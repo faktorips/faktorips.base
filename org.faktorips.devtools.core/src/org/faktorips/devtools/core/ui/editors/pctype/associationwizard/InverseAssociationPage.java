@@ -22,6 +22,7 @@ import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.events.SelectionListener;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
+import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAssociation;
 import org.faktorips.devtools.core.ui.UIToolkit;
 
 /**
@@ -43,11 +44,13 @@ public class InverseAssociationPage extends WizardPage {
     private Button useExistingAssociation;
     private Button noInverseAssociation;
     private Button prevSelection;
+    private IPolicyCmptTypeAssociation association;
 
-    public InverseAssociationPage(NewPcTypeAssociationWizard wizard, UIToolkit toolkit) {
+    public InverseAssociationPage(NewPcTypeAssociationWizard wizard, IPolicyCmptTypeAssociation association, UIToolkit toolkit) {
         super(Messages.InverseAssociationPage_pageName, Messages.InverseAssociationPage_pageTitle, null);
         setDescription(Messages.InverseAssociationPage_pageDescription);
         this.wizard = wizard;
+        this.association = association;
         this.toolkit = toolkit;
         
         setPageComplete(true);
@@ -63,9 +66,9 @@ public class InverseAssociationPage extends WizardPage {
         
         toolkit.createVerticalSpacer(pageComposite, 1);
 
-        useExistingAssociation = toolkit.createRadioButton(pageComposite, Messages.InverseAssociationPage_labelUseExistiongAssociation);
+        useExistingAssociation = toolkit.createRadioButton(pageComposite,
+                Messages.InverseAssociationPage_labelUseExistiongAssociation);
         useExistingAssociation.addSelectionListener(listener);
-        
         toolkit.createVerticalSpacer(pageComposite, 1);
 
         noInverseAssociation = toolkit.createRadioButton(pageComposite, Messages.InverseAssociationPage_labelNoInverseAssociation);
@@ -78,6 +81,22 @@ public class InverseAssociationPage extends WizardPage {
         setControl(pageComposite);
     }
 
+    /**
+     * Overrides the super class method and in addition to the default behaviour disables the <code>useExistingAssociation</code> field
+     * if the association is a composition and if the projects builder set doesn't need a inverse relation link. 
+     */
+    public void setVisible(boolean visiible){
+        super.setVisible(visiible);
+        
+        if(association.isComposition() && !wizard.getIpsProject().getIpsArtefactBuilderSet().isInverseRelationLinkRequiredFor2WayCompositions()){
+            useExistingAssociation.setEnabled(false);
+            useExistingAssociation.setSelection(false);
+        } else {
+            useExistingAssociation.setEnabled(true);
+        }
+            
+    }
+    
     /**
      * Listener for the radio buttons.
      */

@@ -229,8 +229,8 @@ public class InverseAssociationPropertyPage extends WizardPage implements IBlock
     private void bindAllControls(IPolicyCmptTypeAssociation association) {
         bindingContext.bindContent(targetRoleSingularText, association, IPolicyCmptTypeAssociation.PROPERTY_TARGET_ROLE_SINGULAR);
         bindingContext.bindContent(targetRolePluralText, association, IPolicyCmptTypeAssociation.PROPERTY_TARGET_ROLE_PLURAL);
-        bindingContext.bindContent((Text)cardinalityFieldMin.getControl(), association, IPolicyCmptTypeAssociation.PROPERTY_MIN_CARDINALITY);
-        bindingContext.bindContent((Text)cardinalityFieldMax.getControl(), association, IPolicyCmptTypeAssociation.PROPERTY_MAX_CARDINALITY);
+        bindingContext.bindContent(cardinalityFieldMin, association, IPolicyCmptTypeAssociation.PROPERTY_MIN_CARDINALITY);
+        bindingContext.bindContent(cardinalityFieldMax, association, IPolicyCmptTypeAssociation.PROPERTY_MAX_CARDINALITY);
         bindingContext.bindContent(description, association, IPolicyCmptTypeAssociation.PROPERTY_DESCRIPTION);
         
         targetText.setText(association.getTarget());

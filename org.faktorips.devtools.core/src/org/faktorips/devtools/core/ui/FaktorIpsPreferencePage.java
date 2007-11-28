@@ -126,6 +126,13 @@ public class FaktorIpsPreferencePage extends FieldEditorPreferencePage
 						{ Messages.FaktorIpsPreferencePage_labelWorkingModeEdit, IpsPreferences.WORKING_MODE_EDIT } },
 				getFieldEditorParent(), true);
 		addField(workingMode);
+
+        RadioGroupFieldEditor sectionsInTypeEditors = new RadioGroupFieldEditor(
+		        IpsPreferences.SECTIONS_IN_TYPE_EDITORS, "Number of sections on a type editor page", 2, new String[][] {
+		                { "two sections", IpsPreferences.TWO_SECTIONS_IN_TYPE_EDITOR },
+		                { "four sections", IpsPreferences.FOUR_SECTIONS_IN_TYPE_EDITOR} },
+		                getFieldEditorParent(), true);
+		addField(sectionsInTypeEditors);
 	}
 
 	/**

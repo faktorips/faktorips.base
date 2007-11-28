@@ -131,12 +131,12 @@ public class NewPcTypeAssociationWizard extends Wizard implements ContentsChange
     public void addPages() {
         associationTargetPage = new AssociationTargetPage(this, association, toolkit, bindingContext);
         propertyPage = new PropertyPage(this, association, toolkit, bindingContext);
-        inverseAssociationPage = new InverseAssociationPage(this, toolkit);
+        inverseAssociationPage = new InverseAssociationPage(this, association, toolkit);
         inverseAssociationPropertyPage = new InverseAssociationPropertyPage(this, toolkit, bindingContext);
         configureProductCmptTypePage = new ConfigureProductCmptTypePage(this, toolkit);
         confProdCmptTypePropertyPage = new ConfProdCmptTypePropertyPage(this, toolkit, bindingContext);
         errorPage = new ErrorPage(toolkit);
-
+        
         addPage(associationTargetPage);
         addPage(propertyPage);
         addPage(inverseAssociationPage);

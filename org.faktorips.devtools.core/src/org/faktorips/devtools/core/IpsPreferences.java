@@ -88,10 +88,33 @@ public class IpsPreferences {
      * Constant identifying the enable generating preference.
      */
     public final static String ENABLE_GENERATING = IpsPlugin.PLUGIN_ID + ".enableGenerating"; //$NON-NLS-1$
-    
+
+    /**
+     * Constant that identifies the navigate to model or soucre generating preference.
+     */
     public final static String NAVIGATE_TO_MODEL_OR_SOURCE_CODE = IpsPlugin.PLUGIN_ID + ".navigateToModel"; //$NON-NLS-1$
-    
+
+    /**
+     * Constant that identifies the advanced team functions in product definition explorer preference.
+     */
     public final static String ADVANCED_TEAM_FUNCTIONS_IN_PRODUCT_DEF_EXPLORER = IpsPlugin.PLUGIN_ID + ".advancedTeamFunctionsInProductDefExplorer"; //$NON-NLS-1$
+
+    /**
+     * Constant that identifies the number of sections in type editors preference.
+     */
+    public final static String SECTIONS_IN_TYPE_EDITORS = IpsPlugin.PLUGIN_ID + ".sectionsInTypeEditors"; //$NON-NLS-1$
+
+    /**
+     * Constant that defines 2 sections in type editors preference. This constant is a value for the
+     * property <code>SECTIONS_IN_TYPE_EDITORS</code>.
+     */
+    public final static String TWO_SECTIONS_IN_TYPE_EDITOR = IpsPlugin.PLUGIN_ID + ".twoSections"; //$NON-NLS-1$
+
+    /**
+     * Constant that defines 4 sections in type editors preference. This constant is a value for the
+     * property <code>SECTIONS_IN_TYPE_EDITORS</code>.
+     */
+    public final static String FOUR_SECTIONS_IN_TYPE_EDITOR = IpsPlugin.PLUGIN_ID + ".fourSections"; //$NON-NLS-1$
 
     /**
      * Constant identifying the ips test runner max heap size preference.
@@ -118,6 +141,7 @@ public class IpsPreferences {
         prefStore.setDefault(IPSTESTRUNNER_MAX_HEAP_SIZE, ""); //$NON-NLS-1$
         prefStore.setDefault(ENUM_TYPE_DISPLAY, EnumTypeDisplay.NAME_AND_ID.getId());
         prefStore.setDefault(ADVANCED_TEAM_FUNCTIONS_IN_PRODUCT_DEF_EXPLORER, false);
+        prefStore.setDefault(SECTIONS_IN_TYPE_EDITORS, 2);
     }
     
     public void addChangeListener(IPropertyChangeListener listener) {
@@ -360,5 +384,25 @@ public class IpsPreferences {
 
     public void setAvancedTeamFunctionsForProductDefExplorerEnabled(boolean enabled){
         prefStore.setValue(ADVANCED_TEAM_FUNCTIONS_IN_PRODUCT_DEF_EXPLORER, enabled);
+    }
+    
+    /**
+     * Sets the number of sections displayed on a page of a type editor. Only the predefined values
+     * TWO_SECTIONS_IN_TYPE_EDITOR and FOUR_SECTIONS_IN_TYPE_EDITOR are allowed.
+     */
+    public void setSectionsInTypeEditors(String numberOfSections) {
+        //identity on purpose!!
+        if (!(numberOfSections == TWO_SECTIONS_IN_TYPE_EDITOR || numberOfSections == FOUR_SECTIONS_IN_TYPE_EDITOR)) {
+            throw new IllegalArgumentException(
+                    "Valid argument values are the constants TWO_SECTIONS_IN_TYPE_EDITOR or FOUR_SECTIONS_IN_TYPE_EDITOR of the IpsPreferences.");
+        }
+        prefStore.setValue(SECTIONS_IN_TYPE_EDITORS, numberOfSections);
+    }
+
+    /**
+     * Returns the number of sections that are displayed on one page of a type editor.
+     */
+    public String getSectionsInTypeEditors(){
+        return prefStore.getString(SECTIONS_IN_TYPE_EDITORS);
     }
 }
