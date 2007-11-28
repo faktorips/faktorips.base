@@ -175,20 +175,19 @@ public abstract class IpsObjectEditor extends FormEditor
         if (input instanceof IFileEditorInput) {
             IFile file = ((IFileEditorInput)input).getFile();
             ipsSrcFile = (IIpsSrcFile)model.getIpsElement(file);
+//          for what ever reason they made setTitle deprecated. This method does something different than the offered alternatives
+            setTitle(ipsSrcFile.getName());
         } else if (input instanceof IpsArchiveEditorInput) {
             ipsSrcFile = ((IpsArchiveEditorInput)input).getIpsSrcFile();
+            setTitle(ipsSrcFile.getName());
         } else if (input instanceof IStorageEditorInput) {
             initFromStorageEditorInput((IStorageEditorInput)input);
-            setPartName(((IStorageEditorInput)input).getName());
+            setTitle(((IStorageEditorInput)input).getName());
         }
 
         if (ipsSrcFile == null) {
             throw new PartInitException("Unsupported editor input type " + input.getClass().getName()); //$NON-NLS-1$
         } 
-        
-        if(!(input instanceof IStorageEditorInput)){
-            setPartName(ipsSrcFile.getName());
-        }
 
         if (ipsSrcFile.isMutable() && !ipsSrcFile.getEnclosingResource().isSynchronized(0)) {
             try {

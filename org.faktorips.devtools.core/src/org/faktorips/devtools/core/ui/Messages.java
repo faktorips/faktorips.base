@@ -40,7 +40,13 @@ public class Messages extends NLS {
 
     public static String FaktorIpsPreferencePage_advancedTeamFunctionsInProductDefExplorer;
 
+    public static String FaktorIpsPreferencePage_label_fourSections;
+
+    public static String FaktorIpsPreferencePage_label_twoSections;
+
     public static String FaktorIpsPreferencePage_labelEnumTypeDisplay;
+
+    public static String FaktorIpsPreferencePage_title_numberOfSections;
 
 	public static String PdPackageSelectionDialog_title;
 

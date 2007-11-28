@@ -25,36 +25,45 @@ import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.model.ContentChangeEvent;
 import org.faktorips.devtools.core.model.ContentsChangeListener;
 import org.faktorips.devtools.core.model.IIpsModel;
+import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.ui.UIToolkit;
-import org.faktorips.devtools.core.ui.forms.IpsSection;
+import org.faktorips.devtools.core.ui.editors.type.MethodsSection;
+import org.faktorips.devtools.core.ui.editors.type.TypeEditorStructurePage;
 
 
 /**
  * The structure page contain the general information section, the attributes section
  * and the relations section.
  */
-public class StructurePage extends PctEditorPage {
+public class StructurePage extends TypeEditorStructurePage {
     
-    final static String PAGEID = "Structure"; //$NON-NLS-1$
-
     public StructurePage(PctEditor editor) {
-        super(editor, PAGEID, Messages.StructurePage_title);
+        super(editor, Messages.StructurePage_title);
     }
     
 	protected void createPageContent(Composite formBody, UIToolkit toolkit) {
-		formBody.setLayout(createPageLayout(1, false));
-		IpsSection general = new GeneralInfoSection(getPolicyCmptType(), formBody, toolkit); 
-		
-		Composite members = createGridComposite(toolkit, formBody, 2, true, GridData.FILL_BOTH);
-		IpsSection attributes = new AttributesSection(getPolicyCmptType(), members, toolkit);
-        
-        Composite rightComp = createGridComposite(toolkit, members, 1, true, GridData.FILL_BOTH);
-		IpsSection relations = new AssociationsSection(getPolicyCmptType(), rightComp, toolkit);
-        general.setFocusSuccessor(attributes);
-        attributes.setFocusSuccessor(relations);
+        super.createPageContent(formBody, toolkit);
         registerContentsChangeListener();
 	}
-    
+	
+	protected void createContentForSingleStructurePage(Composite formBody, UIToolkit toolkit) {
+        Composite members = createGridComposite(toolkit, formBody, 2, true, GridData.FILL_BOTH);
+        new AttributesSection((IPolicyCmptType)getIpsObject(), members, toolkit);
+        new AssociationsSection((IPolicyCmptType)getIpsObject(), members, toolkit);
+        new MethodsSection((IPolicyCmptType)getIpsObject(), members, toolkit);
+        new RulesSection((IPolicyCmptType)getIpsObject(), members, toolkit);
+	}
+	
+	protected void createContentForSplittedStructurePage(Composite formBody, UIToolkit toolkit) {
+        Composite members = createGridComposite(toolkit, formBody, 2, true, GridData.FILL_BOTH);
+        new AttributesSection((IPolicyCmptType)getIpsObject(), members, toolkit);
+        new AssociationsSection((IPolicyCmptType)getIpsObject(), members, toolkit);
+	}
+	
+	protected void createGeneralPageInfoSection(Composite formBody, UIToolkit toolkit) {
+        new GeneralInfoSection((IPolicyCmptType)getIpsObject(), formBody, toolkit); 
+	}
+
     private void registerContentsChangeListener(){
         //refreshing the page after a change in the PolicyCmptType occured is necessary since there
         //is a dependency from attributes that are displayed in the GeneralInfoSection and the

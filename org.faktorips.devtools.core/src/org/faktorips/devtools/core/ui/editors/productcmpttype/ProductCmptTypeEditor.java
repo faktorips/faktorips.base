@@ -17,29 +17,36 @@
 
 package org.faktorips.devtools.core.ui.editors.productcmpttype;
 
-import org.eclipse.core.runtime.CoreException;
 import org.eclipse.ui.PartInitException;
-import org.faktorips.devtools.core.ui.editors.IpsObjectEditor;
+import org.faktorips.devtools.core.ui.editors.type.TypeEditor;
 
 
 /**
  * 
  * @author Jan Ortmann
  */
-public class ProductCmptTypeEditor extends IpsObjectEditor {
+public class ProductCmptTypeEditor extends TypeEditor {
+
+
+    /** 
+     * {@inheritDoc}
+     */
+    protected String getUniformPageTitle() {
+        return Messages.ProductCmptTypeEditor_title + getIpsObject().getName();
+    }
 
     /**
      * {@inheritDoc}
      */
-    protected void addPagesForParsableSrcFile() throws PartInitException, CoreException {
+    protected void addAllInOneSinglePage() throws PartInitException {
         addPage(new StructurePage(this));
     }
 
     /**
      * {@inheritDoc}
      */
-    protected String getUniformPageTitle() {
-        return null;
+    protected void addSplittedInMorePages() throws PartInitException {
+        addPage(new StructurePage(this));
+        addPage(new BehaviourPage(this));
     }
-
 }

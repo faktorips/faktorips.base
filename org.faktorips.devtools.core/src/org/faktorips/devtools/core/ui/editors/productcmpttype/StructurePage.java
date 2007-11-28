@@ -21,15 +21,13 @@ import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.widgets.Composite;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
 import org.faktorips.devtools.core.ui.UIToolkit;
-import org.faktorips.devtools.core.ui.editors.IpsObjectEditorPage;
+import org.faktorips.devtools.core.ui.editors.type.TypeEditorStructurePage;
 
 /**
  * 
  * @author Jan Ortmann
  */
-public class StructurePage extends IpsObjectEditorPage {
-
-    final static String PAGEID = "Structure"; //$NON-NLS-1$
+public class StructurePage extends TypeEditorStructurePage {
 
     /**
      * @param editor
@@ -37,7 +35,7 @@ public class StructurePage extends IpsObjectEditorPage {
      * @param tabPageName
      */
     public StructurePage(ProductCmptTypeEditor editor) {
-        super(editor, PAGEID, Messages.StructurePage_structurePageTitle);
+        super(editor, Messages.StructurePage_structurePageTitle);
     }
     
     private IProductCmptType getProductCmptType() {
@@ -47,14 +45,29 @@ public class StructurePage extends IpsObjectEditorPage {
     /**
      * {@inheritDoc}
      */
-    protected void createPageContent(Composite formBody, UIToolkit toolkit) {
-        formBody.setLayout(createPageLayout(1, false));
+    protected void createGeneralPageInfoSection(Composite formBody, UIToolkit toolkit) {
         new GeneralInfoSection(getProductCmptType(), formBody, toolkit); 
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    protected void createContentForSingleStructurePage(Composite formBody, UIToolkit toolkit) {
         Composite members = createGridComposite(toolkit, formBody, 2, true, GridData.FILL_BOTH);
         new AttributesSection(getProductCmptType(), members, toolkit);
         new AssociationsSection(getProductCmptType(), members, toolkit);
         new MethodsAndFormulaSection(getProductCmptType(), members, toolkit);
         new TableStructureUsageSection(getProductCmptType(), members, toolkit);
     }
+
+    /**
+     * {@inheritDoc}
+     */
+    protected void createContentForSplittedStructurePage(Composite formBody, UIToolkit toolkit) {
+        Composite members = createGridComposite(toolkit, formBody, 2, true, GridData.FILL_BOTH);
+        new AttributesSection(getProductCmptType(), members, toolkit);
+        new AssociationsSection(getProductCmptType(), members, toolkit);
+    }
+
 
 }

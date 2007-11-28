@@ -17,32 +17,21 @@
 
 package org.faktorips.devtools.core.ui.editors.pctype;
 
-import org.eclipse.core.runtime.CoreException;
 import org.eclipse.ui.PartInitException;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
-import org.faktorips.devtools.core.ui.editors.DescriptionPage;
-import org.faktorips.devtools.core.ui.editors.IpsObjectEditor;
+import org.faktorips.devtools.core.ui.editors.type.TypeEditor;
 
 
 /**
  * The editor to edit policy component types.
  */
-public class PctEditor extends IpsObjectEditor {
+public class PctEditor extends TypeEditor {
     
     public PctEditor() {
         super();
     }
     
-    /**
-     * {@inheritDoc}
-     */
-    protected void addPagesForParsableSrcFile() throws PartInitException, CoreException {
-        addPage(new StructurePage(this));
-        addPage(new BehaviourPage(this));
-        addPage(new DescriptionPage(this));
-    }
-
     IPolicyCmptType getPolicyCmptType() {
         try {
             return (IPolicyCmptType)getIpsObject();
@@ -57,5 +46,20 @@ public class PctEditor extends IpsObjectEditor {
      */
     protected String getUniformPageTitle() {
         return Messages.PctEditor_title + getPolicyCmptType().getName();
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    protected void addAllInOneSinglePage() throws PartInitException {
+        addPage(new StructurePage(this));
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    protected void addSplittedInMorePages() throws PartInitException {
+        addPage(new StructurePage(this));
+        addPage(new BehaviourPage(this));
     }
 }

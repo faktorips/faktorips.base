@@ -47,12 +47,14 @@ public class Messages extends NLS {
     public static String AttributeEditDialog_title;
     public static String AttributeEditDialog_valueSetSection;
     public static String AttributesSection_title;
+    public static String BehaviourPage_title_behaviour;
     public static String GeneralInfoSection_abstractLabel;
     public static String GeneralInfoSection_configuredTypeLabel;
     public static String GeneralInfoSection_configuresLabel;
     public static String GeneralInfoSection_supertypeLabel;
     public static String GeneralInfoSection_title;
     public static String MethodsAndFormulaSection_title;
+    public static String ProductCmptTypeEditor_title;
     public static String ProductCmptTypeMethodEditDialog_formulaCheckbox;
     public static String ProductCmptTypeMethodEditDialog_formulaGroup;
     public static String ProductCmptTypeMethodEditDialog_formulaNameLabel;

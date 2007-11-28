@@ -128,9 +128,9 @@ public class FaktorIpsPreferencePage extends FieldEditorPreferencePage
 		addField(workingMode);
 
         RadioGroupFieldEditor sectionsInTypeEditors = new RadioGroupFieldEditor(
-		        IpsPreferences.SECTIONS_IN_TYPE_EDITORS, "Number of sections on a type editor page", 2, new String[][] {
-		                { "two sections", IpsPreferences.TWO_SECTIONS_IN_TYPE_EDITOR },
-		                { "four sections", IpsPreferences.FOUR_SECTIONS_IN_TYPE_EDITOR} },
+		        IpsPreferences.SECTIONS_IN_TYPE_EDITORS, Messages.FaktorIpsPreferencePage_title_numberOfSections, 2, new String[][] {
+		                { Messages.FaktorIpsPreferencePage_label_twoSections, IpsPreferences.TWO_SECTIONS_IN_TYPE_EDITOR_PAGE },
+		                { Messages.FaktorIpsPreferencePage_label_fourSections, IpsPreferences.FOUR_SECTIONS_IN_TYPE_EDITOR_PAGE} },
 		                getFieldEditorParent(), true);
 		addField(sectionsInTypeEditors);
 	}

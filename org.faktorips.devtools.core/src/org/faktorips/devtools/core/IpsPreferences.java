@@ -108,13 +108,13 @@ public class IpsPreferences {
      * Constant that defines 2 sections in type editors preference. This constant is a value for the
      * property <code>SECTIONS_IN_TYPE_EDITORS</code>.
      */
-    public final static String TWO_SECTIONS_IN_TYPE_EDITOR = IpsPlugin.PLUGIN_ID + ".twoSections"; //$NON-NLS-1$
+    public final static String TWO_SECTIONS_IN_TYPE_EDITOR_PAGE = IpsPlugin.PLUGIN_ID + ".twoSections"; //$NON-NLS-1$
 
     /**
      * Constant that defines 4 sections in type editors preference. This constant is a value for the
      * property <code>SECTIONS_IN_TYPE_EDITORS</code>.
      */
-    public final static String FOUR_SECTIONS_IN_TYPE_EDITOR = IpsPlugin.PLUGIN_ID + ".fourSections"; //$NON-NLS-1$
+    public final static String FOUR_SECTIONS_IN_TYPE_EDITOR_PAGE = IpsPlugin.PLUGIN_ID + ".fourSections"; //$NON-NLS-1$
 
     /**
      * Constant identifying the ips test runner max heap size preference.
@@ -388,13 +388,13 @@ public class IpsPreferences {
     
     /**
      * Sets the number of sections displayed on a page of a type editor. Only the predefined values
-     * TWO_SECTIONS_IN_TYPE_EDITOR and FOUR_SECTIONS_IN_TYPE_EDITOR are allowed.
+     * TWO_SECTIONS_IN_TYPE_EDITOR_PAGE and FOUR_SECTIONS_IN_TYPE_EDITOR_PAGE are allowed.
      */
     public void setSectionsInTypeEditors(String numberOfSections) {
         //identity on purpose!!
-        if (!(numberOfSections == TWO_SECTIONS_IN_TYPE_EDITOR || numberOfSections == FOUR_SECTIONS_IN_TYPE_EDITOR)) {
+        if (!(numberOfSections == TWO_SECTIONS_IN_TYPE_EDITOR_PAGE || numberOfSections == FOUR_SECTIONS_IN_TYPE_EDITOR_PAGE)) {
             throw new IllegalArgumentException(
-                    "Valid argument values are the constants TWO_SECTIONS_IN_TYPE_EDITOR or FOUR_SECTIONS_IN_TYPE_EDITOR of the IpsPreferences.");
+                    "Valid argument values are the constants TWO_SECTIONS_IN_TYPE_EDITOR_PAGE or FOUR_SECTIONS_IN_TYPE_EDITOR_PAGE of the IpsPreferences.");
         }
         prefStore.setValue(SECTIONS_IN_TYPE_EDITORS, numberOfSections);
     }

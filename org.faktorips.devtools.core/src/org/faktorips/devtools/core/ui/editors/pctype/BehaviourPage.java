@@ -18,14 +18,17 @@
 package org.faktorips.devtools.core.ui.editors.pctype;
 
 import org.eclipse.swt.widgets.Composite;
+import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
+import org.faktorips.devtools.core.model.type.IType;
 import org.faktorips.devtools.core.ui.UIToolkit;
+import org.faktorips.devtools.core.ui.editors.IpsObjectEditorPage;
 import org.faktorips.devtools.core.ui.editors.type.MethodsSection;
 
 
 /**
  *
  */
-public class BehaviourPage extends PctEditorPage {
+public class BehaviourPage extends IpsObjectEditorPage {
     
     final static String PAGE_ID = "BehaviourPage"; //$NON-NLS-1$
     
@@ -38,8 +41,8 @@ public class BehaviourPage extends PctEditorPage {
      */
     protected void createPageContent(Composite formBody, UIToolkit toolkit) {
 		formBody.setLayout(createPageLayout(2, true));
-		new MethodsSection(getPolicyCmptType(), formBody, toolkit);
-		new RulesSection(getPolicyCmptType(), formBody, toolkit);
+		new MethodsSection((IType)getIpsObject(), formBody, toolkit);
+		new RulesSection((IPolicyCmptType)getIpsObject(), formBody, toolkit);
     }
 
 }
