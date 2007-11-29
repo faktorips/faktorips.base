@@ -21,6 +21,7 @@ import java.util.Iterator;
 
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.osgi.util.NLS;
 import org.eclipse.swt.graphics.Image;
 import org.faktorips.devtools.core.model.ContentChangeEvent;
 import org.faktorips.devtools.core.model.IDependency;
@@ -234,6 +235,17 @@ public abstract class IpsObject extends IpsObjectPartContainer implements IIpsOb
     protected void validateThis(MessageList list, IIpsProject ipsProject) throws CoreException {
         super.validateThis(list, ipsProject);
         validateNamingConventions(list, getName(), PROPERTY_NAME);
+        validateSecondIpsObjectWithSameNameTypeInIpsObjectPath(list, ipsProject);
+    }
+    
+    private void validateSecondIpsObjectWithSameNameTypeInIpsObjectPath(MessageList list, IIpsProject ipsProject)
+            throws CoreException {
+        IIpsObject otherIpsObject = ipsProject.findIpsObject(getQualifiedNameType());
+        if (otherIpsObject != this) {
+            list.add(new Message(MSGCODE_SAME_IPSOBJECT_IN_IPSOBEJECTPATH_AHEAD, 
+                    NLS.bind(Messages.IpsObject_msg_OtherIpsObjectAlreadyInPathAhead,
+                            getIpsProject()), Message.WARNING, this));
+        }
     }
     
     /**

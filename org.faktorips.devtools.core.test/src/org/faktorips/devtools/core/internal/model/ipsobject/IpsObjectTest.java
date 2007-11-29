@@ -17,16 +17,24 @@
 
 package org.faktorips.devtools.core.internal.model.ipsobject;
 
+import java.util.ArrayList;
+
 import org.eclipse.core.runtime.CoreException;
 import org.faktorips.devtools.core.AbstractIpsPluginTest;
+import org.faktorips.devtools.core.internal.model.ipsproject.IpsObjectPath;
+import org.faktorips.devtools.core.internal.model.ipsproject.IpsProjectRefEntry;
 import org.faktorips.devtools.core.model.ContentChangeEvent;
 import org.faktorips.devtools.core.model.ContentsChangeListener;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObject;
 import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
+import org.faktorips.devtools.core.model.ipsproject.IIpsObjectPath;
+import org.faktorips.devtools.core.model.ipsproject.IIpsObjectPathEntry;
 import org.faktorips.devtools.core.model.ipsproject.IIpsPackageFragment;
 import org.faktorips.devtools.core.model.ipsproject.IIpsPackageFragmentRoot;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
+import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
+import org.faktorips.util.message.MessageList;
 
 
 /**
@@ -63,6 +71,29 @@ public class IpsObjectTest extends AbstractIpsPluginTest implements ContentsChan
         assertEquals(srcFile, lastEvent.getIpsSrcFile());
     }
     
+    public void testValidateEqualIpsObjectAlreadyExistsInIpsObjectPath() throws CoreException{
+    
+        IIpsProject a = newIpsProject("aProject");
+        IPolicyCmptType aPolicyProjectA = newPolicyCmptTypeWithoutProductCmptType(a, "faktorzehn.example.APolicy");
+        IIpsProject b = newIpsProject("bProject");
+        IPolicyCmptType aPolicyProjectB = newPolicyCmptTypeWithoutProductCmptType(b, "faktorzehn.example.APolicy");
+        
+        IIpsObjectPath bPath = b.getIpsObjectPath();
+        IIpsObjectPathEntry[] bPathEntries = bPath.getEntries();
+        ArrayList newbPathEntries = new ArrayList();
+        newbPathEntries.add(new IpsProjectRefEntry((IpsObjectPath)bPath, a));
+        for (int i = 0; i < bPathEntries.length; i++) {
+            newbPathEntries.add(bPathEntries[i]);
+        }
+        bPath.setEntries((IIpsObjectPathEntry[])newbPathEntries.toArray(new IIpsObjectPathEntry[newbPathEntries.size()]));
+        b.setIpsObjectPath(bPath);
+        
+        MessageList msgList = aPolicyProjectA.validate(a);
+        assertNull(msgList.getMessageByCode(IIpsObject.MSGCODE_SAME_IPSOBJECT_IN_IPSOBEJECTPATH_AHEAD));
+        
+        msgList = aPolicyProjectB.validate(b);
+        assertNotNull(msgList.getMessageByCode(IIpsObject.MSGCODE_SAME_IPSOBJECT_IN_IPSOBEJECTPATH_AHEAD));
+    }
     /** 
      * {@inheritDoc}
      */

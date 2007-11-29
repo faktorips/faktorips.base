@@ -28,6 +28,19 @@ import org.faktorips.devtools.core.model.ipsproject.IIpsPackageFragment;
 public interface IIpsObject extends IIpsObjectPartContainer {
     
     /**
+     * Prefix for all message codes of this class.
+     */
+    public final static String MSGCODE_PREFIX = "IPSOBJECT-"; //$NON-NLS-1$
+
+    /**
+     * Validation message code to indicate that this policy component type is defined as configurable by 
+     * product, but the product component type name is not set.
+     */
+    public final static String MSGCODE_SAME_IPSOBJECT_IN_IPSOBEJECTPATH_AHEAD = 
+        MSGCODE_PREFIX + "sameIpsObjectInIpsObjectPathAhead"; //$NON-NLS-1$
+
+    
+    /**
      * Returns the object's type.
      */
     public IpsObjectType getIpsObjectType();

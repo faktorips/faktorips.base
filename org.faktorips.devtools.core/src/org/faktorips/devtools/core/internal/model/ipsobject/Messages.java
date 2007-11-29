@@ -34,6 +34,8 @@ public class Messages extends NLS {
 		NLS.initializeMessages(BUNDLE_NAME, Messages.class);
 	}
 
+    public static String IpsObject_msg_OtherIpsObjectAlreadyInPathAhead;
+
     public static String TimedIpsObject_msgIvalidValidToDate;
 
     public static String IpsObjectGeneration_msgInvalidFromDate;
