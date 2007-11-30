@@ -39,6 +39,7 @@ import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
+import org.eclipse.core.runtime.Path;
 import org.eclipse.jdt.core.IClasspathEntry;
 import org.eclipse.jdt.core.IJavaModelMarker;
 import org.eclipse.jdt.core.IJavaProject;
@@ -78,7 +79,6 @@ import org.faktorips.devtools.core.model.ipsproject.IIpsPackageFragmentRoot;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProjectNamingConventions;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProjectProperties;
-import org.faktorips.devtools.core.model.ipsproject.IIpsSrcFolderEntry;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAssociation;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmpt;
@@ -1473,46 +1473,36 @@ public class IpsProject extends IpsElement implements IIpsProject {
      */
     private void validateDuplicateTocFilePath(MessageList result, IpsProjectProperties props)
             throws CoreException {
-        IIpsObjectPath path = getIpsObjectPathInternal();
-        if (path == null) {
-            return;
-        }
         // check for same toc file path in referenced projects (only product definition projects)
-        List tocPaths = collectTocPaths(path);
+        List tocPaths = collectTocPaths(getIpsArtefactBuilderSet(), this);
         
         IIpsProject[] referencedProjects = getReferencedIpsProjects();
         for (int i = 0; i < referencedProjects.length; i++) {
             if (! referencedProjects[i].isProductDefinitionProject()){
                 continue;
             }
-            IIpsObjectPath pathRelProject = ((IpsProject)referencedProjects[i]).getIpsObjectPathInternal();
-            if (pathRelProject == null) {
-                continue;
-            }
-            List tocPathsInRefProject = collectTocPaths(pathRelProject);
+            IIpsArtefactBuilderSet builderSet = referencedProjects[i].getIpsArtefactBuilderSet();
+            List tocPathsInRefProject = collectTocPaths(builderSet, referencedProjects[i]);
+
             for (Iterator iter = tocPathsInRefProject.iterator(); iter.hasNext();) {
-                String tocPath = (String)iter.next();
+                IPath tocPath = (IPath)iter.next();
                 if (tocPaths.contains(tocPath)) {
                     String msg = NLS.bind(Messages.IpsProject_msgDuplicateTocFilePath, tocPath, referencedProjects[i]
                             .getName());
-                    result.add(new Message(
-                            MSGCODE_DUPLICATE_BASE_PACKAGE_NAME_FOR_GENERATED_CLASSES_IN_DIFFERENT_PROJECTS, msg,
-                            Message.ERROR, this));
-                    continue;
+                    result.add(new Message(MSGCODE_DUPLICATE_TOC_FILE_PATH_IN_DIFFERENT_PROJECTS, msg, Message.ERROR,
+                            this));
                 }
             }
         }
     }
     
-    // Return all toc file paths inside the given ips object path
-    private List collectTocPaths(IIpsObjectPath ipsObjectPath){
-        List tocPath = new ArrayList();
-        IIpsSrcFolderEntry[] srcFolderEntries = ipsObjectPath.getSourceFolderEntries();
-        for (int j = 0; j < srcFolderEntries.length; j++) {
-            String tocFilePath = srcFolderEntries[j].getBasePackageNameForMergableJavaClasses() + "." + srcFolderEntries[j].getBasePackageRelativeTocPath(); //$NON-NLS-1$
-            tocPath.add(tocFilePath);
+    private List collectTocPaths(IIpsArtefactBuilderSet builderSet, IIpsProject ipsProject) throws CoreException{
+        List tocPaths = new ArrayList();
+        IIpsPackageFragmentRoot[] roots = ipsProject.getIpsPackageFragmentRoots();
+        for (int i = 0; i < roots.length; i++) {
+            tocPaths.add(new Path(builderSet.getRuntimeRepositoryTocResourceName(roots[i])));
         }
-        return tocPath;
+        return tocPaths;
     }
     
     /**

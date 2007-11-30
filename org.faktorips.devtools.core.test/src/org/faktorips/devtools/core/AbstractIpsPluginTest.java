@@ -288,6 +288,7 @@ public abstract class AbstractIpsPluginTest extends XmlAbstractTestCase {
 				.setSpecificBasePackageNameForDerivedJavaClasses("org.faktorips.sample.model");
 		entry.setSpecificOutputFolderForDerivedJavaFiles(project
 				.getFolder("extension"));
+       
 		ipsProject.setIpsObjectPath(path);
 
 		// TODO: wichtig dies erzeugt eine Abhaengigkeit vom StdBuilder Projekt.

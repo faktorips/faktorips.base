@@ -395,14 +395,39 @@ public class IpsModelTest extends AbstractIpsPluginTest {
 
         TestContentsChangeListener listener = new TestContentsChangeListener();
         model.addChangeListener(listener);
+        TestModStatusListener modifyListener = new TestModStatusListener();
+        model.addModifcationStatusChangeListener(modifyListener);
+        
         model.runAndQueueChangeEvents(action, null);
 
         assertEquals(2, listener.changedFiles.size());
         assertEquals(typeA.getIpsSrcFile(), listener.changedFiles.get(0));
         assertEquals(typeB.getIpsSrcFile(), listener.changedFiles.get(1));
+        
+        assertEquals(2, modifyListener.modifiedFiles.size());
+        assertEquals(typeA.getIpsSrcFile(), modifyListener.modifiedFiles.get(0));
+        assertEquals(typeB.getIpsSrcFile(), modifyListener.modifiedFiles.get(1));
+
+        listener.changedFiles.clear();
+        modifyListener.modifiedFiles.clear();
+        
+        typeA.setDescription("blublu");
+        typeA.getIpsSrcFile().save(true, null);
+        
+        assertEquals(1, listener.changedFiles.size());
+        assertEquals(typeA.getIpsSrcFile(), listener.changedFiles.get(0));
+
+        //two entries are expected for modifiedFiles. Both are for the same file. First entry is
+        //expected due to the call to the setDescription() method, second due to the call to the
+        //save() of the ips source file
+        assertEquals(2, modifyListener.modifiedFiles.size());
+        assertEquals(typeA.getIpsSrcFile(), modifyListener.modifiedFiles.get(0));
+        
+        
+        
     }
 
-    class TestContentsChangeListener implements ContentsChangeListener {
+    private static class TestContentsChangeListener implements ContentsChangeListener {
 
         List changedFiles = new ArrayList();
         ContentChangeEvent lastEvent;
@@ -414,13 +439,16 @@ public class IpsModelTest extends AbstractIpsPluginTest {
 
     };
 
-    class TestModStatusListener implements IModificationStatusChangeListener {
+    private static class TestModStatusListener implements IModificationStatusChangeListener {
 
+        List modifiedFiles = new ArrayList();
         ModificationStatusChangedEvent lastEvent;
 
         public void modificationStatusHasChanged(ModificationStatusChangedEvent event) {
             lastEvent = event;
+            modifiedFiles.add(event.getIpsSrcFile());
         }
+        
 
     }
 

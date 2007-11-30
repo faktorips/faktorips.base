@@ -353,6 +353,11 @@ public class ProductCmptGeneration extends IpsObjectGeneration implements IProdu
      */
     public IConfigElement newConfigElement(IPolicyCmptTypeAttribute attribute) {
         IConfigElement newElement = newConfigElementInternal(getNextPartId(), attribute);
+        //this is neccessary because though broadcasting has been stopped the modified status will still be changed.
+        //To enable the trigging of the modification event in the objectHasChanged() method it is necessary to clear
+        //the modification status first
+        //TODO pk possible better solution: sent a modification event after resuming broadcasting
+        getIpsSrcFile().markAsClean();
         objectHasChanged();
         return newElement;
     }

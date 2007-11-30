@@ -251,7 +251,7 @@ public class IpsModel extends IpsElement implements IIpsModel, IResourceChangeLi
             int flags,
             IProgressMonitor monitor) throws CoreException {
 
-        if (changeListeners.size()==0) {
+        if (changeListeners.size()==0 && modificationStatusChangeListeners.size() == 0) {
             getWorkspace().run(action, rule, flags, monitor);
             return;
         }
@@ -266,7 +266,19 @@ public class IpsModel extends IpsElement implements IIpsModel, IResourceChangeLi
         };
         changeListeners.clear();
         this.addChangeListener(batchListener);
+        
+        HashSet copyOfCurrentModifyListeners = new HashSet(modificationStatusChangeListeners);
+        final Set modifiedSrcFiles = new LinkedHashSet(0);
+        IModificationStatusChangeListener batchModifiyListener = new IModificationStatusChangeListener(){
 
+            public void modificationStatusHasChanged(ModificationStatusChangedEvent event) {
+                modifiedSrcFiles.add(event.getIpsSrcFile());
+            }
+            
+        };
+        modificationStatusChangeListeners.clear();
+        this.addModifcationStatusChangeListener(batchModifiyListener);
+        
         try {
             getWorkspace().run(action, rule, flags, monitor);
         } finally {
@@ -279,6 +291,14 @@ public class IpsModel extends IpsElement implements IIpsModel, IResourceChangeLi
                 IIpsSrcFile file = (IIpsSrcFile)it.next();
                 ContentChangeEvent event = ContentChangeEvent.newWholeContentChangedEvent(file);
                 notifyChangeListeners(event);
+            }
+            
+            removeModificationStatusChangeListener(batchModifiyListener);
+            modificationStatusChangeListeners = copyOfCurrentModifyListeners;
+            for (Iterator it = modifiedSrcFiles.iterator(); it.hasNext();) {
+                IIpsSrcFile ipsSrcFile = (IIpsSrcFile)it.next();
+                ModificationStatusChangedEvent event = new ModificationStatusChangedEvent(ipsSrcFile);
+                notifyModificationStatusChangeListener(event);
             }
         }
 

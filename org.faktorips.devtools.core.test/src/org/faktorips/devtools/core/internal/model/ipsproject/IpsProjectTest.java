@@ -48,18 +48,17 @@ import org.faktorips.devtools.core.AbstractIpsPluginTest;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.TestEnumType;
 import org.faktorips.devtools.core.TestIpsFeatureVersionManager;
+import org.faktorips.devtools.core.builder.DefaultBuilderSet;
 import org.faktorips.devtools.core.builder.JavaUtilLoggingFrameworkConnector;
 import org.faktorips.devtools.core.internal.model.TableContentsEnumDatatypeAdapter;
-import org.faktorips.devtools.core.internal.model.ipsproject.DefaultIpsProjectNamingConventions;
-import org.faktorips.devtools.core.internal.model.ipsproject.IpsArchive;
-import org.faktorips.devtools.core.internal.model.ipsproject.IpsProject;
-import org.faktorips.devtools.core.internal.model.ipsproject.IpsProjectProperties;
 import org.faktorips.devtools.core.internal.model.tablestructure.TableStructureType;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObject;
 import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
 import org.faktorips.devtools.core.model.ipsobject.QualifiedNameType;
+import org.faktorips.devtools.core.model.ipsproject.IIpsArtefactBuilderSet;
 import org.faktorips.devtools.core.model.ipsproject.IIpsObjectPath;
+import org.faktorips.devtools.core.model.ipsproject.IIpsObjectPathEntry;
 import org.faktorips.devtools.core.model.ipsproject.IIpsPackageFragment;
 import org.faktorips.devtools.core.model.ipsproject.IIpsPackageFragmentRoot;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
@@ -1062,76 +1061,88 @@ public class IpsProjectTest extends AbstractIpsPluginTest {
         assertNull(msg);
     }
     
-    public void testValidateDuplicateBasePackageGenerated() throws Exception {
-        IIpsProject ipsProject2 = (IpsProject)this.newIpsProject("TestProject2");
-    
+    public void testValidateDuplicateTocFilesInDifferentProjects() throws Exception {
+        
+        //check if the validation doesn't fail for a valid non duplicate toc file path
         MessageList ml = ipsProject.validate();
-        assertNull(ml.getMessageByCode(IIpsProject.MSGCODE_DUPLICATE_BASE_PACKAGE_NAME_FOR_GENERATED_CLASSES_IN_DIFFERENT_PROJECTS));
-    
-        IIpsObjectPath path = ipsProject.getIpsObjectPath();
-        IIpsSrcFolderEntry srcFolder = path.newSourceFolderEntry((IFolder)root.getEnclosingResource());
-        srcFolder.setSpecificBasePackageNameForDerivedJavaClasses("srctest");
-        IFolder outMerge = ipsProject.getProject().getFolder("src");
-        if(!outMerge.exists()){
-            outMerge.create(true, true, null);
-        }
-        path.setOutputFolderForGeneratedJavaFiles(outMerge);
-        IFolder outDerived = ipsProject.getProject().getFolder("derived");
-        if(!outDerived.exists()){
-            outDerived.create(true, true, null);
-        }
-        path.setOutputFolderForDerivedSources(outDerived);
-        path.setBasePackageNameForMergableJavaClasses("test");
-        path.newIpsProjectRefEntry(ipsProject2);
-        ipsProject.setIpsObjectPath(path);
+        assertNull(ml.getMessageByCode(IIpsProject.MSGCODE_DUPLICATE_TOC_FILE_PATH_IN_DIFFERENT_PROJECTS));
         
-        // check same base package name and product definition project
-        path = ipsProject2.getIpsObjectPath();
-        IFolder outMerge2 = ipsProject2.getProject().getFolder("src");
-        if(!outMerge2.exists()){
-            outMerge2.create(true, true, null);
-        }
-        path.setOutputFolderForGeneratedJavaFiles(outMerge2);
-        IFolder outDerived2 = ipsProject2.getProject().getFolder("derived");
-        if(!outDerived2.exists()){
-            outDerived2.create(true, true, null);
-        }
-        path.setOutputFolderForDerivedSources(outDerived2);
-        
-        path.setBasePackageNameForMergableJavaClasses("test");
-        ipsProject2.setIpsObjectPath(path);
-        
-        IIpsProjectProperties props = ipsProject2.getProperties();
+        //create builder set so that this test case is independent from StandardBuilderSet which is in a different
+        //plugin
+        IIpsArtefactBuilderSet projectABuilderSet = new DefaultBuilderSet();
+        projectABuilderSet.setId("projectABuilderSet");
+        projectABuilderSet.setIpsProject(ipsProject);
+
+        IIpsProjectProperties props = ipsProject.getProperties();
+        props.setBuilderSetId("projectABuilderSet");
+
+        //the project needs to be a product definition project to force a fail of the validation
         props.setProductDefinitionProject(true);
-        ipsProject2.setProperties(props);
-        ml = ipsProject.validate();
-//        assertEquals(IIpsProject.MSGCODE_DUPLICATE_BASE_PACKAGE_NAME_FOR_GENERATED_CLASSES_IN_DIFFERENT_PROJECTS, ml
-//                .getFirstMessage(Message.ERROR).getCode());
-//        
-//        // check same base package name per src folder
-//        path = ipsProject2.getIpsObjectPath();
-//        path.setBasePackageNameForMergableJavaClasses("test2");
-//        path.setOutputDefinedPerSrcFolder(true);
-//        ipsProject2.setIpsObjectPath(path);
-//        ml = ipsProject.validate();
-//        assertNotNull(ml.getMessageByCode(IIpsProject.MSGCODE_DUPLICATE_BASE_PACKAGE_NAME_FOR_GENERATED_CLASSES_IN_DIFFERENT_PROJECTS));  
-//        
-//        // check different base package name
-//        path = ipsProject2.getIpsObjectPath();
-//        path.setBasePackageNameForMergableJavaClasses("test2");
-//        path.setOutputDefinedPerSrcFolder(false);
-//        ipsProject2.setIpsObjectPath(path);
-//        ml = ipsProject.validate();
-//        assertNull(ml.getMessageByCode(IIpsProject.MSGCODE_DUPLICATE_BASE_PACKAGE_NAME_FOR_GENERATED_CLASSES_IN_DIFFERENT_PROJECTS));  
-//        
-//        // check same base package name and product definition project
-//        path = ipsProject2.getIpsObjectPath();
-//        path.setBasePackageNameForMergableJavaClasses("test");
-//        ipsProject2.setIpsObjectPath(path);        
-//        props = ipsProject2.getProperties();
-//        props.setProductDefinitionProject(false);        
-//        ml = ipsProject.validate();
-//        assertNull(ml.getMessageByCode(IIpsProject.MSGCODE_DUPLICATE_BASE_PACKAGE_NAME_FOR_GENERATED_CLASSES_IN_DIFFERENT_PROJECTS));  
+        ipsProject.setProperties(props);
+        getIpsModel().setIpsArtefactBuilderSet(ipsProject, projectABuilderSet);
+        
+        IIpsObjectPath projectAIpsObjectPath = ipsProject.getIpsObjectPathInternal();
+
+        //to have not to care about each ipsobject path entry the properties are set on the path
+        projectAIpsObjectPath.setOutputDefinedPerSrcFolder(false);
+        //the DefaultBuilderSet uses this package name to determine the toc file name e.g. path
+        projectAIpsObjectPath.setBasePackageNameForDerivedJavaClasses("org.faktorzehn.de");
+        
+        IFolder outputFolderDerived = ipsProject.getProject().getFolder("derived");
+        if(!outputFolderDerived.exists()){
+            outputFolderDerived.create(true, true, null);
+        }
+        projectAIpsObjectPath.setOutputFolderForDerivedSources(outputFolderDerived);
+
+        IFolder outputFolderMergeable = ipsProject.getProject().getFolder("src");
+        if(!outputFolderMergeable.exists()){
+            outputFolderMergeable.create(true, true, null);
+        }
+        projectAIpsObjectPath.setOutputFolderForDerivedSources(outputFolderMergeable);
+        
+        //second ipsproject with its own builderset but the same setting for the toc file name 
+        IpsProject ipsProjectB = (IpsProject)newIpsProject("TestProjectB");
+        
+        IIpsArtefactBuilderSet projectBBuilderSet = new DefaultBuilderSet();
+        projectBBuilderSet.setId("projectBBuilderSet");
+        projectBBuilderSet.setIpsProject(ipsProjectB);
+
+        IIpsProjectProperties projectBProperties = ipsProjectB.getProperties();
+        projectBProperties.setBuilderSetId("projectBBuilderSet");
+        
+        //the project needs to be a product definition project to force a fail of the validation
+        projectBProperties.setProductDefinitionProject(true);
+        ipsProjectB.setProperties(projectBProperties);
+        getIpsModel().setIpsArtefactBuilderSet(ipsProjectB, projectBBuilderSet);
+        
+        //etablish the dependency so that projectB is dependent from projectA
+        IpsObjectPath projectBIpsObjectPath = ipsProjectB.getIpsObjectPathInternal();
+        ArrayList projectBIpsObjectPathEntries = new ArrayList(Arrays.asList(projectBIpsObjectPath.getEntries()));
+        projectBIpsObjectPathEntries.add(new IpsProjectRefEntry(projectBIpsObjectPath, ipsProject));
+        
+        projectBIpsObjectPath.setEntries((IIpsObjectPathEntry[])projectBIpsObjectPathEntries.toArray(new IIpsObjectPathEntry[projectBIpsObjectPathEntries.size()]));
+        projectBIpsObjectPath.setOutputDefinedPerSrcFolder(false);
+        projectBIpsObjectPath.setBasePackageNameForDerivedJavaClasses("org.faktorzehn.de");
+        
+        outputFolderDerived = ipsProjectB.getProject().getFolder("derived");
+        if(!outputFolderDerived.exists()){
+            outputFolderDerived.create(true, true, null);
+        }
+        projectBIpsObjectPath.setOutputFolderForDerivedSources(outputFolderDerived);
+
+        outputFolderMergeable = ipsProjectB.getProject().getFolder("src");
+        if(!outputFolderMergeable.exists()){
+            outputFolderMergeable.create(true, true, null);
+        }
+        projectBIpsObjectPath.setOutputFolderForDerivedSources(outputFolderMergeable);
+
+        //for projectB the validation is expected to fail
+        MessageList msgList = ipsProjectB.validate();
+        assertNotNull(msgList.getMessageByCode(IIpsProject.MSGCODE_DUPLICATE_TOC_FILE_PATH_IN_DIFFERENT_PROJECTS));
+        
+        //for projectA the validation is expected not to fail since A doesn't depend on B
+        msgList = ipsProject.validate();
+        assertNull(msgList.getMessageByCode(IIpsProject.MSGCODE_DUPLICATE_TOC_FILE_PATH_IN_DIFFERENT_PROJECTS));
     }
     
     public void testValidateIpsObjectPathCycle() throws CoreException{

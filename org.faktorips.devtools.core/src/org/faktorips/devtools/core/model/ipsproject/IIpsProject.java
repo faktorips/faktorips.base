@@ -109,8 +109,8 @@ public interface IIpsProject extends IIpsElement, IProjectNature {
      * Validation message code to indicate that the base package generated name is duplicated specified
      * in different projects.
      */
-    public final static String MSGCODE_DUPLICATE_BASE_PACKAGE_NAME_FOR_GENERATED_CLASSES_IN_DIFFERENT_PROJECTS = MSGCODE_PREFIX
-            + "DuplicateBasePackageNameForGeneratedClassesInDifferentProjects"; //$NON-NLS-1$
+    public final static String MSGCODE_DUPLICATE_TOC_FILE_PATH_IN_DIFFERENT_PROJECTS = MSGCODE_PREFIX
+            + "DuplicateTocFilePathInDifferentProjects"; //$NON-NLS-1$
     
 
     /**

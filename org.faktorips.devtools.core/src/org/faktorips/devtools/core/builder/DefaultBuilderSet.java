@@ -22,8 +22,12 @@ import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
+import org.faktorips.codegen.DatatypeHelper;
+import org.faktorips.devtools.core.internal.model.TableContentsEnumDatatypeAdapter;
 import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
+import org.faktorips.devtools.core.model.ipsproject.IIpsArtefactBuilder;
+import org.faktorips.devtools.core.model.ipsproject.IIpsArtefactBuilderSetConfig;
 import org.faktorips.devtools.core.model.ipsproject.IIpsPackageFragmentRoot;
 import org.faktorips.devtools.core.model.ipsproject.IIpsSrcFolderEntry;
 import org.faktorips.devtools.core.model.productcmpt.IFormula;
@@ -45,7 +49,7 @@ import org.faktorips.fl.IdentifierResolver;
  * 
  * @author Peter Erzberger
  */
-public abstract class DefaultBuilderSet extends AbstractBuilderSet {
+public class DefaultBuilderSet extends AbstractBuilderSet {
 
     // kind constants. These constants are not supposed to be used within JavaSourceFileBuilder
     // implementations. Since the JavaSourceFileBuilder implementations might get used in other
@@ -264,5 +268,41 @@ public abstract class DefaultBuilderSet extends AbstractBuilderSet {
     public IdentifierResolver createFlIdentifierResolver(IFormula formula) throws CoreException {
         return null;
     }
+
+    /**
+     * {@inheritDoc}
+     * <p/>
+     * Returns an empty artefact builder array. This method is supposed to be overridden by subclasses.
+     */
+    public IIpsArtefactBuilder[] getArtefactBuilders() {
+        return new IIpsArtefactBuilder[0];
+    }
+
+    /**
+     * {@inheritDoc}
+     * <p/>
+     * Returns <code>null</code>. This method is supposed to be overridden by subclasses.
+     */
+    public DatatypeHelper getDatatypeHelperForTableBasedEnum(TableContentsEnumDatatypeAdapter datatype) {
+        return null;
+    }
+
+    /**
+     * {@inheritDoc}
+     * <p/>
+     * Returns an empty string. This method is supposed to be overridden by subclasses.
+     */
+    public String getVersion() {
+        return "";
+    }
+
+    /**
+     * {@inheritDoc}
+     * <p/>
+     * An empty implementation. This method is supposed to be overridden by subclasses.
+     */
+    public void initialize(IIpsArtefactBuilderSetConfig config) throws CoreException {
+    }
+    
     
 }
