@@ -414,11 +414,12 @@ public abstract class AbstractProductCmptTypeBuilder extends DefaultJavaSourceFi
 
         /**
          * {@inheritDoc}
+         * @throws CoreException 
          */
-        protected boolean visit(IProductCmptType type) {
+        protected boolean visit(IProductCmptType type) throws CoreException {
             IAssociation[] associations = type.getAssociations();
             for (int i = 0; i < associations.length; i++) {
-                if (associations[i].isDerivedUnion()) {
+                if (associations[i].isDerivedUnion() && associations[i].isValid()) {
                     try {
                         List implRelations = (List)containerImplMap.get(associations[i]);
                         if (implRelations!=null) {
@@ -427,7 +428,7 @@ public abstract class AbstractProductCmptTypeBuilder extends DefaultJavaSourceFi
                     } catch (Exception e) {
                         addToBuildStatus(new IpsStatus("Error building container relation implementation. "
                             + "ContainerRelation: " + associations[i]
-                            + "Implementing Type: " + getProductCmptType()));
+                            + "Implementing Type: " + getProductCmptType(), e));
                     }
                 }
             }
