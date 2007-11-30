@@ -362,9 +362,11 @@ public class XmlUtil {
     }
 
     /**
-     * Returns the node's text child node or <code>null</code> if the node hasn't got a text node.
+     * Returns the node's text child node or <code>null</code> if the node
+     * hasn't got a text node.  
      */
     public final static Text getTextNode(Node node) {
+        node.normalize();
         NodeList nl = node.getChildNodes();
         for (int i = 0; i < nl.getLength(); i++) {
             if (nl.item(i).getNodeType() == Node.TEXT_NODE) {
@@ -373,7 +375,7 @@ public class XmlUtil {
         }
         return null;
     }
-
+    
     /**
      * Returns the node's first CDATA section or <code>null</code> if the node hasn't got one.
      */

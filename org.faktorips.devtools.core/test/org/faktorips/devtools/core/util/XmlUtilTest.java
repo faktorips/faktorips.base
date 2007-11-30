@@ -102,7 +102,16 @@ public class XmlUtilTest extends XmlAbstractTestCase {
         Text text = XmlUtil.getTextNode(testElement);
         assertNotNull(text);
         assertEquals("blabla", text.getData()); //$NON-NLS-1$
+        
+        // test after manually processing a document
+        //   e.g. using xsl transformation text nodes could be split into several sibling text nodes
+        // this test ensures that the node will be normalized before returning the text of the child text nodes
+        // see Interface org.w3c.dom.Text
+        Element child = doc.createElement("Child");
+        testElement.appendChild(child);
+        child.appendChild(doc.createTextNode("1"));
+        child.appendChild(doc.createTextNode("2"));
+        child.appendChild(doc.createTextNode("3"));
+        assertEquals("123", XmlUtil.getTextNode(child).getData());
     }
-    
-
 }
