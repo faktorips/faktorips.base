@@ -19,7 +19,7 @@ package org.faktorips.devtools.core.ui.editors.testcase;
 
 import org.faktorips.devtools.core.model.testcase.ITestCase;
 import org.faktorips.devtools.core.model.testcase.ITestPolicyCmpt;
-import org.faktorips.devtools.core.model.testcase.ITestPolicyCmptRelation;
+import org.faktorips.devtools.core.model.testcase.ITestPolicyCmptLink;
 import org.faktorips.devtools.core.model.testcasetype.ITestCaseType;
 import org.faktorips.devtools.core.model.testcasetype.ITestPolicyCmptTypeParameter;
 
@@ -37,10 +37,10 @@ import org.faktorips.devtools.core.model.testcasetype.ITestPolicyCmptTypeParamet
  */
 public class TestCaseAndTestCaseTypeContent {    
     ITestPolicyCmpt testPolicyCmpt1;
-    ITestPolicyCmptRelation relation1;
+    ITestPolicyCmptLink link1;
     ITestPolicyCmpt testPolicyCmpt2;
     ITestPolicyCmpt testPolicyCmpt22;
-    ITestPolicyCmptRelation relation2;
+    ITestPolicyCmptLink link2;
     ITestPolicyCmpt testPolicyCmpt3;
     
     ITestPolicyCmptTypeParameter testPolicyCmptType1;
@@ -56,24 +56,24 @@ public class TestCaseAndTestCaseTypeContent {
         testPolicyCmpt1.setName("testPolicyCmptType1_label");
         testPolicyCmpt1.setTestPolicyCmptTypeParameter("testPolicyCmptType1");
         
-        relation1 = testPolicyCmpt1.newTestPolicyCmptRelation();
-        relation1.setTestPolicyCmptTypeParameter("testPolicyCmptTypeRelation1");
+        link1 = testPolicyCmpt1.newTestPolicyCmptLink();
+        link1.setTestPolicyCmptTypeParameter("testPolicyCmptTypeRelation1");
         
-        testPolicyCmpt2 = relation1.newTargetTestPolicyCmptChild();
+        testPolicyCmpt2 = link1.newTargetTestPolicyCmptChild();
         testPolicyCmpt2.setName("testPolicyCmptType2_label");
         testPolicyCmpt2.setTestPolicyCmptTypeParameter("testPolicyCmptTypeRelation1");
         
-        relation1 = testPolicyCmpt1.newTestPolicyCmptRelation();
-        relation1.setTestPolicyCmptTypeParameter("testPolicyCmptTypeRelation1");
+        link1 = testPolicyCmpt1.newTestPolicyCmptLink();
+        link1.setTestPolicyCmptTypeParameter("testPolicyCmptTypeRelation1");
         
-        testPolicyCmpt22 = relation1.newTargetTestPolicyCmptChild();
+        testPolicyCmpt22 = link1.newTargetTestPolicyCmptChild();
         testPolicyCmpt22.setName("testPolicyCmptType22_label");
         testPolicyCmpt22.setTestPolicyCmptTypeParameter("testPolicyCmptTypeRelation1");
         
-        relation2 = testPolicyCmpt22.newTestPolicyCmptRelation();
-        relation2.setTestPolicyCmptTypeParameter("testPolicyCmptTypeRelation2");
+        link2 = testPolicyCmpt22.newTestPolicyCmptLink();
+        link2.setTestPolicyCmptTypeParameter("testPolicyCmptTypeRelation2");
         
-        testPolicyCmpt3 = relation2.newTargetTestPolicyCmptChild();
+        testPolicyCmpt3 = link2.newTargetTestPolicyCmptChild();
         testPolicyCmpt3.setName("testPolicyCmptType3_label");        
         testPolicyCmpt3.setTestPolicyCmptTypeParameter("testPolicyCmptTypeRelation2");
         
@@ -88,12 +88,12 @@ public class TestCaseAndTestCaseTypeContent {
         testPolicyCmptType3.setName("testPolicyCmptTypeRelation2");
     }
 
-    public ITestPolicyCmptRelation getRelation1() {
-        return relation1;
+    public ITestPolicyCmptLink getRelation1() {
+        return link1;
     }
 
-    public ITestPolicyCmptRelation getRelation2() {
-        return relation2;
+    public ITestPolicyCmptLink getRelation2() {
+        return link2;
     }
 
     public ITestPolicyCmpt getTestPolicyCmpt1() {

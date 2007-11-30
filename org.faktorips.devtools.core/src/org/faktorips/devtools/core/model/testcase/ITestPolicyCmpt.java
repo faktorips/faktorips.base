@@ -77,16 +77,16 @@ public interface ITestPolicyCmpt extends ITestObject {
         + "MaxInstancesReached"; //$NON-NLS-1$
     
     /**
-     * Validation message code to indicate that the product cmpt is not allowed for the relation.
+     * Validation message code to indicate that the product cmpt is not allowed for the link.
      */
-    public final static String MSGCODE_WRONG_PRODUCT_CMPT_OF_RELATION = MSGCODE_PREFIX + "WrongProductCmptOfRelation"; //$NON-NLS-1$
+    public final static String MSGCODE_WRONG_PRODUCT_CMPT_OF_LINK = MSGCODE_PREFIX + "WrongProductCmptOfLink"; //$NON-NLS-1$
     
     /**
-     * Validation message code to indicate that the product cmpt of the parent of a relation is not
+     * Validation message code to indicate that the product cmpt of the parent of a link is not
      * specified.
      */
-    public final static String MSGCODE_PARENT_PRODUCT_CMPT_OF_RELATION_NOT_SPECIFIED = MSGCODE_PREFIX
-            + "ParentProductCmptOfRelationNotSpecified"; //$NON-NLS-1$
+    public final static String MSGCODE_PARENT_PRODUCT_CMPT_OF_LINK_NOT_SPECIFIED = MSGCODE_PREFIX
+            + "ParentProductCmptOfLinkNotSpecified"; //$NON-NLS-1$
     
     /**
      * Returns the qualified name of the test policy component type parameter class.
@@ -152,49 +152,49 @@ public interface ITestPolicyCmpt extends ITestObject {
     public ITestAttributeValue getTestAttributeValue(String name);
     
     /**
-     * Creates a new relation and returns it.
+     * Creates a new link and returns it.
      */
-    public ITestPolicyCmptRelation newTestPolicyCmptRelation();
+    public ITestPolicyCmptLink newTestPolicyCmptLink();
     
     /**
-     * Creates a new relation on the test policy component and returns it. The given test policy
-     * component type param specifies the type of the relation.
+     * Creates a new link on the test policy component and returns it. The given test policy
+     * component type param specifies the type of the link.
      * 
-     * @param typeParam The test policy component type parameter for which the new relation will be
-     *            created. This is the type definition of the test relation.
-     * @param productCmpt The name of the product component if the child of the relation requires a
+     * @param typeParam The test policy component type parameter for which the new link will be
+     *            created. This is the type definition of the test link.
+     * @param productCmpt The name of the product component if the child of the link requires a
      *            product component otherwise empty.
-     * @param targetName The name of the target if the new relation should be an assoziation
+     * @param targetName The name of the target if the new link should be an assoziation
      *            otherwise empty.
      * 
-     * @throws CoreException if an error occurs while adding the new relation.
+     * @throws CoreException if an error occurs while adding the new link.
      */
-    public ITestPolicyCmptRelation addTestPcTypeRelation(ITestPolicyCmptTypeParameter typeParam,
+    public ITestPolicyCmptLink addTestPcTypeLink(ITestPolicyCmptTypeParameter typeParam,
             String productCmpt,
             String targetName) throws CoreException;
     
     /**
-     * Returns all test policy component relations.
+     * Returns all test policy component links.
      */
-    public ITestPolicyCmptRelation[] getTestPolicyCmptRelations();
+    public ITestPolicyCmptLink[] getTestPolicyCmptLinks();
 
     /**
-     * Returns the test policy component relations with the given name 
+     * Returns the test policy component links with the given name 
      * which are related to the given test policy component parameter.
      * 
      */
-    public ITestPolicyCmptRelation[] getTestPolicyCmptRelations(String typeParameterName);
+    public ITestPolicyCmptLink[] getTestPolicyCmptLinks(String typeParameterName);
     
     /**
-     * Returns the first relation with the indicated test policy cmpt type name 
-     * or null if no such relation exists.
+     * Returns the first link with the indicated test policy cmpt type name 
+     * or null if no such link exists.
      * <p>
-     * Note that a relation's name is equal to it's target type, so you
+     * Note that a link's name is equal to it's target type, so you
      * can also use the target type as parameter.
      * 
      * @throws IllegalArgumentException if testPolicyCmptType is <code>null</code>.
      */
-    public ITestPolicyCmptRelation getTestPolicyCmptRelation(String testPolicyCmptType);
+    public ITestPolicyCmptLink getTestPolicyCmptLink(String testPolicyCmptType);
     
     /**
      * Returns the test case which this test policy component belongs to.
@@ -215,11 +215,11 @@ public interface ITestPolicyCmpt extends ITestObject {
     public ITestPolicyCmpt getParentPolicyCmpt();
     
     /**
-     * Removes the given relation.
+     * Removes the given link.
      * 
      * @throws CoreException in case of an error.
      */
-    public void removeRelation(ITestPolicyCmptRelation relation) throws CoreException;
+    public void removeLink(ITestPolicyCmptLink link) throws CoreException;
     
     /**
      * Updates the default for all test attribute values. The default will be retrieved from the
@@ -231,19 +231,19 @@ public interface ITestPolicyCmpt extends ITestObject {
     public void updateDefaultTestAttributeValues() throws CoreException;
     
     /**
-     * Moves the test policy cmpt relation identified by the indexes up or down by one position. If one of the
-     * indexes is 0 (the first relation), nothing is moved up. If one of the indexes is the
-     * number of parameters - 1 (the last relation) nothing moved down
+     * Moves the test policy cmpt link identified by the indexes up or down by one position. If one of the
+     * indexes is 0 (the first link), nothing is moved up. If one of the indexes is the
+     * number of parameters - 1 (the last link) nothing moved down
      * 
-     * @param indexes The indexes identifying the test policy cmpt relation.
+     * @param indexes The indexes identifying the test policy cmpt link.
      * @param up <code>true</code>, to move up, <false> to move them down.
      * 
-     * @return The new indexes of the test policy cmpt relation.
+     * @return The new indexes of the test policy cmpt link.
      * 
      * @throws NullPointerException if indexes is null.
-     * @throws IndexOutOfBoundsException if one of the indexes does not identify a test policy cmpt relation.
+     * @throws IndexOutOfBoundsException if one of the indexes does not identify a test policy cmpt link.
      */
-    public int[] moveTestPolicyCmptRelations(int[] indexes, boolean up);
+    public int[] moveTestPolicyCmptLink(int[] indexes, boolean up);
 
     /**
      * Returns the index of the given child test policy cmpt. The index starts with 0 (the first element).

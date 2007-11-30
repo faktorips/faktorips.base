@@ -195,7 +195,7 @@ public class NewRootParamWizardPage extends WizardPage implements ValueChangeLis
             // check errors only for displayed attributes,
             // otherwise the next button is disabled if there is an error on the next page
             // (e.g. if the policycmpt is abstract and prod rel is not checked.)
-            // In all other cases there is no validation relation between the pages,
+            // In all other cases there is no validation association between the pages,
             // and if the next page was displayed once then the next button on the prev page is
             // always enable (see above)
             MessageList messageList = newTestParameter.validate(newTestParameter.getIpsProject());

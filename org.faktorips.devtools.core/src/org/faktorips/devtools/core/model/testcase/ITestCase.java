@@ -28,7 +28,7 @@ import org.faktorips.devtools.core.model.testcasetype.TestParameterType;
  * @author Joerg Ortmann
  */
 public interface ITestCase extends IIpsObject, IFixDifferencesToModelSupport {
-
+    
     /** Property names */
     public final static String PROPERTY_TEST_CASE_TYPE = "testCaseType"; //$NON-NLS-1$
 
@@ -180,7 +180,7 @@ public interface ITestCase extends IIpsObject, IFixDifferencesToModelSupport {
      * Returns the test policy component or <code>null</code> if not found.
      * 
      * @param testpolicyCmptPath the complete path to the policy component within the test case including
-     *            relations and parent type names.
+     *            links and parent type names.
      *            
      * @throws CoreException in case of an error.
      * 

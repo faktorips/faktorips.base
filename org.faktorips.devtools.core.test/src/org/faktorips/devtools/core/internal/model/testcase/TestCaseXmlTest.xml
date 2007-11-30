@@ -15,17 +15,17 @@
                 <AttributeValue id="0" description="" testAttribute="mandant">
                     <value isNull="false"><![CDATA[1]]></value>
                 </AttributeValue>
-                <Relation id="1" description="" testPolicyCmptType="PersonenHpVertrag" target="">
+                <Link id="1" description="" testPolicyCmptType="PersonenHpVertrag" target="">
                      <PolicyCmptTypeObject id="0" description="" testPolicyCmptType="PersonenHpLvb" productCmpt="hp.Leistungsarten.Mietsachschaden.LeiartPersHp_Mietsachschaden 1992-01" label="LeiartPersHp_Mietsachschaden 1992-01">
                         <AttributeValue id="0" description="" testAttribute="versicherungssumme">
                             <value isNull="false"/>
                         </AttributeValue>
                      </PolicyCmptTypeObject>
-                </Relation>
+                </Link>
 			</PolicyCmptTypeObject>
 			<PolicyCmptTypeObject testPolicyCmptType="policyCmptType2" productCmpt="">
-                <Relation id="0" description="" testPolicyCmptType="PersonenHpLvb" target="policyCmptType1/PersonenHpVertrag/PersonenHpLvb/LeiartPersHp_Mietsachschaden 1992-01">
-                </Relation>			
+                <Link id="0" description="" testPolicyCmptType="PersonenHpLvb" target="policyCmptType1/PersonenHpVertrag/PersonenHpLvb/LeiartPersHp_Mietsachschaden 1992-01">
+                </Link>			
 			</PolicyCmptTypeObject>
 		</Input>
 		<ExpectedResult>

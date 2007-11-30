@@ -40,7 +40,7 @@ import org.eclipse.ui.dialogs.SelectionStatusDialog;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.testcase.ITestCase;
 import org.faktorips.devtools.core.model.testcase.ITestPolicyCmpt;
-import org.faktorips.devtools.core.model.testcase.ITestPolicyCmptRelation;
+import org.faktorips.devtools.core.model.testcase.ITestPolicyCmptLink;
 import org.faktorips.devtools.core.model.testcasetype.ITestPolicyCmptTypeParameter;
 import org.faktorips.devtools.core.ui.UIToolkit;
 
@@ -263,19 +263,19 @@ public class TestPolicyCmptSelectionDialog extends SelectionStatusDialog {
 			try {
 				if (element instanceof ITestPolicyCmpt){
 					return isFilterChildOf((ITestPolicyCmpt)element, filteredPolicyCmptType);
-				}else if (element instanceof TestCaseTypeRelation){
-					TestCaseTypeRelation dummyRelation = (TestCaseTypeRelation) element;
-					ITestPolicyCmpt testPolicyCmpt = (ITestPolicyCmpt) dummyRelation.getParentTestPolicyCmpt();
-					ITestPolicyCmptRelation childs[] = testPolicyCmpt.getTestPolicyCmptRelations();
+				}else if (element instanceof TestCaseTypeAssociation){
+					TestCaseTypeAssociation dummyAssociation = (TestCaseTypeAssociation) element;
+					ITestPolicyCmpt testPolicyCmpt = (ITestPolicyCmpt) dummyAssociation.getParentTestPolicyCmpt();
+					ITestPolicyCmptLink childs[] = testPolicyCmpt.getTestPolicyCmptLinks();
 					boolean found = false;
 					for (int i = 0; i < childs.length; i++) {
-						// because of grouping the relations, get the relations by using the parent test policy component
-						ITestPolicyCmptRelation elem = childs[i];
-						String relationName = ""; //$NON-NLS-1$
+						// because of grouping the links, get the links by using the parent test policy component
+						ITestPolicyCmptLink elem = childs[i];
+						String linkName = ""; //$NON-NLS-1$
 						if (elem.findTarget() != null){
-							relationName = elem.findTarget().getTestPolicyCmptTypeParameter();
-							if (relationName.equals(dummyRelation.getName())){
-								found = isFilterChildOfRelation(elem, filteredPolicyCmptType);
+							linkName = elem.findTarget().getTestPolicyCmptTypeParameter();
+							if (linkName.equals(dummyAssociation.getName())){
+								found = isFilterChildOfLink(elem, filteredPolicyCmptType);
 								if (found)
 									return found;
 							}
@@ -297,12 +297,12 @@ public class TestPolicyCmptSelectionDialog extends SelectionStatusDialog {
 	 */
 	private boolean isFilterChildOf(ITestPolicyCmpt testPolicyCmpt, String filter)  throws CoreException{
 		boolean found = false;
-		ITestPolicyCmptRelation[] realtions = testPolicyCmpt.getTestPolicyCmptRelations();
+		ITestPolicyCmptLink[] realtions = testPolicyCmpt.getTestPolicyCmptLinks();
 		for (int i = 0; i < realtions.length; i++) {
-			ITestPolicyCmptRelation relation = realtions[i];
-			found = isFilterChildOfRelation(relation, filter);
+			ITestPolicyCmptLink link = realtions[i];
+			found = isFilterChildOfLink(link, filter);
 			if (found)
-				// exit, at least one relation contains the filtered element
+				// exit, at least one link contains the filtered element
 				break;
 		}
 		ITestPolicyCmptTypeParameter param = null;
@@ -318,15 +318,15 @@ public class TestPolicyCmptSelectionDialog extends SelectionStatusDialog {
 	}
 	
 	/**
-	 * Returns <code>true</code> if the to be filtered object is a child of the given relation.
+	 * Returns <code>true</code> if the to be filtered object is a child of the given link.
 	 * If there is no such child object return <code>false</code>.
 	 * 
 	 * @throws CoreException if an error occurs
 	 */
-	private boolean isFilterChildOfRelation(ITestPolicyCmptRelation relation, String filter) throws CoreException{
+	private boolean isFilterChildOfLink(ITestPolicyCmptLink link, String filter) throws CoreException{
 		boolean found = false;
-		ITestPolicyCmpt testPolicyCmpt = relation.findTarget();
-		if (!relation.isAccoziation() && testPolicyCmpt!=null){
+		ITestPolicyCmpt testPolicyCmpt = link.findTarget();
+		if (!link.isAccoziation() && testPolicyCmpt!=null){
 			found = isFilterChildOf(testPolicyCmpt, filter);
 		}
 		return found;

@@ -20,7 +20,7 @@ import org.faktorips.devtools.core.model.ipsobject.IIpsObject;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPart;
 import org.faktorips.devtools.core.model.testcase.ITestObject;
 import org.faktorips.devtools.core.model.testcase.ITestPolicyCmpt;
-import org.faktorips.devtools.core.model.testcase.ITestPolicyCmptRelation;
+import org.faktorips.devtools.core.model.testcase.ITestPolicyCmptLink;
 import org.faktorips.devtools.core.model.testcasetype.ITestParameter;
 import org.faktorips.devtools.core.model.testcasetype.TestParameterType;
 import org.w3c.dom.Document;
@@ -64,8 +64,8 @@ public abstract class TestObject extends IpsObjectPart implements ITestObject {
             ITestParameter param = null;
             if (this instanceof ITestPolicyCmpt){
                 param = testCase.findTestPolicyCmptTypeParameter((ITestPolicyCmpt)this, getIpsProject());
-            }else if (this instanceof ITestPolicyCmptRelation){
-                param = testCase.findTestPolicyCmptTypeParameter((ITestPolicyCmptRelation)this, getIpsProject());
+            }else if (this instanceof ITestPolicyCmptLink){
+                param = testCase.findTestPolicyCmptTypeParameter((ITestPolicyCmptLink)this, getIpsProject());
             }
             if (param != null){
                 return testCase.isTypeOrDefault(param, TestParameterType.INPUT, DEFAULT_TYPE);
@@ -88,8 +88,8 @@ public abstract class TestObject extends IpsObjectPart implements ITestObject {
             ITestParameter param = null;
             if (this instanceof ITestPolicyCmpt)
                 param = testCase.findTestPolicyCmptTypeParameter((ITestPolicyCmpt)this, getIpsProject());
-            else if (this instanceof ITestPolicyCmptRelation)
-                param = testCase.findTestPolicyCmptTypeParameter((ITestPolicyCmptRelation)this, getIpsProject());
+            else if (this instanceof ITestPolicyCmptLink)
+                param = testCase.findTestPolicyCmptTypeParameter((ITestPolicyCmptLink)this, getIpsProject());
             
             if (param != null)
                 return testCase.isTypeOrDefault(param, TestParameterType.EXPECTED_RESULT, DEFAULT_TYPE);
@@ -110,8 +110,8 @@ public abstract class TestObject extends IpsObjectPart implements ITestObject {
             ITestParameter param = null;
             if (this instanceof ITestPolicyCmpt)
                 param = testCase.findTestPolicyCmptTypeParameter((ITestPolicyCmpt)this, getIpsProject());
-            else if (this instanceof ITestPolicyCmptRelation)
-                param = testCase.findTestPolicyCmptTypeParameter((ITestPolicyCmptRelation)this, getIpsProject());
+            else if (this instanceof ITestPolicyCmptLink)
+                param = testCase.findTestPolicyCmptTypeParameter((ITestPolicyCmptLink)this, getIpsProject());
             
             if (param != null)
                 return testCase.isTypeOrDefault(param, TestParameterType.COMBINED, DEFAULT_TYPE);

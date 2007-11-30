@@ -36,7 +36,7 @@ import org.faktorips.devtools.core.model.productcmpt.IProductCmptNamingStrategy;
 import org.faktorips.devtools.core.model.testcase.ITestCase;
 import org.faktorips.devtools.core.model.testcase.ITestObject;
 import org.faktorips.devtools.core.model.testcase.ITestPolicyCmpt;
-import org.faktorips.devtools.core.model.testcase.ITestPolicyCmptRelation;
+import org.faktorips.devtools.core.model.testcase.ITestPolicyCmptLink;
 import org.faktorips.devtools.core.model.testcasetype.ITestPolicyCmptTypeParameter;
 import org.faktorips.devtools.core.model.testcasetype.TestParameterType;
 import org.faktorips.devtools.core.ui.UIToolkit;
@@ -177,9 +177,9 @@ public class TestCaseCopyWizard extends ResizableWizard {
         ITestCase testCase = testPolicyCmpt.getTestCase();
         IIpsProject ipsProject = targetTestCase.getIpsProject();
         IProductCmptNamingStrategy productCmptNamingStrategy = ipsProject.getProductCmptNamingStrategy();
-        ITestPolicyCmptRelation[] testPolicyCmptRelations = testPolicyCmpt.getTestPolicyCmptRelations();
-        for (int i = 0; i < testPolicyCmptRelations.length; i++) {
-            ITestPolicyCmpt testPolicyCmptChild = testPolicyCmptRelations[i].findTarget();
+        ITestPolicyCmptLink[] testPolicyCmptlinks = testPolicyCmpt.getTestPolicyCmptLinks();
+        for (int i = 0; i < testPolicyCmptlinks.length; i++) {
+            ITestPolicyCmpt testPolicyCmptChild = testPolicyCmptlinks[i].findTarget();
             if (testPolicyCmptChild != null){
                 IProductCmpt productCmptChild = testPolicyCmptChild.findProductCmpt(testPolicyCmpt.getIpsProject());
                 if (productCmptChild == null){

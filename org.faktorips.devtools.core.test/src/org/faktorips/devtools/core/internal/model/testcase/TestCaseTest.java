@@ -36,7 +36,7 @@ import org.faktorips.devtools.core.model.testcase.ITestAttributeValue;
 import org.faktorips.devtools.core.model.testcase.ITestCase;
 import org.faktorips.devtools.core.model.testcase.ITestObject;
 import org.faktorips.devtools.core.model.testcase.ITestPolicyCmpt;
-import org.faktorips.devtools.core.model.testcase.ITestPolicyCmptRelation;
+import org.faktorips.devtools.core.model.testcase.ITestPolicyCmptLink;
 import org.faktorips.devtools.core.model.testcase.ITestRule;
 import org.faktorips.devtools.core.model.testcase.ITestValue;
 import org.faktorips.devtools.core.model.testcasetype.ITestAttribute;
@@ -74,7 +74,7 @@ public class TestCaseTest extends AbstractIpsPluginTest {
         
         PolicyCmptType policyCmptType0 = newPolicyCmptType(ipsProject, "policyCmptType0");
         IAssociation association = policyCmptType0.newAssociation();
-        association.setTargetRoleSingular("relation0");
+        association.setTargetRoleSingular("link0");
 
         PolicyCmptType policyCmptType1 = newPolicyCmptType(ipsProject, "policyCmptType1");
         IAttribute attribute0 = policyCmptType1.newAttribute();
@@ -101,7 +101,7 @@ public class TestCaseTest extends AbstractIpsPluginTest {
         inputTestPolicyCmptTypeParameter0.setPolicyCmptType("policyCmptType0");
         policyCmptTypeParameterChild0 = inputTestPolicyCmptTypeParameter0.newTestPolicyCmptTypeParamChild();
         policyCmptTypeParameterChild0.setName("inputTestPolicyCmptChild0");
-        policyCmptTypeParameterChild0.setRelation("relation0");
+        policyCmptTypeParameterChild0.setAssociation("link0");
         policyCmptTypeParameterChild0.setPolicyCmptType("policyCmptType1");
         ITestAttribute inputTestAttribute = policyCmptTypeParameterChild0.newInputTestAttribute();
         inputTestAttribute.setName("testAttributeChild0.input");
@@ -306,8 +306,8 @@ public class TestCaseTest extends AbstractIpsPluginTest {
         assertTrue(dependsOnList.contains(IpsObjectDependency.createReferenceDependency(testCase.getQualifiedNameType(), prodCmpt1.getQualifiedNameType())));
 
         // test dependency to product cmpt, child test cmpt
-        ITestPolicyCmptRelation testRelation1 = testPolicyCmpt1.newTestPolicyCmptRelation();
-        ITestPolicyCmpt testPolicyCmpt2 = testRelation1.newTargetTestPolicyCmptChild();
+        ITestPolicyCmptLink testAssociation1 = testPolicyCmpt1.newTestPolicyCmptLink();
+        ITestPolicyCmpt testPolicyCmpt2 = testAssociation1.newTargetTestPolicyCmptChild();
         testPolicyCmpt2.setProductCmpt(prodCmpt2.getQualifiedName());
         dependsOnList = CollectionUtil.toArrayList(testCase.dependsOn());
         assertEquals(3, dependsOnList.size());
@@ -340,30 +340,30 @@ public class TestCaseTest extends AbstractIpsPluginTest {
         assertEquals("Test (4)", param5.getName());
         
         // test for child parameters
-        ITestPolicyCmptRelation relation =  param1.newTestPolicyCmptRelation();
-        ITestPolicyCmpt child = relation.newTargetTestPolicyCmptChild();
+        ITestPolicyCmptLink link =  param1.newTestPolicyCmptLink();
+        ITestPolicyCmpt child = link.newTargetTestPolicyCmptChild();
         child.setName(testCase.generateUniqueNameForTestPolicyCmpt(child, "Test"));
         assertEquals("Test", child.getName());
         
-        relation =  param1.newTestPolicyCmptRelation();
-        ITestPolicyCmpt child2 = relation.newTargetTestPolicyCmptChild();
+        link =  param1.newTestPolicyCmptLink();
+        ITestPolicyCmpt child2 = link.newTargetTestPolicyCmptChild();
         child2.setName(testCase.generateUniqueNameForTestPolicyCmpt(child2, "Test"));
         assertEquals("Test (2)", child2.getName());
         
-        relation =  param1.newTestPolicyCmptRelation();
-        child = relation.newTargetTestPolicyCmptChild();
+        link =  param1.newTestPolicyCmptLink();
+        child = link.newTargetTestPolicyCmptChild();
         child.setName(testCase.generateUniqueNameForTestPolicyCmpt(child, "Test"));
         assertEquals("Test (3)", child.getName());
         
         child2.delete();
         
-        relation =  param1.newTestPolicyCmptRelation();
-        child = relation.newTargetTestPolicyCmptChild();
+        link =  param1.newTestPolicyCmptLink();
+        child = link.newTargetTestPolicyCmptChild();
         child.setName(testCase.generateUniqueNameForTestPolicyCmpt(child, "Test"));
         assertEquals("Test (2)", child.getName());
         
-        relation =  param1.newTestPolicyCmptRelation();
-        child = relation.newTargetTestPolicyCmptChild();
+        link =  param1.newTestPolicyCmptLink();
+        child = link.newTargetTestPolicyCmptChild();
         child.setName(testCase.generateUniqueNameForTestPolicyCmpt(child, "Test"));
         assertEquals("Test (4)", child.getName());        
     }
@@ -544,24 +544,24 @@ public class TestCaseTest extends AbstractIpsPluginTest {
     public void testGetAllTestPolicyCmpts() throws CoreException{
         ITestPolicyCmpt testPolicyCmptRoot1 = testCase.newTestPolicyCmpt();
         testPolicyCmptRoot1.setName("root");
-        ITestPolicyCmptRelation testPolicyCmptRelation = testPolicyCmptRoot1.newTestPolicyCmptRelation();
-        ITestPolicyCmpt testPolicyCmpt = testPolicyCmptRelation.newTargetTestPolicyCmptChild();
+        ITestPolicyCmptLink testPolicyCmptAssociation = testPolicyCmptRoot1.newTestPolicyCmptLink();
+        ITestPolicyCmpt testPolicyCmpt = testPolicyCmptAssociation.newTargetTestPolicyCmptChild();
         testPolicyCmpt.setName("root1_child1");
-        testPolicyCmptRelation = testPolicyCmptRoot1.newTestPolicyCmptRelation();
-        testPolicyCmpt = testPolicyCmptRelation.newTargetTestPolicyCmptChild();
+        testPolicyCmptAssociation = testPolicyCmptRoot1.newTestPolicyCmptLink();
+        testPolicyCmpt = testPolicyCmptAssociation.newTargetTestPolicyCmptChild();
         testPolicyCmpt.setName("root1_child2");
         
         ITestPolicyCmpt testPolicyCmptRoot2 = testCase.newTestPolicyCmpt();
         testPolicyCmptRoot2.setName("root2");
-        testPolicyCmptRelation = testPolicyCmptRoot2.newTestPolicyCmptRelation();
-        testPolicyCmpt = testPolicyCmptRelation.newTargetTestPolicyCmptChild();
+        testPolicyCmptAssociation = testPolicyCmptRoot2.newTestPolicyCmptLink();
+        testPolicyCmpt = testPolicyCmptAssociation.newTargetTestPolicyCmptChild();
         testPolicyCmpt.setName("root2_child1");
-        testPolicyCmptRelation = testPolicyCmpt.newTestPolicyCmptRelation();
-        testPolicyCmpt = testPolicyCmptRelation.newTargetTestPolicyCmptChild();
+        testPolicyCmptAssociation = testPolicyCmpt.newTestPolicyCmptLink();
+        testPolicyCmpt = testPolicyCmptAssociation.newTargetTestPolicyCmptChild();
         testPolicyCmpt.setName("root2_child1_child1");
         
-        testPolicyCmptRelation = testPolicyCmptRoot2.newTestPolicyCmptRelation();
-        testPolicyCmpt = testPolicyCmptRelation.newTargetTestPolicyCmptChild();
+        testPolicyCmptAssociation = testPolicyCmptRoot2.newTestPolicyCmptLink();
+        testPolicyCmpt = testPolicyCmptAssociation.newTargetTestPolicyCmptChild();
         testPolicyCmpt.setName("root2_child2");
         
         ITestPolicyCmpt[] allTestPolicyCmpt = testCase.getAllTestPolicyCmpt();
@@ -586,8 +586,8 @@ public class TestCaseTest extends AbstractIpsPluginTest {
         assertEquals(1, testCase.getAllTestObjects().length);
         assertContains(testCase.getAllTestObjects(), new Object[]{testPolicyCmptRoot1});
         
-        ITestPolicyCmptRelation testPolicyCmptRelation = testPolicyCmptRoot1.newTestPolicyCmptRelation();
-        ITestPolicyCmpt testPolicyCmpt = testPolicyCmptRelation.newTargetTestPolicyCmptChild();
+        ITestPolicyCmptLink testPolicyCmptAssociation = testPolicyCmptRoot1.newTestPolicyCmptLink();
+        ITestPolicyCmpt testPolicyCmpt = testPolicyCmptAssociation.newTargetTestPolicyCmptChild();
         testPolicyCmpt.setName("root1_child1");
         
         assertEquals(2, testCase.getAllTestObjects().length);
@@ -628,8 +628,8 @@ public class TestCaseTest extends AbstractIpsPluginTest {
         assertEquals(1, referencedProductCmpts.size());
         assertEquals(prodCmpt1.getQualifiedName(), ((String)referencedProductCmpts.get(0)));
 
-        ITestPolicyCmptRelation testRelation1 = testPolicyCmpt1.newTestPolicyCmptRelation();
-        ITestPolicyCmpt testPolicyCmpt2 = testRelation1.newTargetTestPolicyCmptChild();
+        ITestPolicyCmptLink testAssociation1 = testPolicyCmpt1.newTestPolicyCmptLink();
+        ITestPolicyCmpt testPolicyCmpt2 = testAssociation1.newTargetTestPolicyCmptChild();
         testPolicyCmpt2.setProductCmpt(prodCmpt2.getQualifiedName());
         referencedProductCmpts = CollectionUtil.toArrayList(testCase.getReferencedProductCmpts());
         assertEquals(2, referencedProductCmpts.size());
@@ -693,8 +693,8 @@ public class TestCaseTest extends AbstractIpsPluginTest {
             ITestPolicyCmpt param3 = testCase.newTestPolicyCmpt();
             param3.setTestPolicyCmptTypeParameter("inputTestPolicyCmpt0");
             param3.setName("inputTestPolicyCmpt0");
-            ITestPolicyCmptRelation relation = param3.addTestPcTypeRelation(policyCmptTypeParameterChild0, null, "relation0");
-            ITestPolicyCmpt childPolicyCmpt = relation.newTargetTestPolicyCmptChild();
+            ITestPolicyCmptLink link = param3.addTestPcTypeLink(policyCmptTypeParameterChild0, null, "link0");
+            ITestPolicyCmpt childPolicyCmpt = link.newTargetTestPolicyCmptChild();
             childPolicyCmpt.setTestPolicyCmptTypeParameter("inputTestPolicyCmptChild0");
             
             attributeValueInput = childPolicyCmpt.newTestAttributeValue();

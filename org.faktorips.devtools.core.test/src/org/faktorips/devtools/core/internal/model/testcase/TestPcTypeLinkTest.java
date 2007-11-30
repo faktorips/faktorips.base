@@ -23,7 +23,7 @@ import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.model.testcase.ITestCase;
 import org.faktorips.devtools.core.model.testcase.ITestPolicyCmpt;
-import org.faktorips.devtools.core.model.testcase.ITestPolicyCmptRelation;
+import org.faktorips.devtools.core.model.testcase.ITestPolicyCmptLink;
 import org.faktorips.devtools.core.model.testcasetype.ITestCaseType;
 import org.faktorips.devtools.core.model.testcasetype.ITestPolicyCmptTypeParameter;
 import org.faktorips.devtools.core.util.XmlUtil;
@@ -34,11 +34,11 @@ import org.w3c.dom.Element;
  * 
  * @author Joerg Ortmann
  */
-public class TestPcTypeRelationTest extends AbstractIpsPluginTest {
+public class TestPcTypeLinkTest extends AbstractIpsPluginTest {
 
     private IIpsProject project;
     private ITestCase testCase;
-    private ITestPolicyCmptRelation testPcTypeRelation;
+    private ITestPolicyCmptLink testPcTypeAssociation;
     
     /*
      * @see AbstractIpsPluginTest#setUp()
@@ -57,62 +57,62 @@ public class TestPcTypeRelationTest extends AbstractIpsPluginTest {
         
         ITestPolicyCmpt tpc = testCase.newTestPolicyCmpt();
         tpc.setTestPolicyCmptTypeParameter("expectedResultParam");
-        testPcTypeRelation = tpc.newTestPolicyCmptRelation();
-        testPcTypeRelation.setTestPolicyCmptTypeParameter("childParam");
+        testPcTypeAssociation = tpc.newTestPolicyCmptLink();
+        testPcTypeAssociation.setTestPolicyCmptTypeParameter("childParam");
     }
     
     public void testInitFromXml() {
         Element docEl = getTestDocument().getDocumentElement();
         Element paramEl = XmlUtil.getFirstElement(docEl);
-        testPcTypeRelation.initFromXml(paramEl);
-        assertEquals("relation1", testPcTypeRelation.getTestPolicyCmptTypeParameter());
-        assertEquals("base.target1", testPcTypeRelation.getTarget());
+        testPcTypeAssociation.initFromXml(paramEl);
+        assertEquals("association1", testPcTypeAssociation.getTestPolicyCmptTypeParameter());
+        assertEquals("base.target1", testPcTypeAssociation.getTarget());
     }
 
     public void testToXml() {
-        testPcTypeRelation.setTestPolicyCmptTypeParameter("relation2");
-        testPcTypeRelation.setTarget("base.target2");
-        Element el = testPcTypeRelation.toXml(newDocument());
-        testPcTypeRelation.setTestPolicyCmptTypeParameter("test1");
-        testPcTypeRelation.setTarget("test2");
-        testPcTypeRelation.initFromXml(el);
-        assertEquals("relation2", testPcTypeRelation.getTestPolicyCmptTypeParameter());
-        assertEquals("base.target2", testPcTypeRelation.getTarget());
+        testPcTypeAssociation.setTestPolicyCmptTypeParameter("association2");
+        testPcTypeAssociation.setTarget("base.target2");
+        Element el = testPcTypeAssociation.toXml(newDocument());
+        testPcTypeAssociation.setTestPolicyCmptTypeParameter("test1");
+        testPcTypeAssociation.setTarget("test2");
+        testPcTypeAssociation.initFromXml(el);
+        assertEquals("association2", testPcTypeAssociation.getTestPolicyCmptTypeParameter());
+        assertEquals("base.target2", testPcTypeAssociation.getTarget());
     }
     
     public void testValidateTestCaseTypeParamNotFound() throws Exception{
-        MessageList ml = testPcTypeRelation.validate(project);
-        assertNull(ml.getMessageByCode(ITestPolicyCmptRelation.MSGCODE_TEST_CASE_TYPE_PARAM_NOT_FOUND));
+        MessageList ml = testPcTypeAssociation.validate(project);
+        assertNull(ml.getMessageByCode(ITestPolicyCmptLink.MSGCODE_TEST_CASE_TYPE_PARAM_NOT_FOUND));
 
-        testPcTypeRelation.setTestPolicyCmptTypeParameter("x");
-        ml = testPcTypeRelation.validate(project);
-        assertNotNull(ml.getMessageByCode(ITestPolicyCmptRelation.MSGCODE_TEST_CASE_TYPE_PARAM_NOT_FOUND));
+        testPcTypeAssociation.setTestPolicyCmptTypeParameter("x");
+        ml = testPcTypeAssociation.validate(project);
+        assertNotNull(ml.getMessageByCode(ITestPolicyCmptLink.MSGCODE_TEST_CASE_TYPE_PARAM_NOT_FOUND));
     }
 
     public void testValidateAssoziationTargetNotInTestCase() throws Exception{
         testCase.newTestPolicyCmpt().setName("testPolicyCmptTarget");
         
-        MessageList ml = testPcTypeRelation.validate(project);
-        assertNull(ml.getMessageByCode(ITestPolicyCmptRelation.MSGCODE_ASSOZIATION_TARGET_NOT_IN_TEST_CASE));
+        MessageList ml = testPcTypeAssociation.validate(project);
+        assertNull(ml.getMessageByCode(ITestPolicyCmptLink.MSGCODE_ASSOZIATION_TARGET_NOT_IN_TEST_CASE));
 
-        testPcTypeRelation.setTarget("x");
-        ml = testPcTypeRelation.validate(project);
-        assertNotNull(ml.getMessageByCode(ITestPolicyCmptRelation.MSGCODE_ASSOZIATION_TARGET_NOT_IN_TEST_CASE));
+        testPcTypeAssociation.setTarget("x");
+        ml = testPcTypeAssociation.validate(project);
+        assertNotNull(ml.getMessageByCode(ITestPolicyCmptLink.MSGCODE_ASSOZIATION_TARGET_NOT_IN_TEST_CASE));
     }
 
-    public void testValidateModelRelationNotFound() throws Exception{
+    public void testValidateModelAssociationNotFound() throws Exception{
         IPolicyCmptType policyCmptType = newPolicyCmptType(project, "policyCmptType");
-        policyCmptType.newPolicyCmptTypeAssociation().setTargetRoleSingular("modelRelation");
-        ITestPolicyCmptTypeParameter param = ((ITestPolicyCmpt)testPcTypeRelation.getParent()).findTestPolicyCmptTypeParameter(project);
+        policyCmptType.newPolicyCmptTypeAssociation().setTargetRoleSingular("modelAssociation");
+        ITestPolicyCmptTypeParameter param = ((ITestPolicyCmpt)testPcTypeAssociation.getParent()).findTestPolicyCmptTypeParameter(project);
         param.setPolicyCmptType("policyCmptType");
-        ITestPolicyCmptTypeParameter paramChild = testPcTypeRelation.findTestPolicyCmptTypeParameter(project);
-        paramChild.setRelation("modelRelation");
+        ITestPolicyCmptTypeParameter paramChild = testPcTypeAssociation.findTestPolicyCmptTypeParameter(project);
+        paramChild.setAssociation("modelAssociation");
 
-        MessageList ml = testPcTypeRelation.validate(project);
-        assertNull(ml.getMessageByCode(ITestPolicyCmptRelation.MSGCODE_MODEL_RELATION_NOT_FOUND));
+        MessageList ml = testPcTypeAssociation.validate(project);
+        assertNull(ml.getMessageByCode(ITestPolicyCmptLink.MSGCODE_MODEL_LINK_NOT_FOUND));
 
-        paramChild.setRelation("x");
-        ml = testPcTypeRelation.validate(project);
-        assertNotNull(ml.getMessageByCode(ITestPolicyCmptRelation.MSGCODE_MODEL_RELATION_NOT_FOUND));
+        paramChild.setAssociation("x");
+        ml = testPcTypeAssociation.validate(project);
+        assertNotNull(ml.getMessageByCode(ITestPolicyCmptLink.MSGCODE_MODEL_LINK_NOT_FOUND));
     }
 }

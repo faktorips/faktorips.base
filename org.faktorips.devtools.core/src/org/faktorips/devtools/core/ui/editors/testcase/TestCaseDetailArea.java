@@ -46,7 +46,7 @@ import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.testcase.ITestAttributeValue;
 import org.faktorips.devtools.core.model.testcase.ITestObject;
 import org.faktorips.devtools.core.model.testcase.ITestPolicyCmpt;
-import org.faktorips.devtools.core.model.testcase.ITestPolicyCmptRelation;
+import org.faktorips.devtools.core.model.testcase.ITestPolicyCmptLink;
 import org.faktorips.devtools.core.model.testcase.ITestRule;
 import org.faktorips.devtools.core.model.testcase.ITestValue;
 import org.faktorips.devtools.core.model.testcase.TestRuleViolationType;
@@ -112,30 +112,30 @@ public class TestCaseDetailArea {
      */
     private class SectionSelectMouseListener implements MouseListener {
         private ITestPolicyCmpt testPolicyCmptType;
-        private ITestPolicyCmptRelation testPolicyCmptTypeRelation;
+        private ITestPolicyCmptLink testPolicyCmptTypeLink;
         private ITestObject testObject;
 
         public SectionSelectMouseListener(IIpsObjectPart object) {
             if (object instanceof ITestPolicyCmpt) {
                 testPolicyCmptType = (ITestPolicyCmpt)object;
-            } else if (object instanceof ITestPolicyCmptRelation) {
-                testPolicyCmptTypeRelation = (ITestPolicyCmptRelation)object;
+            } else if (object instanceof ITestPolicyCmptLink) {
+                testPolicyCmptTypeLink = (ITestPolicyCmptLink)object;
             } else if (object instanceof ITestObject) {
                 testObject = (ITestObject)object;
             }
         }
 
-        public SectionSelectMouseListener(ITestPolicyCmptRelation testPolicyCmptTypeRelation) {
-            this.testPolicyCmptTypeRelation = testPolicyCmptTypeRelation;
+        public SectionSelectMouseListener(ITestPolicyCmptLink testPolicyCmptTypeLink) {
+            this.testPolicyCmptTypeLink = testPolicyCmptTypeLink;
         }
 
         public void mouseDown(MouseEvent e) {
             if (testPolicyCmptType != null) {
                 testCaseSection.selectInTreeByObject(testPolicyCmptType, false);
                 testCaseSection.selectInDetailArea(testPolicyCmptType, false);
-            } else if (testPolicyCmptTypeRelation != null) {
-                testCaseSection.selectInTreeByObject(testPolicyCmptTypeRelation, false);
-                testCaseSection.selectInDetailArea(testPolicyCmptTypeRelation, false);
+            } else if (testPolicyCmptTypeLink != null) {
+                testCaseSection.selectInTreeByObject(testPolicyCmptTypeLink, false);
+                testCaseSection.selectInDetailArea(testPolicyCmptTypeLink, false);
             } else if (testObject != null) {
                 testCaseSection.selectTestObjectInTree(testObject);
                 testCaseSection.selectInDetailArea(testObject, false);
@@ -281,7 +281,7 @@ public class TestCaseDetailArea {
                     createTestRuleSection((ITestRule)testObject, borderedComosite);
                 } else if (testObject instanceof ITestPolicyCmpt) {
                     Composite borderedComosite = createBorderComposite(dynamicArea);
-                    createPolicyCmptAndRelationSection((ITestPolicyCmpt)testObject, borderedComosite);
+                    createPolicyCmptAndLinkSection((ITestPolicyCmpt)testObject, borderedComosite);
                 }
             }
             
@@ -295,7 +295,7 @@ public class TestCaseDetailArea {
 
     /**
      * Creates the section with the test policy component object.<br>
-     * If the element is a child then the relation name could be given as input to display it in the
+     * If the element is a child then the link name could be given as input to display it in the
      * section title beside the test policy component.
      * 
      * @throws CoreException
@@ -433,20 +433,20 @@ public class TestCaseDetailArea {
     }
 
     /*
-     * Creates the section for a relation of type association.<br> Create a hyperlink if the
-     * realtion exists is in the current test case or create a label with the test relation target.
+     * Creates the section for a link of type association.<br> Create a hyperlink if the
+     * realtion exists is in the current test case or create a label with the test link target.
      */
-    private void createRelationSectionAssociation(final ITestPolicyCmptRelation currRelation, Composite details) {
-        String uniquePath = testCaseSection.getUniqueKey(currRelation);
+    private void createLinkSectionAssociation(final ITestPolicyCmptLink currLink, Composite details) {
+        String uniquePath = testCaseSection.getUniqueKey(currLink);
 
         Section section = toolkit.getFormToolkit().createSection(details, 0);
-        section.setText(testCaseSection.getLabelProvider().getTextForSection(currRelation));
+        section.setText(testCaseSection.getLabelProvider().getTextForSection(currLink));
         section.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
         // create separator line
         toolkit.getFormToolkit().createCompositeSeparator(section);
 
-        section.addMouseListener(new SectionSelectMouseListener(currRelation));
-        section.getChildren()[0].addMouseListener(new SectionSelectMouseListener(currRelation));
+        section.addMouseListener(new SectionSelectMouseListener(currLink));
+        section.getChildren()[0].addMouseListener(new SectionSelectMouseListener(currLink));
 
         Composite hyperlinkArea = toolkit.createGridComposite(details, 2, false, true);
         sectionControls.put(uniquePath, section);
@@ -454,32 +454,32 @@ public class TestCaseDetailArea {
         // create a hyperlink to the target
         ITestPolicyCmpt target = null;
         try {
-            target = contentProvider.getTestCase().findTestPolicyCmpt(currRelation.getTarget());
+            target = contentProvider.getTestCase().findTestPolicyCmpt(currLink.getTarget());
         } catch (CoreException e2) {
             // ignore the exception, error searching for the target
         }
         if (target != null) {
-            Hyperlink relationHyperlink = toolkit.getFormToolkit().createHyperlink(hyperlinkArea,
-                    TestCaseHierarchyPath.unqualifiedName(currRelation.getTarget()), SWT.WRAP);
-            relationHyperlink.addHyperlinkListener(new HyperlinkAdapter() {
+            Hyperlink linkHyperlink = toolkit.getFormToolkit().createHyperlink(hyperlinkArea,
+                    TestCaseHierarchyPath.unqualifiedName(currLink.getTarget()), SWT.WRAP);
+            linkHyperlink.addHyperlinkListener(new HyperlinkAdapter() {
                 public void linkActivated(HyperlinkEvent e) {
                     try {
-                        testCaseSection.selectInTreeByObject(currRelation.findTarget(), true);
+                        testCaseSection.selectInTreeByObject(currLink.findTarget(), true);
                     } catch (CoreException e1) {
                         throw new RuntimeException(e1);
                     }
                 }
             });
-            relationHyperlink.addFocusListener(new FocusListener() {
+            linkHyperlink.addFocusListener(new FocusListener() {
                 public void focusGained(FocusEvent e) {
 
-                    testCaseSection.selectInTreeByObject(currRelation, false);
+                    testCaseSection.selectInTreeByObject(currLink, false);
                 }
 
                 public void focusLost(FocusEvent e) {
                 }
             });
-            String hyperLinkPath = " (" + testCaseSection.getLabelProvider().getAssoziationTargetLabel(currRelation.getTarget()) + " ) "; //$NON-NLS-1$ //$NON-NLS-2$
+            String hyperLinkPath = " (" + testCaseSection.getLabelProvider().getAssoziationTargetLabel(currLink.getTarget()) + " ) "; //$NON-NLS-1$ //$NON-NLS-2$
             String hyperLinklabel = hyperLinkPath; //$NON-NLS-1$
             if (hyperLinklabel.length() > 60) {
                 hyperLinklabel = hyperLinkPath.substring(0, 27);
@@ -487,43 +487,43 @@ public class TestCaseDetailArea {
                 hyperLinklabel += hyperLinkPath.substring(hyperLinkPath.length() - 30);
             }
             Label label = toolkit.createLabel(hyperlinkArea, hyperLinklabel);
-            addSectionSelectionListeners(null, label, currRelation);
+            addSectionSelectionListeners(null, label, currLink);
         } else {
             // target not found in current test case
-            Label label = toolkit.createLabel(hyperlinkArea, TestCaseHierarchyPath.unqualifiedName(currRelation
+            Label label = toolkit.createLabel(hyperlinkArea, TestCaseHierarchyPath.unqualifiedName(currLink
                     .getTarget()));
-            addSectionSelectionListeners(null, label, currRelation);
+            addSectionSelectionListeners(null, label, currLink);
             label = toolkit
                     .createLabel(
                             hyperlinkArea,
-                            " ("    + testCaseSection.getLabelProvider().getAssoziationTargetLabel(currRelation.getTarget()) + " ) "); //$NON-NLS-1$ //$NON-NLS-2$
-            addSectionSelectionListeners(null, label, currRelation);
+                            " ("    + testCaseSection.getLabelProvider().getAssoziationTargetLabel(currLink.getTarget()) + " ) "); //$NON-NLS-1$ //$NON-NLS-2$
+            addSectionSelectionListeners(null, label, currLink);
         }
     }
 
     /**
-     * Recursive create the sections for the relations and all their childs.
+     * Recursive create the sections for the links and all their childs.
      * 
      * @throws CoreException
      */
-    private void createPolicyCmptAndRelationSection(ITestPolicyCmpt currTestPolicyCmpt, Composite details)
+    private void createPolicyCmptAndLinkSection(ITestPolicyCmpt currTestPolicyCmpt, Composite details)
             throws CoreException {
         createPolicyCmptSection(currTestPolicyCmpt, details);
-        ITestPolicyCmptRelation[] relations = currTestPolicyCmpt.getTestPolicyCmptRelations();
-        for (int i = 0; i < relations.length; i++) {
-            ITestPolicyCmptRelation currRelation = relations[i];
-            if (currRelation.isComposition()) {
+        ITestPolicyCmptLink[] links = currTestPolicyCmpt.getTestPolicyCmptLinks();
+        for (int i = 0; i < links.length; i++) {
+            ITestPolicyCmptLink currLink = links[i];
+            if (currLink.isComposition()) {
                 try {
-                    ITestPolicyCmpt policyCmpt = currRelation.findTarget();
+                    ITestPolicyCmpt policyCmpt = currLink.findTarget();
                     if (policyCmpt != null) {
-                        createPolicyCmptAndRelationSection(policyCmpt, details);
+                        createPolicyCmptAndLinkSection(policyCmpt, details);
                     }
                 } catch (CoreException e) {
                     IpsPlugin.logAndShowErrorDialog(e);
                 }
             } else {
-                // relation is an association
-                createRelationSectionAssociation(currRelation, details);
+                // link is an association
+                createLinkSectionAssociation(currLink, details);
             }
         }
     }
@@ -836,8 +836,8 @@ public class TestCaseDetailArea {
                 public void focusGained(FocusEvent e) {
                     if (object instanceof ITestPolicyCmpt)
                         testCaseSection.selectInTreeByObject((ITestPolicyCmpt)object, false);
-                    else if (object instanceof ITestPolicyCmptRelation)
-                        testCaseSection.selectInTreeByObject((ITestPolicyCmptRelation)object, false);
+                    else if (object instanceof ITestPolicyCmptLink)
+                        testCaseSection.selectInTreeByObject((ITestPolicyCmptLink)object, false);
                 }
             });
             editField.getControl().addMouseListener(new SectionSelectMouseListener(object));

@@ -20,7 +20,7 @@ package org.faktorips.devtools.core.ui.editors.testcase;
 import org.eclipse.core.runtime.CoreException;
 import org.faktorips.devtools.core.model.testcase.ITestCase;
 import org.faktorips.devtools.core.model.testcase.ITestPolicyCmpt;
-import org.faktorips.devtools.core.model.testcase.ITestPolicyCmptRelation;
+import org.faktorips.devtools.core.model.testcase.ITestPolicyCmptLink;
 
 /**
  * Class to evalulate and navigate a hierarchy path for test case or test case types.
@@ -57,12 +57,12 @@ public class TestCaseHierarchyPath{
         while (!testPolicyCmpt.isRoot()){
             int offset = 0;
             ITestPolicyCmpt parent = testPolicyCmpt.getParentPolicyCmpt();
-            ITestPolicyCmptRelation[] relations = parent.getTestPolicyCmptRelations();
-            for (int i = 0; i < relations.length; i++) {
-                if (relations[i].findTarget().equals(testPolicyCmpt))
+            ITestPolicyCmptLink[] links = parent.getTestPolicyCmptLinks();
+            for (int i = 0; i < links.length; i++) {
+                if (links[i].findTarget().equals(testPolicyCmpt))
                     break;
                 // check for same parameter and increment offset if necessary
-                if (relations[i].getTestPolicyCmptTypeParameter().equals(testPolicyCmpt.getTestPolicyCmptTypeParameter()))
+                if (links[i].getTestPolicyCmptTypeParameter().equals(testPolicyCmpt.getTestPolicyCmptTypeParameter()))
                     offset ++;
             }
             pathWithOffset = testPolicyCmpt.getTestPolicyCmptTypeParameter() + OFFSET_SEPARATOR + offset + (pathWithOffset.length()>0? "." + pathWithOffset: ""); //$NON-NLS-1$ //$NON-NLS-2$
@@ -112,18 +112,18 @@ public class TestCaseHierarchyPath{
 	}
 	
 	/**
-	 * Creates a test case hierarchy path for a given test policy component relation.
+	 * Creates a test case hierarchy path for a given test policy component link.
 	 * 
-	 * @param currTestPolicyCmpt The test policy component relation for which the path will be created.
+	 * @param currTestPolicyCmpt The test policy component link for which the path will be created.
 	 * @param evalForTestCase <code>true</code> if the hierarchy path will be evaluated for a test case
 	 *                        <code>false</code> if the hierarchy path will be evaluated for a test case type.
 	 */	
-	public TestCaseHierarchyPath(ITestPolicyCmptRelation relation, boolean evalforTestCase){
-		String relationPath = relation.getTestPolicyCmptTypeParameter();
+	public TestCaseHierarchyPath(ITestPolicyCmptLink link, boolean evalforTestCase){
+		String linkPath = link.getTestPolicyCmptTypeParameter();
 		if (evalforTestCase){	
-			this.hierarchyPath = evalHierarchyPathForTestCase((ITestPolicyCmpt) relation.getParent(), relationPath);
+			this.hierarchyPath = evalHierarchyPathForTestCase((ITestPolicyCmpt) link.getParent(), linkPath);
 		}else{
-			this.hierarchyPath = evalHierarchyPathForTestCaseType((ITestPolicyCmpt) relation.getParent(), relationPath);
+			this.hierarchyPath = evalHierarchyPathForTestCaseType((ITestPolicyCmpt) link.getParent(), linkPath);
 		}
 	}
 	
@@ -196,9 +196,9 @@ public class TestCaseHierarchyPath{
 		while (!currTestPolicyCmpt.isRoot()){
 			if (hierarchyPath.length()>0)
 				hierarchyPath = SEPARATOR + hierarchyPath ;
-			ITestPolicyCmptRelation testPcTypeRelation = (ITestPolicyCmptRelation) currTestPolicyCmpt.getParent();
-			hierarchyPath = testPcTypeRelation.getTestPolicyCmptTypeParameter() + hierarchyPath;
-			currTestPolicyCmpt = (ITestPolicyCmpt) testPcTypeRelation.getParent();
+			ITestPolicyCmptLink testPcTypeLink = (ITestPolicyCmptLink) currTestPolicyCmpt.getParent();
+			hierarchyPath = testPcTypeLink.getTestPolicyCmptTypeParameter() + hierarchyPath;
+			currTestPolicyCmpt = (ITestPolicyCmpt) testPcTypeLink.getParent();
 		}
 		hierarchyPath = currTestPolicyCmpt.getTestPolicyCmptTypeParameter() + (hierarchyPath.length() > 0 ? SEPARATOR + hierarchyPath : ""); //$NON-NLS-1$
 		return hierarchyPath;
@@ -209,9 +209,9 @@ public class TestCaseHierarchyPath{
 			if (hierarchyPath.length()>0)
 				hierarchyPath = SEPARATOR + hierarchyPath ;
 			hierarchyPath = SEPARATOR + currTestPolicyCmpt.getName() + hierarchyPath;
-			ITestPolicyCmptRelation testPcTypeRelation = (ITestPolicyCmptRelation) currTestPolicyCmpt.getParent();
-			hierarchyPath = testPcTypeRelation.getTestPolicyCmptTypeParameter() + hierarchyPath;
-			currTestPolicyCmpt = (ITestPolicyCmpt) testPcTypeRelation.getParent();
+			ITestPolicyCmptLink testPcTypeLink = (ITestPolicyCmptLink) currTestPolicyCmpt.getParent();
+			hierarchyPath = testPcTypeLink.getTestPolicyCmptTypeParameter() + hierarchyPath;
+			currTestPolicyCmpt = (ITestPolicyCmpt) testPcTypeLink.getParent();
 		}
 		hierarchyPath = currTestPolicyCmpt.getName() + (hierarchyPath.length() > 0 ? SEPARATOR + hierarchyPath : ""); //$NON-NLS-1$
 		return hierarchyPath;

@@ -32,7 +32,7 @@ import org.faktorips.values.DefaultEnumValue;
  * added). A config element test attribute exists, but the test attribute value is missing.
  * <li>DIFFERENT_SORT_ORDER (Test case side) - Different order
  * <li>MISSING_TEST_PARAM (Test case type side) - Missing test parameters (will be removed). A test
- * policy cmpt, test policy cmpt relation, or test value exisits, but the config element is missing.
+ * policy cmpt, test policy cmpt link, or test value exisits, but the config element is missing.
  * <li>MISSING_TEST_ATTRIBUTE (Test case type side) - Missing test attributes (will be removed). A
  * test policy cmpt attribute exists, but the config element test attribute is missing.
  * </ul>
@@ -56,7 +56,7 @@ class TestCaseDeltaType extends DefaultEnumValue {
     /* Test case type side */
 
     /**
-     * A test policy cmpt, test policy cmpt relation, or test value exisits, but the config element is missing.
+     * A test policy cmpt, test policy cmpt link, or test value exisits, but the config element is missing.
      */
     public static final TestCaseDeltaType MISSING_TEST_PARAM;
     

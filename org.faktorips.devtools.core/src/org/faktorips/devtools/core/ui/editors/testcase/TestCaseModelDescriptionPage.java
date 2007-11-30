@@ -30,7 +30,7 @@ import org.faktorips.devtools.core.model.testcase.ITestAttributeValue;
 import org.faktorips.devtools.core.model.testcase.ITestCase;
 import org.faktorips.devtools.core.model.testcase.ITestObject;
 import org.faktorips.devtools.core.model.testcase.ITestPolicyCmpt;
-import org.faktorips.devtools.core.model.testcase.ITestPolicyCmptRelation;
+import org.faktorips.devtools.core.model.testcase.ITestPolicyCmptLink;
 import org.faktorips.devtools.core.model.testcasetype.ITestAttribute;
 import org.faktorips.devtools.core.model.testcasetype.ITestParameter;
 import org.faktorips.devtools.core.ui.views.modeldescription.DefaultModelDescriptionPage;
@@ -99,10 +99,10 @@ public class TestCaseModelDescriptionPage extends DefaultModelDescriptionPage im
             }
             addUniqueDescriptionItem(attribute, desrList, uniqueTestObjects);
         }
-        ITestPolicyCmptRelation[] testPolicyCmptRelations = cmpt.getTestPolicyCmptRelations();
-        for (int i = 0; i < testPolicyCmptRelations.length; i++) {
-            if (testPolicyCmptRelations[i].isComposition()){
-                ITestPolicyCmpt target = testPolicyCmptRelations[i].findTarget();
+        ITestPolicyCmptLink[] testPolicyCmptLinks = cmpt.getTestPolicyCmptLinks();
+        for (int i = 0; i < testPolicyCmptLinks.length; i++) {
+            if (testPolicyCmptLinks[i].isComposition()){
+                ITestPolicyCmpt target = testPolicyCmptLinks[i].findTarget();
                 if (target == null) {
                     continue;
                 }

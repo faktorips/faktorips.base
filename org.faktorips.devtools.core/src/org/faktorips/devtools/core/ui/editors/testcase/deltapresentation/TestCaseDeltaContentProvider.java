@@ -33,10 +33,10 @@ import org.faktorips.devtools.core.model.testcase.ITestCase;
 import org.faktorips.devtools.core.model.testcase.ITestCaseTestCaseTypeDelta;
 import org.faktorips.devtools.core.model.testcase.ITestObject;
 import org.faktorips.devtools.core.model.testcase.ITestPolicyCmpt;
-import org.faktorips.devtools.core.model.testcase.ITestPolicyCmptRelation;
+import org.faktorips.devtools.core.model.testcase.ITestPolicyCmptLink;
 import org.faktorips.devtools.core.model.testcasetype.ITestAttribute;
 import org.faktorips.devtools.core.ui.editors.testcase.TestCaseContentProvider;
-import org.faktorips.devtools.core.ui.editors.testcase.TestCaseTypeRelation;
+import org.faktorips.devtools.core.ui.editors.testcase.TestCaseTypeAssociation;
 
 /**
  * Content provider to represent differnces between test case and test case type.
@@ -53,7 +53,7 @@ public class TestCaseDeltaContentProvider implements ITreeContentProvider {
     /* Contains the delta which will be displayed. */
     private ITestCaseTestCaseTypeDelta in;
     // Contains the list from the delta from the test case side for faster search
-    private List missingTestPolicyCmptRelations = new ArrayList();
+    private List missingTestPolicyCmptLinks = new ArrayList();
     private List missingTestObjects = new ArrayList();
     private List missingTestAttributes = new ArrayList();
     private List missingTestAttributeValues = new ArrayList();
@@ -75,11 +75,11 @@ public class TestCaseDeltaContentProvider implements ITreeContentProvider {
     public void inputChanged(Viewer viewer, Object oldInput, Object newInput) {
         if (newInput instanceof ITestCaseTestCaseTypeDelta) {
             in = (ITestCaseTestCaseTypeDelta)newInput;
-            missingTestPolicyCmptRelations.clear();
+            missingTestPolicyCmptLinks.clear();
             missingTestObjects.clear();
             missingTestAttributes.clear();
             missingTestAttributeValues.clear();
-            missingTestPolicyCmptRelations.addAll(Arrays.asList(in.getTestPolicyCmptRelationsWithMissingTypeParam()));
+            missingTestPolicyCmptLinks.addAll(Arrays.asList(in.getTestPolicyCmptLinkWithMissingTypeParam()));
             missingTestObjects.addAll(Arrays.asList(in.getTestPolicyCmptsWithMissingTypeParam()));
             missingTestObjects.addAll(Arrays.asList(in.getTestValuesWithMissingTestValueParam()));
             missingTestObjects.addAll(Arrays.asList(in.getTestRulesWithMissingTestValueParam()));
@@ -116,7 +116,7 @@ public class TestCaseDeltaContentProvider implements ITreeContentProvider {
         }
         
         if (in.getTestPolicyCmptsWithMissingTypeParam().length>0||
-            in.getTestPolicyCmptRelationsWithMissingTypeParam().length>0||
+            in.getTestPolicyCmptLinkWithMissingTypeParam().length>0||
             in.getTestValuesWithMissingTestValueParam().length>0||
             in.getTestRulesWithMissingTestValueParam().length>0){
             result.add(TestCaseDeltaType.MISSING_TEST_PARAM);
@@ -295,26 +295,26 @@ public class TestCaseDeltaContentProvider implements ITreeContentProvider {
                 return true;
             // search the childs
             if (object instanceof ITestPolicyCmpt){
-                ITestPolicyCmptRelation[] testPolicyCmptRelations = ((ITestPolicyCmpt)object).getTestPolicyCmptRelations();
-                for (int i = 0; i < testPolicyCmptRelations.length; i++) {
-                    if (checkVisibility(testPolicyCmptRelations[i], deltaType))
+                ITestPolicyCmptLink[] testPolicyCmptLinks = ((ITestPolicyCmpt)object).getTestPolicyCmptLinks();
+                for (int i = 0; i < testPolicyCmptLinks.length; i++) {
+                    if (checkVisibility(testPolicyCmptLinks[i], deltaType))
                         return true;
-                    if (testPolicyCmptRelations[i].isComposition()) {
-                        if (isFilterFor(testPolicyCmptRelations[i].findTarget(), deltaType))
+                    if (testPolicyCmptLinks[i].isComposition()) {
+                        if (isFilterFor(testPolicyCmptLinks[i].findTarget(), deltaType))
                             return true;
                     }
                 }
-            } else if (object instanceof TestCaseTypeRelation){
-                TestCaseTypeRelation dummyRelation = (TestCaseTypeRelation)object;
-                ITestPolicyCmptRelation[] testRelations = dummyRelation.getParentTestPolicyCmpt().getTestPolicyCmptRelations(dummyRelation.getName());
-                for (int i = 0; i < testRelations.length; i++) {
-                    if (checkVisibility(testRelations[i], deltaType))
+            } else if (object instanceof TestCaseTypeAssociation){
+                TestCaseTypeAssociation dummyAssociation = (TestCaseTypeAssociation)object;
+                ITestPolicyCmptLink[] testLinks = dummyAssociation.getParentTestPolicyCmpt().getTestPolicyCmptLinks(dummyAssociation.getName());
+                for (int i = 0; i < testLinks.length; i++) {
+                    if (checkVisibility(testLinks[i], deltaType))
                         return true;
-                    if (isFilterFor(testRelations[i].findTarget(), deltaType))
+                    if (isFilterFor(testLinks[i].findTarget(), deltaType))
                         return true;
                 }
-            } else if (object instanceof ITestPolicyCmptRelation){
-                if (checkVisibility((ITestPolicyCmptRelation)object, deltaType))
+            } else if (object instanceof ITestPolicyCmptLink){
+                if (checkVisibility((ITestPolicyCmptLink)object, deltaType))
                     return true;
             }
             return false;
@@ -324,8 +324,8 @@ public class TestCaseDeltaContentProvider implements ITreeContentProvider {
          * Checks the visibility for the given object and delta type.
          */
         private boolean checkVisibility(Object object, TestCaseDeltaType deltaType) {
-            if (object instanceof ITestPolicyCmptRelation) {
-                return checkVisibility((ITestPolicyCmptRelation)object, deltaType);
+            if (object instanceof ITestPolicyCmptLink) {
+                return checkVisibility((ITestPolicyCmptLink)object, deltaType);
             }else if (object instanceof ITestPolicyCmpt) {
                 return checkVisibility((ITestPolicyCmpt)object, deltaType);
             }else if (object instanceof ITestObject){
@@ -343,9 +343,9 @@ public class TestCaseDeltaContentProvider implements ITreeContentProvider {
             }
             return false;
         }
-        private boolean checkVisibility(ITestPolicyCmptRelation relation, TestCaseDeltaType deltaType) {
+        private boolean checkVisibility(ITestPolicyCmptLink link, TestCaseDeltaType deltaType) {
             if (deltaType == TestCaseDeltaType.MISSING_TEST_PARAM){
-                return missingTestPolicyCmptRelations.contains(relation);
+                return missingTestPolicyCmptLinks.contains(link);
             }
             return false;
         }

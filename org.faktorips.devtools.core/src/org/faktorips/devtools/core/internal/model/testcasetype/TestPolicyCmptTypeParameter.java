@@ -65,7 +65,7 @@ public class TestPolicyCmptTypeParameter extends TestParameter implements
 	
 	private String policyCmptType = ""; //$NON-NLS-1$
 	
-	private String relation = ""; //$NON-NLS-1$
+	private String association = ""; //$NON-NLS-1$
 	
 	private boolean requiresProductCmpt = false;
 	
@@ -202,40 +202,40 @@ public class TestPolicyCmptTypeParameter extends TestParameter implements
 	/**
 	 * {@inheritDoc}
 	 */
-	public String getRelation() {
-		return relation;
+	public String getAssociation() {
+		return association;
 	}
 
 	/**
 	 * {@inheritDoc}
 	 */
-	public void setRelation(String relation) {
-		String oldRelation = this.relation;
-		this.relation = relation;
-		valueChanged(oldRelation, relation);
+	public void setAssociation(String association) {
+		String oldAssociation = this.association;
+		this.association = association;
+		valueChanged(oldAssociation, association);
 	}
 
     /**
      * {@inheritDoc}
      */
-    public IPolicyCmptTypeAssociation findRelation(IIpsProject ipsProject) throws CoreException {
-        if (StringUtils.isEmpty(relation)) {
+    public IPolicyCmptTypeAssociation findAssociation(IIpsProject ipsProject) throws CoreException {
+        if (StringUtils.isEmpty(association)) {
             return null;
         }
-        // if this is a root parameter then the relation field is not used
+        // if this is a root parameter then the association field is not used
         if (isRoot()){
             return null;
         }
         
-        // this is a child parameter therfore a relation should exists
+        // this is a child parameter therfore a association should exists
         ITestPolicyCmptTypeParameter parent = (ITestPolicyCmptTypeParameter) getParent();
         IPolicyCmptType pcType = parent.findPolicyCmptType(ipsProject);
         
         while (pcType != null){
-            IPolicyCmptTypeAssociation[] relations = pcType.getPolicyCmptTypeAssociations();
-            for (int i = 0; i < relations.length; i++) {
-                if (relations[i].getName().equals(relation)) {
-                    return relations[i];
+            IPolicyCmptTypeAssociation[] associations = pcType.getPolicyCmptTypeAssociations();
+            for (int i = 0; i < associations.length; i++) {
+                if (associations[i].getName().equals(association)) {
+                    return associations[i];
                 }
             }
             pcType = (IPolicyCmptType)pcType.findSupertype(ipsProject);
@@ -257,7 +257,7 @@ public class TestPolicyCmptTypeParameter extends TestParameter implements
 	protected void initPropertiesFromXml(Element element, Integer id) {
 		super.initPropertiesFromXml(element, id);
 		policyCmptType = element.getAttribute(PROPERTY_POLICYCMPTTYPE);
-		relation = element.getAttribute(PROPERTY_RELATION);
+		association = element.getAttribute(PROPERTY_ASSOCIATION);
 		String needsProductCmptAttr = element.getAttribute(PROPERTY_REQUIRES_PRODUCTCMT);
 		if (StringUtils.isNotEmpty(needsProductCmptAttr)){
 			requiresProductCmpt = needsProductCmptAttr.equalsIgnoreCase("yes")  ? true : //$NON-NLS-1$
@@ -284,21 +284,21 @@ public class TestPolicyCmptTypeParameter extends TestParameter implements
 	protected void propertiesToXml(Element element) {
 		super.propertiesToXml(element);
 		element.setAttribute(PROPERTY_POLICYCMPTTYPE, policyCmptType);
-		element.setAttribute(PROPERTY_RELATION, relation);
+		element.setAttribute(PROPERTY_ASSOCIATION, association);
 		element.setAttribute(PROPERTY_REQUIRES_PRODUCTCMT, requiresProductCmpt ? "true" : "false"); //$NON-NLS-1$ //$NON-NLS-2$
 		element.setAttribute(PROPERTY_MIN_INSTANCES, "" + minInstances); //$NON-NLS-1$
 		element.setAttribute(PROPERTY_MAX_INSTANCES, "" + maxInstances); //$NON-NLS-1$
 	}
 	
     /**
-     * If no relation is specified then return the policy cmpt type image or if a product cmpt is required the
-     * the product cmpt image. If a relation is specified then return the image which is provided by the relation
-     * or if the relation is not found the default "relation.gif" image.
+     * If no association is specified then return the policy cmpt type image or if a product cmpt is required the
+     * the product cmpt image. If a association is specified then return the image which is provided by the association
+     * or if the association is not found the default "association.gif" image.
      * 
      * {@inheritDoc}
      */
     public Image getImage() {
-        if (StringUtils.isEmpty(relation))
+        if (StringUtils.isEmpty(association))
             if (requiresProductCmpt)
                 return IpsObjectType.PRODUCT_CMPT.getEnabledImage();
             else
@@ -307,14 +307,14 @@ public class TestPolicyCmptTypeParameter extends TestParameter implements
         if (!isRoot()) {
             try {
                 //TODO provide ipsProject as parameter
-                IPolicyCmptTypeAssociation relation = findRelation(getIpsProject());
-                if (relation != null)
-                    return relation.getImage();
+                IPolicyCmptTypeAssociation association = findAssociation(getIpsProject());
+                if (association != null)
+                    return association.getImage();
             } catch (CoreException e) {
                 IpsPlugin.log(e);
             }
         }
-        return IpsPlugin.getDefault().getImage("Relation.gif"); //$NON-NLS-1$
+        return IpsPlugin.getDefault().getImage("Association.gif"); //$NON-NLS-1$
     }
 
     /**
@@ -543,11 +543,11 @@ public class TestPolicyCmptTypeParameter extends TestParameter implements
             }            
             return ipsProjectToSearch.findAllProductCmptSrcFiles(productCmptType, true);
         }
-        IPolicyCmptTypeAssociation relation = findRelation(ipsProjectToSearch);
-        if (relation == null){
+        IPolicyCmptTypeAssociation policyCmptTypeAssociation = findAssociation(ipsProjectToSearch);
+        if (policyCmptTypeAssociation == null){
             return new IIpsSrcFile[0];
         }
-        IPolicyCmptType policyCmptTypeTarget = relation.findTargetPolicyCmptType(getIpsProject());
+        IPolicyCmptType policyCmptTypeTarget = policyCmptTypeAssociation.findTargetPolicyCmptType(getIpsProject());
         if (!policyCmptTypeTarget.isConfigurableByProductCmptType()){
             return new IIpsSrcFile[0];
         }
@@ -555,7 +555,7 @@ public class TestPolicyCmptTypeParameter extends TestParameter implements
         if (productCmptTypeTarget == null){
             return new IIpsSrcFile[0];
         }
-        IProductCmptTypeAssociation association = relation.findMatchingProductCmptTypeAssociation(getIpsProject());
+        IProductCmptTypeAssociation association = policyCmptTypeAssociation.findMatchingProductCmptTypeAssociation(getIpsProject());
         if (association == null){
             // no matching association found
             return new IIpsSrcFile[0];
@@ -563,9 +563,9 @@ public class TestPolicyCmptTypeParameter extends TestParameter implements
         List result = new ArrayList(100);
         IIpsObjectGeneration[] generations = productCmpt.getGenerations();
         for (int i = 0; i < generations.length; i++) {
-            IProductCmptLink[] relations = ((IProductCmptGeneration)generations[i]).getLinks(association.getName());
-            for (int j = 0; j < relations.length; j++) {
-                IIpsSrcFile productCmptFound = ipsProjectToSearch.findIpsSrcFile(IpsObjectType.PRODUCT_CMPT, relations[j].getTarget());
+            IProductCmptLink[] associations = ((IProductCmptGeneration)generations[i]).getLinks(association.getName());
+            for (int j = 0; j < associations.length; j++) {
+                IIpsSrcFile productCmptFound = ipsProjectToSearch.findIpsSrcFile(IpsObjectType.PRODUCT_CMPT, associations[j].getTarget());
                 if (productCmptFound != null && !result.contains(productCmptFound)) {
                     result.add(productCmptFound);
                 }
@@ -615,35 +615,35 @@ public class TestPolicyCmptTypeParameter extends TestParameter implements
             }
         }
         
-        // check if the relation exists
-        //  if the parameter is root, no relation is defined
+        // check if the association exists
+        //  if the parameter is root, no association is defined
         if (! isRoot()){
-            IPolicyCmptTypeAssociation relationFound = findRelation(ipsProject);
-            if (relationFound == null) {
-                String text = NLS.bind(Messages.TestPolicyCmptTypeParameter_ValidationError_RelationNotExists, relation);
-                Message msg = new Message(MSGCODE_RELATION_NOT_EXISTS, text, Message.ERROR, this,
-                        PROPERTY_RELATION); //$NON-NLS-1$
+            IPolicyCmptTypeAssociation associationFound = findAssociation(ipsProject);
+            if (associationFound == null) {
+                String text = NLS.bind(Messages.TestPolicyCmptTypeParameter_ValidationError_AssociationNotExists, association);
+                Message msg = new Message(MSGCODE_ASSOCIATION_NOT_EXISTS, text, Message.ERROR, this,
+                        PROPERTY_ASSOCIATION); //$NON-NLS-1$
                 list.add(msg);
             } else if (policyCmptTypeFound != null){
-                // check if the relation is specified and the policy component type exists
-                //   that the policy cmpt type is a possible target of the relation  
-                IPolicyCmptType targetOfRelation = relationFound.findTargetPolicyCmptType(getIpsProject());
-                if (targetOfRelation == null){
-                    String text = NLS.bind(Messages.TestPolicyCmptTypeParameter_ValidationError_TargetOfRelationNotExists, relationFound.getTarget(), relation);
-                    Message msg = new Message(MSGCODE_TARGET_OF_RELATION_NOT_EXISTS, text, Message.WARNING, this,
-                            PROPERTY_RELATION); //$NON-NLS-1$
+                // check if the association is specified and the policy component type exists
+                //   that the policy cmpt type is a possible target of the association  
+                IPolicyCmptType targetOfAssociation = associationFound.findTargetPolicyCmptType(getIpsProject());
+                if (targetOfAssociation == null){
+                    String text = NLS.bind(Messages.TestPolicyCmptTypeParameter_ValidationError_TargetOfAssociationNotExists, associationFound.getTarget(), association);
+                    Message msg = new Message(MSGCODE_TARGET_OF_ASSOCIATION_NOT_EXISTS, text, Message.WARNING, this,
+                            PROPERTY_ASSOCIATION); //$NON-NLS-1$
                     list.add(msg);
                 }else{
-                    if (!policyCmptTypeFound.isSubtypeOrSameType(targetOfRelation)){
-                        String text = NLS.bind(Messages.TestPolicyCmptTypeParameter_ValidationError_PolicyCmptNotAllowedForRelation, policyCmptType, relation);
-                        Message msg = new Message(MSGCODE_WRONG_POLICY_CMPT_TYPE_OF_RELATION, text, Message.ERROR, this,
+                    if (!policyCmptTypeFound.isSubtypeOrSameType(targetOfAssociation)){
+                        String text = NLS.bind(Messages.TestPolicyCmptTypeParameter_ValidationError_PolicyCmptNotAllowedForAssociation, policyCmptType, association);
+                        Message msg = new Message(MSGCODE_WRONG_POLICY_CMPT_TYPE_OF_ASSOCIATION, text, Message.ERROR, this,
                                 PROPERTY_POLICYCMPTTYPE); //$NON-NLS-1$
                         list.add(msg);
                     }
                 }
                 
                 // ckeck if the target of an association exists
-                if (relationFound.isAssoziation()){
+                if (associationFound.isAssoziation()){
                     ITestParameter targetOfAssoziationInTestCaseType = null;
                     ITestParameter[] allTestParameter = getTestCaseType().getAllTestParameter();
                     for (int i = 0; i < allTestParameter.length; i++) {
@@ -654,10 +654,10 @@ public class TestPolicyCmptTypeParameter extends TestParameter implements
                             if (!isTestObject){
                                 // check if the test parameter implements no accosiation
                                 // because we search only for non accosiations
-                                IPolicyCmptTypeAssociation relation = tPCTP.findRelation(ipsProject);
-                                isTestObject =  (relation == null) || ! relation.isAssoziation();
+                                IPolicyCmptTypeAssociation association = tPCTP.findAssociation(ipsProject);
+                                isTestObject =  (association == null) || ! association.isAssoziation();
                             }
-                            if (isTestObject && tPCTP.getPolicyCmptType().equals(relationFound.getTarget())) {
+                            if (isTestObject && tPCTP.getPolicyCmptType().equals(associationFound.getTarget())) {
                                 // check if the parameter type matches, if the parameter type is unequal then
                                 // the object will not be generated in the test case and thus it is not available
                                 if (tPCTP.getTestParameterType().equals(this.getTestParameterType())
@@ -669,19 +669,19 @@ public class TestPolicyCmptTypeParameter extends TestParameter implements
                         }
                     }
                     if (targetOfAssoziationInTestCaseType == null){
-                        String text = NLS.bind(Messages.TestPolicyCmptTypeParameter_ValidationWarning_AccosiationTargetNotInTestCaseType, policyCmptType, relation);
+                        String text = NLS.bind(Messages.TestPolicyCmptTypeParameter_ValidationWarning_AccosiationTargetNotInTestCaseType, policyCmptType, association);
                         Message msg = new Message(MSGCODE_TARGET_OF_ASSOCIATION_NOT_EXISTS_IN_TESTCASETYPE, text, Message.WARNING, this,
                                 PROPERTY_POLICYCMPTTYPE); //$NON-NLS-1$
                         list.add(msg);          
                     }
                 }
             }
-        } // check relation end
+        } // check association end
         
         // check if this is a root parameter and the related policy cmpt is abstract, that the required product cmpt flag
         // is true, otherwise it is not possible to select a derived class of the abstract policy cmpt.
         // for none root parameters this check is not necessary, because in this case a dialog will be displayed to select
-        // the target of a relation (childs are always defined by using a relation)
+        // the target of a association (childs are always defined by using a association)
         if (isRoot() && policyCmptTypeFound != null){
             if (!isRequiresProductCmpt() && policyCmptTypeFound.isAbstract()){
                 String text = NLS.bind(Messages.TestPolicyCmptTypeParameter_ValidationError_MustRequireProdCmptIfRootAndAbstract, policyCmptType);

@@ -26,7 +26,7 @@ import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAssociation;
 import org.faktorips.devtools.core.model.pctype.AssociationType;
 import org.faktorips.devtools.core.model.testcase.ITestCase;
 import org.faktorips.devtools.core.model.testcase.ITestPolicyCmpt;
-import org.faktorips.devtools.core.model.testcase.ITestPolicyCmptRelation;
+import org.faktorips.devtools.core.model.testcase.ITestPolicyCmptLink;
 import org.faktorips.devtools.core.model.testcasetype.ITestCaseType;
 import org.faktorips.devtools.core.model.testcasetype.ITestPolicyCmptTypeParameter;
 import org.faktorips.util.StringUtil;
@@ -55,10 +55,10 @@ public class TestCaseAndTestCaseTypeTest extends AbstractIpsPluginTest {
         IPolicyCmptType pctContract = newPolicyCmptType(project, "Contract");
         IPolicyCmptType pctCoverage = newPolicyCmptType(project, "Coverage");
         
-        IPolicyCmptTypeAssociation relation = pctContract.newPolicyCmptTypeAssociation();
-        relation.setTargetRoleSingular("Coverage");
-        relation.setAssociationType(AssociationType.COMPOSITION_MASTER_TO_DETAIL);
-        relation.setTarget(pctCoverage.getQualifiedName());
+        IPolicyCmptTypeAssociation association = pctContract.newPolicyCmptTypeAssociation();
+        association.setTargetRoleSingular("Coverage");
+        association.setAssociationType(AssociationType.COMPOSITION_MASTER_TO_DETAIL);
+        association.setTarget(pctCoverage.getQualifiedName());
         
         // create test case type side
         ITestPolicyCmptTypeParameter tp = testCaseType.newInputTestPolicyCmptTypeParameter();
@@ -66,8 +66,8 @@ public class TestCaseAndTestCaseTypeTest extends AbstractIpsPluginTest {
         tp.setPolicyCmptType(pctContract.getQualifiedName());
         tp.setName(StringUtil.unqualifiedName(pctContract.getName()));
         ITestPolicyCmptTypeParameter tpChild = tp.newTestPolicyCmptTypeParamChild();
-        tpChild.setRelation(relation.getName());
-        tpChild.setName(relation.getName());
+        tpChild.setAssociation(association.getName());
+        tpChild.setName(association.getName());
         testCaseType.newInputTestValueParameter().setName("inputValueParameter1");
         
         testCaseType.newExpectedResultPolicyCmptTypeParameter().setName("expectedResultTestPolicyCmptTypeParam1");
@@ -81,7 +81,7 @@ public class TestCaseAndTestCaseTypeTest extends AbstractIpsPluginTest {
         pc.setTestPolicyCmptTypeParameter("inputTestPolicyCmptTypeParam1");
         pc.setTestPolicyCmptTypeParameter(tp.getName());
         pc.setName(tp.getName());
-        ITestPolicyCmptRelation pcr = pc.addTestPcTypeRelation(tpChild, "", "");
+        ITestPolicyCmptLink pcr = pc.addTestPcTypeLink(tpChild, "", "");
         ITestPolicyCmpt pcChild = pcr.findTarget();
         pathToTestPolicyCmptInput = new TestCaseHierarchyPath(pcChild).getHierarchyPath();
         testCase.newTestValue().setTestValueParameter("inputValueParameter1");
@@ -104,9 +104,9 @@ public class TestCaseAndTestCaseTypeTest extends AbstractIpsPluginTest {
        assertEquals(5, testCaseContentProviderExp.getElements(testCase).length);
     }
     
-    public void testValidateTestPolicyCmptRelation() throws CoreException {
+    public void testValidateTestPolicyCmptAssociation() throws CoreException {
         ITestPolicyCmpt pc = testCase.findTestPolicyCmpt(pathToTestPolicyCmptInput);
-        ITestPolicyCmptRelation pcr = (ITestPolicyCmptRelation) pc.getParent();
+        ITestPolicyCmptLink pcr = (ITestPolicyCmptLink) pc.getParent();
         MessageList ml = pcr.validate(project);
         assertEquals(1, ml.getNoOfMessages());
         assertNotNull(ml.getMessageByCode(ITestPolicyCmptTypeParameter.MSGCODE_POLICY_CMPT_TYPE_NOT_EXISTS));
@@ -119,21 +119,21 @@ public class TestCaseAndTestCaseTypeTest extends AbstractIpsPluginTest {
         assertNotNull(ml.getMessageByCode(ITestPolicyCmpt.MSGCODE_MIN_INSTANCES_NOT_REACHED));
         
         ITestPolicyCmpt parent = (ITestPolicyCmpt) pcr.getParent();
-        parent.addTestPcTypeRelation(param, "", "");
-        parent.addTestPcTypeRelation(param, "", "");
-        parent.addTestPcTypeRelation(param, "", "");
+        parent.addTestPcTypeLink(param, "", "");
+        parent.addTestPcTypeLink(param, "", "");
+        parent.addTestPcTypeLink(param, "", "");
         ml = pcParent.validate(project);
         assertNotNull(ml.getMessageByCode(ITestPolicyCmpt.MSGCODE_MAX_INSTANCES_REACHED));
         
-        String prevRelation = param.getRelation();
-        param.setRelation("none");
+        String prevAssociation = param.getAssociation();
+        param.setAssociation("none");
         ml = pcr.validate(project);
-        assertNotNull(ml.getMessageByCode(ITestPolicyCmptRelation.MSGCODE_MODEL_RELATION_NOT_FOUND));
+        assertNotNull(ml.getMessageByCode(ITestPolicyCmptLink.MSGCODE_MODEL_LINK_NOT_FOUND));
         
-        param.setRelation(prevRelation);
+        param.setAssociation(prevAssociation);
         
         pcr.setTestPolicyCmptTypeParameter("none");
         ml = pcr.validate(project);
-        assertNotNull(ml.getMessageByCode(ITestPolicyCmptRelation.MSGCODE_TEST_CASE_TYPE_PARAM_NOT_FOUND));
+        assertNotNull(ml.getMessageByCode(ITestPolicyCmptLink.MSGCODE_TEST_CASE_TYPE_PARAM_NOT_FOUND));
     }
 }

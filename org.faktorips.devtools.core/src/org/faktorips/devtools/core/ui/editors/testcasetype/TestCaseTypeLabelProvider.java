@@ -48,8 +48,8 @@ public class TestCaseTypeLabelProvider extends DefaultLabelProvider {
 	/**
      * Returns the displayed text of the test value parameter or test policy cmpt type param.<br>
      * If the element is a test value parameter then return the name of the param.<br>
-     * If the element is a test policy cmpt type param return the name of the param and if a relation is
-     * specified and the target name is not equal the param name return "name : relation".
+     * If the element is a test policy cmpt type param return the name of the param and if a association is
+     * specified and the target name is not equal the param name return "name : association".
      * 
 	 * {@inheritDoc}
 	 */
@@ -63,7 +63,7 @@ public class TestCaseTypeLabelProvider extends DefaultLabelProvider {
             if (StringUtils.isNotEmpty(targetExtension) && !targetExtension.equals(testPolicyCmptTypeParam.getName())){
                 targetExtension = " : " + targetExtension; //$NON-NLS-1$
             } else{
-                // no relation or relation is equal test param name
+                // no association or association is equal test param name
                 targetExtension = ""; //$NON-NLS-1$
             }
             String productExt = testPolicyCmptTypeParam.isRequiresProductCmpt() ? " (P)" : ""; //$NON-NLS-1$ //$NON-NLS-2$

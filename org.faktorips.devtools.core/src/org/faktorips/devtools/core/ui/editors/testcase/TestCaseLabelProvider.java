@@ -28,7 +28,7 @@ import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.pctype.IValidationRule;
 import org.faktorips.devtools.core.model.testcase.ITestObject;
 import org.faktorips.devtools.core.model.testcase.ITestPolicyCmpt;
-import org.faktorips.devtools.core.model.testcase.ITestPolicyCmptRelation;
+import org.faktorips.devtools.core.model.testcase.ITestPolicyCmptLink;
 import org.faktorips.devtools.core.model.testcase.ITestRule;
 import org.faktorips.devtools.core.model.testcase.ITestValue;
 import org.faktorips.devtools.core.model.testcasetype.ITestPolicyCmptTypeParameter;
@@ -51,8 +51,8 @@ public class TestCaseLabelProvider implements ILabelProvider {
 	 * {@inheritDoc}
 	 */
 	public Image getImage(Object element) {
-        if (element instanceof TestCaseTypeRelation){
-	    	return getImageFromRelationType((TestCaseTypeRelation)element);
+        if (element instanceof TestCaseTypeAssociation){
+	    	return getImageFromAssociationType((TestCaseTypeAssociation)element);
 	    } else if (element instanceof IIpsObjectPart) {
             return ((IIpsObjectPart) element).getImage();
         } else if (element instanceof TestCaseTypeRule) {
@@ -62,10 +62,10 @@ public class TestCaseLabelProvider implements ILabelProvider {
 	}
 
 	/**
-     * Returns the image of the given relation test case type parameter.
+     * Returns the image of the given association test case type parameter.
      */
-    private Image getImageFromRelationType(TestCaseTypeRelation dummyRelation) {
-        ITestPolicyCmptTypeParameter typeParam = dummyRelation.getTestPolicyCmptTypeParam();
+    private Image getImageFromAssociationType(TestCaseTypeAssociation dummyAssociation) {
+        ITestPolicyCmptTypeParameter typeParam = dummyAssociation.getTestPolicyCmptTypeParam();
         if (typeParam != null)
             return typeParam.getImage();
 
@@ -79,12 +79,12 @@ public class TestCaseLabelProvider implements ILabelProvider {
 		if (element instanceof ITestPolicyCmpt) {
 			ITestPolicyCmpt tstPolicyCmpt = (ITestPolicyCmpt) element;
 			return tstPolicyCmpt.getName();
-		} else if (element instanceof ITestPolicyCmptRelation) {
-			ITestPolicyCmptRelation testPcTypeRelation = (ITestPolicyCmptRelation) element;
+		} else if (element instanceof ITestPolicyCmptLink) {
+			ITestPolicyCmptLink testPcTypeLink = (ITestPolicyCmptLink) element;
 			String text = ""; //$NON-NLS-1$
 			try {
-				text = TestCaseHierarchyPath.unqualifiedName(testPcTypeRelation.getTestPolicyCmptTypeParameter());
-				ITestPolicyCmptTypeParameter typeParam = testPcTypeRelation.findTestPolicyCmptTypeParameter(ipsProject);
+				text = TestCaseHierarchyPath.unqualifiedName(testPcTypeLink.getTestPolicyCmptTypeParameter());
+				ITestPolicyCmptTypeParameter typeParam = testPcTypeLink.findTestPolicyCmptTypeParameter(ipsProject);
 				if (typeParam != null && typeParam.isRequiresProductCmpt())
 					text += Messages.TestCaseLabelProvider_LabelSuffix_RequiresProductCmpt;
 			} catch (CoreException e) {
@@ -98,10 +98,10 @@ public class TestCaseLabelProvider implements ILabelProvider {
             return testRule.getValidationRule() + extForPolicyCmptForValidationRule;
         } else if (element instanceof ITestObject){
 			return ((ITestObject)element).getTestParameterName();
-	    } else if(element instanceof TestCaseTypeRelation){
-	    	TestCaseTypeRelation dummyRelation = (TestCaseTypeRelation) element;
-	    	String text = dummyRelation.getName();
-	    	if (dummyRelation.isRequiresProductCmpt()){
+	    } else if(element instanceof TestCaseTypeAssociation){
+	    	TestCaseTypeAssociation dummyAssociation = (TestCaseTypeAssociation) element;
+	    	String text = dummyAssociation.getName();
+	    	if (dummyAssociation.isRequiresProductCmpt()){
 	    		text += Messages.TestCaseLabelProvider_LabelSuffix_RequiresProductCmpt;
 	    	}
 	    	return text;
@@ -145,11 +145,11 @@ public class TestCaseLabelProvider implements ILabelProvider {
     }
 
     /**
-     * Returns the title text of a section which displays the given test policy cmpt relation (e.g. assoziation).<br>
+     * Returns the title text of a section which displays the given test policy cmpt link (e.g. assoziation).<br>
      * Returns the name of the test policy cmpt type param.
      */
-    public String getTextForSection(ITestPolicyCmptRelation currRelation){
-        return currRelation.getTestPolicyCmptTypeParameter();
+    public String getTextForSection(ITestPolicyCmptLink currLink){
+        return currLink.getTestPolicyCmptTypeParameter();
     }
     
     /**

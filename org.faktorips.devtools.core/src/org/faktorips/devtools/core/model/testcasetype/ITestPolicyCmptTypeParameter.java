@@ -34,7 +34,7 @@ public interface ITestPolicyCmptTypeParameter extends ITestParameter {
 
 	/** Property names */
 	public final static String PROPERTY_POLICYCMPTTYPE = "policyCmptType"; //$NON-NLS-1$
-	public final static String PROPERTY_RELATION = "relation"; //$NON-NLS-1$	
+	public final static String PROPERTY_ASSOCIATION = "association"; //$NON-NLS-1$	
 	public final static String PROPERTY_REQUIRES_PRODUCTCMT = "requiresProductCmpt"; //$NON-NLS-1$
     public final static String PROPERTY_MIN_INSTANCES = "minInstances"; //$NON-NLS-1$
     public final static String PROPERTY_MAX_INSTANCES = "maxInstances"; //$NON-NLS-1$
@@ -69,19 +69,19 @@ public interface ITestPolicyCmptTypeParameter extends ITestParameter {
     public final static String MSGCODE_TYPE_DOES_NOT_MATCH_PARENT_TYPE = MSGCODE_PREFIX + "TypeDoesNotMatchParentType"; //$NON-NLS-1$
 
     /**
-     * Validation message code to indicate that the relation wasn't found.
+     * Validation message code to indicate that the association wasn't found.
      */
-    public final static String MSGCODE_RELATION_NOT_EXISTS = MSGCODE_PREFIX + "RelationNotExists"; //$NON-NLS-1$
+    public final static String MSGCODE_ASSOCIATION_NOT_EXISTS = MSGCODE_PREFIX + "AssociationNotExists"; //$NON-NLS-1$
     
     /**
-     * Validation message code to indicate that the target of the relation wasn't found.
+     * Validation message code to indicate that the target of the association wasn't found.
      */
-    public final static String MSGCODE_TARGET_OF_RELATION_NOT_EXISTS = MSGCODE_PREFIX + "TargetOfRelationNotExists"; //$NON-NLS-1$
+    public final static String MSGCODE_TARGET_OF_ASSOCIATION_NOT_EXISTS = MSGCODE_PREFIX + "TargetOfAssociationNotExists"; //$NON-NLS-1$
     
     /**
-     * Validation message code to indicate that the policy cmpt type is not allowed for the relation.
+     * Validation message code to indicate that the policy cmpt type is not allowed for the association.
      */
-    public final static String MSGCODE_WRONG_POLICY_CMPT_TYPE_OF_RELATION = MSGCODE_PREFIX + "WrongPolicyCmptTypeOfRelation"; //$NON-NLS-1$
+    public final static String MSGCODE_WRONG_POLICY_CMPT_TYPE_OF_ASSOCIATION = MSGCODE_PREFIX + "WrongPolicyCmptTypeOfAssociation"; //$NON-NLS-1$
     
     /**
      * Validation message code to indicate that the policy cmpt type must have the required product
@@ -126,22 +126,23 @@ public interface ITestPolicyCmptTypeParameter extends ITestParameter {
 	public IPolicyCmptType findPolicyCmptType(IIpsProject ipsProject) throws CoreException;
 	
     /**
-     * Returns the name of the relation.
+     * Returns the name of the association.
      */
-	public String getRelation();
+	public String getAssociation();
 	
     /**
-     * Sets the name of the relation.
+     * Sets the name of the association.
      */	
-	public void setRelation(String relation);
+	public void setAssociation(String association);
 	
     /**
-     * Returns the relation or <code>null</code> if the relation does not exists.
-     * @param ipsProject TODO
+     * Returns the association or <code>null</code> if the association does not exists.
      * 
-     * @throws CoreException if an error occurs while searching for the relation.
+     * @param ipsProject the IpsProject where to start the search from
+     * 
+     * @throws CoreException if an error occurs while searching for the association.
      */	
-	public IPolicyCmptTypeAssociation findRelation(IIpsProject ipsProject) throws CoreException;
+	public IPolicyCmptTypeAssociation findAssociation(IIpsProject ipsProject) throws CoreException;
 		
     /**
      * Creates a new input test attribute and returns it.
@@ -193,34 +194,34 @@ public interface ITestPolicyCmptTypeParameter extends ITestParameter {
     public ITestPolicyCmptTypeParameter getTestPolicyCmptTypeParamChild(String name);
     
 	/** 
-	 * Returns <code>true</code> if corresponding test policy components have relations to product components 
+	 * Returns <code>true</code> if corresponding test policy components have associations to product components 
 	 * instead of policy components.
 	 */
 	public boolean isRequiresProductCmpt();
 	
 	/** 
-	 * Sets if the corresponding test policy components should define relations to product components
+	 * Sets if the corresponding test policy components should define associations to product components
 	 * instead of policy components.
 	 */
 	public void setRequiresProductCmpt(boolean requiresProductCmpt);
 	
 	/**
-	* Returns the minmum instances of the relation.   
+	* Returns the minmum instances of the association.   
 	*/
 	public int getMinInstances();
 	   
 	/**
-	* Sets the minmum instances of the relation.   
+	* Sets the minmum instances of the association.   
 	*/
 	public void setMinInstances(int minInstances);
 	   
 	/**
-	* Returns the maximum allowed instances of the relation.   
+	* Returns the maximum allowed instances of the association.   
 	*/
 	public int getMaxInstances();
 	   
 	/**
-	* Sets the maximum allowed instances of the relation.   
+	* Sets the maximum allowed instances of the association.   
 	*/
 	public void setMaxInstances(int manInstances);
     
@@ -269,7 +270,7 @@ public interface ITestPolicyCmptTypeParameter extends ITestParameter {
      * Returns all allowed product cmpts source files which could be added as target of child test
      * policy cmpt type parameters. Only product cmpts are allowed which are defined as targets
      * within the given parentProductCmpt, in at least one generation. If the given product cmpt is
-     * <code>null</code> then all product cmpts, which matches the relation this parameter is related to,
+     * <code>null</code> then all product cmpts, which matches the association this parameter is related to,
      * are returned.
      * <p>
      * Returns an empty array if no product cmpts are found as valid product cmpt.

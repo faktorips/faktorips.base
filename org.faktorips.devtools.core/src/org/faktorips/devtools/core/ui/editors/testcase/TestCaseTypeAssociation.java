@@ -25,46 +25,46 @@ import org.faktorips.devtools.core.model.Validatable;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAssociation;
 import org.faktorips.devtools.core.model.testcase.ITestPolicyCmpt;
-import org.faktorips.devtools.core.model.testcase.ITestPolicyCmptRelation;
+import org.faktorips.devtools.core.model.testcase.ITestPolicyCmptLink;
 import org.faktorips.devtools.core.model.testcasetype.ITestAttribute;
 import org.faktorips.devtools.core.model.testcasetype.ITestPolicyCmptTypeParameter;
 import org.faktorips.util.message.Message;
 import org.faktorips.util.message.MessageList;
 
 /**
- * Helper class to represent a dummy relation depending on the test case type relation (test policy
+ * Helper class to represent a dummy association depending on the test case type association (test policy
  * component type parameter) and a concrete test policy component which will be the parent of all
- * concrete relations inside the test case. The concret relations are based on the test case type
- * relation.<br>
- * The parent test policy component could be used to add new relations to this test policy component
- * inside the test case (based on the test case type relation).<br>
- * Example: this class R contains the relation type RT and the test policy component A1. By using
- * this class a new test relation RT1 of type RT could be added to the policy component A.
+ * concrete associations inside the test case. The concret associations are based on the test case type
+ * association.<br>
+ * The parent test policy component could be used to add new associations to this test policy component
+ * inside the test case (based on the test case type association).<br>
+ * Example: this class R contains the association type RT and the test policy component A1. By using
+ * this class a new test association RT1 of type RT could be added to the policy component A.
  * 
  * @author Joerg Ortmann
  */
-public class TestCaseTypeRelation implements Validatable {
+public class TestCaseTypeAssociation implements Validatable {
 
-	/** Contains the type definition of the relation */
+	/** Contains the type definition of the association */
 	private ITestPolicyCmptTypeParameter testPolicyCmptTypeParameter;
 	
-	/** Contains the parent inside the test case model of the test relation type parameter */
+	/** Contains the parent inside the test case model of the test association type parameter */
 	private ITestPolicyCmpt parentTestPolicyCmpt;
 	
     /**
      * Constructor for testing purposes.
      */
-    protected TestCaseTypeRelation() {
+    protected TestCaseTypeAssociation() {
     }
     
-	public TestCaseTypeRelation(ITestPolicyCmptTypeParameter testPolicyCmptTypeParameter,
+	public TestCaseTypeAssociation(ITestPolicyCmptTypeParameter testPolicyCmptTypeParameter,
             ITestPolicyCmpt parentTestPolicyCmpt) {
         this.testPolicyCmptTypeParameter = testPolicyCmptTypeParameter;
         this.parentTestPolicyCmpt = parentTestPolicyCmpt;
     }
 	
 	/**
-	 * Returns the test relation type parameter.
+	 * Returns the test association type parameter.
 	 */
 	public ITestPolicyCmptTypeParameter getTestPolicyCmptTypeParam(){
 		return testPolicyCmptTypeParameter;
@@ -72,7 +72,7 @@ public class TestCaseTypeRelation implements Validatable {
 
 	/**
 	 * Returns the test policy component (concrete instance inside the test case model) 
-	 * which is the parent of the test relation type.
+	 * which is the parent of the test association type.
 	 */
 	public ITestPolicyCmpt getParentTestPolicyCmpt() {
 		return parentTestPolicyCmpt;
@@ -80,14 +80,14 @@ public class TestCaseTypeRelation implements Validatable {
 	
 	/**
 	 * Sets the test policy component (concrete instance inside the test case model) 
-	 * which is the parent of the test relation type.
+	 * which is the parent of the test association type.
 	 */
 	public void setParentTestPolicyCmpt(ITestPolicyCmpt testPolicyCmpt) {
 		this.parentTestPolicyCmpt = testPolicyCmpt;
 	}
 	
 	/**
-	 * Returns the name of the test relation type parameter (test policy component type parameter).
+	 * Returns the name of the test association type parameter (test policy component type parameter).
 	 */
 	public String getName(){
         if (testPolicyCmptTypeParameter == null)
@@ -96,51 +96,51 @@ public class TestCaseTypeRelation implements Validatable {
 	}
 
 	/**
-	 * Returns the relation name which is related by the test relation type.
+	 * Returns the association name which is related by the test association type.
 	 */
-	public String getRelation() {
-		return testPolicyCmptTypeParameter.getRelation();
+	public String getAssociation() {
+		return testPolicyCmptTypeParameter.getAssociation();
 	}
 	
 	/**
-	 * Returns the relation object which is related by the test relation type.
+	 * Returns the association object which is related by the test association type.
 	 * @param ipsProject TODO
 	 */
-	public IPolicyCmptTypeAssociation findRelation(IIpsProject ipsProject) throws CoreException {
-		return testPolicyCmptTypeParameter.findRelation(ipsProject);
+	public IPolicyCmptTypeAssociation findAssociation(IIpsProject ipsProject) throws CoreException {
+		return testPolicyCmptTypeParameter.findAssociation(ipsProject);
 	}
 
 	/**
-	 * Returns <code>true</code> if the test relation type requires a product component.
+	 * Returns <code>true</code> if the test association type requires a product component.
 	 */
 	public boolean isRequiresProductCmpt() {
 		return testPolicyCmptTypeParameter.isRequiresProductCmpt();
 	}
 	
     /**
-	 * Returns <code>true</code> if the test relation type is an input parameter.
+	 * Returns <code>true</code> if the test association type is an input parameter.
 	 */
 	public boolean isInput() {
 	    return testPolicyCmptTypeParameter.isInputParameter();
 	}
 
     /**
-	 * Returns <code>true</code> if the test relation type is an expected result parameter.
+	 * Returns <code>true</code> if the test association type is an expected result parameter.
 	 */
 	public boolean isExpectedResult() {
 	    return testPolicyCmptTypeParameter.isExpextedResultParameter();
 	}
 
 	/**
-	 * Returns the name of the policy component type which is related by the test relation parameter.
+	 * Returns the name of the policy component type which is related by the test association parameter.
 	 * @param ipsProject TODO
 	 */
 	public String getPolicyCmptTypeTarget(IIpsProject ipsProject) throws CoreException {
-		return findRelation(ipsProject).getTarget();
+		return findAssociation(ipsProject).getTarget();
 	}
 	
 	/**
-	 * Returns all test attributes which are defined inside the test relation type (test policy component type parameter).
+	 * Returns all test attributes which are defined inside the test association type (test policy component type parameter).
 	 */
 	public ITestAttribute[] getTestAttributes() {
 		return testPolicyCmptTypeParameter.getTestAttributes();
@@ -174,7 +174,7 @@ public class TestCaseTypeRelation implements Validatable {
 	}
 
 	/**
-     * Validate the test policy cmpt relation parameters. And validate the min and max instances of
+     * Validate the test policy cmpt association parameters. And validate the min and max instances of
      * the test policy cmpt type param by validating the parent test policy cmpt
      */
 	private void validate(MessageList list, IIpsProject ipsProject) throws CoreException {
@@ -182,16 +182,16 @@ public class TestCaseTypeRelation implements Validatable {
 			return;
 		}
 		
-		// delegate the validation to the corresponding test policy component relation
-        //   validate all relations with the same name, because this relations are grouped to one
+		// delegate the validation to the corresponding test policy component association
+        //   validate all associations with the same name, because this associations are grouped to one
         //   element
-		ITestPolicyCmptRelation[] relations = parentTestPolicyCmpt.getTestPolicyCmptRelations();
+		ITestPolicyCmptLink[] associations = parentTestPolicyCmpt.getTestPolicyCmptLinks();
 		HashMap messages = new HashMap();
-        for (int i = 0; i < relations.length; i++) {
-		    ITestPolicyCmptRelation testPolicyCmptRelation = null;
-			if (relations[i].getTestPolicyCmptTypeParameter().equals(getName())){
-                testPolicyCmptRelation = relations[i];
-                MessageList msgList = testPolicyCmptRelation.validate(ipsProject);
+        for (int i = 0; i < associations.length; i++) {
+		    ITestPolicyCmptLink testPolicyCmptAssociation = null;
+			if (associations[i].getTestPolicyCmptTypeParameter().equals(getName())){
+                testPolicyCmptAssociation = associations[i];
+                MessageList msgList = testPolicyCmptAssociation.validate(ipsProject);
                 // add only unique messages
                 for (Iterator iter = msgList.iterator(); iter.hasNext();){
                     Message msg = (Message)iter.next();
@@ -201,7 +201,7 @@ public class TestCaseTypeRelation implements Validatable {
 		}
         
         // get the validation messages of the number of instances from the parent test policy cmpt,
-        // thus it could be displayed on the relation symbol
+        // thus it could be displayed on the association symbol
         MessageList ml = parentTestPolicyCmpt.validate(null);
         
         MessageList mlMin = ml.getMessagesFor(parentTestPolicyCmpt, ITestPolicyCmptTypeParameter.PROPERTY_MIN_INSTANCES);
@@ -219,14 +219,14 @@ public class TestCaseTypeRelation implements Validatable {
             }
         }
         
-        // add the unique test relation messages to the list of messages
+        // add the unique test association messages to the list of messages
         for (Iterator iter = messages.values().iterator(); iter.hasNext();) {
             list.add((Message)iter.next());
         }
 	}
 
     /*
-     * Returns true if the message is relevant for this relation.
+     * Returns true if the message is relevant for this association.
      */
     private boolean ifMessageRelevant(Message msg) {
         return (msg.getText().indexOf("\"" + getName()+ "\"")>=0); //$NON-NLS-1$ //$NON-NLS-2$

@@ -48,7 +48,7 @@ import org.faktorips.devtools.core.model.testcase.ITestCase;
 import org.faktorips.devtools.core.model.testcase.ITestCaseTestCaseTypeDelta;
 import org.faktorips.devtools.core.model.testcase.ITestObject;
 import org.faktorips.devtools.core.model.testcase.ITestPolicyCmpt;
-import org.faktorips.devtools.core.model.testcase.ITestPolicyCmptRelation;
+import org.faktorips.devtools.core.model.testcase.ITestPolicyCmptLink;
 import org.faktorips.devtools.core.model.testcase.ITestRule;
 import org.faktorips.devtools.core.model.testcase.ITestValue;
 import org.faktorips.devtools.core.model.testcasetype.ITestAttribute;
@@ -195,11 +195,11 @@ public class TestCase extends IpsObject implements ITestCase {
             dependencies.add(IpsObjectDependency.createReferenceDependency(this.getQualifiedNameType(), new QualifiedNameType(
                     cmpt.getProductCmpt(), IpsObjectType.PRODUCT_CMPT)));
         }
-        ITestPolicyCmptRelation[] testRelations = cmpt.getTestPolicyCmptRelations();
-        for (int i = 0; i < testRelations.length; i++) {
+        ITestPolicyCmptLink[] testLinks = cmpt.getTestPolicyCmptLinks();
+        for (int i = 0; i < testLinks.length; i++) {
             // get the dependencies for the childs of the given test policy cmpt
-            if (testRelations[i].isComposition()) {
-                addQualifiedNameTypesForTestPolicyCmpt(dependencies, testRelations[i].findTarget());
+            if (testLinks[i].isComposition()) {
+                addQualifiedNameTypesForTestPolicyCmpt(dependencies, testLinks[i].findTarget());
             }
         }
     }
@@ -237,11 +237,11 @@ public class TestCase extends IpsObject implements ITestCase {
      */
     private void addChildTestPolicyCmpt(List allPolicyCmpts, ITestPolicyCmpt cmpt) throws CoreException {
         allPolicyCmpts.add(cmpt);
-        ITestPolicyCmptRelation[] testRelations = cmpt.getTestPolicyCmptRelations();
-        for (int i = 0; i < testRelations.length; i++) {
+        ITestPolicyCmptLink[] testLinks = cmpt.getTestPolicyCmptLinks();
+        for (int i = 0; i < testLinks.length; i++) {
             // get the dependencies for the childs of the given test policy cmpt
-            if (testRelations[i].isComposition()){
-                addChildTestPolicyCmpt(allPolicyCmpts, testRelations[i].findTarget());
+            if (testLinks[i].isComposition()){
+                addChildTestPolicyCmpt(allPolicyCmpts, testLinks[i].findTarget());
             }
         }
     }
@@ -305,7 +305,7 @@ public class TestCase extends IpsObject implements ITestCase {
         // Test case side
         ITestValue[] testValuesWithMissingTestValueParam = delta.getTestValuesWithMissingTestValueParam();
         ITestPolicyCmpt[] testPolicyCmptsWithMissingTypeParam = delta.getTestPolicyCmptsWithMissingTypeParam();
-        ITestPolicyCmptRelation[] testPolicyCmptRelationsWithMissingTypeParam = delta.getTestPolicyCmptRelationsWithMissingTypeParam();
+        ITestPolicyCmptLink[] testPolicyCmptLinksWithMissingTypeParam = delta.getTestPolicyCmptLinkWithMissingTypeParam();
         ITestAttributeValue[] testAttributeValuesWithMissingTestAttribute = delta.getTestAttributeValuesWithMissingTestAttribute();
         ITestRule[] testRulesWithMissingTestRuleParam = delta.getTestRulesWithMissingTestValueParam();
         
@@ -328,9 +328,9 @@ public class TestCase extends IpsObject implements ITestCase {
         for (int i = 0; i < testPolicyCmptsWithMissingTypeParam.length; i++) {
             testPolicyCmptsWithMissingTypeParam[i].delete();
         }
-        // delete test policy cmpt relations
-        for (int i = 0; i < testPolicyCmptRelationsWithMissingTypeParam.length; i++) {
-            testPolicyCmptRelationsWithMissingTypeParam[i].delete();
+        // delete test policy cmpt links
+        for (int i = 0; i < testPolicyCmptLinksWithMissingTypeParam.length; i++) {
+            testPolicyCmptLinksWithMissingTypeParam[i].delete();
         }
         // delete test attribute values
         for (int i = 0; i < testAttributeValuesWithMissingTestAttribute.length; i++) {
@@ -389,7 +389,7 @@ public class TestCase extends IpsObject implements ITestCase {
             sortTestObjects();
             
             // fix childs
-            //  order relations in order of the test parameter
+            //  order links in order of the test parameter
             ITestPolicyCmpt[] cmpts = delta.getTestPolicyCmptWithDifferentSortOrder();
             for (int i = 0; i < cmpts.length; i++) {
                 ((TestPolicyCmpt)cmpts[i]).fixDifferentChildSortOrder();
@@ -638,28 +638,28 @@ public class TestCase extends IpsObject implements ITestCase {
      /**
      * {@inheritDoc}
      */
-     public ITestPolicyCmptTypeParameter findTestPolicyCmptTypeParameter(ITestPolicyCmptRelation relation, IIpsProject ipsProject) throws CoreException {
-         return findTestPolicyCmptTypeParameter(null, relation, ipsProject);
+     public ITestPolicyCmptTypeParameter findTestPolicyCmptTypeParameter(ITestPolicyCmptLink link, IIpsProject ipsProject) throws CoreException {
+         return findTestPolicyCmptTypeParameter(null, link, ipsProject);
      }
 
     /**
      * Returns the corresponing test policy componnet type parameter of the given test policy
-     * component or the given relation. Either the test policy component or the relation must be
+     * component or the given link. Either the test policy component or the link must be
      * given, but not both together. Returns <code>null</code> if the parameter not found.
      * 
      * @param testPolicyCmptBase The test policy component which policy component type parameter
      *            will be returned.
-     * @param relation The test policy component relation which test relation will be returned
+     * @param link The test policy component link which test link will be returned
      * 
      * @throws CoreException if an error occurs while searching for the object.
      */
     private ITestPolicyCmptTypeParameter findTestPolicyCmptTypeParameter(
             ITestPolicyCmpt testPolicyCmptBase,
-            ITestPolicyCmptRelation relation,
+            ITestPolicyCmptLink link,
             IIpsProject ipsProject) throws CoreException {
         
-        ArgumentCheck.isTrue(testPolicyCmptBase != null || relation != null);
-        ArgumentCheck.isTrue(!(testPolicyCmptBase != null && relation != null));
+        ArgumentCheck.isTrue(testPolicyCmptBase != null || link != null);
+        ArgumentCheck.isTrue(!(testPolicyCmptBase != null && link != null));
 
         ITestCaseType testCaseTypeFound = findTestCaseType(ipsProject);
         if (testCaseTypeFound == null) {
@@ -670,10 +670,10 @@ public class TestCase extends IpsObject implements ITestCase {
         TestCaseHierarchyPath hierarchyPath = null;
         if (testPolicyCmptBase != null) {
             hierarchyPath = new TestCaseHierarchyPath(testPolicyCmptBase, false);
-        } else if (relation != null) {
-            hierarchyPath = new TestCaseHierarchyPath(relation, false);
+        } else if (link != null) {
+            hierarchyPath = new TestCaseHierarchyPath(link, false);
         } else {
-            throw new CoreException(new IpsStatus(Messages.TestCase_Error_NoRelationOrPolicyCmptGiven));
+            throw new CoreException(new IpsStatus(Messages.TestCase_Error_NoLinkOrPolicyCmptGiven));
         }
 
         // find the root test policy component parameter type
@@ -723,9 +723,9 @@ public class TestCase extends IpsObject implements ITestCase {
                             hierarchyPath.toString())));
                 }
 
-                ITestPolicyCmptRelation relation = (ITestPolicyCmptRelation) testPolicyCmpt.getParent();
-                if (relation != null) {
-                    ((ITestPolicyCmpt)relation.getParent()).removeRelation(relation);
+                ITestPolicyCmptLink link = (ITestPolicyCmptLink) testPolicyCmpt.getParent();
+                if (link != null) {
+                    ((ITestPolicyCmpt)link.getParent()).removeLink(link);
                 }
             }
         } else {
@@ -774,14 +774,14 @@ public class TestCase extends IpsObject implements ITestCase {
             boolean found = false;
             String currElem = path.next();
 
-            ITestPolicyCmptRelation[] prs;
-            prs = pc.getTestPolicyCmptRelations(currElem);
+            ITestPolicyCmptLink[] prs;
+            prs = pc.getTestPolicyCmptLinks(currElem);
 
             currElem = path.next();
             pc = null;
             for (int i = 0; i < prs.length; i++) {
-                ITestPolicyCmptRelation relation = prs[i];
-                ITestPolicyCmpt pcTarget = relation.findTarget();
+                ITestPolicyCmptLink link = prs[i];
+                ITestPolicyCmpt pcTarget = link.findTarget();
                 if (pcTarget == null)
                     return null;
 
@@ -820,13 +820,13 @@ public class TestCase extends IpsObject implements ITestCase {
             }
         } else {
             ITestPolicyCmpt parent = newTestPolicyCmpt.getParentPolicyCmpt();
-            ITestPolicyCmptRelation[] relations = parent.getTestPolicyCmptRelations();
+            ITestPolicyCmptLink[] links = parent.getTestPolicyCmptLinks();
             ArrayList names = new ArrayList();
-            for (int i = 0; i < relations.length; i++) {
-                ITestPolicyCmptRelation relation = relations[i];
-                if (relation.isComposition()) {
+            for (int i = 0; i < links.length; i++) {
+                ITestPolicyCmptLink link = links[i];
+                if (link.isComposition()) {
                     try {
-                        ITestPolicyCmpt child = relation.findTarget();
+                        ITestPolicyCmpt child = link.findTarget();
                         if (! child.equals(newTestPolicyCmpt)){
                             names.add(child.getName());
                         }
@@ -897,7 +897,7 @@ public class TestCase extends IpsObject implements ITestCase {
             IIpsProject ipsProject) throws CoreException {
         
         // add rules of childs, ignore if the corresponding objects are not found (validation errors)
-        ITestPolicyCmptRelation[] rs = testPolicyCmpt.getTestPolicyCmptRelations();
+        ITestPolicyCmptLink[] rs = testPolicyCmpt.getTestPolicyCmptLinks();
         for (int i = 0; i < rs.length; i++) {
             ITestPolicyCmpt tpc = rs[i].findTarget();
             if (tpc == null){

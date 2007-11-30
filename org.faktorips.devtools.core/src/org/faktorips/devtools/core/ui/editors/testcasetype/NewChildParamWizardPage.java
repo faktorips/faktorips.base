@@ -40,7 +40,7 @@ import org.faktorips.devtools.core.ui.controller.fields.ValueChangeListener;
 
 /**
  * Wizard page to create a new child test policy cmpt type parameter.<br>
- * The following fields will be handled: Relation, target policy cmpt type, test policy cmpt type
+ * The following fields will be handled: Association, target policy cmpt type, test policy cmpt type
  * parameter name and the test parameter type (input, exp result or combined).
  * 
  * @author Joerg Ortmann
@@ -51,16 +51,16 @@ public class NewChildParamWizardPage extends WizardPage implements ValueChangeLi
     
     private NewChildParameterWizard wizard;
     
-    private EditField editFieldRelation;
+    private EditField editFieldAssociation;
     private EditField editFieldTarget;
     private EditField editFieldName;
     private EditField editFieldParamType;
     
-    private String prevRelation;
-    private IPolicyCmptTypeAssociation relation;
+    private String prevAssociation;
+    private IPolicyCmptTypeAssociation association;
     
-    private RelationTargetRefControl relTargetRefControl;
-    private RelationRefControl relationRefControl;
+    private AssociationTargetRefControl accosiationTargetRefControl;
+    private AssociationRefControl accosiationRefControl;
     
     public NewChildParamWizardPage(NewChildParameterWizard wizard){
         super(PAGE_ID, Messages.NewChildParamWizardPage_Title, null);
@@ -76,15 +76,15 @@ public class NewChildParamWizardPage extends WizardPage implements ValueChangeLi
 
         Composite c = uiToolkit.createLabelEditColumnComposite(parent);
         
-        uiToolkit.createLabel(c, Messages.NewChildParamWizardPage_Label_Relation);
-        relationRefControl = new RelationRefControl(c, uiToolkit, wizard.getParentPolicyCmptType());
-        editFieldRelation = new TextButtonField(relationRefControl);
-        editFieldRelation.addChangeListener(this);
+        uiToolkit.createLabel(c, Messages.NewChildParamWizardPage_Label_Association);
+        accosiationRefControl = new AssociationRefControl(c, uiToolkit, wizard.getParentPolicyCmptType());
+        editFieldAssociation = new TextButtonField(accosiationRefControl);
+        editFieldAssociation.addChangeListener(this);
 
         uiToolkit.createLabel(c, Messages.NewChildParamWizardPage_Label_Target);
-        relTargetRefControl = new RelationTargetRefControl(wizard.getTestCaseType().getIpsProject(), c,
+        accosiationTargetRefControl = new AssociationTargetRefControl(wizard.getTestCaseType().getIpsProject(), c,
                 uiToolkit, null);
-        editFieldTarget = new TextButtonField(relTargetRefControl);
+        editFieldTarget = new TextButtonField(accosiationTargetRefControl);
         editFieldTarget.addChangeListener(this);
         
         uiToolkit.createLabel(c, Messages.TestCaseTypeSection_EditFieldLabel_Name);
@@ -103,7 +103,7 @@ public class NewChildParamWizardPage extends WizardPage implements ValueChangeLi
      * Connects the edit fields with the given controller to the given test parameter
      */
     void connectToModel(IpsObjectUIController controller, ITestParameter testParameter) {
-        controller.add(editFieldRelation, ITestPolicyCmptTypeParameter.PROPERTY_RELATION);
+        controller.add(editFieldAssociation, ITestPolicyCmptTypeParameter.PROPERTY_ASSOCIATION);
         controller.add(editFieldTarget, ITestPolicyCmptTypeParameter.PROPERTY_POLICYCMPTTYPE);
         controller.add(editFieldName, ITestParameter.PROPERTY_NAME);
         controller.add(editFieldParamType, ITestParameter.PROPERTY_TEST_PARAMETER_TYPE);
@@ -113,8 +113,8 @@ public class NewChildParamWizardPage extends WizardPage implements ValueChangeLi
      * {@inheritDoc}
      */
     public void valueChanged(FieldValueChangedEvent e) {
-        if (e.field == editFieldRelation) {
-            relationChanged(editFieldRelation.getText());
+        if (e.field == editFieldAssociation) {
+            associationChanged(editFieldAssociation.getText());
         }
         
         wizard.postAsyncRunnable(new Runnable() {
@@ -127,19 +127,19 @@ public class NewChildParamWizardPage extends WizardPage implements ValueChangeLi
     }
 
     /**
-     * Relation has changed.
+     * Association has changed.
      */
-    private void relationChanged(String newRelation) {
-        if (newRelation.equals(prevRelation))
+    private void associationChanged(String newAssociation) {
+        if (newAssociation.equals(prevAssociation))
             return;
-        prevRelation = newRelation;
+        prevAssociation = newAssociation;
         
         try {
-            relation = relationRefControl.findRelation();
-            if (relation == null)
+            association = accosiationRefControl.findAssociation();
+            if (association == null)
                 return;
 
-            relTargetRefControl.setPolicyCmptTypeTarget(relation.findTargetPolicyCmptType(relation.getIpsProject()));
+            accosiationTargetRefControl.setPolicyCmptTypeTarget(association.findTargetPolicyCmptType(association.getIpsProject()));
         } catch (CoreException e) {
             IpsPlugin.logAndShowErrorDialog(e);
         }
@@ -155,8 +155,8 @@ public class NewChildParamWizardPage extends WizardPage implements ValueChangeLi
             public void run() {
                 if (wizard.getShell().isDisposed())
                     return;
-                if (relation != null)
-                    wizard.newTestParameter(relation.getName());
+                if (association != null)
+                    wizard.newTestParameter(association.getName());
             }
         });
     }
@@ -168,8 +168,8 @@ public class NewChildParamWizardPage extends WizardPage implements ValueChangeLi
      */
     private boolean validatePage() throws CoreException {
         setErrorMessage(null);
-        if (relation == null) {
-            setErrorMessage(NLS.bind(Messages.NewChildParamWizardPage_Error_RelationDoesNotExists, editFieldRelation.getText()));
+        if (association == null) {
+            setErrorMessage(NLS.bind(Messages.NewChildParamWizardPage_Error_AssociationDoesNotExists, editFieldAssociation.getText()));
             return false;
         }
         if ("".equals(editFieldParamType.getText()) || "".equals(editFieldName.getText())){ //$NON-NLS-1$ //$NON-NLS-2$

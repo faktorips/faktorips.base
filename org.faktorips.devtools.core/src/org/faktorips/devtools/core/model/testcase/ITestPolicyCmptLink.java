@@ -23,11 +23,11 @@ import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.testcasetype.ITestPolicyCmptTypeParameter;
 
 /**
- * Specification of a test policy component relation.
+ * Specification of a test policy component link.
  * 
  * @author Joerg Ortmann
  */
-public interface ITestPolicyCmptRelation extends IIpsObjectPart  {
+public interface ITestPolicyCmptLink extends IIpsObjectPart  {
 	
 	/** Property names */
 	public final static String PROPERTY_POLICYCMPTTYPE = "testPolicyCmptType"; //$NON-NLS-1$
@@ -36,7 +36,7 @@ public interface ITestPolicyCmptRelation extends IIpsObjectPart  {
     /**
      * Prefix for all message codes of this class.
      */
-    public final static String MSGCODE_PREFIX = "TESTPOLICYCMPTRELATION-"; //$NON-NLS-1$
+    public final static String MSGCODE_PREFIX = "TESTPOLICYCMPTLINK-"; //$NON-NLS-1$
 
     /**
 	 * Validation message code to indicate that the target of an assoziation is not in the test case.
@@ -51,11 +51,11 @@ public interface ITestPolicyCmptRelation extends IIpsObjectPart  {
 		+ "TestCaseTypeParamNotFound"; //$NON-NLS-1$
 	
     /**
-	 * Validation message code to indicate that the model relation which is related by the corresponding 
+	 * Validation message code to indicate that the model link which is related by the corresponding 
 	 * test case type parameter not exists.
 	 */
-	public final static String MSGCODE_MODEL_RELATION_NOT_FOUND = MSGCODE_PREFIX
-		+ "ModelRelationNotFound"; //$NON-NLS-1$
+	public final static String MSGCODE_MODEL_LINK_NOT_FOUND = MSGCODE_PREFIX
+		+ "ModelLinkNotFound"; //$NON-NLS-1$
 
     /**
      * Returns the name of test policy component type parameter.
@@ -101,17 +101,17 @@ public interface ITestPolicyCmptRelation extends IIpsObjectPart  {
 	public ITestPolicyCmpt newTargetTestPolicyCmptChild();	
 	
 	/**
-	 * Returns <code>true</code> if the relation is an accociation.
+	 * Returns <code>true</code> if the link is an accociation.
 	 */
 	public boolean isAccoziation();
 	
 	/**
-	 * Returns <code>true</code> if the relation is a composition.
+	 * Returns <code>true</code> if the link is a composition.
 	 */
 	public boolean isComposition();
 	
 	/**
-	 * Returns the test case this relation belongs to.
+	 * Returns the test case this link belongs to.
 	 */
 	public ITestCase getTestCase();	
 }

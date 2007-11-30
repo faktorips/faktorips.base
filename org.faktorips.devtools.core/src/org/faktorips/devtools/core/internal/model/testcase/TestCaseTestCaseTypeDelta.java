@@ -28,7 +28,7 @@ import org.faktorips.devtools.core.model.testcase.ITestCase;
 import org.faktorips.devtools.core.model.testcase.ITestCaseTestCaseTypeDelta;
 import org.faktorips.devtools.core.model.testcase.ITestObject;
 import org.faktorips.devtools.core.model.testcase.ITestPolicyCmpt;
-import org.faktorips.devtools.core.model.testcase.ITestPolicyCmptRelation;
+import org.faktorips.devtools.core.model.testcase.ITestPolicyCmptLink;
 import org.faktorips.devtools.core.model.testcase.ITestRule;
 import org.faktorips.devtools.core.model.testcase.ITestValue;
 import org.faktorips.devtools.core.model.testcasetype.ITestAttribute;
@@ -54,7 +54,7 @@ public class TestCaseTestCaseTypeDelta implements ITestCaseTestCaseTypeDelta {
     private ITestValue[] testValuesWithMissingTestValueParam;
     private ITestRule[] testRulesWithMissingTestRuleParam;
     private ITestPolicyCmpt[] testPolicyCmptsWithMissingTypeParam;
-    private ITestPolicyCmptRelation[] testPolicyCmptRelationsWithMissingTypeParam;
+    private ITestPolicyCmptLink[] testPolicyCmptLinksWithMissingTypeParam;
     private ITestAttributeValue[] testAttributeValuesWithMissingTestAttribute;
     private ITestPolicyCmpt[] testPolicyCmptWithDifferentSortOrder;
     private ITestPolicyCmpt[] testPolicyCmptWithDifferentSortOrderTestAttr;
@@ -264,7 +264,7 @@ public class TestCaseTestCaseTypeDelta implements ITestCaseTestCaseTypeDelta {
     }
     
     /*
-     * Computes all missing test policy cmpts, test policy cmpt relations and test attribute values
+     * Computes all missing test policy cmpts, test policy cmpt links and test attribute values
      * (test case side)
      */
     private void computeTestPolicyCmptTypeParameterWithMissingTestPolicyCmpt(List testCaseSideObjects) throws CoreException {
@@ -391,10 +391,10 @@ public class TestCaseTestCaseTypeDelta implements ITestCaseTestCaseTypeDelta {
      */
     private List computeTestPolicyCmptStructWithMissingTestParameter() throws CoreException {
         List missingTestPolicyCmpts = new ArrayList();
-        List missingTestPolicyCmptRelations = new ArrayList();
+        List missingTestPolicyCmptLinks = new ArrayList();
         List missingTestAttributeValues = new ArrayList();
 
-        // helper list to store all test policy cmpt and test policy cmpt relations
+        // helper list to store all test policy cmpt and test policy cmpt links
         //   will be used later to search for params without these test case objects
         List allTestPolicyCmpt = new ArrayList();
         
@@ -405,12 +405,12 @@ public class TestCaseTestCaseTypeDelta implements ITestCaseTestCaseTypeDelta {
             allTestPolicyCmpt.add(testPolicyCmpts[i]);
             ITestPolicyCmpt cmpt = testPolicyCmpts[i];
             computeTestPolicyCmptStructWithMissingTestParameter(cmpt, missingTestPolicyCmpts,
-                    missingTestPolicyCmptRelations, missingTestAttributeValues, allTestPolicyCmpt);
+                    missingTestPolicyCmptLinks, missingTestAttributeValues, allTestPolicyCmpt);
         }
 
         testPolicyCmptsWithMissingTypeParam = (ITestPolicyCmpt[])missingTestPolicyCmpts.toArray(new ITestPolicyCmpt[0]);
-        testPolicyCmptRelationsWithMissingTypeParam = (ITestPolicyCmptRelation[])missingTestPolicyCmptRelations
-                .toArray(new ITestPolicyCmptRelation[0]);
+        testPolicyCmptLinksWithMissingTypeParam = (ITestPolicyCmptLink[])missingTestPolicyCmptLinks
+                .toArray(new ITestPolicyCmptLink[0]);
         testAttributeValuesWithMissingTestAttribute = (ITestAttributeValue[])missingTestAttributeValues
                 .toArray(new ITestAttributeValue[0]);
         
@@ -423,7 +423,7 @@ public class TestCaseTestCaseTypeDelta implements ITestCaseTestCaseTypeDelta {
     private void computeTestPolicyCmptStructWithMissingTestParameter(
             ITestPolicyCmpt cmpt,
             List missingTestPolicyCmpts,
-            List missingTestPolicyCmptRelations,
+            List missingTestPolicyCmptLinks,
             List missingTestAttributeValues,
             List allTestPolicyCmpt) throws CoreException {
         
@@ -432,8 +432,8 @@ public class TestCaseTestCaseTypeDelta implements ITestCaseTestCaseTypeDelta {
             missingTestPolicyCmpts.add(cmpt);
         } else {
             // search the sub content of the test policy cmpt
-            computeTestPolicyCmptRelationStructWithMissingTestParameter(cmpt.getTestPolicyCmptRelations(),
-                    missingTestPolicyCmpts, missingTestPolicyCmptRelations, missingTestAttributeValues, allTestPolicyCmpt);
+            computeTestPolicyCmptLinkStructWithMissingTestParameter(cmpt.getTestPolicyCmptLinks(),
+                    missingTestPolicyCmpts, missingTestPolicyCmptLinks, missingTestAttributeValues, allTestPolicyCmpt);
             computeTestAttributeValuesWithMissingTestAttribute(cmpt, missingTestAttributeValues);
             computeSortOrderOfTestAttributes(cmpt, param);
         }
@@ -463,11 +463,11 @@ public class TestCaseTestCaseTypeDelta implements ITestCaseTestCaseTypeDelta {
     }
 
     /*
-     * Computes all missing test case type side objects, starting with given test policy cmpt relation.
+     * Computes all missing test case type side objects, starting with given test policy cmpt link.
      */
-    private List computeTestPolicyCmptRelationStructWithMissingTestParameter(ITestPolicyCmptRelation[] testPolicyCmptRelations,
+    private List computeTestPolicyCmptLinkStructWithMissingTestParameter(ITestPolicyCmptLink[] testPolicyCmptLinks,
             List missingTestPolicyCmpt,
-            List missingTestPolicyCmptRelation,
+            List missingTestPolicyCmptLink,
             List missingTestAttributeValue, 
             List allTestPolicyCmpt) throws CoreException {
 
@@ -475,28 +475,28 @@ public class TestCaseTestCaseTypeDelta implements ITestCaseTestCaseTypeDelta {
         List objects = new ArrayList();
         
         ITestPolicyCmptTypeParameter prevParam = null;
-        for (int i = 0; i < testPolicyCmptRelations.length; i++) {
-            objects.add(testPolicyCmptRelations[i]);
-            ITestPolicyCmptTypeParameter param = testPolicyCmptRelations[i].findTestPolicyCmptTypeParameter(ipsProject);
+        for (int i = 0; i < testPolicyCmptLinks.length; i++) {
+            objects.add(testPolicyCmptLinks[i]);
+            ITestPolicyCmptTypeParameter param = testPolicyCmptLinks[i].findTestPolicyCmptTypeParameter(ipsProject);
             if (param == null) {
-                missingTestPolicyCmptRelation.add(testPolicyCmptRelations[i]);
+                missingTestPolicyCmptLink.add(testPolicyCmptLinks[i]);
             } else {
-                if (testPolicyCmptRelations[i].isComposition()) {
-                    ITestPolicyCmpt cmpt = testPolicyCmptRelations[i].findTarget();
+                if (testPolicyCmptLinks[i].isComposition()) {
+                    ITestPolicyCmpt cmpt = testPolicyCmptLinks[i].findTarget();
                     if (cmpt == null){
-                        // ignore error if target of relation not found
+                        // ignore error if target of link not found
                         continue;
                     }
                     // add the child test policy cmpt, thus the attributes could be checked later
                     allTestPolicyCmpt.add(cmpt);
                     
                    // check the sort order
-                    if (prevParam != null && isWrongIfTestPolicyCmptRelationSortOrder(prevParam, param)){
+                    if (prevParam != null && isWrongIfTestPolicyCmptLinkSortOrder(prevParam, param)){
                         testPolicyCmptChildWithWrongSortOrder.add(cmpt);
                     }
                     
                     computeTestPolicyCmptStructWithMissingTestParameter(cmpt, missingTestPolicyCmpt,
-                            missingTestPolicyCmptRelation, missingTestAttributeValue, allTestPolicyCmpt);
+                            missingTestPolicyCmptLink, missingTestAttributeValue, allTestPolicyCmpt);
                 }
             }
             prevParam = param;
@@ -505,9 +505,9 @@ public class TestCaseTestCaseTypeDelta implements ITestCaseTestCaseTypeDelta {
     }
     
     /*
-     * Check if the sort order of the given relation is wrong. Returns true if the order is different.
+     * Check if the sort order of the given link is wrong. Returns true if the order is different.
      */
-    private boolean isWrongIfTestPolicyCmptRelationSortOrder(ITestPolicyCmptTypeParameter prevParam,
+    private boolean isWrongIfTestPolicyCmptLinkSortOrder(ITestPolicyCmptTypeParameter prevParam,
             ITestPolicyCmptTypeParameter param) {
         ArgumentCheck.isTrue(!param.isRoot());        
         ITestPolicyCmptTypeParameter parentPrev = (ITestPolicyCmptTypeParameter) prevParam.getParent();
@@ -563,7 +563,7 @@ public class TestCaseTestCaseTypeDelta implements ITestCaseTestCaseTypeDelta {
         return errorInTestCaseType
                 || testValuesWithMissingTestValueParam.length == 0 
                 && testPolicyCmptsWithMissingTypeParam.length == 0
-                && testPolicyCmptRelationsWithMissingTypeParam.length == 0
+                && testPolicyCmptLinksWithMissingTypeParam.length == 0
                 && testAttributeValuesWithMissingTestAttribute.length == 0
                 && testAttributesWithMissingTestAttributeValue.length == 0
                 && testPolicyCmptTypeParametersWithMissingTestPolicyCmpt.length == 0
@@ -609,8 +609,8 @@ public class TestCaseTestCaseTypeDelta implements ITestCaseTestCaseTypeDelta {
         return testPolicyCmptsWithMissingTypeParam;
     }
     
-    public ITestPolicyCmptRelation[] getTestPolicyCmptRelationsWithMissingTypeParam() {
-        return testPolicyCmptRelationsWithMissingTypeParam;
+    public ITestPolicyCmptLink[] getTestPolicyCmptLinkWithMissingTypeParam() {
+        return testPolicyCmptLinksWithMissingTypeParam;
     }
     
     public ITestAttributeValue[] getTestAttributeValuesWithMissingTestAttribute() {

@@ -33,7 +33,7 @@ import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.testcase.ITestCase;
 import org.faktorips.devtools.core.model.testcase.ITestObject;
 import org.faktorips.devtools.core.model.testcase.ITestPolicyCmpt;
-import org.faktorips.devtools.core.model.testcase.ITestPolicyCmptRelation;
+import org.faktorips.devtools.core.model.testcase.ITestPolicyCmptLink;
 import org.faktorips.devtools.core.model.testcase.ITestValue;
 import org.faktorips.devtools.core.model.testcasetype.ITestCaseType;
 import org.faktorips.devtools.core.model.testcasetype.ITestParameter;
@@ -63,10 +63,10 @@ public class TestCaseContentProvider implements ITreeContentProvider {
 	// Contains the test case for which the content will be provided
 	private ITestCase testCase;
 	
-	// Indicates if the structure should be displayed without relation layer
-	private boolean withoutRelations = false;
+	// Indicates if the structure should be displayed without association layer
+	private boolean withoutAssociations = false;
 	
-    // Cache containing the dummy objects, to display the relation and rules.
+    // Cache containing the dummy objects, to display the association and rules.
     // This kind of objects are only used in the ui to adapt the model objects to the correct
     // content in the tree view
     private HashMap dummyObjects = new HashMap();
@@ -96,19 +96,19 @@ public class TestCaseContentProvider implements ITreeContentProvider {
     }
     
 	/**
-	 * Returns <code>true</code> if the content will be provided without the relation layer.
-	 * If the complete structure will be displayed (with relations) then <code>false</code> will be returned.
+	 * Returns <code>true</code> if the content will be provided without the association layer.
+	 * If the complete structure will be displayed (with associations) then <code>false</code> will be returned.
 	 */
-	public boolean isWithoutRelations() {
-		return withoutRelations;
+	public boolean isWithoutAssociations() {
+		return withoutAssociations;
 	}
 
 	/**
-	 * Set if the relation layer will be shown <code>false</code> 
-	 * or if the relation should be hidden <code>true</code>.
+	 * Set if the association layer will be shown <code>false</code> 
+	 * or if the association should be hidden <code>true</code>.
 	 */
-	public void setWithoutRelations(boolean withoutRelations) {
-		this.withoutRelations = withoutRelations;
+	public void setWithoutAssociations(boolean withoutAssociations) {
+		this.withoutAssociations = withoutAssociations;
 	}
 	
 	/**
@@ -200,10 +200,10 @@ public class TestCaseContentProvider implements ITreeContentProvider {
 	public Object[] getChildren(Object parentElement) {
 	    if(parentElement instanceof ITestPolicyCmpt) {
 	        return getChildsForTestPolicyCmpt((ITestPolicyCmpt)parentElement);
-	    }else if(parentElement instanceof ITestPolicyCmptRelation){
-	    	return getChildsForTestPolicyCmptRelation((ITestPolicyCmptRelation) parentElement);
-	    }else if(parentElement instanceof TestCaseTypeRelation){
-	    	return getChildsForTestCaseTypeRelation((TestCaseTypeRelation) parentElement);
+	    }else if(parentElement instanceof ITestPolicyCmptLink){
+	    	return getChildsForTestPolicyCmptAssociation((ITestPolicyCmptLink) parentElement);
+	    }else if(parentElement instanceof TestCaseTypeAssociation){
+	    	return getChildsForTestCaseTypeAssociation((TestCaseTypeAssociation) parentElement);
 	    }else if (parentElement instanceof TestCaseTypeRule){
             return testCase.getTestRule(((TestCaseTypeRule)parentElement).getName());
         }
@@ -216,10 +216,10 @@ public class TestCaseContentProvider implements ITreeContentProvider {
 	public Object getParent(Object element) {
 	    if(element instanceof ITestPolicyCmpt) {
 	        return ((ITestPolicyCmpt)element).getParent();
-	    }else if(element instanceof ITestPolicyCmptRelation){
-	    	return ((ITestPolicyCmptRelation) element).getParent();
-	    }else if(element instanceof TestCaseTypeRelation){
-	    	return ((TestCaseTypeRelation) element).getParentTestPolicyCmpt();
+	    }else if(element instanceof ITestPolicyCmptLink){
+	    	return ((ITestPolicyCmptLink) element).getParent();
+	    }else if(element instanceof TestCaseTypeAssociation){
+	    	return ((TestCaseTypeAssociation) element).getParentTestPolicyCmpt();
 	    }
 	    // only the objects above have parents, in other case no parent necessary
 	    return null;
@@ -347,28 +347,28 @@ public class TestCaseContentProvider implements ITreeContentProvider {
 	}
 	
 	/*
-	 * Returns all child of the given test case type relation parameter 
-	 * (dummy relation based on the test case type definition)
+	 * Returns all child of the given test case type association parameter 
+	 * (dummy association based on the test case type definition)
 	 */
-	private Object[] getChildsForTestCaseTypeRelation(TestCaseTypeRelation dummyRelation) {
+	private Object[] getChildsForTestCaseTypeAssociation(TestCaseTypeAssociation dummyAssociation) {
 		// show instances of this test policy component type parameter
 		ArrayList childs = new ArrayList();
 		
-		ITestPolicyCmpt parent = dummyRelation.getParentTestPolicyCmpt();
+		ITestPolicyCmpt parent = dummyAssociation.getParentTestPolicyCmpt();
 		if (parent != null){
-			ITestPolicyCmptRelation[] relations = parent.getTestPolicyCmptRelations(dummyRelation.getName());
-			for (int i = 0; i < relations.length; i++) {
-				ITestPolicyCmptRelation relation = relations[i];
-				if (relation.isComposition()){            
+			ITestPolicyCmptLink[] associations = parent.getTestPolicyCmptLinks(dummyAssociation.getName());
+			for (int i = 0; i < associations.length; i++) {
+				ITestPolicyCmptLink association = associations[i];
+				if (association.isComposition()){            
 					try {
-                        if ((isExpectedResult() && relation.findTarget().isExpectedResult())
-                         || (isInput() && relation.findTarget().isInput()))
-                            childs.add(relation.findTarget());
+                        if ((isExpectedResult() && association.findTarget().isExpectedResult())
+                         || (isInput() && association.findTarget().isInput()))
+                            childs.add(association.findTarget());
                     } catch (CoreException e) {
                         // ignore exception, the failure will be displayed by the validation
                     }
 				}else{
-					childs.add(relation);
+					childs.add(association);
 				}
 			}
 		}
@@ -376,15 +376,15 @@ public class TestCaseContentProvider implements ITreeContentProvider {
 	}
 
 	/*
-	 * Returns all child of the given test case relation.
+	 * Returns all child of the given test case association.
 	 */
-	private Object[] getChildsForTestPolicyCmptRelation(ITestPolicyCmptRelation testPcRelation) {
-		if (testPcRelation.isAccoziation()){
+	private Object[] getChildsForTestPolicyCmptAssociation(ITestPolicyCmptLink testPcAssociation) {
+		if (testPcAssociation.isAccoziation()){
 			return EMPTY_ARRAY;
 		}else{
 			ITestPolicyCmpt[] childs = new ITestPolicyCmpt[1];
 			try {
-				childs[0] = testPcRelation.findTarget();
+				childs[0] = testPcAssociation.findTarget();
 			} catch (CoreException e) {
 				return EMPTY_ARRAY;
 			}
@@ -397,16 +397,16 @@ public class TestCaseContentProvider implements ITreeContentProvider {
 	 */
 	private Object[] getChildsForTestPolicyCmpt(ITestPolicyCmpt testPolicyCmpt) {
 	    // TODO Joerg: Methodenlaenge
-        ITestPolicyCmptRelation[] relations = testPolicyCmpt.getTestPolicyCmptRelations();
-		if (withoutRelations){
-			// show childs without relation layer
-			List childTestPolicyCmpt = new ArrayList(relations.length);
-			for (int i = 0; i < relations.length; i++) {
-				ITestPolicyCmptRelation relation = relations[i];
-				if (relation.isComposition()){
+        ITestPolicyCmptLink[] links = testPolicyCmpt.getTestPolicyCmptLinks();
+		if (withoutAssociations){
+			// show childs without association layer
+			List childTestPolicyCmpt = new ArrayList(links.length);
+			for (int i = 0; i < links.length; i++) {
+				ITestPolicyCmptLink link = links[i];
+				if (link.isComposition()){
 					ITestPolicyCmpt target=null;
 					try {
-						target = relation.findTarget();
+						target = link.findTarget();
 					} catch (CoreException e) {
 						IpsPlugin.logAndShowErrorDialog(e);
 					}
@@ -414,7 +414,7 @@ public class TestCaseContentProvider implements ITreeContentProvider {
                         childTestPolicyCmpt.add(target);
 				}else{
                     // assoziation will be added
-                    childTestPolicyCmpt.add(relations[i]);
+                    childTestPolicyCmpt.add(links[i]);
 				}
 			}
 			return (IIpsElement[]) childTestPolicyCmpt.toArray(new IIpsElement[0]);
@@ -435,13 +435,13 @@ public class TestCaseContentProvider implements ITreeContentProvider {
 						childNames.add(parameter.getName());
 					}
 				}
-				// add relations which are not added by the test case parameter
-                //   relation with missing test case type parameter
-				ITestPolicyCmptRelation[] relationsInTestCase = testPolicyCmpt.getTestPolicyCmptRelations();
-				for (int i = 0; i < relationsInTestCase.length; i++) {
-					ITestPolicyCmptRelation relation = relationsInTestCase[i];
-					if (! childNames.contains(relation.getTestPolicyCmptTypeParameter())){
-						childs.add(relation);
+				// add links which are not added by the test case parameter
+                //   association with missing test case type parameter
+				ITestPolicyCmptLink[] linksInTestCase = testPolicyCmpt.getTestPolicyCmptLinks();
+				for (int i = 0; i < linksInTestCase.length; i++) {
+					ITestPolicyCmptLink link = linksInTestCase[i];
+					if (! childNames.contains(link.getTestPolicyCmptTypeParameter())){
+						childs.add(link);
 					}
 				}
 				return childs.toArray(new Object[0]);	
@@ -468,7 +468,7 @@ public class TestCaseContentProvider implements ITreeContentProvider {
         Object dummyObject = dummyObjects.get(id);
         if (dummyObject == null) {
             if (testObject instanceof ITestPolicyCmpt) {
-                dummyObject = new TestCaseTypeRelation((ITestPolicyCmptTypeParameter)parameter,
+                dummyObject = new TestCaseTypeAssociation((ITestPolicyCmptTypeParameter)parameter,
                         (ITestPolicyCmpt)testObject);
                 dummyObjects.put(id, dummyObject);
             } else if (parameter instanceof ITestRuleParameter) {

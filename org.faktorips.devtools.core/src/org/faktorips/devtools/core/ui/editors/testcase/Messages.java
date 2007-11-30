@@ -44,11 +44,11 @@ public class Messages extends NLS {
 	public static String TestCaseSection_ButtonProductCmpt;
     public static String TestCaseSection_DialogOverwriteWithDefault_Text;
     public static String TestCaseSection_DialogOverwriteWithDefault_Title;
-	public static String TestCaseSection_Error_CreatingRelation;
+	public static String TestCaseSection_Error_CreatingAssociation;
 	public static String TestCaseSection_DialogSelectProductCmpt_Title;
 	public static String TestCaseSection_DialogSelectProductCmpt_Description;
-	public static String TestCaseSection_DialogSelectTestRelation_Title;
-	public static String TestCaseSection_DialogSelectTestRelation_Description;
+	public static String TestCaseSection_DialogSelectTestAssociation_Title;
+	public static String TestCaseSection_DialogSelectTestAssociation_Description;
     public static String TestCaseSection_Menu_Down;
     public static String TestCaseSection_Menu_OpenInNewEditor;
     public static String TestCaseSection_Menu_Up;
@@ -73,7 +73,7 @@ public class Messages extends NLS {
     public static String TestCaseSection_FilterCombined_ToolTip;
     public static String TestCaseSection_ToolBar_FlatStructure;
     public static String TestCaseSection_ToolBar_RunTest;
-    public static String TestCaseSection_ToolBar_WithoutRelation;
+    public static String TestCaseSection_ToolBar_WithoutAssociation;
     public static String TestCaseEditor_Combined_Title;
     public static String TestCaseLabelProvider_undefined;
     public static String TestCaseLabelProvider_LabelSuffix_RequiresProductCmpt;

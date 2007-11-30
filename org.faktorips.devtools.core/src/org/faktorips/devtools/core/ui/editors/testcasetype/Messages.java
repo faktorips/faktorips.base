@@ -55,15 +55,15 @@ public class Messages extends NLS {
     public static String TestCaseTypeSection_Error_WrongTestAttributeIndex;
     public static String TestCaseTypeSection_Button_Remove;
     public static String TestCaseTypeSection_Dialog_SelectAttribute_Title;
-    public static String RelationRefControl_Title;
-    public static String RelationRefControl_Description;
+    public static String AssociationRefControl_Title;
+    public static String AssociationRefControl_Description;
     public static String NewChildParameterWizard_Title;
     public static String NewRootParameterWizard_Title;
     public static String NewChildParamWizardPage_Title;
     public static String NewChildParamWizardPage_Description;
-    public static String NewChildParamWizardPage_Label_Relation;
+    public static String NewChildParamWizardPage_Label_Association;
     public static String NewChildParamWizardPage_Label_Target;
-    public static String NewChildParamWizardPage_Error_RelationDoesNotExists;
+    public static String NewChildParamWizardPage_Error_AssociationDoesNotExists;
     public static String NewTestParamDetailWizardPage_Title;
     public static String NewTestParamDetailWizardPage_Description;
     public static String NewRootParamWizardPage_Label_Datatype;
@@ -76,7 +76,7 @@ public class Messages extends NLS {
     public static String TestCaseTypeSection_ErrorDialog_AddParameterTitle;
     public static String TestCaseTypeSection_ErrorDialog_AttributeChangingNotAllowedBecausePolicyCmptTypeNotExists;
     public static String TestCaseTypeSection_ErrorDialog_AttributeChangingTitle;
-    public static String RelationRefControl_Button_Browse;
+    public static String AssociationRefControl_Button_Browse;
     public static String TestCaseTypeSection_FormText_InfoAssociation_1;
     public static String TestCaseTypeSection_FormText_InfoAssociation_2;
     public static String TestCaseTypeSection_FormText_InfoAssociation_3;

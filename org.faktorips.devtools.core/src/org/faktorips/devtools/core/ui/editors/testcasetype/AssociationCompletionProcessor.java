@@ -27,24 +27,24 @@ import org.faktorips.util.ArgumentCheck;
 
 
 /**
- * A completion processor that searchs for relations for a given policy cmpt type.
+ * A completion processor that searchs for associations for a given policy cmpt type.
  */
-public class RelationCompletionProcessor extends AbstractCompletionProcessor {
+public class AssociationCompletionProcessor extends AbstractCompletionProcessor {
     
     private IPolicyCmptType pcType;
     
     // indicates that only assoziations and composition should be searched
     private boolean onlyAssoziationOrComposition;
     
-    public RelationCompletionProcessor() {
+    public AssociationCompletionProcessor() {
     }
     
     /**
-     * @param pcType The policy cmpt type the relations will be searched for
+     * @param pcType The policy cmpt type the associations will be searched for
      * @param onlyAssoziationOrComposition <code>true</code> indicates that only assoziations and
-     *            composition should be searched, <code>false</code> all relation will be searched
+     *            composition should be searched, <code>false</code> all association will be searched
      */
-    public RelationCompletionProcessor(IPolicyCmptType pcType, boolean onlyAssoziationOrComposition) {
+    public AssociationCompletionProcessor(IPolicyCmptType pcType, boolean onlyAssoziationOrComposition) {
         ArgumentCheck.notNull(pcType);
         this.pcType = pcType;
         this.onlyAssoziationOrComposition = onlyAssoziationOrComposition;
@@ -59,27 +59,27 @@ public class RelationCompletionProcessor extends AbstractCompletionProcessor {
 
         IPolicyCmptType currentPcType = pcType;
         while (currentPcType != null){
-            IPolicyCmptTypeAssociation[] relations = currentPcType.getPolicyCmptTypeAssociations();
-            for (int i = 0; i < relations.length; i++) {
+            IPolicyCmptTypeAssociation[] associations = currentPcType.getPolicyCmptTypeAssociations();
+            for (int i = 0; i < associations.length; i++) {
                 if (onlyAssoziationOrComposition &&
-                    !(relations[i].isAssoziation() || relations[i].isCompositionMasterToDetail())){
+                    !(associations[i].isAssoziation() || associations[i].isCompositionMasterToDetail())){
                     continue;
                 }
                 
-                if (relations[i].getName().toLowerCase().startsWith(prefix)) {
-                    addToResult(result, relations[i], documentOffset);
+                if (associations[i].getName().toLowerCase().startsWith(prefix)) {
+                    addToResult(result, associations[i], documentOffset);
                 }
             }
             currentPcType = (IPolicyCmptType)currentPcType.findSupertype(currentPcType.getIpsProject());
         }
     }
     
-    private void addToResult(List result, IPolicyCmptTypeAssociation relation, int documentOffset) {
-        String name = relation.getName();
-        String displayText = name + " - " + relation.getParent().getName(); //$NON-NLS-1$
+    private void addToResult(List result, IPolicyCmptTypeAssociation association, int documentOffset) {
+        String name = association.getName();
+        String displayText = name + " - " + association.getParent().getName(); //$NON-NLS-1$
         CompletionProposal proposal = new CompletionProposal(
                 name, 0, documentOffset, name.length(),  
-                relation.getImage(), displayText, null, relation.getDescription());
+                association.getImage(), displayText, null, association.getDescription());
         result.add(proposal);
     }
 }

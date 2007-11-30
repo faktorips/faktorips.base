@@ -46,7 +46,7 @@ import org.faktorips.devtools.core.model.productcmpt.IProductCmpt;
 import org.faktorips.devtools.core.model.testcase.ITestAttributeValue;
 import org.faktorips.devtools.core.model.testcase.ITestCase;
 import org.faktorips.devtools.core.model.testcase.ITestPolicyCmpt;
-import org.faktorips.devtools.core.model.testcase.ITestPolicyCmptRelation;
+import org.faktorips.devtools.core.model.testcase.ITestPolicyCmptLink;
 import org.faktorips.devtools.core.model.testcase.ITestRule;
 import org.faktorips.devtools.core.model.testcase.ITestValue;
 import org.faktorips.devtools.core.model.testcase.TestRuleViolationType;
@@ -310,29 +310,29 @@ public class TestCaseTransformer implements IWorkspaceRunnable {
                     // this is a child policy component
                     if (! isInput){
                         // merge expected results into input elements
-                        ITestPolicyCmptRelation[] relations = testPolicyCmpt.getTestPolicyCmptRelations(child.getNodeName());
-                        if (relations.length>0){
+                        ITestPolicyCmptLink[] links = testPolicyCmpt.getTestPolicyCmptLinks(child.getNodeName());
+                        if (links.length>0){
                             String productCmpt = child.getAttribute("productCmpt"); //$NON-NLS-1$
-                            ITestPolicyCmptRelation currRelation = relations[0];
+                            ITestPolicyCmptLink currlink = links[0];
                             
-                            for (int j = 0; j < relations.length; j++) {
+                            for (int j = 0; j < links.length; j++) {
                                 // the name is equal compare the product cmpt
-                                IProductCmpt pc = relations[j].findTarget().findProductCmpt(ipsProject);
+                                IProductCmpt pc = links[j].findTarget().findProductCmpt(ipsProject);
                                 if (pc != null && StringUtils.isNotEmpty(productCmpt)){
                                     if (productCmpt.equals(pc.getRuntimeId())){
-                                        currRelation = relations[j];
+                                        currlink = links[j];
                                         break;
                                     }
                                 }
                             }
                             
-                            parseTestPolicyCmptChilds(child, currRelation.findTarget(), isInput);
+                            parseTestPolicyCmptChilds(child, currlink.findTarget(), isInput);
                             continue;
                         }
                     }
-                    ITestPolicyCmptRelation relation = testPolicyCmpt.newTestPolicyCmptRelation();
-                    relation.setTestPolicyCmptTypeParameter(child.getNodeName());
-                    parseTestPolicyCmpt(child, relation.newTargetTestPolicyCmptChild(), isInput);
+                    ITestPolicyCmptLink link = testPolicyCmpt.newTestPolicyCmptLink();
+                    link.setTestPolicyCmptTypeParameter(child.getNodeName());
+                    parseTestPolicyCmpt(child, link.newTargetTestPolicyCmptChild(), isInput);
                 
                 }
             }

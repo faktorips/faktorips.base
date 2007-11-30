@@ -128,21 +128,21 @@ public class NewChildParameterWizard extends Wizard implements IBlockedValidatio
     
     /**
      * Creates and returns a new child test parameter.<br>
-     * The given relation specifies the new child name.
+     * The given association specifies the new child name.
      */
-    public ITestParameter newTestParameter(String relation) {
+    public ITestParameter newTestParameter(String association) {
         if (memento != null)
             testCaseType.setState(memento);
         memento = testCaseType.newMemento();
 
         newTestParameter = parentTestPolicyCmptTypeParameter.newTestPolicyCmptTypeParamChild();
 
-        newTestParameter.setRelation(relation);
+        newTestParameter.setAssociation(association);
         
         try {
-            IPolicyCmptTypeAssociation modelRelation = newTestParameter.findRelation(testCaseType.getIpsProject());
-            if (modelRelation != null){
-                IPolicyCmptType pcType = modelRelation.findTargetPolicyCmptType(parentTestPolicyCmptTypeParameter.getIpsProject());
+            IPolicyCmptTypeAssociation modelAssociation = newTestParameter.findAssociation(testCaseType.getIpsProject());
+            if (modelAssociation != null){
+                IPolicyCmptType pcType = modelAssociation.findTargetPolicyCmptType(parentTestPolicyCmptTypeParameter.getIpsProject());
                 if (pcType != null){
                     newTestParameter.setPolicyCmptType(pcType.getQualifiedName());
                 }
@@ -152,7 +152,7 @@ public class NewChildParameterWizard extends Wizard implements IBlockedValidatio
         }
         
   
-        newTestParameter.setName(relation);
+        newTestParameter.setName(association);
         // set the same role like the parent
         ITestPolicyCmptTypeParameter parent = (ITestPolicyCmptTypeParameter)newTestParameter.getParent();
         if (parent != null)

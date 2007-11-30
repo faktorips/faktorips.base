@@ -5,19 +5,19 @@
 <testcases>
 
 	<PolicyCmptTypeParameter name="policyCmptType1" testParameterType="input"
-		policyCmptType="base.Test1" relation="relation1" requiresProductCmpt="true"
+		policyCmptType="base.Test1" association="association1" requiresProductCmpt="true"
 		 minInstances="2"
 		 maxInstances="3">
 			<PolicyCmptTypeParameter name="policyCmptType2"
 				policyCmptType="base.Test2" requiresProductCmpt="true"
 				 minInstances="4"
 				 maxInstances="5"
-				 relation="relation2" testParameterType="expectedResult"/>
+				 association="association2" testParameterType="expectedResult"/>
 			<PolicyCmptTypeParameter name="policyCmptType3"
 				policyCmptType="base.Test3" requiresProductCmpt="true"
 				 minInstances="6"
 				 maxInstances="7"
-				 relation="relation3" testParameterType="combined"/>				 
+				 association="association3" testParameterType="combined"/>				 
 			<TestAttribute modelAttribute="attribute1" minInstances="2" maxInstances="3"/>
 			<TestAttribute modelAttribute="attribute2" minInstances="2" maxInstances="3"/>
 			<TestAttribute modelAttribute="attribute3" />
@@ -31,7 +31,7 @@
 				policyCmptType="base.Test4.1" requiresProductCmpt="true"
 				 minInstances="1"
 				 maxInstances="1"
-				 relation="relation4.1" testParameterType="input"/>
+				 association="association4.1" testParameterType="input"/>
 	</PolicyCmptTypeParameter>
 				 
 	<PolicyCmptTypeParameter name="policyCmptType5" testParameterType="combined"
@@ -42,7 +42,7 @@
 				policyCmptType="base.Test5.1" requiresProductCmpt="true"
 				 minInstances="2"
 				 maxInstances="2"
-				 relation="relation5.1" testParameterType="combined"/>
+				 association="association5.1" testParameterType="combined"/>
 	</PolicyCmptTypeParameter>
 			
 	<PolicyCmptTypeParameter name="policyCmptType6" testParameterType="xyz"

@@ -55,7 +55,7 @@ public class NewRootParamFirstWizardPage extends WizardPage implements ValueChan
          * {@inheritDoc}
          */
         public void widgetSelected(SelectionEvent e) {
-            // if no reverse relation is selected then disable next wizard page
+            // if no reverse association is selected then disable next wizard page
             // other wise enable next wizard page
             if (prevSelection != e.getSource()){
                 String title=""; //$NON-NLS-1$

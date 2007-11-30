@@ -27,14 +27,14 @@ import org.faktorips.devtools.core.ui.UIToolkit;
 import org.faktorips.devtools.core.ui.controls.PcTypeRefControl;
 
 /**
- * Control to select a specific target of relation.
+ * Control to select a specific target of association.
  * 
  * @author Joerg Ortmann
  */
-public class RelationTargetRefControl extends PcTypeRefControl {
+public class AssociationTargetRefControl extends PcTypeRefControl {
     private IPolicyCmptType policyCmptTypeTarget;
     
-    public RelationTargetRefControl(IIpsProject project, Composite parent, UIToolkit toolkit,
+    public AssociationTargetRefControl(IIpsProject project, Composite parent, UIToolkit toolkit,
             IPolicyCmptType policyCmptTypeTarget) {
         super(project, parent, toolkit);
         
@@ -53,9 +53,9 @@ public class RelationTargetRefControl extends PcTypeRefControl {
             return new IIpsObject[0];
         
         // find all policy component of the given type (incl. subclasses) (the result could be candidates for the
-        // target policy cmpt type of the relation)
+        // target policy cmpt type of the association)
         // when defining the test case subclasses of the current policy cmpt target could be assigned 
-        // as target for the relations target
+        // as target for the associations target
         // Remark: this is a operation in the ui, therefore it is acceptable if the operation takes a long
         // time, because the user has triggered this operation to chose a policy cmpt from this selection
         // of policy cmpt types

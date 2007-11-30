@@ -92,7 +92,7 @@ public class TestCaseTypeRule implements Validatable {
     }
 
     /**
-     * Validate the test policy cmpt relation parameters. And validate the min and max instances of
+     * Validate the test policy cmpt association parameters. And validate the min and max instances of
      * the test policy cmpt type param by validating the parent test policy cmpt
      */
     private void validate(MessageList list, IIpsProject ipsProject) throws CoreException {

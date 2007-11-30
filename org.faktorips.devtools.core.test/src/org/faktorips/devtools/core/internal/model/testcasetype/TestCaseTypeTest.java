@@ -247,7 +247,7 @@ public class TestCaseTypeTest extends AbstractIpsPluginTest {
         param1.setName("PolicyCmpt1");
         ITestPolicyCmptTypeParameter childParam1 = param1.newTestPolicyCmptTypeParamChild();
         childParam1.setPolicyCmptType(policyCmptType2.getQualifiedName());
-        childParam1.setRelation("Relation1");
+        childParam1.setAssociation("Association1");
         childParam1.setName("ChildPolicyCmpt2");
         testRuleParameters = type.getTestRuleCandidates(ipsProject);
         assertEquals(3, testRuleParameters.length);

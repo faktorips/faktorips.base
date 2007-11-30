@@ -30,7 +30,7 @@ import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAssociation;
 import org.faktorips.devtools.core.model.testcase.ITestCase;
 import org.faktorips.devtools.core.model.testcase.ITestPolicyCmpt;
-import org.faktorips.devtools.core.model.testcase.ITestPolicyCmptRelation;
+import org.faktorips.devtools.core.model.testcase.ITestPolicyCmptLink;
 import org.faktorips.devtools.core.model.testcasetype.ITestPolicyCmptTypeParameter;
 import org.faktorips.util.message.Message;
 import org.faktorips.util.message.MessageList;
@@ -38,16 +38,16 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
 /**
- * Test policy component relation. Defines a relation for a policy component
+ * Test policy component link. Defines a link for a policy component
  * class within a test case defination.
  * 
  * @author Joerg Ortmann
  */
-public class TestPolicyCmptRelation extends IpsObjectPart implements
-		ITestPolicyCmptRelation {
+public class TestPolicyCmptLink extends IpsObjectPart implements
+		ITestPolicyCmptLink {
 
 	/** Tags */
-	static final String TAG_NAME = "Relation"; //$NON-NLS-1$
+	static final String TAG_NAME = "Link"; //$NON-NLS-1$
 
 	private String testPolicyCmptTypeParameter = ""; //$NON-NLS-1$
 
@@ -55,11 +55,11 @@ public class TestPolicyCmptRelation extends IpsObjectPart implements
 
 	private ITestPolicyCmpt targetChild;
 
-	public TestPolicyCmptRelation(IIpsObject parent, int id) {
+	public TestPolicyCmptLink(IIpsObject parent, int id) {
 		super(parent, id);
 	}
 
-	public TestPolicyCmptRelation(IIpsObjectPart parent, int id) {
+	public TestPolicyCmptLink(IIpsObjectPart parent, int id) {
 		super(parent, id);
 	}
 
@@ -166,15 +166,15 @@ public class TestPolicyCmptRelation extends IpsObjectPart implements
             try {
                 ITestPolicyCmptTypeParameter param = findTestPolicyCmptTypeParameter(getIpsProject());
                 if (param != null){
-                    IPolicyCmptTypeAssociation relation = param.findRelation(getIpsProject());
-                    if (relation != null){
-                        return relation.getImage();
+                    IPolicyCmptTypeAssociation association = param.findAssociation(getIpsProject());
+                    if (association != null){
+                        return association.getImage();
                     }
                 }
             } catch (CoreException e) {
                 // ignore exception, return default image
             }
-            return IpsPlugin.getDefault().getImage("Relation.gif"); //$NON-NLS-1$
+            return IpsPlugin.getDefault().getImage("Link.gif"); //$NON-NLS-1$
         }
 	}
 
@@ -195,7 +195,7 @@ public class TestPolicyCmptRelation extends IpsObjectPart implements
 
 	/**
 	 * Creates a new test policy component as target for this
-	 * relation without updating the src file.
+	 * link without updating the src file.
 	 */
 	private ITestPolicyCmpt newTargetTestPolicyCmptChildInternal(int id) {
 		TestPolicyCmpt testPc = new TestPolicyCmpt(this, id);
@@ -255,7 +255,7 @@ public class TestPolicyCmptRelation extends IpsObjectPart implements
     protected void removePart(IIpsObjectPart part) {
         if (targetChild!=null && part==targetChild) {
             if (!targetChild.isRoot()) {
-                // delete also this relation that refers to test policy component
+                // delete also this link that refers to test policy component
                 delete();
             }
             targetChild = null;
@@ -288,14 +288,14 @@ public class TestPolicyCmptRelation extends IpsObjectPart implements
 	 */
 	public void validateGroup(MessageList messageList, IIpsProject ipsProject) throws CoreException {
 		
-        // check all messages only once, thus if the same test relation is used more than one
+        // check all messages only once, thus if the same test link is used more than one
         //  only one message are added to the list of validation errors
         
 		// validate if the test policy component type parameter exists
         ITestPolicyCmptTypeParameter testCaseTypeParam = findTestPolicyCmptTypeParameter(ipsProject);
         if (messageList.getMessageByCode(MSGCODE_TEST_CASE_TYPE_PARAM_NOT_FOUND) == null){
     		if (testCaseTypeParam == null){
-    			String text = NLS.bind(Messages.TestPolicyCmptRelation_ValidationError_TestCaseTypeParamNotFound, getName());
+    			String text = NLS.bind(Messages.TestPolicyCmptLink_ValidationError_TestCaseTypeParamNotFound, getName());
     			Message msg = new Message(MSGCODE_TEST_CASE_TYPE_PARAM_NOT_FOUND, text, Message.ERROR, this, PROPERTY_POLICYCMPTTYPE);
     			messageList.add(msg);	
     		}
@@ -305,12 +305,12 @@ public class TestPolicyCmptRelation extends IpsObjectPart implements
 			return;
 		}
 		
-		// validate if the model relation exists
-        if (messageList.getMessageByCode(MSGCODE_MODEL_RELATION_NOT_FOUND) == null){
-            IPolicyCmptTypeAssociation modelRelation = testCaseTypeParam.findRelation(ipsProject);
-            if (modelRelation == null){
-    			String text = NLS.bind(Messages.TestPolicyCmptRelation_ValidationError_ModelRelationNotFound, testCaseTypeParam.getRelation());
-    			Message msg = new Message(MSGCODE_MODEL_RELATION_NOT_FOUND, text, Message.ERROR, this, ITestPolicyCmptTypeParameter.PROPERTY_POLICYCMPTTYPE);
+		// validate if the model association exists
+        if (messageList.getMessageByCode(MSGCODE_MODEL_LINK_NOT_FOUND) == null){
+            IPolicyCmptTypeAssociation modelLink = testCaseTypeParam.findAssociation(ipsProject);
+            if (modelLink == null){
+    			String text = NLS.bind(Messages.TestPolicyCmptLink_ValidationError_ModelAssociationNotFound, testCaseTypeParam.getAssociation());
+    			Message msg = new Message(MSGCODE_MODEL_LINK_NOT_FOUND, text, Message.ERROR, this, ITestPolicyCmptTypeParameter.PROPERTY_POLICYCMPTTYPE);
     			messageList.add(msg);		
     		}
         }
@@ -330,7 +330,7 @@ public class TestPolicyCmptRelation extends IpsObjectPart implements
         
 		// check if the corresponding test parameter exists
 		if (param == null){
-			String text = NLS.bind(Messages.TestPolicyCmptRelation_ValidationError_TestCaseTypeNotFound, getTestPolicyCmptTypeParameter());
+			String text = NLS.bind(Messages.TestPolicyCmptLink_ValidationError_TestCaseTypeNotFound, getTestPolicyCmptTypeParameter());
 			Message msg = new Message(MSGCODE_TEST_CASE_TYPE_PARAM_NOT_FOUND, text, Message.ERROR, this, PROPERTY_POLICYCMPTTYPE);
 			messageList.add(msg);	
         }
@@ -338,7 +338,7 @@ public class TestPolicyCmptRelation extends IpsObjectPart implements
 		// for assoziations check if the target is in the test case
 		if (isAccoziation()){
 			if (getTestCase().findTestPolicyCmpt(getTarget()) == null){
-				String text = NLS.bind(Messages.TestPolicyCmptRelation_ValidationError_AssoziationNotFound, getTarget());
+				String text = NLS.bind(Messages.TestPolicyCmptLink_ValidationError_AssoziationNotFound, getTarget());
 				Message msg = new Message(MSGCODE_ASSOZIATION_TARGET_NOT_IN_TEST_CASE, text, Message.ERROR, this, PROPERTY_POLICYCMPTTYPE);
 				messageList.add(msg);	
 			}

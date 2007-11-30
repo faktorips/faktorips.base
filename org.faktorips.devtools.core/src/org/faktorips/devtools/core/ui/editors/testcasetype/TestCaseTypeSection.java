@@ -1062,28 +1062,28 @@ public class TestCaseTypeSection extends IpsSection {
         section.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
         
         // create error indicator in the description bar
-        //   show errors for property policy cmpt type and property relation,
+        //   show errors for property policy cmpt type and property association,
         //   because there are no edit fields which shows these errors
         String errorMessageText = ""; //$NON-NLS-1$
         MessageList msgListPolicyCmptType = msgList.getMessagesFor(testParam,
                 ITestPolicyCmptTypeParameter.PROPERTY_POLICYCMPTTYPE);
-        MessageList msgListPolicyCmptRelation = msgList.getMessagesFor(testParam,
-                ITestPolicyCmptTypeParameter.PROPERTY_RELATION);
+        MessageList msgListPolicyCmptAssociation = msgList.getMessagesFor(testParam,
+                ITestPolicyCmptTypeParameter.PROPERTY_ASSOCIATION);
         if (!msgListPolicyCmptType.isEmpty()) {
             String msgText = msgListPolicyCmptType.getText();
             errorMessageText += errorMessageText.length()>0?"<br/>":""; //$NON-NLS-1$ //$NON-NLS-2$
             errorMessageText += "<p><img href=\"imagepccmpttype\"/> <span color=\"red\">" + msgText + "</span></p>"; //$NON-NLS-1$ //$NON-NLS-2$
         }
-        if (!msgListPolicyCmptRelation.isEmpty()) {
-            String msgText = msgListPolicyCmptRelation.getText();
+        if (!msgListPolicyCmptAssociation.isEmpty()) {
+            String msgText = msgListPolicyCmptAssociation.getText();
             errorMessageText += errorMessageText.length()>0?"<br/>":""; //$NON-NLS-1$ //$NON-NLS-2$
-            errorMessageText += "<p><img href=\"imagerelation\"/> <span color=\"red\">" + msgText + "</span></p>"; //$NON-NLS-1$ //$NON-NLS-2$
+            errorMessageText += "<p><img href=\"imageassociation\"/> <span color=\"red\">" + msgText + "</span></p>"; //$NON-NLS-1$ //$NON-NLS-2$
         }
         if (errorMessageText.length()>0){
             FormToolkit toolkit = new FormToolkit(form.getParent().getDisplay());
             FormText formText = toolkit.createFormText(section, false);
             formText.setImage("imagepccmpttype", getImageForMsgList(IpsObjectType.POLICY_CMPT_TYPE.getEnabledImage(), msgList)); //$NON-NLS-1$
-            formText.setImage("imagerelation", getImageForMsgList(IpsPlugin.getDefault().getImage("Relation.gif"), msgList)); //$NON-NLS-1$ //$NON-NLS-2$
+            formText.setImage("imageassociation", getImageForMsgList(IpsPlugin.getDefault().getImage("Association.gif"), msgList)); //$NON-NLS-1$ //$NON-NLS-2$
             formText.setColor("red", getDisplay().getSystemColor(SWT.COLOR_DARK_RED)); //$NON-NLS-1$
             formText.setText("<form>" + errorMessageText + "</form>", true, false); //$NON-NLS-1$ //$NON-NLS-2$
             section.setDescriptionControl(formText);
@@ -1152,7 +1152,7 @@ public class TestCaseTypeSection extends IpsSection {
                 text.setText(NLS.bind(Messages.TestCaseTypeSection_FormText_InfoAssociation_1
                         + Messages.TestCaseTypeSection_FormText_InfoAssociation_2
                         + Messages.TestCaseTypeSection_FormText_InfoAssociation_3,
-                        testPolicyCmptTypeParam.getRelation()), true, false);
+                        testPolicyCmptTypeParam.getAssociation()), true, false);
             }
         } else if (testParam instanceof ITestValueParameter){
             createTestValueParamDetails(editFieldsComposite, (ITestValueParameter)testParam, uiController);
@@ -1372,9 +1372,9 @@ public class TestCaseTypeSection extends IpsSection {
 
     private boolean isAssociation(ITestPolicyCmptTypeParameter testParam) {
         try {
-            IPolicyCmptTypeAssociation relation = ((ITestPolicyCmptTypeParameter)testParam).findRelation(testParam.getIpsProject());
-            if (relation != null){
-                if (relation.isAssoziation()){
+            IPolicyCmptTypeAssociation association = ((ITestPolicyCmptTypeParameter)testParam).findAssociation(testParam.getIpsProject());
+            if (association != null){
+                if (association.isAssoziation()){
                     return true;
                 }
             }

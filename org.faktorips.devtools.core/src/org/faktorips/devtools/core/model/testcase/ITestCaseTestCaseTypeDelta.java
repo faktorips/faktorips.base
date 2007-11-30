@@ -60,10 +60,10 @@ public interface ITestCaseTestCaseTypeDelta {
     public ITestPolicyCmpt[] getTestPolicyCmptsWithMissingTypeParam();
     
     /**
-     * Test Case Side: Returns the test policy components relation with missing test policy cmpt
+     * Test Case Side: Returns the test policy components link with missing test policy cmpt
      * type parameter.
      */
-    public ITestPolicyCmptRelation[] getTestPolicyCmptRelationsWithMissingTypeParam();
+    public ITestPolicyCmptLink[] getTestPolicyCmptLinkWithMissingTypeParam();
 
     /**
      * Test Case Side: Returns the test attribute value with missing test attribute.
