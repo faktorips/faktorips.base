@@ -37,8 +37,8 @@ import org.faktorips.devtools.core.ui.editors.type.TypeEditorStructurePage;
  */
 public class StructurePage extends TypeEditorStructurePage {
     
-    public StructurePage(PctEditor editor) {
-        super(editor, Messages.StructurePage_title);
+    public StructurePage(PctEditor editor, boolean twoSectionsWhenTrueOtherwiseFour) {
+        super(editor, twoSectionsWhenTrueOtherwiseFour, Messages.StructurePage_title);
     }
     
 	protected void createPageContent(Composite formBody, UIToolkit toolkit) {

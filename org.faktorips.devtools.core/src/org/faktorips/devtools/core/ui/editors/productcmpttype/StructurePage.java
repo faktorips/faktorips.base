@@ -34,8 +34,8 @@ public class StructurePage extends TypeEditorStructurePage {
      * @param id
      * @param tabPageName
      */
-    public StructurePage(ProductCmptTypeEditor editor) {
-        super(editor, Messages.StructurePage_structurePageTitle);
+    public StructurePage(ProductCmptTypeEditor editor, boolean twoSectionsWhenTrueOtherwiseFour) {
+        super(editor, twoSectionsWhenTrueOtherwiseFour, Messages.StructurePage_structurePageTitle);
     }
     
     private IProductCmptType getProductCmptType() {

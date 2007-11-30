@@ -52,14 +52,14 @@ public class PctEditor extends TypeEditor {
      * {@inheritDoc}
      */
     protected void addAllInOneSinglePage() throws PartInitException {
-        addPage(new StructurePage(this));
+        addPage(new StructurePage(this, false));
     }
 
     /**
      * {@inheritDoc}
      */
     protected void addSplittedInMorePages() throws PartInitException {
-        addPage(new StructurePage(this));
+        addPage(new StructurePage(this, true));
         addPage(new BehaviourPage(this));
     }
 }

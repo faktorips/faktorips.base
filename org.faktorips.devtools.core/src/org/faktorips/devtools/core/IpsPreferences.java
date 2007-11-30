@@ -141,7 +141,7 @@ public class IpsPreferences {
         prefStore.setDefault(IPSTESTRUNNER_MAX_HEAP_SIZE, ""); //$NON-NLS-1$
         prefStore.setDefault(ENUM_TYPE_DISPLAY, EnumTypeDisplay.NAME_AND_ID.getId());
         prefStore.setDefault(ADVANCED_TEAM_FUNCTIONS_IN_PRODUCT_DEF_EXPLORER, false);
-        prefStore.setDefault(SECTIONS_IN_TYPE_EDITORS, 2);
+        prefStore.setDefault(SECTIONS_IN_TYPE_EDITORS, TWO_SECTIONS_IN_TYPE_EDITOR_PAGE);
     }
     
     public void addChangeListener(IPropertyChangeListener listener) {

@@ -18,8 +18,6 @@
 package org.faktorips.devtools.core.ui.editors.type;
 
 import org.eclipse.swt.widgets.Composite;
-import org.faktorips.devtools.core.IpsPlugin;
-import org.faktorips.devtools.core.IpsPreferences;
 import org.faktorips.devtools.core.ui.UIToolkit;
 import org.faktorips.devtools.core.ui.editors.IpsObjectEditorPage;
 
@@ -30,14 +28,16 @@ import org.faktorips.devtools.core.ui.editors.IpsObjectEditorPage;
 public abstract class TypeEditorStructurePage extends IpsObjectEditorPage {
 
     final static String PAGEID = "Structure"; //$NON-NLS-1$
+    private boolean twoSectionsWhenTrueOtherwiseFour;
 
     /**
      * @param editor
      * @param id
      * @param tabPageName
      */
-    public TypeEditorStructurePage(TypeEditor editor, String title) {
+    public TypeEditorStructurePage(TypeEditor editor, boolean twoSectionsWhenTrueOtherwiseFour, String title) {
         super(editor, PAGEID, title);
+        this.twoSectionsWhenTrueOtherwiseFour = twoSectionsWhenTrueOtherwiseFour;
     }
     
     /**
@@ -46,12 +46,11 @@ public abstract class TypeEditorStructurePage extends IpsObjectEditorPage {
     protected void createPageContent(Composite formBody, UIToolkit toolkit) {
         formBody.setLayout(createPageLayout(1, false));
         createGeneralPageInfoSection(formBody, toolkit);
-        String sections = IpsPlugin.getDefault().getIpsPreferences().getSectionsInTypeEditors();
-        if(IpsPreferences.FOUR_SECTIONS_IN_TYPE_EDITOR_PAGE.equals(sections)){
-            createContentForSingleStructurePage(formBody, toolkit);
-        }
-        if(IpsPreferences.TWO_SECTIONS_IN_TYPE_EDITOR_PAGE.equals(sections)){
+        if(twoSectionsWhenTrueOtherwiseFour){
             createContentForSplittedStructurePage(formBody, toolkit);
+        }
+        if(!twoSectionsWhenTrueOtherwiseFour){
+            createContentForSingleStructurePage(formBody, toolkit);
         }
     }
 
