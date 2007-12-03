@@ -24,7 +24,7 @@ import org.faktorips.devtools.core.ui.wizards.OpenNewWizardAction;
 /**
  *
  */
-public class OpenNewPcTypeWizardAction extends OpenNewWizardAction {
+public class OpenNewProductCmptTypeWizardAction extends OpenNewWizardAction {
 
     /** 
      * Overridden method.

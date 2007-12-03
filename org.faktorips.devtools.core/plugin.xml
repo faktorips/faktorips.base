@@ -55,12 +55,12 @@
                id="org.faktorips.devtools.actions.OpenNewTableStructureWizardAction">
          </action>
          <action
-               label="%org.faktorips.devtools.core.ui.wizards.productcmpttype.OpenNewPcTypeWizardAction.label"
+               label="%org.faktorips.devtools.core.ui.wizards.productcmpttype.OpenNewProductCmptTypeWizardAction.label"
                icon="icons/NewProductCmptTypeWizard.gif"
-               tooltip="%org.faktorips.devtools.core.ui.wizards.productcmpttype.OpenNewPcTypeWizardAction.tooltip"
-               class="org.faktorips.devtools.core.ui.wizards.productcmpttype.OpenNewPcTypeWizardAction"
+               tooltip="%org.faktorips.devtools.core.ui.wizards.productcmpttype.OpenNewProductCmptTypeWizardAction.tooltip"
+               class="org.faktorips.devtools.core.ui.wizards.productcmpttype.OpenNewProductCmptTypeWizardAction"
                toolbarPath="org.faktorips.devtools"
-               id="org.faktorips.devtools.core.ui.wizards.productcmpttype.OpenNewPcTypeWizardAction">
+               id="org.faktorips.devtools.core.ui.wizards.productcmpttype.OpenNewProductCmptTypeWizardAction">
          </action>
          <action
                label="%org.faktorips.devtools.actions.OpenNewPcTypeWizardAction.label"
