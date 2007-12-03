@@ -192,7 +192,7 @@ public class TestCaseCopyWizard extends ResizableWizard {
                 IIpsSrcFile[] allowedProductCmpt = parameter.getAllowedProductCmpt(ipsProject, parentProductCmpt);
                 IProductCmpt newProductCmptChild = null;
                 for (int j = 0; j < allowedProductCmpt.length; j++) {
-                    IProductCmpt productCmptCandidate = (IProductCmpt)allowedProductCmpt[i].getIpsObject();
+                    IProductCmpt productCmptCandidate = (IProductCmpt)allowedProductCmpt[j].getIpsObject();
                     if (productCmptCandidate.getName().equals(newProductCmptName)){
                         newProductCmptChild = productCmptCandidate;
                         break;
