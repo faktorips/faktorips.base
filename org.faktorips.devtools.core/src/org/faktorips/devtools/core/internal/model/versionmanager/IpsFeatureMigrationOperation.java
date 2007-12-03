@@ -32,7 +32,6 @@ import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.PlatformUI;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.IpsStatus;
-import org.faktorips.devtools.core.model.ipsobject.IIpsObject;
 import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProjectProperties;
@@ -135,7 +134,7 @@ public class IpsFeatureMigrationOperation extends AbstractIpsFeatureMigrationOpe
         
         monitor.subTask(Messages.IpsContentMigrationOperation_labelSaveChanges);
         ArrayList result = new ArrayList();
-        projectToMigrate.findAllIpsObjects(result);
+        projectToMigrate.findAllIpsSrcFiles(result);
         IProgressMonitor saveMonitor = new SubProgressMonitor(monitor, 1000);
         saveMonitor.beginTask(Messages.IpsContentMigrationOperation_labelSaveChanges, result.size());
 
@@ -143,7 +142,7 @@ public class IpsFeatureMigrationOperation extends AbstractIpsFeatureMigrationOpe
         // we now start to save all the modifications - which has to be done atomically.
         monitor.setCanceled(false);
         for (int i = 0; i < result.size(); i++) {
-            IIpsSrcFile file = ((IIpsObject)result.get(i)).getIpsSrcFile();
+            IIpsSrcFile file = ((IIpsSrcFile)result.get(i));
             if (file.isDirty()) {
                 file.save(true, monitor);
             }
@@ -156,13 +155,13 @@ public class IpsFeatureMigrationOperation extends AbstractIpsFeatureMigrationOpe
     private void rollback() {
         ArrayList result = new ArrayList();
         try {
-            projectToMigrate.findAllIpsObjects(result);
+            projectToMigrate.findAllIpsSrcFiles(result);
         }
         catch (CoreException e) {
             IpsPlugin.log(new IpsStatus("Error during rollback of migration. Rollback might have failed", e)); //$NON-NLS-1$
         }
         for (int i = 0; i < result.size(); i++) {
-            IIpsSrcFile file = ((IIpsObject)result.get(i)).getIpsSrcFile();
+            IIpsSrcFile file = ((IIpsSrcFile)result.get(i));
             if (file.isDirty()) {
                 file.discardChanges();
                 file.markAsClean();
