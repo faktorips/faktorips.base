@@ -1500,7 +1500,10 @@ public class IpsProject extends IpsElement implements IIpsProject {
         List tocPaths = new ArrayList();
         IIpsPackageFragmentRoot[] roots = ipsProject.getIpsPackageFragmentRoots();
         for (int i = 0; i < roots.length; i++) {
-            tocPaths.add(new Path(builderSet.getRuntimeRepositoryTocResourceName(roots[i])));
+            String fileName = builderSet.getRuntimeRepositoryTocResourceName(roots[i]);
+            if(fileName != null){
+                tocPaths.add(new Path(fileName));
+            }
         }
         return tocPaths;
     }
