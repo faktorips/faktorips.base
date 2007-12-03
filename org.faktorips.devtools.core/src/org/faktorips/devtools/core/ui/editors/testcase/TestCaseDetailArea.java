@@ -104,7 +104,6 @@ public class TestCaseDetailArea {
     // area which contains alls detail controls
     private Composite dynamicArea;
 
-    private List previousDisplayedTestObjects;
     private List testCaseDetailAreaRedrawListener = new ArrayList(1);
     
     /*
@@ -239,36 +238,11 @@ public class TestCaseDetailArea {
         }
     }
     
-    private boolean visibleTestObjectsChanged(List testObjects) {
-        boolean changed = false;
-        if (previousDisplayedTestObjects == null){
-            changed = true;
-        } 
-        if (!changed && testObjects.size() != previousDisplayedTestObjects.size()){
-            changed = true;
-        }
-        if (!changed){
-            for (int i = 0; i < testObjects.size(); i++) {
-                if (previousDisplayedTestObjects.get(i) != testObjects.get(i)){
-                    changed = true;
-                    break;
-                }
-            }
-        }
-        if (changed){
-            previousDisplayedTestObjects = testObjects;
-        }
-        return changed;
-    }
-    
     /**
      * Creates the details for the given test objects.
      */
     public void createTestObjectSections(List testObjects) {
         try {
-            if (!visibleTestObjectsChanged(testObjects)){
-                return;
-            }
             notifyListener(testObjects);
             
             for (Iterator iter = testObjects.iterator(); iter.hasNext();) {
