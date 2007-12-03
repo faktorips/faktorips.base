@@ -548,7 +548,7 @@ public class TestPolicyCmptTypeParameter extends TestParameter implements
             return new IIpsSrcFile[0];
         }
         IPolicyCmptType policyCmptTypeTarget = policyCmptTypeAssociation.findTargetPolicyCmptType(getIpsProject());
-        if (!policyCmptTypeTarget.isConfigurableByProductCmptType()){
+        if (policyCmptTypeTarget == null || !policyCmptTypeTarget.isConfigurableByProductCmptType()){
             return new IIpsSrcFile[0];
         }
         IProductCmptType productCmptTypeTarget = policyCmptTypeTarget.findProductCmptType(getIpsProject());
