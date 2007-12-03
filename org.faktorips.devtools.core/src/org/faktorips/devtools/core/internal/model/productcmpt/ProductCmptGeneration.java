@@ -777,6 +777,12 @@ public class ProductCmptGeneration extends IpsObjectGeneration implements IProdu
             throws CoreException {
         IProductCmptLink[] links = getLinks();
         for (int i = 0; i < links.length; i++) {
+            IAssociation association = links[i].findAssociation(ipsProject);
+            //associations of type association will be excluded from this constraint. If the type of the association 
+            //cannot be determined then the link will not be evaluated
+            if(association == null || association.isAssoziation()){
+                continue;
+            }
             IProductCmpt productCmpt = links[i].findTarget(ipsProject);
             if (productCmpt != null) {
                 if (getValidFrom() != null && productCmpt.findGenerationEffectiveOn(getValidFrom()) == null) {
