@@ -201,8 +201,8 @@ public class TestCaseCopyWizard extends ResizableWizard {
                 if (newProductCmptChild != null){
                     testPolicyCmptChild.setProductCmpt(newProductCmptChild.getQualifiedName());
                     testPolicyCmptChild.setName(testCase.generateUniqueNameForTestPolicyCmpt(testPolicyCmptChild, newProductCmptChild.getName()));
+                    productCmptChild = newProductCmptChild;
                 }
-
                 replaceChildsProductCmpts(testPolicyCmptChild, productCmptChild, newVersionId);
             }
         }
@@ -232,6 +232,7 @@ public class TestCaseCopyWizard extends ResizableWizard {
         try {
             deleteUnselectedTestObjects();
             clearTestValues();
+            targetTestCase.getIpsSrcFile().save(true, null);
             IpsPlugin.getDefault().openEditor(targetTestCase);
         } catch (CoreException e) {
             IpsPlugin.logAndShowErrorDialog(e);
