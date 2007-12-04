@@ -69,39 +69,52 @@ public class TestCaseModelDescriptionPage extends DefaultModelDescriptionPage im
             }
             if (testObject instanceof ITestPolicyCmpt){
                 // description of test policy cmpt are currently not supported
+                // only test attributes
                 addChildTestObjetcs(testCase.getIpsProject(), (ITestPolicyCmpt)testObject, desrList, uniqueTestObjects);
             } else {
-                addUniqueDescriptionItem(parameter, desrList, uniqueTestObjects);
+                addUniqueDescriptionItem(parameter, desrList, uniqueTestObjects, parameter.getName());
             }
-            
         }
         
         super.setDescriptionItems((DescriptionItem[]) desrList.toArray(new DescriptionItem[desrList.size()]));
     }
 
-    private void addUniqueDescriptionItem(IIpsObjectPart ipsObjectPart, ArrayList desrList, Set uniqueTestObjects) {
+    private void addUniqueDescriptionItem(IIpsObjectPart ipsObjectPart,
+            ArrayList desrList,
+            Set uniqueTestObjects,
+            String parameterName) {
         String name = ipsObjectPart.getName();
-        if (uniqueTestObjects.contains(ipsObjectPart)){
+        if (uniqueTestObjects.contains(ipsObjectPart)) {
             return;
         } else {
             uniqueTestObjects.add(ipsObjectPart);
         }
-        desrList.add(new DescriptionItem(name, ipsObjectPart.getDescription()));
+        String desrcItemName = name.equals(parameterName) ? name : parameterName + " : " + name;
+        desrList.add(new DescriptionItem(desrcItemName, ipsObjectPart.getDescription()));
     }
 
-    private void addChildTestObjetcs(IIpsProject ipsProject, ITestPolicyCmpt cmpt, ArrayList desrList, Set uniqueTestObjects) throws CoreException {
+    private void addChildTestObjetcs(IIpsProject ipsProject,
+            ITestPolicyCmpt cmpt,
+            ArrayList desrList,
+            Set uniqueTestObjects) throws CoreException {
+        ITestParameter parameter = cmpt.findTestParameter(testCase.getIpsProject());
+        String parameterName = "";
+        if (parameter != null) {
+            parameterName = parameter.getName();
+        }
+        // add description for attributes
         ITestAttributeValue[] testAttributeValues = cmpt.getTestAttributeValues();
         for (int i = 0; i < testAttributeValues.length; i++) {
             ITestAttributeValue value = testAttributeValues[i];
             ITestAttribute attribute = value.findTestAttribute(ipsProject);
-            if (attribute == null){
+            if (attribute == null) {
                 continue;
             }
-            addUniqueDescriptionItem(attribute, desrList, uniqueTestObjects);
+            addUniqueDescriptionItem(attribute, desrList, uniqueTestObjects, parameterName);
         }
         ITestPolicyCmptLink[] testPolicyCmptLinks = cmpt.getTestPolicyCmptLinks();
         for (int i = 0; i < testPolicyCmptLinks.length; i++) {
-            if (testPolicyCmptLinks[i].isComposition()){
+            if (testPolicyCmptLinks[i].isComposition()) {
                 ITestPolicyCmpt target = testPolicyCmptLinks[i].findTarget();
                 if (target == null) {
                     continue;
