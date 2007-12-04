@@ -24,7 +24,7 @@ import org.eclipse.osgi.util.NLS;
  * @author Thorsten Guenther
  */
 public class Messages extends NLS {
-	private static final String BUNDLE_NAME = "org.faktorips.devtools.core.internal.model.messages"; //$NON-NLS-1$
+	private static final String BUNDLE_NAME = "org.faktorips.devtools.core.internal.model.ipsobject.messages"; //$NON-NLS-1$
 
 	private Messages() {
 	}
