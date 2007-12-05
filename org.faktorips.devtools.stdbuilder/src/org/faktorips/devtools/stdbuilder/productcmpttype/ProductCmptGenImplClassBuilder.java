@@ -507,7 +507,7 @@ public class ProductCmptGenImplClassBuilder extends AbstractProductCmptTypeBuild
     }
 
     private String getMethodNameGetTableUsage(ITableStructureUsage tsu) {
-        return "get" + StringUtils.capitalise(tsu.getRoleName());
+        return "get" + StringUtils.capitalize(tsu.getRoleName());
     }
     
     protected void generateCodeForPolicyCmptTypeAttribute(IPolicyCmptTypeAttribute a, DatatypeHelper datatypeHelper, JavaCodeFragmentBuilder memberVarsBuilder, JavaCodeFragmentBuilder methodsBuilder) throws CoreException {
@@ -587,7 +587,7 @@ public class ProductCmptGenImplClassBuilder extends AbstractProductCmptTypeBuild
      * </pre>
      */
     private void generateFieldValue(IProductCmptTypeAttribute a, DatatypeHelper datatypeHelper, JavaCodeFragmentBuilder builder) throws CoreException {
-        appendLocalizedJavaDoc("FIELD_VALUE", StringUtils.capitalise(a.getName()), a, builder);
+        appendLocalizedJavaDoc("FIELD_VALUE", StringUtils.capitalize(a.getName()), a, builder);
         JavaCodeFragment defaultValueExpression = datatypeHelper.newInstance(a.getDefaultValue());
         builder.varDeclaration(Modifier.PRIVATE, datatypeHelper.getJavaClassName(),
                 getFieldNameValue(a), defaultValueExpression);
@@ -744,7 +744,7 @@ public class ProductCmptGenImplClassBuilder extends AbstractProductCmptTypeBuild
      * </pre>
      */
     private void generateFieldToManyRelation(IProductCmptTypeAssociation relation, JavaCodeFragmentBuilder memberVarsBuilder) throws CoreException {
-        String role = StringUtils.capitalise(relation.getTargetRolePlural());
+        String role = StringUtils.capitalize(relation.getTargetRolePlural());
         appendLocalizedJavaDoc("FIELD_TOMANY_RELATION", role, relation, memberVarsBuilder);
         String type = String.class.getName() + "[]";
         memberVarsBuilder.varDeclaration(Modifier.PRIVATE, type, getFieldNameToManyRelation(relation), new JavaCodeFragment("new String[0]"));
@@ -813,7 +813,7 @@ public class ProductCmptGenImplClassBuilder extends AbstractProductCmptTypeBuild
         
         IProductCmptType target = association.findTargetProductCmptType(getIpsProject());
         appendLocalizedJavaDoc("METHOD_ADD_RELATED_CMPT", association.getTargetRoleSingular(), association, methodsBuilder);
-        String methodName = "add" + StringUtils.capitalise(association.getTargetRoleSingular());
+        String methodName = "add" + StringUtils.capitalize(association.getTargetRoleSingular());
         String[] argNames = new String[]{"target"};
         String[] argTypes = new String[]{productCmptTypeInterfaceBuilder.getQualifiedClassName(target)};
         methodsBuilder.signature(getJavaNamingConvention().getModifierForPublicInterfaceMethod(), 
@@ -866,7 +866,7 @@ public class ProductCmptGenImplClassBuilder extends AbstractProductCmptTypeBuild
      * </pre>
      */
     private void generateFieldTo1Relation(IProductCmptTypeAssociation relation, JavaCodeFragmentBuilder memberVarsBuilder) throws CoreException {
-        String role = StringUtils.capitalise(relation.getTargetRoleSingular());
+        String role = StringUtils.capitalize(relation.getTargetRoleSingular());
         appendLocalizedJavaDoc("FIELD_TO1_RELATION", role, relation, memberVarsBuilder);
         memberVarsBuilder.varDeclaration(Modifier.PRIVATE, String.class, getFieldNameTo1Relation(relation), new JavaCodeFragment("null"));
     }
@@ -1119,7 +1119,7 @@ public class ProductCmptGenImplClassBuilder extends AbstractProductCmptTypeBuild
      * e.g. getNumOfCoveragesInternal()
      */
     private String getMethodNameGetNumOfRelatedCmptsInternal(IProductCmptTypeAssociation relation) {
-        return getLocalizedText(relation, "METHOD_GET_NUM_OF_INTERNAL_NAME", StringUtils.capitalise(relation.getTargetRolePlural()));
+        return getLocalizedText(relation, "METHOD_GET_NUM_OF_INTERNAL_NAME", StringUtils.capitalize(relation.getTargetRolePlural()));
     }
     
     private void generateMethodGetCardinalityFor1ToManyRelation(IProductCmptTypeAssociation relation, JavaCodeFragmentBuilder methodsBuilder) throws CoreException{
@@ -1173,7 +1173,7 @@ public class ProductCmptGenImplClassBuilder extends AbstractProductCmptTypeBuild
     }
     
     public String getFieldNameRangeFor(IPolicyCmptTypeAttribute a){
-        return getLocalizedText(a, "FIELD_RANGE_FOR_NAME", StringUtils.capitalise(a.getName()));
+        return getLocalizedText(a, "FIELD_RANGE_FOR_NAME", StringUtils.capitalize(a.getName()));
     }
     
     private void generateFieldRangeFor(IPolicyCmptTypeAttribute a, DatatypeHelper helper, JavaCodeFragmentBuilder memberVarBuilder){
@@ -1194,7 +1194,7 @@ public class ProductCmptGenImplClassBuilder extends AbstractProductCmptTypeBuild
     }
     
     public String getFieldNameAllowedValuesFor(IPolicyCmptTypeAttribute a){
-        return getLocalizedText(a, "FIELD_ALLOWED_VALUES_FOR_NAME", StringUtils.capitalise(a.getName()));
+        return getLocalizedText(a, "FIELD_ALLOWED_VALUES_FOR_NAME", StringUtils.capitalize(a.getName()));
     }
     
     private void generateFieldAllowedValuesFor(IPolicyCmptTypeAttribute a, JavaCodeFragmentBuilder memberVarBuilder){

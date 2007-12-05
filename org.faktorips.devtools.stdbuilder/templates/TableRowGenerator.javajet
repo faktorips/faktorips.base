@@ -28,7 +28,7 @@ public class <%=getJavaSourceFileBuilder().getUnqualifiedClassName(ipsSrcFile)%>
             String qualifiedDatatypeName = tableStructure.getIpsProject().findDatatype(columns[i].getDatatype()).getJavaClassName();
 %>
 
-	private <%=appendClassName(qualifiedDatatypeName)%> <%=StringUtils.uncapitalise(columnName)%>;            
+	private <%=appendClassName(qualifiedDatatypeName)%> <%=StringUtils.uncapitalize(columnName)%>;            
 			<%}%>
 
 	/**
@@ -36,26 +36,26 @@ public class <%=getJavaSourceFileBuilder().getUnqualifiedClassName(ipsSrcFile)%>
 	 */
 	public <%=getJavaSourceFileBuilder().getUnqualifiedClassName(ipsSrcFile)%>(<%
     for (int i = 0; validationStatus && i < columns.length; i++) {
-	    String columnName = StringUtils.uncapitalise(columns[i].getName());
+	    String columnName = StringUtils.uncapitalize(columns[i].getName());
 	    String qualifiedDatatypeName = tableStructure.getIpsProject().findDatatype(columns[i].getDatatype()).getJavaClassName();
 	    if(i > 0){%><%=", "%><%}%><%=appendClassName(qualifiedDatatypeName)%> <%=columnName%><%
 	   }%>){
 	  <%
         for (int i = 0; validationStatus && i < columns.length; i++) {
-					String columnName = StringUtils.uncapitalise(columns[i].getName());%>
+					String columnName = StringUtils.uncapitalize(columns[i].getName());%>
           this.<%=columnName%> = <%=columnName%>;   
       <%}
 	  %>
 	}
  
 <%      for (int i = 0; validationStatus && i < columns.length; i++) {
-            String columnName = StringUtils.uncapitalise(columns[i].getName());
+            String columnName = StringUtils.uncapitalize(columns[i].getName());
             String qualifiedDatatypeName = tableStructure.getIpsProject().findDatatype(columns[i].getDatatype()).getJavaClassName();
 %>
 	/**
 	 * <%=getLocalizedText(ipsSrcFile, GET_FIELD_JAVADOC)%>
 	 */            
-	public <%=appendClassName(qualifiedDatatypeName)%> get<%=StringUtils.capitalise(columnName)%>(){
+	public <%=appendClassName(qualifiedDatatypeName)%> get<%=StringUtils.capitalize(columnName)%>(){
 		return <%=columnName%>;
 	}
 <%        }%>
@@ -69,7 +69,7 @@ public class <%=getJavaSourceFileBuilder().getUnqualifiedClassName(ipsSrcFile)%>
 				if (i != 0) {
 					%> + "|" + <%
 				}
-				%><%=StringUtils.uncapitalise(columns[i].getName())%><%
+				%><%=StringUtils.uncapitalize(columns[i].getName())%><%
 			}%>;
 	}
 }

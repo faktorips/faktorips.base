@@ -144,7 +144,7 @@ public class PolicyCmptImplClassBuilder extends BasePolicyCmptTypeBuilder {
      */
     public String getUnqualifiedClassName(IIpsSrcFile ipsSrcFile) throws CoreException {
         String name = StringUtil.getFilenameWithoutExtension(ipsSrcFile.getName());
-        return getJavaNamingConvention().getImplementationClassName(StringUtils.capitalise(name));
+        return getJavaNamingConvention().getImplementationClassName(StringUtils.capitalize(name));
     }
 
     /**
@@ -555,6 +555,14 @@ public class PolicyCmptImplClassBuilder extends BasePolicyCmptTypeBuilder {
      * {@inheritDoc}
      */
     protected void generateCodeForRelationInCommon(IPolicyCmptTypeAssociation relation, JavaCodeFragmentBuilder fieldsBuilder, JavaCodeFragmentBuilder methodsBuilder) throws Exception {
+        if(relation.isQualified()){
+            if(relation.isDerivedUnion()){
+                generateMethodGetRefObjectsByQualifierForDerivedUnion(relation, methodsBuilder);
+            }
+            else{
+                generateMethodGetRefObjectsByQualifierForNonDerivedUnion(relation, methodsBuilder);
+            }
+        }
     }
 
     /**
@@ -688,7 +696,7 @@ public class PolicyCmptImplClassBuilder extends BasePolicyCmptTypeBuilder {
      * e.g. getNumOfCoveragesInternal()
      */
     private String getMethodNameGetNumOfRefObjectsInternal(IPolicyCmptTypeAssociation relation) {
-        return getLocalizedText(relation, "METHOD_GET_NUM_OF_INTERNAL_NAME", StringUtils.capitalise(relation.getTargetRolePlural()));
+        return getLocalizedText(relation, "METHOD_GET_NUM_OF_INTERNAL_NAME", StringUtils.capitalize(relation.getTargetRolePlural()));
     }
     
     
@@ -900,6 +908,176 @@ public class PolicyCmptImplClassBuilder extends BasePolicyCmptTypeBuilder {
         }
         methodsBuilder.closeBracket();
     }
+    
+    /**
+     * Code sample:
+     * <pre>
+     * [Javadoc]
+     * public ISubTypeB getSubTypeB(ISubTypeBConfig qualifier) {
+     * //1ToMany public ISubTypeB[] getSubTypeB(ISubTypeBConfig qualifier) {
+     *   if(qualifer == null) {
+     *      return null;
+     *   }
+     *   //1ToMany List result = new ArrayList();
+     *   for (Iterator it = subTypeBs.iterator(); it.hasNext();) {
+     *     ISubTypeB subTypeB = (ISubTypeB) it.next();
+     *     if(subTypeB.getSubTypeBConfig().equals(qualifier)){
+     *       return subTypeB;
+     *       //1ToMany result.add(subTypeB); 
+     *     }
+     *   }
+     *   return null;
+     *   //1ToMany return (ISubTypeB[]) result.toArray(new ISubTypeB[result.size()]);
+     * }
+     * </pre>
+     */
+    protected void generateMethodGetRefObjectsByQualifierForNonDerivedUnion(
+            IPolicyCmptTypeAssociation relation, 
+            JavaCodeFragmentBuilder methodsBuilder) throws Exception {
+        methodsBuilder.javaDoc(getJavaDocCommentForOverriddenMethod(), ANNOTATION_GENERATED);
+        interfaceBuilder.generateSignatureGetRefObjectByQualifier(relation, methodsBuilder);
+        IPolicyCmptType target = relation.findTargetPolicyCmptType(getIpsProject());
+        String className = interfaceBuilder.getQualifiedClassName(target);
+        String pcTypeLocalVariable = StringUtils.uncapitalize(getUnqualifiedClassName(target.getIpsSrcFile()));
+        String field = getFieldNameForRelation(relation);
+        methodsBuilder.openBracket();
+        methodsBuilder.append("if(qualifier == null)");
+        methodsBuilder.openBracket();
+        methodsBuilder.append("return null;");
+        methodsBuilder.closeBracket();
+        if(relation.is1ToManyIgnoringQualifier()){
+            methodsBuilder.appendClassName(List.class);
+            methodsBuilder.append(" result = new ");
+            methodsBuilder.appendClassName(ArrayList.class);
+            methodsBuilder.append("();");
+        }
+        methodsBuilder.append("for (");
+        methodsBuilder.appendClassName(Iterator.class);
+        methodsBuilder.append(" it = ");
+        methodsBuilder.append(field);
+        methodsBuilder.append(".iterator(); it.hasNext();)");
+        methodsBuilder.openBracket();
+        methodsBuilder.appendClassName(className);
+        methodsBuilder.append(' ');
+        methodsBuilder.append(pcTypeLocalVariable);
+        methodsBuilder.append(" = (");
+        methodsBuilder.appendClassName(className);
+        methodsBuilder.append(")");
+        methodsBuilder.append(" it.next();");
+        methodsBuilder.appendln();
+        methodsBuilder.append("if(");
+        methodsBuilder.append(pcTypeLocalVariable);
+        methodsBuilder.append('.');
+        methodsBuilder.append(interfaceBuilder.getMethodNameGetProductCmpt(relation.findQualifier(getIpsProject())));
+        methodsBuilder.append("().equals(qualifier))");
+        methodsBuilder.openBracket();
+        if(relation.is1ToManyIgnoringQualifier()){
+            methodsBuilder.append("result.add(");
+            methodsBuilder.append(pcTypeLocalVariable);
+            methodsBuilder.append(");");
+        }else {
+            methodsBuilder.append("return ");
+            methodsBuilder.append(pcTypeLocalVariable);
+            methodsBuilder.append(';');
+        }
+        methodsBuilder.closeBracket();
+        methodsBuilder.closeBracket();
+        if(relation.is1ToManyIgnoringQualifier()){
+            methodsBuilder.append("return (");
+            methodsBuilder.appendClassName(className);
+            methodsBuilder.append("[])");
+            methodsBuilder.append("result.toArray(new ");
+            methodsBuilder.appendClassName(className);
+            methodsBuilder.append("[result.size()]);");
+        } else {
+            methodsBuilder.append("return null;");
+        }
+        methodsBuilder.closeBracket();
+    }
+    
+    /**
+     * Code sample:
+     * <pre>
+     * [Javadoc]
+     * public IB getB(IBConfig qualifier) {
+     * //1ToMany public IB getB(IBConfig qualifier) {
+     *   if(qualifer == null) {
+     *      return null;
+     *   }
+     *   IB[] bs = getBs();
+     *   //1ToMany List result = new ArrayList();
+     *   for (int i = 0; i < bs.length; i++) {
+     *     if (bs[i].getBConfig().equals(qualifier)) {
+     *       return bs[i];
+     *       //1ToMany result.add(bs[i]);
+     *     }
+     *   }
+     *   return null;
+     *   //1ToMany return (IB[]) result.toArray(new IB[result.size()]);
+     * }
+     * </pre>
+     */
+    protected void generateMethodGetRefObjectsByQualifierForDerivedUnion(
+            IPolicyCmptTypeAssociation relation, 
+            JavaCodeFragmentBuilder methodsBuilder) throws Exception {
+        methodsBuilder.javaDoc(getJavaDocCommentForOverriddenMethod(), ANNOTATION_GENERATED);
+        interfaceBuilder.generateSignatureGetRefObjectByQualifier(relation, methodsBuilder);
+        IPolicyCmptType target = relation.findTargetPolicyCmptType(getIpsProject());
+        String className = interfaceBuilder.getQualifiedClassName(target);
+        String allObjectsMethodName = interfaceBuilder.getMethodNameGetAllRefObjects(relation);
+        String localVarName = "elements";
+        methodsBuilder.openBracket();
+        methodsBuilder.append("if(qualifier == null)");
+        methodsBuilder.openBracket();
+        methodsBuilder.append("return null;");
+        methodsBuilder.closeBracket();
+        methodsBuilder.appendClassName(className);
+        methodsBuilder.append("[] ");
+        methodsBuilder.append(localVarName);
+        methodsBuilder.append(" = ");
+        methodsBuilder.append(allObjectsMethodName);
+        methodsBuilder.append("();");
+        if(relation.is1ToManyIgnoringQualifier()){
+            methodsBuilder.appendClassName(List.class);
+            methodsBuilder.append(" result = new ");
+            methodsBuilder.appendClassName(ArrayList.class);
+            methodsBuilder.append("();");
+        }
+        methodsBuilder.append("for (int i = 0; i < ");
+        methodsBuilder.append(localVarName);
+        methodsBuilder.append(".length; i++)");
+        methodsBuilder.openBracket();
+        methodsBuilder.append("if(");
+        methodsBuilder.append(localVarName);
+        methodsBuilder.append("[i].");
+        methodsBuilder.append(interfaceBuilder.getMethodNameGetProductCmpt(relation.findQualifier(getIpsProject())));
+        methodsBuilder.append("().equals(qualifier))");
+        methodsBuilder.openBracket();
+        if(relation.is1ToManyIgnoringQualifier()){
+            methodsBuilder.append("result.add(");
+            methodsBuilder.append(localVarName);
+            methodsBuilder.append("[i]");
+            methodsBuilder.append(");");
+        }else {
+            methodsBuilder.append("return ");
+            methodsBuilder.append(localVarName);
+            methodsBuilder.append("[i];");
+        }
+        methodsBuilder.closeBracket();
+        methodsBuilder.closeBracket();
+        if(relation.is1ToManyIgnoringQualifier()){
+            methodsBuilder.append("return (");
+            methodsBuilder.appendClassName(className);
+            methodsBuilder.append("[])");
+            methodsBuilder.append("result.toArray(new ");
+            methodsBuilder.appendClassName(className);
+            methodsBuilder.append("[result.size()]);");
+        } else {
+            methodsBuilder.append("return null;");
+        }
+        methodsBuilder.closeBracket();
+    }
+
     
     /**
      * Code sample:
@@ -1491,7 +1669,7 @@ public class PolicyCmptImplClassBuilder extends BasePolicyCmptTypeBuilder {
     }
     
     private String getMethodNameCreateMessageForRule(IValidationRule rule) {
-        return "createMessageForRule" + StringUtils.capitalise(rule.getName());
+        return "createMessageForRule" + StringUtils.capitalize(rule.getName());
     }
     
     private JavaCodeFragment generateCodeForInvalidObjectProperties(String pObjectProperties, String[] validatedAttributes) throws CoreException {
@@ -1745,7 +1923,7 @@ public class PolicyCmptImplClassBuilder extends BasePolicyCmptTypeBuilder {
     }
     
     private String getMethodNameExecRule(IValidationRule r){
-        return "execRule" + StringUtils.capitalise(r.getName());
+        return "execRule" + StringUtils.capitalize(r.getName());
     }
     
     private String getMethodExpressionExecRule(IValidationRule r, String messageList, String businessFunction){
@@ -1999,7 +2177,7 @@ public class PolicyCmptImplClassBuilder extends BasePolicyCmptTypeBuilder {
             builder.appendln("if (className.length()>0) {");
             builder.appendln("try {");
             builder.appendClassName(getQualifiedClassName(target));
-            String varName = StringUtils.uncapitalise(relation.getTargetRoleSingular());
+            String varName = StringUtils.uncapitalize(relation.getTargetRoleSingular());
             builder.append(" " + varName + "=(");
             builder.appendClassName(getQualifiedClassName(target));
             builder.appendln(")Class.forName(className).newInstance();");

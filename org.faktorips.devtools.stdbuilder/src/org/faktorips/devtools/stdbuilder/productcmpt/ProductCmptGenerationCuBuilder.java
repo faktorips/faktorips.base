@@ -20,6 +20,7 @@ package org.faktorips.devtools.stdbuilder.productcmpt;
 import java.lang.reflect.Modifier;
 import java.util.Locale;
 
+import org.apache.commons.lang.StringEscapeUtils;
 import org.apache.commons.lang.StringUtils;
 import org.eclipse.core.runtime.CoreException;
 import org.faktorips.codegen.ConversionCodeGenerator;
@@ -192,7 +193,7 @@ public class ProductCmptGenerationCuBuilder extends DefaultJavaSourceFileBuilder
         builder.append("throw new "); //$NON-NLS-1$
         builder.appendClassName(FormulaExecutionException.class);
         builder.append("(toString(), ");   //$NON-NLS-1$
-        builder.appendQuoted(StringUtils.escape(formula.getExpression()));
+        builder.appendQuoted(StringEscapeUtils.escapeJava(formula.getExpression()));
         builder.appendln(", parameterValues.toString(), e);"); //$NON-NLS-1$
         builder.appendln("}"); //$NON-NLS-1$
         

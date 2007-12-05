@@ -187,7 +187,7 @@ public class TestCaseTypeClassBuilder extends DefaultJavaSourceFileBuilder {
         	DatatypeHelper helper = getCachedDatatypeHelper(testValueParam);
             codeBuilder.javaDoc("", ANNOTATION_GENERATED);
             codeBuilder.varDeclaration(Modifier.PRIVATE, helper.getJavaClassName(), 
-                    variablePrefix + StringUtils.capitalise(testValueParam.getName()));
+                    variablePrefix + StringUtils.capitalize(testValueParam.getName()));
         }
     }
     
@@ -240,7 +240,7 @@ public class TestCaseTypeClassBuilder extends DefaultJavaSourceFileBuilder {
      * The violationTypePrefix could be e.g. "violated" or "not violated".
      */
     private String getRuleMemberVariableName(String variablePrefix, String violationTypePrefix, ITestRuleParameter parameter){
-        return variablePrefix + StringUtils.capitalise(violationTypePrefix) + StringUtils.capitalise(parameter.getName());
+        return variablePrefix + StringUtils.capitalize(violationTypePrefix) + StringUtils.capitalize(parameter.getName());
     }
     
     /*
@@ -505,7 +505,7 @@ public class TestCaseTypeClassBuilder extends DefaultJavaSourceFileBuilder {
             DatatypeHelper dataTypeHelper = getCachedDatatypeHelper(policyTypeParam);
             
             body.appendln("value = getValueFromNode(element, \"" + policyTypeParam.getName() + "\");");
-            body.append(variablePrefix + StringUtils.capitalise(policyTypeParam.getName()) + " = ");
+            body.append(variablePrefix + StringUtils.capitalize(policyTypeParam.getName()) + " = ");
             body.append(dataTypeHelper.newInstanceFromExpression("value"));
             body.appendln(";");
         }
@@ -540,7 +540,7 @@ public class TestCaseTypeClassBuilder extends DefaultJavaSourceFileBuilder {
             }
             String rulesVariableNameNotViolated = getRuleMemberVariableName(variablePrefix, violationTypePrefixNotViolated, ruleParams[i]);
             String rulesVariableNameViolated = getRuleMemberVariableName(variablePrefix, violationTypePrefixViolated, ruleParams[i]);
-            String ruleListName = "rules" + StringUtils.capitalise(ruleParams[i].getName());
+            String ruleListName = "rules" + StringUtils.capitalize(ruleParams[i].getName());
             body.append(rulesVariableNameNotViolated);
             body.append(" = new ");
             body.appendClassName(ArrayList.class.getName());
@@ -653,10 +653,10 @@ public class TestCaseTypeClassBuilder extends DefaultJavaSourceFileBuilder {
      * </pre>
      */
     private void buildMethodAssertRule(JavaCodeFragmentBuilder codeBuilder, String variablePrefix, String ruleName){
-        String ruleContainerNameViolated = variablePrefix + StringUtils.capitalise(violationTypePrefixViolated)
-                + StringUtils.capitalise(ruleName);
-        String ruleContainerNameNotViolated = variablePrefix + StringUtils.capitalise(violationTypePrefixNotViolated)
-                + StringUtils.capitalise(ruleName);
+        String ruleContainerNameViolated = variablePrefix + StringUtils.capitalize(violationTypePrefixViolated)
+                + StringUtils.capitalize(ruleName);
+        String ruleContainerNameNotViolated = variablePrefix + StringUtils.capitalize(violationTypePrefixNotViolated)
+                + StringUtils.capitalize(ruleName);
 
         String methodName = "executeAssertsFor" + ruleName;
         String javaDoc = getLocalizedText(getIpsSrcFile(), ASSERT_RULE_METHOD_JAVADOC);

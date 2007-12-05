@@ -127,7 +127,7 @@ public class ProductCmptImplClassBuilder extends AbstractProductCmptTypeBuilder 
         appendLocalizedJavaDoc("CONSTRUCTOR", className, getIpsObject(), builder);
         Locale locale = getLanguageUsedInGeneratedSourceCode(getIpsObject());
         String versionParam = getChangesInTimeNamingConvention(getIpsObject()).getVersionConceptNameSingular(locale);
-        versionParam = StringUtils.uncapitalise(versionParam) + "Id";
+        versionParam = StringUtils.uncapitalize(versionParam) + "Id";
         String[] argNames = new String[] { "repository", "id", "kindId", versionParam };
         String[] argTypes = new String[] { IRuntimeRepository.class.getName(), String.class.getName(), String.class.getName(), String.class.getName() };
         builder.methodBegin(Modifier.PUBLIC, null, className, argNames, argTypes);

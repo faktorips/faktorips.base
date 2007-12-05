@@ -371,7 +371,7 @@ public class EnumClassesBuilder extends DefaultJavaSourceFileBuilder {
 
     private String getMethodNameGetEnumValue(ITableContents tableContents){
         //TODO java naming convensions
-        return "get" + StringUtils.capitalise(tableContents.getName());
+        return "get" + StringUtils.capitalize(tableContents.getName());
     }
 
     /**
@@ -381,7 +381,7 @@ public class EnumClassesBuilder extends DefaultJavaSourceFileBuilder {
     public JavaCodeFragment generateCallMethodGetEnumValue(ITableContents tableContents, String value, boolean valueIsExpression) throws CoreException{
         ArgumentCheck.notNull(tableContents);
         JavaCodeFragment fragment = new JavaCodeFragment();
-        fragment.appendClassName(getPackage(tableContents.getIpsSrcFile()) + '.' +StringUtils.capitalise(tableContents.getName()));
+        fragment.appendClassName(getPackage(tableContents.getIpsSrcFile()) + '.' +StringUtils.capitalize(tableContents.getName()));
         fragment.append('.');
         fragment.append(getMethodNameGetEnumValue(tableContents));
         fragment.append('(');
@@ -466,7 +466,7 @@ public class EnumClassesBuilder extends DefaultJavaSourceFileBuilder {
         methodBody.append(" != null;");
         
         //TODO java naming convensions
-        String methodName = "is" + StringUtils.capitalise(getTableContents().getName());
+        String methodName = "is" + StringUtils.capitalize(getTableContents().getName());
         String[] parameterNames = new String[]{idKeyItem.getName()}; 
         String[] parameterClasses = new String[]{idDatatype.getJavaClassName()}; 
 
@@ -512,7 +512,7 @@ public class EnumClassesBuilder extends DefaultJavaSourceFileBuilder {
         JavaCodeFragment methodBody = new JavaCodeFragment();
         methodBody.append("return ");
         methodBody.append("\"");
-        methodBody.append(StringUtils.capitalise(getTableContents().getName()));
+        methodBody.append(StringUtils.capitalize(getTableContents().getName()));
         methodBody.append(": \"");
         methodBody.append(" + ");
         methodBody.append(nameKeyItem.getName());

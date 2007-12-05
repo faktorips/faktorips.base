@@ -126,7 +126,7 @@ public class StandardBuilderSet extends DefaultBuilderSet {
         code.append("if(row != null)"); //$NON-NLS-1$
         code.appendOpenBracket();
         code.append("return row.get"); //$NON-NLS-1$
-        code.append(StringUtils.capitalise(fct.findAccessedColumn().getName()));
+        code.append(StringUtils.capitalize(fct.findAccessedColumn().getName()));
         code.append("();"); //$NON-NLS-1$
         code.appendCloseBracket();
         code.append("return "); //$NON-NLS-1$

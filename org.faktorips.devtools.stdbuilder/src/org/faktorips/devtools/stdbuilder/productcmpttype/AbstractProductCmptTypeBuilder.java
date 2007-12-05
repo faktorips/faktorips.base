@@ -396,7 +396,7 @@ public abstract class AbstractProductCmptTypeBuilder extends DefaultJavaSourceFi
     public String getVarNameEffectiveDate(IIpsElement element) {
         IChangesOverTimeNamingConvention convention = element.getIpsProject().getChangesInTimeNamingConventionForGeneratedCode();
         String conceptName = convention.getEffectiveDateConceptName(element.getIpsProject().getGeneratedJavaSourcecodeDocumentationLanguage());
-        return StringUtils.uncapitalise(conceptName);
+        return StringUtils.uncapitalize(conceptName);
     }
     
     class CodeGeneratorForContainerAssosImpl extends ProductCmptTypeHierarchyCodeGenerator {

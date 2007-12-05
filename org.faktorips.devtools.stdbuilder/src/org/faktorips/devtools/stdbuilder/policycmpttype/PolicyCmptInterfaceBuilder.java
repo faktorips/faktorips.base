@@ -84,11 +84,11 @@ public class PolicyCmptInterfaceBuilder extends BasePolicyCmptTypeBuilder {
     
     public String getPolicyCmptTypeName(IIpsSrcFile ipsSrcFile) throws CoreException {
         String name = StringUtil.getFilenameWithoutExtension(ipsSrcFile.getName());
-        return StringUtils.capitalise(name);
+        return StringUtils.capitalize(name);
     }
     
     public String getPolicyCmptTypeName(IPolicyCmptType type) throws CoreException {
-        return StringUtils.capitalise(type.getName());
+        return StringUtils.capitalize(type.getName());
     }
 
     protected void assertConditionsBeforeGenerating() {
@@ -219,7 +219,7 @@ public class PolicyCmptInterfaceBuilder extends BasePolicyCmptTypeBuilder {
      * </pre>
      */
     protected void generateMethodSetProductCmpt(JavaCodeFragmentBuilder methodsBuilder) throws CoreException {
-        String[] replacements = new String[]{getProductCmptType().getName(), StringUtils.uncapitalise(getProductCmptType().getName()), "initPropertiesWithConfiguratedDefaults"};
+        String[] replacements = new String[]{getProductCmptType().getName(), StringUtils.uncapitalize(getProductCmptType().getName()), "initPropertiesWithConfiguratedDefaults"};
         appendLocalizedJavaDoc("METHOD_SET_PRODUCTCMPT", replacements, getProductCmptType(), methodsBuilder);
         generateSignatureSetProductCmpt(getProductCmptType(), methodsBuilder);
         methodsBuilder.appendln(";");
@@ -248,7 +248,7 @@ public class PolicyCmptInterfaceBuilder extends BasePolicyCmptTypeBuilder {
      * Returns the method parameters for the method: setProductCmpt.
      */
     public String[] getMethodParamNamesSetProductCmpt(IProductCmptType type) throws CoreException {
-        return new String[] { StringUtils.uncapitalise(type.getName()), "initPropertiesWithConfiguratedDefaults" };
+        return new String[] { StringUtils.uncapitalize(type.getName()), "initPropertiesWithConfiguratedDefaults" };
     }
 
     /**
@@ -536,6 +536,9 @@ public class PolicyCmptInterfaceBuilder extends BasePolicyCmptTypeBuilder {
      * {@inheritDoc}
      */
     protected void generateCodeForRelationInCommon(IPolicyCmptTypeAssociation relation, JavaCodeFragmentBuilder fieldsBuilder, JavaCodeFragmentBuilder methodsBuilder) throws Exception {
+        if(relation.isQualified()){
+            generateMethodGetRefObjectByQualifier(relation, methodsBuilder);
+        }
         if(!relation.isDerivedUnion() && 
            !relation.getAssociationType().isCompositionDetailToMaster()){
             generateFieldGetMaxCardinalityFor(relation, fieldsBuilder);
@@ -605,7 +608,7 @@ public class PolicyCmptInterfaceBuilder extends BasePolicyCmptTypeBuilder {
      * e.g. getNumOfCoverages()
      */
     public String getMethodNameGetNumOfRefObjects(IPolicyCmptTypeAssociation relation) {
-        return getLocalizedText(relation, "METHOD_GET_NUM_OF_NAME", StringUtils.capitalise(relation.getTargetRolePlural()));
+        return getLocalizedText(relation, "METHOD_GET_NUM_OF_NAME", StringUtils.capitalize(relation.getTargetRolePlural()));
     }
 
     /**
@@ -644,7 +647,7 @@ public class PolicyCmptInterfaceBuilder extends BasePolicyCmptTypeBuilder {
      * e.g. getCoverages()
      */
     public String getMethodNameGetAllRefObjects(IPolicyCmptTypeAssociation relation) {
-        return getLocalizedText(relation, "METHOD_GET_ALL_REF_OBJECTS_NAME", StringUtils.capitalise(relation.getTargetRolePlural()));
+        return getLocalizedText(relation, "METHOD_GET_ALL_REF_OBJECTS_NAME", StringUtils.capitalize(relation.getTargetRolePlural()));
     }
 
     /**
@@ -658,7 +661,7 @@ public class PolicyCmptInterfaceBuilder extends BasePolicyCmptTypeBuilder {
             IPolicyCmptTypeAssociation relation,
             JavaCodeFragmentBuilder methodsBuilder) throws CoreException {
 
-        appendLocalizedJavaDoc("METHOD_GET_REF_OBJECT", StringUtils.capitalise(relation.getTargetRoleSingular()), relation, methodsBuilder);
+        appendLocalizedJavaDoc("METHOD_GET_REF_OBJECT", StringUtils.capitalize(relation.getTargetRoleSingular()), relation, methodsBuilder);
         generateSignatureGetRefObject(relation, methodsBuilder);
         methodsBuilder.appendln(";");
     }
@@ -686,6 +689,41 @@ public class PolicyCmptInterfaceBuilder extends BasePolicyCmptTypeBuilder {
         return getLocalizedText(relation, "METHOD_GET_REF_OBJECT_NAME", relation.getTargetRoleSingular());
     }
 
+    /**
+     * Code sample:
+     * <pre>
+     * [Javadoc]
+     * public ICoverage getCoverage(ICoverageType qualifier);
+     * </pre>
+     */
+    protected void generateMethodGetRefObjectByQualifier(
+            IPolicyCmptTypeAssociation relation,
+            JavaCodeFragmentBuilder methodsBuilder) throws CoreException {
+        appendLocalizedJavaDoc("METHOD_GET_REF_OBJECT_BY_QUALIFIER", StringUtils.capitalize(relation.getTargetRoleSingular()), relation, methodsBuilder);
+        generateSignatureGetRefObjectByQualifier(relation, methodsBuilder);
+        methodsBuilder.appendln(";");
+    }
+    
+    /**
+     * Code sample:
+     * <pre>
+     * public ICoverage getCoverage(ICoverageType qualifier)
+     * </pre>
+     */
+    public void generateSignatureGetRefObjectByQualifier(IPolicyCmptTypeAssociation relation,
+            JavaCodeFragmentBuilder methodsBuilder) throws CoreException {
+        String methodName = getMethodNameGetRefObject(relation);
+        String returnType = getQualifiedClassName(relation.findTarget(getIpsProject()));
+        if(relation.is1ToManyIgnoringQualifier()){
+            returnType = returnType + "[]";
+        }
+        IProductCmptType qualifier = relation.findQualifier(getIpsProject());
+        String qualifierClassName = this.productCmptInterfaceBuilder.getQualifiedClassName(qualifier.getIpsSrcFile());
+        methodsBuilder.signature(java.lang.reflect.Modifier.PUBLIC, returnType, methodName,
+                new String[] { "qualifier" }, new String[] { qualifierClassName });
+    }
+    
+    
     /**
      * Code sample:
      * <pre>
@@ -808,7 +846,7 @@ public class PolicyCmptInterfaceBuilder extends BasePolicyCmptTypeBuilder {
      */
     protected String getParamNameForProductCmptInNewChildMethod(IProductCmptType targetProductCmptType) throws CoreException {
         String targetProductCmptClass = productCmptInterfaceBuilder.getQualifiedClassName(targetProductCmptType);
-        return StringUtils.uncapitalise(StringUtil.unqualifiedName(targetProductCmptClass));
+        return StringUtils.uncapitalize(StringUtil.unqualifiedName(targetProductCmptClass));
     }
 
     /**
@@ -985,7 +1023,7 @@ public class PolicyCmptInterfaceBuilder extends BasePolicyCmptTypeBuilder {
     }
     
     public String getMethodNameGetMaxCardinalityFor(IPolicyCmptTypeAssociation relation){
-        return getLocalizedText(relation, "METHOD_GET_MAX_CARDINALITY_NAME", StringUtils.capitalise(relation.getTargetRoleSingular()));
+        return getLocalizedText(relation, "METHOD_GET_MAX_CARDINALITY_NAME", StringUtils.capitalize(relation.getTargetRoleSingular()));
     }
     
     public void generateMethodGetMaxCardinalityFor(IPolicyCmptTypeAssociation relation, JavaCodeFragmentBuilder methodsBuilder){

@@ -175,7 +175,7 @@ public class ProductCmptGenInterfaceBuilder extends AbstractProductCmptTypeBuild
     }
     
     String getPropertyNameDefaultValue(IPolicyCmptTypeAttribute a) {
-        return getLocalizedText(a, "PROPERTY_DEFAULTVALUE_NAME", StringUtils.capitalise(a.getName()));
+        return getLocalizedText(a, "PROPERTY_DEFAULTVALUE_NAME", StringUtils.capitalize(a.getName()));
     }
     
     /**
@@ -223,7 +223,7 @@ public class ProductCmptGenInterfaceBuilder extends AbstractProductCmptTypeBuild
     }
     
     String getPropertyNameValue(IProductCmptTypeAttribute a) {
-        return getLocalizedText(a, "PROPERTY_VALUE_NAME", StringUtils.capitalise(a.getName()));
+        return getLocalizedText(a, "PROPERTY_VALUE_NAME", StringUtils.capitalize(a.getName()));
     }
 
     /**
@@ -277,7 +277,7 @@ public class ProductCmptGenInterfaceBuilder extends AbstractProductCmptTypeBuild
     }
 
     String getPropertyNameToManyRelation(IProductCmptTypeAssociation relation) {
-        String role = StringUtils.capitalise(relation.getTargetRolePlural());
+        String role = StringUtils.capitalize(relation.getTargetRolePlural());
         return getLocalizedText(relation, "PROPERTY_TOMANY_RELATION_NAME", role);
     }
     
@@ -316,7 +316,7 @@ public class ProductCmptGenInterfaceBuilder extends AbstractProductCmptTypeBuild
     }
 
     String getPropertyNameTo1Relation(IProductCmptTypeAssociation relation) {
-        String role = StringUtils.capitalise(relation.getTargetRoleSingular());
+        String role = StringUtils.capitalize(relation.getTargetRoleSingular());
         return getLocalizedText(relation, "PROPERTY_TO1_RELATION_NAME", role);
     }
 
@@ -431,7 +431,7 @@ public class ProductCmptGenInterfaceBuilder extends AbstractProductCmptTypeBuild
     
     public String getMethodNameGetRangeFor(IPolicyCmptTypeAttribute a, Datatype datatype){
         return getJavaNamingConvention().getGetterMethodName(getLocalizedText(a, 
-                "METHOD_GET_RANGE_FOR_NAME", StringUtils.capitalise(a.getName())), datatype);
+                "METHOD_GET_RANGE_FOR_NAME", StringUtils.capitalize(a.getName())), datatype);
     }
     
     public void generateMethodGetRangeFor(IPolicyCmptTypeAttribute a, DatatypeHelper helper, JavaCodeFragmentBuilder methodsBuilder) throws CoreException{
@@ -448,7 +448,7 @@ public class ProductCmptGenInterfaceBuilder extends AbstractProductCmptTypeBuild
 
     public String getMethodNameGetAllowedValuesFor(IPolicyCmptTypeAttribute a, Datatype datatype){
         return getJavaNamingConvention().getGetterMethodName(getLocalizedText(
-                a, "METHOD_GET_ALLOWED_VALUES_FOR_NAME", StringUtils.capitalise(a.getName())), datatype);
+                a, "METHOD_GET_ALLOWED_VALUES_FOR_NAME", StringUtils.capitalize(a.getName())), datatype);
     }
     
     public void generateMethodGetAllowedValuesFor(IPolicyCmptTypeAttribute a, Datatype datatype, JavaCodeFragmentBuilder methodsBuilder) throws CoreException{

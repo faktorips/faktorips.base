@@ -175,12 +175,12 @@ public class TableImplBuilder extends DefaultJavaSourceFileBuilder {
                 for (int j = 0; j < keyItems.length; j++) {
 
                     if (getTableStructure().hasColumn(keyItems[j])) {
-                        keyName.append(StringUtils.capitalise(keyItems[j]));
+                        keyName.append(StringUtils.capitalize(keyItems[j]));
                         continue;
                     }
 
                     IColumnRange range = getTableStructure().getRange(keyItems[j]);
-                    keyName.append(StringUtils.capitalise(range.getParameterName()));
+                    keyName.append(StringUtils.capitalize(range.getParameterName()));
                 }
                 findMethodNames[i] = keyName.toString();
                 continue;
@@ -236,9 +236,9 @@ public class TableImplBuilder extends DefaultJavaSourceFileBuilder {
                 allParameterTypes.add(getJavaClassName(keyItems[j]));
 
                 if (getTableStructure().hasColumn(keyItems[j])) {
-                    keyClassParameterNames.add(StringUtils.uncapitalise(keyItems[j]));
+                    keyClassParameterNames.add(StringUtils.uncapitalize(keyItems[j]));
                     keyClassParameterTypes.add(getJavaClassName(keyItems[j]));
-                    parameters.add(StringUtils.uncapitalise(keyItems[j]));
+                    parameters.add(StringUtils.uncapitalize(keyItems[j]));
                     isColumn = true;
                     continue;
                 }
@@ -389,7 +389,7 @@ public class TableImplBuilder extends DefaultJavaSourceFileBuilder {
 
             methodBody.appendClassName(columnDatatype.getJavaClassName());
             methodBody.append(' ');
-            methodBody.append(StringUtils.uncapitalise(column.getName()));
+            methodBody.append(StringUtils.uncapitalize(column.getName()));
             methodBody.append(" = ");
             methodBody.append(valueName);
             methodBody.append(" == null ? ");
@@ -407,7 +407,7 @@ public class TableImplBuilder extends DefaultJavaSourceFileBuilder {
             if (i > 0) {
                 methodBody.append(", ");
             }
-            methodBody.append(StringUtils.uncapitalise(columns[i].getName()));
+            methodBody.append(StringUtils.uncapitalize(columns[i].getName()));
         }
         methodBody.append("));");
         
@@ -446,7 +446,7 @@ public class TableImplBuilder extends DefaultJavaSourceFileBuilder {
         for (int i = 0; i < fKeyVariableNames.length; i++) {
             StringBuffer keyMapFieldName = new StringBuffer();
             String fieldClassName;
-            keyMapFieldName.append(StringUtils.uncapitalise(fKeyVariableNames[i]));
+            keyMapFieldName.append(StringUtils.uncapitalize(fKeyVariableNames[i]));
             if (fKeyClassParameterNames.get(i) != null) {
                 keyMapFieldName.append("Map");
                 fieldClassName = Map.class.getName();
@@ -463,7 +463,7 @@ public class TableImplBuilder extends DefaultJavaSourceFileBuilder {
             String keyClassName,
             String[] keyItems) throws CoreException {
         JavaCodeFragment methodBody = new JavaCodeFragment();
-        methodBody.append(StringUtils.uncapitalise(combinedKeyName));
+        methodBody.append(StringUtils.uncapitalize(combinedKeyName));
         methodBody.append("Map.put(new ");
         methodBody.append(keyClassName);
         methodBody.append("(");
@@ -472,7 +472,7 @@ public class TableImplBuilder extends DefaultJavaSourceFileBuilder {
                 methodBody.append(", ");
             }
             methodBody.append("row.get");
-            methodBody.append(StringUtils.capitalise(keyItems[i]));
+            methodBody.append(StringUtils.capitalize(keyItems[i]));
             methodBody.append("()");
         }
         methodBody.append("), row);");
@@ -512,7 +512,7 @@ public class TableImplBuilder extends DefaultJavaSourceFileBuilder {
 
         for (int i = 0; i < keys.length; i++) {
             if (keys[i].containsRanges()) {
-                String tempName = StringUtils.uncapitalise(fKeyVariableNames[i]) + "MapTemp";
+                String tempName = StringUtils.uncapitalize(fKeyVariableNames[i]) + "MapTemp";
                 String[] parameterNames = (String[])fAllItemNamesAsParameters.get(i);
                 String[] keyClassParameterNames = (String[])fKeyClassParameterNames.get(i);
                 String[] rangeParameterNames;
@@ -529,7 +529,7 @@ public class TableImplBuilder extends DefaultJavaSourceFileBuilder {
                 ArrayList getMapThirdParameter = new ArrayList();
                 getMapFirstParameter.add(tempName);
                 if (keys[i].containsColumns()) {
-                    getMapFirstParameter.add(StringUtils.uncapitalise(rangeParameterNames[0])
+                    getMapFirstParameter.add(StringUtils.uncapitalize(rangeParameterNames[0])
                             + "Map");
                     getMapSecondParameter.add(createKeyInstantiation(
                             fKeyClassNames[i],
@@ -539,21 +539,21 @@ public class TableImplBuilder extends DefaultJavaSourceFileBuilder {
                 }
                 for (int j = 0; j < rangeParameterNames.length; j++) {
                     if (j != 0) {
-                        getMapFirstParameter.add(StringUtils.uncapitalise(rangeParameterNames[j])
+                        getMapFirstParameter.add(StringUtils.uncapitalize(rangeParameterNames[j])
                                 + "Map");
                     }
                     IColumnRange range = (IColumnRange) fRanges.get(rangeParameterNames[j]);
                     if (range != null && range.getColumnRangeType().isTwoColumn()) {
                         getMapSecondParameter.add("row.get"
-                                + StringUtils.capitalise(range.getFromColumn()) + "()");
+                                + StringUtils.capitalize(range.getFromColumn()) + "()");
                         getMapThirdParameter.add("row.get"
-                                + StringUtils.capitalise(range.getToColumn()) + "()");
+                                + StringUtils.capitalize(range.getToColumn()) + "()");
                     } else {
                         String paramName = range == null ? rangeParameterNames[j] :
                                 range.getColumnRangeType().isOneColumnFrom() ? range.getFromColumn() :
                                     range.getToColumn();
                         getMapSecondParameter.add("row.get" 
-                                + StringUtils.capitalise(paramName) + "()");
+                                + StringUtils.capitalize(paramName) + "()");
                         getMapThirdParameter.add(null);
                     }
                 }
@@ -606,12 +606,12 @@ public class TableImplBuilder extends DefaultJavaSourceFileBuilder {
             if (!keys[i].containsRanges()) {
                 continue;
             }
-            fragment.append(StringUtils.uncapitalise(fKeyVariableNames[i]));
+            fragment.append(StringUtils.uncapitalize(fKeyVariableNames[i]));
             fragment.append(keys[i].containsColumns() ? "Map" : "Tree");
             fragment.append(" = ");
             fragment.append(keys[i].containsColumns() ? "convert" : "generateTree");
             fragment.append("(");
-            fragment.append(StringUtils.uncapitalise(fKeyVariableNames[i]));
+            fragment.append(StringUtils.uncapitalize(fKeyVariableNames[i]));
             fragment.append("MapTemp, new ");
             fragment.appendClassName(Integer.TYPE);
             fragment.append("[] {");
@@ -648,10 +648,10 @@ public class TableImplBuilder extends DefaultJavaSourceFileBuilder {
         if (key.containsRanges()) {
             methodBody.appendClassName(HashMap.class);
             methodBody.append(' ');
-            methodBody.append(StringUtils.uncapitalise(fieldName));
+            methodBody.append(StringUtils.uncapitalize(fieldName));
             methodBody.append("Temp");
         } else {
-            methodBody.append(StringUtils.uncapitalise(fieldName));
+            methodBody.append(StringUtils.uncapitalize(fieldName));
         }
         methodBody.append(" = new ");
         methodBody.appendClassName(HashMap.class);
@@ -682,7 +682,7 @@ public class TableImplBuilder extends DefaultJavaSourceFileBuilder {
     private String[] createInitKeyMapsKeyClassParameters(String[] rangeParameterNames) {
         String[] returnValue = new String[rangeParameterNames.length];
         for (int i = 0; i < rangeParameterNames.length; i++) {
-            returnValue[i] = "row.get" + StringUtils.capitalise(rangeParameterNames[i]) + "()";
+            returnValue[i] = "row.get" + StringUtils.capitalize(rangeParameterNames[i]) + "()";
         }
         return returnValue;
     }
@@ -827,8 +827,8 @@ public class TableImplBuilder extends DefaultJavaSourceFileBuilder {
             methodBody.appendCloseBracket();
             
         }
-        String mapName = StringUtils.uncapitalise(combinedKeyName) + "Map";
-        String treeName = StringUtils.uncapitalise(combinedKeyName) + "Tree";
+        String mapName = StringUtils.uncapitalize(combinedKeyName) + "Map";
+        String treeName = StringUtils.uncapitalize(combinedKeyName) + "Tree";
         String returnVariableName = "returnValue";
         if (key.containsColumns()) {
             if (key.containsRanges()) {
