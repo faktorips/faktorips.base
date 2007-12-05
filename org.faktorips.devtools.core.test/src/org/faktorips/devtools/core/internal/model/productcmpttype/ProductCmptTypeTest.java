@@ -17,16 +17,21 @@
 
 package org.faktorips.devtools.core.internal.model.productcmpttype;
 
+import java.util.ArrayList;
 import java.util.Map;
 
 import org.eclipse.core.runtime.CoreException;
 import org.faktorips.devtools.core.AbstractIpsPluginTest;
+import org.faktorips.devtools.core.internal.model.ipsproject.IpsObjectPath;
+import org.faktorips.devtools.core.internal.model.ipsproject.IpsProjectRefEntry;
 import org.faktorips.devtools.core.model.ContentChangeEvent;
 import org.faktorips.devtools.core.model.ContentsChangeListener;
+import org.faktorips.devtools.core.model.ipsproject.IIpsObjectPath;
+import org.faktorips.devtools.core.model.ipsproject.IIpsObjectPathEntry;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.pctype.AttributeType;
-import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAttribute;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
+import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAttribute;
 import org.faktorips.devtools.core.model.productcmpttype.IProdDefProperty;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeAttribute;
@@ -152,10 +157,14 @@ public class ProductCmptTypeTest extends AbstractIpsPluginTest implements Conten
         superProductCmptType.setConfigurationForPolicyCmptType(true);
         MessageList result = productCmptType.validate(ipsProject);
         assertNull(result.getMessageByCode(IProductCmptType.MSGCODE_MUST_HAVE_SAME_VALUE_FOR_CONFIGURES_POLICY_CMPT_TYPE));
-        
-        superProductCmptType.setConfigurationForPolicyCmptType(false);
+
+        productCmptType.setConfigurationForPolicyCmptType(false);
         result = productCmptType.validate(ipsProject);
         assertNotNull(result.getMessageByCode(IProductCmptType.MSGCODE_MUST_HAVE_SAME_VALUE_FOR_CONFIGURES_POLICY_CMPT_TYPE));
+
+        superProductCmptType.setConfigurationForPolicyCmptType(false);
+        result = productCmptType.validate(ipsProject);
+        assertNull(result.getMessageByCode(IProductCmptType.MSGCODE_MUST_HAVE_SAME_VALUE_FOR_CONFIGURES_POLICY_CMPT_TYPE));
 
         productCmptType.setConfigurationForPolicyCmptType(false);
         result = productCmptType.validate(ipsProject);
@@ -718,6 +727,43 @@ public class ProductCmptTypeTest extends AbstractIpsPluginTest implements Conten
         assertEquals(1, productCmptType.getNumOfAssociations());
         assertEquals(1, productCmptType.getNumOfTableStructureUsages());
         assertEquals(1, productCmptType.getNumOfMethods());
+    }
+    
+    public void testValidateOtherTypeWithSameNameTypeInIpsObjectPath() throws CoreException{
+        
+        IIpsProject a = newIpsProject("aProject");
+        IPolicyCmptType aPolicyProjectA = newPolicyCmptType(a, "faktorzehn.example.APolicy");
+        IIpsProject b = newIpsProject("bProject");
+        IProductCmptType aProductTypeProjectB = newProductCmptType(b, "faktorzehn.example.APolicy");
+        
+        IIpsObjectPath bPath = b.getIpsObjectPath();
+        IIpsObjectPathEntry[] bPathEntries = bPath.getEntries();
+        ArrayList newbPathEntries = new ArrayList();
+        newbPathEntries.add(new IpsProjectRefEntry((IpsObjectPath)bPath, a));
+        for (int i = 0; i < bPathEntries.length; i++) {
+            newbPathEntries.add(bPathEntries[i]);
+        }
+        bPath.setEntries((IIpsObjectPathEntry[])newbPathEntries.toArray(new IIpsObjectPathEntry[newbPathEntries.size()]));
+        b.setIpsObjectPath(bPath);
+        
+        MessageList msgList = aPolicyProjectA.validate(a);
+        assertNull(msgList.getMessageByCode(IType.MSGCODE_OTHER_TYPE_WITH_SAME_NAME_IN_DEPENDENT_PROJECT_EXISTS));
+        
+        msgList = aProductTypeProjectB.validate(b);
+        assertNotNull(msgList.getMessageByCode(IType.MSGCODE_OTHER_TYPE_WITH_SAME_NAME_IN_DEPENDENT_PROJECT_EXISTS));
+    }
+    
+    public void testValidateOtherTypeWithSameNameTypeInIpsObjectPath2() throws CoreException{
+        
+        IIpsProject a = newIpsProject("aProject");
+        IPolicyCmptType aPolicyProjectA = newPolicyCmptType(a, "faktorzehn.example.APolicy");
+        IProductCmptType aProductTypeProjectB = newProductCmptType(a, "faktorzehn.example.APolicy");
+        
+        MessageList msgList = aPolicyProjectA.validate(a);
+        assertNotNull(msgList.getMessageByCode(IType.MSGCODE_OTHER_TYPE_WITH_SAME_NAME_EXISTS));
+        
+        msgList = aProductTypeProjectB.validate(a);
+        assertNotNull(msgList.getMessageByCode(IType.MSGCODE_OTHER_TYPE_WITH_SAME_NAME_EXISTS));
     }
     
     /**

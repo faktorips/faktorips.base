@@ -17,6 +17,7 @@
 
 package org.faktorips.devtools.core.internal.model.pctype;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -25,6 +26,8 @@ import org.faktorips.datatype.Datatype;
 import org.faktorips.devtools.core.AbstractIpsPluginTest;
 import org.faktorips.devtools.core.builder.EmptyBuilderSet;
 import org.faktorips.devtools.core.internal.model.IpsModel;
+import org.faktorips.devtools.core.internal.model.ipsproject.IpsObjectPath;
+import org.faktorips.devtools.core.internal.model.ipsproject.IpsProjectRefEntry;
 import org.faktorips.devtools.core.internal.model.tablecontents.Row;
 import org.faktorips.devtools.core.internal.model.tablecontents.TableContents;
 import org.faktorips.devtools.core.internal.model.tablecontents.TableContentsGeneration;
@@ -41,6 +44,8 @@ import org.faktorips.devtools.core.model.IpsObjectDependency;
 import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
 import org.faktorips.devtools.core.model.ipsobject.Modifier;
+import org.faktorips.devtools.core.model.ipsproject.IIpsObjectPath;
+import org.faktorips.devtools.core.model.ipsproject.IIpsObjectPathEntry;
 import org.faktorips.devtools.core.model.ipsproject.IIpsPackageFragment;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProjectProperties;
@@ -54,6 +59,7 @@ import org.faktorips.devtools.core.model.pctype.IValidationRule;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
 import org.faktorips.devtools.core.model.type.IAssociation;
 import org.faktorips.devtools.core.model.type.IMethod;
+import org.faktorips.devtools.core.model.type.IType;
 import org.faktorips.devtools.core.util.CollectionUtil;
 import org.faktorips.util.message.MessageList;
 import org.w3c.dom.Element;
@@ -411,7 +417,7 @@ public class PolicyCmptTypeTest extends AbstractIpsPluginTest implements Content
         bToC.setTarget(c.getQualifiedName());
         
         List dependencyList = CollectionUtil.toArrayList(a.dependsOn());
-        assertEquals(1, dependencyList.size());
+        assertEquals(2, dependencyList.size());
         assertTrue(dependencyList.contains(IpsObjectDependency.createReferenceDependency(a.getQualifiedNameType(), b.getQualifiedNameType())));
     }
 
@@ -427,7 +433,7 @@ public class PolicyCmptTypeTest extends AbstractIpsPluginTest implements Content
         aMethod.newParameter(c.getQualifiedName(), "cP");
         
         List dependencyList = CollectionUtil.toArrayList(a.dependsOn());
-        assertEquals(2, dependencyList.size());
+        assertEquals(3, dependencyList.size());
         assertTrue(dependencyList.contains(new DatatypeDependency(a.getQualifiedNameType(), b.getQualifiedName())));
         assertTrue(dependencyList.contains(new DatatypeDependency(a.getQualifiedNameType(), c.getQualifiedName())));
     }
@@ -439,21 +445,21 @@ public class PolicyCmptTypeTest extends AbstractIpsPluginTest implements Content
         c.setSupertype(a.getQualifiedName());
         c.newPolicyCmptTypeAssociation().setTarget(b.getQualifiedName());
         List dependencyList = CollectionUtil.toArrayList(c.dependsOn());
-        assertEquals(2, dependencyList.size());
+        assertEquals(3, dependencyList.size());
         assertTrue(dependencyList.contains(IpsObjectDependency.createSubtypeDependency(c.getQualifiedNameType(), a.getQualifiedNameType())));
         assertTrue(dependencyList.contains(IpsObjectDependency.createReferenceDependency(c.getQualifiedNameType(), b.getQualifiedNameType())));
         
         // test if a cicle in the type hierarchy does not lead to a stack overflow exception
         c.setSupertype(c.getQualifiedName());
         dependencyList = CollectionUtil.toArrayList(c.dependsOn());
-        assertEquals(2, dependencyList.size());
+        assertEquals(3, dependencyList.size());
         assertTrue(dependencyList.contains(IpsObjectDependency.createReferenceDependency(c.getQualifiedNameType(), b.getQualifiedNameType())));
         
         // this is actually not possible
         c.setSupertype(a.getQualifiedName());
         a.setSupertype(c.getQualifiedName());
         dependencyList = CollectionUtil.toArrayList(c.dependsOn());
-        assertEquals(2, dependencyList.size());
+        assertEquals(3, dependencyList.size());
         assertTrue(dependencyList.contains(IpsObjectDependency.createSubtypeDependency(c.getQualifiedNameType(), a.getQualifiedNameType())));
         assertTrue(dependencyList.contains(IpsObjectDependency.createReferenceDependency(c.getQualifiedNameType(), b.getQualifiedNameType())));
     }
@@ -522,7 +528,7 @@ public class PolicyCmptTypeTest extends AbstractIpsPluginTest implements Content
         
         d2.setSupertype(s2.getQualifiedName());
         
-        assertEquals(1, a.dependsOn().length);
+        assertEquals(2, a.dependsOn().length);
 
         IIpsProjectProperties props = ipsProject.getProperties();
         props.setBuilderSetId(AggregateRootBuilderSet.ID);
@@ -717,7 +723,32 @@ public class PolicyCmptTypeTest extends AbstractIpsPluginTest implements Content
         ml = policyCmptType.validate(ipsProject);
         assertNull(ml.getMessageByCode(IPolicyCmptType.MSGCODE_SUPERTYPE_NOT_PRODUCT_RELEVANT_IF_THE_TYPE_IS_PRODUCT_RELEVANT));
     }
+
+    public void testValidateOtherTypeWithSameNameTypeInIpsObjectPath() throws CoreException{
         
+        IIpsProject a = newIpsProject("aProject");
+        IProductCmptType aProductTypeProjectA = newProductCmptType(a, "faktorzehn.example.APolicy");
+        IIpsProject b = newIpsProject("bProject");
+        IPolicyCmptType aPolicyProjectB = newPolicyCmptTypeWithoutProductCmptType(b, "faktorzehn.example.APolicy");
+        
+        IIpsObjectPath bPath = b.getIpsObjectPath();
+        IIpsObjectPathEntry[] bPathEntries = bPath.getEntries();
+        ArrayList newbPathEntries = new ArrayList();
+        newbPathEntries.add(new IpsProjectRefEntry((IpsObjectPath)bPath, a));
+        for (int i = 0; i < bPathEntries.length; i++) {
+            newbPathEntries.add(bPathEntries[i]);
+        }
+        bPath.setEntries((IIpsObjectPathEntry[])newbPathEntries.toArray(new IIpsObjectPathEntry[newbPathEntries.size()]));
+        b.setIpsObjectPath(bPath);
+        
+        MessageList msgList = aProductTypeProjectA.validate(a);
+        assertNull(msgList.getMessageByCode(IType.MSGCODE_OTHER_TYPE_WITH_SAME_NAME_IN_DEPENDENT_PROJECT_EXISTS));
+        
+        msgList = aPolicyProjectB.validate(b);
+        assertNotNull(msgList.getMessageByCode(IType.MSGCODE_OTHER_TYPE_WITH_SAME_NAME_IN_DEPENDENT_PROJECT_EXISTS));
+    }
+    
+    
     private class AggregateRootBuilderSet extends EmptyBuilderSet {
 
         public final static String ID = "AggregateRootBuilderSet";
