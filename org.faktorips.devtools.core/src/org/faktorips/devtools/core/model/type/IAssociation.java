@@ -248,6 +248,11 @@ public interface IAssociation extends IIpsObjectPart {
     public boolean is1ToMany();
     
     /**
+     * Returns <code>true</code> if the max cardinalitiy is greater 1 and ignores if this is a qualied association or not. 
+     */
+    public boolean is1ToManyIgnoringQualifier();
+    
+    /**
      * Returns <code>true</code> if this is a 1 (or 0) to 1 association. This is the case if
      * the max cardinality is 1.
      */

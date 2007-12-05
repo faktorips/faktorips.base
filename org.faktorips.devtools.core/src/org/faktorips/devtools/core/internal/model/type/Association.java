@@ -163,7 +163,7 @@ public abstract class Association extends AtomicIpsObjectPart implements IAssoci
      * {@inheritDoc}
      */
     public String getDefaultTargetRoleSingular() {
-        return StringUtils.capitalise(QNameUtil.getUnqualifiedName(target));
+        return StringUtils.capitalize(QNameUtil.getUnqualifiedName(target));
     }
 
     /** 
@@ -234,6 +234,13 @@ public abstract class Association extends AtomicIpsObjectPart implements IAssoci
      */
     public boolean is1ToMany() {
         return isQualified() || maxCardinality > 1;
+    }
+    
+    /**
+     * {@inheritDoc}
+     */
+    public boolean is1ToManyIgnoringQualifier(){
+        return maxCardinality > 1;
     }
     
     /**
@@ -376,7 +383,7 @@ public abstract class Association extends AtomicIpsObjectPart implements IAssoci
         if (maxCardinality == 0) {
             String text = Messages.Association_msg_MaxCardinalityMustBeAtLeast1;
             list.add(new Message(MSGCODE_MAX_CARDINALITY_MUST_BE_AT_LEAST_1, text, Message.ERROR, this, PROPERTY_MAX_CARDINALITY)); //$NON-NLS-1$
-        } else if (maxCardinality == 1 && isDerivedUnion()) {
+        } else if (maxCardinality == 1 && isDerivedUnion() && !isQualified()) {
             String text = Messages.Association_msg_MaxCardinalityForDerivedUnionTooLow;
             list.add(new Message(MSGCODE_MAX_CARDINALITY_FOR_DERIVED_UNION_TOO_LOW, text, Message.ERROR, this, new String[]{PROPERTY_DERIVED_UNION, PROPERTY_MAX_CARDINALITY})); //$NON-NLS-1$
         } else if (minCardinality > maxCardinality) {
