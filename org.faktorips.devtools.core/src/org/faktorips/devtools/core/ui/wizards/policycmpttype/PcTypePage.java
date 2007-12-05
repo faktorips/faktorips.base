@@ -86,7 +86,6 @@ public class PcTypePage extends TypePage {
      * Returns true if the page is complete and the policy component type is configurable.
      */
     public boolean canFlipToNextPage() {
-//        isPageComplete() && 
         return isPolicyCmptTypeConfigurable();
     }
     
@@ -143,8 +142,8 @@ public class PcTypePage extends TypePage {
      * {@inheritDoc}
      */
     protected void validatePageExtension() throws CoreException {
+        super.validatePageExtension();
         if(isPolicyCmptTypeConfigurable()){
-            super.validatePageExtension();
             if(getErrorMessage() == null && pageOfAssociatedType != null && pageOfAssociatedType.isAlreadyBeenEntered()){
                 pageOfAssociatedType.validatePage();
                 if(!StringUtils.isEmpty(pageOfAssociatedType.getErrorMessage())){
