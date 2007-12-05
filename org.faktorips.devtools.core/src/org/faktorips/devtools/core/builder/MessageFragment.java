@@ -21,7 +21,7 @@ import java.util.ArrayList;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang.StringEscapeUtils;
 import org.faktorips.codegen.JavaCodeFragment;
 
 /**
@@ -170,7 +170,7 @@ public class MessageFragment{
                     "DEFAULT_PARAMETER_NAMES, VALUES_AS_PARAMETER_NAMES"); //$NON-NLS-1$
         }
 		
-		messageText = StringUtils.escape(messageText);
+		messageText = StringEscapeUtils.escapeJava(messageText);
 		Pattern p = Pattern.compile("\\{[^\\}]*\\}"); //$NON-NLS-1$
         Matcher m = p.matcher(messageText);
 		JavaCodeFragment frag = new JavaCodeFragment();

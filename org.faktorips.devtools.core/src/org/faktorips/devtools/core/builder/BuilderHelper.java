@@ -47,7 +47,7 @@ public class BuilderHelper {
 					String param = message.substring(start + 1, end);
 					param = param.trim();
 					param = param.replace(' ', '_');	
-					param = StringUtils.uncapitalise(param); 
+					param = StringUtils.uncapitalize(param); 
 					al.add(param);
 					message = message.substring(end + 1); 
 				}

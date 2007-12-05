@@ -82,14 +82,14 @@ public class JavaNamingConvention {
      * Returns the name of the member variable for a property.
      */
     public String getMemberVarName(String propertyName) {
-    	return StringUtils.uncapitalise(propertyName);
+    	return StringUtils.uncapitalize(propertyName);
     }
     
     /**
      * Returns the name of the member variable for a multi value property.
      */
     public String getMultiValueMemberVarName(String propertyNamePlural) {
-    	return StringUtils.uncapitalise(propertyNamePlural);
+    	return StringUtils.uncapitalize(propertyNamePlural);
     }
     
     /**
@@ -97,9 +97,9 @@ public class JavaNamingConvention {
      */
     public String getGetterMethodName(String propertyName, Class datatype) {
     	if (datatype.equals(Boolean.TYPE)) {
-    		return "is" + StringUtils.capitalise(propertyName); //$NON-NLS-1$
+    		return "is" + StringUtils.capitalize(propertyName); //$NON-NLS-1$
     	}
-		return "get" + StringUtils.capitalise(propertyName); //$NON-NLS-1$
+		return "get" + StringUtils.capitalize(propertyName); //$NON-NLS-1$
     }
     
     /**
@@ -107,30 +107,30 @@ public class JavaNamingConvention {
      */
     public String getGetterMethodName(String propertyName, Datatype datatype) {
     	if (datatype.equals(Datatype.PRIMITIVE_BOOLEAN)) {
-    		return "is" + StringUtils.capitalise(propertyName); //$NON-NLS-1$
+    		return "is" + StringUtils.capitalize(propertyName); //$NON-NLS-1$
     	}
-		return "get" + StringUtils.capitalise(propertyName); //$NON-NLS-1$
+		return "get" + StringUtils.capitalize(propertyName); //$NON-NLS-1$
     }
     
     /**
      * Returns the method name for the method with that a multi value property is read. 
      */
     public String getMultiValueGetterMethodName(String propertyNamePlural) {
-		return "get" + StringUtils.capitalise(propertyNamePlural); //$NON-NLS-1$
+		return "get" + StringUtils.capitalize(propertyNamePlural); //$NON-NLS-1$
     }
 
     /**
      * Returns the method name for the method with that the property is set. 
      */
     public String getSetterMethodName(String propertyName, Class datatype) {
-		return "set" + StringUtils.capitalise(propertyName); //$NON-NLS-1$
+		return "set" + StringUtils.capitalize(propertyName); //$NON-NLS-1$
     }
 
     /**
      * Returns the method name for the method with that the property is set. 
      */
     public String getSetterMethodName(String propertyName, Datatype datatype) {
-		return "set" + StringUtils.capitalise(propertyName); //$NON-NLS-1$
+		return "set" + StringUtils.capitalize(propertyName); //$NON-NLS-1$
     }
     
     /**
