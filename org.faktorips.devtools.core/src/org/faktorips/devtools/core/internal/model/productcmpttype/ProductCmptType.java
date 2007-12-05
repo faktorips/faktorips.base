@@ -406,6 +406,7 @@ public class ProductCmptType extends Type implements IProductCmptType {
         DuplicateFormulaNameValidator validator = new DuplicateFormulaNameValidator(ipsProject);
         validator.start(this);
         validator.addMessagesForDuplicates(list);
+        validateOtherTypeWithSameNameTypeInIpsObjectPath(IpsObjectType.POLICY_CMPT_TYPE, list, ipsProject);
     }
 
     /**
@@ -456,6 +457,8 @@ public class ProductCmptType extends Type implements IProductCmptType {
         if(StringUtils.isEmpty(getPolicyCmptType())){
             dependencies.add(IpsObjectDependency.createReferenceDependency(getQualifiedNameType(), new QualifiedNameType(getPolicyCmptType(), IpsObjectType.POLICY_CMPT_TYPE)));
         }
+//      to force a check is a policy component type exists with the same qualified name
+        dependencies.add(IpsObjectDependency.createReferenceDependency(getQualifiedNameType(), new QualifiedNameType(getQualifiedName(), IpsObjectType.POLICY_CMPT_TYPE)));
         dependsOn(dependencies);
         return (IDependency[])dependencies.toArray(new IDependency[dependencies.size()]);
     }

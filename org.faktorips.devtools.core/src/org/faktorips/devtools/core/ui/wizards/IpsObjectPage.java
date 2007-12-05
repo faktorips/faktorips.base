@@ -488,20 +488,36 @@ public abstract class IpsObjectPage extends WizardPage implements ValueChangeLis
         // check if an ipsobject already exists that has the same name and generates a java class
         // to avoid conflicts with java classes that have the same name
         IIpsSrcFile file = getIpsProject().findIpsSrcFile(IpsObjectType.POLICY_CMPT_TYPE, getQualifiedIpsObjectName());
-        if(file != null){
-            setErrorMessage(Messages.IpsObjectPage_msgObjectAllreadyExists);
+        if(file == null){
+            file = getIpsProject().findIpsSrcFile(IpsObjectType.PRODUCT_CMPT_TYPE_V2, getQualifiedIpsObjectName());
         }
-        file = getIpsProject().findIpsSrcFile(IpsObjectType.PRODUCT_CMPT_TYPE_V2, getQualifiedIpsObjectName());
-        if(file != null){
-            setErrorMessage(Messages.IpsObjectPage_msgObjectAllreadyExists);
+        if(file == null){
+            file = getIpsProject().findIpsSrcFile(IpsObjectType.TABLE_STRUCTURE, getQualifiedIpsObjectName());
         }
-        file = getIpsProject().findIpsSrcFile(IpsObjectType.TABLE_STRUCTURE, getQualifiedIpsObjectName());
-        if(file != null){
-            setErrorMessage(Messages.IpsObjectPage_msgObjectAllreadyExists);
+        if(file == null){
+            file = getIpsProject().findIpsSrcFile(IpsObjectType.TEST_CASE_TYPE, getQualifiedIpsObjectName());
         }
-        file = getIpsProject().findIpsSrcFile(IpsObjectType.TEST_CASE_TYPE, getQualifiedIpsObjectName());
         if(file != null){
-            setErrorMessage(Messages.IpsObjectPage_msgObjectAllreadyExists);
+                StringBuffer msg = new StringBuffer();
+                msg.append(Messages.IpsObjectPage_msgIpsObjectAlreadyExists1);
+                msg.append(' ');
+                if(file.getIpsObjectType().equals(getIpsObjectType())){
+                    msg.append(Messages.IpsObjectPage_msgIpsObjectAlreadyExists2);
+                    msg.append(' ');
+                    msg.append(getIpsObjectType().getName());
+                } else {
+                    msg.append(Messages.IpsObjectPage_msgIpsObjectAlreadyExists3);
+                }
+                msg.append(' ');
+                msg.append(Messages.IpsObjectPage_msgIpsObjectAlreadyExists4);
+                msg.append(' ');
+                if(getIpsProject() != null && !getIpsProject().equals(file.getIpsProject())){
+                    msg.append(Messages.IpsObjectPage_msgIpsObjectAlreadyExists5);
+                    msg.append(' ');
+                    msg.append(file.getIpsProject().getName());
+                }
+                msg.append('.');
+                setErrorMessage(msg.toString());
         }
 	}
     

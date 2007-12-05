@@ -65,6 +65,8 @@ public class Messages extends NLS {
     public static String Method_msg_abstractMethodError;
 	public static String Parameter_msg_NameEmpty;
 	public static String Parameter_msg_InvalidParameterName;
+    public static String Type_msgOtherTypeWithSameQNameInDependentProject;
+    public static String Type_msgOtherTypeWithSameQNameInSameProject;
 
 
 

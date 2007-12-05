@@ -75,6 +75,10 @@ public interface IType extends IIpsObject, Datatype {
      */
     public final static String MSGCODE_MUST_SPECIFY_DERIVED_UNION = MSGCODE_PREFIX + "MustSpecifyDerivedUnion"; //$NON-NLS-1$
 
+    public final static String MSGCODE_OTHER_TYPE_WITH_SAME_NAME_EXISTS = MSGCODE_PREFIX + "OtherTypeWithSameNameExists"; //$NON-NLS-1$
+
+    public final static String MSGCODE_OTHER_TYPE_WITH_SAME_NAME_IN_DEPENDENT_PROJECT_EXISTS = MSGCODE_PREFIX + "OtherTypeWithSameNameInDependentProjectExists"; //$NON-NLS-1$
+
     /**
      * Returns <code>true</code> if this is an abstract type, <code>false</code> otherwise.
      */

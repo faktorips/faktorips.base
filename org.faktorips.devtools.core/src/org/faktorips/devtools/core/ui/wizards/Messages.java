@@ -30,6 +30,11 @@ public class Messages extends NLS {
         NLS.initializeMessages(BUNDLE_NAME, Messages.class);
     }
 
+    public static String IpsObjectPage_msgIpsObjectAlreadyExists1;
+    public static String IpsObjectPage_msgIpsObjectAlreadyExists2;
+    public static String IpsObjectPage_msgIpsObjectAlreadyExists3;
+    public static String IpsObjectPage_msgIpsObjectAlreadyExists4;
+    public static String IpsObjectPage_msgIpsObjectAlreadyExists5;
     public static String NewIpsObjectWizard_title;
     public static String IpsObjectPage_msgNew; 
     public static String IpsObjectPage_labelSrcFolder;
@@ -38,7 +43,6 @@ public class Messages extends NLS {
     public static String IpsObjectPage_msgRootMissing;
     public static String IpsObjectPage_msgRootNoIPSSrcFolder;
     public static String IpsObjectPage_msgPackageMissing;
-    public static String IpsObjectPage_msgObjectAllreadyExists;
     public static String IpsObjectPage_msgRootRequired;
     public static String ResultDisplayer_Errors;
     public static String ResultDisplayer_Informations;

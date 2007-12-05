@@ -1478,7 +1478,7 @@ public class IpsProject extends IpsElement implements IIpsProject {
         
         IIpsProject[] referencedProjects = getReferencedIpsProjects();
         for (int i = 0; i < referencedProjects.length; i++) {
-            if (! referencedProjects[i].isProductDefinitionProject()){
+            if (!isProductDefinitionProject() || !referencedProjects[i].isProductDefinitionProject()){
                 continue;
             }
             IIpsArtefactBuilderSet builderSet = referencedProjects[i].getIpsArtefactBuilderSet();

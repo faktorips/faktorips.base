@@ -369,6 +369,7 @@ public class PolicyCmptType extends Type implements IPolicyCmptType {
     protected void validateThis(MessageList list, IIpsProject ipsProject) throws CoreException {
         super.validateThis(list, ipsProject);
         validateProductSide(list, ipsProject);
+        validateOtherTypeWithSameNameTypeInIpsObjectPath(IpsObjectType.PRODUCT_CMPT_TYPE_V2, list, ipsProject);
     }
 
     private void validateProductSide(MessageList list, IIpsProject ipsProject) throws CoreException {
@@ -400,6 +401,7 @@ public class PolicyCmptType extends Type implements IPolicyCmptType {
             }
         }
     }
+
 
     /**
      * {@inheritDoc}
@@ -476,6 +478,8 @@ public class PolicyCmptType extends Type implements IPolicyCmptType {
         if(!StringUtils.isEmpty(getProductCmptType())){
             dependencies.add(IpsObjectDependency.createReferenceDependency(getQualifiedNameType(), new QualifiedNameType(getProductCmptType(), IpsObjectType.PRODUCT_CMPT_TYPE_V2)));
         }
+        //to force a check is a product component type exists with the same qualified name
+        dependencies.add(IpsObjectDependency.createReferenceDependency(getQualifiedNameType(), new QualifiedNameType(getQualifiedName(), IpsObjectType.PRODUCT_CMPT_TYPE_V2)));
         dependsOn(dependencies);
         return (IDependency[])dependencies.toArray(new IDependency[dependencies.size()]);
     }
