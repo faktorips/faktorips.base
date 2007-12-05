@@ -108,7 +108,7 @@ public class IpsModel extends IpsElement implements IIpsModel, IResourceChangeLi
     private Set changeListeners = new HashSet(100);
 
     // set of modifcation status change listeners
-    private Set modificationStatusChangeListeners;
+    private Set modificationStatusChangeListeners = new HashSet(100);
 
     // a map that contains per thread if changes should be broadcasted to the registered listeners
     // or squeezed.

@@ -44,8 +44,6 @@ public class Messages extends NLS {
 
     public static String ProductCmptType_policyCmptTypeDoesNotSpecifyThisType;
 
-    public static String ProductCmptType_TypeCantConfigureAPolicyCmptTypeIfSupertypeDoesNot;
-
     public static String ProductCmptType_TypeMustConfigureAPolicyCmptTypeIfSupertypeDoes;
 
     public static String ProductCmptTypeMethod_FormulaNameIsMissing;

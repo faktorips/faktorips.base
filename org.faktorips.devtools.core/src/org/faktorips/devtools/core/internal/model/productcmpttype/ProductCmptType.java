@@ -417,11 +417,6 @@ public class ProductCmptType extends Type implements IProductCmptType {
     }
 
     private void validatePolicyCmptTypeReference(IProductCmptType supertype, IIpsProject ipsProject, MessageList list) throws CoreException {
-        if (supertype!=null && !supertype.isConfigurationForPolicyCmptType()) {
-            String text = Messages.ProductCmptType_TypeCantConfigureAPolicyCmptTypeIfSupertypeDoesNot;
-            list.add(new Message(IProductCmptType.MSGCODE_MUST_HAVE_SAME_VALUE_FOR_CONFIGURES_POLICY_CMPT_TYPE, text, Message.ERROR, this, IProductCmptType.PROPERTY_CONFIGURATION_FOR_POLICY_CMPT_TYPE));
-            return;
-        } 
         IPolicyCmptType policyCmptTypeObj = findPolicyCmptType(ipsProject);
         if (policyCmptTypeObj==null) {
             String text = NLS.bind(Messages.ProductCmptType_PolicyCmptTypeDoesNotExist, policyCmptType);
