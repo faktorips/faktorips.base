@@ -18,7 +18,6 @@
 package org.faktorips.devtools.core.internal.model.ipsproject;
 
 import org.faktorips.devtools.core.AbstractIpsPluginTest;
-import org.faktorips.devtools.core.internal.model.ipsproject.IpsArtefactBuilderSetConfig;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 

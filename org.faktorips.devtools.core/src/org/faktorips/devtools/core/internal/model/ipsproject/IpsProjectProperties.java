@@ -735,8 +735,20 @@ public class IpsProjectProperties implements IIpsProjectProperties {
         + "one to the log4j framework. Java util logging is specified by the id=\"org.faktorips.devtools.core.javaUtilLoggingConnector\"" + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$
         + "The log4j framework is specified by the id=\"org.faktorips.devtools.core.log4jLoggingConnector\"" + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$
         + " " + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$
-        + "<IpsArtefactBuilderSet id=\"org.faktorips.devtools.stdbuilder.ipsstdbuilderset\" " + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$
-        + "loggingFrameworkConnectorId=\"org.faktorips.devtools.core.javaUtilLoggingConnector\" />" + SystemUtils.LINE_SEPARATOR; //$NON-NLS-1$
+        + "<IpsArtefactBuilderSet id=\"org.faktorips.devtools.stdbuilder.ipsstdbuilderset\" "
+        + "loggingFrameworkConnectorId=\"org.faktorips.devtools.core.javaUtilLoggingConnector\"/> " + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$
+        + " " + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$
+        + "To enable logging for the standard builder set the following configuration has to be set.:" + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$
+        + "     <IpsArtefactBuilderSetConfig>" + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$
+        + "         <Property name=\"generateLoggingStatements\" value=\"true\"/>" + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$ 
+        + "     </IpsArtefactBuilderSetConfig>" + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$
+        + " " + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$
+        + "To enable the generation of a change listerner mechanism with the standard build set add the following configuration: " + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$
+        + "     <IpsArtefactBuilderSetConfig>" + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$
+        + "         <Property name=\"generateChangeListener\" value=\"true\"/>" + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$ 
+        + "     </IpsArtefactBuilderSetConfig>" + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$
+        + "</IpsArtefactBuilderSet>" 
+        + SystemUtils.LINE_SEPARATOR;
         createDescriptionComment(s, parentEl);
     }
     

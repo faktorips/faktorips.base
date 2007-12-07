@@ -21,7 +21,6 @@ import java.util.Locale;
 
 import junit.framework.TestCase;
 
-import org.faktorips.devtools.core.internal.model.ipsproject.ChangesOverTimeNamingConvention;
 import org.faktorips.devtools.core.model.ipsproject.IChangesOverTimeNamingConvention;
 
 /**

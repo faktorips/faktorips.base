@@ -18,14 +18,22 @@
 package org.faktorips.devtools.core.internal.model.productcmpttype;
 
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 import java.util.Map;
 
 import org.eclipse.core.runtime.CoreException;
+import org.faktorips.datatype.Datatype;
 import org.faktorips.devtools.core.AbstractIpsPluginTest;
 import org.faktorips.devtools.core.internal.model.ipsproject.IpsObjectPath;
 import org.faktorips.devtools.core.internal.model.ipsproject.IpsProjectRefEntry;
 import org.faktorips.devtools.core.model.ContentChangeEvent;
 import org.faktorips.devtools.core.model.ContentsChangeListener;
+import org.faktorips.devtools.core.model.DatatypeDependency;
+import org.faktorips.devtools.core.model.DependencyType;
+import org.faktorips.devtools.core.model.IpsObjectDependency;
+import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
+import org.faktorips.devtools.core.model.ipsobject.QualifiedNameType;
 import org.faktorips.devtools.core.model.ipsproject.IIpsObjectPath;
 import org.faktorips.devtools.core.model.ipsproject.IIpsObjectPathEntry;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
@@ -38,6 +46,7 @@ import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeAttribu
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeMethod;
 import org.faktorips.devtools.core.model.productcmpttype.ITableStructureUsage;
 import org.faktorips.devtools.core.model.productcmpttype.ProdDefPropertyType;
+import org.faktorips.devtools.core.model.type.IAssociation;
 import org.faktorips.devtools.core.model.type.IAttribute;
 import org.faktorips.devtools.core.model.type.IMethod;
 import org.faktorips.devtools.core.model.type.IType;
@@ -678,6 +687,75 @@ public class ProductCmptTypeTest extends AbstractIpsPluginTest implements Conten
         assertEquals(2, productCmptType.getNumOfAttributes());
     }
 
+    public void testDependsOn() throws CoreException {
+        IPolicyCmptType a = newPolicyCmptType(ipsProject, "A");
+        IPolicyCmptType b = newPolicyCmptType(ipsProject, "B");
+        
+        IProductCmptType aProductType = a.findProductCmptType(ipsProject);
+        IProductCmptType bProductType = b.findProductCmptType(ipsProject);
+        
+        List dependencies = Arrays.asList(aProductType.dependsOn());
+        assertEquals(1, dependencies.size());
+        assertTrue(dependencies.contains(IpsObjectDependency.create(aProductType.getQualifiedNameType(), 
+                new QualifiedNameType(aProductType.getQualifiedName(), IpsObjectType.POLICY_CMPT_TYPE), 
+                DependencyType.REFERENCE)));
+
+        aProductType.setPolicyCmptType(a.getQualifiedName());
+
+        dependencies = Arrays.asList(aProductType.dependsOn());
+        assertEquals(2, dependencies.size());
+        assertTrue(dependencies.contains(IpsObjectDependency.create(aProductType.getQualifiedNameType(), 
+                new QualifiedNameType(aProductType.getQualifiedName(), IpsObjectType.POLICY_CMPT_TYPE), 
+                DependencyType.REFERENCE)));
+        assertTrue(dependencies.contains(IpsObjectDependency.create(aProductType.getQualifiedNameType(), 
+                a.getQualifiedNameType(), DependencyType.REFERENCE)));
+        
+        IAssociation aProductTypeTobProductType = aProductType.newAssociation();
+        aProductTypeTobProductType.setTarget(bProductType.getQualifiedName());
+
+        dependencies = Arrays.asList(aProductType.dependsOn());
+        assertEquals(3, dependencies.size());
+        assertTrue(dependencies.contains(IpsObjectDependency.create(aProductType.getQualifiedNameType(), 
+                new QualifiedNameType(aProductType.getQualifiedName(), IpsObjectType.POLICY_CMPT_TYPE), 
+                DependencyType.REFERENCE)));
+        assertTrue(dependencies.contains(IpsObjectDependency.create(aProductType.getQualifiedNameType(), 
+                a.getQualifiedNameType(), DependencyType.REFERENCE)));
+        assertTrue(dependencies.contains(IpsObjectDependency.create(aProductType.getQualifiedNameType(), 
+                bProductType.getQualifiedNameType(), DependencyType.REFERENCE)));
+        
+        IAttribute aAttr = aProductType.newAttribute();
+        aAttr.setDatatype(Datatype.MONEY.getQualifiedName());
+
+        dependencies = Arrays.asList(aProductType.dependsOn());
+        assertEquals(4, dependencies.size());
+        assertTrue(dependencies.contains(IpsObjectDependency.create(aProductType.getQualifiedNameType(), 
+                new QualifiedNameType(aProductType.getQualifiedName(), IpsObjectType.POLICY_CMPT_TYPE), 
+                DependencyType.REFERENCE)));
+        assertTrue(dependencies.contains(IpsObjectDependency.create(aProductType.getQualifiedNameType(), 
+                a.getQualifiedNameType(), DependencyType.REFERENCE)));
+        assertTrue(dependencies.contains(IpsObjectDependency.create(aProductType.getQualifiedNameType(), 
+                bProductType.getQualifiedNameType(), DependencyType.REFERENCE)));
+        assertTrue(dependencies.contains(new DatatypeDependency(aProductType.getQualifiedNameType(), Datatype.MONEY.getQualifiedName())));
+        
+        IMethod aMethod = aProductType.newMethod();
+        aMethod.setDatatype(Datatype.DECIMAL.getQualifiedName());
+        
+        dependencies = Arrays.asList(aProductType.dependsOn());
+        assertEquals(5, dependencies.size());
+        assertTrue(dependencies.contains(IpsObjectDependency.create(aProductType.getQualifiedNameType(), 
+                new QualifiedNameType(aProductType.getQualifiedName(), IpsObjectType.POLICY_CMPT_TYPE), 
+                DependencyType.REFERENCE)));
+        assertTrue(dependencies.contains(IpsObjectDependency.create(aProductType.getQualifiedNameType(), 
+                a.getQualifiedNameType(), DependencyType.REFERENCE)));
+        assertTrue(dependencies.contains(IpsObjectDependency.create(aProductType.getQualifiedNameType(), 
+                bProductType.getQualifiedNameType(), DependencyType.REFERENCE)));
+        assertTrue(dependencies.contains(new DatatypeDependency(aProductType.getQualifiedNameType(), Datatype.MONEY.getQualifiedName())));
+        assertTrue(dependencies.contains(new DatatypeDependency(aProductType.getQualifiedNameType(), Datatype.DECIMAL.getQualifiedName())));
+        
+
+
+    }
+    
     public void testMoveAttributes() {
         IProductCmptTypeAttribute a1 = productCmptType.newProductCmptTypeAttribute();
         IProductCmptTypeAttribute a2 = productCmptType.newProductCmptTypeAttribute();
