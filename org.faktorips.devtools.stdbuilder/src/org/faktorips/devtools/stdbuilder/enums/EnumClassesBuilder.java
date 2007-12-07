@@ -71,7 +71,7 @@ public class EnumClassesBuilder extends DefaultJavaSourceFileBuilder {
 
     protected String generate() throws CoreException{
         ITableStructure tableStructure = getTableContents().findTableStructure(getIpsProject());
-        if(tableStructure != null && !tableStructure.isModelEnumType()){
+        if(tableStructure == null || !tableStructure.isModelEnumType()){
             return null;
         }
         return super.generate();
