@@ -19,6 +19,7 @@ import java.io.ObjectOutputStream;
 import org.eclipse.core.resources.ISaveContext;
 import org.eclipse.core.resources.ISaveParticipant;
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.IStatus;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.IpsStatus;
 import org.faktorips.devtools.core.internal.model.IpsModel;
@@ -61,7 +62,7 @@ public class DependencyGraphPersistenceManager implements ISaveParticipant {
             graph.setIpsProject(project);
             return graph;
         } catch (Exception e) {
-            IpsPlugin.log(new IpsStatus("An Exception occured while trying to establish the last state of the dependency graph for the project " + project.getName(), e)); //$NON-NLS-1$
+            IpsPlugin.log(new IpsStatus(IStatus.WARNING, "An Exception occured while trying to establish the last state of the dependency graph for the project " + project.getName(), e)); //$NON-NLS-1$
             return new DependencyGraph(project);
         } finally {
             if (ois != null) {
@@ -126,7 +127,7 @@ public class DependencyGraphPersistenceManager implements ISaveParticipant {
             os.flush();
             os.close();
         } catch (Exception e) {
-            IpsPlugin.log(new IpsStatus("Unable to save dependency graph file " + file.getAbsolutePath(), e)); //$NON-NLS-1$
+            IpsPlugin.log(new IpsStatus(IStatus.WARNING, "Unable to save dependency graph file " + file.getAbsolutePath(), e)); //$NON-NLS-1$
         } finally {
             if (os != null) {
                 try {
