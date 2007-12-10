@@ -25,6 +25,8 @@ import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.NullProgressMonitor;
+import org.faktorips.devtools.core.IpsPlugin;
+import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 
 /**
  * Implements a custom Ant-Task, which triggers a full build on the current Workspace. Alternatively
@@ -61,12 +63,24 @@ public class FullBuildTask extends AbstractIpsTask {
         // Create ProgressMonitor
         IProgressMonitor monitor = new NullProgressMonitor();
 
+        
         IProject projects[] = null;
         if (eclipseProjects.isEmpty()) {
-            workspace.build(IncrementalProjectBuilder.FULL_BUILD, monitor);
-
             // Iterate over Projects in Workspace to find Warning and Errormarkers
             projects = workspace.getRoot().getProjects();
+            if(projects.length > 0){
+                System.out.println("The following IPS-Projects are about to be built: ");
+            }
+            for (int i = 0; i < projects.length; i++) {
+                IIpsProject ipsProject = IpsPlugin.getDefault().getIpsModel().getIpsProject(projects[i].getName());
+                if(ipsProject.exists()){
+                    System.out.println("IPS-Project: " + ipsProject.getName() + ", IPS-Builder Set: " + 
+                            ipsProject.getIpsArtefactBuilderSet().getId() + ", Version: " + 
+                            ipsProject.getIpsArtefactBuilderSet().getVersion());
+                }
+            }
+            workspace.build(IncrementalProjectBuilder.FULL_BUILD, monitor);
+
         } else {
             projects = buildEclipseProjects(workspace);
         }
@@ -83,9 +97,15 @@ public class FullBuildTask extends AbstractIpsTask {
                 IProject project = workspace.getRoot().getProject(name);
                 if (project.exists()) {
                     existingProjects.add(project);
-                    System.out.println("FullBuildTask: start buidling project " + project.getName());
+                    System.out.print("start building project: " + project.getName());
+                    IIpsProject ipsProject = IpsPlugin.getDefault().getIpsModel().getIpsProject(project.getName());
+                    if(ipsProject.exists()){
+                        System.out.println(", Faktor-IPS builder set: " + ipsProject.getIpsArtefactBuilderSet().getId() + ", version: " + ipsProject.getIpsArtefactBuilderSet().getVersion());
+                    } else {
+                        System.out.println();
+                    }
                     project.build(IncrementalProjectBuilder.FULL_BUILD, null);
-                    System.out.println("FullBuildTask: finished buidling project " + project.getName());
+                    System.out.println("finished building project " + project.getName());
                 } else {
                     logProblem(project, IMarker.SEVERITY_WARNING, "Unable to locate the project " + project.getName()
                             + "within the workspace. The project will be skipped.");
