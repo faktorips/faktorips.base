@@ -215,11 +215,6 @@ public abstract class IpsObjectEditor extends FormEditor
         }
         
         setDataChangeable(computeDataChangeableState());
-
-        ResourcesPlugin.getWorkspace().addResourceChangeListener(IpsObjectEditor.this);
-        IpsPlugin.getDefault().getIpsModel().addChangeListener(IpsObjectEditor.this);
-        IpsPlugin.getDefault().getIpsModel().addModifcationStatusChangeListener(IpsObjectEditor.this);
-        IpsPlugin.getDefault().getIpsPreferences().addChangeListener(IpsObjectEditor.this);
         if (TRACE) {
             logMethodFinished("init"); //$NON-NLS-1$
         }
@@ -262,6 +257,14 @@ public abstract class IpsObjectEditor extends FormEditor
             IpsPlugin.log(e);
             throw new PartInitException(e.getMessage());
         }
+    }
+    
+    protected void createPages() {
+        super.createPages();
+        ResourcesPlugin.getWorkspace().addResourceChangeListener(IpsObjectEditor.this);
+        IpsPlugin.getDefault().getIpsModel().addChangeListener(IpsObjectEditor.this);
+        IpsPlugin.getDefault().getIpsModel().addModifcationStatusChangeListener(IpsObjectEditor.this);
+        IpsPlugin.getDefault().getIpsPreferences().addChangeListener(IpsObjectEditor.this);
     }
     
     /**
