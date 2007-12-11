@@ -136,6 +136,7 @@ public class DynamicValueDatatype extends GenericValueDatatype {
 
 	public void setAdaptedClass(Class clazz) {
 		this.adaptedClass = clazz;
+        this.className = clazz.getName();
 	}
 
 	public String getAdaptedClassName() {

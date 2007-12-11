@@ -73,7 +73,7 @@ public class IpsSrcFileTest extends AbstractIpsPluginTest implements IModificati
         parsableFile.getIpsModel().addChangeListener(this);
     }
     
-    protected void tearDown() throws Exception {
+    protected void tearDownExtension() throws Exception {
         parsableFile.getIpsModel().removeModificationStatusChangeListener(this);
         parsableFile.getIpsModel().removeChangeListener(this);
     }

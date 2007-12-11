@@ -99,10 +99,6 @@ public class IpsPackageFragmentArbitrarySortDefinitionTest extends AbstractIpsPl
          list.clear();
     }
 
-    protected void tearDown() throws Exception {
-        super.tearDown();
-    }
-
     public void testCompare() throws CoreException {
         // not initialized
         assertTrue((sorter.compare("", "") == 0));

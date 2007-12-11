@@ -52,8 +52,7 @@ public class SimpleDialogTest extends AbstractIpsPluginTest implements ILogListe
     /**
      * {@inheritDoc}
      */
-    protected void tearDown() throws Exception {
-        super.tearDown();
+    protected void tearDownExtension() throws Exception {
         plugin.getLog().removeLogListener(this);
     }
 

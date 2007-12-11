@@ -20,7 +20,9 @@ package org.faktorips.devtools.core;
 import java.beans.PropertyDescriptor;
 import java.io.ByteArrayInputStream;
 import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.GregorianCalendar;
@@ -56,10 +58,9 @@ import org.eclipse.jdt.core.search.SearchPattern;
 import org.eclipse.jdt.core.search.TypeNameRequestor;
 import org.eclipse.jdt.launching.JavaRuntime;
 import org.faktorips.devtools.core.internal.model.DynamicEnumDatatype;
+import org.faktorips.devtools.core.internal.model.DynamicValueDatatype;
 import org.faktorips.devtools.core.internal.model.IpsModel;
 import org.faktorips.devtools.core.internal.model.ipsproject.IpsPackageFragment;
-import org.faktorips.devtools.core.internal.model.ipsproject.IpsProject;
-import org.faktorips.devtools.core.internal.model.ipsproject.IpsProjectProperties;
 import org.faktorips.devtools.core.internal.model.pctype.PolicyCmptType;
 import org.faktorips.devtools.core.internal.model.productcmpt.ProductCmpt;
 import org.faktorips.devtools.core.internal.model.productcmpttype.ProductCmptType;
@@ -136,6 +137,19 @@ public abstract class AbstractIpsPluginTest extends XmlAbstractTestCase {
 
 	}
 
+    protected final void tearDown() throws Exception {
+        IProject[] projects = ResourcesPlugin.getWorkspace().getRoot().getProjects();
+        for (int i = 0; i < projects.length; i++) {
+            projects[i].close(null);
+            projects[i].delete(true, true, null);
+        }
+        tearDownExtension();
+    }
+    
+    protected void tearDownExtension() throws Exception {
+        
+    }
+    
     protected void createArchive(IIpsProject projectToArchive, IFile archiveFile) throws Exception {
         File file = createFileIfNecessary(archiveFile);
 
@@ -566,12 +580,20 @@ public abstract class AbstractIpsPluginTest extends XmlAbstractTestCase {
 	 * provided to this method and an enum values is supposed to be returned by
 	 * this method</li>
 	 * </ol>
+     * @throws CoreException 
+     * @throws IOException 
 	 */
 	protected DynamicEnumDatatype[] newDefinedEnumDatatype(IIpsProject project,
-			Class[] adaptedClass) {
+			Class[] adaptedClass) throws CoreException, IOException {
 
 		ArrayList dataTypes = new ArrayList(adaptedClass.length);
-		for (int i = 0; i < adaptedClass.length; i++) {
+		IIpsProjectProperties properties = project.getProperties();
+		DynamicValueDatatype[] definedDatatypes = properties.getDefinedDatatypes();
+		for (int i = 0; i < definedDatatypes.length; i++) {
+		    dataTypes.add(definedDatatypes[i]);
+		}
+
+        for (int i = 0; i < adaptedClass.length; i++) {
 			DynamicEnumDatatype dataType = new DynamicEnumDatatype(project);
 			dataType.setAdaptedClass(adaptedClass[i]);
 			dataType.setAllValuesMethodName("getAllValues");
@@ -583,16 +605,53 @@ public abstract class AbstractIpsPluginTest extends XmlAbstractTestCase {
 			dataType.setToStringMethodName("toString");
 			dataType.setValueOfMethodName("valueOf");
 			dataTypes.add(dataType);
+            createEnumClassFileInProjectOutputLocation(project, adaptedClass[i]);
 		}
 
-		IpsProjectProperties properties = ((IpsModel) project.getIpsModel())
-				.getIpsProjectProperties((IpsProject)project);
 		DynamicEnumDatatype[] returnValue = (DynamicEnumDatatype[]) dataTypes
 				.toArray(new DynamicEnumDatatype[adaptedClass.length]);
 		properties.setDefinedDatatypes(returnValue);
+        properties.setJavaProjectContainsClassesForDynamicDatatypes(true);
+        project.setProperties(properties);
 		return returnValue;
 	}
 
+    private void createEnumClassFileInProjectOutputLocation(IIpsProject project, Class adaptedClass) throws IOException, CoreException{
+        IPath outputLocation = project.getJavaProject().getResource().getLocation().append(project.getJavaProject().getOutputLocation().removeFirstSegments(1));
+        IPath packagePath = outputLocation.append(adaptedClass.getPackage().getName().replace('.', '/'));
+        File classFileDir = packagePath.toFile();
+        if(!classFileDir.exists()){
+            classFileDir.mkdirs();
+            IPath classFilePath = outputLocation.append(adaptedClass.getName().replace('.', '/') + ".class");
+            File classFile = classFilePath.toFile();
+            if(!classFile.exists()){
+                classFile.createNewFile();
+            }
+            FileOutputStream fos = null;
+            InputStream is = null;
+            try{
+                is = adaptedClass.getClassLoader().getResourceAsStream(adaptedClass.getName().replace('.', '/') + ".class");
+                fos = new FileOutputStream(classFile);
+                int value = is.read();
+                while(value != -1){
+                    fos.write(value);
+                    value = is.read();
+                }
+            } finally {
+                try{
+                    if(fos != null){
+                        fos.close();
+                    }
+                } catch(IOException e){}
+                try{
+                    if(is != null){
+                        is.close();
+                    }
+                } catch(IOException e){}
+            }
+        }
+    }
+    
 	/**
 	 * Copies the given project properties file and the given classes to the
 	 * given project. The classes are added to the classpath of the project.

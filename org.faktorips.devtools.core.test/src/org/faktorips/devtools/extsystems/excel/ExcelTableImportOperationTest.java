@@ -121,9 +121,8 @@ public class ExcelTableImportOperationTest extends AbstractIpsPluginTest {
 
     }
 
-    protected void tearDown() throws Exception {
+    protected void tearDownExtension() throws Exception {
         file.delete();
-        super.tearDown();
     }
 
     public void testImportValid() throws Exception {

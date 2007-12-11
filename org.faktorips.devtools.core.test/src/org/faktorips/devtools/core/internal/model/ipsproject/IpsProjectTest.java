@@ -390,7 +390,7 @@ public class IpsProjectTest extends AbstractIpsPluginTest {
     	assertEquals("myBuilder", ipsProject.getProperties().getBuilderSetId());
     }
 
-    public void testGetValueDatatypes() throws CoreException {
+    public void testGetValueDatatypes() throws Exception {
     	IIpsProjectProperties props = ipsProject.getProperties();
     	props.setPredefinedDatatypesUsed(new String[]{Datatype.DECIMAL.getQualifiedName()});
         ipsProject.setProperties(props);
@@ -513,7 +513,7 @@ public class IpsProjectTest extends AbstractIpsPluginTest {
         assertNotNull(ipsProject.findValueDatatype("PaymentMode"));
     }
     
-    public void testGetDatatypeHelper() throws CoreException {
+    public void testGetDatatypeHelper() throws Exception {
     	IIpsProjectProperties props = ipsProject.getProperties();
     	props.setPredefinedDatatypesUsed(new String[]{Datatype.DECIMAL.getQualifiedName()});
         ipsProject.setProperties(props);
@@ -555,7 +555,7 @@ public class IpsProjectTest extends AbstractIpsPluginTest {
         assertEquals(Datatype.DECIMAL, arrayType.getBasicDatatype());
     }
     
-    public void testFindDatatypes() throws CoreException {
+    public void testFindDatatypes() throws Exception {
     	IIpsProjectProperties props = ipsProject.getProperties();
     	props.setPredefinedDatatypesUsed(new String[]{Datatype.DECIMAL.getQualifiedName()});
         ipsProject.setProperties(props);
@@ -637,7 +637,7 @@ public class IpsProjectTest extends AbstractIpsPluginTest {
      * Creates an ips project called RefProject that is referenced by the ips project and has 2 predefined datatypes and
      * one dynamic datatype.
      */
-    private IIpsProject createRefProject() throws CoreException {
+    private IIpsProject createRefProject() throws Exception {
         IIpsProject refProject = newIpsProject("RefProject");
     	IIpsProjectProperties props = refProject.getProperties();
     	props.setPredefinedDatatypesUsed(new String[]{Datatype.DECIMAL.getQualifiedName(), Datatype.MONEY.getQualifiedName()});
@@ -952,7 +952,7 @@ public class IpsProjectTest extends AbstractIpsPluginTest {
         assertEquals(testCase, testCases[0]);
     }
     
-    public void testFindEnumDatatypes() throws CoreException{
+    public void testFindEnumDatatypes() throws Exception{
     	newDefinedEnumDatatype(ipsProject, new Class[]{TestEnumType.class});
     	EnumDatatype[] dataType = ipsProject.findEnumDatatypes();
     	assertEquals(1, dataType.length);

@@ -248,8 +248,23 @@ public class Formula extends BaseIpsObjectPart implements IFormula {
     }
     
     private void collectEnumsAllowedInFormula(Map nameToTypeMap) throws CoreException{
+        collectEnumTypesFromAttributes(nameToTypeMap);
         collectEnumTypesFromMethod(nameToTypeMap);
         collectEnumTypesFromUsedTableStructures(nameToTypeMap);
+    }
+    
+    private void collectEnumTypesFromAttributes(Map enumTypes) throws CoreException{
+        IIpsProject ipsProject = getIpsProject();
+        IProductCmptType productCmptType = getProductCmptGeneration().getProductCmpt().findProductCmptType(ipsProject);
+        if(productCmptType != null){
+            IAttribute[] attributes = productCmptType.findAllAttributes(ipsProject);
+            for (int i = 0; i < attributes.length; i++) {
+                Datatype datatype = attributes[i].findDatatype(ipsProject);
+                if(datatype instanceof EnumDatatype){
+                    enumTypes.put(datatype.getName(), datatype);
+                }
+            }
+        }
     }
     
     private void collectEnumTypesFromMethod(Map enumtypes) throws CoreException {

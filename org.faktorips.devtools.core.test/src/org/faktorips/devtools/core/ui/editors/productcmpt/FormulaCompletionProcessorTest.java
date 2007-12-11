@@ -42,6 +42,7 @@ import org.faktorips.devtools.core.model.tablecontents.ITableContents;
 import org.faktorips.devtools.core.model.tablestructure.IColumn;
 import org.faktorips.devtools.core.model.tablestructure.ITableStructure;
 import org.faktorips.devtools.core.model.tablestructure.IUniqueKey;
+import org.faktorips.devtools.core.model.type.IAttribute;
 import org.faktorips.util.StringUtil;
 
 public class FormulaCompletionProcessorTest extends AbstractIpsPluginTest {
@@ -173,6 +174,37 @@ public class FormulaCompletionProcessorTest extends AbstractIpsPluginTest {
         assertEquals("abcparam", document.get());
     }
 
+    public void testDoComputeCompletionProposalsForProductCmptTypeAttributes() throws Exception{
+        IAttribute firstAttr = productCmptType.newAttribute();
+        firstAttr.setName("firstAttr");
+        firstAttr.setDatatype(Datatype.STRING.getQualifiedName());
+
+        IAttribute secondAttr = productCmptType.newAttribute();
+        secondAttr.setName("secondAttr");
+        secondAttr.setDatatype(Datatype.STRING.getQualifiedName());
+        
+        ArrayList results = new ArrayList();
+        processor = new FormulaCompletionProcessor(configElement);
+        processor.doComputeCompletionProposals("f", 1, results);
+        CompletionProposal proposal = (CompletionProposal)results.get(0);
+        Document document = new Document(" ");
+        proposal.apply(document);
+        assertEquals("firstAttr", document.get());
+
+        results = new ArrayList();
+        processor = new FormulaCompletionProcessor(configElement);
+        processor.doComputeCompletionProposals("s", 1, results);
+        proposal = (CompletionProposal)results.get(0);
+        document = new Document(" ");
+        proposal.apply(document);
+        assertEquals("secondAttr", document.get());
+
+        results = new ArrayList();
+        processor = new FormulaCompletionProcessor(configElement);
+        processor.doComputeCompletionProposals("k", 1, results);
+        assertEquals(0, results.size());
+    }
+    
     public void testDoComputeCompletionProposalsForPolicyCmptTypeAndProductCmptTypeParams() throws Exception{
         PolicyCmptType a = newPolicyAndProductCmptType(ipsProject, "a", "aConfigtype");
         ProductCmptType aConfig = (ProductCmptType)a.findProductCmptType(ipsProject);

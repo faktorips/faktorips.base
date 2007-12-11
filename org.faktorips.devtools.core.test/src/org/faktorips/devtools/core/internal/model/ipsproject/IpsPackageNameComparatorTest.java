@@ -44,11 +44,6 @@ public class IpsPackageNameComparatorTest extends AbstractIpsPluginTest {
         ipsRoot = (IpsPackageFragmentRoot)ipsProject.getIpsPackageFragmentRoots()[0];
     }
 
-    protected void tearDown() throws Exception {
-        super.tearDown();
-
-    }
-
     public void testCompareBasicDefaultSortOrder() throws CoreException {
 
         comparator = new IpsPackageNameComparator(true);

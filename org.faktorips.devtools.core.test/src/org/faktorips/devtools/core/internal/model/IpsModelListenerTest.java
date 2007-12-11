@@ -68,7 +68,7 @@ public class IpsModelListenerTest extends AbstractIpsPluginTest {
         
     }
     
-    protected void tearDown() {
+    protected void tearDownExtension() {
         IpsPlugin.getDefault().getIpsModel().removeChangeListener(contentChangeListener);
         IpsPlugin.getDefault().getIpsModel().removeModificationStatusChangeListener(statusChangeListener);
     }

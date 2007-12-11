@@ -27,7 +27,10 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jface.text.contentassist.CompletionProposal;
 import org.faktorips.datatype.Datatype;
 import org.faktorips.datatype.EnumDatatype;
+import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPart;
+import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.productcmpt.IFormula;
+import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
 import org.faktorips.devtools.core.model.type.IAttribute;
 import org.faktorips.devtools.core.model.type.IMethod;
 import org.faktorips.devtools.core.model.type.IParameter;
@@ -81,6 +84,7 @@ public class FormulaCompletionProcessor extends AbstractCompletionProcessor {
             addMatchingEnumValues(result, paramName, attributePrefix, replacementOffset);
         } else {
             int replacementOffset = prefix.length() - identifier.length();
+            addMatchingProductCmptTypeAttributes(result, identifier, replacementOffset);
             addMatchingParameters(result, identifier, replacementOffset);
             addMatchingFunctions(result, identifier, replacementOffset);
             addMatchingEnumTypes(result, identifier, replacementOffset);
@@ -122,22 +126,35 @@ public class FormulaCompletionProcessor extends AbstractCompletionProcessor {
         result.add(proposal);
     }
     
+    private void addMatchingProductCmptTypeAttributes(List result, String prefix, int replacementOffset) throws CoreException{
+        IIpsProject ipsProject = formula.getIpsProject();
+        IProductCmptType productCmptType = formula.findProductCmptType(formula.getIpsProject());
+        if(productCmptType != null){
+            IAttribute[] attributes = productCmptType.findAllAttributes(ipsProject);
+            for (int i = 0; i < attributes.length; i++) {
+                if(attributes[i].getName().startsWith(prefix)){
+                    addPartToResult(result, attributes[i], attributes[i].getDatatype(), replacementOffset, prefix.length());
+                }
+            }
+        }
+    }
+
+    private void addPartToResult(List result, IIpsObjectPart part, String datatype, int replacementOffset, int replacementLength) {
+        String name = part.getName();
+        String displayText = name + " - " + datatype; //$NON-NLS-1$
+        CompletionProposal proposal = new CompletionProposal(
+                name, replacementOffset, replacementLength, replacementOffset + name.length(),  
+                new DefaultLabelProvider().getImage(part), displayText, null, null);
+        result.add(proposal);
+    }
+    
     private void addMatchingParameters(List result, String prefix, int replacementOffset) {
         IParameter[] params = signature.getParameters();
         for (int i=0; i<params.length; i++) {
             if (params[i].getName().startsWith(prefix)) {
-                addParamToResult(result, params[i], replacementOffset, prefix.length());
+                addPartToResult(result, params[i], params[i].getDatatype(), replacementOffset, prefix.length());
             }
         }
-    }
-    
-    private void addParamToResult(List result, IParameter param, int replacementOffset, int replacementLength) {
-        String name = param.getName();
-        String displayText = name + " - " + param.getDatatype(); //$NON-NLS-1$
-        CompletionProposal proposal = new CompletionProposal(
-                name, replacementOffset, replacementLength, replacementOffset + name.length(),  
-                new DefaultLabelProvider().getImage(param), displayText, null, null);
-        result.add(proposal);
     }
     
     private void addMatchingFunctions(List result, String prefix, int replacementOffset) throws CoreException {

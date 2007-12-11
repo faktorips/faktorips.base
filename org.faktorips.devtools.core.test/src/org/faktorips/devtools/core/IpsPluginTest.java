@@ -48,7 +48,7 @@ public class IpsPluginTest extends AbstractIpsPluginTest {
         oldPresentationString = pref.getNullPresentation(); 
     }
     
-    protected void tearDown() {
+    protected void tearDownExtension() {
         pref.setNullPresentation(oldPresentationString);
     }
 

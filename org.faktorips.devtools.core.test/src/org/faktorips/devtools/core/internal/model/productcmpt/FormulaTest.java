@@ -165,7 +165,7 @@ public class FormulaTest extends AbstractIpsPluginTest  {
         assertEquals(1, formula.getFormulaTestCases().length);
     }
 
-    public void testGetEnumDatatypesAllowedInFormula() throws CoreException {
+    public void testGetEnumDatatypesAllowedInFormula() throws Exception {
         newDefinedEnumDatatype((IpsProject)ipsProject, new Class[]{TestEnumType.class});
         EnumDatatype testType = (EnumDatatype)ipsProject.findDatatype("TestEnumType");
         assertNotNull(testType);
@@ -239,7 +239,25 @@ public class FormulaTest extends AbstractIpsPluginTest  {
         assertEquals(testType, enumtypes[0]);
     }
     
-    public void testGetParameterIdentifiersUsedInFormula() throws CoreException {
+    public void testGetEnumDatatypesAllowedInFormulaWithProductCmptTypeAttributes() throws Exception {
+        newDefinedEnumDatatype((IpsProject)ipsProject, new Class[]{TestEnumType.class});
+        EnumDatatype testType = (EnumDatatype)ipsProject.findDatatype("TestEnumType");
+        assertNotNull(testType);
+
+        EnumDatatype[] enumtypes = formula.getEnumDatatypesAllowedInFormula();
+        assertEquals(0, enumtypes.length);
+        
+        IAttribute attribute = productCmptType.newAttribute();
+        attribute.setDatatype(testType.getQualifiedName());
+        attribute.setName("a");
+        
+        enumtypes = formula.getEnumDatatypesAllowedInFormula();
+        assertEquals(1, enumtypes.length);
+        assertEquals(testType, enumtypes[0]);
+        
+    }
+    
+    public void testGetParameterIdentifiersUsedInFormula() throws Exception {
         newDefinedEnumDatatype(ipsProject, new Class[]{TestEnumType.class});
         
         IPolicyCmptTypeAttribute attributeInput = policyCmptType.newPolicyCmptTypeAttribute();
@@ -357,7 +375,6 @@ public class FormulaTest extends AbstractIpsPluginTest  {
         assertTrue(result.successfull());
         identifierInFormula = Arrays.asList(formula.getParameterIdentifiersUsedInFormula(ipsProject));
         assertEquals(0, identifierInFormula.size());
-        
     }
     
     public void testMoveFormulaTestCases(){

@@ -80,13 +80,6 @@ public class IpsModelTest extends AbstractIpsPluginTest {
         model = (IpsModel)IpsPlugin.getDefault().getIpsModel();
     }
 
-    /*
-     * @see PluginTest#tearDown()
-     */
-    protected void tearDown() throws Exception {
-        super.tearDown();
-    }
-
     public void testCreateIpsProject() throws CoreException {
     	IProject project = newPlatformProject("TestProject");
     	IJavaProject javaProject = addJavaCapabilities(project);
