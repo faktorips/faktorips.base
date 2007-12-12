@@ -27,6 +27,23 @@ public interface ITableStructure extends IIpsObject {
     
     public final static String PROPERTY_TYPE = "tableStructureType"; //$NON-NLS-1$
 	
+    /**
+     * Prefix for all message codes of this class.
+     */
+    public final static String MSGCODE_PREFIX = "TABLESTRUCTURE-"; //$NON-NLS-1$
+
+    /**
+     * Validation message code to indicate that if table contents instances are supposed to be used in formulas it
+     * is not advisable to define more than one key since there exists more than one table function and it cannot 
+     * be determined which function is used. 
+     */
+    public final static String MSGCODE_MORE_THAN_ONE_KEY_NOT_ADVISABLE_IN_FORMULAS = MSGCODE_PREFIX + "MoreThanOneKeyNotAdvisableInFormulas"; //$NON-NLS-1$
+
+    /**
+     * Validation message code to indicate that a table structure that defines the a enum type needs two keys.
+     */
+    public final static String MSGCODE_STRUCTURE_NEEDS_TWO_KEYS_WHEN_ENUM_STRUCTURE = MSGCODE_PREFIX + "StructureNeedsTwoKeysWhenEnumStructure"; //$NON-NLS-1$
+
 	/**
 	 * Returns <code>true</code> if multiple table contents are allowed 
 	 * for this table structure, otherwise <code>false</code>.

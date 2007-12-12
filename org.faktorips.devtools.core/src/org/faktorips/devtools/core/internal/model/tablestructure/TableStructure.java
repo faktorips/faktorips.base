@@ -593,12 +593,18 @@ public class TableStructure extends IpsObject implements ITableStructure {
      */
     protected void validateThis(MessageList list, IIpsProject ipsProject) throws CoreException {
         super.validateThis(list, ipsProject);
+        IUniqueKey[] keys = getUniqueKeys();
         if(isModelEnumType()){
-            IUniqueKey[] keys = getUniqueKeys();
             if(keys.length < 2){
-                list.add(new Message("", Messages.TableStructure_needsTwoKeys, Message.ERROR, this, ITableStructure.PROPERTY_TYPE)); //$NON-NLS-1$
+                list.add(new Message(MSGCODE_STRUCTURE_NEEDS_TWO_KEYS_WHEN_ENUM_STRUCTURE, 
+                        Messages.TableStructure_needsTwoKeys, Message.ERROR, this, ITableStructure.PROPERTY_TYPE)); //$NON-NLS-1$
                 return;
             }
+            return;
+        } 
+        
+        if(keys.length > 1){
+            list.add(new Message(MSGCODE_MORE_THAN_ONE_KEY_NOT_ADVISABLE_IN_FORMULAS, Messages.TableStructure_msgMoreThanOneKeyNotAdvisableInFormulas, Message.WARNING, this));
         }
     }
 

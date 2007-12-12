@@ -62,6 +62,8 @@ public class Messages extends NLS {
 
 	public static String ForeignKey_msgKeyDatatypeMismatch;
 
+    public static String TableStructure_msgMoreThanOneKeyNotAdvisableInFormulas;
+
     public static String TableStructure_needsTwoKeys;
 
     public static String UniqueKey_datatypeMustBeString;

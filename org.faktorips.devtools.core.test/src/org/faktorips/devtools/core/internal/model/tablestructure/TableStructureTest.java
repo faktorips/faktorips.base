@@ -29,6 +29,7 @@ import org.faktorips.devtools.core.model.tablestructure.IForeignKey;
 import org.faktorips.devtools.core.model.tablestructure.ITableAccessFunction;
 import org.faktorips.devtools.core.model.tablestructure.ITableStructure;
 import org.faktorips.devtools.core.model.tablestructure.IUniqueKey;
+import org.faktorips.util.message.MessageList;
 import org.w3c.dom.Element;
 
 
@@ -38,10 +39,12 @@ import org.w3c.dom.Element;
 public class TableStructureTest extends AbstractIpsPluginTest {
     
     private TableStructure table;
+    private IIpsProject project;
+    
     
     protected void setUp() throws Exception {
         super.setUp();
-        IIpsProject project = newIpsProject("TestProject");
+        project = newIpsProject("TestProject");
         table = (TableStructure)newIpsObject(project, IpsObjectType.TABLE_STRUCTURE, "TestTable");
     }
     
@@ -253,4 +256,62 @@ public class TableStructureTest extends AbstractIpsPluginTest {
         assertEquals(3, table.getColumnIndex(column2));
     }
 
+    public void testValidateMoreThanOneKeyNotAdvisableInFormulas() throws Exception{
+        TableStructure structure = (TableStructure)newIpsObject(project, IpsObjectType.TABLE_STRUCTURE, "table");
+        
+        IColumn first = structure.newColumn();
+        first.setDatatype(Datatype.STRING.getQualifiedName());
+        first.setName("first");
+        
+        IColumn second = structure.newColumn();
+        second.setDatatype(Datatype.INTEGER.getQualifiedName());
+        second.setName("second");
+        
+        IColumn third = structure.newColumn();
+        third.setDatatype(Datatype.INTEGER.getQualifiedName());
+        third.setName("third");
+        
+        IUniqueKey firstKey = structure.newUniqueKey();
+        firstKey.addKeyItem(second.getName());
+
+        IUniqueKey secondKey = structure.newUniqueKey();
+        secondKey.addKeyItem(third.getName());
+
+        MessageList msgList = structure.validate(project);
+        assertNotNull(msgList.getMessageByCode(ITableStructure.MSGCODE_MORE_THAN_ONE_KEY_NOT_ADVISABLE_IN_FORMULAS));
+        
+        secondKey.delete();
+        
+        msgList = structure.validate(project);
+        assertNull(msgList.getMessageByCode(ITableStructure.MSGCODE_MORE_THAN_ONE_KEY_NOT_ADVISABLE_IN_FORMULAS));
+    }
+    
+    public void testValidateTwoKeysNecessaryForEnum() throws Exception{
+        TableStructure structure = (TableStructure)newIpsObject(project, IpsObjectType.TABLE_STRUCTURE, "table");
+        structure.setTableStructureType(TableStructureType.ENUMTYPE_MODEL);
+        
+        IColumn first = structure.newColumn();
+        first.setDatatype(Datatype.INTEGER.getQualifiedName());
+        first.setName("first");
+        
+        IColumn second = structure.newColumn();
+        second.setDatatype(Datatype.INTEGER.getQualifiedName());
+        second.setName("second");
+        
+        IColumn third = structure.newColumn();
+        third.setDatatype(Datatype.STRING.getQualifiedName());
+        third.setName("third");
+        
+        IUniqueKey firstKey = structure.newUniqueKey();
+        firstKey.addKeyItem(first.getName());
+
+        MessageList msgList = structure.validate(project);
+        assertNotNull(msgList.getMessageByCode(ITableStructure.MSGCODE_STRUCTURE_NEEDS_TWO_KEYS_WHEN_ENUM_STRUCTURE));
+        
+        IUniqueKey secondKey = structure.newUniqueKey();
+        secondKey.addKeyItem(second.getName());
+        
+        msgList = structure.validate(project);
+        assertNull(msgList.getMessageByCode(ITableStructure.MSGCODE_STRUCTURE_NEEDS_TWO_KEYS_WHEN_ENUM_STRUCTURE));
+    }
 }
