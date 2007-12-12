@@ -227,6 +227,10 @@ public class TableContents extends TimedIpsObject implements ITableContents {
         	String text = NLS.bind(Messages.TableContents_msgColumncountMismatch, structCols, contentCols);
         	list.add(new Message(MSGCODE_COLUMNCOUNT_MISMATCH, text, Message.ERROR, this, PROPERTY_TABLE_STRUCTURE));
         }
+        
+        if(tableStructure.isModelEnumType() && tableStructure.getName().equals(getName())){
+            list.add(new Message(MSGCODE_NAME_OF_STRUCTURE_AND_CONTENTS_NOT_THE_SAME_WHEN_ENUM, Messages.TableContents_msgNameStructureAndContentsNotSameWhenEnum, Message.ERROR, this, PROPERTY_NAME));
+        }
     }
     
     ValueDatatype[] findColumnDatatypes(ITableStructure structure, IIpsProject ipsProject) throws CoreException {

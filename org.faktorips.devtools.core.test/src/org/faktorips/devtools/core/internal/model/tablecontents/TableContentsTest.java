@@ -22,6 +22,7 @@ import java.util.List;
 import org.eclipse.core.runtime.CoreException;
 import org.faktorips.datatype.Datatype;
 import org.faktorips.devtools.core.AbstractIpsPluginTest;
+import org.faktorips.devtools.core.internal.model.tablestructure.TableStructureType;
 import org.faktorips.devtools.core.model.IDependency;
 import org.faktorips.devtools.core.model.IpsObjectDependency;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObjectGeneration;
@@ -232,5 +233,23 @@ public class TableContentsTest extends AbstractIpsPluginTest {
         table.setTableStructure("NONE");
         msgList = table.validate(project);
         assertNotNull(msgList.getMessageByCode(ITableContents.MSGCODE_UNKNWON_STRUCTURE));
+    }
+    
+    public void testValidateStructureAndContentsNameNotTheSameWhenEnum() throws Exception{
+        ITableStructure structure = (ITableStructure)newIpsObject(project, IpsObjectType.TABLE_STRUCTURE, "Enum");
+        structure.setTableStructureType(TableStructureType.ENUMTYPE_MODEL);
+        IColumn column1 = structure.newColumn();
+        column1.setDatatype(Datatype.INTEGER.getQualifiedName());
+
+        IColumn column2 = structure.newColumn();
+        column2.setDatatype(Datatype.STRING.getQualifiedName());
+        
+        ITableContents enumType = (ITableContents)newIpsObject(project, IpsObjectType.TABLE_CONTENTS, "Enum");
+        enumType.setTableStructure(structure.getQualifiedName());
+        enumType.newColumn(null);
+        enumType.newColumn(null);
+
+        MessageList msgList = enumType.validate(project);
+        assertNotNull(msgList.getMessageByCode(ITableContents.MSGCODE_NAME_OF_STRUCTURE_AND_CONTENTS_NOT_THE_SAME_WHEN_ENUM));
     }
 }

@@ -48,6 +48,12 @@ public interface ITableContents extends ITimedIpsObject, XmlSaxSupport {
     public final static String MSGCODE_COLUMNCOUNT_MISMATCH = MSGCODE_PREFIX + "ColumncountMismatch"; //$NON-NLS-1$
 
     /**
+     * Validation message code to indicate that the name of the table contents and structure cannot be the same when the structure
+     * is a enumeration table structure.
+     */
+    public final static String MSGCODE_NAME_OF_STRUCTURE_AND_CONTENTS_NOT_THE_SAME_WHEN_ENUM = MSGCODE_PREFIX + "NameOfStructureAndContentsNotTheSameWhenEnum"; //$NON-NLS-1$
+
+    /**
      * Returns the qualified name of the table structure this table contents
      * is based on.
      */

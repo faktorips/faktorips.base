@@ -39,5 +39,6 @@ public class Messages extends NLS {
     public static String Row_ValueNotParsable;
     public static String TableContents_msgMissingTablestructure;
     public static String TableContents_msgColumncountMismatch;
+    public static String TableContents_msgNameStructureAndContentsNotSameWhenEnum;
     public static String TableContentsGeneration_dublicateEnumId;
 }
