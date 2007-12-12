@@ -248,7 +248,7 @@ public class TableContentsGeneration extends IpsObjectGeneration implements ITab
             for (int i = 0; i < rows.length; i++) {
                 for (int j = i + 1; j < rows.length; j++) {
                     if(idDatatype.areValuesEqual(rows[i].getValue(0), rows[j].getValue(0))){
-                        list.add(new Message("", "There is already a value defined with the same id.", 
+                        list.add(new Message(MSGCODE_DOUBLE_ENUM_ID, Messages.TableContentsGeneration_dublicateEnumId, 
                                 Message.ERROR, new ObjectProperty[]{new ObjectProperty(rows[i], IRow.PROPERTY_VALUE, 0), 
                                 new ObjectProperty(rows[j], IRow.PROPERTY_VALUE, 0)}));
                     }
