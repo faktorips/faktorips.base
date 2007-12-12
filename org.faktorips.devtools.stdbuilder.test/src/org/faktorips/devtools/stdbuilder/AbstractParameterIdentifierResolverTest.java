@@ -20,7 +20,9 @@ package org.faktorips.devtools.stdbuilder;
 import java.util.Locale;
 
 import org.faktorips.datatype.Datatype;
+import org.faktorips.datatype.EnumDatatype;
 import org.faktorips.devtools.core.AbstractIpsPluginTest;
+import org.faktorips.devtools.core.TestEnumType;
 import org.faktorips.devtools.core.builder.AbstractParameterIdentifierResolver;
 import org.faktorips.devtools.core.builder.JavaSourceFileBuilder;
 import org.faktorips.devtools.core.model.ipsproject.IIpsArtefactBuilder;
@@ -34,6 +36,7 @@ import org.faktorips.devtools.core.model.productcmpt.IProductCmptGeneration;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeMethod;
 import org.faktorips.devtools.core.model.type.IAttribute;
+import org.faktorips.devtools.core.model.type.IParameter;
 import org.faktorips.devtools.stdbuilder.policycmpttype.PolicyCmptInterfaceBuilder;
 import org.faktorips.fl.CompilationResult;
 import org.faktorips.fl.ExprCompiler;
@@ -50,9 +53,12 @@ public class AbstractParameterIdentifierResolverTest extends AbstractIpsPluginTe
     private IPolicyCmptTypeAttribute attribute;
     private AbstractParameterIdentifierResolver resolver;
     private IIpsProject ipsProject;
+    private Locale locale;
+
 
     protected void setUp() throws Exception {
         super.setUp();
+        locale = Locale.GERMAN;
         ipsProject = this.newIpsProject();
         IIpsProjectProperties props = ipsProject.getProperties();
         props.setJavaSrcLanguage(Locale.GERMAN);
@@ -86,7 +92,6 @@ public class AbstractParameterIdentifierResolverTest extends AbstractIpsPluginTe
     }
 
     public void testCompile() throws Exception {
-        Locale locale = Locale.GERMAN;
 
         // no parameter registered => undefined identifier
         CompilationResult result = resolver.compile("identifier", locale);
@@ -158,7 +163,31 @@ public class AbstractParameterIdentifierResolverTest extends AbstractIpsPluginTe
         result = resolver.compile("a", locale);
         assertTrue(result.successfull());
         assertEquals("getA()", result.getCodeFragment().getSourcecode());
-        
     }
 
+    public void testCompileWithEnumsInWorkspaceButNotInParameters() throws Exception{
+        newDefinedEnumDatatype(ipsProject, new Class[]{TestEnumType.class});
+        EnumDatatype testType = (EnumDatatype)ipsProject.findDatatype("TestEnumType");
+        assertNotNull(testType);
+
+        CompilationResult result = resolver.compile("TestEnumType.1", locale);
+        assertTrue(result.failed());
+        assertEquals(ExprCompiler.UNDEFINED_IDENTIFIER, result.getMessages().getMessage(0).getCode());
+        
+        IParameter methodParam = method.newParameter("TestEnumType", "param0");
+        result = resolver.compile("TestEnumType.1", locale);
+        assertTrue(result.successfull());
+
+        methodParam.delete();
+        result = resolver.compile("TestEnumType.1", locale);
+        assertTrue(result.failed());
+        
+        IAttribute attr = productCmptType.newAttribute();
+        attr.setDatatype("TestEnumType");
+        attr.setName("a");
+
+        result = resolver.compile("TestEnumType.1", locale);
+        assertTrue(result.successfull());
+    }
+    
 }

@@ -33,6 +33,7 @@ import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPart;
 import org.faktorips.devtools.core.ui.controller.IpsObjectUIController;
 import org.faktorips.devtools.core.ui.controller.fields.FieldValueChangedEvent;
 import org.faktorips.devtools.core.ui.controller.fields.TextField;
+import org.faktorips.util.ArgumentCheck;
 import org.faktorips.util.memento.Memento;
 
 
@@ -44,6 +45,7 @@ public abstract class IpsPartEditDialog extends EditDialog {
     protected IpsObjectUIController uiController;
     private TextField descriptionField;
     private Memento oldState;
+    private IIpsObjectPart part;
     private boolean dirty = false;
 
     public IpsPartEditDialog(
@@ -59,8 +61,10 @@ public abstract class IpsPartEditDialog extends EditDialog {
             String windowTitle,
             boolean useTabFolder) {
         super(parentShell, windowTitle, useTabFolder);
+        ArgumentCheck.notNull(part, this);
+        this.part = part;
         uiController = createUIController(part);
-        oldState = part.getIpsObject().newMemento();
+        oldState = part.newMemento();
         dirty = part.getIpsObject().getIpsSrcFile().isDirty();
     }
     
@@ -85,7 +89,7 @@ public abstract class IpsPartEditDialog extends EditDialog {
     }
     
     private void handleAbortion() {
-		uiController.getIpsObject().setState(oldState);
+        part.setState(oldState);
 		if (!dirty) {
 			uiController.getIpsObject().getIpsSrcFile().markAsClean();
 		}
