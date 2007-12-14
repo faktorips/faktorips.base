@@ -127,16 +127,23 @@ public class ProjectSelectionPage extends WizardPage {
          */
         public Object[] getElements(Object inputElement) {
             ArrayList result = new ArrayList();
+            IIpsProject[] projects;
             try {
-                IIpsProject[] projects = IpsPlugin.getDefault().getIpsModel().getIpsProjects();
-                for (int i = 0; i < projects.length; i++) {
-                    if (!IpsPlugin.getDefault().getMigrationOperation(projects[i]).isEmpty()) {
-                        result.add(projects[i]);
-                    }
-                }
+                projects = IpsPlugin.getDefault().getIpsModel().getIpsProjects();
             }
             catch (CoreException e) {
                 IpsPlugin.log(e);
+                setMessage("An internal error occured while reading the projects", DialogPage.ERROR);
+                return new Object[0];
+            }
+            for (int i = 0; i < projects.length; i++) {
+                try {
+                    if (!IpsPlugin.getDefault().getMigrationOperation(projects[i]).isEmpty()) {
+                        result.add(projects[i]);
+                    }
+                } catch (CoreException e) {
+                    IpsPlugin.log(e);
+                }
             }
             if (result.size() == 0) {
                 setMessage(Messages.ProjectSelectionPage_msgNoProjects, DialogPage.INFORMATION);

@@ -1018,4 +1018,5 @@
       <loggingFrameworkConnector class="org.faktorips.devtools.core.builder.Log4jLoggingFrameworkConnector"/>
    </extension>
    
+   
 </plugin>
