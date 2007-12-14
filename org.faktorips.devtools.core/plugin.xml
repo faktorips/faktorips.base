@@ -760,6 +760,7 @@
             id="org.faktorips.devtools.core.ui.search.ReferenceSearchResultPage"
             searchResultClass="org.faktorips.devtools.core.ui.search.ReferenceSearchResult"/>
    </extension>
+
    <extension
          point="org.eclipse.core.runtime.contentTypes">
       <!-- the ipsSrcFile content-type will be used to open the standard text editor
@@ -768,14 +769,28 @@
             base-type="org.eclipse.core.runtime.xml"
             default-charset="UTF-8"
             id="ipsSrcFile"
-            name="Ips Source File"
+            name="IPS Source File"
             priority="normal"/>
       <content-type
             base-type="org.eclipse.core.runtime.xml"
             default-charset="UTF-8"
-            file-extensions="ipspct"
-            id="policyClass"
-            name="Policy Class"
+            file-extensions="ipsproject"
+            id="ipsProject"
+            name="IPS-Project"
+            priority="normal"/>
+      <content-type
+            base-type="org.eclipse.core.runtime.xml"
+            default-charset="UTF-8"
+            file-extensions="ipspolicycmpttype"
+            id="policyCmptType"
+            name="Policy Component Type"
+            priority="normal"/>
+      <content-type
+            base-type="org.eclipse.core.runtime.xml"
+            default-charset="UTF-8"
+            file-extensions="ipsproductcmpttype"
+            id="policyCmptType"
+            name="Product Component Type"
             priority="normal"/>
       <content-type
             base-type="org.eclipse.core.runtime.xml"
