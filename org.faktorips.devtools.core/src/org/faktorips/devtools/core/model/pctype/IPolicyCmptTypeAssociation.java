@@ -31,8 +31,8 @@ import org.faktorips.devtools.core.model.type.IAssociation;
  * the inverse relation.
  * <p>
  * In conceptual models bidirectional relations can be either assoziations or compositions. A bidirectional assoziation
- * is represented in FaktorIPS by two relations of type assoziation. A bidirectional composition is represented in 
- * FaktorIPS by one master to detail composition and one detail to master composition.
+ * is represented in Faktor-IPS by two relations of type assoziation. A bidirectional composition is represented in 
+ * Faktor-IPS by one master to detail composition and one detail to master composition.
  *
  * @author Jan Ortmann
  */

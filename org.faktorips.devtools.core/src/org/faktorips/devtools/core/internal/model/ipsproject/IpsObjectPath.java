@@ -57,7 +57,7 @@ public class IpsObjectPath implements IIpsObjectPath {
     public final static String getXmlFormatDescription() {
         return  XML_TAG_NAME + " : "  //$NON-NLS-1$
                 + SystemUtils.LINE_SEPARATOR 
-                + "The IpsObjectPath defines where FaktorIPS searches for model and product definition files/objects for this project."  //$NON-NLS-1$
+                + "The IpsObjectPath defines where Faktor-IPS searches for model and product definition files/objects for this project."  //$NON-NLS-1$
                 + SystemUtils.LINE_SEPARATOR 
                 + "Basically it is the same concept as the Java classpath." //$NON-NLS-1$
                 + SystemUtils.LINE_SEPARATOR  

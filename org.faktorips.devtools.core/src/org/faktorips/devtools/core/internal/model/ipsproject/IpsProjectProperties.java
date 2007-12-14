@@ -620,7 +620,7 @@ public class IpsProjectProperties implements IIpsProjectProperties {
         + "A strategy that defines how to name product components and what names are valid." + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$
         + "The datatypes that can be used in the model. Datatypes used in the model fall into two categeories:" + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$
         + " * Predefined datatype" + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$
-        + "   Predefined datatypes are defined by the datatype definition extension. FaktorIPS predefines datatypes for" + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$
+        + "   Predefined datatypes are defined by the datatype definition extension. Faktor-IPS predefines datatypes for" + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$
         + "   the standard Java classes like Boolean, String, Integer, etc. and some additionals, for example Money." + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$
         + "   You can add you own datatype be providing an extension and then use it from every ips project." + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$
         + " * User defined datatype (or dynamic datatype)" + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$

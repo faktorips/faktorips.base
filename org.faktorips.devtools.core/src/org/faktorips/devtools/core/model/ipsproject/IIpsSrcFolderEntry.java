@@ -20,7 +20,7 @@ package org.faktorips.devtools.core.model.ipsproject;
 import org.eclipse.core.resources.IFolder;
 
 /**
- * An object path entry that defines a folder containing FaktorIPS source files.
+ * An object path entry that defines a folder containing Faktor-IPS source files.
  * 
  * @author Jan Ortmann
  */

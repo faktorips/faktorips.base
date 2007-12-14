@@ -59,7 +59,7 @@ public class IpsSrcFolderEntry extends IpsObjectPathEntry implements IIpsSrcFold
         return "Sourcefolder:" + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$
              + "  <" + XML_ELEMENT + SystemUtils.LINE_SEPARATOR  //$NON-NLS-1$
              + "    type=\"src\"" + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$
-             + "    sourceFolder=\"model\"            Folder in the project that contains the FaktorIPS model and product definition files." + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$
+             + "    sourceFolder=\"model\"            Folder in the project that contains the Faktor-IPS model and product definition files." + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$
              + "    outputFolderMergable=\"src\"      Folder in the project where the generator puts the java source files which content will be merged with " + //$NON-NLS-1$
                                                         "the newly generated content during each build cycle." + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$
              + "    basePackageMergable=\"org.foo\"   The package prefix for all generated but mergable java files." + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$

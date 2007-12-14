@@ -29,7 +29,7 @@ import org.eclipse.jdt.core.JavaModelException;
 import org.osgi.framework.Bundle;
 
 /**
- * ClasspathVariableInitializer that initializes the FaktorIPS libraries needed at runtime.
+ * ClasspathVariableInitializer that initializes the Faktor-IPS libraries needed at runtime.
  * 
  * @author Jan Ortmann
  */

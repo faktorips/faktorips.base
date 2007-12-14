@@ -43,7 +43,7 @@ import org.eclipse.swt.graphics.Image;
  * <p>
  * While the above concepts are everywhere the same, there is no commonly
  * accepted naming standard for them. In Germany a standard has been defined by
- * the GDV as part of the standard architecture VAA. In FaktorIPS' sourcecode
+ * the GDV as part of the standard architecture VAA. In Faktor-IPS' sourcecode
  * the names are used according to the GDV definition (as described above).
  * However, as their is no widely accepted standard, this class encapsulates the
  * names used for the two concept. The names provided by the naming convention
