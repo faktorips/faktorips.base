@@ -75,7 +75,7 @@ public class IpsProjectPropertiesTest extends AbstractIpsPluginTest {
 		props.setRuntimeIdPrefix("newRuntimeIdPrefix");
         props.setDerivedUnionIsImplementedRuleEnabled(true);
 		props.setProductCmptNamingStrategy(new DateBasedProductCmptNamingStrategy(" ", "yyyy-MM", true));
-		IIpsObjectPath path = new IpsObjectPath();
+		IIpsObjectPath path = new IpsObjectPath(ipsProject);
 		path.newSourceFolderEntry(ipsProject.getProject().getFolder("model"));
 		props.setIpsObjectPath(path);
 		props.setPredefinedDatatypesUsed(new String[]{"Integer", "Boolean"});

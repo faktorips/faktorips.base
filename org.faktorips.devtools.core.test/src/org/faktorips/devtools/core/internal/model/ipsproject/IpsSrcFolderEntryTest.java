@@ -42,7 +42,7 @@ public class IpsSrcFolderEntryTest extends AbstractIpsPluginTest {
     protected void setUp() throws Exception {
         super.setUp();
         ipsProject = this.newIpsProject("TestProject");
-        path = new IpsObjectPath();
+        path = new IpsObjectPath(ipsProject);
     }
     
     public void testGetOutputFolderForGeneratedJavaFiles() {

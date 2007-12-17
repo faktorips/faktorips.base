@@ -166,7 +166,7 @@ public class AddIpsNatureAction extends ActionDelegate {
             if (!ipsModelFolder.exists()) {
                 ipsModelFolder.create(true, true, null);
             }
-            IpsObjectPath path = new IpsObjectPath();
+            IpsObjectPath path = new IpsObjectPath(ipsProject);
             path.setOutputDefinedPerSrcFolder(false);
             path.setBasePackageNameForMergableJavaClasses(basePackageName);
             path.setOutputFolderForGeneratedJavaFiles(javaSrcFolder);

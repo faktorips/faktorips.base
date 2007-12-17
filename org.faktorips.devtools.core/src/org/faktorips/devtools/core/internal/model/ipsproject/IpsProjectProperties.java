@@ -82,7 +82,7 @@ public class IpsProjectProperties implements IIpsProjectProperties {
 	private String builderSetId = ""; //$NON-NLS-1$
     private String loggingFrameworkConnectorId=""; //$NON-NLS-1$
     private IIpsArtefactBuilderSetConfig builderSetConfig = new IpsArtefactBuilderSetConfig();
-	private IIpsObjectPath path = new IpsObjectPath();
+	private IIpsObjectPath path = new IpsObjectPath(new IpsProject());
 	private String[] predefinedDatatypesUsed = new String[0];
     private DynamicValueDatatype[] definedDatatypes = new DynamicValueDatatype[0]; 
     private String runtimeIdPrefix = ""; //$NON-NLS-1$
@@ -435,7 +435,7 @@ public class IpsProjectProperties implements IIpsProjectProperties {
         if (pathEl != null) {
             path = IpsObjectPath.createFromXml(ipsProject, pathEl);
         } else {
-        	path = new IpsObjectPath();
+        	path = new IpsObjectPath(ipsProject);
         }
         Element datatypesEl = XmlUtil.getFirstElement(element, "Datatypes"); //$NON-NLS-1$
         if (datatypesEl==null) {

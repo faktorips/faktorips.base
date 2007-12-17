@@ -38,6 +38,7 @@ import org.faktorips.devtools.core.model.ipsproject.IIpsObjectPathEntry;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProjectRefEntry;
 import org.faktorips.devtools.core.model.ipsproject.IIpsSrcFolderEntry;
+import org.faktorips.util.ArgumentCheck;
 import org.faktorips.util.message.Message;
 import org.faktorips.util.message.MessageList;
 import org.w3c.dom.Document;
@@ -50,6 +51,7 @@ import org.w3c.dom.NodeList;
  * @author Jan Ortmann
  */
 public class IpsObjectPath implements IIpsObjectPath {
+    
     
     /**
      * Returns a description of the xml format.
@@ -107,6 +109,18 @@ public class IpsObjectPath implements IIpsObjectPath {
     private IFolder outputFolderDerivedSources;
     
     private String basePackageDerived = ""; //$NON-NLS-1$
+    
+    private IIpsProject ipsProject;
+    
+    
+    public IpsObjectPath(IIpsProject ipsProject){
+        ArgumentCheck.notNull(ipsProject, this);
+        this.ipsProject = ipsProject;
+    }
+    
+    public IIpsProject getIpsProject(){
+        return ipsProject;
+    }
     
     /**
      * Returns the index of the given entry.
@@ -519,7 +533,7 @@ public class IpsObjectPath implements IIpsObjectPath {
      * Creates the object path from the data stored in the xml element.
      */
     public final static IIpsObjectPath createFromXml(IIpsProject ipsProject, Element element) {
-        IpsObjectPath path = new IpsObjectPath();
+        IpsObjectPath path = new IpsObjectPath(ipsProject);
         path.setBasePackageNameForMergableJavaClasses(element.getAttribute("basePackageMergable")); //$NON-NLS-1$
         path.setBasePackageNameForDerivedJavaClasses(element.getAttribute("basePackageDerived")); //$NON-NLS-1$
         String outputFolderMergedSourcesString = element.getAttribute("outputFolderMergableSources"); //$NON-NLS-1$
@@ -552,11 +566,17 @@ public class IpsObjectPath implements IIpsObjectPath {
      */
     public MessageList validate() throws CoreException {
         MessageList list = new MessageList();
-        if (outputFolderMergableSources != null) {
-            list.add(validateFolder(outputFolderMergableSources));
-        }
-        if (outputFolderDerivedSources != null) {
-            list.add(validateFolder(outputFolderDerivedSources));
+        if(!isOutputDefinedPerSrcFolder()){
+            if (outputFolderMergableSources == null) {
+                list.add(new Message(MSGCODE_MERGABLE_OUTPUT_FOLDER_NOT_SPECIFIED, NLS.bind(Messages.IpsObjectPath_msgOutputFolderMergableMissing, getIpsProject()), Message.ERROR));
+            } else {
+                list.add(validateFolder(outputFolderMergableSources));
+            }
+            if (outputFolderDerivedSources == null) {
+                list.add(new Message(MSGCODE_DERIVED_OUTPUT_FOLDER_NOT_SPECIFIED, NLS.bind(Messages.IpsObjectPath_msgOutputFolderDerivedMissing, getIpsProject()), Message.ERROR));
+            } else {
+                list.add(validateFolder(outputFolderDerivedSources));
+            }
         }
         IIpsSrcFolderEntry[] srcEntries = getSourceFolderEntries();
         if(srcEntries.length == 0){

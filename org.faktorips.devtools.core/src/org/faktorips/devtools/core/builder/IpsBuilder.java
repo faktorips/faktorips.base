@@ -144,9 +144,13 @@ public class IpsBuilder extends IncrementalProjectBuilder {
     private boolean checkIpsProjectBeforeBuild(IProject project, IIpsProject ipsProject) throws CoreException{
         project.deleteMarkers(IpsPlugin.PROBLEM_MARKER, true, 0);
         MessageList list = ipsProject.validate();
-        createMarkersFromMessageList(project, list, IpsPlugin.PROBLEM_MARKER);
+        IResource markedResource = ipsProject.getIpsProjectPropertiesFile();
+        if(!markedResource.exists()){
+            markedResource = project;
+        }
+        createMarkersFromMessageList(markedResource, list, IpsPlugin.PROBLEM_MARKER);
         if (!getIpsProject().canBeBuild()) {
-            IMarker marker = getProject().createMarker(IpsPlugin.PROBLEM_MARKER);
+            IMarker marker = markedResource.createMarker(IpsPlugin.PROBLEM_MARKER);
             String msg = Messages.IpsBuilder_msgInvalidProperties;
             updateMarker(marker, msg, IMarker.SEVERITY_ERROR);
             return false;
@@ -332,7 +336,7 @@ public class IpsBuilder extends IncrementalProjectBuilder {
     }
 
     private void removeEmptyFolders(IFolder parent, boolean removeThisParent) throws CoreException {
-        if (!parent.exists()) {
+        if (parent == null || !parent.exists()) {
             return;
         }
         IResource[] members = parent.members();

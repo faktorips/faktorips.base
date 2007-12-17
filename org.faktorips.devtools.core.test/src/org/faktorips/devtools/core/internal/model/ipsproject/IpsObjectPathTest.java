@@ -165,7 +165,7 @@ public class IpsObjectPathTest extends AbstractIpsPluginTest {
     
     public void testToXml() {
         IProject project = ipsProject.getProject();
-        IpsObjectPath path = new IpsObjectPath();
+        IpsObjectPath path = new IpsObjectPath(ipsProject);
         
         // test case 1: output folder and base package defined per entry
         path.setOutputDefinedPerSrcFolder(true);
@@ -183,7 +183,7 @@ public class IpsObjectPathTest extends AbstractIpsPluginTest {
         path.setEntries(new IIpsObjectPathEntry[]{entry0, entry1});
         
         Element element = path.toXml(newDocument());
-        path = new IpsObjectPath();
+        path = new IpsObjectPath(ipsProject);
         path = (IpsObjectPath)IpsObjectPath.createFromXml(ipsProject, element);
         assertTrue(path.isOutputDefinedPerSrcFolder());
         assertEquals("", path.getBasePackageNameForMergableJavaClasses());
@@ -200,7 +200,7 @@ public class IpsObjectPathTest extends AbstractIpsPluginTest {
         path.setBasePackageNameForDerivedJavaClasses("org.sample.extensions");
         path.setOutputFolderForDerivedSources(project.getFolder("derived"));
         element = path.toXml(newDocument());
-        path = new IpsObjectPath();
+        path = new IpsObjectPath(ipsProject);
         path = (IpsObjectPath)IpsObjectPath.createFromXml(ipsProject, element);
         assertFalse(path.isOutputDefinedPerSrcFolder());
         assertEquals("org.sample.generated", path.getBasePackageNameForMergableJavaClasses());
@@ -263,7 +263,7 @@ public class IpsObjectPathTest extends AbstractIpsPluginTest {
     
     public void testGetOutputFolders() {
         IProject project = ipsProject.getProject();
-        IpsObjectPath path = new IpsObjectPath();
+        IpsObjectPath path = new IpsObjectPath(ipsProject);
         IFolder out0 = project.getFolder("out0");
         IFolder ext0 = project.getFolder("ext0");
         path.setOutputFolderForGeneratedJavaFiles(out0);
@@ -309,9 +309,9 @@ public class IpsObjectPathTest extends AbstractIpsPluginTest {
         // validate missing outputFolderGenerated
         IFolder folder1 = ipsProject.getProject().getFolder("none");
         path.setOutputFolderForGeneratedJavaFiles(folder1);
+        path.setOutputDefinedPerSrcFolder(false);
         ipsProject.setProperties(props);
         ml = ipsProject.validate();
-        assertEquals(1, ml.getNoOfMessages());
         assertNotNull(ml.getMessageByCode(IIpsSrcFolderEntry.MSGCODE_MISSING_FOLDER));
 
         // validate missing outputFolderExtension
@@ -319,5 +319,47 @@ public class IpsObjectPathTest extends AbstractIpsPluginTest {
         ipsProject.setProperties(props);
         ml = ipsProject.validate();
         assertEquals(2, ml.getNoOfMessages());
+
+        //validate missing folders only when general output folder needs to be defined
+        path.setOutputDefinedPerSrcFolder(true);
+        ipsProject.setProperties(props);
+        ml = ipsProject.validate();
+        assertEquals(0, ml.getNoOfMessages());
+        
     }
+    
+    public void testValidateOutputFolderMergableAndDerivedEmpty() throws Exception{
+        MessageList ml = ipsProject.validate();
+        assertEquals(0, ml.getNoOfMessages());
+        
+        IIpsProjectProperties props = ipsProject.getProperties();
+        IIpsObjectPath path = props.getIpsObjectPath();
+        
+        ml = ipsProject.validate();
+        assertNull(ml.getMessageByCode(IIpsObjectPath.MSGCODE_MERGABLE_OUTPUT_FOLDER_NOT_SPECIFIED));
+        assertNull(ml.getMessageByCode(IIpsObjectPath.MSGCODE_DERIVED_OUTPUT_FOLDER_NOT_SPECIFIED));
+
+        path.setOutputDefinedPerSrcFolder(false);
+        path.setOutputFolderForGeneratedJavaFiles(null);
+        path.setOutputFolderForDerivedSources(null);
+        ipsProject.setProperties(props);
+        
+        ml = ipsProject.validate();
+        assertNotNull(ml.getMessageByCode(IIpsObjectPath.MSGCODE_MERGABLE_OUTPUT_FOLDER_NOT_SPECIFIED));
+        assertNotNull(ml.getMessageByCode(IIpsObjectPath.MSGCODE_DERIVED_OUTPUT_FOLDER_NOT_SPECIFIED));
+    }
+    
+    public void testConstructor(){
+        
+        try{
+            new IpsObjectPath(null);
+            fail();
+        }
+        catch(Exception e){}
+        
+        IpsProject ipsProject = new IpsProject();
+        IpsObjectPath path = new IpsObjectPath(ipsProject);
+        assertSame(ipsProject, path.getIpsProject());
+    }
+    
 }

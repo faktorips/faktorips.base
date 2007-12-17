@@ -26,6 +26,16 @@ public interface IIpsObjectPath {
      * Message code constant identifying the message of a validation rule. 
      */
     public final static String MSGCODE_SRC_FOLDER_ENTRY_MISSING  = "SourceFolderEntryMissing"; //$NON-NLS-1$
+
+    /**
+     * Message code constant that indicates that the output folder for mergable java sources is not specified.
+     */
+    public final static String MSGCODE_MERGABLE_OUTPUT_FOLDER_NOT_SPECIFIED  = "MergableOutputFolderNotSpecified"; //$NON-NLS-1$
+
+    /**
+     * Message code constant that indicates that the output folder for derived java sources is not specified.
+     */
+    public final static String MSGCODE_DERIVED_OUTPUT_FOLDER_NOT_SPECIFIED  = "DerivedOutputFolderNotSpecified"; //$NON-NLS-1$
     
     /**
      * Returns the path' entries.

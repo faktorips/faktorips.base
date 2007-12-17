@@ -50,6 +50,10 @@ public class Messages extends NLS {
 
     public static String DefaultIpsProjectNamingConventions_warning;
 
+    public static String IpsObjectPath_msgOutputFolderDerivedMissing;
+
+    public static String IpsObjectPath_msgOutputFolderMergableMissing;
+
     public static String IpsObjectPath_srcfolderentrymissing;
 
     public static String IpsPackageFragmentArbitrarySortDefinition_CommentLine;
