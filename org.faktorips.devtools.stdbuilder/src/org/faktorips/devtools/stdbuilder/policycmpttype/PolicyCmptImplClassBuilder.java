@@ -2278,7 +2278,7 @@ public class PolicyCmptImplClassBuilder extends BasePolicyCmptTypeBuilder {
         JavaCodeFragment body = new JavaCodeFragment();
         body.appendOpenBracket();
         body.append("return ");
-        if(a.isProductRelevant() && getProductCmptType()!=null) {
+        if(!a.getValueSet().getValueSetType().equals(ValueSetType.ALL_VALUES) && a.isProductRelevant() && getProductCmptType()!=null) {
             
             body.append(interfaceBuilder.getMethodNameGetProductCmptGeneration(getProductCmptType()));
             body.append("().");
