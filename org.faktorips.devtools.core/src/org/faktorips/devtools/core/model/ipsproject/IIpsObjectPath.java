@@ -104,14 +104,15 @@ public interface IIpsObjectPath {
     public void setOutputDefinedPerSrcFolder(boolean newValue);
 
     /**
-     * Returns the output folder for generated Java files used for all source folders.
+     * Returns the output folder for generated but mergable sources used for all source folders.
      */
-    public IFolder getOutputFolderForGeneratedJavaFiles();
+    public IFolder getOutputFolderForMergableSources();
 
     /**
-     * Sets the output folder where the Java source files of all source folders are generated into.
+     * Sets the output folder for generated but mergable sources. If the output folder is not
+     * defined per source folder that all mergable sources are generated into this directory.
      */
-    public void setOutputFolderForGeneratedJavaFiles(IFolder outputFolder);
+    public void setOutputFolderForMergableSources(IFolder outputFolder);
 
     /**
      * Returns all output folders specified in the path.

@@ -49,7 +49,7 @@ public class IpsSrcFolderEntryTest extends AbstractIpsPluginTest {
         IFolder src = ipsProject.getProject().getFolder("src");
         IFolder out1 = ipsProject.getProject().getFolder("out1");
         IFolder out2 = ipsProject.getProject().getFolder("out2");
-        path.setOutputFolderForGeneratedJavaFiles(out1);
+        path.setOutputFolderForMergableSources(out1);
         IIpsSrcFolderEntry entry = path.newSourceFolderEntry(src);
         entry.setSpecificOutputFolderForMergableJavaFiles(out2);
 

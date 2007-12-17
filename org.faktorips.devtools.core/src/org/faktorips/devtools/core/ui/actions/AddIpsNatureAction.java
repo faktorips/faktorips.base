@@ -169,7 +169,7 @@ public class AddIpsNatureAction extends ActionDelegate {
             IpsObjectPath path = new IpsObjectPath(ipsProject);
             path.setOutputDefinedPerSrcFolder(false);
             path.setBasePackageNameForMergableJavaClasses(basePackageName);
-            path.setOutputFolderForGeneratedJavaFiles(javaSrcFolder);
+            path.setOutputFolderForMergableSources(javaSrcFolder);
             path.setBasePackageNameForDerivedJavaClasses(basePackageName);
             if(javaSrcFolder.exists()){
                 IFolder derivedsrcFolder = javaSrcFolder.getParent().getFolder(new Path("derived")); //$NON-NLS-1$

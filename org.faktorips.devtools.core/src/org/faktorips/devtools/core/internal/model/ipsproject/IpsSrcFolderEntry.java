@@ -130,7 +130,7 @@ public class IpsSrcFolderEntry extends IpsObjectPathEntry implements IIpsSrcFold
         if (getIpsObjectPath().isOutputDefinedPerSrcFolder()) {
             return outputFolderMergable;
         }
-        return getIpsObjectPath().getOutputFolderForGeneratedJavaFiles();
+        return getIpsObjectPath().getOutputFolderForMergableSources();
     }
 
     /**

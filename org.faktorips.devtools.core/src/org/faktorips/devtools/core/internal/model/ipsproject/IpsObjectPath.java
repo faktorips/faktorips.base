@@ -301,14 +301,14 @@ public class IpsObjectPath implements IIpsObjectPath {
     /**
      * {@inheritDoc}
      */
-    public IFolder getOutputFolderForGeneratedJavaFiles() {
+    public IFolder getOutputFolderForMergableSources() {
         return outputFolderMergableSources;
     }
 
     /**
      * {@inheritDoc}
      */
-    public void setOutputFolderForGeneratedJavaFiles(IFolder outputFolder) {
+    public void setOutputFolderForMergableSources(IFolder outputFolder) {
         this.outputFolderMergableSources = outputFolder;
     }
     
@@ -538,9 +538,9 @@ public class IpsObjectPath implements IIpsObjectPath {
         path.setBasePackageNameForDerivedJavaClasses(element.getAttribute("basePackageDerived")); //$NON-NLS-1$
         String outputFolderMergedSourcesString = element.getAttribute("outputFolderMergableSources"); //$NON-NLS-1$
         if (outputFolderMergedSourcesString.equals("")) { //$NON-NLS-1$
-            path.setOutputFolderForGeneratedJavaFiles(null);
+            path.setOutputFolderForMergableSources(null);
         } else {
-            path.setOutputFolderForGeneratedJavaFiles(ipsProject.getProject().getFolder(new Path(outputFolderMergedSourcesString)));
+            path.setOutputFolderForMergableSources(ipsProject.getProject().getFolder(new Path(outputFolderMergedSourcesString)));
         }
         String outputFolderDerivedSourcesString = element.getAttribute("outputFolderDerivedSources"); //$NON-NLS-1$
         if (outputFolderDerivedSourcesString.equals("")) { //$NON-NLS-1$

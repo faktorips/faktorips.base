@@ -1045,7 +1045,7 @@ public class IpsProjectTest extends AbstractIpsPluginTest {
         if(!outMerge.exists()){
             outMerge.create(true, true, null);
         }
-        path.setOutputFolderForGeneratedJavaFiles(outMerge);
+        path.setOutputFolderForMergableSources(outMerge);
         IFolder outDerived = ipsProject.getProject().getFolder("derived");
         if(!outDerived.exists()){
             outDerived.create(true, true, null);
@@ -1134,7 +1134,7 @@ public class IpsProjectTest extends AbstractIpsPluginTest {
         if(!outputFolderMergeable.exists()){
             outputFolderMergeable.create(true, true, null);
         }
-        projectBIpsObjectPath.setOutputFolderForDerivedSources(outputFolderMergeable);
+        projectBIpsObjectPath.setOutputFolderForMergableSources(outputFolderMergeable);
 
         //for projectB the validation is expected to fail
         MessageList msgList = ipsProjectB.validate();
