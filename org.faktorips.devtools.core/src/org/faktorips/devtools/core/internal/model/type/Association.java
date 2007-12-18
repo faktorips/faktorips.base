@@ -412,6 +412,12 @@ public abstract class Association extends AtomicIpsObjectPart implements IAssoci
         if (StringUtils.isEmpty(subsettedDerivedUnion)) {
             return;
         }
+        if (subsettedDerivedUnion.equals(getName())) {
+            list.add(new Message(MSGCODE_DERIVED_UNION_SUBSET_NOT_SAME_AS_DERIVED_UNION,
+                    Messages.Association_msgDerivedUnionNotSubset, Message.ERROR, this,
+                    PROPERTY_SUBSETTED_DERIVED_UNION));
+            return;
+        }
         IAssociation unionAss = findSubsettedDerivedUnion(ipsProject);
         if (unionAss==null) {
             String text = NLS.bind(Messages.Association_msg_DerivedUnionDoesNotExist, subsettedDerivedUnion);
@@ -452,9 +458,12 @@ public abstract class Association extends AtomicIpsObjectPart implements IAssoci
         protected boolean visit(IType currentType) throws CoreException {
             IAssociation[] associations = currentType.getAssociations();
             for (int j = 0; j < associations.length; j++) {
-                if (!associations[j].isDerivedUnion())
+                if (!associations[j].isDerivedUnion()){
                     continue;
-                
+                }
+                if(associations[j].equals(Association.this)){
+                    continue;
+                }
                 IType derivedUnionTarget = associations[j].findTarget(ipsProject);
                 if (derivedUnionTarget == null)
                     continue;

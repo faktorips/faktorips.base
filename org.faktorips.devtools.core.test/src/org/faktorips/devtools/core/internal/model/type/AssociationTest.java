@@ -23,6 +23,7 @@ import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.builder.TestIpsArtefactBuilderSet;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.pctype.AssociationType;
+import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.model.type.IAssociation;
 import org.faktorips.devtools.core.model.type.IType;
 import org.faktorips.devtools.core.util.XmlUtil;
@@ -117,6 +118,10 @@ public class AssociationTest extends AbstractIpsPluginTest {
         IAssociation[] candidates = association.findDerivedUnionCandidates(ipsProject);
         assertEquals(0, candidates.length);
 
+        association.setDerivedUnion(true);
+        candidates = association.findDerivedUnionCandidates(ipsProject);
+        assertEquals(0, candidates.length);
+        
         association.setDerivedUnion(true);
         candidates = implementationRelation.findDerivedUnionCandidates(ipsProject);
         assertEquals(1, candidates.length);
@@ -291,6 +296,24 @@ public class AssociationTest extends AbstractIpsPluginTest {
         assertNotNull(ml.getMessageByCode(IAssociation.MSGCODE_TARGET_ROLE_PLURAL_MUST_BE_SET));
     }
     
+    public void testValidateDerivedUnionAndSubsetOfDerivedUnionNotTheSame() throws Exception{
+        
+        IPolicyCmptType sourceCmpt = newPolicyCmptTypeWithoutProductCmptType(ipsProject, "A");
+        IPolicyCmptType targetCmpt = newPolicyCmptTypeWithoutProductCmptType(ipsProject, "B");
+        IAssociation association = sourceCmpt.newAssociation();
+        association.setTarget(targetCmpt.getQualifiedName());
+        association.setDerivedUnion(true);
+        association.setAssociationType(AssociationType.COMPOSITION_MASTER_TO_DETAIL);
+        association.setTargetRoleSingular(targetCmpt.getQualifiedName());
+        association.setSubsettedDerivedUnion(association.getName());
+        MessageList msgList = association.validate(ipsProject);
+        assertNotNull(msgList.getMessageByCode(IAssociation.MSGCODE_DERIVED_UNION_SUBSET_NOT_SAME_AS_DERIVED_UNION));
+
+        association.setSubsettedDerivedUnion("");
+        msgList = association.validate(ipsProject);
+        assertNull(msgList.getMessageByCode(IAssociation.MSGCODE_DERIVED_UNION_SUBSET_NOT_SAME_AS_DERIVED_UNION));
+    }
+
     /**
      * Test method for {@link org.faktorips.devtools.core.internal.model.ipsobject.IpsObjectPartContainer#toXml(org.w3c.dom.Document)}.
      */
