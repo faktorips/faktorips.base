@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?><umlet_diagram><element><type>com.umlet.element.base.Relation</type><coordinates><x>80</x><y>210</y><w>460</w><h>130</h></coordinates><panel_attributes>lt=-&gt;
+m1= *
+m2=1
+r2={subsets HausratProdukt}</panel_attributes><additional_attributes>20;20;20;110;440;110</additional_attributes></element><element><type>com.umlet.element.base.Class</type><coordinates><x>520</x><y>290</y><w>230</w><h>60</h></coordinates><panel_attributes>HausratzGrunddeckungstyp
+--</panel_attributes><additional_attributes/></element><element><type>com.umlet.element.base.Relation</type><coordinates><x>510</x><y>60</y><w>40</w><h>140</h></coordinates><panel_attributes>lt=&lt;&lt;-</panel_attributes><additional_attributes>20;20;20;120</additional_attributes></element><element><type>com.umlet.element.base.Class</type><coordinates><x>400</x><y>180</y><w>230</w><h>60</h></coordinates><panel_attributes>HausratzZusatzdeckungstyp
+--
+</panel_attributes><additional_attributes/></element><element><type>com.umlet.element.base.Relation</type><coordinates><x>150</x><y>190</y><w>270</w><h>40</h></coordinates><panel_attributes>lt=-&gt;
+m1=*
+m2=*
+r2={subsets HausratProdukt}</panel_attributes><additional_attributes>20;20;250;20</additional_attributes></element><element><type>com.umlet.element.base.Class</type><coordinates><x>450</x><y>20</y><w>230</w><h>60</h></coordinates><panel_attributes>Deckungstyp
+--
+bezeichnung : String</panel_attributes><additional_attributes/></element><element><type>com.umlet.element.base.Relation</type><coordinates><x>80</x><y>60</y><w>40</w><h>140</h></coordinates><panel_attributes>lt=&lt;&lt;-
+</panel_attributes><additional_attributes>20;20;20;120</additional_attributes></element><element><type>com.umlet.element.base.Class</type><coordinates><x>10</x><y>180</y><w>160</w><h>50</h></coordinates><panel_attributes>HausratProdukt
+--</panel_attributes><additional_attributes/></element><element><type>com.umlet.element.base.Class</type><coordinates><x>10</x><y>20</y><w>160</w><h>60</h></coordinates><panel_attributes>Produkt
+--
+produktname : String</panel_attributes><additional_attributes/></element><element><type>com.umlet.element.base.Relation</type><coordinates><x>150</x><y>30</y><w>320</w><h>40</h></coordinates><panel_attributes>lt=-&gt;
+m1=*
+m2=*
+r1=/HausratProdukt {union}</panel_attributes><additional_attributes>20;20;300;20</additional_attributes></element><element><type>com.umlet.element.base.Relation</type><coordinates><x>640</x><y>60</y><w>40</w><h>250</h></coordinates><panel_attributes>lt=&lt;&lt;-</panel_attributes><additional_attributes>20;20;20;230</additional_attributes></element></umlet_diagram>
