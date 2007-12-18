@@ -116,6 +116,24 @@ public class PolicyCmptTypeTest extends AbstractIpsPluginTest implements Content
         assertNotNull(result.getMessageByCode(IPolicyCmptType.MSGCODE_PRODUCT_CMPT_TYPE_DOES_NOT_CONFIGURE_THIS_TYPE));
     }
     
+    public void testValidateSupertypeConfigurableForcesThisTypeConfigurable() throws Exception{
+        IPolicyCmptType superType = newPolicyAndProductCmptType(ipsProject, "SuperPolicy", "SuperProduct");
+        
+        IPolicyCmptType type = newPolicyCmptTypeWithoutProductCmptType(ipsProject, "Policy");
+        type.setSupertype(superType.getQualifiedName());
+        
+        MessageList msgList = type.validate(ipsProject);
+        assertNotNull(msgList.getMessageByCode(IPolicyCmptType.MSGCODE_SUPERTYPE_CONFIGURABLE_FORCES_THIS_TYPE_IS_CONFIGURABLE));
+        
+        IProductCmptType productType = newProductCmptType(ipsProject, "Product");
+        type.setConfigurableByProductCmptType(true);
+        type.setProductCmptType(productType.getQualifiedName());
+        
+        msgList = type.validate(ipsProject);
+        assertNull(msgList.getMessageByCode(IPolicyCmptType.MSGCODE_SUPERTYPE_CONFIGURABLE_FORCES_THIS_TYPE_IS_CONFIGURABLE));
+        
+    }
+    
     public void testGetOverrideCandidates() throws CoreException {
         assertEquals(0, policyCmptType.findOverrideMethodCandidates(false, ipsProject).length);
         

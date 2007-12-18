@@ -427,6 +427,13 @@ public abstract class Association extends AtomicIpsObjectPart implements IAssoci
         if (!unionAss.isDerivedUnion()) {
             String text = Messages.Association_msg_NotMarkedAsDerivedUnion;
             list.add(new Message(MSGCODE_NOT_MARKED_AS_DERIVED_UNION, text, Message.ERROR, this, PROPERTY_SUBSETTED_DERIVED_UNION)); //$NON-NLS-1$
+            return;
+        }
+        if(unionAss.isQualified() && isQualified()){
+            if(unionAss.getMaxCardinality() != getMaxCardinality()){
+                list.add(new Message(MSGCODE_SUBSET_OF_DERIVED_UNION_SAME_MAX_CARDINALITY, 
+                        Messages.Association_msgSubsetOfDerivedUnionSameMaxCardinality, Message.ERROR, this, PROPERTY_MAX_CARDINALITY));
+            }
         }
         IType unionTarget = unionAss.findTarget(ipsProject);
         if (unionTarget==null) {
@@ -438,7 +445,9 @@ public abstract class Association extends AtomicIpsObjectPart implements IAssoci
         if (targetType!=null && !targetType.isSubtypeOrSameType(unionTarget, ipsProject)) {
             String text = Messages.Association_msg_TargetNotSubclass;
             list.add(new Message(IAssociation.MSGCODE_TARGET_TYPE_NOT_A_SUBTYPE, text, Message.ERROR, this, PROPERTY_SUBSETTED_DERIVED_UNION));     //$NON-NLS-1$
+            return;
         }
+        
     }
     
     

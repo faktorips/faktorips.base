@@ -98,6 +98,12 @@ public interface IPolicyCmptType extends IType, Datatype {
      */
     public final static String MSGCODE_SUPERTYPE_NOT_PRODUCT_RELEVANT_IF_THE_TYPE_IS_PRODUCT_RELEVANT = 
         MSGCODE_PREFIX + "SupertypeNotProductRelevantIfTheTypeIsProductRelevant"; //$NON-NLS-1$
+
+    /**
+     * Validation message code to indicate that this class needs to be configurable if the super type is configurable.
+     */
+    public final static String MSGCODE_SUPERTYPE_CONFIGURABLE_FORCES_THIS_TYPE_IS_CONFIGURABLE = 
+        MSGCODE_PREFIX + "SupertypeProductRelevantForcesThisTypeIsProductRelevant"; //$NON-NLS-1$
     
     /**
      * Returns <code>true</code> if this class has a corresponding product component type,

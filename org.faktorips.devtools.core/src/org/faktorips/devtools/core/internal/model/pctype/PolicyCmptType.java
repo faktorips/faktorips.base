@@ -373,33 +373,43 @@ public class PolicyCmptType extends Type implements IPolicyCmptType {
     }
 
     private void validateProductSide(MessageList list, IIpsProject ipsProject) throws CoreException {
-        if (!isConfigurableByProductCmptType()) {
-            return;
-        }
-        if (StringUtils.isEmpty(this.productCmptType)) {
-            String text = Messages.PolicyCmptType_msg_ProductCmptTypeNameMissing;
-            list.add(new Message(MSGCODE_PRODUCT_CMPT_TYPE_NAME_MISSING, text, Message.ERROR, this,
-                    IPolicyCmptType.PROPERTY_PRODUCT_CMPT_TYPE));
-        }
-        else {
-            IProductCmptType productCmptTypeObj = (IProductCmptType)ValidationUtils.checkIpsObjectReference2(productCmptType, IpsObjectType.PRODUCT_CMPT_TYPE_V2,
-                    Messages.PolicyCmptType_productCmptType, this, IPolicyCmptType.PROPERTY_PRODUCT_CMPT_TYPE,
-                    IPolicyCmptType.MSGCODE_PRODUCT_CMPT_TYPE_NOT_FOUND, list, ipsProject);
-            if (productCmptTypeObj!=null) {
-                if (productCmptTypeObj.findPolicyCmptType(ipsProject)!=this) {
-                    String text = NLS.bind(Messages.PolicyCmptType_TheTypeDoesNotConfigureThisType, productCmptType);
-                    list.add(new Message(IPolicyCmptType.MSGCODE_PRODUCT_CMPT_TYPE_DOES_NOT_CONFIGURE_THIS_TYPE, text, Message.ERROR, this, IPolicyCmptType.PROPERTY_PRODUCT_CMPT_TYPE));
+        if (isConfigurableByProductCmptType()) {
+            if (StringUtils.isEmpty(this.productCmptType)) {
+                String text = Messages.PolicyCmptType_msg_ProductCmptTypeNameMissing;
+                list.add(new Message(MSGCODE_PRODUCT_CMPT_TYPE_NAME_MISSING, text, Message.ERROR, this,
+                        IPolicyCmptType.PROPERTY_PRODUCT_CMPT_TYPE));
+            }
+            else {
+                IProductCmptType productCmptTypeObj = (IProductCmptType)ValidationUtils.checkIpsObjectReference2(productCmptType, IpsObjectType.PRODUCT_CMPT_TYPE_V2,
+                        Messages.PolicyCmptType_productCmptType, this, IPolicyCmptType.PROPERTY_PRODUCT_CMPT_TYPE,
+                        IPolicyCmptType.MSGCODE_PRODUCT_CMPT_TYPE_NOT_FOUND, list, ipsProject);
+                if (productCmptTypeObj!=null) {
+                    if (productCmptTypeObj.findPolicyCmptType(ipsProject)!=this) {
+                        String text = NLS.bind(Messages.PolicyCmptType_TheTypeDoesNotConfigureThisType, productCmptType);
+                        list.add(new Message(IPolicyCmptType.MSGCODE_PRODUCT_CMPT_TYPE_DOES_NOT_CONFIGURE_THIS_TYPE, text, Message.ERROR, this, IPolicyCmptType.PROPERTY_PRODUCT_CMPT_TYPE));
+                    }
+                }
+            }
+            IPolicyCmptType superPolicyCmptType = (IPolicyCmptType)findSupertype(ipsProject);
+            if (superPolicyCmptType != null) {
+                if (!superPolicyCmptType.isConfigurableByProductCmptType()) {
+                    String msg = Messages.PolicyCmptType_msg_IfTheSupertypeIsNotConfigurableTheTypeCanBeConfigurable;
+                    list.add(new Message(MSGCODE_SUPERTYPE_NOT_PRODUCT_RELEVANT_IF_THE_TYPE_IS_PRODUCT_RELEVANT, msg,
+                            Message.ERROR, this, IPolicyCmptType.PROPERTY_CONFIGURABLE_BY_PRODUCTCMPTTYPE));
                 }
             }
         }
-        IPolicyCmptType superPolicyCmptType = (IPolicyCmptType)findSupertype(ipsProject);
-        if (superPolicyCmptType != null) {
-            if (!superPolicyCmptType.isConfigurableByProductCmptType()) {
-                String msg = Messages.PolicyCmptType_msg_IfTheSupertypeIsNotConfigurableTheTypeCanBeConfigurable;
-                list.add(new Message(MSGCODE_SUPERTYPE_NOT_PRODUCT_RELEVANT_IF_THE_TYPE_IS_PRODUCT_RELEVANT, msg,
-                        Message.ERROR, this, IPolicyCmptType.PROPERTY_CONFIGURABLE_BY_PRODUCTCMPTTYPE));
+        if (!isConfigurableByProductCmptType()) {
+            IPolicyCmptType superPolicyCmptType = (IPolicyCmptType)findSupertype(ipsProject);
+            if (superPolicyCmptType != null) {
+                if (superPolicyCmptType.isConfigurableByProductCmptType()) {
+                    list.add(new Message(MSGCODE_SUPERTYPE_CONFIGURABLE_FORCES_THIS_TYPE_IS_CONFIGURABLE,
+                            Messages.PolicyCmptType_msgSubtypeConfigurableWhenSupertypeConfigurable,
+                            Message.ERROR, this, IPolicyCmptType.PROPERTY_CONFIGURABLE_BY_PRODUCTCMPTTYPE));
+                }
             }
         }
+
     }
 
 

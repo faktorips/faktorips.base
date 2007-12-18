@@ -38,6 +38,8 @@ public class Messages extends NLS {
 
     public static String PolicyCmptType_msg_ProductCmptTypeNameMissing;
 
+    public static String PolicyCmptType_msgSubtypeConfigurableWhenSupertypeConfigurable;
+
     public static String PolicyCmptType_productCmptType;
 
     public static String PolicyCmptType_TheTypeDoesNotConfigureThisType;

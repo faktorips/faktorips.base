@@ -24,6 +24,7 @@ import org.faktorips.devtools.core.builder.TestIpsArtefactBuilderSet;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.pctype.AssociationType;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
+import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAssociation;
 import org.faktorips.devtools.core.model.type.IAssociation;
 import org.faktorips.devtools.core.model.type.IType;
 import org.faktorips.devtools.core.util.XmlUtil;
@@ -314,6 +315,39 @@ public class AssociationTest extends AbstractIpsPluginTest {
         assertNull(msgList.getMessageByCode(IAssociation.MSGCODE_DERIVED_UNION_SUBSET_NOT_SAME_AS_DERIVED_UNION));
     }
 
+    public void testValidateSubsetOfDerivedUnionSameMaxCardinality() throws Exception{
+
+        IPolicyCmptType sourceCmpt = newPolicyCmptTypeWithoutProductCmptType(ipsProject, "A");
+        IPolicyCmptType targetCmpt = newPolicyCmptTypeWithoutProductCmptType(ipsProject, "B");
+        IPolicyCmptTypeAssociation association = (IPolicyCmptTypeAssociation)sourceCmpt.newAssociation();
+        association.setTarget(targetCmpt.getQualifiedName());
+        association.setDerivedUnion(true);
+        association.setQualified(true);
+        association.setAssociationType(AssociationType.COMPOSITION_MASTER_TO_DETAIL);
+        association.setMaxCardinality(Integer.MAX_VALUE);
+        association.setTargetRoleSingular(targetCmpt.getQualifiedName());
+
+        IPolicyCmptType subSourceCmpt = newPolicyCmptTypeWithoutProductCmptType(ipsProject, "ASubtype");
+        subSourceCmpt.setSupertype(sourceCmpt.getQualifiedName());
+        IPolicyCmptType subTargetCmpt = newPolicyCmptTypeWithoutProductCmptType(ipsProject, "BSubtype");
+        subTargetCmpt.setSupertype(targetCmpt.getQualifiedName());
+        IPolicyCmptTypeAssociation subAssociation = (IPolicyCmptTypeAssociation)subSourceCmpt.newAssociation();
+        subAssociation.setTarget(subTargetCmpt.getQualifiedName());
+        subAssociation.setAssociationType(AssociationType.COMPOSITION_MASTER_TO_DETAIL);
+        subAssociation.setTargetRoleSingular(subTargetCmpt.getQualifiedName());
+        subAssociation.setSubsettedDerivedUnion(association.getName());
+        subAssociation.setMaxCardinality(1);
+        subAssociation.setQualified(true);
+        
+        MessageList msgList = subAssociation.validate(ipsProject);
+        assertNotNull(msgList.getMessageByCode(IAssociation.MSGCODE_SUBSET_OF_DERIVED_UNION_SAME_MAX_CARDINALITY));
+
+        subAssociation.setMaxCardinality(Integer.MAX_VALUE);
+        msgList = subAssociation.validate(ipsProject);
+        assertNull(msgList.getMessageByCode(IAssociation.MSGCODE_SUBSET_OF_DERIVED_UNION_SAME_MAX_CARDINALITY));
+
+    }
+    
     /**
      * Test method for {@link org.faktorips.devtools.core.internal.model.ipsobject.IpsObjectPartContainer#toXml(org.w3c.dom.Document)}.
      */

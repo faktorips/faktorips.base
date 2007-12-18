@@ -117,6 +117,11 @@ public interface IAssociation extends IIpsObjectPart {
      */
     public final static String MSGCODE_DERIVED_UNION_SUBSET_NOT_SAME_AS_DERIVED_UNION = MSGCODE_PREFIX + "DerivedUnionSubsetNotSameAsDerivedUnion"; //$NON-NLS-1$
 
+    /**
+     * Validation message code that indicates that a derived union cannot be its own subset. 
+     */
+    public final static String MSGCODE_SUBSET_OF_DERIVED_UNION_SAME_MAX_CARDINALITY = MSGCODE_PREFIX + "SubsetOfDerivedUnionSameMaxCardinality"; //$NON-NLS-1$
+
     
     /**
      * Given an association that is subsetting a derived union, this validation message code indicates that the association's target type 
