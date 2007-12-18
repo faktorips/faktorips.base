@@ -43,7 +43,15 @@ public class IpsStatus extends Status {
     public IpsStatus(String msg) {
         super(IStatus.ERROR, IpsPlugin.PLUGIN_ID, 0, msg, null);
     }
+
     
+    /**
+     * Creates a new status with the provided severity and message.
+     */
+    public IpsStatus(int severity, String msg) {
+        super(severity, IpsPlugin.PLUGIN_ID, 0, msg, null);
+    }
+
     /**
      * Creates a new error status based on the given message and throwable.
      */

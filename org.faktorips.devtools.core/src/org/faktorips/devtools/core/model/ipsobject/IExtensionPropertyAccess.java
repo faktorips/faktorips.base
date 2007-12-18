@@ -28,9 +28,17 @@ package org.faktorips.devtools.core.model.ipsobject;
 public interface IExtensionPropertyAccess {
 
     /**
+     * Returns true if a definition of the extension property is available in the current eclipse
+     * installation.
+     * 
+     * @param propertyId The id of an extension property.
+     * @return true if a definition of the extension property is available in the current eclipse
+     *         installation otherwise false.
+     */
+    public boolean isExtPropertyDefinitionAvailable(String propertyId);
+    
+    /**
      * Returns the object's value for extension property identified by the id.
-     * If the extension property is not defined in the current installation
-     * the method return <code>null</code>. 
      * 
      * @param propertyId The id of an extension property.
      * 

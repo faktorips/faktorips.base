@@ -19,8 +19,11 @@ package org.faktorips.devtools.core.internal.model.ipsobject;
 
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.ILogListener;
+import org.eclipse.core.runtime.IStatus;
 import org.eclipse.swt.graphics.Image;
 import org.faktorips.devtools.core.AbstractIpsPluginTest;
+import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.internal.model.IpsModel;
 import org.faktorips.devtools.core.internal.model.ipsproject.IpsProject;
 import org.faktorips.devtools.core.internal.model.pctype.PolicyCmptType;
@@ -119,6 +122,16 @@ public class IpsObjectPartContainerTest extends AbstractIpsPluginTest {
         
     }
 
+    public void testIsExtPropertyDefinitionAvailable(){
+        ExtensionPropertyDefinition extProperty0 = new StringExtensionPropertyDefinition();
+        extProperty0.setPropertyId("org.foo.prop0");
+        extProperty0.setDefaultValue("default");
+        extProperty0.setExtendedType(TestIpsObjectPartContainer.class);
+        model.addIpsObjectExtensionProperty(extProperty0);
+        assertTrue(container.isExtPropertyDefinitionAvailable("org.foo.prop0"));
+        assertFalse(container.isExtPropertyDefinitionAvailable("org.foo.prop1"));
+    }
+    
     public void testToXml_ExtensionProperties() {
 
         // no extension properties
@@ -210,7 +223,40 @@ public class IpsObjectPartContainerTest extends AbstractIpsPluginTest {
         container.initFromXml(docEl);
         assertEquals("defaultValue", container.getExtPropertyValue("org.foo.newProp"));
     }
-    
+
+    public void testInitFromXmlMissingExtPropDefinition() {
+        ExtensionPropertyDefinition extProp0 = new StringExtensionPropertyDefinition();
+        extProp0.setPropertyId("org.foo.prop0");
+        extProp0.setExtendedType(TestIpsObjectPartContainer.class);
+        extProp0.setDefaultValue("default0");
+        
+        model.addIpsObjectExtensionProperty(extProp0);
+
+        final StringBuffer buf = new StringBuffer();
+        ILogListener listener = new ILogListener(){
+
+            public void logging(IStatus status, String plugin) {
+                buf.append(status.getMessage());
+            }
+            
+        };
+        IpsPlugin.getDefault().getLog().addLogListener(listener);
+        Element docEl = getTestDocument().getDocumentElement();
+        container.initFromXml(docEl);
+        IpsPlugin.getDefault().getLog().removeLogListener(listener);
+        
+        assertTrue(buf.indexOf("Extension property") != -1);
+        assertTrue(buf.indexOf("org.foo.prop1") != -1);
+        assertTrue(buf.indexOf("is unknown") != -1);
+        assertEquals("value0", container.getExtPropertyValue("org.foo.prop0"));
+        try{
+            container.getExtPropertyValue("org.foo.prop1");
+            fail();
+        } catch(IllegalArgumentException e){
+            //because property doesn't exist
+        }
+    }
+
     public void testNewMemento() {
         Memento memento = container.newMemento();
         assertEquals(container, memento.getOriginator());        

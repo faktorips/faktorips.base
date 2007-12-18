@@ -23,6 +23,7 @@ import org.apache.commons.lang.ObjectUtils;
 import org.apache.commons.lang.StringUtils;
 import org.eclipse.core.runtime.CoreException;
 import org.faktorips.devtools.core.IpsPlugin;
+import org.faktorips.devtools.core.IpsStatus;
 import org.faktorips.devtools.core.internal.model.IpsElement;
 import org.faktorips.devtools.core.internal.model.IpsModel;
 import org.faktorips.devtools.core.internal.model.ValidationResultCache;
@@ -136,6 +137,14 @@ public abstract class IpsObjectPartContainer extends IpsElement implements IIpsO
     /**
      * {@inheritDoc}
      */
+    public boolean isExtPropertyDefinitionAvailable(String propertyId) {
+        initExtPropertiesIfNotDoneSoFar();
+        return extPropertyValues.containsKey(propertyId);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
     public void setExtPropertyValue(String propertyId, Object value) {
         checkExtProperty(propertyId);
         IExtensionPropertyDefinition property = getIpsModel().getExtensionPropertyDefinition(getClass(), propertyId, true);
@@ -203,8 +212,7 @@ public abstract class IpsObjectPartContainer extends IpsElement implements IIpsO
     }
     
     private void checkExtProperty(String propertyId) {
-        initExtPropertiesIfNotDoneSoFar();
-        if (!extPropertyValues.containsKey(propertyId)) {
+        if (!isExtPropertyDefinitionAvailable(propertyId)) {
             throw new IllegalArgumentException("Extension property " + propertyId + " is not defined for type " + getClass().getName()); //$NON-NLS-1$ //$NON-NLS-2$
         }
     }
@@ -341,7 +349,8 @@ public abstract class IpsObjectPartContainer extends IpsElement implements IIpsO
         if (StringUtils.isEmpty(isNull) || !Boolean.valueOf(isNull).booleanValue()) {
             IExtensionPropertyDefinition property = (IExtensionPropertyDefinition)extPropertyDefinitions.get(propertyId);
             if (property==null) {
-                throw new RuntimeException("Extension property " + propertyId + " for " + this + " is unknown"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+                IpsPlugin.log(new IpsStatus(IpsStatus.WARNING, "Extension property " + propertyId + " for " + this + " is unknown")); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+                return;
             }
             value = property.getValueFromXml(valueElement);
         }
