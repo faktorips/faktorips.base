@@ -20,6 +20,7 @@ package org.faktorips.devtools.core.ui.wizards;
 import java.util.List;
 
 import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang.WordUtils;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
@@ -105,7 +106,6 @@ public abstract class IpsObjectPage extends WizardPage implements ValueChangeLis
         ArgumentCheck.notNull(pageName, this);
         this.ipsObjectType = ipsObjectType;
         selectedResource = getSelectedResourceFromSelection(selection);
-        setTitle(Messages.NewIpsObjectWizard_title + ipsObjectType.getName());
     }
     
     private IResource getSelectedResourceFromSelection(IStructuredSelection selection) {
@@ -134,7 +134,7 @@ public abstract class IpsObjectPage extends WizardPage implements ValueChangeLis
     protected Control createControlInternal(Composite parent){
         UIToolkit toolkit = new UIToolkit(null);
         validateInput = false;
-        setTitle(getIpsObjectType().getName());
+        setTitle(NLS.bind(Messages.NewIpsObjectWizard_title, WordUtils.capitalize(ipsObjectType.getName())));
         setMessage(NLS.bind(Messages.IpsObjectPage_msgNew, getIpsObjectType().getName())); 
         
         // dont set the layout of the parent composite - this will lead to 

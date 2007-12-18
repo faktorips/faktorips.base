@@ -181,9 +181,7 @@ public class IpsObjectType {
 	}
 
 	/**
-	 * Returns the type's name. The name is used for example in the
-	 * QualifiedName.
-	 * This method never returns null. 
+	 * Returns the type's name. 
 	 */
 	public final String getName() {
 		return name;
