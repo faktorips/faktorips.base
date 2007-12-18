@@ -702,7 +702,7 @@
     Problem View Filter (available since Eclipse 3.2)
 -->
    <extension point="org.eclipse.ui.ide.markerSupport">
-      <problemFilter name="FaktorIps Problems" id="org.faktorips.devtools.core.problemFilter"
+      <problemFilter name="Faktor-IPS Problems" id="org.faktorips.devtools.core.problemFilter"
                 enabled="true"
                 scope="ON_ANY">
                 <selectedType markerId="org.faktorips.devtools.core.problemmarker"/>
