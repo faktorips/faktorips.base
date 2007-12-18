@@ -120,9 +120,8 @@ public class RuleFunctionsControl extends EditTableControl {
         editors[0] = null; // no editor for the message image column
         editors[1] = new UnfocusableTextCellEditor(getTable());
 		Text text= (Text)editors[1].getControl();
-		IpsObjectCompletionProcessor processor= new IpsObjectCompletionProcessor(IpsObjectType.BUSINESS_FUNCTION);
+		IpsObjectCompletionProcessor processor= new IpsObjectCompletionProcessor(getRule().getIpsProject(), IpsObjectType.BUSINESS_FUNCTION);
 		processor.setComputeProposalForEmptyPrefix(true);
-		processor.setIpsProject(getRule().getIpsProject());
 		SubjectControlContentAssistant contentAssistant= CompletionUtil.createContentAssistant(processor);
 		ContentAssistHandler.createHandlerForText(text, contentAssistant);
         editors[1].setContentAssistant(contentAssistant, 1);

@@ -106,7 +106,7 @@ public class AssociationEditDialog extends IpsPartEditDialog2 {
 
         // target
         uiToolkit.createFormLabel(workArea, Messages.AssociationEditDialog_targetLabel);
-        ProductCmptType2RefControl targetControl = new ProductCmptType2RefControl(association.getIpsProject(), workArea, uiToolkit, true);
+        ProductCmptType2RefControl targetControl = new ProductCmptType2RefControl(association.getIpsProject(), workArea, uiToolkit, false);
         bindingContext.bindContent(targetControl, association, IProductCmptTypeAssociation.PROPERTY_TARGET);
         targetControl.setFocus();
         

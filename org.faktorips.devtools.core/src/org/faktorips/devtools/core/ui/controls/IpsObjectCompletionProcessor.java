@@ -30,6 +30,7 @@ import org.faktorips.devtools.core.model.ipsobject.QualifiedNameType;
 import org.faktorips.devtools.core.model.ipsproject.IIpsPackageFragmentRoot;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.ui.AbstractCompletionProcessor;
+import org.faktorips.util.ArgumentCheck;
 import org.faktorips.util.StringUtil;
 
 
@@ -42,11 +43,15 @@ public class IpsObjectCompletionProcessor extends AbstractCompletionProcessor {
     private IpsObjectType ipsObjectType;
 
     public IpsObjectCompletionProcessor(IpsObjectRefControl control) {
+        ArgumentCheck.notNull(control);
         this.control = control;
+        this.ipsProject = control.getIpsProject();
         ipsObjectType = null;
     }
     
-    public IpsObjectCompletionProcessor(IpsObjectType type) {
+    public IpsObjectCompletionProcessor(IIpsProject ipsProject, IpsObjectType type) {
+        super(ipsProject);
+        ArgumentCheck.notNull(type);
         ipsObjectType = type;
         control = null;
     }
@@ -107,7 +112,6 @@ public class IpsObjectCompletionProcessor extends AbstractCompletionProcessor {
                     String qName = qnt.getName();
                     String displayText = qnt.getUnqualifiedName()
                             + " - " + mapDefaultPackageName(ipsSrcFiles[i].getParent().getParent().getName()); //$NON-NLS-1$
-                    // TODO: Joerg v2: getIpsObject fuer Description???
                     String description = null;
                     if (IpsObjectType.TABLE_CONTENTS != ipsSrcFiles[i].getIpsObjectType()){
                         // table contents doesn't support description, thus doen't call getIpsObject
@@ -121,22 +125,14 @@ public class IpsObjectCompletionProcessor extends AbstractCompletionProcessor {
                 }
             }
 
-            IIpsProject prj = ipsProject;
-            if (prj == null && control != null) {
-                prj = control.getIpsProject();
-            }
-            if (prj == null) {
-                return;
-            }
-
             // find packages of the project this completion processor was created in
-            IIpsPackageFragmentRoot[] roots = prj.getIpsPackageFragmentRoots();
+            IIpsPackageFragmentRoot[] roots = ipsProject.getIpsPackageFragmentRoots();
             for (int i = 0; i < roots.length; i++) {
                 matchPackages(roots[i].getIpsPackageFragments(), prefix, documentOffset, result);
             }
 
             // find packages of projects, the project of this compeltion processor refers to...
-            IIpsProject[] projects = prj.getIpsObjectPath().getReferencedIpsProjects();
+            IIpsProject[] projects = ipsProject.getIpsObjectPath().getReferencedIpsProjects();
             for (int i = 0; i < projects.length; i++) {
                 roots = projects[i].getIpsPackageFragmentRoots();
                 for (int j = 0; j < projects.length; j++) {
