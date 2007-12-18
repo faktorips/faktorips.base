@@ -110,8 +110,7 @@ public class IpsObjectCompletionProcessor extends AbstractCompletionProcessor {
                 QualifiedNameType qnt = ipsSrcFiles[i].getQualifiedNameType();
                 if (match(matchPack, matchName, qnt.getName())) {
                     String qName = qnt.getName();
-                    String displayText = qnt.getUnqualifiedName()
-                            + " - " + mapDefaultPackageName(ipsSrcFiles[i].getParent().getParent().getName()); //$NON-NLS-1$
+                    String displayText = qnt.getUnqualifiedName() + " - " + mapDefaultPackageName(ipsSrcFiles[i].getIpsPackageFragment().getName()); //$NON-NLS-1$
                     String description = null;
                     if (IpsObjectType.TABLE_CONTENTS != ipsSrcFiles[i].getIpsObjectType()){
                         // table contents doesn't support description, thus doen't call getIpsObject
@@ -125,14 +124,22 @@ public class IpsObjectCompletionProcessor extends AbstractCompletionProcessor {
                 }
             }
 
+            IIpsProject prj = ipsProject;
+            if (prj == null && control != null) {
+                prj = control.getIpsProject();
+            }
+            if (prj == null) {
+                return;
+            }
+
             // find packages of the project this completion processor was created in
-            IIpsPackageFragmentRoot[] roots = ipsProject.getIpsPackageFragmentRoots();
+            IIpsPackageFragmentRoot[] roots = prj.getIpsPackageFragmentRoots();
             for (int i = 0; i < roots.length; i++) {
                 matchPackages(roots[i].getIpsPackageFragments(), prefix, documentOffset, result);
             }
 
             // find packages of projects, the project of this compeltion processor refers to...
-            IIpsProject[] projects = ipsProject.getIpsObjectPath().getReferencedIpsProjects();
+            IIpsProject[] projects = prj.getIpsObjectPath().getReferencedIpsProjects();
             for (int i = 0; i < projects.length; i++) {
                 roots = projects[i].getIpsPackageFragmentRoots();
                 for (int j = 0; j < projects.length; j++) {
