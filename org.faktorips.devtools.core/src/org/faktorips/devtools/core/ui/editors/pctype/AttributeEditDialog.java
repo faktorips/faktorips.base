@@ -432,7 +432,7 @@ public class AttributeEditDialog extends IpsPartEditDialog2 implements ContentsC
         Memento policyCmptTypeMemento = attribute.getPolicyCmptType().newMemento();
         IProductCmptTypeMethod newMethod = productCmptType.newFormulaSignature(attribute.getName());
         String qName = attribute.getPolicyCmptType().getQualifiedName();
-        newMethod.newParameter(qName, StringUtils.uncapitalise(QNameUtil.getUnqualifiedName(qName)));
+        newMethod.newParameter(qName, StringUtils.uncapitalize(QNameUtil.getUnqualifiedName(qName)));
         attribute.setComputationMethodSignature(newMethod.getSignatureString());
         newMethod.setDatatype(attribute.getDatatype());
         int rc = openEditMethodDialog(newMethod, productCmptTypeMemento, productCmptTypeDirty);

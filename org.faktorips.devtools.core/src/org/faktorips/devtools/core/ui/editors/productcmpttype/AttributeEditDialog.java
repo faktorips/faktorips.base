@@ -31,10 +31,12 @@ import org.faktorips.datatype.ValueDatatype;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.model.ContentChangeEvent;
 import org.faktorips.devtools.core.model.ContentsChangeListener;
+import org.faktorips.devtools.core.model.ipsobject.IExtensionPropertyDefinition;
 import org.faktorips.devtools.core.model.ipsobject.Modifier;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeAttribute;
 import org.faktorips.devtools.core.model.valueset.ValueSetType;
+import org.faktorips.devtools.core.ui.ExtensionPropertyControlFactory;
 import org.faktorips.devtools.core.ui.ValueDatatypeControlFactory;
 import org.faktorips.devtools.core.ui.controller.EditField;
 import org.faktorips.devtools.core.ui.controller.IpsObjectUIController;
@@ -70,6 +72,8 @@ public class AttributeEditDialog extends IpsPartEditDialog2 implements ContentsC
     private ValueDatatype currentDatatype;
     private ValueSetType currentValueSetType;
     
+    private ExtensionPropertyControlFactory extFactory;
+
     /**
      * @param part
      * @param parentShell
@@ -86,6 +90,7 @@ public class AttributeEditDialog extends IpsPartEditDialog2 implements ContentsC
             IpsPlugin.log(e);
         }
         currentValueSetType = a.getValueSet().getValueSetType();
+        extFactory = new ExtensionPropertyControlFactory(attribute.getClass());
     }
 
     /**
@@ -107,6 +112,7 @@ public class AttributeEditDialog extends IpsPartEditDialog2 implements ContentsC
 
         Composite c = createTabItemComposite(folder, 1, false);
         Composite workArea = uiToolkit.createLabelEditColumnComposite(c);
+        extFactory.createControls(workArea, uiToolkit, attribute, IExtensionPropertyDefinition.POSITION_TOP);
 
         uiToolkit.createFormLabel(workArea, Messages.AttributeEditDialog_nameLabel);
         Text nameText = uiToolkit.createText(workArea);
@@ -146,6 +152,9 @@ public class AttributeEditDialog extends IpsPartEditDialog2 implements ContentsC
             GridData gd = (GridData)layoutData;
             gd.heightHint = 260;
         }
+        
+        extFactory.createControls(workArea, uiToolkit, attribute, IExtensionPropertyDefinition.POSITION_BOTTOM);
+        extFactory.bind(bindingContext);
         
         return c;
         

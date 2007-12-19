@@ -983,7 +983,7 @@ public class IpsModel extends IpsElement implements IIpsModel, IResourceChangeLi
         if (typeExtensionPropertiesMap == null) {
             initExtensionPropertiesFromConfiguration();
         }
-        ArrayList result = new ArrayList();
+        Set result = new HashSet();
         getIpsObjectExtensionProperties(type, includeSupertypesAndInterfaces, result);
         return (IExtensionPropertyDefinition[])result.toArray(new IExtensionPropertyDefinition[result.size()]);
     }
@@ -994,7 +994,7 @@ public class IpsModel extends IpsElement implements IIpsModel, IResourceChangeLi
     public IExtensionPropertyDefinition getExtensionPropertyDefinition(Class type,
             String propertyId,
             boolean includeSupertypesAndInterfaces) {
-        List props = new ArrayList();
+        Set props = new HashSet();
         getIpsObjectExtensionProperties(type, includeSupertypesAndInterfaces, props);
         for (Iterator it = props.iterator(); it.hasNext();) {
             IExtensionPropertyDefinition prop = (IExtensionPropertyDefinition)it.next();
@@ -1008,7 +1008,7 @@ public class IpsModel extends IpsElement implements IIpsModel, IResourceChangeLi
     /*
      * Same as above but with collection parameter result.
      */
-    private void getIpsObjectExtensionProperties(Class type, boolean includeSupertypesAndInterfaces, List result) {
+    private void getIpsObjectExtensionProperties(Class type, boolean includeSupertypesAndInterfaces, Set result) {
         List props = (List)typeExtensionPropertiesMap.get(type);
         if (props != null) {
             result.addAll(props);

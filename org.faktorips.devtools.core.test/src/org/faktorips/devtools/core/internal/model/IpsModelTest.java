@@ -20,6 +20,7 @@ package org.faktorips.devtools.core.internal.model;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import org.apache.commons.lang.StringUtils;
@@ -237,12 +238,12 @@ public class IpsModelTest extends AbstractIpsPluginTest {
         property.setPropertyId("prop1");
         property.setExtendedType(extendedClass);
         model.addIpsObjectExtensionProperty(property);
-        IExtensionPropertyDefinition[] props = model.getExtensionPropertyDefinitions(extendedClass, false);
-        assertEquals(1, props.length);
-        assertSame(property, props[0]);
-        props = model.getExtensionPropertyDefinitions(extendedClass, true);
-        assertEquals(1, props.length);
-        assertSame(property, props[0]);
+        List props = Arrays.asList(model.getExtensionPropertyDefinitions(extendedClass, false));
+        assertEquals(1, props.size());
+        assertSame(property, props.get(0));
+        props = Arrays.asList(model.getExtensionPropertyDefinitions(extendedClass, true));
+        assertEquals(1, props.size());
+        assertSame(property, props.get(0));
         assertEquals(0, model.getExtensionPropertyDefinitions(String.class, true).length);
 
         // test properties defined on one of the supertypes
@@ -255,27 +256,28 @@ public class IpsModelTest extends AbstractIpsPluginTest {
         property3.setExtendedType(extendedClass.getSuperclass().getSuperclass());
         model.addIpsObjectExtensionProperty(property3);
 
-        props = model.getExtensionPropertyDefinitions(extendedClass, true);
-        assertEquals(3, props.length);
-        assertSame(property, props[0]);
-        assertSame(property2, props[1]);
-        assertSame(property3, props[2]);
-        props = model.getExtensionPropertyDefinitions(extendedClass, false);
-        assertEquals(1, props.length);
+        props = Arrays.asList(model.getExtensionPropertyDefinitions(extendedClass, true));
+        assertEquals(3, props.size());
+        
+        assertTrue(props.contains(property));
+        assertTrue(props.contains(property2));
+        assertTrue(props.contains(property3));
+        props = Arrays.asList(model.getExtensionPropertyDefinitions(extendedClass, false));
+        assertEquals(1, props.size());
 
         // test properties defined in one of the interfaces
         ExtensionPropertyDefinition property4 = new StringExtensionPropertyDefinition();
         property4.setPropertyId("prop4");
         property4.setExtendedType(IIpsModel.class);
         model.addIpsObjectExtensionProperty(property4);
-        props = model.getExtensionPropertyDefinitions(extendedClass, true);
-        assertEquals(4, props.length);
-        assertSame(property, props[0]);  // first the type's properties
-        assertSame(property2, props[1]); // then the supertype's properties
-        assertSame(property3, props[2]); // then the supertype's supertype's properties
-        assertSame(property4, props[3]); // the the type's interface's properties
-        props = model.getExtensionPropertyDefinitions(extendedClass, false);
-        assertEquals(1, props.length);
+        props = Arrays.asList(model.getExtensionPropertyDefinitions(extendedClass, true));
+        assertEquals(4, props.size());
+        assertTrue(props.contains(property));  // first the type's properties
+        assertTrue(props.contains(property2)); // then the supertype's properties
+        assertTrue(props.contains(property3)); // then the supertype's supertype's properties
+        assertTrue(props.contains(property4)); // the the type's interface's properties
+        props = Arrays.asList(model.getExtensionPropertyDefinitions(extendedClass, false));
+        assertEquals(1, props.size());
     }
 
     public void testGetIpsObjectExtensionProperty() {
