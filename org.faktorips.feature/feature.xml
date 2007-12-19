@@ -3,7 +3,7 @@
       id="org.faktorips.feature"
       label="Faktor-IPS"
       version="2.0.0.rc1"
-      provider-name="FaktorZehn AG"
+      provider-name="Faktor Zehn AG"
       plugin="org.faktorips.devtools.core">
    <install-handler/>
 
