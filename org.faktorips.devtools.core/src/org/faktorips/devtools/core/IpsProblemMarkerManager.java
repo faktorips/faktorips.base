@@ -45,7 +45,7 @@ public class IpsProblemMarkerManager implements IResourceChangeListener {
     
     public IpsProblemMarkerManager() {
         super();
-        ResourcesPlugin.getWorkspace().addResourceChangeListener(this);
+        ResourcesPlugin.getWorkspace().addResourceChangeListener(this, IResourceChangeEvent.POST_BUILD);
     }
 
     /**

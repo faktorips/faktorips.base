@@ -25,6 +25,7 @@ import org.eclipse.jface.util.IPropertyChangeListener;
 import org.eclipse.jface.util.PropertyChangeEvent;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.widgets.Display;
+import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.IEditorPart;
 import org.eclipse.ui.IEditorSite;
@@ -52,6 +53,7 @@ import org.faktorips.devtools.core.model.ipsobject.IIpsObject;
 import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
+import org.faktorips.devtools.core.ui.views.IpsProblemsLabelDecorator;
 
 /**
  * Base class for all editors to edit ips objects.
@@ -118,11 +120,11 @@ public abstract class IpsObjectEditor extends FormEditor
     private ActivationListener activationListener;
 
     /* Updates the title image if there are ips marker changes on the editor's input */
-    private IpsObjectEditorErrorTickUpdater errorTickupdater;
+    private IpsObjectEditorErrorMarkerUpdater errorTickupdater;
     
     public IpsObjectEditor() {
         super();
-        errorTickupdater = new IpsObjectEditorErrorTickUpdater(this);
+        errorTickupdater = new IpsObjectEditorErrorMarkerUpdater(this);
     }
 
     /**
@@ -175,7 +177,7 @@ public abstract class IpsObjectEditor extends FormEditor
         if (input instanceof IFileEditorInput) {
             IFile file = ((IFileEditorInput)input).getFile();
             ipsSrcFile = (IIpsSrcFile)model.getIpsElement(file);
-//          for what ever reason they made setTitle deprecated. This method does something different than the offered alternatives
+            //for what ever reason they made setTitle deprecated. This method does something different than the offered alternatives
             setTitle(ipsSrcFile.getName());
         } else if (input instanceof IpsArchiveEditorInput) {
             ipsSrcFile = ((IpsArchiveEditorInput)input).getIpsSrcFile();
@@ -789,13 +791,36 @@ public abstract class IpsObjectEditor extends FormEditor
         return "Editor for " + getIpsSrcFile(); //$NON-NLS-1$
     }
     
+
+    private void logMethodStarted(String msg) {
+        logInternal("." + msg + " - started"); //$NON-NLS-1$ //$NON-NLS-2$ $NON-NLS-2$
+    }
+    
+    private void logMethodFinished(String msg) {
+        logInternal("." + msg + " - finished"); //$NON-NLS-1$ //$NON-NLS-2$ $NON-NLS-2$
+    }
+    
+    private void log(String msg) {
+        logInternal(": " + msg); //$NON-NLS-1$
+    }
+
+    private void logInternal(String msg) {
+        String file = ipsSrcFile==null ? "null" : ipsSrcFile.getName(); // $NON-NLS-1$ //$NON-NLS-1$
+        System.out.println(getLogPrefix() + msg + ", IpsSrcFile=" + file + ", Thread=" + Thread.currentThread().getName()); //$NON-NLS-1$ //$NON-NLS-2$ $NON-NLS-2$
+    }
+    
+    private String getLogPrefix() {
+        return "IpsObjectEditor"; //$NON-NLS-1$
+    }
+
+
     /**
      * Internal part and shell activation listener.
      * 
      * 
      * Copied from AbstractTextEditor.
      */
-    class ActivationListener implements IPartListener, IWindowListener {
+    private class ActivationListener implements IPartListener, IWindowListener {
 
         private IPartService partService;
         
@@ -872,32 +897,72 @@ public abstract class IpsObjectEditor extends FormEditor
         }
     }
 
-    private void logMethodStarted(String msg) {
-        logInternal("." + msg + " - started"); //$NON-NLS-1$ //$NON-NLS-2$ $NON-NLS-2$
-    }
     
-    private void logMethodFinished(String msg) {
-        logInternal("." + msg + " - finished"); //$NON-NLS-1$ //$NON-NLS-2$ $NON-NLS-2$
-    }
-    
-    private void log(String msg) {
-        logInternal(": " + msg); //$NON-NLS-1$
-    }
-
-    private void logInternal(String msg) {
-        String file = ipsSrcFile==null ? "null" : ipsSrcFile.getName(); // $NON-NLS-1$ //$NON-NLS-1$
-        System.out.println(getLogPrefix() + msg + ", IpsSrcFile=" + file + ", Thread=" + Thread.currentThread().getName()); //$NON-NLS-1$ //$NON-NLS-2$ $NON-NLS-2$
-    }
-    
-    private String getLogPrefix() {
-        return "IpsObjectEditor"; //$NON-NLS-1$
-    }
-
-    /**
-     * Updates the title image with the given image.
+    /*
+     * The <code>IpsObjectEditorErrorMarkerUpdater</code> will register as a IIpsProblemChangedListener
+     * to listen on ips problem changes that correspond to the editor's input. It updates the title images and refreshes
+     * the editor if it is active.
+     * 
+     * @author Joerg Ortmann, Peter Erzberger
      */
-    public void updatedTitleImage(Image newImage) {
-        setTitleImage(newImage);
+    private class IpsObjectEditorErrorMarkerUpdater implements IIpsProblemChangedListener{
+
+        private IpsObjectEditor ipsObjectEditor;
+        private IpsProblemsLabelDecorator decorator;
+
+        public IpsObjectEditorErrorMarkerUpdater(IpsObjectEditor ipsObjectEditor) {
+            this.ipsObjectEditor = ipsObjectEditor;
+            decorator = new IpsProblemsLabelDecorator();
+            IpsPlugin.getDefault().getIpsProblemMarkerManager().addListener(this);
+        }
+
+        /**
+         * {@inheritDoc}
+         */
+        public void problemsChanged(IResource[] changedResources) {
+            IResource correspondingResource = ipsObjectEditor.getIpsSrcFile().getCorrespondingResource();
+            if (correspondingResource != null) {
+                for (int i = 0; i < changedResources.length; i++) {
+                    if (changedResources[i].equals(correspondingResource)) {
+                        updateEditorImage(changedResources[i]);
+                    }
+                }
+            }
+        }
+
+        /**
+         * Returns the image of the ips object inside the ips object editor which is optional decorated
+         * with an ips marker image if a marker exists.
+         */
+        Image getDecoratedImage() {
+            Image titleImage = ipsObjectEditor.getIpsSrcFile().getIpsObjectType().getImage(
+                    ipsObjectEditor.isDataChangeable().booleanValue());
+            return decorator.decorateImage(titleImage, ipsObjectEditor.getIpsObject());
+        }
+        
+        private void updateEditorImage(IResource changedResources) {
+            Image image = getDecoratedImage();
+            postImageChange(image);
+        }
+
+        private void postImageChange(final Image newImage) {
+            Shell shell = ipsObjectEditor.getEditorSite().getShell();
+            if (shell != null && !shell.isDisposed()) {
+                shell.getDisplay().syncExec(new Runnable() {
+                    public void run() {
+                        if(isActive()){
+                            refresh();
+                        }
+                        setTitleImage(newImage);
+                    }
+                });
+            }
+        }
+
+        public void dispose() {
+            decorator.dispose();
+            IpsPlugin.getDefault().getIpsProblemMarkerManager().removeListener(this);
+        }
     }
 
 }
