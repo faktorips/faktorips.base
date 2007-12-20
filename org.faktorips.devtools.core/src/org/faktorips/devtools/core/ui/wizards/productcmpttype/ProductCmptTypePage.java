@@ -20,6 +20,7 @@ package org.faktorips.devtools.core.ui.wizards.productcmpttype;
 import java.util.List;
 
 import org.apache.commons.lang.StringUtils;
+import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jdt.core.JavaModelException;
 import org.eclipse.jface.viewers.IStructuredSelection;
@@ -63,6 +64,22 @@ public class ProductCmptTypePage extends TypePage {
      */
     protected IpsObjectRefControl createSupertypeControl(Composite container, UIToolkit toolkit) {
         return toolkit.createProductCmptTypeRefControl(null, container, false);
+    }
+    
+    /**
+     * {@inheritDoc}
+     * 
+     * Adds the setting of the selected PolicyCmptType.
+     */
+    protected void setDefaults(IResource selectedResource) throws CoreException {
+        super.setDefaults(selectedResource);
+        IIpsObject ipsObject = getSelectedIpsObject();
+        if(ipsObject instanceof IPolicyCmptType){
+            IPolicyCmptType selectedPcType = (IPolicyCmptType)ipsObject;
+            if(StringUtils.isEmpty(selectedPcType.getProductCmptType())){
+                pcTypeField.setValue(selectedPcType.getQualifiedName());
+            }
+        }
     }
     
     /**
