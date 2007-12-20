@@ -78,6 +78,11 @@ public interface IProductCmptType extends IIpsObject, IType {
     public final static String MSGCODE_DUPLICATE_FORMULA_NAME = MSGCODE_PREFIX + "DuplicateFormulaName"; //$NON-NLS-1$
 
     /**
+     * Validation message code to indicate that at least two formula signatures have the same name.
+     */
+    public final static String MSGCODE_PRODUCTCMPTTYPE_ABSTRACT_WHEN_POLICYCMPTTYPE_ABSTRACT = MSGCODE_PREFIX + "ProductCmptTypeAbstractWhenPolicyCmptTypeAbstract"; //$NON-NLS-1$
+
+    /**
      * Returns the policy component type this product component type refers to.
      * Returns <code>null</code> if this type does not refer to a policy component type.
      */

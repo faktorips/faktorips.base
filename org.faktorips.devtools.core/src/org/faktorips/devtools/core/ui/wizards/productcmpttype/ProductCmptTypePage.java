@@ -255,6 +255,7 @@ public class ProductCmptTypePage extends TypePage {
                     modifiedIpsObjects.add(policyCmptType);
                     productCmptType.setConfigurationForPolicyCmptType(true);
                     productCmptType.setPolicyCmptType(policyCmptType.getQualifiedName());
+                    productCmptType.setAbstract(policyCmptType.isAbstract());
                 }
                 return;
             }

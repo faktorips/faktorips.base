@@ -843,6 +843,23 @@ public class ProductCmptTypeTest extends AbstractIpsPluginTest implements Conten
         assertNotNull(msgList.getMessageByCode(IType.MSGCODE_OTHER_TYPE_WITH_SAME_NAME_EXISTS));
     }
     
+    public void testValidateProductTypeAbstractWhenPcTypeAbstract() throws Exception{
+        IPolicyCmptType a = newPolicyAndProductCmptType(ipsProject, "A", "AConfig");
+        IProductCmptType aConfig = a.findProductCmptType(ipsProject);
+        a.setAbstract(false);
+        aConfig.setAbstract(false);
+        MessageList msgList = aConfig.validate(ipsProject);
+        assertNull(msgList.getMessageByCode(IProductCmptType.MSGCODE_PRODUCTCMPTTYPE_ABSTRACT_WHEN_POLICYCMPTTYPE_ABSTRACT));
+        
+        a.setAbstract(true);
+        msgList = aConfig.validate(ipsProject);
+        assertNotNull(msgList.getMessageByCode(IProductCmptType.MSGCODE_PRODUCTCMPTTYPE_ABSTRACT_WHEN_POLICYCMPTTYPE_ABSTRACT));
+
+        aConfig.setAbstract(true);
+        msgList = aConfig.validate(ipsProject);
+        assertNull(msgList.getMessageByCode(IProductCmptType.MSGCODE_PRODUCTCMPTTYPE_ABSTRACT_WHEN_POLICYCMPTTYPE_ABSTRACT));
+    }
+    
     /**
      * {@inheritDoc}
      */

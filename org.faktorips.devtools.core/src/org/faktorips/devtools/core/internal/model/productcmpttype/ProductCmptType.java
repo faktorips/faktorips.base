@@ -403,6 +403,7 @@ public class ProductCmptType extends Type implements IProductCmptType {
                 list.add(new Message(IProductCmptType.MSGCODE_MUST_HAVE_SAME_VALUE_FOR_CONFIGURES_POLICY_CMPT_TYPE, text, Message.ERROR, this, IProductCmptType.PROPERTY_CONFIGURATION_FOR_POLICY_CMPT_TYPE));
             }
         }
+        validateProductCmptTypeAbstractWhenPolicyCmptTypeAbstract(list, ipsProject);
         DuplicateFormulaNameValidator validator = new DuplicateFormulaNameValidator(ipsProject);
         validator.start(this);
         validator.addMessagesForDuplicates(list);
@@ -416,6 +417,19 @@ public class ProductCmptType extends Type implements IProductCmptType {
         return new MyDuplicatePropertyNameValidator(ipsProject);
     }
 
+    private void validateProductCmptTypeAbstractWhenPolicyCmptTypeAbstract(MessageList msgList, IIpsProject ipsProject) throws CoreException{
+        if(StringUtils.isEmpty(getPolicyCmptType())){
+            return;
+        }
+        IPolicyCmptType policyCmptType = findPolicyCmptType(ipsProject);
+        if(policyCmptType != null){
+            if(policyCmptType.isAbstract() && !isAbstract()){
+                msgList.add(new Message(MSGCODE_PRODUCTCMPTTYPE_ABSTRACT_WHEN_POLICYCMPTTYPE_ABSTRACT, 
+                        Messages.ProductCmptType_msgProductCmptTypeAbstractWhenPolicyCmptTypeAbstract, Message.ERROR, this, PROPERTY_ABSTRACT));
+            }
+        }
+    }
+    
     private void validatePolicyCmptTypeReference(IProductCmptType supertype, IIpsProject ipsProject, MessageList list) throws CoreException {
         IPolicyCmptType policyCmptTypeObj = findPolicyCmptType(ipsProject);
         if (policyCmptTypeObj==null) {
