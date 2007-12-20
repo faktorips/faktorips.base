@@ -17,12 +17,11 @@
 
 package org.faktorips.util.message;
 
-import java.util.*;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
 import org.apache.commons.lang.SystemUtils;
-import org.faktorips.util.ArgumentCheck;
 
 /**
  * A set of <code>Message</code>s.
@@ -62,23 +61,19 @@ public class MessageList {
     }
 
     /**
-     * Creates a message list that contains the given message.
-     * 
-     * @throws IllegalArgumentException
-     *             if msg is null.
+     * Creates a message list that contains the given message. <code>null</code> will be ignored as a parameter value.
      */
     public MessageList(Message msg) {
         add(msg);
     }
 
     /**
-     * Adds the message to the list.
-     * 
-     * @throws IllegalArgumentException
-     *             if msg is null.
+     * Adds the message to the list. <code>null</code> will be ignored as a parameter value.
      */
     public void add(Message msg) {
-        ArgumentCheck.notNull(msg);
+        if(msg == null){
+            return;
+        }
         messages.add(msg);
     }
 

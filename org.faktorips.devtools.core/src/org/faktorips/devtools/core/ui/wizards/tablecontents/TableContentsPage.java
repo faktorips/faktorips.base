@@ -34,12 +34,14 @@ import org.faktorips.devtools.core.model.ipsobject.IIpsObjectGeneration;
 import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
 import org.faktorips.devtools.core.model.ipsproject.IIpsPackageFragmentRoot;
 import org.faktorips.devtools.core.model.tablecontents.ITableContents;
+import org.faktorips.devtools.core.model.tablecontents.TableContentsValidations;
 import org.faktorips.devtools.core.model.tablestructure.ITableStructure;
 import org.faktorips.devtools.core.ui.UIToolkit;
 import org.faktorips.devtools.core.ui.controller.fields.TextButtonField;
 import org.faktorips.devtools.core.ui.controls.TableStructureRefControl;
 import org.faktorips.devtools.core.ui.wizards.IpsObjectPage;
 import org.faktorips.util.StringUtil;
+import org.faktorips.util.message.Message;
 
 
 /**
@@ -132,6 +134,10 @@ public class TableContentsPage extends IpsObjectPage {
 	    } else {
 	        if (structure.getNumOfColumns()==0) {
                 setErrorMessage(Messages.TableContentsPage_tableStructureHasntGotAnyColumns);
+            }
+            Message msg = TableContentsValidations.validateNameOfStructureAndContentsNotTheSameWhenEnum(structure, getIpsObjectName(), null);
+            if(msg != null){
+                setErrorMessage(msg.getText());
             }
         }
     }

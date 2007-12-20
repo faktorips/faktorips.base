@@ -35,11 +35,13 @@ import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
 import org.faktorips.devtools.core.model.type.IType;
 import org.faktorips.devtools.core.model.type.TypeHierarchyVisitor;
+import org.faktorips.devtools.core.model.type.TypeValidations;
 import org.faktorips.devtools.core.ui.UIToolkit;
 import org.faktorips.devtools.core.ui.controller.fields.TextButtonField;
 import org.faktorips.devtools.core.ui.controls.IpsObjectRefControl;
 import org.faktorips.devtools.core.ui.wizards.policycmpttype.PcTypePage;
 import org.faktorips.devtools.core.ui.wizards.type.TypePage;
+import org.faktorips.util.message.Message;
 
 
 /**
@@ -150,6 +152,18 @@ public class ProductCmptTypePage extends TypePage {
                 ((IpsObjectRefControl)pcTypeField.getControl()).setIpsProject(null);
             }
         }
+    }
+    
+    protected void validateName() throws CoreException {
+        super.validateName();
+        if(getIpsProject() == null){
+            return;
+        }
+        Message msg = TypeValidations.validateOtherTypeWithSameNameTypeInIpsObjectPath(IpsObjectType.POLICY_CMPT_TYPE, getQualifiedIpsObjectName(), getIpsProject(), null);
+        if(msg != null){
+            setErrorMessage(msg.getText());
+        }
+
     }
     
     /**

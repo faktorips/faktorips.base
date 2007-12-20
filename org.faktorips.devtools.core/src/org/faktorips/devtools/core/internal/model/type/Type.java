@@ -31,7 +31,6 @@ import org.faktorips.devtools.core.internal.model.ipsobject.IpsObjectPartCollect
 import org.faktorips.devtools.core.model.DatatypeDependency;
 import org.faktorips.devtools.core.model.IpsObjectDependency;
 import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
-import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
 import org.faktorips.devtools.core.model.ipsobject.QualifiedNameType;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProjectProperties;
@@ -479,24 +478,6 @@ public abstract class Type extends BaseIpsObject implements IType {
                     break;
                 }
             }
-        }
-    }
-    
-    protected void validateOtherTypeWithSameNameTypeInIpsObjectPath(IpsObjectType otherIpsObjectType,
-            MessageList list,
-            IIpsProject ipsProject) throws CoreException {
-        IIpsSrcFile file = ipsProject.findIpsSrcFile(otherIpsObjectType, getQualifiedName());
-        if (file != null) {
-            if (ipsProject.equals(file.getIpsProject())) {
-                list.add(new Message(MSGCODE_OTHER_TYPE_WITH_SAME_NAME_EXISTS, NLS.bind(
-                        Messages.Type_msgOtherTypeWithSameQNameInSameProject, otherIpsObjectType.getName()), 
-                        Message.ERROR, this));
-                return;
-            }
-            list.add(new Message(MSGCODE_OTHER_TYPE_WITH_SAME_NAME_IN_DEPENDENT_PROJECT_EXISTS, NLS.bind(
-                    Messages.Type_msgOtherTypeWithSameQNameInDependentProject,
-                    new Object[] { otherIpsObjectType.getName(), file.getIpsProject() }), Message.WARNING, this));
-
         }
     }
     

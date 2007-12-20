@@ -50,6 +50,7 @@ import org.faktorips.devtools.core.model.productcmpttype.ProdDefPropertyType;
 import org.faktorips.devtools.core.model.productcmpttype.ProductCmptTypeHierarchyVisitor;
 import org.faktorips.devtools.core.model.type.IType;
 import org.faktorips.devtools.core.model.type.TypeHierarchyVisitor;
+import org.faktorips.devtools.core.model.type.TypeValidations;
 import org.faktorips.util.message.Message;
 import org.faktorips.util.message.MessageList;
 import org.faktorips.util.message.ObjectProperty;
@@ -407,7 +408,7 @@ public class ProductCmptType extends Type implements IProductCmptType {
         DuplicateFormulaNameValidator validator = new DuplicateFormulaNameValidator(ipsProject);
         validator.start(this);
         validator.addMessagesForDuplicates(list);
-        validateOtherTypeWithSameNameTypeInIpsObjectPath(IpsObjectType.POLICY_CMPT_TYPE, list, ipsProject);
+        list.add(TypeValidations.validateOtherTypeWithSameNameTypeInIpsObjectPath(IpsObjectType.POLICY_CMPT_TYPE, getQualifiedName(), ipsProject, this));
     }
 
     /**

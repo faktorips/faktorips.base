@@ -30,6 +30,7 @@ import org.faktorips.devtools.core.model.ipsobject.IIpsObject;
 import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
+import org.faktorips.devtools.core.model.type.TypeValidations;
 import org.faktorips.devtools.core.ui.UIToolkit;
 import org.faktorips.devtools.core.ui.controller.fields.CheckboxField;
 import org.faktorips.devtools.core.ui.controller.fields.FieldValueChangedEvent;
@@ -37,6 +38,7 @@ import org.faktorips.devtools.core.ui.controller.fields.TextButtonField;
 import org.faktorips.devtools.core.ui.controls.IpsObjectRefControl;
 import org.faktorips.devtools.core.ui.wizards.productcmpttype.ProductCmptTypePage;
 import org.faktorips.devtools.core.ui.wizards.type.TypePage;
+import org.faktorips.util.message.Message;
 
 
 /**
@@ -135,6 +137,17 @@ public class PcTypePage extends TypePage {
             }
         } else {
             configurableField.getCheckbox().setEnabled(true);
+        }
+    }
+    
+    protected void validateName() throws CoreException {
+        super.validateName();
+        if(getIpsProject() == null){
+            return;
+        }
+        Message msg = TypeValidations.validateOtherTypeWithSameNameTypeInIpsObjectPath(IpsObjectType.PRODUCT_CMPT_TYPE_V2, getQualifiedIpsObjectName(), getIpsProject(), null);
+        if(msg != null){
+            setErrorMessage(msg.getText());
         }
     }
     

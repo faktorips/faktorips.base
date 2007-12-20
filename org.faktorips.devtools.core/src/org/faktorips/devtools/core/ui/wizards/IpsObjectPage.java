@@ -487,16 +487,7 @@ public abstract class IpsObjectPage extends WizardPage implements ValueChangeLis
 		
         // check if an ipsobject already exists that has the same name and generates a java class
         // to avoid conflicts with java classes that have the same name
-        IIpsSrcFile file = getIpsProject().findIpsSrcFile(IpsObjectType.POLICY_CMPT_TYPE, getQualifiedIpsObjectName());
-        if(file == null){
-            file = getIpsProject().findIpsSrcFile(IpsObjectType.PRODUCT_CMPT_TYPE_V2, getQualifiedIpsObjectName());
-        }
-        if(file == null){
-            file = getIpsProject().findIpsSrcFile(IpsObjectType.TABLE_STRUCTURE, getQualifiedIpsObjectName());
-        }
-        if(file == null){
-            file = getIpsProject().findIpsSrcFile(IpsObjectType.TEST_CASE_TYPE, getQualifiedIpsObjectName());
-        }
+        IIpsSrcFile file = getIpsProject().findIpsSrcFile(getIpsObjectType(), getQualifiedIpsObjectName());
         if(file != null){
                 StringBuffer msg = new StringBuffer();
                 msg.append(Messages.IpsObjectPage_msgIpsObjectAlreadyExists1);
