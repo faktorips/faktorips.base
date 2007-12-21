@@ -340,11 +340,15 @@ public class AssociationTest extends AbstractIpsPluginTest {
         subAssociation.setQualified(true);
         
         MessageList msgList = subAssociation.validate(ipsProject);
-        assertNotNull(msgList.getMessageByCode(IAssociation.MSGCODE_SUBSET_OF_DERIVED_UNION_SAME_MAX_CARDINALITY));
+        assertNull(msgList.getMessageByCode(IAssociation.MSGCODE_SUBSET_OF_DERIVED_UNION_SAME_MAX_CARDINALITY));
 
         subAssociation.setMaxCardinality(Integer.MAX_VALUE);
         msgList = subAssociation.validate(ipsProject);
         assertNull(msgList.getMessageByCode(IAssociation.MSGCODE_SUBSET_OF_DERIVED_UNION_SAME_MAX_CARDINALITY));
+
+        association.setMaxCardinality(1);
+        msgList = subAssociation.validate(ipsProject);
+        assertNotNull(msgList.getMessageByCode(IAssociation.MSGCODE_SUBSET_OF_DERIVED_UNION_SAME_MAX_CARDINALITY));
 
     }
     

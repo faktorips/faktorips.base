@@ -426,8 +426,8 @@ public class ProductCmptType extends Type implements IProductCmptType {
         }
         IPolicyCmptType policyCmptType = findPolicyCmptType(ipsProject);
         if (policyCmptType != null) {
-            ProductCmptTypeValidations.validateProductCmptTypeAbstractWhenPolicyCmptTypeAbstract(policyCmptType
-                    .isAbstract(), isAbstract(), this);
+            msgList.add(ProductCmptTypeValidations.validateProductCmptTypeAbstractWhenPolicyCmptTypeAbstract(policyCmptType
+                    .isAbstract(), isAbstract(), this));
         }
     }
     

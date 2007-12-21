@@ -430,7 +430,7 @@ public abstract class Association extends AtomicIpsObjectPart implements IAssoci
             return;
         }
         if(unionAss.isQualified() && isQualified()){
-            if(unionAss.getMaxCardinality() != getMaxCardinality()){
+            if(unionAss.getMaxCardinality() < getMaxCardinality()){
                 list.add(new Message(MSGCODE_SUBSET_OF_DERIVED_UNION_SAME_MAX_CARDINALITY, 
                         Messages.Association_msgSubsetOfDerivedUnionSameMaxCardinality, Message.ERROR, this, PROPERTY_MAX_CARDINALITY));
             }
