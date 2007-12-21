@@ -138,7 +138,7 @@ abstract public class DefaultModelDescriptionPage extends Page {
                 ExpandableComposite.EXPANDED );
 
         // Set faktorips.attribute name
-        excomposite.setText(StringUtils.capitalise(item.getName()));
+        excomposite.setText(StringUtils.capitalize(item.getName()));
 
         if ((index % 2) == 0) {
             excomposite.setBackground(parent.getDisplay().getSystemColor(SWT.COLOR_INFO_BACKGROUND));

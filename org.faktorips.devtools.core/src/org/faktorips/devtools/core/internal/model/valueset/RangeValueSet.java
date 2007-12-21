@@ -501,9 +501,9 @@ public class RangeValueSet extends ValueSet implements IRangeValueSet {
             }
         } else {
             // new format sind 1.0.0.rc2
-            lowerBound = ValueToXmlHelper.getValueFromElement(el, StringUtils.capitalise(PROPERTY_LOWERBOUND));
-            upperBound = ValueToXmlHelper.getValueFromElement(el, StringUtils.capitalise(PROPERTY_UPPERBOUND));
-            step = ValueToXmlHelper.getValueFromElement(el, StringUtils.capitalise(PROPERTY_STEP));
+            lowerBound = ValueToXmlHelper.getValueFromElement(el, StringUtils.capitalize(PROPERTY_LOWERBOUND));
+            upperBound = ValueToXmlHelper.getValueFromElement(el, StringUtils.capitalize(PROPERTY_UPPERBOUND));
+            step = ValueToXmlHelper.getValueFromElement(el, StringUtils.capitalize(PROPERTY_STEP));
         }
         
         containsNull = Boolean.valueOf(el.getAttribute(PROPERTY_CONTAINS_NULL)).booleanValue();
@@ -517,9 +517,9 @@ public class RangeValueSet extends ValueSet implements IRangeValueSet {
         Document doc = element.getOwnerDocument();
         Element tagElement = doc.createElement(XML_TAG);
         tagElement.setAttribute(PROPERTY_CONTAINS_NULL, Boolean.toString(containsNull));
-        ValueToXmlHelper.addValueToElement(lowerBound, tagElement, StringUtils.capitalise(PROPERTY_LOWERBOUND));
-        ValueToXmlHelper.addValueToElement(upperBound, tagElement, StringUtils.capitalise(PROPERTY_UPPERBOUND));
-        ValueToXmlHelper.addValueToElement(step, tagElement, StringUtils.capitalise(PROPERTY_STEP));
+        ValueToXmlHelper.addValueToElement(lowerBound, tagElement, StringUtils.capitalize(PROPERTY_LOWERBOUND));
+        ValueToXmlHelper.addValueToElement(upperBound, tagElement, StringUtils.capitalize(PROPERTY_UPPERBOUND));
+        ValueToXmlHelper.addValueToElement(step, tagElement, StringUtils.capitalize(PROPERTY_STEP));
         element.appendChild(tagElement);
     }
 

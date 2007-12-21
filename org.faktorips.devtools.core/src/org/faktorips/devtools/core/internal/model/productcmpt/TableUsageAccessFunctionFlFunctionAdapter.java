@@ -108,7 +108,7 @@ public class TableUsageAccessFunctionFlFunctionAdapter implements FlFunction {
     }
 
     public String getName() {
-		return StringUtils.capitalise(roleName) + "." + fct.getAccessedColumn(); //$NON-NLS-1$
+		return StringUtils.capitalize(roleName) + "." + fct.getAccessedColumn(); //$NON-NLS-1$
     }
 
     public Datatype[] getArgTypes() {

@@ -309,9 +309,9 @@ public class ProductCmptPage extends IpsObjectPage {
     
 	private void showMessage(MessageList list) {
 		if (!list.isEmpty()) {
-			setErrorMessage(list.getMessage(0).getText());
+			setErrorMessage(list.getMessage(0));
 		} else {
-			setErrorMessage(null);
+			setErrorMessage((String)null);
 		}
 	}
 	

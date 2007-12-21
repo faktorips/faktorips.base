@@ -30,6 +30,7 @@ import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
 import org.faktorips.devtools.core.model.ipsproject.IIpsPackageFragmentRoot;
 import org.faktorips.devtools.core.model.type.IType;
 import org.faktorips.devtools.core.ui.UIToolkit;
+import org.faktorips.devtools.core.ui.controller.fields.CheckboxField;
 import org.faktorips.devtools.core.ui.controller.fields.FieldValueChangedEvent;
 import org.faktorips.devtools.core.ui.controller.fields.TextButtonField;
 import org.faktorips.devtools.core.ui.controls.IpsObjectRefControl;
@@ -41,6 +42,7 @@ import org.faktorips.devtools.core.ui.wizards.IpsObjectPage;
 public abstract class TypePage extends IpsObjectPage {
     
     private TextButtonField supertypeField;
+    protected CheckboxField abstractField;
     protected TypePage pageOfAssociatedType;
     private boolean alreadyBeenEntered = false;
     
@@ -65,6 +67,12 @@ public abstract class TypePage extends IpsObjectPage {
         supertypeField.addChangeListener(this);
     }
 
+    protected void addAbstractField(Composite nameComposite, UIToolkit toolkit){
+        toolkit.createLabel(nameComposite, ""); //$NON-NLS-1$
+        abstractField = new CheckboxField(toolkit.createCheckbox(nameComposite, "Abstract"));
+        abstractField.addChangeListener(this);
+    }
+    
     /**
      * Delegates to supertypeChanged() if the supertype control has been edited.
      */
@@ -100,6 +108,14 @@ public abstract class TypePage extends IpsObjectPage {
         }
     }
     
+    public boolean getAbstract(){
+        return ((Boolean)abstractField.getValue()).booleanValue();
+    }
+    
+    public void setAbstract(boolean value){
+        abstractField.setValue(new Boolean(value));
+    }
+    
     /**
      * Returns the value of the super type field.
      */
@@ -121,6 +137,7 @@ public abstract class TypePage extends IpsObjectPage {
         IType type = (IType)newIpsObject;
         String supertypeName = getSuperType(); 
         type.setSupertype(supertypeName);
+        type.setAbstract(getAbstract());
     }
     
     /**

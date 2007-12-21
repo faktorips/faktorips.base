@@ -199,7 +199,7 @@ public class GenerationAttributesSection extends IpsSection {
 			return;
 		}
 		IIpsProject ipsProject = toDisplay.getIpsProject();
-		Label label = toolkit.createLabel(rootPane, StringUtils.capitalise(toDisplay.getAttribute()));	
+		Label label = toolkit.createLabel(rootPane, StringUtils.capitalize(toDisplay.getAttribute()));	
         
         IpsObjectUIController controller = new IpsObjectUIController(toDisplay);
 		uiMasterController.add(controller);

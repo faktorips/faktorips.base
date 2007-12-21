@@ -163,7 +163,7 @@ public class DefaultsAndRangesSection extends IpsSection {
     }
 
     private void createEditControlForDefaultValue(IConfigElement element, ValueDatatype dataType, IpsObjectUIController controller) throws CoreException {
-        Label label = toolkit.createFormLabel(rootPane, StringUtils.capitalise(element.getName()));
+        Label label = toolkit.createFormLabel(rootPane, StringUtils.capitalize(element.getName()));
         // use the description of the attribute as tooltip 
         IPolicyCmptTypeAttribute attribute = element.findPcTypeAttribute(element.getIpsProject());
         if (attribute != null) {

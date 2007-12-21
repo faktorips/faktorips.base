@@ -233,6 +233,17 @@ public abstract class IpsObjectPage extends WizardPage implements ValueChangeLis
         }
     }
     
+    /**
+     * If the provided message parameter is not <code>null</code> this method sets the text of the
+     * message object as error message text of this page. <code>null</code> as a parameter value
+     * will be ignored.
+     */
+    public void setErrorMessage(Message msg){
+        if(msg != null){
+            setErrorMessage(msg.getText());
+        }
+    }
+    
     protected void fillNameComposite(Composite nameComposite, UIToolkit toolkit) {
         Text nameText = addNameLabelField(toolkit, nameComposite);
         nameText.setFocus();
@@ -393,7 +404,7 @@ public abstract class IpsObjectPage extends WizardPage implements ValueChangeLis
      */
     public final void validatePage() throws CoreException {
         setMessage("", IMessageProvider.NONE); //$NON-NLS-1$
-		setErrorMessage(null);
+		setErrorMessage((String)null);
         validateSourceRoot();
         if (getErrorMessage()!=null) {
             return;

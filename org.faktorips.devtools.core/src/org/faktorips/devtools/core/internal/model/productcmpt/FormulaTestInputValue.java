@@ -66,7 +66,7 @@ public class FormulaTestInputValue extends AtomicIpsObjectPart implements IFormu
     protected void initPropertiesFromXml(Element element, Integer id) {
         super.initPropertiesFromXml(element, id);
         identifier = element.getAttribute(PROPERTY_IDENTIFIER);
-        value = ValueToXmlHelper.getValueFromElement(element, StringUtils.capitalise(PROPERTY_VALUE));
+        value = ValueToXmlHelper.getValueFromElement(element, StringUtils.capitalize(PROPERTY_VALUE));
     }
 
     /**
@@ -75,7 +75,7 @@ public class FormulaTestInputValue extends AtomicIpsObjectPart implements IFormu
     protected void propertiesToXml(Element element) {
         super.propertiesToXml(element);
         element.setAttribute(PROPERTY_IDENTIFIER, identifier);
-        ValueToXmlHelper.addValueToElement(value, element, StringUtils.capitalise(PROPERTY_VALUE));
+        ValueToXmlHelper.addValueToElement(value, element, StringUtils.capitalize(PROPERTY_VALUE));
     }
     
     /**

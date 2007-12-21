@@ -153,7 +153,7 @@ public class TableFunctionFormulaTestFlFunctionAdapter implements FlFunction {
      * {@inheritDoc}
      */
     public String getName() {
-		return StringUtils.capitalise(roleName) + "." + fct.getAccessedColumn(); //$NON-NLS-1$
+		return StringUtils.capitalize(roleName) + "." + fct.getAccessedColumn(); //$NON-NLS-1$
     }
 
     /**
@@ -238,7 +238,7 @@ public class TableFunctionFormulaTestFlFunctionAdapter implements FlFunction {
             // no row found, therefore the result is null
             return null;
         }
-        Method getColumnMethod = runtimeRow.getClass().getMethod("get" + StringUtils.capitalise(fct.getAccessedColumn()), new Class[0]); //$NON-NLS-1$
+        Method getColumnMethod = runtimeRow.getClass().getMethod("get" + StringUtils.capitalize(fct.getAccessedColumn()), new Class[0]); //$NON-NLS-1$
         return getColumnMethod.invoke(runtimeRow, new Object[0]);
     }
 }

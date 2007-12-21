@@ -21,6 +21,7 @@ import java.io.File;
 import java.net.URL;
 import java.util.HashMap;
 
+import org.eclipse.core.runtime.FileLocator;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.jdt.core.ClasspathVariableInitializer;
@@ -92,7 +93,7 @@ public class FaktorIpsClasspathVariableInitializer extends
 		// installLocation is something like bundleentry://140/faktorips-util.jar
 		URL local= null;
 		try {
-			local= Platform.asLocalURL(installLocation);
+			local= FileLocator.toFileURL(installLocation);
 		} catch (Exception e) {
 			IpsPlugin.log(new IpsStatus("Error initializing classpath variable " + variable  //$NON-NLS-1$
 					+ ". Bundle install locaction: " + installLocation, e)); //$NON-NLS-1$

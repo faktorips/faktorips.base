@@ -15,21 +15,50 @@
  *
  *******************************************************************************/
 
-package org.faktorips.devtools.core.internal.model.productcmpttype;
+package org.faktorips.devtools.core.model.productcmpttype;
 
 import org.apache.commons.lang.StringUtils;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.osgi.util.NLS;
+import org.faktorips.devtools.core.internal.model.productcmpttype.Messages;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
-import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
 import org.faktorips.devtools.core.model.type.IType;
 import org.faktorips.devtools.core.model.type.TypeHierarchyVisitor;
 import org.faktorips.util.message.Message;
+import org.faktorips.util.message.ObjectProperty;
 
+/**
+ * A class that contains validations of the model class
+ * <code>org.faktorips.devtools.core.model.productcmpttype.IProductCmptType</code> which are also
+ * used in the creation wizard where the model object doesn't exist at the point of validation.
+ * 
+ * @author Peter Erzberger
+ */
 public class ProductCmptTypeValidations {
 
-    public Message validateSupertypeMustBeInHierarchy(IIpsProject ipsProject, IProductCmptType superType,
+    /**
+     * Validates the rule that if a policy component type is abstract then the configuring product component type needs to be abstract.
+     * @param isPolicyCmptTypeAbstract the value of the property abstract of the policy component type
+     * @param isProductCmptTypeAbstract the value of the property abstract of the product component type
+     * @param thisProductCmptType the product component type instance if available if not <code>null</code> is an accepted value
+     * @return a message instance if the validation fails otherwise <code>null</code>
+     * 
+     * @throws CoreException delegates raised exceptions 
+     */
+    public static Message validateProductCmptTypeAbstractWhenPolicyCmptTypeAbstract(boolean isPolicyCmptTypeAbstract,
+            boolean isProductCmptTypeAbstract,
+            IProductCmptType thisProductCmptType) throws CoreException {
+        if (isPolicyCmptTypeAbstract && !isProductCmptTypeAbstract) {
+            return new Message(IProductCmptType.MSGCODE_PRODUCTCMPTTYPE_ABSTRACT_WHEN_POLICYCMPTTYPE_ABSTRACT,
+                    Messages.ProductCmptType_msgProductCmptTypeAbstractWhenPolicyCmptTypeAbstract, Message.ERROR,
+                    thisProductCmptType != null ? new ObjectProperty[] { new ObjectProperty(thisProductCmptType,
+                            IProductCmptType.PROPERTY_ABSTRACT) } : new ObjectProperty[0]);
+        }
+        return null;
+    }
+
+    public static Message validateSupertypeMustBeInHierarchy(IIpsProject ipsProject, IProductCmptType superType,
             IPolicyCmptType superPcType) throws CoreException {
         IProductCmptType productCmptTypeOfPolicyCmptSupertype = null;        
         if(superPcType != null){
@@ -64,7 +93,7 @@ public class ProductCmptTypeValidations {
         return null;
     }
 
-    public Message validatePolicyCmptSuperTypeNeedsToBeX(IIpsProject ipsProject,
+    public static Message validatePolicyCmptSuperTypeNeedsToBeX(IIpsProject ipsProject,
             String productCmptSuperType,
             String policyCmptSupertype) throws CoreException {
         if (!StringUtils.isEmpty(productCmptSuperType)) {
@@ -86,5 +115,6 @@ public class ProductCmptTypeValidations {
         }
         return null;
     }
+
     
 }

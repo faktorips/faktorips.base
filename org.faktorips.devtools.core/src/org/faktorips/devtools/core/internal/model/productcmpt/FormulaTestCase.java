@@ -146,7 +146,7 @@ public class FormulaTestCase extends IpsObjectPart implements IFormulaTestCase {
         super.initPropertiesFromXml(element, id);
         name = element.getAttribute(PROPERTY_NAME);
         expectedResult = ValueToXmlHelper
-                .getValueFromElement(element, StringUtils.capitalise(PROPERTY_EXPECTED_RESULT));
+                .getValueFromElement(element, StringUtils.capitalize(PROPERTY_EXPECTED_RESULT));
     }
 
     /**
@@ -155,7 +155,7 @@ public class FormulaTestCase extends IpsObjectPart implements IFormulaTestCase {
     protected void propertiesToXml(Element element) {
         super.propertiesToXml(element);
         element.setAttribute(PROPERTY_NAME, name);
-        ValueToXmlHelper.addValueToElement(expectedResult, element, StringUtils.capitalise(PROPERTY_EXPECTED_RESULT));
+        ValueToXmlHelper.addValueToElement(expectedResult, element, StringUtils.capitalize(PROPERTY_EXPECTED_RESULT));
     }
     
     /**

@@ -41,7 +41,6 @@ import org.faktorips.devtools.core.ui.controller.fields.TextButtonField;
 import org.faktorips.devtools.core.ui.controls.TableStructureRefControl;
 import org.faktorips.devtools.core.ui.wizards.IpsObjectPage;
 import org.faktorips.util.StringUtil;
-import org.faktorips.util.message.Message;
 
 
 /**
@@ -125,20 +124,18 @@ public class TableContentsPage extends IpsObjectPage {
     }
     
     protected void validatePageExtension() throws CoreException {
-        if (getErrorMessage()!=null) {
+        if (getErrorMessage() != null) {
             return;
         }
         ITableStructure structure = structureControl.findTableStructure();
-	    if (structure==null) {
-	        setErrorMessage(NLS.bind(Messages.TableContentsPage_msgMissingStructure, structureControl.getText()));
-	    } else {
-	        if (structure.getNumOfColumns()==0) {
+        if (structure == null) {
+            setErrorMessage(NLS.bind(Messages.TableContentsPage_msgMissingStructure, structureControl.getText()));
+        } else {
+            if (structure.getNumOfColumns() == 0) {
                 setErrorMessage(Messages.TableContentsPage_tableStructureHasntGotAnyColumns);
             }
-            Message msg = TableContentsValidations.validateNameOfStructureAndContentsNotTheSameWhenEnum(structure, getIpsObjectName(), null);
-            if(msg != null){
-                setErrorMessage(msg.getText());
-            }
+            setErrorMessage(TableContentsValidations.validateNameOfStructureAndContentsNotTheSameWhenEnum(structure,
+                    getIpsObjectName(), null));
         }
     }
     

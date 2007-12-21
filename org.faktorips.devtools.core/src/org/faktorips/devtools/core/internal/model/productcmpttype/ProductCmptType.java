@@ -48,6 +48,7 @@ import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeMethod;
 import org.faktorips.devtools.core.model.productcmpttype.ITableStructureUsage;
 import org.faktorips.devtools.core.model.productcmpttype.ProdDefPropertyType;
 import org.faktorips.devtools.core.model.productcmpttype.ProductCmptTypeHierarchyVisitor;
+import org.faktorips.devtools.core.model.productcmpttype.ProductCmptTypeValidations;
 import org.faktorips.devtools.core.model.type.IType;
 import org.faktorips.devtools.core.model.type.TypeHierarchyVisitor;
 import org.faktorips.devtools.core.model.type.TypeValidations;
@@ -418,16 +419,15 @@ public class ProductCmptType extends Type implements IProductCmptType {
         return new MyDuplicatePropertyNameValidator(ipsProject);
     }
 
-    private void validateProductCmptTypeAbstractWhenPolicyCmptTypeAbstract(MessageList msgList, IIpsProject ipsProject) throws CoreException{
-        if(StringUtils.isEmpty(getPolicyCmptType())){
+    private void validateProductCmptTypeAbstractWhenPolicyCmptTypeAbstract(MessageList msgList, IIpsProject ipsProject)
+            throws CoreException {
+        if (StringUtils.isEmpty(getPolicyCmptType())) {
             return;
         }
         IPolicyCmptType policyCmptType = findPolicyCmptType(ipsProject);
-        if(policyCmptType != null){
-            if(policyCmptType.isAbstract() && !isAbstract()){
-                msgList.add(new Message(MSGCODE_PRODUCTCMPTTYPE_ABSTRACT_WHEN_POLICYCMPTTYPE_ABSTRACT, 
-                        Messages.ProductCmptType_msgProductCmptTypeAbstractWhenPolicyCmptTypeAbstract, Message.ERROR, this, PROPERTY_ABSTRACT));
-            }
+        if (policyCmptType != null) {
+            ProductCmptTypeValidations.validateProductCmptTypeAbstractWhenPolicyCmptTypeAbstract(policyCmptType
+                    .isAbstract(), isAbstract(), this);
         }
     }
     

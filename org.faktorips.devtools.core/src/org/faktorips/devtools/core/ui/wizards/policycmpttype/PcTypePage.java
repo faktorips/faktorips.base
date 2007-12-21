@@ -38,7 +38,6 @@ import org.faktorips.devtools.core.ui.controller.fields.TextButtonField;
 import org.faktorips.devtools.core.ui.controls.IpsObjectRefControl;
 import org.faktorips.devtools.core.ui.wizards.productcmpttype.ProductCmptTypePage;
 import org.faktorips.devtools.core.ui.wizards.type.TypePage;
-import org.faktorips.util.message.Message;
 
 
 /**
@@ -82,6 +81,7 @@ public class PcTypePage extends TypePage {
         configurableField = new CheckboxField(toolkit.createCheckbox(nameComposite, Messages.PcTypePage_configuredByProductCmptType));
         configurableField.setValue(Boolean.valueOf(getSettings().getBoolean(IProductCmptType.PROPERTY_CONFIGURATION_FOR_POLICY_CMPT_TYPE)));
         configurableField.addChangeListener(this);
+        addAbstractField(nameComposite, toolkit);
     }
 
     /**
@@ -142,13 +142,11 @@ public class PcTypePage extends TypePage {
     
     protected void validateName() throws CoreException {
         super.validateName();
-        if(getIpsProject() == null){
+        if (getIpsProject() == null) {
             return;
         }
-        Message msg = TypeValidations.validateOtherTypeWithSameNameTypeInIpsObjectPath(IpsObjectType.PRODUCT_CMPT_TYPE_V2, getQualifiedIpsObjectName(), getIpsProject(), null);
-        if(msg != null){
-            setErrorMessage(msg.getText());
-        }
+        setErrorMessage(TypeValidations.validateOtherTypeWithSameNameTypeInIpsObjectPath(
+                IpsObjectType.PRODUCT_CMPT_TYPE_V2, getQualifiedIpsObjectName(), getIpsProject(), null));
     }
     
     /**

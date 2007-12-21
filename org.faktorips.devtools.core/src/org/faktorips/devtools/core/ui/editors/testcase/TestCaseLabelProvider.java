@@ -157,7 +157,7 @@ public class TestCaseLabelProvider implements ILabelProvider {
      * Returns the name of the test value.
      */
     public String getTextForSection(ITestValue testValue){
-        return StringUtils.capitalise(testValue.getTestValueParameter());
+        return StringUtils.capitalize(testValue.getTestValueParameter());
     }
 
     /**

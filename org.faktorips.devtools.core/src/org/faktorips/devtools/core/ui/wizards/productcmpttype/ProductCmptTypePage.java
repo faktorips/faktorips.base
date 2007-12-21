@@ -33,15 +33,16 @@ import org.faktorips.devtools.core.model.ipsproject.IIpsPackageFragmentRoot;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
+import org.faktorips.devtools.core.model.productcmpttype.ProductCmptTypeValidations;
 import org.faktorips.devtools.core.model.type.IType;
 import org.faktorips.devtools.core.model.type.TypeHierarchyVisitor;
 import org.faktorips.devtools.core.model.type.TypeValidations;
 import org.faktorips.devtools.core.ui.UIToolkit;
+import org.faktorips.devtools.core.ui.controller.fields.FieldValueChangedEvent;
 import org.faktorips.devtools.core.ui.controller.fields.TextButtonField;
 import org.faktorips.devtools.core.ui.controls.IpsObjectRefControl;
 import org.faktorips.devtools.core.ui.wizards.policycmpttype.PcTypePage;
 import org.faktorips.devtools.core.ui.wizards.type.TypePage;
-import org.faktorips.util.message.Message;
 
 
 /**
@@ -75,11 +76,14 @@ public class ProductCmptTypePage extends TypePage {
      */
     protected void setDefaults(IResource selectedResource) throws CoreException {
         super.setDefaults(selectedResource);
-        IIpsObject ipsObject = getSelectedIpsObject();
-        if(ipsObject instanceof IPolicyCmptType){
-            IPolicyCmptType selectedPcType = (IPolicyCmptType)ipsObject;
-            if(StringUtils.isEmpty(selectedPcType.getProductCmptType())){
-                pcTypeField.setValue(selectedPcType.getQualifiedName());
+        if(pageOfAssociatedType == null){
+            IIpsObject ipsObject = getSelectedIpsObject();
+            if(ipsObject instanceof IPolicyCmptType){
+                IPolicyCmptType selectedPcType = (IPolicyCmptType)ipsObject;
+                if(StringUtils.isEmpty(selectedPcType.getProductCmptType())){
+                    pcTypeField.setValue(selectedPcType.getQualifiedName());
+                    abstractField.setValue(new Boolean(selectedPcType.isAbstract()));
+                }
             }
         }
     }
@@ -112,6 +116,7 @@ public class ProductCmptTypePage extends TypePage {
                     setIpsObjectName(pageOfAssociatedType.getIpsObjectName() + postfix);
                 }
             }
+            setAbstract(pageOfAssociatedType.getAbstract());
         }
         super.pageEntered();
     }
@@ -137,8 +142,33 @@ public class ProductCmptTypePage extends TypePage {
             pcTypeField = new TextButtonField(pcTypeControl);
             pcTypeField.addChangeListener(this);
         }
+        addAbstractField(nameComposite, toolkit);
     }
     
+    private IPolicyCmptType getPolicyCmptType() throws CoreException {
+        String pcTypeQualifiedName = pcTypeField.getText();
+        if(getIpsProject() != null){
+            IPolicyCmptType policyCmptType = getIpsProject().findPolicyCmptType(pcTypeQualifiedName);
+            if(policyCmptType != null){
+                return policyCmptType;
+            }
+        }
+        return null;
+    }
+    
+    /**
+     * {@inheritDoc}
+     */
+    protected void valueChangedExtension(FieldValueChangedEvent e) throws CoreException {
+        super.valueChangedExtension(e);
+        if(e.field == pcTypeField){
+            IPolicyCmptType policyCmptType = getPolicyCmptType();
+            if(policyCmptType != null){
+                setAbstract(policyCmptType.isAbstract());
+            }
+        }
+    }
+
     /** 
      * {@inheritDoc}
      */
@@ -156,14 +186,11 @@ public class ProductCmptTypePage extends TypePage {
     
     protected void validateName() throws CoreException {
         super.validateName();
-        if(getIpsProject() == null){
+        if (getIpsProject() == null) {
             return;
         }
-        Message msg = TypeValidations.validateOtherTypeWithSameNameTypeInIpsObjectPath(IpsObjectType.POLICY_CMPT_TYPE, getQualifiedIpsObjectName(), getIpsProject(), null);
-        if(msg != null){
-            setErrorMessage(msg.getText());
-        }
-
+        setErrorMessage(TypeValidations.validateOtherTypeWithSameNameTypeInIpsObjectPath(
+                IpsObjectType.POLICY_CMPT_TYPE, getQualifiedIpsObjectName(), getIpsProject(), null));
     }
     
     /**
@@ -185,6 +212,8 @@ public class ProductCmptTypePage extends TypePage {
                     validateSupertype(superType, policyCmptProductCmptSuperType);
                 }
             }
+            setErrorMessage(ProductCmptTypeValidations.validateProductCmptTypeAbstractWhenPolicyCmptTypeAbstract(
+                    pageOfAssociatedType.getAbstract(), getAbstract(), null));
         }
         if (pageOfAssociatedType != null) {
             if(!StringUtils.isEmpty(getSuperType())) {
@@ -230,9 +259,12 @@ public class ProductCmptTypePage extends TypePage {
                         }
                     }
                 }
+                
+                setErrorMessage(ProductCmptTypeValidations.validateProductCmptTypeAbstractWhenPolicyCmptTypeAbstract(
+                        configuableType.isAbstract(), getAbstract(), null));
+                
             }
         }
-        
     }
 
     private void validateSupertype(final IProductCmptType superType,

@@ -53,7 +53,7 @@ public class TestPropertyDatatype extends AbstractDatatype implements PropertyDa
      * @see org.faktorips.fl.PropertyDatatype#getGetterMethod()
      */
     public String getGetterMethod() {
-        return "get" + StringUtils.capitalise(name);
+        return "get" + StringUtils.capitalize(name);
     }
 
     /**

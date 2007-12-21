@@ -94,7 +94,7 @@ public class ProductCmptTypeMethod extends Method implements IProductCmptTypeMet
      */
     public String getDefaultMethodName() {
         if (isFormulaSignatureDefinition()) {
-            return "compute" + StringUtils.capitalise(getFormulaName()); //$NON-NLS-1$
+            return "compute" + StringUtils.capitalize(getFormulaName()); //$NON-NLS-1$
         }
         return ""; //$NON-NLS-1$
     }

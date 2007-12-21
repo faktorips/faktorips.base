@@ -432,7 +432,7 @@ public class PolicyCmptTypeAttribute extends Attribute implements IPolicyCmptTyp
      * {@inheritDoc}
      */
     public String getProposalValueSetRuleName() {
-        return NLS.bind(Messages.Attribute_proposalForRuleName, StringUtils.capitalise(getName()));
+        return NLS.bind(Messages.Attribute_proposalForRuleName, StringUtils.capitalize(getName()));
     }
 
     /**

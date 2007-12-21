@@ -142,7 +142,7 @@ public class FormulasSection extends IpsSection {
                 ITableStructureUsage tsu = findTableStructureUsage(usages[i].getStructureUsage());
                 
                 // create label here to avoid lost label in case of exception
-                Label label = toolkit.createFormLabel(rootPane, StringUtils.capitalise(usages[i].getStructureUsage()));
+                Label label = toolkit.createFormLabel(rootPane, StringUtils.capitalize(usages[i].getStructureUsage()));
                 // use description of table structure usage as tooltip
                 if (tsu != null){
                     label.setToolTipText(tsu.getDescription());
@@ -160,7 +160,7 @@ public class FormulasSection extends IpsSection {
 
         // create formula edit fields
         for (int i = 0; i < formulas.length; i++) {
-			Label label = toolkit.createFormLabel(rootPane, StringUtils.capitalise(formulas[i].getName()));
+			Label label = toolkit.createFormLabel(rootPane, StringUtils.capitalize(formulas[i].getName()));
              // use description of formula attribute as tooltip
             label.setToolTipText(formulas[i].getDescription());
             
