@@ -90,6 +90,6 @@ public class IntegerDatatype extends ValueClassDatatype implements NumericDataty
         int a = intA.intValue();
         int b = intB.intValue();
 
-        return Math.IEEEremainder(a, b) == 0;
+        return a % b == 0;
     }
 }

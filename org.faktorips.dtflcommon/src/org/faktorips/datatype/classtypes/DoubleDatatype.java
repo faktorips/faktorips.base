@@ -17,6 +17,8 @@
 
 package org.faktorips.datatype.classtypes;
 
+import java.math.BigDecimal;
+
 import org.apache.commons.lang.StringUtils;
 import org.faktorips.datatype.NumericDatatype;
 import org.faktorips.datatype.ValueClassDatatype;
@@ -77,19 +79,15 @@ public class DoubleDatatype extends ValueClassDatatype implements NumericDatatyp
         if (dividend == null || divisor == null) {
             throw new NullPointerException("dividend and divisor both can not be null.");
         }
-        Double doubleA = (Double)getValue(dividend);
-        Double doubleB = (Double)getValue(divisor);
         
-        if (doubleA == null) {
-            throw new NumberFormatException("The dividend '" + dividend + "' can not be parsed to a Double");
+        BigDecimal a = new BigDecimal(dividend);
+        BigDecimal b = new BigDecimal(divisor);
+
+        try {
+            a.divide(b, 0, BigDecimal.ROUND_UNNECESSARY);
+            return true;
+        } catch (ArithmeticException e) {
+            return false;
         }
-        
-        if (doubleB == null) {
-            throw new NumberFormatException("The divisor '" + divisor + "' can not be parsed to a Double");
-        }
-        
-        double a = doubleA.doubleValue();
-        double b = doubleB.doubleValue();
-        return Math.IEEEremainder(a, b) == 0;
     }
 }

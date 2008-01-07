@@ -38,6 +38,9 @@ public class NumericDatatypeTest extends TestCase {
     public void testDivisibleWithoutRemainderDouble() {
         DoubleDatatype datatype = new DoubleDatatype();
         defaultTests(datatype);
+        
+        assertTrue(datatype.divisibleWithoutRemainder("100", "0.25"));
+        assertTrue(datatype.divisibleWithoutRemainder("100", "0.2"));
     }
     
     public void testDivisibleWithoutRemainderInteger() {
