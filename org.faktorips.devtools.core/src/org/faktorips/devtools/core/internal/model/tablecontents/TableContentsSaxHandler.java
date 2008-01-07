@@ -53,8 +53,12 @@ public class TableContentsSaxHandler extends DefaultHandler {
     // buffer to store the characters inside the value node
     private StringBuffer textBuffer = null;
     
+    // true if the parser is inside the row node
+    private boolean insideRowNode;
+    
     // true if the parser is inside the value node
     private boolean insideValueNode;
+    
     // true if the current value node represents the null value
     private boolean nullValue;
     
@@ -68,10 +72,11 @@ public class TableContentsSaxHandler extends DefaultHandler {
      * {@inheritDoc}
      */
     public void endElement(String uri, String localName, String qName) throws SAXException {
-       if (ROW.equals(qName)) {
+        if (ROW.equals(qName)) {
+            insideRowNode = false;
             currentGeneration.newRow(columns);
             columns.clear();
-        } else if (VALUE.equals(qName)) {
+        } else if (isColumnValueNode(qName)) {
             insideValueNode = false;
             columns.add(textBuffer == null && nullValue ? null : textBuffer == null ? new String("") : textBuffer //$NON-NLS-1$
                     .substring(0));
@@ -91,7 +96,9 @@ public class TableContentsSaxHandler extends DefaultHandler {
             currentGeneration = (TableContentsGeneration)((TableContents)tableContents)
                     .createNewGenerationInternal(DateUtil.parseIsoDateStringToGregorianCalendar(attributes
                             .getValue(ATTRIBUTE_VALIDFROM)));
-        } else if (VALUE.equals(qName)) {
+        } else if (ROW.equals(qName)){
+            insideRowNode = true;
+        } else if (isColumnValueNode(qName)) {
             insideValueNode = true;
             nullValue = Boolean.valueOf(attributes.getValue("isNull")).booleanValue(); //$NON-NLS-1$
         }
@@ -112,4 +119,11 @@ public class TableContentsSaxHandler extends DefaultHandler {
             textBuffer.append(s);
         }
     }
+    
+    /*
+     * Returns <code>true</code> if the given node is the column value node otherwise <code>false</code>
+     */
+    private boolean isColumnValueNode(String nodeName){
+        return VALUE.equals(nodeName) && insideRowNode;
+    }    
 }
