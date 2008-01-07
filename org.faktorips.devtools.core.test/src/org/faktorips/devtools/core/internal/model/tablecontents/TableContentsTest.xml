@@ -4,6 +4,9 @@
  Test data for TableImplTest.java
 -->
 <TableContents description="blabla" tableStructure="RateTableStructure" numOfColumns="2">
+    <ExtensionProperties>
+        <Value id="id1" isNull="false"><![CDATA[XYZ]]></Value>
+    </ExtensionProperties> 	
 	<Generation id="0">
     	<Row id="0" c0="18" c1="0.5">
     		<Value isNull="false">18</Value>
