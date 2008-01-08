@@ -22,6 +22,7 @@ import org.faktorips.devtools.core.AbstractIpsPluginTest;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.pctype.AssociationType;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
+import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAssociation;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeAssociation;
 import org.faktorips.devtools.core.util.XmlUtil;
@@ -49,7 +50,7 @@ public class ProductCmptTypeAssociationTest extends AbstractIpsPluginTest {
         association = productType.newProductCmptTypeAssociation();
     }
     
-    public void testFindPolicyCmptTypeRelation() throws CoreException {
+    public void testFindPolicyCmptTypeAssociation() throws CoreException {
         assertNull(association.findMatchingPolicyCmptTypeAssociation(ipsProject));
         
         association.setTarget(coverageTypeType.getQualifiedName());
@@ -58,16 +59,20 @@ public class ProductCmptTypeAssociationTest extends AbstractIpsPluginTest {
         IPolicyCmptType policyType = newPolicyCmptType(ipsProject, "Policy");
         productType.setPolicyCmptType(policyType.getQualifiedName());
         
-        org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAssociation policyTypeRelation = policyType.newPolicyCmptTypeAssociation();
-        policyTypeRelation.setAssociationType(AssociationType.COMPOSITION_MASTER_TO_DETAIL);
+        IPolicyCmptTypeAssociation policyTypeAssociation = policyType.newPolicyCmptTypeAssociation();
+        policyTypeAssociation.setAssociationType(AssociationType.COMPOSITION_MASTER_TO_DETAIL);
         assertNull(association.findMatchingPolicyCmptTypeAssociation(ipsProject));
 
         IPolicyCmptType coverageType = newPolicyCmptType(ipsProject, "Coverage");
-        policyTypeRelation.setTarget(coverageType.getQualifiedName());
+        policyTypeAssociation.setTarget(coverageType.getQualifiedName());
         assertNull(association.findMatchingPolicyCmptTypeAssociation(ipsProject));
 
         coverageTypeType.setPolicyCmptType(coverageType.getQualifiedName());
-        assertEquals(policyTypeRelation, association.findMatchingPolicyCmptTypeAssociation(ipsProject));
+        assertEquals(policyTypeAssociation, association.findMatchingPolicyCmptTypeAssociation(ipsProject));
+        
+        IProductCmptTypeAssociation association2 = productType.newProductCmptTypeAssociation();
+        association2.setTarget(coverageTypeType.getQualifiedName());
+        assertNull(association2.findMatchingPolicyCmptTypeAssociation(ipsProject));
     }
     
     /**
