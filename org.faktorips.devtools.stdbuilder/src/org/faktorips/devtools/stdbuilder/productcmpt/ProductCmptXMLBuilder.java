@@ -38,7 +38,7 @@ import org.w3c.dom.NodeList;
 
 /**
  * Copies the product cmpt xml file to the output location (=java source folder).
- * For relations the target runtime id is added to the xml.
+ * For associations the target runtime id is added to the xml.
  * 
  * @author Thorsten Guenther
  */
@@ -68,11 +68,11 @@ public class ProductCmptXMLBuilder extends AbstractXmlFileBuilder {
     }
 
     private void updateTargetRuntimeId(IProductCmptGeneration generation, Element generationElement) throws DOMException, CoreException {
-        NodeList relationNodes = generationElement.getElementsByTagName(IProductCmptLink.TAG_NAME);
-        IProductCmptLink[] relations = generation.getLinks();
-        for (int i = 0; i < relations.length; i++) {
-            Element relation = (Element)relationNodes.item(i);
-            relation.setAttribute(ProductCmptGenImplClassBuilder.XML_ATTRIBUTE_TARGET_RUNTIME_ID, getTargetRuntimeId(relations[i]));
+        NodeList associationNodes = generationElement.getElementsByTagName(IProductCmptLink.TAG_NAME);
+        IProductCmptLink[] associations = generation.getLinks();
+        for (int i = 0; i < associations.length; i++) {
+            Element association = (Element)associationNodes.item(i);
+            association.setAttribute(ProductCmptGenImplClassBuilder.XML_ATTRIBUTE_TARGET_RUNTIME_ID, getTargetRuntimeId(associations[i]));
         }
     }
 

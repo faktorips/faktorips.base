@@ -129,67 +129,67 @@ public abstract class BasePolicyCmptTypeBuilder extends AbstractPcTypeBuilder {
     /**
      * {@inheritDoc}
      */
-    protected void generateCodeForRelation(IPolicyCmptTypeAssociation relation,
+    protected void generateCodeForAssociation(IPolicyCmptTypeAssociation association,
             JavaCodeFragmentBuilder fieldsBuilder,
             JavaCodeFragmentBuilder methodsBuilder) throws Exception {
 
-        generateCodeForRelationInCommon(relation, fieldsBuilder, methodsBuilder);
-        if (relation.is1ToMany()) {
-            generateCodeFor1ToManyRelation(relation, fieldsBuilder, methodsBuilder);
+        generateCodeForAssociationInCommon(association, fieldsBuilder, methodsBuilder);
+        if (association.is1ToMany()) {
+            generateCodeFor1ToManyAssociation(association, fieldsBuilder, methodsBuilder);
         } else {
-            generateCodeFor1To1Relation(relation, fieldsBuilder, methodsBuilder);
+            generateCodeFor1To1Association(association, fieldsBuilder, methodsBuilder);
         }
        
     }
 
     /**
-     * Generations the code for a relation unspecific to the cardinality of the relation. 
-     * The method is called for every valid relation defined in the policy component type
+     * Generations the code for a association unspecific to the cardinality of the association. 
+     * The method is called for every valid association defined in the policy component type
      * we currently build sourcecode for.
      * 
-     * @param relation
+     * @param association
      * @param fieldsBuilder
      * @param methodsBuilder
      * @throws Exception
      */
-    protected abstract void generateCodeForRelationInCommon(IPolicyCmptTypeAssociation relation,
+    protected abstract void generateCodeForAssociationInCommon(IPolicyCmptTypeAssociation association,
             JavaCodeFragmentBuilder fieldsBuilder,
             JavaCodeFragmentBuilder methodsBuilder) throws Exception;
 
     /**
-     * Generates the code for a 1-to-many relation. The method is called for every valid relation
+     * Generates the code for a 1-to-many association. The method is called for every valid association
      * defined in the policy component type we currently build sourcecode for.
      */
-    protected abstract void generateCodeFor1ToManyRelation(IPolicyCmptTypeAssociation relation,
+    protected abstract void generateCodeFor1ToManyAssociation(IPolicyCmptTypeAssociation association,
             JavaCodeFragmentBuilder fieldsBuilder,
             JavaCodeFragmentBuilder methodsBuilder) throws Exception;
 
     /**
-     * Generates the code for a 1-to-many relation. The method is called for every valid relation
+     * Generates the code for a 1-to-many association. The method is called for every valid association
      * defined in the policy component type we currently build sourcecode for.
      */
-    protected abstract void generateCodeFor1To1Relation(IPolicyCmptTypeAssociation relation,
+    protected abstract void generateCodeFor1To1Association(IPolicyCmptTypeAssociation association,
             JavaCodeFragmentBuilder fieldsBuilder,
             JavaCodeFragmentBuilder methodsBuilder) throws Exception;
 
     /**
-     * Methods to create a new child object should be generated if the relation is a composite and
+     * Methods to create a new child object should be generated if the association is a composite and
      * the target is not abstract. If the target is configurable by product a second method with the
      * product component type as argument should also be generated.
      */
-    protected void generateNewChildMethodsIfApplicable(IPolicyCmptTypeAssociation relation,
+    protected void generateNewChildMethodsIfApplicable(IPolicyCmptTypeAssociation association,
             IPolicyCmptType target,
             JavaCodeFragmentBuilder methodsBuilder) throws CoreException {
 
-        if (!relation.getAssociationType().isCompositionMasterToDetail()) {
+        if (!association.getAssociationType().isCompositionMasterToDetail()) {
             return;
         }
         if (target.isAbstract()) {
             return;
         }
-        generateMethodNewChild(relation, target, false, methodsBuilder);
+        generateMethodNewChild(association, target, false, methodsBuilder);
         if (target.isConfigurableByProductCmptType() && target.findProductCmptType(getIpsProject())!=null) {
-            generateMethodNewChild(relation, target, true, methodsBuilder);
+            generateMethodNewChild(association, target, true, methodsBuilder);
         }
     }
 
@@ -197,7 +197,7 @@ public abstract class BasePolicyCmptTypeBuilder extends AbstractPcTypeBuilder {
      * Generates a method to create a new child object for a parent obejct and attach it to the
      * parent.
      * 
-     * @param relation The parent to child relation
+     * @param association The parent to child association
      * @param target The child type.
      * @param inclProductCmptArg <code>true</code> if the product component type should be
      *            included as arg.
@@ -205,7 +205,7 @@ public abstract class BasePolicyCmptTypeBuilder extends AbstractPcTypeBuilder {
      * 
      * @throws CoreException
      */
-    public abstract void generateMethodNewChild(IPolicyCmptTypeAssociation relation,
+    public abstract void generateMethodNewChild(IPolicyCmptTypeAssociation association,
             IPolicyCmptType target,
             boolean inclProductCmptArg,
             JavaCodeFragmentBuilder builder) throws CoreException;

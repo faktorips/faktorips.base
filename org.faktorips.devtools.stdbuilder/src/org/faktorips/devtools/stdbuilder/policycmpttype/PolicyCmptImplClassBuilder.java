@@ -227,16 +227,16 @@ public class PolicyCmptImplClassBuilder extends BasePolicyCmptTypeBuilder {
         methodsBuilder.methodBegin(java.lang.reflect.Modifier.PUBLIC, Void.TYPE, MethodNames.EFFECTIVE_FROM_HAS_CHANGED, new String[0], new Class[0]);
         methodsBuilder.appendln("super." + MethodNames.EFFECTIVE_FROM_HAS_CHANGED + "();");
 
-        IPolicyCmptTypeAssociation[] relations = getPolicyCmptType().getPolicyCmptTypeAssociations();
-        for (int i = 0; i < relations.length; i++) {
-            IPolicyCmptTypeAssociation r = relations[i];
+        IPolicyCmptTypeAssociation[] associations = getPolicyCmptType().getPolicyCmptTypeAssociations();
+        for (int i = 0; i < associations.length; i++) {
+            IPolicyCmptTypeAssociation r = associations[i];
             if (r.isValid() && r.isCompositionMasterToDetail() && !r.isDerivedUnion()) {
                 IPolicyCmptType target = r.findTargetPolicyCmptType(getIpsProject());
                 if (!target.isConfigurableByProductCmptType()) {
                     continue;
                 }
                 methodsBuilder.appendln();
-                String field = getFieldNameForRelation(r);
+                String field = getFieldNameForAssociation(r);
                 if (r.is1ToMany()) {
                     methodsBuilder.append("for (");
                     methodsBuilder.appendClassName(Iterator.class);
@@ -265,11 +265,11 @@ public class PolicyCmptImplClassBuilder extends BasePolicyCmptTypeBuilder {
         methodsBuilder.methodBegin(java.lang.reflect.Modifier.PUBLIC, Void.TYPE, MethodNames.REMOVE_CHILD_MODEL_OBJECT_INTERNAL, 
                 new String[] {paramName}, new Class[]{IModelObject.class});
         methodsBuilder.appendln("super." + MethodNames.REMOVE_CHILD_MODEL_OBJECT_INTERNAL + "(" + paramName + ");");
-        IPolicyCmptTypeAssociation[] relations = getPcType().getPolicyCmptTypeAssociations();
-        for (int i = 0; i < relations.length; i++) {
-            if (relations[i].isValid() && relations[i].getAssociationType().isCompositionMasterToDetail() && !relations[i].isDerivedUnion()) {
-                String fieldName = getFieldNameForRelation(relations[i]);
-                if (relations[i].is1ToMany()) {
+        IPolicyCmptTypeAssociation[] associations = getPcType().getPolicyCmptTypeAssociations();
+        for (int i = 0; i < associations.length; i++) {
+            if (associations[i].isValid() && associations[i].getAssociationType().isCompositionMasterToDetail() && !associations[i].isDerivedUnion()) {
+                String fieldName = getFieldNameForAssociation(associations[i]);
+                if (associations[i].is1ToMany()) {
                     methodsBuilder.appendln(fieldName + ".remove(" + paramName + ");");
                 } else {
                     methodsBuilder.appendln("if (" + fieldName + "==" + paramName + ") {");
@@ -553,13 +553,13 @@ public class PolicyCmptImplClassBuilder extends BasePolicyCmptTypeBuilder {
 	/**
      * {@inheritDoc}
      */
-    protected void generateCodeForRelationInCommon(IPolicyCmptTypeAssociation relation, JavaCodeFragmentBuilder fieldsBuilder, JavaCodeFragmentBuilder methodsBuilder) throws Exception {
-        if(relation.isQualified()){
-            if(relation.isDerivedUnion()){
-                generateMethodGetRefObjectsByQualifierForDerivedUnion(relation, methodsBuilder);
+    protected void generateCodeForAssociationInCommon(IPolicyCmptTypeAssociation association, JavaCodeFragmentBuilder fieldsBuilder, JavaCodeFragmentBuilder methodsBuilder) throws Exception {
+        if(association.isQualified()){
+            if(association.isDerivedUnion()){
+                generateMethodGetRefObjectsByQualifierForDerivedUnion(association, methodsBuilder);
             }
             else{
-                generateMethodGetRefObjectsByQualifierForNonDerivedUnion(relation, methodsBuilder);
+                generateMethodGetRefObjectsByQualifierForNonDerivedUnion(association, methodsBuilder);
             }
         }
     }
@@ -567,61 +567,61 @@ public class PolicyCmptImplClassBuilder extends BasePolicyCmptTypeBuilder {
     /**
      * {@inheritDoc}
      */
-    protected void generateCodeFor1To1Relation(IPolicyCmptTypeAssociation relation, JavaCodeFragmentBuilder fieldsBuilder, JavaCodeFragmentBuilder methodsBuilder) throws Exception {
-        if (relation.isCompositionDetailToMaster()) {
-            generateMethodGetTypesafeParentObject(relation, methodsBuilder);
+    protected void generateCodeFor1To1Association(IPolicyCmptTypeAssociation association, JavaCodeFragmentBuilder fieldsBuilder, JavaCodeFragmentBuilder methodsBuilder) throws Exception {
+        if (association.isCompositionDetailToMaster()) {
+            generateMethodGetTypesafeParentObject(association, methodsBuilder);
             return; 
         }
-        if (!relation.isDerivedUnion()) {
-            IPolicyCmptType target = relation.findTargetPolicyCmptType(getIpsProject());
-            generateFieldForRelation(relation, target, fieldsBuilder);
-            generateMethodGetRefObjectBasedOnMemberVariable(relation, methodsBuilder);
-            if (relation.isAssoziation()) {
-                generateMethodSetRefObjectForAssociation(relation, methodsBuilder);
-            } else if (relation.isCompositionMasterToDetail()) { 
-                generateMethodSetRefObjectForComposition(relation, methodsBuilder);
+        if (!association.isDerivedUnion()) {
+            IPolicyCmptType target = association.findTargetPolicyCmptType(getIpsProject());
+            generateFieldForAssociation(association, target, fieldsBuilder);
+            generateMethodGetRefObjectBasedOnMemberVariable(association, methodsBuilder);
+            if (association.isAssoziation()) {
+                generateMethodSetRefObjectForAssociation(association, methodsBuilder);
+            } else if (association.isCompositionMasterToDetail()) { 
+                generateMethodSetRefObjectForComposition(association, methodsBuilder);
             }
-            generateNewChildMethodsIfApplicable(relation, target, methodsBuilder);
+            generateNewChildMethodsIfApplicable(association, target, methodsBuilder);
         }
     }
 
     /**
      * {@inheritDoc}
      */
-    protected void generateCodeFor1ToManyRelation(IPolicyCmptTypeAssociation relation, JavaCodeFragmentBuilder fieldsBuilder, JavaCodeFragmentBuilder methodsBuilder) throws Exception {
-        IPolicyCmptType target = relation.findTargetPolicyCmptType(getIpsProject());
-        if (relation.isDerivedUnion()) {
-            generateMethodContainsObjectForContainerRelation(relation, methodsBuilder);
+    protected void generateCodeFor1ToManyAssociation(IPolicyCmptTypeAssociation association, JavaCodeFragmentBuilder fieldsBuilder, JavaCodeFragmentBuilder methodsBuilder) throws Exception {
+        IPolicyCmptType target = association.findTargetPolicyCmptType(getIpsProject());
+        if (association.isDerivedUnion()) {
+            generateMethodContainsObjectForContainerAssociation(association, methodsBuilder);
         } else {
-            generateFieldForRelation(relation, target, fieldsBuilder);
-            generateMethodGetNumOfForNoneContainerRelation(relation, methodsBuilder);
-            generateMethodContainsObjectForNoneContainerRelation(relation, methodsBuilder);
-            generateMethodGetAllRefObjectsForNoneContainerRelation(relation, methodsBuilder);
-            generateMethodGetRefObjectAtIndex(relation, methodsBuilder);
-            generateNewChildMethodsIfApplicable(relation, target, methodsBuilder);
-            generateMethodAddObject(relation, methodsBuilder);
-            generateMethodRemoveObject(relation, methodsBuilder);
+            generateFieldForAssociation(association, target, fieldsBuilder);
+            generateMethodGetNumOfForNoneContainerAssociation(association, methodsBuilder);
+            generateMethodContainsObjectForNoneContainerAssociation(association, methodsBuilder);
+            generateMethodGetAllRefObjectsForNoneContainerAssociation(association, methodsBuilder);
+            generateMethodGetRefObjectAtIndex(association, methodsBuilder);
+            generateNewChildMethodsIfApplicable(association, target, methodsBuilder);
+            generateMethodAddObject(association, methodsBuilder);
+            generateMethodRemoveObject(association, methodsBuilder);
         }
     }
     
-    protected void generateFieldForRelation(
-            IPolicyCmptTypeAssociation relation,
+    protected void generateFieldForAssociation(
+            IPolicyCmptTypeAssociation association,
             IPolicyCmptType target,
             JavaCodeFragmentBuilder methodsBuilder) throws CoreException {
         
-        String javaClassname = relation.is1ToMany() ? List.class.getName()
+        String javaClassname = association.is1ToMany() ? List.class.getName()
                 : getQualifiedClassName(target);
         JavaCodeFragment initialValueExpression = new JavaCodeFragment();
-        if (relation.is1ToMany()) {
+        if (association.is1ToMany()) {
             initialValueExpression.append("new ");
             initialValueExpression.appendClassName(ArrayList.class);
             initialValueExpression.append("()");
         } else {
             initialValueExpression.append("null");
         }
-        String comment = getLocalizedText(relation, "FIELD_RELATION_JAVADOC", relation.getName());
+        String comment = getLocalizedText(association, "FIELD_RELATION_JAVADOC", association.getName());
         methodsBuilder.javaDoc(comment, JavaSourceFileBuilder.ANNOTATION_GENERATED);
-        methodsBuilder.varDeclaration(java.lang.reflect.Modifier.PRIVATE, javaClassname, getFieldNameForRelation(relation),
+        methodsBuilder.varDeclaration(java.lang.reflect.Modifier.PRIVATE, javaClassname, getFieldNameForAssociation(association),
             initialValueExpression);
     }
 
@@ -634,12 +634,12 @@ public class PolicyCmptImplClassBuilder extends BasePolicyCmptTypeBuilder {
      * }
      * </pre>
      */
-    protected void generateMethodGetNumOfForNoneContainerRelation(IPolicyCmptTypeAssociation relation, JavaCodeFragmentBuilder methodsBuilder) throws Exception {
+    protected void generateMethodGetNumOfForNoneContainerAssociation(IPolicyCmptTypeAssociation association, JavaCodeFragmentBuilder methodsBuilder) throws Exception {
         methodsBuilder.javaDoc(getJavaDocCommentForOverriddenMethod(), ANNOTATION_GENERATED);
-        interfaceBuilder.generateSignatureGetNumOfRefObjects(relation, methodsBuilder);
+        interfaceBuilder.generateSignatureGetNumOfRefObjects(association, methodsBuilder);
         methodsBuilder.openBracket();
-        String field = getFieldNameForRelation(relation);
-        if (relation.is1ToMany()) {
+        String field = getFieldNameForAssociation(association);
+        if (association.is1ToMany()) {
             methodsBuilder.appendln("return " + field + ".size();");
         } else {
             methodsBuilder.appendln("return " + field + "==null ? 0 : 1;");
@@ -660,29 +660,29 @@ public class PolicyCmptImplClassBuilder extends BasePolicyCmptTypeBuilder {
      * }
      * </pre>
      */
-    protected void generateMethodGetNumOfInternalForContainerRelationImplementation(
-            IPolicyCmptTypeAssociation containerRelation, 
-            List implRelations,
+    protected void generateMethodGetNumOfInternalForContainerAssociationImplementation(
+            IPolicyCmptTypeAssociation containerAssociation, 
+            List implAssociations,
             JavaCodeFragmentBuilder methodsBuilder) throws Exception {
     
         methodsBuilder.javaDoc(null, ANNOTATION_GENERATED);
-        String methodName = getMethodNameGetNumOfRefObjectsInternal(containerRelation);
+        String methodName = getMethodNameGetNumOfRefObjectsInternal(containerAssociation);
         methodsBuilder.signature(java.lang.reflect.Modifier.PRIVATE, "int", methodName, new String[]{}, new String[]{});
         methodsBuilder.openBracket();
         methodsBuilder.append("int num = 0;");
         IPolicyCmptType supertype = (IPolicyCmptType)getPcType().findSupertype(getIpsProject());
         if (supertype!=null && !supertype.isAbstract()) {
-            String methodName2 = interfaceBuilder.getMethodNameGetNumOfRefObjects(containerRelation);
+            String methodName2 = interfaceBuilder.getMethodNameGetNumOfRefObjects(containerAssociation);
             methodsBuilder.appendln("num += super." + methodName2 + "();");
         }
-        for (int i = 0; i < implRelations.size(); i++) {
+        for (int i = 0; i < implAssociations.size(); i++) {
             methodsBuilder.appendln();
-            IPolicyCmptTypeAssociation relation = (IPolicyCmptTypeAssociation)implRelations.get(i);
+            IPolicyCmptTypeAssociation association = (IPolicyCmptTypeAssociation)implAssociations.get(i);
             methodsBuilder.append("num += ");
-            if (relation.is1ToMany()) {
-                methodsBuilder.append(interfaceBuilder.getMethodNameGetNumOfRefObjects(relation) + "();");
+            if (association.is1ToMany()) {
+                methodsBuilder.append(interfaceBuilder.getMethodNameGetNumOfRefObjects(association) + "();");
             } else {
-                String field = getFieldNameForRelation(relation);
+                String field = getFieldNameForAssociation(association);
                 methodsBuilder.append(field + "==null ? 0 : 1;");
             }
         }
@@ -694,8 +694,8 @@ public class PolicyCmptImplClassBuilder extends BasePolicyCmptTypeBuilder {
      * Returns the name of the internal method returning the number of referenced objects,
      * e.g. getNumOfCoveragesInternal()
      */
-    private String getMethodNameGetNumOfRefObjectsInternal(IPolicyCmptTypeAssociation relation) {
-        return getLocalizedText(relation, "METHOD_GET_NUM_OF_INTERNAL_NAME", StringUtils.capitalize(relation.getTargetRolePlural()));
+    private String getMethodNameGetNumOfRefObjectsInternal(IPolicyCmptTypeAssociation association) {
+        return getLocalizedText(association, "METHOD_GET_NUM_OF_INTERNAL_NAME", StringUtils.capitalize(association.getTargetRolePlural()));
     }
     
     
@@ -708,15 +708,15 @@ public class PolicyCmptImplClassBuilder extends BasePolicyCmptTypeBuilder {
      * }
      * </pre>
      */
-    protected void generateMethodGetNumOfForContainerRelationImplementation(
-            IPolicyCmptTypeAssociation containerRelation, 
-            List implRelations,
+    protected void generateMethodGetNumOfForContainerAssociationImplementation(
+            IPolicyCmptTypeAssociation containerAssociation, 
+            List implAssociations,
             JavaCodeFragmentBuilder methodsBuilder) throws Exception {
         
         methodsBuilder.javaDoc(getJavaDocCommentForOverriddenMethod(), ANNOTATION_GENERATED);
-        interfaceBuilder.generateSignatureGetNumOfRefObjects(containerRelation, methodsBuilder);
+        interfaceBuilder.generateSignatureGetNumOfRefObjects(containerAssociation, methodsBuilder);
         methodsBuilder.openBracket();
-        String methodName = getMethodNameGetNumOfRefObjectsInternal(containerRelation);
+        String methodName = getMethodNameGetNumOfRefObjectsInternal(containerAssociation);
         methodsBuilder.append("return " + methodName + "();");
         methodsBuilder.closeBracket();
     }
@@ -730,17 +730,17 @@ public class PolicyCmptImplClassBuilder extends BasePolicyCmptTypeBuilder {
      * }
      * </pre>
      */
-    protected void generateMethodContainsObjectForNoneContainerRelation(
-            IPolicyCmptTypeAssociation relation, 
+    protected void generateMethodContainsObjectForNoneContainerAssociation(
+            IPolicyCmptTypeAssociation association, 
             JavaCodeFragmentBuilder methodsBuilder) throws Exception {
         
-        String paramName = interfaceBuilder.getParamNameForContainsObject(relation);
+        String paramName = interfaceBuilder.getParamNameForContainsObject(association);
         
         methodsBuilder.javaDoc(getJavaDocCommentForOverriddenMethod(), ANNOTATION_GENERATED);
-        interfaceBuilder.generateSignatureContainsObject(relation, methodsBuilder);
+        interfaceBuilder.generateSignatureContainsObject(association, methodsBuilder);
         
         methodsBuilder.openBracket();
-        String field = getFieldNameForRelation(relation);
+        String field = getFieldNameForAssociation(association);
         methodsBuilder.appendln("return " + field + ".contains(" + paramName + ");");
         methodsBuilder.closeBracket();
     }
@@ -759,19 +759,19 @@ public class PolicyCmptImplClassBuilder extends BasePolicyCmptTypeBuilder {
      * }
      * </pre>
      */
-    protected void generateMethodContainsObjectForContainerRelation(
-            IPolicyCmptTypeAssociation relation, 
+    protected void generateMethodContainsObjectForContainerAssociation(
+            IPolicyCmptTypeAssociation association, 
             JavaCodeFragmentBuilder methodsBuilder) throws Exception {
         
-        String paramName = interfaceBuilder.getParamNameForContainsObject(relation);
+        String paramName = interfaceBuilder.getParamNameForContainsObject(association);
         
         methodsBuilder.javaDoc(getJavaDocCommentForOverriddenMethod(), ANNOTATION_GENERATED);
-        interfaceBuilder.generateSignatureContainsObject(relation, methodsBuilder);
+        interfaceBuilder.generateSignatureContainsObject(association, methodsBuilder);
         
         methodsBuilder.openBracket();
-        methodsBuilder.appendClassName(interfaceBuilder.getQualifiedClassName(relation.findTarget(getIpsProject())));
+        methodsBuilder.appendClassName(interfaceBuilder.getQualifiedClassName(association.findTarget(getIpsProject())));
         methodsBuilder.append("[] targets = ");
-        methodsBuilder.append(interfaceBuilder.getMethodNameGetAllRefObjects(relation));
+        methodsBuilder.append(interfaceBuilder.getMethodNameGetAllRefObjects(association));
         methodsBuilder.append("();");
         methodsBuilder.append("for(int i=0;i < targets.length;i++) {");
         methodsBuilder.append("if(targets[i] == " + paramName + ") return true; }");
@@ -788,13 +788,13 @@ public class PolicyCmptImplClassBuilder extends BasePolicyCmptTypeBuilder {
      * }
      * </pre>
      */
-    protected void generateMethodGetAllRefObjectsForNoneContainerRelation(
-            IPolicyCmptTypeAssociation relation, 
+    protected void generateMethodGetAllRefObjectsForNoneContainerAssociation(
+            IPolicyCmptTypeAssociation association, 
             JavaCodeFragmentBuilder methodsBuilder) throws Exception {
         methodsBuilder.javaDoc(getJavaDocCommentForOverriddenMethod(), ANNOTATION_GENERATED);
-        interfaceBuilder.generateSignatureGetAllRefObjects(relation, methodsBuilder);
-        String className = getQualifiedClassName(relation.findTargetPolicyCmptType(getIpsProject()));
-        String field = getFieldNameForRelation(relation);
+        interfaceBuilder.generateSignatureGetAllRefObjects(association, methodsBuilder);
+        String className = getQualifiedClassName(association.findTargetPolicyCmptType(getIpsProject()));
+        String field = getFieldNameForAssociation(association);
         methodsBuilder.openBracket();
         methodsBuilder.appendln("return (");
         methodsBuilder.appendClassName(className);
@@ -825,20 +825,20 @@ public class PolicyCmptImplClassBuilder extends BasePolicyCmptTypeBuilder {
      * }
      * </pre>
      */
-    protected void generateMethodGetAllRefObjectsForContainerRelationImplementation(
-            IPolicyCmptTypeAssociation relation,
-            List subRelations,
+    protected void generateMethodGetAllRefObjectsForContainerAssociationImplementation(
+            IPolicyCmptTypeAssociation association,
+            List subAssociations,
             JavaCodeFragmentBuilder methodsBuilder) throws Exception {
         
         methodsBuilder.javaDoc(getJavaDocCommentForOverriddenMethod(), ANNOTATION_GENERATED);
-        interfaceBuilder.generateSignatureGetAllRefObjects(relation, methodsBuilder);
-        String classname = interfaceBuilder.getQualifiedClassName(relation.findTarget(getIpsProject()));
+        interfaceBuilder.generateSignatureGetAllRefObjects(association, methodsBuilder);
+        String classname = interfaceBuilder.getQualifiedClassName(association.findTarget(getIpsProject()));
         
         methodsBuilder.openBracket();
         methodsBuilder.appendClassName(classname);
         methodsBuilder.append("[] result = new ");       
         methodsBuilder.appendClassName(classname);
-        methodsBuilder.append("[" + getMethodNameGetNumOfRefObjectsInternal(relation) + "()];");       
+        methodsBuilder.append("[" + getMethodNameGetNumOfRefObjectsInternal(association) + "()];");       
 
         IPolicyCmptType supertype = (IPolicyCmptType)getPcType().findSupertype(getIpsProject());
         if (supertype!=null && !supertype.isAbstract()) {
@@ -847,7 +847,7 @@ public class PolicyCmptImplClassBuilder extends BasePolicyCmptTypeBuilder {
             // int counter = superResult.length;
             methodsBuilder.appendClassName(classname);
             methodsBuilder.append("[] superResult = super.");       
-            methodsBuilder.appendln(interfaceBuilder.getMethodNameGetAllRefObjects(relation) + "();");
+            methodsBuilder.appendln(interfaceBuilder.getMethodNameGetAllRefObjects(association) + "();");
             
             methodsBuilder.appendln("System.arraycopy(superResult, 0, result, 0, superResult.length);");
             methodsBuilder.appendln("int counter = superResult.length;");
@@ -856,8 +856,8 @@ public class PolicyCmptImplClassBuilder extends BasePolicyCmptTypeBuilder {
         }
         
         boolean elementsVarDefined = false;
-        for (int i = 0; i < subRelations.size(); i++) {
-            IPolicyCmptTypeAssociation subrel = (IPolicyCmptTypeAssociation)subRelations.get(i);
+        for (int i = 0; i < subAssociations.size(); i++) {
+            IPolicyCmptTypeAssociation subrel = (IPolicyCmptTypeAssociation)subAssociations.get(i);
             if (subrel.is1ToMany()) {
                 if (!elementsVarDefined) {
                     methodsBuilder.appendClassName(classname);   
@@ -890,17 +890,17 @@ public class PolicyCmptImplClassBuilder extends BasePolicyCmptTypeBuilder {
      * </pre>
      */
     protected void generateMethodGetRefObjectBasedOnMemberVariable(
-            IPolicyCmptTypeAssociation relation, 
+            IPolicyCmptTypeAssociation association, 
             JavaCodeFragmentBuilder methodsBuilder) throws Exception {
         
         methodsBuilder.javaDoc(getJavaDocCommentForOverriddenMethod(), ANNOTATION_GENERATED);
-        interfaceBuilder.generateSignatureGetRefObject(relation, methodsBuilder);
+        interfaceBuilder.generateSignatureGetRefObject(association, methodsBuilder);
         methodsBuilder.openBracket();
-        if (!relation.isCompositionDetailToMaster()) {
-            String field = getFieldNameForRelation(relation);
+        if (!association.isCompositionDetailToMaster()) {
+            String field = getFieldNameForAssociation(association);
             methodsBuilder.appendln("return " + field + ";");
         } else {
-            IPolicyCmptType target = relation.findTargetPolicyCmptType(getIpsProject());
+            IPolicyCmptType target = association.findTargetPolicyCmptType(getIpsProject());
             methodsBuilder.append("return (");
             methodsBuilder.appendClassName(interfaceBuilder.getQualifiedClassName(target));
             methodsBuilder.append(")" + MethodNames.GET_PARENT + "();");
@@ -931,20 +931,20 @@ public class PolicyCmptImplClassBuilder extends BasePolicyCmptTypeBuilder {
      * </pre>
      */
     protected void generateMethodGetRefObjectsByQualifierForNonDerivedUnion(
-            IPolicyCmptTypeAssociation relation, 
+            IPolicyCmptTypeAssociation association, 
             JavaCodeFragmentBuilder methodsBuilder) throws Exception {
         methodsBuilder.javaDoc(getJavaDocCommentForOverriddenMethod(), ANNOTATION_GENERATED);
-        interfaceBuilder.generateSignatureGetRefObjectByQualifier(relation, methodsBuilder);
-        IPolicyCmptType target = relation.findTargetPolicyCmptType(getIpsProject());
+        interfaceBuilder.generateSignatureGetRefObjectByQualifier(association, methodsBuilder);
+        IPolicyCmptType target = association.findTargetPolicyCmptType(getIpsProject());
         String className = interfaceBuilder.getQualifiedClassName(target);
         String pcTypeLocalVariable = StringUtils.uncapitalize(getUnqualifiedClassName(target.getIpsSrcFile()));
-        String field = getFieldNameForRelation(relation);
+        String field = getFieldNameForAssociation(association);
         methodsBuilder.openBracket();
         methodsBuilder.append("if(qualifier == null)");
         methodsBuilder.openBracket();
         methodsBuilder.append("return null;");
         methodsBuilder.closeBracket();
-        if(relation.is1ToManyIgnoringQualifier()){
+        if(association.is1ToManyIgnoringQualifier()){
             methodsBuilder.appendClassName(List.class);
             methodsBuilder.append(" result = new ");
             methodsBuilder.appendClassName(ArrayList.class);
@@ -967,10 +967,10 @@ public class PolicyCmptImplClassBuilder extends BasePolicyCmptTypeBuilder {
         methodsBuilder.append("if(");
         methodsBuilder.append(pcTypeLocalVariable);
         methodsBuilder.append('.');
-        methodsBuilder.append(interfaceBuilder.getMethodNameGetProductCmpt(relation.findQualifier(getIpsProject())));
+        methodsBuilder.append(interfaceBuilder.getMethodNameGetProductCmpt(association.findQualifier(getIpsProject())));
         methodsBuilder.append("().equals(qualifier))");
         methodsBuilder.openBracket();
-        if(relation.is1ToManyIgnoringQualifier()){
+        if(association.is1ToManyIgnoringQualifier()){
             methodsBuilder.append("result.add(");
             methodsBuilder.append(pcTypeLocalVariable);
             methodsBuilder.append(");");
@@ -981,7 +981,7 @@ public class PolicyCmptImplClassBuilder extends BasePolicyCmptTypeBuilder {
         }
         methodsBuilder.closeBracket();
         methodsBuilder.closeBracket();
-        if(relation.is1ToManyIgnoringQualifier()){
+        if(association.is1ToManyIgnoringQualifier()){
             methodsBuilder.append("return (");
             methodsBuilder.appendClassName(className);
             methodsBuilder.append("[])");
@@ -1017,13 +1017,13 @@ public class PolicyCmptImplClassBuilder extends BasePolicyCmptTypeBuilder {
      * </pre>
      */
     protected void generateMethodGetRefObjectsByQualifierForDerivedUnion(
-            IPolicyCmptTypeAssociation relation, 
+            IPolicyCmptTypeAssociation association, 
             JavaCodeFragmentBuilder methodsBuilder) throws Exception {
         methodsBuilder.javaDoc(getJavaDocCommentForOverriddenMethod(), ANNOTATION_GENERATED);
-        interfaceBuilder.generateSignatureGetRefObjectByQualifier(relation, methodsBuilder);
-        IPolicyCmptType target = relation.findTargetPolicyCmptType(getIpsProject());
+        interfaceBuilder.generateSignatureGetRefObjectByQualifier(association, methodsBuilder);
+        IPolicyCmptType target = association.findTargetPolicyCmptType(getIpsProject());
         String className = interfaceBuilder.getQualifiedClassName(target);
-        String allObjectsMethodName = interfaceBuilder.getMethodNameGetAllRefObjects(relation);
+        String allObjectsMethodName = interfaceBuilder.getMethodNameGetAllRefObjects(association);
         String localVarName = "elements";
         methodsBuilder.openBracket();
         methodsBuilder.append("if(qualifier == null)");
@@ -1036,7 +1036,7 @@ public class PolicyCmptImplClassBuilder extends BasePolicyCmptTypeBuilder {
         methodsBuilder.append(" = ");
         methodsBuilder.append(allObjectsMethodName);
         methodsBuilder.append("();");
-        if(relation.is1ToManyIgnoringQualifier()){
+        if(association.is1ToManyIgnoringQualifier()){
             methodsBuilder.appendClassName(List.class);
             methodsBuilder.append(" result = new ");
             methodsBuilder.appendClassName(ArrayList.class);
@@ -1049,10 +1049,10 @@ public class PolicyCmptImplClassBuilder extends BasePolicyCmptTypeBuilder {
         methodsBuilder.append("if(");
         methodsBuilder.append(localVarName);
         methodsBuilder.append("[i].");
-        methodsBuilder.append(interfaceBuilder.getMethodNameGetProductCmpt(relation.findQualifier(getIpsProject())));
+        methodsBuilder.append(interfaceBuilder.getMethodNameGetProductCmpt(association.findQualifier(getIpsProject())));
         methodsBuilder.append("().equals(qualifier))");
         methodsBuilder.openBracket();
-        if(relation.is1ToManyIgnoringQualifier()){
+        if(association.is1ToManyIgnoringQualifier()){
             methodsBuilder.append("result.add(");
             methodsBuilder.append(localVarName);
             methodsBuilder.append("[i]");
@@ -1064,7 +1064,7 @@ public class PolicyCmptImplClassBuilder extends BasePolicyCmptTypeBuilder {
         }
         methodsBuilder.closeBracket();
         methodsBuilder.closeBracket();
-        if(relation.is1ToManyIgnoringQualifier()){
+        if(association.is1ToManyIgnoringQualifier()){
             methodsBuilder.append("return (");
             methodsBuilder.appendClassName(className);
             methodsBuilder.append("[])");
@@ -1088,13 +1088,13 @@ public class PolicyCmptImplClassBuilder extends BasePolicyCmptTypeBuilder {
      * </pre>
      */
     protected void generateMethodGetTypesafeParentObject(
-            IPolicyCmptTypeAssociation relation, 
+            IPolicyCmptTypeAssociation association, 
             JavaCodeFragmentBuilder methodsBuilder) throws Exception {
         
         methodsBuilder.javaDoc(getJavaDocCommentForOverriddenMethod(), ANNOTATION_GENERATED);
-        interfaceBuilder.generateSignatureGetRefObject(relation, methodsBuilder);
+        interfaceBuilder.generateSignatureGetRefObject(association, methodsBuilder);
         methodsBuilder.openBracket();
-        IPolicyCmptType target = relation.findTargetPolicyCmptType(getIpsProject());
+        IPolicyCmptType target = association.findTargetPolicyCmptType(getIpsProject());
         methodsBuilder.append("return (");
         methodsBuilder.appendClassName(interfaceBuilder.getQualifiedClassName(target));
         methodsBuilder.append(")" + MethodNames.GET_PARENT + "();");
@@ -1116,15 +1116,15 @@ public class PolicyCmptImplClassBuilder extends BasePolicyCmptTypeBuilder {
      * }
      * </pre>
      */
-    protected void generateMethodGetRefObjectForContainerRelationImplementation(
-            IPolicyCmptTypeAssociation relation,
-            List subRelations,
+    protected void generateMethodGetRefObjectForContainerAssociationImplementation(
+            IPolicyCmptTypeAssociation association,
+            List subAssociations,
             JavaCodeFragmentBuilder methodsBuilder) throws Exception {
         methodsBuilder.javaDoc(getJavaDocCommentForOverriddenMethod(), ANNOTATION_GENERATED);
-        interfaceBuilder.generateSignatureGetRefObject(relation, methodsBuilder);
+        interfaceBuilder.generateSignatureGetRefObject(association, methodsBuilder);
         methodsBuilder.openBracket();
-        for (int i = 0; i < subRelations.size(); i++) {
-            IPolicyCmptTypeAssociation subrel = (IPolicyCmptTypeAssociation)subRelations.get(i);
+        for (int i = 0; i < subAssociations.size(); i++) {
+            IPolicyCmptTypeAssociation subrel = (IPolicyCmptTypeAssociation)subAssociations.get(i);
             String accessCode;
             accessCode = interfaceBuilder.getMethodNameGetRefObject(subrel) + "()";
             methodsBuilder.appendln("if (" + accessCode + "!=null) {");
@@ -1151,33 +1151,33 @@ public class PolicyCmptImplClassBuilder extends BasePolicyCmptTypeBuilder {
      * </pre>
      */
     protected void generateMethodAddObject (
-            IPolicyCmptTypeAssociation relation, 
+            IPolicyCmptTypeAssociation association, 
             JavaCodeFragmentBuilder methodsBuilder) throws CoreException {
         
         methodsBuilder.javaDoc(getJavaDocCommentForOverriddenMethod(), ANNOTATION_GENERATED);
-        interfaceBuilder.generateSignatureAddObject(relation, methodsBuilder);
-        String fieldname = getFieldNameForRelation(relation);
-        String paramName = interfaceBuilder.getParamNameForAddObject(relation);
-        IPolicyCmptTypeAssociation reverseRelation = relation.findInverseAssociation(getIpsProject());
+        interfaceBuilder.generateSignatureAddObject(association, methodsBuilder);
+        String fieldname = getFieldNameForAssociation(association);
+        String paramName = interfaceBuilder.getParamNameForAddObject(association);
+        IPolicyCmptTypeAssociation reverseAssociation = association.findInverseAssociation(getIpsProject());
         methodsBuilder.openBracket();
         methodsBuilder.append("if (" + paramName + " == null) {");
         methodsBuilder.append("throw new ");
         methodsBuilder.appendClassName(NullPointerException.class);
-        methodsBuilder.append("(\"Can't add null to relation " + relation.getName() + " of \" + this); }");
+        methodsBuilder.append("(\"Can't add null to association " + association.getName() + " of \" + this); }");
         methodsBuilder.append("if(");
         methodsBuilder.append(fieldname);
         methodsBuilder.append(".contains(" + paramName + ")) { return; }");
-        if (relation.isCompositionMasterToDetail()) {
-            IPolicyCmptType target = relation.findTargetPolicyCmptType(getIpsProject());
+        if (association.isCompositionMasterToDetail()) {
+            IPolicyCmptType target = association.findTargetPolicyCmptType(getIpsProject());
             if (target!=null && target.isDependantType()) {
                 methodsBuilder.append(generateCodeToSynchronizeReverseComposition(paramName, "this"));
             }
         }
         methodsBuilder.append(fieldname);
         methodsBuilder.append(".add(" + paramName + ");");
-        if (relation.isAssoziation() && reverseRelation!=null) {
-            String targetClass = interfaceBuilder.getQualifiedClassName(relation.findTarget(getIpsProject()));
-            methodsBuilder.append(generateCodeToSynchronizeReverseAssoziation(paramName, targetClass, relation, reverseRelation));
+        if (association.isAssoziation() && reverseAssociation!=null) {
+            String targetClass = interfaceBuilder.getQualifiedClassName(association.findTarget(getIpsProject()));
+            methodsBuilder.append(generateCodeToSynchronizeReverseAssoziation(paramName, targetClass, association, reverseAssociation));
         }
         generateChangeListenerSupport(methodsBuilder, IModelObjectChangedEvent.class.getName(), "RELATION_OBJECT_ADDED" , fieldname, paramName);
         methodsBuilder.closeBracket();
@@ -1196,16 +1196,16 @@ public class PolicyCmptImplClassBuilder extends BasePolicyCmptTypeBuilder {
      * </pre>
      */
     public void generateMethodNewChild(
-            IPolicyCmptTypeAssociation relation, 
+            IPolicyCmptTypeAssociation association, 
             IPolicyCmptType target,
             boolean inclProductCmptArg,
             JavaCodeFragmentBuilder methodsBuilder) throws CoreException {
         
         methodsBuilder.javaDoc(getJavaDocCommentForOverriddenMethod(), ANNOTATION_GENERATED);
-        interfaceBuilder.generateSignatureNewChild(relation, target, inclProductCmptArg, methodsBuilder);
-        String addMethod = relation.is1ToMany() ? interfaceBuilder.getMethodNameAddObject(relation) :
-            interfaceBuilder.getMethodNameSetObject(relation);
-        String varName = "new" + relation.getTargetRoleSingular();
+        interfaceBuilder.generateSignatureNewChild(association, target, inclProductCmptArg, methodsBuilder);
+        String addMethod = association.is1ToMany() ? interfaceBuilder.getMethodNameAddObject(association) :
+            interfaceBuilder.getMethodNameSetObject(association);
+        String varName = "new" + association.getTargetRoleSingular();
         methodsBuilder.openBracket();
         methodsBuilder.appendClassName(getQualifiedClassName(target));
         methodsBuilder.append(" " + varName + " = new ");
@@ -1236,29 +1236,29 @@ public class PolicyCmptImplClassBuilder extends BasePolicyCmptTypeBuilder {
      * </pre>
      */
     protected void generateMethodRemoveObject(
-            IPolicyCmptTypeAssociation relation, 
+            IPolicyCmptTypeAssociation association, 
             JavaCodeFragmentBuilder methodsBuilder) throws CoreException {
 
-        String fieldname = getFieldNameForRelation(relation);
-        String paramName = interfaceBuilder.getParamNameForRemoveObject(relation);
-        IPolicyCmptTypeAssociation reverseRelation = relation.findInverseAssociation(getIpsProject());
-        IPolicyCmptType target = relation.findTargetPolicyCmptType(getIpsProject());
+        String fieldname = getFieldNameForAssociation(association);
+        String paramName = interfaceBuilder.getParamNameForRemoveObject(association);
+        IPolicyCmptTypeAssociation reverseAssociation = association.findInverseAssociation(getIpsProject());
+        IPolicyCmptType target = association.findTargetPolicyCmptType(getIpsProject());
         
         methodsBuilder.javaDoc(getJavaDocCommentForOverriddenMethod(), ANNOTATION_GENERATED);
-        interfaceBuilder.generateSignatureRemoveObject(relation, methodsBuilder);
+        interfaceBuilder.generateSignatureRemoveObject(association, methodsBuilder);
 
         methodsBuilder.openBracket();
         methodsBuilder.append("if(" + paramName + "== null) {return;}");
         
-        if (reverseRelation != null || (relation.isComposition() && target!=null && target.isDependantType())) {
+        if (reverseAssociation != null || (association.isComposition() && target!=null && target.isDependantType())) {
             methodsBuilder.append("if(");
         }
         methodsBuilder.append(fieldname);
         methodsBuilder.append(".remove(" + paramName + ")");
-        if (reverseRelation != null || (relation.isComposition() && target!=null && target.isDependantType())) {
+        if (reverseAssociation != null || (association.isComposition() && target!=null && target.isDependantType())) {
             methodsBuilder.append(") {");
-            if (relation.isAssoziation()) {
-                methodsBuilder.append(generateCodeToCleanupOldReference(relation, reverseRelation, paramName));
+            if (association.isAssoziation()) {
+                methodsBuilder.append(generateCodeToCleanupOldReference(association, reverseAssociation, paramName));
             } else {
                 methodsBuilder.append(generateCodeToSynchronizeReverseComposition(paramName, "null"));
             }
@@ -1286,18 +1286,18 @@ public class PolicyCmptImplClassBuilder extends BasePolicyCmptTypeBuilder {
      * </pre>
      */
     protected void generateMethodSetRefObjectForComposition(
-            IPolicyCmptTypeAssociation relation, 
+            IPolicyCmptTypeAssociation association, 
             JavaCodeFragmentBuilder methodsBuilder) throws Exception {
         
-        if (relation.isCompositionDetailToMaster()) {
+        if (association.isCompositionDetailToMaster()) {
             return; // setter defined in base class.
         }
-        String fieldname = getFieldNameForRelation(relation);
-        String paramName = interfaceBuilder.getParamNameForSetObject(relation);
-        IPolicyCmptType target = relation.findTargetPolicyCmptType(getIpsProject());
+        String fieldname = getFieldNameForAssociation(association);
+        String paramName = interfaceBuilder.getParamNameForSetObject(association);
+        IPolicyCmptType target = association.findTargetPolicyCmptType(getIpsProject());
 
         methodsBuilder.javaDoc(getJavaDocCommentForOverriddenMethod(), ANNOTATION_GENERATED);
-        interfaceBuilder.generateSignatureSetObject(relation, methodsBuilder);
+        interfaceBuilder.generateSignatureSetObject(association, methodsBuilder);
         
         methodsBuilder.openBracket();
         if (target.isDependantType()) {
@@ -1341,37 +1341,37 @@ public class PolicyCmptImplClassBuilder extends BasePolicyCmptTypeBuilder {
      * </pre>
      */
     protected void generateMethodSetRefObjectForAssociation(
-            IPolicyCmptTypeAssociation relation, 
+            IPolicyCmptTypeAssociation association, 
             JavaCodeFragmentBuilder methodsBuilder) throws Exception {
         
-        String fieldname = getFieldNameForRelation(relation);
-        String paramName = interfaceBuilder.getParamNameForSetObject(relation);
-        IPolicyCmptType target = relation.findTargetPolicyCmptType(getIpsProject());
-        IPolicyCmptTypeAssociation reverseRelation = relation.findInverseAssociation(getIpsProject());
+        String fieldname = getFieldNameForAssociation(association);
+        String paramName = interfaceBuilder.getParamNameForSetObject(association);
+        IPolicyCmptType target = association.findTargetPolicyCmptType(getIpsProject());
+        IPolicyCmptTypeAssociation reverseAssociation = association.findInverseAssociation(getIpsProject());
 
         methodsBuilder.javaDoc(getJavaDocCommentForOverriddenMethod(), ANNOTATION_GENERATED);
-        interfaceBuilder.generateSignatureSetObject(relation, methodsBuilder);
+        interfaceBuilder.generateSignatureSetObject(association, methodsBuilder);
         
         methodsBuilder.openBracket();
         methodsBuilder.append("if(" + paramName + " == ");
         methodsBuilder.append(fieldname);
         methodsBuilder.append(") return;");
-        if (reverseRelation != null) {
+        if (reverseAssociation != null) {
             methodsBuilder.appendClassName(getQualifiedClassName(target));
             methodsBuilder.append(" oldRefObject = ");
             methodsBuilder.append(fieldname);
             methodsBuilder.append(';');
             methodsBuilder.append(fieldname);
             methodsBuilder.append(" = null;");
-            methodsBuilder.append(generateCodeToCleanupOldReference(relation, reverseRelation, "oldRefObject"));
+            methodsBuilder.append(generateCodeToCleanupOldReference(association, reverseAssociation, "oldRefObject"));
         }
         methodsBuilder.append(fieldname);
         methodsBuilder.append(" = (");
         methodsBuilder.appendClassName(getQualifiedClassName(target));
         methodsBuilder.append(")" + paramName +";");
-        if (reverseRelation != null) {
+        if (reverseAssociation != null) {
             methodsBuilder.append(generateCodeToSynchronizeReverseAssoziation(fieldname, 
-                    getQualifiedClassName(target), relation, reverseRelation));
+                    getQualifiedClassName(target), association, reverseAssociation));
         }
         generateChangeListenerSupport(methodsBuilder, IModelObjectChangedEvent.class.getName(), "RELATION_OBJECT_CHANGED", fieldname, paramName);
         methodsBuilder.closeBracket();
@@ -1380,26 +1380,26 @@ public class PolicyCmptImplClassBuilder extends BasePolicyCmptTypeBuilder {
     private JavaCodeFragment generateCodeToSynchronizeReverseAssoziation(
             String varName,
             String varClassName,
-            IPolicyCmptTypeAssociation relation,
-            IPolicyCmptTypeAssociation reverseRelation) throws CoreException {
+            IPolicyCmptTypeAssociation association,
+            IPolicyCmptTypeAssociation reverseAssociation) throws CoreException {
         JavaCodeFragment code = new JavaCodeFragment();
         code.append("if(");
-        if (!relation.is1ToMany()) {
+        if (!association.is1ToMany()) {
             code.append(varName + " != null && ");
         }
-        if (reverseRelation.is1ToMany()) {
+        if (reverseAssociation.is1ToMany()) {
             code.append("! " + varName + ".");
-            code.append(interfaceBuilder.getMethodNameContainsObject(reverseRelation) + "(this)");
+            code.append(interfaceBuilder.getMethodNameContainsObject(reverseAssociation) + "(this)");
         } else {
             code.append(varName + ".");
-            code.append(interfaceBuilder.getMethodNameGetRefObject(reverseRelation));
+            code.append(interfaceBuilder.getMethodNameGetRefObject(reverseAssociation));
             code.append("() != this");
         }
         code.append(") {");
-        if (reverseRelation.is1ToMany()) {
-            code.append(varName + "." + interfaceBuilder.getMethodNameAddObject(reverseRelation));
+        if (reverseAssociation.is1ToMany()) {
+            code.append(varName + "." + interfaceBuilder.getMethodNameAddObject(reverseAssociation));
         } else {
-            String targetClass = getQualifiedClassName(relation.findTarget(getIpsProject()));
+            String targetClass = getQualifiedClassName(association.findTarget(getIpsProject()));
             if (!varClassName.equals(targetClass)) {
                 code.append("((");
                 code.appendClassName(targetClass);
@@ -1407,7 +1407,7 @@ public class PolicyCmptImplClassBuilder extends BasePolicyCmptTypeBuilder {
             } else {
                 code.append(varName + ".");
             }
-            code.append(interfaceBuilder.getMethodNameSetObject(reverseRelation));
+            code.append(interfaceBuilder.getMethodNameSetObject(reverseAssociation));
         }
         code.appendln("(this);");
         code.appendln("}");
@@ -1435,56 +1435,56 @@ public class PolicyCmptImplClassBuilder extends BasePolicyCmptTypeBuilder {
     }
     
     private JavaCodeFragment generateCodeToCleanupOldReference(
-            IPolicyCmptTypeAssociation relation, 
-            IPolicyCmptTypeAssociation reverseRelation,
+            IPolicyCmptTypeAssociation association, 
+            IPolicyCmptTypeAssociation reverseAssociation,
             String varToCleanUp) throws CoreException {
         
         JavaCodeFragment body = new JavaCodeFragment();
-        if (!relation.is1ToMany()) {
+        if (!association.is1ToMany()) {
             body.append("if (" + varToCleanUp + "!=null) {");
         }
-        if (reverseRelation.is1ToMany()) {
-            String removeMethod = interfaceBuilder.getMethodNameRemoveObject(reverseRelation);
+        if (reverseAssociation.is1ToMany()) {
+            String removeMethod = interfaceBuilder.getMethodNameRemoveObject(reverseAssociation);
             body.append(varToCleanUp + "." + removeMethod + "(this);");
         } else {
-            String targetClass = getQualifiedClassName(relation.findTarget(getIpsProject()));
-            String setMethod = interfaceBuilder.getMethodNameSetObject(reverseRelation);
+            String targetClass = getQualifiedClassName(association.findTarget(getIpsProject()));
+            String setMethod = interfaceBuilder.getMethodNameSetObject(reverseAssociation);
             body.append("((");
             body.appendClassName(targetClass);
             body.append(")" + varToCleanUp + ")." + setMethod + "(null);");
         }
-        if (!relation.is1ToMany()) {
+        if (!association.is1ToMany()) {
             body.append(" }");
         }
         return body;
     }
 
     /**
-     * Returns the name of field/member var for the relation.
+     * Returns the name of field/member var for the association.
      */
-    public String getFieldNameForRelation(IPolicyCmptTypeAssociation relation) throws CoreException {
-        if (relation.is1ToMany()) {
-            return getJavaNamingConvention().getMemberVarName(relation.getTargetRolePlural());
+    public String getFieldNameForAssociation(IPolicyCmptTypeAssociation association) throws CoreException {
+        if (association.is1ToMany()) {
+            return getJavaNamingConvention().getMemberVarName(association.getTargetRolePlural());
         } else {
-            return getJavaNamingConvention().getMemberVarName(relation.getTargetRoleSingular());
+            return getJavaNamingConvention().getMemberVarName(association.getTargetRoleSingular());
         }
     }
 
     /**
      * {@inheritDoc}
      */
-    protected void generateCodeForContainerRelationImplementation(
-            IPolicyCmptTypeAssociation containerRelation,
-            List relations,
+    protected void generateCodeForContainerAssociationImplementation(
+            IPolicyCmptTypeAssociation containerAssociation,
+            List associations,
             JavaCodeFragmentBuilder memberVarsBuilder,
             JavaCodeFragmentBuilder methodsBuilder) throws Exception {
 
-        if (containerRelation.is1ToMany()) {
-            generateMethodGetNumOfForContainerRelationImplementation(containerRelation, relations, methodsBuilder);
-            generateMethodGetAllRefObjectsForContainerRelationImplementation(containerRelation, relations, methodsBuilder);
-            generateMethodGetNumOfInternalForContainerRelationImplementation(containerRelation, relations, methodsBuilder);
+        if (containerAssociation.is1ToMany()) {
+            generateMethodGetNumOfForContainerAssociationImplementation(containerAssociation, associations, methodsBuilder);
+            generateMethodGetAllRefObjectsForContainerAssociationImplementation(containerAssociation, associations, methodsBuilder);
+            generateMethodGetNumOfInternalForContainerAssociationImplementation(containerAssociation, associations, methodsBuilder);
         } else {
-            generateMethodGetRefObjectForContainerRelationImplementation(containerRelation, relations, methodsBuilder);
+            generateMethodGetRefObjectForContainerAssociationImplementation(containerAssociation, associations, methodsBuilder);
         }
     }
 
@@ -1506,20 +1506,20 @@ public class PolicyCmptImplClassBuilder extends BasePolicyCmptTypeBuilder {
             throws CoreException {
         /*
          * public void validateDependants(MessageList ml) { if(NumOfRelToMany() > 0) { TargetType[]
-         * rels = GetAllRelationToMany(); for (int i = 0; i < rels.length; i++) {
+         * rels = GetAllAssociationToMany(); for (int i = 0; i < rels.length; i++) {
          * ml.add(rels[i].validate()); } if (NumOfRelTo1() > 0) {
-         * ml.add(GetRelationTo1().validate()); } }
+         * ml.add(GetAssociationTo1().validate()); } }
          */
 
         String methodName = "validateDependants";
-        IPolicyCmptTypeAssociation[] relations = getPcType().getPolicyCmptTypeAssociations();
+        IPolicyCmptTypeAssociation[] associations = getPcType().getPolicyCmptTypeAssociations();
 
         JavaCodeFragment body = new JavaCodeFragment();
         body.append("super.");
         body.append(methodName);
         body.append("(ml, businessFunction);");
-        for (int i = 0; i < relations.length; i++) {
-            IPolicyCmptTypeAssociation r = relations[i];
+        for (int i = 0; i < associations.length; i++) {
+            IPolicyCmptTypeAssociation r = associations[i];
             if (!r.validate(getIpsProject()).containsErrorMsg()) {
                 if (r.getAssociationType() == AssociationType.COMPOSITION_MASTER_TO_DETAIL
                         && StringUtils.isEmpty(r.getSubsettedDerivedUnion())) {
@@ -1537,7 +1537,7 @@ public class PolicyCmptImplClassBuilder extends BasePolicyCmptTypeBuilder {
                         body.append("for (int i = 0; i < rels.length; i++)");
                         body.append("{ ml.add(rels[i].validate(businessFunction)); } }");
                     } else {
-                        String field = getFieldNameForRelation(r);
+                        String field = getFieldNameForAssociation(r);
                         body.append("if (" + field + "!=null) {");
                         body.append("ml.add(" + field + ".validate(businessFunction));");
                         body.append("}");
@@ -2160,27 +2160,27 @@ public class PolicyCmptImplClassBuilder extends BasePolicyCmptTypeBuilder {
         builder.appendln("return newChild;");
         builder.appendln("}");
 
-        IPolicyCmptTypeAssociation[] relations = getPolicyCmptType().getPolicyCmptTypeAssociations();
-        for (int i = 0; i < relations.length; i++) {
-            IPolicyCmptTypeAssociation relation = relations[i];
-            if (!relation.isCompositionMasterToDetail() 
-                    || relation.isDerivedUnion()
-                    || !relation.isValid()) {
+        IPolicyCmptTypeAssociation[] associations = getPolicyCmptType().getPolicyCmptTypeAssociations();
+        for (int i = 0; i < associations.length; i++) {
+            IPolicyCmptTypeAssociation association = associations[i];
+            if (!association.isCompositionMasterToDetail() 
+                    || association.isDerivedUnion()
+                    || !association.isValid()) {
                 continue;
             }
             builder.append("if (");
-            builder.appendQuoted(relation.getTargetRoleSingular());
+            builder.appendQuoted(association.getTargetRoleSingular());
             builder.appendln(".equals(childEl.getNodeName())) {");
-            IPolicyCmptType target = relation.findTargetPolicyCmptType(getIpsProject());
+            IPolicyCmptType target = association.findTargetPolicyCmptType(getIpsProject());
             builder.appendln("String className = childEl.getAttribute(\"class\");");
             builder.appendln("if (className.length()>0) {");
             builder.appendln("try {");
             builder.appendClassName(getQualifiedClassName(target));
-            String varName = StringUtils.uncapitalize(relation.getTargetRoleSingular());
+            String varName = StringUtils.uncapitalize(association.getTargetRoleSingular());
             builder.append(" " + varName + "=(");
             builder.appendClassName(getQualifiedClassName(target));
             builder.appendln(")Class.forName(className).newInstance();");
-            builder.append(interfaceBuilder.getMethodNameAddOrSetObject(relation) + "(" + varName + ");");
+            builder.append(interfaceBuilder.getMethodNameAddOrSetObject(association) + "(" + varName + ");");
             builder.appendln("return " + varName + ";");
             builder.appendln("} catch (Exception e) {");
             builder.appendln("throw new RuntimeException(e);");
@@ -2190,7 +2190,7 @@ public class PolicyCmptImplClassBuilder extends BasePolicyCmptTypeBuilder {
                 builder.append("return (");
                 builder.appendClassName(AbstractModelObject.class);
                 builder.append(")");
-                builder.append(interfaceBuilder.getMethodNameNewChild(relation));
+                builder.append(interfaceBuilder.getMethodNameNewChild(association));
                 builder.appendln("();");
             } else {
                 builder.appendln("throw new RuntimeException(childEl.toString() + \": Attribute className is missing.\");");
@@ -2226,12 +2226,12 @@ public class PolicyCmptImplClassBuilder extends BasePolicyCmptTypeBuilder {
                 argClasses, 
                 new Class[]{Exception.class});
 
-        IPolicyCmptTypeAssociation[] relations = getPcType().getPolicyCmptTypeAssociations();
-        for (int i = 0; i < relations.length; i++) {
-            if (!relations[i].isValid() || !relations[i].isAssoziation()) {
+        IPolicyCmptTypeAssociation[] associations = getPcType().getPolicyCmptTypeAssociations();
+        for (int i = 0; i < associations.length; i++) {
+            if (!associations[i].isValid() || !associations[i].isAssoziation()) {
                 continue;
             }
-            IPolicyCmptTypeAssociation association = relations[i];
+            IPolicyCmptTypeAssociation association = associations[i];
             String targetClass = interfaceBuilder.getQualifiedClassName(association.findTargetPolicyCmptType(getIpsProject()));
             builder.append("if (");
             builder.appendQuoted(association.getTargetRoleSingular());
@@ -2437,10 +2437,10 @@ public class PolicyCmptImplClassBuilder extends BasePolicyCmptTypeBuilder {
      * }
      * </pre>
      */
-    protected void generateMethodGetRefObjectAtIndex(IPolicyCmptTypeAssociation relation, JavaCodeFragmentBuilder methodBuilder) throws CoreException{
-        String className = interfaceBuilder.getQualifiedClassName(relation.findTarget(getIpsProject()));
-        String field = getFieldNameForRelation(relation);
-        interfaceBuilder.generateSignatureGetRefObjectAtIndex(relation, methodBuilder);
+    protected void generateMethodGetRefObjectAtIndex(IPolicyCmptTypeAssociation association, JavaCodeFragmentBuilder methodBuilder) throws CoreException{
+        String className = interfaceBuilder.getQualifiedClassName(association.findTarget(getIpsProject()));
+        String field = getFieldNameForAssociation(association);
+        interfaceBuilder.generateSignatureGetRefObjectAtIndex(association, methodBuilder);
         methodBuilder.openBracket();
         methodBuilder.append("return (");
         methodBuilder.appendClassName(className);

@@ -119,7 +119,7 @@ public abstract class AbstractProductCmptTypeBuilder extends DefaultJavaSourceFi
         mainSection.setClass(!generatesInterface());
         generateCodeForProductCmptTypeAttributes(mainSection);
         generateCodeForPolicyCmptTypeAttributes(mainSection);
-        generateCodeForRelations(mainSection.getMemberVarSectionBuilder(), mainSection.getMethodSectionBuilder());
+        generateCodeForAssociations(mainSection.getMemberVarSectionBuilder(), mainSection.getMethodSectionBuilder());
         generateCodeForMethods(mainSection.getConstantSectionBuilder(), mainSection.getMemberVarSectionBuilder(), mainSection.getMethodSectionBuilder());
         generateConstructors(mainSection.getConstructorSectionBuilder());
         generateTypeJavadoc(mainSection.getJavaDocForTypeSectionBuilder());
@@ -135,7 +135,7 @@ public abstract class AbstractProductCmptTypeBuilder extends DefaultJavaSourceFi
     protected abstract void generateTypeJavadoc(JavaCodeFragmentBuilder builder) throws CoreException;
 
     /**
-     * A hook to generate code that is not based on attributes, relations, rules and
+     * A hook to generate code that is not based on attributes, associations, rules and
      * methods.
      */
     protected abstract void generateOtherCode(
@@ -296,13 +296,13 @@ public abstract class AbstractProductCmptTypeBuilder extends DefaultJavaSourceFi
             JavaCodeFragmentBuilder methodsBuilder) throws CoreException;
     
     /*
-     * Loops over the relations and generates code for a relation if it is valid.
+     * Loops over the associations and generates code for a association if it is valid.
      * Takes care of proper exception handling.
      */
-    private void generateCodeForRelations(JavaCodeFragmentBuilder fieldsBuilder,
+    private void generateCodeForAssociations(JavaCodeFragmentBuilder fieldsBuilder,
             JavaCodeFragmentBuilder methodsBuilder) throws CoreException {
         
-        HashMap containerRelations = new HashMap();
+        HashMap containerAssociations = new HashMap();
         IAssociation[] associations = getProductCmptType().getAssociations();
         for (int i = 0; i < associations.length; i++) {
             IProductCmptTypeAssociation association = (IProductCmptTypeAssociation)associations[i];
@@ -311,27 +311,27 @@ public abstract class AbstractProductCmptTypeBuilder extends DefaultJavaSourceFi
                     continue;
                 }
                 if (associations[i].isDerivedUnion()) {
-                    generateCodeForContainerRelationDefinition(association, fieldsBuilder, methodsBuilder);
+                    generateCodeForDerivedUnionAssociationDefinition(association, fieldsBuilder, methodsBuilder);
                 } else {
-                    generateCodeForNoneContainerRelation(association, fieldsBuilder, methodsBuilder);                
+                    generateCodeForNoneDerivedUnionAssociation(association, fieldsBuilder, methodsBuilder);                
                 }
                 if (associations[i].isSubsetOfADerivedUnion()) {
                     IAssociation containerRel = associations[i].findSubsettedDerivedUnion(getIpsSrcFile().getIpsProject());
-                    List implementationRelations = (List)containerRelations.get(containerRel);
-                    if (implementationRelations==null) {
-                        implementationRelations = new ArrayList();
-                        containerRelations.put(containerRel, implementationRelations);
+                    List implementationAssociations = (List)containerAssociations.get(containerRel);
+                    if (implementationAssociations==null) {
+                        implementationAssociations = new ArrayList();
+                        containerAssociations.put(containerRel, implementationAssociations);
                     }
-                    implementationRelations.add(associations[i]);
+                    implementationAssociations.add(associations[i]);
                 }
             } catch (Exception e) {
-                throw new CoreException(new IpsStatus(IStatus.ERROR, "Error building relation "
+                throw new CoreException(new IpsStatus(IStatus.ERROR, "Error building association "
                         + associations[i].getName() + " of "
                         + getQualifiedClassName(getIpsObject().getIpsSrcFile()), e));
             }
         }
         CodeGeneratorForContainerAssosImpl generator = new CodeGeneratorForContainerAssosImpl(
-                getIpsProject(), containerRelations, fieldsBuilder, methodsBuilder);
+                getIpsProject(), containerAssociations, fieldsBuilder, methodsBuilder);
         generator.start(getProductCmptType());
     }
     
@@ -352,7 +352,7 @@ public abstract class AbstractProductCmptTypeBuilder extends DefaultJavaSourceFi
      * @see JavaSourceFileBuilder#addToBuildStatus(CoreException)
      * @see JavaSourceFileBuilder#addToBuildStatus(IStatus)
      */
-    protected abstract void generateCodeForNoneContainerRelation(IProductCmptTypeAssociation association,
+    protected abstract void generateCodeForNoneDerivedUnionAssociation(IProductCmptTypeAssociation association,
             JavaCodeFragmentBuilder fieldsBuilder,
             JavaCodeFragmentBuilder methodsBuilder) throws Exception;
 
@@ -365,7 +365,7 @@ public abstract class AbstractProductCmptTypeBuilder extends DefaultJavaSourceFi
      * @param fieldsBuilder the code fragment builder to build the memeber variabales section.
      * @param fieldsBuilder the code fragment builder to build the method section.
      */
-    protected abstract void generateCodeForContainerRelationDefinition(
+    protected abstract void generateCodeForDerivedUnionAssociationDefinition(
             IProductCmptTypeAssociation containerAssociation,
             JavaCodeFragmentBuilder fieldsBuilder,
             JavaCodeFragmentBuilder methodsBuilder) throws Exception;
@@ -373,15 +373,15 @@ public abstract class AbstractProductCmptTypeBuilder extends DefaultJavaSourceFi
     /**
      * Generates code for a container association implementation. 
      * The method is called for every valid container association in the product 
-     * component type we currently build sourcecode for and for each valid container relation
+     * component type we currently build sourcecode for and for each valid container association
      * in one of it's supertypes.
      * 
      * @param containerAssociation the container association source code should be generated for.
-     * @param implementationAssociations the relation implementing the container relation.
+     * @param implementationAssociations the association implementing the container association.
      * @param fieldsBuilder the code fragment builder to build the memeber variabales section.
      * @param methodsBuilder the code fragment builder to build the method section.
      */
-    protected abstract void generateCodeForContainerRelationImplementation(
+    protected abstract void generateCodeForDerivedUnionAssociationImplementation(
             IProductCmptTypeAssociation containerAssociation,
             List implementationAssociations, 
             JavaCodeFragmentBuilder fieldsBuilder,
@@ -421,13 +421,13 @@ public abstract class AbstractProductCmptTypeBuilder extends DefaultJavaSourceFi
             for (int i = 0; i < associations.length; i++) {
                 if (associations[i].isDerivedUnion() && associations[i].isValid()) {
                     try {
-                        List implRelations = (List)containerImplMap.get(associations[i]);
-                        if (implRelations!=null) {
-                            generateCodeForContainerRelationImplementation((IProductCmptTypeAssociation)associations[i], implRelations, fieldsBuilder, methodsBuilder);
+                        List implAssociations = (List)containerImplMap.get(associations[i]);
+                        if (implAssociations!=null) {
+                            generateCodeForDerivedUnionAssociationImplementation((IProductCmptTypeAssociation)associations[i], implAssociations, fieldsBuilder, methodsBuilder);
                         }
                     } catch (Exception e) {
-                        addToBuildStatus(new IpsStatus("Error building container relation implementation. "
-                            + "ContainerRelation: " + associations[i]
+                        addToBuildStatus(new IpsStatus("Error building container association implementation. "
+                            + "DerivedUnionAssociation: " + associations[i]
                             + "Implementing Type: " + getProductCmptType(), e));
                     }
                 }
