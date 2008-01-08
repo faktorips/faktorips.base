@@ -743,11 +743,11 @@ public class ProductCmptGenImplClassBuilder extends AbstractProductCmptTypeBuild
      * private CoverageType[] optionalCoverageTypes;
      * </pre>
      */
-    private void generateFieldToManyRelation(IProductCmptTypeAssociation relation, JavaCodeFragmentBuilder memberVarsBuilder) throws CoreException {
-        String role = StringUtils.capitalize(relation.getTargetRolePlural());
-        appendLocalizedJavaDoc("FIELD_TOMANY_RELATION", role, relation, memberVarsBuilder);
+    private void generateFieldToManyRelation(IProductCmptTypeAssociation association, JavaCodeFragmentBuilder memberVarsBuilder) throws CoreException {
+        String role = StringUtils.capitalize(association.getTargetRolePlural());
+        appendLocalizedJavaDoc("FIELD_TOMANY_RELATION", role, association, memberVarsBuilder);
         String type = String.class.getName() + "[]";
-        memberVarsBuilder.varDeclaration(Modifier.PRIVATE, type, getFieldNameToManyRelation(relation), new JavaCodeFragment("new String[0]"));
+        memberVarsBuilder.varDeclaration(Modifier.PRIVATE, type, getFieldNameToManyRelation(association), new JavaCodeFragment("new String[0]"));
     }
     
     /**
@@ -764,14 +764,14 @@ public class ProductCmptGenImplClassBuilder extends AbstractProductCmptTypeBuild
      * </pre>
      */
     private void generateMethodGetManyRelatedCmpts(
-            IProductCmptTypeAssociation relation, 
+            IProductCmptTypeAssociation association, 
             JavaCodeFragmentBuilder methodsBuilder) throws CoreException {
         
         methodsBuilder.javaDoc(getJavaDocCommentForOverriddenMethod(), ANNOTATION_GENERATED);
-        interfaceBuilder.generateSignatureGetManyRelatedCmpts(relation, methodsBuilder);
+        interfaceBuilder.generateSignatureGetManyRelatedCmpts(association, methodsBuilder);
 
-        String fieldName = getFieldNameToManyRelation(relation);
-        String targetClass = productCmptTypeInterfaceBuilder.getQualifiedClassName(relation.findTarget(getIpsProject()));
+        String fieldName = getFieldNameToManyRelation(association);
+        String targetClass = productCmptTypeInterfaceBuilder.getQualifiedClassName(association.findTarget(getIpsProject()));
         methodsBuilder.openBracket();
         methodsBuilder.appendClassName(targetClass);
         methodsBuilder.append("[] result = new ");
