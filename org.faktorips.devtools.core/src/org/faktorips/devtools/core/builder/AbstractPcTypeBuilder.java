@@ -112,7 +112,7 @@ public abstract class AbstractPcTypeBuilder extends DefaultJavaSourceFileBuilder
         generateCodeForProductCmptTypeAttributes(mainSection);
         generateCodeForAttributes(mainSection.getConstantSectionBuilder(), 
                 mainSection.getMemberVarSectionBuilder(), mainSection.getMethodSectionBuilder());
-        generateCodeForRelations(mainSection.getMemberVarSectionBuilder(), mainSection.getMethodSectionBuilder());
+        generateCodeForAssociations(mainSection.getMemberVarSectionBuilder(), mainSection.getMethodSectionBuilder());
         generateOther(mainSection.getMemberVarSectionBuilder(), mainSection.getMethodSectionBuilder());
         generateCodeForMethodsDefinedInModel(mainSection.getMethodSectionBuilder());
         generateConstructors(mainSection.getConstructorSectionBuilder());
@@ -150,7 +150,7 @@ public abstract class AbstractPcTypeBuilder extends DefaultJavaSourceFileBuilder
     protected abstract void generateTypeJavadoc(JavaCodeFragmentBuilder builder) throws CoreException;
 
     /**
-     * A hook to generate code that is not based on attributes, relations, rules and
+     * A hook to generate code that is not based on attributes, associations, rules and
      * methods.
      */
     protected abstract void generateOther(
@@ -284,44 +284,44 @@ public abstract class AbstractPcTypeBuilder extends DefaultJavaSourceFileBuilder
             JavaCodeFragmentBuilder methodBuilder) throws CoreException;
     
     /*
-     * Loops over the relations and generates code for a relation if it is valid.
+     * Loops over the associations and generates code for a association if it is valid.
      * Takes care of proper exception handling.
      */
-    private void generateCodeForRelations(JavaCodeFragmentBuilder fieldsBuilder,
+    private void generateCodeForAssociations(JavaCodeFragmentBuilder fieldsBuilder,
             JavaCodeFragmentBuilder methodsBuilder) throws CoreException {
         
-        HashMap containerRelations = new HashMap();
-        IPolicyCmptTypeAssociation[] relations = getPcType().getPolicyCmptTypeAssociations();
-        for (int i = 0; i < relations.length; i++) {
+        HashMap containerAssociations = new HashMap();
+        IPolicyCmptTypeAssociation[] associations = getPcType().getPolicyCmptTypeAssociations();
+        for (int i = 0; i < associations.length; i++) {
             try {
-                if (!relations[i].isValid()) {
+                if (!associations[i].isValid()) {
                     continue;
                 }
-                generateCodeForRelation(relations[i], fieldsBuilder, methodsBuilder);                
-                if (relations[i].isSubsetOfADerivedUnion()) {
-                    IAssociation derivedUnion = relations[i].findSubsettedDerivedUnion(getIpsProject());
-                    List implementationRelations = (List)containerRelations.get(derivedUnion);
-                    if (implementationRelations==null) {
-                        implementationRelations = new ArrayList();
-                        containerRelations.put(derivedUnion, implementationRelations);
+                generateCodeForAssociation(associations[i], fieldsBuilder, methodsBuilder);                
+                if (associations[i].isSubsetOfADerivedUnion()) {
+                    IAssociation derivedUnion = associations[i].findSubsettedDerivedUnion(getIpsProject());
+                    List implementationAssociations = (List)containerAssociations.get(derivedUnion);
+                    if (implementationAssociations==null) {
+                        implementationAssociations = new ArrayList();
+                        containerAssociations.put(derivedUnion, implementationAssociations);
                     }
-                    implementationRelations.add(relations[i]);
+                    implementationAssociations.add(associations[i]);
                 }
             } catch (Exception e) {
-                throw new CoreException(new IpsStatus(IStatus.ERROR, "Error building relation " //$NON-NLS-1$
-                        + relations[i].getName() + " of " //$NON-NLS-1$
+                throw new CoreException(new IpsStatus(IStatus.ERROR, "Error building association " //$NON-NLS-1$
+                        + associations[i].getName() + " of " //$NON-NLS-1$
                         + getQualifiedClassName(getIpsObject().getIpsSrcFile()), e));
             }
         }
-        CodeGeneratorForContainerRelationImplementation generator = new CodeGeneratorForContainerRelationImplementation(containerRelations, fieldsBuilder, methodsBuilder);
+        CodeGeneratorForContainerAssociationImplementation generator = new CodeGeneratorForContainerAssociationImplementation(containerAssociations, fieldsBuilder, methodsBuilder);
         generator.start(getPcType());
     }
     
     /**
-     * Generates the code for a relation. The method is called for every 
-     * valid relation defined in the policy component type we currently build sourcecode for.
+     * Generates the code for a association. The method is called for every 
+     * valid association defined in the policy component type we currently build sourcecode for.
      * 
-     * @param relation the relation source code should be generated for
+     * @param association the association source code should be generated for
      * @param fieldsBuilder the code fragment builder to build the memeber variabales section.
      * @param fieldsBuilder the code fragment builder to build the method section.
      * @throws Exception Any exception thrown leads to an interruption of the
@@ -331,16 +331,16 @@ public abstract class AbstractPcTypeBuilder extends DefaultJavaSourceFileBuilder
      * @see JavaSourceFileBuilder#addToBuildStatus(CoreException)
      * @see JavaSourceFileBuilder#addToBuildStatus(IStatus)
      */
-    protected abstract void generateCodeForRelation(
-    		IPolicyCmptTypeAssociation relation,
+    protected abstract void generateCodeForAssociation(
+    		IPolicyCmptTypeAssociation association,
             JavaCodeFragmentBuilder fieldsBuilder,
             JavaCodeFragmentBuilder methodsBuilder) throws Exception;
 
     /**
-     * Generates the code for the implementation of an abstract container relation.
+     * Generates the code for the implementation of an abstract container association.
      * 
-     * @param containerRelation the container relation that is common for the relations in the group
-     * @param subRelations a group of relation instances that have the same container relation
+     * @param containerAssociation the container association that is common for the associations in the group
+     * @param subAssociations a group of association instances that have the same container association
      * @param memberVarsBuilder the code fragment builder to build the memeber variabales section.
      * @param memberVarsBuilder the code fragment builder to build the method section.
      * @throws Exception implementations of this method don't have to take care about rising checked
@@ -349,9 +349,9 @@ public abstract class AbstractPcTypeBuilder extends DefaultJavaSourceFileBuilder
      *             exception and log it by means of the addToBuildStatus() methods of the super
      *             class.
      */
-    protected abstract void generateCodeForContainerRelationImplementation(
-    		IPolicyCmptTypeAssociation containerRelation,
-            List subRelations,
+    protected abstract void generateCodeForContainerAssociationImplementation(
+    		IPolicyCmptTypeAssociation containerAssociation,
+            List subAssociations,
             JavaCodeFragmentBuilder memberVarsBuilder,
             JavaCodeFragmentBuilder methodsBuilder) throws Exception;
 
@@ -394,11 +394,11 @@ public abstract class AbstractPcTypeBuilder extends DefaultJavaSourceFileBuilder
 			JavaCodeFragmentBuilder methodsBuilder) throws CoreException;
     
     
-    class CodeGeneratorForContainerRelationImplementation extends PolicyCmptTypeHierarchyCodeGenerator {
+    class CodeGeneratorForContainerAssociationImplementation extends PolicyCmptTypeHierarchyCodeGenerator {
 
         private HashMap containerImplMap;
         
-        public CodeGeneratorForContainerRelationImplementation(HashMap containerImplMap, JavaCodeFragmentBuilder fieldsBuilder, JavaCodeFragmentBuilder methodsBuilder) {
+        public CodeGeneratorForContainerAssociationImplementation(HashMap containerImplMap, JavaCodeFragmentBuilder fieldsBuilder, JavaCodeFragmentBuilder methodsBuilder) {
             super(fieldsBuilder, methodsBuilder);
             this.containerImplMap = containerImplMap;
         }
@@ -407,17 +407,17 @@ public abstract class AbstractPcTypeBuilder extends DefaultJavaSourceFileBuilder
          * {@inheritDoc}
          */
         protected boolean visit(IPolicyCmptType currentType) throws CoreException {
-            IPolicyCmptTypeAssociation[] relations = currentType.getPolicyCmptTypeAssociations();
-            for (int i = 0; i < relations.length; i++) {
-                if (relations[i].isDerivedUnion() && relations[i].isValid()) {
+            IPolicyCmptTypeAssociation[] associations = currentType.getPolicyCmptTypeAssociations();
+            for (int i = 0; i < associations.length; i++) {
+                if (associations[i].isDerivedUnion() && associations[i].isValid()) {
                     try {
-                        List implRelations = (List)containerImplMap.get(relations[i]);
-                        if (implRelations!=null) {
-                            generateCodeForContainerRelationImplementation(relations[i], implRelations, fieldsBuilder, methodsBuilder);
+                        List implAssociations = (List)containerImplMap.get(associations[i]);
+                        if (implAssociations!=null) {
+                            generateCodeForContainerAssociationImplementation(associations[i], implAssociations, fieldsBuilder, methodsBuilder);
                         }
                     } catch (Exception e) {
-                        addToBuildStatus(new IpsStatus("Error building container relation implementation. " //$NON-NLS-1$
-                            + "ContainerRelation: " + relations[i] //$NON-NLS-1$
+                        addToBuildStatus(new IpsStatus("Error building container association implementation. " //$NON-NLS-1$
+                            + "ContainerAssociation: " + associations[i] //$NON-NLS-1$
                             + "Implementing Type: " + getPcType(), e)); //$NON-NLS-1$
                     }
                 }
