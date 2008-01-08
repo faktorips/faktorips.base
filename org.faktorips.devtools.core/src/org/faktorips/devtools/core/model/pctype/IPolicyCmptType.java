@@ -87,13 +87,6 @@ public interface IPolicyCmptType extends IType, Datatype {
     public final static String MSGCODE_PRODUCT_CMPT_TYPE_DOES_NOT_CONFIGURE_THIS_TYPE = MSGCODE_PREFIX + "ProductCmptTypeDoesNotConfigureThisType"; //$NON-NLS-1$
 
     /**
-     * Validation message code to indicate that table structures can only be used if the type is product
-     * relevant.
-     */ 
-    public final static String MSGCODE_TABLE_STRUCTURES_CAN_ONLY_BE_USED_IF_THE_TYPE_IS_PRODUCT_RELEVANT =
-        MSGCODE_PREFIX + "TableStructuresCanOnlyBeUsedIfTheTypeIsProductRelevant"; //$NON-NLS-1$
-    
-    /**
      * Validation message code to indicate that the product relevant flag is set but the supertype is not product relevant.
      */
     public final static String MSGCODE_SUPERTYPE_NOT_PRODUCT_RELEVANT_IF_THE_TYPE_IS_PRODUCT_RELEVANT = 
