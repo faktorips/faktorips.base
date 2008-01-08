@@ -552,7 +552,7 @@ public class IpsModel extends IpsElement implements IIpsModel, IResourceChangeLi
     }
 
     public void notifyModificationStatusChangeListener(final ModificationStatusChangedEvent event) {
-        if (modificationStatusChangeListeners == null || !isBroadcastingChangesForCurrentThread()) {
+        if (modificationStatusChangeListeners.size() == 0 || !isBroadcastingChangesForCurrentThread()) {
             return;
         }
         if (TRACE_MODEL_CHANGE_LISTENERS) {
