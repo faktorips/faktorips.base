@@ -149,11 +149,11 @@ public class TableContentsTest extends AbstractIpsPluginTest {
         table.initFromXml(getTestDocument().getDocumentElement());
         assertEquals("XYZ", table.getExtPropertyValue("prop1"));
         assertEquals("ABC", table.getExtPropertyValue("prop2"));
-        
-        ITableContentsGeneration generation = (ITableContentsGeneration)table.getFirstGeneration();
-        generation = (ITableContentsGeneration)generation.getNext();
     }
     
+    /**
+     * Test init via SAX
+     */
     public void testInitFromInputStream() throws CoreException {
         table.initFromInputStream(getClass().getResourceAsStream(getXmlResourceName()));
         assertEquals("RateTableStructure", table.getTableStructure());
@@ -176,18 +176,27 @@ public class TableContentsTest extends AbstractIpsPluginTest {
         assertEquals("0.06", rows[1].getValue(1));
         
     }
-    
+
+    /**
+     * Test init via SAX
+     */
     public void testInitFromInputStreamWithExtensionProperties() throws CoreException {
         addExtensionPropertyDefinition("prop1");
         addExtensionPropertyDefinition("prop2");
-        
+
         table.initFromInputStream(getClass().getResourceAsStream(getXmlResourceName()));
-        
+
         assertEquals("XYZ", table.getExtPropertyValue("prop1"));
         assertEquals("ABC", table.getExtPropertyValue("prop2"));
-        
-        ITableContentsGeneration generation = (ITableContentsGeneration)table.getFirstGeneration();
-        generation = (ITableContentsGeneration)generation.getNext();
+
+        // test invalid XML table content with extension properties inside generation node
+        boolean exception = false;
+        try {
+            table.initFromInputStream(getClass().getResourceAsStream("TableContentsTest2.xml"));
+        } catch (CoreException e) {
+            exception = true;
+        }
+        assertTrue("Expected RuntimeException because extension properties inside generations are not supported using SAX", exception);
     }
     
     /*
