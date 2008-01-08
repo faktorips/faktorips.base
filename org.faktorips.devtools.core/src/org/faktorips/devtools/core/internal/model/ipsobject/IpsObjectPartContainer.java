@@ -303,6 +303,26 @@ public abstract class IpsObjectPartContainer extends IpsElement implements IIpsO
     }
 
     /**
+     * Add the given extension property value identified by the given property id. If the extension
+     * property not exists as definitions then the property will be ignored.
+     * 
+     * @param propertyId id of the extension property
+     * @param extPropertyValue extension property value
+     */
+    protected void addExtensionPropertyValue(String propertyId, String extPropertyValue) {
+        initExtPropertiesIfNotDoneSoFar();
+        Object value = null;
+        if (extPropertyValue != null) {
+            IExtensionPropertyDefinition property = findExtensionProperty(propertyId, getExtensionProperties());
+            if (property == null) {
+                return;
+            }
+            value = property.getValueFromString(extPropertyValue);
+        }
+        extPropertyValues.put(propertyId, value);
+    }
+    
+    /**
      * The method is called by the initFromXml() method, so that subclasses can load their properties from
      * the xml element passed as parameter.
      * 
@@ -347,9 +367,8 @@ public abstract class IpsObjectPartContainer extends IpsElement implements IIpsO
         Object value = null;
         String isNull = valueElement.getAttribute(IpsObjectPartContainer.XML_ATTRIBUTE_ISNULL);
         if (StringUtils.isEmpty(isNull) || !Boolean.valueOf(isNull).booleanValue()) {
-            IExtensionPropertyDefinition property = (IExtensionPropertyDefinition)extPropertyDefinitions.get(propertyId);
+            IExtensionPropertyDefinition property = findExtensionProperty(propertyId, extPropertyDefinitions);
             if (property==null) {
-                IpsPlugin.log(new IpsStatus(IpsStatus.WARNING, "Extension property " + propertyId + " for " + this + " is unknown")); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
                 return;
             }
             value = property.getValueFromXml(valueElement);
@@ -364,6 +383,17 @@ public abstract class IpsObjectPartContainer extends IpsElement implements IIpsO
             propMap.put(properties[i].getPropertyId(), properties[i]);
         }
         return propMap;
+    }
+
+    /*
+     * Searchs an extension property using the given id. Returns null if no such extension property exists.
+     */
+    private IExtensionPropertyDefinition findExtensionProperty(String propertyId, HashMap extPropertyDefinitions) {
+        IExtensionPropertyDefinition property = (IExtensionPropertyDefinition)extPropertyDefinitions.get(propertyId);
+        if (property==null) {
+            IpsPlugin.log(new IpsStatus(IpsStatus.WARNING, "Extension property " + propertyId + " for " + this + " is unknown")); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+        }
+        return property;
     }
 
     private void initPartContainersFromXml(Element element) {

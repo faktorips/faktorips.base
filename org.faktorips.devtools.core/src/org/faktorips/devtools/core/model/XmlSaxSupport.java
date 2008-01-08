@@ -36,4 +36,12 @@ public interface XmlSaxSupport {
      */
     public void initFromInputStream(InputStream is) throws CoreException;
 
+    /**
+     * Adds the given extension property. If the extension property not exists as definitions then
+     * the property will be ignored.
+     * 
+     * @param propertyId The id of the extension property
+     * @param extPropertyValue The value of the extension property
+     */
+    public void addExtensionProperty(String propertyId, String extPropertyValue);
 }

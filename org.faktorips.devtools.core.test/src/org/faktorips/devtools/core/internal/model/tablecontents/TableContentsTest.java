@@ -22,9 +22,12 @@ import java.util.List;
 import org.eclipse.core.runtime.CoreException;
 import org.faktorips.datatype.Datatype;
 import org.faktorips.devtools.core.AbstractIpsPluginTest;
+import org.faktorips.devtools.core.internal.model.IpsModel;
 import org.faktorips.devtools.core.internal.model.tablestructure.TableStructureType;
 import org.faktorips.devtools.core.model.IDependency;
 import org.faktorips.devtools.core.model.IpsObjectDependency;
+import org.faktorips.devtools.core.model.extproperties.ExtensionPropertyDefinition;
+import org.faktorips.devtools.core.model.extproperties.StringExtensionPropertyDefinition;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObjectGeneration;
 import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
@@ -131,6 +134,26 @@ public class TableContentsTest extends AbstractIpsPluginTest {
         assertEquals(2, table.getNumOfGenerations());
     }
 
+    private void addExtensionPropertyDefinition(String propId) {
+        Class extendedClass = TableContents.class;
+        ExtensionPropertyDefinition property = new StringExtensionPropertyDefinition();
+        property.setPropertyId(propId);
+        property.setExtendedType(extendedClass);
+        ((IpsModel)table.getIpsModel()).addIpsObjectExtensionProperty(property);
+    }
+    
+    public void testInitFromXmlWithExtensionProperties() {
+        addExtensionPropertyDefinition("prop1");
+        addExtensionPropertyDefinition("prop2");
+        
+        table.initFromXml(getTestDocument().getDocumentElement());
+        assertEquals("XYZ", table.getExtPropertyValue("prop1"));
+        assertEquals("ABC", table.getExtPropertyValue("prop2"));
+        
+        ITableContentsGeneration generation = (ITableContentsGeneration)table.getFirstGeneration();
+        generation = (ITableContentsGeneration)generation.getNext();
+    }
+    
     public void testInitFromInputStream() throws CoreException {
         table.initFromInputStream(getClass().getResourceAsStream(getXmlResourceName()));
         assertEquals("RateTableStructure", table.getTableStructure());
@@ -152,6 +175,19 @@ public class TableContentsTest extends AbstractIpsPluginTest {
         assertEquals("190", rows[1].getValue(0));
         assertEquals("0.06", rows[1].getValue(1));
         
+    }
+    
+    public void testInitFromInputStreamWithExtensionProperties() throws CoreException {
+        addExtensionPropertyDefinition("prop1");
+        addExtensionPropertyDefinition("prop2");
+        
+        table.initFromInputStream(getClass().getResourceAsStream(getXmlResourceName()));
+        
+        assertEquals("XYZ", table.getExtPropertyValue("prop1"));
+        assertEquals("ABC", table.getExtPropertyValue("prop2"));
+        
+        ITableContentsGeneration generation = (ITableContentsGeneration)table.getFirstGeneration();
+        generation = (ITableContentsGeneration)generation.getNext();
     }
     
     /*

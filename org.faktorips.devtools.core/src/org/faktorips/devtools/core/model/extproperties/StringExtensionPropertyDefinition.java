@@ -49,6 +49,13 @@ public class StringExtensionPropertyDefinition extends ExtensionPropertyDefiniti
     /**
      * {@inheritDoc}
      */
+    public Object getValueFromString(String value) {
+        return value;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
     public void setDefaultValue(String s) {
         defaultValue = s;
     }

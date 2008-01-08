@@ -242,4 +242,11 @@ public class TableContents extends TimedIpsObject implements ITableContents {
         }
         return datatypes;
     }
+    
+    /** 
+     * {@inheritDoc}
+     */
+    public void addExtensionProperty(String propertyId, String extPropertyValue) {
+        addExtensionPropertyValue(propertyId, extPropertyValue);
+    }
 }

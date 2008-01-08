@@ -27,6 +27,7 @@ import org.faktorips.devtools.core.model.tablecontents.ITableContents;
 import org.faktorips.values.DateUtil;
 import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
+import org.xml.sax.SAXNotSupportedException;
 import org.xml.sax.helpers.DefaultHandler;
 
 /**
@@ -44,6 +45,12 @@ public class TableContentsSaxHandler extends DefaultHandler {
     private static final String ATTRIBUTE_TABLESTRUCTURE = ITableContents.PROPERTY_TABLESTRUCTURE;
     private static final String ATTRIBUTE_NUMOFCOLUMNS = ITableContents.PROPERTY_NUMOFCOLUMNS;
     
+    // extension properties support
+    private static final String EXTENSIONPROPERTIES = TableContentsGeneration.getXmlExtPropertiesElementName();
+    private static final String EXTENSIONPROPERTIES_VALUE = TableContentsGeneration.getXmlValueElement();
+    private static final String EXTENSIONPROPERTIES_ID = TableContentsGeneration.getXmlAttributeExtpropertyid();
+    private static final String EXTENSIONPROPERTIES_ATTRIBUTE_ISNULL = TableContentsGeneration.getXmlAttributeIsnull();
+    
     // the table which will be filled
     private ITableContents tableContents;
     
@@ -55,12 +62,18 @@ public class TableContentsSaxHandler extends DefaultHandler {
     
     // true if the parser is inside the row node
     private boolean insideRowNode;
+
+    // true if the parser is inside the extension properties node
+    private boolean insideExtensionPropertiesNode;
     
     // true if the parser is inside the value node
     private boolean insideValueNode;
     
     // true if the current value node represents the null value
     private boolean nullValue;
+    
+    // contains the id of the value node
+    private String idValue;
     
     private TableContentsGeneration currentGeneration;
     
@@ -76,10 +89,20 @@ public class TableContentsSaxHandler extends DefaultHandler {
             insideRowNode = false;
             currentGeneration.newRow(columns);
             columns.clear();
+        } else if (EXTENSIONPROPERTIES.equals(qName)) {
+            insideExtensionPropertiesNode = false;
         } else if (isColumnValueNode(qName)) {
             insideValueNode = false;
             columns.add(textBuffer == null && nullValue ? null : textBuffer == null ? new String("") : textBuffer //$NON-NLS-1$
                     .substring(0));
+            textBuffer = null;
+        } else if (isExtensionPropertiesValueNode(qName)) {
+            insideValueNode = false;
+            if (currentGeneration == null) {
+                tableContents.addExtensionProperty(idValue, nullValue?null:textBuffer.substring(0));
+            } else {
+                throw new SAXNotSupportedException("Extension properties inside a generation node are not supported!");
+            }
             textBuffer = null;
         }
     }
@@ -96,11 +119,17 @@ public class TableContentsSaxHandler extends DefaultHandler {
             currentGeneration = (TableContentsGeneration)((TableContents)tableContents)
                     .createNewGenerationInternal(DateUtil.parseIsoDateStringToGregorianCalendar(attributes
                             .getValue(ATTRIBUTE_VALIDFROM)));
+        } else if (EXTENSIONPROPERTIES.equals(qName)) {
+            insideExtensionPropertiesNode = true;
         } else if (ROW.equals(qName)){
             insideRowNode = true;
         } else if (isColumnValueNode(qName)) {
             insideValueNode = true;
             nullValue = Boolean.valueOf(attributes.getValue("isNull")).booleanValue(); //$NON-NLS-1$
+        } else if (isExtensionPropertiesValueNode(qName)) {
+            insideValueNode = true;
+            nullValue = Boolean.valueOf(attributes.getValue(EXTENSIONPROPERTIES_ATTRIBUTE_ISNULL)).booleanValue(); //$NON-NLS-1$
+            idValue = attributes.getValue(EXTENSIONPROPERTIES_ID);
         }
     }
     
@@ -126,4 +155,11 @@ public class TableContentsSaxHandler extends DefaultHandler {
     private boolean isColumnValueNode(String nodeName){
         return VALUE.equals(nodeName) && insideRowNode;
     }    
+    
+    /*
+     * Returns <code>true</code> if the given node is the extension properties value node otherwise <code>false</code>
+     */
+    private boolean isExtensionPropertiesValueNode(String nodeName){
+        return EXTENSIONPROPERTIES_VALUE.equals(nodeName) && insideExtensionPropertiesNode;
+    }     
 }

@@ -298,4 +298,25 @@ public class TableContentsGeneration extends IpsObjectGeneration implements ITab
             result.add(list);
         }
     }
+    
+    //
+    // Methods to return the xml representation constants for the extension properties
+    // The constants are necessary because the TableContents supports the initialisation via SAX. 
+    // And the corresponding SAX handler uses this constants for node identification.
+    //
+    static String getXmlExtPropertiesElementName(){
+        return XML_EXT_PROPERTIES_ELEMENT;
+    }
+    
+    static String getXmlValueElement(){
+        return XML_VALUE_ELEMENT;
+    }
+    
+    static String getXmlAttributeExtpropertyid(){
+        return XML_ATTRIBUTE_EXTPROPERTYID;
+    }
+    
+    static String getXmlAttributeIsnull(){
+        return XML_ATTRIBUTE_ISNULL;
+    }
 }

@@ -108,6 +108,15 @@ public interface IExtensionPropertyDefinition extends Comparable {
     public Object getValueFromXml(Element valueElement);
     
     /**
+     * Returns the property's value from the given string. The method is only called if a 
+     * value other than <code>null</code> is stored in the element. Null handling is done before 
+     * this method is called!
+     * 
+     * @param valueElement The value element (textual representation <value></value>).
+     */
+    public Object getValueFromString(String value);
+    
+    /**
      * This method is called before a value is set to an object's extension property.
      * 
      * @param ipsObjectPart The ips object part which property is about to be set.
