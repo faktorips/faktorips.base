@@ -35,6 +35,20 @@ public abstract class BasePolicyCmptTypeBuilder extends AbstractPcTypeBuilder {
      */
     public final static String CONFIG_PROPERTY_GENERATE_CHANGELISTENER = "generateChangeListener";
     
+    /**
+     * Configuration property that is supposed to be used to read a configuration value from
+     * the IIpsArtefactBuilderSetConfig object provided by the initialize method of an
+     * IIpsArtefactBuilderSet instance.
+     */
+    public final static String CONFIG_PROPERTY_GENERATE_DELTA_COMPUTATION = "generateDeltaComputation";
+
+    /**
+     * Configuration property that is supposed to be used to read a configuration value from
+     * the IIpsArtefactBuilderSetConfig object provided by the initialize method of an
+     * IIpsArtefactBuilderSet instance.
+     */
+    public final static String CONFIG_PROPERTY_GENERATE_COPY_METHOD = "generateCopyMethod";
+
     private boolean changeListenerSupportActive;
     
     public BasePolicyCmptTypeBuilder(IIpsArtefactBuilderSet builderSet, 
