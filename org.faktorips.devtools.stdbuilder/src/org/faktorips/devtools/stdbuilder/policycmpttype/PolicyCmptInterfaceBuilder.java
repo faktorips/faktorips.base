@@ -379,8 +379,8 @@ public class PolicyCmptInterfaceBuilder extends BasePolicyCmptTypeBuilder {
             generateFieldMaxRangeFor(attribute, nonPrimitiveDatatypeHelper, memberVarsBuilder);
             productCmptGenInterfaceBuilder.generateMethodGetRangeFor(attribute, nonPrimitiveDatatypeHelper, methodsBuilder);
         }
-        else if(ValueSetType.ENUM.equals(attribute.getValueSet().getValueSetType()) ||
-                datatypeHelper.getDatatype() instanceof EnumDatatype){
+        else if(ValueSetType.ENUM.equals(attribute.getValueSet().getValueSetType()) /*||
+                datatypeHelper.getDatatype() instanceof EnumDatatype*/){
             generateFieldMaxAllowedValuesFor(attribute, nonPrimitiveDatatypeHelper, memberVarsBuilder);
             productCmptGenInterfaceBuilder.generateMethodGetAllowedValuesFor(
                     attribute, datatypeHelper.getDatatype(), methodsBuilder);

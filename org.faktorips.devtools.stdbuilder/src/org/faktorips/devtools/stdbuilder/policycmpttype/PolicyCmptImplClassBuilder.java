@@ -30,7 +30,6 @@ import org.faktorips.codegen.DatatypeHelper;
 import org.faktorips.codegen.JavaCodeFragment;
 import org.faktorips.codegen.JavaCodeFragmentBuilder;
 import org.faktorips.datatype.Datatype;
-import org.faktorips.datatype.EnumDatatype;
 import org.faktorips.datatype.ValueDatatype;
 import org.faktorips.devtools.core.builder.BuilderHelper;
 import org.faktorips.devtools.core.builder.JavaSourceFileBuilder;
@@ -343,8 +342,8 @@ public class PolicyCmptImplClassBuilder extends BasePolicyCmptTypeBuilder {
             }
             generateMethodGetRangeFor(attribute, nonPrimitiveDatatypeHelper, methodsBuilder);
         }
-        if(ValueSetType.ENUM.equals(attribute.getValueSet().getValueSetType()) ||
-                datatypeHelper.getDatatype() instanceof EnumDatatype){
+        if(ValueSetType.ENUM.equals(attribute.getValueSet().getValueSetType()) /*||
+                datatypeHelper.getDatatype() instanceof EnumDatatype*/){
             if(org.faktorips.devtools.core.model.ipsobject.Modifier.PUBLIC.equals(attribute.getModifier())){
                 interfaceBuilder.generateFieldMaxAllowedValuesFor(attribute, nonPrimitiveDatatypeHelper, memberVarsBuilder);
             }

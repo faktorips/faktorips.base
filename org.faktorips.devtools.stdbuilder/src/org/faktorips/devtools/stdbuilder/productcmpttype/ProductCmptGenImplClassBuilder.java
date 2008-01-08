@@ -30,7 +30,6 @@ import org.faktorips.codegen.DatatypeHelper;
 import org.faktorips.codegen.JavaCodeFragment;
 import org.faktorips.codegen.JavaCodeFragmentBuilder;
 import org.faktorips.datatype.Datatype;
-import org.faktorips.datatype.EnumDatatype;
 import org.faktorips.datatype.ValueDatatype;
 import org.faktorips.devtools.core.IpsStatus;
 import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
@@ -521,8 +520,7 @@ public class ProductCmptGenImplClassBuilder extends AbstractProductCmptTypeBuild
             generateFieldRangeFor(a , datatypeHelper, memberVarsBuilder);
             generateMethodGetRangeFor(a, datatypeHelper, methodsBuilder);
         }
-        else if(ValueSetType.ENUM.equals(a.getValueSet().getValueSetType()) ||
-                datatypeHelper.getDatatype() instanceof EnumDatatype){
+        else if(ValueSetType.ENUM.equals(a.getValueSet().getValueSetType())){
             generateFieldAllowedValuesFor(a, memberVarsBuilder);
             generateMethodGetAllowedValuesFor(a, datatypeHelper.getDatatype(), methodsBuilder);
         }
@@ -722,8 +720,6 @@ public class ProductCmptGenImplClassBuilder extends AbstractProductCmptTypeBuild
             generateFieldTo1Relation(relation, memberVarsBuilder);
             generateMethodGet1RelatedCmpt(relation, methodsBuilder);
             generateMethodSet1RelatedCmpt(relation, methodsBuilder);
-//            generateMethodGetCardinalityFor1To1Relation(relation, methodsBuilder);
-//            generateFieldCardinalityFor1To1Relation(relation, memberVarsBuilder);
         }
         if (relation.findMatchingPolicyCmptTypeAssociation(getIpsProject())!=null) {
             generateMethodGetCardinalityFor1ToManyRelation(relation, methodsBuilder);

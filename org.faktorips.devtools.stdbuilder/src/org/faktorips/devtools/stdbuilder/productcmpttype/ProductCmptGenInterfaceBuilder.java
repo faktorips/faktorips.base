@@ -26,7 +26,6 @@ import org.eclipse.core.runtime.CoreException;
 import org.faktorips.codegen.DatatypeHelper;
 import org.faktorips.codegen.JavaCodeFragmentBuilder;
 import org.faktorips.datatype.Datatype;
-import org.faktorips.datatype.EnumDatatype;
 import org.faktorips.devtools.core.builder.BuilderHelper;
 import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.core.model.ipsproject.IIpsArtefactBuilderSet;
@@ -130,10 +129,10 @@ public class ProductCmptGenInterfaceBuilder extends AbstractProductCmptTypeBuild
         //the published modifier
 
        datatypeHelper = StdBuilderHelper.getDatatypeHelperForValueSet(getIpsSrcFile().getIpsProject(), datatypeHelper);
-       if(datatypeHelper.getDatatype() instanceof EnumDatatype){
+/*       if(datatypeHelper.getDatatype() instanceof EnumDatatype){
            generateMethodGetAllowedValuesFor(a, datatypeHelper.getDatatype(), methodsBuilder);
        }
-       else if(ValueSetType.ENUM.equals(a.getValueSet().getValueSetType())){
+       else*/ if(ValueSetType.ENUM.equals(a.getValueSet().getValueSetType())){
            generateMethodGetAllowedValuesFor(a, datatypeHelper.getDatatype(), methodsBuilder);
        }
        else if(ValueSetType.RANGE.equals(a.getValueSet().getValueSetType())){
