@@ -418,8 +418,13 @@ public class PolicyCmptInterfaceBuilder extends BasePolicyCmptTypeBuilder {
     /**
      * {@inheritDoc}
      */
-    protected void generateCodeForProductCmptTypeAttribute(IProductCmptTypeAttribute attribute, DatatypeHelper helper, JavaCodeFragmentBuilder constantBuilder, JavaCodeFragmentBuilder memberVarBuilder, JavaCodeFragmentBuilder methodsBuilder) throws CoreException {
-        generateMethodGetPropertyValue(attribute, helper, methodsBuilder);    }
+    protected void generateCodeForProductCmptTypeAttribute(IProductCmptTypeAttribute attribute,
+            DatatypeHelper helper,
+            JavaCodeFragmentBuilder constantBuilder,
+            JavaCodeFragmentBuilder memberVarBuilder,
+            JavaCodeFragmentBuilder methodsBuilder) throws CoreException {
+        //empty implementation
+    }
 
     void generateFieldConstPropertyValue(
             IPolicyCmptTypeAttribute a,
