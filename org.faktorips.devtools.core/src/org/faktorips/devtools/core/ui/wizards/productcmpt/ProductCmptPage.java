@@ -163,20 +163,17 @@ public class ProductCmptPage extends IpsObjectPage {
 		if (!(obj instanceof IProductCmpt)) {
 			if (namingStrategy != null && namingStrategy.supportsVersionId()) {
 				versionId.setText(namingStrategy.getNextVersionId(null));
-				typeRefControl.setFocus();
 			}
             if (obj instanceof IProductCmptType) {
                 // set default product cmpt type only if the selected obj is configurable by product cmpt type
                 IProductCmptType type = (IProductCmptType)obj;
                 typeRefControl.setText(type.getQualifiedName());
-                constName.setFocus();
             }
             if (obj instanceof IPolicyCmptType) {
                 // set default product cmpt type only if the selected policy type is configurable 
                 IPolicyCmptType pcType = (IPolicyCmptType)obj;
                 if (pcType.isConfigurableByProductCmptType()) {
                     typeRefControl.setText(pcType.getProductCmptType());
-                    constName.setFocus();
                 }
             }
 		} else {
@@ -185,7 +182,6 @@ public class ProductCmptPage extends IpsObjectPage {
     			if (namingStrategy.supportsVersionId()) {
     				versionId.setText(namingStrategy.getNextVersionId(productCmpt));
     				constName.setText(namingStrategy.getKindId(namingStrategy.getNextName(productCmpt)));
-    				constName.setFocus();
     			}
     		} else {
     			setIpsObjectName(productCmpt.getName());
@@ -372,7 +368,6 @@ public class ProductCmptPage extends IpsObjectPage {
             }
             versionId.setText(sourceProductCmpt.getVersionId());
             runtimeId.setText(getDefaultRuntimeId());
-            constName.setFocus();
             constName.setSelection(constName.getTextLimit());
         }
     }
@@ -392,4 +387,21 @@ public class ProductCmptPage extends IpsObjectPage {
         generation.setValidFrom(date);
         productCmpt.fixAllDifferencesToModel(productCmpt.getIpsProject());
     }
+    
+    /**
+     * Sets the focus to the source folder control if empty if not to the name control. 
+     */
+    protected void setDefaultFocus(){
+        super.setDefaultFocus();
+        if(!StringUtils.isEmpty(getPackage())){
+            if(StringUtils.isEmpty(typeRefControl.getText())){
+                typeRefControl.setFocus();
+                return;
+            }
+            if(StringUtils.isEmpty(constName.getText())){
+                constName.setFocus();
+            }
+        }
+    }
+
 }

@@ -566,6 +566,10 @@ public abstract class IpsObjectPage extends WizardPage implements ValueChangeLis
             sourceFolderField.getControl().setFocus();
             return;
         }
+        if(StringUtils.isEmpty(packageField.getText())){
+            packageField.getControl().setFocus();
+            return;
+        }
         nameField.getControl().setFocus();
     }
     /**
