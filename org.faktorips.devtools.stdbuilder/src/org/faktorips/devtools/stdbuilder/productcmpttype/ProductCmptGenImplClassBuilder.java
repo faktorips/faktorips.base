@@ -318,10 +318,10 @@ public class ProductCmptGenImplClassBuilder extends AbstractProductCmptTypeBuild
     private void generateMethodDoInitReferencesFromXml(JavaCodeFragmentBuilder builder) throws CoreException {
         String javaDoc = null;
         builder.javaDoc(javaDoc, ANNOTATION_GENERATED);
-        String[] argNames = new String[]{"associationMap"};
+        String[] argNames = new String[]{"elementsMap"};
         String[] argTypes = new String[]{Map.class.getName()};
         builder.methodBegin(Modifier.PROTECTED, "void", "doInitReferencesFromXml", argNames, argTypes);
-        builder.appendln("super.doInitReferencesFromXml(associationMap);");
+        builder.appendln("super.doInitReferencesFromXml(elementsMap);");
         
         // before the first association we define a temp variable as follows:
         // Element associationElements = null;
@@ -354,7 +354,7 @@ public class ProductCmptGenImplClassBuilder extends AbstractProductCmptTypeBuild
                 }
                 builder.append("associationElements = (");
                 builder.appendClassName(List.class);
-                builder.append(") associationMap.get(");
+                builder.append(") elementsMap.get(");
                 builder.appendQuoted(ass.getName());
                 builder.appendln(");");
                 builder.append("if (associationElements != null) {");
