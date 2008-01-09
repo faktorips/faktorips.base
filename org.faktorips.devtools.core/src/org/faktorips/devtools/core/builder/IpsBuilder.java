@@ -446,7 +446,9 @@ public class IpsBuilder extends IncrementalProjectBuilder {
                         }
                     }                    
                 }
-                buildStatus.add(currentBuildStatus);
+                if(!currentBuildStatus.isOK()){
+                    buildStatus.add(currentBuildStatus);
+                }
             }
         } catch (Exception e) {
             buildStatus.add(new IpsStatus(e));
@@ -521,8 +523,8 @@ public class IpsBuilder extends IncrementalProjectBuilder {
         applyBuildCommand(ipsArtefactBuilderSet, newStatus, new BuildArtefactBuildCommand(file), monitor);
         if (!newStatus.isOK()) {
             fillMultiStatusWithMessageList(newStatus, ipsObject.validate(ipsProject));
+            buildStatus.add(newStatus);
         }
-        buildStatus.add(newStatus);
         updateMarkers(buildStatus, ipsObject);
         return ipsObject;
     }
