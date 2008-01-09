@@ -129,10 +129,7 @@ public class ProductCmptGenInterfaceBuilder extends AbstractProductCmptTypeBuild
         //the published modifier
 
        datatypeHelper = StdBuilderHelper.getDatatypeHelperForValueSet(getIpsSrcFile().getIpsProject(), datatypeHelper);
-/*       if(datatypeHelper.getDatatype() instanceof EnumDatatype){
-           generateMethodGetAllowedValuesFor(a, datatypeHelper.getDatatype(), methodsBuilder);
-       }
-       else*/ if(ValueSetType.ENUM.equals(a.getValueSet().getValueSetType())){
+       if(ValueSetType.ENUM.equals(a.getValueSet().getValueSetType())){
            generateMethodGetAllowedValuesFor(a, datatypeHelper.getDatatype(), methodsBuilder);
        }
        else if(ValueSetType.RANGE.equals(a.getValueSet().getValueSetType())){
