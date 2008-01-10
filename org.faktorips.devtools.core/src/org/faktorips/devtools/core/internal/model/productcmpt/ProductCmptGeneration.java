@@ -683,7 +683,7 @@ public class ProductCmptGeneration extends IpsObjectGeneration implements IProdu
             tableContentUsages.remove(part);
             return;
         } else if (part instanceof IFormula) {
-            tableContentUsages.remove(part);
+            formulas.remove(part);
             return;
         }
         throw new RuntimeException("Unknown part type" + part.getClass()); //$NON-NLS-1$
