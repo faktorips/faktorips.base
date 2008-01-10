@@ -55,8 +55,10 @@ import org.faktorips.devtools.stdbuilder.productcmpttype.ProductCmptGenInterface
 import org.faktorips.devtools.stdbuilder.productcmpttype.ProductCmptInterfaceBuilder;
 import org.faktorips.runtime.DefaultUnresolvedReference;
 import org.faktorips.runtime.IConfigurableModelObject;
+import org.faktorips.runtime.IDeltaComputationOptions;
 import org.faktorips.runtime.IModelObject;
 import org.faktorips.runtime.IModelObjectChangedEvent;
+import org.faktorips.runtime.IModelObjectDelta;
 import org.faktorips.runtime.IUnresolvedReference;
 import org.faktorips.runtime.Message;
 import org.faktorips.runtime.MessageList;
@@ -67,12 +69,15 @@ import org.faktorips.runtime.internal.AbstractModelObject;
 import org.faktorips.runtime.internal.DependantObject;
 import org.faktorips.runtime.internal.MethodNames;
 import org.faktorips.runtime.internal.ModelObjectChangedEvent;
+import org.faktorips.runtime.internal.ModelObjectDelta;
 import org.faktorips.util.LocalizedStringsSet;
 import org.faktorips.util.StringUtil;
 import org.w3c.dom.Element;
 
 public class PolicyCmptImplClassBuilder extends BasePolicyCmptTypeBuilder {
 
+    private boolean generateDeltaSupport = false;
+    
     private final static String FIELD_PARENT_MODEL_OBJECT = "parentModelObject";
     
     private PolicyCmptInterfaceBuilder interfaceBuilder;
@@ -83,6 +88,14 @@ public class PolicyCmptImplClassBuilder extends BasePolicyCmptTypeBuilder {
     public PolicyCmptImplClassBuilder(IIpsArtefactBuilderSet builderSet, String kindId, boolean changeListenerSupportActive) {
         super(builderSet, kindId, new LocalizedStringsSet(PolicyCmptImplClassBuilder.class), changeListenerSupportActive);
         setMergeEnabled(true);
+    }
+
+    public boolean isGenerateDeltaSupport() {
+        return generateDeltaSupport;
+    }
+
+    public void setGenerateDeltaSupport(boolean generateDeltaSupport) {
+        this.generateDeltaSupport = generateDeltaSupport;
     }
 
     public void setInterfaceBuilder(PolicyCmptInterfaceBuilder policyCmptTypeInterfaceBuilder) {
@@ -207,9 +220,130 @@ public class PolicyCmptImplClassBuilder extends BasePolicyCmptTypeBuilder {
                 generateMethodCreateUnresolvedReference(methodsBuilder);
                 break;
             }
-        } 
+        }
+        if (generateDeltaSupport) {
+            generateMethodComputeDelta(methodsBuilder);
+        }
+    }
+
+    /**
+     * <pre>
+     * public IModelObjectDelta computeDelta(IModelObject otherObject, IDeltaComputationOptions options) {
+     *     ModelObjectDelta delta = (ModelObjectDelta)super.computeDelta(otherObject, options);
+     *     Root otherRoot = (Root)otherObject;
+     *     delta.checkPropertyChange(IRoot.PROPERTY_STRINGATTRIBUTE, stringAttribute, otherRoot.stringAttribute, options);
+     *     delta.checkPropertyChange(IRoot.PROPERTY_INTATTRIBUTE, intAttribute, otherRoot.intAttribute, options);
+     *     delta.checkPropertyChange(IRoot.PROPERTY_BOOLEANATTRIBUTE, booleanAttribute, otherRoot.booleanAttribute, options);
+     *     ModelObjectDelta.createChildDeltas(delta, children, otherRoot.children, "Child", options);
+     *     ModelObjectDelta.createChildDeltas(delta, somethingElse, otherRoot.somethingElse, "SomethingElse", options);
+     *     return delta;
+     * }
+     */
+    protected void generateMethodComputeDelta(JavaCodeFragmentBuilder methodsBuilder) throws CoreException {
+        methodsBuilder.javaDoc(getJavaDocCommentForOverriddenMethod(), ANNOTATION_GENERATED);
+        generateSignatureComputeDelta(methodsBuilder);
+        methodsBuilder.openBracket();
+        
+        if (getPolicyCmptType().hasSupertype()) {
+            // code sample: ModelObjectDelta delta = (ModelObjectDelta)super.computeDelta(otherObject, options);
+            methodsBuilder.appendClassName(ModelObjectDelta.class);
+            methodsBuilder.append(" delta = (");
+            methodsBuilder.appendClassName(ModelObjectDelta.class);
+            methodsBuilder.append(")super.");
+            methodsBuilder.append(MethodNames.COMPUTE_DELTA);
+            methodsBuilder.appendln("(otherObject, options);");
+        } else {
+            // code sample: ModelObjectDelta delta = ModelObjectDelta.newEmptyDelta(this, otherObject);
+            methodsBuilder.appendClassName(ModelObjectDelta.class);
+            methodsBuilder.append(" delta = ");
+            methodsBuilder.appendClassName(ModelObjectDelta.class);
+            methodsBuilder.append('.');
+            methodsBuilder.append(MethodNames.MODELOBJECTDELTA_NEW_EMPTY_DELTA);
+            methodsBuilder.appendln("(this, otherObject);");
+        }
+        
+        // code sample: Contract otherContract = (Contract)otherObject;
+        String varOther = " other" + StringUtils.capitalize(getPolicyCmptType().getName());
+        boolean castForOtherGenerated = false;
+        
+        // code sample for an attribute:
+        // delta.checkPropertyChange(IRoot.PROPERTY_STRINGATTRIBUTE, stringAttribute, otherRoot.stringAttribute, options);
+        IPolicyCmptTypeAttribute[] attributes = getPolicyCmptType().getPolicyCmptTypeAttributes();
+        for (int i = 0; i < attributes.length; i++) {
+            if (!attributes[i].isValid() || attributes[i].isOverwrite() || attributes[i].getModifier()==org.faktorips.devtools.core.model.ipsobject.Modifier.PUBLIC) {
+                continue;
+            }
+            if (attributes[i].isChangeable() || attributes[i].getAttributeType()==AttributeType.DERIVED_BY_EXPLICIT_METHOD_CALL) {
+                if (!castForOtherGenerated) {
+                    castForOtherGenerated = true;
+                    generateCodeToCastOtherObject(varOther, methodsBuilder);
+                }
+                String fieldName = getFieldNameForAttribute(attributes[i]);
+                methodsBuilder.append("delta.");
+                methodsBuilder.append(MethodNames.MODELOBJECTDELTA_CHECK_PROPERTY_CHANGE);
+                methodsBuilder.append("(");
+                methodsBuilder.appendClassName(interfaceBuilder.getQualifiedClassName(getIpsSrcFile()));
+                methodsBuilder.append(".");
+                methodsBuilder.append(interfaceBuilder.getStaticConstantNameForProperty(attributes[i]));
+                methodsBuilder.append(", ");
+                methodsBuilder.append(fieldName);
+                methodsBuilder.append(", ");
+                methodsBuilder.append(varOther);
+                methodsBuilder.append(".");
+                methodsBuilder.append(fieldName);
+                methodsBuilder.appendln(", options);");
+            }
+        }
+        
+        // code sample (note that the generated code is the same for to1 and toMany associations 
+        // ModelObjectDelta.createChildDeltas(delta, children, otherRoot.children, "Child", options);
+
+        // code sample for a to1 association:
+        // ModelObjectDelta.createChildDeltas(delta, somethingElse, otherRoot.somethingElse, "SomethingElse", options);
+        IPolicyCmptTypeAssociation[] associations = getPolicyCmptType().getPolicyCmptTypeAssociations();
+        for (int i = 0; i < associations.length; i++) {
+            if (!associations[i].isValid() || associations[i].isDerived() || associations[i].isCompositionDetailToMaster()) {
+                continue;
+            }
+            if (!castForOtherGenerated) {
+                castForOtherGenerated = true;
+                generateCodeToCastOtherObject(varOther, methodsBuilder);
+            }
+            String fieldName = getFieldNameForAssociation(associations[i]);
+            methodsBuilder.appendClassName(ModelObjectDelta.class);
+            methodsBuilder.append('.');
+            methodsBuilder.append(MethodNames.MODELOBJECTDELTA_CREATE_CHILD_DELTAS);
+            methodsBuilder.append("(delta, ");
+            methodsBuilder.append(fieldName);
+            methodsBuilder.append(", ");
+            methodsBuilder.append(varOther + '.' + fieldName);
+            methodsBuilder.append(", ");
+            methodsBuilder.appendQuoted(fieldName); // = rolename
+            methodsBuilder.append(", options);");
+        }
+        
+        methodsBuilder.append("return delta;");
+        methodsBuilder.closeBracket();
     }
     
+    /*
+     * helper method for generateMethodComputeDelta
+     */
+    private void generateCodeToCastOtherObject(String varOther, JavaCodeFragmentBuilder methodsBuilder) throws CoreException {
+        methodsBuilder.append(getUnqualifiedClassName());
+        methodsBuilder.append(varOther);
+        methodsBuilder.append(" = (");
+        methodsBuilder.append(getUnqualifiedClassName());
+        methodsBuilder.appendln(")otherObject;");
+    }
+    
+    protected void generateSignatureComputeDelta(JavaCodeFragmentBuilder methodsBuilder) throws CoreException {
+        String[] paramNames = new String[]{"otherObject", "options"};
+        String[] paramTypes = new String[]{IModelObject.class.getName(), IDeltaComputationOptions.class.getName()};
+        methodsBuilder.signature(java.lang.reflect.Modifier.PUBLIC, IModelObjectDelta.class.getName(), MethodNames.COMPUTE_DELTA, 
+                paramNames, paramTypes);
+    }
+
     protected void generateMethodGetEffectiveFromAsCalendarForAggregateRoot(JavaCodeFragmentBuilder methodsBuilder) throws CoreException {
         methodsBuilder.javaDoc(getJavaDocCommentForOverriddenMethod(), ANNOTATION_GENERATED);
         methodsBuilder.methodBegin(java.lang.reflect.Modifier.PUBLIC, Calendar.class, MethodNames.GET_EFFECTIVE_FROM_AS_CALENDAR, new String[0], new Class[0]);
@@ -1682,7 +1816,7 @@ public class PolicyCmptImplClassBuilder extends BasePolicyCmptTypeBuilder {
             code.append("[]{");
             for (int j = 0; j < validatedAttributes.length; j++) {
                 IPolicyCmptTypeAttribute attr = getPcType().findPolicyCmptTypeAttribute(validatedAttributes[j], getIpsProject());
-                String propertyConstName = interfaceBuilder.getPropertyName(attr, attr.findDatatype(getIpsProject()));
+                String propertyConstName = interfaceBuilder.getStaticConstantNameForProperty(attr);
                 code.append(" new ");
                 code.appendClassName(ObjectProperty.class);
                 code.append("(this, ");

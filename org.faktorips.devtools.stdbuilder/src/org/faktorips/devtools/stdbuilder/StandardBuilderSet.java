@@ -40,7 +40,6 @@ import org.faktorips.devtools.core.model.type.IAttribute;
 import org.faktorips.devtools.stdbuilder.enums.EnumClassesBuilder;
 import org.faktorips.devtools.stdbuilder.enums.EnumTypeInterfaceBuilder;
 import org.faktorips.devtools.stdbuilder.formulatest.FormulaTestBuilder;
-import org.faktorips.devtools.stdbuilder.policycmpttype.BasePolicyCmptTypeBuilder;
 import org.faktorips.devtools.stdbuilder.policycmpttype.PolicyCmptImplClassBuilder;
 import org.faktorips.devtools.stdbuilder.policycmpttype.PolicyCmptInterfaceBuilder;
 import org.faktorips.devtools.stdbuilder.productcmpt.ProductCmptBuilder;
@@ -57,6 +56,7 @@ import org.faktorips.devtools.stdbuilder.testcasetype.TestCaseTypeClassBuilder;
 import org.faktorips.fl.CompilationResult;
 import org.faktorips.fl.CompilationResultImpl;
 import org.faktorips.fl.IdentifierResolver;
+import org.faktorips.runtime.IDeltaSupport;
 import org.faktorips.runtime.TableFunctionExecution;
 import org.faktorips.runtime.internal.MethodNames;
 
@@ -67,13 +67,34 @@ import org.faktorips.runtime.internal.MethodNames;
  */
 public class StandardBuilderSet extends DefaultBuilderSet {
 
+    /**
+     * Configuration property that is supposed to be used to read a configuration value from
+     * the IIpsArtefactBuilderSetConfig object provided by the initialize method of an
+     * IIpsArtefactBuilderSet instance.
+     */
+    public final static String CONFIG_PROPERTY_GENERATE_COPY_METHOD = "generateCopyMethod";
+    
+    /**
+     * Configuration property that enables/disables the generation of delta computation.
+     * 
+     * @see IDeltaSupport 
+     */
+    public final static String CONFIG_PROPERTY_GENERATE_DELTA_SUPPORT = "generateDeltaSupport";
+    
+    /**
+     * Configuration property that is supposed to be used to read a configuration value from
+     * the IIpsArtefactBuilderSetConfig object provided by the initialize method of an
+     * IIpsArtefactBuilderSet instance.
+     */
+    public final static String CONFIG_PROPERTY_GENERATE_CHANGELISTENER = "generateChangeListener";
+
     private IIpsArtefactBuilder[] builders;
     private TableImplBuilder tableImplBuilder;
     private TableRowBuilder tableRowBuilder;
     private PolicyCmptInterfaceBuilder policyCmptInterfaceBuilder;
     private ProductCmptGenInterfaceBuilder productCmptGenInterfaceBuilder;
     private EnumClassesBuilder enumClassesBuilder;
-
+    
     /**
      * {@inheritDoc}
      */
@@ -188,14 +209,16 @@ public class StandardBuilderSet extends DefaultBuilderSet {
     public void initialize(IIpsArtefactBuilderSetConfig config) throws CoreException {
 
         //configuration properties
-        boolean generateChangeListener = config.getBooleanPropertyValue(BasePolicyCmptTypeBuilder.CONFIG_PROPERTY_GENERATE_CHANGELISTENER, false);
+        boolean generateChangeListener = config.getBooleanPropertyValue(StandardBuilderSet.CONFIG_PROPERTY_GENERATE_CHANGELISTENER, false);
+        boolean generateDeltaSupport = config.getBooleanPropertyValue(StandardBuilderSet.CONFIG_PROPERTY_GENERATE_DELTA_SUPPORT, false);
         
         // create policy component type builders
         PolicyCmptImplClassBuilder policyCmptImplClassBuilder = new PolicyCmptImplClassBuilder(
                 this, KIND_POLICY_CMPT_IMPL, generateChangeListener);
+        policyCmptImplClassBuilder.setGenerateDeltaSupport(generateDeltaSupport);
         policyCmptInterfaceBuilder = new PolicyCmptInterfaceBuilder(
                 this, KIND_POLICY_CMPT_INTERFACE, generateChangeListener);
-        
+        policyCmptInterfaceBuilder.setGenerateDeltaSupport(generateDeltaSupport);
         
         // create product component type builders
         ProductCmptInterfaceBuilder productCmptInterfaceBuilder = new ProductCmptInterfaceBuilder(this,

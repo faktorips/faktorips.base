@@ -17,6 +17,7 @@
 
 package org.faktorips.devtools.stdbuilder.policycmpttype;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.commons.lang.StringUtils;
@@ -48,6 +49,7 @@ import org.faktorips.devtools.stdbuilder.StdBuilderHelper;
 import org.faktorips.devtools.stdbuilder.productcmpttype.ProductCmptGenInterfaceBuilder;
 import org.faktorips.devtools.stdbuilder.productcmpttype.ProductCmptInterfaceBuilder;
 import org.faktorips.runtime.IConfigurableModelObject;
+import org.faktorips.runtime.IDeltaSupport;
 import org.faktorips.runtime.IDependantObject;
 import org.faktorips.runtime.IModelObject;
 import org.faktorips.util.LocalizedStringsSet;
@@ -57,6 +59,8 @@ import org.faktorips.valueset.IntegerRange;
 
 public class PolicyCmptInterfaceBuilder extends BasePolicyCmptTypeBuilder {
 
+    private boolean generateDeltaSupport = false;
+    
     private ProductCmptInterfaceBuilder productCmptInterfaceBuilder;
     
     private ProductCmptGenInterfaceBuilder productCmptGenInterfaceBuilder;
@@ -64,6 +68,14 @@ public class PolicyCmptInterfaceBuilder extends BasePolicyCmptTypeBuilder {
     public PolicyCmptInterfaceBuilder(IIpsArtefactBuilderSet builderSet, String kindId, boolean changeListenerSupportActive) {
         super(builderSet, kindId, new LocalizedStringsSet(PolicyCmptInterfaceBuilder.class), changeListenerSupportActive);
         setMergeEnabled(true);
+    }
+    
+    public boolean isGenerateDeltaSupport() {
+        return generateDeltaSupport;
+    }
+
+    public void setGenerateDeltaSupport(boolean generateDeltaSupport) {
+        this.generateDeltaSupport = generateDeltaSupport;
     }
 
     public void setProductCmptInterfaceBuilder(ProductCmptInterfaceBuilder productCmptInterfaceBuilder) {
@@ -114,23 +126,25 @@ public class PolicyCmptInterfaceBuilder extends BasePolicyCmptTypeBuilder {
      * {@inheritDoc}
      */
     protected String[] getExtendedInterfaces() throws CoreException {
+        List interfaces = new ArrayList();
         IPolicyCmptType type = getPcType();
-        String[] interfaces;
-        if (isFirstDependantTypeInHierarchy(type)) {
-            interfaces = new String[2];
-            interfaces[1] = IDependantObject.class.getName();
-        } else {
-            interfaces = new String[1];
-        }
         IPolicyCmptType supertype = (IPolicyCmptType)type.findSupertype(getIpsProject());
         if (supertype != null) {
-            interfaces[0] = getQualifiedClassName(supertype);
-        } else if (type.isConfigurableByProductCmptType()) {
-            interfaces[0] = IConfigurableModelObject.class.getName();
+            interfaces.add(getQualifiedClassName(supertype));
         } else {
-            interfaces[0] = IModelObject.class.getName();
+            if (type.isConfigurableByProductCmptType()) {
+                interfaces.add(IConfigurableModelObject.class.getName());
+            } else {
+                interfaces.add(IModelObject.class.getName());
+            }
+            if (generateDeltaSupport) {
+                interfaces.add(IDeltaSupport.class.getName());
+            }
         }
-        return interfaces;
+        if (isFirstDependantTypeInHierarchy(type)) {
+            interfaces.add(IDependantObject.class.getName());
+        }
+        return (String[])interfaces.toArray(new String[interfaces.size()]);
     }
 
     /**
@@ -167,7 +181,7 @@ public class PolicyCmptInterfaceBuilder extends BasePolicyCmptTypeBuilder {
         }
         generateCodeForValidationRules(memberVarsBuilder);
     }
-
+    
     /**
      * Generates the code for the rules of the ProductCmptType assigned to this builder.
      */
@@ -1038,7 +1052,7 @@ public class PolicyCmptInterfaceBuilder extends BasePolicyCmptTypeBuilder {
         methodsBuilder.appendln(";");
     }
     
-    public String getPropertyName(IPolicyCmptTypeAttribute a, Datatype datatype){
+    public String getStaticConstantNameForProperty(IPolicyCmptTypeAttribute a){
         return getLocalizedText(a, "FIELD_PROPERTY_NAME", StringUtils.upperCase(a.getName()));
     }
     
@@ -1050,7 +1064,7 @@ public class PolicyCmptInterfaceBuilder extends BasePolicyCmptTypeBuilder {
         membersBuilder.append("public final static ");
         membersBuilder.appendClassName(String.class);
         membersBuilder.append(' ');
-        membersBuilder.append(getPropertyName(a, datatype));
+        membersBuilder.append(getStaticConstantNameForProperty(a));
         membersBuilder.append(" = ");
         membersBuilder.appendQuoted(a.getName());
         membersBuilder.appendln(";");
