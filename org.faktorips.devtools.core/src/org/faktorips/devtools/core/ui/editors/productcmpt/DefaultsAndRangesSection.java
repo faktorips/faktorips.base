@@ -220,7 +220,7 @@ public class DefaultsAndRangesSection extends IpsSection {
     }
     
     private void initTextField(Text text, int widthHint){
-        GridData gd = new GridData();
+        GridData gd = (GridData)text.getLayoutData();
         gd.widthHint = widthHint;
         text.setLayoutData(gd);  
         
