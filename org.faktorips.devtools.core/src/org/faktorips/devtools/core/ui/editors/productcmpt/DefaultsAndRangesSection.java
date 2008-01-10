@@ -198,27 +198,34 @@ public class DefaultsAndRangesSection extends IpsSection {
     private void createEditControlsForRange(IValueSet valueSet, IpsObjectUIController controller) {
         // only if the value set defined in the model is not an all values value set
         // and the datatype is not a string we can modify the ranges of the value set.
-        toolkit.createFormLabel(rootPane, ""); //$NON-NLS-1$
-        toolkit.createFormLabel(rootPane, Messages.PolicyAttributesSection_minimum);
-        Text lower = toolkit.createText(rootPane);
-        addFocusControl(lower);
-        this.editControls.add(lower);
         
         toolkit.createFormLabel(rootPane, ""); //$NON-NLS-1$
-        toolkit.createFormLabel(rootPane, Messages.PolicyAttributesSection_maximum);
-        Text upper = toolkit.createText(rootPane);
-        addFocusControl(upper);
-        this.editControls.add(upper);
         
-        toolkit.createFormLabel(rootPane, ""); //$NON-NLS-1$
-        toolkit.createFormLabel(rootPane, Messages.PolicyAttributesSection_step);
-        Text step = toolkit.createText(rootPane);
-        addFocusControl(step);
-        this.editControls.add(step);
+        toolkit.createFormLabel(rootPane, Messages.DefaultsAndRangesSection_minMaxStepLabel);
+
+        Composite rangeComposite = toolkit.createGridComposite(rootPane, 3, false, false);
+
+        Text lower = toolkit.createText(rangeComposite);
+        initTextField(lower, 50);
+        
+        Text upper = toolkit.createText(rangeComposite);
+        initTextField(upper, 50);
+        
+        Text step = toolkit.createText(rangeComposite);
+        initTextField(step, 50);
         
         controller.add(upper, (IRangeValueSet) valueSet, IRangeValueSet.PROPERTY_UPPERBOUND);
         controller.add(lower, (IRangeValueSet) valueSet, IRangeValueSet.PROPERTY_LOWERBOUND);
         controller.add(step, (IRangeValueSet) valueSet, IRangeValueSet.PROPERTY_STEP);
+    }
+    
+    private void initTextField(Text text, int widthHint){
+        GridData gd = new GridData();
+        gd.widthHint = widthHint;
+        text.setLayoutData(gd);  
+        
+        addFocusControl(text);
+        this.editControls.add(text);
     }
     
 	/**
