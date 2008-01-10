@@ -373,7 +373,7 @@ public class FormulaTestBuilder extends DefaultJavaSourceFileBuilder {
         
         IIpsObjectGeneration[] gen = productCmpt.getGenerations();
         for (int i = 0; i < gen.length; i++) {
-            appendTestMethodsContentForGeneration((IProductCmptGeneration) gen[i], codeBuilder, testMethods);
+            appendTestMethodsContentForGeneration((IProductCmptGeneration)gen[i], codeBuilder, testMethods);
         }
         
         return testMethods;
@@ -392,31 +392,17 @@ public class FormulaTestBuilder extends DefaultJavaSourceFileBuilder {
      * @see generateTestMethods
      */
     private void appendTestMethodsContentForGeneration(IProductCmptGeneration generation, JavaCodeFragmentBuilder builder, ArrayList testMethods) throws CoreException {
+        boolean formulaTestsFound = false;
         String testMethodName = TEST_METHOD_PREFIX
                 + StringUtil.unqualifiedName(productCmptBuilder.getQualifiedClassName(generation));
-        appendLocalizedJavaDoc("METHOD_TEST_METHODS", policyCmptInterfaceBuilder
-                .getNameForGenerationConcept(productCmptType), getIpsObject(), builder);
-
-        builder.signature(Modifier.PUBLIC, "void", testMethodName, new String[] { "productCmpt", "result" },
-                new String[] { IProductComponent.class.getName(), IpsTestResult.class.getName() });  
-        builder.openBracket();
         
         JavaCodeFragment body = new JavaCodeFragment();
-        String productCmptGenClassName = productCmptGenImplClassBuilder.getQualifiedClassName(productCmptType);
-        body.appendClassName(productCmptGenClassName);
-        body.append(" productComponentGen = (");
-        body.appendClassName(productCmptGenClassName);
-        body.append(") productCmpt.getGenerationBase(");
-        body.appendClassName(DateUtil.class.getName());
-        body.append(".parseIsoDateStringToGregorianCalendar(\"");
-        body.append(DateUtil.gregorianCalendarToIsoDateString(generation.getValidFrom()));
-        body.appendln("\"));");
-        body.appendln();
-        body.appendln("Object formulaResult = null;");
         IFormula[] formulas = generation.getFormulas();
         for (int i = 0; i < formulas.length; i++) {
             IFormulaTestCase[] testCases = formulas[i].getFormulaTestCases();
             for (int j = 0; j < testCases.length; j++) {
+                formulaTestsFound = true;
+
                 // append compute method call
                 IMethod method = formulas[i].findFormulaSignature(getIpsProject());
                 body.append("formulaResult = productComponentGen.");
@@ -460,9 +446,34 @@ public class FormulaTestBuilder extends DefaultJavaSourceFileBuilder {
                 body.appendln(");");
             }
         }
-        builder.append(body);
-        builder.closeBracket();
-        
-        testMethods.add(testMethodName);
+
+        // add test method if at least one formula test exists
+        if (formulaTestsFound){
+            appendLocalizedJavaDoc("METHOD_TEST_METHODS", policyCmptInterfaceBuilder
+                    .getNameForGenerationConcept(productCmptType), getIpsObject(), builder);
+            
+            builder.signature(Modifier.PUBLIC, "void", testMethodName, new String[] { "productCmpt", "result" },
+                    new String[] { IProductComponent.class.getName(), IpsTestResult.class.getName() });  
+            builder.openBracket();
+            
+            // add top of test method content
+            String productCmptGenClassName = productCmptGenImplClassBuilder.getQualifiedClassName(productCmptType);
+            builder.appendClassName(productCmptGenClassName);
+            builder.append(" productComponentGen = (");
+            builder.appendClassName(productCmptGenClassName);
+            builder.append(") productCmpt.getGenerationBase(");
+            builder.appendClassName(DateUtil.class.getName());
+            builder.append(".parseIsoDateStringToGregorianCalendar(\"");
+            builder.append(DateUtil.gregorianCalendarToIsoDateString(generation.getValidFrom()));
+            builder.appendln("\"));");
+            builder.appendln();
+            builder.appendln("Object formulaResult = null;");            
+            
+            // add generated body
+            builder.append(body);
+            
+            builder.closeBracket();
+            testMethods.add(testMethodName);
+        }
     }
 }

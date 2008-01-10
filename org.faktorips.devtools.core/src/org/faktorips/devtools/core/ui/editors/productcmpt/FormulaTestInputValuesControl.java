@@ -258,11 +258,14 @@ public class FormulaTestInputValuesControl extends Composite implements ColumnCh
      * Stors the formula test case for which the parameter will be displayed and updates the ui.
      */
     public void storeFormulaTestCase(IFormulaTestCase formulaTestCase) {
+        this.ipsProject = formulaTestCase==null?null:formulaTestCase.getIpsProject();
         this.formulaTestCase = formulaTestCase;
-        ipsProject = formulaTestCase.getIpsProject();
         clearResult();
         repackAndResfreshParamInputTable();
 
+        if (formulaTestCase == null){
+            return;
+        }
         // update the table row cell editors
         IFormulaTestInputValue[] inputValues = formulaTestCase.getFormulaTestInputValues();
         ValueDatatype[] rowDatatypes = new ValueDatatype[inputValues.length];
