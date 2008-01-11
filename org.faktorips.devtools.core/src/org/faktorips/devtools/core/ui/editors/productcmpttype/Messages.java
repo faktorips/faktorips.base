@@ -38,6 +38,7 @@ public class Messages extends NLS {
     public static String AssociationEditDialog_targetLabel;
     public static String AssociationEditDialog_title;
     public static String AssociationEditDialog_typeLabel;
+    public static String AssociationsSection_menuOpenTargetInNewEditor;
     public static String AssociationsSection_title;
     public static String AttributeEditDialog_datatypeLabel;
     public static String AttributeEditDialog_defaultvalueLabel;

@@ -103,6 +103,8 @@ public class Messages extends NLS {
 
     public static String AssociationEditDialog_toConstraintTheAssociation;
 
+    public static String AssociationsSection_menuOpenTargetInNewEditor;
+
     public static String AssociationsSection_newButton;
 
     public static String AttributeEditDialog_attributeComputed;
