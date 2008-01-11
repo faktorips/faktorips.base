@@ -17,14 +17,8 @@
 
 package org.faktorips.devtools.core.ui.editors.pctype;
 
-import org.eclipse.jface.action.IMenuListener;
-import org.eclipse.jface.action.IMenuManager;
-import org.eclipse.jface.action.MenuManager;
 import org.eclipse.jface.viewers.ILabelProvider;
-import org.eclipse.jface.viewers.ISelection;
-import org.eclipse.jface.viewers.ISelectionProvider;
 import org.eclipse.jface.viewers.IStructuredContentProvider;
-import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.jface.window.Window;
 import org.eclipse.jface.wizard.WizardDialog;
@@ -33,7 +27,6 @@ import org.eclipse.swt.events.SelectionListener;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
-import org.eclipse.swt.widgets.Menu;
 import org.eclipse.swt.widgets.Shell;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObject;
@@ -41,9 +34,7 @@ import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPart;
 import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAssociation;
-import org.faktorips.devtools.core.model.type.IType;
 import org.faktorips.devtools.core.ui.UIToolkit;
-import org.faktorips.devtools.core.ui.actions.IpsAction;
 import org.faktorips.devtools.core.ui.editors.EditDialog;
 import org.faktorips.devtools.core.ui.editors.IpsPartsComposite;
 import org.faktorips.devtools.core.ui.editors.SimpleIpsPartsSection;
@@ -73,40 +64,6 @@ public class AssociationsSection extends SimpleIpsPartsSection {
         return new RelationsComposite((IPolicyCmptType)getIpsObject(), parent, toolkit);
     }
 
-    /*
-     * Action to open the selected target in a new editor window
-     */
-    private class OpenTargetPcTypeInEditorAction extends IpsAction {
-        public OpenTargetPcTypeInEditorAction(ISelectionProvider selectionProvider) {
-            super(selectionProvider);
-            setText(Messages.AssociationsSection_menuOpenTargetInNewEditor);
-        }
-
-        /**
-         * {@inheritDoc}
-         */
-        protected boolean computeEnabledProperty(IStructuredSelection selection) {
-            Object selected = selection.getFirstElement();
-            return (selected instanceof IPolicyCmptTypeAssociation);
-        }
-
-        /** 
-         * {@inheritDoc}
-         */
-        public void run(IStructuredSelection selection) {
-            Object selected = selection.getFirstElement();
-            if (selected instanceof IPolicyCmptTypeAssociation) {
-                IPolicyCmptTypeAssociation policyCmptTypeAssociation = (IPolicyCmptTypeAssociation)selected;
-                try {
-                    IType target = policyCmptTypeAssociation.findTarget(getPcType().getIpsProject());
-                    IpsPlugin.getDefault().openEditor(target);
-                } catch (Exception e) {
-                    IpsPlugin.logAndShowErrorDialog(e);
-                }
-            }
-        }
-    }
-    
     /**
      * A composite that shows a policy component's relations in a viewer and 
      * allows to edit relations in a dialog, create new relations and delete relations.
@@ -119,26 +76,6 @@ public class AssociationsSection extends SimpleIpsPartsSection {
         	// create default buttons without the new button, 
         	//   because the new button will be overridden with wizard functionality
             super(pdObject, parent, false, true, true, true, true, toolkit);
-            buildContextMenu();
-        }
-
-        private void buildContextMenu() {
-            final MenuManager menuManager = new MenuManager();
-            menuManager.setRemoveAllWhenShown(true);
-            // display menu only if one element is selected
-            menuManager.addMenuListener(new IMenuListener(){
-                public void menuAboutToShow(IMenuManager manager) {
-                    ISelection selection = getViewer().getSelection();
-                    if (selection.isEmpty()){
-                        return;
-                    }
-                    OpenTargetPcTypeInEditorAction openAction = new OpenTargetPcTypeInEditorAction(getViewer());
-                    menuManager.add(openAction);
-                }
-            });
-            
-            Menu menu = menuManager.createContextMenu(getViewer().getControl());
-            getViewer().getControl().setMenu(menu);
         }
         
         /** 
