@@ -17,7 +17,7 @@ XML-Format des Produktbausteins anpassen (971)
   => Achtung hier muss auch die Laufzeit angepasst werden!!!
 
 Lokalisierung
-....
+.....
 
 
 
