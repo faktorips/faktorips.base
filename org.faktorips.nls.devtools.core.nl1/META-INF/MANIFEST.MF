@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: Core Fragment
 Bundle-SymbolicName: org.faktorips.nls.devtools.core.nl1
-Bundle-Version: 2.0.0.rc1
+Bundle-Version: 2.0.0.rc2
 Bundle-Vendor: FaktorZehn GmbH
 Fragment-Host: org.faktorips.devtools.core
 Bundle-Localization: nlfragment

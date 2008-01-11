@@ -554,6 +554,10 @@ public class PolicyCmptImplClassBuilder extends BasePolicyCmptTypeBuilder {
         builder.openBracket();
 
         IProductCmptTypeMethod formulaSignature = a.findComputationMethod(ipsProject);
+        if(formulaSignature.validate(getIpsProject()).containsErrorMsg()){
+            builder.closeBracket();
+            return;
+        }
         if (!a.isProductRelevant() || formulaSignature==null) {
             builder.append("return ");
             builder.append(datatypeHelper.newInstance(a.getDefaultValue()));
