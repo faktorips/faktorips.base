@@ -565,39 +565,51 @@
 
     <extension
         point = "org.eclipse.ui.exportWizards">
+       <category
+             id="org.faktorips.devtools"
+             name="%org.faktorips.devtools.exportWizard.category">
+       </category>
      	<wizard
-	       id = "tableExportWizard"
-           name = "%TableExportWizard.name"
-    	   class="org.faktorips.devtools.core.ui.wizards.tableexport.TableExportWizard"
-    	   icon="icons/ExportTableContents.gif">
+            category="org.faktorips.devtools"
+            class="org.faktorips.devtools.core.ui.wizards.tableexport.TableExportWizard"
+            icon="icons/ExportTableContents.gif"
+            id="tableExportWizard"
+            name="%TableExportWizard.name">
     	   <description>%TableExportWizard.description</description>
     	   <selection class="org.eclipse.core.resources.IResource"/>
 	    </wizard>
      	<wizard
-	       id = "ipsArchiveExportWizard"
-           name = "%IpsArchiveExportWizard.name"
-    	   class="org.faktorips.devtools.core.ui.wizards.ipsarchiveexport.IpsArchiveExportWizard"
-    	   icon="icons/ExportIpsArchive.gif">
+            category="org.faktorips.devtools"
+            class="org.faktorips.devtools.core.ui.wizards.ipsarchiveexport.IpsArchiveExportWizard"
+            icon="icons/ExportIpsArchive.gif"
+            id="ipsArchiveExportWizard"
+            name="%IpsArchiveExportWizard.name">
     	   <description>%IpsArchiveExportWizard.description</description>
     	   <selection class="org.eclipse.core.resources.IResource"/>
 	    </wizard>
     </extension>
 
     <extension
-        point = "org.eclipse.ui.importWizards">
+          point="org.eclipse.ui.importWizards">
+       <category
+             id="org.faktorips.devtools"
+             name="%org.faktorips.devtools.importWizard.category">
+       </category>
      	<wizard
-	       id = "tableImportWizard"
-           name = "%TableImportWizard.name"
-    	   class="org.faktorips.devtools.core.ui.wizards.tableimport.TableImportWizard"
-    	   icon="icons/ImportTableContents.gif">
+            category="org.faktorips.devtools"
+            class="org.faktorips.devtools.core.ui.wizards.tableimport.TableImportWizard"
+            icon="icons/ImportTableContents.gif"
+            id="tableImportWizard"
+            name="%TableImportWizard.name">
     	   <description>%TableImportWizard.description</description>
     	   <selection class="org.eclipse.core.resources.IResource"/>
 	    </wizard>
 		<wizard
-		   class="org.faktorips.devtools.core.ui.wizards.testcase.transform.TransformRuntimeTestCaseWizard"
-		   icon="icons/ImportTestCase.gif"
-		   id="transformRuntimeTestCase"
-		   name="%org.faktorips.devtools.core.ui.wizards.testcase.transform.TransformRuntimeTestCaseWizard">
+        category="org.faktorips.devtools"
+        class="org.faktorips.devtools.core.ui.wizards.testcase.transform.TransformRuntimeTestCaseWizard"
+        icon="icons/ImportTestCase.gif"
+        id="transformRuntimeTestCase"
+        name="%org.faktorips.devtools.core.ui.wizards.testcase.transform.TransformRuntimeTestCaseWizard">
 	 	   <description>Transform and import runtime test cases</description>
  	    </wizard>
     </extension>
