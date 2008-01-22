@@ -59,6 +59,7 @@ import org.faktorips.fl.IdentifierResolver;
 import org.faktorips.runtime.IDeltaSupport;
 import org.faktorips.runtime.TableFunctionExecution;
 import org.faktorips.runtime.internal.MethodNames;
+import org.osgi.framework.Version;
 
 /**
  * A IpsArtefactBuilderSet implementation that assembles the standard FaktorIPS artefact builders.
@@ -365,14 +366,13 @@ public class StandardBuilderSet extends DefaultBuilderSet {
      * in the version string.
      */
     public String getVersion() {
-        return "1.0.4"; // TODO v2 - bleiben erst einmal auf 1.0.4 damit man aenderungen am sourcecode erkennen kann
-//        Version version = Version.parseVersion((String)StdBuilderPlugin.getDefault().getBundle().getHeaders().get(org.osgi.framework.Constants.BUNDLE_VERSION));
-//        StringBuffer buf = new StringBuffer();
-//        buf.append(version.getMajor());
-//        buf.append('.');
-//        buf.append(version.getMinor());
-//        buf.append('.');
-//        buf.append(version.getMicro());
-//        return buf.toString();
+        Version version = Version.parseVersion((String)StdBuilderPlugin.getDefault().getBundle().getHeaders().get(org.osgi.framework.Constants.BUNDLE_VERSION));
+        StringBuffer buf = new StringBuffer();
+        buf.append(version.getMajor());
+        buf.append('.');
+        buf.append(version.getMinor());
+        buf.append('.');
+        buf.append(version.getMicro());
+        return buf.toString();
     }
 }
