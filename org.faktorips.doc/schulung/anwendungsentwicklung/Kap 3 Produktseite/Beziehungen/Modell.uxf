@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?><umlet_diagram><element><type>com.umlet.element.base.Class</type><coordinates><x>10</x><y>260</y><w>290</w><h>50</h></coordinates><panel_attributes>HausratGrunddeckung
+--</panel_attributes><additional_attributes/></element><element><type>com.umlet.element.base.Relation</type><coordinates><x>280</x><y>270</y><w>160</w><h>40</h></coordinates><panel_attributes>lt=-
+m1=*
+m2=1
+</panel_attributes><additional_attributes>20;20;140;20</additional_attributes></element><element><type>com.umlet.element.base.Class</type><coordinates><x>420</x><y>260</y><w>290</w><h>50</h></coordinates><panel_attributes>HausratGrunddeckungstyp
+--
+
+</panel_attributes><additional_attributes/></element><element><type>com.umlet.element.base.Relation</type><coordinates><x>280</x><y>60</y><w>150</w><h>40</h></coordinates><panel_attributes>lt=-
+m1=*
+m2=1
+</panel_attributes><additional_attributes>20;20;130;20</additional_attributes></element><element><type>com.umlet.element.base.Relation</type><coordinates><x>540</x><y>150</y><w>40</w><h>130</h></coordinates><panel_attributes>lt=&lt;&lt;&lt;-
+r2= 1</panel_attributes><additional_attributes>20;20;20;110</additional_attributes></element><element><type>com.umlet.element.base.Relation</type><coordinates><x>120</x><y>150</y><w>40</w><h>130</h></coordinates><panel_attributes>lt=&lt;&lt;&lt;&lt;-
+m2= 1</panel_attributes><additional_attributes>20;20;20;110</additional_attributes></element><element><type>com.umlet.element.base.Class</type><coordinates><x>410</x><y>30</y><w>290</w><h>140</h></coordinates><panel_attributes>HausratProdukt
+--
+produktname : String</panel_attributes><additional_attributes/></element><element><type>com.umlet.element.base.Class</type><coordinates><x>10</x><y>30</y><w>290</w><h>140</h></coordinates><panel_attributes>HausratVertrag
+--
+plz : String
+/tarifzone : String
+zahlweise : Integer
+wohnflaeche : Integer
+/vorschlagVersSumme : Money
+versSumme : Money</panel_attributes><additional_attributes/></element></umlet_diagram>
