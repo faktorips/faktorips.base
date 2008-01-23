@@ -39,6 +39,7 @@ import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
+import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.jdt.core.IClasspathEntry;
 import org.eclipse.jdt.core.IJavaModelMarker;
@@ -257,9 +258,7 @@ public class IpsProject extends IpsElement implements IIpsProject {
         // implementation note: if the java project has buildpath problems it also hasn't got a build state
         // so we first have to check for problems with the build path. We can't do this via markers as the build path markers
         // are created on a resource change event, and we don't now if it has been executed so far. 
-        MessageList list = new MessageList();
-        validateJavaProjectBuildPath(list);
-        if (!list.isEmpty()) {
+        if (getJavaProjectBuildPathProblemSeverity(javaProject)==IStatus.ERROR) {
             return Boolean.FALSE;
         }
         IMarker[] markers = project.findMarkers(IJavaModelMarker.JAVA_MODEL_PROBLEM_MARKER, false, IResource.DEPTH_INFINITE);
@@ -1413,13 +1412,28 @@ public class IpsProject extends IpsElement implements IIpsProject {
         }
         IClasspathEntry[] entries = javaProject.getRawClasspath();
         for (int i = 0; i < entries.length; i++) {
-            if (!JavaConventions.validateClasspathEntry(javaProject, entries[i], false).isOK()) {
+            if (JavaConventions.validateClasspathEntry(javaProject, entries[i], false).getSeverity()==IStatus.ERROR) {
                 String text = Messages.bind(Messages.IpsProject_javaProjectHasInvalidBuildPath, entries[i].getPath());
                 Message msg = new Message(IIpsProject.MSGCODE_JAVA_PROJECT_HAS_BUILDPATH_ERRORS, text, Message.WARNING, this);
                 result.add(msg); 
                 return;
             }
         }
+    }
+
+    private int getJavaProjectBuildPathProblemSeverity(IJavaProject javaProject) throws JavaModelException {
+        if (!javaProject.exists()) {
+            return IStatus.OK;
+        }
+        int severity = IStatus.OK;
+        IClasspathEntry[] entries = javaProject.getRawClasspath();
+        for (int i = 0; i < entries.length; i++) {
+            int entrySeverity = JavaConventions.validateClasspathEntry(javaProject, entries[i], false).getSeverity();
+            if (entrySeverity > severity) {
+                severity = entrySeverity;
+            }
+        }
+        return severity;
     }
 
     private void validateIpsObjectPathCycle(MessageList result, IpsProjectProperties props) throws CoreException {
