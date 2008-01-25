@@ -244,7 +244,7 @@ public class EnumValueSetTest extends AbstractIpsPluginTest {
         list = set.validate(ipsProject);
         assertEquals(1, list.getNoOfMessages());
 
-        assertFalse(list.getMessagesFor("2w").isEmpty());
+        assertFalse(list.getMessagesFor(set).isEmpty());
         set.removeValue("2w");
         set.addValue("2EUR");
         list.clear();
