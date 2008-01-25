@@ -213,6 +213,9 @@ public class EnumValueSet extends ValueSet implements IEnumValueSet {
      */
     public String[] getValuesNotContained(IEnumValueSet otherSet) {
         List result = new ArrayList();
+        if (otherSet == null){
+            return (String[])result.toArray(new String[result.size()]);
+        }
         for (int i = 0; i < otherSet.size(); i++) {
             if (!elements.contains(otherSet.getValue(i))) {
                 result.add(otherSet.getValue(i));
@@ -231,10 +234,11 @@ public class EnumValueSet extends ValueSet implements IEnumValueSet {
         for (int i = 0; i < numOfValues; i++) {
             String value = (String)elements.get(i);
         	if (datatype == null) {
-                list.add(new Message(MSGCODE_UNKNOWN_DATATYPE, Messages.Range_msgUnknownDatatype, Message.WARNING, value));
+                String msg = NLS.bind(Messages.EnumValueSet_msgValueNotParsableDatatypeUnknown, getNotNullValue(value));
+                list.add(new Message(MSGCODE_UNKNOWN_DATATYPE, msg, Message.WARNING, this, PROPERTY_VALUES));
         	} else if (!datatype.isParsable(value) || isSpecialNull(value, datatype)) {
-                String msg = NLS.bind(Messages.EnumValueSet_msgValueNotParsable, value, datatype.getName());
-                list.add(new Message(MSGCODE_VALUE_NOT_PARSABLE, msg, Message.ERROR, getNotNullValue(value)));
+                String msg = NLS.bind(Messages.EnumValueSet_msgValueNotParsable, getNotNullValue(value), datatype.getName());
+                list.add(new Message(MSGCODE_VALUE_NOT_PARSABLE, msg, Message.ERROR, this, PROPERTY_VALUES));
             }
         }
         for (int i = 0; i < numOfValues - 1; i++) {
@@ -243,9 +247,9 @@ public class EnumValueSet extends ValueSet implements IEnumValueSet {
             for (int j = i + 1; j < numOfValues; j++) {
                 String valueOfj = (String)elements.get(j);
                 if ((valueOfj == null && valueOfi == null) || (valueOfi != null && valueOfi.equals(valueOfj))) {
-                    String msg = NLS.bind(Messages.EnumValueSet_msgDuplicateValue, valueOfi);
-                    list.add(new Message(MSGCODE_DUPLICATE_VALUE, msg, Message.ERROR, getNotNullValue(valueOfi)));
-                    list.add(new Message(MSGCODE_DUPLICATE_VALUE, msg, Message.ERROR, getNotNullValue(valueOfj)));
+                    String msg = NLS.bind(Messages.EnumValueSet_msgDuplicateValue, getNotNullValue(valueOfi));
+                    list.add(new Message(MSGCODE_DUPLICATE_VALUE, msg, Message.ERROR, this, PROPERTY_VALUES));
+                    list.add(new Message(MSGCODE_DUPLICATE_VALUE, msg, Message.ERROR, this, PROPERTY_VALUES));
                 }
             }
         }

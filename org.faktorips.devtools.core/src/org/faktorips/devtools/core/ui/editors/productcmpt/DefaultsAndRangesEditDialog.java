@@ -103,7 +103,7 @@ public class DefaultsAndRangesEditDialog extends IpsPartEditDialog {
         
         try {
 			IValueSet valueSet = getValueSet();
-			ValueDatatype datatype = attribute.findDatatype(configElement.getIpsProject());
+			ValueDatatype datatype = attribute==null?null:attribute.findDatatype(configElement.getIpsProject());
 			if (valueSet.getValueSetType() == ValueSetType.ENUM && datatype != null) {
 			    Combo combo = uiToolkit.createCombo(workArea);
 				defaultValueField = new EnumValueSetField(combo, (IEnumValueSet)valueSet, datatype);
@@ -146,7 +146,7 @@ public class DefaultsAndRangesEditDialog extends IpsPartEditDialog {
                 return rangeEditControl;
             }
             if (valueSet.getValueSetType() == ValueSetType.ENUM) {
-                Datatype type = attribute.findDatatype(configElement.getIpsProject());
+                Datatype type = attribute==null?null:attribute.findDatatype(configElement.getIpsProject());
                 EnumDatatype enumType = null;
                 if (type instanceof EnumDatatype) {
                     enumType = (EnumDatatype)type;

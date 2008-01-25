@@ -42,6 +42,8 @@ public class Messages extends NLS {
 
 	public static String EnumValueSet_msgDuplicateValue;
 
+    public static String EnumValueSet_msgValueNotParsableDatatypeUnknown;
+
 	public static String Range_msgValueNotInRange;
 
 	public static String Range_msgTypeOfValuesetNotMatching;
