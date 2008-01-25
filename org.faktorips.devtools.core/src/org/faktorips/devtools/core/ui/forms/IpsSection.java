@@ -277,4 +277,10 @@ public abstract class IpsSection extends Composite implements IDataChangeableRea
        }
     }
 
+    /**
+     * @return Returns the toolkit.
+     */
+    public UIToolkit getToolkit() {
+        return toolkit;
+    }
 }

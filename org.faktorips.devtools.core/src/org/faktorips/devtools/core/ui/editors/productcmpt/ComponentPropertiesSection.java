@@ -31,11 +31,15 @@ import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Text;
+import org.eclipse.ui.forms.events.HyperlinkAdapter;
+import org.eclipse.ui.forms.events.HyperlinkEvent;
 import org.eclipse.ui.forms.widgets.FormToolkit;
+import org.eclipse.ui.forms.widgets.Hyperlink;
 import org.eclipse.ui.forms.widgets.Section;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.IpsPreferences;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmpt;
+import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
 import org.faktorips.devtools.core.ui.UIToolkit;
 import org.faktorips.devtools.core.ui.controller.CompositeUIController;
 import org.faktorips.devtools.core.ui.controller.IpsObjectUIController;
@@ -100,7 +104,7 @@ public class ComponentPropertiesSection extends IpsSection {
 	 * {@inheritDoc}
 	 */
 	protected void initClientComposite(Composite client, UIToolkit toolkit) {
-		GridLayout layout = new GridLayout(1, true);
+        GridLayout layout = new GridLayout(1, true);
 		layout.marginHeight = 2;
 		layout.marginWidth = 1;
 		client.setLayout(layout);
@@ -117,12 +121,32 @@ public class ComponentPropertiesSection extends IpsSection {
 		rootPane.setData(FormToolkit.KEY_DRAW_BORDER, FormToolkit.TREE_BORDER);
 		toolkit.getFormToolkit().paintBordersFor(rootPane);
 		
-		// create label and text control for the policy component type
+		// create label or hyperlink and text control for the policy component type
 		// this product component is based on.
-		toolkit.createLabel(rootPane, Messages.ProductAttributesSection_template);
-
+		if (IpsPlugin.getDefault().getIpsPreferences().canNavigateToModelOrSourceCode()) {
+            Hyperlink link = toolkit.createHyperlink(rootPane, Messages.ProductAttributesSection_template);
+            link.addHyperlinkListener(new HyperlinkAdapter() {
+                public void linkActivated(HyperlinkEvent event) {
+                    try {
+                        if (!IpsPlugin.getDefault().getIpsPreferences().canNavigateToModelOrSourceCode()){
+                            // if the property changed while the editor is open
+                            return;
+                        }
+                        IProductCmptType productCmptType = product.findProductCmptType(product.getIpsProject());
+                        if (productCmptType != null) {
+                            IpsPlugin.getDefault().openEditor(productCmptType);
+                        }
+                    } catch (Exception e) {
+                        IpsPlugin.logAndShowErrorDialog(e);
+                    }
+                }
+            });
+        } else {
+            toolkit.createLabel(rootPane, Messages.ProductAttributesSection_template);
+        }
+        
 		productCmptTypeControl = new ProductCmptType2RefControl(product.getIpsProject(), rootPane, toolkit, true);
-		productCmptTypeControl.getTextControl().setEnabled(false);
+		toolkit.setDataChangeable(productCmptTypeControl.getTextControl(), false);
         IpsObjectField field = new IpsObjectField(productCmptTypeControl);
 		
 		// create label and text control for the runtime id representing the displayed product component
@@ -213,7 +237,7 @@ public class ComponentPropertiesSection extends IpsSection {
     }
 
     private void updateRuntimeIdEnableState() {
-        runtimeIdText.setEnabled(isDataChangeable() & IpsPlugin.getDefault().getIpsPreferences().canModifyRuntimeId());
+        getToolkit().setDataChangeable(runtimeIdText, isDataChangeable() & IpsPlugin.getDefault().getIpsPreferences().canModifyRuntimeId());
     }
 
 	private class MyModifyListener implements ModifyListener {
