@@ -48,6 +48,10 @@ public class Messages extends NLS {
 
 	public static String ContentPage_title;
 
+    public static String NavigateToTableStructureAction_Label;
+
+    public static String NavigateToTableStructureAction_ToolTip;
+
     public static String NewRowAction_Label;
 
     public static String NewRowAction_Tooltip;
