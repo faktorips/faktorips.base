@@ -36,6 +36,7 @@ import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
 import org.faktorips.devtools.core.model.valueset.IEnumValueSet;
 import org.faktorips.devtools.core.model.valueset.IValueSet;
 import org.faktorips.devtools.core.util.XmlUtil;
+import org.faktorips.util.message.Message;
 import org.faktorips.util.message.MessageList;
 import org.faktorips.values.DefaultEnumType;
 import org.faktorips.values.DefaultEnumValue;
@@ -287,6 +288,21 @@ public class EnumValueSetTest extends AbstractIpsPluginTest {
         list = set.validate(ipsProject);
         assertNotNull(list.getMessageByCode(IEnumValueSet.MSGCODE_NULL_NOT_SUPPORTED));
         
+        // test with unkonwn datatype
+        EnumValueSet set2 = new EnumValueSet(ce, 2);
+        set2.addValue("1");
+        set2.addValue("2");
+        list = set2.validate(ipsProject);
+        assertEquals(0, list.getNoOfMessages());
+        
+        ce.getProductCmpt().setProductCmptType("unkown");
+        list = set2.validate(ipsProject);
+        assertEquals(2, list.getNoOfMessages());
+        MessageList messages = list.getMessagesFor(set2, IEnumValueSet.PROPERTY_VALUES);
+        for (int i = 0; i < messages.getNoOfMessages(); i++) {
+            assertEquals(Message.WARNING, messages.getMessage(i).getSeverity());
+            assertEquals(IEnumValueSet.MSGCODE_UNKNOWN_DATATYPE, messages.getMessage(i).getCode());
+        }
     }
 
     public void testGetValues() {
