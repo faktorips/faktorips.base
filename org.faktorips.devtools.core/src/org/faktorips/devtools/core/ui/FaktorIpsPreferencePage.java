@@ -120,7 +120,11 @@ public class FaktorIpsPreferencePage extends FieldEditorPreferencePage
                 Messages.FaktorIpsPreferencePage_advancedTeamFunctionsInProductDefExplorer, getFieldEditorParent());
         addField(advancedTeamFunctionInProductDefExplorer);
         
-		RadioGroupFieldEditor workingMode = new RadioGroupFieldEditor(
+        BooleanFieldEditor editRangeEditFieldsInOneRow = new BooleanFieldEditor(
+                IpsPreferences.RANGE_EDIT_FIELDS_IN_ONE_ROW, Messages.FaktorIpsPreferencePage_labeRangeEditFieldsInOneRow, getFieldEditorParent());
+        addField(editRangeEditFieldsInOneRow);
+
+        RadioGroupFieldEditor workingMode = new RadioGroupFieldEditor(
 				IpsPreferences.WORKING_MODE, Messages.FaktorIpsPreferencePage_titleWorkingMode, 2, new String[][] {
 						{ Messages.FaktorIpsPreferencePage_labelWorkingModeBrowse, IpsPreferences.WORKING_MODE_BROWSE },
 						{ Messages.FaktorIpsPreferencePage_labelWorkingModeEdit, IpsPreferences.WORKING_MODE_EDIT } },
@@ -133,6 +137,7 @@ public class FaktorIpsPreferencePage extends FieldEditorPreferencePage
 		                { Messages.FaktorIpsPreferencePage_label_fourSections, IpsPreferences.FOUR_SECTIONS_IN_TYPE_EDITOR_PAGE} },
 		                getFieldEditorParent(), true);
 		addField(sectionsInTypeEditors);
+        
 	}
 
 	/**

@@ -65,7 +65,7 @@ public class IpsPreferences {
     
     /**
      * Constant identifiying the preference for editing genrations with
-     * valid-from-dates in the past.
+     * alid-from-dates in the past.
      */
     public static final String EDIT_RECENT_GENERATION = IpsPlugin.PLUGIN_ID + ".editRecentGeneration"; //$NON-NLS-1$
 
@@ -125,6 +125,11 @@ public class IpsPreferences {
      * Constant identifying the enum display type.
      */
     public final static String ENUM_TYPE_DISPLAY = IpsPlugin.PLUGIN_ID + ".enumTypeDisplay"; //$NON-NLS-1$
+
+    /**
+     * Constant that identifies if the range edit fields (min, max and step) will be displayed in one row
+     */
+    public final static String RANGE_EDIT_FIELDS_IN_ONE_ROW = IpsPlugin.PLUGIN_ID + ".rangeEditFieldsInOneRow"; //$NON-NLS-1$
     
     private IPreferenceStore prefStore;
     
@@ -142,6 +147,7 @@ public class IpsPreferences {
         prefStore.setDefault(ENUM_TYPE_DISPLAY, EnumTypeDisplay.NAME_AND_ID.getId());
         prefStore.setDefault(ADVANCED_TEAM_FUNCTIONS_IN_PRODUCT_DEF_EXPLORER, false);
         prefStore.setDefault(SECTIONS_IN_TYPE_EDITORS, TWO_SECTIONS_IN_TYPE_EDITOR_PAGE);
+        prefStore.setDefault(RANGE_EDIT_FIELDS_IN_ONE_ROW, true);
     }
     
     public void addChangeListener(IPropertyChangeListener listener) {
@@ -405,4 +411,18 @@ public class IpsPreferences {
     public String getSectionsInTypeEditors(){
         return prefStore.getString(SECTIONS_IN_TYPE_EDITORS);
     }
+    
+    /**
+     * Returns <code>true</code> if the range edit fields (min, max, and step) should be displayed in one row.
+     */
+    public boolean isRangeEditFieldsInOneRow(){
+        return prefStore.getBoolean(RANGE_EDIT_FIELDS_IN_ONE_ROW);
+    }
+    
+    /**
+     * Sets if the range edit fields (min, max, and step) should be displayed in one row <code>true</code>.
+     */
+    public void setRangeEditFieldsInOneRow(boolean enabled){
+        prefStore.setValue(RANGE_EDIT_FIELDS_IN_ONE_ROW, enabled);
+    }    
 }

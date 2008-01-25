@@ -29,7 +29,10 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.ui.contentassist.ContentAssistHandler;
+import org.eclipse.ui.forms.events.HyperlinkAdapter;
+import org.eclipse.ui.forms.events.HyperlinkEvent;
 import org.eclipse.ui.forms.widgets.FormToolkit;
+import org.eclipse.ui.forms.widgets.Hyperlink;
 import org.eclipse.ui.forms.widgets.Section;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
@@ -37,6 +40,7 @@ import org.faktorips.devtools.core.model.productcmpt.IFormula;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmptGeneration;
 import org.faktorips.devtools.core.model.productcmpt.ITableContentUsage;
 import org.faktorips.devtools.core.model.productcmpttype.ITableStructureUsage;
+import org.faktorips.devtools.core.model.tablecontents.ITableContents;
 import org.faktorips.devtools.core.model.type.IMethod;
 import org.faktorips.devtools.core.ui.CompletionUtil;
 import org.faktorips.devtools.core.ui.UIToolkit;
@@ -139,13 +143,26 @@ public class FormulasSection extends IpsSection {
         // create table content usages fields
         for (int i = 0; i < usages.length; i++) {
             try {
-                ITableStructureUsage tsu = findTableStructureUsage(usages[i].getStructureUsage());
-                
-                // create label here to avoid lost label in case of exception
-                Label label = toolkit.createFormLabel(rootPane, StringUtils.capitalize(usages[i].getStructureUsage()));
+                // create label as hyperlink to open the corresponding table content in a new new editor
+                Hyperlink hyperlink = toolkit.createHyperlink(rootPane, StringUtils.capitalize(usages[i].getStructureUsage()));
+                final ITableContentUsage usage = usages[i];
+                hyperlink.addHyperlinkListener(new HyperlinkAdapter() {
+                    public void linkActivated(HyperlinkEvent event) {
+                        try {
+                            ITableContents tc = usage.findTableContents(generation.getIpsProject());
+                            if (tc != null) {
+                                IpsPlugin.getDefault().openEditor(tc.getIpsSrcFile());
+                            }
+                        } catch (CoreException e) {
+                            IpsPlugin.logAndShowErrorDialog(e);
+                        }
+                    }
+                });
+
                 // use description of table structure usage as tooltip
-                if (tsu != null){
-                    label.setToolTipText(tsu.getDescription());
+                ITableStructureUsage tsu = findTableStructureUsage(usages[i].getStructureUsage());
+                if (tsu != null) {
+                    hyperlink.setToolTipText(tsu.getDescription());
                 }
                 
                 TableContentsUsageRefControl tcuControl = new TableContentsUsageRefControl(generation.getIpsProject(), rootPane, toolkit, tsu);

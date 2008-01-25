@@ -196,24 +196,45 @@ public class DefaultsAndRangesSection extends IpsSection {
     }
 
     private void createEditControlsForRange(IValueSet valueSet, IpsObjectUIController controller) {
-        // only if the value set defined in the model is not an all values value set
-        // and the datatype is not a string we can modify the ranges of the value set.
+        Text lower;
+        Text upper;
+        Text step;
+        if (!IpsPlugin.getDefault().getIpsPreferences().isRangeEditFieldsInOneRow()){
+            toolkit.createFormLabel(rootPane, ""); //$NON-NLS-1$
+            toolkit.createFormLabel(rootPane, Messages.PolicyAttributesSection_minimum);
+            lower = toolkit.createText(rootPane);
+            addFocusControl(lower);
+            
+            toolkit.createFormLabel(rootPane, ""); //$NON-NLS-1$
+            toolkit.createFormLabel(rootPane, Messages.PolicyAttributesSection_maximum);
+            upper = toolkit.createText(rootPane);
+            addFocusControl(upper);
+            
+            toolkit.createFormLabel(rootPane, ""); //$NON-NLS-1$
+            toolkit.createFormLabel(rootPane, Messages.PolicyAttributesSection_step);
+            step = toolkit.createText(rootPane);
+            addFocusControl(step);
+        } else {
+            toolkit.createFormLabel(rootPane, ""); //$NON-NLS-1$
+            
+            toolkit.createFormLabel(rootPane, Messages.DefaultsAndRangesSection_minMaxStepLabel);
+            
+            Composite rangeComposite = toolkit.createGridComposite(rootPane, 3, false, false);
+            
+            lower = toolkit.createText(rangeComposite);
+            initTextField(lower, 50);
+            
+            upper = toolkit.createText(rangeComposite);
+            initTextField(upper, 50);
+            
+            step = toolkit.createText(rangeComposite);
+            initTextField(step, 50);
+        }
         
-        toolkit.createFormLabel(rootPane, ""); //$NON-NLS-1$
-        
-        toolkit.createFormLabel(rootPane, Messages.DefaultsAndRangesSection_minMaxStepLabel);
+        this.editControls.add(lower);
+        this.editControls.add(upper);
+        this.editControls.add(step);
 
-        Composite rangeComposite = toolkit.createGridComposite(rootPane, 3, false, false);
-
-        Text lower = toolkit.createText(rangeComposite);
-        initTextField(lower, 50);
-        
-        Text upper = toolkit.createText(rangeComposite);
-        initTextField(upper, 50);
-        
-        Text step = toolkit.createText(rangeComposite);
-        initTextField(step, 50);
-        
         controller.add(upper, (IRangeValueSet) valueSet, IRangeValueSet.PROPERTY_UPPERBOUND);
         controller.add(lower, (IRangeValueSet) valueSet, IRangeValueSet.PROPERTY_LOWERBOUND);
         controller.add(step, (IRangeValueSet) valueSet, IRangeValueSet.PROPERTY_STEP);
@@ -234,5 +255,4 @@ public class DefaultsAndRangesSection extends IpsSection {
     protected void performRefresh() {
     	uiMasterController.updateUI();
     }
-
 }

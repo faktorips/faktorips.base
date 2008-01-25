@@ -46,6 +46,8 @@ public class Messages extends NLS {
 
     public static String FaktorIpsPreferencePage_labelEnumTypeDisplay;
 
+    public static String FaktorIpsPreferencePage_labeRangeEditFieldsInOneRow;
+
     public static String FaktorIpsPreferencePage_title_numberOfSections;
 
 	public static String PdPackageSelectionDialog_title;

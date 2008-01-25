@@ -255,14 +255,17 @@ public class ProductCmptEditor extends TimedIpsObjectEditor implements IModelDes
 			getSettings().put(getIpsSrcFile(), SETTING_ACTIVE_GENERATION_MANUALLY_SET, false);
 			updateChosenActiveGeneration();
 		} else if (property.equals(IpsPreferences.EDIT_RECENT_GENERATION)) {
-            refresh();
+		    refresh();
 		} else if (event.getProperty().equals(IpsPreferences.WORKING_MODE)) {
             getSettings().put(getIpsSrcFile(), SETTING_ACTIVE_GENERATION_MANUALLY_SET, false);
             // refresh is done in superclass
+		} else if (event.getProperty().equals(IpsPreferences.RANGE_EDIT_FIELDS_IN_ONE_ROW)){
+            refreshInclStructuralChanges();
+            refresh();
 		}
         super.propertyChange(event);
 	}
-
+    
 	public void setActiveGeneration(IIpsObjectGeneration generation, boolean manuallySet) {
 		if (generation == null) {
 			return;
