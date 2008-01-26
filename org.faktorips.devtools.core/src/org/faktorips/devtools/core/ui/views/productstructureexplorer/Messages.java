@@ -36,7 +36,7 @@ public class Messages extends NLS {
     public static String ProductStructureExplorer_menuCollapseAll_toolkit;
     public static String ProductStructureExplorer_menuShowReferencedTables_name;
     public static String ProductStructureExplorer_menuShowReferencedTables_tooltip;
-    public static String ProductStructureExplorer_menuShowRelationNodes_name;
+    public static String ProductStructureExplorer_menuShowAssociationNodes_name;
     public static String ProductStructureExplorer_menuShowTableRoleName_name;
     public static String ProductStructureExplorer_menuShowTableRoleName_tooltip;
     public static String ProductStructureLabelProvider_undefined;

@@ -42,9 +42,9 @@ public class ProductStructureContentProvider implements ITreeContentProvider {
 	
 	/**
 	 * Flag to tell the content provider to show (<code>true</code>) or not to show the
-	 * Relation-Type as Node.
+	 * Association-Type as Node.
 	 */
-	private boolean fShowRelationType = true;
+	private boolean fShowAssociationType = true;
 	
 	private IProductCmptReference root;
 	
@@ -55,10 +55,10 @@ public class ProductStructureContentProvider implements ITreeContentProvider {
 	/**
 	 * Creates a new content provider.
 	 * 
-	 * @param showRelationType <code>true</code> to show the relation types as nodes.
+	 * @param showAssociationType <code>true</code> to show the association types as nodes.
 	 */
-	public ProductStructureContentProvider(boolean showRelationType) {
-		this.fShowRelationType = showRelationType;
+	public ProductStructureContentProvider(boolean showAssociationType) {
+		this.fShowAssociationType = showAssociationType;
 	}
 	
     /**
@@ -67,19 +67,19 @@ public class ProductStructureContentProvider implements ITreeContentProvider {
     public Object[] getChildren(Object parentElement) {
         List children = new ArrayList();
 
-        Object[] childsForRelationProductCmpts = new Object[0];
-        // add product cmpt relation and product cmpts
-        if (!fShowRelationType && parentElement instanceof IProductCmptReference) {
-            childsForRelationProductCmpts = structure
+        Object[] childsForAssociationProductCmpts = new Object[0];
+        // add product cmpt associations and product cmpts
+        if (!fShowAssociationType && parentElement instanceof IProductCmptReference) {
+            childsForAssociationProductCmpts = structure
                     .getChildProductCmptReferences((IProductCmptReference)parentElement);
         } else if (parentElement instanceof IProductCmptReference) {
-            childsForRelationProductCmpts = structure
+            childsForAssociationProductCmpts = structure
                     .getChildProductCmptTypeRelationReferences((IProductCmptReference)parentElement);
         } else if (parentElement instanceof IProductCmptStructureReference) {
-            childsForRelationProductCmpts = structure
+            childsForAssociationProductCmpts = structure
                     .getChildProductCmptReferences((IProductCmptStructureReference)parentElement);
         }
-        children.addAll(Arrays.asList(childsForRelationProductCmpts));
+        children.addAll(Arrays.asList(childsForAssociationProductCmpts));
 
         // add table content usages
         if (showTableContents && parentElement instanceof IProductCmptReference) {
@@ -103,7 +103,7 @@ public class ProductStructureContentProvider implements ITreeContentProvider {
     		return null;
     	}
     	
-    	if (!fShowRelationType && element instanceof IProductCmptReference) {
+    	if (!fShowAssociationType && element instanceof IProductCmptReference) {
     		return structure.getParentProductCmptReference((IProductCmptReference)element);
     	}
     	else if (element instanceof IProductCmptReference) {
@@ -156,17 +156,17 @@ public class ProductStructureContentProvider implements ITreeContentProvider {
     }
 
     /**
-     * Returns <code>true</code> if the relation type will be displayed besides the related product cmpt.
+     * Returns <code>true</code> if the association type will be displayed besides the related product cmpt.
      */
-    public boolean isRelationTypeShowing() {
-    	return fShowRelationType;
+    public boolean isAssociationTypeShowing() {
+    	return fShowAssociationType;
     }
 
     /**
-     * Sets if the relation type will be shown or hidden.
+     * Sets if the association type will be shown or hidden.
      */
-    public void setRelationTypeShowing(boolean showRelationType) {
-    	fShowRelationType = showRelationType;
+    public void setAssociationTypeShowing(boolean showAssociationType) {
+    	fShowAssociationType = showAssociationType;
     }
 
     /**

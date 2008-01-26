@@ -103,7 +103,7 @@ public class ProductStructureExplorer extends ViewPart implements ContentsChange
     private GenerationRootNode rootNode;
     private Label errormsg;
 
-    private boolean showRelationNode = false;
+    private boolean showAssociationNode = false;
     private boolean showTableStructureRoleName = false;
     private boolean showReferencedTable = true;
     
@@ -199,9 +199,9 @@ public class ProductStructureExplorer extends ViewPart implements ContentsChange
     
     private void initMenu(IMenuManager menuManager) {
         menuManager.add(new Separator(MENU_INFO_GROUP));
-        Action showRelationNodeAction = createShowRelationNodeAction();
-        showRelationNodeAction.setChecked(showRelationNode);
-        menuManager.appendToGroup(MENU_INFO_GROUP, showRelationNodeAction);
+        Action showAssociationNodeAction = createShowAssociationNodeAction();
+        showAssociationNodeAction.setChecked(showAssociationNode);
+        menuManager.appendToGroup(MENU_INFO_GROUP, showAssociationNodeAction);
         Action showRoleNameAction = createShowTableRoleNameAction();        
         showRoleNameAction.setChecked(showTableStructureRoleName);
         menuManager.appendToGroup(MENU_INFO_GROUP, showRoleNameAction);        
@@ -244,14 +244,14 @@ public class ProductStructureExplorer extends ViewPart implements ContentsChange
         };
     }
 
-    private Action createShowRelationNodeAction() {
-        return new Action(Messages.ProductStructureExplorer_menuShowRelationNodes_name, Action.AS_CHECK_BOX) {
+    private Action createShowAssociationNodeAction() {
+        return new Action(Messages.ProductStructureExplorer_menuShowAssociationNodes_name, Action.AS_CHECK_BOX) {
             public ImageDescriptor getImageDescriptor() {
-                return IpsPlugin.getDefault().getImageDescriptor("ShowRelationTypeNodes.gif"); //$NON-NLS-1$
+                return IpsPlugin.getDefault().getImageDescriptor("ShowAssociationTypeNodes.gif"); //$NON-NLS-1$
             }
             public void run() {
-                contentProvider.setRelationTypeShowing(!contentProvider.isRelationTypeShowing());
-                showRelationNode = contentProvider.isRelationTypeShowing();
+                contentProvider.setAssociationTypeShowing(!contentProvider.isAssociationTypeShowing());
+                showAssociationNode = contentProvider.isAssociationTypeShowing();
                 refresh();
             }
             public String getToolTipText() {
@@ -334,7 +334,7 @@ public class ProductStructureExplorer extends ViewPart implements ContentsChange
         tree.getTree().setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
         rootNode = new GenerationRootNode();
         contentProvider = new ProductStructureContentProvider(false);
-        contentProvider.setRelationTypeShowing(showRelationNode);
+        contentProvider.setAssociationTypeShowing(showAssociationNode);
         contentProvider.setShowTableContents(showReferencedTable);
         
         contentProvider.setGenerationRootNode(rootNode);
@@ -599,10 +599,10 @@ public class ProductStructureExplorer extends ViewPart implements ContentsChange
     private void intitMenuStateFields(int checkedMenuState){
         showReferencedTable = (checkedMenuState & 1) > 0;
         showTableStructureRoleName = (checkedMenuState & 2) > 0;
-        showRelationNode = (checkedMenuState & 4) > 0;
+        showAssociationNode = (checkedMenuState & 4) > 0;
     }
     
     private int evalMenuStates(){
-        return ((showReferencedTable?1:0) | (showTableStructureRoleName?2:0) | (showRelationNode?4:0));
+        return ((showReferencedTable?1:0) | (showTableStructureRoleName?2:0) | (showAssociationNode?4:0));
     }
 }
