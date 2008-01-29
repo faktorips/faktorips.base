@@ -145,7 +145,7 @@ public class FormulaEditDialog extends IpsPartEditDialog {
     }
     
     /**
-	 * Returns <code>true</code> if the message is no message which is direcly
+	 * Returns <code>true</code> if the message is no message which is directly
 	 * related to the dummy formula test case.
 	 */
     private boolean isNotMessageForDummyFormulaTestCase(Message msg) {

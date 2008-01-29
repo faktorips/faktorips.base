@@ -255,12 +255,13 @@ public class FormulaTestInputValuesControl extends Composite implements ColumnCh
     }
 
     /**
-     * Stors the formula test case for which the parameter will be displayed and updates the ui.
+     * Stores the formula test case for which the parameter will be displayed and updates the ui.
      */
     public void storeFormulaTestCase(IFormulaTestCase formulaTestCase) {
         this.ipsProject = formulaTestCase==null?null:formulaTestCase.getIpsProject();
         this.formulaTestCase = formulaTestCase;
         clearResult();
+        setTableInput(formulaTestCase);
         repackAndResfreshParamInputTable();
 
         if (formulaTestCase == null){
@@ -283,7 +284,7 @@ public class FormulaTestInputValuesControl extends Composite implements ColumnCh
 
     /**
      * Creates the compoiste's controls. This method has to be called by this
-     * controls client, after the control has been configured via the appropiate
+     * controls client, after the control has been configured via the appropriate
      * setter method, e.g. <code>setCanCalulateResult(int rows)</code>
      */
     public void initControl() {
@@ -415,7 +416,8 @@ public class FormulaTestInputValuesControl extends Composite implements ColumnCh
         createTableCellModifier();
         
         hookTableListener();     
-
+        
+        setTableInput(null);
         repackAndResfreshParamInputTable();
     }
 
@@ -445,6 +447,13 @@ public class FormulaTestInputValuesControl extends Composite implements ColumnCh
      * Repacks the columns in the table
      */
     private void repackAndResfreshParamInputTable() {
+        for (int i = 0, n = formulaInputTableViewer.getTable().getColumnCount(); i < n; i++) {
+            formulaInputTableViewer.getTable().getColumn(i).pack();
+        }
+        formulaInputTableViewer.refresh();
+    }
+
+    private void setTableInput(IFormulaTestCase formulaTestCase) {
         if (formulaTestCase != null){
             formulaInputTableViewer.setInput(formulaTestCase.getFormulaTestInputValues());
         } else {
@@ -453,15 +462,10 @@ public class FormulaTestInputValuesControl extends Composite implements ColumnCh
                 clearResult();
             }
         }
-        
-        for (int i = 0, n = formulaInputTableViewer.getTable().getColumnCount(); i < n; i++) {
-            formulaInputTableViewer.getTable().getColumn(i).pack();
-        }
-        formulaInputTableViewer.refresh();
     }
     
     /*
-     * Exceute the formula and displays the result if the formula is valid and all values are given.
+     * Execute the formula and displays the result if the formula is valid and all values are given.
      */
     public Object calculateFormulaIfValid(IIpsProject ipsProject) {
         if (!canCalculateResult){
@@ -650,7 +654,6 @@ public class FormulaTestInputValuesControl extends Composite implements ColumnCh
      */
     public void valueChanged(ColumnIdentifier columnIdentifier, Object value) {
         // the value in the table has changed
-        repackAndResfreshParamInputTable();
         clearResult();
         uiController.updateUI();  
     }

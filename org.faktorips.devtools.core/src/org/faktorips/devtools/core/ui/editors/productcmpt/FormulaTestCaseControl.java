@@ -369,12 +369,13 @@ public class FormulaTestCaseControl extends Composite implements ColumnChangeLis
             updateStatusOfUpdateButton(getSelectedFormulaTestCase());
         }
         calculateAndStoreActualResult();
+        setTableInput(formulaTestCases);
         repackAndResfreshForumlaTestCaseTable();
     }
 
     /**
      * Creates the compoiste's controls. This method has to be called by this
-     * controls client, after the control has been configured via the appropiate
+     * controls client, after the control has been configured via the appropriate
      * setter method.
      */
     public void initControl() {
@@ -515,7 +516,7 @@ public class FormulaTestCaseControl extends Composite implements ColumnChangeLis
         IFormula formula = formulaTestCase.getFormula();
         IFormulaTestCase[] ftcs = formula.getFormulaTestCases();
         for (int i = 0; i < ftcs.length; i++) {
-            if (ftcs[i].equals(formulaTestCase)){
+            if (ftcs[i].equals(formulaTestCase.getFormulaTestCase())){
                 selectedIndexes = new int[]{i};
                 break;
             }
@@ -722,6 +723,8 @@ public class FormulaTestCaseControl extends Composite implements ColumnChangeLis
         
         hookFormulaTestCaseTableListener();     
         
+        setTableInput(new ArrayList());
+        
         // pack the table
         repackAndResfreshForumlaTestCaseTable();
     }
@@ -866,15 +869,20 @@ public class FormulaTestCaseControl extends Composite implements ColumnChangeLis
      * Repacks the columns in the table
      */
     private void repackAndResfreshForumlaTestCaseTable() {
-         if (formulaTestCases != null) {
-            formulaTestCaseTableViewer.setInput(formulaTestCases);
-        }
         for (int i = 0, n = formulaTestCaseTableViewer.getTable().getColumnCount(); i < n; i++) {
             formulaTestCaseTableViewer.getTable().getColumn(i).pack();
         }
+        resetTestRunColor();
+        formulaTestCaseTableViewer.refresh();
+    }
+
+    private void setTableInput(List formulaTestCases) {
+        formulaTestCaseTableViewer.setInput(formulaTestCases);
+    }
+
+    private void resetTestRunColor() {
         // resets the color of the last test run
         testStatusBar.setBackground(getBackground());
-        formulaTestCaseTableViewer.refresh();
     }
 
     /*
@@ -919,7 +927,7 @@ public class FormulaTestCaseControl extends Composite implements ColumnChangeLis
         if (tc != null){
             tc.setActualResult(""); //$NON-NLS-1$
         }
-        repackAndResfreshForumlaTestCaseTable();
+        resetTestRunColor();
     }
     
     private void calculateAndStoreActualResult(){
