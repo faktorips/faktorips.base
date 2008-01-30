@@ -169,7 +169,9 @@ public class TestCaseCopyDesinationPage extends WizardPage {
         RadiobuttonGroup group = toolkit.createRadiobuttonGroup(parent, SWT.SHADOW_IN , Messages.TestCaseCopyDesinationPage_TitleProductCmptReplaceGroup);
         group.getGroup().setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
         
-        Radiobutton radiobuttonReplaceAutomatically = group.addRadiobutton(Messages.TestCaseCopyDesinationPage_LabelRadioBtnReplaceProdCmptVersion);
+        String label = NLS.bind(Messages.TestCaseCopyDesinationPage_LabelRadioBtnReplaceProdCmptVersion, IpsPlugin
+                .getDefault().getIpsPreferences().getChangesOverTimeNamingConvention().getVersionConceptNamePlural());
+        Radiobutton radiobuttonReplaceAutomatically = group.addRadiobutton(label);
         checkboxFieldReplaceProductCmptAutomatically = new CheckboxField(radiobuttonReplaceAutomatically);
         checkboxFieldReplaceProductCmptAutomatically.addChangeListener(new ValueChangeListener(){
             public void valueChanged(FieldValueChangedEvent e) {

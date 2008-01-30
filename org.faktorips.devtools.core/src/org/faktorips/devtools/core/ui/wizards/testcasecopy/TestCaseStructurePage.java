@@ -50,10 +50,12 @@ import org.eclipse.swt.widgets.TableItem;
 import org.eclipse.swt.widgets.Tree;
 import org.eclipse.ui.dialogs.ContainerCheckedTreeViewer;
 import org.faktorips.devtools.core.IpsPlugin;
-import org.faktorips.devtools.core.model.Validatable;
+import org.faktorips.devtools.core.model.IIpsElement;
+import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPartContainer;
 import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmpt;
+import org.faktorips.devtools.core.model.testcase.ITestAttributeValue;
 import org.faktorips.devtools.core.model.testcase.ITestCase;
 import org.faktorips.devtools.core.model.testcase.ITestPolicyCmpt;
 import org.faktorips.devtools.core.model.testcasetype.ITestPolicyCmptTypeParameter;
@@ -81,6 +83,28 @@ public class TestCaseStructurePage extends WizardPage {
     private IIpsProject ipsProject;
     private IIpsSrcFile checkedProductCmpt = null;
     private TestCaseContentProvider testCaseContentProvider;
+
+    /*
+     * Special implementation of MessageCueLabelProvider. If an element isn't checked then the
+     * validation messages will be ignored.
+     */
+    private class CheckMessageCueLabelProvider extends MessageCueLabelProvider{
+        public CheckMessageCueLabelProvider(ILabelProvider baseProvider, IIpsProject ipsProject) {
+            super(baseProvider, ipsProject);
+        }
+
+        /**
+         * {@inheritDoc}
+         */
+        public MessageList getMessages(Object element) throws CoreException {
+            MessageList result = new MessageList();
+            if (element instanceof IIpsObjectPartContainer) {
+                IIpsObjectPartContainer part = (IIpsObjectPartContainer)element;
+                collectMessages(result, part, false);
+            }
+            return result;
+        }
+    }
     
     public TestCaseStructurePage(UIToolkit toolkit, IIpsProject ipsProject) {
         super("TestCaseStructurePage"); //$NON-NLS-1$
@@ -115,26 +139,28 @@ public class TestCaseStructurePage extends WizardPage {
         Tree tree = new Tree(treeComposite, SWT.CHECK | SWT.SINGLE | SWT.H_SCROLL | SWT.V_SCROLL | SWT.BORDER);
         tree.setLayoutData(new GridData(GridData.FILL_BOTH));
         treeViewer = new ContainerCheckedTreeViewer(tree);
-        
         treeViewer.getControl().setLayoutData(new GridData(GridData.FILL_BOTH));
         hookTreeListeners();
         TestCaseLabelProvider labelProvider = new TestCaseLabelProvider(ipsProject);
-        treeViewer.setLabelProvider(new MessageCueLabelProvider(labelProvider, ipsProject));
+        treeViewer.setLabelProvider(new CheckMessageCueLabelProvider(labelProvider, ipsProject));
         treeViewer.setUseHashlookup(true);
         treeViewer.expandAll();
         
         treeViewer.addCheckStateListener(new ICheckStateListener(){
             public void checkStateChanged(CheckStateChangedEvent event) {
                 pageChanged();
+                treeViewer.refresh(true);
             }
         });
         
         new TreeMessageHoverService(treeViewer) {
             protected MessageList getMessagesFor(Object element) throws CoreException {
-                if (element instanceof Validatable) {
-                    return ((Validatable)element).validate(ipsProject);
+                if (element instanceof IIpsObjectPartContainer) {
+                    MessageList result = new MessageList();
+                    collectMessages(result, (IIpsObjectPartContainer)element, false);
+                    return result;
                 } else
-                    return null;
+                    return new MessageList();
             }
         };        
     }
@@ -280,6 +306,7 @@ public class TestCaseStructurePage extends WizardPage {
         treeViewer.setInput(targetTestCase);
         treeViewer.expandAll();
         treeViewer.setAllChecked(true);
+        treeViewer.refresh(true);
         pageChanged();
     }
     
@@ -396,7 +423,30 @@ public class TestCaseStructurePage extends WizardPage {
         return true;
     }
     
+    /*
+     * Returns all checked objects.
+     */
     Object[] getCheckedObjects(){
         return treeViewer.getCheckedElements();
     }
+    
+    /*
+     * Collect all messages for the given element and all its child's.
+     * If an element isn't checked then this element will be ignored.
+     */
+    private void collectMessages(MessageList result,
+            IIpsObjectPartContainer container,
+            boolean parentIsChecked) throws CoreException {
+        MessageList msgList = container.getIpsObject().validate(ipsProject);
+        boolean checked = treeViewer.getChecked(container);
+        if (checked || (parentIsChecked && container instanceof ITestAttributeValue)){
+            result.add(msgList.getMessagesFor(container));
+        }
+        IIpsElement[] childs = container.getChildren();
+        for (int i = 0; i < childs.length; i++) {
+            if (childs[i] instanceof IIpsObjectPartContainer) {
+                collectMessages(result, (IIpsObjectPartContainer)childs[i], checked);
+            }
+        }
+    }    
 }
