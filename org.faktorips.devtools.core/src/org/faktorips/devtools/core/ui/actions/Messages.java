@@ -56,6 +56,7 @@ public class Messages extends NLS {
     public static String IpsEditSortOrderAction_dialogTitle;
     public static String IpsEditSortOrderAction_text;
     public static String IpsEditSortOrderAction_tooltip;
+    public static String NewProductCmptTypeAction_name;
     public static String NewTableStructureAction_name;
     public static String NewTestCaseTypeAction_name;
     public static String OpenIpsObjectAction_description;

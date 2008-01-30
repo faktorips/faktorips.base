@@ -97,6 +97,7 @@ import org.faktorips.devtools.core.ui.actions.NewFileResourceAction;
 import org.faktorips.devtools.core.ui.actions.NewFolderAction;
 import org.faktorips.devtools.core.ui.actions.NewIpsPacketAction;
 import org.faktorips.devtools.core.ui.actions.NewPolicyComponentTypeAction;
+import org.faktorips.devtools.core.ui.actions.NewProductCmptTypeAction;
 import org.faktorips.devtools.core.ui.actions.NewProductComponentAction;
 import org.faktorips.devtools.core.ui.actions.NewTableContentAction;
 import org.faktorips.devtools.core.ui.actions.NewTableStructureAction;
@@ -718,6 +719,9 @@ public class ModelExplorer extends ViewPart implements IShowInTarget {
                 }
                 if (config.isAllowedIpsElementType(IPolicyCmptType.class)) {
                     newMenu.add(new NewPolicyComponentTypeAction(getSite().getWorkbenchWindow()));
+                }
+                if (config.isAllowedIpsElementType(IProductCmptType.class)) {
+                    newMenu.add(new NewProductCmptTypeAction(getSite().getWorkbenchWindow()));
                 }
                 if (config.isAllowedIpsElementType(ITableStructure.class)) {
                     newMenu.add(new NewTableStructureAction(getSite().getWorkbenchWindow()));
