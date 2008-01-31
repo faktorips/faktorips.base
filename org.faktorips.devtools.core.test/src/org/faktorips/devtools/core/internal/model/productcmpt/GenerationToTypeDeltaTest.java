@@ -19,6 +19,7 @@ package org.faktorips.devtools.core.internal.model.productcmpt;
 
 import org.eclipse.core.runtime.CoreException;
 import org.faktorips.devtools.core.AbstractIpsPluginTest;
+import org.faktorips.devtools.core.internal.model.valueset.AllValuesValueSet;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAttribute;
@@ -190,9 +191,10 @@ public class GenerationToTypeDeltaTest extends AbstractIpsPluginTest {
         IValueSet valueSet = generation.getConfigElement("a1").getValueSet();
         assertTrue(valueSet instanceof IEnumValueSet);
         
-        
         attr.setValueSetType(ValueSetType.ALL_VALUES);
         delta = generation.computeDeltaToModel(ipsProject);
-        assertEquals(0, delta.getEntries().length);
+        delta.fix();
+        valueSet = generation.getConfigElement("a1").getValueSet();
+        assertTrue(valueSet instanceof AllValuesValueSet);
     }
 }

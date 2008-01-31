@@ -33,6 +33,7 @@ public class DeltaType extends DefaultEnumValue {
     public final static DeltaType VALUE_SET_MISMATCH;
     public final static DeltaType PROPERTY_TYPE_MISMATCH;
     public final static DeltaType LINK_WITHOUT_ASSOCIATION;
+    public final static DeltaType WRONG_ORDER_ENTRY;
     
     public final static DeltaType[] ALL_TYPES;
     
@@ -45,8 +46,9 @@ public class DeltaType extends DefaultEnumValue {
         PROPERTY_TYPE_MISMATCH = new DeltaType(enumType, "PropertyTypeMismatch", Messages.DeltaType_propertiesWithTypeMismatch, "DeltaTypePropertyTypeMismatch.gif"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
         VALUE_SET_MISMATCH = new DeltaType(enumType, "ValueSetMismatch", Messages.DeltaType_ValueSetMismatches, "DeltaTypeValueSetMismatch.gif"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
         LINK_WITHOUT_ASSOCIATION = new DeltaType(enumType, "LinkWithoutAssocation", Messages.DeltaType_LinksNotFoundInTheModel, "DeltaTypeLinkWithoutAssociation.gif"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+        WRONG_ORDER_ENTRY = new DeltaType(enumType, "WrongOrderEntry", "Wrong sort order", "DeltaTypeWrongOrder.gif"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
         
-        ALL_TYPES = new DeltaType[]{MISSING_PROPERTY_VALUE, VALUE_WITHOUT_PROPERTY, PROPERTY_TYPE_MISMATCH, VALUE_SET_MISMATCH, LINK_WITHOUT_ASSOCIATION};
+        ALL_TYPES = new DeltaType[]{MISSING_PROPERTY_VALUE, VALUE_WITHOUT_PROPERTY, PROPERTY_TYPE_MISMATCH, VALUE_SET_MISMATCH, LINK_WITHOUT_ASSOCIATION, WRONG_ORDER_ENTRY};
     }
     
     private Image image;

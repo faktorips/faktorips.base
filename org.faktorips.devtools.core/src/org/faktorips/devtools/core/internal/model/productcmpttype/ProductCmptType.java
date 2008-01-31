@@ -231,7 +231,11 @@ public class ProductCmptType extends Type implements IProductCmptType {
         if(policyCmptType == null){
             return null;
         }
-        return policyCmptType.findPolicyCmptTypeAttribute(propName, ipsProject);
+        IPolicyCmptTypeAttribute attr = policyCmptType.findPolicyCmptTypeAttribute(propName, ipsProject);
+        if (attr.isProductRelevant()) {
+            return attr;
+        }
+        return null;
     }
 
     /**

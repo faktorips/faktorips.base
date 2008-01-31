@@ -15,15 +15,16 @@
  *
  *******************************************************************************/
 
-package org.faktorips.devtools.core.internal.model.productcmpt;
+package org.faktorips.devtools.core.model.productcmpt;
 
 import org.eclipse.core.runtime.CoreException;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
-import org.faktorips.devtools.core.model.productcmpt.IProductCmptGeneration;
 import org.faktorips.devtools.core.model.productcmpttype.IProdDefProperty;
 import org.faktorips.devtools.core.model.productcmpttype.ProdDefPropertyType;
 
 /**
+ * Base interface for properties stored in product component generartions like 
+ * formulas, table content usages, product component attributes and config elements.
  * 
  * @author Jan Ortmann
  */

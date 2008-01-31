@@ -84,10 +84,6 @@ public class Messages extends NLS {
 
 	public static String FaktorIpsPreferencePage_FaktorIpsPreferencePage_enableGenerating;
 
-	public static String FolderPropertiesPage_labelSortNumber;
-
-	public static String FolderPropertiesPage_msgSortNumberInvalid;
-
 	public static String FaktorIpsPreferencePage_labelEditRecentGenerations;
 
 	public static String FaktorIpsPreferencePage_labelCanNavigateToModelOrSourceCode;

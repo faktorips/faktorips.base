@@ -18,8 +18,8 @@
 package org.faktorips.devtools.core.internal.model.productcmpt.deltaentries;
 
 import org.faktorips.devtools.core.internal.model.productcmpt.GenerationToTypeDelta;
-import org.faktorips.devtools.core.internal.model.productcmpt.IPropertyValue;
 import org.faktorips.devtools.core.model.productcmpt.DeltaType;
+import org.faktorips.devtools.core.model.productcmpt.IPropertyValue;
 import org.faktorips.devtools.core.model.productcmpttype.ProdDefPropertyType;
 
 /**

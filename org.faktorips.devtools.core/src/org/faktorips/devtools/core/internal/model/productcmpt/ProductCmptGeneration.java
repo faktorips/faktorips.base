@@ -11,6 +11,7 @@
 package org.faktorips.devtools.core.internal.model.productcmpt;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Hashtable;
 import java.util.Iterator;
 import java.util.List;
@@ -42,7 +43,9 @@ import org.faktorips.devtools.core.model.productcmpt.IGenerationToTypeDelta;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmpt;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmptGeneration;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmptLink;
+import org.faktorips.devtools.core.model.productcmpt.IPropertyValue;
 import org.faktorips.devtools.core.model.productcmpt.ITableContentUsage;
+import org.faktorips.devtools.core.model.productcmpt.PropertyValueComparator;
 import org.faktorips.devtools.core.model.productcmpttype.IProdDefProperty;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeAssociation;
@@ -227,6 +230,22 @@ public class ProductCmptGeneration extends IpsObjectGeneration implements IProdu
      */
     public IGenerationToTypeDelta computeDeltaToModel(IIpsProject ipsProject) throws CoreException {
         return new GenerationToTypeDelta(this, ipsProject);
+    }
+    
+    /**
+     * {@inheritDoc}
+     */
+    public void sortPropertiesAccordingToModel(IIpsProject ipsProject) throws CoreException {
+        IProductCmptType type = findProductCmptType(ipsProject);
+        if (type==null) {
+            return;
+        }
+        PropertyValueComparator comparator = new PropertyValueComparator(this, this.getIpsProject());
+        Collections.sort(attributeValues, comparator);
+        Collections.sort(configElements, comparator);
+        Collections.sort(links, comparator);
+        Collections.sort(tableContentUsages, comparator);
+        Collections.sort(formulas, comparator);
     }
 
     /**

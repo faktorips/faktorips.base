@@ -18,6 +18,7 @@
 package org.faktorips.devtools.core.ui.editors.productcmpt;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
 
@@ -39,6 +40,7 @@ import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.productcmpt.IFormula;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmptGeneration;
 import org.faktorips.devtools.core.model.productcmpt.ITableContentUsage;
+import org.faktorips.devtools.core.model.productcmpt.PropertyValueComparator;
 import org.faktorips.devtools.core.model.productcmpttype.ITableStructureUsage;
 import org.faktorips.devtools.core.model.tablecontents.ITableContents;
 import org.faktorips.devtools.core.model.type.IMethod;
@@ -126,8 +128,7 @@ public class FormulasSection extends IpsSection {
 		uiMasterController.add(ctrl);
 	
 		IFormula[] formulas = generation.getFormulas();
-		// TODO v2 - sort formulas
-        // Arrays.sort(formulas, new ConfigElementComparator());
+        Arrays.sort(formulas, new PropertyValueComparator(generation.getProductCmpt().getProductCmptType(), generation.getIpsProject()));
 
         ITableContentUsage usages[] = generation.getTableContentUsages();
 

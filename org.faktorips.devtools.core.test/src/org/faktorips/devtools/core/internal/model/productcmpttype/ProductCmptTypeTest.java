@@ -437,8 +437,10 @@ public class ProductCmptTypeTest extends AbstractIpsPluginTest implements Conten
         policyCmptType.setSupertype(policyCmptSupertype.getQualifiedName());
         org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAttribute policyCmptSupertypeAttr = policyCmptSupertype.newPolicyCmptTypeAttribute();
         policyCmptSupertypeAttr.setName("policySuperAttr");
+        policyCmptSupertypeAttr.setProductRelevant(true);
         org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAttribute policyCmptTypeAttr = policyCmptType.newPolicyCmptTypeAttribute();
         policyCmptTypeAttr.setName("policyAttr");
+        policyCmptTypeAttr.setProductRelevant(true);
         
         assertEquals(typeAttribute, productCmptType.findProdDefProperty(ProdDefPropertyType.VALUE, typeAttribute.getName(), ipsProject));
         assertEquals(supertypeAttr, productCmptType.findProdDefProperty(ProdDefPropertyType.VALUE, supertypeAttr.getName(), ipsProject));
@@ -492,8 +494,10 @@ public class ProductCmptTypeTest extends AbstractIpsPluginTest implements Conten
         policyCmptType.setSupertype(policyCmptSupertype.getQualifiedName());
         org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAttribute policyCmptSupertypeAttr = policyCmptSupertype.newPolicyCmptTypeAttribute();
         policyCmptSupertypeAttr.setName("policySuperAttr");
+        policyCmptSupertypeAttr.setProductRelevant(true);
         org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAttribute policyCmptTypeAttr = policyCmptType.newPolicyCmptTypeAttribute();
         policyCmptTypeAttr.setName("policyAttr");
+        policyCmptTypeAttr.setProductRelevant(true);
         
         assertEquals(typeAttribute, productCmptType.findProdDefProperty(typeAttribute.getName(), ipsProject));
         assertEquals(supertypeAttr, productCmptType.findProdDefProperty(supertypeAttr.getName(), ipsProject));
@@ -506,6 +510,9 @@ public class ProductCmptTypeTest extends AbstractIpsPluginTest implements Conten
         
         assertEquals(policyCmptTypeAttr, productCmptType.findProdDefProperty(policyCmptTypeAttr.getName(), ipsProject));
         assertEquals(policyCmptSupertypeAttr, productCmptType.findProdDefProperty(policyCmptSupertypeAttr.getName(), ipsProject));
+
+        policyCmptTypeAttr.setProductRelevant(false);
+        assertNull(productCmptType.findProdDefProperty(policyCmptTypeAttr.getName(), ipsProject));
     }
     
     public void testFindFormulaSignature() throws CoreException {

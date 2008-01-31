@@ -144,6 +144,18 @@ public class ProductCmpt extends TimedIpsObject implements IProductCmpt {
         return ipsProject.findProductCmptType(productCmptType);
     }
 
+    /**
+     * 
+     * {@inheritDoc}
+     */
+    public void sortPropertiesAccordingToModel(IIpsProject ipsProject) throws CoreException {
+        int max = getNumOfGenerations();
+        for (int i=0; i<max; i++) {
+            IProductCmptGeneration gen = getProductCmptGeneration(i);
+            gen.sortPropertiesAccordingToModel(ipsProject);
+        }
+    }
+
     /** 
      * {@inheritDoc}
      */
@@ -317,14 +329,11 @@ public class ProductCmpt extends TimedIpsObject implements IProductCmpt {
      * {@inheritDoc}
      */
     public void fixAllDifferencesToModel(IIpsProject ipsProject) throws CoreException {
-        IIpsObjectGeneration[] generations = this.getGenerations();
-        for (int i = 0; i < generations.length; i++) {
-            IIpsObjectGeneration generation = generations[i];
-            if(generation instanceof IProductCmptGeneration){
-                IGenerationToTypeDelta delta = ((IProductCmptGeneration)generation).computeDeltaToModel(ipsProject);
-                delta.fix();
-                
-            }
+        int max = getNumOfGenerations();
+        for (int i = 0; i < max; i++) {
+            IProductCmptGeneration generation = getProductCmptGeneration(i);
+            IGenerationToTypeDelta delta = ((IProductCmptGeneration)generation).computeDeltaToModel(ipsProject);
+            delta.fix();
         }
     }
 }

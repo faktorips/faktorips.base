@@ -38,6 +38,7 @@ import org.faktorips.devtools.core.model.productcmpt.IDeltaEntry;
 import org.faktorips.devtools.core.model.productcmpt.IGenerationToTypeDelta;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmptGeneration;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmptLink;
+import org.faktorips.devtools.core.model.productcmpt.IPropertyValue;
 import org.faktorips.devtools.core.model.productcmpttype.IProdDefProperty;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeAttribute;
@@ -128,9 +129,6 @@ public class GenerationToTypeDelta implements IGenerationToTypeDelta {
 
     private void checkForValueSetMismatch(IPolicyCmptTypeAttribute attribute, IConfigElement element) {
         ValueSetType attrValueSetType = attribute.getValueSet().getValueSetType(); 
-        if (attrValueSetType==ValueSetType.ALL_VALUES) {
-            return;
-        }
         if (!attrValueSetType.equals(element.getValueSet().getValueSetType())) {
             new ValueSetMismatchEntry(this, attribute, element);
         }

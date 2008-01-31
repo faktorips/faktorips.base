@@ -71,7 +71,8 @@ public class ValueSetMismatchEntry extends AbstractDeltaEntryForProperty {
      * {@inheritDoc}
      */
     public String getDescription() {
-        return NLS.bind(Messages.getString("ValueSetMismatchEntry.description"), new Object[]{getPropertyName(), attribute.getValueSet().getValueSetType().getName(), element.getValueSet().getValueSetType().getName()}); //$NON-NLS-1$
+        String desc = Messages.ValueSetMismatchEntry_desc;
+        return NLS.bind(desc, new Object[]{getPropertyName(), attribute.getValueSet().getValueSetType().getName(), element.getValueSet().getValueSetType().getName()}); //$NON-NLS-1$
     }
 
 }

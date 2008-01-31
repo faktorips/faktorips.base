@@ -18,7 +18,6 @@
 package org.faktorips.devtools.core.model.productcmpt;
 
 import org.eclipse.core.runtime.CoreException;
-import org.faktorips.devtools.core.internal.model.productcmpt.IPropertyValue;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObjectGeneration;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAttribute;
@@ -96,6 +95,8 @@ public interface IProductCmptGeneration extends IIpsObjectGeneration {
     /**
      * Searches the product component type this product component generation is based on.
      *  
+     * @param ipsProject The ips project which search path is used to search the type.
+     * 
      * @return The product component type this product component generation is based on 
      * or <code>null</code> if the product component type can't be found.
      *  
@@ -106,11 +107,24 @@ public interface IProductCmptGeneration extends IIpsObjectGeneration {
     
     /**
      * Returns the delta between this product component and it's product component type.
-     * @param ipsProject TODO
      * 
-     * @throws CoreException
+     * @param ipsProject The ips project which search path is used to search the type.
+     * 
+     * @throws CoreException if an exception occurs while searching for the type.
+     * @throws NullPointerException if ipsProject is <code>null</code>. 
      */
     public IGenerationToTypeDelta computeDeltaToModel(IIpsProject ipsProject) throws CoreException;
+
+    /**
+     * Sorts the generation's properties according to the order defined in the model.
+     * If the product component type isn't found, the generation remains unchanged.
+     * 
+     * @param ipsProject The ips project which search path is used to search the type.
+     * 
+     * @throws CoreException if an exception occurs while searching for the type.
+     * @throws NullPointerException if ipsProject is <code>null</code>. 
+     */
+    public void sortPropertiesAccordingToModel(IIpsProject ipsProject) throws CoreException;
     
     /**
      * Returns the propery value for the given property or <code>null</code> if no value is defined

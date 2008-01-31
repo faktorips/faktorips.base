@@ -655,12 +655,6 @@
                value="org.faktorips.plugin.productdefinitionnature">
          </filter>
         </page> 
-      <page
-            class="org.faktorips.devtools.core.ui.FolderPropertiesPage"
-            icon="icons/IpsSrcFile.gif"
-            id="org.faktorips.devtools.core.folderProperties"
-            name="%org.faktorips.devtools.core.folderProperties"
-            objectClass="org.eclipse.core.resources.IFolder"/>
     </extension> 
     
 <!-- 

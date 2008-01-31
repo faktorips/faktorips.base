@@ -120,6 +120,17 @@ public interface IProductCmpt extends ITimedIpsObject, IFixDifferencesToModelSup
     public IProductCmptType findProductCmptType(IIpsProject ipsProject) throws CoreException;
     
     /**
+     * Sorts properties in all generations according to the order defined in the model.
+     * If the product component type isn't found, the component remains unchanged.
+     * 
+     * @param ipsProject The ips project which search path is used to search the type.
+     * 
+     * @throws CoreException if an exception occurs while searching for the type.
+     * @throws NullPointerException if ipsProject is <code>null</code>. 
+     */
+    public void sortPropertiesAccordingToModel(IIpsProject ipsProject) throws CoreException;
+    
+    /**
      * Returns <code>true</code> if any of the generations contain at least one formula.
      * Returns <code>false</code> otherwise.
      */

@@ -34,31 +34,9 @@ public class Messages extends NLS {
 		NLS.initializeMessages(BUNDLE_NAME, Messages.class);
 	}
 
-	public static String ProductCmptDeltaContentProvider_msgTypeMismatch;
-
-	public static String ProductCmptDeltaContentProvider_msgNoAttribute;
-
-	public static String ProductCmptDeltaContentProvider_msgNoConfigElement;
-
-	public static String ProductCmptDeltaContentProvider_msgNoRelation;
-
-	public static String ProductCmptDeltaContentProvider_msgValuesetMismatch;
+	public static String ProductCmptDeltaDialog_labelSelectGeneration;
 
     public static String ProductCmptDeltaDialog_messageWarningRecentGenerationCouldBeChanged;
-
-	public static String ProductCmptDeltaType_missingAttribute;
-
-	public static String ProductCmptDeltaType_missingCfgElement;
-
-	public static String ProductCmptDeltaType_valuesetMismatch;
-
-	public static String ProductCmptDeltaType_cfgElementTypeMismatch;
-
-	public static String ProductCmptDeltaType_missingRelationDefinition;
-
-	public static String ProductCmptDeltaLabelProvider_label_undefined;
-
-	public static String ProductCmptDeltaDialog_labelSelectGeneration;
 
 	public static String ProductCmptDeltaDialog_labelSelectedDifferences;
 
@@ -70,11 +48,4 @@ public class Messages extends NLS {
 
 	public static String ProductCmptDeltaDialog_ignore;
 
-    public static String ProductCmptDeltaContentProvider_msgMissingContentUsage;
-
-    public static String ProductCmptDeltaContentProvider_msgMissingStructureUsage;
-
-    public static String ProductCmptDeltaType_missingTableStructureUsage;
-
-    public static String ProductCmptDeltaType_missingTableContentUsage;
 }

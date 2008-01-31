@@ -37,6 +37,7 @@ import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAttribute;
 import org.faktorips.devtools.core.model.productcmpt.ConfigElementType;
 import org.faktorips.devtools.core.model.productcmpt.IConfigElement;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmptGeneration;
+import org.faktorips.devtools.core.model.productcmpt.PropertyValueComparator;
 import org.faktorips.devtools.core.model.valueset.IEnumValueSet;
 import org.faktorips.devtools.core.model.valueset.IRangeValueSet;
 import org.faktorips.devtools.core.model.valueset.IValueSet;
@@ -128,7 +129,7 @@ public class DefaultsAndRangesSection extends IpsSection {
 	private void createEditControls() {
 		uiMasterController = new CompositeUIController();
 		IConfigElement[] elements = generation.getConfigElements(ConfigElementType.POLICY_ATTRIBUTE);
-		Arrays.sort(elements, new ConfigElementComparator(generation.getIpsProject()));
+		Arrays.sort(elements, new PropertyValueComparator(generation.getProductCmpt().getProductCmptType(), generation.getIpsProject()));
 		if (elements.length == 0) {
 			toolkit.createLabel(rootPane, Messages.PolicyAttributesSection_noDefaultsAndRangesDefined);
 		}

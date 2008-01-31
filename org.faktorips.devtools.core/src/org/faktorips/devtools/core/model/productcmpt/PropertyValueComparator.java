@@ -15,7 +15,7 @@
  *
  *******************************************************************************/
 
-package org.faktorips.devtools.core.ui.editors.productcmpt;
+package org.faktorips.devtools.core.model.productcmpt;
 
 import java.util.Comparator;
 import java.util.HashMap;
@@ -23,12 +23,18 @@ import java.util.Map;
 
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.IpsStatus;
-import org.faktorips.devtools.core.internal.model.productcmpt.IPropertyValue;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.productcmpttype.IProdDefProperty;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
 
 /**
+ * Comparator that compares two {@link IPropertyValue}s by there type and by the position the
+ * corresponding {@link IProdDefProperty} has in the model.
+ * <p>
+ * Example:
+ * <p>
+ * Given two formulas, the positions of the corresponding formula signatures in the product component
+ * type's list of formula signatures defines the order. 
  * 
  * @author Jan Ortmann
  */
@@ -37,6 +43,14 @@ public class PropertyValueComparator implements Comparator {
     private IProductCmptType type;
     private Map propIndexMap = null;
     
+    public PropertyValueComparator(IProductCmptGeneration gen, IIpsProject ipsProject) {
+        this(gen.getProductCmpt(), ipsProject);
+    }
+
+    public PropertyValueComparator(IProductCmpt productCmpt, IIpsProject ipsProject) {
+        this(productCmpt.getProductCmptType(), ipsProject);
+    }
+
     public PropertyValueComparator(String productCmptType, IIpsProject ipsProject) {
         try {
             type = ipsProject.findProductCmptType(productCmptType); 
@@ -73,6 +87,8 @@ public class PropertyValueComparator implements Comparator {
      * {@inheritDoc}
      */
     public int compare(Object o1, Object o2) {
+        System.out.println("o1: " + o1);
+        System.out.println("o2: " + o2);
         IPropertyValue prop1 = (IPropertyValue)o1;
         IPropertyValue prop2 = (IPropertyValue)o2;
         int typeCompare = prop1.getPropertyType().compareTo(prop2.getPropertyType());
@@ -88,7 +104,6 @@ public class PropertyValueComparator implements Comparator {
         }
         Integer index = (Integer)propIndexMap.get(prop.getPropertyName());
         if (index==null) {
-            IpsPlugin.log(new IpsStatus("Unknwon property " + prop.getPropertyName() + " in comparator for type " + type)); //$NON-NLS-1$ //$NON-NLS-2$
             return 0;
         } 
         return index.intValue();
