@@ -94,7 +94,12 @@ public abstract class ValueClassDatatype extends AbstractDatatype implements Val
 	}
 
 	/**
-	 * {@inheritDoc}
+	 * Returns the string representation of the given value. The String value returned by this method
+     * must be parsable by the {@link #getValue(String)} method.
+     * 
+     * @see #getValue(String)
+     * 
+     * @deprecated see {@link #getValue(String)}
 	 */
 	public String valueToString(Object value) {
 		return value.toString();
@@ -176,5 +181,19 @@ public abstract class ValueClassDatatype extends AbstractDatatype implements Val
     }
 
 
+    /**
+     * This method parses the given string and returns the value as an instance of the class this
+     * value datatype represents.
+     * 
+     * @param value string represenation of the value
+     * @return The value as instance of the class this datatype represents.
+     * 
+     * @see #valueToString(Object)
+     * 
+     * @deprecated During development time Faktor-IPS maintains all values with their string representation.
+     * This allows to change the value's datatype without the need to convert the value from one class 
+     * to another (e.g. if the string representation is 42 you can change the datatype from integer to string
+     * with converting the integer object to a string object. 
+     */
     public abstract Object getValue(String value);
 }
