@@ -66,7 +66,7 @@ public class PolicyCmptTypeAssociation extends Association implements IPolicyCmp
      * {@inheritDoc}
      */
     public boolean isComposition() {
-        return type.isCompositionDetailToMaster() | type.isCompositionMasterToDetail();
+        return type.isCompositionDetailToMaster() || type.isCompositionMasterToDetail();
     }
 
     /**
