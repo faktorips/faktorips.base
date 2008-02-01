@@ -21,6 +21,7 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jface.action.IMenuListener;
 import org.eclipse.jface.action.IMenuManager;
 import org.eclipse.jface.action.MenuManager;
+import org.eclipse.jface.viewers.ILabelProvider;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.ISelectionProvider;
 import org.eclipse.jface.viewers.IStructuredContentProvider;
@@ -37,6 +38,7 @@ import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeAssocia
 import org.faktorips.devtools.core.model.type.IType;
 import org.faktorips.devtools.core.ui.UIToolkit;
 import org.faktorips.devtools.core.ui.actions.IpsAction;
+import org.faktorips.devtools.core.ui.editors.AssociationsLabelProvider;
 import org.faktorips.devtools.core.ui.editors.EditDialog;
 import org.faktorips.devtools.core.ui.editors.IpsPartsComposite;
 import org.faktorips.devtools.core.ui.editors.SimpleIpsPartsSection;
@@ -126,6 +128,9 @@ public class AssociationsSection extends SimpleIpsPartsSection {
             getViewer().getControl().setMenu(menu);
         }
 
+        /**
+         * {@inheritDoc}
+         */
         protected IStructuredContentProvider createContentProvider() {
             return new IStructuredContentProvider() {
 
@@ -143,6 +148,13 @@ public class AssociationsSection extends SimpleIpsPartsSection {
             };
         }
 
+        /**
+         * {@inheritDoc}
+         */
+        protected ILabelProvider createLabelProvider() {
+            return new AssociationsLabelProvider();
+        }
+        
         protected EditDialog createEditDialog(IIpsObjectPart part, Shell shell) throws CoreException {
             return new AssociationEditDialog((IProductCmptTypeAssociation)part, shell);
         }

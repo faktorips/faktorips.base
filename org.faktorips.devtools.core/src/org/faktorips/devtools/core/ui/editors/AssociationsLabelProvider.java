@@ -15,11 +15,10 @@
  *
  *******************************************************************************/
 
-package org.faktorips.devtools.core.ui.editors.pctype;
+package org.faktorips.devtools.core.ui.editors;
 
-import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAssociation;
+import org.faktorips.devtools.core.model.type.IAssociation;
 import org.faktorips.devtools.core.ui.DefaultLabelProvider;
-
 
 
 public class AssociationsLabelProvider extends DefaultLabelProvider {
@@ -28,10 +27,10 @@ public class AssociationsLabelProvider extends DefaultLabelProvider {
      * {@inheritDoc}
      */
     public String getText(Object element) {
-        if (!(element instanceof IPolicyCmptTypeAssociation)) {
+        if (!(element instanceof IAssociation)) {
             return super.getText(element);    
         }
-        IPolicyCmptTypeAssociation relation = (IPolicyCmptTypeAssociation)element;
+        IAssociation relation = (IAssociation)element;
         String targetName = relation.getTarget();
         int pos = targetName.lastIndexOf('.');
         if (pos>0) {
