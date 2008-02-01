@@ -54,7 +54,7 @@ public class GenericValueDatatypeTest extends TestCase {
         datatype.setToStringMethodName("getId");
         datatype.setValueOfMethodName("getPaymentMode");
         datatype.setNullObjectDefined(true);
-        datatype.setNullObjectId("unkownValue");
+        datatype.setNullObjectId("unknownValue");
         MessageList list = datatype.checkReadyToUse();
         assertEquals(1, list.getNoOfMessages());
         assertNotNull(list.getMessageByCode(GenericValueDatatype.MSGCODE_SPECIALCASE_NULL_NOT_FOUND));
@@ -86,7 +86,7 @@ public class GenericValueDatatypeTest extends TestCase {
      */
     public void testGetIsParsableMethod() {
         assertNotNull(datatype.getIsParsableMethod());
-        datatype.setIsParsableMethodName("unkownMethod");
+        datatype.setIsParsableMethodName("unknownMethod");
         try {
             datatype.getIsParsableMethod();
             fail();
@@ -113,7 +113,7 @@ public class GenericValueDatatypeTest extends TestCase {
     public void testGetValueOfMethod() {
         datatype.setValueOfMethodName("getPaymentMode");
         assertNotNull(datatype.getValueOfMethod());
-        datatype.setValueOfMethodName("unkownMethod");
+        datatype.setValueOfMethodName("unknownMethod");
         try {
             datatype.getValueOfMethod();
             fail();
@@ -135,7 +135,7 @@ public class GenericValueDatatypeTest extends TestCase {
     public void testGetToStringMethod() {
         datatype.setToStringMethodName("getId");
         assertNotNull(datatype.getToStringMethod());
-        datatype.setToStringMethodName("unkownMethod");
+        datatype.setToStringMethodName("unknownMethod");
         try {
             datatype.getValueOfMethod();
             fail();

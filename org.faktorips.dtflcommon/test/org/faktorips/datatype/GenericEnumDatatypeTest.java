@@ -62,7 +62,7 @@ public class GenericEnumDatatypeTest extends TestCase {
     public void testGetGetAllValuesMethod() {
         datatype.setGetAllValuesMethodName("getAllPaymentModes");
         assertNotNull(datatype.getGetAllValuesMethod());
-        datatype.setGetAllValuesMethodName("unkownMethod");
+        datatype.setGetAllValuesMethodName("unknownMethod");
         try {
             datatype.getGetAllValuesMethod();
             fail();

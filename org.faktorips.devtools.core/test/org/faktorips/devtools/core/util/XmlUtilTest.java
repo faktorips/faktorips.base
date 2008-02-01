@@ -70,7 +70,7 @@ public class XmlUtilTest extends XmlAbstractTestCase {
         Element testElement = XmlUtil.getFirstElement(docElement, "TestElement"); //$NON-NLS-1$
         assertNotNull(testElement);
         assertEquals("öäüÖÄÜß", testElement.getAttribute("value")); //$NON-NLS-1$ //$NON-NLS-2$
-        assertNull(XmlUtil.getFirstElement(docElement, "UnkownElement")); //$NON-NLS-1$
+        assertNull(XmlUtil.getFirstElement(docElement, "UnknownElement")); //$NON-NLS-1$
     }
     
     public void testGetElementByIndex() throws Exception {
