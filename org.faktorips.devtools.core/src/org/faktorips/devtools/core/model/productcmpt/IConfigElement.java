@@ -160,7 +160,7 @@ public interface IConfigElement extends IIpsObjectPart, IValueDatatypeProvider, 
 
     /**
      * Returns the element's value datatype, or <code>null</code> if it can't be found.
-     * The config element's datatype is the attribute's datatype the elemet is based on.
+     * The config element's datatype is the attribute's datatype the element is based on.
      * 
      * @param ipsProject The ips project which ips object path is used to search.
      * 
@@ -169,7 +169,7 @@ public interface IConfigElement extends IIpsObjectPart, IValueDatatypeProvider, 
     public ValueDatatype findValueDatatype(IIpsProject ipsProject) throws CoreException;
     
 	/**
-	 * Creates a copy of the given value set and aplies this copy to this config
+	 * Creates a copy of the given value set and applies this copy to this config
 	 * element.
 	 */
 	public void setValueSetCopy(IValueSet source);

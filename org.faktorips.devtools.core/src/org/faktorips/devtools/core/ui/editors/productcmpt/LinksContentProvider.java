@@ -49,7 +49,7 @@ public class LinksContentProvider implements ITreeContentProvider {
      */ 
     public Object[] getElements(Object inputElement) {
     	if (!(inputElement instanceof IProductCmptGeneration)) {
-            throw new RuntimeException("Unkown input element type " + inputElement.getClass()); //$NON-NLS-1$
+            throw new RuntimeException("Unknown input element type " + inputElement.getClass()); //$NON-NLS-1$
         }
 		IProductCmptGeneration generation = (IProductCmptGeneration)inputElement;
 		try {

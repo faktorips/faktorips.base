@@ -43,11 +43,11 @@ public interface IPropertyValue {
     public String getPropertyName();
 
     /**
-     * Returns the propery this object provides a value for. Returns <code>null</code> if the property can't be found.
+     * Returns the property this object provides a value for. Returns <code>null</code> if the property can't be found.
      * 
      * @param ispProject The ips project which search path is used.
      * 
-     * @throws CoreException if an error occures 
+     * @throws CoreException if an error occurs 
      */
     public IProdDefProperty findProperty(IIpsProject ipsProject) throws CoreException;
     

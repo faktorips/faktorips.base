@@ -175,7 +175,7 @@ public abstract class AbstractParameterIdentifierResolver implements IdentifierR
         if (datatype instanceof ValueDatatype) {
             return new CompilationResultImpl(param.getName(), datatype);
         }
-        throw new RuntimeException("Unkown datatype class " //$NON-NLS-1$
+        throw new RuntimeException("Unknown datatype class " //$NON-NLS-1$
                 + datatype.getClass());
     }
 

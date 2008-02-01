@@ -121,7 +121,7 @@ public class TestCaseContentProvider implements ITreeContentProvider {
 	/**
 	 * Returns the corresponding test policy component objects.<br>
 	 * Input, expected result or both objects.<br>
-	 * Rerurns <code>null</code> if this content provider has an unkown type.
+	 * Rerurns <code>null</code> if this content provider has an unknown type.
 	 */
 	public ITestPolicyCmpt[] getTestPolicyCmpts(){
 		if (isInput()){
@@ -137,7 +137,7 @@ public class TestCaseContentProvider implements ITreeContentProvider {
 	/**
 	 * Returns the corresponding test value objects.<br>
 	 * Input or expected result objects.<br>
-	 * Rerurns <code>null</code> if this content provider has an unkown type.
+	 * Rerurns <code>null</code> if this content provider has an unknown type.
 	 */
 	public ITestValue[] getTestValues(){
 		if (isCombined()){

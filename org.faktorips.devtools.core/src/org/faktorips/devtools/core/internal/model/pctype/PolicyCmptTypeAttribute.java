@@ -234,7 +234,7 @@ public class PolicyCmptTypeAttribute extends Attribute implements IPolicyCmptTyp
         if (getAttributeType() == AttributeType.DERIVED_BY_EXPLICIT_METHOD_CALL || getAttributeType() == AttributeType.DERIVED_ON_THE_FLY) {
             return null;
         }
-        throw new RuntimeException("Unkown AttributeType!"); //$NON-NLS-1$
+        throw new RuntimeException("Unknown AttributeType!"); //$NON-NLS-1$
     }
 
     /**

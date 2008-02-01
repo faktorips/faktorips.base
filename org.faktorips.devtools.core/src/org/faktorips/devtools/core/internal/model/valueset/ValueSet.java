@@ -39,7 +39,7 @@ import org.w3c.dom.Element;
  * when the datatype changes. E.g. If an attributes datatype is changed by the user from Decimal to Money,
  * lower bound and upper bound from a range value set become invalid (if they were valid before) but the 
  * string values remain. The user can switch back the datatype to Decimal and the range is valid again. 
- * This works also when the attribute's datatype is unkown.
+ * This works also when the attribute's datatype is unknown.
  * 
  * @author Thorsten Guenther
  * @author Jan Ortmann

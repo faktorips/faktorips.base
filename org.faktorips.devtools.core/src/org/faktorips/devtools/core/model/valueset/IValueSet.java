@@ -28,7 +28,7 @@ import org.faktorips.util.message.MessageList;
  * when the datatype changes. E.g. If an attributes datatype is changed by the user from Decimal to Money,
  * lower bound and upper bound from a range value set become invalid (if they were valid before) but the 
  * string values remain. The user can switch back the datatype to Decimal and the range is valid again. 
- * This works also when the attribute's datatype is unkown.
+ * This works also when the attribute's datatype is unknown.
  * 
  * @author Thorsten Guenther
  * @author Jan Ortmann
@@ -151,7 +151,7 @@ public interface IValueSet extends IIpsObjectPart {
     public void setValuesOf(IValueSet source);
     
     /**
-     * Returns the unqulified, human readable representation of this value set.
+     * Returns the unqualified, human readable representation of this value set.
      * If the datatype provided by the parent supports named values, the names provided
      * from the datatype are used to build the value-representations.
      */

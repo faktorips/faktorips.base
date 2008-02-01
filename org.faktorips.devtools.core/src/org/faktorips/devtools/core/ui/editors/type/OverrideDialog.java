@@ -215,7 +215,7 @@ public abstract class OverrideDialog extends CheckedTreeSelectionDialog {
             if (element instanceof IIpsObjectPart) {
                 return ((IIpsObjectPart)element).getParent();
             }
-            throw new RuntimeException("Unkown element " + element); //$NON-NLS-1$
+            throw new RuntimeException("Unknown element " + element); //$NON-NLS-1$
         }
 
         /** 

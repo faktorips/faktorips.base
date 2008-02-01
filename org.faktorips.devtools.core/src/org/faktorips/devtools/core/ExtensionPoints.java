@@ -53,7 +53,7 @@ public class ExtensionPoints {
         IExtensionPoint point = registry.getExtensionPoint(IpsPlugin.PLUGIN_ID, pointId);
         if (point==null) {
             IpsPlugin.log(new IpsStatus("ExtensionPoint " + pointId + " not found!")); //$NON-NLS-1$ //$NON-NLS-2$
-            throw new IllegalArgumentException("Unkown extension point " + pointId); //$NON-NLS-1$
+            throw new IllegalArgumentException("Unknown extension point " + pointId); //$NON-NLS-1$
         }
         return point.getExtensions();
     }

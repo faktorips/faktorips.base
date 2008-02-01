@@ -105,14 +105,14 @@ public abstract class IpsObjectPartContainer extends IpsElement implements IIpsO
      * {@inheritDoc}
      * 
      * The IpsObjectPartContainer version does not throw an exception as no
-     * resource access is not neccessary.
+     * resource access is necessary.
      *
      * @see org.faktorips.devtools.core.model.IIpsElement#getChildren()
      */
     public abstract IIpsElement[] getChildren();
     
     /**
-     * Returns the id that can be used for a new part, so that it's id is unique.
+     * Returns the id that can be used for a new part, so that its id is unique.
      */
     protected int getNextPartId() {
         int maxId = -1;

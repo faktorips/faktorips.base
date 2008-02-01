@@ -82,8 +82,8 @@ public interface IProductCmptGeneration extends IIpsObjectGeneration {
     public final static String MSGCODE_DUPLICATE_RELATION_TARGET = MSGCODE_PREFIX + "DuplicateRelationTarget"; //$NON-NLS-1$
 
     /**
-     * Validation message code to identifiy the message that informs about a link to a product component that doesn't have
-     * an effectiv date that is before or equal to the effective date of the referencing product component generation.
+     * Validation message code to identify the message that informs about a link to a product component that doesn't have
+     * an effective date that is before or equal to the effective date of the referencing product component generation.
      */
     public final static String MSGCODE_LINKS_WITH_WRONG_EFFECTIVE_DATE = MSGCODE_PREFIX + "LinksWithWrongEffectivDate"; //$NON-NLS-1$
 
@@ -127,7 +127,7 @@ public interface IProductCmptGeneration extends IIpsObjectGeneration {
     public void sortPropertiesAccordingToModel(IIpsProject ipsProject) throws CoreException;
     
     /**
-     * Returns the propery value for the given property or <code>null</code> if no value is defined
+     * Returns the property value for the given property or <code>null</code> if no value is defined
      * for this generation. In this case {@link #computeDeltaToModel(IIpsProject)} returns a delta containing
      * an entry for the missing property value.
      * <p>
@@ -139,7 +139,7 @@ public interface IProductCmptGeneration extends IIpsObjectGeneration {
     public IPropertyValue getPropertyValue(IProdDefProperty property);
 
     /**
-     * Returns the propery values for the given property name or <code>null</code> if no value is defined
+     * Returns the property values for the given property name or <code>null</code> if no value is defined
      * for this generation. In this case {@link #computeDeltaToModel(IIpsProject)} returns a delta containing
      * an entry for the missing property value.
      * <p>
@@ -148,7 +148,7 @@ public interface IProductCmptGeneration extends IIpsObjectGeneration {
     public IPropertyValue getPropertyValue(String propertyName);
 
     /**
-     * Returns all propery values for the given type. Returns an empty array if type is <code>null</code>.
+     * Returns all property values for the given type. Returns an empty array if type is <code>null</code>.
      */
     public IPropertyValue[] getPropertyValues(ProdDefPropertyType type);
     
@@ -160,7 +160,7 @@ public interface IProductCmptGeneration extends IIpsObjectGeneration {
     public IPropertyValue newPropertyValue(IProdDefProperty property);
     
     /**
-     * Returns the numer of attribute values defined in the generation. 
+     * Returns the number of attribute values defined in the generation. 
      */
     public int getNumOfAttributeValues();
 
@@ -267,10 +267,10 @@ public interface IProductCmptGeneration extends IIpsObjectGeneration {
     
     /**
      * Checks whether a new link as instance of the given product component type association and 
-     * the gven target will be valid.
+     * the given target will be valid.
      * 
      * @param ipsProject The project which ips object path is used for the searched.
-     *                   This is not neccessarily the project this component is part of. 
+     *                   This is not necessarily the project this component is part of. 
      *                   
      * @return <code>true</code> if a new relation with the given values will be valid, <code>false</code> otherwise.
      * 
@@ -332,7 +332,7 @@ public interface IProductCmptGeneration extends IIpsObjectGeneration {
     public IFormula newFormula();
     
     /**
-     * Creates a new formula based on the given signture. If signature is <code>null</code> the
+     * Creates a new formula based on the given signature. If signature is <code>null</code> the
      * formula is still created, but no reference to a signature is set.
      */
     public IFormula newFormula(IProductCmptTypeMethod signature);

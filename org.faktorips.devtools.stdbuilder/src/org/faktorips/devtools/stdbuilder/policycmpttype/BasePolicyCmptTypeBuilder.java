@@ -81,7 +81,7 @@ public abstract class BasePolicyCmptTypeBuilder extends AbstractPcTypeBuilder {
             }
             generateCodeForComputedAttribute(attribute, datatypeHelper, memberVarsBuilder, methodsBuilder);
         } else {
-            throw new RuntimeException("Unkown attribute type " + type);
+            throw new RuntimeException("Unknown attribute type " + type);
         }
     }
 

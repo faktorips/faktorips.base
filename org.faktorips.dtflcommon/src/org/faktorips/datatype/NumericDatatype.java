@@ -15,7 +15,7 @@
 package org.faktorips.datatype;
 
 /**
- * Speical value datatype representing numbers.
+ * Special value datatype representing numbers.
  * 
  * @author Jan Ortmann
  */

@@ -286,7 +286,7 @@ public class ConfigElement extends IpsObjectPart implements IConfigElement {
             } else if (valueSet instanceof IRangeValueSet) {
                 invalidProperties = new String[]{IRangeValueSet.PROPERTY_LOWERBOUND, IRangeValueSet.PROPERTY_UPPERBOUND};
             } else {
-                // AllValueSet or unkown
+                // AllValueSet or unknown
                 obj = this;
                 invalidProperties = new String[]{PROPERTY_VALUE};
             }
@@ -294,7 +294,7 @@ public class ConfigElement extends IpsObjectPart implements IConfigElement {
         }
 
 		if (StringUtils.isNotEmpty(value)) {
-			// validate valuset containment. If the type of this element
+			// validate valueset containment. If the type of this element
 			// is PRODUCT_ATTRIBUTE, we do not validate against the
 			// valueset of this element but against the valueset of
 			// the attribute this element is based on. This is because an

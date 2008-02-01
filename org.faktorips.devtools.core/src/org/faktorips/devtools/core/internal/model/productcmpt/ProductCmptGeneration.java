@@ -372,10 +372,10 @@ public class ProductCmptGeneration extends IpsObjectGeneration implements IProdu
      */
     public IConfigElement newConfigElement(IPolicyCmptTypeAttribute attribute) {
         IConfigElement newElement = newConfigElementInternal(getNextPartId(), attribute);
-        //this is neccessary because though broadcasting has been stopped the modified status will still be changed.
-        //To enable the trigging of the modification event in the objectHasChanged() method it is necessary to clear
+        //this is necessary because though broadcasting has been stopped the modified status will still be changed.
+        //To enable the triggering of the modification event in the objectHasChanged() method it is necessary to clear
         //the modification status first
-        //TODO pk possible better solution: sent a modification event after resuming broadcasting
+        //TODO pk possible better solution: send a modification event after resuming broadcasting
         getIpsSrcFile().markAsClean();
         objectHasChanged();
         return newElement;
@@ -810,7 +810,7 @@ public class ProductCmptGeneration extends IpsObjectGeneration implements IProdu
                     String text = NLS.bind(
                             Messages.ProductCmptGeneration_msgNoGenerationInLinkedTargetForEffectiveDate,
                             new Object[]{productCmpt.getQualifiedName(), generationName, dateString});
-                    msgList.add(new Message(MSGCODE_LINKS_WITH_WRONG_EFFECTIVE_DATE, text, Message.ERROR, links[i]));
+                    msgList.add(new Message(MSGCODE_LINKS_WITH_WRONG_EFFECTIVE_DATE, text, Message.INFO, links[i]));
                 }
             }
         }

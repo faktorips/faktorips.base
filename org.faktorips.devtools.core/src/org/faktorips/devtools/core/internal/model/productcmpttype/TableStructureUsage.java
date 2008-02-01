@@ -98,7 +98,7 @@ public class TableStructureUsage extends IpsObjectPart implements ITableStructur
         if (partType.equals(TableStructureReference.class)){
             return newTableStructureReference();
         }
-        throw new RuntimeException("Unkown part type " + partType); //$NON-NLS-1$
+        throw new RuntimeException("Unknown part type " + partType); //$NON-NLS-1$
     }
     
     /**
@@ -108,7 +108,7 @@ public class TableStructureUsage extends IpsObjectPart implements ITableStructur
         if (part instanceof TableStructureReference) {
             this.tableStructures.remove(part);
         }
-        throw new RuntimeException("Unkown part type " + part.getClass()); //$NON-NLS-1$
+        throw new RuntimeException("Unknown part type " + part.getClass()); //$NON-NLS-1$
     }
 
     /**

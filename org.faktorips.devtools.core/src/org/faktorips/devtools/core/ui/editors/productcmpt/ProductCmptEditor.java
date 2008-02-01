@@ -461,7 +461,7 @@ public class ProductCmptEditor extends TimedIpsObjectEditor implements IModelDes
 	}
 
     /**
-     * Set if a missmatch of a working date will be handled or ignored.
+     * Set if a mismatch of a working date will be handled or ignored.
      */
     public void setIgnoreHandlingOfWorkingDateMissmatch(boolean ignoreHandlingOfWorkingDateMissmatch) {
         this.ignoreHandlingOfWorkingDateMissmatch = ignoreHandlingOfWorkingDateMissmatch;
