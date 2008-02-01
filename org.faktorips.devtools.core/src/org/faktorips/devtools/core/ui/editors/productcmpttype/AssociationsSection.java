@@ -110,17 +110,18 @@ public class AssociationsSection extends SimpleIpsPartsSection {
             final MenuManager menuManager = new MenuManager();
             menuManager.setRemoveAllWhenShown(true);
             // display menu only if one element is selected
-            menuManager.addMenuListener(new IMenuListener(){
+            menuManager.addMenuListener(new IMenuListener() {
                 public void menuAboutToShow(IMenuManager manager) {
                     ISelection selection = getViewer().getSelection();
-                    if (selection.isEmpty()){
+                    if (selection.isEmpty()) {
                         return;
                     }
-                    OpenTargetProductCmptTypeInEditorAction openAction = new OpenTargetProductCmptTypeInEditorAction(getViewer());
+                    OpenTargetProductCmptTypeInEditorAction openAction = new OpenTargetProductCmptTypeInEditorAction(
+                            getViewer());
                     menuManager.add(openAction);
                 }
             });
-            
+
             Menu menu = menuManager.createContextMenu(getViewer().getControl());
             getViewer().getControl().setMenu(menu);
         }
@@ -149,7 +150,12 @@ public class AssociationsSection extends SimpleIpsPartsSection {
         protected IIpsObjectPart newIpsPart() {
             return getProductCmptType().newProductCmptTypeAssociation();
         }
-        
-    }
 
+        /**
+         * {@inheritDoc}
+         */
+        protected int[] moveParts(int[] indexes, boolean up) {
+            return getProductCmptType().moveAssociations(indexes, up);
+        }
+    }
 }

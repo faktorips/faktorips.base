@@ -171,6 +171,9 @@ public class AttributesSection extends SimpleIpsPartsSection {
             return new AttributeEditDialog((IPolicyCmptTypeAttribute)part, shell);
         }
         
+        /**
+         * {@inheritDoc}
+         */
         protected int[] moveParts(int[] indexes, boolean up) {
             return getPcType().moveAttributes(indexes, up);
         }

@@ -95,8 +95,11 @@ public class AttributesSection extends SimpleIpsPartsSection {
             return new AttributeEditDialog((IProductCmptTypeAttribute)part, shell);
         }
         
+        /**
+         * {@inheritDoc}
+         */
         protected int[] moveParts(int[] indexes, boolean up) {
-            return indexes;
+            return getProductCmptType().moveAttributes(indexes, up);
         }
         
         private class AttributeContentProvider implements IStructuredContentProvider {
