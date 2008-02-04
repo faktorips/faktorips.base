@@ -289,7 +289,7 @@ public class ProductCmptGeneration extends IpsObjectGeneration implements IProdu
      * {@inheritDoc}
      */
     public IAttributeValue newAttributeValue(IProductCmptTypeAttribute attribute) {
-        AttributeValue newValue = newAttributeValueInternal(getNextPartId(), attribute,
+        IAttributeValue newValue = newAttributeValueInternal(getNextPartId(), attribute,
                 attribute == null ? "" : attribute.getDefaultValue()); //$NON-NLS-1$
         objectHasChanged();
         return newValue;
