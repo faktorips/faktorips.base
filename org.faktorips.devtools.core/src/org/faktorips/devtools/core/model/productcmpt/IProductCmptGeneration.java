@@ -269,7 +269,7 @@ public interface IProductCmptGeneration extends IIpsObjectGeneration {
      * Checks whether a new link as instance of the given product component type association and 
      * the given target will be valid.
      * 
-     * @param ipsProject The project which ips object path is used for the searched.
+     * @param ipsProject The project which ips object path is used for the search.
      *                   This is not necessarily the project this component is part of. 
      *                   
      * @return <code>true</code> if a new relation with the given values will be valid, <code>false</code> otherwise.

@@ -67,8 +67,8 @@ public interface ITestCase extends IIpsObject, IFixDifferencesToModelSupport {
     /**
      * Search and return the test case type object in the model.
      * 
-     * @param ipsProject The project which ips object path is used for the searched.
-     *                   This is not neccessarily the project this component is part of.
+     * @param ipsProject The project which ips object path is used for the search.
+     *                   This is not necessarily the project this component is part of.
      *                   
      * @return The test case type or <code>null</code> if the test case type can't be found.
      * 
@@ -95,7 +95,7 @@ public interface ITestCase extends IIpsObject, IFixDifferencesToModelSupport {
     public ITestValue[] getTestValues();
     
     /**
-     * Returns all test rule objects wich are related to the given test rule parameter or an empty
+     * Returns all test rule objects which are related to the given test rule parameter or an empty
      * array if the test case hasn't got such test rule objects.
      */
     public ITestRule[] getTestRule(String testRuleParameter);
@@ -120,7 +120,7 @@ public interface ITestCase extends IIpsObject, IFixDifferencesToModelSupport {
 
     /**
      * Returns all input policy component objects or an empty array if the test case hasn't got any
-     * input policy component objetcs.
+     * input policy component objects.
      */
     public ITestPolicyCmpt[] getInputTestPolicyCmpts();
 
@@ -221,7 +221,7 @@ public interface ITestCase extends IIpsObject, IFixDifferencesToModelSupport {
     public IValidationRule[] getTestRuleCandidates(IIpsProject ipsProject) throws CoreException;
     
     /**
-     * Searchs and returns the validation rule with the given name which is inside the test case.
+     * Searches and returns the validation rule with the given name which is inside the test case.
      * The rule will be searched in all policy cmpt which are related by test test policy cmpt's.
      * 
      * @see ITestCase#getTestRuleCandidates()

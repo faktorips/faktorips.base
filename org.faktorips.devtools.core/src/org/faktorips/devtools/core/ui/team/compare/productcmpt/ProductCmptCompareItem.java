@@ -265,7 +265,7 @@ public class ProductCmptCompareItem extends AbstractCompareItem{
      * {@inheritDoc} 
      * For every generation as well as its configelements and relations the validFrom
      * date is prepended to every line of the text representation. The format of the date prefix is
-     * not necessaryly equal to the faktorips format, instead SimpleDateFormat.MEDIUM is used. The
+     * not necessarily equal to the faktorips format, instead SimpleDateFormat.MEDIUM is used. The
      * prepended date is needed for the rangedifferencing (calculation of differences based on the
      * text representation) that is performed by the <code>TextMergeViewer</code> internally.
      */

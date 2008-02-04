@@ -170,7 +170,7 @@ public class ContentPage extends IpsObjectEditorPage {
      * selected row by pressing "F2".
      * 
      * @param formBody
-     * @return The newly created and initalized Table.
+     * @return The newly created and initialized Table.
      */
     private Table createTable(Composite formBody) {
         // Table: scroll both vertically and horizontally
@@ -359,7 +359,7 @@ public class ContentPage extends IpsObjectEditorPage {
         }
         
         /**
-         * Checks wether a row is empty or not. Returns <code>true</code> if all the given row's
+         * Checks whether a row is empty or not. Returns <code>true</code> if all the given row's
          * values (columns) contain a whitespace string.
          * <p>
          * <code>null</code> is treated as content. Thus a row that contains <code>null</code>

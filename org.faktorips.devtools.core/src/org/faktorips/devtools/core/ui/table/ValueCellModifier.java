@@ -22,7 +22,7 @@ import org.eclipse.jface.viewers.ITableLabelProvider;
 import org.faktorips.devtools.core.IpsPlugin;
 
 /**
- * A cell modifier which supports null-representaion values.
+ * A cell modifier which supports null-representation values.
  * 
  * @author Joerg Ortmann
  */

@@ -85,7 +85,7 @@ public interface IType extends IIpsObject, Datatype {
     public boolean isAbstract();
 
     /**
-     * Sets wether this is an abstract type or not.
+     * Sets whether this is an abstract type or not.
      */
     public void setAbstract(boolean newValue);
     
@@ -107,8 +107,8 @@ public interface IType extends IIpsObject, Datatype {
      * on the project's ips object path. Returns <code>null</code> if either this type is not derived from 
      * a supertype or the supertype can't be found on the project's ips object path. 
      * 
-     * @param ipsProject The project which ips object path is used for the searched.
-     * This is not neccessarily the project this type is part of. 
+     * @param ipsProject The project which ips object path is used for the search.
+     * This is not necessarily the project this type is part of. 
      *
      * @throws CoreException if an error occurs while searching for the supertype.
      */
@@ -127,8 +127,8 @@ public interface IType extends IIpsObject, Datatype {
      * is <code>null</code>.
      * 
      * @param supertypeCandidate The type which is the possibly a supertype of this type
-     * @param ipsProject The project which ips object path is used for the searched.
-     * This is not neccessarily the project this type is part of. 
+     * @param ipsProject The project which ips object path is used for the search.
+     * This is not necessarily the project this type is part of. 
      * 
      * @throws CoreException if an error occurs while searching the type hierarchy.
      */
@@ -140,8 +140,8 @@ public interface IType extends IIpsObject, Datatype {
      * Returns <code>false</code> if candidate is <code>null</code>.
      * 
      * @param supertypeCandidate The type which is the possibly a supertype of this type
-     * @param ipsProject The project which ips object path is used for the searched.
-     * This is not neccessarily the project this type is part of. 
+     * @param ipsProject The project which ips object path is used for the search.
+     * This is not necessarily the project this type is part of. 
      * 
      * @throws CoreException if an error occurs while searching the type hierarchy.
      */
@@ -175,8 +175,8 @@ public interface IType extends IIpsObject, Datatype {
      * Returns <code>null</code> if no such attribute exists.
      * 
      * @param name          The attribute's name.
-     * @param ipsProject    The project which ips object path is used for the searched.
-     *                      This is not neccessarily the project this type is part of. 
+     * @param ipsProject    The project which ips object path is used for the search.
+     *                      This is not necessarily the project this type is part of. 
      * 
      * @throws NullPointerException if project is <code>null</code>.
      * @throws CoreException if an error occurs while searching.
@@ -212,7 +212,7 @@ public interface IType extends IIpsObject, Datatype {
     public int[] moveAttributes(int[] indexes, boolean up);
     
     /**
-     * Returns the assocation with the given name defined in <strong>this</strong> type.
+     * Returns the association with the given name defined in <strong>this</strong> type.
      * (This method does not search the supertype hierarchy.)
      * If more than one association with the name exist, the first one is returned.
      * Returns <code>null</code> if no association with the given name exists or name is <code>null</code>.
@@ -221,11 +221,11 @@ public interface IType extends IIpsObject, Datatype {
     
     /**
      * Searches an association with the given name in the type and it's supertype hierarchy and returns it. 
-     * Returns <code>null</code> if no such assoiation exists.
+     * Returns <code>null</code> if no such association exists.
      * 
      * @param name          The association's name.
-     * @param ipsProject    The project which ips object path is used for the searched.
-     *                      This is not neccessarily the project this type is part of. 
+     * @param ipsProject    The project which ips object path is used for the search.
+     *                      This is not necessarily the project this type is part of. 
      * 
      * @throws CoreException if an error occurs while searching.
      */
@@ -311,8 +311,8 @@ public interface IType extends IIpsObject, Datatype {
      * Returns <code>null</code> if no such method exists.
      * 
      * @param name          The method's sigature as string, e.g. computePremium(base.Contract, base.Coverage)
-     * @param ipsProject    The project which ips object path is used for the searched.
-     *                      This is not neccessarily the project this type is part of. 
+     * @param ipsProject    The project which ips object path is used for the search.
+     *                      This is not necessarily the project this type is part of. 
      * 
      * @throws NullPointerException if project is <code>null</code>.
      * @throws CoreException if an error occurs while searching.
@@ -325,8 +325,8 @@ public interface IType extends IIpsObject, Datatype {
      * 
      * @param name          The method's name.
      * @param datatypes     The datatypes of the method's parameters.
-     * @param ipsProject    The project which ips object path is used for the searched.
-     *                      This is not neccessarily the project this type is part of. 
+     * @param ipsProject    The project which ips object path is used for the search.
+     *                      This is not necessarily the project this type is part of. 
      * 
      * @throws NullPointerException if project is <code>null</code>.
      * @throws CoreException if an error occurs while searching.
@@ -363,11 +363,11 @@ public interface IType extends IIpsObject, Datatype {
     
     /**
      * Returns a list of methods defined in any of the type's supertypes
-     * that can be overriden (and isn't overriden yet).
+     * that can be overridden (and isn't overridden yet).
      * 
      * @param onlyAbstractMethods if true only abstract methods are returned.
-     * @param ipsProject          The project which ips object path is used for the searched.
-     *                            This is not neccessarily the project this type is part of. 
+     * @param ipsProject          The project which ips object path is used for the search.
+     *                            This is not necessarily the project this type is part of. 
      */
     public IMethod[] findOverrideMethodCandidates(boolean onlyNotImplementedAbstractMethods, IIpsProject ipsProject) throws CoreException;
     

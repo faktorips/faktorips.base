@@ -273,7 +273,7 @@ public abstract class AbstractCompareItem implements IStreamContentAccessor, ISt
     }
 
     /**
-     * Returns wether this ProductCmptCompareItem has children.
+     * Returns whether this ProductCmptCompareItem has children.
      */
     protected boolean hasChildren() {
         return !children.isEmpty();

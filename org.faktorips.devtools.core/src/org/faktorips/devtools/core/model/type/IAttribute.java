@@ -104,8 +104,8 @@ public interface IAttribute extends IIpsObjectPart {
      * the policy component type's value datatype is returned. If the attribute is not linked, the attribute's *own*
      * value datatype is returned.
      * 
-     * @param project The project which ips object path is used for the searched.
-     * This is not neccessarily the project this type is part of. 
+     * @param project The project which ips object path is used for the search.
+     * This is not necessarily the project this type is part of. 
      *
      * @see #getDatatype()
      */

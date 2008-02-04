@@ -106,7 +106,7 @@ public abstract class TableCellEditor extends CellEditor{
     }
     
     /**
-     * Inititializes a <code>TraverseListener</code> for this CellEditor's control. 
+     * Initializes a <code>TraverseListener</code> for this CellEditor's control. 
      * This listener is used for navigation the table with tab, shift-tab, enter and escape.
      */
     protected void initTraverseListener(Control control){
@@ -129,7 +129,7 @@ public abstract class TableCellEditor extends CellEditor{
         });
     }
     /**
-     * Inititializes a <code>KeyListener</code> for this CellEditor's control. 
+     * Initializes a <code>KeyListener</code> for this CellEditor's control. 
      * This listener is used for navigation the table with arrow-up and arrow-down.
      */
     protected void initKeyListener(Control control){
@@ -246,11 +246,11 @@ public abstract class TableCellEditor extends CellEditor{
      * Converts the given rowIndex to a valid index and returns it. This method may also create a
      * new row if this cellEditor is configured to do so.
      * <p>
-     * If the given rowindex ist less than zero, 0 is returned. If rowindex is valid (greater or
+     * If the given rowindex is less than zero, 0 is returned. If rowindex is valid (greater or
      * equal than zero and less than the number of rows in the table) the given rowIndex is simply
      * returned.
      * <p>
-     * If th rowindex is greater or equal than the number of tableitems actions are possible:
+     * If the rowindex is greater or equal than the number of tableitems actions are possible:
      * <ul>
      * <li> If isRowCreating()==true a new row is created and its index returned. </li>
      * <li> If isRowCreating()==false no row is created, instead the index of last row of the table
@@ -262,7 +262,7 @@ public abstract class TableCellEditor extends CellEditor{
      * @see ContentPage
      * 
      * @param nextRow
-     * @return The index of the last row of the table (wether it was newly created or not).
+     * @return The index of the last row of the table (whether it was newly created or not).
      */
     private int requestRow(int nextRow) {
         // transform to valid range

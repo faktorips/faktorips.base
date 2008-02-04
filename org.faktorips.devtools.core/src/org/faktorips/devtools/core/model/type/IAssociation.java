@@ -170,7 +170,7 @@ public interface IAssociation extends IIpsObjectPart {
      * Returns the target type or <code>null</code> if either this association hasn't got a target
      * or the target does not exists.
      * 
-     * @param project The project which ips object path is used for the searched.
+     * @param project The project which ips object path is used for the search.
      * This is not necessarily the project this type is part of. 
      * 
      * @throws CoreException if an error occurs while searching for the target.
@@ -322,7 +322,7 @@ public interface IAssociation extends IIpsObjectPart {
      * otherwise <code>false</code>. Returns <code>false</code> if derived union is <code>null</code>.
      * This method does not check if the given association is *really* a derived union.
      * 
-     * @param ipsProject The project which ips object path is used for the searched.
+     * @param ipsProject The project which ips object path is used for the search.
      * This is not necessarily the project this type is part of.
      * 
      * @throws CoreException if an error occurs while searching for the derived union.
@@ -335,7 +335,7 @@ public interface IAssociation extends IIpsObjectPart {
      * a derived union is <b>really</b> a derived union. It just returns the association that is defined as being
      * subsetted by this one. 
      * 
-     * @param ipsProject The project which ips object path is used for the searched.
+     * @param ipsProject The project which ips object path is used for the search.
      * This is not necessarily the project this type is part of.
      * 
      * @throws CoreException if an error occurs while searching.

@@ -64,7 +64,7 @@ public interface IMethod extends IParameterContainer {
      * can't be found.
      *  
      * @param project The project which ips object path is used to search.
-     * This is not neccessarily the project this method belongs to. 
+     * This is not necessarily the project this method belongs to. 
      * 
      * @throws CoreException if an error occurs while searching.
      * @throws NullPointerException if ipsProject is <code>null</code>.

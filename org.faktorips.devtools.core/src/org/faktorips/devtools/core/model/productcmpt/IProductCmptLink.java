@@ -40,7 +40,7 @@ public interface IProductCmptLink extends IIpsObjectPart {
     public final static int CARDINALITY_MANY = IPolicyCmptTypeAssociation.CARDINALITY_MANY;
     
     /**
-     * The name of the xml-tag used if this object is saved to xml.
+     * The name of the XML-tag used if this object is saved to XML.
      */
 	public final static String TAG_NAME = "Link"; //$NON-NLS-1$
     
@@ -50,7 +50,7 @@ public interface IProductCmptLink extends IIpsObjectPart {
     public final static String MSGCODE_PREFIX = "PRODUCTCMPT_RELATION-"; //$NON-NLS-1$
     
     /**
-     * Validation message code to indicate that the asscoation in the model can't be found.
+     * Validation message code to indicate that the association in the model can't be found.
      */
     public final static String MSGCODE_UNKNWON_ASSOCIATION = MSGCODE_PREFIX + "UnknownAssociation"; //$NON-NLS-1$
     
@@ -77,13 +77,13 @@ public interface IProductCmptLink extends IIpsObjectPart {
 
     /**
      * Validation message code to indicate that the maximum cardinality is less than 
-     * the min cardinality.
+     * the minimum cardinality.
      */
     public final static String MSGCODE_MAX_CARDINALITY_IS_LESS_THAN_MIN = MSGCODE_PREFIX + "MaxCardinalityIsLessThanMin"; //$NON-NLS-1$
 
     /**
      * Validation message code to indicate that the maximum cardinality is less than 
-     * the min cardinality.
+     * the minimum cardinality.
      */
     public final static String MSGCODE_INVALID_TARGET = MSGCODE_PREFIX + "InvalidTarget"; //$NON-NLS-1$
     
@@ -107,8 +107,8 @@ public interface IProductCmptLink extends IIpsObjectPart {
      * Note that the method searches not only the direct product component type this product component is based on, 
      * but also it's super type hierarchy.
      * 
-     * @param ipsProject The project which ips object path is used for the searched.
-     *                   This is not neccessarily the project this type is part of. 
+     * @param ipsProject The project which ips object path is used for the search.
+     *                   This is not necessarily the project this type is part of. 
      * 
      * @return the association or <code>null</code> if no such association exists.
      * 
@@ -128,11 +128,11 @@ public interface IProductCmptLink extends IIpsObjectPart {
     public void setTarget(String newTarget);
 
     /**
-     * Retursn the product component which is the target of this association or <code>null</code>, 
+     * Returns the product component which is the target of this association or <code>null</code>, 
      * if no (valid) target name is set.
      * 
-     * @param ipsProject The project which ips object path is used for the searched.
-     *                   This is not neccessarily the project this component is part of. 
+     * @param ipsProject The project which ips object path is used for the search.
+     *                   This is not necessarily the project this component is part of. 
      *      
      * @throws CoreException if an exception occurs while searching for the type.
      * @throws NullPointerException if ipsProject is <code>null</code>.
@@ -140,38 +140,38 @@ public interface IProductCmptLink extends IIpsObjectPart {
     public IProductCmpt findTarget(IIpsProject ipsProject) throws CoreException;
 
     /**
-     * Returns the minmum number of target instances required in this relation.   
+     * Returns the minimum number of target instances required in this relation.   
      */
     public int getMinCardinality();
     
     /**
-     * Sets the minmum number of target instances required in this relation.   
+     * Sets the minimum number of target instances required in this relation.   
      */
     public void setMinCardinality(int newValue);
     
     /**
-     * Returns the maxmium number of target instances allowed in this relation.
+     * Returns the maximum number of target instances allowed in this relation.
      * If the number is not limited CARDINALITY_MANY is returned. 
      */
     public int getMaxCardinality();
     
     /**
-     * Sets the maxmium number of target instances allowed in this relation.
+     * Sets the maximum number of target instances allowed in this relation.
      * An unlimited number is represented by CARDINALITY_MANY. 
      */
     public void setMaxCardinality(int newValue);
     
     /**
-     * Returns weather or not this Relation is mandatory. A Relation is mandatory if both minimum
+     * Returns whether this Relation is mandatory. A Relation is mandatory if both minimum
      * and maximum-cardinality are equal to 1.
      * @return <code>true</code> if this Relation is mandatory, else <code>false</code>.
      */
     public boolean isMandatory();
 
     /**
-     * Returns weather or not this Relation is optional. A Relation is optional if the minimum
+     * Returns whether this Relation is optional. A Relation is optional if the minimum
      * cardinality equals 0 and the maximum cardinality equals 1.
-     * @return <code>true</code> if this Relation is optinal, else <code>false</code>.
+     * @return <code>true</code> if this Relation is optional, else <code>false</code>.
      */
     public boolean isOptional();
 }

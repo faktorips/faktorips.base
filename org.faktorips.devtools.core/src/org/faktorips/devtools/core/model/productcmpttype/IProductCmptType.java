@@ -111,8 +111,8 @@ public interface IProductCmptType extends IIpsObject, IType {
      * Returns <code>null</code> if either this product component type does not refer to a policy
      * component type or the policy component type can't be found.
      * 
-     * @param project The project which ips object path is used for the searched.
-     * This is not neccessarily the project this type is part of. 
+     * @param project The project which ips object path is used for the search.
+     * This is not necessarily the project this type is part of. 
      * 
      * @throws CoreException if an error occurs while searching for the type.
      */
@@ -123,8 +123,8 @@ public interface IProductCmptType extends IIpsObject, IType {
      * on the project's ips object path. Returns <code>null</code> if either this type is not based on
      * a supertype or the supertype can't be found on the project's ips object path. 
      * 
-     * @param project The project which ips object path is used for the searched.
-     * This is not neccessarily the project this type is part of. 
+     * @param project The project which ips object path is used for the search.
+     * This is not necessarily the project this type is part of. 
      *
      * @throws CoreException if an error occurs while searching for the supertype.
      */
@@ -149,8 +149,8 @@ public interface IProductCmptType extends IIpsObject, IType {
      * Returns <code>null</code> if no such attribute exists.
      * 
      * @param name          The attribute's name.
-     * @param ipsProject    The project which ips object path is used for the searched.
-     *                      This is not neccessarily the project this type is part of. 
+     * @param ipsProject    The project which ips object path is used for the search.
+     *                      This is not necessarily the project this type is part of. 
      * 
      * @throws NullPointerException if project is <code>null</code>.
      * @throws CoreException if an error occurs while searching.
@@ -196,8 +196,8 @@ public interface IProductCmptType extends IIpsObject, IType {
      * supertype hierarchy. If no table structure usage is found, <code>null</code> is returned.
      * 
      * @param roleName the role name of the ITableStructureUsage in question 
-     * @param project The project which ips object path is used for the searched.
-     * This is not neccessarily the project this type is part of. 
+     * @param project The project which ips object path is used for the search.
+     * This is not necessarily the project this type is part of. 
      * 
      * @return the ITableStructureUsage for the provided name or <code>null</code> if non is found
      */
@@ -269,7 +269,7 @@ public interface IProductCmptType extends IIpsObject, IType {
     public IProductCmptTypeMethod findFormulaSignature(String formulaName, IIpsProject ipsProject) throws CoreException;
 
     /**
-     * Returns the types product definition properties inlcuding properties defined in one of the type's supertypes.
+     * Returns the types product definition properties including properties defined in one of the type's supertypes.
      * 
      * @throws CoreException
      */

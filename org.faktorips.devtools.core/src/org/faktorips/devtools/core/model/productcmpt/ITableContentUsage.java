@@ -97,8 +97,8 @@ public interface ITableContentUsage extends IIpsObjectPart, IPropertyValue {
      * Returns the related table structure usage or <code>null</code> if the table contents
      * can't be found.
      * 
-     * @param project The project which ips object path is used for the searched.
-     * This is not neccessarily the project this type is part of. 
+     * @param project The project which ips object path is used for the search.
+     * This is not necessarily the project this type is part of. 
      * 
      * @throws CoreException if an error occurs while searching for the table structure usage.
      * @throws NullPointerException if ipsProject is <code>null</code>.
