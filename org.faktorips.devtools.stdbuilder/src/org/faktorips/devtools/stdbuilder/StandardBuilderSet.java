@@ -69,13 +69,6 @@ import org.osgi.framework.Version;
 public class StandardBuilderSet extends DefaultBuilderSet {
 
     /**
-     * Configuration property that is supposed to be used to read a configuration value from
-     * the IIpsArtefactBuilderSetConfig object provided by the initialize method of an
-     * IIpsArtefactBuilderSet instance.
-     */
-    public final static String CONFIG_PROPERTY_GENERATE_COPY_METHOD = "generateCopyMethod";
-    
-    /**
      * Configuration property that enables/disables the generation of delta computation.
      * 
      * @see IDeltaSupport 
