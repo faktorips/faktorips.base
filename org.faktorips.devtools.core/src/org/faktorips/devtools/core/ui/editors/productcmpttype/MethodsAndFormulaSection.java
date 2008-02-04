@@ -20,6 +20,7 @@ package org.faktorips.devtools.core.ui.editors.productcmpttype;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Shell;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
+import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeMethod;
 import org.faktorips.devtools.core.model.type.IMethod;
 import org.faktorips.devtools.core.ui.UIToolkit;
 import org.faktorips.devtools.core.ui.editors.EditDialog;
@@ -37,6 +38,6 @@ public class MethodsAndFormulaSection extends MethodsSection {
     }
     
     protected EditDialog createEditDialog(IMethod method, Shell shell) {
-        return new ProductCmptTypeMethodEditDialog(method, shell);
+        return new ProductCmptTypeMethodEditDialog((IProductCmptTypeMethod)method, shell);
     }
 }

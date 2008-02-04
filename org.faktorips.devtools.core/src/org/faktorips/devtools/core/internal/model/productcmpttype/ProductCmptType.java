@@ -40,6 +40,7 @@ import org.faktorips.devtools.core.model.ipsobject.QualifiedNameType;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAttribute;
+import org.faktorips.devtools.core.model.productcmpttype.FormulaSignatureFinder;
 import org.faktorips.devtools.core.model.productcmpttype.IProdDefProperty;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeAssociation;
@@ -389,9 +390,9 @@ public class ProductCmptType extends Type implements IProductCmptType {
      * {@inheritDoc}
      */
     public IProductCmptTypeMethod findFormulaSignature(String formulaName, IIpsProject ipsProject) throws CoreException {
-        FormulaSignatureFinder finder = new FormulaSignatureFinder(ipsProject, formulaName);
+        FormulaSignatureFinder finder = new FormulaSignatureFinder(ipsProject, formulaName, true);
         finder.start(this);
-        return finder.method;
+        return (IProductCmptTypeMethod)(finder.getMethods().size() != 0 ? finder.getMethods().get(0) : null);  
     }
 
     
@@ -494,26 +495,6 @@ public class ProductCmptType extends Type implements IProductCmptType {
         protected boolean visit(IProductCmptType currentType) {
             tsu = currentType.getTableStructureUsage(tsuName);
             return tsu==null;
-        }
-        
-    }
-
-    private static class FormulaSignatureFinder extends ProductCmptTypeHierarchyVisitor {
-
-        private String formulaName;
-        private IProductCmptTypeMethod method;
-        
-        public FormulaSignatureFinder(IIpsProject ipsProject, String formulaName) {
-            super(ipsProject);
-            this.formulaName = formulaName;
-        }
-
-        /**
-         * {@inheritDoc}
-         */
-        protected boolean visit(IProductCmptType currentType) throws CoreException {
-            method = currentType.getFormulaSignature(formulaName);
-            return method==null;
         }
         
     }
@@ -666,7 +647,9 @@ public class ProductCmptType extends Type implements IProductCmptType {
             Type currType = (Type)currentType;
             for (Iterator it=currType.getIteratorForMethods(); it.hasNext(); ) {
                 IProductCmptTypeMethod method = (IProductCmptTypeMethod)it.next();
-                if (method.isFormulaSignatureDefinition() && StringUtils.isNotEmpty(method.getFormulaName())) {
+                if (method.isFormulaSignatureDefinition() && 
+                    StringUtils.isNotEmpty(method.getFormulaName()) && 
+                    !method.overloadsFormulaInTypeHierarchy()) {
                     add(method);
                 }
             }

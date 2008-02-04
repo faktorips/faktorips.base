@@ -25,6 +25,7 @@ import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeMethod;
 import org.faktorips.devtools.core.model.productcmpttype.ProdDefPropertyType;
+import org.faktorips.devtools.core.model.productcmpttype.ProductCmptTypeHierarchyVisitor;
 import org.faktorips.devtools.core.model.type.IMethod;
 import org.faktorips.util.message.Message;
 import org.faktorips.util.message.MessageList;
@@ -39,6 +40,7 @@ public class ProductCmptTypeMethod extends Method implements IProductCmptTypeMet
 
     private boolean formulaSignatureDefinition = true;
     private String formulaName = ""; //$NON-NLS-1$
+    private String overloadedFormulaMethodSignature = ""; //$NON-NLS-1$
     
     
     public ProductCmptTypeMethod(IProductCmptType parent, int id) {
@@ -83,10 +85,40 @@ public class ProductCmptTypeMethod extends Method implements IProductCmptTypeMet
         formulaSignatureDefinition = newValue;
         if (!formulaSignatureDefinition) {
             formulaName = ""; //$NON-NLS-1$
+            overloadedFormulaMethodSignature = ""; //$NON-NLS-1$
         } else {
             setAbstract(false);
         }
         valueChanged(oldValue, newValue);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public String getOverloadedFormulaMethodSignature() {
+        return overloadedFormulaMethodSignature;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public void setOverloadedFormulaMethodSignature(String overloadedFormulaMethod) {
+        String oldValue = this.overloadedFormulaMethodSignature;
+        this.overloadedFormulaMethodSignature = overloadedFormulaMethod;
+        valueChanged(oldValue, overloadedFormulaMethod);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public boolean overloadsFormulaInTypeHierarchy(){
+        return !StringUtils.isEmpty(getOverloadedFormulaMethodSignature()); 
+    }
+
+    public IProductCmptTypeMethod findOverloadedFormulaMethod() throws CoreException{
+        FormulaMethodSignatureFinder finder = new FormulaMethodSignatureFinder(getIpsProject());
+        finder.start(getProductCmptType().findSupertype(getIpsProject()));
+        return finder.method;
     }
     
     /**
@@ -103,12 +135,14 @@ public class ProductCmptTypeMethod extends Method implements IProductCmptTypeMet
         super.initPropertiesFromXml(element, id);
         formulaSignatureDefinition = Boolean.valueOf(element.getAttribute(PROPERTY_FORMULA_SIGNATURE_DEFINITION)).booleanValue();
         formulaName = element.getAttribute(PROPERTY_FORMULA_NAME);
+        overloadedFormulaMethodSignature = element.getAttribute(PROPERTY_OVERLOADED_FORMULA_SIGNATURE);
     }
 
     protected void propertiesToXml(Element element) {
         super.propertiesToXml(element);
         element.setAttribute(PROPERTY_FORMULA_SIGNATURE_DEFINITION, "" + formulaSignatureDefinition); //$NON-NLS-1$
         element.setAttribute(PROPERTY_FORMULA_NAME, formulaName);
+        element.setAttribute(PROPERTY_OVERLOADED_FORMULA_SIGNATURE, overloadedFormulaMethodSignature);
     }
 
     /**
@@ -161,6 +195,34 @@ public class ProductCmptTypeMethod extends Method implements IProductCmptTypeMet
             String text = Messages.ProductCmptTypeMethod_FormulaSignatureMustntBeAbstract;
             result.add(new Message(IProductCmptTypeMethod.MSGCODE_FORMULA_MUSTNT_BE_ABSTRACT, text, Message.ERROR, this, IMethod.PROPERTY_ABSTRACT));
         }
+        if(isFormulaSignatureDefinition() && overloadsFormulaInTypeHierarchy()){
+            if(findOverloadedFormulaMethod() == null){
+                result.add(new Message(IProductCmptTypeMethod.MSGCODE_OVERLOADED_FORMULA_SIGNATURE_NOT_IN_SUPERTYPE_HIERARCHY, Messages.ProductCmptTypeMethod_msgOverloadedSignatureNotInTypeHierarchy, Message.ERROR, this, IProductCmptTypeMethod.PROPERTY_OVERLOADED_FORMULA_SIGNATURE));                
+            }
+        }
     }
     
+    
+    private class FormulaMethodSignatureFinder extends ProductCmptTypeHierarchyVisitor {
+
+        private IProductCmptTypeMethod method;
+        
+        public FormulaMethodSignatureFinder(IIpsProject ipsProject) {
+            super(ipsProject);
+        }
+
+        /**
+         * {@inheritDoc}
+         */
+        protected boolean visit(IProductCmptType currentType) throws CoreException {
+            if(currentType == null){
+                return false;
+            }
+            IProductCmptTypeMethod formulaSignature = currentType.getFormulaSignature(formulaName);
+            if(formulaSignature != null && overloadedFormulaMethodSignature.equals(formulaSignature.getSignatureString())){
+                method = formulaSignature;
+            }
+            return method==null;
+        }
+    }
 }
