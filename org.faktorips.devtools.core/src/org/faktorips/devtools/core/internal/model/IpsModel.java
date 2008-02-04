@@ -11,8 +11,10 @@ package org.faktorips.devtools.core.internal.model;
 
 import java.io.InputStream;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -985,7 +987,22 @@ public class IpsModel extends IpsElement implements IIpsModel, IResourceChangeLi
         }
         Set result = new HashSet();
         getIpsObjectExtensionProperties(type, includeSupertypesAndInterfaces, result);
-        return (IExtensionPropertyDefinition[])result.toArray(new IExtensionPropertyDefinition[result.size()]);
+        IExtensionPropertyDefinition[] properties = (IExtensionPropertyDefinition[])result.toArray(new IExtensionPropertyDefinition[result.size()]);
+        
+        // Sort extension property definitions by id to avoid random arrangement at return  
+        Arrays.sort(properties, new Comparator() {
+            
+            public int compare(Object o1, Object o2) {
+                if (!(o1 instanceof IExtensionPropertyDefinition) || !(o2 instanceof IExtensionPropertyDefinition)) {
+                    return 0;
+                }
+                IExtensionPropertyDefinition def1 = (IExtensionPropertyDefinition)o1;
+                IExtensionPropertyDefinition def2 = (IExtensionPropertyDefinition)o2;
+                return def1.getPropertyId().compareTo(def2.getPropertyId());
+            }
+        
+        });
+        return properties;
     }
 
     /**
