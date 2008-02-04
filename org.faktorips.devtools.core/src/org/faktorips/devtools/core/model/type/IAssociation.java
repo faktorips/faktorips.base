@@ -125,7 +125,7 @@ public interface IAssociation extends IIpsObjectPart {
     
     /**
      * Given an association that is subsetting a derived union, this validation message code indicates that the association's target type 
-     * is not a sutype (or the same type) of the derived union's target type.
+     * is not a subtype (or the same type) of the derived union's target type.
      */
     public final static String MSGCODE_TARGET_TYPE_NOT_A_SUBTYPE = IPolicyCmptTypeAssociation.MSGCODE_PREFIX + "TargetTypeNotASubtype"; //$NON-NLS-1$
     public final static AssociationType DEFAULT_RELATION_TYPE = AssociationType.ASSOCIATION;
@@ -152,7 +152,7 @@ public interface IAssociation extends IIpsObjectPart {
     public AggregationKind getAggregationKind();
     
     /**
-     * Returns <code>true</code> if this is an assoziation (no composition, no aggegration) otherwise <code>false</code>.
+     * Returns <code>true</code> if this is an assoziation (no composition, no aggregation) otherwise <code>false</code>.
      */
     public boolean isAssoziation();
     
@@ -171,7 +171,7 @@ public interface IAssociation extends IIpsObjectPart {
      * or the target does not exists.
      * 
      * @param project The project which ips object path is used for the searched.
-     * This is not neccessarily the project this type is part of. 
+     * This is not necessarily the project this type is part of. 
      * 
      * @throws CoreException if an error occurs while searching for the target.
      */
@@ -216,24 +216,24 @@ public interface IAssociation extends IIpsObjectPart {
     
     /**
      * Returns if the target role plural is required (or not) based on the associations's max cardinality
-     * and the aretfact builderset's information if it needs the plural form for to 1 relations.
+     * and the artefact builderset's information if it needs the plural form for to 1 relations.
      * 
      * @see IIpsArtefactBuilderSet#isRoleNamePluralRequiredForTo1Relations()
      */
     public boolean isTargetRolePluralRequired();
     
     /**
-     * Returns the minmum number of target instances required in this association.   
+     * Returns the minimum number of target instances required in this association.   
      */
     public int getMinCardinality();
     
     /**
-     * Sets the minmum number of target instances required in this association.   
+     * Sets the minimum number of target instances required in this association.   
      */
     public void setMinCardinality(int newValue);
     
     /**
-     * Returns the maxmium number of links allowed in this association.
+     * Returns the maximum number of links allowed in this association.
      * If this is a qualified association, the max cardinality specifies the number of links
      * per qualifier(!).
      * <p> 
@@ -259,7 +259,8 @@ public interface IAssociation extends IIpsObjectPart {
     public boolean is1ToMany();
     
     /**
-     * Returns <code>true</code> if the max cardinalitiy is greater 1 and ignores if this is a qualied association or not. 
+     * Returns <code>true</code> if the max cardinality is greater 1 and ignores if this is a
+     * qualified association or not.
      */
     public boolean is1ToManyIgnoringQualifier();
     
@@ -270,7 +271,7 @@ public interface IAssociation extends IIpsObjectPart {
     public boolean is1To1();
     
     /**
-     * Sets the maxmium number of target instances allowed in this association.
+     * Sets the maximum number of target instances allowed in this association.
      * An unlimited number is represented by CARDINALITY_MANY.
      */
     public void setMaxCardinality(int newValue);
@@ -322,7 +323,7 @@ public interface IAssociation extends IIpsObjectPart {
      * This method does not check if the given association is *really* a derived union.
      * 
      * @param ipsProject The project which ips object path is used for the searched.
-     * This is not neccessarily the project this type is part of.
+     * This is not necessarily the project this type is part of.
      * 
      * @throws CoreException if an error occurs while searching for the derived union.
      */
@@ -330,24 +331,24 @@ public interface IAssociation extends IIpsObjectPart {
     
     /**
      * Searches the derived union association and returns it, if it exists. Returns <code>null</code> if the derived
-     * union does not exist. Not that this method does not check if the assocation refered by this one as
-     * a derived union is *really* a derived union. It just returns the association that is defined as being
+     * union does not exist. Note that this method does not check if the association referred by this one as
+     * a derived union is <b>really</b> a derived union. It just returns the association that is defined as being
      * subsetted by this one. 
      * 
      * @param ipsProject The project which ips object path is used for the searched.
-     * This is not neccessarily the project this type is part of.
+     * This is not necessarily the project this type is part of.
      * 
      * @throws CoreException if an error occurs while searching.
      */
     public IAssociation findSubsettedDerivedUnion(IIpsProject project) throws CoreException;
     
     /**
-     * Searches for derived union associations in the type's hierarchy (of the type this assocation belongs to)
-     * which are canditates for a derived union for this associations. This is the case if an association in 
+     * Searches for derived union associations in the type's hierarchy (of the type this association belongs to)
+     * which are candidates for a derived union for this associations. This is the case if an association in 
      * the type's hierarchy is marked as a derived union and the target is the same or a supertype of this
      * association's target.
      *   
-     * Returns and emty array if no such associations exists.
+     * Returns and empty array if no such associations exists.
      * 
      * @throws CoreException if an error occurs while searching.
      */

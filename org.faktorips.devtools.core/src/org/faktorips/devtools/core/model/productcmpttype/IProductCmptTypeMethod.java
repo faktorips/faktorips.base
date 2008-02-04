@@ -65,7 +65,7 @@ public interface IProductCmptTypeMethod extends IMethod, IProdDefProperty {
     public void setFormulaSignatureDefinition(boolean newValue);
     
     /**
-     * Returns the name of the formula signature. Not that this is not equal to the method name.
+     * Returns the name of the formula signature. Note that this is not equal to the method name.
      * For example the formula name might be 'Premium' while the method name might be 'calculatePremium'.
      * The formula name is presented when editing product components.
      */
@@ -80,7 +80,7 @@ public interface IProductCmptTypeMethod extends IMethod, IProdDefProperty {
     
     /**
      * Returns a default name for the method based on the formula name. E.g. if the formula name is
-     * 'Premium' the method  meight return 'computePremium'.
+     * 'Premium' the method  might return 'computePremium'.
      */
     public String getDefaultMethodName();
     
