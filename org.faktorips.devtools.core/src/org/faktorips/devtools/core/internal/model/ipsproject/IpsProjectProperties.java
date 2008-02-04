@@ -747,6 +747,12 @@ public class IpsProjectProperties implements IIpsProjectProperties {
         + "     <IpsArtefactBuilderSetConfig>" + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$
         + "         <Property name=\"generateChangeListener\" value=\"true\"/>" + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$ 
         + "     </IpsArtefactBuilderSetConfig>" + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$
+        + " " + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$
+        + "To enable delta computation for model objects the following configuration has to be set.:" + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$
+        + "     <IpsArtefactBuilderSetConfig>" + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$
+        + "         <Property name=\"generateDeltaSupport\" value=\"true\"/>" + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$ 
+        + "     </IpsArtefactBuilderSetConfig>" + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$
+        + " " + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$
         + "</IpsArtefactBuilderSet>" 
         + SystemUtils.LINE_SEPARATOR;
         createDescriptionComment(s, parentEl);
