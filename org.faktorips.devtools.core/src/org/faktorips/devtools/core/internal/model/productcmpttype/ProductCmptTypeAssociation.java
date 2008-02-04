@@ -103,7 +103,7 @@ public class ProductCmptTypeAssociation extends Association implements IProductC
         if (index>=policyAss.length) {
             return null;
         }
-        return policyAss[getAssociationIndex()];
+        return policyAss[index];
     }
     
     private IPolicyCmptTypeAssociation[] getRelationsFor(IPolicyCmptType from, IPolicyCmptType target) {
