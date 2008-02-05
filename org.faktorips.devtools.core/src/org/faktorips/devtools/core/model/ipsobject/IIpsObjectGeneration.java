@@ -93,7 +93,7 @@ public interface IIpsObjectGeneration extends IIpsObjectPart {
 	public IIpsObjectGeneration getPrevious();
 	
 	/**
-	 * Returns the generation succeding this one. The order is determined by
+	 * Returns the generation succeeding this one. The order is determined by
 	 * the generation number and not by the valid from and valid to dates.
 	 */
 	public IIpsObjectGeneration getNext();
