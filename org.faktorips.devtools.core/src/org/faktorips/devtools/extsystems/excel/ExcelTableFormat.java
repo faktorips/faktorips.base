@@ -74,7 +74,7 @@ public class ExcelTableFormat extends AbstractExternalTableFormat {
 			new HSSFWorkbook(fis);
             return true;
 		} catch (Exception e) {
-			// if an exception occured, it is not a valid source, this exception can be ignored
+			// if an exception occurred, it is not a valid source, this exception can be ignored
 		}
         finally {
             if (fis != null) {

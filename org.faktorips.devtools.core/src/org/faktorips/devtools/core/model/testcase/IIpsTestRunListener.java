@@ -73,7 +73,7 @@ public interface IIpsTestRunListener {
     public void testRunEnded(String elapsedTime);
     
     /** 
-     * A error (exception) occured while executing the test.
+     * A error (exception) occurred while executing the test.
      */
     public void testErrorOccured(String qualifiedTestName, String[] errorDetails);  
     

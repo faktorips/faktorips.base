@@ -114,8 +114,8 @@ public abstract class AbstractIpsProjectMigrationOperation extends WorkspaceModi
      * WorkingCopies.
      * 
      * @param monitor Progress monitor to report progress to, can be <code>null</code>.
-     * @return A list of messages describing any problems occured during migration. If this list is
-     *         empty, migration was successfull. If this list contains a message with severity
+     * @return A list of messages describing any problems occurred during migration. If this list is
+     *         empty, migration was successful. If this list contains a message with severity
      *         error, it was not.
      */
     public abstract MessageList migrate(IProgressMonitor monitor) throws CoreException, InvocationTargetException,

@@ -91,7 +91,7 @@ public class ExprCompiler {
     public final static String PREFIX = "FLC-"; //$NON-NLS-1$
 
     /**
-     * An internal compiler error occured during compilation. This message is generated if the
+     * An internal compiler error occurred during compilation. This message is generated if the
      * compiler fails because of a bug, there is nothing wrong with the expression.
      */
     public final static String INTERNAL_ERROR = PREFIX + "InternalError"; //$NON-NLS-1$
@@ -466,9 +466,9 @@ public class ExprCompiler {
 
     /**
      * Compiles the given expression string into Java sourcecode. If the compilation is not
-     * successfull, the result contains messages that describe the error/problem that has occured.
-     * If the compilation is successfull, the result contains Java sourcecode that represents the
-     * expression along wih the expression's datatype. In this case the result does not contain any
+     * successful, the result contains messages that describe the error/problem that has occurred.
+     * If the compilation is successful, the result contains Java sourcecode that represents the
+     * expression along with the expression's datatype. In this case the result does not contain any
      * error messages, but may contain warnings or informations.
      */
     public CompilationResult compile(String expr) {

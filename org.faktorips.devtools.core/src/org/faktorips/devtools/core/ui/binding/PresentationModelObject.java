@@ -57,20 +57,20 @@ public class PresentationModelObject  {
     }
 
     /**
-     * Notifies all listeners that the object has chnaged. No detailed information about property and
+     * Notifies all listeners that the object has changed. No detailed information about property and
      * old and new value is passed to the listeners.
      * <p> 
      * If a listener throws an exception while dealing with the exception, the exception
-     * is logged, but NOT rethrown. Instead the method continues to notify the remaining listeners.
+     * is logged, but NOT re-thrown. Instead the method continues to notify the remaining listeners.
      */
     protected void notifyListeners() {
         notifyListeners(new PropertyChangeEvent(this, null, null, null));
     }
 
     /**
-     * Notifies all listeners that the given event has occured.
+     * Notifies all listeners that the given event has occurred.
      * If a listener throws an exception while dealing with the exception, the exception
-     * is logged, but NOT rethrown. Instead the method continues to notify the remaining listeners.
+     * is logged, but NOT re-thrown. Instead the method continues to notify the remaining listeners.
      */
     protected void notifyListeners(PropertyChangeEvent event) {
         List listeners = new ArrayList(propertyChangeListeners); // copy to be thread-safe

@@ -2502,7 +2502,7 @@ public class TestCaseSection extends IpsSection implements IIpsTestRunListener {
 	 */	
 	public void testRunEnded(String elapsedTime) {
         if (isTestRunError){
-            // set the status only if an error occured, otherwise the status is set by the testFinished event
+            // set the status only if an error occurred, otherwise the status is set by the testFinished event
             postSetTestRunStatus(isTestRunError, isTestRunFailure, failureCount);
         }
 	}
@@ -2732,7 +2732,7 @@ public class TestCaseSection extends IpsSection implements IIpsTestRunListener {
     
     /**
      * Forwarded listener function for test run and store expected result. This method is calling when
-     * the test runner ends and if failures occured during the test run.
+     * the test runner ends and if failures occurred during the test run.
      */
     public void testFailureOccuredToStoreExpResult(String qualifiedTestName, final List failureDetailsList) {
         if (!canListenToTestRun(qualifiedTestName)) {

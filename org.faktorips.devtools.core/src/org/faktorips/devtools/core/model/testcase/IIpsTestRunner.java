@@ -68,7 +68,7 @@ public interface IIpsTestRunner {
      * @param classpathRepository the repository where the test are selected from
      * @param testPackage the package including the tests
      * 
-	 * @throws CoreException if an error occured.
+	 * @throws CoreException if an error occurred.
 	 */
 	public void startTestRunnerJob(String classpathRepository, String testPackage) throws CoreException;
 
@@ -77,10 +77,10 @@ public interface IIpsTestRunner {
      * 
      * @param classpathRepository the repository where the test are selected from
      * @param testPackage the package including the tests
-     * @param mode The mode to run the test whith @see org.eclipse.debug.core.ILaunchManager#DEBUG_MODE/RUN_MODE
+     * @param mode The mode to run the test with @see org.eclipse.debug.core.ILaunchManager#DEBUG_MODE/RUN_MODE
      * @param launch An existing launch to run/debug the test runner with
      * 
-     * @throws CoreException if an error occured.
+     * @throws CoreException if an error occurred.
      */
     public void startTestRunnerJob(String classpathRepository, String testPackage, String mode, ILaunch launch) throws CoreException;
     

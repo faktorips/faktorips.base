@@ -47,7 +47,7 @@ public abstract class AbstractIpsFeatureMigrationOperation extends WorkspaceModi
     public abstract boolean isEmpty();
 
     /**
-     * @return A list of messages describing any problems occured during migration. If this list is
+     * @return A list of messages describing any problems occurred during migration. If this list is
      *         empty, migration was either not executed or executed successfully. If this list
      *         contains a message with severity error, it was not.
      */

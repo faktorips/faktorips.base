@@ -120,7 +120,7 @@ public class EditFieldChangesBroadcaster {
     }
     
     /**
-     *  Broadcasts the occured event immediately.
+     *  Broadcasts the occurred event immediately.
      */
     public void broadcastLastEvent() {
         if (lastEvent!=null) {
@@ -164,7 +164,7 @@ public class EditFieldChangesBroadcaster {
 
     /*
      * Start the delay broadcast job if the job is currently not running. The job stops
-     * automatically after broadcasting the last occured event.
+     * automatically after broadcasting the last occurred event.
      */
     private void startBroadcastDelayedJobIfNecessary() {
         if (!running){

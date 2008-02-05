@@ -133,7 +133,7 @@ public class ProjectSelectionPage extends WizardPage {
             }
             catch (CoreException e) {
                 IpsPlugin.log(e);
-                setMessage("An internal error occured while reading the projects", DialogPage.ERROR);
+                setMessage("An internal error occurred while reading the projects", DialogPage.ERROR);
                 return new Object[0];
             }
             for (int i = 0; i < projects.length; i++) {

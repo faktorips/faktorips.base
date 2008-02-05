@@ -138,7 +138,7 @@ public class DeepCopyWizard extends ResizableWizard {
 			getContainer().run(true, true, operation);
 
 		} catch (Exception e) {
-			IpsPlugin.logAndShowErrorDialog(new IpsStatus("An error occured during the copying process.",e)); //$NON-NLS-1$
+			IpsPlugin.logAndShowErrorDialog(new IpsStatus("An error occurred during the copying process.",e)); //$NON-NLS-1$
 		}
 
 		//this implementation of this method should always return true since this causes the wizard dialog to close.

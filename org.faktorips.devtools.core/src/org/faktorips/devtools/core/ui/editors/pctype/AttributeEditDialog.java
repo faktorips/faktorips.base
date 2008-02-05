@@ -504,7 +504,7 @@ public class AttributeEditDialog extends IpsPartEditDialog2 implements ContentsC
             }
         }
         catch (CoreException e) {
-            String text = NLS.bind("An error occured while searching for the product component type ''{0}''.", policyCmptType.getProductCmptType()); //$NON-NLS-1$
+            String text = NLS.bind("An error occurred while searching for the product component type ''{0}''.", policyCmptType.getProductCmptType()); //$NON-NLS-1$
             MessageDialog.openInformation(getShell(), Messages.AttributeEditDialog_Info, text);
         }
         return productCmptType;

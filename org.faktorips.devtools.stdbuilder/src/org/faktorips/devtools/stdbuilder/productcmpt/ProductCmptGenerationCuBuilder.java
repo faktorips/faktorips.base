@@ -239,7 +239,7 @@ public class ProductCmptGenerationCuBuilder extends DefaultJavaSourceFileBuilder
             addToBuildStatus(new IpsStatus("Error compiling formula " + formula.getExpression() //$NON-NLS-1$
                     + " of config element " + formula+ ".", e)); //$NON-NLS-1$ //$NON-NLS-2$
             JavaCodeFragment fragment = new JavaCodeFragment();
-            fragment.appendln("// An excpetion occured while compiling the following formula:"); //$NON-NLS-1$
+            fragment.appendln("// An excpetion occurred while compiling the following formula:"); //$NON-NLS-1$
             fragment.append("// "); //$NON-NLS-1$
             fragment.appendln(expression);
             fragment.append("// See the error log for details."); //$NON-NLS-1$

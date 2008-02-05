@@ -473,7 +473,7 @@ public class IpsBuilder extends IncrementalProjectBuilder {
             MessageList list = object.validate(object.getIpsProject());
             createMarkersFromMessageList(resource, list, IpsPlugin.PROBLEM_MARKER);
         } catch (Exception e) {
-            buildStatus.add(new IpsStatus("An exception occured during marker updating for " + object, e)); //$NON-NLS-1$
+            buildStatus.add(new IpsStatus("An exception occurred during marker updating for " + object, e)); //$NON-NLS-1$
         }
     }
 
@@ -542,7 +542,7 @@ public class IpsBuilder extends IncrementalProjectBuilder {
                     .getIpsProject());
             graph.update(ipsSrcFile.getQualifiedNameType());
         } catch (CoreException e) {
-            buildStatus.add(new IpsStatus("An error occured while trying to update the " + //$NON-NLS-1$
+            buildStatus.add(new IpsStatus("An error occurred while trying to update the " + //$NON-NLS-1$
                     "dependency graph for the IpsSrcFile: " + ipsSrcFile, e)); //$NON-NLS-1$
         }
     }

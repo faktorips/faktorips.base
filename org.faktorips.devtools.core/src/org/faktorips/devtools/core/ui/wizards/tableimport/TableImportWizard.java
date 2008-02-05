@@ -150,7 +150,7 @@ public class TableImportWizard extends Wizard implements IImportWizard {
             if (e instanceof InvocationTargetException) {
                 throwable = ((InvocationTargetException)e).getCause();
             }
-            IpsPlugin.logAndShowErrorDialog(new IpsStatus("An error occured during the import process.", throwable)); //$NON-NLS-1$
+            IpsPlugin.logAndShowErrorDialog(new IpsStatus("An error occurred during the import process.", throwable)); //$NON-NLS-1$
         } finally {
             selectContentsPage.saveWidgetValues();
             newContentsPage.saveWidgetValues();

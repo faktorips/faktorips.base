@@ -176,7 +176,7 @@ public class DefaultsAndRangesEditDialog extends IpsPartEditDialog {
      * Returns the most restrictive valueset defined for this config element and the
      * underlying attribute.
      * 
-     * @throws CoreException If an error occured during the search for the attribute.
+     * @throws CoreException If an error occurred during the search for the attribute.
      */
     private IValueSet getValueSet() throws CoreException {
         IValueSet valueSet = configElement.getValueSet();

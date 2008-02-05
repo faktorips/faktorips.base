@@ -24,7 +24,7 @@ import org.faktorips.util.message.MessageList;
 
 /**
  * The result of a compilation. The result consists of a list of messages generated
- * during the compilation process. If no error has occured (and thus none of
+ * during the compilation process. If no error has occurred (and thus none of
  * the messages is an error message) the result contains the Java sourcecode
  * that represents the compiled expression along with the expression's datatype.  
  */

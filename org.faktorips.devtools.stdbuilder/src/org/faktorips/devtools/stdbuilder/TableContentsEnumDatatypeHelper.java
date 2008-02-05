@@ -61,7 +61,7 @@ public class TableContentsEnumDatatypeHelper extends AbstractDatatypeHelper {
         try {
             return enumClassesBuilder.getQualifiedClassName(getTableContentsEnumDatatypeAdapter().getTableContents().getIpsSrcFile());
         } catch (CoreException e) {
-            throw new RuntimeException("An exception occured while trying to determine the java class name " +
+            throw new RuntimeException("An exception occurred while trying to determine the java class name " +
                     "of the table content based enum type: " + getDatatype().getQualifiedName(), e);
         }
     }

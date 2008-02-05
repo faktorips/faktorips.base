@@ -77,7 +77,7 @@ public interface IFormulaTestInputValue extends IIpsObjectPart {
      * Returns the formula parameter the formula test input belongs to, or <code>null</code> if
      * the parameter wasn't found.
      * 
-     * @throws CoreException If an error occured
+     * @throws CoreException If an error occurred
      */
     public IParameter findFormulaParameter(IIpsProject ipsProject) throws CoreException;
     

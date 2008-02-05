@@ -492,7 +492,7 @@ public abstract class IpsObjectPage extends WizardPage implements ValueChangeLis
             }            
         }
         catch (CoreException e) {
-            // an error occured while validating the name
+            // an error occurred while validating the name
             IpsPlugin.logAndShowErrorDialog(e);
         }
 		

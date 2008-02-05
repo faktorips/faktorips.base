@@ -409,7 +409,7 @@ public class MessageCueController {
 	 * It paints the visual icon representing the messages. It also extends the HoverController
 	 * as the hover controller listens to mouse events on the target control only. So it
 	 * does not catch the case, that the user hovers with the mouse over the image. So here
-	 * all mouse events from all parents are analyzed, if it occured in the image area.
+	 * all mouse events from all parents are analyzed, if it occurred in the image area.
 	 * (this is actually done in the updateHoverOnCue() method).
 	 */
 	class MessageCuePainter extends HoverController implements PaintListener  {

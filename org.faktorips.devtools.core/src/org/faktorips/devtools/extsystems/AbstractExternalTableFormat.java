@@ -189,7 +189,7 @@ public abstract class AbstractExternalTableFormat {
 	 * @param contents
 	 *            The contents of the table to export.
 	 * @param filename
-	 *            The name of the file to export to. The file can exist allready
+	 *            The name of the file to export to. The file can exist already
 	 *            and might or might not be overwritten, the choice is up to the
 	 *            runnable.
 	 * @param nullRepresentationString
@@ -197,9 +197,9 @@ public abstract class AbstractExternalTableFormat {
 	 *            can be used for systems with no own <code>null</code>-representation
 	 *            (MS-Excel, for example).
 	 * @param list
-	 *            A list for messages describing any problems occured during the
+	 *            A list for messages describing any problems occurred during the
 	 *            export. If no messages of severity ERROR are contained in this
-	 *            list, the export is considered successfull.
+	 *            list, the export is considered successful.
 	 *            
 	 * @return Returns the runnable to use to export a table.
 	 */
@@ -222,9 +222,9 @@ public abstract class AbstractExternalTableFormat {
      *            <code>true</code> if the first row contains column header and should be ignored
      *            <code>false</code> if the to be imported content contains no column header row.
 	 * @param list
-	 *            A list for messages describing any problems occured during the
+	 *            A list for messages describing any problems occurred during the
 	 *            import. If no messages of severity ERROR are contained in this
-	 *            list, the import is considered successfull.
+	 *            list, the import is considered successful.
 	 *            
 	 * @return The runnable to use to import a table.
 	 */

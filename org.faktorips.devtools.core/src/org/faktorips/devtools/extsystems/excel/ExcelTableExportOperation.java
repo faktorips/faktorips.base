@@ -86,7 +86,7 @@ public class ExcelTableExportOperation implements IWorkspaceRunnable {
     private Datatype[] datatypes;
 
     /**
-     * List of messages describing problems occured during export.
+     * List of messages describing problems occurred during export.
      */
     private MessageList messageList;
 
