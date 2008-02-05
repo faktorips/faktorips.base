@@ -413,8 +413,8 @@ public class LocalizeHelper {
     }
 
     /**
-     * Creates a new file and, if neccessary, the parent directories, too. If the file
-     * allready exists, this method returns silently.
+     * Creates a new file and, if necessary, the parent directories, too. If the file
+     * already exists, this method returns silently.
      * 
      * @param file The file to create
      * @throws IOException if an error during file creation occurs.
