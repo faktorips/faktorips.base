@@ -168,7 +168,7 @@ public class IpsProjectProperties implements IIpsProjectProperties {
     
 	/**
 	 * Returns <code>true</code> if this property object was created by reading a  
-	 * .ipsproject file containg parsable xml data, otherwise <code>false</code>.
+	 * .ipsproject file containing parsable XML data, otherwise <code>false</code>.
 	 */
 	public boolean isCreatedFromParsableFileContents() {
 		return createdFromParsableFileContents;
@@ -176,7 +176,7 @@ public class IpsProjectProperties implements IIpsProjectProperties {
 
 	/**
 	 * Sets if if this property object was created by reading a .ipsproject file 
-	 * containg parsable xml data, or not.
+	 * containing parsable XML data, or not.
 	 */
 	public void setCreatedFromParsableFileContents(boolean flag) {
 		this.createdFromParsableFileContents = flag;
@@ -613,7 +613,7 @@ public class IpsProjectProperties implements IIpsProjectProperties {
     }
 
     private void createIpsProjectDescriptionComment(Node parentEl) {
-        String s = "This xml file contains the properties of the enclosing ips project. It contains the following information:" + SystemUtils.LINE_SEPARATOR  //$NON-NLS-1$
+        String s = "This XML file contains the properties of the enclosing ips project. It contains the following information:" + SystemUtils.LINE_SEPARATOR  //$NON-NLS-1$
         + " " + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$
         + "The generator used to transform the model to Java sourcecode and the product definition into the runtime format." + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$
         + "The path where to search for model and product definition files. This is basically the same concept as the  Java classpath." + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$
@@ -868,7 +868,7 @@ public class IpsProjectProperties implements IIpsProjectProperties {
     }
 
     /**
-     * Adds the given resource path to the list of exludes resources in the product definition.
+     * Adds the given resource path to the list of excluded resources in the product definition.
      */
     public void addResourcesPathExcludedFromTheProductDefiniton(String resourcesPath) {
         resourcesPathExcludedFromTheProductDefiniton.add(resourcesPath);
