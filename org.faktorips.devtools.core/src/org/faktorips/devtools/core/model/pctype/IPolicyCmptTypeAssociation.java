@@ -201,7 +201,7 @@ public interface IPolicyCmptTypeAssociation extends IAssociation {
     public String getDefaultTargetRolePlural();
     
     /**
-     * Returns <code>true</code> if this allowed links for this association are contrained
+     * Returns <code>true</code> if this allowed links for this association are constrained
      * by the product structure. n this case {@link #findMatchingProductCmptTypeAssociation(IIpsProject)} returns
      * the matching association on the product side of the model. See the method's Javadoc for a detailed description.
      * 
@@ -216,7 +216,7 @@ public interface IPolicyCmptTypeAssociation extends IAssociation {
      * <p>
      * Example:
      * We have two policy component types called 'Policy' and 'Coverage' with a composition relationship
-     * between them. A policy contains severall coverages. Policy ist configured by the product component type
+     * between them. A policy contains several coverages. Policy is configured by the product component type
      * 'Product' and coverage by 'CoverageType'. There is also an association between product and coverage type.
      * This association is the matching association for the Policy-Coverage composition. 
      * 
@@ -258,8 +258,8 @@ public interface IPolicyCmptTypeAssociation extends IAssociation {
     public void setQualified(boolean newValue);
     
     /**
-     * Returns <code>true</code> if it is possible to mark this association as beeing qualified, otherwise <code>false</code>.
-     * It is possible to mark an association as beeing qualified if the following conditions hold true:
+     * Returns <code>true</code> if it is possible to mark this association as being qualified, otherwise <code>false</code>.
+     * It is possible to mark an association as being qualified if the following conditions hold true:
      * <p>
      * <ul>
      * <li>The association is a composition (master-to-detail)</li>
