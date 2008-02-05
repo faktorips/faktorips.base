@@ -30,6 +30,7 @@ import org.faktorips.devtools.core.model.ipsobject.ITimedIpsObject;
 import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
 import org.faktorips.devtools.core.model.ipsobject.QualifiedNameType;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
+import org.faktorips.devtools.core.model.ipsproject.IIpsProjectProperties;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAssociation;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAttribute;
 import org.faktorips.devtools.core.model.productcmpt.ConfigElementType;
@@ -792,7 +793,11 @@ public class ProductCmptGeneration extends IpsObjectGeneration implements IProdu
                 }
             }
         }
-        validateIfReferencedProductCmptsHaveFittingGeneration(list, ipsProject);
+        
+        IIpsProjectProperties props = getIpsProject().getProperties();
+        if (props.isReferencedProductComponentsAreValidOnThisGenerationsValidFromDateRuleEnabled()) {
+            validateIfReferencedProductCmptsHaveFittingGeneration(list, ipsProject);
+        }
     }
 
     protected void validateIfReferencedProductCmptsHaveFittingGeneration(MessageList msgList, IIpsProject ipsProject)
