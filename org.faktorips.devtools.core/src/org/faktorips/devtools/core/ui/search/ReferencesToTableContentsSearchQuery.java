@@ -17,25 +17,20 @@
 
 package org.faktorips.devtools.core.ui.search;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-
 import org.eclipse.core.runtime.CoreException;
 import org.faktorips.devtools.core.model.IIpsElement;
-import org.faktorips.devtools.core.model.productcmpt.IProductCmpt;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmptGeneration;
-import org.faktorips.devtools.core.model.testcase.ITestCase;
+import org.faktorips.devtools.core.model.tablecontents.ITableContents;
 
 /**
- * Find references to a given product cmpt. This query searches for product cmpt's and test cases
- * which contains an reference to the given product cmpt.
+ * Find references to a table contents. This query searches for product cmpt's which contains an
+ * reference to the given table contents.
  * 
- * @author Stefan Widmaier
+ * @author Joerg Ortmann
  */
-public class ReferencesToProductSearchQuery extends ReferenceSearchQuery {
+public class ReferencesToTableContentsSearchQuery extends ReferenceSearchQuery {
     
-    public ReferencesToProductSearchQuery(IProductCmpt referenced) {
+    public ReferencesToTableContentsSearchQuery(ITableContents referenced) {
         super(referenced);
     }
     
@@ -43,17 +38,7 @@ public class ReferencesToProductSearchQuery extends ReferenceSearchQuery {
      * @inheritDoc
      */
     protected IIpsElement[] findReferences() throws CoreException {
-        IIpsElement[] refProductCmptGenerations = referenced.getIpsProject().findReferencingProductCmptGenerations(
-                referenced.getQualifiedNameType());
-        IIpsElement[] refTestCases = referenced.getIpsProject().findReferencingTestCases(referenced.getQualifiedName());
-        
-        List generations = Arrays.asList(refProductCmptGenerations);
-        List testCases = Arrays.asList(refTestCases);
-
-        List result = new ArrayList(refProductCmptGenerations.length + refTestCases.length);
-        result.addAll(generations);
-        result.addAll(testCases);
-        return (IIpsElement[]) result.toArray(new IIpsElement[result.size()]);
+        return referenced.getIpsProject().findReferencingProductCmptGenerations(referenced.getQualifiedNameType());
     }
     
     /**
@@ -62,8 +47,6 @@ public class ReferencesToProductSearchQuery extends ReferenceSearchQuery {
     protected Object[] getDataForResult(IIpsElement object) {
         if (object instanceof IProductCmptGeneration){
             return new Object[]{((IProductCmptGeneration)object).getProductCmpt(), object};
-        } else if (object instanceof ITestCase) {
-            return new Object[]{object};
         }
         return null;
 	}

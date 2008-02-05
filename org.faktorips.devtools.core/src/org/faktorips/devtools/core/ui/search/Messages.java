@@ -32,4 +32,5 @@ public class Messages extends NLS {
     public static String ReferenceSearchQuery_ok;
     public static String ReferenceSearchQuery_labelPrefix;
     public static String ReferenceSearchResult_label;
+    public static String ReferenceSearchResultPage_labelFilterCountDetails;
 }

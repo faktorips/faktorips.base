@@ -21,7 +21,9 @@ import org.eclipse.jface.viewers.ISelectionProvider;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.search.ui.NewSearchUI;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmpt;
+import org.faktorips.devtools.core.model.tablecontents.ITableContents;
 import org.faktorips.devtools.core.ui.search.ReferencesToProductSearchQuery;
+import org.faktorips.devtools.core.ui.search.ReferencesToTableContentsSearchQuery;
 
 /**
  * Find all product components which refer to the selected one.
@@ -51,6 +53,9 @@ public class FindProductReferencesAction extends IpsAction {
 			if (selected instanceof IProductCmpt) {
 				NewSearchUI.activateSearchResultView();
 				NewSearchUI.runQueryInBackground(new ReferencesToProductSearchQuery((IProductCmpt) selected));
+			} else if (selected instanceof ITableContents) {
+			    NewSearchUI.activateSearchResultView();
+			    NewSearchUI.runQueryInBackground(new ReferencesToTableContentsSearchQuery((ITableContents) selected));
 			}
 		}
     }

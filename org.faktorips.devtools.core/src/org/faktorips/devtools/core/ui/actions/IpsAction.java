@@ -50,6 +50,7 @@ import org.faktorips.devtools.core.model.productcmpt.IProductCmptLink;
 import org.faktorips.devtools.core.model.productcmpt.treestructure.IProductCmptReference;
 import org.faktorips.devtools.core.model.productcmpt.treestructure.IProductCmptStructureTblUsageReference;
 import org.faktorips.devtools.core.model.productcmpt.treestructure.IProductCmptTypeRelationReference;
+import org.faktorips.devtools.core.model.testcase.ITestCase;
 import org.faktorips.devtools.core.ui.IDataChangeableReadAccess;
 import org.faktorips.devtools.core.ui.IDataChangeableReadAccessWithListenerSupport;
 import org.faktorips.devtools.core.ui.IDataChangeableStateChangeListener;
@@ -254,12 +255,14 @@ public abstract class IpsAction extends Action {
         }        
 		// for use with reference search, where elements are stored in arrays
 		if (selected instanceof Object[]) {
-			Object[] array = (Object[]) selected;
-			if (array.length > 1 && array[0] instanceof IProductCmpt) {
-				return (IIpsObject) array[0];
-			} else if (array.length >= 1 && array[0] instanceof IPolicyCmptType) {
-				return (IIpsObject) array[0];
-			}
+            Object[] array = (Object[])selected;
+            if (array.length > 1 && array[0] instanceof IProductCmpt) {
+                return (IIpsObject)array[0];
+            } else if (array.length >= 1 && array[0] instanceof IPolicyCmptType) {
+                return (IIpsObject)array[0];
+            } else if (array.length >= 1 && array[0] instanceof ITestCase) {
+                return (IIpsObject)array[0];
+            }
 		}
 		return null;
 	}

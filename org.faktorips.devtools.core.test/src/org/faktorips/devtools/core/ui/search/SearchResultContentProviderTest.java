@@ -32,7 +32,7 @@ public class SearchResultContentProviderTest extends AbstractIpsPluginTest {
 
 	protected void setUp() throws Exception {
 		super.setUp();
-		provider = new SearchResultContentProvider();
+		provider = new SearchResultContentProvider(null);
 		proj = newIpsProject("TestProjekt");
 		root = (IpsPackageFragmentRoot) proj.getIpsPackageFragmentRoots()[0];
         pcType = newPolicyCmptType(root, "TestPCType");
