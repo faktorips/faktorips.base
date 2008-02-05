@@ -479,10 +479,10 @@ public abstract class IpsObjectPartContainer extends IpsElement implements IIpsO
     /**
      * This method is called during the initFromXml processing to create a new part object for 
      * the given element with the given id. Subclasses must create the right part based on
-     * the xml element, e.g. for IPolicyCmptType: if the element name is <code>Attribute</code>
+     * the XML element, e.g. for IPolicyCmptType: if the element name is <code>Attribute</code>
      * an <code>IAttribute</code> is created.
      * <p>
-     * Note: It is <strong>NOT</strong> neccessary to fully initialize the part, this is 
+     * Note: It is <strong>NOT</strong> necessary to fully initialize the part, this is 
      * done later by the caller calling initFromXml().
      * 
      * @return a new part with the given id, or <code>null</code> if the xml tag name is unknown.

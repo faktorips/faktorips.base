@@ -150,7 +150,7 @@ public class IpsModel extends IpsElement implements IIpsModel, IResourceChangeLi
     // IAttribute.
     private Map typeExtensionPropertiesMap = null; // null as long as they
 
-    // map containg all changes in time naming conventions by id.
+    // map containing all changes in time naming conventions by id.
     private Map changesOverTimeNamingConventionMap = null;
 
     private Map dependencyGraphForProjectsMap = new HashMap();
@@ -744,7 +744,7 @@ public class IpsModel extends IpsElement implements IIpsModel, IResourceChangeLi
             builderSet.initialize(data.getBuilderSetConfig());
             return true;
         } catch (CoreException e) {
-            IpsPlugin.log(new IpsStatus("An exception occured while trying to initialize" //$NON-NLS-1$
+            IpsPlugin.log(new IpsStatus("An exception occurred while trying to initialize" //$NON-NLS-1$
                     + " the artefact builder set: " //$NON-NLS-1$
                     + builderSet.getId(), e));
             return false;
@@ -1226,7 +1226,7 @@ public class IpsModel extends IpsElement implements IIpsModel, IResourceChangeLi
      */
     public IChangesOverTimeNamingConvention getChangesOverTimeNamingConvention(String id) {
 
-        initChangesOverTimeNamingConventionIfNeccessary();
+        initChangesOverTimeNamingConventionIfNecessary();
         IChangesOverTimeNamingConvention convention = (IChangesOverTimeNamingConvention)changesOverTimeNamingConventionMap
                 .get(id);
         if (convention != null) {
@@ -1247,7 +1247,7 @@ public class IpsModel extends IpsElement implements IIpsModel, IResourceChangeLi
     }
 
     public IChangesOverTimeNamingConvention[] getChangesOverTimeNamingConvention() {
-        initChangesOverTimeNamingConventionIfNeccessary();
+        initChangesOverTimeNamingConventionIfNecessary();
         IChangesOverTimeNamingConvention[] conventions = new IChangesOverTimeNamingConvention[changesOverTimeNamingConventionMap
                 .size()];
         int i = 0;
@@ -1257,7 +1257,7 @@ public class IpsModel extends IpsElement implements IIpsModel, IResourceChangeLi
         return conventions;
     }
 
-    private void initChangesOverTimeNamingConventionIfNeccessary() {
+    private void initChangesOverTimeNamingConventionIfNecessary() {
         if (changesOverTimeNamingConventionMap == null) {
             changesOverTimeNamingConventionMap = new HashMap();
             IChangesOverTimeNamingConvention vaa = new ChangesOverTimeNamingConvention(

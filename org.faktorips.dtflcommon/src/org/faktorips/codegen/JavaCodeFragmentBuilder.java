@@ -80,7 +80,7 @@ public class JavaCodeFragmentBuilder {
 
     /**
      * Appends the class' unqualified name to the sourcecode and updates the import declaration (if
-     * neccessary).
+     * necessary).
      */
     public void appendClassName(Class clazz) {
         fragment.appendClassName(clazz);
@@ -88,7 +88,7 @@ public class JavaCodeFragmentBuilder {
 
     /**
      * Appends the unqualified class name to the sourcecode and updates the import declaration (if
-     * neccessary).
+     * necessary).
      */
     public void appendClassName(String qualifiedClassName) {
         fragment.appendClassName(qualifiedClassName);

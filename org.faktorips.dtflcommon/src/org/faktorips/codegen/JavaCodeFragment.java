@@ -98,7 +98,7 @@ public class JavaCodeFragment {
     /**
      * Returns the import declaration needed to compile the sourcecode. The returned
      * import declaration does not contain any import statements that refer to the indicated 
-     * packageName. The method is useful to avoid unneccessary import statements.
+     * packageName. The method is useful to avoid unnecessary import statements.
      */
     public ImportDeclaration getImportDeclaration(String packageName) {
         return new ImportDeclaration(importDecl, packageName);
@@ -192,7 +192,7 @@ public class JavaCodeFragment {
 
 	/**
 	 * Appends the unqualified class name to the sourcecode and updates the import 
-	 * declaration (if neccessary).
+	 * declaration (if necessary).
 	 * 
 	 * @throws NullPointerException if clazz is null.
 	 */
@@ -207,7 +207,7 @@ public class JavaCodeFragment {
     
     /**
      * Appends the unqualified class name of an public inner class to the sourcecode 
-     * and updates the import declaration (if neccessary).
+     * and updates the import declaration (if necessary).
      * 
      * @throws NullPointerException if clazz is null.
      */
@@ -217,7 +217,7 @@ public class JavaCodeFragment {
 	
     /**
      * Appends the unqualified class name of an public inner class to the sourcecode 
-     * and updates the import declaration (if neccessary).
+     * and updates the import declaration (if necessary).
      * 
      * @throws NullPointerException if clazz is null.
      */
@@ -227,7 +227,7 @@ public class JavaCodeFragment {
     
     /**
 	 * Appends the unqualified class name to the source code and updates the import 
-	 * declaration (if neccessary). A [] appended at the end of the qualified class name indicates
+	 * declaration (if necessary). A [] appended at the end of the qualified class name indicates
      * the array of this type. The brackets are added correctly at the end of
      * the class name in the source code. 
 	 * 
@@ -257,7 +257,7 @@ public class JavaCodeFragment {
     }
     
 	/**
-	 * Appends a line seperator to the sourcecode. 
+	 * Appends a line separator to the sourcecode. 
 	 */
 	public void appendln() {
 	    sourcecode.append(SystemUtils.LINE_SEPARATOR);

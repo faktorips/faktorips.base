@@ -79,7 +79,7 @@ public class DeepCopyOperation implements IWorkspaceRunnable{
 		Hashtable copied = new Hashtable();
 		for (int i = 0; i < toCopy.length; i++) {
 			IIpsSrcFile file = (IIpsSrcFile)handleMap.get(toCopy[i]);
-			// if the file allready exists, we can do nothing because the file was created allready
+			// if the file already exists, we can do nothing because the file was created already
 			// caused by another reference to the same product component.
 			if (!file.exists()) {
 				IIpsPackageFragment targetPackage = createTargetPackage(file, monitor);

@@ -26,7 +26,7 @@ import org.faktorips.util.StringUtil;
 /**
  * An ImportDeclaration is an ordered set of import statements.
  * <p>
- * When adding new import statements it is checked that no unneccessary
+ * When adding new import statements it is checked that no unnecessary
  * statements are added, for example if you add <code>java.util.ArrayList</code>
  * and then <code>java.util.*</code> only the latter statement is kept.
  * Also import statements for classes residing in <code>java.lang</code> and

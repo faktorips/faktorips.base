@@ -69,7 +69,7 @@ public class ProjectImportTask extends AbstractIpsTask {
     }
 
     /**
-     * Excecutes the Ant-Task {@inheritDoc}
+     * Executes the Ant-Task {@inheritDoc}
      */
     public void executeInternal() throws Exception {
 
@@ -111,7 +111,7 @@ public class ProjectImportTask extends AbstractIpsTask {
 
         project.open(monitor);
         project.refreshLocal(IResource.DEPTH_INFINITE, new NullProgressMonitor());
-        // build is done via FullBuild-Target seperately
+        // build is done via FullBuild-Target separately
     }
 
     /**

@@ -86,7 +86,7 @@ public class IpsArchive implements IIpsArchive {
      * {@inheritDoc}
      */
     public String[] getNoneEmptyPackages() throws CoreException {
-        readArchiveContentIfNeccessary();
+        readArchiveContentIfNecessary();
         String[] packNames = new String[packs.size()];
         int i = 0;
         for (Iterator it=packs.keySet().iterator(); it.hasNext(); i++) {
@@ -105,7 +105,7 @@ public class IpsArchive implements IIpsArchive {
         if (name.equals("")) { //$NON-NLS-1$
             return true; // default package is always contained.
         }
-        readArchiveContentIfNeccessary();
+        readArchiveContentIfNecessary();
         if (packs.containsKey(name)) {
             return true;
         }
@@ -126,7 +126,7 @@ public class IpsArchive implements IIpsArchive {
         if (parentPack==null) {
             return Collections.EMPTY_SET;
         }
-        readArchiveContentIfNeccessary();
+        readArchiveContentIfNecessary();
         Set result = new HashSet();
         for (Iterator it=packs.keySet().iterator(); it.hasNext(); ) {
             String nonEmptyPack = (String)it.next();
@@ -155,7 +155,7 @@ public class IpsArchive implements IIpsArchive {
      * {@inheritDoc}
      */
     public boolean contains(QualifiedNameType qnt) throws CoreException {
-        readArchiveContentIfNeccessary();
+        readArchiveContentIfNecessary();
         return qNameTypes.containsKey(qnt);
     }
 
@@ -163,7 +163,7 @@ public class IpsArchive implements IIpsArchive {
      * {@inheritDoc}
      */
     public Set getQNameTypes() throws CoreException {
-        readArchiveContentIfNeccessary();
+        readArchiveContentIfNecessary();
         return qNameTypes.keySet();
     }
     
@@ -171,7 +171,7 @@ public class IpsArchive implements IIpsArchive {
      * {@inheritDoc}
      */
     public Set getQNameTypes(String packName) throws CoreException {
-        readArchiveContentIfNeccessary();
+        readArchiveContentIfNecessary();
         Set qnts = (Set)packs.get(packName);
         if (qnts==null) {
             return Collections.EMPTY_SET;
@@ -233,7 +233,7 @@ public class IpsArchive implements IIpsArchive {
 //        if (qnt == null) {
 //            return null;
 //        }
-//        readArchiveContentIfNeccessary();
+//        readArchiveContentIfNecessary();
 //        if (!qNameTypes.containsKey(qnt)) {
 //            return null;
 //        }
@@ -252,7 +252,7 @@ public class IpsArchive implements IIpsArchive {
         if (qnt == null) {
             return null;
         }
-        readArchiveContentIfNeccessary();
+        readArchiveContentIfNecessary();
         if (!qNameTypes.containsKey(qnt)) {
             return null;
         }
@@ -281,7 +281,7 @@ public class IpsArchive implements IIpsArchive {
 
     }
     
-    private void readArchiveContentIfNeccessary() throws CoreException {
+    private void readArchiveContentIfNecessary() throws CoreException {
         synchronized (this) {
             if (archiveFile==null) {
                 return;
@@ -395,7 +395,7 @@ public class IpsArchive implements IIpsArchive {
      * {@inheritDoc}
      */
     public String getBasePackageNameForGeneratedJavaClass(QualifiedNameType qnt) throws CoreException {
-        readArchiveContentIfNeccessary();
+        readArchiveContentIfNecessary();
         IpsObjectProperties props = (IpsObjectProperties )qNameTypes.get(qnt);
         if (props==null) {
             return null;
@@ -407,7 +407,7 @@ public class IpsArchive implements IIpsArchive {
      * {@inheritDoc}
      */
     public String getBasePackageNameForExtensionJavaClass(QualifiedNameType qnt) throws CoreException {
-        readArchiveContentIfNeccessary();
+        readArchiveContentIfNecessary();
         IpsObjectProperties props = (IpsObjectProperties )qNameTypes.get(qnt);
         if (props==null) {
             return null;

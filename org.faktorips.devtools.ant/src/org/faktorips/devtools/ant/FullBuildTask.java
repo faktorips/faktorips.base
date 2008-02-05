@@ -138,7 +138,7 @@ public class FullBuildTask extends AbstractIpsTask {
         }
 
         if (projectsWithErrors.size() > 0) {
-            throw new BuildException("Unable to complete the build. Errors occured in the following projects: "
+            throw new BuildException("Unable to complete the build. Errors occurred in the following projects: "
                     + getErroneousProjectsAsText(projectsWithErrors));
         }
     }

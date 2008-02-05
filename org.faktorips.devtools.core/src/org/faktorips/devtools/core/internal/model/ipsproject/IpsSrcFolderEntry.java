@@ -75,7 +75,7 @@ public class IpsSrcFolderEntry extends IpsObjectPathEntry implements IIpsSrcFold
              + " </" + XML_ELEMENT + ">" + SystemUtils.LINE_SEPARATOR;  //$NON-NLS-1$ //$NON-NLS-2$
     }
     
-    // the folder containg the ips objects
+    // the folder containig the ips objects
     private IFolder sourceFolder;
 
     // the output folder containing the generated but mergable Java files.
