@@ -300,7 +300,7 @@ public class IpsPlugin extends AbstractUIPlugin {
     }
 
     private ImageDescriptorRegistry getImageDescriptorRegistry() {
-        // must use lazy initilization, as the current display is not neccessarily
+        // must use lazy initialization, as the current display is not necessarily
         // available when the plugin is started.
         if (this.imageDescriptorRegistry == null) {
             imageDescriptorRegistry = new ImageDescriptorRegistry(Display.getCurrent());
