@@ -473,7 +473,7 @@ public class ProductCmptGenInterfaceBuilder extends AbstractProductCmptTypeBuild
      * 
      * @since 2.0
      */
-    //TODO this method might go to a type builder when introducted 
+    //TODO this method might go to a type builder when introduced 
     public String getMethodNameGetPropertyValue(String propName, Datatype datatype){
         return getJavaNamingConvention().getGetterMethodName(propName, datatype);
     }
