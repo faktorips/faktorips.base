@@ -813,7 +813,7 @@ public class ProductCmptGeneration extends IpsObjectGeneration implements IProdu
                     String text = NLS.bind(
                             Messages.ProductCmptGeneration_msgNoGenerationInLinkedTargetForEffectiveDate,
                             new Object[]{productCmpt.getQualifiedName(), generationName, dateString});
-                    msgList.add(new Message(MSGCODE_LINKS_WITH_WRONG_EFFECTIVE_DATE, text, Message.INFO, links[i]));
+                    msgList.add(new Message(MSGCODE_LINKS_WITH_WRONG_EFFECTIVE_DATE, text, Message.ERROR, links[i]));
                 }
             }
         }
