@@ -56,7 +56,7 @@ public class Round extends AbstractFlFunction {
      */
     public Round(String name, String description, int roundingMode) {
         super(name, description, Datatype.DECIMAL, new Datatype[] {Datatype.DECIMAL, Datatype.PRIMITIVE_INT});
-        if (roundingMode<0 | roundingMode > ROUNDING_MODES.length-1) {
+        if (roundingMode<0 || roundingMode > ROUNDING_MODES.length-1) {
             throw new IllegalArgumentException("Illegal rounding mode " + roundingMode); //$NON-NLS-1$
         }
         this.roundingMode = roundingMode;
