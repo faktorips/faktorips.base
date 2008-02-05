@@ -235,10 +235,10 @@ public class ProductCmptLink extends AtomicIpsObjectPart implements
 				int maxType = associationObj.getMaxCardinality();
 				if (maxCardinality > maxType) {
 					String text = NLS
-							.bind(
-									Messages.ProductCmptRelation_msgMaxCardinalityExceedsModelMax,
-									"" + maxCardinality, "" + associationObj.getMaxCardinality()); //$NON-NLS-1$ //$NON-NLS-2$
-					list.add(new Message(
+                            .bind(Messages.ProductCmptRelation_msgMaxCardinalityExceedsModelMax,
+                                  "" + (maxCardinality == IAssociation.CARDINALITY_MANY ? "*" : "" + maxCardinality), 
+                                  "" + associationObj.getMaxCardinality()); //$NON-NLS-1$ //$NON-NLS-2$
+                    list.add(new Message(
 							MSGCODE_MAX_CARDINALITY_EXCEEDS_MODEL_MAX,
 							text, Message.ERROR, this,
 							PROPERTY_MAX_CARDINALITY));
@@ -294,19 +294,15 @@ public class ProductCmptLink extends AtomicIpsObjectPart implements
 		}
 	}
 
-    /**
-     * Returns weather or not this Relation is mandatory. A Relation is mandatory if both minimum
-     * and maximum-cardinality are equal to 1.
-     * @return <code>true</code> if this Relation is mandatory, else <code>false</code>.
+	/**
+     * {@inheritDoc}
      */
     public boolean isMandatory(){
         return getMinCardinality()==1 && getMaxCardinality()==1;
     }
 
     /**
-     * Returns weather or not this Relation is optional. A Relation is optional if the minimum
-     * cardinality equals 0 and the maximum cardinality equals 1.
-     * @return <code>true</code> if this Relation is optinal, else <code>false</code>.
+     * {@inheritDoc}
      */
     public boolean isOptional(){
         return getMinCardinality()==0 && getMaxCardinality()==1;
