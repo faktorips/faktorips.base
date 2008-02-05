@@ -252,6 +252,19 @@ public interface IIpsProjectProperties {
     public void setDerivedUnionIsImplementedRuleEnabled(boolean enabled);
 	
     /**
+     * Returns <code>true</code> if the rule is enabled, otherwise <code>false</code>.
+     * See the message code for the violation of this rule for further details.
+     * 
+     * @see org.faktorips.devtools.core.model.productcmpt.IProductCmptGeneration#MSGCODE_LINKS_WITH_WRONG_EFFECTIVE_DATE
+     */
+    public boolean isReferencedProductComponentsAreValidOnThisGenerationsValidFromDateRuleEnabled();
+    
+    /**
+     * @see #isReferencedProductComponentsAreValidOnThisGenerationsValidFromDateRuleEnabled()
+     */
+    public void setReferencedProductComponentsAreValidOnThisGenerationsValidFromDateRuleEnabled(boolean enabled);
+    
+    /**
      * @return The ids of all required features.
      */
     public String[] getRequiredIpsFeatureIds();

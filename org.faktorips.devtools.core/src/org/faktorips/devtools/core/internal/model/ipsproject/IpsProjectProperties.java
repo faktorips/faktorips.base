@@ -88,6 +88,7 @@ public class IpsProjectProperties implements IIpsProjectProperties {
     private String runtimeIdPrefix = ""; //$NON-NLS-1$
     private boolean javaProjectContainsClassesForDynamicDatatypes = false;
     private boolean derivedUnionIsImplementedRuleEnabled = true;
+    private boolean referencedProductComponentsAreValidOnThisGenerationsValidFromDateRuleEnabled = true;
     private Hashtable requiredFeatures = new Hashtable();
     // hidden resource names in the model and product explorer
     private Set resourcesPathExcludedFromTheProductDefiniton= new HashSet(10);
@@ -331,7 +332,6 @@ public class IpsProjectProperties implements IIpsProjectProperties {
 		projectEl.setAttribute("productDefinitionProject", "" + productDefinitionProject); //$NON-NLS-1$ //$NON-NLS-2$
 		projectEl.setAttribute("runtimeIdPrefix", runtimeIdPrefix); //$NON-NLS-1$
 		projectEl.setAttribute("javaProjectContainsClassesForDynamicDatatypes", "" + javaProjectContainsClassesForDynamicDatatypes); //$NON-NLS-1$ //$NON-NLS-2$
-		projectEl.setAttribute("derivedUnionIsImplementedRuleEnabled", "" + derivedUnionIsImplementedRuleEnabled); //$NON-NLS-1$ //$NON-NLS-2$
         
         // required features
         createRequiredIpsFeaturesComment(projectEl);
@@ -396,7 +396,26 @@ public class IpsProjectProperties implements IIpsProjectProperties {
             resourcesExcludedFromProdDefEl.appendChild(resourceExcludedEl);
         }
         
+        // optional constraints
+        createOptionalConstraintsDescriptionComment(projectEl);
+        Element optionalConstraintsEl = doc.createElement("OptionalConstraints"); //$NON-NLS-1$
+        projectEl.appendChild(optionalConstraintsEl);
+        
+        optionalConstraintsEl.appendChild(createConstraintElement(doc, "derivedUnionIsImplemented", //$NON-NLS-1$
+                derivedUnionIsImplementedRuleEnabled));
+
+        optionalConstraintsEl.appendChild(createConstraintElement(doc,
+                "referencedProductComponentsAreValidOnThisGenerationsValidFromDate", //$NON-NLS-1$
+                referencedProductComponentsAreValidOnThisGenerationsValidFromDateRuleEnabled));
+        
 		return projectEl;
+	}
+	
+	private Element createConstraintElement(Document doc, String name, boolean enable) {
+	    Element constraintElement = doc.createElement("Constraint"); //$NON-NLS-1$
+	    constraintElement.setAttribute("name", name); //$NON-NLS-1$
+	    constraintElement.setAttribute("enable", "" + enable); //$NON-NLS-1$ //$NON-NLS-2$
+	    return constraintElement;
 	}
 	
 	public void initFromXml(IIpsProject ipsProject, Element element) {
@@ -404,11 +423,7 @@ public class IpsProjectProperties implements IIpsProjectProperties {
         productDefinitionProject = Boolean.valueOf(element.getAttribute("productDefinitionProject")).booleanValue(); //$NON-NLS-1$
         runtimeIdPrefix = element.getAttribute("runtimeIdPrefix"); //$NON-NLS-1$
         javaProjectContainsClassesForDynamicDatatypes = Boolean.valueOf(element.getAttribute("javaProjectContainsClassesForDynamicDatatypes")).booleanValue();  //$NON-NLS-1$
-        derivedUnionIsImplementedRuleEnabled = Boolean.valueOf(element.getAttribute("derivedUnionIsImplementedRuleEnabled")).booleanValue();  //$NON-NLS-1$
-        if (element.hasAttribute("containerRelationIsImplementedRuleEnabled")) { //$NON-NLS-1$
-            // migration for 1.0 files
-            derivedUnionIsImplementedRuleEnabled = Boolean.valueOf(element.getAttribute("containerRelationIsImplementedRuleEnabled")).booleanValue();  //$NON-NLS-1$
-        } 
+        
         Element generatedCodeEl = XmlUtil.getFirstElement(element, GENERATED_CODE_TAG_NAME);
         if (generatedCodeEl!=null) {
     	    javaSrcLanguage = getLocale(generatedCodeEl.getAttribute("docLanguage")); //$NON-NLS-1$
@@ -449,6 +464,8 @@ public class IpsProjectProperties implements IIpsProjectProperties {
         initRequiredFeatures(XmlUtil.getFirstElement(element, "RequiredIpsFeatures")); //$NON-NLS-1$
         
         initResourcesExcludedFromProductDefinition(XmlUtil.getFirstElement(element, "ResourcesExcludedFromProductDefinition")); //$NON-NLS-1$
+        
+        initOptionalConstraints(element);
 	}
 	
     /**
@@ -519,6 +536,53 @@ public class IpsProjectProperties implements IIpsProjectProperties {
         }
     }
 
+    /**
+     * Reads the definition of optional constraints from the given &lt;IpsProject&gt; XML
+     * <code>Element</code>.
+     * 
+     * @param element The &lt;IpsProject&gt; XML <code>Element</code>.
+     */
+    private void initOptionalConstraints(Element element) {
+        // migration for 1.0 files
+        if (element.hasAttribute("containerRelationIsImplementedRuleEnabled")) { //$NON-NLS-1$
+            derivedUnionIsImplementedRuleEnabled = Boolean.valueOf(
+                    element.getAttribute("containerRelationIsImplementedRuleEnabled")).booleanValue(); //$NON-NLS-1$
+        }
+
+        // migration for 2.0-rc files
+        if (element.hasAttribute("derivedUnionIsImplementedRuleEnabled")) { //$NON-NLS-1$
+            derivedUnionIsImplementedRuleEnabled = Boolean.valueOf(
+                    element.getAttribute("derivedUnionIsImplementedRuleEnabled")).booleanValue(); //$NON-NLS-1$
+        }
+
+        // since 2.0: read from <OptionalConstraints>
+        Element optionalConstraintsEl = XmlUtil.getFirstElement(element, "OptionalConstraints"); //$NON-NLS-1$
+        
+        // migration for pre-2.0 files 
+        if (optionalConstraintsEl == null) {
+            return;
+        }
+        
+        NodeList nl = optionalConstraintsEl.getElementsByTagName("Constraint"); //$NON-NLS-1$
+        int length = nl.getLength();
+        for (int i = 0; i < length; ++i) {
+            Element child = (Element)nl.item(i);
+            if (!child.hasAttribute("name") || !child.hasAttribute("enable")) { //$NON-NLS-1$ //$NON-NLS-2$
+                // ignore incomplete entries
+                continue;
+            }
+
+            String name = child.getAttribute("name"); //$NON-NLS-1$
+            boolean enable = Boolean.valueOf(child.getAttribute("enable")).booleanValue(); //$NON-NLS-1$
+
+            if (name.equals("derivedUnionIsImplemented")) { //$NON-NLS-1$
+                derivedUnionIsImplementedRuleEnabled = enable;
+            } else if (name.equals("referencedProductComponentsAreValidOnThisGenerationsValidFromDate")) { //$NON-NLS-1$
+                referencedProductComponentsAreValidOnThisGenerationsValidFromDateRuleEnabled = enable;
+            }
+        }
+    }
+    
     private void writeDefinedDataTypesToXML(Document doc, Element parent) {
 		for (int i=0; i<definedDatatypes.length; i++) {
 			Element datatypeEl = doc.createElement("Datatype"); //$NON-NLS-1$
@@ -612,6 +676,20 @@ public class IpsProjectProperties implements IIpsProjectProperties {
         derivedUnionIsImplementedRuleEnabled = enabled;
     }
 
+    /**
+     * {@inheritDoc}
+     */
+    public boolean isReferencedProductComponentsAreValidOnThisGenerationsValidFromDateRuleEnabled() {
+        return referencedProductComponentsAreValidOnThisGenerationsValidFromDateRuleEnabled;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public void setReferencedProductComponentsAreValidOnThisGenerationsValidFromDateRuleEnabled(boolean enabled) {
+        referencedProductComponentsAreValidOnThisGenerationsValidFromDateRuleEnabled = enabled;
+    }
+    
     private void createIpsProjectDescriptionComment(Node parentEl) {
         String s = "This XML file contains the properties of the enclosing ips project. It contains the following information:" + SystemUtils.LINE_SEPARATOR  //$NON-NLS-1$
         + " " + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$
@@ -629,9 +707,9 @@ public class IpsProjectProperties implements IIpsProjectProperties {
         + "   below how to register the class. Naturallyt the class must be availabl via the project's Java classpath." + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$
         + "   There you have different options. It is strongly recommended to provide the class via a Jar file or in a separate Java" + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$
         + "   project. However cou can also implement the class in this project itself. In this case you have to set the " + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$
-        + "   javaProjectContainsClassesForDynamicDatatypes property to true so that FaktorIPS also looks in this project " + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$
+        + "   javaProjectContainsClassesForDynamicDatatypes property to true so that Faktor-IPS also looks in this project " + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$
         + "   for the class. The disadvantage of this approach is that a clean build won't work properly. At the beginning" + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$
-        + "   of the clean build the Java class is deleted, then FaktorIPS checks the model, doesn't find the class and reports" + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$
+        + "   of the clean build the Java class is deleted, then Faktor-IPS checks the model, doesn't find the class and reports" + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$
         + "   problems." + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$
         + " " + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$
         + "<IpsProject>" + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$
@@ -639,12 +717,12 @@ public class IpsProjectProperties implements IIpsProjectProperties {
         + "    modelProject                                       True if this project contains the model or part of it." + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$
         + "    runtimeIdPrefix                                    " + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$
         + "    javaProjectContainsClassesForDynamicDatatypes      see discussion above" + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$
-        + "    derivedUnionIsImplementedRuleEnabled               True if FaktorIPS checks if all derived unions are implemented in none abstract classes." + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$
         + "    <IpsArtefactBuilderSet/>                           The generator used. Details below." + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$
         + "    <GeneratedSourcecode/>                             See details below." + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$
         + "    <IpsObjectPath/>                                   The object path to search for model and product definition objects. Details below." + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$
         + "    <ProductCmptNamingStrategy/>                       The strategy used for product component names. Details below." + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$
         + "    <Datatypes/>                                       The datatypes used in the model. Details below." + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$
+        + "    <OptionalConstraints/>                             Definition of optional constraints. Details below." + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$
         + "</IpsProject>" + SystemUtils.LINE_SEPARATOR; //$NON-NLS-1$
         createDescriptionComment(s, parentEl, "    "); //$NON-NLS-1$
     }
@@ -670,7 +748,7 @@ public class IpsProjectProperties implements IIpsProjectProperties {
         + "in Java identifiers are replaced by the code generator. In order to deal with different versions of " + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$
         + "a product you need a strategy to derive the version from the product component name. " + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$
         + " " + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$
-        + "Currently FaktorIPS includes the following strategy:" + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$
+        + "Currently Faktor-IPS includes the following strategy:" + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$
         + " * DateBasedProductCmptNamingStrategy" + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$
         + "   The product component name is made up of a \"unversioned\" name and a date format for the version id." + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$
         + "   <ProductCmptNamingStrategy id=\"org.faktorips.devtools.core.DateBasedProductCmptNamingStrategy\">" + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$
@@ -720,10 +798,10 @@ public class IpsProjectProperties implements IIpsProjectProperties {
         String s = "Artefact builder set" + SystemUtils.LINE_SEPARATOR  //$NON-NLS-1$
         + " " + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$
         + "In this section the artefact builder set (code generator) is defined." + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$
-        + "FaktorIPS comes with a standard builder set. However the build / generator mechanism is completly decoupled " + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$
+        + "Faktor-IPS comes with a standard builder set. However the build / generator mechanism is completly decoupled " + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$
         + "from the modeling and product definition capabilities and you can write your own builder/generators." + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$
         + "A different builder set is defined by providing an extension for the extension point" + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$
-        + "\"org.faktorips.devtools.core.artefactbuilderset\" defined by FaktorIPS" + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$
+        + "\"org.faktorips.devtools.core.artefactbuilderset\" defined by Faktor-IPS" + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$
         + "A builder set is activated for an Ips project by defining the IpsArtefactBuilderSet tag." + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$
         + "The attribute \"id\" specifies the builder set implementation that is registered as an extension." + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$
         + "The unique identifier of the extension is to specify." + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$
@@ -731,11 +809,11 @@ public class IpsProjectProperties implements IIpsProjectProperties {
         + "Logging framework connectors can be used by builder sets to generate logging statements for the registered logging framework." + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$
         + "Logging framework connectors have to be registered as eclipse plugins with the extension point" + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$
         + "\"org.faktorips.devtools.core.loggingFrameworkConnector\"" + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$
-        + "Faktorips provides 2 implementations for logging framework connectors. A connector to the java util logging framework and" + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$
+        + "Faktor-IPS provides two implementations for logging framework connectors. A connector to the java util logging framework and" + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$
         + "one to the log4j framework. Java util logging is specified by the id=\"org.faktorips.devtools.core.javaUtilLoggingConnector\"" + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$
         + "The log4j framework is specified by the id=\"org.faktorips.devtools.core.log4jLoggingConnector\"" + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$
         + " " + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$
-        + "<IpsArtefactBuilderSet id=\"org.faktorips.devtools.stdbuilder.ipsstdbuilderset\" "
+        + "<IpsArtefactBuilderSet id=\"org.faktorips.devtools.stdbuilder.ipsstdbuilderset\" " //$NON-NLS-1$
         + "loggingFrameworkConnectorId=\"org.faktorips.devtools.core.javaUtilLoggingConnector\"/> " + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$
         + " " + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$
         + "To enable logging for the standard builder set the following configuration has to be set.:" + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$
@@ -753,7 +831,7 @@ public class IpsProjectProperties implements IIpsProjectProperties {
         + "         <Property name=\"generateDeltaSupport\" value=\"true\"/>" + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$ 
         + "     </IpsArtefactBuilderSetConfig>" + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$
         + " " + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$
-        + "</IpsArtefactBuilderSet>" 
+        + "</IpsArtefactBuilderSet>"  //$NON-NLS-1$
         + SystemUtils.LINE_SEPARATOR;
         createDescriptionComment(s, parentEl);
     }
@@ -762,8 +840,8 @@ public class IpsProjectProperties implements IIpsProjectProperties {
         String s = "Required Ips-Features" + SystemUtils.LINE_SEPARATOR + " " + SystemUtils.LINE_SEPARATOR  //$NON-NLS-1$ //$NON-NLS-2$
         + "In this section, all required features are listed with the minimum version for these features." + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$
         + "By default, the feature with id  \"org.faktorips.feature\" is required allways (because this is the core " + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$
-        + "feature of FaktorIps. Other features can be required if plugins providing extensions for any extension points"  + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$
-        + "defined by FaktorIps are used." + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$
+        + "feature of Faktor-IPS. Other features can be required if plugins providing extensions for any extension points"  + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$
+        + "defined by Faktor-IPS are used." + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$
         + "If a required feature is missing or a required feature has a version less than the minimum version number " + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$
         + "this project will not be build (an error is created)." + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$
         + " " + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$
@@ -787,7 +865,22 @@ public class IpsProjectProperties implements IIpsProjectProperties {
         + ""; //$NON-NLS-1$
         createDescriptionComment(s, parentEl);
     }
-    
+
+    private void createOptionalConstraintsDescriptionComment(Node parentEl) {
+        String s = "OptionalConstraints" + SystemUtils.LINE_SEPARATOR  //$NON-NLS-1$
+        + " " + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$
+        + "In the datatypes section the value datatypes allowed in the model are defined." + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$
+        + "See also the discussion at the top this file." + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$
+        + " " + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$
+        + "<OptionalConstraints>" + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$
+        + "    <!-- True if Faktor-IPS checks if all derived unions are implemented in none abstract classes. -->" + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$
+        + "    <Constraint name=\"derivedUnionIsImplemented\" enable=\"true\"/>" + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$
+        + "    <!-- True if Faktor-IPS checks if referenced product components are valid on the effective date of the referencing product component generation. -->"  + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$
+        + "    <Constraint name=\"referencedProductComponentsAreValidOnThisGenerationsValidFromDate\" enable=\"true\"/>" + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$
+        + "</OptionalConstraints>" + SystemUtils.LINE_SEPARATOR; //$NON-NLS-1$
+        createDescriptionComment(s, parentEl);
+    }
+
 	private void createDescriptionComment(String text, Node parent) {
         createDescriptionComment(text, parent, "        "); //$NON-NLS-1$
     }
