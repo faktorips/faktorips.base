@@ -39,22 +39,22 @@ import org.faktorips.util.ArgumentCheck;
 public class IpsPreferences {
     
 	/**
-     * Constant identifiying the working mode
+     * Constant identifying the working mode
      */
     public final static String WORKING_MODE = IpsPlugin.PLUGIN_ID + ".workingmode"; //$NON-NLS-1$
 	
 	/**
-     * Constant identifiying the working mode edit
+     * Constant identifying the working mode edit
      */
     public final static String WORKING_MODE_EDIT = "edit"; //$NON-NLS-1$
 
     /**
-     * Constant identifiying the working mode browse
+     * Constant identifying the working mode browse
      */
     public final static String WORKING_MODE_BROWSE = "browse"; //$NON-NLS-1$
     
 	/**
-     * Constant identifiying the working date preference
+     * Constant identifying the working date preference
      */
     public final static String WORKING_DATE = IpsPlugin.PLUGIN_ID + ".workingdate"; //$NON-NLS-1$
 	
@@ -64,8 +64,8 @@ public class IpsPreferences {
     public static final String NULL_REPRESENTATION_STRING = IpsPlugin.PLUGIN_ID + ".nullRepresentationString"; //$NON-NLS-1$
     
     /**
-     * Constant identifiying the preference for editing genrations with
-     * alid-from-dates in the past.
+     * Constant identifying the preference for editing generations with
+     * valid-from-dates in the past.
      */
     public static final String EDIT_RECENT_GENERATION = IpsPlugin.PLUGIN_ID + ".editRecentGeneration"; //$NON-NLS-1$
 
@@ -90,7 +90,7 @@ public class IpsPreferences {
     public final static String ENABLE_GENERATING = IpsPlugin.PLUGIN_ID + ".enableGenerating"; //$NON-NLS-1$
 
     /**
-     * Constant that identifies the navigate to model or soucre generating preference.
+     * Constant that identifies the navigate to model or source generating preference.
      */
     public final static String NAVIGATE_TO_MODEL_OR_SOURCE_CODE = IpsPlugin.PLUGIN_ID + ".navigateToModel"; //$NON-NLS-1$
 
@@ -316,7 +316,7 @@ public class IpsPreferences {
     /**
      * Returns the to be displayed text of an enumeration. 
      * The property ENUM_TYPE_DISPLAY specifies how the name and id will be formated.
-     * E.g. diplay only id or only name, or display both.
+     * E.g. display only id or only name, or display both.
      */
     public String getFormatedEnumText(String id, String name){
         EnumTypeDisplay enumTypeDisplay = getEnumTypeDisplay();
@@ -331,7 +331,7 @@ public class IpsPreferences {
     
     /**
      * Returns the enum type display. Specifies the text display of enum type edit fields. E.g.
-     * diplay id or name only, or display both.
+     * display id or name only, or display both.
      * 
      * @see EnumTypeDisplay
      */
