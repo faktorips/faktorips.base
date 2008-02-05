@@ -89,7 +89,7 @@ public class OpenEditorAction extends IpsAction {
     }
     
     /*
-     * Open product componts via selected generations. Returns a new structured selection with all
+     * Open product components via selected generations. Returns a new structured selection with all
      * elements which wasn't open using this method.
      */
     private IStructuredSelection openProductCmptEditorBySelectedGeneration(IStructuredSelection selection) {
