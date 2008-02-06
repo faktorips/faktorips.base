@@ -136,7 +136,7 @@ public class ExprCompiler {
     public final static String WRONG_ARGUMENT_TYPES = PREFIX + "WrongArgumentTypes"; //$NON-NLS-1$
 
     /**
-     * The expresseion contains a literal that is identified by the parser as a money literal that
+     * The expression contains a literal that is identified by the parser as a money literal that
      * doesn't have a valid currency.
      */
     public final static String WRONG_MONEY_LITERAL = PREFIX + "Money"; //$NON-NLS-1$
