@@ -204,8 +204,8 @@ public interface IProductCmptGeneration extends IIpsObjectGeneration {
     public IConfigElement[] getConfigElements(ConfigElementType type);
     
     /**
-     * Returns the config element that correspongs to the attribute with the
-     * given name. Returns <code>null</code> if no suich element exists.
+     * Returns the config element that corresponds to the attribute with the
+     * given name. Returns <code>null</code> if no such element exists.
      */
     public IConfigElement getConfigElement(String attributeName);
     
@@ -310,7 +310,7 @@ public interface IProductCmptGeneration extends IIpsObjectGeneration {
     public ITableContentUsage[] getTableContentUsages();
     
     /**
-     * Returns the numer of formulas defined in the generation. 
+     * Returns the number of formulas defined in the generation. 
      */
     public int getNumOfFormulas();
 
