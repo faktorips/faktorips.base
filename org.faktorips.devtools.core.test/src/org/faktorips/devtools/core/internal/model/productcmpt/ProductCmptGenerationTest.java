@@ -21,8 +21,11 @@ import java.util.GregorianCalendar;
 
 import org.eclipse.core.runtime.CoreException;
 import org.faktorips.devtools.core.AbstractIpsPluginTest;
+import org.faktorips.devtools.core.IpsPlugin;
+import org.faktorips.devtools.core.internal.model.ipsproject.IpsProjectProperties;
 import org.faktorips.devtools.core.model.IIpsElement;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
+import org.faktorips.devtools.core.model.ipsproject.IIpsProjectProperties;
 import org.faktorips.devtools.core.model.pctype.AssociationType;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAssociation;
@@ -290,7 +293,7 @@ public class ProductCmptGenerationTest extends AbstractIpsPluginTest {
         assertNotNull(ml.getMessageByCode(IProductCmptGeneration.MSGCODE_DUPLICATE_RELATION_TARGET));
     }
     
-    public void testValidateNotEnougthRelations() throws Exception {
+    public void testValidateNotEnoughRelations() throws Exception {
         association.setMinCardinality(1);
         association.setMaxCardinality(2);
 
@@ -494,7 +497,8 @@ public class ProductCmptGenerationTest extends AbstractIpsPluginTest {
         assertNull(ml.getMessageByCode(IProductCmptGeneration.MSGCODE_INVALID_VALID_FROM));
     }
 
-    public void testValidateIfReferencedProductCmptsHaveFittingGeneration() throws CoreException, Exception {
+    public void testValidateIfReferencedProductComponentsAreValidOnThisGenerationsValidFromDate() throws CoreException,
+            Exception {
         generation.setValidFrom(DateUtil.parseIsoDateStringToGregorianCalendar("2007-01-01"));
         IProductCmptLink link = generation.newLink(association);
         link.setTarget(target.getQualifiedName());
@@ -506,6 +510,17 @@ public class ProductCmptGenerationTest extends AbstractIpsPluginTest {
         MessageList msgList = ((ProductCmptGeneration)generation).validate(ipsProject);
         assertNotNull(msgList.getMessageByCode(IProductCmptGeneration.MSGCODE_LINKS_WITH_WRONG_EFFECTIVE_DATE));
 
+        // assert that there is no validation error if the optional constraint 
+        // "referencedProductComponentsAreValidOnThisGenerationsValidFromDate" is turned off
+        IIpsProjectProperties oldProps = ipsProject.getProperties();
+        IIpsProjectProperties newProps = new IpsProjectProperties(ipsProject, (IpsProjectProperties)oldProps);
+        newProps.setReferencedProductComponentsAreValidOnThisGenerationsValidFromDateRuleEnabled(false);
+        ipsProject.setProperties(newProps);
+        msgList = ((ProductCmptGeneration)generation).validate(ipsProject);
+        assertNull(msgList.getMessageByCode(IProductCmptGeneration.MSGCODE_LINKS_WITH_WRONG_EFFECTIVE_DATE));
+        ipsProject.getProperties().setReferencedProductComponentsAreValidOnThisGenerationsValidFromDateRuleEnabled(true);
+        ipsProject.setProperties(oldProps);
+        
         targetGeneration.setValidFrom(DateUtil.parseIsoDateStringToGregorianCalendar("2007-01-01"));
         msgList = ((ProductCmptGeneration)generation).validate(ipsProject);
         assertNull(msgList.getMessageByCode(IProductCmptGeneration.MSGCODE_LINKS_WITH_WRONG_EFFECTIVE_DATE));
@@ -513,7 +528,6 @@ public class ProductCmptGenerationTest extends AbstractIpsPluginTest {
         targetGeneration.setValidFrom(DateUtil.parseIsoDateStringToGregorianCalendar("2006-01-01"));
         msgList = ((ProductCmptGeneration)generation).validate(ipsProject);
         assertNull(msgList.getMessageByCode(IProductCmptGeneration.MSGCODE_LINKS_WITH_WRONG_EFFECTIVE_DATE));
-
     }
     
 }
