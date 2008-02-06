@@ -194,7 +194,7 @@ public class GenerationSelectionDialogTest extends AbstractIpsPluginTest {
     private GenerationSelectionDialog createDialog(String workingDate, boolean canEditRecentGenerations){
         GenerationSelectionDialog dialog = new GenerationSelectionDialog(null, productCmpt, 
                 workingDate, getWorkingDateAsCalender(workingDate), "Generation", "Generations", canEditRecentGenerations, true);
-        dialog.createChoiseControls(Display.getDefault().getActiveShell());
+        dialog.createChoiseControls(Display.getCurrent().getActiveShell());
         return dialog;
     }
     private GregorianCalendar getWorkingDateAsCalender(String workingDate){
