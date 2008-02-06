@@ -213,7 +213,7 @@ public abstract class AbstractIpsPluginTest extends XmlAbstractTestCase {
 	}
 
 	/**
-	 * Creates a new platfrom project with the given name and opens it.
+	 * Creates a new platform project with the given name and opens it.
 	 *
 	 * @throws CoreException
 	 */
@@ -231,7 +231,7 @@ public abstract class AbstractIpsPluginTest extends XmlAbstractTestCase {
 	}
 
 	/**
-	 * Creates a new platfrom project with the given name and opens it.
+	 * Creates a new platform project with the given name and opens it.
 	 *
 	 * @throws CoreException
 	 */
