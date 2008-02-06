@@ -73,6 +73,8 @@ public class GenerationToTypeDeltaTest extends AbstractIpsPluginTest {
         assertEquals(generation, delta.getProductCmptGeneration());
         assertEquals(productCmptType, delta.getProductCmptType());
         delta.fix();
+        
+        fail("Test CC");
     }
     
     public void getEntriesByType() throws CoreException {
