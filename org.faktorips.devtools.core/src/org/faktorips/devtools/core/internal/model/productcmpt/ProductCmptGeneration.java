@@ -796,12 +796,12 @@ public class ProductCmptGeneration extends IpsObjectGeneration implements IProdu
         
         IIpsProjectProperties props = getIpsProject().getProperties();
         if (props.isReferencedProductComponentsAreValidOnThisGenerationsValidFromDateRuleEnabled()) {
-            validateIfReferencedProductCmptsHaveFittingGeneration(list, ipsProject);
+            validateIfReferencedProductComponentsAreValidOnThisGenerationsValidFromDate(list, ipsProject);
         }
     }
 
-    protected void validateIfReferencedProductCmptsHaveFittingGeneration(MessageList msgList, IIpsProject ipsProject)
-            throws CoreException {
+    protected void validateIfReferencedProductComponentsAreValidOnThisGenerationsValidFromDate(MessageList msgList,
+            IIpsProject ipsProject) throws CoreException {
         IProductCmptLink[] links = getLinks();
         for (int i = 0; i < links.length; i++) {
             IAssociation association = links[i].findAssociation(ipsProject);
