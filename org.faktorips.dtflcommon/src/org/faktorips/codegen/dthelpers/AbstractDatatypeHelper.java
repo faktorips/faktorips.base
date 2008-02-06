@@ -66,7 +66,7 @@ public abstract class AbstractDatatypeHelper implements DatatypeHelper {
 	 * It returns a JavaCodeFragment with sourcecode that creates an instance of
 	 * the datatype's Java class with the given expression. If the expression is
 	 * null the fragment's sourcecode is either the String "null" or the
-	 * sourcecode to get an instance of the apropriate null object.
+	 * sourcecode to get an instance of the appropriate null object.
 	 * Preconditions: Expression may not be null or empty. When evaluated the
 	 * expression must return a string
 	 */
