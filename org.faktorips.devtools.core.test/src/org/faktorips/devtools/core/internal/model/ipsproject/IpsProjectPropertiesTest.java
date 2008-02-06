@@ -64,6 +64,24 @@ public class IpsProjectPropertiesTest extends AbstractIpsPluginTest {
 		assertTrue(list.getMessageByCode(IIpsProjectProperties.MSGCODE_UNKNOWN_PREDEFINED_DATATYPE)!=null);
 	}
 
+	public void testOptionalConstraints() {
+	    IpsProjectProperties props = new IpsProjectProperties();
+	    
+	    // tests non-defaults, too.
+        for (int i = 0; i < 4; ++i) {
+            props.setDerivedUnionIsImplementedRuleEnabled((i & 1) == 1);
+            props.setReferencedProductComponentsAreValidOnThisGenerationsValidFromDateRuleEnabled((i & 2) == 2);
+
+            Element projectEl = props.toXml(newDocument());
+            props = new IpsProjectProperties();
+            props.initFromXml(ipsProject, projectEl);
+
+            assertEquals(props.isDerivedUnionIsImplementedRuleEnabled(), (i & 1) == 1);
+            assertEquals(props.isReferencedProductComponentsAreValidOnThisGenerationsValidFromDateRuleEnabled(),
+                    (i & 2) == 2);
+        }
+    }
+	
 	public void testToXml() {
 		IpsProjectProperties props = new IpsProjectProperties();
 		props.setModelProject(true);
@@ -74,6 +92,7 @@ public class IpsProjectPropertiesTest extends AbstractIpsPluginTest {
 		props.setBuilderSetId("myBuilder");
 		props.setRuntimeIdPrefix("newRuntimeIdPrefix");
         props.setDerivedUnionIsImplementedRuleEnabled(true);
+        props.setReferencedProductComponentsAreValidOnThisGenerationsValidFromDateRuleEnabled(true);
 		props.setProductCmptNamingStrategy(new DateBasedProductCmptNamingStrategy(" ", "yyyy-MM", true));
 		IIpsObjectPath path = new IpsObjectPath(ipsProject);
 		path.newSourceFolderEntry(ipsProject.getProject().getFolder("model"));
@@ -106,6 +125,7 @@ public class IpsProjectPropertiesTest extends AbstractIpsPluginTest {
 		assertTrue(props.isModelProject());
 		assertTrue(props.isProductDefinitionProject());
         assertTrue(props.isDerivedUnionIsImplementedRuleEnabled());
+        assertTrue(props.isReferencedProductComponentsAreValidOnThisGenerationsValidFromDateRuleEnabled());
 		assertEquals("newRuntimeIdPrefix", props.getRuntimeIdPrefix());
 		assertEquals(Locale.ITALIAN, props.getJavaSrcLanguage());
         assertTrue(props.isJavaProjectContainsClassesForDynamicDatatypes());
@@ -171,6 +191,7 @@ public class IpsProjectPropertiesTest extends AbstractIpsPluginTest {
 		assertEquals(Locale.ITALIAN, props.getJavaSrcLanguage());
         assertTrue(props.isJavaProjectContainsClassesForDynamicDatatypes());
         assertTrue(props.isDerivedUnionIsImplementedRuleEnabled());
+        assertTrue(props.isReferencedProductComponentsAreValidOnThisGenerationsValidFromDateRuleEnabled());
 		assertEquals("myConvention", props.getChangesOverTimeNamingConventionIdForGeneratedCode());
 		assertEquals("testPrefix", props.getRuntimeIdPrefix());
 		
