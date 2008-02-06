@@ -336,7 +336,7 @@ public abstract class IpsObjectPartContainer extends IpsElement implements IIpsO
      * The method is called by the initFromXml() method to retrieve the values of the
      * extension properties.
      * 
-     * @param element The &ltExtensionProperties&gt element.
+     * @param element The &lt;ExtensionProperties&gt; element.
      */
     private void initExtPropertiesFromXml(Element containerEl) {
         extPropertyValues = null;
@@ -360,7 +360,7 @@ public abstract class IpsObjectPartContainer extends IpsElement implements IIpsO
      * The method is called by the initFromXml() method to retrieve the values of the
      * extension properties.
      * 
-     * @param element The &ltExtensionProperties&gt element.
+     * @param element The &lt;ExtensionProperties&gt; element.
      */
     private void initExtPropertyFromXml(Element valueElement, HashMap extPropertyDefinitions) {
         String propertyId = valueElement.getAttribute(IpsObjectPartContainer.XML_ATTRIBUTE_EXTPROPERTYID);
@@ -386,7 +386,7 @@ public abstract class IpsObjectPartContainer extends IpsElement implements IIpsO
     }
 
     /*
-     * Searchs an extension property using the given id. Returns null if no such extension property exists.
+     * Searches an extension property using the given id. Returns null if no such extension property exists.
      */
     private IExtensionPropertyDefinition findExtensionProperty(String propertyId, HashMap extPropertyDefinitions) {
         IExtensionPropertyDefinition property = (IExtensionPropertyDefinition)extPropertyDefinitions.get(propertyId);
@@ -467,7 +467,7 @@ public abstract class IpsObjectPartContainer extends IpsElement implements IIpsO
      * the correct collection, e.g. for IPolicyCmptType: if the part is an IAttribute, the part must be
      * added to the <code>attributes</code> list.
      * 
-     * @throws RuntimeException if the part can't be readded, e.g. because it's type is unknown.
+     * @throws RuntimeException if the part can't be read, e.g. because it's type is unknown.
      */
     protected abstract void reAddPart(IIpsObjectPart part);
     
@@ -537,7 +537,7 @@ public abstract class IpsObjectPartContainer extends IpsElement implements IIpsO
         validateExtensionProperties(result);
         validateChildren(result, ipsProject);
         if (IpsModel.TRACE_VALIDATION) {
-            System.out.println("Validation of " + this + ": Finsihed, took " + (System.currentTimeMillis() - validationStartTime) + "ms."); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+            System.out.println("Validation of " + this + ": Finished, took " + (System.currentTimeMillis() - validationStartTime) + "ms."); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
             validationStartTime = -1;
         }
         getValidationCache().putResult(this, result);        
