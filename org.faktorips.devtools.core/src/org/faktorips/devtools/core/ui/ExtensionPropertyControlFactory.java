@@ -17,6 +17,9 @@
 
 package org.faktorips.devtools.core.ui;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+
 import org.eclipse.swt.widgets.Composite;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.model.ipsobject.IExtensionPropertyDefinition;
@@ -32,22 +35,22 @@ import org.faktorips.devtools.core.ui.controller.IpsObjectUIController;
  */
 public class ExtensionPropertyControlFactory {
 
-	private IExtensionPropertyDefinition[] extensionProperties;
-
-	private EditField[] extensionEditFields;
-	private IIpsObjectPartContainer[] partContainers;
+	private ExtPropControlData[] extPropData;
     
 	public ExtensionPropertyControlFactory(Class extensionClass) {
-		extensionProperties = IpsPlugin.getDefault().getIpsModel()
+		IExtensionPropertyDefinition[] extensionProperties = IpsPlugin.getDefault().getIpsModel()
 				.getExtensionPropertyDefinitions(extensionClass, true);
-		extensionEditFields = new EditField[extensionProperties.length];
-        partContainers = new IIpsObjectPartContainer[extensionProperties.length];
+        
+        extPropData = new ExtPropControlData[extensionProperties.length];
+        for (int i = 0; i < extensionProperties.length; i++) {
+            extPropData[i] = new ExtPropControlData(extensionProperties[i]);
+        }
 	}
     
     public boolean needsToCreateControlsFor(IIpsObjectPartContainer ipsObjectPart, String position) {
-        for (int i = 0; i < extensionProperties.length; i++) {
-            if (extensionProperties[i].getEditedInStandardTextArea().equals(position)
-                    && (extensionEditFields[i] == null)) {
+        for (int i = 0; i < extPropData.length; i++) {
+            if (extPropData[i].extProperty.getEditedInStandardTextArea().equals(position)
+                    && (extPropData[i].editField == null)) {
                 return true;
             }
         }
@@ -59,51 +62,55 @@ public class ExtensionPropertyControlFactory {
 	 */
 	public void createControls(Composite workArea, UIToolkit uiToolkit,
             IIpsObjectPartContainer ipsObjectPart, String position) {
-		for (int i = 0; i < extensionProperties.length; i++) {
-			if (extensionProperties[i].getEditedInStandardTextArea().equals(position)
-					&& (extensionEditFields[i] == null)) {
-
-                createLabelAndEditField(workArea, uiToolkit, ipsObjectPart, i);
+        
+        // find all extension property definitions for the given position
+        ArrayList extPropertiesForPosition = new ArrayList();
+        for (int i = 0; i < extPropData.length; i++) {
+            if (extPropData[i].extProperty.getEditedInStandardTextArea().equals(position)) {
+                extPropertiesForPosition.add(extPropData[i]);
+            }
+        }
+        
+        // sort the array of found extension property definitions by their SortOrder
+        ExtPropControlData[] sortedExtensionPropertyDefinitions;
+        sortedExtensionPropertyDefinitions = (ExtPropControlData[])extPropertiesForPosition.toArray(new ExtPropControlData[extPropertiesForPosition.size()]);
+        Arrays.sort(sortedExtensionPropertyDefinitions);
+        
+        // create controls
+		for (int i = 0; i < sortedExtensionPropertyDefinitions.length; i++) {
+			if (sortedExtensionPropertyDefinitions[i].editField == null) {
+                createLabelAndEditField(workArea, uiToolkit, ipsObjectPart, sortedExtensionPropertyDefinitions[i]);
 			}
 		}
 	}
-
+    
 	/**
 	 * Creates all not yet explicitely created EditFields of an extension not including
 	 * the extensions tagged with <code>false</code> 
 	 */
 	public void createControls(Composite workArea, UIToolkit uiToolkit,
             IIpsObjectPartContainer ipsObjectPart) {
-		for (int i = 0; i < extensionProperties.length; i++) {
-			if ((!extensionProperties[i].getEditedInStandardTextArea().equals("false")) //$NON-NLS-1$
-					&& (extensionEditFields[i] == null)) {
-            
-                createLabelAndEditField(workArea, uiToolkit, ipsObjectPart, i);
-			}
-		}
+        createControls(workArea, uiToolkit, ipsObjectPart, "false"); //$NON-NLS-1$
 	}
     
     private void createLabelAndEditField(
             Composite workArea, 
             UIToolkit uiToolkit, 
             IIpsObjectPartContainer ipsObjectPart,
-            int i) {
+            ExtPropControlData extPropertyData) {
 
-        uiToolkit.createFormLabel(workArea, extensionProperties[i].getDisplayName() + ":"); //$NON-NLS-1$
-        extensionEditFields[i] = extensionProperties[i].newEditField(ipsObjectPart, workArea, uiToolkit);
-        partContainers[i] = ipsObjectPart;
+        uiToolkit.createFormLabel(workArea, extPropertyData.extProperty.getDisplayName() + ":"); //$NON-NLS-1$
+        extPropertyData.editField = extPropertyData.extProperty.newEditField(ipsObjectPart, workArea, uiToolkit);
+        extPropertyData.partContainer = ipsObjectPart;
     }
 
 	/**
 	 * Connects all EditFields created by this factory with the model.
 	 */
 	public void connectToModel(IpsObjectUIController uiController) {
-		for (int i = 0; i < extensionEditFields.length; i++) {
-			if (extensionEditFields[i] != null) {
-				uiController.add(extensionEditFields[i], extensionProperties[i]
-						.getPropertyId());
-			}
-		}
+        for (int i = 0; i < extPropData.length; i++) {
+            uiController.add(extPropData[i].editField, extPropData[i].extProperty.getPropertyId());
+        }
 	}
     
     /**
@@ -112,9 +119,9 @@ public class ExtensionPropertyControlFactory {
      * @throws NullPointerException if context is <code>null</code>.
      */
     public void bind(BindingContext context) {
-        for (int i = 0; i < extensionEditFields.length; i++) {
-            if (extensionEditFields[i] != null) {
-                context.bindContent(extensionEditFields[i], partContainers[i], extensionProperties[i].getPropertyId());
+        for (int i = 0; i < extPropData.length; i++) {
+            if (extPropData[i].editField != null) {
+                context.bindContent(extPropData[i].editField, extPropData[i].partContainer, extPropData[i].extProperty.getPropertyId());
             }
         }
     }
@@ -125,11 +132,28 @@ public class ExtensionPropertyControlFactory {
      * @throws NullPointerException if context is <code>null</code>.
      */
     public void removeBinding(BindingContext context) {
-        for (int i = 0; i < extensionEditFields.length; i++) {
-            if (extensionEditFields[i] != null) {
-                context.removeBindings(extensionEditFields[i].getControl());
+        for (int i = 0; i < extPropData.length; i++) {
+            if (extPropData[i].editField != null) {
+                context.removeBindings(extPropData[i].editField.getControl());
             }
         }        
     }
     
+    private class ExtPropControlData implements Comparable {
+        IExtensionPropertyDefinition extProperty;
+        EditField editField;
+        IIpsObjectPartContainer partContainer;
+        
+        public ExtPropControlData(IExtensionPropertyDefinition extProperty) {
+            this.extProperty = extProperty;
+        }
+
+        public int compareTo(Object o) {
+            if (!(o instanceof ExtPropControlData)) {
+                return 0;
+            }
+            return extProperty.compareTo(((ExtPropControlData)o).extProperty);
+        }
+        
+    }
 }
