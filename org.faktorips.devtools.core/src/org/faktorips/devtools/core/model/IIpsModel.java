@@ -166,7 +166,7 @@ public interface IIpsModel extends IIpsElement {
      * 
      * @param type The published interface of the ips object or part e.g.
      *            <code>or.faktorips.plugin.model.pctype.Attribute</code>
-     * @parma propertyId the extension property id
+     * @param propertyId the extension property id
      * @param <code>true</code> if not only the extension properties defined for for the type
      *            itself should be returned, but also the ones registered for it's supertype(s) and
      *            it's interfaces.
