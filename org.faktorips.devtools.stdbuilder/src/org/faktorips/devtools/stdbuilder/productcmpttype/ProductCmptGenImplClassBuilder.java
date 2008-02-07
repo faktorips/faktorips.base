@@ -1121,8 +1121,12 @@ public class ProductCmptGenImplClassBuilder extends AbstractProductCmptTypeBuild
         for (Iterator it = implAssociations.iterator(); it.hasNext();) {
             IProductCmptTypeAssociation association = (IProductCmptTypeAssociation)it.next();
             builder.append("num += ");
-            builder.append(interfaceBuilder.getMethodNameGetNumOfRelatedCmpts(association));
-            builder.append("();");
+            if (association.is1To1()) {
+                builder.append(getFieldNameTo1Association(association) + "==null ? 0 : 1;");
+            } else {
+                builder.append(interfaceBuilder.getMethodNameGetNumOfRelatedCmpts(association));
+                builder.append("();");
+            }
         }
         builder.appendln("return num;");
         builder.closeBracket();
