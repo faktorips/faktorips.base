@@ -71,17 +71,7 @@ public class ExtensionPropertyControlFactory {
             }
         }
         
-        // sort the array of found extension property definitions by their SortOrder
-        ExtPropControlData[] sortedExtensionPropertyDefinitions;
-        sortedExtensionPropertyDefinitions = (ExtPropControlData[])extPropertiesForPosition.toArray(new ExtPropControlData[extPropertiesForPosition.size()]);
-        Arrays.sort(sortedExtensionPropertyDefinitions);
-        
-        // create controls
-		for (int i = 0; i < sortedExtensionPropertyDefinitions.length; i++) {
-			if (sortedExtensionPropertyDefinitions[i].editField == null) {
-                createLabelAndEditField(workArea, uiToolkit, ipsObjectPart, sortedExtensionPropertyDefinitions[i]);
-			}
-		}
+        createControls(extPropertiesForPosition, workArea, uiToolkit, ipsObjectPart);
 	}
     
 	/**
@@ -90,8 +80,31 @@ public class ExtensionPropertyControlFactory {
 	 */
 	public void createControls(Composite workArea, UIToolkit uiToolkit,
             IIpsObjectPartContainer ipsObjectPart) {
-        createControls(workArea, uiToolkit, ipsObjectPart, "false"); //$NON-NLS-1$
+        // find all extension property definitions for the given position
+        ArrayList extPropertiesForPosition = new ArrayList();
+        for (int i = 0; i < extPropData.length; i++) {
+            if (!extPropData[i].extProperty.getEditedInStandardTextArea().equals("false")) {
+                extPropertiesForPosition.add(extPropData[i]);
+            }
+        }
+        createControls(extPropertiesForPosition, workArea, uiToolkit, ipsObjectPart);
 	}
+    
+    private void createControls(ArrayList extPropControlData, Composite workArea, UIToolkit uiToolkit,
+            IIpsObjectPartContainer ipsObjectPart) {
+        
+        // sort the array of found extension property definitions by their SortOrder
+        ExtPropControlData[] sortedExtensionPropertyDefinitions;
+        sortedExtensionPropertyDefinitions = (ExtPropControlData[])extPropControlData.toArray(new ExtPropControlData[extPropControlData.size()]);
+        Arrays.sort(sortedExtensionPropertyDefinitions);
+        
+        // create controls
+        for (int i = 0; i < sortedExtensionPropertyDefinitions.length; i++) {
+            if (sortedExtensionPropertyDefinitions[i].editField == null) {
+                createLabelAndEditField(workArea, uiToolkit, ipsObjectPart, sortedExtensionPropertyDefinitions[i]);
+            }
+        }
+    }
     
     private void createLabelAndEditField(
             Composite workArea, 
