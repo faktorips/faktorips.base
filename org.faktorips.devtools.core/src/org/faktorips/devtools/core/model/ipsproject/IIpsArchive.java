@@ -33,7 +33,7 @@ import org.faktorips.devtools.core.model.ipsobject.QualifiedNameType;
 public interface IIpsArchive {
 
     /**
-     * Constant for the toplevel folder in the archive file that contains the entries for the ips 
+     * Constant for the top-level folder in the archive file that contains the entries for the ips 
      * objects. 
      */
     public final static String IPSOBJECTS_FOLDER = "ipsobjects"; //$NON-NLS-1$
@@ -60,7 +60,7 @@ public interface IIpsArchive {
     public boolean exists();
     
     /**
-     * Returns the name of the none-empty packages contained in the archive. A package is not empty,
+     * Returns the name of the non-empty packages contained in the archive. A package is not empty,
      * if it contains at least one ips object.
      */
     public String[] getNoneEmptyPackages() throws CoreException;
@@ -72,7 +72,7 @@ public interface IIpsArchive {
     public boolean containsPackage(String name) throws CoreException;
 
     /**
-     * Returns the names of the none-empty subpackages for the given parent package as list.
+     * Returns the names of the non-empty subpackages for the given parent package as list.
      */
     public Set getNoneEmptySubpackages(String pack) throws CoreException;
 
@@ -111,7 +111,7 @@ public interface IIpsArchive {
     /**
      * Returns the name of the base package for the extension Java source files. All generated Java types
      * are contained in this package or one of the child packages.
-     * Extension Java files are the files where the developer adds it's own code.
+     * Extension Java files are the files where the developer adds his own code.
      */
     public String getBasePackageNameForExtensionJavaClass(QualifiedNameType qnt) throws CoreException;
     
