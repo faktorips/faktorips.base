@@ -49,6 +49,7 @@ import org.faktorips.devtools.stdbuilder.StdBuilderHelper;
 import org.faktorips.devtools.stdbuilder.productcmpttype.ProductCmptGenInterfaceBuilder;
 import org.faktorips.devtools.stdbuilder.productcmpttype.ProductCmptInterfaceBuilder;
 import org.faktorips.runtime.IConfigurableModelObject;
+import org.faktorips.runtime.ICopySupport;
 import org.faktorips.runtime.IDeltaSupport;
 import org.faktorips.runtime.IDependantObject;
 import org.faktorips.runtime.IModelObject;
@@ -60,6 +61,7 @@ import org.faktorips.valueset.IntegerRange;
 public class PolicyCmptInterfaceBuilder extends BasePolicyCmptTypeBuilder {
 
     private boolean generateDeltaSupport = false;
+    private boolean generateCopySupport = false;
     
     private ProductCmptInterfaceBuilder productCmptInterfaceBuilder;
     
@@ -76,6 +78,14 @@ public class PolicyCmptInterfaceBuilder extends BasePolicyCmptTypeBuilder {
 
     public void setGenerateDeltaSupport(boolean generateDeltaSupport) {
         this.generateDeltaSupport = generateDeltaSupport;
+    }
+    
+    public boolean isGenerateCopySupport() {
+        return generateCopySupport;
+    }
+
+    public void setGenerateCopySupport(boolean generateCopySupport) {
+        this.generateCopySupport = generateCopySupport;
     }
 
     public void setProductCmptInterfaceBuilder(ProductCmptInterfaceBuilder productCmptInterfaceBuilder) {
@@ -139,6 +149,9 @@ public class PolicyCmptInterfaceBuilder extends BasePolicyCmptTypeBuilder {
             }
             if (generateDeltaSupport) {
                 interfaces.add(IDeltaSupport.class.getName());
+            }
+            if (generateCopySupport) {
+                interfaces.add(ICopySupport.class.getName());
             }
         }
         if (isFirstDependantTypeInHierarchy(type)) {

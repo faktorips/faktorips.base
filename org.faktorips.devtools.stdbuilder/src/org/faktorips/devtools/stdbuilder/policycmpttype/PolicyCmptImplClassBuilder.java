@@ -382,7 +382,7 @@ public class PolicyCmptImplClassBuilder extends BasePolicyCmptTypeBuilder {
         }
     }
         
-        private String getMethodNameCopyProperties() {
+    private String getMethodNameCopyProperties() {
         return "copyProperties";
     }
     
