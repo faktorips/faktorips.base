@@ -60,8 +60,8 @@ public class CreateIpsArchiveOperationTest extends AbstractIpsPluginTest {
         IIpsArchive archive = new IpsArchive(archiveFile);
         String[] packs = archive.getNoneEmptyPackages();
         assertEquals(2, packs.length);
-        assertEquals("mycompany.motor", packs[0]);
-        assertEquals("mycompany.home", packs[1]);
+        assertEquals("mycompany.home", packs[0]);
+        assertEquals("mycompany.motor", packs[1]);
         
         Set qnt = archive.getQNameTypes();
         assertEquals(6, qnt.size());

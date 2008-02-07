@@ -119,8 +119,8 @@ public class IpsArchiveTest extends AbstractIpsPluginTest {
     public void testGetNoneEmptyPackages() throws CoreException {
         String[] packs = archive.getNoneEmptyPackages();
         assertEquals(3, packs.length);
-        assertEquals("motor", packs[0]);
-        assertEquals("home.base", packs[1]);
+        assertEquals("home.base", packs[0]);
+        assertEquals("motor", packs[1]);
         assertEquals("motor.collision", packs[2]);
     }
 

@@ -20,6 +20,7 @@ package org.faktorips.devtools.core.internal.model.ipsproject;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.Enumeration;
 import java.util.HashMap;
@@ -92,6 +93,7 @@ public class IpsArchive implements IIpsArchive {
         for (Iterator it=packs.keySet().iterator(); it.hasNext(); i++) {
             packNames[i] = (String)it.next();
         }
+        Arrays.sort(packNames);
         return packNames;
     }
     
