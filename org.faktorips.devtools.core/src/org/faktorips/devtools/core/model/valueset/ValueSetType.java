@@ -36,7 +36,7 @@ import org.w3c.dom.Element;
 public class ValueSetType extends DefaultEnumValue {
 
     /**
-     * Defines the value set type specifiyinf all value. 
+     * Defines the value set type specifying all values. 
      */
     public final static ValueSetType ALL_VALUES;
     
