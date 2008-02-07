@@ -869,8 +869,8 @@ public class IpsProjectProperties implements IIpsProjectProperties {
     private void createOptionalConstraintsDescriptionComment(Node parentEl) {
         String s = "OptionalConstraints" + SystemUtils.LINE_SEPARATOR  //$NON-NLS-1$
         + " " + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$
-        + "In the datatypes section the value datatypes allowed in the model are defined." + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$
-        + "See also the discussion at the top this file." + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$
+        + "Some of the contraints defined in the Faktor-IPS metamodel are optional." + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$
+        + "In this section you can enable or disable these optional contraints." + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$
         + " " + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$
         + "<OptionalConstraints>" + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$
         + "    <!-- True if Faktor-IPS checks if all derived unions are implemented in none abstract classes. -->" + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$
