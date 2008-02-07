@@ -17,18 +17,17 @@
 
 package org.faktorips.devtools.core.ui.controlfactories;
 
-import junit.framework.TestCase;
-
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Shell;
+import org.faktorips.devtools.core.AbstractIpsPluginTest;
 
 /**
  *
  * @author Jan Ortmann
  */
-public class BooleanComboFieldTest extends TestCase {
+public class BooleanComboFieldTest extends AbstractIpsPluginTest {
 
     private Shell shell;
 
