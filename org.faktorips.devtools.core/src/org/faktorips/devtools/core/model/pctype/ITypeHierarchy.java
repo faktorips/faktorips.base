@@ -88,12 +88,6 @@ public interface ITypeHierarchy {
     public IMethod[] getAllMethods(IPolicyCmptType type);
     
     /**
-     * Returns all relations of the given type either defined in the type itself
-     * or any of it's supertyes found in the hierarchy.
-     */
-    public IPolicyCmptTypeAssociation[] getAllRelations(IPolicyCmptType type);
-
-    /**
      * Returns all rules of the given type either defined in the type itself
      * or any of it's supertyes found in the hierarchy.
      */
@@ -105,13 +99,6 @@ public interface ITypeHierarchy {
      * if no attribute with the given name is found.  
      */
     public IPolicyCmptTypeAttribute findAttribute(IPolicyCmptType type, String attributeName);
-    
-    /**
-     * Returns the relation with the given target role if either the type or one of
-     * it's supertypes contains a relation with that target role. Returns <code>null</code>
-     * if no relation with the given target role is found.  
-     */
-    public IPolicyCmptTypeAssociation findRelation(IPolicyCmptType type, String targetRole);
     
     /**
      * Returns the direct subtypes for the given policy component type.

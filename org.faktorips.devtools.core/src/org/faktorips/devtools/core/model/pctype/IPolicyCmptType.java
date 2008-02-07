@@ -337,17 +337,6 @@ public interface IPolicyCmptType extends IType, Datatype {
     public IPolicyCmptTypeAssociation[] getPolicyCmptTypeAssociations();
     
     /**
-     * Returns the first relation with the indicated name or null if
-     * no such relation exists.
-     * <p>
-     * Note that a relation's name is equal to it's target role, so you
-     * can also use the target role as parameter.
-     * 
-     * @throws IllegalArgumentException if name is <code>null</code>.
-     */
-    public IPolicyCmptTypeAssociation getRelation(String name);
-    
-    /**
      * Creates a new association and returns it.
      */
     public IPolicyCmptTypeAssociation newPolicyCmptTypeAssociation();

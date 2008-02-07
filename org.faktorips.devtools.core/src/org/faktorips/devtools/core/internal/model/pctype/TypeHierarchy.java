@@ -30,7 +30,6 @@ import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
-import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAssociation;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAttribute;
 import org.faktorips.devtools.core.model.pctype.ITypeHierarchy;
 import org.faktorips.devtools.core.model.pctype.IValidationRule;
@@ -313,18 +312,6 @@ public class TypeHierarchy implements ITypeHierarchy {
     }
     
     /**
-	 * {@inheritDoc}
-	 */
-	public IPolicyCmptTypeAssociation[] getAllRelations(IPolicyCmptType type) {
-        List relations = new ArrayList();
-        IPolicyCmptType[] types = getAllSupertypesInclSelf(type);
-        for (int i=0; i<types.length; i++) {
-            relations.addAll(((PolicyCmptType)types[i]).getAssociationList());
-        }
-        return (IPolicyCmptTypeAssociation[])relations.toArray(new IPolicyCmptTypeAssociation[relations.size()]);
-	}
-
-    /**
      * {@inheritDoc}
      */
 	public IValidationRule[] getAllRules(IPolicyCmptType type) {
@@ -345,20 +332,6 @@ public class TypeHierarchy implements ITypeHierarchy {
             IPolicyCmptTypeAttribute a = types[i].getPolicyCmptTypeAttribute(attributeName);
             if (a!=null) {
                 return a;
-            }
-        }
-        return null;
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    public IPolicyCmptTypeAssociation findRelation(IPolicyCmptType type, String targetRole) {
-        IPolicyCmptType[] types = getAllSupertypesInclSelf(type);
-        for (int i=0; i<types.length; i++) {
-            IPolicyCmptTypeAssociation r = types[i].getRelation(targetRole);
-            if (r!=null) {
-                return r;
             }
         }
         return null;

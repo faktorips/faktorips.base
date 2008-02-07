@@ -739,7 +739,9 @@ public class ProductCmptGenImplClassBuilder extends AbstractProductCmptTypeBuild
             generateMethodGetCardinalityFor1ToManyAssociation(association, methodsBuilder);
             generateFieldCardinalityForAssociation(association, memberVarsBuilder);
         }
-        generateMethodGetNumOfRelatedProductCmpts(association, methodsBuilder);  
+        if (association.is1ToMany()) {
+            generateMethodGetNumOfRelatedProductCmpts(association, methodsBuilder);  
+        }
     }
     
     private String getFieldNameToManyAssociation(IProductCmptTypeAssociation association) throws CoreException {
@@ -946,8 +948,10 @@ public class ProductCmptGenImplClassBuilder extends AbstractProductCmptTypeBuild
      */
     protected void generateCodeForDerivedUnionAssociationImplementation(IProductCmptTypeAssociation containerAssociation, List implAssociations, JavaCodeFragmentBuilder memberVarsBuilder, JavaCodeFragmentBuilder methodsBuilder) throws Exception {
         generateMethodGetRelatedCmptsInContainer(containerAssociation, implAssociations, methodsBuilder);
-        generateMethodGetNumOfRelatedProductCmpts(containerAssociation, implAssociations, methodsBuilder);
-        generateMethodGetNumOfRelatedProductCmptsInternal(containerAssociation, implAssociations, methodsBuilder);
+        if (containerAssociation.is1ToMany()) {
+            generateMethodGetNumOfRelatedProductCmpts(containerAssociation, implAssociations, methodsBuilder);
+            generateMethodGetNumOfRelatedProductCmptsInternal(containerAssociation, implAssociations, methodsBuilder);
+        }
     }
     
     /**

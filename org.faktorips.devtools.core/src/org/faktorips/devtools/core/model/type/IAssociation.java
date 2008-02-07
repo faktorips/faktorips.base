@@ -255,6 +255,8 @@ public interface IAssociation extends IIpsObjectPart {
      * Returns <code>true</code> if this is a to-many association. This is the case if
      * either the max cardinality is greater than 1 or (!) this association is a qualified association.
      * In the latter case the max cardinality specifies the number of allowed links per qualifier instance(!).
+     * <p>
+     * If this method returns <code>true</code> {{@link #is1To1()} returns <code>false</code> and vice versa.
      */
     public boolean is1ToMany();
     
@@ -266,7 +268,9 @@ public interface IAssociation extends IIpsObjectPart {
     
     /**
      * Returns <code>true</code> if this is a 1 (or 0) to 1 association. This is the case if
-     * the max cardinality is 1.
+     * the max cardinality is 1 and(!) the association is not qualified. 
+     * <p>
+     * If this method returns <code>true</code> {{@link #is1ToMany()} returns <code>false</code> and vice versa.
      */
     public boolean is1To1();
     

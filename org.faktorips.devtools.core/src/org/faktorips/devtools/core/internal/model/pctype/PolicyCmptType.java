@@ -286,13 +286,6 @@ public class PolicyCmptType extends Type implements IPolicyCmptType {
     /**
      * {@inheritDoc}
      */
-    public IPolicyCmptTypeAssociation getRelation(String name) {
-        return (IPolicyCmptTypeAssociation)getAssociation(name);
-    }
-
-    /**
-     * {@inheritDoc}
-     */
     public IPolicyCmptTypeAssociation newPolicyCmptTypeAssociation() {
         return (IPolicyCmptTypeAssociation)newAssociation();
     }

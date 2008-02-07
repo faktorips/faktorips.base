@@ -242,7 +242,9 @@ public class ProductCmptGenInterfaceBuilder extends AbstractProductCmptTypeBuild
         if (association.findMatchingPolicyCmptTypeAssociation(getIpsProject())!=null) {
             generateMethodGetCardinalityForAssociation(association, methodsBuilder);
         }
-        generateMethodGetNumOfRelatedCmpts(association, methodsBuilder);
+        if (association.is1ToMany()) {
+            generateMethodGetNumOfRelatedCmpts(association, methodsBuilder);
+        }
     }
     
     /**
@@ -323,8 +325,10 @@ public class ProductCmptGenInterfaceBuilder extends AbstractProductCmptTypeBuild
         appendLocalizedJavaDoc("METHOD_GET_MANY_RELATED_CMPTS", containerAssociation.getTargetRolePlural(), containerAssociation, methodsBuilder);
         generateSignatureDerivedUnionAssociation(containerAssociation, methodsBuilder);
         methodsBuilder.appendln(";");
-        
-        generateMethodGetNumOfRelatedCmpts(containerAssociation, methodsBuilder);
+
+        if (containerAssociation.is1ToMany()) {
+            generateMethodGetNumOfRelatedCmpts(containerAssociation, methodsBuilder);
+        }
     }
     
     void generateSignatureDerivedUnionAssociation(IProductCmptTypeAssociation containerAssociation, JavaCodeFragmentBuilder methodsBuilder) throws CoreException {
