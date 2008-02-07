@@ -410,17 +410,6 @@ public class PolicyCmptTypeTest extends AbstractIpsPluginTest implements Content
         assertNotNull(policyCmptType.getPolicyCmptTypeAssociations()[0]);
     }
     
-    public void testGetRelation() {
-        assertNull(policyCmptType.getRelation("unkown"));
-        IPolicyCmptTypeAssociation r1 = policyCmptType.newPolicyCmptTypeAssociation();
-        r1.setTargetRoleSingular("r1");
-        IPolicyCmptTypeAssociation r2 = policyCmptType.newPolicyCmptTypeAssociation();
-        r2.setTargetRoleSingular("r2");
-        IPolicyCmptTypeAssociation r3 = policyCmptType.newPolicyCmptTypeAssociation();
-        r3.setTargetRoleSingular("r2");
-        assertEquals(r2, policyCmptType.getRelation("r2"));
-    }
-    
     public void testDependsOnAssociation() throws CoreException{
         IPolicyCmptType a = newPolicyCmptTypeWithoutProductCmptType(ipsProject, "A");
         IPolicyCmptType b = newPolicyCmptTypeWithoutProductCmptType(ipsProject, "B");

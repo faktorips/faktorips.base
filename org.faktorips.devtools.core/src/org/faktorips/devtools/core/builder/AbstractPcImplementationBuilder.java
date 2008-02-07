@@ -48,32 +48,31 @@ public abstract class AbstractPcImplementationBuilder extends
 	abstract protected void generateGetterBodyForDerivedAttribute(IPolicyCmptTypeAttribute attribute, DatatypeHelper datatypeHelper, JavaCodeFragmentBuilder methodsBuilder);
 
 
-	protected void generateCodeForRelation(IPolicyCmptTypeAssociation relation, JavaCodeFragmentBuilder memberVarsBuilder, JavaCodeFragmentBuilder methodsBuilder) throws CoreException {
+	protected void generateCodeForRelation(IPolicyCmptTypeAssociation association, JavaCodeFragmentBuilder memberVarsBuilder, JavaCodeFragmentBuilder methodsBuilder) throws CoreException {
 	
-		IPolicyCmptType targetType = relation.findTargetPolicyCmptType(getIpsProject());
+		IPolicyCmptType targetType = association.findTargetPolicyCmptType(getIpsProject());
 		if (targetType == null) {
-			throw new CoreException(new IpsStatus("Target not found: " + relation.getTarget())); //$NON-NLS-1$
+			throw new CoreException(new IpsStatus("Target not found: " + association.getTarget())); //$NON-NLS-1$
 		}
 	
-		if (relation.getMaxCardinality() == IPolicyCmptTypeAssociation.CARDINALITY_ONE) {
+		if (association.getMaxCardinality() == IPolicyCmptTypeAssociation.CARDINALITY_ONE) {
 			/* get */
-	
-			policyInterfaceBuilder.generateCodeForRelationGetOneSignature(relation,memberVarsBuilder,methodsBuilder);
-			generateRelationGetToOneBody(targetType, relation, methodsBuilder);
+			policyInterfaceBuilder.generateCodeForRelationGetOneSignature(association,memberVarsBuilder,methodsBuilder);
+			generateRelationGetToOneBody(targetType, association, methodsBuilder);
 			/* set */
-			policyInterfaceBuilder.generateCodeForRelationSetSignature(relation,memberVarsBuilder,methodsBuilder);
-			generateRelationSetBody(targetType,relation, methodsBuilder);
+			policyInterfaceBuilder.generateCodeForRelationSetSignature(association,memberVarsBuilder,methodsBuilder);
+			generateRelationSetBody(targetType,association, methodsBuilder);
 	
 		} else {
 			/* get */
-			policyInterfaceBuilder.generateCodeForRelationGetManySignature(relation,memberVarsBuilder,methodsBuilder);
-			generateRelationGetToManyBody(targetType, relation, methodsBuilder);
+			policyInterfaceBuilder.generateCodeForRelationGetManySignature(association,memberVarsBuilder,methodsBuilder);
+			generateRelationGetToManyBody(targetType, association, methodsBuilder);
 			/* add */
-			policyInterfaceBuilder.generateCodeForRelationAddSignature(relation,memberVarsBuilder,methodsBuilder);
-			generateRelationAddBody(targetType, relation, methodsBuilder);
+			policyInterfaceBuilder.generateCodeForRelationAddSignature(association,memberVarsBuilder,methodsBuilder);
+			generateRelationAddBody(targetType, association, methodsBuilder);
 			/* remove */
-			policyInterfaceBuilder.generateCodeForRelationRemoveSignature(relation,memberVarsBuilder,methodsBuilder);
-			generateRelationRemoveBody(targetType, relation, methodsBuilder);
+			policyInterfaceBuilder.generateCodeForRelationRemoveSignature(association,memberVarsBuilder,methodsBuilder);
+			generateRelationRemoveBody(targetType, association, methodsBuilder);
 	
 		}
 	}	

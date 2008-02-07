@@ -383,7 +383,7 @@ public abstract class Association extends AtomicIpsObjectPart implements IAssoci
         if (maxCardinality == 0) {
             String text = Messages.Association_msg_MaxCardinalityMustBeAtLeast1;
             list.add(new Message(MSGCODE_MAX_CARDINALITY_MUST_BE_AT_LEAST_1, text, Message.ERROR, this, PROPERTY_MAX_CARDINALITY)); //$NON-NLS-1$
-        } else if (maxCardinality == 1 && isDerivedUnion() && !isQualified()) {
+        } else if (is1To1() && isDerivedUnion()) {
             String text = Messages.Association_msg_MaxCardinalityForDerivedUnionTooLow;
             list.add(new Message(MSGCODE_MAX_CARDINALITY_FOR_DERIVED_UNION_TOO_LOW, text, Message.ERROR, this, new String[]{PROPERTY_DERIVED_UNION, PROPERTY_MAX_CARDINALITY})); //$NON-NLS-1$
         } else if (minCardinality > maxCardinality) {
@@ -391,7 +391,7 @@ public abstract class Association extends AtomicIpsObjectPart implements IAssoci
             list.add(new Message(MSGCODE_MAX_IS_LESS_THAN_MIN, text, Message.ERROR, this, new String[]{PROPERTY_MIN_CARDINALITY, PROPERTY_MAX_CARDINALITY})); //$NON-NLS-1$
         }
         
-        if (maxCardinality > 1 || getIpsProject().getIpsArtefactBuilderSet().isRoleNamePluralRequiredForTo1Relations()) {
+        if (is1ToMany() || getIpsProject().getIpsArtefactBuilderSet().isRoleNamePluralRequiredForTo1Relations()) {
             ValidationUtils.checkStringPropertyNotEmpty(targetRolePlural,
                     Messages.Association_msg_TargetRolePlural, this, PROPERTY_TARGET_ROLE_PLURAL,
                     MSGCODE_TARGET_ROLE_PLURAL_MUST_BE_SET, list);

@@ -25,7 +25,6 @@ import org.faktorips.devtools.core.model.ipsproject.IIpsPackageFragment;
 import org.faktorips.devtools.core.model.ipsproject.IIpsPackageFragmentRoot;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
-import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAssociation;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAttribute;
 import org.faktorips.devtools.core.model.pctype.ITypeHierarchy;
 import org.faktorips.devtools.core.model.type.IMethod;
@@ -389,58 +388,6 @@ public class TypeHierarchyTest extends AbstractIpsPluginTest {
         
     }
     
-    public void testFindRelation() throws Exception {
-        // create the supetype relations
-        pcType.setSupertype(supertype.getQualifiedName());
-        supertype.setSupertype(supersupertype.getQualifiedName());
-
-        IPolicyCmptTypeAssociation r1 = pcType.newPolicyCmptTypeAssociation();
-        r1.setTargetRoleSingular("r1");
-        IPolicyCmptTypeAssociation r2 = supersupertype.newPolicyCmptTypeAssociation();
-        r2.setTargetRoleSingular("r2");
-        
-        TypeHierarchy hierarchy = TypeHierarchy.getSupertypeHierarchy(pcType);
-        assertEquals(r1, hierarchy.findRelation(pcType, "r1"));
-        assertEquals(r2, hierarchy.findRelation(pcType, "r2"));
-        assertEquals(r2, hierarchy.findRelation(supertype, "r2"));
-        assertNull(hierarchy.findRelation(pcType, "unkown"));
-        
-        // now same with cycle in hierarchy 
-        supersupertype.setSupertype(pcType.getQualifiedName());
-        hierarchy = TypeHierarchy.getSupertypeHierarchy(pcType);
-        assertEquals(r1, hierarchy.findRelation(pcType, "r1"));
-        assertEquals(r2, hierarchy.findRelation(pcType, "r2"));
-        assertEquals(r2, hierarchy.findRelation(supertype, "r2"));
-        assertNull(hierarchy.findRelation(pcType, "unkown"));
-        
-    }
-    
-    public void testGetAllRelations() throws Exception {
-        // create the supetype relations
-        pcType.setSupertype(supertype.getQualifiedName());
-        supertype.setSupertype(supersupertype.getQualifiedName());
-
-        IPolicyCmptTypeAssociation r1 = pcType.newPolicyCmptTypeAssociation();
-        IPolicyCmptTypeAssociation r2 = supertype.newPolicyCmptTypeAssociation();
-        IPolicyCmptTypeAssociation r3 = supersupertype.newPolicyCmptTypeAssociation();
-        TypeHierarchy hierarchy = TypeHierarchy.getSupertypeHierarchy(pcType);
-        IPolicyCmptTypeAssociation[] relations = hierarchy.getAllRelations(pcType);
-        assertEquals(3, relations.length);
-        assertEquals(r1, relations[0]);
-        assertEquals(r2, relations[1]);
-        assertEquals(r3, relations[2]);
-        
-        // now same with cycle in hierarchy 
-        supersupertype.setSupertype(pcType.getQualifiedName());
-        hierarchy = TypeHierarchy.getSupertypeHierarchy(pcType);
-        relations = hierarchy.getAllRelations(pcType);
-        assertEquals(3, relations.length);
-        assertEquals(r1, relations[0]);
-        assertEquals(r2, relations[1]);
-        assertEquals(r3, relations[2]);
-        
-    }
-
     public void testCycleDetection() throws Exception {
         pcType.setSupertype(supertype.getQualifiedName());
         supertype.setSupertype(supersupertype.getQualifiedName());

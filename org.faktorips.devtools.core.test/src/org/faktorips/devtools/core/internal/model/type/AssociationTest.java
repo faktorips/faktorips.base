@@ -66,6 +66,33 @@ public class AssociationTest extends AbstractIpsPluginTest {
         implementationRelation.setSubsettedDerivedUnion(association.getName());
     }
     
+    public void testIs1To1_And_Is1ToMany() throws CoreException {
+        IPolicyCmptType type = newPolicyCmptTypeWithoutProductCmptType(ipsProject, "Policy");
+        IPolicyCmptTypeAssociation ass = type.newPolicyCmptTypeAssociation();
+        
+        ass.setQualified(false);
+        ass.setMaxCardinality(1);
+        assertTrue(ass.is1To1());
+        assertFalse(ass.is1ToMany());
+        assertFalse(ass.is1ToManyIgnoringQualifier());
+        
+        ass.setQualified(true);
+        assertFalse(ass.is1To1());
+        assertTrue(ass.is1ToMany());
+        assertFalse(ass.is1ToManyIgnoringQualifier());
+        
+        ass.setMaxCardinality(10);
+        assertFalse(ass.is1To1());
+        assertTrue(ass.is1ToMany());
+        assertTrue(ass.is1ToManyIgnoringQualifier());
+        
+        ass.setQualified(false);
+        ass.setMaxCardinality(10);
+        assertFalse(ass.is1To1());
+        assertTrue(ass.is1ToMany());
+        assertTrue(ass.is1ToManyIgnoringQualifier());
+    }
+    
     public void testValidateTargetTypeNotASubtype() throws Exception {
         MessageList ml = new MessageList();
         association.setDerivedUnion(true);

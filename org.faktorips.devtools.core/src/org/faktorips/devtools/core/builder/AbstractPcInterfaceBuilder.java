@@ -32,16 +32,20 @@ public abstract class AbstractPcInterfaceBuilder extends AbstractPcTypeBuilder {
 	abstract public void generateCodeForRelationGetOneSignature(IPolicyCmptTypeAssociation relation,
 			JavaCodeFragmentBuilder memberVarsBuilder,
 			JavaCodeFragmentBuilder methodsBuilder) throws CoreException;
+    
 	abstract public void generateCodeForRelationGetManySignature(IPolicyCmptTypeAssociation relation,
 			JavaCodeFragmentBuilder memberVarsBuilder,
 			JavaCodeFragmentBuilder methodsBuilder) throws CoreException;
-	abstract public void generateCodeForRelationSetSignature(IPolicyCmptTypeAssociation relation,
+	
+    abstract public void generateCodeForRelationSetSignature(IPolicyCmptTypeAssociation relation,
 			JavaCodeFragmentBuilder memberVarsBuilder,
 			JavaCodeFragmentBuilder methodsBuilder) throws CoreException;
-	abstract public void generateCodeForRelationAddSignature(IPolicyCmptTypeAssociation relation,
+	
+    abstract public void generateCodeForRelationAddSignature(IPolicyCmptTypeAssociation relation,
 			JavaCodeFragmentBuilder memberVarsBuilder,
 			JavaCodeFragmentBuilder methodsBuilder) throws CoreException;
-	abstract public void generateCodeForRelationRemoveSignature(IPolicyCmptTypeAssociation relation,
+	
+    abstract public void generateCodeForRelationRemoveSignature(IPolicyCmptTypeAssociation relation,
 			JavaCodeFragmentBuilder memberVarsBuilder,
 			JavaCodeFragmentBuilder methodsBuilder) throws CoreException;
 
