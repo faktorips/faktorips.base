@@ -28,18 +28,18 @@ import org.faktorips.util.message.MessageList;
  */
 public abstract class BasePolicyCmptTypeBuilder extends AbstractPcTypeBuilder {
 
-    private boolean changeListenerSupportActive;
+    private boolean generateChangeListenerSupport;
     
     public BasePolicyCmptTypeBuilder(IIpsArtefactBuilderSet builderSet, 
                                      String kindId, 
                                      LocalizedStringsSet stringsSet, 
-                                     boolean isChangeListenerSupportActive) {
+                                     boolean generateChangeListenerSupport) {
         super(builderSet, kindId, stringsSet);
-        this.changeListenerSupportActive = isChangeListenerSupportActive;
+        this.generateChangeListenerSupport = generateChangeListenerSupport;
     }
 
-    public boolean isChangeListenerSupportActive() {
-        return changeListenerSupportActive;
+    public boolean isGenerateChangeListenerSupport() {
+        return generateChangeListenerSupport;
     }
     
     /**

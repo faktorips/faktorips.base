@@ -56,6 +56,7 @@ import org.faktorips.devtools.stdbuilder.testcasetype.TestCaseTypeClassBuilder;
 import org.faktorips.fl.CompilationResult;
 import org.faktorips.fl.CompilationResultImpl;
 import org.faktorips.fl.IdentifierResolver;
+import org.faktorips.runtime.ICopySupport;
 import org.faktorips.runtime.IDeltaSupport;
 import org.faktorips.runtime.TableFunctionExecution;
 import org.faktorips.runtime.internal.MethodNames;
@@ -67,6 +68,13 @@ import org.osgi.framework.Version;
  * @author Peter Erzberger
  */
 public class StandardBuilderSet extends DefaultBuilderSet {
+
+    /**
+     * Configuration property that enables/disables the generation of a copy method.
+     * 
+     * @see ICopySupport 
+     */
+    public final static String CONFIG_PROPERTY_GENERATE_COPY_SUPPORT = "generateCopySupport";
 
     /**
      * Configuration property that enables/disables the generation of delta computation.
@@ -205,14 +213,17 @@ public class StandardBuilderSet extends DefaultBuilderSet {
         //configuration properties
         boolean generateChangeListener = config.getBooleanPropertyValue(StandardBuilderSet.CONFIG_PROPERTY_GENERATE_CHANGELISTENER, false);
         boolean generateDeltaSupport = config.getBooleanPropertyValue(StandardBuilderSet.CONFIG_PROPERTY_GENERATE_DELTA_SUPPORT, false);
+        boolean generateCopySupport = config.getBooleanPropertyValue(StandardBuilderSet.CONFIG_PROPERTY_GENERATE_COPY_SUPPORT, false);
         
         // create policy component type builders
         PolicyCmptImplClassBuilder policyCmptImplClassBuilder = new PolicyCmptImplClassBuilder(
                 this, KIND_POLICY_CMPT_IMPL, generateChangeListener);
         policyCmptImplClassBuilder.setGenerateDeltaSupport(generateDeltaSupport);
+        policyCmptImplClassBuilder.setGenerateCopySupport(generateCopySupport);
         policyCmptInterfaceBuilder = new PolicyCmptInterfaceBuilder(
                 this, KIND_POLICY_CMPT_INTERFACE, generateChangeListener);
         policyCmptInterfaceBuilder.setGenerateDeltaSupport(generateDeltaSupport);
+        policyCmptInterfaceBuilder.setGenerateCopySupport(generateCopySupport);
         
         // create product component type builders
         ProductCmptInterfaceBuilder productCmptInterfaceBuilder = new ProductCmptInterfaceBuilder(this,

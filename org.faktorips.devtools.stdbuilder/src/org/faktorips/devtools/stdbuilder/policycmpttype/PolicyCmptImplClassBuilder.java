@@ -49,6 +49,7 @@ import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeMethod;
 import org.faktorips.devtools.core.model.type.IMethod;
 import org.faktorips.devtools.core.model.type.IParameter;
 import org.faktorips.devtools.core.model.valueset.ValueSetType;
+import org.faktorips.devtools.core.util.QNameUtil;
 import org.faktorips.devtools.stdbuilder.StdBuilderHelper;
 import org.faktorips.devtools.stdbuilder.productcmpttype.ProductCmptGenImplClassBuilder;
 import org.faktorips.devtools.stdbuilder.productcmpttype.ProductCmptGenInterfaceBuilder;
@@ -76,15 +77,15 @@ import org.w3c.dom.Element;
 
 public class PolicyCmptImplClassBuilder extends BasePolicyCmptTypeBuilder {
 
-    private boolean generateDeltaSupport = false;
-    
     private final static String FIELD_PARENT_MODEL_OBJECT = "parentModelObject";
     
     private PolicyCmptInterfaceBuilder interfaceBuilder;
     private ProductCmptInterfaceBuilder productCmptInterfaceBuilder;
     private ProductCmptGenInterfaceBuilder productCmptGenInterfaceBuilder;
     private ProductCmptGenImplClassBuilder productCmptGenImplBuilder;
-
+    private boolean generateDeltaSupport = false;
+    private boolean generateCopySupport = false;
+    
     public PolicyCmptImplClassBuilder(IIpsArtefactBuilderSet builderSet, String kindId, boolean changeListenerSupportActive) {
         super(builderSet, kindId, new LocalizedStringsSet(PolicyCmptImplClassBuilder.class), changeListenerSupportActive);
         setMergeEnabled(true);
@@ -96,6 +97,14 @@ public class PolicyCmptImplClassBuilder extends BasePolicyCmptTypeBuilder {
 
     public void setGenerateDeltaSupport(boolean generateDeltaSupport) {
         this.generateDeltaSupport = generateDeltaSupport;
+    }
+
+    public boolean isGenerateCopySupport() {
+        return generateCopySupport;
+    }
+
+    public void setGenerateCopySupport(boolean generateCopySupport) {
+        this.generateCopySupport = generateCopySupport;
     }
 
     public void setInterfaceBuilder(PolicyCmptInterfaceBuilder policyCmptTypeInterfaceBuilder) {
@@ -224,8 +233,159 @@ public class PolicyCmptImplClassBuilder extends BasePolicyCmptTypeBuilder {
         if (generateDeltaSupport) {
             generateMethodComputeDelta(methodsBuilder);
         }
+        if (generateCopySupport) {
+            if ((getClassModifier() & java.lang.reflect.Modifier.ABSTRACT) == 0) {
+                generateMethodNewCopy(methodsBuilder);
+            }
+            generateMethodCopyProperties(methodsBuilder);
+        }
     }
+    
+    protected void generateMethodNewCopy(JavaCodeFragmentBuilder methodsBuilder) throws CoreException {
+        methodsBuilder.javaDoc(getJavaDocCommentForOverriddenMethod(), ANNOTATION_GENERATED);
+        methodsBuilder.signature(java.lang.reflect.Modifier.PUBLIC, IModelObject.class.getName(), MethodNames.NEW_COPY, new String[0], new String[0]);
+        methodsBuilder.openBracket();
+        String varName = "newCopy";
+        methodsBuilder.append(getUnqualifiedClassName());
+        methodsBuilder.append(' ');
+        methodsBuilder.append(varName);
+        methodsBuilder.append(" = new ");
+        methodsBuilder.append(getUnqualifiedClassName());
+        methodsBuilder.append("(");
+        if (getPolicyCmptType().isConfigurableByProductCmptType() && getProductCmptType()!=null) {
+            methodsBuilder.append(interfaceBuilder.getMethodNameGetProductCmpt(getProductCmptType()) + "()");
+        }
+        methodsBuilder.appendln(");");
+        if (getPolicyCmptType().hasSupertype()) {
+            methodsBuilder.appendln("super." + getMethodNameCopyProperties() + "(" + varName + ");");
+        }
+        methodsBuilder.appendln(getMethodNameCopyProperties() + "(" + varName + ");");
+        methodsBuilder.appendln("return " + varName + ";");
+        methodsBuilder.closeBracket();
+    }
+    
+    protected void generateMethodCopyProperties(JavaCodeFragmentBuilder methodsBuilder) throws CoreException {
+        methodsBuilder.javaDoc(getJavaDocCommentForOverriddenMethod(), ANNOTATION_GENERATED);
+        String paramName = "copy";
+        methodsBuilder.signature(java.lang.reflect.Modifier.PROTECTED, "void", getMethodNameCopyProperties(), new String[]{paramName}, new String[]{getUnqualifiedClassName()});
+        methodsBuilder.openBracket();
+        
+        // copy attributes
+        IPolicyCmptTypeAttribute[] attributes = getPolicyCmptType().getPolicyCmptTypeAttributes();
+        for (int i = 0; i < attributes.length; i++) {
+            if (!attributes[i].isValid() || attributes[i].isOverwrite()) {
+                continue;
+            }
+            AttributeType attrType = attributes[i].getAttributeType();
+            if (attrType==AttributeType.CHANGEABLE || attrType==AttributeType.DERIVED_BY_EXPLICIT_METHOD_CALL) {
+                String field = getFieldNameForAttribute(attributes[i]);
+                methodsBuilder.appendln(paramName + "." + field + " = " + field + ";");
+            }
+        }
+        IPolicyCmptTypeAssociation[] associations = getPolicyCmptType().getPolicyCmptTypeAssociations();
+        for (int i = 0; i < associations.length; i++) {
+            if (!associations[i].isValid() || associations[i].isDerived()) {
+                continue;
+            }
+            if (associations[i].isCompositionDetailToMaster()) {
+                continue;
+            }
+            if (associations[i].isAssoziation()) {
+                generateMethodCopyPropertiesForAssociation(associations[i], paramName, methodsBuilder);
+            } else {
+                generateMethodCopyPropertiesForComposition(associations[i], paramName, methodsBuilder);
+            }
+        }
+        methodsBuilder.closeBracket();
+    }
+    
+    /**
+     * Code sample for 1-1 composition
+     * 
+     * <pre>
+     * if (child1 != null) {
+     *     copy.child1 = (CpChild1)child1.newCopy();
+     *     copy.child1.setParentModelObjectInternal(copy);
+     * }
+     * </pre>
+     * 
+     * Code sample for 1-Many composition
+     * 
+     * <pre>
+     * for (Iterator it = child2s.iterator(); it.hasNext();) {
+     *     ICpChild2 cpChild2 = (ICpChild2)it.next();
+     *     ICpChild2 copycpChild2 = (ICpChild2)cpChild2.newCopy();
+     *     ((DependantObject)copycpChild2).setParentModelObjectInternal(copy);
+     *     copy.child2s.add(copycpChild2);
+     * }
+     * </pre>
+     */
+    protected void generateMethodCopyPropertiesForComposition(IPolicyCmptTypeAssociation composition, String paramName, JavaCodeFragmentBuilder methodsBuilder) throws CoreException {
+        String field = getFieldNameForAssociation(composition);
+        IPolicyCmptType targetType = composition.findTargetPolicyCmptType(getIpsProject());
+        String targetTypeQName = getQualifiedClassName(targetType);
+        if (composition.is1ToMany()) {
+            String varOrig = QNameUtil.getUnqualifiedName(targetTypeQName);
+            String varCopy= "copy" + StringUtils.capitalize(varOrig);
+            methodsBuilder.append("for (");
+            methodsBuilder.appendClassName(Iterator.class);
+            methodsBuilder.appendln(" it = " + field + ".iterator(); it.hasNext();) {");
+            
+            methodsBuilder.appendClassName(targetTypeQName);
+            methodsBuilder.append(" " + varOrig + " = ( ");
+            methodsBuilder.appendClassName(targetTypeQName);
+            methodsBuilder.appendln(")it.next();");
+            
+            methodsBuilder.appendClassName(targetTypeQName);
+            methodsBuilder.append(" " + varCopy+ " = ( ");
+            methodsBuilder.appendClassName(targetTypeQName);
+            methodsBuilder.appendln(")" + varOrig + "." + MethodNames.NEW_COPY + "();");
+            
+            if (targetType.isDependantType()) {
+                methodsBuilder.append("((");
+                methodsBuilder.appendClassName(DependantObject.class);
+                methodsBuilder.append(")" + varCopy + ")." + MethodNames.SET_PARENT + "(" + paramName + ");");
+            }
 
+            methodsBuilder.appendln(paramName + "." + field + ".add(" + varCopy + ");");
+            methodsBuilder.appendln("}");
+            return;
+        } 
+        // 1-1
+        methodsBuilder.appendln("if (" + field + "!=null) {");
+        methodsBuilder.append(paramName + "." + field + " = (");
+        methodsBuilder.appendClassName(targetTypeQName);
+        methodsBuilder.appendln(")" + field + "." + MethodNames.NEW_COPY + "();");
+        if (targetType.isDependantType()) {
+            methodsBuilder.appendln(paramName + "." + field + "." + MethodNames.SET_PARENT + "(" + paramName + ");");
+        }
+        methodsBuilder.appendln("}");
+    }   
+    
+    /**
+     * Code sample for 1-1 composition
+     * <pre>
+     * copy.child1 = child1;
+     * </pre>
+     * 
+     * Code sample for 1-Many composition
+     * <pre>
+     * copy.child2s.addAll(child2s);
+     * </pre>
+     */
+    protected void generateMethodCopyPropertiesForAssociation(IPolicyCmptTypeAssociation association, String paramName, JavaCodeFragmentBuilder methodsBuilder) throws CoreException {
+        String field = getFieldNameForAssociation(association);
+        if (association.is1ToMany()) {
+            methodsBuilder.appendln(paramName + "." + field + ".addAll(" + field + ");");
+        } else {
+            methodsBuilder.appendln(paramName + "." + field + " = " + field + ";");
+        }
+    }
+        
+        private String getMethodNameCopyProperties() {
+        return "copyProperties";
+    }
+    
     /**
      * <pre>
      * public IModelObjectDelta computeDelta(IModelObject otherObject, IDeltaComputationOptions options) {
@@ -302,7 +462,7 @@ public class PolicyCmptImplClassBuilder extends BasePolicyCmptTypeBuilder {
         // ModelObjectDelta.createChildDeltas(delta, somethingElse, otherRoot.somethingElse, "SomethingElse", options);
         IPolicyCmptTypeAssociation[] associations = getPolicyCmptType().getPolicyCmptTypeAssociations();
         for (int i = 0; i < associations.length; i++) {
-            if (!associations[i].isValid() || associations[i].isDerived() || associations[i].isCompositionDetailToMaster()) {
+            if (!associations[i].isValid() || associations[i].isDerived() || !associations[i].isCompositionMasterToDetail()) {
                 continue;
             }
             if (!castForOtherGenerated) {
@@ -665,7 +825,7 @@ public class PolicyCmptImplClassBuilder extends BasePolicyCmptTypeBuilder {
 	}
     
     protected void generateChangeListenerSupport(JavaCodeFragmentBuilder methodsBuilder, String eventClassName, String eventConstant, String fieldName, String paramName) {
-    	if (isChangeListenerSupportActive()) {
+    	if (isGenerateChangeListenerSupport()) {
             methodsBuilder.appendln("if (" + MethodNames.EXISTS_CHANGE_LISTENER_TO_BE_INFORMED + "()) {");
             methodsBuilder.append(MethodNames.NOTIFIY_CHANGE_LISTENERS + "(new ");
             methodsBuilder.appendClassName(ModelObjectChangedEvent.class);
@@ -2434,7 +2594,7 @@ public class PolicyCmptImplClassBuilder extends BasePolicyCmptTypeBuilder {
         }
         generateMethodGetParentModelObject(methodBuilder);
         generateMethodSetParentModelObjectInternal(methodBuilder);
-        if (isChangeListenerSupportActive()) {
+        if (isGenerateChangeListenerSupport()) {
             generateMethodExistsChangeListenerToBeInformed(methodBuilder);
             generateMethodNotifyChangeListeners(methodBuilder);
         }
