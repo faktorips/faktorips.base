@@ -59,7 +59,7 @@ public interface IGenerationToTypeDelta {
      * Fixes the generation so that it conforms to the type afterwards.
      * <p>
      * For example if the type contains a new attribute but the product component generation.
-     * has not matching attribute value, this method creates the attribute vlaue.
+     * has not matching attribute value, this method creates the attribute value.
      */
     public void fix();
     
