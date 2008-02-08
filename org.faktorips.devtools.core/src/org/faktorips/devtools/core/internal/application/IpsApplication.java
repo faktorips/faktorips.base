@@ -22,8 +22,8 @@ import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.PlatformUI;
 
 /**
- * Application for FaktorIPS to be used with eclipse. Provides reduced functionality in comparison
- * with the use as plugin within an eclipse runing the IDE-Product. Used for departement-workers.
+ * Application for Faktor-IPS to be used with eclipse. Provides reduced functionality in comparison
+ * with the use as plugin within an eclipse running the IDE-Product. Used for department-workers.
  * 
  * @author Thorsten Guenther
  */
