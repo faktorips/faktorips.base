@@ -5,6 +5,6 @@
 -->
 <TestData>
 
-	<Method id="42" name="calcPremium" datatype="Money" modifier="public" abstract="true" formulaName="Premium" formulaSignatureDefinition="true"/>
+	<Method id="42" name="calcPremium" datatype="Money" modifier="public" abstract="true" formulaName="Premium" formulaSignatureDefinition="true" overloadsFormula="true" />
 
 </TestData>

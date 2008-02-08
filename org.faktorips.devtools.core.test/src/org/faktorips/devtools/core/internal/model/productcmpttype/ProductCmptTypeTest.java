@@ -33,6 +33,7 @@ import org.faktorips.devtools.core.model.DatatypeDependency;
 import org.faktorips.devtools.core.model.DependencyType;
 import org.faktorips.devtools.core.model.IpsObjectDependency;
 import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
+import org.faktorips.devtools.core.model.ipsobject.Modifier;
 import org.faktorips.devtools.core.model.ipsobject.QualifiedNameType;
 import org.faktorips.devtools.core.model.ipsproject.IIpsObjectPath;
 import org.faktorips.devtools.core.model.ipsproject.IIpsObjectPathEntry;
@@ -867,11 +868,105 @@ public class ProductCmptTypeTest extends AbstractIpsPluginTest implements Conten
         assertNull(msgList.getMessageByCode(IProductCmptType.MSGCODE_PRODUCTCMPTTYPE_ABSTRACT_WHEN_POLICYCMPTTYPE_ABSTRACT));
     }
     
+    public void testFindSignaturesOfOverloadedFormulas() throws Exception{
+        
+        IProductCmptType aType = newProductCmptType(ipsProject, "AType");
+
+        //formula method that will be overloaded by subclass
+        IProductCmptTypeMethod aMethod = aType.newProductCmptTypeMethod();
+        aMethod.setName("calculate");
+        aMethod.setDatatype(Datatype.STRING.toString());
+        aMethod.setFormulaName("formula");
+        aMethod.setFormulaSignatureDefinition(true);
+        aMethod.setModifier(Modifier.PUBLIC);
+        aMethod.newParameter(Datatype.STRING.toString(), "param1");
+        aMethod.newParameter(Datatype.INTEGER.toString(), "param2");
+
+        //formula method that is no exp
+        IProductCmptTypeMethod a2Method = aType.newProductCmptTypeMethod();
+        a2Method.setName("calculate2");
+        a2Method.setDatatype(Datatype.STRING.toString());
+        a2Method.setFormulaName("formula2");
+        a2Method.setFormulaSignatureDefinition(true);
+        a2Method.setModifier(Modifier.PUBLIC);
+        a2Method.newParameter(Datatype.STRING.toString(), "param1");
+        a2Method.newParameter(Datatype.INTEGER.toString(), "param2");
+
+        IProductCmptType bType = newProductCmptType(ipsProject, "BType");
+        bType.setSupertype(aType.getQualifiedName());
+        IProductCmptTypeMethod bMethod = bType.newProductCmptTypeMethod();
+        bMethod.setName("calculate");
+        bMethod.setDatatype(Datatype.STRING.toString());
+        bMethod.setFormulaName("formula");
+        bMethod.setFormulaSignatureDefinition(true);
+        bMethod.setModifier(Modifier.PUBLIC);
+        bMethod.newParameter(Datatype.STRING.toString(), "param1");
+        bMethod.newParameter(Datatype.INTEGER.toString(), "param2");
+        bMethod.setOverloadsFormula(true);
+
+        IProductCmptTypeMethod bMethod2 = bType.newProductCmptTypeMethod();
+        bMethod2 = bType.newProductCmptTypeMethod();
+        bMethod2.setName("doCalculate");
+        bMethod2.setDatatype(Datatype.STRING.toString());
+        bMethod2.setFormulaName("formula");
+        bMethod2.setFormulaSignatureDefinition(true);
+        bMethod2.setModifier(Modifier.PUBLIC);
+        bMethod2.newParameter(Datatype.STRING.toString(), "param1");
+        bMethod2.newParameter(Datatype.INTEGER.toString(), "param2");
+        bMethod2.setOverloadsFormula(false);
+
+        IProductCmptTypeMethod[] methods = bType.findSignaturesOfOverloadedFormulas(ipsProject);
+        assertEquals(1, methods.length);
+    }
+    
+    public void testFindOverrideMethodCandidates() throws Exception{
+        
+        IProductCmptType aType = newProductCmptType(ipsProject, "AType");
+
+        IProductCmptTypeMethod aMethod = aType.newProductCmptTypeMethod();
+        aMethod.setName("calculate");
+        aMethod.setDatatype(Datatype.STRING.toString());
+        aMethod.setFormulaName("formula");
+        aMethod.setFormulaSignatureDefinition(true);
+        aMethod.setModifier(Modifier.PUBLIC);
+        aMethod.newParameter(Datatype.STRING.toString(), "param1");
+        aMethod.newParameter(Datatype.INTEGER.toString(), "param2");
+
+        //formula method that is no exp
+        IProductCmptTypeMethod a2Method = aType.newProductCmptTypeMethod();
+        a2Method.setName("calculate2");
+        a2Method.setDatatype(Datatype.STRING.toString());
+        a2Method.setFormulaName("formula2");
+        a2Method.setFormulaSignatureDefinition(true);
+        a2Method.setModifier(Modifier.PUBLIC);
+        a2Method.newParameter(Datatype.STRING.toString(), "param1");
+        a2Method.newParameter(Datatype.INTEGER.toString(), "param2");
+
+        IProductCmptType bType = newProductCmptType(ipsProject, "BType");
+        bType.setSupertype(aType.getQualifiedName());
+
+        IMethod[] methods = bType.findOverrideMethodCandidates(false, ipsProject);
+        assertEquals(2, methods.length);
+
+        IProductCmptTypeMethod bMethod = bType.newProductCmptTypeMethod();
+        bMethod.setName("calculate");
+        bMethod.setDatatype(Datatype.STRING.toString());
+        bMethod.setFormulaName("formula");
+        bMethod.setFormulaSignatureDefinition(true);
+        bMethod.setModifier(Modifier.PUBLIC);
+        bMethod.newParameter(Datatype.STRING.toString(), "param1");
+        bMethod.newParameter(Datatype.INTEGER.toString(), "param2");
+        bMethod.newParameter(Datatype.INTEGER.toString(), "param2");
+        bMethod.setOverloadsFormula(true);
+
+        methods = bType.findOverrideMethodCandidates(false, ipsProject);
+        assertEquals(1, methods.length);
+    }
+    
     /**
      * {@inheritDoc}
      */
     public void contentsChanged(ContentChangeEvent event) {
         lastEvent = event;
     }
-
 }

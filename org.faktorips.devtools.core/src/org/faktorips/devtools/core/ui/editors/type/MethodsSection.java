@@ -55,11 +55,18 @@ public class MethodsSection extends SimpleIpsPartsSection {
         return new MethodsComposite((IType)getIpsObject(), parent, toolkit);
     }
     
-    /** 
-     * {@inheritDoc}
-     */
     protected EditDialog createEditDialog(IMethod method, Shell shell) {
         return new MethodEditDialog(method, shell);
+    }
+
+    /**
+     * Creates the override dialog. This method is called when the override button is clicked.
+     * @param type the IType upon which the methods to override are calculated
+     * @param shell the shell which is need by the dialog
+     * @return the override dialog 
+     */
+    protected OverrideMethodDialog createOverrideMethodDialog(IType type, Shell shell){
+        return new OverrideMethodDialog(type, shell);
     }
     
     /**
@@ -102,7 +109,7 @@ public class MethodsSection extends SimpleIpsPartsSection {
         
         private void overrideClicked() {
             try {
-            	OverrideMethodDialog dialog = new OverrideMethodDialog(getType(), getShell());
+            	OverrideMethodDialog dialog = createOverrideMethodDialog(getType(), getShell());
                 if (dialog.open()==Window.OK) {
                     getType().overrideMethods(dialog.getSelectedMethods());
                 }

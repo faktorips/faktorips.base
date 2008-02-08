@@ -18,6 +18,7 @@
 package org.faktorips.devtools.core.internal.model.productcmpttype;
 
 import org.eclipse.core.runtime.CoreException;
+import org.faktorips.datatype.Datatype;
 import org.faktorips.devtools.core.AbstractIpsPluginTest;
 import org.faktorips.devtools.core.model.ipsobject.Modifier;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
@@ -25,6 +26,7 @@ import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeMethod;
 import org.faktorips.devtools.core.model.type.IParameter;
 import org.faktorips.devtools.core.util.XmlUtil;
+import org.faktorips.util.message.Message;
 import org.faktorips.util.message.MessageList;
 import org.w3c.dom.Element;
 
@@ -36,10 +38,11 @@ public class ProductCmptTypeMethodTest extends AbstractIpsPluginTest {
     
     private IProductCmptType pcType;
     private IProductCmptTypeMethod method;
+    private IIpsProject ipsProject;
     
     protected void setUp() throws Exception {
         super.setUp();
-        IIpsProject ipsProject= newIpsProject("TestProject");
+        ipsProject = newIpsProject("TestProject");
         pcType = newProductCmptType(ipsProject, "Type");
         method = pcType.newProductCmptTypeMethod();
     }
@@ -116,6 +119,7 @@ public class ProductCmptTypeMethodTest extends AbstractIpsPluginTest {
         assertEquals("Money", method.getDatatype());
         assertEquals(Modifier.PUBLIC, method.getModifier());
         assertTrue(method.isAbstract());
+        assertTrue(method.isOverloadsFormula());
     }
 
     /*
@@ -135,7 +139,8 @@ public class ProductCmptTypeMethodTest extends AbstractIpsPluginTest {
         IParameter param1 = method.newParameter();
         param1.setName("p1");
         param1.setDatatype("Money");
-
+        method.setOverloadsFormula(true);
+        
         Element element = method.toXml(this.newDocument());
         
         IProductCmptTypeMethod copy = pcType.newProductCmptTypeMethod();
@@ -153,6 +158,96 @@ public class ProductCmptTypeMethodTest extends AbstractIpsPluginTest {
         assertEquals("Decimal", copyParams[0].getDatatype());
         assertEquals("p1", copyParams[1].getName());
         assertEquals("Money", copyParams[1].getDatatype());
+        assertTrue(copy.isOverloadsFormula());
     }
     
+    public void testFindOverloadedFormulaMethod() throws CoreException{
+        IProductCmptType aType = newProductCmptType(ipsProject, "AType");
+        IProductCmptTypeMethod aMethod = aType.newProductCmptTypeMethod();
+        aMethod.setName("calculate");
+        aMethod.setDatatype(Datatype.STRING.toString());
+        aMethod.setFormulaName("formula");
+        aMethod.setFormulaSignatureDefinition(true);
+        aMethod.setModifier(Modifier.PUBLIC);
+        aMethod.newParameter(Datatype.STRING.toString(), "param1");
+        aMethod.newParameter(Datatype.INTEGER.toString(), "param2");
+        
+        IProductCmptType bType = newProductCmptType(ipsProject, "BType");
+        bType.setSupertype(aType.getQualifiedName());
+        IProductCmptTypeMethod bMethod = bType.newProductCmptTypeMethod();
+        bMethod.setName("calculate");
+        bMethod.setDatatype(Datatype.STRING.toString());
+        bMethod.setFormulaName("formula");
+        bMethod.setFormulaSignatureDefinition(true);
+        bMethod.setModifier(Modifier.PUBLIC);
+        bMethod.newParameter(Datatype.STRING.toString(), "param1");
+        bMethod.newParameter(Datatype.INTEGER.toString(), "param2");
+        
+        IProductCmptTypeMethod overloadedFormulaMethod = bMethod.findOverloadedFormulaMethod(ipsProject);
+        assertNull(overloadedFormulaMethod);
+
+        bMethod.setOverloadsFormula(true);
+        overloadedFormulaMethod = bMethod.findOverloadedFormulaMethod(ipsProject);
+        assertEquals(aMethod, overloadedFormulaMethod);
+
+        bType.setSupertype(null);
+        overloadedFormulaMethod = bMethod.findOverloadedFormulaMethod(ipsProject);
+        assertNull(overloadedFormulaMethod);
+
+        bType.setSupertype(aType.getQualifiedName());
+        bMethod.setFormulaSignatureDefinition(false);
+        assertNull(overloadedFormulaMethod);
+    }
+    
+    public void testOverloadsFormula() throws CoreException{
+
+        IProductCmptType bType = newProductCmptType(ipsProject, "BType");
+        IProductCmptTypeMethod bMethod = bType.newProductCmptTypeMethod();
+        bMethod.setName("calculate");
+        bMethod.setDatatype(Datatype.STRING.toString());
+        bMethod.setFormulaName("formula");
+        bMethod.setFormulaSignatureDefinition(true);
+        bMethod.setModifier(Modifier.PUBLIC);
+        bMethod.newParameter(Datatype.STRING.toString(), "param1");
+        bMethod.newParameter(Datatype.INTEGER.toString(), "param2");
+
+        assertFalse(bMethod.isOverloadsFormula());
+
+        bMethod.setOverloadsFormula(true);
+        assertTrue(bMethod.isOverloadsFormula());
+    }
+    
+    public void testValidateOverLoadedFormulaSignatureNotInSupertypeHierarchy() throws CoreException{
+        IProductCmptType aType = newProductCmptType(ipsProject, "AType");
+        IProductCmptTypeMethod aMethod = aType.newProductCmptTypeMethod();
+        aMethod.setName("calculate");
+        aMethod.setDatatype(Datatype.STRING.toString());
+        aMethod.setFormulaName("formula");
+        aMethod.setFormulaSignatureDefinition(true);
+        aMethod.setModifier(Modifier.PUBLIC);
+        aMethod.newParameter(Datatype.STRING.toString(), "param1");
+        aMethod.newParameter(Datatype.INTEGER.toString(), "param2");
+        
+        IProductCmptType bType = newProductCmptType(ipsProject, "BType");
+        bType.setSupertype(aType.getQualifiedName());
+        IProductCmptTypeMethod bMethod = bType.newProductCmptTypeMethod();
+        bMethod.setName("calculate");
+        bMethod.setDatatype(Datatype.STRING.toString());
+        bMethod.setFormulaName("formula");
+        bMethod.setFormulaSignatureDefinition(true);
+        bMethod.setModifier(Modifier.PUBLIC);
+        bMethod.newParameter(Datatype.STRING.toString(), "param1");
+        bMethod.newParameter(Datatype.INTEGER.toString(), "param2");
+        bMethod.setOverloadsFormula(true);
+        
+        MessageList msgList = bMethod.validate(ipsProject);
+        Message msg = msgList.getMessageByCode(IProductCmptTypeMethod.MSGCODE_NO_FORMULA_WITH_SAME_NAME_IN_TYPE_HIERARCHY);
+        assertNull(msg);
+
+        aMethod.setFormulaName("formula2");
+        msgList = bMethod.validate(ipsProject);
+        msg = msgList.getMessageByCode(IProductCmptTypeMethod.MSGCODE_NO_FORMULA_WITH_SAME_NAME_IN_TYPE_HIERARCHY);
+        assertNotNull(msg);
+        
+    }
 }

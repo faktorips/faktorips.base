@@ -18,6 +18,7 @@
 package org.faktorips.devtools.core.model.productcmpttype;
 
 import org.eclipse.core.runtime.CoreException;
+import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.type.IMethod;
 
 /**
@@ -29,7 +30,7 @@ import org.faktorips.devtools.core.model.type.IMethod;
 public interface IProductCmptTypeMethod extends IMethod, IProdDefProperty {
 
     public final static String PROPERTY_FORMULA_SIGNATURE_DEFINITION = "formulaSignatureDefinition"; //$NON-NLS-1$
-    public final static String PROPERTY_OVERLOADED_FORMULA_SIGNATURE = "overloadedFormulaMethodSignature"; //$NON-NLS-1$
+    public final static String PROPERTY_OVERLOADS_FORMULA = "overloadsFormula"; //$NON-NLS-1$
     public final static String PROPERTY_FORMULA_NAME = "formulaName"; //$NON-NLS-1$
     
     /**
@@ -50,10 +51,7 @@ public interface IProductCmptTypeMethod extends IMethod, IProdDefProperty {
      */
     public final static String MSGCODE_FORMULA_MUSTNT_BE_ABSTRACT = MSGCODE_PREFIX + "FormulaMustntBeAbstract"; //$NON-NLS-1$
 
-    /**
-     * Validation message code to indicate that a the specified formula method signature doesn't exist in the supertype hierarchy.
-     */
-    public final static String MSGCODE_OVERLOADED_FORMULA_SIGNATURE_NOT_IN_SUPERTYPE_HIERARCHY = MSGCODE_PREFIX + "formulaSignatureNotInSupertypeHierarchy"; //$NON-NLS-1$
+    public final static String MSGCODE_NO_FORMULA_WITH_SAME_NAME_IN_TYPE_HIERARCHY = MSGCODE_PREFIX + "NoFormulaWithSameNameInTypeHierarchy"; //$NON-NLS-1$
 
     /**
      * Returns the product component type this method belongs to.
@@ -86,30 +84,23 @@ public interface IProductCmptTypeMethod extends IMethod, IProdDefProperty {
     public void setFormulaName(String newName);
 
     /**
-     * Returns the formula method that is overloaded by this formula method. A formula method
-     * overloads another formula method in the inheritence hierarchy if the formula names are
-     * identical. Overloading of formula methods within the same class is not supported.
-     */
-    public String getOverloadedFormulaMethodSignature();
-
-    /**
      * Returns true if this is a formula method that overloads a formula method within the supertype hierarchy.
      */
-    public boolean overloadsFormulaInTypeHierarchy();
+    public boolean isOverloadsFormula();
     
     /**
-     * Returns the overloaded method of the supertype or <code>null</code> if none could be found.
+     * Looks in the supertype hierarchy if a formula method can be found with the same formula name than this one and returns the first that is found.
+     * If none can be found <code>null</code> will be returned.
      * 
      * @throws CoreException if an exception occurs during finding the method
      */
-    public IProductCmptTypeMethod findOverloadedFormulaMethod() throws CoreException;
+    public IProductCmptTypeMethod findOverloadedFormulaMethod(IIpsProject ipsProject) throws CoreException;
     
     /**
-     * Sets the overloaed formula method. This method must be within the supertype hierarchy.
-     * 
-     * @see #getOverloadedFormulaMethodSignature()
+     * Sets if this formula method overloads a formula method in the supertype hierarchy. If so, the next formula method
+     * in the supertype hierarchy with the same formula name will be chosen to be the method that will be overloaded. 
      */
-    public void setOverloadedFormulaMethodSignature(String overloadedFormulaMethod);
+    public void setOverloadsFormula(boolean overloadsFormula);
 
     /**
      * Returns a default name for the method based on the formula name. E.g. if the formula name is

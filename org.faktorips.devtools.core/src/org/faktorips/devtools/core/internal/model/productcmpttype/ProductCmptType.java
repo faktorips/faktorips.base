@@ -18,6 +18,7 @@
 package org.faktorips.devtools.core.internal.model.productcmpttype;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -50,6 +51,7 @@ import org.faktorips.devtools.core.model.productcmpttype.ITableStructureUsage;
 import org.faktorips.devtools.core.model.productcmpttype.ProdDefPropertyType;
 import org.faktorips.devtools.core.model.productcmpttype.ProductCmptTypeHierarchyVisitor;
 import org.faktorips.devtools.core.model.productcmpttype.ProductCmptTypeValidations;
+import org.faktorips.devtools.core.model.type.IMethod;
 import org.faktorips.devtools.core.model.type.IType;
 import org.faktorips.devtools.core.model.type.TypeHierarchyVisitor;
 import org.faktorips.devtools.core.model.type.TypeValidations;
@@ -356,6 +358,21 @@ public class ProductCmptType extends Type implements IProductCmptType {
     /**
      * {@inheritDoc}
      */
+    public IProductCmptTypeMethod[] getNonFormulaProductCmptTypeMethods() {
+
+        ArrayList result = new ArrayList();
+        for (Iterator it = methods.iterator(); it.hasNext();) {
+            IProductCmptTypeMethod method = (IProductCmptTypeMethod)it.next();
+            if(!method.isFormulaSignatureDefinition()){
+                result.add(method);
+            }
+        }
+        return (IProductCmptTypeMethod[])result.toArray(new IProductCmptTypeMethod[result.size()]);
+    }
+    
+    /**
+     * {@inheritDoc}
+     */
     public IProductCmptTypeMethod newProductCmptTypeMethod() {
         return (IProductCmptTypeMethod)methods.newPart();
     }
@@ -374,6 +391,23 @@ public class ProductCmptType extends Type implements IProductCmptType {
     /**
      * {@inheritDoc}
      */
+    public IProductCmptTypeMethod[] findSignaturesOfOverloadedFormulas(IIpsProject ipsProject) throws CoreException{
+        ArrayList overloadedMethods = new ArrayList();
+        for (Iterator it=methods.iterator(); it.hasNext(); ) {
+            IProductCmptTypeMethod method = (IProductCmptTypeMethod)it.next();
+            if (method.isFormulaSignatureDefinition() && method.isOverloadsFormula()) {
+                IProductCmptTypeMethod overloadedMethod = method.findOverloadedFormulaMethod(ipsProject);
+                if(overloadedMethod != null){
+                    overloadedMethods.add(overloadedMethod);
+                }
+            }
+        }
+        return (IProductCmptTypeMethod[])overloadedMethods.toArray(new IProductCmptTypeMethod[overloadedMethods.size()]);
+    }
+    
+    /**
+     * {@inheritDoc}
+     */
     public IProductCmptTypeMethod getFormulaSignature(String formulaName) throws CoreException {
         if (StringUtils.isEmpty(formulaName)) {
             return null;
@@ -387,6 +421,18 @@ public class ProductCmptType extends Type implements IProductCmptType {
         return null;
     }
 
+    public IProductCmptTypeMethod[] getFormulaSignatures() {
+
+        ArrayList result = new ArrayList();
+        for (Iterator it=methods.iterator(); it.hasNext(); ) {
+            IProductCmptTypeMethod method = (IProductCmptTypeMethod)it.next();
+            if (method.isFormulaSignatureDefinition()) {
+                result.add(method);
+            }
+        }
+        return (IProductCmptTypeMethod[])result.toArray(new IProductCmptTypeMethod[result.size()]);
+    }
+    
     /**
      * {@inheritDoc}
      */
@@ -394,6 +440,22 @@ public class ProductCmptType extends Type implements IProductCmptType {
         FormulaSignatureFinder finder = new FormulaSignatureFinder(ipsProject, formulaName, true);
         finder.start(this);
         return (IProductCmptTypeMethod)(finder.getMethods().size() != 0 ? finder.getMethods().get(0) : null);  
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public IMethod[] findOverrideMethodCandidates(boolean onlyNotImplementedAbstractMethods, IIpsProject ipsProject) throws CoreException {
+        IMethod[] candidates = super.findOverrideMethodCandidates(onlyNotImplementedAbstractMethods, ipsProject);
+        List overloadedMethods = Arrays.asList(findSignaturesOfOverloadedFormulas(ipsProject));
+        ArrayList result = new ArrayList(candidates.length);
+        for (int i = 0; i < candidates.length; i++) {
+            if(overloadedMethods.contains(candidates[i])){
+                continue;
+            }
+            result.add(candidates[i]);
+        }
+        return (IMethod[])result.toArray(new IMethod[result.size()]);
     }
 
     
@@ -412,12 +474,53 @@ public class ProductCmptType extends Type implements IProductCmptType {
             }
         }
         validateProductCmptTypeAbstractWhenPolicyCmptTypeAbstract(list, ipsProject);
-        DuplicateFormulaNameValidator validator = new DuplicateFormulaNameValidator(ipsProject);
+        DuplicateFormulaNameInHierarchyValidator validator = new DuplicateFormulaNameInHierarchyValidator(ipsProject);
         validator.start(this);
         validator.addMessagesForDuplicates(list);
+        validateIfDuplicateFormulaNameInSameType(list);
+        validateIfAnOverrideOfOverloadedFormulaExists(list, ipsProject);
         list.add(TypeValidations.validateOtherTypeWithSameNameTypeInIpsObjectPath(IpsObjectType.POLICY_CMPT_TYPE, getQualifiedName(), ipsProject, this));
     }
 
+    private void validateIfDuplicateFormulaNameInSameType(MessageList msgList){
+        IProductCmptTypeMethod[] formulaMethods = getProductCmptTypeMethods(); 
+        for(int i = 0; i < formulaMethods.length; i++){
+            for(int r = i+1; r < formulaMethods.length; r++){
+                if(!StringUtils.isEmpty(formulaMethods[i].getFormulaName()) && formulaMethods[i].getFormulaName().equals(formulaMethods[r].getFormulaName())){
+                    String text = Messages.ProductCmptType_msgDuplicateFormulasNotAllowedInSameType;
+                    msgList.add(new Message(MSGCODE_DUPLICATE_FORMULAS_NOT_ALLOWED_IN_SAME_TYPE, text, Message.ERROR, formulaMethods[i], IProductCmptTypeMethod.PROPERTY_FORMULA_NAME));
+                    msgList.add(new Message(MSGCODE_DUPLICATE_FORMULAS_NOT_ALLOWED_IN_SAME_TYPE, text, Message.ERROR, formulaMethods[r], IProductCmptTypeMethod.PROPERTY_FORMULA_NAME));
+                }
+                
+            }
+        }
+    }
+    
+    //TODO pk: write test case
+    private void validateIfAnOverrideOfOverloadedFormulaExists(MessageList msgList, IIpsProject ipsProject) throws CoreException{
+        ArrayList overloadedSupertypeFormulaSignatures = new ArrayList();
+        IProductCmptTypeMethod[] formulaSignatures = getFormulaSignatures();
+        for (int i = 0; i < formulaSignatures.length; i++) {
+            if(formulaSignatures[i].isOverloadsFormula()){
+                IProductCmptTypeMethod method = formulaSignatures[i].findOverloadedFormulaMethod(ipsProject);
+                if(method != null){
+                    overloadedSupertypeFormulaSignatures.add(method);
+                }
+            }
+        }
+        
+        IProductCmptTypeMethod[] nonFormulas = getNonFormulaProductCmptTypeMethods();
+        for (Iterator it = overloadedSupertypeFormulaSignatures.iterator(); it.hasNext();) {
+            IProductCmptTypeMethod overloadedMethod = (IProductCmptTypeMethod)it.next();
+            for (int i = 0; i < nonFormulas.length; i++) {
+                if(nonFormulas[i].overrides(overloadedMethod)){
+                    String text = NLS.bind(Messages.ProductCmptType_msgOverloadedFormulaMethodCannotBeOverridden, overloadedMethod.getFormulaName());
+                    msgList.add(new Message(MSGCODE_OVERLOADED_FORMULA_CANNOT_BE_OVERRIDDEN, text, Message.ERROR, nonFormulas[i], IProductCmptTypeMethod.PROPERTY_NAME));
+                }
+            }
+        }
+    }
+    
     /**
      * {@inheritDoc}
      */
@@ -500,6 +603,7 @@ public class ProductCmptType extends Type implements IProductCmptType {
         
     }
 
+    
     private static class ProdDefPropertyCollector extends ProductCmptTypeHierarchyVisitor {
 
         // if set, indicates the type of properties that are collected
@@ -600,6 +704,7 @@ public class ProductCmptType extends Type implements IProductCmptType {
         }
     }
 
+    
     private static class MyDuplicatePropertyNameValidator extends DuplicatePropertyNameValidator {
 
         public MyDuplicatePropertyNameValidator(IIpsProject ipsProject) {
@@ -622,12 +727,12 @@ public class ProductCmptType extends Type implements IProductCmptType {
         }        
     }
     
-    private static class DuplicateFormulaNameValidator extends TypeHierarchyVisitor {
+    private static class DuplicateFormulaNameInHierarchyValidator extends TypeHierarchyVisitor {
 
         private Map formulaNames = new HashMap();
         private List duplicateFormulaNames = new ArrayList();
         
-        public DuplicateFormulaNameValidator(IIpsProject ipsProject) {
+        public DuplicateFormulaNameInHierarchyValidator(IIpsProject ipsProject) {
             super(ipsProject);
         }
         
@@ -650,7 +755,7 @@ public class ProductCmptType extends Type implements IProductCmptType {
                 IProductCmptTypeMethod method = (IProductCmptTypeMethod)it.next();
                 if (method.isFormulaSignatureDefinition() && 
                     StringUtils.isNotEmpty(method.getFormulaName()) && 
-                    !method.overloadsFormulaInTypeHierarchy()) {
+                    !method.isOverloadsFormula()) {
                     add(method);
                 }
             }

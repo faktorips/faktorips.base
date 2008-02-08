@@ -83,6 +83,16 @@ public interface IProductCmptType extends IIpsObject, IType {
     public final static String MSGCODE_PRODUCTCMPTTYPE_ABSTRACT_WHEN_POLICYCMPTTYPE_ABSTRACT = MSGCODE_PREFIX + "ProductCmptTypeAbstractWhenPolicyCmptTypeAbstract"; //$NON-NLS-1$
 
     /**
+     * Validation message code to indicate that a formula name is only allowed once in a type neglecting the inheritance hierarchy.
+     */
+    public final static String MSGCODE_DUPLICATE_FORMULAS_NOT_ALLOWED_IN_SAME_TYPE = MSGCODE_PREFIX + "DuplicateFormulasNotAllowedInSameType"; //$NON-NLS-1$
+
+    /**
+     * Validation message code to indicate that the overloaded product component type formula method cannot be overridden. 
+     */
+    public final static String MSGCODE_OVERLOADED_FORMULA_CANNOT_BE_OVERRIDDEN = MSGCODE_PREFIX + "OverloadedFormulaCannotBeOverridden"; //$NON-NLS-1$
+
+    /**
      * Returns the policy component type this product component type refers to.
      * Returns <code>null</code> if this type does not refer to a policy component type.
      */
@@ -249,12 +259,23 @@ public interface IProductCmptType extends IIpsObject, IType {
     public IProductCmptTypeMethod[] getProductCmptTypeMethods();
     
     /**
+     * Returns the methods of this type which are no formula signatures.
+     */
+    public IProductCmptTypeMethod[] getNonFormulaProductCmptTypeMethods();
+    
+    /**
      * Returns the method signature with the indicates formula name. Returns <code>null</code>
      * if no such method is found in <strong>this</strong> type. The type hierarchy is not
      * searched.
      * Returns <code>null</code> if formulaName is <code>null</code>.
      */
     public IProductCmptTypeMethod getFormulaSignature(String formulaName) throws CoreException;
+
+    /**
+     * Returns all method signatures of this product component type neglecting the type hierarchy.
+     * Returns an empty array if no formula signature is defined for this type.
+     */
+    public IProductCmptTypeMethod[] getFormulaSignatures();
 
     /**
      * Searches the method signature with the indicated formula name in the type's supertype hierarchy. 
@@ -267,6 +288,13 @@ public interface IProductCmptType extends IIpsObject, IType {
      * @throws NullPointerException if ips project is <code>null</code>.
      */
     public IProductCmptTypeMethod findFormulaSignature(String formulaName, IIpsProject ipsProject) throws CoreException;
+
+    /**
+     * Returns the formula signatures of formulas in the supertype hierarchy that are overloaded by formulas of this type.
+     *  
+     * @throws CoreException if an error occurs while searching.
+     */
+    public IProductCmptTypeMethod[] findSignaturesOfOverloadedFormulas(IIpsProject ipsProject) throws CoreException;
 
     /**
      * Returns the types product definition properties including properties defined in one of the type's supertypes.

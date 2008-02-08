@@ -668,8 +668,8 @@ public class ProductCmptGenImplClassBuilder extends AbstractProductCmptTypeBuild
                 productCmptGenInterfaceBuilder.generateSignatureForModelMethod(method, true, false, methodsBuilder);
                 methodsBuilder.append(';');
             }
-            if(method.overloadsFormulaInTypeHierarchy()){
-                IProductCmptTypeMethod overloadedFormulaMethod = method.findOverloadedFormulaMethod();
+            if(method.isOverloadsFormula()){
+                IProductCmptTypeMethod overloadedFormulaMethod = method.findOverloadedFormulaMethod(getIpsProject());
                 methodsBuilder.appendln();
                 methodsBuilder.javaDoc(getJavaDocCommentForOverriddenMethod(), ANNOTATION_GENERATED);
                 productCmptGenInterfaceBuilder.generateSignatureForModelMethod(overloadedFormulaMethod, false, false, methodsBuilder);

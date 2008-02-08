@@ -38,6 +38,10 @@ public class Messages extends NLS {
 
     public static String ProductCmptType_InconsistentTypeHierarchies;
 
+    public static String ProductCmptType_msgDuplicateFormulasNotAllowedInSameType;
+
+    public static String ProductCmptType_msgOverloadedFormulaMethodCannotBeOverridden;
+
     public static String ProductCmptType_msgProductCmptTypeAbstractWhenPolicyCmptTypeAbstract;
 
     public static String ProductCmptType_notMarkedAsConfigurable;
@@ -53,6 +57,8 @@ public class Messages extends NLS {
     public static String ProductCmptTypeMethod_FormulaSignatureDatatypeMustBeAValueDatatype;
 
     public static String ProductCmptTypeMethod_FormulaSignatureMustntBeAbstract;
+
+    public static String ProductCmptTypeMethod_msgNoOverloadableFormulaInSupertypeHierarchy;
 
     public static String ProductCmptTypeMethod_msgOverloadedSignatureNotInTypeHierarchy;
 
