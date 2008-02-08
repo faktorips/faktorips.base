@@ -194,6 +194,7 @@ public class ProductCmptType extends Type implements IProductCmptType {
     public Map getProdDefPropertiesMap(ProdDefPropertyType propertyType, IIpsProject ipsProject) throws CoreException {
         ProdDefPropertyCollector collector = new ProdDefPropertyCollector(propertyType, ipsProject);
         collector.start(this);
+        // TODO Stefan umstellen auf LinkedHashMap um stabile reihenfolge zu erreichen
         return collector.getPropertyMap();
     }
     

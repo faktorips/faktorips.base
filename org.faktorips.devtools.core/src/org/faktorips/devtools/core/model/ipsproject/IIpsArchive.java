@@ -75,6 +75,7 @@ public interface IIpsArchive {
      * Returns the names of the non-empty subpackages for the given parent package as list.
      */
     public Set getNoneEmptySubpackages(String pack) throws CoreException;
+    // TODO Stefan auf String[] aendern, subpackges sind alphabetisch sortiert 
 
     /**
      * Returns the set of qualified name types for the ips objects stored in the archive
