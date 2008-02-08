@@ -112,6 +112,10 @@ public class NewPcTypeAssociationWizard extends Wizard implements ContentsChange
     private Set displayErrorMessageForPages = new HashSet();
     private Set visiblePages = new HashSet();
     HashMap suppressedEventForPages = new HashMap();
+
+    // stores the last inverse association, to indicate changes of this property
+    private String prevInverseAssociationRoleName = "";
+    private String prevAssociationRoleName = "";
     
     public NewPcTypeAssociationWizard(IPolicyCmptTypeAssociation association) {
         super.setWindowTitle(Messages.NewPcTypeAssociationWizard_wizardTitle);
@@ -199,7 +203,20 @@ public class NewPcTypeAssociationWizard extends Wizard implements ContentsChange
                 currentPage == null){
             return;
         }
+        
+        handleInverseAssociationRoleNameChange(event);
+        
         contentsChanged(currentPage);
+    }
+
+    private void handleInverseAssociationRoleNameChange(ContentChangeEvent event) {
+        // if the target role singular name has changed
+        // then we have to update the inverse association definition in the corresponding inverse association
+        if (event.isAffected(inverseAssociation) && ! prevInverseAssociationRoleName.equals(inverseAssociation.getTargetRoleSingular())){
+            storeInverseAssociation(inverseAssociation);
+        } else if (event.isAffected(association) && ! prevAssociationRoleName.equals(association.getTargetRoleSingular())){
+            storeInverseAssociation(inverseAssociation);
+        }
     }
 
     /**
@@ -684,6 +701,11 @@ public class NewPcTypeAssociationWizard extends Wizard implements ContentsChange
             association.setInverseAssociation(""); //$NON-NLS-1$
         }        
         inverseAssociationPropertyPage.setAssociationAndUpdatePage(inverseAssociation);
+        
+        // store role names to handle the next role name change
+        // the role names are used as definition for the corresponding inverse association
+        prevAssociationRoleName = association.getTargetRoleSingular();
+        prevInverseAssociationRoleName = inverseAssociation == null ? "" : inverseAssociation.getTargetRoleSingular();
     }
 
     public void storeExistingInverseAssociation(String inverseAssociation) {
