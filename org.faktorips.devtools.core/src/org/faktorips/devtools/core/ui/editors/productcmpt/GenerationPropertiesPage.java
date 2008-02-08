@@ -20,14 +20,18 @@ package org.faktorips.devtools.core.ui.editors.productcmpt;
 import java.text.DateFormat;
 import java.util.GregorianCalendar;
 
+import org.eclipse.jface.action.Action;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.custom.BusyIndicator;
 import org.eclipse.swt.custom.CTabFolder;
 import org.eclipse.swt.custom.StackLayout;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
+import org.eclipse.ui.forms.widgets.ScrolledForm;
 import org.faktorips.devtools.core.IpsPlugin;
+import org.faktorips.devtools.core.model.ipsobject.IIpsObjectGeneration;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmptGeneration;
 import org.faktorips.devtools.core.ui.UIToolkit;
 import org.faktorips.devtools.core.ui.editors.IpsObjectEditor;
@@ -73,6 +77,9 @@ public class GenerationPropertiesPage extends IpsObjectEditorPage {
 	 */
 	private UIToolkit toolkit;
 
+	private GotoGenerationAction gotoPreviousGenerationAction;
+	private GotoGenerationAction gotoNextGenerationAction;
+    
 	/**
 	 * Creates a new page for editing properties of a product.
 	 * 
@@ -98,7 +105,66 @@ public class GenerationPropertiesPage extends IpsObjectEditorPage {
 		stack.topControl = root;
 
 		buildContent(toolkit, root);
+		
+		createNavigationButtons();
 	}
+
+	private void createNavigationButtons() {
+        gotoPreviousGenerationAction = new GotoGenerationAction(this, "ArrowLeft.gif") { //$NON-NLS-1$
+            protected IIpsObjectGeneration getGeneration() {
+                return generationPropertiesPage.getActiveGeneration().getPrevious();
+            }
+        };
+
+        gotoNextGenerationAction = new GotoGenerationAction(this, "ArrowRight.gif") { //$NON-NLS-1$
+            protected IIpsObjectGeneration getGeneration() {
+                return generationPropertiesPage.getActiveGeneration().getNext();
+            }
+        };
+
+        ScrolledForm form = getManagedForm().getForm();
+        form.getToolBarManager().add(gotoPreviousGenerationAction);
+        form.getToolBarManager().add(gotoNextGenerationAction);
+        form.updateToolBar();
+    }
+
+    private abstract class GotoGenerationAction extends Action {
+        /**
+         * Explicit reference to outer class (avoids bug
+         * http://bugs.sun.com/bugdatabase/view_bug.do?bug_id=4030374).
+         */
+        protected GenerationPropertiesPage generationPropertiesPage;
+
+        public GotoGenerationAction(GenerationPropertiesPage generationPropertiesPage, String imageName) {
+            this.generationPropertiesPage = generationPropertiesPage;
+            setImageDescriptor(IpsPlugin.getDefault().getImageDescriptor(imageName));
+            update();
+        }
+
+        abstract protected IIpsObjectGeneration getGeneration();
+
+        public void update() {
+            if (getGeneration() == null) {
+                setText(null);
+                setToolTipText(null);
+                setEnabled(false);
+            } else {
+                String tabName = getTabname(getGeneration());
+                setText(tabName);
+                setToolTipText(tabName);
+                setEnabled(true);
+            }
+        }
+
+        public void run() {
+            BusyIndicator.showWhile(pageRoot.getDisplay(), new Runnable() {
+                public void run() {
+                    IpsPlugin.getDefault().getIpsPreferences().setWorkingDate(getGeneration().getValidFrom());
+                    ((ProductCmptEditor)getEditor()).setActiveGeneration(getGeneration(), true);
+                }
+            });
+        }
+    }
 
 	/**
 	 * Create the page-content by building the different sections.
@@ -159,7 +225,7 @@ public class GenerationPropertiesPage extends IpsObjectEditorPage {
     }
 
     /**
-     * Refreshes the page when the active generation has chanaged.
+     * Refreshes the page when the active generation has changed.
      * 
      * A call to this method causes the currently displayed composite to be
      * disposed. A completely new composite is created and stacked on top of the
@@ -176,13 +242,16 @@ public class GenerationPropertiesPage extends IpsObjectEditorPage {
             updateTabname();
             resetDataChangeableState();
         }
+        
+        gotoPreviousGenerationAction.update();
+        gotoNextGenerationAction.update();
     }
 
-    private void updateTabname() {
+    private String getTabname(IIpsObjectGeneration generation) {
         DateFormat format = IpsPlugin.getDefault().getIpsPreferences().getDateFormat();
-        String validRange = format.format(getActiveGeneration().getValidFrom().getTime());
+        String validRange = format.format(generation.getValidFrom().getTime());
 
-        GregorianCalendar date = getActiveGeneration().getValidTo();
+        GregorianCalendar date = generation.getValidTo();
         String validToString;
         if (date == null) {
             validToString = Messages.ProductAttributesSection_valueGenerationValidToUnlimited;
@@ -193,7 +262,11 @@ public class GenerationPropertiesPage extends IpsObjectEditorPage {
 
         validRange += " - " + validToString; //$NON-NLS-1$
         String generationConceptName = IpsPlugin.getDefault().getIpsPreferences().getChangesOverTimeNamingConvention().getGenerationConceptNameSingular(); 
-        setPartName(generationConceptName + " " + validRange); //$NON-NLS-1$
+        return generationConceptName + " " + validRange; //$NON-NLS-1$
+    }
+    
+    private void updateTabname() {
+        setPartName(getTabname(getActiveGeneration()));
         updateTabText(getPartControl());
     }
 
