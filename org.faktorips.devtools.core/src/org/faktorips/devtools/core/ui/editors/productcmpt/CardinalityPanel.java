@@ -37,7 +37,7 @@ import org.faktorips.devtools.core.ui.controller.fields.MessageCueController;
 import org.faktorips.util.message.MessageList;
 
 /**
- * Panel to disply cardinality. Note that this is <strong>NOT</strong> a control.
+ * Panel to display cardinality. Note that this is <strong>NOT</strong> a control.
  * 
  * @author Thorsten Guenther
  */

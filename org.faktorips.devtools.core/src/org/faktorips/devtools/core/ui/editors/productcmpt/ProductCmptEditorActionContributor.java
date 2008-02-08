@@ -53,8 +53,8 @@ public class ProductCmptEditorActionContributor extends EditorActionBarContribut
      * Communicates the new SelectionProvider (of the currently active editor) to all actions used
      * in the ProductCmptEditor.
      * <p>
-     * This is necessary because the worbench (and the plugin-mechanism) can't distinguisch between
-     * instances of ProductCmptEditors as they all posses the same extension-ID. This method is
+     * This is necessary because the workbench (and the plugin-mechanism) can't distinguish between
+     * instances of ProductCmptEditors as they all possess the same extension-ID. This method is
      * automatically called by the workbench every time a ProductCmptEditor is activated.
      */
     public void setActiveEditor(IEditorPart targetEditor) {
