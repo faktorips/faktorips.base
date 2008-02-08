@@ -228,7 +228,7 @@ public class PolicyCmptInterfaceBuilder extends BasePolicyCmptTypeBuilder {
     public void generateSignatureGetProductCmpt(IProductCmptType type, JavaCodeFragmentBuilder methodsBuilder) throws CoreException {
         String returnType = productCmptInterfaceBuilder.getQualifiedClassName(type);
         String methodName = getMethodNameGetProductCmpt(type);
-        methodsBuilder.signature(java.lang.reflect.Modifier.PUBLIC, returnType, methodName, new String[0], new String[0]);
+        methodsBuilder.signature(java.lang.reflect.Modifier.PUBLIC, returnType, methodName, EMPTY_STRING_ARRAY, EMPTY_STRING_ARRAY);
     }
     
     /**
@@ -302,7 +302,7 @@ public class PolicyCmptInterfaceBuilder extends BasePolicyCmptTypeBuilder {
         String genName = productCmptGenInterfaceBuilder.getQualifiedClassName(type);
         String methodName = getMethodNameGetProductCmptGeneration(type);
         methodsBuilder.signature(java.lang.reflect.Modifier.PUBLIC, genName, methodName, 
-                new String[0], new String[0]);
+                EMPTY_STRING_ARRAY, EMPTY_STRING_ARRAY);
     }
     
     /**
@@ -498,7 +498,7 @@ public class PolicyCmptInterfaceBuilder extends BasePolicyCmptTypeBuilder {
         
         int modifier = java.lang.reflect.Modifier.PUBLIC;
         String methodName = getMethodNameGetPropertyValue(propName, datatypeHelper.getDatatype());
-        methodsBuilder.signature(modifier, datatypeHelper.getJavaClassName(), methodName, new String[0], new String[0]);
+        methodsBuilder.signature(modifier, datatypeHelper.getJavaClassName(), methodName, EMPTY_STRING_ARRAY, EMPTY_STRING_ARRAY);
     }
     
     /**
@@ -860,8 +860,8 @@ public class PolicyCmptInterfaceBuilder extends BasePolicyCmptTypeBuilder {
             argNames = new String[]{getParamNameForProductCmptInNewChildMethod(productCmptType)};
             argTypes = new String[]{productCmptInterfaceBuilder.getQualifiedClassName(productCmptType)};
         } else {
-            argNames = new String[0];
-            argTypes = new String[0];
+            argNames = EMPTY_STRING_ARRAY;
+            argTypes = EMPTY_STRING_ARRAY;
         }
         builder.signature(java.lang.reflect.Modifier.PUBLIC, returnType, methodName, argNames, argTypes);
     }
@@ -1051,7 +1051,7 @@ public class PolicyCmptInterfaceBuilder extends BasePolicyCmptTypeBuilder {
     
     public void generateSignatureGetMaxCardinalityFor(IPolicyCmptTypeAssociation association, JavaCodeFragmentBuilder methodsBuilder){
         String methodName = getMethodNameGetMaxCardinalityFor(association);
-        methodsBuilder.signature(java.lang.reflect.Modifier.PUBLIC, IntegerRange.class.getName(), methodName, new String[0], new String[0]);
+        methodsBuilder.signature(java.lang.reflect.Modifier.PUBLIC, IntegerRange.class.getName(), methodName, EMPTY_STRING_ARRAY, EMPTY_STRING_ARRAY);
     }
     
     public String getMethodNameGetMaxCardinalityFor(IPolicyCmptTypeAssociation association){
@@ -1135,7 +1135,7 @@ public class PolicyCmptInterfaceBuilder extends BasePolicyCmptTypeBuilder {
 
     public void generateFieldMaxAllowedValuesFor(IPolicyCmptTypeAttribute a, DatatypeHelper helper, JavaCodeFragmentBuilder membersBuilder){
         appendLocalizedJavaDoc("FIELD_MAX_ALLOWED_VALUES_FOR", a.getName(), a, membersBuilder);
-        String[] valueIds = new String[0];
+        String[] valueIds = EMPTY_STRING_ARRAY;
         boolean containsNull = false;
         if(a.getValueSet() instanceof IEnumValueSet){
             IEnumValueSet set = (IEnumValueSet)a.getValueSet();

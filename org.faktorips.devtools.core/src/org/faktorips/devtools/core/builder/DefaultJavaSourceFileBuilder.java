@@ -71,6 +71,7 @@ public abstract class DefaultJavaSourceFileBuilder extends JavaSourceFileBuilder
      */
     public final static String CONFIG_PROPERTY_GENERATE_LOGGING = "generateLoggingStatements"; //$NON-NLS-1$
 
+    protected static final String[] EMPTY_STRING_ARRAY = new String[0];
     
     private boolean loggingGenerationEnabled = false;
     private TypeSection mainSection;

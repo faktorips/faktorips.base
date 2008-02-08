@@ -17,6 +17,9 @@
 
 package org.faktorips.devtools.stdbuilder;
 
+import java.text.MessageFormat;
+import java.util.Locale;
+
 import org.apache.commons.lang.StringUtils;
 import org.eclipse.core.runtime.CoreException;
 import org.faktorips.codegen.DatatypeHelper;
@@ -37,6 +40,8 @@ import org.faktorips.devtools.core.model.tablecontents.ITableContents;
 import org.faktorips.devtools.core.model.tablestructure.ITableAccessFunction;
 import org.faktorips.devtools.core.model.tablestructure.ITableStructure;
 import org.faktorips.devtools.core.model.type.IAttribute;
+import org.faktorips.devtools.core.model.type.IParameter;
+import org.faktorips.devtools.core.model.type.IType;
 import org.faktorips.devtools.stdbuilder.enums.EnumClassesBuilder;
 import org.faktorips.devtools.stdbuilder.enums.EnumTypeInterfaceBuilder;
 import org.faktorips.devtools.stdbuilder.formulatest.FormulaTestBuilder;
@@ -161,6 +166,9 @@ public class StandardBuilderSet extends DefaultBuilderSet {
         return result;
     }
     
+    /**
+     * {@inheritDoc}
+     */
     public IdentifierResolver createFlIdentifierResolver(IFormula formula) throws CoreException {
         return new AbstractParameterIdentifierResolver(formula){
 
@@ -172,6 +180,46 @@ public class StandardBuilderSet extends DefaultBuilderSet {
                     return productCmptGenInterfaceBuilder.getMethodNameGetPropertyValue(attribute.getName(), datatype);
                 }
                 return null;
+            }
+        };
+    }
+    
+    /**
+     * {@inheritDoc}
+     */
+    public IdentifierResolver createFlIdentifierResolverForFormulaTest(IFormula formula, final String attributeSubstitution) throws CoreException {
+        return new AbstractParameterIdentifierResolver(formula){
+
+            protected String getParameterAttributGetterName(IAttribute attribute, Datatype datatype) {
+                if(datatype instanceof IPolicyCmptType){
+                    return policyCmptInterfaceBuilder.getMethodNameGetPropertyValue(attribute.getName(), datatype);    
+                }
+                if(datatype instanceof IProductCmptType){
+                    return productCmptGenInterfaceBuilder.getMethodNameGetPropertyValue(attribute.getName(), datatype);
+                }
+                return null;
+            }
+
+            /**
+             * {@inheritDoc}
+             */
+            protected CompilationResult compile(IParameter param, String attributeName, Locale locale) {
+                CompilationResult compile = super.compile(param, attributeName, locale);
+                try {
+                    Datatype datatype = param.findDatatype(getIpsProject());
+                    if (datatype instanceof IType){
+                        // instead of using the types getter method to get the value for an identifier,
+                        // the given attribute substitution will be used, this enables the ability 
+                        // to test a generated method without having policy cmpt types as parameters
+                        MessageFormat format = new MessageFormat(attributeSubstitution);
+                        String code = "(" + compile.getDatatype() + ")";
+                        code += format.format(new String[]{param.getName() + "." + attributeName});
+                        return new CompilationResultImpl(code, compile.getDatatype());
+                    }
+                } catch (CoreException ignored) {
+                    // the exception was already handled in the compile method of the super class
+                }
+                return compile;
             }
         };
     }

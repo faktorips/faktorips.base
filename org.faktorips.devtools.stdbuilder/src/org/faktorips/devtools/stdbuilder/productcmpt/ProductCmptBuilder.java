@@ -64,6 +64,13 @@ public class ProductCmptBuilder extends AbstractArtefactBuilder {
     public void setProductCmptGenInterfaceBuilder(ProductCmptGenInterfaceBuilder builder) {
         generationBuilder.setProductCmptGenInterfaceBuilder(builder);
     }
+    
+    /**
+     * @return Returns the generationBuilder.
+     */
+    public ProductCmptGenerationCuBuilder getGenerationBuilder() {
+        return generationBuilder;
+    }
 
     /**
      * {@inheritDoc}

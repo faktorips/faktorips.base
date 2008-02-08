@@ -131,6 +131,14 @@ public interface IFormula extends IIpsObjectPart, IPropertyValue {
     public ExprCompiler newExprCompiler(IIpsProject ipsProject) throws CoreException;
     
     /**
+     * Returns an expression compiler that can be used to compile the formula. or <code>null</code>
+     * if the element does not contain a formula. The expression compiler substitutes all policy cmpt
+     * types attributes with the given attributeSubstitution String. So the result is independent
+     * from all type parameters and could be used in generated tests (e.g. formula test cases).
+     */
+    public ExprCompiler newExprCompiler(IIpsProject ipsProject, String attributeSubstitution) throws CoreException;
+    
+    /**
      * Returns the enum dataypes that can be use in this formula.
      * Allowed enum types are those that are used as datatype in one of the parameters
      * or in a table used by the product component generation this config element belongs to.

@@ -154,7 +154,11 @@ public abstract class AbstractParameterIdentifierResolver implements IdentifierR
         return null;
     }
     
-	private CompilationResult compile(IParameter param, String attributeName, Locale locale) {
+    /**
+     * Returns the compilation result for the a parameter and attribute name
+     * @see #compile(String, Locale)
+     */
+	protected CompilationResult compile(IParameter param, String attributeName, Locale locale) {
         Datatype datatype;
         try {
             datatype = param.findDatatype(ipsproject);

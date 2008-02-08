@@ -110,8 +110,16 @@ public class TestIpsArtefactBuilderSet extends AbstractBuilderSet {
 	public IdentifierResolver createFlIdentifierResolver(IFormula formula) throws CoreException {
 		return null;
 	}
-
+	
 	/**
+     * {@inheritDoc}
+     */
+    public IdentifierResolver createFlIdentifierResolverForFormulaTest(IFormula formula, String typeSubstitution)
+            throws CoreException {
+        return null;
+    }
+
+    /**
 	 * {@inheritDoc}
 	 */
 	public String getPackage(String kind, IIpsSrcFile ipsSrcFile) throws CoreException {

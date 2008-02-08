@@ -271,6 +271,14 @@ public class DefaultBuilderSet extends AbstractBuilderSet {
 
     /**
      * {@inheritDoc}
+     */
+    public IdentifierResolver createFlIdentifierResolverForFormulaTest(IFormula formula, String attributeSubstitution)
+            throws CoreException {
+        return null;
+    }
+
+    /**
+     * {@inheritDoc}
      * <p/>
      * Returns an empty artefact builder array. This method is supposed to be overridden by subclasses.
      */

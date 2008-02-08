@@ -506,7 +506,7 @@ public class PolicyCmptImplClassBuilder extends BasePolicyCmptTypeBuilder {
 
     protected void generateMethodGetEffectiveFromAsCalendarForAggregateRoot(JavaCodeFragmentBuilder methodsBuilder) throws CoreException {
         methodsBuilder.javaDoc(getJavaDocCommentForOverriddenMethod(), ANNOTATION_GENERATED);
-        methodsBuilder.methodBegin(java.lang.reflect.Modifier.PUBLIC, Calendar.class, MethodNames.GET_EFFECTIVE_FROM_AS_CALENDAR, new String[0], new Class[0]);
+        methodsBuilder.methodBegin(java.lang.reflect.Modifier.PUBLIC, Calendar.class, MethodNames.GET_EFFECTIVE_FROM_AS_CALENDAR, EMPTY_STRING_ARRAY, new Class[0]);
         if (getPolicyCmptType().hasSupertype()) {
             methodsBuilder.appendln("return super." + MethodNames.GET_EFFECTIVE_FROM_AS_CALENDAR + "();");
         } else {
@@ -518,7 +518,7 @@ public class PolicyCmptImplClassBuilder extends BasePolicyCmptTypeBuilder {
     
     protected void generateMethodEffectiveFromHasChanged(JavaCodeFragmentBuilder methodsBuilder) throws CoreException {
         methodsBuilder.javaDoc(getJavaDocCommentForOverriddenMethod(), ANNOTATION_GENERATED);
-        methodsBuilder.methodBegin(java.lang.reflect.Modifier.PUBLIC, Void.TYPE, MethodNames.EFFECTIVE_FROM_HAS_CHANGED, new String[0], new Class[0]);
+        methodsBuilder.methodBegin(java.lang.reflect.Modifier.PUBLIC, Void.TYPE, MethodNames.EFFECTIVE_FROM_HAS_CHANGED, EMPTY_STRING_ARRAY, new Class[0]);
         methodsBuilder.appendln("super." + MethodNames.EFFECTIVE_FROM_HAS_CHANGED + "();");
 
         IPolicyCmptTypeAssociation[] associations = getPolicyCmptType().getPolicyCmptTypeAssociations();
@@ -2074,7 +2074,7 @@ public class PolicyCmptImplClassBuilder extends BasePolicyCmptTypeBuilder {
 
         appendLocalizedJavaDoc("CONSTRUCTOR", getUnqualifiedClassName(), getPcType(), builder);
         builder.methodBegin(java.lang.reflect.Modifier.PUBLIC, null, getUnqualifiedClassName(),
-                new String[0], new String[0]);
+                EMPTY_STRING_ARRAY, EMPTY_STRING_ARRAY);
         builder.append("super();");
         generateInitializationForOverrideAttributes(builder);
         builder.methodEnd();
@@ -2115,7 +2115,7 @@ public class PolicyCmptImplClassBuilder extends BasePolicyCmptTypeBuilder {
         }
         appendLocalizedJavaDoc("METHOD_INITIALIZE", getPcType(), builder);
         builder.methodBegin(java.lang.reflect.Modifier.PUBLIC, Datatype.VOID.getJavaClassName(),
-                getMethodNameInitialize(), new String[0], new String[0]);
+                getMethodNameInitialize(), EMPTY_STRING_ARRAY, EMPTY_STRING_ARRAY);
         if (StringUtils.isNotEmpty(getPcType().getSupertype())) {
             builder.append("super." + getMethodNameInitialize() + "();");
         }
@@ -2624,7 +2624,7 @@ public class PolicyCmptImplClassBuilder extends BasePolicyCmptTypeBuilder {
      */
     private void generateMethodGetParentModelObject(JavaCodeFragmentBuilder methodBuilder) {
         methodBuilder.javaDoc(getJavaDocCommentForOverriddenMethod(), ANNOTATION_GENERATED);
-        methodBuilder.methodBegin(Modifier.PUBLIC, IModelObject.class, MethodNames.GET_PARENT, new String[0], new Class[0]);
+        methodBuilder.methodBegin(Modifier.PUBLIC, IModelObject.class, MethodNames.GET_PARENT, EMPTY_STRING_ARRAY, new Class[0]);
         methodBuilder.appendln("return " + FIELD_PARENT_MODEL_OBJECT + ";");
         methodBuilder.methodEnd();
     }
@@ -2712,7 +2712,7 @@ public class PolicyCmptImplClassBuilder extends BasePolicyCmptTypeBuilder {
      */
     protected void generateMethodGetEffectiveFromAsCalendarForDependantObjectBaseClass(JavaCodeFragmentBuilder methodsBuilder) throws CoreException {
         methodsBuilder.javaDoc(getJavaDocCommentForOverriddenMethod(), ANNOTATION_GENERATED);
-        methodsBuilder.methodBegin(java.lang.reflect.Modifier.PUBLIC, Calendar.class, MethodNames.GET_EFFECTIVE_FROM_AS_CALENDAR, new String[0], new Class[0]);
+        methodsBuilder.methodBegin(java.lang.reflect.Modifier.PUBLIC, Calendar.class, MethodNames.GET_EFFECTIVE_FROM_AS_CALENDAR, EMPTY_STRING_ARRAY, new Class[0]);
         methodsBuilder.append("if (" + FIELD_PARENT_MODEL_OBJECT + " instanceof ");
         methodsBuilder.appendClassName(IConfigurableModelObject.class);
         methodsBuilder.append(") {");

@@ -86,6 +86,14 @@ public class EmptyBuilderSet extends AbstractBuilderSet {
     /**
      * {@inheritDoc}
      */
+    public IdentifierResolver createFlIdentifierResolverForFormulaTest(IFormula formula, String typeSubstitution)
+            throws CoreException {
+        return createFlIdentifierResolver(formula);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
     public String getPackage(String kind, IIpsSrcFile ipsSrcFile) throws CoreException {
         return null;
     }

@@ -53,7 +53,7 @@ import org.faktorips.valueset.IntegerRange;
  * @author Jan Ortmann
  */
 public class ProductCmptGenInterfaceBuilder extends AbstractProductCmptTypeBuilder {
-
+    
     private ProductCmptInterfaceBuilder productCmptTypeInterfaceBuilder;
     private PolicyCmptImplClassBuilder policyCmptTypeImplBuilder;
     private ProductCmptGenImplClassBuilder productCmptGenImplClassBuilder;
@@ -159,7 +159,7 @@ public class ProductCmptGenInterfaceBuilder extends AbstractProductCmptTypeBuild
     void generateSignatureGetDefaultValue(IPolicyCmptTypeAttribute a, DatatypeHelper datatypeHelper, JavaCodeFragmentBuilder builder) throws CoreException {
         String methodName = getMethodNameGetDefaultValue(a, datatypeHelper);
         builder.signature(Modifier.PUBLIC, datatypeHelper.getJavaClassName(),
-                methodName, new String[0], new String[0]);
+                methodName, EMPTY_STRING_ARRAY, EMPTY_STRING_ARRAY);
     }
     
     /**
@@ -211,7 +211,7 @@ public class ProductCmptGenInterfaceBuilder extends AbstractProductCmptTypeBuild
     void generateSignatureGetValue(IProductCmptTypeAttribute a, DatatypeHelper datatypeHelper, JavaCodeFragmentBuilder builder) throws CoreException {
         String methodName = getMethodNameGetValue(a, datatypeHelper);
         builder.signature(Modifier.PUBLIC, datatypeHelper.getJavaClassName(),
-                methodName, new String[0], new String[0]);
+                methodName, EMPTY_STRING_ARRAY, EMPTY_STRING_ARRAY);
     }
     
     public String getMethodNameGetValue(IProductCmptTypeAttribute a, DatatypeHelper datatypeHelper) throws CoreException {
@@ -271,7 +271,7 @@ public class ProductCmptGenInterfaceBuilder extends AbstractProductCmptTypeBuild
         IProductCmptType target = association.findTargetProductCmptType(getIpsProject());
         String returnType = productCmptTypeInterfaceBuilder.getQualifiedClassName(target) + "[]";
         builder.signature(getJavaNamingConvention().getModifierForPublicInterfaceMethod(), 
-                returnType, methodName, new String[0], new String[0]);
+                returnType, methodName, EMPTY_STRING_ARRAY, EMPTY_STRING_ARRAY);
     }
 
     String getPropertyNameToManyAssociation(IProductCmptTypeAssociation association) {
@@ -302,7 +302,7 @@ public class ProductCmptGenInterfaceBuilder extends AbstractProductCmptTypeBuild
         String methodName = getMethodNameGet1RelatedCmpt(association);
         IProductCmptType target = association.findTargetProductCmptType(getIpsProject());
         String returnType = productCmptTypeInterfaceBuilder.getQualifiedClassName(target);
-        builder.signature(Modifier.PUBLIC, returnType, methodName, new String[0], new String[0]);
+        builder.signature(Modifier.PUBLIC, returnType, methodName, EMPTY_STRING_ARRAY, EMPTY_STRING_ARRAY);
     }
     
     String getMethodNameGet1RelatedCmpt(IProductCmptTypeAssociation association) throws CoreException {
@@ -364,7 +364,7 @@ public class ProductCmptGenInterfaceBuilder extends AbstractProductCmptTypeBuild
      */
     void generateSignatureGetNumOfRelatedCmpts(IProductCmptTypeAssociation association, JavaCodeFragmentBuilder builder) throws CoreException {
         String methodName = getMethodNameGetNumOfRelatedCmpts(association);
-        builder.signature(Modifier.PUBLIC, "int", methodName, new String[0], new String[0]);
+        builder.signature(Modifier.PUBLIC, "int", methodName, EMPTY_STRING_ARRAY, EMPTY_STRING_ARRAY);
     }
     
     public String getMethodNameGetNumOfRelatedCmpts(IProductCmptTypeAssociation association) {
@@ -496,32 +496,60 @@ public class ProductCmptGenInterfaceBuilder extends AbstractProductCmptTypeBuild
             methodsBuilder.append(';');
         }
     }
-    
-    /**
-     * Code sample:
-     * <pre>
-     * public abstract Money computePremium(Policy policy, Integer age) throws FormulaException
-     * </pre>
-     */
+
     public void generateSignatureForModelMethod(
             IProductCmptTypeMethod method,
             boolean isAbstract,
             boolean parametersFinal,
             JavaCodeFragmentBuilder methodsBuilder) throws CoreException {
+        generateSignatureForModelMethod(method, isAbstract, parametersFinal, methodsBuilder, null, null);
+    }
+        
+    /**
+     * Code sample:
+     * <pre>
+     * public abstract Money computePremium(Policy policy, Integer age) throws FormulaException
+     * </pre>
+     * 
+     * If the array parameters parametersForTest and parameterTypesForTest are given
+     */
+    public void generateSignatureForModelMethod(
+            IProductCmptTypeMethod method,
+            boolean isAbstract,
+            boolean parametersFinal,
+            JavaCodeFragmentBuilder methodsBuilder,
+            String[] parametersForTest, String[] parameterTypesForTest) throws CoreException {
         
         IParameter[] parameters = method.getParameters();
         int modifier = method.getJavaModifier() | (isAbstract ? Modifier.ABSTRACT : 0);
         boolean resolveTypesToPublishedInterface = method.getModifier().isPublished();
         String returnClass = StdBuilderHelper.transformDatatypeToJavaClassName(method.getDatatype(), resolveTypesToPublishedInterface, method.getIpsProject(), policyCmptTypeImplBuilder, productCmptGenImplClassBuilder);
-        methodsBuilder.signature(modifier, returnClass, method.getName(), BuilderHelper
-                .extractParameterNames(parameters), StdBuilderHelper
-                .transformParameterTypesToJavaClassNames(parameters, resolveTypesToPublishedInterface, method.getIpsProject(),
-                        policyCmptTypeImplBuilder, productCmptGenImplClassBuilder), parametersFinal);
+        String[] parameterNames = BuilderHelper.extractParameterNames(parameters);
+        String[] parameterTypes = StdBuilderHelper.transformParameterTypesToJavaClassNames(parameters, resolveTypesToPublishedInterface, method.getIpsProject(),
+                        policyCmptTypeImplBuilder, productCmptGenImplClassBuilder);
+        String[] parameterInSignatur = parameterNames;
+        String[] parameterTypesInSignatur = parameterTypes;
+        String methodName = method.getName();
+        // extend the method signature with the given parameter names
+        if (parametersForTest != null){
+            parameterInSignatur = extendArray(parameterNames, parametersForTest);
+            parameterTypesInSignatur = extendArray(parameterTypes, parameterTypesForTest);
+            parametersFinal = true;
+            methodName = method.getName() + "ForTest";
+        } 
+        methodsBuilder.signature(modifier, returnClass, methodName, parameterInSignatur, parameterTypesInSignatur, parametersFinal);
         
         if (method.isFormulaSignatureDefinition()) {
             methodsBuilder.append(" throws ");
             methodsBuilder.appendClassName(FormulaExecutionException.class);
         }
+    }
+
+    private String[] extendArray(String[] source1, String[] source2) {
+        String[] dest = new String[source1.length + source2.length];
+        System.arraycopy(source1, 0, dest, 0, source1.length);
+        System.arraycopy(source2, 0, dest, source1.length, source2.length);
+        return dest;
     }
     
     

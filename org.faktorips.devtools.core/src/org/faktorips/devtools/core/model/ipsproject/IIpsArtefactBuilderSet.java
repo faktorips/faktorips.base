@@ -105,6 +105,18 @@ public interface IIpsArtefactBuilderSet extends IJavaPackageStructure {
 	 */
 	public IdentifierResolver createFlIdentifierResolver(IFormula formula) throws CoreException;
 	
+	/**
+     * Creates an<code>IdentifierResolver</code> used to resolve identifiers in the given
+     * formula. The returned identifier resolver has an special handling of type attribute (e.g. an
+     * policy cmpt type attribute), the generated code for this kind of identifiers will be replaced
+     * by the given attributeSubstitution. Instead of calling the getter method on the type, the
+     * given attributeSubstitution will be used as compilation result.
+     * 
+     * Returns <code>null</code> if this builder set doesn't support an formula language
+     * identifier resolver.
+     */
+	public IdentifierResolver createFlIdentifierResolverForFormulaTest(IFormula formula, String attributeSubstitution) throws CoreException;
+	
     /**
      * Returns the datatype helper used for the enum type that is defined by a 
      * table contents. 
