@@ -86,8 +86,8 @@ public interface ITimedIpsObject extends IIpsObject {
     public IIpsObjectGeneration newGeneration();
 
     /**
-     * Creates a new generation that is valid from the indicated validFrom date. If the timed ips
-     * object already nhas a generation that tis valid on that date, the new generation is
+     * Creates a new generation that is valid from the specified validFrom date. If the timed ips
+     * object already has a generation that is valid on that date, the new generation is
      * initialized with the data from that (existing) generation.
      * 
      * @throws NullPointerException if validFrom is <code>null</code>.
@@ -100,7 +100,7 @@ public interface ITimedIpsObject extends IIpsObject {
     public int getNumOfGenerations();
 
     /**
-     * @return The date this IpsObject is valid toor <code>null</code> if this
+     * @return The date this IpsObject is valid on or <code>null</code> if this
      *         IpsObject is valid forever.
      */
     public GregorianCalendar getValidTo();
