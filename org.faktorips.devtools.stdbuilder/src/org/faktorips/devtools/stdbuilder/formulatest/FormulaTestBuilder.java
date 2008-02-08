@@ -510,6 +510,15 @@ public class FormulaTestBuilder extends DefaultJavaSourceFileBuilder {
         
         // append compute method call
         IMethod method = formula.findFormulaSignature(getIpsProject());
+        body.append(FORMULA_NAME);
+        body.append("_static = \"");
+        body.append(formula.getName());
+        body.appendln("\";");
+        body.append(FORMULA_TEST_CASE_NAME);
+        body.append("_static = \"");
+        body.append(formulaTestCase.getName());
+        body.appendln("\";");
+
         body.append("formulaResult = ");
         body.append(method.getName());
         body.append(getComputeTestMethodSuffix(generation.getGenerationNo()));
@@ -547,8 +556,6 @@ public class FormulaTestBuilder extends DefaultJavaSourceFileBuilder {
                 orderedInputValue.add(formulaTestCase.getFormulaTestInputValue(identifier));
             }
         }
-        orderedInputValue.add("\""+ formula.getName() + "\"");
-        orderedInputValue.add("\"" + formulaTestCase.getName() + "\"");
 
         for (int k = 0; k < orderedInputValue.size(); k++) {
             if (k > 0) {
