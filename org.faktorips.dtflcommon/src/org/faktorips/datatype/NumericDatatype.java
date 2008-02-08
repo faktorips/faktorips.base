@@ -39,7 +39,7 @@ public interface NumericDatatype extends ValueDatatype {
      * Decides whether the given dividend can be divided by the divisor without remainder or not.
      * This method is used to validate numeric ranges, see RangeValueSet as an example.
      * 
-     * @param dividend The value to be devided
+     * @param dividend The value to be divided
      * @param divisor The value to be used to divide the dividend
      * @return <code>true</code> if dividend can be divided by the divisor without remainder,
      *         <code>false</code> otherwise.
