@@ -162,7 +162,7 @@ public class ProductCmptGenerationCuBuilder extends DefaultJavaSourceFileBuilder
      * Generates the method to compute a value as specified by a formula configuration element and
      */
     private void generateMethodForFormula(IFormula formula, JavaCodeFragmentBuilder builder) throws CoreException {
-        generateMethodForFormula(formula, builder, null, null, null);
+        generateMethodForFormula(formula, builder, null, null);
     }
     
     /**
@@ -170,22 +170,19 @@ public class ProductCmptGenerationCuBuilder extends DefaultJavaSourceFileBuilder
      * 
      * @param formula The formula the method will be generated for
      * @param builder The builder which is used to generate the code
-     * @param parametersForTest Special String array with parameter names which will be added to the
-     *            method signature
-     * @param parameterTypesForTest Special String array with parameter datatypes qualified names,
-     *            which are used for the given parameter names
+     * @param methodSuffix Suffix which will append to the method name
      * @param attributeSubstitution String which will be used to replace the type attribute
      *            generated code, this enables the ability to test the generated method without
      *            having the type
      */
-    public void generateMethodForFormula(IFormula formula, JavaCodeFragmentBuilder builder, String[] parametersForTest, String[] parameterTypesForTest, String attributeSubstitution) throws CoreException {
+    public void generateMethodForFormula(IFormula formula, JavaCodeFragmentBuilder builder, String methodSuffix, String attributeSubstitution) throws CoreException {
         IProductCmptTypeMethod method = formula.findFormulaSignature(getIpsProject());
         if(method.validate(getIpsProject()).containsErrorMsg()){
             return;   
         }
         builder.javaDoc(getJavaDocCommentForOverriddenMethod(), ANNOTATION_GENERATED);
         
-        productCmptGenInterfaceBuilder.generateSignatureForModelMethod(method, false, true, builder, parametersForTest, parameterTypesForTest);
+        productCmptGenInterfaceBuilder.generateSignatureForModelMethod(method, false, true, builder, methodSuffix);
         builder.openBracket();
         builder.append("try {"); //$NON-NLS-1$
         builder.append("return "); //$NON-NLS-1$

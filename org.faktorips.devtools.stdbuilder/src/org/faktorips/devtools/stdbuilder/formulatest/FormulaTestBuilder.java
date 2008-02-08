@@ -20,11 +20,9 @@ package org.faktorips.devtools.stdbuilder.formulatest;
 import java.lang.reflect.Modifier;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IFolder;
@@ -98,7 +96,7 @@ public class FormulaTestBuilder extends DefaultJavaSourceFileBuilder {
     
     private Map policyCmptTypeTestValues;
 
-    private Set formulasToTest;
+    private Map formulasToTest;
 
     public FormulaTestBuilder(
             IIpsArtefactBuilderSet builderSet, 
@@ -170,7 +168,7 @@ public class FormulaTestBuilder extends DefaultJavaSourceFileBuilder {
         super.beforeBuild(ipsSrcFile, status);
 
         policyCmptTypeTestValues = new HashMap();
-        formulasToTest = new HashSet();
+        formulasToTest = new HashMap();
     }
 
     protected String getSuperClassName(){
@@ -272,15 +270,19 @@ public class FormulaTestBuilder extends DefaultJavaSourceFileBuilder {
     /*
      * Creates all compute methods which should be tested by the formula test cases
      */
-    private void generateComputeTestMethods(Set formulasToTest, JavaCodeFragmentBuilder builder) throws CoreException {
+    private void generateComputeTestMethods(Map formulasToTest, JavaCodeFragmentBuilder builder) throws CoreException {
         ProductCmptGenerationCuBuilder generationBuilder = productCmptBuilder.getGenerationBuilder();
-        for (Iterator iterator = formulasToTest.iterator(); iterator.hasNext();) {
+        for (Iterator iterator = formulasToTest.keySet().iterator(); iterator.hasNext();) {
             IFormula formula = (IFormula)iterator.next();
-            generationBuilder.generateMethodForFormula(formula, builder, new String[] { FORMULA_NAME,
-                    FORMULA_TEST_CASE_NAME }, new String[] { Datatype.STRING.getQualifiedName(),
-                    Datatype.STRING.getQualifiedName() }, getUnqualifiedClassName() + ".this." + TEST_VALUES + ".get("
-                    + FORMULA_NAME + "_static + \"#\" + " + FORMULA_TEST_CASE_NAME + "_static + \"#\" + \"{0}\")");
+            Integer generationId = (Integer)formulasToTest.get(formula);
+            generationBuilder.generateMethodForFormula(formula, builder, getComputeTestMethodSuffix(generationId
+                    .intValue()), getUnqualifiedClassName() + ".this." + TEST_VALUES + ".get(" + FORMULA_NAME
+                    + "_static + \"#\" + " + FORMULA_TEST_CASE_NAME + "_static + \"#\" + \"{0}\")");
         }
+    }
+
+    private String getComputeTestMethodSuffix(int generationId) {
+        return "ForTest_" + generationId;
     }
 
     /*
@@ -290,21 +292,12 @@ public class FormulaTestBuilder extends DefaultJavaSourceFileBuilder {
      * </pre>
      */
     private void generateTestValueField(Map testValues, JavaCodeFragmentBuilder builder) {
-        if (testValues.size() == 0){
-            return;
-        }
-        builder.javaDoc("", ANNOTATION_GENERATED);
         JavaCodeFragment body = new JavaCodeFragment();
-        body.addImport(HashMap.class.getName());
-        body.append("private HashMap ");
-        body.append(TEST_VALUES);
-        body.appendln("= new HashMap();");
-        builder.append(body);
         
         builder.javaDoc("", ANNOTATION_GENERATED);
         body = new JavaCodeFragment();
         body.addImport(HashMap.class.getName());
-        body.append("private static String ");
+        body.append("static String ");
         body.append(FORMULA_NAME);
         body.appendln("_static = null;");
         builder.append(body);  
@@ -312,10 +305,21 @@ public class FormulaTestBuilder extends DefaultJavaSourceFileBuilder {
         builder.javaDoc("", ANNOTATION_GENERATED);
         body = new JavaCodeFragment();
         body.addImport(HashMap.class.getName());
-        body.append("private static String ");
+        body.append("static String ");
         body.append(FORMULA_TEST_CASE_NAME);
         body.appendln("_static = null;");
-        builder.append(body);        
+        builder.append(body);    
+        
+        if (testValues.size() == 0){
+            return;
+        }
+        builder.javaDoc("", ANNOTATION_GENERATED);
+        body = new JavaCodeFragment();
+        body.addImport(HashMap.class.getName());
+        body.append("private HashMap ");
+        body.append(TEST_VALUES);
+        body.appendln("= new HashMap();");
+        builder.append(body);
     }
 
     /*
@@ -494,29 +498,21 @@ public class FormulaTestBuilder extends DefaultJavaSourceFileBuilder {
     }
 
     private void appendTestMethodsContentForGenerationFormulaTest(IProductCmptGeneration generation, JavaCodeFragmentBuilder builder, ArrayList testMethods, IFormulaTestCase formulaTestCase) throws CoreException {
-        String testMethodName = TEST_METHOD_PREFIX
-        + StringUtil.unqualifiedName(productCmptBuilder.getQualifiedClassName(generation)) + "_" + getJavaMethodSuffix(formulaTestCase.getName());
-
         JavaCodeFragment body = new JavaCodeFragment();
-        
         IFormula formula = formulaTestCase.getFormula();
+        
+        String testMethodName = TEST_METHOD_PREFIX
+                + StringUtil.unqualifiedName(productCmptBuilder.getQualifiedClassName(generation)) + "_"
+                + getJavaMethodSuffix(formula.getName()) + "_" + getJavaMethodSuffix(formulaTestCase.getName());
+
         // store the formula to indicate the generation of the test method
-        formulasToTest.add(formula);
+        formulasToTest.put(formula, new Integer(generation.getGenerationNo()));
         
         // append compute method call
         IMethod method = formula.findFormulaSignature(getIpsProject());
-        body.append(FORMULA_NAME);
-        body.append("_static = \"");
-        body.append(formula.getName());
-        body.appendln("\";");
-        body.append(FORMULA_TEST_CASE_NAME);
-        body.append("_static = \"");
-        body.append(formulaTestCase.getName());
-        body.appendln("\";");
-        
         body.append("formulaResult = ");
         body.append(method.getName());
-        body.append("ForTest");
+        body.append(getComputeTestMethodSuffix(generation.getGenerationNo()));
         body.append("(");
 
         // append the method parameters in the correct order

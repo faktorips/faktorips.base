@@ -502,7 +502,7 @@ public class ProductCmptGenInterfaceBuilder extends AbstractProductCmptTypeBuild
             boolean isAbstract,
             boolean parametersFinal,
             JavaCodeFragmentBuilder methodsBuilder) throws CoreException {
-        generateSignatureForModelMethod(method, isAbstract, parametersFinal, methodsBuilder, null, null);
+        generateSignatureForModelMethod(method, isAbstract, parametersFinal, methodsBuilder, null);
     }
         
     /**
@@ -510,15 +510,13 @@ public class ProductCmptGenInterfaceBuilder extends AbstractProductCmptTypeBuild
      * <pre>
      * public abstract Money computePremium(Policy policy, Integer age) throws FormulaException
      * </pre>
-     * 
-     * If the array parameters parametersForTest and parameterTypesForTest are given
      */
     public void generateSignatureForModelMethod(
             IProductCmptTypeMethod method,
             boolean isAbstract,
             boolean parametersFinal,
             JavaCodeFragmentBuilder methodsBuilder,
-            String[] parametersForTest, String[] parameterTypesForTest) throws CoreException {
+            String methodSuffix) throws CoreException {
         
         IParameter[] parameters = method.getParameters();
         int modifier = method.getJavaModifier() | (isAbstract ? Modifier.ABSTRACT : 0);
@@ -531,11 +529,8 @@ public class ProductCmptGenInterfaceBuilder extends AbstractProductCmptTypeBuild
         String[] parameterTypesInSignatur = parameterTypes;
         String methodName = method.getName();
         // extend the method signature with the given parameter names
-        if (parametersForTest != null){
-            parameterInSignatur = extendArray(parameterNames, parametersForTest);
-            parameterTypesInSignatur = extendArray(parameterTypes, parameterTypesForTest);
-            parametersFinal = true;
-            methodName = method.getName() + "ForTest";
+        if (methodSuffix != null){
+            methodName = method.getName() + methodSuffix;
         } 
         methodsBuilder.signature(modifier, returnClass, methodName, parameterInSignatur, parameterTypesInSignatur, parametersFinal);
         
@@ -544,13 +539,4 @@ public class ProductCmptGenInterfaceBuilder extends AbstractProductCmptTypeBuild
             methodsBuilder.appendClassName(FormulaExecutionException.class);
         }
     }
-
-    private String[] extendArray(String[] source1, String[] source2) {
-        String[] dest = new String[source1.length + source2.length];
-        System.arraycopy(source1, 0, dest, 0, source1.length);
-        System.arraycopy(source2, 0, dest, source1.length, source2.length);
-        return dest;
-    }
-    
-    
 }
