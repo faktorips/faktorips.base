@@ -87,6 +87,6 @@ public class LongDatatype extends ValueClassDatatype implements NumericDatatype 
         long a = longA.longValue();
         long b = longB.longValue();
 
-        return a % b == 0;
+        return b == 0 ? false : a % b == 0;
     }
 }

@@ -90,6 +90,6 @@ public class IntegerDatatype extends ValueClassDatatype implements NumericDataty
         int a = intA.intValue();
         int b = intB.intValue();
 
-        return a % b == 0;
+        return b == 0 ? false : a % b == 0;
     }
 }

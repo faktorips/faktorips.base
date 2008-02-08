@@ -91,7 +91,7 @@ public class PrimitiveIntegerDatatype extends AbstractPrimitiveDatatype implemen
         }
         int a = ((Integer)getValue(dividend)).intValue();
         int b = ((Integer)getValue(divisor)).intValue();
-        return a % b == 0;
+        return b == 0 ? false : a % b == 0;
     }
 
 }
