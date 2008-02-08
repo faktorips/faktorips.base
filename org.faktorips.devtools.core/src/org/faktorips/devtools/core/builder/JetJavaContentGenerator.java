@@ -28,9 +28,9 @@ import org.faktorips.util.StringUtil;
 
 /**
  * The intention of this class is to use it as a base class for generators that are created by JET.
- * Therefor the JET-Skeleton class needs to extend from this class. Furhtermore the JET-Skeleton's
+ * Therefore the JET-Skeleton class needs to extend from this class. Furthermore the JET-Skeleton's
  * generate() method must exactly match the signature of this class's generate() method.
- * JetJavaContentGenerator classes can be provided to a JetJavaSourceFileBuilder and are reponsible
+ * JetJavaContentGenerator classes can be provided to a JetJavaSourceFileBuilder and are responsible
  * to just create the content of the java file while the file builder does the rest.
  * Class declarations within JET-template files need to be done by means of the appendXXX-methods of
  * this class. This assures that all import declarations will be collected. To be able to add the imports
@@ -93,7 +93,7 @@ public abstract class JetJavaContentGenerator {
      * To be able to collect the imports of the generated java source content this method has to be
      * used within a JET-Template file to add a class declaration.
      * 
-     * @param clazz used to detemine the qualified class name of this class
+     * @param clazz used to determine the qualified class name of this class
      * @return the unqualified class name of the provided class
      */
     public String appendClass(Class clazz) {
@@ -102,7 +102,7 @@ public abstract class JetJavaContentGenerator {
     }
 
     /**
-     * Needs to be delared with in the JET-Template after the package and before the class
+     * Needs to be declared with in the JET-Template after the package and before the class
      * declaration. By means of this method the JetJavaContentGenerator is able to insert the import
      * declarations at the right point within the java source.
      * 

@@ -608,9 +608,9 @@ public abstract class Type extends BaseIpsObject implements IType {
         IAssociation[] relations = getAssociations();
         for (int i = 0; i < relations.length; i++) {
             String targetQName = relations[i].getTarget();
-            // an additional condition "&& this.isAggregateRoot()" will _not_ be helpfull, because
+            // an additional condition "&& this.isAggregateRoot()" will _not_ be helpful, because
             // this method is called recursively for the detail and so on. But this detail is not an
-            // aggregate root and the recursion will terminate to early.
+            // aggregate root and the recursion will terminate too early.
             if (relations[i].getAssociationType().equals(AssociationType.COMPOSITION_MASTER_TO_DETAIL)) {
                 dependencies.add(IpsObjectDependency.createCompostionMasterDetailDependency(this.getQualifiedNameType(),
                         new QualifiedNameType(targetQName, getIpsObjectType())));

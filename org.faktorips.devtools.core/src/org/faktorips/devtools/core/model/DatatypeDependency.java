@@ -24,7 +24,7 @@ import org.faktorips.util.ArgumentCheck;
 
 /**
  * Instances of this class indicate a dependency between an IpsObject and a Datatype. It is assumed
- * that the source is an IpsObject and therefor the qualified name type is used to identify it. The
+ * that the source is an IpsObject and therefore the qualified name type is used to identify it. The
  * target is assumed to be a datatype where only the qualified name is known.
  * 
  * @author Peter Erzberger

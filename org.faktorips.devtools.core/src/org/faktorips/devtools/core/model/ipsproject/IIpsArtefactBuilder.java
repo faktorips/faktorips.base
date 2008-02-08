@@ -24,7 +24,7 @@ import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
 /**
  * An implementation of this interface is supposed to create one artefact for an IpsObject. The
  * isBuilderFor() method indicates to the ips build framework which kind of IpsObjects this builder
- * is interested in. This interface describes a defined build cyle. For every IpsObject this builder
+ * is interested in. This interface describes a defined build cycle. For every IpsObject this builder
  * builds an artefact for, the following methods are called sequentially beforeBuild(), build(),
  * afterBuild(). If a full build is started the beforeFullBuild() method is called before the first
  * IpsSrcFile that hosts the IpsObject is provided to this builder and the afterFullBuild() method

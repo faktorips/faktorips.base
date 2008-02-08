@@ -46,7 +46,7 @@ import org.faktorips.util.StringUtil;
  * he has really modified as changed files. <p> In addition this builder provides sections for typical
  * source code fragments. The following sections are distinguished: constant section, java doc
  * section for the main class, attribute section, constructor section for the main class, method
- * section, inner classes section. For inner classes the same subdivion of sections except for the
+ * section, inner classes section. For inner classes the same subdivision of sections except for the
  * inner classes section is provided. To write code to this sections for the main class that is to
  * generation by an implementation of this builder one has to access the main type section by means
  * of the getMainTypeSection() method. The TypeSection object retrieved by this method offers the
@@ -55,10 +55,10 @@ import org.faktorips.util.StringUtil;
  * class. For each inner class that is to generate a new TypeSection object needs to be created. The
  * TypeSection objects are typically accessed within implementations of the
  * generateCodeForJavatype() method. <p>This builder also provides a set of methods that generate code
- * fragments for logging statments. These methods generate logging code for the logging framework
+ * fragments for logging statements. These methods generate logging code for the logging framework
  * registered with the <code>org.faktorips.devtools.core.loggingFrameworkConnector</code>
  * extension point. Typical java logging frameworks are log4j or the logging framework that comes
- * the the jdk since 1.4.
+ * with the JDK since 1.4.
  * 
  * @author Jan Ortmann, Peter Erzberger
  */
@@ -219,7 +219,7 @@ public abstract class DefaultJavaSourceFileBuilder extends JavaSourceFileBuilder
     /**
      * Defines if the generation of the logging statement is enabled. Irrespective of the fact that a
      * generator uses the generate logging methods of this builder the actual code generation for
-     * logging statments can be enabled and disabled by this method.
+     * logging statements can be enabled and disabled by this method.
      */
     public void setLoggingCodeGenerationEnabled(boolean enabled){
         this.loggingGenerationEnabled = enabled;
@@ -513,7 +513,7 @@ public abstract class DefaultJavaSourceFileBuilder extends JavaSourceFileBuilder
     
     /**
      * A TypeSection assembles the code fragments for a type, e.g. the main class or an inner class,
-     * during the generation process. Therefor it provides subsections for typical code sections
+     * during the generation process. Therefore it provides subsections for typical code sections
      * like for constants, attributes, methods, constructors and java doc for the type.
      * 
      * @author Peter Erzberger
