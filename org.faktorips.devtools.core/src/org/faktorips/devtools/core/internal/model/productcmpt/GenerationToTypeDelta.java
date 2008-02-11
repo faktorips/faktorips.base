@@ -19,6 +19,7 @@ package org.faktorips.devtools.core.internal.model.productcmpt;
 
 import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -84,14 +85,15 @@ public class GenerationToTypeDelta implements IGenerationToTypeDelta {
     
     private void createEntriesForProperties() throws CoreException {
         for (int i=0; i<ProdDefPropertyType.ALL_TYPES.length; i++) {
-            ProdDefPropertyType propertyType = ProdDefPropertyType.ALL_TYPES[i]; 
-            Map propertiesMap = ((ProductCmptType)productCmptType).getProdDefPropertiesMap(propertyType, ipsProject);
+            ProdDefPropertyType propertyType = ProdDefPropertyType.ALL_TYPES[i];
+            LinkedHashMap propertiesMap = ((ProductCmptType)productCmptType).getProdDefPropertiesMap(propertyType,
+                    ipsProject);
             checkForMissingPropertyValues(propertiesMap, propertyType);
             checkForInconsistentPropertyValues(propertiesMap, propertyType);
         }
     }
     
-    private void checkForMissingPropertyValues(Map propertiesMap, ProdDefPropertyType propertyType) {
+    private void checkForMissingPropertyValues(LinkedHashMap propertiesMap, ProdDefPropertyType propertyType) {
         for (Iterator it=propertiesMap.values().iterator(); it.hasNext(); ) {
             IProdDefProperty property = (IProdDefProperty)it.next();
             if (generation.getPropertyValue(property)==null) {
@@ -105,7 +107,8 @@ public class GenerationToTypeDelta implements IGenerationToTypeDelta {
         }
     }
 
-    private void checkForInconsistentPropertyValues(Map propertiesMap, ProdDefPropertyType propertyType) throws CoreException {
+    private void checkForInconsistentPropertyValues(LinkedHashMap propertiesMap, ProdDefPropertyType propertyType)
+            throws CoreException {
         IPropertyValue[] values = generation.getPropertyValues(propertyType);
         for (int i = 0; i < values.length; i++) {
             IProdDefProperty property = (IProdDefProperty)propertiesMap.get(values[i].getPropertyName());

@@ -23,6 +23,7 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -185,18 +186,18 @@ public class ProductCmptType extends Type implements IProductCmptType {
     }
     
     /**
-     * Returns a  map containing the property names as keys and the properties as values.
-     * This method searches the supertype hierarchy.
+     * Returns a map containing the property names as keys and the properties as values. This method
+     * searches the supertype hierarchy.
      * <p>
      * Note this is a model internal method, it is not part of the published interface.
      * 
-     * @param propertyType The type of properties that should be included in the map. <code>null</code> indicates
-     *                     that all properties should be included in the map.
+     * @param propertyType The type of properties that should be included in the map.
+     *            <code>null</code> indicates that all properties should be included in the map.
      */
-    public Map getProdDefPropertiesMap(ProdDefPropertyType propertyType, IIpsProject ipsProject) throws CoreException {
+    public LinkedHashMap getProdDefPropertiesMap(ProdDefPropertyType propertyType, IIpsProject ipsProject)
+            throws CoreException {
         ProdDefPropertyCollector collector = new ProdDefPropertyCollector(propertyType, ipsProject);
         collector.start(this);
-        // TODO Stefan umstellen auf LinkedHashMap um stabile reihenfolge zu erreichen
         return collector.getPropertyMap();
     }
     
@@ -683,8 +684,8 @@ public class ProductCmptType extends Type implements IProductCmptType {
             return props;
         }
 
-        public Map getPropertyMap() {
-            Map propertyMap = new HashMap(size());
+        public LinkedHashMap getPropertyMap() {
+            LinkedHashMap propertyMap = new LinkedHashMap(size());
             add(propertyMap, myAttributes);
             add(propertyMap, myTableStructureUsages);
             add(propertyMap, myFormulaSignatures);
