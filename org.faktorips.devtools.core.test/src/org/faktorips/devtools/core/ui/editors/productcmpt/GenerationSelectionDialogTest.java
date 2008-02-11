@@ -24,6 +24,7 @@ import java.util.List;
 
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.swt.widgets.Display;
+import org.eclipse.swt.widgets.Shell;
 import org.faktorips.devtools.core.AbstractIpsPluginTest;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObjectGeneration;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
@@ -33,6 +34,7 @@ import org.faktorips.values.DateUtil;
 public class GenerationSelectionDialogTest extends AbstractIpsPluginTest {
     private IIpsProject project;
     private IProductCmpt productCmpt;
+    private Shell shell;
     
     /**
      * {@inheritDoc}
@@ -41,14 +43,15 @@ public class GenerationSelectionDialogTest extends AbstractIpsPluginTest {
         super.setUp();
         project = super.newIpsProject("TestProject");
         productCmpt = newProductCmpt(project, "TestProduct");
+        shell = new Shell(Display.getCurrent());
     }
 
-    public void testCreatedChoiseBtns() throws CoreException{
+    public void testCreatedChoiceBtns() throws CoreException{
         GenerationSelectionDialog dialog = null;
         IIpsObjectGeneration[] generations = new IIpsObjectGeneration[10];
         
-        // ProductCmpt has no generations => no choise available
-        assertContainsChoiseButtons(createDialogWithCanChangeRecentGenerations("2200-01-01"), false, false, true);
+        // ProductCmpt has no generations => no choice available
+        assertContainsChoiceButtons(createDialogWithCanChangeRecentGenerations("2200-01-01"), false, false, true);
         
         // a) recent generations could be changed
         // b) ProductCmpt has one generations in past (2001-01-01)
@@ -58,7 +61,7 @@ public class GenerationSelectionDialogTest extends AbstractIpsPluginTest {
         // -> create new generation
         generations[0] = productCmpt.newGeneration(DateUtil.parseIsoDateStringToGregorianCalendar("2001-01-01"));
         dialog = createDialogWithCanChangeRecentGenerations("2200-01-01");
-        assertContainsChoiseButtons(dialog, true, true, true);
+        assertContainsChoiceButtons(dialog, true, true, true);
         assertContentOfDropDownSwitchWorkingDate(dialog, new String[]{generations[0].getName()});
         assertContentOfDropDownShowGenerationValidFrom(dialog, new String[]{generations[0].getName()});
         deleteGenerations(generations);
@@ -72,7 +75,7 @@ public class GenerationSelectionDialogTest extends AbstractIpsPluginTest {
         generations[0] = productCmpt.newGeneration(DateUtil.parseIsoDateStringToGregorianCalendar("2001-01-01"));
         generations[1] = productCmpt.newGeneration(DateUtil.parseIsoDateStringToGregorianCalendar("2002-02-02"));
         dialog = createDialogWithCanChangeRecentGenerations("2200-01-01");
-        assertContainsChoiseButtons(dialog, true, true, true);
+        assertContainsChoiceButtons(dialog, true, true, true);
         assertContentOfDropDownShowGenerationValidFrom(dialog, new String[]{generations[0].getName(), generations[1].getName()}); 
         assertContentOfDropDownSwitchWorkingDate(dialog, new String[]{generations[0].getName(), generations[1].getName()});
         deleteGenerations(generations);
@@ -87,7 +90,7 @@ public class GenerationSelectionDialogTest extends AbstractIpsPluginTest {
         generations[1] = productCmpt.newGeneration(DateUtil.parseIsoDateStringToGregorianCalendar("2002-02-02"));
         generations[2] = productCmpt.newGeneration(DateUtil.parseIsoDateStringToGregorianCalendar("2200-12-01"));
         dialog = createDialogWithCanChangeRecentGenerations("2200-01-01");
-        assertContainsChoiseButtons(dialog, true, true, true);
+        assertContainsChoiceButtons(dialog, true, true, true);
         assertContentOfDropDownShowGenerationValidFrom(dialog, new String[]{generations[0].getName(), generations[1].getName(), generations[2].getName()}); 
         assertContentOfDropDownSwitchWorkingDate(dialog, new String[]{generations[0].getName(), generations[1].getName(), generations[2].getName()});
         deleteGenerations(generations); 
@@ -102,7 +105,7 @@ public class GenerationSelectionDialogTest extends AbstractIpsPluginTest {
         generations[1] = productCmpt.newGeneration(DateUtil.parseIsoDateStringToGregorianCalendar("2002-02-02"));
         generations[2] = productCmpt.newGeneration(DateUtil.parseIsoDateStringToGregorianCalendar("2200-12-01"));
         dialog = createDialogWithNotChangeRecentGenerations("2200-01-01");
-        assertContainsChoiseButtons(dialog, true, true, true);
+        assertContainsChoiceButtons(dialog, true, true, true);
         assertContentOfDropDownShowGenerationValidFrom(dialog, new String[]{generations[0].getName(), generations[1].getName(), generations[2].getName()}); 
         assertContentOfDropDownSwitchWorkingDate(dialog, new String[]{generations[2].getName()});
         deleteGenerations(generations);
@@ -116,7 +119,7 @@ public class GenerationSelectionDialogTest extends AbstractIpsPluginTest {
         generations[1] = productCmpt.newGeneration(DateUtil.parseIsoDateStringToGregorianCalendar("2002-02-02"));
         generations[2] = productCmpt.newGeneration(DateUtil.parseIsoDateStringToGregorianCalendar("2200-12-01"));
         dialog = createDialogWithNotChangeRecentGenerations("2000-01-01");
-        assertContainsChoiseButtons(dialog, true, true, false);
+        assertContainsChoiceButtons(dialog, true, true, false);
         assertContentOfDropDownShowGenerationValidFrom(dialog, new String[]{generations[0].getName(), generations[1].getName(), generations[2].getName()}); 
         assertContentOfDropDownSwitchWorkingDate(dialog, new String[]{generations[2].getName()});
         deleteGenerations(generations);
@@ -130,7 +133,7 @@ public class GenerationSelectionDialogTest extends AbstractIpsPluginTest {
         generations[1] = productCmpt.newGeneration(DateUtil.parseIsoDateStringToGregorianCalendar("2002-02-02"));
         generations[2] = productCmpt.newGeneration(DateUtil.parseIsoDateStringToGregorianCalendar("2200-12-01"));
         dialog = createDialogWithNotChangeRecentGenerations("2200-12-01");
-        assertContainsChoiseButtons(dialog, true, true, false);
+        assertContainsChoiceButtons(dialog, true, true, false);
         assertContentOfDropDownShowGenerationValidFrom(dialog, new String[]{generations[0].getName(), generations[1].getName()}); 
         assertContentOfDropDownSwitchWorkingDate(dialog, new String[]{generations[2].getName()});
         deleteGenerations(generations);
@@ -143,7 +146,7 @@ public class GenerationSelectionDialogTest extends AbstractIpsPluginTest {
         String today = DateUtil.gregorianCalendarToIsoDateString(new GregorianCalendar());
         generations[0] = productCmpt.newGeneration(DateUtil.parseIsoDateStringToGregorianCalendar("2001-01-01"));
         dialog = createDialogWithNotChangeRecentGenerations(today);
-        assertContainsChoiseButtons(dialog, true, false, true);
+        assertContainsChoiceButtons(dialog, true, false, true);
         assertContentOfDropDownShowGenerationValidFrom(dialog, new String[]{generations[0].getName()}); 
         deleteGenerations(generations);
     }
@@ -173,7 +176,7 @@ public class GenerationSelectionDialogTest extends AbstractIpsPluginTest {
         assertEqualLists(Arrays.asList(dates), dialog.getRelevantGenerations(false));
     }
 
-    private void assertContainsChoiseButtons(GenerationSelectionDialog gsDialog,
+    private void assertContainsChoiceButtons(GenerationSelectionDialog gsDialog,
             boolean browse,
             boolean switchWorkingDate,
             boolean newGeneration) {
@@ -194,7 +197,7 @@ public class GenerationSelectionDialogTest extends AbstractIpsPluginTest {
     private GenerationSelectionDialog createDialog(String workingDate, boolean canEditRecentGenerations){
         GenerationSelectionDialog dialog = new GenerationSelectionDialog(null, productCmpt, 
                 workingDate, getWorkingDateAsCalender(workingDate), "Generation", "Generations", canEditRecentGenerations, true);
-        dialog.createChoiseControls(Display.getCurrent().getActiveShell());
+        dialog.createChoiceControls(shell);
         return dialog;
     }
     private GregorianCalendar getWorkingDateAsCalender(String workingDate){

@@ -37,7 +37,7 @@ public class BooleanComboFieldTest extends AbstractIpsPluginTest {
     protected void setUp() throws Exception {
         super.setUp();
 
-        this.shell = Display.getCurrent().getActiveShell();
+        this.shell = new Shell(Display.getCurrent());
     }
 
     public void testSetText() {

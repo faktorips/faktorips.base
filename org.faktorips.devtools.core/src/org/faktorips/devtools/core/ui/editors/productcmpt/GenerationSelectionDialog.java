@@ -131,19 +131,19 @@ public class GenerationSelectionDialog extends TitleAreaDialog {
 
         setMessage(NLS.bind(Messages.GenerationSelectionDialog_description, formatedWorkingDate, generationConceptNameSingular));
         
-        // create choise buttons
+        // create choice buttons
         Composite selectPane = new Composite(workArea, SWT.None);
         selectPane.setLayout(new GridLayout(3, false));
         
-        createChoiseControls(selectPane);
+        createChoiceControls(selectPane);
 		
 		return workArea;
 	}
 
-    public void createChoiseControls(Composite selectPane) {
-        createChoiseForShowGenerationReadOnly(selectPane);
-        createChoiseForSwitchWorkingDate(selectPane);
-        createChoiseForCreateNewGeneration(selectPane);
+    public void createChoiceControls(Composite selectPane) {
+        createChoiceForShowGenerationReadOnly(selectPane);
+        createChoiceForSwitchWorkingDate(selectPane);
+        createChoiceForCreateNewGeneration(selectPane);
         createInfoMessageNoRecentCange(selectPane);
         
         initSelectionFromPreferences();
@@ -175,7 +175,7 @@ public class GenerationSelectionDialog extends TitleAreaDialog {
                 true);
     }
     
-    private void createChoiseForSwitchWorkingDate(Composite selectPane) {
+    private void createChoiceForSwitchWorkingDate(Composite selectPane) {
         List relevantGenerations = getRelevantGenerations(false);
         if (relevantGenerations.size() == 0){
             return;
@@ -251,13 +251,13 @@ public class GenerationSelectionDialog extends TitleAreaDialog {
         }
     }
     
-    private void createChoiseForShowGenerationReadOnly(Composite selectPane) {
+    private void createChoiceForShowGenerationReadOnly(Composite selectPane) {
         List relevantGenerations = getRelevantGenerations(true);
         if (relevantGenerations.size() == 0){
             return;
         }
 
-        // neccessary to get the same space between create- and browse-line
+        // necessary to get the same space between create- and browse-line
         // and browse- and switch-line.
         createHoricontalSpace(selectPane);
 
@@ -278,7 +278,7 @@ public class GenerationSelectionDialog extends TitleAreaDialog {
         new Composite(selectPane, SWT.NONE).setLayoutData(new GridData(1, 3));
     }
     
-    private void createChoiseForCreateNewGeneration(Composite selectPane) {
+    private void createChoiceForCreateNewGeneration(Composite selectPane) {
         GregorianCalendar now = getToday();
         
         createHoricontalSpace(selectPane);
@@ -448,8 +448,8 @@ public class GenerationSelectionDialog extends TitleAreaDialog {
 	// test methods
     
     public List getAllButtons(){
-        List createdChoises = new ArrayList(4);
-        createdChoises.addAll(allButtons.keySet());
-        return createdChoises;
+        List createdChoices = new ArrayList(4);
+        createdChoices.addAll(allButtons.keySet());
+        return createdChoices;
     }
 }
