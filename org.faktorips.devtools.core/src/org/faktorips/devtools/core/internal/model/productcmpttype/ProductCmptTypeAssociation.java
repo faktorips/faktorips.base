@@ -96,7 +96,7 @@ public class ProductCmptTypeAssociation extends Association implements IProductC
         if (targetPolicyCmptType == null) {
             return null;
         }
-        IPolicyCmptTypeAssociation[] policyAssoc = getRelationsFor(policyCmptType, targetPolicyCmptType);
+        IPolicyCmptTypeAssociation[] policyAssoc = getAssociationsFor(policyCmptType, targetPolicyCmptType);
         if (policyAssoc.length == 0) {
             return null;
         }
@@ -114,7 +114,7 @@ public class ProductCmptTypeAssociation extends Association implements IProductC
      * source and target policy component type, but ignoring associations of type
      * COMPOSITION_DETAIL_TO_MASTER.
      */
-    private IPolicyCmptTypeAssociation[] getRelationsFor(IPolicyCmptType from, IPolicyCmptType target) {
+    private IPolicyCmptTypeAssociation[] getAssociationsFor(IPolicyCmptType from, IPolicyCmptType target) {
         List result = new ArrayList();
         String targetQName = target.getQualifiedName();
         IPolicyCmptTypeAssociation[] policyRelations = from.getPolicyCmptTypeAssociations();
