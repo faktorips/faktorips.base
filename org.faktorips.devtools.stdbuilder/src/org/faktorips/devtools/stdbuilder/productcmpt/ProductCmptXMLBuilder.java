@@ -55,7 +55,7 @@ public class ProductCmptXMLBuilder extends AbstractXmlFileBuilder {
         IProductCmpt productCmpt = (IProductCmpt)ipsSrcFile.getIpsObject();
         Element root = productCmpt.toXml(IpsPlugin.getDefault().newDocumentBuilder().newDocument());
         
-        IIpsObjectGeneration[] generations = productCmpt.getGenerations();
+        IIpsObjectGeneration[] generations = productCmpt.getGenerationsOrderedByValidDate();
         NodeList generationNodes = root.getElementsByTagName(IIpsObjectGeneration.TAG_NAME);
         for (int i = 0; i < generations.length; i++) {
             updateTargetRuntimeId((IProductCmptGeneration)generations[i], (Element)generationNodes.item(i));

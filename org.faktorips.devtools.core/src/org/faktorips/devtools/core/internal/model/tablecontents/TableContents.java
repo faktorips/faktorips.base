@@ -138,7 +138,7 @@ public class TableContents extends TimedIpsObject implements ITableContents {
      * {@inheritDoc}
      */
     public void newColumnAt(int index, String defaultValue) {
-        IIpsObjectGeneration[] generations = getGenerations();
+        IIpsObjectGeneration[] generations = getGenerationsOrderedByValidDate();
         for (int i=0; i<generations.length; i++) {
             ((TableContentsGeneration)generations[i]).newColumn(index, defaultValue);
         }
@@ -153,7 +153,7 @@ public class TableContents extends TimedIpsObject implements ITableContents {
         if (columnIndex<0 || columnIndex>=numOfColumns) {
             throw new IllegalArgumentException("Illegal column index " + columnIndex); //$NON-NLS-1$
         }
-        IIpsObjectGeneration[] generations = getGenerations();
+        IIpsObjectGeneration[] generations = getGenerationsOrderedByValidDate();
         for (int i=0; i<generations.length; i++) {
             ((TableContentsGeneration)generations[i]).removeColumn(columnIndex);
         }

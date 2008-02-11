@@ -114,7 +114,7 @@ public class ExcelTableExportOperation implements IWorkspaceRunnable {
             monitor = new NullProgressMonitor();
         }
 
-        IIpsObjectGeneration[] gens = contents.getGenerations();
+        IIpsObjectGeneration[] gens = contents.getGenerationsOrderedByValidDate();
         if (gens.length == 0) {
             String text = NLS.bind(Messages.TableExportOperation_errNoGenerations, contents.getName());
             messageList.add(new Message("", text, Message.ERROR)); //$NON-NLS-1$

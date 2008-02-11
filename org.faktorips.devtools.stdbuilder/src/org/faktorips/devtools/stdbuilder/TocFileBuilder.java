@@ -355,7 +355,7 @@ public class TocFileBuilder extends AbstractArtefactBuilder {
             xmlResourceName, 
             productCmptTypeImplClassBuilder.getQualifiedClassName(pcType.getIpsSrcFile()),
             validTo);
-        IIpsObjectGeneration[] generations = productCmpt.getGenerations();
+        IIpsObjectGeneration[] generations = productCmpt.getGenerationsOrderedByValidDate();
         TocEntryGeneration[] genEntries = new TocEntryGeneration[generations.length];
         for (int i = 0; i < generations.length; i++) {
             DateTime validFrom = DateTime.createDateOnly(generations[i].getValidFrom());

@@ -60,7 +60,7 @@ public abstract class IpsObjectGeneration extends IpsObjectPart implements IIpsO
      * {@inheritDoc}
      */
     public int getGenerationNo() {
-        IIpsObjectGeneration[] generations = ((ITimedIpsObject)getIpsObject()).getGenerations();
+        IIpsObjectGeneration[] generations = ((ITimedIpsObject)getIpsObject()).getGenerationsOrderedByValidDate();
         for (int i=0; i<generations.length; i++) {
             if (generations[i]==this) {
                 return i+1;
@@ -172,7 +172,7 @@ public abstract class IpsObjectGeneration extends IpsObjectPart implements IIpsO
      * {@inheritDoc}
      */
 	public GregorianCalendar getValidTo() {
-		IIpsObjectGeneration[] generations = this.getTimedIpsObject().getGenerations();
+		IIpsObjectGeneration[] generations = this.getTimedIpsObject().getGenerationsOrderedByValidDate();
 
         GregorianCalendar parentValidTo = getTimedIpsObject().getValidTo();
         
@@ -213,8 +213,8 @@ public abstract class IpsObjectGeneration extends IpsObjectPart implements IIpsO
 	/**
 	 * {@inheritDoc}
 	 */
-	public IIpsObjectGeneration getNext() {
-		IIpsObjectGeneration[] generations = getTimedIpsObject().getGenerations();
+	public IIpsObjectGeneration getNextByValidDate() {
+		IIpsObjectGeneration[] generations = getTimedIpsObject().getGenerationsOrderedByValidDate();
 		int genIndex = getGenerationNo();
 		
 		if (generations.length > genIndex) {
@@ -226,8 +226,8 @@ public abstract class IpsObjectGeneration extends IpsObjectPart implements IIpsO
 	/**
 	 * {@inheritDoc}
 	 */
-	public IIpsObjectGeneration getPrevious() {
-		IIpsObjectGeneration[] generations = getTimedIpsObject().getGenerations();
+	public IIpsObjectGeneration getPreviousByValidDate() {
+		IIpsObjectGeneration[] generations = getTimedIpsObject().getGenerationsOrderedByValidDate();
 		int genIndex = getGenerationNo()-2;
 		
 		if (genIndex >= 0) {

@@ -43,7 +43,7 @@ public interface ITimedIpsObject extends IIpsObject {
      * (none overlapping) period of time. The returned generations are ordered by their valid from
      * date with the oldest generations coming first.
      */
-    public IIpsObjectGeneration[] getGenerations();
+    public IIpsObjectGeneration[] getGenerationsOrderedByValidDate();
 
     /**
      * Returns the index at the specified index.

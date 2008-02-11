@@ -227,7 +227,7 @@ public class ProductCmptTest extends AbstractIpsPluginTest {
         assertEquals("MotorProduct", productCmpt.getProductCmptType());
         assertEquals("MotorProductId", productCmpt.getRuntimeId());
         assertEquals(2, productCmpt.getNumOfGenerations());
-        IProductCmptGeneration gen = (IProductCmptGeneration)productCmpt.getGenerations()[0];
+        IProductCmptGeneration gen = (IProductCmptGeneration)productCmpt.getGenerationsOrderedByValidDate()[0];
         assertEquals(1, gen.getNumOfConfigElements());
         IConfigElement ce = gen.getConfigElements()[0];
         assertEquals("1.5", ce.getValue());
@@ -246,7 +246,7 @@ public class ProductCmptTest extends AbstractIpsPluginTest {
         assertEquals("MotorProduct", copy.getProductCmptType());
         assertEquals("MotorProductId", copy.getRuntimeId());
         assertEquals(2, copy.getNumOfGenerations());
-        IProductCmptGeneration genCopy = (IProductCmptGeneration)copy.getGenerations()[0];
+        IProductCmptGeneration genCopy = (IProductCmptGeneration)copy.getGenerationsOrderedByValidDate()[0];
         assertEquals(1, genCopy.getConfigElements().length);
         assertEquals("0.15", genCopy.getConfigElements()[0].getValue());
     }

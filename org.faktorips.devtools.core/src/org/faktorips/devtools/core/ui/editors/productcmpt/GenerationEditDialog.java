@@ -60,8 +60,8 @@ public class GenerationEditDialog extends IpsPartEditDialog implements ModifyLis
         
         // we have to store previous and next here, because the evaulation of
         // previous and next depend on the valid-from date which we will modify...
-        this.previous = (IProductCmptGeneration)generation.getPrevious();
-        this.next = (IProductCmptGeneration)generation.getNext();
+        this.previous = (IProductCmptGeneration)generation.getPreviousByValidDate();
+        this.next = (IProductCmptGeneration)generation.getNextByValidDate();
     }
 
     /**

@@ -72,7 +72,7 @@ public class ProductCmptCompareItemCreator extends AbstractCompareItemCreator{
                 IProductCmpt product = (IProductCmpt)file.getIpsObject();
                 ProductCmptCompareItem ipsObject = new ProductCmptCompareItem(root, product);
                 // Generations of product
-                IIpsObjectGeneration[] gens = product.getGenerations();
+                IIpsObjectGeneration[] gens = product.getGenerationsOrderedByValidDate();
                 for (int i = 0; i < gens.length; i++) {
                     ProductCmptCompareItem generation = new ProductCmptCompareItem(ipsObject, gens[i]);
                     IIpsElement[] children = gens[i].getChildren();

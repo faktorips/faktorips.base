@@ -113,7 +113,7 @@ public class ProductCmptEditor extends TimedIpsObjectEditor implements IModelDes
 		addPage(new DescriptionPage(this));
         IIpsObjectGeneration gen = getGenerationEffectiveOnCurrentEffectiveDate();
         if (gen==null) {
-            gen = cmpt.getGenerations()[cmpt.getNumOfGenerations()-1];
+            gen = cmpt.getGenerationsOrderedByValidDate()[cmpt.getNumOfGenerations()-1];
         }
         setActiveGeneration(gen, false);
 	}
@@ -395,7 +395,7 @@ public class ProductCmptEditor extends TimedIpsObjectEditor implements IModelDes
      */
     protected Dialog createDialogToFixDifferencesToModel() throws CoreException {
 
-        IIpsObjectGeneration[] gen = this.getProductCmpt().getGenerations();
+        IIpsObjectGeneration[] gen = this.getProductCmpt().getGenerationsOrderedByValidDate();
         IProductCmptGeneration[] generations = new IProductCmptGeneration[gen.length];
         for (int i = 0; i < generations.length; i++) {
             generations[i] = (IProductCmptGeneration)gen[i];

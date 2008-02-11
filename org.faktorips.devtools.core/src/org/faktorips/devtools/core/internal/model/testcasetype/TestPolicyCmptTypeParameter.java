@@ -561,7 +561,7 @@ public class TestPolicyCmptTypeParameter extends TestParameter implements
             return new IIpsSrcFile[0];
         }
         List result = new ArrayList(100);
-        IIpsObjectGeneration[] generations = productCmpt.getGenerations();
+        IIpsObjectGeneration[] generations = productCmpt.getGenerationsOrderedByValidDate();
         for (int i = 0; i < generations.length; i++) {
             IProductCmptLink[] associations = ((IProductCmptGeneration)generations[i]).getLinks(association.getName());
             for (int j = 0; j < associations.length; j++) {

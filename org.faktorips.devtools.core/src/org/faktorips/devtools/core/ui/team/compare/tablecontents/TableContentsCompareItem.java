@@ -233,7 +233,7 @@ public class TableContentsCompareItem extends AbstractCompareItem {
      */ 
     private void initColumnWidths(ITableContents table) {
         columnWidthsInTabs = new int[table.getNumOfColumns()+1];
-        IIpsObjectGeneration[] gens= table.getGenerations();
+        IIpsObjectGeneration[] gens= table.getGenerationsOrderedByValidDate();
         for (int genCounter = 0; genCounter < gens.length; genCounter++) {
             IRow[] rows = ((ITableContentsGeneration)gens[genCounter]).getRows();
             for(int colCounter=0; colCounter<table.getNumOfColumns(); colCounter++){

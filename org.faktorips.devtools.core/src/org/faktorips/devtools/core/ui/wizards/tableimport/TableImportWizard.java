@@ -102,7 +102,7 @@ public class TableImportWizard extends Wizard implements IImportWizard {
             final AbstractExternalTableFormat format = filePage.getFormat();
             final ITableStructure structure = getTableStructure();
             ITableContents contents = getTableContents();
-            final ITableContentsGeneration generation = (ITableContentsGeneration)contents.getGenerations()[0];
+            final ITableContentsGeneration generation = (ITableContentsGeneration)contents.getGenerationsOrderedByValidDate()[0];
             final String nullRepresentation = filePage.getNullRepresentation();
 
             // no append, so remove any existing content

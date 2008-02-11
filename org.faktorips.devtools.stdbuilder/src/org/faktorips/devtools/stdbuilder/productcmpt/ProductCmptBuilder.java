@@ -112,7 +112,7 @@ public class ProductCmptBuilder extends AbstractArtefactBuilder {
         if (!mustFileBeBuild(productCmpt)) {
             return;
         }
-        IIpsObjectGeneration[] generations = productCmpt.getGenerations();
+        IIpsObjectGeneration[] generations = productCmpt.getGenerationsOrderedByValidDate();
         for (int i = 0; i < generations.length; i++) {
             build((IProductCmptGeneration)generations[i]);
         }

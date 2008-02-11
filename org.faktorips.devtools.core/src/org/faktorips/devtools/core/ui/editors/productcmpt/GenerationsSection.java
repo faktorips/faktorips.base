@@ -180,7 +180,7 @@ public class GenerationsSection extends SimpleIpsPartsSection{
 		 * {@inheritDoc}
 		 */
 		public void aboutToDelete(IIpsObjectPart part) {
-			if (page.getProductCmpt().getGenerations().length == 2) {
+			if (page.getProductCmpt().getGenerationsOrderedByValidDate().length == 2) {
 				super.deleteButton.setEnabled(false);
 			}
 		}
@@ -205,12 +205,12 @@ public class GenerationsSection extends SimpleIpsPartsSection{
 		 */
 		protected void updateButtonEnabledStates() {
 			super.updateButtonEnabledStates();
-			deleteButton.setEnabled(page.getProductCmpt().getGenerations().length>1);
+			deleteButton.setEnabled(page.getProductCmpt().getGenerationsOrderedByValidDate().length>1);
 		}
     	
     	private class ContentProvider implements IStructuredContentProvider {
     		public Object[] getElements(Object inputElement) {
-    			 return getTimedIpsObject().getGenerations();
+    			 return getTimedIpsObject().getGenerationsOrderedByValidDate();
     		}
     		public void dispose() {
     			// nothing todo

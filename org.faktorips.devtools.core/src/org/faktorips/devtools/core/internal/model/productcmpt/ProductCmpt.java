@@ -207,7 +207,7 @@ public class ProductCmpt extends TimedIpsObject implements IProductCmpt {
      * {@inheritDoc}
      */
     public boolean containsFormula() {
-        IIpsObjectGeneration[] generations = getGenerations();
+        IIpsObjectGeneration[] generations = getGenerationsOrderedByValidDate();
         for (int i=0; i<generations.length; i++) {
             if (((ProductCmptGeneration)generations[i]).containsFormula()) {
                 return true;
@@ -220,7 +220,7 @@ public class ProductCmpt extends TimedIpsObject implements IProductCmpt {
      * {@inheritDoc}
      */
     public boolean containsFormulaTest() {
-        IIpsObjectGeneration[] generations = getGenerations();
+        IIpsObjectGeneration[] generations = getGenerationsOrderedByValidDate();
         for (int i=0; i<generations.length; i++) {
             IProductCmptGeneration gen = getProductCmptGeneration(0);
             if (gen.getNumOfFormulas()>0) {
@@ -248,7 +248,7 @@ public class ProductCmpt extends TimedIpsObject implements IProductCmpt {
         }
 
         // add dependency to related product cmpt's and add dependency to table contents
-        IIpsObjectGeneration[] generations = getGenerations();
+        IIpsObjectGeneration[] generations = getGenerationsOrderedByValidDate();
         for (int i = 0; i < generations.length; i++) {
             ((ProductCmptGeneration)generations[i]).dependsOn(dependencySet);
         }
@@ -312,7 +312,7 @@ public class ProductCmpt extends TimedIpsObject implements IProductCmpt {
      * {@inheritDoc}
      */
     public boolean containsDifferenceToModel(IIpsProject ipsProject) throws CoreException {
-        IIpsObjectGeneration[] generations = this.getGenerations();
+        IIpsObjectGeneration[] generations = this.getGenerationsOrderedByValidDate();
         for (int i = 0; i < generations.length; i++) {
             IIpsObjectGeneration generation = generations[i];
             if(generation instanceof IProductCmptGeneration){

@@ -169,7 +169,7 @@ public class DeepCopyOperationTest extends AbstractIpsPluginTest {
 		}
         
         IProductCmpt base = (IProductCmpt)((IIpsSrcFile)handles.get(toCopy[toCopy.length-1])).getIpsObject();
-        IProductCmptGeneration gen = (IProductCmptGeneration)base.getGenerations()[0];
+        IProductCmptGeneration gen = (IProductCmptGeneration)base.getGenerationsOrderedByValidDate()[0];
         IProductCmptLink[] rels = gen.getLinks("TplCoverageType");
         assertEquals(1, rels.length);
         assertEquals("products.StandardTplCoverage", rels[0].getName());

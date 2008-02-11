@@ -87,15 +87,15 @@ public interface IIpsObjectGeneration extends IIpsObjectPart {
 	public void initFromGeneration(IIpsObjectGeneration source, GregorianCalendar validFrom);
 
 	/**
-	 * Returns the generation previous to this one. The order is determined by
-	 * the generation number and not by the valid from and valid to dates.
+	 * Returns the generation previous to this one. The order is defined by
+     * the generations' valid from date.
 	 */
-	public IIpsObjectGeneration getPrevious();
+	public IIpsObjectGeneration getPreviousByValidDate();
 	
 	/**
-	 * Returns the generation succeeding this one. The order is determined by
-	 * the generation number and not by the valid from and valid to dates.
+	 * Returns the generation succeeding this one. The order is defined by
+	 * the generations' valid from date.
 	 */
-	public IIpsObjectGeneration getNext();
+	public IIpsObjectGeneration getNextByValidDate();
 	
 }

@@ -119,7 +119,7 @@ public class DeepCopyOperation implements IWorkspaceRunnable{
 	}
 	
 	private void fixRelations(IProductCmpt product, IProductCmptReference source, Hashtable nameMap, Hashtable referMap) {
-		IProductCmptGeneration generation = (IProductCmptGeneration)product.getGenerations()[0];
+		IProductCmptGeneration generation = (IProductCmptGeneration)product.getGenerationsOrderedByValidDate()[0];
 		IProductCmptLink[] relations = generation.getLinks();
 		
 		for (int i = 0; i < relations.length; i++) {

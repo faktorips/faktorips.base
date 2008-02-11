@@ -106,7 +106,7 @@ public class ProductCmptStructureTest extends AbstractIpsPluginTest {
     }
     
     public void testNoGeneration() throws CycleInProductStructureException {
-    	productCmpt.getGenerations()[0].delete();
+    	productCmpt.getGenerationsOrderedByValidDate()[0].delete();
     	structure.refresh();
     }
     

@@ -68,7 +68,7 @@ public class TableContentsCompareItemCreator extends AbstractCompareItemCreator 
                 ITableContents table = (ITableContents)file.getIpsObject();
                 TableContentsCompareItem ipsObject = new TableContentsCompareItem(root, table);
                 // Generations for table
-                IIpsObjectGeneration[] gens = table.getGenerations();
+                IIpsObjectGeneration[] gens = table.getGenerationsOrderedByValidDate();
                 for (int i = 0; i < gens.length; i++) {
                     TableContentsCompareItem generation = new TableContentsCompareItem(ipsObject, gens[i]);
                     // rows for each generation

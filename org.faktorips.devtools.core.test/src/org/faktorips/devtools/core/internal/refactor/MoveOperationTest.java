@@ -227,7 +227,7 @@ public class MoveOperationTest extends AbstractIpsPluginTest {
         
         // add ref to table content
         coverage.newGeneration();
-        IIpsObjectGeneration[] generations = coverage.getGenerations();
+        IIpsObjectGeneration[] generations = coverage.getGenerationsOrderedByValidDate();
         for (int i = 0; i < generations.length; i++) {
             ITableContentUsage tableContentUsage = ((IProductCmptGeneration)generations[i]).newTableContentUsage();
             tableContentUsage.setTableContentName(tableContent.getQualifiedName());

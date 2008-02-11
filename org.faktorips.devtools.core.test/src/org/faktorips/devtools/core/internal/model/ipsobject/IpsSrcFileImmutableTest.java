@@ -100,8 +100,8 @@ public class IpsSrcFileImmutableTest extends AbstractIpsPluginTest {
         assertEquals(productImmutable.getQualifiedName(), prodImm2.getQualifiedName());
 
         // compare generations
-        List gens1= Arrays.asList(productImmutable.getGenerations());
-        List gens2= Arrays.asList(prodImm2.getGenerations());
+        List gens1= Arrays.asList(productImmutable.getGenerationsOrderedByValidDate());
+        List gens2= Arrays.asList(prodImm2.getGenerationsOrderedByValidDate());
         assertEquals(gens1.size(), gens2.size());
         Iterator iterator1= gens1.iterator();
         Iterator iterator2= gens2.iterator();

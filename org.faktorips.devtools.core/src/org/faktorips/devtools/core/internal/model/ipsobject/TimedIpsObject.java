@@ -75,7 +75,7 @@ public abstract class TimedIpsObject extends IpsObject implements ITimedIpsObjec
      */
     public IIpsObjectGeneration getFirstGeneration() {
     	if (this.generations.size() > 0) {
-    	return this.getGenerations()[0];
+    	return this.getGenerationsOrderedByValidDate()[0];
     	}    	
     	return null;
     }
@@ -90,7 +90,7 @@ public abstract class TimedIpsObject extends IpsObject implements ITimedIpsObjec
     /** 
      * {@inheritDoc}
      */
-    public IIpsObjectGeneration[] getGenerations() {
+    public IIpsObjectGeneration[] getGenerationsOrderedByValidDate() {
         IIpsObjectGeneration[] gens = (IIpsObjectGeneration[])generations.toArray(new IIpsObjectGeneration[generations.size()]);
         Arrays.sort(gens, new Comparator() {
 
@@ -219,7 +219,7 @@ public abstract class TimedIpsObject extends IpsObject implements ITimedIpsObjec
      * @see org.faktorips.devtools.core.model.IIpsElement#getChildren()
      */
     public IIpsElement[] getChildren() {
-        return getGenerations();
+        return getGenerationsOrderedByValidDate();
     }
     
     /**
@@ -301,7 +301,7 @@ public abstract class TimedIpsObject extends IpsObject implements ITimedIpsObjec
             return;
         }
         
-        IIpsObjectGeneration[] generations = getGenerations();
+        IIpsObjectGeneration[] generations = getGenerationsOrderedByValidDate();
         for (int i = 0; i < generations.length; i++) {
             if (generations[i].getValidFrom().after(validTo)) {
                 IpsPreferences prefs = IpsPlugin.getDefault().getIpsPreferences();

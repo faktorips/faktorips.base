@@ -193,7 +193,7 @@ public class GenerationSelectionDialog extends TitleAreaDialog {
     }
     
     public List getRelevantGenerations(boolean forReadOnlyCombo){
-        IIpsObjectGeneration[] generations = cmpt.getGenerations();
+        IIpsObjectGeneration[] generations = cmpt.getGenerationsOrderedByValidDate();
         List relevantGenerations = new ArrayList(generations.length);
         for (int i = 0; i < generations.length; i++) {
             if (forReadOnlyCombo){
@@ -294,7 +294,7 @@ public class GenerationSelectionDialog extends TitleAreaDialog {
         }
         
         // if one genearations valid to date is equal the working date then the new button should not displayed 
-        IIpsObjectGeneration[] generations = cmpt.getGenerations();
+        IIpsObjectGeneration[] generations = cmpt.getGenerationsOrderedByValidDate();
         for (int i = 0; i < generations.length; i++) {
             if (workingDate.equals(generations[i].getValidFrom())){
                 return;
@@ -355,7 +355,7 @@ public class GenerationSelectionDialog extends TitleAreaDialog {
         if (generationIndex == -1) {
 			return null;
 		}
-		return (IProductCmptGeneration)cmpt.getGenerations()[generationIndex];
+		return (IProductCmptGeneration)cmpt.getGenerationsOrderedByValidDate()[generationIndex];
 	}
 
 	private void updateCurrentChoice(Button choosen) {

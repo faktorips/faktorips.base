@@ -127,9 +127,9 @@ public class IpsObjectGenerationTest extends AbstractIpsPluginTest {
     	IIpsObjectGeneration gen2 = timedObj.newGeneration();
     	IIpsObjectGeneration gen3 = timedObj.newGeneration();
     	
-    	assertSame(gen2, gen1.getNext());
-    	assertSame(gen3, gen2.getNext());
-    	assertNull(gen3.getNext());
+    	assertSame(gen2, gen1.getNextByValidDate());
+    	assertSame(gen3, gen2.getNextByValidDate());
+    	assertNull(gen3.getNextByValidDate());
     }
     
     public void testGetPrevious() throws Exception {
@@ -137,10 +137,10 @@ public class IpsObjectGenerationTest extends AbstractIpsPluginTest {
     	IIpsObjectGeneration gen2 = timedObj.newGeneration();
     	IIpsObjectGeneration gen3 = timedObj.newGeneration();
     	
-    	assertSame(gen2, gen3.getPrevious());
-    	assertSame(gen1, gen2.getPrevious());
-    	assertSame(generation, gen1.getPrevious());
-    	assertNull(generation.getPrevious());
+    	assertSame(gen2, gen3.getPreviousByValidDate());
+    	assertSame(gen1, gen2.getPreviousByValidDate());
+    	assertSame(generation, gen1.getPreviousByValidDate());
+    	assertNull(generation.getPreviousByValidDate());
     }
     
 }

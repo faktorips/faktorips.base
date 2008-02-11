@@ -167,7 +167,7 @@ public class TableContentsTest extends AbstractIpsPluginTest {
         assertEquals("19", rows[1].getValue(0));
         assertEquals("0.6", rows[1].getValue(1));
         
-        generation = (ITableContentsGeneration)generation.getNext();
+        generation = (ITableContentsGeneration)generation.getNextByValidDate();
         rows = generation.getRows();
         assertEquals(2, rows.length);
         assertEquals("180", rows[0].getValue(0));
@@ -222,7 +222,7 @@ public class TableContentsTest extends AbstractIpsPluginTest {
         assertEquals("RateTableStructure", table.getTableStructure());
         assertEquals(1, table.getNumOfColumns());
         assertEquals(2, table.getNumOfGenerations());
-        ITableContentsGeneration gen = (ITableContentsGeneration)table.getGenerations()[0];
+        ITableContentsGeneration gen = (ITableContentsGeneration)table.getGenerationsOrderedByValidDate()[0];
         assertEquals(1, gen.getRows().length);
         row = gen.getRows()[0];
         assertEquals("value", row.getValue(0));

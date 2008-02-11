@@ -467,7 +467,7 @@ public class FormulaTestBuilder extends DefaultJavaSourceFileBuilder {
     private List generateTestMethods(IProductCmpt productCmpt, JavaCodeFragmentBuilder codeBuilder) throws CoreException {
         ArrayList testMethods = new ArrayList();
         
-        IIpsObjectGeneration[] gen = productCmpt.getGenerations();
+        IIpsObjectGeneration[] gen = productCmpt.getGenerationsOrderedByValidDate();
         for (int i = 0; i < gen.length; i++) {
             appendTestMethodsContentForGeneration((IProductCmptGeneration)gen[i], codeBuilder, testMethods);
         }

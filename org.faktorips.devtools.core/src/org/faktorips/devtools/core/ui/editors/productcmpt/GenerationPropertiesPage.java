@@ -112,13 +112,13 @@ public class GenerationPropertiesPage extends IpsObjectEditorPage {
 	private void createNavigationButtons() {
         gotoPreviousGenerationAction = new GotoGenerationAction(this, "ArrowLeft.gif") { //$NON-NLS-1$
             protected IIpsObjectGeneration getGeneration() {
-                return generationPropertiesPage.getActiveGeneration().getPrevious();
+                return generationPropertiesPage.getActiveGeneration().getPreviousByValidDate();
             }
         };
 
         gotoNextGenerationAction = new GotoGenerationAction(this, "ArrowRight.gif") { //$NON-NLS-1$
             protected IIpsObjectGeneration getGeneration() {
-                return generationPropertiesPage.getActiveGeneration().getNext();
+                return generationPropertiesPage.getActiveGeneration().getNextByValidDate();
             }
         };
 
