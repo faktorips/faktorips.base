@@ -87,8 +87,6 @@ public class PropertyValueComparator implements Comparator {
      * {@inheritDoc}
      */
     public int compare(Object o1, Object o2) {
-        System.out.println("o1: " + o1);
-        System.out.println("o2: " + o2);
         IPropertyValue prop1 = (IPropertyValue)o1;
         IPropertyValue prop2 = (IPropertyValue)o2;
         int typeCompare = prop1.getPropertyType().compareTo(prop2.getPropertyType());
