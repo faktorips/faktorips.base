@@ -50,11 +50,7 @@ public class ProductCmptTypeAssociationTest extends AbstractIpsPluginTest {
         association = productType.newProductCmptTypeAssociation();
     }
     
-    public void testFindPolicyCmptTypeAssociation() throws CoreException {
-        IProductCmptTypeAssociation detailToMasterAssoc = productType.newProductCmptTypeAssociation();
-        detailToMasterAssoc.setAssociationType(AssociationType.COMPOSITION_DETAIL_TO_MASTER);
-        detailToMasterAssoc.setTarget(coverageTypeType.getQualifiedName());
-        
+    public void testFindPolicyCmptTypeAssociation() throws CoreException {  
         assertNull(association.findMatchingPolicyCmptTypeAssociation(ipsProject));
         
         association.setTarget(coverageTypeType.getQualifiedName());
@@ -71,6 +67,10 @@ public class ProductCmptTypeAssociationTest extends AbstractIpsPluginTest {
         policyTypeAssociation.setTarget(coverageType.getQualifiedName());
         assertNull(association.findMatchingPolicyCmptTypeAssociation(ipsProject));
 
+        IPolicyCmptTypeAssociation detailToMasterAssoc = policyType.newPolicyCmptTypeAssociation();
+        detailToMasterAssoc.setAssociationType(AssociationType.COMPOSITION_DETAIL_TO_MASTER);
+        detailToMasterAssoc.setTarget(coverageType.getQualifiedName());
+        
         coverageTypeType.setPolicyCmptType(coverageType.getQualifiedName());
         assertEquals(policyTypeAssociation, association.findMatchingPolicyCmptTypeAssociation(ipsProject));
         

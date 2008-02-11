@@ -82,63 +82,63 @@ public class ProductCmptTypeAssociation extends Association implements IProductC
     /**
      * {@inheritDoc}
      */
-    public IPolicyCmptTypeAssociation findMatchingPolicyCmptTypeAssociation(IIpsProject ipsProject) throws CoreException {
+    public IPolicyCmptTypeAssociation findMatchingPolicyCmptTypeAssociation(IIpsProject ipsProject)
+            throws CoreException {
         IPolicyCmptType policyCmptType = getProductCmptType().findPolicyCmptType(ipsProject);
-        if (policyCmptType==null) {
+        if (policyCmptType == null) {
             return null;
         }
         IProductCmptType targetType = findTargetProductCmptType(ipsProject);
-        if (targetType==null) {
+        if (targetType == null) {
             return null;
         }
         IPolicyCmptType targetPolicyCmptType = targetType.findPolicyCmptType(ipsProject);
-        if (targetPolicyCmptType==null) {
+        if (targetPolicyCmptType == null) {
             return null;
         }
-        IPolicyCmptTypeAssociation[] policyAss = getRelationsFor(policyCmptType, targetPolicyCmptType); 
-        if (policyAss.length==0) {
+        IPolicyCmptTypeAssociation[] policyAssoc = getRelationsFor(policyCmptType, targetPolicyCmptType);
+        if (policyAssoc.length == 0) {
             return null;
         }
-        // Assume that both PolicyCmptTypeAssociations and ProductCmptTypeAssociations are listed in the same order.
-        int index = getAssociationIndexPerTargetType();
-        if (index>=policyAss.length) {
+        // Assume that both PolicyCmptTypeAssociations and ProductCmptTypeAssociations are listed in
+        // the same order.
+        int index = getAssociationIndex();
+        if (index >= policyAssoc.length) {
             return null;
         }
-        return policyAss[index];
+        return policyAssoc[index];
     }
     
+    /**
+     * Returns all {@code IPolicyCmptTypeAssociation}s which have the specified
+     * source and target policy component type, but ignoring associations of type
+     * COMPOSITION_DETAIL_TO_MASTER.
+     */
     private IPolicyCmptTypeAssociation[] getRelationsFor(IPolicyCmptType from, IPolicyCmptType target) {
         List result = new ArrayList();
         String targetQName = target.getQualifiedName();
         IPolicyCmptTypeAssociation[] policyRelations = from.getPolicyCmptTypeAssociations();
-        for (int i=0; i<policyRelations.length; i++) {
+        for (int i = 0; i < policyRelations.length; i++) {
             if (targetQName.equals(policyRelations[i].getTarget())) {
-                result.add(policyRelations[i]);
+                if (!AssociationType.COMPOSITION_DETAIL_TO_MASTER.equals(policyRelations[i].getAssociationType())) {
+                    result.add(policyRelations[i]);
+                }
             }
         }
         return (IPolicyCmptTypeAssociation[])result.toArray(new IPolicyCmptTypeAssociation[result.size()]);
     }
     
-    /**
-     * Returns the index of the {@link IPolicyCmptTypeAssociation} within the list of associations
-     * sharing the same target type.
-     * 
-     * <p>
-     * Note that inverse compositions are ignored when compiling the list of associations sharing
-     * the same target type.
-     */
-    private int getAssociationIndexPerTargetType() {
+    private int getAssociationIndex() {
         List allAssociationsForTheTargetType = new ArrayList();
         IAssociation[] assoc = getType().getAssociations();
         for (int i = 0; i < assoc.length; i++) {
-            if (getTarget().equals(assoc[i].getTarget())
-                    && !AssociationType.COMPOSITION_DETAIL_TO_MASTER.equals(assoc[i].getAssociationType())) {
+            if (getTarget().equals(assoc[i].getTarget())) {
                 allAssociationsForTheTargetType.add(assoc[i]);
             }
         }
         int index = 0;
-        for (Iterator it = allAssociationsForTheTargetType.iterator(); it.hasNext(); index++) {
-            if (it.next() == this) {
+        for (Iterator it=allAssociationsForTheTargetType.iterator(); it.hasNext(); index++) {
+            if (it.next()==this) {
                 return index;
             }
         }
