@@ -51,6 +51,10 @@ public class ProductCmptTypeAssociationTest extends AbstractIpsPluginTest {
     }
     
     public void testFindPolicyCmptTypeAssociation() throws CoreException {
+        IProductCmptTypeAssociation detailToMasterAssoc = productType.newProductCmptTypeAssociation();
+        detailToMasterAssoc.setAssociationType(AssociationType.COMPOSITION_DETAIL_TO_MASTER);
+        detailToMasterAssoc.setTarget(coverageTypeType.getQualifiedName());
+        
         assertNull(association.findMatchingPolicyCmptTypeAssociation(ipsProject));
         
         association.setTarget(coverageTypeType.getQualifiedName());
