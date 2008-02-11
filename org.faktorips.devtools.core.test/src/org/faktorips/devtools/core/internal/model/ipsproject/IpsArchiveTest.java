@@ -117,7 +117,7 @@ public class IpsArchiveTest extends AbstractIpsPluginTest {
     }
 
     public void testGetNoneEmptyPackages() throws CoreException {
-        String[] packs = archive.getNoneEmptyPackages();
+        String[] packs = archive.getNonEmptyPackages();
         assertEquals(3, packs.length);
         assertEquals("home.base", packs[0]);
         assertEquals("motor", packs[1]);
@@ -125,19 +125,19 @@ public class IpsArchiveTest extends AbstractIpsPluginTest {
     }
 
     public void testGetNoneEmptySubpackages() throws CoreException {
-        Set subpacks = archive.getNoneEmptySubpackages("");
-        assertEquals(2, subpacks.size());
-        assertTrue(subpacks.contains("motor"));
-        assertTrue(subpacks.contains("home"));
+        String [] subpacks = archive.getNonEmptySubpackages("");
+        assertEquals(2, subpacks.length);
+        assertEquals("home", subpacks[0]);
+        assertEquals("motor", subpacks[1]);
         
-        subpacks = archive.getNoneEmptySubpackages("motor");
-        assertEquals(1, subpacks.size());
-        assertTrue(subpacks.contains("motor.collision"));
+        subpacks = archive.getNonEmptySubpackages("motor");
+        assertEquals(1, subpacks.length);
+        assertEquals("motor.collision", subpacks[0]);
         
-        assertEquals(0, archive.getNoneEmptySubpackages(null).size());
+        assertEquals(0, archive.getNonEmptySubpackages(null).length);
         
-        subpacks = archive.getNoneEmptySubpackages("noneExistingPack");
-        assertEquals(0, subpacks.size());
+        subpacks = archive.getNonEmptySubpackages("noneExistingPack");
+        assertEquals(0, subpacks.length);
     }
 
     public void testGetQNameTypes() throws CoreException {
@@ -183,10 +183,10 @@ public class IpsArchiveTest extends AbstractIpsPluginTest {
     }
     
     public void testDuplicateEntryAndTestRefreshInWorkspace() throws Exception{
-        // store archive time to check if the refresh is successfull after re-creating the archive
+        // store archive time to check if the refresh is successful after re-creating the archive
         long timeBefore = archiveFile.getLocalTimeStamp();
         
-        // check if duplicate entries will be overriden in the archive, e.g. test case runtime xml's are generated 
+        // check if duplicate entries will be overridden in the archive, e.g. test case runtime xml's are generated 
         // in the source and afterwards copied to the bin folder
         newIpsObject(project, IpsObjectType.TEST_CASE, "test.testcase");
 
@@ -198,7 +198,7 @@ public class IpsArchiveTest extends AbstractIpsPluginTest {
         op.setInclJavaSources(true);
         ResourcesPlugin.getWorkspace().run(op, null);
         createLinkIfNecessary(archiveFile, file);
-        // no exception test was successfull
+        // no exception test was successful
         
         // check if the archive file was refreshed
         assertFalse(timeBefore == archiveFile.getLocalTimeStamp());

@@ -130,13 +130,12 @@ public class ArchiveIpsPackageFragmentRoot extends AbstractIpsPackageFragmentRoo
      * @throws CoreException
      */
     private List getIpsPackageFragmentsAsList() throws CoreException {
-
         IIpsArchive archive = getIpsArchive();
         if (archive==null) {
             return new ArrayList(0);
         }
 
-        String[] packNames = archive.getNoneEmptyPackages();
+        String[] packNames = archive.getNonEmptyPackages();
 
         List list = new ArrayList(packNames.length);
 

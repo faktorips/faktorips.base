@@ -60,10 +60,12 @@ public interface IIpsArchive {
     public boolean exists();
     
     /**
-     * Returns the name of the non-empty packages contained in the archive. A package is not empty,
-     * if it contains at least one ips object.
+     * Returns the names (in ascending order) of the non-empty packages contained in the archive.
+     * 
+     * <p>
+     * A package is not empty, if it contains at least one ips object.
      */
-    public String[] getNoneEmptyPackages() throws CoreException;
+    public String[] getNonEmptyPackages() throws CoreException;
 
     /**
      * Returns <code>true</code> if the archive contains the package (empty or not),
@@ -72,10 +74,10 @@ public interface IIpsArchive {
     public boolean containsPackage(String name) throws CoreException;
 
     /**
-     * Returns the names of the non-empty subpackages for the given parent package as list.
+     * Returns the names (in ascending order) of the non-empty subpackages for the given parent
+     * package as list.
      */
-    public Set getNoneEmptySubpackages(String pack) throws CoreException;
-    // TODO Stefan auf String[] aendern, subpackges sind alphabetisch sortiert 
+    public String [] getNonEmptySubpackages(String pack) throws CoreException;
 
     /**
      * Returns the set of qualified name types for the ips objects stored in the archive

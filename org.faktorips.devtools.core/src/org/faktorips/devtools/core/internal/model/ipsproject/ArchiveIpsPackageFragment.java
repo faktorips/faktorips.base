@@ -240,7 +240,6 @@ public class ArchiveIpsPackageFragment extends AbstractIpsPackageFragment implem
      * {@inheritDoc}
      */
     public IIpsPackageFragment[] getSortedChildIpsPackageFragments() throws CoreException {
-
         // TODO Sort IpsPackageFragments by IpsPackageFragment.SORT_ORDER_FILE_NAME
         List sortedPacks = getChildIpsPackageFragmentsAsList();
 
@@ -248,20 +247,19 @@ public class ArchiveIpsPackageFragment extends AbstractIpsPackageFragment implem
     }
 
     /**
-     * Get all chidren of type IIpsPackageFragment.
+     * Get all children of type IIpsPackageFragment.
      *
      * @return IpsPackageFragments as List.
      * @throws CoreException
      */
     private List getChildIpsPackageFragmentsAsList() throws CoreException {
-
         ArchiveIpsPackageFragmentRoot root = (ArchiveIpsPackageFragmentRoot)getParent();
-        Set packNames = root.getIpsArchive().getNoneEmptySubpackages(getName());
+        String [] packNames = root.getIpsArchive().getNonEmptySubpackages(getName());
 
-        List list = new ArrayList(packNames.size());
+        List list = new ArrayList(packNames.length);
 
-        for (Iterator iter = packNames.iterator(); iter.hasNext();) {
-            String element = (String)iter.next();
+        for (int i = 0; i < packNames.length; ++i) {
+            String element = packNames[i];
             list.add(new ArchiveIpsPackageFragment(root, element));
         }
 
@@ -287,9 +285,9 @@ public class ArchiveIpsPackageFragment extends AbstractIpsPackageFragment implem
      */
     public boolean hasChildIpsPackageFragments()  throws CoreException {
         ArchiveIpsPackageFragmentRoot root = (ArchiveIpsPackageFragmentRoot)getParent();
-        Set packNames = root.getIpsArchive().getNoneEmptySubpackages(getName());
+        String [] packNames = root.getIpsArchive().getNonEmptySubpackages(getName());
 
-        return (packNames.size() > 0 ? true : false);
+        return packNames.length > 0;
     }
 
 }

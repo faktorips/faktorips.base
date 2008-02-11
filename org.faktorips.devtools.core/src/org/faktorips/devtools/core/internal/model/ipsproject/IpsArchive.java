@@ -86,7 +86,7 @@ public class IpsArchive implements IIpsArchive {
     /**
      * {@inheritDoc}
      */
-    public String[] getNoneEmptyPackages() throws CoreException {
+    public String[] getNonEmptyPackages() throws CoreException {
         readArchiveContentIfNecessary();
         String[] packNames = new String[packs.size()];
         int i = 0;
@@ -124,22 +124,27 @@ public class IpsArchive implements IIpsArchive {
     /**
      * {@inheritDoc}
      */
-    public Set getNoneEmptySubpackages(String parentPack) throws CoreException {
-        if (parentPack==null) {
-            return Collections.EMPTY_SET;
+    public String [] getNonEmptySubpackages(String parentPack) throws CoreException {
+        if (parentPack == null) {
+            return new String[0];
         }
+
         readArchiveContentIfNecessary();
         Set result = new HashSet();
-        for (Iterator it=packs.keySet().iterator(); it.hasNext(); ) {
+        for (Iterator it = packs.keySet().iterator(); it.hasNext();) {
             String nonEmptyPack = (String)it.next();
-            for (Iterator it2=getParentPackagesIncludingSelf(nonEmptyPack).iterator(); it2.hasNext(); ) {
-               String pack = (String)it2.next();
-               if (isChildPackageOf(pack, parentPack)) {
-                   result.add(pack);
-               }
+            for (Iterator it2 = getParentPackagesIncludingSelf(nonEmptyPack).iterator(); it2.hasNext();) {
+                String pack = (String)it2.next();
+                if (isChildPackageOf(pack, parentPack)) {
+                    result.add(pack);
+                }
             }
         }
-        return result;
+
+        String[]packNames = (String[])result.toArray(new String [result.size()]);
+        Arrays.sort(packNames);
+        
+        return packNames;
     }
     
     private boolean isChildPackageOf(String candidate, String parentPack) {
