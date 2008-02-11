@@ -110,7 +110,7 @@ public class ProductCmptTypeAssociation extends Association implements IProductC
     private IPolicyCmptTypeAssociation[] getRelationsFor(IPolicyCmptType from, IPolicyCmptType target) {
         List result = new ArrayList();
         String targetQName = target.getQualifiedName();
-        org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAssociation[] policyRelations = from.getPolicyCmptTypeAssociations();
+        IPolicyCmptTypeAssociation[] policyRelations = from.getPolicyCmptTypeAssociations();
         for (int i=0; i<policyRelations.length; i++) {
             if (targetQName.equals(policyRelations[i].getTarget())) {
                 result.add(policyRelations[i]);
