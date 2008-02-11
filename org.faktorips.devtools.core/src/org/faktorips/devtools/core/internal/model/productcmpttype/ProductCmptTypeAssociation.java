@@ -99,7 +99,8 @@ public class ProductCmptTypeAssociation extends Association implements IProductC
         if (policyAss.length==0) {
             return null;
         }
-        int index = getAssociationIndex();
+        // Assume that both PolicyCmptTypeAssociations and ProductCmptTypeAssociations are listed in the same order.
+        int index = getAssociationIndexPerTargetType();
         if (index>=policyAss.length) {
             return null;
         }
@@ -118,17 +119,26 @@ public class ProductCmptTypeAssociation extends Association implements IProductC
         return (IPolicyCmptTypeAssociation[])result.toArray(new IPolicyCmptTypeAssociation[result.size()]);
     }
     
-    private int getAssociationIndex() {
+    /**
+     * Returns the index of the {@link IPolicyCmptTypeAssociation} within the list of associations
+     * sharing the same target type.
+     * 
+     * <p>
+     * Note that inverse compositions are ignored when compiling the list of associations sharing
+     * the same target type.
+     */
+    private int getAssociationIndexPerTargetType() {
         List allAssociationsForTheTargetType = new ArrayList();
-        IAssociation[] ass = getType().getAssociations();
-        for (int i = 0; i < ass.length; i++) {
-            if (getTarget().equals(ass[i].getTarget())) {
-                allAssociationsForTheTargetType.add(ass[i]);
+        IAssociation[] assoc = getType().getAssociations();
+        for (int i = 0; i < assoc.length; i++) {
+            if (getTarget().equals(assoc[i].getTarget())
+                    && !AssociationType.COMPOSITION_DETAIL_TO_MASTER.equals(assoc[i].getAssociationType())) {
+                allAssociationsForTheTargetType.add(assoc[i]);
             }
         }
         int index = 0;
-        for (Iterator it=allAssociationsForTheTargetType.iterator(); it.hasNext(); index++) {
-            if (it.next()==this) {
+        for (Iterator it = allAssociationsForTheTargetType.iterator(); it.hasNext(); index++) {
+            if (it.next() == this) {
                 return index;
             }
         }
