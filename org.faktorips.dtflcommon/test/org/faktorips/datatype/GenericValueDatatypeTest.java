@@ -147,6 +147,44 @@ public class GenericValueDatatypeTest extends TestCase {
         
     }
 
+    public void testEquals(){
+        assertEquals(datatype, datatype);
+        assertFalse(datatype.equals(Datatype.INTEGER));
+        GenericValueDatatype paymentMode2 = new GenericValueDatatype(){
+
+            public Class getAdaptedClass() {
+                return null;
+            }
+
+            public String getAdaptedClassName() {
+                return null;
+            }
+            
+        };
+        paymentMode2.setQualifiedName("PaymentMode");
+        assertEquals(datatype, paymentMode2);
+        
+    }
+    
+    public void testHashCode(){
+        assertEquals(datatype.hashCode(), datatype.hashCode());
+        assertFalse(datatype.hashCode() == Datatype.INTEGER.hashCode());
+        GenericValueDatatype paymentMode2 = new GenericValueDatatype(){
+
+            public Class getAdaptedClass() {
+                return null;
+            }
+
+            public String getAdaptedClassName() {
+                return null;
+            }
+            
+        };
+        paymentMode2.setQualifiedName("PaymentMode");
+        assertEquals(datatype.hashCode(), paymentMode2.hashCode());
+        
+    }
+    
     /*
      * Test method for 'org.faktorips.datatype.GenericValueDatatype.isNull(Object)'
      */

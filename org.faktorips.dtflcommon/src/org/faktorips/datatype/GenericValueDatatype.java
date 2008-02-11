@@ -309,6 +309,26 @@ public abstract class GenericValueDatatype implements ValueDatatype {
         return qualifiedName;
     }
 
+    /**
+     * {@inheritDoc}
+     */
+    public int hashCode() {
+        return getName().hashCode();
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public boolean equals(Object o) {
+        if (this==o) {
+            return true;
+        }
+        if (!(o instanceof Datatype)) {
+            return false;
+        }
+        return getQualifiedName().equals(((Datatype)o).getQualifiedName());
+    }
+    
     public boolean isVoid() {
         return false;
     }
