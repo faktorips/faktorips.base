@@ -21,7 +21,7 @@ import org.faktorips.devtools.core.model.ipsobject.IIpsObject;
 import org.faktorips.devtools.core.model.ipsobject.QualifiedNameType;
 
 /**
- * This interface describes that a source depends on a target. The dependency type descibes
+ * This interface describes that a source depends on a target. The dependency type describes
  * the kind of the dependency. Dependency instances are created by the dependsOn() methods of
  * {@link IIpsObject}s to indicate the dependency to other IpsObjects. The DependencyGraph which is
  * used by the IpsBuilder to determine the dependent IpsObjects during an incremental build cycle
@@ -36,7 +36,7 @@ import org.faktorips.devtools.core.model.ipsobject.QualifiedNameType;
 public interface IDependency {
     
     /**
-     * The source which depends on the target. Sources are discribed by their qualified name types
+     * The source which depends on the target. Sources are described by their qualified name types
      * since a source must always be an IpsObject.
      */
     public QualifiedNameType getSource();
