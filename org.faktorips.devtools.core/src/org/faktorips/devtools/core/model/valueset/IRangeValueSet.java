@@ -10,7 +10,7 @@
 package org.faktorips.devtools.core.model.valueset;
 
 /**
- * Valueset representing a range out of a discrete or continuous set of values.
+ * Valueset representing a range over a discrete or continuous set of values.
  * 
  * @author Thorsten Guenther
  */
@@ -52,8 +52,8 @@ public interface IRangeValueSet extends IValueSet {
     public final static String MSGCODE_NOT_NUMERIC_DATATYPE = MSGCODE_PREFIX + "notNumericDatatype"; //$NON-NLS-1$
 
     /**
-     * Validation message code to indicate that the range definde by the lower and upper bound is
-     * not devisible wihtout remainder using the step.
+     * Validation message code to indicate that the range defined by the lower and upper bound is
+     * not divisible without remainder using the step.
      */
     public final static String MSGCODE_STEP_RANGE_MISMATCH = MSGCODE_PREFIX + "stepRangeMissmatch"; //$NON-NLS-1$
 
