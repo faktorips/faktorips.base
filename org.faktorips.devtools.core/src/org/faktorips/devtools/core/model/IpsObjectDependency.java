@@ -146,6 +146,6 @@ public class IpsObjectDependency implements IDependency, Serializable{
      * {@inheritDoc}
      */
     public String toString() {
-        return "(" + source.toString() + " -> " + target.toString() + " type: " + dependencyType + ")"; //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
+        return "(" + source.toString() + " -> " + target.toString() + ", type: " + dependencyType + ")"; //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
     }
 }

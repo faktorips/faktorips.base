@@ -104,4 +104,11 @@ public class DatatypeDependency implements IDependency, Serializable{
     public int hashCode(){
         return hashCode;
     }
+    
+    /**
+     * {@inheritDoc}
+     */
+    public String toString(){
+        return "(" + source.toString() + " -> " + target.toString() + ", type: " + type + ")"; //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
+    }
 }

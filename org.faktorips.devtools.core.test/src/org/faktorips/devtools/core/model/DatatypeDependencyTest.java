@@ -82,4 +82,10 @@ public class DatatypeDependencyTest extends TestCase {
         DatatypeDependency dependency = (DatatypeDependency)ois.readObject();
         assertEquals(this.dependency, dependency);
     }
+    
+    public void testToString(){
+        QualifiedNameType source = new QualifiedNameType("a.b.c", IpsObjectType.POLICY_CMPT_TYPE);
+        DatatypeDependency dependency = new DatatypeDependency(source, "a.b.e");
+        assertEquals("(PolicyCmptType: a.b.c -> a.b.e, type: datatype dependency)", dependency.toString());
+    }
 }
