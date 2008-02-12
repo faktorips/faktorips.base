@@ -566,10 +566,7 @@ public abstract class IpsObjectPage extends WizardPage implements ValueChangeLis
             sourceFolderField.getControl().setFocus();
             return;
         }
-        if(StringUtils.isEmpty(packageField.getText())){
-            packageField.getControl().setFocus();
-            return;
-        }
+        //the package field is not considered at this point since it can be empty which means it is the default package
         nameField.getControl().setFocus();
     }
     /**

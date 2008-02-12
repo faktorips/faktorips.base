@@ -20,6 +20,7 @@ package org.faktorips.devtools.core.ui.wizards.tablecontents;
 import java.util.GregorianCalendar;
 import java.util.List;
 
+import org.apache.commons.lang.StringUtils;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jdt.core.JavaModelException;
 import org.eclipse.jface.viewers.IStructuredSelection;
@@ -92,6 +93,21 @@ public class TableContentsPage extends IpsObjectPage {
             name.setFocus();
         }
     }
+    
+    /**
+     * Calls the supertype method and checks sets the focus to the structure field if it is empty and the
+     * source folder field isn't empty. 
+     */
+    protected void setDefaultFocus(){
+        super.setDefaultFocus();
+        if(StringUtils.isEmpty(getSourceFolder())){
+            return;
+        }
+        if(StringUtils.isEmpty(structureField.getText())){
+            structureField.getControl().setFocus();
+        }
+    }
+
     
     private String getTableStructureFromSelection() {
         IIpsObject selectedObject;
