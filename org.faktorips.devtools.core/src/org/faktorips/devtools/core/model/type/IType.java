@@ -55,7 +55,7 @@ public interface IType extends IIpsObject, Datatype {
 
     /**
      * Validation message code to indicate that an abstract method exists in the type's supertype
-     * hierarchy that must be overriden in the conrete type.
+     * hierarchy that must be overridden in the concrete type.
      */
     public final static String MSGCODE_MUST_OVERRIDE_ABSTRACT_METHOD = MSGCODE_PREFIX + "MustOverrideAbstractMethod"; //$NON-NLS-1$
     
@@ -233,7 +233,7 @@ public interface IType extends IIpsObject, Datatype {
 
     /**
      * Returns all associations that have the indicated target and association type in the current type and
-     * it's supertype hierarchy. Returns an empty array if no such assoiation exists or target or
+     * it's supertype hierarchy. Returns an empty array if no such association exists or target or
      * association type is <code>null</code>.
      * 
      * @param target The qualified name of the target type.
@@ -247,7 +247,7 @@ public interface IType extends IIpsObject, Datatype {
     public IAssociation[] getAssociations();
 
     /**
-     * Returns all associations that have the indicated target. Returns an empty array if no such assoiation exists
+     * Returns all associations that have the indicated target. Returns an empty array if no such association exists
      * or target is <code>null</code>.
      * <p>
      * Note that this does NOT search the supertype hierarchy.
@@ -310,7 +310,7 @@ public interface IType extends IIpsObject, Datatype {
      * Searches a method with the given signature in the type and its supertype hierarchy and returns it. 
      * Returns <code>null</code> if no such method exists.
      * 
-     * @param name          The method's sigature as string, e.g. computePremium(base.Contract, base.Coverage)
+     * @param name          The method's signature as string, e.g. computePremium(base.Contract, base.Coverage)
      * @param ipsProject    The project which ips object path is used for the search.
      *                      This is not necessarily the project this type is part of. 
      * 
