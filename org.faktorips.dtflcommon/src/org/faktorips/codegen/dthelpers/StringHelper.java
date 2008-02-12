@@ -17,6 +17,7 @@
 
 package org.faktorips.codegen.dthelpers;
 
+import org.apache.commons.lang.StringEscapeUtils;
 import org.apache.commons.lang.StringUtils;
 import org.faktorips.codegen.JavaCodeFragment;
 import org.faktorips.datatype.classtypes.StringDatatype;
@@ -53,7 +54,7 @@ public class StringHelper extends AbstractDatatypeHelper {
 			return nullExpression();
 		}
 		JavaCodeFragment fragment = new JavaCodeFragment();
-		fragment.appendQuoted(StringUtils.escape(value));
+		fragment.appendQuoted(StringEscapeUtils.escapeJava(value));
 		return fragment;
 	}
 

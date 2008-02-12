@@ -20,7 +20,7 @@ package org.faktorips.fl.functions;
 import java.util.Arrays;
 import java.util.List;
 
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang.StringEscapeUtils;
 import org.faktorips.codegen.JavaCodeFragment;
 import org.faktorips.datatype.Datatype;
 import org.faktorips.fl.CompilationResult;
@@ -95,10 +95,10 @@ public class IfTest extends FunctionAbstractTest {
     public void testIdentifierInFunction() throws Exception{
         DefaultIdentifierResolver resolver = new DefaultIdentifierResolver();
         compiler.setIdentifierResolver(resolver);
-        resolver.register("param1", new JavaCodeFragment(StringUtils.escape("1")), Datatype.PRIMITIVE_INT);
-        resolver.register("param2", new JavaCodeFragment(StringUtils.escape("2")), Datatype.PRIMITIVE_INT);
-        resolver.register("param3", new JavaCodeFragment(StringUtils.escape("3")), Datatype.PRIMITIVE_INT);
-        resolver.register("param4", new JavaCodeFragment(StringUtils.escape("4")), Datatype.PRIMITIVE_INT);
+        resolver.register("param1", new JavaCodeFragment(StringEscapeUtils.escapeJava("1")), Datatype.PRIMITIVE_INT);
+        resolver.register("param2", new JavaCodeFragment(StringEscapeUtils.escapeJava("2")), Datatype.PRIMITIVE_INT);
+        resolver.register("param3", new JavaCodeFragment(StringEscapeUtils.escapeJava("3")), Datatype.PRIMITIVE_INT);
+        resolver.register("param4", new JavaCodeFragment(StringEscapeUtils.escapeJava("4")), Datatype.PRIMITIVE_INT);
         CompilationResult result = execAndTestSuccessfull("IF(param1=param2; param3; param4)", new Integer(4), Datatype.INTEGER);
         List identifier = Arrays.asList(result.getResolvedIdentifiers());
         assertTrue(identifier.contains("param1"));
