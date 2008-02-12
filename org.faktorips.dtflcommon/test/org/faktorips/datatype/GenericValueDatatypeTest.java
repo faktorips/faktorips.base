@@ -201,7 +201,7 @@ public class GenericValueDatatypeTest extends TestCase {
         }
 
         public String getAdaptedClassName() {
-            return "UnknwonClass";
+            return "UnknownClass";
         }
         
     }
