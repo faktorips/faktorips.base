@@ -393,13 +393,11 @@ public class ProductCmptPage extends IpsObjectPage {
      */
     protected void setDefaultFocus(){
         super.setDefaultFocus();
-        if(!StringUtils.isEmpty(getPackage())){
-            if(StringUtils.isEmpty(typeRefControl.getText())){
-                typeRefControl.setFocus();
-                return;
-            }
-            constName.setFocus();
+        if(StringUtils.isEmpty(typeRefControl.getText())){
+            typeRefControl.setFocus();
+            return;
         }
+        constName.setFocus();
     }
 
 }
