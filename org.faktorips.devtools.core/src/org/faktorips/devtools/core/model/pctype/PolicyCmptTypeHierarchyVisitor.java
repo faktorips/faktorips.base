@@ -59,7 +59,7 @@ public abstract class PolicyCmptTypeHierarchyVisitor {
     /**
      * Template method in that subclasses realize the function for the given type.
      * 
-     * @return <code>true</code> if the visitor should continue to navgiate up the hierarchy.
+     * @return <code>true</code> if the visitor should continue to navigate up the hierarchy.
      * <code>false</code> if not.
      */
     protected abstract boolean visit(IPolicyCmptType currentType) throws CoreException;
