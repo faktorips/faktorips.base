@@ -38,12 +38,7 @@ public abstract class ReferenceSearchQuery implements ISearchQuery {
         	IIpsElement[] found= findReferences();
             
             monitor.worked(1);
-            Match[] resultMatches = new Match[found.length];
-            for (int i = 0; i < found.length; i++) {
-                Object[] combined = getDataForResult(found[i]);
-                resultMatches[i] = new Match(combined, 0, 0);
-            }
-            result.addMatches(resultMatches);
+            addFoundMatches(found);
         } catch (PartInitException e) {
             return new IpsStatus(e);
         } catch (CoreException e) {
@@ -51,6 +46,20 @@ public abstract class ReferenceSearchQuery implements ISearchQuery {
         }
         monitor.done();
         return new IpsStatus(IStatus.OK, 0, Messages.ReferenceSearchQuery_ok, null);
+    }
+
+    /**
+     * Adds all given elements as result match to the result list. Subclasses can overwrite this
+     * method to perform special operations before adding the found element to the result list (e.g.
+     * combine the found elements to one match with multiple childs)
+     */
+    protected void addFoundMatches(IIpsElement[] found) throws CoreException {
+        Match[] resultMatches = new Match[found.length];
+        for (int i = 0; i < found.length; i++) {
+            Object[] combined = getDataForResult(found[i]);
+            resultMatches[i] = new Match(combined, 0, 0);
+        }
+        result.addMatches(resultMatches);
     }
     
     /**
