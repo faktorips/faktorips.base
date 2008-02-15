@@ -183,7 +183,7 @@ public class ProductCmptGenerationCuBuilder extends DefaultJavaSourceFileBuilder
         if(method.validate(getIpsProject()).containsErrorMsg()){
             return;   
         }
-        boolean formulaTest = testParameterNames.length > 0 && testParameterTypes.length > 0;
+        boolean formulaTest = (testParameterNames.length > 0 && testParameterTypes.length > 0) || methodSuffix != null;
         
         builder.javaDoc(getJavaDocCommentForOverriddenMethod(), ANNOTATION_GENERATED);
         

@@ -520,7 +520,7 @@ public class ProductCmptGenInterfaceBuilder extends AbstractProductCmptTypeBuild
             JavaCodeFragmentBuilder methodsBuilder,
             String methodSuffix, String[] testParameterNames,
             String[] testParameterTypes) throws CoreException {
-        boolean formulaTest = testParameterNames.length > 0 && testParameterTypes.length > 0;
+        boolean formulaTest = (testParameterNames.length > 0 && testParameterTypes.length > 0) || methodSuffix != null;
         
         IParameter[] parameters = method.getParameters();
         int modifier = method.getJavaModifier() | (isAbstract ? Modifier.ABSTRACT : 0);
@@ -532,7 +532,7 @@ public class ProductCmptGenInterfaceBuilder extends AbstractProductCmptTypeBuild
             List parametersWithoutTypes = new ArrayList();
             for (int i = 0; i < parameters.length; i++) {
                 Datatype datatype = parameters[i].findDatatype(getIpsProject());
-                if (!(datatype instanceof IPolicyCmptType)) {
+                if (!(datatype instanceof IPolicyCmptType || datatype instanceof IProductCmptType)) {
                     parametersWithoutTypes.add(parameters[i]);
                 }
             }

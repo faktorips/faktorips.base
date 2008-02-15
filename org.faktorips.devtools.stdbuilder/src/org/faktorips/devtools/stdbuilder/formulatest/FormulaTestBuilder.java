@@ -474,7 +474,7 @@ public class FormulaTestBuilder extends DefaultJavaSourceFileBuilder {
         for (int k = 0; k < params.length; k++) {
             String identifier = (String)identifierNameIdx.get(new Integer(k));
             Datatype datatype = getIpsProject().findDatatype(params[k].getDatatype());
-            if (datatype instanceof IPolicyCmptType) {
+            if (datatype instanceof IPolicyCmptType || datatype instanceof IProductCmptType ) {
                 IFormulaTestInputValue[] formulaTestInputValues = formulaTestCase.getFormulaTestInputValues();
                 // insert all attributes and their test values which are used in the formula
                 // in the value cache
