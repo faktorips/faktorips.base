@@ -114,7 +114,7 @@ public class TestIpsArtefactBuilderSet extends AbstractBuilderSet {
 	/**
      * {@inheritDoc}
      */
-    public IdentifierResolver createFlIdentifierResolverForFormulaTest(IFormula formula, String typeSubstitution)
+    public IdentifierResolver createFlIdentifierResolverForFormulaTest(IFormula formula)
             throws CoreException {
         return null;
     }

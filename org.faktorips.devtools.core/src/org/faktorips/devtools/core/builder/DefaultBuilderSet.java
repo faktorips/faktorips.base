@@ -272,8 +272,7 @@ public class DefaultBuilderSet extends AbstractBuilderSet {
     /**
      * {@inheritDoc}
      */
-    public IdentifierResolver createFlIdentifierResolverForFormulaTest(IFormula formula, String attributeSubstitution)
-            throws CoreException {
+    public IdentifierResolver createFlIdentifierResolverForFormulaTest(IFormula formula) throws CoreException {
         return null;
     }
 

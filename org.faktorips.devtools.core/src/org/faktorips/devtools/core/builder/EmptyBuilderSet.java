@@ -86,7 +86,7 @@ public class EmptyBuilderSet extends AbstractBuilderSet {
     /**
      * {@inheritDoc}
      */
-    public IdentifierResolver createFlIdentifierResolverForFormulaTest(IFormula formula, String typeSubstitution)
+    public IdentifierResolver createFlIdentifierResolverForFormulaTest(IFormula formula)
             throws CoreException {
         return createFlIdentifierResolver(formula);
     }

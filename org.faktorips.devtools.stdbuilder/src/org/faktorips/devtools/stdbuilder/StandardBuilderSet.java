@@ -17,7 +17,6 @@
 
 package org.faktorips.devtools.stdbuilder;
 
-import java.text.MessageFormat;
 import java.util.Locale;
 
 import org.apache.commons.lang.StringUtils;
@@ -187,7 +186,7 @@ public class StandardBuilderSet extends DefaultBuilderSet {
     /**
      * {@inheritDoc}
      */
-    public IdentifierResolver createFlIdentifierResolverForFormulaTest(IFormula formula, final String attributeSubstitution) throws CoreException {
+    public IdentifierResolver createFlIdentifierResolverForFormulaTest(IFormula formula) throws CoreException {
         return new AbstractParameterIdentifierResolver(formula){
 
             protected String getParameterAttributGetterName(IAttribute attribute, Datatype datatype) {
@@ -209,11 +208,10 @@ public class StandardBuilderSet extends DefaultBuilderSet {
                     Datatype datatype = param.findDatatype(getIpsProject());
                     if (datatype instanceof IType){
                         // instead of using the types getter method to get the value for an identifier,
-                        // the given attribute substitution will be used, this enables the ability 
-                        // to test a generated method without having policy cmpt types as parameters
-                        MessageFormat format = new MessageFormat(attributeSubstitution);
-                        String code = "(" + compile.getDatatype() + ")";
-                        code += format.format(new String[]{param.getName() + "." + attributeName});
+                        // the given datatype plus the attribute will be used as new parameter identifier,
+                        // this parameter identifier will also be used as parameter inside the formula method
+                        // which uses this code fragment
+                        String code = param.getName() + "_" + attributeName;
                         return new CompilationResultImpl(code, compile.getDatatype());
                     }
                 } catch (CoreException ignored) {

@@ -162,7 +162,7 @@ public class ProductCmptGenerationCuBuilder extends DefaultJavaSourceFileBuilder
      * Generates the method to compute a value as specified by a formula configuration element and
      */
     private void generateMethodForFormula(IFormula formula, JavaCodeFragmentBuilder builder) throws CoreException {
-        generateMethodForFormula(formula, builder, null, null);
+        generateMethodForFormula(formula, builder, null, EMPTY_STRING_ARRAY, EMPTY_STRING_ARRAY);
     }
     
     /**
@@ -174,34 +174,43 @@ public class ProductCmptGenerationCuBuilder extends DefaultJavaSourceFileBuilder
      * @param attributeSubstitution String which will be used to replace the type attribute
      *            generated code, this enables the ability to test the generated method without
      *            having the type
+     * @param testParameterNames additional parameter name which will be append to the method signature           
+     * @param testParameterTypes additional parameter types which will be append to the method signature
      */
-    public void generateMethodForFormula(IFormula formula, JavaCodeFragmentBuilder builder, String methodSuffix, String attributeSubstitution) throws CoreException {
+    public void generateMethodForFormula(IFormula formula, JavaCodeFragmentBuilder builder, String methodSuffix, String[] testParameterNames,
+            String[] testParameterTypes) throws CoreException {
         IProductCmptTypeMethod method = formula.findFormulaSignature(getIpsProject());
         if(method.validate(getIpsProject()).containsErrorMsg()){
             return;   
         }
+        boolean formulaTest = testParameterNames.length > 0 && testParameterTypes.length > 0;
+        
         builder.javaDoc(getJavaDocCommentForOverriddenMethod(), ANNOTATION_GENERATED);
         
-        productCmptGenInterfaceBuilder.generateSignatureForModelMethod(method, false, true, builder, methodSuffix);
+        productCmptGenInterfaceBuilder.generateSignatureForModelMethod(method, false, true, builder, methodSuffix, testParameterNames, testParameterTypes);
         builder.openBracket();
         builder.append("try {"); //$NON-NLS-1$
         builder.append("return "); //$NON-NLS-1$
-        builder.append(compileFormulaToJava(formula, method, attributeSubstitution));
+        builder.append(compileFormulaToJava(formula, method, formulaTest));
         builder.appendln(";"); //$NON-NLS-1$
         builder.append("} catch (Exception e) {"); //$NON-NLS-1$
         builder.appendClassName(StringBuffer.class);
         builder.append(" parameterValues=new StringBuffer();"); //$NON-NLS-1$
-        IParameter[] parameters = method.getParameters();
-        for (int i = 0; i < parameters.length; i++) {
-            if (i>0) {
-                builder.append("parameterValues.append(\", \");"); //$NON-NLS-1$
-            }
-            builder.append("parameterValues.append(\"" + parameters[i].getName() + "=\");"); //$NON-NLS-1$ //$NON-NLS-2$
-            ValueDatatype valuetype = getIpsProject().findValueDatatype(parameters[i].getDatatype());
-            if (valuetype!=null && valuetype.isPrimitive()) { // optimization: we search for value types only as only those can be primitives!
-                builder.append("parameterValues.append(" + parameters[i].getName() + ");"); //$NON-NLS-1$ //$NON-NLS-2$
-            } else {
-                builder.append("parameterValues.append(" + parameters[i].getName() + " == null ? \"null\" : " + parameters[i].getName() + ".toString());"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+        if (! formulaTest){
+            // in formula tests the input will not printed in case of an exception
+            // because the input is stored in the formula test
+            IParameter[] parameters = method.getParameters();
+            for (int i = 0; i < parameters.length; i++) {
+                if (i>0) {
+                    builder.append("parameterValues.append(\", \");"); //$NON-NLS-1$
+                }
+                builder.append("parameterValues.append(\"" + parameters[i].getName() + "=\");"); //$NON-NLS-1$ //$NON-NLS-2$
+                ValueDatatype valuetype = getIpsProject().findValueDatatype(parameters[i].getDatatype());
+                if (valuetype!=null && valuetype.isPrimitive()) { // optimization: we search for value types only as only those can be primitives!
+                    builder.append("parameterValues.append(" + parameters[i].getName() + ");"); //$NON-NLS-1$ //$NON-NLS-2$
+                } else {
+                    builder.append("parameterValues.append(" + parameters[i].getName() + " == null ? \"null\" : " + parameters[i].getName() + ".toString());"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+                }
             }
         }
         builder.append("throw new "); //$NON-NLS-1$
@@ -214,7 +223,7 @@ public class ProductCmptGenerationCuBuilder extends DefaultJavaSourceFileBuilder
         builder.closeBracket();
     }
     
-    private JavaCodeFragment compileFormulaToJava(IFormula formula, IProductCmptTypeMethod formulaSignature, String attributeSubstitution) {
+    private JavaCodeFragment compileFormulaToJava(IFormula formula, IProductCmptTypeMethod formulaSignature, boolean formulaTest) {
         String expression = formula.getExpression();
         if (StringUtils.isEmpty(expression)) {
             JavaCodeFragment fragment = new JavaCodeFragment();
@@ -222,7 +231,7 @@ public class ProductCmptGenerationCuBuilder extends DefaultJavaSourceFileBuilder
             return fragment;
         }
         try {
-            ExprCompiler compiler = formula.newExprCompiler(getIpsProject(), attributeSubstitution);
+            ExprCompiler compiler = formula.newExprCompiler(getIpsProject(), formulaTest);
             CompilationResult result = compiler.compile(expression);
             if (result.successfull()) {
                 Datatype attributeDatatype = formulaSignature.findDatatype(getIpsProject());

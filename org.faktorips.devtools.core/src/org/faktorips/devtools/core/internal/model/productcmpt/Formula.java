@@ -210,13 +210,13 @@ public class Formula extends BaseIpsObjectPart implements IFormula {
      * {@inheritDoc}
      */
     public ExprCompiler newExprCompiler(IIpsProject ipsProject) throws CoreException {
-        return newExprCompiler(ipsProject, null);
+        return newExprCompiler(ipsProject, false);
     }
 
     /**
      * {@inheritDoc}
      */
-    public ExprCompiler newExprCompiler(IIpsProject ipsProject, String attributeSubstitution) throws CoreException {
+    public ExprCompiler newExprCompiler(IIpsProject ipsProject, boolean formulaTest) throws CoreException {
         ExprCompiler compiler = new ExprCompiler();
         compiler.add(new ExcelFunctionsResolver(ipsProject.getExpressionLanguageFunctionsLanguage()));
         
@@ -230,11 +230,11 @@ public class Formula extends BaseIpsObjectPart implements IFormula {
             return compiler;
         }
         IdentifierResolver resolver;
-        if (attributeSubstitution == null){
+        if (! formulaTest){
             resolver = builderSet.createFlIdentifierResolver(this);
         } else {
             // create special identifier resolver for test methods
-            resolver = builderSet.createFlIdentifierResolverForFormulaTest(this, attributeSubstitution);
+            resolver = builderSet.createFlIdentifierResolverForFormulaTest(this);
         }
         if (resolver == null) {
             return compiler;

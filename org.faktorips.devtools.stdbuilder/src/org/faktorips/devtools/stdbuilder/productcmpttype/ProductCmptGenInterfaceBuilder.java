@@ -18,6 +18,7 @@
 package org.faktorips.devtools.stdbuilder.productcmpttype;
 
 import java.lang.reflect.Modifier;
+import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.commons.lang.StringUtils;
@@ -29,6 +30,7 @@ import org.faktorips.datatype.Datatype;
 import org.faktorips.devtools.core.builder.BuilderHelper;
 import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.core.model.ipsproject.IIpsArtefactBuilderSet;
+import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAttribute;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeAssociation;
@@ -502,7 +504,7 @@ public class ProductCmptGenInterfaceBuilder extends AbstractProductCmptTypeBuild
             boolean isAbstract,
             boolean parametersFinal,
             JavaCodeFragmentBuilder methodsBuilder) throws CoreException {
-        generateSignatureForModelMethod(method, isAbstract, parametersFinal, methodsBuilder, null);
+        generateSignatureForModelMethod(method, isAbstract, parametersFinal, methodsBuilder, null, EMPTY_STRING_ARRAY, EMPTY_STRING_ARRAY);
     }
         
     /**
@@ -516,17 +518,40 @@ public class ProductCmptGenInterfaceBuilder extends AbstractProductCmptTypeBuild
             boolean isAbstract,
             boolean parametersFinal,
             JavaCodeFragmentBuilder methodsBuilder,
-            String methodSuffix) throws CoreException {
+            String methodSuffix, String[] testParameterNames,
+            String[] testParameterTypes) throws CoreException {
+        boolean formulaTest = testParameterNames.length > 0 && testParameterTypes.length > 0;
         
         IParameter[] parameters = method.getParameters();
         int modifier = method.getJavaModifier() | (isAbstract ? Modifier.ABSTRACT : 0);
         boolean resolveTypesToPublishedInterface = method.getModifier().isPublished();
         String returnClass = StdBuilderHelper.transformDatatypeToJavaClassName(method.getDatatype(), resolveTypesToPublishedInterface, method.getIpsProject(), policyCmptTypeImplBuilder, productCmptGenImplClassBuilder);
-        String[] parameterNames = BuilderHelper.extractParameterNames(parameters);
+
+        String[] parameterNames = null;
+        if (formulaTest) {
+            List parametersWithoutTypes = new ArrayList();
+            for (int i = 0; i < parameters.length; i++) {
+                Datatype datatype = parameters[i].findDatatype(getIpsProject());
+                if (!(datatype instanceof IPolicyCmptType)) {
+                    parametersWithoutTypes.add(parameters[i]);
+                }
+            }
+            parameters = (IParameter[]) parametersWithoutTypes.toArray(new IParameter[parametersWithoutTypes.size()]);
+        } 
+        parameterNames = BuilderHelper.extractParameterNames(parameters);
         String[] parameterTypes = StdBuilderHelper.transformParameterTypesToJavaClassNames(parameters, resolveTypesToPublishedInterface, method.getIpsProject(),
                         policyCmptTypeImplBuilder, productCmptGenImplClassBuilder);
         String[] parameterInSignatur = parameterNames;
         String[] parameterTypesInSignatur = parameterTypes;
+        if (formulaTest){
+            // add test parameters
+            parameterInSignatur = extendArray(parameterNames, testParameterNames);
+            parameterTypesInSignatur = extendArray(parameterTypes, testParameterTypes);
+        } else {
+            parameterInSignatur = parameterNames;
+            parameterTypesInSignatur = parameterTypes;
+        }        
+        
         String methodName = method.getName();
         // extend the method signature with the given parameter names
         if (methodSuffix != null){
@@ -539,4 +564,11 @@ public class ProductCmptGenInterfaceBuilder extends AbstractProductCmptTypeBuild
             methodsBuilder.appendClassName(FormulaExecutionException.class);
         }
     }
+    
+    private String[] extendArray(String[] source1, String[] source2) {
+        String[] dest = new String[source1.length + source2.length];
+        System.arraycopy(source1, 0, dest, 0, source1.length);
+        System.arraycopy(source2, 0, dest, source1.length, source2.length);
+        return dest;
+    }    
 }

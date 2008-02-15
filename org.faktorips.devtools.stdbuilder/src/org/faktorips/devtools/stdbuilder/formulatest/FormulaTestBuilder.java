@@ -21,6 +21,7 @@ import java.lang.reflect.Modifier;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
@@ -34,6 +35,7 @@ import org.faktorips.codegen.DatatypeHelper;
 import org.faktorips.codegen.JavaCodeFragment;
 import org.faktorips.codegen.JavaCodeFragmentBuilder;
 import org.faktorips.datatype.Datatype;
+import org.faktorips.datatype.ValueDatatype;
 import org.faktorips.devtools.core.IpsStatus;
 import org.faktorips.devtools.core.builder.DefaultBuilderSet;
 import org.faktorips.devtools.core.builder.DefaultJavaSourceFileBuilder;
@@ -74,10 +76,7 @@ import org.faktorips.values.DateUtil;
  * @author Joerg Ortmann
  */
 public class FormulaTestBuilder extends DefaultJavaSourceFileBuilder {
-    private static final String TEST_VALUES = "testValues";
     private static final String FORMULA_TEST_CASE_NAME = "formulaTestCaseName";
-    private static final String FORMULA_NAME = "formulaName";
-
     private static final String RUNTIME_EXTENSION = "_formulaTest";
     private static final String TEST_METHOD_PREFIX = "test";
     
@@ -94,10 +93,10 @@ public class FormulaTestBuilder extends DefaultJavaSourceFileBuilder {
     private ProductCmptGenImplClassBuilder productCmptGenImplClassBuilder; 
     private ProductCmptBuilder productCmptBuilder;
     
-    private Map policyCmptTypeTestValues;
-
-    private Map formulasToTest;
-
+    private Map formulasToTestForGeneration;
+    private Map testParameterTypesForGeneration;
+    private Map testParameterNamesForGeneration;
+    
     public FormulaTestBuilder(
             IIpsArtefactBuilderSet builderSet, 
             String kindId) {
@@ -167,8 +166,9 @@ public class FormulaTestBuilder extends DefaultJavaSourceFileBuilder {
             throws CoreException {
         super.beforeBuild(ipsSrcFile, status);
 
-        policyCmptTypeTestValues = new HashMap();
-        formulasToTest = new HashMap();
+        formulasToTestForGeneration = new HashMap();
+        testParameterTypesForGeneration = new HashMap();
+        testParameterNamesForGeneration = new HashMap();
     }
 
     protected String getSuperClassName(){
@@ -262,9 +262,7 @@ public class FormulaTestBuilder extends DefaultJavaSourceFileBuilder {
         generateExecuteBusinessLogicMethod(productCmptType, testMethods ,mainSection.getMethodSectionBuilder());
         generateExecuteAssertsMethod(productCmptType, testMethods ,mainSection.getMethodSectionBuilder());
         
-        generateTestValueField(policyCmptTypeTestValues, mainSection.getMemberVarSectionBuilder());
-        generateInitTestValueMethod(policyCmptTypeTestValues, mainSection.getMethodSectionBuilder());
-        generateComputeTestMethods(formulasToTest, mainSection.getMethodSectionBuilder());
+        generateComputeTestMethods(formulasToTestForGeneration, mainSection.getMethodSectionBuilder());
     }
     
     /*
@@ -275,74 +273,19 @@ public class FormulaTestBuilder extends DefaultJavaSourceFileBuilder {
         for (Iterator iterator = formulasToTest.keySet().iterator(); iterator.hasNext();) {
             IFormula formula = (IFormula)iterator.next();
             Integer generationId = (Integer)formulasToTest.get(formula);
+            List testParameterNames = (List)testParameterNamesForGeneration.get(formula.getName() + "#" + generationId);
+            List testParameterTypes = (List)testParameterTypesForGeneration.get(formula.getName() + "#" + generationId);
+            if (testParameterNames == null  || testParameterTypes == null){
+                throw new CoreException(new IpsStatus("No formula paramter names and types found for generation id: " + generationId));
+            }
             generationBuilder.generateMethodForFormula(formula, builder, getComputeTestMethodSuffix(generationId
-                    .intValue()), getUnqualifiedClassName() + ".this." + TEST_VALUES + ".get(" + FORMULA_NAME
-                    + "_static + \"#\" + " + FORMULA_TEST_CASE_NAME + "_static + \"#\" + \"{0}\")");
+                    .intValue()), (String[])testParameterNames.toArray(new String[testParameterNames.size()]),
+                    (String[])(String[])testParameterTypes.toArray(new String[testParameterTypes.size()]));
         }
     }
 
     private String getComputeTestMethodSuffix(int generationId) {
         return "ForTest_" + generationId;
-    }
-
-    /*
-     * Code sample:
-     * <pre>
-     *  private HashMap testValues = new HashMap();
-     * </pre>
-     */
-    private void generateTestValueField(Map testValues, JavaCodeFragmentBuilder builder) {
-        JavaCodeFragment body = new JavaCodeFragment();
-        
-        builder.javaDoc("", ANNOTATION_GENERATED);
-        body = new JavaCodeFragment();
-        body.addImport(HashMap.class.getName());
-        body.append("static String ");
-        body.append(FORMULA_NAME);
-        body.appendln("_static = null;");
-        builder.append(body);  
-        
-        builder.javaDoc("", ANNOTATION_GENERATED);
-        body = new JavaCodeFragment();
-        body.addImport(HashMap.class.getName());
-        body.append("static String ");
-        body.append(FORMULA_TEST_CASE_NAME);
-        body.appendln("_static = null;");
-        builder.append(body);    
-        
-        if (testValues.size() == 0){
-            return;
-        }
-        builder.javaDoc("", ANNOTATION_GENERATED);
-        body = new JavaCodeFragment();
-        body.addImport(HashMap.class.getName());
-        body.append("private HashMap ");
-        body.append(TEST_VALUES);
-        body.appendln("= new HashMap();");
-        builder.append(body);
-    }
-
-    /*
-     * Code sample:
-     * <pre>
-     * public void initTestValues() {
-     *   testValues.put(formula_name#formula_test_name#policyCmptTypeParamName.attribute", test_value);
-     * </pre>
-     */
-    private void generateInitTestValueMethod(Map policyCmptTypeTestValues, JavaCodeFragmentBuilder builder) {
-        JavaCodeFragment body = new JavaCodeFragment();
-        for (Iterator iter = policyCmptTypeTestValues.keySet().iterator(); iter.hasNext();) {
-            String identifier = (String)iter.next();
-            body.append(TEST_VALUES);
-            body.append(".put(\"");
-            body.append(identifier);
-            body.append("\", ");
-            body.append((JavaCodeFragment)policyCmptTypeTestValues.get(identifier));
-            body.append(");");
-            body.appendln();
-        }
-        builder.method(Modifier.PUBLIC, "void", "initTestValues", EMPTY_STRING_ARRAY,
-                EMPTY_STRING_ARRAY, body, null, ANNOTATION_GENERATED);
     }
     
     /*
@@ -360,7 +303,6 @@ public class FormulaTestBuilder extends DefaultJavaSourceFileBuilder {
         String[] argTypes = new String[] { String.class.getName()};
         builder.methodBegin(Modifier.PUBLIC, null, className, argNames, argTypes);
         builder.append("super(formulaTestCaseName);");
-        builder.append("initTestValues();");
         builder.methodEnd();
     }
     
@@ -506,19 +448,16 @@ public class FormulaTestBuilder extends DefaultJavaSourceFileBuilder {
                 + getJavaMethodSuffix(formula.getName()) + "_" + getJavaMethodSuffix(formulaTestCase.getName());
 
         // store the formula to indicate the generation of the test method
-        formulasToTest.put(formula, new Integer(generation.getGenerationNo()));
+        boolean multipleFormulaTest = false;
+        if (formulasToTestForGeneration.get(formula) != null){
+            Integer genNr = (Integer)formulasToTestForGeneration.get(formula);
+            multipleFormulaTest = genNr != null && genNr.intValue() == generation.getGenerationNo();
+        }
+        
+        formulasToTestForGeneration.put(formula, new Integer(generation.getGenerationNo()));
         
         // append compute method call
         IMethod method = formula.findFormulaSignature(getIpsProject());
-        body.append(FORMULA_NAME);
-        body.append("_static = \"");
-        body.append(formula.getName());
-        body.appendln("\";");
-        body.append(FORMULA_TEST_CASE_NAME);
-        body.append("_static = \"");
-        body.append(formulaTestCase.getName());
-        body.appendln("\";");
-
         body.append("formulaResult = ");
         body.append(method.getName());
         body.append(getComputeTestMethodSuffix(generation.getGenerationNo()));
@@ -530,7 +469,8 @@ public class FormulaTestBuilder extends DefaultJavaSourceFileBuilder {
         for (int k = 0; k < params.length; k++) {
             identifierNameIdx.put(new Integer(k), params[k].getName());
         }
-        
+        List testParameterNames = new LinkedList();
+        List testParameterTypes = new LinkedList();
         List orderedInputValue = new ArrayList(params.length);
         for (int k = 0; k < params.length; k++) {
             String identifier = (String)identifierNameIdx.get(new Integer(k));
@@ -542,21 +482,29 @@ public class FormulaTestBuilder extends DefaultJavaSourceFileBuilder {
                 for (int l = 0; l < formulaTestInputValues.length; l++) {
                     String identifierInFormula = formulaTestInputValues[l].getIdentifier();
                     if (identifierInFormula.startsWith(identifier)) {
-                        String valueKey = formula.getName() + "#" + formulaTestCase.getName() + "#"
-                                + identifierInFormula;
-                        DatatypeHelper inputValueHelper = project.getDatatypeHelper(formulaTestInputValues[l]
-                                .findDatatypeOfFormulaParameter(project));
-                        policyCmptTypeTestValues.put(valueKey, inputValueHelper
-                                .newInstance(formulaTestInputValues[l].getValue()));
+                        ValueDatatype datatypeOfParam = formulaTestInputValues[l]
+                                                        .findDatatypeOfFormulaParameter(project);
+                        if (!multipleFormulaTest){
+                            // store parameter names and types to append the formula test signature
+                            testParameterNames.add(identifierInFormula.replaceAll("\\.", "_"));
+                            testParameterTypes.add(datatypeOfParam.getQualifiedName());
+                            body.addImport(datatypeOfParam.getJavaClassName());
+                        }
+                        orderedInputValue.add(formulaTestInputValues[l]);
                     }
                 }
-                // the value will be evaluated by using the value cache inside the generated formula code
-                orderedInputValue.add("null");
             } else {
                 orderedInputValue.add(formulaTestCase.getFormulaTestInputValue(identifier));
             }
         }
 
+        // store pctype parameter types and names
+        if (!multipleFormulaTest){
+            testParameterNamesForGeneration.put(formula.getName() + "#" + generation.getGenerationNo(), testParameterNames);
+            testParameterTypesForGeneration.put(formula.getName() + "#" + generation.getGenerationNo(), testParameterTypes);
+        }
+        
+        // add compute method call with parameters values
         for (int k = 0; k < orderedInputValue.size(); k++) {
             if (k > 0) {
                 body.append(", ");

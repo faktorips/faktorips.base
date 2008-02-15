@@ -132,11 +132,13 @@ public interface IFormula extends IIpsObjectPart, IPropertyValue {
     
     /**
      * Returns an expression compiler that can be used to compile the formula. or <code>null</code>
-     * if the element does not contain a formula. The expression compiler substitutes all policy cmpt
-     * types attributes with the given attributeSubstitution String. So the result is independent
-     * from all type parameters and could be used in generated tests (e.g. formula test cases).
+     * if the element does not contain a formula.
+     * 
+     * @param formulaTest if <code>true</code> the formula will be compiled for usage inside a
+     *            forumla test, in formula tests all type parameters will be replaced by their
+     *            value, which is defined inside the forumla test.
      */
-    public ExprCompiler newExprCompiler(IIpsProject ipsProject, String attributeSubstitution) throws CoreException;
+    public ExprCompiler newExprCompiler(IIpsProject ipsProject, boolean formulaTest) throws CoreException;
     
     /**
      * Returns the enum dataypes that can be use in this formula.
