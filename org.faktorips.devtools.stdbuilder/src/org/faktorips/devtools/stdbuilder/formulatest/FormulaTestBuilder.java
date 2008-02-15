@@ -527,7 +527,7 @@ public class FormulaTestBuilder extends DefaultJavaSourceFileBuilder {
         DatatypeHelper valueHelper = project.getDatatypeHelper(method.findDatatype(project));
         body.append(valueHelper.newInstance(formulaTestCase.getExpectedResult()));
         body.append(", formulaResult, result, productComponentGen.toString(), \"");
-        body.append(method.getName());
+        body.append(formula.getName());
         body.append(".");
         body.append(formulaTestCase.getName());
         body.append("\"");
