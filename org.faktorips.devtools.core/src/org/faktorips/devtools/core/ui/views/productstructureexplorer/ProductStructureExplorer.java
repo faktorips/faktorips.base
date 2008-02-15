@@ -36,6 +36,8 @@ import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.jface.util.IPropertyChangeListener;
 import org.eclipse.jface.util.PropertyChangeEvent;
 import org.eclipse.jface.viewers.DecoratingLabelProvider;
+import org.eclipse.jface.viewers.DoubleClickEvent;
+import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.jface.viewers.ViewerLabel;
@@ -111,6 +113,25 @@ public class ProductStructureExplorer extends ViewPart implements ContentsChange
     private boolean showAssociationNode = false;
     private boolean showTableStructureRoleName = false;
     private boolean showReferencedTable = true;
+    
+    /*
+     * Class to handle double clicks. Doubleclicks of ProductCmptTypeRelationReference will be ignored.
+     */
+    private class ProdStructExplTreeDoubleClickListener extends TreeViewerDoubleclickListener {
+        public ProdStructExplTreeDoubleClickListener(TreeViewer tree) {
+            super(tree);
+        }
+
+        /**
+         * {@inheritDoc}
+         */
+        public void doubleClick(DoubleClickEvent event) {
+            if (getSelectedObjectFromSelection(event.getSelection()) instanceof ProductCmptTypeRelationReference){
+                return;
+            }
+            super.doubleClick(event);
+        }
+    }
     
     /*
      * Class to represent the root tree node to inform about the current working date.
@@ -350,7 +371,7 @@ public class ProductStructureExplorer extends ViewPart implements ContentsChange
         tree.setLabelProvider(new DecoratingLabelProvider(labelProvider, new IpsProblemsLabelDecorator()));
         labelProvider.setShowTableStructureUsageName(showTableStructureRoleName);
         
-        tree.addDoubleClickListener(new TreeViewerDoubleclickListener(tree));
+        tree.addDoubleClickListener(new ProdStructExplTreeDoubleClickListener(tree));
         tree.expandAll();
         tree.addDragSupport(DND.DROP_LINK, new Transfer[] { FileTransfer.getInstance() }, new IpsElementDragListener(
                 tree));
@@ -360,10 +381,8 @@ public class ProductStructureExplorer extends ViewPart implements ContentsChange
         menumanager.setRemoveAllWhenShown(true);
         menumanager.addMenuListener(new IMenuListener(){
             public void menuAboutToShow(IMenuManager manager) {
-                if (isOpenActionSupportedForSelection()){
+                if (isReferenceAndOpenActionSupportedForSelection()){
                     manager.add(new OpenEditorAction(tree));
-                }
-                if (isReferenceActionSupportedForSelection()){
                     manager.add(new FindProductReferencesAction(tree));
                 }
             }
@@ -380,22 +399,22 @@ public class ProductStructureExplorer extends ViewPart implements ContentsChange
         initToolBar(actionBars.getToolBarManager());        
     }
 
-    private boolean isReferenceActionSupportedForSelection(){
-        if (!(tree.getSelection() instanceof IStructuredSelection)) {
+    private boolean isReferenceAndOpenActionSupportedForSelection(){
+        Object selectedRef = getSelectedObjectFromSelection(tree.getSelection());
+        if (selectedRef == null){
             return false;
         }
-        Object selectedRef = ((IStructuredSelection)tree.getSelection()).getFirstElement();
         return (selectedRef instanceof IProductCmptReference || selectedRef instanceof ProductCmptStructureTblUsageReference);
     }
 
-    private boolean isOpenActionSupportedForSelection(){
-        if (!(tree.getSelection() instanceof IStructuredSelection)) {
-            return false;
+    private Object getSelectedObjectFromSelection(ISelection selection) {
+        if (!(selection instanceof IStructuredSelection)) {
+            return null;
         }
         Object selectedRef = ((IStructuredSelection)tree.getSelection()).getFirstElement();
-        return (selectedRef instanceof ProductCmptTypeRelationReference || selectedRef instanceof IProductCmptReference || selectedRef instanceof ProductCmptStructureTblUsageReference);
+        return selectedRef;
     }
-    
+
     /**
      * {@inheritDoc}
      */
