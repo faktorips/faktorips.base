@@ -51,6 +51,7 @@ import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.TableColumn;
 import org.faktorips.datatype.ValueDatatype;
 import org.faktorips.devtools.core.IpsPlugin;
+import org.faktorips.devtools.core.IpsStatus;
 import org.faktorips.devtools.core.model.IIpsElement;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPartContainer;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
@@ -229,7 +230,7 @@ public class FormulaTestCaseControl extends Composite implements ColumnChangeLis
             }
         } else {
             if (StringUtils.isNotEmpty(actualResult)){
-                if (actualResult.toString().equals(expectedResult.toString())){
+                if (compareResult(actualResult, expectedResult)){
                     return TEST_OK;
                 } else {
                     return TEST_FAILURE;
@@ -242,6 +243,20 @@ public class FormulaTestCaseControl extends Composite implements ColumnChangeLis
             return TEST_ERROR;
         }
         return TEST_UNKNOWN;
+    }
+
+    private boolean compareResult(String actualResult, String expectedResult) {
+        try {
+            ValueDatatype datatype = formula.findValueDatatype(ipsProject);
+            if (datatype == null){
+                throw new CoreException(new IpsStatus("Result datatype not found for formula: " + formula.getName()));
+            }
+            return datatype.compare(actualResult, expectedResult) == 0;
+        } catch (CoreException e) {
+            IpsPlugin.logAndShowErrorDialog(e);
+            return false;
+        }
+        
     }
     
     /*
