@@ -57,6 +57,7 @@ import org.faktorips.datatype.EnumDatatype;
 import org.faktorips.datatype.NumericDatatype;
 import org.faktorips.datatype.ValueDatatype;
 import org.faktorips.datatype.classtypes.MoneyDatatype;
+import org.faktorips.devtools.core.IFunctionResolverFactory;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.IpsStatus;
 import org.faktorips.devtools.core.builder.IpsBuilder;
@@ -94,6 +95,7 @@ import org.faktorips.devtools.core.model.testcase.ITestCase;
 import org.faktorips.devtools.core.model.valueset.ValueSetType;
 import org.faktorips.devtools.core.model.versionmanager.IIpsFeatureVersionManager;
 import org.faktorips.devtools.core.util.XmlUtil;
+import org.faktorips.fl.ExprCompiler;
 import org.faktorips.util.ArgumentCheck;
 import org.faktorips.util.message.Message;
 import org.faktorips.util.message.MessageList;
@@ -164,6 +166,23 @@ public class IpsProject extends IpsElement implements IIpsProject {
 		saveProjectProperties(new IpsProjectProperties(this, (IpsProjectProperties)properties));
 	}
 
+    /**
+     * {@inheritDoc}
+     */
+    public ExprCompiler newExpressionCompiler(){
+        ExprCompiler compiler = new ExprCompiler();
+        IFunctionResolverFactory[] resolvers = IpsPlugin.getDefault().getFlFunctionResolverFactories();
+        for (int i = 0; i < resolvers.length; i++) {
+            try{
+                compiler.add(resolvers[i].newFunctionResolver(getExpressionLanguageFunctionsLanguage()));
+            }
+            catch(Exception e){
+                IpsPlugin.log(new IpsStatus("Unable the function resolver for the following factory: " + resolvers[i].getClass(), e));
+            }
+        }
+        return compiler;
+    }
+    
 	/**
      * Saves the project properties to the .ipsproject file.
      * 

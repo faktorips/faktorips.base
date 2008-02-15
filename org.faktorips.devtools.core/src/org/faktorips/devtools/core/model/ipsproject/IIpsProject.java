@@ -47,6 +47,7 @@ import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
 import org.faktorips.devtools.core.model.tablestructure.ITableStructure;
 import org.faktorips.devtools.core.model.testcase.ITestCase;
 import org.faktorips.devtools.core.model.valueset.ValueSetType;
+import org.faktorips.fl.ExprCompiler;
 import org.faktorips.util.message.MessageList;
 
 
@@ -239,6 +240,12 @@ public interface IIpsProject extends IIpsElement, IProjectNature {
      */
     public String getPlainTextFileCharset();
 
+    /**
+     * Returns an ExprCompiler instance that is configured with the default set operations and functions.
+     * Functions that are added via the FunctionResolver extension point are also included.
+     */
+    public ExprCompiler newExpressionCompiler();
+    
     /**
      * Returns a copy of the project's object path. Note that a copy and not a reference is returned. If you want
      * to update the project's path, the updated object path has to b e explicitly set on the project via the

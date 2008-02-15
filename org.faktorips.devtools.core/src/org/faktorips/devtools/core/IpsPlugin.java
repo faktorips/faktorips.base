@@ -126,6 +126,8 @@ public class IpsPlugin extends AbstractUIPlugin {
     private IIpsFeatureVersionManager[] featureVersionManagers;
     
     private IIpsLoggingFrameworkConnector[] loggingFrameworkConnectors;
+    
+    private IFunctionResolverFactory[] flFunctionResolvers;
 
     // Factories for creating controls depending on the datatype
     private ValueDatatypeControlFactory[] controlFactories = new ValueDatatypeControlFactory[] {
@@ -591,6 +593,42 @@ public class IpsPlugin extends AbstractUIPlugin {
         }
         return loggingFrameworkConnectors;
     }
+
+    /**
+     * Returns the <code>org.faktorips.fl.FunctionResolver</code>s that are registered at the according
+     * extension-point.
+     */
+    public IFunctionResolverFactory[] getFlFunctionResolverFactories() {
+
+        if (flFunctionResolvers == null) {
+            ArrayList flFunctionResolverFactoryList = new ArrayList();
+            IExtensionPoint extensionPoint = Platform.getExtensionRegistry().getExtensionPoint(IpsPlugin.PLUGIN_ID,
+                    "flFunctionResolverFactory"); //$NON-NLS-1$
+            IExtension[] extensions = extensionPoint.getExtensions();
+            for (int i = 0; i < extensions.length; i++) {
+                IExtension extension = extensions[i];
+                IConfigurationElement[] configElements = extension.getConfigurationElements();
+                for (int j = 0; j < configElements.length; j++) {
+                    IConfigurationElement configElement = configElements[j];
+                    if ("functionResolverFactory".equals(configElement.getName())) { //$NON-NLS-1$
+                        try {
+                            IFunctionResolverFactory functionResolverFactory = (IFunctionResolverFactory)configElement
+                                    .createExecutableExtension("class"); //$NON-NLS-1$
+                            flFunctionResolverFactoryList.add(functionResolverFactory);
+
+                        } catch (CoreException e) {
+                            log(new IpsStatus("Unable to create the flfunctionResolverFactory identified by the extension unique identifier: " //$NON-NLS-1$
+                                            + extension.getUniqueIdentifier(), e));
+                        }
+                    }
+                }
+            }
+            flFunctionResolvers = (IFunctionResolverFactory[])flFunctionResolverFactoryList
+                    .toArray(new IFunctionResolverFactory[flFunctionResolverFactoryList.size()]);
+        }
+        return flFunctionResolvers;
+    }
+    
     
     /**
      * Opens the given IpsObject in its editor.<br>

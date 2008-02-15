@@ -13,6 +13,7 @@
    <extension-point id="faktorIpsFeatureVersionManager" name="FaktorIpsFeatureVersionManager" schema="schema/faktorIpsFeatureVersionManager.exsd"/>
    <extension-point id="loggingFrameworkConnector" name="Logging Framework Connector" schema="schema/loggingFrameworkConnector.exsd"/>
    <extension-point id="ipsobjecttype" name="ipsObjectType" schema="schema/ipsobjecttype.exsd"/>
+   <extension-point id="flFunctionResolverFactory" name="factory for formula language function resolvers" schema="schema/flFunctionResolverFactory.exsd"/>
    
 <!-- 
     Product Definition Perspective
@@ -1037,6 +1038,12 @@
          name="Log4j Logging Connector"
          point="org.faktorips.devtools.core.loggingFrameworkConnector">
       <loggingFrameworkConnector class="org.faktorips.devtools.core.builder.Log4jLoggingFrameworkConnector"/>
+   </extension>
+   <extension
+         id="excelFunctionResolverFactory"
+         name="function resolver factory for an excel function resolver"
+         point="org.faktorips.devtools.core.flFunctionResolverFactory">
+         <functionResolverFactory class="org.faktorips.devtools.core.ExcelFunctionsFunctionResolverFactory"/>
    </extension>
    
    

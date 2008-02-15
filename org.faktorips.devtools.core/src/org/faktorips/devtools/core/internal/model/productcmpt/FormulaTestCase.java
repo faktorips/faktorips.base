@@ -47,6 +47,7 @@ import org.faktorips.fl.DefaultIdentifierResolver;
 import org.faktorips.fl.ExcelFunctionsResolver;
 import org.faktorips.fl.ExprCompiler;
 import org.faktorips.fl.ExprEvaluator;
+import org.faktorips.fl.FunctionResolver;
 import org.faktorips.runtime.internal.ValueToXmlHelper;
 import org.faktorips.util.message.Message;
 import org.faktorips.util.message.MessageList;
@@ -169,8 +170,7 @@ public class FormulaTestCase extends IpsObjectPart implements IFormulaTestCase {
      * Returns the expression compiler used to compile the formula preview result.
      */
     private ExprCompiler getPreviewExprCompiler(IIpsProject ipsProject) throws CoreException {
-        ExprCompiler compiler = new ExprCompiler();
-        compiler.add(new ExcelFunctionsResolver(ipsProject.getExpressionLanguageFunctionsLanguage()));
+        ExprCompiler compiler = ipsProject.newExpressionCompiler();
         
         // add the table functions based on the table usages defined in the product cmpt type
         IProductCmptGeneration gen = getFormula().getProductCmptGeneration();

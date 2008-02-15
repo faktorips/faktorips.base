@@ -57,7 +57,6 @@ import org.faktorips.devtools.core.model.type.IAttribute;
 import org.faktorips.devtools.core.model.type.IMethod;
 import org.faktorips.devtools.core.model.type.IParameter;
 import org.faktorips.fl.CompilationResult;
-import org.faktorips.fl.ExcelFunctionsResolver;
 import org.faktorips.fl.ExprCompiler;
 import org.faktorips.fl.IdentifierResolver;
 import org.faktorips.runtime.internal.ValueToXmlHelper;
@@ -217,8 +216,7 @@ public class Formula extends BaseIpsObjectPart implements IFormula {
      * {@inheritDoc}
      */
     public ExprCompiler newExprCompiler(IIpsProject ipsProject, boolean formulaTest) throws CoreException {
-        ExprCompiler compiler = new ExprCompiler();
-        compiler.add(new ExcelFunctionsResolver(ipsProject.getExpressionLanguageFunctionsLanguage()));
+        ExprCompiler compiler = ipsProject.newExpressionCompiler();
         
         // add the table functions based on the table usages defined in the product cmpt type
         IProductCmptGeneration gen = getProductCmptGeneration();
