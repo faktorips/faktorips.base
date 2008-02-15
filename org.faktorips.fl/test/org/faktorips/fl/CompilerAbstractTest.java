@@ -17,12 +17,15 @@
 
 package org.faktorips.fl;
 
+import java.util.HashMap;
 import java.util.Locale;
+import java.util.Map;
 
 import junit.framework.TestCase;
 
 import org.apache.commons.lang.ObjectUtils;
 import org.faktorips.datatype.Datatype;
+import org.faktorips.util.message.Message;
 
 
 /**
@@ -69,6 +72,44 @@ public abstract class CompilerAbstractTest extends TestCase {
         return result;
     }
 
+    protected CompilationResult execAndTestSuccessfull(
+            String expression,
+            Object expectedValue,
+            String[] parameterNames,
+            Datatype[] parameterTypes,
+            Object[] parameterValues,
+            Datatype expectedDatatype) throws Exception {
+        
+        final Map parameterMap = new HashMap();
+        for (int i = 0; i < parameterNames.length; i++) {
+            parameterMap.put(parameterNames[i], parameterTypes[i]);
+        }
+        IdentifierResolver resolver = new IdentifierResolver(){
+            public CompilationResult compile(String identifier, Locale locale) {
+                Object paramDatatype = parameterMap.get(identifier);
+                if(paramDatatype != null){
+                    return new CompilationResultImpl(identifier, (Datatype)paramDatatype);
+                }
+                return new CompilationResultImpl(new Message("", "The parameter " + identifier + " cannot be resolved.", Message.ERROR));
+            }
+        };
+        compiler.setIdentifierResolver(resolver);
+        CompilationResult result = compiler.compile(expression);
+        if (result.failed()) {
+            System.out.println(result);
+        }
+        assertTrue(result.successfull());
+        assertEquals(expectedDatatype, result.getDatatype());
+
+        Object value = processor.evaluate(expression, parameterNames, parameterValues);
+        if (!ObjectUtils.equals(value, expectedValue)) {
+            System.out.println(result);
+        }
+        assertEquals(expectedValue, value);
+        return result;
+
+    }
+    
     /**
      * Compiles the given expression and tests if the compilation was successfull
      * and if the datatype is the expected one. After that the expression is executed

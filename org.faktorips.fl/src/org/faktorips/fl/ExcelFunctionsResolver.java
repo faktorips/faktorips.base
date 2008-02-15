@@ -24,6 +24,11 @@ import org.faktorips.fl.functions.Abs;
 import org.faktorips.fl.functions.And;
 import org.faktorips.fl.functions.If;
 import org.faktorips.fl.functions.IsEmpty;
+import org.faktorips.fl.functions.MinMaxDecimal;
+import org.faktorips.fl.functions.MinMaxDouble;
+import org.faktorips.fl.functions.MinMaxInt;
+import org.faktorips.fl.functions.MinMaxLong;
+import org.faktorips.fl.functions.MinMaxMoney;
 import org.faktorips.fl.functions.Not;
 import org.faktorips.fl.functions.NotBoolean;
 import org.faktorips.fl.functions.Or;
@@ -64,6 +69,16 @@ public class ExcelFunctionsResolver extends DefaultFunctionResolver {
         add(new IsEmpty(getFctName("isempty"), getFctDescription("isempty"))); //$NON-NLS-1$ //$NON-NLS-2$
         add(new Not(getFctName("not"), getFctDescription("not"))); //$NON-NLS-1$ //$NON-NLS-2$
         add(new NotBoolean(getFctName("not"), getFctDescription("not"))); //$NON-NLS-1$ //$NON-NLS-2$
+        add(new MinMaxMoney(getFctName("max"), getFctDescription("max"), true)); //$NON-NLS-1$ //$NON-NLS-2$
+        add(new MinMaxMoney(getFctName("min"), getFctDescription("min"), false)); //$NON-NLS-1$ //$NON-NLS-2$
+        add(new MinMaxDecimal(getFctName("max"), getFctDescription("max"), true)); //$NON-NLS-1$ //$NON-NLS-2$
+        add(new MinMaxDecimal(getFctName("min"), getFctDescription("min"), false)); //$NON-NLS-1$ //$NON-NLS-2$
+        add(new MinMaxInt(getFctName("max"), getFctDescription("max"), true)); //$NON-NLS-1$ //$NON-NLS-2$
+        add(new MinMaxInt(getFctName("min"), getFctDescription("min"), false)); //$NON-NLS-1$ //$NON-NLS-2$
+        add(new MinMaxLong(getFctName("max"), getFctDescription("max"), true)); //$NON-NLS-1$ //$NON-NLS-2$
+        add(new MinMaxLong(getFctName("min"), getFctDescription("min"), false)); //$NON-NLS-1$ //$NON-NLS-2$
+        add(new MinMaxDouble(getFctName("max"), getFctDescription("max"), true)); //$NON-NLS-1$ //$NON-NLS-2$
+        add(new MinMaxDouble(getFctName("min"), getFctDescription("min"), false)); //$NON-NLS-1$ //$NON-NLS-2$
     }
     
     private String getFctName(String key) {

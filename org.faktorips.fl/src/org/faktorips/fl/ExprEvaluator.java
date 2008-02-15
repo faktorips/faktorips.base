@@ -69,7 +69,30 @@ public class ExprEvaluator {
         sb.append(fragment.getImportDeclaration().toString());
         sb.append(System.getProperty("line.separator")); //$NON-NLS-1$
         sb.append(fragment.getSourcecode());
+        return i.eval(sb.toString());
+    }
 
+    /**
+     * Evaluates and returns the result of the given expression. If the expression contains any variables the variables can be specified 
+     * with the variables parameter and the values of the variables can be specified by means of the variableValues parameter.
+     */
+    public Object evaluate(String expression, String[] variables, Object[] variableValues) throws Exception {
+
+        ArgumentCheck.length(variableValues, variables.length,
+                "the variableValues parameter and the variables parameter need to have the same amount of values.");
+        Interpreter i = new Interpreter(); // Construct an interpreter
+        if (classLoader != null) {
+            i.setClassLoader(classLoader);
+        }
+        for (int r = 0; r < variables.length; r++) {
+            i.set(variables[r], variableValues[r]);
+        }
+        JavaCodeFragment fragment = compileExpressionToJava(expression);
+
+        StringBuffer sb = new StringBuffer();
+        sb.append(fragment.getImportDeclaration().toString());
+        sb.append(System.getProperty("line.separator")); //$NON-NLS-1$
+        sb.append(fragment.getSourcecode());
         return i.eval(sb.toString());
     }
     
