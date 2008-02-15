@@ -485,11 +485,16 @@ public class FormulaTestBuilder extends DefaultJavaSourceFileBuilder {
                                                         .findDatatypeOfFormulaParameter(project);
                         if (!multipleFormulaTest){
                             // store parameter names and types to append the formula test signature
-                            testParameterNames.add(identifierInFormula.replaceAll("\\.", "_"));
-                            testParameterTypes.add(datatypeOfParam.getQualifiedName());
-                            body.addImport(datatypeOfParam.getJavaClassName());
+                            String parameterName = identifierInFormula.replaceAll("\\.", "_");
+                            if (!testParameterNames.contains(parameterName)) {
+                                testParameterNames.add(parameterName);
+                                testParameterTypes.add(datatypeOfParam.getQualifiedName());
+                                body.addImport(datatypeOfParam.getJavaClassName());
+                            }
                         }
-                        orderedInputValue.add(formulaTestInputValues[l]);
+                        if (!orderedInputValue.contains(formulaTestInputValues[l])){
+                            orderedInputValue.add(formulaTestInputValues[l]);
+                        }
                     }
                 }
             } else {
