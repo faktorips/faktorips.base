@@ -27,6 +27,7 @@ import org.eclipse.core.resources.IResourceChangeListener;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jface.action.Action;
+import org.eclipse.jface.action.IMenuListener;
 import org.eclipse.jface.action.IMenuManager;
 import org.eclipse.jface.action.IToolBarManager;
 import org.eclipse.jface.action.MenuManager;
@@ -35,6 +36,7 @@ import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.jface.util.IPropertyChangeListener;
 import org.eclipse.jface.util.PropertyChangeEvent;
 import org.eclipse.jface.viewers.DecoratingLabelProvider;
+import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.jface.viewers.ViewerLabel;
 import org.eclipse.osgi.util.NLS;
@@ -61,6 +63,8 @@ import org.eclipse.ui.part.ShowInContext;
 import org.eclipse.ui.part.ViewPart;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.IpsPreferences;
+import org.faktorips.devtools.core.internal.model.productcmpt.treestructure.ProductCmptStructureTblUsageReference;
+import org.faktorips.devtools.core.internal.model.productcmpt.treestructure.ProductCmptTypeRelationReference;
 import org.faktorips.devtools.core.model.ContentChangeEvent;
 import org.faktorips.devtools.core.model.ContentsChangeListener;
 import org.faktorips.devtools.core.model.IIpsElement;
@@ -71,6 +75,7 @@ import org.faktorips.devtools.core.model.productcmpt.IProductCmpt;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmptLink;
 import org.faktorips.devtools.core.model.productcmpt.ITableContentUsage;
 import org.faktorips.devtools.core.model.productcmpt.treestructure.CycleInProductStructureException;
+import org.faktorips.devtools.core.model.productcmpt.treestructure.IProductCmptReference;
 import org.faktorips.devtools.core.model.productcmpt.treestructure.IProductCmptTreeStructure;
 import org.faktorips.devtools.core.ui.actions.FindProductReferencesAction;
 import org.faktorips.devtools.core.ui.actions.OpenEditorAction;
@@ -352,9 +357,17 @@ public class ProductStructureExplorer extends ViewPart implements ContentsChange
         tree.addDropSupport(DND.DROP_LINK, new Transfer[] { FileTransfer.getInstance() }, new ProductCmptDropListener());
 
         MenuManager menumanager = new MenuManager();
-        menumanager.setRemoveAllWhenShown(false);
-        menumanager.add(new OpenEditorAction(tree));
-        menumanager.add(new FindProductReferencesAction(tree));
+        menumanager.setRemoveAllWhenShown(true);
+        menumanager.addMenuListener(new IMenuListener(){
+            public void menuAboutToShow(IMenuManager manager) {
+                if (isOpenActionSupportedForSelection()){
+                    manager.add(new OpenEditorAction(tree));
+                }
+                if (isReferenceActionSupportedForSelection()){
+                    manager.add(new FindProductReferencesAction(tree));
+                }
+            }
+        });
 
         Menu menu = menumanager.createContextMenu(tree.getControl());
         tree.getControl().setMenu(menu);
@@ -367,6 +380,22 @@ public class ProductStructureExplorer extends ViewPart implements ContentsChange
         initToolBar(actionBars.getToolBarManager());        
     }
 
+    private boolean isReferenceActionSupportedForSelection(){
+        if (!(tree.getSelection() instanceof IStructuredSelection)) {
+            return false;
+        }
+        Object selectedRef = ((IStructuredSelection)tree.getSelection()).getFirstElement();
+        return (selectedRef instanceof IProductCmptReference || selectedRef instanceof ProductCmptStructureTblUsageReference);
+    }
+
+    private boolean isOpenActionSupportedForSelection(){
+        if (!(tree.getSelection() instanceof IStructuredSelection)) {
+            return false;
+        }
+        Object selectedRef = ((IStructuredSelection)tree.getSelection()).getFirstElement();
+        return (selectedRef instanceof ProductCmptTypeRelationReference || selectedRef instanceof IProductCmptReference || selectedRef instanceof ProductCmptStructureTblUsageReference);
+    }
+    
     /**
      * {@inheritDoc}
      */
