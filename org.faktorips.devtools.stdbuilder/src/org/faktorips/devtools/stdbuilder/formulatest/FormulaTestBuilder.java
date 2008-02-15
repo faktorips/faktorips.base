@@ -101,7 +101,6 @@ public class FormulaTestBuilder extends DefaultJavaSourceFileBuilder {
             IIpsArtefactBuilderSet builderSet, 
             String kindId) {
         super(builderSet, kindId, new LocalizedStringsSet(FormulaTestBuilder.class));
-        setMergeEnabled(true);
     }
 
     /**
