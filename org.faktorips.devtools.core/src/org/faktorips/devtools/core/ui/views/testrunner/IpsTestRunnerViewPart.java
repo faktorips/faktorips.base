@@ -678,6 +678,7 @@ public class IpsTestRunnerViewPart extends ViewPart implements IIpsTestRunListen
 			public void run() {
 				if (isDisposed()) 
 					return;
+				setStatusBarMessage(""); //$NON-NLS-1$
 				fCounterPanel.reset();
 				fProgressBar.reset();
 				start(testCount);
