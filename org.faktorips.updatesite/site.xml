@@ -36,18 +36,6 @@
    <feature url="features/org.faktorips.feature.nls1_1.0.4.jar" id="org.faktorips.feature.nls1" version="1.0.4">
       <category name="Faktor-IPS 1.0.4"/>
    </feature>
-   <feature url="features/org.faktorips.feature_2.0.0.rc1.jar" id="org.faktorips.feature" version="2.0.0.rc1">
-      <category name="Faktor-IPS 2.0.0.rc1"/>
-   </feature>
-   <feature url="features/org.faktorips.feature.nls1_2.0.0.rc1.jar" id="org.faktorips.feature.nls1" version="2.0.0.rc1">
-      <category name="Faktor-IPS 2.0.0.rc1"/>
-   </feature>
-   <feature url="features/org.faktorips.feature_2.0.0.rc2.jar" id="org.faktorips.feature" version="2.0.0.rc2">
-      <category name="Faktor-IPS 2.0.0.rc2"/>
-   </feature>
-   <feature url="features/org.faktorips.feature.nls1_2.0.0.rc2.jar" id="org.faktorips.feature.nls1" version="2.0.0.rc2">
-      <category name="Faktor-IPS 2.0.0.rc2"/>
-   </feature>
    <feature url="features/org.faktorips.migration_v1_v2.feature_2.0.0.rfinal.jar" id="org.faktorips.migration_v1_v2.feature" version="2.0.0.rfinal">
       <category name="Faktor-IPS Migration v1-v2"/>
    </feature>
@@ -62,8 +50,6 @@
    <category-def name="Faktor-IPS 1.0.2" label="Faktor-IPS 1.0.2"/>
    <category-def name="Faktor-IPS 1.0.3" label="Faktor-IPS 1.0.3"/>
    <category-def name="Faktor-IPS 1.0.4" label="Faktor-IPS 1.0.4"/>
-   <category-def name="Faktor-IPS 2.0.0.rc1" label="Faktor-IPS 2.0.0.rc1"/>
-   <category-def name="Faktor-IPS 2.0.0.rc2" label="Faktor-IPS 2.0.0.rc2"/>
    <category-def name="Faktor-IPS Migration v1-v2" label="Faktor-IPS Migration v1-v2">
       <description>
          This feature enables migration of Faktor-IPS projects based on version 1.0.4 to version 2.0.0.rfinal.
