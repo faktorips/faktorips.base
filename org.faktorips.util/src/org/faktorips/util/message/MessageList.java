@@ -177,6 +177,9 @@ public class MessageList {
         for (int i = 0; i < getNoOfMessages(); i++) {
             if (getMessage(i).getSeverity() > severity) {
                 severity = getMessage(i).getSeverity();
+                if (severity==Message.ERROR) {
+                    return severity;
+                }
             }
         }
         return severity;
