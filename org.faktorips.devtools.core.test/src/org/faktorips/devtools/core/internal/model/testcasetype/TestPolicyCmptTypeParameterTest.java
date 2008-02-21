@@ -459,9 +459,12 @@ public class TestPolicyCmptTypeParameterTest extends AbstractIpsPluginTest {
         private IPolicyCmptType policy;
         private IPolicyCmptTypeAssociation coverages;
         private IPolicyCmptType coverage;
+        private IPolicyCmptType subCoverage;
+        
         private IProductCmpt policyProduct;
         private IProductCmpt coverageProductA;
         private IProductCmpt coverageProductB;
+        private IProductCmpt subCoverageProduct;
 
         private ITestPolicyCmptTypeParameter parameter;
         private ITestPolicyCmptTypeParameter childParameter;
@@ -479,6 +482,14 @@ public class TestPolicyCmptTypeParameterTest extends AbstractIpsPluginTest {
             coverage.setProductCmptType(productCmptTypeCoverage.getQualifiedName());
             productCmptTypeCoverage.setPolicyCmptType(coverage.getQualifiedName());
 
+            subCoverage = newPolicyCmptType(project, "SubCoverage");
+            coverage.setConfigurableByProductCmptType(true);
+            ProductCmptType productCmptTypeSubCoverage = newProductCmptType(project, "SubCoverageType");
+            subCoverage.setProductCmptType(productCmptTypeSubCoverage.getQualifiedName());
+            productCmptTypeSubCoverage.setPolicyCmptType(subCoverage.getQualifiedName());
+            subCoverage.setSupertype(coverage.getQualifiedName());
+            productCmptTypeSubCoverage.setSupertype(productCmptTypeCoverage.getQualifiedName());
+            
             coverages = policy.newPolicyCmptTypeAssociation();
             coverages.setTarget(coverage.getQualifiedName());
             coverages.setTargetRoleSingular("Coverage");
@@ -490,6 +501,7 @@ public class TestPolicyCmptTypeParameterTest extends AbstractIpsPluginTest {
             association.setTargetRoleSingular("Coverage");
             association.setTargetRolePlural("Coverages");
             
+            // create products
             policyProduct = newProductCmpt(project, "PolicyA 2007-09");
             policyProduct.setProductCmptType(productCmptTypePolicy.getQualifiedName());
             coverageProductA = newProductCmpt(project, "CoverageA 2007-09");
@@ -498,6 +510,8 @@ public class TestPolicyCmptTypeParameterTest extends AbstractIpsPluginTest {
             coverageProductB = newProductCmpt(project, "CoverageB 2007-09");
             coverageProductB.setProductCmptType(productCmptTypeCoverage.getQualifiedName());
             coverageProductB.newGeneration(new GregorianCalendar());
+            subCoverageProduct = newProductCmpt(project, "SubCoverage 2008-02");
+            subCoverageProduct.newGeneration(new GregorianCalendar());
             
             parameter = testCaseType.newCombinedPolicyCmptTypeParameter();
             parameter.setPolicyCmptType(policy.getQualifiedName());
@@ -508,6 +522,40 @@ public class TestPolicyCmptTypeParameterTest extends AbstractIpsPluginTest {
             childParameter.setName("CoverageParam");            
 
         }
+    }
+
+    public void testGetAllowedProductCmptDependingTarget() throws CoreException{
+        // two testPolicyCmptTypeParameter uses same associations (base class)
+        // but different targets (subclass of base class).
+        // This test case type make sense if the subclasses defines different
+        // attributes which should be used in the test case
+        TestContent testContent = new TestContent();
+        testContent.init(project);
+
+        // create second child test parameter (represents the association with a subset of allowed products)
+        // because subCoverage is specified as target
+        ITestPolicyCmptTypeParameter childParameter2 = testContent.parameter.newTestPolicyCmptTypeParamChild();
+        childParameter2.setPolicyCmptType(testContent.subCoverage.getQualifiedName());
+        childParameter2.setAssociation(testContent.coverages.getName());
+        childParameter2.setName("SubCoverageParam");            
+
+        // create the three links on the product cmpt
+        IProductCmptGeneration generation = (IProductCmptGeneration)testContent.policyProduct.newGeneration(new GregorianCalendar());
+        IProductCmptLink productCmptAssociationA = generation.newLink("Coverage");
+        productCmptAssociationA.setTarget(testContent.coverageProductA.getQualifiedName());
+        IProductCmptLink productCmptAssociationB = generation.newLink("Coverage");
+        productCmptAssociationB.setTarget(testContent.coverageProductB.getQualifiedName());
+        IProductCmptLink productCmptAssociationSub = generation.newLink("Coverage");
+        productCmptAssociationSub.setTarget(testContent.subCoverageProduct.getQualifiedName());
+        
+        // assert that all product cmpt specified in the product cmpt are allowed for first test param (association)
+        IIpsSrcFile[] allowedProductCmpt = testContent.childParameter.getAllowedProductCmpt(project, testContent.policyProduct);
+        assertEquals(3, allowedProductCmpt.length);
+
+        // assert that only the subtype product cmpt is allowed for the second test param (association)
+        allowedProductCmpt = childParameter2.getAllowedProductCmpt(project, testContent.policyProduct);
+        assertEquals(1, allowedProductCmpt.length);
+        assertEquals(testContent.subCoverageProduct.getIpsSrcFile(), allowedProductCmpt[0]);
     }
     
     public void testGetAllowedProductCmpt() throws CoreException{

@@ -543,6 +543,7 @@ public class TestPolicyCmptTypeParameter extends TestParameter implements
             }            
             return ipsProjectToSearch.findAllProductCmptSrcFiles(productCmptType, true);
         }
+        
         IPolicyCmptTypeAssociation policyCmptTypeAssociation = findAssociation(ipsProjectToSearch);
         if (policyCmptTypeAssociation == null){
             return new IIpsSrcFile[0];
@@ -565,9 +566,19 @@ public class TestPolicyCmptTypeParameter extends TestParameter implements
         for (int i = 0; i < generations.length; i++) {
             IProductCmptLink[] associations = ((IProductCmptGeneration)generations[i]).getLinks(association.getName());
             for (int j = 0; j < associations.length; j++) {
-                IIpsSrcFile productCmptFound = ipsProjectToSearch.findIpsSrcFile(IpsObjectType.PRODUCT_CMPT, associations[j].getTarget());
-                if (productCmptFound != null && !result.contains(productCmptFound)) {
-                    result.add(productCmptFound);
+                IIpsSrcFile productCmptFoundSrc = ipsProjectToSearch.findIpsSrcFile(IpsObjectType.PRODUCT_CMPT, associations[j].getTarget());
+                if (productCmptFoundSrc != null && !result.contains(productCmptFoundSrc)) {
+                    IProductCmpt productCmptFound = (IProductCmpt)productCmptFoundSrc.getIpsObject();
+                    IPolicyCmptType pcType = findPolicyCmptType(getIpsProject());
+                    IPolicyCmptType pcTypeOfProduct = productCmptFound.findPolicyCmptType(getIpsProject());
+                    if (pcType != null && pcTypeOfProduct != null){
+                        // check if the specified policy cmpt type is the same or a supertype 
+                        // of the found product cmpt policy cmpt type
+                        if (! pcTypeOfProduct.isSubtypeOrSameType(pcType)) {
+                            continue;
+                        }                        
+                    } 
+                    result.add(productCmptFoundSrc);
                 }
             }
         }
