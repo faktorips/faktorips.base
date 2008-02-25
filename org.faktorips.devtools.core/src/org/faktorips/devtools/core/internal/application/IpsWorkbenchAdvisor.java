@@ -17,6 +17,7 @@
 
 package org.faktorips.devtools.core.internal.application;
 
+import java.lang.reflect.InvocationTargetException;
 import java.net.URL;
 
 import org.eclipse.core.resources.IFile;
@@ -25,12 +26,20 @@ import org.eclipse.core.resources.IMarker;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IWorkspace;
 import org.eclipse.core.resources.IWorkspaceRoot;
+import org.eclipse.core.resources.ResourcesPlugin;
+import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IAdapterFactory;
 import org.eclipse.core.runtime.IAdapterManager;
+import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.core.runtime.IStatus;
+import org.eclipse.core.runtime.MultiStatus;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.core.runtime.Platform;
+import org.eclipse.core.runtime.Status;
 import org.eclipse.jface.dialogs.Dialog;
+import org.eclipse.jface.dialogs.ErrorDialog;
 import org.eclipse.jface.dialogs.TrayDialog;
+import org.eclipse.jface.operation.IRunnableWithProgress;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.jface.resource.ImageRegistry;
 import org.eclipse.jface.resource.JFaceResources;
@@ -39,6 +48,11 @@ import org.eclipse.ui.application.IWorkbenchWindowConfigurer;
 import org.eclipse.ui.application.WorkbenchAdvisor;
 import org.eclipse.ui.application.WorkbenchWindowAdvisor;
 import org.eclipse.ui.ide.IDE;
+import org.eclipse.ui.internal.ide.IDEWorkbenchAdvisor;
+import org.eclipse.ui.internal.ide.IDEWorkbenchMessages;
+import org.eclipse.ui.internal.ide.IDEWorkbenchPlugin;
+import org.eclipse.ui.internal.progress.ProgressMonitorJobsDialog;
+import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.IpsProductDefinitionPerspectiveFactory;
 import org.osgi.framework.Bundle;
 
@@ -52,12 +66,12 @@ class IpsWorkbenchAdvisor extends WorkbenchAdvisor {
 
 	public void initialize(IWorkbenchConfigurer configurer) {
 		
-        // make sure we always save and restore workspace state
+        // make sure we always save and restore worbench state
+        // note, this does not save the workspace(!) state. This has to be handled explicitly in postShutdown!
         configurer.setSaveAndRestore(true);
         
         // setup the event loop exception handler
         // TODO do we need this? exceptionHandler = new IDEExceptionHandler(configurer);
-
         // register workspace adapters
 		registerWorkspaceAdapters();
 
@@ -289,6 +303,50 @@ class IpsWorkbenchAdvisor extends WorkbenchAdvisor {
         URL url = Platform.find(ideBundle, new Path(path));
         ImageDescriptor desc = ImageDescriptor.createFromURL(url);
         getWorkbenchConfigurer().declareImage(symbolicName, desc, shared);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public void postShutdown() {
+        if (ResourcesPlugin.getWorkspace()!=null) {
+            disconnectFromWorkspace();
+        }
+    }
+
+    /**
+     * Disconnect from the core workspace.
+     * 
+     * See Eclipse's IDEWorkbenchAdvisor for more details.
+     * 
+     * The 
+     */
+    private void disconnectFromWorkspace() {
+        // save the workspace (this has to be coded as the rcp workbench advisor is not aware of the 
+        // workspace! The workspace is an IDE concept!
+        final MultiStatus status = new MultiStatus(IpsPlugin.PLUGIN_ID, 1, Messages.ProblemsSavingWorkspace, null);
+        IRunnableWithProgress runnable = new IRunnableWithProgress() {
+            public void run(IProgressMonitor monitor) {
+                try {
+                    status.merge(ResourcesPlugin.getWorkspace().save(true,
+                            monitor));
+                } catch (CoreException e) {
+                    status.merge(e.getStatus());
+                }
+            }
+        };
+        try {
+            // yes it is internal, but you would need to copy a lot of classes to get the same funcitonality!
+            new ProgressMonitorJobsDialog(null).run(true, false, runnable);
+        } catch (InvocationTargetException e) {
+            status.merge(new Status(IStatus.ERROR, IpsPlugin.PLUGIN_ID, 1, "Internal Error", e.getTargetException()));
+        } catch (InterruptedException e) {
+            status.merge(new Status(IStatus.ERROR, IpsPlugin.PLUGIN_ID, 1, "Internal Error", e));
+        }
+        ErrorDialog.openError(null, Messages.ProblemsSavingWorkspace, null, status, IStatus.ERROR | IStatus.WARNING);
+        if (!status.isOK()) {
+            IpsPlugin.log(status);
+        }
     }
 
     

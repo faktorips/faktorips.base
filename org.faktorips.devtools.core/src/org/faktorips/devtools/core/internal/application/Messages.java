@@ -55,4 +55,6 @@ public class Messages extends NLS {
 	public static String IpsActionBarAdvisor_help;
 
 	public static String IpsWorkbenchAdvisor_title;
+    
+    public static String ProblemsSavingWorkspace;
 }
