@@ -48,8 +48,6 @@ import org.eclipse.ui.application.IWorkbenchWindowConfigurer;
 import org.eclipse.ui.application.WorkbenchAdvisor;
 import org.eclipse.ui.application.WorkbenchWindowAdvisor;
 import org.eclipse.ui.ide.IDE;
-import org.eclipse.ui.internal.ide.IDEWorkbenchMessages;
-import org.eclipse.ui.internal.ide.IDEWorkbenchPlugin;
 import org.eclipse.ui.internal.progress.ProgressMonitorJobsDialog;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.IpsProductDefinitionPerspectiveFactory;
