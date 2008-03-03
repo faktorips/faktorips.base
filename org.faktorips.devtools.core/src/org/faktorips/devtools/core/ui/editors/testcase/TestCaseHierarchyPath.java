@@ -56,7 +56,7 @@ public class TestCaseHierarchyPath{
         
         while (!testPolicyCmpt.isRoot()){
             int offset = 0;
-            ITestPolicyCmpt parent = testPolicyCmpt.getParentPolicyCmpt();
+            ITestPolicyCmpt parent = testPolicyCmpt.getParentTestPolicyCmpt();
             ITestPolicyCmptLink[] links = parent.getTestPolicyCmptLinks();
             for (int i = 0; i < links.length; i++) {
                 if (links[i].findTarget().equals(testPolicyCmpt))

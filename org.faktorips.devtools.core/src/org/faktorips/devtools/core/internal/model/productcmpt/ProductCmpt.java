@@ -44,6 +44,7 @@ import org.faktorips.devtools.core.model.productcmpt.IGenerationToTypeDelta;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmpt;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmptGeneration;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmptKind;
+import org.faktorips.devtools.core.model.productcmpt.IProductCmptLink;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmptNamingStrategy;
 import org.faktorips.devtools.core.model.productcmpt.treestructure.CycleInProductStructureException;
 import org.faktorips.devtools.core.model.productcmpt.treestructure.IProductCmptTreeStructure;
@@ -335,5 +336,22 @@ public class ProductCmpt extends TimedIpsObject implements IProductCmpt {
             IGenerationToTypeDelta delta = ((IProductCmptGeneration)generation).computeDeltaToModel(ipsProject);
             delta.fix();
         }
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public boolean isUsedAsTargetProductCmpt(IIpsProject ipsProjectToSearch, String association, IProductCmpt productCmptCandidate) {
+        int numOfGenerations = getNumOfGenerations();
+        for (int i = 0; i < numOfGenerations; i++) {
+            IProductCmptGeneration generation = (IProductCmptGeneration)getGeneration(i);
+            IProductCmptLink[] links = generation.getLinks(association);
+            for (int j = 0; j < links.length; j++) {
+                if (productCmptCandidate.getQualifiedName().equals(links[j].getTarget())){
+                    return true;
+                }
+            }
+        }
+        return false;
     }
 }

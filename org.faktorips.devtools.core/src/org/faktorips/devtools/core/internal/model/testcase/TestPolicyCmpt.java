@@ -18,7 +18,6 @@
 package org.faktorips.devtools.core.internal.model.testcase;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.GregorianCalendar;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -34,13 +33,13 @@ import org.faktorips.devtools.core.IpsStatus;
 import org.faktorips.devtools.core.model.IIpsElement;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObject;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPart;
-import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAssociation;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmpt;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmptGeneration;
+import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeAssociation;
 import org.faktorips.devtools.core.model.testcase.ITestAttributeValue;
 import org.faktorips.devtools.core.model.testcase.ITestCase;
 import org.faktorips.devtools.core.model.testcase.ITestObject;
@@ -397,7 +396,7 @@ public class TestPolicyCmpt extends TestObject implements ITestPolicyCmpt {
     public ITestObject getRoot(){
     	ITestPolicyCmpt testPolicyCmpt = this;
     	while (!testPolicyCmpt.isRoot()) {
-			testPolicyCmpt = testPolicyCmpt.getParentPolicyCmpt();
+			testPolicyCmpt = testPolicyCmpt.getParentTestPolicyCmpt();
 		}
 		return testPolicyCmpt;
     }
@@ -405,7 +404,7 @@ public class TestPolicyCmpt extends TestObject implements ITestPolicyCmpt {
     /**
      * {@inheritDoc}
      */
-	public ITestPolicyCmpt getParentPolicyCmpt() {
+	public ITestPolicyCmpt getParentTestPolicyCmpt() {
 		if (isRoot()){
 			return null;
 		}
@@ -641,8 +640,9 @@ public class TestPolicyCmpt extends TestObject implements ITestPolicyCmpt {
 	 */
     protected void validateThis(MessageList list, IIpsProject ipsProject) throws CoreException {
         super.validateThis(list, ipsProject);
-		// validate if the test case type param exists
-		ITestPolicyCmptTypeParameter param = findTestPolicyCmptTypeParameter(ipsProject);
+		
+        // validate if the test case type param exists
+        ITestPolicyCmptTypeParameter param = findTestPolicyCmptTypeParameter(ipsProject);
         IProductCmpt productCmptObj = findProductCmpt(ipsProject);
         
 		if (param == null){
@@ -712,17 +712,23 @@ public class TestPolicyCmpt extends TestObject implements ITestPolicyCmpt {
 	}
 
     private void validateAllowedProductCmpt(MessageList list, ITestPolicyCmptTypeParameter param, 
-            IProductCmpt productCmptObj, IIpsProject ipsProject) throws CoreException {
+            IProductCmpt productCmptCandidateObj, IIpsProject ipsProject) throws CoreException {
         // abort validation if no product cmpt was found/or specified
-        // or if the parameter wasn't found
-        if (param == null || productCmptObj == null){
+        // or if the parameter wasn't found or if the param isn't product relevant
+        if (param == null || productCmptCandidateObj == null || ! param.isRequiresProductCmpt()){
             return;
         }
         
-        if (isRoot()){
-            IIpsSrcFile[] allowedProductCmpt = param.getAllowedProductCmpt(getIpsProject(), null);
-            if (!isInAllowedProductCmpts(productCmptObj, allowedProductCmpt)) {
-                String text = NLS.bind(Messages.TestPolicyCmpt_TestPolicyCmpt_ValidationError_ProductCmpNotAllowedRoot, productCmptObj.getName());
+        // this is the root element, check only the correct policy cmpt type of the specified
+        // product cmpt
+        IPolicyCmptType policyCmptType = param.findPolicyCmptType(ipsProject);
+        IPolicyCmptType policyCmptTypeOfCandidate = productCmptCandidateObj.findPolicyCmptType(ipsProject);
+        if (policyCmptType != null && !policyCmptType.equals(policyCmptTypeOfCandidate)) {
+            // maybe the policy cmpt type of the product cmpt candidate is an subtype of the
+            // specified type in the test case type param
+            if (!policyCmptTypeOfCandidate.isSubtypeOf(policyCmptType)) {
+                String text = NLS.bind(Messages.TestPolicyCmpt_TestPolicyCmpt_ValidationError_ProductCmpNotAllowedRoot,
+                        productCmptCandidateObj.getName());
                 Message msg = new Message(MSGCODE_WRONG_PRODUCT_CMPT_OF_LINK, text, Message.ERROR, this,
                         ITestPolicyCmpt.PROPERTY_PRODUCTCMPT);
                 list.add(msg);
@@ -730,46 +736,57 @@ public class TestPolicyCmpt extends TestObject implements ITestPolicyCmpt {
             }
         }
         
-        // this is a child test policy cmpt, check allowed product depending on parent product cmpt
-        ITestPolicyCmpt parentPolicyCmpt = getParentPolicyCmpt();
-        if (parentPolicyCmpt == null){
-            // no validation possible
-            return;
-        }
-        
-        // if parent product cmpt not found, add warning
-        // check allowed product cmpt by using parent product cmpt
-        ITestPolicyCmptTypeParameter parentParameter = param.getParentTestPolicyCmptTypeParam();
-        boolean isParentProductRelevant = true;
-        if (parentParameter == null || !parentParameter.isRequiresProductCmpt()){
-            // error in test case type parameter structure
-            // or parent isn't product relevant
-            isParentProductRelevant = false;
-        }        
+        if (!isRoot()) {
+            // this is a child test policy cmpt, check allowed product depending on parent product
+            // cmpt
+            ITestPolicyCmpt parentPolicyCmpt = getParentTestPolicyCmpt();
+            if (parentPolicyCmpt == null){
+                // no further validation possible because parent policy cmpt not found
+                return;
+            }
 
-        IProductCmpt productCmptOfParent = parentPolicyCmpt.findProductCmpt(ipsProject);
-        if (isParentProductRelevant && productCmptOfParent == null){
-            String text = NLS.bind(Messages.TestPolicyCmpt_TestPolicyCmpt_ValidationError_ProductCmpCouldNotValidatedParentNotFound, productCmptObj.getName());
-            Message msg = new Message(MSGCODE_PARENT_PRODUCT_CMPT_OF_LINK_NOT_SPECIFIED, text, Message.WARNING, this,
-                    ITestPolicyCmpt.PROPERTY_PRODUCTCMPT);
-            list.add(msg);
-            return;
+            // if parent product cmpt not found, add warning
+            // check allowed product cmpt by using parent product cmpt
+            ITestPolicyCmptTypeParameter parentParameter = param.getParentTestPolicyCmptTypeParam();
+            if (parentParameter == null || !parentParameter.isRequiresProductCmpt()) {
+                // no further validation possible because parent policy cmpt isn't product relevant
+                return;
+            }        
+            
+            if (!parentParameter.isRequiresProductCmpt()){
+                // parent isn't product relevant no further validation of allowed target possible
+                return;
+            }
+            
+            IProductCmpt productCmptOfParent = parentPolicyCmpt.findProductCmpt(ipsProject);
+            if (productCmptOfParent == null){
+                String text = NLS.bind(Messages.TestPolicyCmpt_TestPolicyCmpt_ValidationError_ProductCmpCouldNotValidatedParentNotFound, productCmptCandidateObj.getName());
+                Message msg = new Message(MSGCODE_PARENT_PRODUCT_CMPT_OF_LINK_NOT_SPECIFIED, text, Message.WARNING, this,
+                        ITestPolicyCmpt.PROPERTY_PRODUCTCMPT);
+                list.add(msg);
+                return;
+            }
+            
+            IPolicyCmptTypeAssociation association = param.findAssociation(ipsProject);
+            if (association == null){
+                // no further validation because association not found
+                return;
+            }
+            
+            IProductCmptTypeAssociation productCmptTypeAssociation = association.findMatchingProductCmptTypeAssociation(ipsProject);
+            if (productCmptTypeAssociation == null){
+                // no further validation because association of product cmpt type not found
+                return;
+            }
+            
+            if (! productCmptOfParent.isUsedAsTargetProductCmpt(ipsProject, productCmptTypeAssociation.getName(), productCmptCandidateObj)){
+                String text = NLS.bind(Messages.TestPolicyCmpt_TestPolicyCmpt_ValidationError_ProductCmpNotAllowed, productCmptCandidateObj.getName());
+                Message msg = new Message(MSGCODE_WRONG_PRODUCT_CMPT_OF_LINK, text, Message.ERROR, this,
+                        ITestPolicyCmpt.PROPERTY_PRODUCTCMPT);
+                list.add(msg);
+                return;                
+            }
         }
-        
-        // check allowed product cmpts
-        IIpsSrcFile[] allowedProductCmpt = param.getAllowedProductCmpt(getIpsProject(), productCmptOfParent);
-        if (!isInAllowedProductCmpts(productCmptObj, allowedProductCmpt)) {
-            String text = NLS.bind(Messages.TestPolicyCmpt_TestPolicyCmpt_ValidationError_ProductCmpNotAllowed, productCmptObj.getName());
-            Message msg = new Message(MSGCODE_WRONG_PRODUCT_CMPT_OF_LINK, text, Message.ERROR, this,
-                    ITestPolicyCmpt.PROPERTY_PRODUCTCMPT);
-            list.add(msg);
-            return;
-        }
-    }
-
-    private boolean isInAllowedProductCmpts(IProductCmpt productCmptObj, IIpsSrcFile[] allowedProductCmpt) {
-        List list = Arrays.asList(allowedProductCmpt);
-        return list.contains(productCmptObj.getIpsSrcFile());
     }
 
     /**

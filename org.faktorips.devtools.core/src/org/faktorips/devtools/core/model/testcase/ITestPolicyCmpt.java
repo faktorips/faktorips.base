@@ -212,7 +212,7 @@ public interface ITestPolicyCmpt extends ITestObject {
     /**
      * Returns the parent test policy component.
      */
-    public ITestPolicyCmpt getParentPolicyCmpt();
+    public ITestPolicyCmpt getParentTestPolicyCmpt();
     
     /**
      * Removes the given link.

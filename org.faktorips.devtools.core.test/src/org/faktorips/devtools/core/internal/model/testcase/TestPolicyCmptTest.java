@@ -641,8 +641,9 @@ public class TestPolicyCmptTest extends AbstractIpsPluginTest {
       
       // product definied but parent product cmpt not specified, no error but warning
       testPolicyCmpt.setProductCmpt("");
-      testPolicyCmptChild.setProductCmpt(testContent.policyProduct.getQualifiedName());
+      testPolicyCmptChild.setProductCmpt(testContent.coverageProductA.getQualifiedName());
       ml = testPolicyCmptChild.validate(project);
+      
       assertNull(ml.getMessageByCode(ITestPolicyCmpt.MSGCODE_WRONG_PRODUCT_CMPT_OF_LINK));
       assertNotNull(ml.getMessageByCode(ITestPolicyCmpt.MSGCODE_PARENT_PRODUCT_CMPT_OF_LINK_NOT_SPECIFIED));
       assertEquals(ml.getFirstMessage(Message.WARNING).getCode(), ITestPolicyCmpt.MSGCODE_PARENT_PRODUCT_CMPT_OF_LINK_NOT_SPECIFIED);

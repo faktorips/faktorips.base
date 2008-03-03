@@ -414,12 +414,12 @@ public class ProductCmptGeneration extends IpsObjectGeneration implements IProdu
     /**
      * {@inheritDoc}
      */
-    public IProductCmptLink[] getLinks(String typeRelation) {
+    public IProductCmptLink[] getLinks(String typeLink) {
         List result = new ArrayList();
         for (Iterator it = links.iterator(); it.hasNext();) {
-            IProductCmptLink relation = (IProductCmptLink)it.next();
-            if (relation.getAssociation().equals(typeRelation)) {
-                result.add(relation);
+            IProductCmptLink link = (IProductCmptLink)it.next();
+            if (link.getAssociation().equals(typeLink)) {
+                result.add(link);
             }
         }
         return (IProductCmptLink[])result.toArray(new ProductCmptLink[result.size()]);

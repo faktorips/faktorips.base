@@ -289,7 +289,7 @@ public class TestCaseTestCaseTypeDelta implements ITestCaseTestCaseTypeDelta {
                         // check if the order is equal
                         checkSortOrder(param, (ITestPolicyCmpt)element);
                     }else{
-                        ITestPolicyCmpt parent = (ITestPolicyCmpt) ((ITestPolicyCmpt)element).getParentPolicyCmpt();
+                        ITestPolicyCmpt parent = (ITestPolicyCmpt) ((ITestPolicyCmpt)element).getParentTestPolicyCmpt();
                         if (differentSortOrderForTestPolicyCmpts.contains(parent)){
                             continue;
                         }

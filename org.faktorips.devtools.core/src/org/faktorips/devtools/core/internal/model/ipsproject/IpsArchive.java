@@ -296,7 +296,6 @@ public class IpsArchive implements IIpsArchive {
             if (packs==null) {
                 readArchiveContent();
             }
-            archiveFile.refreshLocal(0, null);
             if ((archiveFile.getModificationStamp()!=modificationStamp)) {
                 readArchiveContent();
             }

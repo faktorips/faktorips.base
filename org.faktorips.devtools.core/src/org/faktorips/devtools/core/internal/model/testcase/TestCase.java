@@ -819,7 +819,7 @@ public class TestCase extends IpsObject implements ITestCase {
                 }
             }
         } else {
-            ITestPolicyCmpt parent = newTestPolicyCmpt.getParentPolicyCmpt();
+            ITestPolicyCmpt parent = newTestPolicyCmpt.getParentTestPolicyCmpt();
             ITestPolicyCmptLink[] links = parent.getTestPolicyCmptLinks();
             ArrayList names = new ArrayList();
             for (int i = 0; i < links.length; i++) {

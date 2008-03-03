@@ -283,7 +283,7 @@ public class TestCaseStructurePage extends WizardPage {
                         clearCandidatesInTable();
                         return;
                     }
-                    ITestPolicyCmpt parentPolicyCmpt = testPolicyCmpt.getParentPolicyCmpt();
+                    ITestPolicyCmpt parentPolicyCmpt = testPolicyCmpt.getParentTestPolicyCmpt();
                     changeCandidatesInTable(testPolicyCmpt.findProductCmpt(testPolicyCmpt.getIpsProject()),
                             testPolicyCmpt.findTestPolicyCmptTypeParameter(ipsProject), parentPolicyCmpt == null ? null
                                     : parentPolicyCmpt.findProductCmpt(testPolicyCmpt.getIpsProject()));

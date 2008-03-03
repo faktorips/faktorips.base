@@ -495,13 +495,13 @@ public class TestCaseSection extends IpsSection implements IIpsTestRunListener {
         }
 
         private boolean isValidTarget(Object insertAt){
-            ITestPolicyCmpt parentTestPolicyCmpt = toMove.getParentPolicyCmpt();
+            ITestPolicyCmpt parentTestPolicyCmpt = toMove.getParentTestPolicyCmpt();
             if (parentTestPolicyCmpt == null){
                 return false;
             }
             ITestPolicyCmpt parentTestPolicyCmptOfTarget = null;
             if (insertAt instanceof ITestPolicyCmpt){
-                parentTestPolicyCmptOfTarget = ((ITestPolicyCmpt)insertAt).getParentPolicyCmpt();
+                parentTestPolicyCmptOfTarget = ((ITestPolicyCmpt)insertAt).getParentTestPolicyCmpt();
             }
             if (parentTestPolicyCmpt.equals(parentTestPolicyCmptOfTarget)){
                 return true;
@@ -548,7 +548,7 @@ public class TestCaseSection extends IpsSection implements IIpsTestRunListener {
          * Moves the test policy cmpt stored in toMove on the position of the given cmpt.
          */
         private void move(ITestPolicyCmpt cmpt) throws CoreException {
-            final ITestPolicyCmpt parentTestPolicyCmpt = toMove.getParentPolicyCmpt();
+            final ITestPolicyCmpt parentTestPolicyCmpt = toMove.getParentTestPolicyCmpt();
             
             int posTarget = parentTestPolicyCmpt.getIndexOfChildTestPolicyCmpt(cmpt);
             final int posSource = parentTestPolicyCmpt.getIndexOfChildTestPolicyCmpt(toMove);
@@ -595,7 +595,7 @@ public class TestCaseSection extends IpsSection implements IIpsTestRunListener {
             
             if (selected instanceof ITestPolicyCmpt) {
                 toMove = (ITestPolicyCmpt) selected;
-                ITestPolicyCmpt parentTestPolicyCmpt = toMove.getParentPolicyCmpt();
+                ITestPolicyCmpt parentTestPolicyCmpt = toMove.getParentTestPolicyCmpt();
                 if (parentTestPolicyCmpt == null){
                     event.doit = false;
                     return;
@@ -785,7 +785,7 @@ public class TestCaseSection extends IpsSection implements IIpsTestRunListener {
                 Object firstElement = selection.getFirstElement();
                 if (firstElement instanceof ITestPolicyCmpt){
                     ITestPolicyCmpt testPolicyCmpt = (ITestPolicyCmpt)firstElement;
-                    ITestPolicyCmpt parentPolicyCmpt = testPolicyCmpt.getParentPolicyCmpt();
+                    ITestPolicyCmpt parentPolicyCmpt = testPolicyCmpt.getParentTestPolicyCmpt();
                     int index = parentPolicyCmpt.getIndexOfChildTestPolicyCmpt(testPolicyCmpt);
                     int newIndex = parentPolicyCmpt.moveTestPolicyCmptLink(new int[]{index}, up)[0];
                     if (newIndex != index){
@@ -1773,7 +1773,7 @@ public class TestCaseSection extends IpsSection implements IIpsTestRunListener {
                         // policy cmpt type not found, this is a validation error
                         return;
                     }
-					productCmptQualifiedNames = selectProductCmptsDialog(testTypeParam, testPolicyCmpt.getParentPolicyCmpt(), false);
+					productCmptQualifiedNames = selectProductCmptsDialog(testTypeParam, testPolicyCmpt.getParentTestPolicyCmpt(), false);
 					if (productCmptQualifiedNames == null || productCmptQualifiedNames.length == 0){
 						// chancel
 						return;
