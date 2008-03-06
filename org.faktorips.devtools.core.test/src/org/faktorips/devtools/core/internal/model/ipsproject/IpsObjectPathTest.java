@@ -21,6 +21,7 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Set;
 
+import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.runtime.CoreException;
@@ -48,6 +49,27 @@ public class IpsObjectPathTest extends AbstractIpsPluginTest {
     protected void setUp() throws Exception {
         super.setUp();
         ipsProject = this.newIpsProject("TestProject");
+    }
+    
+    public void testGetEntry() throws CoreException {
+        IIpsObjectPath path = ipsProject.getIpsObjectPath();
+        assertNull(path.getEntry(null));
+        assertNull(path.getEntry("unknown"));
+        
+        IFolder srcFolder = ipsProject.getProject().getFolder("src");
+        IIpsObjectPathEntry entry0 = path.newSourceFolderEntry(srcFolder);
+        
+        path.newIpsProjectRefEntry(newIpsProject("Project2"));
+        
+        IFile archiveFile = ipsProject.getProject().getFile("archive.jar");
+        IIpsObjectPathEntry entry2 = path.newArchiveEntry(archiveFile);
+        
+        assertEquals(entry0, path.getEntry("src"));
+        assertNull(path.getEntry("Project2"));
+        assertEquals(entry2, path.getEntry("archive.jar"));
+        
+        assertNull(path.getEntry("unknwon"));
+        assertNull(path.getEntry(null));
     }
     
     public void testNewSrcFolderEntry() throws CoreException {
