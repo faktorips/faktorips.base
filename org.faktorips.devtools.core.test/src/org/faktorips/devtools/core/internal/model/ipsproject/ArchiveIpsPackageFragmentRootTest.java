@@ -119,16 +119,6 @@ public class ArchiveIpsPackageFragmentRootTest extends AbstractIpsPluginTest {
         assertTrue(result.contains(root.findIpsObject(IpsObjectType.POLICY_CMPT_TYPE, "motor.collision.CollisionCoverage")));
     }
 
-    public void testFindIpsObjects() throws CoreException {
-        List result = new ArrayList();
-        root.findIpsObjects(result);
-        assertEquals(4, result.size());
-        assertTrue(result.contains(root.findIpsObject(IpsObjectType.POLICY_CMPT_TYPE, "motor.Policy")));
-        assertTrue(result.contains(root.findIpsObject(IpsObjectType.PRODUCT_CMPT_TYPE_V2, "motor.PolicyProductCmpt")));
-        assertTrue(result.contains(root.findIpsObject(IpsObjectType.POLICY_CMPT_TYPE, "motor.collision.CollisionCoverage")));
-        assertTrue(result.contains(root.findIpsObject(IpsObjectType.PRODUCT_CMPT, "motor.MotorProduct")));
-    }
-
     public void testGetSortedIpsPackageFragments() throws CoreException {
         IIpsPackageFragment[] packs = root.getSortedIpsPackageFragments();
         assertEquals(2, packs.length);

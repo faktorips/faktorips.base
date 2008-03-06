@@ -126,14 +126,6 @@ public abstract class AbstractIpsPackageFragmentRoot extends IpsElement implemen
     abstract void findIpsObjects(IpsObjectType type, List result) throws CoreException;
 
     /**
-     * Searches all objects in the root folder and adds them to the result. Does nothing if the 
-     * Parameter is null.
-     */
-    abstract void findIpsObjects(List result) throws CoreException;
-    
-    
-
-    /**
      * Searches all product components that are based on the given product component type (either
      * directly or because they are based on a subtype of the given type) and adds them to the
      * result. If productCmptType is <code>null</code>, returns all product components found in

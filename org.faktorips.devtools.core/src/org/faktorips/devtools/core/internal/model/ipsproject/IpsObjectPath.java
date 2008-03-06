@@ -18,8 +18,10 @@
 package org.faktorips.devtools.core.internal.model.ipsproject;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import org.apache.commons.lang.SystemUtils;
@@ -110,6 +112,9 @@ public class IpsObjectPath implements IIpsObjectPath {
     private String basePackageDerived = ""; //$NON-NLS-1$
     
     private IIpsProject ipsProject;
+    
+    // map with QualifiedNameTypes as keys and CachedIpsSrcFiles as values.
+    private Map lookupCache = new HashMap(1000);
     
     public IpsObjectPath(IIpsProject ipsProject){
         ArgumentCheck.notNull(ipsProject, this);
@@ -399,13 +404,30 @@ public class IpsObjectPath implements IIpsObjectPath {
      * on the path. Returns <code>null</code> if no such object is found.
      */
     public IIpsSrcFile findIpsSrcFile(QualifiedNameType nameType, Set visitedEntries) throws CoreException {
-        for (int i=0; i<entries.length; i++) {
+        int maxEntriesToSearch = entries.length;
+        CachedSrcFile cachedSrcFile = (CachedSrcFile)lookupCache.get(nameType);
+        if (cachedSrcFile!=null) {
+            if (cachedSrcFile.entryIndex==0) {
+                // if the file was found via the first entry, it is not possible that a file with the same name
+                // has been added to another entry that now shadows the found file.
+                if (cachedSrcFile.file.exists()) {
+                    return cachedSrcFile.file;
+                } else {
+                    lookupCache.remove(nameType);
+                    return null;
+                }
+            } else {
+                maxEntriesToSearch = cachedSrcFile.entryIndex;
+            }
+        }
+        for (int i=0; i<maxEntriesToSearch; i++) {
             IIpsSrcFile ipsSrcFile = ((IpsObjectPathEntry)entries[i]).findIpsSrcFile(nameType, visitedEntries);
             if (ipsSrcFile!=null) {
+                lookupCache.put(nameType, new CachedSrcFile(ipsSrcFile, i));
                 return ipsSrcFile;
             }
         }
-        return null;
+        return cachedSrcFile==null ? null : cachedSrcFile.file;
     }
     
     /**
@@ -579,5 +601,19 @@ public class IpsObjectPath implements IIpsObjectPath {
             }
         }
         return false;
+    }
+    
+    private static class CachedSrcFile {
+        
+        IIpsSrcFile file;
+        int entryIndex;
+        
+        public CachedSrcFile(IIpsSrcFile file, int entryIndex) {
+            super();
+            this.file = file;
+            this.entryIndex = entryIndex;
+        }
+        
+        
     }
 }

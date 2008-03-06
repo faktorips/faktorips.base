@@ -651,6 +651,61 @@ public class IpsProjectTest extends AbstractIpsPluginTest {
 	    return refProject;
     }
 
+    public void testFindIpsSrcFile() throws CoreException, InterruptedException {
+        IPolicyCmptType testObject = newPolicyCmptTypeWithoutProductCmptType(ipsProject, "a.b.Test");
+        QualifiedNameType qnt = new QualifiedNameType("a.b.Test", IpsObjectType.POLICY_CMPT_TYPE);
+        IIpsSrcFile file = ipsProject.findIpsSrcFile(qnt);
+        assertNotNull(file);
+        assertEquals(testObject, file.getIpsObject());
+        
+        // search again should return same instance as src file handles are cached
+        assertSame(file, ipsProject.findIpsSrcFile(qnt));
+        
+        // if we change the ips project properties, the cache must be cleared and a new file instance returned.
+        Thread.sleep(500); // sleep some time to make sure the .ipsproject file has definitly a new modification stamp 
+        IIpsObjectPath path = ipsProject.getIpsObjectPath();
+        IFolder newFolder = ipsProject.getProject().getFolder("newFolder");
+        newFolder.create(true, false, null);
+        IIpsSrcFolderEntry entry = path.newSourceFolderEntry(newFolder);
+        ipsProject.setIpsObjectPath(path);
+
+        assertNotSame(file, ipsProject.findIpsSrcFile(qnt));
+        assertNotNull(ipsProject.findIpsSrcFile(qnt));
+        
+        // negative tests
+        assertNull(ipsProject.findIpsSrcFile(new QualifiedNameType("a.c.Test", IpsObjectType.POLICY_CMPT_TYPE)));
+        assertNull(ipsProject.findIpsSrcFile(new QualifiedNameType("a.b.Unknown", IpsObjectType.POLICY_CMPT_TYPE)));
+
+        // invalid package name as it contains a blank => should return null
+        assertNull(ipsProject.findIpsObject(new QualifiedNameType("a b.Test", IpsObjectType.POLICY_CMPT_TYPE)));
+    }
+
+    public void testFindIpsSrcFile_WithTwoRoots() throws CoreException, InterruptedException {
+        IPolicyCmptType testObject = newPolicyCmptTypeWithoutProductCmptType(ipsProject, "a.b.Test");
+        QualifiedNameType qnt = new QualifiedNameType("a.b.Test", IpsObjectType.POLICY_CMPT_TYPE);
+        IIpsSrcFile file = ipsProject.findIpsSrcFile(qnt);
+        assertNotNull(file);
+        assertEquals(testObject, file.getIpsObject());
+        
+        // search again should return same instance as src file handles are cached
+        assertSame(file, ipsProject.findIpsSrcFile(qnt));
+        
+        // if we change the ips project properties, the cache must be cleared and a new file instance returned.
+        Thread.sleep(500); // sleep some time to make sure the .ipsproject file has definitly a new modification stamp 
+        IIpsObjectPath path = ipsProject.getIpsObjectPath();
+        IFolder newFolder = ipsProject.getProject().getFolder("newFolder");
+        newFolder.create(true, false, null);
+        IIpsSrcFolderEntry entry = path.newSourceFolderEntry(newFolder);
+        ipsProject.setIpsObjectPath(path);
+
+        // test if we also find files on the second entry
+        IPolicyCmptType newType = newPolicyCmptType(entry.getIpsPackageFragmentRoot(), "NewPolicy");
+        assertEquals(newType.getIpsSrcFile(), ipsProject.findIpsSrcFile(newType.getQualifiedNameType()));
+        
+        // test if caching works also for the second entry
+        assertEquals(newType.getIpsSrcFile(), ipsProject.findIpsSrcFile(newType.getQualifiedNameType()));
+    }
+
     public void testFindIpsObject() throws CoreException {
         IIpsPackageFragment folder = root.createPackageFragment("a.b", true, null);
         IIpsSrcFile file = folder.createIpsFile(IpsObjectType.POLICY_CMPT_TYPE, "Test", true, null);
