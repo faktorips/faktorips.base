@@ -453,9 +453,9 @@ public interface IIpsProject extends IIpsElement, IProjectNature {
     public void findAllIpsSrcFiles(List result) throws CoreException;
 
     /**
-     * Returns all IpsObjects that are accessible through IpsSrcFolder entries of this IpsProject.
+     * Adds all ips source files that are accessible through ips source folder entries to the result list. 
      */
-    public void findAllIpsObjectsOfSrcFolderEntries(List result) throws CoreException;
+    public void collectAllIpsSrcFilesOfSrcFolderEntries(List result) throws CoreException;
     
     /**
      * Returns all objects of the given type starting with the given prefix found on the ipsobject path.

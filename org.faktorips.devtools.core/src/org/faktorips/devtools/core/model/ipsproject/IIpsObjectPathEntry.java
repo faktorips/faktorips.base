@@ -74,6 +74,11 @@ public interface IIpsObjectPathEntry {
     public IIpsObjectPath getIpsObjectPath();
     
     /**
+     * Returns the ips project this project belongs to.
+     */
+    public IIpsProject getIpsProject();
+    
+    /**
      * Returns the type of this entry as one of the type constant defined in this interface.
      */
     public String getType();
@@ -87,7 +92,7 @@ public interface IIpsObjectPathEntry {
      * Returns the package fragment root this source folder entry defines or <code>null</code> if
      * this is a project reference entry. Note that is not guaranteed that the returned package fragment root exists.
      */
-    public IIpsPackageFragmentRoot getIpsPackageFragmentRoot(IIpsProject project) throws CoreException;
+    public IIpsPackageFragmentRoot getIpsPackageFragmentRoot() throws CoreException;
     
     /**
      * Validates the object path entry and returns the result as list of messages.

@@ -22,7 +22,6 @@ import java.util.Set;
 
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.runtime.CoreException;
-import org.faktorips.devtools.core.model.ipsobject.IIpsObject;
 import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
 import org.faktorips.devtools.core.model.ipsobject.QualifiedNameType;
@@ -56,6 +55,13 @@ public abstract class IpsObjectPathEntry implements IIpsObjectPathEntry {
     public IIpsObjectPath getIpsObjectPath() {
         return path;
     }
+
+    /**
+     * {@inheritDoc}
+     */
+    public IIpsProject getIpsProject() {
+        return path.getIpsProject();
+    }
     
     /**
      * {@inheritDoc}
@@ -64,86 +70,25 @@ public abstract class IpsObjectPathEntry implements IIpsObjectPathEntry {
         return path.getIndex(this);
     }
 
-    /**
-     * Returns the first object with the indicated qualified name type found in the path entry.
-     */
-    public final IIpsObject findIpsObject(IIpsProject ipsProject, QualifiedNameType nameType, Set visitedEntries) throws CoreException {
+    public final IIpsSrcFile findIpsSrcFile(QualifiedNameType nameType, Set visitedEntries) throws CoreException {
         if (visitedEntries.contains(this)) {
             return null;
         }
         visitedEntries.add(this);
-        return findIpsObjectInternal(ipsProject, nameType, visitedEntries);
-    }
-    
-    public final IIpsSrcFile findIpsSrcFile(IIpsProject ipsProject, QualifiedNameType nameType, Set visitedEntries) throws CoreException {
-        if (visitedEntries.contains(this)) {
-            return null;
-        }
-        visitedEntries.add(this);
-        return findIpsSrcFileInternal(ipsProject, nameType, visitedEntries);
-    }
-
-    /**
-     * Adds all objects of the given type found in the path entry to the result list. 
-     */
-    public final void findIpsObjects(IIpsProject ipsProject, IpsObjectType type, List result, Set visitedEntries) throws CoreException {
-        if (visitedEntries.contains(this)) {
-            return;
-        }
-        visitedEntries.add(this);
-        findIpsObjectsInternal(ipsProject, type, result, visitedEntries);
+        return findIpsSrcFileInternal(nameType, visitedEntries);
     }
 
     /**
      * Adds all ips source files of the given type found in the path entry to the result list. 
      */
-    public final void findIpsSrcFiles(IIpsProject ipsProject, IpsObjectType type, List result, Set visitedEntries) throws CoreException {
+    public final void findIpsSrcFiles(IpsObjectType type, List result, Set visitedEntries) throws CoreException {
         if (visitedEntries.contains(this)) {
             return;
         }
         visitedEntries.add(this);
-        findIpsSrcFilesInternal(ipsProject, type, result, visitedEntries);
+        findIpsSrcFilesInternal(type, result, visitedEntries);
     }
         
-    /**
-     * Adds all objects of the given type found in the path entry to the result list. 
-     */
-    public final void findIpsObjects(IIpsProject ipsProject, List result, Set visitedEntries) throws CoreException {
-        if (visitedEntries.contains(this)) {
-            return;
-        }
-        visitedEntries.add(this);
-        findIpsObjectsInternal(ipsProject, result, visitedEntries);
-    }
-    
-    /**
-     * Adds all objects of the given type found in the path entry to the result list. 
-     */
-    protected abstract void findIpsObjectsInternal(IIpsProject ipsProject, List result, Set visitedEntries) throws CoreException;
-    
-    
-    /**
-     * Returns all objects of the given type starting with the given prefix found on the path.
-     * 
-     * @param ignoreCase <code>true</code> if case differences should be ignored during the search.
-     * 
-     * @throws CoreException if an error occurs while searching for the objects. 
-     */
-    public final void findIpsObjectsStartingWith(
-    		IIpsProject ipsProject, 
-    		IpsObjectType type, 
-    		String prefix, 
-    		boolean ignoreCase, 
-    		List result,
-            Set visitedEntries) throws CoreException {
-
-        if (visitedEntries.contains(this)) {
-            return;
-        }
-        visitedEntries.add(this);
-        findIpsObjectsStartingWithInternal(ipsProject, type, prefix, ignoreCase, result, visitedEntries);
-    }
-
     /**
      * Returns all isp source files of the given type starting with the given prefix found on the path.
      * 
@@ -152,7 +97,6 @@ public abstract class IpsObjectPathEntry implements IIpsObjectPathEntry {
      * @throws CoreException if an error occurs while searching for the source files. 
      */
     public final void findIpsSrcFilesStartingWith(
-            IIpsProject ipsProject, 
             IpsObjectType type, 
             String prefix, 
             boolean ignoreCase, 
@@ -163,43 +107,18 @@ public abstract class IpsObjectPathEntry implements IIpsObjectPathEntry {
             return;
         }
         visitedEntries.add(this);
-        findIpsSrcFilesStartingWithInternal(ipsProject, type, prefix, ignoreCase, result, visitedEntries);
+        findIpsSrcFilesStartingWithInternal(type, prefix, ignoreCase, result, visitedEntries);
     }
 
     /**
      * Adds all objects of the given type found in the path entry to the result list. 
      */
-    protected abstract void findIpsObjectsInternal(IIpsProject ipsProject, IpsObjectType type, List result, Set visitedEntries) throws CoreException;
-
-    /**
-     * Adds all objects of the given type found in the path entry to the result list. 
-     */
-    protected abstract void findIpsSrcFilesInternal(IIpsProject ipsProject, IpsObjectType type, List result, Set visitedEntries) throws CoreException;
-
-    /**
-     * Returns the first object with the indicated qualified name type found in the path entry.
-     */
-    protected abstract IIpsObject findIpsObjectInternal(IIpsProject ipsProject, QualifiedNameType nameType, Set visitedEntries) throws CoreException;
+    protected abstract void findIpsSrcFilesInternal(IpsObjectType type, List result, Set visitedEntries) throws CoreException;
 
     /**
      * Returns the first ips source file with the indicated qualified name type found in the path entry. 
      */
-    protected abstract IIpsSrcFile findIpsSrcFileInternal(IIpsProject ipsProject, QualifiedNameType nameType, Set visitedEntries) throws CoreException;
-    
-    /**
-     * Returns all objects of the given type starting with the given prefix found on the path.
-     * 
-     * @param ignoreCase <code>true</code> if case differences should be ignored during the search.
-     * 
-     * @throws CoreException if an error occurs while searching for the objects. 
-     */
-    protected abstract void findIpsObjectsStartingWithInternal(
-            IIpsProject ipsProject, 
-            IpsObjectType type, 
-            String prefix, 
-            boolean ignoreCase, 
-            List result,
-            Set visitedEntries) throws CoreException;
+    protected abstract IIpsSrcFile findIpsSrcFileInternal(QualifiedNameType nameType, Set visitedEntries) throws CoreException;
     
     /**
      * Returns all ips source files of the given type starting with the given prefix found on the path.
@@ -208,8 +127,7 @@ public abstract class IpsObjectPathEntry implements IIpsObjectPathEntry {
      * 
      * @throws CoreException if an error occurs while searching for the source files. 
      */
-    protected abstract void findIpsSrcFilesStartingWithInternal(
-            IIpsProject ipsProject, 
+    public abstract void findIpsSrcFilesStartingWithInternal(
             IpsObjectType type, 
             String prefix, 
             boolean ignoreCase, 

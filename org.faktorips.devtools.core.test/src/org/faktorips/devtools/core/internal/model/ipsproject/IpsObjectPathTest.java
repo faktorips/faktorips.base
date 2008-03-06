@@ -210,24 +210,6 @@ public class IpsObjectPathTest extends AbstractIpsPluginTest {
         assertEquals(project.getFolder("derived"), path.getOutputFolderForDerivedSources());
     }
     
-    public void testFindIpsObjectsStartingWith() throws CoreException {
-        IIpsProject ipsProject2 = newIpsProject("TestProject2");
-        
-        IpsObjectPath path = (IpsObjectPath)ipsProject.getIpsObjectPath();
-        path.newIpsProjectRefEntry(ipsProject2);
-        ipsProject.setIpsObjectPath(path);
-        
-        IIpsObject obj1 = newIpsObject(ipsProject, IpsObjectType.POLICY_CMPT_TYPE, "MotorPolicy");
-        IIpsObject obj2 = newIpsObject(ipsProject2, IpsObjectType.POLICY_CMPT_TYPE, "MotorPolicy2");
-        
-        ArrayList result = new ArrayList();
-        Set visitedEntries = new HashSet();
-        path.findIpsObjectsStartingWith(ipsProject, IpsObjectType.POLICY_CMPT_TYPE, "Motor", false, result, visitedEntries);
-        assertEquals(2, result.size());
-        assertTrue(result.contains(obj1));
-        assertTrue(result.contains(obj2));
-    }
-
     public void testFindIpsSrcFileStartingWith() throws CoreException {
         IIpsProject ipsProject2 = newIpsProject("TestProject2");
         
@@ -240,13 +222,13 @@ public class IpsObjectPathTest extends AbstractIpsPluginTest {
         
         ArrayList result = new ArrayList();
         Set visitedEntries = new HashSet();
-        path.findIpsSrcFilesStartingWith(ipsProject, IpsObjectType.POLICY_CMPT_TYPE, "Motor", false, result, visitedEntries);
+        path.findIpsSrcFilesStartingWith(IpsObjectType.POLICY_CMPT_TYPE, "Motor", false, result, visitedEntries);
         assertEquals(2, result.size());
         assertTrue(result.contains(obj1.getIpsSrcFile()));
         assertTrue(result.contains(obj2.getIpsSrcFile()));
     }
     
-    public void testFineIpsObjects() throws Exception{
+    public void testFindIpsSrcFiles() throws Exception{
     
         IIpsObject obj1 = newIpsObject(ipsProject, IpsObjectType.PRODUCT_CMPT_TYPE_V2, "a.b.A");
         IIpsObject obj2 = newIpsObject(ipsProject, IpsObjectType.PRODUCT_CMPT_TYPE_V2, "a.b.B");
@@ -254,11 +236,11 @@ public class IpsObjectPathTest extends AbstractIpsPluginTest {
         
         ArrayList result = new ArrayList();
         Set visitedEntries = new HashSet();
-        ((IpsObjectPath)ipsProject.getIpsObjectPath()).findAllIpsObjects(ipsProject, result, visitedEntries);
+        ((IpsObjectPath)ipsProject.getIpsObjectPath()).findIpsSrcFiles(IpsObjectType.PRODUCT_CMPT_TYPE_V2, result, visitedEntries);
         
-        assertTrue(result.contains(obj1));
-        assertTrue(result.contains(obj2));
-        assertTrue(result.contains(obj3));
+        assertTrue(result.contains(obj1.getIpsSrcFile()));
+        assertTrue(result.contains(obj2.getIpsSrcFile()));
+        assertTrue(result.contains(obj3.getIpsSrcFile()));
     }
     
     public void testGetOutputFolders() {

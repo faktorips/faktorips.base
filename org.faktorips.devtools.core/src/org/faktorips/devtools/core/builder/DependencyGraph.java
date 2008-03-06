@@ -28,6 +28,7 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.Platform;
 import org.faktorips.devtools.core.model.IDependency;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObject;
+import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
 import org.faktorips.devtools.core.model.ipsobject.QualifiedNameType;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
@@ -88,13 +89,14 @@ public class DependencyGraph implements Serializable {
     private void init() throws CoreException {
         dependantsForMap = new HashMap();
         dependsOnMap = new HashMap();
-        List allIpsObjects = new ArrayList();
-        ipsProject.findAllIpsObjectsOfSrcFolderEntries(allIpsObjects);
-        if(TRACE_DEPENDENCY_GRAPH_MANAGEMENT){
-            System.out.println("all: " + allIpsObjects); //$NON-NLS-1$
-        }
-        for (Iterator it = allIpsObjects.iterator(); it.hasNext();) {
-            IIpsObject ipsObject = (IIpsObject)it.next();
+        List allSrcFiles = new ArrayList();
+        ipsProject.collectAllIpsSrcFilesOfSrcFolderEntries(allSrcFiles);
+        for (Iterator it = allSrcFiles.iterator(); it.hasNext();) {
+            IIpsSrcFile file = (IIpsSrcFile)it.next();
+            if (!file.exists()) {
+                continue;
+            }
+            IIpsObject ipsObject = file.getIpsObject();
             IDependency[] dependsOn = ipsObject.dependsOn();
             if(dependsOn == null || dependsOn.length == 0){
                 continue;

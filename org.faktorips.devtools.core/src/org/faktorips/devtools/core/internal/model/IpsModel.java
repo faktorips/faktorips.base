@@ -822,7 +822,6 @@ public class IpsModel extends IpsElement implements IIpsModel, IResourceChangeLi
             clearIpsProjectPropertiesCache(ipsProject);
         }
         IpsProjectProperties data = (IpsProjectProperties)projectPropertiesMap.get(ipsProject.getName());
-
         if (data == null) {
             data = readProjectData(ipsProject);
             projectPropertiesMap.put(ipsProject.getName(), data);

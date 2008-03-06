@@ -37,7 +37,6 @@ import org.faktorips.devtools.core.model.ipsproject.IIpsArchive;
 import org.faktorips.devtools.core.model.ipsproject.IIpsArchiveEntry;
 import org.faktorips.devtools.core.model.ipsproject.IIpsObjectPathEntry;
 import org.faktorips.devtools.core.model.ipsproject.IIpsPackageFragmentRoot;
-import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.util.message.Message;
 import org.faktorips.util.message.MessageList;
 import org.w3c.dom.Document;
@@ -111,73 +110,30 @@ public class IpsArchiveEntry extends IpsObjectPathEntry implements IIpsArchiveEn
     /**
      * {@inheritDoc}
      */
-    public IIpsPackageFragmentRoot getIpsPackageFragmentRoot(IIpsProject ipsProject) throws CoreException {
+    public IIpsPackageFragmentRoot getIpsPackageFragmentRoot() throws CoreException {
         return new ArchiveIpsPackageFragmentRoot(getIpsArchive().getArchiveFile());
     }
     
-    /**
-     * {@inheritDoc}
-     */
-    public IIpsObject findIpsObjectInternal(IIpsProject ipsProject, QualifiedNameType qnt, Set visitedEntries) throws CoreException {
-        return getIpsPackageFragmentRoot(ipsProject).findIpsObject(qnt);
+    public void findIpsSrcFilesInternal(IpsObjectType type, List result, Set visitedEntries) throws CoreException {
+        ((ArchiveIpsPackageFragmentRoot)getIpsPackageFragmentRoot()).findIpsSourceFiles(type, result);
     }
 
     /**
      * {@inheritDoc}
      */
-    public void findIpsObjectsInternal(IIpsProject ipsProject, IpsObjectType type, List result, Set visitedEntries) throws CoreException {
-        ((ArchiveIpsPackageFragmentRoot)getIpsPackageFragmentRoot(ipsProject)).findIpsObjects(type, result);
+    protected IIpsSrcFile findIpsSrcFileInternal(QualifiedNameType qnt, Set visitedEntries) throws CoreException {
+        return getIpsPackageFragmentRoot().findIpsSrcFile(qnt);
     }
 
     /**
      * {@inheritDoc}
      */
-    protected void findIpsObjectsInternal(IIpsProject ipsProject, List result, Set visitedEntries) throws CoreException {
-        ((ArchiveIpsPackageFragmentRoot)getIpsPackageFragmentRoot(ipsProject)).findIpsObjects(result);
-    }
-    
-    public void findIpsSrcFilesInternal(IIpsProject ipsProject, IpsObjectType type, List result, Set visitedEntries) throws CoreException {
-        ((ArchiveIpsPackageFragmentRoot)getIpsPackageFragmentRoot(ipsProject)).findIpsSourceFiles(type, result);
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    protected IIpsSrcFile findIpsSrcFileInternal(IIpsProject ipsProject, QualifiedNameType qnt, Set visitedEntries) throws CoreException {
-        return getIpsPackageFragmentRoot(ipsProject).findIpsSrcFile(qnt);
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    public void findIpsObjectsStartingWithInternal(IIpsProject ipsProject,
+    public void findIpsSrcFilesStartingWithInternal(
             IpsObjectType type,
             String prefix,
             boolean ignoreCase,
             List result,
             Set visitedEntries) throws CoreException {
-        findIpsSrcFilesStartingWithInternal(ipsProject, type, prefix, ignoreCase, result, visitedEntries, true);
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    protected void findIpsSrcFilesStartingWithInternal(IIpsProject ipsProject,
-            IpsObjectType type,
-            String prefix,
-            boolean ignoreCase,
-            List result,
-            Set visitedEntries) throws CoreException {
-        findIpsSrcFilesStartingWithInternal(ipsProject, type, prefix, ignoreCase, result, visitedEntries, false);
-    }
-    
-    private void findIpsSrcFilesStartingWithInternal(IIpsProject ipsProject,
-            IpsObjectType type,
-            String prefix,
-            boolean ignoreCase,
-            List result,
-            Set visitedEntries,
-            boolean returnIpsObjects) throws CoreException {
         if (ignoreCase) {
             prefix = prefix.toLowerCase();
         }
@@ -189,26 +145,13 @@ public class IpsArchiveEntry extends IpsObjectPathEntry implements IIpsArchiveEn
                 name = name.toLowerCase();
             }
             if (name.startsWith(prefix)) {
-                if (returnIpsObjects) {
-                    result.add(getIpsObject(qnt, ipsProject));
-                } else {
-                    result.add(getIpsSrcFile(qnt, ipsProject));
-                }
+                result.add(getIpsSrcFile(qnt));
             }
         }
     }
 
-    private IIpsObject getIpsObject(QualifiedNameType qNameType, IIpsProject project) throws CoreException {
-        IIpsPackageFragmentRoot root = getIpsPackageFragmentRoot(project);
-        IIpsObject object = root.findIpsObject(qNameType);
-        if (object!=null) {
-            return object;
-        }
-        throw new CoreException(new IpsStatus("IpsObject not found for qNameType " + qNameType + " (but was expectedt to be in the archive!")); //$NON-NLS-1$ //$NON-NLS-2$
-    }
-
-    private IIpsSrcFile getIpsSrcFile(QualifiedNameType qNameType, IIpsProject project) throws CoreException {
-        IIpsPackageFragmentRoot root = getIpsPackageFragmentRoot(project);
+    private IIpsSrcFile getIpsSrcFile(QualifiedNameType qNameType) throws CoreException {
+        IIpsPackageFragmentRoot root = getIpsPackageFragmentRoot();
         IIpsSrcFile object = root.findIpsSrcFile(qNameType);
         if (object!=null) {
             return object;

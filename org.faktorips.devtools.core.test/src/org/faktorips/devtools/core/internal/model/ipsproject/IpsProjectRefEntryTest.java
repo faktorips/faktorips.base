@@ -24,6 +24,7 @@ import java.util.Set;
 import org.eclipse.core.runtime.CoreException;
 import org.faktorips.devtools.core.AbstractIpsPluginTest;
 import org.faktorips.devtools.core.IpsPlugin;
+import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
 import org.faktorips.devtools.core.model.ipsproject.IIpsObjectPath;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProjectProperties;
@@ -48,7 +49,7 @@ public class IpsProjectRefEntryTest extends AbstractIpsPluginTest {
         path = new IpsObjectPath(ipsProject);
     }
 
-    public void testFindIpsObjectsInternal() throws Exception{
+    public void testFindIpsSrcFiles() throws Exception{
         
         IpsProject refProject = (IpsProject)newIpsProject("RefProject");
         IPolicyCmptType a = newPolicyCmptTypeWithoutProductCmptType(refProject, "a.A");
@@ -62,11 +63,11 @@ public class IpsProjectRefEntryTest extends AbstractIpsPluginTest {
         
         ArrayList result = new ArrayList();
         Set visitedEntries = new HashSet();
-        entry.findIpsObjects(refProject, result, visitedEntries);
+        entry.findIpsSrcFiles(IpsObjectType.POLICY_CMPT_TYPE, result, visitedEntries);
         
-        assertTrue(result.contains(a));
-        assertTrue(result.contains(b));
-        assertFalse(result.contains(c));
+        assertTrue(result.contains(a.getIpsSrcFile()));
+        assertTrue(result.contains(b.getIpsSrcFile()));
+        assertFalse(result.contains(c.getIpsSrcFile()));
     }
     
     public void testInitFromXml() {

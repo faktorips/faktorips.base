@@ -108,8 +108,12 @@ import org.w3c.dom.Element;
  */
 public class IpsProject extends IpsElement implements IIpsProject {
 
+    // the underlying plattform project
+    private IProject project;
+
     private IIpsProjectNamingConventions namingConventions = null;
 	
+    
     /**
      * Constructor needed for <code>IProject.getNature()</code> and
      * <code>IProject.addNature()</code>.
@@ -124,7 +128,11 @@ public class IpsProject extends IpsElement implements IIpsProject {
     }
 
     public IProject getProject() {
-        return ResourcesPlugin.getWorkspace().getRoot().getProject(getName());
+        if (project==null) {
+            // we don't have a threading problem here, as projects are only handles!
+            project = ResourcesPlugin.getWorkspace().getRoot().getProject(getName()); 
+        }
+        return project;
     }
     
     /**
@@ -433,8 +441,11 @@ public class IpsProject extends IpsElement implements IIpsProject {
         if (ipsObject==null) {
             return false;
         }
-        IIpsObject objectOnPath = getIpsObjectPathInternal().findIpsObject(this, ipsObject.getQualifiedNameType(), new HashSet());
-        return ipsObject==objectOnPath;
+        IIpsSrcFile file = findIpsSrcFile(ipsObject.getQualifiedNameType());
+        if (file==null) {
+            return false;
+        }
+        return file.equals(ipsObject.getIpsSrcFile());
     }
 
     /**
@@ -505,7 +516,7 @@ public class IpsProject extends IpsElement implements IIpsProject {
         List roots = new ArrayList();
         IIpsObjectPathEntry[] entries = getIpsObjectPathInternal().getEntries();
         for (int i = 0; i < entries.length; i++) {
-            IIpsPackageFragmentRoot root = entries[i].getIpsPackageFragmentRoot(this);
+            IIpsPackageFragmentRoot root = entries[i].getIpsPackageFragmentRoot();
             if (root!=null) {
                 roots.add(root);
             }
@@ -729,19 +740,22 @@ public class IpsProject extends IpsElement implements IIpsProject {
      * {@inheritDoc}
      */
     public IIpsObject findIpsObject(IpsObjectType type, String qualifiedName) throws CoreException {
-        if (qualifiedName==null || qualifiedName.equals("")) { //$NON-NLS-1$
+        IIpsSrcFile file = findIpsSrcFile(type, qualifiedName);
+        if (file==null) {
             return null;
         }
-        Set visitedEntries = new HashSet();
-        return ((IpsObjectPath)getIpsObjectPathInternal()).findIpsObject(this, type, qualifiedName, visitedEntries);
+        return file.getIpsObject();
     }
 
     /**
      * {@inheritDoc}
      */
     public IIpsObject findIpsObject(QualifiedNameType nameType) throws CoreException {
-        Set visitedEntries = new HashSet();
-        return ((IpsObjectPath)getIpsObjectPathInternal()).findIpsObject(this, nameType, visitedEntries);
+        IIpsSrcFile file = findIpsSrcFile(nameType.getIpsObjectType(), nameType.getName());
+        if (file==null) {
+            return null;
+        }
+        return file.getIpsObject();
     }
 
     /**
@@ -785,12 +799,18 @@ public class IpsProject extends IpsElement implements IIpsProject {
      * {@inheritDoc}
      */
     public void findTableContents(ITableStructure structure, List tableContents) throws CoreException{
+        if (structure==null) {
+            return;
+        }
+        String structureQName = structure.getQualifiedName();
         List alltableContents = new ArrayList();
-        findIpsObjects(IpsObjectType.TABLE_CONTENTS, alltableContents);
+        findAllIpsSrcFiles(alltableContents, IpsObjectType.TABLE_CONTENTS);
         for (Iterator it = alltableContents.iterator(); it.hasNext();) {
-            ITableContents content = (ITableContents)it.next();
-            if(content.getTableStructure().equals(structure.getQualifiedName())){
-                tableContents.add(content);
+            IIpsSrcFile file = (IIpsSrcFile)it.next();
+            if (file.exists()) {
+                if (structureQName.equals(file.getPropertyValue(ITableContents.PROPERTY_TABLESTRUCTURE))) {
+                    tableContents.add(file.getIpsObject());
+                }
             }
         }
     }
@@ -798,9 +818,17 @@ public class IpsProject extends IpsElement implements IIpsProject {
     /**
      * {@inheritDoc}
      */
+    public IIpsSrcFile findIpsSrcFile(QualifiedNameType qNameType) throws CoreException{
+        Set visitedEntries = new HashSet();
+        return ((IpsObjectPath)getIpsObjectPathInternal()).findIpsSrcFile(qNameType.getIpsObjectType(), qNameType.getName(), visitedEntries);
+    }
+    
+    /**
+     * {@inheritDoc}
+     */
     public IIpsSrcFile findIpsSrcFile(IpsObjectType type, String qualifiedName) throws CoreException{
         Set visitedEntries = new HashSet();
-        return ((IpsObjectPath)getIpsObjectPathInternal()).findIpsSrcFile(this, type, qualifiedName, visitedEntries);
+        return ((IpsObjectPath)getIpsObjectPathInternal()).findIpsSrcFile(type, qualifiedName, visitedEntries);
     }
     
     /**
@@ -809,26 +837,12 @@ public class IpsProject extends IpsElement implements IIpsProject {
     public IIpsObject[] findIpsObjectsStartingWith(IpsObjectType type,
             String prefix,
             boolean ignoreCase) throws CoreException {
-        ArrayList result = new ArrayList();
-        findIpsObjectsStartingWith(type, prefix, ignoreCase, result);
-        return (IIpsObject[])result.toArray(new IIpsObject[result.size()]);
+        
+        ArrayList files = new ArrayList();
+        findIpsSrcFilesStartingWith(type, prefix, ignoreCase, files);
+        return filesToIpsObjects(files);
     }
     
-    /*
-     * Searches all objects of the given type starting with the given prefix found on the project's
-     * path and adds them to the given result list.
-     * 
-     * @throws CoreException if an error occurs while searching for the objects.
-     */
-    private void findIpsObjectsStartingWith(IpsObjectType type,
-            String prefix,
-            boolean ignoreCase,
-            List result) throws CoreException {
-        Set visitedEntries = new HashSet();
-        ((IpsObjectPath)getIpsObjectPathInternal()).findIpsObjectsStartingWith(this, type, prefix,
-            ignoreCase, result, visitedEntries);
-    }
-
     /**
      * {@inheritDoc}
      */
@@ -851,7 +865,7 @@ public class IpsProject extends IpsElement implements IIpsProject {
             boolean ignoreCase,
             List result) throws CoreException {
         Set visitedEntries = new HashSet();
-        ((IpsObjectPath)getIpsObjectPathInternal()).findIpsSrcFilesStartingWith(this, type, prefix,
+        ((IpsObjectPath)getIpsObjectPathInternal()).findIpsSrcFilesStartingWith(type, prefix,
             ignoreCase, result, visitedEntries);
     }
 	
@@ -861,8 +875,7 @@ public class IpsProject extends IpsElement implements IIpsProject {
      * @deprecated use this{@link #findIpsSrcFiles(IpsObjectType)} instead
 	 */
     public IIpsObject[] findIpsObjects(IpsObjectType type) throws CoreException {
-        Set visitedEntries = new HashSet();
-        return ((IpsObjectPath)getIpsObjectPathInternal()).findIpsObjects(this, type, visitedEntries);
+        return filesToIpsObjects(findIpsSrcFiles(type));
     }
     
     /**
@@ -872,25 +885,59 @@ public class IpsProject extends IpsElement implements IIpsProject {
      * @deprecated use this{@link #findAllIpsSrcFiles(List)} instead
      */
     public void findAllIpsObjects(List result) throws CoreException{
-        findAllIpsObjects(result, IpsObjectType.ALL_TYPES);
-    }
-
-    private void findAllIpsObjects(List result, IpsObjectType[] ipsObjectTypes) throws CoreException{
-        Set visitedEntries = new HashSet();
-        for (int i = 0; i < ipsObjectTypes.length; i++) {
-            getIpsObjectPathInternal().findIpsObjects(this, ipsObjectTypes[i], result, visitedEntries);
-            visitedEntries.clear();
+        // this is not the most effizient implementation, however, you should use
+        // findIpsSrcFiles anyway!
+        List files = new ArrayList();
+        findAllIpsSrcFiles(files);
+        for (Iterator iter = files.iterator(); iter.hasNext();) {
+            IIpsSrcFile file = (IIpsSrcFile)iter.next();
+            IIpsObject ipsObject = null;
+            if (file.exists()) {
+                ipsObject = file.getIpsObject();
+                if (ipsObject!=null) {
+                    result.add(ipsObject);
+                }
+            }
         }
     }
-    
-    private void findIpsObjects(IpsObjectType type, List result) throws CoreException {
-    	getIpsObjectPathInternal().findIpsObjects(this, type, result, new HashSet());
+
+    private IIpsObject[] filesToIpsObjects(IIpsSrcFile[] files) throws CoreException {
+        // this is not the most effizient implementation, however, you should use
+        // findIpsSrcFiles anyway!
+        List objects = new ArrayList(files.length);
+        for (int i = 0; i < files.length; i++) {
+            IIpsObject ipsObject = null;
+            if (files[i].exists()) {
+                ipsObject = files[i].getIpsObject();
+                if (ipsObject!=null) {
+                    objects.add(ipsObject);
+                }
+            }
+        }
+        return (IIpsObject[])objects.toArray(new IIpsObject[objects.size()]);
     }
     
-
-    public void findAllIpsObjectsOfSrcFolderEntries(List result) throws CoreException {
-        Set visitedEntries = new HashSet();
-        getIpsObjectPathInternal().findAllIpsObjectsOfSrcFolderEntries(this, result, visitedEntries);
+    private IIpsObject[] filesToIpsObjects(List files) throws CoreException {
+        List objects = new ArrayList(files.size());
+        for (Iterator it=files.iterator(); it.hasNext(); ) {
+            IIpsSrcFile file = (IIpsSrcFile)it.next();
+            IIpsObject ipsObject = null;
+            if (file.exists()) {
+                ipsObject = file.getIpsObject();
+                if (ipsObject!=null) {
+                    objects.add(ipsObject);
+                }
+            }
+            
+        }
+        return (IIpsObject[])objects.toArray(new IIpsObject[objects.size()]);
+    }
+    
+    /**
+     * {@inheritDoc}
+     */
+    public void collectAllIpsSrcFilesOfSrcFolderEntries(List result) throws CoreException {
+        getIpsObjectPathInternal().collectAllIpsSrcFilesOfSrcFolderEntries(result);
     }
 
     /**
@@ -898,7 +945,7 @@ public class IpsProject extends IpsElement implements IIpsProject {
      */
     public IIpsSrcFile[] findIpsSrcFiles(IpsObjectType type) throws CoreException {
         Set visitedEntries = new HashSet();
-        return ((IpsObjectPath)getIpsObjectPathInternal()).findIpsSrcFiles(this, type, visitedEntries);
+        return ((IpsObjectPath)getIpsObjectPathInternal()).findIpsSrcFiles(type, visitedEntries);
     }
     
     /**
@@ -908,10 +955,15 @@ public class IpsProject extends IpsElement implements IIpsProject {
         findAllIpsSrcFiles(result, IpsObjectType.ALL_TYPES);
     }
     
+    private void findAllIpsSrcFiles(List result, IpsObjectType ipsObjectType) throws CoreException{
+        Set visitedEntries = new HashSet();
+        getIpsObjectPathInternal().findIpsSrcFiles(ipsObjectType, result, visitedEntries);
+    }
+    
     private void findAllIpsSrcFiles(List result, IpsObjectType[] ipsObjectTypes) throws CoreException{
         Set visitedEntries = new HashSet();
         for (int i = 0; i < ipsObjectTypes.length; i++) {
-            getIpsObjectPathInternal().findIpsSrcFiles(this, ipsObjectTypes[i], result, visitedEntries);
+            getIpsObjectPathInternal().findIpsSrcFiles(ipsObjectTypes[i], result, visitedEntries);
             visitedEntries.clear();
         }
     }
@@ -943,6 +995,9 @@ public class IpsProject extends IpsElement implements IIpsProject {
 		try {
 			IIpsSrcFile[] structureSrcFiles = findIpsSrcFiles(IpsObjectType.TABLE_STRUCTURE);
 	        for (int i = 0; i < structureSrcFiles.length; i++) {
+                if (!structureSrcFiles[i].exists()) {
+                    continue;
+                }
                 ITableStructure structure = (ITableStructure)structureSrcFiles[i].getIpsObject(); 
 				if (structure.isModelEnumType()) {
                     ArrayList enumTableContents = new ArrayList(structureSrcFiles.length);
@@ -999,14 +1054,19 @@ public class IpsProject extends IpsElement implements IIpsProject {
         Set result = new LinkedHashSet();
         getValueDatatypes(includeVoid, includePrimitives, result);
         if (!valuetypesOnly) {
-            List refDatatypes = new ArrayList();
+            List refDatatypeFiles = new ArrayList();
             IpsObjectType[] objectTypes = IpsObjectType.ALL_TYPES;
             for (int i = 0; i < objectTypes.length; i++) {
                 if (objectTypes[i].isDatatype()) {
-                    findIpsObjects(objectTypes[i], refDatatypes);
+                    findAllIpsSrcFiles(refDatatypeFiles, objectTypes[i]);
                 }
             }
-            result.addAll(refDatatypes);
+            for (Iterator it=refDatatypeFiles.iterator(); it.hasNext();) {
+                IIpsSrcFile file = (IIpsSrcFile)it.next();
+                if (file.exists()) {
+                    result.add(file.getIpsObject());
+                }
+            }
         }
         Datatype[] array = new Datatype[result.size()];
         result.toArray(array);
@@ -1456,7 +1516,7 @@ public class IpsProject extends IpsElement implements IIpsProject {
     }
 
     private void validateIpsObjectPathCycle(MessageList result, IpsProjectProperties props) throws CoreException {
-        if (getIpsObjectPathInternal().detectCycle(this)){
+        if (getIpsObjectPathInternal().detectCycle()){
             String msg = Messages.IpsProject_msgCycleInIpsObjectPath;
             result.add(new Message(MSGCODE_CYCLE_IN_IPS_OBJECT_PATH, msg, Message.ERROR, this));            
         }

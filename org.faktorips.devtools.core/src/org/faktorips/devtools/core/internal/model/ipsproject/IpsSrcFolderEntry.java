@@ -28,12 +28,10 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.osgi.util.NLS;
-import org.faktorips.devtools.core.model.ipsobject.IIpsObject;
 import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
 import org.faktorips.devtools.core.model.ipsobject.QualifiedNameType;
 import org.faktorips.devtools.core.model.ipsproject.IIpsPackageFragmentRoot;
-import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.ipsproject.IIpsSrcFolderEntry;
 import org.faktorips.devtools.core.util.QNameUtil;
 import org.faktorips.runtime.ClassloaderRuntimeRepository;
@@ -119,8 +117,8 @@ public class IpsSrcFolderEntry extends IpsObjectPathEntry implements IIpsSrcFold
     /**
      * {@inheritDoc}
      */
-    public IIpsPackageFragmentRoot getIpsPackageFragmentRoot(IIpsProject ipsProject) {
-        return ipsProject.getIpsPackageFragmentRoot(sourceFolder.getName());
+    public IIpsPackageFragmentRoot getIpsPackageFragmentRoot() {
+        return getIpsProject().getIpsPackageFragmentRoot(sourceFolder.getName());
     }
 
     /**
@@ -219,53 +217,26 @@ public class IpsSrcFolderEntry extends IpsObjectPathEntry implements IIpsSrcFold
         basePackageDerived = name;
     }
 
-    protected void findIpsObjectsInternal(IIpsProject ipsProject, List result, Set visitedEntries) throws CoreException {
-        ((IpsPackageFragmentRoot)getIpsPackageFragmentRoot(ipsProject)).findIpsObjects(result);
+    /**
+     * {@inheritDoc}
+     */
+    public void findIpsSrcFilesInternal(IpsObjectType type, List result, Set visitedEntries) throws CoreException {
+        ((IpsPackageFragmentRoot)getIpsPackageFragmentRoot()).findIpsSourceFiles(type, result);
     }
 
     /**
      * {@inheritDoc}
      */
-    public IIpsObject findIpsObjectInternal(IIpsProject ipsProject, QualifiedNameType nameType, Set visitedEntries) throws CoreException {
-        return getIpsPackageFragmentRoot(ipsProject).findIpsObject(nameType);
+    public IIpsSrcFile findIpsSrcFileInternal(QualifiedNameType nameType, Set visitedEntries) throws CoreException {
+        return getIpsPackageFragmentRoot().findIpsSrcFile(nameType);
     }
 
     /**
      * {@inheritDoc}
      */
-    public void findIpsObjectsInternal(IIpsProject ipsProject, IpsObjectType type, List result, Set visitedEntries) throws CoreException {
-        ((IpsPackageFragmentRoot)getIpsPackageFragmentRoot(ipsProject)).findIpsObjects(type, result);
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    public void findIpsSrcFilesInternal(IIpsProject ipsProject, IpsObjectType type, List result, Set visitedEntries) throws CoreException {
-        ((IpsPackageFragmentRoot)getIpsPackageFragmentRoot(ipsProject)).findIpsSourceFiles(type, result);
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    public IIpsSrcFile findIpsSrcFileInternal(IIpsProject ipsProject, QualifiedNameType nameType, Set visitedEntries) throws CoreException {
-        return getIpsPackageFragmentRoot(ipsProject).findIpsSrcFile(nameType);
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    protected void findIpsObjectsStartingWithInternal(IIpsProject ipsProject, IpsObjectType type, String prefix, boolean ignoreCase, List result, Set visitedEntries)
+    public void findIpsSrcFilesStartingWithInternal(IpsObjectType type, String prefix, boolean ignoreCase, List result, Set visitedEntries)
             throws CoreException {
-        ((IpsPackageFragmentRoot)getIpsPackageFragmentRoot(ipsProject)).findIpsObjectsStartingWith(type, prefix, ignoreCase,
-                result);
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    protected void findIpsSrcFilesStartingWithInternal(IIpsProject ipsProject, IpsObjectType type, String prefix, boolean ignoreCase, List result, Set visitedEntries)
-            throws CoreException {
-        ((IpsPackageFragmentRoot)getIpsPackageFragmentRoot(ipsProject)).findIpsSourceFilesStartingWithInternal(type, prefix, ignoreCase,
+        ((IpsPackageFragmentRoot)getIpsPackageFragmentRoot()).findIpsSourceFilesStartingWithInternal(type, prefix, ignoreCase,
                 result);
     }
     

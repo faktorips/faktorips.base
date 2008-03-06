@@ -85,7 +85,7 @@ public class IpsPackageFragmentRoot extends AbstractIpsPackageFragmentRoot imple
         for (int i = 0; i < entries.length; i++) {
             if (entries[i].getType().equals(IIpsObjectPathEntry.TYPE_SRC_FOLDER)) {
                 IIpsSrcFolderEntry entry = (IIpsSrcFolderEntry)entries[i];
-                if (entry.getIpsPackageFragmentRoot(getIpsProject()).equals(this)) {
+                if (entry.getIpsPackageFragmentRoot().equals(this)) {
                     return entry;
                 }
             }
@@ -287,28 +287,6 @@ public class IpsPackageFragmentRoot extends AbstractIpsPackageFragmentRoot imple
         }
     }
 
-    /**
-     * Searches all objects of the given type starting with the given prefix in this root folder and
-     * adds them to the result.
-     *
-     * @throws NullPointerException if either type, prefix or result is null.
-     * @throws CoreException if an error occurs while searching.
-     */
-    public void findIpsObjectsStartingWith(IpsObjectType type, String prefix, boolean ignoreCase, List result)
-            throws CoreException {
-        ArgumentCheck.notNull(type);
-        ArgumentCheck.notNull(prefix);
-        ArgumentCheck.notNull(result);
-        if (!exists()) {
-            return;
-        }
-        IIpsPackageFragment[] packs = getIpsPackageFragments();
-        for (int i = 0; i < packs.length; i++) {
-            ((IpsPackageFragment)packs[i]).findIpsObjectsStartingWith(type, prefix, ignoreCase, result);
-        }
-    }
-
-    
     /**
      * Searches all objects of the given type starting with the given prefix in this root folder and
      * adds them to the result.

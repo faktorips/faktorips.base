@@ -38,6 +38,11 @@ public interface IIpsObjectPath {
     public final static String MSGCODE_DERIVED_OUTPUT_FOLDER_NOT_SPECIFIED  = "DerivedOutputFolderNotSpecified"; //$NON-NLS-1$
     
     /**
+     * Returns the ips project this path belongs to.
+     */
+    public IIpsProject getIpsProject();
+    
+    /**
      * Returns the path' entries.
      */
     public IIpsObjectPathEntry[] getEntries();

@@ -26,7 +26,6 @@ import org.eclipse.core.resources.IProject;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.osgi.util.NLS;
 import org.faktorips.devtools.core.IpsPlugin;
-import org.faktorips.devtools.core.model.ipsobject.IIpsObject;
 import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
 import org.faktorips.devtools.core.model.ipsobject.QualifiedNameType;
@@ -86,49 +85,17 @@ public class IpsProjectRefEntry extends IpsObjectPathEntry implements
     /**
      * {@inheritDoc}
      */
-    public IIpsPackageFragmentRoot getIpsPackageFragmentRoot(IIpsProject project) throws CoreException {
+    public IIpsPackageFragmentRoot getIpsPackageFragmentRoot() throws CoreException {
         return null;
     }
 
     /**
      * {@inheritDoc}
      */
-    public IIpsObject findIpsObjectInternal(IIpsProject project, QualifiedNameType nameType, Set visitedEntries)
-            throws CoreException {
-        
-        if (referencedIpsProject!=null) {
-            return ((IpsProject)referencedIpsProject).getIpsObjectPathInternal().findIpsObject(referencedIpsProject, nameType, visitedEntries);
-        }
-        return null;
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    public void findIpsObjectsInternal(IIpsProject project, IpsObjectType type, List result, Set visitedEntries)
-            throws CoreException {
-        
-        if (referencedIpsProject!=null) {
-            ((IpsProject)referencedIpsProject).getIpsObjectPathInternal().findIpsObjects(referencedIpsProject, type, result, visitedEntries);
-        }
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    protected void findIpsObjectsInternal(IIpsProject ipsProject, List result, Set visitedEntries) throws CoreException {
-        if (referencedIpsProject!=null) {
-            ((IpsProject)referencedIpsProject).getIpsObjectPathInternal().findAllIpsObjects(referencedIpsProject, result, visitedEntries);
-        }
-    }
-    
-    /**
-     * {@inheritDoc}
-     */
-    public void findIpsSrcFilesInternal(IIpsProject project, IpsObjectType type, List result, Set visitedEntries)
+    public void findIpsSrcFilesInternal(IpsObjectType type, List result, Set visitedEntries)
             throws CoreException {
         if (referencedIpsProject != null) {
-            ((IpsProject)referencedIpsProject).getIpsObjectPathInternal().findIpsSrcFiles(referencedIpsProject, type,
+            ((IpsProject)referencedIpsProject).getIpsObjectPathInternal().findIpsSrcFiles(type,
                     result, visitedEntries);
         }
     }
@@ -136,9 +103,9 @@ public class IpsProjectRefEntry extends IpsObjectPathEntry implements
     /**
      * {@inheritDoc}
      */
-    protected IIpsSrcFile findIpsSrcFileInternal(IIpsProject ipsProject, QualifiedNameType nameType, Set visitedEntries) throws CoreException {
+    protected IIpsSrcFile findIpsSrcFileInternal(QualifiedNameType nameType, Set visitedEntries) throws CoreException {
         if (referencedIpsProject!=null) {
-            return ((IpsProject)referencedIpsProject).getIpsObjectPathInternal().findIpsSrcFile(referencedIpsProject, nameType, visitedEntries);
+            return ((IpsProject)referencedIpsProject).getIpsObjectPathInternal().findIpsSrcFile(nameType, visitedEntries);
         }
         return null;
     }
@@ -146,22 +113,7 @@ public class IpsProjectRefEntry extends IpsObjectPathEntry implements
     /**
      * {@inheritDoc}
      */
-    public void findIpsObjectsStartingWithInternal(IIpsProject project,
-            IpsObjectType type,
-            String prefix,
-            boolean ignoreCase,
-            List result,
-            Set visitedEntries) throws CoreException {
-        if (referencedIpsProject != null) {
-            ((IpsProject)referencedIpsProject).getIpsObjectPathInternal().findIpsObjectsStartingWith(
-                    referencedIpsProject, type, prefix, ignoreCase, result, visitedEntries);
-        }
-    }
-    
-    /**
-     * {@inheritDoc}
-     */
-    protected void findIpsSrcFilesStartingWithInternal(IIpsProject ipsProject,
+    public void findIpsSrcFilesStartingWithInternal(
             IpsObjectType type,
             String prefix,
             boolean ignoreCase,
@@ -169,7 +121,7 @@ public class IpsProjectRefEntry extends IpsObjectPathEntry implements
             Set visitedEntries) throws CoreException {
         if (referencedIpsProject != null) {
             ((IpsProject)referencedIpsProject).getIpsObjectPathInternal().findIpsSrcFilesStartingWith(
-                    referencedIpsProject, type, prefix, ignoreCase, result, visitedEntries);
+                    type, prefix, ignoreCase, result, visitedEntries);
         }
     }
 

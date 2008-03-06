@@ -166,43 +166,46 @@ public class IpsPackageFragmentRootTest extends AbstractIpsPluginTest {
     }
 
     public void testFindIpsObjectsStartingWith() throws CoreException {
-        IIpsObject obj1 = newIpsObject(ipsRoot, IpsObjectType.POLICY_CMPT_TYPE, "pack1.MotorPolicy");
-        IIpsObject obj2 = newIpsObject(ipsRoot, IpsObjectType.POLICY_CMPT_TYPE, "pack2.MotorCoverage");
+        IIpsObject ob1 = newIpsObject(ipsRoot, IpsObjectType.POLICY_CMPT_TYPE, "pack1.MotorPolicy");
+        IIpsObject ob2 = newIpsObject(ipsRoot, IpsObjectType.POLICY_CMPT_TYPE, "pack2.MotorCoverage");
 
+        IIpsSrcFile file1 = ob1.getIpsSrcFile();
+        IIpsSrcFile file2 = ob2.getIpsSrcFile();
+        
         ArrayList result = new ArrayList();
-        ipsRoot.findIpsObjectsStartingWith(IpsObjectType.POLICY_CMPT_TYPE, "MotorP", false, result);
+        ipsRoot.findIpsSourceFilesStartingWithInternal(IpsObjectType.POLICY_CMPT_TYPE, "MotorP", false, result);
         assertEquals(1, result.size());
-        assertTrue(result.contains(obj1));
+        assertTrue(result.contains(file1));
 
         result.clear();
-        ipsRoot.findIpsObjectsStartingWith(IpsObjectType.POLICY_CMPT_TYPE, "Motor", false, result);
+        ipsRoot.findIpsSourceFilesStartingWithInternal(IpsObjectType.POLICY_CMPT_TYPE, "Motor", false, result);
         assertEquals(2, result.size());
-        assertTrue(result.contains(obj1));
-        assertTrue(result.contains(obj2));
+        assertTrue(result.contains(file1));
+        assertTrue(result.contains(file2));
 
         // root does not exist
         IpsPackageFragmentRoot root2 = (IpsPackageFragmentRoot)ipsProject.getIpsPackageFragmentRoot("notExistingRoot");
         result.clear();
-        root2.findIpsObjectsStartingWith(IpsObjectType.POLICY_CMPT_TYPE, "Motor", false, result);
+        root2.findIpsSourceFilesStartingWithInternal(IpsObjectType.POLICY_CMPT_TYPE, "Motor", false, result);
         assertEquals(0, result.size());
 
         // ipsobjecttype null
         try {
-            ipsRoot.findIpsObjectsStartingWith(null, "M", true, result);
+            ipsRoot.findIpsSourceFilesStartingWithInternal(null, "M", true, result);
             fail();
         } catch (NullPointerException e) {
         }
 
         // prefix null
         try {
-            ipsRoot.findIpsObjectsStartingWith(IpsObjectType.POLICY_CMPT_TYPE, null, true, result);
+            ipsRoot.findIpsSourceFilesStartingWithInternal(IpsObjectType.POLICY_CMPT_TYPE, null, true, result);
             fail();
         } catch (NullPointerException e) {
         }
 
         // result null
         try {
-            ipsRoot.findIpsObjectsStartingWith(IpsObjectType.POLICY_CMPT_TYPE, "M", true, null);
+            ipsRoot.findIpsSourceFilesStartingWithInternal(IpsObjectType.POLICY_CMPT_TYPE, "M", true, null);
             fail();
         } catch (NullPointerException e) {
         }

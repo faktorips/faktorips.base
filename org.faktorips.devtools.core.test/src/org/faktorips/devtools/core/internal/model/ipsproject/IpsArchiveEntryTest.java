@@ -26,6 +26,7 @@ import org.eclipse.core.resources.IFile;
 import org.eclipse.core.runtime.CoreException;
 import org.faktorips.devtools.core.AbstractIpsPluginTest;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObject;
+import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
 import org.faktorips.devtools.core.model.ipsobject.QualifiedNameType;
 import org.faktorips.devtools.core.model.ipsproject.IIpsArchive;
@@ -72,42 +73,45 @@ public class IpsArchiveEntryTest extends AbstractIpsPluginTest {
         project.setIpsObjectPath(path);
     }
     
-    public void testFindIpsObjectsStartingWith() throws CoreException {
-        IIpsObject motorPolicy = project.findIpsObject(qntMotorPolicy);
-        IIpsObject motorCollision = project.findIpsObject(qntMotorCollision);
+    public void testFindIpsSrcFilesStartingWith() throws CoreException {
+        IIpsObject motorPol = project.findIpsObject(qntMotorPolicy);
+        IIpsObject motorCol = project.findIpsObject(qntMotorCollision);
+        
+        IIpsSrcFile motorPolFile = motorPol.getIpsSrcFile();
+        IIpsSrcFile motorColFile = motorCol.getIpsSrcFile();
         
         List result = new ArrayList();
         
         Set visitedEntries = new HashSet();
-        entry.findIpsObjectsStartingWith(project, IpsObjectType.POLICY_CMPT_TYPE, "motor", true, result, visitedEntries);
+        entry.findIpsSrcFilesStartingWithInternal(IpsObjectType.POLICY_CMPT_TYPE, "motor", true, result, visitedEntries);
         assertEquals(2, result.size());
-        assertTrue(result.contains(motorPolicy));
-        assertTrue(result.contains(motorCollision));
+        assertTrue(result.contains(motorPolFile));
+        assertTrue(result.contains(motorColFile));
         
         result = new ArrayList();
         visitedEntries.clear();
-        entry.findIpsObjectsStartingWith(project, IpsObjectType.POLICY_CMPT_TYPE, "motor", false, result, visitedEntries);
+        entry.findIpsSrcFilesStartingWith(IpsObjectType.POLICY_CMPT_TYPE, "motor", false, result, visitedEntries);
         assertEquals(0, result.size());
         
         visitedEntries.clear();
-        entry.findIpsObjectsStartingWith(project, IpsObjectType.POLICY_CMPT_TYPE, "Motor", false, result, visitedEntries);
+        entry.findIpsSrcFilesStartingWith(IpsObjectType.POLICY_CMPT_TYPE, "Motor", false, result, visitedEntries);
         assertEquals(2, result.size());
-        assertTrue(result.contains(motorPolicy));
-        assertTrue(result.contains(motorCollision));
+        assertTrue(result.contains(motorPolFile));
+        assertTrue(result.contains(motorColFile));
         
     }
     
-    public void testFindIpsObjects() throws Exception{
+    public void testFindIpsSrcFiles() throws Exception{
         
         ArrayList result = new ArrayList();
         Set visitedEntries = new HashSet();
-        entry.findIpsObjects(project, result, visitedEntries);
+        entry.findIpsSrcFiles(IpsObjectType.POLICY_CMPT_TYPE, result, visitedEntries);
         
         IIpsObject motorPolicy = project.findIpsObject(qntMotorPolicy);
         IIpsObject motorCollision = project.findIpsObject(qntMotorCollision);
 
-        assertTrue(result.contains(motorPolicy));
-        assertTrue(result.contains(motorCollision));
+        assertTrue(result.contains(motorPolicy.getIpsSrcFile()));
+        assertTrue(result.contains(motorCollision.getIpsSrcFile()));
     }
     
     public void testInitFromXml() {
@@ -127,7 +131,7 @@ public class IpsArchiveEntryTest extends AbstractIpsPluginTest {
     }
     
     public void testGetIpsPackageFragementRoot() throws CoreException {
-        IIpsPackageFragmentRoot root = entry.getIpsPackageFragmentRoot(project);
+        IIpsPackageFragmentRoot root = entry.getIpsPackageFragmentRoot();
         assertNotNull(root);
         assertEquals(archiveFile.getName(), root.getName());
     }
