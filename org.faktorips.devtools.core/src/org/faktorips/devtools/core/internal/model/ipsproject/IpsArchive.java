@@ -128,7 +128,6 @@ public class IpsArchive implements IIpsArchive {
         if (parentPack == null) {
             return new String[0];
         }
-
         readArchiveContentIfNecessary();
         Set result = new HashSet();
         for (Iterator it = packs.keySet().iterator(); it.hasNext();) {
@@ -309,8 +308,8 @@ public class IpsArchive implements IIpsArchive {
         if (IpsModel.TRACE_MODEL_MANAGEMENT) {
             System.out.println("Reading archive content from disk: " + this); //$NON-NLS-1$
         }
-        packs = new HashMap(100);
-        qNameTypes = new HashMap(100);
+        packs = new HashMap(200);
+        qNameTypes = new HashMap(200);
         modificationStamp = archiveFile.getModificationStamp();
         JarFile jar;
         try {
