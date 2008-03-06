@@ -136,13 +136,6 @@ public class QualifiedNameType implements Serializable{
         return type.getFileName(getUnqualifiedName());
     }
     
-    public IIpsObject findIpsObject(IIpsPackageFragmentRoot root) throws CoreException{
-        if(root == null) {
-            return null;
-        }
-        return root.findIpsObject(type, qualifiedName);
-    }
-    
     private void calculateHashCode(){
         int result = 17;
         result = result*37 + qualifiedName.hashCode();
