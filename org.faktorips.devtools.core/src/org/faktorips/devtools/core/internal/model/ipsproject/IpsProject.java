@@ -820,15 +820,14 @@ public class IpsProject extends IpsElement implements IIpsProject {
      */
     public IIpsSrcFile findIpsSrcFile(QualifiedNameType qNameType) throws CoreException{
         Set visitedEntries = new HashSet();
-        return ((IpsObjectPath)getIpsObjectPathInternal()).findIpsSrcFile(qNameType.getIpsObjectType(), qNameType.getName(), visitedEntries);
+        return ((IpsObjectPath)getIpsObjectPathInternal()).findIpsSrcFile(qNameType, visitedEntries);
     }
     
     /**
      * {@inheritDoc}
      */
     public IIpsSrcFile findIpsSrcFile(IpsObjectType type, String qualifiedName) throws CoreException{
-        Set visitedEntries = new HashSet();
-        return ((IpsObjectPath)getIpsObjectPathInternal()).findIpsSrcFile(type, qualifiedName, visitedEntries);
+        return findIpsSrcFile(new QualifiedNameType(qualifiedName, type));
     }
     
     /**

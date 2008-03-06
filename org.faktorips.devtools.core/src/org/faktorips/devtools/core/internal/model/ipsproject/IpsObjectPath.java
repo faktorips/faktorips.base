@@ -398,14 +398,6 @@ public class IpsObjectPath implements IIpsObjectPath {
      * Returns the first ips source file with the indicated qualified name tpye found
      * on the path. Returns <code>null</code> if no such object is found.
      */
-    public IIpsSrcFile findIpsSrcFile(IpsObjectType type, String qualifiedName, Set visitedEntries) throws CoreException {
-        return findIpsSrcFile(new QualifiedNameType(qualifiedName, type), visitedEntries);
-    }
-
-    /**
-     * Returns the first ips source file with the indicated qualified name tpye found
-     * on the path. Returns <code>null</code> if no such object is found.
-     */
     public IIpsSrcFile findIpsSrcFile(QualifiedNameType nameType, Set visitedEntries) throws CoreException {
         for (int i=0; i<entries.length; i++) {
             IIpsSrcFile ipsSrcFile = ((IpsObjectPathEntry)entries[i]).findIpsSrcFile(nameType, visitedEntries);
