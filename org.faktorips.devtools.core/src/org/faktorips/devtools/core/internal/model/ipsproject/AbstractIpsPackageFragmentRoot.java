@@ -94,9 +94,6 @@ public abstract class AbstractIpsPackageFragmentRoot extends IpsElement implemen
      * {@inheritDoc}
      */
     public IIpsObjectPathEntry getIpsObjectPathEntry() throws CoreException {
-        if (!exists()) {
-            throw new CoreException(new IpsStatus("IpsPackageFragmentRoot does not exist!")); //$NON-NLS-1$
-        }
         IIpsObjectPathEntry entry = ((IpsProject)getIpsProject()).getIpsObjectPathInternal().getEntry(getName());
         if (entry!=null) {
             return entry;
