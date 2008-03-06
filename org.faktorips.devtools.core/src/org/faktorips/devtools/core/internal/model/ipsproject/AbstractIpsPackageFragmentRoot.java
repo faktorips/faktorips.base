@@ -22,11 +22,14 @@ import java.util.Iterator;
 import java.util.List;
 
 import org.eclipse.core.runtime.CoreException;
+import org.faktorips.devtools.core.IpsPlugin;
+import org.faktorips.devtools.core.IpsStatus;
 import org.faktorips.devtools.core.internal.model.IpsElement;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObject;
 import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
 import org.faktorips.devtools.core.model.ipsobject.QualifiedNameType;
+import org.faktorips.devtools.core.model.ipsproject.IIpsObjectPathEntry;
 import org.faktorips.devtools.core.model.ipsproject.IIpsPackageFragment;
 import org.faktorips.devtools.core.model.ipsproject.IIpsPackageFragmentRoot;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
@@ -50,6 +53,32 @@ public abstract class AbstractIpsPackageFragmentRoot extends IpsElement implemen
     /**
      * {@inheritDoc}
      */
+    public boolean isBasedOnSourceFolder() {
+        try {
+            return getIpsObjectPathEntry().getType()==IIpsObjectPathEntry.TYPE_SRC_FOLDER;
+        }
+        catch (CoreException e) {
+            IpsPlugin.log(e);
+            return true;
+        }
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public boolean isBasedOnIpsArchive() {
+        try {
+            return getIpsObjectPathEntry().getType()==IIpsObjectPathEntry.TYPE_ARCHIVE;
+        }
+        catch (CoreException e) {
+            IpsPlugin.log(e);
+            return false;
+        }
+    }
+
+    /**
+     * {@inheritDoc}
+     */
     public IIpsProject getIpsProject() {
         return (IIpsProject)parent;
     }
@@ -59,6 +88,20 @@ public abstract class AbstractIpsPackageFragmentRoot extends IpsElement implemen
      */
     public IIpsPackageFragment getDefaultIpsPackageFragment() {
         return getIpsPackageFragment(""); //$NON-NLS-1$
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public IIpsObjectPathEntry getIpsObjectPathEntry() throws CoreException {
+        if (!exists()) {
+            throw new CoreException(new IpsStatus("IpsPackageFragmentRoot does not exist!")); //$NON-NLS-1$
+        }
+        IIpsObjectPathEntry entry = ((IpsProject)getIpsProject()).getIpsObjectPathInternal().getEntry(getName());
+        if (entry!=null) {
+            return entry;
+        }
+        throw new CoreException(new IpsStatus("No IpsObjectPathEntry found for package fragment root " + this)); //$NON-NLS-1$
     }
 
     /**

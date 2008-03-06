@@ -35,8 +35,6 @@ import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
 import org.faktorips.devtools.core.model.ipsobject.QualifiedNameType;
 import org.faktorips.devtools.core.model.ipsproject.IIpsArchive;
-import org.faktorips.devtools.core.model.ipsproject.IIpsArchiveEntry;
-import org.faktorips.devtools.core.model.ipsproject.IIpsObjectPathEntry;
 import org.faktorips.devtools.core.model.ipsproject.IIpsPackageFragment;
 import org.faktorips.devtools.core.model.ipsproject.IIpsPackageFragmentRoot;
 
@@ -55,39 +53,6 @@ public class ArchiveIpsPackageFragmentRoot extends AbstractIpsPackageFragmentRoo
     public ArchiveIpsPackageFragmentRoot(IFile archiveFile) {
         super(IpsPlugin.getDefault().getIpsModel().getIpsProject(archiveFile.getProject()), archiveFile.getName());
         this.archiveFile = archiveFile;
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    public boolean isBasedOnSourceFolder() {
-        return false;
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    public boolean isBasedOnIpsArchive() {
-        return true;
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    public IIpsObjectPathEntry getIpsObjectPathEntry() throws CoreException {
-        if (!exists()) {
-            throw new CoreException(new IpsStatus("IpsPackageFragmentRoot does not exist!")); //$NON-NLS-1$
-        }
-        IIpsObjectPathEntry[] entries = ((IpsProject)getIpsProject()).getIpsObjectPathInternal().getEntries();
-        for (int i = 0; i < entries.length; i++) {
-            if (entries[i].getType().equals(IIpsObjectPathEntry.TYPE_ARCHIVE)) {
-                IIpsArchiveEntry entry = (IIpsArchiveEntry)entries[i];
-                if (entry.getArchiveFile().equals(archiveFile)) {
-                    return entry;
-                }
-            }
-        }
-        throw new CoreException(new IpsStatus("No IpsObjectPathEntry found for package fragment root " + this)); //$NON-NLS-1$
     }
 
     /**

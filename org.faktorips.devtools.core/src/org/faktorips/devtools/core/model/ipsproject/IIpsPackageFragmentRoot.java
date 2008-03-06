@@ -53,6 +53,7 @@ public interface IIpsPackageFragmentRoot extends IIpsElement {
     /**
      * Returns the entry in the ips object path that results in this package fragment root.
      * E.g. an entry defining a source folder leads to an ips package fragment root.
+     * 
      * @throws CoreException if an excpetion occurs while accessing the object path or this package fragment root
      * does not exist.
      */

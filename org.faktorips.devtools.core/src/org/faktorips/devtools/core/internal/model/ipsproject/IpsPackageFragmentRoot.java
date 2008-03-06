@@ -27,12 +27,10 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.swt.graphics.Image;
 import org.faktorips.devtools.core.IpsPlugin;
-import org.faktorips.devtools.core.IpsStatus;
 import org.faktorips.devtools.core.model.IIpsElement;
 import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
 import org.faktorips.devtools.core.model.ipsproject.IIpsArchive;
 import org.faktorips.devtools.core.model.ipsproject.IIpsObjectPath;
-import org.faktorips.devtools.core.model.ipsproject.IIpsObjectPathEntry;
 import org.faktorips.devtools.core.model.ipsproject.IIpsPackageFragment;
 import org.faktorips.devtools.core.model.ipsproject.IIpsPackageFragmentRoot;
 import org.faktorips.devtools.core.model.ipsproject.IIpsSrcFolderEntry;
@@ -50,20 +48,6 @@ public class IpsPackageFragmentRoot extends AbstractIpsPackageFragmentRoot imple
     }
 
     /**
-     * {@inheritDoc}
-     */
-    public boolean isBasedOnSourceFolder() {
-        return true;
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    public boolean isBasedOnIpsArchive() {
-        return false;
-    }
-
-    /**
      * Returns the artefact destination for the artefacts generated on behalf of the ips objects
      * within this ips package fragment root.
      */
@@ -73,25 +57,6 @@ public class IpsPackageFragmentRoot extends AbstractIpsPackageFragmentRoot imple
             return entry.getOutputFolderForDerivedJavaFiles();
         }
         return entry.getOutputFolderForMergableJavaFiles();
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    public IIpsObjectPathEntry getIpsObjectPathEntry() throws CoreException {
-        if (!exists()) {
-            throw new CoreException(new IpsStatus("IpsPackageFragmentRoot does not exist!")); //$NON-NLS-1$
-        }
-        IIpsObjectPathEntry[] entries = ((IpsProject)getIpsProject()).getIpsObjectPathInternal().getEntries();
-        for (int i = 0; i < entries.length; i++) {
-            if (entries[i].getType().equals(IIpsObjectPathEntry.TYPE_SRC_FOLDER)) {
-                IIpsSrcFolderEntry entry = (IIpsSrcFolderEntry)entries[i];
-                if (entry.getIpsPackageFragmentRoot().equals(this)) {
-                    return entry;
-                }
-            }
-        }
-        throw new CoreException(new IpsStatus("No IpsObjectPathEntry found for package fragment root " + this)); //$NON-NLS-1$
     }
 
     /**
