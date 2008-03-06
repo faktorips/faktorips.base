@@ -31,6 +31,7 @@ import org.faktorips.devtools.core.model.IIpsElement;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObject;
 import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
+import org.faktorips.devtools.core.model.ipsproject.IIpsObjectPath;
 import org.faktorips.devtools.core.model.ipsproject.IIpsObjectPathEntry;
 import org.faktorips.devtools.core.model.ipsproject.IIpsPackageFragment;
 import org.faktorips.devtools.core.model.ipsproject.IIpsPackageFragmentRoot;
@@ -95,11 +96,11 @@ public class IpsPackageFragmentRootTest extends AbstractIpsPluginTest {
         assertEquals(outputPathDerived, destination.getProjectRelativePath());
     }
 
-    public void testGetPdProject() {
+    public void testGetIpsProject() {
         assertEquals(ipsProject, ipsRoot.getIpsProject());
     }
 
-    public void testGetPdFolders() throws CoreException {
+    public void testGetIpsPackageFragments() throws CoreException {
         IIpsPackageFragment defaultFolder = ipsRoot.getIpsPackageFragment("");
         assertEquals(1, ipsRoot.getIpsPackageFragments().length);
         assertEquals(defaultFolder, ipsRoot.getIpsPackageFragments()[0]);
@@ -119,12 +120,12 @@ public class IpsPackageFragmentRootTest extends AbstractIpsPluginTest {
         assertEquals(folderD, children[4]);
     }
 
-    public void testGetPdFolder() {
+    public void testGetIpsPackageFragment() {
         IIpsPackageFragment f = ipsRoot.getIpsPackageFragment("folder");
         assertFalse(f.exists());
     }
 
-    public void testCreatePdFolder() throws CoreException {
+    public void testCreatePackageFragment() throws CoreException {
         IIpsPackageFragment f = ipsRoot.createPackageFragment("a.b", true, null);
         assertTrue(f.exists());
         assertEquals(ipsRoot, f.getParent());
@@ -151,8 +152,14 @@ public class IpsPackageFragmentRootTest extends AbstractIpsPluginTest {
         assertTrue(ipsRoot.exists());
         IIpsPackageFragmentRoot root2 = ipsProject.getIpsPackageFragmentRoot("unknown");
         assertFalse(root2.exists());
-        ((IFolder)root2.getCorrespondingResource()).create(true, true, null);
+        IFolder corrFolder2 = (IFolder)root2.getCorrespondingResource(); 
+        corrFolder2.create(true, true, null);
         assertFalse(root2.exists());
+        
+        IIpsObjectPath path = ipsProject.getIpsObjectPath();
+        path.newSourceFolderEntry(corrFolder2);
+        ipsProject.setIpsObjectPath(path);
+        assertTrue(root2.exists());
     }
 
     public void testGetIpsObject() throws CoreException {

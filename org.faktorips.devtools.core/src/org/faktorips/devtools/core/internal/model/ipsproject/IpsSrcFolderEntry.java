@@ -113,12 +113,19 @@ public class IpsSrcFolderEntry extends IpsObjectPathEntry implements IIpsSrcFold
     public IFolder getSourceFolder() {
         return sourceFolder;
     }
+    
+    /**
+     * {@inheritDoc}
+     */
+    public String getIpsPackageFragmentRootName() {
+        return sourceFolder.getName();
+    }
 
     /**
      * {@inheritDoc}
      */
     public IIpsPackageFragmentRoot getIpsPackageFragmentRoot() {
-        return getIpsProject().getIpsPackageFragmentRoot(sourceFolder.getName());
+        return getIpsProject().getIpsPackageFragmentRoot(getIpsPackageFragmentRootName());
     }
 
     /**

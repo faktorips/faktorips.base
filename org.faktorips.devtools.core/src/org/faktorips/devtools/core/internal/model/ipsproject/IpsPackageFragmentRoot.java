@@ -31,6 +31,7 @@ import org.faktorips.devtools.core.IpsStatus;
 import org.faktorips.devtools.core.model.IIpsElement;
 import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
 import org.faktorips.devtools.core.model.ipsproject.IIpsArchive;
+import org.faktorips.devtools.core.model.ipsproject.IIpsObjectPath;
 import org.faktorips.devtools.core.model.ipsproject.IIpsObjectPathEntry;
 import org.faktorips.devtools.core.model.ipsproject.IIpsPackageFragment;
 import org.faktorips.devtools.core.model.ipsproject.IIpsPackageFragmentRoot;
@@ -105,18 +106,14 @@ public class IpsPackageFragmentRoot extends AbstractIpsPackageFragmentRoot imple
         if (!getCorrespondingResource().exists()) {
             return false;
         }
-        IIpsPackageFragmentRoot[] roots;
         try {
-            roots = getIpsProject().getIpsPackageFragmentRoots();
-        } catch (CoreException e) {
+            IIpsObjectPath path = ((IpsProject)getIpsProject()).getIpsObjectPathInternal();
+            return path.getEntry(getName())!=null;
+        }
+        catch (CoreException e1) {
+            IpsPlugin.log(e1);
             return false;
         }
-        for (int i = 0; i < roots.length; i++) {
-            if (roots[i].equals(this)) {
-                return true;
-            }
-        }
-        return false;
     }
 
     /**

@@ -81,6 +81,13 @@ public class IpsProjectRefEntry extends IpsObjectPathEntry implements
     public String getType() {
         return TYPE_PROJECT_REFERENCE;
     }
+    
+    /**
+     * {@inheritDoc}
+     */
+    public String getIpsPackageFragmentRootName() {
+        return null;
+    }
 
     /**
      * {@inheritDoc}

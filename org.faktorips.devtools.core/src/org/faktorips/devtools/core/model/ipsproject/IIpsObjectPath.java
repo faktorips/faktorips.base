@@ -43,6 +43,12 @@ public interface IIpsObjectPath {
     public IIpsProject getIpsProject();
     
     /**
+     * Returns the entry for the given ips package fragment root name or <code>null</code>
+     * if no such entry exists.
+     */
+    public IIpsObjectPathEntry getEntry(String rootName);
+    
+    /**
      * Returns the path' entries.
      */
     public IIpsObjectPathEntry[] getEntries();

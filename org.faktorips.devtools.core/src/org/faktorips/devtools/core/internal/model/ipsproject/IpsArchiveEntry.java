@@ -29,7 +29,6 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.osgi.util.NLS;
 import org.faktorips.devtools.core.IpsStatus;
-import org.faktorips.devtools.core.model.ipsobject.IIpsObject;
 import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
 import org.faktorips.devtools.core.model.ipsobject.QualifiedNameType;
@@ -107,6 +106,13 @@ public class IpsArchiveEntry extends IpsObjectPathEntry implements IIpsArchiveEn
         return IIpsObjectPathEntry.TYPE_ARCHIVE;
     }
     
+    /**
+     * {@inheritDoc}
+     */
+    public String getIpsPackageFragmentRootName() {
+        return getIpsArchive().getArchiveFile().getName();
+    }
+
     /**
      * {@inheritDoc}
      */

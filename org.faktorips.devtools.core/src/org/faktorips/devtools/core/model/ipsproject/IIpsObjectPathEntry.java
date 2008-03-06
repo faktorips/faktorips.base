@@ -89,7 +89,13 @@ public interface IIpsObjectPathEntry {
     public int getIndex();
 
     /**
-     * Returns the package fragment root this source folder entry defines or <code>null</code> if
+     * Returns the name of the ips package fragment root this entry defines or <code>null</code> if
+     * this is a project reference entry. 
+     */
+    public abstract String getIpsPackageFragmentRootName();
+    
+    /**
+     * Returns the package fragment root this entry defines or <code>null</code> if
      * this is a project reference entry. Note that is not guaranteed that the returned package fragment root exists.
      */
     public IIpsPackageFragmentRoot getIpsPackageFragmentRoot() throws CoreException;

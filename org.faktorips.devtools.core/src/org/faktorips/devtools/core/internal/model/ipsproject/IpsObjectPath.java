@@ -174,6 +174,21 @@ public class IpsObjectPath implements IIpsObjectPath {
         }
         return (IIpsArchiveEntry[])archiveEntries.toArray(new IIpsArchiveEntry[archiveEntries.size()]);
     }
+    
+    /**
+     * {@inheritDoc}
+     */
+    public IIpsObjectPathEntry getEntry(String rootName) {
+        if (rootName==null) {
+            return null;
+        }
+        for (int i = 0; i < entries.length; i++) {
+            if (rootName.equals(entries[i].getIpsPackageFragmentRootName())) {
+                return entries[i];
+            }
+        }
+        return null;
+    }
 
     /**
      * {@inheritDoc}

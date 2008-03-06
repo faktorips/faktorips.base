@@ -130,6 +130,10 @@ public class IpsArchiveEntryTest extends AbstractIpsPluginTest {
         assertEquals(archiveFile, archive.getArchiveFile());
     }
     
+    public void testGetIpsPackageFragementRootName() throws CoreException {
+        assertEquals(entry.getIpsPackageFragmentRoot().getName(), entry.getIpsPackageFragmentRootName());
+    }
+    
     public void testGetIpsPackageFragementRoot() throws CoreException {
         IIpsPackageFragmentRoot root = entry.getIpsPackageFragmentRoot();
         assertNotNull(root);
