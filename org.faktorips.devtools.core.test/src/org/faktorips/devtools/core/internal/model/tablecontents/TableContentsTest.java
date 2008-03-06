@@ -175,6 +175,10 @@ public class TableContentsTest extends AbstractIpsPluginTest {
         assertEquals("190", rows[1].getValue(0));
         assertEquals("0.06", rows[1].getValue(1));
         
+        assertEquals(2, table.getNumOfGenerations());
+
+        table.initFromInputStream(getClass().getResourceAsStream(getXmlResourceName()));
+        assertEquals(2, table.getNumOfGenerations());
     }
 
     /**

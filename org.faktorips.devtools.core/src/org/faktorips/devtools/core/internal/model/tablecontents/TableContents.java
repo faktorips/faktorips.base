@@ -202,6 +202,7 @@ public class TableContents extends TimedIpsObject implements ITableContents {
      */
     public void initFromInputStream(InputStream is) throws CoreException {
         try {
+            reinitPartCollections();
             SAXParser saxParser = SAXParserFactory.newInstance().newSAXParser();
             saxParser.parse(new InputSource(is), new TableContentsSaxHandler(this));
         } catch (Exception e) {
