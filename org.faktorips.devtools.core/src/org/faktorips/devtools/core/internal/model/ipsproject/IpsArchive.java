@@ -38,9 +38,12 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.faktorips.devtools.core.IpsStatus;
 import org.faktorips.devtools.core.internal.model.IpsModel;
+import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.core.model.ipsobject.QualifiedNameType;
 import org.faktorips.devtools.core.model.ipsproject.IIpsArchive;
 import org.faktorips.devtools.core.model.ipsproject.IIpsPackageFragment;
+import org.faktorips.devtools.core.model.ipsproject.IIpsPackageFragmentRoot;
+import org.faktorips.util.ArgumentCheck;
 import org.faktorips.util.StreamUtil;
 
 /**
@@ -59,6 +62,8 @@ public class IpsArchive implements IIpsArchive {
     private IFile archiveFile;
     private long modificationStamp;
     
+    IIpsPackageFragmentRoot root;
+    
     // package name as key, content as value. content stored as a set of qNameTypes
     private HashMap packs = null;
 
@@ -66,7 +71,9 @@ public class IpsArchive implements IIpsArchive {
     private HashMap qNameTypes = null;
     
     public IpsArchive(IFile file) {
+        ArgumentCheck.notNull(file);
         this.archiveFile = file;
+        root = new ArchiveIpsPackageFragmentRoot(file);
     }
 
     /**
@@ -120,7 +127,7 @@ public class IpsArchive implements IIpsArchive {
         }
         return false;
     }
-
+    
     /**
      * {@inheritDoc}
      */
@@ -160,9 +167,9 @@ public class IpsArchive implements IIpsArchive {
     /**
      * {@inheritDoc}
      */
-    public boolean contains(QualifiedNameType qnt) throws CoreException {
+    public boolean contains(IIpsSrcFile file) throws CoreException {
         readArchiveContentIfNecessary();
-        return qNameTypes.containsKey(qnt);
+        return qNameTypes.containsKey(file.getQualifiedNameType());
     }
 
     /**

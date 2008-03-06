@@ -138,6 +138,19 @@ public class IpsProjectTest extends AbstractIpsPluginTest {
         // TODO v2 - test with more than one project
     }
     
+    public void testFindProductCmptsByPolicyCmptWithExistingProductCmptMissingPolicyCmpt() throws CoreException{
+        IProductCmptType type = newProductCmptType(ipsProject, "MotorProduct");
+        newProductCmpt(type, "ProductCmpt1");
+        IProductCmpt[] result = ipsProject.findAllProductCmpts(type, true);
+        assertEquals(1, result.length);
+
+        // now creeate a component without product component type
+        newProductCmpt(ipsProject, "ProductCmpt2");
+        result = ipsProject.findAllProductCmpts(type, true);
+        assertEquals(1, result.length);
+    }
+
+    
     public void testValidateRequiredFeatures() throws CoreException {
         MessageList ml = ipsProject.validate();
         assertNull(ml.getMessageByCode(IIpsProject.MSGCODE_NO_VERSIONMANAGER));

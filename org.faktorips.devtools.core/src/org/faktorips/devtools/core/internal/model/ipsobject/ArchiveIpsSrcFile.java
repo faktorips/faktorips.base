@@ -57,7 +57,7 @@ public class ArchiveIpsSrcFile extends AbstractIpsSrcFile implements IIpsSrcFile
             if (archive==null) {
                 return false;
             }
-            return archive.contains(getQualifiedNameType());
+            return archive.contains(this);
         } catch (CoreException e) {
             IpsPlugin.log(e);
             return false;

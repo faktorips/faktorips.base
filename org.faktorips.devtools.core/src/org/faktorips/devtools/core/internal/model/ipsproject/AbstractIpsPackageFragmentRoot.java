@@ -17,8 +17,6 @@
 
 package org.faktorips.devtools.core.internal.model.ipsproject;
 
-import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 
 import org.eclipse.core.runtime.CoreException;
@@ -33,8 +31,6 @@ import org.faktorips.devtools.core.model.ipsproject.IIpsObjectPathEntry;
 import org.faktorips.devtools.core.model.ipsproject.IIpsPackageFragment;
 import org.faktorips.devtools.core.model.ipsproject.IIpsPackageFragmentRoot;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
-import org.faktorips.devtools.core.model.productcmpt.IProductCmpt;
-import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
 
 /**
  * 
@@ -165,40 +161,5 @@ public abstract class AbstractIpsPackageFragmentRoot extends IpsElement implemen
      */
     abstract void findIpsObjects(IpsObjectType type, List result) throws CoreException;
 
-    /**
-     * Searches all product components that are based on the given product component type (either
-     * directly or because they are based on a subtype of the given type) and adds them to the
-     * result. If productCmptType is <code>null</code>, returns all product components found in
-     * the fragment root.
-     * 
-     * @param pcTypeName The product component type product components are searched for.
-     * @param includeSubtypes If <code>true</code> is passed also product component that are based
-     *            on subtypes of the given policy component are returned, otherwise only product
-     *            components that are directly based on the given type are returned.
-     * @param result List in which the product components being found are stored in.
-     */
-    public void findAllProductCmpts(IProductCmptType productCmptType, boolean includeSubytpes, List result)
-            throws CoreException {
-
-        IIpsProject ipsProject = getIpsProject();
-        List allCmpts = new ArrayList(100);
-        findIpsObjects(IpsObjectType.PRODUCT_CMPT, allCmpts);
-        for (Iterator iter = allCmpts.iterator(); iter.hasNext();) {
-            IProductCmpt productCmpt = (IProductCmpt)iter.next();
-            if (productCmptType == null) {
-                result.add(productCmpt);
-                continue;
-            }
-            IProductCmptType productCmptTypeFound = productCmpt.findProductCmptType(ipsProject);
-            if (productCmptTypeFound == null) {
-                continue;
-            }
-            if (productCmptType.equals(productCmptTypeFound)
-                    || (includeSubytpes && productCmptTypeFound.isSubtypeOf(productCmptType, ipsProject)) ) { 
-                result.add(productCmpt);
-            }
-        }
-    }
-    
     
 }

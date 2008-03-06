@@ -55,30 +55,6 @@ public class IpsPackageFragmentRootTest extends AbstractIpsPluginTest {
         ipsRoot = (IpsPackageFragmentRoot)ipsProject.getIpsPackageFragmentRoots()[0];
     }
 
-    public void testFindAllProductCmpts() throws CoreException {
-
-        IProductCmptType productCmptType = newProductCmptType(ipsProject, "pack1.Product");
-        IProductCmptType motorProductCmptType = newProductCmptType(ipsProject, "pack2.MotorProduct");
-        motorProductCmptType.setSupertype(productCmptType.getQualifiedName());
-
-        IProductCmpt product1 = newProductCmpt(productCmptType, "pack3.Product1");
-        IProductCmpt product2 = newProductCmpt(productCmptType, "pack4.Product2");
-        IProductCmpt motorProduct = newProductCmpt(motorProductCmptType, "pack5.MotorProduct");
-
-        List result = new ArrayList();
-        ipsRoot.findAllProductCmpts(productCmptType, false, result);
-        assertEquals(2, result.size());
-        assertTrue(result.contains(product1));
-        assertTrue(result.contains(product2));
-
-        result.clear();
-        ipsRoot.findAllProductCmpts(productCmptType, true, result);
-        assertEquals(3, result.size());
-        assertTrue(result.contains(product1));
-        assertTrue(result.contains(product2));
-        assertTrue(result.contains(motorProduct));
-    }
-
     public void testGetIpsObjectPathEntry() throws CoreException {
         IIpsObjectPathEntry entry = ipsRoot.getIpsObjectPathEntry();
         assertNotNull(entry);
@@ -239,21 +215,6 @@ public class IpsPackageFragmentRootTest extends AbstractIpsPluginTest {
         assertTrue(list.contains(nonIpsFile2));
         assertFalse(list.contains(fragment));
         assertFalse(list.contains(subFragment));
-    }
-
-    public void testFindProductCmptsByPolicyCmptWithExistingProductCmptMissingPolicyCmpt() throws CoreException{
-        // find product cmpt by given product component type,
-        // the package fragment we search in, contains a product cmpt without assigned product component type.
-        IProductCmptType type = newProductCmptType(ipsProject, "MotorProduct");
-        newProductCmpt(type, "ProductCmpt1");
-        List result = new ArrayList(1);
-        ipsRoot.findAllProductCmpts(type, true, result);
-        assertEquals(1, result.size());
-
-        result.clear();
-        newProductCmpt(ipsRoot, "ProductCmpt2");
-        ipsRoot.findAllProductCmpts(type, true, result);
-        assertEquals(1, result.size());
     }
 
     public void testGetSortedIpsPackageFragments() throws CoreException, IOException {

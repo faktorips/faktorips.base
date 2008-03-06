@@ -20,6 +20,7 @@ package org.faktorips.devtools.core.internal.model.ipsproject;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -39,6 +40,8 @@ import org.faktorips.devtools.core.model.ipsproject.IIpsObjectPathEntry;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProjectRefEntry;
 import org.faktorips.devtools.core.model.ipsproject.IIpsSrcFolderEntry;
+import org.faktorips.devtools.core.model.productcmpt.IProductCmpt;
+import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
 import org.faktorips.util.ArgumentCheck;
 import org.faktorips.util.message.Message;
 import org.faktorips.util.message.MessageList;
@@ -460,6 +463,55 @@ public class IpsObjectPath implements IIpsObjectPath {
             ((IpsObjectPathEntry)entries[i]).findIpsSrcFiles(type, result, visitedEntries);
         }
     }
+    
+    /**
+     * Searches all product components that are based on the given product component type (either
+     * directly or because they are based on a subtype of the given type) and adds them to the
+     * result. If productCmptType is <code>null</code>, returns all product components found in
+     * the fragment root.
+     * 
+     * @param pcTypeName The product component type product components are searched for.
+     * @param includeSubtypes If <code>true</code> is passed also product component that are based
+     *            on subtypes of the given policy component are returned, otherwise only product
+     *            components that are directly based on the given type are returned.
+     * @param result List in which the product components being found are stored in.
+     */
+    public void findAllProductCmpts(IProductCmptType productCmptType, boolean includeSubytpes, List result)
+            throws CoreException {
+
+
+        Set visitedEntries = new HashSet();
+        List allCmptFiles = new ArrayList(100);
+        findIpsSrcFiles(IpsObjectType.PRODUCT_CMPT, allCmptFiles, visitedEntries);
+        for (Iterator iter = allCmptFiles.iterator(); iter.hasNext();) {
+            IIpsSrcFile productCmptFile = (IIpsSrcFile)iter.next();
+            if (!productCmptFile.exists()) {
+                continue;
+            }
+            if (productCmptType == null) {
+                result.add(productCmptFile.getIpsObject());
+                continue;
+            }
+            QualifiedNameType cmptTypeQnt = new QualifiedNameType(productCmptFile.getPropertyValue(IProductCmpt.PROPERTY_PRODUCT_CMPT_TYPE), IpsObjectType.PRODUCT_CMPT_TYPE_V2);
+            visitedEntries.clear();
+            IIpsSrcFile typeFoundFile = findIpsSrcFile(cmptTypeQnt, visitedEntries);
+            if (typeFoundFile == null) {
+                continue;
+            }
+            if (productCmptType.getIpsSrcFile().equals(typeFoundFile)) {
+                result.add(productCmptFile.getIpsObject());
+            } else {
+                if (includeSubytpes) {
+                    IProductCmptType typeFound = (IProductCmptType)typeFoundFile.getIpsObject();
+                    if (typeFound.isSubtypeOf(productCmptType, ipsProject)) {
+                        result.add(productCmptFile.getIpsObject());
+                    }
+                }
+            }
+        }
+    }
+    
+    
     
     /**
      * Adds all source files found in <code>IpsSrcFolderEntry</code>s on the path to the result list.
