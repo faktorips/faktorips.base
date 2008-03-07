@@ -41,6 +41,7 @@ import org.faktorips.devtools.core.model.tablestructure.ITableStructure;
 import org.faktorips.devtools.core.model.tablestructure.IUniqueKey;
 import org.faktorips.devtools.core.util.CollectionUtil;
 import org.faktorips.util.message.MessageList;
+import org.faktorips.values.DateUtil;
 import org.w3c.dom.Element;
 
 public class TableContentsTest extends AbstractIpsPluginTest {
@@ -132,6 +133,8 @@ public class TableContentsTest extends AbstractIpsPluginTest {
         assertEquals("RateTableStructure", table.getTableStructure());
         assertEquals(2, table.getNumOfColumns());
         assertEquals(2, table.getNumOfGenerations());
+        assertEquals("2008-01-01", DateUtil.dateToIsoDateString(table.getGeneration(0).getValidFrom().getTime()));
+        assertEquals("2008-02-01", DateUtil.dateToIsoDateString(table.getGeneration(1).getValidFrom().getTime()));
     }
 
     private void addExtensionPropertyDefinition(String propId) {
@@ -160,6 +163,7 @@ public class TableContentsTest extends AbstractIpsPluginTest {
         assertEquals(2, table.getNumOfColumns());
         assertEquals(2, table.getNumOfGenerations());
         ITableContentsGeneration generation = (ITableContentsGeneration)table.getFirstGeneration();
+        assertEquals("2008-01-01", DateUtil.dateToIsoDateString(generation.getValidFrom().getTime()));
         IRow[] rows = generation.getRows();
         assertEquals(2, rows.length);
         assertEquals("18", rows[0].getValue(0));
@@ -168,6 +172,7 @@ public class TableContentsTest extends AbstractIpsPluginTest {
         assertEquals("0.6", rows[1].getValue(1));
         
         generation = (ITableContentsGeneration)generation.getNextByValidDate();
+        assertEquals("2008-02-01", DateUtil.dateToIsoDateString(generation.getValidFrom().getTime()));
         rows = generation.getRows();
         assertEquals(2, rows.length);
         assertEquals("180", rows[0].getValue(0));

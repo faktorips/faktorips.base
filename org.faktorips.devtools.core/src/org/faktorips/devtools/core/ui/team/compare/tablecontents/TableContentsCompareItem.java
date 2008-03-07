@@ -131,7 +131,8 @@ public class TableContentsCompareItem extends AbstractCompareItem {
             sb.append(Messages.TableContentsCompareItem_Row).append(COLON_BLANK).append(row.getRowNumber()+1);
         }else if(getIpsElement() instanceof IIpsObjectGeneration){
             IIpsObjectGeneration gen= (IIpsObjectGeneration) getIpsElement();
-            sb.append(changingNamingConventionGenerationString).append(COLON_BLANK).append(QUOTE).append(dateFormat.format(gen.getValidFrom().getTime())).append(QUOTE);
+            String validFrom = gen.getValidFrom() != null ?  dateFormat.format(gen.getValidFrom().getTime()) : IpsPlugin.getDefault().getIpsPreferences().getNullPresentation();
+            sb.append(changingNamingConventionGenerationString).append(COLON_BLANK).append(QUOTE).append(validFrom).append(QUOTE);
         }else if(getIpsElement() instanceof ITableContents){
             ITableContents table= (ITableContents) getIpsElement();
             sb.append(Messages.TableContentsCompareItem_TableContents).append(COLON_BLANK);

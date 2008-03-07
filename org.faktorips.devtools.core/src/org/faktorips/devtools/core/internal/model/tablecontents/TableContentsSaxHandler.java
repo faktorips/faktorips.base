@@ -21,7 +21,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.faktorips.devtools.core.internal.model.ipsobject.IpsObjectGeneration;
-import org.faktorips.devtools.core.model.ipsobject.ITimedIpsObject;
+import org.faktorips.devtools.core.model.ipsobject.IIpsObjectGeneration;
 import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
 import org.faktorips.devtools.core.model.tablecontents.ITableContents;
 import org.faktorips.values.DateUtil;
@@ -41,7 +41,7 @@ public class TableContentsSaxHandler extends DefaultHandler {
     private static final String VALUE = Row.VALUE_TAG_NAME;
     private static final String ROW = Row.TAG_NAME;
     private static final String GENERATION = IpsObjectGeneration.TAG_NAME;
-    private static final String ATTRIBUTE_VALIDFROM = ITimedIpsObject.PROPERTY_VALID_TO;
+    private static final String ATTRIBUTE_VALIDFROM = IIpsObjectGeneration.PROPERTY_VALID_FROM;
     private static final String ATTRIBUTE_TABLESTRUCTURE = ITableContents.PROPERTY_TABLESTRUCTURE;
     private static final String ATTRIBUTE_NUMOFCOLUMNS = ITableContents.PROPERTY_NUMOFCOLUMNS;
     
