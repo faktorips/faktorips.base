@@ -66,6 +66,9 @@ public abstract class AbstractIpsSrcFile extends IpsElement implements IIpsSrcFi
     public boolean exists() {
         try {
             IpsObjectPathEntry entry = (IpsObjectPathEntry)getIpsPackageFragment().getRoot().getIpsObjectPathEntry();
+            if (entry==null) {
+                return false;
+            }
             return entry.exists(getQualifiedNameType());
         }
         catch (CoreException e) {

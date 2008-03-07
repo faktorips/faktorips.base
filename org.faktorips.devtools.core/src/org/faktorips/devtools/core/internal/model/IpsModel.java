@@ -105,6 +105,10 @@ public class IpsModel extends IpsElement implements IIpsModel, IResourceChangeLi
         TRACE_VALIDATION = Boolean.valueOf(Platform.getDebugOption("org.faktorips.devtools.core/trace/validation")) //$NON-NLS-1$
         .booleanValue();
     }
+    
+    // resource delta visitor used to generate ips sourcefile contents changed events and trigger a build after 
+    // changes to the ips project properties file.
+    private ResourceDeltaVisitor resourceDeltaVisitor;
 
     // set of model change listeners that are notified about model changes
     private Set changeListeners = new HashSet(100);
@@ -179,6 +183,7 @@ public class IpsModel extends IpsElement implements IIpsModel, IResourceChangeLi
             System.out.println("IpsModel.Constructor(): IpsModel created."); //$NON-NLS-1$
         }
         initIpsObjectTypes();
+        resourceDeltaVisitor = new ResourceDeltaVisitor(); // has to be done after the ips object types are initialized!
     }
 
     private void initIpsObjectTypes() {
@@ -924,7 +929,7 @@ public class IpsModel extends IpsElement implements IIpsModel, IResourceChangeLi
         IResourceDelta delta = event.getDelta();
         if (delta != null) {
             try {
-                delta.accept(new ResourceDeltaVisitor());
+                delta.accept(resourceDeltaVisitor);
             } catch (Exception e) {
                 IpsPlugin.log(new IpsStatus("Error updating model objects in resurce changed event.", //$NON-NLS-1$
                         e));
@@ -1424,14 +1429,28 @@ public class IpsModel extends IpsElement implements IIpsModel, IResourceChangeLi
     }
 
     /**
-     * ResourceDeltaVisitor to update any model objects on resource changes.
+     * ResourceDeltaVisitor to generate ips model change events.
      */
     private class ResourceDeltaVisitor implements IResourceDeltaVisitor {
+        
+        private Set fileExtensionsOfInterest = new HashSet(20);
+        
+        public ResourceDeltaVisitor() {
+            IpsObjectType[] types = getIpsObjectTypes();
+            for (int i = 0; i < types.length; i++) {
+                fileExtensionsOfInterest.add(types[i].getFileExtension());
+            }
+            fileExtensionsOfInterest.add(IpsProject.PROPERTY_FILE_EXTENSION);
+        }
+
         public boolean visit(final IResourceDelta delta) {
             IResource resource = delta.getResource();
             try {
                 if (resource == null || resource.getType() != IResource.FILE) {
                     return true;
+                }
+                if (!fileExtensionsOfInterest.contains(((IFile)resource).getFileExtension())) {
+                    return false;
                 }
                 IIpsProject ipsProject = getIpsProject(resource.getProject());
                 if (resource.equals(((IpsProject)ipsProject).getIpsProjectPropertiesFile())) {
