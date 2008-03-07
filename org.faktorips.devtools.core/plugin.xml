@@ -330,7 +330,7 @@
 		             <or>
 			              <objectClass name="org.eclipse.jdt.core.IJavaProject"/>
 			              <objectClass name="org.eclipse.core.resources.IResource"/>
-			              <objectClass name="org.faktorips.devtools.core.model.IFixDifferencesToModelSupport"/>
+			              <objectClass name="org.faktorips.devtools.core.model.ipsobject.IFixDifferencesToModelSupport"/>
 		             </or>
 	            </enablement> 
             </action>
@@ -338,7 +338,7 @@
 	             <or>
 		              <objectClass name="org.eclipse.jdt.core.IJavaProject"/>
 		              <objectClass name="org.eclipse.core.resources.IResource"/>
-		              <objectClass name="org.faktorips.devtools.core.model.IFixDifferencesToModelSupport"/>
+		              <objectClass name="org.faktorips.devtools.core.model.ipsobject.IFixDifferencesToModelSupport"/>
 	             </or>
 		      </visibility> 
     	</objectContribution>
@@ -1039,6 +1039,7 @@
          point="org.faktorips.devtools.core.loggingFrameworkConnector">
       <loggingFrameworkConnector class="org.faktorips.devtools.core.builder.Log4jLoggingFrameworkConnector"/>
    </extension>
+   
    <extension
          id="excelFunctionResolverFactory"
          name="function resolver factory for an excel function resolver"
@@ -1046,5 +1047,13 @@
          <functionResolverFactory class="org.faktorips.devtools.core.ExcelFunctionsFunctionResolverFactory"/>
    </extension>
    
+   <extension
+         point="org.faktorips.devtools.core.faktorIpsFeatureVersionManager">
+      <faktorIpsFeatureVersionManager
+            class="org.faktorips.devtools.core.internal.migration.CoreVersionManager"
+            featureId="org.faktorips.feature"
+            id="org.faktorips.feature.versionmanagerv2"
+            basedOnFeatureManager=""/>
+   </extension>
    
 </plugin>
