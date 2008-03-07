@@ -95,6 +95,16 @@ public class IpsProjectRefEntry extends IpsObjectPathEntry implements
     public IIpsPackageFragmentRoot getIpsPackageFragmentRoot() throws CoreException {
         return null;
     }
+    
+    /**
+     * {@inheritDoc}
+     */
+    public boolean exists(QualifiedNameType qnt) throws CoreException {
+        if (referencedIpsProject==null) {
+            return false;
+        }
+        return referencedIpsProject.findIpsSrcFile(qnt)!=null;
+    }
 
     /**
      * {@inheritDoc}
@@ -111,10 +121,10 @@ public class IpsProjectRefEntry extends IpsObjectPathEntry implements
      * {@inheritDoc}
      */
     protected IIpsSrcFile findIpsSrcFileInternal(QualifiedNameType nameType, Set visitedEntries) throws CoreException {
-        if (referencedIpsProject!=null) {
-            return ((IpsProject)referencedIpsProject).getIpsObjectPathInternal().findIpsSrcFile(nameType, visitedEntries);
+        if (referencedIpsProject==null) {
+            return null;
         }
-        return null;
+        return ((IpsProject)referencedIpsProject).getIpsObjectPathInternal().findIpsSrcFile(nameType, visitedEntries);
     }
 
     /**
@@ -126,6 +136,7 @@ public class IpsProjectRefEntry extends IpsObjectPathEntry implements
             boolean ignoreCase,
             List result,
             Set visitedEntries) throws CoreException {
+        
         if (referencedIpsProject != null) {
             ((IpsProject)referencedIpsProject).getIpsObjectPathInternal().findIpsSrcFilesStartingWith(
                     type, prefix, ignoreCase, result, visitedEntries);

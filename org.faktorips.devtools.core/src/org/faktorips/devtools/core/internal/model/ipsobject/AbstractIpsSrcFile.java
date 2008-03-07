@@ -25,6 +25,7 @@ import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.IpsStatus;
 import org.faktorips.devtools.core.internal.model.IpsElement;
 import org.faktorips.devtools.core.internal.model.IpsModel;
+import org.faktorips.devtools.core.internal.model.ipsproject.IpsObjectPathEntry;
 import org.faktorips.devtools.core.model.IIpsElement;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObject;
 import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
@@ -39,6 +40,11 @@ import org.faktorips.util.StringUtil;
  */
 public abstract class AbstractIpsSrcFile extends IpsElement implements IIpsSrcFile {
 
+    // Cached QNameType
+    // as QualifiedNameType is an immutable value object, we don't have any threading problems here
+    // if two threads create two qualified name types we don't have a problem as the two QNameTypes are equal.
+    private QualifiedNameType qualifiedNameType = null;
+    
     /**
      * @param parent
      * @param name
@@ -54,6 +60,20 @@ public abstract class AbstractIpsSrcFile extends IpsElement implements IIpsSrcFi
         return (IIpsPackageFragment)getParent();
     }
     
+    /**
+     * {@inheritDoc}
+     */
+    public boolean exists() {
+        try {
+            IpsObjectPathEntry entry = (IpsObjectPathEntry)getIpsPackageFragment().getRoot().getIpsObjectPathEntry();
+            return entry.exists(getQualifiedNameType());
+        }
+        catch (CoreException e) {
+            IpsPlugin.log(e);
+            return false;
+        }
+    }
+
     /**
      * {@inheritDoc}
      */
@@ -81,15 +101,20 @@ public abstract class AbstractIpsSrcFile extends IpsElement implements IIpsSrcFi
      * {@inheritDoc}
      */
     public QualifiedNameType getQualifiedNameType() {
-        StringBuffer buf = new StringBuffer();
-        String packageFragmentName = getIpsPackageFragment().getName();
-        if(!StringUtils.isEmpty(packageFragmentName)){
-            buf.append(getIpsPackageFragment().getName());
-            buf.append('.');
+        // as QualifiedNameType is an immutable value object, we don't have any threading problems here
+        // if two threads create two qualified name types we don't have a problem as the two QNameTypes are equal.
+        if (qualifiedNameType==null) {
+            StringBuffer buf = new StringBuffer();
+            String packageFragmentName = getIpsPackageFragment().getName();
+            if(!StringUtils.isEmpty(packageFragmentName)){
+                buf.append(getIpsPackageFragment().getName());
+                buf.append('.');
+            }
+            
+            buf.append(StringUtil.getFilenameWithoutExtension(getName()));
+            qualifiedNameType = new QualifiedNameType(buf.toString(), getIpsObjectType());
         }
-        
-        buf.append(StringUtil.getFilenameWithoutExtension(getName()));
-        return new QualifiedNameType(buf.toString(), getIpsObjectType());
+        return qualifiedNameType;
     }
 
     /**

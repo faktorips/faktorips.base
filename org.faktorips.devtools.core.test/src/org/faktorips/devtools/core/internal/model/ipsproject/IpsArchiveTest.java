@@ -28,7 +28,6 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.NullProgressMonitor;
 import org.faktorips.devtools.core.AbstractIpsPluginTest;
 import org.faktorips.devtools.core.model.CreateIpsArchiveOperation;
-import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
 import org.faktorips.devtools.core.model.ipsobject.QualifiedNameType;
 import org.faktorips.devtools.core.model.ipsproject.IIpsArchive;
@@ -67,14 +66,14 @@ public class IpsArchiveTest extends AbstractIpsPluginTest {
      * Tests if the access methods work correct if we change the underlying archive file on disk.
      */
     public void testModificationToUnderlyingFile() throws Exception {
-        IIpsSrcFile file = project.getIpsPackageFragmentRoots()[0].getIpsPackageFragment("motor").getIpsSrcFile(IpsObjectType.POLICY_CMPT_TYPE.getFileName("MotorPolicy"));
-        assertTrue(archive.contains(file));
+        QualifiedNameType qnt = new QualifiedNameType("motor.MotorPolicy", IpsObjectType.POLICY_CMPT_TYPE);
+        assertTrue(archive.contains(qnt));
 
         motorPolicyType.getIpsSrcFile().getCorrespondingFile().delete(IResource.ALWAYS_DELETE_PROJECT_CONTENT, null);
         project.getProject().build(IncrementalProjectBuilder.INCREMENTAL_BUILD, new NullProgressMonitor());
         
         createArchive(project, archiveFile);
-        assertFalse(archive.contains(file));
+        assertFalse(archive.contains(qnt));
     }
     
     public void testBasePackageNameForGeneratedJavaClass() throws CoreException {
@@ -88,11 +87,8 @@ public class IpsArchiveTest extends AbstractIpsPluginTest {
     }
     
     public void testContains() throws CoreException {
-        IIpsSrcFile file = project.getIpsPackageFragmentRoots()[0].getIpsPackageFragment("motor").getIpsSrcFile(IpsObjectType.POLICY_CMPT_TYPE.getFileName("MotorPolicy"));
-        assertTrue(archive.contains(file));
-        
-        IIpsSrcFile unkownFile = project.getIpsPackageFragmentRoots()[0].getIpsPackageFragment("motor").getIpsSrcFile(IpsObjectType.POLICY_CMPT_TYPE.getFileName("Unknown"));
-        assertFalse(archive.contains(unkownFile));
+        assertTrue(archive.contains(new QualifiedNameType("motor.MotorPolicy", IpsObjectType.POLICY_CMPT_TYPE)));
+        assertFalse(archive.contains(new QualifiedNameType("Unknown", IpsObjectType.POLICY_CMPT_TYPE)));
     }
     
     public void testContainsPackage() throws CoreException {

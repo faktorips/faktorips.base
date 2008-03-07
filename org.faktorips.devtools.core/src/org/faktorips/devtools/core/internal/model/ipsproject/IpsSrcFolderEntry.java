@@ -31,6 +31,7 @@ import org.eclipse.osgi.util.NLS;
 import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
 import org.faktorips.devtools.core.model.ipsobject.QualifiedNameType;
+import org.faktorips.devtools.core.model.ipsproject.IIpsPackageFragment;
 import org.faktorips.devtools.core.model.ipsproject.IIpsPackageFragmentRoot;
 import org.faktorips.devtools.core.model.ipsproject.IIpsSrcFolderEntry;
 import org.faktorips.devtools.core.util.QNameUtil;
@@ -90,6 +91,8 @@ public class IpsSrcFolderEntry extends IpsObjectPathEntry implements IIpsSrcFold
     // the name of the base package containing the Java files where the developer adds it's own code.
     private String basePackageDerived = ""; //$NON-NLS-1$
 
+    private IIpsPackageFragmentRoot root;
+    
     public IpsSrcFolderEntry(IpsObjectPath path) {
         super(path);
     }
@@ -97,7 +100,12 @@ public class IpsSrcFolderEntry extends IpsObjectPathEntry implements IIpsSrcFold
     public IpsSrcFolderEntry(IpsObjectPath path, IFolder sourceFolder) {
         super(path);
         ArgumentCheck.notNull(sourceFolder);
-        this.sourceFolder = sourceFolder;
+        setSourceFolder(sourceFolder);
+    }
+    
+    private void setSourceFolder(IFolder newFolder) {
+        sourceFolder = newFolder;
+        root = new IpsPackageFragmentRoot((IpsProject)getIpsObjectPath().getIpsProject(), getIpsPackageFragmentRootName());
     }
 
     /**
@@ -223,6 +231,16 @@ public class IpsSrcFolderEntry extends IpsObjectPathEntry implements IIpsSrcFold
     public void setSpecificBasePackageNameForDerivedJavaClasses(String name) {
         basePackageDerived = name;
     }
+    
+    /**
+     * {@inheritDoc}
+     */
+    public boolean exists(QualifiedNameType qnt) throws CoreException {
+        if (sourceFolder==null) {
+            return false;
+        }
+        return sourceFolder.getFile(qnt.toPath()).exists();
+    }
 
     /**
      * {@inheritDoc}
@@ -234,8 +252,16 @@ public class IpsSrcFolderEntry extends IpsObjectPathEntry implements IIpsSrcFold
     /**
      * {@inheritDoc}
      */
-    public IIpsSrcFile findIpsSrcFileInternal(QualifiedNameType nameType, Set visitedEntries) throws CoreException {
-        return getIpsPackageFragmentRoot().findIpsSrcFile(nameType);
+    public IIpsSrcFile findIpsSrcFileInternal(QualifiedNameType qnt, Set visitedEntries) throws CoreException {
+        IIpsPackageFragment pack = root.getIpsPackageFragment(qnt.getPackageName());
+        if (pack==null) {
+            return null;
+        }
+        IIpsSrcFile file = pack.getIpsSrcFile(qnt.getFileName());
+        if (!file.exists()) {
+            return null;
+        }
+        return file;
     }
 
     /**
@@ -252,7 +278,7 @@ public class IpsSrcFolderEntry extends IpsObjectPathEntry implements IIpsSrcFold
      */
     public void initFromXml(Element element, IProject project) {
         String sourceFolderPath = element.getAttribute("sourceFolder"); //$NON-NLS-1$
-        sourceFolder = project.getFolder(new Path(sourceFolderPath));
+        setSourceFolder(project.getFolder(new Path(sourceFolderPath)));
         String outputFolderPathMergable = element.getAttribute("outputFolderMergable"); //$NON-NLS-1$
         outputFolderMergable = outputFolderPathMergable.equals("") ? null : project.getFolder(new Path( //$NON-NLS-1$
                 outputFolderPathMergable));

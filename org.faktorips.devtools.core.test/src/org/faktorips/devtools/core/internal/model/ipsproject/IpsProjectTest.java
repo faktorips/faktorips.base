@@ -692,7 +692,7 @@ public class IpsProjectTest extends AbstractIpsPluginTest {
         // invalid package name as it contains a blank => should return null
         assertNull(ipsProject.findIpsObject(new QualifiedNameType("a b.Test", IpsObjectType.POLICY_CMPT_TYPE)));
     }
-
+    
     public void testFindIpsSrcFile_WithTwoRoots() throws CoreException, InterruptedException {
         IPolicyCmptType testObject = newPolicyCmptTypeWithoutProductCmptType(ipsProject, "a.b.Test");
         QualifiedNameType qnt = new QualifiedNameType("a.b.Test", IpsObjectType.POLICY_CMPT_TYPE);
@@ -717,6 +717,23 @@ public class IpsProjectTest extends AbstractIpsPluginTest {
         
         // test if caching works also for the second entry
         assertEquals(newType.getIpsSrcFile(), ipsProject.findIpsSrcFile(newType.getQualifiedNameType()));
+    }
+    
+    public void testFindIpsSrcFile_InArchive() throws Exception {
+        IIpsProject archiveProject = newIpsProject("ArchiveProject");
+        IPolicyCmptType type = newPolicyCmptType(archiveProject, "motor.Policy");
+        newPolicyCmptTypeWithoutProductCmptType(archiveProject, "motor.collision.CollisionCoverage");
+        newProductCmpt(archiveProject, "motor.MotorProduct");
+
+        IFile archiveFile = ipsProject.getProject().getFile("test.ipsar");
+        createArchive(archiveProject, archiveFile);
+        
+        IIpsObjectPath path = ipsProject.getIpsObjectPath();
+        path.newArchiveEntry(archiveFile);
+        ipsProject.setIpsObjectPath(path);
+        
+        IIpsSrcFile foundFile = ipsProject.findIpsSrcFile(type.getQualifiedNameType());
+        assertEquals(type.getQualifiedNameType(), foundFile.getQualifiedNameType());
     }
 
     public void testFindIpsObject() throws CoreException {

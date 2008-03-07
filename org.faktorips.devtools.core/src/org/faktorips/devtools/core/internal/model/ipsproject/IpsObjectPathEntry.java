@@ -22,12 +22,12 @@ import java.util.Set;
 
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.runtime.CoreException;
+import org.faktorips.devtools.core.model.ipsobject.IIpsObject;
 import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
 import org.faktorips.devtools.core.model.ipsobject.QualifiedNameType;
 import org.faktorips.devtools.core.model.ipsproject.IIpsObjectPath;
 import org.faktorips.devtools.core.model.ipsproject.IIpsObjectPathEntry;
-import org.faktorips.devtools.core.model.ipsproject.IIpsPackageFragmentRoot;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.util.ArgumentCheck;
 import org.w3c.dom.Document;
@@ -70,12 +70,36 @@ public abstract class IpsObjectPathEntry implements IIpsObjectPathEntry {
     public int getIndex() {
         return path.getIndex(this);
     }
-
-    public final IIpsSrcFile findIpsSrcFile(QualifiedNameType nameType, Set visitedEntries) throws CoreException {
-        if (visitedEntries.contains(this)) {
+    
+    /**
+     * Returns <code>true</code> if the entry contains a source file with the indicated qualified name type,
+     * otherwise <code>false</code>.
+     * @throws CoreException 
+     */
+    abstract public boolean exists(QualifiedNameType qnt) throws CoreException;
+    
+    /**
+     * {@inheritDoc}
+     */
+    public IIpsObject findIpsObject(IpsObjectType type, String qualifiedName) throws CoreException {
+        IIpsSrcFile file = findIpsSrcFile(new QualifiedNameType(qualifiedName, type));
+        if (file==null) {
             return null;
         }
-        visitedEntries.add(this);
+        return file.getIpsObject();
+    }
+
+    public IIpsSrcFile findIpsSrcFile(QualifiedNameType qnt) throws CoreException {
+        return findIpsSrcFile(qnt, null);
+    }
+
+    public final IIpsSrcFile findIpsSrcFile(QualifiedNameType nameType, Set visitedEntries) throws CoreException {
+        if (visitedEntries!=null) {
+            if (visitedEntries.contains(this)) {
+                return null;
+            }
+            visitedEntries.add(this);
+        }
         return findIpsSrcFileInternal(nameType, visitedEntries);
     }
 
@@ -83,10 +107,12 @@ public abstract class IpsObjectPathEntry implements IIpsObjectPathEntry {
      * Adds all ips source files of the given type found in the path entry to the result list. 
      */
     public final void findIpsSrcFiles(IpsObjectType type, List result, Set visitedEntries) throws CoreException {
-        if (visitedEntries.contains(this)) {
-            return;
+        if (visitedEntries!=null) {
+            if (visitedEntries.contains(this)) {
+                return;
+            }
+            visitedEntries.add(this);
         }
-        visitedEntries.add(this);
         findIpsSrcFilesInternal(type, result, visitedEntries);
     }
         

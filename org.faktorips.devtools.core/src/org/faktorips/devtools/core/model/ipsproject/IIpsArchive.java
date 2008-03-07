@@ -23,7 +23,6 @@ import java.util.Set;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
-import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.core.model.ipsobject.QualifiedNameType;
 
 /**
@@ -93,9 +92,10 @@ public interface IIpsArchive {
     public Set getQNameTypes(String packName) throws CoreException;
     
     /**
-     * Returns <code>true</code> if the archive contains the indicated file, otherwise <code>false</code>.
+     * Returns <code>true</code> if the archive contains the ips object indentified by the given
+     * qualified name type, otherwise <code>false</code>.
      */
-    public boolean contains(IIpsSrcFile file) throws CoreException;
+    public boolean contains(QualifiedNameType qnt) throws CoreException;
     
     /**
      * Returns the content for the qualified name type or <code>null</code> if the archive

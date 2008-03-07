@@ -17,11 +17,8 @@
 
 package org.faktorips.devtools.core.internal.model.ipsproject;
 
-import java.util.List;
-
 import org.eclipse.core.runtime.CoreException;
 import org.faktorips.devtools.core.IpsPlugin;
-import org.faktorips.devtools.core.IpsStatus;
 import org.faktorips.devtools.core.internal.model.IpsElement;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObject;
 import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
@@ -90,11 +87,7 @@ public abstract class AbstractIpsPackageFragmentRoot extends IpsElement implemen
      * {@inheritDoc}
      */
     public IIpsObjectPathEntry getIpsObjectPathEntry() throws CoreException {
-        IIpsObjectPathEntry entry = ((IpsProject)getIpsProject()).getIpsObjectPathInternal().getEntry(getName());
-        if (entry!=null) {
-            return entry;
-        }
-        throw new CoreException(new IpsStatus("No IpsObjectPathEntry found for package fragment root " + this)); //$NON-NLS-1$
+        return ((IpsProject)getIpsProject()).getIpsObjectPathInternal().getEntry(getName());
     }
 
     /**
@@ -127,39 +120,23 @@ public abstract class AbstractIpsPackageFragmentRoot extends IpsElement implemen
      * {@inheritDoc}
      */
     public IIpsObject findIpsObject(IpsObjectType type, String qualifiedName) throws CoreException {
-        return findIpsObject(new QualifiedNameType(qualifiedName, type));
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    public final IIpsObject findIpsObject(QualifiedNameType qnt) throws CoreException {
-        IIpsSrcFile file = findIpsSrcFile(qnt);
-        if (file == null) {
+        IIpsSrcFile file = findIpsSrcFile(new QualifiedNameType(qualifiedName, type));
+        if (file==null) {
             return null;
         }
         return file.getIpsObject();
     }
-    
+
     /**
      * {@inheritDoc}
      */
     public final IIpsSrcFile findIpsSrcFile(QualifiedNameType qnt) throws CoreException {
-        IIpsPackageFragment pack = getIpsPackageFragment(qnt.getPackageName());
-        if (pack==null) {
+        IIpsObjectPathEntry entry = getIpsObjectPathEntry();
+        if (entry==null) {
             return null;
         }
-        IIpsSrcFile file = pack.getIpsSrcFile(qnt.getFileName());
-        if (!file.exists()) {
-            return null;
-        }
-        return file;
+        return entry.findIpsSrcFile(qnt);
     }
-
-    /**
-     * Searches all objects of the given type in the root folder and adds them to the result.
-     */
-    abstract void findIpsObjects(IpsObjectType type, List result) throws CoreException;
 
     
 }

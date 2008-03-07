@@ -213,19 +213,6 @@ public class IpsPackageFragmentRoot extends AbstractIpsPackageFragmentRoot imple
         return IpsPlugin.getDefault().getImage("IpsPackageFragmentRoot.gif"); //$NON-NLS-1$
     }
 
-    /**
-     * {@inheritDoc}
-     */
-    void findIpsObjects(IpsObjectType type, List result) throws CoreException {
-        if (!exists()) {
-            return;
-        }
-        IIpsPackageFragment[] packs = this.getIpsPackageFragments();
-        for (int i = 0; i < packs.length; i++) {
-            ((IpsPackageFragment)packs[i]).findIpsObjects(type, result);
-        }
-    }
-
     void findIpsSourceFiles(IpsObjectType type, List result) throws CoreException {
         if (!exists()) {
             return;
@@ -233,19 +220,6 @@ public class IpsPackageFragmentRoot extends AbstractIpsPackageFragmentRoot imple
         IIpsPackageFragment[] packs = this.getIpsPackageFragments();
         for (int i = 0; i < packs.length; i++) {
             ((IpsPackageFragment)packs[i]).findIpsSourceFiles(type, result);
-        }
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    public void findIpsObjects(List result) throws CoreException {
-        if (!exists() || result == null) {
-            return;
-        }
-        IIpsPackageFragment[] packs = this.getIpsPackageFragments();
-        for (int i = 0; i < packs.length; i++) {
-            ((IpsPackageFragment)packs[i]).findIpsObjects(result);
         }
     }
 

@@ -418,6 +418,12 @@ public interface IIpsProject extends IIpsElement, IProjectNature {
     public void findTableContents(ITableStructure structure, List tableContents) throws CoreException;
 
     /**
+     * Returns the first ips source file on the ips object path with the the indicated qualified name and type.
+     * Returns <code>null</code> if no such file was found.
+     */
+    public IIpsSrcFile findIpsSrcFile(QualifiedNameType qNameType) throws CoreException;
+    
+    /**
      * Returns the first ips source file with the the indicated ips object type and qualified name
      * found on the objectpath.<br>
      * Returns <code>null</code> if the source file wasn't found (not exists).

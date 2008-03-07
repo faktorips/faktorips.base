@@ -71,7 +71,6 @@ public class IpsArchive implements IIpsArchive {
     private HashMap qNameTypes = null;
     
     public IpsArchive(IFile file) {
-        ArgumentCheck.notNull(file);
         this.archiveFile = file;
         root = new ArchiveIpsPackageFragmentRoot(file);
     }
@@ -167,9 +166,9 @@ public class IpsArchive implements IIpsArchive {
     /**
      * {@inheritDoc}
      */
-    public boolean contains(IIpsSrcFile file) throws CoreException {
+    public boolean contains(QualifiedNameType qnt) throws CoreException {
         readArchiveContentIfNecessary();
-        return qNameTypes.containsKey(file.getQualifiedNameType());
+        return qNameTypes.containsKey(qnt);
     }
 
     /**

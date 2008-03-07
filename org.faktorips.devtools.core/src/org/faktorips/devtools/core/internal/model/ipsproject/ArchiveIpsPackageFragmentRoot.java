@@ -146,29 +146,6 @@ public class ArchiveIpsPackageFragmentRoot extends AbstractIpsPackageFragmentRoo
         return new CoreException(new IpsStatus("Not possible for archives because they are not modifiable.")); //$NON-NLS-1$
     }
 
-    /**
-     * {@inheritDoc}
-     */
-    public void findIpsObjects(IpsObjectType type, List result) throws CoreException {
-        if (type==null) {
-            return;
-        }
-        IIpsArchive archive = getIpsArchive();
-        if (archive==null) {
-            return;
-        }
-        Set qntSet = archive.getQNameTypes();
-        for (Iterator it = qntSet.iterator(); it.hasNext();) {
-            QualifiedNameType qnt = (QualifiedNameType)it.next();
-            if (type.equals(qnt.getIpsObjectType())) {
-                IIpsObject object = findIpsObject(qnt);
-                if (object!=null) {
-                    result.add(object);
-                }
-            }
-        }
-    }
-    
     public void findIpsSourceFiles(IpsObjectType type, List result) throws CoreException {
         if (type==null) {
             return;

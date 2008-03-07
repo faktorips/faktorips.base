@@ -96,29 +96,6 @@ public class ArchiveIpsPackageFragmentRootTest extends AbstractIpsPluginTest {
         assertEquals(archiveFile, root.getEnclosingResource());
     }
 
-    public void testFindIpsObject() throws Throwable {
-        IIpsObject type = root.findIpsObject(IpsObjectType.POLICY_CMPT_TYPE, "motor.Policy");
-        assertNotNull(type);
-
-        IIpsObject type2 = root.findIpsObject(IpsObjectType.POLICY_CMPT_TYPE, "motor.Policy");
-        assertEquals(type, type2);
-
-        assertNull(root.findIpsObject(IpsObjectType.POLICY_CMPT_TYPE, "Unkown"));
-        assertNull(root.findIpsObject(IpsObjectType.PRODUCT_CMPT, "motor.Policy"));
-    }
-
-    public void testFindIpsObject_ProductCmptType() throws Throwable {
-        assertNotNull(root.findIpsObject(IpsObjectType.OLD_PRODUCT_CMPT_TYPE, type.getProductCmptType()));
-    }
-
-    public void testFindIpsObjectsByIpsObjectType() throws CoreException {
-        List result = new ArrayList();
-        root.findIpsObjects(IpsObjectType.POLICY_CMPT_TYPE, result);
-        assertEquals(2, result.size());
-        assertTrue(result.contains(root.findIpsObject(IpsObjectType.POLICY_CMPT_TYPE, "motor.Policy")));
-        assertTrue(result.contains(root.findIpsObject(IpsObjectType.POLICY_CMPT_TYPE, "motor.collision.CollisionCoverage")));
-    }
-
     public void testGetSortedIpsPackageFragments() throws CoreException {
         IIpsPackageFragment[] packs = root.getSortedIpsPackageFragments();
         assertEquals(2, packs.length);

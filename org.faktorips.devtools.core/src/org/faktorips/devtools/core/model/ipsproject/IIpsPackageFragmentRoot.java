@@ -125,11 +125,6 @@ public interface IIpsPackageFragmentRoot extends IIpsElement {
     public IIpsObject findIpsObject(IpsObjectType type, String qualifiedName) throws CoreException;
 
     /**
-     * Returns the IPS object with the indicated qualified name type.
-     */
-    public IIpsObject findIpsObject(QualifiedNameType nameType) throws CoreException;
-
-    /**
      * Returns the IPS source file with the indicated qualified name type.
      */
     public IIpsSrcFile findIpsSrcFile(QualifiedNameType nameType) throws CoreException;

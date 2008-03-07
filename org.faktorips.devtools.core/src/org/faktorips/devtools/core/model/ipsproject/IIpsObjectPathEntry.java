@@ -18,6 +18,10 @@
 package org.faktorips.devtools.core.model.ipsproject;
 
 import org.eclipse.core.runtime.CoreException;
+import org.faktorips.devtools.core.model.ipsobject.IIpsObject;
+import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
+import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
+import org.faktorips.devtools.core.model.ipsobject.QualifiedNameType;
 import org.faktorips.util.message.MessageList;
 
 /**
@@ -104,4 +108,16 @@ public interface IIpsObjectPathEntry {
      * Validates the object path entry and returns the result as list of messages.
      */
     public MessageList validate() throws CoreException;
+    
+    /**
+     * Returns the IPS object with the indicated type and qualified name.
+     */
+    public IIpsObject findIpsObject(IpsObjectType type, String qualifiedName) throws CoreException;
+
+    /**
+     * Returns the IPS source file with the indicated qualified name type.
+     */
+    public IIpsSrcFile findIpsSrcFile(QualifiedNameType nameType) throws CoreException;
+
+    
 }

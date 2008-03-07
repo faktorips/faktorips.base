@@ -111,9 +111,9 @@ public class ModelContentProviderTest extends AbstractIpsPluginTest {
         attribute = polCmptType.newPolicyCmptTypeAttribute();
         polCmptType.newPolicyCmptTypeAttribute();
         polCmptType.newPolicyCmptTypeAssociation();
-        tableStructure = (ITableStructure) newIpsObject(modelPackage, IpsObjectType.TABLE_STRUCTURE, "subpackage.model.TestTableStructure");
+        tableStructure = (ITableStructure) newIpsObject(root, IpsObjectType.TABLE_STRUCTURE, "subpackage.model.TestTableStructure");
         prodCmpt= newProductCmpt(root, "subpackage.product.TestProductComponent");
-        tableContents = (ITableContents) newIpsObject(productPackage, IpsObjectType.TABLE_CONTENTS, "subpackage.product.TestTableContents");
+        tableContents = (ITableContents) newIpsObject(root, IpsObjectType.TABLE_CONTENTS, "subpackage.product.TestTableContents");
         polCmptType2= newPolicyCmptType(root, "TestPolicy2"); //defaultpackage
 
         folder = ((IProject)proj.getCorrespondingResource()).getFolder("testfolder");

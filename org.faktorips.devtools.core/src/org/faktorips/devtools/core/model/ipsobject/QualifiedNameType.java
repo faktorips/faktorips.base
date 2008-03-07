@@ -22,13 +22,11 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.Serializable;
 
-import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Path;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.internal.model.ipsproject.IpsPackageFragment;
 import org.faktorips.devtools.core.model.ipsproject.IIpsPackageFragment;
-import org.faktorips.devtools.core.model.ipsproject.IIpsPackageFragmentRoot;
 import org.faktorips.util.ArgumentCheck;
 
 /**
@@ -43,6 +41,11 @@ public class QualifiedNameType implements Serializable{
     private String qualifiedName;
     private transient IpsObjectType type;
     private transient int hashCode;
+
+    // Cached Path
+    // as Path is an immutable value object, we don't have any threading problems here
+    // if two threads create two different paths we don't have a problem as the two paths are equal.
+    private transient IPath path = null;
     
     /**
      * Returns the qualified name type for he given path. 
@@ -124,8 +127,11 @@ public class QualifiedNameType implements Serializable{
      * E.g.: mycompany.motor.MotorPolicy of type PolicyCmptType becomes mycompany/motor/MotorPolicy.ipspct
      */
     public IPath toPath() {
-        return new Path(qualifiedName.replace(IIpsPackageFragment.SEPARATOR, IPath.SEPARATOR)
-            + '.' + type.getFileExtension());
+        if (path==null) {
+            path = new Path(qualifiedName.replace(IIpsPackageFragment.SEPARATOR, IPath.SEPARATOR)
+                    + '.' + type.getFileExtension()); 
+        }
+        return path;
     }
     
     /**

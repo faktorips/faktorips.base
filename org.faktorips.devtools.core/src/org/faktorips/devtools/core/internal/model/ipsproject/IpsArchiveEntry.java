@@ -28,7 +28,7 @@ import org.eclipse.core.resources.IProject;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.osgi.util.NLS;
-import org.faktorips.devtools.core.IpsStatus;
+import org.faktorips.devtools.core.internal.model.ipsobject.ArchiveIpsSrcFile;
 import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
 import org.faktorips.devtools.core.model.ipsobject.QualifiedNameType;
@@ -60,6 +60,7 @@ public class IpsArchiveEntry extends IpsObjectPathEntry implements IIpsArchiveEn
     }
     
     private IIpsArchive archive;
+    private IIpsPackageFragmentRoot root;
     
     /**
      * @param path
@@ -88,15 +89,17 @@ public class IpsArchiveEntry extends IpsObjectPathEntry implements IIpsArchiveEn
     /**
      * {@inheritDoc}
      */
-    public void setArchiveFile(IFile archiveFile) {
-        if (archiveFile==null) {
+    public void setArchiveFile(IFile newArchiveFile) {
+        if (newArchiveFile==null) {
             archive = null;
+            root = null;
             return;
         }
-        if (archive!=null && archiveFile.equals(archive.getArchiveFile())) {
+        if (archive!=null && newArchiveFile.equals(archive.getArchiveFile())) {
             return;
         }
-        archive = new IpsArchive(archiveFile);
+        archive = new IpsArchive(newArchiveFile);
+        root = new ArchiveIpsPackageFragmentRoot(newArchiveFile);
     }
     
     /**
@@ -117,9 +120,19 @@ public class IpsArchiveEntry extends IpsObjectPathEntry implements IIpsArchiveEn
      * {@inheritDoc}
      */
     public IIpsPackageFragmentRoot getIpsPackageFragmentRoot() throws CoreException {
-        return new ArchiveIpsPackageFragmentRoot(getIpsArchive().getArchiveFile());
+        return root;
     }
     
+    /**
+     * {@inheritDoc}
+     */
+    public boolean exists(QualifiedNameType qnt) throws CoreException {
+        if (archive==null) {
+            return false;
+        }
+        return archive.contains(qnt);
+    }
+
     public void findIpsSrcFilesInternal(IpsObjectType type, List result, Set visitedEntries) throws CoreException {
         ((ArchiveIpsPackageFragmentRoot)getIpsPackageFragmentRoot()).findIpsSourceFiles(type, result);
     }
@@ -128,7 +141,11 @@ public class IpsArchiveEntry extends IpsObjectPathEntry implements IIpsArchiveEn
      * {@inheritDoc}
      */
     protected IIpsSrcFile findIpsSrcFileInternal(QualifiedNameType qnt, Set visitedEntries) throws CoreException {
-        return getIpsPackageFragmentRoot().findIpsSrcFile(qnt);
+        IIpsSrcFile file = getIpsSrcFile(qnt);
+        if (file.exists()) {
+            return file;
+        }
+        return null;
     }
 
     /**
@@ -140,6 +157,7 @@ public class IpsArchiveEntry extends IpsObjectPathEntry implements IIpsArchiveEn
             boolean ignoreCase,
             List result,
             Set visitedEntries) throws CoreException {
+        
         if (ignoreCase) {
             prefix = prefix.toLowerCase();
         }
@@ -151,18 +169,18 @@ public class IpsArchiveEntry extends IpsObjectPathEntry implements IIpsArchiveEn
                 name = name.toLowerCase();
             }
             if (name.startsWith(prefix)) {
-                result.add(getIpsSrcFile(qnt));
+                IIpsSrcFile file = getIpsSrcFile(qnt);
+                if (file.exists()) {
+                    result.add(getIpsSrcFile(qnt));
+                }
             }
         }
     }
 
     private IIpsSrcFile getIpsSrcFile(QualifiedNameType qNameType) throws CoreException {
-        IIpsPackageFragmentRoot root = getIpsPackageFragmentRoot();
-        IIpsSrcFile object = root.findIpsSrcFile(qNameType);
-        if (object!=null) {
-            return object;
-        }
-        throw new CoreException(new IpsStatus("IpsObject not found for qNameType " + qNameType + " (but was expectedt to be in the archive!")); //$NON-NLS-1$ //$NON-NLS-2$
+        root.getIpsPackageFragment(qNameType.getPackageName());
+        ArchiveIpsPackageFragment pack = new ArchiveIpsPackageFragment((ArchiveIpsPackageFragmentRoot)root, qNameType.getPackageName()); 
+        return new ArchiveIpsSrcFile(pack, qNameType.getFileName()); 
     }
     
     /**
