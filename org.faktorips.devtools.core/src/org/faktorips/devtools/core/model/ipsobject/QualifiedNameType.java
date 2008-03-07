@@ -34,7 +34,7 @@ import org.faktorips.util.ArgumentCheck;
  * 
  * @author Jan Ortmann
  */
-public class QualifiedNameType implements Serializable{
+public class QualifiedNameType implements Serializable, Comparable {
 
     private static final long serialVersionUID = -5891585006868536302L;
     
@@ -193,4 +193,25 @@ public class QualifiedNameType implements Serializable{
         }
         calculateHashCode();
     }
+
+    /**
+     * QualifiedNameTypes are compared by their package name, then by their unqualified name and then by their
+     * ips obejct type's name.
+     * 
+     * {@inheritDoc}
+     */
+    public int compareTo(Object o) {
+        QualifiedNameType other = (QualifiedNameType)o;
+        int c = getPackageName().compareTo(other.getPackageName());
+        if (c!=0) {
+            return c;
+        }
+        c = getUnqualifiedName().compareTo(other.getUnqualifiedName());
+        if (c!=0) {
+            return c;
+        }
+        return getIpsObjectType().getName().compareTo(other.getIpsObjectType().getName());
+    }
+    
+    
 }

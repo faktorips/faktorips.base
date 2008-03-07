@@ -26,9 +26,12 @@ import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Properties;
 import java.util.Set;
+import java.util.SortedMap;
+import java.util.TreeMap;
 import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
 
@@ -68,7 +71,7 @@ public class IpsArchive implements IIpsArchive {
     private HashMap packs = null;
 
     // map with qNameTypes as keys and IpsObjectProperties as values.
-    private HashMap qNameTypes = null;
+    private LinkedHashMap qNameTypes = null;
     
     public IpsArchive(IFile file) {
         this.archiveFile = file;
@@ -315,7 +318,7 @@ public class IpsArchive implements IIpsArchive {
             System.out.println("Reading archive content from disk: " + this); //$NON-NLS-1$
         }
         packs = new HashMap(200);
-        qNameTypes = new HashMap(200);
+        SortedMap qntTemp = new TreeMap();
         modificationStamp = archiveFile.getModificationStamp();
         JarFile jar;
         try {
@@ -336,7 +339,7 @@ public class IpsArchive implements IIpsArchive {
             IpsObjectProperties props = new IpsObjectProperties(
                     getPropertyValue(ipsObjectProperties, qNameType, IIpsArchive.PROPERTY_POSTFIX_BASE_PACKAGE),
                     getPropertyValue(ipsObjectProperties, qNameType, IIpsArchive.PROPERTY_POSTFIX_EXTENSION_PACKAGE));
-            qNameTypes.put(qNameType, props);
+            qntTemp.put(qNameType, props);
             Set content = (Set)packs.get(qNameType.getPackageName());
             if (content==null) {
                 content = new HashSet();
@@ -344,6 +347,7 @@ public class IpsArchive implements IIpsArchive {
             }
             content.add(qNameType);
         }
+        qNameTypes = new LinkedHashMap(qntTemp);
         try {
             jar.close();
         } catch (IOException e) {

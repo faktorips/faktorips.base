@@ -140,10 +140,13 @@ public class IpsArchiveTest extends AbstractIpsPluginTest {
     public void testGetQNameTypes() throws CoreException {
         Set qnt = archive.getQNameTypes();
         assertEquals(4, qnt.size());
-        assertTrue(qnt.contains(new QualifiedNameType("motor.MotorPolicy", IpsObjectType.POLICY_CMPT_TYPE)));
-        assertTrue(qnt.contains(new QualifiedNameType("motor.collision.SimpleCollisionCoverage", IpsObjectType.POLICY_CMPT_TYPE)));
-        assertTrue(qnt.contains(new QualifiedNameType("motor.collision.ExtendedCollisionCoverage", IpsObjectType.POLICY_CMPT_TYPE)));
-        assertTrue(qnt.contains(new QualifiedNameType("home.base.HomePolicy", IpsObjectType.POLICY_CMPT_TYPE)));
+        QualifiedNameType[] qntArray = new QualifiedNameType[qnt.size()];
+        qnt.toArray(qntArray);
+        
+        assertEquals(new QualifiedNameType("home.base.HomePolicy", IpsObjectType.POLICY_CMPT_TYPE), qntArray[0]);
+        assertEquals(new QualifiedNameType("motor.MotorPolicy", IpsObjectType.POLICY_CMPT_TYPE), qntArray[1]);
+        assertEquals(new QualifiedNameType("motor.collision.ExtendedCollisionCoverage", IpsObjectType.POLICY_CMPT_TYPE), qntArray[2]);
+        assertEquals(new QualifiedNameType("motor.collision.SimpleCollisionCoverage", IpsObjectType.POLICY_CMPT_TYPE), qntArray[3]);
     }
     
     public void testGetQNameType_Pack() throws CoreException {

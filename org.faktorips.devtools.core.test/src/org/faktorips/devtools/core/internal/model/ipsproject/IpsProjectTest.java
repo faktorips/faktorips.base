@@ -984,8 +984,8 @@ public class IpsProjectTest extends AbstractIpsPluginTest {
         IIpsSrcFile[] files = ipsProject.findIpsSrcFiles(IpsObjectType.POLICY_CMPT_TYPE);
         assertEquals(3, files.length);
         assertEquals(basePolicy, files[0].getIpsObject());
-        assertEquals(coverage.getQualifiedNameType(), files[1].getQualifiedNameType());
-        assertEquals(policy.getQualifiedNameType(), files[2].getQualifiedNameType());
+        assertEquals(policy.getQualifiedNameType(), files[1].getQualifiedNameType());
+        assertEquals(coverage.getQualifiedNameType(), files[2].getQualifiedNameType());
         
         files = ipsProject.findIpsSrcFiles(IpsObjectType.TABLE_STRUCTURE);
         assertEquals(0, files.length);
