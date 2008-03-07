@@ -93,6 +93,12 @@ public class IpsPackageFragmentRootTest extends AbstractIpsPluginTest {
         assertEquals(folderB, children[2]);
         assertEquals(folderC, children[3]);
         assertEquals(folderD, children[4]);
+        
+        // test if folders that aren't packages because they don't adhere to the naming convention are igored
+        IFolder invalidPack = ((IFolder)ipsRoot.getCorrespondingResource()).getFolder("invalid package");
+        invalidPack.create(true, false, null);
+        children = ipsRoot.getIpsPackageFragments();
+        assertEquals(5, ipsRoot.getIpsPackageFragments().length);
     }
 
     public void testGetIpsPackageFragment() {

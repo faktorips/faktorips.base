@@ -679,7 +679,7 @@ public class IpsProjectTest extends AbstractIpsPluginTest {
         IIpsObjectPath path = ipsProject.getIpsObjectPath();
         IFolder newFolder = ipsProject.getProject().getFolder("newFolder");
         newFolder.create(true, false, null);
-        IIpsSrcFolderEntry entry = path.newSourceFolderEntry(newFolder);
+        path.newSourceFolderEntry(newFolder);
         ipsProject.setIpsObjectPath(path);
 
         assertNotSame(file, ipsProject.findIpsSrcFile(qnt));
@@ -690,10 +690,10 @@ public class IpsProjectTest extends AbstractIpsPluginTest {
         assertNull(ipsProject.findIpsSrcFile(new QualifiedNameType("a.b.Unknown", IpsObjectType.POLICY_CMPT_TYPE)));
 
         // invalid package name as it contains a blank => should return null
-        assertNull(ipsProject.findIpsObject(new QualifiedNameType("a b.Test", IpsObjectType.POLICY_CMPT_TYPE)));
+        assertNull(ipsProject.findIpsSrcFile(new QualifiedNameType("a b.Test", IpsObjectType.POLICY_CMPT_TYPE)));
     }
     
-    public void testFindIpsSrcFile_WithTwoRoots() throws CoreException, InterruptedException {
+    public void testFindIpsSrcFile_WithTwoSrcFolderRoots() throws CoreException, InterruptedException {
         IPolicyCmptType testObject = newPolicyCmptTypeWithoutProductCmptType(ipsProject, "a.b.Test");
         QualifiedNameType qnt = new QualifiedNameType("a.b.Test", IpsObjectType.POLICY_CMPT_TYPE);
         IIpsSrcFile file = ipsProject.findIpsSrcFile(qnt);
@@ -734,6 +734,29 @@ public class IpsProjectTest extends AbstractIpsPluginTest {
         
         IIpsSrcFile foundFile = ipsProject.findIpsSrcFile(type.getQualifiedNameType());
         assertEquals(type.getQualifiedNameType(), foundFile.getQualifiedNameType());
+    }
+
+    public void testFindIpsSrcFile_InReferencedProject() throws Exception {
+        // setup the projects. ipsproject -> baseproject -> project3
+        IIpsProject project3 = newIpsProject("Project3");
+
+        IIpsObjectPath path = ipsProject.getIpsObjectPath();
+        path.newIpsProjectRefEntry(baseProject);
+        ipsProject.setIpsObjectPath(path);
+        
+        path = baseProject.getIpsObjectPath();
+        path.newIpsProjectRefEntry(project3);
+        baseProject.setIpsObjectPath(path);
+        
+        IPolicyCmptType basePolicy = newPolicyCmptType(baseProject, "BasePolicy");
+        IProductCmptType policy3 = newProductCmptType(project3, "Policy3");
+        IPolicyCmptType policy = newPolicyCmptType(ipsProject, "Policy");
+
+        assertEquals(policy, ipsProject.findIpsSrcFile(policy.getQualifiedNameType()).getIpsObject());
+        assertEquals(basePolicy, ipsProject.findIpsSrcFile(basePolicy.getQualifiedNameType()).getIpsObject());
+        assertEquals(policy3, ipsProject.findIpsSrcFile(policy3.getQualifiedNameType()).getIpsObject());
+        
+        assertNull(ipsProject.findIpsSrcFile(new QualifiedNameType("unkown", IpsObjectType.POLICY_CMPT_TYPE)));
     }
 
     public void testFindIpsObject() throws CoreException {
@@ -916,6 +939,58 @@ public class IpsProjectTest extends AbstractIpsPluginTest {
         assertEquals(pct, ipsObj);
     }
     
+    public void testFindIpsSrcFiles_InReferencedProject() throws Exception {
+        // setup the projects. ipsproject -> baseproject and project3, baseproject-> project3
+        // => project 3 is referenced twice! => make sure objects are only found once!
+        IIpsProject project3 = newIpsProject("Project3");
+
+        IIpsObjectPath path = ipsProject.getIpsObjectPath();
+        path.newIpsProjectRefEntry(baseProject);
+        path.newIpsProjectRefEntry(project3);
+        ipsProject.setIpsObjectPath(path);
+        
+        path = baseProject.getIpsObjectPath();
+        path.newIpsProjectRefEntry(project3);
+        baseProject.setIpsObjectPath(path);
+        
+        IPolicyCmptType basePolicy = newPolicyAndProductCmptType(baseProject, "BasePolicy", "BaseProduct");
+        IPolicyCmptType policy3 = newPolicyAndProductCmptType(project3, "Policy3", "Product3");
+        IPolicyCmptType policy = newPolicyAndProductCmptType(ipsProject, "Policy", "Product");
+        
+        IIpsSrcFile[] files = ipsProject.findIpsSrcFiles(IpsObjectType.POLICY_CMPT_TYPE);
+        assertEquals(3, files.length);
+        assertEquals(policy, files[0].getIpsObject());
+        assertEquals(basePolicy, files[1].getIpsObject());
+        assertEquals(policy3, files[2].getIpsObject());
+        
+        files = ipsProject.findIpsSrcFiles(IpsObjectType.TABLE_STRUCTURE);
+        assertEquals(0, files.length);
+    }
+    
+    public void testFindIpsSrcFiles_InArchive() throws Exception {
+        IIpsProject archiveProject = newIpsProject("ArchiveProject");
+        IPolicyCmptType policy = newPolicyCmptType(archiveProject, "motor.Policy");
+        IPolicyCmptType coverage = newPolicyCmptTypeWithoutProductCmptType(archiveProject, "motor.collision.CollisionCoverage");
+        newProductCmpt(archiveProject, "motor.MotorProduct");
+
+        IFile archiveFile = ipsProject.getProject().getFile("test.ipsar");
+        createArchive(archiveProject, archiveFile);
+        
+        IIpsObjectPath path = ipsProject.getIpsObjectPath();
+        path.newArchiveEntry(archiveFile);
+        ipsProject.setIpsObjectPath(path);
+        IPolicyCmptType basePolicy = newPolicyCmptType(ipsProject, "basePolicy");
+        
+        IIpsSrcFile[] files = ipsProject.findIpsSrcFiles(IpsObjectType.POLICY_CMPT_TYPE);
+        assertEquals(3, files.length);
+        assertEquals(basePolicy, files[0].getIpsObject());
+        assertEquals(coverage.getQualifiedNameType(), files[1].getQualifiedNameType());
+        assertEquals(policy.getQualifiedNameType(), files[2].getQualifiedNameType());
+        
+        files = ipsProject.findIpsSrcFiles(IpsObjectType.TABLE_STRUCTURE);
+        assertEquals(0, files.length);
+    }
+
     public void testSetIpsObjectPath() throws CoreException {
         IFile projectFile = ipsProject.getIpsProjectPropertiesFile();
         long stamp = projectFile.getModificationStamp();

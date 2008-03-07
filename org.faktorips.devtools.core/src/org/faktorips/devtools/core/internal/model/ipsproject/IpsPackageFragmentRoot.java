@@ -177,6 +177,7 @@ public class IpsPackageFragmentRoot extends AbstractIpsPackageFragmentRoot imple
      */
     public IIpsPackageFragment createPackageFragment(String name, boolean force, IProgressMonitor monitor)
             throws CoreException {
+        
         if (!isValidIpsPackageFragmentName(name)) {
             return null;
         }

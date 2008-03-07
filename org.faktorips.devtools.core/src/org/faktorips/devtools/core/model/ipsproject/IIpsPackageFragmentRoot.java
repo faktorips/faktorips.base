@@ -82,7 +82,12 @@ public interface IIpsPackageFragmentRoot extends IIpsElement {
     public IIpsPackageFragment[] getSortedIpsPackageFragments() throws CoreException;
 
     /**
-     * Returns the package fragment with the indicated name.
+     * Returns the package fragment with the indicated name or <code>null</code> if the given name 
+     * is not a valid package name. Note that the returned package fragment might not exists.
+     * <p>
+     * If a given name is valid as name for a package fragment is determined by {@link IIpsProject#getNamingConventions()}.
+     * 
+     * @see IIpsProject#getNamingConventions()
      */
     public IIpsPackageFragment getIpsPackageFragment(String name);
 
