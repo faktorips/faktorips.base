@@ -108,6 +108,9 @@ import org.w3c.dom.Element;
  */
 public class IpsProject extends IpsElement implements IIpsProject {
 
+    public final static String PROPERTY_FILE_EXTENSION = "ipsproject";
+    public final static String PROPERTY_FILE_EXTENSION_INCL_DOT = "." + PROPERTY_FILE_EXTENSION;
+    
     // the underlying plattform project
     private IProject project;
 
@@ -246,7 +249,7 @@ public class IpsProject extends IpsElement implements IIpsProject {
      * {@inheritDoc}
 	 */
     public IFile getIpsProjectPropertiesFile() {
-    	return getProject().getFile(".ipsproject"); //$NON-NLS-1$
+    	return getProject().getFile(PROPERTY_FILE_EXTENSION_INCL_DOT);
     }
 
     /**
