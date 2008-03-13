@@ -22,12 +22,14 @@ import java.lang.reflect.InvocationTargetException;
 import org.eclipse.core.resources.IContainer;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.dialogs.ProgressMonitorDialog;
 import org.eclipse.swt.dnd.DND;
 import org.eclipse.swt.dnd.DropTargetEvent;
 import org.eclipse.swt.dnd.FileTransfer;
+import org.eclipse.ui.actions.WorkspaceModifyOperation;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.IpsStatus;
 import org.faktorips.devtools.core.internal.refactor.MoveOperation;
@@ -38,6 +40,19 @@ import org.faktorips.devtools.core.ui.views.IpsElementDropListener;
 
 public class ModelExplorerDropListener extends IpsElementDropListener {
 	
+    private class ModifyOperation extends WorkspaceModifyOperation {
+        private MoveOperation move;
+        
+        public ModifyOperation(MoveOperation toExecute) {
+            super();
+            this.move = toExecute;
+        }
+        
+        protected void execute(IProgressMonitor monitor) throws CoreException, InvocationTargetException, InterruptedException {
+            move.run(monitor);
+        }       
+    }
+    
 	public ModelExplorerDropListener(){}
 	/**
 	 * {@inheritDoc}
@@ -73,7 +88,6 @@ public class ModelExplorerDropListener extends IpsElementDropListener {
         event.feedback = DND.FEEDBACK_EXPAND | DND.FEEDBACK_SELECT | DND.FEEDBACK_SCROLL;
     }
 
-
     /**
 	 * {@inheritDoc}
 	 */
@@ -96,7 +110,8 @@ public class ModelExplorerDropListener extends IpsElementDropListener {
             }
             
 			ProgressMonitorDialog dialog = new ProgressMonitorDialog(event.display.getActiveShell());
-			dialog.run(false, false, moveOp);
+            dialog.run(true, false, new ModifyOperation(moveOp));
+            // run the operation with fork=true to ensure UI responsiveness 
 		} catch (CoreException e) {
 			IStatus status = e.getStatus();
 			if (status instanceof IpsStatus) {
@@ -110,9 +125,8 @@ public class ModelExplorerDropListener extends IpsElementDropListener {
 		} catch (InterruptedException e) {
 			IpsPlugin.log(e);
 		}
-		
 	}
-
+    
 	private Object getTarget(DropTargetEvent event) throws CoreException {
 		if(event.item == null){
 			return null;

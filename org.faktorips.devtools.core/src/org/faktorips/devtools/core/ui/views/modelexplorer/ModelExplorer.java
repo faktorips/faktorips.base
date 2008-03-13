@@ -348,6 +348,7 @@ public class ModelExplorer extends ViewPart implements IShowInTarget {
         createFilters(treeViewer);
 
         getSite().setSelectionProvider(treeViewer);
+       
         resourceListener = new IpsResourceChangeListener(treeViewer) {
             // TODO Optimize refresh: refresh folders if files were added or removed, additionally
             // refresh changed files
@@ -360,7 +361,7 @@ public class ModelExplorer extends ViewPart implements IShowInTarget {
                 return new IResource[] {};
             }
         };
-        ResourcesPlugin.getWorkspace().addResourceChangeListener(resourceListener, IResourceChangeEvent.POST_BUILD);
+        ResourcesPlugin.getWorkspace().addResourceChangeListener(resourceListener, IResourceChangeEvent.POST_BUILD | IResourceChangeEvent.POST_CHANGE);
 
         /*
          * Use the current value of isFlatLayout, which is set by loading the memento/viewState

@@ -80,7 +80,8 @@ public class MoveWizard extends Wizard {
 	
 	public MoveWizard(IStructuredSelection selection, int operation) {
 		super();
-	
+		setNeedsProgressMonitor(true);
+        
 		this.operation = operation;
 		if (operation == OPERATION_MOVE) {
 			super.setWindowTitle(Messages.MoveWizard_titleMove);
@@ -141,15 +142,17 @@ public class MoveWizard extends Wizard {
 	public boolean performFinish() {
 		try {
 			WorkspaceModifyOperation modifyOperation = null;
-			if (operation == OPERATION_MOVE) {
-				MoveOperation move = new MoveOperation(selectedObjects,
+            if (operation == OPERATION_MOVE) {
+                MoveOperation move = new MoveOperation(selectedObjects,
 						((MovePage) sourcePage).getTarget());
 				modifyOperation = new ModifyOperation(move);
 			} else if (operation == OPERATION_RENAME) {
-				MoveOperation move = new MoveOperation(selectedObjects,
+                MoveOperation move = new MoveOperation(selectedObjects,
 						new String[] { ((RenamePage) sourcePage).getNewName() });
 				modifyOperation = new ModifyOperation(move);
-			}
+			} else {
+			    throw new CoreException(new IpsStatus("Wrong operation: " + operation));
+            }
 
 			getContainer().run(true, true, modifyOperation);
 

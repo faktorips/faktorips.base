@@ -300,8 +300,11 @@ public class MoveOperation implements IRunnableWithProgress {
                     currMonitor = new NullProgressMonitor();
                 }
 
+                monitor.beginTask("Move", MoveOperation.this.sourceObjects.length);
                 for (int i = 0; i < MoveOperation.this.sourceObjects.length; i++) {
                     try {
+                        monitor.internalWorked(1);
+                        
                         Object toMove = null;
                         if (sourceObjects[i] instanceof IIpsSrcFile) {
                             toMove = ((IIpsSrcFile)sourceObjects[i]).getIpsObject();
@@ -327,6 +330,7 @@ public class MoveOperation implements IRunnableWithProgress {
                         IpsPlugin.logAndShowErrorDialog(e);
                     }
                 }
+                monitor.done();
             }
 
             private void moveNoneIpsElement(File file, String targetName) {
