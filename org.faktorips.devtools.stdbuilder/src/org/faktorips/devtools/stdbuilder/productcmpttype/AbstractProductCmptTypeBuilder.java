@@ -31,6 +31,7 @@ import org.faktorips.devtools.core.IpsStatus;
 import org.faktorips.devtools.core.builder.DefaultJavaSourceFileBuilder;
 import org.faktorips.devtools.core.builder.JavaSourceFileBuilder;
 import org.faktorips.devtools.core.builder.ProductCmptTypeHierarchyCodeGenerator;
+import org.faktorips.devtools.core.builder.TypeSection;
 import org.faktorips.devtools.core.model.IIpsElement;
 import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
@@ -119,12 +120,12 @@ public abstract class AbstractProductCmptTypeBuilder extends DefaultJavaSourceFi
         mainSection.setClass(!generatesInterface());
         generateCodeForProductCmptTypeAttributes(mainSection);
         generateCodeForPolicyCmptTypeAttributes(mainSection);
-        generateCodeForAssociations(mainSection.getMemberVarSectionBuilder(), mainSection.getMethodSectionBuilder());
-        generateCodeForMethods(mainSection.getConstantSectionBuilder(), mainSection.getMemberVarSectionBuilder(), mainSection.getMethodSectionBuilder());
-        generateConstructors(mainSection.getConstructorSectionBuilder());
-        generateTypeJavadoc(mainSection.getJavaDocForTypeSectionBuilder());
-        generateCodeForTableUsages(mainSection.getMemberVarSectionBuilder(), mainSection.getMethodSectionBuilder());
-        generateOtherCode(mainSection.getMemberVarSectionBuilder(), mainSection.getMethodSectionBuilder());
+        generateCodeForAssociations(mainSection.getMemberVarBuilder(), mainSection.getMethodBuilder());
+        generateCodeForMethods(mainSection.getConstantBuilder(), mainSection.getMemberVarBuilder(), mainSection.getMethodBuilder());
+        generateConstructors(mainSection.getConstructorBuilder());
+        generateTypeJavadoc(mainSection.getJavaDocForTypeBuilder());
+        generateCodeForTableUsages(mainSection.getMemberVarBuilder(), mainSection.getMethodBuilder());
+        generateOtherCode(mainSection.getMemberVarBuilder(), mainSection.getMethodBuilder());
     }
 
     /**
@@ -181,7 +182,7 @@ public abstract class AbstractProductCmptTypeBuilder extends DefaultJavaSourceFi
                 if (helper == null) {
                     throw new CoreException(new IpsStatus("No datatype helper found for datatype " + datatype));            
                 }
-                generateCodeForPolicyCmptTypeAttribute(a, helper, typeSection.getMemberVarSectionBuilder(), typeSection.getMethodSectionBuilder());
+                generateCodeForPolicyCmptTypeAttribute(a, helper, typeSection.getMemberVarBuilder(), typeSection.getMethodBuilder());
             } catch (Exception e) {
                 throw new CoreException(new IpsStatus(IStatus.ERROR,
                         "Error building attribute " + attributes[i].getName() + " of "
@@ -210,7 +211,7 @@ public abstract class AbstractProductCmptTypeBuilder extends DefaultJavaSourceFi
                 if (helper == null) {
                     throw new CoreException(new IpsStatus("No datatype helper found for datatype " + datatype));            
                 }
-                generateCodeForProductCmptTypeAttribute(a, helper, typeSection.getConstantSectionBuilder(), typeSection.getMemberVarSectionBuilder(), typeSection.getMethodSectionBuilder());
+                generateCodeForProductCmptTypeAttribute(a, helper, typeSection.getConstantBuilder(), typeSection.getMemberVarBuilder(), typeSection.getMethodBuilder());
             } catch (Exception e) {
                 throw new CoreException(new IpsStatus(IStatus.ERROR,
                         "Error building attribute " + attributes[i].getName() + " of "

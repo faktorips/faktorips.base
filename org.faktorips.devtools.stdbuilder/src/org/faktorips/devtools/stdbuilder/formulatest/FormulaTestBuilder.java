@@ -39,6 +39,7 @@ import org.faktorips.datatype.ValueDatatype;
 import org.faktorips.devtools.core.IpsStatus;
 import org.faktorips.devtools.core.builder.DefaultBuilderSet;
 import org.faktorips.devtools.core.builder.DefaultJavaSourceFileBuilder;
+import org.faktorips.devtools.core.builder.TypeSection;
 import org.faktorips.devtools.core.internal.model.productcmpt.NoVersionIdProductCmptNamingStrategy;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObject;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObjectGeneration;
@@ -254,14 +255,14 @@ public class FormulaTestBuilder extends DefaultJavaSourceFileBuilder {
         mainSection.setUnqualifiedName(StringUtil.unqualifiedName(getQualifiedClassName()));
         mainSection.setSuperClass(getSuperClassName());
 
-        generateConstructor(mainSection.getConstructorSectionBuilder());
-        generateMethodGetProductCmptType(productCmptType, mainSection.getMethodSectionBuilder());
+        generateConstructor(mainSection.getConstructorBuilder());
+        generateMethodGetProductCmptType(productCmptType, mainSection.getMethodBuilder());
         
-        List testMethods = generateTestMethods(productCmpt, mainSection.getMethodSectionBuilder());
-        generateExecuteBusinessLogicMethod(productCmptType, testMethods ,mainSection.getMethodSectionBuilder());
-        generateExecuteAssertsMethod(productCmptType, testMethods ,mainSection.getMethodSectionBuilder());
+        List testMethods = generateTestMethods(productCmpt, mainSection.getMethodBuilder());
+        generateExecuteBusinessLogicMethod(productCmptType, testMethods ,mainSection.getMethodBuilder());
+        generateExecuteAssertsMethod(productCmptType, testMethods ,mainSection.getMethodBuilder());
         
-        generateComputeTestMethods(formulasToTestForGeneration, mainSection.getMethodSectionBuilder());
+        generateComputeTestMethods(formulasToTestForGeneration, mainSection.getMethodBuilder());
     }
     
     /*

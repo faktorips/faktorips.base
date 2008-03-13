@@ -30,6 +30,7 @@ import org.faktorips.codegen.JavaCodeFragment;
 import org.faktorips.codegen.JavaCodeFragmentBuilder;
 import org.faktorips.datatype.Datatype;
 import org.faktorips.devtools.core.builder.DefaultJavaSourceFileBuilder;
+import org.faktorips.devtools.core.builder.TypeSection;
 import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
 import org.faktorips.devtools.core.model.ipsproject.IIpsArtefactBuilderSet;
@@ -93,21 +94,21 @@ public class EnumClassesBuilder extends DefaultJavaSourceFileBuilder {
         mainSection.setExtendedInterfaces(new String[]{Serializable.class.getName(), 
                 enumTypeInterfaceBuilder.getQualifiedClassName(tableStructure)});
 
-        JavaCodeFragmentBuilder memberBuilder = getMainTypeSection().getMemberVarSectionBuilder();
-        JavaCodeFragmentBuilder methodBuilder = getMainTypeSection().getMethodSectionBuilder();
+        JavaCodeFragmentBuilder memberBuilder = getMainTypeSection().getMemberVarBuilder();
+        JavaCodeFragmentBuilder methodBuilder = getMainTypeSection().getMethodBuilder();
         
         appendLocalizedJavaDoc("CLASS_DESCRIPTION", getTableContents().getName(), getIpsObject().getDescription(), 
-                getTableContents(), getMainTypeSection().getJavaDocForTypeSectionBuilder());
+                getTableContents(), getMainTypeSection().getJavaDocForTypeBuilder());
 
         generateCodeForColumns(memberBuilder, methodBuilder, tableStructure);
-        generateConstantForSerialVersionNumber(getMainTypeSection().getConstantSectionBuilder());
+        generateConstantForSerialVersionNumber(getMainTypeSection().getConstantBuilder());
         
         EnumValueAttributesInfo info = createEnumValueAttributesInfo(getTableContents());
         if(!info.isValid){
             return;
         }
-        generateConstructor(getMainTypeSection().getConstructorSectionBuilder(), tableStructure, info.idKeyItem, info.nameKeyItem);
-        generateConstantsForEnumValues(getMainTypeSection().getConstantSectionBuilder(), tableStructure);
+        generateConstructor(getMainTypeSection().getConstructorBuilder(), tableStructure, info.idKeyItem, info.nameKeyItem);
+        generateConstantsForEnumValues(getMainTypeSection().getConstantBuilder(), tableStructure);
         generateMethodGetAllEnumValues(methodBuilder);
         generateMethodGetEnumValue(methodBuilder, info.idKeyItem, info.idDatatype);
         generateMethodIsEnumValue(methodBuilder, info.idKeyItem, info.idDatatype);

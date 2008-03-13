@@ -110,14 +110,14 @@ public abstract class AbstractPcTypeBuilder extends DefaultJavaSourceFileBuilder
         mainSection.setUnqualifiedName(getUnqualifiedClassName());
         mainSection.setClass(!generatesInterface());
         generateCodeForProductCmptTypeAttributes(mainSection);
-        generateCodeForAttributes(mainSection.getConstantSectionBuilder(), 
-                mainSection.getMemberVarSectionBuilder(), mainSection.getMethodSectionBuilder());
-        generateCodeForAssociations(mainSection.getMemberVarSectionBuilder(), mainSection.getMethodSectionBuilder());
-        generateOther(mainSection.getMemberVarSectionBuilder(), mainSection.getMethodSectionBuilder());
-        generateCodeForMethodsDefinedInModel(mainSection.getMethodSectionBuilder());
-        generateConstructors(mainSection.getConstructorSectionBuilder());
-        generateTypeJavadoc(mainSection.getJavaDocForTypeSectionBuilder());
-        generateConstants(mainSection.getConstantSectionBuilder());
+        generateCodeForAttributes(mainSection.getConstantBuilder(), 
+                mainSection.getMemberVarBuilder(), mainSection.getMethodBuilder());
+        generateCodeForAssociations(mainSection.getMemberVarBuilder(), mainSection.getMethodBuilder());
+        generateOther(mainSection.getMemberVarBuilder(), mainSection.getMethodBuilder());
+        generateCodeForMethodsDefinedInModel(mainSection.getMethodBuilder());
+        generateConstructors(mainSection.getConstructorBuilder());
+        generateTypeJavadoc(mainSection.getJavaDocForTypeBuilder());
+        generateConstants(mainSection.getConstantBuilder());
         generateInnerClasses();
     }
 
@@ -257,7 +257,7 @@ public abstract class AbstractPcTypeBuilder extends DefaultJavaSourceFileBuilder
                 if (helper == null) {
                     throw new CoreException(new IpsStatus("No datatype helper found for datatype " + datatype));             //$NON-NLS-1$
                 }
-                generateCodeForProductCmptTypeAttribute(a, helper, typeSection.getConstantSectionBuilder(), typeSection.getMemberVarSectionBuilder(), typeSection.getMethodSectionBuilder());
+                generateCodeForProductCmptTypeAttribute(a, helper, typeSection.getConstantBuilder(), typeSection.getMemberVarBuilder(), typeSection.getMethodBuilder());
             } catch (Exception e) {
                 throw new CoreException(new IpsStatus(IStatus.ERROR,
                         "Error building attribute " + attributes[i].getName() + " of " //$NON-NLS-1$ //$NON-NLS-2$

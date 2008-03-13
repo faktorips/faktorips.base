@@ -760,7 +760,7 @@ public abstract class JavaSourceFileBuilder extends AbstractArtefactBuilder {
         }
     }
 
-    protected String getJavaDocCommentForOverriddenMethod() {
+    public String getJavaDocCommentForOverriddenMethod() {
         return "{@inheritDoc}"; //$NON-NLS-1$
     }
 

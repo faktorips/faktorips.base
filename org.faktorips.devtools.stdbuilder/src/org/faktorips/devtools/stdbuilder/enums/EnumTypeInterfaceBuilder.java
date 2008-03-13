@@ -23,6 +23,7 @@ import org.eclipse.core.runtime.CoreException;
 import org.faktorips.codegen.JavaCodeFragmentBuilder;
 import org.faktorips.datatype.Datatype;
 import org.faktorips.devtools.core.builder.DefaultJavaSourceFileBuilder;
+import org.faktorips.devtools.core.builder.TypeSection;
 import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
 import org.faktorips.devtools.core.model.ipsproject.IIpsArtefactBuilderSet;
@@ -61,9 +62,9 @@ public class EnumTypeInterfaceBuilder extends DefaultJavaSourceFileBuilder {
         mainSection.setUnqualifiedName(structure.getName());
         mainSection.setClass(false);
         appendLocalizedJavaDoc("INTERFACE_DESCRIPTION", structure.getQualifiedName(), getIpsObject().getDescription(), 
-                structure, getMainTypeSection().getJavaDocForTypeSectionBuilder());
+                structure, getMainTypeSection().getJavaDocForTypeBuilder());
         
-        generateMethodGetField(mainSection.getMethodSectionBuilder());
+        generateMethodGetField(mainSection.getMethodBuilder());
     }
 
     public String getMethodNameGetField(IColumn column, Datatype datatype){

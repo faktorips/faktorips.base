@@ -35,6 +35,7 @@ import org.faktorips.datatype.ValueDatatype;
 import org.faktorips.devtools.core.IpsStatus;
 import org.faktorips.devtools.core.builder.DefaultBuilderSet;
 import org.faktorips.devtools.core.builder.DefaultJavaSourceFileBuilder;
+import org.faktorips.devtools.core.builder.TypeSection;
 import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
 import org.faktorips.devtools.core.model.ipsproject.IIpsArtefactBuilderSet;
@@ -138,12 +139,12 @@ public class TestCaseTypeClassBuilder extends DefaultJavaSourceFileBuilder {
         mainSection.setClassModifier(Modifier.PUBLIC);
         mainSection.setUnqualifiedName(getUnqualifiedClassName());
         mainSection.setSuperClass(getSuperClassName());
-        appendLocalizedJavaDoc("CLASS_DESCRIPTION", getIpsObject(), getIpsObject().getDescription(), mainSection.getJavaDocForTypeSectionBuilder());
+        appendLocalizedJavaDoc("CLASS_DESCRIPTION", getIpsObject(), getIpsObject().getDescription(), mainSection.getJavaDocForTypeBuilder());
         
-        buildMemberVariables(mainSection.getMemberVarSectionBuilder(), testCaseType);
-        buildConstructor(mainSection.getConstructorSectionBuilder());
-        buildHelperMethods(mainSection.getMethodSectionBuilder());
-        buildSuperMethodImplementation(mainSection.getMethodSectionBuilder(), testCaseType);
+        buildMemberVariables(mainSection.getMemberVarBuilder(), testCaseType);
+        buildConstructor(mainSection.getConstructorBuilder());
+        buildHelperMethods(mainSection.getMethodBuilder());
+        buildSuperMethodImplementation(mainSection.getMethodBuilder(), testCaseType);
     }
     
     protected String getSuperClassName(){

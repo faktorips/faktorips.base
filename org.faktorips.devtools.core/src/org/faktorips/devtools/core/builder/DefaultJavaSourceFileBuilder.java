@@ -155,7 +155,7 @@ public abstract class DefaultJavaSourceFileBuilder extends JavaSourceFileBuilder
     
     private JavaCodeFragment generateClassBody(TypeSection section, TypeSection[] innerClassSections) throws CoreException{
         JavaCodeFragmentBuilder codeBuilder = new JavaCodeFragmentBuilder();
-        codeBuilder.append(section.getJavaDocForTypeSectionBuilder().getFragment());
+        codeBuilder.append(section.getJavaDocForTypeBuilder().getFragment());
         if (section.isClass()) {
             codeBuilder.classBegin(section.getClassModifier(), section.getUnqualifiedName(), 
                     section.getSuperClass(), section.getExtendedInterfaces());
@@ -163,13 +163,13 @@ public abstract class DefaultJavaSourceFileBuilder extends JavaSourceFileBuilder
             codeBuilder.interfaceBegin(section.getUnqualifiedName(), section.getExtendedInterfaces());
         }
         codeBuilder.appendln();
-        codeBuilder.append(section.getConstantSectionBuilder().getFragment());
+        codeBuilder.append(section.getConstantBuilder().getFragment());
         codeBuilder.appendln();
-        codeBuilder.append(section.getMemberVarSectionBuilder().getFragment());
+        codeBuilder.append(section.getMemberVarBuilder().getFragment());
         codeBuilder.appendln();
-        codeBuilder.append(section.getConstructorSectionBuilder().getFragment());
+        codeBuilder.append(section.getConstructorBuilder().getFragment());
         codeBuilder.appendln();
-        codeBuilder.append(section.getMethodSectionBuilder().getFragment());
+        codeBuilder.append(section.getMethodBuilder().getFragment());
 
         if(innerClassSections != null){
             codeBuilder.appendln();
@@ -239,7 +239,7 @@ public abstract class DefaultJavaSourceFileBuilder extends JavaSourceFileBuilder
     
     private void generateLoggerConstantIfNecessary() throws CoreException{
         if(!loggerInstanceGenerated){
-            generateLoggerInstance(mainSection.getConstantSectionBuilder());
+            generateLoggerInstance(mainSection.getConstantBuilder());
             loggerInstanceGenerated = true;
         }
     }
@@ -509,147 +509,5 @@ public abstract class DefaultJavaSourceFileBuilder extends JavaSourceFileBuilder
      */
     protected final void generateErrorLoggingStmtWithCondition(JavaCodeFragment frag, String message) throws CoreException{
         generateLoggingStmtWithCondition(IIpsLoggingFrameworkConnector.LEVEL_ERROR, frag, message);
-    }
-    
-    
-    /**
-     * A TypeSection assembles the code fragments for a type, e.g. the main class or an inner class,
-     * during the generation process. Therefore it provides subsections for typical code sections
-     * like for constants, attributes, methods, constructors and java doc for the type.
-     * 
-     * @author Peter Erzberger
-     */
-    public final static class TypeSection{
-        
-        private boolean isClass = true;
-        private int classModifier;
-        private String[] extendedInterfaces;
-        private String superClass;
-        private String unqualifiedName;
-        private JavaCodeFragmentBuilder constantSectionBuilder;
-        private JavaCodeFragmentBuilder javaDocForTypeSectionBuilder;
-        private JavaCodeFragmentBuilder memberVariableSectionBuilder;
-        private JavaCodeFragmentBuilder constructorSectionBuilder;
-        private JavaCodeFragmentBuilder methodSectionBuilder;
-
-        public TypeSection(){
-            constantSectionBuilder = new JavaCodeFragmentBuilder();
-            memberVariableSectionBuilder = new JavaCodeFragmentBuilder();
-            constructorSectionBuilder = new JavaCodeFragmentBuilder();
-            methodSectionBuilder = new JavaCodeFragmentBuilder();
-            javaDocForTypeSectionBuilder = new JavaCodeFragmentBuilder();
-        }
-
-        /**
-         * Returns the class modifier for the type represented by this TypeSection.
-         * 
-         * @see <code>{@link java.reflect.Modifier}</code>
-         */
-        public int getClassModifier() {
-            return classModifier;
-        }
-
-        /**
-         * Sets the class modifier for the type represented by this TypeSection.
-         * 
-         * @see <code>{@link java.reflect.Modifier}</code>
-         */
-        public void setClassModifier(int classModifier) {
-            this.classModifier = classModifier;
-        }
-
-        /**
-         * Returns the qualified names of the interfaces that the generated class or interface extends.
-         */
-        public String[] getExtendedInterfaces() {
-            return extendedInterfaces;
-        }
-
-        /**
-         * Sets the qualified names of the interfaces that the generated class or interface extends.
-         */
-        public void setExtendedInterfaces(String[] extendedInterfaces) {
-            this.extendedInterfaces = extendedInterfaces;
-        }
-
-        /**
-         * Returns if the type that is to generate is a class or an interface.
-         */
-        public boolean isClass() {
-            return isClass;
-        }
-
-        /**
-         * Sets if the type that is to generate is a class or an interface.
-         */
-        public void setClass(boolean isClass) {
-            this.isClass = isClass;
-        }
-
-        /**
-         * Returns the qualified name of the super class that the generated class extends. <code>null</code>
-         * indicates no superclass will be extended by the generated class.
-         */
-        public String getSuperClass() {
-            return superClass;
-        }
-
-        /**
-         * Sets the qualified name of the super class that the generated class extends. <code>null</code>
-         * indicates no superclass will be extended by the generated class.
-         */
-        public void setSuperClass(String superClass) {
-            this.superClass = superClass;
-        }
-
-        /**
-         * Returns the unqualified name of the generated class or interface.
-         */
-        public String getUnqualifiedName() {
-            return unqualifiedName;
-        }
-
-        /**
-         * Sets the unqualified name of the generated class or interface.
-         */
-        public void setUnqualifiedName(String unqualifiedName) {
-            this.unqualifiedName = unqualifiedName;
-        }
-
-        /**
-         * Returns the {@link <code>JavaCodeFragmentBuilder</code>} that assembles the code for the constant definitions.
-         */
-        public JavaCodeFragmentBuilder getConstantSectionBuilder() {
-            return constantSectionBuilder;
-        }
-
-        /**
-         * Returns the {@link <code>JavaCodeFragmentBuilder</code>} that assembles the code for the constructor definitions.
-         */
-        public JavaCodeFragmentBuilder getConstructorSectionBuilder() {
-            return constructorSectionBuilder;
-        }
-
-        /**
-         * Returns the {@link <code>JavaCodeFragmentBuilder</code>} that assembles the code for the member variable definitions.
-         */
-        public JavaCodeFragmentBuilder getMemberVarSectionBuilder() {
-            return memberVariableSectionBuilder;
-        }
-
-        /**
-         * Returns the {@link <code>JavaCodeFragmentBuilder</code>} that assembles the code for the method definitions.
-         */
-        public JavaCodeFragmentBuilder getMethodSectionBuilder() {
-            return methodSectionBuilder;
-        }
-
-        /**
-         * Returns the {@link <code>JavaCodeFragmentBuilder</code>} that assembles the code for the
-         * java doc of the type of this TypeSection.
-         */
-        public JavaCodeFragmentBuilder getJavaDocForTypeSectionBuilder() {
-            return javaDocForTypeSectionBuilder;
-        }
     }
 }

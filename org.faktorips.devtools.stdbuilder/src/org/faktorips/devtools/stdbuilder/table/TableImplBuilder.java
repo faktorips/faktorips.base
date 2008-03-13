@@ -34,6 +34,7 @@ import org.faktorips.codegen.JavaCodeFragment;
 import org.faktorips.codegen.JavaCodeFragmentBuilder;
 import org.faktorips.datatype.Datatype;
 import org.faktorips.devtools.core.builder.DefaultJavaSourceFileBuilder;
+import org.faktorips.devtools.core.builder.TypeSection;
 import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
 import org.faktorips.devtools.core.model.ipsproject.IIpsArtefactBuilderSet;
@@ -290,18 +291,18 @@ public class TableImplBuilder extends DefaultJavaSourceFileBuilder {
         mainSection.setSuperClass(Table.class.getName());
         mainSection.setClass(true);
         
-        appendLocalizedJavaDoc("CLASS_DESCRIPTION", getIpsObject(), getIpsObject().getDescription(), mainSection.getJavaDocForTypeSectionBuilder());
-        createFields(mainSection.getMemberVarSectionBuilder());
-        createAddRowMethod(mainSection.getMethodSectionBuilder());
-        createInitKeyMapsMethod(mainSection.getMethodSectionBuilder());
+        appendLocalizedJavaDoc("CLASS_DESCRIPTION", getIpsObject(), getIpsObject().getDescription(), mainSection.getJavaDocForTypeBuilder());
+        createFields(mainSection.getMemberVarBuilder());
+        createAddRowMethod(mainSection.getMethodBuilder());
+        createInitKeyMapsMethod(mainSection.getMethodBuilder());
         // create single instance method only if no multi content is allowed
         if (!getTableStructure().isMultipleContentsAllowed()) {
-            createGetInstanceMethodForSingleContent(mainSection.getMethodSectionBuilder());
+            createGetInstanceMethodForSingleContent(mainSection.getMethodBuilder());
         }
         // create multi instance content method if multi or single content
-        createGetInstanceMethodForMultipleContents(mainSection.getMethodSectionBuilder());
-        createAllRowsMethod(mainSection.getMethodSectionBuilder());
-        createFindMethods(mainSection.getMethodSectionBuilder());
+        createGetInstanceMethodForMultipleContents(mainSection.getMethodBuilder());
+        createAllRowsMethod(mainSection.getMethodBuilder());
+        createFindMethods(mainSection.getMethodBuilder());
         createHashKeyClasses();
     }
 
@@ -706,15 +707,15 @@ public class TableImplBuilder extends DefaultJavaSourceFileBuilder {
             String[] keyItemTypes) throws CoreException {
         
         TypeSection innerClassBody = createInnerClassSection();
-        innerClassBody.getJavaDocForTypeSectionBuilder().javaDoc(getLocalizedText(getIpsObject(), KEY_CLASS_JAVADOC), ANNOTATION_GENERATED);
+        innerClassBody.getJavaDocForTypeBuilder().javaDoc(getLocalizedText(getIpsObject(), KEY_CLASS_JAVADOC), ANNOTATION_GENERATED);
         innerClassBody.setClassModifier(Modifier.PRIVATE | Modifier.STATIC | Modifier.FINAL);
         innerClassBody.setUnqualifiedName(hashKeyClassName);
         for (int i = 0; i < keyNames.length; i++) {
-            innerClassBody.getMemberVarSectionBuilder().varDeclaration(Modifier.PRIVATE, keyItemTypes[i],
+            innerClassBody.getMemberVarBuilder().varDeclaration(Modifier.PRIVATE, keyItemTypes[i],
                     keyNames[i]);
         }
         // create hashCode field
-        innerClassBody.getMemberVarSectionBuilder().varDeclaration(Modifier.PRIVATE, Integer.TYPE, "hashCode");
+        innerClassBody.getMemberVarBuilder().varDeclaration(Modifier.PRIVATE, Integer.TYPE, "hashCode");
 
         JavaCodeFragment constructorBody = new JavaCodeFragment();
         for (int i = 0; i < keyNames.length; i++) {
@@ -727,12 +728,12 @@ public class TableImplBuilder extends DefaultJavaSourceFileBuilder {
         }
         constructorBody.appendln("hashCode = calculateHashCode();");
         // constructor
-        innerClassBody.getConstructorSectionBuilder()
+        innerClassBody.getConstructorBuilder()
                 .method(Modifier.PRIVATE, null, hashKeyClassName, keyNames, keyItemTypes,
                         constructorBody, getLocalizedText(getIpsObject(), KEY_CLASS_CONSTRUCTOR_JAVADOC), ANNOTATION_GENERATED);
-        createKeyClassCalHashCodeMethod(keyNames, innerClassBody.getMethodSectionBuilder());
-        createKeyClassEqualsMethod(hashKeyClassName, keyNames, innerClassBody.getMethodSectionBuilder());
-        createKeyClassHashCodeMethod(keyNames, innerClassBody.getMethodSectionBuilder());
+        createKeyClassCalHashCodeMethod(keyNames, innerClassBody.getMethodBuilder());
+        createKeyClassEqualsMethod(hashKeyClassName, keyNames, innerClassBody.getMethodBuilder());
+        createKeyClassHashCodeMethod(keyNames, innerClassBody.getMethodBuilder());
     }
 
     private void createKeyClassCalHashCodeMethod(String[] keyNames, JavaCodeFragmentBuilder codeBuilder) throws CoreException {

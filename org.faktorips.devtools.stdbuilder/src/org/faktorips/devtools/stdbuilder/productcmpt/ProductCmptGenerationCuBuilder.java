@@ -30,6 +30,7 @@ import org.faktorips.datatype.Datatype;
 import org.faktorips.datatype.ValueDatatype;
 import org.faktorips.devtools.core.IpsStatus;
 import org.faktorips.devtools.core.builder.DefaultJavaSourceFileBuilder;
+import org.faktorips.devtools.core.builder.TypeSection;
 import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.core.model.ipsproject.IIpsArtefactBuilderSet;
 import org.faktorips.devtools.core.model.productcmpt.IFormula;
@@ -120,12 +121,12 @@ public class ProductCmptGenerationCuBuilder extends DefaultJavaSourceFileBuilder
         mainSection.setUnqualifiedName(getUnqualifiedClassName());
         mainSection.setSuperClass(productCmptGenImplBuilder.getQualifiedClassName(pcType.getIpsSrcFile()));
 
-        buildConstructor(mainSection.getConstructorSectionBuilder());
+        buildConstructor(mainSection.getConstructorBuilder());
         IFormula[] formulas = generation.getFormulas();
         for (int i = 0; i < formulas.length; i++) {
             try {
                 if(!formulas[i].validate(getIpsProject()).containsErrorMsg()){
-                    generateMethodForFormula(formulas[i], mainSection.getMethodSectionBuilder());
+                    generateMethodForFormula(formulas[i], mainSection.getMethodBuilder());
                 }
             } catch (Exception e) {
                 addToBuildStatus(new IpsStatus("Error generating code for " + formulas[i], e)); //$NON-NLS-1$
