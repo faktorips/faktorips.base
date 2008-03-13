@@ -301,7 +301,8 @@ public class IpsSrcFileContent {
             // lazy load of root properties
             initRootPropertiesFromFile();
         }
-        return (String) rootProperties.get(propertyName);
+        // rootProperties could be null if the workspace is out of sync and the file doesn't exists anymore
+        return (String) (rootProperties != null ? rootProperties.get(propertyName) : null);
     }
     
     private String getPropertyFromIpsObject(String propertyName) {
