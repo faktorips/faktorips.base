@@ -21,10 +21,10 @@ import org.eclipse.ui.IActionBars;
 import org.eclipse.ui.IEditorPart;
 import org.eclipse.ui.IWorkbenchPage;
 import org.eclipse.ui.actions.ActionFactory;
-import org.eclipse.ui.part.EditorActionBarContributor;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.IpsStatus;
 import org.faktorips.devtools.core.ui.actions.ProductEditorDeleteAction;
+import org.faktorips.devtools.core.ui.editors.IpsObjectEditorActionContributor;
 
 /**
  * The ProductCmptEditorActionContributor distinguishes between multiple instances of
@@ -37,7 +37,7 @@ import org.faktorips.devtools.core.ui.actions.ProductEditorDeleteAction;
  *
  * @author Stefan Widmaier, Peter Erzberger
  */
-public class ProductCmptEditorActionContributor extends EditorActionBarContributor {
+public class ProductCmptEditorActionContributor extends IpsObjectEditorActionContributor {
     
     private ProductEditorDeleteAction deleteAction= null;
 
@@ -58,6 +58,8 @@ public class ProductCmptEditorActionContributor extends EditorActionBarContribut
      * automatically called by the workbench every time a ProductCmptEditor is activated.
      */
     public void setActiveEditor(IEditorPart targetEditor) {
+        super.setActiveEditor(targetEditor);
+        
         if(!(targetEditor instanceof ProductCmptEditor)){
             IpsPlugin.log(new IpsStatus(getClass().getName() + 
                 ": This editor action contributor expects to be registered with an " +  //$NON-NLS-1$

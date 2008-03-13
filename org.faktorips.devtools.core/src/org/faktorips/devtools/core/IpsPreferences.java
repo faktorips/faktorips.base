@@ -365,6 +365,13 @@ public class IpsPreferences {
     }
     
     /**
+     * Sets the working mode.
+     */
+    public void setWorkingMode(String workingMode){
+        prefStore.setValue(WORKING_MODE, workingMode);
+    }
+    
+    /**
 	 * Returns <code>true</code> if the currently set working mode is edit, <code>false</code>
 	 * otherwise
 	 */

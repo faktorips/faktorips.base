@@ -110,7 +110,6 @@
                toolbarPath="org.faktorips.devtools"
                tooltip="%org.faktorips.devtools.core.ChangeWorkingDateAction.tooltip"/>
       </actionSet>
-
       <actionSet
             label="IPS Navigation"
             description="IPS Navigation Action Set"
@@ -139,8 +138,39 @@
                toolbarPath="org.faktorips.devtools"
                tooltip="%org.faktorips.devtools.actions.OpenNewIpsPackageWizardAction.tooltip"/>
       </actionSet>
+ 	  <actionSet
+            id="org.faktorips.devtools.actions.EditModeActionSet"   
+            label="%org.faktorips.devtools.actions.EditModeActionSet"
+            visible="false">
+         <action
+               style="toggle"
+			   retarget="true"
+			   allowLabelUpdate="true"
+               class="org.faktorips.devtools.core.ui.actions.ToggleWorkingModeAction"
+               icon="icons/obj16/write_obj.gif"
+               disabledIcon="icons/obj16/write_obj_disabled.gif"
+               id="org.faktorips.devtools.actions.ToggleWorkingModeAction"
+               label="%org.faktorips.devtools.actions.ToggleWorkingModeAction.label"
+               toolbarPath="org.faktorips.devtools"
+               tooltip="%org.faktorips.devtools.actions.ToggleWorkingModeAction.tooltip">
+         </action>
+      </actionSet>            
    </extension>
    
+   <extension
+         point="org.eclipse.ui.actionSetPartAssociations">
+      <actionSetPartAssociation
+            targetID="org.faktorips.devtools.actions.EditModeActionSet">
+         <part id="policyCmptTypeEditor" />
+         <part id="productCmptTypeEditor" />
+         <part id="productCmptEditor" />
+         <part id="tableStructureEditor" />
+         <part id="tableContentsEditor" />
+         <part id="testCaseEditor" />
+         <part id="testCaseTypeEditor" />
+      </actionSetPartAssociation>
+   </extension>
+
    <extension
          point="org.eclipse.ui.commands">
       <command
@@ -426,6 +456,7 @@
          point="org.eclipse.ui.editors">
       <editor
             class="org.faktorips.devtools.core.ui.editors.pctype.PctEditor"
+            contributorClass="org.faktorips.devtools.core.ui.editors.IpsObjectEditorActionContributor"
             default="true"
             extensions="ipspolicycmpttype"
             icon="icons/PolicyCmptType.gif"
@@ -434,6 +465,7 @@
       </editor>
       <editor
             class="org.faktorips.devtools.core.ui.editors.productcmpttype.ProductCmptTypeEditor"
+            contributorClass="org.faktorips.devtools.core.ui.editors.IpsObjectEditorActionContributor"
             default="true"
             extensions="ipsproductcmpttype"
             icon="icons/ProductCmptType.gif"
@@ -451,6 +483,7 @@
       </editor>
       <editor
             class="org.faktorips.devtools.core.ui.editors.tablestructure.TableStructureEditor"
+            contributorClass="org.faktorips.devtools.core.ui.editors.IpsObjectEditorActionContributor"
             default="true"
             extensions="ipstablestructure"
             icon="icons/TableStructure.gif"
@@ -459,6 +492,7 @@
       </editor>
       <editor
             class="org.faktorips.devtools.core.ui.editors.tablecontents.TableContentsEditor"
+            contributorClass="org.faktorips.devtools.core.ui.editors.IpsObjectEditorActionContributor"
             default="true"
             extensions="ipstablecontents"
             icon="icons/TableContents.gif"
@@ -467,6 +501,7 @@
       </editor>
       <editor
             class="org.faktorips.devtools.core.ui.editors.testcase.TestCaseEditor"
+            contributorClass="org.faktorips.devtools.core.ui.editors.IpsObjectEditorActionContributor"
             default="true"
             extensions="ipstestcase"
             icon="icons/TestCase.gif"
@@ -474,11 +509,12 @@
             name="%testCaseEditor"/>
       <editor
       		class="org.faktorips.devtools.core.ui.editors.testcasetype.TestCaseTypeEditor"
+            contributorClass="org.faktorips.devtools.core.ui.editors.IpsObjectEditorActionContributor"
             default="true"
             extensions="ipstestcasetype"
             icon="icons/TestCaseType.gif"
             id="testCaseTypeEditor"
-            name="%testCaseTypeEditor"/>      
+            name="%testCaseTypeEditor"/>   
    </extension>
 
 <!-- 
@@ -760,6 +796,7 @@
             id="org.faktorips.devtools.core.ui.views.modelDescription"
             name="%org.faktorips.devtools.core.ui.views.modelDescription"/>
    </extension>
+   
    <extension
          point="org.eclipse.search.searchResultViewPages">
       <viewPage
