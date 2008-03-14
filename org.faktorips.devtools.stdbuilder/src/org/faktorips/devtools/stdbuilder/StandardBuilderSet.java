@@ -100,7 +100,24 @@ public class StandardBuilderSet extends DefaultBuilderSet {
     private PolicyCmptInterfaceBuilder policyCmptInterfaceBuilder;
     private ProductCmptGenInterfaceBuilder productCmptGenInterfaceBuilder;
     private EnumClassesBuilder enumClassesBuilder;
+    private String version;
     
+    public StandardBuilderSet() {
+      initVersion();
+    }
+
+    private void initVersion() {
+        version = "2.0.0.rfinal";
+//        Version versionObj = Version.parseVersion((String)StdBuilderPlugin.getDefault().getBundle().getHeaders().get(org.osgi.framework.Constants.BUNDLE_VERSION));
+//        StringBuffer buf = new StringBuffer();
+//        buf.append(versionObj.getMajor());
+//        buf.append('.');
+//        buf.append(versionObj.getMinor());
+//        buf.append('.');
+//        buf.append(versionObj.getMicro());
+//        version = buf.toString();
+    }
+
     /**
      * {@inheritDoc}
      */
@@ -416,13 +433,6 @@ public class StandardBuilderSet extends DefaultBuilderSet {
      * in the version string.
      */
     public String getVersion() {
-        Version version = Version.parseVersion((String)StdBuilderPlugin.getDefault().getBundle().getHeaders().get(org.osgi.framework.Constants.BUNDLE_VERSION));
-        StringBuffer buf = new StringBuffer();
-        buf.append(version.getMajor());
-        buf.append('.');
-        buf.append(version.getMinor());
-        buf.append('.');
-        buf.append(version.getMicro());
-        return buf.toString();
+        return version;
     }
 }
