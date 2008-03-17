@@ -228,6 +228,13 @@ public class IpsPreferences {
     public boolean canEditRecentGeneration() {
     	return prefStore.getBoolean(EDIT_RECENT_GENERATION);
     }
+
+    /**
+     * Sets whether generations with valid-from-date in the past can be edited or not.
+     */
+    public void setEditRecentGeneration(boolean editRecentGeneration) {
+        prefStore.setValue(EDIT_RECENT_GENERATION, editRecentGeneration);
+    }
     
     /**
      * Returns the value of the enable generating preference.

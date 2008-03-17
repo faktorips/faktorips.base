@@ -355,6 +355,7 @@ public class ProductCmptEditor extends TimedIpsObjectEditor implements IModelDes
         GenerationSelectionDialog dialog = new GenerationSelectionDialog(getContainer().getShell(), cmpt, prefs
                 .getFormattedWorkingDate(), prefs.getWorkingDate(), generationConceptNameSingular, generationConceptNamePlural, prefs.canEditRecentGeneration(), prefs.isWorkingModeEdit());
         dialog.open(); // closing the dialog triggers an window activation event
+        
         isHandlingWorkingDateMismatch = false;
         int choice = -1;
         if (IpsPlugin.getDefault().isTestMode()) {
@@ -362,6 +363,7 @@ public class ProductCmptEditor extends TimedIpsObjectEditor implements IModelDes
         } else {
             if (dialog.getReturnCode() == GenerationSelectionDialog.OK) {
                 choice = dialog.getChoice();
+                prefs.setEditRecentGeneration(dialog.isCanEditRecentGenerations());
             }
         }
         GregorianCalendar workingDate = IpsPlugin.getDefault().getIpsPreferences().getWorkingDate();

@@ -129,4 +129,10 @@ public class Messages extends NLS {
     public static String CreateIpsArchiveAction_Tooltip;
     public static String IpsPasteAction_Error_CannotPasteIntoSelectedElement;
     public static String MigrateProjectAction_text;
+    public static String ChangeWorkingDateAction_warningRecentGenerationReadOnlyRow1;
+    public static String ChangeWorkingDateAction_warningRecentGenerationReadOnlyRow2;
+    public static String ChangeWorkingDateAction_warningRecentGenerationReadOnlyRow3;
+    public static String ChangeWorkingDateAction_warningRecentGenerationReadOnlyRow4;
+    public static String ChangeWorkingDateAction_warningRecentGenerationReadOnlyRow5;
+    public static String ChangeWorkingDateAction_labelEditRecentGenerations;
 }

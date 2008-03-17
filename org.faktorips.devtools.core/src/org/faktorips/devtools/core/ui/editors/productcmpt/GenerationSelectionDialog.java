@@ -26,6 +26,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.eclipse.jface.dialogs.IDialogConstants;
+import org.eclipse.jface.dialogs.IMessageProvider;
 import org.eclipse.jface.dialogs.TitleAreaDialog;
 import org.eclipse.osgi.util.NLS;
 import org.eclipse.swt.SWT;
@@ -47,6 +48,10 @@ import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObjectGeneration;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmpt;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmptGeneration;
+import org.faktorips.devtools.core.ui.UIToolkit;
+import org.faktorips.devtools.core.ui.binding.BindingContext;
+import org.faktorips.devtools.core.ui.binding.PresentationModelObject;
+import org.faktorips.devtools.core.ui.controls.Checkbox;
 import org.faktorips.values.DateUtil;
 
 /**
@@ -62,6 +67,9 @@ import org.faktorips.values.DateUtil;
  */
 public class GenerationSelectionDialog extends TitleAreaDialog {
     private static final String STORED_CHOICE_ID = IpsPlugin.PLUGIN_ID + ".generationSelectionDialogChoice"; //$NON-NLS-1$
+    
+    private UIToolkit toolkit = new UIToolkit(null);
+    private BindingContext bindingContext = new BindingContext();
     
 	private IProductCmpt cmpt;
     
@@ -96,6 +104,19 @@ public class GenerationSelectionDialog extends TitleAreaDialog {
     private String generationConceptNameSingular;
     private String generationConceptNamePlural;
     
+    public class WorkingDatePmo extends PresentationModelObject {
+        public static final String CAN_EDIT_RECENT_GENERATION = "editRecentGeneration"; //$NON-NLS-1$
+        
+        public boolean isEditRecentGeneration() {
+            return GenerationSelectionDialog.this.canEditRecentGenerations;
+        }
+
+        public void setEditRecentGeneration(boolean editRecentGeneration) {
+            GenerationSelectionDialog.this.canEditRecentGenerations = editRecentGeneration;
+            validate();
+        }
+    }
+    
 	/**
 	 * @param parentShell
 	 * @param generationConceptNamePlural 
@@ -113,6 +134,8 @@ public class GenerationSelectionDialog extends TitleAreaDialog {
         this.editWorkingMode = editWorkingMode;
 
         setShellStyle(getShellStyle() | SWT.RESIZE);
+        
+        setHelpAvailable(false);
     }
 
 	/**
@@ -129,41 +152,61 @@ public class GenerationSelectionDialog extends TitleAreaDialog {
                 generationConceptNameSingular);
         getShell().setText(winTitle);
 
-        setMessage(NLS.bind(Messages.GenerationSelectionDialog_description, formatedWorkingDate, generationConceptNameSingular));
         
         // create choice buttons
         Composite selectPane = new Composite(workArea, SWT.None);
         selectPane.setLayout(new GridLayout(3, false));
+
+        Label label = toolkit.createLabel(selectPane, NLS.bind(Messages.GenerationSelectionDialog_description, formatedWorkingDate, generationConceptNameSingular));
+        GridData gd = (GridData)label.getLayoutData();
+        gd.horizontalSpan = 3;
         
         createChoiceControls(selectPane);
 		
+        getShell().getDisplay().asyncExec(new Runnable(){
+            public void run() {
+                validate();
+            }
+        });
+        
+        bindingContext.updateUI();
+        
 		return workArea;
 	}
 
     public void createChoiceControls(Composite selectPane) {
+        
         createChoiceForShowGenerationReadOnly(selectPane);
         createChoiceForSwitchWorkingDate(selectPane);
         createChoiceForCreateNewGeneration(selectPane);
-        createInfoMessageNoRecentCange(selectPane);
         
+        createHoricontalSpace(selectPane);
+        
+        Label label = toolkit.createHorizonzalLine(selectPane);
+        GridData ld = (GridData)label.getLayoutData();
+        ld.horizontalSpan = 3;
+        createCheckBoxEditRecentGenerations(selectPane);
+
+        createHoricontalSpace(selectPane);
+
         initSelectionFromPreferences();
     }
 
-    private void createInfoMessageNoRecentCange(Composite selectPane) {
-        createHoricontalSpace(selectPane);
-        
-        Composite composite = new Composite(selectPane, SWT.NONE);
+    private void createCheckBoxEditRecentGenerations(Composite selectPane) {
+        Composite composite = toolkit.createComposite(selectPane);
+        GridLayout gl = toolkit.createNoMarginGridLayout(1, true);
+        composite.setLayout(gl);
         GridData gd = new GridData();
-        gd.horizontalSpan = 2;
-        gd.grabExcessHorizontalSpace = true;
+        gd.horizontalSpan = 3;
         composite.setLayoutData(gd);
-        composite.setLayout(new GridLayout(1, true));
         
-		if (! canEditRecentGenerations){
-		    String message = NLS.bind(Messages.GenerationSelectionDialog_infoGenerationsCouldntChange, generationConceptNamePlural);
-            Label descrition = new Label(composite, SWT.NONE);
-		    descrition.setText(message);
-		}
+        String labelText = NLS.bind(
+                Messages.GenerationSelectionDialog_checkboxCanEditRecentGenerations,
+                IpsPlugin.getDefault().getIpsPreferences().getChangesOverTimeNamingConvention()
+                .getGenerationConceptNamePlural());
+        Checkbox checkbox = toolkit.createCheckbox(composite, labelText);    
+        
+        bindingContext.bindContent(checkbox, new WorkingDatePmo(), WorkingDatePmo.CAN_EDIT_RECENT_GENERATION);
     }
 
     /**
@@ -176,10 +219,7 @@ public class GenerationSelectionDialog extends TitleAreaDialog {
     }
     
     private void createChoiceForSwitchWorkingDate(Composite selectPane) {
-        List relevantGenerations = getRelevantGenerations(false);
-        if (relevantGenerations.size() == 0){
-            return;
-        }
+        List relevantGenerations = getGenerationsDropDownContent();
         
         Button switchButton = new Button(selectPane, SWT.RADIO);
         allButtons.put(new Integer(CHOICE_SWITCH), switchButton);
@@ -192,25 +232,12 @@ public class GenerationSelectionDialog extends TitleAreaDialog {
         createGenerationsDropDown(selectPane, switchButton, relevantGenerations, false);
     }
     
-    public List getRelevantGenerations(boolean forReadOnlyCombo){
+    public List getGenerationsDropDownContent(){
         IIpsObjectGeneration[] generations = cmpt.getGenerationsOrderedByValidDate();
         List relevantGenerations = new ArrayList(generations.length);
         for (int i = 0; i < generations.length; i++) {
-            if (forReadOnlyCombo){
-                if (editWorkingMode && workingDate.equals(generations[i].getValidFrom())){
-                    // skip because: generation could be edit because working date is equal generations vaild from date
-                    // will be added as option in the switch working date to drop down
-                    continue;
-                }
-            } else {
-                if (! editWorkingMode || 
-                        (! canEditRecentGenerations && new GregorianCalendar().after(generations[i].getValidFrom()))){
-                    // skip because: working date is before generations valid from date and recent generations couldn't be changed
-                    // will be added as option in the shwow generation read only drop down
-                    continue;
-                }
-            }
-            relevantGenerations.add(generations[i].getName());
+            String valueToAdd = generations[i].getName();
+            relevantGenerations.add(valueToAdd);
         }
         return relevantGenerations;
     }
@@ -252,10 +279,7 @@ public class GenerationSelectionDialog extends TitleAreaDialog {
     }
     
     private void createChoiceForShowGenerationReadOnly(Composite selectPane) {
-        List relevantGenerations = getRelevantGenerations(true);
-        if (relevantGenerations.size() == 0){
-            return;
-        }
+        List relevantGenerations = getGenerationsDropDownContent();
 
         // necessary to get the same space between create- and browse-line
         // and browse- and switch-line.
@@ -282,16 +306,18 @@ public class GenerationSelectionDialog extends TitleAreaDialog {
         GregorianCalendar now = getToday();
         
         createHoricontalSpace(selectPane);
+
+        Button createButton = new Button(selectPane, SWT.RADIO);
+        allButtons.put(new Integer(CHOICE_CREATE), createButton);
+        choices.put(createButton, new Integer(CHOICE_CREATE));
+        Label l1 = new Label(selectPane, SWT.NONE);
+        l1.setText(NLS.bind(Messages.GenerationSelectionDialog_labelCreate, generationConceptNameSingular, formatedWorkingDate));
         
-        if (!cmpt.getIpsSrcFile().isMutable()) {
-            return;
-        }
-        if (!canEditRecentGenerations && workingDate.before(now)) {
-            return;
-        }
-        if (!canEditRecentGenerations && cmpt.getValidTo() != null && cmpt.getValidTo().after(workingDate)) {
-            return;
-        }
+        // if control is enabled add mouse listener
+        l1.addMouseListener(new ActivateButtonOnClickListener(createButton));
+
+        // fill grid composite
+        new Composite(selectPane, SWT.NONE).setLayoutData(new GridData(1, 3));
         
         // if one genearations valid to date is equal the working date then the new button should not displayed 
         IIpsObjectGeneration[] generations = cmpt.getGenerationsOrderedByValidDate();
@@ -301,15 +327,15 @@ public class GenerationSelectionDialog extends TitleAreaDialog {
             }
         }
 
-        Button createButton = new Button(selectPane, SWT.RADIO);
-        allButtons.put(new Integer(CHOICE_CREATE), createButton);
-        choices.put(createButton, new Integer(CHOICE_CREATE));
-        Label l1 = new Label(selectPane, SWT.NONE);
-        l1.setText(NLS.bind(Messages.GenerationSelectionDialog_labelCreate, generationConceptNameSingular, formatedWorkingDate));
-        l1.addMouseListener(new ActivateButtonOnClickListener(createButton));
-        
-        // fill grid composite
-        new Composite(selectPane, SWT.NONE).setLayoutData(new GridData(1, 3));
+        if (!cmpt.getIpsSrcFile().isMutable()) {
+            return;
+        }
+        if (!canEditRecentGenerations && workingDate.before(now)) {
+            return;
+        }
+        if (!canEditRecentGenerations && cmpt.getValidTo() != null && cmpt.getValidTo().after(workingDate)) {
+            return;
+        }
     }
 
     private GregorianCalendar getToday() {
@@ -360,6 +386,7 @@ public class GenerationSelectionDialog extends TitleAreaDialog {
 
 	private void updateCurrentChoice(Button choosen) {
 		choice = ((Integer)choices.get(choosen)).intValue();
+        validate();
 	}
 	
 	private class SelectionListenerForButton implements SelectionListener {
@@ -372,6 +399,7 @@ public class GenerationSelectionDialog extends TitleAreaDialog {
 		public void widgetSelected(SelectionEvent e) {
 			updateCurrentChoice((Button)e.widget);
 			GenerationSelectionDialog.this.generationIndex = data.getSelectionIndex();
+            validate();
 		}
 
 		public void widgetDefaultSelected(SelectionEvent e) {
@@ -441,12 +469,67 @@ public class GenerationSelectionDialog extends TitleAreaDialog {
 			
             toSelect.setSelection(true);
 			updateCurrentChoice(toSelect);
+            validate();
 		}
-		
+	}
+
+    private boolean cannotEditRecentGeneration(){
+        IProductCmptGeneration selectedGeneration = getSelectedGeneration();
+        return ! canEditRecentGenerations && new GregorianCalendar().after(selectedGeneration.getValidFrom());
+    }
+    
+    /**
+     * @return Returns the canEditRecentGenerations.
+     */
+    public boolean isCanEditRecentGenerations() {
+        return canEditRecentGenerations;
+    }
+
+    private void validate() {
+        String message = null;
+        int messageType = IMessageProvider.NONE;
+        
+        if (!editWorkingMode){
+            message = ""; //$NON-NLS-1$
+            messageType = IMessageProvider.INFORMATION;
+        }
+        
+        if ((choice == CHOICE_SWITCH || choice == CHOICE_CREATE ) && !editWorkingMode) {
+            message = Messages.GenerationSelectionDialog_infoNoChangesInCurrentWorkingMode;
+            messageType = choice == CHOICE_SWITCH ? IMessageProvider.WARNING : IMessageProvider.ERROR;
+        }
+        
+        if (messageType == IMessageProvider.NONE && choice == CHOICE_SWITCH) {
+            if (cannotEditRecentGeneration()) {
+                if (editWorkingMode) {
+                    message = NLS.bind(Messages.GenerationSelectionDialog_infoGenerationsCouldntChangeInfo,
+                            generationConceptNamePlural);
+                    messageType = IMessageProvider.WARNING;
+                }
+            }
+        } else if (messageType == IMessageProvider.NONE && choice == CHOICE_CREATE) {
+            if (!canEditRecentGenerations && new GregorianCalendar().after(workingDate)) {
+                message = NLS.bind(Messages.GenerationSelectionDialog_infoGenerationsCouldntChange,
+                        generationConceptNamePlural);
+                messageType = IMessageProvider.ERROR;
+            }
+        }
+
+        setMessage(null, IMessageProvider.WARNING);
+        setErrorMessage(null);
+        if (messageType == IMessageProvider.WARNING){
+            setMessage(message, messageType);
+        } else if (messageType == IMessageProvider.ERROR){
+            setErrorMessage(message);
+        }
+        
+        Button button = getButton(IDialogConstants.OK_ID);
+        if (button != null && ! button.isDisposed()){
+            button.setEnabled(messageType != IMessageProvider.ERROR);
+        } 
 	}
 	
 	// test methods
-    
     public List getAllButtons(){
         List createdChoices = new ArrayList(4);
         createdChoices.addAll(allButtons.keySet());
