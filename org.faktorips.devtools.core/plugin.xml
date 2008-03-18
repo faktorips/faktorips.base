@@ -141,7 +141,7 @@
  	  <actionSet
             id="org.faktorips.devtools.actions.EditModeActionSet"   
             label="%org.faktorips.devtools.actions.EditModeActionSet"
-            visible="true">
+            visible="false">
          <action
                style="toggle"
 			   retarget="true"
@@ -155,6 +155,20 @@
                tooltip="%org.faktorips.devtools.actions.ToggleWorkingModeAction.tooltip">
          </action>
       </actionSet>            
+   </extension>
+   
+   <extension
+         point="org.eclipse.ui.actionSetPartAssociations">
+      <actionSetPartAssociation
+            targetID="org.faktorips.devtools.actions.EditModeActionSet">
+         <part id="policyCmptTypeEditor" />
+         <part id="productCmptTypeEditor" />
+         <part id="productCmptEditor" />
+         <part id="tableStructureEditor" />
+         <part id="tableContentsEditor" />
+         <part id="testCaseEditor" />
+         <part id="testCaseTypeEditor" />
+      </actionSetPartAssociation>
    </extension>
 
    <extension
