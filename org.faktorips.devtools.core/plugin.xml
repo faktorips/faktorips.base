@@ -221,6 +221,7 @@
          point="org.eclipse.ui.perspectiveExtensions">
       <perspectiveExtension
             targetID="org.eclipse.jdt.ui.JavaPerspective">
+         <actionSet id="org.faktorips.devtools.actions.EditModeActionSet"/>
          <actionSet id="org.faktorips.devtools.actions.StandardActionSet"/>
          <actionSet
                id="org.faktorips.devtools.actions.ModelingActionSet">
@@ -298,6 +299,7 @@
                showTitle="true"
                standalone="false"
                visible="true"/>
+         <actionSet id="org.faktorips.devtools.actions.EditModeActionSet"/>
          <actionSet id="org.faktorips.devtools.actions.StandardActionSet"/>
          <actionSet id="org.faktorips.devtools.actions.ProductDefinitionActionSet"/>
          <view
