@@ -29,20 +29,6 @@
       </perspective>
    </extension>
 
-   <extension
-         point="org.eclipse.ui.actionSetPartAssociations">
-      <actionSetPartAssociation
-            targetID="org.faktorips.devtools.actions.EditModeActionSet">
-         <part id="policyCmptTypeEditor" />
-         <part id="productCmptTypeEditor" />
-         <part id="productCmptEditor" />
-         <part id="tableStructureEditor" />
-         <part id="tableContentsEditor" />
-         <part id="testCaseEditor" />
-         <part id="testCaseTypeEditor" />
-      </actionSetPartAssociation>
-   </extension>
-
 <!--
 	Action sets
 -->
@@ -155,7 +141,7 @@
  	  <actionSet
             id="org.faktorips.devtools.actions.EditModeActionSet"   
             label="%org.faktorips.devtools.actions.EditModeActionSet"
-            visible="false">
+            visible="true">
          <action
                style="toggle"
 			   retarget="true"
