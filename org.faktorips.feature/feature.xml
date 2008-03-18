@@ -160,7 +160,7 @@ Es gilt das Recht der Bundesrepublik Deutschland.
       <import plugin="org.junit"/>
       <import plugin="org.eclipse.emf.codegen"/>
    </requires>
-
+   <includes id="org.faktorips.feature.source" version="0.0.0"/>
    <plugin
          id="org.faktorips.dtflcommon"
          download-size="0"
