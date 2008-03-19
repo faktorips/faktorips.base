@@ -293,8 +293,8 @@ public class MoveOperation implements IRunnableWithProgress {
      * {@inheritDoc}
      */
 	public void run(final IProgressMonitor monitor) throws InvocationTargetException, InterruptedException {
-//	    Runnable run = new Runnable(){
-//            public void run() {
+	    Runnable run = new Runnable(){
+            public void run() {
                 IProgressMonitor currMonitor = monitor;
                 if (currMonitor == null) {
                     currMonitor = new NullProgressMonitor();
@@ -331,10 +331,10 @@ public class MoveOperation implements IRunnableWithProgress {
                     }
                 }
                 currMonitor.done();
-//            }
-//        };
+            }
+        };
         
-//        BusyIndicator.showWhile(getDisplay(), run);
+        BusyIndicator.showWhile(getDisplay(), run);
 	}
 	
     private void moveNoneIpsElement(File file, String targetName) {
