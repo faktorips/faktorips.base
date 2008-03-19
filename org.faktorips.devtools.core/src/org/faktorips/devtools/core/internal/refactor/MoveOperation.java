@@ -300,7 +300,8 @@ public class MoveOperation implements IRunnableWithProgress {
                     currMonitor = new NullProgressMonitor();
                 }
 
-                currMonitor.beginTask("Move", MoveOperation.this.sourceObjects.length);
+                currMonitor.beginTask("", MoveOperation.this.sourceObjects.length); //$NON-NLS-1$
+                currMonitor.subTask("Move"); //$NON-NLS-1$
                 for (int i = 0; i < MoveOperation.this.sourceObjects.length; i++) {
                     try {
                         currMonitor.internalWorked(1);
@@ -368,7 +369,7 @@ public class MoveOperation implements IRunnableWithProgress {
                 if (targetProject == null) {
                     targetProject = targetRoot.getIpsProject().getProject();
                 }
-                String folderName = "";
+                String folderName = ""; //$NON-NLS-1$
                 if (targetName.startsWith(targetProject.getLocation().toOSString())) {
                     folderName = targetName.substring(targetProject.getLocation().toOSString().length());
                 } else {
@@ -836,12 +837,12 @@ public class MoveOperation implements IRunnableWithProgress {
                 }
             } else if (source[i] instanceof IFile) {
                 if (!((IFile)source[i]).exists()) {
-                    String msg = NLS.bind("Die Quelldatei {0} existiert nicht.", ((IFile)source[i]).getLocation().toOSString());
+                    String msg = NLS.bind(Messages.MoveOperation_errorMessageSourceNotExists, ((IFile)source[i]).getLocation().toOSString());
                     return new IpsStatus(msg);
                 }
             } else if (source[i] instanceof String) {
                 if (!(new File((String)source[i]).exists())) {
-                    String msg = NLS.bind("Die Quelldatei {0} existiert nicht.", (String)source[i]);
+                    String msg = NLS.bind(Messages.MoveOperation_errorMessageSourceNotExists, (String)source[i]);
                     return new IpsStatus(msg);
                 }
             } else {

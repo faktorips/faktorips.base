@@ -34,7 +34,9 @@ public class Messages extends NLS {
 		NLS.initializeMessages(BUNDLE_NAME, Messages.class);
 	}
 
-	public static String MoveOperation_msgErrorProductCmptIsMissing;
+	public static String MoveOperation_errorMessageSourceNotExists;
+
+    public static String MoveOperation_msgErrorProductCmptIsMissing;
 
     public static String MoveOperation_msgErrorTheTargetIsIncludedInTheSource;
 
