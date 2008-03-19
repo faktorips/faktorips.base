@@ -84,6 +84,8 @@ public class MoveOperation implements IRunnableWithProgress {
 
     private IProject targetProject;
 	
+    private Shell shell;
+    
 	/**
 	 * Creates a new operation to move or rename the given product. After the run-method has returned,
 	 * all references of other products to the moved/renamed one are updated to refer to the new name.
@@ -160,6 +162,13 @@ public class MoveOperation implements IRunnableWithProgress {
         checkTargets(sources, targetNames);
     }
     
+    /**
+     * @param shell The shell to set.
+     */
+    public void setShell(Shell shell) {
+        this.shell = shell;
+    }
+
     /*
 	 * Creates the new qualified names for the moved objects.
 	 *  
@@ -300,8 +309,7 @@ public class MoveOperation implements IRunnableWithProgress {
                     currMonitor = new NullProgressMonitor();
                 }
 
-                currMonitor.beginTask("", MoveOperation.this.sourceObjects.length); //$NON-NLS-1$
-                currMonitor.subTask("Move"); //$NON-NLS-1$
+                currMonitor.beginTask("Move", MoveOperation.this.sourceObjects.length); //$NON-NLS-1$
                 for (int i = 0; i < MoveOperation.this.sourceObjects.length; i++) {
                     try {
                         currMonitor.internalWorked(1);
@@ -353,7 +361,7 @@ public class MoveOperation implements IRunnableWithProgress {
 
             private void copyNoneIpsElement(String fileName, String targetName) {
                 IContainer targetFolder = getTargetContainer(targetName);
-                CopyFilesAndFoldersOperation operation = new CopyFilesAndFoldersOperation(Display.getCurrent()
+                CopyFilesAndFoldersOperation operation = new CopyFilesAndFoldersOperation(getDisplay()
                         .getActiveShell());
                 operation.copyFiles(new String[] { fileName }, targetFolder);
             }
@@ -386,7 +394,7 @@ public class MoveOperation implements IRunnableWithProgress {
             }
         };
         
-        BusyIndicator.showWhile(Display.getCurrent(), run);
+        BusyIndicator.showWhile(getDisplay(), run);
 	}
 	
 	private void movePackageFragement(IIpsPackageFragment pack, String newName, IProgressMonitor monitor) throws CoreException {
@@ -917,4 +925,7 @@ public class MoveOperation implements IRunnableWithProgress {
 		return product.getQualifiedName() + "." + product.getIpsObjectType().getFileExtension(); //$NON-NLS-1$
 	}
 	
+    private Display getDisplay(){
+        return shell == null ? Display.getCurrent() : shell.getDisplay();
+    }
 }
