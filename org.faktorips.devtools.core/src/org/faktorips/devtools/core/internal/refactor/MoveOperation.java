@@ -300,10 +300,10 @@ public class MoveOperation implements IRunnableWithProgress {
                     currMonitor = new NullProgressMonitor();
                 }
 
-                monitor.beginTask("Move", MoveOperation.this.sourceObjects.length);
+                currMonitor.beginTask("Move", MoveOperation.this.sourceObjects.length);
                 for (int i = 0; i < MoveOperation.this.sourceObjects.length; i++) {
                     try {
-                        monitor.internalWorked(1);
+                        currMonitor.internalWorked(1);
                         
                         Object toMove = null;
                         if (sourceObjects[i] instanceof IIpsSrcFile) {
@@ -313,14 +313,14 @@ public class MoveOperation implements IRunnableWithProgress {
                         }
                         
                         if (toMove instanceof IProductCmpt) {
-                            moveProductCmpt((IProductCmpt)toMove, MoveOperation.this.targetNames[i], monitor);
+                            moveProductCmpt((IProductCmpt)toMove, MoveOperation.this.targetNames[i], currMonitor);
                         } else if (toMove instanceof IIpsPackageFragment) {
                             movePackageFragement((IIpsPackageFragment)toMove, MoveOperation.this.targetNames[i],
-                                    monitor);
+                                    currMonitor);
                         } else if (toMove instanceof ITableContents) {
-                            moveTableContent((ITableContents)toMove, MoveOperation.this.targetNames[i], monitor);
+                            moveTableContent((ITableContents)toMove, MoveOperation.this.targetNames[i], currMonitor);
                         } else if (toMove instanceof ITestCase) {
-                            moveTestCase((ITestCase)toMove, MoveOperation.this.targetNames[i], monitor);
+                            moveTestCase((ITestCase)toMove, MoveOperation.this.targetNames[i], currMonitor);
                         } else if (toMove instanceof IFile) {
                             moveNoneIpsElement((IFile)sourceObjects[i], targetNames[i]);
                         } else if (toMove instanceof File) {
@@ -330,7 +330,7 @@ public class MoveOperation implements IRunnableWithProgress {
                         IpsPlugin.logAndShowErrorDialog(e);
                     }
                 }
-                monitor.done();
+                currMonitor.done();
             }
 
             private void moveNoneIpsElement(File file, String targetName) {
