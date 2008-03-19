@@ -70,6 +70,18 @@ public class ChangesOverTimeNamingConventionTest extends TestCase {
 		assertNotNull(pm.getGenerationConceptNamePlural(Locale.GERMAN));
 	}
 
+    public void testGetGenerationConceptNameInsideSentence(){
+        assertNotNull(vaa.getGenerationConceptNamePlural(true));
+        assertNotNull(vaa.getGenerationConceptNamePlural(true));
+        assertNotNull(pm.getGenerationConceptNamePlural(true));
+        assertNotNull(pm.getGenerationConceptNamePlural(true));
+        
+        assertNotNull(vaa.getGenerationConceptNamePlural(false));
+        assertNotNull(vaa.getGenerationConceptNamePlural(false));
+        assertNotNull(pm.getGenerationConceptNamePlural(false));
+        assertNotNull(pm.getGenerationConceptNamePlural(false));
+    }
+    
 	/*
 	 * Test method for 'org.faktorips.devtools.core.internal.model.ChangesInTimeNamingConvention.getGenerationConceptNameAbbreviation(Locale)'
 	 */

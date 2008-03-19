@@ -118,9 +118,8 @@ public class ChangeWorkingDateAction implements IWorkbenchWindowActionDelegate {
             String labelText = NLS.bind(
                     Messages.ChangeWorkingDateAction_labelEditRecentGenerations,
                     IpsPlugin.getDefault().getIpsPreferences().getChangesOverTimeNamingConvention()
-                    .getGenerationConceptNamePlural());
+                    .getGenerationConceptNamePlural(true));
             Checkbox editRecentGenerationCheckBox = toolkit.createCheckbox(composite, labelText);
-
             WorkingDatePmo workingDatePmo = new WorkingDatePmo(this);
             bindingContext.bindContent(editRecentGenerationCheckBox, workingDatePmo,
                     WorkingDatePmo.CAN_EDIT_RECENT_GENERATION);
@@ -233,7 +232,7 @@ public class ChangeWorkingDateAction implements IWorkbenchWindowActionDelegate {
 	public void run(IAction action) {
 		IpsPreferences ipsPreferences = IpsPlugin.getDefault().getIpsPreferences();
         
-        generationConceptNamePlural = ipsPreferences.getChangesOverTimeNamingConvention().getGenerationConceptNamePlural();
+        generationConceptNamePlural = ipsPreferences.getChangesOverTimeNamingConvention().getGenerationConceptNamePlural(true);
         
         WorkingDateInputDialog dialog = new WorkingDateInputDialog(shell, Messages.ChangeWorkingDateAction_title, Messages.ChangeWorkingDateAction_description, ipsPreferences.getFormattedWorkingDate(), ipsPreferences.canEditRecentGeneration()); //$NON-NLS-1$ //$NON-NLS-1$
 

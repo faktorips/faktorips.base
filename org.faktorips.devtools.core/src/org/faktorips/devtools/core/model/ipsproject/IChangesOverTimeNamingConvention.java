@@ -98,6 +98,14 @@ public interface IChangesOverTimeNamingConvention {
 	 */
 	public String getGenerationConceptNameSingular();
 
+    /**
+     * Returns the name for the generation concept in singular. The locale used
+     * is the one returned from IpsPlugin.getUsedLanguagePackLocale().
+     * 
+     * @param usageInsideSentence <code>true</code> if the name will be used inside a sentence
+     */
+    public String getGenerationConceptNameSingular(boolean usageInsideSentence);
+    
 	/**
 	 * Returns the name for the generation concept in plural.
 	 * 
@@ -113,6 +121,14 @@ public interface IChangesOverTimeNamingConvention {
 	 */
 	public String getGenerationConceptNamePlural();
 
+    /**
+     * Returns the name for the generation concept in plural. The locale used is
+     * the one returned from IpsPlugin.getUsedLanguagePackLocale().
+     *
+     * @param usageInsideSentence <code>true</code> if the name will be used inside a sentence
+     */
+    public String getGenerationConceptNamePlural(boolean usageInsideSentence);
+    
 	/**
 	 * Returns the abbreviation for the generation concept (singular).
 	 * 

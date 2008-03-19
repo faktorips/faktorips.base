@@ -339,6 +339,8 @@ public class ProductCmptEditor extends TimedIpsObjectEditor implements IModelDes
 	}
 
 	private void handleWorkingDateMissmatch() {
+        IpsPreferences prefs = IpsPlugin.getDefault().getIpsPreferences();
+        
         // following if statement is there as closing the dialog triggers a window activated event
         // and handling the evant calls this method.
         if (isHandlingWorkingDateMismatch) {
@@ -347,13 +349,8 @@ public class ProductCmptEditor extends TimedIpsObjectEditor implements IModelDes
         isHandlingWorkingDateMismatch = true;
 		IProductCmpt cmpt = getProductCmpt();
         
-        IpsPreferences prefs = IpsPlugin.getDefault().getIpsPreferences();
-        String generationConceptNameSingular = prefs.getChangesOverTimeNamingConvention()
-                .getGenerationConceptNameSingular();
-        String generationConceptNamePlural = prefs.getChangesOverTimeNamingConvention()
-                .getGenerationConceptNamePlural();
-        GenerationSelectionDialog dialog = new GenerationSelectionDialog(getContainer().getShell(), cmpt, prefs
-                .getFormattedWorkingDate(), prefs.getWorkingDate(), generationConceptNameSingular, generationConceptNamePlural, prefs.canEditRecentGeneration(), prefs.isWorkingModeEdit());
+        GenerationSelectionDialog dialog = new GenerationSelectionDialog(getContainer().getShell(), cmpt);
+        
         dialog.open(); // closing the dialog triggers an window activation event
         
         isHandlingWorkingDateMismatch = false;

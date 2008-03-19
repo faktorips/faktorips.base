@@ -33,12 +33,10 @@ import org.faktorips.util.StringUtil;
 public class ChangesOverTimeNamingConvention implements
 		IChangesOverTimeNamingConvention {
 
-	
 	private final static String pack = StringUtil.getPackageName(ChangesOverTimeNamingConvention.class.getName());
 	private final static String unqalifiedClassName = StringUtil.unqualifiedName(ChangesOverTimeNamingConvention.class.getName());
 	private final static String GENERATION_IMAGE_BASE = "Generation"; //$NON-NLS-1$
 	private final static String VERSION_IMAGE_BASE = "Version"; //$NON-NLS-1$
-
 	
 	private String id;
 	private LocalizedStringsSet locStringSet;
@@ -66,20 +64,6 @@ public class ChangesOverTimeNamingConvention implements
 	 */
 	public String getName(Locale locale) {
 		return locStringSet.getString("name", locale); //$NON-NLS-1$
-	}
-
-	/**
-	 * {@inheritDoc}
-	 */
-	public String getGenerationConceptNameSingular(Locale locale) {
-		return locStringSet.getString("generationConceptNameSingular", locale); //$NON-NLS-1$
-	}
-
-	/**
-	 * {@inheritDoc}
-	 */
-	public String getGenerationConceptNamePlural(Locale locale) {
-		return locStringSet.getString("generationConceptNamePlural", locale); //$NON-NLS-1$
 	}
 
 	/**
@@ -159,23 +143,61 @@ public class ChangesOverTimeNamingConvention implements
 		return getGenerationConceptNameAbbreviation(IpsPlugin.getDefault().getUsedLanguagePackLocale());
 	}
 
+    /**
+     * {@inheritDoc}
+     */
+    public String getGenerationConceptNameSingular(Locale locale) {
+        return getGenerationConceptNameSingular(locale, false);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public String getGenerationConceptNamePlural(Locale locale) {
+        return getGenerationConceptNamePlural(locale, false);
+    }
+    
 	/**
 	 * {@inheritDoc}
 	 */
 	public String getGenerationConceptNamePlural() {
-		return getGenerationConceptNamePlural(IpsPlugin.getDefault().getUsedLanguagePackLocale());
+		return getGenerationConceptNameSingular(IpsPlugin.getDefault().getUsedLanguagePackLocale(), false);
 	}
 
-	/**
+    /**
 	 * {@inheritDoc}
 	 */
 	public String getGenerationConceptNameSingular() {
-		return getGenerationConceptNameSingular(IpsPlugin.getDefault().getUsedLanguagePackLocale());
+		return getGenerationConceptNamePlural(IpsPlugin.getDefault().getUsedLanguagePackLocale(), false);
 	}
 
+    /**
+     * {@inheritDoc}
+     */
+    public String getGenerationConceptNamePlural(boolean usageInsideSentence) {
+        return getGenerationConceptNamePlural(IpsPlugin.getDefault().getUsedLanguagePackLocale(), usageInsideSentence);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public String getGenerationConceptNameSingular(boolean usageInsideSentence) {
+        return getGenerationConceptNameSingular(IpsPlugin.getDefault().getUsedLanguagePackLocale(), usageInsideSentence);
+    }
+
+    private String getGenerationConceptNamePlural(Locale usedLanguagePackLocale, boolean usageInsideSentence) {
+        return locStringSet.getString(!usageInsideSentence ? "generationConceptNamePlural"
+                : "generationConceptNamePluralInsideSentence", usedLanguagePackLocale);
+    }
+
+    private String getGenerationConceptNameSingular(Locale usedLanguagePackLocale, boolean usageInsideSentence) {
+        return locStringSet.getString(!usageInsideSentence ? "generationConceptNameSingular"
+                : "generationConceptNameSingularInsideSentence", usedLanguagePackLocale);
+    }
+    
 	/**
-	 * {@inheritDoc}
-	 */
+     * {@inheritDoc}
+     */
 	public String getName() {
 		return getName(IpsPlugin.getDefault().getUsedLanguagePackLocale());
 	}
@@ -208,7 +230,7 @@ public class ChangesOverTimeNamingConvention implements
 		return getVersionConceptNameSingular(IpsPlugin.getDefault().getUsedLanguagePackLocale());
 	}
 
-	/**
+    /**
 	 * Returns the image with the name build by the id given to this
 	 * class on construction, the given baseName
 	 * and locale as <code><id>_<basename>_<locale>.gif</code>. First, the 

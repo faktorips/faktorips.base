@@ -96,7 +96,7 @@ public class GenerationsSection extends SimpleIpsPartsSection{
             page.getProductCmptEditor().setActiveGeneration(generation, false);
             return;
         }
-		String genName = IpsPlugin.getDefault().getIpsPreferences().getChangesOverTimeNamingConvention().getGenerationConceptNameSingular();
+		String genName = IpsPlugin.getDefault().getIpsPreferences().getChangesOverTimeNamingConvention().getGenerationConceptNameSingular(true);
 		String title = NLS.bind(Messages.GenerationsSection_titleShowGeneration, genName);
 		Object[] args = new Object[3];
 		args[0] = genName;

@@ -45,6 +45,7 @@ import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Shell;
 import org.faktorips.devtools.core.IpsPlugin;
+import org.faktorips.devtools.core.IpsPreferences;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObjectGeneration;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmpt;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmptGeneration;
@@ -102,7 +103,9 @@ public class GenerationSelectionDialog extends TitleAreaDialog {
     private boolean editWorkingMode;
 
     private String generationConceptNameSingular;
+    private String generationConceptNameSingularInsideSentence;
     private String generationConceptNamePlural;
+    private String generationConceptNamePluralInsideSentence;
     
     public class WorkingDatePmo extends PresentationModelObject {
         public static final String CAN_EDIT_RECENT_GENERATION = "editRecentGeneration"; //$NON-NLS-1$
@@ -117,27 +120,62 @@ public class GenerationSelectionDialog extends TitleAreaDialog {
         }
     }
     
-	/**
-	 * @param parentShell
-	 * @param generationConceptNamePlural 
-	 */
-	public GenerationSelectionDialog(Shell parentShell, IProductCmpt cmpt, String formatedWorkingDate, GregorianCalendar workingDate,
-            String generationConceptNameSingular, String generationConceptNamePlural, boolean canEditRecentGenerations, boolean editWorkingMode) {
+    public GenerationSelectionDialog(Shell parentShell, IProductCmpt cmpt, String formatedWorkingDate,
+            GregorianCalendar workingDate, String generationConceptNameSingular,
+            String generationConceptNameSingularInsideSentence, String generationConceptNamePlural,
+            String generationConceptNamePluralInsideSentence, boolean canEditRecentGenerations, boolean editWorkingMode) {
         super(parentShell);
-        this.cmpt = cmpt;
 
+        init(cmpt, formatedWorkingDate, workingDate, generationConceptNameSingular,
+                generationConceptNameSingularInsideSentence, generationConceptNamePlural,
+                generationConceptNamePluralInsideSentence, canEditRecentGenerations, editWorkingMode);
+    }
+
+	public GenerationSelectionDialog(Shell parentShell, IProductCmpt cmpt) {
+        super(parentShell);
+        
+        IpsPreferences prefs = IpsPlugin.getDefault().getIpsPreferences();
+        String generationConceptNameSingular = prefs.getChangesOverTimeNamingConvention()
+                .getGenerationConceptNameSingular();
+        String generationConceptNameSingularInsideSentence = prefs.getChangesOverTimeNamingConvention()
+                .getGenerationConceptNameSingular(true);
+        String generationConceptNamePlural = prefs.getChangesOverTimeNamingConvention()
+                .getGenerationConceptNamePlural();
+        String generationConceptNamePluralInsideSentence = prefs.getChangesOverTimeNamingConvention()
+                .getGenerationConceptNamePlural(true);
+
+        String formatedWorkingDate = prefs.getFormattedWorkingDate();
+        GregorianCalendar workingDate = prefs.getWorkingDate();
+        boolean canEditRecentGenerations = prefs.canEditRecentGeneration();
+        boolean editWorkingMode = prefs.isWorkingModeEdit();
+
+        init(cmpt, formatedWorkingDate, workingDate, generationConceptNameSingular,
+                generationConceptNameSingularInsideSentence, generationConceptNamePlural,
+                generationConceptNamePluralInsideSentence, canEditRecentGenerations, editWorkingMode);
+    }
+
+    public void init(IProductCmpt cmpt, String formatedWorkingDate,
+            GregorianCalendar workingDate,
+            String generationConceptNameSingular,
+            String generationConceptNameSingularInsideSentence,
+            String generationConceptNamePlural,
+            String generationConceptNamePluralInsideSentence,
+            boolean canEditRecentGenerations,
+            boolean editWorkingMode) {
+        this.cmpt = cmpt;
         this.formatedWorkingDate = formatedWorkingDate;
         this.workingDate = workingDate;
         this.generationConceptNameSingular = generationConceptNameSingular;
         this.generationConceptNamePlural = generationConceptNamePlural;
+        this.generationConceptNameSingularInsideSentence = generationConceptNameSingularInsideSentence;
+        this.generationConceptNamePluralInsideSentence = generationConceptNamePluralInsideSentence;
         this.canEditRecentGenerations = canEditRecentGenerations;
         this.editWorkingMode = editWorkingMode;
-
-        setShellStyle(getShellStyle() | SWT.RESIZE);
         
-        setHelpAvailable(false);
+        setShellStyle(getShellStyle() | SWT.RESIZE);
+        setHelpAvailable(false);        
     }
-
+    
 	/**
 	 * {@inheritDoc}
 	 */
@@ -157,7 +195,7 @@ public class GenerationSelectionDialog extends TitleAreaDialog {
         Composite selectPane = new Composite(workArea, SWT.None);
         selectPane.setLayout(new GridLayout(3, false));
 
-        Label label = toolkit.createLabel(selectPane, NLS.bind(Messages.GenerationSelectionDialog_description, formatedWorkingDate, generationConceptNameSingular));
+        Label label = toolkit.createLabel(selectPane, NLS.bind(Messages.GenerationSelectionDialog_description, formatedWorkingDate, generationConceptNameSingularInsideSentence));
         GridData gd = (GridData)label.getLayoutData();
         gd.horizontalSpan = 3;
         
@@ -202,8 +240,7 @@ public class GenerationSelectionDialog extends TitleAreaDialog {
         
         String labelText = NLS.bind(
                 Messages.GenerationSelectionDialog_checkboxCanEditRecentGenerations,
-                IpsPlugin.getDefault().getIpsPreferences().getChangesOverTimeNamingConvention()
-                .getGenerationConceptNamePlural());
+                generationConceptNamePluralInsideSentence);
         Checkbox checkbox = toolkit.createCheckbox(composite, labelText);    
         
         bindingContext.bindContent(checkbox, new WorkingDatePmo(), WorkingDatePmo.CAN_EDIT_RECENT_GENERATION);
@@ -290,7 +327,7 @@ public class GenerationSelectionDialog extends TitleAreaDialog {
         choices.put(browseButton, new Integer(CHOICE_BROWSE));
         
         Label l2 = new Label(selectPane, SWT.NONE);
-        l2.setText(NLS.bind(Messages.GenerationSelectionDialog_labelShowReadOnlyGeneration, generationConceptNameSingular));
+        l2.setText(NLS.bind(Messages.GenerationSelectionDialog_labelShowReadOnlyGeneration, generationConceptNameSingularInsideSentence));
         l2.addMouseListener(new ActivateButtonOnClickListener(browseButton));
 
         createGenerationsDropDown(selectPane, browseButton, relevantGenerations, true);
@@ -311,7 +348,7 @@ public class GenerationSelectionDialog extends TitleAreaDialog {
         allButtons.put(new Integer(CHOICE_CREATE), createButton);
         choices.put(createButton, new Integer(CHOICE_CREATE));
         Label l1 = new Label(selectPane, SWT.NONE);
-        l1.setText(NLS.bind(Messages.GenerationSelectionDialog_labelCreate, generationConceptNameSingular, formatedWorkingDate));
+        l1.setText(NLS.bind(Messages.GenerationSelectionDialog_labelCreate, generationConceptNameSingularInsideSentence, formatedWorkingDate));
         
         // if control is enabled add mouse listener
         l1.addMouseListener(new ActivateButtonOnClickListener(createButton));
