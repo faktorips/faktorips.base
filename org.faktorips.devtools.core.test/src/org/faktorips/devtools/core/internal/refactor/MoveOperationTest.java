@@ -26,8 +26,6 @@ import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.CoreException;
-import org.eclipse.swt.widgets.Display;
-import org.eclipse.swt.widgets.Shell;
 import org.faktorips.devtools.core.AbstractIpsPluginTest;
 import org.faktorips.devtools.core.model.IIpsElement;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObjectGeneration;
@@ -62,7 +60,6 @@ public class MoveOperationTest extends AbstractIpsPluginTest {
     private IProductCmpt productB;
     private IProductCmptGeneration productBGen;  
     private IProductCmpt coverage;
-    private Shell shell;
     
 	/**
 	 * {@inheritDoc}
@@ -92,8 +89,6 @@ public class MoveOperationTest extends AbstractIpsPluginTest {
         
         IProductCmptGeneration[] refs = ipsProject.findReferencingProductCmptGenerations(coverage.getQualifiedNameType());
         assertEquals(2, refs.length);
-        
-        shell = new Shell(Display.getCurrent());
     }
    
     /**
@@ -111,7 +106,6 @@ public class MoveOperationTest extends AbstractIpsPluginTest {
         IProductCmptGeneration[] sourceRefs = ipsProject.findReferencingProductCmptGenerations(coverage.getQualifiedNameType());
         
         MoveOperation move = new MoveOperation(coverage, coverage.getIpsPackageFragment().getName() + "." + "Moved" + coverage.getName());
-        move.setShell(shell);
         move.run(null);
         
         assertTrue(target.exists());
@@ -138,7 +132,6 @@ public class MoveOperationTest extends AbstractIpsPluginTest {
         IProductCmptGeneration[] sourceRefs = coverage.getIpsProject().findReferencingProductCmptGenerations(coverage.getQualifiedNameType());
         
         MoveOperation move = new MoveOperation(new IIpsElement[] {sourcePackage}, new String[] {"renamed"});
-        move.setShell(shell);
         move.run(null);
         
         assertTrue(target.exists());
@@ -174,7 +167,6 @@ public class MoveOperationTest extends AbstractIpsPluginTest {
         IProductCmptGeneration[] sourceRefs = ipsProject.findReferencingProductCmptGenerations(coverage.getQualifiedNameType());
         
         MoveOperation move = new MoveOperation(coverage, targetName);
-        move.setShell(shell);
         move.run(null);
         
         // assert that the runtime id hasn't changed
@@ -207,7 +199,6 @@ public class MoveOperationTest extends AbstractIpsPluginTest {
         testCase.getIpsSrcFile().save(true, null);
         
         MoveOperation move = new MoveOperation(coverage, targetName);
-        move.setShell(shell);
         move.run(null);
         
         // assert move
@@ -243,7 +234,6 @@ public class MoveOperationTest extends AbstractIpsPluginTest {
         }
         
         MoveOperation move = new MoveOperation(new IIpsElement[] {file.getIpsObject()}, new String[] {"table"});
-        move.setShell(shell);
         move.run(null);
         IIpsSrcFile target = coverage.getIpsPackageFragment().getRoot().getDefaultIpsPackageFragment().getIpsSrcFile(IpsObjectType.TABLE_CONTENTS.getFileName("table"));
 
@@ -279,7 +269,6 @@ public class MoveOperationTest extends AbstractIpsPluginTest {
         IProductCmptGeneration[] sourceRefs = coverage.getIpsProject().findReferencingProductCmptGenerations(coverage.getQualifiedNameType());
         
         MoveOperation move = new MoveOperation(new IIpsElement[] {sourcePackage}, target);
-        move.setShell(shell);
         move.run(null);
         
         assertTrue(target.exists());
@@ -316,7 +305,6 @@ public class MoveOperationTest extends AbstractIpsPluginTest {
         
         // test move valid types again
         MoveOperation move = new MoveOperation(new IIpsElement[] { sourcePackage }, target);
-        move.setShell(shell);
         move.run(null);
         assertTrue(target.exists());
         assertFalse(sourcePackage.exists()); 
@@ -327,7 +315,6 @@ public class MoveOperationTest extends AbstractIpsPluginTest {
         boolean exceptionThrown = false;
         try {
             MoveOperation move = new MoveOperation(new IIpsElement[] { sourcePackage }, target);
-            move.setShell(shell);
             move.run(null);
         }
         catch (CoreException e) {
@@ -351,7 +338,6 @@ public class MoveOperationTest extends AbstractIpsPluginTest {
         IProductCmptGeneration[] sourceRefs = ipsProject.findReferencingProductCmptGenerations(coverage.getQualifiedNameType());
         
         MoveOperation move = new MoveOperation(new IIpsElement[] {sourcePackage}, target);
-        move.setShell(shell);
         move.run(null);
         
         assertTrue(target.exists());
@@ -375,7 +361,6 @@ public class MoveOperationTest extends AbstractIpsPluginTest {
     	assertTrue(file.exists());
     	
    		MoveOperation move = new MoveOperation(new IIpsElement[] {file.getIpsObject()}, new String[] {"table"});
-        move.setShell(shell);
         move.run(null);
    		
    		IIpsSrcFile target = coverage.getIpsPackageFragment().getRoot().getDefaultIpsPackageFragment().getIpsSrcFile(IpsObjectType.TABLE_CONTENTS.getFileName("table"));
@@ -388,7 +373,6 @@ public class MoveOperationTest extends AbstractIpsPluginTest {
     	assertTrue(file.exists());
     	
    		MoveOperation move = new MoveOperation(new IIpsElement[] {file.getIpsObject()}, new String[] {"products.newTable"});
-        move.setShell(shell);
         move.run(null);
    		
    		IIpsSrcFile target = ipsRoot.getIpsPackageFragment("products").getIpsSrcFile("newTable", IpsObjectType.TABLE_CONTENTS);
@@ -402,7 +386,6 @@ public class MoveOperationTest extends AbstractIpsPluginTest {
         assertTrue(file.exists());
         
         MoveOperation move = new MoveOperation(new IIpsElement[] {file.getIpsObject()}, new String[] {"testCase"});
-        move.setShell(shell);
         move.run(null);
         
         IIpsSrcFile target = ipsRoot.getDefaultIpsPackageFragment().getIpsSrcFile(IpsObjectType.TEST_CASE.getFileName("testCase"));
@@ -416,7 +399,6 @@ public class MoveOperationTest extends AbstractIpsPluginTest {
         assertTrue(file.exists());
         
         MoveOperation move = new MoveOperation(new IIpsElement[] {file.getIpsObject()}, new String[] {"products.newTestCase"});
-        move.setShell(shell);
         move.run(null);
         
         IIpsSrcFile target = ipsRoot.getIpsPackageFragment("products").getIpsSrcFile("newTestCase", IpsObjectType.TEST_CASE);
@@ -438,7 +420,6 @@ public class MoveOperationTest extends AbstractIpsPluginTest {
         int count = pack.getParentIpsPackageFragment().getChildIpsPackageFragments().length;
         
     	MoveOperation move = new MoveOperation(new IIpsElement[] {pack}, new String[] {"test.renamedPackage"});
-        move.setShell(shell);
         move.run(null);
     	
     	assertFalse(pack.exists());
@@ -458,7 +439,6 @@ public class MoveOperationTest extends AbstractIpsPluginTest {
         assertTrue(pack.exists());
         
         MoveOperation move = new MoveOperation(new IIpsElement[] {pack}, new String[] {"empty2"});
-        move.setShell(shell);
         move.run(null);
         
         assertFalse(pack.exists());
@@ -479,7 +459,6 @@ public class MoveOperationTest extends AbstractIpsPluginTest {
         super.newIpsObject(ipsRoot, IpsObjectType.TABLE_CONTENTS, "level1.level2_1.TableContent");
         
         MoveOperation move = new MoveOperation(new IIpsElement[] {level1}, new String[] {"levela"});
-        move.setShell(shell);
         move.run(null);
         
         assertFalse(level1.exists());
@@ -489,7 +468,6 @@ public class MoveOperationTest extends AbstractIpsPluginTest {
 
         try {
             move = new MoveOperation(new IIpsElement[] {ipsRoot.getIpsPackageFragment("levela")}, new String[] {"levelb"});
-            move.setShell(shell);
             move.run(null);
             fail();
         } catch (CoreException ce) {
@@ -504,7 +482,6 @@ public class MoveOperationTest extends AbstractIpsPluginTest {
         ipsRoot.createPackageFragment("source.empty", true, null);
         
         MoveOperation move = new MoveOperation(new IIpsElement[] {source}, target);
-        move.setShell(shell);
         move.run(null);
         
         assertFalse(source.exists());
@@ -521,7 +498,6 @@ public class MoveOperationTest extends AbstractIpsPluginTest {
         ipsRoot.createPackageFragment("parent.source.empty", true, null);
         
         MoveOperation move = new MoveOperation(new IIpsElement[] {source}, target);
-        move.setShell(shell);
         move.run(null);
         
         assertFalse(source.exists());
@@ -545,7 +521,6 @@ public class MoveOperationTest extends AbstractIpsPluginTest {
         
         // now move the source object into the target root default frgmt
         MoveOperation move = new MoveOperation(new IIpsElement[] {file.getIpsObject()}, targetRoot.getDefaultIpsPackageFragment());
-        move.setShell(shell);
         move.run(null);
         
         target = sourcePackageFrgmt.getRoot().getIpsPackageFragment(sourcePackageFrgmtName).getIpsSrcFile(IpsObjectType.TEST_CASE.getFileName("testCase"));
@@ -578,7 +553,6 @@ public class MoveOperationTest extends AbstractIpsPluginTest {
         MoveOperation operation = new MoveOperation(folderTarget.getProject(), new Object[] {
                 file1, file2}, folderTarget.getLocation()
                 .toOSString());
-        operation.setShell(shell);
         operation.run(null);
       
         assertTrue(folderTarget.getFile("file1").exists());
@@ -591,7 +565,6 @@ public class MoveOperationTest extends AbstractIpsPluginTest {
         assertTrue(source01 == null);
         IFile source1 = folderTarget.getFile("file1");
         operation = new MoveOperation(new Object[] {source1}, targetIpsPackageFragment);
-        operation.setShell(shell);
         operation.run(null);
         source01 = ((IContainer)targetIpsPackageFragment.getEnclosingResource()).findMember("file1");
         assertTrue(source01.exists());
@@ -599,7 +572,6 @@ public class MoveOperationTest extends AbstractIpsPluginTest {
         // test move to project
         operation = new MoveOperation(ipsProject.getProject(), new Object[] { source01 }, ipsProject.getProject()
                 .getLocation().toOSString());
-        operation.setShell(shell);
         operation.run(null);
         assertTrue(((IContainer)targetIpsPackageFragment.getEnclosingResource()).findMember("file1") == null);        
         assertTrue(ipsProject.getProject().findMember("file1").exists());        
@@ -625,7 +597,6 @@ public class MoveOperationTest extends AbstractIpsPluginTest {
         MoveOperation operation = new MoveOperation(folderTarget.getProject(), new Object[] {
                 file1.getLocation().toOSString(), file2.getLocation().toOSString() }, folderTarget.getLocation()
                 .toOSString());
-        operation.setShell(shell);
         operation.run(null);
       
         assertTrue(folderTarget.getFile("file1").exists());

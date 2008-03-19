@@ -84,8 +84,6 @@ public class MoveOperation implements IRunnableWithProgress {
 
     private IProject targetProject;
 	
-    private Shell shell;
-    
 	/**
 	 * Creates a new operation to move or rename the given product. After the run-method has returned,
 	 * all references of other products to the moved/renamed one are updated to refer to the new name.
@@ -162,13 +160,6 @@ public class MoveOperation implements IRunnableWithProgress {
         checkTargets(sources, targetNames);
     }
     
-    /**
-     * @param shell The shell to set.
-     */
-    public void setShell(Shell shell) {
-        this.shell = shell;
-    }
-
     /*
 	 * Creates the new qualified names for the moved objects.
 	 *  
@@ -361,8 +352,7 @@ public class MoveOperation implements IRunnableWithProgress {
 
             private void copyNoneIpsElement(String fileName, String targetName) {
                 IContainer targetFolder = getTargetContainer(targetName);
-                CopyFilesAndFoldersOperation operation = new CopyFilesAndFoldersOperation(getDisplay()
-                        .getActiveShell());
+                CopyFilesAndFoldersOperation operation = new CopyFilesAndFoldersOperation(getShell());
                 operation.copyFiles(new String[] { fileName }, targetFolder);
             }
 
@@ -924,8 +914,18 @@ public class MoveOperation implements IRunnableWithProgress {
 	public static String getQualifiedSourceName(IIpsObject product) {
 		return product.getQualifiedName() + "." + product.getIpsObjectType().getFileExtension(); //$NON-NLS-1$
 	}
-	
+    
+    private Shell getShell() {
+        Display display = getDisplay();
+        if (display != null){
+            return display.getActiveShell();
+        } else {
+            return new Shell((Display)null);
+        }
+        
+    }
+    
     private Display getDisplay(){
-        return shell == null ? Display.getCurrent() : shell.getDisplay();
+        return Display.getCurrent();
     }
 }
