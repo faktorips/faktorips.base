@@ -145,6 +145,10 @@ Es gilt das Recht der Bundesrepublik Deutschland.
       <update label="Faktor-IPS" url="http://update.faktorzehn.org/faktorips/"/>
    </url>
 
+   <includes
+         id="org.faktorips.feature.source"
+         version="0.0.0"/>
+
    <requires>
       <import plugin="org.eclipse.ui"/>
       <import plugin="org.eclipse.core.runtime"/>
@@ -160,45 +164,45 @@ Es gilt das Recht der Bundesrepublik Deutschland.
       <import plugin="org.junit"/>
       <import plugin="org.eclipse.emf.codegen"/>
    </requires>
-   <includes id="org.faktorips.feature.source" version="0.0.0"/>
+
    <plugin
          id="org.faktorips.dtflcommon"
          download-size="0"
          install-size="0"
-         version="2.0.0.rfinal"
+         version="2.0.1"
          unpack="false"/>
 
    <plugin
          id="org.faktorips.fl"
          download-size="0"
          install-size="0"
-         version="2.0.0.rfinal"
+         version="2.0.1"
          unpack="false"/>
 
    <plugin
          id="org.faktorips.runtime"
          download-size="0"
          install-size="0"
-         version="2.0.0.rfinal"/>
+         version="2.0.1"/>
 
    <plugin
          id="org.faktorips.util"
          download-size="0"
          install-size="0"
-         version="2.0.0.rfinal"
+         version="2.0.1"
          unpack="false"/>
 
    <plugin
          id="org.faktorips.valuetypes"
          download-size="0"
          install-size="0"
-         version="2.0.0.rfinal"/>
+         version="2.0.1"/>
 
    <plugin
          id="org.faktorips.devtools.ant"
          download-size="0"
          install-size="0"
-         version="2.0.0.rfinal"
+         version="2.0.1"
          unpack="false"/>
 
    <plugin
