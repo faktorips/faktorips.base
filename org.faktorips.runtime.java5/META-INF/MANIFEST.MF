@@ -1,0 +1,8 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: FaktorIPS-Runtime-Wrapper for Java5
+Bundle-SymbolicName: org.faktorips.runtime.java5
+Bundle-Version: 0.0.1
+Bundle-Vendor: FaktorZehn
+Require-Bundle: org.faktorips.runtime;visibility:=reexport
+Export-Package: org.faktorips.runtime.internal.java5
