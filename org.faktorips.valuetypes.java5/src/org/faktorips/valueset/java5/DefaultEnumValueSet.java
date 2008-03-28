@@ -9,6 +9,7 @@
  * http://www.faktorzehn.org/f10-org:lizenzen:community eingesehen werden kann.
  * 
  * Mitwirkende: Faktor Zehn GmbH - initial API and implementation - http://www.faktorzehn.de
+ * 
  **************************************************************************************************/
 package org.faktorips.valueset.java5;
 
