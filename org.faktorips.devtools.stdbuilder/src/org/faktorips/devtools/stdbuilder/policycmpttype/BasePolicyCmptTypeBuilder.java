@@ -9,12 +9,21 @@
 
 package org.faktorips.devtools.stdbuilder.policycmpttype;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.MultiStatus;
 import org.faktorips.codegen.DatatypeHelper;
 import org.faktorips.codegen.JavaCodeFragmentBuilder;
 import org.faktorips.devtools.core.builder.AbstractPcTypeBuilder;
+import org.faktorips.devtools.core.builder.DefaultJavaGeneratorForIpsPart;
+import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPartContainer;
+import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.core.model.ipsproject.IIpsArtefactBuilderSet;
-import org.faktorips.devtools.core.model.pctype.AttributeType;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAssociation;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAttribute;
@@ -28,15 +37,59 @@ import org.faktorips.util.message.MessageList;
  */
 public abstract class BasePolicyCmptTypeBuilder extends AbstractPcTypeBuilder {
 
+    private Map generatorsByPart = new HashMap();
+    private List genAttributes = new ArrayList();
+
     private boolean generateChangeListenerSupport;
     
     public BasePolicyCmptTypeBuilder(IIpsArtefactBuilderSet builderSet, 
                                      String kindId, 
                                      LocalizedStringsSet stringsSet, 
-                                     boolean generateChangeListenerSupport) {
+                                     boolean generateChangeListenerSupport) throws CoreException {
         super(builderSet, kindId, stringsSet);
         this.generateChangeListenerSupport = generateChangeListenerSupport;
     }
+    
+    
+    /**
+     * {@inheritDoc}
+     */
+    public void beforeBuild(IIpsSrcFile ipsSrcFile, MultiStatus status) throws CoreException {
+        super.beforeBuild(ipsSrcFile, status);
+        initPartGenerators();
+    }
+
+    private void initPartGenerators() throws CoreException {
+        genAttributes.clear();
+        generatorsByPart.clear();
+        LocalizedStringsSet attrStringsSet = new LocalizedStringsSet(GenAttribute.class);
+        IPolicyCmptType type = getPcType();
+        IPolicyCmptTypeAttribute[] attrs = type.getPolicyCmptTypeAttributes();
+        for (int i = 0; i < attrs.length; i++) {
+            if (attrs[i].isValid()) {
+                GenAttribute generator = createGenerator(attrs[i], attrStringsSet);
+                if (generator!=null) {
+                    genAttributes.add(generator);
+                    generatorsByPart.put(attrs[i], generator);
+                }
+            }
+        }
+    }
+    
+    protected abstract GenAttribute createGenerator(IPolicyCmptTypeAttribute a, LocalizedStringsSet localizedStringsSet) throws CoreException;
+    
+    protected Iterator getGenAttributes() {
+        return genAttributes.iterator();
+    }
+    
+    protected DefaultJavaGeneratorForIpsPart getGenerator(IIpsObjectPartContainer part) {
+        return (DefaultJavaGeneratorForIpsPart)generatorsByPart.get(part);
+    }
+    
+    protected GenAttribute getGenerator(IPolicyCmptTypeAttribute a) {
+        return (GenAttribute)generatorsByPart.get(a);
+    }
+    
 
     public boolean isGenerateChangeListenerSupport() {
         return generateChangeListenerSupport;
@@ -64,46 +117,11 @@ public abstract class BasePolicyCmptTypeBuilder extends AbstractPcTypeBuilder {
         if (attribute.isProductRelevant() && getProductCmptType() == null) {
             return;
         }
-        AttributeType type = attribute.getAttributeType();
-        if (type == AttributeType.CHANGEABLE) {
-            if (attribute.isOverwrite()) {
-                return;
-            }
-            generateCodeForChangeableAttribute(attribute, datatypeHelper, memberVarsBuilder, methodsBuilder);
-        } else if (type == AttributeType.CONSTANT) {
-            generateCodeForConstantAttribute(attribute, datatypeHelper, constantBuilder, memberVarsBuilder,
-                    methodsBuilder);
-        } else if (type == AttributeType.DERIVED_ON_THE_FLY) {
-            generateCodeForDerivedAttribute(attribute, datatypeHelper, memberVarsBuilder, methodsBuilder);
-        } else if (type == AttributeType.DERIVED_BY_EXPLICIT_METHOD_CALL) {
-            if (attribute.isOverwrite()) {
-                return;
-            }
-            generateCodeForComputedAttribute(attribute, datatypeHelper, memberVarsBuilder, methodsBuilder);
-        } else {
-            throw new RuntimeException("Unknown attribute type " + type);
+        GenAttribute generator = (GenAttribute)getGenerator(attribute);
+        if (generator!=null) {
+            generator.generate();
         }
     }
-
-    protected abstract void generateCodeForConstantAttribute(IPolicyCmptTypeAttribute attribute,
-            DatatypeHelper datatypeHelper,
-            JavaCodeFragmentBuilder constantBuilder,
-            JavaCodeFragmentBuilder memberVarsBuilder, JavaCodeFragmentBuilder methodsBuilder) throws CoreException;
-
-    protected abstract void generateCodeForChangeableAttribute(IPolicyCmptTypeAttribute attribute,
-            DatatypeHelper datatypeHelper,
-            JavaCodeFragmentBuilder memberVarsBuilder,
-            JavaCodeFragmentBuilder methodsBuilder) throws CoreException;
-
-    protected abstract void generateCodeForDerivedAttribute(IPolicyCmptTypeAttribute attribute,
-            DatatypeHelper datatypeHelper,
-            JavaCodeFragmentBuilder memberVarsBuilder,
-            JavaCodeFragmentBuilder methodsBuilder) throws CoreException;
-
-    protected abstract void generateCodeForComputedAttribute(IPolicyCmptTypeAttribute attribute,
-            DatatypeHelper datatypeHelper,
-            JavaCodeFragmentBuilder memberVarsBuilder,
-            JavaCodeFragmentBuilder methodsBuilder) throws CoreException;
 
     /**
      * {@inheritDoc}
@@ -118,7 +136,6 @@ public abstract class BasePolicyCmptTypeBuilder extends AbstractPcTypeBuilder {
         } else {
             generateCodeFor1To1Association(association, fieldsBuilder, methodsBuilder);
         }
-       
     }
 
     /**

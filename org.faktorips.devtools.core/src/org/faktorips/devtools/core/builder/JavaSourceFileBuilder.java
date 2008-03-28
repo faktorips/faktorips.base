@@ -152,6 +152,14 @@ public abstract class JavaSourceFileBuilder extends AbstractArtefactBuilder {
             IpsPlugin.log(new IpsStatus("Unable to apply the java formatter options.", e)); //$NON-NLS-1$
         }
     }
+    
+    public Integer getJavaOptionsSplitLength() {
+        return javaOptionsSplitLength;
+    }
+
+    public Integer getJavaOptionsTabSize() {
+        return javaOptionsTabSize;
+    }
 
     /**
      * {@inheritDoc}
@@ -576,6 +584,7 @@ public abstract class JavaSourceFileBuilder extends AbstractArtefactBuilder {
             String modelDescription,
             IIpsElement element,
             JavaCodeFragmentBuilder builder) {
+        
         String text = getLocalizedText(element, keyPrefix + "_JAVADOC", replacements); //$NON-NLS-1$
         String[] annotations = new String[] { getLocalizedText(element, keyPrefix + "_ANNOTATION") }; //$NON-NLS-1$
         StringBuffer buf = new StringBuffer();

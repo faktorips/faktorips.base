@@ -20,6 +20,7 @@ package org.faktorips.devtools.core.builder;
 import org.eclipse.core.runtime.CoreException;
 import org.faktorips.codegen.JavaCodeFragmentBuilder;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPartContainer;
+import org.faktorips.util.LocalizedStringsSet;
 
 /**
  * This subclass of <code>JavaGeneratorForIpsPart</code> works together with <code>DefaultJavaSourceFileBuilder</code>.
@@ -37,8 +38,12 @@ public abstract class DefaultJavaGeneratorForIpsPart extends JavaGeneratorForIps
     // of the interface.
     private boolean generateImplementation;
     
-    public DefaultJavaGeneratorForIpsPart(IIpsObjectPartContainer part, DefaultJavaSourceFileBuilder builder, boolean generateImplementation) throws CoreException {
-        super(part, builder);
+    public DefaultJavaGeneratorForIpsPart(
+            IIpsObjectPartContainer part, 
+            DefaultJavaSourceFileBuilder builder, 
+            LocalizedStringsSet stringsSet,
+            boolean generateImplementation) throws CoreException {
+        super(part, builder, stringsSet);
         this.javaSourceFileBuilder = builder;
         this.generateImplementation = generateImplementation;
         init();

@@ -22,6 +22,7 @@ import org.faktorips.datatype.Datatype;
 import org.faktorips.devtools.core.model.IIpsElement;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPartContainer;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
+import org.faktorips.util.LocalizedStringsSet;
 
 /**
  * Base class for Java source code generators for an ips object part container (ips object or ips part).
@@ -38,12 +39,15 @@ public abstract class JavaGeneratorForIpsPart {
     
     private JavaSourceFileBuilder javaSourceFileBuilder;
     
-
-    public JavaGeneratorForIpsPart(IIpsObjectPartContainer part, JavaSourceFileBuilder builder) {
+    private LocalizedTextHelper localizedTextHelper; 
+    
+    public JavaGeneratorForIpsPart(IIpsObjectPartContainer part, JavaSourceFileBuilder builder, LocalizedStringsSet stringsSet) {
         super();
         this.ipsPart = part;
         this.ipsProject = ipsPart.getIpsProject();
         this.javaSourceFileBuilder = builder;
+        this.localizedTextHelper = new LocalizedTextHelper(stringsSet, builder.getLanguageUsedInGeneratedSourceCode(ipsPart), 
+                builder.getJavaOptionsSplitLength(), builder.getJavaOptionsTabSize());
     }
     
     public IIpsObjectPartContainer getIpsPart() {
@@ -51,11 +55,25 @@ public abstract class JavaGeneratorForIpsPart {
     }
     
     /**
+     * Returns the ips project the generator generates source code for.
+     */
+    public IIpsProject getIpsProject() {
+        return javaSourceFileBuilder.getIpsProject();
+    }
+    
+    /**
+     * Returns the Java source file builder that uses this generator.
+     */
+    public JavaSourceFileBuilder getJavaSourceFileBuilder() {
+        return javaSourceFileBuilder;
+    }
+    
+    /**
      * Like {@link #appendLocalizedJavaDoc(String, String, JavaCodeFragmentBuilder)}
      * without a description that is expected to be provided by the model.
      */
     protected void appendLocalizedJavaDoc(String keyPrefix, JavaCodeFragmentBuilder builder) {
-        javaSourceFileBuilder.appendLocalizedJavaDoc(keyPrefix, ipsPart, builder);
+        localizedTextHelper.appendLocalizedJavaDoc(keyPrefix, builder);
     }
 
     /**
@@ -76,7 +94,7 @@ public abstract class JavaGeneratorForIpsPart {
             String modelDescription,
             JavaCodeFragmentBuilder builder) {
         
-        javaSourceFileBuilder.appendLocalizedJavaDoc(keyPrefix, replacement, modelDescription, ipsPart, builder);
+        localizedTextHelper.appendLocalizedJavaDoc(keyPrefix, replacement, modelDescription, builder);
     }
 
     /**
@@ -88,7 +106,7 @@ public abstract class JavaGeneratorForIpsPart {
             Object replacement,
             JavaCodeFragmentBuilder builder) {
         
-        javaSourceFileBuilder.appendLocalizedJavaDoc(keyPrefix, replacement, ipsPart, builder);
+        localizedTextHelper.appendLocalizedJavaDoc(keyPrefix, replacement, builder);
     }
 
     /**
@@ -116,7 +134,7 @@ public abstract class JavaGeneratorForIpsPart {
             String modelDescription,
             JavaCodeFragmentBuilder builder) {
         
-        javaSourceFileBuilder.appendLocalizedJavaDoc(keyPrefix, replacements, ipsPart, builder);
+        localizedTextHelper.appendLocalizedJavaDoc(keyPrefix, replacements, builder);
     }
 
     /**
@@ -128,7 +146,7 @@ public abstract class JavaGeneratorForIpsPart {
             Object[] replacements,
             JavaCodeFragmentBuilder builder) {
         
-        javaSourceFileBuilder.appendLocalizedJavaDoc(keyPrefix, replacements, ipsPart, builder);
+        localizedTextHelper.appendLocalizedJavaDoc(keyPrefix, replacements, builder);
     }
     
     /**
@@ -138,7 +156,7 @@ public abstract class JavaGeneratorForIpsPart {
      * @return the requested text
      */
     protected String getLocalizedText(String key) {
-        return javaSourceFileBuilder.getLocalizedText(ipsPart, key);
+        return localizedTextHelper.getLocalizedText(key);
     }
     
     /**
@@ -151,7 +169,7 @@ public abstract class JavaGeneratorForIpsPart {
      * @return the requested text
      */
     protected String getLocalizedText(String key, Object replacement) {
-        return javaSourceFileBuilder.getLocalizedText(ipsPart, key, replacement);
+        return localizedTextHelper.getLocalizedText(key, replacement);
     }
 
     /**
@@ -163,7 +181,7 @@ public abstract class JavaGeneratorForIpsPart {
      * @return the requested text
      */
     protected String getLocalizedText(String key, Object[] replacements) {
-        return javaSourceFileBuilder.getLocalizedText(ipsPart, key, replacements);
+        return localizedTextHelper.getLocalizedText(key, replacements);
     }
 
     protected String getJavaDocCommentForOverriddenMethod() {
@@ -181,6 +199,15 @@ public abstract class JavaGeneratorForIpsPart {
         return getJavaNamingConvention().getGetterMethodName(propName, datatype);
     }
     
+    /**
+     * Returns the setter method to access a property/attribute value.
+     */
+    protected String getMethodNametSetPropertyValue(String propName, Datatype datatype){
+        return getJavaNamingConvention().getSetterMethodName(propName, datatype);
+    }
     
+    public String toString() {
+        return "Generator for " + ipsPart.toString();
+    }
     
 }
