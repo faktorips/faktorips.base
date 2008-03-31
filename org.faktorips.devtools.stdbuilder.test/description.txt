@@ -1,1 +1,0 @@
-This project contains the JUnit test cases for the standard builder set.
