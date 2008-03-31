@@ -215,8 +215,8 @@
       <feature id="org.eclipse.platform.nls1" version="3.2.0.v200606220026"/>
       <feature id="org.eclipse.rcp" version="3.2.2.r322_v20070104-8pcviKVqd8J7C1U"/>
       <feature id="org.eclipse.rcp.nls1" version="3.2.0.v200606220026"/>
-      <feature id="org.faktorips.feature" version="2.0.0.rc2"/>
-      <feature id="org.faktorips.feature.nls1" version="2.0.0.rc2"/>
+      <feature id="org.faktorips.feature" version="2.0.1"/>
+      <feature id="org.faktorips.feature.nls1" version="2.0.1"/>
    </features>
 
 </product>
