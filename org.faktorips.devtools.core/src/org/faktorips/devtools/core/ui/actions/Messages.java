@@ -117,6 +117,12 @@ public class Messages extends NLS {
     public static String IpsTestAction_msgCantRunTest;
     public static String ExpandCollapseAllAction_Expand_Description;
     public static String ExpandCollapseAllAction_Collapse_Description;
+    public static String TableImportExportAction_confirmDialogDirtyTableContentsText;
+    public static String TableImportExportAction_confirmDialogDirtyTableContentsTitle;
+    public static String TableImportExportAction_exportActionTitle;
+    public static String TableImportExportAction_exportActionTooltip;
+    public static String TableImportExportAction_importActionTitle;
+    public static String TableImportExportAction_importActionTooltip;
     public static String ToggleLinkingAction_Description;
     public static String ToggleLinkingAction_Text;
     public static String ToggleLinkingAction_ToolTipText;

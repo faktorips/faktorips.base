@@ -106,6 +106,7 @@ import org.faktorips.devtools.core.ui.actions.NewTestCaseTypeAction;
 import org.faktorips.devtools.core.ui.actions.OpenEditorAction;
 import org.faktorips.devtools.core.ui.actions.RenameAction;
 import org.faktorips.devtools.core.ui.actions.ShowStructureAction;
+import org.faktorips.devtools.core.ui.actions.TableImportExportAction;
 import org.faktorips.devtools.core.ui.actions.TreeViewerRefreshAction;
 import org.faktorips.devtools.core.ui.editors.IpsObjectEditor;
 import org.faktorips.devtools.core.ui.views.IpsElementDragListener;
@@ -687,6 +688,7 @@ public class ModelExplorer extends ViewPart implements IShowInTarget {
             createRefreshAction(manager, selected);
             createProjectActions(manager, selected, (IStructuredSelection)treeViewer.getSelection());
             manager.add(new Separator());
+            createImportExportTableContentsAction(manager, selected);
             createTestCaseAction(manager, selected);
             createIpsEditSortOrderAction(manager, selected);
             createFixDifferencesAction(manager, selected, (IStructuredSelection)treeViewer.getSelection());
@@ -883,7 +885,15 @@ public class ModelExplorer extends ViewPart implements IShowInTarget {
                 return open;
             }
         }
-
+        
+        private void createImportExportTableContentsAction(IMenuManager manager, Object selected) {
+            if (config.isAllowedIpsElementType(ITableContents.class) && selected instanceof ITableContents) {
+                manager.add(TableImportExportAction.createTableImportAction(getSite().getShell(), treeViewer));
+                manager.add(TableImportExportAction.createTableExportAction(getSite().getShell(), treeViewer));
+                manager.add(new Separator());
+            }
+        }
+        
         protected void createTestCaseAction(IMenuManager manager, Object selected) {
             if (config.isAllowedIpsElementType(ITestCase.class) || config.isAllowedIpsElementType(IProductCmpt.class)) {
                 if (selected instanceof IIpsPackageFragment || selected instanceof IIpsPackageFragmentRoot
@@ -948,6 +958,7 @@ public class ModelExplorer extends ViewPart implements IShowInTarget {
                 if (!isRootArchive(selected)) {
                     MenuManager subMm = new MenuManager(Messages.ModelExplorer_submenuRefactor);
                     subMm.add(rename);
+                    move.setText(Messages.ModelExplorer_menuItemMove);
                     subMm.add(move);
                     manager.add(subMm);
                 }
