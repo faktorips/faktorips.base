@@ -31,6 +31,7 @@ import org.faktorips.util.LocalizedStringsSet;
  */
 public abstract class DefaultJavaGeneratorForIpsPart extends JavaGeneratorForIpsPart {
 
+    protected static final String[] EMPTY_STRING_ARRAY = new String[0];
     
     private DefaultJavaSourceFileBuilder javaSourceFileBuilder;
     
