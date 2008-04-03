@@ -30,7 +30,6 @@ import org.faktorips.codegen.DatatypeHelper;
 import org.faktorips.codegen.JavaCodeFragment;
 import org.faktorips.codegen.JavaCodeFragmentBuilder;
 import org.faktorips.datatype.Datatype;
-import org.faktorips.devtools.core.builder.JavaSourceFileBuilder;
 import org.faktorips.devtools.core.builder.MessageFragment;
 import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
@@ -48,6 +47,10 @@ import org.faktorips.devtools.stdbuilder.policycmpttype.association.GenAssociati
 import org.faktorips.devtools.stdbuilder.policycmpttype.association.GenAssociationTo1Impl;
 import org.faktorips.devtools.stdbuilder.policycmpttype.association.GenAssociationToMany;
 import org.faktorips.devtools.stdbuilder.policycmpttype.association.GenAssociationToManyImpl;
+import org.faktorips.devtools.stdbuilder.policycmpttype.attribute.GenAttribute;
+import org.faktorips.devtools.stdbuilder.policycmpttype.attribute.GenChangeableAttributeImpl;
+import org.faktorips.devtools.stdbuilder.policycmpttype.attribute.GenConstantAttribute;
+import org.faktorips.devtools.stdbuilder.policycmpttype.attribute.GenDerivedAttributeImpl;
 import org.faktorips.devtools.stdbuilder.productcmpttype.ProductCmptGenImplClassBuilder;
 import org.faktorips.devtools.stdbuilder.productcmpttype.ProductCmptGenInterfaceBuilder;
 import org.faktorips.devtools.stdbuilder.productcmpttype.ProductCmptInterfaceBuilder;
@@ -674,22 +677,8 @@ public class PolicyCmptImplClassBuilder extends BasePolicyCmptTypeBuilder {
      * {@inheritDoc}
      */
     protected void generateCodeFor1To1Association(IPolicyCmptTypeAssociation association, JavaCodeFragmentBuilder fieldsBuilder, JavaCodeFragmentBuilder methodsBuilder) throws Exception {
-        if (association.isCompositionDetailToMaster()) {
-            generateMethodGetTypesafeParentObject(association, methodsBuilder);
-            return; 
-        }
-        if (!association.isDerivedUnion()) {
-            IPolicyCmptType target = association.findTargetPolicyCmptType(getIpsProject());
-            generateFieldForAssociation(association, target, fieldsBuilder);
-            generateMethodGetRefObjectBasedOnMemberVariable(association, methodsBuilder);
-            if (association.isAssoziation()) {
-                generateMethodSetRefObjectForAssociation(association, methodsBuilder);
-            } else if (association.isCompositionMasterToDetail()) { 
-                generateMethodSetRefObjectForComposition(association, methodsBuilder);
-            }
-            GenAssociation generator = getGenerator(association);
-            generator.generate();
-        }
+        GenAssociation generator = getGenerator(association);
+        generator.generate();
     }
 
     /**
@@ -702,49 +691,6 @@ public class PolicyCmptImplClassBuilder extends BasePolicyCmptTypeBuilder {
             GenAssociation generator = getGenerator(association);
             generator.generate();
         }
-    }
-    
-    protected void generateFieldForAssociation(
-            IPolicyCmptTypeAssociation association,
-            IPolicyCmptType target,
-            JavaCodeFragmentBuilder methodsBuilder) throws CoreException {
-        
-        String javaClassname = association.is1ToMany() ? List.class.getName()
-                : getQualifiedClassName(target);
-        JavaCodeFragment initialValueExpression = new JavaCodeFragment();
-        if (association.is1ToMany()) {
-            initialValueExpression.append("new ");
-            initialValueExpression.appendClassName(ArrayList.class);
-            initialValueExpression.append("()");
-        } else {
-            initialValueExpression.append("null");
-        }
-        String comment = getLocalizedText(association, "FIELD_RELATION_JAVADOC", association.getName());
-        methodsBuilder.javaDoc(comment, JavaSourceFileBuilder.ANNOTATION_GENERATED);
-        methodsBuilder.varDeclaration(java.lang.reflect.Modifier.PRIVATE, javaClassname, getFieldNameForAssociation(association),
-            initialValueExpression);
-    }
-
-    /**
-     * Code sample:
-     * <pre>
-     * [Javadoc]
-     * public int getNumOfCoverages() {
-     *     return coverages.size();
-     * }
-     * </pre>
-     */
-    protected void generateMethodGetNumOfForNoneContainerAssociation(IPolicyCmptTypeAssociation association, JavaCodeFragmentBuilder methodsBuilder) throws Exception {
-        methodsBuilder.javaDoc(getJavaDocCommentForOverriddenMethod(), ANNOTATION_GENERATED);
-        interfaceBuilder.generateSignatureGetNumOfRefObjects(association, methodsBuilder);
-        methodsBuilder.openBracket();
-        String field = getFieldNameForAssociation(association);
-        if (association.is1ToMany()) {
-            methodsBuilder.appendln("return " + field + ".size();");
-        } else {
-            methodsBuilder.appendln("return " + field + "==null ? 0 : 1;");
-        }
-        methodsBuilder.closeBracket();
     }
     
     /**
@@ -826,30 +772,6 @@ public class PolicyCmptImplClassBuilder extends BasePolicyCmptTypeBuilder {
      * <pre>
      * [Javadoc]
      * public boolean containsCoverage(ICoverage objectToTest) {
-     *     return coverages.contains(objectToTest);
-     * }
-     * </pre>
-     */
-    protected void generateMethodContainsObjectForNoneContainerAssociation(
-            IPolicyCmptTypeAssociation association, 
-            JavaCodeFragmentBuilder methodsBuilder) throws Exception {
-        
-        String paramName = interfaceBuilder.getParamNameForContainsObject(association);
-        
-        methodsBuilder.javaDoc(getJavaDocCommentForOverriddenMethod(), ANNOTATION_GENERATED);
-        interfaceBuilder.generateSignatureContainsObject(association, methodsBuilder);
-        
-        methodsBuilder.openBracket();
-        String field = getFieldNameForAssociation(association);
-        methodsBuilder.appendln("return " + field + ".contains(" + paramName + ");");
-        methodsBuilder.closeBracket();
-    }
-    
-    /**
-     * Code sample:
-     * <pre>
-     * [Javadoc]
-     * public boolean containsCoverage(ICoverage objectToTest) {
      *     ICoverage[] targets = getCoverages();
      *     for (int i = 0; i < targets.length; i++) {
      *         if (targets[i] == objectToTest)
@@ -876,36 +798,6 @@ public class PolicyCmptImplClassBuilder extends BasePolicyCmptTypeBuilder {
         methodsBuilder.append("for(int i=0;i < targets.length;i++) {");
         methodsBuilder.append("if(targets[i] == " + paramName + ") return true; }");
         methodsBuilder.append("return false;");
-        methodsBuilder.closeBracket();
-    }
-    
-    /**
-     * Code sample:
-     * <pre>
-     * [Javadoc]
-     * public ICoverage[] getCoverages() {
-     *     return (ICoverage[])coverages.toArray(new ICoverage[coverages.size()]);
-     * }
-     * </pre>
-     */
-    // TODO remove
-    protected void generateMethodGetAllRefObjectsForNoneContainerAssociation(
-            IPolicyCmptTypeAssociation association, 
-            JavaCodeFragmentBuilder methodsBuilder) throws Exception {
-        methodsBuilder.javaDoc(getJavaDocCommentForOverriddenMethod(), ANNOTATION_GENERATED);
-        interfaceBuilder.generateSignatureGetAllRefObjects(association, methodsBuilder);
-        String className = getQualifiedClassName(association.findTargetPolicyCmptType(getIpsProject()));
-        String field = getFieldNameForAssociation(association);
-        methodsBuilder.openBracket();
-        methodsBuilder.appendln("return (");
-        methodsBuilder.appendClassName(className);
-        methodsBuilder.append("[])");
-        methodsBuilder.append(field);
-        methodsBuilder.append(".toArray(new ");
-        methodsBuilder.appendClassName(className);
-        methodsBuilder.append('[');
-        methodsBuilder.append(field);
-        methodsBuilder.append(".size()]);");
         methodsBuilder.closeBracket();
     }
     
@@ -978,34 +870,6 @@ public class PolicyCmptImplClassBuilder extends BasePolicyCmptTypeBuilder {
             }
         }
         methodsBuilder.append("return result;");
-        methodsBuilder.closeBracket();
-    }
-    
-    /**
-     * Code sample:
-     * <pre>
-     * [Javadoc]
-     * public ICoverage getCoverage() {
-     *     return coverage;
-     * }
-     * </pre>
-     */
-    protected void generateMethodGetRefObjectBasedOnMemberVariable(
-            IPolicyCmptTypeAssociation association, 
-            JavaCodeFragmentBuilder methodsBuilder) throws Exception {
-        
-        methodsBuilder.javaDoc(getJavaDocCommentForOverriddenMethod(), ANNOTATION_GENERATED);
-        interfaceBuilder.generateSignatureGetRefObject(association, methodsBuilder);
-        methodsBuilder.openBracket();
-        if (!association.isCompositionDetailToMaster()) {
-            String field = getFieldNameForAssociation(association);
-            methodsBuilder.appendln("return " + field + ";");
-        } else {
-            IPolicyCmptType target = association.findTargetPolicyCmptType(getIpsProject());
-            methodsBuilder.append("return (");
-            methodsBuilder.appendClassName(interfaceBuilder.getQualifiedClassName(target));
-            methodsBuilder.append(")" + MethodNames.GET_PARENT + "();");
-        }
         methodsBuilder.closeBracket();
     }
     
@@ -1178,30 +1042,6 @@ public class PolicyCmptImplClassBuilder extends BasePolicyCmptTypeBuilder {
         methodsBuilder.closeBracket();
     }
 
-    
-    /**
-     * Code sample:
-     * <pre>
-     * [Javadoc]
-     * public ICoverage getCoverage() {
-     *     return (ICoverage)getParentModelObject();
-     * }
-     * </pre>
-     */
-    protected void generateMethodGetTypesafeParentObject(
-            IPolicyCmptTypeAssociation association, 
-            JavaCodeFragmentBuilder methodsBuilder) throws Exception {
-        
-        methodsBuilder.javaDoc(getJavaDocCommentForOverriddenMethod(), ANNOTATION_GENERATED);
-        interfaceBuilder.generateSignatureGetRefObject(association, methodsBuilder);
-        methodsBuilder.openBracket();
-        IPolicyCmptType target = association.findTargetPolicyCmptType(getIpsProject());
-        methodsBuilder.append("return (");
-        methodsBuilder.appendClassName(interfaceBuilder.getQualifiedClassName(target));
-        methodsBuilder.append(")" + MethodNames.GET_PARENT + "();");
-        methodsBuilder.closeBracket();
-    }
-    
     /**
      * Code sample:
      * <pre>
@@ -1282,113 +1122,6 @@ public class PolicyCmptImplClassBuilder extends BasePolicyCmptTypeBuilder {
             methodsBuilder.append(';');
         }
         generateChangeListenerSupport(methodsBuilder, IModelObjectChangedEvent.class.getName(), "RELATION_OBJECT_REMOVED", fieldname, paramName);
-        methodsBuilder.closeBracket();
-    }
-    
-    /**
-     * Code sample:
-     * <pre>
-     * [Javadoc]
-     * public void setCoverage(ICoverage newObject) {
-     *     if (homeContract!=null) {
-     *         ((DependantObject)homeContract).setParentModelObjectInternal(null);
-     *     }
-     *     homeContract = (HomeContract)newObject;
-     *     if (homeContract!=null) {
-     *         ((DependantObject)homeContract).setParentModelObjectInternal(this);
-     *     }
-     * }
-     * </pre>
-     */
-    protected void generateMethodSetRefObjectForComposition(
-            IPolicyCmptTypeAssociation association, 
-            JavaCodeFragmentBuilder methodsBuilder) throws Exception {
-        
-        if (association.isCompositionDetailToMaster()) {
-            return; // setter defined in base class.
-        }
-        String fieldname = getFieldNameForAssociation(association);
-        String paramName = interfaceBuilder.getParamNameForSetObject(association);
-        IPolicyCmptType target = association.findTargetPolicyCmptType(getIpsProject());
-
-        methodsBuilder.javaDoc(getJavaDocCommentForOverriddenMethod(), ANNOTATION_GENERATED);
-        interfaceBuilder.generateSignatureSetObject(association, methodsBuilder);
-        
-        methodsBuilder.openBracket();
-        if (target.isDependantType()) {
-            methodsBuilder.appendln("if(" + fieldname + " != null) {");
-            methodsBuilder.append(generateCodeToSynchronizeReverseComposition(fieldname, "null"));;
-            methodsBuilder.appendln("}");
-        }
-
-        if (target.isDependantType()) {
-            methodsBuilder.appendln("if(" + paramName + " != null) {");
-            methodsBuilder.append(generateCodeToSynchronizeReverseComposition(paramName, "this"));;
-            methodsBuilder.appendln("}");
-        }
-        
-        methodsBuilder.append(fieldname);
-        methodsBuilder.append(" = (");
-        methodsBuilder.appendClassName(getQualifiedClassName(target));
-        methodsBuilder.append(")" + paramName +";");
-
-        generateChangeListenerSupport(methodsBuilder, IModelObjectChangedEvent.class.getName(), "RELATION_OBJECT_CHANGED", fieldname, paramName);
-        methodsBuilder.closeBracket();
-    }
-    
-    /**
-     * Code sample:
-     * <pre>
-     * [Javadoc]
-     * public void setCoverage(ICoverage newObject) {
-     *     if (refObject == homeContract)
-     *         return;
-     *     IHomeContract oldRefObject = homeContract;
-     *     homeContract = null;
-     *     if (oldRefObject != null) {
-     *          oldRefObject.setHomePolicy(null);
-     *     }
-     *     homeContract = (HomeContract) refObject;
-     *     if (refObject != null && refObject.getHomePolicy() != this) {
-     *         refObject.setHomePolicy(this);
-     *     }
-     * }
-     * </pre>
-     */
-    protected void generateMethodSetRefObjectForAssociation(
-            IPolicyCmptTypeAssociation association, 
-            JavaCodeFragmentBuilder methodsBuilder) throws Exception {
-        
-        String fieldname = getFieldNameForAssociation(association);
-        String paramName = interfaceBuilder.getParamNameForSetObject(association);
-        IPolicyCmptType target = association.findTargetPolicyCmptType(getIpsProject());
-        IPolicyCmptTypeAssociation reverseAssociation = association.findInverseAssociation(getIpsProject());
-
-        methodsBuilder.javaDoc(getJavaDocCommentForOverriddenMethod(), ANNOTATION_GENERATED);
-        interfaceBuilder.generateSignatureSetObject(association, methodsBuilder);
-        
-        methodsBuilder.openBracket();
-        methodsBuilder.append("if(" + paramName + " == ");
-        methodsBuilder.append(fieldname);
-        methodsBuilder.append(") return;");
-        if (reverseAssociation != null) {
-            methodsBuilder.appendClassName(getQualifiedClassName(target));
-            methodsBuilder.append(" oldRefObject = ");
-            methodsBuilder.append(fieldname);
-            methodsBuilder.append(';');
-            methodsBuilder.append(fieldname);
-            methodsBuilder.append(" = null;");
-            methodsBuilder.append(generateCodeToCleanupOldReference(association, reverseAssociation, "oldRefObject"));
-        }
-        methodsBuilder.append(fieldname);
-        methodsBuilder.append(" = (");
-        methodsBuilder.appendClassName(getQualifiedClassName(target));
-        methodsBuilder.append(")" + paramName +";");
-        if (reverseAssociation != null) {
-            methodsBuilder.append(generateCodeToSynchronizeReverseAssoziation(fieldname, 
-                    getQualifiedClassName(target), association, reverseAssociation));
-        }
-        generateChangeListenerSupport(methodsBuilder, IModelObjectChangedEvent.class.getName(), "RELATION_OBJECT_CHANGED", fieldname, paramName);
         methodsBuilder.closeBracket();
     }
     
@@ -2183,7 +1916,8 @@ public class PolicyCmptImplClassBuilder extends BasePolicyCmptTypeBuilder {
             builder.append(" " + varName + "=(");
             builder.appendClassName(getQualifiedClassName(target));
             builder.appendln(")Class.forName(className).newInstance();");
-            builder.append(interfaceBuilder.getMethodNameAddOrSetObject(association) + "(" + varName + ");");
+            GenAssociation generator = getGenerator(association);
+            builder.append(generator.getMethodNameAddOrSetObject() + "(" + varName + ");");
             builder.appendln("return " + varName + ";");
             builder.appendln("} catch (Exception e) {");
             builder.appendln("throw new RuntimeException(e);");
@@ -2242,7 +1976,8 @@ public class PolicyCmptImplClassBuilder extends BasePolicyCmptTypeBuilder {
             builder.append("return new ");
             builder.appendClassName(DefaultUnresolvedReference.class);
             builder.append("(this, objectId, ");
-            builder.appendQuoted(interfaceBuilder.getMethodNameAddOrSetObject(association));
+            GenAssociation generator = getGenerator(association);
+            builder.appendQuoted(generator.getMethodNameAddOrSetObject());
             builder.append(", ");
             builder.appendClassName(targetClass);
             builder.append(".class, targetId);");

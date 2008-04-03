@@ -29,6 +29,7 @@ import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
 import org.faktorips.devtools.stdbuilder.policycmpttype.BasePolicyCmptTypeBuilder;
 import org.faktorips.devtools.stdbuilder.policycmpttype.PolicyCmptImplClassBuilder;
 import org.faktorips.devtools.stdbuilder.productcmpttype.ProductCmptInterfaceBuilder;
+import org.faktorips.runtime.IModelObjectChangedEvent;
 import org.faktorips.runtime.internal.DependantObject;
 import org.faktorips.runtime.internal.MethodNames;
 import org.faktorips.util.LocalizedStringsSet;
@@ -78,6 +79,18 @@ public abstract class GenAssociation extends DefaultJavaGeneratorForIpsPart {
     
     public boolean isDerivedUnion() {
         return association.isDerivedUnion();
+    }
+    
+    public boolean isCompositionMasterToDetail() {
+        return association.isCompositionMasterToDetail();
+    }
+
+    public boolean isCompositionDetailToMaster() {
+        return association.isCompositionDetailToMaster();
+    }
+    
+    public boolean isAssociation() {
+        return association.isAssoziation();
     }
 
     /**
@@ -265,6 +278,10 @@ public abstract class GenAssociation extends DefaultJavaGeneratorForIpsPart {
         code.appendln(");");
         return code;
     }
-    
 
+    // TODO refactor
+    protected void generateChangeListenerSupport(String eventConstant, String paramName) {
+        PolicyCmptImplClassBuilder implClassBuilder = (PolicyCmptImplClassBuilder)getJavaSourceFileBuilder();
+        implClassBuilder.generateChangeListenerSupport(getMethodBuilder(), IModelObjectChangedEvent.class.getName(), eventConstant, fieldName, paramName);
+    }
 }

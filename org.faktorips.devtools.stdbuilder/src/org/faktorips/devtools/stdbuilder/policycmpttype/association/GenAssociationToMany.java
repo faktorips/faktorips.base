@@ -21,6 +21,7 @@ import org.apache.commons.lang.StringUtils;
 import org.eclipse.core.runtime.CoreException;
 import org.faktorips.codegen.JavaCodeFragmentBuilder;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAssociation;
+import org.faktorips.devtools.core.model.type.IAssociation;
 import org.faktorips.devtools.stdbuilder.policycmpttype.BasePolicyCmptTypeBuilder;
 import org.faktorips.util.LocalizedStringsSet;
 
@@ -96,6 +97,14 @@ public abstract class GenAssociationToMany extends GenAssociation {
         return getLocalizedText("METHOD_CONTAINS_OBJECT_NAME", association.getTargetRoleSingular());
     }
     
+    /**
+     * Returns the name of the method returning the number of referenced objects,
+     * e.g. getNumOfCoverages()
+     */
+    protected String getMethodNameContainsObject(IAssociation association) {
+        return getLocalizedText("METHOD_CONTAINS_OBJECT_NAME", association.getTargetRoleSingular());
+    }
+
     /**
      * Code sample:
      * <pre>

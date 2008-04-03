@@ -40,6 +40,10 @@ import org.faktorips.devtools.core.model.type.IMethod;
 import org.faktorips.devtools.stdbuilder.policycmpttype.association.GenAssociation;
 import org.faktorips.devtools.stdbuilder.policycmpttype.association.GenAssociationTo1Interface;
 import org.faktorips.devtools.stdbuilder.policycmpttype.association.GenAssociationToManyInterface;
+import org.faktorips.devtools.stdbuilder.policycmpttype.attribute.GenAttribute;
+import org.faktorips.devtools.stdbuilder.policycmpttype.attribute.GenChangeableAttributeInterface;
+import org.faktorips.devtools.stdbuilder.policycmpttype.attribute.GenConstantAttribute;
+import org.faktorips.devtools.stdbuilder.policycmpttype.attribute.GenDerivedAttributeInterface;
 import org.faktorips.devtools.stdbuilder.productcmpttype.ProductCmptGenInterfaceBuilder;
 import org.faktorips.devtools.stdbuilder.productcmpttype.ProductCmptInterfaceBuilder;
 import org.faktorips.runtime.IConfigurableModelObject;
@@ -467,12 +471,8 @@ public class PolicyCmptInterfaceBuilder extends BasePolicyCmptTypeBuilder {
      * {@inheritDoc}
      */
     protected void generateCodeFor1To1Association(IPolicyCmptTypeAssociation association, JavaCodeFragmentBuilder fieldsBuilder, JavaCodeFragmentBuilder methodsBuilder) throws Exception {
-        generateMethodGetRefObject(association, methodsBuilder);
-        if (!association.isDerivedUnion() && !association.getAssociationType().isCompositionDetailToMaster()) {
-            generateMethodSetObject(association, methodsBuilder);
-            GenAssociation generator = getGenerator(association);
-            generator.generateMethods(methodsBuilder);
-        }
+        GenAssociation generator = getGenerator(association);
+        generator.generateMethods(methodsBuilder);
     }
 
     /**
@@ -481,6 +481,14 @@ public class PolicyCmptInterfaceBuilder extends BasePolicyCmptTypeBuilder {
     protected void generateCodeFor1ToManyAssociation(IPolicyCmptTypeAssociation association, JavaCodeFragmentBuilder fieldsBuilder, JavaCodeFragmentBuilder methodsBuilder) throws Exception {
         GenAssociation generator = getGenerator(association);
         generator.generateMethods(methodsBuilder);
+    }
+    
+    /**
+     * Returns the name of the method setting the referenced object.
+     * e.g. setCoverage(ICoverage newObject)
+     */
+    public String getMethodNameSetObject(IPolicyCmptTypeAssociation association) {
+        return getLocalizedText(association, "METHOD_SET_OBJECT_NAME", association.getTargetRoleSingular());
     }
     
     /**
@@ -528,22 +536,6 @@ public class PolicyCmptInterfaceBuilder extends BasePolicyCmptTypeBuilder {
     // TODO remove
     public String getMethodNameGetAllRefObjects(IPolicyCmptTypeAssociation association) {
         return getLocalizedText(association, "METHOD_GET_ALL_REF_OBJECTS_NAME", StringUtils.capitalize(association.getTargetRolePlural()));
-    }
-
-    /**
-     * Code sample:
-     * <pre>
-     * [Javadoc]
-     * public ICoverage getCoverage();
-     * </pre>
-     */
-    protected void generateMethodGetRefObject(
-            IPolicyCmptTypeAssociation association,
-            JavaCodeFragmentBuilder methodsBuilder) throws CoreException {
-
-        appendLocalizedJavaDoc("METHOD_GET_REF_OBJECT", StringUtils.capitalize(association.getTargetRoleSingular()), association, methodsBuilder);
-        generateSignatureGetRefObject(association, methodsBuilder);
-        methodsBuilder.appendln(";");
     }
 
     /**
@@ -763,67 +755,6 @@ public class PolicyCmptInterfaceBuilder extends BasePolicyCmptTypeBuilder {
     // TODO remove
     public String getParamNameForContainsObject(IPolicyCmptTypeAssociation association) {
         return getLocalizedText(association, "PARAM_OBJECT_TO_TEST_NAME", association.getTargetRoleSingular());
-    }
-    
-    /**
-     * Code sample:
-     * <pre>
-     * [Javadoc]
-     * public void setCoverage(ICoverage newObject);
-     * </pre>
-     */
-    protected void generateMethodSetObject(
-            IPolicyCmptTypeAssociation association,
-            JavaCodeFragmentBuilder methodsBuilder) throws CoreException {
-
-        appendLocalizedJavaDoc("METHOD_SET_OBJECT", association.getTargetRoleSingular(), association, methodsBuilder);
-        generateSignatureSetObject(association, methodsBuilder);
-        methodsBuilder.appendln(";");
-    }
-
-    /**
-     * Code sample:
-     * <pre>
-     * public void setCoverage(ICoverage objectToTest)
-     * </pre>
-     */
-    public void generateSignatureSetObject(
-            IPolicyCmptTypeAssociation association,
-            JavaCodeFragmentBuilder methodsBuilder) throws CoreException {
-        
-        String methodName = getMethodNameSetObject(association);
-        String paramClass = getQualifiedClassName(association.findTarget(getIpsProject()));
-        String paramName = getParamNameForSetObject(association);
-        methodsBuilder.signature(java.lang.reflect.Modifier.PUBLIC, "void", methodName, new String[]{paramName}, new String[]{paramClass});
-    }
-    
-    /**
-     * Returns the name of the method setting the referenced object.
-     * e.g. setCoverage(ICoverage newObject)
-     */
-    public String getMethodNameSetObject(IPolicyCmptTypeAssociation association) {
-        return getLocalizedText(association, "METHOD_SET_OBJECT_NAME", association.getTargetRoleSingular());
-    }
-    
-    /**
-     * Returns the name of the method that adds an object to a toMany association or that sets
-     * the object in a to1 association respectively.
-     */
-    // TODO remove
-    public String getMethodNameAddOrSetObject(IPolicyCmptTypeAssociation association) {
-        if (association.is1ToMany()) {
-            return getLocalizedText(association, "METHOD_ADD_OBJECT_NAME", association.getTargetRoleSingular());
-        } else {
-            return getMethodNameSetObject(association);
-        }
-    }
-
-    /**
-     * Returns the name of the paramter for the method that tests if an object is references in a multi-value association,
-     * e.g. objectToTest
-     */
-    public String getParamNameForSetObject(IPolicyCmptTypeAssociation association) {
-        return getLocalizedText(association, "PARAM_OBJECT_TO_SET_NAME", association.getTargetRoleSingular());
     }
     
     /**

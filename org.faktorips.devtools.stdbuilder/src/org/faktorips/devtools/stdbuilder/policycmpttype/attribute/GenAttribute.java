@@ -15,7 +15,7 @@
  *
  *******************************************************************************/
 
-package org.faktorips.devtools.stdbuilder.policycmpttype;
+package org.faktorips.devtools.stdbuilder.policycmpttype.attribute;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.SystemUtils;
@@ -30,6 +30,8 @@ import org.faktorips.devtools.core.builder.JavaSourceFileBuilder;
 import org.faktorips.devtools.core.model.pctype.AttributeType;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAttribute;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
+import org.faktorips.devtools.stdbuilder.policycmpttype.PolicyCmptImplClassBuilder;
+import org.faktorips.devtools.stdbuilder.policycmpttype.PolicyCmptInterfaceBuilder;
 import org.faktorips.runtime.internal.MethodNames;
 import org.faktorips.util.LocalizedStringsSet;
 
@@ -201,15 +203,15 @@ public abstract class GenAttribute extends DefaultJavaGeneratorForIpsPart {
      * This is currently the case for changeable attributes and attributes that are derived by an explicit
      * method call.
      */
-    protected boolean isMemberVariableRequired() {
+    public boolean isMemberVariableRequired() {
         return (attribute.isChangeable() || isDerivedByExplicitMethodCall()) && !isOverwritten();
     }
     
-    protected boolean needsToBeConsideredInDeltaComputation() {
+    public boolean needsToBeConsideredInDeltaComputation() {
         return isPublished() && isMemberVariableRequired() && !isOverwritten();
     }
     
-    protected void generateDeltaComputation(JavaCodeFragmentBuilder methodsBuilder, String deltaVar, String otherVar) throws CoreException {
+    public void generateDeltaComputation(JavaCodeFragmentBuilder methodsBuilder, String deltaVar, String otherVar) throws CoreException {
         methodsBuilder.append(deltaVar);
         methodsBuilder.append('.');
         methodsBuilder.append(MethodNames.MODELOBJECTDELTA_CHECK_PROPERTY_CHANGE);
@@ -230,7 +232,7 @@ public abstract class GenAttribute extends DefaultJavaGeneratorForIpsPart {
         return isMemberVariableRequired();        
     }
     
-    protected void generateInitPropertiesFromXml(JavaCodeFragmentBuilder builder) throws CoreException {
+    public void generateInitPropertiesFromXml(JavaCodeFragmentBuilder builder) throws CoreException {
         builder.append("if (propMap.containsKey(");
         builder.appendQuoted(attributeName);
         builder.appendln(")) {");

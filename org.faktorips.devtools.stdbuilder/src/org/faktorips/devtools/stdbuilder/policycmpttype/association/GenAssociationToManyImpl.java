@@ -33,8 +33,6 @@ import org.faktorips.util.LocalizedStringsSet;
  */
 public class GenAssociationToManyImpl extends GenAssociationToMany {
 
-    private String targetImplClassName;
-    
     public GenAssociationToManyImpl(IPolicyCmptTypeAssociation association, PolicyCmptImplClassBuilder builder,
             LocalizedStringsSet stringsSet) throws CoreException {
         super(association, builder, stringsSet, true);
@@ -197,7 +195,7 @@ public class GenAssociationToManyImpl extends GenAssociationToMany {
         if (association.isAssoziation() && reverseAssociation!=null) {
             methodsBuilder.append(implClassBuilder.generateCodeToSynchronizeReverseAssoziation(paramName, targetInterfaceName, association, reverseAssociation));
         }
-        implClassBuilder.generateChangeListenerSupport(methodsBuilder, IModelObjectChangedEvent.class.getName(), "RELATION_OBJECT_ADDED" , fieldName, paramName);
+        generateChangeListenerSupport("RELATION_OBJECT_ADDED" , paramName);
         methodsBuilder.closeBracket();
     }
        
