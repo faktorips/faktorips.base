@@ -28,6 +28,7 @@ import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAssociation;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAttribute;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
+import org.faktorips.devtools.stdbuilder.policycmpttype.association.GenAssociation;
 import org.faktorips.util.LocalizedStringsSet;
 import org.faktorips.util.message.MessageList;
 
@@ -39,6 +40,7 @@ public abstract class BasePolicyCmptTypeBuilder extends AbstractPcTypeBuilder {
 
     private Map generatorsByPart = new HashMap();
     private List genAttributes = new ArrayList();
+    private List genAssociations = new ArrayList();
 
     private boolean generateChangeListenerSupport;
     
@@ -49,6 +51,8 @@ public abstract class BasePolicyCmptTypeBuilder extends AbstractPcTypeBuilder {
         super(builderSet, kindId, stringsSet);
         this.generateChangeListenerSupport = generateChangeListenerSupport;
     }
+    
+    public abstract PolicyCmptInterfaceBuilder getInterfaceBuilder();
     
     
     /**
@@ -61,13 +65,21 @@ public abstract class BasePolicyCmptTypeBuilder extends AbstractPcTypeBuilder {
 
     private void initPartGenerators() throws CoreException {
         genAttributes.clear();
+        genAssociations.clear();
         generatorsByPart.clear();
-        LocalizedStringsSet attrStringsSet = new LocalizedStringsSet(GenAttribute.class);
+
+        createGeneratorsForAttributes();
+        createGeneratorsForAssociations();
+    }
+
+
+    private void createGeneratorsForAttributes() throws CoreException {
+        LocalizedStringsSet stringsSet = new LocalizedStringsSet(GenAttribute.class);
         IPolicyCmptType type = getPcType();
         IPolicyCmptTypeAttribute[] attrs = type.getPolicyCmptTypeAttributes();
         for (int i = 0; i < attrs.length; i++) {
             if (attrs[i].isValid()) {
-                GenAttribute generator = createGenerator(attrs[i], attrStringsSet);
+                GenAttribute generator = createGenerator(attrs[i], stringsSet);
                 if (generator!=null) {
                     genAttributes.add(generator);
                     generatorsByPart.put(attrs[i], generator);
@@ -78,6 +90,24 @@ public abstract class BasePolicyCmptTypeBuilder extends AbstractPcTypeBuilder {
     
     protected abstract GenAttribute createGenerator(IPolicyCmptTypeAttribute a, LocalizedStringsSet localizedStringsSet) throws CoreException;
     
+    private void createGeneratorsForAssociations() throws CoreException {
+        LocalizedStringsSet stringsSet = new LocalizedStringsSet(GenAssociation.class);
+        IPolicyCmptType type = getPcType();
+        IPolicyCmptTypeAssociation[] ass = type.getPolicyCmptTypeAssociations();
+        for (int i = 0; i < ass.length; i++) {
+            if (ass[i].isValid()) {
+                GenAssociation generator = createGenerator(ass[i], stringsSet);
+                if (generator!=null) {
+                    genAssociations.add(generator);
+                    generatorsByPart.put(ass[i], generator);
+                }
+            }
+        }
+    }
+    
+    protected abstract GenAssociation createGenerator(IPolicyCmptTypeAssociation association, LocalizedStringsSet attrStringsSet) throws CoreException;
+
+
     protected Iterator getGenAttributes() {
         return genAttributes.iterator();
     }
@@ -90,6 +120,9 @@ public abstract class BasePolicyCmptTypeBuilder extends AbstractPcTypeBuilder {
         return (GenAttribute)generatorsByPart.get(a);
     }
     
+    protected GenAssociation getGenerator(IPolicyCmptTypeAssociation a) {
+        return (GenAssociation)generatorsByPart.get(a);
+    }
 
     public boolean isGenerateChangeListenerSupport() {
         return generateChangeListenerSupport;
@@ -167,44 +200,6 @@ public abstract class BasePolicyCmptTypeBuilder extends AbstractPcTypeBuilder {
     protected abstract void generateCodeFor1To1Association(IPolicyCmptTypeAssociation association,
             JavaCodeFragmentBuilder fieldsBuilder,
             JavaCodeFragmentBuilder methodsBuilder) throws Exception;
-
-    /**
-     * Methods to create a new child object should be generated if the association is a composite and
-     * the target is not abstract. If the target is configurable by product a second method with the
-     * product component type as argument should also be generated.
-     */
-    protected void generateNewChildMethodsIfApplicable(IPolicyCmptTypeAssociation association,
-            IPolicyCmptType target,
-            JavaCodeFragmentBuilder methodsBuilder) throws CoreException {
-
-        if (!association.getAssociationType().isCompositionMasterToDetail()) {
-            return;
-        }
-        if (target.isAbstract()) {
-            return;
-        }
-        generateMethodNewChild(association, target, false, methodsBuilder);
-        if (target.isConfigurableByProductCmptType() && target.findProductCmptType(getIpsProject())!=null) {
-            generateMethodNewChild(association, target, true, methodsBuilder);
-        }
-    }
-
-    /**
-     * Generates a method to create a new child object for a parent obejct and attach it to the
-     * parent.
-     * 
-     * @param association The parent to child association
-     * @param target The child type.
-     * @param inclProductCmptArg <code>true</code> if the product component type should be
-     *            included as arg.
-     * @param builder The builder sourcecode can be appended to.
-     * 
-     * @throws CoreException
-     */
-    public abstract void generateMethodNewChild(IPolicyCmptTypeAssociation association,
-            IPolicyCmptType target,
-            boolean inclProductCmptArg,
-            JavaCodeFragmentBuilder builder) throws CoreException;
 
     boolean isFirstDependantTypeInHierarchy(IPolicyCmptType type) throws CoreException {
         if (!type.isDependantType()) {

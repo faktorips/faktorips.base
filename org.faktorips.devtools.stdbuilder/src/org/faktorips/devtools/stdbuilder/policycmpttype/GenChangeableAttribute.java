@@ -152,6 +152,7 @@ public abstract class GenChangeableAttribute extends GenAttribute {
      * Generates the sginature for the method to access an attribute's range of allowed values.
      */
     protected void generateSignatureGetRange(JavaCodeFragmentBuilder builder) throws CoreException {
+        // TODO refactor
         getProductCmptGenInterfaceBuilder().generateSignatureGetRangeFor(attribute, datatypeHelper, builder);
     }
 

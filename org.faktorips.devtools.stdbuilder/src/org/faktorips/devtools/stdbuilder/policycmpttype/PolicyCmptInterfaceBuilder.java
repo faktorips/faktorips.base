@@ -37,6 +37,9 @@ import org.faktorips.devtools.core.model.pctype.IValidationRule;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeAttribute;
 import org.faktorips.devtools.core.model.type.IMethod;
+import org.faktorips.devtools.stdbuilder.policycmpttype.association.GenAssociation;
+import org.faktorips.devtools.stdbuilder.policycmpttype.association.GenAssociationTo1Interface;
+import org.faktorips.devtools.stdbuilder.policycmpttype.association.GenAssociationToManyInterface;
 import org.faktorips.devtools.stdbuilder.productcmpttype.ProductCmptGenInterfaceBuilder;
 import org.faktorips.devtools.stdbuilder.productcmpttype.ProductCmptInterfaceBuilder;
 import org.faktorips.runtime.IConfigurableModelObject;
@@ -62,8 +65,19 @@ public class PolicyCmptInterfaceBuilder extends BasePolicyCmptTypeBuilder {
         setMergeEnabled(true);
     }
     
+    /**
+     * {@inheritDoc}
+     */
+    public PolicyCmptInterfaceBuilder getInterfaceBuilder() {
+        return this;
+    }
+
     public ProductCmptGenInterfaceBuilder getProductCmptGenInterfaceBuilder() {
         return productCmptGenInterfaceBuilder;
+    }
+
+    public ProductCmptInterfaceBuilder getProductCmptInterfaceBuilder() {
+        return productCmptInterfaceBuilder;
     }
 
     /**
@@ -82,6 +96,15 @@ public class PolicyCmptInterfaceBuilder extends BasePolicyCmptTypeBuilder {
         return new GenConstantAttribute(a, this, stringsSet, false);
     }
 
+    /**
+     * {@inheritDoc}
+     */
+    protected GenAssociation createGenerator(IPolicyCmptTypeAssociation association, LocalizedStringsSet stringsSet) throws CoreException {
+        if (association.is1ToMany()) {
+            return new GenAssociationToManyInterface(association, this, stringsSet);
+        }
+        return new GenAssociationTo1Interface(association, this, stringsSet);
+    }
 
     public boolean isGenerateDeltaSupport() {
         return generateDeltaSupport;
@@ -444,11 +467,11 @@ public class PolicyCmptInterfaceBuilder extends BasePolicyCmptTypeBuilder {
      * {@inheritDoc}
      */
     protected void generateCodeFor1To1Association(IPolicyCmptTypeAssociation association, JavaCodeFragmentBuilder fieldsBuilder, JavaCodeFragmentBuilder methodsBuilder) throws Exception {
-        IPolicyCmptType target = association.findTargetPolicyCmptType(getIpsProject());
         generateMethodGetRefObject(association, methodsBuilder);
         if (!association.isDerivedUnion() && !association.getAssociationType().isCompositionDetailToMaster()) {
             generateMethodSetObject(association, methodsBuilder);
-            generateNewChildMethodsIfApplicable(association, target, methodsBuilder);
+            GenAssociation generator = getGenerator(association);
+            generator.generateMethods(methodsBuilder);
         }
     }
 
@@ -456,34 +479,10 @@ public class PolicyCmptInterfaceBuilder extends BasePolicyCmptTypeBuilder {
      * {@inheritDoc}
      */
     protected void generateCodeFor1ToManyAssociation(IPolicyCmptTypeAssociation association, JavaCodeFragmentBuilder fieldsBuilder, JavaCodeFragmentBuilder methodsBuilder) throws Exception {
-        IPolicyCmptType target = association.findTargetPolicyCmptType(getIpsProject());
-        generateMethodGetNumOfRefObjects(association, methodsBuilder);
-        generateMethodGetAllRefObjects(association, methodsBuilder);
-        generateMethodContainsObject(association, methodsBuilder);
-        if (!association.isDerivedUnion()) {
-            generateMethodAddObject(association, methodsBuilder);
-            generateMethodRemoveObject(association, methodsBuilder);
-            generateNewChildMethodsIfApplicable(association, target, methodsBuilder);
-            generateMethodGetRefObjectAtIndex(association, methodsBuilder);
-        }
+        GenAssociation generator = getGenerator(association);
+        generator.generateMethods(methodsBuilder);
     }
     
-    /**
-     * Code sample:
-     * <pre>
-     * [Javadoc]
-     * public int getNumOfCoverages();
-     * </pre>
-     */
-    protected void generateMethodGetNumOfRefObjects(
-            IPolicyCmptTypeAssociation association,
-            JavaCodeFragmentBuilder methodsBuilder) throws CoreException {
-
-        appendLocalizedJavaDoc("METHOD_GET_NUM_OF", association.getTargetRolePlural(), association, methodsBuilder);
-        generateSignatureGetNumOfRefObjects(association, methodsBuilder);
-        methodsBuilder.appendln(";");
-    }
-
     /**
      * Code sample:
      * <pre>
@@ -509,25 +508,10 @@ public class PolicyCmptInterfaceBuilder extends BasePolicyCmptTypeBuilder {
     /**
      * Code sample:
      * <pre>
-     * [Javadoc]
-     * public ICoverage[] getCoverages();
-     * </pre>
-     */
-    protected void generateMethodGetAllRefObjects(
-            IPolicyCmptTypeAssociation association,
-            JavaCodeFragmentBuilder methodsBuilder) throws CoreException {
-
-        appendLocalizedJavaDoc("METHOD_GET_ALL_REF_OBJECTS", association.getTargetRolePlural(), association, methodsBuilder);
-        generateSignatureGetAllRefObjects(association, methodsBuilder);
-        methodsBuilder.appendln(";");
-    }
-
-    /**
-     * Code sample:
-     * <pre>
      * public ICoverage[] getCoverages()
      * </pre>
      */
+    // TODO remove
     public void generateSignatureGetAllRefObjects(
             IPolicyCmptTypeAssociation association,
             JavaCodeFragmentBuilder methodsBuilder) throws CoreException {
@@ -541,6 +525,7 @@ public class PolicyCmptInterfaceBuilder extends BasePolicyCmptTypeBuilder {
      * Returns the name of the method returning the referenced objects,
      * e.g. getCoverages()
      */
+    // TODO remove
     public String getMethodNameGetAllRefObjects(IPolicyCmptTypeAssociation association) {
         return getLocalizedText(association, "METHOD_GET_ALL_REF_OBJECTS_NAME", StringUtils.capitalize(association.getTargetRolePlural()));
     }
@@ -618,54 +603,6 @@ public class PolicyCmptInterfaceBuilder extends BasePolicyCmptTypeBuilder {
                 new String[] { "qualifier" }, new String[] { qualifierClassName });
     }
     
-    
-    /**
-     * Code sample:
-     * <pre>
-     * [Javadoc]
-     * public void addCoverage(ICoverage objectToAdd);
-     * </pre>
-     */
-    protected void generateMethodAddObject(
-            IPolicyCmptTypeAssociation association,
-            JavaCodeFragmentBuilder methodsBuilder) throws CoreException {
-
-        appendLocalizedJavaDoc("METHOD_ADD_OBJECT", association.getTargetRoleSingular(), association, methodsBuilder);
-        generateSignatureAddObject(association, methodsBuilder);
-        methodsBuilder.appendln(";");
-    }
-
-    /**
-     * Code sample:
-     * <pre>
-     * public void addCoverage(ICoverage objectToAdd)
-     * </pre>
-     */
-    public void generateSignatureAddObject(
-            IPolicyCmptTypeAssociation association,
-            JavaCodeFragmentBuilder methodsBuilder) throws CoreException {
-        
-        String methodName = getMethodNameAddObject(association);
-        String className = getQualifiedClassName(association.findTarget(getIpsProject()));
-        String paramName = getParamNameForAddObject(association);
-        methodsBuilder.signature(java.lang.reflect.Modifier.PUBLIC, "void", methodName, new String[]{paramName}, new String[]{className});
-    }
-    
-    /**
-     * Returns the name of the method adding an object to a multi-value association,
-     * e.g. getCoverage()
-     */
-    public String getMethodNameAddObject(IPolicyCmptTypeAssociation association) {
-        return getLocalizedText(association, "METHOD_ADD_OBJECT_NAME", association.getTargetRoleSingular());
-    }
-
-    /**
-     * Returns the name of the paramter for the method adding an object to a multi-value association,
-     * e.g. objectToAdd
-     */
-    public String getParamNameForAddObject(IPolicyCmptTypeAssociation association) {
-        return getLocalizedText(association, "PARAM_OBJECT_TO_ADD_NAME", association.getTargetRoleSingular());
-    }
     
     /**
      * Code sample without product component parameter:
@@ -747,22 +684,6 @@ public class PolicyCmptInterfaceBuilder extends BasePolicyCmptTypeBuilder {
     /**
      * Code sample:
      * <pre>
-     * [Javadoc]
-     * public void removeCoverage(ICoverage objectToRemove);
-     * </pre>
-     */
-    protected void generateMethodRemoveObject(
-            IPolicyCmptTypeAssociation association,
-            JavaCodeFragmentBuilder methodsBuilder) throws CoreException {
-
-        appendLocalizedJavaDoc("METHOD_REMOVE_OBJECT", association.getTargetRoleSingular(), association, methodsBuilder);
-        generateSignatureRemoveObject(association, methodsBuilder);
-        methodsBuilder.appendln(";");
-    }
-
-    /**
-     * Code sample:
-     * <pre>
      * public void removeCoverage(ICoverage objectToRemove)
      * </pre>
      */
@@ -799,6 +720,7 @@ public class PolicyCmptInterfaceBuilder extends BasePolicyCmptTypeBuilder {
      * public boolean containsCoverage(ICoverage objectToTest);
      * </pre>
      */
+    // TODO remove
     protected void generateMethodContainsObject(
             IPolicyCmptTypeAssociation association,
             JavaCodeFragmentBuilder methodsBuilder) throws CoreException {
@@ -814,6 +736,7 @@ public class PolicyCmptInterfaceBuilder extends BasePolicyCmptTypeBuilder {
      * public boolean containsCoverage(ICoverage objectToTest)
      * </pre>
      */
+    // TODO remove
     public void generateSignatureContainsObject(
             IPolicyCmptTypeAssociation association,
             JavaCodeFragmentBuilder methodsBuilder) throws CoreException {
@@ -828,6 +751,7 @@ public class PolicyCmptInterfaceBuilder extends BasePolicyCmptTypeBuilder {
      * Returns the name of the method returning the number of referenced objects,
      * e.g. getNumOfCoverages()
      */
+    // TODO remove
     public String getMethodNameContainsObject(IPolicyCmptTypeAssociation association) {
         return getLocalizedText(association, "METHOD_CONTAINS_OBJECT_NAME", association.getTargetRoleSingular());
     }
@@ -836,6 +760,7 @@ public class PolicyCmptInterfaceBuilder extends BasePolicyCmptTypeBuilder {
      * Returns the name of the paramter for the method that tests if an object is references in a multi-value association,
      * e.g. objectToTest
      */
+    // TODO remove
     public String getParamNameForContainsObject(IPolicyCmptTypeAssociation association) {
         return getLocalizedText(association, "PARAM_OBJECT_TO_TEST_NAME", association.getTargetRoleSingular());
     }
@@ -884,9 +809,10 @@ public class PolicyCmptInterfaceBuilder extends BasePolicyCmptTypeBuilder {
      * Returns the name of the method that adds an object to a toMany association or that sets
      * the object in a to1 association respectively.
      */
+    // TODO remove
     public String getMethodNameAddOrSetObject(IPolicyCmptTypeAssociation association) {
         if (association.is1ToMany()) {
-            return getMethodNameAddObject(association);
+            return getLocalizedText(association, "METHOD_ADD_OBJECT_NAME", association.getTargetRoleSingular());
         } else {
             return getMethodNameSetObject(association);
         }

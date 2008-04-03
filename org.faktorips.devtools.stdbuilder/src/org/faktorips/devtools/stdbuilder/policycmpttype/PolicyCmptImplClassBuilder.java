@@ -44,6 +44,10 @@ import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeAttribu
 import org.faktorips.devtools.core.model.type.IMethod;
 import org.faktorips.devtools.core.model.valueset.ValueSetType;
 import org.faktorips.devtools.core.util.QNameUtil;
+import org.faktorips.devtools.stdbuilder.policycmpttype.association.GenAssociation;
+import org.faktorips.devtools.stdbuilder.policycmpttype.association.GenAssociationTo1Impl;
+import org.faktorips.devtools.stdbuilder.policycmpttype.association.GenAssociationToMany;
+import org.faktorips.devtools.stdbuilder.policycmpttype.association.GenAssociationToManyImpl;
 import org.faktorips.devtools.stdbuilder.productcmpttype.ProductCmptGenImplClassBuilder;
 import org.faktorips.devtools.stdbuilder.productcmpttype.ProductCmptGenInterfaceBuilder;
 import org.faktorips.devtools.stdbuilder.productcmpttype.ProductCmptInterfaceBuilder;
@@ -84,6 +88,8 @@ public class PolicyCmptImplClassBuilder extends BasePolicyCmptTypeBuilder {
         setMergeEnabled(true);
     }
     
+    
+    
     public ProductCmptGenInterfaceBuilder getProductCmptGenInterfaceBuilder() {
         return productCmptGenInterfaceBuilder;
     }
@@ -103,6 +109,16 @@ public class PolicyCmptImplClassBuilder extends BasePolicyCmptTypeBuilder {
             return new GenChangeableAttributeImpl(a, this, stringsSet);
         }
         return new GenConstantAttribute(a, this, stringsSet, true);
+    }
+    
+    /**
+     * {@inheritDoc}
+     */
+    protected GenAssociation createGenerator(IPolicyCmptTypeAssociation association, LocalizedStringsSet stringsSet) throws CoreException {
+        if (association.is1ToMany()) {
+            return new GenAssociationToManyImpl(association, this, stringsSet);
+        }
+        return new GenAssociationTo1Impl(association, this, stringsSet);
     }
 
     public boolean isGenerateDeltaSupport() {
@@ -124,7 +140,10 @@ public class PolicyCmptImplClassBuilder extends BasePolicyCmptTypeBuilder {
     public void setInterfaceBuilder(PolicyCmptInterfaceBuilder policyCmptTypeInterfaceBuilder) {
         this.interfaceBuilder = policyCmptTypeInterfaceBuilder;
     }
-
+    
+    /**
+     * {@inheritDoc}
+     */
     public PolicyCmptInterfaceBuilder getInterfaceBuilder() {
         return interfaceBuilder;
     }
@@ -617,7 +636,7 @@ public class PolicyCmptImplClassBuilder extends BasePolicyCmptTypeBuilder {
     	generateChangeListenerSupport(methodsBuilder, eventClassName, eventConstant, fieldName, null);
 	}
     
-    protected void generateChangeListenerSupport(JavaCodeFragmentBuilder methodsBuilder, String eventClassName, String eventConstant, String fieldName, String paramName) {
+    public void generateChangeListenerSupport(JavaCodeFragmentBuilder methodsBuilder, String eventClassName, String eventConstant, String fieldName, String paramName) {
     	if (isGenerateChangeListenerSupport()) {
             methodsBuilder.appendln("if (" + MethodNames.EXISTS_CHANGE_LISTENER_TO_BE_INFORMED + "()) {");
             methodsBuilder.append(MethodNames.NOTIFIY_CHANGE_LISTENERS + "(new ");
@@ -668,7 +687,8 @@ public class PolicyCmptImplClassBuilder extends BasePolicyCmptTypeBuilder {
             } else if (association.isCompositionMasterToDetail()) { 
                 generateMethodSetRefObjectForComposition(association, methodsBuilder);
             }
-            generateNewChildMethodsIfApplicable(association, target, methodsBuilder);
+            GenAssociation generator = getGenerator(association);
+            generator.generate();
         }
     }
 
@@ -676,18 +696,11 @@ public class PolicyCmptImplClassBuilder extends BasePolicyCmptTypeBuilder {
      * {@inheritDoc}
      */
     protected void generateCodeFor1ToManyAssociation(IPolicyCmptTypeAssociation association, JavaCodeFragmentBuilder fieldsBuilder, JavaCodeFragmentBuilder methodsBuilder) throws Exception {
-        IPolicyCmptType target = association.findTargetPolicyCmptType(getIpsProject());
         if (association.isDerivedUnion()) {
             generateMethodContainsObjectForContainerAssociation(association, methodsBuilder);
         } else {
-            generateFieldForAssociation(association, target, fieldsBuilder);
-            generateMethodGetNumOfForNoneContainerAssociation(association, methodsBuilder);
-            generateMethodContainsObjectForNoneContainerAssociation(association, methodsBuilder);
-            generateMethodGetAllRefObjectsForNoneContainerAssociation(association, methodsBuilder);
-            generateMethodGetRefObjectAtIndex(association, methodsBuilder);
-            generateNewChildMethodsIfApplicable(association, target, methodsBuilder);
-            generateMethodAddObject(association, methodsBuilder);
-            generateMethodRemoveObject(association, methodsBuilder);
+            GenAssociation generator = getGenerator(association);
+            generator.generate();
         }
     }
     
@@ -875,6 +888,7 @@ public class PolicyCmptImplClassBuilder extends BasePolicyCmptTypeBuilder {
      * }
      * </pre>
      */
+    // TODO remove
     protected void generateMethodGetAllRefObjectsForNoneContainerAssociation(
             IPolicyCmptTypeAssociation association, 
             JavaCodeFragmentBuilder methodsBuilder) throws Exception {
@@ -1226,92 +1240,6 @@ public class PolicyCmptImplClassBuilder extends BasePolicyCmptTypeBuilder {
      * Code sample:
      * <pre>
      * [Javadoc]
-     * public void addCoverage(ICoverage objectToAdd) {
-     *     if(objectToAdd == null) { 
-     *         throw new IllegalArgumentException("Can't add null to ...");
-     *     }
-     *     if (coverages.contains(objectToAdd)) { 
-     *         return; 
-     *     }
-     *     coverages.add(objectToAdd);
-     * }
-     * </pre>
-     */
-    protected void generateMethodAddObject (
-            IPolicyCmptTypeAssociation association, 
-            JavaCodeFragmentBuilder methodsBuilder) throws CoreException {
-        
-        methodsBuilder.javaDoc(getJavaDocCommentForOverriddenMethod(), ANNOTATION_GENERATED);
-        interfaceBuilder.generateSignatureAddObject(association, methodsBuilder);
-        String fieldname = getFieldNameForAssociation(association);
-        String paramName = interfaceBuilder.getParamNameForAddObject(association);
-        IPolicyCmptTypeAssociation reverseAssociation = association.findInverseAssociation(getIpsProject());
-        methodsBuilder.openBracket();
-        methodsBuilder.append("if (" + paramName + " == null) {");
-        methodsBuilder.append("throw new ");
-        methodsBuilder.appendClassName(NullPointerException.class);
-        methodsBuilder.append("(\"Can't add null to association " + association.getName() + " of \" + this); }");
-        methodsBuilder.append("if(");
-        methodsBuilder.append(fieldname);
-        methodsBuilder.append(".contains(" + paramName + ")) { return; }");
-        if (association.isCompositionMasterToDetail()) {
-            IPolicyCmptType target = association.findTargetPolicyCmptType(getIpsProject());
-            if (target!=null && target.isDependantType()) {
-                methodsBuilder.append(generateCodeToSynchronizeReverseComposition(paramName, "this"));
-            }
-        }
-        methodsBuilder.append(fieldname);
-        methodsBuilder.append(".add(" + paramName + ");");
-        if (association.isAssoziation() && reverseAssociation!=null) {
-            String targetClass = interfaceBuilder.getQualifiedClassName(association.findTarget(getIpsProject()));
-            methodsBuilder.append(generateCodeToSynchronizeReverseAssoziation(paramName, targetClass, association, reverseAssociation));
-        }
-        generateChangeListenerSupport(methodsBuilder, IModelObjectChangedEvent.class.getName(), "RELATION_OBJECT_ADDED" , fieldname, paramName);
-        methodsBuilder.closeBracket();
-    }
-    
-    
-
-	/**
-     * Code sample:
-     * <pre>
-     * [Javadoc]
-     * public ICoverage newCoverage() {
-     *     ICoverage newCoverage = new Coverage();
-     *     return newCoverage;
-     * }
-     * </pre>
-     */
-    public void generateMethodNewChild(
-            IPolicyCmptTypeAssociation association, 
-            IPolicyCmptType target,
-            boolean inclProductCmptArg,
-            JavaCodeFragmentBuilder methodsBuilder) throws CoreException {
-        
-        methodsBuilder.javaDoc(getJavaDocCommentForOverriddenMethod(), ANNOTATION_GENERATED);
-        interfaceBuilder.generateSignatureNewChild(association, target, inclProductCmptArg, methodsBuilder);
-        String addMethod = association.is1ToMany() ? interfaceBuilder.getMethodNameAddObject(association) :
-            interfaceBuilder.getMethodNameSetObject(association);
-        String varName = "new" + association.getTargetRoleSingular();
-        methodsBuilder.openBracket();
-        methodsBuilder.appendClassName(getQualifiedClassName(target));
-        methodsBuilder.append(" " + varName + " = new ");
-        methodsBuilder.appendClassName(getQualifiedClassName(target));
-        if (inclProductCmptArg) {
-            methodsBuilder.appendln("(" + interfaceBuilder.getParamNameForProductCmptInNewChildMethod(target.findProductCmptType(getIpsProject())) + ");");  
-        } else {
-            methodsBuilder.appendln("();");
-        }
-        methodsBuilder.appendln(addMethod + "(" + varName + ");");
-        methodsBuilder.appendln(varName + "." + getMethodNameInitialize() + "();");
-        methodsBuilder.appendln("return " + varName + ";");
-        methodsBuilder.closeBracket();
-    }
-    
-    /**
-     * Code sample:
-     * <pre>
-     * [Javadoc]
      * public void removeMotorCoverage(IMotorCoverage objectToRemove) {
      *     if (objectToRemove == null) {
      *          return;
@@ -1464,7 +1392,8 @@ public class PolicyCmptImplClassBuilder extends BasePolicyCmptTypeBuilder {
         methodsBuilder.closeBracket();
     }
     
-    private JavaCodeFragment generateCodeToSynchronizeReverseAssoziation(
+    // TODO move to Generator
+    public JavaCodeFragment generateCodeToSynchronizeReverseAssoziation(
             String varName,
             String varClassName,
             IPolicyCmptTypeAssociation association,
@@ -1484,7 +1413,9 @@ public class PolicyCmptImplClassBuilder extends BasePolicyCmptTypeBuilder {
         }
         code.append(") {");
         if (reverseAssociation.is1ToMany()) {
-            code.append(varName + "." + interfaceBuilder.getMethodNameAddObject(reverseAssociation));
+            // TODO refactor
+            GenAssociationToMany generator = new GenAssociationToManyImpl(reverseAssociation, this, new LocalizedStringsSet(GenAssociation.class));
+            code.append(varName + "." + generator.getMethodNameAddObject());
         } else {
             String targetClass = getQualifiedClassName(association.findTarget(getIpsProject()));
             if (!varClassName.equals(targetClass)) {
@@ -1506,7 +1437,8 @@ public class PolicyCmptImplClassBuilder extends BasePolicyCmptTypeBuilder {
      * ((DependantObject)parentModelObject).setParentModelObjectInternal(this);
      * </pre>
      */
-    private JavaCodeFragment generateCodeToSynchronizeReverseComposition(
+    // TODO remove
+    protected JavaCodeFragment generateCodeToSynchronizeReverseComposition(
             String varName, String newValue) throws CoreException {
         
         JavaCodeFragment code = new JavaCodeFragment();
@@ -1521,7 +1453,7 @@ public class PolicyCmptImplClassBuilder extends BasePolicyCmptTypeBuilder {
         return code;
     }
     
-    private JavaCodeFragment generateCodeToCleanupOldReference(
+    public JavaCodeFragment generateCodeToCleanupOldReference(
             IPolicyCmptTypeAssociation association, 
             IPolicyCmptTypeAssociation reverseAssociation,
             String varToCleanUp) throws CoreException {
@@ -2457,24 +2389,5 @@ public class PolicyCmptImplClassBuilder extends BasePolicyCmptTypeBuilder {
         methodsBuilder.methodEnd();
     }
 
-    /**
-     * <pre>
-     * public IMotorCoverage getMotorCoverage(int index) {
-     *      return (IMotorCoverage)motorCoverages.get(index);
-     * }
-     * </pre>
-     */
-    protected void generateMethodGetRefObjectAtIndex(IPolicyCmptTypeAssociation association, JavaCodeFragmentBuilder methodBuilder) throws CoreException{
-        String className = interfaceBuilder.getQualifiedClassName(association.findTarget(getIpsProject()));
-        String field = getFieldNameForAssociation(association);
-        interfaceBuilder.generateSignatureGetRefObjectAtIndex(association, methodBuilder);
-        methodBuilder.openBracket();
-        methodBuilder.append("return (");
-        methodBuilder.appendClassName(className);
-        methodBuilder.append(')');
-        methodBuilder.append(field);
-        methodBuilder.append(".get(index);");
-        methodBuilder.closeBracket();
-    }
    
 }
