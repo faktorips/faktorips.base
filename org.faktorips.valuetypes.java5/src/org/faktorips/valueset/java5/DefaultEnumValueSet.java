@@ -1,32 +1,36 @@
 /***************************************************************************************************
- * Copyright (c) 2005-2008 Faktor Zehn AG und andere.
+ * Copyright (c) 2005,2006 Faktor Zehn GmbH und andere.
  * 
  * Alle Rechte vorbehalten.
  * 
  * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen,
- * etc.) duerfen nur unter den Bedingungen der Faktor-Zehn-Community Lizenzvereinbarung - Version
- * 0.1 (vor Gruendung Community) genutzt werden, die Bestandteil der Auslieferung ist und auch unter
- * http://www.faktorzehn.org/f10-org:lizenzen:community eingesehen werden kann.
+ * etc.) dürfen nur unter den Bedingungen der Faktor-Zehn-Community Lizenzvereinbarung – Version 0.1
+ * (vor Gründung Community) genutzt werden, die Bestandteil der Auslieferung ist und auch unter
+ * http://www.faktorips.org/legal/cl-v01.html eingesehen werden kann.
  * 
- * Mitwirkende: Faktor Zehn GmbH - initial API and implementation - http://www.faktorzehn.de
+ * Mitwirkende: Faktor Zehn GmbH - initial API and implementation
  * 
  **************************************************************************************************/
+
 package org.faktorips.valueset.java5;
 
 import java.io.Serializable;
 import java.util.Collection;
-
-import org.faktorips.valueset.EnumValueSet;
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.Set;
 
 /**
+ * Default implementation of the <code>org.faktorips.valueset.EnumValueSet</code> interface.
  * 
- * @author Daniel Hohenberger
+ * @author Peter Erzberger
  */
-public class DefaultEnumValueSet implements EnumValueSet, Serializable {
+public class DefaultEnumValueSet<T> extends HashSet<T> implements Serializable, ValueSet<T> {
 
-    private static final long serialVersionUID = -7383945006925352479L;
+    private static final long serialVersionUID = -4073950730803261951L;
 
-    private final org.faktorips.valueset.DefaultEnumValueSet defaultEnumValueSet;
+    private boolean containsNull;
+    private T nullValue;
 
     /**
      * Creates a new instance of DefaultEnumValueSet.
@@ -40,28 +44,13 @@ public class DefaultEnumValueSet implements EnumValueSet, Serializable {
      *            value
      * @param nullValue the java null value or null representation value for the datatype of this
      *            enumeration value set
-     * @throws IllegalArgumentException if the values array contains duplicate entries
+     * @throws IllegalArgumentException if the values array contains duplicate entries           
      */
-    public DefaultEnumValueSet(Object[] values, boolean containsNull, Object nullValue) {
-        this.defaultEnumValueSet = new org.faktorips.valueset.DefaultEnumValueSet(values, containsNull, nullValue);
-    }
-
-    /**
-     * Creates a new instance of DefaultEnumValueSet.
-     * 
-     * @param containsNull indicates if the provided values contain null or the null representation
-     *            value
-     * @param nullValue the java null value or null representation value for the datatype of this
-     *            enumeration value set
-     * 
-     * @param values the values of this set. If these values contain null or the null representation
-     *            value the parameter containsNull must be set to true. This implementation of
-     *            EnumValueSet cannot validate if the provided values really contain null. The
-     *            caller is responsible for that
-     * @throws IllegalArgumentException if the values array contains duplicate entries
-     */
-    public DefaultEnumValueSet(boolean containsNull, Object nullValue, Object... values) {
-        this.defaultEnumValueSet = new org.faktorips.valueset.DefaultEnumValueSet(values, containsNull, nullValue);
+    public DefaultEnumValueSet(boolean containsNull, T nullValue, T... values) {
+        for (T t : values) {
+            add(t);
+        }
+        initialize(containsNull, nullValue);
     }
 
     /**
@@ -76,78 +65,61 @@ public class DefaultEnumValueSet implements EnumValueSet, Serializable {
      *            value
      * @param nullValue the java null value or null representation value for the datatype of this
      *            enumeration value set
-     * @throws IllegalArgumentException if the values collection contains duplicate entries
+     * @throws IllegalArgumentException if the values collection contains duplicate entries           
      */
-    @SuppressWarnings("unchecked")
-    public DefaultEnumValueSet(Collection values, boolean containsNull, Object nullValue) {
-        this.defaultEnumValueSet = new org.faktorips.valueset.DefaultEnumValueSet(values, containsNull, nullValue);
+    public DefaultEnumValueSet(Collection<T> values, boolean containsNull, T nullValue) {
+        addAll(values);
+        initialize(containsNull, nullValue);
     }
 
+    private void initialize(boolean containsNull, T nullValue){
+        this.containsNull = containsNull;
+        this.nullValue = nullValue;
+        this.add(nullValue);
+    }
+    
+    private Set<T> getValuesWithoutNull(){
+        if(containsNull && super.contains(nullValue)){
+            Set<T> set = new HashSet<T>(this);
+            set.remove(nullValue);
+            return Collections.unmodifiableSet(set);
+        }
+        return Collections.unmodifiableSet(this);
+    }
+    
     /**
      * {@inheritDoc}
      */
-    public Object[] getValues(boolean excludeNull) {
-        return defaultEnumValueSet.getValues(excludeNull);
+    public Set<T> getValues(boolean excludeNull) {
+        return excludeNull?getValuesWithoutNull():Collections.unmodifiableSet(this);
     }
 
     /**
      * {@inheritDoc}
      */
     public final boolean isDiscrete() {
-        return defaultEnumValueSet.isDiscrete();
+        return true;
     }
 
     /**
      * {@inheritDoc}
      */
-    public boolean equals(Object obj) {
+    @SuppressWarnings("unchecked")
+    public boolean equals(Object obj){
         if (obj instanceof DefaultEnumValueSet) {
-            DefaultEnumValueSet other = (DefaultEnumValueSet)obj;
-            return defaultEnumValueSet.equals(other.defaultEnumValueSet);
+            DefaultEnumValueSet<? extends T> other = (DefaultEnumValueSet<? extends T>)obj;
+            return super.equals(other) && 
+                    containsNull == other.containsNull && 
+                    nullValue == other.nullValue;
         }
-        return defaultEnumValueSet.equals(obj);
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    public int hashCode() {
-        return defaultEnumValueSet.hashCode();
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    public String toString() {
-        return defaultEnumValueSet.toString();
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    public boolean contains(Object value) {
-        return defaultEnumValueSet.contains(value);
+        return false;
     }
 
     /**
      * {@inheritDoc}
      */
     public boolean containsNull() {
-        return defaultEnumValueSet.containsNull();
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    public boolean isEmpty() {
-        return defaultEnumValueSet.isEmpty();
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    public int size() {
-        return defaultEnumValueSet.size();
+        return containsNull;
     }
 
 }
