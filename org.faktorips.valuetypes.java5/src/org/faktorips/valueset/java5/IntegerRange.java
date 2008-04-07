@@ -90,7 +90,7 @@ public class IntegerRange extends AbstractRange<Integer>{
      */
     protected boolean checkIfValueCompliesToStepIncrement(Integer value, Integer bound) {
         
-        if(getStep().intValue() == 0){
+        if(getStep() == 0){
             throw new IllegalArgumentException("The step size cannot be zero. Use null to indicate a continuous range.");
         }
         int diff = Math.abs(bound - value);
