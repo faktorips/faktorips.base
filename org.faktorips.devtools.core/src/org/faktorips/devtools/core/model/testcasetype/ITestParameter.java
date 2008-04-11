@@ -17,7 +17,9 @@
 
 package org.faktorips.devtools.core.model.testcasetype;
 
+import org.eclipse.swt.graphics.Image;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPart;
+import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 
 /**
  *  Specification of a test parameter.
@@ -111,4 +113,9 @@ public interface ITestParameter extends IIpsObjectPart {
      * or <code>false</code> if the parameter is a child of another object.
      */
     public boolean isRoot();
+    
+    /**
+     * Returns the element's image.
+     */
+    public Image getImage(IIpsProject ipsProject);
 }

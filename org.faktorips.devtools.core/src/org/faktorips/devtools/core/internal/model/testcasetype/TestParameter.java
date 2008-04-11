@@ -89,6 +89,15 @@ public abstract class TestParameter extends IpsObjectPart implements ITestParame
      * {@inheritDoc}
      */
     public Image getImage() {
+        // default no image
+        return null;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public Image getImage(IIpsProject ipsProject) {
+        // default no image
         return null;
     }
 

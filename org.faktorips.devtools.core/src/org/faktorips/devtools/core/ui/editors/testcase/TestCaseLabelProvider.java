@@ -31,6 +31,7 @@ import org.faktorips.devtools.core.model.testcase.ITestPolicyCmpt;
 import org.faktorips.devtools.core.model.testcase.ITestPolicyCmptLink;
 import org.faktorips.devtools.core.model.testcase.ITestRule;
 import org.faktorips.devtools.core.model.testcase.ITestValue;
+import org.faktorips.devtools.core.model.testcasetype.ITestParameter;
 import org.faktorips.devtools.core.model.testcasetype.ITestPolicyCmptTypeParameter;
 
 /**
@@ -51,15 +52,19 @@ public class TestCaseLabelProvider implements ILabelProvider {
 	 * {@inheritDoc}
 	 */
 	public Image getImage(Object element) {
-        if (element instanceof TestCaseTypeAssociation){
-	    	return getImageFromAssociationType((TestCaseTypeAssociation)element);
-	    } else if (element instanceof IIpsObjectPart) {
-            return ((IIpsObjectPart) element).getImage();
+        if (element instanceof TestCaseTypeAssociation) {
+            return getImageFromAssociationType((TestCaseTypeAssociation)element);
+        } else if (element instanceof ITestParameter) {
+            // the test parameter uses the attribute to get the image for
+            // thus the find method (with the ips project) is used to find the correct attribute
+            return ((ITestParameter)element).getImage(ipsProject);
+        } else if (element instanceof IIpsObjectPart) {
+            return ((IIpsObjectPart)element).getImage();
         } else if (element instanceof TestCaseTypeRule) {
-            return ((TestCaseTypeRule) element).getImage();
+            return ((TestCaseTypeRule)element).getImage();
         }
-        return null; 
-	}
+        return null;
+    }
 
 	/**
      * Returns the image of the given association test case type parameter.

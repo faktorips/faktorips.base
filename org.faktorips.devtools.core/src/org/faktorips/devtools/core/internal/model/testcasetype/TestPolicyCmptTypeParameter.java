@@ -297,7 +297,14 @@ public class TestPolicyCmptTypeParameter extends TestParameter implements
      * 
      * {@inheritDoc}
      */
-    public Image getImage() {
+	public Image getImage() {
+        return getImage(getIpsProject());
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public Image getImage(IIpsProject ipsProject) {
         if (StringUtils.isEmpty(association))
             if (requiresProductCmpt)
                 return IpsObjectType.PRODUCT_CMPT.getEnabledImage();
@@ -306,8 +313,7 @@ public class TestPolicyCmptTypeParameter extends TestParameter implements
         
         if (!isRoot()) {
             try {
-                //TODO provide ipsProject as parameter
-                IPolicyCmptTypeAssociation association = findAssociation(getIpsProject());
+                IPolicyCmptTypeAssociation association = findAssociation(ipsProject);
                 if (association != null)
                     return association.getImage();
             } catch (CoreException e) {
@@ -638,7 +644,7 @@ public class TestPolicyCmptTypeParameter extends TestParameter implements
             } else if (policyCmptTypeFound != null){
                 // check if the association is specified and the policy component type exists
                 //   that the policy cmpt type is a possible target of the association  
-                IPolicyCmptType targetOfAssociation = associationFound.findTargetPolicyCmptType(getIpsProject());
+                IPolicyCmptType targetOfAssociation = associationFound.findTargetPolicyCmptType(ipsProject);
                 if (targetOfAssociation == null){
                     String text = NLS.bind(Messages.TestPolicyCmptTypeParameter_ValidationError_TargetOfAssociationNotExists, associationFound.getTarget(), association);
                     Message msg = new Message(MSGCODE_TARGET_OF_ASSOCIATION_NOT_EXISTS, text, Message.WARNING, this,
