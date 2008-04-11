@@ -63,6 +63,8 @@ public class SourcePage extends WizardPage implements ICheckStateListener, Value
     private IProductCmptTreeStructure structure;
     private CheckboxTreeViewer tree;
     private CheckStateListener checkStateListener;
+    
+    // TODO Joerg fuer membervariablen kein Javadoc verwenden  
     /**
      * Cotnrol for search pattern
      */
@@ -83,8 +85,8 @@ public class SourcePage extends WizardPage implements ICheckStateListener, Value
      */
     private TextButtonField sourceFolderField;
     
-    private IpsPckFragmentRootRefControl sourceFolderControl;
-    private IpsPckFragmentRefControl targetInput;
+    private IpsPckFragmentRootRefControl sourceFolderControl; // TODO Joerg: Namensgebung: targetPackRootControl?
+    private IpsPckFragmentRefControl targetInput; // TODO Joerg: Namensgebung: targetPackageControl?
 
     /**
      * The naming strategy which is to be used to find the correct new names of the product
@@ -154,11 +156,27 @@ public class SourcePage extends WizardPage implements ICheckStateListener, Value
         sourceFolderField = new TextButtonField(sourceFolderControl);
         sourceFolderField.addChangeListener(this);
         
-        toolkit.createFormLabel(inputRoot, Messages.ReferenceAndPreviewPage_labelTargetPackage);
-        targetInput = toolkit.createPdPackageFragmentRefControl(structure.getRoot().getProductCmpt().getIpsPackageFragment().getRoot(), inputRoot);
-        
         // set target default
-        sourceFolderControl.setPdPckFragmentRoot(getPackage().getRoot());
+        IIpsPackageFragmentRoot packRoot = getPackage().getRoot();
+        if (!packRoot.isBasedOnSourceFolder()) {
+            IIpsPackageFragmentRoot srcRoots[];
+            try {
+                srcRoots = structure.getRoot().getProductCmpt().getIpsProject().getSourceIpsPackageFragmentRoots();
+                if (srcRoots.length>0) {
+                    packRoot = srcRoots[0];
+                } else {
+                    packRoot = null;
+                }
+            }
+            catch (CoreException e1) {
+                packRoot = null;
+            }
+        }
+        sourceFolderControl.setPdPckFragmentRoot(packRoot);
+        
+        toolkit.createFormLabel(inputRoot, Messages.ReferenceAndPreviewPage_labelTargetPackage);
+        targetInput = toolkit.createPdPackageFragmentRefControl(packRoot, inputRoot);
+        
         targetInput.setIpsPackageFragment(getPackage());
         
         if (type == DeepCopyWizard.TYPE_COPY_PRODUCT) {
@@ -242,6 +260,7 @@ public class SourcePage extends WizardPage implements ICheckStateListener, Value
     
     IIpsPackageFragment getPackage() {
         int ignore = getSegmentsToIgnore((IProductCmptReference[])structure.toArray(true));
+        // TODO Joerg: Ist die folgende Zeile korrekt, oder muss hier jetzt nicht das gewählte PackFragRoot benutzt werden?
         IIpsPackageFragment pack = structure.getRoot().getProductCmpt().getIpsPackageFragment();
         int segments = pack.getRelativePath().segmentCount();
         if (segments - ignore > 0) {
@@ -393,8 +412,10 @@ public class SourcePage extends WizardPage implements ICheckStateListener, Value
     }
 
     private void sourceFolderChanged() {
-        targetInput.setIpsPckFragmentRoot(sourceFolderControl.getIpsPckFragmentRoot());
-        targetInput.setIpsPackageFragment(null);
+        if (targetInput!=null) {
+            targetInput.setIpsPckFragmentRoot(sourceFolderControl.getIpsPckFragmentRoot());
+            targetInput.setIpsPackageFragment(null);
+        }
     }
 
     protected void updatePageComplete() {
