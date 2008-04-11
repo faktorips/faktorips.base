@@ -60,43 +60,34 @@ import org.faktorips.util.message.MessageList;
  * @author Thorsten Guenther
  */
 public class SourcePage extends WizardPage implements ICheckStateListener, ValueChangeListener {
+    static final String PAGE_ID = "deepCopyWizard.source"; //$NON-NLS-1$
+
     private IProductCmptTreeStructure structure;
     private CheckboxTreeViewer tree;
     private CheckStateListener checkStateListener;
     
-    // TODO Joerg fuer membervariablen kein Javadoc verwenden  
-    /**
-     * Cotnrol for search pattern
-     */
+    // Control for search pattern
     private Text searchInput;
 
-    /**
-     * Control for replace text
-     */
+    // Control for replace text
     private Text replaceInput;
-    /**
-     * The input field for the user to enter a version id to be used for all newly created product
-     * components.
-     */
+    
+    // The input field for the user to enter a version id to be used for all newly created product
+    // components.
     private Text versionId;
     
-    /**
-     * Controls
-     */
-    private TextButtonField sourceFolderField;
-    
-    private IpsPckFragmentRootRefControl sourceFolderControl; // TODO Joerg: Namensgebung: targetPackRootControl?
-    private IpsPckFragmentRefControl targetInput; // TODO Joerg: Namensgebung: targetPackageControl?
+    // Controls
+    private TextButtonField targetPackRootField;
+    private IpsPckFragmentRootRefControl targetPackRootControl; 
+    private IpsPckFragmentRefControl targetPackageControl; 
 
-    /**
-     * The naming strategy which is to be used to find the correct new names of the product
-     * components to create.
-     */
+    // The naming strategy which is to be used to find the correct new names of the product
+    // components to create.
     private IProductCmptNamingStrategy namingStrategy;
 
+    // The type of the deep copy wizard (see DeepCopyWizard):
+    //   DeepCopyWizard.TYPE_COPY_PRODUCT or TYPE_NEW_VERSION
     private int type;
-
-    static final String PAGE_ID = "deepCopyWizard.source"; //$NON-NLS-1$
 
     private static String getTitle(int type) {
         if (type == DeepCopyWizard.TYPE_COPY_PRODUCT) {
@@ -152,9 +143,9 @@ public class SourcePage extends WizardPage implements ICheckStateListener, Value
         toolkit.createFormLabel(inputRoot, IpsPlugin.getDefault().getIpsPreferences().getFormattedWorkingDate());
         
         toolkit.createFormLabel(inputRoot, Messages.SourcePage_labelSourceFolder);
-        sourceFolderControl = toolkit.createPdPackageFragmentRootRefControl(inputRoot, true);
-        sourceFolderField = new TextButtonField(sourceFolderControl);
-        sourceFolderField.addChangeListener(this);
+        targetPackRootControl = toolkit.createPdPackageFragmentRootRefControl(inputRoot, true);
+        targetPackRootField = new TextButtonField(targetPackRootControl);
+        targetPackRootField.addChangeListener(this);
         
         // set target default
         IIpsPackageFragmentRoot packRoot = getPackage().getRoot();
@@ -172,12 +163,12 @@ public class SourcePage extends WizardPage implements ICheckStateListener, Value
                 packRoot = null;
             }
         }
-        sourceFolderControl.setPdPckFragmentRoot(packRoot);
+        targetPackRootControl.setPdPckFragmentRoot(packRoot);
         
         toolkit.createFormLabel(inputRoot, Messages.ReferenceAndPreviewPage_labelTargetPackage);
-        targetInput = toolkit.createPdPackageFragmentRefControl(packRoot, inputRoot);
+        targetPackageControl = toolkit.createPdPackageFragmentRefControl(packRoot, inputRoot);
         
-        targetInput.setIpsPackageFragment(getPackage());
+        targetPackageControl.setIpsPackageFragment(getPackage());
         
         if (type == DeepCopyWizard.TYPE_COPY_PRODUCT) {
             toolkit.createFormLabel(inputRoot, Messages.ReferenceAndPreviewPage_labelSearchPattern);
@@ -213,7 +204,7 @@ public class SourcePage extends WizardPage implements ICheckStateListener, Value
         tree.addCheckStateListener(checkStateListener);
         
         // add Listener to the target text control (must be done here after the default is set)
-        targetInput.getTextControl().addModifyListener(new ModifyListener() {
+        targetPackageControl.getTextControl().addModifyListener(new ModifyListener() {
             public void modifyText(ModifyEvent e) {
                 getWizard().getContainer().updateButtons();
             }
@@ -292,7 +283,7 @@ public class SourcePage extends WizardPage implements ICheckStateListener, Value
             pageComplete = false;
         }
 
-        IIpsPackageFragmentRoot ipsPckFragmentRoot = sourceFolderControl.getIpsPckFragmentRoot();
+        IIpsPackageFragmentRoot ipsPckFragmentRoot = targetPackRootControl.getIpsPckFragmentRoot();
         if (ipsPckFragmentRoot != null && !ipsPckFragmentRoot.exists()) {
             setErrorMessage(NLS.bind(Messages.SourcePage_msgMissingSourceFolder, ipsPckFragmentRoot.getName()));
             pageComplete = false;
@@ -356,7 +347,7 @@ public class SourcePage extends WizardPage implements ICheckStateListener, Value
      * Returns the package fragment which is to be used as target package for the copy.
      */
     public IIpsPackageFragment getTargetPackage() {
-        return targetInput.getIpsPackageFragment();
+        return targetPackageControl.getIpsPackageFragment();
     }
 
     public void checkStateChanged(CheckStateChangedEvent event) {
@@ -405,16 +396,16 @@ public class SourcePage extends WizardPage implements ICheckStateListener, Value
      * {@inheritDoc}
      */
     public void valueChanged(FieldValueChangedEvent e) {
-        if (e.field==sourceFolderField) {
+        if (e.field==targetPackRootField) {
             sourceFolderChanged();
         }
         updatePageComplete();
     }
 
     private void sourceFolderChanged() {
-        if (targetInput!=null) {
-            targetInput.setIpsPckFragmentRoot(sourceFolderControl.getIpsPckFragmentRoot());
-            targetInput.setIpsPackageFragment(null);
+        if (targetPackageControl!=null) {
+            targetPackageControl.setIpsPckFragmentRoot(targetPackRootControl.getIpsPckFragmentRoot());
+            targetPackageControl.setIpsPackageFragment(null);
         }
     }
 
@@ -423,6 +414,6 @@ public class SourcePage extends WizardPage implements ICheckStateListener, Value
             setPageComplete(false);
             return;
         }
-        setPageComplete(!"".equals(sourceFolderControl.getText())); //$NON-NLS-1$
+        setPageComplete(!"".equals(targetPackRootControl.getText())); //$NON-NLS-1$
     }
 }
