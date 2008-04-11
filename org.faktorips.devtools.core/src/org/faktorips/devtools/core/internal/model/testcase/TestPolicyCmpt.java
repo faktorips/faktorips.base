@@ -472,6 +472,7 @@ public class TestPolicyCmpt extends TestObject implements ITestPolicyCmpt {
 				ITestAttributeValue attrValue = newTestPolicyCmpt.newTestAttributeValue();
 				attrValue.setTestAttribute(attribute.getName());
 			}
+            
             // set the defaults for all attribute values
             newTestPolicyCmpt.updateDefaultTestAttributeValues();
 
@@ -513,7 +514,21 @@ public class TestPolicyCmpt extends TestObject implements ITestPolicyCmpt {
         IProductCmptGeneration generation = findProductCmpsCurrentGeneration(getIpsProject());
         ITestAttributeValue[] testAttrValues = getTestAttributeValues();
         for (int i = 0; i < testAttrValues.length; i++) {
-            ((TestAttributeValue)testAttrValues[i]).setDefaultTestAttributeValueInternal(generation);
+            // set default value only if the model attribute is relevant by the specified product cmpt
+            // otherwise set the value to null,
+            // therefore if the value is null and the currently specified product cmpt doesn't configure this attribute
+            // the attribute will be hidden in the test case editor (because it is null), otherwise if the value isn't null
+            // the test attribute value will be displayed and a warning will be shown
+            if(generation != null){
+                ITestAttribute testAttribute = testAttrValues[i].findTestAttribute(getIpsProject());
+                if (testAttribute != null){
+                    if (! testAttribute.isAttributeRelevantByProductCmpt(generation.getProductCmpt(), getIpsProject())){
+                        ((TestAttributeValue)testAttrValues[i]).setValue(null);
+                        continue;
+                    }
+                } 
+                ((TestAttributeValue)testAttrValues[i]).setDefaultTestAttributeValueInternal(generation);
+            }
         }
     }
 
