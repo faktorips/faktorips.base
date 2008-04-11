@@ -74,13 +74,19 @@ class TestCaseDeltaType extends DefaultEnumValue {
 
     static {
         enumType = new DefaultEnumType("TestCaseDeltaType", TestCaseDeltaType.class); //$NON-NLS-1$
-        MISSING_ROOT_TEST_OBJECT = new TestCaseDeltaType(enumType, "missingRootTestObject", Messages.TestCaseDeltaType_MissingRootTestObject, "MissingConfigElement.gif"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
-        MISSING_TEST_ATTRIBUTE_VALUE = new TestCaseDeltaType(enumType, "missingTestAttributeValue", Messages.TestCaseDeltaType_MissingTestAttributeValue, "MissingConfigElement.gif"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
-        
-        MISSING_TEST_PARAM = new TestCaseDeltaType(enumType, "missingTestParam", Messages.TestCaseDeltaType_MissingTestParam, "CfgElementTypeMismatch.gif"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
-        MISSING_TEST_ATTRIBUTE = new TestCaseDeltaType(enumType, "missingTestAttribute", Messages.TestCaseDeltaType_MissingTestAttribute, "CfgElementTypeMismatch.gif"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
-    
-        DIFFERENT_SORT_ORDER = new TestCaseDeltaType(enumType, "differentSortOrder", Messages.TestCaseDeltaType_DifferentSortOrder, "ChangedOrder.gif"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+        MISSING_ROOT_TEST_OBJECT = new TestCaseDeltaType(enumType,
+                "missingRootTestObject", Messages.TestCaseDeltaType_MissingRootTestObject, "DeltaTypeMissingPropertyValue.gif"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+        MISSING_TEST_ATTRIBUTE_VALUE = new TestCaseDeltaType(
+                enumType,
+                "missingTestAttributeValue", Messages.TestCaseDeltaType_MissingTestAttributeValue, "DeltaTypeMissingPropertyValue.gif"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+
+        MISSING_TEST_PARAM = new TestCaseDeltaType(enumType,
+                "missingTestParam", Messages.TestCaseDeltaType_MissingTestParam, "DeltaTypeValueWithoutProperty.gif"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+        MISSING_TEST_ATTRIBUTE = new TestCaseDeltaType(enumType,
+                "missingTestAttribute", Messages.TestCaseDeltaType_MissingTestAttribute, "DeltaTypeValueWithoutProperty.gif"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+
+        DIFFERENT_SORT_ORDER = new TestCaseDeltaType(enumType,
+                "differentSortOrder", Messages.TestCaseDeltaType_DifferentSortOrder, "ChangedOrder.gif"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
     }
 
     private Image icon;
