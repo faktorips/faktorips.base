@@ -197,7 +197,8 @@ public abstract class IpsPartsComposite extends ViewerButtonComposite implements
     protected Viewer createViewer(Composite parent, UIToolkit toolkit) {
 		table = toolkit.getFormToolkit().createTable(parent, SWT.NONE);
 		setEditDoubleClickListenerEnabled(true);
-
+        registerOpenLinkListener();
+        
 		viewer = new TableViewer(table);
 		viewer.setContentProvider(createContentProvider());
 		ILabelProvider lp = createLabelProvider();
@@ -215,25 +216,46 @@ public abstract class IpsPartsComposite extends ViewerButtonComposite implements
 		return viewer;
     }
     
+    /*
+     * If mouse down and the CTRL key is pressed then the open link method is called
+     */
+    private void registerOpenLinkListener() {
+        MouseAdapter adapter = new MouseAdapter() {
+            public void mouseDown(MouseEvent e) {
+                if ((e.stateMask & SWT.CTRL) != 0){
+                    openLink();
+                }
+            }
+        };
+        table.addMouseListener(adapter);
+    }
+
+    /**
+     * Open the element in a new editor if the CTRL key was pressed durring selection. Subclasses
+     * are indent to overwrite this method if this functionality is available.
+     */
+    protected void openLink() {
+        // nothing do do
+    }
+
     /**
      * Enable or disable the listener to start editing on double click.
      * 
      * @param enabled <code>true</code> to enable editing on double click.
      */
     protected void setEditDoubleClickListenerEnabled(boolean enabled) {
-    	if (enabled) {
-    		if (editDoubleClickListener == null) {
-    			editDoubleClickListener = new MouseAdapter() {
-    			    public void mouseDoubleClick(MouseEvent e) {
-    			        editPart();
-    			    }
-    			};
-    		}
-    		table.addMouseListener(editDoubleClickListener);
-    	}
-    	else if (editDoubleClickListener != null) {
-    		table.removeMouseListener(editDoubleClickListener);
-    	}
+        if (enabled) {
+            if (editDoubleClickListener == null) {
+                editDoubleClickListener = new MouseAdapter() {
+                    public void mouseDoubleClick(MouseEvent e) {
+                        editPart();
+                    }
+                };
+            }
+            table.addMouseListener(editDoubleClickListener);
+        } else if (editDoubleClickListener != null) {
+            table.removeMouseListener(editDoubleClickListener);
+        }
     }
     
     /**
@@ -414,7 +436,7 @@ public abstract class IpsPartsComposite extends ViewerButtonComposite implements
         refresh();
     }
 
-    private void editPart() {
+    protected void editPart() {
         TableViewer viewer = (TableViewer)getViewer();
         if (viewer.getSelection().isEmpty()) {
             return;

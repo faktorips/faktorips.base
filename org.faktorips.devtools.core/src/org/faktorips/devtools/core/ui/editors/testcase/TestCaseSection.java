@@ -60,6 +60,9 @@ import org.eclipse.swt.dnd.TextTransfer;
 import org.eclipse.swt.dnd.Transfer;
 import org.eclipse.swt.events.KeyEvent;
 import org.eclipse.swt.events.KeyListener;
+import org.eclipse.swt.events.MouseAdapter;
+import org.eclipse.swt.events.MouseEvent;
+import org.eclipse.swt.events.MouseListener;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.events.SelectionListener;
 import org.eclipse.swt.graphics.Color;
@@ -225,6 +228,8 @@ public class TestCaseSection extends IpsSection implements IIpsTestRunListener {
     
     // ips project used to search
     private IIpsProject ipsProject;
+
+    private OpenInNewEditorAction openInNewEditorAction;
 
     /*
      * State class contains the enable state of all actions (for buttons and context menu)
@@ -821,16 +826,20 @@ public class TestCaseSection extends IpsSection implements IIpsTestRunListener {
          */
         public void run(IStructuredSelection selection) {
             Object firstElement = selection.getFirstElement();
-            if (firstElement instanceof ITestPolicyCmpt){
+            boolean canNavigateToModelOrSourceCode = IpsPlugin.getDefault().getIpsPreferences()
+                    .canNavigateToModelOrSourceCode();
+            if (firstElement instanceof ITestPolicyCmpt) {
                 try {
-                    ITestPolicyCmpt tpct = (ITestPolicyCmpt) firstElement;
-                    if (StringUtils.isNotEmpty(tpct.getProductCmpt())){
+                    ITestPolicyCmpt tpct = (ITestPolicyCmpt)firstElement;
+                    if (StringUtils.isNotEmpty(tpct.getProductCmpt())) {
+                        // open the product cmpt
                         IProductCmpt cmpt = tpct.findProductCmpt(tpct.getIpsProject());
                         IpsPlugin.getDefault().openEditor(cmpt);
                         return;
-                    } else {
+                    } else if (canNavigateToModelOrSourceCode) {
+                        // open the policy cmpt type because the param is not product relevanz
                         ITestPolicyCmptTypeParameter parameter = tpct.findTestPolicyCmptTypeParameter(ipsProject);
-                        if (parameter != null){
+                        if (parameter != null) {
                             IPolicyCmptType type = parameter.findPolicyCmptType(parameter.getIpsProject());
                             IpsPlugin.getDefault().openEditor(type);
                             return;
@@ -839,8 +848,15 @@ public class TestCaseSection extends IpsSection implements IIpsTestRunListener {
                 } catch (CoreException e) {
                     IpsPlugin.logAndShowErrorDialog(e);
                 }
-            } else {
-                throw new RuntimeException("Open action not supported for: " + firstElement.getClass().getName()); //$NON-NLS-1$
+            } else if (canNavigateToModelOrSourceCode && firstElement instanceof TestCaseTypeAssociation) {
+                // open the target policy cmpt type of the association which is related to the corresponding test parameter 
+                TestCaseTypeAssociation ta = (TestCaseTypeAssociation)firstElement;
+                try {
+                    IPolicyCmptTypeAssociation association = ta.findAssociation(ipsProject);
+                    IpsPlugin.getDefault().openEditor(association.findTarget(ipsProject));
+                } catch (CoreException e) {
+                    IpsPlugin.logAndShowErrorDialog(e);
+                }
             }
         }
     }
@@ -924,6 +940,8 @@ public class TestCaseSection extends IpsSection implements IIpsTestRunListener {
 	protected void initClientComposite(Composite client, UIToolkit toolkit) {
 		this.toolkit = toolkit;
 		
+        hookeSectionTitleHyperlink();
+        
 		configureToolBar();
 		
 		// Layout main section with two columns
@@ -1349,7 +1367,16 @@ public class TestCaseSection extends IpsSection implements IIpsTestRunListener {
             }
             public void keyReleased(KeyEvent e) {
             }
-        });        
+        });  
+
+        MouseAdapter adapter = new MouseAdapter() {
+            public void mouseDown(MouseEvent e) {
+                if ((e.stateMask & SWT.CTRL) != 0){
+                    openInNewEditorAction.run();
+                }
+            }
+        };
+        treeViewer.getTree().addMouseListener(adapter);
 	}
     
     /*
@@ -1365,7 +1392,8 @@ public class TestCaseSection extends IpsSection implements IIpsTestRunListener {
         manager.add(new MoveAction(true));
         manager.add(new MoveAction(false));
         manager.add(new Separator());
-        manager.add(new OpenInNewEditorAction());
+        openInNewEditorAction = new OpenInNewEditorAction();
+        manager.add(openInNewEditorAction);
         Menu contextMenu = manager.createContextMenu(treeViewer.getControl());
         treeViewer.getControl().setMenu(contextMenu);
     }
@@ -1939,34 +1967,6 @@ public class TestCaseSection extends IpsSection implements IIpsTestRunListener {
             ITestPolicyCmpt testPolicyCmptParent) throws CoreException {
         return testTypeParam.getAllowedProductCmpt(testCase.getIpsProject(),
                 testPolicyCmptParent != null ? testPolicyCmptParent.findProductCmpt(testCase.getIpsProject()) : null);
-    }
-
-    /**
-	 * Returns all product component objects in the model which are related to the given type name.
-	 * 
-	 * @throws CoreException If an error occurs
-	 */
-    public IIpsSrcFile[] getProductCmptSrcFiles(IProductCmptType productCmptType) throws CoreException {
-        // TODO v2 - was macht die methode, braucht man das umkopieren wirklich?
-        
-        List allProductCmpts = new ArrayList();
-        
-        getProductCmptObjects(testCase.getIpsProject(), productCmptType, allProductCmpts);
-        IIpsSrcFile[] cmpts = (IIpsSrcFile[]) allProductCmpts.toArray(new IIpsSrcFile[0]);
-    	List cmptList = new ArrayList();
-    	cmptList.addAll(Arrays.asList(cmpts));
-        return (IIpsSrcFile[])cmptList.toArray(new IIpsSrcFile[cmptList.size()]);
-    }
-
-    /*
-     * Adds all product components in the given project and referenced projects
-     * with the given qualified name to the given result list.
-     */
-    private void getProductCmptObjects(IIpsProject ipsProject, IProductCmptType productCmptType, List result) throws CoreException {
-        IIpsSrcFile[] cmpts = ipsProject.findAllProductCmptSrcFiles(productCmptType, true);
-        for (int i = 0; i < cmpts.length; i++) {
-            result.add(cmpts[i]);
-        }
     }
 
 	/**
@@ -2586,6 +2586,37 @@ public class TestCaseSection extends IpsSection implements IIpsTestRunListener {
             form.getContent().setForeground(getDisplay().getSystemColor(SWT.COLOR_WHITE));
             setFormToolTipText(Messages.TestCaseEditor_Title_Success);
         }
+    }
+    
+    /*
+     * Adds a link to the test case type. The link is activated if the mouse is clicked and the ctrl
+     * button is pressed.
+     */
+    private void hookeSectionTitleHyperlink(){
+        getFormTitleLabel().addMouseListener(new MouseListener(){
+            public void mouseDoubleClick(MouseEvent e) {
+            }
+            public void mouseDown(MouseEvent event) {
+                if ((event.stateMask & SWT.CTRL) > 0){
+                    if (! IpsPlugin.getDefault().getIpsPreferences().canNavigateToModelOrSourceCode()){
+                        return;
+                    }
+                    ITestCaseType type = null;
+                    try {
+                        type = testCase.findTestCaseType(ipsProject);
+                    } catch (CoreException e) {
+                        IpsPlugin.log(e);
+                        return;
+                    }
+                    if (type == null){
+                        return;
+                    }
+                    IpsPlugin.getDefault().openEditor(type.getIpsSrcFile());
+                }
+            }
+            public void mouseUp(MouseEvent e) {
+            }
+        });
     }
 
     void postSetFailureBackgroundAndToolTip(final EditField editField, final String expectedResult) {

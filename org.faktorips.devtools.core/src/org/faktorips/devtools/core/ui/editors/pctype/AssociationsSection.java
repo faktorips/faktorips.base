@@ -114,7 +114,8 @@ public class AssociationsSection extends SimpleIpsPartsSection {
      */
     private class RelationsComposite extends IpsPartsComposite {
     	private Button wizardNewButton;
-    	
+        private OpenTargetPcTypeInEditorAction openAction ;
+        
         RelationsComposite(IIpsObject pdObject, Composite parent,
                 UIToolkit toolkit) {
         	// create default buttons without the new button, 
@@ -124,6 +125,7 @@ public class AssociationsSection extends SimpleIpsPartsSection {
         }
 
         private void buildContextMenu() {
+            openAction = new OpenTargetPcTypeInEditorAction(getViewer());
             final MenuManager menuManager = new MenuManager();
             menuManager.setRemoveAllWhenShown(true);
             // display menu only if one element is selected
@@ -133,7 +135,6 @@ public class AssociationsSection extends SimpleIpsPartsSection {
                     if (selection.isEmpty()){
                         return;
                     }
-                    OpenTargetPcTypeInEditorAction openAction = new OpenTargetPcTypeInEditorAction(getViewer());
                     menuManager.add(openAction);
                 }
             });
@@ -232,6 +233,13 @@ public class AssociationsSection extends SimpleIpsPartsSection {
             refresh();
         }
         
+        /**
+         * {@inheritDoc}
+         */
+        protected void openLink() {
+            openAction.run();
+        }
+
         private class RelationContentProvider implements IStructuredContentProvider {
     		public Object[] getElements(Object inputElement) {
     			 return getPcType().getPolicyCmptTypeAssociations();
@@ -245,5 +253,4 @@ public class AssociationsSection extends SimpleIpsPartsSection {
     	}
 
 	}
-    
 }

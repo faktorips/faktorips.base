@@ -21,6 +21,7 @@ import java.util.GregorianCalendar;
 
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.viewers.ILabelProvider;
+import org.eclipse.jface.viewers.ISelectionProvider;
 import org.eclipse.jface.viewers.IStructuredContentProvider;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.Viewer;
@@ -30,13 +31,16 @@ import org.eclipse.swt.events.MouseEvent;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Shell;
+import org.eclipse.ui.IEditorPart;
 import org.eclipse.ui.forms.widgets.Section;
 import org.faktorips.devtools.core.IpsPlugin;
+import org.faktorips.devtools.core.IpsPreferences;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPart;
 import org.faktorips.devtools.core.model.ipsobject.ITimedIpsObject;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmptGeneration;
 import org.faktorips.devtools.core.ui.DefaultLabelProvider;
 import org.faktorips.devtools.core.ui.UIToolkit;
+import org.faktorips.devtools.core.ui.actions.IpsAction;
 import org.faktorips.devtools.core.ui.editors.EditDialog;
 import org.faktorips.devtools.core.ui.editors.IDeleteListener;
 import org.faktorips.devtools.core.ui.editors.IpsPartsComposite;
@@ -126,6 +130,8 @@ public class GenerationsSection extends SimpleIpsPartsSection{
      */
     public class GenerationsComposite extends IpsPartsComposite implements IDeleteListener {
 
+        private OpenGenerationInEditorAction openAction;
+
         public GenerationsComposite(ITimedIpsObject ipsObject, Composite parent,
                 UIToolkit toolkit) {
             super(ipsObject, parent, false, true, true, false, true, toolkit);
@@ -142,6 +148,8 @@ public class GenerationsSection extends SimpleIpsPartsSection{
             });
             
 			addDeleteListener(this);
+            
+            openAction = new OpenGenerationInEditorAction(getViewer());
         }
         
         public ITimedIpsObject getTimedIpsObject() {
@@ -255,6 +263,46 @@ public class GenerationsSection extends SimpleIpsPartsSection{
 				}
 			}
     	}
+
+        /**
+         * {@inheritDoc}
+         */
+        protected void openLink() {
+            openAction.run();
+        }
+    }
+
+    private class OpenGenerationInEditorAction extends IpsAction {
+        public OpenGenerationInEditorAction(ISelectionProvider selectionProvider) {
+            super(selectionProvider);
+        }
+
+        public void run(IStructuredSelection selection) {
+            Object selected = selection.getFirstElement();
+            if (selected instanceof IProductCmptGeneration) {
+                IProductCmptGeneration generation = (IProductCmptGeneration)selected;
+                try {
+                    IEditorPart editor = IpsPlugin.getDefault().openEditor(generation.getProductCmpt());
+                    if (editor instanceof ProductCmptEditor){
+                        // set the selected generation
+                        ProductCmptEditor productCmptEditor = (ProductCmptEditor)editor;
+                        productCmptEditor.setActiveGeneration(generation, true);
+
+                        // edit generation: set working date to generations valid from date
+                        //   only if the edit working mode is enabled and
+                        //   recent generations could be changed
+                        // otherwise show generation read-only
+                        IpsPreferences ipsPreferences = IpsPlugin.getDefault().getIpsPreferences();
+                        if (ipsPreferences.canEditRecentGeneration() && ipsPreferences.isWorkingModeEdit()){
+                            ipsPreferences.setWorkingDate(generation.getValidFrom());
+                        }
+                    }
+                } catch (Exception e) {
+                    IpsPlugin.logAndShowErrorDialog(e);
+                }
+            }            
+        }
+        
     }
     
 }

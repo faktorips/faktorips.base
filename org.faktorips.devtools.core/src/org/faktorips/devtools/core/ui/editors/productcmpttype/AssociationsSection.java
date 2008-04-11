@@ -102,6 +102,8 @@ public class AssociationsSection extends SimpleIpsPartsSection {
     
     private class RelationsComposite extends IpsPartsComposite {
 
+        protected OpenTargetProductCmptTypeInEditorAction openAction;
+
         RelationsComposite(IIpsObject pdObject, Composite parent,
                 UIToolkit toolkit) {
             super(pdObject, parent, true, true, true, true, true, toolkit);
@@ -118,7 +120,7 @@ public class AssociationsSection extends SimpleIpsPartsSection {
                     if (selection.isEmpty()) {
                         return;
                     }
-                    OpenTargetProductCmptTypeInEditorAction openAction = new OpenTargetProductCmptTypeInEditorAction(
+                    openAction = new OpenTargetProductCmptTypeInEditorAction(
                             getViewer());
                     menuManager.add(openAction);
                 }
@@ -168,6 +170,13 @@ public class AssociationsSection extends SimpleIpsPartsSection {
          */
         protected int[] moveParts(int[] indexes, boolean up) {
             return getProductCmptType().moveAssociations(indexes, up);
+        }
+
+        /**
+         * {@inheritDoc}
+         */
+        protected void openLink() {
+            openAction.run();
         }
     }
 }

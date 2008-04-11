@@ -45,6 +45,8 @@ import org.eclipse.swt.dnd.DropTargetListener;
 import org.eclipse.swt.dnd.FileTransfer;
 import org.eclipse.swt.dnd.TextTransfer;
 import org.eclipse.swt.dnd.Transfer;
+import org.eclipse.swt.events.MouseAdapter;
+import org.eclipse.swt.events.MouseEvent;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.events.SelectionListener;
 import org.eclipse.swt.layout.GridData;
@@ -145,6 +147,8 @@ public class LinksSection extends IpsSection implements ISelectionProviderActiva
 	 */
 	private SelectionChangedListener selectionChangedListener;
 
+    private OpenReferencedProductCmptInEditorAction openAction;
+
 	/**
 	 * Creates a new RelationsSection which displays relations for the given
 	 * generation.
@@ -235,6 +239,7 @@ public class LinksSection extends IpsSection implements ISelectionProviderActiva
 	
 			addFocusControl(treeViewer.getTree());
 			registerDoubleClickListener();
+			registerOpenLinkListener();
 			ModelViewerSynchronizer synchronizer = new ModelViewerSynchronizer(generation, treeViewer);
 			synchronizer.setWidget(client);
 			IpsPlugin.getDefault().getIpsModel().addChangeListener(synchronizer);
@@ -242,6 +247,26 @@ public class LinksSection extends IpsSection implements ISelectionProviderActiva
 		toolkit.getFormToolkit().paintBordersFor(relationRootPane);
 	}
     
+    /*
+     * If mouse down and the CTRL key is pressed then the selected object will be opened in a new
+     * edior
+     */
+    private void registerOpenLinkListener() {
+        MouseAdapter adapter = new MouseAdapter() {
+            public void mouseDown(MouseEvent e) {
+                if ((e.stateMask & SWT.CTRL) != 0){
+                    openLink();
+                }
+            }
+
+        };
+        treeViewer.getTree().addMouseListener(adapter);
+    }
+
+    private void openLink() {
+        openAction.run();
+    }
+
     /**
 	 * register a double click listener to open the edit-dialog to edit the relation. 
 	 */
@@ -272,7 +297,8 @@ public class LinksSection extends IpsSection implements ISelectionProviderActiva
 		menuManager.add(new NewProductCmptRelationAction(site.getShell(),
 				treeViewer, this));
 
-        menuManager.add(new OpenReferencedProductCmptInEditorAction());
+        openAction = new OpenReferencedProductCmptInEditorAction();
+        menuManager.add(openAction);
 		menuManager.add(ActionFactory.DELETE.create(site.getWorkbenchWindow()));
 		menuManager.add(new OpenProductCmptRelationDialogAction());
         

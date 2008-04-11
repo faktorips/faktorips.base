@@ -26,6 +26,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
+import org.apache.commons.lang.StringUtils;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.MenuManager;
@@ -53,6 +54,7 @@ import org.eclipse.swt.events.FocusAdapter;
 import org.eclipse.swt.events.FocusEvent;
 import org.eclipse.swt.events.KeyEvent;
 import org.eclipse.swt.events.KeyListener;
+import org.eclipse.swt.events.MouseAdapter;
 import org.eclipse.swt.events.MouseEvent;
 import org.eclipse.swt.events.MouseListener;
 import org.eclipse.swt.events.SelectionEvent;
@@ -179,6 +181,8 @@ public class TestCaseTypeSection extends IpsSection {
     private SectionDetailObjectCache objectCache;
 
     private boolean showSubtypeAttributes;
+
+    private OpenInNewEditorAction openInNewEditorAction;
 
     private class AttributeDetails {
         private Composite attributesDetails;
@@ -821,6 +825,32 @@ public class TestCaseTypeSection extends IpsSection {
             }
             catch (Exception e) {
                 IpsPlugin.logAndShowErrorDialog(e);
+            }
+        }
+    }
+    
+    private class OpenInNewEditorAction extends IpsAction {
+        public OpenInNewEditorAction() {
+            super(treeViewer);
+            setText("");
+        }
+        
+        /**
+         * {@inheritDoc}
+         */
+        public void run(IStructuredSelection selection) {
+            Object firstElement = selection.getFirstElement();
+            if (firstElement instanceof ITestPolicyCmptTypeParameter){
+                try {
+                    ITestPolicyCmptTypeParameter param = (ITestPolicyCmptTypeParameter) firstElement;
+                    if (StringUtils.isNotEmpty(param.getPolicyCmptType())){
+                        IPolicyCmptType cmptType = param.findPolicyCmptType(param.getIpsProject());
+                        IpsPlugin.getDefault().openEditor(cmptType);
+                        return;
+                    }
+                } catch (CoreException e) {
+                    IpsPlugin.logAndShowErrorDialog(e);
+                }
             }
         }
     }
@@ -1613,6 +1643,8 @@ public class TestCaseTypeSection extends IpsSection {
      * Add the tree listener to the tree.
      */
     private void hookTreeListeners() {
+        openInNewEditorAction = new OpenInNewEditorAction();
+        
         treeViewer.addSelectionChangedListener(new ISelectionChangedListener() {
             public void selectionChanged(SelectionChangedEvent event) {
                 if (event.getSelection() instanceof IStructuredSelection) {
@@ -1651,7 +1683,15 @@ public class TestCaseTypeSection extends IpsSection {
             }
             public void keyReleased(KeyEvent e) {
             }
-        });        
+        });
+        MouseAdapter adapter = new MouseAdapter() {
+            public void mouseDown(MouseEvent e) {
+                if ((e.stateMask & SWT.CTRL) != 0){
+                    openInNewEditorAction.run();
+                }
+            }
+        };
+        treeViewer.getTree().addMouseListener(adapter);        
     }
 
     private void buildContextMenu() {
