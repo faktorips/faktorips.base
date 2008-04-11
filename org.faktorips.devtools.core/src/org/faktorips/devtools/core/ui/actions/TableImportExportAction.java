@@ -19,7 +19,6 @@ package org.faktorips.devtools.core.ui.actions;
 
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jface.dialogs.MessageDialog;
-import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.ISelectionChangedListener;
 import org.eclipse.jface.viewers.ISelectionProvider;
@@ -64,32 +63,49 @@ public class TableImportExportAction extends IpsAction {
     }
     
     public static TableImportExportAction createTableImportAction(Shell shell, ISelectionProvider selectionProvider) {
-        TableImportWizard tableImportWizard = new TableImportWizard();
-        tableImportWizard.setImportIntoExisting(true);
-        return new TableImportExportAction(shell, selectionProvider, tableImportWizard, Messages.TableImportExportAction_importActionTitle,
-                Messages.TableImportExportAction_importActionTooltip, IpsPlugin.getDefault().getImageDescriptor("ImportTableContents.gif")); //$NON-NLS-2$
+        TableImportExportAction tableImportExportAction = new TableImportExportAction(shell, selectionProvider);
+        tableImportExportAction.initImportAction();
+        return tableImportExportAction;
     }
 
     public static TableImportExportAction createTableExportAction(Shell shell, ISelectionProvider selectionProvider) {
-        return new TableImportExportAction(shell, selectionProvider, new TableExportWizard(), Messages.TableImportExportAction_exportActionTitle,
-                Messages.TableImportExportAction_exportActionTooltip, IpsPlugin.getDefault().getImageDescriptor("ExportTableContents.gif")); //$NON-NLS-2$
+        TableImportExportAction tableImportExportAction = new TableImportExportAction(shell, selectionProvider);
+        tableImportExportAction.initExportAction();
+        return tableImportExportAction;
     }
     
     public static TableImportExportAction createTableImportAction(Shell shell, ITableContents tableContents) {
-        return createTableImportAction(shell, new SimpleSelectionProvider(tableContents));
+        return createTableImportAction(shell, tableContents);
     }
 
     public static TableImportExportAction createTableExportAction(Shell shell, ITableContents tableContents) {
-        return createTableExportAction(shell, new SimpleSelectionProvider(tableContents));
+        return createTableExportAction(shell, tableContents);
     }
     
-    private TableImportExportAction(Shell shell, ISelectionProvider selectionProvider, IWorkbenchWizard wizard, String text, String tooltip, ImageDescriptor imageDesrc) {
+    protected TableImportExportAction(Shell shell, ISelectionProvider selectionProvider) {
         super(selectionProvider);
         this.shell = shell;
-        setText(text);
-        setToolTipText(tooltip);
-        setImageDescriptor(imageDesrc); //$NON-NLS-1$
-        this.wizard = wizard;
+    }
+
+    protected TableImportExportAction(Shell shell, ITableContents tableContents) {
+        super(new SimpleSelectionProvider(tableContents));
+        this.shell = shell;
+    }
+    
+    protected void initImportAction(){
+        setText(Messages.TableImportExportAction_importActionTitle);
+        setToolTipText(Messages.TableImportExportAction_importActionTooltip);
+        setImageDescriptor(IpsPlugin.getDefault().getImageDescriptor("ImportTableContents.gif")); //$NON-NLS-1$
+        TableImportWizard tableImportWizard = new TableImportWizard();
+        tableImportWizard.setImportIntoExisting(true);
+        this.wizard = tableImportWizard;
+    }
+
+    protected void initExportAction() {
+        setText(Messages.TableImportExportAction_exportActionTitle);
+        setToolTipText(Messages.TableImportExportAction_exportActionTooltip);
+        setImageDescriptor(IpsPlugin.getDefault().getImageDescriptor("ExportTableContents.gif")); //$NON-NLS-1$
+        this.wizard = new TableExportWizard(); 
     }
     
     private boolean isImport() {
@@ -100,6 +116,14 @@ public class TableImportExportAction extends IpsAction {
      * {@inheritDoc}
      */
     public void run(IStructuredSelection selection) {
+        runInternal(selection);
+    }
+    
+    /**
+     * Special run method returns the result of the dialog.
+     * Returns <code>true</code> if the dialog was closed with the ok return code otherwise <code>false</code>.
+     */
+    protected boolean runInternal(IStructuredSelection selection) {
         if (! (selection.getFirstElement() instanceof ITableContents)){
             IpsPlugin.logAndShowErrorDialog(new IpsStatus("The selected element is no table contents!")); //$NON-NLS-1$
         }
@@ -107,13 +131,13 @@ public class TableImportExportAction extends IpsAction {
         if (isImport()){
             if (! checkAndSaveDirtyStateBeforeImport((ITableContents)selection.getFirstElement())){
                 // abort import
-                return;
+                return false;
             }
         }
         
         wizard.init(IpsPlugin.getDefault().getWorkbench(), selection);
         WizardDialog dialog = new WizardDialog(shell, wizard);
-        dialog.open();
+        return dialog.open() == WizardDialog.OK;
     }
 
     private boolean checkAndSaveDirtyStateBeforeImport(final ITableContents tableContents) {

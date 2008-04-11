@@ -44,6 +44,7 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.Menu;
+import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.TableColumn;
 import org.eclipse.swt.widgets.TableItem;
@@ -84,6 +85,29 @@ public class ContentPage extends IpsObjectEditorPage {
 
     private Table table;
 
+    private class TableImportExportActionInEditor extends TableImportExportAction {
+        
+        protected TableImportExportActionInEditor(Shell shell, ITableContents tableContents, boolean isImport) {
+            super(shell, tableContents);
+            if (isImport){
+                initImportAction();
+            } else {
+                initExportAction();
+            }
+        }
+        
+        /**
+         * {@inheritDoc}
+         */
+        public void run(IStructuredSelection selection) {
+            if  (super.runInternal(selection)){
+                tableViewer.setInput(getTableContents());
+                tableViewer.refresh(true);
+                redrawTable();
+            }
+        }
+    }
+    
 	public ContentPage(IpsObjectEditor editor) {
 		super(editor, PAGE_ID, Messages.ContentPage_title);
 	}
@@ -117,8 +141,15 @@ public class ContentPage extends IpsObjectEditorPage {
         form.getToolBarManager().add(newRowAction);
         form.getToolBarManager().add(deleteRowAction);
         form.getToolBarManager().add(new Separator());
-        form.getToolBarManager().add(TableImportExportAction.createTableImportAction(getSite().getShell(), getTableContents()));
-        form.getToolBarManager().add(TableImportExportAction.createTableExportAction(getSite().getShell(), getTableContents()));
+        
+        // create own TableImportExportActionInEditor because the editor must be refreshed after 
+        // importing of the table contents othwise the old content is visible until the editor is reopened
+        // Workaround see 
+        TableImportExportActionInEditor importAction = new TableImportExportActionInEditor(getSite().getShell(), getTableContents(), true);
+        TableImportExportActionInEditor exportAction = new TableImportExportActionInEditor(getSite().getShell(), getTableContents(), false);
+        
+        form.getToolBarManager().add(importAction);
+        form.getToolBarManager().add(exportAction);
         if (IpsPlugin.getDefault().getIpsPreferences().canNavigateToModelOrSourceCode()) {
             form.getToolBarManager().add(new Separator());
             form.getToolBarManager().add(new NavigateToTableStructureAction(getTableContents()));
