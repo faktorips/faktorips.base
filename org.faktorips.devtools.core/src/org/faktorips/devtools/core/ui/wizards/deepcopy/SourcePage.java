@@ -274,19 +274,18 @@ public class SourcePage extends WizardPage implements ICheckStateListener, Value
         }
 
         IIpsPackageFragmentRoot ipsPckFragmentRoot = sourceFolderControl.getIpsPckFragmentRoot();
-        if (ipsPckFragmentRoot != null && ! ipsPckFragmentRoot.exists()){
-            if (ipsPckFragmentRoot != null){
-                setErrorMessage(NLS.bind(Messages.SourcePage_msgMissingSourceFolder,ipsPckFragmentRoot.getName()));
-            } else {
-                setErrorMessage(Messages.SourcePage_msgSelectSourceFolder);
-            }
+        if (ipsPckFragmentRoot != null && !ipsPckFragmentRoot.exists()) {
+            setErrorMessage(NLS.bind(Messages.SourcePage_msgMissingSourceFolder, ipsPckFragmentRoot.getName()));
+            pageComplete = false;
+        } else if (ipsPckFragmentRoot == null) {
+            setErrorMessage(Messages.SourcePage_msgSelectSourceFolder);
             pageComplete = false;
         }
         
         if (pageComplete && getTargetPackage() != null && !getTargetPackage().exists()) {
             setMessage(NLS.bind(Messages.SourcePage_msgWarningTargetWillBeCreated, getTargetPackage().getName()),
                     WARNING);
-        } else if (getTargetPackage() == null){
+        } else if (pageComplete && getTargetPackage() == null){
             setErrorMessage(Messages.SourcePage_msgBadTargetPackage);
         }
         
