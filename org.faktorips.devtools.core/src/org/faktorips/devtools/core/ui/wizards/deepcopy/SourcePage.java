@@ -40,13 +40,18 @@ import org.eclipse.swt.widgets.TreeItem;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.model.IIpsElement;
 import org.faktorips.devtools.core.model.ipsproject.IIpsPackageFragment;
+import org.faktorips.devtools.core.model.ipsproject.IIpsPackageFragmentRoot;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmptNamingStrategy;
 import org.faktorips.devtools.core.model.productcmpt.treestructure.IProductCmptReference;
 import org.faktorips.devtools.core.model.productcmpt.treestructure.IProductCmptStructureReference;
 import org.faktorips.devtools.core.model.productcmpt.treestructure.IProductCmptTreeStructure;
 import org.faktorips.devtools.core.model.productcmpt.treestructure.IProductCmptTypeRelationReference;
 import org.faktorips.devtools.core.ui.UIToolkit;
+import org.faktorips.devtools.core.ui.controller.fields.FieldValueChangedEvent;
+import org.faktorips.devtools.core.ui.controller.fields.TextButtonField;
+import org.faktorips.devtools.core.ui.controller.fields.ValueChangeListener;
 import org.faktorips.devtools.core.ui.controls.IpsPckFragmentRefControl;
+import org.faktorips.devtools.core.ui.controls.IpsPckFragmentRootRefControl;
 import org.faktorips.util.message.MessageList;
 
 /**
@@ -54,7 +59,7 @@ import org.faktorips.util.message.MessageList;
  * 
  * @author Thorsten Guenther
  */
-public class SourcePage extends WizardPage implements ICheckStateListener {
+public class SourcePage extends WizardPage implements ICheckStateListener, ValueChangeListener {
     private IProductCmptTreeStructure structure;
     private CheckboxTreeViewer tree;
     private CheckStateListener checkStateListener;
@@ -72,10 +77,13 @@ public class SourcePage extends WizardPage implements ICheckStateListener {
      * components.
      */
     private Text versionId;
-
+    
     /**
-     * Control for target package.
+     * Controls
      */
+    private TextButtonField sourceFolderField;
+    
+    private IpsPckFragmentRootRefControl sourceFolderControl;
     private IpsPckFragmentRefControl targetInput;
 
     /**
@@ -140,11 +148,17 @@ public class SourcePage extends WizardPage implements ICheckStateListener {
 
         toolkit.createFormLabel(inputRoot, Messages.ReferenceAndPreviewPage_labelValidFrom);
         toolkit.createFormLabel(inputRoot, IpsPlugin.getDefault().getIpsPreferences().getFormattedWorkingDate());
+        
+        toolkit.createFormLabel(inputRoot, Messages.SourcePage_labelSourceFolder);
+        sourceFolderControl = toolkit.createPdPackageFragmentRootRefControl(inputRoot, true);
+        sourceFolderField = new TextButtonField(sourceFolderControl);
+        sourceFolderField.addChangeListener(this);
+        
         toolkit.createFormLabel(inputRoot, Messages.ReferenceAndPreviewPage_labelTargetPackage);
-        targetInput = toolkit.createPdPackageFragmentRefControl(structure.getRoot().getProductCmpt()
-                .getIpsPackageFragment().getRoot(), inputRoot);
+        targetInput = toolkit.createPdPackageFragmentRefControl(structure.getRoot().getProductCmpt().getIpsPackageFragment().getRoot(), inputRoot);
         
         // set target default
+        sourceFolderControl.setPdPckFragmentRoot(getPackage().getRoot());
         targetInput.setIpsPackageFragment(getPackage());
         
         if (type == DeepCopyWizard.TYPE_COPY_PRODUCT) {
@@ -259,7 +273,17 @@ public class SourcePage extends WizardPage implements ICheckStateListener {
             pageComplete = false;
         }
 
-        if (getTargetPackage() != null && !getTargetPackage().exists()) {
+        IIpsPackageFragmentRoot ipsPckFragmentRoot = sourceFolderControl.getIpsPckFragmentRoot();
+        if (ipsPckFragmentRoot != null && ! ipsPckFragmentRoot.exists()){
+            if (ipsPckFragmentRoot != null){
+                setErrorMessage(NLS.bind(Messages.SourcePage_msgMissingSourceFolder,ipsPckFragmentRoot.getName()));
+            } else {
+                setErrorMessage(Messages.SourcePage_msgSelectSourceFolder);
+            }
+            pageComplete = false;
+        }
+        
+        if (pageComplete && getTargetPackage() != null && !getTargetPackage().exists()) {
             setMessage(NLS.bind(Messages.SourcePage_msgWarningTargetWillBeCreated, getTargetPackage().getName()),
                     WARNING);
         } else if (getTargetPackage() == null){
@@ -359,4 +383,26 @@ public class SourcePage extends WizardPage implements ICheckStateListener {
 
     }
 
+    /**
+     * {@inheritDoc}
+     */
+    public void valueChanged(FieldValueChangedEvent e) {
+        if (e.field==sourceFolderField) {
+            sourceFolderChanged();
+        }
+        updatePageComplete();
+    }
+
+    private void sourceFolderChanged() {
+        targetInput.setIpsPckFragmentRoot(sourceFolderControl.getIpsPckFragmentRoot());
+        targetInput.setIpsPackageFragment(null);
+    }
+
+    protected void updatePageComplete() {
+        if (getErrorMessage()!=null) {
+            setPageComplete(false);
+            return;
+        }
+        setPageComplete(!"".equals(sourceFolderControl.getText())); //$NON-NLS-1$
+    }
 }

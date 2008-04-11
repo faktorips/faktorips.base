@@ -32,7 +32,10 @@ public class Messages extends NLS {
 
     public static String DeepCopyLabelProvider_textUndefined;
     public static String DeepCopyWizard_title;
+    public static String SourcePage_labelSourceFolder;
     public static String SourcePage_msgBadTargetPackage;
+    public static String SourcePage_msgMissingSourceFolder;
+    public static String SourcePage_msgSelectSourceFolder;
     public static String SourcePage_msgWarningTargetIsDefaultPackage;
     public static String SourcePage_msgWarningTargetWillBeCreated;
     public static String SourcePage_title;
