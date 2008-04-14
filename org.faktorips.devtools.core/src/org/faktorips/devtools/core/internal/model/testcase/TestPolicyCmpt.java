@@ -794,7 +794,7 @@ public class TestPolicyCmpt extends TestObject implements ITestPolicyCmpt {
                 return;
             }
             
-            if (! productCmptOfParent.isUsedAsTargetProductCmpt(ipsProject, productCmptTypeAssociation.getName(), productCmptCandidateObj)){
+            if (! productCmptOfParent.isUsedAsTargetProductCmpt(ipsProject, productCmptCandidateObj)){
                 String text = NLS.bind(Messages.TestPolicyCmpt_TestPolicyCmpt_ValidationError_ProductCmpNotAllowed, productCmptCandidateObj.getName());
                 Message msg = new Message(MSGCODE_WRONG_PRODUCT_CMPT_OF_LINK, text, Message.ERROR, this,
                         ITestPolicyCmpt.PROPERTY_PRODUCTCMPT);

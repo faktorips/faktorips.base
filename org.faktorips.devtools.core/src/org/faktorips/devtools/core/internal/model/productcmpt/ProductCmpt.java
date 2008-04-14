@@ -341,11 +341,11 @@ public class ProductCmpt extends TimedIpsObject implements IProductCmpt {
     /**
      * {@inheritDoc}
      */
-    public boolean isUsedAsTargetProductCmpt(IIpsProject ipsProjectToSearch, String association, IProductCmpt productCmptCandidate) {
+    public boolean isUsedAsTargetProductCmpt(IIpsProject ipsProjectToSearch, IProductCmpt productCmptCandidate) {
         int numOfGenerations = getNumOfGenerations();
         for (int i = 0; i < numOfGenerations; i++) {
             IProductCmptGeneration generation = (IProductCmptGeneration)getGeneration(i);
-            IProductCmptLink[] links = generation.getLinks(association);
+            IProductCmptLink[] links = generation.getLinks();
             for (int j = 0; j < links.length; j++) {
                 if (productCmptCandidate.getQualifiedName().equals(links[j].getTarget())){
                     return true;
