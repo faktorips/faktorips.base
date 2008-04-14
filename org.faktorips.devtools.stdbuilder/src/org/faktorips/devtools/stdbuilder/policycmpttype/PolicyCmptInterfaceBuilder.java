@@ -28,6 +28,7 @@ import org.faktorips.codegen.JavaCodeFragmentBuilder;
 import org.faktorips.datatype.Datatype;
 import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
+import org.faktorips.devtools.core.model.ipsobject.Modifier;
 import org.faktorips.devtools.core.model.ipsproject.IIpsArtefactBuilderSet;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAssociation;
@@ -45,6 +46,7 @@ import org.faktorips.devtools.stdbuilder.policycmpttype.attribute.GenConstantAtt
 import org.faktorips.devtools.stdbuilder.policycmpttype.attribute.GenDerivedAttributeInterface;
 import org.faktorips.devtools.stdbuilder.productcmpttype.ProductCmptGenInterfaceBuilder;
 import org.faktorips.devtools.stdbuilder.productcmpttype.ProductCmptInterfaceBuilder;
+import org.faktorips.devtools.stdbuilder.productcmpttype.attribute.GenProdAttribute;
 import org.faktorips.runtime.IConfigurableModelObject;
 import org.faktorips.runtime.ICopySupport;
 import org.faktorips.runtime.IDeltaSupport;
@@ -97,6 +99,13 @@ public class PolicyCmptInterfaceBuilder extends BasePolicyCmptTypeBuilder {
             return new GenChangeableAttributeInterface(a, this, stringsSet);
         }
         return new GenConstantAttribute(a, this, stringsSet, false);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    protected GenProdAttribute createGenerator(IProductCmptTypeAttribute a, LocalizedStringsSet stringsSet) throws CoreException {
+        return new GenProdAttribute(a, this, stringsSet, false);
     }
 
     /**
@@ -233,7 +242,6 @@ public class PolicyCmptInterfaceBuilder extends BasePolicyCmptTypeBuilder {
         // TODO remove
         // generateCodeForValidationRules(memberVarsBuilder);
     }
-    
     
     /**
      * Generates the code for the rules of the ProductCmptType assigned to this builder.

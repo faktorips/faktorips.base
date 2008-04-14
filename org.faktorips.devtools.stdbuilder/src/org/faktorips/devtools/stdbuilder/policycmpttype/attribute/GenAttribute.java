@@ -24,7 +24,6 @@ import org.faktorips.codegen.DatatypeHelper;
 import org.faktorips.codegen.JavaCodeFragment;
 import org.faktorips.codegen.JavaCodeFragmentBuilder;
 import org.faktorips.datatype.ValueDatatype;
-import org.faktorips.devtools.core.builder.DefaultJavaGeneratorForIpsPart;
 import org.faktorips.devtools.core.builder.DefaultJavaSourceFileBuilder;
 import org.faktorips.devtools.core.builder.JavaSourceFileBuilder;
 import org.faktorips.devtools.core.model.pctype.AttributeType;
@@ -32,6 +31,7 @@ import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAttribute;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
 import org.faktorips.devtools.stdbuilder.policycmpttype.PolicyCmptImplClassBuilder;
 import org.faktorips.devtools.stdbuilder.policycmpttype.PolicyCmptInterfaceBuilder;
+import org.faktorips.devtools.stdbuilder.type.AbstractGenAttribute;
 import org.faktorips.runtime.internal.MethodNames;
 import org.faktorips.util.LocalizedStringsSet;
 
@@ -40,27 +40,12 @@ import org.faktorips.util.LocalizedStringsSet;
  * 
  * @author Jan Ortmann
  */
-public abstract class GenAttribute extends DefaultJavaGeneratorForIpsPart {
-
-    protected static final String[] EMPTY_STRING_ARRAY = new String[0];
+public abstract class GenAttribute extends AbstractGenAttribute {
     
-    protected IPolicyCmptTypeAttribute attribute;
-    protected String attributeName;
-    protected DatatypeHelper datatypeHelper;
-    protected String staticConstantPropertyName;
-    protected String memberVarName;
     private IProductCmptType productCmptType;
     
     public GenAttribute(IPolicyCmptTypeAttribute a, DefaultJavaSourceFileBuilder builder, LocalizedStringsSet stringsSet, boolean generateImplementation) throws CoreException {
         super(a, builder, stringsSet, generateImplementation);
-        this.attribute = a;
-        attributeName = a.getName();
-        datatypeHelper = builder.getIpsProject().findDatatypeHelper(a.getDatatype());
-        if (datatypeHelper==null) {
-            throw new NullPointerException("No datatype helper found for " + a);
-        }
-        staticConstantPropertyName = getLocalizedText("FIELD_PROPERTY_NAME", StringUtils.upperCase(a.getName()));
-        memberVarName = getJavaNamingConvention().getMemberVarName(attributeName);
     }
     
     /**
@@ -89,12 +74,12 @@ public abstract class GenAttribute extends DefaultJavaGeneratorForIpsPart {
     }
 
     public IPolicyCmptTypeAttribute getPolicyCmptTypeAttribute() {
-        return attribute;
+        return (IPolicyCmptTypeAttribute)attribute;
     }
     
     protected IProductCmptType getProductCmptType() throws CoreException {
         if (productCmptType==null) {
-            productCmptType = attribute.getPolicyCmptType().findProductCmptType(getIpsProject());
+            productCmptType = getPolicyCmptTypeAttribute().getPolicyCmptType().findProductCmptType(getIpsProject());
         }
         return productCmptType;
     }
@@ -124,15 +109,15 @@ public abstract class GenAttribute extends DefaultJavaGeneratorForIpsPart {
     }
     
     public boolean isConfigurableByProduct() {
-        return attribute.isProductRelevant();
+        return getPolicyCmptTypeAttribute().isProductRelevant();
     }
     
     public boolean isDerivedOnTheFly() {
-        return attribute.getAttributeType()==AttributeType.DERIVED_ON_THE_FLY;
+        return getPolicyCmptTypeAttribute().getAttributeType()==AttributeType.DERIVED_ON_THE_FLY;
     }
     
     public boolean isDerivedByExplicitMethodCall() {
-        return attribute.getAttributeType()==AttributeType.DERIVED_BY_EXPLICIT_METHOD_CALL;
+        return getPolicyCmptTypeAttribute().getAttributeType()==AttributeType.DERIVED_BY_EXPLICIT_METHOD_CALL;
     }
 
     public String getGetterMethodName() {
@@ -204,7 +189,7 @@ public abstract class GenAttribute extends DefaultJavaGeneratorForIpsPart {
      * method call.
      */
     public boolean isMemberVariableRequired() {
-        return (attribute.isChangeable() || isDerivedByExplicitMethodCall()) && !isOverwritten();
+        return (getPolicyCmptTypeAttribute().isChangeable() || isDerivedByExplicitMethodCall()) && !isOverwritten();
     }
     
     public boolean needsToBeConsideredInDeltaComputation() {
@@ -271,6 +256,22 @@ public abstract class GenAttribute extends DefaultJavaGeneratorForIpsPart {
      */
     public String getMemberVarName() throws CoreException {
         return memberVarName;
+    }  
+    
+    public String getFieldNameDefaultValue() throws CoreException {
+        return getJavaNamingConvention().getMemberVarName(getPropertyNameDefaultValue());
+    } 
+    
+    String getPropertyNameDefaultValue() {
+        return getLocalizedText("PROPERTY_DEFAULTVALUE_NAME", StringUtils.capitalize(getPolicyCmptTypeAttribute().getName()));
+    }
+    
+    public String getFieldNameRangeFor(){
+        return getLocalizedText("FIELD_RANGE_FOR_NAME", StringUtils.capitalize(getPolicyCmptTypeAttribute().getName()));
+    }
+    
+    public String getFieldNameAllowedValuesFor(){
+        return getLocalizedText("FIELD_ALLOWED_VALUES_FOR_NAME", StringUtils.capitalize(getPolicyCmptTypeAttribute().getName()));
     }
 
     public String getMethodNameGetAllowedValuesFor() throws CoreException{

@@ -22,12 +22,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.commons.lang.StringUtils;
-import org.apache.commons.lang.SystemUtils;
 import org.eclipse.core.runtime.CoreException;
 import org.faktorips.codegen.DatatypeHelper;
 import org.faktorips.codegen.JavaCodeFragmentBuilder;
 import org.faktorips.datatype.Datatype;
-import org.faktorips.devtools.core.builder.AbstractProductCmptTypeBuilder;
 import org.faktorips.devtools.core.builder.BuilderHelper;
 import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.core.model.ipsproject.IIpsArtefactBuilderSet;
@@ -38,16 +36,18 @@ import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeAssocia
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeAttribute;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeMethod;
 import org.faktorips.devtools.core.model.productcmpttype.ITableStructureUsage;
-import org.faktorips.devtools.core.model.type.IMethod;
 import org.faktorips.devtools.core.model.type.IParameter;
-import org.faktorips.devtools.core.model.valueset.ValueSetType;
 import org.faktorips.devtools.stdbuilder.StdBuilderHelper;
 import org.faktorips.devtools.stdbuilder.policycmpttype.PolicyCmptImplClassBuilder;
+import org.faktorips.devtools.stdbuilder.policycmpttype.attribute.GenAttribute;
+import org.faktorips.devtools.stdbuilder.policycmpttype.attribute.GenChangeableAttributeInterface;
+import org.faktorips.devtools.stdbuilder.policycmpttype.attribute.GenConstantAttribute;
+import org.faktorips.devtools.stdbuilder.policycmpttype.attribute.GenDerivedAttributeInterface;
+import org.faktorips.devtools.stdbuilder.productcmpttype.attribute.GenProdAttribute;
 import org.faktorips.runtime.FormulaExecutionException;
 import org.faktorips.runtime.IProductComponentGeneration;
 import org.faktorips.util.LocalizedStringsSet;
 import org.faktorips.util.StringUtil;
-import org.faktorips.valueset.EnumValueSet;
 import org.faktorips.valueset.IntegerRange;
 
 /**
@@ -77,6 +77,29 @@ public class ProductCmptGenInterfaceBuilder extends AbstractProductCmptTypeBuild
     
     public void setProductCmptGenImplClassBuilder(ProductCmptGenImplClassBuilder builder) {
         this.productCmptGenImplClassBuilder = builder;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    protected GenProdAttribute createGenerator(IProductCmptTypeAttribute a, LocalizedStringsSet stringsSet) throws CoreException {
+        return new GenProdAttribute(a, this, stringsSet, false);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    protected GenAttribute createGenerator(IPolicyCmptTypeAttribute a, LocalizedStringsSet stringsSet) throws CoreException {
+        if (!a.getModifier().isPublished()) {
+            return null;
+        }
+        if (a.isDerived()) {
+            return new GenDerivedAttributeInterface(a, this, stringsSet);
+        }
+        if (a.isChangeable()) {
+            return new GenChangeableAttributeInterface(a, this, stringsSet);
+        }
+        return new GenConstantAttribute(a, this, stringsSet, false);
     }
 
     /**
@@ -114,7 +137,7 @@ public class ProductCmptGenInterfaceBuilder extends AbstractProductCmptTypeBuild
         appendLocalizedJavaDoc("INTERFACE", new String[]{generationConceptName, getProductCmptType().getName()}, getIpsObject(), builder);
     }
 
-    protected void generateOtherCode(JavaCodeFragmentBuilder constantsBuilder, JavaCodeFragmentBuilder memberVarsBuilder, JavaCodeFragmentBuilder methodsBuilder)
+    protected void generateOtherCode(JavaCodeFragmentBuilder memberVarsBuilder, JavaCodeFragmentBuilder methodsBuilder)
             throws CoreException {
         // nothing to do
     }
@@ -127,104 +150,15 @@ public class ProductCmptGenInterfaceBuilder extends AbstractProductCmptTypeBuild
      * {@inheritDoc}
      */
     protected void generateCodeForPolicyCmptTypeAttribute(IPolicyCmptTypeAttribute a, DatatypeHelper datatypeHelper, JavaCodeFragmentBuilder memberVarsBuilder, JavaCodeFragmentBuilder methodsBuilder) throws CoreException {
-        generateMethodGetDefaultValue(a, datatypeHelper, methodsBuilder);
-        
-        //TODO the generateCodeForAttribute method of the abstract builder needs to discriminate against
-        //the published modifier
-
-       datatypeHelper = StdBuilderHelper.getDatatypeHelperForValueSet(getIpsSrcFile().getIpsProject(), datatypeHelper);
-       if(ValueSetType.ENUM.equals(a.getValueSet().getValueSetType())){
-           generateMethodGetAllowedValuesFor(a, datatypeHelper.getDatatype(), methodsBuilder);
-       }
-       else if(ValueSetType.RANGE.equals(a.getValueSet().getValueSetType())){
-           generateMethodGetRangeFor(a, datatypeHelper, methodsBuilder);
-       }
+        GenAttribute generator = (GenAttribute)getGenerator(a);
+        if (generator != null) {
+            generator.generate();
+        }
     }
 
-    /**
-     * Code sample:
-     * <pre>
-     * [Javadoc]
-     * public Integer getDefaultMinAge();
-     * </pre>
-     */
-    void generateMethodGetDefaultValue(IPolicyCmptTypeAttribute a, DatatypeHelper datatypeHelper, JavaCodeFragmentBuilder builder) throws CoreException {
-        appendLocalizedJavaDoc("METHOD_GET_DEFAULTVALUE", a.getName(), a, builder);
-        generateSignatureGetDefaultValue(a, datatypeHelper, builder);
-        builder.append(';');
-    }
+    
 
-    /**
-     * Code sample:
-     * <pre>
-     * public Integer getDefaultMinAge()
-     * </pre>
-     */
-    void generateSignatureGetDefaultValue(IPolicyCmptTypeAttribute a, DatatypeHelper datatypeHelper, JavaCodeFragmentBuilder builder) throws CoreException {
-        String methodName = getMethodNameGetDefaultValue(a, datatypeHelper);
-        builder.signature(Modifier.PUBLIC, datatypeHelper.getJavaClassName(),
-                methodName, EMPTY_STRING_ARRAY, EMPTY_STRING_ARRAY);
-    }
     
-    /**
-     * Returns the name of the method that returns the default value for the indicated
-     * attribute.
-     */
-    public String getMethodNameGetDefaultValue(IPolicyCmptTypeAttribute a, DatatypeHelper datatypeHelper) {
-        return getJavaNamingConvention().getGetterMethodName(getPropertyNameDefaultValue(a), datatypeHelper.getDatatype());        
-    }
-    
-    String getPropertyNameDefaultValue(IPolicyCmptTypeAttribute a) {
-        return getLocalizedText(a, "PROPERTY_DEFAULTVALUE_NAME", StringUtils.capitalize(a.getName()));
-    }
-    
-    /**
-     * {@inheritDoc}
-     */
-    protected void generateCodeForProductCmptTypeAttribute(
-            IProductCmptTypeAttribute a, 
-            DatatypeHelper datatypeHelper, 
-            JavaCodeFragmentBuilder memberVarsBuilder, 
-            JavaCodeFragmentBuilder methodsBuilder, 
-            JavaCodeFragmentBuilder constantBuilder) throws CoreException {
-        
-        generateMethodGetValue(a, datatypeHelper, methodsBuilder);
-    }
-
-    /**
-     * Code sample:
-     * [Javadoc]
-     * <pre>
-     * public Integer getTaxRate();
-     * </pre>
-     */
-    void generateMethodGetValue(IProductCmptTypeAttribute a, DatatypeHelper datatypeHelper, JavaCodeFragmentBuilder builder) throws CoreException {
-        String description = StringUtils.isEmpty(a.getDescription()) ? "" : SystemUtils.LINE_SEPARATOR + "<p>" + SystemUtils.LINE_SEPARATOR + a.getDescription();
-        String[] replacements = new String[]{a.getName(), description};
-        appendLocalizedJavaDoc("METHOD_GET_VALUE", replacements, a, builder);
-        generateSignatureGetValue(a, datatypeHelper, builder);
-        builder.append(';');
-    }
-
-    /**
-     * Code sample:
-     * <pre>
-     * public Integer getTaxRate()
-     * </pre>
-     */
-    void generateSignatureGetValue(IProductCmptTypeAttribute a, DatatypeHelper datatypeHelper, JavaCodeFragmentBuilder builder) throws CoreException {
-        String methodName = getMethodNameGetValue(a, datatypeHelper);
-        builder.signature(Modifier.PUBLIC, datatypeHelper.getJavaClassName(),
-                methodName, EMPTY_STRING_ARRAY, EMPTY_STRING_ARRAY);
-    }
-    
-    public String getMethodNameGetValue(IProductCmptTypeAttribute a, DatatypeHelper datatypeHelper) throws CoreException {
-        return getJavaNamingConvention().getGetterMethodName(getPropertyNameValue(a), datatypeHelper.getDatatype());
-    }
-    
-    String getPropertyNameValue(IProductCmptTypeAttribute a) {
-        return getLocalizedText(a, "PROPERTY_VALUE_NAME", StringUtils.capitalize(a.getName()));
-    }
 
     /**
      * {@inheritDoc}
@@ -433,39 +367,7 @@ public class ProductCmptGenInterfaceBuilder extends AbstractProductCmptTypeBuild
         methodsBuilder.append(';');
     }
     
-    public String getMethodNameGetRangeFor(IPolicyCmptTypeAttribute a, Datatype datatype){
-        return getJavaNamingConvention().getGetterMethodName(getLocalizedText(a, 
-                "METHOD_GET_RANGE_FOR_NAME", StringUtils.capitalize(a.getName())), datatype);
-    }
     
-    public void generateMethodGetRangeFor(IPolicyCmptTypeAttribute a, DatatypeHelper helper, JavaCodeFragmentBuilder methodsBuilder) throws CoreException{
-        appendLocalizedJavaDoc("METHOD_GET_RANGE_FOR", a.getName(), a, methodsBuilder);
-        generateSignatureGetRangeFor(a, helper, methodsBuilder);
-        methodsBuilder.append(';');
-    }
-    
-    public void generateSignatureGetRangeFor(IPolicyCmptTypeAttribute a, DatatypeHelper helper, JavaCodeFragmentBuilder methodsBuilder) throws CoreException{
-        String methodName = getMethodNameGetRangeFor(a, helper.getDatatype());
-        String rangeClassName = helper.getRangeJavaClassName();
-        methodsBuilder.signature(Modifier.PUBLIC, rangeClassName, methodName, new String[]{"businessFunction"}, new String[]{String.class.getName()});
-    }
-
-    public String getMethodNameGetAllowedValuesFor(IPolicyCmptTypeAttribute a, Datatype datatype){
-        return getJavaNamingConvention().getGetterMethodName(getLocalizedText(
-                a, "METHOD_GET_ALLOWED_VALUES_FOR_NAME", StringUtils.capitalize(a.getName())), datatype);
-    }
-    
-    public void generateMethodGetAllowedValuesFor(IPolicyCmptTypeAttribute a, Datatype datatype, JavaCodeFragmentBuilder methodsBuilder) throws CoreException{
-        appendLocalizedJavaDoc("METHOD_GET_ALLOWED_VALUES_FOR", a.getName(), a, methodsBuilder);
-        generateSignatureGetAllowedValuesFor(a, datatype, methodsBuilder);
-        methodsBuilder.append(';');
-    }
-    
-    public void generateSignatureGetAllowedValuesFor(IPolicyCmptTypeAttribute a, Datatype datatype, JavaCodeFragmentBuilder methodsBuilder) throws CoreException{
-        String methodName = getMethodNameGetAllowedValuesFor(a, datatype);
-        methodsBuilder.signature(Modifier.PUBLIC, EnumValueSet.class.getName(), methodName, 
-                new String[]{"businessFunction"}, new String[]{String.class.getName()});
-    }
     
     /**
      * {@inheritDoc}
@@ -489,13 +391,14 @@ public class ProductCmptGenInterfaceBuilder extends AbstractProductCmptTypeBuild
     /**
      * {@inheritDoc}
      */
-    protected void generateCodeForMethodDefinedInModel(
-            IMethod method, 
+    protected void generateCodeForModelMethod(
+            IProductCmptTypeMethod method, 
+            JavaCodeFragmentBuilder fieldsBuilder, 
             JavaCodeFragmentBuilder methodsBuilder) throws CoreException {
         
         if (method.getModifier().isPublished()) {
             methodsBuilder.javaDoc(method.getDescription(), ANNOTATION_GENERATED);
-            generateSignatureForModelMethod((IProductCmptTypeMethod)method, false, false, methodsBuilder);
+            generateSignatureForModelMethod(method, false, false, methodsBuilder);
             methodsBuilder.append(';');
         }
     }

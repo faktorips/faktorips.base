@@ -24,7 +24,6 @@ import java.util.List;
 import org.eclipse.core.runtime.CoreException;
 import org.faktorips.codegen.DatatypeHelper;
 import org.faktorips.codegen.JavaCodeFragmentBuilder;
-import org.faktorips.devtools.core.builder.AbstractProductCmptTypeBuilder;
 import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.core.model.ipsproject.IChangesOverTimeNamingConvention;
 import org.faktorips.devtools.core.model.ipsproject.IIpsArtefactBuilderSet;
@@ -33,9 +32,11 @@ import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAttribute;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeAssociation;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeAttribute;
+import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeMethod;
 import org.faktorips.devtools.core.model.productcmpttype.ITableStructureUsage;
-import org.faktorips.devtools.core.model.type.IMethod;
 import org.faktorips.devtools.stdbuilder.policycmpttype.PolicyCmptInterfaceBuilder;
+import org.faktorips.devtools.stdbuilder.policycmpttype.attribute.GenAttribute;
+import org.faktorips.devtools.stdbuilder.productcmpttype.attribute.GenProdAttribute;
 import org.faktorips.runtime.IProductComponent;
 import org.faktorips.util.LocalizedStringsSet;
 
@@ -117,13 +118,13 @@ public class ProductCmptInterfaceBuilder extends AbstractProductCmptTypeBuilder 
     /**
      * {@inheritDoc}
      */
-    protected void generateOtherCode(JavaCodeFragmentBuilder constantsBuilder, JavaCodeFragmentBuilder memberVarsBuilder, JavaCodeFragmentBuilder methodsBuilder)
+    protected void generateOtherCode(JavaCodeFragmentBuilder memberVarsBuilder, JavaCodeFragmentBuilder methodsBuilder)
             throws CoreException {
         
         generateMethodGetGeneration(methodsBuilder);
         // v2 - prufen, wann man die factory methode erzeugt. Signature koennte ja durchaus generiert werden.
         // und nur die implementierung nicht! 
-        if (getPcType()!=null && !getPcType().isAbstract()) {
+        if (getPolicyCmptType()!=null && !getPolicyCmptType().isAbstract()) {
             generateMethodCreatePolicyCmpt(methodsBuilder);
         }
     }
@@ -171,7 +172,7 @@ public class ProductCmptInterfaceBuilder extends AbstractProductCmptTypeBuilder 
      * </pre>
      */
     private void generateMethodCreatePolicyCmpt(JavaCodeFragmentBuilder methodsBuilder) throws CoreException {
-        IPolicyCmptType policyCmptType = getPcType();
+        IPolicyCmptType policyCmptType = getPolicyCmptType();
         String policyCmptTypeName = policyCmptTypeInterfaceBuilder.getPolicyCmptTypeName(policyCmptType); 
         appendLocalizedJavaDoc("METHOD_CREATE_POLICY_CMPT", new String[]{policyCmptTypeName}, getIpsObject(), methodsBuilder);
         generateSignatureCreatePolicyCmpt(policyCmptType, methodsBuilder);
@@ -214,17 +215,6 @@ public class ProductCmptInterfaceBuilder extends AbstractProductCmptTypeBuilder 
     /**
      * {@inheritDoc}
      */
-    protected void generateCodeForProductCmptTypeAttribute(IProductCmptTypeAttribute a,
-            DatatypeHelper datatypeHelper,
-            JavaCodeFragmentBuilder memberVarsBuilder,
-            JavaCodeFragmentBuilder methodsBuilder, JavaCodeFragmentBuilder constantBuilder) throws CoreException {
-        
-        //  nothing to do
-    }
-
-    /**
-     * {@inheritDoc}
-     */
     protected void generateCodeForNoneDerivedUnionAssociation(IProductCmptTypeAssociation association,
             JavaCodeFragmentBuilder memberVarsBuilder,
             JavaCodeFragmentBuilder methodsBuilder) throws Exception {
@@ -259,8 +249,22 @@ public class ProductCmptInterfaceBuilder extends AbstractProductCmptTypeBuilder 
     /**
      * {@inheritDoc}
      */
-    protected void generateCodeForMethodDefinedInModel(IMethod method, JavaCodeFragmentBuilder methodsBuilder) throws CoreException {
+    protected void generateCodeForModelMethod(IProductCmptTypeMethod method, JavaCodeFragmentBuilder fieldsBuilder, JavaCodeFragmentBuilder methodsBuilder) throws CoreException {
         // nothing to do
+    }
+
+    @Override
+    protected GenProdAttribute createGenerator(IProductCmptTypeAttribute a, LocalizedStringsSet localizedStringsSet)
+            throws CoreException {
+        // return null, as this builder does not need code for product component type attributes
+        return null;
+    }
+
+    @Override
+    protected GenAttribute createGenerator(IPolicyCmptTypeAttribute a, LocalizedStringsSet localizedStringsSet)
+            throws CoreException {
+        // TODO return null, as this builder does not need code for policy component type attributes
+        return null;
     }
     
 }

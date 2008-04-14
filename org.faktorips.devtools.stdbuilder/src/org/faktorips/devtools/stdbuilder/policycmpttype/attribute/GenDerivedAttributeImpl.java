@@ -1,19 +1,16 @@
-/*******************************************************************************
+/***************************************************************************************************
  * Copyright (c) 2005,2006 Faktor Zehn GmbH und andere.
- *
+ * 
  * Alle Rechte vorbehalten.
- *
- * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele,
- * Konfigurationen, etc.) dürfen nur unter den Bedingungen der 
- * Faktor-Zehn-Community Lizenzvereinbarung – Version 0.1 (vor Gründung Community) 
- * genutzt werden, die Bestandteil der Auslieferung ist und auch unter
- *   http://www.faktorips.org/legal/cl-v01.html
- * eingesehen werden kann.
- *
- * Mitwirkende:
- *   Faktor Zehn GmbH - initial API and implementation 
- *
- *******************************************************************************/
+ * 
+ * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen,
+ * etc.) dürfen nur unter den Bedingungen der Faktor-Zehn-Community Lizenzvereinbarung – Version 0.1
+ * (vor Gründung Community) genutzt werden, die Bestandteil der Auslieferung ist und auch unter
+ * http://www.faktorips.org/legal/cl-v01.html eingesehen werden kann.
+ * 
+ * Mitwirkende: Faktor Zehn GmbH - initial API and implementation
+ * 
+ **************************************************************************************************/
 
 package org.faktorips.devtools.stdbuilder.policycmpttype.attribute;
 
@@ -24,6 +21,7 @@ import org.faktorips.codegen.JavaCodeFragmentBuilder;
 import org.faktorips.datatype.Datatype;
 import org.faktorips.datatype.ValueDatatype;
 import org.faktorips.devtools.core.builder.BuilderHelper;
+import org.faktorips.devtools.core.builder.DefaultJavaSourceFileBuilder;
 import org.faktorips.devtools.core.builder.JavaSourceFileBuilder;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.pctype.AttributeType;
@@ -44,39 +42,42 @@ import org.faktorips.util.LocalizedStringsSet;
  */
 public class GenDerivedAttributeImpl extends GenAttribute {
 
-    public GenDerivedAttributeImpl(
-            IPolicyCmptTypeAttribute a, 
-            PolicyCmptImplClassBuilder builder,
+    public GenDerivedAttributeImpl(IPolicyCmptTypeAttribute a, DefaultJavaSourceFileBuilder builder,
             LocalizedStringsSet stringsSet) throws CoreException {
-        
+
         super(a, builder, stringsSet, true);
         ArgumentCheck.isTrue(a.isDerived());
     }
-    
+
     /**
      * Returns the policy component interface builder.
      */
     private PolicyCmptImplClassBuilder getImplClassBuilder() {
-        return (PolicyCmptImplClassBuilder)getJavaSourceFileBuilder();
+        if (getJavaSourceFileBuilder() instanceof PolicyCmptImplClassBuilder) {
+            return (PolicyCmptImplClassBuilder)getJavaSourceFileBuilder();
+        }
+        return null;
     }
-    
+
     /**
      * Returns the policy component interface builder.
      */
     private PolicyCmptInterfaceBuilder getInterfaceBuilder() {
         return ((PolicyCmptImplClassBuilder)getJavaSourceFileBuilder()).getInterfaceBuilder();
     }
-    
+
     private ProductCmptGenImplClassBuilder getProductCmptGenImplClassBuilder() {
         return getImplClassBuilder().getProductCmptGenImplBuilder();
     }
-    
+
     /**
      * {@inheritDoc}
      */
     protected void generateConstants(JavaCodeFragmentBuilder builder) throws CoreException {
-        if (isNotPublished()) {
-            generateAttributeNameConstant(builder);
+        if (isGeneratingPolicySide()) {
+            if (isNotPublished()) {
+                generateAttributeNameConstant(builder);
+            }
         }
     }
 
@@ -84,8 +85,11 @@ public class GenDerivedAttributeImpl extends GenAttribute {
      * {@inheritDoc}
      */
     protected void generateMemberVariables(JavaCodeFragmentBuilder builder) throws CoreException {
-        if (attribute.getAttributeType()==AttributeType.DERIVED_BY_EXPLICIT_METHOD_CALL && !isOverwritten()) {
-            generateField(builder);
+        if (isGeneratingPolicySide()) {
+            if (getPolicyCmptTypeAttribute().getAttributeType() == AttributeType.DERIVED_BY_EXPLICIT_METHOD_CALL
+                    && !isOverwritten()) {
+                generateField(builder);
+            }
         }
     }
 
@@ -93,23 +97,27 @@ public class GenDerivedAttributeImpl extends GenAttribute {
      * {@inheritDoc}
      */
     protected void generateMethods(JavaCodeFragmentBuilder builder) throws CoreException {
-        if (attribute.getAttributeType()==AttributeType.DERIVED_ON_THE_FLY) {
-            generateGetterImplementationForOnTheFlyComputation(builder);
-        } else {
-            if (!isOverwritten()) {
-                generateGetterImplementation(builder);
+        if (isGeneratingPolicySide()) {
+            if (getPolicyCmptTypeAttribute().getAttributeType() == AttributeType.DERIVED_ON_THE_FLY) {
+                generateGetterImplementationForOnTheFlyComputation(builder);
+            } else {
+                if (!isOverwritten()) {
+                    generateGetterImplementation(builder);
+                }
             }
         }
     }
-    
-    private void generateGetterImplementationForOnTheFlyComputation(JavaCodeFragmentBuilder builder) throws CoreException {
+
+    private void generateGetterImplementationForOnTheFlyComputation(JavaCodeFragmentBuilder builder)
+            throws CoreException {
         IIpsProject ipsProject = getIpsProject();
         builder.javaDoc(getJavaDocCommentForOverriddenMethod(), JavaSourceFileBuilder.ANNOTATION_GENERATED);
         generateGetterSignature(builder);
         builder.openBracket();
 
-        IProductCmptTypeMethod formulaSignature = attribute.findComputationMethod(ipsProject);
-        if (!attribute.isProductRelevant() || formulaSignature==null || formulaSignature.validate(getIpsProject()).containsErrorMsg()) {
+        IProductCmptTypeMethod formulaSignature = getPolicyCmptTypeAttribute().findComputationMethod(ipsProject);
+        if (!getPolicyCmptTypeAttribute().isProductRelevant() || formulaSignature == null
+                || formulaSignature.validate(getIpsProject()).containsErrorMsg()) {
             builder.append("return ");
             builder.append(datatypeHelper.newInstance(attribute.getDefaultValue()));
             builder.appendln(";");
@@ -117,8 +125,9 @@ public class GenDerivedAttributeImpl extends GenAttribute {
             IParameter[] parameters = formulaSignature.getParameters();
             boolean resolveTypesToPublishedInterface = formulaSignature.getModifier().isPublished();
             String[] paramNames = BuilderHelper.extractParameterNames(parameters);
-            String[] paramTypes = StdBuilderHelper.transformParameterTypesToJavaClassNames(
-                    parameters, resolveTypesToPublishedInterface, ipsProject, getImplClassBuilder(), getProductCmptGenImplClassBuilder());
+            String[] paramTypes = StdBuilderHelper.transformParameterTypesToJavaClassNames(parameters,
+                    resolveTypesToPublishedInterface, ipsProject, getImplClassBuilder(),
+                    getProductCmptGenImplClassBuilder());
 
             builder.appendln("// TODO Belegung der Berechnungsparameter implementieren");
             JavaCodeFragment paramFragment = new JavaCodeFragment();
@@ -130,10 +139,9 @@ public class GenDerivedAttributeImpl extends GenAttribute {
                 builder.append(" = ");
                 Datatype paramDataype = ipsProject.findDatatype(parameters[i].getDatatype());
                 DatatypeHelper helper = ipsProject.getDatatypeHelper(paramDataype);
-                if(paramDataype.isPrimitive()){
+                if (paramDataype.isPrimitive()) {
                     builder.append(((ValueDatatype)paramDataype).getDefaultValue());
-                }
-                else{
+                } else {
                     if (helper != null) {
                         JavaCodeFragment nullExpressionFragment = helper.nullExpression();
                         builder.append(nullExpressionFragment);
@@ -156,9 +164,8 @@ public class GenDerivedAttributeImpl extends GenAttribute {
             builder.append(formulaSignature.getName());
             builder.append(paramFragment);
             builder.append(";");
-        } 
+        }
         builder.closeBracket();
     }
-
 
 }

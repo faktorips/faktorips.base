@@ -32,7 +32,6 @@ import org.faktorips.codegen.JavaCodeFragmentBuilder;
 import org.faktorips.datatype.Datatype;
 import org.faktorips.datatype.ValueDatatype;
 import org.faktorips.devtools.core.IpsStatus;
-import org.faktorips.devtools.core.builder.AbstractProductCmptTypeBuilder;
 import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
 import org.faktorips.devtools.core.model.ipsproject.IIpsArtefactBuilderSet;
@@ -48,9 +47,13 @@ import org.faktorips.devtools.core.model.productcmpttype.ITableStructureUsage;
 import org.faktorips.devtools.core.model.productcmpttype.ProductCmptTypeHierarchyVisitor;
 import org.faktorips.devtools.core.model.tablestructure.ITableStructure;
 import org.faktorips.devtools.core.model.type.IAssociation;
-import org.faktorips.devtools.core.model.type.IMethod;
 import org.faktorips.devtools.core.model.valueset.ValueSetType;
 import org.faktorips.devtools.stdbuilder.StdBuilderHelper;
+import org.faktorips.devtools.stdbuilder.policycmpttype.attribute.GenAttribute;
+import org.faktorips.devtools.stdbuilder.policycmpttype.attribute.GenChangeableAttributeImpl;
+import org.faktorips.devtools.stdbuilder.policycmpttype.attribute.GenConstantAttribute;
+import org.faktorips.devtools.stdbuilder.policycmpttype.attribute.GenDerivedAttributeImpl;
+import org.faktorips.devtools.stdbuilder.productcmpttype.attribute.GenProdAttribute;
 import org.faktorips.devtools.stdbuilder.table.TableImplBuilder;
 import org.faktorips.runtime.ITable;
 import org.faktorips.runtime.IllegalRepositoryModificationException;
@@ -62,7 +65,6 @@ import org.faktorips.runtime.internal.ValueToXmlHelper;
 import org.faktorips.util.ArgumentCheck;
 import org.faktorips.util.LocalizedStringsSet;
 import org.faktorips.util.StringUtil;
-import org.faktorips.valueset.EnumValueSet;
 import org.faktorips.valueset.IntegerRange;
 import org.w3c.dom.Element;
 
@@ -189,7 +191,7 @@ public class ProductCmptGenImplClassBuilder extends AbstractProductCmptTypeBuild
     /**
      * {@inheritDoc}
      */
-    protected void generateOtherCode(JavaCodeFragmentBuilder constantsBuilder, JavaCodeFragmentBuilder memberVarsBuilder, JavaCodeFragmentBuilder methodsBuilder)
+    protected void generateOtherCode(JavaCodeFragmentBuilder memberVarsBuilder, JavaCodeFragmentBuilder methodsBuilder)
             throws CoreException {
         
         generateMethodDoInitPropertiesFromXml(methodsBuilder);
@@ -206,23 +208,18 @@ public class ProductCmptGenImplClassBuilder extends AbstractProductCmptTypeBuild
         builder.appendln("super.doInitPropertiesFromXml(configMap);");
         
         boolean attributeFound = false;
-        IProductCmptTypeAttribute[] productAttributes = getProductCmptType().getProductCmptTypeAttributes();
-        for (int i = 0; i < productAttributes.length; i++) {
-            IProductCmptTypeAttribute a = productAttributes[i];
-            if (a.validate(getIpsProject()).containsErrorMsg()) {
+        for (Iterator it=getGenProdAttributes(); it.hasNext(); ) {
+            GenProdAttribute generator = (GenProdAttribute)it.next();
+            if (generator.isValidAttribute()) {
                 continue;
             }
             if (attributeFound == false) {
                 generateDefineLocalVariablesForXmlExtraction(builder);
                 attributeFound = true;
             }
-            ValueDatatype datatype = a.findDatatype(getIpsProject());
-            DatatypeHelper helper = getIpsProject().getDatatypeHelper(datatype);
-            generateGetElementFromConfigMapAndIfStatement(a.getName(), builder);
-            generateExtractValueFromXml(getFieldNameValue(a), helper, builder);
-            builder.closeBracket(); // close if statement generated three lines above
+            generator.generateDoInitPropertiesFromXml(builder);
         }
-        IPolicyCmptType policyCmptType = getPcType();
+        IPolicyCmptType policyCmptType = getPolicyCmptType();
         IPolicyCmptTypeAttribute[] attributes = policyCmptType == null ? new IPolicyCmptTypeAttribute[0] : policyCmptType.getPolicyCmptTypeAttributes();
         for (int i = 0; i < attributes.length; i++) {
             IPolicyCmptTypeAttribute a = attributes[i];
@@ -236,11 +233,12 @@ public class ProductCmptGenImplClassBuilder extends AbstractProductCmptTypeBuild
                 generateDefineLocalVariablesForXmlExtraction(builder);
                 attributeFound = true;
             }
+            GenAttribute generator = getGenerator(a);
             ValueDatatype datatype = a.findDatatype(getIpsProject());
             DatatypeHelper helper = getProductCmptType().getIpsProject().getDatatypeHelper(datatype);
             generateGetElementFromConfigMapAndIfStatement(a.getName(), builder);
-            generateExtractValueFromXml(getFieldNameDefaulValue(a), helper, builder);
-            generateExtractValueSetFromXml(a, helper, builder);
+            generateExtractValueFromXml(generator.getFieldNameDefaultValue(), helper, builder);
+            generateExtractValueSetFromXml(generator, helper, builder);
             builder.closeBracket(); // close if statement generated three lines above
         }
         builder.methodEnd();
@@ -273,8 +271,8 @@ public class ProductCmptGenImplClassBuilder extends AbstractProductCmptTypeBuild
         builder.appendln(";");
     }
     
-    private void generateExtractValueSetFromXml(IPolicyCmptTypeAttribute a, DatatypeHelper helper, JavaCodeFragmentBuilder builder) throws CoreException {
-        ValueSetType valueSetType = a.getValueSet().getValueSetType();
+    private void generateExtractValueSetFromXml(GenAttribute attribute, DatatypeHelper helper, JavaCodeFragmentBuilder builder) throws CoreException {
+        ValueSetType valueSetType = attribute.getPolicyCmptTypeAttribute().getValueSet().getValueSetType();
         JavaCodeFragment frag = new JavaCodeFragment();
         helper = StdBuilderHelper.getDatatypeHelperForValueSet(getIpsSrcFile().getIpsProject(), helper);
         if(ValueSetType.RANGE.equals(valueSetType)){
@@ -282,7 +280,7 @@ public class ProductCmptGenImplClassBuilder extends AbstractProductCmptTypeBuild
             frag.append(" range = ");
             frag.appendClassName(ValueToXmlHelper.class);
             frag.appendln(".getRangeFromElement(configElement, \"ValueSet\");");
-            frag.append(getFieldNameRangeFor(a));
+            frag.append(attribute.getFieldNameRangeFor());
             frag.append(" = ");
             JavaCodeFragment newRangeInstanceFrag = helper.newRangeInstance(
                     new JavaCodeFragment("range.getLower()"), new JavaCodeFragment("range.getUpper()"),
@@ -308,7 +306,7 @@ public class ProductCmptGenImplClassBuilder extends AbstractProductCmptTypeBuild
             frag.append(helper.newInstanceFromExpression("values.getValue(i)"));
             frag.appendln(");");
             frag.appendCloseBracket();
-            frag.append(getFieldNameAllowedValuesFor(a));
+            frag.append(attribute.getFieldNameAllowedValuesFor());
             frag.append(" = ");
             frag.append(helper.newEnumValueSetInstance(new JavaCodeFragment("enumValues"), 
                     new JavaCodeFragment("values.containsNull()")));
@@ -510,133 +508,24 @@ public class ProductCmptGenImplClassBuilder extends AbstractProductCmptTypeBuild
     private String getMethodNameGetTableUsage(ITableStructureUsage tsu) {
         return "get" + StringUtils.capitalize(tsu.getRoleName());
     }
-    
-    protected void generateCodeForPolicyCmptTypeAttribute(IPolicyCmptTypeAttribute a, DatatypeHelper datatypeHelper, JavaCodeFragmentBuilder memberVarsBuilder, JavaCodeFragmentBuilder methodsBuilder) throws CoreException {
-        generateFieldDefaultValue(a, datatypeHelper, memberVarsBuilder);
-        generateMethodGetDefaultValue(a, datatypeHelper, methodsBuilder);
 
-        //if the datatype is a primitive datatype the datatypehelper will be switched to the helper of the 
-        //wrapper type
-        datatypeHelper = StdBuilderHelper.getDatatypeHelperForValueSet(getIpsSrcFile().getIpsProject(), datatypeHelper);
-        if(ValueSetType.RANGE.equals(a.getValueSet().getValueSetType())){
-            generateFieldRangeFor(a , datatypeHelper, memberVarsBuilder);
-            generateMethodGetRangeFor(a, datatypeHelper, methodsBuilder);
-        }
-        else if(ValueSetType.ENUM.equals(a.getValueSet().getValueSetType())){
-            generateFieldAllowedValuesFor(a, memberVarsBuilder);
-            generateMethodGetAllowedValuesFor(a, datatypeHelper.getDatatype(), methodsBuilder);
-        }
-    }
-    
-    /**
-     * Code sample:
-     * <pre>
-     * [javadoc]
-     * private Integer minAge;
-     * </pre>
-     */
-    private void generateFieldDefaultValue(IPolicyCmptTypeAttribute a, DatatypeHelper datatypeHelper, JavaCodeFragmentBuilder memberVarsBuilder) throws CoreException {
-        appendLocalizedJavaDoc("FIELD_DEFAULTVALUE", a.getName(), a, memberVarsBuilder);
-        JavaCodeFragment defaultValueExpression = datatypeHelper.newInstance(a.getDefaultValue());
-        memberVarsBuilder.varDeclaration(Modifier.PRIVATE, datatypeHelper.getJavaClassName(),
-                getFieldNameDefaulValue(a), defaultValueExpression);
-    }    
-    
-    /**
-     * Code sample:
-     * <pre>
-     * [Javadoc]
-     * public Integer getDefaultMinAge() {
-     *     return minAge;
-     * </pre>
-     */
-    private void generateMethodGetDefaultValue(IPolicyCmptTypeAttribute a, DatatypeHelper datatypeHelper, JavaCodeFragmentBuilder methodsBuilder) throws CoreException {
-        methodsBuilder.javaDoc(getJavaDocCommentForOverriddenMethod(), ANNOTATION_GENERATED);
-        interfaceBuilder.generateSignatureGetDefaultValue(a, datatypeHelper, methodsBuilder);
-        methodsBuilder.openBracket();
-        methodsBuilder.append("return ");
-        methodsBuilder.append(getFieldNameDefaulValue(a));
-        methodsBuilder.append(';');
-        methodsBuilder.closeBracket();
-    }
-    
-    private String getFieldNameDefaulValue(IPolicyCmptTypeAttribute a) throws CoreException {
-        return getJavaNamingConvention().getMemberVarName(interfaceBuilder.getPropertyNameDefaultValue(a));
-    }
-    
     /**
      * {@inheritDoc}
      */
-    protected void generateCodeForProductCmptTypeAttribute(
-            IProductCmptTypeAttribute a, 
-            DatatypeHelper datatypeHelper, 
-            JavaCodeFragmentBuilder memberVarsBuilder, 
-            JavaCodeFragmentBuilder methodsBuilder, 
-            JavaCodeFragmentBuilder constantBuilder) throws CoreException {
-        
-        generateFieldValue(a, datatypeHelper, memberVarsBuilder);
-        generateMethodGetValue(a, datatypeHelper, methodsBuilder);
-        generateMethodSetValue(a, datatypeHelper, methodsBuilder);
+    protected GenProdAttribute createGenerator(IProductCmptTypeAttribute a, LocalizedStringsSet stringsSet) throws CoreException {
+        return new GenProdAttribute(a, this, stringsSet, true);
     }
     
-    /**
-     * Code sample:
-     * <pre>
-     * [javadoc]
-     * private Integer taxRate;
-     * </pre>
-     */
-    private void generateFieldValue(IProductCmptTypeAttribute a, DatatypeHelper datatypeHelper, JavaCodeFragmentBuilder builder) throws CoreException {
-        appendLocalizedJavaDoc("FIELD_VALUE", StringUtils.capitalize(a.getName()), a, builder);
-        JavaCodeFragment defaultValueExpression = datatypeHelper.newInstance(a.getDefaultValue());
-        builder.varDeclaration(Modifier.PRIVATE, datatypeHelper.getJavaClassName(),
-                getFieldNameValue(a), defaultValueExpression);
-    }
-
-    /**
-     * Code sample:
-     * <pre>
-     * [Javadoc]
-     * public Integer getInterestRate() {
-     *     return interestRate;
-     * </pre>
-     */
-    private void generateMethodGetValue(IProductCmptTypeAttribute a, DatatypeHelper datatypeHelper, JavaCodeFragmentBuilder methodsBuilder) throws CoreException {
-        methodsBuilder.javaDoc(getJavaDocCommentForOverriddenMethod(), ANNOTATION_GENERATED);
-        interfaceBuilder.generateSignatureGetValue(a, datatypeHelper, methodsBuilder);
-        methodsBuilder.openBracket();
-        methodsBuilder.append("return ");
-        methodsBuilder.append(getFieldNameValue(a));
-        methodsBuilder.append(';');
-        methodsBuilder.closeBracket();
+    protected void generateCodeForPolicyCmptTypeAttribute(IPolicyCmptTypeAttribute a, DatatypeHelper datatypeHelper, JavaCodeFragmentBuilder memberVarsBuilder, JavaCodeFragmentBuilder methodsBuilder) throws CoreException {
+        GenAttribute generator = (GenAttribute)getGenerator(a);
+        if (generator != null) {
+            generator.generate();
+        }
     }
     
-    /**
-     * Code sample:
-     * <pre>
-     * [Javadoc]
-     * public void setInterestRate(Decimal newValue) {
-     *     if (getRepository()!=null && !getRepository().isModifiable()) {
-     *         throw new IllegalRepositoryModificationException();
-     *     }
-     *     this.interestRate = newValue;
-     * }
-     * </pre>
-     */
-    private void generateMethodSetValue(IProductCmptTypeAttribute a, DatatypeHelper datatypeHelper, JavaCodeFragmentBuilder methodsBuilder) throws CoreException {
-        appendLocalizedJavaDoc("METHOD_SET_VALUE", a.getName(), a, methodsBuilder);
-        String methodName = getJavaNamingConvention().getSetterMethodName(interfaceBuilder.getPropertyNameValue(a), datatypeHelper.getDatatype());
-        String[] paramNames = new String[]{"newValue"};
-        String[] paramTypes = new String[]{datatypeHelper.getJavaClassName()};
-        methodsBuilder.signature(Modifier.PUBLIC, "void", methodName, paramNames, paramTypes);
-        methodsBuilder.openBracket();
-        methodsBuilder.append(generateFragmentCheckIfRepositoryIsModifiable());
-        methodsBuilder.append("this." + getFieldNameValue(a));
-        methodsBuilder.appendln(" = newValue;");
-        methodsBuilder.closeBracket();
-    }
     
-    private JavaCodeFragment generateFragmentCheckIfRepositoryIsModifiable() {
+    
+    public JavaCodeFragment generateFragmentCheckIfRepositoryIsModifiable() {
         JavaCodeFragment frag = new JavaCodeFragment();
         frag.appendln("if (" + MethodNames.GET_REPOSITORY + "()!=null && !" + MethodNames.GET_REPOSITORY + "()." + MethodNames.IS_MODIFIABLE + "()) {");
         frag.append("throw new ");
@@ -646,32 +535,27 @@ public class ProductCmptGenImplClassBuilder extends AbstractProductCmptTypeBuild
         return frag;
     }
     
-    private String getFieldNameValue(IProductCmptTypeAttribute a) throws CoreException {
-        return getJavaNamingConvention().getMemberVarName(interfaceBuilder.getPropertyNameValue(a));
-    }
-
-    
     /**
      * Code sample:
      * <pre>
      * public abstract Money computePremium(Policy policy, Integer age) throws FormulaException
      * </pre>
      */
-    public void generateCodeForMethodDefinedInModel(
-            IMethod method,
+    public void generateCodeForModelMethod(
+            IProductCmptTypeMethod method,
+            JavaCodeFragmentBuilder fieldsBuilder, 
             JavaCodeFragmentBuilder methodsBuilder) throws CoreException {
         
-        IProductCmptTypeMethod productCmptTypeMethod = (IProductCmptTypeMethod)method;
-        if (productCmptTypeMethod.isFormulaSignatureDefinition()) {
+        if (method.isFormulaSignatureDefinition()) {
             if (method.getModifier().isPublished()) {
                 // nothing to do, signature is generated by the interface builder, implementation by the product component builder.
             } else {
                 methodsBuilder.javaDoc(getJavaDocCommentForOverriddenMethod(), ANNOTATION_GENERATED);
-                productCmptGenInterfaceBuilder.generateSignatureForModelMethod(productCmptTypeMethod, true, false, methodsBuilder);
+                productCmptGenInterfaceBuilder.generateSignatureForModelMethod(method, true, false, methodsBuilder);
                 methodsBuilder.append(';');
             }
-            if(productCmptTypeMethod.isOverloadsFormula()){
-                IProductCmptTypeMethod overloadedFormulaMethod = productCmptTypeMethod.findOverloadedFormulaMethod(getIpsProject());
+            if(method.isOverloadsFormula()){
+                IProductCmptTypeMethod overloadedFormulaMethod = method.findOverloadedFormulaMethod(getIpsProject());
                 methodsBuilder.appendln();
                 methodsBuilder.javaDoc(getJavaDocCommentForOverriddenMethod(), ANNOTATION_GENERATED);
                 productCmptGenInterfaceBuilder.generateSignatureForModelMethod(overloadedFormulaMethod, false, false, methodsBuilder);
@@ -690,7 +574,7 @@ public class ProductCmptGenImplClassBuilder extends AbstractProductCmptTypeBuild
         } else {
             methodsBuilder.javaDoc(method.getDescription(), ANNOTATION_GENERATED);
         }
-        productCmptGenInterfaceBuilder.generateSignatureForModelMethod(productCmptTypeMethod, method.isAbstract(), false, methodsBuilder);
+        productCmptGenInterfaceBuilder.generateSignatureForModelMethod(method, method.isAbstract(), false, methodsBuilder);
         methodsBuilder.openBracket();
         methodsBuilder.appendln("// TODO implement method!");
         Datatype datatype = method.getIpsProject().findDatatype(method.getDatatype());
@@ -1179,48 +1063,6 @@ public class ProductCmptGenImplClassBuilder extends AbstractProductCmptTypeBuild
         expression.append("(0);");
         fieldsBuilder.varDeclaration(Modifier.PRIVATE, Map.class, getFieldNameCardinalityForAssociation(association), expression);
     }
-    
-    private void generateMethodGetRangeFor(IPolicyCmptTypeAttribute a, DatatypeHelper helper, JavaCodeFragmentBuilder methodsBuilder) throws CoreException{
-        methodsBuilder.javaDoc("{@inheritDoc}", ANNOTATION_GENERATED);
-        interfaceBuilder.generateSignatureGetRangeFor(a, helper, methodsBuilder);
-        JavaCodeFragment body = new JavaCodeFragment();
-        body.appendOpenBracket();
-        body.append("return ");
-        body.append(getFieldNameRangeFor(a));
-        body.appendln(';');
-        body.appendCloseBracket();
-        methodsBuilder.append(body);
-    }
-    
-    public String getFieldNameRangeFor(IPolicyCmptTypeAttribute a){
-        return getLocalizedText(a, "FIELD_RANGE_FOR_NAME", StringUtils.capitalize(a.getName()));
-    }
-    
-    private void generateFieldRangeFor(IPolicyCmptTypeAttribute a, DatatypeHelper helper, JavaCodeFragmentBuilder memberVarBuilder){
-        appendLocalizedJavaDoc("FIELD_RANGE_FOR", a.getName(), a, memberVarBuilder);
-        memberVarBuilder.varDeclaration(Modifier.PRIVATE, helper.getRangeJavaClassName(), getFieldNameRangeFor(a)); 
-    }
-
-    private void generateMethodGetAllowedValuesFor(IPolicyCmptTypeAttribute a, Datatype datatype, JavaCodeFragmentBuilder methodsBuilder) throws CoreException{
-        methodsBuilder.javaDoc("{@inheritDoc}", ANNOTATION_GENERATED);
-        interfaceBuilder.generateSignatureGetAllowedValuesFor(a, datatype, methodsBuilder);
-        JavaCodeFragment body = new JavaCodeFragment();
-        body.appendOpenBracket();
-        body.append("return ");
-        body.append(getFieldNameAllowedValuesFor(a));
-        body.appendln(';');
-        body.appendCloseBracket();
-        methodsBuilder.append(body);
-    }
-    
-    public String getFieldNameAllowedValuesFor(IPolicyCmptTypeAttribute a){
-        return getLocalizedText(a, "FIELD_ALLOWED_VALUES_FOR_NAME", StringUtils.capitalize(a.getName()));
-    }
-    
-    private void generateFieldAllowedValuesFor(IPolicyCmptTypeAttribute a, JavaCodeFragmentBuilder memberVarBuilder){
-        appendLocalizedJavaDoc("FIELD_ALLOWED_VALUES_FOR", a.getName(), a, memberVarBuilder);
-        memberVarBuilder.varDeclaration(Modifier.PRIVATE, EnumValueSet.class, getFieldNameAllowedValuesFor(a)); 
-    }
 
     public void setProductCmptGenInterfaceBuilder(ProductCmptGenInterfaceBuilder productCmptGenInterfaceBuilder) {
         this.productCmptGenInterfaceBuilder = productCmptGenInterfaceBuilder;
@@ -1253,6 +1095,18 @@ public class ProductCmptGenImplClassBuilder extends AbstractProductCmptTypeBuild
             return modifier;
         }
         
+    }
+
+    @Override
+    protected GenAttribute createGenerator(IPolicyCmptTypeAttribute a, LocalizedStringsSet stringsSet)
+            throws CoreException {
+        if (a.isDerived()) {
+            return new GenDerivedAttributeImpl(a, this, stringsSet);
+        }
+        if (a.isChangeable()) {
+            return new GenChangeableAttributeImpl(a, this, stringsSet);
+        }
+        return new GenConstantAttribute(a, this, stringsSet, true);
     }
 
 }
