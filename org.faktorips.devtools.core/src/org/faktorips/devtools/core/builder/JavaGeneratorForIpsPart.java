@@ -188,6 +188,11 @@ public abstract class JavaGeneratorForIpsPart {
         return javaSourceFileBuilder.getJavaDocCommentForOverriddenMethod();
     }
 
+    public String getLocalizedToDo(String keyPrefix, Object replacement) {
+        return javaSourceFileBuilder.getLocalizedToDo(ipsPart, keyPrefix, replacement);
+    }
+
+    
     protected JavaNamingConvention getJavaNamingConvention() {
         return javaSourceFileBuilder.getJavaNamingConvention();
     }

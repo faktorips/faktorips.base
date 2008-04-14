@@ -15,7 +15,7 @@
  *
  *******************************************************************************/
 
-package org.faktorips.devtools.stdbuilder.productcmpttype;
+package org.faktorips.devtools.core.builder;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -28,10 +28,6 @@ import org.faktorips.codegen.DatatypeHelper;
 import org.faktorips.codegen.JavaCodeFragmentBuilder;
 import org.faktorips.datatype.Datatype;
 import org.faktorips.devtools.core.IpsStatus;
-import org.faktorips.devtools.core.builder.DefaultJavaSourceFileBuilder;
-import org.faktorips.devtools.core.builder.JavaSourceFileBuilder;
-import org.faktorips.devtools.core.builder.ProductCmptTypeHierarchyCodeGenerator;
-import org.faktorips.devtools.core.builder.TypeSection;
 import org.faktorips.devtools.core.model.IIpsElement;
 import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
@@ -42,8 +38,6 @@ import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAttribute;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeAssociation;
-import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeAttribute;
-import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeMethod;
 import org.faktorips.devtools.core.model.productcmpttype.ITableStructureUsage;
 import org.faktorips.devtools.core.model.type.IAssociation;
 import org.faktorips.util.LocalizedStringsSet;
@@ -53,7 +47,7 @@ import org.faktorips.util.LocalizedStringsSet;
  * 
  * @author Jan Ortmann
  */
-public abstract class AbstractProductCmptTypeBuilder extends DefaultJavaSourceFileBuilder {
+public abstract class AbstractProductCmptTypeBuilder extends AbstractTypeBuilder {
 
     /**
      * @param packageStructure
@@ -80,96 +74,25 @@ public abstract class AbstractProductCmptTypeBuilder extends DefaultJavaSourceFi
     public IProductCmptType getProductCmptType() {
         return (IProductCmptType)getIpsObject();    }
 
-    protected IPolicyCmptType getPolicyCmptType() throws CoreException {
+    protected IPolicyCmptType getPcType() throws CoreException {
         return getProductCmptType().findPolicyCmptType(getIpsProject());
     }
 
-    /**
-     * Returns the class modifier.
-     * 
-     * @see java.lang.reflect.Modifier
-     */
-    protected int getClassModifier() throws CoreException {
-        return getProductCmptType().isAbstract() ? java.lang.reflect.Modifier.PUBLIC
-                | java.lang.reflect.Modifier.ABSTRACT : java.lang.reflect.Modifier.PUBLIC;
-    }
-
-    /**
-     * Returns the abbreviation for the generation (changes over time) concept.
-     * 
-     * @param element An ips element needed to access the ipsproject where the neccessary configuration
-     * information is stored.
-     * 
-     * @see org.faktorips.devtools.core.model.ipsproject.IChangesOverTimeNamingConvention
-     */
-    public String getAbbreviationForGenerationConcept(IIpsElement element) {
-        return getChangesInTimeNamingConvention(element).
-            getGenerationConceptNameAbbreviation(getLanguageUsedInGeneratedSourceCode(element));
-    }
     
     /*
      * Generates the sourcecode of the generated Java class or interface.
      */
-    protected void generateCodeForJavatype() throws CoreException {
-
-        TypeSection mainSection = getMainTypeSection();
-        mainSection.setClassModifier(getClassModifier());
-        mainSection.setSuperClass(getSuperclass());
-        mainSection.setExtendedInterfaces(getExtendedInterfaces());
-        mainSection.setUnqualifiedName(getUnqualifiedClassName());
-        mainSection.setClass(!generatesInterface());
-        generateCodeForProductCmptTypeAttributes(mainSection);
-        generateCodeForPolicyCmptTypeAttributes(mainSection);
-        generateCodeForAssociations(mainSection.getMemberVarBuilder(), mainSection.getMethodBuilder());
-        generateCodeForMethods(mainSection.getConstantBuilder(), mainSection.getMemberVarBuilder(), mainSection.getMethodBuilder());
-        generateConstructors(mainSection.getConstructorBuilder());
-        generateTypeJavadoc(mainSection.getJavaDocForTypeBuilder());
+    protected final void generateCodeForJavatype(TypeSection mainSection) throws CoreException {
         generateCodeForTableUsages(mainSection.getMemberVarBuilder(), mainSection.getMethodBuilder());
-        generateOtherCode(mainSection.getMemberVarBuilder(), mainSection.getMethodBuilder());
     }
-
-    /**
-     * Generates the Javadoc for the Java class or interface.
-     * 
-     * @param builder The builder to use to generate the Javadoc via it's javadoc method.
-     */
-    protected abstract void generateTypeJavadoc(JavaCodeFragmentBuilder builder) throws CoreException;
-
-    /**
-     * A hook to generate code that is not based on attributes, associations, rules and
-     * methods.
-     */
-    protected abstract void generateOtherCode(
-            JavaCodeFragmentBuilder fieldsBuilder,
-            JavaCodeFragmentBuilder methodsBuilder) throws CoreException;
-
-    /**
-     * Returns true if an interface is generated, false if a class is generated.
-     */
-    protected abstract boolean generatesInterface();
-
-    protected abstract void generateConstructors(JavaCodeFragmentBuilder builder)
-            throws CoreException;
-
-    /**
-     * Returns the qualified name of the superclass or <code>null</code> if the class being
-     * generated is not derived from a class or is an interface.
-     */
-    protected abstract String getSuperclass() throws CoreException;
-
-    /**
-     * Returns the qualified name of the interfaces the generated class or interface extends.
-     * Returns an empty array if no interfaces are extended
-     */
-    protected abstract String[] getExtendedInterfaces() throws CoreException;
 
     /*
      * Loops over the attributes and generates code for an attribute if it is valid.
      * Takes care of proper exception handling.
      */
-    private void generateCodeForPolicyCmptTypeAttributes(TypeSection typeSection) throws CoreException {
+    protected final void generateCodeForPolicyCmptTypeAttributes(TypeSection typeSection) throws CoreException {
         
-        IPolicyCmptType policyCmptType = getPolicyCmptType();
+        IPolicyCmptType policyCmptType = getPcType();
         IPolicyCmptTypeAttribute[] attributes = policyCmptType == null ? new IPolicyCmptTypeAttribute[0] : policyCmptType.getPolicyCmptTypeAttributes();
         for (int i = 0; i < attributes.length; i++) {
             IPolicyCmptTypeAttribute a = attributes[i];
@@ -190,53 +113,6 @@ public abstract class AbstractProductCmptTypeBuilder extends DefaultJavaSourceFi
             }
         }
     }
-
-    /*
-     * Loops over the attributes and generates code for an attribute if it is valid.
-     * Takes care of proper exception handling.
-     */
-    private void generateCodeForProductCmptTypeAttributes(TypeSection typeSection) throws CoreException {
-        
-        IProductCmptType productCmptType = getProductCmptType();
-        IProductCmptTypeAttribute[] attributes = 
-            productCmptType == null ? new IProductCmptTypeAttribute[0] : productCmptType.getProductCmptTypeAttributes();
-        for (int i = 0; i < attributes.length; i++) {
-            IProductCmptTypeAttribute a = attributes[i];
-            if (!a.isValid()) {
-                continue;
-            }
-            try {
-                Datatype datatype = a.findDatatype(getIpsProject());
-                DatatypeHelper helper = getIpsProject().getDatatypeHelper(datatype);
-                if (helper == null) {
-                    throw new CoreException(new IpsStatus("No datatype helper found for datatype " + datatype));            
-                }
-                generateCodeForProductCmptTypeAttribute(a, helper, typeSection.getConstantBuilder(), typeSection.getMemberVarBuilder(), typeSection.getMethodBuilder());
-            } catch (Exception e) {
-                throw new CoreException(new IpsStatus(IStatus.ERROR,
-                        "Error building attribute " + attributes[i].getName() + " of "
-                                + getQualifiedClassName(getIpsObject().getIpsSrcFile()), e));
-            }
-        }
-    }
-
-    private void generateCodeForMethods(JavaCodeFragmentBuilder constantBuilder,
-            JavaCodeFragmentBuilder fieldsBuilder, JavaCodeFragmentBuilder methodsBuilder) throws CoreException {
-        
-        IProductCmptTypeMethod[] methods = getProductCmptType().getProductCmptTypeMethods();
-        for (int i = 0; i < methods.length; i++) {
-            try {
-                if (!methods[i].isValid()) {
-                    continue;
-                }
-                generateCodeForModelMethod(methods[i], fieldsBuilder, methodsBuilder);
-            } catch (Exception e) {
-                throw new CoreException(new IpsStatus(IStatus.ERROR,
-                        "Error building method " + methods[i].getName() + " of "
-                                + getQualifiedClassName(getIpsObject().getIpsSrcFile()), e));
-            }
-        }
-    }    
         
     /*
      * Loops over all table structure usages and generates code for the table content access method.
@@ -268,30 +144,6 @@ public abstract class AbstractProductCmptTypeBuilder extends DefaultJavaSourceFi
             JavaCodeFragmentBuilder fieldsBuilder,
             JavaCodeFragmentBuilder methodsBuilder) throws CoreException;
 
-    /**
-     * This method is called from the abstract builder if the product component attribute is valid and
-     * therefore code can be generated.
-     * <p>
-     * @param attribute The attribute sourcecode should be generated for.
-     * @param datatypeHelper The datatype code generation helper for the attribute's datatype.
-     * @param fieldsBuilder The code fragment builder to build the member variabales section.
-     * @param methodsBuilder The code fragment builder to build the method section.
-     */
-    protected abstract void generateCodeForProductCmptTypeAttribute(
-            org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeAttribute attribute, 
-            DatatypeHelper datatypeHelper,
-            JavaCodeFragmentBuilder fieldsBuilder,
-            JavaCodeFragmentBuilder methodsBuilder, 
-            JavaCodeFragmentBuilder constantBuilder) throws CoreException;
-    
-    /**
-     * Generates the code for a method defined in the model. This includes formula signature definitions.
-     */
-    protected abstract void generateCodeForModelMethod (
-            IProductCmptTypeMethod method,  
-            JavaCodeFragmentBuilder fieldsBuilder, 
-            JavaCodeFragmentBuilder methodsBuilder) throws CoreException;
-
     protected abstract void generateCodeForTableUsage(ITableStructureUsage tsu,
             JavaCodeFragmentBuilder fieldsBuilder,
             JavaCodeFragmentBuilder methodsBuilder) throws CoreException;
@@ -300,7 +152,7 @@ public abstract class AbstractProductCmptTypeBuilder extends DefaultJavaSourceFi
      * Loops over the associations and generates code for a association if it is valid.
      * Takes care of proper exception handling.
      */
-    private void generateCodeForAssociations(JavaCodeFragmentBuilder fieldsBuilder,
+    protected final void generateCodeForAssociations(JavaCodeFragmentBuilder fieldsBuilder,
             JavaCodeFragmentBuilder methodsBuilder) throws CoreException {
         
         HashMap containerAssociations = new HashMap();

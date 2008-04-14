@@ -27,7 +27,9 @@ import org.faktorips.devtools.core.model.ipsproject.IIpsArtefactBuilderSet;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAssociation;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAttribute;
+import org.faktorips.devtools.core.model.pctype.IValidationRule;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
+import org.faktorips.devtools.core.model.type.IMethod;
 import org.faktorips.devtools.stdbuilder.policycmpttype.association.GenAssociation;
 import org.faktorips.devtools.stdbuilder.policycmpttype.attribute.GenAttribute;
 import org.faktorips.util.LocalizedStringsSet;
@@ -42,6 +44,8 @@ public abstract class BasePolicyCmptTypeBuilder extends AbstractPcTypeBuilder {
     private Map generatorsByPart = new HashMap();
     private List genAttributes = new ArrayList();
     private List genAssociations = new ArrayList();
+    private List genValidationRules = new ArrayList();
+    private List genMethods =new ArrayList();
 
     private boolean generateChangeListenerSupport;
     
@@ -66,13 +70,31 @@ public abstract class BasePolicyCmptTypeBuilder extends AbstractPcTypeBuilder {
 
     private void initPartGenerators() throws CoreException {
         genAttributes.clear();
+        genMethods.clear();
         genAssociations.clear();
+        genValidationRules.clear();
         generatorsByPart.clear();
-
+        
+        createGeneratorsForMethods();
         createGeneratorsForAttributes();
         createGeneratorsForAssociations();
+        createGeneratorsForValidationRules();
     }
 
+    private void createGeneratorsForValidationRules() throws CoreException {
+        LocalizedStringsSet stringsSet = new LocalizedStringsSet(GenValidationRule.class);
+        IPolicyCmptType type = getPcType();
+        IValidationRule[] validationRules = type.getRules();
+        for (int i = 0; i < validationRules.length; i++) {
+            if (validationRules[i].isValid()) {
+                GenValidationRule generator = new GenValidationRule(validationRules[i], this,  stringsSet, !generatesInterface());
+                if (generator!=null) {
+                    genValidationRules.add(generator);
+                    generatorsByPart.put(validationRules[i], generator);
+                }
+            }
+        }
+    }
 
     private void createGeneratorsForAttributes() throws CoreException {
         LocalizedStringsSet stringsSet = new LocalizedStringsSet(GenAttribute.class);
@@ -88,8 +110,24 @@ public abstract class BasePolicyCmptTypeBuilder extends AbstractPcTypeBuilder {
             }
         }
     }
+
     
     protected abstract GenAttribute createGenerator(IPolicyCmptTypeAttribute a, LocalizedStringsSet localizedStringsSet) throws CoreException;
+
+    private void createGeneratorsForMethods() throws CoreException {
+        LocalizedStringsSet stringsSet = new LocalizedStringsSet(GenAttribute.class);
+        IPolicyCmptType type = getPcType();
+        IMethod[] methods = type.getMethods();
+        for (int i = 0; i < methods.length; i++) {
+            if (methods[i].isValid()) {
+                GenMethod generator = new GenMethod(methods[i], this, stringsSet, !generatesInterface());
+                if (generator!=null) {
+                    genMethods.add(generator);
+                    generatorsByPart.put(methods[i], generator);
+                }
+            }
+        }
+    }
     
     private void createGeneratorsForAssociations() throws CoreException {
         LocalizedStringsSet stringsSet = new LocalizedStringsSet(GenAssociation.class);
@@ -119,6 +157,10 @@ public abstract class BasePolicyCmptTypeBuilder extends AbstractPcTypeBuilder {
     
     protected GenAttribute getGenerator(IPolicyCmptTypeAttribute a) {
         return (GenAttribute)generatorsByPart.get(a);
+    }
+    
+    protected GenMethod getGenerator(IMethod a) {
+        return (GenMethod)generatorsByPart.get(a);
     }
     
     protected GenAssociation getGenerator(IPolicyCmptTypeAssociation a) {
@@ -153,6 +195,22 @@ public abstract class BasePolicyCmptTypeBuilder extends AbstractPcTypeBuilder {
         }
         GenAttribute generator = (GenAttribute)getGenerator(attribute);
         if (generator!=null) {
+            generator.generate();
+        }
+    }
+    
+    protected void generateCodeForMethodDefinedInModel(IMethod method, JavaCodeFragmentBuilder methodsBuilder)
+            throws CoreException {
+
+        GenMethod generator = (GenMethod)getGenerator(method);
+        if (generator != null) {
+            generator.generate();
+        }
+    }
+    
+    protected void generateCodeForValidationRule(IValidationRule validationRule) throws CoreException {
+        GenValidationRule generator = (GenValidationRule)getGenerator(validationRule);
+        if (generator != null) {
             generator.generate();
         }
     }

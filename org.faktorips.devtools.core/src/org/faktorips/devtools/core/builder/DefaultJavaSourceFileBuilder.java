@@ -108,8 +108,7 @@ public abstract class DefaultJavaSourceFileBuilder extends JavaSourceFileBuilder
             innerClassesSections = new ArrayList();
             
             generateCodeForJavatype();
-            code = generateClassBody(mainSection, (TypeSection[])innerClassesSections.toArray(
-                    new TypeSection[innerClassesSections.size()]));
+            code = generateClassBody(mainSection, innerClassesSections);
         } 
         finally {
             loggerInstanceGenerated = false;
@@ -153,7 +152,7 @@ public abstract class DefaultJavaSourceFileBuilder extends JavaSourceFileBuilder
                 DefaultJavaSourceFileBuilder.class);
     }
     
-    private JavaCodeFragment generateClassBody(TypeSection section, TypeSection[] innerClassSections) throws CoreException{
+    private JavaCodeFragment generateClassBody(TypeSection section, List innerClassSections) throws CoreException{
         JavaCodeFragmentBuilder codeBuilder = new JavaCodeFragmentBuilder();
         codeBuilder.append(section.getJavaDocForTypeBuilder().getFragment());
         if (section.isClass()) {
@@ -174,8 +173,8 @@ public abstract class DefaultJavaSourceFileBuilder extends JavaSourceFileBuilder
         if(innerClassSections != null){
             codeBuilder.appendln();
             codeBuilder.appendln();
-            for (int i = 0; i < innerClassSections.length; i++) {
-                codeBuilder.append(generateClassBody(innerClassSections[i], null));
+            for (Iterator it = innerClassSections.iterator(); it.hasNext();){
+                codeBuilder.append(generateClassBody((TypeSection)it.next(), null));
             }
         }
         codeBuilder.classEnd();

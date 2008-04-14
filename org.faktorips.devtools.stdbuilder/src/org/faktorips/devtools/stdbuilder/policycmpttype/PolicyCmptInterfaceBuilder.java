@@ -28,7 +28,6 @@ import org.faktorips.codegen.JavaCodeFragmentBuilder;
 import org.faktorips.datatype.Datatype;
 import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
-import org.faktorips.devtools.core.model.ipsobject.Modifier;
 import org.faktorips.devtools.core.model.ipsproject.IIpsArtefactBuilderSet;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAssociation;
@@ -221,21 +220,25 @@ public class PolicyCmptInterfaceBuilder extends BasePolicyCmptTypeBuilder {
     /**
      * {@inheritDoc}
      */
-    protected void generateOther(JavaCodeFragmentBuilder memberVarsBuilder, JavaCodeFragmentBuilder methodsBuilder)
-            throws CoreException {
-        if (getProductCmptType()!=null) {
+    protected void generateOtherCode(JavaCodeFragmentBuilder constantsBuilder,
+            JavaCodeFragmentBuilder memberVarsBuilder,
+            JavaCodeFragmentBuilder methodsBuilder) throws CoreException {
+        if (getProductCmptType() != null) {
             if (hasValidProductCmptTypeName()) {
                 generateMethodGetProductCmpt(methodsBuilder);
                 generateMethodSetProductCmpt(methodsBuilder);
                 generateMethodGetProductCmptGeneration(getProductCmptType(), methodsBuilder);
             }
         }
-        generateCodeForValidationRules(memberVarsBuilder);
+        // TODO remove
+        // generateCodeForValidationRules(memberVarsBuilder);
     }
+    
     
     /**
      * Generates the code for the rules of the ProductCmptType assigned to this builder.
      */
+    //FIXME remove 
     protected void generateCodeForValidationRules(JavaCodeFragmentBuilder memberVarsBuilder){
         IValidationRule[] rules = getPcType().getRules();
         for (int i = 0; i < rules.length; i++) {
@@ -354,18 +357,19 @@ public class PolicyCmptInterfaceBuilder extends BasePolicyCmptTypeBuilder {
     /**
      * {@inheritDoc}
      */
+    //TODO remove
     protected void generateCodeForMethodDefinedInModel(
             IMethod method,
             Datatype returnType,
             Datatype[] paramTypes,
             JavaCodeFragmentBuilder methodsBuilder) throws CoreException {
         
-        if (method.getModifier() != Modifier.PUBLISHED) {
-            return;
-        }
-        methodsBuilder.javaDoc(method.getDescription(), ANNOTATION_GENERATED);
-        generateSignatureForMethodDefinedInModel(method, java.lang.reflect.Modifier.PUBLIC, returnType, paramTypes, methodsBuilder);
-        methodsBuilder.appendln(";");
+//        if (method.getModifier() != Modifier.PUBLISHED) {
+//            return;
+//        }
+//        methodsBuilder.javaDoc(method.getDescription(), ANNOTATION_GENERATED);
+//        generateSignatureForMethodDefinedInModel(method, java.lang.reflect.Modifier.PUBLIC, returnType, paramTypes, methodsBuilder);
+//        methodsBuilder.appendln(";");
     }
     
     /**
@@ -789,6 +793,7 @@ public class PolicyCmptInterfaceBuilder extends BasePolicyCmptTypeBuilder {
         return getLocalizedText(rule, "FIELD_MSG_CODE_NAME", StringUtils.upperCase(rule.getName()));
     }
     
+    //FIXME remove
     private void generateFieldForMsgCode(IValidationRule rule, JavaCodeFragmentBuilder membersBuilder){
         appendLocalizedJavaDoc("FIELD_MSG_CODE", rule.getName(), rule, membersBuilder);
         membersBuilder.append("public final static ");

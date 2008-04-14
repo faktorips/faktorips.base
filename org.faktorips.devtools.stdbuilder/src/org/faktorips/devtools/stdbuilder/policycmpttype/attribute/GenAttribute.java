@@ -272,5 +272,15 @@ public abstract class GenAttribute extends DefaultJavaGeneratorForIpsPart {
     public String getMemberVarName() throws CoreException {
         return memberVarName;
     }
+
+    public String getMethodNameGetAllowedValuesFor() throws CoreException{
+        return getJavaNamingConvention().getGetterMethodName(getLocalizedText(
+                "METHOD_GET_ALLOWED_VALUES_FOR_NAME", StringUtils.capitalize(attributeName)), getDatatype());
+    }
+
+    public String getMethodNameGetRangeFor() throws CoreException{
+        return getJavaNamingConvention().getGetterMethodName(getLocalizedText( 
+                "METHOD_GET_RANGE_FOR_NAME", StringUtils.capitalize(attributeName)), getDatatype());
+    }
     
 }

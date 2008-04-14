@@ -27,6 +27,7 @@ import org.eclipse.core.runtime.CoreException;
 import org.faktorips.codegen.DatatypeHelper;
 import org.faktorips.codegen.JavaCodeFragmentBuilder;
 import org.faktorips.datatype.Datatype;
+import org.faktorips.devtools.core.builder.AbstractProductCmptTypeBuilder;
 import org.faktorips.devtools.core.builder.BuilderHelper;
 import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.core.model.ipsproject.IIpsArtefactBuilderSet;
@@ -37,6 +38,7 @@ import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeAssocia
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeAttribute;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeMethod;
 import org.faktorips.devtools.core.model.productcmpttype.ITableStructureUsage;
+import org.faktorips.devtools.core.model.type.IMethod;
 import org.faktorips.devtools.core.model.type.IParameter;
 import org.faktorips.devtools.core.model.valueset.ValueSetType;
 import org.faktorips.devtools.stdbuilder.StdBuilderHelper;
@@ -112,7 +114,7 @@ public class ProductCmptGenInterfaceBuilder extends AbstractProductCmptTypeBuild
         appendLocalizedJavaDoc("INTERFACE", new String[]{generationConceptName, getProductCmptType().getName()}, getIpsObject(), builder);
     }
 
-    protected void generateOtherCode(JavaCodeFragmentBuilder memberVarsBuilder, JavaCodeFragmentBuilder methodsBuilder)
+    protected void generateOtherCode(JavaCodeFragmentBuilder constantsBuilder, JavaCodeFragmentBuilder memberVarsBuilder, JavaCodeFragmentBuilder methodsBuilder)
             throws CoreException {
         // nothing to do
     }
@@ -487,14 +489,13 @@ public class ProductCmptGenInterfaceBuilder extends AbstractProductCmptTypeBuild
     /**
      * {@inheritDoc}
      */
-    protected void generateCodeForModelMethod(
-            IProductCmptTypeMethod method, 
-            JavaCodeFragmentBuilder fieldsBuilder, 
+    protected void generateCodeForMethodDefinedInModel(
+            IMethod method, 
             JavaCodeFragmentBuilder methodsBuilder) throws CoreException {
         
         if (method.getModifier().isPublished()) {
             methodsBuilder.javaDoc(method.getDescription(), ANNOTATION_GENERATED);
-            generateSignatureForModelMethod(method, false, false, methodsBuilder);
+            generateSignatureForModelMethod((IProductCmptTypeMethod)method, false, false, methodsBuilder);
             methodsBuilder.append(';');
         }
     }
