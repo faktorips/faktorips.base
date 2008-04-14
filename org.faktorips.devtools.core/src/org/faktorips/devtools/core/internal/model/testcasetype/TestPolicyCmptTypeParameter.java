@@ -543,7 +543,7 @@ public class TestPolicyCmptTypeParameter extends TestParameter implements
             if (policyCmptType == null){
                 return new IIpsSrcFile[0];
             }
-            IProductCmptType productCmptType = policyCmptType.findProductCmptType(getIpsProject());
+            IProductCmptType productCmptType = policyCmptType.findProductCmptType(ipsProjectToSearch);
             if (productCmptType == null){
                 return new IIpsSrcFile[0];
             }            
@@ -554,29 +554,30 @@ public class TestPolicyCmptTypeParameter extends TestParameter implements
         if (policyCmptTypeAssociation == null){
             return new IIpsSrcFile[0];
         }
-        IPolicyCmptType policyCmptTypeTarget = policyCmptTypeAssociation.findTargetPolicyCmptType(getIpsProject());
+        IPolicyCmptType policyCmptTypeTarget = policyCmptTypeAssociation.findTargetPolicyCmptType(ipsProjectToSearch);
         if (policyCmptTypeTarget == null || !policyCmptTypeTarget.isConfigurableByProductCmptType()){
             return new IIpsSrcFile[0];
         }
-        IProductCmptType productCmptTypeTarget = policyCmptTypeTarget.findProductCmptType(getIpsProject());
+        IProductCmptType productCmptTypeTarget = policyCmptTypeTarget.findProductCmptType(ipsProjectToSearch);
         if (productCmptTypeTarget == null){
             return new IIpsSrcFile[0];
         }
-        IProductCmptTypeAssociation association = policyCmptTypeAssociation.findMatchingProductCmptTypeAssociation(getIpsProject());
-        if (association == null){
-            // no matching association found
+        IProductCmptTypeAssociation association = policyCmptTypeAssociation.findMatchingProductCmptTypeAssociation(ipsProjectToSearch);
+        if (association == null) {
+        	// no matching association found
             return new IIpsSrcFile[0];
         }
         List result = new ArrayList(100);
         IIpsObjectGeneration[] generations = productCmpt.getGenerationsOrderedByValidDate();
         for (int i = 0; i < generations.length; i++) {
-            IProductCmptLink[] associations = ((IProductCmptGeneration)generations[i]).getLinks(association.getName());
-            for (int j = 0; j < associations.length; j++) {
-                IIpsSrcFile productCmptFoundSrc = ipsProjectToSearch.findIpsSrcFile(IpsObjectType.PRODUCT_CMPT, associations[j].getTarget());
+            // check all links, if the target matches the defined target in the test case type
+            IProductCmptLink[] links = ((IProductCmptGeneration)generations[i]).getLinks();
+            for (int j = 0; j < links.length; j++) {
+                IIpsSrcFile productCmptFoundSrc = ipsProjectToSearch.findIpsSrcFile(IpsObjectType.PRODUCT_CMPT, links[j].getTarget());
                 if (productCmptFoundSrc != null && !result.contains(productCmptFoundSrc)) {
                     IProductCmpt productCmptFound = (IProductCmpt)productCmptFoundSrc.getIpsObject();
-                    IPolicyCmptType pcType = findPolicyCmptType(getIpsProject());
-                    IPolicyCmptType pcTypeOfProduct = productCmptFound.findPolicyCmptType(getIpsProject());
+                    IPolicyCmptType pcType = findPolicyCmptType(ipsProjectToSearch);
+                    IPolicyCmptType pcTypeOfProduct = productCmptFound.findPolicyCmptType(ipsProjectToSearch);
                     if (pcType != null && pcTypeOfProduct != null){
                         // check if the specified policy cmpt type is the same or a supertype 
                         // of the found product cmpt policy cmpt type
