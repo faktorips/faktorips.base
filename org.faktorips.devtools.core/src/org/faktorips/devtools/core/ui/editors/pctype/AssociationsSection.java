@@ -121,11 +121,11 @@ public class AssociationsSection extends SimpleIpsPartsSection {
         	// create default buttons without the new button, 
         	//   because the new button will be overridden with wizard functionality
             super(pdObject, parent, false, true, true, true, true, toolkit);
+            openAction = new OpenTargetPcTypeInEditorAction(getViewer());
             buildContextMenu();
         }
 
         private void buildContextMenu() {
-            openAction = new OpenTargetPcTypeInEditorAction(getViewer());
             final MenuManager menuManager = new MenuManager();
             menuManager.setRemoveAllWhenShown(true);
             // display menu only if one element is selected
