@@ -1097,7 +1097,9 @@ public class ProductCmptGenImplClassBuilder extends AbstractProductCmptTypeBuild
         
     }
 
-    @Override
+    /**
+     * {@inheritDoc}
+     */
     protected GenAttribute createGenerator(IPolicyCmptTypeAttribute a, LocalizedStringsSet stringsSet)
             throws CoreException {
         if (a.isDerived()) {

@@ -276,14 +276,18 @@ public class ProductCmptImplClassBuilder extends AbstractProductCmptTypeBuilder 
         // nothing to do
     }
 
-    @Override
+    /**
+     * {@inheritDoc}
+     */
     protected GenProdAttribute createGenerator(IProductCmptTypeAttribute a, LocalizedStringsSet localizedStringsSet)
             throws CoreException {
         // return null, as this builder does not need code for product component type attributes
         return null;
     }
 
-    @Override
+    /**
+     * {@inheritDoc}
+     */
     protected GenAttribute createGenerator(IPolicyCmptTypeAttribute a, LocalizedStringsSet localizedStringsSet)
             throws CoreException {
         // TODO return null, as this builder does not need code for policy component type attributes

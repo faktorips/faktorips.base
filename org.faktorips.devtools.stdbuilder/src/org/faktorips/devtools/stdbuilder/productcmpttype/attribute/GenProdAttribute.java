@@ -202,20 +202,27 @@ public class GenProdAttribute extends AbstractGenAttribute {
         return memberVarName;
     }
 
-    @Override
+
+    /**
+     * {@inheritDoc}
+     */
     protected void generateConstants(JavaCodeFragmentBuilder builder) throws CoreException {
         // TODO Auto-generated method stub
 
     }
 
-    @Override
+    /**
+     * {@inheritDoc}
+     */
     protected void generateMemberVariables(JavaCodeFragmentBuilder builder) throws CoreException {
         if (isGeneratingImplementationClass()) {
             generateFieldValue(datatypeHelper, builder);
         }
     }
 
-    @Override
+    /**
+     * {@inheritDoc}
+     */
     protected void generateMethods(JavaCodeFragmentBuilder builder) throws CoreException {
         if(isGeneratingPolicySide()){
             if(isGeneratingImplementationClass()){
