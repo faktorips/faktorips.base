@@ -86,13 +86,15 @@ public abstract class AbstractProductCmptTypeBuilder extends DefaultJavaSourceFi
     private void createGeneratorsForAttributes() throws CoreException {
         LocalizedStringsSet stringsSet = new LocalizedStringsSet(GenAttribute.class);
         IPolicyCmptType type = getPolicyCmptType();
-        IPolicyCmptTypeAttribute[] attrs = type.getPolicyCmptTypeAttributes();
-        for (int i = 0; i < attrs.length; i++) {
-            if (attrs[i].isValid()) {
-                GenAttribute generator = createGenerator(attrs[i], stringsSet);
-                if (generator != null) {
-                    genAttributes.add(generator);
-                    generatorsByPart.put(attrs[i], generator);
+        if (type != null) {
+            IPolicyCmptTypeAttribute[] attrs = type.getPolicyCmptTypeAttributes();
+            for (int i = 0; i < attrs.length; i++) {
+                if (attrs[i].isValid()) {
+                    GenAttribute generator = createGenerator(attrs[i], stringsSet);
+                    if (generator != null) {
+                        genAttributes.add(generator);
+                        generatorsByPart.put(attrs[i], generator);
+                    }
                 }
             }
         }
@@ -101,13 +103,15 @@ public abstract class AbstractProductCmptTypeBuilder extends DefaultJavaSourceFi
     private void createGeneratorsForProdAttributes() throws CoreException {
         LocalizedStringsSet stringsSet = new LocalizedStringsSet(GenProdAttribute.class);
         IProductCmptType type = getProductCmptType();
-        IProductCmptTypeAttribute[] attrs = type.getProductCmptTypeAttributes();
-        for (int i = 0; i < attrs.length; i++) {
-            if (attrs[i].isValid()) {
-                GenProdAttribute generator = createGenerator(attrs[i], stringsSet);
-                if (generator != null) {
-                    genProdAttributes.add(generator);
-                    generatorsByPart.put(attrs[i], generator);
+        if (type != null) {
+            IProductCmptTypeAttribute[] attrs = type.getProductCmptTypeAttributes();
+            for (int i = 0; i < attrs.length; i++) {
+                if (attrs[i].isValid()) {
+                    GenProdAttribute generator = createGenerator(attrs[i], stringsSet);
+                    if (generator != null) {
+                        genProdAttributes.add(generator);
+                        generatorsByPart.put(attrs[i], generator);
+                    }
                 }
             }
         }
@@ -333,7 +337,7 @@ public abstract class AbstractProductCmptTypeBuilder extends DefaultJavaSourceFi
             DatatypeHelper datatypeHelper,
             JavaCodeFragmentBuilder fieldsBuilder,
             JavaCodeFragmentBuilder methodsBuilder) throws CoreException {
-        
+
         GenAttribute generator = (GenAttribute)getGenerator(a);
         if (generator != null) {
             generator.generate();
