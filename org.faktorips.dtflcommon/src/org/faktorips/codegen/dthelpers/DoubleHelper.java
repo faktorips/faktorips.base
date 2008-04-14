@@ -20,6 +20,7 @@ package org.faktorips.codegen.dthelpers;
 import org.apache.commons.lang.StringUtils;
 import org.faktorips.codegen.JavaCodeFragment;
 import org.faktorips.datatype.classtypes.DoubleDatatype;
+import org.faktorips.valueset.DoubleRange;
 
 /**
  * 
@@ -75,6 +76,29 @@ public class DoubleHelper extends AbstractDatatypeHelper {
         fragment.append(value);
         fragment.append(')');
         return fragment;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public String getRangeJavaClassName() {
+        return DoubleRange.class.getName();
+    }
+    
+    /**
+     * {@inheritDoc}
+     */
+    public JavaCodeFragment newRangeInstance(JavaCodeFragment lowerBoundExp, JavaCodeFragment upperBoundExp, JavaCodeFragment stepExp, JavaCodeFragment containsNullExp) {
+        JavaCodeFragment frag = new JavaCodeFragment();
+        frag.appendClassName(getRangeJavaClassName());
+        frag.append(".valueOf(");
+        frag.append(lowerBoundExp);
+        frag.append(", ");
+        frag.append(upperBoundExp);
+        frag.append(", ");
+        frag.append(containsNullExp);
+        frag.append(")");
+        return frag;
     }
 
 }
