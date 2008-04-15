@@ -45,8 +45,8 @@ public class GenProdAttribute extends AbstractGenAttribute {
     private IProductCmptType productCmptType;
 
     public GenProdAttribute(IProductCmptTypeAttribute a, DefaultJavaSourceFileBuilder builder,
-            LocalizedStringsSet stringsSet, boolean generateImplementation) throws CoreException {
-        super(a, builder, stringsSet, generateImplementation);
+            LocalizedStringsSet stringsSet) throws CoreException {
+        super(a, builder, stringsSet);
     }
 
     /**
@@ -206,7 +206,7 @@ public class GenProdAttribute extends AbstractGenAttribute {
     /**
      * {@inheritDoc}
      */
-    protected void generateConstants(JavaCodeFragmentBuilder builder) throws CoreException {
+    protected void generateConstants(JavaCodeFragmentBuilder builder, boolean generatesInterface) throws CoreException {
         // TODO Auto-generated method stub
 
     }
@@ -214,8 +214,8 @@ public class GenProdAttribute extends AbstractGenAttribute {
     /**
      * {@inheritDoc}
      */
-    protected void generateMemberVariables(JavaCodeFragmentBuilder builder) throws CoreException {
-        if (isGeneratingImplementationClass()) {
+    protected void generateMemberVariables(JavaCodeFragmentBuilder builder, boolean generatesInterface) throws CoreException {
+        if (!generatesInterface) {
             generateFieldValue(datatypeHelper, builder);
         }
     }
@@ -223,13 +223,13 @@ public class GenProdAttribute extends AbstractGenAttribute {
     /**
      * {@inheritDoc}
      */
-    protected void generateMethods(JavaCodeFragmentBuilder builder) throws CoreException {
+    protected void generateMethods(JavaCodeFragmentBuilder builder, boolean generatesInterface) throws CoreException {
         if(isGeneratingPolicySide()){
-            if(isGeneratingImplementationClass()){
+            if(!generatesInterface){
                 generateCodeForPolicyCmptType(builder);
             }
         }else{
-            if (isGeneratingImplementationClass()) {
+            if (!generatesInterface) {
                 generateMethodGetValue(datatypeHelper, builder);
                 generateMethodSetValue(datatypeHelper, builder);
             } else {
@@ -368,6 +368,7 @@ public class GenProdAttribute extends AbstractGenAttribute {
         generateGetterSignature(builder);
         builder.openBracket();
         builder.append("return ");
+        //TODO when the GenProductCmptType is introduced the method getMethodNameGetProductCmptGeneration needs to be moved to it
         builder.append(getPolicyCmptGenInterfaceBuilder().getMethodNameGetProductCmptGeneration(getProductCmptType()));
         builder.append("().");
         builder.append(getGetterMethodName());

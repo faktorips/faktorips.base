@@ -40,12 +40,12 @@ import org.faktorips.util.LocalizedStringsSet;
  * 
  * @author Jan Ortmann
  */
-public class GenDerivedAttributeImpl extends GenAttribute {
+public class GenDerivedAttribute extends GenAttribute {
 
-    public GenDerivedAttributeImpl(IPolicyCmptTypeAttribute a, DefaultJavaSourceFileBuilder builder,
+    public GenDerivedAttribute(IPolicyCmptTypeAttribute a, DefaultJavaSourceFileBuilder builder,
             LocalizedStringsSet stringsSet) throws CoreException {
 
-        super(a, builder, stringsSet, true);
+        super(a, builder, stringsSet);
         ArgumentCheck.isTrue(a.isDerived());
     }
 
@@ -73,10 +73,16 @@ public class GenDerivedAttributeImpl extends GenAttribute {
     /**
      * {@inheritDoc}
      */
-    protected void generateConstants(JavaCodeFragmentBuilder builder) throws CoreException {
+    protected void generateConstants(JavaCodeFragmentBuilder builder, boolean generatesInterface) throws CoreException {
         if (isGeneratingPolicySide()) {
-            if (isNotPublished()) {
-                generateAttributeNameConstant(builder);
+            if (generatesInterface) {
+                if (!isOverwritten()) {
+                    generateAttributeNameConstant(builder);
+                }
+            } else {
+                if (isNotPublished()) {
+                    generateAttributeNameConstant(builder);
+                }
             }
         }
     }
@@ -84,8 +90,8 @@ public class GenDerivedAttributeImpl extends GenAttribute {
     /**
      * {@inheritDoc}
      */
-    protected void generateMemberVariables(JavaCodeFragmentBuilder builder) throws CoreException {
-        if (isGeneratingPolicySide()) {
+    protected void generateMemberVariables(JavaCodeFragmentBuilder builder, boolean generatesInterface) throws CoreException {
+        if (!generatesInterface && isGeneratingPolicySide()) {
             if (getPolicyCmptTypeAttribute().getAttributeType() == AttributeType.DERIVED_BY_EXPLICIT_METHOD_CALL
                     && !isOverwritten()) {
                 generateField(builder);
@@ -96,13 +102,19 @@ public class GenDerivedAttributeImpl extends GenAttribute {
     /**
      * {@inheritDoc}
      */
-    protected void generateMethods(JavaCodeFragmentBuilder builder) throws CoreException {
+    protected void generateMethods(JavaCodeFragmentBuilder builder, boolean generatesInterface) throws CoreException {
         if (isGeneratingPolicySide()) {
-            if (getPolicyCmptTypeAttribute().getAttributeType() == AttributeType.DERIVED_ON_THE_FLY) {
-                generateGetterImplementationForOnTheFlyComputation(builder);
-            } else {
+            if(generatesInterface){
                 if (!isOverwritten()) {
-                    generateGetterImplementation(builder);
+                    generateGetterInterface(builder);
+                }
+            } else {
+                if (getPolicyCmptTypeAttribute().getAttributeType() == AttributeType.DERIVED_ON_THE_FLY) {
+                    generateGetterImplementationForOnTheFlyComputation(builder);
+                } else {
+                    if (!isOverwritten()) {
+                        generateGetterImplementation(builder);
+                    }
                 }
             }
         }

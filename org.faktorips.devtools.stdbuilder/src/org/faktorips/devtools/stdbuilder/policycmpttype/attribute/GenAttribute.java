@@ -44,8 +44,8 @@ public abstract class GenAttribute extends AbstractGenAttribute {
     
     private IProductCmptType productCmptType;
     
-    public GenAttribute(IPolicyCmptTypeAttribute a, DefaultJavaSourceFileBuilder builder, LocalizedStringsSet stringsSet, boolean generateImplementation) throws CoreException {
-        super(a, builder, stringsSet, generateImplementation);
+    public GenAttribute(IPolicyCmptTypeAttribute a, DefaultJavaSourceFileBuilder builder, LocalizedStringsSet stringsSet) throws CoreException {
+        super(a, builder, stringsSet);
     }
     
     /**

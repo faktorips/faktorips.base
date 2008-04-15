@@ -20,14 +20,9 @@ import org.faktorips.codegen.DatatypeHelper;
 import org.faktorips.devtools.core.builder.DefaultJavaGeneratorForIpsPart;
 import org.faktorips.devtools.core.builder.DefaultJavaSourceFileBuilder;
 import org.faktorips.devtools.core.model.ipsproject.IIpsArtefactBuilder;
-import org.faktorips.devtools.core.model.ipsproject.IIpsArtefactBuilderSet;
-import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.type.IAttribute;
-import org.faktorips.devtools.stdbuilder.StandardBuilderSet;
 import org.faktorips.devtools.stdbuilder.policycmpttype.BasePolicyCmptTypeBuilder;
 import org.faktorips.devtools.stdbuilder.policycmpttype.PolicyCmptInterfaceBuilder;
-import org.faktorips.devtools.stdbuilder.policycmpttype.attribute.GenAttribute;
-import org.faktorips.devtools.stdbuilder.productcmpttype.ProductCmptGenInterfaceBuilder;
 import org.faktorips.util.LocalizedStringsSet;
 
 /**
@@ -44,13 +39,11 @@ public abstract class AbstractGenAttribute extends DefaultJavaGeneratorForIpsPar
     private boolean generatePolicySide;
 
     private PolicyCmptInterfaceBuilder policyCmptInterfaceBuilder;
-    private ProductCmptGenInterfaceBuilder productCmptGenInterfaceBuilder;
 
     protected static final String[] EMPTY_STRING_ARRAY = new String[0];
 
-    public AbstractGenAttribute(IAttribute a, DefaultJavaSourceFileBuilder builder, LocalizedStringsSet stringsSet,
-            boolean generateImplementation) throws CoreException {
-        super(a, builder, stringsSet, generateImplementation);
+    public AbstractGenAttribute(IAttribute a, DefaultJavaSourceFileBuilder builder, LocalizedStringsSet stringsSet) throws CoreException {
+        super(a, builder, stringsSet);
         this.attribute = a;
         attributeName = a.getName();
         datatypeHelper = builder.getIpsProject().findDatatypeHelper(a.getDatatype());

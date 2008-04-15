@@ -89,8 +89,7 @@ public abstract class BasePolicyCmptTypeBuilder extends AbstractPcTypeBuilder {
         IValidationRule[] validationRules = type.getRules();
         for (int i = 0; i < validationRules.length; i++) {
             if (validationRules[i].isValid()) {
-                GenValidationRule generator = new GenValidationRule(validationRules[i], this, stringsSet,
-                        !generatesInterface());
+                GenValidationRule generator = new GenValidationRule(validationRules[i], this, stringsSet);
                 if (generator != null) {
                     genValidationRules.add(generator);
                     generatorsByPart.put(validationRules[i], generator);
@@ -147,7 +146,7 @@ public abstract class BasePolicyCmptTypeBuilder extends AbstractPcTypeBuilder {
         IMethod[] methods = type.getMethods();
         for (int i = 0; i < methods.length; i++) {
             if (methods[i].isValid()) {
-                GenMethod generator = new GenMethod(methods[i], this, stringsSet, !generatesInterface());
+                GenMethod generator = new GenMethod(methods[i], this, stringsSet);
                 if (generator != null) {
                     genMethods.add(generator);
                     generatorsByPart.put(methods[i], generator);
@@ -222,7 +221,7 @@ public abstract class BasePolicyCmptTypeBuilder extends AbstractPcTypeBuilder {
         }
         GenAttribute generator = (GenAttribute)getGenerator(attribute);
         if (generator != null) {
-            generator.generate();
+            generator.generate(generatesInterface());
         }
     }
 
@@ -231,14 +230,14 @@ public abstract class BasePolicyCmptTypeBuilder extends AbstractPcTypeBuilder {
 
         GenMethod generator = (GenMethod)getGenerator(method);
         if (generator != null) {
-            generator.generate();
+            generator.generate(generatesInterface());
         }
     }
 
     protected void generateCodeForValidationRule(IValidationRule validationRule) throws CoreException {
         GenValidationRule generator = (GenValidationRule)getGenerator(validationRule);
         if (generator != null) {
-            generator.generate();
+            generator.generate(generatesInterface());
         }
     }
 

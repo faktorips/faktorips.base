@@ -41,14 +41,12 @@ import org.faktorips.devtools.core.model.pctype.IValidationRule;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeAttribute;
 import org.faktorips.devtools.core.util.QNameUtil;
 import org.faktorips.devtools.stdbuilder.policycmpttype.association.GenAssociation;
-import org.faktorips.devtools.stdbuilder.policycmpttype.association.GenAssociationTo1Impl;
+import org.faktorips.devtools.stdbuilder.policycmpttype.association.GenAssociationTo1;
 import org.faktorips.devtools.stdbuilder.policycmpttype.association.GenAssociationToMany;
-import org.faktorips.devtools.stdbuilder.policycmpttype.association.GenAssociationToManyImpl;
 import org.faktorips.devtools.stdbuilder.policycmpttype.attribute.GenAttribute;
 import org.faktorips.devtools.stdbuilder.policycmpttype.attribute.GenChangeableAttribute;
-import org.faktorips.devtools.stdbuilder.policycmpttype.attribute.GenChangeableAttributeImpl;
 import org.faktorips.devtools.stdbuilder.policycmpttype.attribute.GenConstantAttribute;
-import org.faktorips.devtools.stdbuilder.policycmpttype.attribute.GenDerivedAttributeImpl;
+import org.faktorips.devtools.stdbuilder.policycmpttype.attribute.GenDerivedAttribute;
 import org.faktorips.devtools.stdbuilder.productcmpttype.ProductCmptGenImplClassBuilder;
 import org.faktorips.devtools.stdbuilder.productcmpttype.ProductCmptGenInterfaceBuilder;
 import org.faktorips.devtools.stdbuilder.productcmpttype.ProductCmptInterfaceBuilder;
@@ -102,19 +100,19 @@ public class PolicyCmptImplClassBuilder extends BasePolicyCmptTypeBuilder {
      */
     protected GenAttribute createGenerator(IPolicyCmptTypeAttribute a, LocalizedStringsSet stringsSet) throws CoreException {
         if (a.isDerived()) {
-            return new GenDerivedAttributeImpl(a, this, stringsSet);
+            return new GenDerivedAttribute(a, this, stringsSet);
         }
         if (a.isChangeable()) {
-            return new GenChangeableAttributeImpl(a, this, stringsSet);
+            return new GenChangeableAttribute(a, this, stringsSet);
         }
-        return new GenConstantAttribute(a, this, stringsSet, true);
+        return new GenConstantAttribute(a, this, stringsSet);
     }
 
     /**
      * {@inheritDoc}
      */
     protected GenProdAttribute createGenerator(IProductCmptTypeAttribute a, LocalizedStringsSet stringsSet) throws CoreException {
-        return new GenProdAttribute(a, this, stringsSet, true);
+        return new GenProdAttribute(a, this, stringsSet);
     }
     
     /**
@@ -122,9 +120,9 @@ public class PolicyCmptImplClassBuilder extends BasePolicyCmptTypeBuilder {
      */
     protected GenAssociation createGenerator(IPolicyCmptTypeAssociation association, LocalizedStringsSet stringsSet) throws CoreException {
         if (association.is1ToMany()) {
-            return new GenAssociationToManyImpl(association, this, stringsSet);
+            return new GenAssociationToMany(association, this, stringsSet);
         }
-        return new GenAssociationTo1Impl(association, this, stringsSet);
+        return new GenAssociationTo1(association, this, stringsSet);
     }
 
     public boolean isGenerateDeltaSupport() {
@@ -632,7 +630,7 @@ public class PolicyCmptImplClassBuilder extends BasePolicyCmptTypeBuilder {
 
         GenProdAttribute generator = (GenProdAttribute)getGenerator(attribute);
         if (generator!=null) {
-            generator.generate();
+            generator.generate(generatesInterface());
         }
     }
     
@@ -687,7 +685,7 @@ public class PolicyCmptImplClassBuilder extends BasePolicyCmptTypeBuilder {
      */
     protected void generateCodeFor1To1Association(IPolicyCmptTypeAssociation association, JavaCodeFragmentBuilder fieldsBuilder, JavaCodeFragmentBuilder methodsBuilder) throws Exception {
         GenAssociation generator = getGenerator(association);
-        generator.generate();
+        generator.generate(generatesInterface());
     }
 
     /**
@@ -698,7 +696,7 @@ public class PolicyCmptImplClassBuilder extends BasePolicyCmptTypeBuilder {
             generateMethodContainsObjectForContainerAssociation(association, methodsBuilder);
         } else {
             GenAssociation generator = getGenerator(association);
-            generator.generate();
+            generator.generate(generatesInterface());
         }
     }
     
@@ -1156,7 +1154,7 @@ public class PolicyCmptImplClassBuilder extends BasePolicyCmptTypeBuilder {
         code.append(") {");
         if (reverseAssociation.is1ToMany()) {
             // TODO refactor
-            GenAssociationToMany generator = new GenAssociationToManyImpl(reverseAssociation, this, new LocalizedStringsSet(GenAssociation.class));
+            GenAssociationToMany generator = new GenAssociationToMany(reverseAssociation, this, new LocalizedStringsSet(GenAssociation.class));
             code.append(varName + "." + generator.getMethodNameAddObject());
         } else {
             String targetClass = getQualifiedClassName(association.findTarget(getIpsProject()));
@@ -1444,7 +1442,7 @@ public class PolicyCmptImplClassBuilder extends BasePolicyCmptTypeBuilder {
         builder.appendln("}");
         for (Iterator it = selectedValues.iterator(); it.hasNext();) {
             IPolicyCmptTypeAttribute a = (IPolicyCmptTypeAttribute)it.next();
-            GenChangeableAttributeImpl gen = (GenChangeableAttributeImpl)getGenerator(a);
+            GenChangeableAttribute gen = (GenChangeableAttribute)getGenerator(a);
             gen.generateInitialization(builder);
         }
         builder.methodEnd();
@@ -1516,11 +1514,6 @@ public class PolicyCmptImplClassBuilder extends BasePolicyCmptTypeBuilder {
         builder.appendln("setProductCmpt(" + paramNames[0] + ");");
         builder.appendln("if(" + paramNames[1] + ") { initialize(); }");
         builder.closeBracket();
-    }
-
-    private String getMethodNameGetDefaultValueFromProductCmpt(IPolicyCmptTypeAttribute a, DatatypeHelper datatype) throws CoreException {
-        String methodName = ((GenChangeableAttribute)getGenerator(a)).getMethodNameGetDefaultValue(datatype);
-        return interfaceBuilder.getMethodNameGetProductCmptGeneration(getProductCmptType()) + "()." + methodName + "()";
     }
     
     private String getMethodNameExecRule(IValidationRule r){

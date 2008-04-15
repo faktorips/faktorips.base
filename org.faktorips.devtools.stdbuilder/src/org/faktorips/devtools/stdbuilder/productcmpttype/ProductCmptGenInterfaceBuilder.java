@@ -36,13 +36,14 @@ import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeAssocia
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeAttribute;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeMethod;
 import org.faktorips.devtools.core.model.productcmpttype.ITableStructureUsage;
+import org.faktorips.devtools.core.model.type.IMethod;
 import org.faktorips.devtools.core.model.type.IParameter;
 import org.faktorips.devtools.stdbuilder.StdBuilderHelper;
 import org.faktorips.devtools.stdbuilder.policycmpttype.PolicyCmptImplClassBuilder;
 import org.faktorips.devtools.stdbuilder.policycmpttype.attribute.GenAttribute;
-import org.faktorips.devtools.stdbuilder.policycmpttype.attribute.GenChangeableAttributeInterface;
+import org.faktorips.devtools.stdbuilder.policycmpttype.attribute.GenChangeableAttribute;
 import org.faktorips.devtools.stdbuilder.policycmpttype.attribute.GenConstantAttribute;
-import org.faktorips.devtools.stdbuilder.policycmpttype.attribute.GenDerivedAttributeInterface;
+import org.faktorips.devtools.stdbuilder.policycmpttype.attribute.GenDerivedAttribute;
 import org.faktorips.devtools.stdbuilder.productcmpttype.attribute.GenProdAttribute;
 import org.faktorips.runtime.FormulaExecutionException;
 import org.faktorips.runtime.IProductComponentGeneration;
@@ -56,7 +57,7 @@ import org.faktorips.valueset.IntegerRange;
  * 
  * @author Jan Ortmann
  */
-public class ProductCmptGenInterfaceBuilder extends AbstractProductCmptTypeBuilder {
+public class ProductCmptGenInterfaceBuilder extends BaseProductCmptTypeBuilder {
     
     private ProductCmptInterfaceBuilder productCmptTypeInterfaceBuilder;
     private PolicyCmptImplClassBuilder policyCmptTypeImplBuilder;
@@ -83,7 +84,7 @@ public class ProductCmptGenInterfaceBuilder extends AbstractProductCmptTypeBuild
      * {@inheritDoc}
      */
     protected GenProdAttribute createGenerator(IProductCmptTypeAttribute a, LocalizedStringsSet stringsSet) throws CoreException {
-        return new GenProdAttribute(a, this, stringsSet, false);
+        return new GenProdAttribute(a, this, stringsSet);
     }
 
     /**
@@ -94,12 +95,12 @@ public class ProductCmptGenInterfaceBuilder extends AbstractProductCmptTypeBuild
             return null;
         }
         if (a.isDerived()) {
-            return new GenDerivedAttributeInterface(a, this, stringsSet);
+            return new GenDerivedAttribute(a, this, stringsSet);
         }
         if (a.isChangeable()) {
-            return new GenChangeableAttributeInterface(a, this, stringsSet);
+            return new GenChangeableAttribute(a, this, stringsSet);
         }
-        return new GenConstantAttribute(a, this, stringsSet, false);
+        return new GenConstantAttribute(a, this, stringsSet);
     }
 
     /**
@@ -137,7 +138,7 @@ public class ProductCmptGenInterfaceBuilder extends AbstractProductCmptTypeBuild
         appendLocalizedJavaDoc("INTERFACE", new String[]{generationConceptName, getProductCmptType().getName()}, getIpsObject(), builder);
     }
 
-    protected void generateOtherCode(JavaCodeFragmentBuilder memberVarsBuilder, JavaCodeFragmentBuilder methodsBuilder)
+    protected void generateOtherCode(JavaCodeFragmentBuilder constantsBuilder, JavaCodeFragmentBuilder memberVarsBuilder, JavaCodeFragmentBuilder methodsBuilder)
             throws CoreException {
         // nothing to do
     }
@@ -152,7 +153,7 @@ public class ProductCmptGenInterfaceBuilder extends AbstractProductCmptTypeBuild
     protected void generateCodeForPolicyCmptTypeAttribute(IPolicyCmptTypeAttribute a, DatatypeHelper datatypeHelper, JavaCodeFragmentBuilder memberVarsBuilder, JavaCodeFragmentBuilder methodsBuilder) throws CoreException {
         GenAttribute generator = (GenAttribute)getGenerator(a);
         if (generator != null) {
-            generator.generate();
+            generator.generate(generatesInterface());
         }
     }
 
@@ -391,14 +392,13 @@ public class ProductCmptGenInterfaceBuilder extends AbstractProductCmptTypeBuild
     /**
      * {@inheritDoc}
      */
-    protected void generateCodeForModelMethod(
-            IProductCmptTypeMethod method, 
-            JavaCodeFragmentBuilder fieldsBuilder, 
+    protected void generateCodeForMethodDefinedInModel(
+            IMethod method,
             JavaCodeFragmentBuilder methodsBuilder) throws CoreException {
         
         if (method.getModifier().isPublished()) {
             methodsBuilder.javaDoc(method.getDescription(), ANNOTATION_GENERATED);
-            generateSignatureForModelMethod(method, false, false, methodsBuilder);
+            generateSignatureForModelMethod((IProductCmptTypeMethod)method, false, false, methodsBuilder);
             methodsBuilder.append(';');
         }
     }

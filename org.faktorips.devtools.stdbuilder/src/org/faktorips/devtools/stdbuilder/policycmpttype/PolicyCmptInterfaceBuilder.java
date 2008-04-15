@@ -28,7 +28,6 @@ import org.faktorips.codegen.JavaCodeFragmentBuilder;
 import org.faktorips.datatype.Datatype;
 import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
-import org.faktorips.devtools.core.model.ipsobject.Modifier;
 import org.faktorips.devtools.core.model.ipsproject.IIpsArtefactBuilderSet;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAssociation;
@@ -38,12 +37,12 @@ import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeAttribute;
 import org.faktorips.devtools.core.model.type.IMethod;
 import org.faktorips.devtools.stdbuilder.policycmpttype.association.GenAssociation;
-import org.faktorips.devtools.stdbuilder.policycmpttype.association.GenAssociationTo1Interface;
-import org.faktorips.devtools.stdbuilder.policycmpttype.association.GenAssociationToManyInterface;
+import org.faktorips.devtools.stdbuilder.policycmpttype.association.GenAssociationTo1;
+import org.faktorips.devtools.stdbuilder.policycmpttype.association.GenAssociationToMany;
 import org.faktorips.devtools.stdbuilder.policycmpttype.attribute.GenAttribute;
-import org.faktorips.devtools.stdbuilder.policycmpttype.attribute.GenChangeableAttributeInterface;
+import org.faktorips.devtools.stdbuilder.policycmpttype.attribute.GenChangeableAttribute;
 import org.faktorips.devtools.stdbuilder.policycmpttype.attribute.GenConstantAttribute;
-import org.faktorips.devtools.stdbuilder.policycmpttype.attribute.GenDerivedAttributeInterface;
+import org.faktorips.devtools.stdbuilder.policycmpttype.attribute.GenDerivedAttribute;
 import org.faktorips.devtools.stdbuilder.productcmpttype.ProductCmptGenInterfaceBuilder;
 import org.faktorips.devtools.stdbuilder.productcmpttype.ProductCmptInterfaceBuilder;
 import org.faktorips.devtools.stdbuilder.productcmpttype.attribute.GenProdAttribute;
@@ -93,19 +92,19 @@ public class PolicyCmptInterfaceBuilder extends BasePolicyCmptTypeBuilder {
             return null;
         }
         if (a.isDerived()) {
-            return new GenDerivedAttributeInterface(a, this, stringsSet);
+            return new GenDerivedAttribute(a, this, stringsSet);
         }
         if (a.isChangeable()) {
-            return new GenChangeableAttributeInterface(a, this, stringsSet);
+            return new GenChangeableAttribute(a, this, stringsSet);
         }
-        return new GenConstantAttribute(a, this, stringsSet, false);
+        return new GenConstantAttribute(a, this, stringsSet);
     }
 
     /**
      * {@inheritDoc}
      */
     protected GenProdAttribute createGenerator(IProductCmptTypeAttribute a, LocalizedStringsSet stringsSet) throws CoreException {
-        return new GenProdAttribute(a, this, stringsSet, false);
+        return new GenProdAttribute(a, this, stringsSet);
     }
 
     /**
@@ -113,9 +112,9 @@ public class PolicyCmptInterfaceBuilder extends BasePolicyCmptTypeBuilder {
      */
     protected GenAssociation createGenerator(IPolicyCmptTypeAssociation association, LocalizedStringsSet stringsSet) throws CoreException {
         if (association.is1ToMany()) {
-            return new GenAssociationToManyInterface(association, this, stringsSet);
+            return new GenAssociationToMany(association, this, stringsSet);
         }
-        return new GenAssociationTo1Interface(association, this, stringsSet);
+        return new GenAssociationTo1(association, this, stringsSet);
     }
 
     public boolean isGenerateDeltaSupport() {
@@ -484,7 +483,7 @@ public class PolicyCmptInterfaceBuilder extends BasePolicyCmptTypeBuilder {
      */
     protected void generateCodeFor1To1Association(IPolicyCmptTypeAssociation association, JavaCodeFragmentBuilder fieldsBuilder, JavaCodeFragmentBuilder methodsBuilder) throws Exception {
         GenAssociation generator = getGenerator(association);
-        generator.generateMethods(methodsBuilder);
+        generator.generateMethods(methodsBuilder, generatesInterface());
     }
 
     /**
@@ -492,7 +491,7 @@ public class PolicyCmptInterfaceBuilder extends BasePolicyCmptTypeBuilder {
      */
     protected void generateCodeFor1ToManyAssociation(IPolicyCmptTypeAssociation association, JavaCodeFragmentBuilder fieldsBuilder, JavaCodeFragmentBuilder methodsBuilder) throws Exception {
         GenAssociation generator = getGenerator(association);
-        generator.generateMethods(methodsBuilder);
+        generator.generateMethods(methodsBuilder, generatesInterface());
     }
     
     /**

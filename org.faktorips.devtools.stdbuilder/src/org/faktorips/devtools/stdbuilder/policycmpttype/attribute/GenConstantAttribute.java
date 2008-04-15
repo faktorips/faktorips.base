@@ -32,17 +32,17 @@ import org.faktorips.util.LocalizedStringsSet;
 public class GenConstantAttribute extends GenAttribute {
 
     public GenConstantAttribute(IPolicyCmptTypeAttribute a, DefaultJavaSourceFileBuilder builder,
-            LocalizedStringsSet stringsSet, boolean generateImplementation) throws CoreException {
-        super(a, builder, stringsSet, generateImplementation);
+            LocalizedStringsSet stringsSet) throws CoreException {
+        super(a, builder, stringsSet);
         ArgumentCheck.isTrue(a.getAttributeType() == AttributeType.CONSTANT);
     }
 
     /**
      * {@inheritDoc}
      */
-    protected void generateConstants(JavaCodeFragmentBuilder builder) throws CoreException {
+    protected void generateConstants(JavaCodeFragmentBuilder builder, boolean generatesInterface) throws CoreException {
         if (isGeneratingPolicySide()) {
-            if (isPublished() == isGeneratingInterface()) {
+            if (isPublished() == generatesInterface) {
                 generateAttributeNameConstant(builder);
                 generateConstant(builder);
             }
@@ -52,14 +52,14 @@ public class GenConstantAttribute extends GenAttribute {
     /**
      * {@inheritDoc}
      */
-    protected void generateMemberVariables(JavaCodeFragmentBuilder builder) throws CoreException {
+    protected void generateMemberVariables(JavaCodeFragmentBuilder builder, boolean generatesInterface) throws CoreException {
         // nothing to do
     }
 
     /**
      * {@inheritDoc}
      */
-    protected void generateMethods(JavaCodeFragmentBuilder builder) throws CoreException {
+    protected void generateMethods(JavaCodeFragmentBuilder builder, boolean generatesInterface) throws CoreException {
         // nothing to do
     }
 

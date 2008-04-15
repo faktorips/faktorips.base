@@ -32,8 +32,8 @@ import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAttribute;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeAssociation;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeAttribute;
-import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeMethod;
 import org.faktorips.devtools.core.model.productcmpttype.ITableStructureUsage;
+import org.faktorips.devtools.core.model.type.IMethod;
 import org.faktorips.devtools.stdbuilder.policycmpttype.PolicyCmptInterfaceBuilder;
 import org.faktorips.devtools.stdbuilder.policycmpttype.attribute.GenAttribute;
 import org.faktorips.devtools.stdbuilder.productcmpttype.attribute.GenProdAttribute;
@@ -46,7 +46,7 @@ import org.faktorips.util.LocalizedStringsSet;
  * 
  * @author Jan Ortmann
  */
-public class ProductCmptInterfaceBuilder extends AbstractProductCmptTypeBuilder {
+public class ProductCmptInterfaceBuilder extends BaseProductCmptTypeBuilder {
 
     private PolicyCmptInterfaceBuilder policyCmptTypeInterfaceBuilder;
     private ProductCmptGenInterfaceBuilder productCmptGenInterfaceBuilder;
@@ -118,13 +118,15 @@ public class ProductCmptInterfaceBuilder extends AbstractProductCmptTypeBuilder 
     /**
      * {@inheritDoc}
      */
-    protected void generateOtherCode(JavaCodeFragmentBuilder memberVarsBuilder, JavaCodeFragmentBuilder methodsBuilder)
-            throws CoreException {
-        
+    protected void generateOtherCode(JavaCodeFragmentBuilder constantsBuilder,
+            JavaCodeFragmentBuilder memberVarsBuilder,
+            JavaCodeFragmentBuilder methodsBuilder) throws CoreException {
+
         generateMethodGetGeneration(methodsBuilder);
-        // v2 - prufen, wann man die factory methode erzeugt. Signature koennte ja durchaus generiert werden.
-        // und nur die implementierung nicht! 
-        if (getPolicyCmptType()!=null && !getPolicyCmptType().isAbstract()) {
+        // v2 - prufen, wann man die factory methode erzeugt. Signature koennte ja durchaus
+        // generiert werden.
+        // und nur die implementierung nicht!
+        if (getPcType() != null && !getPcType().isAbstract()) {
             generateMethodCreatePolicyCmpt(methodsBuilder);
         }
     }
@@ -172,7 +174,7 @@ public class ProductCmptInterfaceBuilder extends AbstractProductCmptTypeBuilder 
      * </pre>
      */
     private void generateMethodCreatePolicyCmpt(JavaCodeFragmentBuilder methodsBuilder) throws CoreException {
-        IPolicyCmptType policyCmptType = getPolicyCmptType();
+        IPolicyCmptType policyCmptType = getPcType();
         String policyCmptTypeName = policyCmptTypeInterfaceBuilder.getPolicyCmptTypeName(policyCmptType); 
         appendLocalizedJavaDoc("METHOD_CREATE_POLICY_CMPT", new String[]{policyCmptTypeName}, getIpsObject(), methodsBuilder);
         generateSignatureCreatePolicyCmpt(policyCmptType, methodsBuilder);
@@ -249,8 +251,10 @@ public class ProductCmptInterfaceBuilder extends AbstractProductCmptTypeBuilder 
     /**
      * {@inheritDoc}
      */
-    protected void generateCodeForModelMethod(IProductCmptTypeMethod method, JavaCodeFragmentBuilder fieldsBuilder, JavaCodeFragmentBuilder methodsBuilder) throws CoreException {
-        // nothing to do
+    protected void generateCodeForMethodDefinedInModel(
+            IMethod method,
+            JavaCodeFragmentBuilder methodsBuilder) throws CoreException{
+//      nothing to do
     }
 
     /**

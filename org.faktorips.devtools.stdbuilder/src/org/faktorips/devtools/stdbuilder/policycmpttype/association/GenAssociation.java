@@ -54,9 +54,9 @@ public abstract class GenAssociation extends DefaultJavaGeneratorForIpsPart {
     protected String fieldName;
     
     public GenAssociation(IPolicyCmptTypeAssociation association, BasePolicyCmptTypeBuilder builder,
-            LocalizedStringsSet stringsSet, boolean generateImplementation) throws CoreException {
+            LocalizedStringsSet stringsSet) throws CoreException {
         
-        super(association, builder, stringsSet, generateImplementation);
+        super(association, builder, stringsSet);
         this.association = association;
         this.reverseAssociation = association.findInverseAssociation(getIpsProject());
         this.target = association.findTargetPolicyCmptType(association.getIpsProject());
@@ -96,14 +96,14 @@ public abstract class GenAssociation extends DefaultJavaGeneratorForIpsPart {
     /**
      * {@inheritDoc}
      */
-    protected void generateConstants(JavaCodeFragmentBuilder builder) throws CoreException {
+    protected void generateConstants(JavaCodeFragmentBuilder builder, boolean generatesInterface) throws CoreException {
         
     }
 
     /**
      * {@inheritDoc}
      */
-    protected void generateMemberVariables(JavaCodeFragmentBuilder builder) throws CoreException {
+    protected void generateMemberVariables(JavaCodeFragmentBuilder builder, boolean generatesInterface) throws CoreException {
 
     }
 
@@ -111,7 +111,7 @@ public abstract class GenAssociation extends DefaultJavaGeneratorForIpsPart {
      * {@inheritDoc}
      */
     // TODO go back to protected
-    public void generateMethods(JavaCodeFragmentBuilder builder) throws CoreException {
+    public void generateMethods(JavaCodeFragmentBuilder builder, boolean generatesInterface) throws CoreException {
 
     }
 
@@ -120,24 +120,25 @@ public abstract class GenAssociation extends DefaultJavaGeneratorForIpsPart {
      * the target is not abstract. If the target is configurable by product a second method with the
      * product component type as argument is also generated.
      */
-    protected void generateNewChildMethodsIfApplicable(JavaCodeFragmentBuilder methodsBuilder) throws CoreException {
+    protected void generateNewChildMethodsIfApplicable(JavaCodeFragmentBuilder methodsBuilder, boolean generatesInterface) throws CoreException {
         if (!association.getAssociationType().isCompositionMasterToDetail()) {
             return;
         }
         if (target.isAbstract()) {
             return;
         }
-        generateMethodNewChild(false, methodsBuilder);
+        generateMethodNewChild(generatesInterface, false, methodsBuilder);
         if (target.isConfigurableByProductCmptType() && target.findProductCmptType(getIpsProject())!=null) {
-            generateMethodNewChild(true, methodsBuilder);
+            generateMethodNewChild(generatesInterface, true, methodsBuilder);
         }
     }
     
     private void generateMethodNewChild(
+            boolean generatesInterface,
             boolean inclProductCmptArg,
             JavaCodeFragmentBuilder builder) throws CoreException {
         
-        if (isGeneratingInterface()) {
+        if (generatesInterface) {
             generateInterfaceMethodNewChild(inclProductCmptArg, builder);
         } else {
             generateImplMethodNewChild(inclProductCmptArg, builder);

@@ -46,15 +46,15 @@ import org.faktorips.util.LocalizedStringsSet;
 public class GenValidationRule extends DefaultJavaGeneratorForIpsPart {
 
     
-    public GenValidationRule(IIpsObjectPartContainer part, DefaultJavaSourceFileBuilder builder, LocalizedStringsSet stringsSet, boolean generateImplementation) throws CoreException {
-        super(part, builder, stringsSet, generateImplementation);
+    public GenValidationRule(IIpsObjectPartContainer part, DefaultJavaSourceFileBuilder builder, LocalizedStringsSet stringsSet) throws CoreException {
+        super(part, builder, stringsSet);
     }
 
     /**
      * {@inheritDoc}
      */
-    protected void generateConstants(JavaCodeFragmentBuilder builder) throws CoreException {
-        if(isGeneratingInterface()){
+    protected void generateConstants(JavaCodeFragmentBuilder builder, boolean generatesInterface) throws CoreException {
+        if(generatesInterface){
             generateFieldForMsgCode(builder);
         }
     }
@@ -62,15 +62,15 @@ public class GenValidationRule extends DefaultJavaGeneratorForIpsPart {
     /**
      * {@inheritDoc}
      */
-    protected void generateMemberVariables(JavaCodeFragmentBuilder builder) throws CoreException {
+    protected void generateMemberVariables(JavaCodeFragmentBuilder builder, boolean generatesInterface) throws CoreException {
         //nothing to do
     }
 
     /**
      * {@inheritDoc}
      */
-    protected void generateMethods(JavaCodeFragmentBuilder builder) throws CoreException {
-        if(isGeneratingImplementationClass()){
+    protected void generateMethods(JavaCodeFragmentBuilder builder, boolean generatesInterface) throws CoreException {
+        if(!generatesInterface){
             generateMethodExecRule(builder);
             generateMethodCreateMessageForRule(builder);
         }

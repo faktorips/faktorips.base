@@ -38,28 +38,28 @@ import org.faktorips.util.LocalizedStringsSet;
  */
 public class GenMethod extends DefaultJavaGeneratorForIpsPart {
 
-    public GenMethod(IMethod method, DefaultJavaSourceFileBuilder builder, LocalizedStringsSet stringsSet, boolean generateImplementation) throws CoreException {
-        super(method, builder, stringsSet, generateImplementation);
+    public GenMethod(IMethod method, DefaultJavaSourceFileBuilder builder, LocalizedStringsSet stringsSet) throws CoreException {
+        super(method, builder, stringsSet);
     }
 
     /**
      * {@inheritDoc}
      */
-    protected void generateConstants(JavaCodeFragmentBuilder builder) throws CoreException {
+    protected void generateConstants(JavaCodeFragmentBuilder builder, boolean generatesInterface) throws CoreException {
         //nothing to do
     }
 
     /**
      * {@inheritDoc}
      */
-    protected void generateMemberVariables(JavaCodeFragmentBuilder builder) throws CoreException {
+    protected void generateMemberVariables(JavaCodeFragmentBuilder builder, boolean generatesInterface) throws CoreException {
         //nothing to do
     }
 
     /**
      * {@inheritDoc}
      */
-    protected void generateMethods(JavaCodeFragmentBuilder builder) throws CoreException {
+    protected void generateMethods(JavaCodeFragmentBuilder builder, boolean generatesInterface) throws CoreException {
 
         IMethod method = getMethod();
         try {
@@ -69,10 +69,10 @@ public class GenMethod extends DefaultJavaGeneratorForIpsPart {
             for (int j = 0; j < paramDatatypes.length; j++) {
                 paramDatatypes[j] = getIpsProject().findDatatype(params[j].getDatatype());
             }
-            if(isGeneratingImplementationClass()){
+            if(!generatesInterface){
                 generateClassCodeForMethodDefinedInModel(method, returnType, paramDatatypes, builder);
             }
-            if(isGeneratingInterface()){
+            if(generatesInterface){
                 generateInterfaceCodeForMethodDefinedInModelInterface(method, returnType, paramDatatypes, builder);  
             }
             
@@ -169,7 +169,8 @@ public class GenMethod extends DefaultJavaGeneratorForIpsPart {
         }
         String returnClassName;
         if  (returnType instanceof IPolicyCmptType) {
-            returnClassName = getJavaSourceFileBuilder().getQualifiedClassName((IPolicyCmptType)returnType);
+//          TODO führen wir ein GenPolicyCmptType ein der den qualifiedClassName kennt
+            returnClassName = getInterfaceBuilder().getQualifiedClassName((IPolicyCmptType)returnType);
         } else {
             returnClassName = returnType.getJavaClassName();
         }
