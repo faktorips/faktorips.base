@@ -928,6 +928,13 @@ public class IpsTestRunner implements IIpsTestRunner {
             return;
         }
 
+        if (ipsProject == null) {
+            // if no project is given, try to extract and find the project from the given classpath
+            // repository, this could be happen if the test case are started directly by using the run history
+            // without further project information
+            ipsProject = getIpsProjectFromTocPath(classpathRepository);
+        }
+        
         if (ipsProject == null){
             MessageDialog.openWarning(null, Messages.IpsTestRunner_InfoDialogTestCouldNotStarted_Title, Messages.IpsTestRunner_Error_ProjectTheTestBelongsToNotFound);
             trace("Cancel test run, no project found."); //$NON-NLS-1$
