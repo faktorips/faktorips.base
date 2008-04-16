@@ -21,7 +21,6 @@ import org.faktorips.devtools.core.builder.DefaultJavaGeneratorForIpsPart;
 import org.faktorips.devtools.core.builder.DefaultJavaSourceFileBuilder;
 import org.faktorips.devtools.core.model.ipsproject.IIpsArtefactBuilder;
 import org.faktorips.devtools.core.model.type.IAttribute;
-import org.faktorips.devtools.stdbuilder.policycmpttype.BasePolicyCmptTypeBuilder;
 import org.faktorips.devtools.stdbuilder.policycmpttype.PolicyCmptInterfaceBuilder;
 import org.faktorips.util.LocalizedStringsSet;
 
@@ -36,7 +35,6 @@ public abstract class AbstractGenAttribute extends DefaultJavaGeneratorForIpsPar
     protected DatatypeHelper datatypeHelper;
     protected String staticConstantPropertyName;
     protected String memberVarName;
-    private boolean generatePolicySide;
 
     private PolicyCmptInterfaceBuilder policyCmptInterfaceBuilder;
 
@@ -52,15 +50,6 @@ public abstract class AbstractGenAttribute extends DefaultJavaGeneratorForIpsPar
         }
         staticConstantPropertyName = getLocalizedText("FIELD_PROPERTY_NAME", StringUtils.upperCase(a.getName()));
         memberVarName = getJavaNamingConvention().getMemberVarName(attributeName);
-        generatePolicySide = builder instanceof BasePolicyCmptTypeBuilder;
-    }
-
-    public boolean isGeneratingPolicySide() {
-        return generatePolicySide;
-    }
-
-    public boolean isGeneratingProductSide() {
-        return !generatePolicySide;
     }
 
     protected PolicyCmptInterfaceBuilder getPolicyCmptInterfaceBuilder() {

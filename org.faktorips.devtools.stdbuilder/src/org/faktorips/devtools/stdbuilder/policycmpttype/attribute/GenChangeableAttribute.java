@@ -58,22 +58,31 @@ public class GenChangeableAttribute extends GenAttribute {
         ArgumentCheck.isTrue(a.isChangeable());
         wrapperDatatypeHelper = StdBuilderHelper.getDatatypeHelperForValueSet(getIpsProject(), datatypeHelper);
     }
+    
+    /**
+     * Generates the source code for the ips object part this is a generator for.
+     * @param generatesInterface TODO
+     */
+    public void generateCodeForProductCmptType(boolean generatesInterface) throws CoreException{
+        if (!generatesInterface) {
+            generateMemberVariablesForProductCmptType(getMemberVarBuilder(), generatesInterface);
+        }
+        generateMethodsForProductCmptType(getMethodBuilder(), generatesInterface);
+    }
 
     /**
      * {@inheritDoc}
      */
     protected void generateConstants(JavaCodeFragmentBuilder builder, boolean generatesInterface) throws CoreException {
-        if (isGeneratingPolicySide()) {
-            if (isOverwritten()) {
-                return;
-            }
-            if (isPublished() == generatesInterface) {
-                generateAttributeNameConstant(builder);
-                if (isRangeValueSet()) {
-                    generateFieldMaxRange(builder);
-                } else if (isEnumValueSet()) {
-                    generateFieldMaxAllowedValuesFor(builder);
-                }
+        if (isOverwritten()) {
+            return;
+        }
+        if (isPublished() == generatesInterface) {
+            generateAttributeNameConstant(builder);
+            if (isRangeValueSet()) {
+                generateFieldMaxRange(builder);
+            } else if (isEnumValueSet()) {
+                generateFieldMaxAllowedValuesFor(builder);
             }
         }
     }
@@ -242,14 +251,7 @@ public class GenChangeableAttribute extends GenAttribute {
         return getJavaNamingConvention().getGetterMethodName(getPropertyNameDefaultValue(),
                 datatypeHelper.getDatatype());
     }
-    
-    
-    
-    
-    
-    
-    
-    
+
     /**
      * Returns the policy component implementation class builder.
      */
@@ -270,26 +272,33 @@ public class GenChangeableAttribute extends GenAttribute {
     /**
      * {@inheritDoc}
      */
-    protected void generateMemberVariables(JavaCodeFragmentBuilder builder, boolean generatesInterface) throws CoreException {
-        if(!generatesInterface){
-            if (isGeneratingPolicySide()) {
-                if (isOverwritten()) {
-                    return;
-                }
-                generateField(builder);
-            } else if (isGeneratingProductSide()) {
-                generateFieldDefaultValue(datatypeHelper, builder);
-                
-                // if the datatype is a primitive datatype the datatypehelper will be switched to the
-                // helper of the
-                // wrapper type
-                wrapperDatatypeHelper = StdBuilderHelper.getDatatypeHelperForValueSet(getIpsProject(),
-                        datatypeHelper);
-                if (isRangeValueSet()) {
-                    generateFieldRangeFor(wrapperDatatypeHelper, builder);
-                } else if (isEnumValueSet()) {
-                    generateFieldAllowedValuesFor(builder);
-                }
+    protected void generateMemberVariables(JavaCodeFragmentBuilder builder, boolean generatesInterface)
+            throws CoreException {
+        if (!generatesInterface) {
+            if (isOverwritten()) {
+                return;
+            }
+            generateField(builder);
+        }
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    protected void generateMemberVariablesForProductCmptType(JavaCodeFragmentBuilder builder, boolean generatesInterface)
+            throws CoreException {
+        if (!generatesInterface) {
+            generateFieldDefaultValue(datatypeHelper, builder);
+
+            // if the datatype is a primitive datatype the datatypehelper will be switched to
+            // the
+            // helper of the
+            // wrapper type
+            wrapperDatatypeHelper = StdBuilderHelper.getDatatypeHelperForValueSet(getIpsProject(), datatypeHelper);
+            if (isRangeValueSet()) {
+                generateFieldRangeFor(wrapperDatatypeHelper, builder);
+            } else if (isEnumValueSet()) {
+                generateFieldAllowedValuesFor(builder);
             }
         }
     }
@@ -298,76 +307,79 @@ public class GenChangeableAttribute extends GenAttribute {
      * {@inheritDoc}
      */
     protected void generateMethods(JavaCodeFragmentBuilder builder, boolean generatesInterface) throws CoreException {
-        if(!generatesInterface){
-            if (isGeneratingPolicySide()) {
-                if (isOverwritten()) {
-                    return;
-                }
-                if (isRangeValueSet()) {
-                    generateMethodGetRange(builder);
-                } else if (isEnumValueSet()) {
-                    generateMethodGetAllowedValues(builder);
-                }
-                generateGetterImplementation(builder);
-                generateSetterMethod(builder);
-            } else if (isGeneratingProductSide()) {
-                generateMethodGetDefaultValue(datatypeHelper, builder, generatesInterface);
-                
-                // if the datatype is a primitive datatype the datatypehelper will be switched to the
-                // helper of the
-                // wrapper type
-                wrapperDatatypeHelper = StdBuilderHelper.getDatatypeHelperForValueSet(getIpsProject(),
-                        datatypeHelper);
-                if (isRangeValueSet()) {
-                    generateMethodGetRangeForProd(wrapperDatatypeHelper, builder);
-                } else if (isEnumValueSet()) {
-                    generateMethodGetAllowedValuesForProd(wrapperDatatypeHelper.getDatatype(), builder);
-                }
+        if (!generatesInterface) {
+            if (isOverwritten()) {
+                return;
             }
+            if (isRangeValueSet()) {
+                generateMethodGetRange(builder);
+            } else if (isEnumValueSet()) {
+                generateMethodGetAllowedValues(builder);
+            }
+            generateGetterImplementation(builder);
+            generateSetterMethod(builder);
         }
-        
-        if(generatesInterface){
-            if (isGeneratingPolicySide()) {
-                if (isOverwritten()) {
-                    return;
-                }
-                generateGetterInterface(builder);
-                generateSetterInterface(builder);
-                if (isRangeValueSet()) {
-                    generateMethodGetRangeFor(wrapperDatatypeHelper, builder);
-                } else if (isEnumValueSet()) {
-                    generateMethodGetAllowedValuesFor(wrapperDatatypeHelper.getDatatype(), builder);
-                }
-            } else if (isGeneratingProductSide()) {
-                generateMethodGetDefaultValue(datatypeHelper, builder, generatesInterface);
-                
-                //TODO the generateCodeForAttribute method of the abstract builder needs to discriminate against
-                //the published modifier
-                
-                // if the datatype is a primitive datatype the datatypehelper will be switched to the
-                // helper of the
-                // wrapper type
-                wrapperDatatypeHelper = StdBuilderHelper.getDatatypeHelperForValueSet(getIpsProject(), datatypeHelper);
-                if(isEnumValueSet()){
-                    generateMethodGetAllowedValuesFor(wrapperDatatypeHelper.getDatatype(), builder);
-                }
-                else if(isRangeValueSet()){
-                    generateMethodGetRangeFor(wrapperDatatypeHelper, builder);
-                }
+
+        if (generatesInterface) {
+            if (isOverwritten()) {
+                return;
+            }
+            generateGetterInterface(builder);
+            generateSetterInterface(builder);
+            if (isRangeValueSet()) {
+                generateMethodGetRangeFor(wrapperDatatypeHelper, builder);
+            } else if (isEnumValueSet()) {
+                generateMethodGetAllowedValuesFor(wrapperDatatypeHelper.getDatatype(), builder);
             }
         }
     }
-    
+
+    /**
+     * {@inheritDoc}
+     */
+    protected void generateMethodsForProductCmptType(JavaCodeFragmentBuilder builder, boolean generatesInterface)
+            throws CoreException {
+        if (!generatesInterface) {
+            generateMethodGetDefaultValue(datatypeHelper, builder, generatesInterface);
+
+            // if the datatype is a primitive datatype the datatypehelper will be switched to the
+            // helper of the
+            // wrapper type
+            wrapperDatatypeHelper = StdBuilderHelper.getDatatypeHelperForValueSet(getIpsProject(), datatypeHelper);
+            if (isRangeValueSet()) {
+                generateMethodGetRangeForProd(wrapperDatatypeHelper, builder);
+            } else if (isEnumValueSet()) {
+                generateMethodGetAllowedValuesForProd(wrapperDatatypeHelper.getDatatype(), builder);
+            }
+        }
+
+        if (generatesInterface) {
+            generateMethodGetDefaultValue(datatypeHelper, builder, generatesInterface);
+
+            // if the datatype is a primitive datatype the datatypehelper will be switched to the
+            // helper of the wrapper type
+            wrapperDatatypeHelper = StdBuilderHelper.getDatatypeHelperForValueSet(getIpsProject(), datatypeHelper);
+            if (isEnumValueSet()) {
+                generateMethodGetAllowedValuesFor(wrapperDatatypeHelper.getDatatype(), builder);
+            } else if (isRangeValueSet()) {
+                generateMethodGetRangeFor(wrapperDatatypeHelper, builder);
+            }
+        }
+    }
+
     /**
      * Code sample:
+     * 
      * <pre>
      * [Javadoc]
      * public Integer getDefaultMinAge() {
      *     return minAge;
      * </pre>
      */
-    private void generateMethodGetDefaultValue(DatatypeHelper datatypeHelper, JavaCodeFragmentBuilder methodsBuilder, boolean generatesInterface) throws CoreException {
-        if(!generatesInterface){
+    private void generateMethodGetDefaultValue(DatatypeHelper datatypeHelper,
+            JavaCodeFragmentBuilder methodsBuilder,
+            boolean generatesInterface) throws CoreException {
+        if (!generatesInterface) {
             methodsBuilder.javaDoc(getJavaDocCommentForOverriddenMethod(), JavaSourceFileBuilder.ANNOTATION_GENERATED);
             generateSignatureGetDefaultValue(datatypeHelper, methodsBuilder);
             methodsBuilder.openBracket();
@@ -377,7 +389,7 @@ public class GenChangeableAttribute extends GenAttribute {
             methodsBuilder.closeBracket();
         }
 
-        if(generatesInterface){
+        if (generatesInterface) {
             appendLocalizedJavaDoc("METHOD_GET_DEFAULTVALUE", getPolicyCmptTypeAttribute().getName(), methodsBuilder);
             generateSignatureGetDefaultValue(datatypeHelper, methodsBuilder);
             methodsBuilder.append(';');
@@ -456,12 +468,13 @@ public class GenChangeableAttribute extends GenAttribute {
     }
 
     private void generateGenerationAccess(JavaCodeFragment body) throws CoreException {
-        if(isPublished()){
+        if (isPublished()) {
             body.append(getInterfaceBuilder().getMethodNameGetProductCmptGeneration(getProductCmptType()));
             body.append("().");
-        }else{ // Public
+        } else { // Public
             body.append("((");
-            body.append(getProductCmptType().getName()+getInterfaceBuilder().getAbbreviationForGenerationConcept(getProductCmptType()));
+            body.append(getProductCmptType().getName()
+                    + getInterfaceBuilder().getAbbreviationForGenerationConcept(getProductCmptType()));
             body.append(")");
             body.append(getInterfaceBuilder().getMethodNameGetProductCmptGeneration(getProductCmptType()));
             body.append("()).");
@@ -486,7 +499,8 @@ public class GenChangeableAttribute extends GenAttribute {
         methodBuilder.append(body);
     }
 
-    private void generateMethodGetRangeForProd(DatatypeHelper helper, JavaCodeFragmentBuilder methodsBuilder) throws CoreException {
+    private void generateMethodGetRangeForProd(DatatypeHelper helper, JavaCodeFragmentBuilder methodsBuilder)
+            throws CoreException {
         methodsBuilder.javaDoc("{@inheritDoc}", JavaSourceFileBuilder.ANNOTATION_GENERATED);
         generateSignatureGetRangeFor(helper, methodsBuilder);
         JavaCodeFragment body = new JavaCodeFragment();
@@ -498,7 +512,8 @@ public class GenChangeableAttribute extends GenAttribute {
         methodsBuilder.append(body);
     }
 
-    private void generateMethodGetAllowedValuesForProd(Datatype datatype, JavaCodeFragmentBuilder methodsBuilder) throws CoreException{
+    private void generateMethodGetAllowedValuesForProd(Datatype datatype, JavaCodeFragmentBuilder methodsBuilder)
+            throws CoreException {
         methodsBuilder.javaDoc("{@inheritDoc}", JavaSourceFileBuilder.ANNOTATION_GENERATED);
         generateSignatureGetAllowedValuesFor(datatype, methodsBuilder);
         JavaCodeFragment body = new JavaCodeFragment();
@@ -509,31 +524,34 @@ public class GenChangeableAttribute extends GenAttribute {
         body.appendCloseBracket();
         methodsBuilder.append(body);
     }
-    
-    public String getFieldNameRangeFor(IPolicyCmptTypeAttribute a){
+
+    public String getFieldNameRangeFor(IPolicyCmptTypeAttribute a) {
         return getLocalizedText("FIELD_RANGE_FOR_NAME", StringUtils.capitalize(a.getName()));
     }
-    
-    private void generateFieldRangeFor(DatatypeHelper helper, JavaCodeFragmentBuilder memberVarBuilder){
+
+    private void generateFieldRangeFor(DatatypeHelper helper, JavaCodeFragmentBuilder memberVarBuilder) {
         appendLocalizedJavaDoc("FIELD_RANGE_FOR", getPolicyCmptTypeAttribute().getName(), memberVarBuilder);
-        memberVarBuilder.varDeclaration(Modifier.PRIVATE, helper.getRangeJavaClassName(), getFieldNameRangeFor()); 
+        memberVarBuilder.varDeclaration(Modifier.PRIVATE, helper.getRangeJavaClassName(), getFieldNameRangeFor());
     }
-    
-    private void generateFieldAllowedValuesFor(JavaCodeFragmentBuilder memberVarBuilder){
+
+    private void generateFieldAllowedValuesFor(JavaCodeFragmentBuilder memberVarBuilder) {
         appendLocalizedJavaDoc("FIELD_ALLOWED_VALUES_FOR", getPolicyCmptTypeAttribute().getName(), memberVarBuilder);
-        memberVarBuilder.varDeclaration(Modifier.PRIVATE, EnumValueSet.class, getFieldNameAllowedValuesFor()); 
+        memberVarBuilder.varDeclaration(Modifier.PRIVATE, EnumValueSet.class, getFieldNameAllowedValuesFor());
     }
-    
+
     /**
      * Code sample:
+     * 
      * <pre>
      * [javadoc]
      * private Integer minAge;
      * </pre>
      */
-    private void generateFieldDefaultValue(DatatypeHelper datatypeHelper, JavaCodeFragmentBuilder memberVarsBuilder) throws CoreException {
+    private void generateFieldDefaultValue(DatatypeHelper datatypeHelper, JavaCodeFragmentBuilder memberVarsBuilder)
+            throws CoreException {
         appendLocalizedJavaDoc("FIELD_DEFAULTVALUE", getPolicyCmptTypeAttribute().getName(), memberVarsBuilder);
-        JavaCodeFragment defaultValueExpression = datatypeHelper.newInstance(getPolicyCmptTypeAttribute().getDefaultValue());
+        JavaCodeFragment defaultValueExpression = datatypeHelper.newInstance(getPolicyCmptTypeAttribute()
+                .getDefaultValue());
         memberVarsBuilder.varDeclaration(Modifier.PRIVATE, datatypeHelper.getJavaClassName(),
                 getFieldNameDefaultValue(), defaultValueExpression);
     }
@@ -547,8 +565,8 @@ public class GenChangeableAttribute extends GenAttribute {
         builder.append(body);
         builder.append("();");
         builder.appendln();
-    } 
- 
+    }
+
     /**
      * Code sample:
      * 

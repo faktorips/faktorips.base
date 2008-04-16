@@ -28,6 +28,7 @@ import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeAttribute;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeMethod;
 import org.faktorips.devtools.stdbuilder.policycmpttype.attribute.GenAttribute;
+import org.faktorips.devtools.stdbuilder.policycmpttype.attribute.GenChangeableAttribute;
 import org.faktorips.devtools.stdbuilder.productcmpttype.attribute.GenProdAttribute;
 import org.faktorips.util.LocalizedStringsSet;
 
@@ -136,9 +137,9 @@ public abstract class BaseProductCmptTypeBuilder extends AbstractProductCmptType
             JavaCodeFragmentBuilder fieldsBuilder,
             JavaCodeFragmentBuilder methodsBuilder) throws CoreException {
 
-        GenAttribute generator = (GenAttribute)getGenerator(a);
+        GenChangeableAttribute generator = (GenChangeableAttribute)getGenerator(a);
         if (generator != null) {
-            generator.generate(generatesInterface());
+            generator.generateCodeForProductCmptType(generatesInterface());
         }
     }
 

@@ -41,18 +41,17 @@ public class GenConstantAttribute extends GenAttribute {
      * {@inheritDoc}
      */
     protected void generateConstants(JavaCodeFragmentBuilder builder, boolean generatesInterface) throws CoreException {
-        if (isGeneratingPolicySide()) {
-            if (isPublished() == generatesInterface) {
-                generateAttributeNameConstant(builder);
-                generateConstant(builder);
-            }
+        if (isPublished() == generatesInterface) {
+            generateAttributeNameConstant(builder);
+            generateConstant(builder);
         }
     }
 
     /**
      * {@inheritDoc}
      */
-    protected void generateMemberVariables(JavaCodeFragmentBuilder builder, boolean generatesInterface) throws CoreException {
+    protected void generateMemberVariables(JavaCodeFragmentBuilder builder, boolean generatesInterface)
+            throws CoreException {
         // nothing to do
     }
 

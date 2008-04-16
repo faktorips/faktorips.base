@@ -52,8 +52,6 @@ import org.faktorips.devtools.core.model.valueset.ValueSetType;
 import org.faktorips.devtools.stdbuilder.StdBuilderHelper;
 import org.faktorips.devtools.stdbuilder.policycmpttype.attribute.GenAttribute;
 import org.faktorips.devtools.stdbuilder.policycmpttype.attribute.GenChangeableAttribute;
-import org.faktorips.devtools.stdbuilder.policycmpttype.attribute.GenConstantAttribute;
-import org.faktorips.devtools.stdbuilder.policycmpttype.attribute.GenDerivedAttribute;
 import org.faktorips.devtools.stdbuilder.productcmpttype.attribute.GenProdAttribute;
 import org.faktorips.devtools.stdbuilder.table.TableImplBuilder;
 import org.faktorips.runtime.ITable;
@@ -519,9 +517,9 @@ public class ProductCmptGenImplClassBuilder extends BaseProductCmptTypeBuilder{
     }
     
     protected void generateCodeForPolicyCmptTypeAttribute(IPolicyCmptTypeAttribute a, DatatypeHelper datatypeHelper, JavaCodeFragmentBuilder memberVarsBuilder, JavaCodeFragmentBuilder methodsBuilder) throws CoreException {
-        GenAttribute generator = (GenAttribute)getGenerator(a);
+        GenChangeableAttribute generator = (GenChangeableAttribute)getGenerator(a);
         if (generator != null) {
-            generator.generate(generatesInterface());
+            generator.generateCodeForProductCmptType(generatesInterface());
         }
     }
     
@@ -1104,13 +1102,10 @@ public class ProductCmptGenImplClassBuilder extends BaseProductCmptTypeBuilder{
      */
     protected GenAttribute createGenerator(IPolicyCmptTypeAttribute a, LocalizedStringsSet stringsSet)
             throws CoreException {
-        if (a.isDerived()) {
-            return new GenDerivedAttribute(a, this, stringsSet);
-        }
         if (a.isChangeable()) {
             return new GenChangeableAttribute(a, this, stringsSet);
         }
-        return new GenConstantAttribute(a, this, stringsSet);
+        return null;
     }
 
 }

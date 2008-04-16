@@ -630,7 +630,7 @@ public class PolicyCmptImplClassBuilder extends BasePolicyCmptTypeBuilder {
 
         GenProdAttribute generator = (GenProdAttribute)getGenerator(attribute);
         if (generator!=null) {
-            generator.generate(generatesInterface());
+            generator.generateCodeForPolicyCmptType(generatesInterface());
         }
     }
     

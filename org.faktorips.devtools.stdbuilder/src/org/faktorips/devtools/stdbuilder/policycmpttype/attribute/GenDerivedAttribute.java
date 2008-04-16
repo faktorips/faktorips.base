@@ -74,15 +74,13 @@ public class GenDerivedAttribute extends GenAttribute {
      * {@inheritDoc}
      */
     protected void generateConstants(JavaCodeFragmentBuilder builder, boolean generatesInterface) throws CoreException {
-        if (isGeneratingPolicySide()) {
-            if (generatesInterface) {
-                if (!isOverwritten()) {
-                    generateAttributeNameConstant(builder);
-                }
-            } else {
-                if (isNotPublished()) {
-                    generateAttributeNameConstant(builder);
-                }
+        if (generatesInterface) {
+            if (!isOverwritten()) {
+                generateAttributeNameConstant(builder);
+            }
+        } else {
+            if (isNotPublished()) {
+                generateAttributeNameConstant(builder);
             }
         }
     }
@@ -90,8 +88,9 @@ public class GenDerivedAttribute extends GenAttribute {
     /**
      * {@inheritDoc}
      */
-    protected void generateMemberVariables(JavaCodeFragmentBuilder builder, boolean generatesInterface) throws CoreException {
-        if (!generatesInterface && isGeneratingPolicySide()) {
+    protected void generateMemberVariables(JavaCodeFragmentBuilder builder, boolean generatesInterface)
+            throws CoreException {
+        if (!generatesInterface) {
             if (getPolicyCmptTypeAttribute().getAttributeType() == AttributeType.DERIVED_BY_EXPLICIT_METHOD_CALL
                     && !isOverwritten()) {
                 generateField(builder);
@@ -103,18 +102,16 @@ public class GenDerivedAttribute extends GenAttribute {
      * {@inheritDoc}
      */
     protected void generateMethods(JavaCodeFragmentBuilder builder, boolean generatesInterface) throws CoreException {
-        if (isGeneratingPolicySide()) {
-            if(generatesInterface){
-                if (!isOverwritten()) {
-                    generateGetterInterface(builder);
-                }
+        if (generatesInterface) {
+            if (!isOverwritten()) {
+                generateGetterInterface(builder);
+            }
+        } else {
+            if (getPolicyCmptTypeAttribute().getAttributeType() == AttributeType.DERIVED_ON_THE_FLY) {
+                generateGetterImplementationForOnTheFlyComputation(builder);
             } else {
-                if (getPolicyCmptTypeAttribute().getAttributeType() == AttributeType.DERIVED_ON_THE_FLY) {
-                    generateGetterImplementationForOnTheFlyComputation(builder);
-                } else {
-                    if (!isOverwritten()) {
-                        generateGetterImplementation(builder);
-                    }
+                if (!isOverwritten()) {
+                    generateGetterImplementation(builder);
                 }
             }
         }

@@ -151,9 +151,9 @@ public class ProductCmptGenInterfaceBuilder extends BaseProductCmptTypeBuilder {
      * {@inheritDoc}
      */
     protected void generateCodeForPolicyCmptTypeAttribute(IPolicyCmptTypeAttribute a, DatatypeHelper datatypeHelper, JavaCodeFragmentBuilder memberVarsBuilder, JavaCodeFragmentBuilder methodsBuilder) throws CoreException {
-        GenAttribute generator = (GenAttribute)getGenerator(a);
+        GenChangeableAttribute generator = (GenChangeableAttribute)getGenerator(a);
         if (generator != null) {
-            generator.generate(generatesInterface());
+            generator.generateCodeForProductCmptType(generatesInterface());
         }
     }
 

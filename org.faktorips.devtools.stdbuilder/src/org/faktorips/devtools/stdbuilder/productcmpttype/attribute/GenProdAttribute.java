@@ -202,7 +202,6 @@ public class GenProdAttribute extends AbstractGenAttribute {
         return memberVarName;
     }
 
-
     /**
      * {@inheritDoc}
      */
@@ -214,7 +213,8 @@ public class GenProdAttribute extends AbstractGenAttribute {
     /**
      * {@inheritDoc}
      */
-    protected void generateMemberVariables(JavaCodeFragmentBuilder builder, boolean generatesInterface) throws CoreException {
+    protected void generateMemberVariables(JavaCodeFragmentBuilder builder, boolean generatesInterface)
+            throws CoreException {
         if (!generatesInterface) {
             generateFieldValue(datatypeHelper, builder);
         }
@@ -224,17 +224,11 @@ public class GenProdAttribute extends AbstractGenAttribute {
      * {@inheritDoc}
      */
     protected void generateMethods(JavaCodeFragmentBuilder builder, boolean generatesInterface) throws CoreException {
-        if(isGeneratingPolicySide()){
-            if(!generatesInterface){
-                generateCodeForPolicyCmptType(builder);
-            }
-        }else{
-            if (!generatesInterface) {
-                generateMethodGetValue(datatypeHelper, builder);
-                generateMethodSetValue(datatypeHelper, builder);
-            } else {
-                generateMethodGetValueInterface(datatypeHelper, builder);
-            }
+        if (!generatesInterface) {
+            generateMethodGetValue(datatypeHelper, builder);
+            generateMethodSetValue(datatypeHelper, builder);
+        } else {
+            generateMethodGetValueInterface(datatypeHelper, builder);
         }
     }
 
@@ -361,19 +355,30 @@ public class GenProdAttribute extends AbstractGenAttribute {
         builder.append(getDatatypeHelper().newInstanceFromExpression("value"));
         builder.appendln(";");
     }
-    
-    private void generateCodeForPolicyCmptType(JavaCodeFragmentBuilder builder) throws CoreException{
-        String javaDoc = null; // getLocalizedText(null, a.getName()); // TODO
-        builder.javaDoc(javaDoc, JavaSourceFileBuilder.ANNOTATION_GENERATED);
-        generateGetterSignature(builder);
-        builder.openBracket();
-        builder.append("return ");
-        //TODO when the GenProductCmptType is introduced the method getMethodNameGetProductCmptGeneration needs to be moved to it
-        builder.append(getPolicyCmptGenInterfaceBuilder().getMethodNameGetProductCmptGeneration(getProductCmptType()));
-        builder.append("().");
-        builder.append(getGetterMethodName());
-        builder.append("();");
-        builder.closeBracket();
+
+    /**
+     * Generates the source code for the ips object part this is a generator for.
+     * 
+     * @param generatesInterface TODO
+     */
+    public void generateCodeForPolicyCmptType(boolean generatesInterface)
+            throws CoreException {
+        if (!generatesInterface) {
+            JavaCodeFragmentBuilder builder = getMethodBuilder();
+            String javaDoc = null; // getLocalizedText(null, a.getName()); // TODO
+            builder.javaDoc(javaDoc, JavaSourceFileBuilder.ANNOTATION_GENERATED);
+            generateGetterSignature(builder);
+            builder.openBracket();
+            builder.append("return ");
+            // TODO when the GenProductCmptType is introduced the method
+            // getMethodNameGetProductCmptGeneration needs to be moved to it
+            builder.append(getPolicyCmptGenInterfaceBuilder().getMethodNameGetProductCmptGeneration(
+                    getProductCmptType()));
+            builder.append("().");
+            builder.append(getGetterMethodName());
+            builder.append("();");
+            builder.closeBracket();
+        }
     }
 
 }
