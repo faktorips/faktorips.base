@@ -438,7 +438,6 @@ public class TestCaseSection extends IpsSection implements IIpsTestRunListener {
                         FailureDetails failureDetails = (FailureDetails)iter.next();
                         storeActualAsExpectedValue(failureDetails, failureDetailsToStoreInExpResultToString(failureDetails.getFailureDetails()));
                     }
-                    testCaseDetailArea.updateUi();
                 }
 
             };
@@ -996,7 +995,7 @@ public class TestCaseSection extends IpsSection implements IIpsTestRunListener {
 		productCmptButton.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
 		
 		// Details section
-        testCaseDetailArea = new TestCaseDetailArea(toolkit, contentProvider, this);
+        testCaseDetailArea = new TestCaseDetailArea(toolkit, contentProvider, this, bindingContext);
 		testCaseDetailArea.createInitialDetailArea(client, sectionDetailTitle);
 
         // Initialize the previous selected objects as empty list
@@ -1165,7 +1164,7 @@ public class TestCaseSection extends IpsSection implements IIpsTestRunListener {
 	}
 	
 	/**
-	 * The selection in the tree changed the given object is selected.
+	 * The selection in the tree changed the given object is the new object selected.
 	 */
 	private void selectionInTreeChanged(IStructuredSelection selection) {
         if (isTreeRefreshing){
@@ -2152,6 +2151,7 @@ public class TestCaseSection extends IpsSection implements IIpsTestRunListener {
 		pack();
 		getParent().layout(true);
         form.reflow(true);
+        bindingContext.updateUI();
         form.setRedraw(true);
 	}
 
@@ -2231,6 +2231,8 @@ public class TestCaseSection extends IpsSection implements IIpsTestRunListener {
      * (@inheritDoc)
      */
     protected void performRefresh() {
+        bindingContext.updateUI();
+        
         refreshTree();
         
         // reset the test status color of the title area
@@ -2815,8 +2817,6 @@ public class TestCaseSection extends IpsSection implements IIpsTestRunListener {
                     setTitleStatus(true, false, false, 0, ""); //$NON-NLS-1$
                     return;
                 }
-
-                testCaseDetailArea.updateUi();
             }
         });
     }

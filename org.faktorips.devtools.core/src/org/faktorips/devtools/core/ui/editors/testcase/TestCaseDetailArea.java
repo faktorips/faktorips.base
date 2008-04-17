@@ -54,11 +54,9 @@ import org.faktorips.devtools.core.model.testcasetype.ITestValueParameter;
 import org.faktorips.devtools.core.model.type.IAttribute;
 import org.faktorips.devtools.core.ui.UIToolkit;
 import org.faktorips.devtools.core.ui.ValueDatatypeControlFactory;
+import org.faktorips.devtools.core.ui.binding.BindingContext;
 import org.faktorips.devtools.core.ui.controller.EditField;
-import org.faktorips.devtools.core.ui.controller.IpsObjectUIController;
-import org.faktorips.devtools.core.ui.controller.UIController;
 import org.faktorips.devtools.core.ui.controller.fields.EnumValueField;
-import org.faktorips.devtools.core.ui.controller.fields.FieldValueChangedEvent;
 
 /**
  * Detail section class of the test case editor. Supports dynamic creation of detail edit controls.
@@ -93,7 +91,7 @@ public class TestCaseDetailArea {
     private HashMap editField2ModelObject = new HashMap();
 
     // Contains all ui controller
-    private ArrayList uiControllers = new ArrayList();
+    private List allBindedControls = new ArrayList();
 
     // The section this details belongs to
     private TestCaseSection testCaseSection;
@@ -105,6 +103,9 @@ public class TestCaseDetailArea {
     private Composite dynamicArea;
 
     private List testCaseDetailAreaRedrawListener = new ArrayList(1);
+
+    private BindingContext bindingContext;
+
     
     /*
      * Mouse listener class to select the section if the mouse button is clicked
@@ -150,12 +151,12 @@ public class TestCaseDetailArea {
         }
     }
 
-    public TestCaseDetailArea(UIToolkit toolkit, TestCaseContentProvider contentProvider,
-            TestCaseSection testCaseSection) {
+    public TestCaseDetailArea(UIToolkit toolkit, TestCaseContentProvider contentProvider, TestCaseSection section, BindingContext bindingContext) {
         this.toolkit = toolkit;
         this.contentProvider = contentProvider;
         this.ipsProject = contentProvider.getTestCase().getIpsProject();
-        this.testCaseSection = testCaseSection;
+        this.testCaseSection = section;
+        this.bindingContext = bindingContext;
     }
 
     /**
@@ -331,7 +332,6 @@ public class TestCaseDetailArea {
             final ITestPolicyCmpt testPolicyCmptForSelection,
             Composite attributeComposite,
             final ITestAttributeValue attributeValue) throws CoreException {
-        IpsObjectUIController uiController = createUIController(attributeValue);
         EditField editField = null;
 
         // get the ctrlFactory to create the edit field
@@ -367,7 +367,6 @@ public class TestCaseDetailArea {
             // ignore exception
         }
         
-        uiController.add(editField, ITestAttributeValue.PROPERTY_VALUE);
         // store the edit field
         String testPolicyCmptTypeParamPath = TestCaseHierarchyPath.evalTestPolicyCmptParamPath(testPolicyCmpt);
         allEditFields.put(testPolicyCmptTypeParamPath + attributeValue.getTestAttribute(), editField);
@@ -394,7 +393,8 @@ public class TestCaseDetailArea {
                 testCaseSection.postSetOverriddenValueBackgroundAndToolTip(editField, failureLastTestRun, false);
             }
         }
-        uiController.updateUI();
+        
+        addBindingFor(editField, attributeValue, ITestAttributeValue.PROPERTY_VALUE);
 
         return editField;
     }
@@ -513,8 +513,6 @@ public class TestCaseDetailArea {
             return;
         }
 
-        IpsObjectUIController uiController = createUIController(testValue);
-
         Section section = toolkit.getFormToolkit().createSection(details, 0);
         section.setText(testCaseSection.getLabelProvider().getTextForSection(testValue));
         section.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
@@ -545,7 +543,8 @@ public class TestCaseDetailArea {
         Label label = toolkit.createFormLabel(composite, Messages.TestCaseDetailArea_Label_Value);
         final EditField editField = ctrlFactory.createEditField(toolkit, composite, datatype, null);
         addSectionSelectionListeners(editField, label, testValue);
-        uiController.add(editField, ITestValue.PROPERTY_VALUE);
+
+        addBindingFor(editField, testValue, ITestValue.PROPERTY_VALUE);
 
         editField.getControl().addFocusListener(new FocusAdapter() {
             public void focusGained(FocusEvent e) {
@@ -565,8 +564,6 @@ public class TestCaseDetailArea {
         if (failureLastTestRun != null) {
             testCaseSection.postSetFailureBackgroundAndToolTip(editField, failureLastTestRun);
         }
-
-        uiController.updateUI();
     }
 
     /**
@@ -579,8 +576,6 @@ public class TestCaseDetailArea {
         if (!isVisibleForContentFilter(testCaseSection.getContentProvider(), rule)) {
             return;
         }
-
-        IpsObjectUIController uiController = createUIController(rule);
 
         Section section = toolkit.getFormToolkit().createSection(borderedComosite, 0);
         section.setText(testCaseSection.getLabelProvider().getTextForSection(rule));
@@ -599,7 +594,6 @@ public class TestCaseDetailArea {
         final EditField editField = new EnumValueField(toolkit.createCombo(composite, TestRuleViolationType
                 .getEnumType()), TestRuleViolationType.getEnumType());
         addSectionSelectionListeners(editField, label, rule);
-        uiController.add(editField, ITestRule.PROPERTY_VIOLATED);
 
         editField.getControl().addFocusListener(new FocusAdapter() {
             public void focusGained(FocusEvent e) {
@@ -620,8 +614,7 @@ public class TestCaseDetailArea {
             testCaseSection.postSetFailureBackgroundAndToolTip(editField, failureLastTestRun);
         }
 
-        uiController.updateUI();
-
+        addBindingFor(editField, rule, ITestRule.PROPERTY_VIOLATED);
     }
 
     /*
@@ -663,31 +656,13 @@ public class TestCaseDetailArea {
     }
 
     /**
-     * Creates a new ui controller for the given object.
-     */
-    private IpsObjectUIController createUIController(IIpsObjectPart part) {
-        IpsObjectUIController controller = new IpsObjectUIController(part) {
-            public void valueChanged(FieldValueChangedEvent e) {
-                try {
-                    super.valueChanged(e);
-                } catch (Exception ex) {
-                    IpsPlugin.logAndShowErrorDialog(ex);
-                }
-            }
-        };
-        uiControllers.add(controller);
-
-        return controller;
-    }
-
-    /**
      * Resets the containers containing the control references.
      */
     private void resetContainers() {
+        unbindControls();
         allEditFields.clear();
         firstAttributeEditFields.clear();
         sectionControls.clear();
-        uiControllers.clear();
         editField2ModelObject.clear();
     }
 
@@ -820,14 +795,23 @@ public class TestCaseDetailArea {
             label.addMouseListener(new SectionSelectMouseListener(object));
         }
     }
-
-    /**
-     * Updates the ui for all ui controller
+    
+    /*
+     * Remove binding of all controls
      */
-    void updateUi() {
-        for (Iterator iter = uiControllers.iterator(); iter.hasNext();) {
-            UIController controller = (UIController)iter.next();
-            controller.updateUI();
+    private void unbindControls() {
+        for (Iterator iter = allBindedControls.iterator(); iter.hasNext();) {
+            Control control = (Control)iter.next();
+            bindingContext.removeBindings(control);
         }
+        allBindedControls.clear();
+    }
+
+    /*
+     * Adds the given object to the binding context
+     */
+    private void addBindingFor(EditField editField, Object object, String property) {
+        bindingContext.bindContent(editField, object, property);
+        allBindedControls.add(editField.getControl());
     }
 }
