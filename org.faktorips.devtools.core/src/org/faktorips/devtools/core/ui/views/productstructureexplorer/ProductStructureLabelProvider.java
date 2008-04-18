@@ -30,6 +30,7 @@ import org.faktorips.devtools.core.model.productcmpt.ITableContentUsage;
 import org.faktorips.devtools.core.model.productcmpt.treestructure.IProductCmptReference;
 import org.faktorips.devtools.core.model.productcmpt.treestructure.IProductCmptStructureTblUsageReference;
 import org.faktorips.devtools.core.model.productcmpt.treestructure.IProductCmptTypeRelationReference;
+import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeAssociation;
 import org.faktorips.devtools.core.ui.views.productstructureexplorer.ProductStructureExplorer.GenerationRootNode;
 import org.faktorips.util.StringUtil;
 
@@ -96,7 +97,14 @@ public class ProductStructureLabelProvider implements ILabelProvider {
             return generationRootNode.getProductCmptNoGenerationLabel(((IProductCmptReference)element).getProductCmpt());
 		}
 		else if (element instanceof IProductCmptTypeRelationReference) {
-            return ((IProductCmptTypeRelationReference)element).getRelation().getName();
+            IProductCmptTypeAssociation association = ((IProductCmptTypeRelationReference)element).getRelation();
+            // if the cardinality of the association is "toMany" then show the name (target role name) in plural
+            // otherwise show the default name, which normally is the singular target role name
+            if (association.is1ToMany()){
+                return association.getTargetRolePlural();
+            } else {
+                return association.getName();
+            }
         }
         else if (element instanceof IProductCmptStructureTblUsageReference) {
             ITableContentUsage tcu = ((IProductCmptStructureTblUsageReference)element).getTableContentUsage();
