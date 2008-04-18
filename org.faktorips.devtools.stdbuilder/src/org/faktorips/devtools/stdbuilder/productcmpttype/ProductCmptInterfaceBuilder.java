@@ -36,6 +36,7 @@ import org.faktorips.devtools.core.model.productcmpttype.ITableStructureUsage;
 import org.faktorips.devtools.core.model.type.IMethod;
 import org.faktorips.devtools.stdbuilder.policycmpttype.PolicyCmptInterfaceBuilder;
 import org.faktorips.devtools.stdbuilder.policycmpttype.attribute.GenAttribute;
+import org.faktorips.devtools.stdbuilder.productcmpttype.association.GenProdAssociation;
 import org.faktorips.devtools.stdbuilder.productcmpttype.attribute.GenProdAttribute;
 import org.faktorips.runtime.IProductComponent;
 import org.faktorips.util.LocalizedStringsSet;
@@ -271,8 +272,22 @@ public class ProductCmptInterfaceBuilder extends BaseProductCmptTypeBuilder {
      */
     protected GenAttribute createGenerator(IPolicyCmptTypeAttribute a, LocalizedStringsSet localizedStringsSet)
             throws CoreException {
-        // TODO return null, as this builder does not need code for policy component type attributes
+        // return null, as this builder does not need code for policy component type attributes
         return null;
+    }
+
+
+    /**
+     * {@inheritDoc}
+     */
+    protected GenProdAssociation createGenerator(IProductCmptTypeAssociation a, LocalizedStringsSet stringsSet)
+            throws CoreException {
+        // return null, as this builder does not need code for product component type associations
+        return null;
+    }
+
+    public ProductCmptInterfaceBuilder getProductCmptInterfaceBuilder() {
+        return this;
     }
     
 }

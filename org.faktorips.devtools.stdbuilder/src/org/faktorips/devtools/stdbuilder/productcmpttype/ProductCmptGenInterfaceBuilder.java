@@ -21,7 +21,6 @@ import java.lang.reflect.Modifier;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.apache.commons.lang.StringUtils;
 import org.eclipse.core.runtime.CoreException;
 import org.faktorips.codegen.DatatypeHelper;
 import org.faktorips.codegen.JavaCodeFragmentBuilder;
@@ -44,12 +43,14 @@ import org.faktorips.devtools.stdbuilder.policycmpttype.attribute.GenAttribute;
 import org.faktorips.devtools.stdbuilder.policycmpttype.attribute.GenChangeableAttribute;
 import org.faktorips.devtools.stdbuilder.policycmpttype.attribute.GenConstantAttribute;
 import org.faktorips.devtools.stdbuilder.policycmpttype.attribute.GenDerivedAttribute;
+import org.faktorips.devtools.stdbuilder.productcmpttype.association.GenProdAssociation;
+import org.faktorips.devtools.stdbuilder.productcmpttype.association.GenProdAssociationTo1;
+import org.faktorips.devtools.stdbuilder.productcmpttype.association.GenProdAssociationToMany;
 import org.faktorips.devtools.stdbuilder.productcmpttype.attribute.GenProdAttribute;
 import org.faktorips.runtime.FormulaExecutionException;
 import org.faktorips.runtime.IProductComponentGeneration;
 import org.faktorips.util.LocalizedStringsSet;
 import org.faktorips.util.StringUtil;
-import org.faktorips.valueset.IntegerRange;
 
 /**
  * Builder that generates Java sourcefiles (compilation units) containing the sourcecode for the
@@ -172,106 +173,16 @@ public class ProductCmptGenInterfaceBuilder extends BaseProductCmptTypeBuilder {
      * {@inheritDoc}
      */
     protected void generateCodeForNoneDerivedUnionAssociation(IProductCmptTypeAssociation association, JavaCodeFragmentBuilder memberVarsBuilder, JavaCodeFragmentBuilder methodsBuilder) throws Exception {
-        if (association.is1ToMany()) {
-            generateMethodGetManyRelatedCmpts(association, methodsBuilder);
-            generateMethodGetRelatedCmptAtIndex(association, methodsBuilder);
-        } else {
-            generateMethodGet1RelatedCmpt(association, methodsBuilder);
-        }
-        if (association.findMatchingPolicyCmptTypeAssociation(getIpsProject())!=null) {
-            generateMethodGetCardinalityForAssociation(association, methodsBuilder);
-        }
-        if (association.is1ToMany()) {
-            generateMethodGetNumOfRelatedCmpts(association, methodsBuilder);
-        }
-    }
-    
-    /**
-     * Code sample:
-     * [Javadoc]
-     * <pre>
-     * public CoverageType[] getCoverageTypes();
-     * </pre>
-     */
-    private void generateMethodGetManyRelatedCmpts(IProductCmptTypeAssociation association, JavaCodeFragmentBuilder methodsBuilder) throws CoreException {
-        appendLocalizedJavaDoc("METHOD_GET_MANY_RELATED_CMPTS", association.getTargetRolePlural(), association, methodsBuilder);
-        generateSignatureGetManyRelatedCmpts(association, methodsBuilder);        
-        methodsBuilder.appendln(";");
-    }
-
-    /**
-     * Code sample:
-     * <pre>
-     * public CoverageType[] getCoverageTypes()
-     * </pre>
-     */
-    void generateSignatureGetManyRelatedCmpts(IProductCmptTypeAssociation association, JavaCodeFragmentBuilder builder) throws CoreException {
-        String methodName = getMethodNameGetManyRelatedCmpts(association);
-        IProductCmptType target = association.findTargetProductCmptType(getIpsProject());
-        String returnType = productCmptTypeInterfaceBuilder.getQualifiedClassName(target) + "[]";
-        builder.signature(getJavaNamingConvention().getModifierForPublicInterfaceMethod(), 
-                returnType, methodName, EMPTY_STRING_ARRAY, EMPTY_STRING_ARRAY);
-    }
-
-    String getPropertyNameToManyAssociation(IProductCmptTypeAssociation association) {
-        String role = StringUtils.capitalize(association.getTargetRolePlural());
-        return getLocalizedText(association, "PROPERTY_TOMANY_RELATION_NAME", role);
-    }
-    
-    /**
-     * Code sample:
-     * <pre>
-     * [Javadoc]
-     * public CoverageType getMainCoverageType();
-     * </pre>
-     */
-    void generateMethodGet1RelatedCmpt(IProductCmptTypeAssociation association, JavaCodeFragmentBuilder builder) throws CoreException {
-        appendLocalizedJavaDoc("METHOD_GET_1_RELATED_CMPT", association.getTargetRoleSingular(), association, builder);
-        generateSignatureGet1RelatedCmpt(association, builder);
-        builder.appendln(";");
-    }
-
-    /**
-     * Code sample:
-     * <pre>
-     * public CoverageType getMainCoverageType()
-     * </pre>
-     */
-    void generateSignatureGet1RelatedCmpt(IProductCmptTypeAssociation association, JavaCodeFragmentBuilder builder) throws CoreException {
-        String methodName = getMethodNameGet1RelatedCmpt(association);
-        IProductCmptType target = association.findTargetProductCmptType(getIpsProject());
-        String returnType = productCmptTypeInterfaceBuilder.getQualifiedClassName(target);
-        builder.signature(Modifier.PUBLIC, returnType, methodName, EMPTY_STRING_ARRAY, EMPTY_STRING_ARRAY);
-    }
-    
-    String getMethodNameGet1RelatedCmpt(IProductCmptTypeAssociation association) throws CoreException {
-        return getJavaNamingConvention().getGetterMethodName(getPropertyNameTo1Association(association), Datatype.INTEGER);
-    }
-    
-    String getMethodNameGetManyRelatedCmpts(IProductCmptTypeAssociation association) throws CoreException {
-        return getJavaNamingConvention().getMultiValueGetterMethodName(getPropertyNameToManyAssociation(association));
-    }
-
-    String getPropertyNameTo1Association(IProductCmptTypeAssociation association) {
-        String role = StringUtils.capitalize(association.getTargetRoleSingular());
-        return getLocalizedText(association, "PROPERTY_TO1_RELATION_NAME", role);
+        GenProdAssociation generator = getGenerator(association);
+        generator.generate(generatesInterface());
     }
 
     /**
      * {@inheritDoc}
      */
     protected void generateCodeForDerivedUnionAssociationDefinition(IProductCmptTypeAssociation containerAssociation, JavaCodeFragmentBuilder memberVarsBuilder, JavaCodeFragmentBuilder methodsBuilder) throws Exception {
-        appendLocalizedJavaDoc("METHOD_GET_MANY_RELATED_CMPTS", containerAssociation.getTargetRolePlural(), containerAssociation, methodsBuilder);
-        generateSignatureDerivedUnionAssociation(containerAssociation, methodsBuilder);
-        methodsBuilder.appendln(";");
-
-        if (containerAssociation.is1ToMany()) {
-            generateMethodGetNumOfRelatedCmpts(containerAssociation, methodsBuilder);
-        }
-    }
-    
-    void generateSignatureDerivedUnionAssociation(IProductCmptTypeAssociation containerAssociation, JavaCodeFragmentBuilder methodsBuilder) throws CoreException {
-        generateSignatureGetManyRelatedCmpts(containerAssociation, methodsBuilder);        
+        GenProdAssociation generator = getGenerator(containerAssociation);
+        generator.generateCodeForDerivedUnionAssociationDefinition(methodsBuilder);
     }
     
     /**
@@ -279,93 +190,6 @@ public class ProductCmptGenInterfaceBuilder extends BaseProductCmptTypeBuilder {
      */
     protected void generateCodeForDerivedUnionAssociationImplementation(IProductCmptTypeAssociation containerAssociation, List implementationAssociations, JavaCodeFragmentBuilder memberVarsBuilder, JavaCodeFragmentBuilder methodsBuilder) throws Exception {
         // nothing to do
-    }
-
-    /**
-     * Code sample:
-     * <pre>
-     * [Javadoc]
-     * public int getNumOfCoverageTypes();
-     * </pre>
-     */
-    void generateMethodGetNumOfRelatedCmpts(IProductCmptTypeAssociation association, JavaCodeFragmentBuilder builder) throws CoreException {
-        String role = association.getTargetRolePlural();
-        appendLocalizedJavaDoc("METHOD_GET_NUM_OF_RELATED_CMPTS", role, association, builder);
-        generateSignatureGetNumOfRelatedCmpts(association, builder);
-        builder.appendln(";");
-    }
-    
-    /**
-     * Code sample:
-     * <pre>
-     * public int getNumOfCoverageTypes()
-     * </pre>
-     */
-    void generateSignatureGetNumOfRelatedCmpts(IProductCmptTypeAssociation association, JavaCodeFragmentBuilder builder) throws CoreException {
-        String methodName = getMethodNameGetNumOfRelatedCmpts(association);
-        builder.signature(Modifier.PUBLIC, "int", methodName, EMPTY_STRING_ARRAY, EMPTY_STRING_ARRAY);
-    }
-    
-    public String getMethodNameGetNumOfRelatedCmpts(IProductCmptTypeAssociation association) {
-        String propName = getLocalizedText(association, "PROPERTY_GET_NUM_OF_RELATED_CMPTS_NAME", association.getTargetRolePlural());
-        return getJavaNamingConvention().getGetterMethodName(propName, Datatype.INTEGER);
-    }
-
-    /**
-     * Code sample:
-     * <pre>
-     * [Javadoc]
-     * public CoverageType getCoverageType(int index);
-     * </pre>
-     */
-    void generateMethodGetRelatedCmptAtIndex(IProductCmptTypeAssociation association, JavaCodeFragmentBuilder builder) throws CoreException {
-        String role = association.getTargetRolePlural();
-        appendLocalizedJavaDoc("METHOD_GET_RELATED_CMPT_AT_INDEX", role, association, builder);
-        generateSignatureGetRelatedCmptsAtIndex(association, builder);
-        builder.appendln(";");
-    }
-    
-    /**
-     * Code sample:
-     * <pre>
-     * public CoverageType getCoverageType(int index)
-     * </pre>
-     */
-    void generateSignatureGetRelatedCmptsAtIndex(IProductCmptTypeAssociation association, JavaCodeFragmentBuilder builder) throws CoreException {
-        String methodName = getMethodNameGetRelatedCmptAtIndex(association);
-        IProductCmptType target = association.findTargetProductCmptType(getIpsProject());
-        String returnType = productCmptTypeInterfaceBuilder.getQualifiedClassName(target);
-        builder.signature(Modifier.PUBLIC, returnType, methodName, new String[]{"index"}, new String[]{"int"});
-    }
-
-    public String getMethodNameGetRelatedCmptAtIndex(IProductCmptTypeAssociation association) {
-        return getJavaNamingConvention().getGetterMethodName(association.getTargetRoleSingular(), Datatype.INTEGER);
-    }
-    
-    public String getMethodNameGetCardinalityForAssociation(IProductCmptTypeAssociation association) throws CoreException{
-        return getJavaNamingConvention().getGetterMethodName(
-                getLocalizedText(association, "METHOD_GET_CARDINALITY_FOR_NAME", 
-                association.findMatchingPolicyCmptTypeAssociation(getIpsProject()).getTargetRoleSingular()), IntegerRange.class);
-    }
-    
-    public String[][] getParamGetCardinalityForAssociation(IProductCmptTypeAssociation association) throws CoreException{
-        String paramName = productCmptTypeInterfaceBuilder.getQualifiedClassName(association.findTarget(getIpsProject()));
-        return new String[][]{new String[]{"productCmpt"}, new String[]{paramName}};
-    }
-    
-    public void generateSignatureGetCardinalityForAssociation(
-            IProductCmptTypeAssociation association, JavaCodeFragmentBuilder methodsBuilder) throws CoreException{
-        String methodName = getMethodNameGetCardinalityForAssociation(association);
-        String[][] params = getParamGetCardinalityForAssociation(association);
-        methodsBuilder.signature(Modifier.PUBLIC, IntegerRange.class.getName(), methodName, 
-                params[0], params[1]);
-    }
-    
-    private void generateMethodGetCardinalityForAssociation(IProductCmptTypeAssociation association, JavaCodeFragmentBuilder methodsBuilder) throws CoreException{
-        appendLocalizedJavaDoc("METHOD_GET_CARDINALITY_FOR", association.findMatchingPolicyCmptTypeAssociation(getIpsProject()).getTargetRoleSingular(), 
-                association, methodsBuilder);
-        generateSignatureGetCardinalityForAssociation(association, methodsBuilder);
-        methodsBuilder.append(';');
     }
     
     
@@ -474,5 +298,17 @@ public class ProductCmptGenInterfaceBuilder extends BaseProductCmptTypeBuilder {
         System.arraycopy(source1, 0, dest, 0, source1.length);
         System.arraycopy(source2, 0, dest, source1.length, source2.length);
         return dest;
-    }    
+    }  
+
+    protected GenProdAssociation createGenerator(IProductCmptTypeAssociation association, LocalizedStringsSet stringsSet)
+            throws CoreException {
+        if (association.is1ToMany()) {
+            return new GenProdAssociationToMany(association, this, stringsSet);
+        }
+        return new GenProdAssociationTo1(association, this, stringsSet);
+    }  
+
+    public ProductCmptInterfaceBuilder getProductCmptInterfaceBuilder() {
+        return productCmptTypeInterfaceBuilder;
+    }
 }

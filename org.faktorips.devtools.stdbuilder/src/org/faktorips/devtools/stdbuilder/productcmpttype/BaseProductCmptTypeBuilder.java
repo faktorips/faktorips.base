@@ -25,10 +25,13 @@ import org.faktorips.devtools.core.model.ipsproject.IIpsArtefactBuilderSet;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAttribute;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
+import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeAssociation;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeAttribute;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeMethod;
+import org.faktorips.devtools.core.model.type.IAssociation;
 import org.faktorips.devtools.stdbuilder.policycmpttype.attribute.GenAttribute;
 import org.faktorips.devtools.stdbuilder.policycmpttype.attribute.GenChangeableAttribute;
+import org.faktorips.devtools.stdbuilder.productcmpttype.association.GenProdAssociation;
 import org.faktorips.devtools.stdbuilder.productcmpttype.attribute.GenProdAttribute;
 import org.faktorips.util.LocalizedStringsSet;
 
@@ -42,6 +45,7 @@ public abstract class BaseProductCmptTypeBuilder extends AbstractProductCmptType
     private Map generatorsByPart = new HashMap();
     private List genAttributes = new ArrayList();
     private List genProdAttributes = new ArrayList();
+    private List genProdAssociations = new ArrayList();
 
     /**
      * @param packageStructure
@@ -64,10 +68,12 @@ public abstract class BaseProductCmptTypeBuilder extends AbstractProductCmptType
     private void initPartGenerators() throws CoreException {
         genAttributes.clear();
         genProdAttributes.clear();
+        genProdAssociations.clear();
         generatorsByPart.clear();
 
         createGeneratorsForAttributes();
         createGeneratorsForProdAttributes();
+        createGeneratorsForProdAssociations();
     }
 
     private void createGeneratorsForAttributes() throws CoreException {
@@ -104,6 +110,37 @@ public abstract class BaseProductCmptTypeBuilder extends AbstractProductCmptType
         }
     }
 
+    private void createGeneratorsForProdAssociations() throws CoreException {
+        LocalizedStringsSet stringsSet = new LocalizedStringsSet(GenProdAssociation.class);
+        IProductCmptType type = getProductCmptType();
+        if (type != null) {
+            IAssociation[] ass = type.getAssociations();
+            for (int i = 0; i < ass.length; i++) {
+                if (ass[i].isValid() && ass[i] instanceof IProductCmptTypeAssociation) {
+                    GenProdAssociation generator = createGenerator((IProductCmptTypeAssociation)ass[i], stringsSet);
+                    if (generator != null) {
+                        genProdAssociations.add(generator);
+                        generatorsByPart.put(ass[i], generator);
+                    }
+                }
+            }
+        }
+    }
+
+    public GenProdAssociation getGenerator(IProductCmptTypeAssociation a) throws CoreException {
+        if(generatorsByPart.containsKey(a)){
+            return (GenProdAssociation)generatorsByPart.get(a);
+        }else if(a.isValid()){
+            GenProdAssociation generator = createGenerator(a, new LocalizedStringsSet(GenProdAssociation.class));
+            if (generator != null) {
+                genProdAssociations.add(generator);
+                generatorsByPart.put(a, generator);
+            }
+            return generator;
+        }
+        return null;
+    }
+
     protected GenAttribute getGenerator(IPolicyCmptTypeAttribute a) {
         return (GenAttribute)generatorsByPart.get(a);
     }
@@ -111,6 +148,9 @@ public abstract class BaseProductCmptTypeBuilder extends AbstractProductCmptType
     protected GenProdAttribute getGenerator(IProductCmptTypeAttribute a) {
         return (GenProdAttribute)generatorsByPart.get(a);
     }
+
+    protected abstract GenProdAssociation createGenerator(IProductCmptTypeAssociation a, LocalizedStringsSet stringsSet)
+            throws CoreException;
 
     protected abstract GenAttribute createGenerator(IPolicyCmptTypeAttribute a, LocalizedStringsSet localizedStringsSet)
             throws CoreException;
@@ -170,9 +210,12 @@ public abstract class BaseProductCmptTypeBuilder extends AbstractProductCmptType
      * Generates the code for a method defined in the model. This includes formula signature
      * definitions.
      */
-    //FIXME remove
+    // FIXME remove
     protected final void generateCodeForModelMethod(IProductCmptTypeMethod method,
             JavaCodeFragmentBuilder fieldsBuilder,
-            JavaCodeFragmentBuilder methodsBuilder) throws CoreException{};
+            JavaCodeFragmentBuilder methodsBuilder) throws CoreException {
+    }
+
+    public abstract ProductCmptInterfaceBuilder getProductCmptInterfaceBuilder();
 
 }
