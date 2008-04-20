@@ -241,7 +241,7 @@ public interface IIpsArtefactBuilderSet extends IJavaPackageStructure {
 
     /**
      * This method is called when the build process is finished for this builder set. This method is called after the 
-     * <code>afterBuildProcess(IIpsProject, int)</code> method on the registered IpsArtefactBuilders was called.
+     * <code>afterBuildProcess(IIpsProject, int)</code> methods on the registered IpsArtefactBuilders were called.
      * 
      * @param buildKind One of the build kinds defined in <code>org.eclipse.core.resources.IncrementalProjectBuilder</code>
      * 
