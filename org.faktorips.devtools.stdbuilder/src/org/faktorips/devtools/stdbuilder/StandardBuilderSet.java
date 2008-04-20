@@ -17,7 +17,9 @@
 
 package org.faktorips.devtools.stdbuilder;
 
+import java.util.HashMap;
 import java.util.Locale;
+import java.util.Map;
 
 import org.apache.commons.lang.StringUtils;
 import org.eclipse.core.runtime.CoreException;
@@ -44,10 +46,12 @@ import org.faktorips.devtools.core.model.type.IType;
 import org.faktorips.devtools.stdbuilder.enums.EnumClassesBuilder;
 import org.faktorips.devtools.stdbuilder.enums.EnumTypeInterfaceBuilder;
 import org.faktorips.devtools.stdbuilder.formulatest.FormulaTestBuilder;
+import org.faktorips.devtools.stdbuilder.policycmpttype.GenPolicyCmptType;
 import org.faktorips.devtools.stdbuilder.policycmpttype.PolicyCmptImplClassBuilder;
 import org.faktorips.devtools.stdbuilder.policycmpttype.PolicyCmptInterfaceBuilder;
 import org.faktorips.devtools.stdbuilder.productcmpt.ProductCmptBuilder;
 import org.faktorips.devtools.stdbuilder.productcmpt.ProductCmptXMLBuilder;
+import org.faktorips.devtools.stdbuilder.productcmpttype.GenProductCmptType;
 import org.faktorips.devtools.stdbuilder.productcmpttype.ProductCmptGenImplClassBuilder;
 import org.faktorips.devtools.stdbuilder.productcmpttype.ProductCmptGenInterfaceBuilder;
 import org.faktorips.devtools.stdbuilder.productcmpttype.ProductCmptImplClassBuilder;
@@ -64,6 +68,7 @@ import org.faktorips.runtime.ICopySupport;
 import org.faktorips.runtime.IDeltaSupport;
 import org.faktorips.runtime.TableFunctionExecution;
 import org.faktorips.runtime.internal.MethodNames;
+import org.faktorips.util.LocalizedStringsSet;
 
 /**
  * A IpsArtefactBuilderSet implementation that assembles the standard FaktorIPS artefact builders.
@@ -100,9 +105,19 @@ public class StandardBuilderSet extends DefaultBuilderSet {
     private ProductCmptGenInterfaceBuilder productCmptGenInterfaceBuilder;
     private EnumClassesBuilder enumClassesBuilder;
     private String version;
+    private Map ipsObjectTypeGenerators = new HashMap(1000);
+    
     
     public StandardBuilderSet() {
       initVersion();
+    }
+
+    public void afterBuildProcess(int buildKind) throws CoreException {
+        clearGenerators();
+    }
+
+    public void beforeBuildProcess(int buildKind) throws CoreException {
+        clearGenerators();
     }
 
     private void initVersion() {
@@ -129,6 +144,34 @@ public class StandardBuilderSet extends DefaultBuilderSet {
      */
     public boolean isSupportTableAccess() {
         return true;
+    }
+
+    private void clearGenerators(){
+        ipsObjectTypeGenerators.clear();
+    }
+    
+    public GenPolicyCmptType getGenerator(IPolicyCmptType policyCmptType) throws CoreException{
+        if(policyCmptType == null){
+            return null;
+        }
+        GenPolicyCmptType generator = (GenPolicyCmptType)ipsObjectTypeGenerators.get(policyCmptType);
+        if(generator == null){
+            generator = new GenPolicyCmptType(policyCmptType, this, new LocalizedStringsSet(GenPolicyCmptType.class));
+            ipsObjectTypeGenerators.put(policyCmptType, generator);
+        }
+        return generator;
+    }
+    
+    public GenProductCmptType getGenerator(IProductCmptType productCmptType) throws CoreException{
+        if(productCmptType == null){
+            return null;
+        }
+        GenProductCmptType generator = (GenProductCmptType)ipsObjectTypeGenerators.get(productCmptType);
+        if(generator == null){
+            generator = new GenProductCmptType(productCmptType, this, new LocalizedStringsSet(GenProductCmptType.class));
+            ipsObjectTypeGenerators.put(productCmptType, generator);
+        }
+        return generator;
     }
 
     /**

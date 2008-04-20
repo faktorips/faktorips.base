@@ -24,14 +24,15 @@ import org.faktorips.codegen.DatatypeHelper;
 import org.faktorips.codegen.JavaCodeFragment;
 import org.faktorips.codegen.JavaCodeFragmentBuilder;
 import org.faktorips.datatype.ValueDatatype;
-import org.faktorips.devtools.core.builder.DefaultJavaSourceFileBuilder;
 import org.faktorips.devtools.core.builder.JavaSourceFileBuilder;
+import org.faktorips.devtools.core.builder.TypeSection;
+import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.pctype.AttributeType;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAttribute;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
-import org.faktorips.devtools.stdbuilder.policycmpttype.PolicyCmptImplClassBuilder;
-import org.faktorips.devtools.stdbuilder.policycmpttype.PolicyCmptInterfaceBuilder;
-import org.faktorips.devtools.stdbuilder.type.AbstractGenAttribute;
+import org.faktorips.devtools.core.model.type.IAttribute;
+import org.faktorips.devtools.stdbuilder.policycmpttype.GenPolicyCmptType;
+import org.faktorips.devtools.stdbuilder.policycmpttype.GenPolicyCmptTypePart;
 import org.faktorips.runtime.internal.MethodNames;
 import org.faktorips.util.LocalizedStringsSet;
 
@@ -40,34 +41,36 @@ import org.faktorips.util.LocalizedStringsSet;
  * 
  * @author Jan Ortmann
  */
-public abstract class GenAttribute extends AbstractGenAttribute {
+public abstract class GenAttribute extends GenPolicyCmptTypePart {
     
     private IProductCmptType productCmptType;
     
-    public GenAttribute(IPolicyCmptTypeAttribute a, DefaultJavaSourceFileBuilder builder, LocalizedStringsSet stringsSet) throws CoreException {
-        super(a, builder, stringsSet);
-    }
+    protected IAttribute attribute;
+    protected String attributeName;
+    protected DatatypeHelper datatypeHelper;
+    protected String staticConstantPropertyName;
+    protected String memberVarName;
     
-    /**
-     * Returns the policy component implementation class builder.
-     */
-    private PolicyCmptImplClassBuilder getImplClassBuilder() {
-        if (getJavaSourceFileBuilder() instanceof PolicyCmptImplClassBuilder) {
-            return (PolicyCmptImplClassBuilder)getJavaSourceFileBuilder();
+    
+    public GenAttribute(GenPolicyCmptType genPolicyCmptType, IPolicyCmptTypeAttribute a, LocalizedStringsSet stringsSet) throws CoreException {
+        super(genPolicyCmptType, a, stringsSet);
+        this.attribute = a;
+        attributeName = a.getName();
+        datatypeHelper = a.getIpsProject().findDatatypeHelper(a.getDatatype());
+        if (datatypeHelper == null) {
+            throw new NullPointerException("No datatype helper found for " + a);
         }
-        return null;
+        staticConstantPropertyName = getLocalizedText("FIELD_PROPERTY_NAME", StringUtils.upperCase(a.getName()));
+        memberVarName = getJavaNamingConvention().getMemberVarName(attributeName);
     }
     
-    /**
-     * Returns the policy component interface builder.
-     */
-    private PolicyCmptInterfaceBuilder getInterfaceBuilder() {
-        if (getJavaSourceFileBuilder() instanceof PolicyCmptInterfaceBuilder) {
-            return (PolicyCmptInterfaceBuilder)getJavaSourceFileBuilder();
+    public void generate(boolean generatesInterface, IIpsProject ipsProject, TypeSection mainSection) throws CoreException {
+        if(generatesInterface && !getPolicyCmptTypeAttribute().getModifier().isPublished()){
+            return;
         }
-        return getImplClassBuilder().getInterfaceBuilder();
+        super.generate(generatesInterface, ipsProject, mainSection);
     }
-    
+
     // TODO refactor
     protected boolean isGenerateChangeListenerSupport() {
         return true;
@@ -77,9 +80,9 @@ public abstract class GenAttribute extends AbstractGenAttribute {
         return (IPolicyCmptTypeAttribute)attribute;
     }
     
-    protected IProductCmptType getProductCmptType() throws CoreException {
+    protected IProductCmptType getProductCmptType(IIpsProject ipsProject) throws CoreException {
         if (productCmptType==null) {
-            productCmptType = getPolicyCmptTypeAttribute().getPolicyCmptType().findProductCmptType(getIpsProject());
+            productCmptType = getPolicyCmptTypeAttribute().getPolicyCmptType().findProductCmptType(ipsProject);
         }
         return productCmptType;
     }
@@ -201,7 +204,7 @@ public abstract class GenAttribute extends AbstractGenAttribute {
         methodsBuilder.append('.');
         methodsBuilder.append(MethodNames.MODELOBJECTDELTA_CHECK_PROPERTY_CHANGE);
         methodsBuilder.append("(");
-        methodsBuilder.appendClassName(getInterfaceBuilder().getQualifiedClassName(attribute.getIpsSrcFile()));
+        methodsBuilder.appendClassName(getGenPolicyCmptType().getQualifiedName(true));
         methodsBuilder.append(".");
         methodsBuilder.append(staticConstantPropertyName);
         methodsBuilder.append(", ");

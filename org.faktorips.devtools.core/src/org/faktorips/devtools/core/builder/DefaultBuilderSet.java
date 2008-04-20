@@ -74,12 +74,21 @@ public class DefaultBuilderSet extends AbstractBuilderSet {
     
     private final static String INTERNAL_PACKAGE = "internal"; //$NON-NLS-1$
     
+    
+    /**
+     * Returns the Java naming convention to be used.
+     */
+    //TODO duplicate method in JavaSourceFileBuilder
+    public JavaNamingConvention getJavaNamingConvention() {
+        return JavaNamingConvention.ECLIPSE_STANDARD;
+    }
+
     /**
      * Returns the addition of the name of the ips package fragment that contains the provided
      * IpsSrcFile and the base package name. This method is used within the getPackage() method
      * implementation.
      */
-    protected String getPackageName(IIpsSrcFile ipsSrcFile) throws CoreException {
+    public String getPackageName(IIpsSrcFile ipsSrcFile) throws CoreException {
         StringBuffer buf = new StringBuffer();
         String basePackeName = ipsSrcFile.getBasePackageNameForGeneratedJavaClass();
         if (!StringUtils.isEmpty(basePackeName)) {
@@ -96,7 +105,7 @@ public class DefaultBuilderSet extends AbstractBuilderSet {
      * Returns ips package fragment + ".internal." + base package name. This method is used within
      * the getPackage() method implementation.
      */
-    protected String getInternalPackageName(IIpsSrcFile ipsSrcFile) throws CoreException {
+    public String getInternalPackageName(IIpsSrcFile ipsSrcFile) throws CoreException {
         StringBuffer buf = new StringBuffer();
         String basePackeName = ipsSrcFile.getBasePackageNameForGeneratedJavaClass();
         if (!StringUtils.isEmpty(basePackeName)) {

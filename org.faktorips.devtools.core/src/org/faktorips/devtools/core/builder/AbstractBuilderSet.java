@@ -9,6 +9,7 @@
 
 package org.faktorips.devtools.core.builder;
 
+import org.eclipse.core.runtime.CoreException;
 import org.faktorips.devtools.core.model.ipsproject.IIpsArtefactBuilderSet;
 import org.faktorips.devtools.core.model.ipsproject.IIpsLoggingFrameworkConnector;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
@@ -115,5 +116,17 @@ public abstract class AbstractBuilderSet implements IIpsArtefactBuilderSet {
      */
     public boolean isRoleNamePluralRequiredForTo1Relations() {
         return false;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public void afterBuildProcess(int buildKind) throws CoreException {
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public void beforeBuildProcess(int buildKind) throws CoreException {
     }
 }

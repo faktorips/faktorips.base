@@ -77,6 +77,7 @@ public abstract class DefaultJavaSourceFileBuilder extends JavaSourceFileBuilder
     private TypeSection mainSection;
     private List innerClassesSections;
     private boolean loggerInstanceGenerated = false;
+
     
 	/**
 	 * @param builderSet

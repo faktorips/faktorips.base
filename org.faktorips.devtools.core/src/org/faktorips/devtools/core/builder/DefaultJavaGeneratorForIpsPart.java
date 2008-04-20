@@ -41,16 +41,6 @@ public abstract class DefaultJavaGeneratorForIpsPart extends JavaGeneratorForIps
             LocalizedStringsSet stringsSet) throws CoreException {
         super(part, builder, stringsSet);
         this.javaSourceFileBuilder = builder;
-        init();
-    }
-    
-    /**
-     * Hook for subclasses to initialize member variables before the code generation starts.
-     * 
-     * @throws CoreException if an error occurs while initializing the generator
-     */
-    protected void init() throws CoreException {
-        
     }
     
     /**

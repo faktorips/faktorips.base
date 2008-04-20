@@ -22,10 +22,9 @@ import org.eclipse.core.runtime.IStatus;
 import org.faktorips.codegen.JavaCodeFragmentBuilder;
 import org.faktorips.datatype.Datatype;
 import org.faktorips.devtools.core.IpsStatus;
-import org.faktorips.devtools.core.builder.DefaultJavaGeneratorForIpsPart;
-import org.faktorips.devtools.core.builder.DefaultJavaSourceFileBuilder;
 import org.faktorips.devtools.core.builder.JavaSourceFileBuilder;
 import org.faktorips.devtools.core.model.ipsobject.Modifier;
+import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.model.type.IMethod;
 import org.faktorips.devtools.core.model.type.IParameter;
@@ -36,38 +35,38 @@ import org.faktorips.util.LocalizedStringsSet;
  * 
  * @author Peter Erzberger
  */
-public class GenMethod extends DefaultJavaGeneratorForIpsPart {
+public class GenMethod extends GenPolicyCmptTypePart {
 
-    public GenMethod(IMethod method, DefaultJavaSourceFileBuilder builder, LocalizedStringsSet stringsSet) throws CoreException {
-        super(method, builder, stringsSet);
+    public GenMethod(GenPolicyCmptType genPolicyCmptType, IMethod method, LocalizedStringsSet stringsSet) throws CoreException {
+        super(genPolicyCmptType, method, stringsSet);
     }
 
     /**
      * {@inheritDoc}
      */
-    protected void generateConstants(JavaCodeFragmentBuilder builder, boolean generatesInterface) throws CoreException {
+    protected void generateConstants(JavaCodeFragmentBuilder builder, IIpsProject ipsProject, boolean generatesInterface) throws CoreException {
         //nothing to do
     }
 
     /**
      * {@inheritDoc}
      */
-    protected void generateMemberVariables(JavaCodeFragmentBuilder builder, boolean generatesInterface) throws CoreException {
+    protected void generateMemberVariables(JavaCodeFragmentBuilder builder, IIpsProject ipsProject, boolean generatesInterface) throws CoreException {
         //nothing to do
     }
 
     /**
      * {@inheritDoc}
      */
-    protected void generateMethods(JavaCodeFragmentBuilder builder, boolean generatesInterface) throws CoreException {
+    protected void generateMethods(JavaCodeFragmentBuilder builder, IIpsProject ipsProject, boolean generatesInterface) throws CoreException {
 
         IMethod method = getMethod();
         try {
-            Datatype returnType = getIpsProject().findDatatype(method.getDatatype());
+            Datatype returnType = ipsProject.findDatatype(method.getDatatype());
             IParameter[] params = method.getParameters();
             Datatype[] paramDatatypes = new Datatype[params.length];
             for (int j = 0; j < paramDatatypes.length; j++) {
-                paramDatatypes[j] = getIpsProject().findDatatype(params[j].getDatatype());
+                paramDatatypes[j] = ipsProject.findDatatype(params[j].getDatatype());
             }
             if(!generatesInterface){
                 generateClassCodeForMethodDefinedInModel(method, returnType, paramDatatypes, builder);
@@ -79,7 +78,7 @@ public class GenMethod extends DefaultJavaGeneratorForIpsPart {
         } catch (Exception e) {
             throw new CoreException(new IpsStatus(IStatus.ERROR,
                     "Error building method " + method.getName() + " of " //$NON-NLS-1$ //$NON-NLS-2$
-                            + getJavaSourceFileBuilder().getQualifiedClassName(method.getIpsObject()), e));
+                            + getGenPolicyCmptType().getQualifiedName(generatesInterface), e));
         }
     }
 
@@ -123,28 +122,6 @@ public class GenMethod extends DefaultJavaGeneratorForIpsPart {
     }
 
     /**
-     * Returns the policy component implementation class builder.
-     */
-    //TODO needs to be removed when the GenPolicyCmptType is introduced
-    private PolicyCmptImplClassBuilder getImplClassBuilder() {
-        if (getJavaSourceFileBuilder() instanceof PolicyCmptImplClassBuilder) {
-            return (PolicyCmptImplClassBuilder)getJavaSourceFileBuilder();
-        }
-        return null;
-    }
-    
-    /**
-     * Returns the policy component interface builder.
-     */
-//  TODO needs to be removed when the GenPolicyCmptType is introduced
-    private PolicyCmptInterfaceBuilder getInterfaceBuilder() {
-        if (getJavaSourceFileBuilder() instanceof PolicyCmptInterfaceBuilder) {
-            return (PolicyCmptInterfaceBuilder)getJavaSourceFileBuilder();
-        }
-        return getImplClassBuilder().getInterfaceBuilder();
-    }
-
-    /**
      * Code samples:
      * <pre>
      * public void calculatePremium(IPolicy policy)
@@ -161,16 +138,14 @@ public class GenMethod extends DefaultJavaGeneratorForIpsPart {
         String[] paramClassNames = new String[paramTypes.length];
         for (int i = 0; i < paramClassNames.length; i++) {
             if (paramTypes[i] instanceof IPolicyCmptType) {
-//                TODO führen wir ein GenPolicyCmptType ein der den qualifiedClassName kennt
-                paramClassNames[i] = getInterfaceBuilder().getQualifiedClassName((IPolicyCmptType)paramTypes[i]);
+                paramClassNames[i] = getGenPolicyCmptType().getBuilderSet().getGenerator((IPolicyCmptType)paramTypes[i]).getQualifiedName(true);
             } else {
                 paramClassNames[i] = paramTypes[i].getJavaClassName();
             }
         }
         String returnClassName;
         if  (returnType instanceof IPolicyCmptType) {
-//          TODO führen wir ein GenPolicyCmptType ein der den qualifiedClassName kennt
-            returnClassName = getInterfaceBuilder().getQualifiedClassName((IPolicyCmptType)returnType);
+            returnClassName = getGenPolicyCmptType().getBuilderSet().getGenerator((IPolicyCmptType)returnType).getQualifiedName(true);
         } else {
             returnClassName = returnType.getJavaClassName();
         }

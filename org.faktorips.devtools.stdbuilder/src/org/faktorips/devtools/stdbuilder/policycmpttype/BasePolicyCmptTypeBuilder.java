@@ -11,7 +11,6 @@ package org.faktorips.devtools.stdbuilder.policycmpttype;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
@@ -31,6 +30,7 @@ import org.faktorips.devtools.core.model.pctype.IValidationRule;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeAttribute;
 import org.faktorips.devtools.core.model.type.IMethod;
+import org.faktorips.devtools.stdbuilder.StandardBuilderSet;
 import org.faktorips.devtools.stdbuilder.policycmpttype.association.GenAssociation;
 import org.faktorips.devtools.stdbuilder.policycmpttype.attribute.GenAttribute;
 import org.faktorips.devtools.stdbuilder.productcmpttype.attribute.GenProdAttribute;
@@ -47,8 +47,6 @@ public abstract class BasePolicyCmptTypeBuilder extends AbstractPcTypeBuilder {
     private List genAttributes = new ArrayList();
     private List genProdAttributes = new ArrayList();
     private List genAssociations = new ArrayList();
-    private List genValidationRules = new ArrayList();
-    private List genMethods = new ArrayList();
 
     private boolean generateChangeListenerSupport;
 
@@ -71,50 +69,12 @@ public abstract class BasePolicyCmptTypeBuilder extends AbstractPcTypeBuilder {
     private void initPartGenerators() throws CoreException {
         genAttributes.clear();
         genProdAttributes.clear();
-        genMethods.clear();
         genAssociations.clear();
-        genValidationRules.clear();
         generatorsByPart.clear();
 
-        createGeneratorsForMethods();
-        createGeneratorsForAttributes();
         createGeneratorsForProdAttributes();
         createGeneratorsForAssociations();
-        createGeneratorsForValidationRules();
     }
-
-    private void createGeneratorsForValidationRules() throws CoreException {
-        LocalizedStringsSet stringsSet = new LocalizedStringsSet(GenValidationRule.class);
-        IPolicyCmptType type = getPcType();
-        IValidationRule[] validationRules = type.getRules();
-        for (int i = 0; i < validationRules.length; i++) {
-            if (validationRules[i].isValid()) {
-                GenValidationRule generator = new GenValidationRule(validationRules[i], this, stringsSet);
-                if (generator != null) {
-                    genValidationRules.add(generator);
-                    generatorsByPart.put(validationRules[i], generator);
-                }
-            }
-        }
-    }
-
-    private void createGeneratorsForAttributes() throws CoreException {
-        LocalizedStringsSet stringsSet = new LocalizedStringsSet(GenAttribute.class);
-        IPolicyCmptType type = getPcType();
-        IPolicyCmptTypeAttribute[] attrs = type.getPolicyCmptTypeAttributes();
-        for (int i = 0; i < attrs.length; i++) {
-            if (attrs[i].isValid()) {
-                GenAttribute generator = createGenerator(attrs[i], stringsSet);
-                if (generator != null) {
-                    genAttributes.add(generator);
-                    generatorsByPart.put(attrs[i], generator);
-                }
-            }
-        }
-    }
-
-    protected abstract GenAttribute createGenerator(IPolicyCmptTypeAttribute a, LocalizedStringsSet localizedStringsSet)
-            throws CoreException;
 
     private void createGeneratorsForProdAttributes() throws CoreException {
         LocalizedStringsSet stringsSet = new LocalizedStringsSet(GenProdAttribute.class);
@@ -140,21 +100,6 @@ public abstract class BasePolicyCmptTypeBuilder extends AbstractPcTypeBuilder {
     protected abstract GenProdAttribute createGenerator(IProductCmptTypeAttribute a,
             LocalizedStringsSet localizedStringsSet) throws CoreException;
 
-    private void createGeneratorsForMethods() throws CoreException {
-        LocalizedStringsSet stringsSet = new LocalizedStringsSet(GenAttribute.class);
-        IPolicyCmptType type = getPcType();
-        IMethod[] methods = type.getMethods();
-        for (int i = 0; i < methods.length; i++) {
-            if (methods[i].isValid()) {
-                GenMethod generator = new GenMethod(methods[i], this, stringsSet);
-                if (generator != null) {
-                    genMethods.add(generator);
-                    generatorsByPart.put(methods[i], generator);
-                }
-            }
-        }
-    }
-
     private void createGeneratorsForAssociations() throws CoreException {
         LocalizedStringsSet stringsSet = new LocalizedStringsSet(GenAssociation.class);
         IPolicyCmptType type = getPcType();
@@ -173,20 +118,8 @@ public abstract class BasePolicyCmptTypeBuilder extends AbstractPcTypeBuilder {
     protected abstract GenAssociation createGenerator(IPolicyCmptTypeAssociation association,
             LocalizedStringsSet attrStringsSet) throws CoreException;
 
-    protected Iterator getGenAttributes() {
-        return genAttributes.iterator();
-    }
-
     protected DefaultJavaGeneratorForIpsPart getGenerator(IIpsObjectPartContainer part) {
         return (DefaultJavaGeneratorForIpsPart)generatorsByPart.get(part);
-    }
-
-    protected GenAttribute getGenerator(IPolicyCmptTypeAttribute a) {
-        return (GenAttribute)generatorsByPart.get(a);
-    }
-
-    protected GenMethod getGenerator(IMethod a) {
-        return (GenMethod)generatorsByPart.get(a);
     }
 
     protected GenAssociation getGenerator(IPolicyCmptTypeAssociation a) {
@@ -219,25 +152,25 @@ public abstract class BasePolicyCmptTypeBuilder extends AbstractPcTypeBuilder {
         if (attribute.isProductRelevant() && getProductCmptType() == null) {
             return;
         }
-        GenAttribute generator = (GenAttribute)getGenerator(attribute);
+        GenAttribute generator = ((StandardBuilderSet)getBuilderSet()).getGenerator(getPcType()).getGenerator(attribute);
         if (generator != null) {
-            generator.generate(generatesInterface());
+            generator.generate(generatesInterface(), getIpsProject(), getMainTypeSection());
         }
     }
 
     protected void generateCodeForMethodDefinedInModel(IMethod method, JavaCodeFragmentBuilder methodsBuilder)
             throws CoreException {
 
-        GenMethod generator = (GenMethod)getGenerator(method);
+        GenMethod generator = ((StandardBuilderSet)getBuilderSet()).getGenerator(getPcType()).getGenerator(method);
         if (generator != null) {
-            generator.generate(generatesInterface());
+            generator.generate(generatesInterface(), getIpsProject(), getMainTypeSection());
         }
     }
 
     protected void generateCodeForValidationRule(IValidationRule validationRule) throws CoreException {
-        GenValidationRule generator = (GenValidationRule)getGenerator(validationRule);
+        GenValidationRule generator = ((StandardBuilderSet)getBuilderSet()).getGenerator(getPcType()).getGenerator(validationRule);
         if (generator != null) {
-            generator.generate(generatesInterface());
+            generator.generate(generatesInterface(), getIpsProject(), getMainTypeSection());
         }
     }
 

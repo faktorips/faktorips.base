@@ -27,6 +27,7 @@ import org.faktorips.devtools.core.builder.DefaultJavaSourceFileBuilder;
 import org.faktorips.devtools.core.builder.JavaSourceFileBuilder;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeAttribute;
+import org.faktorips.devtools.stdbuilder.StandardBuilderSet;
 import org.faktorips.devtools.stdbuilder.policycmpttype.PolicyCmptImplClassBuilder;
 import org.faktorips.devtools.stdbuilder.policycmpttype.PolicyCmptInterfaceBuilder;
 import org.faktorips.devtools.stdbuilder.productcmpttype.ProductCmptGenImplClassBuilder;
@@ -206,7 +207,6 @@ public class GenProdAttribute extends AbstractGenAttribute {
      * {@inheritDoc}
      */
     protected void generateConstants(JavaCodeFragmentBuilder builder, boolean generatesInterface) throws CoreException {
-        // TODO Auto-generated method stub
 
     }
 
@@ -358,8 +358,6 @@ public class GenProdAttribute extends AbstractGenAttribute {
 
     /**
      * Generates the source code for the ips object part this is a generator for.
-     * 
-     * @param generatesInterface TODO
      */
     public void generateCodeForPolicyCmptType(boolean generatesInterface)
             throws CoreException {
@@ -370,10 +368,9 @@ public class GenProdAttribute extends AbstractGenAttribute {
             generateGetterSignature(builder);
             builder.openBracket();
             builder.append("return ");
-            // TODO when the GenProductCmptType is introduced the method
-            // getMethodNameGetProductCmptGeneration needs to be moved to it
-            builder.append(getPolicyCmptGenInterfaceBuilder().getMethodNameGetProductCmptGeneration(
-                    getProductCmptType()));
+            // TODO this has to be cleaned up reference to the JavaSourceFileBuilder has to be removed
+            builder.append(((StandardBuilderSet)getJavaSourceFileBuilder().getBuilderSet()).getGenerator(getProductCmptType())
+            .getMethodNameGetProductCmptGeneration());
             builder.append("().");
             builder.append(getGetterMethodName());
             builder.append("();");

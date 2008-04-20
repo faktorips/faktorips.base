@@ -21,14 +21,12 @@ import org.eclipse.core.runtime.CoreException;
 import org.faktorips.codegen.DatatypeHelper;
 import org.faktorips.datatype.Datatype;
 import org.faktorips.datatype.ValueDatatype;
-import org.faktorips.devtools.core.internal.model.ipsobject.IpsObject;
 import org.faktorips.devtools.core.internal.model.pctype.PolicyCmptType;
 import org.faktorips.devtools.core.internal.model.productcmpttype.ProductCmptType;
-import org.faktorips.devtools.core.model.ipsobject.IIpsObject;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
+import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
+import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
 import org.faktorips.devtools.core.model.type.IParameter;
-import org.faktorips.devtools.stdbuilder.policycmpttype.PolicyCmptImplClassBuilder;
-import org.faktorips.devtools.stdbuilder.productcmpttype.ProductCmptGenImplClassBuilder;
 
 /**
  * 
@@ -39,9 +37,8 @@ public class StdBuilderHelper {
     public final static String transformDatatypeToJavaClassName(
             String datatypeName, 
             boolean resolveToPublishedInterface,
-            IIpsProject ipsProject,
-            PolicyCmptImplClassBuilder policyCmptImplBuilder,
-            ProductCmptGenImplClassBuilder productCmptGenImplClassBuilder) throws CoreException {
+            StandardBuilderSet builderSet,
+            IIpsProject ipsProject) throws CoreException {
         
         Datatype datatype = ipsProject.findDatatype(datatypeName);
         if (datatype.isVoid()) {
@@ -56,14 +53,14 @@ public class StdBuilderHelper {
         }
         if (datatype instanceof PolicyCmptType) {
             if (resolveToPublishedInterface) {
-                return policyCmptImplBuilder.getInterfaceBuilder().getQualifiedClassName((IIpsObject)datatype);
+                return builderSet.getGenerator((IPolicyCmptType)datatype).getQualifiedName(true);
             }
-            return policyCmptImplBuilder.getQualifiedClassName((IpsObject)datatype);
+            return builderSet.getGenerator((IPolicyCmptType)datatype).getQualifiedName(false);
         } else if(datatype instanceof ProductCmptType){
             if (resolveToPublishedInterface) {
-                return productCmptGenImplClassBuilder.getInterfaceBuilder().getQualifiedClassName((IpsObject)datatype);
+                return builderSet.getGenerator((IProductCmptType)datatype).getQualifiedName(true);
             }
-            return productCmptGenImplClassBuilder.getQualifiedClassName((IpsObject)datatype);
+            return builderSet.getGenerator((IProductCmptType)datatype).getQualifiedName(false);
         }
         throw new RuntimeException("Can't get Java class name for datatype " + datatypeName);
     }
@@ -71,16 +68,63 @@ public class StdBuilderHelper {
     public final static String[] transformParameterTypesToJavaClassNames(
             IParameter[] params,
             boolean resolveToPublishedInterface,
-            IIpsProject ipsProject,
-            PolicyCmptImplClassBuilder policyCmptImplBuilder,
-            ProductCmptGenImplClassBuilder productCmptGenImplClassBuilder) throws CoreException {
+            StandardBuilderSet builderSet,
+            IIpsProject ipsProject) throws CoreException {
         
         String[] javaClasses = new String[params.length];
         for (int i=0; i<params.length; i++) {
-            javaClasses[i] = transformDatatypeToJavaClassName(params[i].getDatatype(), resolveToPublishedInterface, ipsProject, policyCmptImplBuilder, productCmptGenImplClassBuilder);
+            javaClasses[i] = transformDatatypeToJavaClassName(params[i].getDatatype(), resolveToPublishedInterface, builderSet, ipsProject);
         }
         return javaClasses;
     }
+    
+    
+    
+//    public final static String transformDatatypeToJavaClassName(
+//            String datatypeName, 
+//            boolean resolveToPublishedInterface,
+//            IIpsProject ipsProject,
+//            GenPolicyCmptType genPolicyCmptType,
+//            GenProductCmptType genProductCmptType) throws CoreException {
+//        
+//        Datatype datatype = ipsProject.findDatatype(datatypeName);
+//        if (datatype.isVoid()) {
+//            return "void";
+//        }
+//        if (datatype instanceof ValueDatatype) {
+//            DatatypeHelper helper = ipsProject.findDatatypeHelper(datatypeName);
+//            if (helper!=null) {
+//                return helper.getJavaClassName();
+//            }
+//            throw new RuntimeException("Can't get datatype helper for datatype " + datatypeName);
+//        }
+//        if (datatype instanceof PolicyCmptType) {
+//            if (resolveToPublishedInterface) {
+//                return genPolicyCmptType.getQualifiedName(true)policyCmptImplBuilder.getInterfaceBuilder().getQualifiedClassName((IIpsObject)datatype);
+//            }
+//            return policyCmptImplBuilder.getQualifiedClassName((IpsObject)datatype);
+//        } else if(datatype instanceof ProductCmptType){
+//            if (resolveToPublishedInterface) {
+//                return productCmptGenImplClassBuilder.getInterfaceBuilder().getQualifiedClassName((IpsObject)datatype);
+//            }
+//            return productCmptGenImplClassBuilder.getQualifiedClassName((IpsObject)datatype);
+//        }
+//        throw new RuntimeException("Can't get Java class name for datatype " + datatypeName);
+//    }
+//    
+//    public final static String[] transformParameterTypesToJavaClassNames(
+//            IParameter[] params,
+//            boolean resolveToPublishedInterface,
+//            IIpsProject ipsProject,
+//            PolicyCmptImplClassBuilder policyCmptImplBuilder,
+//            ProductCmptGenImplClassBuilder productCmptGenImplClassBuilder) throws CoreException {
+//        
+//        String[] javaClasses = new String[params.length];
+//        for (int i=0; i<params.length; i++) {
+//            javaClasses[i] = transformDatatypeToJavaClassName(params[i].getDatatype(), resolveToPublishedInterface, ipsProject, policyCmptImplBuilder, productCmptGenImplClassBuilder);
+//        }
+//        return javaClasses;
+//    }
     
     /**
      * This method is supposed to be used for the generation of methods which deal with the range or enum value set for a datatype.

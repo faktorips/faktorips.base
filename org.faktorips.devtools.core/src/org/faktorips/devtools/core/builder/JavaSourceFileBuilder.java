@@ -143,6 +143,7 @@ public abstract class JavaSourceFileBuilder extends AbstractArtefactBuilder {
         initJavaOptions();
     }
 
+    //TODO duplicate code in LocalizedTextHelper
     private void initJavaOptions() {
         try {
             javaOptionsSplitLength = Integer.valueOf(JavaCore

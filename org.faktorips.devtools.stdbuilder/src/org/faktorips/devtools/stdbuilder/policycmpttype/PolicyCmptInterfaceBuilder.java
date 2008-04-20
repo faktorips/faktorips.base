@@ -36,13 +36,10 @@ import org.faktorips.devtools.core.model.pctype.IValidationRule;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeAttribute;
 import org.faktorips.devtools.core.model.type.IMethod;
+import org.faktorips.devtools.stdbuilder.StandardBuilderSet;
 import org.faktorips.devtools.stdbuilder.policycmpttype.association.GenAssociation;
 import org.faktorips.devtools.stdbuilder.policycmpttype.association.GenAssociationTo1;
 import org.faktorips.devtools.stdbuilder.policycmpttype.association.GenAssociationToMany;
-import org.faktorips.devtools.stdbuilder.policycmpttype.attribute.GenAttribute;
-import org.faktorips.devtools.stdbuilder.policycmpttype.attribute.GenChangeableAttribute;
-import org.faktorips.devtools.stdbuilder.policycmpttype.attribute.GenConstantAttribute;
-import org.faktorips.devtools.stdbuilder.policycmpttype.attribute.GenDerivedAttribute;
 import org.faktorips.devtools.stdbuilder.productcmpttype.ProductCmptGenInterfaceBuilder;
 import org.faktorips.devtools.stdbuilder.productcmpttype.ProductCmptInterfaceBuilder;
 import org.faktorips.devtools.stdbuilder.productcmpttype.attribute.GenProdAttribute;
@@ -82,22 +79,6 @@ public class PolicyCmptInterfaceBuilder extends BasePolicyCmptTypeBuilder {
 
     public ProductCmptInterfaceBuilder getProductCmptInterfaceBuilder() {
         return productCmptInterfaceBuilder;
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    protected GenAttribute createGenerator(IPolicyCmptTypeAttribute a, LocalizedStringsSet stringsSet) throws CoreException {
-        if (!a.getModifier().isPublished()) {
-            return null;
-        }
-        if (a.isDerived()) {
-            return new GenDerivedAttribute(a, this, stringsSet);
-        }
-        if (a.isChangeable()) {
-            return new GenChangeableAttribute(a, this, stringsSet);
-        }
-        return new GenConstantAttribute(a, this, stringsSet);
     }
 
     /**
@@ -235,22 +216,12 @@ public class PolicyCmptInterfaceBuilder extends BasePolicyCmptTypeBuilder {
             if (hasValidProductCmptTypeName()) {
                 generateMethodGetProductCmpt(methodsBuilder);
                 generateMethodSetProductCmpt(methodsBuilder);
-                generateMethodGetProductCmptGeneration(getProductCmptType(), methodsBuilder);
+                ((StandardBuilderSet)getBuilderSet()).getGenerator(getProductCmptType())
+                        .generateMethodGetProductCmptGeneration(getIpsProject(), methodsBuilder);
             }
         }
         // TODO remove
         // generateCodeForValidationRules(memberVarsBuilder);
-    }
-    
-    /**
-     * Generates the code for the rules of the ProductCmptType assigned to this builder.
-     */
-    //FIXME remove 
-    protected void generateCodeForValidationRules(JavaCodeFragmentBuilder memberVarsBuilder){
-        IValidationRule[] rules = getPcType().getRules();
-        for (int i = 0; i < rules.length; i++) {
-            generateFieldForMsgCode(rules[i], memberVarsBuilder);
-        }
     }
     
     /**
@@ -326,41 +297,6 @@ public class PolicyCmptInterfaceBuilder extends BasePolicyCmptTypeBuilder {
         return new String[] { StringUtils.uncapitalize(type.getName()), "initPropertiesWithConfiguratedDefaults" };
     }
 
-    /**
-     * Code sample:
-     * <pre>
-     * [Javadoc]
-     * public IMotorProductGen getMotorProductGen();
-     * </pre>
-     */
-    public void generateMethodGetProductCmptGeneration(IProductCmptType type, JavaCodeFragmentBuilder methodsBuilder) throws CoreException {
-        String[] replacements = new String[]{getNameForGenerationConcept(type), type.getName(), getPcType().getName()};
-        appendLocalizedJavaDoc("METHOD_GET_PRODUCTCMPT_GENERATION", replacements, type, methodsBuilder);
-        generateSignatureGetProductCmptGeneration(type, methodsBuilder);
-        methodsBuilder.appendln(";");
-    }
-
-    /**
-     * Code sample:
-     * <pre>
-     * public IMotorProductGen getMotorProductGen()
-     * </pre>
-     */
-    public void generateSignatureGetProductCmptGeneration(IProductCmptType type, JavaCodeFragmentBuilder methodsBuilder) throws CoreException {
-        String genName = productCmptGenInterfaceBuilder.getQualifiedClassName(type);
-        String methodName = getMethodNameGetProductCmptGeneration(type);
-        methodsBuilder.signature(java.lang.reflect.Modifier.PUBLIC, genName, methodName, 
-                EMPTY_STRING_ARRAY, EMPTY_STRING_ARRAY);
-    }
-    
-    /**
-     * Returns the name of the method to access the product component generation, e.g. getMotorProductGen
-     */
-    public String getMethodNameGetProductCmptGeneration(IProductCmptType type) throws CoreException {
-        String[] replacements = new String[]{type.getName(), getAbbreviationForGenerationConcept(type), getNameForGenerationConcept(type)};
-        return getLocalizedText(type, "METHOD_GET_PRODUCTCMPT_GENERATION_NAME", replacements);
-    }
-    
     /**
      * {@inheritDoc}
      */
@@ -798,18 +734,6 @@ public class PolicyCmptInterfaceBuilder extends BasePolicyCmptTypeBuilder {
     
     public String getFieldNameForMsgCode(IValidationRule rule){
         return getLocalizedText(rule, "FIELD_MSG_CODE_NAME", StringUtils.upperCase(rule.getName()));
-    }
-    
-    //FIXME remove
-    private void generateFieldForMsgCode(IValidationRule rule, JavaCodeFragmentBuilder membersBuilder){
-        appendLocalizedJavaDoc("FIELD_MSG_CODE", rule.getName(), rule, membersBuilder);
-        membersBuilder.append("public final static ");
-        membersBuilder.appendClassName(String.class);
-        membersBuilder.append(' ');
-        membersBuilder.append(getFieldNameForMsgCode(rule));
-        membersBuilder.append(" = \"");
-        membersBuilder.append(rule.getMessageCode());
-        membersBuilder.appendln("\";");
     }
     
     protected void generateFieldGetMaxCardinalityFor(IPolicyCmptTypeAssociation association, JavaCodeFragmentBuilder attrBuilder){

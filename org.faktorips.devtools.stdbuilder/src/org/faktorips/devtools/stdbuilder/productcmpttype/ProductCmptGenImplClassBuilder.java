@@ -40,7 +40,9 @@ import org.faktorips.devtools.core.model.tablestructure.ITableStructure;
 import org.faktorips.devtools.core.model.type.IAssociation;
 import org.faktorips.devtools.core.model.type.IMethod;
 import org.faktorips.devtools.core.model.valueset.ValueSetType;
+import org.faktorips.devtools.stdbuilder.StandardBuilderSet;
 import org.faktorips.devtools.stdbuilder.StdBuilderHelper;
+import org.faktorips.devtools.stdbuilder.policycmpttype.GenPolicyCmptType;
 import org.faktorips.devtools.stdbuilder.policycmpttype.attribute.GenAttribute;
 import org.faktorips.devtools.stdbuilder.policycmpttype.attribute.GenChangeableAttribute;
 import org.faktorips.devtools.stdbuilder.productcmpttype.association.GenProdAssociation;
@@ -228,7 +230,8 @@ public class ProductCmptGenImplClassBuilder extends BaseProductCmptTypeBuilder {
                 generateDefineLocalVariablesForXmlExtraction(builder);
                 attributeFound = true;
             }
-            GenAttribute generator = getGenerator(a);
+            GenPolicyCmptType genPolicyCmptType = ((StandardBuilderSet)getBuilderSet()).getGenerator(a.getPolicyCmptType());
+            GenAttribute generator = genPolicyCmptType.getGenerator(a);
             ValueDatatype datatype = a.findDatatype(getIpsProject());
             DatatypeHelper helper = getProductCmptType().getIpsProject().getDatatypeHelper(datatype);
             generateGetElementFromConfigMapAndIfStatement(a.getName(), builder);
@@ -462,16 +465,6 @@ public class ProductCmptGenImplClassBuilder extends BaseProductCmptTypeBuilder {
         return new GenProdAttribute(a, this, stringsSet);
     }
 
-    protected void generateCodeForPolicyCmptTypeAttribute(IPolicyCmptTypeAttribute a,
-            DatatypeHelper datatypeHelper,
-            JavaCodeFragmentBuilder memberVarsBuilder,
-            JavaCodeFragmentBuilder methodsBuilder) throws CoreException {
-        GenChangeableAttribute generator = (GenChangeableAttribute)getGenerator(a);
-        if (generator != null) {
-            generator.generateCodeForProductCmptType(generatesInterface());
-        }
-    }
-
     public JavaCodeFragment generateFragmentCheckIfRepositoryIsModifiable() {
         JavaCodeFragment frag = new JavaCodeFragment();
         frag.appendln("if (" + MethodNames.GET_REPOSITORY + "()!=null && !" + MethodNames.GET_REPOSITORY + "()."
@@ -622,17 +615,6 @@ public class ProductCmptGenImplClassBuilder extends BaseProductCmptTypeBuilder {
             return modifier;
         }
 
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    protected GenAttribute createGenerator(IPolicyCmptTypeAttribute a, LocalizedStringsSet stringsSet)
-            throws CoreException {
-        if (a.isChangeable()) {
-            return new GenChangeableAttribute(a, this, stringsSet);
-        }
-        return null;
     }
 
     protected GenProdAssociation createGenerator(IProductCmptTypeAssociation association, LocalizedStringsSet stringsSet)

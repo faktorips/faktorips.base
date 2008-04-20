@@ -17,10 +17,11 @@ package org.faktorips.devtools.stdbuilder.policycmpttype.attribute;
 import org.eclipse.core.runtime.CoreException;
 import org.faktorips.codegen.JavaCodeFragment;
 import org.faktorips.codegen.JavaCodeFragmentBuilder;
-import org.faktorips.devtools.core.builder.DefaultJavaSourceFileBuilder;
 import org.faktorips.devtools.core.builder.JavaSourceFileBuilder;
+import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.pctype.AttributeType;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAttribute;
+import org.faktorips.devtools.stdbuilder.policycmpttype.GenPolicyCmptType;
 import org.faktorips.util.ArgumentCheck;
 import org.faktorips.util.LocalizedStringsSet;
 
@@ -31,16 +32,16 @@ import org.faktorips.util.LocalizedStringsSet;
  */
 public class GenConstantAttribute extends GenAttribute {
 
-    public GenConstantAttribute(IPolicyCmptTypeAttribute a, DefaultJavaSourceFileBuilder builder,
+    public GenConstantAttribute(GenPolicyCmptType genPolicyCmptType, IPolicyCmptTypeAttribute a,
             LocalizedStringsSet stringsSet) throws CoreException {
-        super(a, builder, stringsSet);
+        super(genPolicyCmptType, a, stringsSet);
         ArgumentCheck.isTrue(a.getAttributeType() == AttributeType.CONSTANT);
     }
 
     /**
      * {@inheritDoc}
      */
-    protected void generateConstants(JavaCodeFragmentBuilder builder, boolean generatesInterface) throws CoreException {
+    protected void generateConstants(JavaCodeFragmentBuilder builder, IIpsProject ipsProject, boolean generatesInterface) throws CoreException {
         if (isPublished() == generatesInterface) {
             generateAttributeNameConstant(builder);
             generateConstant(builder);
@@ -50,7 +51,7 @@ public class GenConstantAttribute extends GenAttribute {
     /**
      * {@inheritDoc}
      */
-    protected void generateMemberVariables(JavaCodeFragmentBuilder builder, boolean generatesInterface)
+    protected void generateMemberVariables(JavaCodeFragmentBuilder builder, IIpsProject ipsProject, boolean generatesInterface)
             throws CoreException {
         // nothing to do
     }
@@ -58,7 +59,7 @@ public class GenConstantAttribute extends GenAttribute {
     /**
      * {@inheritDoc}
      */
-    protected void generateMethods(JavaCodeFragmentBuilder builder, boolean generatesInterface) throws CoreException {
+    protected void generateMethods(JavaCodeFragmentBuilder builder, IIpsProject ipsProject, boolean generatesInterface) throws CoreException {
         // nothing to do
     }
 

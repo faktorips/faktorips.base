@@ -21,7 +21,11 @@ import java.util.Locale;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.SystemUtils;
+import org.eclipse.jdt.core.JavaCore;
+import org.eclipse.jdt.core.formatter.DefaultCodeFormatterConstants;
 import org.faktorips.codegen.JavaCodeFragmentBuilder;
+import org.faktorips.devtools.core.IpsPlugin;
+import org.faktorips.devtools.core.IpsStatus;
 import org.faktorips.util.LocalizedStringsSet;
 
 /**
@@ -35,12 +39,23 @@ public class LocalizedTextHelper {
     private Integer javaOptionsSplitLength;
     private Integer javaOptionsTabSize;
     
+    //TODO remove Integer javaOptionsSplitLength, Integer javaOptionsTabSize 
     public LocalizedTextHelper(LocalizedStringsSet localizedStringsSet, Locale locale, Integer javaOptionsSplitLength, Integer javaOptionsTabSize) {
         super();
         this.localizedStringsSet = localizedStringsSet;
         this.locale = locale;
-        this.javaOptionsSplitLength = javaOptionsSplitLength;
-        this.javaOptionsTabSize = javaOptionsTabSize;
+        initJavaOptions();
+    }
+    
+    //TODO duplicate code in JavaSourceFileBuilder
+    private void initJavaOptions() {
+        try {
+            javaOptionsSplitLength = Integer.valueOf(JavaCore
+                    .getOption(DefaultCodeFormatterConstants.FORMATTER_LINE_SPLIT));
+            javaOptionsTabSize = Integer.valueOf(JavaCore.getOption(DefaultCodeFormatterConstants.FORMATTER_TAB_SIZE));
+        } catch (Exception e) {
+            IpsPlugin.log(new IpsStatus("Unable to apply the java formatter options.", e)); //$NON-NLS-1$
+        }
     }
 
     /**

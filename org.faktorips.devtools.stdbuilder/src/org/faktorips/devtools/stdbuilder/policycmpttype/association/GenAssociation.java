@@ -110,7 +110,6 @@ public abstract class GenAssociation extends DefaultJavaGeneratorForIpsPart {
     /**
      * {@inheritDoc}
      */
-    // TODO go back to protected
     public void generateMethods(JavaCodeFragmentBuilder builder, boolean generatesInterface) throws CoreException {
 
     }

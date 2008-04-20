@@ -22,13 +22,14 @@ import org.faktorips.codegen.JavaCodeFragmentBuilder;
 import org.faktorips.devtools.core.builder.AbstractProductCmptTypeBuilder;
 import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.core.model.ipsproject.IIpsArtefactBuilderSet;
-import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAttribute;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeAssociation;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeAttribute;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeMethod;
 import org.faktorips.devtools.core.model.type.IAssociation;
+import org.faktorips.devtools.stdbuilder.StandardBuilderSet;
+import org.faktorips.devtools.stdbuilder.policycmpttype.GenPolicyCmptType;
 import org.faktorips.devtools.stdbuilder.policycmpttype.attribute.GenAttribute;
 import org.faktorips.devtools.stdbuilder.policycmpttype.attribute.GenChangeableAttribute;
 import org.faktorips.devtools.stdbuilder.productcmpttype.association.GenProdAssociation;
@@ -71,26 +72,8 @@ public abstract class BaseProductCmptTypeBuilder extends AbstractProductCmptType
         genProdAssociations.clear();
         generatorsByPart.clear();
 
-        createGeneratorsForAttributes();
         createGeneratorsForProdAttributes();
         createGeneratorsForProdAssociations();
-    }
-
-    private void createGeneratorsForAttributes() throws CoreException {
-        LocalizedStringsSet stringsSet = new LocalizedStringsSet(GenAttribute.class);
-        IPolicyCmptType type = getPcType();
-        if (type != null) {
-            IPolicyCmptTypeAttribute[] attrs = type.getPolicyCmptTypeAttributes();
-            for (int i = 0; i < attrs.length; i++) {
-                if (attrs[i].isValid()) {
-                    GenAttribute generator = createGenerator(attrs[i], stringsSet);
-                    if (generator != null) {
-                        genAttributes.add(generator);
-                        generatorsByPart.put(attrs[i], generator);
-                    }
-                }
-            }
-        }
     }
 
     private void createGeneratorsForProdAttributes() throws CoreException {
@@ -152,9 +135,6 @@ public abstract class BaseProductCmptTypeBuilder extends AbstractProductCmptType
     protected abstract GenProdAssociation createGenerator(IProductCmptTypeAssociation a, LocalizedStringsSet stringsSet)
             throws CoreException;
 
-    protected abstract GenAttribute createGenerator(IPolicyCmptTypeAttribute a, LocalizedStringsSet localizedStringsSet)
-            throws CoreException;
-
     protected abstract GenProdAttribute createGenerator(IProductCmptTypeAttribute a,
             LocalizedStringsSet localizedStringsSet) throws CoreException;
 
@@ -177,9 +157,10 @@ public abstract class BaseProductCmptTypeBuilder extends AbstractProductCmptType
             JavaCodeFragmentBuilder fieldsBuilder,
             JavaCodeFragmentBuilder methodsBuilder) throws CoreException {
 
-        GenChangeableAttribute generator = (GenChangeableAttribute)getGenerator(a);
+        GenPolicyCmptType genPolicyCmptType = ((StandardBuilderSet)getBuilderSet()).getGenerator(a.getPolicyCmptType());
+        GenChangeableAttribute generator = (GenChangeableAttribute)genPolicyCmptType.getGenerator(a);
         if (generator != null) {
-            generator.generateCodeForProductCmptType(generatesInterface());
+            generator.generateCodeForProductCmptType(generatesInterface(), getIpsProject(), getMainTypeSection());
         }
     }
 
@@ -206,15 +187,6 @@ public abstract class BaseProductCmptTypeBuilder extends AbstractProductCmptType
         }
     }
 
-    /**
-     * Generates the code for a method defined in the model. This includes formula signature
-     * definitions.
-     */
-    // FIXME remove
-    protected final void generateCodeForModelMethod(IProductCmptTypeMethod method,
-            JavaCodeFragmentBuilder fieldsBuilder,
-            JavaCodeFragmentBuilder methodsBuilder) throws CoreException {
-    }
 
     public abstract ProductCmptInterfaceBuilder getProductCmptInterfaceBuilder();
 

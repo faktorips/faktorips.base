@@ -104,6 +104,7 @@ public class IpsBuilder extends IncrementalProjectBuilder {
             if (isFullBuildRequired) {
                 kind = IncrementalProjectBuilder.FULL_BUILD;
             }
+            beforeBuildForBuilderSet(ipsArtefactBuilderSet, buildStatus, kind);
             applyBuildCommand(ipsArtefactBuilderSet, buildStatus, new BeforeBuildProcessCommand(kind, getIpsProject()), monitor);
             monitor.worked(100);
             try{
@@ -118,6 +119,7 @@ public class IpsBuilder extends IncrementalProjectBuilder {
             } finally {
                 monitor.subTask(Messages.IpsBuilder_finishBuild);
                 applyBuildCommand(ipsArtefactBuilderSet, buildStatus, new AfterBuildProcessCommand(kind, getIpsProject()), monitor);
+                afterBuildForBuilderSet(ipsArtefactBuilderSet, buildStatus, kind);
             }
             monitor.worked(100);
             if (buildStatus.getSeverity() == IStatus.OK) {
@@ -181,6 +183,36 @@ public class IpsBuilder extends IncrementalProjectBuilder {
         return false;
     }
 
+    private void beforeBuildForBuilderSet(IIpsArtefactBuilderSet builderSet, MultiStatus buildStatus, int buildKind){
+        // Despite the fact that generating is disabled in the faktor ips
+        // preferences the
+        // validation of the modell class instances and marker updating of the
+        // regarding resource files still takes place
+        if (!IpsPlugin.getDefault().getIpsPreferences().getEnableGenerating()) {
+            return;
+        }
+        try {
+            builderSet.beforeBuildProcess(buildKind);
+        } catch (Exception e) {
+            buildStatus.add(new IpsStatus("Error during beforeBuildProcess() of the builder set: " + builderSet.getId(), e));
+        }
+    }
+
+    private void afterBuildForBuilderSet(IIpsArtefactBuilderSet builderSet, MultiStatus buildStatus, int buildKind){
+        // Despite the fact that generating is disabled in the faktor ips
+        // preferences the
+        // validation of the modell class instances and marker updating of the
+        // regarding resource files still takes place
+        if (!IpsPlugin.getDefault().getIpsPreferences().getEnableGenerating()) {
+            return;
+        }
+        try {
+            builderSet.afterBuildProcess(buildKind);
+        } catch (Exception e) {
+            buildStatus.add(new IpsStatus("Error during afterBuildProcess() of the builder set: " + builderSet.getId(), e));
+        }
+    }
+    
     private void applyBuildCommand(IIpsArtefactBuilderSet currentBuilderSet,
             MultiStatus buildStatus,
             BuildCommand command,
@@ -414,6 +446,7 @@ public class IpsBuilder extends IncrementalProjectBuilder {
                 MultiStatus currentBuildStatus = createInitialMultiStatus();
                 try {
                     if(!ipsProject.equals(getIpsProject())){
+                        beforeBuildForBuilderSet(ipsArtefactBuilderSet, buildStatus, INCREMENTAL_BUILD);
                         applyBuildCommand(ipsArtefactBuilderSet, currentBuildStatus, new BeforeBuildProcessCommand(
                                 INCREMENTAL_BUILD, ipsProject), monitor);
                     }                    
@@ -441,6 +474,7 @@ public class IpsBuilder extends IncrementalProjectBuilder {
                     if(!ipsProject.equals(getIpsProject())){
                         applyBuildCommand(ipsArtefactBuilderSet, currentBuildStatus, new AfterBuildProcessCommand(
                                 INCREMENTAL_BUILD, ipsProject), monitor);
+                        afterBuildForBuilderSet(ipsArtefactBuilderSet, buildStatus, INCREMENTAL_BUILD);
                         if (currentBuildStatus.getSeverity() != MultiStatus.OK) {
                             ipsProject.reinitializeIpsArtefactBuilderSet();
                         }

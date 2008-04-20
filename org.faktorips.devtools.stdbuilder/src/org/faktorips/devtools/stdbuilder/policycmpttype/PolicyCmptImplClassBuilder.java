@@ -40,13 +40,12 @@ import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAttribute;
 import org.faktorips.devtools.core.model.pctype.IValidationRule;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeAttribute;
 import org.faktorips.devtools.core.util.QNameUtil;
+import org.faktorips.devtools.stdbuilder.StandardBuilderSet;
 import org.faktorips.devtools.stdbuilder.policycmpttype.association.GenAssociation;
 import org.faktorips.devtools.stdbuilder.policycmpttype.association.GenAssociationTo1;
 import org.faktorips.devtools.stdbuilder.policycmpttype.association.GenAssociationToMany;
 import org.faktorips.devtools.stdbuilder.policycmpttype.attribute.GenAttribute;
 import org.faktorips.devtools.stdbuilder.policycmpttype.attribute.GenChangeableAttribute;
-import org.faktorips.devtools.stdbuilder.policycmpttype.attribute.GenConstantAttribute;
-import org.faktorips.devtools.stdbuilder.policycmpttype.attribute.GenDerivedAttribute;
 import org.faktorips.devtools.stdbuilder.productcmpttype.ProductCmptGenImplClassBuilder;
 import org.faktorips.devtools.stdbuilder.productcmpttype.ProductCmptGenInterfaceBuilder;
 import org.faktorips.devtools.stdbuilder.productcmpttype.ProductCmptInterfaceBuilder;
@@ -93,19 +92,6 @@ public class PolicyCmptImplClassBuilder extends BasePolicyCmptTypeBuilder {
     
     public ProductCmptGenImplClassBuilder getProductCmptGenImplBuilder() {
         return productCmptGenImplBuilder;
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    protected GenAttribute createGenerator(IPolicyCmptTypeAttribute a, LocalizedStringsSet stringsSet) throws CoreException {
-        if (a.isDerived()) {
-            return new GenDerivedAttribute(a, this, stringsSet);
-        }
-        if (a.isChangeable()) {
-            return new GenChangeableAttribute(a, this, stringsSet);
-        }
-        return new GenConstantAttribute(a, this, stringsSet);
     }
 
     /**
@@ -254,8 +240,6 @@ public class PolicyCmptImplClassBuilder extends BasePolicyCmptTypeBuilder {
             generateCodeForDependantObjectBaseClass(memberVarsBuilder, methodsBuilder);
         }
         generateMethodRemoveChildModelObjectInternal(methodsBuilder);
-        //TODO remove
-        //buildValidation(methodsBuilder);
         generateMethodInitPropertiesFromXml(methodsBuilder);
         generateMethodCreateChildFromXml(methodsBuilder);
         IPolicyCmptTypeAssociation[] associations = getPcType().getPolicyCmptTypeAssociations();
@@ -336,7 +320,8 @@ public class PolicyCmptImplClassBuilder extends BasePolicyCmptTypeBuilder {
             methodsBuilder.appendln("super." + getMethodNameCopyProperties() + "(" + paramName + ");");
         }
 
-        for (Iterator it=getGenAttributes(); it.hasNext(); ) {
+        GenPolicyCmptType genPolicyCmptType = ((StandardBuilderSet)getBuilderSet()).getGenerator(getPcType());
+        for (Iterator it=genPolicyCmptType.getGenAttributes(); it.hasNext(); ) {
             GenAttribute generator = (GenAttribute)it.next();
             if (generator.isMemberVariableRequired()) {
                 String field = generator.getMemberVarName();
@@ -490,7 +475,8 @@ public class PolicyCmptImplClassBuilder extends BasePolicyCmptTypeBuilder {
         
         // code sample for an attribute:
         // delta.checkPropertyChange(IRoot.PROPERTY_STRINGATTRIBUTE, stringAttribute, otherRoot.stringAttribute, options);
-        for (Iterator it=getGenAttributes(); it.hasNext(); ) {
+        GenPolicyCmptType genPolicyCmptType = ((StandardBuilderSet)getBuilderSet()).getGenerator(getPcType());
+        for (Iterator it=genPolicyCmptType.getGenAttributes(); it.hasNext(); ) {
             GenAttribute generator = (GenAttribute)it.next();
             if (generator.needsToBeConsideredInDeltaComputation()) {
                 if (!castForOtherGenerated) {
@@ -639,7 +625,7 @@ public class PolicyCmptImplClassBuilder extends BasePolicyCmptTypeBuilder {
      * for the property/attribute.
      */
     public String getFieldNameForAttribute(IPolicyCmptTypeAttribute a) throws CoreException {
-        return ((GenAttribute)getGenerator(a)).getMemberVarName();
+        return ((StandardBuilderSet)getBuilderSet()).getGenerator(getPcType()).getGenerator(a).getMemberVarName();
     }
     
     protected void generateChangeListenerSupport(JavaCodeFragmentBuilder methodsBuilder, String eventClassName, String eventConstant, String fieldName) {
@@ -1436,14 +1422,15 @@ public class PolicyCmptImplClassBuilder extends BasePolicyCmptTypeBuilder {
             builder.methodEnd();
             return;
         }
-        String method = interfaceBuilder.getMethodNameGetProductCmptGeneration(getProductCmptType());
+        String method = ((StandardBuilderSet)getBuilderSet()).getGenerator(getProductCmptType()).getMethodNameGetProductCmptGeneration();
         builder.appendln("if (" + method + "()==null) {");
         builder.appendln("return;");
         builder.appendln("}");
+        GenPolicyCmptType genPolicyCmptType = ((StandardBuilderSet)getBuilderSet()).getGenerator(getPcType());
         for (Iterator it = selectedValues.iterator(); it.hasNext();) {
             IPolicyCmptTypeAttribute a = (IPolicyCmptTypeAttribute)it.next();
-            GenChangeableAttribute gen = (GenChangeableAttribute)getGenerator(a);
-            gen.generateInitialization(builder);
+            GenChangeableAttribute gen = (GenChangeableAttribute)genPolicyCmptType.getGenerator(a);
+            gen.generateInitialization(builder, getIpsProject());
         }
         builder.methodEnd();
     }
@@ -1488,7 +1475,8 @@ public class PolicyCmptImplClassBuilder extends BasePolicyCmptTypeBuilder {
      */
     protected void generateMethodGetProductCmptGeneration(JavaCodeFragmentBuilder builder) throws CoreException {
         builder.javaDoc(getJavaDocCommentForOverriddenMethod(), ANNOTATION_GENERATED);
-        interfaceBuilder.generateSignatureGetProductCmptGeneration(getProductCmptType(), builder);
+        ((StandardBuilderSet)getBuilderSet()).getGenerator(getProductCmptType())
+                .generateSignatureGetProductCmptGeneration(builder);
         builder.openBracket();
         builder.appendln("if (getProductComponent()==null) {");
         builder.appendln("return null;");
@@ -1543,7 +1531,8 @@ public class PolicyCmptImplClassBuilder extends BasePolicyCmptTypeBuilder {
      */
     private void generateMethodInitPropertiesFromXml(JavaCodeFragmentBuilder builder) throws CoreException {
         boolean first = true;
-        for (Iterator it=getGenAttributes(); it.hasNext(); ) {
+        GenPolicyCmptType genPolicyCmptType = ((StandardBuilderSet)getBuilderSet()).getGenerator(getPcType());
+        for (Iterator it=genPolicyCmptType.getGenAttributes(); it.hasNext(); ) {
             GenAttribute generator = (GenAttribute)it.next();
             if (!generator.isMemberVariableRequired()) {
                 continue;

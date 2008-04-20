@@ -22,11 +22,10 @@ import org.eclipse.core.runtime.CoreException;
 import org.faktorips.codegen.JavaCodeFragment;
 import org.faktorips.codegen.JavaCodeFragmentBuilder;
 import org.faktorips.datatype.Datatype;
-import org.faktorips.devtools.core.builder.DefaultJavaGeneratorForIpsPart;
-import org.faktorips.devtools.core.builder.DefaultJavaSourceFileBuilder;
 import org.faktorips.devtools.core.builder.JavaSourceFileBuilder;
 import org.faktorips.devtools.core.builder.MessageFragment;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPartContainer;
+import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAttribute;
 import org.faktorips.devtools.core.model.pctype.IValidationRule;
@@ -43,17 +42,18 @@ import org.faktorips.util.LocalizedStringsSet;
  * 
  * @author Peter Erzberger
  */
-public class GenValidationRule extends DefaultJavaGeneratorForIpsPart {
+public class GenValidationRule extends GenPolicyCmptTypePart {
 
     
-    public GenValidationRule(IIpsObjectPartContainer part, DefaultJavaSourceFileBuilder builder, LocalizedStringsSet stringsSet) throws CoreException {
-        super(part, builder, stringsSet);
+    public GenValidationRule(GenPolicyCmptType genPolicyCmptType, IIpsObjectPartContainer part,
+            LocalizedStringsSet stringsSet) throws CoreException {
+        super(genPolicyCmptType, part, stringsSet);
     }
 
     /**
      * {@inheritDoc}
      */
-    protected void generateConstants(JavaCodeFragmentBuilder builder, boolean generatesInterface) throws CoreException {
+    protected void generateConstants(JavaCodeFragmentBuilder builder, IIpsProject ipsProject, boolean generatesInterface) throws CoreException {
         if(generatesInterface){
             generateFieldForMsgCode(builder);
         }
@@ -62,29 +62,18 @@ public class GenValidationRule extends DefaultJavaGeneratorForIpsPart {
     /**
      * {@inheritDoc}
      */
-    protected void generateMemberVariables(JavaCodeFragmentBuilder builder, boolean generatesInterface) throws CoreException {
+    protected void generateMemberVariables(JavaCodeFragmentBuilder builder, IIpsProject ipsProject, boolean generatesInterface) throws CoreException {
         //nothing to do
     }
 
     /**
      * {@inheritDoc}
      */
-    protected void generateMethods(JavaCodeFragmentBuilder builder, boolean generatesInterface) throws CoreException {
+    protected void generateMethods(JavaCodeFragmentBuilder builder, IIpsProject ipsProject, boolean generatesInterface) throws CoreException {
         if(!generatesInterface){
             generateMethodExecRule(builder);
-            generateMethodCreateMessageForRule(builder);
+            generateMethodCreateMessageForRule(builder, ipsProject);
         }
-    }
-
-    /**
-     * Returns the policy component implementation class builder.
-     */
-//  TODO needs to be removed when the GenPolicyCmptType is introduced
-    private PolicyCmptImplClassBuilder getImplClassBuilder() {
-        if (getJavaSourceFileBuilder() instanceof PolicyCmptImplClassBuilder) {
-            return (PolicyCmptImplClassBuilder)getJavaSourceFileBuilder();
-        }
-        return null;
     }
 
     /**
@@ -141,7 +130,7 @@ public class GenValidationRule extends DefaultJavaGeneratorForIpsPart {
             IPolicyCmptTypeAttribute attr = ((IPolicyCmptType)rule.getIpsObject()).getPolicyCmptTypeAttribute(rule.getValidatedAttributeAt(0));
             body.append('!');
             
-            GenAttribute genAttribute = getImplClassBuilder().getGenerator(attr);
+            GenAttribute genAttribute = getGenPolicyCmptType().getGenerator(attr);
             if(attr.getValueSet().getValueSetType().equals(ValueSetType.ENUM)){
                 body.append(genAttribute.getMethodNameGetAllowedValuesFor());
             }
@@ -224,7 +213,7 @@ public class GenValidationRule extends DefaultJavaGeneratorForIpsPart {
      *  }
      * </pre>
      */
-    private void generateMethodCreateMessageForRule(JavaCodeFragmentBuilder builder) throws CoreException {
+    private void generateMethodCreateMessageForRule(JavaCodeFragmentBuilder builder, IIpsProject ipsProject) throws CoreException {
         IValidationRule rule = (IValidationRule)getIpsPart();
         String localVarObjectProperties = "invalidObjectProperties";
         String localVarReplacementParams = "replacementParameters";
@@ -250,7 +239,7 @@ public class GenValidationRule extends DefaultJavaGeneratorForIpsPart {
         JavaCodeFragment body = new JavaCodeFragment();
         String[] validatedAttributes = rule.getValidatedAttributes();
         if(!rule.isValidatedAttrSpecifiedInSrc()){
-            body.append(generateCodeForInvalidObjectProperties(localVarObjectProperties, validatedAttributes));
+            body.append(generateCodeForInvalidObjectProperties(localVarObjectProperties, validatedAttributes, ipsProject));
         }
         // code for replacement parameters
         if (msgFrag.hasParameters()) {
@@ -282,7 +271,7 @@ public class GenValidationRule extends DefaultJavaGeneratorForIpsPart {
                 getMethodNameCreateMessageForRule(rule), methodParamNames, methodParamTypes, body, javaDoc, JavaSourceFileBuilder.ANNOTATION_GENERATED);
     }
     
-    private JavaCodeFragment generateCodeForInvalidObjectProperties(String pObjectProperties, String[] validatedAttributes) throws CoreException {
+    private JavaCodeFragment generateCodeForInvalidObjectProperties(String pObjectProperties, String[] validatedAttributes, IIpsProject ipsProject) throws CoreException {
         JavaCodeFragment code = new JavaCodeFragment();
         if(validatedAttributes.length > 0){
             code.appendClassName(ObjectProperty.class);
@@ -292,8 +281,8 @@ public class GenValidationRule extends DefaultJavaGeneratorForIpsPart {
             code.appendClassName(ObjectProperty.class);
             code.append("[]{");
             for (int j = 0; j < validatedAttributes.length; j++) {
-                IPolicyCmptTypeAttribute attr = ((IPolicyCmptType)getIpsPart().getIpsObject()).findPolicyCmptTypeAttribute(validatedAttributes[j], getIpsProject());
-                String propertyConstName = getImplClassBuilder().getGenerator(attr).getStaticConstantPropertyName();
+                IPolicyCmptTypeAttribute attr = ((IPolicyCmptType)getIpsPart().getIpsObject()).findPolicyCmptTypeAttribute(validatedAttributes[j], ipsProject);
+                String propertyConstName = getGenPolicyCmptType().getGenerator(attr).getStaticConstantPropertyName();
                 code.append(" new ");
                 code.appendClassName(ObjectProperty.class);
                 code.append("(this, ");

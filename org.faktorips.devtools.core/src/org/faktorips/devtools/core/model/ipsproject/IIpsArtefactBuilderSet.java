@@ -227,4 +227,26 @@ public interface IIpsArtefactBuilderSet extends IJavaPackageStructure {
      * Returns the IpsProject for which this builder set is registered.
      */
     public IIpsProject getIpsProject();
+    
+    /**
+     * This method is called when the build process starts for this builder set. This method is called before the 
+     * <code>beforeBuildProcess(IIpsProject, int)</code> method of the registered IpsArtefactBuilders will be called.
+     * 
+     * @param buildKind One of the build kinds defined in <code>org.eclipse.core.resources.IncrementalProjectBuilder</code>
+     * 
+     * @throws CoreException implementations can throw or delegate rising CoreExceptions. Throwing a
+     *             CoreException or RuntimeException will interrupt the build cycle
+     */
+    public void beforeBuildProcess(int buildKind) throws CoreException;
+
+    /**
+     * This method is called when the build process is finished for this builder set. This method is called after the 
+     * <code>afterBuildProcess(IIpsProject, int)</code> method on the registered IpsArtefactBuilders was called.
+     * 
+     * @param buildKind One of the build kinds defined in <code>org.eclipse.core.resources.IncrementalProjectBuilder</code>
+     * 
+     * @throws CoreException implementations can throw or delegate rising CoreExceptions.
+     */
+    public void afterBuildProcess(int buildKind) throws CoreException;
+
 }

@@ -37,12 +37,9 @@ import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeMethod;
 import org.faktorips.devtools.core.model.productcmpttype.ITableStructureUsage;
 import org.faktorips.devtools.core.model.type.IMethod;
 import org.faktorips.devtools.core.model.type.IParameter;
+import org.faktorips.devtools.stdbuilder.StandardBuilderSet;
 import org.faktorips.devtools.stdbuilder.StdBuilderHelper;
 import org.faktorips.devtools.stdbuilder.policycmpttype.PolicyCmptImplClassBuilder;
-import org.faktorips.devtools.stdbuilder.policycmpttype.attribute.GenAttribute;
-import org.faktorips.devtools.stdbuilder.policycmpttype.attribute.GenChangeableAttribute;
-import org.faktorips.devtools.stdbuilder.policycmpttype.attribute.GenConstantAttribute;
-import org.faktorips.devtools.stdbuilder.policycmpttype.attribute.GenDerivedAttribute;
 import org.faktorips.devtools.stdbuilder.productcmpttype.association.GenProdAssociation;
 import org.faktorips.devtools.stdbuilder.productcmpttype.association.GenProdAssociationTo1;
 import org.faktorips.devtools.stdbuilder.productcmpttype.association.GenProdAssociationToMany;
@@ -86,22 +83,6 @@ public class ProductCmptGenInterfaceBuilder extends BaseProductCmptTypeBuilder {
      */
     protected GenProdAttribute createGenerator(IProductCmptTypeAttribute a, LocalizedStringsSet stringsSet) throws CoreException {
         return new GenProdAttribute(a, this, stringsSet);
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    protected GenAttribute createGenerator(IPolicyCmptTypeAttribute a, LocalizedStringsSet stringsSet) throws CoreException {
-        if (!a.getModifier().isPublished()) {
-            return null;
-        }
-        if (a.isDerived()) {
-            return new GenDerivedAttribute(a, this, stringsSet);
-        }
-        if (a.isChangeable()) {
-            return new GenChangeableAttribute(a, this, stringsSet);
-        }
-        return new GenConstantAttribute(a, this, stringsSet);
     }
 
     /**
@@ -151,22 +132,17 @@ public class ProductCmptGenInterfaceBuilder extends BaseProductCmptTypeBuilder {
     /**
      * {@inheritDoc}
      */
-    protected void generateCodeForPolicyCmptTypeAttribute(IPolicyCmptTypeAttribute a, DatatypeHelper datatypeHelper, JavaCodeFragmentBuilder memberVarsBuilder, JavaCodeFragmentBuilder methodsBuilder) throws CoreException {
-        GenChangeableAttribute generator = (GenChangeableAttribute)getGenerator(a);
-        if (generator != null) {
-            generator.generateCodeForProductCmptType(generatesInterface());
-        }
-    }
-
-    
-
-    
-
-    /**
-     * {@inheritDoc}
-     */
     protected void generateCodeForMethod(IPolicyCmptTypeAttribute a, DatatypeHelper datatypeHelper, JavaCodeFragmentBuilder memberVarsBuilder, JavaCodeFragmentBuilder methodsBuilder) throws CoreException {
         // nothing to do, computation methods are not published.
+    }
+    
+    protected void generateCodeForPolicyCmptTypeAttribute(IPolicyCmptTypeAttribute a,
+            DatatypeHelper datatypeHelper,
+            JavaCodeFragmentBuilder fieldsBuilder,
+            JavaCodeFragmentBuilder methodsBuilder) throws CoreException {
+        if(a.getModifier().equals(org.faktorips.devtools.core.model.ipsobject.Modifier.PUBLISHED)){
+            super.generateCodeForPolicyCmptTypeAttribute(a, datatypeHelper, fieldsBuilder, methodsBuilder);
+        }
     }
     
     /**
@@ -253,7 +229,8 @@ public class ProductCmptGenInterfaceBuilder extends BaseProductCmptTypeBuilder {
         IParameter[] parameters = method.getParameters();
         int modifier = method.getJavaModifier() | (isAbstract ? Modifier.ABSTRACT : 0);
         boolean resolveTypesToPublishedInterface = method.getModifier().isPublished();
-        String returnClass = StdBuilderHelper.transformDatatypeToJavaClassName(method.getDatatype(), resolveTypesToPublishedInterface, method.getIpsProject(), policyCmptTypeImplBuilder, productCmptGenImplClassBuilder);
+        String returnClass = StdBuilderHelper.transformDatatypeToJavaClassName(method.getDatatype(),
+                resolveTypesToPublishedInterface, (StandardBuilderSet)getBuilderSet(), method.getIpsProject());
 
         String[] parameterNames = null;
         if (formulaTest) {
@@ -267,8 +244,8 @@ public class ProductCmptGenInterfaceBuilder extends BaseProductCmptTypeBuilder {
             parameters = (IParameter[]) parametersWithoutTypes.toArray(new IParameter[parametersWithoutTypes.size()]);
         } 
         parameterNames = BuilderHelper.extractParameterNames(parameters);
-        String[] parameterTypes = StdBuilderHelper.transformParameterTypesToJavaClassNames(parameters, resolveTypesToPublishedInterface, method.getIpsProject(),
-                        policyCmptTypeImplBuilder, productCmptGenImplClassBuilder);
+        String[] parameterTypes = StdBuilderHelper.transformParameterTypesToJavaClassNames(parameters,
+                resolveTypesToPublishedInterface, (StandardBuilderSet)getBuilderSet(), method.getIpsProject());
         String[] parameterInSignatur = parameterNames;
         String[] parameterTypesInSignatur = parameterTypes;
         if (formulaTest){
