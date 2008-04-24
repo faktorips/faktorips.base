@@ -43,6 +43,7 @@ import org.faktorips.devtools.core.model.tablestructure.ITableStructure;
 import org.faktorips.devtools.core.model.type.IAttribute;
 import org.faktorips.devtools.core.model.type.IParameter;
 import org.faktorips.devtools.core.model.type.IType;
+import org.faktorips.devtools.core.ui.controller.fields.EnumTypeTargetJavaVersion;
 import org.faktorips.devtools.stdbuilder.enums.EnumClassesBuilder;
 import org.faktorips.devtools.stdbuilder.enums.EnumTypeInterfaceBuilder;
 import org.faktorips.devtools.stdbuilder.formulatest.FormulaTestBuilder;
@@ -98,6 +99,23 @@ public class StandardBuilderSet extends DefaultBuilderSet {
      */
     public final static String CONFIG_PROPERTY_GENERATE_CHANGELISTENER = "generateChangeListener";
 
+    /**
+     * Configuration property that declares for which java version sourcecode will be generated.
+     */
+    public final static String CONFIG_PROPERTY_TARGET_JAVA_VERSION = "targetJavaVersion";
+
+    /**
+     * Configuration property that enanbles/disables the use of typesafe collections, if supported
+     * by the target java version.
+     */
+    public final static String CONFIG_PROPERTY_USE_TYPESAFE_COLLECTIONS = "useTypesafeCollections";
+
+    /**
+     * Configuration property that enanbles/disables the use of enums, if supported by the target
+     * java version.
+     */
+    public final static String CONFIG_PROPERTY_USE_ENUMS = "useEnums";
+
     private IIpsArtefactBuilder[] builders;
     private TableImplBuilder tableImplBuilder;
     private TableRowBuilder tableRowBuilder;
@@ -108,6 +126,12 @@ public class StandardBuilderSet extends DefaultBuilderSet {
     private Map ipsObjectTypeGenerators = new HashMap(1000);
 
     private boolean generateChangeListener;
+
+    private EnumTypeTargetJavaVersion targetJavaVersion;
+
+    private boolean useEnums;
+
+    private boolean useTypesafeCollections;
     
     
     public StandardBuilderSet() {
@@ -320,7 +344,12 @@ public class StandardBuilderSet extends DefaultBuilderSet {
         generateChangeListener = config.getBooleanPropertyValue(StandardBuilderSet.CONFIG_PROPERTY_GENERATE_CHANGELISTENER, false);
         boolean generateDeltaSupport = config.getBooleanPropertyValue(StandardBuilderSet.CONFIG_PROPERTY_GENERATE_DELTA_SUPPORT, false);
         boolean generateCopySupport = config.getBooleanPropertyValue(StandardBuilderSet.CONFIG_PROPERTY_GENERATE_COPY_SUPPORT, false);
-        
+        targetJavaVersion = EnumTypeTargetJavaVersion.valueOf(config
+                .getPropertyValue(StandardBuilderSet.CONFIG_PROPERTY_TARGET_JAVA_VERSION));
+        useEnums = targetJavaVersion.isAtLeast(EnumTypeTargetJavaVersion.JAVA_5)
+                && config.getBooleanPropertyValue(StandardBuilderSet.CONFIG_PROPERTY_USE_ENUMS, false);
+        useTypesafeCollections = targetJavaVersion.isAtLeast(EnumTypeTargetJavaVersion.JAVA_5)
+                && config.getBooleanPropertyValue(StandardBuilderSet.CONFIG_PROPERTY_USE_TYPESAFE_COLLECTIONS, false);
         // create policy component type builders
         PolicyCmptImplClassBuilder policyCmptImplClassBuilder = new PolicyCmptImplClassBuilder(
                 this, KIND_POLICY_CMPT_IMPL, generateChangeListener);
@@ -465,5 +494,17 @@ public class StandardBuilderSet extends DefaultBuilderSet {
 
     public boolean isGenerateChangeListener() {
         return generateChangeListener;
+    }
+
+    public EnumTypeTargetJavaVersion getTargetJavaVersion() {
+        return targetJavaVersion;
+    }
+
+    public boolean isUseEnums() {
+        return useEnums;
+    }
+
+    public boolean isUseTypesafeCollections() {
+        return useTypesafeCollections;
     }
 }

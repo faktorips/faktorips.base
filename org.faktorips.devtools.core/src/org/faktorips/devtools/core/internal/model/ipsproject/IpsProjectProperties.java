@@ -831,6 +831,21 @@ public class IpsProjectProperties implements IIpsProjectProperties {
         + "         <Property name=\"generateDeltaSupport\" value=\"true\"/>" + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$ 
         + "     </IpsArtefactBuilderSetConfig>" + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$
         + " " + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$
+        + "To enable generation of code for java 5 or above, the target java version has to be set. Possible Values are \"1.4\" and \"5.0\":" + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$
+        + "     <IpsArtefactBuilderSetConfig>" + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$
+        + "         <Property name=\"targetJavaVersion\" value=\"5.0\"/>" + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$ 
+        + "     </IpsArtefactBuilderSetConfig>" + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$
+        + " " + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$
+        + "When the target java version is 5.0 or above, to enable the use of java enums for enum table contents, use:" + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$
+        + "     <IpsArtefactBuilderSetConfig>" + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$
+        + "         <Property name=\"useEnums\" value=\"true\"/>" + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$ 
+        + "     </IpsArtefactBuilderSetConfig>" + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$
+        + " " + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$
+        + "When the target java version is 5.0 or above, to enable the use of typesafe collections, use:" + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$
+        + "     <IpsArtefactBuilderSetConfig>" + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$
+        + "         <Property name=\"useTypesafeCollections\" value=\"true\"/>" + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$ 
+        + "     </IpsArtefactBuilderSetConfig>" + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$
+        + " " + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$
         + "</IpsArtefactBuilderSet>"  //$NON-NLS-1$
         + SystemUtils.LINE_SEPARATOR;
         createDescriptionComment(s, parentEl);
