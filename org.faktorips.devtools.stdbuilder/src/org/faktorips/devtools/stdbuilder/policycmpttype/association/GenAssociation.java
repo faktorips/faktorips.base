@@ -461,12 +461,23 @@ public abstract class GenAssociation extends GenPolicyCmptTypePart {
      * <pre>
      * public ICoverage[] getCoverages()
      * </pre>
+     * 
+     * Java 5 Code sample:
+     * <pre>
+     * public List<ICoverage> getCoverages()
+     * </pre>
      */
     public void generateSignatureGetAllRefObjects(
             JavaCodeFragmentBuilder methodsBuilder) throws CoreException {
         
         String methodName = getMethodNameGetAllRefObjects();
-        String returnType = getQualifiedClassName((IPolicyCmptType)association.findTarget(getIpsProject()), true) + "[]";
+        String returnType;
+        if(isUseTypesafeCollections()){
+            returnType = "List<"+getQualifiedClassName((IPolicyCmptType)association.findTarget(getIpsProject()), true) + ">";
+        }else{
+            returnType = getQualifiedClassName((IPolicyCmptType)association.findTarget(getIpsProject()), true) + "[]";
+        }
+        
         methodsBuilder.signature(java.lang.reflect.Modifier.PUBLIC, returnType, methodName, new String[]{}, new String[]{});
     }
 

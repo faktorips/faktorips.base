@@ -54,4 +54,8 @@ public abstract class GenProductCmptTypePart extends DefaultJavaGeneratorForIpsP
     public String getUnqualifiedClassName(IProductCmptType target, boolean forInterface) throws CoreException {
         return genProductCmptType.getBuilderSet().getGenerator(target).getUnqualifiedClassName(forInterface);
     }
+
+    protected boolean isUseTypesafeCollections() {
+        return getGenProductCmptType().getBuilderSet().isUseTypesafeCollections();
+    }
 }

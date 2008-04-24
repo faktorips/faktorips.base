@@ -54,4 +54,8 @@ public abstract class GenPolicyCmptTypePart extends DefaultJavaGeneratorForIpsPa
     public String getUnqualifiedClassName(IPolicyCmptType target, boolean forInterface) throws CoreException {
         return genPolicyCmptType.getBuilderSet().getGenerator(target).getUnqualifiedClassName(forInterface);
     }
+
+    protected boolean isUseTypesafeCollections() {
+        return getGenPolicyCmptType().getBuilderSet().isUseTypesafeCollections();
+    }
 }

@@ -15,6 +15,7 @@
 package org.faktorips.devtools.stdbuilder.productcmpttype.association;
 
 import java.lang.reflect.Modifier;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
@@ -143,19 +144,42 @@ public class GenProdAssociationToMany extends GenProdAssociation {
         String fieldName = getFieldNameToManyAssociation();
         String targetClass = getQualifiedInterfaceClassNameForTarget();
         methodsBuilder.openBracket();
-        methodsBuilder.appendClassName(targetClass);
-        methodsBuilder.append("[] result = new ");
-        methodsBuilder.appendClassName(targetClass);
-        methodsBuilder.append("[");
-        methodsBuilder.append(fieldName);
-        methodsBuilder.appendln(".length];");
+        if (isUseTypesafeCollections()) {
+            methodsBuilder.appendClassName(List.class.getName());
+            methodsBuilder.append("<");
+            methodsBuilder.appendClassName(targetClass);
+            methodsBuilder.append("> result = new ");
+            methodsBuilder.appendClassName(ArrayList.class.getName());
+            methodsBuilder.append("<");
+            methodsBuilder.appendClassName(targetClass);
+            methodsBuilder.append(">(");
+            methodsBuilder.append(fieldName);
+            methodsBuilder.appendln(".length);");
+        }else{
+            methodsBuilder.appendClassName(targetClass);
+            methodsBuilder.append("[] result = new ");
+            methodsBuilder.appendClassName(targetClass);
+            methodsBuilder.append("[");
+            methodsBuilder.append(fieldName);
+            methodsBuilder.appendln(".length];");
+        }
 
-        methodsBuilder.appendln("for (int i=0; i<result.length; i++) {");
-        methodsBuilder.appendln("result[i] = (");
+        methodsBuilder.append("for (int i=0; i<");
+        methodsBuilder.append(fieldName);
+        methodsBuilder.appendln(".length; i++) {");
+        if (isUseTypesafeCollections()) {
+            methodsBuilder.appendln("result.add((");
+        }else{
+            methodsBuilder.appendln("result[i] = (");
+        }
         methodsBuilder.appendClassName(targetClass);
         methodsBuilder.append(")getRepository()." + MethodNames.GET_EXISTING_PRODUCT_COMPONENT + "(");
         methodsBuilder.append(fieldName);
-        methodsBuilder.appendln("[i]);");
+        if (isUseTypesafeCollections()) {
+            methodsBuilder.appendln("[i]));");
+        }else{
+            methodsBuilder.appendln("[i]);");
+        }
         methodsBuilder.appendln("}");
         methodsBuilder.appendln("return result;");
 
