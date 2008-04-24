@@ -25,11 +25,11 @@ import org.faktorips.util.StringUtil;
  * 
  * @author Peter Erzberger
  */
-public abstract class GenType extends JavaGeneratorForIpsPart2{
+public abstract class GenType extends JavaGeneratorForIpsPart2 {
 
     private StandardBuilderSet builderSet;
     private IType type;
-    
+
     /**
      * @param policyCmptType
      * @param builder
@@ -43,31 +43,58 @@ public abstract class GenType extends JavaGeneratorForIpsPart2{
         this.builderSet = builderSet;
     }
 
-    public IType getType(){
+    public IType getType() {
         return type;
     }
-    
-    public StandardBuilderSet getBuilderSet(){
+
+    public StandardBuilderSet getBuilderSet() {
         return builderSet;
     }
 
     public String getPackageName(boolean forInterface) throws CoreException {
-        if(forInterface){
-            return builderSet.getPackageName(type.getIpsSrcFile());
+        return getPackageName(type, builderSet, forInterface);
+    }
+
+    private static String getPackageName(IType type, StandardBuilderSet builderSet, boolean forInterface)
+            throws CoreException {
+        if (type != null) {
+            if (forInterface) {
+                return builderSet.getPackageName(type.getIpsSrcFile());
+            }
+            return builderSet.getInternalPackageName(type.getIpsSrcFile());
         }
-        return builderSet.getInternalPackageName(type.getIpsSrcFile());
+        return null;
     }
 
     public String getQualifiedName(boolean forInterface) throws CoreException {
-        return getQualifiedName(getPackageName(forInterface), forInterface);
+        return getQualifiedName(type, builderSet, getPackageName(forInterface), forInterface);
     }
 
-    private String getQualifiedName(String packageName, boolean forInterface) throws CoreException {
+    public static String getQualifiedName(IType type, StandardBuilderSet builderSet, boolean forInterface)
+            throws CoreException {
+        if (type != null) {
+            return getQualifiedName(type, builderSet, getPackageName(type, builderSet, forInterface), forInterface);
+        }
+        return null;
+    }
+
+    private static String getQualifiedName(IType type,
+            StandardBuilderSet builderSet,
+            String packageName,
+            boolean forInterface) {
         StringBuffer buf = new StringBuffer();
         buf.append(packageName);
         buf.append('.');
-        buf.append(getUnqualifiedClassName(forInterface));
+        buf.append(getUnqualifiedClassName(type, builderSet, forInterface));
         return buf.toString();
+    }
+
+    private static String getUnqualifiedClassName(IType type, StandardBuilderSet builderSet, boolean forInterface) {
+        if (forInterface) {
+            return builderSet.getJavaNamingConvention().getPublishedInterfaceName(type.getName());
+
+        }
+        return StringUtil.getFilenameWithoutExtension(type.getName());
     }
 
     /**
@@ -79,31 +106,27 @@ public abstract class GenType extends JavaGeneratorForIpsPart2{
      * @throws CoreException is delegated from calls to other methods
      */
     public String getUnqualifiedClassName(boolean forInterface) throws CoreException {
-        if(forInterface){
-            return getBuilderSet().getJavaNamingConvention().getPublishedInterfaceName(type.getName());
-            
-        }
-        return StringUtil.getFilenameWithoutExtension(type.getName());
+        return getUnqualifiedClassName(type, builderSet, forInterface);
     }
 
     /**
      * Returns the abbreviation for the generation (changes over time) concept.
      * 
-     * @param element An ips element needed to access the ipsproject where the neccessary configuration
-     * information is stored.
+     * @param element An ips element needed to access the ipsproject where the neccessary
+     *            configuration information is stored.
      * 
      * @see org.faktorips.devtools.core.model.ipsproject.IChangesOverTimeNamingConvention
      */
-    //TODO duplicate method in AbstractTypeBuilder
+    // TODO duplicate method in AbstractTypeBuilder
     public String getAbbreviationForGenerationConcept() {
-        return getChangesInTimeNamingConvention().
-            getGenerationConceptNameAbbreviation(getLanguageUsedInGeneratedSourceCode());
+        return getChangesInTimeNamingConvention().getGenerationConceptNameAbbreviation(
+                getLanguageUsedInGeneratedSourceCode());
     }
 
     /**
      * Returns the naming convention for product changes over time.
      */
-    //TODO duplicate method in JavaSourceFileBuilder
+    // TODO duplicate method in JavaSourceFileBuilder
     public IChangesOverTimeNamingConvention getChangesInTimeNamingConvention() {
         return type.getIpsProject().getChangesInTimeNamingConventionForGeneratedCode();
     }
@@ -111,7 +134,7 @@ public abstract class GenType extends JavaGeneratorForIpsPart2{
     /**
      * Returns the language in that variables, methods are named and and Java docs are written in.
      */
-    //TODO duplicate method in JavaSourceFileBuilder
+    // TODO duplicate method in JavaSourceFileBuilder
     public Locale getLanguageUsedInGeneratedSourceCode() {
         return type.getIpsProject().getGeneratedJavaSourcecodeDocumentationLanguage();
     }
@@ -119,15 +142,15 @@ public abstract class GenType extends JavaGeneratorForIpsPart2{
     /**
      * Returns the name (singular form) for the generation (changes over time) concept.
      * 
-     * @param element An ips element needed to access the ipsproject where the neccessary configuration
-     * information is stored.
+     * @param element An ips element needed to access the ipsproject where the neccessary
+     *            configuration information is stored.
      * 
      * @see org.faktorips.devtools.core.model.ipsproject.IChangesOverTimeNamingConvention
      */
-    //TODO duplicate method in AbstractPcTypeBuilder
+    // TODO duplicate method in AbstractPcTypeBuilder
     public String getNameForGenerationConcept() {
-        return getChangesInTimeNamingConvention().
-            getGenerationConceptNameSingular(getLanguageUsedInGeneratedSourceCode());
+        return getChangesInTimeNamingConvention().getGenerationConceptNameSingular(
+                getLanguageUsedInGeneratedSourceCode());
     }
 
 }

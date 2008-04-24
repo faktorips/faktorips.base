@@ -14,15 +14,17 @@
 
 package org.faktorips.devtools.stdbuilder.policycmpttype.association;
 
+import java.util.List;
+
 import org.apache.commons.lang.StringUtils;
 import org.eclipse.core.runtime.CoreException;
 import org.faktorips.codegen.JavaCodeFragment;
 import org.faktorips.codegen.JavaCodeFragmentBuilder;
 import org.faktorips.devtools.core.builder.JavaSourceFileBuilder;
+import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAssociation;
 import org.faktorips.devtools.core.model.type.IAssociation;
-import org.faktorips.devtools.stdbuilder.policycmpttype.BasePolicyCmptTypeBuilder;
-import org.faktorips.devtools.stdbuilder.policycmpttype.PolicyCmptImplClassBuilder;
+import org.faktorips.devtools.stdbuilder.policycmpttype.GenPolicyCmptType;
 import org.faktorips.runtime.internal.MethodNames;
 import org.faktorips.util.LocalizedStringsSet;
 
@@ -32,9 +34,9 @@ import org.faktorips.util.LocalizedStringsSet;
  */
 public class GenAssociationTo1 extends GenAssociation {
 
-    public GenAssociationTo1(IPolicyCmptTypeAssociation association, BasePolicyCmptTypeBuilder builder,
+    public GenAssociationTo1(GenPolicyCmptType genPolicyCmptType, IPolicyCmptTypeAssociation association,
             LocalizedStringsSet stringsSet) throws CoreException {
-        super(association, builder, stringsSet);
+        super(genPolicyCmptType, association, stringsSet);
     }
 
     /**
@@ -46,6 +48,7 @@ public class GenAssociationTo1 extends GenAssociation {
 
     /**
      * Code sample:
+     * 
      * <pre>
      * public void setCoverage(ICoverage objectToTest)
      * </pre>
@@ -53,9 +56,10 @@ public class GenAssociationTo1 extends GenAssociation {
     public void generateSignatureSetObject(JavaCodeFragmentBuilder methodsBuilder) throws CoreException {
         String methodName = getMethodNameSetObject();
         String paramName = getParamNameForSetObject();
-        methodsBuilder.signature(java.lang.reflect.Modifier.PUBLIC, "void", methodName, new String[]{paramName}, new String[]{targetInterfaceName});
+        methodsBuilder.signature(java.lang.reflect.Modifier.PUBLIC, "void", methodName, new String[] { paramName },
+                new String[] { targetInterfaceName });
     }
-    
+
     /**
      * {@inheritDoc}
      */
@@ -64,90 +68,94 @@ public class GenAssociationTo1 extends GenAssociation {
     }
 
     /**
-     * Returns the name of the method setting the referenced object.
-     * e.g. setCoverage(ICoverage newObject)
+     * Returns the name of the method setting the referenced object. e.g. setCoverage(ICoverage
+     * newObject)
      */
     public String getMethodNameSetObject() {
         return getLocalizedText("METHOD_SET_OBJECT_NAME", association.getTargetRoleSingular());
     }
-    
+
     /**
-     * Returns the name of the method setting the referenced object.
-     * e.g. setCoverage(ICoverage newObject)
+     * Returns the name of the method setting the referenced object. e.g. setCoverage(ICoverage
+     * newObject)
      */
     public String getMethodNameSetObject(IAssociation association) {
         return getLocalizedText("METHOD_SET_OBJECT_NAME", association.getTargetRoleSingular());
     }
 
     /**
-     * Returns the name of the paramter for the method that tests if an object is references in a multi-value association,
-     * e.g. objectToTest
+     * Returns the name of the paramter for the method that tests if an object is references in a
+     * multi-value association, e.g. objectToTest
      */
     public String getParamNameForSetObject() {
         return getLocalizedText("PARAM_OBJECT_TO_SET_NAME", association.getTargetRoleSingular());
     }
-    
+
     /**
-     * Returns the name of the method removing an object from a multi-value association,
-     * e.g. removeCoverage()
+     * Returns the name of the method removing an object from a multi-value association, e.g.
+     * removeCoverage()
      */
     public String getMethodNameRemoveObject() {
         return getLocalizedText("METHOD_REMOVE_OBJECT_NAME", association.getTargetRoleSingular());
     }
-    
+
     /**
-     * Returns the name of the method removing an object from a multi-value association,
-     * e.g. removeCoverage()
+     * Returns the name of the method removing an object from a multi-value association, e.g.
+     * removeCoverage()
      */
     public String getMethodNameRemoveObject(IAssociation association) {
         return getLocalizedText("METHOD_REMOVE_OBJECT_NAME", association.getTargetRoleSingular());
     }
 
-
     /**
      * Code sample:
+     * 
      * <pre>
      * public ICoverage getCoverage()
      * </pre>
      */
     public void generateSignatureGetRefObject(JavaCodeFragmentBuilder builder) throws CoreException {
         String methodName = getMethodNameGetRefObject();
-        builder.signature(java.lang.reflect.Modifier.PUBLIC, targetInterfaceName, methodName, new String[]{}, new String[]{});
+        builder.signature(java.lang.reflect.Modifier.PUBLIC, targetInterfaceName, methodName, new String[] {},
+                new String[] {});
     }
-    
+
     /**
-     * Returns the name of the method returning the single referenced object.
-     * e.g. getCoverage()
+     * Returns the name of the method returning the single referenced object. e.g. getCoverage()
      */
     public String getMethodNameGetRefObject() {
         return getLocalizedText("METHOD_GET_REF_OBJECT_NAME", association.getTargetRoleSingular());
     }
 
     /**
-     * Returns the name of the method returning the single referenced object.
-     * e.g. getCoverage()
+     * Returns the name of the method returning the single referenced object. e.g. getCoverage()
      */
     public String getMethodNameGetRefObject(IPolicyCmptTypeAssociation association) {
         return getLocalizedText("METHOD_GET_REF_OBJECT_NAME", association.getTargetRoleSingular());
-    }
-    
-    /**
-     * {@inheritDoc}
-     */
-    protected void generateMemberVariables(JavaCodeFragmentBuilder builder, boolean generatesInterface) throws CoreException {
-        if (!isDerivedUnion() && !isCompositionDetailToMaster()) {
-            String comment = getLocalizedText("FIELD_RELATION_JAVADOC", association.getName());
-            builder.javaDoc(comment, JavaSourceFileBuilder.ANNOTATION_GENERATED);
-            builder.varDeclaration(java.lang.reflect.Modifier.PRIVATE, targetImplClassName, fieldName, new JavaCodeFragment("null"));
-        }        
     }
 
     /**
      * {@inheritDoc}
      */
-    public void generateMethods(JavaCodeFragmentBuilder builder, boolean generatesInterface) throws CoreException {
-        
-        if(generatesInterface){
+    protected void generateMemberVariables(JavaCodeFragmentBuilder builder,
+            IIpsProject ipsProject,
+            boolean generatesInterface) throws CoreException {
+        super.generateMemberVariables(builder, ipsProject, generatesInterface);
+        if (!isDerivedUnion() && !isCompositionDetailToMaster()) {
+            String comment = getLocalizedText("FIELD_RELATION_JAVADOC", association.getName());
+            builder.javaDoc(comment, JavaSourceFileBuilder.ANNOTATION_GENERATED);
+            builder.varDeclaration(java.lang.reflect.Modifier.PRIVATE, targetImplClassName, fieldName,
+                    new JavaCodeFragment("null"));
+        }
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    protected void generateMethods(JavaCodeFragmentBuilder builder, IIpsProject ipsProject, boolean generatesInterface)
+            throws CoreException {
+        super.generateMethods(builder, ipsProject, generatesInterface);
+        if (generatesInterface) {
             generateMethodGetRefObject(builder);
             if (!association.isDerivedUnion() && !association.getAssociationType().isCompositionDetailToMaster()) {
                 generateMethodSetObject(builder);
@@ -156,13 +164,13 @@ public class GenAssociationTo1 extends GenAssociation {
         } else {
             if (association.isCompositionDetailToMaster()) {
                 generateMethodGetTypesafeParentObject(builder);
-                return; 
+                return;
             }
             if (!isDerivedUnion()) {
                 generateMethodGetRefObjectBasedOnMemberVariable(builder);
                 if (association.isAssoziation()) {
                     generateMethodSetRefObjectForAssociation(builder);
-                } else if (association.isCompositionMasterToDetail()) { 
+                } else if (association.isCompositionMasterToDetail()) {
                     generateMethodSetRefObjectForComposition(builder);
                 }
                 generateNewChildMethodsIfApplicable(builder, generatesInterface);
@@ -172,6 +180,7 @@ public class GenAssociationTo1 extends GenAssociation {
 
     /**
      * Code sample:
+     * 
      * <pre>
      * [Javadoc]
      * public void setCoverage(ICoverage newObject) {
@@ -185,16 +194,15 @@ public class GenAssociationTo1 extends GenAssociation {
      * }
      * </pre>
      */
-    protected void generateMethodSetRefObjectForComposition(
-            JavaCodeFragmentBuilder builder) throws CoreException {
-        
+    protected void generateMethodSetRefObjectForComposition(JavaCodeFragmentBuilder builder) throws CoreException {
+
         if (association.isCompositionDetailToMaster()) {
             return; // setter defined in base class.
         }
         String paramName = getParamNameForSetObject();
         builder.javaDoc(getJavaDocCommentForOverriddenMethod(), JavaSourceFileBuilder.ANNOTATION_GENERATED);
         generateSignatureSetObject(builder);
-        
+
         builder.openBracket();
         if (target.isDependantType()) {
             builder.appendln("if(" + fieldName + " != null) {");
@@ -207,18 +215,19 @@ public class GenAssociationTo1 extends GenAssociation {
             builder.append(generateCodeToSynchronizeReverseComposition(paramName, "this"));;
             builder.appendln("}");
         }
-        
+
         builder.append(fieldName);
         builder.append(" = (");
         builder.appendClassName(targetImplClassName);
-        builder.append(")" + paramName +";");
+        builder.append(")" + paramName + ";");
 
-        generateChangeListenerSupport("RELATION_OBJECT_CHANGED", paramName);
+        generateChangeListenerSupport(builder, "RELATION_OBJECT_CHANGED", paramName);
         builder.closeBracket();
     }
-    
+
     /**
      * Code sample:
+     * 
      * <pre>
      * [Javadoc]
      * public void setCoverage(ICoverage newObject) {
@@ -230,18 +239,19 @@ public class GenAssociationTo1 extends GenAssociation {
      *          oldRefObject.setHomePolicy(null);
      *     }
      *     homeContract = (HomeContract) refObject;
-     *     if (refObject != null && refObject.getHomePolicy() != this) {
+     *     if (refObject != null &amp;&amp; refObject.getHomePolicy() != this) {
      *         refObject.setHomePolicy(this);
      *     }
      * }
      * </pre>
      */
-    protected void generateMethodSetRefObjectForAssociation(JavaCodeFragmentBuilder methodsBuilder) throws CoreException {
-        
+    protected void generateMethodSetRefObjectForAssociation(JavaCodeFragmentBuilder methodsBuilder)
+            throws CoreException {
+
         String paramName = getParamNameForSetObject();
         methodsBuilder.javaDoc(getJavaDocCommentForOverriddenMethod(), JavaSourceFileBuilder.ANNOTATION_GENERATED);
         generateSignatureSetObject(methodsBuilder);
-        
+
         methodsBuilder.openBracket();
         methodsBuilder.append("if(" + paramName + " == ");
         methodsBuilder.append(fieldName);
@@ -258,14 +268,14 @@ public class GenAssociationTo1 extends GenAssociation {
         methodsBuilder.append(fieldName);
         methodsBuilder.append(" = (");
         methodsBuilder.appendClassName(targetImplClassName);
-        methodsBuilder.append(")" + paramName +";");
+        methodsBuilder.append(")" + paramName + ";");
         if (reverseAssociation != null) {
             methodsBuilder.append(generateCodeToSynchronizeReverseAssoziation(fieldName, targetImplClassName));
         }
-        generateChangeListenerSupport("RELATION_OBJECT_CHANGED", paramName);
+        generateChangeListenerSupport(methodsBuilder, "RELATION_OBJECT_CHANGED", paramName);
         methodsBuilder.closeBracket();
     }
-    
+
     public JavaCodeFragment generateCodeToCleanupOldReference(String varToCleanUp) throws CoreException {
         JavaCodeFragment body = new JavaCodeFragment();
         if (!association.is1ToMany()) {
@@ -288,15 +298,16 @@ public class GenAssociationTo1 extends GenAssociation {
 
     // TODO refactor
     // hier muesste man den korrekten Generator fuer die reverse association bekommen und
-    // dort dann ein generateCodeToSynchronizeReverseAssoziation aufrufen. Implementierung der Method
+    // dort dann ein generateCodeToSynchronizeReverseAssoziation aufrufen. Implementierung der
+    // Method
     // fuer toMany und to1 unterschiedlich.
-    public JavaCodeFragment generateCodeToSynchronizeReverseAssoziation(
-            String varName,
-            String varClassName) throws CoreException {
+    public JavaCodeFragment generateCodeToSynchronizeReverseAssoziation(String varName, String varClassName)
+            throws CoreException {
 
         GenAssociationToMany toManyGenerator = null;
         if (reverseAssociation.is1ToMany()) {
-            toManyGenerator = new GenAssociationToMany(reverseAssociation, (PolicyCmptImplClassBuilder)getJavaSourceFileBuilder(), new LocalizedStringsSet(GenAssociation.class));
+            toManyGenerator = new GenAssociationToMany(getGenPolicyCmptType(), reverseAssociation,
+                    new LocalizedStringsSet(GenAssociation.class));
         }
 
         JavaCodeFragment code = new JavaCodeFragment();
@@ -327,9 +338,10 @@ public class GenAssociationTo1 extends GenAssociation {
         code.appendln("}");
         return code;
     }
-    
+
     /**
      * Code sample:
+     * 
      * <pre>
      * [Javadoc]
      * public ICoverage getCoverage() {
@@ -337,7 +349,8 @@ public class GenAssociationTo1 extends GenAssociation {
      * }
      * </pre>
      */
-    protected void generateMethodGetRefObjectBasedOnMemberVariable(JavaCodeFragmentBuilder methodsBuilder) throws CoreException {
+    protected void generateMethodGetRefObjectBasedOnMemberVariable(JavaCodeFragmentBuilder methodsBuilder)
+            throws CoreException {
         methodsBuilder.javaDoc(getJavaDocCommentForOverriddenMethod(), JavaSourceFileBuilder.ANNOTATION_GENERATED);
         generateSignatureGetRefObject(methodsBuilder);
         methodsBuilder.openBracket();
@@ -350,9 +363,10 @@ public class GenAssociationTo1 extends GenAssociation {
         }
         methodsBuilder.closeBracket();
     }
-    
+
     /**
      * Code sample:
+     * 
      * <pre>
      * [Javadoc]
      * public ICoverage getCoverage() {
@@ -369,9 +383,10 @@ public class GenAssociationTo1 extends GenAssociation {
         methodsBuilder.append(")" + MethodNames.GET_PARENT + "();");
         methodsBuilder.closeBracket();
     }
-    
+
     /**
      * Code sample:
+     * 
      * <pre>
      * [Javadoc]
      * public void setCoverage(ICoverage newObject);
@@ -385,15 +400,102 @@ public class GenAssociationTo1 extends GenAssociation {
 
     /**
      * Code sample:
+     * 
      * <pre>
      * [Javadoc]
      * public ICoverage getCoverage();
      * </pre>
      */
     protected void generateMethodGetRefObject(JavaCodeFragmentBuilder builder) throws CoreException {
-        appendLocalizedJavaDoc("METHOD_GET_REF_OBJECT", StringUtils.capitalize(association.getTargetRoleSingular()), builder);
+        appendLocalizedJavaDoc("METHOD_GET_REF_OBJECT", StringUtils.capitalize(association.getTargetRoleSingular()),
+                builder);
         generateSignatureGetRefObject(builder);
         builder.appendln(";");
+    }
+
+    protected void generateConstants(JavaCodeFragmentBuilder builder, IIpsProject ipsProject, boolean generatesInterface)
+            throws CoreException {
+        super.generateConstants(builder, ipsProject, generatesInterface);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public String getFieldNameForAssociation() throws CoreException {
+        return getJavaNamingConvention().getMemberVarName(association.getTargetRoleSingular());
+    }
+
+    /**
+     * Code sample for 1-1 composition
+     * 
+     * <pre>
+     * copy.child1 = child1;
+     * </pre>
+     */
+    public void generateMethodCopyPropertiesForAssociation(String paramName, JavaCodeFragmentBuilder methodsBuilder)
+            throws CoreException {
+        String field = getFieldNameForAssociation();
+        methodsBuilder.appendln(paramName + "." + field + " = " + field + ";");
+    }
+
+    /**
+     * {@inheritDoc}
+     * @throws CoreException 
+     */
+    public void generateCodeForRemoveChildModelObjectInternal(JavaCodeFragmentBuilder methodsBuilder,
+            String paramName) throws CoreException {
+        String fieldName = getFieldNameForAssociation();
+        methodsBuilder.appendln("if (" + fieldName + "==" + paramName + ") {");
+        methodsBuilder.appendln(fieldName + " = null;");
+        methodsBuilder.appendln("}");
+    }
+
+    /**
+     * Code sample:
+     * <pre>
+     * [Javadoc]
+     * public ICoverage getCoverage() {
+     *     if(getNumOfTplCoverage() > 0) { 
+     *         return getTplCoverage(); 
+     *     } 
+     *     if (getNumOfCollisionCoverage() > 0) { 
+     *         return getCollisionCoverage(); 
+     *     } 
+     *     return null;
+     * }
+     * </pre>
+     */
+    protected void generateMethodGetRefObjectForContainerAssociationImplementation(
+            List subAssociations,
+            JavaCodeFragmentBuilder methodsBuilder) throws CoreException {
+        methodsBuilder.javaDoc(getJavaDocCommentForOverriddenMethod(), JavaSourceFileBuilder.ANNOTATION_GENERATED);
+        generateSignatureGetRefObject(methodsBuilder);
+        methodsBuilder.openBracket();
+        for (int i = 0; i < subAssociations.size(); i++) {
+            IPolicyCmptTypeAssociation subrel = (IPolicyCmptTypeAssociation)subAssociations.get(i);
+            GenAssociation subrelGenerator = getGenPolicyCmptType().getGenerator(subrel);
+            String accessCode;
+            accessCode = subrelGenerator.getMethodNameGetRefObject() + "()";
+            methodsBuilder.appendln("if (" + accessCode + "!=null) {");
+            methodsBuilder.appendln("return " + accessCode + ";");
+            methodsBuilder.appendln("}");
+        }
+        methodsBuilder.append("return null;");
+        methodsBuilder.closeBracket();
+    }
+
+    public void generateCodeForContainerAssociationImplementation(List associations,
+            JavaCodeFragmentBuilder memberVarsBuilder,
+            JavaCodeFragmentBuilder methodsBuilder) throws CoreException {
+        generateMethodGetRefObjectForContainerAssociationImplementation(associations,
+                methodsBuilder);
+    }
+    
+    public void generateCodeForValidateDependants(JavaCodeFragment body) throws CoreException {
+        String field = getFieldNameForAssociation();
+        body.append("if (" + field + "!=null) {");
+        body.append("ml.add(" + field + ".validate(businessFunction));");
+        body.append("}");
     }
 
 }

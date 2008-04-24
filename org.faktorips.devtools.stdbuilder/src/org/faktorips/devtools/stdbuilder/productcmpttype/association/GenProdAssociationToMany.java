@@ -24,10 +24,10 @@ import org.faktorips.codegen.JavaCodeFragment;
 import org.faktorips.codegen.JavaCodeFragmentBuilder;
 import org.faktorips.datatype.Datatype;
 import org.faktorips.devtools.core.builder.JavaSourceFileBuilder;
+import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAssociation;
-import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeAssociation;
-import org.faktorips.devtools.stdbuilder.productcmpttype.BaseProductCmptTypeBuilder;
+import org.faktorips.devtools.stdbuilder.productcmpttype.GenProductCmptType;
 import org.faktorips.devtools.stdbuilder.productcmpttype.ProductCmptGenImplClassBuilder;
 import org.faktorips.runtime.internal.MethodNames;
 import org.faktorips.util.LocalizedStringsSet;
@@ -45,15 +45,16 @@ public class GenProdAssociationToMany extends GenProdAssociation {
      * @param stringsSet
      * @throws CoreException
      */
-    public GenProdAssociationToMany(IProductCmptTypeAssociation association, BaseProductCmptTypeBuilder builder,
+    public GenProdAssociationToMany(GenProductCmptType genProductCmptType, IProductCmptTypeAssociation association,
             LocalizedStringsSet stringsSet) throws CoreException {
-        super(association, builder, stringsSet);
+        super(genProductCmptType, association, stringsSet);
     }
 
     /**
      * {@inheritDoc}
      */
-    protected void generateConstants(JavaCodeFragmentBuilder builder, boolean generatesInterface) throws CoreException {
+    protected void generateConstants(JavaCodeFragmentBuilder builder, IIpsProject ipsProject, boolean generatesInterface)
+    throws CoreException {
         if (generatesInterface) {
 
         } else {
@@ -64,13 +65,14 @@ public class GenProdAssociationToMany extends GenProdAssociation {
     /**
      * {@inheritDoc}
      */
-    protected void generateMemberVariables(JavaCodeFragmentBuilder builder, boolean generatesInterface)
-            throws CoreException {
+    protected void generateMemberVariables(JavaCodeFragmentBuilder builder,
+            IIpsProject ipsProject,
+            boolean generatesInterface) throws CoreException {
         if (generatesInterface) {
 
         } else {
             generateFieldToManyAssociation(builder);
-            if (association.findMatchingPolicyCmptTypeAssociation(getIpsProject()) != null) {
+            if (association.findMatchingPolicyCmptTypeAssociation(ipsProject) != null) {
                 generateFieldCardinalityForAssociation(builder);
             }
         }
@@ -79,11 +81,12 @@ public class GenProdAssociationToMany extends GenProdAssociation {
     /**
      * {@inheritDoc}
      */
-    protected void generateMethods(JavaCodeFragmentBuilder builder, boolean generatesInterface) throws CoreException {
+    protected void generateMethods(JavaCodeFragmentBuilder builder, IIpsProject ipsProject, boolean generatesInterface)
+    throws CoreException {
         if (generatesInterface) {
             generateMethodInterfaceGetManyRelatedCmpts(builder);
             generateMethodInterfaceGetRelatedCmptAtIndex(builder);
-            if (association.findMatchingPolicyCmptTypeAssociation(getIpsProject()) != null) {
+            if (association.findMatchingPolicyCmptTypeAssociation(ipsProject) != null) {
                 generateMethodGetCardinalityForAssociation(builder);
             }
             generateMethodGetNumOfRelatedCmpts(builder);
@@ -91,7 +94,7 @@ public class GenProdAssociationToMany extends GenProdAssociation {
             generateMethodGetManyRelatedCmpts(builder);
             generateMethodGetRelatedCmptAtIndex(builder);
             generateMethodAddRelatedCmpt(builder);
-            if (association.findMatchingPolicyCmptTypeAssociation(getIpsProject()) != null) {
+            if (association.findMatchingPolicyCmptTypeAssociation(ipsProject) != null) {
                 generateMethodGetCardinalityFor1ToManyAssociation(builder);
             }
             generateMethodGetNumOfRelatedProductCmpts(builder);
@@ -138,8 +141,7 @@ public class GenProdAssociationToMany extends GenProdAssociation {
         generateSignatureGetManyRelatedCmpts(association, methodsBuilder);
 
         String fieldName = getFieldNameToManyAssociation();
-        String targetClass = getProductCmptInterfaceBuilder().getQualifiedClassName(
-                association.findTarget(getIpsProject()));
+        String targetClass = getQualifiedInterfaceClassNameForTarget();
         methodsBuilder.openBracket();
         methodsBuilder.appendClassName(targetClass);
         methodsBuilder.append("[] result = new ");
@@ -189,8 +191,7 @@ public class GenProdAssociationToMany extends GenProdAssociation {
         methodsBuilder.javaDoc(getJavaDocCommentForOverriddenMethod(), JavaSourceFileBuilder.ANNOTATION_GENERATED);
         generateSignatureGetRelatedCmptsAtIndex(methodsBuilder);
         String fieldName = getFieldNameToManyAssociation();
-        String targetClass = getProductCmptInterfaceBuilder().getQualifiedClassName(
-                association.findTarget(getIpsProject()));
+        String targetClass = getQualifiedInterfaceClassNameForTarget();
         methodsBuilder.openBracket();
         methodsBuilder.append("return (");
         methodsBuilder.appendClassName(targetClass);
@@ -224,8 +225,7 @@ public class GenProdAssociationToMany extends GenProdAssociation {
      */
     void generateSignatureGetRelatedCmptsAtIndex(JavaCodeFragmentBuilder builder) throws CoreException {
         String methodName = getMethodNameGetRelatedCmptAtIndex();
-        IProductCmptType target = association.findTargetProductCmptType(getIpsProject());
-        String returnType = getProductCmptInterfaceBuilder().getQualifiedClassName(target);
+        String returnType = getQualifiedInterfaceClassNameForTarget();
         builder.signature(Modifier.PUBLIC, returnType, methodName, new String[] { "index" }, new String[] { "int" });
     }
 
@@ -251,16 +251,15 @@ public class GenProdAssociationToMany extends GenProdAssociation {
      */
     private void generateMethodAddRelatedCmpt(JavaCodeFragmentBuilder methodsBuilder) throws CoreException {
 
-        IProductCmptType target = association.findTargetProductCmptType(getIpsProject());
         appendLocalizedJavaDoc("METHOD_ADD_RELATED_CMPT", association.getTargetRoleSingular(), methodsBuilder);
         String methodName = "add" + StringUtils.capitalize(association.getTargetRoleSingular());
         String[] argNames = new String[] { "target" };
-        String[] argTypes = new String[] { getProductCmptInterfaceBuilder().getQualifiedClassName(target) };
+        String[] argTypes = new String[] { getQualifiedInterfaceClassNameForTarget() };
         methodsBuilder.signature(getJavaNamingConvention().getModifierForPublicInterfaceMethod(), "void", methodName,
                 argNames, argTypes);
         String fieldName = getFieldNameToManyAssociation();
         methodsBuilder.openBracket();
-        methodsBuilder.append(getGenImplClassBuilder().generateFragmentCheckIfRepositoryIsModifiable());
+        methodsBuilder.append(getGenProductCmptType().generateFragmentCheckIfRepositoryIsModifiable());
         methodsBuilder.appendln("String[] tmp = new String[this." + fieldName + ".length+1];");
         methodsBuilder.appendln("System.arraycopy(this." + fieldName + ", 0, tmp, 0, this." + fieldName + ".length);");
         methodsBuilder.appendln("tmp[tmp.length-1] = " + argNames[0] + "." + MethodNames.GET_PRODUCT_COMPONENT_ID
@@ -283,8 +282,7 @@ public class GenProdAssociationToMany extends GenProdAssociation {
     protected void generateCodeGetRelatedCmptsInContainer(JavaCodeFragmentBuilder methodsBuilder) throws CoreException {
         String objectArrayVar = getFieldNameToManyAssociation() + "Objects";
         String getterMethod = getMethodNameGetManyRelatedCmpts(association) + "()";
-        methodsBuilder.appendClassName(getProductCmptInterfaceBuilder().getQualifiedClassName(
-                association.findTarget(getIpsProject())));
+        methodsBuilder.appendClassName(getQualifiedInterfaceClassNameForTarget());
         methodsBuilder.append("[] " + objectArrayVar + " = " + getterMethod + ";");
         methodsBuilder.appendln("for (int i=0; i<" + objectArrayVar + ".length; i++) {");
         methodsBuilder.appendln("result[index++] = " + objectArrayVar + "[i];");

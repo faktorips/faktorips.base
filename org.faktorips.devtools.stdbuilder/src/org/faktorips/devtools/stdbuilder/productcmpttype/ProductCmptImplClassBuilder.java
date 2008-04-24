@@ -1,19 +1,11 @@
-/*******************************************************************************
- * Copyright (c) 2005,2006 Faktor Zehn GmbH und andere.
- *
- * Alle Rechte vorbehalten.
- *
- * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele,
- * Konfigurationen, etc.) duerfen nur unter den Bedingungen der 
- * Faktor-Zehn-Community Lizenzvereinbarung - Version 0.1 (vor Gruendung Community) 
- * genutzt werden, die Bestandteil der Auslieferung ist und auch unter
- *   http://www.faktorips.org/legal/cl-v01.html
- * eingesehen werden kann.
- *
- * Mitwirkende:
- *   Faktor Zehn GmbH - initial API and implementation - http://www.faktorzehn.de
- *
- *******************************************************************************/
+/***************************************************************************************************
+ *  * Copyright (c) 2005,2006 Faktor Zehn GmbH und andere.  *  * Alle Rechte vorbehalten.  *  *
+ * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele,  * Konfigurationen,
+ * etc.) duerfen nur unter den Bedingungen der  * Faktor-Zehn-Community Lizenzvereinbarung - Version
+ * 0.1 (vor Gruendung Community)  * genutzt werden, die Bestandteil der Auslieferung ist und auch
+ * unter  *   http://www.faktorips.org/legal/cl-v01.html  * eingesehen werden kann.  *  *
+ * Mitwirkende:  *   Faktor Zehn GmbH - initial API and implementation - http://www.faktorzehn.de  *  
+ **************************************************************************************************/
 
 package org.faktorips.devtools.stdbuilder.productcmpttype;
 
@@ -36,7 +28,7 @@ import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeAssocia
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeAttribute;
 import org.faktorips.devtools.core.model.productcmpttype.ITableStructureUsage;
 import org.faktorips.devtools.core.model.type.IMethod;
-import org.faktorips.devtools.stdbuilder.policycmpttype.PolicyCmptImplClassBuilder;
+import org.faktorips.devtools.stdbuilder.StandardBuilderSet;
 import org.faktorips.devtools.stdbuilder.policycmpttype.attribute.GenAttribute;
 import org.faktorips.devtools.stdbuilder.productcmpttype.association.GenProdAssociation;
 import org.faktorips.devtools.stdbuilder.productcmpttype.attribute.GenProdAttribute;
@@ -47,33 +39,24 @@ import org.faktorips.runtime.internal.ProductComponent;
 import org.faktorips.util.LocalizedStringsSet;
 
 /**
- * A builder that generates the Java source file (compilation unit) for the
- * product component type implementation. 
+ * A builder that generates the Java source file (compilation unit) for the product component type
+ * implementation.
  * 
  * @author Jan Ortmann
  */
 public class ProductCmptImplClassBuilder extends BaseProductCmptTypeBuilder {
 
     private ProductCmptInterfaceBuilder interfaceBuilder;
-    private ProductCmptGenInterfaceBuilder productCmptGenInterfaceBuilder;
-    private PolicyCmptImplClassBuilder policyCmptImplClassBuilder;
-    
+
     public ProductCmptImplClassBuilder(IIpsArtefactBuilderSet builderSet, String kindId) {
         super(builderSet, kindId, new LocalizedStringsSet(ProductCmptImplClassBuilder.class));
-        //TODO pk 2006-06-21 merge enabled at least until generator has been extended for validation and information capabilities  
+        // TODO pk 2006-06-21 merge enabled at least until generator has been extended for
+        // validation and information capabilities
         setMergeEnabled(true);
     }
-    
+
     public void setInterfaceBuilder(ProductCmptInterfaceBuilder builder) {
         interfaceBuilder = builder;
-    }
-    
-    public void setProductCmptGenInterfaceBuilder(ProductCmptGenInterfaceBuilder builder) {
-        this.productCmptGenInterfaceBuilder = builder;
-    }
-    
-    public void setPolicyCmptImplClassBuilder(PolicyCmptImplClassBuilder builder) {
-        this.policyCmptImplClassBuilder = builder;
     }
 
     /**
@@ -96,7 +79,7 @@ public class ProductCmptImplClassBuilder extends BaseProductCmptTypeBuilder {
     protected String getSuperclass() throws CoreException {
         String javaSupertype = ProductComponent.class.getName();
         IProductCmptType supertype = (IProductCmptType)getProductCmptType().findSupertype(getIpsProject());
-        if (supertype!=null) {
+        if (supertype != null) {
             javaSupertype = getQualifiedClassName(supertype.getIpsSrcFile());
         }
         return javaSupertype;
@@ -106,7 +89,7 @@ public class ProductCmptImplClassBuilder extends BaseProductCmptTypeBuilder {
      * {@inheritDoc}
      */
     protected String[] getExtendedInterfaces() throws CoreException {
-        return new String[]{interfaceBuilder.getQualifiedClassName(getProductCmptType())};
+        return new String[] { interfaceBuilder.getQualifiedClassName(getProductCmptType()) };
     }
 
     /**
@@ -119,10 +102,11 @@ public class ProductCmptImplClassBuilder extends BaseProductCmptTypeBuilder {
 
     /**
      * {@inheritDoc}
+     * 
      * <pre>
      * public MotorPolicy(RuntimeRepository repository, String qName, Class policyComponentType) {
      *     super(registry, qName, policyComponentType);
-     * } 
+     * }
      * </pre>
      */
     protected void generateConstructors(JavaCodeFragmentBuilder builder) throws CoreException {
@@ -132,7 +116,8 @@ public class ProductCmptImplClassBuilder extends BaseProductCmptTypeBuilder {
         String versionParam = getChangesInTimeNamingConvention(getIpsObject()).getVersionConceptNameSingular(locale);
         versionParam = StringUtils.uncapitalize(versionParam) + "Id";
         String[] argNames = new String[] { "repository", "id", "kindId", versionParam };
-        String[] argTypes = new String[] { IRuntimeRepository.class.getName(), String.class.getName(), String.class.getName(), String.class.getName() };
+        String[] argTypes = new String[] { IRuntimeRepository.class.getName(), String.class.getName(),
+                String.class.getName(), String.class.getName() };
         builder.methodBegin(Modifier.PUBLIC, null, className, argNames, argTypes);
         builder.append("super(repository, id, kindId, " + versionParam + ");");
         builder.methodEnd();
@@ -141,37 +126,39 @@ public class ProductCmptImplClassBuilder extends BaseProductCmptTypeBuilder {
     /**
      * {@inheritDoc}
      */
-    protected void generateOtherCode(JavaCodeFragmentBuilder constantsBuilder, JavaCodeFragmentBuilder memberVarsBuilder, JavaCodeFragmentBuilder methodsBuilder)
-            throws CoreException {
-        
+    protected void generateOtherCode(JavaCodeFragmentBuilder constantsBuilder,
+            JavaCodeFragmentBuilder memberVarsBuilder,
+            JavaCodeFragmentBuilder methodsBuilder) throws CoreException {
+
         generateGetGenerationMethod(methodsBuilder);
         IPolicyCmptType policyCmptType = getPcType();
-        if (policyCmptType!=null && !policyCmptType.isAbstract()) {
+        if (policyCmptType != null && !policyCmptType.isAbstract()) {
             generateFactoryMethodsForPolicyCmptType(policyCmptType, methodsBuilder, new HashSet());
         }
-        if (policyCmptType==null || !policyCmptType.isAbstract()) {
-            // if policy component type is null, must generate to fullfill the contract of IProductComponent. 
-            generateMethodCreatePolicyCmptBase(methodsBuilder); 
-        } 
+        if (policyCmptType == null || !policyCmptType.isAbstract()) {
+            // if policy component type is null, must generate to fullfill the contract of
+            // IProductComponent.
+            generateMethodCreatePolicyCmptBase(methodsBuilder);
+        }
     }
-    
-    private void generateFactoryMethodsForPolicyCmptType(
-            IPolicyCmptType returnedTypeInSignature, 
+
+    private void generateFactoryMethodsForPolicyCmptType(IPolicyCmptType returnedTypeInSignature,
             JavaCodeFragmentBuilder methodsBuilder,
             Set supertypesHandledSoFar) throws CoreException {
-        
-        if (returnedTypeInSignature!=null && !returnedTypeInSignature.isAbstract()) {
+
+        if (returnedTypeInSignature != null && !returnedTypeInSignature.isAbstract()) {
             generateMethodCreatePolicyCmpt(returnedTypeInSignature, methodsBuilder);
         }
         IPolicyCmptType supertype = (IPolicyCmptType)returnedTypeInSignature.findSupertype(getIpsProject());
-        if (supertype!=null && !supertypesHandledSoFar.contains(supertype)) {
+        if (supertype != null && !supertypesHandledSoFar.contains(supertype)) {
             supertypesHandledSoFar.add(supertype);
             generateFactoryMethodsForPolicyCmptType(supertype, methodsBuilder, supertypesHandledSoFar);
         }
     }
-    
+
     /**
      * Code sample:
+     * 
      * <pre>
      * [Javadoc]
      * public IMotorPolicy createMotorPolicy() {
@@ -179,18 +166,21 @@ public class ProductCmptImplClassBuilder extends BaseProductCmptTypeBuilder {
      * }
      * </pre>
      */
-    private void generateMethodCreatePolicyCmpt(IPolicyCmptType returnedTypeInSignature, JavaCodeFragmentBuilder methodsBuilder) throws CoreException {
+    private void generateMethodCreatePolicyCmpt(IPolicyCmptType returnedTypeInSignature,
+            JavaCodeFragmentBuilder methodsBuilder) throws CoreException {
         methodsBuilder.javaDoc(getJavaDocCommentForOverriddenMethod(), ANNOTATION_GENERATED);
         interfaceBuilder.generateSignatureCreatePolicyCmpt(returnedTypeInSignature, methodsBuilder);
         methodsBuilder.openBracket();
         methodsBuilder.append("return new ");
-        methodsBuilder.appendClassName(policyCmptImplClassBuilder.getQualifiedClassName(getPcType()));
+        methodsBuilder.appendClassName(((StandardBuilderSet)getBuilderSet()).getGenerator(getPcType())
+                .getQualifiedName(false));
         methodsBuilder.appendln("(this);");
         methodsBuilder.closeBracket();
     }
 
     /**
      * Code sample:
+     * 
      * <pre>
      * [Javadoc]
      * public IPolicyComponent createPolicyComponent() {
@@ -200,10 +190,11 @@ public class ProductCmptImplClassBuilder extends BaseProductCmptTypeBuilder {
      */
     private void generateMethodCreatePolicyCmptBase(JavaCodeFragmentBuilder methodsBuilder) throws CoreException {
         methodsBuilder.javaDoc(getJavaDocCommentForOverriddenMethod(), ANNOTATION_GENERATED);
-        methodsBuilder.signature(Modifier.PUBLIC, IConfigurableModelObject.class.getName(), MethodNames.CREATE_POLICY_COMPONENT, new String[0], new String[0]);
+        methodsBuilder.signature(Modifier.PUBLIC, IConfigurableModelObject.class.getName(),
+                MethodNames.CREATE_POLICY_COMPONENT, new String[0], new String[0]);
         methodsBuilder.openBracket();
         methodsBuilder.append("return ");
-        if (getPcType()==null) {
+        if (getPcType() == null) {
             methodsBuilder.appendln("null;");
         } else {
             methodsBuilder.appendln(interfaceBuilder.getMethodNameCreatePolicyCmpt(getPcType()) + "();");
@@ -216,7 +207,8 @@ public class ProductCmptImplClassBuilder extends BaseProductCmptTypeBuilder {
         interfaceBuilder.generateSignatureGetGeneration(getProductCmptType(), methodsBuilder);
         methodsBuilder.openBracket();
         methodsBuilder.append("return (");
-        methodsBuilder.appendClassName(productCmptGenInterfaceBuilder.getQualifiedClassName(getIpsSrcFile()));
+        methodsBuilder.appendClassName(((StandardBuilderSet)getBuilderSet()).getGenerator(getProductCmptType())
+                .getQualifiedClassNameForProductCmptTypeGen(true));
         methodsBuilder.append(")getRepository().getProductComponentGeneration(");
         methodsBuilder.append(MethodNames.GET_PRODUCT_COMPONENT_ID);
         methodsBuilder.append("(), ");
@@ -224,7 +216,7 @@ public class ProductCmptImplClassBuilder extends BaseProductCmptTypeBuilder {
         methodsBuilder.append(");");
         methodsBuilder.closeBracket();
     }
-    
+
     /**
      * {@inheritDoc}
      */
@@ -232,9 +224,20 @@ public class ProductCmptImplClassBuilder extends BaseProductCmptTypeBuilder {
             DatatypeHelper datatypeHelper,
             JavaCodeFragmentBuilder memberVarsBuilder,
             JavaCodeFragmentBuilder methodsBuilder) throws CoreException {
-        
-        // nothing to do
 
+        // nothing to do
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    protected void generateCodeForProductCmptTypeAttribute(org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeAttribute attribute,
+            DatatypeHelper datatypeHelper,
+            JavaCodeFragmentBuilder fieldsBuilder,
+            JavaCodeFragmentBuilder methodsBuilder,
+            JavaCodeFragmentBuilder constantBuilder) throws CoreException {
+
+        // nothing to do
     }
 
     /**
@@ -250,14 +253,19 @@ public class ProductCmptImplClassBuilder extends BaseProductCmptTypeBuilder {
     /**
      * {@inheritDoc}
      */
-    protected void generateCodeForDerivedUnionAssociationDefinition(IProductCmptTypeAssociation containerAssociation, JavaCodeFragmentBuilder memberVarsBuilder, JavaCodeFragmentBuilder methodsBuilder) throws Exception {
+    protected void generateCodeForDerivedUnionAssociationDefinition(IProductCmptTypeAssociation containerAssociation,
+            JavaCodeFragmentBuilder memberVarsBuilder,
+            JavaCodeFragmentBuilder methodsBuilder) throws Exception {
         // nothing to do
     }
 
     /**
      * {@inheritDoc}
      */
-    protected void generateCodeForDerivedUnionAssociationImplementation(IProductCmptTypeAssociation containerAssociation, List implementationAssociations, JavaCodeFragmentBuilder memberVarsBuilder, JavaCodeFragmentBuilder methodsBuilder) throws Exception {
+    protected void generateCodeForDerivedUnionAssociationImplementation(IProductCmptTypeAssociation containerAssociation,
+            List implementationAssociations,
+            JavaCodeFragmentBuilder memberVarsBuilder,
+            JavaCodeFragmentBuilder methodsBuilder) throws Exception {
         // nothing to do
     }
 
@@ -273,10 +281,9 @@ public class ProductCmptImplClassBuilder extends BaseProductCmptTypeBuilder {
     /**
      * {@inheritDoc}
      */
-    protected void generateCodeForMethodDefinedInModel(
-            IMethod method,
-            JavaCodeFragmentBuilder methodsBuilder) throws CoreException{
-//      nothing to do
+    protected void generateCodeForMethodDefinedInModel(IMethod method, JavaCodeFragmentBuilder methodsBuilder)
+            throws CoreException {
+        // nothing to do
     }
 
     /**
@@ -297,7 +304,6 @@ public class ProductCmptImplClassBuilder extends BaseProductCmptTypeBuilder {
         return null;
     }
 
-
     /**
      * {@inheritDoc}
      */
@@ -310,6 +316,5 @@ public class ProductCmptImplClassBuilder extends BaseProductCmptTypeBuilder {
     public ProductCmptInterfaceBuilder getProductCmptInterfaceBuilder() {
         return interfaceBuilder;
     }
-    
-    
+
 }

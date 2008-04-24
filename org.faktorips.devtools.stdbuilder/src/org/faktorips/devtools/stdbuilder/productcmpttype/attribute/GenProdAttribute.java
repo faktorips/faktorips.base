@@ -23,15 +23,11 @@ import org.faktorips.codegen.DatatypeHelper;
 import org.faktorips.codegen.JavaCodeFragment;
 import org.faktorips.codegen.JavaCodeFragmentBuilder;
 import org.faktorips.datatype.ValueDatatype;
-import org.faktorips.devtools.core.builder.DefaultJavaSourceFileBuilder;
 import org.faktorips.devtools.core.builder.JavaSourceFileBuilder;
-import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
+import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeAttribute;
-import org.faktorips.devtools.stdbuilder.StandardBuilderSet;
-import org.faktorips.devtools.stdbuilder.policycmpttype.PolicyCmptImplClassBuilder;
-import org.faktorips.devtools.stdbuilder.policycmpttype.PolicyCmptInterfaceBuilder;
-import org.faktorips.devtools.stdbuilder.productcmpttype.ProductCmptGenImplClassBuilder;
-import org.faktorips.devtools.stdbuilder.type.AbstractGenAttribute;
+import org.faktorips.devtools.stdbuilder.productcmpttype.GenProductCmptType;
+import org.faktorips.devtools.stdbuilder.productcmpttype.GenProductCmptTypePart;
 import org.faktorips.runtime.internal.ValueToXmlHelper;
 import org.faktorips.util.LocalizedStringsSet;
 import org.w3c.dom.Element;
@@ -41,43 +37,24 @@ import org.w3c.dom.Element;
  * 
  * @author Daniel Hohenberger
  */
-public class GenProdAttribute extends AbstractGenAttribute {
+public class GenProdAttribute extends GenProductCmptTypePart {
 
-    private IProductCmptType productCmptType;
+    protected IProductCmptTypeAttribute attribute;
+    protected String attributeName;
+    protected DatatypeHelper datatypeHelper;
+    protected String staticConstantPropertyName;
+    protected String memberVarName;
 
-    public GenProdAttribute(IProductCmptTypeAttribute a, DefaultJavaSourceFileBuilder builder,
-            LocalizedStringsSet stringsSet) throws CoreException {
-        super(a, builder, stringsSet);
-    }
-
-    /**
-     * Returns the product component generation implementation class builder.
-     */
-    private ProductCmptGenImplClassBuilder getGenImplClassBuilder() {
-        if (getJavaSourceFileBuilder() instanceof ProductCmptGenImplClassBuilder) {
-            return (ProductCmptGenImplClassBuilder)getJavaSourceFileBuilder();
+    public GenProdAttribute(GenProductCmptType genProductCmptType, IProductCmptTypeAttribute a, LocalizedStringsSet stringsSet) throws CoreException {
+        super(genProductCmptType, a, stringsSet);
+        this.attribute = a;
+        attributeName = a.getName();
+        datatypeHelper = a.getIpsProject().findDatatypeHelper(a.getDatatype());
+        if (datatypeHelper == null) {
+            throw new NullPointerException("No datatype helper found for " + a);
         }
-        return null;
-    }
-
-    /**
-     * Returns the policy component implementation class builder.
-     */
-    private PolicyCmptImplClassBuilder getPolicyCmptImplClassBuilder() {
-        if (getJavaSourceFileBuilder() instanceof PolicyCmptImplClassBuilder) {
-            return (PolicyCmptImplClassBuilder)getJavaSourceFileBuilder();
-        }
-        return null;
-    }
-
-    /**
-     * Returns the policy component interface builder.
-     */
-    private PolicyCmptInterfaceBuilder getPolicyCmptGenInterfaceBuilder() {
-        if (getJavaSourceFileBuilder() instanceof PolicyCmptInterfaceBuilder) {
-            return (PolicyCmptInterfaceBuilder)getJavaSourceFileBuilder();
-        }
-        return getPolicyCmptImplClassBuilder().getInterfaceBuilder();
+        staticConstantPropertyName = getLocalizedText("FIELD_PROPERTY_NAME", StringUtils.upperCase(a.getName()));
+        memberVarName = getJavaNamingConvention().getMemberVarName(attributeName);
     }
 
     // TODO refactor
@@ -86,14 +63,7 @@ public class GenProdAttribute extends AbstractGenAttribute {
     }
 
     public IProductCmptTypeAttribute getProductCmptTypeAttribute() {
-        return (IProductCmptTypeAttribute)attribute;
-    }
-
-    protected IProductCmptType getProductCmptType() throws CoreException {
-        if (productCmptType == null) {
-            productCmptType = (IProductCmptType)attribute.getParent();
-        }
-        return productCmptType;
+        return attribute;
     }
 
     public DatatypeHelper getDatatypeHelper() {
@@ -206,15 +176,17 @@ public class GenProdAttribute extends AbstractGenAttribute {
     /**
      * {@inheritDoc}
      */
-    protected void generateConstants(JavaCodeFragmentBuilder builder, boolean generatesInterface) throws CoreException {
+    protected void generateConstants(JavaCodeFragmentBuilder builder, IIpsProject ipsProject, boolean generatesInterface)
+    throws CoreException {
 
-    }
+}
 
     /**
      * {@inheritDoc}
      */
-    protected void generateMemberVariables(JavaCodeFragmentBuilder builder, boolean generatesInterface)
-            throws CoreException {
+    protected void generateMemberVariables(JavaCodeFragmentBuilder builder,
+            IIpsProject ipsProject,
+            boolean generatesInterface) throws CoreException {
         if (!generatesInterface) {
             generateFieldValue(datatypeHelper, builder);
         }
@@ -223,7 +195,8 @@ public class GenProdAttribute extends AbstractGenAttribute {
     /**
      * {@inheritDoc}
      */
-    protected void generateMethods(JavaCodeFragmentBuilder builder, boolean generatesInterface) throws CoreException {
+    protected void generateMethods(JavaCodeFragmentBuilder builder, IIpsProject ipsProject, boolean generatesInterface)
+    throws CoreException {
         if (!generatesInterface) {
             generateMethodGetValue(datatypeHelper, builder);
             generateMethodSetValue(datatypeHelper, builder);
@@ -291,7 +264,7 @@ public class GenProdAttribute extends AbstractGenAttribute {
         String[] paramTypes = new String[] { datatypeHelper.getJavaClassName() };
         methodsBuilder.signature(Modifier.PUBLIC, "void", methodName, paramNames, paramTypes);
         methodsBuilder.openBracket();
-        methodsBuilder.append(getGenImplClassBuilder().generateFragmentCheckIfRepositoryIsModifiable());
+        methodsBuilder.append(getGenProductCmptType().generateFragmentCheckIfRepositoryIsModifiable());
         methodsBuilder.append("this." + getMemberVarName());
         methodsBuilder.appendln(" = newValue;");
         methodsBuilder.closeBracket();
@@ -327,7 +300,7 @@ public class GenProdAttribute extends AbstractGenAttribute {
     }
 
     public boolean isValidAttribute() throws CoreException {
-        return attribute.validate(getIpsProject()).containsErrorMsg();
+        return attribute.validate(attribute.getIpsProject()).containsErrorMsg();
     }
 
     public void generateDoInitPropertiesFromXml(JavaCodeFragmentBuilder builder) throws CoreException {
@@ -359,22 +332,19 @@ public class GenProdAttribute extends AbstractGenAttribute {
     /**
      * Generates the source code for the ips object part this is a generator for.
      */
-    public void generateCodeForPolicyCmptType(boolean generatesInterface)
+    public void generateCodeForPolicyCmptType(boolean generatesInterface, JavaCodeFragmentBuilder methodBuilder)
             throws CoreException {
         if (!generatesInterface) {
-            JavaCodeFragmentBuilder builder = getMethodBuilder();
             String javaDoc = null; // getLocalizedText(null, a.getName()); // TODO
-            builder.javaDoc(javaDoc, JavaSourceFileBuilder.ANNOTATION_GENERATED);
-            generateGetterSignature(builder);
-            builder.openBracket();
-            builder.append("return ");
-            // TODO this has to be cleaned up reference to the JavaSourceFileBuilder has to be removed
-            builder.append(((StandardBuilderSet)getJavaSourceFileBuilder().getBuilderSet()).getGenerator(getProductCmptType())
-            .getMethodNameGetProductCmptGeneration());
-            builder.append("().");
-            builder.append(getGetterMethodName());
-            builder.append("();");
-            builder.closeBracket();
+            methodBuilder.javaDoc(javaDoc, JavaSourceFileBuilder.ANNOTATION_GENERATED);
+            generateGetterSignature(methodBuilder);
+            methodBuilder.openBracket();
+            methodBuilder.append("return ");
+            methodBuilder.append(getGenProductCmptType().getMethodNameGetProductCmptGeneration());
+            methodBuilder.append("().");
+            methodBuilder.append(getGetterMethodName());
+            methodBuilder.append("();");
+            methodBuilder.closeBracket();
         }
     }
 

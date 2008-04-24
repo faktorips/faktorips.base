@@ -32,7 +32,6 @@ import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAssociation;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAttribute;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeAssociation;
-import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeAttribute;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeMethod;
 import org.faktorips.devtools.core.model.productcmpttype.ITableStructureUsage;
 import org.faktorips.devtools.core.model.productcmpttype.ProductCmptTypeHierarchyVisitor;
@@ -44,10 +43,7 @@ import org.faktorips.devtools.stdbuilder.StandardBuilderSet;
 import org.faktorips.devtools.stdbuilder.StdBuilderHelper;
 import org.faktorips.devtools.stdbuilder.policycmpttype.GenPolicyCmptType;
 import org.faktorips.devtools.stdbuilder.policycmpttype.attribute.GenAttribute;
-import org.faktorips.devtools.stdbuilder.policycmpttype.attribute.GenChangeableAttribute;
 import org.faktorips.devtools.stdbuilder.productcmpttype.association.GenProdAssociation;
-import org.faktorips.devtools.stdbuilder.productcmpttype.association.GenProdAssociationTo1;
-import org.faktorips.devtools.stdbuilder.productcmpttype.association.GenProdAssociationToMany;
 import org.faktorips.devtools.stdbuilder.productcmpttype.attribute.GenProdAttribute;
 import org.faktorips.devtools.stdbuilder.table.TableImplBuilder;
 import org.faktorips.runtime.ITable;
@@ -76,9 +72,6 @@ public class ProductCmptGenImplClassBuilder extends BaseProductCmptTypeBuilder {
     public static final String XML_ATTRIBUTE_TARGET_RUNTIME_ID = "targetRuntimeId";
 
     private ProductCmptGenInterfaceBuilder interfaceBuilder;
-    private ProductCmptImplClassBuilder productCmptTypeImplCuBuilder;
-    private ProductCmptInterfaceBuilder productCmptTypeInterfaceBuilder;
-    private ProductCmptGenInterfaceBuilder productCmptGenInterfaceBuilder;
 
     private TableImplBuilder tableImplBuilder;
 
@@ -94,15 +87,6 @@ public class ProductCmptGenImplClassBuilder extends BaseProductCmptTypeBuilder {
 
     public ProductCmptGenInterfaceBuilder getInterfaceBuilder() {
         return interfaceBuilder;
-    }
-
-    public void setProductCmptTypeImplBuilder(ProductCmptImplClassBuilder builder) {
-        ArgumentCheck.notNull(builder);
-        productCmptTypeImplCuBuilder = builder;
-    }
-
-    public void setProductCmptTypeInterfaceBuilder(ProductCmptInterfaceBuilder builder) {
-        this.productCmptTypeInterfaceBuilder = builder;
     }
 
     public void setTableImplBuilder(TableImplBuilder tableImplBuilder) {
@@ -176,7 +160,7 @@ public class ProductCmptGenImplClassBuilder extends BaseProductCmptTypeBuilder {
         builder.append("public ");
         builder.append(getUnqualifiedClassName());
         builder.append('(');
-        builder.appendClassName(productCmptTypeImplCuBuilder.getQualifiedClassName(getIpsSrcFile()));
+        builder.appendClassName(((StandardBuilderSet)getBuilderSet()).getGenerator(getProductCmptType()).getQualifiedName(false));
         builder.append(" productCmpt)");
         builder.openBracket();
         builder.appendln("super(productCmpt);");
@@ -204,7 +188,7 @@ public class ProductCmptGenImplClassBuilder extends BaseProductCmptTypeBuilder {
         builder.appendln("super.doInitPropertiesFromXml(configMap);");
 
         boolean attributeFound = false;
-        for (Iterator it = getGenProdAttributes(); it.hasNext();) {
+        for (Iterator it = ((StandardBuilderSet)getBuilderSet()).getGenerator(getProductCmptType()).getGenProdAttributes(); it.hasNext();) {
             GenProdAttribute generator = (GenProdAttribute)it.next();
             if (generator.isValidAttribute()) {
                 continue;
@@ -457,14 +441,7 @@ public class ProductCmptGenImplClassBuilder extends BaseProductCmptTypeBuilder {
         return "get" + StringUtils.capitalize(tsu.getRoleName());
     }
 
-    /**
-     * {@inheritDoc}
-     */
-    protected GenProdAttribute createGenerator(IProductCmptTypeAttribute a, LocalizedStringsSet stringsSet)
-            throws CoreException {
-        return new GenProdAttribute(a, this, stringsSet);
-    }
-
+    // TODO move to GenProductCmptType
     public JavaCodeFragment generateFragmentCheckIfRepositoryIsModifiable() {
         JavaCodeFragment frag = new JavaCodeFragment();
         frag.appendln("if (" + MethodNames.GET_REPOSITORY + "()!=null && !" + MethodNames.GET_REPOSITORY + "()."
@@ -493,7 +470,7 @@ public class ProductCmptGenImplClassBuilder extends BaseProductCmptTypeBuilder {
                 // the product component builder.
             } else {
                 methodsBuilder.javaDoc(getJavaDocCommentForOverriddenMethod(), ANNOTATION_GENERATED);
-                productCmptGenInterfaceBuilder.generateSignatureForModelMethod(productCmptTypeMethod, true, false,
+                interfaceBuilder.generateSignatureForModelMethod(productCmptTypeMethod, true, false,
                         methodsBuilder);
                 methodsBuilder.append(';');
             }
@@ -502,7 +479,7 @@ public class ProductCmptGenImplClassBuilder extends BaseProductCmptTypeBuilder {
                         .findOverloadedFormulaMethod(getIpsProject());
                 methodsBuilder.appendln();
                 methodsBuilder.javaDoc(getJavaDocCommentForOverriddenMethod(), ANNOTATION_GENERATED);
-                productCmptGenInterfaceBuilder.generateSignatureForModelMethod(overloadedFormulaMethod, false, false,
+                interfaceBuilder.generateSignatureForModelMethod(overloadedFormulaMethod, false, false,
                         methodsBuilder);
                 methodsBuilder.openBracket();
                 methodsBuilder.appendln("// TODO a delegation to the method " + method.getSignatureString()
@@ -520,7 +497,7 @@ public class ProductCmptGenImplClassBuilder extends BaseProductCmptTypeBuilder {
         } else {
             methodsBuilder.javaDoc(method.getDescription(), ANNOTATION_GENERATED);
         }
-        productCmptGenInterfaceBuilder.generateSignatureForModelMethod(productCmptTypeMethod, method.isAbstract(),
+        interfaceBuilder.generateSignatureForModelMethod(productCmptTypeMethod, method.isAbstract(),
                 false, methodsBuilder);
         methodsBuilder.openBracket();
         methodsBuilder.appendln("// TODO implement method!");
@@ -561,7 +538,7 @@ public class ProductCmptGenImplClassBuilder extends BaseProductCmptTypeBuilder {
             JavaCodeFragmentBuilder memberVarsBuilder,
             JavaCodeFragmentBuilder methodsBuilder) throws Exception {
         GenProdAssociation generator = getGenerator(association);
-        generator.generate(generatesInterface());
+        generator.generate(generatesInterface(), getIpsProject(), getMainTypeSection());
     }
 
     /**
@@ -582,10 +559,6 @@ public class ProductCmptGenImplClassBuilder extends BaseProductCmptTypeBuilder {
             JavaCodeFragmentBuilder methodsBuilder) throws Exception {
         GenProdAssociation generator = getGenerator(association);
         generator.generateCodeForDerivedUnionAssociationImplementation(implAssociations, methodsBuilder);
-    }
-
-    public void setProductCmptGenInterfaceBuilder(ProductCmptGenInterfaceBuilder productCmptGenInterfaceBuilder) {
-        this.productCmptGenInterfaceBuilder = productCmptGenInterfaceBuilder;
     }
 
     class GetClassModifierFunction extends ProductCmptTypeHierarchyVisitor {
@@ -615,18 +588,6 @@ public class ProductCmptGenImplClassBuilder extends BaseProductCmptTypeBuilder {
             return modifier;
         }
 
-    }
-
-    protected GenProdAssociation createGenerator(IProductCmptTypeAssociation association, LocalizedStringsSet stringsSet)
-            throws CoreException {
-        if (association.is1ToMany()) {
-            return new GenProdAssociationToMany(association, this, stringsSet);
-        }
-        return new GenProdAssociationTo1(association, this, stringsSet);
-    }
-
-    public ProductCmptInterfaceBuilder getProductCmptInterfaceBuilder() {
-        return productCmptTypeInterfaceBuilder;
     }
 
 }

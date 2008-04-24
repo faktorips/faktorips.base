@@ -57,6 +57,7 @@ import org.faktorips.devtools.core.model.productcmpt.IProductCmptNamingStrategy;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
 import org.faktorips.devtools.core.model.type.IMethod;
 import org.faktorips.devtools.core.model.type.IParameter;
+import org.faktorips.devtools.stdbuilder.StandardBuilderSet;
 import org.faktorips.devtools.stdbuilder.policycmpttype.PolicyCmptInterfaceBuilder;
 import org.faktorips.devtools.stdbuilder.productcmpt.ProductCmptBuilder;
 import org.faktorips.devtools.stdbuilder.productcmpt.ProductCmptGenerationCuBuilder;
@@ -343,7 +344,7 @@ public class FormulaTestBuilder extends DefaultJavaSourceFileBuilder {
     private void generateSignatureGetProductCmptGeneration(IProductCmptType type, JavaCodeFragmentBuilder methodsBuilder)
             throws CoreException {
         String genName = productCmptInterfaceBuilder.getQualifiedClassName(type);
-        String methodName = policyCmptInterfaceBuilder.getMethodNameGetProductCmpt(type);
+        String methodName = ((StandardBuilderSet)getBuilderSet()).getGenerator(type).getMethodNameGetProductCmpt();
         methodsBuilder.signature(java.lang.reflect.Modifier.PUBLIC, genName, methodName, EMPTY_STRING_ARRAY, EMPTY_STRING_ARRAY);
     }
     
@@ -376,7 +377,7 @@ public class FormulaTestBuilder extends DefaultJavaSourceFileBuilder {
         String genClassName = productCmptInterfaceBuilder.getQualifiedClassName(productCmptType);
         body.appendClassName(genClassName);
         body.append(" productCmpt = ");
-        body.append(policyCmptInterfaceBuilder.getMethodNameGetProductCmpt(productCmptType));
+        body.append(((StandardBuilderSet)getBuilderSet()).getGenerator(productCmptType).getMethodNameGetProductCmpt());
         body.appendln("();");
         body.appendln();
         

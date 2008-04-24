@@ -15,28 +15,28 @@
  *
  *******************************************************************************/
 
-package org.faktorips.devtools.stdbuilder.policycmpttype;
+package org.faktorips.devtools.stdbuilder.productcmpttype;
 
 import org.eclipse.core.runtime.CoreException;
 import org.faktorips.devtools.core.builder.DefaultJavaGeneratorForIpsPart2;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPartContainer;
-import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
+import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
 import org.faktorips.util.ArgumentCheck;
 import org.faktorips.util.LocalizedStringsSet;
 
-public abstract class GenPolicyCmptTypePart extends DefaultJavaGeneratorForIpsPart2{
+public abstract class GenProductCmptTypePart extends DefaultJavaGeneratorForIpsPart2{
 
-    private GenPolicyCmptType genPolicyCmptType;
+    private GenProductCmptType genProductCmptType;
     
-    public GenPolicyCmptTypePart(GenPolicyCmptType genPolicyCmptType, IIpsObjectPartContainer part, LocalizedStringsSet stringsSet) throws CoreException {
+    public GenProductCmptTypePart(GenProductCmptType genProductCmptType, IIpsObjectPartContainer part, LocalizedStringsSet stringsSet) throws CoreException {
         super(part, stringsSet);
-        ArgumentCheck.notNull(genPolicyCmptType, this);
-        this.genPolicyCmptType = genPolicyCmptType;
+        ArgumentCheck.notNull(genProductCmptType, this);
+        this.genProductCmptType = genProductCmptType;
     }
 
 
-    public GenPolicyCmptType getGenPolicyCmptType(){
-        return genPolicyCmptType;
+    public GenProductCmptType getGenProductCmptType(){
+        return genProductCmptType;
     }
 
     /**
@@ -47,11 +47,11 @@ public abstract class GenPolicyCmptTypePart extends DefaultJavaGeneratorForIpsPa
      * @return the qualified class name
      * @throws CoreException
      */
-    public String getQualifiedClassName(IPolicyCmptType target, boolean forInterface) throws CoreException {
-        return genPolicyCmptType.getBuilderSet().getGenerator(target).getQualifiedName(forInterface);
+    public String getQualifiedClassName(IProductCmptType target, boolean forInterface) throws CoreException {
+        return genProductCmptType.getBuilderSet().getGenerator(target).getQualifiedName(forInterface);
     }
 
-    public String getUnqualifiedClassName(IPolicyCmptType target, boolean forInterface) throws CoreException {
-        return genPolicyCmptType.getBuilderSet().getGenerator(target).getUnqualifiedClassName(forInterface);
+    public String getUnqualifiedClassName(IProductCmptType target, boolean forInterface) throws CoreException {
+        return genProductCmptType.getBuilderSet().getGenerator(target).getUnqualifiedClassName(forInterface);
     }
 }

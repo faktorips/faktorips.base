@@ -34,7 +34,7 @@ import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeAssocia
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeAttribute;
 import org.faktorips.devtools.core.model.productcmpttype.ITableStructureUsage;
 import org.faktorips.devtools.core.model.type.IMethod;
-import org.faktorips.devtools.stdbuilder.policycmpttype.PolicyCmptInterfaceBuilder;
+import org.faktorips.devtools.stdbuilder.StandardBuilderSet;
 import org.faktorips.devtools.stdbuilder.policycmpttype.attribute.GenAttribute;
 import org.faktorips.devtools.stdbuilder.productcmpttype.association.GenProdAssociation;
 import org.faktorips.devtools.stdbuilder.productcmpttype.attribute.GenProdAttribute;
@@ -49,20 +49,10 @@ import org.faktorips.util.LocalizedStringsSet;
  */
 public class ProductCmptInterfaceBuilder extends BaseProductCmptTypeBuilder {
 
-    private PolicyCmptInterfaceBuilder policyCmptTypeInterfaceBuilder;
-    private ProductCmptGenInterfaceBuilder productCmptGenInterfaceBuilder;
 
     public ProductCmptInterfaceBuilder(IIpsArtefactBuilderSet builderSet, String kindId) throws CoreException {
         super(builderSet, kindId, new LocalizedStringsSet(ProductCmptInterfaceBuilder.class));
         setMergeEnabled(true);
-    }
-
-    public void setPolicyCmptTypeInterfaceBuilder(PolicyCmptInterfaceBuilder builder) {
-        this.policyCmptTypeInterfaceBuilder = builder;
-    }
-
-    public void setProductCmptGenInterfaceBuilder(ProductCmptGenInterfaceBuilder builder) {
-        this.productCmptGenInterfaceBuilder = builder;
     }
 
     /**
@@ -154,17 +144,10 @@ public class ProductCmptInterfaceBuilder extends BaseProductCmptTypeBuilder {
      * </pre>
      */
     void generateSignatureGetGeneration(IProductCmptType type, JavaCodeFragmentBuilder methodsBuilder) throws CoreException {
-        String generationInterface = productCmptGenInterfaceBuilder.getQualifiedClassName(type);
-        String methodName = getMethodNameGetGeneration(type);
+        String generationInterface = ((StandardBuilderSet)getBuilderSet()).getGenerator(type).getQualifiedClassNameForProductCmptTypeGen(true);
+        String methodName = ((StandardBuilderSet)getBuilderSet()).getGenerator(type).getMethodNameGetGeneration();
         String paramName = getVarNameEffectiveDate(type);
         methodsBuilder.signature(Modifier.PUBLIC, generationInterface, methodName, new String[]{paramName}, new String[]{Calendar.class.getName()});
-    }
-    
-    public String getMethodNameGetGeneration(IProductCmptType type) throws CoreException {
-        IChangesOverTimeNamingConvention convention = getChangesInTimeNamingConvention(type);
-        String generationConceptName = convention.getGenerationConceptNameSingular(getLanguageUsedInGeneratedSourceCode(type));
-        String generationConceptAbbreviation = convention.getGenerationConceptNameAbbreviation(getLanguageUsedInGeneratedSourceCode(type));
-        return getLocalizedText(type, "METHOD_GET_GENERATION_NAME", new String[]{type.getName(), generationConceptAbbreviation, generationConceptName});
     }
 
     /**
@@ -176,7 +159,7 @@ public class ProductCmptInterfaceBuilder extends BaseProductCmptTypeBuilder {
      */
     private void generateMethodCreatePolicyCmpt(JavaCodeFragmentBuilder methodsBuilder) throws CoreException {
         IPolicyCmptType policyCmptType = getPcType();
-        String policyCmptTypeName = policyCmptTypeInterfaceBuilder.getPolicyCmptTypeName(policyCmptType); 
+        String policyCmptTypeName = ((StandardBuilderSet)getBuilderSet()).getGenerator(policyCmptType).getPolicyCmptTypeName(); 
         appendLocalizedJavaDoc("METHOD_CREATE_POLICY_CMPT", new String[]{policyCmptTypeName}, getIpsObject(), methodsBuilder);
         generateSignatureCreatePolicyCmpt(policyCmptType, methodsBuilder);
         methodsBuilder.append(';');
@@ -189,7 +172,7 @@ public class ProductCmptInterfaceBuilder extends BaseProductCmptTypeBuilder {
      * </pre>
      */
     void generateSignatureCreatePolicyCmpt(IPolicyCmptType type, JavaCodeFragmentBuilder methodsBuilder) throws CoreException {
-        String returnType =policyCmptTypeInterfaceBuilder.getQualifiedClassName(type);
+        String returnType = ((StandardBuilderSet)getBuilderSet()).getGenerator(type).getQualifiedName(true);
         String methodName = getMethodNameCreatePolicyCmpt(type);
         methodsBuilder.signature(Modifier.PUBLIC, returnType, methodName, new String[0], new String[0]);
     }
@@ -198,7 +181,7 @@ public class ProductCmptInterfaceBuilder extends BaseProductCmptTypeBuilder {
      * Returns the method name to create the concrete policy component class, e.g. createMotorPolicy.
      */
     public String getMethodNameCreatePolicyCmpt(IPolicyCmptType type) throws CoreException {
-        String policyCmptConceptName = policyCmptTypeInterfaceBuilder.getPolicyCmptTypeName(type); 
+        String policyCmptConceptName = ((StandardBuilderSet)getBuilderSet()).getGenerator(type).getPolicyCmptTypeName(); 
         return getLocalizedText(type, "METHOD_CREATE_POLICY_CMPT_NAME", policyCmptConceptName);
     }
     
@@ -212,7 +195,18 @@ public class ProductCmptInterfaceBuilder extends BaseProductCmptTypeBuilder {
             JavaCodeFragmentBuilder methodsBuilder) throws CoreException {
         
         // nothing to do
+    }
 
+    /**
+     * {@inheritDoc}
+     */
+    protected void generateCodeForProductCmptTypeAttribute(org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeAttribute attribute,
+            DatatypeHelper datatypeHelper,
+            JavaCodeFragmentBuilder fieldsBuilder,
+            JavaCodeFragmentBuilder methodsBuilder,
+            JavaCodeFragmentBuilder constantBuilder) throws CoreException {
+
+        // nothing to do
     }
 
     /**

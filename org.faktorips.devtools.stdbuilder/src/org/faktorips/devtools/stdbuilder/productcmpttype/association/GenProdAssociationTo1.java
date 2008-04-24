@@ -23,10 +23,10 @@ import org.faktorips.codegen.JavaCodeFragment;
 import org.faktorips.codegen.JavaCodeFragmentBuilder;
 import org.faktorips.datatype.Datatype;
 import org.faktorips.devtools.core.builder.JavaSourceFileBuilder;
+import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAssociation;
-import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeAssociation;
-import org.faktorips.devtools.stdbuilder.productcmpttype.BaseProductCmptTypeBuilder;
+import org.faktorips.devtools.stdbuilder.productcmpttype.GenProductCmptType;
 import org.faktorips.devtools.stdbuilder.productcmpttype.ProductCmptGenImplClassBuilder;
 import org.faktorips.runtime.internal.MethodNames;
 import org.faktorips.util.LocalizedStringsSet;
@@ -44,15 +44,16 @@ public class GenProdAssociationTo1 extends GenProdAssociation {
      * @param stringsSet
      * @throws CoreException
      */
-    public GenProdAssociationTo1(IProductCmptTypeAssociation association, BaseProductCmptTypeBuilder builder,
+    public GenProdAssociationTo1(GenProductCmptType genProductCmptType, IProductCmptTypeAssociation association,
             LocalizedStringsSet stringsSet) throws CoreException {
-        super(association, builder, stringsSet);
+        super(genProductCmptType, association, stringsSet);
     }
 
     /**
      * {@inheritDoc}
      */
-    protected void generateConstants(JavaCodeFragmentBuilder builder, boolean generatesInterface) throws CoreException {
+    protected void generateConstants(JavaCodeFragmentBuilder builder, IIpsProject ipsProject, boolean generatesInterface)
+            throws CoreException {
         if (generatesInterface) {
 
         } else {
@@ -63,13 +64,14 @@ public class GenProdAssociationTo1 extends GenProdAssociation {
     /**
      * {@inheritDoc}
      */
-    protected void generateMemberVariables(JavaCodeFragmentBuilder builder, boolean generatesInterface)
-            throws CoreException {
+    protected void generateMemberVariables(JavaCodeFragmentBuilder builder,
+            IIpsProject ipsProject,
+            boolean generatesInterface) throws CoreException {
         if (generatesInterface) {
 
         } else {
             generateFieldTo1Association(builder);
-            if (association.findMatchingPolicyCmptTypeAssociation(getIpsProject()) != null) {
+            if (association.findMatchingPolicyCmptTypeAssociation(ipsProject) != null) {
                 generateFieldCardinalityForAssociation(builder);
             }
         }
@@ -78,16 +80,17 @@ public class GenProdAssociationTo1 extends GenProdAssociation {
     /**
      * {@inheritDoc}
      */
-    protected void generateMethods(JavaCodeFragmentBuilder builder, boolean generatesInterface) throws CoreException {
+    protected void generateMethods(JavaCodeFragmentBuilder builder, IIpsProject ipsProject, boolean generatesInterface)
+            throws CoreException {
         if (generatesInterface) {
             generateMethodInterfaceGet1RelatedCmpt(builder);
-            if (association.findMatchingPolicyCmptTypeAssociation(getIpsProject()) != null) {
+            if (association.findMatchingPolicyCmptTypeAssociation(ipsProject) != null) {
                 generateMethodGetCardinalityForAssociation(builder);
             }
         } else {
             generateMethodGet1RelatedCmpt(builder);
             generateMethodSet1RelatedCmpt(builder);
-            if (association.findMatchingPolicyCmptTypeAssociation(getIpsProject()) != null) {
+            if (association.findMatchingPolicyCmptTypeAssociation(ipsProject) != null) {
                 generateMethodGetCardinalityFor1ToManyAssociation(builder);
             }
         }
@@ -142,8 +145,7 @@ public class GenProdAssociationTo1 extends GenProdAssociation {
         methodsBuilder.javaDoc(getJavaDocCommentForOverriddenMethod(), JavaSourceFileBuilder.ANNOTATION_GENERATED);
         generateSignatureGet1RelatedCmpt(methodsBuilder);
         String fieldName = getFieldNameTo1Association();
-        String targetClass = getProductCmptInterfaceBuilder().getQualifiedClassName(
-                association.findTarget(getIpsProject()));
+        String targetClass = getQualifiedInterfaceClassNameForTarget();
         methodsBuilder.openBracket();
         methodsBuilder.append("return (");
         methodsBuilder.appendClassName(targetClass);
@@ -184,12 +186,11 @@ public class GenProdAssociationTo1 extends GenProdAssociation {
         String propName = getPropertyNameTo1Association();
         String methodName = getJavaNamingConvention().getSetterMethodName(propName, Datatype.INTEGER);
         String[] argNames = new String[] { "target" };
-        String[] argTypes = new String[] { getProductCmptInterfaceBuilder().getQualifiedClassName(
-                association.findTarget(getIpsProject())) };
+        String[] argTypes = new String[] { getQualifiedInterfaceClassNameForTarget() };
         methodsBuilder.signature(Modifier.PUBLIC, "void", methodName, argNames, argTypes);
         String fieldName = getFieldNameTo1Association();
         methodsBuilder.openBracket();
-        methodsBuilder.append(getGenImplClassBuilder().generateFragmentCheckIfRepositoryIsModifiable());
+        methodsBuilder.append(getGenProductCmptType().generateFragmentCheckIfRepositoryIsModifiable());
         methodsBuilder.append(fieldName + " = (" + argNames[0] + "==null ? null : " + argNames[0] + "."
                 + MethodNames.GET_PRODUCT_COMPONENT_ID + "() );");
         methodsBuilder.closeBracket();
@@ -204,8 +205,7 @@ public class GenProdAssociationTo1 extends GenProdAssociation {
      */
     void generateSignatureGet1RelatedCmpt(JavaCodeFragmentBuilder builder) throws CoreException {
         String methodName = getMethodNameGet1RelatedCmpt();
-        IProductCmptType target = association.findTargetProductCmptType(getIpsProject());
-        String returnType = getProductCmptInterfaceBuilder().getQualifiedClassName(target);
+        String returnType = getQualifiedInterfaceClassNameForTarget();
         builder.signature(Modifier.PUBLIC, returnType, methodName, EMPTY_STRING_ARRAY, EMPTY_STRING_ARRAY);
     }
 

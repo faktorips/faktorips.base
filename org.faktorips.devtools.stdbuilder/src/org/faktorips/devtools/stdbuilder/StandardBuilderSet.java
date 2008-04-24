@@ -106,6 +106,8 @@ public class StandardBuilderSet extends DefaultBuilderSet {
     private EnumClassesBuilder enumClassesBuilder;
     private String version;
     private Map ipsObjectTypeGenerators = new HashMap(1000);
+
+    private boolean generateChangeListener;
     
     
     public StandardBuilderSet() {
@@ -315,8 +317,7 @@ public class StandardBuilderSet extends DefaultBuilderSet {
      */
     public void initialize(IIpsArtefactBuilderSetConfig config) throws CoreException {
 
-        //configuration properties
-        boolean generateChangeListener = config.getBooleanPropertyValue(StandardBuilderSet.CONFIG_PROPERTY_GENERATE_CHANGELISTENER, false);
+        generateChangeListener = config.getBooleanPropertyValue(StandardBuilderSet.CONFIG_PROPERTY_GENERATE_CHANGELISTENER, false);
         boolean generateDeltaSupport = config.getBooleanPropertyValue(StandardBuilderSet.CONFIG_PROPERTY_GENERATE_DELTA_SUPPORT, false);
         boolean generateCopySupport = config.getBooleanPropertyValue(StandardBuilderSet.CONFIG_PROPERTY_GENERATE_COPY_SUPPORT, false);
         
@@ -371,28 +372,12 @@ public class StandardBuilderSet extends DefaultBuilderSet {
         
         // policy component type builders
         policyCmptImplClassBuilder.setInterfaceBuilder(policyCmptInterfaceBuilder);
-        policyCmptInterfaceBuilder.setProductCmptInterfaceBuilder(productCmptInterfaceBuilder);
-        policyCmptInterfaceBuilder.setProductCmptGenInterfaceBuilder(productCmptGenInterfaceBuilder);
-        policyCmptImplClassBuilder.setProductCmptGenInterfaceBuilder(productCmptGenInterfaceBuilder);
-        policyCmptImplClassBuilder.setProductCmptGenImplBuilder(productCmptGenImplClassBuilder);
-        policyCmptImplClassBuilder.setProductCmptInterfaceBuilder(productCmptInterfaceBuilder);
         
         // product component type builders
-        productCmptInterfaceBuilder.setPolicyCmptTypeInterfaceBuilder(policyCmptInterfaceBuilder);
-        productCmptInterfaceBuilder.setProductCmptGenInterfaceBuilder(productCmptGenInterfaceBuilder);
 
         productCmptImplClassBuilder.setInterfaceBuilder(productCmptInterfaceBuilder);
-        productCmptImplClassBuilder.setProductCmptGenInterfaceBuilder(productCmptGenInterfaceBuilder);
-        productCmptImplClassBuilder.setPolicyCmptImplClassBuilder(policyCmptImplClassBuilder);
-        
-        productCmptGenInterfaceBuilder.setProductCmptTypeInterfaceBuilder(productCmptInterfaceBuilder);
-        productCmptGenInterfaceBuilder.setPolicyCmptTypeImplBuilder(policyCmptImplClassBuilder);
-        productCmptGenInterfaceBuilder.setProductCmptGenImplClassBuilder(productCmptGenImplClassBuilder);
         
         productCmptGenImplClassBuilder.setInterfaceBuilder(productCmptGenInterfaceBuilder);
-        productCmptGenImplClassBuilder.setProductCmptTypeImplBuilder(productCmptImplClassBuilder);
-        productCmptGenImplClassBuilder.setProductCmptTypeInterfaceBuilder(productCmptInterfaceBuilder);
-        productCmptGenImplClassBuilder.setProductCmptGenInterfaceBuilder(productCmptGenInterfaceBuilder);
         productCmptGenImplClassBuilder.setTableImplBuilder(tableImplBuilder);
         
         // product component builders.
@@ -476,5 +461,9 @@ public class StandardBuilderSet extends DefaultBuilderSet {
      */
     public String getVersion() {
         return version;
+    }
+
+    public boolean isGenerateChangeListener() {
+        return generateChangeListener;
     }
 }

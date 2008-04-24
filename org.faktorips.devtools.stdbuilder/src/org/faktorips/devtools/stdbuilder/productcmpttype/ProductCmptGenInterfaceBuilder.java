@@ -32,18 +32,13 @@ import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAttribute;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeAssociation;
-import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeAttribute;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeMethod;
 import org.faktorips.devtools.core.model.productcmpttype.ITableStructureUsage;
 import org.faktorips.devtools.core.model.type.IMethod;
 import org.faktorips.devtools.core.model.type.IParameter;
 import org.faktorips.devtools.stdbuilder.StandardBuilderSet;
 import org.faktorips.devtools.stdbuilder.StdBuilderHelper;
-import org.faktorips.devtools.stdbuilder.policycmpttype.PolicyCmptImplClassBuilder;
 import org.faktorips.devtools.stdbuilder.productcmpttype.association.GenProdAssociation;
-import org.faktorips.devtools.stdbuilder.productcmpttype.association.GenProdAssociationTo1;
-import org.faktorips.devtools.stdbuilder.productcmpttype.association.GenProdAssociationToMany;
-import org.faktorips.devtools.stdbuilder.productcmpttype.attribute.GenProdAttribute;
 import org.faktorips.runtime.FormulaExecutionException;
 import org.faktorips.runtime.IProductComponentGeneration;
 import org.faktorips.util.LocalizedStringsSet;
@@ -57,32 +52,9 @@ import org.faktorips.util.StringUtil;
  */
 public class ProductCmptGenInterfaceBuilder extends BaseProductCmptTypeBuilder {
     
-    private ProductCmptInterfaceBuilder productCmptTypeInterfaceBuilder;
-    private PolicyCmptImplClassBuilder policyCmptTypeImplBuilder;
-    private ProductCmptGenImplClassBuilder productCmptGenImplClassBuilder;
-    
     public ProductCmptGenInterfaceBuilder(IIpsArtefactBuilderSet builderSet, String kindId) {
         super(builderSet, kindId, new LocalizedStringsSet(ProductCmptGenInterfaceBuilder.class));
         setMergeEnabled(true);
-    }
-    
-    public void setProductCmptTypeInterfaceBuilder(ProductCmptInterfaceBuilder builder) {
-        this.productCmptTypeInterfaceBuilder = builder;
-    }
-    
-    public void setPolicyCmptTypeImplBuilder(PolicyCmptImplClassBuilder policyCmptTypeImplBuilder) {
-        this.policyCmptTypeImplBuilder = policyCmptTypeImplBuilder;
-    }
-    
-    public void setProductCmptGenImplClassBuilder(ProductCmptGenImplClassBuilder builder) {
-        this.productCmptGenImplClassBuilder = builder;
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    protected GenProdAttribute createGenerator(IProductCmptTypeAttribute a, LocalizedStringsSet stringsSet) throws CoreException {
-        return new GenProdAttribute(a, this, stringsSet);
     }
 
     /**
@@ -92,6 +64,8 @@ public class ProductCmptGenInterfaceBuilder extends BaseProductCmptTypeBuilder {
         String name = ipsSrcFile.getIpsObjecName() + getAbbreviationForGenerationConcept(ipsSrcFile);
         return getJavaNamingConvention().getPublishedInterfaceName(name);
     }
+    
+    
     
     /**
      * {@inheritDoc}
@@ -150,7 +124,7 @@ public class ProductCmptGenInterfaceBuilder extends BaseProductCmptTypeBuilder {
      */
     protected void generateCodeForNoneDerivedUnionAssociation(IProductCmptTypeAssociation association, JavaCodeFragmentBuilder memberVarsBuilder, JavaCodeFragmentBuilder methodsBuilder) throws Exception {
         GenProdAssociation generator = getGenerator(association);
-        generator.generate(generatesInterface());
+        generator.generate(generatesInterface(), getIpsProject(), getMainTypeSection());
     }
 
     /**
@@ -275,17 +249,5 @@ public class ProductCmptGenInterfaceBuilder extends BaseProductCmptTypeBuilder {
         System.arraycopy(source1, 0, dest, 0, source1.length);
         System.arraycopy(source2, 0, dest, source1.length, source2.length);
         return dest;
-    }  
-
-    protected GenProdAssociation createGenerator(IProductCmptTypeAssociation association, LocalizedStringsSet stringsSet)
-            throws CoreException {
-        if (association.is1ToMany()) {
-            return new GenProdAssociationToMany(association, this, stringsSet);
-        }
-        return new GenProdAssociationTo1(association, this, stringsSet);
-    }  
-
-    public ProductCmptInterfaceBuilder getProductCmptInterfaceBuilder() {
-        return productCmptTypeInterfaceBuilder;
     }
 }

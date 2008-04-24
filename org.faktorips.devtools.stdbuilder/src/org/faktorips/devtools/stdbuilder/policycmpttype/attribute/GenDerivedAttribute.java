@@ -140,7 +140,7 @@ public class GenDerivedAttribute extends GenAttribute {
             }
             paramFragment.append(")");
             builder.append(" return ((");
-            builder.appendClassName(getGenPolicyCmptType().getBuilderSet().getGenerator(getProductCmptType(ipsProject)).getQualifiedName(false));
+            builder.appendClassName(getGenPolicyCmptType().getBuilderSet().getGenerator(getProductCmptType(ipsProject)).getQualifiedClassNameForProductCmptTypeGen(false));
             builder.append(')');
             builder.append(getGenPolicyCmptType().getBuilderSet().getGenerator(getProductCmptType(ipsProject))
                     .getMethodNameGetProductCmptGeneration());

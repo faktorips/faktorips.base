@@ -58,9 +58,9 @@ public class StdBuilderHelper {
             return builderSet.getGenerator((IPolicyCmptType)datatype).getQualifiedName(false);
         } else if(datatype instanceof ProductCmptType){
             if (resolveToPublishedInterface) {
-                return builderSet.getGenerator((IProductCmptType)datatype).getQualifiedName(true);
+                return builderSet.getGenerator((IProductCmptType)datatype).getQualifiedClassNameForProductCmptTypeGen(true);
             }
-            return builderSet.getGenerator((IProductCmptType)datatype).getQualifiedName(false);
+            return builderSet.getGenerator((IProductCmptType)datatype).getQualifiedClassNameForProductCmptTypeGen(false);
         }
         throw new RuntimeException("Can't get Java class name for datatype " + datatypeName);
     }
