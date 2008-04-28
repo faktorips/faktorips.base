@@ -30,6 +30,7 @@ import org.faktorips.devtools.core.model.productcmpt.IFormula;
 import org.faktorips.devtools.core.model.tablecontents.ITableContents;
 import org.faktorips.devtools.core.model.tablestructure.ITableAccessFunction;
 import org.faktorips.devtools.core.model.tablestructure.ITableStructure;
+import org.faktorips.devtools.core.ui.controller.fields.EnumTypeTargetJavaVersion;
 import org.faktorips.fl.CompilationResult;
 import org.faktorips.fl.IdentifierResolver;
 
@@ -169,5 +170,13 @@ public class TestIpsArtefactBuilderSet extends AbstractBuilderSet {
      */
     public String getVersion() {
         return null;
+    }
+
+
+    /**
+     * {@inheritDoc}
+     */
+    public EnumTypeTargetJavaVersion getTargetJavaVersion() {
+        return EnumTypeTargetJavaVersion.DEFAULT;
     }
 }
