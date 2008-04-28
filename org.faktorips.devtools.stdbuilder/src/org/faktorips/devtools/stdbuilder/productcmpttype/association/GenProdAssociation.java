@@ -15,6 +15,7 @@
 package org.faktorips.devtools.stdbuilder.productcmpttype.association;
 
 import java.lang.reflect.Modifier;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -272,12 +273,25 @@ public abstract class GenProdAssociation extends GenProductCmptTypePart {
 
         String targetClass = getQualifiedInterfaceClassNameForTarget();
         methodsBuilder.openBracket();
-        methodsBuilder.appendClassName(targetClass);
-        methodsBuilder.append("[] result = new ");
-        methodsBuilder.appendClassName(targetClass);
-        methodsBuilder.append("[");
-        methodsBuilder.append(getMethodNameGetNumOfRelatedCmptsInternal());
-        methodsBuilder.appendln("()];");
+        if (isUseTypesafeCollections()) {
+            methodsBuilder.appendClassName(List.class.getName());
+            methodsBuilder.append("<");
+            methodsBuilder.appendClassName(targetClass);
+            methodsBuilder.append("> result = new ");
+            methodsBuilder.appendClassName(ArrayList.class.getName());
+            methodsBuilder.append("<");
+            methodsBuilder.appendClassName(targetClass);
+            methodsBuilder.append(">(");
+            methodsBuilder.append(getMethodNameGetNumOfRelatedCmptsInternal());
+            methodsBuilder.appendln("());");
+        } else {
+            methodsBuilder.appendClassName(targetClass);
+            methodsBuilder.append("[] result = new ");
+            methodsBuilder.appendClassName(targetClass);
+            methodsBuilder.append("[");
+            methodsBuilder.append(getMethodNameGetNumOfRelatedCmptsInternal());
+            methodsBuilder.appendln("()];");
+        }
 
         IProductCmptType supertype = (IProductCmptType)getGenProductCmptType().getProductCmptType().findSupertype(
                 getGenProductCmptType().getProductCmptType().getIpsProject());
@@ -285,13 +299,26 @@ public abstract class GenProdAssociation extends GenProductCmptTypePart {
             // ICoverage[] superResult = super.getCoverages();
             // System.arraycopy(superResult, 0, result, 0, superResult.length);
             // int counter = superResult.length;
-            methodsBuilder.appendClassName(targetClass);
-            methodsBuilder.append("[] superResult = super.");
-            methodsBuilder.appendln(getMethodNameGetManyRelatedCmpts(association) + "();");
-            methodsBuilder.appendln("System.arraycopy(superResult, 0, result, 0, superResult.length);");
-            methodsBuilder.appendln("int index = superResult.length;");
+            if (isUseTypesafeCollections()) {
+                methodsBuilder.appendClassName(List.class.getName());
+                methodsBuilder.append("<");
+                methodsBuilder.appendClassName(targetClass);
+                methodsBuilder.append("> superResult = super.");
+                methodsBuilder.appendln(getMethodNameGetManyRelatedCmpts(association) + "();");
+                methodsBuilder.appendln("result.addAll(superResult);");
+            } else {
+                methodsBuilder.appendClassName(targetClass);
+                methodsBuilder.append("[] superResult = super.");
+                methodsBuilder.appendln(getMethodNameGetManyRelatedCmpts(association) + "();");
+                methodsBuilder.appendln("System.arraycopy(superResult, 0, result, 0, superResult.length);");
+                methodsBuilder.appendln("int index = superResult.length;");
+            }
         } else {
-            methodsBuilder.append("int index = 0;");
+            if (isUseTypesafeCollections()) {
+                
+            }else{
+                methodsBuilder.append("int index = 0;");
+            }
         }
         for (Iterator it = implAssociations.iterator(); it.hasNext();) {
             IProductCmptTypeAssociation implAssociation = (IProductCmptTypeAssociation)it.next();

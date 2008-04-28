@@ -55,7 +55,7 @@ public class GenProdAssociationToMany extends GenProdAssociation {
      * {@inheritDoc}
      */
     protected void generateConstants(JavaCodeFragmentBuilder builder, IIpsProject ipsProject, boolean generatesInterface)
-    throws CoreException {
+            throws CoreException {
         if (generatesInterface) {
 
         } else {
@@ -83,7 +83,7 @@ public class GenProdAssociationToMany extends GenProdAssociation {
      * {@inheritDoc}
      */
     protected void generateMethods(JavaCodeFragmentBuilder builder, IIpsProject ipsProject, boolean generatesInterface)
-    throws CoreException {
+            throws CoreException {
         if (generatesInterface) {
             generateMethodInterfaceGetManyRelatedCmpts(builder);
             generateMethodInterfaceGetRelatedCmptAtIndex(builder);
@@ -103,19 +103,37 @@ public class GenProdAssociationToMany extends GenProdAssociation {
     }
 
     /**
-     * Code sample for
+     * Code sample
      * 
      * <pre>
      * [javadoc]
-     * private CoverageType[] optionalCoverageTypes;
+     * private String[] optionalCoverageTypes;
+     * </pre>
+     * 
+     * Java 5 code sample
+     * 
+     * <pre>
+     * [javadoc]
+     * private List&lt;String&gt; optionalCoverageTypes;
      * </pre>
      */
     private void generateFieldToManyAssociation(JavaCodeFragmentBuilder memberVarsBuilder) throws CoreException {
         String role = StringUtils.capitalize(association.getTargetRolePlural());
         appendLocalizedJavaDoc("FIELD_TOMANY_RELATION", role, memberVarsBuilder);
-        String type = String.class.getName() + "[]";
-        memberVarsBuilder.varDeclaration(Modifier.PRIVATE, type, getFieldNameToManyAssociation(), new JavaCodeFragment(
-                "new String[0]"));
+        if (isUseTypesafeCollections()) {
+            String type = List.class.getName() + "<" + String.class.getName() + ">";
+            JavaCodeFragment fragment = new JavaCodeFragment();
+            fragment.append("new ");
+            fragment.appendClassName(ArrayList.class.getName());
+            fragment.append("<");
+            fragment.appendClassName(String.class.getName());
+            fragment.append(">(0)");
+            memberVarsBuilder.varDeclaration(Modifier.PRIVATE, type, getFieldNameToManyAssociation(), fragment);
+        } else {
+            String type = String.class.getName() + "[]";
+            memberVarsBuilder.varDeclaration(Modifier.PRIVATE, type, getFieldNameToManyAssociation(),
+                    new JavaCodeFragment("new String[0]"));
+        }
     }
 
     private String getFieldNameToManyAssociation() throws CoreException {
@@ -129,6 +147,19 @@ public class GenProdAssociationToMany extends GenProdAssociation {
      * [Javadoc]
      * public ICoverageType[] getCoverageTypes() {
      *     ICoverageType[] result = new ICoverageType[coverageTypes.length];
+     *     for (int i = 0; i &lt; coverageTypes.length; i++) {
+     *         result[i] = (ICoverageType) getRepository().getProductComponent(coverageTypes[i]);
+     *     }
+     *     return result;
+     * }
+     * </pre>
+     * 
+     * Java 5 code sample:
+     * 
+     * <pre>
+     * [Javadoc]
+     * public List&lt;ICoverageType&gt; getCoverageTypes() {
+     *     List&lt;ICoverageType&gt; result = new ArrayList&lt;ICoverageType&gt;(coverageTypes.size());
      *     for (int i = 0; i &lt; result.length; i++) {
      *         result[i] = (ICoverageType) getRepository().getProductComponent(coverageTypes[i]);
      *     }
@@ -154,30 +185,29 @@ public class GenProdAssociationToMany extends GenProdAssociation {
             methodsBuilder.appendClassName(targetClass);
             methodsBuilder.append(">(");
             methodsBuilder.append(fieldName);
-            methodsBuilder.appendln(".length);");
-        }else{
+            methodsBuilder.appendln(".size());");
+            methodsBuilder.append("for (String ");
+            methodsBuilder.append(getJavaNamingConvention().getMemberVarName(association.getTargetRoleSingular()));
+            methodsBuilder.append(" : ");
+            methodsBuilder.append(fieldName);
+            methodsBuilder.appendln(") {");
+            methodsBuilder.appendln("result.add((");
+            methodsBuilder.appendClassName(targetClass);
+            methodsBuilder.append(")getRepository()." + MethodNames.GET_EXISTING_PRODUCT_COMPONENT + "(");
+            methodsBuilder.append(getJavaNamingConvention().getMemberVarName(association.getTargetRoleSingular()));
+            methodsBuilder.appendln("));");
+        } else {
             methodsBuilder.appendClassName(targetClass);
             methodsBuilder.append("[] result = new ");
             methodsBuilder.appendClassName(targetClass);
             methodsBuilder.append("[");
             methodsBuilder.append(fieldName);
             methodsBuilder.appendln(".length];");
-        }
-
-        methodsBuilder.append("for (int i=0; i<");
-        methodsBuilder.append(fieldName);
-        methodsBuilder.appendln(".length; i++) {");
-        if (isUseTypesafeCollections()) {
-            methodsBuilder.appendln("result.add((");
-        }else{
+            methodsBuilder.append("for (int i=0; i<result.length; i++) {");
             methodsBuilder.appendln("result[i] = (");
-        }
-        methodsBuilder.appendClassName(targetClass);
-        methodsBuilder.append(")getRepository()." + MethodNames.GET_EXISTING_PRODUCT_COMPONENT + "(");
-        methodsBuilder.append(fieldName);
-        if (isUseTypesafeCollections()) {
-            methodsBuilder.appendln("[i]));");
-        }else{
+            methodsBuilder.appendClassName(targetClass);
+            methodsBuilder.append(")getRepository()." + MethodNames.GET_EXISTING_PRODUCT_COMPONENT + "(");
+            methodsBuilder.append(fieldName);
             methodsBuilder.appendln("[i]);");
         }
         methodsBuilder.appendln("}");
@@ -201,12 +231,21 @@ public class GenProdAssociationToMany extends GenProdAssociation {
     }
 
     /**
-     * Code sample for
+     * Code sample
      * 
      * <pre>
      * [javadoc]
      * public CoverageType getMainCoverageType(int index) {
      *     return (ICoverageType) getRepository().getProductComponent(coverageTypes[index]);
+     * }
+     * </pre>
+     * 
+     * Java 5 code sample
+     * 
+     * <pre>
+     * [javadoc]
+     * public CoverageType getMainCoverageType(int index) {
+     *     return (ICoverageType) getRepository().getProductComponent(coverageTypes.get(index));
      * }
      * </pre>
      */
@@ -221,7 +260,11 @@ public class GenProdAssociationToMany extends GenProdAssociation {
         methodsBuilder.appendClassName(targetClass);
         methodsBuilder.append(")getRepository()." + MethodNames.GET_EXISTING_PRODUCT_COMPONENT + "(");
         methodsBuilder.append(fieldName);
-        methodsBuilder.append("[index]);");
+        if (isUseTypesafeCollections()) {
+            methodsBuilder.append(".get(index));");
+        } else {
+            methodsBuilder.append("[index]);");
+        }
         methodsBuilder.closeBracket();
     }
 
@@ -284,11 +327,16 @@ public class GenProdAssociationToMany extends GenProdAssociation {
         String fieldName = getFieldNameToManyAssociation();
         methodsBuilder.openBracket();
         methodsBuilder.append(getGenProductCmptType().generateFragmentCheckIfRepositoryIsModifiable());
-        methodsBuilder.appendln("String[] tmp = new String[this." + fieldName + ".length+1];");
-        methodsBuilder.appendln("System.arraycopy(this." + fieldName + ", 0, tmp, 0, this." + fieldName + ".length);");
-        methodsBuilder.appendln("tmp[tmp.length-1] = " + argNames[0] + "." + MethodNames.GET_PRODUCT_COMPONENT_ID
-                + "();");
-        methodsBuilder.appendln("this." + fieldName + " = tmp;");
+        if (isUseTypesafeCollections()) {
+            methodsBuilder.appendln("this." + fieldName + ".add(target.getId());");
+        } else {
+            methodsBuilder.appendln("String[] tmp = new String[this." + fieldName + ".length+1];");
+            methodsBuilder.appendln("System.arraycopy(this." + fieldName + ", 0, tmp, 0, this." + fieldName
+                    + ".length);");
+            methodsBuilder.appendln("tmp[tmp.length-1] = " + argNames[0] + "." + MethodNames.GET_PRODUCT_COMPONENT_ID
+                    + "();");
+            methodsBuilder.appendln("this." + fieldName + " = tmp;");
+        }
         methodsBuilder.closeBracket();
     }
 
@@ -300,23 +348,40 @@ public class GenProdAssociationToMany extends GenProdAssociation {
 
     protected void generateCodeGetNumOfRelatedProductCmpts(JavaCodeFragmentBuilder builder) throws CoreException {
         builder.append(getFieldNameToManyAssociation());
-        builder.appendln(".length;");
+        if (isUseTypesafeCollections()) {
+            builder.appendln(".size();");
+        }else{
+            builder.appendln(".length;");
+        }
     }
 
     protected void generateCodeGetRelatedCmptsInContainer(JavaCodeFragmentBuilder methodsBuilder) throws CoreException {
         String objectArrayVar = getFieldNameToManyAssociation() + "Objects";
         String getterMethod = getMethodNameGetManyRelatedCmpts(association) + "()";
-        methodsBuilder.appendClassName(getQualifiedInterfaceClassNameForTarget());
-        methodsBuilder.append("[] " + objectArrayVar + " = " + getterMethod + ";");
-        methodsBuilder.appendln("for (int i=0; i<" + objectArrayVar + ".length; i++) {");
-        methodsBuilder.appendln("result[index++] = " + objectArrayVar + "[i];");
-        methodsBuilder.appendln("}");
+        if (isUseTypesafeCollections()) {
+            methodsBuilder.appendClassName(List.class.getName());
+            methodsBuilder.append("<");
+            methodsBuilder.appendClassName(getQualifiedInterfaceClassNameForTarget());
+            methodsBuilder.append("> " + objectArrayVar + " = " + getterMethod + ";");
+            methodsBuilder.appendln("for (");
+            methodsBuilder.appendClassName(getQualifiedInterfaceClassNameForTarget());
+            methodsBuilder.appendln(" " + getFieldNameToManyAssociation() + "Object : " + objectArrayVar + ") {");
+            methodsBuilder.appendln("result.add(" + getFieldNameToManyAssociation() + "Object);");
+            methodsBuilder.appendln("}");
+        } else {
+            methodsBuilder.appendClassName(getQualifiedInterfaceClassNameForTarget());
+            methodsBuilder.append("[] " + objectArrayVar + " = " + getterMethod + ";");
+            methodsBuilder.appendln("for (int i=0; i<" + objectArrayVar + ".length; i++) {");
+            methodsBuilder.appendln("result[index++] = " + objectArrayVar + "[i];");
+            methodsBuilder.appendln("}");
+        }
     }
 
     /**
      * {@inheritDoc}
      */
-    public void generateCodeForDerivedUnionAssociationDefinition(JavaCodeFragmentBuilder methodsBuilder) throws Exception {
+    public void generateCodeForDerivedUnionAssociationDefinition(JavaCodeFragmentBuilder methodsBuilder)
+            throws Exception {
         super.generateCodeForDerivedUnionAssociationDefinition(methodsBuilder);
         generateMethodGetNumOfRelatedCmpts(methodsBuilder);
     }
@@ -334,8 +399,15 @@ public class GenProdAssociationToMany extends GenProdAssociation {
         String fieldName = getFieldNameToManyAssociation();
         builder.append(fieldName);
         builder.appendln(" = new ");
-        builder.appendClassName(String.class);
-        builder.appendln("[associationElements.size()];");
+        if (isUseTypesafeCollections()) {
+            builder.appendClassName(ArrayList.class.getName());
+            builder.append("<");
+            builder.appendClassName(String.class.getName());
+            builder.append(">(associationElements.size());");
+        }else{
+            builder.appendClassName(String.class);
+            builder.appendln("[associationElements.size()];");
+        }
         if (policyCmptTypeAssociation != null) {
             builder.append(cardinalityFieldName);
             builder.append(" = new ");
@@ -348,15 +420,25 @@ public class GenProdAssociationToMany extends GenProdAssociation {
         builder.appendClassName(Element.class);
         builder.appendln(")associationElements.get(i);");
         builder.append(fieldName);
-        builder.append("[i] = ");
-        builder.appendln("element.getAttribute(\"" + ProductCmptGenImplClassBuilder.XML_ATTRIBUTE_TARGET_RUNTIME_ID
-                + "\");");
+        if (isUseTypesafeCollections()) {
+            builder.append(".add(");
+            builder.appendln("element.getAttribute(\"" + ProductCmptGenImplClassBuilder.XML_ATTRIBUTE_TARGET_RUNTIME_ID
+                    + "\"));");
+        }else{
+            builder.append("[i] = ");
+            builder.appendln("element.getAttribute(\"" + ProductCmptGenImplClassBuilder.XML_ATTRIBUTE_TARGET_RUNTIME_ID
+                    + "\");");
+        }
         if (policyCmptTypeAssociation != null) {
             builder.append("addToCardinalityMap(");
             builder.append(cardinalityFieldName);
             builder.append(", ");
             builder.append(fieldName);
-            builder.append("[i], ");
+            if (isUseTypesafeCollections()) {
+                builder.append(".get(i), ");
+            }else{
+                builder.append("[i], ");
+            }
             builder.appendln("element);");
         }
         builder.appendln("}");

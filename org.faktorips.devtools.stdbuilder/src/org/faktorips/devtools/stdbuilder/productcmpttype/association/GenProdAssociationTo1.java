@@ -224,7 +224,11 @@ public class GenProdAssociationTo1 extends GenProdAssociation {
             accessCode = getFieldNameTo1Association();
         }
         methodsBuilder.appendln("if (" + accessCode + "!=null) {");
-        methodsBuilder.appendln("result[index++] = " + getMethodNameGet1RelatedCmpt() + "();");
+        if (isUseTypesafeCollections()) {
+            methodsBuilder.appendln("result.add(" + getMethodNameGet1RelatedCmpt() + "());");
+        } else {
+            methodsBuilder.appendln("result[index++] = " + getMethodNameGet1RelatedCmpt() + "();");
+        }
         methodsBuilder.appendln("}");
     }
 

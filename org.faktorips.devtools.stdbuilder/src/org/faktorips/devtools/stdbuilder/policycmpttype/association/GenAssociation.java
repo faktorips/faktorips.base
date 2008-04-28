@@ -473,7 +473,7 @@ public abstract class GenAssociation extends GenPolicyCmptTypePart {
         String methodName = getMethodNameGetAllRefObjects();
         String returnType;
         if(isUseTypesafeCollections()){
-            returnType = "List<"+getQualifiedClassName((IPolicyCmptType)association.findTarget(getIpsProject()), true) + ">";
+            returnType = List.class.getName() + "<"+getQualifiedClassName((IPolicyCmptType)association.findTarget(getIpsProject()), true) + ">";
         }else{
             returnType = getQualifiedClassName((IPolicyCmptType)association.findTarget(getIpsProject()), true) + "[]";
         }
