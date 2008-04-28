@@ -25,6 +25,7 @@ import org.faktorips.devtools.core.model.tablecontents.ITableContents;
 import org.faktorips.devtools.core.model.tablestructure.ITableAccessFunction;
 import org.faktorips.devtools.core.model.tablestructure.ITableStructure;
 import org.faktorips.devtools.core.model.type.IAttribute;
+import org.faktorips.devtools.core.ui.controller.fields.EnumTypeTargetJavaVersion;
 import org.faktorips.fl.CompilationResult;
 import org.faktorips.fl.CompilationResultImpl;
 import org.faktorips.fl.IdentifierResolver;
@@ -173,5 +174,14 @@ public class EmptyBuilderSet extends AbstractBuilderSet {
 
     public String getVersion() {
         return null;
+    }
+
+    /**
+     * {@inheritDoc}
+     * <p/>
+     * Returns the default target Java version. This method is supposed to be overridden by subclasses.
+     */
+    public EnumTypeTargetJavaVersion getTargetJavaVersion() {
+        return EnumTypeTargetJavaVersion.DEFAULT;
     }
 }

@@ -28,8 +28,11 @@ import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.MultiStatus;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.Status;
-import org.eclipse.emf.codegen.jmerge.JControlModel;
-import org.eclipse.emf.codegen.jmerge.JMerger;
+import org.eclipse.emf.codegen.merge.java.JControlModel;
+import org.eclipse.emf.codegen.merge.java.JMerger;
+import org.eclipse.emf.codegen.merge.java.facade.FacadeHelper;
+import org.eclipse.emf.codegen.merge.java.facade.ast.ASTFacadeHelper;
+import org.eclipse.emf.codegen.merge.java.facade.jdom.JDOMFacadeHelper;
 import org.eclipse.jdt.core.JavaCore;
 import org.eclipse.jdt.core.ToolFactory;
 import org.eclipse.jdt.core.formatter.CodeFormatter;
@@ -47,7 +50,7 @@ import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.core.model.ipsproject.IChangesOverTimeNamingConvention;
 import org.faktorips.devtools.core.model.ipsproject.IIpsArtefactBuilderSet;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
-import org.faktorips.devtools.core.util.XmlUtil;
+import org.faktorips.devtools.core.ui.controller.fields.EnumTypeTargetJavaVersion;
 import org.faktorips.util.ArgumentCheck;
 import org.faktorips.util.LocalizedStringsSet;
 import org.faktorips.util.StringUtil;
@@ -843,6 +846,7 @@ public abstract class JavaSourceFileBuilder extends AbstractArtefactBuilder {
         return folder.getFile(fileName + JAVA_EXTENSION);
     }
 
+    /* Old Code for EMF < 2.2
     private void initJControlModel(IIpsProject project) throws CoreException {
         IFile mergeFile = project.getJavaProject().getProject().getFile("merge.xml"); //$NON-NLS-1$
         if (mergeFile.exists()) {
@@ -872,18 +876,6 @@ public abstract class JavaSourceFileBuilder extends AbstractArtefactBuilder {
 
     }
 
-    private JControlModel getJControlModel() {
-
-        if (model == null) {
-            throw new IllegalStateException("The jmerge control model has not been set, " + //$NON-NLS-1$
-                    "while merging is activated. Possible reason for that might be that " + //$NON-NLS-1$
-                    "the builder initialization method beforeBuildProcess(IIpsProject, int) " + //$NON-NLS-1$
-                    "this class: " + JavaSourceFileBuilder.class + " has been overridden and " + //$NON-NLS-1$ //$NON-NLS-2$
-                    "a call to the super class method has been forgotten."); //$NON-NLS-1$
-        }
-        return model;
-    }
-
     private void merge(IFile javaFile, String oldContent, String newContent, String charset) throws CoreException {
 
         try {
@@ -903,13 +895,24 @@ public abstract class JavaSourceFileBuilder extends AbstractArtefactBuilder {
             throw new CoreException(new IpsStatus("An error occurred while trying to merge " + //$NON-NLS-1$
                     "the generated content with the old content of the file: " + javaFile, e)); //$NON-NLS-1$
         }
+    }*/
+
+    private JControlModel getJControlModel() {
+
+        if (model == null) {
+            throw new IllegalStateException("The jmerge control model has not been set, " + //$NON-NLS-1$
+                    "while merging is activated. Possible reason for that might be that " + //$NON-NLS-1$
+                    "the builder initialization method beforeBuildProcess(IIpsProject, int) " + //$NON-NLS-1$
+                    "this class: " + JavaSourceFileBuilder.class + " has been overridden and " + //$NON-NLS-1$ //$NON-NLS-2$
+                    "a call to the super class method has been forgotten."); //$NON-NLS-1$
+        }
+        return model;
     }
 
-/* This code fragment needs to be activated when moving to EMF 2.2.x or later    
     private void merge(IFile javaFile, String oldContent, String newContent, String charset) throws CoreException {
 
         try {
-            org.eclipse.emf.codegen.merge.java.JMerger merger = new org.eclipse.emf.codegen.merge.java.JMerger(getJControlModel());
+            JMerger merger = new JMerger(getJControlModel());
             merger.setSourceCompilationUnit(merger.createCompilationUnitForContents(newContent));
             merger.setTargetCompilationUnit(merger.createCompilationUnitForContents(oldContent));
             String targetContentsBeforeMerge = merger.getTargetCompilationUnitContents();
@@ -929,8 +932,12 @@ public abstract class JavaSourceFileBuilder extends AbstractArtefactBuilder {
     private void initJControlModel(IIpsProject project) throws CoreException {
         IFile mergeFile = project.getJavaProject().getProject().getFile("merge.xml"); //$NON-NLS-1$
         model = new org.eclipse.emf.codegen.merge.java.JControlModel();
-        //using the ASTFacadeHelper leads to a OutOfMemoryError 
-        FacadeHelper facadeHelper = new JDOMFacadeHelper();
+        FacadeHelper facadeHelper;
+        if(getBuilderSet().getTargetJavaVersion().isAtLeast(EnumTypeTargetJavaVersion.JAVA_5)){
+            facadeHelper = new ASTFacadeHelper();
+        }else{
+            facadeHelper = new JDOMFacadeHelper();
+        }
         if (mergeFile.exists()) {
             try {
                 model.initialize(facadeHelper, mergeFile.getLocation().toPortableString());
@@ -949,7 +956,7 @@ public abstract class JavaSourceFileBuilder extends AbstractArtefactBuilder {
                 "/merge.xml"); //$NON-NLS-1$
         return Platform.getBundle(IpsPlugin.PLUGIN_ID).getResource(mergeFile.toString()).toExternalForm();
     }
-*/
+    
     private final static Pattern createFeatureSectionPattern() {
         StringBuffer buf = new StringBuffer();
         buf.append("/\\*.*"); //$NON-NLS-1$

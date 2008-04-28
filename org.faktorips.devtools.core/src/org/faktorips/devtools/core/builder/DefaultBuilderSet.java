@@ -33,6 +33,7 @@ import org.faktorips.devtools.core.model.ipsproject.IIpsSrcFolderEntry;
 import org.faktorips.devtools.core.model.productcmpt.IFormula;
 import org.faktorips.devtools.core.model.tablecontents.ITableContents;
 import org.faktorips.devtools.core.model.tablestructure.ITableAccessFunction;
+import org.faktorips.devtools.core.ui.controller.fields.EnumTypeTargetJavaVersion;
 import org.faktorips.devtools.core.util.QNameUtil;
 import org.faktorips.fl.CompilationResult;
 import org.faktorips.fl.IdentifierResolver;
@@ -319,6 +320,14 @@ public class DefaultBuilderSet extends AbstractBuilderSet {
      */
     public void initialize(IIpsArtefactBuilderSetConfig config) throws CoreException {
     }
-    
+
+    /**
+     * {@inheritDoc}
+     * <p/>
+     * Returns the default target Java version. This method is supposed to be overridden by subclasses.
+     */
+    public EnumTypeTargetJavaVersion getTargetJavaVersion() {
+        return EnumTypeTargetJavaVersion.DEFAULT;
+    }
     
 }
