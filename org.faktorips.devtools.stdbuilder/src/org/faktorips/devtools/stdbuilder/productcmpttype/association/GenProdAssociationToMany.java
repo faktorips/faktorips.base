@@ -160,8 +160,8 @@ public class GenProdAssociationToMany extends GenProdAssociation {
      * [Javadoc]
      * public List&lt;ICoverageType&gt; getCoverageTypes() {
      *     List&lt;ICoverageType&gt; result = new ArrayList&lt;ICoverageType&gt;(coverageTypes.size());
-     *     for (int i = 0; i &lt; result.length; i++) {
-     *         result[i] = (ICoverageType) getRepository().getProductComponent(coverageTypes[i]);
+     *     for (String coverageType: coverageTypes) {
+     *         result.add((ICoverageType) getRepository().getProductComponent(coverageType));
      *     }
      *     return result;
      * }
@@ -305,14 +305,26 @@ public class GenProdAssociationToMany extends GenProdAssociation {
      * 
      * <pre>
      * [Javadoc]
-     * public void addCoverageType(ICoverageType[] target) {
+     * public void addCoverageType(ICoverageType target) {
      *     if (getRepository()!=null &amp;&amp; !getRepository().isModifiable()) {
      *         throw new IllegalRepositoryModificationException();
      *     }
-     *     String[] tmp = new String[coverageTypes.length+1];
-     *     System.arraycopy(coverageTypes, 0, tmp, 0, coverageTypes.length);
+     *     String[] tmp = new String[this.coverageTypes.length+1];
+     *     System.arraycopy(coverageTypes, 0, tmp, 0, this.coverageTypes.length);
      *     tmp[tmp.length-1] = target.getId();
-     *     coverageTypes = tmp;
+     *     this.coverageTypes = tmp;
+     * }
+     * </pre>
+     * 
+     * Java 5 code sample:
+     * 
+     * <pre>
+     * [Javadoc]
+     * public void addCoverageType(ICoverageType target) {
+     *     if (getRepository()!=null &amp;&amp; !getRepository().isModifiable()) {
+     *         throw new IllegalRepositoryModificationException();
+     *     }
+     *     this.coverageTypes.add(target.getId());
      * }
      * </pre>
      */
