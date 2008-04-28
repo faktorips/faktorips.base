@@ -234,6 +234,13 @@ public class JavaCodeFragment {
 	 * @throws NullPointerException if qualifiedClassName is null.
 	 */
 	public void appendClassName(String qualifiedClassName) {
+	    if(qualifiedClassName.indexOf('<')>0){
+            appendClassName(qualifiedClassName.substring(0, qualifiedClassName.indexOf('<')));
+	        append("<");
+            appendClassName(qualifiedClassName.substring(qualifiedClassName.indexOf('<')+1, qualifiedClassName.lastIndexOf('>')));
+            append(">");
+            return;
+	    }
         append(StringUtil.unqualifiedName(qualifiedClassName));
         if(qualifiedClassName.indexOf('.') < 0){
             return;
