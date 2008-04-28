@@ -28,11 +28,8 @@ import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.MultiStatus;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.Status;
-import org.eclipse.emf.codegen.merge.java.JControlModel;
-import org.eclipse.emf.codegen.merge.java.JMerger;
-import org.eclipse.emf.codegen.merge.java.facade.FacadeHelper;
-import org.eclipse.emf.codegen.merge.java.facade.ast.ASTFacadeHelper;
-import org.eclipse.emf.codegen.merge.java.facade.jdom.JDOMFacadeHelper;
+import org.eclipse.emf.codegen.jmerge.JControlModel;
+import org.eclipse.emf.codegen.jmerge.JMerger;
 import org.eclipse.jdt.core.JavaCore;
 import org.eclipse.jdt.core.ToolFactory;
 import org.eclipse.jdt.core.formatter.CodeFormatter;
@@ -50,7 +47,7 @@ import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.core.model.ipsproject.IChangesOverTimeNamingConvention;
 import org.faktorips.devtools.core.model.ipsproject.IIpsArtefactBuilderSet;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
-import org.faktorips.devtools.core.ui.controller.fields.EnumTypeTargetJavaVersion;
+import org.faktorips.devtools.core.util.XmlUtil;
 import org.faktorips.util.ArgumentCheck;
 import org.faktorips.util.LocalizedStringsSet;
 import org.faktorips.util.StringUtil;
@@ -846,7 +843,6 @@ public abstract class JavaSourceFileBuilder extends AbstractArtefactBuilder {
         return folder.getFile(fileName + JAVA_EXTENSION);
     }
 
-    /* Old Code for EMF < 2.2
     private void initJControlModel(IIpsProject project) throws CoreException {
         IFile mergeFile = project.getJavaProject().getProject().getFile("merge.xml"); //$NON-NLS-1$
         if (mergeFile.exists()) {
@@ -895,7 +891,7 @@ public abstract class JavaSourceFileBuilder extends AbstractArtefactBuilder {
             throw new CoreException(new IpsStatus("An error occurred while trying to merge " + //$NON-NLS-1$
                     "the generated content with the old content of the file: " + javaFile, e)); //$NON-NLS-1$
         }
-    }*/
+    }
 
     private JControlModel getJControlModel() {
 
@@ -909,6 +905,7 @@ public abstract class JavaSourceFileBuilder extends AbstractArtefactBuilder {
         return model;
     }
 
+    /*
     private void merge(IFile javaFile, String oldContent, String newContent, String charset) throws CoreException {
 
         try {
@@ -948,7 +945,7 @@ public abstract class JavaSourceFileBuilder extends AbstractArtefactBuilder {
             return;
         }
         model.initialize(facadeHelper, getJMergeDefaultConfigLocation());
-    }
+    }*/
     
     private String getJMergeDefaultConfigLocation(){
         StringBuffer mergeFile = new StringBuffer();
