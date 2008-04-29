@@ -1,19 +1,16 @@
-/*******************************************************************************
+/***************************************************************************************************
  * Copyright (c) 2005,2006 Faktor Zehn GmbH und andere.
- *
+ * 
  * Alle Rechte vorbehalten.
- *
- * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele,
- * Konfigurationen, etc.) dürfen nur unter den Bedingungen der 
- * Faktor-Zehn-Community Lizenzvereinbarung – Version 0.1 (vor Gründung Community) 
- * genutzt werden, die Bestandteil der Auslieferung ist und auch unter
- *   http://www.faktorips.org/legal/cl-v01.html
- * eingesehen werden kann.
- *
- * Mitwirkende:
- *   Faktor Zehn GmbH - initial API and implementation 
- *
- *******************************************************************************/
+ * 
+ * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen,
+ * etc.) dürfen nur unter den Bedingungen der Faktor-Zehn-Community Lizenzvereinbarung – Version 0.1
+ * (vor Gründung Community) genutzt werden, die Bestandteil der Auslieferung ist und auch unter
+ * http://www.faktorips.org/legal/cl-v01.html eingesehen werden kann.
+ * 
+ * Mitwirkende: Faktor Zehn GmbH - initial API and implementation
+ * 
+ **************************************************************************************************/
 
 package org.faktorips.devtools.stdbuilder.enums;
 
@@ -42,27 +39,29 @@ import org.faktorips.devtools.core.model.tablestructure.IColumn;
 import org.faktorips.devtools.core.model.tablestructure.IKeyItem;
 import org.faktorips.devtools.core.model.tablestructure.ITableStructure;
 import org.faktorips.devtools.core.model.tablestructure.IUniqueKey;
+import org.faktorips.devtools.stdbuilder.StandardBuilderSet;
 import org.faktorips.util.ArgumentCheck;
 import org.faktorips.util.LocalizedStringsSet;
 import org.faktorips.util.message.MessageList;
 
 /**
- * A builder for enumeration classes. Generates enumeration classes according to the type save enum pattern.
- * The enumeration type is defined by an ips table structure and the enumeration values by an ips table 
- * contents. Therefore this builder is a builder for the ips type tablestructure and tablecontents.
+ * A builder for enumeration classes. Generates enumeration classes according to the type save enum
+ * pattern. The enumeration type is defined by an ips table structure and the enumeration values by
+ * an ips table contents. Therefore this builder is a builder for the ips type tablestructure and
+ * tablecontents.
  * 
  * @author Peter Erzberger
  */
 public class EnumClassesBuilder extends DefaultJavaSourceFileBuilder {
 
     public final static String PACKAGE_STRUCTURE_KIND_ID = "EnumClassesBuilder.enums.stdbuilder.devtools.faktorips.org"; //$NON-NLS-1$
-    
+
     private EnumTypeInterfaceBuilder enumTypeInterfaceBuilder;
-    
+
     /**
      * See super class constructor.
      */
-    public EnumClassesBuilder(IIpsArtefactBuilderSet builderSet, String kindId, 
+    public EnumClassesBuilder(IIpsArtefactBuilderSet builderSet, String kindId,
             EnumTypeInterfaceBuilder enumTypeInterfaceBuilder) {
         super(builderSet, kindId, new LocalizedStringsSet(EnumClassesBuilder.class));
         ArgumentCheck.notNull(enumTypeInterfaceBuilder);
@@ -70,108 +69,126 @@ public class EnumClassesBuilder extends DefaultJavaSourceFileBuilder {
         setMergeEnabled(true);
     }
 
-    protected String generate() throws CoreException{
+    protected String generate() throws CoreException {
         ITableStructure tableStructure = getTableContents().findTableStructure(getIpsProject());
-        if(tableStructure == null || !tableStructure.isModelEnumType()){
+        if (tableStructure == null || !tableStructure.isModelEnumType()) {
             return null;
         }
         return super.generate();
     }
-    
+
     /**
      * {@inheritDoc}
      */
     protected void generateCodeForJavatype() throws CoreException {
         ITableStructure tableStructure = getTableContents().findTableStructure(getIpsProject());
-        if(tableStructure == null){
+        if (tableStructure == null) {
             return;
         }
-        
+
         TypeSection mainSection = getMainTypeSection();
-        mainSection.setClassModifier(Modifier.PUBLIC | Modifier.FINAL);
         mainSection.setUnqualifiedName(getTableContents().getName());
-        mainSection.setClass(true);
-        mainSection.setExtendedInterfaces(new String[]{Serializable.class.getName(), 
-                enumTypeInterfaceBuilder.getQualifiedClassName(tableStructure)});
+        if (isUseEnums()) {
+            mainSection.setClassModifier(Modifier.PUBLIC);
+            mainSection.setEnum(true);
+            mainSection.setExtendedInterfaces(new String[] { enumTypeInterfaceBuilder
+                    .getQualifiedClassName(tableStructure) });
+        } else {
+            mainSection.setClassModifier(Modifier.PUBLIC | Modifier.FINAL);
+            mainSection.setClass(true);
+            mainSection.setExtendedInterfaces(new String[] { Serializable.class.getName(),
+                    enumTypeInterfaceBuilder.getQualifiedClassName(tableStructure) });
+        }
 
         JavaCodeFragmentBuilder memberBuilder = getMainTypeSection().getMemberVarBuilder();
         JavaCodeFragmentBuilder methodBuilder = getMainTypeSection().getMethodBuilder();
-        
-        appendLocalizedJavaDoc("CLASS_DESCRIPTION", getTableContents().getName(), getIpsObject().getDescription(), 
-                getTableContents(), getMainTypeSection().getJavaDocForTypeBuilder());
+
+        if (isUseEnums()) {
+            appendLocalizedJavaDoc("ENUM_DESCRIPTION", getTableContents().getName(), getIpsObject().getDescription(),
+                    getTableContents(), getMainTypeSection().getJavaDocForTypeBuilder());
+        } else {
+            appendLocalizedJavaDoc("CLASS_DESCRIPTION", getTableContents().getName(), getIpsObject().getDescription(),
+                    getTableContents(), getMainTypeSection().getJavaDocForTypeBuilder());
+        }
 
         generateCodeForColumns(memberBuilder, methodBuilder, tableStructure);
         generateConstantForSerialVersionNumber(getMainTypeSection().getConstantBuilder());
-        
+
         EnumValueAttributesInfo info = createEnumValueAttributesInfo(getTableContents());
-        if(!info.isValid){
+        if (!info.isValid) {
             return;
         }
-        generateConstructor(getMainTypeSection().getConstructorBuilder(), tableStructure, info.idKeyItem, info.nameKeyItem);
-        generateConstantsForEnumValues(getMainTypeSection().getConstantBuilder(), tableStructure);
-        generateMethodGetAllEnumValues(methodBuilder);
+        generateConstructor(getMainTypeSection().getConstructorBuilder(), tableStructure, info.idKeyItem,
+                info.nameKeyItem);
+        if (isUseEnums()) {
+            generateEnumInitialization(getMainTypeSection().getEnumDefinitionBuilder(), tableStructure);
+        } else {
+            generateConstantsForEnumValues(getMainTypeSection().getConstantBuilder(), tableStructure);
+            generateMethodGetAllEnumValues(methodBuilder);
+            generateMethodReadResolve(methodBuilder, info.idKeyItem);
+        }
         generateMethodGetEnumValue(methodBuilder, info.idKeyItem, info.idDatatype);
         generateMethodIsEnumValue(methodBuilder, info.idKeyItem, info.idDatatype);
-        generateMethodReadResolve(methodBuilder, info.idKeyItem);
         generateMethodToString(methodBuilder, info.nameKeyItem, info.idKeyItem);
     }
-    
-    private EnumValueAttributesInfo createEnumValueAttributesInfo(ITableContents tableContents) throws CoreException{
+
+    private EnumValueAttributesInfo createEnumValueAttributesInfo(ITableContents tableContents) throws CoreException {
         ITableStructure tableStructure = tableContents.findTableStructure(getIpsProject());
-        if(tableStructure == null){
+        if (tableStructure == null) {
             return EnumValueAttributesInfo.INVALID_INFO;
         }
         IUniqueKey[] uniqueKeys = tableStructure.getUniqueKeys();
-        //first key is the id of the enum
-        //second key is the name of the enum
-        if(uniqueKeys.length != 2){
+        // first key is the id of the enum
+        // second key is the name of the enum
+        if (uniqueKeys.length != 2) {
             return EnumValueAttributesInfo.INVALID_INFO;
         }
-        
+
         for (int i = 0; i < uniqueKeys.length; i++) {
-            if(!uniqueKeys[i].validate(getIpsProject()).isEmpty()){
+            if (!uniqueKeys[i].validate(getIpsProject()).isEmpty()) {
                 return EnumValueAttributesInfo.INVALID_INFO;
             }
         }
         IUniqueKey idKey = uniqueKeys[0];
         IUniqueKey nameKey = uniqueKeys[1];
-        
+
         IKeyItem[] idKeyItems = idKey.getKeyItems();
-        if(idKeyItems.length != 1){
+        if (idKeyItems.length != 1) {
             return EnumValueAttributesInfo.INVALID_INFO;
         }
         IKeyItem[] nameKeyItems = nameKey.getKeyItems();
-        if(nameKeyItems.length != 1){
+        if (nameKeyItems.length != 1) {
             return EnumValueAttributesInfo.INVALID_INFO;
         }
         IIpsProject ipsProject = tableContents.getIpsProject();
         Datatype idKeyItemDatatype = ipsProject.findDatatype(idKeyItems[0].getDatatype());
         return new EnumValueAttributesInfo(idKeyItems[0], nameKeyItems[0], idKeyItemDatatype);
     }
-    
+
     /**
-     * Returns true for ips table structures and table contents if the tablestructure of the contents
-     * is a structure for an enumeration type.
+     * Returns true for ips table structures and table contents if the tablestructure of the
+     * contents is a structure for an enumeration type.
      * 
      * {@inheritDoc}
      */
     public final boolean isBuilderFor(IIpsSrcFile ipsSrcFile) throws CoreException {
-        if(ipsSrcFile.getIpsObjectType().equals(IpsObjectType.TABLE_CONTENTS)){
+        if (ipsSrcFile.getIpsObjectType().equals(IpsObjectType.TABLE_CONTENTS)) {
             return true;
         }
         return false;
     }
 
-    private ITableContents getTableContents(){
+    private ITableContents getTableContents() {
         return (ITableContents)getIpsObject();
     }
-    
-    private void generateCodeForColumns(JavaCodeFragmentBuilder memberBuilder, 
-            JavaCodeFragmentBuilder methodBuilder, ITableStructure structure) throws CoreException{
+
+    private void generateCodeForColumns(JavaCodeFragmentBuilder memberBuilder,
+            JavaCodeFragmentBuilder methodBuilder,
+            ITableStructure structure) throws CoreException {
         IColumn[] columns = structure.getColumns();
         for (int i = 0; i < columns.length; i++) {
             Datatype datatype = columns[i].findValueDatatype(getIpsProject());
-            if (datatype == null){
+            if (datatype == null) {
                 continue;
             }
             generateField(memberBuilder, columns[i], datatype);
@@ -179,66 +196,53 @@ public class EnumClassesBuilder extends DefaultJavaSourceFileBuilder {
         }
     }
 
-    private String getFieldName(IColumn column){
+    private String getFieldName(IColumn column) {
         return column.getName();
     }
 
     /*
-     * Code sample:
-     * <pre>
-     * [Javadoc]
-     * private Integer id;
-     * </pre>
+     * Code sample: <pre> [Javadoc] private Integer id; </pre>
      */
-    private void generateField(JavaCodeFragmentBuilder memberBuilder, IColumn column, Datatype datatype) throws CoreException{
+    private void generateField(JavaCodeFragmentBuilder memberBuilder, IColumn column, Datatype datatype)
+            throws CoreException {
         memberBuilder.javaDoc(null, ANNOTATION_GENERATED);
         memberBuilder.varDeclaration(Modifier.PRIVATE, datatype.getJavaClassName(), getFieldName(column));
     }
 
     /*
-     * Code sample:
-     * <pre>
-     * [Javadoc]
-     * public Integer getId() {
-     *     return id;
-     * }    
-     * </pre>
+     * Code sample: <pre> [Javadoc] public Integer getId() { return id; } </pre>
      */
-    private void generateMethodGetField(JavaCodeFragmentBuilder methodBuilder, IColumn column, Datatype datatype){
+    private void generateMethodGetField(JavaCodeFragmentBuilder methodBuilder, IColumn column, Datatype datatype) {
         String methodName = getJavaNamingConvention().getGetterMethodName(column.getName(), datatype);
         JavaCodeFragment methodBody = new JavaCodeFragment();
         methodBody.append("return ");
         methodBody.append(getFieldName(column));
         methodBody.append(';');
         appendLocalizedJavaDoc("GET_FIELD_METHOD", getFieldName(column), column, methodBuilder);
-        methodBuilder.method(Modifier.PUBLIC, datatype.getJavaClassName(), methodName, new String[0], 
-                new String[0], methodBody, null); 
+        methodBuilder.method(Modifier.PUBLIC, datatype.getJavaClassName(), methodName, new String[0], new String[0],
+                methodBody, null);
     }
- 
-    private boolean checkTableColumns(IColumn[] columns) throws CoreException{
+
+    private boolean checkTableColumns(IColumn[] columns) throws CoreException {
         for (int i = 0; i < columns.length; i++) {
-            if(!columns[i].validate(getIpsProject()).isEmpty()){
+            if (!columns[i].validate(getIpsProject()).isEmpty()) {
                 return false;
             }
         }
         return true;
     }
-    
+
     /*
-     * Code sample:
-     * <pre>
-     * [Javadoc]
-     * private GeneratedGender(Integer id, String name, String description) {
-     *     this.id = id;
-     *     this.name = name;    
-     *     this.description = description;
-     * }    
-     * </pre>
+     * Code sample: <pre> [Javadoc] private GeneratedGender(Integer id, String name, String
+     * description) { this.id = id; this.name = name; this.description = description; } </pre>
      */
-    private void generateConstructor(JavaCodeFragmentBuilder methodBuilder, ITableStructure tableStructure, IKeyItem idKeyItem, IKeyItem nameKeyItem) throws CoreException{
-        
+    private void generateConstructor(JavaCodeFragmentBuilder methodBuilder,
+            ITableStructure tableStructure,
+            IKeyItem idKeyItem,
+            IKeyItem nameKeyItem) throws CoreException {
+
         IColumn[] columns = tableStructure.getColumns();
-        if(!checkTableColumns(columns)){
+        if (!checkTableColumns(columns)) {
             return;
         }
         List columnsDatatypes = new ArrayList();
@@ -264,49 +268,48 @@ public class EnumClassesBuilder extends DefaultJavaSourceFileBuilder {
         for (int i = 0; i < parameterNames.length; i++) {
             parameterNames[i] = columns[i].getName();
         }
-        
+
         String className = getTableContents().getName();
-        appendLocalizedJavaDoc("CONSTRUCTOR", new Object[]{className, idKeyItem.getName(), nameKeyItem.getName()}, getTableContents(), methodBuilder);
-        methodBuilder.method(Modifier.PRIVATE, null, className, parameterNames, 
-                parameterClasses, methodBody, null); 
-        
+        appendLocalizedJavaDoc("CONSTRUCTOR", new Object[] { className, idKeyItem.getName(), nameKeyItem.getName() },
+                getTableContents(), methodBuilder);
+        methodBuilder.method(Modifier.PRIVATE, null, className, parameterNames, parameterClasses, methodBody, null);
+
     }
 
-    //TODO we have to force some constrains on the name rows[i].getValue(1)
-    private String getEnumValueConstantName(IRow row){
+    // TODO we have to force some constrains on the name rows[i].getValue(1)
+    private String getEnumValueConstantName(IRow row) {
         return StringUtils.upperCase(row.getValue(1));
     }
 
-    private IRow[] getValidTableContentRows() throws CoreException{
+    private IRow[] getValidTableContentRows() throws CoreException {
         ITableContentsGeneration generation = (ITableContentsGeneration)getTableContents().getFirstGeneration();
         List validRows = new ArrayList();
         IRow[] rows = generation.getRows();
         for (int i = 0; i < rows.length; i++) {
             MessageList msgList = rows[i].validate(getIpsProject());
-            if(msgList.isEmpty()){
+            if (msgList.isEmpty()) {
                 validRows.add(rows[i]);
             }
         }
-        return (IRow[])validRows.toArray(new IRow[validRows.size()]); 
+        return (IRow[])validRows.toArray(new IRow[validRows.size()]);
     }
-    
+
     /*
-     * Code sample:
-     * <pre>
-     * [Javadoc]
-     * public static final GeneratedGender MALE = new GeneratedGender(new Integer(1), "male", "Male");
-     * </pre>
+     * Code sample: <pre> [Javadoc] public static final GeneratedGender MALE = new
+     * GeneratedGender(new Integer(1), "male", "Male"); </pre>
      */
-    private void generateConstantsForEnumValues(JavaCodeFragmentBuilder constantBuilder, ITableStructure structure) throws CoreException{
+    private void generateConstantsForEnumValues(JavaCodeFragmentBuilder constantBuilder, ITableStructure structure)
+            throws CoreException {
 
         String className = getTableContents().getName();
         IColumn[] columns = structure.getColumns();
-        if(!checkTableColumns(columns)){
+        if (!checkTableColumns(columns)) {
             return;
         }
-        //the number of columns retrieved from the table contents object can differ from the one
-        //retrieved from the table structure. This inconsistency is allowed in the model and is shown 
-        //to the user as an error. The builder still has to cope with this inconsistency.
+        // the number of columns retrieved from the table contents object can differ from the one
+        // retrieved from the table structure. This inconsistency is allowed in the model and is
+        // shown
+        // to the user as an error. The builder still has to cope with this inconsistency.
         int numberOfColumns = Math.min(getTableContents().getNumOfColumns(), columns.length);
         List datatypHelpers = new ArrayList();
         for (int i = 0; i < numberOfColumns; i++) {
@@ -323,33 +326,85 @@ public class EnumClassesBuilder extends DefaultJavaSourceFileBuilder {
             for (int j = 0; j < numberOfColumns; j++) {
                 DatatypeHelper helper = (DatatypeHelper)datatypHelpers.get(j);
                 value.append(helper.newInstance(rows[i].getValue(j)));
-                if(j < numberOfColumns - 1){
+                if (j < numberOfColumns - 1) {
                     value.appendln(", ");
                 }
             }
             value.append(")");
             appendLocalizedJavaDoc("ENUM_CONSTANT", rows[i], constantBuilder);
-            constantBuilder.varDeclaration(Modifier.PUBLIC | Modifier.FINAL | Modifier.STATIC, 
-                    className, getEnumValueConstantName(rows[i]), value);
-            //this line is necessary because it forces a new line between the generated constants
+            constantBuilder.varDeclaration(Modifier.PUBLIC | Modifier.FINAL | Modifier.STATIC, className,
+                    getEnumValueConstantName(rows[i]), value);
+            // this line is necessary because it forces a new line between the generated constants
             constantBuilder.appendln(" ");
         }
     }
-    
-    /*
-     * Code sample:
-     * <pre>
-     * [Javadoc]
-     * public static final GeneratedGender[] getGeneratedGenders() {
-     *     return new GeneratedGender[] { MALE, FEMALE };
-     * }
-     * </pre>
-     */
-    private void generateMethodGetAllEnumValues(JavaCodeFragmentBuilder methodBuilder) throws CoreException{
 
-        //TODO java naming convensions
+    /*
+     * Code sample: <pre> MALE(new Integer(1), "male", "Male"); </pre>
+     */
+    private void generateEnumInitialization(JavaCodeFragmentBuilder enumDefinitionBuilder, ITableStructure structure)
+            throws CoreException {
+
+        IColumn[] columns = structure.getColumns();
+        if (!checkTableColumns(columns)) {
+            return;
+        }
+        // the number of columns retrieved from the table contents object can differ from the one
+        // retrieved from the table structure. This inconsistency is allowed in the model and is
+        // shown
+        // to the user as an error. The builder still has to cope with this inconsistency.
+        int numberOfColumns = Math.min(getTableContents().getNumOfColumns(), columns.length);
+        List datatypeHelpers = getDatatypeHelpers(columns, numberOfColumns);
+        IRow[] rows = getValidTableContentRows();
+        for (int i = 0; i < rows.length; i++) {
+            JavaCodeFragment value = new JavaCodeFragment();
+            value.append(getEnumValueConstantName(rows[i]));
+            value.append("(");
+            for (int j = 0; j < numberOfColumns; j++) {
+                DatatypeHelper helper = (DatatypeHelper)datatypeHelpers.get(j);
+                value.append(helper.newInstance(rows[i].getValue(j)));
+                if (j < numberOfColumns - 1) {
+                    value.append(", ");
+                }
+            }
+            value.append(")");
+            if (i < rows.length - 1) {
+                value.appendln(", ");
+            } else {
+                value.appendln(";");
+            }
+            enumDefinitionBuilder.append(value);
+        }
+    }
+
+    private List getDatatypeHelpers(IColumn[] columns, int numberOfColumns) throws CoreException {
+        List datatypeHelpers = new ArrayList();
+        for (int i = 0; i < numberOfColumns; i++) {
+            Datatype datatype = columns[i].findValueDatatype(getIpsProject());
+            IIpsProject project = getIpsObject().getIpsProject();
+            datatypeHelpers.add(project.findDatatypeHelper(datatype.getName()));
+        }
+        return datatypeHelpers;
+    }
+
+    /**
+     * Code sample:
+     * 
+     * <pre>
+     *  
+     * [Javadoc] 
+     * public static final GeneratedGender[] getGeneratedGenders() {
+     *      return new GeneratedGender[] { MALE, FEMALE }; 
+     * } 
+     * </pre>
+     * 
+     * Not generated for Java5 enums, use .values() instead
+     */
+    private void generateMethodGetAllEnumValues(JavaCodeFragmentBuilder methodBuilder) throws CoreException {
+
+        // TODO java naming convensions
         String methodName = "getAllValues";
-        
+
         JavaCodeFragment methodBody = new JavaCodeFragment();
         methodBody.append("return ");
         methodBody.append("new ");
@@ -358,46 +413,49 @@ public class EnumClassesBuilder extends DefaultJavaSourceFileBuilder {
         IRow[] rows = getValidTableContentRows();
         for (int i = 0; i < rows.length; i++) {
             methodBody.append(getEnumValueConstantName(rows[i]));
-            if(i < rows.length - 1){
+            if (i < rows.length - 1) {
                 methodBody.append(", ");
             }
         }
         methodBody.append("};");
-        
+
         appendLocalizedJavaDoc("METHOD_GET_ALL_VALUES", getTableContents(), methodBuilder);
-        methodBuilder.method(Modifier.PUBLIC | Modifier.FINAL | Modifier.STATIC, getTableContents().getName() + "[]", methodName, 
-                new String[0], new String[0], methodBody, null); 
+        methodBuilder.method(Modifier.PUBLIC | Modifier.FINAL | Modifier.STATIC, getTableContents().getName() + "[]",
+                methodName, new String[0], new String[0], methodBody, null);
 
     }
 
-    private String getMethodNameGetEnumValue(ITableContents tableContents){
-        //TODO java naming convensions
+    private String getMethodNameGetEnumValue(ITableContents tableContents) {
+        // TODO java naming convensions
         return "get" + StringUtils.capitalize(tableContents.getName());
     }
 
     /**
-     * This method expects a value that is either a constant or an expression of the regarding datatype. The parameter valueIsExpression
-     * needs to be true when a constant value is provided and false otherwise.
+     * This method expects a value that is either a constant or an expression of the regarding
+     * datatype. The parameter valueIsExpression needs to be true when a constant value is provided
+     * and false otherwise.
      */
-    public JavaCodeFragment generateCallMethodGetEnumValue(ITableContents tableContents, String value, boolean valueIsExpression) throws CoreException{
+    public JavaCodeFragment generateCallMethodGetEnumValue(ITableContents tableContents,
+            String value,
+            boolean valueIsExpression) throws CoreException {
         ArgumentCheck.notNull(tableContents);
         JavaCodeFragment fragment = new JavaCodeFragment();
-        fragment.appendClassName(getPackage(tableContents.getIpsSrcFile()) + '.' +StringUtils.capitalize(tableContents.getName()));
+        fragment.appendClassName(getPackage(tableContents.getIpsSrcFile()) + '.'
+                + StringUtils.capitalize(tableContents.getName()));
         fragment.append('.');
         fragment.append(getMethodNameGetEnumValue(tableContents));
         fragment.append('(');
         EnumValueAttributesInfo info = createEnumValueAttributesInfo(tableContents);
-        if(!info.isValid){
+        if (!info.isValid) {
             return fragment;
         }
         DatatypeHelper helper = tableContents.getIpsProject().findDatatypeHelper(info.idDatatype.getQualifiedName());
-        if(helper == null){
+        if (helper == null) {
             return fragment;
         }
-        if(valueIsExpression){
+        if (valueIsExpression) {
             fragment.append(helper.newInstanceFromExpression(value));
-        }
-        else{
+        } else {
             fragment.append(helper.newInstance(value));
         }
         fragment.append(')');
@@ -405,31 +463,23 @@ public class EnumClassesBuilder extends DefaultJavaSourceFileBuilder {
     }
 
     /*
-     * Code sample:
-     * <pre>
-     * [Javadoc]
-     * public static final GeneratedGender getGeneratedGender(Integer id) {
-     *     if (MALE.id.equals(id)) {
-     *         return MALE;
-     *     }    
-     *     if (FEMALE.id.equals(id)) {
-     *         return FEMALE;
-     *     }
-     *     return null;        
-     * }
-     * </pre>
+     * Code sample: <pre> [Javadoc] public static final GeneratedGender getGeneratedGender(Integer
+     * id) { if (MALE.id.equals(id)) { return MALE; } if (FEMALE.id.equals(id)) { return FEMALE; }
+     * return null; } </pre>
      */
-    private void generateMethodGetEnumValue(JavaCodeFragmentBuilder methodBuilder, IKeyItem idKeyItem, Datatype idDatatype) throws CoreException{
+    private void generateMethodGetEnumValue(JavaCodeFragmentBuilder methodBuilder,
+            IKeyItem idKeyItem,
+            Datatype idDatatype) throws CoreException {
 
         JavaCodeFragment methodBody = new JavaCodeFragment();
-        String[] parameterNames = new String[]{idKeyItem.getName()}; 
-        String[] parameterClasses = new String[]{idDatatype.getJavaClassName()}; 
+        String[] parameterNames = new String[] { idKeyItem.getName() };
+        String[] parameterClasses = new String[] { idDatatype.getJavaClassName() };
         IRow[] rows = getValidTableContentRows();
         for (int i = 0; i < rows.length; i++) {
             methodBody.append("if(");
             methodBody.append(getEnumValueConstantName(rows[i]));
             methodBody.append(".");
-            //TODO better way to find the id column
+            // TODO better way to find the id column
             methodBody.append(idKeyItem.getName());
             methodBody.append(".equals(");
             methodBody.append(idKeyItem.getName());
@@ -443,21 +493,18 @@ public class EnumClassesBuilder extends DefaultJavaSourceFileBuilder {
         methodBody.append("return null;");
 
         appendLocalizedJavaDoc("METHOD_GET_VALUE", idKeyItem.getName(), getTableContents(), methodBuilder);
-        methodBuilder.method(Modifier.PUBLIC | Modifier.FINAL | Modifier.STATIC, getTableContents().getName(), 
-                getMethodNameGetEnumValue(getTableContents()), parameterNames, parameterClasses, methodBody, null); 
-        
+        methodBuilder.method(Modifier.PUBLIC | Modifier.FINAL | Modifier.STATIC, getTableContents().getName(),
+                getMethodNameGetEnumValue(getTableContents()), parameterNames, parameterClasses, methodBody, null);
+
     }
 
     /*
-     * Code sample:
-     * <pre>
-     * [Javadoc]
-     * public final static boolean isGender(Integer id){
-     *     return getGender(id) != null;
-     * }
-     * </pre>
+     * Code sample: <pre> [Javadoc] public final static boolean isGender(Integer id){ return
+     * getGender(id) != null; } </pre>
      */
-    private void generateMethodIsEnumValue(JavaCodeFragmentBuilder methodBuilder, IKeyItem idKeyItem, Datatype idDatatype){
+    private void generateMethodIsEnumValue(JavaCodeFragmentBuilder methodBuilder,
+            IKeyItem idKeyItem,
+            Datatype idDatatype) {
         JavaCodeFragment methodBody = new JavaCodeFragment();
         methodBody.append("return ");
         methodBody.append(getMethodNameGetEnumValue(getTableContents()));
@@ -465,27 +512,22 @@ public class EnumClassesBuilder extends DefaultJavaSourceFileBuilder {
         methodBody.append(idKeyItem.getName());
         methodBody.append(")");
         methodBody.append(" != null;");
-        
-        //TODO java naming convensions
+
+        // TODO java naming convensions
         String methodName = "is" + StringUtils.capitalize(getTableContents().getName());
-        String[] parameterNames = new String[]{idKeyItem.getName()}; 
-        String[] parameterClasses = new String[]{idDatatype.getJavaClassName()}; 
+        String[] parameterNames = new String[] { idKeyItem.getName() };
+        String[] parameterClasses = new String[] { idDatatype.getJavaClassName() };
 
         appendLocalizedJavaDoc("METHOD_IS_VALUE", idKeyItem.getName(), getTableContents(), methodBuilder);
-        methodBuilder.method(Modifier.PUBLIC | Modifier.FINAL | Modifier.STATIC, Boolean.TYPE.getName(), methodName, 
-                parameterNames, parameterClasses, methodBody, null); 
+        methodBuilder.method(Modifier.PUBLIC | Modifier.FINAL | Modifier.STATIC, Boolean.TYPE.getName(), methodName,
+                parameterNames, parameterClasses, methodBody, null);
     }
-    
+
     /*
-     * Code sample:
-     * <pre>
-     * [Javadoc]
-     * private Object readResolve() throws ObjectStreamException{
-     *     return getGender(id);
-     * }
-     * </pre>
+     * Code sample: <pre> [Javadoc] private Object readResolve() throws ObjectStreamException{
+     * return getGender(id); } </pre>
      */
-    private void generateMethodReadResolve(JavaCodeFragmentBuilder methodBuilder, IKeyItem idKeyItem){
+    private void generateMethodReadResolve(JavaCodeFragmentBuilder methodBuilder, IKeyItem idKeyItem) {
 
         JavaCodeFragment methodBody = new JavaCodeFragment();
         methodBody.append("return ");
@@ -494,21 +536,15 @@ public class EnumClassesBuilder extends DefaultJavaSourceFileBuilder {
         methodBody.append(idKeyItem.getName());
         methodBody.append(");");
         methodBuilder.javaDoc(null, ANNOTATION_GENERATED);
-        methodBuilder.method(Modifier.PRIVATE, Object.class, "readResolve", 
-                new String[0], new Class[0], new Class[]{ObjectStreamException.class}, methodBody, null); 
+        methodBuilder.method(Modifier.PRIVATE, Object.class, "readResolve", new String[0], new Class[0],
+                new Class[] { ObjectStreamException.class }, methodBody, null);
 
     }
-    
+
     /*
-     * Code sample:
-     * <pre>
-     * [Javadoc]
-     * public String toString(){
-     *     return "Gender: " + name;
-     * }
-     * </pre>
+     * Code sample: <pre> [Javadoc] public String toString(){ return "Gender: " + name; } </pre>
      */
-    private void generateMethodToString(JavaCodeFragmentBuilder methodBuilder, IKeyItem nameKeyItem, IKeyItem idKeyItem){
+    private void generateMethodToString(JavaCodeFragmentBuilder methodBuilder, IKeyItem nameKeyItem, IKeyItem idKeyItem) {
 
         JavaCodeFragment methodBody = new JavaCodeFragment();
         methodBody.append("return ");
@@ -522,42 +558,39 @@ public class EnumClassesBuilder extends DefaultJavaSourceFileBuilder {
         methodBody.append(" + \")\";");
 
         methodBuilder.javaDoc("{@inheritDoc}", ANNOTATION_GENERATED);
-        methodBuilder.method(Modifier.PUBLIC, String.class, "toString", 
-                new String[0], new Class[0],  methodBody, null); 
+        methodBuilder.method(Modifier.PUBLIC, String.class, "toString", new String[0], new Class[0], methodBody, null);
     }
-    
+
     /*
-     * Code sample:
-     * <pre>
-     * [Javadoc]
-     * private static final long serialVersionUID = 7932454078331259392L;
-     * </pre>
+     * Code sample: <pre> [Javadoc] private static final long serialVersionUID =
+     * 7932454078331259392L; </pre>
      */
-    private void generateConstantForSerialVersionNumber(JavaCodeFragmentBuilder constantBuilder) throws CoreException{
+    private void generateConstantForSerialVersionNumber(JavaCodeFragmentBuilder constantBuilder) throws CoreException {
         String packageName = getBuilderSet().getPackage(PACKAGE_STRUCTURE_KIND_ID, getIpsSrcFile());
         int hashCode = 17;
         hashCode = 37 * hashCode + packageName.hashCode();
         hashCode = 37 * hashCode + getTableContents().getName().hashCode();
         appendLocalizedJavaDoc("SERIALVERSIONUID", getTableContents(), constantBuilder);
-        constantBuilder.varDeclaration(Modifier.PUBLIC | Modifier.FINAL | Modifier.STATIC, Long.TYPE, "serialVersionUID", new JavaCodeFragment(String.valueOf(hashCode)));
+        constantBuilder.varDeclaration(Modifier.PUBLIC | Modifier.FINAL | Modifier.STATIC, Long.TYPE,
+                "serialVersionUID", new JavaCodeFragment(String.valueOf(hashCode)));
     }
-    
-    
-    private static class EnumValueAttributesInfo{
+
+    private static class EnumValueAttributesInfo {
 
         private final static EnumValueAttributesInfo INVALID_INFO = new EnumValueAttributesInfo();
-        
+
         public final IKeyItem idKeyItem;
         public final IKeyItem nameKeyItem;
         public final Datatype idDatatype;
         public final boolean isValid;
-        
-        private EnumValueAttributesInfo(){
+
+        private EnumValueAttributesInfo() {
             this.idKeyItem = null;
             this.nameKeyItem = null;
             this.idDatatype = null;
             this.isValid = false;
         }
+
         /**
          * @param idKeyItem
          * @param nameKeyItem
@@ -569,5 +602,12 @@ public class EnumClassesBuilder extends DefaultJavaSourceFileBuilder {
             this.idDatatype = idDatatype;
             this.isValid = true;
         }
+    }
+
+    /**
+     * Returns if Java 5 enums shall be used in the code generated by this builder.
+     */
+    public boolean isUseEnums() {
+        return ((StandardBuilderSet)getBuilderSet()).isUseEnums();
     }
 }

@@ -10,8 +10,9 @@ import org.faktorips.codegen.JavaCodeFragmentBuilder;
  * @author Peter Erzberger
  */
 public final class TypeSection{
-    
+
     private boolean isClass = true;
+    private boolean isEnum = false;
     private int classModifier;
     private String[] extendedInterfaces;
     private String superClass;
@@ -21,8 +22,10 @@ public final class TypeSection{
     private JavaCodeFragmentBuilder memberVariableBuilder;
     private JavaCodeFragmentBuilder constructorBuilder;
     private JavaCodeFragmentBuilder methodBuilder;
+    private JavaCodeFragmentBuilder enumDefinitionBuilder;
 
     public TypeSection(){
+        enumDefinitionBuilder = new JavaCodeFragmentBuilder();
         constantBuilder = new JavaCodeFragmentBuilder();
         memberVariableBuilder = new JavaCodeFragmentBuilder();
         constructorBuilder = new JavaCodeFragmentBuilder();
@@ -74,6 +77,26 @@ public final class TypeSection{
      */
     public void setClass(boolean isClass) {
         this.isClass = isClass;
+        if(this.isClass){
+            this.isEnum = false;
+        }
+    }
+
+    /**
+     * Returns if the type that is to generate is an enum or an interface.
+     */
+    public boolean isEnum() {
+        return isEnum;
+    }
+
+    /**
+     * Sets if the type that is to generate is an enum or an interface.
+     */
+    public void setEnum(boolean isEnum) {
+        this.isEnum = isEnum;
+        if(isEnum){
+            this.isClass = false;
+        }
     }
 
     /**
@@ -111,6 +134,13 @@ public final class TypeSection{
      */
     public JavaCodeFragmentBuilder getConstantBuilder() {
         return constantBuilder;
+    }
+
+    /**
+     * Returns the {@link <code>JavaCodeFragmentBuilder</code>} that assembles the code for the initialisation of the enum.
+     */
+    public JavaCodeFragmentBuilder getEnumDefinitionBuilder() {
+        return enumDefinitionBuilder;
     }
 
     /**

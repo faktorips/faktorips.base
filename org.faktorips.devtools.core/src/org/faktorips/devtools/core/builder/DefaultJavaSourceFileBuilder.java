@@ -159,6 +159,11 @@ public abstract class DefaultJavaSourceFileBuilder extends JavaSourceFileBuilder
         if (section.isClass()) {
             codeBuilder.classBegin(section.getClassModifier(), section.getUnqualifiedName(), 
                     section.getSuperClass(), section.getExtendedInterfaces());
+        } else if (section.isEnum()) {
+            codeBuilder.enumBegin(section.getClassModifier(), section.getUnqualifiedName(), 
+                    section.getSuperClass(), section.getExtendedInterfaces());
+            codeBuilder.append(section.getEnumDefinitionBuilder().getFragment());
+            codeBuilder.appendln();
         } else {
             codeBuilder.interfaceBegin(section.getUnqualifiedName(), section.getExtendedInterfaces());
         }

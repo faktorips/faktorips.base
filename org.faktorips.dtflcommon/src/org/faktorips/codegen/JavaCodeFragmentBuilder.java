@@ -655,6 +655,37 @@ public class JavaCodeFragmentBuilder {
     }
 
     /**
+     * Appends the sourcecode for the beginning of a new enum at the end of the fragment under
+     * construction.
+     */
+    public void enumBegin(int modifier,
+            String className,
+            String extendsClassName,
+            String interfaces[]) {
+
+        fragment.append(Modifier.toString(modifier));
+        fragment.append(" enum ");
+        fragment.append(className);
+        if (extendsClassName != null) {
+            fragment.append(" extends ");
+            fragment.appendClassName(extendsClassName);
+        }
+        if (interfaces != null) {
+            for (int i = 0; i < interfaces.length; i++) {
+                if (i == 0) {
+                    fragment.append(" implements ");
+                } else {
+                    fragment.append(", ");
+                }
+                fragment.appendClassName(interfaces[i]);
+            }
+        }
+        fragment.appendln();
+        openBracket();
+        fragment.appendln();
+    }
+
+    /**
      * Writes the code at the end of a class.
      */
     public void classEnd() {
