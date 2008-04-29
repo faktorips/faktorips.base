@@ -448,11 +448,16 @@ public class PolicyCmptImplClassBuilder extends BasePolicyCmptTypeBuilder {
                 if (r.is1ToMany()) {
                     methodsBuilder.append("for (");
                     methodsBuilder.appendClassName(Iterator.class);
+                    if (((StandardBuilderSet)getBuilderSet()).isUseTypesafeCollections()) {
+                        methodsBuilder.append("<");
+                        methodsBuilder.appendClassName(getGenerator(r).getQualifiedClassName(getGenerator(r).getTargetPolicyCmptType(), true));
+                        methodsBuilder.append(">");
+                    }
                     methodsBuilder.append(" it=" + field + ".iterator(); it.hasNext();) {");
                     methodsBuilder.appendClassName(AbstractConfigurableModelObject.class);
                     methodsBuilder.append(" child = (");
-                    methodsBuilder.appendClassName(AbstractConfigurableModelObject.class);
-                    methodsBuilder.append(")it.next();");
+                        methodsBuilder.appendClassName(AbstractConfigurableModelObject.class);
+                        methodsBuilder.append(")it.next();");
                     methodsBuilder.append("child." + MethodNames.EFFECTIVE_FROM_HAS_CHANGED + "();");
                     methodsBuilder.append("}");
                 } else {

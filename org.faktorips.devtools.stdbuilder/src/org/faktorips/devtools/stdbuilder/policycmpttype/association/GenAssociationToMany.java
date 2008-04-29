@@ -15,6 +15,7 @@
 package org.faktorips.devtools.stdbuilder.policycmpttype.association;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 
@@ -80,10 +81,21 @@ public class GenAssociationToMany extends GenAssociation {
      * <pre>
      * public ICoverage[] getCoverages()
      * </pre>
+     * 
+     * Java 5 code sample:
+     * 
+     * <pre>
+     * public List<ICoverage> getCoverages()
+     * </pre>
      */
     public void generateSignatureGetAllRefObjects(JavaCodeFragmentBuilder methodsBuilder) throws CoreException {
         String methodName = getMethodNameGetAllRefObjects();
-        String returnType = targetInterfaceName + "[]";
+        String returnType;
+        if (isUseTypesafeCollections()) {
+            returnType = List.class.getName()+"<"+targetInterfaceName+">";
+        }else{
+            returnType = targetInterfaceName + "[]";
+        }
         methodsBuilder.signature(java.lang.reflect.Modifier.PUBLIC, returnType, methodName, new String[] {},
                 new String[] {});
     }
@@ -169,10 +181,15 @@ public class GenAssociationToMany extends GenAssociation {
             JavaCodeFragment initialValueExpression = new JavaCodeFragment();
             initialValueExpression.append("new ");
             initialValueExpression.appendClassName(ArrayList.class);
+            if (isUseTypesafeCollections()) {
+                initialValueExpression.append("<");
+                initialValueExpression.appendClassName(targetInterfaceName);
+                initialValueExpression.append(">");
+            }
             initialValueExpression.append("()");
             String comment = getLocalizedText("FIELD_RELATION_JAVADOC", association.getName());
             builder.javaDoc(comment, JavaSourceFileBuilder.ANNOTATION_GENERATED);
-            builder.varDeclaration(java.lang.reflect.Modifier.PRIVATE, List.class, fieldName, initialValueExpression);
+            builder.varDeclaration(java.lang.reflect.Modifier.PRIVATE, List.class.getName()+(isUseTypesafeCollections()?("<"+targetInterfaceName+">"):""), fieldName, initialValueExpression);
         }
     }
 
@@ -223,11 +240,10 @@ public class GenAssociationToMany extends GenAssociation {
         methodsBuilder.javaDoc(getJavaDocCommentForOverriddenMethod(), JavaSourceFileBuilder.ANNOTATION_GENERATED);
         generateSignatureGetNumOfRefObjects(methodsBuilder);
         methodsBuilder.openBracket();
-        String field = fieldName;
         if (association.is1ToMany()) {
-            methodsBuilder.appendln("return " + field + ".size();");
+            methodsBuilder.appendln("return " + fieldName + ".size();");
         } else {
-            methodsBuilder.appendln("return " + field + "==null ? 0 : 1;");
+            methodsBuilder.appendln("return " + fieldName + "==null ? 0 : 1;");
         }
         methodsBuilder.closeBracket();
     }
@@ -262,6 +278,15 @@ public class GenAssociationToMany extends GenAssociation {
      *     return (ICoverage[])coverages.toArray(new ICoverage[coverages.size()]);
      * }
      * </pre>
+     * 
+     * Java 5 code sample:
+     * 
+     * <pre>
+     * [Javadoc]
+     * public List<ICoverage> getCoverages() {
+     *     return Collections.unmodifiableList(coverages);
+     * }
+     * </pre>
      */
     protected void generateMethodGetAllObjectsForNoneDerivedUnion(JavaCodeFragmentBuilder methodsBuilder)
             throws CoreException {
@@ -269,31 +294,52 @@ public class GenAssociationToMany extends GenAssociation {
         methodsBuilder.javaDoc(getJavaDocCommentForOverriddenMethod(), JavaSourceFileBuilder.ANNOTATION_GENERATED);
         generateSignatureGetAllRefObjects(methodsBuilder);
         methodsBuilder.openBracket();
-        methodsBuilder.appendln("return (");
-        methodsBuilder.appendClassName(targetImplClassName);
-        methodsBuilder.append("[])");
-        methodsBuilder.append(fieldName);
-        methodsBuilder.append(".toArray(new ");
-        methodsBuilder.appendClassName(targetImplClassName);
-        methodsBuilder.append('[');
-        methodsBuilder.append(fieldName);
-        methodsBuilder.append(".size()]);");
+        if (isUseTypesafeCollections()) {
+            methodsBuilder.appendln("return ");
+            methodsBuilder.appendClassName(Collections.class.getName());
+            methodsBuilder.appendln(".unmodifiableList(");
+            methodsBuilder.append(fieldName);
+            methodsBuilder.append(");");
+        }else{
+            methodsBuilder.appendln("return (");
+            methodsBuilder.appendClassName(targetImplClassName);
+            methodsBuilder.append("[])");
+            methodsBuilder.append(fieldName);
+            methodsBuilder.append(".toArray(new ");
+            methodsBuilder.appendClassName(targetImplClassName);
+            methodsBuilder.append('[');
+            methodsBuilder.append(fieldName);
+            methodsBuilder.append(".size()]);");
+        }
         methodsBuilder.closeBracket();
     }
 
     /**
+     * Code sample
      * <pre>
      * public IMotorCoverage getMotorCoverage(int index) {
      *     return (IMotorCoverage)motorCoverages.get(index);
+     * }
+     * </pre>
+     * 
+     * Java 5 code sample
+     * <pre>
+     * public IMotorCoverage getMotorCoverage(int index) {
+     *     return motorCoverages.get(index);
      * }
      * </pre>
      */
     protected void generateMethodGetRefObjectAtIndex(JavaCodeFragmentBuilder methodBuilder) throws CoreException {
         generateSignatureGetRefObjectAtIndex(methodBuilder);
         methodBuilder.openBracket();
-        methodBuilder.append("return (");
-        methodBuilder.appendClassName(targetInterfaceName);
-        methodBuilder.append(')');
+        methodBuilder.append("return ");
+        if (isUseTypesafeCollections()) {
+            
+        }else{
+            methodBuilder.append("(");
+            methodBuilder.appendClassName(targetInterfaceName);
+            methodBuilder.append(')');
+        }
         methodBuilder.append(fieldName);
         methodBuilder.append(".get(index);");
         methodBuilder.closeBracket();
@@ -663,6 +709,17 @@ public class GenAssociationToMany extends GenAssociation {
      *     return result;
      * }
      * </pre>
+     * 
+     * Java 5 code sample:
+     * 
+     * <pre>
+     * [Javadoc]
+     * public List&lt;ICoverage&gt; getCoverages() {
+     *     List&lt;ICoverage&gt; result = new ArrayList&lt;ICoverage&gt;(getNumOfCoveragesInternal());
+     *     result.addAll(getTplCoverages());
+     *     return result;
+     * }
+     * </pre>
      */
     protected void generateMethodGetAllRefObjectsForContainerAssociationImplementation(List subAssociations,
             JavaCodeFragmentBuilder methodsBuilder) throws CoreException {
@@ -672,25 +729,44 @@ public class GenAssociationToMany extends GenAssociation {
         String classname = getQualifiedClassName((IPolicyCmptType)association.findTarget(getIpsProject()), true);
 
         methodsBuilder.openBracket();
-        methodsBuilder.appendClassName(classname);
-        methodsBuilder.append("[] result = new ");
-        methodsBuilder.appendClassName(classname);
-        methodsBuilder.append("[" + getMethodNameGetNumOfRefObjectsInternal() + "()];");
+        if (isUseTypesafeCollections()) {
+            methodsBuilder.appendClassName(List.class.getName());
+            methodsBuilder.append("<");
+            methodsBuilder.appendClassName(classname);
+            methodsBuilder.append("> result = new ");
+            methodsBuilder.appendClassName(ArrayList.class.getName());
+            methodsBuilder.append("<");
+            methodsBuilder.appendClassName(classname);
+            methodsBuilder.append(">(" + getMethodNameGetNumOfRefObjectsInternal() + "());");
+        }else{
+            methodsBuilder.appendClassName(classname);
+            methodsBuilder.append("[] result = new ");
+            methodsBuilder.appendClassName(classname);
+            methodsBuilder.append("[" + getMethodNameGetNumOfRefObjectsInternal() + "()];");
+        }
 
         IPolicyCmptType supertype = (IPolicyCmptType)getGenPolicyCmptType().getPolicyCmptType().findSupertype(
                 getIpsProject());
         if (supertype != null && !supertype.isAbstract()) {
-            // ICoverage[] superResult = super.getCoverages();
-            // System.arraycopy(superResult, 0, result, 0, superResult.length);
-            // int counter = superResult.length;
-            methodsBuilder.appendClassName(classname);
-            methodsBuilder.append("[] superResult = super.");
-            methodsBuilder.appendln(getMethodNameGetAllRefObjects() + "();");
+            if (isUseTypesafeCollections()) {
+                // result.addAll(super.getCoverages());
+                methodsBuilder.append("result.addAll(super.");
+                methodsBuilder.appendln(getMethodNameGetAllRefObjects() + "());");
+            }else{
+                // ICoverage[] superResult = super.getCoverages();
+                // System.arraycopy(superResult, 0, result, 0, superResult.length);
+                // int counter = superResult.length;
+                methodsBuilder.appendClassName(classname);
+                methodsBuilder.append("[] superResult = super.");
+                methodsBuilder.appendln(getMethodNameGetAllRefObjects() + "();");
 
-            methodsBuilder.appendln("System.arraycopy(superResult, 0, result, 0, superResult.length);");
-            methodsBuilder.appendln("int counter = superResult.length;");
+                methodsBuilder.appendln("System.arraycopy(superResult, 0, result, 0, superResult.length);");
+                methodsBuilder.appendln("int counter = superResult.length;");
+            }
         } else {
-            methodsBuilder.append("int counter = 0;");
+            if (!isUseTypesafeCollections()) {
+                methodsBuilder.append("int counter = 0;");
+            }
         }
 
         boolean elementsVarDefined = false;
@@ -698,20 +774,28 @@ public class GenAssociationToMany extends GenAssociation {
             IPolicyCmptTypeAssociation subrel = (IPolicyCmptTypeAssociation)subAssociations.get(i);
             GenAssociation subrelGenerator = getGenPolicyCmptType().getGenerator(subrel);
             if (subrel.is1ToMany()) {
-                if (!elementsVarDefined) {
-                    methodsBuilder.appendClassName(classname);
-                    methodsBuilder.append("[] ");
-                    elementsVarDefined = true;
-                }
                 String method = subrelGenerator.getMethodNameGetAllRefObjects();
-                methodsBuilder.appendln("elements = " + method + "();");
-                methodsBuilder.appendln("for (int i=0; i<elements.length; i++) {");
-                methodsBuilder.appendln("result[counter++] = elements[i];");
-                methodsBuilder.appendln("}");
+                if (isUseTypesafeCollections()) {
+                    methodsBuilder.appendln("result.addAll(" + method + "());");
+                }else{
+                    if (!elementsVarDefined) {
+                        methodsBuilder.appendClassName(classname);
+                        methodsBuilder.append("[] ");
+                        elementsVarDefined = true;
+                    }
+                    methodsBuilder.appendln("elements = " + method + "();");
+                    methodsBuilder.appendln("for (int i=0; i<elements.length; i++) {");
+                    methodsBuilder.appendln("result[counter++] = elements[i];");
+                    methodsBuilder.appendln("}");
+                }
             } else {
                 String method = subrelGenerator.getMethodNameGetRefObject();
                 methodsBuilder.appendln("if (" + method + "()!=null) {");
-                methodsBuilder.appendln("result[counter++] = " + method + "();");
+                if (isUseTypesafeCollections()) {
+                    methodsBuilder.appendln("result.add(" + method + "());");
+                }else{
+                    methodsBuilder.appendln("result[counter++] = " + method + "();");
+                }
                 methodsBuilder.appendln("}");
             }
         }
@@ -773,16 +857,31 @@ public class GenAssociationToMany extends GenAssociation {
     }
 
     public void generateCodeForValidateDependants(JavaCodeFragment body) throws CoreException {
-        IPolicyCmptType target = association.getIpsProject().findPolicyCmptType(association.getTarget());
+        IPolicyCmptType target = getTargetPolicyCmptType();
         body.append("if(");
         body.append(getMethodNameGetNumOfRefObjects());
         body.append("() > 0) { ");
-        body.appendClassName(getQualifiedClassName(target, true));
-        body.append("[] rels = ");
+        if (isUseTypesafeCollections()) {
+            body.appendClassName(List.class.getName());
+            body.append("<");
+            body.appendClassName(getQualifiedClassName(target, true));
+            body.append(">");
+        }else{
+            body.appendClassName(getQualifiedClassName(target, true));
+            body.append("[]");
+        }
+        body.append(" rels = ");
         body.append(getMethodNameGetAllRefObjects());
         body.append("();");
-        body.append("for (int i = 0; i < rels.length; i++)");
-        body.append("{ ml.add(rels[i].validate(businessFunction)); } }");
+        if (isUseTypesafeCollections()) {
+            body.append("for (");
+            body.appendClassName(getQualifiedClassName(target, true));
+            body.append(" rel : rels)");
+            body.append("{ ml.add(rel.validate(businessFunction)); } }");
+        }else{
+            body.append("for (int i = 0; i < rels.length; i++)");
+            body.append("{ ml.add(rels[i].validate(businessFunction)); } }");
+        }
     }
 
 }
