@@ -17,94 +17,79 @@ package org.faktorips.valueset.java5;
 import java.io.Serializable;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.HashSet;
 import java.util.Set;
+import java.util.TreeSet;
 
 /**
- * Default implementation of the <code>org.faktorips.valueset.EnumValueSet</code> interface.
+ * Implementation of the <code>org.faktorips.valueset.java5.ValueSet</code> interface for ordered
+ * values.
  * 
- * @author Peter Erzberger
+ * @author Daniel Hohenberger
  */
-public class DefaultEnumValueSet<T> extends HashSet<T> implements Serializable, ValueSet<T> {
+public class OrderedValueSet<E> extends TreeSet<E> implements Serializable, ValueSet<E> {
 
-    private static final long serialVersionUID = -4073950730803261951L;
-
+    private static final long serialVersionUID = 2484960572251702320L;
+    
     private boolean containsNull;
-    private T nullValue;
+    private E nullValue;
 
     /**
-     * Creates a new instance of DefaultEnumValueSet.
+     * Creates a new instance of <code>OrderedEnumValueSet</code>.
      * 
      * @param values the values of this set. If these values contain null or the null representation
-     *            value the parameter containsNull must be set to true. This implementation of
-     *            EnumValueSet cannot validate if the provided values really contain null. The
-     *            caller is responsible for that
-     * 
-     * @param containsNull indicates if the provided values contain null or the null representation
-     *            value
-     * @param nullValue the java null value or null representation value for the datatype of this
-     *            enumeration value set 
-     */
-    public DefaultEnumValueSet(boolean containsNull, T nullValue, T... values) {
-        for (T t : values) {
-            add(t);
-        }
-        initialize(containsNull, nullValue);
-    }
-
-    /**
-     * Creates a new instance of DefaultEnumValueSet.
-     * 
-     * @param values the values of this set. If these values contain null or the null representation
-     *            value the parameter containsNull must be set to true. This implementation of
-     *            EnumValueSet cannot validate if the provided values really contain null. The
-     *            caller is responsible for that      
-     */
-    public DefaultEnumValueSet(T... values) {
-        for (T t : values) {
-            add(t);
-        }
-        initialize(false, null);
-    }
-
-    /**
-     * Creates a new instance of DefaultEnumValueSet.
-     * 
-     * @param values the values of this set. If these values contain null or the null representation
-     *            value the parameter containsNull must be set to true. This implementation of
-     *            EnumValueSet cannot validate if the provided values really contain null. The
-     *            caller is responsible for that
+     *            value the parameter containsNull must be set to true.
      * 
      * @param containsNull indicates if the provided values contain null or the null representation
      *            value
      * @param nullValue the java null value or null representation value for the datatype of this
      *            enumeration value set
      */
-    public DefaultEnumValueSet(Collection<T> values, boolean containsNull, T nullValue) {
+    public OrderedValueSet(boolean containsNull, E nullValue, E... values) {
+        for (E e : values) {
+            add(e);
+        }
+        initialize(containsNull, nullValue);
+    }
+
+    /**
+     * Creates a new instance of DefaultEnumValueSet.
+     * 
+     * @param values the values of this set. If these values contain null or the null representation
+     *            value the parameter containsNull must be set to true.
+     * 
+     * @param containsNull indicates if the provided values contain null or the null representation
+     *            value
+     * @param nullValue the java null value or null representation value for the datatype of this
+     *            enumeration value set
+     */
+    public OrderedValueSet(Collection<E> values, boolean containsNull, E nullValue) {
         addAll(values);
         initialize(containsNull, nullValue);
     }
 
-    private void initialize(boolean containsNull, T nullValue){
+    private void initialize(boolean containsNull, E nullValue) {
         this.containsNull = containsNull;
         this.nullValue = nullValue;
-        if(containsNull)this.add(nullValue);
+        if (containsNull && !super.contains(nullValue)) {
+            add(nullValue);
+        }
     }
-    
-    private Set<T> getValuesWithoutNull(){
-        if(containsNull && super.contains(nullValue)){
-            Set<T> set = new HashSet<T>(this);
+
+    @SuppressWarnings("unchecked")
+    private Set<E> getValuesWithoutNull() {
+        if (containsNull) {
+            Set<E> set = (Set<E>)super.clone();
             set.remove(nullValue);
             return Collections.unmodifiableSet(set);
         }
         return Collections.unmodifiableSet(this);
     }
-    
+
     /**
      * {@inheritDoc}
      */
-    public Set<T> getValues(boolean excludeNull) {
-        return excludeNull?getValuesWithoutNull():Collections.unmodifiableSet(this);
+    public Set<E> getValues(boolean excludeNull) {
+        return excludeNull ? getValuesWithoutNull() : Collections.unmodifiableSet(this);
     }
 
     /**
@@ -118,12 +103,12 @@ public class DefaultEnumValueSet<T> extends HashSet<T> implements Serializable, 
      * {@inheritDoc}
      */
     @SuppressWarnings("unchecked")
-    public boolean equals(Object obj){
-        if (obj instanceof DefaultEnumValueSet) {
-            DefaultEnumValueSet<? extends T> other = (DefaultEnumValueSet<? extends T>)obj;
-            return super.equals(other) && 
-                    containsNull == other.containsNull && 
-                    nullValue == other.nullValue;
+    public boolean equals(Object obj) {
+        if (obj instanceof OrderedValueSet) {
+            OrderedValueSet<? extends E> other = (OrderedValueSet<? extends E>)obj;
+            return super.equals(other) && containsNull == other.containsNull && containsNull ? ((null == nullValue && null == other.nullValue) || (nullValue
+                    .equals(other.nullValue)))
+                    : true;
         }
         return false;
     }

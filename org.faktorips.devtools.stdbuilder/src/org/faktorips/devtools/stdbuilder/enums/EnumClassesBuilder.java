@@ -294,9 +294,12 @@ public class EnumClassesBuilder extends DefaultJavaSourceFileBuilder {
         return (IRow[])validRows.toArray(new IRow[validRows.size()]);
     }
 
-    /*
-     * Code sample: <pre> [Javadoc] public static final GeneratedGender MALE = new
-     * GeneratedGender(new Integer(1), "male", "Male"); </pre>
+    /**
+     * Code sample: 
+     * <pre> 
+     * [Javadoc]
+     * public static final GeneratedGender MALE = new GeneratedGender(new Integer(1), "male", "Male"); 
+     * </pre>
      */
     private void generateConstantsForEnumValues(JavaCodeFragmentBuilder constantBuilder, ITableStructure structure)
             throws CoreException {
@@ -339,8 +342,11 @@ public class EnumClassesBuilder extends DefaultJavaSourceFileBuilder {
         }
     }
 
-    /*
-     * Code sample: <pre> MALE(new Integer(1), "male", "Male"); </pre>
+    /**
+     * Code sample: 
+     * <pre>
+     * MALE(new Integer(1), "male", "Male");
+     * </pre>
      */
     private void generateEnumInitialization(JavaCodeFragmentBuilder enumDefinitionBuilder, ITableStructure structure)
             throws CoreException {
@@ -462,10 +468,20 @@ public class EnumClassesBuilder extends DefaultJavaSourceFileBuilder {
         return fragment;
     }
 
-    /*
-     * Code sample: <pre> [Javadoc] public static final GeneratedGender getGeneratedGender(Integer
-     * id) { if (MALE.id.equals(id)) { return MALE; } if (FEMALE.id.equals(id)) { return FEMALE; }
-     * return null; } </pre>
+    /**
+     * Code sample:
+     * <pre>
+     *  [Javadoc]
+     *  public static final GeneratedGender getGeneratedGender(Integer id) {
+     *      if (MALE.id.equals(id)) {
+     *          return MALE;
+     *      }
+     *      if (FEMALE.id.equals(id)) {
+     *          return FEMALE;
+     *      }
+     *      return null;
+     *  }
+     * </pre>
      */
     private void generateMethodGetEnumValue(JavaCodeFragmentBuilder methodBuilder,
             IKeyItem idKeyItem,

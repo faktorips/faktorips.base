@@ -101,5 +101,9 @@ public abstract class BaseProductCmptTypeBuilder extends AbstractProductCmptType
             generator.generate(generatesInterface(), getIpsProject(), getMainTypeSection());
         }
     }
+    
+    public boolean isUseTypesafeCollections(){
+        return ((StandardBuilderSet)getBuilderSet()).isUseTypesafeCollections();
+    }
 
 }

@@ -151,8 +151,9 @@ public interface DatatypeHelper {
      *  
      * @param values the values contained in the enum value set code fragment returned by this method
      * @param containsNull indicates if <code>null</code> is also contained in the returned enum value set
+     * @param useTypesafeCollections indicates if Java 5 typesafe collections and valuetypes shall be used
      */
-    public JavaCodeFragment newEnumValueSetInstance(String[] values, boolean containsNull);
+    public JavaCodeFragment newEnumValueSetInstance(String[] values, boolean containsNull, boolean useTypesafeCollections);
     
     /**
      * Returns a <code>JavaCodeFragment</code> containing the source code to create a new enum value set instance. 
@@ -161,6 +162,7 @@ public interface DatatypeHelper {
      *          The collection has to contain instances of the datatype of this helper.
      *              
      * @param containsNullExpression a JavaCodeFragment is expected that contains an expression of the type <code>boolean</code>
+     * @param useTypesafeCollections indicates if Java 5 typesafe collections and valuetypes shall be used
      */
-    public JavaCodeFragment newEnumValueSetInstance(JavaCodeFragment collectionExpression, JavaCodeFragment containsNullExpression);
+    public JavaCodeFragment newEnumValueSetInstance(JavaCodeFragment collectionExpression, JavaCodeFragment containsNullExpression, boolean useTypesafeCollections);
 }

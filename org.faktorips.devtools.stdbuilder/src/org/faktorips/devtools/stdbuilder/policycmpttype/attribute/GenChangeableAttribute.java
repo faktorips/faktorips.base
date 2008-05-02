@@ -22,6 +22,7 @@ import org.eclipse.core.runtime.CoreException;
 import org.faktorips.codegen.DatatypeHelper;
 import org.faktorips.codegen.JavaCodeFragment;
 import org.faktorips.codegen.JavaCodeFragmentBuilder;
+import org.faktorips.codegen.dthelpers.Java5ClassNames;
 import org.faktorips.datatype.Datatype;
 import org.faktorips.datatype.EnumDatatype;
 import org.faktorips.devtools.core.builder.JavaSourceFileBuilder;
@@ -148,9 +149,9 @@ public class GenChangeableAttribute extends GenAttribute {
         if (getDatatype().isPrimitive()) {
             containsNull = false;
         }
-        frag = wrapperDatatypeHelper.newEnumValueSetInstance(valueIds, containsNull);
+        frag = wrapperDatatypeHelper.newEnumValueSetInstance(valueIds, containsNull, isUseTypesafeCollections());
         builder.varDeclaration(java.lang.reflect.Modifier.PUBLIC | java.lang.reflect.Modifier.FINAL
-                | java.lang.reflect.Modifier.STATIC, EnumValueSet.class, getFieldNameMaxAllowedValues(), frag);
+                | java.lang.reflect.Modifier.STATIC, isUseTypesafeCollections()?Java5ClassNames.OrderedValueSet_QualifiedName+"<"+wrapperDatatypeHelper.getJavaClassName()+">":EnumValueSet.class.getName(), getFieldNameMaxAllowedValues(), frag);
     }
 
     protected String getFieldNameMaxAllowedValues() {
@@ -192,7 +193,7 @@ public class GenChangeableAttribute extends GenAttribute {
     public void generateSignatureGetAllowedValuesFor(Datatype datatype, JavaCodeFragmentBuilder methodsBuilder)
             throws CoreException {
         String methodName = getMethodNameGetAllowedValuesFor(datatype);
-        methodsBuilder.signature(Modifier.PUBLIC, EnumValueSet.class.getName(), methodName,
+        methodsBuilder.signature(Modifier.PUBLIC, isUseTypesafeCollections()?Java5ClassNames.OrderedValueSet_QualifiedName+"<"+datatype.getJavaClassName()+">":EnumValueSet.class.getName(), methodName,
                 new String[] { "businessFunction" }, new String[] { String.class.getName() });
     }
 
@@ -520,7 +521,7 @@ public class GenChangeableAttribute extends GenAttribute {
 
     private void generateFieldAllowedValuesFor(JavaCodeFragmentBuilder memberVarBuilder) {
         appendLocalizedJavaDoc("FIELD_ALLOWED_VALUES_FOR", getPolicyCmptTypeAttribute().getName(), memberVarBuilder);
-        memberVarBuilder.varDeclaration(Modifier.PRIVATE, EnumValueSet.class, getFieldNameAllowedValuesFor());
+        memberVarBuilder.varDeclaration(Modifier.PRIVATE, isUseTypesafeCollections()?Java5ClassNames.OrderedValueSet_QualifiedName+"<"+wrapperDatatypeHelper.getJavaClassName()+">":EnumValueSet.class.getName(), getFieldNameAllowedValuesFor());
     }
 
     /**

@@ -282,8 +282,18 @@ public class ProductCmptGenImplClassBuilder extends BaseProductCmptTypeBuilder {
             frag.appendClassName(ValueToXmlHelper.class);
             frag.appendln(".getEnumValueSetFromElement(configElement, \"ValueSet\");");
             frag.appendClassName(ArrayList.class);
+            if(isUseTypesafeCollections()){
+                frag.append("<");
+                frag.appendClassName(helper.getJavaClassName());
+                frag.append(">");
+            }
             frag.append(" enumValues = new ");
             frag.appendClassName(ArrayList.class);
+            if(isUseTypesafeCollections()){
+                frag.append("<");
+                frag.appendClassName(helper.getJavaClassName());
+                frag.append(">");
+            }
             frag.append("();");
             frag.append("for (int i = 0; i < values.getNumberOfValues(); i++)");
             frag.appendOpenBracket();
@@ -294,7 +304,7 @@ public class ProductCmptGenImplClassBuilder extends BaseProductCmptTypeBuilder {
             frag.append(attribute.getFieldNameAllowedValuesFor());
             frag.append(" = ");
             frag.append(helper.newEnumValueSetInstance(new JavaCodeFragment("enumValues"), new JavaCodeFragment(
-                    "values.containsNull()")));
+                    "values.containsNull()"), isUseTypesafeCollections()));
             frag.appendln(";");
         }
         builder.append(frag);

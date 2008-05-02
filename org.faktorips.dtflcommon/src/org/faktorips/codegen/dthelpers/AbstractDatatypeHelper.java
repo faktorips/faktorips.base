@@ -123,38 +123,83 @@ public abstract class AbstractDatatypeHelper implements DatatypeHelper {
 
     /**
      * {@inheritDoc}
+     * 
+     * Code sample
+     * <pre>
+     *  new DefaultEnumValueSet(new GeneratedGender[] {
+     *          GeneratedGender.getGeneratedGender(new Integer(1)), 
+     *          GeneratedGender.getGeneratedGender(new Integer(2)),
+     *          GeneratedGender.getGeneratedGender(null) }, 
+     *      true, 
+     *      GeneratedGender.getGeneratedGender(null));
+     * </pre>
+     * 
+     * Java 5 code sample
+     * <pre>
+     *  (EnumValueSet)new DefaultEnumValueSet&lt;GeneratedGender&gt;(
+     *      true, 
+     *      GeneratedGender.getGeneratedGender(null),
+     *      GeneratedGender.getGeneratedGender(new Integer(1)), 
+     *      GeneratedGender.getGeneratedGender(new Integer(2)));
+     * </pre>
      */
-    public JavaCodeFragment newEnumValueSetInstance(String[] values, boolean containsNull) {
+    public JavaCodeFragment newEnumValueSetInstance(String[] values, boolean containsNull, boolean useTypesafeCollections) {
         JavaCodeFragment frag = new JavaCodeFragment();
-        frag.append("new ");
-        frag.appendClassName(DefaultEnumValueSet.class);
-        frag.append("(");
-        frag.append("new ");
-        frag.appendClassName(getJavaClassName());
-        frag.append("[] ");
-        frag.appendOpenBracket();
-        for (int i = 0; i < values.length; i++) {
-            frag.append(newInstance(values[i]));
-            if(i < values.length - 1){
-                frag.append(", ");
+        if(useTypesafeCollections){
+            frag.append("new ");
+            frag.appendClassName(Java5ClassNames.OrderedValueSet_QualifiedName);
+            frag.append("<");
+            frag.appendClassName(getJavaClassName());
+            frag.append(">(");
+            frag.append(containsNull);
+            frag.append(", ");
+            frag.append(newInstance(null));
+            frag.append(", ");
+            for (int i = 0; i < values.length; i++) {
+                frag.append(newInstance(values[i]));
+                if(i < values.length - 1){
+                    frag.append(", ");
+                }
             }
+            frag.appendln(")");
+        }else{
+            frag.append("new ");
+            frag.appendClassName(DefaultEnumValueSet.class);
+            frag.append("(");
+            frag.append("new ");
+            frag.appendClassName(getJavaClassName());
+            frag.append("[] ");
+            frag.appendOpenBracket();
+            for (int i = 0; i < values.length; i++) {
+                frag.append(newInstance(values[i]));
+                if(i < values.length - 1){
+                    frag.append(", ");
+                }
+            }
+            frag.appendCloseBracket();
+            frag.append(", ");
+            frag.append(containsNull);
+            frag.append(", ");
+            frag.append(newInstance(null));
+            frag.appendln(")");
         }
-        frag.appendCloseBracket();
-        frag.append(", ");
-        frag.append(containsNull);
-        frag.append(", ");
-        frag.append(newInstance(null));
-        frag.appendln(")");
         return frag;
     }
 
     /**
      * {@inheritDoc}
      */
-    public JavaCodeFragment newEnumValueSetInstance(JavaCodeFragment valueCollection, JavaCodeFragment containsNullExpression) {
+    public JavaCodeFragment newEnumValueSetInstance(JavaCodeFragment valueCollection, JavaCodeFragment containsNullExpression, boolean useTypesafeCollections) {
         JavaCodeFragment frag = new JavaCodeFragment();
         frag.append("new ");
-        frag.appendClassName(DefaultEnumValueSet.class);
+        if(useTypesafeCollections){
+            frag.appendClassName(Java5ClassNames.OrderedValueSet_QualifiedName);
+            frag.append("<");
+            frag.appendClassName(getJavaClassName());
+            frag.append(">");
+        }else{
+            frag.appendClassName(DefaultEnumValueSet.class);
+        }
         frag.append("(");
         frag.append(valueCollection);
         frag.append(", ");
