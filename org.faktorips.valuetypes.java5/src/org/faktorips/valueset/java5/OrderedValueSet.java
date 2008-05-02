@@ -26,12 +26,13 @@ import java.util.Set;
  * 
  * @author Daniel Hohenberger
  */
-public class OrderedValueSet<E> extends LinkedHashSet<E> implements Serializable, ValueSet<E> {
+public class OrderedValueSet<E> implements Serializable, ValueSet<E> {
 
     private static final long serialVersionUID = 2484960572251702320L;
 
     private boolean containsNull;
     private E nullValue;
+    private LinkedHashSet<E> set = new LinkedHashSet<E>();
 
     /**
      * Creates a new instance of <code>OrderedEnumValueSet</code>.
@@ -46,7 +47,7 @@ public class OrderedValueSet<E> extends LinkedHashSet<E> implements Serializable
      */
     public OrderedValueSet(boolean containsNull, E nullValue, E... values) {
         for (E e : values) {
-            add(e);
+            set.add(e);
         }
         initialize(containsNull, nullValue);
     }
@@ -63,33 +64,33 @@ public class OrderedValueSet<E> extends LinkedHashSet<E> implements Serializable
      *            enumeration value set
      */
     public OrderedValueSet(Collection<E> values, boolean containsNull, E nullValue) {
-        addAll(values);
+        set.addAll(values);
         initialize(containsNull, nullValue);
     }
 
     private void initialize(boolean containsNull, E nullValue) {
         this.containsNull = containsNull;
         this.nullValue = nullValue;
-        if (containsNull && !super.contains(nullValue) && null != nullValue) {
-            add(nullValue);
+        if (containsNull && !set.contains(nullValue)) {
+            set.add(nullValue);
         }
     }
 
     @SuppressWarnings("unchecked")
     private Set<E> getValuesWithoutNull() {
         if (containsNull) {
-            Set<E> set = (Set<E>)super.clone();
-            set.remove(nullValue);
-            return Collections.unmodifiableSet(set);
+            Set<E> set2 = (Set<E>)set.clone();
+            set2.remove(nullValue);
+            return Collections.unmodifiableSet(set2);
         }
-        return Collections.unmodifiableSet(this);
+        return Collections.unmodifiableSet(set);
     }
 
     /**
      * {@inheritDoc}
      */
     public Set<E> getValues(boolean excludeNull) {
-        return excludeNull ? getValuesWithoutNull() : Collections.unmodifiableSet(this);
+        return excludeNull ? getValuesWithoutNull() : Collections.unmodifiableSet(set);
     }
 
     /**
@@ -120,17 +121,19 @@ public class OrderedValueSet<E> extends LinkedHashSet<E> implements Serializable
         return containsNull;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
-    public boolean addAll(Collection<? extends E> c) {
-        for (E e : c) {
-            if (!super.contains(e)) {
-                add(e);
-            }
-        }
-        return true;
+    public boolean contains(Object value) {
+        return set.contains(value);
+    }
+
+    @Override
+    public boolean isEmpty() {
+        return set.isEmpty();
+    }
+
+    @Override
+    public int size() {
+        return set.size();
     }
 
 }
