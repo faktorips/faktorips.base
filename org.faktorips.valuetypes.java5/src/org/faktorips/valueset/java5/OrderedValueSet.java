@@ -17,8 +17,8 @@ package org.faktorips.valueset.java5;
 import java.io.Serializable;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.LinkedHashSet;
 import java.util.Set;
-import java.util.TreeSet;
 
 /**
  * Implementation of the <code>org.faktorips.valueset.java5.ValueSet</code> interface for ordered
@@ -26,10 +26,10 @@ import java.util.TreeSet;
  * 
  * @author Daniel Hohenberger
  */
-public class OrderedValueSet<E> extends TreeSet<E> implements Serializable, ValueSet<E> {
+public class OrderedValueSet<E> extends LinkedHashSet<E> implements Serializable, ValueSet<E> {
 
     private static final long serialVersionUID = 2484960572251702320L;
-    
+
     private boolean containsNull;
     private E nullValue;
 
@@ -70,7 +70,7 @@ public class OrderedValueSet<E> extends TreeSet<E> implements Serializable, Valu
     private void initialize(boolean containsNull, E nullValue) {
         this.containsNull = containsNull;
         this.nullValue = nullValue;
-        if (containsNull && !super.contains(nullValue)) {
+        if (containsNull && !super.contains(nullValue) && null != nullValue) {
             add(nullValue);
         }
     }
@@ -118,6 +118,19 @@ public class OrderedValueSet<E> extends TreeSet<E> implements Serializable, Valu
      */
     public boolean containsNull() {
         return containsNull;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public boolean addAll(Collection<? extends E> c) {
+        for (E e : c) {
+            if (!super.contains(e)) {
+                add(e);
+            }
+        }
+        return true;
     }
 
 }
