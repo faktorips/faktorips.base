@@ -21,7 +21,6 @@ import org.faktorips.codegen.JavaCodeFragmentBuilder;
 import org.faktorips.datatype.Datatype;
 import org.faktorips.devtools.core.model.IIpsElement;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPartContainer;
-import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.util.LocalizedStringsSet;
 
 /**
@@ -34,38 +33,18 @@ public abstract class JavaGeneratorForIpsPart {
     // the ips elements this generator generates sourcecode for 
     private IIpsObjectPartContainer ipsPart;
     
-    // and the ips project the element belongs to.
-    protected IIpsProject ipsProject;
-    
-    private JavaSourceFileBuilder javaSourceFileBuilder;
-    
     private LocalizedTextHelper localizedTextHelper; 
     
-    public JavaGeneratorForIpsPart(IIpsObjectPartContainer part, JavaSourceFileBuilder builder, LocalizedStringsSet stringsSet) {
+    public JavaGeneratorForIpsPart(IIpsObjectPartContainer part, LocalizedStringsSet stringsSet) {
         super();
         this.ipsPart = part;
-        this.ipsProject = ipsPart.getIpsProject();
-        this.javaSourceFileBuilder = builder;
-        this.localizedTextHelper = new LocalizedTextHelper(stringsSet, builder.getLanguageUsedInGeneratedSourceCode(ipsPart), 
-                builder.getJavaOptionsSplitLength(), builder.getJavaOptionsTabSize());
+        //TODO the last two parameters have to be removed
+        this.localizedTextHelper = new LocalizedTextHelper(stringsSet, ipsPart.getIpsProject().getGeneratedJavaSourcecodeDocumentationLanguage(), 
+                new Integer(0), new Integer(0));
     }
     
     public IIpsObjectPartContainer getIpsPart() {
         return ipsPart;
-    }
-    
-    /**
-     * Returns the ips project the generator generates source code for.
-     */
-    public IIpsProject getIpsProject() {
-        return javaSourceFileBuilder.getIpsProject();
-    }
-    
-    /**
-     * Returns the Java source file builder that uses this generator.
-     */
-    public JavaSourceFileBuilder getJavaSourceFileBuilder() {
-        return javaSourceFileBuilder;
     }
     
     /**
@@ -184,17 +163,26 @@ public abstract class JavaGeneratorForIpsPart {
         return localizedTextHelper.getLocalizedText(key, replacements);
     }
 
-    protected String getJavaDocCommentForOverriddenMethod() {
-        return javaSourceFileBuilder.getJavaDocCommentForOverriddenMethod();
+    //TODO duplicate in JavaSourceFileBuilder
+    public String getJavaDocCommentForOverriddenMethod() {
+        return "{@inheritDoc}"; //$NON-NLS-1$
     }
 
+    /**
+     * Returns a single line comment containing a TO DO, e.g.
+     * <pre>// TODO Implement the rule xyz.</pre>
+     * 
+     * @param element Any ips element used to access the ips project and determine the langauge for the generated code.
+     * @param keyPrefix A key prefix for the resource bundle, this method adds a "_TODO" to the prefix
+     * @param replacements Any objects to replace wildcards in the message text.
+     */
     public String getLocalizedToDo(String keyPrefix, Object replacement) {
-        return javaSourceFileBuilder.getLocalizedToDo(ipsPart, keyPrefix, replacement);
+        return localizedTextHelper.getLocalizedToDo(keyPrefix, replacement);
     }
 
-    
-    protected JavaNamingConvention getJavaNamingConvention() {
-        return javaSourceFileBuilder.getJavaNamingConvention();
+//  TODO duplicate in JavaSourceFileBuilder
+    public JavaNamingConvention getJavaNamingConvention() {
+        return JavaNamingConvention.ECLIPSE_STANDARD;
     }
     
     /**
