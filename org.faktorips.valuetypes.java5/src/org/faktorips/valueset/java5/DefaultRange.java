@@ -1,10 +1,15 @@
 /***************************************************************************************************
- *  * Copyright (c) 2005,2006 Faktor Zehn GmbH und andere.  *  * Alle Rechte vorbehalten.  *  *
- * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele,  * Konfigurationen,
- * etc.) duerfen nur unter den Bedingungen der  * Faktor-Zehn-Community Lizenzvereinbarung - Version
- * 0.1 (vor Gruendung Community)  * genutzt werden, die Bestandteil der Auslieferung ist und auch
- * unter  *   http://www.faktorips.org/legal/cl-v01.html  * eingesehen werden kann.  *  *
- * Mitwirkende:  *   Faktor Zehn GmbH - initial API and implementation - http://www.faktorzehn.de  *  
+ * Copyright (c) 2005-2008 Faktor Zehn AG und andere.
+ * 
+ * Alle Rechte vorbehalten.
+ * 
+ * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen,
+ * etc.) duerfen nur unter den Bedingungen der Faktor-Zehn-Community Lizenzvereinbarung - Version
+ * 0.1 (vor Gruendung Community) genutzt werden, die Bestandteil der Auslieferung ist und auch unter
+ * http://www.faktorzehn.org/f10-org:lizenzen:community eingesehen werden kann.
+ * 
+ * Mitwirkende: Faktor Zehn GmbH - initial API and implementation - http://www.faktorzehn.de
+ * 
  **************************************************************************************************/
 
 package org.faktorips.valueset.java5;
@@ -28,8 +33,10 @@ import org.faktorips.valueset.Util;
  * @author Jan Ortmann, Peter Erzberger
  * @author Daniel Hohenberger conversion to Java5
  */
-public abstract class AbstractRange<T extends Comparable<T>> implements Range<T>, Serializable {
+public class DefaultRange<T extends Comparable/*<? super T>*/> implements Range<T>, Serializable {
 
+    private static final long serialVersionUID = 8669778203942426507L;
+    
     private T lowerBound;
     private T upperBound;
     private T step;
@@ -56,7 +63,7 @@ public abstract class AbstractRange<T extends Comparable<T>> implements Range<T>
      *            if both bounds are null
      * @return true if the provided value fits into the range
      */
-    protected boolean checkIfValueCompliesToStepIncrement(Object value, Object bound) {
+    protected boolean checkIfValueCompliesToStepIncrement(T value, T bound) {
         throw new RuntimeException("Needs to be implemented if the range supports incremental steps.");
     }
 
@@ -67,7 +74,7 @@ public abstract class AbstractRange<T extends Comparable<T>> implements Range<T>
      * @param currentValue the value to use to calculate the next value
      * @return the next value
      */
-    protected T getNextValue(Object currentValue) {
+    protected T getNextValue(T currentValue) {
         throw new RuntimeException("Needs to be implemented if the range supports incremental steps.");
     }
 
@@ -85,7 +92,7 @@ public abstract class AbstractRange<T extends Comparable<T>> implements Range<T>
      * @param lower bound of the range
      * @param upper bound of the range
      */
-    public AbstractRange(T lower, T upper) {
+    public DefaultRange(T lower, T upper) {
         this(lower, upper, null, false);
     }
 
@@ -94,7 +101,7 @@ public abstract class AbstractRange<T extends Comparable<T>> implements Range<T>
      * contains null or not. Null can mean the native java null or a null representation value
      * specific to the datatype the range implementation is for.
      */
-    public AbstractRange(T lower, T upper, boolean containsNull) {
+    public DefaultRange(T lower, T upper, boolean containsNull) {
         this(lower, upper, null, containsNull);
     }
 
@@ -112,7 +119,7 @@ public abstract class AbstractRange<T extends Comparable<T>> implements Range<T>
      * @throws IllegalArgumentException if the condition <i>abs(upperBound - lowerBound) / step</i>
      *             is not met. The condition is not applied if one is or both of the bounds are null
      */
-    public AbstractRange(T lower, T upper, T step) {
+    public DefaultRange(T lower, T upper, T step) {
         this(lower, upper, step, false);
     }
 
@@ -128,7 +135,7 @@ public abstract class AbstractRange<T extends Comparable<T>> implements Range<T>
      * @throws IllegalArgumentException if the condition <i>abs(upperBound - lowerBound) / step</i>
      *             is not met. The condition is not applied if one is or both of the bounds are null
      */
-    public AbstractRange(T lower, T upper, T step, boolean containsNull) {
+    public DefaultRange(T lower, T upper, T step, boolean containsNull) {
         lowerBound = lower;
         upperBound = upper;
         this.step = step;

@@ -1,14 +1,14 @@
 /***************************************************************************************************
- * Copyright (c) 2005,2006 Faktor Zehn GmbH und andere.
+ * Copyright (c) 2005-2008 Faktor Zehn AG und andere.
  * 
  * Alle Rechte vorbehalten.
  * 
  * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen,
- * etc.) dürfen nur unter den Bedingungen der Faktor-Zehn-Community Lizenzvereinbarung – Version 0.1
- * (vor Gründung Community) genutzt werden, die Bestandteil der Auslieferung ist und auch unter
- * http://www.faktorips.org/legal/cl-v01.html eingesehen werden kann.
+ * etc.) duerfen nur unter den Bedingungen der Faktor-Zehn-Community Lizenzvereinbarung - Version
+ * 0.1 (vor Gruendung Community) genutzt werden, die Bestandteil der Auslieferung ist und auch unter
+ * http://www.faktorzehn.org/f10-org:lizenzen:community eingesehen werden kann.
  * 
- * Mitwirkende: Faktor Zehn GmbH - initial API and implementation
+ * Mitwirkende: Faktor Zehn GmbH - initial API and implementation - http://www.faktorzehn.de
  * 
  **************************************************************************************************/
 
@@ -17,6 +17,7 @@ package org.faktorips.valueset.java5;
 import java.io.Serializable;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.Iterator;
 import java.util.LinkedHashSet;
 import java.util.Set;
 
@@ -34,6 +35,8 @@ public class OrderedValueSet<E> implements Serializable, ValueSet<E> {
     private E nullValue;
     private LinkedHashSet<E> set = new LinkedHashSet<E>();
 
+    private int hashCode;
+
     /**
      * Creates a new instance of <code>OrderedEnumValueSet</code>.
      * 
@@ -44,9 +47,13 @@ public class OrderedValueSet<E> implements Serializable, ValueSet<E> {
      *            value
      * @param nullValue the java null value or null representation value for the datatype of this
      *            enumeration value set
+     * @throws IllegalArgumentException if the values array contains duplicate entries
      */
     public OrderedValueSet(boolean containsNull, E nullValue, E... values) {
         for (E e : values) {
+            if (set.contains(e)) {
+                throw new IllegalArgumentException("The provided values array contains duplicate entries.");
+            }
             set.add(e);
         }
         initialize(containsNull, nullValue);
@@ -62,9 +69,18 @@ public class OrderedValueSet<E> implements Serializable, ValueSet<E> {
      *            value
      * @param nullValue the java null value or null representation value for the datatype of this
      *            enumeration value set
+     * @throws IllegalArgumentException if the values Collection is null or contains duplicate entries
      */
     public OrderedValueSet(Collection<E> values, boolean containsNull, E nullValue) {
-        set.addAll(values);
+        if (values == null) {
+            throw new IllegalArgumentException("The parameter values cannot be null.");
+        }
+        for (E e : values) {
+            if (set.contains(e)) {
+                throw new IllegalArgumentException("The provided values Collection contains duplicate entries.");
+            }
+            set.add(e);
+        }
         initialize(containsNull, nullValue);
     }
 
@@ -74,6 +90,24 @@ public class OrderedValueSet<E> implements Serializable, ValueSet<E> {
         if (containsNull && !set.contains(nullValue)) {
             set.add(nullValue);
         }
+        calculateHashCode();
+    }
+    
+    private void calculateHashCode(){
+        int result = 17;
+        for (E item : set) {
+            if(item != null){
+                result = result * 37 + item.hashCode();    
+            }
+        }
+        hashCode = result;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public int hashCode(){
+        return hashCode;
     }
 
     @SuppressWarnings("unchecked")
@@ -107,9 +141,9 @@ public class OrderedValueSet<E> implements Serializable, ValueSet<E> {
     public boolean equals(Object obj) {
         if (obj instanceof OrderedValueSet) {
             OrderedValueSet<? extends E> other = (OrderedValueSet<? extends E>)obj;
-            return super.equals(other) && containsNull == other.containsNull && containsNull ? ((null == nullValue && null == other.nullValue) || (nullValue
+            return set.equals(other.set) && containsNull == other.containsNull && (containsNull ? ((null == nullValue && null == other.nullValue) || (nullValue
                     .equals(other.nullValue)))
-                    : true;
+                    : true);
         }
         return false;
     }
@@ -119,6 +153,23 @@ public class OrderedValueSet<E> implements Serializable, ValueSet<E> {
      */
     public boolean containsNull() {
         return containsNull;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public String toString() {
+        StringBuilder buf = new StringBuilder();
+        buf.append("[");
+        for (Iterator<E> it = set.iterator(); it.hasNext();) {
+            E item = it.next();
+            buf.append(item);
+            if(it.hasNext()){
+                buf.append(", ");
+            }
+        }
+        buf.append(']');
+        return buf.toString();
     }
 
     @Override

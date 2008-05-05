@@ -4,5 +4,6 @@ Bundle-Name: FaktorIPS-Valuetypes-Wrapper for Java5
 Bundle-SymbolicName: org.faktorips.valuetypes.java5
 Bundle-Version: 0.0.1
 Bundle-Vendor: FaktorZehn
-Require-Bundle: org.faktorips.valuetypes;visibility:=reexport
+Require-Bundle: org.faktorips.valuetypes;visibility:=reexport,
+ org.junit
 Export-Package: org.faktorips.valueset.java5

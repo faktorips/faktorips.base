@@ -1,10 +1,15 @@
 /***************************************************************************************************
- *  * Copyright (c) 2005,2006 Faktor Zehn GmbH und andere.  *  * Alle Rechte vorbehalten.  *  *
- * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele,  * Konfigurationen,
- * etc.) duerfen nur unter den Bedingungen der  * Faktor-Zehn-Community Lizenzvereinbarung - Version
- * 0.1 (vor Gruendung Community)  * genutzt werden, die Bestandteil der Auslieferung ist und auch
- * unter  *   http://www.faktorips.org/legal/cl-v01.html  * eingesehen werden kann.  *  *
- * Mitwirkende:  *   Faktor Zehn GmbH - initial API and implementation - http://www.faktorzehn.de  *  
+ * Copyright (c) 2005-2008 Faktor Zehn AG und andere.
+ * 
+ * Alle Rechte vorbehalten.
+ * 
+ * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen,
+ * etc.) duerfen nur unter den Bedingungen der Faktor-Zehn-Community Lizenzvereinbarung - Version
+ * 0.1 (vor Gruendung Community) genutzt werden, die Bestandteil der Auslieferung ist und auch unter
+ * http://www.faktorzehn.org/f10-org:lizenzen:community eingesehen werden kann.
+ * 
+ * Mitwirkende: Faktor Zehn GmbH - initial API and implementation - http://www.faktorzehn.de
+ * 
  **************************************************************************************************/
 
 package org.faktorips.valueset.java5;
@@ -18,7 +23,7 @@ package org.faktorips.valueset.java5;
  * @author Daniel Hohenberger conversion to Java5
  * @see java.lang.Comparable
  */
-public interface Range<T extends Comparable<? super T>> extends ValueSet<T> {
+public interface Range<T extends Comparable/*<? super T>*/> extends ValueSet<T> {
 
     /**
      * Returns the range's lower bound, <code>null</code> means that the range is unbounded.
