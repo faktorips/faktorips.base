@@ -120,9 +120,9 @@ public class GenChangeableAttribute extends GenAttribute {
         JavaCodeFragment containsNullFrag = new JavaCodeFragment();
         containsNullFrag.append(range.getContainsNull());
         JavaCodeFragment frag = wrapperDatatypeHelper.newRangeInstance(createCastExpression(range.getLowerBound()),
-                createCastExpression(range.getUpperBound()), createCastExpression(range.getStep()), containsNullFrag);
+                createCastExpression(range.getUpperBound()), createCastExpression(range.getStep()), containsNullFrag, isUseTypesafeCollections());
         membersBuilder.varDeclaration(java.lang.reflect.Modifier.PUBLIC | java.lang.reflect.Modifier.FINAL
-                | java.lang.reflect.Modifier.STATIC, wrapperDatatypeHelper.getRangeJavaClassName(),
+                | java.lang.reflect.Modifier.STATIC, wrapperDatatypeHelper.getRangeJavaClassName(isUseTypesafeCollections()),
                 getFieldNameMaxRange(), frag);
     }
 
@@ -226,7 +226,7 @@ public class GenChangeableAttribute extends GenAttribute {
     public void generateSignatureGetRangeFor(DatatypeHelper helper, JavaCodeFragmentBuilder methodsBuilder)
             throws CoreException {
         String methodName = getMethodNameGetRangeFor(helper.getDatatype());
-        String rangeClassName = helper.getRangeJavaClassName();
+        String rangeClassName = helper.getRangeJavaClassName(isUseTypesafeCollections());
         methodsBuilder.signature(Modifier.PUBLIC, rangeClassName, methodName, new String[] { "businessFunction" },
                 new String[] { String.class.getName() });
     }
@@ -516,7 +516,7 @@ public class GenChangeableAttribute extends GenAttribute {
 
     private void generateFieldRangeFor(DatatypeHelper helper, JavaCodeFragmentBuilder memberVarBuilder) {
         appendLocalizedJavaDoc("FIELD_RANGE_FOR", getPolicyCmptTypeAttribute().getName(), memberVarBuilder);
-        memberVarBuilder.varDeclaration(Modifier.PRIVATE, helper.getRangeJavaClassName(), getFieldNameRangeFor());
+        memberVarBuilder.varDeclaration(Modifier.PRIVATE, helper.getRangeJavaClassName(isUseTypesafeCollections()), getFieldNameRangeFor());
     }
 
     private void generateFieldAllowedValuesFor(JavaCodeFragmentBuilder memberVarBuilder) {

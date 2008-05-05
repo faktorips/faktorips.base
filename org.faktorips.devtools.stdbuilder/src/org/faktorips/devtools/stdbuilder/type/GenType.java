@@ -12,7 +12,7 @@ package org.faktorips.devtools.stdbuilder.type;
 import java.util.Locale;
 
 import org.eclipse.core.runtime.CoreException;
-import org.faktorips.devtools.core.builder.JavaGeneratorForIpsPart2;
+import org.faktorips.devtools.core.builder.JavaGeneratorForIpsPart;
 import org.faktorips.devtools.core.model.ipsproject.IChangesOverTimeNamingConvention;
 import org.faktorips.devtools.core.model.type.IType;
 import org.faktorips.devtools.stdbuilder.StandardBuilderSet;
@@ -25,7 +25,7 @@ import org.faktorips.util.StringUtil;
  * 
  * @author Peter Erzberger
  */
-public abstract class GenType extends JavaGeneratorForIpsPart2 {
+public abstract class GenType extends JavaGeneratorForIpsPart {
 
     private StandardBuilderSet builderSet;
     private IType type;

@@ -93,7 +93,7 @@ public class IntegerRange extends DefaultRange<Integer>{
     
     private IntegerRange(Integer lower, Integer upper, Integer step, boolean containsNull) {
         super(lower, upper, step, containsNull);
-    }   
+    }
 
     /**
      * {@inheritDoc}

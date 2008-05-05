@@ -1,19 +1,11 @@
-/*******************************************************************************
- * Copyright (c) 2005,2006 Faktor Zehn GmbH und andere.
- *
- * Alle Rechte vorbehalten.
- *
- * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele,
- * Konfigurationen, etc.) duerfen nur unter den Bedingungen der 
- * Faktor-Zehn-Community Lizenzvereinbarung - Version 0.1 (vor Gruendung Community) 
- * genutzt werden, die Bestandteil der Auslieferung ist und auch unter
- *   http://www.faktorips.org/legal/cl-v01.html
- * eingesehen werden kann.
- *
- * Mitwirkende:
- *   Faktor Zehn GmbH - initial API and implementation - http://www.faktorzehn.de
- *
- *******************************************************************************/
+/***************************************************************************************************
+ *  * Copyright (c) 2005,2006 Faktor Zehn GmbH und andere.  *  * Alle Rechte vorbehalten.  *  *
+ * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele,  * Konfigurationen,
+ * etc.) duerfen nur unter den Bedingungen der  * Faktor-Zehn-Community Lizenzvereinbarung - Version
+ * 0.1 (vor Gruendung Community)  * genutzt werden, die Bestandteil der Auslieferung ist und auch
+ * unter  *   http://www.faktorips.org/legal/cl-v01.html  * eingesehen werden kann.  *  *
+ * Mitwirkende:  *   Faktor Zehn GmbH - initial API and implementation - http://www.faktorzehn.de  *  
+ **************************************************************************************************/
 
 package org.faktorips.codegen.dthelpers;
 
@@ -30,74 +22,72 @@ import org.faktorips.valueset.DefaultEnumValueSet;
  */
 public abstract class AbstractDatatypeHelper implements DatatypeHelper {
 
-	private Datatype datatype;
+    private Datatype datatype;
 
-	/**
-	 * Constructs a new helper.
-	 */
-	public AbstractDatatypeHelper() {
-	}
-
-	/**
-	 * Constructs a new helper for the given datatype.
-	 */
-	public AbstractDatatypeHelper(Datatype datatype) {
-		ArgumentCheck.notNull(datatype);
-		this.datatype = datatype;
-	}
-
-	/**
-	 * Overridden.
-	 */
-	public Datatype getDatatype() {
-		return datatype;
-	}
-	
-	/**
-	 * Overridden.
-	 */
-	public void setDatatype(Datatype datatype) {
-		this.datatype = datatype;
-	}
-
-	/**
-     * This method is supposed to be overridden by subclasses. It is used within the
-     * newInstanceFromExpression(String) method.
-	 * It returns a JavaCodeFragment with sourcecode that creates an instance of
-	 * the datatype's Java class with the given expression. If the expression is
-	 * null the fragment's sourcecode is either the String "null" or the
-	 * sourcecode to get an instance of the appropriate null object.
-	 * Preconditions: Expression may not be null or empty. When evaluated the
-	 * expression must return a string
-	 */
-	protected JavaCodeFragment valueOfExpression(String expression){
-	    return nullExpression();
+    /**
+     * Constructs a new helper.
+     */
+    public AbstractDatatypeHelper() {
     }
 
-	/**
+    /**
+     * Constructs a new helper for the given datatype.
+     */
+    public AbstractDatatypeHelper(Datatype datatype) {
+        ArgumentCheck.notNull(datatype);
+        this.datatype = datatype;
+    }
+
+    /**
+     * Overridden.
+     */
+    public Datatype getDatatype() {
+        return datatype;
+    }
+
+    /**
+     * Overridden.
+     */
+    public void setDatatype(Datatype datatype) {
+        this.datatype = datatype;
+    }
+
+    /**
+     * This method is supposed to be overridden by subclasses. It is used within the
+     * newInstanceFromExpression(String) method. It returns a JavaCodeFragment with sourcecode that
+     * creates an instance of the datatype's Java class with the given expression. If the expression
+     * is null the fragment's sourcecode is either the String "null" or the sourcecode to get an
+     * instance of the appropriate null object. Preconditions: Expression may not be null or empty.
+     * When evaluated the expression must return a string
+     */
+    protected JavaCodeFragment valueOfExpression(String expression) {
+        return nullExpression();
+    }
+
+    /**
      * {@inheritDoc}
-	 */
-	public JavaCodeFragment newInstanceFromExpression(String expression) {
-		if (expression==null || expression.equals("")) {
-			return nullExpression();
-		}
-		// ((expression==null) || (expression.equals(""))) ? nullExpression() :
-		// valueOfExpression(expression)
+     */
+    public JavaCodeFragment newInstanceFromExpression(String expression) {
+        if (expression == null || expression.equals("")) {
+            return nullExpression();
+        }
+        // ((expression==null) || (expression.equals(""))) ? nullExpression() :
+        // valueOfExpression(expression)
         expression = '(' + expression + ')';
-		JavaCodeFragment fragment = new JavaCodeFragment();
+        JavaCodeFragment fragment = new JavaCodeFragment();
         fragment.append("(");
         fragment.append(expression);
         fragment.append("==null || ");
         fragment.append(expression);
         fragment.append(".equals(\"\")");
-		fragment.append(") ? ");
-		fragment.append(nullExpression());
-		fragment.append(" : ");
-		fragment.append(valueOfExpression(expression));
+        fragment.append(") ? ");
+        fragment.append(nullExpression());
+        fragment.append(" : ");
+        fragment.append(valueOfExpression(expression));
 
-		return fragment;
-	}
-	
+        return fragment;
+    }
+
     /**
      * {@inheritDoc}
      */
@@ -108,16 +98,20 @@ public abstract class AbstractDatatypeHelper implements DatatypeHelper {
     /**
      * {@inheritDoc}
      */
-    public String getRangeJavaClassName() {
+    public String getRangeJavaClassName(boolean useTypesafeCollections) {
         return null;
     }
 
-    
     /**
      * {@inheritDoc}
+     * 
      * @return <code>null</code>
      */
-    public JavaCodeFragment newRangeInstance(JavaCodeFragment lowerBoundExp, JavaCodeFragment upperBoundExp, JavaCodeFragment stepExp, JavaCodeFragment containsNullExp) {
+    public JavaCodeFragment newRangeInstance(JavaCodeFragment lowerBoundExp,
+            JavaCodeFragment upperBoundExp,
+            JavaCodeFragment stepExp,
+            JavaCodeFragment containsNullExp,
+            boolean useTypesafeCollections) {
         return null;
     }
 
@@ -125,16 +119,15 @@ public abstract class AbstractDatatypeHelper implements DatatypeHelper {
      * {@inheritDoc}
      * 
      * Code sample
+     * 
      * <pre>
-     *  new DefaultEnumValueSet(new GeneratedGender[] {
-     *          GeneratedGender.getGeneratedGender(new Integer(1)), 
-     *          GeneratedGender.getGeneratedGender(new Integer(2)),
-     *          GeneratedGender.getGeneratedGender(null) }, 
-     *      true, 
-     *      GeneratedGender.getGeneratedGender(null));
+     * new DefaultEnumValueSet(new GeneratedGender[] { GeneratedGender.getGeneratedGender(new Integer(1)),
+     *         GeneratedGender.getGeneratedGender(new Integer(2)), GeneratedGender.getGeneratedGender(null) }, true,
+     *         GeneratedGender.getGeneratedGender(null));
      * </pre>
      * 
      * Java 5 code sample
+     * 
      * <pre>
      *  (EnumValueSet)new DefaultEnumValueSet&lt;GeneratedGender&gt;(
      *      true, 
@@ -143,9 +136,11 @@ public abstract class AbstractDatatypeHelper implements DatatypeHelper {
      *      GeneratedGender.getGeneratedGender(new Integer(2)));
      * </pre>
      */
-    public JavaCodeFragment newEnumValueSetInstance(String[] values, boolean containsNull, boolean useTypesafeCollections) {
+    public JavaCodeFragment newEnumValueSetInstance(String[] values,
+            boolean containsNull,
+            boolean useTypesafeCollections) {
         JavaCodeFragment frag = new JavaCodeFragment();
-        if(useTypesafeCollections){
+        if (useTypesafeCollections) {
             frag.append("new ");
             frag.appendClassName(Java5ClassNames.OrderedValueSet_QualifiedName);
             frag.append("<");
@@ -157,12 +152,12 @@ public abstract class AbstractDatatypeHelper implements DatatypeHelper {
             frag.append(", ");
             for (int i = 0; i < values.length; i++) {
                 frag.append(newInstance(values[i]));
-                if(i < values.length - 1){
+                if (i < values.length - 1) {
                     frag.append(", ");
                 }
             }
             frag.appendln(")");
-        }else{
+        } else {
             frag.append("new ");
             frag.appendClassName(DefaultEnumValueSet.class);
             frag.append("(");
@@ -172,7 +167,7 @@ public abstract class AbstractDatatypeHelper implements DatatypeHelper {
             frag.appendOpenBracket();
             for (int i = 0; i < values.length; i++) {
                 frag.append(newInstance(values[i]));
-                if(i < values.length - 1){
+                if (i < values.length - 1) {
                     frag.append(", ");
                 }
             }
@@ -189,15 +184,17 @@ public abstract class AbstractDatatypeHelper implements DatatypeHelper {
     /**
      * {@inheritDoc}
      */
-    public JavaCodeFragment newEnumValueSetInstance(JavaCodeFragment valueCollection, JavaCodeFragment containsNullExpression, boolean useTypesafeCollections) {
+    public JavaCodeFragment newEnumValueSetInstance(JavaCodeFragment valueCollection,
+            JavaCodeFragment containsNullExpression,
+            boolean useTypesafeCollections) {
         JavaCodeFragment frag = new JavaCodeFragment();
         frag.append("new ");
-        if(useTypesafeCollections){
+        if (useTypesafeCollections) {
             frag.appendClassName(Java5ClassNames.OrderedValueSet_QualifiedName);
             frag.append("<");
             frag.appendClassName(getJavaClassName());
             frag.append(">");
-        }else{
+        } else {
             frag.appendClassName(DefaultEnumValueSet.class);
         }
         frag.append("(");

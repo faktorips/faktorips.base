@@ -237,7 +237,13 @@ public class JavaCodeFragment {
 	    if(qualifiedClassName.indexOf('<')>0){
             appendClassName(qualifiedClassName.substring(0, qualifiedClassName.indexOf('<')));
 	        append("<");
-            appendClassName(qualifiedClassName.substring(qualifiedClassName.indexOf('<')+1, qualifiedClassName.lastIndexOf('>')));
+	        String[] classNames = qualifiedClassName.substring(qualifiedClassName.indexOf('<')+1, qualifiedClassName.lastIndexOf('>')).split(",");
+	        for (int i = 0; i < classNames.length; i++) {
+                appendClassName(classNames[i].trim());
+                if(i<classNames.length-1){
+                    append(", ");
+                }
+            }
             append(">");
             return;
 	    }

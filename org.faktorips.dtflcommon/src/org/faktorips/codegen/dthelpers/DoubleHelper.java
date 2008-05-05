@@ -1,19 +1,11 @@
-/*******************************************************************************
- * Copyright (c) 2005,2006 Faktor Zehn GmbH und andere.
- *
- * Alle Rechte vorbehalten.
- *
- * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele,
- * Konfigurationen, etc.) duerfen nur unter den Bedingungen der 
- * Faktor-Zehn-Community Lizenzvereinbarung - Version 0.1 (vor Gruendung Community) 
- * genutzt werden, die Bestandteil der Auslieferung ist und auch unter
- *   http://www.faktorips.org/legal/cl-v01.html
- * eingesehen werden kann.
- *
- * Mitwirkende:
- *   Faktor Zehn GmbH - initial API and implementation - http://www.faktorzehn.de
- *
- *******************************************************************************/
+/***************************************************************************************************
+ *  * Copyright (c) 2005,2006 Faktor Zehn GmbH und andere.  *  * Alle Rechte vorbehalten.  *  *
+ * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele,  * Konfigurationen,
+ * etc.) duerfen nur unter den Bedingungen der  * Faktor-Zehn-Community Lizenzvereinbarung - Version
+ * 0.1 (vor Gruendung Community)  * genutzt werden, die Bestandteil der Auslieferung ist und auch
+ * unter  *   http://www.faktorips.org/legal/cl-v01.html  * eingesehen werden kann.  *  *
+ * Mitwirkende:  *   Faktor Zehn GmbH - initial API and implementation - http://www.faktorzehn.de  *  
+ **************************************************************************************************/
 
 package org.faktorips.codegen.dthelpers;
 
@@ -44,7 +36,7 @@ public class DoubleHelper extends AbstractDatatypeHelper {
 
     /**
      * Overridden Method.
-     *
+     * 
      * @see org.faktorips.codegen.dthelpers.AbstractDatatypeHelper#valueOfExpression(java.lang.String)
      */
     protected JavaCodeFragment valueOfExpression(String expression) {
@@ -53,23 +45,23 @@ public class DoubleHelper extends AbstractDatatypeHelper {
 
     /**
      * Overridden Method.
-     *
+     * 
      * @see org.faktorips.codegen.DatatypeHelper#nullExpression()
      */
     public JavaCodeFragment nullExpression() {
-		return new JavaCodeFragment("null");
+        return new JavaCodeFragment("null");
     }
 
     /**
      * Overridden Method.
-     *
+     * 
      * @see org.faktorips.codegen.DatatypeHelper#newInstance(java.lang.String)
      */
     public JavaCodeFragment newInstance(String value) {
         if (StringUtils.isEmpty(value)) {
-        	return nullExpression();
+            return nullExpression();
         }
-        JavaCodeFragment fragment = new JavaCodeFragment();        
+        JavaCodeFragment fragment = new JavaCodeFragment();
         fragment.append("new ");
         fragment.appendClassName(Double.class);
         fragment.append('(');
@@ -81,16 +73,24 @@ public class DoubleHelper extends AbstractDatatypeHelper {
     /**
      * {@inheritDoc}
      */
-    public String getRangeJavaClassName() {
-        return DoubleRange.class.getName();
+    public String getRangeJavaClassName(boolean useTypesafeCollections) {
+        if (useTypesafeCollections) {
+            return Java5ClassNames.DoubleRange_QualifiedName;
+        } else {
+            return DoubleRange.class.getName();
+        }
     }
-    
+
     /**
      * {@inheritDoc}
      */
-    public JavaCodeFragment newRangeInstance(JavaCodeFragment lowerBoundExp, JavaCodeFragment upperBoundExp, JavaCodeFragment stepExp, JavaCodeFragment containsNullExp) {
+    public JavaCodeFragment newRangeInstance(JavaCodeFragment lowerBoundExp,
+            JavaCodeFragment upperBoundExp,
+            JavaCodeFragment stepExp,
+            JavaCodeFragment containsNullExp,
+            boolean useTypesafeCollections) {
         JavaCodeFragment frag = new JavaCodeFragment();
-        frag.appendClassName(getRangeJavaClassName());
+        frag.appendClassName(getRangeJavaClassName(useTypesafeCollections));
         frag.append(".valueOf(");
         frag.append(lowerBoundExp);
         frag.append(", ");

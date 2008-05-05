@@ -25,6 +25,7 @@ import org.apache.commons.lang.StringUtils;
 import org.eclipse.core.runtime.CoreException;
 import org.faktorips.codegen.JavaCodeFragment;
 import org.faktorips.codegen.JavaCodeFragmentBuilder;
+import org.faktorips.codegen.dthelpers.Java5ClassNames;
 import org.faktorips.datatype.Datatype;
 import org.faktorips.devtools.core.builder.JavaSourceFileBuilder;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAssociation;
@@ -63,8 +64,18 @@ public abstract class GenProdAssociation extends GenProductCmptTypePart {
         JavaCodeFragment expression = new JavaCodeFragment();
         expression.append(" new ");
         expression.appendClassName(HashMap.class);
+        if (isUseTypesafeCollections()) {
+            expression.append('<');
+            expression.appendClassName(String.class);
+            expression.append(", ");
+            expression.appendClassName(Java5ClassNames.IntegerRange_QualifiedName);
+            expression.append('>');
+        }
         expression.append("(0)");
-        fieldsBuilder.varDeclaration(Modifier.PRIVATE, Map.class, getFieldNameCardinalityForAssociation(), expression);
+        fieldsBuilder.varDeclaration(Modifier.PRIVATE, Map.class.getName()
+                + (isUseTypesafeCollections() ? "<" + String.class.getName() + ", "
+                        + Java5ClassNames.IntegerRange_QualifiedName + ">" : ""),
+                getFieldNameCardinalityForAssociation(), expression);
     }
 
     public String getFieldNameCardinalityForAssociation() throws CoreException {
@@ -215,9 +226,11 @@ public abstract class GenProdAssociation extends GenProductCmptTypePart {
         frag.append(" != null)");
         frag.appendOpenBracket();
         frag.append("return ");
-        frag.append('(');
-        frag.appendClassName(IntegerRange.class);
-        frag.append(')');
+        if (!isUseTypesafeCollections()) {
+            frag.append('(');
+            frag.appendClassName(IntegerRange.class);
+            frag.append(')');
+        }
         frag.append(getFieldNameCardinalityForAssociation());
         frag.append(".get(");
         frag.append(params[0][0]);
@@ -232,7 +245,9 @@ public abstract class GenProdAssociation extends GenProductCmptTypePart {
             throws CoreException {
         String methodName = getMethodNameGetCardinalityForAssociation();
         String[][] params = getParamGetCardinalityForAssociation();
-        methodsBuilder.signature(Modifier.PUBLIC, IntegerRange.class.getName(), methodName, params[0], params[1]);
+        methodsBuilder.signature(Modifier.PUBLIC,
+                isUseTypesafeCollections() ? Java5ClassNames.IntegerRange_QualifiedName : IntegerRange.class.getName(),
+                methodName, params[0], params[1]);
     }
 
     public String getMethodNameGetCardinalityForAssociation() throws CoreException {
@@ -315,8 +330,8 @@ public abstract class GenProdAssociation extends GenProductCmptTypePart {
             }
         } else {
             if (isUseTypesafeCollections()) {
-                
-            }else{
+
+            } else {
                 methodsBuilder.append("int index = 0;");
             }
         }

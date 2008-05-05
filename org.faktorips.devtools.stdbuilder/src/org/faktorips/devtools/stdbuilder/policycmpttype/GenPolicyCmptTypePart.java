@@ -18,13 +18,13 @@
 package org.faktorips.devtools.stdbuilder.policycmpttype;
 
 import org.eclipse.core.runtime.CoreException;
-import org.faktorips.devtools.core.builder.DefaultJavaGeneratorForIpsPart2;
+import org.faktorips.devtools.core.builder.DefaultJavaGeneratorForIpsPart;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPartContainer;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.util.ArgumentCheck;
 import org.faktorips.util.LocalizedStringsSet;
 
-public abstract class GenPolicyCmptTypePart extends DefaultJavaGeneratorForIpsPart2{
+public abstract class GenPolicyCmptTypePart extends DefaultJavaGeneratorForIpsPart{
 
     private GenPolicyCmptType genPolicyCmptType;
     

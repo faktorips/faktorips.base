@@ -26,5 +26,21 @@ public interface Java5ClassNames {
     public static final String ValuesetPackage = "org.faktorips.valueset.java5";
     public static final String OrderedValueSet_UnqualifiedName = "OrderedValueSet";
     public static final String OrderedValueSet_QualifiedName = ValuesetPackage+"."+OrderedValueSet_UnqualifiedName;
+    public static final String DefaultRange_UnqualifiedName = "DefaultRange";
+    public static final String DefaultRange_QualifiedName = ValuesetPackage+"."+DefaultRange_UnqualifiedName;
+    public static final String DecimalRange_UnqualifiedName = "DecimalRange";
+    public static final String DecimalRange_QualifiedName = ValuesetPackage+"."+DecimalRange_UnqualifiedName;
+    public static final String DoubleRange_UnqualifiedName = "DoubleRange";
+    public static final String DoubleRange_QualifiedName = ValuesetPackage+"."+DoubleRange_UnqualifiedName;
+    public static final String IntegerRange_UnqualifiedName = "IntegerRange";
+    public static final String IntegerRange_QualifiedName = ValuesetPackage+"."+IntegerRange_UnqualifiedName;
+    public static final String LongRange_UnqualifiedName = "LongRange";
+    public static final String LongRange_QualifiedName = ValuesetPackage+"."+LongRange_UnqualifiedName;
+    public static final String MoneyRange_UnqualifiedName = "MoneyRange";
+    public static final String MoneyRange_QualifiedName = ValuesetPackage+"."+MoneyRange_UnqualifiedName;
+
+    public static final String RuntimePackage = "org.faktorips.runtime.internal.java5";
+    public static final String ProductComponentGeneration_UnqualifiedName = "ProductComponentGeneration";
+    public static final String ProductComponentGeneration_QualifiedName = RuntimePackage+"."+ProductComponentGeneration_UnqualifiedName;
 
 }

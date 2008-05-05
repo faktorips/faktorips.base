@@ -99,16 +99,24 @@ public class DecimalHelper extends AbstractDatatypeHelper {
     /* (non-Javadoc)
      * @see org.faktorips.codegen.DatatypeHelper#getRangeJavaClassName()
      */
-    public String getRangeJavaClassName() {
-        return DecimalRange.class.getName();
+    public String getRangeJavaClassName(boolean useTypesafeCollections) {
+        if(useTypesafeCollections){
+            return Java5ClassNames.DecimalRange_QualifiedName;
+        }else{
+            return DecimalRange.class.getName();
+        }
     }
 
     /**
      * {@inheritDoc}
      */
-    public JavaCodeFragment newRangeInstance(JavaCodeFragment lowerBoundExp, JavaCodeFragment upperBoundExp, JavaCodeFragment stepExp, JavaCodeFragment containsNullExp) {
+    public JavaCodeFragment newRangeInstance(JavaCodeFragment lowerBoundExp,
+            JavaCodeFragment upperBoundExp,
+            JavaCodeFragment stepExp,
+            JavaCodeFragment containsNullExp,
+            boolean useTypesafeCollections) {
         JavaCodeFragment frag = new JavaCodeFragment();
-        frag.appendClassName(getRangeJavaClassName());
+        frag.appendClassName(getRangeJavaClassName(useTypesafeCollections));
         frag.append(".valueOf(");
         frag.append(lowerBoundExp);
         frag.append(", ");

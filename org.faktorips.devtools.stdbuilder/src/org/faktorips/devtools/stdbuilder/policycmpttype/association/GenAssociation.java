@@ -22,6 +22,7 @@ import org.apache.commons.lang.StringUtils;
 import org.eclipse.core.runtime.CoreException;
 import org.faktorips.codegen.JavaCodeFragment;
 import org.faktorips.codegen.JavaCodeFragmentBuilder;
+import org.faktorips.codegen.dthelpers.Java5ClassNames;
 import org.faktorips.devtools.core.builder.JavaSourceFileBuilder;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
@@ -667,9 +668,9 @@ public abstract class GenAssociation extends GenPolicyCmptTypePart {
             methodsBuilder.append("return ");
             methodsBuilder.append(getMethodNameGetAllRefObjects());
             methodsBuilder.append("().contains(" + paramName + ");");
-        }else{
-            methodsBuilder.appendClassName(getQualifiedClassName((IPolicyCmptType)association.findTarget(getIpsProject()),
-                    true));
+        } else {
+            methodsBuilder.appendClassName(getQualifiedClassName((IPolicyCmptType)association
+                    .findTarget(getIpsProject()), true));
             methodsBuilder.append("[] targets = ");
             methodsBuilder.append(getMethodNameGetAllRefObjects());
             methodsBuilder.append("();");
@@ -774,8 +775,9 @@ public abstract class GenAssociation extends GenPolicyCmptTypePart {
 
     public void generateSignatureGetMaxCardinalityFor(JavaCodeFragmentBuilder methodsBuilder) {
         String methodName = getMethodNameGetMaxCardinalityFor();
-        methodsBuilder.signature(java.lang.reflect.Modifier.PUBLIC, IntegerRange.class.getName(), methodName,
-                EMPTY_STRING_ARRAY, EMPTY_STRING_ARRAY);
+        methodsBuilder.signature(java.lang.reflect.Modifier.PUBLIC,
+                isUseTypesafeCollections() ? Java5ClassNames.IntegerRange_QualifiedName : IntegerRange.class.getName(),
+                methodName, EMPTY_STRING_ARRAY, EMPTY_STRING_ARRAY);
     }
 
     public String getMethodNameGetMaxCardinalityFor() {
@@ -795,14 +797,20 @@ public abstract class GenAssociation extends GenPolicyCmptTypePart {
         String fieldName = getFieldNameGetMaxCardinalityFor();
         JavaCodeFragment frag = new JavaCodeFragment();
         frag.append("new ");
-        frag.appendClassName(IntegerRange.class);
+        if (isUseTypesafeCollections()) {
+            frag.appendClassName(Java5ClassNames.IntegerRange_QualifiedName);
+        } else {
+            frag.appendClassName(IntegerRange.class);
+        }
         frag.append("(");
         frag.append(association.getMinCardinality());
         frag.append(", ");
         frag.append(association.getMaxCardinality());
         frag.append(")");
         attrBuilder.varDeclaration(java.lang.reflect.Modifier.PUBLIC | java.lang.reflect.Modifier.FINAL
-                | java.lang.reflect.Modifier.STATIC, IntegerRange.class, fieldName, frag);
+                | java.lang.reflect.Modifier.STATIC,
+                isUseTypesafeCollections() ? Java5ClassNames.IntegerRange_QualifiedName : IntegerRange.class.getName(),
+                fieldName, frag);
         attrBuilder.appendln();
     }
 

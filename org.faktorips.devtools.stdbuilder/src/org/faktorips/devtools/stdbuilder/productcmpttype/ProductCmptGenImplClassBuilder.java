@@ -269,7 +269,7 @@ public class ProductCmptGenImplClassBuilder extends BaseProductCmptTypeBuilder {
             frag.append(" = ");
             JavaCodeFragment newRangeInstanceFrag = helper.newRangeInstance(new JavaCodeFragment("range.getLower()"),
                     new JavaCodeFragment("range.getUpper()"), new JavaCodeFragment("range.getStep()"),
-                    new JavaCodeFragment("range.containsNull()"));
+                    new JavaCodeFragment("range.containsNull()"), isUseTypesafeCollections());
             if (newRangeInstanceFrag == null) {
                 throw new CoreException(new IpsStatus("The " + helper + " for the datatype "
                         + helper.getDatatype().getName() + " doesn't support ranges."));

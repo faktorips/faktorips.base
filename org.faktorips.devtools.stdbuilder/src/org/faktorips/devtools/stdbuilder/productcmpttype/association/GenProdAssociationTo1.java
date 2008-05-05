@@ -21,6 +21,7 @@ import org.apache.commons.lang.StringUtils;
 import org.eclipse.core.runtime.CoreException;
 import org.faktorips.codegen.JavaCodeFragment;
 import org.faktorips.codegen.JavaCodeFragmentBuilder;
+import org.faktorips.codegen.dthelpers.Java5ClassNames;
 import org.faktorips.datatype.Datatype;
 import org.faktorips.devtools.core.builder.JavaSourceFileBuilder;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
@@ -248,7 +249,18 @@ public class GenProdAssociationTo1 extends GenProdAssociation {
             builder.append(cardinalityFieldName);
             builder.append(" = new ");
             builder.appendClassName(HashMap.class);
+            if (isUseTypesafeCollections()) {
+                builder.append("<");
+                builder.appendClassName(String.class.getName());
+                builder.append(", ");
+                builder.appendClassName(Java5ClassNames.IntegerRange_QualifiedName);
+                builder.append(">");
+            }
             builder.appendln("(1);");
+            if(isUseTypesafeCollections()){
+                builder.append(Java5ClassNames.ProductComponentGeneration_QualifiedName); // don't append as classname, the include would collide with the original
+                builder.append(".");
+            }
             builder.append("addToCardinalityMap(");
             builder.append(cardinalityFieldName);
             builder.append(", ");

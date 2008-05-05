@@ -17,6 +17,8 @@
 
 package org.faktorips.codegen.dthelpers;
 
+import java.util.Date;
+
 import org.apache.commons.lang.StringUtils;
 import org.faktorips.codegen.JavaCodeFragment;
 import org.faktorips.datatype.classtypes.DateDatatype;
@@ -88,7 +90,33 @@ public class DateHelper extends AbstractDatatypeHelper {
      *
      * @see org.faktorips.codegen.DatatypeHelper#getRangeJavaClassName()
      */
-    public String getRangeJavaClassName() {
-        return DateRange.class.getName();
+    public String getRangeJavaClassName(boolean useTypesafeCollections) {
+        if(useTypesafeCollections){
+            return Java5ClassNames.DefaultRange_QualifiedName+"<"+Date.class.getName()+">";
+        }else{
+            return DateRange.class.getName();
+        }
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public JavaCodeFragment newRangeInstance(JavaCodeFragment lowerBoundExp,
+            JavaCodeFragment upperBoundExp,
+            JavaCodeFragment stepExp,
+            JavaCodeFragment containsNullExp,
+            boolean useTypesafeCollections) {
+        JavaCodeFragment frag = new JavaCodeFragment();
+        frag.appendClassName(getRangeJavaClassName(useTypesafeCollections));
+        frag.append(".valueOf(");
+        frag.append(lowerBoundExp);
+        frag.append(", ");
+        frag.append(upperBoundExp);
+        frag.append(", ");
+        frag.append(stepExp);
+        frag.append(", ");
+        frag.append(containsNullExp);
+        frag.append(")");
+        return frag;
     }
 }

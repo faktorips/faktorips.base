@@ -1,19 +1,11 @@
-/*******************************************************************************
- * Copyright (c) 2005,2006 Faktor Zehn GmbH und andere.
- *
- * Alle Rechte vorbehalten.
- *
- * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele,
- * Konfigurationen, etc.) duerfen nur unter den Bedingungen der 
- * Faktor-Zehn-Community Lizenzvereinbarung - Version 0.1 (vor Gruendung Community) 
- * genutzt werden, die Bestandteil der Auslieferung ist und auch unter
- *   http://www.faktorips.org/legal/cl-v01.html
- * eingesehen werden kann.
- *
- * Mitwirkende:
- *   Faktor Zehn GmbH - initial API and implementation - http://www.faktorzehn.de
- *
- *******************************************************************************/
+/***************************************************************************************************
+ *  * Copyright (c) 2005,2006 Faktor Zehn GmbH und andere.  *  * Alle Rechte vorbehalten.  *  *
+ * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele,  * Konfigurationen,
+ * etc.) duerfen nur unter den Bedingungen der  * Faktor-Zehn-Community Lizenzvereinbarung - Version
+ * 0.1 (vor Gruendung Community)  * genutzt werden, die Bestandteil der Auslieferung ist und auch
+ * unter  *   http://www.faktorips.org/legal/cl-v01.html  * eingesehen werden kann.  *  *
+ * Mitwirkende:  *   Faktor Zehn GmbH - initial API and implementation - http://www.faktorzehn.de  *  
+ **************************************************************************************************/
 
 package org.faktorips.codegen.dthelpers;
 
@@ -22,9 +14,8 @@ import org.faktorips.codegen.JavaCodeFragment;
 import org.faktorips.datatype.classtypes.IntegerDatatype;
 import org.faktorips.valueset.IntegerRange;
 
-
 /**
- * DatatypeHelper for datatype Integer. 
+ * DatatypeHelper for datatype Integer.
  */
 public class IntegerHelper extends AbstractDatatypeHelper {
 
@@ -43,15 +34,15 @@ public class IntegerHelper extends AbstractDatatypeHelper {
     public IntegerHelper(IntegerDatatype datatype) {
         super(datatype);
     }
-    
+
     /**
      * {@inheritDoc}
      */
     public JavaCodeFragment newInstance(String value) {
         if (StringUtils.isEmpty(value)) {
-        	return nullExpression();
+            return nullExpression();
         }
-        JavaCodeFragment fragment = new JavaCodeFragment();        
+        JavaCodeFragment fragment = new JavaCodeFragment();
         fragment.append("new ");
         fragment.appendClassName(Integer.class);
         fragment.append('(');
@@ -63,30 +54,38 @@ public class IntegerHelper extends AbstractDatatypeHelper {
     /**
      * {@inheritDoc}
      */
-	protected JavaCodeFragment valueOfExpression(String expression) {
+    protected JavaCodeFragment valueOfExpression(String expression) {
         return newInstance(expression);
     }
 
     /**
      * {@inheritDoc}
      */
-	public JavaCodeFragment nullExpression() {
-		return new JavaCodeFragment("null");
-	}
+    public JavaCodeFragment nullExpression() {
+        return new JavaCodeFragment("null");
+    }
 
     /**
      * {@inheritDoc}
      */
-    public String getRangeJavaClassName() {
-        return IntegerRange.class.getName();
+    public String getRangeJavaClassName(boolean useTypesafeCollections) {
+        if (useTypesafeCollections) {
+            return Java5ClassNames.IntegerRange_QualifiedName;
+        } else {
+            return IntegerRange.class.getName();
+        }
     }
-    
+
     /**
      * {@inheritDoc}
      */
-    public JavaCodeFragment newRangeInstance(JavaCodeFragment lowerBoundExp, JavaCodeFragment upperBoundExp, JavaCodeFragment stepExp, JavaCodeFragment containsNullExp) {
+    public JavaCodeFragment newRangeInstance(JavaCodeFragment lowerBoundExp,
+            JavaCodeFragment upperBoundExp,
+            JavaCodeFragment stepExp,
+            JavaCodeFragment containsNullExp,
+            boolean useTypesafeCollections) {
         JavaCodeFragment frag = new JavaCodeFragment();
-        frag.appendClassName(getRangeJavaClassName());
+        frag.appendClassName(getRangeJavaClassName(useTypesafeCollections));
         frag.append(".valueOf(");
         frag.append(lowerBoundExp);
         frag.append(", ");

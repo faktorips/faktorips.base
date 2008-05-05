@@ -12,5 +12,10 @@
     </manifest>
     <selectedElements exportClassFiles="true" exportJavaFiles="false" exportOutputFolder="false">
         <javaElement handleIdentifier="=org.faktorips.valuetypes.java5"/>
+        <javaElement handleIdentifier="=org.faktorips.valuetypes/src&lt;org.faktorips.valueset{Util.java"/>
+        <javaElement handleIdentifier="=org.faktorips.valuetypes/test&lt;org.faktorips.valueset{TestUtil.java"/>
+        <javaElement handleIdentifier="=org.faktorips.valuetypes/test&lt;org.faktorips.valueset{UtilTest.java"/>
+        <javaElement handleIdentifier="=org.faktorips.valuetypes/src&lt;org.faktorips.values"/>
+        <javaElement handleIdentifier="=org.faktorips.valuetypes/test&lt;org.faktorips.values"/>
     </selectedElements>
 </jardesc>
