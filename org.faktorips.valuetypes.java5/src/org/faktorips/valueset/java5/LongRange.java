@@ -14,6 +14,8 @@
 
 package org.faktorips.valueset.java5;
 
+import java.math.BigInteger;
+
 
 /**
  * A Range class where upper and lower bounds are Longs.
@@ -69,28 +71,25 @@ public class LongRange extends DefaultRange<Long> {
     /**
      * {@inheritDoc}
      */
-    protected boolean checkIfValueCompliesToStepIncrement(Long value, Long bound) {
+    protected boolean checkIfValueCompliesToStepIncrement(Object value, Object bound) {
         
-        if(getStep() == 0L){
+        if(((Long)getStep()).longValue() == 0L){
             throw new IllegalArgumentException("The step size cannot be zero. Use null to indicate a continuous range.");
         }
-        long upper = getUpperBound();
-        long lower = getLowerBound();
-        long diff = Math.abs(upper - lower);
-        long remainder = diff % getStep();
-        return remainder == 0;
+        BigInteger diff = BigInteger.valueOf(Math.abs(getUpperBound() - getLowerBound()));
+        BigInteger[] divAndRemainder = diff.divideAndRemainder(BigInteger.valueOf(((Long)getStep()).longValue()));
+        return divAndRemainder[1].longValue() == 0;
     }
 
     /**
      * {@inheritDoc}
      */
     protected int sizeForDiscreteValuesExcludingNull() {
-        long upper = getUpperBound();
-        long lower = getLowerBound();
-        long diff = Math.abs(upper - lower);
-        Long returnValue = diff / getStep() + 1;
+        BigInteger diff = BigInteger.valueOf(Math.abs(getUpperBound() - getLowerBound()));
+        BigInteger[] divAndRemainder = diff.divideAndRemainder(BigInteger.valueOf(((Long)getStep()).longValue()));
+        BigInteger returnValue = divAndRemainder[0].add(BigInteger.valueOf(1));
 
-        if (returnValue > Integer.MAX_VALUE) {
+        if (returnValue.longValue() > Integer.MAX_VALUE) {
             throw new RuntimeException(
                     "The number of values contained within this range are to huge to be supported by this operation.");
         }
