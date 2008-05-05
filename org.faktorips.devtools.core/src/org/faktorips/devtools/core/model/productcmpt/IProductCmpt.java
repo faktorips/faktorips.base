@@ -181,7 +181,7 @@ public interface IProductCmpt extends ITimedIpsObject, IFixDifferencesToModelSup
     
     /**
      * Returns <code>true</code> if the given policy cmpt type is used as target inside at least
-     * one generation of this product cmpt, specified by the given association.
+     * one generation of this product cmpt.
      */
-    public boolean isUsedAsTargetProductCmpt(IIpsProject ipsProjectToSearch, String association, IProductCmpt productCmptCandidate);
+    public boolean isUsedAsTargetProductCmpt(IIpsProject ipsProjectToSearch, IProductCmpt productCmptCandidate);
 }

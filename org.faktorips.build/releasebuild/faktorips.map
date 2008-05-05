@@ -1,5 +1,6 @@
 feature@org.faktorips.feature=--VTAG--,/usr/local/cvsroot
 feature@org.faktorips.feature.test=--VTAG--,/usr/local/cvsroot/
+feature@org.faktorips.feature.nls1=--VTAG--,/usr/local/cvsroot/
 plugin@org.faktorips.devtools.core=--VTAG--,/usr/local/cvsroot
 plugin@org.faktorips.devtools.stdbuilder=--VTAG--,/usr/local/cvsroot
 plugin@org.faktorips.dtflcommon=--VTAG--,/usr/local/cvsroot
@@ -10,3 +11,4 @@ plugin@org.faktorips.valuetypes=--VTAG--,/usr/local/cvsroot
 plugin@org.faktorips.devtools.stdbuilder.test=--VTAG--,/usr/local/cvsroot
 plugin@org.faktorips.devtools.core.test=--VTAG--,/usr/local/cvsroot
 plugin@org.faktorips.devtools.ant=--VTAG--,/usr/local/cvsroot
+plugin@org.faktorips.nls.devtools.core.nl1=--VTAG--,/usr/local/cvsroot
