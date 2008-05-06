@@ -1,10 +1,15 @@
 /***************************************************************************************************
- *  * Copyright (c) 2005,2006 Faktor Zehn GmbH und andere.  *  * Alle Rechte vorbehalten.  *  *
- * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele,  * Konfigurationen,
- * etc.) duerfen nur unter den Bedingungen der  * Faktor-Zehn-Community Lizenzvereinbarung - Version
- * 0.1 (vor Gruendung Community)  * genutzt werden, die Bestandteil der Auslieferung ist und auch
- * unter  *   http://www.faktorips.org/legal/cl-v01.html  * eingesehen werden kann.  *  *
- * Mitwirkende:  *   Faktor Zehn GmbH - initial API and implementation - http://www.faktorzehn.de  *  
+ * Copyright (c) 2005-2008 Faktor Zehn AG und andere.
+ * 
+ * Alle Rechte vorbehalten.
+ * 
+ * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen,
+ * etc.) duerfen nur unter den Bedingungen der Faktor-Zehn-Community Lizenzvereinbarung - Version
+ * 0.1 (vor Gruendung Community) genutzt werden, die Bestandteil der Auslieferung ist und auch unter
+ * http://www.faktorzehn.org/f10-org:lizenzen:community eingesehen werden kann.
+ * 
+ * Mitwirkende: Faktor Zehn GmbH - initial API and implementation - http://www.faktorzehn.de
+ * 
  **************************************************************************************************/
 
 package org.faktorips.devtools.core.builder;
@@ -845,57 +850,6 @@ public abstract class JavaSourceFileBuilder extends AbstractArtefactBuilder {
         }
         return folder.getFile(fileName + JAVA_EXTENSION);
     }
-
-    /* Old Code for EMF < 2.2
-    private void initJControlModel(IIpsProject project) throws CoreException {
-        IFile mergeFile = project.getJavaProject().getProject().getFile("merge.xml"); //$NON-NLS-1$
-        if (mergeFile.exists()) {
-            try {
-                model = new JControlModel(XmlUtil.getDocument(mergeFile.getContents()).getDocumentElement());
-            } catch (Exception e) {
-                throw new CoreException(new IpsStatus(e));
-            }
-            return;
-        }
-        model = new JControlModel(getJMergeDefaultConfigDocument().getDocumentElement());
-    }
-
-    private org.w3c.dom.Document getJMergeDefaultConfigDocument() throws CoreException {
-        InputStream is = null;
-        try {
-            StringBuffer mergeFile = new StringBuffer();
-            mergeFile.append('/').append(JavaSourceFileBuilder.class.getPackage().getName().replace('.', '/')).append(
-                    "/merge.xml"); //$NON-NLS-1$
-            is = (InputStream)Platform.getBundle(IpsPlugin.PLUGIN_ID).getResource(mergeFile.toString()).getContent();
-            return XmlUtil.getDocument(is);
-        } catch (Exception e) {
-            throw new CoreException(new IpsStatus(e));
-        } finally {
-            closeStream(is);
-        }
-
-    }
-
-    private void merge(IFile javaFile, String oldContent, String newContent, String charset) throws CoreException {
-
-        try {
-            JMerger merger = new JMerger();
-            merger.setControlModel(getJControlModel());
-            merger.setSourceCompilationUnit(merger.createCompilationUnitForContents(newContent));
-            merger.setTargetCompilationUnit(merger.createCompilationUnitForContents(oldContent));
-            String targetContentsBeforeMerge = merger.getTargetCompilationUnitContents();
-            merger.merge();
-            String targetContents = merger.getTargetCompilationUnitContents();
-            targetContents = writeFeatureVersions(targetContents);
-            if (targetContents == null || targetContents.equals(targetContentsBeforeMerge)) {
-                return;
-            }
-            javaFile.setContents(new ByteArrayInputStream(targetContents.getBytes(charset)), true, false, null);
-        } catch (Exception e) {
-            throw new CoreException(new IpsStatus("An error occurred while trying to merge " + //$NON-NLS-1$
-                    "the generated content with the old content of the file: " + javaFile, e)); //$NON-NLS-1$
-        }
-    }*/
 
     private JControlModel getJControlModel() {
 
