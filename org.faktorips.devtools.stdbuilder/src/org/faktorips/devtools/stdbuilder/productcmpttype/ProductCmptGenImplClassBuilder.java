@@ -190,18 +190,6 @@ public class ProductCmptGenImplClassBuilder extends BaseProductCmptTypeBuilder {
                 new Class[] { Map.class });
 
         builder.appendln("super.doInitPropertiesFromXml(configMap);");
-        if (isUseTypesafeCollections()) {
-            JavaCodeFragment frag = new JavaCodeFragment();
-            frag.append('(');
-            frag.appendClassName(Map.class);
-            frag.append('<');
-            frag.appendClassName(String.class);
-            frag.append(", ");
-            frag.appendClassName(Element.class);
-            frag.append(">)configMap");
-            builder.varDeclaration(Modifier.FINAL, Map.class.getName() + "<" + String.class.getName() + ", "
-                    + Element.class.getName() + ">", "checkedConfigMap", frag);
-        }
 
         boolean attributeFound = false;
         for (Iterator it = ((StandardBuilderSet)getBuilderSet()).getGenerator(getProductCmptType())
@@ -211,6 +199,7 @@ public class ProductCmptGenImplClassBuilder extends BaseProductCmptTypeBuilder {
                 continue;
             }
             if (attributeFound == false) {
+                generateCheckedConfigMap(builder);
                 generateDefineLocalVariablesForXmlExtraction(builder);
                 attributeFound = true;
             }
@@ -228,6 +217,7 @@ public class ProductCmptGenImplClassBuilder extends BaseProductCmptTypeBuilder {
                 continue;
             }
             if (attributeFound == false) {
+                generateCheckedConfigMap(builder);
                 generateDefineLocalVariablesForXmlExtraction(builder);
                 attributeFound = true;
             }
@@ -242,6 +232,24 @@ public class ProductCmptGenImplClassBuilder extends BaseProductCmptTypeBuilder {
             builder.closeBracket(); // close if statement generated three lines above
         }
         builder.methodEnd();
+    }
+
+    /**
+     * @param builder
+     */
+    private void generateCheckedConfigMap(JavaCodeFragmentBuilder builder) {
+        if (isUseTypesafeCollections()) {
+            JavaCodeFragment frag = new JavaCodeFragment();
+            frag.append('(');
+            frag.appendClassName(Map.class);
+            frag.append('<');
+            frag.appendClassName(String.class);
+            frag.append(", ");
+            frag.appendClassName(Element.class);
+            frag.append(">)configMap");
+            builder.varDeclaration(Modifier.FINAL, Map.class.getName() + "<" + String.class.getName() + ", "
+                    + Element.class.getName() + ">", "checkedConfigMap", frag);
+        }
     }
 
     private void generateDefineLocalVariablesForXmlExtraction(JavaCodeFragmentBuilder builder) {
@@ -342,20 +350,6 @@ public class ProductCmptGenImplClassBuilder extends BaseProductCmptTypeBuilder {
         String[] argTypes = new String[] { Map.class.getName() };
         builder.methodBegin(Modifier.PROTECTED, "void", "doInitReferencesFromXml", argNames, argTypes);
         builder.appendln("super.doInitReferencesFromXml(elementsMap);");
-        if (isUseTypesafeCollections()) {
-            JavaCodeFragment frag = new JavaCodeFragment();
-            frag.append('(');
-            frag.appendClassName(Map.class);
-            frag.append('<');
-            frag.appendClassName(String.class);
-            frag.append(", ");
-            frag.appendClassName(List.class);
-            frag.append('<');
-            frag.appendClassName(Element.class);
-            frag.append(">>)elementsMap");
-            builder.varDeclaration(Modifier.FINAL, Map.class.getName() + "<" + String.class.getName() + ", "
-                    + List.class.getName() + "<" + Element.class.getName() + ">>", "checkedElementsMap", frag);
-        }
 
         // before the first association we define a temp variable as follows:
         // Element associationElements = null;
@@ -382,6 +376,20 @@ public class ProductCmptGenImplClassBuilder extends BaseProductCmptTypeBuilder {
             IProductCmptTypeAssociation ass = (IProductCmptTypeAssociation)associations[i];
             if (!ass.isDerived()) {
                 if (associationFound == false) {
+                    if (isUseTypesafeCollections()) {
+                        JavaCodeFragment frag = new JavaCodeFragment();
+                        frag.append('(');
+                        frag.appendClassName(Map.class);
+                        frag.append('<');
+                        frag.appendClassName(String.class);
+                        frag.append(", ");
+                        frag.appendClassName(List.class);
+                        frag.append('<');
+                        frag.appendClassName(Element.class);
+                        frag.append(">>)elementsMap");
+                        builder.varDeclaration(Modifier.FINAL, Map.class.getName() + "<" + String.class.getName() + ", "
+                                + List.class.getName() + "<" + Element.class.getName() + ">>", "checkedElementsMap", frag);
+                    }
                     builder.appendln();
                     builder.appendClassName(List.class);
                     if (isUseTypesafeCollections()) {
