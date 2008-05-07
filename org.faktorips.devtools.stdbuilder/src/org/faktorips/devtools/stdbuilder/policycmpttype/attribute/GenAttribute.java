@@ -221,10 +221,11 @@ public abstract class GenAttribute extends GenPolicyCmptTypePart {
     }
     
     public void generateInitPropertiesFromXml(JavaCodeFragmentBuilder builder) throws CoreException {
-        builder.append("if (propMap.containsKey(");
+        String propMapName = isUseTypesafeCollections()?"checkedPropMap":"propMap";
+        builder.append("if ("+propMapName+".containsKey(");
         builder.appendQuoted(attributeName);
         builder.appendln(")) {");
-        String expr = "(String)propMap.get(\"" + attributeName + "\")";
+        String expr = (isUseTypesafeCollections()?"":"(String)")+propMapName+".get(\"" + attributeName + "\")";
         builder.append(getMemberVarName() + " = ");
         builder.append(datatypeHelper.newInstanceFromExpression(expr));
         builder.appendln(";");

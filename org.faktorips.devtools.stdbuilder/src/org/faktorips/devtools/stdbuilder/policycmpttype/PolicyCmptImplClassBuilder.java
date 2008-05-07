@@ -15,6 +15,7 @@ import java.util.Calendar;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 
 import org.apache.commons.lang.StringUtils;
 import org.eclipse.core.runtime.CoreException;
@@ -450,14 +451,15 @@ public class PolicyCmptImplClassBuilder extends BasePolicyCmptTypeBuilder {
                     methodsBuilder.appendClassName(Iterator.class);
                     if (((StandardBuilderSet)getBuilderSet()).isUseTypesafeCollections()) {
                         methodsBuilder.append("<");
-                        methodsBuilder.appendClassName(getGenerator(r).getQualifiedClassName(getGenerator(r).getTargetPolicyCmptType(), true));
+                        methodsBuilder.appendClassName(getGenerator(r).getQualifiedClassName(
+                                getGenerator(r).getTargetPolicyCmptType(), true));
                         methodsBuilder.append(">");
                     }
                     methodsBuilder.append(" it=" + field + ".iterator(); it.hasNext();) {");
                     methodsBuilder.appendClassName(AbstractConfigurableModelObject.class);
                     methodsBuilder.append(" child = (");
-                        methodsBuilder.appendClassName(AbstractConfigurableModelObject.class);
-                        methodsBuilder.append(")it.next();");
+                    methodsBuilder.appendClassName(AbstractConfigurableModelObject.class);
+                    methodsBuilder.append(")it.next();");
                     methodsBuilder.append("child." + MethodNames.EFFECTIVE_FROM_HAS_CHANGED + "();");
                     methodsBuilder.append("}");
                 } else {
@@ -496,7 +498,8 @@ public class PolicyCmptImplClassBuilder extends BasePolicyCmptTypeBuilder {
             JavaCodeFragmentBuilder memberVarsBuilder,
             JavaCodeFragmentBuilder methodsBuilder) throws CoreException {
 
-        GenProdAttribute generator = ((StandardBuilderSet)getBuilderSet()).getGenerator(getPcType()).getGenerator(attribute);
+        GenProdAttribute generator = ((StandardBuilderSet)getBuilderSet()).getGenerator(getPcType()).getGenerator(
+                attribute);
         if (generator != null) {
             generator.generateCodeForPolicyCmptType(generatesInterface(), methodsBuilder);
         }
@@ -645,7 +648,8 @@ public class PolicyCmptImplClassBuilder extends BasePolicyCmptTypeBuilder {
 
         appendLocalizedJavaDoc("CONSTRUCTOR", getUnqualifiedClassName(), getPcType(), builder);
         String[] paramNames = new String[] { "productCmpt" };
-        String[] paramTypes = new String[] { ((StandardBuilderSet)getBuilderSet()).getGenerator(getProductCmptType()).getQualifiedName(true) };
+        String[] paramTypes = new String[] { ((StandardBuilderSet)getBuilderSet()).getGenerator(getProductCmptType())
+                .getQualifiedName(true) };
         builder.methodBegin(java.lang.reflect.Modifier.PUBLIC, null, getUnqualifiedClassName(), paramNames, paramTypes);
         builder.append("super(productCmpt);");
         generateInitializationForOverrideAttributes(builder);
@@ -751,11 +755,12 @@ public class PolicyCmptImplClassBuilder extends BasePolicyCmptTypeBuilder {
         builder.javaDoc(getJavaDocCommentForOverriddenMethod(), ANNOTATION_GENERATED);
         interfaceBuilder.generateSignatureGetProductCmpt(getProductCmptType(), builder);
         builder.openBracket();
-        String productCmptInterfaceQualifiedName = ((StandardBuilderSet)getBuilderSet()).getGenerator(getProductCmptType()).getQualifiedName(true);
+        String productCmptInterfaceQualifiedName = ((StandardBuilderSet)getBuilderSet()).getGenerator(
+                getProductCmptType()).getQualifiedName(true);
         builder.append("return (");
         builder.appendClassName(productCmptInterfaceQualifiedName);
         builder.append(")getProductComponent();"); // don't use getMethodNameGetProductComponent()
-                                                    // as this results in a recursive call
+        // as this results in a recursive call
         // we have to call the generic superclass method here
         builder.closeBracket();
     }
@@ -780,11 +785,13 @@ public class PolicyCmptImplClassBuilder extends BasePolicyCmptTypeBuilder {
         builder.appendln("}");
 
         builder.append("return (");
-        builder.appendClassName(((StandardBuilderSet)getBuilderSet()).getGenerator(getProductCmptType()).getQualifiedClassNameForProductCmptTypeGen(true));
+        builder.appendClassName(((StandardBuilderSet)getBuilderSet()).getGenerator(getProductCmptType())
+                .getQualifiedClassNameForProductCmptTypeGen(true));
         builder.append(")");
         builder.append(interfaceBuilder.getMethodNameGetProductCmpt(getProductCmptType()));
         builder.append("().");
-        builder.append(((StandardBuilderSet)getBuilderSet()).getGenerator(getProductCmptType()).getMethodNameGetGeneration());
+        builder.append(((StandardBuilderSet)getBuilderSet()).getGenerator(getProductCmptType())
+                .getMethodNameGetGeneration());
         builder.append('(');
         builder.append(MethodNames.GET_EFFECTIVE_FROM_AS_CALENDAR);
         builder.appendln("());");
@@ -837,6 +844,18 @@ public class PolicyCmptImplClassBuilder extends BasePolicyCmptTypeBuilder {
                                 MethodNames.INIT_PROPERTIES_FROM_XML, new String[] { "propMap" },
                                 new Class[] { HashMap.class });
                 builder.appendln("super." + MethodNames.INIT_PROPERTIES_FROM_XML + "(propMap);");
+                if (((StandardBuilderSet)getBuilderSet()).isUseTypesafeCollections()) {
+                    JavaCodeFragment frag = new JavaCodeFragment();
+                    frag.append('(');
+                    frag.appendClassName(Map.class);
+                    frag.append('<');
+                    frag.appendClassName(String.class);
+                    frag.append(", ");
+                    frag.appendClassName(String.class);
+                    frag.append(">)propMap");
+                    builder.varDeclaration(Modifier.FINAL, Map.class.getName() + "<" + String.class.getName() + ", "
+                            + String.class.getName() + ">", "checkedPropMap", frag);
+                }
             }
             generator.generateInitPropertiesFromXml(builder);
         }
