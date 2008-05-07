@@ -838,7 +838,10 @@ public class PolicyCmptImplClassBuilder extends BasePolicyCmptTypeBuilder {
             }
             if (first) {
                 first = false;
-                builder.javaDoc(getJavaDocCommentForOverriddenMethod(), ANNOTATION_GENERATED);
+                builder.javaDoc(getJavaDocCommentForOverriddenMethod(), ANNOTATION_RESTRAINED_MODIFIABLE);
+                if (((StandardBuilderSet)getBuilderSet()).isUseTypesafeCollections()) {
+                    builder.annotation(ANNOTATION_SUPPRESS_WARNINGS_UNCHECKED);
+                }
                 builder
                         .methodBegin(java.lang.reflect.Modifier.PROTECTED, Void.TYPE,
                                 MethodNames.INIT_PROPERTIES_FROM_XML, new String[] { "propMap" },

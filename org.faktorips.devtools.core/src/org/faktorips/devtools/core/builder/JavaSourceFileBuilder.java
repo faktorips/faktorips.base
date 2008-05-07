@@ -90,6 +90,12 @@ public abstract class JavaSourceFileBuilder extends AbstractArtefactBuilder {
     public final static String[] ANNOTATION_RESTRAINED_MODIFIABLE = new String[] { "restrainedmodifiable" }; //$NON-NLS-1$
 
     /**
+     * This constant is supposed to be used as a Java 5 annotation. It suppresses warnings for
+     * unchecked casts when interacting with legacy code.
+     */
+    public static final String ANNOTATION_SUPPRESS_WARNINGS_UNCHECKED = "SuppressWarnings(\"unchecked\")"; //$NON-NLS-1$
+
+    /**
      * This constant is supposed to be used to indicate the beginning of a section within generated
      * code that a user can modify and will not be overridden by the generator at the next
      * generation.
@@ -127,7 +133,7 @@ public abstract class JavaSourceFileBuilder extends AbstractArtefactBuilder {
     private MultiStatus buildStatus;
 
     private JControlModel model;
-    
+
     private Integer javaOptionsSplitLength;
 
     private Integer javaOptionsTabSize;
@@ -151,7 +157,7 @@ public abstract class JavaSourceFileBuilder extends AbstractArtefactBuilder {
         initJavaOptions();
     }
 
-    //TODO duplicate code in LocalizedTextHelper
+    // TODO duplicate code in LocalizedTextHelper
     private void initJavaOptions() {
         try {
             javaOptionsSplitLength = Integer.valueOf(JavaCore
@@ -161,7 +167,7 @@ public abstract class JavaSourceFileBuilder extends AbstractArtefactBuilder {
             IpsPlugin.log(new IpsStatus("Unable to apply the java formatter options.", e)); //$NON-NLS-1$
         }
     }
-    
+
     public Integer getJavaOptionsSplitLength() {
         return javaOptionsSplitLength;
     }
@@ -250,7 +256,7 @@ public abstract class JavaSourceFileBuilder extends AbstractArtefactBuilder {
     public IIpsSrcFile getIpsSrcFile() {
         return ipsSrcFile;
     }
-    
+
     /**
      * Returns the ips project, the builder is currently building for.
      */
@@ -446,13 +452,18 @@ public abstract class JavaSourceFileBuilder extends AbstractArtefactBuilder {
         }
         return getLocalizedStringSet().getString(key, getLanguageUsedInGeneratedSourceCode(element));
     }
-    
+
     /**
      * Returns a single line comment containing a TO DO, e.g.
-     * <pre>// TODO Implement this rule.</pre>
      * 
-     * @param element Any ips element used to access the ips project and determine the langauge for the generated code.
-     * @param keyPrefix A key prefix for the resource bundle, this method adds a "_TODO" to the prefix
+     * <pre>
+     * // TODO Implement this rule.
+     * </pre>
+     * 
+     * @param element Any ips element used to access the ips project and determine the langauge for
+     *            the generated code.
+     * @param keyPrefix A key prefix for the resource bundle, this method adds a "_TODO" to the
+     *            prefix
      */
     public String getLocalizedToDo(IIpsElement element, String keyPrefix, JavaCodeFragmentBuilder builder) {
         return getLocalizedToDo(element, keyPrefix, new Object[0]);
@@ -460,22 +471,32 @@ public abstract class JavaSourceFileBuilder extends AbstractArtefactBuilder {
 
     /**
      * Returns a single line comment containing a TO DO, e.g.
-     * <pre>// TODO Implement the rule xyz.</pre>
      * 
-     * @param element Any ips element used to access the ips project and determine the langauge for the generated code.
-     * @param keyPrefix A key prefix for the resource bundle, this method adds a "_TODO" to the prefix
+     * <pre>
+     * // TODO Implement the rule xyz.
+     * </pre>
+     * 
+     * @param element Any ips element used to access the ips project and determine the langauge for
+     *            the generated code.
+     * @param keyPrefix A key prefix for the resource bundle, this method adds a "_TODO" to the
+     *            prefix
      * @param replacement An object to replace the wildcard in the message text.
      */
     public String getLocalizedToDo(IIpsElement element, String keyPrefix, Object replacement) {
-        return getLocalizedToDo(element, keyPrefix, new Object[]{replacement});
+        return getLocalizedToDo(element, keyPrefix, new Object[] { replacement });
     }
 
     /**
      * Returns a single line comment containing a TO DO, e.g.
-     * <pre>// TODO Implement the rule xyz.</pre>
      * 
-     * @param element Any ips element used to access the ips project and determine the langauge for the generated code.
-     * @param keyPrefix A key prefix for the resource bundle, this method adds a "_TODO" to the prefix
+     * <pre>
+     * // TODO Implement the rule xyz.
+     * </pre>
+     * 
+     * @param element Any ips element used to access the ips project and determine the langauge for
+     *            the generated code.
+     * @param keyPrefix A key prefix for the resource bundle, this method adds a "_TODO" to the
+     *            prefix
      * @param replacements Any objects to replace wildcards in the message text.
      */
     public String getLocalizedToDo(IIpsElement element, String keyPrefix, Object[] replacements) {
@@ -593,7 +614,7 @@ public abstract class JavaSourceFileBuilder extends AbstractArtefactBuilder {
             String modelDescription,
             IIpsElement element,
             JavaCodeFragmentBuilder builder) {
-        
+
         String text = getLocalizedText(element, keyPrefix + "_JAVADOC", replacements); //$NON-NLS-1$
         String[] annotations = new String[] { getLocalizedText(element, keyPrefix + "_ANNOTATION") }; //$NON-NLS-1$
         StringBuffer buf = new StringBuffer();
@@ -615,7 +636,7 @@ public abstract class JavaSourceFileBuilder extends AbstractArtefactBuilder {
             JavaCodeFragmentBuilder builder) {
         appendLocalizedJavaDoc(keyPrefix, replacements, null, element, builder);
     }
-    
+
     private String wrapText(String text) {
 
         if (StringUtils.isEmpty(text) || javaOptionsSplitLength == null || javaOptionsTabSize == null) {
@@ -882,20 +903,20 @@ public abstract class JavaSourceFileBuilder extends AbstractArtefactBuilder {
                     "the generated content with the old content of the file: " + javaFile, e)); //$NON-NLS-1$
         }
     }
-    
+
     private void initJControlModel(IIpsProject project) throws CoreException {
         IFile mergeFile = project.getJavaProject().getProject().getFile("merge.xml"); //$NON-NLS-1$
         model = new org.eclipse.emf.codegen.merge.java.JControlModel();
         FacadeHelper facadeHelper;
-        if(getBuilderSet().getTargetJavaVersion().isAtLeast(EnumTypeTargetJavaVersion.JAVA_5)){
+        if (getBuilderSet().getTargetJavaVersion().isAtLeast(EnumTypeTargetJavaVersion.JAVA_5)) {
             facadeHelper = new ASTFacadeHelper();
-        }else{
+        } else {
             facadeHelper = new JDOMFacadeHelper();
         }
         if (mergeFile.exists()) {
             try {
                 model.initialize(facadeHelper, mergeFile.getLocation().toPortableString());
-                
+
             } catch (Exception e) {
                 throw new CoreException(new IpsStatus(e));
             }
@@ -903,14 +924,14 @@ public abstract class JavaSourceFileBuilder extends AbstractArtefactBuilder {
         }
         model.initialize(facadeHelper, getJMergeDefaultConfigLocation());
     }
-    
-    private String getJMergeDefaultConfigLocation(){
+
+    private String getJMergeDefaultConfigLocation() {
         StringBuffer mergeFile = new StringBuffer();
         mergeFile.append('/').append(JavaSourceFileBuilder.class.getPackage().getName().replace('.', '/')).append(
                 "/merge.xml"); //$NON-NLS-1$
         return Platform.getBundle(IpsPlugin.PLUGIN_ID).getResource(mergeFile.toString()).toExternalForm();
     }
-    
+
     private final static Pattern createFeatureSectionPattern() {
         StringBuffer buf = new StringBuffer();
         buf.append("/\\*.*"); //$NON-NLS-1$
@@ -933,7 +954,7 @@ public abstract class JavaSourceFileBuilder extends AbstractArtefactBuilder {
         versionSecionBuf.append(getBuilderSet().getId());
         versionSecionBuf.append(", Version: "); //$NON-NLS-1$
         versionSecionBuf.append(getBuilderSet().getVersion());
-        
+
         versionSecionBuf.append(SystemUtils.LINE_SEPARATOR);
         versionSecionBuf.append(" * "); //$NON-NLS-1$
         versionSecionBuf.append(SystemUtils.LINE_SEPARATOR);
