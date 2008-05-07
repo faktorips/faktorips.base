@@ -295,6 +295,37 @@ public class JavaCodeFragmentBuilder {
      * 
      * @param modifier Access modifier according to java.lang.reflect.Modifier.
      * @param returnType the className that the methods returnds an instance of or null to indicate
+     *            no return type in case of a constructor.
+     * @param methodName the name of the method.
+     * @param argName Argument names.
+     * @param argClass Argument classes.
+     * @param body the method body
+     * @param javadoc the java documentation
+     * @param javaDocAnnotations annotations of the java documentation
+     * @param annotations Java 5 annotations
+     */
+    public void method(int modifier,
+            Class returnType,
+            String methodName,
+            String[] argName,
+            Class[] argClass,
+            JavaCodeFragment body,
+            String javadoc,
+            String[] javaDocAnnotations,
+            String[] annotations) {
+
+        javaDoc(javadoc, javaDocAnnotations);
+        annotation(annotations);
+        methodBegin(modifier, returnType, methodName, argName, argClass);
+        append(body);
+        methodEnd();
+    }
+
+    /**
+     * Creates the Java source code for a method including signature, body and java doc.
+     * 
+     * @param modifier Access modifier according to java.lang.reflect.Modifier.
+     * @param returnType the className that the methods returnds an instance of or null to indicate
      *            no return type in case of a constructor
      * @param methodName the name of the method.
      * @param argName Argument names.
@@ -313,6 +344,37 @@ public class JavaCodeFragmentBuilder {
             String[] javaDocAnnotations) {
 
         javaDoc(javadoc, javaDocAnnotations);
+        methodBegin(modifier, returnType, methodName, argName, argClass);
+        append(body);
+        methodEnd();
+    }
+
+    /**
+     * Creates the Java source code for a method including signature, body and java doc.
+     * 
+     * @param modifier Access modifier according to java.lang.reflect.Modifier.
+     * @param returnType the className that the methods returnds an instance of or null to indicate
+     *            no return type in case of a constructor
+     * @param methodName the name of the method.
+     * @param argName Argument names.
+     * @param argClass Argument classes.
+     * @param body the method body
+     * @param javadoc the java documentation
+     * @param javaDocAnnotations annotations of the java documentation
+     * @param annotations Java 5 annotations
+     */
+    public void method(int modifier,
+            String returnType,
+            String methodName,
+            String[] argName,
+            String[] argClass,
+            JavaCodeFragment body,
+            String javadoc,
+            String[] javaDocAnnotations,
+            String[] annotations) {
+
+        javaDoc(javadoc, javaDocAnnotations);
+        annotation(annotations);
         methodBegin(modifier, returnType, methodName, argName, argClass);
         append(body);
         methodEnd();
@@ -868,7 +930,7 @@ public class JavaCodeFragmentBuilder {
     }
 
     /**
-     * Writed the annotation. For an annotation only the annotation name needs to be specified. The
+     * Writes the annotation. For an annotation only the annotation name needs to be specified. The
      * '@' character will be automatically added.
      * 
      * @param annotation
@@ -879,6 +941,21 @@ public class JavaCodeFragmentBuilder {
         }
         fragment.append("@");
         fragment.appendln(annotation);
+    }
+
+    /**
+     * Writes the annotations. For an annotation only the annotation name needs to be specified. The
+     * '@' character will be automatically added.
+     * 
+     * @param annotations
+     */
+    public void annotation(String[] annotations) {
+        if (annotations == null) {
+            return;
+        }
+        for (int i = 0; i < annotations.length; i++) {
+            annotation(annotations[i]);
+        }
     }
 
     public String toString() {
