@@ -160,7 +160,8 @@ public class ProductCmptGenImplClassBuilder extends BaseProductCmptTypeBuilder {
         builder.append("public ");
         builder.append(getUnqualifiedClassName());
         builder.append('(');
-        builder.appendClassName(((StandardBuilderSet)getBuilderSet()).getGenerator(getProductCmptType()).getQualifiedName(false));
+        builder.appendClassName(((StandardBuilderSet)getBuilderSet()).getGenerator(getProductCmptType())
+                .getQualifiedName(false));
         builder.append(" productCmpt)");
         builder.openBracket();
         builder.appendln("super(productCmpt);");
@@ -182,13 +183,29 @@ public class ProductCmptGenImplClassBuilder extends BaseProductCmptTypeBuilder {
     private void generateMethodDoInitPropertiesFromXml(JavaCodeFragmentBuilder builder) throws CoreException {
 
         builder.javaDoc(getJavaDocCommentForOverriddenMethod(), ANNOTATION_GENERATED);
+        if (isUseTypesafeCollections()) {
+            builder.annotation(ANNOTATION_SUPPRESS_WARNINGS_UNCHECKED);
+        }
         builder.methodBegin(Modifier.PROTECTED, Void.TYPE, "doInitPropertiesFromXml", new String[] { "configMap" },
                 new Class[] { Map.class });
 
         builder.appendln("super.doInitPropertiesFromXml(configMap);");
+        if (isUseTypesafeCollections()) {
+            JavaCodeFragment frag = new JavaCodeFragment();
+            frag.append('(');
+            frag.appendClassName(Map.class);
+            frag.append('<');
+            frag.appendClassName(String.class);
+            frag.append(", ");
+            frag.appendClassName(Element.class);
+            frag.append(">)configMap");
+            builder.varDeclaration(Modifier.FINAL, Map.class.getName() + "<" + String.class.getName() + ", "
+                    + Element.class.getName() + ">", "checkedConfigMap", frag);
+        }
 
         boolean attributeFound = false;
-        for (Iterator it = ((StandardBuilderSet)getBuilderSet()).getGenerator(getProductCmptType()).getGenProdAttributes(); it.hasNext();) {
+        for (Iterator it = ((StandardBuilderSet)getBuilderSet()).getGenerator(getProductCmptType())
+                .getGenProdAttributes(); it.hasNext();) {
             GenProdAttribute generator = (GenProdAttribute)it.next();
             if (generator.isValidAttribute()) {
                 continue;
@@ -214,7 +231,8 @@ public class ProductCmptGenImplClassBuilder extends BaseProductCmptTypeBuilder {
                 generateDefineLocalVariablesForXmlExtraction(builder);
                 attributeFound = true;
             }
-            GenPolicyCmptType genPolicyCmptType = ((StandardBuilderSet)getBuilderSet()).getGenerator(a.getPolicyCmptType());
+            GenPolicyCmptType genPolicyCmptType = ((StandardBuilderSet)getBuilderSet()).getGenerator(a
+                    .getPolicyCmptType());
             GenAttribute generator = genPolicyCmptType.getGenerator(a);
             ValueDatatype datatype = a.findDatatype(getIpsProject());
             DatatypeHelper helper = getProductCmptType().getIpsProject().getDatatypeHelper(datatype);
@@ -234,9 +252,13 @@ public class ProductCmptGenImplClassBuilder extends BaseProductCmptTypeBuilder {
     }
 
     private void generateGetElementFromConfigMapAndIfStatement(String attributeName, JavaCodeFragmentBuilder builder) {
-        builder.append("configElement = (");
-        builder.appendClassName(Element.class);
-        builder.append(")configMap.get(\"");
+        if (isUseTypesafeCollections()) {
+            builder.append("configElement = checkedConfigMap.get(\"");
+        } else {
+            builder.append("configElement = (");
+            builder.appendClassName(Element.class);
+            builder.append(")configMap.get(\"");
+        }
         builder.append(attributeName);
         builder.appendln("\");");
         builder.append("if (configElement != null) ");
@@ -282,14 +304,14 @@ public class ProductCmptGenImplClassBuilder extends BaseProductCmptTypeBuilder {
             frag.appendClassName(ValueToXmlHelper.class);
             frag.appendln(".getEnumValueSetFromElement(configElement, \"ValueSet\");");
             frag.appendClassName(ArrayList.class);
-            if(isUseTypesafeCollections()){
+            if (isUseTypesafeCollections()) {
                 frag.append("<");
                 frag.appendClassName(helper.getJavaClassName());
                 frag.append(">");
             }
             frag.append(" enumValues = new ");
             frag.appendClassName(ArrayList.class);
-            if(isUseTypesafeCollections()){
+            if (isUseTypesafeCollections()) {
                 frag.append("<");
                 frag.appendClassName(helper.getJavaClassName());
                 frag.append(">");
@@ -332,7 +354,7 @@ public class ProductCmptGenImplClassBuilder extends BaseProductCmptTypeBuilder {
             frag.appendClassName(Element.class);
             frag.append(">>)elementsMap");
             builder.varDeclaration(Modifier.FINAL, Map.class.getName() + "<" + String.class.getName() + ", "
-                    +List.class.getName()+"<"+ Element.class.getName() + ">>", "checkedElementsMap", frag);
+                    + List.class.getName() + "<" + Element.class.getName() + ">>", "checkedElementsMap", frag);
         }
 
         // before the first association we define a temp variable as follows:
@@ -362,7 +384,7 @@ public class ProductCmptGenImplClassBuilder extends BaseProductCmptTypeBuilder {
                 if (associationFound == false) {
                     builder.appendln();
                     builder.appendClassName(List.class);
-                    if(isUseTypesafeCollections()){
+                    if (isUseTypesafeCollections()) {
                         builder.append("<");
                         builder.appendClassName(Element.class);
                         builder.append(">");
@@ -371,10 +393,10 @@ public class ProductCmptGenImplClassBuilder extends BaseProductCmptTypeBuilder {
                     associationFound = true;
                 }
                 builder.append("associationElements = ");
-                if(isUseTypesafeCollections()){
+                if (isUseTypesafeCollections()) {
                     builder.append("checkedElementsMap.get(");
-                }else{
-                    
+                } else {
+
                     builder.append("(");
                     builder.appendClassName(List.class);
                     builder.append(") elementsMap.get(");
@@ -402,16 +424,35 @@ public class ProductCmptGenImplClassBuilder extends BaseProductCmptTypeBuilder {
         }
         String javaDoc = null;
         builder.javaDoc(javaDoc, ANNOTATION_GENERATED);
+        if (isUseTypesafeCollections()) {
+            builder.annotation(ANNOTATION_SUPPRESS_WARNINGS_UNCHECKED);
+        }
         String[] argNames = new String[] { "tableUsageMap" };
         String[] argTypes = new String[] { Map.class.getName() };
         builder.methodBegin(Modifier.PROTECTED, "void", "doInitTableUsagesFromXml", argNames, argTypes);
         builder.appendln("super.doInitTableUsagesFromXml(tableUsageMap);");
+        if (isUseTypesafeCollections()) {
+            JavaCodeFragment frag = new JavaCodeFragment();
+            frag.append('(');
+            frag.appendClassName(Map.class);
+            frag.append('<');
+            frag.appendClassName(String.class);
+            frag.append(", ");
+            frag.appendClassName(Element.class);
+            frag.append(">)tableUsageMap");
+            builder.varDeclaration(Modifier.FINAL, Map.class.getName() + "<" + String.class.getName() + ", "
+                    + Element.class.getName() + ">", "checkedTableUsageMap", frag);
+        }
         builder.appendClassName(Element.class);
         builder.appendln(" element = null;");
         for (int i = 0; i < tsus.length; i++) {
-            builder.append(" element = (");
-            builder.appendClassName(Element.class);
-            builder.append(") tableUsageMap.get(\"");
+            if (isUseTypesafeCollections()) {
+                builder.append("element = checkedTableUsageMap.get(\"");
+            } else {
+                builder.append("element = (");
+                builder.appendClassName(Element.class);
+                builder.append(")tableUsageMap.get(\"");
+            }
             builder.append(tsus[i].getRoleName());
             builder.appendln("\");");
             builder.appendln("if (element != null){");
@@ -508,8 +549,7 @@ public class ProductCmptGenImplClassBuilder extends BaseProductCmptTypeBuilder {
                 // the product component builder.
             } else {
                 methodsBuilder.javaDoc(getJavaDocCommentForOverriddenMethod(), ANNOTATION_GENERATED);
-                interfaceBuilder.generateSignatureForModelMethod(productCmptTypeMethod, true, false,
-                        methodsBuilder);
+                interfaceBuilder.generateSignatureForModelMethod(productCmptTypeMethod, true, false, methodsBuilder);
                 methodsBuilder.append(';');
             }
             if (productCmptTypeMethod.isOverloadsFormula()) {
@@ -517,8 +557,7 @@ public class ProductCmptGenImplClassBuilder extends BaseProductCmptTypeBuilder {
                         .findOverloadedFormulaMethod(getIpsProject());
                 methodsBuilder.appendln();
                 methodsBuilder.javaDoc(getJavaDocCommentForOverriddenMethod(), ANNOTATION_GENERATED);
-                interfaceBuilder.generateSignatureForModelMethod(overloadedFormulaMethod, false, false,
-                        methodsBuilder);
+                interfaceBuilder.generateSignatureForModelMethod(overloadedFormulaMethod, false, false, methodsBuilder);
                 methodsBuilder.openBracket();
                 methodsBuilder.appendln("// TODO a delegation to the method " + method.getSignatureString()
                         + " needs to be implemented here");
@@ -535,8 +574,8 @@ public class ProductCmptGenImplClassBuilder extends BaseProductCmptTypeBuilder {
         } else {
             methodsBuilder.javaDoc(method.getDescription(), ANNOTATION_GENERATED);
         }
-        interfaceBuilder.generateSignatureForModelMethod(productCmptTypeMethod, method.isAbstract(),
-                false, methodsBuilder);
+        interfaceBuilder.generateSignatureForModelMethod(productCmptTypeMethod, method.isAbstract(), false,
+                methodsBuilder);
         methodsBuilder.openBracket();
         methodsBuilder.appendln("// TODO implement method!");
         Datatype datatype = method.getIpsProject().findDatatype(method.getDatatype());

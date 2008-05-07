@@ -310,9 +310,13 @@ public class GenProdAttribute extends GenProductCmptTypePart {
     }
 
     private void generateGetElementFromConfigMapAndIfStatement(JavaCodeFragmentBuilder builder) {
-        builder.append("configElement = (");
-        builder.appendClassName(Element.class);
-        builder.append(")configMap.get(\"");
+        if (isUseTypesafeCollections()) {
+            builder.append("configElement = checkedConfigMap.get(\"");
+        } else {
+            builder.append("configElement = (");
+            builder.appendClassName(Element.class);
+            builder.append(")configMap.get(\"");
+        }
         builder.append(attributeName);
         builder.appendln("\");");
         builder.append("if (configElement != null) ");
