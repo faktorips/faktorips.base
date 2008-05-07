@@ -8,7 +8,7 @@
  * 0.1 (vor Gruendung Community) genutzt werden, die Bestandteil der Auslieferung ist und auch unter
  * http://www.faktorzehn.org/f10-org:lizenzen:community eingesehen werden kann.
  * 
- * Mitwirkende: Faktor Zehn GmbH - initial API and implementation - http://www.faktorzehn.de
+ * Mitwirkende: Faktor Zehn AG - initial API and implementation - http://www.faktorzehn.de
  * 
  **************************************************************************************************/
 
@@ -440,10 +440,11 @@ public class GenAssociationTo1 extends GenAssociation {
 
     /**
      * {@inheritDoc}
-     * @throws CoreException 
+     * 
+     * @throws CoreException
      */
-    public void generateCodeForRemoveChildModelObjectInternal(JavaCodeFragmentBuilder methodsBuilder,
-            String paramName) throws CoreException {
+    public void generateCodeForRemoveChildModelObjectInternal(JavaCodeFragmentBuilder methodsBuilder, String paramName)
+            throws CoreException {
         String fieldName = getFieldNameForAssociation();
         methodsBuilder.appendln("if (" + fieldName + "==" + paramName + ") {");
         methodsBuilder.appendln(fieldName + " = null;");
@@ -452,21 +453,21 @@ public class GenAssociationTo1 extends GenAssociation {
 
     /**
      * Code sample:
+     * 
      * <pre>
      * [Javadoc]
      * public ICoverage getCoverage() {
-     *     if(getNumOfTplCoverage() > 0) { 
+     *     if(getNumOfTplCoverage() &gt; 0) { 
      *         return getTplCoverage(); 
      *     } 
-     *     if (getNumOfCollisionCoverage() > 0) { 
+     *     if (getNumOfCollisionCoverage() &gt; 0) { 
      *         return getCollisionCoverage(); 
      *     } 
      *     return null;
      * }
      * </pre>
      */
-    protected void generateMethodGetRefObjectForContainerAssociationImplementation(
-            List subAssociations,
+    protected void generateMethodGetRefObjectForContainerAssociationImplementation(List subAssociations,
             JavaCodeFragmentBuilder methodsBuilder) throws CoreException {
         methodsBuilder.javaDoc(getJavaDocCommentForOverriddenMethod(), JavaSourceFileBuilder.ANNOTATION_GENERATED);
         generateSignatureGetRefObject(methodsBuilder);
@@ -487,10 +488,9 @@ public class GenAssociationTo1 extends GenAssociation {
     public void generateCodeForContainerAssociationImplementation(List associations,
             JavaCodeFragmentBuilder memberVarsBuilder,
             JavaCodeFragmentBuilder methodsBuilder) throws CoreException {
-        generateMethodGetRefObjectForContainerAssociationImplementation(associations,
-                methodsBuilder);
+        generateMethodGetRefObjectForContainerAssociationImplementation(associations, methodsBuilder);
     }
-    
+
     public void generateCodeForValidateDependants(JavaCodeFragment body) throws CoreException {
         String field = getFieldNameForAssociation();
         body.append("if (" + field + "!=null) {");

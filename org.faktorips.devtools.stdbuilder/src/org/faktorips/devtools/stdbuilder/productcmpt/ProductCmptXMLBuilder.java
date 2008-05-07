@@ -1,19 +1,16 @@
-/*******************************************************************************
- * Copyright (c) 2005,2006 Faktor Zehn GmbH und andere.
- *
+/***************************************************************************************************
+ * Copyright (c) 2005-2008 Faktor Zehn AG und andere.
+ * 
  * Alle Rechte vorbehalten.
- *
- * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele,
- * Konfigurationen, etc.) dürfen nur unter den Bedingungen der 
- * Faktor-Zehn-Community Lizenzvereinbarung – Version 0.1 (vor Gründung Community) 
- * genutzt werden, die Bestandteil der Auslieferung ist und auch unter
- *   http://www.faktorips.org/legal/cl-v01.html
- * eingesehen werden kann.
- *
- * Mitwirkende:
- *   Faktor Zehn GmbH - initial API and implementation 
- *
- *******************************************************************************/
+ * 
+ * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen,
+ * etc.) duerfen nur unter den Bedingungen der Faktor-Zehn-Community Lizenzvereinbarung - Version
+ * 0.1 (vor Gruendung Community) genutzt werden, die Bestandteil der Auslieferung ist und auch unter
+ * http://www.faktorzehn.org/f10-org:lizenzen:community eingesehen werden kann.
+ * 
+ * Mitwirkende: Faktor Zehn AG - initial API and implementation - http://www.faktorzehn.de
+ * 
+ **************************************************************************************************/
 
 package org.faktorips.devtools.stdbuilder.productcmpt;
 
@@ -37,8 +34,8 @@ import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
 
 /**
- * Copies the product cmpt xml file to the output location (=java source folder).
- * For associations the target runtime id is added to the xml.
+ * Copies the product cmpt xml file to the output location (=java source folder). For associations
+ * the target runtime id is added to the xml.
  * 
  * @author Thorsten Guenther
  */
@@ -54,7 +51,7 @@ public class ProductCmptXMLBuilder extends AbstractXmlFileBuilder {
     public void build(IIpsSrcFile ipsSrcFile) throws CoreException {
         IProductCmpt productCmpt = (IProductCmpt)ipsSrcFile.getIpsObject();
         Element root = productCmpt.toXml(IpsPlugin.getDefault().newDocumentBuilder().newDocument());
-        
+
         IIpsObjectGeneration[] generations = productCmpt.getGenerationsOrderedByValidDate();
         NodeList generationNodes = root.getElementsByTagName(IIpsObjectGeneration.TAG_NAME);
         for (int i = 0; i < generations.length; i++) {
@@ -67,23 +64,25 @@ public class ProductCmptXMLBuilder extends AbstractXmlFileBuilder {
         }
     }
 
-    private void updateTargetRuntimeId(IProductCmptGeneration generation, Element generationElement) throws DOMException, CoreException {
+    private void updateTargetRuntimeId(IProductCmptGeneration generation, Element generationElement)
+            throws DOMException, CoreException {
         NodeList associationNodes = generationElement.getElementsByTagName(IProductCmptLink.TAG_NAME);
         IProductCmptLink[] associations = generation.getLinks();
         for (int i = 0; i < associations.length; i++) {
             Element association = (Element)associationNodes.item(i);
-            association.setAttribute(ProductCmptGenImplClassBuilder.XML_ATTRIBUTE_TARGET_RUNTIME_ID, getTargetRuntimeId(associations[i]));
+            association.setAttribute(ProductCmptGenImplClassBuilder.XML_ATTRIBUTE_TARGET_RUNTIME_ID,
+                    getTargetRuntimeId(associations[i]));
         }
     }
 
     private String getTargetRuntimeId(IProductCmptLink link) throws CoreException {
         IProductCmpt productCmpt = link.findTarget(link.getIpsProject());
-        if(productCmpt != null){
+        if (productCmpt != null) {
             return productCmpt.getRuntimeId();
         }
         return "";
     }
-    
+
     /**
      * {@inheritDoc}
      * 

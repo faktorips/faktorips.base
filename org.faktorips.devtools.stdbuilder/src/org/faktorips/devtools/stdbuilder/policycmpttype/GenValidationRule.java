@@ -1,19 +1,16 @@
-/*******************************************************************************
- * Copyright (c) 2005,2006 Faktor Zehn GmbH und andere.
- *
+/***************************************************************************************************
+ * Copyright (c) 2005-2008 Faktor Zehn AG und andere.
+ * 
  * Alle Rechte vorbehalten.
- *
- * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele,
- * Konfigurationen, etc.) dürfen nur unter den Bedingungen der 
- * Faktor-Zehn-Community Lizenzvereinbarung – Version 0.1 (vor Gründung Community) 
- * genutzt werden, die Bestandteil der Auslieferung ist und auch unter
- *   http://www.faktorips.org/legal/cl-v01.html
- * eingesehen werden kann.
- *
- * Mitwirkende:
- *   Faktor Zehn GmbH - initial API and implementation 
- *
- *******************************************************************************/
+ * 
+ * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen,
+ * etc.) duerfen nur unter den Bedingungen der Faktor-Zehn-Community Lizenzvereinbarung - Version
+ * 0.1 (vor Gruendung Community) genutzt werden, die Bestandteil der Auslieferung ist und auch unter
+ * http://www.faktorzehn.org/f10-org:lizenzen:community eingesehen werden kann.
+ * 
+ * Mitwirkende: Faktor Zehn AG - initial API and implementation - http://www.faktorzehn.de
+ * 
+ **************************************************************************************************/
 
 package org.faktorips.devtools.stdbuilder.policycmpttype;
 
@@ -44,7 +41,6 @@ import org.faktorips.util.LocalizedStringsSet;
  */
 public class GenValidationRule extends GenPolicyCmptTypePart {
 
-    
     public GenValidationRule(GenPolicyCmptType genPolicyCmptType, IIpsObjectPartContainer part,
             LocalizedStringsSet stringsSet) throws CoreException {
         super(genPolicyCmptType, part, stringsSet);
@@ -53,8 +49,9 @@ public class GenValidationRule extends GenPolicyCmptTypePart {
     /**
      * {@inheritDoc}
      */
-    protected void generateConstants(JavaCodeFragmentBuilder builder, IIpsProject ipsProject, boolean generatesInterface) throws CoreException {
-        if(generatesInterface){
+    protected void generateConstants(JavaCodeFragmentBuilder builder, IIpsProject ipsProject, boolean generatesInterface)
+            throws CoreException {
+        if (generatesInterface) {
             generateFieldForMsgCode(builder);
         }
     }
@@ -62,15 +59,18 @@ public class GenValidationRule extends GenPolicyCmptTypePart {
     /**
      * {@inheritDoc}
      */
-    protected void generateMemberVariables(JavaCodeFragmentBuilder builder, IIpsProject ipsProject, boolean generatesInterface) throws CoreException {
-        //nothing to do
+    protected void generateMemberVariables(JavaCodeFragmentBuilder builder,
+            IIpsProject ipsProject,
+            boolean generatesInterface) throws CoreException {
+        // nothing to do
     }
 
     /**
      * {@inheritDoc}
      */
-    protected void generateMethods(JavaCodeFragmentBuilder builder, IIpsProject ipsProject, boolean generatesInterface) throws CoreException {
-        if(!generatesInterface){
+    protected void generateMethods(JavaCodeFragmentBuilder builder, IIpsProject ipsProject, boolean generatesInterface)
+            throws CoreException {
+        if (!generatesInterface) {
             generateMethodExecRule(builder);
             generateMethodCreateMessageForRule(builder, ipsProject);
         }
@@ -78,9 +78,10 @@ public class GenValidationRule extends GenPolicyCmptTypePart {
 
     /**
      * Code sample:
+     * 
      * <pre>
      * [Javadoc]
-     *   if ("rules.businessProcess1".equals(businessFunction) || "rules.businessProcess2".equals(businessFunction)) {
+     *   if (&quot;rules.businessProcess1&quot;.equals(businessFunction) || &quot;rules.businessProcess2&quot;.equals(businessFunction)) {
      *      //begin-user-code
      *      boolean condition = getA().equals(new Integer(1));
      *      if (condition) {
@@ -100,8 +101,8 @@ public class GenValidationRule extends GenPolicyCmptTypePart {
         JavaCodeFragment body = new JavaCodeFragment();
         body.appendln();
         String[] businessFunctions = rule.getBusinessFunctions();
-        if(!rule.isAppliedForAllBusinessFunctions()){
-            if(businessFunctions.length > 0){
+        if (!rule.isAppliedForAllBusinessFunctions()) {
+            if (businessFunctions.length > 0) {
                 body.append("if(");
                 for (int j = 0; j < businessFunctions.length; j++) {
                     body.append("\"");
@@ -110,7 +111,7 @@ public class GenValidationRule extends GenPolicyCmptTypePart {
                     body.append(".equals(");
                     body.append(parameterBusinessFunction);
                     body.append(")");
-                    if(j < businessFunctions.length - 1){
+                    if (j < businessFunctions.length - 1) {
                         body.appendln(" || ");
                     }
                 }
@@ -118,23 +119,23 @@ public class GenValidationRule extends GenPolicyCmptTypePart {
                 body.appendOpenBracket();
             }
         }
-        if(!rule.isCheckValueAgainstValueSetRule()) {
+        if (!rule.isCheckValueAgainstValueSetRule()) {
             body.appendln("//begin-user-code");
             body.appendln(getLocalizedToDo("EXEC_RULE_IMPLEMENT", rule.getName()));
         }
-        
+
         body.append("if(");
         String[] javaDocAnnotation = JavaSourceFileBuilder.ANNOTATION_RESTRAINED_MODIFIABLE;
-        if(rule.isCheckValueAgainstValueSetRule()){
+        if (rule.isCheckValueAgainstValueSetRule()) {
             javaDocAnnotation = JavaSourceFileBuilder.ANNOTATION_GENERATED;
-            IPolicyCmptTypeAttribute attr = ((IPolicyCmptType)rule.getIpsObject()).getPolicyCmptTypeAttribute(rule.getValidatedAttributeAt(0));
+            IPolicyCmptTypeAttribute attr = ((IPolicyCmptType)rule.getIpsObject()).getPolicyCmptTypeAttribute(rule
+                    .getValidatedAttributeAt(0));
             body.append('!');
-            
+
             GenAttribute genAttribute = getGenPolicyCmptType().getGenerator(attr);
-            if(attr.getValueSet().getValueSetType().equals(ValueSetType.ENUM)){
+            if (attr.getValueSet().getValueSetType().equals(ValueSetType.ENUM)) {
                 body.append(genAttribute.getMethodNameGetAllowedValuesFor());
-            }
-            else if(attr.getValueSet().getValueSetType().equals(ValueSetType.RANGE)){
+            } else if (attr.getValueSet().getValueSetType().equals(ValueSetType.RANGE)) {
                 body.append(genAttribute.getMethodNameGetRangeFor());
             }
             body.append("(");
@@ -142,37 +143,37 @@ public class GenValidationRule extends GenPolicyCmptTypePart {
             body.append(").contains(");
             body.append(genAttribute.getGetterMethodName());
             body.append("()))");
-        }
-        else{
+        } else {
             body.append("true) ");
         }
         body.appendOpenBracket();
         boolean generateToDo = false;
         body.append("ml.add(");
         body.append(getMethodNameCreateMessageForRule(rule));
-        MessageFragment msgFrag = MessageFragment.createMessageFragment(rule.getMessageText(), MessageFragment.VALUES_AS_PARAMETER_NAMES);
+        MessageFragment msgFrag = MessageFragment.createMessageFragment(rule.getMessageText(),
+                MessageFragment.VALUES_AS_PARAMETER_NAMES);
         body.append('(');
-        if(msgFrag.hasParameters()){
+        if (msgFrag.hasParameters()) {
             String[] parameterNames = msgFrag.getParameterNames();
             for (int j = 0; j < parameterNames.length; j++) {
                 body.append("null");
                 generateToDo = true;
-                if(j < parameterNames.length - 1){
+                if (j < parameterNames.length - 1) {
                     body.append(", ");
                 }
             }
         }
 
-        if(rule.isValidatedAttrSpecifiedInSrc()){
+        if (rule.isValidatedAttrSpecifiedInSrc()) {
             generateToDo = true;
-            if(msgFrag.hasParameters()){
+            if (msgFrag.hasParameters()) {
                 body.append(", ");
             }
             body.append("new ");
             body.appendClassName(ObjectProperty.class);
             body.append("[0]");
         }
-        
+
         body.append("));");
         if (generateToDo) {
             body.append(getLocalizedToDo("EXEC_RULE_COMPLETE_CALL_CREATE_MSG", rule.getName()));
@@ -180,44 +181,47 @@ public class GenValidationRule extends GenPolicyCmptTypePart {
         body.appendln();
         body.appendCloseBracket();
         body.appendln(" return true;");
-        if(!rule.isCheckValueAgainstValueSetRule()) {
+        if (!rule.isCheckValueAgainstValueSetRule()) {
             body.appendln("//end-user-code");
         }
-        if(!rule.isAppliedForAllBusinessFunctions()){
-            if(businessFunctions.length > 0){
+        if (!rule.isAppliedForAllBusinessFunctions()) {
+            if (businessFunctions.length > 0) {
                 body.appendCloseBracket();
                 body.appendln(" return true;");
             }
         }
-        
+
         builder.method(java.lang.reflect.Modifier.PROTECTED, Datatype.PRIMITIVE_BOOLEAN.getJavaClassName(),
-            getMethodNameExecRule(rule), new String[] { "ml", parameterBusinessFunction },
-            new String[] { MessageList.class.getName(), String.class.getName() }, body, javaDoc, javaDocAnnotation);
+                getMethodNameExecRule(rule), new String[] { "ml", parameterBusinessFunction }, new String[] {
+                        MessageList.class.getName(), String.class.getName() }, body, javaDoc, javaDocAnnotation);
     }
 
     /**
      * Code sample:
+     * 
      * <pre>
      * [Javadoc]
      *   protected Message createMessageForRuleARule(String p0, String p1, String p2) {
      *      ObjectProperty[] objectProperties = new ObjectProperty[] { new ObjectProperty(this, PROPERTY_NAME_A),
      *              new ObjectProperty(this, PROPERTY_NAME_B) };
      *      StringBuffer text = new StringBuffer();
-     *      text.append("Check parameters ");
+     *      text.append(&quot;Check parameters &quot;);
      *      text.append(p0);
-     *      text.append(", check if line break works in generated code\n");
+     *      text.append(&quot;, check if line break works in generated code\n&quot;);
      *      text.append(p1);
-     *      text.append(" and ");
+     *      text.append(&quot; and &quot;);
      *      text.append(p2);
      *      return new Message(MSG_CODE_ARULE, text.toString(), Message.ERROR, objectProperties);
      *  }
      * </pre>
      */
-    private void generateMethodCreateMessageForRule(JavaCodeFragmentBuilder builder, IIpsProject ipsProject) throws CoreException {
+    private void generateMethodCreateMessageForRule(JavaCodeFragmentBuilder builder, IIpsProject ipsProject)
+            throws CoreException {
         IValidationRule rule = (IValidationRule)getIpsPart();
         String localVarObjectProperties = "invalidObjectProperties";
         String localVarReplacementParams = "replacementParameters";
-        MessageFragment msgFrag = MessageFragment.createMessageFragment(rule.getMessageText(), MessageFragment.VALUES_AS_PARAMETER_NAMES);
+        MessageFragment msgFrag = MessageFragment.createMessageFragment(rule.getMessageText(),
+                MessageFragment.VALUES_AS_PARAMETER_NAMES);
 
         // determine method parameters (name and type)
         String[] methodParamNames;
@@ -231,21 +235,24 @@ public class GenValidationRule extends GenPolicyCmptTypePart {
             methodParamTypes = new String[numberOfMethodParams];
             System.arraycopy(msgFrag.getParameterNames(), 0, methodParamNames, 0, msgFrag.getNumberOfParameters());
             System.arraycopy(msgFrag.getParameterClasses(), 0, methodParamTypes, 0, msgFrag.getNumberOfParameters());
-            methodParamNames[methodParamNames.length-1] = localVarObjectProperties;
-            methodParamTypes[methodParamTypes.length-1] = ObjectProperty.class.getName() + "[]";
+            methodParamNames[methodParamNames.length - 1] = localVarObjectProperties;
+            methodParamTypes[methodParamTypes.length - 1] = ObjectProperty.class.getName() + "[]";
         }
-        
+
         // code for objectProperties
         JavaCodeFragment body = new JavaCodeFragment();
         String[] validatedAttributes = rule.getValidatedAttributes();
-        if(!rule.isValidatedAttrSpecifiedInSrc()){
-            body.append(generateCodeForInvalidObjectProperties(localVarObjectProperties, validatedAttributes, ipsProject));
+        if (!rule.isValidatedAttrSpecifiedInSrc()) {
+            body.append(generateCodeForInvalidObjectProperties(localVarObjectProperties, validatedAttributes,
+                    ipsProject));
         }
         // code for replacement parameters
         if (msgFrag.hasParameters()) {
-            body.append(generateCodeForMsgReplacementParameters(localVarReplacementParams, msgFrag.getParameterNames()));
+            body
+                    .append(generateCodeForMsgReplacementParameters(localVarReplacementParams, msgFrag
+                            .getParameterNames()));
         }
-        
+
         // code to construct the message's text
         body.append(msgFrag.getFrag());
 
@@ -268,12 +275,15 @@ public class GenValidationRule extends GenPolicyCmptTypePart {
 
         String javaDoc = getLocalizedText("CREATE_MESSAGE_JAVADOC", rule.getName());
         builder.method(java.lang.reflect.Modifier.PROTECTED, Message.class.getName(),
-                getMethodNameCreateMessageForRule(rule), methodParamNames, methodParamTypes, body, javaDoc, JavaSourceFileBuilder.ANNOTATION_GENERATED);
+                getMethodNameCreateMessageForRule(rule), methodParamNames, methodParamTypes, body, javaDoc,
+                JavaSourceFileBuilder.ANNOTATION_GENERATED);
     }
-    
-    private JavaCodeFragment generateCodeForInvalidObjectProperties(String pObjectProperties, String[] validatedAttributes, IIpsProject ipsProject) throws CoreException {
+
+    private JavaCodeFragment generateCodeForInvalidObjectProperties(String pObjectProperties,
+            String[] validatedAttributes,
+            IIpsProject ipsProject) throws CoreException {
         JavaCodeFragment code = new JavaCodeFragment();
-        if(validatedAttributes.length > 0){
+        if (validatedAttributes.length > 0) {
             code.appendClassName(ObjectProperty.class);
             code.append("[] ");
             code.append(pObjectProperties);
@@ -281,20 +291,20 @@ public class GenValidationRule extends GenPolicyCmptTypePart {
             code.appendClassName(ObjectProperty.class);
             code.append("[]{");
             for (int j = 0; j < validatedAttributes.length; j++) {
-                IPolicyCmptTypeAttribute attr = ((IPolicyCmptType)getIpsPart().getIpsObject()).findPolicyCmptTypeAttribute(validatedAttributes[j], ipsProject);
+                IPolicyCmptTypeAttribute attr = ((IPolicyCmptType)getIpsPart().getIpsObject())
+                        .findPolicyCmptTypeAttribute(validatedAttributes[j], ipsProject);
                 String propertyConstName = getGenPolicyCmptType().getGenerator(attr).getStaticConstantPropertyName();
                 code.append(" new ");
                 code.appendClassName(ObjectProperty.class);
                 code.append("(this, ");
                 code.append(propertyConstName);
                 code.append(")");
-                if(j < validatedAttributes.length -1){
+                if (j < validatedAttributes.length - 1) {
                     code.append(',');
                 }
             }
             code.appendln("};");
-        }
-        else{
+        } else {
             code.appendClassName(ObjectProperty.class);
             code.append(" ");
             code.append(pObjectProperties);
@@ -304,13 +314,13 @@ public class GenValidationRule extends GenPolicyCmptTypePart {
         }
         return code;
     }
-    
+
     /**
      * Code sample:
+     * 
      * <pre>
-     *   MsgReplacementParameter[] replacementParameters = new MsgReplacementParameter[] {
-     *       new MsgReplacementParameter("maxVs", maxVs),
-     *   };
+     * MsgReplacementParameter[] replacementParameters = new MsgReplacementParameter[] { new MsgReplacementParameter(&quot;maxVs&quot;,
+     *         maxVs), };
      * 
      * </pre>
      */
@@ -324,7 +334,7 @@ public class GenValidationRule extends GenPolicyCmptTypePart {
 
         for (int i = 0; i < parameterNames.length; i++) {
 
-            //     new MsgReplacementParameter("paramName", paramName),
+            // new MsgReplacementParameter("paramName", paramName),
             code.append("new ");
             code.appendClassName(MsgReplacementParameter.class);
             code.append("(");
@@ -332,21 +342,21 @@ public class GenValidationRule extends GenPolicyCmptTypePart {
             code.append(", ");
             code.append(parameterNames[i]);
             code.append(")");
-            if (i!=parameterNames.length-1) {
+            if (i != parameterNames.length - 1) {
                 code.append(", ");
             }
             code.appendln();
         }
-        
+
         code.appendln("};");
         return code;
     }
 
-    private IValidationRule getValidationRule(){
+    private IValidationRule getValidationRule() {
         return (IValidationRule)getIpsPart();
     }
-    
-    private void generateFieldForMsgCode(JavaCodeFragmentBuilder membersBuilder){
+
+    private void generateFieldForMsgCode(JavaCodeFragmentBuilder membersBuilder) {
         appendLocalizedJavaDoc("FIELD_MSG_CODE", getValidationRule().getName(), membersBuilder);
         membersBuilder.append("public final static ");
         membersBuilder.appendClassName(String.class);
@@ -357,7 +367,7 @@ public class GenValidationRule extends GenPolicyCmptTypePart {
         membersBuilder.appendln("\";");
     }
 
-    public String getFieldNameForMsgCode(IValidationRule rule){
+    public String getFieldNameForMsgCode(IValidationRule rule) {
         return getLocalizedText("FIELD_MSG_CODE_NAME", StringUtils.upperCase(rule.getName()));
     }
 
@@ -365,7 +375,7 @@ public class GenValidationRule extends GenPolicyCmptTypePart {
         return "createMessageForRule" + StringUtils.capitalize(rule.getName());
     }
 
-    private String getMethodNameExecRule(IValidationRule r){
+    private String getMethodNameExecRule(IValidationRule r) {
         return "execRule" + StringUtils.capitalize(r.getName());
     }
 }

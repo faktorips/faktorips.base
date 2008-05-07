@@ -1,14 +1,14 @@
 /***************************************************************************************************
- * Copyright (c) 2005,2006 Faktor Zehn GmbH und andere.
+ * Copyright (c) 2005-2008 Faktor Zehn AG und andere.
  * 
  * Alle Rechte vorbehalten.
  * 
  * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen,
- * etc.) dürfen nur unter den Bedingungen der Faktor-Zehn-Community Lizenzvereinbarung – Version 0.1
- * (vor Gründung Community) genutzt werden, die Bestandteil der Auslieferung ist und auch unter
- * http://www.faktorips.org/legal/cl-v01.html eingesehen werden kann.
+ * etc.) duerfen nur unter den Bedingungen der Faktor-Zehn-Community Lizenzvereinbarung - Version
+ * 0.1 (vor Gruendung Community) genutzt werden, die Bestandteil der Auslieferung ist und auch unter
+ * http://www.faktorzehn.org/f10-org:lizenzen:community eingesehen werden kann.
  * 
- * Mitwirkende: Faktor Zehn GmbH - initial API and implementation
+ * Mitwirkende: Faktor Zehn AG - initial API and implementation - http://www.faktorzehn.de
  * 
  **************************************************************************************************/
 
@@ -49,7 +49,8 @@ public class GenDerivedAttribute extends GenAttribute {
     /**
      * {@inheritDoc}
      */
-    protected void generateConstants(JavaCodeFragmentBuilder builder, IIpsProject ipsProject, boolean generatesInterface) throws CoreException {
+    protected void generateConstants(JavaCodeFragmentBuilder builder, IIpsProject ipsProject, boolean generatesInterface)
+            throws CoreException {
         if (generatesInterface) {
             if (!isOverwritten()) {
                 generateAttributeNameConstant(builder);
@@ -64,8 +65,9 @@ public class GenDerivedAttribute extends GenAttribute {
     /**
      * {@inheritDoc}
      */
-    protected void generateMemberVariables(JavaCodeFragmentBuilder builder, IIpsProject ipsProject, boolean generatesInterface)
-            throws CoreException {
+    protected void generateMemberVariables(JavaCodeFragmentBuilder builder,
+            IIpsProject ipsProject,
+            boolean generatesInterface) throws CoreException {
         if (!generatesInterface) {
             if (getPolicyCmptTypeAttribute().getAttributeType() == AttributeType.DERIVED_BY_EXPLICIT_METHOD_CALL
                     && !isOverwritten()) {
@@ -77,7 +79,8 @@ public class GenDerivedAttribute extends GenAttribute {
     /**
      * {@inheritDoc}
      */
-    protected void generateMethods(JavaCodeFragmentBuilder builder, IIpsProject ipsProject, boolean generatesInterface) throws CoreException {
+    protected void generateMethods(JavaCodeFragmentBuilder builder, IIpsProject ipsProject, boolean generatesInterface)
+            throws CoreException {
         if (generatesInterface) {
             if (!isOverwritten()) {
                 generateGetterInterface(builder);
@@ -93,8 +96,8 @@ public class GenDerivedAttribute extends GenAttribute {
         }
     }
 
-    private void generateGetterImplementationForOnTheFlyComputation(JavaCodeFragmentBuilder builder, IIpsProject ipsProject)
-            throws CoreException {
+    private void generateGetterImplementationForOnTheFlyComputation(JavaCodeFragmentBuilder builder,
+            IIpsProject ipsProject) throws CoreException {
         builder.javaDoc(getJavaDocCommentForOverriddenMethod(), JavaSourceFileBuilder.ANNOTATION_GENERATED);
         generateGetterSignature(builder);
         builder.openBracket();
@@ -140,7 +143,8 @@ public class GenDerivedAttribute extends GenAttribute {
             }
             paramFragment.append(")");
             builder.append(" return ((");
-            builder.appendClassName(getGenPolicyCmptType().getBuilderSet().getGenerator(getProductCmptType(ipsProject)).getQualifiedClassNameForProductCmptTypeGen(false));
+            builder.appendClassName(getGenPolicyCmptType().getBuilderSet().getGenerator(getProductCmptType(ipsProject))
+                    .getQualifiedClassNameForProductCmptTypeGen(false));
             builder.append(')');
             builder.append(getGenPolicyCmptType().getBuilderSet().getGenerator(getProductCmptType(ipsProject))
                     .getMethodNameGetProductCmptGeneration());

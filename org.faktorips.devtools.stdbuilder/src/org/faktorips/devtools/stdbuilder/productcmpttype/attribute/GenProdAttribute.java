@@ -8,7 +8,7 @@
  * 0.1 (vor Gruendung Community) genutzt werden, die Bestandteil der Auslieferung ist und auch unter
  * http://www.faktorzehn.org/f10-org:lizenzen:community eingesehen werden kann.
  * 
- * Mitwirkende: Faktor Zehn GmbH - initial API and implementation - http://www.faktorzehn.de
+ * Mitwirkende: Faktor Zehn AG - initial API and implementation - http://www.faktorzehn.de
  * 
  **************************************************************************************************/
 
@@ -45,7 +45,8 @@ public class GenProdAttribute extends GenProductCmptTypePart {
     protected String staticConstantPropertyName;
     protected String memberVarName;
 
-    public GenProdAttribute(GenProductCmptType genProductCmptType, IProductCmptTypeAttribute a, LocalizedStringsSet stringsSet) throws CoreException {
+    public GenProdAttribute(GenProductCmptType genProductCmptType, IProductCmptTypeAttribute a,
+            LocalizedStringsSet stringsSet) throws CoreException {
         super(genProductCmptType, a, stringsSet);
         this.attribute = a;
         attributeName = a.getName();
@@ -177,9 +178,9 @@ public class GenProdAttribute extends GenProductCmptTypePart {
      * {@inheritDoc}
      */
     protected void generateConstants(JavaCodeFragmentBuilder builder, IIpsProject ipsProject, boolean generatesInterface)
-    throws CoreException {
+            throws CoreException {
 
-}
+    }
 
     /**
      * {@inheritDoc}
@@ -196,7 +197,7 @@ public class GenProdAttribute extends GenProductCmptTypePart {
      * {@inheritDoc}
      */
     protected void generateMethods(JavaCodeFragmentBuilder builder, IIpsProject ipsProject, boolean generatesInterface)
-    throws CoreException {
+            throws CoreException {
         if (!generatesInterface) {
             generateMethodGetValue(datatypeHelper, builder);
             generateMethodSetValue(datatypeHelper, builder);

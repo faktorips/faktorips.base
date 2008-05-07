@@ -1,14 +1,14 @@
 /***************************************************************************************************
- * Copyright (c) 2005,2006 Faktor Zehn GmbH und andere.
+ * Copyright (c) 2005-2008 Faktor Zehn AG und andere.
  * 
  * Alle Rechte vorbehalten.
  * 
  * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen,
- * etc.) dürfen nur unter den Bedingungen der Faktor-Zehn-Community Lizenzvereinbarung – Version 0.1
- * (vor Gründung Community) genutzt werden, die Bestandteil der Auslieferung ist und auch unter
- * http://www.faktorips.org/legal/cl-v01.html eingesehen werden kann.
+ * etc.) duerfen nur unter den Bedingungen der Faktor-Zehn-Community Lizenzvereinbarung - Version
+ * 0.1 (vor Gruendung Community) genutzt werden, die Bestandteil der Auslieferung ist und auch unter
+ * http://www.faktorzehn.org/f10-org:lizenzen:community eingesehen werden kann.
  * 
- * Mitwirkende: Faktor Zehn GmbH - initial API and implementation
+ * Mitwirkende: Faktor Zehn AG - initial API and implementation - http://www.faktorzehn.de
  * 
  **************************************************************************************************/
 
@@ -60,11 +60,13 @@ public class GenChangeableAttribute extends GenAttribute {
         ArgumentCheck.isTrue(a.isChangeable());
         wrapperDatatypeHelper = StdBuilderHelper.getDatatypeHelperForValueSet(a.getIpsProject(), datatypeHelper);
     }
-    
+
     /**
      * Generates the source code for the ips object part this is a generator for.
      */
-    public void generateCodeForProductCmptType(boolean generatesInterface, IIpsProject ipsProject, TypeSection mainSection) throws CoreException{
+    public void generateCodeForProductCmptType(boolean generatesInterface,
+            IIpsProject ipsProject,
+            TypeSection mainSection) throws CoreException {
         if (!generatesInterface) {
             generateMemberVariablesForProductCmptType(mainSection.getMemberVarBuilder(), ipsProject, generatesInterface);
         }
@@ -74,7 +76,8 @@ public class GenChangeableAttribute extends GenAttribute {
     /**
      * {@inheritDoc}
      */
-    protected void generateConstants(JavaCodeFragmentBuilder builder, IIpsProject ipsProject, boolean generatesInterface) throws CoreException {
+    protected void generateConstants(JavaCodeFragmentBuilder builder, IIpsProject ipsProject, boolean generatesInterface)
+            throws CoreException {
         if (isOverwritten()) {
             return;
         }
@@ -120,10 +123,11 @@ public class GenChangeableAttribute extends GenAttribute {
         JavaCodeFragment containsNullFrag = new JavaCodeFragment();
         containsNullFrag.append(range.getContainsNull());
         JavaCodeFragment frag = wrapperDatatypeHelper.newRangeInstance(createCastExpression(range.getLowerBound()),
-                createCastExpression(range.getUpperBound()), createCastExpression(range.getStep()), containsNullFrag, isUseTypesafeCollections());
+                createCastExpression(range.getUpperBound()), createCastExpression(range.getStep()), containsNullFrag,
+                isUseTypesafeCollections());
         membersBuilder.varDeclaration(java.lang.reflect.Modifier.PUBLIC | java.lang.reflect.Modifier.FINAL
-                | java.lang.reflect.Modifier.STATIC, wrapperDatatypeHelper.getRangeJavaClassName(isUseTypesafeCollections()),
-                getFieldNameMaxRange(), frag);
+                | java.lang.reflect.Modifier.STATIC, wrapperDatatypeHelper
+                .getRangeJavaClassName(isUseTypesafeCollections()), getFieldNameMaxRange(), frag);
     }
 
     protected String getFieldNameMaxRange() {
@@ -151,7 +155,10 @@ public class GenChangeableAttribute extends GenAttribute {
         }
         frag = wrapperDatatypeHelper.newEnumValueSetInstance(valueIds, containsNull, isUseTypesafeCollections());
         builder.varDeclaration(java.lang.reflect.Modifier.PUBLIC | java.lang.reflect.Modifier.FINAL
-                | java.lang.reflect.Modifier.STATIC, isUseTypesafeCollections()?Java5ClassNames.OrderedValueSet_QualifiedName+"<"+wrapperDatatypeHelper.getJavaClassName()+">":EnumValueSet.class.getName(), getFieldNameMaxAllowedValues(), frag);
+                | java.lang.reflect.Modifier.STATIC,
+                isUseTypesafeCollections() ? Java5ClassNames.OrderedValueSet_QualifiedName + "<"
+                        + wrapperDatatypeHelper.getJavaClassName() + ">" : EnumValueSet.class.getName(),
+                getFieldNameMaxAllowedValues(), frag);
     }
 
     protected String getFieldNameMaxAllowedValues() {
@@ -193,7 +200,9 @@ public class GenChangeableAttribute extends GenAttribute {
     public void generateSignatureGetAllowedValuesFor(Datatype datatype, JavaCodeFragmentBuilder methodsBuilder)
             throws CoreException {
         String methodName = getMethodNameGetAllowedValuesFor(datatype);
-        methodsBuilder.signature(Modifier.PUBLIC, isUseTypesafeCollections()?Java5ClassNames.OrderedValueSet_QualifiedName+"<"+datatype.getJavaClassName()+">":EnumValueSet.class.getName(), methodName,
+        methodsBuilder.signature(Modifier.PUBLIC,
+                isUseTypesafeCollections() ? Java5ClassNames.OrderedValueSet_QualifiedName + "<"
+                        + datatype.getJavaClassName() + ">" : EnumValueSet.class.getName(), methodName,
                 new String[] { "businessFunction" }, new String[] { String.class.getName() });
     }
 
@@ -256,8 +265,9 @@ public class GenChangeableAttribute extends GenAttribute {
     /**
      * {@inheritDoc}
      */
-    protected void generateMemberVariables(JavaCodeFragmentBuilder builder, IIpsProject ipsProject, boolean generatesInterface)
-            throws CoreException {
+    protected void generateMemberVariables(JavaCodeFragmentBuilder builder,
+            IIpsProject ipsProject,
+            boolean generatesInterface) throws CoreException {
         if (!generatesInterface) {
             if (isOverwritten()) {
                 return;
@@ -269,8 +279,9 @@ public class GenChangeableAttribute extends GenAttribute {
     /**
      * {@inheritDoc}
      */
-    protected void generateMemberVariablesForProductCmptType(JavaCodeFragmentBuilder builder, IIpsProject ipsProject, boolean generatesInterface)
-            throws CoreException {
+    protected void generateMemberVariablesForProductCmptType(JavaCodeFragmentBuilder builder,
+            IIpsProject ipsProject,
+            boolean generatesInterface) throws CoreException {
         if (!generatesInterface) {
             generateFieldDefaultValue(datatypeHelper, builder);
 
@@ -290,7 +301,8 @@ public class GenChangeableAttribute extends GenAttribute {
     /**
      * {@inheritDoc}
      */
-    protected void generateMethods(JavaCodeFragmentBuilder builder, IIpsProject ipsProject, boolean generatesInterface) throws CoreException {
+    protected void generateMethods(JavaCodeFragmentBuilder builder, IIpsProject ipsProject, boolean generatesInterface)
+            throws CoreException {
         if (!generatesInterface) {
             if (isOverwritten()) {
                 return;
@@ -321,8 +333,9 @@ public class GenChangeableAttribute extends GenAttribute {
     /**
      * {@inheritDoc}
      */
-    protected void generateMethodsForProductCmptType(JavaCodeFragmentBuilder builder, IIpsProject ipsProject, boolean generatesInterface)
-            throws CoreException {
+    protected void generateMethodsForProductCmptType(JavaCodeFragmentBuilder builder,
+            IIpsProject ipsProject,
+            boolean generatesInterface) throws CoreException {
         if (!generatesInterface) {
             generateMethodGetDefaultValue(datatypeHelper, builder, generatesInterface);
 
@@ -432,7 +445,8 @@ public class GenChangeableAttribute extends GenAttribute {
         }
     }
 
-    private void generateMethodGetRange(JavaCodeFragmentBuilder methodBuilder, IIpsProject ipsProject) throws CoreException {
+    private void generateMethodGetRange(JavaCodeFragmentBuilder methodBuilder, IIpsProject ipsProject)
+            throws CoreException {
         methodBuilder.javaDoc("{@inheritDoc}", JavaSourceFileBuilder.ANNOTATION_GENERATED);
         generateSignatureGetRangeFor(wrapperDatatypeHelper, methodBuilder);
         JavaCodeFragment body = new JavaCodeFragment();
@@ -452,7 +466,8 @@ public class GenChangeableAttribute extends GenAttribute {
     }
 
     private void generateGenerationAccess(JavaCodeFragment body, IIpsProject ipsProject) throws CoreException {
-        GenProductCmptType genProductCmptType = getGenPolicyCmptType().getBuilderSet().getGenerator(getProductCmptType(ipsProject));
+        GenProductCmptType genProductCmptType = getGenPolicyCmptType().getBuilderSet().getGenerator(
+                getProductCmptType(ipsProject));
         if (isPublished()) {
             body.append(genProductCmptType.getMethodNameGetProductCmptGeneration());
             body.append("().");
@@ -466,7 +481,8 @@ public class GenChangeableAttribute extends GenAttribute {
         }
     }
 
-    private void generateMethodGetAllowedValues(JavaCodeFragmentBuilder methodBuilder, IIpsProject ipsProject) throws CoreException {
+    private void generateMethodGetAllowedValues(JavaCodeFragmentBuilder methodBuilder, IIpsProject ipsProject)
+            throws CoreException {
         methodBuilder.javaDoc("{@inheritDoc}", JavaSourceFileBuilder.ANNOTATION_GENERATED);
         generateSignatureGetAllowedValuesFor(wrapperDatatypeHelper.getDatatype(), methodBuilder);
         JavaCodeFragment body = new JavaCodeFragment();
@@ -516,12 +532,16 @@ public class GenChangeableAttribute extends GenAttribute {
 
     private void generateFieldRangeFor(DatatypeHelper helper, JavaCodeFragmentBuilder memberVarBuilder) {
         appendLocalizedJavaDoc("FIELD_RANGE_FOR", getPolicyCmptTypeAttribute().getName(), memberVarBuilder);
-        memberVarBuilder.varDeclaration(Modifier.PRIVATE, helper.getRangeJavaClassName(isUseTypesafeCollections()), getFieldNameRangeFor());
+        memberVarBuilder.varDeclaration(Modifier.PRIVATE, helper.getRangeJavaClassName(isUseTypesafeCollections()),
+                getFieldNameRangeFor());
     }
 
     private void generateFieldAllowedValuesFor(JavaCodeFragmentBuilder memberVarBuilder) {
         appendLocalizedJavaDoc("FIELD_ALLOWED_VALUES_FOR", getPolicyCmptTypeAttribute().getName(), memberVarBuilder);
-        memberVarBuilder.varDeclaration(Modifier.PRIVATE, isUseTypesafeCollections()?Java5ClassNames.OrderedValueSet_QualifiedName+"<"+wrapperDatatypeHelper.getJavaClassName()+">":EnumValueSet.class.getName(), getFieldNameAllowedValuesFor());
+        memberVarBuilder.varDeclaration(Modifier.PRIVATE,
+                isUseTypesafeCollections() ? Java5ClassNames.OrderedValueSet_QualifiedName + "<"
+                        + wrapperDatatypeHelper.getJavaClassName() + ">" : EnumValueSet.class.getName(),
+                getFieldNameAllowedValuesFor());
     }
 
     /**

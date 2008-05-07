@@ -1,19 +1,16 @@
-/*******************************************************************************
- * Copyright (c) 2005,2006 Faktor Zehn GmbH und andere.
- *
+/***************************************************************************************************
+ * Copyright (c) 2005-2008 Faktor Zehn AG und andere.
+ * 
  * Alle Rechte vorbehalten.
- *
- * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele,
- * Konfigurationen, etc.) dürfen nur unter den Bedingungen der 
- * Faktor-Zehn-Community Lizenzvereinbarung – Version 0.1 (vor Gründung Community) 
- * genutzt werden, die Bestandteil der Auslieferung ist und auch unter
- *   http://www.faktorips.org/legal/cl-v01.html
- * eingesehen werden kann.
- *
- * Mitwirkende:
- *   Faktor Zehn GmbH - initial API and implementation 
- *
- *******************************************************************************/
+ * 
+ * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen,
+ * etc.) duerfen nur unter den Bedingungen der Faktor-Zehn-Community Lizenzvereinbarung - Version
+ * 0.1 (vor Gruendung Community) genutzt werden, die Bestandteil der Auslieferung ist und auch unter
+ * http://www.faktorzehn.org/f10-org:lizenzen:community eingesehen werden kann.
+ * 
+ * Mitwirkende: Faktor Zehn AG - initial API and implementation - http://www.faktorzehn.de
+ * 
+ **************************************************************************************************/
 
 package org.faktorips.devtools.stdbuilder.policycmpttype.attribute;
 
@@ -42,17 +39,17 @@ import org.faktorips.util.LocalizedStringsSet;
  * @author Jan Ortmann
  */
 public abstract class GenAttribute extends GenPolicyCmptTypePart {
-    
+
     private IProductCmptType productCmptType;
-    
+
     protected IAttribute attribute;
     protected String attributeName;
     protected DatatypeHelper datatypeHelper;
     protected String staticConstantPropertyName;
     protected String memberVarName;
-    
-    
-    public GenAttribute(GenPolicyCmptType genPolicyCmptType, IPolicyCmptTypeAttribute a, LocalizedStringsSet stringsSet) throws CoreException {
+
+    public GenAttribute(GenPolicyCmptType genPolicyCmptType, IPolicyCmptTypeAttribute a, LocalizedStringsSet stringsSet)
+            throws CoreException {
         super(genPolicyCmptType, a, stringsSet);
         this.attribute = a;
         attributeName = a.getName();
@@ -63,9 +60,10 @@ public abstract class GenAttribute extends GenPolicyCmptTypePart {
         staticConstantPropertyName = getLocalizedText("FIELD_PROPERTY_NAME", StringUtils.upperCase(a.getName()));
         memberVarName = getJavaNamingConvention().getMemberVarName(attributeName);
     }
-    
-    public void generate(boolean generatesInterface, IIpsProject ipsProject, TypeSection mainSection) throws CoreException {
-        if(generatesInterface && !getPolicyCmptTypeAttribute().getModifier().isPublished()){
+
+    public void generate(boolean generatesInterface, IIpsProject ipsProject, TypeSection mainSection)
+            throws CoreException {
+        if (generatesInterface && !getPolicyCmptTypeAttribute().getModifier().isPublished()) {
             return;
         }
         super.generate(generatesInterface, ipsProject, mainSection);
@@ -79,48 +77,48 @@ public abstract class GenAttribute extends GenPolicyCmptTypePart {
     public IPolicyCmptTypeAttribute getPolicyCmptTypeAttribute() {
         return (IPolicyCmptTypeAttribute)attribute;
     }
-    
+
     protected IProductCmptType getProductCmptType(IIpsProject ipsProject) throws CoreException {
-        if (productCmptType==null) {
+        if (productCmptType == null) {
             productCmptType = getPolicyCmptTypeAttribute().getPolicyCmptType().findProductCmptType(ipsProject);
         }
         return productCmptType;
     }
-    
+
     public DatatypeHelper getDatatypeHelper() {
         return datatypeHelper;
     }
-    
+
     public ValueDatatype getDatatype() {
         return (ValueDatatype)datatypeHelper.getDatatype();
     }
-    
+
     public String getJavaClassName() {
         return datatypeHelper.getJavaClassName();
     }
-    
+
     public boolean isPublished() {
-        return attribute.getModifier().isPublished();        
+        return attribute.getModifier().isPublished();
     }
-    
+
     public boolean isNotPublished() {
         return !isPublished();
     }
-    
+
     public boolean isOverwritten() {
         return attribute.isOverwrite();
     }
-    
+
     public boolean isConfigurableByProduct() {
         return getPolicyCmptTypeAttribute().isProductRelevant();
     }
-    
+
     public boolean isDerivedOnTheFly() {
-        return getPolicyCmptTypeAttribute().getAttributeType()==AttributeType.DERIVED_ON_THE_FLY;
+        return getPolicyCmptTypeAttribute().getAttributeType() == AttributeType.DERIVED_ON_THE_FLY;
     }
-    
+
     public boolean isDerivedByExplicitMethodCall() {
-        return getPolicyCmptTypeAttribute().getAttributeType()==AttributeType.DERIVED_BY_EXPLICIT_METHOD_CALL;
+        return getPolicyCmptTypeAttribute().getAttributeType() == AttributeType.DERIVED_BY_EXPLICIT_METHOD_CALL;
     }
 
     public String getGetterMethodName() {
@@ -130,16 +128,17 @@ public abstract class GenAttribute extends GenPolicyCmptTypePart {
     public String getSetterMethodName() {
         return getJavaNamingConvention().getSetterMethodName(attributeName, getDatatype());
     }
-    
+
     public String getStaticConstantPropertyName() {
         return this.staticConstantPropertyName;
     }
 
     /**
      * Code sample:
+     * 
      * <pre>
      * [Javadoc]
-     * public final static String PROPERTY_PREMIUM = "premium";
+     * public final static String PROPERTY_PREMIUM = &quot;premium&quot;;
      * </pre>
      */
     protected void generateAttributeNameConstant(JavaCodeFragmentBuilder builder) throws CoreException {
@@ -152,24 +151,27 @@ public abstract class GenAttribute extends GenPolicyCmptTypePart {
         builder.appendQuoted(attributeName);
         builder.appendln(";");
     }
-    
+
     /**
      * Code sample:
+     * 
      * <pre>
      * [Javadoc]
      * public Money getPremium();
      * </pre>
      */
     protected void generateGetterInterface(JavaCodeFragmentBuilder builder) throws CoreException {
-        String description = StringUtils.isEmpty(attribute.getDescription()) ? "" : SystemUtils.LINE_SEPARATOR + "<p>" + SystemUtils.LINE_SEPARATOR + attribute.getDescription();
-        String[] replacements = new String[]{attributeName, description};
+        String description = StringUtils.isEmpty(attribute.getDescription()) ? "" : SystemUtils.LINE_SEPARATOR + "<p>"
+                + SystemUtils.LINE_SEPARATOR + attribute.getDescription();
+        String[] replacements = new String[] { attributeName, description };
         appendLocalizedJavaDoc("METHOD_GETVALUE", replacements, builder);
         generateGetterSignature(builder);
         builder.appendln(";");
     }
-        
+
     /**
      * Code sample:
+     * 
      * <pre>
      * public Money getPremium() {
      *     return premium;
@@ -185,21 +187,22 @@ public abstract class GenAttribute extends GenPolicyCmptTypePart {
         methodsBuilder.append(";");
         methodsBuilder.closeBracket();
     }
-    
+
     /**
-     * Returns <code>true</code> if a member variable is required to the type of attribute.
-     * This is currently the case for changeable attributes and attributes that are derived by an explicit
-     * method call.
+     * Returns <code>true</code> if a member variable is required to the type of attribute. This
+     * is currently the case for changeable attributes and attributes that are derived by an
+     * explicit method call.
      */
     public boolean isMemberVariableRequired() {
         return (getPolicyCmptTypeAttribute().isChangeable() || isDerivedByExplicitMethodCall()) && !isOverwritten();
     }
-    
+
     public boolean needsToBeConsideredInDeltaComputation() {
         return isPublished() && isMemberVariableRequired() && !isOverwritten();
     }
-    
-    public void generateDeltaComputation(JavaCodeFragmentBuilder methodsBuilder, String deltaVar, String otherVar) throws CoreException {
+
+    public void generateDeltaComputation(JavaCodeFragmentBuilder methodsBuilder, String deltaVar, String otherVar)
+            throws CoreException {
         methodsBuilder.append(deltaVar);
         methodsBuilder.append('.');
         methodsBuilder.append(MethodNames.MODELOBJECTDELTA_CHECK_PROPERTY_CHANGE);
@@ -215,25 +218,26 @@ public abstract class GenAttribute extends GenPolicyCmptTypePart {
         methodsBuilder.append(memberVarName);
         methodsBuilder.appendln(", options);");
     }
-    
+
     protected boolean needsToBeConsideredInInitPropertiesFromXml() throws CoreException {
-        return isMemberVariableRequired();        
+        return isMemberVariableRequired();
     }
-    
+
     public void generateInitPropertiesFromXml(JavaCodeFragmentBuilder builder) throws CoreException {
-        String propMapName = isUseTypesafeCollections()?"checkedPropMap":"propMap";
-        builder.append("if ("+propMapName+".containsKey(");
+        String propMapName = isUseTypesafeCollections() ? "checkedPropMap" : "propMap";
+        builder.append("if (" + propMapName + ".containsKey(");
         builder.appendQuoted(attributeName);
         builder.appendln(")) {");
-        String expr = (isUseTypesafeCollections()?"":"(String)")+propMapName+".get(\"" + attributeName + "\")";
+        String expr = (isUseTypesafeCollections() ? "" : "(String)") + propMapName + ".get(\"" + attributeName + "\")";
         builder.append(getMemberVarName() + " = ");
         builder.append(datatypeHelper.newInstanceFromExpression(expr));
         builder.appendln(";");
         builder.appendln("}");
     }
-    
+
     /**
      * Code sample:
+     * 
      * <pre>
      * public Money getPremium()
      * </pre>
@@ -243,7 +247,7 @@ public abstract class GenAttribute extends GenPolicyCmptTypePart {
         String methodName = getMethodNameGetPropertyValue(attributeName, datatypeHelper.getDatatype());
         methodsBuilder.signature(modifier, getJavaClassName(), methodName, EMPTY_STRING_ARRAY, EMPTY_STRING_ARRAY);
     }
-    
+
     protected void generateField(JavaCodeFragmentBuilder memberVarsBuilders) throws CoreException {
         JavaCodeFragment initialValueExpression = datatypeHelper.newInstance(attribute.getDefaultValue());
         String comment = getLocalizedText("FIELD_ATTRIBUTE_VALUE_JAVADOC", attributeName);
@@ -251,41 +255,44 @@ public abstract class GenAttribute extends GenPolicyCmptTypePart {
 
         memberVarsBuilders.javaDoc(comment, JavaSourceFileBuilder.ANNOTATION_GENERATED);
         memberVarsBuilders.varDeclaration(java.lang.reflect.Modifier.PRIVATE, getJavaClassName(), fieldName,
-            initialValueExpression);
+                initialValueExpression);
     }
-    
+
     /**
-     * Returns the name of the field/member variable that stores the values
-     * for the property/attribute.
+     * Returns the name of the field/member variable that stores the values for the
+     * property/attribute.
      */
     public String getMemberVarName() throws CoreException {
         return memberVarName;
-    }  
-    
+    }
+
     public String getFieldNameDefaultValue() throws CoreException {
         return getJavaNamingConvention().getMemberVarName(getPropertyNameDefaultValue());
-    } 
-    
-    String getPropertyNameDefaultValue() {
-        return getLocalizedText("PROPERTY_DEFAULTVALUE_NAME", StringUtils.capitalize(getPolicyCmptTypeAttribute().getName()));
     }
-    
-    public String getFieldNameRangeFor(){
+
+    String getPropertyNameDefaultValue() {
+        return getLocalizedText("PROPERTY_DEFAULTVALUE_NAME", StringUtils.capitalize(getPolicyCmptTypeAttribute()
+                .getName()));
+    }
+
+    public String getFieldNameRangeFor() {
         return getLocalizedText("FIELD_RANGE_FOR_NAME", StringUtils.capitalize(getPolicyCmptTypeAttribute().getName()));
     }
-    
-    public String getFieldNameAllowedValuesFor(){
-        return getLocalizedText("FIELD_ALLOWED_VALUES_FOR_NAME", StringUtils.capitalize(getPolicyCmptTypeAttribute().getName()));
+
+    public String getFieldNameAllowedValuesFor() {
+        return getLocalizedText("FIELD_ALLOWED_VALUES_FOR_NAME", StringUtils.capitalize(getPolicyCmptTypeAttribute()
+                .getName()));
     }
 
-    public String getMethodNameGetAllowedValuesFor() throws CoreException{
-        return getJavaNamingConvention().getGetterMethodName(getLocalizedText(
-                "METHOD_GET_ALLOWED_VALUES_FOR_NAME", StringUtils.capitalize(attributeName)), getDatatype());
+    public String getMethodNameGetAllowedValuesFor() throws CoreException {
+        return getJavaNamingConvention().getGetterMethodName(
+                getLocalizedText("METHOD_GET_ALLOWED_VALUES_FOR_NAME", StringUtils.capitalize(attributeName)),
+                getDatatype());
     }
 
-    public String getMethodNameGetRangeFor() throws CoreException{
-        return getJavaNamingConvention().getGetterMethodName(getLocalizedText( 
-                "METHOD_GET_RANGE_FOR_NAME", StringUtils.capitalize(attributeName)), getDatatype());
+    public String getMethodNameGetRangeFor() throws CoreException {
+        return getJavaNamingConvention().getGetterMethodName(
+                getLocalizedText("METHOD_GET_RANGE_FOR_NAME", StringUtils.capitalize(attributeName)), getDatatype());
     }
-    
+
 }

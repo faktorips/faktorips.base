@@ -1,10 +1,15 @@
 /***************************************************************************************************
- * Copyright (c) 2005,2006 Faktor Zehn GmbH und andere. Alle Rechte vorbehalten. Dieses Programm und
- * alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen, etc.) dürfen nur unter
- * den Bedingungen der Faktor-Zehn-Community Lizenzvereinbarung – Version 0.1 (vor Gründung
- * Community) genutzt werden, die Bestandteil der Auslieferung ist und auch unter
- * http://www.faktorips.org/legal/cl-v01.html eingesehen werden kann. Mitwirkende: Faktor Zehn GmbH -
- * initial API and implementation
+ * Copyright (c) 2005-2008 Faktor Zehn AG und andere.
+ * 
+ * Alle Rechte vorbehalten.
+ * 
+ * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen,
+ * etc.) duerfen nur unter den Bedingungen der Faktor-Zehn-Community Lizenzvereinbarung - Version
+ * 0.1 (vor Gruendung Community) genutzt werden, die Bestandteil der Auslieferung ist und auch unter
+ * http://www.faktorzehn.org/f10-org:lizenzen:community eingesehen werden kann.
+ * 
+ * Mitwirkende: Faktor Zehn AG - initial API and implementation - http://www.faktorzehn.de
+ * 
  **************************************************************************************************/
 
 package org.faktorips.devtools.stdbuilder.policycmpttype;
@@ -41,8 +46,7 @@ import org.faktorips.util.ArgumentCheck;
 import org.faktorips.util.LocalizedStringsSet;
 import org.faktorips.util.StringUtil;
 
-public class GenPolicyCmptType extends GenType{
-
+public class GenPolicyCmptType extends GenType {
 
     private Map generatorsByPart = new HashMap();
     private List genAttributes = new ArrayList();
@@ -55,7 +59,8 @@ public class GenPolicyCmptType extends GenType{
      * @param builder
      * @throws CoreException
      */
-    public GenPolicyCmptType(IPolicyCmptType policyCmptType, StandardBuilderSet builderSet, LocalizedStringsSet stringsSet) throws CoreException {
+    public GenPolicyCmptType(IPolicyCmptType policyCmptType, StandardBuilderSet builderSet,
+            LocalizedStringsSet stringsSet) throws CoreException {
         super(policyCmptType, builderSet, stringsSet);
         ArgumentCheck.notNull(policyCmptType, this);
         ArgumentCheck.notNull(builderSet, this);
@@ -66,10 +71,10 @@ public class GenPolicyCmptType extends GenType{
         createGeneratorsForAssociations();
     }
 
-    public IPolicyCmptType getPolicyCmptType(){
-        return (IPolicyCmptType) getType();
+    public IPolicyCmptType getPolicyCmptType() {
+        return (IPolicyCmptType)getType();
     }
-    
+
     private void createGeneratorsForMethods() throws CoreException {
         LocalizedStringsSet stringsSet = new LocalizedStringsSet(GenAttribute.class);
         IMethod[] methods = getPolicyCmptType().getMethods();
@@ -112,10 +117,10 @@ public class GenPolicyCmptType extends GenType{
         }
     }
 
-    public Iterator getGenAttributes(){
+    public Iterator getGenAttributes() {
         return genAttributes.iterator();
     }
-    
+
     private GenAttribute createGenerator(IPolicyCmptTypeAttribute a, LocalizedStringsSet stringsSet)
             throws CoreException {
         if (a.isDerived()) {
@@ -141,11 +146,12 @@ public class GenPolicyCmptType extends GenType{
             }
         }
     }
-    
+
     /**
      * {@inheritDoc}
      */
-    private GenAssociation createGenerator(IPolicyCmptTypeAssociation association, LocalizedStringsSet stringsSet) throws CoreException {
+    private GenAssociation createGenerator(IPolicyCmptTypeAssociation association, LocalizedStringsSet stringsSet)
+            throws CoreException {
         if (association.is1ToMany()) {
             return new GenAssociationToMany(this, association, stringsSet);
         }
@@ -158,14 +164,15 @@ public class GenPolicyCmptType extends GenType{
 
     public GenAttribute getGenerator(IPolicyCmptTypeAttribute a) throws CoreException {
         GenAttribute generator = (GenAttribute)generatorsByPart.get(a);
-        if(generator != null){
+        if (generator != null) {
             return generator;
         }
-        //if the attributes policy component type is not this type but one in the super type hierarchy of this type 
-        if(!a.getPolicyCmptType().equals(getPolicyCmptType())){
+        // if the attributes policy component type is not this type but one in the super type
+        // hierarchy of this type
+        if (!a.getPolicyCmptType().equals(getPolicyCmptType())) {
             GenPolicyCmptType superTypeGenerator = getBuilderSet().getGenerator(a.getPolicyCmptType());
             return superTypeGenerator.getGenerator(a);
-            
+
         }
         return null;
     }
@@ -176,11 +183,11 @@ public class GenPolicyCmptType extends GenType{
 
     public GenAssociation getGenerator(IPolicyCmptTypeAssociation a) {
         GenAssociation generator = (GenAssociation)generatorsByPart.get(a);
-        if(null == generator){
+        if (null == generator) {
             try {
                 generator = createGenerator(a, new LocalizedStringsSet(GenAssociation.class));
             } catch (CoreException e) {
-               return null;
+                return null;
             }
             if (generator != null) {
                 genAssociations.add(generator);
@@ -199,22 +206,23 @@ public class GenPolicyCmptType extends GenType{
      * @throws CoreException is delegated from calls to other methods
      */
     public String getUnqualifiedClassName(boolean forInterface) throws CoreException {
-        if(forInterface){
+        if (forInterface) {
             return getBuilderSet().getJavaNamingConvention().getPublishedInterfaceName(getPolicyCmptType().getName());
-            
+
         }
         return StringUtil.getFilenameWithoutExtension(getPolicyCmptType().getName());
     }
-    
+
     /**
-     * Returns the method name to initialize the policy component with the default data from
-     * the product component.
+     * Returns the method name to initialize the policy component with the default data from the
+     * product component.
      */
     public String getMethodNameInitialize() {
         return "initialize";
     }
 
-    public void generateChangeListenerSupport(JavaCodeFragmentBuilder methodsBuilder, String eventClassName,
+    public void generateChangeListenerSupport(JavaCodeFragmentBuilder methodsBuilder,
+            String eventClassName,
             String eventConstant,
             String fieldName,
             String paramName) {
@@ -228,7 +236,7 @@ public class GenPolicyCmptType extends GenType{
             methodsBuilder.append(eventConstant);
             methodsBuilder.append(", ");
             methodsBuilder.appendQuoted(fieldName);
-            if(paramName != null) {
+            if (paramName != null) {
                 methodsBuilder.append(", ");
                 methodsBuilder.append(paramName);
             }
@@ -244,11 +252,11 @@ public class GenPolicyCmptType extends GenType{
     protected GenProdAttribute getGenerator(IProductCmptTypeAttribute a) throws CoreException {
         return getBuilderSet().getGenerator(getProductCmptType()).getGenerator(a);
     }
-    
+
     public IProductCmptType getProductCmptType() throws CoreException {
         return getPolicyCmptType().findProductCmptType(getPolicyCmptType().getIpsProject());
     }
-    
+
     public String getPolicyCmptTypeName() throws CoreException {
         return StringUtils.capitalize(getPolicyCmptType().getName());
     }

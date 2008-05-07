@@ -1,19 +1,16 @@
-/*******************************************************************************
- * Copyright (c) 2005,2006 Faktor Zehn GmbH und andere.
- *
+/***************************************************************************************************
+ * Copyright (c) 2005-2008 Faktor Zehn AG und andere.
+ * 
  * Alle Rechte vorbehalten.
- *
- * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele,
- * Konfigurationen, etc.) dürfen nur unter den Bedingungen der 
- * Faktor-Zehn-Community Lizenzvereinbarung – Version 0.1 (vor Gründung Community) 
- * genutzt werden, die Bestandteil der Auslieferung ist und auch unter
- *   http://www.faktorips.org/legal/cl-v01.html
- * eingesehen werden kann.
- *
- * Mitwirkende:
- *   Faktor Zehn GmbH - initial API and implementation 
- *
- *******************************************************************************/
+ * 
+ * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen,
+ * etc.) duerfen nur unter den Bedingungen der Faktor-Zehn-Community Lizenzvereinbarung - Version
+ * 0.1 (vor Gruendung Community) genutzt werden, die Bestandteil der Auslieferung ist und auch unter
+ * http://www.faktorzehn.org/f10-org:lizenzen:community eingesehen werden kann.
+ * 
+ * Mitwirkende: Faktor Zehn AG - initial API and implementation - http://www.faktorzehn.de
+ * 
+ **************************************************************************************************/
 
 package org.faktorips.devtools.stdbuilder.policycmpttype;
 
@@ -37,28 +34,33 @@ import org.faktorips.util.LocalizedStringsSet;
  */
 public class GenMethod extends GenPolicyCmptTypePart {
 
-    public GenMethod(GenPolicyCmptType genPolicyCmptType, IMethod method, LocalizedStringsSet stringsSet) throws CoreException {
+    public GenMethod(GenPolicyCmptType genPolicyCmptType, IMethod method, LocalizedStringsSet stringsSet)
+            throws CoreException {
         super(genPolicyCmptType, method, stringsSet);
     }
 
     /**
      * {@inheritDoc}
      */
-    protected void generateConstants(JavaCodeFragmentBuilder builder, IIpsProject ipsProject, boolean generatesInterface) throws CoreException {
-        //nothing to do
+    protected void generateConstants(JavaCodeFragmentBuilder builder, IIpsProject ipsProject, boolean generatesInterface)
+            throws CoreException {
+        // nothing to do
     }
 
     /**
      * {@inheritDoc}
      */
-    protected void generateMemberVariables(JavaCodeFragmentBuilder builder, IIpsProject ipsProject, boolean generatesInterface) throws CoreException {
-        //nothing to do
+    protected void generateMemberVariables(JavaCodeFragmentBuilder builder,
+            IIpsProject ipsProject,
+            boolean generatesInterface) throws CoreException {
+        // nothing to do
     }
 
     /**
      * {@inheritDoc}
      */
-    protected void generateMethods(JavaCodeFragmentBuilder builder, IIpsProject ipsProject, boolean generatesInterface) throws CoreException {
+    protected void generateMethods(JavaCodeFragmentBuilder builder, IIpsProject ipsProject, boolean generatesInterface)
+            throws CoreException {
 
         IMethod method = getMethod();
         try {
@@ -68,32 +70,34 @@ public class GenMethod extends GenPolicyCmptTypePart {
             for (int j = 0; j < paramDatatypes.length; j++) {
                 paramDatatypes[j] = ipsProject.findDatatype(params[j].getDatatype());
             }
-            if(!generatesInterface){
+            if (!generatesInterface) {
                 generateClassCodeForMethodDefinedInModel(method, returnType, paramDatatypes, builder);
             }
-            if(generatesInterface){
-                generateInterfaceCodeForMethodDefinedInModelInterface(method, returnType, paramDatatypes, builder);  
+            if (generatesInterface) {
+                generateInterfaceCodeForMethodDefinedInModelInterface(method, returnType, paramDatatypes, builder);
             }
-            
+
         } catch (Exception e) {
-            throw new CoreException(new IpsStatus(IStatus.ERROR,
-                    "Error building method " + method.getName() + " of " //$NON-NLS-1$ //$NON-NLS-2$
-                            + getGenPolicyCmptType().getQualifiedName(generatesInterface), e));
+            throw new CoreException(new IpsStatus(IStatus.ERROR, "Error building method " + method.getName() + " of " //$NON-NLS-1$ //$NON-NLS-2$
+                    + getGenPolicyCmptType().getQualifiedName(generatesInterface), e));
         }
     }
 
-    public IMethod getMethod(){
+    public IMethod getMethod() {
         return (IMethod)getIpsPart();
     }
-    
-    protected void generateClassCodeForMethodDefinedInModel(IMethod method, Datatype returnType, Datatype[] paramTypes, JavaCodeFragmentBuilder methodsBuilder) throws CoreException {
-        if (method.getModifier()==org.faktorips.devtools.core.model.ipsobject.Modifier.PUBLISHED) {
+
+    protected void generateClassCodeForMethodDefinedInModel(IMethod method,
+            Datatype returnType,
+            Datatype[] paramTypes,
+            JavaCodeFragmentBuilder methodsBuilder) throws CoreException {
+        if (method.getModifier() == org.faktorips.devtools.core.model.ipsobject.Modifier.PUBLISHED) {
             methodsBuilder.javaDoc(getJavaDocCommentForOverriddenMethod(), JavaSourceFileBuilder.ANNOTATION_GENERATED);
         } else {
             methodsBuilder.javaDoc(method.getDescription(), JavaSourceFileBuilder.ANNOTATION_GENERATED);
         }
-        generateSignatureForMethodDefinedInModel(method, method.getJavaModifier(),
-                returnType, paramTypes, methodsBuilder);
+        generateSignatureForMethodDefinedInModel(method, method.getJavaModifier(), returnType, paramTypes,
+                methodsBuilder);
         if (method.isAbstract()) {
             methodsBuilder.appendln(";");
             return;
@@ -107,50 +111,52 @@ public class GenMethod extends GenPolicyCmptTypePart {
     /**
      * {@inheritDoc}
      */
-    protected void generateInterfaceCodeForMethodDefinedInModelInterface(
-            IMethod method,
+    protected void generateInterfaceCodeForMethodDefinedInModelInterface(IMethod method,
             Datatype returnType,
             Datatype[] paramTypes,
             JavaCodeFragmentBuilder methodsBuilder) throws CoreException {
-        
+
         if (method.getModifier() != Modifier.PUBLISHED) {
             return;
         }
         methodsBuilder.javaDoc(method.getDescription(), JavaSourceFileBuilder.ANNOTATION_GENERATED);
-        generateSignatureForMethodDefinedInModel(method, java.lang.reflect.Modifier.PUBLIC, returnType, paramTypes, methodsBuilder);
+        generateSignatureForMethodDefinedInModel(method, java.lang.reflect.Modifier.PUBLIC, returnType, paramTypes,
+                methodsBuilder);
         methodsBuilder.appendln(";");
     }
 
     /**
      * Code samples:
+     * 
      * <pre>
      * public void calculatePremium(IPolicy policy)
      * public ICoverage getCoverageWithHighestSumInsured()
      * </pre>
      */
-    public void generateSignatureForMethodDefinedInModel(
-        IMethod method,
-        int javaModifier,
-        Datatype returnType,
-        Datatype[] paramTypes,
-        JavaCodeFragmentBuilder methodsBuilder) throws CoreException {
-        
+    public void generateSignatureForMethodDefinedInModel(IMethod method,
+            int javaModifier,
+            Datatype returnType,
+            Datatype[] paramTypes,
+            JavaCodeFragmentBuilder methodsBuilder) throws CoreException {
+
         String[] paramClassNames = new String[paramTypes.length];
         for (int i = 0; i < paramClassNames.length; i++) {
             if (paramTypes[i] instanceof IPolicyCmptType) {
-                paramClassNames[i] = getGenPolicyCmptType().getBuilderSet().getGenerator((IPolicyCmptType)paramTypes[i]).getQualifiedName(true);
+                paramClassNames[i] = getGenPolicyCmptType().getBuilderSet()
+                        .getGenerator((IPolicyCmptType)paramTypes[i]).getQualifiedName(true);
             } else {
                 paramClassNames[i] = paramTypes[i].getJavaClassName();
             }
         }
         String returnClassName;
-        if  (returnType instanceof IPolicyCmptType) {
-            returnClassName = getGenPolicyCmptType().getBuilderSet().getGenerator((IPolicyCmptType)returnType).getQualifiedName(true);
+        if (returnType instanceof IPolicyCmptType) {
+            returnClassName = getGenPolicyCmptType().getBuilderSet().getGenerator((IPolicyCmptType)returnType)
+                    .getQualifiedName(true);
         } else {
             returnClassName = returnType.getJavaClassName();
         }
-        methodsBuilder.signature(javaModifier, returnClassName, method.getName(), 
-                method.getParameterNames(), paramClassNames);
+        methodsBuilder.signature(javaModifier, returnClassName, method.getName(), method.getParameterNames(),
+                paramClassNames);
     }
-    
+
 }

@@ -1,10 +1,15 @@
 /***************************************************************************************************
- *  * Copyright (c) 2005,2006 Faktor Zehn GmbH und andere.  *  * Alle Rechte vorbehalten.  *  *
- * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele,  * Konfigurationen,
- * etc.) duerfen nur unter den Bedingungen der  * Faktor-Zehn-Community Lizenzvereinbarung - Version
- * 0.1 (vor Gruendung Community)  * genutzt werden, die Bestandteil der Auslieferung ist und auch
- * unter  *   http://www.faktorips.org/legal/cl-v01.html  * eingesehen werden kann.  *  *
- * Mitwirkende:  *   Faktor Zehn GmbH - initial API and implementation - http://www.faktorzehn.de  *  
+ * Copyright (c) 2005-2008 Faktor Zehn AG und andere.
+ * 
+ * Alle Rechte vorbehalten.
+ * 
+ * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen,
+ * etc.) duerfen nur unter den Bedingungen der Faktor-Zehn-Community Lizenzvereinbarung - Version
+ * 0.1 (vor Gruendung Community) genutzt werden, die Bestandteil der Auslieferung ist und auch unter
+ * http://www.faktorzehn.org/f10-org:lizenzen:community eingesehen werden kann.
+ * 
+ * Mitwirkende: Faktor Zehn AG - initial API and implementation - http://www.faktorzehn.de
+ * 
  **************************************************************************************************/
 
 package org.faktorips.devtools.stdbuilder.productcmpttype;
@@ -346,7 +351,7 @@ public class ProductCmptGenImplClassBuilder extends BaseProductCmptTypeBuilder {
             return;
         }
         IAssociation[] associations = type.getAssociations();
-        if(associations.length == 0){
+        if (associations.length == 0) {
             return;
         }
         String javaDoc = null;
@@ -394,8 +399,9 @@ public class ProductCmptGenImplClassBuilder extends BaseProductCmptTypeBuilder {
                         frag.append('<');
                         frag.appendClassName(Element.class);
                         frag.append(">>)elementsMap");
-                        builder.varDeclaration(Modifier.FINAL, Map.class.getName() + "<" + String.class.getName() + ", "
-                                + List.class.getName() + "<" + Element.class.getName() + ">>", "checkedElementsMap", frag);
+                        builder.varDeclaration(Modifier.FINAL, Map.class.getName() + "<" + String.class.getName()
+                                + ", " + List.class.getName() + "<" + Element.class.getName() + ">>",
+                                "checkedElementsMap", frag);
                     }
                     builder.appendln();
                     builder.appendClassName(List.class);

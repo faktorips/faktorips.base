@@ -1,19 +1,16 @@
-/*******************************************************************************
- * Copyright (c) 2005,2006 Faktor Zehn GmbH und andere.
- *
+/***************************************************************************************************
+ * Copyright (c) 2005-2008 Faktor Zehn AG und andere.
+ * 
  * Alle Rechte vorbehalten.
- *
- * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele,
- * Konfigurationen, etc.) dürfen nur unter den Bedingungen der 
- * Faktor-Zehn-Community Lizenzvereinbarung – Version 0.1 (vor Gründung Community) 
- * genutzt werden, die Bestandteil der Auslieferung ist und auch unter
- *   http://www.faktorips.org/legal/cl-v01.html
- * eingesehen werden kann.
- *
- * Mitwirkende:
- *   Faktor Zehn GmbH - initial API and implementation 
- *
- *******************************************************************************/
+ * 
+ * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen,
+ * etc.) duerfen nur unter den Bedingungen der Faktor-Zehn-Community Lizenzvereinbarung - Version
+ * 0.1 (vor Gruendung Community) genutzt werden, die Bestandteil der Auslieferung ist und auch unter
+ * http://www.faktorzehn.org/f10-org:lizenzen:community eingesehen werden kann.
+ * 
+ * Mitwirkende: Faktor Zehn AG - initial API and implementation - http://www.faktorzehn.de
+ * 
+ **************************************************************************************************/
 
 package org.faktorips.devtools.stdbuilder;
 
@@ -26,13 +23,14 @@ import org.faktorips.devtools.stdbuilder.enums.EnumClassesBuilder;
 public class TableContentsEnumDatatypeHelper extends AbstractDatatypeHelper {
 
     private EnumClassesBuilder enumClassesBuilder;
-    
-    public TableContentsEnumDatatypeHelper(TableContentsEnumDatatypeAdapter datatype, EnumClassesBuilder enumClassesBuilder){
+
+    public TableContentsEnumDatatypeHelper(TableContentsEnumDatatypeAdapter datatype,
+            EnumClassesBuilder enumClassesBuilder) {
         super(datatype);
         this.enumClassesBuilder = enumClassesBuilder;
     }
 
-    private TableContentsEnumDatatypeAdapter getTableContentsEnumDatatypeAdapter(){
+    private TableContentsEnumDatatypeAdapter getTableContentsEnumDatatypeAdapter() {
         return (TableContentsEnumDatatypeAdapter)getDatatype();
     }
 
@@ -41,7 +39,8 @@ public class TableContentsEnumDatatypeHelper extends AbstractDatatypeHelper {
      */
     public JavaCodeFragment newInstance(String value) {
         try {
-            return enumClassesBuilder.generateCallMethodGetEnumValue(getTableContentsEnumDatatypeAdapter().getTableContents(), value, false);
+            return enumClassesBuilder.generateCallMethodGetEnumValue(getTableContentsEnumDatatypeAdapter()
+                    .getTableContents(), value, false);
         } catch (CoreException e) {
             throw new RuntimeException(e);
         }
@@ -59,10 +58,11 @@ public class TableContentsEnumDatatypeHelper extends AbstractDatatypeHelper {
      */
     public String getJavaClassName() {
         try {
-            return enumClassesBuilder.getQualifiedClassName(getTableContentsEnumDatatypeAdapter().getTableContents().getIpsSrcFile());
+            return enumClassesBuilder.getQualifiedClassName(getTableContentsEnumDatatypeAdapter().getTableContents()
+                    .getIpsSrcFile());
         } catch (CoreException e) {
-            throw new RuntimeException("An exception occurred while trying to determine the java class name " +
-                    "of the table content based enum type: " + getDatatype().getQualifiedName(), e);
+            throw new RuntimeException("An exception occurred while trying to determine the java class name "
+                    + "of the table content based enum type: " + getDatatype().getQualifiedName(), e);
         }
     }
 
@@ -71,7 +71,8 @@ public class TableContentsEnumDatatypeHelper extends AbstractDatatypeHelper {
      */
     protected JavaCodeFragment valueOfExpression(String expression) {
         try {
-            return enumClassesBuilder.generateCallMethodGetEnumValue(getTableContentsEnumDatatypeAdapter().getTableContents(), expression, true);
+            return enumClassesBuilder.generateCallMethodGetEnumValue(getTableContentsEnumDatatypeAdapter()
+                    .getTableContents(), expression, true);
         } catch (CoreException e) {
             throw new RuntimeException(e);
         }

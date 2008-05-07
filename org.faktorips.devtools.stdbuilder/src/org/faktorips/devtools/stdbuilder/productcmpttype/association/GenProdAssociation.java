@@ -8,7 +8,7 @@
  * 0.1 (vor Gruendung Community) genutzt werden, die Bestandteil der Auslieferung ist und auch unter
  * http://www.faktorzehn.org/f10-org:lizenzen:community eingesehen werden kann.
  * 
- * Mitwirkende: Faktor Zehn GmbH - initial API and implementation - http://www.faktorzehn.de
+ * Mitwirkende: Faktor Zehn AG - initial API and implementation - http://www.faktorzehn.de
  * 
  **************************************************************************************************/
 

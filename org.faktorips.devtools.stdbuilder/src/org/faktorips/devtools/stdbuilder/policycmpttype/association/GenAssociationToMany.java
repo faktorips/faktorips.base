@@ -1,14 +1,14 @@
 /***************************************************************************************************
- * Copyright (c) 2005,2006 Faktor Zehn GmbH und andere.
+ * Copyright (c) 2005-2008 Faktor Zehn AG und andere.
  * 
  * Alle Rechte vorbehalten.
  * 
  * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen,
- * etc.) dürfen nur unter den Bedingungen der Faktor-Zehn-Community Lizenzvereinbarung – Version 0.1
- * (vor Gründung Community) genutzt werden, die Bestandteil der Auslieferung ist und auch unter
- * http://www.faktorips.org/legal/cl-v01.html eingesehen werden kann.
+ * etc.) duerfen nur unter den Bedingungen der Faktor-Zehn-Community Lizenzvereinbarung - Version
+ * 0.1 (vor Gruendung Community) genutzt werden, die Bestandteil der Auslieferung ist und auch unter
+ * http://www.faktorzehn.org/f10-org:lizenzen:community eingesehen werden kann.
  * 
- * Mitwirkende: Faktor Zehn GmbH - initial API and implementation
+ * Mitwirkende: Faktor Zehn AG - initial API and implementation - http://www.faktorzehn.de
  * 
  **************************************************************************************************/
 
@@ -85,15 +85,15 @@ public class GenAssociationToMany extends GenAssociation {
      * Java 5 code sample:
      * 
      * <pre>
-     * public List<ICoverage> getCoverages()
+     * public List&lt;ICoverage&gt; getCoverages()
      * </pre>
      */
     public void generateSignatureGetAllRefObjects(JavaCodeFragmentBuilder methodsBuilder) throws CoreException {
         String methodName = getMethodNameGetAllRefObjects();
         String returnType;
         if (isUseTypesafeCollections()) {
-            returnType = List.class.getName()+"<"+targetInterfaceName+">";
-        }else{
+            returnType = List.class.getName() + "<" + targetInterfaceName + ">";
+        } else {
             returnType = targetInterfaceName + "[]";
         }
         methodsBuilder.signature(java.lang.reflect.Modifier.PUBLIC, returnType, methodName, new String[] {},
@@ -189,7 +189,9 @@ public class GenAssociationToMany extends GenAssociation {
             initialValueExpression.append("()");
             String comment = getLocalizedText("FIELD_RELATION_JAVADOC", association.getName());
             builder.javaDoc(comment, JavaSourceFileBuilder.ANNOTATION_GENERATED);
-            builder.varDeclaration(java.lang.reflect.Modifier.PRIVATE, List.class.getName()+(isUseTypesafeCollections()?("<"+targetInterfaceName+">"):""), fieldName, initialValueExpression);
+            builder.varDeclaration(java.lang.reflect.Modifier.PRIVATE, List.class.getName()
+                    + (isUseTypesafeCollections() ? ("<" + targetInterfaceName + ">") : ""), fieldName,
+                    initialValueExpression);
         }
     }
 
@@ -283,7 +285,7 @@ public class GenAssociationToMany extends GenAssociation {
      * 
      * <pre>
      * [Javadoc]
-     * public List<ICoverage> getCoverages() {
+     * public List&lt;ICoverage&gt; getCoverages() {
      *     return Collections.unmodifiableList(coverages);
      * }
      * </pre>
@@ -300,7 +302,7 @@ public class GenAssociationToMany extends GenAssociation {
             methodsBuilder.appendln(".unmodifiableList(");
             methodsBuilder.append(fieldName);
             methodsBuilder.append(");");
-        }else{
+        } else {
             methodsBuilder.appendln("return (");
             methodsBuilder.appendClassName(targetImplClassName);
             methodsBuilder.append("[])");
@@ -316,6 +318,7 @@ public class GenAssociationToMany extends GenAssociation {
 
     /**
      * Code sample
+     * 
      * <pre>
      * public IMotorCoverage getMotorCoverage(int index) {
      *     return (IMotorCoverage)motorCoverages.get(index);
@@ -323,6 +326,7 @@ public class GenAssociationToMany extends GenAssociation {
      * </pre>
      * 
      * Java 5 code sample
+     * 
      * <pre>
      * public IMotorCoverage getMotorCoverage(int index) {
      *     return motorCoverages.get(index);
@@ -334,8 +338,8 @@ public class GenAssociationToMany extends GenAssociation {
         methodBuilder.openBracket();
         methodBuilder.append("return ");
         if (isUseTypesafeCollections()) {
-            
-        }else{
+
+        } else {
             methodBuilder.append("(");
             methodBuilder.appendClassName(targetInterfaceName);
             methodBuilder.append(')');
@@ -628,7 +632,7 @@ public class GenAssociationToMany extends GenAssociation {
         String varCopy = "copy" + StringUtils.capitalize(varOrig);
         methodsBuilder.append("for (");
         methodsBuilder.appendClassName(Iterator.class);
-        if(isUseTypesafeCollections()){
+        if (isUseTypesafeCollections()) {
             methodsBuilder.append("<");
             methodsBuilder.appendClassName(getQualifiedClassName(targetType, true));
             methodsBuilder.append(">");
@@ -743,7 +747,7 @@ public class GenAssociationToMany extends GenAssociation {
             methodsBuilder.append("<");
             methodsBuilder.appendClassName(classname);
             methodsBuilder.append(">(" + getMethodNameGetNumOfRefObjectsInternal() + "());");
-        }else{
+        } else {
             methodsBuilder.appendClassName(classname);
             methodsBuilder.append("[] result = new ");
             methodsBuilder.appendClassName(classname);
@@ -757,7 +761,7 @@ public class GenAssociationToMany extends GenAssociation {
                 // result.addAll(super.getCoverages());
                 methodsBuilder.append("result.addAll(super.");
                 methodsBuilder.appendln(getMethodNameGetAllRefObjects() + "());");
-            }else{
+            } else {
                 // ICoverage[] superResult = super.getCoverages();
                 // System.arraycopy(superResult, 0, result, 0, superResult.length);
                 // int counter = superResult.length;
@@ -782,7 +786,7 @@ public class GenAssociationToMany extends GenAssociation {
                 String method = subrelGenerator.getMethodNameGetAllRefObjects();
                 if (isUseTypesafeCollections()) {
                     methodsBuilder.appendln("result.addAll(" + method + "());");
-                }else{
+                } else {
                     if (!elementsVarDefined) {
                         methodsBuilder.appendClassName(classname);
                         methodsBuilder.append("[] ");
@@ -798,7 +802,7 @@ public class GenAssociationToMany extends GenAssociation {
                 methodsBuilder.appendln("if (" + method + "()!=null) {");
                 if (isUseTypesafeCollections()) {
                     methodsBuilder.appendln("result.add(" + method + "());");
-                }else{
+                } else {
                     methodsBuilder.appendln("result[counter++] = " + method + "();");
                 }
                 methodsBuilder.appendln("}");
@@ -871,7 +875,7 @@ public class GenAssociationToMany extends GenAssociation {
             body.append("<");
             body.appendClassName(getQualifiedClassName(target, true));
             body.append(">");
-        }else{
+        } else {
             body.appendClassName(getQualifiedClassName(target, true));
             body.append("[]");
         }
@@ -883,7 +887,7 @@ public class GenAssociationToMany extends GenAssociation {
             body.appendClassName(getQualifiedClassName(target, true));
             body.append(" rel : rels)");
             body.append("{ ml.add(rel.validate(businessFunction)); } }");
-        }else{
+        } else {
             body.append("for (int i = 0; i < rels.length; i++)");
             body.append("{ ml.add(rels[i].validate(businessFunction)); } }");
         }

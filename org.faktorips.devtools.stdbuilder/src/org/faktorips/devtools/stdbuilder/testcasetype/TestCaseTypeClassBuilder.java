@@ -1,14 +1,14 @@
 /***************************************************************************************************
- * Copyright (c) 2005,2006 Faktor Zehn GmbH und andere.
+ * Copyright (c) 2005-2008 Faktor Zehn AG und andere.
  * 
  * Alle Rechte vorbehalten.
  * 
  * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen,
- * etc.) dürfen nur unter den Bedingungen der Faktor-Zehn-Community Lizenzvereinbarung – Version 0.1
- * (vor Gründung Community) genutzt werden, die Bestandteil der Auslieferung ist und auch unter
- * http://www.faktorips.org/legal/cl-v01.html eingesehen werden kann.
+ * etc.) duerfen nur unter den Bedingungen der Faktor-Zehn-Community Lizenzvereinbarung - Version
+ * 0.1 (vor Gruendung Community) genutzt werden, die Bestandteil der Auslieferung ist und auch unter
+ * http://www.faktorzehn.org/f10-org:lizenzen:community eingesehen werden kann.
  * 
- * Mitwirkende: Faktor Zehn GmbH - initial API and implementation
+ * Mitwirkende: Faktor Zehn AG - initial API and implementation - http://www.faktorzehn.de
  * 
  **************************************************************************************************/
 
@@ -648,7 +648,7 @@ public class TestCaseTypeClassBuilder extends DefaultJavaSourceFileBuilder {
             body.appendln(".iterator(); iter.hasNext();){");
             if (isUseTypesafeCollections()) {
                 body.appendln("String msgCode = iter.next();");
-            }else{
+            } else {
                 body.appendln("String msgCode = (String)iter.next();");
             }
             body.append("if (messageList.getMessageByCode(msgCode) ");

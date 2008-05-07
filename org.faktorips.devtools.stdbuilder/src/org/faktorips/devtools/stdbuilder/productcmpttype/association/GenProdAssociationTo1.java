@@ -8,7 +8,7 @@
  * 0.1 (vor Gruendung Community) genutzt werden, die Bestandteil der Auslieferung ist und auch unter
  * http://www.faktorzehn.org/f10-org:lizenzen:community eingesehen werden kann.
  * 
- * Mitwirkende: Faktor Zehn GmbH - initial API and implementation - http://www.faktorzehn.de
+ * Mitwirkende: Faktor Zehn AG - initial API and implementation - http://www.faktorzehn.de
  * 
  **************************************************************************************************/
 
@@ -239,7 +239,7 @@ public class GenProdAssociationTo1 extends GenProdAssociation {
         String fieldName = getFieldNameTo1Association();
         builder.appendClassName(Element.class);
         builder.append(" element = ");
-        if(!isUseTypesafeCollections()){
+        if (!isUseTypesafeCollections()) {
             builder.append("(");
             builder.appendClassName(Element.class);
             builder.appendln(")");
@@ -261,8 +261,18 @@ public class GenProdAssociationTo1 extends GenProdAssociation {
                 builder.append(">");
             }
             builder.appendln("(1);");
-            if(isUseTypesafeCollections()){
-                builder.append(Java5ClassNames.ProductComponentGeneration_QualifiedName); // don't append as classname, the include would collide with the original
+            if (isUseTypesafeCollections()) {
+                builder.append(Java5ClassNames.ProductComponentGeneration_QualifiedName); // don't
+                                                                                            // append
+                                                                                            // as
+                                                                                            // classname,
+                                                                                            // the
+                                                                                            // include
+                                                                                            // would
+                                                                                            // collide
+                                                                                            // with
+                                                                                            // the
+                                                                                            // original
                 builder.append(".");
             }
             builder.append("addToCardinalityMap(");

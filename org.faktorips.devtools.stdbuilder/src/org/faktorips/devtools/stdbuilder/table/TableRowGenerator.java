@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2005,2006 Faktor Zehn GmbH und andere.
+ * Copyright (c) 2005,2006 Faktor Zehn AG und andere.
  *
  * Alle Rechte vorbehalten.
  *
@@ -11,7 +11,7 @@
  * eingesehen werden kann.
  *
  * Mitwirkende:
- * Faktor Zehn GmbH - initial API and implementation - http://www.faktorzehn.de
+ * Faktor Zehn AG - initial API and implementation - http://www.faktorzehn.de
  *
  *******************************************************************************/
 

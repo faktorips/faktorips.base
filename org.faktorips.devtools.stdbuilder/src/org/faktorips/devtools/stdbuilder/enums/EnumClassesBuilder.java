@@ -1,14 +1,14 @@
 /***************************************************************************************************
- * Copyright (c) 2005,2006 Faktor Zehn GmbH und andere.
+ * Copyright (c) 2005-2008 Faktor Zehn AG und andere.
  * 
  * Alle Rechte vorbehalten.
  * 
  * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen,
- * etc.) dürfen nur unter den Bedingungen der Faktor-Zehn-Community Lizenzvereinbarung – Version 0.1
- * (vor Gründung Community) genutzt werden, die Bestandteil der Auslieferung ist und auch unter
- * http://www.faktorips.org/legal/cl-v01.html eingesehen werden kann.
+ * etc.) duerfen nur unter den Bedingungen der Faktor-Zehn-Community Lizenzvereinbarung - Version
+ * 0.1 (vor Gruendung Community) genutzt werden, die Bestandteil der Auslieferung ist und auch unter
+ * http://www.faktorzehn.org/f10-org:lizenzen:community eingesehen werden kann.
  * 
- * Mitwirkende: Faktor Zehn GmbH - initial API and implementation
+ * Mitwirkende: Faktor Zehn AG - initial API and implementation - http://www.faktorzehn.de
  * 
  **************************************************************************************************/
 
@@ -295,10 +295,12 @@ public class EnumClassesBuilder extends DefaultJavaSourceFileBuilder {
     }
 
     /**
-     * Code sample: 
-     * <pre> 
+     * Code sample:
+     * 
+     * <pre>
+     *  
      * [Javadoc]
-     * public static final GeneratedGender MALE = new GeneratedGender(new Integer(1), "male", "Male"); 
+     * public static final GeneratedGender MALE = new GeneratedGender(new Integer(1), &quot;male&quot;, &quot;Male&quot;); 
      * </pre>
      */
     private void generateConstantsForEnumValues(JavaCodeFragmentBuilder constantBuilder, ITableStructure structure)
@@ -343,9 +345,10 @@ public class EnumClassesBuilder extends DefaultJavaSourceFileBuilder {
     }
 
     /**
-     * Code sample: 
+     * Code sample:
+     * 
      * <pre>
-     * MALE(new Integer(1), "male", "Male");
+     * MALE(new Integer(1), &quot;male&quot;, &quot;Male&quot;);
      * </pre>
      */
     private void generateEnumInitialization(JavaCodeFragmentBuilder enumDefinitionBuilder, ITableStructure structure)
@@ -470,6 +473,7 @@ public class EnumClassesBuilder extends DefaultJavaSourceFileBuilder {
 
     /**
      * Code sample:
+     * 
      * <pre>
      *  [Javadoc]
      *  public static final GeneratedGender getGeneratedGender(Integer id) {

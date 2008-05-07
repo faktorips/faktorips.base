@@ -1,19 +1,16 @@
-/*******************************************************************************
- * Copyright (c) 2005,2006 Faktor Zehn GmbH und andere.
- *
- * Alle Rechte vorbehalten.
- *
- * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele,
- * Konfigurationen, etc.) duerfen nur unter den Bedingungen der 
- * Faktor-Zehn-Community Lizenzvereinbarung - Version 0.1 (vor Gruendung Community) 
- * genutzt werden, die Bestandteil der Auslieferung ist und auch unter
- *   http://www.faktorips.org/legal/cl-v01.html
- * eingesehen werden kann.
- *
- * Mitwirkende:
- *   Faktor Zehn GmbH - initial API and implementation - http://www.faktorzehn.de
- *
- *******************************************************************************/
+/***************************************************************************************************
+ * Copyright (c) 2005-2008 Faktor Zehn AG und andere.
+ * 
+ * Alle Rechte vorbehalten.
+ * 
+ * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen,
+ * etc.) duerfen nur unter den Bedingungen der Faktor-Zehn-Community Lizenzvereinbarung - Version
+ * 0.1 (vor Gruendung Community) genutzt werden, die Bestandteil der Auslieferung ist und auch unter
+ * http://www.faktorzehn.org/f10-org:lizenzen:community eingesehen werden kann.
+ * 
+ * Mitwirkende: Faktor Zehn AG - initial API and implementation - http://www.faktorzehn.de
+ * 
+ **************************************************************************************************/
 
 package org.faktorips.devtools.stdbuilder;
 
@@ -40,7 +37,7 @@ public abstract class AbstractXmlFileBuilder extends AbstractArtefactBuilder {
 
     private IpsObjectType ipsObjectType;
     private String kind;
- 
+
     public AbstractXmlFileBuilder(IpsObjectType type, IIpsArtefactBuilderSet builderSet, String kind) {
         super(builderSet);
         ArgumentCheck.notNull(kind, this);
@@ -48,19 +45,20 @@ public abstract class AbstractXmlFileBuilder extends AbstractArtefactBuilder {
         ipsObjectType = type;
         this.kind = kind;
     }
-    
-    private ByteArrayInputStream convertContentAsStream(String content, String charSet) throws CoreException{
-    
+
+    private ByteArrayInputStream convertContentAsStream(String content, String charSet) throws CoreException {
+
         try {
             return new ByteArrayInputStream(content.getBytes(charSet));
         } catch (UnsupportedEncodingException e) {
             throw new CoreException(new IpsStatus(e));
         }
     }
-    
+
     /**
-     * Copies the xml content (which is either the given string <code>newContent</code> or the content
-     * of the given <code>IIpsSrcFile</code> if <code>newContent</code> is <code>null</code>).
+     * Copies the xml content (which is either the given string <code>newContent</code> or the
+     * content of the given <code>IIpsSrcFile</code> if <code>newContent</code> is
+     * <code>null</code>).
      * 
      * @param ipsSrcFile The sourcefile to process.
      * @param newContent The content of the sourcefile to process. Must not be <code>null</code>.
@@ -70,7 +68,7 @@ public abstract class AbstractXmlFileBuilder extends AbstractArtefactBuilder {
      */
     protected void build(IIpsSrcFile ipsSrcFile, String newContent) throws CoreException {
         ArgumentCheck.notNull(newContent);
-        
+
         String charSet = ipsSrcFile.getIpsProject().getXmlFileCharset();
         IFile file = (IFile)ipsSrcFile.getEnclosingResource();
         try {
@@ -78,7 +76,7 @@ public abstract class AbstractXmlFileBuilder extends AbstractArtefactBuilder {
             boolean newlyCreated = createFileIfNotThere(copy);
             if (!newlyCreated) {
                 String currentContent = getContentAsString(copy.getContents(), charSet);
-                if(!newContent.equals(currentContent)){
+                if (!newContent.equals(currentContent)) {
                     copy.setContents(convertContentAsStream(newContent, charSet), true, true, null);
                 }
             } else {
@@ -93,8 +91,7 @@ public abstract class AbstractXmlFileBuilder extends AbstractArtefactBuilder {
     private IFolder getXmlContentFileFolder(IIpsSrcFile ipsSrcFile) throws CoreException {
         String packageString = getBuilderSet().getPackage(kind, ipsSrcFile);
         IPath pathToPack = new Path(packageString.replace('.', '/'));
-        return ipsSrcFile.getIpsPackageFragment().getRoot().getArtefactDestination(true).getFolder(
-            pathToPack);
+        return ipsSrcFile.getIpsPackageFragment().getRoot().getArtefactDestination(true).getFolder(pathToPack);
     }
 
     private IFile getXmlContentFile(IIpsSrcFile ipsSrcFile) throws CoreException {
@@ -132,12 +129,12 @@ public abstract class AbstractXmlFileBuilder extends AbstractArtefactBuilder {
         return "XmlContentFileCopyBuilder"; //$NON-NLS-1$
     }
 
-    protected String getContentAsString(InputStream is, String charSet) throws CoreException{
+    protected String getContentAsString(InputStream is, String charSet) throws CoreException {
         try {
             return StringUtil.readFromInputStream(is, charSet);
         } catch (IOException e) {
             throw new CoreException(new IpsStatus(e));
         }
     }
-    
+
 }

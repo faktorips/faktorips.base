@@ -1,19 +1,16 @@
-/*******************************************************************************
- * Copyright (c) 2005,2006 Faktor Zehn GmbH und andere.
- *
+/***************************************************************************************************
+ * Copyright (c) 2005-2008 Faktor Zehn AG und andere.
+ * 
  * Alle Rechte vorbehalten.
- *
- * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele,
- * Konfigurationen, etc.) dürfen nur unter den Bedingungen der 
- * Faktor-Zehn-Community Lizenzvereinbarung – Version 0.1 (vor Gründung Community) 
- * genutzt werden, die Bestandteil der Auslieferung ist und auch unter
- *   http://www.faktorips.org/legal/cl-v01.html
- * eingesehen werden kann.
- *
- * Mitwirkende:
- *   Faktor Zehn GmbH - initial API and implementation 
- *
- *******************************************************************************/
+ * 
+ * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen,
+ * etc.) duerfen nur unter den Bedingungen der Faktor-Zehn-Community Lizenzvereinbarung - Version
+ * 0.1 (vor Gruendung Community) genutzt werden, die Bestandteil der Auslieferung ist und auch unter
+ * http://www.faktorzehn.org/f10-org:lizenzen:community eingesehen werden kann.
+ * 
+ * Mitwirkende: Faktor Zehn AG - initial API and implementation - http://www.faktorzehn.de
+ * 
+ **************************************************************************************************/
 
 package org.faktorips.devtools.stdbuilder.testcase;
 
@@ -67,24 +64,26 @@ import org.w3c.dom.Element;
 public class TestCaseBuilder extends AbstractArtefactBuilder {
 
     private JavaSourceFileBuilder javaSourceFileBuilder;
-    
+
     private Map objectIdMap = new HashMap();
 
     private Map targetObjectIdMap = new HashMap();
-    
+
     /*
      * Class to generate an unique object id within the input and the expected result.
      */
     private class ObjectId {
         int objectId = 0;
-        public int nextValue(){
+
+        public int nextValue() {
             return objectId++;
         }
-        public String toString(){
-            return ""+objectId;
+
+        public String toString() {
+            return "" + objectId;
         }
     }
-    
+
     /**
      * @param builderSet
      */
@@ -98,7 +97,7 @@ public class TestCaseBuilder extends AbstractArtefactBuilder {
     public String getName() {
         return "TestCaseBuilder";
     }
-    
+
     /**
      * Sets the policy component type implementation builder.
      */
@@ -109,22 +108,23 @@ public class TestCaseBuilder extends AbstractArtefactBuilder {
     /**
      * Returns the path to the xml resource as used by the Class.getResourceAsStream() Method.
      * 
-     * @see Class#getResourceAsStream(java.lang.String) 
+     * @see Class#getResourceAsStream(java.lang.String)
      */
     public String getXmlResourcePath(ITestCase testCase) throws CoreException {
         String packageInternal = getBuilderSet().getPackage(DefaultBuilderSet.KIND_TEST_CASE_XML,
                 testCase.getIpsSrcFile());
         return packageInternal.replace('.', '/') + '/' + testCase.getName() + ".xml";
     }
-    
+
     /**
      * {@inheritDoc}
-     * @throws IOException 
+     * 
+     * @throws IOException
      */
     public void build(IIpsSrcFile ipsSrcFile) throws CoreException {
         ArgumentCheck.isTrue(ipsSrcFile.getIpsObjectType() == IpsObjectType.TEST_CASE);
-        ITestCase testCase = (ITestCase) ipsSrcFile.getIpsObject();
-        if (!testCase.isValid()){
+        ITestCase testCase = (ITestCase)ipsSrcFile.getIpsObject();
+        if (!testCase.isValid()) {
             return;
         }
         InputStream is = null;
@@ -132,32 +132,31 @@ public class TestCaseBuilder extends AbstractArtefactBuilder {
         try {
             Document doc = IpsPlugin.getDefault().newDocumentBuilder().newDocument();
             Element element = toRuntimeTestCaseXml(doc, testCase);
-            String encoding = ipsSrcFile.getIpsProject()==null?"UTF-8":testCase.getIpsProject().getXmlFileCharset(); //$NON-NLS-1$
+            String encoding = ipsSrcFile.getIpsProject() == null ? "UTF-8" : testCase.getIpsProject().getXmlFileCharset(); //$NON-NLS-1$
             content = XmlUtil.nodeToString(element, encoding);
             is = convertContentAsStream(content, ipsSrcFile.getIpsProject().getProject().getDefaultCharset());
 
             IFile file = getXmlContentFile(ipsSrcFile);
             boolean newlyCreated = createFileIfNotThere(file);
-            
-            if(newlyCreated){
+
+            if (newlyCreated) {
                 file.setContents(is, true, false, null);
-            }else{
+            } else {
                 String charSet = ipsSrcFile.getIpsProject().getProject().getDefaultCharset();
                 String currentContent = getContentAsString(file.getContents(), charSet);
-                if(!content.equals(currentContent)){
+                if (!content.equals(currentContent)) {
                     file.setContents(is, true, true, null);
                 }
             }
         } catch (TransformerException e) {
-            throw new RuntimeException(e); 
+            throw new RuntimeException(e);
             // This is a programing error, rethrow as runtime exception
-        }
-        finally{
-            if(is != null){
+        } finally {
+            if (is != null) {
                 try {
                     is.close();
                 } catch (Exception e) {
-                    //nothing to do
+                    // nothing to do
                 }
             }
         }
@@ -179,28 +178,27 @@ public class TestCaseBuilder extends AbstractArtefactBuilder {
             file.delete(true, null);
         }
     }
-    
+
     /*
      * Converts the given string content as ByteArrayInputStream.
      */
-    private ByteArrayInputStream convertContentAsStream(String content, String charSet) throws CoreException{
+    private ByteArrayInputStream convertContentAsStream(String content, String charSet) throws CoreException {
         try {
             return new ByteArrayInputStream(content.getBytes(charSet));
         } catch (UnsupportedEncodingException e) {
             throw new CoreException(new IpsStatus(e));
         }
     }
-    
+
     /*
      * Returns the package folder for the given ips sourcefile.
      */
     private IFolder getXmlContentFileFolder(IIpsSrcFile ipsSrcFile) throws CoreException {
         String packageString = getBuilderSet().getPackage(DefaultBuilderSet.KIND_TEST_CASE_XML, ipsSrcFile);
         IPath pathToPack = new Path(packageString.replace('.', '/'));
-        return ipsSrcFile.getIpsPackageFragment().getRoot().getArtefactDestination(true).getFolder(
-            pathToPack);
+        return ipsSrcFile.getIpsPackageFragment().getRoot().getArtefactDestination(true).getFolder(pathToPack);
     }
-    
+
     /*
      * Returns the file resource of the given ips source file.
      */
@@ -209,45 +207,47 @@ public class TestCaseBuilder extends AbstractArtefactBuilder {
         IFolder folder = getXmlContentFileFolder(ipsSrcFile);
         return folder.getFile(StringUtil.getFilenameWithoutExtension(file.getName()) + ".xml");
     }
-    
+
     /*
-     * Transforms the given test case object to an ips test case xml which can executed as ips test case
-     * in runtime. 
+     * Transforms the given test case object to an ips test case xml which can executed as ips test
+     * case in runtime.
      * 
-     * @param doc the xml document that can be used as a factory to create xml elment.
-     * @param testCase the test case which will be transformed to the runtime test case format.
+     * @param doc the xml document that can be used as a factory to create xml elment. @param
+     * testCase the test case which will be transformed to the runtime test case format.
      * 
      * @return the xml representation of the test case
      */
     private Element toRuntimeTestCaseXml(Document doc, ITestCase testCase) throws CoreException {
         Element testCaseElm = doc.createElement("TestCase");
-        
+
         doc.appendChild(testCaseElm);
-        
+
         Element input = doc.createElement("Input");
         Element expectedResult = doc.createElement("ExpectedResult");
-        
+
         testCaseElm.appendChild(input);
         testCaseElm.appendChild(expectedResult);
-        
+
         // add test values (input and expected)
         addTestValues(doc, input, testCase.getInputTestValues());
         addTestValues(doc, expectedResult, testCase.getExpectedResultTestValues());
-        
+
         // add test rules (only expected because rules are always expected)
         addTestRules(doc, expectedResult, testCase.getExpectedResultTestRules());
-        
+
         // add test policy cmpt (input and expected)
         // remark: the object id will be only unique in the input and unique in the expected result,
         // the same object id in the input could be differ to the object id in the expected result,
-        // because the object id will be used to resolve the references in the input or expected result;
+        // because the object id will be used to resolve the references in the input or expected
+        // result;
         // references from the input to the exp. result are not supported!
         addTestPolicyCmpts(doc, input, testCase.getInputTestPolicyCmpts(), null, true, new ObjectId());
         resolveAssociations();
-        
-        addTestPolicyCmpts(doc, expectedResult, testCase.getExpectedResultTestPolicyCmpts(), null, false, new ObjectId());
+
+        addTestPolicyCmpts(doc, expectedResult, testCase.getExpectedResultTestPolicyCmpts(), null, false,
+                new ObjectId());
         resolveAssociations();
-        
+
         return testCaseElm;
     }
 
@@ -255,8 +255,8 @@ public class TestCaseBuilder extends AbstractArtefactBuilder {
         for (Iterator iter = targetObjectIdMap.keySet().iterator(); iter.hasNext();) {
             ITestPolicyCmpt target = (ITestPolicyCmpt)iter.next();
             String objectId = (String)objectIdMap.get(target);
-            if (objectId != null){
-                Element elem = (Element) targetObjectIdMap.get(target);
+            if (objectId != null) {
+                Element elem = (Element)targetObjectIdMap.get(target);
                 elem.setAttribute("targetId", objectId);
             }
         }
@@ -265,14 +265,14 @@ public class TestCaseBuilder extends AbstractArtefactBuilder {
     }
 
     /*
-     * Add the given test values to the given element. 
+     * Add the given test values to the given element.
      */
     private void addTestValues(Document doc, Element element, ITestValue[] testValues) throws CoreException {
-        if (testValues == null){
-            return; 
+        if (testValues == null) {
+            return;
         }
         for (int i = 0; i < testValues.length; i++) {
-            if (!testValues[i].isValid()){
+            if (!testValues[i].isValid()) {
                 continue;
             }
             Element valueElem = XmlUtil.addNewChild(doc, element, testValues[i].getTestValueParameter());
@@ -280,20 +280,20 @@ public class TestCaseBuilder extends AbstractArtefactBuilder {
             valueElem.setAttribute("type", "testvalue");
         }
     }
-    
+
     /*
-     * Add the given test rules to the given element. 
+     * Add the given test rules to the given element.
      */
     private void addTestRules(Document doc, Element element, ITestRule[] testRules) throws CoreException {
-        if (testRules == null){
-            return; 
+        if (testRules == null) {
+            return;
         }
         for (int i = 0; i < testRules.length; i++) {
-            if (!testRules[i].isValid()){
+            if (!testRules[i].isValid()) {
                 continue;
             }
             IValidationRule validationRule = testRules[i].findValidationRule(getIpsProject());
-            if (validationRule == null){
+            if (validationRule == null) {
                 // validation rule not found ignore element
                 continue;
             }
@@ -301,10 +301,10 @@ public class TestCaseBuilder extends AbstractArtefactBuilder {
             ruleElem.setAttribute("type", "testrule");
             ruleElem.setAttribute("validationRule", testRules[i].getValidationRule());
             ruleElem.setAttribute("validationRuleMessageCode", validationRule.getMessageCode());
-            ruleElem.setAttribute("violationType", testRules[i].getViolationType().getId()); 
+            ruleElem.setAttribute("violationType", testRules[i].getViolationType().getId());
         }
     }
-    
+
     /*
      * Add test given policy components to the given element.
      */
@@ -318,18 +318,18 @@ public class TestCaseBuilder extends AbstractArtefactBuilder {
             return;
         }
         for (int i = 0; i < testPolicyCmpts.length; i++) {
-            if (!testPolicyCmpts[i].isValid()){
+            if (!testPolicyCmpts[i].isValid()) {
                 continue;
             }
             Element testPolicyCmptElem = createTestPolicyCmptElem(doc, parent, testPolicyCmpts[i], link);
-            
+
             // set object id
             int currObjectId = objectId.nextValue();
             objectIdMap.put(testPolicyCmpts[i], "" + currObjectId);
-            testPolicyCmptElem.setAttribute("objectId", ""+currObjectId);
-            
+            testPolicyCmptElem.setAttribute("objectId", "" + currObjectId);
+
             String policyCmptTypeQName = null;
-            if (testPolicyCmpts[i].isProductRelevant()){
+            if (testPolicyCmpts[i].isProductRelevant()) {
                 // the test policy cmpt type parameter is product relevant
                 ITestPolicyCmpt testPolicyCmpt = testPolicyCmpts[i];
                 policyCmptTypeQName = getPolicyCmptTypeNameAndSetProductCmptAttr(testPolicyCmpt, testPolicyCmptElem);
@@ -337,15 +337,17 @@ public class TestCaseBuilder extends AbstractArtefactBuilder {
                 // the test policy cmpt type parameter is not product relevant
                 policyCmptTypeQName = getPolicyCmptTypeName(testPolicyCmpts[i]);
             }
-            
-            IIpsSrcFile policyCmptTypeSrcFile = testPolicyCmpts[i].getIpsProject().findIpsSrcFile(IpsObjectType.POLICY_CMPT_TYPE, policyCmptTypeQName);
+
+            IIpsSrcFile policyCmptTypeSrcFile = testPolicyCmpts[i].getIpsProject().findIpsSrcFile(
+                    IpsObjectType.POLICY_CMPT_TYPE, policyCmptTypeQName);
             if (policyCmptTypeSrcFile == null) {
                 throw new CoreException(new IpsStatus(NLS.bind("The policy component type {0} was not found.",
                         policyCmptTypeQName)));
             }
-            testPolicyCmptElem.setAttribute("class", javaSourceFileBuilder.getQualifiedClassName(policyCmptTypeSrcFile));
+            testPolicyCmptElem
+                    .setAttribute("class", javaSourceFileBuilder.getQualifiedClassName(policyCmptTypeSrcFile));
             addTestAttrValues(doc, testPolicyCmptElem, testPolicyCmpts[i].getTestAttributeValues(), isInput);
-            addAssociations(doc, testPolicyCmptElem, testPolicyCmpts[i].getTestPolicyCmptLinks(), isInput, objectId);    
+            addAssociations(doc, testPolicyCmptElem, testPolicyCmpts[i].getTestPolicyCmptLinks(), isInput, objectId);
         }
     }
 
@@ -399,7 +401,7 @@ public class TestCaseBuilder extends AbstractArtefactBuilder {
         }
         return testPolicyCmptElem;
     }
-    
+
     /*
      * Add the given relations to the given element.
      */
@@ -411,24 +413,26 @@ public class TestCaseBuilder extends AbstractArtefactBuilder {
         if (relations == null) {
             return;
         }
-        if (relations.length > 0){
-            for(int i = 0; i < relations.length; i++){
-                if (!relations[i].isValid()){
+        if (relations.length > 0) {
+            for (int i = 0; i < relations.length; i++) {
+                if (!relations[i].isValid()) {
                     continue;
                 }
-                if (! relationsParentSameType(relations[i], isInput)){
+                if (!relationsParentSameType(relations[i], isInput)) {
                     continue;
                 }
                 String relationType = "";
                 if (relations[i].isComposition()) {
                     try {
-                        addTestPolicyCmpts(doc, parent, new ITestPolicyCmpt[]{relations[i].findTarget()}, relations[i], isInput, objectId);
+                        addTestPolicyCmpts(doc, parent, new ITestPolicyCmpt[] { relations[i].findTarget() },
+                                relations[i], isInput, objectId);
                     } catch (CoreException e) {
                         throw new RuntimeException(e);
                     }
-                } else if (relations[i].isAccoziation()){
+                } else if (relations[i].isAccoziation()) {
                     relationType = "association"; // @see AbstractModelObject
-                    Element testPolicyCmptElem = XmlUtil.addNewChild(doc, parent, relations[i].getTestPolicyCmptTypeParameter());
+                    Element testPolicyCmptElem = XmlUtil.addNewChild(doc, parent, relations[i]
+                            .getTestPolicyCmptTypeParameter());
                     testPolicyCmptElem.setAttribute("target", relations[i].getTarget());
                     testPolicyCmptElem.setAttribute("type", relationType);
                     ITestPolicyCmpt target = relations[i].findTarget();
@@ -437,10 +441,10 @@ public class TestCaseBuilder extends AbstractArtefactBuilder {
             }
         }
     }
-    
+
     private boolean relationsParentSameType(ITestPolicyCmptLink relation, boolean isInput) throws CoreException {
         ITestPolicyCmptTypeParameter param = relation.findTestPolicyCmptTypeParameter(getIpsProject());
-        if (param == null){
+        if (param == null) {
             return false;
         }
         return param.isInputParameter() && isInput || param.isExpextedResultParameter() && !isInput;
@@ -448,39 +452,43 @@ public class TestCaseBuilder extends AbstractArtefactBuilder {
 
     /*
      * Add the given test attributes to the given element.
-     */ 
-    private void addTestAttrValues(Document doc, Element testPolicyCmpt, ITestAttributeValue[] testAttrValues, boolean isInput) throws CoreException{
-        if (testAttrValues == null){
+     */
+    private void addTestAttrValues(Document doc,
+            Element testPolicyCmpt,
+            ITestAttributeValue[] testAttrValues,
+            boolean isInput) throws CoreException {
+        if (testAttrValues == null) {
             return;
         }
         IIpsProject ipsProject = getIpsProject();
         for (int i = 0; i < testAttrValues.length; i++) {
-            if (!testAttrValues[i].isValid()){
+            if (!testAttrValues[i].isValid()) {
                 continue;
             }
-            if (testAttrValues[i].isInputAttribute(ipsProject) && isInput || testAttrValues[i].isExpextedResultAttribute(ipsProject) && ! isInput){
+            if (testAttrValues[i].isInputAttribute(ipsProject) && isInput
+                    || testAttrValues[i].isExpextedResultAttribute(ipsProject) && !isInput) {
                 ITestAttribute testAttribute = testAttrValues[i].findTestAttribute(ipsProject);
                 if (testAttribute == null) {
                     throw new CoreException(new IpsStatus(NLS.bind(
                             "The test attribute {0} was not found in the test case type definition.", testAttrValues[i]
                                     .getTestAttribute())));
                 }
-                
+
                 Element attrValueElem = XmlUtil.addNewChild(doc, testPolicyCmpt, testAttribute.getAttribute());
                 XmlUtil.addNewCDATAorTextChild(doc, attrValueElem, testAttrValues[i].getValue());
                 attrValueElem.setAttribute("type", "property");
             }
         }
     }
-    
-    private String getContentAsString(InputStream is, String charSet) throws CoreException{
+
+    private String getContentAsString(InputStream is, String charSet) throws CoreException {
         try {
             return StringUtil.readFromInputStream(is, charSet);
         } catch (IOException e) {
             throw new CoreException(new IpsStatus(e));
         }
-    }    
-    
+    }
+
     /**
      * {@inheritDoc}
      * 

@@ -1,19 +1,16 @@
-/*******************************************************************************
- * Copyright (c) 2005,2006 Faktor Zehn GmbH und andere.
- *
- * Alle Rechte vorbehalten.
- *
- * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele,
- * Konfigurationen, etc.) duerfen nur unter den Bedingungen der 
- * Faktor-Zehn-Community Lizenzvereinbarung - Version 0.1 (vor Gruendung Community) 
- * genutzt werden, die Bestandteil der Auslieferung ist und auch unter
- *   http://www.faktorips.org/legal/cl-v01.html
- * eingesehen werden kann.
- *
- * Mitwirkende:
- *   Faktor Zehn GmbH - initial API and implementation - http://www.faktorzehn.de
- *
- *******************************************************************************/
+/***************************************************************************************************
+ * Copyright (c) 2005-2008 Faktor Zehn AG und andere.
+ * 
+ * Alle Rechte vorbehalten.
+ * 
+ * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen,
+ * etc.) duerfen nur unter den Bedingungen der Faktor-Zehn-Community Lizenzvereinbarung - Version
+ * 0.1 (vor Gruendung Community) genutzt werden, die Bestandteil der Auslieferung ist und auch unter
+ * http://www.faktorzehn.org/f10-org:lizenzen:community eingesehen werden kann.
+ * 
+ * Mitwirkende: Faktor Zehn AG - initial API and implementation - http://www.faktorzehn.de
+ * 
+ **************************************************************************************************/
 
 package org.faktorips.devtools.stdbuilder;
 
@@ -81,20 +78,20 @@ public class StandardBuilderSet extends DefaultBuilderSet {
     /**
      * Configuration property that enables/disables the generation of a copy method.
      * 
-     * @see ICopySupport 
+     * @see ICopySupport
      */
     public final static String CONFIG_PROPERTY_GENERATE_COPY_SUPPORT = "generateCopySupport";
 
     /**
      * Configuration property that enables/disables the generation of delta computation.
      * 
-     * @see IDeltaSupport 
+     * @see IDeltaSupport
      */
     public final static String CONFIG_PROPERTY_GENERATE_DELTA_SUPPORT = "generateDeltaSupport";
-    
+
     /**
-     * Configuration property that is supposed to be used to read a configuration value from
-     * the IIpsArtefactBuilderSetConfig object provided by the initialize method of an
+     * Configuration property that is supposed to be used to read a configuration value from the
+     * IIpsArtefactBuilderSetConfig object provided by the initialize method of an
      * IIpsArtefactBuilderSet instance.
      */
     public final static String CONFIG_PROPERTY_GENERATE_CHANGELISTENER = "generateChangeListener";
@@ -132,10 +129,9 @@ public class StandardBuilderSet extends DefaultBuilderSet {
     private boolean useEnums;
 
     private boolean useTypesafeCollections;
-    
-    
+
     public StandardBuilderSet() {
-      initVersion();
+        initVersion();
     }
 
     public void afterBuildProcess(int buildKind) throws CoreException {
@@ -148,14 +144,15 @@ public class StandardBuilderSet extends DefaultBuilderSet {
 
     private void initVersion() {
         version = "2.0.0";
-//        Version versionObj = Version.parseVersion((String)StdBuilderPlugin.getDefault().getBundle().getHeaders().get(org.osgi.framework.Constants.BUNDLE_VERSION));
-//        StringBuffer buf = new StringBuffer();
-//        buf.append(versionObj.getMajor());
-//        buf.append('.');
-//        buf.append(versionObj.getMinor());
-//        buf.append('.');
-//        buf.append(versionObj.getMicro());
-//        version = buf.toString();
+        // Version versionObj =
+        // Version.parseVersion((String)StdBuilderPlugin.getDefault().getBundle().getHeaders().get(org.osgi.framework.Constants.BUNDLE_VERSION));
+        // StringBuffer buf = new StringBuffer();
+        // buf.append(versionObj.getMajor());
+        // buf.append('.');
+        // buf.append(versionObj.getMinor());
+        // buf.append('.');
+        // buf.append(versionObj.getMicro());
+        // version = buf.toString();
     }
 
     /**
@@ -172,28 +169,28 @@ public class StandardBuilderSet extends DefaultBuilderSet {
         return true;
     }
 
-    private void clearGenerators(){
+    private void clearGenerators() {
         ipsObjectTypeGenerators.clear();
     }
-    
-    public GenPolicyCmptType getGenerator(IPolicyCmptType policyCmptType) throws CoreException{
-        if(policyCmptType == null){
+
+    public GenPolicyCmptType getGenerator(IPolicyCmptType policyCmptType) throws CoreException {
+        if (policyCmptType == null) {
             return null;
         }
         GenPolicyCmptType generator = (GenPolicyCmptType)ipsObjectTypeGenerators.get(policyCmptType);
-        if(generator == null){
+        if (generator == null) {
             generator = new GenPolicyCmptType(policyCmptType, this, new LocalizedStringsSet(GenPolicyCmptType.class));
             ipsObjectTypeGenerators.put(policyCmptType, generator);
         }
         return generator;
     }
-    
-    public GenProductCmptType getGenerator(IProductCmptType productCmptType) throws CoreException{
-        if(productCmptType == null){
+
+    public GenProductCmptType getGenerator(IProductCmptType productCmptType) throws CoreException {
+        if (productCmptType == null) {
             return null;
         }
         GenProductCmptType generator = (GenProductCmptType)ipsObjectTypeGenerators.get(productCmptType);
-        if(generator == null){
+        if (generator == null) {
             generator = new GenProductCmptType(productCmptType, this, new LocalizedStringsSet(GenProductCmptType.class));
             ipsObjectTypeGenerators.put(productCmptType, generator);
         }
@@ -203,7 +200,9 @@ public class StandardBuilderSet extends DefaultBuilderSet {
     /**
      * {@inheritDoc}
      */
-    public CompilationResult getTableAccessCode(ITableContents tableContents, ITableAccessFunction fct, CompilationResult[] argResults) throws CoreException {
+    public CompilationResult getTableAccessCode(ITableContents tableContents,
+            ITableAccessFunction fct,
+            CompilationResult[] argResults) throws CoreException {
         Datatype returnType = fct.getIpsProject().findDatatype(fct.getType());
         DatatypeHelper returnTypeHelper = fct.getIpsProject().findDatatypeHelper(returnType.getQualifiedName());
         JavaCodeFragment code = new JavaCodeFragment();
@@ -227,7 +226,7 @@ public class StandardBuilderSet extends DefaultBuilderSet {
                 + "\").findRow("); //$NON-NLS-1$
         // TODO pk: findRow is not correct in general
         for (int i = 0; i < argResults.length; i++) {
-            if (i>0) {
+            if (i > 0) {
                 code.append(", "); //$NON-NLS-1$
             }
             code.append(argResults[i].getCodeFragment());
@@ -249,36 +248,36 @@ public class StandardBuilderSet extends DefaultBuilderSet {
         code.append(").execute())"); //$NON-NLS-1$
         return result;
     }
-    
+
     /**
      * {@inheritDoc}
      */
     public IdentifierResolver createFlIdentifierResolver(IFormula formula) throws CoreException {
-        return new AbstractParameterIdentifierResolver(formula){
+        return new AbstractParameterIdentifierResolver(formula) {
 
             protected String getParameterAttributGetterName(IAttribute attribute, Datatype datatype) {
-                if(datatype instanceof IPolicyCmptType){
-                    return policyCmptInterfaceBuilder.getMethodNameGetPropertyValue(attribute.getName(), datatype);    
+                if (datatype instanceof IPolicyCmptType) {
+                    return policyCmptInterfaceBuilder.getMethodNameGetPropertyValue(attribute.getName(), datatype);
                 }
-                if(datatype instanceof IProductCmptType){
+                if (datatype instanceof IProductCmptType) {
                     return productCmptGenInterfaceBuilder.getMethodNameGetPropertyValue(attribute.getName(), datatype);
                 }
                 return null;
             }
         };
     }
-    
+
     /**
      * {@inheritDoc}
      */
     public IdentifierResolver createFlIdentifierResolverForFormulaTest(IFormula formula) throws CoreException {
-        return new AbstractParameterIdentifierResolver(formula){
+        return new AbstractParameterIdentifierResolver(formula) {
 
             protected String getParameterAttributGetterName(IAttribute attribute, Datatype datatype) {
-                if(datatype instanceof IPolicyCmptType){
-                    return policyCmptInterfaceBuilder.getMethodNameGetPropertyValue(attribute.getName(), datatype);    
+                if (datatype instanceof IPolicyCmptType) {
+                    return policyCmptInterfaceBuilder.getMethodNameGetPropertyValue(attribute.getName(), datatype);
                 }
-                if(datatype instanceof IProductCmptType){
+                if (datatype instanceof IProductCmptType) {
                     return productCmptGenInterfaceBuilder.getMethodNameGetPropertyValue(attribute.getName(), datatype);
                 }
                 return null;
@@ -291,10 +290,13 @@ public class StandardBuilderSet extends DefaultBuilderSet {
                 CompilationResult compile = super.compile(param, attributeName, locale);
                 try {
                     Datatype datatype = param.findDatatype(getIpsProject());
-                    if (datatype instanceof IType){
-                        // instead of using the types getter method to get the value for an identifier,
-                        // the given datatype plus the attribute will be used as new parameter identifier,
-                        // this parameter identifier will also be used as parameter inside the formula method
+                    if (datatype instanceof IType) {
+                        // instead of using the types getter method to get the value for an
+                        // identifier,
+                        // the given datatype plus the attribute will be used as new parameter
+                        // identifier,
+                        // this parameter identifier will also be used as parameter inside the
+                        // formula method
                         // which uses this code fragment
                         String code = param.getName() + "_" + attributeName;
                         return new CompilationResultImpl(code, compile.getDatatype());
@@ -306,26 +308,27 @@ public class StandardBuilderSet extends DefaultBuilderSet {
             }
         };
     }
-    
+
     /**
      * {@inheritDoc}
      */
     public String getPackage(String kind, IIpsSrcFile ipsSrcFile) throws CoreException {
         String returnValue = super.getPackage(kind, ipsSrcFile);
-        if(returnValue != null){
+        if (returnValue != null) {
             return returnValue;
         }
-        if (IpsObjectType.TABLE_CONTENTS.equals(ipsSrcFile.getIpsObjectType()) &&
-                EnumClassesBuilder.PACKAGE_STRUCTURE_KIND_ID.equals(kind)) {
+        if (IpsObjectType.TABLE_CONTENTS.equals(ipsSrcFile.getIpsObjectType())
+                && EnumClassesBuilder.PACKAGE_STRUCTURE_KIND_ID.equals(kind)) {
             return getPackageName(ipsSrcFile);
         }
-        
-        if (IpsObjectType.TABLE_STRUCTURE.equals(ipsSrcFile.getIpsObjectType()) &&
-                EnumTypeInterfaceBuilder.PACKAGE_STRUCTURE_KIND_ID.equals(kind)) {
+
+        if (IpsObjectType.TABLE_STRUCTURE.equals(ipsSrcFile.getIpsObjectType())
+                && EnumTypeInterfaceBuilder.PACKAGE_STRUCTURE_KIND_ID.equals(kind)) {
             return getPackageName(ipsSrcFile);
         }
-        
-        throw new IllegalArgumentException("Unexpected kind id " + kind + " for the IpsObjectType: " + ipsSrcFile.getIpsObjectType());
+
+        throw new IllegalArgumentException("Unexpected kind id " + kind + " for the IpsObjectType: "
+                + ipsSrcFile.getIpsObjectType());
     }
 
     public boolean isSupportFlIdentifierResolver() {
@@ -333,17 +336,20 @@ public class StandardBuilderSet extends DefaultBuilderSet {
     }
 
     /**
-     * Instantiates the artefact builders for this set. The following configuration properties of the
-     * provided IIpsArtefactBuilderSetConfig are considered by this builder set.
+     * Instantiates the artefact builders for this set. The following configuration properties of
+     * the provided IIpsArtefactBuilderSetConfig are considered by this builder set.
      * 
      * Property: generateChangeListener, type=boolean, values = ("true", "false")
      * 
      */
     public void initialize(IIpsArtefactBuilderSetConfig config) throws CoreException {
 
-        generateChangeListener = config.getBooleanPropertyValue(StandardBuilderSet.CONFIG_PROPERTY_GENERATE_CHANGELISTENER, false);
-        boolean generateDeltaSupport = config.getBooleanPropertyValue(StandardBuilderSet.CONFIG_PROPERTY_GENERATE_DELTA_SUPPORT, false);
-        boolean generateCopySupport = config.getBooleanPropertyValue(StandardBuilderSet.CONFIG_PROPERTY_GENERATE_COPY_SUPPORT, false);
+        generateChangeListener = config.getBooleanPropertyValue(
+                StandardBuilderSet.CONFIG_PROPERTY_GENERATE_CHANGELISTENER, false);
+        boolean generateDeltaSupport = config.getBooleanPropertyValue(
+                StandardBuilderSet.CONFIG_PROPERTY_GENERATE_DELTA_SUPPORT, false);
+        boolean generateCopySupport = config.getBooleanPropertyValue(
+                StandardBuilderSet.CONFIG_PROPERTY_GENERATE_COPY_SUPPORT, false);
         targetJavaVersion = EnumTypeTargetJavaVersion.valueOf(config
                 .getPropertyValue(StandardBuilderSet.CONFIG_PROPERTY_TARGET_JAVA_VERSION));
         useEnums = targetJavaVersion.isAtLeast(EnumTypeTargetJavaVersion.JAVA_5)
@@ -351,28 +357,31 @@ public class StandardBuilderSet extends DefaultBuilderSet {
         useTypesafeCollections = targetJavaVersion.isAtLeast(EnumTypeTargetJavaVersion.JAVA_5)
                 && config.getBooleanPropertyValue(StandardBuilderSet.CONFIG_PROPERTY_USE_TYPESAFE_COLLECTIONS, false);
         // create policy component type builders
-        PolicyCmptImplClassBuilder policyCmptImplClassBuilder = new PolicyCmptImplClassBuilder(
-                this, KIND_POLICY_CMPT_IMPL, generateChangeListener);
+        PolicyCmptImplClassBuilder policyCmptImplClassBuilder = new PolicyCmptImplClassBuilder(this,
+                KIND_POLICY_CMPT_IMPL, generateChangeListener);
         policyCmptImplClassBuilder.setGenerateDeltaSupport(generateDeltaSupport);
         policyCmptImplClassBuilder.setGenerateCopySupport(generateCopySupport);
-        policyCmptInterfaceBuilder = new PolicyCmptInterfaceBuilder(
-                this, KIND_POLICY_CMPT_INTERFACE, generateChangeListener);
+        policyCmptInterfaceBuilder = new PolicyCmptInterfaceBuilder(this, KIND_POLICY_CMPT_INTERFACE,
+                generateChangeListener);
         policyCmptInterfaceBuilder.setGenerateDeltaSupport(generateDeltaSupport);
         policyCmptInterfaceBuilder.setGenerateCopySupport(generateCopySupport);
-        
+
         // create product component type builders
         ProductCmptInterfaceBuilder productCmptInterfaceBuilder = new ProductCmptInterfaceBuilder(this,
                 KIND_PRODUCT_CMPT_INTERFACE);
-        ProductCmptImplClassBuilder productCmptImplClassBuilder = new ProductCmptImplClassBuilder(this, KIND_PRODUCT_CMPT_IMPL);
-        productCmptGenInterfaceBuilder = new ProductCmptGenInterfaceBuilder(this, DefaultBuilderSet.KIND_PRODUCT_CMPT_GENERATION_INTERFACE);
-        ProductCmptGenImplClassBuilder productCmptGenImplClassBuilder = new ProductCmptGenImplClassBuilder(this, DefaultBuilderSet.KIND_PRODUCT_CMPT_GENERATION_IMPL);
+        ProductCmptImplClassBuilder productCmptImplClassBuilder = new ProductCmptImplClassBuilder(this,
+                KIND_PRODUCT_CMPT_IMPL);
+        productCmptGenInterfaceBuilder = new ProductCmptGenInterfaceBuilder(this,
+                DefaultBuilderSet.KIND_PRODUCT_CMPT_GENERATION_INTERFACE);
+        ProductCmptGenImplClassBuilder productCmptGenImplClassBuilder = new ProductCmptGenImplClassBuilder(this,
+                DefaultBuilderSet.KIND_PRODUCT_CMPT_GENERATION_IMPL);
 
         // product component builders
-        ProductCmptBuilder productCmptGenerationImplBuilder = new ProductCmptBuilder(
-                this, KIND_PRODUCT_CMPT_GENERATION_IMPL);
-        IIpsArtefactBuilder productCmptContentCopyBuilder = new ProductCmptXMLBuilder(
-                IpsObjectType.PRODUCT_CMPT, this, KIND_PRODUCT_CMPT_CONTENT);
-        
+        ProductCmptBuilder productCmptGenerationImplBuilder = new ProductCmptBuilder(this,
+                KIND_PRODUCT_CMPT_GENERATION_IMPL);
+        IIpsArtefactBuilder productCmptContentCopyBuilder = new ProductCmptXMLBuilder(IpsObjectType.PRODUCT_CMPT, this,
+                KIND_PRODUCT_CMPT_CONTENT);
+
         // table structure builders
         tableImplBuilder = new TableImplBuilder(this, KIND_TABLE_IMPL);
         tableRowBuilder = new TableRowBuilder(this, KIND_TABLE_ROW);
@@ -382,8 +391,9 @@ public class StandardBuilderSet extends DefaultBuilderSet {
         IIpsArtefactBuilder tableContentCopyBuilder = new TableContentBuilder(this, KIND_TABLE_CONTENT);
 
         // test case type builders
-        TestCaseTypeClassBuilder testCaseTypeClassBuilder = new TestCaseTypeClassBuilder(this, KIND_TEST_CASE_TYPE_CLASS);
-        
+        TestCaseTypeClassBuilder testCaseTypeClassBuilder = new TestCaseTypeClassBuilder(this,
+                KIND_TEST_CASE_TYPE_CLASS);
+
         // test case builder
         TestCaseBuilder testCaseBuilder = new TestCaseBuilder(this);
 
@@ -392,37 +402,39 @@ public class StandardBuilderSet extends DefaultBuilderSet {
 
         // toc file builder
         TocFileBuilder tocFileBuilder = new TocFileBuilder(this);
-       
-        EnumTypeInterfaceBuilder enumTypeInterfaceBuilder = new EnumTypeInterfaceBuilder(this, EnumTypeInterfaceBuilder.PACKAGE_STRUCTURE_KIND_ID);
-        enumClassesBuilder = new EnumClassesBuilder(this, EnumClassesBuilder.PACKAGE_STRUCTURE_KIND_ID, enumTypeInterfaceBuilder);
+
+        EnumTypeInterfaceBuilder enumTypeInterfaceBuilder = new EnumTypeInterfaceBuilder(this,
+                EnumTypeInterfaceBuilder.PACKAGE_STRUCTURE_KIND_ID);
+        enumClassesBuilder = new EnumClassesBuilder(this, EnumClassesBuilder.PACKAGE_STRUCTURE_KIND_ID,
+                enumTypeInterfaceBuilder);
         //
         // wire up the builders
         //
-        
+
         // policy component type builders
         policyCmptImplClassBuilder.setInterfaceBuilder(policyCmptInterfaceBuilder);
-        
+
         // product component type builders
 
         productCmptImplClassBuilder.setInterfaceBuilder(productCmptInterfaceBuilder);
-        
+
         productCmptGenImplClassBuilder.setInterfaceBuilder(productCmptGenInterfaceBuilder);
         productCmptGenImplClassBuilder.setTableImplBuilder(tableImplBuilder);
-        
+
         // product component builders.
         productCmptGenerationImplBuilder.setProductCmptImplBuilder(productCmptImplClassBuilder);
         productCmptGenerationImplBuilder.setProductCmptGenImplBuilder(productCmptGenImplClassBuilder);
         productCmptGenerationImplBuilder.setProductCmptGenInterfaceBuilder(productCmptGenInterfaceBuilder);
-        
+
         // test case builder
         testCaseBuilder.setJavaSourceFileBuilder(policyCmptImplClassBuilder);
-        
+
         // formula test builder
         formulaTestBuilder.setPolicyCmptInterfaceBuilder(policyCmptInterfaceBuilder);
         formulaTestBuilder.setProductCmptInterfaceBuilder(productCmptInterfaceBuilder);
         formulaTestBuilder.setProductCmptBuilder(productCmptGenerationImplBuilder);
         formulaTestBuilder.setProductCmptGenImplClassBuilder(productCmptGenImplClassBuilder);
-        
+
         // toc file builders
         tocFileBuilder.setProductCmptTypeImplClassBuilder(productCmptImplClassBuilder);
         tocFileBuilder.setProductCmptBuilder(productCmptGenerationImplBuilder);
@@ -431,51 +443,39 @@ public class StandardBuilderSet extends DefaultBuilderSet {
         tocFileBuilder.setTestCaseTypeClassBuilder(testCaseTypeClassBuilder);
         tocFileBuilder.setTestCaseBuilder(testCaseBuilder);
         tocFileBuilder.setFormulaTestBuilder(formulaTestBuilder);
-        
-        // set generate logging state for the builders
-        boolean generateLogging = config.getBooleanPropertyValue(DefaultJavaSourceFileBuilder.CONFIG_PROPERTY_GENERATE_LOGGING, false);
 
-        tableImplBuilder.setLoggingCodeGenerationEnabled(generateLogging); 
+        // set generate logging state for the builders
+        boolean generateLogging = config.getBooleanPropertyValue(
+                DefaultJavaSourceFileBuilder.CONFIG_PROPERTY_GENERATE_LOGGING, false);
+
+        tableImplBuilder.setLoggingCodeGenerationEnabled(generateLogging);
         productCmptGenInterfaceBuilder.setLoggingCodeGenerationEnabled(generateLogging);
         productCmptGenImplClassBuilder.setLoggingCodeGenerationEnabled(generateLogging);
-        productCmptInterfaceBuilder.setLoggingCodeGenerationEnabled(generateLogging); 
+        productCmptInterfaceBuilder.setLoggingCodeGenerationEnabled(generateLogging);
         productCmptImplClassBuilder.setLoggingCodeGenerationEnabled(generateLogging);
         policyCmptImplClassBuilder.setLoggingCodeGenerationEnabled(generateLogging);
-        policyCmptInterfaceBuilder.setLoggingCodeGenerationEnabled(generateLogging); 
+        policyCmptInterfaceBuilder.setLoggingCodeGenerationEnabled(generateLogging);
         productCmptGenerationImplBuilder.setLoggingCodeGenerationEnabled(generateLogging);
         testCaseTypeClassBuilder.setLoggingCodeGenerationEnabled(generateLogging);
         formulaTestBuilder.setLoggingCodeGenerationEnabled(generateLogging);
         enumClassesBuilder.setLoggingCodeGenerationEnabled(generateLogging);
         enumTypeInterfaceBuilder.setLoggingCodeGenerationEnabled(generateLogging);
-        
-        
-        builders = new IIpsArtefactBuilder[] { 
-                tableImplBuilder, 
-                tableRowBuilder,
-                productCmptGenInterfaceBuilder,
-                productCmptGenImplClassBuilder,
-                productCmptInterfaceBuilder, 
-                productCmptImplClassBuilder, 
-                policyCmptImplClassBuilder,
-                policyCmptInterfaceBuilder, 
-                productCmptGenerationImplBuilder,
-                tableContentCopyBuilder, 
-                productCmptContentCopyBuilder,
-                testCaseTypeClassBuilder,
-                testCaseBuilder,
-                formulaTestBuilder,
-                enumClassesBuilder,
-                enumTypeInterfaceBuilder,
-                tocFileBuilder };
+
+        builders = new IIpsArtefactBuilder[] { tableImplBuilder, tableRowBuilder, productCmptGenInterfaceBuilder,
+                productCmptGenImplClassBuilder, productCmptInterfaceBuilder, productCmptImplClassBuilder,
+                policyCmptImplClassBuilder, policyCmptInterfaceBuilder, productCmptGenerationImplBuilder,
+                tableContentCopyBuilder, productCmptContentCopyBuilder, testCaseTypeClassBuilder, testCaseBuilder,
+                formulaTestBuilder, enumClassesBuilder, enumTypeInterfaceBuilder, tocFileBuilder };
     }
-    
+
     /**
      * For testing purposes.
      */
     public IIpsArtefactBuilder getBuilder(Class builderClass) {
         for (int i = 0; i < builders.length; i++) {
             if (builders[i].getClass().equals(builderClass)) {
-                return builders[i];            }
+                return builders[i];
+            }
         }
         throw new RuntimeException("No builder of class " + builderClass + " defined."); //$NON-NLS-1$ //$NON-NLS-2$
     }
@@ -485,8 +485,8 @@ public class StandardBuilderSet extends DefaultBuilderSet {
     }
 
     /**
-     * Returns the standard builder plugin version in the format [major.minor.mico]. The version qualifier is not included
-     * in the version string.
+     * Returns the standard builder plugin version in the format [major.minor.mico]. The version
+     * qualifier is not included in the version string.
      */
     public String getVersion() {
         return version;
@@ -509,7 +509,6 @@ public class StandardBuilderSet extends DefaultBuilderSet {
     public boolean isUseEnums() {
         return useEnums;
     }
-
 
     /**
      * Returns if Java 5 typesafe collections shall be used in the code generated by this builder.

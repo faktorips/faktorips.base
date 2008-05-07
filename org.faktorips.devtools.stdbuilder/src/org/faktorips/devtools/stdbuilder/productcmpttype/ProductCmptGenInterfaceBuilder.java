@@ -1,19 +1,16 @@
-/*******************************************************************************
- * Copyright (c) 2005,2006 Faktor Zehn GmbH und andere.
- *
- * Alle Rechte vorbehalten.
- *
- * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele,
- * Konfigurationen, etc.) duerfen nur unter den Bedingungen der 
- * Faktor-Zehn-Community Lizenzvereinbarung - Version 0.1 (vor Gruendung Community) 
- * genutzt werden, die Bestandteil der Auslieferung ist und auch unter
- *   http://www.faktorips.org/legal/cl-v01.html
- * eingesehen werden kann.
- *
- * Mitwirkende:
- *   Faktor Zehn GmbH - initial API and implementation - http://www.faktorzehn.de
- *
- *******************************************************************************/
+/***************************************************************************************************
+ * Copyright (c) 2005-2008 Faktor Zehn AG und andere.
+ * 
+ * Alle Rechte vorbehalten.
+ * 
+ * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen,
+ * etc.) duerfen nur unter den Bedingungen der Faktor-Zehn-Community Lizenzvereinbarung - Version
+ * 0.1 (vor Gruendung Community) genutzt werden, die Bestandteil der Auslieferung ist und auch unter
+ * http://www.faktorzehn.org/f10-org:lizenzen:community eingesehen werden kann.
+ * 
+ * Mitwirkende: Faktor Zehn AG - initial API and implementation - http://www.faktorzehn.de
+ * 
+ **************************************************************************************************/
 
 package org.faktorips.devtools.stdbuilder.productcmpttype;
 
@@ -51,7 +48,7 @@ import org.faktorips.util.StringUtil;
  * @author Jan Ortmann
  */
 public class ProductCmptGenInterfaceBuilder extends BaseProductCmptTypeBuilder {
-    
+
     public ProductCmptGenInterfaceBuilder(IIpsArtefactBuilderSet builderSet, String kindId) {
         super(builderSet, kindId, new LocalizedStringsSet(ProductCmptGenInterfaceBuilder.class));
         setMergeEnabled(true);
@@ -64,9 +61,7 @@ public class ProductCmptGenInterfaceBuilder extends BaseProductCmptTypeBuilder {
         String name = ipsSrcFile.getIpsObjecName() + getAbbreviationForGenerationConcept(ipsSrcFile);
         return getJavaNamingConvention().getPublishedInterfaceName(name);
     }
-    
-    
-    
+
     /**
      * {@inheritDoc}
      */
@@ -89,13 +84,15 @@ public class ProductCmptGenInterfaceBuilder extends BaseProductCmptTypeBuilder {
     }
 
     protected void generateTypeJavadoc(JavaCodeFragmentBuilder builder) throws CoreException {
-        String generationConceptName = getChangesInTimeNamingConvention(getIpsObject()).getGenerationConceptNameSingular(
-                getLanguageUsedInGeneratedSourceCode(getIpsObject()));
-        appendLocalizedJavaDoc("INTERFACE", new String[]{generationConceptName, getProductCmptType().getName()}, getIpsObject(), builder);
+        String generationConceptName = getChangesInTimeNamingConvention(getIpsObject())
+                .getGenerationConceptNameSingular(getLanguageUsedInGeneratedSourceCode(getIpsObject()));
+        appendLocalizedJavaDoc("INTERFACE", new String[] { generationConceptName, getProductCmptType().getName() },
+                getIpsObject(), builder);
     }
 
-    protected void generateOtherCode(JavaCodeFragmentBuilder constantsBuilder, JavaCodeFragmentBuilder memberVarsBuilder, JavaCodeFragmentBuilder methodsBuilder)
-            throws CoreException {
+    protected void generateOtherCode(JavaCodeFragmentBuilder constantsBuilder,
+            JavaCodeFragmentBuilder memberVarsBuilder,
+            JavaCodeFragmentBuilder methodsBuilder) throws CoreException {
         // nothing to do
     }
 
@@ -106,23 +103,28 @@ public class ProductCmptGenInterfaceBuilder extends BaseProductCmptTypeBuilder {
     /**
      * {@inheritDoc}
      */
-    protected void generateCodeForMethod(IPolicyCmptTypeAttribute a, DatatypeHelper datatypeHelper, JavaCodeFragmentBuilder memberVarsBuilder, JavaCodeFragmentBuilder methodsBuilder) throws CoreException {
+    protected void generateCodeForMethod(IPolicyCmptTypeAttribute a,
+            DatatypeHelper datatypeHelper,
+            JavaCodeFragmentBuilder memberVarsBuilder,
+            JavaCodeFragmentBuilder methodsBuilder) throws CoreException {
         // nothing to do, computation methods are not published.
     }
-    
+
     protected void generateCodeForPolicyCmptTypeAttribute(IPolicyCmptTypeAttribute a,
             DatatypeHelper datatypeHelper,
             JavaCodeFragmentBuilder fieldsBuilder,
             JavaCodeFragmentBuilder methodsBuilder) throws CoreException {
-        if(a.getModifier().equals(org.faktorips.devtools.core.model.ipsobject.Modifier.PUBLISHED)){
+        if (a.getModifier().equals(org.faktorips.devtools.core.model.ipsobject.Modifier.PUBLISHED)) {
             super.generateCodeForPolicyCmptTypeAttribute(a, datatypeHelper, fieldsBuilder, methodsBuilder);
         }
     }
-    
+
     /**
      * {@inheritDoc}
      */
-    protected void generateCodeForNoneDerivedUnionAssociation(IProductCmptTypeAssociation association, JavaCodeFragmentBuilder memberVarsBuilder, JavaCodeFragmentBuilder methodsBuilder) throws Exception {
+    protected void generateCodeForNoneDerivedUnionAssociation(IProductCmptTypeAssociation association,
+            JavaCodeFragmentBuilder memberVarsBuilder,
+            JavaCodeFragmentBuilder methodsBuilder) throws Exception {
         GenProdAssociation generator = getGenerator(association);
         generator.generate(generatesInterface(), getIpsProject(), getMainTypeSection());
     }
@@ -130,20 +132,23 @@ public class ProductCmptGenInterfaceBuilder extends BaseProductCmptTypeBuilder {
     /**
      * {@inheritDoc}
      */
-    protected void generateCodeForDerivedUnionAssociationDefinition(IProductCmptTypeAssociation containerAssociation, JavaCodeFragmentBuilder memberVarsBuilder, JavaCodeFragmentBuilder methodsBuilder) throws Exception {
+    protected void generateCodeForDerivedUnionAssociationDefinition(IProductCmptTypeAssociation containerAssociation,
+            JavaCodeFragmentBuilder memberVarsBuilder,
+            JavaCodeFragmentBuilder methodsBuilder) throws Exception {
         GenProdAssociation generator = getGenerator(containerAssociation);
         generator.generateCodeForDerivedUnionAssociationDefinition(methodsBuilder);
     }
-    
+
     /**
      * {@inheritDoc}
      */
-    protected void generateCodeForDerivedUnionAssociationImplementation(IProductCmptTypeAssociation containerAssociation, List implementationAssociations, JavaCodeFragmentBuilder memberVarsBuilder, JavaCodeFragmentBuilder methodsBuilder) throws Exception {
+    protected void generateCodeForDerivedUnionAssociationImplementation(IProductCmptTypeAssociation containerAssociation,
+            List implementationAssociations,
+            JavaCodeFragmentBuilder memberVarsBuilder,
+            JavaCodeFragmentBuilder methodsBuilder) throws Exception {
         // nothing to do
     }
-    
-    
-    
+
     /**
      * {@inheritDoc}
      */
@@ -158,18 +163,17 @@ public class ProductCmptGenInterfaceBuilder extends BaseProductCmptTypeBuilder {
      * 
      * @since 2.0
      */
-    //TODO this method might go to a type builder when introduced 
-    public String getMethodNameGetPropertyValue(String propName, Datatype datatype){
+    // TODO this method might go to a type builder when introduced
+    public String getMethodNameGetPropertyValue(String propName, Datatype datatype) {
         return getJavaNamingConvention().getGetterMethodName(propName, datatype);
     }
 
     /**
      * {@inheritDoc}
      */
-    protected void generateCodeForMethodDefinedInModel(
-            IMethod method,
-            JavaCodeFragmentBuilder methodsBuilder) throws CoreException {
-        
+    protected void generateCodeForMethodDefinedInModel(IMethod method, JavaCodeFragmentBuilder methodsBuilder)
+            throws CoreException {
+
         if (method.getModifier().isPublished()) {
             methodsBuilder.javaDoc(method.getDescription(), ANNOTATION_GENERATED);
             generateSignatureForModelMethod((IProductCmptTypeMethod)method, false, false, methodsBuilder);
@@ -177,29 +181,30 @@ public class ProductCmptGenInterfaceBuilder extends BaseProductCmptTypeBuilder {
         }
     }
 
-    public void generateSignatureForModelMethod(
-            IProductCmptTypeMethod method,
+    public void generateSignatureForModelMethod(IProductCmptTypeMethod method,
             boolean isAbstract,
             boolean parametersFinal,
             JavaCodeFragmentBuilder methodsBuilder) throws CoreException {
-        generateSignatureForModelMethod(method, isAbstract, parametersFinal, methodsBuilder, null, EMPTY_STRING_ARRAY, EMPTY_STRING_ARRAY);
+        generateSignatureForModelMethod(method, isAbstract, parametersFinal, methodsBuilder, null, EMPTY_STRING_ARRAY,
+                EMPTY_STRING_ARRAY);
     }
-        
+
     /**
      * Code sample:
+     * 
      * <pre>
      * public abstract Money computePremium(Policy policy, Integer age) throws FormulaException
      * </pre>
      */
-    public void generateSignatureForModelMethod(
-            IProductCmptTypeMethod method,
+    public void generateSignatureForModelMethod(IProductCmptTypeMethod method,
             boolean isAbstract,
             boolean parametersFinal,
             JavaCodeFragmentBuilder methodsBuilder,
-            String methodSuffix, String[] testParameterNames,
+            String methodSuffix,
+            String[] testParameterNames,
             String[] testParameterTypes) throws CoreException {
         boolean formulaTest = (testParameterNames.length > 0 && testParameterTypes.length > 0) || methodSuffix != null;
-        
+
         IParameter[] parameters = method.getParameters();
         int modifier = method.getJavaModifier() | (isAbstract ? Modifier.ABSTRACT : 0);
         boolean resolveTypesToPublishedInterface = method.getModifier().isPublished();
@@ -215,35 +220,36 @@ public class ProductCmptGenInterfaceBuilder extends BaseProductCmptTypeBuilder {
                     parametersWithoutTypes.add(parameters[i]);
                 }
             }
-            parameters = (IParameter[]) parametersWithoutTypes.toArray(new IParameter[parametersWithoutTypes.size()]);
-        } 
+            parameters = (IParameter[])parametersWithoutTypes.toArray(new IParameter[parametersWithoutTypes.size()]);
+        }
         parameterNames = BuilderHelper.extractParameterNames(parameters);
         String[] parameterTypes = StdBuilderHelper.transformParameterTypesToJavaClassNames(parameters,
                 resolveTypesToPublishedInterface, (StandardBuilderSet)getBuilderSet(), method.getIpsProject());
         String[] parameterInSignatur = parameterNames;
         String[] parameterTypesInSignatur = parameterTypes;
-        if (formulaTest){
+        if (formulaTest) {
             // add test parameters
             parameterInSignatur = extendArray(parameterNames, testParameterNames);
             parameterTypesInSignatur = extendArray(parameterTypes, testParameterTypes);
         } else {
             parameterInSignatur = parameterNames;
             parameterTypesInSignatur = parameterTypes;
-        }        
-        
+        }
+
         String methodName = method.getName();
         // extend the method signature with the given parameter names
-        if (methodSuffix != null){
+        if (methodSuffix != null) {
             methodName = method.getName() + methodSuffix;
-        } 
-        methodsBuilder.signature(modifier, returnClass, methodName, parameterInSignatur, parameterTypesInSignatur, parametersFinal);
-        
+        }
+        methodsBuilder.signature(modifier, returnClass, methodName, parameterInSignatur, parameterTypesInSignatur,
+                parametersFinal);
+
         if (method.isFormulaSignatureDefinition()) {
             methodsBuilder.append(" throws ");
             methodsBuilder.appendClassName(FormulaExecutionException.class);
         }
     }
-    
+
     private String[] extendArray(String[] source1, String[] source2) {
         String[] dest = new String[source1.length + source2.length];
         System.arraycopy(source1, 0, dest, 0, source1.length);

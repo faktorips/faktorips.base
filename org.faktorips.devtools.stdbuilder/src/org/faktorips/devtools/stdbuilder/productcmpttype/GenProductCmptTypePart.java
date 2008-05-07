@@ -1,19 +1,16 @@
-/*******************************************************************************
- * Copyright (c) 2005,2006 Faktor Zehn GmbH und andere.
- *
+/***************************************************************************************************
+ * Copyright (c) 2005-2008 Faktor Zehn AG und andere.
+ * 
  * Alle Rechte vorbehalten.
- *
- * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele,
- * Konfigurationen, etc.) dürfen nur unter den Bedingungen der 
- * Faktor-Zehn-Community Lizenzvereinbarung – Version 0.1 (vor Gründung Community) 
- * genutzt werden, die Bestandteil der Auslieferung ist und auch unter
- *   http://www.faktorips.org/legal/cl-v01.html
- * eingesehen werden kann.
- *
- * Mitwirkende:
- *   Faktor Zehn GmbH - initial API and implementation 
- *
- *******************************************************************************/
+ * 
+ * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen,
+ * etc.) duerfen nur unter den Bedingungen der Faktor-Zehn-Community Lizenzvereinbarung - Version
+ * 0.1 (vor Gruendung Community) genutzt werden, die Bestandteil der Auslieferung ist und auch unter
+ * http://www.faktorzehn.org/f10-org:lizenzen:community eingesehen werden kann.
+ * 
+ * Mitwirkende: Faktor Zehn AG - initial API and implementation - http://www.faktorzehn.de
+ * 
+ **************************************************************************************************/
 
 package org.faktorips.devtools.stdbuilder.productcmpttype;
 
@@ -24,18 +21,18 @@ import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
 import org.faktorips.util.ArgumentCheck;
 import org.faktorips.util.LocalizedStringsSet;
 
-public abstract class GenProductCmptTypePart extends DefaultJavaGeneratorForIpsPart{
+public abstract class GenProductCmptTypePart extends DefaultJavaGeneratorForIpsPart {
 
     private GenProductCmptType genProductCmptType;
-    
-    public GenProductCmptTypePart(GenProductCmptType genProductCmptType, IIpsObjectPartContainer part, LocalizedStringsSet stringsSet) throws CoreException {
+
+    public GenProductCmptTypePart(GenProductCmptType genProductCmptType, IIpsObjectPartContainer part,
+            LocalizedStringsSet stringsSet) throws CoreException {
         super(part, stringsSet);
         ArgumentCheck.notNull(genProductCmptType, this);
         this.genProductCmptType = genProductCmptType;
     }
 
-
-    public GenProductCmptType getGenProductCmptType(){
+    public GenProductCmptType getGenProductCmptType() {
         return genProductCmptType;
     }
 

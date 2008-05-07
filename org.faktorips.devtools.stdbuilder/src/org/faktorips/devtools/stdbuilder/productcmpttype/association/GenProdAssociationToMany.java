@@ -8,7 +8,7 @@
  * 0.1 (vor Gruendung Community) genutzt werden, die Bestandteil der Auslieferung ist und auch unter
  * http://www.faktorzehn.org/f10-org:lizenzen:community eingesehen werden kann.
  * 
- * Mitwirkende: Faktor Zehn GmbH - initial API and implementation - http://www.faktorzehn.de
+ * Mitwirkende: Faktor Zehn AG - initial API and implementation - http://www.faktorzehn.de
  * 
  **************************************************************************************************/
 
@@ -363,7 +363,7 @@ public class GenProdAssociationToMany extends GenProdAssociation {
         builder.append(getFieldNameToManyAssociation());
         if (isUseTypesafeCollections()) {
             builder.appendln(".size();");
-        }else{
+        } else {
             builder.appendln(".length;");
         }
     }
@@ -417,7 +417,7 @@ public class GenProdAssociationToMany extends GenProdAssociation {
             builder.append("<");
             builder.appendClassName(String.class.getName());
             builder.append(">(associationElements.size());");
-        }else{
+        } else {
             builder.appendClassName(String.class);
             builder.appendln("[associationElements.size()];");
         }
@@ -437,7 +437,7 @@ public class GenProdAssociationToMany extends GenProdAssociation {
         builder.appendln("for (int i=0; i<associationElements.size(); i++) {");
         builder.appendClassName(Element.class);
         builder.append(" element = ");
-        if(!isUseTypesafeCollections()){
+        if (!isUseTypesafeCollections()) {
             builder.append("(");
             builder.appendClassName(Element.class);
             builder.appendln(")");
@@ -448,14 +448,24 @@ public class GenProdAssociationToMany extends GenProdAssociation {
             builder.append(".add(");
             builder.appendln("element.getAttribute(\"" + ProductCmptGenImplClassBuilder.XML_ATTRIBUTE_TARGET_RUNTIME_ID
                     + "\"));");
-        }else{
+        } else {
             builder.append("[i] = ");
             builder.appendln("element.getAttribute(\"" + ProductCmptGenImplClassBuilder.XML_ATTRIBUTE_TARGET_RUNTIME_ID
                     + "\");");
         }
         if (policyCmptTypeAssociation != null) {
-            if(isUseTypesafeCollections()){
-                builder.append(Java5ClassNames.ProductComponentGeneration_QualifiedName); // don't append as classname, the include would collide with the original
+            if (isUseTypesafeCollections()) {
+                builder.append(Java5ClassNames.ProductComponentGeneration_QualifiedName); // don't
+                                                                                            // append
+                                                                                            // as
+                                                                                            // classname,
+                                                                                            // the
+                                                                                            // include
+                                                                                            // would
+                                                                                            // collide
+                                                                                            // with
+                                                                                            // the
+                                                                                            // original
                 builder.append(".");
             }
             builder.append("addToCardinalityMap(");
@@ -464,7 +474,7 @@ public class GenProdAssociationToMany extends GenProdAssociation {
             builder.append(fieldName);
             if (isUseTypesafeCollections()) {
                 builder.append(".get(i), ");
-            }else{
+            } else {
                 builder.append("[i], ");
             }
             builder.appendln("element);");
