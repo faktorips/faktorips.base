@@ -341,6 +341,14 @@ public class ProductCmptGenImplClassBuilder extends BaseProductCmptTypeBuilder {
     }
 
     private void generateMethodDoInitReferencesFromXml(JavaCodeFragmentBuilder builder) throws CoreException {
+        IProductCmptType type = getProductCmptType();
+        if (type == null) {
+            return;
+        }
+        IAssociation[] associations = type.getAssociations();
+        if(associations.length == 0){
+            return;
+        }
         String javaDoc = null;
         builder.javaDoc(javaDoc, ANNOTATION_GENERATED);
         if (isUseTypesafeCollections()) {
@@ -370,7 +378,6 @@ public class ProductCmptGenImplClassBuilder extends BaseProductCmptTypeBuilder {
         // }
         // }
         // }
-        IAssociation[] associations = getProductCmptType().getAssociations();
         boolean associationFound = false;
         for (int i = 0; i < associations.length; i++) {
             IProductCmptTypeAssociation ass = (IProductCmptTypeAssociation)associations[i];
