@@ -436,9 +436,13 @@ public class GenProdAssociationToMany extends GenProdAssociation {
         }
         builder.appendln("for (int i=0; i<associationElements.size(); i++) {");
         builder.appendClassName(Element.class);
-        builder.append(" element = (");
-        builder.appendClassName(Element.class);
-        builder.appendln(")associationElements.get(i);");
+        builder.append(" element = ");
+        if(!isUseTypesafeCollections()){
+            builder.append("(");
+            builder.appendClassName(Element.class);
+            builder.appendln(")");
+        }
+        builder.appendln("associationElements.get(i);");
         builder.append(fieldName);
         if (isUseTypesafeCollections()) {
             builder.append(".add(");

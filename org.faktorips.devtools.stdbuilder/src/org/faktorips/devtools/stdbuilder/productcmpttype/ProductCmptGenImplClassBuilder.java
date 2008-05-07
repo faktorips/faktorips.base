@@ -313,10 +313,27 @@ public class ProductCmptGenImplClassBuilder extends BaseProductCmptTypeBuilder {
     private void generateMethodDoInitReferencesFromXml(JavaCodeFragmentBuilder builder) throws CoreException {
         String javaDoc = null;
         builder.javaDoc(javaDoc, ANNOTATION_GENERATED);
+        if (isUseTypesafeCollections()) {
+            builder.annotation(ANNOTATION_SUPPRESS_WARNINGS_UNCHECKED);
+        }
         String[] argNames = new String[] { "elementsMap" };
         String[] argTypes = new String[] { Map.class.getName() };
         builder.methodBegin(Modifier.PROTECTED, "void", "doInitReferencesFromXml", argNames, argTypes);
         builder.appendln("super.doInitReferencesFromXml(elementsMap);");
+        if (isUseTypesafeCollections()) {
+            JavaCodeFragment frag = new JavaCodeFragment();
+            frag.append('(');
+            frag.appendClassName(Map.class);
+            frag.append('<');
+            frag.appendClassName(String.class);
+            frag.append(", ");
+            frag.appendClassName(List.class);
+            frag.append('<');
+            frag.appendClassName(Element.class);
+            frag.append(">>)elementsMap");
+            builder.varDeclaration(Modifier.FINAL, Map.class.getName() + "<" + String.class.getName() + ", "
+                    +List.class.getName()+"<"+ Element.class.getName() + ">>", "checkedElementsMap", frag);
+        }
 
         // before the first association we define a temp variable as follows:
         // Element associationElements = null;
@@ -345,12 +362,23 @@ public class ProductCmptGenImplClassBuilder extends BaseProductCmptTypeBuilder {
                 if (associationFound == false) {
                     builder.appendln();
                     builder.appendClassName(List.class);
+                    if(isUseTypesafeCollections()){
+                        builder.append("<");
+                        builder.appendClassName(Element.class);
+                        builder.append(">");
+                    }
                     builder.append(" ");
                     associationFound = true;
                 }
-                builder.append("associationElements = (");
-                builder.appendClassName(List.class);
-                builder.append(") elementsMap.get(");
+                builder.append("associationElements = ");
+                if(isUseTypesafeCollections()){
+                    builder.append("checkedElementsMap.get(");
+                }else{
+                    
+                    builder.append("(");
+                    builder.appendClassName(List.class);
+                    builder.append(") elementsMap.get(");
+                }
                 builder.appendQuoted(ass.getName());
                 builder.appendln(");");
                 builder.append("if (associationElements != null) {");

@@ -238,9 +238,13 @@ public class GenProdAssociationTo1 extends GenProdAssociation {
         String cardinalityFieldName = policyCmptTypeAssociation == null ? "" : getFieldNameCardinalityForAssociation();
         String fieldName = getFieldNameTo1Association();
         builder.appendClassName(Element.class);
-        builder.append(" element = (");
-        builder.appendClassName(Element.class);
-        builder.appendln(")associationElements.get(0);");
+        builder.append(" element = ");
+        if(!isUseTypesafeCollections()){
+            builder.append("(");
+            builder.appendClassName(Element.class);
+            builder.appendln(")");
+        }
+        builder.appendln("associationElements.get(0);");
         builder.append(fieldName);
         builder.append(" = ");
         builder.appendln("element.getAttribute(\"" + ProductCmptGenImplClassBuilder.XML_ATTRIBUTE_TARGET_RUNTIME_ID
