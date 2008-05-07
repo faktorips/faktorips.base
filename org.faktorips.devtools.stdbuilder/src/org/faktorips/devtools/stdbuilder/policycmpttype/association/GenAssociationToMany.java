@@ -628,6 +628,11 @@ public class GenAssociationToMany extends GenAssociation {
         String varCopy = "copy" + StringUtils.capitalize(varOrig);
         methodsBuilder.append("for (");
         methodsBuilder.appendClassName(Iterator.class);
+        if(isUseTypesafeCollections()){
+            methodsBuilder.append("<");
+            methodsBuilder.appendClassName(getQualifiedClassName(targetType, true));
+            methodsBuilder.append(">");
+        }
         methodsBuilder.appendln(" it = " + field + ".iterator(); it.hasNext();) {");
 
         methodsBuilder.appendClassName(targetTypeQName);
