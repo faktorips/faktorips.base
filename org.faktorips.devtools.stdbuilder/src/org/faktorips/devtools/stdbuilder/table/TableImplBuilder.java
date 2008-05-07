@@ -1,19 +1,11 @@
-/*******************************************************************************
- * Copyright (c) 2005,2006 Faktor Zehn GmbH und andere.
- *
- * Alle Rechte vorbehalten.
- *
- * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele,
- * Konfigurationen, etc.) duerfen nur unter den Bedingungen der 
- * Faktor-Zehn-Community Lizenzvereinbarung - Version 0.1 (vor Gruendung Community) 
- * genutzt werden, die Bestandteil der Auslieferung ist und auch unter
- *   http://www.faktorips.org/legal/cl-v01.html
- * eingesehen werden kann.
- *
- * Mitwirkende:
- *   Faktor Zehn GmbH - initial API and implementation - http://www.faktorzehn.de
- *
- *******************************************************************************/
+/***************************************************************************************************
+ *  * Copyright (c) 2005,2006 Faktor Zehn GmbH und andere.  *  * Alle Rechte vorbehalten.  *  *
+ * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele,  * Konfigurationen,
+ * etc.) duerfen nur unter den Bedingungen der  * Faktor-Zehn-Community Lizenzvereinbarung - Version
+ * 0.1 (vor Gruendung Community)  * genutzt werden, die Bestandteil der Auslieferung ist und auch
+ * unter  *   http://www.faktorips.org/legal/cl-v01.html  * eingesehen werden kann.  *  *
+ * Mitwirkende:  *   Faktor Zehn GmbH - initial API and implementation - http://www.faktorzehn.de  *  
+ **************************************************************************************************/
 
 package org.faktorips.devtools.stdbuilder.table;
 
@@ -43,6 +35,7 @@ import org.faktorips.devtools.core.model.tablestructure.IColumnRange;
 import org.faktorips.devtools.core.model.tablestructure.IKeyItem;
 import org.faktorips.devtools.core.model.tablestructure.ITableStructure;
 import org.faktorips.devtools.core.model.tablestructure.IUniqueKey;
+import org.faktorips.devtools.stdbuilder.StandardBuilderSet;
 import org.faktorips.runtime.IRuntimeRepository;
 import org.faktorips.runtime.internal.ReadOnlyBinaryRangeTree;
 import org.faktorips.runtime.internal.Table;
@@ -70,7 +63,7 @@ public class TableImplBuilder extends DefaultJavaSourceFileBuilder {
     private final static String INIT_KEY_MAPS_JAVADOC = "TABLE_IMPL_BUILDER_INIT_KEY_MAPS_JAVADOC";
 
     private TableRowBuilder tableRowBuilder;
-    
+
     private String[] fKeyVariableNames;
     private String[] fKeyClassNames;
     private List fKeyClassParameterNames;
@@ -93,15 +86,14 @@ public class TableImplBuilder extends DefaultJavaSourceFileBuilder {
     /**
      * Returns the table structure during generation and null otherwise.
      */
-    protected ITableStructure getTableStructure(){
+    protected ITableStructure getTableStructure() {
         return (ITableStructure)getIpsObject();
     }
 
     /**
      * {@inheritDoc}
      */
-    public void beforeBuild(IIpsSrcFile ipsSrcFile, MultiStatus status)
-            throws CoreException {
+    public void beforeBuild(IIpsSrcFile ipsSrcFile, MultiStatus status) throws CoreException {
         super.beforeBuild(ipsSrcFile, status);
         qualifiedTableRowName = tableRowBuilder.getQualifiedClassName(ipsSrcFile);
         buildKeyVariableNames();
@@ -123,8 +115,8 @@ public class TableImplBuilder extends DefaultJavaSourceFileBuilder {
         fRanges = null;
     }
 
-    protected String generate() throws CoreException{
-        if(getTableStructure().isModelEnumType()){
+    protected String generate() throws CoreException {
+        if (getTableStructure().isModelEnumType()) {
             return null;
         }
         return super.generate();
@@ -134,7 +126,7 @@ public class TableImplBuilder extends DefaultJavaSourceFileBuilder {
      * {@inheritDoc}
      */
     public boolean isBuilderFor(IIpsSrcFile ipsSrcFile) throws CoreException {
-        if(ipsSrcFile.getIpsObjectType().equals(IpsObjectType.TABLE_STRUCTURE)){
+        if (ipsSrcFile.getIpsObjectType().equals(IpsObjectType.TABLE_STRUCTURE)) {
             return true;
         }
         return false;
@@ -203,7 +195,7 @@ public class TableImplBuilder extends DefaultJavaSourceFileBuilder {
         for (int i = 0; i < firstkeyItems.length; i++) {
             Datatype firstDatatype = getDatatypeForKeyName(firstkeyItems[i]);
             Datatype secondDatatype = getDatatypeForKeyName(secondkeyItems[i]);
-            if (firstDatatype == null || secondDatatype == null){
+            if (firstDatatype == null || secondDatatype == null) {
                 // compare failed beacause of missing datatypes
                 return false;
             }
@@ -245,7 +237,7 @@ public class TableImplBuilder extends DefaultJavaSourceFileBuilder {
                 }
 
                 IColumnRange range = getTableStructure().getRange(keyItems[j]);
-                
+
                 parameters.add(range.getParameterName());
                 fRanges.put(range.getParameterName(), range);
             }
@@ -273,14 +265,14 @@ public class TableImplBuilder extends DefaultJavaSourceFileBuilder {
             // additional check if the column inside the keys are valid
             IKeyItem[] keyItems = keys[i].getKeyItems();
             for (int j = 0; j < keyItems.length; j++) {
-                if (! checkColumnsValidity(keyItems[j].getColumns())){
+                if (!checkColumnsValidity(keyItems[j].getColumns())) {
                     return false;
                 }
             }
         }
         return true;
     }
-    
+
     /**
      * {@inheritDoc}
      */
@@ -290,8 +282,9 @@ public class TableImplBuilder extends DefaultJavaSourceFileBuilder {
         mainSection.setUnqualifiedName(getTableStructure().getName());
         mainSection.setSuperClass(Table.class.getName());
         mainSection.setClass(true);
-        
-        appendLocalizedJavaDoc("CLASS_DESCRIPTION", getIpsObject(), getIpsObject().getDescription(), mainSection.getJavaDocForTypeBuilder());
+
+        appendLocalizedJavaDoc("CLASS_DESCRIPTION", getIpsObject(), getIpsObject().getDescription(), mainSection
+                .getJavaDocForTypeBuilder());
         createFields(mainSection.getMemberVarBuilder());
         createAddRowMethod(mainSection.getMethodBuilder());
         createInitKeyMapsMethod(mainSection.getMethodBuilder());
@@ -319,9 +312,9 @@ public class TableImplBuilder extends DefaultJavaSourceFileBuilder {
         methodBody.append("rows.toArray(rowsArray);");
         methodBody.appendln();
         methodBody.append("return rowsArray;");
-        codeBuilder.method(Modifier.PUBLIC, qualifiedTableRowName + "[]",
-                "getAllRows", new String[0], new String[0], methodBody,
-                getLocalizedText(getIpsObject(), GET_ALL_ROWS_JAVADOC), ANNOTATION_GENERATED);
+        codeBuilder.method(Modifier.PUBLIC, qualifiedTableRowName + "[]", "getAllRows", new String[0], new String[0],
+                methodBody, getLocalizedText(getIpsObject(), GET_ALL_ROWS_JAVADOC), ANNOTATION_GENERATED,
+                isUseTypesafeCollections() ? new String[] { ANNOTATION_SUPPRESS_WARNINGS_UNCHECKED } : null);
     }
 
     private void createGetInstanceMethodForSingleContent(JavaCodeFragmentBuilder codeBuilder) throws CoreException {
@@ -335,9 +328,8 @@ public class TableImplBuilder extends DefaultJavaSourceFileBuilder {
         methodBody.append(".class");
         methodBody.append(");");
 
-        codeBuilder.method(Modifier.PUBLIC | Modifier.STATIC | Modifier.FINAL,
-                qualifiedClassName, "getInstance", new String[] { "repository" },
-                new String[] { IRuntimeRepository.class.getName() }, methodBody,
+        codeBuilder.method(Modifier.PUBLIC | Modifier.STATIC | Modifier.FINAL, qualifiedClassName, "getInstance",
+                new String[] { "repository" }, new String[] { IRuntimeRepository.class.getName() }, methodBody,
                 getLocalizedText(getIpsObject(), GET_INSTANCE_JAVADOC), ANNOTATION_GENERATED);
     }
 
@@ -349,17 +341,15 @@ public class TableImplBuilder extends DefaultJavaSourceFileBuilder {
         methodBody.append(")");
         methodBody.append("repository.getTable(qualifiedTableName);");
 
-        codeBuilder.method(Modifier.PUBLIC | Modifier.STATIC | Modifier.FINAL,
-                qualifiedClassName, "getInstance", 
-                new String[] { "repository", "qualifiedTableName" },
-                new String[] { IRuntimeRepository.class.getName(), String.class.getName() }, 
-                methodBody,
-                getLocalizedText(getIpsObject(), GET_INSTANCE_JAVADOC), ANNOTATION_GENERATED);
+        codeBuilder.method(Modifier.PUBLIC | Modifier.STATIC | Modifier.FINAL, qualifiedClassName, "getInstance",
+                new String[] { "repository", "qualifiedTableName" }, new String[] { IRuntimeRepository.class.getName(),
+                        String.class.getName() }, methodBody, getLocalizedText(getIpsObject(), GET_INSTANCE_JAVADOC),
+                ANNOTATION_GENERATED);
     }
 
-    private boolean checkColumnsValidity(IColumn[] columns) throws CoreException{
+    private boolean checkColumnsValidity(IColumn[] columns) throws CoreException {
         for (int i = 0; i < columns.length; i++) {
-            if(!columns[i].validate(getIpsProject()).isEmpty()){
+            if (!columns[i].validate(getIpsProject()).isEmpty()) {
                 return false;
             }
         }
@@ -375,7 +365,7 @@ public class TableImplBuilder extends DefaultJavaSourceFileBuilder {
 
         for (int i = 0; i < columns.length; i++) {
             String valueName = "columnValue";
-            if (i==0){
+            if (i == 0) {
                 methodBody.appendClassName(String.class.getName());
                 methodBody.append(" ");
             }
@@ -411,11 +401,18 @@ public class TableImplBuilder extends DefaultJavaSourceFileBuilder {
             methodBody.append(StringUtils.uncapitalize(columns[i].getName()));
         }
         methodBody.append("));");
-        
+
         methodBody.addImport(List.class.getName());
-        codeBuilder.method(Modifier.PROTECTED, "void", "addRow",
-                new String[] { "values" }, new String[] { List.class.getName()}, methodBody,
-                getLocalizedText(getIpsObject(), ADD_ROW_JAVADOC), ANNOTATION_GENERATED);
+        codeBuilder.method(Modifier.PROTECTED, "void", "addRow", new String[] { "values" }, new String[] { List.class
+                .getName() }, methodBody, getLocalizedText(getIpsObject(), ADD_ROW_JAVADOC), ANNOTATION_GENERATED,
+                isUseTypesafeCollections() ? new String[] { ANNOTATION_SUPPRESS_WARNINGS_UNCHECKED } : null);
+    }
+
+    /**
+     * @return
+     */
+    private boolean isUseTypesafeCollections() {
+        return ((StandardBuilderSet)getBuilderSet()).isUseTypesafeCollections();
     }
 
     private void createFindMethods(JavaCodeFragmentBuilder codeBuilder) throws CoreException {
@@ -428,9 +425,8 @@ public class TableImplBuilder extends DefaultJavaSourceFileBuilder {
             StringBuffer methodName = new StringBuffer();
             methodName.append("findRow");
             methodName.append(findMethodNames[i]);
-            createFindMethod(methodName.toString(), qualifiedTableRowName,
-                    (String[])fAllItemParameterTypes.get(i), (String[])fAllItemNamesAsParameters
-                            .get(i), (String[])fKeyClassParameterNames.get(i),
+            createFindMethod(methodName.toString(), qualifiedTableRowName, (String[])fAllItemParameterTypes.get(i),
+                    (String[])fAllItemNamesAsParameters.get(i), (String[])fKeyClassParameterNames.get(i),
                     fKeyVariableNames[i], fKeyClassNames[i], keys[i], codeBuilder);
         }
     }
@@ -451,18 +447,20 @@ public class TableImplBuilder extends DefaultJavaSourceFileBuilder {
             if (fKeyClassParameterNames.get(i) != null) {
                 keyMapFieldName.append("Map");
                 fieldClassName = Map.class.getName();
+                if (isUseTypesafeCollections()) {
+                    fieldClassName += "<" + fKeyClassNames[i] + ", " + qualifiedTableRowName + ">";
+                }
             } else {
                 keyMapFieldName.append("Tree");
                 fieldClassName = ReadOnlyBinaryRangeTree.class.getName();
             }
-            codeBuilder.varDeclaration(Modifier.PRIVATE, fieldClassName,
-                    keyMapFieldName.toString());
+            appendLocalizedJavaDoc("FIELD_KEY_MAP", getTableStructure(), codeBuilder);
+            codeBuilder.varDeclaration(Modifier.PRIVATE, fieldClassName, keyMapFieldName.toString());
         }
     }
 
-    private JavaCodeFragment buildAddKeyFragment(String combinedKeyName,
-            String keyClassName,
-            String[] keyItems) throws CoreException {
+    private JavaCodeFragment buildAddKeyFragment(String combinedKeyName, String keyClassName, String[] keyItems)
+            throws CoreException {
         JavaCodeFragment methodBody = new JavaCodeFragment();
         methodBody.append(StringUtils.uncapitalize(combinedKeyName));
         methodBody.append("Map.put(new ");
@@ -487,22 +485,27 @@ public class TableImplBuilder extends DefaultJavaSourceFileBuilder {
 
         IUniqueKey[] keys = getUniqueKeys();
         JavaCodeFragment methodBody = new JavaCodeFragment();
-        if(keys.length != 0){
+        if (keys.length != 0) {
             methodBody = createInitKeyMapsMethodBody(keys);
         }
-        codeBuilder.method(Modifier.PROTECTED, Void.TYPE, "initKeyMaps",
-                new String[0], new Class[0], methodBody,
-                getLocalizedText(getIpsObject(), INIT_KEY_MAPS_JAVADOC), ANNOTATION_GENERATED);
+        codeBuilder.method(Modifier.PROTECTED, Void.TYPE, "initKeyMaps", new String[0], new Class[0], methodBody,
+                getLocalizedText(getIpsObject(), INIT_KEY_MAPS_JAVADOC), ANNOTATION_GENERATED,
+                isUseTypesafeCollections() ? new String[] { ANNOTATION_SUPPRESS_WARNINGS_UNCHECKED } : null);
     }
 
-    private JavaCodeFragment createInitKeyMapsMethodBody(IUniqueKey[] keys) throws CoreException{
+    private JavaCodeFragment createInitKeyMapsMethodBody(IUniqueKey[] keys) throws CoreException {
         JavaCodeFragment methodBody = new JavaCodeFragment();
         for (int i = 0; i < keys.length; i++) {
-            methodBody.append(createInitKeyMapsVariables(keys[i], fKeyVariableNames[i] + "Map"));
+            methodBody.append(createInitKeyMapsVariables(keys[i], fKeyVariableNames[i] + "Map", fKeyClassNames[i]));
             methodBody.appendln();
         }
         methodBody.append("for (");
         methodBody.appendClassName(Iterator.class);
+        if (isUseTypesafeCollections()) {
+            methodBody.append("<");
+            methodBody.appendClassName(qualifiedTableRowName);
+            methodBody.append(">");
+        }
         methodBody.append(" it = rows.iterator(); it.hasNext();)");
         methodBody.appendOpenBracket();
         methodBody.appendClassName(qualifiedTableRowName);
@@ -520,54 +523,43 @@ public class TableImplBuilder extends DefaultJavaSourceFileBuilder {
                 if (keyClassParameterNames == null) {
                     rangeParameterNames = parameterNames;
                 } else {
-                    rangeParameterNames = new String[parameterNames.length
-                            - keyClassParameterNames.length];
-                    System.arraycopy(parameterNames, keyClassParameterNames.length,
-                            rangeParameterNames, 0, rangeParameterNames.length);
+                    rangeParameterNames = new String[parameterNames.length - keyClassParameterNames.length];
+                    System.arraycopy(parameterNames, keyClassParameterNames.length, rangeParameterNames, 0,
+                            rangeParameterNames.length);
                 }
                 ArrayList getMapFirstParameter = new ArrayList();
                 ArrayList getMapSecondParameter = new ArrayList();
                 ArrayList getMapThirdParameter = new ArrayList();
                 getMapFirstParameter.add(tempName);
                 if (keys[i].containsColumns()) {
-                    getMapFirstParameter.add(StringUtils.uncapitalize(rangeParameterNames[0])
-                            + "Map");
-                    getMapSecondParameter.add(createKeyInstantiation(
-                            fKeyClassNames[i],
-                            createInitKeyMapsKeyClassParameters((String[])fKeyClassParameterNames
-                                    .get(i))).toString());
+                    getMapFirstParameter.add(StringUtils.uncapitalize(rangeParameterNames[0]) + "Map");
+                    getMapSecondParameter.add(createKeyInstantiation(fKeyClassNames[i],
+                            createInitKeyMapsKeyClassParameters((String[])fKeyClassParameterNames.get(i))).toString());
                     getMapThirdParameter.add(null);
                 }
                 for (int j = 0; j < rangeParameterNames.length; j++) {
                     if (j != 0) {
-                        getMapFirstParameter.add(StringUtils.uncapitalize(rangeParameterNames[j])
-                                + "Map");
+                        getMapFirstParameter.add(StringUtils.uncapitalize(rangeParameterNames[j]) + "Map");
                     }
-                    IColumnRange range = (IColumnRange) fRanges.get(rangeParameterNames[j]);
+                    IColumnRange range = (IColumnRange)fRanges.get(rangeParameterNames[j]);
                     if (range != null && range.getColumnRangeType().isTwoColumn()) {
-                        getMapSecondParameter.add("row.get"
-                                + StringUtils.capitalize(range.getFromColumn()) + "()");
-                        getMapThirdParameter.add("row.get"
-                                + StringUtils.capitalize(range.getToColumn()) + "()");
+                        getMapSecondParameter.add("row.get" + StringUtils.capitalize(range.getFromColumn()) + "()");
+                        getMapThirdParameter.add("row.get" + StringUtils.capitalize(range.getToColumn()) + "()");
                     } else {
-                        String paramName = range == null ? rangeParameterNames[j] :
-                                range.getColumnRangeType().isOneColumnFrom() ? range.getFromColumn() :
-                                    range.getToColumn();
-                        getMapSecondParameter.add("row.get" 
-                                + StringUtils.capitalize(paramName) + "()");
+                        String paramName = range == null ? rangeParameterNames[j] : range.getColumnRangeType()
+                                .isOneColumnFrom() ? range.getFromColumn() : range.getToColumn();
+                        getMapSecondParameter.add("row.get" + StringUtils.capitalize(paramName) + "()");
                         getMapThirdParameter.add(null);
                     }
                 }
                 for (int j = 1; j < getMapFirstParameter.size(); j++) {
-                    methodBody.append(createInitKeyMapsMapAssignment((String)getMapFirstParameter
-                            .get(j), (String)getMapFirstParameter.get(j - 1),
-                            (String)getMapSecondParameter.get(j - 1),
+                    methodBody.append(createInitKeyMapsMapAssignment((String)getMapFirstParameter.get(j),
+                            (String)getMapFirstParameter.get(j - 1), (String)getMapSecondParameter.get(j - 1),
                             (String)getMapThirdParameter.get(j - 1)));
                     methodBody.appendln();
                 }
-                methodBody.append(createInitKeyMapsPutStatement(
-                        (String)getMapFirstParameter.get(getMapFirstParameter.size() - 1),
-                        (String)getMapSecondParameter.get(getMapSecondParameter.size() - 1),
+                methodBody.append(createInitKeyMapsPutStatement((String)getMapFirstParameter.get(getMapFirstParameter
+                        .size() - 1), (String)getMapSecondParameter.get(getMapSecondParameter.size() - 1),
                         (String)getMapThirdParameter.get(getMapThirdParameter.size() - 1)));
                 methodBody.appendln();
                 continue;
@@ -580,9 +572,8 @@ public class TableImplBuilder extends DefaultJavaSourceFileBuilder {
         methodBody.append(createInitKeyMapsFieldAssignments(keys));
         return methodBody;
     }
-    
-    private JavaCodeFragment createInitKeyMapsPutStatement(String mapName, String key,
-            String secondKey) {
+
+    private JavaCodeFragment createInitKeyMapsPutStatement(String mapName, String key, String secondKey) {
         JavaCodeFragment fragment = new JavaCodeFragment();
         fragment.append(mapName);
         fragment.append(".put(");
@@ -600,7 +591,7 @@ public class TableImplBuilder extends DefaultJavaSourceFileBuilder {
         fragment.append(", row);");
         return fragment;
     }
-    
+
     private JavaCodeFragment createInitKeyMapsFieldAssignments(IUniqueKey[] keys) {
         JavaCodeFragment fragment = new JavaCodeFragment();
         for (int i = 0; i < keys.length; i++) {
@@ -630,13 +621,13 @@ public class TableImplBuilder extends DefaultJavaSourceFileBuilder {
                 fragment.appendClassName(ReadOnlyBinaryRangeTree.class);
                 fragment.append('.');
                 if (range.getColumnRangeType().isTwoColumn()) {
-                    fragment.append("KEY_IS_TWO_COLUMN_KEY"); 
+                    fragment.append("KEY_IS_TWO_COLUMN_KEY");
                 }
                 if (range.getColumnRangeType().isOneColumnFrom()) {
-                    fragment.append("KEY_IS_LOWER_BOUND_EQUAL"); 
+                    fragment.append("KEY_IS_LOWER_BOUND_EQUAL");
                 }
                 if (range.getColumnRangeType().isOneColumnTo()) {
-                    fragment.append("KEY_IS_UPPER_BOUND_EQUAL"); 
+                    fragment.append("KEY_IS_UPPER_BOUND_EQUAL");
                 }
             }
             fragment.append("});");
@@ -644,10 +635,17 @@ public class TableImplBuilder extends DefaultJavaSourceFileBuilder {
         return fragment;
     }
 
-    private JavaCodeFragment createInitKeyMapsVariables(IUniqueKey key, String fieldName) {
+    private JavaCodeFragment createInitKeyMapsVariables(IUniqueKey key, String fieldName, String keyClassName) {
         JavaCodeFragment methodBody = new JavaCodeFragment();
         if (key.containsRanges()) {
             methodBody.appendClassName(HashMap.class);
+            if (isUseTypesafeCollections()) {
+                methodBody.append("<");
+                methodBody.appendClassName(keyClassName != null ? keyClassName : Integer.class.getName());
+                methodBody.append(", ");
+                methodBody.appendClassName(qualifiedTableRowName);
+                methodBody.append(">");
+            }
             methodBody.append(' ');
             methodBody.append(StringUtils.uncapitalize(fieldName));
             methodBody.append("Temp");
@@ -656,6 +654,13 @@ public class TableImplBuilder extends DefaultJavaSourceFileBuilder {
         }
         methodBody.append(" = new ");
         methodBody.appendClassName(HashMap.class);
+        if (isUseTypesafeCollections()) {
+            methodBody.append("<");
+            methodBody.appendClassName(keyClassName != null ? keyClassName : Integer.class.getName());
+            methodBody.append(", ");
+            methodBody.appendClassName(qualifiedTableRowName);
+            methodBody.append(">");
+        }
         methodBody.append("(rows.size());");
         return methodBody;
     }
@@ -696,23 +701,21 @@ public class TableImplBuilder extends DefaultJavaSourceFileBuilder {
         for (int i = 0; i < keys.length; i++) {
             String[] keyClassParameterTypes = (String[])fKeyClassParameterTypes.get(i);
             if (keyClassParameterTypes != null) {
-                createHashKeyClass(fKeyClassNames[i], (String[])fKeyClassParameterNames.get(i),
-                        keyClassParameterTypes);
+                createHashKeyClass(fKeyClassNames[i], (String[])fKeyClassParameterNames.get(i), keyClassParameterTypes);
             }
         }
     }
 
-    private void createHashKeyClass(String hashKeyClassName,
-            String[] keyNames,
-            String[] keyItemTypes) throws CoreException {
-        
+    private void createHashKeyClass(String hashKeyClassName, String[] keyNames, String[] keyItemTypes)
+            throws CoreException {
+
         TypeSection innerClassBody = createInnerClassSection();
-        innerClassBody.getJavaDocForTypeBuilder().javaDoc(getLocalizedText(getIpsObject(), KEY_CLASS_JAVADOC), ANNOTATION_GENERATED);
+        innerClassBody.getJavaDocForTypeBuilder().javaDoc(getLocalizedText(getIpsObject(), KEY_CLASS_JAVADOC),
+                ANNOTATION_GENERATED);
         innerClassBody.setClassModifier(Modifier.PRIVATE | Modifier.STATIC | Modifier.FINAL);
         innerClassBody.setUnqualifiedName(hashKeyClassName);
         for (int i = 0; i < keyNames.length; i++) {
-            innerClassBody.getMemberVarBuilder().varDeclaration(Modifier.PRIVATE, keyItemTypes[i],
-                    keyNames[i]);
+            innerClassBody.getMemberVarBuilder().varDeclaration(Modifier.PRIVATE, keyItemTypes[i], keyNames[i]);
         }
         // create hashCode field
         innerClassBody.getMemberVarBuilder().varDeclaration(Modifier.PRIVATE, Integer.TYPE, "hashCode");
@@ -728,15 +731,15 @@ public class TableImplBuilder extends DefaultJavaSourceFileBuilder {
         }
         constructorBody.appendln("hashCode = calculateHashCode();");
         // constructor
-        innerClassBody.getConstructorBuilder()
-                .method(Modifier.PRIVATE, null, hashKeyClassName, keyNames, keyItemTypes,
-                        constructorBody, getLocalizedText(getIpsObject(), KEY_CLASS_CONSTRUCTOR_JAVADOC), ANNOTATION_GENERATED);
+        innerClassBody.getConstructorBuilder().method(Modifier.PRIVATE, null, hashKeyClassName, keyNames, keyItemTypes,
+                constructorBody, getLocalizedText(getIpsObject(), KEY_CLASS_CONSTRUCTOR_JAVADOC), ANNOTATION_GENERATED);
         createKeyClassCalHashCodeMethod(keyNames, innerClassBody.getMethodBuilder());
         createKeyClassEqualsMethod(hashKeyClassName, keyNames, innerClassBody.getMethodBuilder());
         createKeyClassHashCodeMethod(keyNames, innerClassBody.getMethodBuilder());
     }
 
-    private void createKeyClassCalHashCodeMethod(String[] keyNames, JavaCodeFragmentBuilder codeBuilder) throws CoreException {
+    private void createKeyClassCalHashCodeMethod(String[] keyNames, JavaCodeFragmentBuilder codeBuilder)
+            throws CoreException {
         JavaCodeFragment methodBody = new JavaCodeFragment();
         methodBody.appendln("int result = 17;");
         for (int i = 0; i < keyNames.length; i++) {
@@ -746,17 +749,15 @@ public class TableImplBuilder extends DefaultJavaSourceFileBuilder {
         }
         methodBody.appendln("return result;");
 
-        codeBuilder.methodBegin(Modifier.PRIVATE, Integer.TYPE,
-                "calculateHashCode", new String[0], new Class[0], "", ANNOTATION_GENERATED);
+        codeBuilder.methodBegin(Modifier.PRIVATE, Integer.TYPE, "calculateHashCode", new String[0], new Class[0], "",
+                ANNOTATION_GENERATED);
         codeBuilder.append(methodBody);
         codeBuilder.methodEnd();
     }
 
-    private void createKeyClassEqualsMethod(
-            String keyClass, 
+    private void createKeyClassEqualsMethod(String keyClass,
             String[] combinedKeyNames,
-            JavaCodeFragmentBuilder codeBuilder)
-            throws CoreException {
+            JavaCodeFragmentBuilder codeBuilder) throws CoreException {
 
         JavaCodeFragment methodBody = new JavaCodeFragment();
         methodBody.append("if (o instanceof ");
@@ -781,18 +782,17 @@ public class TableImplBuilder extends DefaultJavaSourceFileBuilder {
         methodBody.appendCloseBracket();
         methodBody.append("return false;");
 
-        codeBuilder.method(Modifier.PUBLIC, Boolean.TYPE, "equals",
-                new String[] { "o" }, new Class[] { Object.class }, methodBody,
-                getLocalizedText(getIpsObject(), KEY_CLASS_EQUALS_JAVADOC), ANNOTATION_GENERATED);
+        codeBuilder.method(Modifier.PUBLIC, Boolean.TYPE, "equals", new String[] { "o" }, new Class[] { Object.class },
+                methodBody, getLocalizedText(getIpsObject(), KEY_CLASS_EQUALS_JAVADOC), ANNOTATION_GENERATED);
     }
 
-    private void createKeyClassHashCodeMethod(String[] combineKeyNames, JavaCodeFragmentBuilder codeBuilder) throws CoreException {
+    private void createKeyClassHashCodeMethod(String[] combineKeyNames, JavaCodeFragmentBuilder codeBuilder)
+            throws CoreException {
 
         JavaCodeFragment methodBody = new JavaCodeFragment();
         methodBody.append("return hashCode;");
 
-        codeBuilder.method(Modifier.PUBLIC, Integer.TYPE, "hashCode",
-                new String[0], new Class[0], methodBody,
+        codeBuilder.method(Modifier.PUBLIC, Integer.TYPE, "hashCode", new String[0], new Class[0], methodBody,
                 getLocalizedText(getIpsObject(), KEY_CLASS_HASHCODE_JAVADOC), ANNOTATION_GENERATED);
     }
 
@@ -806,18 +806,18 @@ public class TableImplBuilder extends DefaultJavaSourceFileBuilder {
             IUniqueKey key,
             JavaCodeFragmentBuilder codeBuilder) throws CoreException {
         JavaCodeFragment methodBody = new JavaCodeFragment();
-        
-        //logging
+
+        // logging
         generateMethodEnteringLoggingStmt(methodBody, keyClassName, methodName, parameterNames);
         methodBody.appendln();
-        
-        if(parameterNames.length > 0){
+
+        if (parameterNames.length > 0) {
             methodBody.appendln("if (");
 
             for (int i = 0; i < parameterNames.length; i++) {
                 methodBody.append(parameterNames[i]);
                 methodBody.append(" == null");
-                if(i < parameterNames.length - 1){
+                if (i < parameterNames.length - 1) {
                     methodBody.append(" || ");
                 }
             }
@@ -826,35 +826,39 @@ public class TableImplBuilder extends DefaultJavaSourceFileBuilder {
             generateMethodExitingLoggingStmt(methodBody, keyClassName, methodName, "null");
             methodBody.appendln("return null;");
             methodBody.appendCloseBracket();
-            
+
         }
         String mapName = StringUtils.uncapitalize(combinedKeyName) + "Map";
         String treeName = StringUtils.uncapitalize(combinedKeyName) + "Tree";
         String returnVariableName = "returnValue";
         if (key.containsColumns()) {
             if (key.containsRanges()) {
-                String[] rangeParameterNames = new String[parameterNames.length
-                        - keyClassParameterNames.length];
-                System.arraycopy(parameterNames, keyClassParameterNames.length,
-                        rangeParameterNames, 0, rangeParameterNames.length);
-                generateReturnFindMethodReturnStmt(methodBody, returnTypeName, returnVariableName, keyClassName, methodName, 
-                        createFindMethodGetValueFrag(false, mapName, keyClassName, keyClassParameterNames, rangeParameterNames));
+                String[] rangeParameterNames = new String[parameterNames.length - keyClassParameterNames.length];
+                System.arraycopy(parameterNames, keyClassParameterNames.length, rangeParameterNames, 0,
+                        rangeParameterNames.length);
+                generateReturnFindMethodReturnStmt(methodBody, returnTypeName, returnVariableName, keyClassName,
+                        methodName, createFindMethodGetValueFrag(false, mapName, keyClassName, keyClassParameterNames,
+                                rangeParameterNames));
             } else {
-                generateReturnFindMethodReturnStmt(methodBody, returnTypeName, returnVariableName, keyClassName, methodName, 
-                        createFindMethodGetMapEntryFrag(mapName, keyClassName, keyClassParameterNames));
+                generateReturnFindMethodReturnStmt(methodBody, returnTypeName, returnVariableName, keyClassName,
+                        methodName, createFindMethodGetMapEntryFrag(mapName, keyClassName, keyClassParameterNames));
             }
         } else {
-            generateReturnFindMethodReturnStmt(methodBody, returnTypeName, returnVariableName, keyClassName, methodName, 
-                    createFindMethodGetValueFrag(true, treeName, keyClassName, keyClassParameterNames, parameterNames));
+            generateReturnFindMethodReturnStmt(methodBody, returnTypeName, returnVariableName, keyClassName,
+                    methodName, createFindMethodGetValueFrag(true, treeName, keyClassName, keyClassParameterNames,
+                            parameterNames));
         }
         methodBody.appendln(';');
-        codeBuilder.method(Modifier.PUBLIC, returnTypeName, methodName,
-                parameterNames, parameterTypes, methodBody, getLocalizedText(getIpsObject(), FIND_JAVADOC), ANNOTATION_GENERATED);
+        codeBuilder.method(Modifier.PUBLIC, returnTypeName, methodName, parameterNames, parameterTypes, methodBody,
+                getLocalizedText(getIpsObject(), FIND_JAVADOC), ANNOTATION_GENERATED);
     }
 
-    private void generateReturnFindMethodReturnStmt(JavaCodeFragment methodBody, String returnTypeName, 
-            String returnVariableName, String keyClassName, String methodName, JavaCodeFragment getValueFrag) 
-        throws CoreException{
+    private void generateReturnFindMethodReturnStmt(JavaCodeFragment methodBody,
+            String returnTypeName,
+            String returnVariableName,
+            String keyClassName,
+            String methodName,
+            JavaCodeFragment getValueFrag) throws CoreException {
         methodBody.append(createFindMethodReturnVariable(returnVariableName, returnTypeName));
         methodBody.append(getValueFrag);
         methodBody.appendln(';');
@@ -864,7 +868,7 @@ public class TableImplBuilder extends DefaultJavaSourceFileBuilder {
         methodBody.append(returnVariableName);
         methodBody.appendln();
     }
-    
+
     private JavaCodeFragment createFindMethodReturnVariable(String returnVariable, String returnTypeName) {
         JavaCodeFragment fragment = new JavaCodeFragment();
         fragment.appendClassName(returnTypeName);
@@ -937,8 +941,7 @@ public class TableImplBuilder extends DefaultJavaSourceFileBuilder {
         if (range != null) {
             return findDatatype(range.getDatatype());
         }
-        throw new RuntimeException("Unable to find column or columnRange for keyItemName: "
-                + keyName);
+        throw new RuntimeException("Unable to find column or columnRange for keyItemName: " + keyName);
     }
 
     private String getJavaClassName(String keyName) throws CoreException {
