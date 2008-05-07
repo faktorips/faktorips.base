@@ -102,7 +102,7 @@ public abstract class BaseProductCmptTypeBuilder extends AbstractProductCmptType
         }
     }
     
-    public boolean isUseTypesafeCollections(){
+    protected boolean isUseTypesafeCollections(){
         return ((StandardBuilderSet)getBuilderSet()).isUseTypesafeCollections();
     }
 

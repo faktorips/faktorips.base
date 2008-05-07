@@ -139,4 +139,8 @@ public abstract class BasePolicyCmptTypeBuilder extends AbstractPcTypeBuilder {
         }
         return !supertype.isDependantType();
     }
+    
+    protected boolean isUseTypesafeCollections(){
+        return ((StandardBuilderSet)getBuilderSet()).isUseTypesafeCollections();
+    }
 }

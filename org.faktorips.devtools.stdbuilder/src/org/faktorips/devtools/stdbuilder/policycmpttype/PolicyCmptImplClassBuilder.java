@@ -449,7 +449,7 @@ public class PolicyCmptImplClassBuilder extends BasePolicyCmptTypeBuilder {
                 if (r.is1ToMany()) {
                     methodsBuilder.append("for (");
                     methodsBuilder.appendClassName(Iterator.class);
-                    if (((StandardBuilderSet)getBuilderSet()).isUseTypesafeCollections()) {
+                    if (isUseTypesafeCollections()) {
                         methodsBuilder.append("<");
                         methodsBuilder.appendClassName(getGenerator(r).getQualifiedClassName(
                                 getGenerator(r).getTargetPolicyCmptType(), true));
@@ -839,7 +839,7 @@ public class PolicyCmptImplClassBuilder extends BasePolicyCmptTypeBuilder {
             if (first) {
                 first = false;
                 builder.javaDoc(getJavaDocCommentForOverriddenMethod(), ANNOTATION_RESTRAINED_MODIFIABLE);
-                if (((StandardBuilderSet)getBuilderSet()).isUseTypesafeCollections()) {
+                if (isUseTypesafeCollections()) {
                     builder.annotation(ANNOTATION_SUPPRESS_WARNINGS_UNCHECKED);
                 }
                 builder
@@ -847,7 +847,7 @@ public class PolicyCmptImplClassBuilder extends BasePolicyCmptTypeBuilder {
                                 MethodNames.INIT_PROPERTIES_FROM_XML, new String[] { "propMap" },
                                 new Class[] { HashMap.class });
                 builder.appendln("super." + MethodNames.INIT_PROPERTIES_FROM_XML + "(propMap);");
-                if (((StandardBuilderSet)getBuilderSet()).isUseTypesafeCollections()) {
+                if (isUseTypesafeCollections()) {
                     JavaCodeFragment frag = new JavaCodeFragment();
                     frag.append('(');
                     frag.appendClassName(Map.class);
