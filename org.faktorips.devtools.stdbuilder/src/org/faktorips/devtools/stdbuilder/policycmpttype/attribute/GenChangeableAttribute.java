@@ -106,8 +106,8 @@ public class GenChangeableAttribute extends GenAttribute {
                 new String[] { getJavaClassName() });
     }
 
-    protected String getMethodNametSetPropertyValue(IPolicyCmptTypeAttribute a, DatatypeHelper datatypeHelper) {
-        return getJavaNamingConvention().getSetterMethodName(a.getName(), datatypeHelper.getDatatype());
+    protected String getMethodNametSetPropertyValue() {
+        return getJavaNamingConvention().getSetterMethodName(attribute.getName(), datatypeHelper.getDatatype());
     }
 
     /**
@@ -587,6 +587,20 @@ public class GenChangeableAttribute extends GenAttribute {
         appendLocalizedJavaDoc("METHOD_SETVALUE", replacements, attributeName, methodsBuilder);
         generateSetterSignature(methodsBuilder);
         methodsBuilder.appendln(";");
+    }
+
+
+    public void generateInitializationForOverrideAttributes(JavaCodeFragmentBuilder builder, IIpsProject ipsProject) throws CoreException {
+                JavaCodeFragment initialValueExpression = datatypeHelper.newInstance(attribute.getDefaultValue());
+                generateCallToMethodSetPropertyValue(initialValueExpression, builder);
+    }
+
+    private void generateCallToMethodSetPropertyValue(JavaCodeFragment value,
+            JavaCodeFragmentBuilder builder) {
+        builder.append(getMethodNametSetPropertyValue());
+        builder.append('(');
+        builder.append(value);
+        builder.append(");");
     }
 
 }

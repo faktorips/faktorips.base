@@ -14,6 +14,7 @@
 
 package org.faktorips.devtools.stdbuilder.policycmpttype;
 
+import java.lang.reflect.Modifier;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -259,6 +260,29 @@ public class GenPolicyCmptType extends GenType {
 
     public String getPolicyCmptTypeName() throws CoreException {
         return StringUtils.capitalize(getPolicyCmptType().getName());
+    }
+
+    /**
+     * Code sample:
+     * 
+     * <pre>
+     * public IPolicy createPolicy()
+     * </pre>
+     */
+    public void generateSignatureCreatePolicyCmpt(JavaCodeFragmentBuilder methodsBuilder)
+            throws CoreException {
+        String returnType = getQualifiedName(true);
+        String methodName = getMethodNameCreatePolicyCmpt();
+        methodsBuilder.signature(Modifier.PUBLIC, returnType, methodName, new String[0], new String[0]);
+    }
+
+    /**
+     * Returns the method name to create the concrete policy component class, e.g.
+     * createMotorPolicy.
+     */
+    public String getMethodNameCreatePolicyCmpt() throws CoreException {
+        String policyCmptConceptName = getPolicyCmptTypeName();
+        return getLocalizedText("METHOD_CREATE_POLICY_CMPT_NAME", policyCmptConceptName);
     }
 
 }

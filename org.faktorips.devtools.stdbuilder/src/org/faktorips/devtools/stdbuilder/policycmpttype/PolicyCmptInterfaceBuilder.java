@@ -20,7 +20,6 @@ import java.util.List;
 import org.apache.commons.lang.StringUtils;
 import org.eclipse.core.runtime.CoreException;
 import org.faktorips.codegen.DatatypeHelper;
-import org.faktorips.codegen.JavaCodeFragment;
 import org.faktorips.codegen.JavaCodeFragmentBuilder;
 import org.faktorips.datatype.Datatype;
 import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
@@ -159,7 +158,7 @@ public class PolicyCmptInterfaceBuilder extends BasePolicyCmptTypeBuilder {
             if (hasValidProductCmptTypeName()) {
                 generateMethodGetProductCmpt(methodsBuilder);
                 generateMethodSetProductCmpt(methodsBuilder);
-                ((StandardBuilderSet)getBuilderSet()).getGenerator(getProductCmptType())
+                getGenProductCmptType()
                         .generateMethodGetProductCmptGeneration(getIpsProject(), methodsBuilder);
             }
         }
@@ -178,27 +177,8 @@ public class PolicyCmptInterfaceBuilder extends BasePolicyCmptTypeBuilder {
     protected void generateMethodGetProductCmpt(JavaCodeFragmentBuilder methodsBuilder) throws CoreException {
         String[] replacements = new String[] { getProductCmptType().getName(), getPcType().getName() };
         appendLocalizedJavaDoc("METHOD_GET_PRODUCTCMPT", replacements, getPcType(), methodsBuilder);
-        generateSignatureGetProductCmpt(getProductCmptType(), methodsBuilder);
+        getGenProductCmptType().generateSignatureGetProductCmpt(methodsBuilder);
         methodsBuilder.append(";");
-    }
-
-    /**
-     * Code sample:
-     * 
-     * <pre>
-     * public IMotorProduct getMotorProduct()
-     * </pre>
-     */
-    public void generateSignatureGetProductCmpt(IProductCmptType type, JavaCodeFragmentBuilder methodsBuilder)
-            throws CoreException {
-        String returnType = getQualifiedClassName(type);
-        String methodName = getMethodNameGetProductCmpt(type);
-        methodsBuilder.signature(java.lang.reflect.Modifier.PUBLIC, returnType, methodName, EMPTY_STRING_ARRAY,
-                EMPTY_STRING_ARRAY);
-    }
-
-    String getMethodNameGetProductCmpt(IProductCmptType type) throws CoreException {
-        return ((StandardBuilderSet)getBuilderSet()).getGenerator(type).getMethodNameGetProductCmpt();
     }
 
     /**
@@ -213,37 +193,8 @@ public class PolicyCmptInterfaceBuilder extends BasePolicyCmptTypeBuilder {
         String[] replacements = new String[] { getProductCmptType().getName(),
                 StringUtils.uncapitalize(getProductCmptType().getName()), "initPropertiesWithConfiguratedDefaults" };
         appendLocalizedJavaDoc("METHOD_SET_PRODUCTCMPT", replacements, getProductCmptType(), methodsBuilder);
-        generateSignatureSetProductCmpt(getProductCmptType(), methodsBuilder);
+        getGenProductCmptType().generateSignatureSetProductCmpt(methodsBuilder);
         methodsBuilder.appendln(";");
-    }
-
-    /**
-     * Code sample:
-     * 
-     * <pre>
-     * public void setMotorProduct(IMotorProduct motorProduct, boolean initPropertiesWithConfiguratedDefaults)
-     * </pre>
-     */
-    public void generateSignatureSetProductCmpt(IProductCmptType type, JavaCodeFragmentBuilder methodsBuilder)
-            throws CoreException {
-        String methodName = getMethodNameSetProductCmpt(type);
-        String[] paramTypes = new String[] { getQualifiedClassName(type), "boolean" };
-        methodsBuilder.signature(java.lang.reflect.Modifier.PUBLIC, "void", methodName,
-                getMethodParamNamesSetProductCmpt(type), paramTypes);
-    }
-
-    /**
-     * Returns the name of the method to set the product component, e.g. setMotorProduct
-     */
-    public String getMethodNameSetProductCmpt(IProductCmptType type) throws CoreException {
-        return getLocalizedText(type, "METHOD_SET_PRODUCTCMPT_NAME", type.getName());
-    }
-
-    /**
-     * Returns the method parameters for the method: setProductCmpt.
-     */
-    public String[] getMethodParamNamesSetProductCmpt(IProductCmptType type) throws CoreException {
-        return new String[] { StringUtils.uncapitalize(type.getName()), "initPropertiesWithConfiguratedDefaults" };
     }
 
     /**
@@ -315,16 +266,6 @@ public class PolicyCmptInterfaceBuilder extends BasePolicyCmptTypeBuilder {
 
     public String getMethodNametSetPropertyValue(IPolicyCmptTypeAttribute a, DatatypeHelper datatypeHelper) {
         return getJavaNamingConvention().getSetterMethodName(a.getName(), datatypeHelper.getDatatype());
-    }
-
-    public void generateCallToMethodSetPropertyValue(IPolicyCmptTypeAttribute a,
-            DatatypeHelper datatypeHelper,
-            JavaCodeFragment value,
-            JavaCodeFragmentBuilder builder) {
-        builder.append(getMethodNametSetPropertyValue(a, datatypeHelper));
-        builder.append('(');
-        builder.append(value);
-        builder.append(");");
     }
 
     /**

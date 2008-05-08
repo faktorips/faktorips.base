@@ -14,12 +14,15 @@
 
 package org.faktorips.devtools.stdbuilder.productcmpttype;
 
+import java.lang.reflect.Modifier;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.commons.lang.StringUtils;
 import org.eclipse.core.runtime.CoreException;
 import org.faktorips.codegen.JavaCodeFragment;
 import org.faktorips.codegen.JavaCodeFragmentBuilder;
@@ -68,7 +71,7 @@ public class GenProductCmptType extends GenType {
     /**
      * {@inheritDoc}
      */
-    public String getUnqualifiedClassName(boolean forInterface) throws CoreException {
+    public String getUnqualifiedClassNameForProductCmptTypeGen(boolean forInterface) throws CoreException {
         if (forInterface) {
             String name = getType().getName() + getAbbreviationForGenerationConcept();
             return getJavaNamingConvention().getPublishedInterfaceName(name);
@@ -99,11 +102,17 @@ public class GenProductCmptType extends GenType {
      * Returns the name of the method to access the product component generation, e.g.
      * getMotorProductGen
      */
-    // TODO duplicate method in PolicyCmptInterfaceBuilder
     public String getMethodNameGetProductCmptGeneration() throws CoreException {
         String[] replacements = new String[] { getType().getName(), getAbbreviationForGenerationConcept(),
                 getNameForGenerationConcept() };
         return getLocalizedText("METHOD_GET_PRODUCTCMPT_GENERATION_NAME", replacements);
+    }
+
+    /**
+     * Returns the name of the method to set the product component, e.g. setMotorProduct
+     */
+    public String getMethodNameSetProductCmpt() throws CoreException {
+        return getLocalizedText("METHOD_SET_PRODUCTCMPT_NAME", getType().getName());
     }
 
     /**
@@ -260,6 +269,71 @@ public class GenProductCmptType extends GenType {
         return getQualifiedName(forInterface)
                 + getChangesInTimeNamingConvention().getGenerationConceptNameAbbreviation(
                         getLanguageUsedInGeneratedSourceCode());
+    }
+
+    /**
+     * Code sample:
+     * 
+     * <pre>
+     * public IProductGen getGeneration(Calendar effectiveDate)
+     * </pre>
+     */
+    void generateSignatureGetGeneration(JavaCodeFragmentBuilder methodsBuilder)
+            throws CoreException {
+        String generationInterface = getQualifiedClassNameForProductCmptTypeGen(true);
+        String methodName = getMethodNameGetGeneration();
+        String paramName = getVarNameEffectiveDate();
+        methodsBuilder.signature(Modifier.PUBLIC, generationInterface, methodName, new String[] { paramName },
+                new String[] { Calendar.class.getName() });
+    }
+    
+    /**
+     * Returns the variable or parameter name for the effetiveDate.
+     * 
+     * @param element An isp element that gives access to the ips project.
+     * TODO duplicated from AbstractProductCmptTypeBuilder
+     */
+    public String getVarNameEffectiveDate() {
+        IChangesOverTimeNamingConvention convention = getProductCmptType().getIpsProject().getChangesInTimeNamingConventionForGeneratedCode();
+        String conceptName = convention.getEffectiveDateConceptName(getProductCmptType().getIpsProject().getGeneratedJavaSourcecodeDocumentationLanguage());
+        return StringUtils.uncapitalize(conceptName);
+    }
+
+    /**
+     * Code sample:
+     * 
+     * <pre>
+     * public IMotorProduct getMotorProduct()
+     * </pre>
+     */
+    public void generateSignatureGetProductCmpt(JavaCodeFragmentBuilder methodsBuilder)
+            throws CoreException {
+        String returnType = getQualifiedName(true);
+        String methodName = getMethodNameGetProductCmpt();
+        methodsBuilder.signature(Modifier.PUBLIC, returnType, methodName, EMPTY_STRING_ARRAY,
+                EMPTY_STRING_ARRAY);
+    }
+
+    /**
+     * Code sample:
+     * 
+     * <pre>
+     * public void setMotorProduct(IMotorProduct motorProduct, boolean initPropertiesWithConfiguratedDefaults)
+     * </pre>
+     */
+    public void generateSignatureSetProductCmpt(JavaCodeFragmentBuilder methodsBuilder)
+            throws CoreException {
+        String methodName = getMethodNameSetProductCmpt();
+        String[] paramTypes = new String[] { getQualifiedName(true), "boolean" };
+        methodsBuilder.signature(java.lang.reflect.Modifier.PUBLIC, "void", methodName,
+                getMethodParamNamesSetProductCmpt(), paramTypes);
+    }
+
+    /**
+     * Returns the method parameters for the method: setProductCmpt.
+     */
+    public String[] getMethodParamNamesSetProductCmpt() throws CoreException {
+        return new String[] { StringUtils.uncapitalize(getType().getName()), "initPropertiesWithConfiguratedDefaults" };
     }
 
 }

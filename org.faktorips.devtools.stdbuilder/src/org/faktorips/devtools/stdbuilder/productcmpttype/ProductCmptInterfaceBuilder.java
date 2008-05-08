@@ -14,8 +14,6 @@
 
 package org.faktorips.devtools.stdbuilder.productcmpttype;
 
-import java.lang.reflect.Modifier;
-import java.util.Calendar;
 import java.util.List;
 
 import org.eclipse.core.runtime.CoreException;
@@ -32,6 +30,7 @@ import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeAttribu
 import org.faktorips.devtools.core.model.productcmpttype.ITableStructureUsage;
 import org.faktorips.devtools.core.model.type.IMethod;
 import org.faktorips.devtools.stdbuilder.StandardBuilderSet;
+import org.faktorips.devtools.stdbuilder.policycmpttype.GenPolicyCmptType;
 import org.faktorips.devtools.stdbuilder.policycmpttype.attribute.GenAttribute;
 import org.faktorips.devtools.stdbuilder.productcmpttype.association.GenProdAssociation;
 import org.faktorips.devtools.stdbuilder.productcmpttype.attribute.GenProdAttribute;
@@ -131,25 +130,8 @@ public class ProductCmptInterfaceBuilder extends BaseProductCmptTypeBuilder {
         String generationConceptName = convention
                 .getGenerationConceptNameSingular(getLanguageUsedInGeneratedSourceCode(getIpsObject()));
         appendLocalizedJavaDoc("METHOD_GET_GENERATION", generationConceptName, getIpsObject(), methodsBuilder);
-        generateSignatureGetGeneration(getProductCmptType(), methodsBuilder);
+        ((StandardBuilderSet)getBuilderSet()).getGenerator(getProductCmptType()).generateSignatureGetGeneration(methodsBuilder);
         methodsBuilder.append(';');
-    }
-
-    /**
-     * Code sample:
-     * 
-     * <pre>
-     * public IProductGen getGeneration(Calendar effectiveDate)
-     * </pre>
-     */
-    void generateSignatureGetGeneration(IProductCmptType type, JavaCodeFragmentBuilder methodsBuilder)
-            throws CoreException {
-        String generationInterface = ((StandardBuilderSet)getBuilderSet()).getGenerator(type)
-                .getQualifiedClassNameForProductCmptTypeGen(true);
-        String methodName = ((StandardBuilderSet)getBuilderSet()).getGenerator(type).getMethodNameGetGeneration();
-        String paramName = getVarNameEffectiveDate(type);
-        methodsBuilder.signature(Modifier.PUBLIC, generationInterface, methodName, new String[] { paramName },
-                new String[] { Calendar.class.getName() });
     }
 
     /**
@@ -162,35 +144,12 @@ public class ProductCmptInterfaceBuilder extends BaseProductCmptTypeBuilder {
      */
     private void generateMethodCreatePolicyCmpt(JavaCodeFragmentBuilder methodsBuilder) throws CoreException {
         IPolicyCmptType policyCmptType = getPcType();
-        String policyCmptTypeName = ((StandardBuilderSet)getBuilderSet()).getGenerator(policyCmptType)
-                .getPolicyCmptTypeName();
+        GenPolicyCmptType genPcType = ((StandardBuilderSet)getBuilderSet()).getGenerator(policyCmptType);
+        String policyCmptTypeName = genPcType.getPolicyCmptTypeName();
         appendLocalizedJavaDoc("METHOD_CREATE_POLICY_CMPT", new String[] { policyCmptTypeName }, getIpsObject(),
                 methodsBuilder);
-        generateSignatureCreatePolicyCmpt(policyCmptType, methodsBuilder);
+        genPcType.generateSignatureCreatePolicyCmpt(methodsBuilder);
         methodsBuilder.append(';');
-    }
-
-    /**
-     * Code sample:
-     * 
-     * <pre>
-     * public IPolicy createPolicy()
-     * </pre>
-     */
-    void generateSignatureCreatePolicyCmpt(IPolicyCmptType type, JavaCodeFragmentBuilder methodsBuilder)
-            throws CoreException {
-        String returnType = ((StandardBuilderSet)getBuilderSet()).getGenerator(type).getQualifiedName(true);
-        String methodName = getMethodNameCreatePolicyCmpt(type);
-        methodsBuilder.signature(Modifier.PUBLIC, returnType, methodName, new String[0], new String[0]);
-    }
-
-    /**
-     * Returns the method name to create the concrete policy component class, e.g.
-     * createMotorPolicy.
-     */
-    public String getMethodNameCreatePolicyCmpt(IPolicyCmptType type) throws CoreException {
-        String policyCmptConceptName = ((StandardBuilderSet)getBuilderSet()).getGenerator(type).getPolicyCmptTypeName();
-        return getLocalizedText(type, "METHOD_CREATE_POLICY_CMPT_NAME", policyCmptConceptName);
     }
 
     /**

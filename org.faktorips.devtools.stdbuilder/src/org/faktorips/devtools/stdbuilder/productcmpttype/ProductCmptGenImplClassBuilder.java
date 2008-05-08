@@ -56,7 +56,6 @@ import org.faktorips.runtime.internal.MethodNames;
 import org.faktorips.runtime.internal.ProductComponentGeneration;
 import org.faktorips.runtime.internal.Range;
 import org.faktorips.runtime.internal.ValueToXmlHelper;
-import org.faktorips.util.ArgumentCheck;
 import org.faktorips.util.LocalizedStringsSet;
 import org.faktorips.util.StringUtil;
 import org.w3c.dom.Element;
@@ -74,22 +73,11 @@ public class ProductCmptGenImplClassBuilder extends BaseProductCmptTypeBuilder {
 
     public static final String XML_ATTRIBUTE_TARGET_RUNTIME_ID = "targetRuntimeId";
 
-    private ProductCmptGenInterfaceBuilder interfaceBuilder;
-
     private TableImplBuilder tableImplBuilder;
 
     public ProductCmptGenImplClassBuilder(IIpsArtefactBuilderSet builderSet, String kindId) {
         super(builderSet, kindId, new LocalizedStringsSet(ProductCmptGenImplClassBuilder.class));
         setMergeEnabled(true);
-    }
-
-    public void setInterfaceBuilder(ProductCmptGenInterfaceBuilder builder) {
-        ArgumentCheck.notNull(builder);
-        this.interfaceBuilder = builder;
-    }
-
-    public ProductCmptGenInterfaceBuilder getInterfaceBuilder() {
-        return interfaceBuilder;
     }
 
     public void setTableImplBuilder(TableImplBuilder tableImplBuilder) {
@@ -144,14 +132,16 @@ public class ProductCmptGenImplClassBuilder extends BaseProductCmptTypeBuilder {
      */
     protected String[] getExtendedInterfaces() throws CoreException {
         // The implementation implements the published interface.
-        return new String[] { interfaceBuilder.getQualifiedClassName(getIpsSrcFile()) };
+        return new String[] { ((StandardBuilderSet)getBuilderSet()).getGenerator(getProductCmptType())
+                .getQualifiedClassNameForProductCmptTypeGen(true) };
     }
 
     /**
      * {@inheritDoc}
      */
     protected void generateTypeJavadoc(JavaCodeFragmentBuilder builder) throws CoreException {
-        appendLocalizedJavaDoc("CLASS", interfaceBuilder.getUnqualifiedClassName(getIpsSrcFile()), getIpsObject(),
+        appendLocalizedJavaDoc("CLASS", ((StandardBuilderSet)getBuilderSet()).getGenerator(getProductCmptType())
+                .getUnqualifiedClassNameForProductCmptTypeGen(true), getIpsObject(),
                 builder);
     }
 
@@ -549,7 +539,8 @@ public class ProductCmptGenImplClassBuilder extends BaseProductCmptTypeBuilder {
     protected void generateCodeForMethodDefinedInModel(IMethod method, JavaCodeFragmentBuilder methodsBuilder)
             throws CoreException {
 
-        GenProdMethod generator = ((StandardBuilderSet)getBuilderSet()).getGenerator(getProductCmptType()).getGenerator(method);
+        GenProdMethod generator = ((StandardBuilderSet)getBuilderSet()).getGenerator(getProductCmptType())
+                .getGenerator(method);
         if (generator != null) {
             generator.generate(generatesInterface(), getIpsProject(), getMainTypeSection());
         }

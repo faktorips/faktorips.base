@@ -35,6 +35,8 @@ public abstract class GenType extends JavaGeneratorForIpsPart {
     private StandardBuilderSet builderSet;
     private IType type;
 
+    protected static final String[] EMPTY_STRING_ARRAY = new String[0];
+
     /**
      * @param policyCmptType
      * @param builder
@@ -94,7 +96,7 @@ public abstract class GenType extends JavaGeneratorForIpsPart {
         return buf.toString();
     }
 
-    private static String getUnqualifiedClassName(IType type, StandardBuilderSet builderSet, boolean forInterface) {
+    public static String getUnqualifiedClassName(IType type, StandardBuilderSet builderSet, boolean forInterface) {
         if (forInterface) {
             return builderSet.getJavaNamingConvention().getPublishedInterfaceName(type.getName());
 

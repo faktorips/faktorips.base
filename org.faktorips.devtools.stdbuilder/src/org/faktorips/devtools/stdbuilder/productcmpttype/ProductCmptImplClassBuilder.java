@@ -37,6 +37,7 @@ import org.faktorips.devtools.stdbuilder.StandardBuilderSet;
 import org.faktorips.devtools.stdbuilder.policycmpttype.attribute.GenAttribute;
 import org.faktorips.devtools.stdbuilder.productcmpttype.association.GenProdAssociation;
 import org.faktorips.devtools.stdbuilder.productcmpttype.attribute.GenProdAttribute;
+import org.faktorips.devtools.stdbuilder.type.GenType;
 import org.faktorips.runtime.IConfigurableModelObject;
 import org.faktorips.runtime.IRuntimeRepository;
 import org.faktorips.runtime.internal.MethodNames;
@@ -51,17 +52,11 @@ import org.faktorips.util.LocalizedStringsSet;
  */
 public class ProductCmptImplClassBuilder extends BaseProductCmptTypeBuilder {
 
-    private ProductCmptInterfaceBuilder interfaceBuilder;
-
     public ProductCmptImplClassBuilder(IIpsArtefactBuilderSet builderSet, String kindId) {
         super(builderSet, kindId, new LocalizedStringsSet(ProductCmptImplClassBuilder.class));
         // TODO pk 2006-06-21 merge enabled at least until generator has been extended for
         // validation and information capabilities
         setMergeEnabled(true);
-    }
-
-    public void setInterfaceBuilder(ProductCmptInterfaceBuilder builder) {
-        interfaceBuilder = builder;
     }
 
     /**
@@ -94,14 +89,14 @@ public class ProductCmptImplClassBuilder extends BaseProductCmptTypeBuilder {
      * {@inheritDoc}
      */
     protected String[] getExtendedInterfaces() throws CoreException {
-        return new String[] { interfaceBuilder.getQualifiedClassName(getProductCmptType()) };
+        return new String[] { GenType.getQualifiedName(getProductCmptType(), (StandardBuilderSet)getBuilderSet(), true) };
     }
 
     /**
      * {@inheritDoc}
      */
     protected void generateTypeJavadoc(JavaCodeFragmentBuilder builder) throws CoreException {
-        String interfaceName = interfaceBuilder.getUnqualifiedClassName(getIpsSrcFile());
+        String interfaceName = GenType.getUnqualifiedClassName(getProductCmptType(), (StandardBuilderSet)getBuilderSet(), true);
         appendLocalizedJavaDoc("CLASS", interfaceName, getIpsObject(), builder);
     }
 
@@ -174,7 +169,7 @@ public class ProductCmptImplClassBuilder extends BaseProductCmptTypeBuilder {
     private void generateMethodCreatePolicyCmpt(IPolicyCmptType returnedTypeInSignature,
             JavaCodeFragmentBuilder methodsBuilder) throws CoreException {
         methodsBuilder.javaDoc(getJavaDocCommentForOverriddenMethod(), ANNOTATION_GENERATED);
-        interfaceBuilder.generateSignatureCreatePolicyCmpt(returnedTypeInSignature, methodsBuilder);
+        ((StandardBuilderSet)getBuilderSet()).getGenerator(returnedTypeInSignature).generateSignatureCreatePolicyCmpt(methodsBuilder);
         methodsBuilder.openBracket();
         methodsBuilder.append("return new ");
         methodsBuilder.appendClassName(((StandardBuilderSet)getBuilderSet()).getGenerator(getPcType())
@@ -202,22 +197,22 @@ public class ProductCmptImplClassBuilder extends BaseProductCmptTypeBuilder {
         if (getPcType() == null) {
             methodsBuilder.appendln("null;");
         } else {
-            methodsBuilder.appendln(interfaceBuilder.getMethodNameCreatePolicyCmpt(getPcType()) + "();");
+            methodsBuilder.appendln(((StandardBuilderSet)getBuilderSet()).getGenerator(getPcType()).getMethodNameCreatePolicyCmpt() + "();");
         }
         methodsBuilder.closeBracket();
     }
 
     private void generateGetGenerationMethod(JavaCodeFragmentBuilder methodsBuilder) throws CoreException {
         appendLocalizedJavaDoc("METHOD_GET_GENERATION", getIpsObject(), methodsBuilder);
-        interfaceBuilder.generateSignatureGetGeneration(getProductCmptType(), methodsBuilder);
+        GenProductCmptType genProd = ((StandardBuilderSet)getBuilderSet()).getGenerator(getProductCmptType());
+        genProd.generateSignatureGetGeneration(methodsBuilder);
         methodsBuilder.openBracket();
         methodsBuilder.append("return (");
-        methodsBuilder.appendClassName(((StandardBuilderSet)getBuilderSet()).getGenerator(getProductCmptType())
-                .getQualifiedClassNameForProductCmptTypeGen(true));
+        methodsBuilder.appendClassName(genProd.getQualifiedClassNameForProductCmptTypeGen(true));
         methodsBuilder.append(")getRepository().getProductComponentGeneration(");
         methodsBuilder.append(MethodNames.GET_PRODUCT_COMPONENT_ID);
         methodsBuilder.append("(), ");
-        methodsBuilder.append(interfaceBuilder.getVarNameEffectiveDate(getIpsObject()));
+        methodsBuilder.append(genProd.getVarNameEffectiveDate());
         methodsBuilder.append(");");
         methodsBuilder.closeBracket();
     }
@@ -316,10 +311,6 @@ public class ProductCmptImplClassBuilder extends BaseProductCmptTypeBuilder {
             throws CoreException {
         // return null, as this builder does not need code for product component type associations
         return null;
-    }
-
-    public ProductCmptInterfaceBuilder getProductCmptInterfaceBuilder() {
-        return interfaceBuilder;
     }
 
 }

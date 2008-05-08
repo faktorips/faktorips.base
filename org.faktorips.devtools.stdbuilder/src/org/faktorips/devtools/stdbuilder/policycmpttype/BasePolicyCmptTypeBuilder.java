@@ -35,6 +35,7 @@ import org.faktorips.devtools.core.model.type.IMethod;
 import org.faktorips.devtools.stdbuilder.StandardBuilderSet;
 import org.faktorips.devtools.stdbuilder.policycmpttype.association.GenAssociation;
 import org.faktorips.devtools.stdbuilder.policycmpttype.attribute.GenAttribute;
+import org.faktorips.devtools.stdbuilder.productcmpttype.GenProductCmptType;
 import org.faktorips.util.LocalizedStringsSet;
 import org.faktorips.util.message.MessageList;
 
@@ -56,8 +57,6 @@ public abstract class BasePolicyCmptTypeBuilder extends AbstractPcTypeBuilder {
         super(builderSet, kindId, stringsSet);
         this.generateChangeListenerSupport = generateChangeListenerSupport;
     }
-
-    public abstract PolicyCmptInterfaceBuilder getInterfaceBuilder();
 
     /**
      * {@inheritDoc}
@@ -148,5 +147,13 @@ public abstract class BasePolicyCmptTypeBuilder extends AbstractPcTypeBuilder {
 
     protected boolean isUseTypesafeCollections() {
         return ((StandardBuilderSet)getBuilderSet()).isUseTypesafeCollections();
+    }
+
+    /**
+     * @return
+     * @throws CoreException
+     */
+    protected GenProductCmptType getGenProductCmptType() throws CoreException {
+        return ((StandardBuilderSet)getBuilderSet()).getGenerator(getProductCmptType());
     }
 }
