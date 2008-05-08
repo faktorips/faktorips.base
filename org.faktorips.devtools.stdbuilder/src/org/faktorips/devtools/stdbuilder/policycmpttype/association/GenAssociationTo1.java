@@ -72,7 +72,7 @@ public class GenAssociationTo1 extends GenAssociation {
      * newObject)
      */
     public String getMethodNameSetObject() {
-        return getLocalizedText("METHOD_SET_OBJECT_NAME", association.getTargetRoleSingular());
+        return getMethodNameSetObject(association);
     }
 
     /**
@@ -124,7 +124,7 @@ public class GenAssociationTo1 extends GenAssociation {
      * Returns the name of the method returning the single referenced object. e.g. getCoverage()
      */
     public String getMethodNameGetRefObject() {
-        return getLocalizedText("METHOD_GET_REF_OBJECT_NAME", association.getTargetRoleSingular());
+        return getMethodNameGetRefObject(association);
     }
 
     /**
@@ -270,7 +270,8 @@ public class GenAssociationTo1 extends GenAssociation {
         methodsBuilder.appendClassName(targetImplClassName);
         methodsBuilder.append(")" + paramName + ";");
         if (reverseAssociation != null) {
-            methodsBuilder.append(generateCodeToSynchronizeReverseAssoziation(fieldName, targetImplClassName));
+            methodsBuilder.append(getGenPolicyCmptType().getBuilderSet().getGenerator(target).getGenerator(reverseAssociation)
+                    .generateCodeToSynchronizeReverseAssoziation(fieldName, targetImplClassName));
         }
         generateChangeListenerSupport(methodsBuilder, "RELATION_OBJECT_CHANGED", paramName);
         methodsBuilder.closeBracket();
@@ -296,44 +297,25 @@ public class GenAssociationTo1 extends GenAssociation {
         return body;
     }
 
-    // TODO refactor
-    // hier muesste man den korrekten Generator fuer die reverse association bekommen und
-    // dort dann ein generateCodeToSynchronizeReverseAssoziation aufrufen. Implementierung der
-    // Method
-    // fuer toMany und to1 unterschiedlich.
     public JavaCodeFragment generateCodeToSynchronizeReverseAssoziation(String varName, String varClassName)
             throws CoreException {
-
-        GenAssociationToMany toManyGenerator = null;
-        if (reverseAssociation.is1ToMany()) {
-            toManyGenerator = new GenAssociationToMany(getGenPolicyCmptType(), reverseAssociation,
-                    new LocalizedStringsSet(GenAssociation.class));
-        }
-
         JavaCodeFragment code = new JavaCodeFragment();
         code.append("if(");
-        code.append(varName + " != null && ");
-        if (reverseAssociation.is1ToMany()) {
-            code.append("! " + varName + ".");
-            code.append(toManyGenerator.getMethodNameContainsObject(reverseAssociation) + "(this)");
+        if (!reverseAssociation.is1ToMany()) {
+            code.append(varName + " != null && ");
+        }
+        code.append(varName + ".");
+        code.append(getMethodNameGetRefObject());
+        code.append("() != this");
+        code.append(") {");
+        if (!varClassName.equals(getGenPolicyCmptType().getQualifiedName(false))) {
+            code.append("((");
+            code.appendClassName(getGenPolicyCmptType().getQualifiedName(false));
+            code.append(")" + varName + ").");
         } else {
             code.append(varName + ".");
-            code.append(getMethodNameGetRefObject(reverseAssociation));
-            code.append("() != this");
         }
-        code.append(") {");
-        if (reverseAssociation.is1ToMany()) {
-            code.append(varName + "." + toManyGenerator.getMethodNameAddObject());
-        } else {
-            if (!varClassName.equals(targetImplClassName)) {
-                code.append("((");
-                code.appendClassName(targetImplClassName);
-                code.append(")" + varName + ").");
-            } else {
-                code.append(varName + ".");
-            }
-            code.append(getMethodNameSetObject(reverseAssociation));
-        }
+        code.append(getMethodNameSetObject());
         code.appendln("(this);");
         code.appendln("}");
         return code;

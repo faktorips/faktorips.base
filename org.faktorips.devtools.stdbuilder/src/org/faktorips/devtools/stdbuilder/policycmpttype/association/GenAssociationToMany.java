@@ -370,7 +370,6 @@ public class GenAssociationToMany extends GenAssociation {
         methodsBuilder.javaDoc(getJavaDocCommentForOverriddenMethod(), JavaSourceFileBuilder.ANNOTATION_GENERATED);
         generateSignatureAddObject(methodsBuilder);
         String paramName = getParamNameForAddObject();
-        IPolicyCmptTypeAssociation reverseAssociation = association.findInverseAssociation(getIpsProject());
         methodsBuilder.openBracket();
         methodsBuilder.append("if (" + paramName + " == null) {");
         methodsBuilder.append("throw new ");
@@ -387,50 +386,11 @@ public class GenAssociationToMany extends GenAssociation {
         methodsBuilder.append(fieldName);
         methodsBuilder.append(".add(" + paramName + ");");
         if (association.isAssoziation() && reverseAssociation != null) {
-            methodsBuilder.append(generateCodeToSynchronizeReverseAssoziation(paramName, targetInterfaceName,
-                    reverseAssociation));
+            methodsBuilder.append(getGenPolicyCmptType().getBuilderSet().getGenerator(target).getGenerator(reverseAssociation)
+                    .generateCodeToSynchronizeReverseAssoziation(paramName, targetInterfaceName));
         }
         generateChangeListenerSupport(methodsBuilder, "RELATION_OBJECT_ADDED", paramName);
         methodsBuilder.closeBracket();
-    }
-
-    private JavaCodeFragment generateCodeToSynchronizeReverseAssoziation(String varName,
-            String varClassName,
-            IPolicyCmptTypeAssociation reverseAssociation) throws CoreException {
-        JavaCodeFragment code = new JavaCodeFragment();
-        code.append("if(");
-        if (!association.is1ToMany()) {
-            code.append(varName + " != null && ");
-        }
-        if (reverseAssociation.is1ToMany()) {
-            code.append("! " + varName + ".");
-            code.append(getMethodNameContainsObject(reverseAssociation) + "(this)");
-        } else {
-            code.append(varName + ".");
-            code.append(getGenPolicyCmptType().getGenerator(reverseAssociation).getMethodNameGetRefObject());
-            code.append("() != this");
-        }
-        code.append(") {");
-        if (reverseAssociation.is1ToMany()) {
-            // TODO refactor
-            GenAssociationToMany generator = (GenAssociationToMany)getGenPolicyCmptType().getGenerator(
-                    reverseAssociation);
-            code.append(varName + "." + generator.getMethodNameAddObject());
-        } else {
-            String targetClass = getGenPolicyCmptType().getBuilderSet().getGenerator(
-                    (IPolicyCmptType)association.findTarget(getIpsProject())).getQualifiedName(false);
-            if (!varClassName.equals(targetClass)) {
-                code.append("((");
-                code.appendClassName(targetClass);
-                code.append(")" + varName + ").");
-            } else {
-                code.append(varName + ".");
-            }
-            code.append(getGenPolicyCmptType().getGenerator(reverseAssociation).getMethodNameSetObject());
-        }
-        code.appendln("(this);");
-        code.appendln("}");
-        return code;
     }
 
     /**
@@ -891,6 +851,22 @@ public class GenAssociationToMany extends GenAssociation {
             body.append("for (int i = 0; i < rels.length; i++)");
             body.append("{ ml.add(rels[i].validate(businessFunction)); } }");
         }
+    }
+
+    public JavaCodeFragment generateCodeToSynchronizeReverseAssoziation(String varName, String varClassName)
+            throws CoreException {
+        JavaCodeFragment code = new JavaCodeFragment();
+        code.append("if(");
+        if (!reverseAssociation.is1ToMany()) {
+            code.append(varName + " != null && ");
+        }
+        code.append("! " + varName + ".");
+        code.append(getMethodNameContainsObject(association) + "(this)");
+        code.append(") {");
+        code.append(varName + "." + getMethodNameAddObject());
+        code.appendln("(this);");
+        code.appendln("}");
+        return code;
     }
 
 }

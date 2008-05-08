@@ -1054,4 +1054,6 @@ public abstract class GenAssociation extends GenPolicyCmptTypePart {
     public IPolicyCmptType getTargetPolicyCmptType() throws CoreException {
         return association.getIpsProject().findPolicyCmptType(association.getTarget());
     }
+
+    public abstract JavaCodeFragment generateCodeToSynchronizeReverseAssoziation(String fieldName, String targetImplClassName) throws CoreException;
 }
