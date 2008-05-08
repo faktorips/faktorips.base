@@ -359,20 +359,31 @@ public abstract class GenAssociation extends GenPolicyCmptTypePart {
             }
             methodsBuilder.append("();");
         }
-        methodsBuilder.append("for (");
-        methodsBuilder.appendClassName(Iterator.class);
-        methodsBuilder.append(" it = ");
-        methodsBuilder.append(fieldName);
-        methodsBuilder.append(".iterator(); it.hasNext();)");
-        methodsBuilder.openBracket();
-        methodsBuilder.appendClassName(className);
-        methodsBuilder.append(' ');
-        methodsBuilder.append(pcTypeLocalVariable);
-        methodsBuilder.append(" = (");
-        methodsBuilder.appendClassName(className);
-        methodsBuilder.append(")");
-        methodsBuilder.append(" it.next();");
-        methodsBuilder.appendln();
+        if (isUseTypesafeCollections()) {
+            methodsBuilder.append("for (");
+            methodsBuilder.appendClassName(className);
+            methodsBuilder.append(" ");
+            methodsBuilder.append(pcTypeLocalVariable);
+            methodsBuilder.append(" : ");
+            methodsBuilder.append(fieldName);
+            methodsBuilder.append(")");
+            methodsBuilder.openBracket();
+        }else{
+            methodsBuilder.append("for (");
+            methodsBuilder.appendClassName(Iterator.class);
+            methodsBuilder.append(" it = ");
+            methodsBuilder.append(fieldName);
+            methodsBuilder.append(".iterator(); it.hasNext();)");
+            methodsBuilder.openBracket();
+            methodsBuilder.appendClassName(className);
+            methodsBuilder.append(' ');
+            methodsBuilder.append(pcTypeLocalVariable);
+            methodsBuilder.append(" = (");
+            methodsBuilder.appendClassName(className);
+            methodsBuilder.append(")");
+            methodsBuilder.append(" it.next();");
+            methodsBuilder.appendln();
+        }
         methodsBuilder.append("if(");
         methodsBuilder.append(pcTypeLocalVariable);
         methodsBuilder.append('.');
