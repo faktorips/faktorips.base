@@ -198,6 +198,16 @@ public abstract class GenProdAssociation extends GenProductCmptTypePart {
      *     return coverageTypes.length;
      * }
      * </pre>
+     * 
+     * <p>
+     * Java 5 Code sample for 1-many associations:
+     * 
+     * <pre>
+     * [javadoc]
+     * public CoverageType getNumOfCoverageTypes() {
+     *     return coverageTypes.size();
+     * }
+     * </pre>
      */
     protected void generateMethodGetNumOfRelatedProductCmpts(JavaCodeFragmentBuilder builder) throws CoreException {
         if (association.isDerivedUnion()) {
