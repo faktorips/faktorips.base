@@ -289,6 +289,23 @@ public abstract class GenProdAssociation extends GenProductCmptTypePart {
      *     return result;
      * }
      * </pre>
+     * 
+     * Java 5 Code sample where a 1-1 and a 1-many association implement a container association.
+     * 
+     * <pre>
+     * [Javadoc]
+     * public List&lt;ICoverageType&gt; getCoverageTypes() {
+     *     List&lt;ICoverageType&gt; result = new ArrayList&lt;ICoverageType&gt;(getNumOfCoverageTypes());
+     *     if (collisionCoverageType!=null) {
+     *         result.add(getCollisionCoverageType());
+     *     }
+     *     List&lt;ITplCoverageType&gt; tplCoverageTypesObjects = getTplcCoverageTypes();
+     *     for (ITplCoverageType tplCoverageTypesObject : tplCoverageTypesObjects) {
+     *         result.add(tplCoverageTypesObject);
+     *     }
+     *     return result;
+     * }
+     * </pre>
      */
     public void generateMethodGetRelatedCmptsInContainer(List implAssociations, JavaCodeFragmentBuilder methodsBuilder)
             throws CoreException {
@@ -321,10 +338,9 @@ public abstract class GenProdAssociation extends GenProductCmptTypePart {
         IProductCmptType supertype = (IProductCmptType)getGenProductCmptType().getProductCmptType().findSupertype(
                 getGenProductCmptType().getProductCmptType().getIpsProject());
         if (supertype != null && !supertype.isAbstract()) {
-            // ICoverage[] superResult = super.getCoverages();
-            // System.arraycopy(superResult, 0, result, 0, superResult.length);
-            // int counter = superResult.length;
             if (isUseTypesafeCollections()) {
+                // List<ICoverage> superResult = super.getCoverages();
+                // result.addAll(superResult);
                 methodsBuilder.appendClassName(List.class.getName());
                 methodsBuilder.append("<");
                 methodsBuilder.appendClassName(targetClass);
@@ -332,6 +348,9 @@ public abstract class GenProdAssociation extends GenProductCmptTypePart {
                 methodsBuilder.appendln(getMethodNameGetManyRelatedCmpts(association) + "();");
                 methodsBuilder.appendln("result.addAll(superResult);");
             } else {
+                // ICoverage[] superResult = super.getCoverages();
+                // System.arraycopy(superResult, 0, result, 0, superResult.length);
+                // int counter = superResult.length;
                 methodsBuilder.appendClassName(targetClass);
                 methodsBuilder.append("[] superResult = super.");
                 methodsBuilder.appendln(getMethodNameGetManyRelatedCmpts(association) + "();");
@@ -339,9 +358,7 @@ public abstract class GenProdAssociation extends GenProductCmptTypePart {
                 methodsBuilder.appendln("int index = superResult.length;");
             }
         } else {
-            if (isUseTypesafeCollections()) {
-
-            } else {
+            if (!isUseTypesafeCollections()) {
                 methodsBuilder.append("int index = 0;");
             }
         }
