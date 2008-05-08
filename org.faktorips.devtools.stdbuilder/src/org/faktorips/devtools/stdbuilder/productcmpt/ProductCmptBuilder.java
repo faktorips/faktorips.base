@@ -30,7 +30,6 @@ import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmpt;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmptGeneration;
 import org.faktorips.devtools.stdbuilder.productcmpttype.ProductCmptGenImplClassBuilder;
-import org.faktorips.devtools.stdbuilder.productcmpttype.ProductCmptGenInterfaceBuilder;
 import org.faktorips.devtools.stdbuilder.productcmpttype.ProductCmptImplClassBuilder;
 
 /**
@@ -56,10 +55,6 @@ public class ProductCmptBuilder extends AbstractArtefactBuilder {
 
     public void setProductCmptGenImplBuilder(ProductCmptGenImplClassBuilder builder) {
         generationBuilder.setProductCmptGenImplBuilder(builder);
-    }
-
-    public void setProductCmptGenInterfaceBuilder(ProductCmptGenInterfaceBuilder builder) {
-        generationBuilder.setProductCmptGenInterfaceBuilder(builder);
     }
 
     /**

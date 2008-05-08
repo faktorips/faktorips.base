@@ -35,8 +35,8 @@ import org.faktorips.devtools.core.model.productcmpt.IProductCmptGeneration;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeMethod;
 import org.faktorips.devtools.core.model.type.IParameter;
+import org.faktorips.devtools.stdbuilder.StandardBuilderSet;
 import org.faktorips.devtools.stdbuilder.productcmpttype.ProductCmptGenImplClassBuilder;
-import org.faktorips.devtools.stdbuilder.productcmpttype.ProductCmptGenInterfaceBuilder;
 import org.faktorips.devtools.stdbuilder.productcmpttype.ProductCmptImplClassBuilder;
 import org.faktorips.fl.CompilationResult;
 import org.faktorips.fl.ExprCompiler;
@@ -64,7 +64,6 @@ public class ProductCmptGenerationCuBuilder extends DefaultJavaSourceFileBuilder
     // builders needed
     private ProductCmptImplClassBuilder productCmptImplBuilder;
     private ProductCmptGenImplClassBuilder productCmptGenImplBuilder;
-    private ProductCmptGenInterfaceBuilder productCmptGenInterfaceBuilder;
 
     /**
      * Constructs a new builder.
@@ -84,10 +83,6 @@ public class ProductCmptGenerationCuBuilder extends DefaultJavaSourceFileBuilder
 
     public void setProductCmptGenImplBuilder(ProductCmptGenImplClassBuilder builder) {
         this.productCmptGenImplBuilder = builder;
-    }
-
-    public void setProductCmptGenInterfaceBuilder(ProductCmptGenInterfaceBuilder productCmptGenInterfaceBuilder) {
-        this.productCmptGenInterfaceBuilder = productCmptGenInterfaceBuilder;
     }
 
     /**
@@ -179,9 +174,9 @@ public class ProductCmptGenerationCuBuilder extends DefaultJavaSourceFileBuilder
         boolean formulaTest = (testParameterNames.length > 0 && testParameterTypes.length > 0) || methodSuffix != null;
 
         builder.javaDoc(getJavaDocCommentForOverriddenMethod(), ANNOTATION_GENERATED);
-
-        productCmptGenInterfaceBuilder.generateSignatureForModelMethod(method, false, true, builder, methodSuffix,
-                testParameterNames, testParameterTypes);
+        
+        ((StandardBuilderSet)getBuilderSet()).getGenerator(getProductCmptType()).getGenerator(method).generateSignatureForModelMethod(false, true, builder, methodSuffix,
+                testParameterNames, testParameterTypes, getIpsProject());
         builder.openBracket();
         builder.append("try {"); //$NON-NLS-1$
         builder.append("return "); //$NON-NLS-1$

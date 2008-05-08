@@ -14,29 +14,21 @@
 
 package org.faktorips.devtools.stdbuilder.productcmpttype;
 
-import java.lang.reflect.Modifier;
-import java.util.ArrayList;
 import java.util.List;
 
 import org.eclipse.core.runtime.CoreException;
 import org.faktorips.codegen.DatatypeHelper;
 import org.faktorips.codegen.JavaCodeFragmentBuilder;
 import org.faktorips.datatype.Datatype;
-import org.faktorips.devtools.core.builder.BuilderHelper;
 import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.core.model.ipsproject.IIpsArtefactBuilderSet;
-import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAttribute;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeAssociation;
-import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeMethod;
 import org.faktorips.devtools.core.model.productcmpttype.ITableStructureUsage;
 import org.faktorips.devtools.core.model.type.IMethod;
-import org.faktorips.devtools.core.model.type.IParameter;
 import org.faktorips.devtools.stdbuilder.StandardBuilderSet;
-import org.faktorips.devtools.stdbuilder.StdBuilderHelper;
 import org.faktorips.devtools.stdbuilder.productcmpttype.association.GenProdAssociation;
-import org.faktorips.runtime.FormulaExecutionException;
 import org.faktorips.runtime.IProductComponentGeneration;
 import org.faktorips.util.LocalizedStringsSet;
 import org.faktorips.util.StringUtil;
@@ -174,86 +166,9 @@ public class ProductCmptGenInterfaceBuilder extends BaseProductCmptTypeBuilder {
     protected void generateCodeForMethodDefinedInModel(IMethod method, JavaCodeFragmentBuilder methodsBuilder)
             throws CoreException {
 
-        if (method.getModifier().isPublished()) {
-            methodsBuilder.javaDoc(method.getDescription(), ANNOTATION_GENERATED);
-            generateSignatureForModelMethod((IProductCmptTypeMethod)method, false, false, methodsBuilder);
-            methodsBuilder.append(';');
+        GenProdMethod generator = ((StandardBuilderSet)getBuilderSet()).getGenerator(getProductCmptType()).getGenerator(method);
+        if (generator != null) {
+            generator.generate(generatesInterface(), getIpsProject(), getMainTypeSection());
         }
-    }
-
-    public void generateSignatureForModelMethod(IProductCmptTypeMethod method,
-            boolean isAbstract,
-            boolean parametersFinal,
-            JavaCodeFragmentBuilder methodsBuilder) throws CoreException {
-        generateSignatureForModelMethod(method, isAbstract, parametersFinal, methodsBuilder, null, EMPTY_STRING_ARRAY,
-                EMPTY_STRING_ARRAY);
-    }
-
-    /**
-     * Code sample:
-     * 
-     * <pre>
-     * public abstract Money computePremium(Policy policy, Integer age) throws FormulaException
-     * </pre>
-     */
-    public void generateSignatureForModelMethod(IProductCmptTypeMethod method,
-            boolean isAbstract,
-            boolean parametersFinal,
-            JavaCodeFragmentBuilder methodsBuilder,
-            String methodSuffix,
-            String[] testParameterNames,
-            String[] testParameterTypes) throws CoreException {
-        boolean formulaTest = (testParameterNames.length > 0 && testParameterTypes.length > 0) || methodSuffix != null;
-
-        IParameter[] parameters = method.getParameters();
-        int modifier = method.getJavaModifier() | (isAbstract ? Modifier.ABSTRACT : 0);
-        boolean resolveTypesToPublishedInterface = method.getModifier().isPublished();
-        String returnClass = StdBuilderHelper.transformDatatypeToJavaClassName(method.getDatatype(),
-                resolveTypesToPublishedInterface, (StandardBuilderSet)getBuilderSet(), method.getIpsProject());
-
-        String[] parameterNames = null;
-        if (formulaTest) {
-            List parametersWithoutTypes = new ArrayList();
-            for (int i = 0; i < parameters.length; i++) {
-                Datatype datatype = parameters[i].findDatatype(getIpsProject());
-                if (!(datatype instanceof IPolicyCmptType || datatype instanceof IProductCmptType)) {
-                    parametersWithoutTypes.add(parameters[i]);
-                }
-            }
-            parameters = (IParameter[])parametersWithoutTypes.toArray(new IParameter[parametersWithoutTypes.size()]);
-        }
-        parameterNames = BuilderHelper.extractParameterNames(parameters);
-        String[] parameterTypes = StdBuilderHelper.transformParameterTypesToJavaClassNames(parameters,
-                resolveTypesToPublishedInterface, (StandardBuilderSet)getBuilderSet(), method.getIpsProject());
-        String[] parameterInSignatur = parameterNames;
-        String[] parameterTypesInSignatur = parameterTypes;
-        if (formulaTest) {
-            // add test parameters
-            parameterInSignatur = extendArray(parameterNames, testParameterNames);
-            parameterTypesInSignatur = extendArray(parameterTypes, testParameterTypes);
-        } else {
-            parameterInSignatur = parameterNames;
-            parameterTypesInSignatur = parameterTypes;
-        }
-
-        String methodName = method.getName();
-        // extend the method signature with the given parameter names
-        if (methodSuffix != null) {
-            methodName = method.getName() + methodSuffix;
-        }
-        methodsBuilder.signature(modifier, returnClass, methodName, parameterInSignatur, parameterTypesInSignatur,
-                parametersFinal);
-
-        if (method.isFormulaSignatureDefinition()) {
-            methodsBuilder.append(" throws ");
-            methodsBuilder.appendClassName(FormulaExecutionException.class);
-        }
-    }
-
-    private String[] extendArray(String[] source1, String[] source2) {
-        String[] dest = new String[source1.length + source2.length];
-        System.arraycopy(source1, 0, dest, 0, source1.length);
-        System.arraycopy(source2, 0, dest, source1.length, source2.length);
-        return dest;
     }
 }

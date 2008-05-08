@@ -247,24 +247,6 @@ public class PolicyCmptInterfaceBuilder extends BasePolicyCmptTypeBuilder {
     }
 
     /**
-     * {@inheritDoc}
-     */
-    // TODO remove
-    protected void generateCodeForMethodDefinedInModel(IMethod method,
-            Datatype returnType,
-            Datatype[] paramTypes,
-            JavaCodeFragmentBuilder methodsBuilder) throws CoreException {
-
-        // if (method.getModifier() != Modifier.PUBLISHED) {
-        // return;
-        // }
-        // methodsBuilder.javaDoc(method.getDescription(), ANNOTATION_GENERATED);
-        // generateSignatureForMethodDefinedInModel(method, java.lang.reflect.Modifier.PUBLIC,
-        // returnType, paramTypes, methodsBuilder);
-        // methodsBuilder.appendln(";");
-    }
-
-    /**
      * Code samples:
      * 
      * <pre>

@@ -29,7 +29,9 @@ import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeAssociation;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeAttribute;
+import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeMethod;
 import org.faktorips.devtools.core.model.type.IAssociation;
+import org.faktorips.devtools.core.model.type.IMethod;
 import org.faktorips.devtools.stdbuilder.StandardBuilderSet;
 import org.faktorips.devtools.stdbuilder.productcmpttype.association.GenProdAssociation;
 import org.faktorips.devtools.stdbuilder.productcmpttype.association.GenProdAssociationTo1;
@@ -46,6 +48,7 @@ public class GenProductCmptType extends GenType {
     private Map generatorsByPart = new HashMap();
     private List genProdAttributes = new ArrayList();
     private List genProdAssociations = new ArrayList();
+    private List genMethods = new ArrayList();
 
     public GenProductCmptType(IProductCmptType productCmptType, StandardBuilderSet builderSet,
             LocalizedStringsSet stringsSet) throws CoreException {
@@ -55,6 +58,7 @@ public class GenProductCmptType extends GenType {
 
         createGeneratorsForProdAttributes();
         createGeneratorsForProdAssociations();
+        createGeneratorsForMethods();
     }
 
     public IProductCmptType getProductCmptType() {
@@ -156,6 +160,20 @@ public class GenProductCmptType extends GenType {
         }
     }
 
+    private void createGeneratorsForMethods() throws CoreException {
+        LocalizedStringsSet stringsSet = new LocalizedStringsSet(GenProdMethod.class);
+        IMethod[] methods = getProductCmptType().getMethods();
+        for (int i = 0; i < methods.length; i++) {
+            if (methods[i].isValid()) {
+                GenProdMethod generator = new GenProdMethod(this, (IProductCmptTypeMethod)methods[i], stringsSet);
+                if (generator != null) {
+                    genMethods.add(generator);
+                    generatorsByPart.put(methods[i], generator);
+                }
+            }
+        }
+    }
+
     /**
      * {@inheritDoc}
      */
@@ -182,6 +200,20 @@ public class GenProductCmptType extends GenType {
             }
         }
         return generator;
+    }
+
+    public GenProdMethod getGenerator(IMethod a) throws CoreException {
+        if (generatorsByPart.containsKey(a)) {
+            return (GenProdMethod)generatorsByPart.get(a);
+        } else if (a.isValid()) {
+            GenProdMethod generator = new GenProdMethod(this, (IProductCmptTypeMethod)a,  new LocalizedStringsSet(GenProdMethod.class));
+            if (generator != null) {
+                genProdAssociations.add(generator);
+                generatorsByPart.put(a, generator);
+            }
+            return generator;
+        }
+        return null;
     }
 
     public GenProdAssociation getGenerator(IProductCmptTypeAssociation a) throws CoreException {
