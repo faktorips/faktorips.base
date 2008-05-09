@@ -162,8 +162,6 @@ public class PolicyCmptInterfaceBuilder extends BasePolicyCmptTypeBuilder {
                         .generateMethodGetProductCmptGeneration(getIpsProject(), methodsBuilder);
             }
         }
-        // TODO remove
-        // generateCodeForValidationRules(memberVarsBuilder);
     }
 
     /**
