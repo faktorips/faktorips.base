@@ -17,6 +17,7 @@ package org.faktorips.devtools.stdbuilder.type;
 import java.util.Locale;
 
 import org.eclipse.core.runtime.CoreException;
+import org.faktorips.datatype.Datatype;
 import org.faktorips.devtools.core.builder.AbstractPcTypeBuilder;
 import org.faktorips.devtools.core.builder.AbstractTypeBuilder;
 import org.faktorips.devtools.core.builder.JavaGeneratorForIpsPart;
@@ -158,6 +159,15 @@ public abstract class GenType extends JavaGeneratorForIpsPart {
      */
     public String getNameForGenerationConcept() {
         return AbstractPcTypeBuilder.getNameForGenerationConcept(type);
+    }
+
+    /**
+     * Returns the getter method to access a property/attribute value.
+     * 
+     * @since 2.0
+     */
+    public String getMethodNameGetPropertyValue(String propName, Datatype datatype) {
+        return getJavaNamingConvention().getGetterMethodName(propName, datatype);
     }
 
 }

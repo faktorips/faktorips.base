@@ -69,11 +69,6 @@ public abstract class GenAttribute extends GenPolicyCmptTypePart {
         super.generate(generatesInterface, ipsProject, mainSection);
     }
 
-    // TODO refactor
-    protected boolean isGenerateChangeListenerSupport() {
-        return true;
-    }
-
     public IPolicyCmptTypeAttribute getPolicyCmptTypeAttribute() {
         return (IPolicyCmptTypeAttribute)attribute;
     }

@@ -150,10 +150,9 @@ public abstract class BasePolicyCmptTypeBuilder extends AbstractPcTypeBuilder {
     }
 
     /**
-     * @return
-     * @throws CoreException
+     * Returns the GenProductCmptType for this builder.
      */
-    protected GenProductCmptType getGenProductCmptType() throws CoreException {
+    public GenProductCmptType getGenProductCmptType() throws CoreException {
         return ((StandardBuilderSet)getBuilderSet()).getGenerator(getProductCmptType());
     }
 }

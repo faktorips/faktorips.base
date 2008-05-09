@@ -151,16 +151,6 @@ public class ProductCmptGenInterfaceBuilder extends BaseProductCmptTypeBuilder {
     }
 
     /**
-     * Returns the getter method to access a property/attribute value.
-     * 
-     * @since 2.0
-     */
-    // TODO this method might go to a type builder when introduced
-    public String getMethodNameGetPropertyValue(String propName, Datatype datatype) {
-        return getJavaNamingConvention().getGetterMethodName(propName, datatype);
-    }
-
-    /**
      * {@inheritDoc}
      */
     protected void generateCodeForMethodDefinedInModel(IMethod method, JavaCodeFragmentBuilder methodsBuilder)

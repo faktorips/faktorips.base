@@ -250,16 +250,9 @@ public class PolicyCmptInterfaceBuilder extends BasePolicyCmptTypeBuilder {
             JavaCodeFragmentBuilder methodsBuilder) throws CoreException {
 
         int modifier = java.lang.reflect.Modifier.PUBLIC;
-        String methodName = getMethodNameGetPropertyValue(propName, datatypeHelper.getDatatype());
+        String methodName = getGenProductCmptType().getMethodNameGetPropertyValue(propName, datatypeHelper.getDatatype());
         methodsBuilder.signature(modifier, datatypeHelper.getJavaClassName(), methodName, EMPTY_STRING_ARRAY,
                 EMPTY_STRING_ARRAY);
-    }
-
-    /**
-     * Returns the getter method to access a property/attribute value.
-     */
-    public String getMethodNameGetPropertyValue(String propName, Datatype datatype) {
-        return getJavaNamingConvention().getGetterMethodName(propName, datatype);
     }
 
     public String getMethodNametSetPropertyValue(IPolicyCmptTypeAttribute a, DatatypeHelper datatypeHelper) {

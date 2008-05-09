@@ -256,11 +256,17 @@ public class StandardBuilderSet extends DefaultBuilderSet {
         return new AbstractParameterIdentifierResolver(formula) {
 
             protected String getParameterAttributGetterName(IAttribute attribute, Datatype datatype) {
-                if (datatype instanceof IPolicyCmptType) {
-                    return policyCmptInterfaceBuilder.getMethodNameGetPropertyValue(attribute.getName(), datatype);
-                }
-                if (datatype instanceof IProductCmptType) {
-                    return productCmptGenInterfaceBuilder.getMethodNameGetPropertyValue(attribute.getName(), datatype);
+                try {
+                    if (datatype instanceof IPolicyCmptType) {
+                        return getGenerator((IPolicyCmptType)datatype).getMethodNameGetPropertyValue(
+                                attribute.getName(), datatype);
+                    }
+                    if (datatype instanceof IProductCmptType) {
+                        return getGenerator((IProductCmptType)datatype).getMethodNameGetPropertyValue(
+                                attribute.getName(), datatype);
+                    }
+                } catch (CoreException e) {
+                    return null;
                 }
                 return null;
             }
@@ -274,11 +280,17 @@ public class StandardBuilderSet extends DefaultBuilderSet {
         return new AbstractParameterIdentifierResolver(formula) {
 
             protected String getParameterAttributGetterName(IAttribute attribute, Datatype datatype) {
-                if (datatype instanceof IPolicyCmptType) {
-                    return policyCmptInterfaceBuilder.getMethodNameGetPropertyValue(attribute.getName(), datatype);
-                }
-                if (datatype instanceof IProductCmptType) {
-                    return productCmptGenInterfaceBuilder.getMethodNameGetPropertyValue(attribute.getName(), datatype);
+                try {
+                    if (datatype instanceof IPolicyCmptType) {
+                        return getGenerator((IPolicyCmptType)datatype).getMethodNameGetPropertyValue(
+                                attribute.getName(), datatype);
+                    }
+                    if (datatype instanceof IProductCmptType) {
+                        return getGenerator((IProductCmptType)datatype).getMethodNameGetPropertyValue(
+                                attribute.getName(), datatype);
+                    }
+                } catch (CoreException e) {
+                    return null;
                 }
                 return null;
             }

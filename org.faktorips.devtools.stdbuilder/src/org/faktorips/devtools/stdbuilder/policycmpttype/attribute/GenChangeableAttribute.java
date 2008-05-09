@@ -426,23 +426,21 @@ public class GenChangeableAttribute extends GenAttribute {
             String eventConstant,
             String fieldName,
             String paramName) {
-        if (isGenerateChangeListenerSupport()) {
-            methodsBuilder.appendln("if (" + MethodNames.EXISTS_CHANGE_LISTENER_TO_BE_INFORMED + "()) {");
-            methodsBuilder.append(MethodNames.NOTIFIY_CHANGE_LISTENERS + "(new ");
-            methodsBuilder.appendClassName(ModelObjectChangedEvent.class);
-            methodsBuilder.append("(this, ");
-            methodsBuilder.appendClassName(eventClassName);
-            methodsBuilder.append('.');
-            methodsBuilder.append(eventConstant);
+        methodsBuilder.appendln("if (" + MethodNames.EXISTS_CHANGE_LISTENER_TO_BE_INFORMED + "()) {");
+        methodsBuilder.append(MethodNames.NOTIFIY_CHANGE_LISTENERS + "(new ");
+        methodsBuilder.appendClassName(ModelObjectChangedEvent.class);
+        methodsBuilder.append("(this, ");
+        methodsBuilder.appendClassName(eventClassName);
+        methodsBuilder.append('.');
+        methodsBuilder.append(eventConstant);
+        methodsBuilder.append(", ");
+        methodsBuilder.appendQuoted(fieldName);
+        if (paramName != null) {
             methodsBuilder.append(", ");
-            methodsBuilder.appendQuoted(fieldName);
-            if (paramName != null) {
-                methodsBuilder.append(", ");
-                methodsBuilder.append(paramName);
-            }
-            methodsBuilder.appendln("));");
-            methodsBuilder.appendln("}");
+            methodsBuilder.append(paramName);
         }
+        methodsBuilder.appendln("));");
+        methodsBuilder.appendln("}");
     }
 
     private void generateMethodGetRange(JavaCodeFragmentBuilder methodBuilder, IIpsProject ipsProject)
@@ -589,14 +587,13 @@ public class GenChangeableAttribute extends GenAttribute {
         methodsBuilder.appendln(";");
     }
 
-
-    public void generateInitializationForOverrideAttributes(JavaCodeFragmentBuilder builder, IIpsProject ipsProject) throws CoreException {
-                JavaCodeFragment initialValueExpression = datatypeHelper.newInstance(attribute.getDefaultValue());
-                generateCallToMethodSetPropertyValue(initialValueExpression, builder);
+    public void generateInitializationForOverrideAttributes(JavaCodeFragmentBuilder builder, IIpsProject ipsProject)
+            throws CoreException {
+        JavaCodeFragment initialValueExpression = datatypeHelper.newInstance(attribute.getDefaultValue());
+        generateCallToMethodSetPropertyValue(initialValueExpression, builder);
     }
 
-    private void generateCallToMethodSetPropertyValue(JavaCodeFragment value,
-            JavaCodeFragmentBuilder builder) {
+    private void generateCallToMethodSetPropertyValue(JavaCodeFragment value, JavaCodeFragmentBuilder builder) {
         builder.append(getMethodNametSetPropertyValue());
         builder.append('(');
         builder.append(value);

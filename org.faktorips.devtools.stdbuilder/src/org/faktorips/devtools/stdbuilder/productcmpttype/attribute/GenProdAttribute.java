@@ -58,11 +58,6 @@ public class GenProdAttribute extends GenProductCmptTypePart {
         memberVarName = getJavaNamingConvention().getMemberVarName(attributeName);
     }
 
-    // TODO refactor
-    protected boolean isGenerateChangeListenerSupport() {
-        return true;
-    }
-
     public IProductCmptTypeAttribute getProductCmptTypeAttribute() {
         return attribute;
     }

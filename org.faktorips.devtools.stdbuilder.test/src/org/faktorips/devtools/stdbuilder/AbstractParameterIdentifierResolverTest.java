@@ -115,7 +115,7 @@ public class AbstractParameterIdentifierResolverTest extends AbstractIpsPluginTe
         assertTrue(result.successfull());
         assertEquals(Datatype.DECIMAL, result.getDatatype());
         String expected = "policy."
-                + getPolicyCmptInterfaceBuilder().getMethodNameGetPropertyValue(attribute.getName(), result.getDatatype()) + "()";
+                + ((StandardBuilderSet)getPolicyCmptInterfaceBuilder().getBuilderSet()).getGenerator(policyCmptType).getMethodNameGetPropertyValue(attribute.getName(), result.getDatatype()) + "()";
         assertEquals(expected, result.getCodeFragment().getSourcecode());
 
         // unkown parameter
