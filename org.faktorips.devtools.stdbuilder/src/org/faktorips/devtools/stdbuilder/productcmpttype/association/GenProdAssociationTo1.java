@@ -55,11 +55,7 @@ public class GenProdAssociationTo1 extends GenProdAssociation {
      */
     protected void generateConstants(JavaCodeFragmentBuilder builder, IIpsProject ipsProject, boolean generatesInterface)
             throws CoreException {
-        if (generatesInterface) {
-
-        } else {
-
-        }
+        // nothing to do
     }
 
     /**
@@ -68,9 +64,7 @@ public class GenProdAssociationTo1 extends GenProdAssociation {
     protected void generateMemberVariables(JavaCodeFragmentBuilder builder,
             IIpsProject ipsProject,
             boolean generatesInterface) throws CoreException {
-        if (generatesInterface) {
-
-        } else {
+        if (!generatesInterface) {
             generateFieldTo1Association(builder);
             if (association.findMatchingPolicyCmptTypeAssociation(ipsProject) != null) {
                 generateFieldCardinalityForAssociation(builder);
@@ -262,17 +256,8 @@ public class GenProdAssociationTo1 extends GenProdAssociation {
             }
             builder.appendln("(1);");
             if (isUseTypesafeCollections()) {
-                builder.append(Java5ClassNames.ProductComponentGeneration_QualifiedName); // don't
-                                                                                            // append
-                                                                                            // as
-                                                                                            // classname,
-                                                                                            // the
-                                                                                            // include
-                                                                                            // would
-                                                                                            // collide
-                                                                                            // with
-                                                                                            // the
-                                                                                            // original
+                // don't append as classname, the include would collide with the original
+                builder.append(Java5ClassNames.ProductComponentGeneration_QualifiedName);
                 builder.append(".");
             }
             builder.append("addToCardinalityMap(");
