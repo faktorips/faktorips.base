@@ -335,13 +335,23 @@ public class GenProdAttribute extends GenProductCmptTypePart {
     }
 
     /**
-     * Generates the source code for the ips object part this is a generator for.
+     * Generates the getter code for the attribute this is a generator for.
+     * 
+     * Code sample:
+     * 
+     * <pre>
+     * public Money getPremium() {
+     *     return getMotorProductGen().getPremium();
+     * }
+     * </pre>
      */
     public void generateCodeForPolicyCmptType(boolean generatesInterface, JavaCodeFragmentBuilder methodBuilder)
             throws CoreException {
         if (!generatesInterface) {
-            String javaDoc = null; // getLocalizedText(null, a.getName()); // TODO
-            methodBuilder.javaDoc(javaDoc, JavaSourceFileBuilder.ANNOTATION_GENERATED);
+            String description = StringUtils.isEmpty(attribute.getDescription()) ? "" : SystemUtils.LINE_SEPARATOR
+                    + "<p>" + SystemUtils.LINE_SEPARATOR + attribute.getDescription();
+            methodBuilder.javaDoc(getLocalizedText("METHOD_GETVALUE_JAVADOC", new String[] { attributeName, description }),
+                    JavaSourceFileBuilder.ANNOTATION_GENERATED);
             generateGetterSignature(methodBuilder);
             methodBuilder.openBracket();
             methodBuilder.append("return ");
