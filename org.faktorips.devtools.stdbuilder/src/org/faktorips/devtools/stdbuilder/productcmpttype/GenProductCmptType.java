@@ -26,6 +26,7 @@ import org.apache.commons.lang.StringUtils;
 import org.eclipse.core.runtime.CoreException;
 import org.faktorips.codegen.JavaCodeFragment;
 import org.faktorips.codegen.JavaCodeFragmentBuilder;
+import org.faktorips.devtools.core.builder.AbstractProductCmptTypeBuilder;
 import org.faktorips.devtools.core.model.ipsproject.IChangesOverTimeNamingConvention;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
@@ -291,12 +292,10 @@ public class GenProductCmptType extends GenType {
      * Returns the variable or parameter name for the effetiveDate.
      * 
      * @param element An isp element that gives access to the ips project.
-     * TODO duplicated from AbstractProductCmptTypeBuilder
+     * @see org.faktorips.devtools.core.builder.AbstractProductCmptTypeBuilder#getVarNameEffectiveDate
      */
     public String getVarNameEffectiveDate() {
-        IChangesOverTimeNamingConvention convention = getProductCmptType().getIpsProject().getChangesInTimeNamingConventionForGeneratedCode();
-        String conceptName = convention.getEffectiveDateConceptName(getProductCmptType().getIpsProject().getGeneratedJavaSourcecodeDocumentationLanguage());
-        return StringUtils.uncapitalize(conceptName);
+        return AbstractProductCmptTypeBuilder.getVarNameEffectiveDate(getProductCmptType());
     }
 
     /**

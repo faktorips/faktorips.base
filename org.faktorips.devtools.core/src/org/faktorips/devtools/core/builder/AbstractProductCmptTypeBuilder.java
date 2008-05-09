@@ -246,7 +246,7 @@ public abstract class AbstractProductCmptTypeBuilder extends AbstractTypeBuilder
      * 
      * @param element An isp element that gives access to the ips project.
      */
-    public String getVarNameEffectiveDate(IIpsElement element) {
+    public static String getVarNameEffectiveDate(IIpsElement element) {
         IChangesOverTimeNamingConvention convention = element.getIpsProject().getChangesInTimeNamingConventionForGeneratedCode();
         String conceptName = convention.getEffectiveDateConceptName(element.getIpsProject().getGeneratedJavaSourcecodeDocumentationLanguage());
         return StringUtils.uncapitalize(conceptName);
