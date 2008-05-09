@@ -63,7 +63,7 @@ public abstract class AbstractTypeBuilder extends DefaultJavaSourceFileBuilder {
      * 
      * @see org.faktorips.devtools.core.model.ipsproject.IChangesOverTimeNamingConvention
      */
-    public String getAbbreviationForGenerationConcept(IIpsElement element) {
+    public static String getAbbreviationForGenerationConcept(IIpsElement element) {
         return getChangesInTimeNamingConvention(element).
             getGenerationConceptNameAbbreviation(getLanguageUsedInGeneratedSourceCode(element));
     }

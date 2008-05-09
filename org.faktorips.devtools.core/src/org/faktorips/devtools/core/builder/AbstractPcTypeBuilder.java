@@ -79,7 +79,7 @@ public abstract class AbstractPcTypeBuilder extends AbstractTypeBuilder {
      * 
      * @see org.faktorips.devtools.core.model.ipsproject.IChangesOverTimeNamingConvention
      */
-    public String getNameForGenerationConcept(IIpsElement element) {
+    public static String getNameForGenerationConcept(IIpsElement element) {
         return getChangesInTimeNamingConvention(element).
             getGenerationConceptNameSingular(getLanguageUsedInGeneratedSourceCode(element));
     }

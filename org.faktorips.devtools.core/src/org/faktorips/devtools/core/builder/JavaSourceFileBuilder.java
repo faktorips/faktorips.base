@@ -209,14 +209,14 @@ public abstract class JavaSourceFileBuilder extends AbstractArtefactBuilder {
     /**
      * Returns the naming convention for product changes over time.
      */
-    public IChangesOverTimeNamingConvention getChangesInTimeNamingConvention(IIpsElement element) {
+    public static IChangesOverTimeNamingConvention getChangesInTimeNamingConvention(IIpsElement element) {
         return element.getIpsProject().getChangesInTimeNamingConventionForGeneratedCode();
     }
 
     /**
      * Returns the language in that variables, methods are named and and Java docs are written in.
      */
-    public Locale getLanguageUsedInGeneratedSourceCode(IIpsElement element) {
+    public static Locale getLanguageUsedInGeneratedSourceCode(IIpsElement element) {
         return element.getIpsProject().getGeneratedJavaSourcecodeDocumentationLanguage();
     }
 
