@@ -34,6 +34,7 @@ import org.faktorips.codegen.JavaCodeFragmentBuilder;
 import org.faktorips.datatype.Datatype;
 import org.faktorips.datatype.ValueDatatype;
 import org.faktorips.devtools.core.IpsStatus;
+import org.faktorips.devtools.core.builder.AbstractPcTypeBuilder;
 import org.faktorips.devtools.core.builder.DefaultBuilderSet;
 import org.faktorips.devtools.core.builder.DefaultJavaSourceFileBuilder;
 import org.faktorips.devtools.core.builder.TypeSection;
@@ -55,7 +56,6 @@ import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
 import org.faktorips.devtools.core.model.type.IMethod;
 import org.faktorips.devtools.core.model.type.IParameter;
 import org.faktorips.devtools.stdbuilder.StandardBuilderSet;
-import org.faktorips.devtools.stdbuilder.policycmpttype.PolicyCmptInterfaceBuilder;
 import org.faktorips.devtools.stdbuilder.productcmpt.ProductCmptBuilder;
 import org.faktorips.devtools.stdbuilder.productcmpt.ProductCmptGenerationCuBuilder;
 import org.faktorips.devtools.stdbuilder.productcmpttype.ProductCmptGenImplClassBuilder;
@@ -87,7 +87,6 @@ public class FormulaTestBuilder extends DefaultJavaSourceFileBuilder {
     private IProductCmptNamingStrategy productCmptNamingStrategy = new NoVersionIdProductCmptNamingStrategy();
 
     // wired builder
-    private PolicyCmptInterfaceBuilder policyCmptInterfaceBuilder;
     private ProductCmptInterfaceBuilder productCmptInterfaceBuilder;
     private ProductCmptGenImplClassBuilder productCmptGenImplClassBuilder;
     private ProductCmptBuilder productCmptBuilder;
@@ -98,13 +97,6 @@ public class FormulaTestBuilder extends DefaultJavaSourceFileBuilder {
 
     public FormulaTestBuilder(IIpsArtefactBuilderSet builderSet, String kindId) {
         super(builderSet, kindId, new LocalizedStringsSet(FormulaTestBuilder.class));
-    }
-
-    /**
-     * @param policyCmptInterfaceBuilder The policyCmptInterfaceBuilder to set.
-     */
-    public synchronized void setPolicyCmptInterfaceBuilder(PolicyCmptInterfaceBuilder policyCmptInterfaceBuilder) {
-        this.policyCmptInterfaceBuilder = policyCmptInterfaceBuilder;
     }
 
     /**
@@ -531,7 +523,7 @@ public class FormulaTestBuilder extends DefaultJavaSourceFileBuilder {
         body.append("\"");
         body.appendln(");");
 
-        appendLocalizedJavaDoc("METHOD_TEST_METHODS", policyCmptInterfaceBuilder
+        appendLocalizedJavaDoc("METHOD_TEST_METHODS", AbstractPcTypeBuilder
                 .getNameForGenerationConcept(productCmptType), getIpsObject(), builder);
 
         builder.signature(Modifier.PUBLIC, "void", testMethodName, new String[] { "productCmpt", "result" },

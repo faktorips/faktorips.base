@@ -424,7 +424,6 @@ public class StandardBuilderSet extends DefaultBuilderSet {
         testCaseBuilder.setJavaSourceFileBuilder(policyCmptImplClassBuilder);
 
         // formula test builder
-        formulaTestBuilder.setPolicyCmptInterfaceBuilder(policyCmptInterfaceBuilder);
         formulaTestBuilder.setProductCmptInterfaceBuilder(productCmptInterfaceBuilder);
         formulaTestBuilder.setProductCmptBuilder(productCmptGenerationImplBuilder);
         formulaTestBuilder.setProductCmptGenImplClassBuilder(productCmptGenImplClassBuilder);

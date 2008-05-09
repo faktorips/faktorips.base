@@ -17,7 +17,10 @@ package org.faktorips.devtools.stdbuilder.type;
 import java.util.Locale;
 
 import org.eclipse.core.runtime.CoreException;
+import org.faktorips.devtools.core.builder.AbstractPcTypeBuilder;
+import org.faktorips.devtools.core.builder.AbstractTypeBuilder;
 import org.faktorips.devtools.core.builder.JavaGeneratorForIpsPart;
+import org.faktorips.devtools.core.builder.JavaSourceFileBuilder;
 import org.faktorips.devtools.core.model.ipsproject.IChangesOverTimeNamingConvention;
 import org.faktorips.devtools.core.model.type.IType;
 import org.faktorips.devtools.stdbuilder.StandardBuilderSet;
@@ -119,31 +122,29 @@ public abstract class GenType extends JavaGeneratorForIpsPart {
     /**
      * Returns the abbreviation for the generation (changes over time) concept.
      * 
-     * @param element An ips element needed to access the ipsproject where the neccessary
-     *            configuration information is stored.
-     * 
      * @see org.faktorips.devtools.core.model.ipsproject.IChangesOverTimeNamingConvention
+     * @see org.faktorips.devtools.core.builder.AbstractTypeBuilder#getAbbreviationForGenerationConcept
      */
-    // TODO duplicate method in AbstractTypeBuilder
     public String getAbbreviationForGenerationConcept() {
-        return getChangesInTimeNamingConvention().getGenerationConceptNameAbbreviation(
-                getLanguageUsedInGeneratedSourceCode());
+        return AbstractTypeBuilder.getAbbreviationForGenerationConcept(type);
     }
 
     /**
      * Returns the naming convention for product changes over time.
+     * 
+     * @see org.faktorips.devtools.core.builder.JavaSourceFileBuilder#getChangesInTimeNamingConvention
      */
-    // TODO duplicate method in JavaSourceFileBuilder
     public IChangesOverTimeNamingConvention getChangesInTimeNamingConvention() {
-        return type.getIpsProject().getChangesInTimeNamingConventionForGeneratedCode();
+        return JavaSourceFileBuilder.getChangesInTimeNamingConvention(type);
     }
 
     /**
      * Returns the language in that variables, methods are named and and Java docs are written in.
+     * 
+     * @see org.faktorips.devtools.core.builder.JavaSourceFileBuilder#getLanguageUsedInGeneratedSourceCode
      */
-    // TODO duplicate method in JavaSourceFileBuilder
     public Locale getLanguageUsedInGeneratedSourceCode() {
-        return type.getIpsProject().getGeneratedJavaSourcecodeDocumentationLanguage();
+        return JavaSourceFileBuilder.getLanguageUsedInGeneratedSourceCode(type);
     }
 
     /**
@@ -153,11 +154,10 @@ public abstract class GenType extends JavaGeneratorForIpsPart {
      *            configuration information is stored.
      * 
      * @see org.faktorips.devtools.core.model.ipsproject.IChangesOverTimeNamingConvention
+     * @see org.faktorips.devtools.core.builder.AbstractPcTypeBuilder#getNameForGenerationConcept
      */
-    // TODO duplicate method in AbstractPcTypeBuilder
     public String getNameForGenerationConcept() {
-        return getChangesInTimeNamingConvention().getGenerationConceptNameSingular(
-                getLanguageUsedInGeneratedSourceCode());
+        return AbstractPcTypeBuilder.getNameForGenerationConcept(type);
     }
 
 }
