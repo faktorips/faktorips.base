@@ -62,12 +62,11 @@ public abstract class GenAssociation extends GenPolicyCmptTypePart {
 
         super(genPolicyCmptType, association, stringsSet);
         this.association = association;
-        this.reverseAssociation = association.findInverseAssociation(getGenPolicyCmptType().getIpsPart()
-                .getIpsProject());
-        this.target = association.findTargetPolicyCmptType(association.getIpsProject());
-        this.targetInterfaceName = GenType.getQualifiedName(target, genPolicyCmptType.getBuilderSet(), true);
-        this.targetImplClassName = GenType.getQualifiedName(target, genPolicyCmptType.getBuilderSet(), false);
-        this.fieldName = computeFieldName();
+        reverseAssociation = association.findInverseAssociation(getGenPolicyCmptType().getIpsPart().getIpsProject());
+        target = association.findTargetPolicyCmptType(association.getIpsProject());
+        targetInterfaceName = GenType.getQualifiedName(target, genPolicyCmptType.getBuilderSet(), true);
+        targetImplClassName = GenType.getQualifiedName(target, genPolicyCmptType.getBuilderSet(), false);
+        fieldName = computeFieldName();
     }
 
     /**
@@ -368,7 +367,7 @@ public abstract class GenAssociation extends GenPolicyCmptTypePart {
             methodsBuilder.append(fieldName);
             methodsBuilder.append(")");
             methodsBuilder.openBracket();
-        }else{
+        } else {
             methodsBuilder.append("for (");
             methodsBuilder.appendClassName(Iterator.class);
             methodsBuilder.append(" it = ");
@@ -796,13 +795,6 @@ public abstract class GenAssociation extends GenPolicyCmptTypePart {
                 .getTargetRoleSingular()));
     }
 
-    public void generateMethodGetMaxCardinalityFor(JavaCodeFragmentBuilder methodsBuilder) {
-        String[] replacements = new String[] { association.getTargetRoleSingular() };
-        appendLocalizedJavaDoc("METHOD_GET_MAX_CARDINALITY", replacements, methodsBuilder);
-        generateSignatureGetMaxCardinalityFor(methodsBuilder);
-        methodsBuilder.appendln(";");
-    }
-
     protected void generateFieldGetMaxCardinalityFor(JavaCodeFragmentBuilder attrBuilder) {
         appendLocalizedJavaDoc("FIELD_MAX_CARDINALITY", association.getTargetRoleSingular(), attrBuilder);
         String fieldName = getFieldNameGetMaxCardinalityFor();
@@ -868,69 +860,6 @@ public abstract class GenAssociation extends GenPolicyCmptTypePart {
     protected void generateMethodGetRefObjectAtIndex(JavaCodeFragmentBuilder methodBuilder) throws CoreException {
         generateSignatureGetRefObjectAtIndex(methodBuilder);
         methodBuilder.append(';');
-    }
-
-    /**
-     * Code sample without product component parameter:
-     * 
-     * <pre>
-     * [Javadoc]
-     * public Coverage newCoverage();
-     * </pre>
-     * 
-     * Code sample with product component parameter: [Javadoc]
-     * 
-     * <pre>
-     * public Coverage newCoverage(CoverageType coverageType);
-     * </pre>
-     */
-    public void generateMethodNewChild(IPolicyCmptType target,
-            boolean inclProductCmptArg,
-            JavaCodeFragmentBuilder builder) throws CoreException {
-
-        String targetTypeName = target.getName();
-        String role = association.getTargetRoleSingular();
-        if (inclProductCmptArg) {
-            String replacements[] = new String[] { targetTypeName, role,
-                    getParamNameForProductCmptInNewChildMethod(target.findProductCmptType(getIpsProject())) };
-            appendLocalizedJavaDoc("METHOD_NEW_CHILD_WITH_PRODUCTCMPT_ARG", replacements, builder);
-        } else {
-            appendLocalizedJavaDoc("METHOD_NEW_CHILD", new String[] { targetTypeName, role }, builder);
-        }
-        generateSignatureNewChild(target, inclProductCmptArg, builder);
-        builder.appendln(";");
-    }
-
-    /**
-     * Code sample without product component argument:
-     * 
-     * <pre>
-     * public Coverage newCoverage()
-     * </pre>
-     * 
-     * Code sample with product component argument:
-     * 
-     * <pre>
-     * public Coverage newCoverage(ICoverageType coverageType)
-     * </pre>
-     */
-    public void generateSignatureNewChild(IPolicyCmptType target,
-            boolean inclProductCmptArg,
-            JavaCodeFragmentBuilder builder) throws CoreException {
-
-        String methodName = getMethodNameNewChild(association);
-        String returnType = getQualifiedClassName((IPolicyCmptType)association.findTarget(getIpsProject()), true);
-        String[] argNames, argTypes;
-        if (inclProductCmptArg) {
-            IProductCmptType productCmptType = target.findProductCmptType(getIpsProject());
-            argNames = new String[] { getParamNameForProductCmptInNewChildMethod(productCmptType) };
-            argTypes = new String[] { getGenPolicyCmptType().getBuilderSet().getGenerator(productCmptType)
-                    .getQualifiedName(true) };
-        } else {
-            argNames = EMPTY_STRING_ARRAY;
-            argTypes = EMPTY_STRING_ARRAY;
-        }
-        builder.signature(java.lang.reflect.Modifier.PUBLIC, returnType, methodName, argNames, argTypes);
     }
 
     /**
@@ -1055,5 +984,6 @@ public abstract class GenAssociation extends GenPolicyCmptTypePart {
         return association.getIpsProject().findPolicyCmptType(association.getTarget());
     }
 
-    public abstract JavaCodeFragment generateCodeToSynchronizeReverseAssoziation(String fieldName, String targetImplClassName) throws CoreException;
+    public abstract JavaCodeFragment generateCodeToSynchronizeReverseAssoziation(String fieldName,
+            String targetImplClassName) throws CoreException;
 }

@@ -188,10 +188,6 @@ public class GenChangeableAttribute extends GenAttribute {
         return ValueSetType.ALL_VALUES == getPolicyCmptTypeAttribute().getValueSet().getValueSetType();
     }
 
-    protected boolean isNotAllValuesValueSet() {
-        return ValueSetType.ALL_VALUES != getPolicyCmptTypeAttribute().getValueSet().getValueSetType();
-    }
-
     /**
      * Generates the signature for the method to access an attribute's set of allowed values.
      * 
@@ -486,7 +482,7 @@ public class GenChangeableAttribute extends GenAttribute {
         JavaCodeFragment body = new JavaCodeFragment();
         body.appendOpenBracket();
         body.append("return ");
-        if (isNotAllValuesValueSet() && isConfigurableByProduct() && getProductCmptType(ipsProject) != null) {
+        if (!isAllValuesValueSet() && isConfigurableByProduct() && getProductCmptType(ipsProject) != null) {
             generateGenerationAccess(body, ipsProject);
             body.append(getMethodNameGetAllowedValuesFor(wrapperDatatypeHelper.getDatatype()));
             body.appendln("(businessFunction);");
@@ -522,10 +518,6 @@ public class GenChangeableAttribute extends GenAttribute {
         body.appendln(';');
         body.appendCloseBracket();
         methodsBuilder.append(body);
-    }
-
-    public String getFieldNameRangeFor(IPolicyCmptTypeAttribute a) {
-        return getLocalizedText("FIELD_RANGE_FOR_NAME", StringUtils.capitalize(a.getName()));
     }
 
     private void generateFieldRangeFor(DatatypeHelper helper, JavaCodeFragmentBuilder memberVarBuilder) {

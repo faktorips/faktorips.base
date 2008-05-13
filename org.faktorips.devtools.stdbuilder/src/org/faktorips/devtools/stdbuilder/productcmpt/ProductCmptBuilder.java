@@ -14,6 +14,7 @@
 
 package org.faktorips.devtools.stdbuilder.productcmpt;
 
+import java.util.Calendar;
 import java.util.GregorianCalendar;
 
 import org.eclipse.core.resources.IContainer;
@@ -157,10 +158,10 @@ public class ProductCmptBuilder extends AbstractArtefactBuilder {
         // instead we delete all file that start with the common prefix.
         String prefix = getJavaSrcFilePrefix(deletedFile);
         IFile file = generationBuilder.getJavaFile(deletedFile); // get a file handle in the
-                                                                    // target folder
+        // target folder
         IContainer folder = file.getParent();
         IResource[] members = folder.members(); // now delete all files that start with the common
-                                                // prefix
+        // prefix
         for (int i = 0; i < members.length; i++) {
             if (members[i].getType() == IResource.FILE && members[i].getName().startsWith(prefix)) {
                 members[i].delete(true, null);
@@ -175,10 +176,10 @@ public class ProductCmptBuilder extends AbstractArtefactBuilder {
      */
     private IIpsSrcFile getVirtualIpsSrcFile(IProductCmptGeneration generation) throws CoreException {
         GregorianCalendar validFrom = generation.getValidFrom();
-        int month = validFrom.get(GregorianCalendar.MONTH) + 1;
-        int date = validFrom.get(GregorianCalendar.DATE);
-        String name = getUnchangedJavaSrcFilePrefix(generation.getIpsSrcFile())
-                + +validFrom.get(GregorianCalendar.YEAR) + (month < 10 ? "0" + month : "" + month) //$NON-NLS-1$ //$NON-NLS-2$
+        int month = validFrom.get(Calendar.MONTH) + 1;
+        int date = validFrom.get(Calendar.DATE);
+        String name = getUnchangedJavaSrcFilePrefix(generation.getIpsSrcFile()) + +validFrom.get(Calendar.YEAR)
+                + (month < 10 ? "0" + month : "" + month) //$NON-NLS-1$ //$NON-NLS-2$
                 + (date < 10 ? "0" + date : "" + date); //$NON-NLS-1$ //$NON-NLS-2$
         name = generation.getIpsProject().getProductCmptNamingStrategy().getJavaClassIdentifier(name);
         return generation.getProductCmpt().getIpsSrcFile().getIpsPackageFragment().getIpsSrcFile(

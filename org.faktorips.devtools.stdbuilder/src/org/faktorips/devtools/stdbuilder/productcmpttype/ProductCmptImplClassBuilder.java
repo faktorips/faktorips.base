@@ -28,7 +28,6 @@ import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.core.model.ipsproject.IIpsArtefactBuilderSet;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAttribute;
-import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeAssociation;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeAttribute;
 import org.faktorips.devtools.core.model.productcmpttype.ITableStructureUsage;
@@ -41,7 +40,6 @@ import org.faktorips.devtools.stdbuilder.type.GenType;
 import org.faktorips.runtime.IConfigurableModelObject;
 import org.faktorips.runtime.IRuntimeRepository;
 import org.faktorips.runtime.internal.MethodNames;
-import org.faktorips.runtime.internal.ProductComponent;
 import org.faktorips.util.LocalizedStringsSet;
 
 /**
@@ -76,18 +74,6 @@ public class ProductCmptImplClassBuilder extends BaseProductCmptTypeBuilder {
     /**
      * {@inheritDoc}
      */
-    protected String getSuperclass() throws CoreException {
-        String javaSupertype = ProductComponent.class.getName();
-        IProductCmptType supertype = (IProductCmptType)getProductCmptType().findSupertype(getIpsProject());
-        if (supertype != null) {
-            javaSupertype = getQualifiedClassName(supertype.getIpsSrcFile());
-        }
-        return javaSupertype;
-    }
-
-    /**
-     * {@inheritDoc}
-     */
     protected String[] getExtendedInterfaces() throws CoreException {
         return new String[] { GenType.getQualifiedName(getProductCmptType(), (StandardBuilderSet)getBuilderSet(), true) };
     }
@@ -96,7 +82,8 @@ public class ProductCmptImplClassBuilder extends BaseProductCmptTypeBuilder {
      * {@inheritDoc}
      */
     protected void generateTypeJavadoc(JavaCodeFragmentBuilder builder) throws CoreException {
-        String interfaceName = GenType.getUnqualifiedClassName(getProductCmptType(), (StandardBuilderSet)getBuilderSet(), true);
+        String interfaceName = GenType.getUnqualifiedClassName(getProductCmptType(),
+                (StandardBuilderSet)getBuilderSet(), true);
         appendLocalizedJavaDoc("CLASS", interfaceName, getIpsObject(), builder);
     }
 
@@ -169,7 +156,8 @@ public class ProductCmptImplClassBuilder extends BaseProductCmptTypeBuilder {
     private void generateMethodCreatePolicyCmpt(IPolicyCmptType returnedTypeInSignature,
             JavaCodeFragmentBuilder methodsBuilder) throws CoreException {
         methodsBuilder.javaDoc(getJavaDocCommentForOverriddenMethod(), ANNOTATION_GENERATED);
-        ((StandardBuilderSet)getBuilderSet()).getGenerator(returnedTypeInSignature).generateSignatureCreatePolicyCmpt(methodsBuilder);
+        ((StandardBuilderSet)getBuilderSet()).getGenerator(returnedTypeInSignature).generateSignatureCreatePolicyCmpt(
+                methodsBuilder);
         methodsBuilder.openBracket();
         methodsBuilder.append("return new ");
         methodsBuilder.appendClassName(((StandardBuilderSet)getBuilderSet()).getGenerator(getPcType())
@@ -197,7 +185,9 @@ public class ProductCmptImplClassBuilder extends BaseProductCmptTypeBuilder {
         if (getPcType() == null) {
             methodsBuilder.appendln("null;");
         } else {
-            methodsBuilder.appendln(((StandardBuilderSet)getBuilderSet()).getGenerator(getPcType()).getMethodNameCreatePolicyCmpt() + "();");
+            methodsBuilder.appendln(((StandardBuilderSet)getBuilderSet()).getGenerator(getPcType())
+                    .getMethodNameCreatePolicyCmpt()
+                    + "();");
         }
         methodsBuilder.closeBracket();
     }

@@ -55,7 +55,7 @@ public abstract class GenProdAssociation extends GenProductCmptTypePart {
             LocalizedStringsSet stringsSet) throws CoreException {
         super(genProductCmptType, association, stringsSet);
         this.association = association;
-        this.target = association.findTargetProductCmptType(association.getIpsProject());
+        target = association.findTargetProductCmptType(association.getIpsProject());
     }
 
     protected void generateFieldCardinalityForAssociation(JavaCodeFragmentBuilder fieldsBuilder) throws CoreException {

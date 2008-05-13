@@ -190,7 +190,7 @@ public class GenAssociationToMany extends GenAssociation {
             String comment = getLocalizedText("FIELD_RELATION_JAVADOC", association.getName());
             builder.javaDoc(comment, JavaSourceFileBuilder.ANNOTATION_GENERATED);
             builder.varDeclaration(java.lang.reflect.Modifier.PRIVATE, List.class.getName()
-                    + (isUseTypesafeCollections() ? ("<" + targetInterfaceName + ">") : ""), fieldName,
+                    + (isUseTypesafeCollections() ? "<" + targetInterfaceName + ">" : ""), fieldName,
                     initialValueExpression);
         }
     }
@@ -386,8 +386,8 @@ public class GenAssociationToMany extends GenAssociation {
         methodsBuilder.append(fieldName);
         methodsBuilder.append(".add(" + paramName + ");");
         if (association.isAssoziation() && reverseAssociation != null) {
-            methodsBuilder.append(getGenPolicyCmptType().getBuilderSet().getGenerator(target).getGenerator(reverseAssociation)
-                    .generateCodeToSynchronizeReverseAssoziation(paramName, targetInterfaceName));
+            methodsBuilder.append(getGenPolicyCmptType().getBuilderSet().getGenerator(target).getGenerator(
+                    reverseAssociation).generateCodeToSynchronizeReverseAssoziation(paramName, targetInterfaceName));
         }
         generateChangeListenerSupport(methodsBuilder, "RELATION_OBJECT_ADDED", paramName);
         methodsBuilder.closeBracket();
@@ -419,12 +419,12 @@ public class GenAssociationToMany extends GenAssociation {
         methodsBuilder.openBracket();
         methodsBuilder.append("if(" + paramName + "== null) {return;}");
 
-        if (reverseAssociation != null || (association.isComposition() && target != null && target.isDependantType())) {
+        if (reverseAssociation != null || association.isComposition() && target != null && target.isDependantType()) {
             methodsBuilder.append("if(");
         }
         methodsBuilder.append(fieldName);
         methodsBuilder.append(".remove(" + paramName + ")");
-        if (reverseAssociation != null || (association.isComposition() && target != null && target.isDependantType())) {
+        if (reverseAssociation != null || association.isComposition() && target != null && target.isDependantType()) {
             methodsBuilder.append(") {");
             if (association.isAssoziation()) {
                 methodsBuilder.append(generateCodeToCleanupOldReference(association, reverseAssociation, paramName));

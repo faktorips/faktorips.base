@@ -51,7 +51,7 @@ public abstract class GenAttribute extends GenPolicyCmptTypePart {
     public GenAttribute(GenPolicyCmptType genPolicyCmptType, IPolicyCmptTypeAttribute a, LocalizedStringsSet stringsSet)
             throws CoreException {
         super(genPolicyCmptType, a, stringsSet);
-        this.attribute = a;
+        attribute = a;
         attributeName = a.getName();
         datatypeHelper = a.getIpsProject().findDatatypeHelper(a.getDatatype());
         if (datatypeHelper == null) {
@@ -78,10 +78,6 @@ public abstract class GenAttribute extends GenPolicyCmptTypePart {
             productCmptType = getPolicyCmptTypeAttribute().getPolicyCmptType().findProductCmptType(ipsProject);
         }
         return productCmptType;
-    }
-
-    public DatatypeHelper getDatatypeHelper() {
-        return datatypeHelper;
     }
 
     public ValueDatatype getDatatype() {
@@ -125,7 +121,7 @@ public abstract class GenAttribute extends GenPolicyCmptTypePart {
     }
 
     public String getStaticConstantPropertyName() {
-        return this.staticConstantPropertyName;
+        return staticConstantPropertyName;
     }
 
     /**
@@ -212,10 +208,6 @@ public abstract class GenAttribute extends GenPolicyCmptTypePart {
         methodsBuilder.append(".");
         methodsBuilder.append(memberVarName);
         methodsBuilder.appendln(", options);");
-    }
-
-    protected boolean needsToBeConsideredInInitPropertiesFromXml() throws CoreException {
-        return isMemberVariableRequired();
     }
 
     public void generateInitPropertiesFromXml(JavaCodeFragmentBuilder builder) throws CoreException {

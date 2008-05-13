@@ -19,7 +19,6 @@ import java.util.List;
 import org.eclipse.core.runtime.CoreException;
 import org.faktorips.codegen.DatatypeHelper;
 import org.faktorips.codegen.JavaCodeFragmentBuilder;
-import org.faktorips.datatype.Datatype;
 import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.core.model.ipsproject.IIpsArtefactBuilderSet;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAttribute;
@@ -61,6 +60,9 @@ public class ProductCmptGenInterfaceBuilder extends BaseProductCmptTypeBuilder {
         return true;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     protected String[] getExtendedInterfaces() throws CoreException {
         String javaSupertype = IProductComponentGeneration.class.getName();
         IProductCmptType supertype = (IProductCmptType)getProductCmptType().findSupertype(getIpsProject());
@@ -71,6 +73,9 @@ public class ProductCmptGenInterfaceBuilder extends BaseProductCmptTypeBuilder {
         return new String[] { javaSupertype };
     }
 
+    /**
+     * {@inheritDoc}
+     */
     protected String getSuperclass() throws CoreException {
         return null;
     }
@@ -156,7 +161,8 @@ public class ProductCmptGenInterfaceBuilder extends BaseProductCmptTypeBuilder {
     protected void generateCodeForMethodDefinedInModel(IMethod method, JavaCodeFragmentBuilder methodsBuilder)
             throws CoreException {
 
-        GenProdMethod generator = ((StandardBuilderSet)getBuilderSet()).getGenerator(getProductCmptType()).getGenerator(method);
+        GenProdMethod generator = ((StandardBuilderSet)getBuilderSet()).getGenerator(getProductCmptType())
+                .getGenerator(method);
         if (generator != null) {
             generator.generate(generatesInterface(), getIpsProject(), getMainTypeSection());
         }

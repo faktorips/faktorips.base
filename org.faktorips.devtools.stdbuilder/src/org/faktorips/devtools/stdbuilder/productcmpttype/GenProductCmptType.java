@@ -216,7 +216,8 @@ public class GenProductCmptType extends GenType {
         if (generatorsByPart.containsKey(a)) {
             return (GenProdMethod)generatorsByPart.get(a);
         } else if (a.isValid()) {
-            GenProdMethod generator = new GenProdMethod(this, (IProductCmptTypeMethod)a,  new LocalizedStringsSet(GenProdMethod.class));
+            GenProdMethod generator = new GenProdMethod(this, (IProductCmptTypeMethod)a, new LocalizedStringsSet(
+                    GenProdMethod.class));
             if (generator != null) {
                 genProdAssociations.add(generator);
                 generatorsByPart.put(a, generator);
@@ -279,15 +280,14 @@ public class GenProductCmptType extends GenType {
      * public IProductGen getGeneration(Calendar effectiveDate)
      * </pre>
      */
-    void generateSignatureGetGeneration(JavaCodeFragmentBuilder methodsBuilder)
-            throws CoreException {
+    void generateSignatureGetGeneration(JavaCodeFragmentBuilder methodsBuilder) throws CoreException {
         String generationInterface = getQualifiedClassNameForProductCmptTypeGen(true);
         String methodName = getMethodNameGetGeneration();
         String paramName = getVarNameEffectiveDate();
         methodsBuilder.signature(Modifier.PUBLIC, generationInterface, methodName, new String[] { paramName },
                 new String[] { Calendar.class.getName() });
     }
-    
+
     /**
      * Returns the variable or parameter name for the effetiveDate.
      * 
@@ -305,12 +305,10 @@ public class GenProductCmptType extends GenType {
      * public IMotorProduct getMotorProduct()
      * </pre>
      */
-    public void generateSignatureGetProductCmpt(JavaCodeFragmentBuilder methodsBuilder)
-            throws CoreException {
+    public void generateSignatureGetProductCmpt(JavaCodeFragmentBuilder methodsBuilder) throws CoreException {
         String returnType = getQualifiedName(true);
         String methodName = getMethodNameGetProductCmpt();
-        methodsBuilder.signature(Modifier.PUBLIC, returnType, methodName, EMPTY_STRING_ARRAY,
-                EMPTY_STRING_ARRAY);
+        methodsBuilder.signature(Modifier.PUBLIC, returnType, methodName, EMPTY_STRING_ARRAY, EMPTY_STRING_ARRAY);
     }
 
     /**
@@ -320,8 +318,7 @@ public class GenProductCmptType extends GenType {
      * public void setMotorProduct(IMotorProduct motorProduct, boolean initPropertiesWithConfiguratedDefaults)
      * </pre>
      */
-    public void generateSignatureSetProductCmpt(JavaCodeFragmentBuilder methodsBuilder)
-            throws CoreException {
+    public void generateSignatureSetProductCmpt(JavaCodeFragmentBuilder methodsBuilder) throws CoreException {
         String methodName = getMethodNameSetProductCmpt();
         String[] paramTypes = new String[] { getQualifiedName(true), "boolean" };
         methodsBuilder.signature(java.lang.reflect.Modifier.PUBLIC, "void", methodName,

@@ -53,11 +53,9 @@ import org.faktorips.devtools.stdbuilder.table.TableImplBuilder;
 import org.faktorips.runtime.ITable;
 import org.faktorips.runtime.internal.EnumValues;
 import org.faktorips.runtime.internal.MethodNames;
-import org.faktorips.runtime.internal.ProductComponentGeneration;
 import org.faktorips.runtime.internal.Range;
 import org.faktorips.runtime.internal.ValueToXmlHelper;
 import org.faktorips.util.LocalizedStringsSet;
-import org.faktorips.util.StringUtil;
 import org.w3c.dom.Element;
 
 /**
@@ -118,18 +116,6 @@ public class ProductCmptGenImplClassBuilder extends BaseProductCmptTypeBuilder {
     /**
      * {@inheritDoc}
      */
-    protected String getSuperclass() throws CoreException {
-        IProductCmptType supertype = (IProductCmptType)getProductCmptType().findSupertype(getIpsProject());
-        if (supertype != null) {
-            String pack = getPackage(supertype.getIpsSrcFile());
-            return StringUtil.qualifiedName(pack, getUnqualifiedClassName(supertype.getIpsSrcFile()));
-        }
-        return ProductComponentGeneration.class.getName();
-    }
-
-    /**
-     * {@inheritDoc}
-     */
     protected String[] getExtendedInterfaces() throws CoreException {
         // The implementation implements the published interface.
         return new String[] { ((StandardBuilderSet)getBuilderSet()).getGenerator(getProductCmptType())
@@ -141,8 +127,7 @@ public class ProductCmptGenImplClassBuilder extends BaseProductCmptTypeBuilder {
      */
     protected void generateTypeJavadoc(JavaCodeFragmentBuilder builder) throws CoreException {
         appendLocalizedJavaDoc("CLASS", ((StandardBuilderSet)getBuilderSet()).getGenerator(getProductCmptType())
-                .getUnqualifiedClassNameForProductCmptTypeGen(true), getIpsObject(),
-                builder);
+                .getUnqualifiedClassNameForProductCmptTypeGen(true), getIpsObject(), builder);
     }
 
     /**
@@ -188,7 +173,7 @@ public class ProductCmptGenImplClassBuilder extends BaseProductCmptTypeBuilder {
         for (Iterator it = ((StandardBuilderSet)getBuilderSet()).getGenerator(getProductCmptType())
                 .getGenProdAttributes(); it.hasNext();) {
             GenProdAttribute generator = (GenProdAttribute)it.next();
-            if (generator.isValidAttribute()) {
+            if (!generator.isValidAttribute()) {
                 continue;
             }
             if (attributeFound == false) {

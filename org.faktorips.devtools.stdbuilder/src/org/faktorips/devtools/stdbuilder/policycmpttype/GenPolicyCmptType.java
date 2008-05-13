@@ -269,8 +269,7 @@ public class GenPolicyCmptType extends GenType {
      * public IPolicy createPolicy()
      * </pre>
      */
-    public void generateSignatureCreatePolicyCmpt(JavaCodeFragmentBuilder methodsBuilder)
-            throws CoreException {
+    public void generateSignatureCreatePolicyCmpt(JavaCodeFragmentBuilder methodsBuilder) throws CoreException {
         String returnType = getQualifiedName(true);
         String methodName = getMethodNameCreatePolicyCmpt();
         methodsBuilder.signature(Modifier.PUBLIC, returnType, methodName, new String[0], new String[0]);

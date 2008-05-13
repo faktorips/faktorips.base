@@ -48,7 +48,7 @@ public class GenProdAttribute extends GenProductCmptTypePart {
     public GenProdAttribute(GenProductCmptType genProductCmptType, IProductCmptTypeAttribute a,
             LocalizedStringsSet stringsSet) throws CoreException {
         super(genProductCmptType, a, stringsSet);
-        this.attribute = a;
+        attribute = a;
         attributeName = a.getName();
         datatypeHelper = a.getIpsProject().findDatatypeHelper(a.getDatatype());
         if (datatypeHelper == null) {
@@ -98,46 +98,6 @@ public class GenProdAttribute extends GenProductCmptTypePart {
         return getJavaNamingConvention().getSetterMethodName(attributeName, getDatatype());
     }
 
-    public String getStaticConstantPropertyName() {
-        return this.staticConstantPropertyName;
-    }
-
-    /**
-     * Code sample:
-     * 
-     * <pre>
-     * [Javadoc]
-     * public Money getPremium();
-     * </pre>
-     */
-    protected void generateGetterInterface(JavaCodeFragmentBuilder builder) throws CoreException {
-        String description = StringUtils.isEmpty(attribute.getDescription()) ? "" : SystemUtils.LINE_SEPARATOR + "<p>"
-                + SystemUtils.LINE_SEPARATOR + attribute.getDescription();
-        String[] replacements = new String[] { attributeName, description };
-        appendLocalizedJavaDoc("METHOD_GETVALUE", replacements, builder);
-        generateGetterSignature(builder);
-        builder.appendln(";");
-    }
-
-    /**
-     * Code sample:
-     * 
-     * <pre>
-     * public Money getPremium() {
-     *     return premium;
-     * }
-     * </pre>
-     */
-    protected void generateGetterImplementation(JavaCodeFragmentBuilder methodsBuilder) throws CoreException {
-        methodsBuilder.javaDoc(getJavaDocCommentForOverriddenMethod(), JavaSourceFileBuilder.ANNOTATION_GENERATED);
-        generateGetterSignature(methodsBuilder);
-        methodsBuilder.openBracket();
-        methodsBuilder.append("return ");
-        methodsBuilder.append(memberVarName);
-        methodsBuilder.append(";");
-        methodsBuilder.closeBracket();
-    }
-
     /**
      * Code sample:
      * 
@@ -149,16 +109,6 @@ public class GenProdAttribute extends GenProductCmptTypePart {
         int modifier = java.lang.reflect.Modifier.PUBLIC;
         String methodName = getMethodNameGetPropertyValue(attributeName, datatypeHelper.getDatatype());
         methodsBuilder.signature(modifier, getJavaClassName(), methodName, EMPTY_STRING_ARRAY, EMPTY_STRING_ARRAY);
-    }
-
-    protected void generateField(JavaCodeFragmentBuilder memberVarsBuilders) throws CoreException {
-        JavaCodeFragment initialValueExpression = datatypeHelper.newInstance(attribute.getDefaultValue());
-        String comment = getLocalizedText("FIELD_ATTRIBUTE_VALUE_JAVADOC", attributeName);
-        String fieldName = getMemberVarName();
-
-        memberVarsBuilders.javaDoc(comment, JavaSourceFileBuilder.ANNOTATION_GENERATED);
-        memberVarsBuilders.varDeclaration(java.lang.reflect.Modifier.PRIVATE, getJavaClassName(), fieldName,
-                initialValueExpression);
     }
 
     /**
@@ -174,7 +124,7 @@ public class GenProdAttribute extends GenProductCmptTypePart {
      */
     protected void generateConstants(JavaCodeFragmentBuilder builder, IIpsProject ipsProject, boolean generatesInterface)
             throws CoreException {
-
+        // nothing to do
     }
 
     /**
@@ -296,7 +246,7 @@ public class GenProdAttribute extends GenProductCmptTypePart {
     }
 
     public boolean isValidAttribute() throws CoreException {
-        return attribute.validate(attribute.getIpsProject()).containsErrorMsg();
+        return !attribute.validate(attribute.getIpsProject()).containsErrorMsg();
     }
 
     public void generateDoInitPropertiesFromXml(JavaCodeFragmentBuilder builder) throws CoreException {
@@ -345,8 +295,8 @@ public class GenProdAttribute extends GenProductCmptTypePart {
         if (!generatesInterface) {
             String description = StringUtils.isEmpty(attribute.getDescription()) ? "" : SystemUtils.LINE_SEPARATOR
                     + "<p>" + SystemUtils.LINE_SEPARATOR + attribute.getDescription();
-            methodBuilder.javaDoc(getLocalizedText("METHOD_GETVALUE_JAVADOC", new String[] { attributeName, description }),
-                    JavaSourceFileBuilder.ANNOTATION_GENERATED);
+            methodBuilder.javaDoc(getLocalizedText("METHOD_GETVALUE_JAVADOC",
+                    new String[] { attributeName, description }), JavaSourceFileBuilder.ANNOTATION_GENERATED);
             generateGetterSignature(methodBuilder);
             methodBuilder.openBracket();
             methodBuilder.append("return ");

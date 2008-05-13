@@ -55,7 +55,6 @@ import org.faktorips.runtime.internal.AbstractConfigurableModelObject;
 import org.faktorips.runtime.internal.AbstractModelObject;
 import org.faktorips.runtime.internal.DependantObject;
 import org.faktorips.runtime.internal.MethodNames;
-import org.faktorips.runtime.internal.ModelObjectChangedEvent;
 import org.faktorips.runtime.internal.ModelObjectDelta;
 import org.faktorips.util.LocalizedStringsSet;
 import org.faktorips.util.StringUtil;
@@ -495,45 +494,6 @@ public class PolicyCmptImplClassBuilder extends BasePolicyCmptTypeBuilder {
         GenProdAttribute generator = getGenerator().getGenerator(attribute);
         if (generator != null) {
             generator.generateCodeForPolicyCmptType(generatesInterface(), methodsBuilder);
-        }
-    }
-
-    /**
-     * Returns the name of the field/member variable that stores the values for the
-     * property/attribute.
-     */
-    public String getFieldNameForAttribute(IPolicyCmptTypeAttribute a) throws CoreException {
-        return getGenerator().getGenerator(a).getMemberVarName();
-    }
-
-    protected void generateChangeListenerSupport(JavaCodeFragmentBuilder methodsBuilder,
-            String eventClassName,
-            String eventConstant,
-            String fieldName) {
-        generateChangeListenerSupport(methodsBuilder, eventClassName, eventConstant, fieldName, null);
-    }
-
-    public void generateChangeListenerSupport(JavaCodeFragmentBuilder methodsBuilder,
-            String eventClassName,
-            String eventConstant,
-            String fieldName,
-            String paramName) {
-        if (isGenerateChangeListenerSupport()) {
-            methodsBuilder.appendln("if (" + MethodNames.EXISTS_CHANGE_LISTENER_TO_BE_INFORMED + "()) {");
-            methodsBuilder.append(MethodNames.NOTIFIY_CHANGE_LISTENERS + "(new ");
-            methodsBuilder.appendClassName(ModelObjectChangedEvent.class);
-            methodsBuilder.append("(this, ");
-            methodsBuilder.appendClassName(eventClassName);
-            methodsBuilder.append('.');
-            methodsBuilder.append(eventConstant);
-            methodsBuilder.append(", ");
-            methodsBuilder.appendQuoted(fieldName);
-            if (paramName != null) {
-                methodsBuilder.append(", ");
-                methodsBuilder.append(paramName);
-            }
-            methodsBuilder.appendln("));");
-            methodsBuilder.appendln("}");
         }
     }
 

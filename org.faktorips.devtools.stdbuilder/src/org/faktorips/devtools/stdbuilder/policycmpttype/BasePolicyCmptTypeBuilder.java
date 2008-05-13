@@ -24,7 +24,6 @@ import org.eclipse.core.runtime.MultiStatus;
 import org.faktorips.codegen.DatatypeHelper;
 import org.faktorips.codegen.JavaCodeFragmentBuilder;
 import org.faktorips.devtools.core.builder.AbstractPcTypeBuilder;
-import org.faktorips.devtools.core.model.IIpsElement;
 import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.core.model.ipsproject.IIpsArtefactBuilderSet;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;

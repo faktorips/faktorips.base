@@ -130,7 +130,8 @@ public class ProductCmptInterfaceBuilder extends BaseProductCmptTypeBuilder {
         String generationConceptName = convention
                 .getGenerationConceptNameSingular(getLanguageUsedInGeneratedSourceCode(getIpsObject()));
         appendLocalizedJavaDoc("METHOD_GET_GENERATION", generationConceptName, getIpsObject(), methodsBuilder);
-        ((StandardBuilderSet)getBuilderSet()).getGenerator(getProductCmptType()).generateSignatureGetGeneration(methodsBuilder);
+        ((StandardBuilderSet)getBuilderSet()).getGenerator(getProductCmptType()).generateSignatureGetGeneration(
+                methodsBuilder);
         methodsBuilder.append(';');
     }
 
@@ -247,10 +248,6 @@ public class ProductCmptInterfaceBuilder extends BaseProductCmptTypeBuilder {
             throws CoreException {
         // return null, as this builder does not need code for product component type associations
         return null;
-    }
-
-    public ProductCmptInterfaceBuilder getProductCmptInterfaceBuilder() {
-        return this;
     }
 
 }
