@@ -252,6 +252,10 @@ public class PolicyCmptImplClassBuilder extends BasePolicyCmptTypeBuilder {
      *     }
      * }
      * </pre>
+     * 
+     * Java 5 code sample:
+     *     for (Iterator&lt;ICpChild2&gt; it = child2s.iterator(); it.hasNext();) {
+     * 
      */
     protected void generateMethodCopyProperties(JavaCodeFragmentBuilder methodsBuilder) throws CoreException {
         methodsBuilder.javaDoc(getJavaDocCommentForOverriddenMethod(), ANNOTATION_GENERATED);
@@ -423,6 +427,30 @@ public class PolicyCmptImplClassBuilder extends BasePolicyCmptTypeBuilder {
         methodsBuilder.methodEnd();
     }
 
+    /**
+     * Code sample
+     * 
+     * <pre>
+     *  public void effectiveFromHasChanged() {
+     *      super.effectiveFromHasChanged();
+     *      for (Iterator it = ftCoverages.iterator(); it.hasNext();) {
+     *          AbstractConfigurableModelObject child = (AbstractConfigurableModelObject)it.next();
+     *          child.effectiveFromHasChanged();
+     *      }
+     *  }
+     * </pre>
+     * 
+     * Java 5 code sample
+     * <pre>
+     *  public void effectiveFromHasChanged() {
+     *      super.effectiveFromHasChanged();
+     *      for (Iterator&lt;IFtCoverage&gt; it = ftCoverages.iterator(); it.hasNext();) {
+     *          AbstractConfigurableModelObject child = (AbstractConfigurableModelObject)it.next();
+     *          child.effectiveFromHasChanged();
+     *      }
+     *  }
+     * </pre>
+     */
     protected void generateMethodEffectiveFromHasChanged(JavaCodeFragmentBuilder methodsBuilder) throws CoreException {
         methodsBuilder.javaDoc(getJavaDocCommentForOverriddenMethod(), ANNOTATION_GENERATED);
         methodsBuilder.methodBegin(java.lang.reflect.Modifier.PUBLIC, Void.TYPE,
@@ -517,14 +545,36 @@ public class PolicyCmptImplClassBuilder extends BasePolicyCmptTypeBuilder {
         super.generateCodeForValidationRules(constantBuilder, memberVarBuilder, methodBuilder);
     }
 
+    /**
+     * Code sample
+     * 
+     * <pre>
+     *  public void validateDependants(MessageList ml, String businessFunction) {
+     *      super.validateDependants(ml, businessFunction);
+     *      if (getNumOfFtCoverages() > 0) {
+     *          IFtCoverage[] rels = getFtCoverages();
+     *          for (int i = 0; i < rels.length; i++) {
+     *              ml.add(rels[i].validate(businessFunction));
+     *          }
+     *      }
+     *  }
+     * </pre>
+     * 
+     * Java 5 code sample
+     * 
+     * <pre>
+     *  public void validateDependants(MessageList ml, String businessFunction) {
+     *      super.validateDependants(ml, businessFunction);
+     *      if (getNumOfFtCoverages() > 0) {
+     *          List<IFtCoverage> rels = getFtCoverages();
+     *          for (IFtCoverage rel : rels) {
+     *              ml.add(rel.validate(businessFunction));
+     *          }
+     *      }
+     *  }
+     * </pre>
+     */
     private void createMethodValidateDependants(JavaCodeFragmentBuilder builder) throws CoreException {
-        /*
-         * public void validateDependants(MessageList ml) { if(NumOfRelToMany() > 0) { TargetType[]
-         * rels = GetAllAssociationToMany(); for (int i = 0; i < rels.length; i++) {
-         * ml.add(rels[i].validate()); } if (NumOfRelTo1() > 0) {
-         * ml.add(GetAssociationTo1().validate()); } }
-         */
-
         String methodName = "validateDependants";
         IPolicyCmptTypeAssociation[] associations = getPcType().getPolicyCmptTypeAssociations();
 
@@ -551,12 +601,17 @@ public class PolicyCmptImplClassBuilder extends BasePolicyCmptTypeBuilder {
                 javaDoc, ANNOTATION_GENERATED);
     }
 
+    /**
+     * Code sample
+     * 
+     * <pre>
+     *  public void validateSelf(MessageList ml, String businessFunction) {
+     *      super.validateSelf(ml, businessFunction);
+     *  }
+     * </pre>
+     */
     private void generateMethodValidateSelf(JavaCodeFragmentBuilder builder, IPolicyCmptTypeAttribute[] attributes)
             throws CoreException {
-        /*
-         * public void validateSelf(MessageList ml, String businessFunction) {
-         * super.validateSelf(ml, businessFunction); }
-         */
         String methodName = "validateSelf";
         String javaDoc = getLocalizedText(getIpsObject(), "VALIDATE_SELF_JAVADOC", getPcType().getName());
 
@@ -641,8 +696,7 @@ public class PolicyCmptImplClassBuilder extends BasePolicyCmptTypeBuilder {
     }
 
     /**
-     * @return
-     * @throws CoreException
+     * Returns the <code>GenPolicyCmptType</code> for this builder.
      */
     private GenPolicyCmptType getGenerator() throws CoreException {
         return ((StandardBuilderSet)getBuilderSet()).getGenerator(getPcType());
@@ -777,9 +831,32 @@ public class PolicyCmptImplClassBuilder extends BasePolicyCmptTypeBuilder {
     }
 
     /**
-     * protected void initPropertiesFromXml(HashMap propMap) { if (propMap.containsKey("prop0")) {
-     * prop0 = (String)propMap.get("prop0"); } if (propMap.containsKey("prop1")) { prop1 =
-     * (String)propMap.get("prop1"); } }
+     * Code sample
+     * 
+     * <pre>
+     *  protected void initPropertiesFromXml(HashMap propMap) {
+     *      if (propMap.containsKey("prop0")) {
+     *          prop0 = (String)propMap.get("prop0");
+     *      } 
+     *      if (propMap.containsKey("prop1")) {
+     *          prop1 = (String)propMap.get("prop1");
+     *      }
+     *  }
+     * </pre>
+     *  
+     * Java 5 code sample
+     * 
+     * <pre>
+     *  protected void initPropertiesFromXml(HashMap propMap) {
+     *      final Map<String, String> checkedPropMap = (Map<String, String>)propMap;
+     *      if (checkedPropMap.containsKey("prop0")) {
+     *          prop0 = checkedPropMap.get("prop0");
+     *      } 
+     *      if (checkedPropMap.containsKey("prop1")) {
+     *          prop1 = checkedPropMap.get("prop1");
+     *      }
+     *  }
+     * </pre>
      */
     private void generateMethodInitPropertiesFromXml(JavaCodeFragmentBuilder builder) throws CoreException {
         boolean first = true;
@@ -824,8 +901,10 @@ public class PolicyCmptImplClassBuilder extends BasePolicyCmptTypeBuilder {
     }
 
     /**
+     * Code sample
+     * 
      * <pre>
-     * protected AbstractPolicyComponent createChildFromXml(Element childEl) {
+     *  protected AbstractPolicyComponent createChildFromXml(Element childEl) {
      *     AbstractPolicyComponent newChild ) super.createChildFromXml(childEl);
      *     if (newChild!=null) {
      *         return newChild;
@@ -844,7 +923,7 @@ public class PolicyCmptImplClassBuilder extends BasePolicyCmptTypeBuilder {
      *         (AbstractPolicyComponent)return newCovergae();
      *     }
      *     return null;    
-     * }
+     *  }
      * </pre>
      */
     private void generateMethodCreateChildFromXml(JavaCodeFragmentBuilder builder) throws CoreException {

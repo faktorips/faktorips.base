@@ -124,7 +124,7 @@ public class GenAssociationToMany extends GenAssociation {
 
     /**
      * Returns the name of the method adding an object to a multi-value association, e.g.
-     * getCoverage()
+     * addCoverage()
      */
     public String getMethodNameAddObject() {
         return getLocalizedText("METHOD_ADD_OBJECT_NAME", association.getTargetRoleSingular());
@@ -500,6 +500,13 @@ public class GenAssociationToMany extends GenAssociation {
      * [Javadoc]
      * public ICoverage[] getCoverages();
      * </pre>
+     * 
+     * Java 5 code sample:
+     * 
+     * <pre>
+     * [Javadoc]
+     * public List&lt;ICoverage&gt; getCoverages();
+     * </pre>
      */
     protected void generateMethodGetAllRefObjects(JavaCodeFragmentBuilder methodsBuilder) throws CoreException {
         appendLocalizedJavaDoc("METHOD_GET_ALL_REF_OBJECTS", association.getTargetRolePlural(), methodsBuilder);
@@ -652,7 +659,7 @@ public class GenAssociationToMany extends GenAssociation {
         methodsBuilder.closeBracket();
     }
 
-    /*
+    /**
      * Returns the name of the internal method returning the number of referenced objects, e.g.
      * getNumOfCoveragesInternal()
      */
@@ -668,6 +675,9 @@ public class GenAssociationToMany extends GenAssociation {
      * [Javadoc]
      * public ICoverage[] getCoverages() {
      *     ICoverage[] result = new ICoverage[getNumOfCoveragesInternal()];
+     *     ICoverage[] superResult = super.getCoverages();
+     *     System.arraycopy(superResult, 0, result, 0, superResult.length);
+     *     int counter = superResult.length;
      *     ICoverage[] elements;
      *     counter = 0;
      *     elements = getTplCoverages();
@@ -685,6 +695,7 @@ public class GenAssociationToMany extends GenAssociation {
      * [Javadoc]
      * public List&lt;ICoverage&gt; getCoverages() {
      *     List&lt;ICoverage&gt; result = new ArrayList&lt;ICoverage&gt;(getNumOfCoveragesInternal());
+           result.addAll(super.getCoverages());
      *     result.addAll(getTplCoverages());
      *     return result;
      * }
@@ -825,6 +836,35 @@ public class GenAssociationToMany extends GenAssociation {
         generateMethodGetNumOfInternalForContainerAssociationImplementation(associations, methodsBuilder);
     }
 
+    /**
+     * Code sample
+     * 
+     * <pre>
+     *  public void validateDependants(MessageList ml, String businessFunction) {
+     *      super.validateDependants(ml, businessFunction);
+     *      if (getNumOfFtCoverages() > 0) {
+     *          IFtCoverage[] rels = getFtCoverages();
+     *          for (int i = 0; i < rels.length; i++) {
+     *              ml.add(rels[i].validate(businessFunction));
+     *          }
+     *      }
+     *  }
+     * </pre>
+     * 
+     * Java 5 code sample
+     * 
+     * <pre>
+     *  public void validateDependants(MessageList ml, String businessFunction) {
+     *      super.validateDependants(ml, businessFunction);
+     *      if (getNumOfFtCoverages() > 0) {
+     *          List<IFtCoverage> rels = getFtCoverages();
+     *          for (IFtCoverage rel : rels) {
+     *              ml.add(rel.validate(businessFunction));
+     *          }
+     *      }
+     *  }
+     * </pre>
+     */
     public void generateCodeForValidateDependants(JavaCodeFragment body) throws CoreException {
         IPolicyCmptType target = getTargetPolicyCmptType();
         body.append("if(");

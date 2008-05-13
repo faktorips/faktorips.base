@@ -282,9 +282,7 @@ public class GenChangeableAttribute extends GenAttribute {
             generateFieldDefaultValue(datatypeHelper, builder);
 
             // if the datatype is a primitive datatype the datatypehelper will be switched to
-            // the
-            // helper of the
-            // wrapper type
+            // the helper of the wrapper type
             wrapperDatatypeHelper = StdBuilderHelper.getDatatypeHelperForValueSet(ipsProject, datatypeHelper);
             if (isRangeValueSet()) {
                 generateFieldRangeFor(wrapperDatatypeHelper, builder);
@@ -336,8 +334,7 @@ public class GenChangeableAttribute extends GenAttribute {
             generateMethodGetDefaultValue(datatypeHelper, builder, generatesInterface);
 
             // if the datatype is a primitive datatype the datatypehelper will be switched to the
-            // helper of the
-            // wrapper type
+            // helper of the wrapper type
             wrapperDatatypeHelper = StdBuilderHelper.getDatatypeHelperForValueSet(ipsProject, datatypeHelper);
             if (isRangeValueSet()) {
                 generateMethodGetRangeForProd(wrapperDatatypeHelper, builder);

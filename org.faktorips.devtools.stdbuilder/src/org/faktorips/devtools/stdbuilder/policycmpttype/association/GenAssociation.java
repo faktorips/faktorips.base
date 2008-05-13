@@ -91,7 +91,7 @@ public abstract class GenAssociation extends GenPolicyCmptTypePart {
     }
 
     /**
-     * Gnerates a method to create a new child object if the association is a composite and the
+     * Generates a method to create a new child object if the association is a composite and the
      * target is not abstract. If the target is configurable by product a second method with the
      * product component type as argument is also generated.
      */

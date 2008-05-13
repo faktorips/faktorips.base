@@ -439,10 +439,10 @@ public class GenAssociationTo1 extends GenAssociation {
      * <pre>
      * [Javadoc]
      * public ICoverage getCoverage() {
-     *     if(getNumOfTplCoverage() &gt; 0) { 
+     *     if(getTplCoverage()!=null) { 
      *         return getTplCoverage(); 
      *     } 
-     *     if (getNumOfCollisionCoverage() &gt; 0) { 
+     *     if (getCollisionCoverage()!=null) { 
      *         return getCollisionCoverage(); 
      *     } 
      *     return null;

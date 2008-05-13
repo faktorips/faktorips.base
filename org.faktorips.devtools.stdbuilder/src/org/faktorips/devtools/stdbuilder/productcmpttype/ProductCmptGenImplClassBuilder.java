@@ -172,6 +172,41 @@ public class ProductCmptGenImplClassBuilder extends BaseProductCmptTypeBuilder {
         generateMethodDoInitTableUsagesFromXml(methodsBuilder);
     }
 
+    /**
+     * Code sample
+     * 
+     * <pre>
+     *  [javadoc]
+     *  protected void doInitPropertiesFromXml(Map configMap) {
+     *      super.doInitPropertiesFromXml(configMap);
+     *      Element configElement = null;
+     *      String value = null;
+     *      configElement = (Element)configMap.get("testTypeDecimal");
+     *      if (configElement != null) {
+     *          value = ValueToXmlHelper.getValueFromElement(configElement, "Value");
+     *          testTypeDecimal = Decimal.valueOf(value);
+     *      }
+     *  }
+     * </pre>
+     * 
+     * Java 5 code sample
+     * 
+     * <pre>
+     *  [javadoc]
+     *  @SuppressWarnings("unchecked")
+     *  protected void doInitPropertiesFromXml(Map configMap) {
+     *      super.doInitPropertiesFromXml(configMap);
+     *      final Map<String, Element> checkedConfigMap = (Map<String, Element>)configMap;
+     *      Element configElement = null;
+     *      String value = null;
+     *      configElement = checkedConfigMap.get("testTypeDecimal");
+     *      if (configElement != null) {
+     *          value = ValueToXmlHelper.getValueFromElement(configElement, "Value");
+     *          testTypeDecimal = Decimal.valueOf(value);
+     *      }
+     *  }
+     * </pre>
+     */
     private void generateMethodDoInitPropertiesFromXml(JavaCodeFragmentBuilder builder) throws CoreException {
 
         builder.javaDoc(getJavaDocCommentForOverriddenMethod(), ANNOTATION_GENERATED);
@@ -332,6 +367,48 @@ public class ProductCmptGenImplClassBuilder extends BaseProductCmptTypeBuilder {
         builder.append(frag);
     }
 
+    /**
+     * Code sample
+     * 
+     * <pre>
+     *  [javadoc]
+     *  protected void doInitReferencesFromXml(Map elementsMap) {
+     *      super.doInitReferencesFromXml(elementsMap);
+     *      List associationElements = (List)elementsMap.get("FtCoverageType");
+     *      if (associationElements != null) {
+     *          ftCoverageTypes = new String[associationElements.size()];
+     *          cardinalitiesForFtCoverage = new HashMap(associationElements.size());
+     *          for (int i = 0; i < associationElements.size(); i++) {
+     *              Element element = (Element)associationElements.get(i);
+     *              ftCoverageTypes[i] = element.getAttribute("targetRuntimeId");
+     *              addToCardinalityMap(cardinalitiesForFtCoverage, ftCoverageTypes[i], element);
+     *          }
+     *      }
+     *  }
+     * </pre>
+     * 
+     * Java 5 code sample
+     * 
+     * <pre>
+     *  [javadoc]
+     *  @SuppressWarnings("unchecked")
+     *  protected void doInitReferencesFromXml(Map elementsMap) {
+     *      super.doInitReferencesFromXml(elementsMap);
+     *      final Map<String, List<Element>> checkedElementsMap = (Map<String, List<Element>>)elementsMap;
+     *      List<Element> associationElements = checkedElementsMap.get("FtCoverageType");
+     *      if (associationElements != null) {
+     *          ftCoverageTypes = new ArrayList<String>(associationElements.size());
+     *          cardinalitiesForFtCoverage = new HashMap<String, IntegerRange>(associationElements.size());
+     *          for (int i = 0; i < associationElements.size(); i++) {
+     *              Element element = associationElements.get(i);
+     *              ftCoverageTypes.add(element.getAttribute("targetRuntimeId"));
+     *              org.faktorips.runtime.internal.java5.ProductComponentGeneration.addToCardinalityMap(
+     *                  cardinalitiesForFtCoverage, ftCoverageTypes.get(i), element);
+     *          }
+     *      }
+     *  }
+     * </pre>
+     */
     private void generateMethodDoInitReferencesFromXml(JavaCodeFragmentBuilder builder) throws CoreException {
         IProductCmptType type = getProductCmptType();
         if (type == null) {
@@ -421,6 +498,37 @@ public class ProductCmptGenImplClassBuilder extends BaseProductCmptTypeBuilder {
         builder.methodEnd();
     }
 
+    /**
+     * Code sample
+     * 
+     * <pre>
+     *  [javadoc]
+     *  protected void doInitTableUsagesFromXml(Map tableUsageMap) {
+     *      super.doInitTableUsagesFromXml(tableUsageMap);
+     *      Element element = null;
+     *      element = (Element)tableUsageMap.get("ratePlan");
+     *      if (element != null) {
+     *          ratePlanName = ValueToXmlHelper.getValueFromElement(element, "TableContentName");
+     *      }
+     *  }
+     * </pre>
+     * 
+     * Java 5 code sample
+     * 
+     * <pre>
+     *  [javadoc]
+     *  @SuppressWarnings("unchecked")
+     *  protected void doInitTableUsagesFromXml(Map tableUsageMap) {
+     *      super.doInitTableUsagesFromXml(tableUsageMap);
+     *      final Map<String, Element> checkedTableUsageMap = (Map<String, Element>)tableUsageMap;
+     *      Element element = null;
+     *      element = checkedTableUsageMap.get("ratePlan");
+     *      if (element != null) {
+     *          ratePlanName = ValueToXmlHelper.getValueFromElement(element, "TableContentName");
+     *      }
+     *  }
+     * </pre>
+     */
     private void generateMethodDoInitTableUsagesFromXml(JavaCodeFragmentBuilder builder) throws CoreException {
         IProductCmptType type = getProductCmptType();
         if (type == null) {
@@ -468,15 +576,21 @@ public class ProductCmptGenImplClassBuilder extends BaseProductCmptTypeBuilder {
             builder.appendln(" = ");
             builder.appendClassName(ValueToXmlHelper.class);
             builder.append(".getValueFromElement(element, \"TableContentName\");");
-            builder.appendln("};");
+            builder.appendln("}");
         }
-        builder.appendln("};");
+        builder.appendln("}");
     }
 
-    /*
+    /**
      * Generates the method to return the table content which is related to the specific role.<br>
-     * Example: <code> public FtTable getRatePlan() { if (ratePlanName == null) { return null; }
-     * return (FtTable)getRepository().getTable(ratePlanName); } <code>
+     * Example: <pre> 
+     *  public FtTable getRatePlan() {
+     *      if (ratePlanName == null) {
+     *          return null;
+     *      }
+     *      return (FtTable)getRepository().getTable(ratePlanName);
+     *  }
+     * </pre>
      */
     private void generateMethodGetTableStructure(ITableStructureUsage tsu, JavaCodeFragmentBuilder codeBuilder)
             throws CoreException {
