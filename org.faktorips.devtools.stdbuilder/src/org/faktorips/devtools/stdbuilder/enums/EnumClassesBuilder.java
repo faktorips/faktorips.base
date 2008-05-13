@@ -605,10 +605,10 @@ public class EnumClassesBuilder extends DefaultJavaSourceFileBuilder {
         public final boolean isValid;
 
         private EnumValueAttributesInfo() {
-            this.idKeyItem = null;
-            this.nameKeyItem = null;
-            this.idDatatype = null;
-            this.isValid = false;
+            idKeyItem = null;
+            nameKeyItem = null;
+            idDatatype = null;
+            isValid = false;
         }
 
         /**
@@ -620,7 +620,7 @@ public class EnumClassesBuilder extends DefaultJavaSourceFileBuilder {
             this.idKeyItem = idKeyItem;
             this.nameKeyItem = nameKeyItem;
             this.idDatatype = idDatatype;
-            this.isValid = true;
+            isValid = true;
         }
     }
 
