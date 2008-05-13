@@ -53,9 +53,11 @@ import org.faktorips.devtools.stdbuilder.table.TableImplBuilder;
 import org.faktorips.runtime.ITable;
 import org.faktorips.runtime.internal.EnumValues;
 import org.faktorips.runtime.internal.MethodNames;
+import org.faktorips.runtime.internal.ProductComponentGeneration;
 import org.faktorips.runtime.internal.Range;
 import org.faktorips.runtime.internal.ValueToXmlHelper;
 import org.faktorips.util.LocalizedStringsSet;
+import org.faktorips.util.StringUtil;
 import org.w3c.dom.Element;
 
 /**
@@ -111,6 +113,18 @@ public class ProductCmptGenImplClassBuilder extends BaseProductCmptTypeBuilder {
      */
     protected boolean generatesInterface() {
         return false;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    protected String getSuperclass() throws CoreException {
+        IProductCmptType supertype = (IProductCmptType)getProductCmptType().findSupertype(getIpsProject());
+        if (supertype != null) {
+            String pack = getPackage(supertype.getIpsSrcFile());
+            return StringUtil.qualifiedName(pack, getUnqualifiedClassName(supertype.getIpsSrcFile()));
+        }
+        return ProductComponentGeneration.class.getName();
     }
 
     /**

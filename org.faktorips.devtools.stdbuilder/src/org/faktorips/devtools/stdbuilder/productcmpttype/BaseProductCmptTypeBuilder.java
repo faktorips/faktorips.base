@@ -22,16 +22,13 @@ import org.faktorips.devtools.core.builder.AbstractProductCmptTypeBuilder;
 import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.core.model.ipsproject.IIpsArtefactBuilderSet;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAttribute;
-import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeAssociation;
 import org.faktorips.devtools.stdbuilder.StandardBuilderSet;
 import org.faktorips.devtools.stdbuilder.policycmpttype.GenPolicyCmptType;
 import org.faktorips.devtools.stdbuilder.policycmpttype.attribute.GenChangeableAttribute;
 import org.faktorips.devtools.stdbuilder.productcmpttype.association.GenProdAssociation;
 import org.faktorips.devtools.stdbuilder.productcmpttype.attribute.GenProdAttribute;
-import org.faktorips.runtime.internal.ProductComponentGeneration;
 import org.faktorips.util.LocalizedStringsSet;
-import org.faktorips.util.StringUtil;
 
 /**
  * 
@@ -108,17 +105,5 @@ public abstract class BaseProductCmptTypeBuilder extends AbstractProductCmptType
 
     protected boolean isUseTypesafeCollections() {
         return ((StandardBuilderSet)getBuilderSet()).isUseTypesafeCollections();
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    protected String getSuperclass() throws CoreException {
-        IProductCmptType supertype = (IProductCmptType)getProductCmptType().findSupertype(getIpsProject());
-        if (supertype != null) {
-            String pack = getPackage(supertype.getIpsSrcFile());
-            return StringUtil.qualifiedName(pack, getUnqualifiedClassName(supertype.getIpsSrcFile()));
-        }
-        return ProductComponentGeneration.class.getName();
     }
 }

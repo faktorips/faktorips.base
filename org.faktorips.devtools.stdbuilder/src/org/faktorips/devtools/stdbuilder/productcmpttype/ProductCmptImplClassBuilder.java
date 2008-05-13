@@ -28,6 +28,7 @@ import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.core.model.ipsproject.IIpsArtefactBuilderSet;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAttribute;
+import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeAssociation;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeAttribute;
 import org.faktorips.devtools.core.model.productcmpttype.ITableStructureUsage;
@@ -40,6 +41,7 @@ import org.faktorips.devtools.stdbuilder.type.GenType;
 import org.faktorips.runtime.IConfigurableModelObject;
 import org.faktorips.runtime.IRuntimeRepository;
 import org.faktorips.runtime.internal.MethodNames;
+import org.faktorips.runtime.internal.ProductComponent;
 import org.faktorips.util.LocalizedStringsSet;
 
 /**
@@ -69,6 +71,18 @@ public class ProductCmptImplClassBuilder extends BaseProductCmptTypeBuilder {
      */
     protected boolean generatesInterface() {
         return false;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    protected String getSuperclass() throws CoreException {
+        String javaSupertype = ProductComponent.class.getName();
+        IProductCmptType supertype = (IProductCmptType)getProductCmptType().findSupertype(getIpsProject());
+        if (supertype != null) {
+            javaSupertype = getQualifiedClassName(supertype.getIpsSrcFile());
+        }
+        return javaSupertype;
     }
 
     /**
