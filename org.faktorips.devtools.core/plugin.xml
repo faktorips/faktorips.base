@@ -696,7 +696,7 @@
         </page> 
 
         <page
-              class="org.faktorips.devtools.core.ui.preferences.IpsObjectPathPropertyPage"
+              class="org.faktorips.devtools.core.ui.preferencepages.IpsObjectPathPropertyPage"
               id="org.faktorips.devtools.core.ui.propertyPages.IpsObjectPathsPropertyPage"
               name="%org.faktorips.ipsobjectpathspropertypage"
               objectClass="org.eclipse.core.resources.IProject"> 
@@ -706,7 +706,7 @@
          </filter>
         </page>
         <page
-              class="org.faktorips.devtools.core.ui.preferences.IpsObjectPathPropertyPage"
+              class="org.faktorips.devtools.core.ui.preferencepages.IpsObjectPathPropertyPage"
               id="org.faktorips.devtools.core.ui.propertyPages.IpsObjectPathsPropertyPage"
               name="%org.faktorips.ipsobjectpathspropertypage"
               objectClass="org.eclipse.jdt.core.IJavaProject"> 
