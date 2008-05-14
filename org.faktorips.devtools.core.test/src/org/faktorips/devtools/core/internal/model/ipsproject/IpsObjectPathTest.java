@@ -28,6 +28,8 @@ import org.eclipse.core.runtime.CoreException;
 import org.faktorips.devtools.core.AbstractIpsPluginTest;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObject;
 import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
+import org.faktorips.devtools.core.model.ipsproject.IIpsArchive;
+import org.faktorips.devtools.core.model.ipsproject.IIpsArchiveEntry;
 import org.faktorips.devtools.core.model.ipsproject.IIpsObjectPath;
 import org.faktorips.devtools.core.model.ipsproject.IIpsObjectPathEntry;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
@@ -137,6 +139,34 @@ public class IpsObjectPathTest extends AbstractIpsPluginTest {
         assertEquals(1, path.getEntries().length);
     }
     
+    public void testContainsArchiveEntry() throws CoreException {
+        IIpsObjectPath path = ipsProject.getIpsObjectPath();
+        IIpsArchiveEntry entry = path.newArchiveEntry(ipsProject.getProject().getFile("test.ipsar"));
+        assertTrue(path.containsArchiveEntry(entry));
+
+        IIpsProject ipsProject2 = this.newIpsProject("TestProject2");
+        assertFalse(ipsProject2.getIpsObjectPath().containsArchiveEntry(entry));
+        
+        path.removeArchiveEntry(entry.getIpsArchive());
+        assertFalse(path.containsArchiveEntry(entry));
+    }
+
+    public void testRemoveArchiveEntry() throws Exception {
+        IIpsObjectPath path = ipsProject.getIpsObjectPath();
+        IFile archiveFile = ipsProject.getProject().getFile("test.ipsar");
+        createArchive(ipsProject, archiveFile);
+        IIpsArchiveEntry entry0 = path.newArchiveEntry(archiveFile);
+        IIpsArchive archive0 = entry0.getIpsArchive();
+        assertEquals(path, entry0.getIpsObjectPath());
+        assertEquals(2, path.getEntries().length); // default test project contains already 1 entry
+        assertEquals(entry0, path.getEntries()[1]);
+        assertTrue(path.containsArchiveEntry(entry0));
+        path.removeArchiveEntry(archive0);
+        assertEquals(1, path.getEntries().length);
+        path.removeArchiveEntry(archive0);
+        assertEquals(1, path.getEntries().length);
+    }
+
     public void testGetReferencedIpsProjects() throws CoreException {
         IFolder srcFolder = ipsProject.getProject().getFolder("src");
         IIpsProject refProject1 = ipsProject.getIpsModel().getIpsProject("RefProject1");

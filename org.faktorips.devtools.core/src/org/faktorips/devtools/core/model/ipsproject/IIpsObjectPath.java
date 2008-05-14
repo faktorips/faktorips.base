@@ -104,6 +104,16 @@ public interface IIpsObjectPath {
     public void removeProjectRefEntry(IIpsProject ipsProject);
 
     /**
+     * @return true if this path contains the given archive entry.
+     */
+    public boolean containsArchiveEntry(IIpsArchiveEntry entry);
+    
+    /**
+     * Removes the given archive from the list of entries if contained.
+     */
+    public void removeArchiveEntry(IIpsArchive ipsArchive);    
+
+    /**
      * Returns true if the output folder and base package are defined per source folder, otherwise
      * false.
      */

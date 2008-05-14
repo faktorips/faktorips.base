@@ -34,6 +34,7 @@ import org.eclipse.osgi.util.NLS;
 import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
 import org.faktorips.devtools.core.model.ipsobject.QualifiedNameType;
+import org.faktorips.devtools.core.model.ipsproject.IIpsArchive;
 import org.faktorips.devtools.core.model.ipsproject.IIpsArchiveEntry;
 import org.faktorips.devtools.core.model.ipsproject.IIpsObjectPath;
 import org.faktorips.devtools.core.model.ipsproject.IIpsObjectPathEntry;
@@ -307,6 +308,39 @@ public class IpsObjectPath implements IIpsObjectPath {
 			}
 		}
 	}
+
+    /**
+     * {@inheritDoc}
+     */
+    public boolean containsArchiveEntry(IIpsArchiveEntry archiveEntry){
+        for (int i = 0; i < entries.length; i++) {
+            IIpsObjectPathEntry entry = entries[i];
+            if(entry instanceof IpsArchiveEntry) {
+                IpsArchiveEntry ref = (IpsArchiveEntry) entry;
+                if(ref.equals(archiveEntry))
+                    return true;
+            }
+        }
+        return false;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public void removeArchiveEntry(IIpsArchive ipsArchive) {
+        for (int i = 0; i < entries.length; i++) {
+            IIpsObjectPathEntry entry = entries[i];
+            if(entry instanceof IpsArchiveEntry) {
+                IpsArchiveEntry archiveEntry = (IpsArchiveEntry) entry;
+                if (archiveEntry.getIpsArchive().equals(ipsArchive)) {
+                    IIpsObjectPathEntry[] newEntries = new IIpsObjectPathEntry[entries.length-1];
+                    System.arraycopy(entries, 0, newEntries, 0, i);
+                    System.arraycopy(entries, i+1, newEntries, i, entries.length-i-1);
+                    entries = newEntries;
+                }
+            }
+        }
+    }
 	
     /**
      * {@inheritDoc}
