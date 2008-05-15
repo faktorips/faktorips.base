@@ -55,4 +55,12 @@ public class DoubleRange extends DefaultRange<Double>{
         }
         return new DoubleRange(min, max, containsNull);
     }
+
+    /**
+     * Creates an DoubleRange based on the indicated Double values.
+     * @param containsNull defines if null is part of the range or not
+     */
+    public static DoubleRange valueOf(Double lower, Double upper,  boolean containsNull) {
+        return new DoubleRange(lower, upper, containsNull);
+    }
 }
