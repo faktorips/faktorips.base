@@ -25,6 +25,8 @@ import org.eclipse.core.runtime.CoreException;
 import org.faktorips.codegen.DatatypeHelper;
 import org.faktorips.codegen.JavaCodeFragment;
 import org.faktorips.codegen.JavaCodeFragmentBuilder;
+import org.faktorips.codegen.dthelpers.BooleanHelper;
+import org.faktorips.codegen.dthelpers.IntegerHelper;
 import org.faktorips.datatype.Datatype;
 import org.faktorips.devtools.core.builder.DefaultJavaSourceFileBuilder;
 import org.faktorips.devtools.core.builder.TypeSection;
@@ -348,7 +350,7 @@ public class EnumClassesBuilder extends DefaultJavaSourceFileBuilder {
      * Code sample:
      * 
      * <pre>
-     * MALE(new Integer(1), &quot;male&quot;, &quot;Male&quot;);
+     * MALE(1, &quot;male&quot;, &quot;Male&quot;);
      * </pre>
      */
     private void generateEnumInitialization(JavaCodeFragmentBuilder enumDefinitionBuilder, ITableStructure structure)
@@ -367,10 +369,18 @@ public class EnumClassesBuilder extends DefaultJavaSourceFileBuilder {
         IRow[] rows = getValidTableContentRows();
         for (int i = 0; i < rows.length; i++) {
             JavaCodeFragment value = new JavaCodeFragment();
+            appendLocalizedJavaDoc("ENUM_VALUE", rows[i], enumDefinitionBuilder);
             value.append(getEnumValueConstantName(rows[i]));
             value.append("(");
             for (int j = 0; j < numberOfColumns; j++) {
                 DatatypeHelper helper = (DatatypeHelper)datatypeHelpers.get(j);
+                // use autoboxing if possible to reduce static code size
+                if(helper instanceof IntegerHelper){
+                    helper = DatatypeHelper.PRIMITIVE_INTEGER; 
+                }
+                if(helper instanceof BooleanHelper){
+                    helper = DatatypeHelper.PRIMITIVE_BOOLEAN; 
+                }
                 value.append(helper.newInstance(rows[i].getValue(j)));
                 if (j < numberOfColumns - 1) {
                     value.append(", ");
@@ -382,6 +392,7 @@ public class EnumClassesBuilder extends DefaultJavaSourceFileBuilder {
             } else {
                 value.appendln(";");
             }
+            value.appendln();
             enumDefinitionBuilder.append(value);
         }
     }

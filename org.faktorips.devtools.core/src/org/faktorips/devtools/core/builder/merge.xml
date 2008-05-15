@@ -39,7 +39,11 @@
     <merge:pull targetMarkup="^gen$" sourceGet="Method/getReturnType" targetPut="Method/setReturnType"/>
     <merge:pull targetMarkup="^gen$" sourceGet="Method/getExceptions" targetPut="Method/addException"/>
     <merge:pull targetMarkup="^gen$" sourceGet="Field/getInitializer" targetPut="Field/setInitializer"/>
-    <merge:pull targetMarkup="^gen$" sourceGet="Member/getComment" targetPut="Member/setComment"/>
+    <merge:pull targetMarkup="^gen$" sourceGet="Member/getComment" targetPut="Member/setComment"/>    
+  	<merge:pull targetMarkup="^gen$" sourceGet="Enum/getSuperInterfaces" targetPut="Enum/addSuperInterface"/>
+  	<merge:pull targetMarkup="^gen$" sourceGet="EnumConstant/getArguments" targetPut="EnumConstant/setArguments"/>
+  	<merge:pull targetMarkup="^gen$" sourceGet="EnumConstant/getBody" targetPut="EnumConstant/setBody"/>
+
     <!--
         The sweep rule looks in the target content if there exist Members that are indicated with the "generated"
         meta-attribute that are not available in the source content. If so it deletes the member in the target
