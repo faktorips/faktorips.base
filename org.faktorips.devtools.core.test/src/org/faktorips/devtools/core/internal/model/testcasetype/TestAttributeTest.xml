@@ -15,4 +15,7 @@
 	
 	<TestAttribute name="attribute4Name" attribute="attribute4" testAttributeType="xyz">
 	</TestAttribute>		
+
+		<TestAttribute name="attribute5Name" datatype="String" attribute="" testAttributeType="xyz">
+	</TestAttribute>		
 </testcases>

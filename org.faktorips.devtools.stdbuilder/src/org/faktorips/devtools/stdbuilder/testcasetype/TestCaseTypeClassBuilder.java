@@ -18,6 +18,7 @@ import java.lang.reflect.Modifier;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 
 import javax.xml.parsers.ParserConfigurationException;
 
@@ -38,6 +39,7 @@ import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
 import org.faktorips.devtools.core.model.ipsproject.IIpsArtefactBuilderSet;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
+import org.faktorips.devtools.core.model.testcasetype.ITestAttribute;
 import org.faktorips.devtools.core.model.testcasetype.ITestCaseType;
 import org.faktorips.devtools.core.model.testcasetype.ITestPolicyCmptTypeParameter;
 import org.faktorips.devtools.core.model.testcasetype.ITestRuleParameter;
@@ -45,8 +47,10 @@ import org.faktorips.devtools.core.model.testcasetype.ITestValueParameter;
 import org.faktorips.devtools.stdbuilder.StandardBuilderSet;
 import org.faktorips.runtime.DefaultObjectReferenceStore;
 import org.faktorips.runtime.DefaultReferenceResolver;
+import org.faktorips.runtime.IModelObject;
 import org.faktorips.runtime.IObjectReferenceStore;
 import org.faktorips.runtime.MessageList;
+import org.faktorips.runtime.internal.XmlCallback;
 import org.faktorips.runtime.internal.XmlUtil;
 import org.faktorips.runtime.test.IpsTestCase2;
 import org.faktorips.runtime.test.IpsTestResult;
@@ -141,6 +145,7 @@ public class TestCaseTypeClassBuilder extends DefaultJavaSourceFileBuilder {
         buildConstructor(mainSection.getConstructorBuilder());
         buildHelperMethods(mainSection.getMethodBuilder());
         buildSuperMethodImplementation(mainSection.getMethodBuilder(), testCaseType);
+        buildXmlCallbackClasses(mainSection.getMemberVarBuilder(), testCaseType);
     }
 
     protected String getSuperClassName() {
@@ -743,7 +748,82 @@ public class TestCaseTypeClassBuilder extends DefaultJavaSourceFileBuilder {
                 String.class.getName(), String.class.getName(), String.class.getName() }, body, "",
                 ANNOTATION_GENERATED);
     }
+    
+    /*
+     * Generate xml callback classes for each root policy cmpt type parameter.
+     */
+    private void buildXmlCallbackClasses(JavaCodeFragmentBuilder memberVarBuilder, ITestCaseType testCaseType) throws CoreException {
+        ITestPolicyCmptTypeParameter[] testPolicyCmptTypeParameters = testCaseType.getTestPolicyCmptTypeParameters();
+        for (int i = 0; i < testPolicyCmptTypeParameters.length; i++) {
+            if (! testPolicyCmptTypeParameters[i].isValid()){
+                continue;
+            }
+            buildXmlCallbackClasseFor(memberVarBuilder, testPolicyCmptTypeParameters[i]);
+        }
+    }
 
+    private void buildXmlCallbackClasseFor(JavaCodeFragmentBuilder builder, ITestPolicyCmptTypeParameter parameter) throws CoreException {
+        builder.javaDoc("", ANNOTATION_GENERATED);
+        builder.append("private class " + StringUtils.capitalize(parameter.getName()) + "XmlCallback");
+        builder.append(" implements ");
+        builder.appendClassName(XmlCallback.class);
+        builder.appendln("{");
+
+        JavaCodeFragment body = new JavaCodeFragment();
+
+        buildXmlCallbackBodyFor(body, parameter, "");
+
+        JavaCodeFragmentBuilder method = new JavaCodeFragmentBuilder();
+        method.method(Modifier.PUBLIC, "void", "initProperties", new String[] { "pathFromAggregateRoot", "modelObject",
+                "propMap" }, new String[] { String.class.getName(), IModelObject.class.getName(),
+                Map.class.getName() }, body, null, ANNOTATION_GENERATED);
+        builder.append(method.getFragment());
+        builder.appendln("}");
+    }
+
+    private void buildXmlCallbackBodyFor(JavaCodeFragment body, ITestPolicyCmptTypeParameter parameter, String parentPath) throws CoreException {
+        String testParameterName = parameter.getName();
+        String currentPath = parentPath + "/" + testParameterName;
+        body.append("if (pathFromAggregateRoot.equals(\"");
+        body.append(currentPath);
+        body.appendln("\")){");
+
+        ITestAttribute[] testAttributes = parameter.getTestAttributes();
+        boolean valueDeclAvailable = false;
+        for (int i = 0; i < testAttributes.length; i++) {
+            if (StringUtils.isEmpty(testAttributes[i].getAttribute())){
+                String testAttribute = "testValue";
+                if (!valueDeclAvailable){
+                    body.appendClassName(String.class);
+                    valueDeclAvailable = true;
+                }
+                ValueDatatype datatype = testAttributes[i].findDatatype(getIpsProject());
+                if (datatype == null){
+                    // ignore, should be catched by a validation error
+                    continue;
+                }
+                DatatypeHelper datatypeHelper = getIpsProject().getDatatypeHelper(datatype);
+                if (datatypeHelper == null){
+                    throw new CoreException(new IpsStatus("Datatypehelper not found for: " + datatype.getQualifiedName()));
+                }
+                body.append(" value = (String) propMap.get(\"");
+                body.append(testAttributes[i].getName());
+                body.appendln("\");");
+                body.append("addExtensionAttribute(");
+                body.append("modelObject, \"");
+                body.append(testAttribute);
+                body.append("\", ");
+                body.append(datatypeHelper.newInstanceFromExpression("value"));
+                body.appendln(");");
+            }
+        }
+        body.appendln("}");
+        ITestPolicyCmptTypeParameter[] testPolicyCmptTypeParamChilds = parameter.getTestPolicyCmptTypeParamChilds();
+        for (int i = 0; i < testPolicyCmptTypeParamChilds.length; i++) {
+            buildXmlCallbackBodyFor(body, testPolicyCmptTypeParamChilds[i], currentPath);
+        }
+    }
+    
     /**
      * @return
      */

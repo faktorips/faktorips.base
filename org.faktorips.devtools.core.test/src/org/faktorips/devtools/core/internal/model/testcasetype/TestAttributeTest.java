@@ -30,6 +30,7 @@ import org.faktorips.devtools.core.model.testcasetype.ITestCaseType;
 import org.faktorips.devtools.core.model.testcasetype.ITestPolicyCmptTypeParameter;
 import org.faktorips.devtools.core.model.testcasetype.TestParameterType;
 import org.faktorips.devtools.core.util.XmlUtil;
+import org.faktorips.util.message.Message;
 import org.faktorips.util.message.MessageList;
 import org.w3c.dom.Element;
 
@@ -84,6 +85,14 @@ public class TestAttributeTest extends AbstractIpsPluginTest {
         assertFalse(testAttribute.isInputAttribute());
         assertFalse(testAttribute.isExpextedResultAttribute());
         
+        attributeEl = XmlUtil.getElement(docEl, 4);
+        testAttribute.initFromXml(attributeEl);
+        assertEquals("", testAttribute.getAttribute());
+        assertEquals("attribute5Name", testAttribute.getName());
+        assertEquals("String", testAttribute.getDatatype());
+        assertFalse(testAttribute.isInputAttribute());
+        assertFalse(testAttribute.isExpextedResultAttribute());
+        
         boolean exceptionOccored = false;
         try {
             // test unsupported test attribute type
@@ -97,18 +106,21 @@ public class TestAttributeTest extends AbstractIpsPluginTest {
 
     public void testToXml() {
         testAttribute.setAttribute("attribute2");
+        testAttribute.setDatatype("Money");
         testAttribute.setPolicyCmptType("policyCmptTyp2");
         testAttribute.setName("attribute2Name");
         ((TestAttribute)testAttribute).setTestAttributeType(TestParameterType.INPUT);
         Element el = testAttribute.toXml(newDocument());
 
         testAttribute.setAttribute("attributeName3");
+        testAttribute.setDatatype("String");
         testAttribute.setPolicyCmptType("policyCmptTyp3");
         testAttribute.setName("attribute3Name");
         ((TestAttribute)testAttribute).setTestAttributeType(TestParameterType.EXPECTED_RESULT);
         
         testAttribute.initFromXml(el);
         assertEquals("attribute2", testAttribute.getAttribute());
+        assertEquals("Money", testAttribute.getDatatype());
         assertEquals("policyCmptTyp2", testAttribute.getPolicyCmptType());
         assertEquals("attribute2Name", testAttribute.getName());
         assertTrue(testAttribute.isInputAttribute());
@@ -199,6 +211,7 @@ public class TestAttributeTest extends AbstractIpsPluginTest {
     }
 
     public void testValidateDuplicateTestAttributeName() throws Exception{
+        testAttribute.setName("testAttribute");
         MessageList ml = testAttribute.validate(ipsProject);
         assertNull(ml.getMessageByCode(ITestAttribute.MSGCODE_DUPLICATE_TEST_ATTRIBUTE_NAME));
 
@@ -262,7 +275,19 @@ public class TestAttributeTest extends AbstractIpsPluginTest {
         testAttribute2.setAttribute("attribute2");
         ml = testAttribute.validate(ipsProject);
         assertNull(ml.getMessageByCode(ITestAttribute.MSGCODE_DUPLICATE_ATTRIBUTE_AND_TYPE));
-    }    
+        
+        // test with attributes not based on model attributes
+        ITestAttribute testAttribute3 = param.newExpectedResultTestAttribute();
+        ITestAttribute testAttribute4 = param.newExpectedResultTestAttribute();
+        testAttribute3.setName("String3");
+        testAttribute3.setDatatype("String");
+        testAttribute4.setName("String4");
+        testAttribute4.setDatatype("String");
+        ml = testAttribute3.validate(ipsProject);
+        assertNull(ml.getMessageByCode(ITestAttribute.MSGCODE_DUPLICATE_ATTRIBUTE_AND_TYPE));
+        ml = testAttribute4.validate(ipsProject);
+        assertNull(ml.getMessageByCode(ITestAttribute.MSGCODE_DUPLICATE_ATTRIBUTE_AND_TYPE));
+    }
    
     public void testValidateNameMustNotBeEmpty() throws Exception{
         testAttribute.setName("attribute1");
@@ -277,6 +302,52 @@ public class TestAttributeTest extends AbstractIpsPluginTest {
         ml = testAttribute.validate(ipsProject);
         assertNotNull(ml.getMessageByCode(ITestAttribute.MSGCODE_ATTRIBUTE_NAME_IS_EMPTY));        
     }    
+
+    public void testValidateDatatypeAndAttributeGiven() throws Exception{
+        testAttribute.setAttribute("");
+        testAttribute.setDatatype("Y");
+        MessageList ml = testAttribute.validate(ipsProject);
+        assertNull(ml.getMessageByCode(ITestAttribute.MSGCODE_DATATYPE_AND_ATTRIBUTE_GIVEN));
+        
+        testAttribute.setAttribute("X");
+        testAttribute.setDatatype("Y");
+        ml = testAttribute.validate(ipsProject);
+        assertNotNull(ml.getMessageByCode(ITestAttribute.MSGCODE_DATATYPE_AND_ATTRIBUTE_GIVEN));
+        assertEquals(Message.ERROR, ml.getMessageByCode(ITestAttribute.MSGCODE_DATATYPE_AND_ATTRIBUTE_GIVEN).getSeverity());
+
+        testAttribute.setAttribute("X");
+        testAttribute.setDatatype("");
+        ml = testAttribute.validate(ipsProject);
+        assertNull(ml.getMessageByCode(ITestAttribute.MSGCODE_DATATYPE_AND_ATTRIBUTE_GIVEN));
+    }    
+
+    public void testValidateDatatypeNotFound() throws Exception{
+        testAttribute.setAttribute("");
+        testAttribute.setDatatype("String");
+        MessageList ml = testAttribute.validate(ipsProject);
+        assertNull(ml.getMessageByCode(ITestAttribute.MSGCODE_DATATYPE_NOT_FOUND));
+        
+        testAttribute.setAttribute("");
+        testAttribute.setDatatype("Y");
+        ml = testAttribute.validate(ipsProject);
+        assertNotNull(ml.getMessageByCode(ITestAttribute.MSGCODE_DATATYPE_NOT_FOUND));
+        assertEquals(Message.ERROR, ml.getMessageByCode(ITestAttribute.MSGCODE_DATATYPE_NOT_FOUND).getSeverity());
+    }    
+    
+    public void testIsBasedOnModelAttribute() throws CoreException{
+        testAttribute.setDatatype("");
+        testAttribute.setAttribute((String)"");
+        IPolicyCmptType policyCmptType = newPolicyAndProductCmptType(ipsProject, "SubPolicy1", "SubProduct1");
+        IPolicyCmptTypeAttribute policyCmptTypeAttribute = policyCmptType.newPolicyCmptTypeAttribute();
+        policyCmptTypeAttribute.setName("modelAttribute");
+        assertFalse(testAttribute.isBasedOnModelAttribute());
+        
+        testAttribute.setAttribute(policyCmptTypeAttribute);
+        assertTrue(testAttribute.isBasedOnModelAttribute());
+
+        testAttribute.setAttribute((String)"");
+        assertFalse(testAttribute.isBasedOnModelAttribute());
+    }
     
     public void testIsAttributeRelevantByProductCmpt() throws CoreException{
         ITestPolicyCmptTypeParameter param = (ITestPolicyCmptTypeParameter)testAttribute.getParent();

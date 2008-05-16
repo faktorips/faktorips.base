@@ -20,6 +20,7 @@ package org.faktorips.devtools.core.internal.model.testcase;
 import org.eclipse.core.runtime.CoreException;
 import org.faktorips.devtools.core.AbstractIpsPluginTest;
 import org.faktorips.devtools.core.internal.model.productcmpt.ProductCmpt;
+import org.faktorips.devtools.core.model.IValidationMsgCodesForInvalidValues;
 import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
@@ -53,7 +54,9 @@ public class TestAttributeValueTest  extends AbstractIpsPluginTest {
         ITestCaseType testCaseType = (ITestCaseType)newIpsObject(ipsProject, IpsObjectType.TEST_CASE_TYPE, "PremiumCalculation");
         ITestPolicyCmptTypeParameter param1 = testCaseType.newInputTestPolicyCmptTypeParameter();
         param1.setName("inputTestPcCmptParam1");
-        param1.newInputTestAttribute().setName("inputAttribute1");
+        ITestAttribute testAttribute = param1.newInputTestAttribute();
+        testAttribute.setName("inputAttribute1");
+        testAttribute.setAttribute("Xyz");
         
         ITestCase testCase = (ITestCase)newIpsObject(ipsProject, IpsObjectType.TEST_CASE, "PremiumCalculation");
         testCase.setTestCaseType(testCaseType.getName());
@@ -175,5 +178,27 @@ public class TestAttributeValueTest  extends AbstractIpsPluginTest {
     
     public void testFindAttribiute() throws CoreException{
         testAttributeValue.findAttribute(ipsProject);
+    }
+    
+    public void testTestAttributeNotBasedOnModelAttribute() throws CoreException{
+        testAttributeValue.setValue("x");
+        ITestAttribute testAttribute = testAttributeValue.findTestAttribute(ipsProject);
+        MessageList ml = testAttributeValue.validate(ipsProject);
+        // first check the correct test setup
+        assertTrue(testAttribute.isBasedOnModelAttribute());
+        assertNotNull(ml.getMessageByCode(ITestAttribute.MSGCODE_ATTRIBUTE_NOT_FOUND));
+        
+        testAttribute.setAttribute("");
+        testAttribute.setDatatype("X");
+        assertFalse(testAttribute.isBasedOnModelAttribute());
+        ml = testAttributeValue.validate(ipsProject);
+        assertNull(ml.getMessageByCode(ITestAttribute.MSGCODE_ATTRIBUTE_NOT_FOUND));
+        assertNotNull(ml.getMessageByCode(IValidationMsgCodesForInvalidValues.MSGCODE_CANT_CHECK_VALUE_BECAUSE_VALUEDATATYPE_CANT_BE_FOUND));
+        assertEquals(Message.WARNING, ml.getMessageByCode(IValidationMsgCodesForInvalidValues.MSGCODE_CANT_CHECK_VALUE_BECAUSE_VALUEDATATYPE_CANT_BE_FOUND).getSeverity());
+        
+        testAttribute.setDatatype("String");
+        assertFalse(testAttribute.isBasedOnModelAttribute());
+        ml = testAttributeValue.validate(ipsProject);
+        assertNull(ml.getMessageByCode(IValidationMsgCodesForInvalidValues.MSGCODE_CANT_CHECK_VALUE_BECAUSE_VALUEDATATYPE_CANT_BE_FOUND));
     }
 }
