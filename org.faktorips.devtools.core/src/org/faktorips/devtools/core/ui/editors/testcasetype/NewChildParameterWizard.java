@@ -30,11 +30,6 @@ import org.faktorips.devtools.core.ui.controller.IpsObjectUIController;
 import org.faktorips.util.memento.Memento;
 
 /**
- * Wizard to create a root test policy cmpt type param or value datatype.
- * First page: selection of value datatype or policy cmpt type and name and type
- * Second page: if value datatype: not enabled (visible)
- *              if policy cmpt type: min instance, max instance and requires product
- * 
  * @author Joerg Ortmann
  */
 public class NewChildParameterWizard extends Wizard implements IBlockedValidationWizard {

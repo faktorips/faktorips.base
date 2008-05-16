@@ -34,18 +34,34 @@ public class Messages extends NLS {
 	}
 
     public static String AttributeElementListSelectionDialog_ShowAttributesOfSubclasses;
+    public static String NewTestAttributeWizard_wizardTitle;
+    public static String NewTestAttributeWizardPage_groupLabel;
+    public static String NewTestAttributeWizardPage_radioBtnLabelBasedOnPolicyCmptTypeAttr;
+    public static String NewTestAttributeWizardPage_radioBtnLabelNotBasedOnPolicyCmptTypeAttr;
+    public static String NewTestAttributeWizardPage_wizardPageDescription;
+    public static String NewTestAttributeWizardPage_wizardPageTitle;
+    public static String TestAttributeDefinitionWizardPage_errorMessageDatatypeNotFound;
+    public static String TestAttributeDefinitionWizardPage_errorMessageEmptyName;
+    public static String TestAttributeDefinitionWizardPage_TestAttributeDefinitionWizardPage_errorMessageEmptyDatatype;
+    public static String TestAttributeDefinitionWizardPage_testLabelDatatype;
+    public static String TestAttributeDefinitionWizardPage_testLabelTestAttrName;
+    public static String TestAttributeDefinitionWizardPage_wizardPageDescription;
+    public static String TestAttributeDefinitionWizardPage_wizardPageTitle;
+    public static String TestAttributeSelectionWizardPage_errorMessageNothingSelected;
+    public static String TestAttributeSelectionWizardPage_wizardPageDescription;
+    public static String TestAttributeSelectionWizardPage_wizardPageTitle;
     public static String TestCaseTypeEditor_PageName;
     public static String TestCaseTypeEditor_SectionTitle_Structure;
     public static String TestCaseTypeEditor_SectionTitle_Details;
     public static String TestCaseTypeEditor_EditorTitle;
     public static String TestCaseTypeLabelProvider_Undefined;
+    public static String TestCaseTypeSection_AttributeTable_ColumnTitle_Datatyp;
     public static String TestCaseTypeSection_Button_AddAttribute;
     public static String TestCaseTypeSection_Button_RemoveAttribute;
     public static String TestCaseTypeSection_Button_MoveAttributeUp;
     public static String TestCaseTypeSection_Button_MoveAttributeDown;
     public static String TestCaseTypeSection_Action_ShowAll_ToolTip;
     public static String TestCaseTypeSection_Error_UnexpectedObjectClass;
-    public static String TestCaseTypeSection_Dialog_SelectAttributeAdd_Message;
     public static String TestCaseTypeSection_EditFieldLabel_Datatype;
     public static String TestCaseTypeSection_EditFieldLabel_MinInstances;
     public static String TestCaseTypeSection_EditFieldLabel_MaxInstances;
@@ -80,6 +96,7 @@ public class Messages extends NLS {
     public static String TestCaseTypeSection_FormText_InfoAssociation_1;
     public static String TestCaseTypeSection_FormText_InfoAssociation_2;
     public static String TestCaseTypeSection_FormText_InfoAssociation_3;
+    public static String TestCaseTypeSection_infoTextTestAttributeWithoutPolicyCmptTypeAttr;
     public static String TestCaseTypeSection_labelAttributeDetails;
     public static String TestCaseTypeSection_labelDescription;
     public static String TestCaseTypeSection_labelPolicyCmptType;

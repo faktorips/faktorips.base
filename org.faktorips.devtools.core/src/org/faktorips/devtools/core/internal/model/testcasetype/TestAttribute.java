@@ -21,7 +21,9 @@ import org.apache.commons.lang.StringUtils;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.osgi.util.NLS;
 import org.eclipse.swt.graphics.Image;
+import org.faktorips.datatype.ValueDatatype;
 import org.faktorips.devtools.core.IpsPlugin;
+import org.faktorips.devtools.core.internal.model.ValidationUtils;
 import org.faktorips.devtools.core.internal.model.ipsobject.AtomicIpsObjectPart;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObject;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPart;
@@ -51,6 +53,8 @@ public class TestAttribute extends AtomicIpsObjectPart implements ITestAttribute
 	static final String TAG_NAME = "TestAttribute"; //$NON-NLS-1$
 	
 	private String attribute = ""; //$NON-NLS-1$
+
+    private String datatype = ""; //$NON-NLS-1$
 
     private String policyCmptType = ""; //$NON-NLS-1$
     
@@ -120,6 +124,37 @@ public class TestAttribute extends AtomicIpsObjectPart implements ITestAttribute
 	        valueChanged(oldPolicyCmptTypeNameOfAttribute, policyCmptType);
         }
 	}
+
+    /**
+     * {@inheritDoc}
+     */
+    public String getDatatype() {
+        return datatype;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public void setDatatype(String newDatatype) {
+        String oldDatatype = datatype;
+        datatype = newDatatype;
+        valueChanged(oldDatatype, newDatatype);
+    }
+    
+    /**
+     * {@inheritDoc}
+     */
+    public ValueDatatype findDatatype(IIpsProject project) throws CoreException {
+        if (StringUtils.isEmpty(attribute)){
+            return project.findValueDatatype(datatype);
+        } else {
+            IPolicyCmptTypeAttribute attr = findAttribute(project);
+            if (attr == null){
+                return null;
+            }
+            return attr.findDatatype(project);
+        }
+    }
 
     /**
 	 * {@inheritDoc}
@@ -196,6 +231,7 @@ public class TestAttribute extends AtomicIpsObjectPart implements ITestAttribute
 		super.initPropertiesFromXml(element, id);
         name = element.getAttribute(PROPERTY_NAME);
 		attribute = element.getAttribute(PROPERTY_ATTRIBUTE);
+        datatype = element.getAttribute(PROPERTY_DATATYPE);
         policyCmptType = element.getAttribute(PROPERTY_POLICYCMPTTYPE_OF_ATTRIBUTE);
 		type = TestParameterType.getTestParameterType(element.getAttribute(PROPERTY_TEST_ATTRIBUTE_TYPE));
 	}
@@ -207,6 +243,7 @@ public class TestAttribute extends AtomicIpsObjectPart implements ITestAttribute
 		super.propertiesToXml(element);
         element.setAttribute(PROPERTY_NAME, name);
 		element.setAttribute(PROPERTY_ATTRIBUTE, attribute);
+		element.setAttribute(PROPERTY_DATATYPE, datatype);
 		element.setAttribute(PROPERTY_POLICYCMPTTYPE_OF_ATTRIBUTE, policyCmptType);
 		element.setAttribute(PROPERTY_TEST_ATTRIBUTE_TYPE, type.getId());
 	}  
@@ -224,7 +261,7 @@ public class TestAttribute extends AtomicIpsObjectPart implements ITestAttribute
         } catch (CoreException e) {
             // ignore exception, return default image
         }
-        return IpsPlugin.getDefault().getImage("MissingAttribute.gif"); //$NON-NLS-1$
+        return IpsPlugin.getDefault().getImage("DeltaTypeMissingPropertyValue.gif"); //$NON-NLS-1$
     }
     
 	/**
@@ -278,6 +315,13 @@ public class TestAttribute extends AtomicIpsObjectPart implements ITestAttribute
     /**
      * {@inheritDoc}
      */
+    public boolean isBasedOnModelAttribute() {
+        return !StringUtils.isEmpty(attribute) && StringUtils.isEmpty(datatype);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
     protected void validateThis(MessageList messageList, IIpsProject ipsProject) throws CoreException {
         super.validateThis(messageList, ipsProject);
         
@@ -290,10 +334,23 @@ public class TestAttribute extends AtomicIpsObjectPart implements ITestAttribute
         
         // check if the attribute exists
         IPolicyCmptTypeAttribute modelAttribute = findAttribute(ipsProject);
-        if (modelAttribute == null){
+        if (isBasedOnModelAttribute() && modelAttribute == null){
             String text = NLS.bind(Messages.TestAttribute_Error_AttributeNotFound, getAttribute());
             Message msg = new Message(MSGCODE_ATTRIBUTE_NOT_FOUND, text, Message.ERROR, this, ITestAttribute.PROPERTY_ATTRIBUTE);
             messageList.add(msg);
+        } 
+        
+        // check if the attribute and the datatype are set together
+        if (StringUtils.isNotEmpty(attribute) && StringUtils.isNotEmpty(datatype)){
+            String text = "Ein gleichzeitiges setzten des Attributes und des Datentyps ist nicht möglich.";
+            Message msg = new Message(MSGCODE_DATATYPE_AND_ATTRIBUTE_GIVEN, text, Message.ERROR, this, ITestAttribute.PROPERTY_DATATYPE);
+            messageList.add(msg);
+        }
+        
+        // check if the datatype exists
+        if (!isBasedOnModelAttribute()) {
+            ValidationUtils.checkDatatypeReference(datatype, false, this, ITestAttribute.PROPERTY_DATATYPE,
+                    MSGCODE_DATATYPE_NOT_FOUND, messageList, ipsProject);
         } 
         
         // check the correct type
@@ -318,26 +375,32 @@ public class TestAttribute extends AtomicIpsObjectPart implements ITestAttribute
         ITestAttribute testAttributes[] = typeParam.getTestAttributes();
         for (int i = 0; i < testAttributes.length; i++) {
             if (testAttributes[i] != this && testAttributes[i].getName().equals(name)) {
+                // duplicate name
                 String text = NLS.bind(Messages.TestAttribute_Error_DuplicateName, name);
                 Message msg = new Message(MSGCODE_DUPLICATE_TEST_ATTRIBUTE_NAME, text, Message.ERROR, this,
                         PROPERTY_NAME);
                 messageList.add(msg);
                 break;
-            } else if (testAttributes[i] != this && testAttributes[i].getAttribute().equals(attribute) && testAttributes[i].getTestAttributeType() == type){
-                String text = NLS.bind(Messages.TestAttribute_ValidationError_DuplicateAttributeAndType, attribute, type.getName());
+            } else if (isBasedOnModelAttribute() 
+                    && testAttributes[i] != this 
+                    && testAttributes[i].getAttribute().equals(attribute)
+                    && testAttributes[i].getTestAttributeType() == type) {
+                // duplicate attribute and type
+                String text = NLS.bind(Messages.TestAttribute_ValidationError_DuplicateAttributeAndType, attribute,
+                        type.getName());
                 Message msg = new Message(MSGCODE_DUPLICATE_ATTRIBUTE_AND_TYPE, text, Message.ERROR, this,
                         PROPERTY_ATTRIBUTE);
                 messageList.add(msg);
                 break;
             }
         }
-        
-        // check that derived (computed on the fly) arrtibutes are not supported
-        if (modelAttribute != null){
-            if (AttributeType.DERIVED_ON_THE_FLY.equals(modelAttribute.getAttributeType())){
+            
+         if (modelAttribute != null) {
+            // check that derived (computed on the fly) arrtibutes are not supported
+            if (AttributeType.DERIVED_ON_THE_FLY.equals(modelAttribute.getAttributeType())) {
                 String text = Messages.TestAttribute_ValidationWarning_DerivedOnTheFlyAttributesAreNotSupported;
-                Message msg = new Message(MSGCODE_DERIVED_ON_THE_FLY_ATTRIBUTES_NOT_SUPPORTED, text, Message.WARNING, this,
-                        PROPERTY_TEST_ATTRIBUTE_TYPE);
+                Message msg = new Message(MSGCODE_DERIVED_ON_THE_FLY_ATTRIBUTES_NOT_SUPPORTED, text, Message.WARNING,
+                        this, PROPERTY_TEST_ATTRIBUTE_TYPE);
                 messageList.add(msg);
             }
         }

@@ -31,6 +31,7 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.MenuManager;
 import org.eclipse.jface.dialogs.MessageDialog;
+import org.eclipse.jface.text.contentassist.ICompletionProposal;
 import org.eclipse.jface.viewers.ArrayContentProvider;
 import org.eclipse.jface.viewers.CellEditor;
 import org.eclipse.jface.viewers.ComboBoxCellEditor;
@@ -81,6 +82,7 @@ import org.eclipse.ui.forms.widgets.FormText;
 import org.eclipse.ui.forms.widgets.FormToolkit;
 import org.eclipse.ui.forms.widgets.ScrolledForm;
 import org.eclipse.ui.forms.widgets.Section;
+import org.faktorips.datatype.ValueDatatype;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPart;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPartContainer;
@@ -218,8 +220,9 @@ public class TestCaseTypeSection extends IpsSection {
             
             attributesDetails.setData(FormToolkit.KEY_DRAW_BORDER, FormToolkit.TREE_BORDER);
             
+            // details of the selected test attribute
+            
             toolkit.createLabel(attributesDetails, Messages.TestCaseTypeSection_labelPolicyCmptType);
-
             attributesPolicyCmptType = toolkit.createText(attributesDetails);
             toolkit.setDataChangeable(attributesPolicyCmptType, false);
             
@@ -249,7 +252,11 @@ public class TestCaseTypeSection extends IpsSection {
                 uiControllerAttributeDescription = createUIController(selectedAttribute);
                 uiControllerAttributeDescription.add(attributesDescriptionField, ITestAttribute.PROPERTY_DESCRIPTION);
 
-                attributesPolicyCmptType.setText(selectedAttribute.getCorrespondingPolicyCmptType());
+                if (selectedAttribute.isBasedOnModelAttribute()){
+                    attributesPolicyCmptType.setText(selectedAttribute.getCorrespondingPolicyCmptType());
+                } else {
+                    attributesPolicyCmptType.setText(Messages.TestCaseTypeSection_infoTextTestAttributeWithoutPolicyCmptTypeAttr);
+                }
                 
                 uiControllerAttributeDescription.updateUI();
             } catch (CoreException e) {
@@ -380,6 +387,10 @@ public class TestCaseTypeSection extends IpsSection {
         public AttributeDetails getAttributeDetails(ITestParameter testParam){
             return (AttributeDetails) attributeDetailsMap.get(getKeyFor(testParam));
         }        
+        
+        public Collection getAllAttributeDetails(){
+            return attributeDetailsMap.values();
+        }
     }
     
     /*
@@ -554,6 +565,13 @@ public class TestCaseTypeSection extends IpsSection {
          * {@inheritDoc}
          */
         public boolean canModify(Object element, String property) {
+            ITestAttribute testAttributeFromObject = getTestAttributeFromObject(element);
+            if (property.equals(ITestAttribute.PROPERTY_DATATYPE)){
+                if (!StringUtils.isEmpty(testAttributeFromObject.getAttribute())){
+                    return false;
+                }
+                
+            }
             return isDataChangeable();
         }
 
@@ -565,6 +583,8 @@ public class TestCaseTypeSection extends IpsSection {
                 return getTestAttributeFromObject(element).getTestAttributeType().getIndex();
             } else if (property.equals(ITestAttribute.PROPERTY_NAME)){
                 return getTestAttributeFromObject(element).getName();
+            } else if (property.equals(ITestAttribute.PROPERTY_DATATYPE)){
+                return getTestAttributeFromObject(element).getDatatype();
             }
             return null;
         }
@@ -579,10 +599,13 @@ public class TestCaseTypeSection extends IpsSection {
                 if (selectedType == null)
                     return;
                 getTestAttributeFromObject(tableItem.getData()).setTestAttributeType(selectedType);
-                tableItem.setText(2, selectedType.getName());
+                tableItem.setText(1, selectedType.getName());
             } else if (property.equals(ITestAttribute.PROPERTY_NAME)){
                 getTestAttributeFromObject(tableItem.getData()).setName((String)value);
-                tableItem.setText(1, (String) value);
+                tableItem.setText(0, (String) value);
+            } else if (property.equals(ITestAttribute.PROPERTY_DATATYPE)){
+                getTestAttributeFromObject(tableItem.getData()).setDatatype((String)value);
+                tableItem.setText(3, (String) value);
             }
             repackAttributeTable(viewer);
         }
@@ -607,28 +630,44 @@ public class TestCaseTypeSection extends IpsSection {
         public Image getColumnImage(Object element, int columnIndex) {
             Image defaultImage = null;
             try {
-                MessageList msgList = ((ITestAttribute) element).validate(ipsProject);
+                ITestAttribute testAttribute = ((ITestAttribute) element);
+                MessageList msgList = testAttribute.validate(ipsProject);
                 switch (columnIndex) {
                     case 0:
-                        defaultImage = getImageForAttribute(element);
-                        msgList = msgList.getMessagesFor(element);
-                        if (! msgList.isEmpty()){
-                            return getImageForMsgList(defaultImage, msgList);
-                        }
-                        break;
-                    case 1:
+                        // test attribute name (used in test case)
                         defaultImage = empytImage;
                         msgList = msgList.getMessagesFor(element, ITestAttribute.PROPERTY_NAME);
                         if (! msgList.isEmpty()){
                             return getImageForMsgList(defaultImage, msgList);
                         }
                         return null;
-                    case 2:
-                        defaultImage = ((ITestAttribute)element).getTestAttributeType().getImage();
+                    case 1:
+                        // type input or expected
+                        defaultImage = testAttribute.getTestAttributeType().getImage();
                         msgList = msgList.getMessagesFor(element, ITestAttribute.PROPERTY_TEST_ATTRIBUTE_TYPE);
                         if (! msgList.isEmpty()){
                             return getImageForMsgList(defaultImage, msgList);
                         }
+                        break;
+                    case 2:
+                        // attribute
+                        if (StringUtils.isEmpty(testAttribute.getAttribute())){
+                            return null;
+                        }
+                        defaultImage = getImageForAttribute(element);
+                        msgList = msgList.getMessagesFor(element);
+                        if (! msgList.isEmpty()){
+                            return getImageForMsgList(defaultImage, msgList);
+                        }
+                        break;
+                    case 3:
+                        // datatype
+                        defaultImage = IpsPlugin.getDefault().getImage("Datatype.gif"); //$NON-NLS-1$
+                        msgList = msgList.getMessagesFor(element, ITestAttribute.PROPERTY_DATATYPE);
+                        if (! msgList.isEmpty()){
+                            return getImageForMsgList(defaultImage, msgList);
+                        }
+                        break;
                     default:
                         break;
                 }
@@ -643,19 +682,34 @@ public class TestCaseTypeSection extends IpsSection {
                 ITestAttribute testAttribute = (ITestAttribute) element;
                 switch (columnIndex) {
                     case 0:
+                        // test attribute name (used in test case)
+                        return testAttribute.getName();
+                    case 1:
+                        // // type input or expected
+                        return testAttribute.getTestAttributeType().getName();
+                    case 2:
+                        // attribute
                         try {
                             IPolicyCmptTypeAttribute attr = testAttribute.findAttribute(ipsProject);
                             if (attr != null){
-                                return super.getText(attr);
+                                return (attr.isDerived()?"/":"")+attr.getName(); //$NON-NLS-1$ //$NON-NLS-2$
                             }
                         } catch (CoreException e) {
-                            // ignore exception diplay attributes name stored in test parameter
+                            // ignore exception, display attributes name stored in test parameter instead
                         }
                         return testAttribute.getAttribute();
-                    case 1:
-                        return testAttribute.getName();
-                    case 2:
-                        return testAttribute.getTestAttributeType().getName();
+                    case 3:
+                        // datatype
+                        ValueDatatype datatype;
+                        try {
+                            datatype = testAttribute.findDatatype(ipsProject);
+                            if (datatype != null){
+                                return super.getText(datatype);
+                            }
+                        } catch (CoreException e) {
+                            // ignore exception, display datatype name stored in test parameter instead
+                        }
+                        return testAttribute.getDatatype();
                     default:
                         break;
                 }
@@ -832,7 +886,7 @@ public class TestCaseTypeSection extends IpsSection {
     private class OpenInNewEditorAction extends IpsAction {
         public OpenInNewEditorAction() {
             super(treeViewer);
-            setText("");
+            setText(""); //$NON-NLS-1$
         }
         
         /**
@@ -1151,7 +1205,7 @@ public class TestCaseTypeSection extends IpsSection {
                 composite.setLayout(structureLayout);
 
                 // create the attribute table
-                final TableViewer attributeTableViewer = createTestAttributeTable(composite);
+                final TableViewer attributeTableViewer = createTestAttributeTable(composite, testPolicyCmptTypeParam);
                 objectCache.putAttributeTable(testParam, attributeTableViewer);
 
                 // stores the index of the test attributes for faster move up/down
@@ -1201,6 +1255,11 @@ public class TestCaseTypeSection extends IpsSection {
     public void setDataChangeable(boolean changeable) {
         super.setDataChangeable(changeable);
         updateDetailButtonStatus(null);
+        Collection allAttributeDetails = objectCache.getAllAttributeDetails();
+        for (Iterator iter = allAttributeDetails.iterator(); iter.hasNext();) {
+            AttributeDetails details = (AttributeDetails)iter.next();
+            toolkit.setDataChangeable(details.attributesPolicyCmptType, false);
+        }
     }
 
     /*
@@ -1212,22 +1271,31 @@ public class TestCaseTypeSection extends IpsSection {
         }
     }
 
+    
+    ICompletionProposal proposal = null;
+    
     /*
      * Create the test attribute table
      */
-    private TableViewer createTestAttributeTable(Composite details) {
-        Table table = new Table(details, SWT.BORDER | SWT.MULTI | SWT.FULL_SELECTION);
+    private TableViewer createTestAttributeTable(Composite details, final ITestPolicyCmptTypeParameter testPolicyCmptTypeParam) {
+        final Table table = new Table(details, SWT.BORDER | SWT.MULTI | SWT.FULL_SELECTION);
         table.setLayoutData(new GridData(GridData.FILL_BOTH));
         table.setHeaderVisible (true);
         table.setLinesVisible (true);
-        TableColumn column = new TableColumn(table, SWT.LEFT);
-        column.setText(Messages.TestCaseTypeSection_AttributeTable_ColumnTitleAttribute);
+        TableColumn column = null;
         
         column = new TableColumn(table, SWT.LEFT);
         column.setText(Messages.TestCaseTypeSection_AttributeTable_ColumnTitleAttributeName);
         
         column = new TableColumn(table, SWT.LEFT);
         column.setText(Messages.TestCaseTypeSection_AttributeTable_ColumnTitleAttributeType);
+
+        column = new TableColumn(table, SWT.LEFT);
+        column.setText(Messages.TestCaseTypeSection_AttributeTable_ColumnTitleAttribute);
+        
+        column = new TableColumn(table, SWT.LEFT);
+        column.setText(Messages.TestCaseTypeSection_AttributeTable_ColumnTitle_Datatyp);
+        
 
         // Create the viewer and connect it to the view
         final TableViewer viewer = new TableViewer(table);
@@ -1244,12 +1312,14 @@ public class TestCaseTypeSection extends IpsSection {
         
         // create the cell editors
         ComboBoxCellEditor cellEditorTestAttributeType = new ComboBoxCellEditor(table, valueNames, SWT.READ_ONLY); //$NON-NLS-1$ //$NON-NLS-2$
-        TextCellEditor textCellEditor = new TextCellEditor(table);
+        final TextCellEditor textCellEditorName = new TextCellEditor(table);
         
-        viewer.setCellEditors(new CellEditor[]{null, textCellEditor, cellEditorTestAttributeType});
+        viewer.setCellEditors(new CellEditor[]{textCellEditorName, cellEditorTestAttributeType, null, null});
+        
         viewer.setCellModifier(new TestAttributeCellModifier(viewer));
-        viewer.setColumnProperties(new String[] { ITestAttribute.PROPERTY_ATTRIBUTE, ITestAttribute.PROPERTY_NAME,
-                ITestAttribute.PROPERTY_TEST_ATTRIBUTE_TYPE });
+        viewer.setColumnProperties(new String[] { ITestAttribute.PROPERTY_NAME,
+                ITestAttribute.PROPERTY_TEST_ATTRIBUTE_TYPE, ITestAttribute.PROPERTY_ATTRIBUTE,
+                ITestAttribute.PROPERTY_DATATYPE });
 
         // add listener to the table
         viewer.addSelectionChangedListener(new ISelectionChangedListener() {
@@ -1273,7 +1343,7 @@ public class TestCaseTypeSection extends IpsSection {
                 } else
                     return null;
             }
-        };     
+        };
         return viewer;
     }
 
@@ -1282,52 +1352,23 @@ public class TestCaseTypeSection extends IpsSection {
      */
     private void addAttributeClicked(IIpsObjectPart object) {
         ITestPolicyCmptTypeParameter testPolicyCmptTypeParam;
-        if (object instanceof ITestAttribute)
+        if (object instanceof ITestAttribute){
             testPolicyCmptTypeParam = (ITestPolicyCmptTypeParameter)((ITestAttribute)object).getParent();
-        else if (object instanceof ITestPolicyCmptTypeParameter)
+        } else if (object instanceof ITestPolicyCmptTypeParameter) {
             testPolicyCmptTypeParam = (ITestPolicyCmptTypeParameter)object;
-        else
+        } else {
             throw new RuntimeException(NLS.bind(Messages.TestCaseTypeSection_Error_UnexpectedObjectClass, object.getClass().getName()));
+        }
         
-        // open a dialog to select an attribute of the policy cmpt 
+        // open a wizard to select an attribute of the policy cmpt 
         // wich is related by the given test policy cmpt type param
-        IPolicyCmptTypeAttribute[] attributesSelected;
+        // or define a new test attribite without a policy cmpt type 
+        // attribute
         try {
-            attributesSelected = selectAttributeByDialog(testPolicyCmptTypeParam,
-                    Messages.TestCaseTypeSection_Dialog_SelectAttributeAdd_Message, true);
-        } catch (CoreException e1) {
-            throw new RuntimeException(e1);
+            newTestAttributesByWizard(testPolicyCmptTypeParam);
+        } catch (CoreException e) {
+            IpsPlugin.logAndShowErrorDialog(e);
         }
-        if (attributesSelected == null){
-            return;
-        }
-        
-        ITestAttribute testAttribute = null;
-        for (int i = 0; i < attributesSelected.length; i++) {
-            IPolicyCmptTypeAttribute modelAttribute = attributesSelected[i];
-            try {
-                if (testPolicyCmptTypeParam.isCombinedParameter()){
-                    // if the type of the parent is combined 
-                    //   create a new expected if attribute is derived or computed
-                    if (modelAttribute.isDerived())
-                        testAttribute = testPolicyCmptTypeParam.newExpectedResultTestAttribute();
-                    else
-                        testAttribute = testPolicyCmptTypeParam.newInputTestAttribute();
-                } else if (testPolicyCmptTypeParam.isExpextedResultParameter()){
-                    testAttribute = testPolicyCmptTypeParam.newExpectedResultTestAttribute();
-                } else {
-                    // default is input
-                    testAttribute = testPolicyCmptTypeParam.newInputTestAttribute();
-                }
-            } catch (CoreException e) {
-                throw new RuntimeException(e);
-            }
-            
-            testAttribute.setAttribute(modelAttribute);
-            testAttribute.setName(testCaseType.generateUniqueNameForTestAttribute(testAttribute, modelAttribute.getName()));
-        }
-
-        redrawDetailArea(testPolicyCmptTypeParam, testAttribute);
     }
 
     /**
@@ -2286,34 +2327,22 @@ public class TestCaseTypeSection extends IpsSection {
     /*
      * Displays a dialog to select attributes of a policy component.
      */
-    private IPolicyCmptTypeAttribute[] selectAttributeByDialog(ITestPolicyCmptTypeParameter testPolicyCmptTypeParam,
-            String message,
-            boolean multi) throws CoreException {
-        AttributeElementListSelectionDialog selectDialog = new AttributeElementListSelectionDialog(getShell(), toolkit);
-        selectDialog.setMultipleSelection(multi);
-        selectDialog.setTitle(Messages.TestCaseTypeSection_Dialog_SelectAttribute_Title);
-        selectDialog.setMessage(message);
-        selectDialog.setShowSubtypes(showSubtypeAttributes);
+    private void newTestAttributesByWizard(ITestPolicyCmptTypeParameter testPolicyCmptTypeParam) throws CoreException {
+        boolean dirty = testCaseType.getIpsSrcFile().isDirty();
         
-        IPolicyCmptType policyCmptType = testPolicyCmptTypeParam.findPolicyCmptType(testPolicyCmptTypeParam.getIpsProject());
-        if (policyCmptType == null) {
-            String msg = NLS.bind(
-                    Messages.TestCaseTypeSection_ErrorDialog_AttributeChangingNotAllowedBecausePolicyCmptTypeNotExists,
-                    testPolicyCmptTypeParam.getPolicyCmptType());
-            MessageDialog.openWarning(getShell(), Messages.TestCaseTypeSection_ErrorDialog_AttributeChangingTitle, msg);
-            return null;
-        }
-
-        selectDialog.init(policyCmptType);
-        if (selectDialog.open() == Window.OK) {
-            showSubtypeAttributes = selectDialog.isShowSubtypes();
-            if (selectDialog.getResult().length > 0) {
-                Object[] result = (Object[])selectDialog.getResult();
-                IPolicyCmptTypeAttribute[] attributeResult = new IPolicyCmptTypeAttribute[result.length];
-                System.arraycopy(result, 0, attributeResult, 0, result.length);
-                return attributeResult;
+        // open wizard to add new test attributes
+        Memento memento = testCaseType.newMemento();
+        NewTestAttributeWizard wizard = new NewTestAttributeWizard(testCaseType, testPolicyCmptTypeParam, showSubtypeAttributes);
+        WizardDialog dialog = new WizardDialog(getShell(), wizard);
+        dialog.open();
+        if (dialog.getReturnCode() == Window.CANCEL) {
+            testCaseType.setState(memento);
+            if (!dirty) {
+                testCaseType.getIpsSrcFile().markAsClean();
             }
+        } else {
+            redrawDetailArea(testPolicyCmptTypeParam, wizard.getNewlyCreatedTestAttribute());
+            showSubtypeAttributes = wizard.getShowSubtypeAttributes();
         }
-        return null;
     }
 }

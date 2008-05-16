@@ -160,7 +160,7 @@ public class ValidationUtils {
         Datatype datatype = ipsProject.findDatatype(datatypeName);
         if (datatype==null) {
             String text = NLS.bind(Messages.ValidationUtils_msgDatatypeDoesNotExist, datatypeName); 
-            list.add(new Message("", text, Message.ERROR, part, propertyName)); //$NON-NLS-1$
+            list.add(new Message(msgcode, text, Message.ERROR, part, propertyName)); //$NON-NLS-1$
             return null;
         }
         if (datatype instanceof ValueDatatype) {
@@ -206,13 +206,13 @@ public class ValidationUtils {
         ValueDatatype datatype = part.getIpsProject().findValueDatatype(datatypeName);
         if (datatype==null) {
             String text = NLS.bind(Messages.ValidationUtils_msgDatatypeDoesNotExist, datatypeName); 
-            list.add(new Message("", text, Message.ERROR, part, propertyName)); //$NON-NLS-1$
+            list.add(new Message(msgcode, text, Message.ERROR, part, propertyName)); //$NON-NLS-1$
             return null;
         }
         list.add(datatype.checkReadyToUse(), new ObjectProperty(part, propertyName), true);
         if (datatype.isVoid() && !voidAllowed) {
             String text = Messages.ValidationUtils_msgVoidNotAllowed;
-            list.add(new Message("", text, Message.ERROR, part, propertyName)); //$NON-NLS-1$
+            list.add(new Message(msgcode, text, Message.ERROR, part, propertyName)); //$NON-NLS-1$
         }
         return datatype;
     }

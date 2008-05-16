@@ -50,6 +50,7 @@ import org.faktorips.devtools.core.model.testcase.ITestPolicyCmptLink;
 import org.faktorips.devtools.core.model.testcase.ITestRule;
 import org.faktorips.devtools.core.model.testcase.ITestValue;
 import org.faktorips.devtools.core.model.testcase.TestRuleViolationType;
+import org.faktorips.devtools.core.model.testcasetype.ITestAttribute;
 import org.faktorips.devtools.core.model.testcasetype.ITestValueParameter;
 import org.faktorips.devtools.core.model.type.IAttribute;
 import org.faktorips.devtools.core.ui.UIToolkit;
@@ -338,18 +339,25 @@ public class TestCaseDetailArea {
         ValueDatatype datatype = null;
         ValueDatatypeControlFactory ctrlFactory = null;
         
+        
         try {
-            IAttribute attribute = attributeValue.findAttribute(ipsProject);
-            if (attribute != null){
-                datatype = attribute.findDatatype(ipsProject);
+            ITestAttribute testAttribute = attributeValue.findTestAttribute(ipsProject);
+            if (!testAttribute.isBasedOnModelAttribute()){
+                datatype = testAttribute.findDatatype(ipsProject);
                 ctrlFactory = IpsPlugin.getDefault().getValueDatatypeControlFactory(datatype);
-            } else { 
-                if (StringUtils.isNotEmpty(attributeValue.getValue())){
-                    ctrlFactory = IpsPlugin.getDefault().getValueDatatypeControlFactory(ValueDatatype.STRING);
-                } else {
-                    // if the attribute wasn't found and no value is stored then no controls will be displayed
-                    // maybe this attributes are not available in subtype test policy cmpt's
-                    return null;
+            } else {
+                IAttribute attribute = attributeValue.findAttribute(ipsProject);
+                if (attribute != null){
+                    datatype = attribute.findDatatype(ipsProject);
+                    ctrlFactory = IpsPlugin.getDefault().getValueDatatypeControlFactory(datatype);
+                } else { 
+                    if (StringUtils.isNotEmpty(attributeValue.getValue())){
+                        ctrlFactory = IpsPlugin.getDefault().getValueDatatypeControlFactory(ValueDatatype.STRING);
+                    } else {
+                        // if the attribute wasn't found and no value is stored then no controls will be displayed
+                        // maybe this attributes are not available in subtype test policy cmpt's
+                        return null;
+                    }
                 }
             }
         } catch (CoreException e) {

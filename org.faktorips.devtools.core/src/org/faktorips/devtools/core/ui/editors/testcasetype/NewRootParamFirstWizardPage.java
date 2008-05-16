@@ -64,15 +64,15 @@ public class NewRootParamFirstWizardPage extends WizardPage implements ValueChan
                 if (e.getSource() == testValueParameterBtn) {
                     wizard.setKindOfTestParameter(NewRootParameterWizard.TEST_VALUE_PARAMETER);
                     title = Messages.NewRootParamWizardPage_Title_TestValueParam;
-                    title = Messages.NewRootParamWizardPage_Description_TestValueParam;
+                    description = Messages.NewRootParamWizardPage_Description_TestValueParam;
                 } else if (e.getSource() == testPolicyCmptTypeParameterBtn){
                     wizard.setKindOfTestParameter(NewRootParameterWizard.TEST_POLICY_CMPT_TYPE_PARAMETER);
                     title = Messages.NewRootParamWizardPage_Title_TestPolicyCmptParam;
-                    title = Messages.NewRootParamWizardPage_Description_TestPolicyCmptParam;                    
+                    description = Messages.NewRootParamWizardPage_Description_TestPolicyCmptParam;                    
                 } else if (e.getSource() == testRuleParameterBtn){
                     wizard.setKindOfTestParameter(NewRootParameterWizard.TEST_RULE_PARAMETER);
                     title = Messages.NewRootParamWizardPage_Title_TestRuleParam;
-                    title = Messages.NewRootParamWizardPage_Description_TestRuleParam;                    
+                    description = Messages.NewRootParamWizardPage_Description_TestRuleParam;                    
                 }
                 wizard.setTitleAndDescriptionOfSecondPage(title, description);
                 wizard.resetWizard();

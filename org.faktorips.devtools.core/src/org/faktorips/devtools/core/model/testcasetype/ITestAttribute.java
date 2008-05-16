@@ -18,6 +18,7 @@
 package org.faktorips.devtools.core.model.testcasetype;
 
 import org.eclipse.core.runtime.CoreException;
+import org.faktorips.datatype.ValueDatatype;
 import org.faktorips.devtools.core.internal.model.testcasetype.TestPolicyCmptTypeParameter;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPart;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
@@ -34,6 +35,8 @@ public interface ITestAttribute extends IIpsObjectPart {
 	/** Property names */
     public final static String PROPERTY_ATTRIBUTE = "attribute"; //$NON-NLS-1$
 
+    public final static String PROPERTY_DATATYPE = "datatype"; //$NON-NLS-1$
+    
     public final static String PROPERTY_POLICYCMPTTYPE_OF_ATTRIBUTE = "policyCmptType"; //$NON-NLS-1$
     
     public final static String PROPERTY_TEST_ATTRIBUTE_TYPE = "testAttributeType"; //$NON-NLS-1$
@@ -82,6 +85,18 @@ public interface ITestAttribute extends IIpsObjectPart {
     public final static String MSGCODE_ATTRIBUTE_NAME_IS_EMPTY = MSGCODE_PREFIX + "AttributeNameIsEmpty"; //$NON-NLS-1$
     
     /**
+     * Validation message code to indicate that the datatype not exists.
+     */
+    public final static String MSGCODE_DATATYPE_NOT_FOUND = MSGCODE_PREFIX + "DatatypeNotFound"; //$NON-NLS-1$
+    
+    /**
+     * Validation message code to indicate that the attribute and the datatype are given.
+     * This is an validation error, because the datatype will be searched using the attribute,
+     * thus if the attribute is given then the datatype should be empty and vice versa.
+     */
+    public final static String MSGCODE_DATATYPE_AND_ATTRIBUTE_GIVEN = MSGCODE_PREFIX + "DatatypeAndAttributeAreGiven"; //$NON-NLS-1$
+    
+    /**
      * Sets the attribute's name.
      */
     public void setName(String newName);
@@ -116,6 +131,18 @@ public interface ITestAttribute extends IIpsObjectPart {
      */
 	public void setAttribute(IPolicyCmptTypeAttribute attribute);
 
+    /**
+     * Returns the test attribute's datatype. Note that only value datatypes are allowed as
+     * attribute datatype.
+     */
+    public String getDatatype();
+    
+    /**
+     * Sets the test attribute's datatype. Note that only value datatypes are allowed as
+     * attribute datatype.
+     */
+    public void setDatatype(String newDatatype);
+    
     /**
      * Returns the policy cmpt type the attribute belongs to.
      * 
@@ -155,6 +182,17 @@ public interface ITestAttribute extends IIpsObjectPart {
      */	
 	public IPolicyCmptTypeAttribute findAttribute(IIpsProject ipsProject) throws CoreException;
 	
+    /**
+     * Returns the test attribute's value datatype.
+     * 
+     * @param project The project which ips object path is used for the search.
+     * This is not necessarily the project this type is part of. 
+     *
+     * @see #getDatatype() #getAttribute()
+     */
+    public ValueDatatype findDatatype(IIpsProject project) throws CoreException;
+
+    
 	/**
 	 * Returns <code>true</code> if the test attribute is an input attribute, 
 	 * otherwise <code>false</code>.
@@ -192,4 +230,9 @@ public interface ITestAttribute extends IIpsObjectPart {
      * @throws CoreException if an error occurs 
      */
     public boolean isAttributeRelevantByProductCmpt(IProductCmpt productCmpt, IIpsProject ipsProject) throws CoreException;
+
+    /**
+     * Returns <code>true</code> if the test attribute based on a model attribute (policy cmpt type attribute).
+     */
+    public boolean isBasedOnModelAttribute();
 }

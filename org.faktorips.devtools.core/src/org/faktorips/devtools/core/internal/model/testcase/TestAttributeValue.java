@@ -309,22 +309,27 @@ public class TestAttributeValue  extends AtomicIpsObjectPart implements ITestAtt
             Message msg = new Message(MSGCODE_TESTATTRIBUTE_NOT_FOUND, text, Message.ERROR, this, PROPERTY_VALUE);
             messageList.add(msg);
         } else {
-            IAttribute attribute = findAttribute(ipsProject);
-            // create a warning only if the attribute wasn't found and the value is set,
-            // otherwise the attribute value object is disabled (not relevant for the test policy cmpt),
-            // because the policy cmpt could be a subclass of the policy cmpt which is defined in the test case type,
-            // and the attribute should be only relevant for other policy cmpts which defines this subclass attribute
-            if (attribute == null && !StringUtils.isEmpty(value)) {
-                String text = NLS.bind(Messages.TestAttributeValue_ValidateError_AttributeNotFound, testAttr
-                        .getAttribute());
-                Message msg = new Message(ITestAttribute.MSGCODE_ATTRIBUTE_NOT_FOUND, text, Message.WARNING, this,
-                        PROPERTY_VALUE);
-                messageList.add(msg);
-            }
-            
-            if (attribute != null ){
-                // ignore validation if the attribute wasn't found (see above)
-                ValidationUtils.checkValue(attribute.getDatatype(), value, this, PROPERTY_VALUE, messageList);
+            if (testAttr.isBasedOnModelAttribute()){
+                IAttribute attribute = findAttribute(ipsProject);
+                // create a warning only if the attribute wasn't found and the value is set,
+                // otherwise the attribute value object is disabled (not relevant for the test policy cmpt),
+                // because the policy cmpt could be a subclass of the policy cmpt which is defined in the test case type,
+                // and the attribute should be only relevant for other policy cmpts which defines this subclass attribute
+                if (attribute == null && !StringUtils.isEmpty(value)) {
+                    String text = NLS.bind(Messages.TestAttributeValue_ValidateError_AttributeNotFound, testAttr
+                            .getAttribute());
+                    Message msg = new Message(ITestAttribute.MSGCODE_ATTRIBUTE_NOT_FOUND, text, Message.WARNING, this,
+                            PROPERTY_VALUE);
+                    messageList.add(msg);
+                }
+                
+                if (attribute != null ){
+                    // ignore validation if the attribute wasn't found (see above)
+                    ValidationUtils.checkValue(attribute.getDatatype(), value, this, PROPERTY_VALUE, messageList);
+                }
+            } else {
+                // the test attribute is not based on a model attribute therefor check only the value
+                ValidationUtils.checkValue(testAttr.getDatatype(), value, this, PROPERTY_VALUE, messageList);
             }
             
             // check the correct type
