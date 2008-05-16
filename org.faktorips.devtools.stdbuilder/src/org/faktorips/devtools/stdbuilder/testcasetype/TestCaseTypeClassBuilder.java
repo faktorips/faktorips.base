@@ -409,12 +409,20 @@ public class TestCaseTypeClassBuilder extends DefaultJavaSourceFileBuilder {
             if (!policyTypeParams[i].isValid()) {
                 continue;
             }
+            String callbackClassName = policyTypeParams[i].getName() + "XmlCallback";
+            body.appendClassName(StringUtils.capitalize(callbackClassName));
+            body.append(" ");
+            body.append(callbackClassName);
+            body.append(" = new ");
+            body.append(StringUtils.capitalize(callbackClassName));
+            body.appendln("();");
+            
             ITestPolicyCmptTypeParameter policyTypeParam = policyTypeParams[i];
             body.append("childElement = ");
             body.appendClassName(XmlUtil.class);
             body.appendln(".getFirstElement(element, \"" + policyTypeParams[i].getName() + "\");");
             body.appendln("if (childElement != null){");
-            buildConstrutorForTestPolicyCmptParameter(body, policyTypeParam, variablePrefix, objectReferenceStoreName);
+            buildConstrutorForTestPolicyCmptParameter(body, policyTypeParam, variablePrefix, objectReferenceStoreName, callbackClassName);
             body.appendln("}");
         }
 
@@ -444,7 +452,7 @@ public class TestCaseTypeClassBuilder extends DefaultJavaSourceFileBuilder {
     protected void buildConstrutorForTestPolicyCmptParameter(JavaCodeFragment body,
             ITestPolicyCmptTypeParameter policyTypeParam,
             String variablePrefix,
-            String objectReferenceStoreName) throws CoreException {
+            String objectReferenceStoreName, String callbackClassName) throws CoreException {
         String qualifiedPolicyCmptName = getQualifiedNameFromTestPolicyCmptParam(policyTypeParam);
         String variableName = variablePrefix + policyTypeParam.getName();
         body.appendln("try {");
@@ -458,6 +466,8 @@ public class TestCaseTypeClassBuilder extends DefaultJavaSourceFileBuilder {
         body.append(variableName);
         body.append(".initFromXml(childElement, true, getRepository(), ");
         body.append(objectReferenceStoreName);
+        body.appendln(", ");
+        body.appendln(callbackClassName);        
         body.appendln(");");
         body.appendln("} catch (Exception e) {throw new RuntimeException(e);}");
     }
