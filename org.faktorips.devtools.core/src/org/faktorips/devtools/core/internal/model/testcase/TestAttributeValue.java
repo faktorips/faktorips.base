@@ -299,6 +299,8 @@ public class TestAttributeValue  extends AtomicIpsObjectPart implements ITestAtt
             ValueDatatype datatype = testAttribute.findDatatype(ipsProject);
             if (datatype != null){
                 this.setValue(datatype.getDefaultValue());
+            } else {
+                this.setValue(null);
             }
         }
     }
