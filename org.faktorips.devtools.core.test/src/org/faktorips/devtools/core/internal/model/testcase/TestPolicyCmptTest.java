@@ -530,6 +530,16 @@ public class TestPolicyCmptTest extends AbstractIpsPluginTest {
         tcChild.setProductCmpt("");
         testAttrValueCoverage.updateDefaultTestAttributeValue();
         assertEquals(testAttrValueCoverage.getValue(), "attrCoverage_Default");
+        
+        // test extension attributes
+        ITestAttribute attribute = testAttrValueCoverage.findTestAttribute(project);
+        attribute.setAttribute((String)null);
+        attribute.setDatatype("undef");
+        testAttrValueCoverage.updateDefaultTestAttributeValue();
+        assertNull(testAttrValueCoverage.getValue());
+        attribute.setDatatype("String");
+        testAttrValueCoverage.updateDefaultTestAttributeValue();
+        assertNull(testAttrValueCoverage.getValue());
     }
     
     public void testFindProductCmpsCurrentGeneration_notProdRelevant() throws CoreException{
