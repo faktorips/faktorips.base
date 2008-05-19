@@ -125,6 +125,8 @@ public class TestAttributeDefinitionWizardPage extends WizardPage {
         // datatype of test attribute
         uiToolkit.createFormLabel(c, Messages.TestAttributeDefinitionWizardPage_testLabelDatatype);
         datatypeRefControl = uiToolkit.createDatatypeRefEdit(wizard.getIpsProjekt(), c);
+        datatypeRefControl.setOnlyValueDatatypesAllowed(true);
+        
         bindingContext.bindContent(datatypeRefControl, testAttribute, PmoTestAttribute.PROPERTY_DATATYPE);
         
         setControl(c);

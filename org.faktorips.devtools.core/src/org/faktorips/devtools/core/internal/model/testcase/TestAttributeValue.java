@@ -294,7 +294,12 @@ public class TestAttributeValue  extends AtomicIpsObjectPart implements ITestAtt
                 defaultSet = true;
             }
         } else {
-            // the model attribute (policy cmpt type attribute) wasn't found, do nothing
+            // the model attribute (policy cmpt type attribute) wasn't found,
+            // set the default using the datatype
+            ValueDatatype datatype = testAttribute.findDatatype(ipsProject);
+            if (datatype != null){
+                this.setValue(datatype.getDefaultValue());
+            }
         }
     }
     

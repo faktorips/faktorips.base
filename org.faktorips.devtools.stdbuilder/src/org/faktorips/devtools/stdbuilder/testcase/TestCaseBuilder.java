@@ -24,6 +24,7 @@ import java.util.Map;
 
 import javax.xml.transform.TransformerException;
 
+import org.apache.commons.lang.StringUtils;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.runtime.CoreException;
@@ -473,8 +474,10 @@ public class TestCaseBuilder extends AbstractArtefactBuilder {
                             "The test attribute {0} was not found in the test case type definition.", testAttrValues[i]
                                     .getTestAttribute())));
                 }
-
-                Element attrValueElem = XmlUtil.addNewChild(doc, testPolicyCmpt, testAttribute.getAttribute());
+                
+                // the child name is either the attribute name or the extension attribute (=test attribute name)
+                String childName = StringUtils.isEmpty(testAttribute.getAttribute()) ? testAttribute.getName() : testAttribute.getAttribute();
+                Element attrValueElem = XmlUtil.addNewChild(doc, testPolicyCmpt, childName);
                 XmlUtil.addNewCDATAorTextChild(doc, attrValueElem, testAttrValues[i].getValue());
                 attrValueElem.setAttribute("type", "property");
             }
