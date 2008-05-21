@@ -106,6 +106,13 @@ public class DefaultBuilderSetTest extends AbstractIpsPluginTest {
         public String getVersion() {
             return null;
         }
+
+        /**
+         * {@inheritDoc}
+         */
+        protected IIpsArtefactBuilder[] createBuilders() throws CoreException {
+            return new IIpsArtefactBuilder[0];
+        }
         
 	}
 }

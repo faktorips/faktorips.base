@@ -986,4 +986,13 @@ public abstract class GenAssociation extends GenPolicyCmptTypePart {
 
     public abstract JavaCodeFragment generateCodeToSynchronizeReverseAssoziation(String fieldName,
             String targetImplClassName) throws CoreException;
+    
+    public void generateSnippetForAcceptVisitorIfAccplicable(String paramName, JavaCodeFragmentBuilder builder) throws CoreException {
+        if (isDerivedUnion() || !isCompositionMasterToDetail()) {
+            return; 
+        }
+        generateSnippetForAcceptVisitor(paramName, builder);
+    }
+
+    public abstract void generateSnippetForAcceptVisitor(String paramName, JavaCodeFragmentBuilder builder) throws CoreException;
 }

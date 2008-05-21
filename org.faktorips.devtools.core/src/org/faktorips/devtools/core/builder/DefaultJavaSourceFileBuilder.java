@@ -221,18 +221,15 @@ public abstract class DefaultJavaSourceFileBuilder extends JavaSourceFileBuilder
     	}
     	return cu.getImportContainer();
     }
-    
+
     /**
-     * Defines if the generation of the logging statement is enabled. Irrespective of the fact that a
-     * generator uses the generate logging methods of this builder the actual code generation for
-     * logging statements can be enabled and disabled by this method.
+     * Returns <code>true</code> if log statements should be generated, otherwise <code>false</code>.
+     * Log statements should be generated if is enabled and a logging framework connector exists. 
      */
-    public void setLoggingCodeGenerationEnabled(boolean enabled){
-        this.loggingGenerationEnabled = enabled;
-    }
-    
     private boolean checkLoggingGenerationConditions(){
-        return loggingGenerationEnabled && getBuilderSet() != null && getBuilderSet().getIpsLoggingFrameworkConnector() != null;
+        boolean generateLogging = getBuilderSet().getConfig().getBooleanPropertyValue(
+                DefaultJavaSourceFileBuilder.CONFIG_PROPERTY_GENERATE_LOGGING, false);
+        return generateLogging && getBuilderSet().getIpsLoggingFrameworkConnector() != null;
     }
     
     private void addLoggingConnectorImports(List usedClasses, JavaCodeFragment frag){

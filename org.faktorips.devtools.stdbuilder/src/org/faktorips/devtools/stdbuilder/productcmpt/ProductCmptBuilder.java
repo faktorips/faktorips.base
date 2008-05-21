@@ -212,11 +212,4 @@ public class ProductCmptBuilder extends AbstractArtefactBuilder {
         return true;
     }
 
-    /**
-     * Delegates to the ProductCmptGenerationBuilder.
-     */
-    public void setLoggingCodeGenerationEnabled(boolean enabled) {
-        generationBuilder.setLoggingCodeGenerationEnabled(enabled);
-    }
-
 }

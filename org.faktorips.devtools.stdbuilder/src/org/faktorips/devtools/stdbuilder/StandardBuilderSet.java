@@ -25,12 +25,10 @@ import org.faktorips.codegen.JavaCodeFragment;
 import org.faktorips.datatype.Datatype;
 import org.faktorips.devtools.core.builder.AbstractParameterIdentifierResolver;
 import org.faktorips.devtools.core.builder.DefaultBuilderSet;
-import org.faktorips.devtools.core.builder.DefaultJavaSourceFileBuilder;
 import org.faktorips.devtools.core.internal.model.TableContentsEnumDatatypeAdapter;
 import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
 import org.faktorips.devtools.core.model.ipsproject.IIpsArtefactBuilder;
-import org.faktorips.devtools.core.model.ipsproject.IIpsArtefactBuilderSetConfig;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.model.productcmpt.IFormula;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
@@ -90,6 +88,13 @@ public class StandardBuilderSet extends DefaultBuilderSet {
     public final static String CONFIG_PROPERTY_GENERATE_DELTA_SUPPORT = "generateDeltaSupport";
 
     /**
+     * Configuration property that enables/disables the generation of the visitor support.
+     * 
+     * @see IDeltaSupport
+     */
+    public final static String CONFIG_PROPERTY_GENERATE_VISITOR_SUPPORT = "generateVisitorSupport";
+
+    /**
      * Configuration property that is supposed to be used to read a configuration value from the
      * IIpsArtefactBuilderSetConfig object provided by the initialize method of an
      * IIpsArtefactBuilderSet instance.
@@ -113,7 +118,6 @@ public class StandardBuilderSet extends DefaultBuilderSet {
      */
     public final static String CONFIG_PROPERTY_USE_ENUMS = "useEnums";
 
-    private IIpsArtefactBuilder[] builders;
     private TableImplBuilder tableImplBuilder;
     private TableRowBuilder tableRowBuilder;
     private PolicyCmptInterfaceBuilder policyCmptInterfaceBuilder;
@@ -121,14 +125,6 @@ public class StandardBuilderSet extends DefaultBuilderSet {
     private EnumClassesBuilder enumClassesBuilder;
     private String version;
     private Map ipsObjectTypeGenerators = new HashMap(1000);
-
-    private boolean generateChangeListener;
-
-    private EnumTypeTargetJavaVersion targetJavaVersion;
-
-    private boolean useEnums;
-
-    private boolean useTypesafeCollections;
 
     public StandardBuilderSet() {
         initVersion();
@@ -153,13 +149,6 @@ public class StandardBuilderSet extends DefaultBuilderSet {
         // buf.append('.');
         // buf.append(versionObj.getMicro());
         // version = buf.toString();
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    public IIpsArtefactBuilder[] getArtefactBuilders() {
-        return builders;
     }
 
     /**
@@ -348,35 +337,12 @@ public class StandardBuilderSet extends DefaultBuilderSet {
     }
 
     /**
-     * Instantiates the artefact builders for this set. The following configuration properties of
-     * the provided IIpsArtefactBuilderSetConfig are considered by this builder set.
-     * 
-     * Property: generateChangeListener, type=boolean, values = ("true", "false")
-     * 
+     * {@inheritDoc}
      */
-    public void initialize(IIpsArtefactBuilderSetConfig config) throws CoreException {
-
-        generateChangeListener = config.getBooleanPropertyValue(
-                StandardBuilderSet.CONFIG_PROPERTY_GENERATE_CHANGELISTENER, false);
-        boolean generateDeltaSupport = config.getBooleanPropertyValue(
-                StandardBuilderSet.CONFIG_PROPERTY_GENERATE_DELTA_SUPPORT, false);
-        boolean generateCopySupport = config.getBooleanPropertyValue(
-                StandardBuilderSet.CONFIG_PROPERTY_GENERATE_COPY_SUPPORT, false);
-        targetJavaVersion = EnumTypeTargetJavaVersion.valueOf(config
-                .getPropertyValue(StandardBuilderSet.CONFIG_PROPERTY_TARGET_JAVA_VERSION));
-        useEnums = targetJavaVersion.isAtLeast(EnumTypeTargetJavaVersion.JAVA_5)
-                && config.getBooleanPropertyValue(StandardBuilderSet.CONFIG_PROPERTY_USE_ENUMS, false);
-        useTypesafeCollections = targetJavaVersion.isAtLeast(EnumTypeTargetJavaVersion.JAVA_5)
-                && config.getBooleanPropertyValue(StandardBuilderSet.CONFIG_PROPERTY_USE_TYPESAFE_COLLECTIONS, false);
+    protected IIpsArtefactBuilder[] createBuilders() throws CoreException {
         // create policy component type builders
-        PolicyCmptImplClassBuilder policyCmptImplClassBuilder = new PolicyCmptImplClassBuilder(this,
-                KIND_POLICY_CMPT_IMPL, generateChangeListener);
-        policyCmptImplClassBuilder.setGenerateDeltaSupport(generateDeltaSupport);
-        policyCmptImplClassBuilder.setGenerateCopySupport(generateCopySupport);
-        policyCmptInterfaceBuilder = new PolicyCmptInterfaceBuilder(this, KIND_POLICY_CMPT_INTERFACE,
-                generateChangeListener);
-        policyCmptInterfaceBuilder.setGenerateDeltaSupport(generateDeltaSupport);
-        policyCmptInterfaceBuilder.setGenerateCopySupport(generateCopySupport);
+        PolicyCmptImplClassBuilder policyCmptImplClassBuilder = new PolicyCmptImplClassBuilder(this, KIND_POLICY_CMPT_IMPL);
+        policyCmptInterfaceBuilder = new PolicyCmptInterfaceBuilder(this, KIND_POLICY_CMPT_INTERFACE);
 
         // create product component type builders
         ProductCmptInterfaceBuilder productCmptInterfaceBuilder = new ProductCmptInterfaceBuilder(this,
@@ -449,40 +415,11 @@ public class StandardBuilderSet extends DefaultBuilderSet {
         tocFileBuilder.setTestCaseBuilder(testCaseBuilder);
         tocFileBuilder.setFormulaTestBuilder(formulaTestBuilder);
 
-        // set generate logging state for the builders
-        boolean generateLogging = config.getBooleanPropertyValue(
-                DefaultJavaSourceFileBuilder.CONFIG_PROPERTY_GENERATE_LOGGING, false);
-
-        tableImplBuilder.setLoggingCodeGenerationEnabled(generateLogging);
-        productCmptGenInterfaceBuilder.setLoggingCodeGenerationEnabled(generateLogging);
-        productCmptGenImplClassBuilder.setLoggingCodeGenerationEnabled(generateLogging);
-        productCmptInterfaceBuilder.setLoggingCodeGenerationEnabled(generateLogging);
-        productCmptImplClassBuilder.setLoggingCodeGenerationEnabled(generateLogging);
-        policyCmptImplClassBuilder.setLoggingCodeGenerationEnabled(generateLogging);
-        policyCmptInterfaceBuilder.setLoggingCodeGenerationEnabled(generateLogging);
-        productCmptGenerationImplBuilder.setLoggingCodeGenerationEnabled(generateLogging);
-        testCaseTypeClassBuilder.setLoggingCodeGenerationEnabled(generateLogging);
-        formulaTestBuilder.setLoggingCodeGenerationEnabled(generateLogging);
-        enumClassesBuilder.setLoggingCodeGenerationEnabled(generateLogging);
-        enumTypeInterfaceBuilder.setLoggingCodeGenerationEnabled(generateLogging);
-
-        builders = new IIpsArtefactBuilder[] { tableImplBuilder, tableRowBuilder, productCmptGenInterfaceBuilder,
+        return new IIpsArtefactBuilder[] { tableImplBuilder, tableRowBuilder, productCmptGenInterfaceBuilder,
                 productCmptGenImplClassBuilder, productCmptInterfaceBuilder, productCmptImplClassBuilder,
                 policyCmptImplClassBuilder, policyCmptInterfaceBuilder, productCmptGenerationImplBuilder,
                 tableContentCopyBuilder, productCmptContentCopyBuilder, testCaseTypeClassBuilder, testCaseBuilder,
                 formulaTestBuilder, enumClassesBuilder, enumTypeInterfaceBuilder, tocFileBuilder };
-    }
-
-    /**
-     * For testing purposes.
-     */
-    public IIpsArtefactBuilder getBuilder(Class builderClass) {
-        for (int i = 0; i < builders.length; i++) {
-            if (builders[i].getClass().equals(builderClass)) {
-                return builders[i];
-            }
-        }
-        throw new RuntimeException("No builder of class " + builderClass + " defined."); //$NON-NLS-1$ //$NON-NLS-2$
     }
 
     public DatatypeHelper getDatatypeHelperForTableBasedEnum(TableContentsEnumDatatypeAdapter datatype) {
@@ -498,27 +435,28 @@ public class StandardBuilderSet extends DefaultBuilderSet {
     }
 
     public boolean isGenerateChangeListener() {
-        return generateChangeListener;
-    }
+        return getConfig().getBooleanPropertyValue(StandardBuilderSet.CONFIG_PROPERTY_GENERATE_CHANGELISTENER, false);    }
 
     /**
      * {@inheritDoc}
      */
     public EnumTypeTargetJavaVersion getTargetJavaVersion() {
-        return targetJavaVersion;
+        return EnumTypeTargetJavaVersion.valueOf(getConfig().getPropertyValue(StandardBuilderSet.CONFIG_PROPERTY_TARGET_JAVA_VERSION));
     }
 
     /**
      * Returns if Java 5 enums shall be used in the code generated by this builder.
      */
     public boolean isUseEnums() {
-        return useEnums;
+        return getTargetJavaVersion().isAtLeast(EnumTypeTargetJavaVersion.JAVA_5)
+            && getConfig().getBooleanPropertyValue(StandardBuilderSet.CONFIG_PROPERTY_USE_ENUMS, false);    
     }
 
     /**
      * Returns if Java 5 typesafe collections shall be used in the code generated by this builder.
      */
     public boolean isUseTypesafeCollections() {
-        return useTypesafeCollections;
+        return getTargetJavaVersion().isAtLeast(EnumTypeTargetJavaVersion.JAVA_5)
+            && getConfig().getBooleanPropertyValue(StandardBuilderSet.CONFIG_PROPERTY_USE_TYPESAFE_COLLECTIONS, false);    
     }
 }

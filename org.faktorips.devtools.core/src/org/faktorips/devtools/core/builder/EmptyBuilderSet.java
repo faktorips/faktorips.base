@@ -43,13 +43,6 @@ public class EmptyBuilderSet extends AbstractBuilderSet {
     /**
      * {@inheritDoc}
      */
-    public IIpsArtefactBuilder[] getArtefactBuilders() {
-        return new IIpsArtefactBuilder[0];
-    }
-
-    /**
-     * {@inheritDoc}
-     */
     public boolean isSupportTableAccess() {
         return true;
     }
@@ -183,5 +176,12 @@ public class EmptyBuilderSet extends AbstractBuilderSet {
      */
     public EnumTypeTargetJavaVersion getTargetJavaVersion() {
         return EnumTypeTargetJavaVersion.DEFAULT;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    protected IIpsArtefactBuilder[] createBuilders() throws CoreException {
+        return new IIpsArtefactBuilder[0];
     }
 }

@@ -38,13 +38,23 @@ public class TestIpsArtefactBuilderSet extends AbstractBuilderSet {
 
     public final static String ID = "testbuilderset";
     
-    private IIpsArtefactBuilder[] artefactBuilders;
     private boolean inverseRelationLinkRequiredFor2WayCompositions = false;
     private boolean roleNamePluralRequiredForTo1Relations = true;
     private boolean isAggregateRootBuilder = false;
 
     public TestIpsArtefactBuilderSet(){
-        artefactBuilders = new IIpsArtefactBuilder[0];
+        this(new IIpsArtefactBuilder[0]);
+    }
+
+    public TestIpsArtefactBuilderSet(IIpsArtefactBuilder[] builders){
+        super(builders);
+    }
+    
+    /**
+     * {@inheritDoc}
+     */
+    protected IIpsArtefactBuilder[] createBuilders() throws CoreException {
+        return getArtefactBuilders(); // are passed into the constructor
     }
 
     public void setAggregateRootBuilder(boolean enable){
@@ -55,14 +65,6 @@ public class TestIpsArtefactBuilderSet extends AbstractBuilderSet {
         return isAggregateRootBuilder;
     }
 
-    public TestIpsArtefactBuilderSet(IIpsArtefactBuilder[] builders){
-        artefactBuilders = builders;
-    }
-    
-    public IIpsArtefactBuilder[] getArtefactBuilders() {
-        return artefactBuilders;
-    }
-    
     public boolean isInverseRelationLinkRequiredFor2WayCompositions() {
         return inverseRelationLinkRequiredFor2WayCompositions;
     }

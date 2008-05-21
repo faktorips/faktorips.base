@@ -56,6 +56,7 @@ import org.faktorips.devtools.core.model.ipsobject.IIpsObject;
 import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
 import org.faktorips.devtools.core.model.ipsobject.QualifiedNameType;
+import org.faktorips.devtools.core.model.ipsproject.IIpsArtefactBuilder;
 import org.faktorips.devtools.core.model.ipsproject.IIpsArtefactBuilderSet;
 import org.faktorips.devtools.core.model.ipsproject.IIpsObjectPath;
 import org.faktorips.devtools.core.model.ipsproject.IIpsObjectPathEntry;
@@ -1229,7 +1230,13 @@ public class IpsProjectTest extends AbstractIpsPluginTest {
         
         //create builder set so that this test case is independent from StandardBuilderSet which is in a different
         //plugin
-        IIpsArtefactBuilderSet projectABuilderSet = new DefaultBuilderSet();
+        IIpsArtefactBuilderSet projectABuilderSet = new DefaultBuilderSet() {
+
+            protected IIpsArtefactBuilder[] createBuilders() throws CoreException {
+                return new IIpsArtefactBuilder[0];
+            }
+            
+        };
         projectABuilderSet.setId("projectABuilderSet");
         projectABuilderSet.setIpsProject(ipsProject);
 
@@ -1263,7 +1270,13 @@ public class IpsProjectTest extends AbstractIpsPluginTest {
         //second ipsproject with its own builderset but the same setting for the toc file name 
         IpsProject ipsProjectB = (IpsProject)newIpsProject("TestProjectB");
         
-        IIpsArtefactBuilderSet projectBBuilderSet = new DefaultBuilderSet();
+        IIpsArtefactBuilderSet projectBBuilderSet = new DefaultBuilderSet() {
+
+            protected IIpsArtefactBuilder[] createBuilders() throws CoreException {
+                return new IIpsArtefactBuilder[0];
+            }
+            
+        };
         projectBBuilderSet.setId("projectBBuilderSet");
         projectBBuilderSet.setIpsProject(ipsProjectB);
 

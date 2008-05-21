@@ -49,6 +49,7 @@ import org.faktorips.runtime.IDeltaComputationOptions;
 import org.faktorips.runtime.IModelObject;
 import org.faktorips.runtime.IModelObjectChangedEvent;
 import org.faktorips.runtime.IModelObjectDelta;
+import org.faktorips.runtime.IModelObjectVisitor;
 import org.faktorips.runtime.IUnresolvedReference;
 import org.faktorips.runtime.MessageList;
 import org.faktorips.runtime.internal.AbstractConfigurableModelObject;
@@ -64,30 +65,9 @@ public class PolicyCmptImplClassBuilder extends BasePolicyCmptTypeBuilder {
 
     private final static String FIELD_PARENT_MODEL_OBJECT = "parentModelObject";
 
-    private boolean generateDeltaSupport = false;
-    private boolean generateCopySupport = false;
-
-    public PolicyCmptImplClassBuilder(IIpsArtefactBuilderSet builderSet, String kindId,
-            boolean changeListenerSupportActive) throws CoreException {
-        super(builderSet, kindId, new LocalizedStringsSet(PolicyCmptImplClassBuilder.class),
-                changeListenerSupportActive);
+    public PolicyCmptImplClassBuilder(IIpsArtefactBuilderSet builderSet, String kindId) throws CoreException {
+        super(builderSet, kindId, new LocalizedStringsSet(PolicyCmptImplClassBuilder.class));
         setMergeEnabled(true);
-    }
-
-    public boolean isGenerateDeltaSupport() {
-        return generateDeltaSupport;
-    }
-
-    public void setGenerateDeltaSupport(boolean generateDeltaSupport) {
-        this.generateDeltaSupport = generateDeltaSupport;
-    }
-
-    public boolean isGenerateCopySupport() {
-        return generateCopySupport;
-    }
-
-    public void setGenerateCopySupport(boolean generateCopySupport) {
-        this.generateCopySupport = generateCopySupport;
     }
 
     /**
@@ -189,14 +169,17 @@ public class PolicyCmptImplClassBuilder extends BasePolicyCmptTypeBuilder {
                 break;
             }
         }
-        if (generateDeltaSupport) {
+        if (isGenerateDeltaSupport()) {
             generateMethodComputeDelta(methodsBuilder);
         }
-        if (generateCopySupport) {
+        if (isGenerateCopySupport()) {
             if ((getClassModifier() & java.lang.reflect.Modifier.ABSTRACT) == 0) {
                 generateMethodNewCopy(methodsBuilder);
             }
             generateMethodCopyProperties(methodsBuilder);
+        }
+        if (isGenerateVisitorSupport()) {
+            generateMethodAccept(methodsBuilder);
         }
     }
 
@@ -301,7 +284,57 @@ public class PolicyCmptImplClassBuilder extends BasePolicyCmptTypeBuilder {
     private String getMethodNameCopyProperties() {
         return "copyProperties";
     }
+    
+    /**
+     * Code sample:
+     * <pre>
+     * public boolean accept(IModelObjectVisitor visitor) {
+     *     // next if statement only for subclasses (of other model classes)
+     *     if (!super.accept(visitor)) {
+     *         return false;
+     *     }
+     *     
+     *     // next if statement only for classes that are NOT subclasses (of other model classes)
+     *     if (!visitor.visit(this)) {
+     *         return false;
+     *     }
+     *
+     *     // code for assocations see the association generators
+     *     
+     *     return true;
+     * }
+     * 
+     * </pre>
+     * 
+     * @see GenAssociation#generateSnippetForAcceptVisitorIfAccplicable(String, String, JavaCodeFragmentBuilder)
+     */
+    protected void generateMethodAccept(JavaCodeFragmentBuilder methodsBuilder) throws CoreException {
+        methodsBuilder.javaDoc(getJavaDocCommentForOverriddenMethod(), ANNOTATION_GENERATED);
+        methodsBuilder.signature(java.lang.reflect.Modifier.PUBLIC, "boolean", MethodNames.ACCEPT_VISITOR,
+                new String[] { "visitor" }, new String[] { IModelObjectVisitor.class.getName() });
+        methodsBuilder.openBracket();
 
+        if (getPcType().hasSupertype()) {
+            methodsBuilder.appendln("if (!super." + MethodNames.ACCEPT_VISITOR +"(visitor)) {");
+            methodsBuilder.appendln("return false;");
+            methodsBuilder.append('}');
+        } else {
+            methodsBuilder.appendln("if (!visitor.visit(this)) {");
+            methodsBuilder.appendln("return false;");
+            methodsBuilder.append('}');
+        }
+        
+        IPolicyCmptTypeAssociation[] associations = getPcType().getPolicyCmptTypeAssociations();
+        for (int i = 0; i < associations.length; i++) {
+            GenAssociation generator = getGenerator(associations[i]);
+            if (generator!=null) {
+                generator.generateSnippetForAcceptVisitorIfAccplicable("visitor", methodsBuilder);
+            }
+        }
+        methodsBuilder.appendln("return true;");
+        methodsBuilder.closeBracket();
+    }
+    
     /**
      * <pre>
      * public IModelObjectDelta computeDelta(IModelObject otherObject, IDeltaComputationOptions options) {

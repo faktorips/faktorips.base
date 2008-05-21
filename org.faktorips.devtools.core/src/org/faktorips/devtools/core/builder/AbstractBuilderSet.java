@@ -10,9 +10,12 @@
 package org.faktorips.devtools.core.builder;
 
 import org.eclipse.core.runtime.CoreException;
+import org.faktorips.devtools.core.model.ipsproject.IIpsArtefactBuilder;
 import org.faktorips.devtools.core.model.ipsproject.IIpsArtefactBuilderSet;
+import org.faktorips.devtools.core.model.ipsproject.IIpsArtefactBuilderSetConfig;
 import org.faktorips.devtools.core.model.ipsproject.IIpsLoggingFrameworkConnector;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
+import org.faktorips.util.ArgumentCheck;
 
 /**
  * Abstract implementation that can be used as a base class for real builder sets.
@@ -25,9 +28,18 @@ public abstract class AbstractBuilderSet implements IIpsArtefactBuilderSet {
     private String label;
     private IIpsProject ipsProject;
     private IIpsLoggingFrameworkConnector logStatementBuilder;
-
+    private IIpsArtefactBuilderSetConfig config;
+    private IIpsArtefactBuilder[] builders;
+    
     public AbstractBuilderSet() {
         super();
+    }
+    
+    /**
+     * Constructor for testing purposes.
+     */
+    public AbstractBuilderSet(IIpsArtefactBuilder[] builders) {
+        this.builders = builders;
     }
 
     /**
@@ -121,6 +133,36 @@ public abstract class AbstractBuilderSet implements IIpsArtefactBuilderSet {
     /**
      * {@inheritDoc}
      */
+    public IIpsArtefactBuilder[] getArtefactBuilders() {
+        return builders;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public IIpsArtefactBuilderSetConfig getConfig() {
+        return config;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public void initialize(IIpsArtefactBuilderSetConfig config) throws CoreException {
+        ArgumentCheck.notNull(config);
+        this.config = config;
+        builders = createBuilders();
+    }
+
+    /**
+     * Template method to create the set's builders.
+     * 
+     * @throws CoreException
+     */
+    protected abstract IIpsArtefactBuilder[] createBuilders() throws CoreException;
+
+   /**
+     * {@inheritDoc}
+     */
     public void afterBuildProcess(int buildKind) throws CoreException {
     }
 
@@ -129,4 +171,17 @@ public abstract class AbstractBuilderSet implements IIpsArtefactBuilderSet {
      */
     public void beforeBuildProcess(int buildKind) throws CoreException {
     }
+
+    /**
+     * For testing purposes.
+     */
+    public IIpsArtefactBuilder getBuilder(Class builderClass) {
+        for (int i = 0; i < builders.length; i++) {
+            if (builders[i].getClass().equals(builderClass)) {
+                return builders[i];
+            }
+        }
+        throw new RuntimeException("No builder of class " + builderClass + " defined."); //$NON-NLS-1$ //$NON-NLS-2$
+    }
+
 }

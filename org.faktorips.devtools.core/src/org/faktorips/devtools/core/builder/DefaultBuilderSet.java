@@ -26,8 +26,6 @@ import org.faktorips.codegen.DatatypeHelper;
 import org.faktorips.devtools.core.internal.model.TableContentsEnumDatatypeAdapter;
 import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
-import org.faktorips.devtools.core.model.ipsproject.IIpsArtefactBuilder;
-import org.faktorips.devtools.core.model.ipsproject.IIpsArtefactBuilderSetConfig;
 import org.faktorips.devtools.core.model.ipsproject.IIpsPackageFragmentRoot;
 import org.faktorips.devtools.core.model.ipsproject.IIpsSrcFolderEntry;
 import org.faktorips.devtools.core.model.productcmpt.IFormula;
@@ -50,7 +48,7 @@ import org.faktorips.fl.IdentifierResolver;
  * 
  * @author Peter Erzberger
  */
-public class DefaultBuilderSet extends AbstractBuilderSet {
+public abstract class DefaultBuilderSet extends AbstractBuilderSet {
 
     // kind constants. These constants are not supposed to be used within JavaSourceFileBuilder
     // implementations. Since the JavaSourceFileBuilder implementations might get used in other
@@ -74,7 +72,6 @@ public class DefaultBuilderSet extends AbstractBuilderSet {
     public final static String KIND_PRODUCT_CMPT_TOCENTRY = "productcmpttocentry"; //$NON-NLS-1$
     
     private final static String INTERNAL_PACKAGE = "internal"; //$NON-NLS-1$
-    
     
     /**
      * Returns the Java naming convention to be used.
@@ -289,15 +286,6 @@ public class DefaultBuilderSet extends AbstractBuilderSet {
     /**
      * {@inheritDoc}
      * <p/>
-     * Returns an empty artefact builder array. This method is supposed to be overridden by subclasses.
-     */
-    public IIpsArtefactBuilder[] getArtefactBuilders() {
-        return new IIpsArtefactBuilder[0];
-    }
-
-    /**
-     * {@inheritDoc}
-     * <p/>
      * Returns <code>null</code>. This method is supposed to be overridden by subclasses.
      */
     public DatatypeHelper getDatatypeHelperForTableBasedEnum(TableContentsEnumDatatypeAdapter datatype) {
@@ -312,22 +300,15 @@ public class DefaultBuilderSet extends AbstractBuilderSet {
     public String getVersion() {
         return "";
     }
-
-    /**
-     * {@inheritDoc}
-     * <p/>
-     * An empty implementation. This method is supposed to be overridden by subclasses.
-     */
-    public void initialize(IIpsArtefactBuilderSetConfig config) throws CoreException {
-    }
-
     /**
      * {@inheritDoc}
      * <p/>
      * Returns the default target Java version. This method is supposed to be overridden by subclasses.
      */
     public EnumTypeTargetJavaVersion getTargetJavaVersion() {
+        // TODO Durch Zugriff auf die entsprechende Eigenschaft des JavaProjects ersetzen
         return EnumTypeTargetJavaVersion.DEFAULT;
     }
+
     
 }

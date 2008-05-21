@@ -38,6 +38,14 @@ public interface IIpsArtefactBuilderSet extends IJavaPackageStructure {
     public final static String XML_ELEMENT = "IpsArtefactBuilderSet"; //$NON-NLS-1$
 
     /**
+     * Returns the configuration that configures this builder set.
+     * The configuration is available after the initialize method has been called.
+     * 
+     * @since 2.1
+     */
+    public IIpsArtefactBuilderSetConfig getConfig();
+    
+    /**
      * Returns all IpsArtefactBuilders of this set.
      * 
      * @return if the set is empty an empty array has to be returned
@@ -190,6 +198,9 @@ public interface IIpsArtefactBuilderSet extends IJavaPackageStructure {
      * 
      * @param config the configuration for this builder set instance. The configuration for a
      *            builder set instance is defined in the .ipsproject file of an ips project.
+     *            
+     * @throws NullPointerException if config is <code>null</code>.
+     * 
      * @see IIpsArtefactBuilderSetConfig class description
      */
     public void initialize(IIpsArtefactBuilderSetConfig config) throws CoreException;

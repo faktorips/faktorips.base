@@ -273,16 +273,16 @@ public class IpsBuilderTest extends AbstractIpsPluginTest {
     }
 
     public void testMarkerHandling() throws Exception {
-        IPolicyCmptType pcType = newPolicyCmptType(root, "TestPolicy");
-        pcType.setSupertype("unknownSupertype");
+        IPolicyCmptType pcType = newPolicyCmptTypeWithoutProductCmptType(ipsProject, "TestPolicy");
+        pcType.setSupertype("UnknownSupertype");
         pcType.getIpsSrcFile().save(true, null);
         MessageList msgList = pcType.validate(pcType.getIpsProject());
-        int numOfMsg = msgList.getNoOfMessages();
-        assertTrue(numOfMsg > 0);
+        assertEquals(1, msgList.getNoOfMessages());
         ipsProject.getProject().build(IncrementalProjectBuilder.INCREMENTAL_BUILD, new NullProgressMonitor());
         IResource resource = pcType.getEnclosingResource();
         IMarker[] markers = resource.findMarkers(IpsPlugin.PROBLEM_MARKER, true, IResource.DEPTH_INFINITE);
-        assertTrue(markers.length > 0);
+        assertEquals(1, markers.length);
+        
         assertEquals(msgList.getMessage(0).getText(), (String)markers[0].getAttribute(IMarker.MESSAGE));
         assertEquals(IMarker.SEVERITY_ERROR, markers[0].getAttribute(IMarker.SEVERITY, -1));
 
@@ -290,7 +290,7 @@ public class IpsBuilderTest extends AbstractIpsPluginTest {
         pcType.setSupertype("");
         pcType.getIpsSrcFile().save(true, null);
         msgList = pcType.validate(ipsProject);
-        assertTrue(msgList.getNoOfMessages() < numOfMsg);
+        assertEquals(0, msgList.getNoOfMessages());
         ipsProject.getProject().build(IncrementalProjectBuilder.INCREMENTAL_BUILD, new NullProgressMonitor());
         resource = pcType.getEnclosingResource();
         markers = resource.findMarkers(IpsPlugin.PROBLEM_MARKER, true, IResource.DEPTH_INFINITE);

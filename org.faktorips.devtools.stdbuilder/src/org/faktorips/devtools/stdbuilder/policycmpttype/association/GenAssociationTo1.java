@@ -480,4 +480,19 @@ public class GenAssociationTo1 extends GenAssociation {
         body.append("}");
     }
 
+    /**
+     * Code sample:
+     * <pre>
+     *     if (coverage!=null) {
+     *         coverage.accept(visitor);
+     *     }
+     * </pre>
+     * {@inheritDoc}
+     */
+    public void generateSnippetForAcceptVisitor(String paramName, JavaCodeFragmentBuilder builder) throws CoreException {
+        builder.appendln("if (" + fieldName + " != null) {");
+        builder.appendln(fieldName + "." + MethodNames.ACCEPT_VISITOR + "(" + paramName + ");");
+        builder.appendln("}");
+    }
+
 }

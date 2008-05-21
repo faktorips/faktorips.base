@@ -32,18 +32,14 @@ import org.faktorips.runtime.ICopySupport;
 import org.faktorips.runtime.IDeltaSupport;
 import org.faktorips.runtime.IDependantObject;
 import org.faktorips.runtime.IModelObject;
+import org.faktorips.runtime.IVisitorSupport;
 import org.faktorips.util.LocalizedStringsSet;
 import org.faktorips.util.StringUtil;
 
 public class PolicyCmptInterfaceBuilder extends BasePolicyCmptTypeBuilder {
 
-    private boolean generateDeltaSupport = false;
-    private boolean generateCopySupport = false;
-
-    public PolicyCmptInterfaceBuilder(IIpsArtefactBuilderSet builderSet, String kindId,
-            boolean changeListenerSupportActive) throws CoreException {
-        super(builderSet, kindId, new LocalizedStringsSet(PolicyCmptInterfaceBuilder.class),
-                changeListenerSupportActive);
+    public PolicyCmptInterfaceBuilder(IIpsArtefactBuilderSet builderSet, String kindId) throws CoreException {
+        super(builderSet, kindId, new LocalizedStringsSet(PolicyCmptInterfaceBuilder.class));
         setMergeEnabled(true);
     }
 
@@ -52,22 +48,6 @@ public class PolicyCmptInterfaceBuilder extends BasePolicyCmptTypeBuilder {
      */
     public PolicyCmptInterfaceBuilder getInterfaceBuilder() {
         return this;
-    }
-
-    public boolean isGenerateDeltaSupport() {
-        return generateDeltaSupport;
-    }
-
-    public void setGenerateDeltaSupport(boolean generateDeltaSupport) {
-        this.generateDeltaSupport = generateDeltaSupport;
-    }
-
-    public boolean isGenerateCopySupport() {
-        return generateCopySupport;
-    }
-
-    public void setGenerateCopySupport(boolean generateCopySupport) {
-        this.generateCopySupport = generateCopySupport;
     }
 
     public boolean isBuilderFor(IIpsSrcFile ipsSrcFile) {
@@ -108,11 +88,14 @@ public class PolicyCmptInterfaceBuilder extends BasePolicyCmptTypeBuilder {
             } else {
                 interfaces.add(IModelObject.class.getName());
             }
-            if (generateDeltaSupport) {
+            if (isGenerateDeltaSupport()) {
                 interfaces.add(IDeltaSupport.class.getName());
             }
-            if (generateCopySupport) {
+            if (isGenerateCopySupport()) {
                 interfaces.add(ICopySupport.class.getName());
+            }
+            if (isGenerateVisitorSupport()) {
+                interfaces.add(IVisitorSupport.class.getName());
             }
         }
         if (isFirstDependantTypeInHierarchy(type)) {

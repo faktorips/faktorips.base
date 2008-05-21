@@ -909,4 +909,24 @@ public class GenAssociationToMany extends GenAssociation {
         return code;
     }
 
+    /**
+     * Code sample:
+     * <pre>
+     *     for (Iterator it = visitedSubChilds.iterator(); it.hasNext();) {
+     *         IVisitedSubChild child = (IVisitedSubChild)it.next();
+     *         child.accept(visitor);
+     *     }
+     * </pre>
+     * {@inheritDoc}
+     */
+    public void generateSnippetForAcceptVisitor(String paramName, JavaCodeFragmentBuilder builder) throws CoreException {
+        builder.append("for (");
+        builder.appendClassName(Iterator.class);
+        builder.appendln(" it = " + fieldName + ".iterator(); it.hasNext();) {");
+        String varName = association.getTargetRoleSingular();
+        builder.appendln(targetInterfaceName + " " + varName + " = (" + targetInterfaceName + ")it.next();"); 
+        builder.appendln(varName + "." + MethodNames.ACCEPT_VISITOR + "(" + paramName + ");");
+        builder.appendln("}");
+    }
+    
 }

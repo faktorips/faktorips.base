@@ -50,12 +50,8 @@ public abstract class BasePolicyCmptTypeBuilder extends AbstractPcTypeBuilder {
     private List genProdAttributes = new ArrayList();
     private List genAssociations = new ArrayList();
 
-    private boolean generateChangeListenerSupport;
-
-    public BasePolicyCmptTypeBuilder(IIpsArtefactBuilderSet builderSet, String kindId, LocalizedStringsSet stringsSet,
-            boolean generateChangeListenerSupport) throws CoreException {
+    public BasePolicyCmptTypeBuilder(IIpsArtefactBuilderSet builderSet, String kindId, LocalizedStringsSet stringsSet) throws CoreException {
         super(builderSet, kindId, stringsSet);
-        this.generateChangeListenerSupport = generateChangeListenerSupport;
     }
 
     /**
@@ -74,7 +70,19 @@ public abstract class BasePolicyCmptTypeBuilder extends AbstractPcTypeBuilder {
     }
 
     public boolean isGenerateChangeListenerSupport() {
-        return generateChangeListenerSupport;
+        return getBuilderSet().getConfig().getBooleanPropertyValue(StandardBuilderSet.CONFIG_PROPERTY_GENERATE_CHANGELISTENER, false);
+    }
+    
+    public boolean isGenerateDeltaSupport() {
+        return getBuilderSet().getConfig().getBooleanPropertyValue(StandardBuilderSet.CONFIG_PROPERTY_GENERATE_DELTA_SUPPORT, false);
+    }
+
+    public boolean isGenerateCopySupport() {
+        return getBuilderSet().getConfig().getBooleanPropertyValue(StandardBuilderSet.CONFIG_PROPERTY_GENERATE_COPY_SUPPORT, false);
+    }
+
+    public boolean isGenerateVisitorSupport() {
+        return getBuilderSet().getConfig().getBooleanPropertyValue(StandardBuilderSet.CONFIG_PROPERTY_GENERATE_VISITOR_SUPPORT, false);
     }
 
     /**
@@ -155,4 +163,5 @@ public abstract class BasePolicyCmptTypeBuilder extends AbstractPcTypeBuilder {
     public GenProductCmptType getGenProductCmptType() throws CoreException {
         return ((StandardBuilderSet)getBuilderSet()).getGenerator(getProductCmptType());
     }
+     
 }
