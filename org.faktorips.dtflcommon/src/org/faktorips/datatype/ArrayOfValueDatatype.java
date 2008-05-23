@@ -34,15 +34,12 @@ public class ArrayOfValueDatatype extends AbstractDatatype implements ValueDatat
     private int dimension;
     
     /**
-     * Returns the dimensions the datatypeName specifies. 
+     * Returns the number of dimensions specified in the given datatypeName. 
      * <p>
      * Examples:<br>
-     * "Money" specifies dimension 0.
-     * "Money[]" specifies dimenesion 1
-     * "Money[][]" specifies dimension 2
-     * 
-     * @param datatypeName
-     * @return
+     * "Money" specifies 0 dimensions.
+     * "Money[]" specifies 1 dimension.
+     * "Money[][]" specifies 2 dimensions.
      */
     public final static int getDimension(String datatypeName) {
         if (datatypeName==null) {
