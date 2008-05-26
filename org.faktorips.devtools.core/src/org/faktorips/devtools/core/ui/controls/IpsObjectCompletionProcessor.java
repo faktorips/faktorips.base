@@ -142,7 +142,7 @@ public class IpsObjectCompletionProcessor extends AbstractCompletionProcessor {
             IIpsProject[] projects = prj.getIpsObjectPath().getReferencedIpsProjects();
             for (int i = 0; i < projects.length; i++) {
                 roots = projects[i].getIpsPackageFragmentRoots();
-                for (int j = 0; j < projects.length; j++) {
+                for (int j = 0; j < roots.length; j++) {
                     matchPackages(roots[j].getIpsPackageFragments(), prefix, documentOffset, result);
                 }
             }
