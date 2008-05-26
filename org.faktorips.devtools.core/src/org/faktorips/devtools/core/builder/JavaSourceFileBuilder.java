@@ -905,7 +905,11 @@ public abstract class JavaSourceFileBuilder extends AbstractArtefactBuilder {
     }
 
     private void initJControlModel(IIpsProject project) throws CoreException {
-        IFile mergeFile = project.getJavaProject().getProject().getFile("merge.xml"); //$NON-NLS-1$
+        IFile mergeFile = project
+                .getJavaProject()
+                .getProject()
+                .getFile(
+                        getBuilderSet().getTargetJavaVersion().isAtLeast(EnumTypeTargetJavaVersion.JAVA_5) ? "merge.java5.xml" : "merge.xml"); //$NON-NLS-1$ //$NON-NLS-2$
         model = new org.eclipse.emf.codegen.merge.java.JControlModel();
         FacadeHelper facadeHelper;
         if (getBuilderSet().getTargetJavaVersion().isAtLeast(EnumTypeTargetJavaVersion.JAVA_5)) {
@@ -928,7 +932,7 @@ public abstract class JavaSourceFileBuilder extends AbstractArtefactBuilder {
     private String getJMergeDefaultConfigLocation() {
         StringBuffer mergeFile = new StringBuffer();
         mergeFile.append('/').append(JavaSourceFileBuilder.class.getPackage().getName().replace('.', '/')).append(
-                "/merge.xml"); //$NON-NLS-1$
+                getBuilderSet().getTargetJavaVersion().isAtLeast(EnumTypeTargetJavaVersion.JAVA_5) ? "/merge.java5.xml" : "/merge.xml"); //$NON-NLS-1$ //$NON-NLS-2$
         return Platform.getBundle(IpsPlugin.PLUGIN_ID).getResource(mergeFile.toString()).toExternalForm();
     }
 
