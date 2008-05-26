@@ -172,17 +172,14 @@ public class OrderedValueSet<E> implements Serializable, ValueSet<E> {
         return buf.toString();
     }
 
-    @Override
     public boolean contains(Object value) {
         return set.contains(value);
     }
 
-    @Override
     public boolean isEmpty() {
         return set.isEmpty();
     }
 
-    @Override
     public int size() {
         return set.size();
     }
