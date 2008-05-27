@@ -14,7 +14,10 @@
 
 package org.faktorips.devtools.core.ui.actions;
 
+import java.util.Iterator;
 import java.util.Locale;
+import java.util.Map;
+import java.util.Map.Entry;
 
 import org.apache.commons.lang.StringUtils;
 import org.eclipse.core.resources.IFolder;
@@ -30,6 +33,7 @@ import org.eclipse.jdt.core.IPackageFragmentRoot;
 import org.eclipse.jdt.core.JavaConventions;
 import org.eclipse.jdt.core.JavaCore;
 import org.eclipse.jdt.core.JavaModelException;
+import org.eclipse.jdt.internal.core.ClasspathEntry;
 import org.eclipse.jface.action.IAction;
 import org.eclipse.jface.dialogs.ErrorDialog;
 import org.eclipse.jface.dialogs.IDialogConstants;
@@ -159,8 +163,11 @@ public class AddIpsNatureAction extends ActionDelegate {
             } else {
                 props.setJavaSrcLanguage(Locale.ENGLISH);
             }
-            props.setMinRequiredVersionNumber("org.faktorips.feature", (String)Platform.getBundle("org.faktorips.devtools.core").getHeaders().get("Bundle-Version")); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
-            props.setChangesOverTimeNamingConventionIdForGeneratedCode(IpsPlugin.getDefault().getIpsPreferences().getChangesOverTimeNamingConvention().getId());
+            props
+                    .setMinRequiredVersionNumber(
+                            "org.faktorips.feature", (String)Platform.getBundle("org.faktorips.devtools.core").getHeaders().get("Bundle-Version")); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+            props.setChangesOverTimeNamingConventionIdForGeneratedCode(IpsPlugin.getDefault().getIpsPreferences()
+                    .getChangesOverTimeNamingConvention().getId());
             ipsProject.setProperties(props);
             IFolder ipsModelFolder = ipsProject.getProject().getFolder(sourceFolderName);
             if (!ipsModelFolder.exists()) {
@@ -171,7 +178,7 @@ public class AddIpsNatureAction extends ActionDelegate {
             path.setBasePackageNameForMergableJavaClasses(basePackageName);
             path.setOutputFolderForMergableSources(javaSrcFolder);
             path.setBasePackageNameForDerivedJavaClasses(basePackageName);
-            if(javaSrcFolder.exists()){
+            if (javaSrcFolder.exists()) {
                 IFolder derivedsrcFolder = javaSrcFolder.getParent().getFolder(new Path("derived")); //$NON-NLS-1$
                 derivedsrcFolder.create(true, true, new NullProgressMonitor());
                 IClasspathEntry derivedsrc = JavaCore.newSourceEntry(derivedsrcFolder.getFullPath());
@@ -194,18 +201,40 @@ public class AddIpsNatureAction extends ActionDelegate {
 
     private void addIpsRuntimeLibraries(IJavaProject javaProject) throws JavaModelException {
         IClasspathEntry[] oldEntries = javaProject.getRawClasspath();
-        int numOfJars = FaktorIpsClasspathVariableInitializer.IPS_VARIABLES_BIN.length;
-        IClasspathEntry[] entries = new IClasspathEntry[oldEntries.length + numOfJars];
-        System.arraycopy(oldEntries, 0, entries, 0, oldEntries.length);
-        for (int i = 0; i < numOfJars; i++) {
-            Path jarPath = new Path(FaktorIpsClasspathVariableInitializer.IPS_VARIABLES_BIN[i]);
-            Path srcZipPath = null;
-            if (StringUtils.isNotEmpty(FaktorIpsClasspathVariableInitializer.IPS_VARIABLES_SRC[i])) {
-                srcZipPath = new Path(FaktorIpsClasspathVariableInitializer.IPS_VARIABLES_SRC[i]);
+        if (targetVersionIsAtLeast5(javaProject)) {
+            int numOfJars = FaktorIpsClasspathVariableInitializer.IPS_VARIABLES_JAVA5_BIN.length;
+            IClasspathEntry[] entries = new IClasspathEntry[oldEntries.length + numOfJars];
+            System.arraycopy(oldEntries, 0, entries, 0, oldEntries.length);
+            for (int i = 0; i < numOfJars; i++) {
+                Path jarPath = new Path(FaktorIpsClasspathVariableInitializer.IPS_VARIABLES_JAVA5_BIN[i]);
+                Path srcZipPath = null;
+                if (StringUtils.isNotEmpty(FaktorIpsClasspathVariableInitializer.IPS_VARIABLES_JAVA5_SRC[i])) {
+                    srcZipPath = new Path(FaktorIpsClasspathVariableInitializer.IPS_VARIABLES_JAVA5_SRC[i]);
+                }
+                entries[oldEntries.length + i] = JavaCore.newVariableEntry(jarPath, srcZipPath, null);
             }
-            entries[oldEntries.length + i] = JavaCore.newVariableEntry(jarPath, srcZipPath, null);
+            javaProject.setRawClasspath(entries, null);
+        }else{
+            int numOfJars = FaktorIpsClasspathVariableInitializer.IPS_VARIABLES_BIN.length;
+            IClasspathEntry[] entries = new IClasspathEntry[oldEntries.length + numOfJars];
+            System.arraycopy(oldEntries, 0, entries, 0, oldEntries.length);
+            for (int i = 0; i < numOfJars; i++) {
+                Path jarPath = new Path(FaktorIpsClasspathVariableInitializer.IPS_VARIABLES_BIN[i]);
+                Path srcZipPath = null;
+                if (StringUtils.isNotEmpty(FaktorIpsClasspathVariableInitializer.IPS_VARIABLES_SRC[i])) {
+                    srcZipPath = new Path(FaktorIpsClasspathVariableInitializer.IPS_VARIABLES_SRC[i]);
+                }
+                entries[oldEntries.length + i] = JavaCore.newVariableEntry(jarPath, srcZipPath, null);
+            }
+            javaProject.setRawClasspath(entries, null);
         }
-        javaProject.setRawClasspath(entries, null);
+    }
+
+    private boolean targetVersionIsAtLeast5(IJavaProject javaProject) {
+        String[] targetVersion = javaProject.getOption("org.eclipse.jdt.core.compiler.codegen.targetPlatform", true)
+                .split("\\.");
+        return (Integer.parseInt(targetVersion[0]) == 1 && Integer.parseInt(targetVersion[1]) >= 5)
+                || Integer.parseInt(targetVersion[0]) > 1;
     }
 
     /**
