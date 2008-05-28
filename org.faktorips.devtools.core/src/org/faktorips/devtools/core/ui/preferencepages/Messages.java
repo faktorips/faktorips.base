@@ -38,6 +38,7 @@ public class Messages extends NLS {
     public static String ArchiveComposite_dialog_warning_select_archive;
     public static String ArchiveComposite_labelProvider_invalid_element;
     public static String ArchiveComposite_viewer_label;
+    public static String IpsObjectPathLabelProvider_0;
     public static String IpsObjectPathsPropertyPage_closed_project_message;
     public static String IpsObjectPathContainer_tab_projects;
     public static String ReferencedProjectsComposite_label_provider_invalid_element;

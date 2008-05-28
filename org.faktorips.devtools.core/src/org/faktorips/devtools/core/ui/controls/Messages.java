@@ -34,6 +34,10 @@ public class Messages extends NLS {
 		NLS.initializeMessages(BUNDLE_NAME, Messages.class);
 	}
 
+    public static String FolderSelectionControl_select_folder_message;
+
+    public static String FolderSelectionControl_select_folder_title;
+
     public static String RangeEditControl_titleRange;
 
 	public static String RangeEditControl_labelMinimum;

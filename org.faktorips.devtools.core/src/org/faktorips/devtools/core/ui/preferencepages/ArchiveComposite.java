@@ -176,7 +176,7 @@ public class ArchiveComposite extends Composite {
             public IStatus validate(Object[] selection) {
                 for (int i = 0; i < selection.length; i++) {
                     if (selection[i] == null || ! (selection[i] instanceof IFile))
-                        return new IpsStatus(IpsStatus.WARNING, Messages.ArchiveComposite_dialog_warning_select_archive);
+                        return new IpsStatus(IpsStatus.ERROR, Messages.ArchiveComposite_dialog_warning_select_archive);
                 }
                 return new IpsStatus(IpsStatus.OK, " "); //$NON-NLS-1$
             }
@@ -194,17 +194,17 @@ public class ArchiveComposite extends Composite {
                     IFile archiveFile = (IFile) selectedArchives[i];
                     tableViewer.add(ipsObjectPath.newArchiveEntry(archiveFile));
                 }
+                dataChanged = true;
             }
         } catch (CoreException e) {
             IpsPlugin.logAndShowErrorDialog(e);
             return;
         }
-        dataChanged = true;
     }
 
     private void addExternalIpsArchives() {
         // TODO: impl
-        // needs model change, since now it's not possible to reference archives outside the current projects` path?
+        // Flyspray BUG ID: 1196
     }
 
     private void removeIpsArchives() {

@@ -54,8 +54,8 @@ public class IpsObjectPathContainer {
 
     private ReferencedProjectsComposite refProjectsComposite;
     private ArchiveComposite archiveComposite;
-//    private SrcFolderComposite srcFolderComposite;
-//    private ObjectPathOrderComposite orderComposite;
+    private SrcFolderComposite srcFolderComposite;
+    private ObjectPathOrderComposite orderComposite;
     
     
     public IpsObjectPathContainer(int pageToShow, IWorkbenchPreferenceContainer preferenceContainer) {
@@ -100,25 +100,25 @@ public class IpsObjectPathContainer {
         folder.setLayoutData(new GridData(GridData.FILL_BOTH));
         folder.setFont(composite.getFont());
 
-//        srcFolderComposite = new SrcFolderComposite(folder);
+        srcFolderComposite = new SrcFolderComposite(folder);
         refProjectsComposite = new ReferencedProjectsComposite(folder);
         archiveComposite = new ArchiveComposite(folder);
-//        orderComposite = new ObjectPathOrderComposite(folder);
+        orderComposite = new ObjectPathOrderComposite(folder);
         
-//        addTabItem(folder, "Source", 
-//                IpsPlugin.getDefault().getImage("IpsPackageFragmentRoot.gif"), srcFolderComposite); //$NON-NLS-1$
+        addTabItem(folder, "Source", 
+                IpsPlugin.getDefault().getImage("IpsPackageFragmentRoot.gif"), srcFolderComposite); //$NON-NLS-1$
         addTabItem(folder, Messages.IpsObjectPathContainer_tab_projects, 
                 IpsPlugin.getDefault().getImage("IpsProject.gif"), refProjectsComposite); //$NON-NLS-1$
         addTabItem(folder, "Archives", 
                 IpsPlugin.getDefault().getImage("IpsAr.gif"), archiveComposite); //$NON-NLS-1$
-//        addTabItem(folder, "Path Order", 
-//                IpsPlugin.getDefault().getImage("obj16" + IPath.SEPARATOR + "cp_order_obj.gif"), orderComposite); //$NON-NLS-1$
+        addTabItem(folder, "Path Order", 
+                IpsPlugin.getDefault().getImage("obj16" + IPath.SEPARATOR + "cp_order_obj.gif"), orderComposite); //$NON-NLS-1$
 
-        
-//        srcFolderComposite.init(ipsObjectPath);
+
+        srcFolderComposite.init(ipsObjectPath);
         refProjectsComposite.init(ipsObjectPath);
         archiveComposite.init(ipsObjectPath);
-//        orderComposite.init(ipsObjectPath);
+        orderComposite.init(ipsObjectPath);
         
         folder.setSelection(pageIndex);
         folder.addSelectionListener(new SelectionAdapter() {
