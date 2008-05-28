@@ -14,10 +14,7 @@
 
 package org.faktorips.devtools.core.ui.actions;
 
-import java.util.Iterator;
 import java.util.Locale;
-import java.util.Map;
-import java.util.Map.Entry;
 
 import org.apache.commons.lang.StringUtils;
 import org.eclipse.core.resources.IFolder;
@@ -33,7 +30,6 @@ import org.eclipse.jdt.core.IPackageFragmentRoot;
 import org.eclipse.jdt.core.JavaConventions;
 import org.eclipse.jdt.core.JavaCore;
 import org.eclipse.jdt.core.JavaModelException;
-import org.eclipse.jdt.internal.core.ClasspathEntry;
 import org.eclipse.jface.action.IAction;
 import org.eclipse.jface.dialogs.ErrorDialog;
 import org.eclipse.jface.dialogs.IDialogConstants;
@@ -65,14 +61,11 @@ import org.faktorips.devtools.core.IpsStatus;
 import org.faktorips.devtools.core.internal.model.ipsproject.IpsArtefactBuilderSetConfig;
 import org.faktorips.devtools.core.internal.model.ipsproject.IpsObjectPath;
 import org.faktorips.devtools.core.internal.model.productcmpt.DateBasedProductCmptNamingStrategy;
-import org.faktorips.devtools.core.model.ipsproject.IIpsArtefactBuilderSetConfig;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProjectProperties;
 import org.faktorips.devtools.core.ui.UIToolkit;
 import org.faktorips.devtools.core.ui.controls.Radiobutton;
 import org.faktorips.devtools.core.ui.controls.RadiobuttonGroup;
-import org.w3c.dom.Document;
-import org.w3c.dom.Element;
 
 /**
  * An action that adds the ips nature to a project.
@@ -173,8 +166,10 @@ public class AddIpsNatureAction extends ActionDelegate {
             props.setChangesOverTimeNamingConventionIdForGeneratedCode(IpsPlugin.getDefault().getIpsPreferences()
                     .getChangesOverTimeNamingConvention().getId());
             if(targetVersionIsAtLeast5(javaProject)){
-                IIpsArtefactBuilderSetConfig config = new IpsArtefactBuilderSetConfig();
-                // TODO set config to generate Java5 code
+                IpsArtefactBuilderSetConfig config = (IpsArtefactBuilderSetConfig)props.getBuilderSetConfig();
+                config.setPropertyValue("targetJavaVersion", "5.0");
+                config.setPropertyValue("useTypesafeCollections", "true");
+                config.setPropertyValue("useEnums", "true");
                 props.setBuilderSetConfig(config);
             }
             ipsProject.setProperties(props);
