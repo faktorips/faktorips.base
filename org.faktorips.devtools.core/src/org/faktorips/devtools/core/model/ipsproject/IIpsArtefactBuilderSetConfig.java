@@ -41,7 +41,12 @@ public interface IIpsArtefactBuilderSetConfig{
      * The xml tag name for instances of this type.
      */
     public final static String XML_ELEMENT = "IpsArtefactBuilderSetConfig"; //$NON-NLS-1$
-    
+
+    /**
+     * Returns the names of all properties provided by this configuration.
+     */
+    public String[] getPropertyNames();
+
     /**
      * Returns the value of the property of the provided property name.
      */

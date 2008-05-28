@@ -24,6 +24,7 @@ import java.util.Set;
 
 import org.apache.commons.lang.StringUtils;
 import org.faktorips.devtools.core.model.ipsproject.IIpsArtefactBuilderSetConfig;
+import org.faktorips.util.ArgumentCheck;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
@@ -42,6 +43,14 @@ public class IpsArtefactBuilderSetConfig implements IIpsArtefactBuilderSetConfig
      */
     public IpsArtefactBuilderSetConfig() {
         properties = new HashMap();
+    }
+
+    /**
+     * This constructor is for test purposes only.
+     */
+    public IpsArtefactBuilderSetConfig(Map properties) {
+        ArgumentCheck.notNull(properties);
+        this.properties = properties;
     }
 
     /**
@@ -66,6 +75,16 @@ public class IpsArtefactBuilderSetConfig implements IIpsArtefactBuilderSetConfig
     }
 
     /**
+     * Sets the value of a property
+     * 
+     * @param propertyName the name of the property
+     * @param value the value of the property
+     */
+    public void setPropertyValue(String propertyName, String value){
+        properties.put(propertyName, value);
+    }
+    
+    /**
      * {@inheritDoc}
      */
     public boolean getBooleanPropertyValue(String propertName, boolean defaultValue) {
@@ -76,6 +95,9 @@ public class IpsArtefactBuilderSetConfig implements IIpsArtefactBuilderSetConfig
         return Boolean.valueOf(value).booleanValue();
     }
     
+    /**
+     * {@inheritDoc}
+     */
     public final Element toXml(Document doc) {
         Element root = doc.createElement(XML_ELEMENT);
         Set keys = properties.keySet();
@@ -88,6 +110,13 @@ public class IpsArtefactBuilderSetConfig implements IIpsArtefactBuilderSetConfig
             prop.setAttribute("value", value); //$NON-NLS-1$
         }
         return root;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public String[] getPropertyNames() {
+        return (String[])properties.keySet().toArray(new String[properties.size()]);
     }
 
 }
