@@ -139,16 +139,18 @@ public class IpsObjectPathTest extends AbstractIpsPluginTest {
         assertEquals(1, path.getEntries().length);
     }
     
-    public void testContainsArchiveEntry() throws CoreException {
+    public void testContainsArchiveEntry() throws Exception {
         IIpsObjectPath path = ipsProject.getIpsObjectPath();
-        IIpsArchiveEntry entry = path.newArchiveEntry(ipsProject.getProject().getFile("test.ipsar"));
-        assertTrue(path.containsArchiveEntry(entry));
+        IFile archiveFile = ipsProject.getProject().getFile("test.ipsar");
+        createArchive(ipsProject, archiveFile);
+        IIpsArchive ipsArchive = path.newArchiveEntry(archiveFile).getIpsArchive();
+        assertTrue(path.containsArchiveEntry(ipsArchive));
 
         IIpsProject ipsProject2 = this.newIpsProject("TestProject2");
-        assertFalse(ipsProject2.getIpsObjectPath().containsArchiveEntry(entry));
+        assertFalse(ipsProject2.getIpsObjectPath().containsArchiveEntry(ipsArchive));
         
-        path.removeArchiveEntry(entry.getIpsArchive());
-        assertFalse(path.containsArchiveEntry(entry));
+        path.removeArchiveEntry(ipsArchive);
+        assertFalse(path.containsArchiveEntry(ipsArchive));
     }
 
     public void testRemoveArchiveEntry() throws Exception {
@@ -160,13 +162,45 @@ public class IpsObjectPathTest extends AbstractIpsPluginTest {
         assertEquals(path, entry0.getIpsObjectPath());
         assertEquals(2, path.getEntries().length); // default test project contains already 1 entry
         assertEquals(entry0, path.getEntries()[1]);
-        assertTrue(path.containsArchiveEntry(entry0));
+        assertTrue(path.containsArchiveEntry(entry0.getIpsArchive()));
         path.removeArchiveEntry(archive0);
         assertEquals(1, path.getEntries().length);
         path.removeArchiveEntry(archive0);
         assertEquals(1, path.getEntries().length);
     }
 
+    public void testContainsSrcFolderEntry() throws CoreException {
+        IIpsObjectPath path = ipsProject.getIpsObjectPath();
+        IFolder folder = ipsProject.getProject().getFolder("testfolder");
+        path.newSourceFolderEntry(folder);
+        assertTrue(path.containsSrcFolderEntry(folder));
+
+        IIpsProject ipsProject2 = this.newIpsProject("TestProject2");
+        assertFalse(ipsProject2.getIpsObjectPath().containsSrcFolderEntry(folder));
+        
+        path.removeSrcFolderEntry(folder);
+        assertFalse(path.containsSrcFolderEntry(folder));
+    }
+
+    public void testRemoveSrcFolderEntry() throws CoreException {
+        IIpsObjectPath path = ipsProject.getIpsObjectPath();
+        IFolder folder = ipsProject.getProject().getFolder("testfolder");
+        IIpsSrcFolderEntry entry0 = path.newSourceFolderEntry(folder);
+        assertEquals(path, entry0.getIpsObjectPath());
+        assertEquals(2, path.getEntries().length); // default test project contains already 1 entry
+        assertEquals(entry0, path.getEntries()[1]);
+        assertTrue(path.containsSrcFolderEntry(folder));
+        path.removeSrcFolderEntry(folder);
+        assertFalse(path.containsSrcFolderEntry(folder));
+        assertEquals(1, path.getEntries().length);
+
+        IIpsProject ipsProject2 = this.newIpsProject("TestProject2");
+        assertFalse(ipsProject2.getIpsObjectPath().containsSrcFolderEntry(folder));
+        path.removeSrcFolderEntry(folder);
+        assertFalse(path.containsSrcFolderEntry(folder));
+        assertEquals(1, path.getEntries().length);
+    }    
+    
     public void testGetReferencedIpsProjects() throws CoreException {
         IFolder srcFolder = ipsProject.getProject().getFolder("src");
         IIpsProject refProject1 = ipsProject.getIpsModel().getIpsProject("RefProject1");

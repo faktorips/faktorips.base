@@ -279,7 +279,7 @@ public class IpsObjectPath implements IIpsObjectPath {
     /**
      * {@inheritDoc}
      */
-	public boolean containsProjectRefEntry(IIpsProject ipsProject){
+	public boolean containsProjectRefEntry(IIpsProject ipsProject) {
 		for (int i = 0; i < entries.length; i++) {
 			IIpsObjectPathEntry entry = entries[i];
 			if(entry instanceof IpsProjectRefEntry) {
@@ -294,7 +294,7 @@ public class IpsObjectPath implements IIpsObjectPath {
     /**
      * {@inheritDoc}
      */
-	public void removeProjectRefEntry(IIpsProject ipsProject){
+	public void removeProjectRefEntry(IIpsProject ipsProject) {
 		for (int i = 0; i < entries.length; i++) {
 			IIpsObjectPathEntry entry = entries[i];
 			if(entry instanceof IpsProjectRefEntry) {
@@ -312,12 +312,12 @@ public class IpsObjectPath implements IIpsObjectPath {
     /**
      * {@inheritDoc}
      */
-    public boolean containsArchiveEntry(IIpsArchiveEntry archiveEntry){
+    public boolean containsArchiveEntry(IIpsArchive ipsArchive) {
         for (int i = 0; i < entries.length; i++) {
             IIpsObjectPathEntry entry = entries[i];
             if(entry instanceof IpsArchiveEntry) {
                 IpsArchiveEntry ref = (IpsArchiveEntry) entry;
-                if(ref.equals(archiveEntry))
+                if(ref.getIpsArchive().equals(ipsArchive))
                     return true;
             }
         }
@@ -341,7 +341,40 @@ public class IpsObjectPath implements IIpsObjectPath {
             }
         }
     }
-	
+	    
+    /**
+     * {@inheritDoc}
+     */
+    public boolean containsSrcFolderEntry(IFolder folder) {
+        for (int i = 0; i < entries.length; i++) {
+            IIpsObjectPathEntry entry = entries[i];
+            if(entry instanceof IpsSrcFolderEntry) {
+                IpsSrcFolderEntry ref = (IpsSrcFolderEntry) entry;
+                if(ref.getSourceFolder().equals(folder))
+                    return true;
+            }
+        }
+        return false;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public void removeSrcFolderEntry(IFolder srcFolder) {
+        for (int i = 0; i < entries.length; i++) {
+            IIpsObjectPathEntry entry = entries[i];
+            if(entry instanceof IpsSrcFolderEntry) {
+                IpsSrcFolderEntry srcFolderEntry = (IpsSrcFolderEntry) entry;
+                if (srcFolderEntry.getSourceFolder().equals(srcFolder)) {
+                    IIpsObjectPathEntry[] newEntries = new IIpsObjectPathEntry[entries.length-1];
+                    System.arraycopy(entries, 0, newEntries, 0, i);
+                    System.arraycopy(entries, i+1, newEntries, i, entries.length-i-1);
+                    entries = newEntries;
+                }
+            }
+        }
+    }
+    
     /**
      * {@inheritDoc}
      */
