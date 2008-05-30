@@ -1,0 +1,6 @@
+bin
+runtime-jar.jardesc
+runtime-src-zip.jardesc
+temp.folder
+build.xml
+javaCompiler.faktorips-runtime.jar.args

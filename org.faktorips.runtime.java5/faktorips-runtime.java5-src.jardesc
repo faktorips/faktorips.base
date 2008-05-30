@@ -5,8 +5,17 @@
     <storedRefactorings deprecationInfo="true" structuralOnly="false"/>
     <selectedProjects/>
     <selectedElements exportClassFiles="false" exportJavaFiles="true" exportOutputFolder="false">
-        <javaElement handleIdentifier="=org.faktorips.runtime/src"/>
-        <javaElement handleIdentifier="=org.faktorips.runtime/test"/>
-        <javaElement handleIdentifier="=org.faktorips.runtime.java5"/>
+        <file path="/org.faktorips.runtime.java5/.cvsignore"/>
+        <file path="/org.faktorips.runtime.java5/description.txt"/>
+        <file path="/org.faktorips.runtime.java5/faktorips-runtime.java5-src.jardesc"/>
+        <file path="/org.faktorips.runtime.java5/faktorips-runtime.java5.jardesc"/>
+        <folder path="/org.faktorips.runtime.java5/test"/>
+        <folder path="/org.faktorips.runtime.java5/META-INF"/>
+        <javaElement handleIdentifier="=org.faktorips.runtime.java5/src"/>
+        <file path="/org.faktorips.runtime.java5/build.properties"/>
+        <folder path="/org.faktorips.runtime.java5/build"/>
+        <folder path="/org.faktorips.runtime.java5/lib"/>
+        <file path="/org.faktorips.runtime.java5/.project"/>
+        <file path="/org.faktorips.runtime.java5/.classpath"/>
     </selectedElements>
 </jardesc>
