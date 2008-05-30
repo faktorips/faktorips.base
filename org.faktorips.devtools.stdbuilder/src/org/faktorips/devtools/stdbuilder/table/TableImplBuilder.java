@@ -29,6 +29,7 @@ import org.eclipse.core.runtime.MultiStatus;
 import org.faktorips.codegen.DatatypeHelper;
 import org.faktorips.codegen.JavaCodeFragment;
 import org.faktorips.codegen.JavaCodeFragmentBuilder;
+import org.faktorips.codegen.dthelpers.Java5ClassNames;
 import org.faktorips.datatype.Datatype;
 import org.faktorips.devtools.core.builder.DefaultJavaSourceFileBuilder;
 import org.faktorips.devtools.core.builder.TypeSection;
@@ -610,7 +611,11 @@ public class TableImplBuilder extends DefaultJavaSourceFileBuilder {
             fragment.append("(");
             fragment.append(StringUtils.uncapitalize(fKeyVariableNames[i]));
             fragment.append("MapTemp, new ");
-            fragment.appendClassName(Integer.TYPE);
+            if(isUseTypesafeCollections()){
+                fragment.appendClassName(Java5ClassNames.ReadOnlyBinaryRangeTreeKeyType_QualifiedName);
+            }else{
+                fragment.appendClassName(Integer.TYPE);
+            }
             fragment.append("[] {");
             String[] keyItemNames = keys[i].getKeyItemNames();
             boolean firstEntry = true;

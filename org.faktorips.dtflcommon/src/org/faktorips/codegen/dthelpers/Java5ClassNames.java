@@ -39,8 +39,8 @@ public interface Java5ClassNames {
     public static final String MoneyRange_UnqualifiedName = "MoneyRange";
     public static final String MoneyRange_QualifiedName = ValuesetPackage+"."+MoneyRange_UnqualifiedName;
 
-    public static final String RuntimePackage = "org.faktorips.runtime.internal.java5";
-    public static final String ProductComponentGeneration_UnqualifiedName = "ProductComponentGeneration";
-    public static final String ProductComponentGeneration_QualifiedName = RuntimePackage+"."+ProductComponentGeneration_UnqualifiedName;
+    public static final String RuntimePackage = "org.faktorips.runtime.internal";
+    public static final String ReadOnlyBinaryRangeTreeKeyType_UnqualifiedName = "ReadOnlyBinaryRangeTree.KeyType";
+    public static final String ReadOnlyBinaryRangeTreeKeyType_QualifiedName = RuntimePackage+"."+ReadOnlyBinaryRangeTreeKeyType_UnqualifiedName;
 
 }

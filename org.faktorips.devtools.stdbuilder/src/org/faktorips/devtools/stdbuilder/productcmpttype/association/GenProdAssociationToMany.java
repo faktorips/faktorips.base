@@ -448,11 +448,6 @@ public class GenProdAssociationToMany extends GenProdAssociation {
                     + "\");");
         }
         if (policyCmptTypeAssociation != null) {
-            if (isUseTypesafeCollections()) {
-                builder.append(Java5ClassNames.ProductComponentGeneration_QualifiedName);
-                // don't append as classname, the include would collide with the original
-                builder.append(".");
-            }
             builder.append("addToCardinalityMap(");
             builder.append(cardinalityFieldName);
             builder.append(", ");

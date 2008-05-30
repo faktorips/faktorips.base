@@ -255,11 +255,6 @@ public class GenProdAssociationTo1 extends GenProdAssociation {
                 builder.append(">");
             }
             builder.appendln("(1);");
-            if (isUseTypesafeCollections()) {
-                // don't append as classname, the include would collide with the original
-                builder.append(Java5ClassNames.ProductComponentGeneration_QualifiedName);
-                builder.append(".");
-            }
             builder.append("addToCardinalityMap(");
             builder.append(cardinalityFieldName);
             builder.append(", ");
