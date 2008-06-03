@@ -12,11 +12,11 @@ import org.faktorips.util.message.MessageList;
 /**
  * Empty Migration 
  * 
- * @author Peter Erzberger
+ * @author Joerg Ortmann
  */
-public class Migration_2_0_0_rfinal extends AbstractIpsProjectMigrationOperation {
+public class Migration_2_0_1 extends AbstractIpsProjectMigrationOperation {
 
-    public Migration_2_0_0_rfinal(IIpsProject projectToMigrate, String featureId) {
+    public Migration_2_0_1(IIpsProject projectToMigrate, String featureId) {
         super(projectToMigrate, featureId);
     }
 
@@ -31,7 +31,7 @@ public class Migration_2_0_0_rfinal extends AbstractIpsProjectMigrationOperation
      * {@inheritDoc}
      */
     public String getTargetVersion() {
-        return "2.0.1"; //$NON-NLS-1$
+        return "2.0.2"; //$NON-NLS-1$
     }
 
     /**
