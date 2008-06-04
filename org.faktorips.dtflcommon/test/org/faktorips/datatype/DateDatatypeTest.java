@@ -16,12 +16,13 @@
  *******************************************************************************/
 
 package org.faktorips.datatype;
+import java.text.ParseException;
 import java.util.Calendar;
 import java.util.Date;
 
-import org.faktorips.datatype.classtypes.DateDatatype;
-
 import junit.framework.TestCase;
+
+import org.faktorips.datatype.classtypes.DateDatatype;
 
 
 
@@ -58,12 +59,16 @@ public class DateDatatypeTest extends TestCase {
         }
     }
     
-    public void testIsParsable() {
+    public void testIsParsable() throws ParseException {
+        assertTrue(datatype.isParsable("2000-01-01"));
         assertTrue(datatype.isParsable("2000-01-01"));
         assertTrue(datatype.isParsable(null));
         assertFalse(datatype.isParsable("2000.01.01"));
         assertFalse(datatype.isParsable("01-01-2001"));
-        
+        assertFalse(datatype.isParsable("2001-01-01 "));
+        assertFalse(datatype.isParsable(" 2001-01-01"));
+        assertTrue(datatype.isParsable("2001-1-1"));
+        assertTrue(datatype.isParsable("2001-1-1"));
     }
     
     public void testValueToString(){

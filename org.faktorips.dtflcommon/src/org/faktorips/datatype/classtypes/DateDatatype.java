@@ -19,6 +19,7 @@ package org.faktorips.datatype.classtypes;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.regex.Pattern;
 
 import org.apache.commons.lang.StringUtils;
 import org.faktorips.datatype.ValueClassDatatype;
@@ -58,9 +59,11 @@ public class DateDatatype extends ValueClassDatatype {
             return null;
         }
         try{
-            if (value.charAt(4)!='-' || value.charAt(7)!='-') {
+            String regex = "^\\d{4}-\\d{1,2}-\\d{1,2}$";
+            if (!Pattern.matches(regex, value)){
                 throw new IllegalArgumentException("Date value must have the format " + format);
             }
+            
             return formatter.parse(value);
         }
         catch (Exception e){
