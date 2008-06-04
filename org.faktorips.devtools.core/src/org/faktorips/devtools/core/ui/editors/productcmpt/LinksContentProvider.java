@@ -60,7 +60,8 @@ public class LinksContentProvider implements ITreeContentProvider {
                 // this is the reason we return Strings instead of association objects as elements. 
 				return getAssociationNames(generation);
 			} else {
-			    return getAssociationNames(pcType);
+			    // find association using the product cmpt's project
+			    return getAssociationNames(pcType, pc.getIpsProject());
             }
 		} catch (CoreException e) {
             throw new RuntimeException("Error getting element ", e); //$NON-NLS-1$
@@ -76,8 +77,8 @@ public class LinksContentProvider implements ITreeContentProvider {
         return (String[])associations.toArray(new String[associations.size()]);
     }
 
-    private String[] getAssociationNames(IProductCmptType type) throws CoreException {
-        NoneDerivedAssociationsCollector collector = new NoneDerivedAssociationsCollector(type.getIpsProject());
+    private String[] getAssociationNames(IProductCmptType type, IIpsProject ipsProject) throws CoreException {
+        NoneDerivedAssociationsCollector collector = new NoneDerivedAssociationsCollector(ipsProject);
         collector.start(type);
         return (String[])collector.associations.toArray(new String[collector.associations.size()]);
     }

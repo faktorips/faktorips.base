@@ -56,7 +56,7 @@ public class GenerationPropertiesPage extends IpsObjectEditorPage {
 
 	private DefaultsAndRangesSection defaultsAndRangesSection;
 
-	private LinksSection relationsSection;
+	private LinksSection linksSection;
 
 	/*
 	 * Layout for this page (see pageRoot) - if the content-structure for this
@@ -194,12 +194,12 @@ public class GenerationPropertiesPage extends IpsObjectEditorPage {
 				GridData.FILL_BOTH);
 		defaultsAndRangesSection = new DefaultsAndRangesSection(generation,
 				right, toolkit);
-		relationsSection = new LinksSection(generation, right, toolkit,
+		linksSection = new LinksSection(generation, right, toolkit,
 				getEditorSite());
 
 		productAttributesSection.setFocusSuccessor(formulasSection);
 		formulasSection.setFocusSuccessor(defaultsAndRangesSection);
-		defaultsAndRangesSection.setFocusSuccessor(relationsSection);
+		defaultsAndRangesSection.setFocusSuccessor(linksSection);
         
         //searches for Composites that implement the ISelectionProviderActivation interface and registers
         //them with the selection provider dispatcher of the IpsObjectEditor
