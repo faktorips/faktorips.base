@@ -1,1 +1,1 @@
-This project contains JUnit tests for the core plugin.
+This project contains JUnit tests for the core plugin..
