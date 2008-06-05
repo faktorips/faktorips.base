@@ -44,6 +44,11 @@ public interface IIpsArtefactBuilderSetInfo {
     public IIpsArtefactBuilderSet create(IIpsProject ipsProject);
     
     /**
+     * Creates a default configuration for a builder set defined by this info.
+     */
+    public IIpsArtefactBuilderSetConfigModel createDefaultConfiguration(IIpsProject ipsProject);
+    
+    /**
      * Returns the id by which the <code>IIpsArtefactBuilderSet</code> is registered with the
      * system.
      */

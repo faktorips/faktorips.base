@@ -129,7 +129,7 @@ public class IpsArtefactBuilderSetConfigModel implements IIpsArtefactBuilderSetC
             }
             String valueAsString = (String)this.properties.get(name);
             if(!propertyDef.isAvailable(ipsProject)){
-                properties.put(name, propertyDef.getDisableValue());
+                properties.put(name, propertyDef.parseValue(propertyDef.getDisableValue(ipsProject)));
                 continue;
             }
             Object value = propertyDef.parseValue(valueAsString);
@@ -139,7 +139,7 @@ public class IpsArtefactBuilderSetConfigModel implements IIpsArtefactBuilderSetC
         for (int i = 0; i < propertyDefs.length; i++) {
             Object value = properties.get(propertyDefs[i].getName());
             if(value == null){
-                properties.put(propertyDefs[i].getName(), propertyDefs[i].getDisableValue());
+                properties.put(propertyDefs[i].getName(), propertyDefs[i].parseValue(propertyDefs[i].getDisableValue(ipsProject)));
             }
         }
         return new IpsArtefactBuilderSetConfig(properties);

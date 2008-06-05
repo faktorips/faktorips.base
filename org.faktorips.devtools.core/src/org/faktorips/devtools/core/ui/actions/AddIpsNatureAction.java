@@ -60,7 +60,7 @@ import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.IpsStatus;
 import org.faktorips.devtools.core.internal.model.ipsproject.IpsObjectPath;
 import org.faktorips.devtools.core.internal.model.productcmpt.DateBasedProductCmptNamingStrategy;
-import org.faktorips.devtools.core.model.ipsproject.IIpsArtefactBuilderSetConfigModel;
+import org.faktorips.devtools.core.model.ipsproject.IIpsArtefactBuilderSetInfo;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProjectProperties;
 import org.faktorips.devtools.core.ui.UIToolkit;
@@ -151,6 +151,11 @@ public class AddIpsNatureAction extends ActionDelegate {
             props.setRuntimeIdPrefix(runtimeIdPrefix);
             props.setProductDefinitionProject(isProductDefinitionProject);
             props.setModelProject(isModelProject);
+            
+            // use the first registered builder set info as default
+            IIpsArtefactBuilderSetInfo[] builderSetInfos = IpsPlugin.getDefault().getIpsModel().getIpsArtefactBuilderSetInfos();
+            props.setBuilderSetId(builderSetInfos.length > 0 ? builderSetInfos[0].getBuilderSetId() : "");
+            
             props.setPredefinedDatatypesUsed(IpsPlugin.getDefault().getIpsModel().getPredefinedValueDatatypes());
             DateBasedProductCmptNamingStrategy namingStrategy = new DateBasedProductCmptNamingStrategy(
                     " ", "yyyy-MM", true); //$NON-NLS-1$ //$NON-NLS-2$
@@ -160,17 +165,13 @@ public class AddIpsNatureAction extends ActionDelegate {
             } else {
                 props.setJavaSrcLanguage(Locale.ENGLISH);
             }
-            props
-                    .setMinRequiredVersionNumber(
+            props.setMinRequiredVersionNumber(
                             "org.faktorips.feature", (String)Platform.getBundle("org.faktorips.devtools.core").getHeaders().get("Bundle-Version")); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
             props.setChangesOverTimeNamingConventionIdForGeneratedCode(IpsPlugin.getDefault().getIpsPreferences()
                     .getChangesOverTimeNamingConvention().getId());
-            if(targetVersionIsAtLeast5(javaProject)){
-                IIpsArtefactBuilderSetConfigModel config = props.getBuilderSetConfig();
-                config.setPropertyValue("targetJavaVersion", "5.0");
-                config.setPropertyValue("useTypesafeCollections", "true");
-                config.setPropertyValue("useEnums", "true");
-                props.setBuilderSetConfig(config);
+            IIpsArtefactBuilderSetInfo builderSetInfo = IpsPlugin.getDefault().getIpsModel().getIpsArtefactBuilderSetInfo(props.getBuilderSetId());
+            if(builderSetInfo != null){
+                props.setBuilderSetConfig(builderSetInfo.createDefaultConfiguration(ipsProject));
             }
             ipsProject.setProperties(props);
             IFolder ipsModelFolder = ipsProject.getProject().getFolder(sourceFolderName);
@@ -234,8 +235,10 @@ public class AddIpsNatureAction extends ActionDelegate {
         }
     }
 
+    //TODO do not change the targetVersion comming from the java options
     private boolean targetVersionIsAtLeast5(IJavaProject javaProject) {
-        String[] targetVersion = javaProject.getOption("org.eclipse.jdt.core.compiler.codegen.targetPlatform", true)
+        
+        String[] targetVersion = javaProject.getOption(JavaCore.COMPILER_CODEGEN_TARGET_PLATFORM, true)
                 .split("\\.");
         return (Integer.parseInt(targetVersion[0]) == 1 && Integer.parseInt(targetVersion[1]) >= 5)
                 || Integer.parseInt(targetVersion[0]) > 1;

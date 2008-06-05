@@ -14,15 +14,13 @@
                name="generateChangeListener"
                type="boolean"/>
          <builderSetPropertyDef
-               defaultValue="false"
+               class="org.faktorips.devtools.stdbuilder.Java5BuilderSetPropertiesDef"
                description="Enables the generation of java 5 enumeration types"
-               disableValue="false"
                name="useJavaEnumTypes"
                type="boolean"/>
          <builderSetPropertyDef
-               defaultValue="false"
+               class="org.faktorips.devtools.stdbuilder.Java5BuilderSetPropertiesDef"
                description="Enables the generation of java 5 generices for collections"
-               disableValue="false"
                name="useTypesafeCollections"
                type="boolean"/>
          <builderSetPropertyDef

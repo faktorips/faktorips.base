@@ -44,8 +44,8 @@ public class IpsBuilderSetPropertyDef implements IIpsBuilderSetPropertyDef{
     private String name;
     private String description;
     private String type;
-    private Object defaultValue;
-    private Object disableValue;
+    private String defaultValue;
+    private String disableValue;
     private List supportedJdkVersions;
     private List discretePropertyValues;
 
@@ -62,15 +62,15 @@ public class IpsBuilderSetPropertyDef implements IIpsBuilderSetPropertyDef{
         this.description = description;
         this.type = type;
         this.discretePropertyValues = discretePropertyValues;
-        this.defaultValue = parseValue(defaultValue);
-        this.disableValue = parseValue(disableValue);
+        this.defaultValue = defaultValue;
+        this.disableValue = disableValue;
         this.supportedJdkVersions = supportedJdkVersions;
     }
 
     /**
-     * Returns the default value specified in the plugin descriptor.
+     * {@inheritDoc}
      */
-    public Object getDefaultValue() {
+    public String getDefaultValue(IIpsProject ipsProject) {
         return defaultValue;
     }
 
@@ -82,10 +82,9 @@ public class IpsBuilderSetPropertyDef implements IIpsBuilderSetPropertyDef{
     }
 
     /**
-     * Returns the disable value specified in the plugin descriptor. The disable value is a special value of the value set for a property
-     * that disables the functionality that is controlled by it.
+     * {@inheritDoc}
      */
-    public Object getDisableValue() {
+    public String getDisableValue(IIpsProject ipsProject) {
         return disableValue;
     }
 

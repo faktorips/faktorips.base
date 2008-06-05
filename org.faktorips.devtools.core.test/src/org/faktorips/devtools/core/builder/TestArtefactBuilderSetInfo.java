@@ -89,4 +89,8 @@ public class TestArtefactBuilderSetInfo implements IIpsArtefactBuilderSetInfo {
     public Message validateIpsBuilderSetPropertyValue(IIpsProject ipsProject, String propertyName, String propertyValue) {
         return null;
     }
+
+    public IIpsArtefactBuilderSetConfigModel createDefaultConfiguration(IIpsProject ipsProject) {
+        return null;
+    }
 }

@@ -42,14 +42,17 @@ public interface IIpsBuilderSetPropertyDef {
     public String getDescription();
 
     /**
-     * Returns the value that disables a functionalitiy based on the property descripted by this property definiton.
+     * Returns the value that disables a functionalitiy based on the property descripted by this property definiton as string. To
+     * get the type based value the parseValue(String) method with return value of this method as parameter has to be called.
      */
-    public Object getDisableValue();
+    public String getDisableValue(IIpsProject ipsProject);
 
     /**
-     * The default value for a property descripted by this property definition.
+     * The default value for a property descripted by this property definition as string. To get the type
+     * based value the parseValue(String) method with return value of this method as parameter has
+     * to be called.
      */
-    public Object getDefaultValue();
+    public String getDefaultValue(IIpsProject ipsProject);
 
     /**
      * Returns if the property of this property definition has discrete values.

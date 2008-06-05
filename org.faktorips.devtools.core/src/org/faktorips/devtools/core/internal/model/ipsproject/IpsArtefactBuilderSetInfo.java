@@ -10,6 +10,7 @@
 package org.faktorips.devtools.core.internal.model.ipsproject;
 
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
@@ -87,7 +88,18 @@ public class IpsArtefactBuilderSetInfo implements IIpsArtefactBuilderSetInfo{
         return new EmptyBuilderSet();
     }
     
-    
+    /**
+     * {@inheritDoc}
+     */
+    public IIpsArtefactBuilderSetConfigModel createDefaultConfiguration(IIpsProject ipsProject){
+        IpsArtefactBuilderSetConfigModel configModel = new IpsArtefactBuilderSetConfigModel();
+        for (Iterator it = propertyDefinitions.values().iterator(); it.hasNext();) {
+            IIpsBuilderSetPropertyDef propertyDef = (IIpsBuilderSetPropertyDef)it.next();
+            configModel.setPropertyValue(propertyDef.getName(), propertyDef.getDefaultValue(ipsProject));
+        }
+        return configModel;
+    }
+
     
     /*
      * Returns the class of the IIpsArtefactBuilderSet implementation class.
@@ -131,7 +143,7 @@ public class IpsArtefactBuilderSetInfo implements IIpsArtefactBuilderSetInfo{
      */
     public IIpsBuilderSetPropertyDef[] getPropertyDefinitions() {
         return (IIpsBuilderSetPropertyDef[])propertyDefinitions.values()
-                .toArray(new IpsBuilderSetPropertyDef[propertyDefinitions.size()]);
+                .toArray(new IIpsBuilderSetPropertyDef[propertyDefinitions.size()]);
     }
 
     /**
@@ -166,7 +178,7 @@ public class IpsArtefactBuilderSetInfo implements IIpsArtefactBuilderSetInfo{
         if(msg != null){
             return msg;
         }
-        if (!propertyDef.isAvailable(ipsProject) && !propertyDef.getDisableValue().equals(propertyDef.parseValue(propertyValue))) {
+        if (!propertyDef.isAvailable(ipsProject) && !propertyDef.getDisableValue(ipsProject).equals(propertyValue)) {
             return new Message(MSG_CODE_PROPERTY_NO_JDK_COMPLIANCE,
                     "This property is not in accordance with the JDK compliance level of this java project.",
                     Message.ERROR);
