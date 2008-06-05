@@ -21,6 +21,7 @@ import org.faktorips.datatype.ValueDatatype;
 import org.faktorips.devtools.core.model.ipsobject.IExtensionPropertyDefinition;
 import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
 import org.faktorips.devtools.core.model.ipsproject.IChangesOverTimeNamingConvention;
+import org.faktorips.devtools.core.model.ipsproject.IIpsArtefactBuilderSetInfo;
 import org.faktorips.devtools.core.model.ipsproject.IIpsPackageFragmentRoot;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 
@@ -223,5 +224,17 @@ public interface IIpsModel extends IIpsElement {
      * type exists.
      */
     public IpsObjectType getIpsObjectTypeByFileExtension(String fileExtension);
+    
+    /**
+     *  Returns all registered IpsArtefactBuilderSetInfo objects.
+     */
+    public IIpsArtefactBuilderSetInfo[] getIpsArtefactBuilderSetInfos();
+
+    /**
+     * Returns the IpsArtefactBuilderSetInfo object for the specified id. If none is found
+     * <code>null</code> will be returned.
+     */
+    public IIpsArtefactBuilderSetInfo getIpsArtefactBuilderSetInfo(String id);
+
 
 }

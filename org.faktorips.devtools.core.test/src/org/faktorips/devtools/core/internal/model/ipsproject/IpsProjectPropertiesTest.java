@@ -107,7 +107,7 @@ public class IpsProjectPropertiesTest extends AbstractIpsPluginTest {
         propEl.setAttribute("value", "yyy");
         configEl.appendChild(propEl);
         
-        IpsArtefactBuilderSetConfig config = new IpsArtefactBuilderSetConfig();
+        IpsArtefactBuilderSetConfigModel config = new IpsArtefactBuilderSetConfigModel();
         config.initFromXml(configEl);
         props.setBuilderSetConfig(config);
         DynamicEnumDatatype datatype = new DynamicEnumDatatype(ipsProject);

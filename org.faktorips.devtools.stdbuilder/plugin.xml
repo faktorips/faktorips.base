@@ -6,7 +6,62 @@
          id="ipsstdbuilderset"
          name="%ipsstdbuilderset"
          point="org.faktorips.devtools.core.artefactbuilderset">
-      <builderSet class="org.faktorips.devtools.stdbuilder.StandardBuilderSet"/>
+      <builderSet class="org.faktorips.devtools.stdbuilder.StandardBuilderSet">
+         <builderSetPropertyDef
+               defaultValue="false"
+               description="Enables the generation of change event mechanism"
+               disableValue="false"
+               name="generateChangeListener"
+               type="boolean"/>
+         <builderSetPropertyDef
+               defaultValue="false"
+               description="Enables the generation of java 5 enumeration types"
+               disableValue="false"
+               name="useJavaEnumTypes"
+               type="boolean"/>
+         <builderSetPropertyDef
+               defaultValue="false"
+               description="Enables the generation of java 5 generices for collections"
+               disableValue="false"
+               name="useTypesafeCollections"
+               type="boolean"/>
+         <builderSetPropertyDef
+               defaultValue="false"
+               description="Enables the generation of a delta determining mechnism for model objects"
+               disableValue="false"
+               name="generateDeltaSupport"
+               type="boolean"/>
+         <builderSetPropertyDef
+               defaultValue="false"
+               description="Enables the generation of a model copy mechanism"
+               disableValue="false"
+               name="generateCopySupport"
+               type="boolean"/>
+         <builderSetPropertyDef
+               defaultValue="false"
+               description="Enables the generation of logging code"
+               disableValue="false"
+               name="generateLoggingStatements"
+               type="boolean"/>
+         <builderSetPropertyDef
+               defaultValue="1.4"
+               description="Java version (will be removed later)"
+               disableValue="1.4"
+               name="targetJavaVersion"
+               type="enum">
+            <discreteValues>
+               <value value="1.4"/>
+               <value value="5.0"/>
+               <value value="6.0"/>
+            </discreteValues>
+         </builderSetPropertyDef>
+         <builderSetPropertyDef
+               defaultValue="false"
+               description="Enables the generation of visitor code"
+               disableValue="false"
+               name="generateVisitorSupport"
+               type="boolean"/>
+      </builderSet>
    </extension>
 
 </plugin>

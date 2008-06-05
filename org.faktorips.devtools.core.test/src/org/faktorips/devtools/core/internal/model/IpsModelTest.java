@@ -552,4 +552,5 @@ public class IpsModelTest extends AbstractIpsPluginTest {
                                 "should be triggered by know and have the cache cleared.",
                 status);
     }
+    
 }

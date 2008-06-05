@@ -59,6 +59,16 @@ public interface IIpsProjectProperties {
     public final static String MSGCODE_MISSING_MIN_FEATURE_ID = MSGCODE_PREFIX + "MissingMinFeatureId"; //$NON-NLS-1$
 
     /**
+     * Returns the timestamp of the last persistent modification of this object.
+     */
+    public Long getLastPersistentModificationTimestamp();
+    
+    /**
+     * Sets the timestamp of the last persistent modification of this object.
+     */
+    public void setLastPersistentModificationTimestamp(Long timestamp);
+    
+    /**
 	 * Validates the project properties. 
 	 */
 	public MessageList validate(IIpsProject ipsProject) throws CoreException;
@@ -76,12 +86,12 @@ public interface IIpsProjectProperties {
     /**
      * Returns the IpsProject specific configuration of the IIpsArtefactBuilderSet.
      */
-    public IIpsArtefactBuilderSetConfig getBuilderSetConfig();
+    public IIpsArtefactBuilderSetConfigModel getBuilderSetConfig();
 
     /**
      * Sets the IpsProjects specific configuration of the IIpsArtefactBuilderSet.
      */
-    public void setBuilderSetConfig(IIpsArtefactBuilderSetConfig config);
+    public void setBuilderSetConfig(IIpsArtefactBuilderSetConfigModel config);
     
 	/**
 	 * Returns the objct path to lookup objets.

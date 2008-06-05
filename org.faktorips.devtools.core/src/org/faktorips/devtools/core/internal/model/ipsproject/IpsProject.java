@@ -157,6 +157,13 @@ public class IpsProject extends IpsElement implements IIpsProject {
     }
 
     /**
+     * {@inheritDoc}
+     */
+    public IIpsProjectProperties getReadOnlyProperties(){
+        return new IpsProjectPropertiesReadOnlyProxy(getPropertiesInternal());
+    }
+    
+    /**
 	 * {@inheritDoc}
 	 */
 	public IIpsProjectProperties getProperties() {

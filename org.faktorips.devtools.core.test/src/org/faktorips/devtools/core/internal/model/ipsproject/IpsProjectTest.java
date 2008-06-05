@@ -50,6 +50,7 @@ import org.faktorips.devtools.core.TestEnumType;
 import org.faktorips.devtools.core.TestIpsFeatureVersionManager;
 import org.faktorips.devtools.core.builder.DefaultBuilderSet;
 import org.faktorips.devtools.core.builder.JavaUtilLoggingFrameworkConnector;
+import org.faktorips.devtools.core.builder.TestArtefactBuilderSetInfo;
 import org.faktorips.devtools.core.internal.model.TableContentsEnumDatatypeAdapter;
 import org.faktorips.devtools.core.internal.model.tablestructure.TableStructureType;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObject;
@@ -58,6 +59,7 @@ import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
 import org.faktorips.devtools.core.model.ipsobject.QualifiedNameType;
 import org.faktorips.devtools.core.model.ipsproject.IIpsArtefactBuilder;
 import org.faktorips.devtools.core.model.ipsproject.IIpsArtefactBuilderSet;
+import org.faktorips.devtools.core.model.ipsproject.IIpsArtefactBuilderSetInfo;
 import org.faktorips.devtools.core.model.ipsproject.IIpsObjectPath;
 import org.faktorips.devtools.core.model.ipsproject.IIpsObjectPathEntry;
 import org.faktorips.devtools.core.model.ipsproject.IIpsPackageFragment;
@@ -1246,7 +1248,7 @@ public class IpsProjectTest extends AbstractIpsPluginTest {
         //the project needs to be a product definition project to force a fail of the validation
         props.setProductDefinitionProject(true);
         ipsProject.setProperties(props);
-        getIpsModel().setIpsArtefactBuilderSet(ipsProject, projectABuilderSet);
+        getIpsModel().setIpsArtefactBuilderSetInfos(new IIpsArtefactBuilderSetInfo[]{new TestArtefactBuilderSetInfo(projectABuilderSet)});
         
         IIpsObjectPath projectAIpsObjectPath = ipsProject.getIpsObjectPathInternal();
 
@@ -1286,7 +1288,8 @@ public class IpsProjectTest extends AbstractIpsPluginTest {
         //the project needs to be a product definition project to force a fail of the validation
         projectBProperties.setProductDefinitionProject(true);
         ipsProjectB.setProperties(projectBProperties);
-        getIpsModel().setIpsArtefactBuilderSet(ipsProjectB, projectBBuilderSet);
+        getIpsModel().setIpsArtefactBuilderSetInfos(new IIpsArtefactBuilderSetInfo[]{new TestArtefactBuilderSetInfo(projectBBuilderSet), 
+                new TestArtefactBuilderSetInfo(projectABuilderSet)});
         
         //etablish the dependency so that projectB is dependent from projectA
         IpsObjectPath projectBIpsObjectPath = ipsProjectB.getIpsObjectPathInternal();

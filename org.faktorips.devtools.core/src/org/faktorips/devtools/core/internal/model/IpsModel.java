@@ -80,6 +80,8 @@ import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
 import org.faktorips.devtools.core.model.ipsproject.IChangesOverTimeNamingConvention;
 import org.faktorips.devtools.core.model.ipsproject.IIpsArtefactBuilderSet;
+import org.faktorips.devtools.core.model.ipsproject.IIpsArtefactBuilderSetConfig;
+import org.faktorips.devtools.core.model.ipsproject.IIpsArtefactBuilderSetInfo;
 import org.faktorips.devtools.core.model.ipsproject.IIpsPackageFragment;
 import org.faktorips.devtools.core.model.ipsproject.IIpsPackageFragmentRoot;
 import org.faktorips.devtools.core.model.ipsproject.IIpsPackageFragmentSortDefinition;
@@ -149,7 +151,7 @@ public class IpsModel extends IpsElement implements IIpsModel, IResourceChangeLi
     private Map projectToBuilderSetMap = Collections.synchronizedMap(new HashMap());
 
     private List builderSetInfoList = null;
-
+    
     // extension properties (as list) per ips object (or part) type, e.g.
     // IAttribute.
     private Map typeExtensionPropertiesMap = null; // null as long as they
@@ -167,8 +169,6 @@ public class IpsModel extends IpsElement implements IIpsModel, IResourceChangeLi
     
     // validation result cache
     private ValidationResultCache validationResultCache = new ValidationResultCache();
-
-    private Map lastIpsPropertyFileModifications = new HashMap();
 
     private IpsObjectType[] ipsObjectTypes;
 
@@ -325,7 +325,7 @@ public class IpsModel extends IpsElement implements IIpsModel, IResourceChangeLi
         IIpsProject ipsProject = getIpsProject(javaProject.getProject());
         Util.addNature(javaProject.getProject(), IIpsProject.NATURE_ID);
 
-        IpsArtefactBuilderSetInfo[] infos = getIpsArtefactBuilderSetInfos();
+        IIpsArtefactBuilderSetInfo[] infos = getIpsArtefactBuilderSetInfos();
         if (infos.length > 0) {
             IIpsProjectProperties props = ipsProject.getProperties();
             props.setBuilderSetId(infos[0].getBuilderSetId());
@@ -726,15 +726,15 @@ public class IpsModel extends IpsElement implements IIpsModel, IResourceChangeLi
         }
 
         if(reinit){
-            initBuilderSet(builderSet, data);
+            initBuilderSet(builderSet, project, data);
         }
         return builderSet;
     }
 
     private IIpsArtefactBuilderSet registerBuilderSet(IIpsProject project) {
         IpsProjectProperties data = getIpsProjectProperties((IpsProject)project);
-        IIpsArtefactBuilderSet builderSet = createInstanceOfRegisteredArtefactBuilderSet(data.getBuilderSetId(), data.getLoggingFrameworkConnectorId(), project);
-        if(!initBuilderSet(builderSet, data)){
+        IIpsArtefactBuilderSet builderSet = createIpsArtefactBuilderSet(data.getBuilderSetId(), data.getLoggingFrameworkConnectorId(), project);
+        if(builderSet == null || !initBuilderSet(builderSet, project, data)){
             return new EmptyBuilderSet();
         }
         projectToBuilderSetMap.put(project, builderSet);
@@ -744,9 +744,15 @@ public class IpsModel extends IpsElement implements IIpsModel, IResourceChangeLi
     /**
      * @return true if the initialization was successful
      */
-    private boolean initBuilderSet(IIpsArtefactBuilderSet builderSet, IIpsProjectProperties data){
+    private boolean initBuilderSet(IIpsArtefactBuilderSet builderSet, IIpsProject ipsProject, IIpsProjectProperties properties){
         try {
-            builderSet.initialize(data.getBuilderSetConfig());
+            IIpsArtefactBuilderSetInfo builderSetInfo = getIpsArtefactBuilderSetInfo(builderSet.getId());
+            if(builderSetInfo == null){
+                IpsPlugin.log(new IpsStatus("There is no builder set info registered with the id: " + builderSet.getId())); //$NON-NLS-1$
+                return false;
+            }
+            IIpsArtefactBuilderSetConfig builderSetConfig = properties.getBuilderSetConfig().create(ipsProject, builderSetInfo);
+            builderSet.initialize(builderSetConfig);
             return true;
         } catch (CoreException e) {
             IpsPlugin.log(new IpsStatus("An exception occurred while trying to initialize" //$NON-NLS-1$
@@ -820,13 +826,14 @@ public class IpsModel extends IpsElement implements IIpsModel, IResourceChangeLi
      */
     public IpsProjectProperties getIpsProjectProperties(IpsProject ipsProject) {
         IFile propertyFile = ipsProject.getIpsProjectPropertiesFile();
-        Long lastIpsPropertyFileModification = (Long)lastIpsPropertyFileModifications.get(ipsProject.getName());
-        if (propertyFile.exists()
-                && !new Long(ipsProject.getIpsProjectPropertiesFile().getModificationStamp())
-                        .equals(lastIpsPropertyFileModification)) {
-            clearIpsProjectPropertiesCache(ipsProject);
-        }
         IpsProjectProperties data = (IpsProjectProperties)projectPropertiesMap.get(ipsProject.getName());
+        if (data != null
+                && propertyFile.exists()
+                && !new Long(ipsProject.getIpsProjectPropertiesFile().getModificationStamp()).equals(data
+                        .getLastPersistentModificationTimestamp())) {
+            clearIpsProjectPropertiesCache(ipsProject);
+            data = null;
+        }
         if (data == null) {
             data = readProjectData(ipsProject);
             projectPropertiesMap.put(ipsProject.getName(), data);
@@ -886,7 +893,7 @@ public class IpsModel extends IpsElement implements IIpsModel, IResourceChangeLi
                     + file, e));
             data.setCreatedFromParsableFileContents(false);
         }
-        lastIpsPropertyFileModifications.put(ipsProject.getName(), new Long(file.getModificationStamp()));
+        data.setLastPersistentModificationTimestamp(new Long(file.getModificationStamp()));
         return data;
     }
 
@@ -942,43 +949,28 @@ public class IpsModel extends IpsElement implements IIpsModel, IResourceChangeLi
      * <code>builderSetId</code> at the artefact builder set extension point. Otherwise an
      * <code>EmptyBuilderSet</code> will be returned.
      */
-    private IIpsArtefactBuilderSet createInstanceOfRegisteredArtefactBuilderSet(String builderSetId, String loggingFrameworkConnectorId, IIpsProject ipsProject) {
+    private IIpsArtefactBuilderSet createIpsArtefactBuilderSet(String builderSetId,
+            String loggingFrameworkConnectorId,
+            IIpsProject ipsProject) {
         ArgumentCheck.notNull(builderSetId);
         ArgumentCheck.notNull(ipsProject);
-        
-        IpsArtefactBuilderSetInfo[] infos = getIpsArtefactBuilderSetInfos();
-        for (int i = 0; i < infos.length; i++) {
-            try {
-                if (infos[i].getBuilderSetId().equals(builderSetId)){
-                    IIpsArtefactBuilderSet builderSet = (IIpsArtefactBuilderSet)infos[i].getBuilderSetClass().newInstance();
-                    builderSet.setId(infos[i].getBuilderSetId());
-                    builderSet.setLabel(infos[i].getBuilderSetLabel());
-                    builderSet.setIpsLoggingFrameworkConnector(IpsPlugin.getDefault().getIpsLoggingFrameworkConnector(loggingFrameworkConnectorId));
-                    builderSet.setIpsProject(ipsProject);
-                    return builderSet;
-                }
-            } catch(ClassCastException e){
-                IpsPlugin.log(new IpsStatus("The registered builder set " + infos[i].getBuilderSetClass() +  //$NON-NLS-1$
-                        " doesn't implement the " + IIpsArtefactBuilderSet.class + " interface.", e)); //$NON-NLS-1$ //$NON-NLS-2$
-            } catch (InstantiationException e) {
-                IpsPlugin.log(new IpsStatus("Unable to instantiate the builder set " + infos[i].getBuilderSetClass(), e)); //$NON-NLS-1$
 
-            } catch (IllegalAccessException e) {
-                IpsPlugin.log(new IpsStatus("Unable to instantiate the builder set " + infos[i].getBuilderSetClass(), e)); //$NON-NLS-1$
+        IIpsArtefactBuilderSetInfo[] infos = getIpsArtefactBuilderSetInfos();
+        for (int i = 0; i < infos.length; i++) {
+            if (infos[i].getBuilderSetId().equals(builderSetId)) {
+                IIpsArtefactBuilderSet builderSet = infos[i].create(ipsProject);
+                return builderSet;
             }
         }
-        return new EmptyBuilderSet();
+        return null;
     }
 
-    //TODO check if this method can be removed
-    public void setIpsArtefactBuilderSet(IIpsProject project, IIpsArtefactBuilderSet set) {
-        ArgumentCheck.notNull(project);
-        reinitIpsProjectPropertiesIfNecessary((IpsProject)project);
-        if (set == null) {
-            projectToBuilderSetMap.remove(project);
-            return;
-        }
-        projectToBuilderSetMap.put(project, set);
+    /**
+     * This method is for test purposes only. Usually the builder set infos are loaded via the
+     * according extension point.
+     */
+    public void setIpsArtefactBuilderSetInfos(IIpsArtefactBuilderSetInfo[] builderSetInfos){
+        builderSetInfoList = new ArrayList(Arrays.asList(builderSetInfos));
     }
 
     /**
@@ -1282,7 +1274,7 @@ public class IpsModel extends IpsElement implements IIpsModel, IResourceChangeLi
         ArgumentCheck.notNull(ipsProject);
         ClassLoaderProvider provider = (ClassLoaderProvider)classLoaderProviderMap.get(ipsProject);
         if (provider == null) {
-            provider = new ClassLoaderProvider(ipsProject.getJavaProject(), ipsProject.getProperties().isJavaProjectContainsClassesForDynamicDatatypes());
+            provider = new ClassLoaderProvider(ipsProject.getJavaProject(), ipsProject.getReadOnlyProperties().isJavaProjectContainsClassesForDynamicDatatypes());
             classLoaderProviderMap.put(ipsProject, provider);
         }
         return provider;
@@ -1505,57 +1497,39 @@ public class IpsModel extends IpsElement implements IIpsModel, IResourceChangeLi
         getValidationResultCache().removeStaleData(null);
     }
 
-    private void registerBuilderSetInfos(){
-        IExtensionRegistry registry = Platform.getExtensionRegistry();
-        IExtensionPoint point = registry.getExtensionPoint(IpsPlugin.PLUGIN_ID, "artefactbuilderset"); //$NON-NLS-1$
-        IExtension[] extensions = point.getExtensions();
-        builderSetInfoList = new ArrayList();
-
-        for (int i = 0; i < extensions.length; i++) {
-
-            IExtension extension = extensions[i];
-
-            IConfigurationElement[] configElements = extension.getConfigurationElements();
-            if (configElements.length > 0) {
-                IConfigurationElement element = configElements[0];
-                if (element.getName().equals("builderSet")) { //$NON-NLS-1$
-                    if(StringUtils.isEmpty(extension.getUniqueIdentifier())){
-                        IpsPlugin.log(new IpsStatus("The identifier of the IpsArtefactBuilderSet extension is empty")); //$NON-NLS-1$
-                        continue;
-                    }
-                    String builderSetClassName = element.getAttribute("class"); //$NON-NLS-1$
-                    if(StringUtils.isEmpty(builderSetClassName)){
-                        IpsPlugin.log(new IpsStatus("The class attribute of the IpsArtefactBuilderSet extension with the extension id " + //$NON-NLS-1$
-                                extension.getUniqueIdentifier() + " is not specified."));//$NON-NLS-1$
-                        continue;
-                    }
-                    Class builderSetClass = null;
-                    try {
-                        builderSetClass = Platform.getBundle(extension.getNamespaceIdentifier()).loadClass(builderSetClassName);
-                    } catch (ClassNotFoundException e) {
-                        IpsPlugin.log(new IpsStatus("Unable to load the IpsArtefactBuilderSet class " + builderSetClassName +  //$NON-NLS-1$
-                                " specified with the extension id " + extension.getUniqueIdentifier())); //$NON-NLS-1$
-                        continue;
-                    }
-                    builderSetInfoList.add(new IpsArtefactBuilderSetInfo(builderSetClass, extension.getUniqueIdentifier(), extension.getLabel()));
-                }
-            }
+    private void createIpsArtefactBuilderSetInfosIfNecessary() {
+        if (builderSetInfoList == null) {
+            IExtensionRegistry registry = Platform.getExtensionRegistry();
+            builderSetInfoList = new ArrayList();
+            IpsArtefactBuilderSetInfo.loadExtensions(registry, IpsPlugin.getDefault().getLog(), builderSetInfoList,
+                    this);
         }
     }
-
+    
     /**
      * Returns an array of IpsArtefactBuilderSetInfo objects. Each IpsArtefactBuilderSetInfo object represents an
      * IpsArtefactBuilderSet that is a registered at the corresponding extension point.
      */
-    public IpsArtefactBuilderSetInfo[] getIpsArtefactBuilderSetInfos() {
-
-        if(builderSetInfoList == null){
-            registerBuilderSetInfos();
-        }
-        return (IpsArtefactBuilderSetInfo[])builderSetInfoList.toArray(
-                new IpsArtefactBuilderSetInfo[builderSetInfoList.size()]);
+    public IIpsArtefactBuilderSetInfo[] getIpsArtefactBuilderSetInfos() {
+        createIpsArtefactBuilderSetInfosIfNecessary();
+        return (IIpsArtefactBuilderSetInfo[])builderSetInfoList.toArray(
+                new IIpsArtefactBuilderSetInfo[builderSetInfoList.size()]);
     }
 
+    /**
+     * {@inheritDoc}
+     */
+    public IIpsArtefactBuilderSetInfo getIpsArtefactBuilderSetInfo(String id){
+        createIpsArtefactBuilderSetInfosIfNecessary();
+        for (Iterator it = builderSetInfoList.iterator(); it.hasNext();) {
+            IIpsArtefactBuilderSetInfo builderSetInfo = (IIpsArtefactBuilderSetInfo)it.next();
+            if(builderSetInfo.getBuilderSetId().equals(id)){
+                return builderSetInfo;
+            }
+        }
+        return null;
+    }
+    
     /**
      * {@inheritDoc}
      */

@@ -31,14 +31,14 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.osgi.util.NLS;
 import org.faktorips.datatype.ValueDatatype;
 import org.faktorips.devtools.core.IpsPlugin;
-import org.faktorips.devtools.core.builder.EmptyBuilderSet;
 import org.faktorips.devtools.core.internal.model.DynamicValueDatatype;
 import org.faktorips.devtools.core.internal.model.productcmpt.DateBasedProductCmptNamingStrategy;
 import org.faktorips.devtools.core.internal.model.productcmpt.NoVersionIdProductCmptNamingStrategy;
 import org.faktorips.devtools.core.model.IIpsModel;
 import org.faktorips.devtools.core.model.ipsproject.IChangesOverTimeNamingConvention;
 import org.faktorips.devtools.core.model.ipsproject.IIpsArtefactBuilderSet;
-import org.faktorips.devtools.core.model.ipsproject.IIpsArtefactBuilderSetConfig;
+import org.faktorips.devtools.core.model.ipsproject.IIpsArtefactBuilderSetConfigModel;
+import org.faktorips.devtools.core.model.ipsproject.IIpsArtefactBuilderSetInfo;
 import org.faktorips.devtools.core.model.ipsproject.IIpsObjectPath;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProjectProperties;
@@ -81,7 +81,7 @@ public class IpsProjectProperties implements IIpsProjectProperties {
 	private IProductCmptNamingStrategy productCmptNamingStrategy = new NoVersionIdProductCmptNamingStrategy();
 	private String builderSetId = ""; //$NON-NLS-1$
     private String loggingFrameworkConnectorId=""; //$NON-NLS-1$
-    private IIpsArtefactBuilderSetConfig builderSetConfig = new IpsArtefactBuilderSetConfig();
+    private IIpsArtefactBuilderSetConfigModel builderSetConfig = new IpsArtefactBuilderSetConfigModel();
 	private IIpsObjectPath path = new IpsObjectPath(new IpsProject());
 	private String[] predefinedDatatypesUsed = new String[0];
     private DynamicValueDatatype[] definedDatatypes = new DynamicValueDatatype[0]; 
@@ -92,6 +92,7 @@ public class IpsProjectProperties implements IIpsProjectProperties {
     private Hashtable requiredFeatures = new Hashtable();
     // hidden resource names in the model and product explorer
     private Set resourcesPathExcludedFromTheProductDefiniton= new HashSet(10);
+    private Long lastPersistentModificationTimestamp;
     
     /**
      * Default constructor.
@@ -115,7 +116,9 @@ public class IpsProjectProperties implements IIpsProjectProperties {
 	 */
 	public MessageList validate(IIpsProject ipsProject) throws CoreException {
 		MessageList list = new MessageList();
-		validateBuilderSetId(ipsProject, list);
+		if(validateBuilderSetId(ipsProject, list)){
+		    validateBuilderSetConfig(ipsProject, list);
+        }
 		validateUsedPredefinedDatatype(ipsProject, list);
         validateIpsObjectPath(ipsProject, list);
         validateRequiredFeatures(ipsProject, list);
@@ -125,10 +128,12 @@ public class IpsProjectProperties implements IIpsProjectProperties {
 		return list;
 	}
 	
-    /**
-     * @param ipsProject
-     * @param list
-     */
+    private void validateBuilderSetConfig(IIpsProject ipsProject, MessageList msgList){
+        IIpsArtefactBuilderSetInfo builderSetInfo = ipsProject.getIpsModel().getIpsArtefactBuilderSetInfo(builderSetId);
+        msgList.add(builderSetInfo.validateIpsArtefactBuilderSetConfig(ipsProject, builderSetConfig));
+        
+    }
+    
     private void validateRequiredFeatures(IIpsProject ipsProject, MessageList list) {
         IIpsFeatureVersionManager[] managers = IpsPlugin.getDefault().getIpsFeatureVersionManagers();
         for (int i = 0; i < managers.length; i++) {
@@ -150,14 +155,15 @@ public class IpsProjectProperties implements IIpsProjectProperties {
 		}
 	}
 	
-	private void validateBuilderSetId(IIpsProject ipsProject, MessageList list) {
-		IIpsArtefactBuilderSet set = ipsProject.getIpsArtefactBuilderSet();
-        if(!(set instanceof EmptyBuilderSet)){
-            return;
+	private boolean validateBuilderSetId(IIpsProject ipsProject, MessageList list) {
+        IIpsArtefactBuilderSetInfo builderSetInfo = ipsProject.getIpsModel().getIpsArtefactBuilderSetInfo(builderSetId);
+        if(builderSetInfo == null){
+            String text = Messages.IpsProjectProperties_msgUnknownBuilderSetId + builderSetId;
+            Message msg = new Message(IIpsProjectProperties.MSGCODE_UNKNOWN_BUILDER_SET_ID, text, Message.ERROR, this, IIpsProjectProperties.PROPERTY_BUILDER_SET_ID);
+            list.add(msg);
+            return false;
         }
-		String text = Messages.IpsProjectProperties_msgUnknownBuilderSetId + builderSetId;
-		Message msg = new Message(IIpsProjectProperties.MSGCODE_UNKNOWN_BUILDER_SET_ID, text, Message.ERROR, this, IIpsProjectProperties.PROPERTY_BUILDER_SET_ID);
-		list.add(msg);
+        return true;
 	}
 	
     /*
@@ -440,9 +446,9 @@ public class IpsProjectProperties implements IIpsProjectProperties {
         	builderSetId = ""; //$NON-NLS-1$
             loggingFrameworkConnectorId = ""; //$NON-NLS-1$
         }
-        Element artefactConfigEl = XmlUtil.getFirstElement(artefactEl, IIpsArtefactBuilderSetConfig.XML_ELEMENT);
+        Element artefactConfigEl = XmlUtil.getFirstElement(artefactEl, IIpsArtefactBuilderSetConfigModel.XML_ELEMENT);
         if(artefactConfigEl != null){
-            builderSetConfig = new IpsArtefactBuilderSetConfig();
+            builderSetConfig = new IpsArtefactBuilderSetConfigModel();
             builderSetConfig.initFromXml(artefactConfigEl);
         }
         initProductCmptNamingStrategyFromXml(ipsProject, XmlUtil.getFirstElement(element, IProductCmptNamingStrategy.XML_TAG_NAME));
@@ -922,14 +928,14 @@ public class IpsProjectProperties implements IIpsProjectProperties {
     /**
      * {@inheritDoc}
      */
-    public IIpsArtefactBuilderSetConfig getBuilderSetConfig() {
+    public IIpsArtefactBuilderSetConfigModel getBuilderSetConfig() {
         return builderSetConfig;
     }
 
     /**
      * {@inheritDoc}
      */
-    public void setBuilderSetConfig(IIpsArtefactBuilderSetConfig config) {
+    public void setBuilderSetConfig(IIpsArtefactBuilderSetConfigModel config) {
         ArgumentCheck.notNull(config);
         builderSetConfig = config;
     }
@@ -989,5 +995,19 @@ public class IpsProjectProperties implements IIpsProjectProperties {
      */
     public boolean isResourceExcludedFromProductDefinition(String location) {
         return resourcesPathExcludedFromTheProductDefiniton.contains(location);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public Long getLastPersistentModificationTimestamp() {
+        return lastPersistentModificationTimestamp;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public void setLastPersistentModificationTimestamp(Long timestamp) {
+        this.lastPersistentModificationTimestamp = timestamp;
     }
 }

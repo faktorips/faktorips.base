@@ -17,17 +17,10 @@
 
 package org.faktorips.devtools.core.internal.model.ipsproject;
 
-import java.util.HashMap;
-import java.util.Iterator;
 import java.util.Map;
-import java.util.Set;
 
-import org.apache.commons.lang.StringUtils;
 import org.faktorips.devtools.core.model.ipsproject.IIpsArtefactBuilderSetConfig;
 import org.faktorips.util.ArgumentCheck;
-import org.w3c.dom.Document;
-import org.w3c.dom.Element;
-import org.w3c.dom.NodeList;
 
 /**
  * The default implementation of the IIpsArtefactBuilderSetConfig interface
@@ -39,77 +32,18 @@ public class IpsArtefactBuilderSetConfig implements IIpsArtefactBuilderSetConfig
     private Map properties;
     
     /**
-     * Creates an empty ips artefact builder set configuration instances.
-     */
-    public IpsArtefactBuilderSetConfig() {
-        properties = new HashMap();
-    }
-
-    /**
      * This constructor is for test purposes only.
      */
     public IpsArtefactBuilderSetConfig(Map properties) {
         ArgumentCheck.notNull(properties);
         this.properties = properties;
     }
-
-    /**
-     * Creates and returns an ips artefact builder set configuration instance from the provided dom element.
-     */
-    public final void initFromXml(Element el){
-        properties = new HashMap();
-        NodeList nl = el.getElementsByTagName("Property"); //$NON-NLS-1$
-        for (int i = 0; i < nl.getLength(); i++) {
-            Element propertyEl = (Element)nl.item(i);
-            String key = propertyEl.getAttribute("name"); //$NON-NLS-1$
-            String value = propertyEl.getAttribute("value"); //$NON-NLS-1$
-            properties.put(key, value);
-        }
-    }
     
     /**
      * {@inheritDoc}
      */
-    public String getPropertyValue(String propertyName) {
-        return (String)properties.get(propertyName);
-    }
-
-    /**
-     * Sets the value of a property
-     * 
-     * @param propertyName the name of the property
-     * @param value the value of the property
-     */
-    public void setPropertyValue(String propertyName, String value){
-        properties.put(propertyName, value);
-    }
-    
-    /**
-     * {@inheritDoc}
-     */
-    public boolean getBooleanPropertyValue(String propertName, boolean defaultValue) {
-        String value = getPropertyValue(propertName);
-        if(StringUtils.isEmpty(value)){
-            return false;
-        }
-        return Boolean.valueOf(value).booleanValue();
-    }
-    
-    /**
-     * {@inheritDoc}
-     */
-    public final Element toXml(Document doc) {
-        Element root = doc.createElement(XML_ELEMENT);
-        Set keys = properties.keySet();
-        for (Iterator iter = keys.iterator();iter.hasNext();) {
-            String key = (String)iter.next();
-            String value = (String)properties.get(key);
-            Element prop = doc.createElement("Property"); //$NON-NLS-1$
-            root.appendChild(prop);
-            prop.setAttribute("name", key); //$NON-NLS-1$
-            prop.setAttribute("value", value); //$NON-NLS-1$
-        }
-        return root;
+    public Object getPropertyValue(String propertyName) {
+        return properties.get(propertyName);
     }
 
     /**
@@ -117,6 +51,27 @@ public class IpsArtefactBuilderSetConfig implements IIpsArtefactBuilderSetConfig
      */
     public String[] getPropertyNames() {
         return (String[])properties.keySet().toArray(new String[properties.size()]);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public Boolean getPropertyValueAsBoolean(String propertyName) {
+        return (Boolean)getPropertyValue(propertyName);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public Integer getPropertyValueAsInteger(String propertyName) {
+        return (Integer)getPropertyValue(propertyName);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public String getPropertyValueAsString(String propertyName) {
+        return (String)getPropertyValue(propertyName);
     }
 
 }

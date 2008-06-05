@@ -150,9 +150,6 @@ public class TestIpsArtefactBuilderSet extends AbstractBuilderSet {
         return null;
     }
 
-    public void initialize(IIpsArtefactBuilderSetConfig config) throws CoreException {
-    }
-
     /**
      * {@inheritDoc}
      */
@@ -180,5 +177,9 @@ public class TestIpsArtefactBuilderSet extends AbstractBuilderSet {
      */
     public EnumTypeTargetJavaVersion getTargetJavaVersion() {
         return EnumTypeTargetJavaVersion.DEFAULT;
+    }
+
+    public void initialize(IIpsArtefactBuilderSetConfig config) throws CoreException {
+        
     }
 }

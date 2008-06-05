@@ -72,6 +72,12 @@ public class IpsBuilder extends IncrementalProjectBuilder {
                 .valueOf(Platform.getDebugOption("org.faktorips.devtools.core/trace/builder")).booleanValue(); //$NON-NLS-1$
     }
 
+    /*
+     * The key is the name of the IpsProject, the value the last modification timestamp of the IpsProjectProperties from the
+     * last build.
+     */
+    private Map lastModificationTimestampForBuilderSets = new HashMap();
+    
     public IpsBuilder() {
         super();
     }
@@ -99,7 +105,7 @@ public class IpsBuilder extends IncrementalProjectBuilder {
             }
             monitor.worked(100);
             monitor.subTask(Messages.IpsBuilder_preparingBuild);
-            IIpsArtefactBuilderSet ipsArtefactBuilderSet = getIpsProject().getIpsArtefactBuilderSet();
+            IIpsArtefactBuilderSet ipsArtefactBuilderSet = getBuilderSetReInitialisedIfNecessary(getIpsProject());
             boolean isFullBuildRequired = isFullBuildRequired(kind);
             if (isFullBuildRequired) {
                 kind = IncrementalProjectBuilder.FULL_BUILD;
@@ -143,6 +149,21 @@ public class IpsBuilder extends IncrementalProjectBuilder {
         return getProject().getReferencedProjects();
     }
 
+    private IIpsArtefactBuilderSet getBuilderSetReInitialisedIfNecessary(IIpsProject project) throws CoreException{
+        Long timestamp = (Long)lastModificationTimestampForBuilderSets.get(project.getName());
+        if(timestamp == null){
+            lastModificationTimestampForBuilderSets.put(project.getName(), project.getReadOnlyProperties().getLastPersistentModificationTimestamp());
+            return project.getIpsArtefactBuilderSet();
+        }
+
+        Long projectTimestamp = project.getReadOnlyProperties().getLastPersistentModificationTimestamp(); 
+        if(!timestamp.equals(projectTimestamp)){
+            project.reinitializeIpsArtefactBuilderSet();
+            lastModificationTimestampForBuilderSets.put(project.getName(), projectTimestamp);
+        }
+        return project.getIpsArtefactBuilderSet();
+    }
+    
     private boolean checkIpsProjectBeforeBuild(IProject project, IIpsProject ipsProject) throws CoreException{
         project.deleteMarkers(IpsPlugin.PROBLEM_MARKER, true, 0);
         MessageList list = ipsProject.validate();
@@ -441,7 +462,7 @@ public class IpsBuilder extends IncrementalProjectBuilder {
                 // dependent ips object can be located in a different project which can have a
                 // differen artefact builder set
                 // therefor the builder set needs to be determined for each project at this point
-                ipsArtefactBuilderSet = ipsProject.getIpsArtefactBuilderSet();
+                ipsArtefactBuilderSet = getBuilderSetReInitialisedIfNecessary(ipsProject);
                 Set alreadyBuild = new HashSet(dependencySet.size());
                 MultiStatus currentBuildStatus = createInitialMultiStatus();
                 try {

@@ -116,7 +116,8 @@ public class StandardBuilderSet extends DefaultBuilderSet {
      * Configuration property that enanbles/disables the use of enums, if supported by the target
      * java version.
      */
-    public final static String CONFIG_PROPERTY_USE_ENUMS = "useEnums";
+    public final static String CONFIG_PROPERTY_USE_ENUMS = "useJavaEnumTypes";
+
 
     private TableImplBuilder tableImplBuilder;
     private TableRowBuilder tableRowBuilder;
@@ -435,13 +436,14 @@ public class StandardBuilderSet extends DefaultBuilderSet {
     }
 
     public boolean isGenerateChangeListener() {
-        return getConfig().getBooleanPropertyValue(StandardBuilderSet.CONFIG_PROPERTY_GENERATE_CHANGELISTENER, false);    }
+        return getConfig().getPropertyValueAsBoolean(StandardBuilderSet.CONFIG_PROPERTY_GENERATE_CHANGELISTENER).booleanValue();
+    }
 
     /**
      * {@inheritDoc}
      */
     public EnumTypeTargetJavaVersion getTargetJavaVersion() {
-        return EnumTypeTargetJavaVersion.valueOf(getConfig().getPropertyValue(StandardBuilderSet.CONFIG_PROPERTY_TARGET_JAVA_VERSION));
+        return EnumTypeTargetJavaVersion.valueOf(getConfig().getPropertyValueAsString(StandardBuilderSet.CONFIG_PROPERTY_TARGET_JAVA_VERSION));
     }
 
     /**
@@ -449,7 +451,7 @@ public class StandardBuilderSet extends DefaultBuilderSet {
      */
     public boolean isUseEnums() {
         return getTargetJavaVersion().isAtLeast(EnumTypeTargetJavaVersion.JAVA_5)
-            && getConfig().getBooleanPropertyValue(StandardBuilderSet.CONFIG_PROPERTY_USE_ENUMS, false);    
+            && getConfig().getPropertyValueAsBoolean(StandardBuilderSet.CONFIG_PROPERTY_USE_ENUMS).booleanValue();    
     }
 
     /**
@@ -457,6 +459,6 @@ public class StandardBuilderSet extends DefaultBuilderSet {
      */
     public boolean isUseTypesafeCollections() {
         return getTargetJavaVersion().isAtLeast(EnumTypeTargetJavaVersion.JAVA_5)
-            && getConfig().getBooleanPropertyValue(StandardBuilderSet.CONFIG_PROPERTY_USE_TYPESAFE_COLLECTIONS, false);    
+            && getConfig().getPropertyValueAsBoolean(StandardBuilderSet.CONFIG_PROPERTY_USE_TYPESAFE_COLLECTIONS).booleanValue();    
     }
 }

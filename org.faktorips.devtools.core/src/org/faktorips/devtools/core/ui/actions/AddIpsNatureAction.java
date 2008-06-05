@@ -58,9 +58,9 @@ import org.eclipse.ui.actions.ActionDelegate;
 import org.faktorips.devtools.core.FaktorIpsClasspathVariableInitializer;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.IpsStatus;
-import org.faktorips.devtools.core.internal.model.ipsproject.IpsArtefactBuilderSetConfig;
 import org.faktorips.devtools.core.internal.model.ipsproject.IpsObjectPath;
 import org.faktorips.devtools.core.internal.model.productcmpt.DateBasedProductCmptNamingStrategy;
+import org.faktorips.devtools.core.model.ipsproject.IIpsArtefactBuilderSetConfigModel;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProjectProperties;
 import org.faktorips.devtools.core.ui.UIToolkit;
@@ -166,7 +166,7 @@ public class AddIpsNatureAction extends ActionDelegate {
             props.setChangesOverTimeNamingConventionIdForGeneratedCode(IpsPlugin.getDefault().getIpsPreferences()
                     .getChangesOverTimeNamingConvention().getId());
             if(targetVersionIsAtLeast5(javaProject)){
-                IpsArtefactBuilderSetConfig config = (IpsArtefactBuilderSetConfig)props.getBuilderSetConfig();
+                IIpsArtefactBuilderSetConfigModel config = props.getBuilderSetConfig();
                 config.setPropertyValue("targetJavaVersion", "5.0");
                 config.setPropertyValue("useTypesafeCollections", "true");
                 config.setPropertyValue("useEnums", "true");

@@ -216,6 +216,11 @@ public interface IIpsProject extends IIpsElement, IProjectNature {
      * object has to be set in the project via setProperties().
      */
     public IIpsProjectProperties getProperties();
+
+    /**
+     * Returns a read only object of the project's properties.
+     */
+    public IIpsProjectProperties getReadOnlyProperties();
     
     /**
      * Sets the project's properties and stores the properties in the project's property file

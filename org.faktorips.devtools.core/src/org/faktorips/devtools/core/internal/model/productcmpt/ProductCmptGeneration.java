@@ -794,7 +794,7 @@ public class ProductCmptGeneration extends IpsObjectGeneration implements IProdu
             }
         }
         
-        IIpsProjectProperties props = getIpsProject().getProperties();
+        IIpsProjectProperties props = getIpsProject().getReadOnlyProperties();
         if (props.isReferencedProductComponentsAreValidOnThisGenerationsValidFromDateRuleEnabled()) {
             validateIfReferencedProductComponentsAreValidOnThisGenerationsValidFromDate(list, ipsProject);
         }

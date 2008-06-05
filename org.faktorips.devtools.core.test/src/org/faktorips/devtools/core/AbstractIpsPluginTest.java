@@ -57,6 +57,7 @@ import org.eclipse.jdt.core.search.SearchEngine;
 import org.eclipse.jdt.core.search.SearchPattern;
 import org.eclipse.jdt.core.search.TypeNameRequestor;
 import org.eclipse.jdt.launching.JavaRuntime;
+import org.faktorips.devtools.core.builder.TestArtefactBuilderSetInfo;
 import org.faktorips.devtools.core.internal.model.DynamicEnumDatatype;
 import org.faktorips.devtools.core.internal.model.DynamicValueDatatype;
 import org.faktorips.devtools.core.internal.model.IpsModel;
@@ -71,6 +72,7 @@ import org.faktorips.devtools.core.model.ipsobject.IIpsObject;
 import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
 import org.faktorips.devtools.core.model.ipsproject.IIpsArtefactBuilderSet;
+import org.faktorips.devtools.core.model.ipsproject.IIpsArtefactBuilderSetInfo;
 import org.faktorips.devtools.core.model.ipsproject.IIpsObjectPath;
 import org.faktorips.devtools.core.model.ipsproject.IIpsPackageFragment;
 import org.faktorips.devtools.core.model.ipsproject.IIpsPackageFragmentRoot;
@@ -688,7 +690,7 @@ public abstract class AbstractIpsPluginTest extends XmlAbstractTestCase {
         props.setBuilderSetId(builderset.getId());
         project.setProperties(props);
         IpsModel model = ((IpsModel)project.getIpsModel());
-        model.setIpsArtefactBuilderSet(project, builderset);
+        model.setIpsArtefactBuilderSetInfos(new IIpsArtefactBuilderSetInfo[]{new TestArtefactBuilderSetInfo(builderset)});
         model.clearValidationCache();
     }
 

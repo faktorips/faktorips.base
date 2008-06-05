@@ -28,7 +28,7 @@ import org.w3c.dom.Element;
 public class IpsArtefactBuilderSetConfigTest extends AbstractIpsPluginTest {
     
     public void testInitFromXml() throws Exception {
-        IpsArtefactBuilderSetConfig config = new IpsArtefactBuilderSetConfig();
+        IpsArtefactBuilderSetConfigModel config = new IpsArtefactBuilderSetConfigModel();
         Document doc = getTestDocument();        
         config.initFromXml(doc.getDocumentElement());
         
@@ -37,12 +37,12 @@ public class IpsArtefactBuilderSetConfigTest extends AbstractIpsPluginTest {
     }
     
     public void testToXml() throws Exception {
-        IpsArtefactBuilderSetConfig config = new IpsArtefactBuilderSetConfig();
+        IpsArtefactBuilderSetConfigModel config = new IpsArtefactBuilderSetConfigModel();
         Document doc = getTestDocument();        
         config.initFromXml(doc.getDocumentElement());
         
         Element el = config.toXml(doc);
-        IpsArtefactBuilderSetConfig newConfig = new IpsArtefactBuilderSetConfig();
+        IpsArtefactBuilderSetConfigModel newConfig = new IpsArtefactBuilderSetConfigModel();
         newConfig.initFromXml(el);
         
         assertEquals("one", newConfig.getPropertyValue("prop1"));

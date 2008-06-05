@@ -227,9 +227,10 @@ public abstract class DefaultJavaSourceFileBuilder extends JavaSourceFileBuilder
      * Log statements should be generated if is enabled and a logging framework connector exists. 
      */
     private boolean checkLoggingGenerationConditions(){
-        boolean generateLogging = getBuilderSet().getConfig().getBooleanPropertyValue(
-                DefaultJavaSourceFileBuilder.CONFIG_PROPERTY_GENERATE_LOGGING, false);
-        return generateLogging && getBuilderSet().getIpsLoggingFrameworkConnector() != null;
+        Boolean generateLogging = getBuilderSet().getConfig().getPropertyValueAsBoolean(
+                DefaultJavaSourceFileBuilder.CONFIG_PROPERTY_GENERATE_LOGGING);
+        generateLogging = generateLogging != null ? generateLogging : Boolean.FALSE; 
+        return generateLogging.booleanValue() && getBuilderSet().getIpsLoggingFrameworkConnector() != null;
     }
     
     private void addLoggingConnectorImports(List usedClasses, JavaCodeFragment frag){

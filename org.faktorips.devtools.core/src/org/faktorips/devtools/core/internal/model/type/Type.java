@@ -465,7 +465,7 @@ public abstract class Type extends BaseIpsObject implements IType {
         }
         if (!isAbstract()) {
             validateIfAllAbstractMethodsAreImplemented(getIpsProject(), list);
-            IIpsProjectProperties props = getIpsProject().getProperties();
+            IIpsProjectProperties props = getIpsProject().getReadOnlyProperties();
             if (props.isDerivedUnionIsImplementedRuleEnabled()) {
                 DerivedUnionsSpecifiedValidator validator = new DerivedUnionsSpecifiedValidator(list, ipsProject);
                 validator.start(this);

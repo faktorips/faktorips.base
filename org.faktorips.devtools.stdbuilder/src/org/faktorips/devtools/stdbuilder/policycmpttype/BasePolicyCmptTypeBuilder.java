@@ -70,19 +70,23 @@ public abstract class BasePolicyCmptTypeBuilder extends AbstractPcTypeBuilder {
     }
 
     public boolean isGenerateChangeListenerSupport() {
-        return getBuilderSet().getConfig().getBooleanPropertyValue(StandardBuilderSet.CONFIG_PROPERTY_GENERATE_CHANGELISTENER, false);
+        return getBuilderSet().getConfig().getPropertyValueAsBoolean(
+                StandardBuilderSet.CONFIG_PROPERTY_GENERATE_CHANGELISTENER).booleanValue();
     }
     
     public boolean isGenerateDeltaSupport() {
-        return getBuilderSet().getConfig().getBooleanPropertyValue(StandardBuilderSet.CONFIG_PROPERTY_GENERATE_DELTA_SUPPORT, false);
+        return getBuilderSet().getConfig().getPropertyValueAsBoolean(
+                StandardBuilderSet.CONFIG_PROPERTY_GENERATE_DELTA_SUPPORT).booleanValue();
     }
 
     public boolean isGenerateCopySupport() {
-        return getBuilderSet().getConfig().getBooleanPropertyValue(StandardBuilderSet.CONFIG_PROPERTY_GENERATE_COPY_SUPPORT, false);
+        return getBuilderSet().getConfig().getPropertyValueAsBoolean(
+                StandardBuilderSet.CONFIG_PROPERTY_GENERATE_COPY_SUPPORT).booleanValue();
     }
 
     public boolean isGenerateVisitorSupport() {
-        return getBuilderSet().getConfig().getBooleanPropertyValue(StandardBuilderSet.CONFIG_PROPERTY_GENERATE_VISITOR_SUPPORT, false);
+        return getBuilderSet().getConfig().getPropertyValueAsBoolean(
+                StandardBuilderSet.CONFIG_PROPERTY_GENERATE_VISITOR_SUPPORT).booleanValue();
     }
 
     /**

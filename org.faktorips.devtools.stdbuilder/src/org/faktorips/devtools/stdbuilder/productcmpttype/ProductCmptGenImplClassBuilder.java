@@ -450,6 +450,9 @@ public class ProductCmptGenImplClassBuilder extends BaseProductCmptTypeBuilder {
         boolean associationFound = false;
         for (int i = 0; i < associations.length; i++) {
             IProductCmptTypeAssociation ass = (IProductCmptTypeAssociation)associations[i];
+            if(!ass.isValid()){
+                continue;
+            }
             if (!ass.isDerived()) {
                 if (associationFound == false) {
                     if (isUseTypesafeCollections()) {

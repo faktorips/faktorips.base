@@ -25,6 +25,7 @@ import org.eclipse.core.runtime.CoreException;
 import org.faktorips.datatype.Datatype;
 import org.faktorips.devtools.core.AbstractIpsPluginTest;
 import org.faktorips.devtools.core.builder.EmptyBuilderSet;
+import org.faktorips.devtools.core.builder.TestArtefactBuilderSetInfo;
 import org.faktorips.devtools.core.internal.model.IpsModel;
 import org.faktorips.devtools.core.internal.model.ipsproject.IpsObjectPath;
 import org.faktorips.devtools.core.internal.model.ipsproject.IpsProjectRefEntry;
@@ -44,6 +45,7 @@ import org.faktorips.devtools.core.model.IpsObjectDependency;
 import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
 import org.faktorips.devtools.core.model.ipsobject.Modifier;
+import org.faktorips.devtools.core.model.ipsproject.IIpsArtefactBuilderSetInfo;
 import org.faktorips.devtools.core.model.ipsproject.IIpsObjectPath;
 import org.faktorips.devtools.core.model.ipsproject.IIpsObjectPathEntry;
 import org.faktorips.devtools.core.model.ipsproject.IIpsPackageFragment;
@@ -540,7 +542,11 @@ public class PolicyCmptTypeTest extends AbstractIpsPluginTest implements Content
         IIpsProjectProperties props = ipsProject.getProperties();
         props.setBuilderSetId(AggregateRootBuilderSet.ID);
         ipsProject.setProperties(props);
-        ((IpsModel)ipsProject.getIpsModel()).setIpsArtefactBuilderSet(ipsProject, new AggregateRootBuilderSet());
+        AggregateRootBuilderSet builderSet = new AggregateRootBuilderSet();
+        builderSet.setIpsProject(ipsProject);
+        ((IpsModel)ipsProject.getIpsModel())
+                .setIpsArtefactBuilderSetInfos(new IIpsArtefactBuilderSetInfo[] { new TestArtefactBuilderSetInfo(
+                        builderSet) });
 
         List dependsOn = Arrays.asList(a.dependsOn());
         assertTrue(dependsOn.contains(IpsObjectDependency.createCompostionMasterDetailDependency(a.getQualifiedNameType(), d1.getQualifiedNameType())));

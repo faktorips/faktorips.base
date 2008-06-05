@@ -269,6 +269,7 @@ public class PolicyCmptTypeAssociationTest extends AbstractIpsPluginTest {
         assertFalse(association.isInverseAssociationApplicable());
 
         TestIpsArtefactBuilderSet builderset = new TestIpsArtefactBuilderSet();
+        builderset.setIpsProject(pcType.getIpsProject());
         setArtefactBuildset(pcType.getIpsProject(), builderset);
         
         association.setAssociationType(AssociationType.COMPOSITION_MASTER_TO_DETAIL);
