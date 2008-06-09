@@ -50,6 +50,14 @@ public class DateValueConverterTest extends TestCase {
         value = converter.getIpsValue("0", ml);
         assertFalse(ml.isEmpty());
         assertEquals("0", value);
+        
+        ml.clear();
+        assertEquals("2008-07-06", converter.getIpsValue("2008-07-06", ml));
+        assertTrue(ml.isEmpty());
+
+        ml.clear();
+        assertEquals("01.02.2009", converter.getIpsValue("01.02.2009", ml));
+        assertFalse(ml.isEmpty());
     }
 
     public void testGetExternalDataValue() {
@@ -71,5 +79,4 @@ public class DateValueConverterTest extends TestCase {
         assertFalse(ml.isEmpty());
         assertEquals(INVALID, value);
     }
-
 }

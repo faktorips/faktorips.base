@@ -40,18 +40,27 @@ public class DateValueConverter implements IValueConverter {
      * {@inheritDoc}
      */
     public String getIpsValue(Object externalDataValue, MessageList messageList) {
-        Date date;
+        Date date = null;
+        boolean error = true;
         if (externalDataValue instanceof Date) {
             date = (Date)externalDataValue;
+            error = false;
         } else if (externalDataValue instanceof Number) {
             date = HSSFDateUtil.getJavaDate(((Number)externalDataValue).doubleValue());
             date = new Date();
+            error = false;
         } else if (externalDataValue instanceof String) {
-            date = DateUtil.parseIsoDateStringToDate((String)externalDataValue);
-        } else {
+            try {
+                date = DateUtil.parseIsoDateStringToDate((String)externalDataValue);
+                error = false;
+            } catch (IllegalArgumentException ignored) {
+            }
+        }
+        
+        if (error){
             messageList.add(ExtSystemsMessageUtil.createConvertExtToIntErrorMessage("" + externalDataValue, externalDataValue //$NON-NLS-1$
                     .getClass().getName(), getSupportedDatatype().getQualifiedName())); 
-            return externalDataValue.toString();
+            return externalDataValue.toString();            
         }
         return datatype.valueToString(date);
     }
