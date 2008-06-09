@@ -40,14 +40,23 @@ public class GregorianCalendarValueConverter implements IValueConverter {
     public String getIpsValue(Object externalDataValue, MessageList messageList) {
         GregorianCalendarDatatype datatype = (GregorianCalendarDatatype)getSupportedDatatype();
         GregorianCalendar cal = new GregorianCalendar();
+        boolean error = true;
         if (externalDataValue instanceof Date) {
             cal.setTime((Date)externalDataValue);
+            error = false;
         } else if (externalDataValue instanceof Number) {
             Date date = new Date(((Number)externalDataValue).longValue());
             cal.setTime(date);
+            error = false;
         } else if (externalDataValue instanceof String) {
-            cal = DateUtil.parseIsoDateStringToGregorianCalendar((String)externalDataValue);
-        } else {
+            try {
+                cal = DateUtil.parseIsoDateStringToGregorianCalendar((String)externalDataValue);
+                error = false;
+            } catch (IllegalArgumentException ignored) {
+            }
+        }
+        
+        if (error) {
             messageList.add(ExtSystemsMessageUtil.createConvertExtToIntErrorMessage(
                                     "" + externalDataValue, externalDataValue.getClass().getName(), getSupportedDatatype().getQualifiedName())); //$NON-NLS-1$
             return externalDataValue.toString();
