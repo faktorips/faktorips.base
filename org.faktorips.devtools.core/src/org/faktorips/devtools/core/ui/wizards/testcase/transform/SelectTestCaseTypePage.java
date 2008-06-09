@@ -42,7 +42,7 @@ public class SelectTestCaseTypePage extends WizardPage {
 	
 	private TransformRuntimeTestCaseWizard wizard;
 	
-    private TextButtonField supertypeField;
+    private TextButtonField testCaseTypeField;
     
     private TextField extensionField;
     
@@ -121,8 +121,8 @@ public class SelectTestCaseTypePage extends WizardPage {
             TestCaseTypeRefControl superTypeControl = 
                 uiToolkit.createTestCaseTypeRefControl(targetIpsPackageFragment.getIpsProject(), parent);
 
-            supertypeField = new TextButtonField(superTypeControl);
-            supertypeField.addChangeListener(new ValueChangeListener(){
+            testCaseTypeField = new TextButtonField(superTypeControl);
+            testCaseTypeField.addChangeListener(new ValueChangeListener(){
                 public void valueChanged(FieldValueChangedEvent e) {
                     wizard.setTestCaseTypeName((String) e.field.getValue());
                 }

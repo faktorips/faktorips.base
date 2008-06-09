@@ -339,10 +339,9 @@ public class TestCaseDetailArea {
         ValueDatatype datatype = null;
         ValueDatatypeControlFactory ctrlFactory = null;
         
-        
         try {
             ITestAttribute testAttribute = attributeValue.findTestAttribute(ipsProject);
-            if (!testAttribute.isBasedOnModelAttribute()){
+            if (testAttribute != null && !testAttribute.isBasedOnModelAttribute()){
                 datatype = testAttribute.findDatatype(ipsProject);
                 ctrlFactory = IpsPlugin.getDefault().getValueDatatypeControlFactory(datatype);
             } else {
@@ -362,9 +361,12 @@ public class TestCaseDetailArea {
             }
         } catch (CoreException e) {
             IpsPlugin.log(e);
-            ctrlFactory = IpsPlugin.getDefault().getValueDatatypeControlFactory(ValueDatatype.STRING);
         }
         
+        if (ctrlFactory == null){
+            ctrlFactory = IpsPlugin.getDefault().getValueDatatypeControlFactory(ValueDatatype.STRING);
+        }
+
         Label label = toolkit.createFormLabel(attributeComposite, StringUtils.capitalize(attributeValue
                 .getTestAttribute()));
         addSectionSelectionListeners(null, label, testPolicyCmptForSelection);

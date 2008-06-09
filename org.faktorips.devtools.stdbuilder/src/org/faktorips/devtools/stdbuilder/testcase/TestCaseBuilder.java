@@ -36,6 +36,7 @@ import org.faktorips.devtools.core.IpsStatus;
 import org.faktorips.devtools.core.builder.AbstractArtefactBuilder;
 import org.faktorips.devtools.core.builder.DefaultBuilderSet;
 import org.faktorips.devtools.core.builder.JavaSourceFileBuilder;
+import org.faktorips.devtools.core.internal.model.ipsobject.DescriptionHelper;
 import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
 import org.faktorips.devtools.core.model.ipsproject.IIpsArtefactBuilderSet;
@@ -220,9 +221,10 @@ public class TestCaseBuilder extends AbstractArtefactBuilder {
      */
     private Element toRuntimeTestCaseXml(Document doc, ITestCase testCase) throws CoreException {
         Element testCaseElm = doc.createElement("TestCase");
-
+        testCaseElm.setAttribute("testCaseType", testCase.getTestCaseType());
+        DescriptionHelper.setDescription(testCaseElm, testCase.getDescription());
         doc.appendChild(testCaseElm);
-
+        
         Element input = doc.createElement("Input");
         Element expectedResult = doc.createElement("ExpectedResult");
 

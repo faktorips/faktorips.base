@@ -85,21 +85,21 @@ public class TransformRuntimeTestCaseWizard extends Wizard implements IImportWiz
 	 * {@inheritDoc}
 	 */
 	public boolean canFinish(){
-		boolean testCaseTypeFound = false;
 		if (StringUtils.isNotEmpty(testCaseTypeName) && targetIpsPackageFragment != null){
 			try {
 				if (targetIpsPackageFragment.getIpsProject().findIpsObject(IpsObjectType.TEST_CASE_TYPE, testCaseTypeName) !=  null){
-					testCaseTypeFound = true;
 					selectTestCaseTypePage.setErrorMsg(""); //$NON-NLS-1$
+                    return true;
 				} else {
 					selectTestCaseTypePage.setErrorMsg(
 							NLS.bind(Messages.TransformRuntimeTestCaseWizard_Error_TestCaseTypeNotExists, testCaseTypeName));
-				}
-			} catch (CoreException e) {
-				// ignore exception
+                }
+			} catch (CoreException ignored) {
 			}
+            return false;
 		}
-		return testCaseTypeFound;
+        // the test case type is optinal
+		return true;
 	}
 	
 	/**

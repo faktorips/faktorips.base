@@ -33,7 +33,8 @@ public class Messages extends NLS {
 		NLS.initializeMessages(BUNDLE_NAME, Messages.class);
 	}
 
-	public static String TestCaseTransformer_Error_FileAlreadyExists;
+	public static String TestCaseTransformer_Error_DuplicateTestAttributeValue;
+    public static String TestCaseTransformer_Error_FileAlreadyExists;
     public static String TestCaseTransformer_Error_TestAttributeWithTypeNotFound;
     public static String TestCaseTransformer_Error_TestPolicyCmptTypeNotFound;
     public static String TestCaseTransformer_MessageTextInput;

@@ -17,7 +17,9 @@
 
 package org.faktorips.devtools.core.ui.wizards.testcase.transform;
 
+import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.List;
 
 import org.apache.commons.lang.StringUtils;
 import org.eclipse.core.resources.IFile;
@@ -37,6 +39,7 @@ import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.osgi.util.NLS;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.IpsStatus;
+import org.faktorips.devtools.core.internal.model.ipsobject.DescriptionHelper;
 import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
 import org.faktorips.devtools.core.model.ipsproject.IIpsPackageFragment;
@@ -83,6 +86,13 @@ public class TestCaseTransformer implements IWorkspaceRunnable {
 
     private IIpsProject ipsProject;
 
+    // store test attributes for each test policy cmpt to check if the attribute is unique
+    // thus if there are more then one elements for the same test parameter then the 
+    // attributes will be added to the correct test policy cmpt
+    // because the input and expected are stored in different paremt elements
+    // but must be put together in one
+    private List uniqueTestAttributeValues = new ArrayList();
+    
     public TestCaseTransformer(IStructuredSelection selection, IIpsPackageFragment targtePackage, String testCaseTypeName, String nameExtension) {
         super();
         this.selection = selection;
@@ -131,8 +141,8 @@ public class TestCaseTransformer implements IWorkspaceRunnable {
         } catch (Exception e) {
             throw new CoreException(new IpsStatus(e));
         }
-        Element elem = XmlUtil.getFirstElement(doc, "TestCase"); //$NON-NLS-1$
-        if (elem == null){
+        Element testCaseElem = XmlUtil.getFirstElement(doc, "TestCase"); //$NON-NLS-1$
+        if (testCaseElem == null){
             // test case node not found, this file is no test case
             return null;
         }
@@ -140,16 +150,30 @@ public class TestCaseTransformer implements IWorkspaceRunnable {
         String testCaseName = file.getName().substring(0, 
                 file.getName().indexOf(file.getFileExtension()) - 1) + nameExtension;
         
+        
+        ITestCase newTestCase = createNewTestCase(root, targetPackageName, testCaseName);
+        
+        // if no test case name is specified in the dialog then use the test case type stored
+        // in the file
+        if (testCaseTypeName.length()==0){
+            testCaseTypeName = testCaseElem.getAttribute("testCaseType");  //$NON-NLS-1$
+            newTestCase.setTestCaseType(testCaseTypeName);        
+        } else {
+            newTestCase.setTestCaseType(testCaseTypeName);        
+        }
+        
+        // assert test case type exists
         type = (ITestCaseType)root.getIpsProject().findIpsObject(IpsObjectType.TEST_CASE_TYPE, testCaseTypeName);
         if (type == null){
             throw new CoreException(new IpsStatus(NLS.bind(Messages.TestCaseTransformer_Error_TestCaseType_Not_Found,testCaseTypeName)));
         }
+
+        initTestPolicyCmpts(XmlUtil.getFirstElement(testCaseElem, "Input"), newTestCase, true); //$NON-NLS-1$
+        initTestPolicyCmpts(XmlUtil.getFirstElement(testCaseElem, "ExpectedResult"), newTestCase, false); //$NON-NLS-1$
         
-        ITestCase newTestCase = createNewTestCase(root, targetPackageName, testCaseName);
-        newTestCase.setTestCaseType(testCaseTypeName);        
+        newTestCase.setDescription(DescriptionHelper.getDescription(testCaseElem));
         
-        initTestPolicyCmpts(XmlUtil.getFirstElement(elem, "Input"), newTestCase, true); //$NON-NLS-1$
-        initTestPolicyCmpts(XmlUtil.getFirstElement(elem, "ExpectedResult"), newTestCase, false); //$NON-NLS-1$
+
         
         newTestCase.getIpsSrcFile().save(true, null);
         
@@ -166,48 +190,53 @@ public class TestCaseTransformer implements IWorkspaceRunnable {
                 } else if ("testrule".equals(elem.getAttribute("type"))){ //$NON-NLS-1$ //$NON-NLS-2$
                     parseTestRule(elem, testCase.newTestRule());
                 } else {
-                    String testPolicyCmptName = elem.getNodeName();
-                    ITestPolicyCmpt testPolicyCmpt = null;
-                    ITestPolicyCmpt[] pcs = testCase.getTestPolicyCmpts();
-                    for (int j = 0; j < pcs.length; j++) {
-                        if (pcs[j].getTestPolicyCmptTypeParameter().equals(testPolicyCmptName)){
-                            testPolicyCmpt = pcs[j];
-                            break;
-                        }
-                    }
-                    if (testPolicyCmpt == null){
-                        // new test policy cmpt
-                        parseTestPolicyCmpt(elem, testCase.newTestPolicyCmpt(), isInput);
-                    } else {
-                        // the element was already parsed, e.g. this could be the expecpected result attribute for an already imported test policy cmpt
-                        ITestPolicyCmptTypeParameter param = testPolicyCmpt.findTestPolicyCmptTypeParameter(ipsProject);
-                        if (param != null){
-                            if (isInput && param.getTestParameterType().equals(TestParameterType.INPUT) && 
-                                    (!isInput && param.isInputParameter() || (isInput && param
-                                    .isExpextedResultParameter()))) {
-                                // the runtime xml contains and input or expected policy cmpt,
-                                // but the corresponding test parameter doesn't specifies such type
-                                // here!
-                                throw new CoreException(new IpsStatus(NLS.bind(
-                                        Messages.TestCaseTransformer_Error_WrongTypeOfTestPolicyCmpt,
-                                        new String[] {
-                                                getTestParameterTypeName(isInput),
-                                                testPolicyCmptName, param.getTestParameterType().toString() })));
-                            }
-                            parseTestPolicyCmptChilds(elem, testPolicyCmpt, isInput);
-                        }
-                    }
+                    parseDefault(elem, testCase, isInput);
                 }
             }
         }
     }
     
-    private void parseTestValue(Element element, ITestValue testValue){
-        if (XmlUtil.getTextNode(element) == null){
-            return;
+    private void parseDefault(Element elem, ITestCase testCase, boolean isInput) throws CoreException {
+        String testPolicyCmptName = elem.getNodeName();
+        ITestPolicyCmpt testPolicyCmptFound = null;
+        ITestPolicyCmpt[] pcs = testCase.getTestPolicyCmpts();
+        for (int j = 0; j < pcs.length; j++) {
+            if (pcs[j].getTestPolicyCmptTypeParameter().equals(testPolicyCmptName)){
+                testPolicyCmptFound = pcs[j];
+                break;
+            }
         }
-        testValue.setValue(XmlUtil.getTextNode(element).getData());
+        if (testPolicyCmptFound == null){
+            // new test policy cmpt
+            parseTestPolicyCmpt(elem, testCase.newTestPolicyCmpt(), isInput);
+        } else {
+            // the element was already parsed, e.g. this could be the expecpected result attribute for an already imported test policy cmpt
+            ITestPolicyCmptTypeParameter param = testPolicyCmptFound.findTestPolicyCmptTypeParameter(ipsProject);
+            if (param != null){
+                if (isInput && param.getTestParameterType().equals(TestParameterType.INPUT) && 
+                        (!isInput && param.isInputParameter() || (isInput && param
+                        .isExpextedResultParameter()))) {
+                    // the runtime xml contains and input or expected policy cmpt,
+                    // but the corresponding test parameter doesn't specifies such type
+                    // here!
+                    throw new CoreException(new IpsStatus(NLS.bind(
+                            Messages.TestCaseTransformer_Error_WrongTypeOfTestPolicyCmpt,
+                            new String[] {
+                                    getTestParameterTypeName(isInput),
+                                    testPolicyCmptName, param.getTestParameterType().toString() })));
+                }
+                parseTestPolicyCmptChilds(elem, testPolicyCmptFound, isInput);
+            }
+        }
+    }
+
+    private void parseTestValue(Element element, ITestValue testValue){
         testValue.setTestValueParameter(element.getNodeName());
+        if (XmlUtil.getTextNode(element) == null){
+            testValue.setValue(null);
+        } else {
+            testValue.setValue(XmlUtil.getTextNode(element).getData());
+        }
     }
     
     private void parseTestRule(Element element, ITestRule testRule){
@@ -269,7 +298,6 @@ public class TestCaseTransformer implements IWorkspaceRunnable {
     }
     
     private void parseTestPolicyCmptChilds(Element element, ITestPolicyCmpt testPolicyCmpt, boolean isInput) throws CoreException {
-        // TODO: Joerg; Methodenkomplexitaet
         // read childs
         NodeList nl = element.getChildNodes();
         for (int i = 0; i < nl.getLength(); i++) {
@@ -279,66 +307,101 @@ public class TestCaseTransformer implements IWorkspaceRunnable {
                     // no type given do nothing 
                     logError(testPolicyCmpt.getIpsObject().getQualifiedName(), Messages.TestCaseTransformer_Error_NoTypeAttributeSpecified);
                 } else if (child.getAttribute("type").equals("property")){ //$NON-NLS-1$ //$NON-NLS-2$
-                    Text textNode = XmlUtil.getTextNode(child);
-                    String value = textNode==null?"":textNode.getData(); //$NON-NLS-1$
-                    ITestAttributeValue testAttrValue = testPolicyCmpt.newTestAttributeValue();
-                    String testAttributeName = getTestAttributeName(testPolicyCmpt, child.getNodeName(), isInput);
-                    if (StringUtils.isEmpty(testAttributeName)) {
-                        // test attribute not found set the invalid value 
-                        testAttrValue.setTestAttribute(child.getNodeName() + "_" + getShortTestParameterTypeName(isInput)); //$NON-NLS-1$
-                        testAttrValue.setValue(value);
-                        continue;
-                    }
-                    testAttrValue.setTestAttribute(testAttributeName);
-                    if (XmlUtil.getTextNode(child) != null) {
-                        testAttrValue.setValue(value);
-                    }
-                    
-                    ITestAttribute attr = null;
-                    try {
-                        attr = testAttrValue.findTestAttribute(ipsProject);
-                    }
-                    catch (CoreException e) {
-                        IpsPlugin.log(e);
-                    }
-                    
-                    if (attr == null) {
-                        testAttrValue.delete();
-                    }
-                    
+                    parsePropertyType(testPolicyCmpt, child, isInput);
                 }else if (child.getAttribute("type").equals("composite")){ //$NON-NLS-1$ //$NON-NLS-2$
                     // this is a child policy component
-                    if (! isInput){
-                        // merge expected results into input elements
-                        ITestPolicyCmptLink[] links = testPolicyCmpt.getTestPolicyCmptLinks(child.getNodeName());
-                        if (links.length>0){
-                            String productCmpt = child.getAttribute("productCmpt"); //$NON-NLS-1$
-                            ITestPolicyCmptLink currlink = links[0];
-                            
-                            for (int j = 0; j < links.length; j++) {
-                                // the name is equal compare the product cmpt
-                                IProductCmpt pc = links[j].findTarget().findProductCmpt(ipsProject);
-                                if (pc != null && StringUtils.isNotEmpty(productCmpt)){
-                                    if (productCmpt.equals(pc.getRuntimeId())){
-                                        currlink = links[j];
-                                        break;
-                                    }
-                                }
-                            }
-                            
-                            parseTestPolicyCmptChilds(child, currlink.findTarget(), isInput);
-                            continue;
-                        }
-                    }
-                    ITestPolicyCmptLink link = testPolicyCmpt.newTestPolicyCmptLink();
-                    link.setTestPolicyCmptTypeParameter(child.getNodeName());
-                    parseTestPolicyCmpt(child, link.newTargetTestPolicyCmptChild(), isInput);
-                
+                    parseCompositeType(testPolicyCmpt, child , isInput);
                 }
             }
         }
     }
     
+    private void parseCompositeType(ITestPolicyCmpt testPolicyCmpt, Element child, boolean isInput) throws CoreException {
+        if (! isInput){
+            // merge expected results into input elements
+            ITestPolicyCmptLink[] links = testPolicyCmpt.getTestPolicyCmptLinks(child.getNodeName());
+            if (links.length>0){
+                String productCmpt = child.getAttribute("productCmpt"); //$NON-NLS-1$
+                ITestPolicyCmptLink currlink = links[0];
+                
+                for (int j = 0; j < links.length; j++) {
+                    // the name is equal compare the product cmpt
+                    IProductCmpt pc = links[j].findTarget().findProductCmpt(ipsProject);
+                    if (pc != null && StringUtils.isNotEmpty(productCmpt)){
+                        if (productCmpt.equals(pc.getRuntimeId())){
+                            currlink = links[j];
+                            break;
+                        }
+                    }
+                }
+                
+                parseTestPolicyCmptChilds(child, currlink.findTarget(), isInput);
+                return;
+            }
+        }
+        ITestPolicyCmptLink link = testPolicyCmpt.newTestPolicyCmptLink();
+        link.setTestPolicyCmptTypeParameter(child.getNodeName());
+        parseTestPolicyCmpt(child, link.newTargetTestPolicyCmptChild(), isInput);
+    }
+
+    private void parsePropertyType(ITestPolicyCmpt testPolicyCmpt, Element child, boolean isInput) throws CoreException {
+        boolean isExtensionAttr = false;
+        Text textNode = XmlUtil.getTextNode(child);
+        String value = textNode==null?"":textNode.getData(); //$NON-NLS-1$
+        String testAttributeName = getTestAttributeName(testPolicyCmpt, child.getNodeName(), isInput);
+        if (StringUtils.isEmpty(testAttributeName)) {
+            // test attribute not found
+            // maybe this is an extension attribute 
+            testAttributeName = child.getNodeName();
+            isExtensionAttr = true;
+        }
+        
+        ITestPolicyCmpt testPolicyCmptToEdit = null;
+        if (isAlreadyFound(testPolicyCmpt, testAttributeName)){
+            testPolicyCmptToEdit = getNextTestPolicyCmpt(testPolicyCmpt, testAttributeName);
+            if (testPolicyCmptToEdit == null){
+                throw new CoreException(new IpsStatus(NLS.bind(Messages.TestCaseTransformer_Error_DuplicateTestAttributeValue, testAttributeName)));
+            }
+        } else {
+            testPolicyCmptToEdit = testPolicyCmpt;
+        }
+        ITestAttributeValue testAttrValue = testPolicyCmptToEdit.newTestAttributeValue();
+        
+        testAttrValue.setTestAttribute(testAttributeName);
+        if (XmlUtil.getTextNode(child) != null) {
+            testAttrValue.setValue(value);
+        }
+        
+        if (isExtensionAttr){
+            return;
+        }
+        
+        ITestAttribute attr = null;
+        try {
+            attr = testAttrValue.findTestAttribute(ipsProject);
+        }
+        catch (CoreException e) {
+            IpsPlugin.log(e);
+        }
+        
+        if (attr == null) {
+            testAttrValue.delete();
+        }
+    }
+
+    // Returns the next test policy cmpt on which the given attribute wasn't added yet
+    private ITestPolicyCmpt getNextTestPolicyCmpt(ITestPolicyCmpt testPolicyCmpt, String testAttributeName) throws CoreException {
+        ITestPolicyCmptLink[] pcs = testPolicyCmpt.getParentTestPolicyCmpt().getTestPolicyCmptLinks(testPolicyCmpt.getTestParameterName());
+        
+        for (int j = 0; j < pcs.length; j++) {
+            ITestPolicyCmpt cmpt = pcs[j].findTarget();
+            if (! isAlreadyFound(cmpt, testAttributeName)){
+                return cmpt;
+            }
+        }
+        return null;
+    }
+
     /*
      * Creates and returns a new test case object. The given package and name specified the full qualified name
      * of the new test case.
@@ -484,5 +547,14 @@ public class TestCaseTransformer implements IWorkspaceRunnable {
         if (importedTestCase == 0){
             IpsPlugin.log(new IpsStatus(IStatus.WARNING, NLS.bind(Messages.TestCaseTransformer_WarningNoTestCasesFound, RUNTIME_TEST_CASES_EXTENSION), null));
         }
+    }
+    
+    private boolean isAlreadyFound(ITestPolicyCmpt cmpt, String attributeName){
+        String key = cmpt + "#" + attributeName; //$NON-NLS-1$
+        if (uniqueTestAttributeValues.contains(key)){
+            return true;
+        }
+        uniqueTestAttributeValues.add(key);
+        return false;
     }
 }
