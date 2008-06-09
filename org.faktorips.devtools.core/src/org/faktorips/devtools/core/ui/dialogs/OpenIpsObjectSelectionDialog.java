@@ -16,8 +16,11 @@ package org.faktorips.devtools.core.ui.dialogs;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import org.eclipse.jface.dialogs.Dialog;
@@ -56,6 +59,13 @@ public class OpenIpsObjectSelectionDialog extends AbstractElementListSelectionDi
     private static final String IPSOBJECTTYPESFILTER_KEY = "IpsObjectTypesFilter"; //$NON-NLS-1$
 
     private Object[] fElements;
+
+    // Map contains all duplicate elements, this map is used by the label provider
+    // to show the project and root if the name is duplicate
+    // Remark: the super class needs the label provider on construction time
+    // thus we must use a static map to check the duplicates but
+    // the dialog will be opened modular, thus a static helper map doesn't matter
+    private static Map duplicateNamesMap;
     
     private IpsObjectType[] types;
     private Table filterList;
@@ -68,6 +78,43 @@ public class OpenIpsObjectSelectionDialog extends AbstractElementListSelectionDi
     private ExpandableComposite expandableComposite;
 
     private Composite thisDialogArea;
+
+    public static class DefaultLabelProviderDuplicateSupport extends DefaultLabelProvider {
+        public DefaultLabelProviderDuplicateSupport() {
+            super(true);
+        }
+
+        /**
+         * {@inheritDoc}
+         */
+        public String getText(Object element) {
+            boolean isIpsSrcFile = element instanceof IIpsSrcFile;
+
+            String label = super.getText(element);
+            if (isDuplicate(getNameFor(element, isIpsSrcFile))) {
+                label += " - " + getAdditionalLabel(element, isIpsSrcFile);
+            }
+            return label;
+        }
+
+        private String getNameFor(Object element, boolean isIpsSrcFile) {
+            if (isIpsSrcFile) {
+                return ((IIpsSrcFile)element).getName();
+            } else {
+                return ((IIpsObject)element).getName();
+            }
+        }
+
+        private String getAdditionalLabel(Object element, boolean isIpsSrcFile) {
+            IIpsPackageFragment fragment;
+            if (isIpsSrcFile) {
+                fragment = ((IIpsSrcFile)element).getIpsPackageFragment();
+            } else {
+                fragment = ((IIpsObject)element).getIpsPackageFragment();
+            }
+            return getPackageSrcLabel(fragment);
+        }
+    }
     
     /**
      * Creates a list selection dialog.
@@ -76,7 +123,7 @@ public class OpenIpsObjectSelectionDialog extends AbstractElementListSelectionDi
      * @param renderer the label renderer.
      */
     public OpenIpsObjectSelectionDialog(Shell parent, String dialogTitle, String dialogMessage) {
-        super(parent, DefaultLabelProvider.createWithIpsSourceFileMapping());
+        super(parent, new DefaultLabelProviderDuplicateSupport());
         setTitle(dialogTitle);
         setMessage(dialogMessage);
         setIgnoreCase(true);
@@ -98,12 +145,48 @@ public class OpenIpsObjectSelectionDialog extends AbstractElementListSelectionDi
      * 
      * @param elements the elements of the list.
      */
-    public void setElements(Object[] elements) {
-        if (elements instanceof IIpsObject[] || elements instanceof IIpsSrcFile[]) {
+    public void setElements(final Object[] elements) {
+        final boolean isIpsObject = elements instanceof IIpsObject[];
+        final boolean isIpsSrcFile = elements instanceof IIpsSrcFile[];
+
+        if (isIpsObject || isIpsSrcFile) {
             fElements = elements;
+            checkDuplicates(elements, isIpsSrcFile);
         }
     }
 
+    /*
+     * Store duplicate objects in a seperate hash, duplicate entries will be displayed with
+     * additional package info in their label
+     */
+    private void checkDuplicates(final Object[] elements, final boolean isIpsSrcFile) {
+        duplicateNamesMap = Collections.synchronizedMap(new HashMap(elements.length));
+        HashMap map = new HashMap(elements.length);
+        for (int i = 0; i < elements.length; i++) {
+            String name = getName(elements[i], isIpsSrcFile);
+            if (map.get(name) != null) {
+                duplicateNamesMap.put(name, name);
+            } else {
+                map.put(name, name);
+            }
+        }
+    }
+
+    private String getName(Object object, boolean isIpsSrcFile){
+        if (isIpsSrcFile){
+            return ((IIpsSrcFile) object).getName();
+        } else {
+            return ((IIpsObject) object).getName();
+        }
+    }
+    
+    /*
+     * Returns true if the given object name is stored more then once in the list
+     */
+    private static boolean isDuplicate(String name){
+        return duplicateNamesMap != null && duplicateNamesMap.get(name)!=null;
+    }
+    
     /**
      * Sets the types of the filter list.
      * 
@@ -197,19 +280,21 @@ public class OpenIpsObjectSelectionDialog extends AbstractElementListSelectionDi
                     packageInfo.setImage(null);
                 } else if (selection[0] instanceof IIpsObject) {
                     IIpsPackageFragment frgmt = ((IIpsObject)selection[0]).getIpsPackageFragment();
-                    String packageSource = frgmt.getName();
-                    packageSource += " - " + frgmt.getIpsProject().getName() + "/" + frgmt.getRoot().getName(); //$NON-NLS-1$ //$NON-NLS-2$
-                    packageInfo.setText(packageSource);
+                    packageInfo.setText(getPackageSrcLabel(frgmt));
                     packageInfo.setImage(fFilteredList.getLabelProvider().getImage(frgmt));
                 } else if (selection[0] instanceof IIpsSrcFile) {
                     IIpsPackageFragment frgmt = ((IIpsSrcFile)selection[0]).getIpsPackageFragment();
-                    String packageSource = frgmt.getName();
-                    packageSource += " - " + frgmt.getIpsProject().getName() + "/" + frgmt.getRoot().getName(); //$NON-NLS-1$ //$NON-NLS-2$
-                    packageInfo.setText(packageSource);
+                    packageInfo.setText(getPackageSrcLabel(frgmt));
                     packageInfo.setImage(fFilteredList.getLabelProvider().getImage(frgmt));
                 }
             }
         });
+    }
+    
+    private static String getPackageSrcLabel(IIpsPackageFragment frgmt){
+        String packageSource = frgmt.getName();
+        packageSource += " - /" + frgmt.getIpsProject().getName() + "/" + frgmt.getRoot().getName(); //$NON-NLS-1$ //$NON-NLS-2$
+        return packageSource;
     }
     
     private void createTypeList(Composite contents) {
