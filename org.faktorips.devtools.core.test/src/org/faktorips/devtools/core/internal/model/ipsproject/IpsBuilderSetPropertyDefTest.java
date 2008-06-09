@@ -113,8 +113,11 @@ public class IpsBuilderSetPropertyDefTest extends TestCase {
         IIpsBuilderSetPropertyDef propertyDef = IpsBuilderSetPropertyDef.loadExtensions(propertyDefEl, null, "builderSetId", logger, null);
 
         assertTrue(logger.getLogEntries().isEmpty());
-        assertEquals(new Integer(1), propertyDef.getDefaultValue(null));
-        assertEquals(new Integer(0), propertyDef.getDisableValue(null));
+        assertEquals("1", propertyDef.getDefaultValue(null));
+        assertEquals(new Integer(1), propertyDef.parseValue(propertyDef.getDefaultValue(null)));
+        
+        assertEquals("0", propertyDef.getDisableValue(null));
+        assertEquals(new Integer(0), propertyDef.parseValue(propertyDef.getDisableValue(null)));
         
         assertNotNull(propertyDef.validateValue("hallo"));
         assertNull(propertyDef.validateValue("1"));
@@ -144,8 +147,11 @@ public class IpsBuilderSetPropertyDefTest extends TestCase {
 
         assertTrue(logger.getLogEntries().isEmpty());
         
-        assertEquals(Boolean.TRUE, propertyDef.getDefaultValue(null));
-        assertEquals(Boolean.FALSE, propertyDef.getDisableValue(null));
+        assertEquals("true", propertyDef.getDefaultValue(null));
+        assertEquals(Boolean.TRUE, propertyDef.parseValue(propertyDef.getDefaultValue(null)));
+
+        assertEquals("false", propertyDef.getDisableValue(null));
+        assertEquals(Boolean.FALSE, propertyDef.parseValue(propertyDef.getDisableValue(null)));
         
     }
 
@@ -176,7 +182,10 @@ public class IpsBuilderSetPropertyDefTest extends TestCase {
         IIpsBuilderSetPropertyDef propertyDef = IpsBuilderSetPropertyDef.loadExtensions(propertyDefEl, registry, "builderSetId", logger, null);
         
         assertEquals("javaLoggingConnector", propertyDef.getDefaultValue(null));
-        assertEquals(null, propertyDef.getDisableValue(null));
+        assertEquals("javaLoggingConnector", propertyDef.parseValue(propertyDef.getDefaultValue(null)));
+        
+        assertEquals("null", propertyDef.getDisableValue(null));
+        assertNull(propertyDef.parseValue(propertyDef.getDisableValue(null)));
         
         assertNotNull(propertyDef.validateValue("anotherConnector"));
         assertNull(propertyDef.validateValue("javaLoggingConnector"));
