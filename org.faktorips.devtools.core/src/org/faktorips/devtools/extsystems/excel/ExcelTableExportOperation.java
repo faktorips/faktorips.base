@@ -48,36 +48,27 @@ import org.faktorips.util.message.MessageList;
  */
 public class ExcelTableExportOperation implements IWorkspaceRunnable {
 
-    /**
-     * The maximum number of rows allowed in an Excel sheet
-     */
+    /* The maximum number of rows allowed in an Excel sheet */
     private static final short MAX_ROWS = Short.MAX_VALUE;
 
-    /**
-     * The contents to export
-     */
+    /* The contents to export */
     private ITableContents contents;
 
-    /**
-     * The qualified name of the target-file for export.
-     */
+    /* The qualified name of the target-file for export. */
     private String filename;
 
-    /**
-     * type to be used for cells with a date. Dates a treated as numbers by excel, so the only way
-     * to display a date as a date and not as a stupid number is to format the cell :-(
-     */
+    /* Type to be used for cells with a date. Dates a treated as numbers by excel, so the only way
+     * to display a date as a date and not as a stupid number is to format the cell :-( */
     private HSSFCellStyle dateStyle = null;
 
-    /**
-     * the format to use to convert data.
-     */
+    /* The format to use to convert data. */
     private ExcelTableFormat format;
 
-    /**
-     * The string to use if the value is null.
-     */
+    /* The string to use if the value is null. */
     private String nullRepresentationString;
+
+    /* Column header names are included or not */
+    private boolean exportColumnHeaderRow;
 
     /**
      * datatypes for the columns. The datatype at index 1 is the datatype defined in the structure
@@ -90,18 +81,21 @@ public class ExcelTableExportOperation implements IWorkspaceRunnable {
      */
     private MessageList messageList;
 
+
     /**
      * @param contents The contents to export.
      * @param filename The name of the file to export to.
      * @param format The format to use for transforming the data.
      * @param nullRepresentationString The string to use as replacement for <code>null</code>.
+     * @param exportColumnHeaderRow <code>true</code> if the header names will be included in the exported format
      */
     public ExcelTableExportOperation(ITableContents contents, String filename, ExcelTableFormat format,
-            String nullRepresentationString, MessageList list) {
+            String nullRepresentationString, boolean exportColumnHeaderRow, MessageList list) {
         this.contents = contents;
         this.filename = filename;
         this.format = format;
         this.nullRepresentationString = nullRepresentationString;
+        this.exportColumnHeaderRow = exportColumnHeaderRow;
         this.messageList = list;
     }
 
@@ -168,10 +162,12 @@ public class ExcelTableExportOperation implements IWorkspaceRunnable {
 
         monitor.worked(1);
 
-        createHeader(sheet, structure.getColumns());
+        // FS#1188 — Tabelleninhalte exportieren: Checkbox "mit Spaltenüberschrift" und Zielordner
+        createHeader(sheet, structure.getColumns(), exportColumnHeaderRow);
+
         monitor.worked(1);
 
-        createDataCells(sheet, currentGeneration, structure, monitor);
+        createDataCells(sheet, currentGeneration, structure, monitor, exportColumnHeaderRow);
 
         try {
             if (!monitor.isCanceled()) {
@@ -191,10 +187,14 @@ public class ExcelTableExportOperation implements IWorkspaceRunnable {
      * 
      * @param sheet The sheet where to create the header
      * @param columns The columsn defined by the Structure.
+     * @param exportColumnHeaderRow2 
      * 
      * @throws CoreException
      */
-    private void createHeader(HSSFSheet sheet, IColumn[] columns) throws CoreException {
+    private void createHeader(HSSFSheet sheet, IColumn[] columns, boolean exportColumnHeaderRow) throws CoreException {
+        if (!exportColumnHeaderRow){
+            return;
+        }
         HSSFRow headerRow = sheet.createRow(0);
         for (int i = 0; i < columns.length; i++) {
             headerRow.createCell((short)i).setCellValue(columns[i].getName());
@@ -208,6 +208,7 @@ public class ExcelTableExportOperation implements IWorkspaceRunnable {
      * @param generation The generation of the content to get the values from
      * @param structure The structure the content is bound to.
      * @param monitor The monitor to display the progress.
+     * @param exportColumnHeaderRow column header names included or not
      * 
      * @throws CoreException thrown if an error occurs during the search for the datatypes of the
      *             structure.
@@ -215,7 +216,7 @@ public class ExcelTableExportOperation implements IWorkspaceRunnable {
     private void createDataCells(HSSFSheet sheet,
             ITableContentsGeneration generation,
             ITableStructure structure,
-            IProgressMonitor monitor) throws CoreException {
+            IProgressMonitor monitor, boolean exportColumnHeaderRow) throws CoreException {
 
         datatypes = new Datatype[contents.getNumOfColumns()];
         for (int i = 0; i < datatypes.length; i++) {
@@ -223,8 +224,9 @@ public class ExcelTableExportOperation implements IWorkspaceRunnable {
         }
 
         IRow[] contentRows = generation.getRows();
+        int offest = exportColumnHeaderRow ? 1 : 0;
         for (int i = 0; i < generation.getRows().length; i++) {
-            HSSFRow sheetRow = sheet.createRow(i + 1); // row 0 already used for header
+            HSSFRow sheetRow = sheet.createRow(i + offest);
 
             for (int j = 0; j < contents.getNumOfColumns(); j++) {
                 HSSFCell cell = sheetRow.createCell((short)j);

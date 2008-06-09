@@ -17,22 +17,23 @@
 
 package org.faktorips.devtools.core.ui.wizards.tableexport;
 
-import java.io.File;
-
+import org.apache.commons.lang.StringUtils;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jdt.core.IJavaElement;
 import org.eclipse.jdt.core.JavaModelException;
+import org.eclipse.jface.dialogs.IDialogSettings;
 import org.eclipse.jface.dialogs.IMessageProvider;
 import org.eclipse.jface.viewers.IStructuredSelection;
-import org.eclipse.jface.wizard.WizardPage;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Text;
+import org.eclipse.ui.dialogs.WizardDataTransferPage;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.model.IIpsElement;
 import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
@@ -40,9 +41,11 @@ import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.tablecontents.ITableContents;
 import org.faktorips.devtools.core.ui.UIToolkit;
+import org.faktorips.devtools.core.ui.controller.fields.CheckboxField;
 import org.faktorips.devtools.core.ui.controller.fields.FieldValueChangedEvent;
 import org.faktorips.devtools.core.ui.controller.fields.TextButtonField;
 import org.faktorips.devtools.core.ui.controller.fields.ValueChangeListener;
+import org.faktorips.devtools.core.ui.controls.Checkbox;
 import org.faktorips.devtools.core.ui.controls.FileSelectionControl;
 import org.faktorips.devtools.core.ui.controls.IpsProjectRefControl;
 import org.faktorips.devtools.core.ui.controls.TableContentsRefControl;
@@ -53,8 +56,13 @@ import org.faktorips.util.StringUtil;
  * 
  * @author Thorsten Waertel
  */
-public class TableExportPage extends WizardPage implements ValueChangeListener {
-	
+public class TableExportPage extends WizardDataTransferPage implements ValueChangeListener {
+    public static final String PAGE_NAME= "TableExportPage"; //$NON-NLS-1$
+
+    // Stored widget contents
+    private static final String EXPORT_WITH_COLUMN_HEADER = PAGE_NAME + ".EXPORT_WITH_COLUMN_HEADER";
+    private static final String NULL_REPRESENTATION = PAGE_NAME + ".NULL_REPRESENTATION"; //$NON-NLS-1$
+    
     // the resource that was selected in the workbench or null if none.
     private IResource selectedResource;
 
@@ -68,6 +76,7 @@ public class TableExportPage extends WizardPage implements ValueChangeListener {
     private TextButtonField filenameField;
     private TextButtonField projectField;
     private TextButtonField contentsField;
+    private CheckboxField exportWithColumnHeaderRowField;
     
     private AbstractExternalTableFormat[] formats;
     
@@ -76,6 +85,42 @@ public class TableExportPage extends WizardPage implements ValueChangeListener {
     
     // page control as defined by the wizard page class
     private Composite pageControl;
+
+    /*
+     * File selection with default name. The default name will be derived from the
+     * current selected table contents name.
+     */
+    private class FileSelectionDialogWithDefault extends FileSelectionControl{
+        public FileSelectionDialogWithDefault(Composite parent, UIToolkit toolkit) {
+            super(parent, toolkit);
+        }
+
+        /**
+         * {@inheritDoc}
+         */
+        protected void buttonClicked() {
+            String previousFilename = getFilename();
+            
+            // if there is no previous filename use the default filename
+            setFilename(StringUtils.isEmpty(previousFilename) ? getDefaultFilename() : previousFilename);
+            
+            // if no file was selected (e.g. cancel clicked)
+            // set the previous filename
+            if (super.askForFilename() == null) {
+                setFilename(previousFilename);
+            }
+        }
+        
+        private String getDefaultFilename(){
+            String contentsName = contentsField.getText();
+            AbstractExternalTableFormat format = getFormat();
+            String extension = ""; //$NON-NLS-1$
+            if (format != null) {
+                extension = format.getDefaultExtension();
+            }
+            return StringUtil.unqualifiedName(contentsName) + extension;
+        }
+    }
     
 	/**
 	 * @param pageName
@@ -136,18 +181,25 @@ public class TableExportPage extends WizardPage implements ValueChangeListener {
         fileFormatControl.select(0);
 
         toolkit.createFormLabel(lowerComposite, Messages.TableExportPage_labelName); 
-        filenameField = new TextButtonField(new FileSelectionControl(lowerComposite, toolkit));
+        filenameField = new TextButtonField(new FileSelectionDialogWithDefault(lowerComposite, toolkit));
         filenameField.addChangeListener(this);
 
         toolkit.createFormLabel(lowerComposite, Messages.TableExportPage_labelNullRepresentation);
         nullRepresentation = toolkit.createText(lowerComposite);
         nullRepresentation.setText(IpsPlugin.getDefault().getIpsPreferences().getNullPresentation());
         
+        Checkbox withColumnHeaderRow = toolkit.createCheckbox(pageControl, "First row contains column header");
+        exportWithColumnHeaderRowField = new CheckboxField(withColumnHeaderRow);
+        exportWithColumnHeaderRowField.addChangeListener(this);
+        withColumnHeaderRow.setChecked(true);
+        
         setDefaults(selectedResource);
 
         validateInput = true;
+        
+        restoreWidgetValues();
 	}
-
+    
     /**
      * Derives the default values for source folder and package from
      * the selected resource.
@@ -201,6 +253,10 @@ public class TableExportPage extends WizardPage implements ValueChangeListener {
     public String getNullRepresentation() {
     	return nullRepresentation.getText();
     }
+
+    public boolean isExportColumnHeaderRow() {
+        return exportWithColumnHeaderRowField.getCheckbox().isChecked();
+    }
     
     protected void filenameChanged() {
         
@@ -211,18 +267,9 @@ public class TableExportPage extends WizardPage implements ValueChangeListener {
     }
     
     protected void contentsChanged() {
-        if (getFilename().equals("")) { //$NON-NLS-1$
-            String contentsName = contentsField.getText();
-            AbstractExternalTableFormat format = getFormat();
-            String extension = ""; //$NON-NLS-1$
-            if (format != null) {
-            	extension = format.getDefaultExtension();
-            }
-            
-            setFilename(new File(
-                    System.getProperty("user.home") +  //$NON-NLS-1$
-                    File.separator + StringUtil.unqualifiedName(contentsName) + extension).getAbsolutePath());
-        }
+        // table contents has changed, thus clear the previous entered file name
+        // because maybe the filename equals the table contents name
+        setFilename("");
     }
     
     protected void projectChanged() {
@@ -364,6 +411,44 @@ public class TableExportPage extends WizardPage implements ValueChangeListener {
         && !"".equals(contentsField.getText()) //$NON-NLS-1$
         && fileFormatControl.getSelectionIndex() != -1; 
         setPageComplete(complete);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    protected void restoreWidgetValues() {
+        IDialogSettings settings = getDialogSettings();
+        if (settings == null){
+            return;
+        }
+        exportWithColumnHeaderRowField.getCheckbox().setChecked(settings.getBoolean(EXPORT_WITH_COLUMN_HEADER));
+        nullRepresentation.setText(settings.get(NULL_REPRESENTATION));
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public void saveWidgetValues() {
+        IDialogSettings settings = getDialogSettings();
+        if (settings == null){
+            return;
+        }
+        settings.put(EXPORT_WITH_COLUMN_HEADER, exportWithColumnHeaderRowField.getCheckbox().isChecked());
+        settings.put(NULL_REPRESENTATION, nullRepresentation.getText());
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    protected boolean allowNewContainerName() {
+        return false;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public void handleEvent(Event event) {
+        
     }
     
 }

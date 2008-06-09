@@ -26,6 +26,7 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.core.runtime.jobs.ISchedulingRule;
 import org.eclipse.jface.dialogs.IDialogConstants;
+import org.eclipse.jface.dialogs.IDialogSettings;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.dialogs.ProgressMonitorDialog;
 import org.eclipse.jface.operation.ModalContext;
@@ -48,16 +49,15 @@ import org.faktorips.util.message.MessageList;
  * @author Thorsten Waertel, Thorsten Guenther
  */
 public class TableExportWizard extends Wizard implements IExportWizard {
-
-	/**
-	 * The selection this wizard is called on.
-	 */
+    private static String DIALOG_SETTINGS_KEY = "TableExportWizard"; //$NON-NLS-1$
+    
+	/* The selection this wizard is called on. */
 	private IStructuredSelection selection;
 
-	/**
-	 * The details-page of this wizard
-	 */
+	/* The details-page of this wizard */
 	private TableExportPage exportPage;
+
+    private boolean hasNewDialogSettings;
 
 	/**
 	 * Create a new TableExportWizard
@@ -66,6 +66,16 @@ public class TableExportWizard extends Wizard implements IExportWizard {
 		super();
 		setWindowTitle(Messages.TableExport_title);
         this.setDefaultPageImageDescriptor(IpsPlugin.getDefault().getImageDescriptor("wizards/TableExportWizard.png")); //$NON-NLS-1$
+
+        IDialogSettings workbenchSettings= IpsPlugin.getDefault().getDialogSettings();
+        IDialogSettings section= workbenchSettings.getSection(DIALOG_SETTINGS_KEY); //$NON-NLS-1$
+        if (section == null)
+            hasNewDialogSettings = true;
+        else {
+            hasNewDialogSettings = false;
+            setDialogSettings(section);
+        }
+
 	}
 
 	/**
@@ -90,6 +100,7 @@ public class TableExportWizard extends Wizard implements IExportWizard {
 			final String exportFilename = exportPage.getFilename();
 			final AbstractExternalTableFormat format = exportPage.getFormat();
 			final String nullRepresentation = exportPage.getNullRepresentation();
+			final boolean exportColumnHeaderRow = exportPage.isExportColumnHeaderRow();
 
 			File exportFile = new File(exportFilename);
 			if (exportFile.exists()) {
@@ -109,7 +120,7 @@ public class TableExportWizard extends Wizard implements IExportWizard {
 			WorkspaceModifyOperation operation = new WorkspaceModifyOperation(schedulingRule) {
 				protected void execute(IProgressMonitor monitor) throws CoreException, InvocationTargetException, InterruptedException {
 					MessageList messageList = new MessageList();
-					IWorkspaceRunnable runnable = format.getExportTableOperation(exportContents, new Path(exportFilename), nullRepresentation, messageList);
+					IWorkspaceRunnable runnable = format.getExportTableOperation(exportContents, new Path(exportFilename), nullRepresentation, exportColumnHeaderRow, messageList);
 					runnable.run(monitor);
 
 					if (!messageList.isEmpty()) {
@@ -128,6 +139,9 @@ public class TableExportWizard extends Wizard implements IExportWizard {
             pmd.open();
             ModalContext.run(operation, true, pmd.getProgressMonitor(), getShell().getDisplay());
             pmd.close();
+            
+            saveDialogSettings();
+            
 		} catch (InterruptedException ignoredException){
         } catch (Exception e) {
 			Throwable throwable = e;
@@ -136,7 +150,9 @@ public class TableExportWizard extends Wizard implements IExportWizard {
 			}
 			IpsPlugin.logAndShowErrorDialog(new IpsStatus(
 					"An error occurred during the export process.", throwable)); //$NON-NLS-1$
-		} 
+		} finally {
+            exportPage.saveWidgetValues();
+        }
 
 		// this implementation of this method should always return true since
 		// this causes the wizard dialog to close.
@@ -145,7 +161,17 @@ public class TableExportWizard extends Wizard implements IExportWizard {
 		return true;
 	}
 
-	/**
+	private void saveDialogSettings() {
+        // save the dialog settings
+        if (hasNewDialogSettings) {
+            IDialogSettings workbenchSettings = IpsPlugin.getDefault().getDialogSettings();
+            IDialogSettings section = workbenchSettings.getSection(DIALOG_SETTINGS_KEY);
+            section = workbenchSettings.addNewSection(DIALOG_SETTINGS_KEY);
+            setDialogSettings(section);
+        }
+    }
+
+    /**
 	 * {@inheritDoc}
 	 */
 	public void init(IWorkbench workbench, IStructuredSelection selection) {

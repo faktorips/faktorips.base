@@ -39,7 +39,7 @@ import org.faktorips.devtools.core.ui.wizards.tableimport.TableImportWizard;
  */
 public class TableImportExportAction extends IpsAction {
     private Shell shell;
-    private IWorkbenchWizard wizard;
+    private boolean isImport;
     
     private static class SimpleSelectionProvider implements ISelectionProvider {
         private ITableContents tableContents;
@@ -96,22 +96,15 @@ public class TableImportExportAction extends IpsAction {
         setText(Messages.TableImportExportAction_importActionTitle);
         setToolTipText(Messages.TableImportExportAction_importActionTooltip);
         setImageDescriptor(IpsPlugin.getDefault().getImageDescriptor("ImportTableContents.gif")); //$NON-NLS-1$
-        TableImportWizard tableImportWizard = new TableImportWizard();
-        tableImportWizard.setImportIntoExisting(true);
-        this.wizard = tableImportWizard;
+        this.isImport = true;
     }
 
     protected void initExportAction() {
         setText(Messages.TableImportExportAction_exportActionTitle);
         setToolTipText(Messages.TableImportExportAction_exportActionTooltip);
         setImageDescriptor(IpsPlugin.getDefault().getImageDescriptor("ExportTableContents.gif")); //$NON-NLS-1$
-        this.wizard = new TableExportWizard(); 
     }
     
-    private boolean isImport() {
-        return wizard instanceof TableImportWizard;
-    }
-
     /**
      * {@inheritDoc}
      */
@@ -124,11 +117,19 @@ public class TableImportExportAction extends IpsAction {
      * Returns <code>true</code> if the dialog was closed with the ok return code otherwise <code>false</code>.
      */
     protected boolean runInternal(IStructuredSelection selection) {
+        IWorkbenchWizard wizard;
+        if (isImport){
+            wizard = new TableImportWizard();
+            ((TableImportWizard)wizard).setImportIntoExisting(true);
+        } else {
+            wizard = new TableExportWizard(); 
+        }
+        
         if (! (selection.getFirstElement() instanceof ITableContents)){
             IpsPlugin.logAndShowErrorDialog(new IpsStatus("The selected element is no table contents!")); //$NON-NLS-1$
         }
         
-        if (isImport()){
+        if (isImport){
             if (! checkAndSaveDirtyStateBeforeImport((ITableContents)selection.getFirstElement())){
                 // abort import
                 return false;

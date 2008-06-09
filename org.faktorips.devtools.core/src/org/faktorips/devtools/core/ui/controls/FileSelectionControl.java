@@ -19,7 +19,6 @@ package org.faktorips.devtools.core.ui.controls;
 
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.FileDialog;
-import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.ui.UIToolkit;
 
 /**
@@ -35,21 +34,25 @@ public class FileSelectionControl extends TextButtonControl {
     }
     
 	/**
-	 * {@inheritDoc}
-	 */
-	protected void buttonClicked() {
-        try {
-    		FileDialog dialog = new FileDialog(getShell());
-    		dialog.setFileName(getText());
-    		String newFile = dialog.open();
-    		if (newFile != null) {
-    			setText(newFile);
-    		}
-        } catch (Exception e) {
-            IpsPlugin.logAndShowErrorDialog(e);
+     * {@inheritDoc}
+     */
+    protected void buttonClicked() {
+        askForFilename();
+    }
+    
+    /**
+     * Open the file dialog to ask the user to select the file.
+     * Returns the selected filename
+     */
+    protected String askForFilename() {
+        FileDialog dialog = new FileDialog(getShell());
+        dialog.setFileName(getText());
+        String newFile = dialog.open();
+        if (newFile != null) {
+            setText(newFile);
         }
-		
-	}
+        return newFile;
+    }
 
 	/**
 	 * @return Returns the file.

@@ -124,7 +124,7 @@ public class ExcelTableExportOperationTest extends AbstractIpsPluginTest {
     public void testExportValid() throws Exception {
         MessageList ml = new MessageList();
         fillValid();
-        ExcelTableExportOperation op = new ExcelTableExportOperation(contents, file.getName(), format, "NULL", ml);
+        ExcelTableExportOperation op = new ExcelTableExportOperation(contents, file.getName(), format, "NULL", true, ml);
         op.run(new NullProgressMonitor());
         assertTrue(ml.isEmpty());
     }
@@ -136,7 +136,7 @@ public class ExcelTableExportOperationTest extends AbstractIpsPluginTest {
         // too many columns
         IColumn col = structure.newColumn();
 
-        ExcelTableExportOperation op = new ExcelTableExportOperation(contents, file.getName(), format, "NULL", ml);
+        ExcelTableExportOperation op = new ExcelTableExportOperation(contents, file.getName(), format, "NULL", true, ml );
         op.run(new NullProgressMonitor());
         assertFalse(ml.isEmpty());
 
@@ -157,7 +157,7 @@ public class ExcelTableExportOperationTest extends AbstractIpsPluginTest {
     public void testExportInvalid() throws Exception {
         MessageList ml = new MessageList();
         createInvalid();
-        ExcelTableExportOperation op = new ExcelTableExportOperation(contents, file.getName(), format, "NULL", ml);
+        ExcelTableExportOperation op = new ExcelTableExportOperation(contents, file.getName(), format, "NULL", true, ml);
         op.run(new NullProgressMonitor());
         assertEquals(7, ml.getNoOfMessages());
     }

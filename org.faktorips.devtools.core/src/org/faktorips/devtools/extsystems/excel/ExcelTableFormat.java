@@ -41,8 +41,8 @@ public class ExcelTableFormat extends AbstractExternalTableFormat {
 	/**
 	 * {@inheritDoc}
 	 */
-	public IWorkspaceRunnable getExportTableOperation(ITableContents contents, IPath filename, String nullRepresentationString, MessageList list) {
-		return new ExcelTableExportOperation(contents, filename.toOSString(), this, nullRepresentationString, list);
+	public IWorkspaceRunnable getExportTableOperation(ITableContents contents, IPath filename, String nullRepresentationString, boolean exportColumnHeaderRow, MessageList list) {
+		return new ExcelTableExportOperation(contents, filename.toOSString(), this, nullRepresentationString, exportColumnHeaderRow, list);
 	}
 
 	/**

@@ -196,6 +196,9 @@ public abstract class AbstractExternalTableFormat {
 	 *            The string to use to replace <code>null</code>. This value
 	 *            can be used for systems with no own <code>null</code>-representation
 	 *            (MS-Excel, for example).
+	 * @param exportColumnHeaderRow 
+     *            <code>true</code> if the header names should be exported or <code>false</code> if only
+     *            the content should be exported without the header names
 	 * @param list
 	 *            A list for messages describing any problems occurred during the
 	 *            export. If no messages of severity ERROR are contained in this
@@ -205,7 +208,7 @@ public abstract class AbstractExternalTableFormat {
 	 */
 	public abstract IWorkspaceRunnable getExportTableOperation(
 			ITableContents contents, IPath filename,
-			String nullRepresentationString, MessageList list);
+			String nullRepresentationString, boolean exportColumnHeaderRow, MessageList list);
 
 	/**
 	 * @param structure
