@@ -23,6 +23,7 @@ import org.faktorips.datatype.classtypes.DateDatatype;
 import org.faktorips.devtools.extsystems.ExtSystemsMessageUtil;
 import org.faktorips.devtools.extsystems.IValueConverter;
 import org.faktorips.util.message.MessageList;
+import org.faktorips.values.DateUtil;
 
 /**
  * Converter for the Date-Datatype.
@@ -45,6 +46,8 @@ public class DateValueConverter implements IValueConverter {
         } else if (externalDataValue instanceof Number) {
             date = HSSFDateUtil.getJavaDate(((Number)externalDataValue).doubleValue());
             date = new Date();
+        } else if (externalDataValue instanceof String) {
+            date = DateUtil.parseIsoDateStringToDate((String)externalDataValue);
         } else {
             messageList.add(ExtSystemsMessageUtil.createConvertExtToIntErrorMessage("" + externalDataValue, externalDataValue //$NON-NLS-1$
                     .getClass().getName(), getSupportedDatatype().getQualifiedName())); 

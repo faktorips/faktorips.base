@@ -23,6 +23,7 @@ import org.faktorips.devtools.extsystems.ExtSystemsMessageUtil;
 import org.faktorips.devtools.extsystems.IValueConverter;
 import org.faktorips.util.message.Message;
 import org.faktorips.util.message.MessageList;
+import org.faktorips.values.DateUtil;
 
 /**
  * Converter for the GregorianCalendarDatatype.
@@ -32,7 +33,7 @@ import org.faktorips.util.message.MessageList;
 public class GregorianCalendarValueConverter implements IValueConverter {
 
     /**
-     * Supported type for the externalDataValue is Number or Date.
+     * Supported type for the externalDataValue is String, Number, or Date.
      * 
      * {@inheritDoc}
      */
@@ -44,6 +45,8 @@ public class GregorianCalendarValueConverter implements IValueConverter {
         } else if (externalDataValue instanceof Number) {
             Date date = new Date(((Number)externalDataValue).longValue());
             cal.setTime(date);
+        } else if (externalDataValue instanceof String) {
+            cal = DateUtil.parseIsoDateStringToGregorianCalendar((String)externalDataValue);
         } else {
             messageList.add(ExtSystemsMessageUtil.createConvertExtToIntErrorMessage(
                                     "" + externalDataValue, externalDataValue.getClass().getName(), getSupportedDatatype().getQualifiedName())); //$NON-NLS-1$
