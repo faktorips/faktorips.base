@@ -31,6 +31,7 @@ public class Messages extends NLS {
     public static String TestCaseCopyDesinationPage_LabelDestinationPackage;
     public static String TestCaseCopyDesinationPage_LabelRadioBtnManualReplace;
     public static String TestCaseCopyDesinationPage_LabelRadioBtnReplaceProdCmptVersion;
+    public static String TestCaseCopyDesinationPage_LabelSrcFolder;
     public static String TestCaseCopyDesinationPage_LabelTargetName;
     public static String TestCaseCopyDesinationPage_Title;
     public static String TestCaseCopyDesinationPage_TitleProductCmptReplaceGroup;

@@ -41,8 +41,6 @@ import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.jface.wizard.WizardPage;
 import org.eclipse.osgi.util.NLS;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.events.ModifyEvent;
-import org.eclipse.swt.events.ModifyListener;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
@@ -67,9 +65,12 @@ import org.faktorips.devtools.core.ui.DefaultLabelProvider;
 import org.faktorips.devtools.core.ui.UIToolkit;
 import org.faktorips.devtools.core.ui.controller.fields.CheckboxField;
 import org.faktorips.devtools.core.ui.controller.fields.FieldValueChangedEvent;
+import org.faktorips.devtools.core.ui.controller.fields.TextButtonField;
+import org.faktorips.devtools.core.ui.controller.fields.TextField;
 import org.faktorips.devtools.core.ui.controller.fields.ValueChangeListener;
 import org.faktorips.devtools.core.ui.controls.Checkbox;
 import org.faktorips.devtools.core.ui.controls.IpsPckFragmentRefControl;
+import org.faktorips.devtools.core.ui.controls.IpsPckFragmentRootRefControl;
 import org.faktorips.devtools.core.ui.controls.Radiobutton;
 import org.faktorips.devtools.core.ui.controls.RadiobuttonGroup;
 import org.faktorips.devtools.core.ui.table.ComboCellEditor;
@@ -83,7 +84,7 @@ import org.faktorips.util.message.MessageList;
  * 
  * @author Joerg Ortmann
  */
-public class TestCaseCopyDesinationPage extends WizardPage {
+public class TestCaseCopyDesinationPage extends WizardPage implements ValueChangeListener {
     private static final String COLUMN_ROOT_PARAMETER_PRODUCTCMPT = "rootParameter"; //$NON-NLS-1$
 
     private static final String COLUMN_NEW_PRODUCTCMPT = "productcmpt"; //$NON-NLS-1$
@@ -99,9 +100,13 @@ public class TestCaseCopyDesinationPage extends WizardPage {
     private boolean needRecreateTarget;
 
     // controls
-    private Text targetName;
+    private IpsPckFragmentRootRefControl targetPackageRootControl;
     private IpsPckFragmentRefControl targetInput;
+    private Text targetName;
     private TableViewer tableViewer;
+
+    // fields
+    private TextButtonField targetPackageRootField;
     private CheckboxField checkboxFieldReplaceProductCmptAutomatically;
     private CheckboxField checkboxFieldReplaceProductCmptManual;
     private CheckboxField checkboxFieldCopyInputTestValues;
@@ -110,6 +115,7 @@ public class TestCaseCopyDesinationPage extends WizardPage {
     // Cache of available product cmpt to replace with
     private Map rootParameterProductCmpt = new HashMap(10);
     private Map rootParameterProductCmptCandidates = new HashMap(10);
+
 
     
     public TestCaseCopyDesinationPage(UIToolkit toolkit) {
@@ -135,28 +141,29 @@ public class TestCaseCopyDesinationPage extends WizardPage {
     }
     
     private void createTargetControls(Composite parent) {
+        IIpsPackageFragment targetIpsPackageFragment = getTestCaseCopyWizard().getSourceTestCase().getIpsPackageFragment();
+
         Composite root = toolkit.createLabelEditColumnComposite(parent);
         
         Group group = toolkit.createGridGroup(root, Messages.TestCaseCopyDesinationPage_TitleTargetGroup, 2, false);
         
+        toolkit.createFormLabel(group, Messages.TestCaseCopyDesinationPage_LabelSrcFolder);
+        targetPackageRootControl = toolkit.createPdPackageFragmentRootRefControl(group, true);
+        // set target default
+        targetPackageRootControl.setPdPckFragmentRoot(targetIpsPackageFragment.getRoot());
+        targetPackageRootField = new TextButtonField(targetPackageRootControl);
+        targetPackageRootField.addChangeListener(this);
+        
+        
         toolkit.createFormLabel(group, Messages.TestCaseCopyDesinationPage_LabelDestinationPackage);
-        IIpsPackageFragment targetIpsPackageFragment = getTestCaseCopyWizard().getSourceTestCase().getIpsPackageFragment();
         targetInput = toolkit.createPdPackageFragmentRefControl(targetIpsPackageFragment.getRoot(), group);
         // set target default
         targetInput.setIpsPackageFragment(targetIpsPackageFragment);
-        targetInput.getTextControl().addModifyListener(new ModifyListener(){
-            public void modifyText(ModifyEvent e) {
-                pageChanged();
-            }
-        });
+        new TextButtonField(targetInput).addChangeListener(this);
 
         toolkit.createFormLabel(group, Messages.TestCaseCopyDesinationPage_LabelTargetName);
         targetName = toolkit.createText(group);
-        targetName.addModifyListener(new ModifyListener(){
-            public void modifyText(ModifyEvent e) {
-                pageChanged();
-            }
-        });
+        new TextField(targetName).addChangeListener(this);
         
         targetName.setFocus();
     }
@@ -173,25 +180,13 @@ public class TestCaseCopyDesinationPage extends WizardPage {
                 .getDefault().getIpsPreferences().getChangesOverTimeNamingConvention().getVersionConceptNamePlural());
         Radiobutton radiobuttonReplaceAutomatically = group.addRadiobutton(label);
         checkboxFieldReplaceProductCmptAutomatically = new CheckboxField(radiobuttonReplaceAutomatically);
-        checkboxFieldReplaceProductCmptAutomatically.addChangeListener(new ValueChangeListener(){
-            public void valueChanged(FieldValueChangedEvent e) {
-                tableViewer.getTable().setEnabled(true);
-                pageChanged();
-            }
-        });
+        checkboxFieldReplaceProductCmptAutomatically.addChangeListener(this);
         
         createRootParameterTable(group.getGroup());
 
         Radiobutton radiobuttonReplaceProductCmptManual = group.addRadiobutton(Messages.TestCaseCopyDesinationPage_LabelRadioBtnManualReplace);
         checkboxFieldReplaceProductCmptManual = new CheckboxField(radiobuttonReplaceProductCmptManual);
-        checkboxFieldReplaceProductCmptManual.addChangeListener(new ValueChangeListener(){
-            public void valueChanged(FieldValueChangedEvent e) {
-                tableViewer.getTable().setEnabled(false);
-                pageChanged();
-                needRecreateTarget = true;
-            }
-        });
-        
+        checkboxFieldReplaceProductCmptManual.addChangeListener(this);
         radiobuttonReplaceAutomatically.setChecked(true);
     }
 
@@ -206,19 +201,11 @@ public class TestCaseCopyDesinationPage extends WizardPage {
         
         Checkbox checkBoxCopyInputTestValues = toolkit.createCheckbox(group, Messages.TestCaseCopyDesinationPage_LabelCopyInputValues);
         checkboxFieldCopyInputTestValues = new CheckboxField(checkBoxCopyInputTestValues);
-        checkboxFieldCopyInputTestValues.addChangeListener(new ValueChangeListener(){
-            public void valueChanged(FieldValueChangedEvent e) {
-                pageChanged();
-            }
-        });
+        checkboxFieldCopyInputTestValues.addChangeListener(this);
         
         Checkbox checkBoxCopyExpectedTestValues = toolkit.createCheckbox(group, Messages.TestCaseCopyDesinationPage_LabelCopyExpectedResultValues);
         checkboxFieldCopyExpectedTestValues = new CheckboxField(checkBoxCopyExpectedTestValues);
-        checkboxFieldCopyExpectedTestValues.addChangeListener(new ValueChangeListener(){
-            public void valueChanged(FieldValueChangedEvent e) {
-                pageChanged();
-            }
-        });
+        checkboxFieldCopyExpectedTestValues.addChangeListener(this);
         
         checkBoxCopyInputTestValues.setChecked(true);
         checkBoxCopyExpectedTestValues.setChecked(true);
@@ -443,13 +430,6 @@ public class TestCaseCopyDesinationPage extends WizardPage {
         return (TestCaseCopyWizard) super.getWizard();
     }
 
-    private void pageChanged() {
-        initialState = false;
-        boolean pageComplete = validatePage();
-        setPageComplete(pageComplete);
-        getContainer().updateButtons();
-    }
-    
     /**
      * {@inheritDoc}
      */
@@ -570,4 +550,23 @@ public class TestCaseCopyDesinationPage extends WizardPage {
     public boolean isClearExpectedTestValues(){
         return ! checkboxFieldCopyExpectedTestValues.getCheckbox().isChecked();
     }
+
+    public void valueChanged(FieldValueChangedEvent e) {
+        if (e.field == targetPackageRootField) {
+            targetInput.setIpsPackageFragment(null);
+        } else if (e.field == checkboxFieldReplaceProductCmptManual) {
+            tableViewer.getTable().setEnabled(false);
+            needRecreateTarget = true;
+        } else if (e.field == checkboxFieldReplaceProductCmptAutomatically){
+            tableViewer.getTable().setEnabled(true);
+        }
+        pageChanged();
+    }
+    
+    private void pageChanged() {
+        initialState = false;
+        boolean pageComplete = validatePage();
+        setPageComplete(pageComplete);
+        getContainer().updateButtons();
+    }    
 }
