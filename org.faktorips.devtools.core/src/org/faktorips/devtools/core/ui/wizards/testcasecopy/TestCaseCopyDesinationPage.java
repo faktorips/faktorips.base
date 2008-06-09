@@ -54,6 +54,7 @@ import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
 import org.faktorips.devtools.core.model.ipsproject.IIpsPackageFragment;
+import org.faktorips.devtools.core.model.ipsproject.IIpsPackageFragmentRoot;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProjectNamingConventions;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmpt;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmptNamingStrategy;
@@ -141,7 +142,8 @@ public class TestCaseCopyDesinationPage extends WizardPage implements ValueChang
     }
     
     private void createTargetControls(Composite parent) {
-        IIpsPackageFragment targetIpsPackageFragment = getTestCaseCopyWizard().getSourceTestCase().getIpsPackageFragment();
+        ITestCase sourceTestCase = getTestCaseCopyWizard().getSourceTestCase();
+        IIpsPackageFragment targetIpsPackageFragment = sourceTestCase.getIpsPackageFragment();
 
         Composite root = toolkit.createLabelEditColumnComposite(parent);
         
@@ -149,15 +151,38 @@ public class TestCaseCopyDesinationPage extends WizardPage implements ValueChang
         
         toolkit.createFormLabel(group, Messages.TestCaseCopyDesinationPage_LabelSrcFolder);
         targetPackageRootControl = toolkit.createPdPackageFragmentRootRefControl(group, true);
+
         // set target default
-        targetPackageRootControl.setPdPckFragmentRoot(targetIpsPackageFragment.getRoot());
+        IIpsPackageFragmentRoot packRoot = targetIpsPackageFragment.getRoot();
+        if (!packRoot.isBasedOnSourceFolder()) {
+            IIpsPackageFragmentRoot srcRoots[];
+            try {
+                srcRoots = sourceTestCase.getIpsProject().getSourceIpsPackageFragmentRoots();
+                if (srcRoots.length>0) {
+                    packRoot = srcRoots[0];
+                } else {
+                    packRoot = null;
+                }
+            }
+            catch (CoreException e1) {
+                packRoot = null;
+            }
+        }
+        
+        targetPackageRootControl.setPdPckFragmentRoot(packRoot);
         targetPackageRootField = new TextButtonField(targetPackageRootControl);
         targetPackageRootField.addChangeListener(this);
         
         
         toolkit.createFormLabel(group, Messages.TestCaseCopyDesinationPage_LabelDestinationPackage);
-        targetInput = toolkit.createPdPackageFragmentRefControl(targetIpsPackageFragment.getRoot(), group);
+        targetInput = toolkit.createPdPackageFragmentRefControl(packRoot, group);
+        
         // set target default
+        if (targetIpsPackageFragment.getRoot() != packRoot){
+            // no valid default because target isn't based on a ips src folder (maybe an archive), 
+            // thus clear target package
+            targetIpsPackageFragment = null;
+        }
         targetInput.setIpsPackageFragment(targetIpsPackageFragment);
         new TextButtonField(targetInput).addChangeListener(this);
 
