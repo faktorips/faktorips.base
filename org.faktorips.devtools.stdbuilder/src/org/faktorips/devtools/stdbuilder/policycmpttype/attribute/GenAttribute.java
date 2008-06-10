@@ -211,7 +211,7 @@ public abstract class GenAttribute extends GenPolicyCmptTypePart {
     }
 
     public void generateInitPropertiesFromXml(JavaCodeFragmentBuilder builder) throws CoreException {
-        String propMapName = isUseTypesafeCollections() ? "checkedPropMap" : "propMap";
+        String propMapName = "propMap";
         builder.append("if (" + propMapName + ".containsKey(");
         builder.appendQuoted(attributeName);
         builder.appendln(")) {");

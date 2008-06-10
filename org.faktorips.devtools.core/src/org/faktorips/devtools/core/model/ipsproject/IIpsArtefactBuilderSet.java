@@ -17,7 +17,6 @@ import org.faktorips.devtools.core.internal.model.TableContentsEnumDatatypeAdapt
 import org.faktorips.devtools.core.model.productcmpt.IFormula;
 import org.faktorips.devtools.core.model.tablecontents.ITableContents;
 import org.faktorips.devtools.core.model.tablestructure.ITableAccessFunction;
-import org.faktorips.devtools.core.ui.controller.fields.EnumTypeTargetJavaVersion;
 import org.faktorips.fl.CompilationResult;
 import org.faktorips.fl.IdentifierResolver;
 
@@ -250,11 +249,5 @@ public interface IIpsArtefactBuilderSet extends IJavaPackageStructure {
      * @throws CoreException implementations can throw or delegate rising CoreExceptions.
      */
     public void afterBuildProcess(int buildKind) throws CoreException;
-
-    /**
-     * Returns the target Java version from this BulderSet's configuration or the default target
-     * Java version(1.4) if none is set.
-     */
-    public EnumTypeTargetJavaVersion getTargetJavaVersion();
 
 }

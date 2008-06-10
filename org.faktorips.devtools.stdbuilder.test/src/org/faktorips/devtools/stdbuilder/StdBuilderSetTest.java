@@ -43,6 +43,5 @@ public class StdBuilderSetTest extends AbstractIpsPluginTest {
         assertTrue(propertyDefNames.contains("generateCopySupport"));
         assertTrue(propertyDefNames.contains("generateLoggingStatements"));
         assertTrue(propertyDefNames.contains("generateVisitorSupport"));
-        assertTrue(propertyDefNames.contains("targetJavaVersion"));
     }
 }

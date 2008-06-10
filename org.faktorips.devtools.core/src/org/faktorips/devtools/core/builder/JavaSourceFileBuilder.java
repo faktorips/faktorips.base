@@ -37,7 +37,6 @@ import org.eclipse.emf.codegen.merge.java.JControlModel;
 import org.eclipse.emf.codegen.merge.java.JMerger;
 import org.eclipse.emf.codegen.merge.java.facade.FacadeHelper;
 import org.eclipse.emf.codegen.merge.java.facade.ast.ASTFacadeHelper;
-import org.eclipse.emf.codegen.merge.java.facade.jdom.JDOMFacadeHelper;
 import org.eclipse.jdt.core.JavaCore;
 import org.eclipse.jdt.core.ToolFactory;
 import org.eclipse.jdt.core.formatter.CodeFormatter;
@@ -55,7 +54,6 @@ import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.core.model.ipsproject.IChangesOverTimeNamingConvention;
 import org.faktorips.devtools.core.model.ipsproject.IIpsArtefactBuilderSet;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
-import org.faktorips.devtools.core.ui.controller.fields.EnumTypeTargetJavaVersion;
 import org.faktorips.util.ArgumentCheck;
 import org.faktorips.util.LocalizedStringsSet;
 import org.faktorips.util.StringUtil;
@@ -109,6 +107,8 @@ public abstract class JavaSourceFileBuilder extends AbstractArtefactBuilder {
     public final static String MARKER_END_USER_CODE = "//end-user-code"; //$NON-NLS-1$
 
     protected final static String JAVA_EXTENSION = ".java"; //$NON-NLS-1$
+
+    protected final static String MERGE_CONFIGURATION_FILE = "merge.xml"; //$NON-NLS-1$
 
     private final static String BEGIN_FAKTORIPS_GENERATOR_INFORMATION_SECTION = "BEGIN FAKTORIPS GENERATOR INFORMATION SECTION"; //$NON-NLS-1$
 
@@ -908,15 +908,9 @@ public abstract class JavaSourceFileBuilder extends AbstractArtefactBuilder {
         IFile mergeFile = project
                 .getJavaProject()
                 .getProject()
-                .getFile(
-                        getBuilderSet().getTargetJavaVersion().isAtLeast(EnumTypeTargetJavaVersion.JAVA_5) ? "merge.java5.xml" : "merge.xml"); //$NON-NLS-1$ //$NON-NLS-2$
+                .getFile(MERGE_CONFIGURATION_FILE);
         model = new org.eclipse.emf.codegen.merge.java.JControlModel();
-        FacadeHelper facadeHelper;
-        if (getBuilderSet().getTargetJavaVersion().isAtLeast(EnumTypeTargetJavaVersion.JAVA_5)) {
-            facadeHelper = new ASTFacadeHelper();
-        } else {
-            facadeHelper = new JDOMFacadeHelper();
-        }
+        FacadeHelper facadeHelper = new ASTFacadeHelper();
         if (mergeFile.exists()) {
             try {
                 model.initialize(facadeHelper, mergeFile.getLocation().toPortableString());
@@ -931,8 +925,7 @@ public abstract class JavaSourceFileBuilder extends AbstractArtefactBuilder {
 
     private String getJMergeDefaultConfigLocation() {
         StringBuffer mergeFile = new StringBuffer();
-        mergeFile.append('/').append(JavaSourceFileBuilder.class.getPackage().getName().replace('.', '/')).append(
-                getBuilderSet().getTargetJavaVersion().isAtLeast(EnumTypeTargetJavaVersion.JAVA_5) ? "/merge.java5.xml" : "/merge.xml"); //$NON-NLS-1$ //$NON-NLS-2$
+        mergeFile.append('/').append(JavaSourceFileBuilder.class.getPackage().getName().replace('.', '/')).append("/"+MERGE_CONFIGURATION_FILE); //$NON-NLS-1$
         return Platform.getBundle(IpsPlugin.PLUGIN_ID).getResource(mergeFile.toString()).toExternalForm();
     }
 

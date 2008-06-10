@@ -287,56 +287,26 @@ public class GenValidationRule extends GenPolicyCmptTypePart {
             IIpsProject ipsProject) throws CoreException {
         JavaCodeFragment code = new JavaCodeFragment();
         if (validatedAttributes.length > 0) {
-            /*List<ObjectProperty> invalidObjectProperties = new ArrayList<ObjectProperty>();
-            invalidObjectProperties.add(new ObjectProperty(this, PROPERTY_A));
-            invalidObjectProperties.add(new ObjectProperty(this, PROPERTY_B));*/
-            if(getGenPolicyCmptType().getBuilderSet().isUseTypesafeCollections()){
-                code.appendClassName(List.class);
-                code.append("<");
+            code.appendClassName(ObjectProperty.class);
+            code.append("[] ");
+            code.append(pObjectProperties);
+            code.append(" = new ");
+            code.appendClassName(ObjectProperty.class);
+            code.append("[]{");
+            for (int j = 0; j < validatedAttributes.length; j++) {
+                IPolicyCmptTypeAttribute attr = ((IPolicyCmptType)getIpsPart().getIpsObject())
+                        .findPolicyCmptTypeAttribute(validatedAttributes[j], ipsProject);
+                String propertyConstName = getGenPolicyCmptType().getGenerator(attr).getStaticConstantPropertyName();
+                code.append(" new ");
                 code.appendClassName(ObjectProperty.class);
-                code.append("> ");
-                code.append(pObjectProperties);
-                code.append(" = new ");
-                code.appendClassName(ArrayList.class);
-                code.append("<");
-                code.appendClassName(ObjectProperty.class);
-                code.appendln(">();");
-                for (int j = 0; j < validatedAttributes.length; j++) {
-                    IPolicyCmptTypeAttribute attr = ((IPolicyCmptType)getIpsPart().getIpsObject())
-                            .findPolicyCmptTypeAttribute(validatedAttributes[j], ipsProject);
-                    String propertyConstName = getGenPolicyCmptType().getGenerator(attr).getStaticConstantPropertyName();
-                    code.append(pObjectProperties);
-                    code.append(".add(new ");
-                    code.appendClassName(ObjectProperty.class);
-                    code.append("(this, ");
-                    code.append(propertyConstName);
-                    code.appendln("));");
+                code.append("(this, ");
+                code.append(propertyConstName);
+                code.append(")");
+                if (j < validatedAttributes.length - 1) {
+                    code.append(',');
                 }
-            }else{
-                /*ObjectProperty[] invalidObjectProperties = new ObjectProperty[]{
-                    new ObjectProperty(this, PROPERTY_A),
-                    new ObjectProperty(this, PROPERTY_B)};*/
-                code.appendClassName(ObjectProperty.class);
-                code.append("[] ");
-                code.append(pObjectProperties);
-                code.append(" = new ");
-                code.appendClassName(ObjectProperty.class);
-                code.append("[]{");
-                for (int j = 0; j < validatedAttributes.length; j++) {
-                    IPolicyCmptTypeAttribute attr = ((IPolicyCmptType)getIpsPart().getIpsObject())
-                            .findPolicyCmptTypeAttribute(validatedAttributes[j], ipsProject);
-                    String propertyConstName = getGenPolicyCmptType().getGenerator(attr).getStaticConstantPropertyName();
-                    code.append(" new ");
-                    code.appendClassName(ObjectProperty.class);
-                    code.append("(this, ");
-                    code.append(propertyConstName);
-                    code.append(")");
-                    if (j < validatedAttributes.length - 1) {
-                        code.append(',');
-                    }
-                }
-                code.appendln("};");
             }
+            code.appendln("};");
         } else {
             code.appendClassName(ObjectProperty.class);
             code.append(" ");

@@ -38,7 +38,6 @@ import org.faktorips.devtools.core.model.tablestructure.ITableStructure;
 import org.faktorips.devtools.core.model.type.IAttribute;
 import org.faktorips.devtools.core.model.type.IParameter;
 import org.faktorips.devtools.core.model.type.IType;
-import org.faktorips.devtools.core.ui.controller.fields.EnumTypeTargetJavaVersion;
 import org.faktorips.devtools.stdbuilder.enums.EnumClassesBuilder;
 import org.faktorips.devtools.stdbuilder.enums.EnumTypeInterfaceBuilder;
 import org.faktorips.devtools.stdbuilder.formulatest.FormulaTestBuilder;
@@ -100,11 +99,6 @@ public class StandardBuilderSet extends DefaultBuilderSet {
      * IIpsArtefactBuilderSet instance.
      */
     public final static String CONFIG_PROPERTY_GENERATE_CHANGELISTENER = "generateChangeListener";
-
-    /**
-     * Configuration property that declares for which java version sourcecode will be generated.
-     */
-    public final static String CONFIG_PROPERTY_TARGET_JAVA_VERSION = "targetJavaVersion";
 
     /**
      * Configuration property that enanbles/disables the use of typesafe collections, if supported
@@ -437,13 +431,6 @@ public class StandardBuilderSet extends DefaultBuilderSet {
 
     public boolean isGenerateChangeListener() {
         return getConfig().getPropertyValueAsBoolean(StandardBuilderSet.CONFIG_PROPERTY_GENERATE_CHANGELISTENER).booleanValue();
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    public EnumTypeTargetJavaVersion getTargetJavaVersion() {
-        return EnumTypeTargetJavaVersion.valueOf(getConfig().getPropertyValueAsString(StandardBuilderSet.CONFIG_PROPERTY_TARGET_JAVA_VERSION));
     }
 
     /**

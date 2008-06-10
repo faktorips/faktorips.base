@@ -31,7 +31,6 @@ import org.faktorips.devtools.core.model.ipsproject.IIpsSrcFolderEntry;
 import org.faktorips.devtools.core.model.productcmpt.IFormula;
 import org.faktorips.devtools.core.model.tablecontents.ITableContents;
 import org.faktorips.devtools.core.model.tablestructure.ITableAccessFunction;
-import org.faktorips.devtools.core.ui.controller.fields.EnumTypeTargetJavaVersion;
 import org.faktorips.devtools.core.util.QNameUtil;
 import org.faktorips.fl.CompilationResult;
 import org.faktorips.fl.IdentifierResolver;
@@ -299,15 +298,6 @@ public abstract class DefaultBuilderSet extends AbstractBuilderSet {
      */
     public String getVersion() {
         return "";
-    }
-    /**
-     * {@inheritDoc}
-     * <p/>
-     * Returns the default target Java version. This method is supposed to be overridden by subclasses.
-     */
-    public EnumTypeTargetJavaVersion getTargetJavaVersion() {
-        // TODO Durch Zugriff auf die entsprechende Eigenschaft des JavaProjects ersetzen
-        return EnumTypeTargetJavaVersion.DEFAULT;
     }
 
     
