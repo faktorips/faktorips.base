@@ -158,6 +158,10 @@ public interface IProductCmpt extends ITimedIpsObject, IFixDifferencesToModelSup
      * The relations are evaluted for the given daten. The 
      * structure is rootet at this product.
      * 
+     * @param date       The date the structure has to be valid for. That means that
+     *                   the relations between the product components represented by
+     *                   this structure are valid for the given date.
+     *             
      * @param ipsProject The project which ips object path is used for the searched.
      *                   This is not neccessarily the project this component is part of. 
      *                   

@@ -182,7 +182,7 @@ public class ReferenceAndPreviewPage extends WizardPage {
     }
 
     private void updateWorkingDateLabel() {
-        workingDateLabel.setText(IpsPlugin.getDefault().getIpsPreferences().getFormattedWorkingDate());
+        workingDateLabel.setText(getDeepCopyWizard().getFormattedStructureDate());
     }
 
     /**
@@ -190,14 +190,13 @@ public class ReferenceAndPreviewPage extends WizardPage {
      */
     public void setVisible(boolean visible) {
         super.setVisible(visible);
-
+        structure = getDeepCopyWizard().getStructure();
         if (visible) {
             ProgressMonitorDialog pmd = new ProgressMonitorDialog(getShell());
             pmd.setOpenOnRun(true);
             try {
                 getWizard().getContainer().run(false, false, new IRunnableWithProgress() {
                     public void run(IProgressMonitor monitor) throws InvocationTargetException, InterruptedException {
-                        ((DeepCopyWizard)getWizard()).applyWorkingDate();
                         updateWorkingDateLabel();
                         
                         if (monitor == null) {
@@ -264,6 +263,13 @@ public class ReferenceAndPreviewPage extends WizardPage {
         tree.addCheckStateListener(checkStateListener);
     }
 
+    /**
+     * Resets the check state
+     */
+    void resetCheckState(){
+        checkState = null;
+    }
+    
     /**
      * Checks for errors in the user input and sets page complete if no error was found.
      */
@@ -677,7 +683,11 @@ public class ReferenceAndPreviewPage extends WizardPage {
         }
 
         private boolean isChecked(IProductCmptStructureReference node) {
-            return checkedNodes.get(node) != null;
+            return checkedNodes != null && checkedNodes.get(node) != null;
         }
     }
+
+    private DeepCopyWizard getDeepCopyWizard(){
+        return (DeepCopyWizard)getWizard();
+    }    
 }

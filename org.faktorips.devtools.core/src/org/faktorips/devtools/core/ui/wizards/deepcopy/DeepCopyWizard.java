@@ -21,6 +21,7 @@ package org.faktorips.devtools.core.ui.wizards.deepcopy;
 import java.lang.reflect.InvocationTargetException;
 import java.text.DateFormat;
 import java.text.ParseException;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.Map;
@@ -57,6 +58,7 @@ public class DeepCopyWizard extends ResizableWizard {
 	private IProductCmpt copiedRoot;
 	private ISchedulingRule schedulingRule;
 	private int type;
+    private GregorianCalendar structureDate;
 
 	/**
 	 * Creates a new wizard which can make a deep copy of the given product.
@@ -78,8 +80,9 @@ public class DeepCopyWizard extends ResizableWizard {
 		}
 		this.type = type;
 
+		structureDate = IpsPlugin.getDefault().getIpsPreferences().getWorkingDate();
 		try {
-			// the working date lies before the valid from date of the first available generation
+            // the working date lies before the valid from date of the first available generation
 			// of the given product component - so we have to take this valid-from date rather
 			// then the working date to build the product component structure.
 			if (IpsPlugin.getDefault().getIpsPreferences().getWorkingDate().before(product.getFirstGeneration().getValidFrom())) {
@@ -93,9 +96,10 @@ public class DeepCopyWizard extends ResizableWizard {
 
 				MessageDialog.openInformation(getShell(), title, msg);
 
-				structure = (ProductCmptTreeStructure)product.getStructure(product.getFirstGeneration().getValidFrom(), product.getIpsProject());
+				structureDate = product.getFirstGeneration().getValidFrom();
+				structure = (ProductCmptTreeStructure)product.getStructure(structureDate, product.getIpsProject());
 			} else {
-				structure = (ProductCmptTreeStructure)product.getStructure(product.getIpsProject());
+				structure = (ProductCmptTreeStructure)product.getStructure(structureDate, product.getIpsProject());
 			}
 
 		} catch (CycleInProductStructureException e) {
@@ -159,7 +163,7 @@ public class DeepCopyWizard extends ResizableWizard {
 	}
 
 	/**
-	 * Updates the given working date in the ips preferences
+	 * Updates the wizards working date
 	 */
     void applyWorkingDate() {
         IpsPreferences ipsPreferences = IpsPlugin.getDefault().getIpsPreferences();
@@ -169,8 +173,36 @@ public class DeepCopyWizard extends ResizableWizard {
             newDate = format.parse(sourcePage.getWorkingDate());
             GregorianCalendar calendar = new GregorianCalendar(); 
             calendar.setTime(newDate);
-            ipsPreferences.setWorkingDate(calendar);
+            try {
+                structure = (ProductCmptTreeStructure)structure.getRoot().getProductCmpt().getStructure(calendar, structure.getRoot().getProductCmpt().getIpsProject());
+                sourcePage.refreshStructure(structure);
+                previewPage.resetCheckState();
+            } catch (CycleInProductStructureException e) {
+                IpsPlugin.log(e);
+            }
         } catch (ParseException ignored) {
         }
+    }
+
+    /**
+     * Returns the current structure date (the date the structure is valid) 
+     * as formatted string
+     */
+    String getFormattedStructureDate() {
+        return sourcePage.getWorkingDate();
+    }
+
+    /**
+     * Returns the current structure date (the date the structure is valid) 
+     */
+    Calendar getStructureDate() {
+        return structureDate;
+    }
+    
+    /**
+     * @return Returns the structure.
+     */
+    public ProductCmptTreeStructure getStructure() {
+        return structure;
     }
 }

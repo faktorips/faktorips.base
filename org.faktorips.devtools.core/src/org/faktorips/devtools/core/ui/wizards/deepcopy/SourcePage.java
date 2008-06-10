@@ -21,6 +21,9 @@ import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Arrays;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.GregorianCalendar;
 import java.util.regex.Pattern;
 import java.util.regex.PatternSyntaxException;
 
@@ -152,7 +155,7 @@ public class SourcePage extends WizardPage implements ICheckStateListener, Value
 
         toolkit.createFormLabel(inputRoot, Messages.ReferenceAndPreviewPage_labelValidFrom);
         Text workingDate = toolkit.createText(inputRoot);
-        workingDate.setText(IpsPlugin.getDefault().getIpsPreferences().getFormattedWorkingDate());
+        workingDate.setText(dateFormat.format(getDeepCopyWizard().getStructureDate().getTime()));
         workingDateField = new TextField(workingDate);
         workingDateField.addChangeListener(this);
         
@@ -213,9 +216,7 @@ public class SourcePage extends WizardPage implements ICheckStateListener, Value
         tree.setUseHashlookup(true);
         tree.setLabelProvider(new DeepCopyLabelProvider());
         tree.setContentProvider(new DeepCopyContentProvider(true));
-        tree.setInput(this.structure);
-        tree.expandAll();
-        setCheckedAll(tree.getTree().getItems(), true);
+        refreshStructure(structure);
         tree.getControl().setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
         tree.addCheckStateListener(this);
         checkStateListener = new CheckStateListener(null);
@@ -229,6 +230,14 @@ public class SourcePage extends WizardPage implements ICheckStateListener, Value
         });        
     }
 
+    void refreshStructure(IProductCmptTreeStructure structure){
+        this.structure = structure;
+        tree.setInput(this.structure);
+        tree.expandAll();
+        setCheckedAll(tree.getTree().getItems(), true);        
+        tree.refresh();
+    }
+    
     private void setCheckedAll(TreeItem[] items, boolean checked) {
         for (int i = 0; i < items.length; i++) {
             items[i].setChecked(checked);
@@ -326,7 +335,18 @@ public class SourcePage extends WizardPage implements ICheckStateListener, Value
 
     private void validateWorkingDate() {
         try {
-            dateFormat.parse(workingDateField.getText());
+            Date date = dateFormat.parse(workingDateField.getText());
+            Calendar calendar = new GregorianCalendar();
+            calendar.setTime(date);
+            if (calendar.before(structure.getRoot().getProductCmpt().getFirstGeneration().getValidFrom())) {
+                String msg = NLS
+                        .bind(
+                                Messages.DeepCopyWizard_msgWorkingDateNotUsedSimple,
+                                IpsPlugin.getDefault().getIpsPreferences()
+                                        .getChangesOverTimeNamingConvention()
+                                        .getGenerationConceptNameSingular());
+                setErrorMessage(msg);
+            }
         } catch (ParseException e) {
             String pattern;
             if (dateFormat instanceof SimpleDateFormat) {
@@ -434,6 +454,8 @@ public class SourcePage extends WizardPage implements ICheckStateListener, Value
     public void valueChanged(FieldValueChangedEvent e) {
         if (e.field==targetPackRootField) {
             sourceFolderChanged();
+        } else if (e.field==workingDateField){
+            getDeepCopyWizard().applyWorkingDate();
         }
         updatePageComplete();
     }
@@ -458,5 +480,9 @@ public class SourcePage extends WizardPage implements ICheckStateListener, Value
      */
     public String getWorkingDate() {
         return workingDateField.getText();
+    }
+
+    private DeepCopyWizard getDeepCopyWizard(){
+        return (DeepCopyWizard)getWizard();
     }
 }
