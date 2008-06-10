@@ -38,7 +38,7 @@ import org.faktorips.runtime.ObjectProperty;
 import org.faktorips.util.LocalizedStringsSet;
 
 /**
- * Genertor for validation rules.
+ * Generator for validation rules.
  * 
  * @author Peter Erzberger
  */

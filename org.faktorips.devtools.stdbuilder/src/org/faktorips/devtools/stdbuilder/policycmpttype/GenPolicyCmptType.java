@@ -82,10 +82,8 @@ public class GenPolicyCmptType extends GenType {
         for (int i = 0; i < methods.length; i++) {
             if (methods[i].isValid()) {
                 GenMethod generator = new GenMethod(this, methods[i], stringsSet);
-                if (generator != null) {
-                    genMethods.add(generator);
-                    generatorsByPart.put(methods[i], generator);
-                }
+                genMethods.add(generator);
+                generatorsByPart.put(methods[i], generator);
             }
         }
     }
@@ -96,10 +94,8 @@ public class GenPolicyCmptType extends GenType {
         for (int i = 0; i < validationRules.length; i++) {
             if (validationRules[i].isValid()) {
                 GenValidationRule generator = new GenValidationRule(this, validationRules[i], stringsSet);
-                if (generator != null) {
-                    genValidationRules.add(generator);
-                    generatorsByPart.put(validationRules[i], generator);
-                }
+                genValidationRules.add(generator);
+                generatorsByPart.put(validationRules[i], generator);
             }
         }
     }
@@ -110,10 +106,8 @@ public class GenPolicyCmptType extends GenType {
         for (int i = 0; i < attrs.length; i++) {
             if (attrs[i].isValid()) {
                 GenAttribute generator = createGenerator(attrs[i], stringsSet);
-                if (generator != null) {
-                    genAttributes.add(generator);
-                    generatorsByPart.put(attrs[i], generator);
-                }
+                genAttributes.add(generator);
+                generatorsByPart.put(attrs[i], generator);
             }
         }
     }
@@ -140,10 +134,8 @@ public class GenPolicyCmptType extends GenType {
         for (int i = 0; i < ass.length; i++) {
             if (ass[i].isValid()) {
                 GenAssociation generator = createGenerator(ass[i], stringsSet);
-                if (generator != null) {
-                    genAssociations.add(generator);
-                    generatorsByPart.put(ass[i], generator);
-                }
+                genAssociations.add(generator);
+                generatorsByPart.put(ass[i], generator);
             }
         }
     }

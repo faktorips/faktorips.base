@@ -235,7 +235,7 @@ public class AddIpsNatureAction extends ActionDelegate {
         }
     }
 
-    //TODO do not change the targetVersion comming from the java options
+    //TODO do not change the targetVersion coming from the java options
     private boolean targetVersionIsAtLeast5(IJavaProject javaProject) {
         
         String[] targetVersion = javaProject.getOption(JavaCore.COMPILER_CODEGEN_TARGET_PLATFORM, true)

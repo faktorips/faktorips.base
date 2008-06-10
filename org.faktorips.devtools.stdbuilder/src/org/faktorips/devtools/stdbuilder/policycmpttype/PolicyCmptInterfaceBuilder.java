@@ -63,9 +63,6 @@ public class PolicyCmptInterfaceBuilder extends BasePolicyCmptTypeBuilder {
         return StringUtils.capitalize(name);
     }
 
-    protected void assertConditionsBeforeGenerating() {
-    }
-
     /**
      * {@inheritDoc}
      */
