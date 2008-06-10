@@ -49,5 +49,10 @@ public interface IModelTypeAttribute extends IModelElement {
     public enum ValueSetType {
         Enum, Range, AllValues;
     }
+    
+    /**
+     * @return if this attribute is product relevant.
+     */
+    public boolean isProductRelevant();
 
 }

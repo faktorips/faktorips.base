@@ -49,13 +49,12 @@ public class Message implements Serializable {
          * Severity warning.
          */
         WARNING,
-        
+
         /**
          * Severity error.
          */
         ERROR;
     }
-
 
     /**
      * Severity none.
@@ -71,7 +70,7 @@ public class Message implements Serializable {
      * Severity warning.
      */
     public static final Severity WARNING = Severity.WARNING;
-    
+
     /**
      * Severity error.
      */
@@ -143,8 +142,8 @@ public class Message implements Serializable {
             Collections.copy(invalidOp, msg.invalidOp);
         }
         if (msg.replacementParameters != null) {
-            replacementParameters = new ArrayList<MsgReplacementParameter>(msg.replacementParameters.size());
-            Collections.copy(replacementParameters, msg.replacementParameters);
+            replacementParameters = new ArrayList<MsgReplacementParameter>();
+            replacementParameters.addAll(msg.replacementParameters);
         }
 
     }
@@ -156,14 +155,6 @@ public class Message implements Serializable {
         this.code = code;
         this.text = text;
         this.severity = severity;
-    }
-
-    /**
-     * Creates a new message with the indicated code, text and severity. The message refers to the
-     * indicated object and it's property.
-     */
-    public Message(String code, String text, Severity severity, Object referencedObject, String referencedProperty) {
-        this(code, text, severity, referencedObject, new String[] { referencedProperty });
     }
 
     /**
@@ -199,10 +190,22 @@ public class Message implements Serializable {
      * Creates a new message with the indicated code, text and severity. The message refers to the
      * indicated objects and their properties.
      */
-    public Message(String code, String text, Severity severity, ObjectProperty... refersTo) {
+    public Message(String code, String text, Severity severity, ObjectProperty[] refersTo) {
         this(code, text, severity);
         if (refersTo != null) {
-            invalidOp = Arrays.asList(refersTo);
+            invalidOp = new ArrayList<ObjectProperty>();
+            invalidOp.addAll(Arrays.asList(refersTo));
+        }
+    }
+
+    /**
+     * Creates a new message with the indicated code, text and severity. The message refers to the
+     * indicated objects and their properties.
+     */
+    public Message(String code, String text, Severity severity, List<ObjectProperty> refersTo) {
+        this(code, text, severity);
+        if (refersTo != null) {
+            invalidOp = new ArrayList<ObjectProperty>(refersTo);
         }
     }
 
@@ -229,15 +232,27 @@ public class Message implements Serializable {
      * indicated objects and their properties. The message's contains the given replacement
      * parameters.
      */
-    public Message(String code, String text, Severity severity, List<ObjectProperty> refersTo,
-            MsgReplacementParameter... parameters) {
+    public Message(String code, String text, Severity severity, ObjectProperty[] refersTo,
+            MsgReplacementParameter[] parameters) {
         this(code, text, severity);
         if (refersTo != null) {
-            invalidOp = new ArrayList<ObjectProperty>(refersTo.size());
-            Collections.copy(invalidOp, refersTo);
+            invalidOp = new ArrayList<ObjectProperty>(1);
+            invalidOp.addAll(Arrays.asList(refersTo));
         }
         if (parameters != null) {
             replacementParameters = Arrays.asList(parameters);
+        }
+    }
+
+    public Message(String code, String text, Severity severity, ObjectProperty refersTo,
+            List<MsgReplacementParameter> parameters) {
+        this(code, text, severity);
+        if (refersTo != null) {
+            invalidOp = new ArrayList<ObjectProperty>(1);
+            invalidOp.add(refersTo);
+        }
+        if (parameters != null) {
+            replacementParameters = new ArrayList<MsgReplacementParameter>(parameters);
         }
     }
 
@@ -282,7 +297,7 @@ public class Message implements Serializable {
         if (invalidOp == null) {
             return new ArrayList<ObjectProperty>(0);
         }
-        return invalidOp;
+        return Collections.unmodifiableList(invalidOp);
     }
 
     /**
@@ -393,14 +408,18 @@ public class Message implements Serializable {
         if (numOfInvalidObjectProperties != other.getNumOfInvalidObjectProperties()) {
             return false;
         }
-        if (!invalidOp.equals(other.invalidOp)) {
+        if (invalidOp == null) {
+            return other.invalidOp == null;
+        } else if (!invalidOp.equals(other.invalidOp)) {
             return false;
         }
         int numOfReplacementParams = getNumOfReplacementParameters();
         if (numOfReplacementParams != other.getNumOfReplacementParameters()) {
             return false;
         }
-        if (!replacementParameters.equals(other.replacementParameters)) {
+        if (replacementParameters == null) {
+            return other.replacementParameters == null;
+        } else if (!replacementParameters.equals(other.replacementParameters)) {
             return false;
         }
         return true;

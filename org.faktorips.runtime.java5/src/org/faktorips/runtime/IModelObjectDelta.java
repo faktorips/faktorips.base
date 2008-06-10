@@ -16,9 +16,6 @@
  package org.faktorips.runtime;
 
 import java.util.List;
-import java.util.Set;
-
-import org.faktorips.runtime.IModelObject;
 
 /**
  * A model object delta represents the delta between two model objects. The two model objects must
@@ -205,7 +202,7 @@ public interface IModelObjectDelta {
      * Returns the properties that have a different a value in the model object and the reference model object.
      * Returns an empty array if no such property exists.
      */
-    public Set<String> getChangedProperties();
+    public List<String> getChangedProperties();
     
     /**
      * Returns <code>true</code> if the model object contains a different value for the given property than

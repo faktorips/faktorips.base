@@ -17,8 +17,10 @@
 
 package org.faktorips.runtime.internal;
 
+import java.util.Arrays;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
+import java.util.List;
 
 import org.faktorips.runtime.XmlAbstractTestCase;
 import org.w3c.dom.Element;
@@ -47,12 +49,12 @@ public class TocEntryObjectTest extends XmlAbstractTestCase {
         assertEquals("org.faktorips.sample.motor.MotorPolicyPk", entry.getImplementationClassName());
         assertEquals(new DateTime(2010, 1, 16), entry.getValidTo());
         
-        TocEntryGeneration[] genEntries = entry.getGenerationEntries();
-        assertEquals(2, genEntries.length);
-        assertEquals(new DateTime(2006, 1, 1), genEntries[0].getValidFrom());
-        assertEquals("GenerationClass", genEntries[0].getImplementationClassName());
-        assertEquals("GenerationRessource.xml", genEntries[0].getXmlResourceName());
-        assertEquals(new DateTime(2005, 1, 1), genEntries[1].getValidFrom());
+        List<TocEntryGeneration> genEntries = entry.getGenerationEntries();
+        assertEquals(2, genEntries.size());
+        assertEquals(new DateTime(2006, 1, 1), genEntries.get(0).getValidFrom());
+        assertEquals("GenerationClass", genEntries.get(0).getImplementationClassName());
+        assertEquals("GenerationRessource.xml", genEntries.get(0).getXmlResourceName());
+        assertEquals(new DateTime(2005, 1, 1), genEntries.get(1).getValidFrom());
     }
 
     public void testToXml() {
@@ -65,22 +67,22 @@ public class TocEntryObjectTest extends XmlAbstractTestCase {
         assertEquals("MotorPolicy", entry.getIpsObjectId());
         assertEquals("org/samples/MotorPolice.ipsproduct", entry.getXmlResourceName());
         assertEquals("org.samples.MotorPolicyPk", entry.getImplementationClassName());
-        assertEquals(0, entry.getGenerationEntries().length);
+        assertEquals(0, entry.getGenerationEntries().size());
         assertEquals(new DateTime(2010, 1, 18), entry.getValidTo());
 
         // with generation entries
         entry = TocEntryObject.createProductCmptTocEntry("MotorPolicy", "MotorPolicy", "MotorProduct", "2005-01", "org/samples/MotorPolice.ipsproduct", "org.samples.MotorPolicyPk", new DateTime(2010, 1, 1));
         TocEntryGeneration genEntry0 = new TocEntryGeneration(entry, new DateTime(2006, 1, 1), "class", "resource");
         TocEntryGeneration genEntry1 = new TocEntryGeneration(entry, new DateTime(2005, 1, 1), "class", "resource");
-        entry.setGenerationEntries(new TocEntryGeneration[] {genEntry0, genEntry1});
+        entry.setGenerationEntries(Arrays.asList(genEntry0, genEntry1));
 
         element = entry.toXml(newDocument());
         entry = TocEntryObject.createFromXml(element);
-        assertEquals(2, entry.getGenerationEntries().length);
-        assertEquals(new DateTime(2006, 1, 1), entry.getGenerationEntries()[0].getValidFrom());
-        assertEquals("class", entry.getGenerationEntries()[0].getImplementationClassName());
-        assertEquals("resource", entry.getGenerationEntries()[0].getXmlResourceName());
-        assertEquals(new DateTime(2005, 1, 1), entry.getGenerationEntries()[1].getValidFrom());
+        assertEquals(2, entry.getGenerationEntries().size());
+        assertEquals(new DateTime(2006, 1, 1), entry.getGenerationEntries().get(0).getValidFrom());
+        assertEquals("class", entry.getGenerationEntries().get(0).getImplementationClassName());
+        assertEquals("resource", entry.getGenerationEntries().get(0).getXmlResourceName());
+        assertEquals(new DateTime(2005, 1, 1), entry.getGenerationEntries().get(1).getValidFrom());
     }
     
     public void testGetGenerationEntry() {
@@ -89,7 +91,7 @@ public class TocEntryObjectTest extends XmlAbstractTestCase {
         assertNull(entry.getGenerationEntry(effectiveDate));
         TocEntryGeneration genEntry0 = new TocEntryGeneration(entry, new DateTime(2005, 1, 1), "class", "resource");
         TocEntryGeneration genEntry1 = new TocEntryGeneration(entry, new DateTime(2006, 1, 1), "class", "resource");
-        entry.setGenerationEntries(new TocEntryGeneration[] {genEntry0, genEntry1});
+        entry.setGenerationEntries(Arrays.asList(genEntry0, genEntry1));
         assertNull(entry.getGenerationEntry(new GregorianCalendar(2004, 11, 31)));
         assertSame(genEntry0, entry.getGenerationEntry(new GregorianCalendar(2005, 0, 1)));
         assertSame(genEntry0, entry.getGenerationEntry(new GregorianCalendar(2005, 11, 31)));

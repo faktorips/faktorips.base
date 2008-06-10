@@ -31,6 +31,7 @@ public class ModelTypeAssociation extends AbstractModelElement implements IModel
     private int maxCardinality = Integer.MAX_VALUE;
     private String namePlural = null;
     private String targetName = null;
+    private boolean isProductRelevant = false;
 
     /**
      * {@inheritDoc}
@@ -71,6 +72,13 @@ public class ModelTypeAssociation extends AbstractModelElement implements IModel
     /**
      * {@inheritDoc}
      */
+    public boolean isProductRelevant() {
+        return isProductRelevant;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
     public void initFromXml(XMLStreamReader parser) throws XMLStreamException {
         super.initFromXml(parser);
         for (int i = 0; i < parser.getAttributeCount(); i++) {
@@ -84,6 +92,8 @@ public class ModelTypeAssociation extends AbstractModelElement implements IModel
                 this.maxCardinality = Integer.parseInt(parser.getAttributeValue(i));
             } else if (parser.getAttributeLocalName(i).equals("associationType")) {
                 this.associationType = AssociationType.valueOf(parser.getAttributeValue(i));
+            } else if (parser.getAttributeLocalName(i).equals("isProductRelevant")) {
+                this.isProductRelevant = Boolean.valueOf(parser.getAttributeValue(i));
             }
         }
         initExtPropertiesFromXml(parser);

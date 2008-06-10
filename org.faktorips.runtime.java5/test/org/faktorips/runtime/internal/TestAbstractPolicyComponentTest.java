@@ -18,17 +18,18 @@
 package org.faktorips.runtime.internal;
 
 import java.lang.reflect.Method;
-import java.util.HashMap;
+import java.util.Map;
 
 import org.faktorips.runtime.DefaultObjectReferenceStore;
 import org.faktorips.runtime.DefaultUnresolvedReference;
-import org.faktorips.runtime.IModelObjectChangeListener;
 import org.faktorips.runtime.IModelObject;
+import org.faktorips.runtime.IModelObjectChangeListener;
+import org.faktorips.runtime.IModelObjectChangedEvent;
 import org.faktorips.runtime.IUnresolvedReference;
 import org.faktorips.runtime.Message;
 import org.faktorips.runtime.MessageList;
-import org.faktorips.runtime.IModelObjectChangedEvent;
 import org.faktorips.runtime.XmlAbstractTestCase;
+import org.faktorips.runtime.IModelObjectChangedEvent.Type;
 import org.w3c.dom.Element;
 
 /**
@@ -94,12 +95,12 @@ public class TestAbstractPolicyComponentTest extends XmlAbstractTestCase {
         PcB pc = new PcB();
         ChangeListener listener = new ChangeListener();
         pc.addChangeListener(listener);
-        IModelObjectChangedEvent event = new ModelObjectChangedEvent(pc, 0, "prop");
+        IModelObjectChangedEvent event = new ModelObjectChangedEvent(pc, Type.OBJECT_HAS_CHANGED, "prop");
         pc.notifyChangeListeners(event);
         assertEquals(pc, listener.lastEvent.getChangedObject());
 
         pc.removeChangeListener(listener);
-        pc.notifyChangeListeners(new ModelObjectChangedEvent(pc, 0, "prop"));
+        pc.notifyChangeListeners(new ModelObjectChangedEvent(pc, Type.OBJECT_HAS_CHANGED, "prop"));
         assertEquals(event, listener.lastEvent);
     }
     
@@ -175,7 +176,7 @@ public class TestAbstractPolicyComponentTest extends XmlAbstractTestCase {
             super();
         }
 
-        protected void initPropertiesFromXml(HashMap propMap) {
+        protected void initPropertiesFromXml(Map<String, String> propMap) {
             if (propMap.containsKey("prop0")) {
                 prop0 = (String)propMap.get("prop0");
             }
@@ -228,7 +229,7 @@ public class TestAbstractPolicyComponentTest extends XmlAbstractTestCase {
         
         String prop0;
 
-        protected void initPropertiesFromXml(HashMap propMap) {
+        protected void initPropertiesFromXml(Map<String, String> propMap) {
             if (propMap.containsKey("prop0")) {
                 prop0 = (String)propMap.get("prop0");
             }

@@ -52,5 +52,10 @@ public interface IModelTypeAssociation extends IModelElement {
     public enum AssociationType {
         Association, Composition, CompositionToMaster;
     }
+    
+    /**
+     * @return if this association is product relevant.
+     */
+    public boolean isProductRelevant();
 
 }

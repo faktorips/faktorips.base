@@ -32,7 +32,7 @@ public class ReadonlyTableOfContentsTest extends XmlAbstractTestCase {
     public void testInitFromXml() {
         AbstractReadonlyTableOfContents toc = new ReadonlyTableOfContents();
         toc.initFromXml(getTestDocument().getDocumentElement());
-        assertEquals(1, toc.getProductCmptTocEntries().length);
+        assertEquals(1, toc.getProductCmptTocEntries().size());
     }
 
 }

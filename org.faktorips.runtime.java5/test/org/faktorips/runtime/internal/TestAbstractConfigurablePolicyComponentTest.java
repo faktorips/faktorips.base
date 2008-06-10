@@ -20,21 +20,22 @@ package org.faktorips.runtime.internal;
 import java.lang.reflect.Method;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
-import java.util.HashMap;
+import java.util.Map;
 import java.util.TimeZone;
 
 import org.faktorips.runtime.DefaultObjectReferenceStore;
 import org.faktorips.runtime.DefaultUnresolvedReference;
 import org.faktorips.runtime.IConfigurableModelObject;
-import org.faktorips.runtime.IModelObjectChangeListener;
 import org.faktorips.runtime.IModelObject;
+import org.faktorips.runtime.IModelObjectChangeListener;
+import org.faktorips.runtime.IModelObjectChangedEvent;
 import org.faktorips.runtime.IProductComponent;
 import org.faktorips.runtime.IUnresolvedReference;
 import org.faktorips.runtime.InMemoryRuntimeRepository;
 import org.faktorips.runtime.Message;
 import org.faktorips.runtime.MessageList;
-import org.faktorips.runtime.IModelObjectChangedEvent;
 import org.faktorips.runtime.XmlAbstractTestCase;
+import org.faktorips.runtime.IModelObjectChangedEvent.Type;
 import org.w3c.dom.Element;
 
 /**
@@ -127,12 +128,12 @@ public class TestAbstractConfigurablePolicyComponentTest extends XmlAbstractTest
         PcB pc = new PcB(null);
         ChangeListener listener = new ChangeListener();
         pc.addChangeListener(listener);
-        IModelObjectChangedEvent event = new ModelObjectChangedEvent(pc, 0, "prop");
+        IModelObjectChangedEvent event = new ModelObjectChangedEvent(pc, Type.OBJECT_HAS_CHANGED, "prop");
         pc.notifyChangeListeners(event);
         assertEquals(pc, listener.lastEvent.getChangedObject());
 
         pc.removeChangeListener(listener);
-        pc.notifyChangeListeners(new ModelObjectChangedEvent(pc, 0, "prop"));
+        pc.notifyChangeListeners(new ModelObjectChangedEvent(pc, Type.OBJECT_HAS_CHANGED, "prop"));
         assertEquals(event, listener.lastEvent);
     }
     
@@ -198,7 +199,7 @@ public class TestAbstractConfigurablePolicyComponentTest extends XmlAbstractTest
             super();
         }
 
-        protected void initPropertiesFromXml(HashMap propMap) {
+        protected void initPropertiesFromXml(Map<String, String> propMap) {
             if (propMap.containsKey("effectiveDate")) {
                 effectiveDate = DateTime.parseIso((String)propMap.get("effectiveDate")).toGregorianCalendar(TimeZone.getDefault());
             }
@@ -260,7 +261,7 @@ public class TestAbstractConfigurablePolicyComponentTest extends XmlAbstractTest
         private AbstractModelObject parent;
         String prop0;
 
-        protected void initPropertiesFromXml(HashMap propMap) {
+        protected void initPropertiesFromXml(Map<String, String> propMap) {
             if (propMap.containsKey("prop0")) {
                 prop0 = (String)propMap.get("prop0");
             }

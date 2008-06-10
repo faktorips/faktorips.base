@@ -100,28 +100,28 @@ public class TestAbstractRuntimeRepositoryTest extends TestCase {
         InMemoryRuntimeRepository r2 = new InMemoryRuntimeRepository();
         
         mainRepository.addDirectlyReferencedRepository(r1);
-        assertEquals(1, mainRepository.getDirectlyReferencedRepositories().length);
-        assertEquals(r1, mainRepository.getDirectlyReferencedRepositories()[0]);
+        assertEquals(1, mainRepository.getDirectlyReferencedRepositories().size());
+        assertEquals(r1, mainRepository.getDirectlyReferencedRepositories().get(0));
         
         mainRepository.addDirectlyReferencedRepository(r2);
-        assertEquals(2, mainRepository.getDirectlyReferencedRepositories().length);
-        assertEquals(r1, mainRepository.getDirectlyReferencedRepositories()[0]);
-        assertEquals(r2, mainRepository.getDirectlyReferencedRepositories()[1]);
+        assertEquals(2, mainRepository.getDirectlyReferencedRepositories().size());
+        assertEquals(r1, mainRepository.getDirectlyReferencedRepositories().get(0));
+        assertEquals(r2, mainRepository.getDirectlyReferencedRepositories().get(1));
     }
     
     public void testGetAllReferencedRepositories() {
-        IRuntimeRepository[] result = baseRepository.getAllReferencedRepositories();
-        assertEquals(0, result.length);
+        List<IRuntimeRepository> result = baseRepository.getAllReferencedRepositories();
+        assertEquals(0, result.size());
 
         result = inBetweenRepositoryA.getAllReferencedRepositories();
-        assertEquals(1, result.length);
-        assertEquals(baseRepository, result[0]);
+        assertEquals(1, result.size());
+        assertEquals(baseRepository, result.get(0));
 
         result = mainRepository.getAllReferencedRepositories();
-        assertEquals(3, result.length);
-        assertEquals(inBetweenRepositoryA, result[0]);
-        assertEquals(inBetweenRepositoryB, result[1]);
-        assertEquals(baseRepository, result[2]);
+        assertEquals(3, result.size());
+        assertEquals(inBetweenRepositoryA, result.get(0));
+        assertEquals(inBetweenRepositoryB, result.get(1));
+        assertEquals(baseRepository, result.get(2));
     }
     
     public void testGetProductComponent_ById() {

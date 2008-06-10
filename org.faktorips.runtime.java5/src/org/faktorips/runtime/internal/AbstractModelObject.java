@@ -21,6 +21,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 
 import org.faktorips.runtime.IModelObject;
 import org.faktorips.runtime.IModelObjectChangeListener;
@@ -294,7 +295,7 @@ public abstract class AbstractModelObject implements IModelObject {
         propMap.put(propName, value);
     }
     
-    protected void initPropertiesFromXml(HashMap<String, String> propMap) {
+    protected void initPropertiesFromXml(Map<String, String> propMap) {
     }
     
     protected AbstractModelObject createChildFromXml(Element childEl) {

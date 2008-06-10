@@ -22,30 +22,31 @@
   </xs:element>
   <xs:element name="ModelTypeAttribute">
     <xs:complexType>
-      <xs:all>
-        <xs:element ref="ExtensionProperties" minOccurs="0"/>
-      </xs:all>
-      <xs:attribute name="name" type="xs:string" use="required"/>
-      <xs:attribute name="datatype" type="xs:string" use="required"/>
-      <xs:attribute name="valueSetType" default="AllValues">
-        <xs:simpleType>
-          <xs:restriction base="xs:string">
-            <xs:enumeration value="Range"/>
-            <xs:enumeration value="Enum"/>
-            <xs:enumeration value="AllValues"/>
-          </xs:restriction>
-        </xs:simpleType>
-      </xs:attribute>
-      <xs:attribute name="attributeType" default="changeable">
-        <xs:simpleType>
-          <xs:restriction base="xs:string">
-            <xs:enumeration value="changeable"/>
-            <xs:enumeration value="constant"/>
-            <xs:enumeration value="derived"/>
-            <xs:enumeration value="derived_cached"/>
-          </xs:restriction>
-        </xs:simpleType>
-      </xs:attribute>
+    	<xs:all>
+    		<xs:element ref="ExtensionProperties" minOccurs="0" />
+    	</xs:all>
+    	<xs:attribute name="name" type="xs:string" use="required" />
+    	<xs:attribute name="datatype" type="xs:string" use="required" />
+    	<xs:attribute name="valueSetType" default="AllValues">
+    		<xs:simpleType>
+    			<xs:restriction base="xs:string">
+    				<xs:enumeration value="Range" />
+    				<xs:enumeration value="Enum" />
+    				<xs:enumeration value="AllValues" />
+    			</xs:restriction>
+    		</xs:simpleType>
+    	</xs:attribute>
+    	<xs:attribute name="attributeType" default="changeable">
+    		<xs:simpleType>
+    			<xs:restriction base="xs:string">
+    				<xs:enumeration value="changeable" />
+    				<xs:enumeration value="constant" />
+    				<xs:enumeration value="derived" />
+    				<xs:enumeration value="derived_cached" />
+    			</xs:restriction>
+    		</xs:simpleType>
+    	</xs:attribute>
+    	<xs:attribute name="isProductRelevant" type="xs:boolean"></xs:attribute>
     </xs:complexType>
   </xs:element>
   <xs:element name="ModelTypeAssociations">
@@ -57,23 +58,26 @@
   </xs:element>
   <xs:element name="ModelTypeAssociation">
     <xs:complexType>
-      <xs:all>
-        <xs:element ref="ExtensionProperties" minOccurs="0"/>
-      </xs:all>
-      <xs:attribute name="name" type="xs:string" use="required"/>
-      <xs:attribute name="target" type="xs:string" use="required"/>
-      <xs:attribute name="namePlural" type="xs:string" use="required"/>
-      <xs:attribute name="minCardinality" type="xs:nonNegativeInteger" use="optional"/>
-      <xs:attribute name="maxCardinality" type="xs:nonNegativeInteger" use="optional"/>
-      <xs:attribute name="associationType" default="Association">
-        <xs:simpleType>
-          <xs:restriction base="xs:string">
-            <xs:enumeration value="Association"/>
-            <xs:enumeration value="Composition"/>
-            <xs:enumeration value="CompositionToMaster"/>
-          </xs:restriction>
-        </xs:simpleType>
-      </xs:attribute>
+    	<xs:all>
+    		<xs:element ref="ExtensionProperties" minOccurs="0" />
+    	</xs:all>
+    	<xs:attribute name="name" type="xs:string" use="required" />
+    	<xs:attribute name="target" type="xs:string" use="required" />
+    	<xs:attribute name="namePlural" type="xs:string" use="required" />
+    	<xs:attribute name="minCardinality" type="xs:nonNegativeInteger"
+    		use="optional" />
+    	<xs:attribute name="maxCardinality" type="xs:nonNegativeInteger"
+    		use="optional" />
+    	<xs:attribute name="associationType" default="Association">
+    		<xs:simpleType>
+    			<xs:restriction base="xs:string">
+    				<xs:enumeration value="Association" />
+    				<xs:enumeration value="Composition" />
+    				<xs:enumeration value="CompositionToMaster" />
+    			</xs:restriction>
+    		</xs:simpleType>
+    	</xs:attribute>
+    	<xs:attribute name="isProductRelevant" type="xs:boolean"></xs:attribute>
     </xs:complexType>
   </xs:element>
   <xs:element name="ExtensionProperties">

@@ -17,6 +17,9 @@
 
 package org.faktorips.runtime;
 
+import java.util.Arrays;
+import java.util.List;
+
 import org.faktorips.values.Money;
 
 
@@ -33,8 +36,8 @@ public class MessageTest extends XmlAbstractTestCase {
         assertEquals("code", msg.getCode());
         assertEquals("text", msg.getText());
         assertEquals(Message.INFO, msg.getSeverity());
-        assertEquals(0, msg.getInvalidObjectProperties().length);
-        assertEquals(0, msg.getReplacementParameters().length);
+        assertEquals(0, msg.getInvalidObjectProperties().size());
+        assertEquals(0, msg.getReplacementParameters().size());
         
         Object oldObject = new Object();
         ObjectProperty op0 = new ObjectProperty(oldObject, "prop0");
@@ -43,15 +46,15 @@ public class MessageTest extends XmlAbstractTestCase {
         msg = new Message("code", "text", Message.ERROR, new ObjectProperty[]{op0, op1, op2});
         Object newObject = new Object();
         copy = Message.createCopy(msg, oldObject, newObject);
-        ObjectProperty[] ops = copy.getInvalidObjectProperties();
-        assertEquals(3, ops.length);
-        assertEquals(newObject, ops[0].getObject());
-        assertEquals("prop0", ops[0].getProperty());
-        assertEquals(this, ops[1].getObject());
-        assertEquals("prop1", ops[1].getProperty());
-        assertEquals(newObject, ops[2].getObject());
-        assertEquals("prop2", ops[2].getProperty());
-        assertEquals(0, msg.getReplacementParameters().length);
+        List<ObjectProperty> ops = copy.getInvalidObjectProperties();
+        assertEquals(3, ops.size());
+        assertEquals(newObject, ops.get(0).getObject());
+        assertEquals("prop0", ops.get(0).getProperty());
+        assertEquals(this, ops.get(1).getObject());
+        assertEquals("prop1", ops.get(1).getProperty());
+        assertEquals(newObject, ops.get(2).getObject());
+        assertEquals("prop2", ops.get(2).getProperty());
+        assertEquals(0, msg.getReplacementParameters().size());
     }
     
     public void testMessage_StringStringint() {
@@ -59,8 +62,8 @@ public class MessageTest extends XmlAbstractTestCase {
         assertEquals("code", msg.getCode());
         assertEquals("text", msg.getText());
         assertEquals(Message.INFO, msg.getSeverity());
-        assertEquals(0, msg.getInvalidObjectProperties().length);
-        assertEquals(0, msg.getReplacementParameters().length);
+        assertEquals(0, msg.getInvalidObjectProperties().size());
+        assertEquals(0, msg.getReplacementParameters().size());
     }
     
     public void testMessage_StringStringintObjectString() {
@@ -68,10 +71,10 @@ public class MessageTest extends XmlAbstractTestCase {
         assertEquals("code", msg.getCode());
         assertEquals("text", msg.getText());
         assertEquals(Message.INFO, msg.getSeverity());
-        ObjectProperty[] op = msg.getInvalidObjectProperties();
-        assertEquals(1, op.length);
-        assertEquals(this, op[0].getObject());
-        assertEquals("property", op[0].getProperty());
+        List<ObjectProperty> op = msg.getInvalidObjectProperties();
+        assertEquals(1, op.size());
+        assertEquals(this, op.get(0).getObject());
+        assertEquals("property", op.get(0).getProperty());
     }
     
     public void testMessage_StringStringintObjectStringArray() {
@@ -79,12 +82,12 @@ public class MessageTest extends XmlAbstractTestCase {
         assertEquals("code", msg.getCode());
         assertEquals("text", msg.getText());
         assertEquals(Message.INFO, msg.getSeverity());
-        ObjectProperty[] op = msg.getInvalidObjectProperties();
-        assertEquals(2, op.length);
-        assertEquals(this, op[0].getObject());
-        assertEquals("p1", op[0].getProperty());
-        assertEquals(this, op[1].getObject());
-        assertEquals("p2", op[1].getProperty());
+        List<ObjectProperty> op = msg.getInvalidObjectProperties();
+        assertEquals(2, op.size());
+        assertEquals(this, op.get(0).getObject());
+        assertEquals("p1", op.get(0).getProperty());
+        assertEquals(this, op.get(1).getObject());
+        assertEquals("p2", op.get(1).getProperty());
     }
     
     public void testMessage_StringStringintObjectPropertyArray() {
@@ -96,31 +99,31 @@ public class MessageTest extends XmlAbstractTestCase {
         assertEquals("text", msg.getText());
         assertEquals(Message.INFO, msg.getSeverity());
         
-        ObjectProperty[] op2 = msg.getInvalidObjectProperties();
+        List<ObjectProperty> op2 = msg.getInvalidObjectProperties();
         op[0] = null; // make sure a defensive copy was made
-        assertEquals(2, op2.length);
-        assertEquals("objectA", op2[0].getObject());
-        assertEquals("pA", op2[0].getProperty());
-        assertEquals("objectB", op2[1].getObject());
-        assertEquals("pB", op2[1].getProperty());
+        assertEquals(2, op2.size());
+        assertEquals("objectA", op2.get(0).getObject());
+        assertEquals("pA", op2.get(0).getProperty());
+        assertEquals("objectB", op2.get(1).getObject());
+        assertEquals("pB", op2.get(1).getProperty());
     }
     
     public void testMessage_Message() {
         Message msg = new Message("code", "text", Message.ERROR);
         Message copy = new Message(msg);
-        assertEquals(0, copy.getInvalidObjectProperties().length);
-        assertEquals(0, copy.getReplacementParameters().length);
+        assertEquals(0, copy.getInvalidObjectProperties().size());
+        assertEquals(0, copy.getReplacementParameters().size());
         
-        MsgReplacementParameter[] params = new MsgReplacementParameter[]{
+        List<MsgReplacementParameter> params = Arrays.asList(
                 new MsgReplacementParameter("sumInsured", Money.euro(100)),
                 new MsgReplacementParameter("minAge", new Integer(18))
-        };
+        );
         msg = new Message("code", "text", Message.ERROR, (ObjectProperty)null, params);
         copy = new Message(msg);
-        MsgReplacementParameter[] copyParams = copy.getReplacementParameters();
-        assertEquals(2, copyParams.length);
-        assertEquals(params[0], copyParams[0]);
-        assertEquals(params[1], copyParams[1]);
+        List<MsgReplacementParameter> copyParams = copy.getReplacementParameters();
+        assertEquals(2, copyParams.size());
+        assertEquals(params.get(0), copyParams.get(0));
+        assertEquals(params.get(1), copyParams.get(1));
     }
     
     /*

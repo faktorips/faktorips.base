@@ -2,9 +2,9 @@ package org.faktorips.runtime.internal;
 
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
+import java.util.SortedSet;
+import java.util.TreeSet;
 
 import org.faktorips.runtime.IDeltaComputationOptions;
 import org.faktorips.runtime.IDeltaSupport;
@@ -188,7 +188,7 @@ public class ModelObjectDelta implements IModelObjectDelta {
 	private int kind;
 	private int kindOfChange;
 	private String association;
-    private Set<String> changedProperties = null;
+    private SortedSet<String> changedProperties = null;
 
 	private List<IModelObjectDelta> children = new ArrayList<IModelObjectDelta>(0);
 
@@ -329,7 +329,7 @@ public class ModelObjectDelta implements IModelObjectDelta {
      */
 	public void markPropertyChanged(String property) {
         if (changedProperties==null) {
-            changedProperties = new HashSet<String>();
+            changedProperties = new TreeSet<String>();
         }
         changedProperties.add(property);
 		kind |= CHANGED;
@@ -346,11 +346,11 @@ public class ModelObjectDelta implements IModelObjectDelta {
     /**
      * {@inheritDoc}
      */
-	public Set<String> getChangedProperties() {
+	public List<String> getChangedProperties() {
         if (changedProperties==null) {
-            return new HashSet<String>(0);
+            return new ArrayList<String>(0);
         }
-        return Collections.unmodifiableSet(changedProperties);
+        return new ArrayList<String>(changedProperties);
     }
 
     /**

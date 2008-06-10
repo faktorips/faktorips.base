@@ -17,6 +17,8 @@
 
 package org.faktorips.runtime;
 
+import org.faktorips.runtime.Message.Severity;
+
 import junit.framework.TestCase;
 
 /**
@@ -75,9 +77,9 @@ public class MessageListTest extends TestCase {
         ObjectProperty objProp2 = new ObjectProperty(this, "property2");
         list1.add(list2, objProp2, true);
         assertEquals(3, list1.getNoOfMessages());
-        assertEquals(0, list1.getMessage(0).getInvalidObjectProperties().length);
-        assertEquals(objProp2, list1.getMessage(1).getInvalidObjectProperties()[0]);
-        assertEquals(objProp2, list1.getMessage(2).getInvalidObjectProperties()[0]);
+        assertEquals(0, list1.getMessage(0).getInvalidObjectProperties().size());
+        assertEquals(objProp2, list1.getMessage(1).getInvalidObjectProperties().get(0));
+        assertEquals(objProp2, list1.getMessage(2).getInvalidObjectProperties().get(0));
         
         assertEquals(msg3.getCode(), list1.getMessage(2).getCode());
         assertEquals(msg3.getText(), list1.getMessage(2).getText());
@@ -99,10 +101,10 @@ public class MessageListTest extends TestCase {
         ObjectProperty objProp2 = new ObjectProperty(this, "property2");
         list1.add(list2, objProp2, false);
         assertEquals(3, list1.getNoOfMessages());
-        assertEquals(0, list1.getMessage(0).getInvalidObjectProperties().length);
-        assertEquals(objProp2, list1.getMessage(1).getInvalidObjectProperties()[0]);
+        assertEquals(0, list1.getMessage(0).getInvalidObjectProperties().size());
+        assertEquals(objProp2, list1.getMessage(1).getInvalidObjectProperties().get(0));
         // message 3 should remain untouched, as the invalid object properties were set!
-        assertEquals(objProp1, list1.getMessage(2).getInvalidObjectProperties()[0]);
+        assertEquals(objProp1, list1.getMessage(2).getInvalidObjectProperties().get(0));
     }
         
     public void testGetNoOfMessages() {
@@ -174,16 +176,16 @@ public class MessageListTest extends TestCase {
     
     public void testGetSeverity() {
         MessageList list = new MessageList();
-        assertEquals(0, list.getSeverity());
+        assertEquals(Severity.NONE, list.getSeverity());
         
         list.add(Message.newInfo("1", "blabla"));
-        assertEquals(Message.INFO, list.getSeverity());
+        assertEquals(Severity.INFO, list.getSeverity());
         
         list.add(Message.newWarning("1", "blabla"));
-        assertEquals(Message.WARNING, list.getSeverity());
+        assertEquals(Severity.WARNING, list.getSeverity());
         
         list.add(Message.newError("1", "blabla"));
-        assertEquals(Message.ERROR, list.getSeverity());
+        assertEquals(Severity.ERROR, list.getSeverity());
     }
 
     public void testContainsErrorMsg() {

@@ -20,9 +20,9 @@ package org.faktorips.runtime.internal;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.faktorips.runtime.internal.ReadOnlyBinaryRangeTree.TwoColumnKey;
-
 import junit.framework.TestCase;
+
+import org.faktorips.runtime.internal.ReadOnlyBinaryRangeTree.TwoColumnKey;
 
 /**
  * 
@@ -303,21 +303,21 @@ public class ReadOnlyBinaryRangeTreeTest extends TestCase {
 		/**
          * @param values
          */
-        public TestReadOnlyBinaryRangTree(Map map, int treeType) {
-            super(map, treeType);
+        public TestReadOnlyBinaryRangTree(Map map, KeyType keyType) {
+            super(map, keyType);
         }
         
         private static TestReadOnlyBinaryRangTree createTreeWidthIntegerValues(int nodeCount, int startPos, int rangWidth){
             return createTreeWidthIntegerValues(nodeCount, startPos, rangWidth, ReadOnlyBinaryRangeTree.KEY_IS_LOWER_BOUND_EQUAL);
         }
         
-        private static TestReadOnlyBinaryRangTree createTreeWidthIntegerValues(int nodeCount, int startPos, int rangeWidth, int treeType){
+        private static TestReadOnlyBinaryRangTree createTreeWidthIntegerValues(int nodeCount, int startPos, int rangeWidth, KeyType keyType){
             HashMap map = new HashMap(nodeCount);
             for (int i = 0; i < nodeCount; i++) {
                 Integer value = new Integer(startPos + rangeWidth * i);
                 map.put(value, value);
             }
-            return new TestReadOnlyBinaryRangTree(map, treeType);
+            return new TestReadOnlyBinaryRangTree(map, keyType);
         }
     }
     
