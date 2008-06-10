@@ -19,6 +19,10 @@ package org.faktorips.devtools.core.ui.wizards.deepcopy;
 
 
 import java.lang.reflect.InvocationTargetException;
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.util.Date;
+import java.util.GregorianCalendar;
 import java.util.Map;
 
 import org.eclipse.core.runtime.CoreException;
@@ -28,6 +32,7 @@ import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.osgi.util.NLS;
 import org.eclipse.ui.actions.WorkspaceModifyOperation;
 import org.faktorips.devtools.core.IpsPlugin;
+import org.faktorips.devtools.core.IpsPreferences;
 import org.faktorips.devtools.core.IpsStatus;
 import org.faktorips.devtools.core.internal.model.productcmpt.DeepCopyOperation;
 import org.faktorips.devtools.core.internal.model.productcmpt.treestructure.ProductCmptTreeStructure;
@@ -153,4 +158,19 @@ public class DeepCopyWizard extends ResizableWizard {
 		return copiedRoot;
 	}
 
+	/**
+	 * Updates the given working date in the ips preferences
+	 */
+    void applyWorkingDate() {
+        IpsPreferences ipsPreferences = IpsPlugin.getDefault().getIpsPreferences();
+        DateFormat format = ipsPreferences.getDateFormat();
+        Date newDate;
+        try {
+            newDate = format.parse(sourcePage.getWorkingDate());
+            GregorianCalendar calendar = new GregorianCalendar(); 
+            calendar.setTime(newDate);
+            ipsPreferences.setWorkingDate(calendar);
+        } catch (ParseException ignored) {
+        }
+    }
 }

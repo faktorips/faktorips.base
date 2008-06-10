@@ -281,9 +281,9 @@ public class ChangeWorkingDateAction implements IWorkbenchWindowActionDelegate {
 					pattern = ((SimpleDateFormat)format).toLocalizedPattern();
 				}
 				else {
-					pattern = ""; //$NON-NLS-1$
+					pattern = Messages.ChangeWorkingDateAction_errorFallbackMessageParameter;
 				}
-				String msg = NLS.bind("", pattern); //$NON-NLS-1$
+				String msg = NLS.bind(Messages.ChangeWorkingDateAction_errorPrefix, pattern);
 				return msg;
 			}
 

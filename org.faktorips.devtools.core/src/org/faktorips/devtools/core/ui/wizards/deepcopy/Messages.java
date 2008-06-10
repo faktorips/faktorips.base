@@ -32,6 +32,8 @@ public class Messages extends NLS {
 
     public static String DeepCopyLabelProvider_textUndefined;
     public static String DeepCopyWizard_title;
+    public static String SourcePage_errorPrefixWorkingDateFormat;
+    public static String SourcePage_errorWorkingDateFormat;
     public static String SourcePage_labelSourceFolder;
     public static String SourcePage_msgBadTargetPackage;
     public static String SourcePage_msgMissingSourceFolder;

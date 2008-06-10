@@ -66,57 +66,41 @@ import org.faktorips.devtools.core.ui.UIToolkit;
  * @author Thorsten Guenther
  */
 public class ReferenceAndPreviewPage extends WizardPage {
-    /**
-     * The ID to identify this page.
-     */
+    
+    // The ID to identify this page.
     private static final String PAGE_ID = "deepCopyWizard.preview"; //$NON-NLS-1$
 
-    /**
-     * The page where the source for the deep copy operation is defined
-     */
+    // The page where the source for the deep copy operation is defined
     private SourcePage sourcePage;
 
-    /**
-     * Structure to represent
-     */
+    // Structure to represent
     private IProductCmptTreeStructure structure;
 
-    /**
-     * The viewer to display the products to copy
-     */
+    // The viewer to display the products to copy
     private CheckboxTreeViewer tree;
 
-    /**
-     * A list of selected objects to restore the state of the ceckboxes from.
-     */
+    // A list of selected objects to restore the state of the ceckboxes from.
     private Object[] checkState;
 
-    /**
-     * Collection of error messages indexed by product components.
-     */
+    // Collection of error messages indexed by product components.
     private Hashtable errorElements;
     
-    /**
-     * Mapping of filenames to product references. Used for error-handling.
-     */
+    // Mapping of filenames to product references. Used for error-handling.
     private Hashtable filename2productMap;
     
-    /**
-     * Mapping of product references to filenames. Used for error-handling.
-     */
+    // Mapping of product references to filenames. Used for error-handling.
     private Hashtable product2filenameMap;
 
-    /**
-     * the type of the wizard displaying this page. Used to show different titles for different types.
-     */
+    // The type of the wizard displaying this page. Used to show different titles for different types.
     private int type;
 
-    /**
-     * Listener to handle check-modifications
-     */
+    // Listener to handle check-modifications
     private CheckStateListener checkStateListener;
 
-    /**
+    // Label shows the current working date
+    private Label workingDateLabel;
+
+    /*
      * @param type The type of the wizard displaying this page.
      * @return The title for this page - which depends on the given type.
      */
@@ -132,7 +116,7 @@ public class ReferenceAndPreviewPage extends WizardPage {
 
     /**
      * Create a new page to show the previously selected products with new names and allow the user
-     * to choose between copy and reference, select the target package, search- and replac-pattern.
+     * to choose between copy and reference, select the target package, search- and replace-pattern.
      * 
      * @param structure The product component structure to copy.
      * @param sourcePage The page to get the objects selected for copy, the target package and the
@@ -185,8 +169,9 @@ public class ReferenceAndPreviewPage extends WizardPage {
         Composite inputRoot = toolkit.createLabelEditColumnComposite(root);
 
         toolkit.createFormLabel(inputRoot, Messages.ReferenceAndPreviewPage_labelValidFrom);
-        toolkit.createFormLabel(inputRoot, IpsPlugin.getDefault().getIpsPreferences().getFormattedWorkingDate());
-
+        workingDateLabel = toolkit.createFormLabel(inputRoot, ""); //$NON-NLS-1$
+        updateWorkingDateLabel();
+        
         tree = new CheckboxTreeViewer(root);
         tree.setUseHashlookup(true);
         tree.setLabelProvider(new LabelProvider(tree));
@@ -194,6 +179,10 @@ public class ReferenceAndPreviewPage extends WizardPage {
         tree.getControl().setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
         checkStateListener = new CheckStateListener(this);
         tree.addCheckStateListener(checkStateListener);
+    }
+
+    private void updateWorkingDateLabel() {
+        workingDateLabel.setText(IpsPlugin.getDefault().getIpsPreferences().getFormattedWorkingDate());
     }
 
     /**
@@ -207,11 +196,14 @@ public class ReferenceAndPreviewPage extends WizardPage {
             pmd.setOpenOnRun(true);
             try {
                 getWizard().getContainer().run(false, false, new IRunnableWithProgress() {
-
                     public void run(IProgressMonitor monitor) throws InvocationTargetException, InterruptedException {
+                        ((DeepCopyWizard)getWizard()).applyWorkingDate();
+                        updateWorkingDateLabel();
+                        
                         if (monitor == null) {
                             monitor = new NullProgressMonitor();
                         }
+                        
                         monitor.beginTask(Messages.ReferenceAndPreviewPage_msgValidateCopy, 6);
                         ((ContentProvider)tree.getContentProvider()).setCheckedNodes(sourcePage.getCheckedNodes());
                         monitor.worked(1);

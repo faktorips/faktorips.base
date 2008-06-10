@@ -17,6 +17,9 @@
 
 package org.faktorips.devtools.core.ui.wizards.deepcopy;
 
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.Arrays;
 import java.util.regex.Pattern;
 import java.util.regex.PatternSyntaxException;
@@ -49,6 +52,7 @@ import org.faktorips.devtools.core.model.productcmpt.treestructure.IProductCmptT
 import org.faktorips.devtools.core.ui.UIToolkit;
 import org.faktorips.devtools.core.ui.controller.fields.FieldValueChangedEvent;
 import org.faktorips.devtools.core.ui.controller.fields.TextButtonField;
+import org.faktorips.devtools.core.ui.controller.fields.TextField;
 import org.faktorips.devtools.core.ui.controller.fields.ValueChangeListener;
 import org.faktorips.devtools.core.ui.controls.IpsPckFragmentRefControl;
 import org.faktorips.devtools.core.ui.controls.IpsPckFragmentRootRefControl;
@@ -77,6 +81,7 @@ public class SourcePage extends WizardPage implements ICheckStateListener, Value
     private Text versionId;
     
     // Controls
+    private TextField workingDateField;
     private TextButtonField targetPackRootField;
     private IpsPckFragmentRootRefControl targetPackRootControl; 
     private IpsPckFragmentRefControl targetPackageControl; 
@@ -88,6 +93,10 @@ public class SourcePage extends WizardPage implements ICheckStateListener, Value
     // The type of the deep copy wizard (see DeepCopyWizard):
     //   DeepCopyWizard.TYPE_COPY_PRODUCT or TYPE_NEW_VERSION
     private int type;
+
+	// The working date format specified in the ips preferences
+    private DateFormat dateFormat;
+
 
     private static String getTitle(int type) {
         if (type == DeepCopyWizard.TYPE_COPY_PRODUCT) {
@@ -116,6 +125,8 @@ public class SourcePage extends WizardPage implements ICheckStateListener, Value
         } catch (CoreException e) {
             IpsPlugin.logAndShowErrorDialog(e);
         }
+        
+        dateFormat = IpsPlugin.getDefault().getIpsPreferences().getDateFormat();
     }
 
     /**
@@ -140,7 +151,10 @@ public class SourcePage extends WizardPage implements ICheckStateListener, Value
         Composite inputRoot = toolkit.createLabelEditColumnComposite(root);
 
         toolkit.createFormLabel(inputRoot, Messages.ReferenceAndPreviewPage_labelValidFrom);
-        toolkit.createFormLabel(inputRoot, IpsPlugin.getDefault().getIpsPreferences().getFormattedWorkingDate());
+        Text workingDate = toolkit.createText(inputRoot);
+        workingDate.setText(IpsPlugin.getDefault().getIpsPreferences().getFormattedWorkingDate());
+        workingDateField = new TextField(workingDate);
+        workingDateField.addChangeListener(this);
         
         toolkit.createFormLabel(inputRoot, Messages.SourcePage_labelSourceFolder);
         targetPackRootControl = toolkit.createPdPackageFragmentRootRefControl(inputRoot, true);
@@ -148,7 +162,9 @@ public class SourcePage extends WizardPage implements ICheckStateListener, Value
         targetPackRootField.addChangeListener(this);
         
         // set target default
-        IIpsPackageFragmentRoot packRoot = getPackage().getRoot();
+        IIpsPackageFragment defaultPackage = getDefaultPackage();
+        IIpsPackageFragmentRoot defaultPackageRoot = getDefaultPackage().getRoot();
+        IIpsPackageFragmentRoot packRoot = defaultPackageRoot;
         if (!packRoot.isBasedOnSourceFolder()) {
             IIpsPackageFragmentRoot srcRoots[];
             try {
@@ -168,7 +184,9 @@ public class SourcePage extends WizardPage implements ICheckStateListener, Value
         toolkit.createFormLabel(inputRoot, Messages.ReferenceAndPreviewPage_labelTargetPackage);
         targetPackageControl = toolkit.createPdPackageFragmentRefControl(packRoot, inputRoot);
         
-        targetPackageControl.setIpsPackageFragment(getPackage());
+        // sets the default package only if the corresponding package root is based on a source folder
+        // in other cases reset the default package (because maybe the target package is inside an ips archive)
+        targetPackageControl.setIpsPackageFragment(defaultPackageRoot == packRoot ? defaultPackage : null);
         
         if (type == DeepCopyWizard.TYPE_COPY_PRODUCT) {
             toolkit.createFormLabel(inputRoot, Messages.ReferenceAndPreviewPage_labelSearchPattern);
@@ -249,9 +267,8 @@ public class SourcePage extends WizardPage implements ICheckStateListener, Value
         return ignore;
     }
     
-    IIpsPackageFragment getPackage() {
+    IIpsPackageFragment getDefaultPackage() {
         int ignore = getSegmentsToIgnore((IProductCmptReference[])structure.toArray(true));
-        // TODO Joerg: Ist die folgende Zeile korrekt, oder muss hier jetzt nicht das gewählte PackFragRoot benutzt werden?
         IIpsPackageFragment pack = structure.getRoot().getProductCmpt().getIpsPackageFragment();
         int segments = pack.getRelativePath().segmentCount();
         if (segments - ignore > 0) {
@@ -269,6 +286,11 @@ public class SourcePage extends WizardPage implements ICheckStateListener, Value
         setMessage(null);
         setErrorMessage(null);
 
+        validateWorkingDate();
+        if (getErrorMessage() != null){
+            return false;
+        }
+        
         if (namingStrategy != null && namingStrategy.supportsVersionId() ) {
             MessageList ml = namingStrategy.validateVersionId(versionId.getText());
             if (!ml.isEmpty()) {
@@ -300,6 +322,20 @@ public class SourcePage extends WizardPage implements ICheckStateListener, Value
         }
         
         return pageComplete;
+    }
+
+    private void validateWorkingDate() {
+        try {
+            dateFormat.parse(workingDateField.getText());
+        } catch (ParseException e) {
+            String pattern;
+            if (dateFormat instanceof SimpleDateFormat) {
+                pattern = ((SimpleDateFormat)dateFormat).toLocalizedPattern();
+            } else {
+                pattern = Messages.SourcePage_errorPrefixWorkingDateFormat;
+            }
+            setErrorMessage(NLS.bind(Messages.SourcePage_errorWorkingDateFormat, pattern));
+        }
     }
 
     public IProductCmptStructureReference[] getCheckedNodes() {
@@ -415,5 +451,12 @@ public class SourcePage extends WizardPage implements ICheckStateListener, Value
             return;
         }
         setPageComplete(!"".equals(targetPackRootControl.getText())); //$NON-NLS-1$
+    }
+
+	/**
+	 * Returns the working date entered in the text control
+     */
+    public String getWorkingDate() {
+        return workingDateField.getText();
     }
 }
