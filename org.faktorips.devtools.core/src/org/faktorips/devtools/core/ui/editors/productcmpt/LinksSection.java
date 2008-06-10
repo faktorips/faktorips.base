@@ -267,24 +267,16 @@ public class LinksSection extends IpsSection implements ISelectionProviderActiva
         openAction.run();
     }
 
-    /**
-	 * register a double click listener to open the edit-dialog to edit the relation. 
+    /*
+	 * Register a double click listener to open the referenced product component in a new editor 
 	 */
 	private void registerDoubleClickListener() {
-		treeViewer.addDoubleClickListener(new IDoubleClickListener() {
-			public void doubleClick(DoubleClickEvent event) {
-				if (!(event.getSelection() instanceof IStructuredSelection)) {
-					return;
-				}
-				IStructuredSelection selection = (IStructuredSelection)event.getSelection();
-				Object selected = selection.getFirstElement();
-				if (selected instanceof IProductCmptLink) {
-                    IProductCmptLink relation = (IProductCmptLink)selected;
-                    openLinkEditDialog(relation);
-				}
-			}
-		});
-	}
+        treeViewer.addDoubleClickListener(new IDoubleClickListener() {
+            public void doubleClick(DoubleClickEvent event) {
+                openLink();
+            }
+        });
+    }
 
 	/**
 	 * Creates the context menu for the treeview.
