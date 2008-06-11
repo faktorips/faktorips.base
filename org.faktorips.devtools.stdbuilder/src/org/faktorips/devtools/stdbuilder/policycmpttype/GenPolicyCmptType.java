@@ -165,7 +165,6 @@ public class GenPolicyCmptType extends GenType {
         if (!a.getPolicyCmptType().equals(getPolicyCmptType())) {
             GenPolicyCmptType superTypeGenerator = getBuilderSet().getGenerator(a.getPolicyCmptType());
             return superTypeGenerator.getGenerator(a);
-
         }
         return null;
     }
@@ -174,18 +173,16 @@ public class GenPolicyCmptType extends GenType {
         return (GenValidationRule)generatorsByPart.get(a);
     }
 
-    public GenAssociation getGenerator(IPolicyCmptTypeAssociation a) {
+    public GenAssociation getGenerator(IPolicyCmptTypeAssociation a) throws CoreException {
         GenAssociation generator = (GenAssociation)generatorsByPart.get(a);
-        if (null == generator) {
-            try {
-                generator = createGenerator(a, new LocalizedStringsSet(GenAssociation.class));
-            } catch (CoreException e) {
-                return null;
-            }
-            if (generator != null) {
-                genAssociations.add(generator);
-                generatorsByPart.put(a, generator);
-            }
+        if (null != generator) {
+            return generator;
+        }
+        // if the associations policy component type is not this type but one in the super type
+        // hierarchy of this type
+        if (!a.getPolicyCmptType().equals(getPolicyCmptType())) {
+            GenPolicyCmptType superTypeGenerator = getBuilderSet().getGenerator(a.getPolicyCmptType());
+            return superTypeGenerator.getGenerator(a);
         }
         return generator;
     }
@@ -201,7 +198,6 @@ public class GenPolicyCmptType extends GenType {
     public String getUnqualifiedClassName(boolean forInterface) throws CoreException {
         if (forInterface) {
             return getBuilderSet().getJavaNamingConvention().getPublishedInterfaceName(getPolicyCmptType().getName());
-
         }
         return StringUtil.getFilenameWithoutExtension(getPolicyCmptType().getName());
     }

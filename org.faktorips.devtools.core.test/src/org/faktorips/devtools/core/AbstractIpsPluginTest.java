@@ -254,6 +254,7 @@ public abstract class AbstractIpsPluginTest extends XmlAbstractTestCase {
 		IJavaProject javaProject = JavaCore.create(project);
 		// add Java nature
 		Util.addNature(project, JavaCore.NATURE_ID);
+		javaProject.setOption(JavaCore.COMPILER_COMPLIANCE, JavaCore.VERSION_1_4);
 		// create bin folder and set as output folder.
 		IFolder binFolder = project.getFolder("bin");
 		if (!binFolder.exists()) {

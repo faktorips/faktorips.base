@@ -359,6 +359,13 @@ public class ProductCmptType extends Type implements IProductCmptType {
     /**
      * {@inheritDoc}
      */
+    public IProductCmptTypeAssociation[] getProductCmptTypeAssociations() {
+        return (IProductCmptTypeAssociation[])associations.toArray(new IProductCmptTypeAssociation[associations.size()]);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
     public IProductCmptTypeMethod[] getNonFormulaProductCmptTypeMethods() {
 
         ArrayList result = new ArrayList();

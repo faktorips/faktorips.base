@@ -257,6 +257,11 @@ public interface IProductCmptType extends IIpsObject, IType {
      * Returns the type's methods. Typesafe version of <code>getMethods()</code>. 
      */
     public IProductCmptTypeMethod[] getProductCmptTypeMethods();
+
+    /**
+     * Returns the type's associations. Typesafe version of <code>getAssociations()</code>. 
+     */
+    public IProductCmptTypeAssociation[] getProductCmptTypeAssociations();
     
     /**
      * Returns the methods of this type which are no formula signatures.

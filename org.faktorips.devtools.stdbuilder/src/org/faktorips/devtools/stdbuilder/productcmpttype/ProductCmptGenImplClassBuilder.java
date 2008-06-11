@@ -656,7 +656,7 @@ public class ProductCmptGenImplClassBuilder extends BaseProductCmptTypeBuilder {
             throws CoreException {
 
         GenProdMethod generator = ((StandardBuilderSet)getBuilderSet()).getGenerator(getProductCmptType())
-                .getGenerator(method);
+                .getGenerator((IProductCmptTypeMethod)method);
         if (generator != null) {
             generator.generate(generatesInterface(), getIpsProject(), getMainTypeSection());
         }
