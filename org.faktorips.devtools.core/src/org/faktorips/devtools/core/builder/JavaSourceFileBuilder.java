@@ -926,9 +926,13 @@ public abstract class JavaSourceFileBuilder extends AbstractArtefactBuilder {
     }
 
     private boolean isComplianceLevelAtLeast5(IIpsProject project) {
-        String[] complianceLevel = project.getJavaProject().getOption(
-                "org.eclipse.jdt.core.compiler.compliance", true).split("\\.");
-        return Integer.parseInt(complianceLevel[0]) > 1 && Integer.parseInt(complianceLevel[1]) >= 5;
+        String complianceLevel = project.getJavaProject().getOption(
+                "org.eclipse.jdt.core.compiler.compliance", true);
+        if(complianceLevel!=null){
+            String[] complianceLevelParts = complianceLevel.split("\\.");
+            return Integer.parseInt(complianceLevelParts[0]) > 1 && Integer.parseInt(complianceLevelParts[1]) >= 5;
+        }
+        return false; // assume old Java 1.4 project if compliance level is not set.
     }
 
     private String getJMergeDefaultConfigLocation() {
