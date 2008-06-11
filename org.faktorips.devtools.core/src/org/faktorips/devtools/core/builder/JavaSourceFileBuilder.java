@@ -78,7 +78,7 @@ public abstract class JavaSourceFileBuilder extends AbstractArtefactBuilder {
      * activated a class, method or attribute that is marked by this annotation will be regenerated
      * with every build.
      */
-    public final static String[] ANNOTATION_GENERATED = new String[] { "generated" }; //$NON-NLS-1$
+    public final static String[] ANNOTATION_GENERATED = new String[] { "generated" }; //$NON-NLSO-1$
 
     /**
      * This constant is supposed to be used as a javadoc annotation. It becomes relevant if the
@@ -922,12 +922,12 @@ public abstract class JavaSourceFileBuilder extends AbstractArtefactBuilder {
             }
             return;
         }
-        model.initialize(facadeHelper, getJMergeDefaultConfigLocation());
+        model.initialize(facadeHelper, getJMergeDefaultConfigLocation(project));
     }
 
     private boolean isComplianceLevelAtLeast5(IIpsProject project) {
         String complianceLevel = project.getJavaProject().getOption(
-                "org.eclipse.jdt.core.compiler.compliance", true);
+                JavaCore.COMPILER_COMPLIANCE, true);
         if(complianceLevel!=null){
             String[] complianceLevelParts = complianceLevel.split("\\.");
             return Integer.parseInt(complianceLevelParts[0]) > 1 || Integer.parseInt(complianceLevelParts[1]) >= 5;
@@ -935,13 +935,13 @@ public abstract class JavaSourceFileBuilder extends AbstractArtefactBuilder {
         return false; // assume old Java 1.4 project if compliance level is not set.
     }
 
-    private String getJMergeDefaultConfigLocation() {
+    private String getJMergeDefaultConfigLocation(IIpsProject ipsProject) {
         StringBuffer mergeFile = new StringBuffer();
         mergeFile
                 .append('/')
                 .append(JavaSourceFileBuilder.class.getPackage().getName().replace('.', '/'))
                 .append(
-                        isComplianceLevelAtLeast5(getIpsProject()) ? "/merge.java5.xml" : "/merge.xml"); //$NON-NLS-1$ //$NON-NLS-2$
+                        isComplianceLevelAtLeast5(ipsProject) ? "/merge.java5.xml" : "/merge.xml"); //$NON-NLS-1$ //$NON-NLS-2$
         return Platform.getBundle(IpsPlugin.PLUGIN_ID).getResource(mergeFile.toString()).toExternalForm();
     }
 
