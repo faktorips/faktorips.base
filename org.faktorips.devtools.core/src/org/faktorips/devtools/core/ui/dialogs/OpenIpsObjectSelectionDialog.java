@@ -293,7 +293,7 @@ public class OpenIpsObjectSelectionDialog extends AbstractElementListSelectionDi
     
     private static String getPackageSrcLabel(IIpsPackageFragment frgmt){
         String packageSource = frgmt.getName();
-        packageSource += " - /" + frgmt.getIpsProject().getName() + "/" + frgmt.getRoot().getName(); //$NON-NLS-1$ //$NON-NLS-2$
+        packageSource += " - " + frgmt.getIpsProject().getName() + "/" + frgmt.getRoot().getName(); //$NON-NLS-1$ //$NON-NLS-2$
         return packageSource;
     }
     
