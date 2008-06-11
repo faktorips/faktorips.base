@@ -241,6 +241,16 @@ public class PolicyCmptImplClassBuilder extends BasePolicyCmptTypeBuilder {
         }
     }
     
+    /**
+     * Code sample
+     * <pre>
+     * public IModelObject newCopy() {
+     *     CpParent newCopy = new CpParent(getCpParentType());
+     *     copyProperties(newCopy);
+     *     return newCopy;
+     * }
+     * </pre>
+     */
     protected void generateMethodNewCopy(JavaCodeFragmentBuilder methodsBuilder) throws CoreException {
         methodsBuilder.javaDoc(getJavaDocCommentForOverriddenMethod(), ANNOTATION_GENERATED);
         methodsBuilder.signature(java.lang.reflect.Modifier.PUBLIC, IModelObject.class.getName(), MethodNames.NEW_COPY, new String[0], new String[0]);
@@ -256,19 +266,40 @@ public class PolicyCmptImplClassBuilder extends BasePolicyCmptTypeBuilder {
             methodsBuilder.append(interfaceBuilder.getMethodNameGetProductCmpt(getProductCmptType()) + "()");
         }
         methodsBuilder.appendln(");");
-        if (getPolicyCmptType().hasSupertype()) {
-            methodsBuilder.appendln("super." + getMethodNameCopyProperties() + "(" + varName + ");");
-        }
         methodsBuilder.appendln(getMethodNameCopyProperties() + "(" + varName + ");");
         methodsBuilder.appendln("return " + varName + ";");
         methodsBuilder.closeBracket();
     }
     
+    /**
+     * Code sample
+     * <pre>
+     * protected void copyProperties(CpParent copy) {
+     *     super.copyProperties(copy); // if class has superclass
+     *     copy.changeableAttr = changeableAttr;
+     *     copy.derivedExplicitCall = derivedExplicitCall;
+     *     if (child1 != null) {
+     *         copy.child1 = (CpChild1)child1.newCopy();
+     *         copy.child1.setParentModelObjectInternal(copy);
+     *     } 
+     *     for (Iterator it = child2s.iterator(); it.hasNext();) {
+     *         CpChild2 CpChild2 = (CpChild2)it.next();
+     *         CpChild2 copyCpChild2 = (CpChild2)CpChild2.newCopy();
+     *         ((DependantObject)copyCpChild2).setParentModelObjectInternal(copy);
+     *         copy.child2s.add(copyCpChild2);
+     *     }
+     * }    
+     * </pre>
+     */    
     protected void generateMethodCopyProperties(JavaCodeFragmentBuilder methodsBuilder) throws CoreException {
         methodsBuilder.javaDoc(getJavaDocCommentForOverriddenMethod(), ANNOTATION_GENERATED);
         String paramName = "copy";
         methodsBuilder.signature(java.lang.reflect.Modifier.PROTECTED, "void", getMethodNameCopyProperties(), new String[]{paramName}, new String[]{getUnqualifiedClassName()});
         methodsBuilder.openBracket();
+        
+        if (getPolicyCmptType().hasSupertype()) {
+            methodsBuilder.appendln("super." + getMethodNameCopyProperties() + "(" + paramName + ");");
+        }
         
         // copy attributes
         IPolicyCmptTypeAttribute[] attributes = getPolicyCmptType().getPolicyCmptTypeAttributes();
