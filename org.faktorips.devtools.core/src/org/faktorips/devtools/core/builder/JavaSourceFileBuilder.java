@@ -930,7 +930,7 @@ public abstract class JavaSourceFileBuilder extends AbstractArtefactBuilder {
                 "org.eclipse.jdt.core.compiler.compliance", true);
         if(complianceLevel!=null){
             String[] complianceLevelParts = complianceLevel.split("\\.");
-            return Integer.parseInt(complianceLevelParts[0]) > 1 && Integer.parseInt(complianceLevelParts[1]) >= 5;
+            return Integer.parseInt(complianceLevelParts[0]) > 1 || Integer.parseInt(complianceLevelParts[1]) >= 5;
         }
         return false; // assume old Java 1.4 project if compliance level is not set.
     }
