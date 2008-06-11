@@ -22,6 +22,7 @@ import java.util.StringTokenizer;
 
 import org.apache.commons.lang.StringUtils;
 import org.faktorips.datatype.ValueClassDatatype;
+import org.faktorips.values.DateUtil;
 
 /**
  *
@@ -44,6 +45,9 @@ public class GregorianCalendarDatatype extends ValueClassDatatype {
         if (StringUtils.isEmpty(value)) {
             return null;
         }
+        if (!DateUtil.isIsoDate(value)) {
+            throw new IllegalArgumentException("Date value must have the format YYYY-MM-DD");
+        }
         try {
             StringTokenizer tokenizer = new StringTokenizer(value, "-");
             int year = Integer.parseInt(tokenizer.nextToken());
@@ -53,6 +57,13 @@ public class GregorianCalendarDatatype extends ValueClassDatatype {
         } catch (Exception e) {
             throw new IllegalArgumentException("Can't parse " + value + " to a date!");
         }
+    }
+    
+    /**
+     * {@inheritDoc}
+     */
+    public boolean isParsable(String value) {
+        return DateUtil.isIsoDate(value);
     }
 
     /**

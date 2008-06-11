@@ -19,10 +19,10 @@ package org.faktorips.datatype.classtypes;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
-import java.util.regex.Pattern;
 
 import org.apache.commons.lang.StringUtils;
 import org.faktorips.datatype.ValueClassDatatype;
+import org.faktorips.values.DateUtil;
 
 
 /**
@@ -59,11 +59,9 @@ public class DateDatatype extends ValueClassDatatype {
             return null;
         }
         try{
-            String regex = "^\\d{4}-\\d{1,2}-\\d{1,2}$";
-            if (!Pattern.matches(regex, value)){
+            if (!DateUtil.isIsoDate(value)) {
                 throw new IllegalArgumentException("Date value must have the format " + format);
             }
-            
             return formatter.parse(value);
         }
         catch (Exception e){
@@ -73,6 +71,13 @@ public class DateDatatype extends ValueClassDatatype {
             ill.initCause(e);
             throw ill;
         }
+    }
+    
+    /**
+     * {@inheritDoc}
+     */
+    public boolean isParsable(String value) {
+        return DateUtil.isIsoDate(value);
     }
 
     /**
