@@ -37,6 +37,7 @@ import org.eclipse.emf.codegen.merge.java.JControlModel;
 import org.eclipse.emf.codegen.merge.java.JMerger;
 import org.eclipse.emf.codegen.merge.java.facade.FacadeHelper;
 import org.eclipse.emf.codegen.merge.java.facade.ast.ASTFacadeHelper;
+import org.eclipse.emf.codegen.merge.java.facade.jdom.JDOMFacadeHelper;
 import org.eclipse.jdt.core.JavaCore;
 import org.eclipse.jdt.core.ToolFactory;
 import org.eclipse.jdt.core.formatter.CodeFormatter;
@@ -107,8 +108,6 @@ public abstract class JavaSourceFileBuilder extends AbstractArtefactBuilder {
     public final static String MARKER_END_USER_CODE = "//end-user-code"; //$NON-NLS-1$
 
     protected final static String JAVA_EXTENSION = ".java"; //$NON-NLS-1$
-
-    protected final static String MERGE_CONFIGURATION_FILE = "merge.xml"; //$NON-NLS-1$
 
     private final static String BEGIN_FAKTORIPS_GENERATOR_INFORMATION_SECTION = "BEGIN FAKTORIPS GENERATOR INFORMATION SECTION"; //$NON-NLS-1$
 
@@ -905,12 +904,15 @@ public abstract class JavaSourceFileBuilder extends AbstractArtefactBuilder {
     }
 
     private void initJControlModel(IIpsProject project) throws CoreException {
-        IFile mergeFile = project
-                .getJavaProject()
-                .getProject()
-                .getFile(MERGE_CONFIGURATION_FILE);
+        IFile mergeFile = project.getJavaProject().getProject().getFile(
+                isComplianceLevelAtLeast5(project) ? "merge.java5.xml" : "merge.xml"); //$NON-NLS-1$ //$NON-NLS-2$
         model = new org.eclipse.emf.codegen.merge.java.JControlModel();
-        FacadeHelper facadeHelper = new ASTFacadeHelper();
+        FacadeHelper facadeHelper;
+        if (isComplianceLevelAtLeast5(project)) {
+            facadeHelper = new ASTFacadeHelper();
+        } else {
+            facadeHelper = new JDOMFacadeHelper();
+        }
         if (mergeFile.exists()) {
             try {
                 model.initialize(facadeHelper, mergeFile.getLocation().toPortableString());
@@ -923,9 +925,19 @@ public abstract class JavaSourceFileBuilder extends AbstractArtefactBuilder {
         model.initialize(facadeHelper, getJMergeDefaultConfigLocation());
     }
 
+    private boolean isComplianceLevelAtLeast5(IIpsProject project) {
+        String[] complianceLevel = project.getJavaProject().getOption(
+                "org.eclipse.jdt.core.compiler.compliance", true).split("\\.");
+        return Integer.parseInt(complianceLevel[0]) > 1 || Integer.parseInt(complianceLevel[1]) >= 5;
+    }
+
     private String getJMergeDefaultConfigLocation() {
         StringBuffer mergeFile = new StringBuffer();
-        mergeFile.append('/').append(JavaSourceFileBuilder.class.getPackage().getName().replace('.', '/')).append("/"+MERGE_CONFIGURATION_FILE); //$NON-NLS-1$
+        mergeFile
+                .append('/')
+                .append(JavaSourceFileBuilder.class.getPackage().getName().replace('.', '/'))
+                .append(
+                        isComplianceLevelAtLeast5(getIpsProject()) ? "/merge.java5.xml" : "/merge.xml"); //$NON-NLS-1$ //$NON-NLS-2$
         return Platform.getBundle(IpsPlugin.PLUGIN_ID).getResource(mergeFile.toString()).toExternalForm();
     }
 
