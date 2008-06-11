@@ -35,6 +35,7 @@ public class Messages extends NLS {
 	}
 
 	public static String TableExport_title;
+    public static String TableExportPage_firstRowContainsHeader;
 	public static String TableExportPage_title;
 	public static String TableExportPage_labelContents;
     public static String TableExportPage_labelName;

@@ -60,7 +60,7 @@ public class TableExportPage extends WizardDataTransferPage implements ValueChan
     public static final String PAGE_NAME= "TableExportPage"; //$NON-NLS-1$
 
     // Stored widget contents
-    private static final String EXPORT_WITH_COLUMN_HEADER = PAGE_NAME + ".EXPORT_WITH_COLUMN_HEADER";
+    private static final String EXPORT_WITH_COLUMN_HEADER = PAGE_NAME + ".EXPORT_WITH_COLUMN_HEADER"; //$NON-NLS-1$
     private static final String NULL_REPRESENTATION = PAGE_NAME + ".NULL_REPRESENTATION"; //$NON-NLS-1$
     
     // the resource that was selected in the workbench or null if none.
@@ -188,7 +188,7 @@ public class TableExportPage extends WizardDataTransferPage implements ValueChan
         nullRepresentation = toolkit.createText(lowerComposite);
         nullRepresentation.setText(IpsPlugin.getDefault().getIpsPreferences().getNullPresentation());
         
-        Checkbox withColumnHeaderRow = toolkit.createCheckbox(pageControl, "First row contains column header");
+        Checkbox withColumnHeaderRow = toolkit.createCheckbox(pageControl, Messages.TableExportPage_firstRowContainsHeader);
         exportWithColumnHeaderRowField = new CheckboxField(withColumnHeaderRow);
         exportWithColumnHeaderRowField.addChangeListener(this);
         withColumnHeaderRow.setChecked(true);
@@ -269,7 +269,7 @@ public class TableExportPage extends WizardDataTransferPage implements ValueChan
     protected void contentsChanged() {
         // table contents has changed, thus clear the previous entered file name
         // because maybe the filename equals the table contents name
-        setFilename("");
+        setFilename(""); //$NON-NLS-1$
     }
     
     protected void projectChanged() {
