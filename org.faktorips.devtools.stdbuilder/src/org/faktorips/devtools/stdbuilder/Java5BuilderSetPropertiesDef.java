@@ -20,13 +20,12 @@ package org.faktorips.devtools.stdbuilder;
 import java.util.Map;
 
 import org.eclipse.core.runtime.IStatus;
-import org.eclipse.jdt.core.JavaCore;
 import org.eclipse.osgi.util.NLS;
+import org.faktorips.devtools.core.builder.ComplianceCheck;
 import org.faktorips.devtools.core.model.IIpsModel;
 import org.faktorips.devtools.core.model.ipsproject.IIpsBuilderSetPropertyDef;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.util.message.Message;
-import org.faktorips.values.Decimal;
 
 /**
  * An implementation of the {@link IIpsBuilderSetPropertyDef} interface specific for Java 5 properties. The default value for the enablement
@@ -43,12 +42,7 @@ public class Java5BuilderSetPropertiesDef implements IIpsBuilderSetPropertyDef {
      * Returns "true" if the java project setting are greater equals to 1.5 and false otherwise.
      */
     public String getDefaultValue(IIpsProject ipsProject) {
-        String optionValue = ipsProject.getJavaProject().getOption(JavaCore.COMPILER_COMPLIANCE, true);
-        Decimal value = Decimal.valueOf(optionValue);
-        if(value.greaterThanOrEqual(Decimal.valueOf("1.5"))){ //$NON-NLS-1$
-            return Boolean.toString(true);
-        }
-        return Boolean.toString(false);
+        return Boolean.toString(ComplianceCheck.isComplianceLevelAtLeast5(ipsProject));
     }
 
     /**
@@ -87,12 +81,7 @@ public class Java5BuilderSetPropertiesDef implements IIpsBuilderSetPropertyDef {
      * Returns <code>true</code> if the java project setting are greater equals to 1.5 and false otherwise.
      */
     public boolean isAvailable(IIpsProject ipsProject) {
-        String optionValue = ipsProject.getJavaProject().getOption(JavaCore.COMPILER_COMPLIANCE, true);
-        Decimal value = Decimal.valueOf(optionValue);
-        if(value.greaterThanOrEqual(Decimal.valueOf("1.5"))){ //$NON-NLS-1$
-            return true;
-        }
-        return false;
+        return ComplianceCheck.isComplianceLevelAtLeast5(ipsProject);
     }
 
     /**

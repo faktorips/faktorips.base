@@ -16,6 +16,7 @@ package org.faktorips.devtools.core.builder;
 
 import org.eclipse.jdt.core.JavaCore;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
+import org.faktorips.values.Decimal;
 
 /**
  * A class that provides static methods to check against the Java compiler's compliance level.
@@ -31,8 +32,7 @@ public class ComplianceCheck {
     public static boolean isComplianceLevelAtLeast5(IIpsProject project) {
         String complianceLevel = project.getJavaProject().getOption(JavaCore.COMPILER_COMPLIANCE, true);
         if (complianceLevel != null) {
-            String[] complianceLevelParts = complianceLevel.split("\\.");
-            return Integer.parseInt(complianceLevelParts[0]) > 1 || Integer.parseInt(complianceLevelParts[1]) >= 5;
+            return Decimal.valueOf(complianceLevel).greaterThanOrEqual(Decimal.valueOf("1.5")); //$NON-NLS-1$
         }
         return false; // assume old Java 1.4 project if compliance level is not set.
     }
