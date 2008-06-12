@@ -60,6 +60,7 @@ public abstract class DefaultBuilderSet extends AbstractBuilderSet {
     public final static String KIND_PRODUCT_CMPT_CONTENT = "productcmptcontent"; //$NON-NLS-1$
     public final static String KIND_POLICY_CMPT_INTERFACE = "policycmptinterface"; //$NON-NLS-1$
     public final static String KIND_POLICY_CMPT_IMPL = "policycmptimpl"; //$NON-NLS-1$
+    public final static String KIND_MODEL_TYPE = "modeltype"; //$NON-NLS-1$
     public final static String KIND_TABLE_IMPL = "tableimpl"; //$NON-NLS-1$
     public final static String KIND_TABLE_CONTENT = "tablecontent"; //$NON-NLS-1$
     public final static String KIND_TABLE_ROW = "tablerow"; //$NON-NLS-1$
@@ -190,6 +191,10 @@ public abstract class DefaultBuilderSet extends AbstractBuilderSet {
                 return getInternalPackageName(ipsSrcFile);
             }
 
+            if (KIND_MODEL_TYPE.equals(kind)) {
+                return getInternalPackageName(ipsSrcFile);
+            }
+
         }
 
         if (IpsObjectType.PRODUCT_CMPT_TYPE_V2.equals(ipsSrcFile.getIpsObjectType())) {
@@ -204,6 +209,10 @@ public abstract class DefaultBuilderSet extends AbstractBuilderSet {
                 return getPackageName(ipsSrcFile);
             }
             if (KIND_PRODUCT_CMPT_GENERATION_IMPL.equals(kind)) {
+                return getInternalPackageName(ipsSrcFile);
+            }
+
+            if (KIND_MODEL_TYPE.equals(kind)) {
                 return getInternalPackageName(ipsSrcFile);
             }
         }
