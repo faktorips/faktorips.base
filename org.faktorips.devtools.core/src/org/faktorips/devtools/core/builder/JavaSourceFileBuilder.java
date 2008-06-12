@@ -640,8 +640,8 @@ public abstract class JavaSourceFileBuilder extends AbstractArtefactBuilder {
         if (StringUtils.isEmpty(text) || javaOptionsSplitLength == null || javaOptionsTabSize == null) {
             return text;
         }
-        return org.faktorips.devtools.core.util.StringUtils.wrapText(text, javaOptionsSplitLength.intValue(),
-                javaOptionsTabSize.intValue(), SystemUtils.LINE_SEPARATOR);
+        return org.faktorips.devtools.core.util.StringUtils.wrapText(text, javaOptionsSplitLength.intValue() -
+                javaOptionsTabSize.intValue() - 3, SystemUtils.LINE_SEPARATOR);
     }
 
     /**

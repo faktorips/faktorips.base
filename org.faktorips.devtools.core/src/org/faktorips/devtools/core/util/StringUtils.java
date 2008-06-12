@@ -31,17 +31,15 @@ public class StringUtils {
      * Wraps the provide text according to the split length and tabSize. 
      * 
      * @param text the text that needs to be wrapped up
-     * @param splitLength the length after which a line break should occur
-     * @param tabSize since this method is aimed to be used for java doc the tab size is identation tab size of the java doc
+     * @param length the length after which a line break should occur
      * @param lineSeparator the line separator that is used for the wrapped text
      * @return the wrapped up text
      */
-    public final static String wrapText(String text, int splitLength, int tabSize, String lineSeparator) {
+    public final static String wrapText(String text, int length, String lineSeparator) {
 
         if (text == null || "".equals(text)) {
             return text;
         }
-        int length = splitLength - tabSize - 3;
         String[] lines = text.split(lineSeparator);
         StringBuffer buf = new StringBuffer();
         for (int i = 0; i < lines.length; i++) {

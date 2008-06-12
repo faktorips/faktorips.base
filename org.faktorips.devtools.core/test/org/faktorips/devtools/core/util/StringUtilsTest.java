@@ -33,7 +33,7 @@ public class StringUtilsTest extends TestCase {
             + "geführt. Dabei unterscheidet man zwischen den Komponenten Stammdeckung, \n"
             + "Bonus, Ansammlungsguthaben und Schlussüberschuss.";
 
-        String wrappedText = StringUtils.wrapText(text, 80, 4, "\n");
+        String wrappedText = StringUtils.wrapText(text, 73, "\n");
         assertEquals(expectedText, wrappedText);
         
         text = "Diese Klasse enthält die Kontostände, die für die Bestimmung der abzuführenden "
@@ -46,7 +46,7 @@ public class StringUtilsTest extends TestCase {
                 "geführt. Dabei unterscheidet man zwischen den Komponenten Stammdeckung, Bonus,\n" +
                 "Ansammlungsguthaben und Schlussüberschuss.";
         
-        wrappedText = StringUtils.wrapText(text, 80, 4, "\n");
+        wrappedText = StringUtils.wrapText(text, 73, "\n");
         assertEquals(expectedText, wrappedText);
     }
 
