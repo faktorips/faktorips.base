@@ -35,7 +35,7 @@ public interface IModelTypeAttribute extends IModelElement {
      * Enum defining the possible attribute types.
      */
     public enum AttributeType{
-        changeable, constant, derived, derived_cached;
+        changeable, constant, derived, computed;
     }
 
     /**
