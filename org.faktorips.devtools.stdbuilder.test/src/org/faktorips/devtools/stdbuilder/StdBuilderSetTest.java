@@ -30,7 +30,7 @@ public class StdBuilderSetTest extends AbstractIpsPluginTest {
         IIpsArtefactBuilderSetInfo builderSetInfo = IpsPlugin.getDefault().getIpsModel().getIpsArtefactBuilderSetInfo("org.faktorips.devtools.stdbuilder.ipsstdbuilderset");
         assertNotNull(builderSetInfo);
         IIpsBuilderSetPropertyDef[] propertyDefs = builderSetInfo.getPropertyDefinitions();
-        assertEquals(8, propertyDefs.length);
+        assertEquals(7, propertyDefs.length);
         
         ArrayList propertyDefNames = new ArrayList();
         for (int i = 0; i < propertyDefs.length; i++) {

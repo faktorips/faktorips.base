@@ -637,35 +637,11 @@ public abstract class JavaSourceFileBuilder extends AbstractArtefactBuilder {
     }
 
     private String wrapText(String text) {
-
         if (StringUtils.isEmpty(text) || javaOptionsSplitLength == null || javaOptionsTabSize == null) {
             return text;
         }
-        int maxLengthInt = javaOptionsSplitLength.intValue();
-        int tabSizeInt = javaOptionsTabSize.intValue();
-        int length = maxLengthInt - tabSizeInt - 3;
-        String[] lines = StringUtils.split(text, SystemUtils.LINE_SEPARATOR);
-        StringBuffer buf = new StringBuffer();
-        for (int i = 0; i < lines.length; i++) {
-            String lineText = lines[i];
-            while (lineText.length() > length) {
-                int index = lineText.indexOf(' ', length);
-                if (index != -1) {
-                    buf.append(lineText.substring(0, index));
-                    buf.append(SystemUtils.LINE_SEPARATOR);
-                    if (lineText.length() > index + 1) {
-                        lineText = lineText.substring(index + 1, lineText.length() - 1);
-                    } else {
-                        break;
-                    }
-                } else {
-                    break;
-                }
-            }
-            buf.append(lineText);
-            buf.append(SystemUtils.LINE_SEPARATOR);
-        }
-        return buf.toString();
+        return org.faktorips.devtools.core.util.StringUtils.wrapText(text, javaOptionsSplitLength.intValue(),
+                javaOptionsTabSize.intValue(), SystemUtils.LINE_SEPARATOR);
     }
 
     /**
