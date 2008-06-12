@@ -63,8 +63,7 @@ public class GregorianCalendarDatatype extends ValueClassDatatype {
      * {@inheritDoc}
      */
     public boolean isParsable(String value) {
-        return DateUtil.isIsoDate(value);
-    }
+        return StringUtils.isEmpty(value) || DateUtil.isIsoDate(value);    }
 
     /**
      * {@inheritDoc}
