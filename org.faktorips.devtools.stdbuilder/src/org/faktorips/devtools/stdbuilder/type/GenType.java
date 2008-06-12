@@ -46,7 +46,7 @@ public abstract class GenType extends JavaGeneratorForIpsPart {
      * @param builder
      * @throws CoreException
      */
-    public GenType(IType type, StandardBuilderSet builderSet, LocalizedStringsSet stringsSet) throws CoreException {
+    public GenType(IType type, StandardBuilderSet builderSet, LocalizedStringsSet stringsSet) {
         super(type, stringsSet);
         ArgumentCheck.notNull(type, this);
         ArgumentCheck.notNull(builderSet, this);

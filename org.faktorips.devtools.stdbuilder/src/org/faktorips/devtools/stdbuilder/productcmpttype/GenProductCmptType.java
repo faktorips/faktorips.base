@@ -44,13 +44,27 @@ import org.faktorips.runtime.IllegalRepositoryModificationException;
 import org.faktorips.runtime.internal.MethodNames;
 import org.faktorips.util.LocalizedStringsSet;
 
+/**
+ * A generator for <code>IProductCmptType</code>s. It provides access to generators for attributes, methods and associations of the 
+ * product component type. Typically when the generator is created all the generators of its parts are also greated accept the ones
+ * in the super type hierarchy. These are created on demand since it is expected that only a few of them will be overridden. It is necessary
+ * to provide an own generator instance for those overridden parts in this generator and not to delegate to the generator of the super
+ * class since otherwise it would not be possible to determine if code has to be generated with respect to the super type.
+ * 
+ * @author Peter Erzberger
+ */
 public class GenProductCmptType extends GenType {
 
     private Map generatorsByPart = new HashMap();
     private List genProdAttributes = new ArrayList();
     private List genProdAssociations = new ArrayList();
     private List genMethods = new ArrayList();
+    private LocalizedStringsSet methodStringsSet = new LocalizedStringsSet(GenProdMethod.class);
+    private LocalizedStringsSet associationStringsSet = new LocalizedStringsSet(GenProdAssociation.class);
+    private LocalizedStringsSet attributeStringsSet = new LocalizedStringsSet(GenProdAttribute.class);
 
+
+    
     public GenProductCmptType(IProductCmptType productCmptType, StandardBuilderSet builderSet,
             LocalizedStringsSet stringsSet) throws CoreException {
         super(productCmptType, builderSet, stringsSet);
@@ -131,11 +145,10 @@ public class GenProductCmptType extends GenType {
     }
 
     private void createGeneratorsForProdAttributes() throws CoreException {
-        LocalizedStringsSet stringsSet = new LocalizedStringsSet(GenProdAttribute.class);
         IProductCmptTypeAttribute[] attrs = getProductCmptType().getProductCmptTypeAttributes();
         for (int i = 0; i < attrs.length; i++) {
             if (attrs[i].isValid()) {
-                GenProdAttribute generator = new GenProdAttribute(this, attrs[i], stringsSet);
+                GenProdAttribute generator = new GenProdAttribute(this, attrs[i], attributeStringsSet);
                 genProdAttributes.add(generator);
                 generatorsByPart.put(attrs[i], generator);
             }
@@ -143,11 +156,10 @@ public class GenProductCmptType extends GenType {
     }
 
     private void createGeneratorsForProdAssociations() throws CoreException {
-        LocalizedStringsSet stringsSet = new LocalizedStringsSet(GenProdAssociation.class);
         IProductCmptTypeAssociation[] ass = getProductCmptType().getProductCmptTypeAssociations();
         for (int i = 0; i < ass.length; i++) {
             if (ass[i].isValid()) {
-                GenProdAssociation generator = createGenerator(ass[i], stringsSet);
+                GenProdAssociation generator = createGenerator(ass[i], associationStringsSet);
                 genProdAssociations.add(generator);
                 generatorsByPart.put(ass[i], generator);
             }
@@ -155,11 +167,10 @@ public class GenProductCmptType extends GenType {
     }
 
     private void createGeneratorsForMethods() throws CoreException {
-        LocalizedStringsSet stringsSet = new LocalizedStringsSet(GenProdMethod.class);
         IProductCmptTypeMethod[] methods = getProductCmptType().getProductCmptTypeMethods();
         for (int i = 0; i < methods.length; i++) {
             if (methods[i].isValid()) {
-                GenProdMethod generator = new GenProdMethod(this, methods[i], stringsSet);
+                GenProdMethod generator = new GenProdMethod(this, methods[i], methodStringsSet);
                 genMethods.add(generator);
                 generatorsByPart.put(methods[i], generator);
             }
@@ -176,44 +187,42 @@ public class GenProductCmptType extends GenType {
 
     public GenProdAttribute getGenerator(IProductCmptTypeAttribute a) throws CoreException {
         GenProdAttribute generator = (GenProdAttribute)generatorsByPart.get(a);
-        if (null != generator) {
-            return generator;
+        if (generator == null && a.isValid()) {
+            //generators for supertype attributes will be created on demand since it is expected that 
+            //only a few exit. It will not be checked if the provided attribute is actually a supertype
+            //attribute because of performance reasons.
+            generator = new GenProdAttribute(this, a, attributeStringsSet);
+            genProdAttributes.add(generator);
+            generatorsByPart.put(a, generator);
         }
-        // if the associations policy component type is not this type but one in the super type
-        // hierarchy of this type
-        if (!a.getProductCmptType().equals(getProductCmptType())) {
-            GenProductCmptType superTypeGenerator = getBuilderSet().getGenerator(a.getProductCmptType());
-            return superTypeGenerator.getGenerator(a);
-        }
+
         return generator;
     }
 
     public GenProdMethod getGenerator(IProductCmptTypeMethod method) throws CoreException {
         GenProdMethod generator = (GenProdMethod)generatorsByPart.get(method);
-        if(generator != null){
-            return generator;
+        if(generator == null && method.isValid()){
+            //generators for supertype methods will be created on demand since it is expected that 
+            //only a few exit. It will not be checked if the provided method is actually a supertype
+            //method because of performance reasons.
+            generator = new GenProdMethod(this, method, methodStringsSet);
+            genMethods.add(generator);
+            generatorsByPart.put(method, generator);
         }
-        // if the associations policy component type is not this type but one in the super type
-        // hierarchy of this type
-        if (!method.getProductCmptType().equals(getProductCmptType())) {
-            GenProductCmptType superTypeGenerator = getBuilderSet().getGenerator(method.getProductCmptType());
-            return superTypeGenerator.getGenerator(method);
-        }
-        return null;
+        return generator;
     }
 
     public GenProdAssociation getGenerator(IProductCmptTypeAssociation a) throws CoreException {
         GenProdAssociation generator = (GenProdAssociation)generatorsByPart.get(a);
-        if(generator != null){
-            return generator;
+        if(generator == null && a.isValid()){
+            //generators for supertype associations will be created on demand since it is expected that 
+            //only a few exit. It will not be checked if the provided association is actually a supertype
+            //assocation because of performance reasons.
+            generator = createGenerator(a, associationStringsSet);
+            genProdAssociations.add(generator);
+            generatorsByPart.put(a, generator);
         }
-        // if the associations policy component type is not this type but one in the super type
-        // hierarchy of this type
-        if (!a.getProductCmptType().equals(getProductCmptType())) {
-            GenProductCmptType superTypeGenerator = getBuilderSet().getGenerator(a.getProductCmptType());
-            return superTypeGenerator.getGenerator(a);
-        }
-        return null;
+        return generator;
     }
 
     public Iterator getGenProdAttributes() {

@@ -42,18 +42,6 @@
                name="generateLoggingStatements"
                type="boolean"/>
          <builderSetPropertyDef
-               defaultValue="1.4"
-               description="Java version (will be removed later)"
-               disableValue="1.4"
-               name="targetJavaVersion"
-               type="enum">
-            <discreteValues>
-               <value value="1.4"/>
-               <value value="5.0"/>
-               <value value="6.0"/>
-            </discreteValues>
-         </builderSetPropertyDef>
-         <builderSetPropertyDef
                defaultValue="false"
                description="Enables the generation of visitor code"
                disableValue="false"
