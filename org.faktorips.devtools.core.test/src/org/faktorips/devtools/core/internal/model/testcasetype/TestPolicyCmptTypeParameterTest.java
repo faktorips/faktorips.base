@@ -31,6 +31,7 @@ import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAssociation;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmpt;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmptGeneration;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmptLink;
+import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeAssociation;
 import org.faktorips.devtools.core.model.testcasetype.ITestAttribute;
 import org.faktorips.devtools.core.model.testcasetype.ITestCaseType;
@@ -550,11 +551,20 @@ public class TestPolicyCmptTypeParameterTest extends AbstractIpsPluginTest {
         
         // assert that all product cmpt specified in the product cmpt are allowed for first test param (association)
         IIpsSrcFile[] allowedProductCmpt = testContent.childParameter.getAllowedProductCmpt(project, testContent.policyProduct);
-        assertEquals(3, allowedProductCmpt.length);
+        assertEquals(2, allowedProductCmpt.length); // only 2 product cmpt types are configurated correctly
 
         // assert that only the subtype product cmpt is allowed for the second test param (association)
         allowedProductCmpt = childParameter2.getAllowedProductCmpt(project, testContent.policyProduct);
         assertEquals(1, allowedProductCmpt.length);
+        assertEquals(testContent.subCoverageProduct.getIpsSrcFile(), allowedProductCmpt[0]);
+        
+        // last test again but now
+        // remove the policy cmpt type from the product cmpt type to ensure that the 
+        // product is not allowed without a configured policy cmpt type
+        IProductCmptType productCmptType = testContent.policyProduct.findProductCmptType(project);
+        productCmptType.setPolicyCmptType(null);
+        allowedProductCmpt = childParameter2.getAllowedProductCmpt(project, testContent.policyProduct);
+        assertEquals(0, allowedProductCmpt.length);
         assertEquals(testContent.subCoverageProduct.getIpsSrcFile(), allowedProductCmpt[0]);
     }
     
