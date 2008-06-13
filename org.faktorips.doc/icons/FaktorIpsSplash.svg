@@ -17,7 +17,7 @@
    version="1.0"
    sodipodi:docbase="E:\Ips4to5\workspace\org.faktorips.doc\icons"
    sodipodi:docname="FaktorIpsSplash.svg"
-   inkscape:export-filename="D:\faktorips-icons\org.faktorips.devtools.core\splash.bmp"
+   inkscape:export-filename="E:\Ips4to5\workspace\org.faktorips.devtools.core\splash.bmp"
    inkscape:export-xdpi="90"
    inkscape:export-ydpi="90">
   <defs
@@ -550,7 +550,7 @@
          style="font-size:12px;font-family:MetaMedium-Caps">Visit http://www.faktorzehn.org or http://www.faktorips.org</tspan></text>
     <text
        xml:space="preserve"
-       style="font-size:12px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:end;line-height:125%;writing-mode:lr-tb;text-anchor:end;fill:black;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;font-family:Bitstream Vera Sans"
+       style="font-size:12px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:end;line-height:125%;writing-mode:lr-tb;text-anchor:end;fill:white;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;font-family:Bitstream Vera Sans"
        x="491.30273"
        y="252"
        id="text19297"
