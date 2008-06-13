@@ -1,6 +1,8 @@
 feature@org.faktorips.feature=HEAD,/usr/local/cvsroot
 feature@org.faktorips.feature.test=HEAD,/usr/local/cvsroot/
 plugin@org.faktorips.devtools.core=HEAD,/usr/local/cvsroot
+plugin@org.faktorips.runtime.java5=HEAD,/usr/local/cvsroot
+plugin@org.faktorips.valuetypes.java5=HEAD,/usr/local/cvsroot
 plugin@org.faktorips.devtools.stdbuilder=HEAD,/usr/local/cvsroot
 plugin@org.faktorips.dtflcommon=HEAD,/usr/local/cvsroot
 plugin@org.faktorips.fl=HEAD,/usr/local/cvsroot
