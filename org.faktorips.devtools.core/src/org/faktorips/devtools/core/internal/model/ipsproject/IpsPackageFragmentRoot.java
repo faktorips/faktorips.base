@@ -109,9 +109,6 @@ public class IpsPackageFragmentRoot extends AbstractIpsPackageFragmentRoot imple
      */
     private List getIpsPackageFragmentsAsList() throws CoreException {
         IFolder folder = (IFolder)getCorrespondingResource();
-        if (!isValidIpsPackageFragmentName(name)) {
-            return new ArrayList(0);
-        }
         List list = new ArrayList();
         list.add(new IpsPackageFragment(this, IIpsPackageFragment.NAME_OF_THE_DEFAULT_PACKAGE)); // add the default package
         getIpsPackageFragments(folder, IIpsPackageFragment.NAME_OF_THE_DEFAULT_PACKAGE, list);
