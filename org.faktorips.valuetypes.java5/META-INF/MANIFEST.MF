@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: FaktorIPS-Valuetypes-Wrapper for Java5
 Bundle-SymbolicName: org.faktorips.valuetypes.java5
-Bundle-Version: 0.0.1
+Bundle-Version: 2.1.0.ms1
 Bundle-Vendor: FaktorZehn
 Require-Bundle: org.faktorips.valuetypes;visibility:=reexport,
  org.junit
