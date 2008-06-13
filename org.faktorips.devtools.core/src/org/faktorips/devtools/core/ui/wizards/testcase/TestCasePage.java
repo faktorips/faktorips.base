@@ -53,8 +53,6 @@ public class TestCasePage extends IpsObjectPage implements ValueChangeListener {
     
     private TestCaseTypeRefControl superTypeControl;
     
-    private Text nameField;
-    
     /**
      * @param pageName
      * @param selection
@@ -97,11 +95,9 @@ public class TestCasePage extends IpsObjectPage implements ValueChangeListener {
         IIpsObject obj = getSelectedIpsObject();
         if (obj instanceof ITestCaseType) {
             superTypeControl.setText(obj.getQualifiedName());
-            nameField.setFocus();
         }
         else if (obj instanceof ITestCase) {
             superTypeControl.setText(((ITestCase)obj).getTestCaseType());
-            nameField.setFocus();
         }
         return;
     }
