@@ -66,9 +66,10 @@ import org.w3c.dom.NodeList;
  * @author Joerg Ortmann
  */
 public class TestCaseTypeClassBuilder extends DefaultJavaSourceFileBuilder {
+
     private final static String[] EMPTY_STRING_ARRAY = new String[0];
 
-    // property key for the constructor's Javadoc.
+    // property key for the Javadoc.
     private final static String CONSTRUCTOR_JAVADOC = "CONSTRUCTOR_JAVADOC";
     private final static String INITINPUTFROMXML_JAVADOC = "INITINPUTFROMXML_JAVADOC";
     private final static String INITEXPECTEDRESULTFROMXML_JAVADOC = "INITEXPECTEDRESULTFROMXML_JAVADOC";
@@ -86,6 +87,9 @@ public class TestCaseTypeClassBuilder extends DefaultJavaSourceFileBuilder {
     private static final String ASSERT_RULE_METHOD_JAVADOC = "ASSERT_RULE_METHOD_JAVADOC";
     private static final String ASSERT_FAIL_NO_VIOLATION_EXPECTED = "ASSERT_FAIL_NO_VIOLATION_EXPECTED";
     private static final String ASSERT_FAIL_VIOLATION_EXPECTED = "ASSERT_FAIL_VIOLATION_EXPECTED";
+    private static final String XML_CALLBACK_CONSTRUCTOR_JAVADOC = "XML_CALLBACK_CONSTRUCTOR_JAVADOC";
+    private static final String XML_CALLBACK_BOOLEAN_FIELD_JAVADOC = "XML_CALLBACK_BOOLEAN_FIELD_JAVADOC";
+    private static final String XML_CALLBACK_CLASS_JAVADOC = "XML_CALLBACK_CLASS_JAVADOC";
 
     private String inputPrefix;
     private String expectedResultPrefix;
@@ -138,7 +142,6 @@ public class TestCaseTypeClassBuilder extends DefaultJavaSourceFileBuilder {
      * {@inheritDoc}
      */
     protected void generateCodeForJavatype() throws CoreException {
-
         TypeSection mainSection = getMainTypeSection();
         mainSection.setClassModifier(Modifier.PUBLIC);
         mainSection.setUnqualifiedName(getUnqualifiedClassName());
@@ -146,11 +149,13 @@ public class TestCaseTypeClassBuilder extends DefaultJavaSourceFileBuilder {
         appendLocalizedJavaDoc("CLASS_DESCRIPTION", getIpsObject(), getIpsObject().getDescription(), mainSection
                 .getJavaDocForTypeBuilder());
 
+        JavaCodeFragmentBuilder xmlCallbackBuilder = new JavaCodeFragmentBuilder();
+        buildXmlCallbackClasses(xmlCallbackBuilder, testCaseType);
         buildMemberVariables(mainSection.getMemberVarBuilder(), testCaseType);
-        buildXmlCallbackClasses(mainSection.getMemberVarBuilder(), testCaseType);
         buildConstructor(mainSection.getConstructorBuilder());
-        buildHelperMethods(mainSection.getMethodBuilder());
         buildSuperMethodImplementation(mainSection.getMethodBuilder(), testCaseType);
+        buildHelperMethods(mainSection.getMethodBuilder());
+        mainSection.getMethodBuilder().append(xmlCallbackBuilder.getFragment());
     }
 
     protected String getSuperClassName() {
@@ -333,11 +338,11 @@ public class TestCaseTypeClassBuilder extends DefaultJavaSourceFileBuilder {
      */
     private void buildSuperMethodImplementation(JavaCodeFragmentBuilder codeBuilder, ITestCaseType testCaseType)
             throws CoreException {
-        buildMethodInitInputFromXml(codeBuilder, testCaseType);
-        buildMethodInitExpectedResultFromXml(codeBuilder, testCaseType);
-        buildMethodsForAssertRules(codeBuilder, testCaseType.getTestRuleParameters(), expectedResultPrefix);
         buildMethodExecuteBusinessLogic(codeBuilder, testCaseType);
         buildMethodExecuteAsserts(codeBuilder, testCaseType);
+        buildMethodsForAssertRules(codeBuilder, testCaseType.getTestRuleParameters(), expectedResultPrefix);
+        buildMethodInitInputFromXml(codeBuilder, testCaseType);
+        buildMethodInitExpectedResultFromXml(codeBuilder, testCaseType);
     }
 
     /*
@@ -800,30 +805,39 @@ public class TestCaseTypeClassBuilder extends DefaultJavaSourceFileBuilder {
         boolean extensionAttrExists = buildXmlCallbackBodyFor(body, parameter, "");
 
         if (extensionAttrExists){
+            String javaDoc;
+            
+            // class definition
+            String testParamName = StringUtils.capitalize(parameter.getName());
+            String className = testParamName + "XmlCallback";
+            javaDoc = getLocalizedText(getIpsSrcFile(), XML_CALLBACK_CLASS_JAVADOC, testParamName);
             policyTypeParamsWithExtensionAttr.add(parameter);
-            builder.javaDoc("", ANNOTATION_GENERATED);
-            String className = StringUtils.capitalize(parameter.getName()) + "XmlCallback";
+            builder.javaDoc(javaDoc, ANNOTATION_GENERATED);
             builder.append("private class " + className);
             builder.append(" implements ");
             builder.appendClassName(XmlCallback.class);
             builder.appendln("{");
-            
-            builder.javaDoc("", ANNOTATION_GENERATED);
+
+            // boolean input/expected result indicator
+            javaDoc = getLocalizedText(getIpsSrcFile(), XML_CALLBACK_BOOLEAN_FIELD_JAVADOC);
+            builder.javaDoc(javaDoc, ANNOTATION_GENERATED);
             builder.varDeclaration(Modifier.PRIVATE, "boolean", "input");
             
             // constructor
+            javaDoc = getLocalizedText(getIpsSrcFile(), XML_CALLBACK_CONSTRUCTOR_JAVADOC, testParamName);
             JavaCodeFragment constructorBody = new JavaCodeFragment();
             constructorBody.appendln("this.input = input;");
             JavaCodeFragmentBuilder method = new JavaCodeFragmentBuilder();
-            method.method(Modifier.PUBLIC, "", className, new String[] { "input"}, new String[] { "boolean"}, constructorBody, null, 
+            method.method(Modifier.PUBLIC, "", className, new String[] { "input"}, new String[] { "boolean"}, constructorBody, javaDoc, 
                     ANNOTATION_GENERATED);
             builder.append(method.getFragment());
             
             // init method
+            javaDoc = "{@inheritDoc}";
             method = new JavaCodeFragmentBuilder();
             method.method(Modifier.PUBLIC, "void", "initProperties", new String[] { "pathFromAggregateRoot", "modelObject",
             "propMap" }, new String[] { String.class.getName(), IModelObject.class.getName(),
-                    Map.class.getName() }, body, null, ANNOTATION_GENERATED);
+                    Map.class.getName() }, body,javaDoc, ANNOTATION_GENERATED);
             builder.append(method.getFragment());
             builder.appendln("}");
         }
@@ -860,13 +874,16 @@ public class TestCaseTypeClassBuilder extends DefaultJavaSourceFileBuilder {
                 if (datatypeHelper == null){
                     throw new CoreException(new IpsStatus("Datatypehelper not found for: " + datatype.getQualifiedName()));
                 }
-                childCodeFragment.append(" value = (String) propMap.get(\"");
-                childCodeFragment.append(testAttribute);
-                childCodeFragment.appendln("\");");
+                // generate a constant
+                String constName = generateTestAttributeConstant(parameter, testAttribute);
+                
+                childCodeFragment.append(" value = (String) propMap.get(");
+                childCodeFragment.append(constName);
+                childCodeFragment.appendln(");");
                 childCodeFragment.append("addExtensionAttribute(");
-                childCodeFragment.append("modelObject, \"");
-                childCodeFragment.append(testAttribute);
-                childCodeFragment.append("\", ");
+                childCodeFragment.append("modelObject, ");
+                childCodeFragment.append(constName);
+                childCodeFragment.append(", ");
                 if (datatype.isPrimitive()) {
                     // a primitiv datatype couldn't be added as value object, thus we must handle it
                     // as a String
@@ -875,6 +892,7 @@ public class TestCaseTypeClassBuilder extends DefaultJavaSourceFileBuilder {
                 childCodeFragment.append(datatypeHelper.newInstanceFromExpression("value"));
                 childCodeFragment.appendln(");");
                 childCodeFragment.append("}");
+                
             }
         }
         
@@ -893,6 +911,16 @@ public class TestCaseTypeClassBuilder extends DefaultJavaSourceFileBuilder {
         return extensionAttrExists;
     }
     
+    private String generateTestAttributeConstant(ITestPolicyCmptTypeParameter parameter, String testAttribute) {
+        String constName = "TESTATTR_" + parameter.getName() + "_" + testAttribute;
+//        constName  = constName.replaceAll("([a-z])([A-Z])", "1_2");
+        constName = StringUtils.upperCase(constName);
+        JavaCodeFragmentBuilder constantBuilder = getMainTypeSection().getConstantBuilder();
+        constantBuilder.javaDoc("", ANNOTATION_GENERATED);
+        constantBuilder.varDefinition("String" , constName, "\"" + testAttribute + "\"");
+        return constName;
+    }
+
     /**
      * @return
      */
