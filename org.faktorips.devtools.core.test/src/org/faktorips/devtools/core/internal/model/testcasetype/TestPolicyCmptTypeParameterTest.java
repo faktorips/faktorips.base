@@ -455,6 +455,110 @@ public class TestPolicyCmptTypeParameterTest extends AbstractIpsPluginTest {
         ml = policyCmptTypeParameterInput.validate(project);
         assertNotNull(ml.getMessageByCode(ITestPolicyCmptTypeParameter.MSGCODE_TARGET_OF_ASSOCIATION_NOT_EXISTS_IN_TESTCASETYPE));
     }
+
+    public void testGetAllowedProductCmptDependingTarget() throws CoreException{
+        // two testPolicyCmptTypeParameter uses same associations (base class)
+        // but different targets (subclass of base class).
+        // This test case type make sense if the subclasses defines different
+        // attributes which should be used in the test case
+        TestContent testContent = new TestContent();
+        testContent.init(project);
+
+        // create second child test parameter (represents the association with a subset of allowed products)
+        // because subCoverage is specified as target
+        ITestPolicyCmptTypeParameter childParameter2 = testContent.parameter.newTestPolicyCmptTypeParamChild();
+        childParameter2.setPolicyCmptType(testContent.subCoverage.getQualifiedName());
+        childParameter2.setAssociation(testContent.coverages.getName());
+        childParameter2.setName("SubCoverageParam");            
+
+        // create the three links on the product cmpt
+        IProductCmptGeneration generation = (IProductCmptGeneration)testContent.policyProduct.newGeneration(new GregorianCalendar());
+        IProductCmptLink productCmptAssociationA = generation.newLink("Coverage");
+        productCmptAssociationA.setTarget(testContent.coverageProductA.getQualifiedName());
+        IProductCmptLink productCmptAssociationB = generation.newLink("Coverage");
+        productCmptAssociationB.setTarget(testContent.coverageProductB.getQualifiedName());
+        IProductCmptLink productCmptAssociationSub = generation.newLink("Coverage");
+        productCmptAssociationSub.setTarget(testContent.subCoverageProduct.getQualifiedName());
+        
+        // assert that all product cmpt specified in the product cmpt are allowed for first test param (association)
+        IIpsSrcFile[] allowedProductCmpt = testContent.childParameter.getAllowedProductCmpt(project, testContent.policyProduct);
+        assertEquals(3, allowedProductCmpt.length);
+
+        // assert that only the subtype product cmpt is allowed for the second test param (association)
+        allowedProductCmpt = childParameter2.getAllowedProductCmpt(project, testContent.policyProduct);
+        assertEquals(1, allowedProductCmpt.length);
+        assertEquals(testContent.subCoverageProduct.getIpsSrcFile(), allowedProductCmpt[0]);
+        
+        // previous test again but now
+        // remove the policy cmpt type from the product cmpt type to assert that the 
+        // product is not allowed, because no policy cmpt type is configured
+        IProductCmptType subCoverageProductCmptType = testContent.subCoverageProduct.findProductCmptType(project);
+        subCoverageProductCmptType.setPolicyCmptType(null);
+        subCoverageProductCmptType.setConfigurationForPolicyCmptType(false);
+        allowedProductCmpt = childParameter2.getAllowedProductCmpt(project, testContent.policyProduct);
+        assertEquals(0, allowedProductCmpt.length);
+    }
+    
+    public void testGetAllowedProductCmpt() throws CoreException{
+        TestContent testContent = new TestContent();
+        testContent.init(project);
+        
+        // no association defined
+        // => root 1, child no result
+        IIpsSrcFile[] allowedProductCmpt = testContent.parameter.getAllowedProductCmpt(project, testContent.policyProduct);
+        assertEquals(1, allowedProductCmpt.length);
+        assertEquals(testContent.policyProduct.getIpsSrcFile(), allowedProductCmpt[0]);
+        allowedProductCmpt = testContent.childParameter.getAllowedProductCmpt(project, testContent.policyProduct);
+        assertEquals(0, allowedProductCmpt.length);
+        
+        // one association defined, but without target
+        // => child no result
+        IProductCmptGeneration generation = (IProductCmptGeneration)testContent.policyProduct.newGeneration(new GregorianCalendar());
+        IProductCmptLink productCmptAssociation = generation.newLink("Coverage");
+        allowedProductCmpt = testContent.childParameter.getAllowedProductCmpt(project, testContent.policyProduct);
+        assertEquals(0, allowedProductCmpt.length);
+        
+        // one association with target
+        productCmptAssociation.setTarget(testContent.coverageProductA.getQualifiedName());
+        allowedProductCmpt = testContent.childParameter.getAllowedProductCmpt(project, testContent.policyProduct);
+        
+        
+        assertEquals(1, allowedProductCmpt.length);
+        assertEquals(testContent.coverageProductA.getIpsSrcFile(), allowedProductCmpt[0]);
+        
+        // association exists twice
+        // find product cmpt only once
+        generation = (IProductCmptGeneration)testContent.policyProduct.newGeneration(new GregorianCalendar());
+        productCmptAssociation = generation.newLink("Coverage");
+        productCmptAssociation.setTarget(testContent.coverageProductA.getQualifiedName());
+        allowedProductCmpt = testContent.childParameter.getAllowedProductCmpt(project, testContent.policyProduct);
+        assertEquals(1, allowedProductCmpt.length);
+        assertEquals(testContent.coverageProductA.getIpsSrcFile(), allowedProductCmpt[0]);
+        
+        // if no parent product cmpt is given, return all product cmpt which matches the
+        // association of the parameter
+        allowedProductCmpt = testContent.childParameter.getAllowedProductCmpt(project, null);
+        assertEquals(3, allowedProductCmpt.length);
+        asserContains(allowedProductCmpt, testContent.coverageProductA);
+        asserContains(allowedProductCmpt, testContent.coverageProductB);
+
+        // test with two generations
+        //   coverageProductA specified in generation 1
+        //   coverageProductB specified in generation 2
+        generation = (IProductCmptGeneration)testContent.policyProduct.newGeneration(new GregorianCalendar());
+        productCmptAssociation = generation.newLink("Coverage");
+        productCmptAssociation.setTarget(testContent.coverageProductB.getQualifiedName());
+        allowedProductCmpt = testContent.childParameter.getAllowedProductCmpt(project, testContent.policyProduct);
+        assertEquals(2, allowedProductCmpt.length);
+        asserContains(allowedProductCmpt, testContent.coverageProductA);
+        asserContains(allowedProductCmpt, testContent.coverageProductB);
+    }
+
+    private void asserContains(IIpsSrcFile[] allowedProductCmpt, IProductCmpt productCmpt) {
+        List list = Arrays.asList(allowedProductCmpt);
+        assertTrue(list.contains(productCmpt.getIpsSrcFile()));
+    }
+    
     
     private class TestContent{
         private IPolicyCmptType policy;
@@ -512,6 +616,7 @@ public class TestPolicyCmptTypeParameterTest extends AbstractIpsPluginTest {
             coverageProductB.setProductCmptType(productCmptTypeCoverage.getQualifiedName());
             coverageProductB.newGeneration(new GregorianCalendar());
             subCoverageProduct = newProductCmpt(project, "SubCoverage 2008-02");
+            subCoverageProduct.setProductCmptType(productCmptTypeSubCoverage.getQualifiedName());
             subCoverageProduct.newGeneration(new GregorianCalendar());
             
             parameter = testCaseType.newCombinedPolicyCmptTypeParameter();
@@ -523,109 +628,5 @@ public class TestPolicyCmptTypeParameterTest extends AbstractIpsPluginTest {
             childParameter.setName("CoverageParam");            
 
         }
-    }
-
-    public void testGetAllowedProductCmptDependingTarget() throws CoreException{
-        // two testPolicyCmptTypeParameter uses same associations (base class)
-        // but different targets (subclass of base class).
-        // This test case type make sense if the subclasses defines different
-        // attributes which should be used in the test case
-        TestContent testContent = new TestContent();
-        testContent.init(project);
-
-        // create second child test parameter (represents the association with a subset of allowed products)
-        // because subCoverage is specified as target
-        ITestPolicyCmptTypeParameter childParameter2 = testContent.parameter.newTestPolicyCmptTypeParamChild();
-        childParameter2.setPolicyCmptType(testContent.subCoverage.getQualifiedName());
-        childParameter2.setAssociation(testContent.coverages.getName());
-        childParameter2.setName("SubCoverageParam");            
-
-        // create the three links on the product cmpt
-        IProductCmptGeneration generation = (IProductCmptGeneration)testContent.policyProduct.newGeneration(new GregorianCalendar());
-        IProductCmptLink productCmptAssociationA = generation.newLink("Coverage");
-        productCmptAssociationA.setTarget(testContent.coverageProductA.getQualifiedName());
-        IProductCmptLink productCmptAssociationB = generation.newLink("Coverage");
-        productCmptAssociationB.setTarget(testContent.coverageProductB.getQualifiedName());
-        IProductCmptLink productCmptAssociationSub = generation.newLink("Coverage");
-        productCmptAssociationSub.setTarget(testContent.subCoverageProduct.getQualifiedName());
-        
-        // assert that all product cmpt specified in the product cmpt are allowed for first test param (association)
-        IIpsSrcFile[] allowedProductCmpt = testContent.childParameter.getAllowedProductCmpt(project, testContent.policyProduct);
-        assertEquals(2, allowedProductCmpt.length); // only 2 product cmpt types are configurated correctly
-
-        // assert that only the subtype product cmpt is allowed for the second test param (association)
-        allowedProductCmpt = childParameter2.getAllowedProductCmpt(project, testContent.policyProduct);
-        // FIXME Joerg sollte wieder 1 sein (ProductCmptType richtig konf.)
-//        assertEquals(1, allowedProductCmpt.length);
-//        assertEquals(testContent.subCoverageProduct.getIpsSrcFile(), allowedProductCmpt[0]);
-        
-        // last test again but now
-        // remove the policy cmpt type from the product cmpt type to ensure that the 
-        // product is not allowed without a configured policy cmpt type
-//        IProductCmptType productCmptType = testContent.policyProduct.findProductCmptType(project);
-//        productCmptType.setPolicyCmptType(null);
-//        allowedProductCmpt = childParameter2.getAllowedProductCmpt(project, testContent.policyProduct);
-//        assertEquals(0, allowedProductCmpt.length);
-//        assertEquals(testContent.subCoverageProduct.getIpsSrcFile(), allowedProductCmpt[0]);
-    }
-    
-    public void testGetAllowedProductCmpt() throws CoreException{
-        TestContent testContent = new TestContent();
-        testContent.init(project);
-        
-        // no association defined
-        // => root 1, child no result
-        IIpsSrcFile[] allowedProductCmpt = testContent.parameter.getAllowedProductCmpt(project, testContent.policyProduct);
-        assertEquals(1, allowedProductCmpt.length);
-        assertEquals(testContent.policyProduct.getIpsSrcFile(), allowedProductCmpt[0]);
-        allowedProductCmpt = testContent.childParameter.getAllowedProductCmpt(project, testContent.policyProduct);
-        assertEquals(0, allowedProductCmpt.length);
-        
-        // one association defined, but without target
-        // => child no result
-        IProductCmptGeneration generation = (IProductCmptGeneration)testContent.policyProduct.newGeneration(new GregorianCalendar());
-        IProductCmptLink productCmptAssociation = generation.newLink("Coverage");
-        allowedProductCmpt = testContent.childParameter.getAllowedProductCmpt(project, testContent.policyProduct);
-        assertEquals(0, allowedProductCmpt.length);
-        
-        // one association with target
-        productCmptAssociation.setTarget(testContent.coverageProductA.getQualifiedName());
-        allowedProductCmpt = testContent.childParameter.getAllowedProductCmpt(project, testContent.policyProduct);
-        
-        
-        assertEquals(1, allowedProductCmpt.length);
-        assertEquals(testContent.coverageProductA.getIpsSrcFile(), allowedProductCmpt[0]);
-        
-        // association exists twice
-        // find product cmpt only once
-        generation = (IProductCmptGeneration)testContent.policyProduct.newGeneration(new GregorianCalendar());
-        productCmptAssociation = generation.newLink("Coverage");
-        productCmptAssociation.setTarget(testContent.coverageProductA.getQualifiedName());
-        allowedProductCmpt = testContent.childParameter.getAllowedProductCmpt(project, testContent.policyProduct);
-        assertEquals(1, allowedProductCmpt.length);
-        assertEquals(testContent.coverageProductA.getIpsSrcFile(), allowedProductCmpt[0]);
-        
-        // if no parent product cmpt is given, return all product cmpt which matches the
-        // association of the parameter
-        allowedProductCmpt = testContent.childParameter.getAllowedProductCmpt(project, null);
-        assertEquals(2, allowedProductCmpt.length);
-        asserContains(allowedProductCmpt, testContent.coverageProductA);
-        asserContains(allowedProductCmpt, testContent.coverageProductB);
-
-        // test with two generations
-        //   coverageProductA specified in generation 1
-        //   coverageProductB specified in generation 2
-        generation = (IProductCmptGeneration)testContent.policyProduct.newGeneration(new GregorianCalendar());
-        productCmptAssociation = generation.newLink("Coverage");
-        productCmptAssociation.setTarget(testContent.coverageProductB.getQualifiedName());
-        allowedProductCmpt = testContent.childParameter.getAllowedProductCmpt(project, testContent.policyProduct);
-        assertEquals(2, allowedProductCmpt.length);
-        asserContains(allowedProductCmpt, testContent.coverageProductA);
-        asserContains(allowedProductCmpt, testContent.coverageProductB);
-    }
-
-    private void asserContains(IIpsSrcFile[] allowedProductCmpt, IProductCmpt productCmpt) {
-        List list = Arrays.asList(allowedProductCmpt);
-        assertTrue(list.contains(productCmpt.getIpsSrcFile()));
-    }
+    }    
 }

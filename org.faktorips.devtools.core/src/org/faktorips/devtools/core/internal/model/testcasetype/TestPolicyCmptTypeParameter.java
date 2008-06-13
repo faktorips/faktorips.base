@@ -576,6 +576,9 @@ public class TestPolicyCmptTypeParameter extends TestParameter implements
                 IIpsSrcFile productCmptFoundSrc = ipsProjectToSearch.findIpsSrcFile(IpsObjectType.PRODUCT_CMPT, links[j].getTarget());
                 if (productCmptFoundSrc != null && !result.contains(productCmptFoundSrc)) {
                     IProductCmpt productCmptFound = (IProductCmpt)productCmptFoundSrc.getIpsObject();
+                    if (productCmptFound == null){
+                        continue;
+                    }
                     IPolicyCmptType pcType = findPolicyCmptType(ipsProjectToSearch);
                     IPolicyCmptType pcTypeOfProduct = productCmptFound.findPolicyCmptType(ipsProjectToSearch);
                     if (pcType != null && pcTypeOfProduct != null){
