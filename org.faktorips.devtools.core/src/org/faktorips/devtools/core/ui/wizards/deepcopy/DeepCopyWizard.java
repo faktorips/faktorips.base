@@ -59,6 +59,10 @@ public class DeepCopyWizard extends ResizableWizard {
 	private ISchedulingRule schedulingRule;
 	private int type;
     private GregorianCalendar structureDate;
+    
+    // contains the previous working date, 
+    // in case of cancel the working date will be set to the old value
+    private GregorianCalendar prevWorkingDate;
 
 	/**
 	 * Creates a new wizard which can make a deep copy of the given product.
@@ -80,6 +84,7 @@ public class DeepCopyWizard extends ResizableWizard {
 		}
 		this.type = type;
 
+        prevWorkingDate = IpsPlugin.getDefault().getIpsPreferences().getWorkingDate();
 		structureDate = IpsPlugin.getDefault().getIpsPreferences().getWorkingDate();
 		try {
             // the working date lies before the valid from date of the first available generation
@@ -127,6 +132,16 @@ public class DeepCopyWizard extends ResizableWizard {
 	}
 
 	/**
+     * {@inheritDoc}
+     */
+    public boolean performCancel() {
+        // maybe the working date has changed, thus restore the old working date
+        IpsPreferences ipsPreferences = IpsPlugin.getDefault().getIpsPreferences();
+        ipsPreferences.setWorkingDate(prevWorkingDate);
+        return super.performCancel();
+    }
+
+    /**
 	 * {@inheritDoc}
 	 */
 	public boolean performFinish() {
@@ -170,18 +185,23 @@ public class DeepCopyWizard extends ResizableWizard {
         DateFormat format = ipsPreferences.getDateFormat();
         Date newDate;
         try {
+            // apply working date in ips preferences
             newDate = format.parse(sourcePage.getWorkingDate());
-            GregorianCalendar calendar = new GregorianCalendar(); 
+            GregorianCalendar calendar = new GregorianCalendar();
             calendar.setTime(newDate);
-            try {
-                structure = (ProductCmptTreeStructure)structure.getRoot().getProductCmpt().getStructure(calendar, structure.getRoot().getProductCmpt().getIpsProject());
-                sourcePage.refreshStructure(structure);
-                previewPage.resetCheckState();
-            } catch (CycleInProductStructureException e) {
-                IpsPlugin.log(e);
-            }
+            ipsPreferences.setWorkingDate(calendar);
+
+            // apply working date in wizard pages
+            structure = (ProductCmptTreeStructure)structure.getRoot().getProductCmpt().getStructure(calendar,
+                    structure.getRoot().getProductCmpt().getIpsProject());
+            sourcePage.refreshStructureAndVersionId(structure);
+            previewPage.resetCheckState();
         } catch (ParseException ignored) {
+        } catch (CycleInProductStructureException e) {
+            IpsPlugin.log(e);
         }
+        
+        getContainer().updateButtons();
     }
 
     /**

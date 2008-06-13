@@ -35,6 +35,8 @@ import org.eclipse.jface.viewers.ICheckStateListener;
 import org.eclipse.jface.wizard.WizardPage;
 import org.eclipse.osgi.util.NLS;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.events.FocusEvent;
+import org.eclipse.swt.events.FocusListener;
 import org.eclipse.swt.events.ModifyEvent;
 import org.eclipse.swt.events.ModifyListener;
 import org.eclipse.swt.layout.GridData;
@@ -157,7 +159,14 @@ public class SourcePage extends WizardPage implements ICheckStateListener, Value
         Text workingDate = toolkit.createText(inputRoot);
         workingDate.setText(dateFormat.format(getDeepCopyWizard().getStructureDate().getTime()));
         workingDateField = new TextField(workingDate);
-        workingDateField.addChangeListener(this);
+        workingDateField.getControl().addFocusListener(new FocusListener(){
+            public void focusGained(FocusEvent e) {
+                // ignored
+            }
+            public void focusLost(FocusEvent e) {
+                getDeepCopyWizard().applyWorkingDate();
+            }
+        });
         
         toolkit.createFormLabel(inputRoot, Messages.SourcePage_labelSourceFolder);
         targetPackRootControl = toolkit.createPdPackageFragmentRootRefControl(inputRoot, true);
@@ -199,24 +208,18 @@ public class SourcePage extends WizardPage implements ICheckStateListener, Value
             replaceInput = toolkit.createText(inputRoot);
         }
 
-        if (namingStrategy != null && namingStrategy.supportsVersionId()) {
-            String label = NLS.bind(Messages.ReferenceAndPreviewPage_labelVersionId, IpsPlugin.getDefault()
-                    .getIpsPreferences().getChangesOverTimeNamingConvention().getVersionConceptNameSingular());
-            toolkit.createFormLabel(inputRoot, label);
-            versionId = toolkit.createText(inputRoot);
-            versionId.setText(namingStrategy.getNextVersionId(structure.getRoot().getProductCmpt()));
-            versionId.addModifyListener(new ModifyListener() {
-                public void modifyText(ModifyEvent e) {
-                    getWizard().getContainer().updateButtons();
-                }
-            });
-        }
+        String label = NLS.bind(Messages.ReferenceAndPreviewPage_labelVersionId, IpsPlugin.getDefault()
+                .getIpsPreferences().getChangesOverTimeNamingConvention().getVersionConceptNameSingular());
+        toolkit.createFormLabel(inputRoot, label);
+        versionId = toolkit.createText(inputRoot);
+        TextField versionIdField = new TextField(versionId);
+        versionIdField.addChangeListener(this);
 
         tree = new CheckboxTreeViewer(root);
         tree.setUseHashlookup(true);
         tree.setLabelProvider(new DeepCopyLabelProvider());
         tree.setContentProvider(new DeepCopyContentProvider(true));
-        refreshStructure(structure);
+        refreshStructureAndVersionId(structure);
         tree.getControl().setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
         tree.addCheckStateListener(this);
         checkStateListener = new CheckStateListener(null);
@@ -230,12 +233,20 @@ public class SourcePage extends WizardPage implements ICheckStateListener, Value
         });        
     }
 
-    void refreshStructure(IProductCmptTreeStructure structure){
+    /**
+     * Refresh the strucure in the tree and updates the version id
+     */
+    void refreshStructureAndVersionId(IProductCmptTreeStructure structure){
         this.structure = structure;
         tree.setInput(this.structure);
         tree.expandAll();
         setCheckedAll(tree.getTree().getItems(), true);        
         tree.refresh();
+
+        if (namingStrategy != null && namingStrategy.supportsVersionId()) {
+            versionId.setText(namingStrategy.getNextVersionId(structure.getRoot().getProductCmpt()));
+        }
+        updatePageComplete();
     }
     
     private void setCheckedAll(TreeItem[] items, boolean checked) {
@@ -454,8 +465,6 @@ public class SourcePage extends WizardPage implements ICheckStateListener, Value
     public void valueChanged(FieldValueChangedEvent e) {
         if (e.field==targetPackRootField) {
             sourceFolderChanged();
-        } else if (e.field==workingDateField){
-            getDeepCopyWizard().applyWorkingDate();
         }
         updatePageComplete();
     }
