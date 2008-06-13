@@ -585,6 +585,11 @@ public class TestPolicyCmptTypeParameter extends TestParameter implements
                             continue;
                         }                        
                     } 
+                    if (pcType == null || pcTypeOfProduct == null){
+                        // in case of product cmpt types with a missing or not configurated poliy cmpt type
+                        // the product cmpt couldn't be used
+                        continue;
+                    }
                     result.add(productCmptFoundSrc);
                 }
             }

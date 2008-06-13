@@ -734,14 +734,14 @@ public class TestPolicyCmpt extends TestObject implements ITestPolicyCmpt {
             return;
         }
         
-        // this is the root element, check only the correct policy cmpt type of the specified
+        // if this is the root element, check only the correct policy cmpt type of the specified
         // product cmpt
         IPolicyCmptType policyCmptType = param.findPolicyCmptType(ipsProject);
         IPolicyCmptType policyCmptTypeOfCandidate = productCmptCandidateObj.findPolicyCmptType(ipsProject);
         if (policyCmptType != null && !policyCmptType.equals(policyCmptTypeOfCandidate)) {
             // maybe the policy cmpt type of the product cmpt candidate is an subtype of the
             // specified type in the test case type param
-            if (!policyCmptTypeOfCandidate.isSubtypeOf(policyCmptType)) {
+            if (policyCmptTypeOfCandidate == null || !policyCmptTypeOfCandidate.isSubtypeOf(policyCmptType)) {
                 String text = NLS.bind(Messages.TestPolicyCmpt_TestPolicyCmpt_ValidationError_ProductCmpNotAllowedRoot,
                         productCmptCandidateObj.getName());
                 Message msg = new Message(MSGCODE_WRONG_PRODUCT_CMPT_OF_LINK, text, Message.ERROR, this,
