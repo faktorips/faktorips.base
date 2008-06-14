@@ -7,3 +7,4 @@ Bundle-Vendor: FaktorZehn
 Require-Bundle: org.faktorips.valuetypes;visibility:=reexport,
  org.junit
 Export-Package: org.faktorips.valueset.java5
+Bundle-ClassPath: faktorips-valuetypes-java5.jar
