@@ -247,6 +247,7 @@ public class JavaCodeFragment {
             append(">");
             return;
 	    }
+        qualifiedClassName = qualifiedClassName.replace('$', '.'); // for inner classes.
         append(StringUtil.unqualifiedName(qualifiedClassName));
         if(qualifiedClassName.indexOf('.') < 0){
             return;
