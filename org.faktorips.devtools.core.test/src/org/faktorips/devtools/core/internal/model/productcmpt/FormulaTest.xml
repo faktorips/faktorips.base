@@ -1,7 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-
-<Formula id="42" formulaSignature="PremiumCalculation">
-    <Expression>a + b</Expression>
-    <FormulaTestCase name="formulaTest1">
-    </FormulaTestCase>
-</Formula>
