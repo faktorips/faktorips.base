@@ -17,6 +17,7 @@ package org.faktorips.runtime.modeltype.internal;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 
+import org.faktorips.runtime.IRuntimeRepository;
 import org.faktorips.runtime.modeltype.IModelTypeAttribute;
 
 /**
@@ -24,11 +25,15 @@ import org.faktorips.runtime.modeltype.IModelTypeAttribute;
  * @author Daniel Hohenberger
  */
 public class ModelTypeAttribute extends AbstractModelElement implements IModelTypeAttribute {
-    
+
     private Class<?> datatype;
     private ValueSetType valueSetType = ValueSetType.AllValues;
     private AttributeType attributeType = AttributeType.changeable;
     private boolean isProductRelevant = false;
+    
+    public ModelTypeAttribute(IRuntimeRepository repository) {
+        super(repository);
+    }
     
     /**
      * {@inheritDoc}

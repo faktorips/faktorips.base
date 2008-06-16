@@ -22,6 +22,7 @@ import javax.xml.stream.XMLStreamConstants;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 
+import org.faktorips.runtime.IRuntimeRepository;
 import org.faktorips.runtime.modeltype.IModelElement;
 
 /**
@@ -32,6 +33,11 @@ public class AbstractModelElement implements IModelElement {
 
     private Map<String, Object> extPropertyValues = new HashMap<String, Object>();
     private String name = null;
+    private IRuntimeRepository repository;
+    
+    public AbstractModelElement(IRuntimeRepository repository){
+        this.repository = repository;
+    }
 
     /**
      * {@inheritDoc}
@@ -46,23 +52,6 @@ public class AbstractModelElement implements IModelElement {
     public String getName() {
         return name;
     }
-
-    // TODO init
-
-    /*
-    public void initFromXml(Element objectEl, IRuntimeRepository productRepository) {
-        NodeList extProps = ((Element)objectEl.getElementsByTagName("ExtensionProperties").item(0)).getChildNodes();
-        for (int i = 0; i < extProps.getLength(); i++) {
-            Element valueElement = (Element)extProps.item(i);
-            String extPropId = valueElement.getAttribute("id");
-            String isNull = valueElement.getAttribute("isNull");
-            if (StringUtils.isEmpty(isNull) || !Boolean.valueOf(isNull).booleanValue()) {
-                extPropertyValues.put(extPropId, XmlUtil.getCDATAorTextContent(valueElement));
-            } else {
-                extPropertyValues.put(extPropId, null);
-            }
-        }
-    }*/
 
     /**
      * {@inheritDoc}
@@ -110,7 +99,7 @@ public class AbstractModelElement implements IModelElement {
             if (parser.getAttributeLocalName(i).equals("id")) {
                 id = parser.getAttributeValue(i);
             } else if (parser.getAttributeLocalName(i).equals("isNull")) {
-                isNull = Boolean.valueOf(isNull).booleanValue();
+                isNull = Boolean.valueOf(parser.getAttributeValue(i)).booleanValue();
             }
         }
         if (isNull) {
@@ -119,10 +108,10 @@ public class AbstractModelElement implements IModelElement {
             for (int event = parser.next(); event != XMLStreamConstants.END_DOCUMENT; event = parser.next()) {
                 switch (event) {
                     case XMLStreamConstants.CHARACTERS:
-                        value.append(parser.getText());
+                        value.append(parser.getText().trim());
                         break;
                     case XMLStreamConstants.CDATA:
-                        value.append(parser.getText());
+                        value.append(parser.getText().trim());
                         break;
                     case XMLStreamConstants.END_ELEMENT:
                         if (parser.getLocalName().equals("ExtensionProperty")) {
@@ -133,6 +122,14 @@ public class AbstractModelElement implements IModelElement {
                 }
             }
         }
+    }
+
+    /**
+     * 
+     * {@inheritDoc}
+     */
+    public IRuntimeRepository getRepository() {
+        return repository;
     }
 
 }

@@ -25,8 +25,9 @@ public interface IModelType extends IModelElement {
     
     /**
      * @return the class generated for this type.
+     * @throws ClassNotFoundException if the class could not be loaded.
      */
-    public Class<?> getGeneratedClass();
+    public Class<?> getGeneratedClass() throws ClassNotFoundException;
     
     /**
      * @return this model type's super type or <code>null</code> if it has none.

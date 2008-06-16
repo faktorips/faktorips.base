@@ -20,6 +20,7 @@ package org.faktorips.runtime;
 import java.util.Calendar;
 import java.util.List;
 
+import org.faktorips.runtime.modeltype.IModelType;
 import org.faktorips.runtime.test.IpsTest2;
 import org.faktorips.runtime.test.IpsTestCaseBase;
 import org.faktorips.runtime.test.IpsTestSuite;
@@ -285,5 +286,16 @@ public interface IRuntimeRepository {
      * programatically. Returns <code>false</code> otherwise.
      */
     public boolean isModifiable();
+    
+    /**
+     * Returns the <code>IModelType</code> containing the meta information for the given model object class.
+     */
+    public IModelType getModelType(Class<? extends IConfigurableModelObject> modelObjectClass);
+    
+    /**
+     * Returns the <code>IModelType</code> containing the meta information for the given model object.
+     * This is a convenience method calling <code>getModelType</code> with the model object's class.
+     */
+    public IModelType getModelType(IConfigurableModelObject modelObject);
 
 }

@@ -19,6 +19,8 @@ import java.util.Set;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 
+import org.faktorips.runtime.IRuntimeRepository;
+
 /**
  * Base Interface for all model elements.
  * 
@@ -54,5 +56,11 @@ public interface IModelElement {
      * This method assumes that the element is <code>&lt;ExtensionProperties&gt;</code>.
      */
     public void initExtPropertiesFromXml(XMLStreamReader parser) throws XMLStreamException;
+
+    /**
+     * Returns the repository this model element belongs to.
+     * This method never returns <code>null</code>.
+     */
+    public IRuntimeRepository getRepository();
 
 }

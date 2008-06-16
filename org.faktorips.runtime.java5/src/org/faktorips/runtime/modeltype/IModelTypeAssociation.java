@@ -23,8 +23,9 @@ public interface IModelTypeAssociation extends IModelElement {
     
     /**
      * @return the target model type object of this association.
+     * @throws ClassNotFoundException if the target class could not be loaded.
      */
-    public IModelType getTarget();
+    public IModelType getTarget() throws ClassNotFoundException;
     
     /**
      * @return the minimum cardinality for this association. <code>0</code> if no minimum is set.

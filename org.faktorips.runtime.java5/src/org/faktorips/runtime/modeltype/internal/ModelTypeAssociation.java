@@ -17,6 +17,8 @@ package org.faktorips.runtime.modeltype.internal;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 
+import org.faktorips.runtime.IConfigurableModelObject;
+import org.faktorips.runtime.IRuntimeRepository;
 import org.faktorips.runtime.modeltype.IModelType;
 import org.faktorips.runtime.modeltype.IModelTypeAssociation;
 
@@ -32,6 +34,10 @@ public class ModelTypeAssociation extends AbstractModelElement implements IModel
     private String namePlural = null;
     private String targetName = null;
     private boolean isProductRelevant = false;
+
+    public ModelTypeAssociation(IRuntimeRepository repository) {
+        super(repository);
+    }
 
     /**
      * {@inheritDoc}
@@ -63,9 +69,15 @@ public class ModelTypeAssociation extends AbstractModelElement implements IModel
 
     /**
      * {@inheritDoc}
+     * @throws ClassNotFoundException 
      */
-    public IModelType getTarget() {
-        // TODO get target from the repository
+    @SuppressWarnings("unchecked")
+    public IModelType getTarget() throws ClassNotFoundException {
+        if (targetName != null && targetName.length() > 0) {
+                return getRepository().getModelType(
+                        (Class<? extends IConfigurableModelObject>)this.getClass().getClassLoader()
+                                .loadClass(targetName));
+        }
         return null;
     }
 

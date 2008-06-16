@@ -24,6 +24,8 @@ import javax.xml.stream.XMLStreamConstants;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 
+import org.faktorips.runtime.IConfigurableModelObject;
+import org.faktorips.runtime.IRuntimeRepository;
 import org.faktorips.runtime.modeltype.IModelType;
 import org.faktorips.runtime.modeltype.IModelTypeAssociation;
 import org.faktorips.runtime.modeltype.IModelTypeAttribute;
@@ -33,15 +35,19 @@ import org.faktorips.runtime.modeltype.IModelTypeAttribute;
  * @author Daniel Hohenberger
  */
 public class ModelType extends AbstractModelElement implements IModelType {
-    
+
     private List<IModelTypeAssociation> associations = new ArrayList<IModelTypeAssociation>();
     private Map<String, IModelTypeAssociation> associationsByName = new HashMap<String, IModelTypeAssociation>();
-    
+
     private List<IModelTypeAttribute> attributes = new ArrayList<IModelTypeAttribute>();
     private Map<String, IModelTypeAttribute> attributesByName = new HashMap<String, IModelTypeAttribute>();
-    
+
     private String className;
     private String superTypeName;
+
+    public ModelType(IRuntimeRepository repository) {
+        super(repository);
+    }
 
     /**
      * {@inheritDoc}
@@ -87,17 +93,28 @@ public class ModelType extends AbstractModelElement implements IModelType {
 
     /**
      * {@inheritDoc}
+     * 
+     * @throws ClassNotFoundException
      */
-    public Class<?> getGeneratedClass() {
-        // TODO get class from Classloader
-        return null;
+    public Class<?> getGeneratedClass() throws ClassNotFoundException {
+        return this.getClass().getClassLoader().loadClass(className);
     }
 
     /**
      * {@inheritDoc}
+     * 
      */
+    @SuppressWarnings("unchecked")
     public IModelType getSuperType() {
-        // TODO get supertype from repository
+        if (superTypeName != null && superTypeName.length() > 0) {
+            try {
+                return getRepository().getModelType(
+                        (Class<? extends IConfigurableModelObject>)this.getClass().getClassLoader()
+                                .loadClass(superTypeName));
+            } catch (ClassNotFoundException e) {
+                return null;
+            }
+        }
         return null;
     }
 
@@ -111,7 +128,7 @@ public class ModelType extends AbstractModelElement implements IModelType {
                 this.className = parser.getAttributeValue(i);
             } else if (parser.getAttributeLocalName(i).equals("supertype")) {
                 this.superTypeName = parser.getAttributeValue(i);
-            } 
+            }
         }
         for (int event = parser.next(); event != XMLStreamConstants.END_DOCUMENT; event = parser.next()) {
             switch (event) {
@@ -125,7 +142,7 @@ public class ModelType extends AbstractModelElement implements IModelType {
                     }
                     break;
             }
-        }        
+        }
     }
 
     /**
@@ -136,7 +153,7 @@ public class ModelType extends AbstractModelElement implements IModelType {
             switch (event) {
                 case XMLStreamConstants.START_ELEMENT:
                     if (parser.getLocalName().equals("ModelTypeAttribute")) {
-                        IModelTypeAttribute attribute = new ModelTypeAttribute();
+                        IModelTypeAttribute attribute = new ModelTypeAttribute(getRepository());
                         attribute.initFromXml(parser);
                         attributes.add(attribute);
                         attributesByName.put(attribute.getName(), attribute);
@@ -159,7 +176,7 @@ public class ModelType extends AbstractModelElement implements IModelType {
             switch (event) {
                 case XMLStreamConstants.START_ELEMENT:
                     if (parser.getLocalName().equals("ModelTypeAssociation")) {
-                        IModelTypeAssociation association = new ModelTypeAssociation();
+                        IModelTypeAssociation association = new ModelTypeAssociation(getRepository());
                         association.initFromXml(parser);
                         associations.add(association);
                         associationsByName.put(association.getName(), association);
