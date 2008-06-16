@@ -225,10 +225,10 @@ public class TableImplBuilder extends DefaultJavaSourceFileBuilder {
         fRanges = new HashMap(keys.length);
         for (int i = 0; i < keys.length; i++) {
             String[] keyItems = keys[i].getKeyItemNames();
-            ArrayList parameters = new ArrayList();
-            ArrayList allParameterTypes = new ArrayList();
-            ArrayList keyClassParameterTypes = new ArrayList();
-            ArrayList keyClassParameterNames = new ArrayList();
+            List parameters = new ArrayList();
+            List allParameterTypes = new ArrayList();
+            List keyClassParameterTypes = new ArrayList();
+            List keyClassParameterNames = new ArrayList();
             boolean isColumn = false;
             for (int j = 0; j < keyItems.length; j++) {
 
@@ -245,6 +245,9 @@ public class TableImplBuilder extends DefaultJavaSourceFileBuilder {
                 IColumnRange range = getTableStructure().getRange(keyItems[j]);
 
                 parameters.add(range.getParameterName());
+                if (!isColumn && range != null && range.getColumnRangeType().isTwoColumn()) {
+                    fKeyClassNames[i] = TwoColumnKey.class.getName();
+                }
                 fRanges.put(range.getParameterName(), range);
             }
 
@@ -502,7 +505,26 @@ public class TableImplBuilder extends DefaultJavaSourceFileBuilder {
     private JavaCodeFragment createInitKeyMapsMethodBody(IUniqueKey[] keys) throws CoreException {
         JavaCodeFragment methodBody = new JavaCodeFragment();
         for (int i = 0; i < keys.length; i++) {
-            methodBody.append(createInitKeyMapsVariables(keys[i], fKeyVariableNames[i] + "Map", fKeyClassNames[i]));
+            String keyClassName = fKeyClassNames[i];
+            if (keyClassName == null && keys[i].containsRanges()) {
+                String[] keyClassParameterNames = (String[])fKeyClassParameterNames.get(i);
+                String[] parameterNames = (String[])fAllItemNamesAsParameters.get(i);
+                String[] rangeParameterNames;
+                if (keyClassParameterNames == null) {
+                    rangeParameterNames = parameterNames;
+                } else {
+                    rangeParameterNames = new String[parameterNames.length - keyClassParameterNames.length];
+                    System.arraycopy(parameterNames, keyClassParameterNames.length, rangeParameterNames, 0,
+                            rangeParameterNames.length);
+                }
+                for (int j = 0; j < rangeParameterNames.length; j++) {
+                    IColumnRange range = (IColumnRange)fRanges.get(rangeParameterNames[j]);
+                    if (range != null && range.getColumnRangeType().isTwoColumn()) {
+                        keyClassName = TwoColumnKey.class.getName();
+                    }
+                }
+            }
+            methodBody.append(createInitKeyMapsVariables(keys[i], fKeyVariableNames[i] + "Map", keyClassName));
             methodBody.appendln();
         }
         methodBody.append("for (");
@@ -611,9 +633,9 @@ public class TableImplBuilder extends DefaultJavaSourceFileBuilder {
             fragment.append("(");
             fragment.append(StringUtils.uncapitalize(fKeyVariableNames[i]));
             fragment.append("MapTemp, new ");
-            if(isUseTypesafeCollections()){
+            if (isUseTypesafeCollections()) {
                 fragment.appendClassName(Java5ClassNames.ReadOnlyBinaryRangeTreeKeyType_QualifiedName);
-            }else{
+            } else {
                 fragment.appendClassName(Integer.TYPE);
             }
             fragment.append("[] {");
