@@ -579,13 +579,13 @@ public abstract class AbstractRuntimeRepository implements IRuntimeRepository {
 
     protected abstract IProductComponentGeneration getPreviousProductComponentGenerationInternal(IProductComponentGeneration generation);
 
-    private Map<Class<? extends IConfigurableModelObject>, IModelType> modelTypes = new HashMap<Class<? extends IConfigurableModelObject>, IModelType>();
+    private Map<Class<?>, IModelType> modelTypes = new HashMap<Class<?>, IModelType>();
 
     /**
      * 
      * {@inheritDoc}
      */
-    public IModelType getModelType(Class<? extends IConfigurableModelObject> modelObjectClass) {
+    public IModelType getModelType(Class<?> modelObjectClass) {
         if (modelTypes.containsKey(modelObjectClass)) {
             return modelTypes.get(modelObjectClass);
         }
@@ -617,6 +617,14 @@ public abstract class AbstractRuntimeRepository implements IRuntimeRepository {
      * {@inheritDoc}
      */
     public IModelType getModelType(IConfigurableModelObject modelObject) {
+        return getModelType(modelObject.getClass());
+    }
+
+    /**
+     * 
+     * {@inheritDoc}
+     */
+    public IModelType getModelType(IProductComponent modelObject) {
         return getModelType(modelObject.getClass());
     }
 }

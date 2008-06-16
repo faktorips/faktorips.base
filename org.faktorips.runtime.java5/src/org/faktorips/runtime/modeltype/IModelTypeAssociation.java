@@ -38,7 +38,7 @@ public interface IModelTypeAssociation extends IModelElement {
     public int getMaxCardinality();
 
     /**
-     * @return the plural form of this model type's name.
+     * @return the plural form of this model type's name or <code>null</code> if no plural for for the name is set.
      */
     public String getNamePlural();
 

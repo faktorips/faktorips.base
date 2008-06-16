@@ -96,6 +96,9 @@ public class ModelTypeAssociation extends AbstractModelElement implements IModel
         for (int i = 0; i < parser.getAttributeCount(); i++) {
             if (parser.getAttributeLocalName(i).equals("namePlural")) {
                 this.namePlural = parser.getAttributeValue(i);
+                if(this.namePlural.length()==0){
+                    this.namePlural = null;
+                }
             } else if (parser.getAttributeLocalName(i).equals("target")) {
                 this.targetName = parser.getAttributeValue(i);
             } else if (parser.getAttributeLocalName(i).equals("minCardinality")) {

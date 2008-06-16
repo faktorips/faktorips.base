@@ -290,12 +290,18 @@ public interface IRuntimeRepository {
     /**
      * Returns the <code>IModelType</code> containing the meta information for the given model object class.
      */
-    public IModelType getModelType(Class<? extends IConfigurableModelObject> modelObjectClass);
+    public IModelType getModelType(Class<?> modelObjectClass);
     
     /**
      * Returns the <code>IModelType</code> containing the meta information for the given model object.
      * This is a convenience method calling <code>getModelType</code> with the model object's class.
      */
     public IModelType getModelType(IConfigurableModelObject modelObject);
+    
+    /**
+     * Returns the <code>IModelType</code> containing the meta information for the given model object.
+     * This is a convenience method calling <code>getModelType</code> with the model object's class.
+     */
+    public IModelType getModelType(IProductComponent modelObject);
 
 }
