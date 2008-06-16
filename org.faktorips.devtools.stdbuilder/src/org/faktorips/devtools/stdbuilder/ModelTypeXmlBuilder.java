@@ -63,7 +63,19 @@ public class ModelTypeXmlBuilder extends AbstractXmlFileBuilder {
             modelType.setAttribute("class", ((StandardBuilderSet)getBuilderSet()).getGenerator((IProductCmptType)model)
                     .getQualifiedName(false));
         }
-        modelType.setAttribute("supertype", model.getSupertype());
+        String superTypeName = model.getSupertype();
+
+        if(superTypeName!=null&&superTypeName.length()>0){
+        if (model instanceof IPolicyCmptType) {            
+            modelType.setAttribute("supertype", ((StandardBuilderSet)getBuilderSet()).getGenerator(getIpsProject().findPolicyCmptType(superTypeName))
+                    .getQualifiedName(false));
+        } else if (model instanceof IProductCmptType) {
+            modelType.setAttribute("supertype", ((StandardBuilderSet)getBuilderSet()).getGenerator(getIpsProject().findProductCmptType(superTypeName))
+                    .getQualifiedName(false));
+        }
+        }else{
+            modelType.setAttribute("supertype", null);
+        }
         addExtensionProperties(modelType, model);
         addAssociations(model, modelType);
         addAttributes(model, modelType);
