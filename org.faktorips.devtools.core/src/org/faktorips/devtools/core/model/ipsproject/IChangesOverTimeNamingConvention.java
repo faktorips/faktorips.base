@@ -28,15 +28,15 @@ import org.eclipse.swt.graphics.Image;
  * <ol>
  * <li>Version</li>
  * <p>
- * A new product version affects only new insurance policies. Exististing
+ * A new product version affects only new insurance policies. Existing
  * policies are not affected by a new product version in any way. Existing
  * policies have to be explicitly converted to the product version, e.g. by a
  * batch program. Perhaps the customer rejects changing to the product version
  * and wants to remain with the old one.
  * <li>Generation</li>
  * <p>
- * A new product generation affects exististing policies (and of cource new
- * policies). If a policy is changed in a way where product data is neccessary,
+ * A new product generation affects existing policies (and of course new
+ * policies). If a policy is changed in a way where product data is necessary,
  * the appropriate product is determined automatically based on the change's
  * effective date.
  * </ol>
@@ -45,7 +45,7 @@ import org.eclipse.swt.graphics.Image;
  * accepted naming standard for them. In Germany a standard has been defined by
  * the GDV as part of the standard architecture VAA. In Faktor-IPS' sourcecode
  * the names are used according to the GDV definition (as described above).
- * However, as their is no widely accepted standard, this class encapsulates the
+ * However, as there is no widely accepted standard, this class encapsulates the
  * names used for the two concept. The names provided by the naming convention
  * are used in the UI.
  * 
@@ -134,7 +134,7 @@ public interface IChangesOverTimeNamingConvention {
 	 * 
 	 * @param locale
 	 *            The locale that determines the language in which the
-	 *            abbreivation should be returned.
+	 *            abbreviation should be returned.
 	 */
 	public String getGenerationConceptNameAbbreviation(Locale locale);
 
@@ -146,17 +146,17 @@ public interface IChangesOverTimeNamingConvention {
 	public String getGenerationConceptNameAbbreviation();
 
 	/**
-	 * Returns an image that can be used to represent an item of the genration
+	 * Returns an image that can be used to represent an item of the generation
 	 * concept.
 	 * 
 	 * @param locale
-	 *            The locale that determines the langugage to use. This is
-	 *            neccessary because chars can be contained in the image.
+	 *            The locale that determines the language to use. This is
+	 *            necessary because chars can be contained in the image.
 	 */
 	public Image getGenerationConceptImage(Locale locale);
 
 	/**
-	 * Returns an image that can be used to represent an item of the genration
+	 * Returns an image that can be used to represent an item of the generation
 	 * concept. The locale used is the one returned from
 	 * IpsPlugin.getUsedLanguagePackLocale().
 	 */
@@ -197,7 +197,7 @@ public interface IChangesOverTimeNamingConvention {
 	 * 
 	 * @param locale
 	 *            The locale that determines the language in which the
-	 *            abbreivation should be returned.
+	 *            abbreviation should be returned.
 	 */
 	public String getVersionConceptNameAbbreviation(Locale locale);
 
@@ -212,8 +212,8 @@ public interface IChangesOverTimeNamingConvention {
 	 * concept.
 	 * 
 	 * @param locale
-	 *            The locale that determines the langugage to use. This is
-	 *            neccessary because chars can be contained in the image.
+	 *            The locale that determines the language to use. This is
+	 *            necessary because chars can be contained in the image.
 	 */
 	public Image getVersionConceptImage(Locale locale);
 
@@ -229,7 +229,7 @@ public interface IChangesOverTimeNamingConvention {
 	 * might be called validFrom.
 	 * 
 	 * @param locale
-	 *            The locale that determines the langugage to use.
+	 *            The locale that determines the language to use.
 	 */
 	public String getEffectiveDateConceptName(Locale locale);
 
