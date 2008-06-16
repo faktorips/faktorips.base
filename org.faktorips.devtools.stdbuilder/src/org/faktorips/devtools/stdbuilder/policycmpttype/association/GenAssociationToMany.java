@@ -871,23 +871,18 @@ public class GenAssociationToMany extends GenAssociation {
         body.append(getMethodNameGetNumOfRefObjects());
         body.append("() > 0) { ");
         if (isUseTypesafeCollections()) {
-            body.appendClassName(List.class.getName());
-            body.append("<");
+            body.append("for (");
             body.appendClassName(getQualifiedClassName(target, true));
-            body.append(">");
+            body.append(" rel : ");
+            body.append(getMethodNameGetAllRefObjects());
+            body.append("())");
+            body.append("{ ml.add(rel.validate(businessFunction)); } }");
         } else {
             body.appendClassName(getQualifiedClassName(target, true));
             body.append("[]");
-        }
-        body.append(" rels = ");
-        body.append(getMethodNameGetAllRefObjects());
-        body.append("();");
-        if (isUseTypesafeCollections()) {
-            body.append("for (");
-            body.appendClassName(getQualifiedClassName(target, true));
-            body.append(" rel : rels)");
-            body.append("{ ml.add(rel.validate(businessFunction)); } }");
-        } else {
+            body.append(" rels = ");
+            body.append(getMethodNameGetAllRefObjects());
+            body.append("();");
             body.append("for (int i = 0; i < rels.length; i++)");
             body.append("{ ml.add(rels[i].validate(businessFunction)); } }");
         }
