@@ -23,8 +23,9 @@ public interface IModelTypeAttribute extends IModelElement {
 
     /**
      * @return this attribute's datatype <code>Class</code>.
+     * @throws ClassNotFoundException if the datatype's class can not be loaded.
      */
-    public Class<?> getDatatype();
+    public Class<?> getDatatype() throws ClassNotFoundException;
 
     /**
      * @return the type of this attribute.

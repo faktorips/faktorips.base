@@ -109,7 +109,7 @@ public class ModelTypeXmlBuilder extends AbstractXmlFileBuilder {
                     }
                 } else {
                     modelTypeAssociation.setAttribute("target", null);
-                }                
+                }
                 modelTypeAssociation.setAttribute("minCardinality", Integer.toString(association.getMinCardinality()));
                 modelTypeAssociation.setAttribute("maxCardinality", Integer.toString(association.getMaxCardinality()));
                 modelTypeAssociation.setAttribute("associationType", getAssociantionType(association));
@@ -131,7 +131,7 @@ public class ModelTypeXmlBuilder extends AbstractXmlFileBuilder {
         }
     }
 
-    private void addAttributes(IType model, Element modelType) {
+    private void addAttributes(IType model, Element modelType) throws CoreException {
         IAttribute[] attributes = model.getAttributes();
         if (attributes.length > 0) {
             Element modelTypeAttributes = doc.createElement("ModelTypeAttributes");
@@ -141,7 +141,17 @@ public class ModelTypeXmlBuilder extends AbstractXmlFileBuilder {
                 Element modelTypeAttribute = doc.createElement("ModelTypeAttribute");
                 modelTypeAttributes.appendChild(modelTypeAttribute);
                 modelTypeAttribute.setAttribute("name", attribute.getName());
-                modelTypeAttribute.setAttribute("datatype", attribute.getDatatype());
+                    if (model instanceof IPolicyCmptType) {
+                        modelTypeAttribute.setAttribute("datatype", ((StandardBuilderSet)getBuilderSet()).getGenerator(
+                                (IPolicyCmptType)model).getGenerator((IPolicyCmptTypeAttribute)attribute).getDatatype()
+                                .getJavaClassName());
+                    } else if (model instanceof IProductCmptType) {
+                        modelTypeAttribute.setAttribute("datatype", ((StandardBuilderSet)getBuilderSet()).getGenerator(
+                                (IProductCmptType)model).getGenerator((IProductCmptTypeAttribute)attribute).getDatatype()
+                                .getJavaClassName());
+                } else {
+                    modelTypeAttribute.setAttribute("datatype", null);
+                }
                 modelTypeAttribute.setAttribute("valueSetType", getValueSetType(attribute));
                 modelTypeAttribute.setAttribute("attributeType", getAttributeType(attribute));
                 modelTypeAttribute.setAttribute("isProductRelevant", Boolean

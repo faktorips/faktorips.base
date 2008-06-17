@@ -27,18 +27,24 @@ import org.faktorips.runtime.modeltype.IModelTypeAttribute;
 public class ModelTypeAttribute extends AbstractModelElement implements IModelTypeAttribute {
 
     private Class<?> datatype;
+    private String datatypeName;
     private ValueSetType valueSetType = ValueSetType.AllValues;
     private AttributeType attributeType = AttributeType.changeable;
     private boolean isProductRelevant = false;
-    
+
     public ModelTypeAttribute(IRuntimeRepository repository) {
         super(repository);
     }
-    
+
     /**
      * {@inheritDoc}
+     * 
+     * @throws ClassNotFoundException
      */
-    public Class<?> getDatatype() {
+    public Class<?> getDatatype() throws ClassNotFoundException {
+        if(datatype==null){
+            datatype = findDatatype();
+        }
         return datatype;
     }
 
@@ -70,21 +76,26 @@ public class ModelTypeAttribute extends AbstractModelElement implements IModelTy
         super.initFromXml(parser);
         for (int i = 0; i < parser.getAttributeCount(); i++) {
             if (parser.getAttributeLocalName(i).equals("datatype")) {
-                this.datatype = findDatatype(parser.getAttributeValue(i));
-            }else if (parser.getAttributeLocalName(i).equals("valueSetType")) {
+                this.datatypeName = parser.getAttributeValue(i);
+            } else if (parser.getAttributeLocalName(i).equals("valueSetType")) {
                 this.valueSetType = ValueSetType.valueOf(parser.getAttributeValue(i));
-            }else if (parser.getAttributeLocalName(i).equals("attributeType")) {
+            } else if (parser.getAttributeLocalName(i).equals("attributeType")) {
                 this.attributeType = AttributeType.valueOf(parser.getAttributeValue(i));
-            }else if (parser.getAttributeLocalName(i).equals("isProductRelevant")) {
+            } else if (parser.getAttributeLocalName(i).equals("isProductRelevant")) {
                 this.isProductRelevant = Boolean.valueOf(parser.getAttributeValue(i));
             }
         }
         initExtPropertiesFromXml(parser);
     }
 
-    private Class<?> findDatatype(String attributeValue) {
-        // TODO Auto-generated method stub
-        return null;
+    private Class<?> findDatatype() throws ClassNotFoundException {
+        if(datatypeName.equals(int.class.getName())){
+            return int.class;
+        }
+        if(datatypeName.equals(boolean.class.getName())){
+            return boolean.class;
+        }
+        return this.getClass().getClassLoader().loadClass(datatypeName);
     }
 
 }
