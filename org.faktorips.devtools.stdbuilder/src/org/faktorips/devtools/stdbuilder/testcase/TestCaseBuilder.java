@@ -136,7 +136,7 @@ public class TestCaseBuilder extends AbstractArtefactBuilder {
             Element element = toRuntimeTestCaseXml(doc, testCase);
             String encoding = ipsSrcFile.getIpsProject() == null ? "UTF-8" : testCase.getIpsProject().getXmlFileCharset(); //$NON-NLS-1$
             content = XmlUtil.nodeToString(element, encoding);
-            is = convertContentAsStream(content, ipsSrcFile.getIpsProject().getProject().getDefaultCharset());
+            is = convertContentAsStream(content, encoding);
 
             IFile file = getXmlContentFile(ipsSrcFile);
             boolean newlyCreated = createFileIfNotThere(file);
@@ -144,8 +144,7 @@ public class TestCaseBuilder extends AbstractArtefactBuilder {
             if (newlyCreated) {
                 file.setContents(is, true, false, null);
             } else {
-                String charSet = ipsSrcFile.getIpsProject().getProject().getDefaultCharset();
-                String currentContent = getContentAsString(file.getContents(), charSet);
+                String currentContent = getContentAsString(file.getContents(), encoding);
                 if (!content.equals(currentContent)) {
                     file.setContents(is, true, true, null);
                 }
