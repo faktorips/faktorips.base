@@ -44,6 +44,11 @@ import org.w3c.dom.DOMException;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
+/**
+ * A builder writing meta information from design time objects to xml files for later use at runtime.
+ * 
+ * @author Daniel Hohenberger
+ */
 public class ModelTypeXmlBuilder extends AbstractXmlFileBuilder {
 
     private Document doc;
@@ -52,6 +57,10 @@ public class ModelTypeXmlBuilder extends AbstractXmlFileBuilder {
         super(type, builderSet, kind);
     }
 
+    /**
+     * 
+     * {@inheritDoc}
+     */
     public void build(IIpsSrcFile ipsSrcFile) throws CoreException {
         IType model = (IType)ipsSrcFile.getIpsObject();
         doc = IpsPlugin.getDefault().newDocumentBuilder().newDocument();
