@@ -912,14 +912,30 @@ public class GenAssociationToMany extends GenAssociation {
      *         child.accept(visitor);
      *     }
      * </pre>
+     * 
+     * Java 5 Code sample:
+     * <pre>
+     *     for (IVisitedSubChild child : visitedSubChilds) {
+     *         child.accept(visitor);
+     *     }
+     * </pre>
      * {@inheritDoc}
      */
     public void generateSnippetForAcceptVisitor(String paramName, JavaCodeFragmentBuilder builder) throws CoreException {
-        builder.append("for (");
-        builder.appendClassName(Iterator.class);
-        builder.appendln(" it = " + fieldName + ".iterator(); it.hasNext();) {");
-        String varName = association.getTargetRoleSingular();
-        builder.appendln(targetInterfaceName + " " + varName + " = (" + targetInterfaceName + ")it.next();"); 
+        String varName = getJavaNamingConvention().getMemberVarName(association.getTargetRoleSingular());
+        if (isUseTypesafeCollections()) {
+            builder.append("for (");
+            builder.appendClassName(targetInterfaceName);
+            builder.appendln(" " + varName + " : "+fieldName+") {"); 
+        }else{
+            builder.append("for (");
+            builder.appendClassName(Iterator.class);
+            builder.appendln(" it = " + fieldName + ".iterator(); it.hasNext();) {");
+            builder.appendClassName(targetInterfaceName);
+            builder.appendln(" " + varName + " = (");
+            builder.appendClassName(targetInterfaceName);
+            builder.appendln(")it.next();"); 
+        }
         builder.appendln(varName + "." + MethodNames.ACCEPT_VISITOR + "(" + paramName + ");");
         builder.appendln("}");
     }
