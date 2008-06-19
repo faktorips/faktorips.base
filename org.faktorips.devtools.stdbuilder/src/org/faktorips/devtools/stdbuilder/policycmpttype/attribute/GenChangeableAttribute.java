@@ -402,38 +402,9 @@ public class GenChangeableAttribute extends GenAttribute {
         methodsBuilder.append("this.");
         methodsBuilder.append(getMemberVarName());
         methodsBuilder.appendln(" = " + getParamNameForSetterMethod() + ";");
-        generateChangeListenerSupport(methodsBuilder, IModelObjectChangedEvent.class.getName(),
-                "MUTABLE_PROPERTY_CHANGED", getMemberVarName());
+        getGenPolicyCmptType().generateChangeListenerSupport(methodsBuilder, IModelObjectChangedEvent.class.getName(),
+                "MUTABLE_PROPERTY_CHANGED", getMemberVarName(), null);
         methodsBuilder.closeBracket();
-    }
-
-    protected void generateChangeListenerSupport(JavaCodeFragmentBuilder methodsBuilder,
-            String eventClassName,
-            String eventConstant,
-            String fieldName) {
-        generateChangeListenerSupport(methodsBuilder, eventClassName, eventConstant, fieldName, null);
-    }
-
-    protected void generateChangeListenerSupport(JavaCodeFragmentBuilder methodsBuilder,
-            String eventClassName,
-            String eventConstant,
-            String fieldName,
-            String paramName) {
-        methodsBuilder.appendln("if (" + MethodNames.EXISTS_CHANGE_LISTENER_TO_BE_INFORMED + "()) {");
-        methodsBuilder.append(MethodNames.NOTIFIY_CHANGE_LISTENERS + "(new ");
-        methodsBuilder.appendClassName(ModelObjectChangedEvent.class);
-        methodsBuilder.append("(this, ");
-        methodsBuilder.appendClassName(eventClassName);
-        methodsBuilder.append('.');
-        methodsBuilder.append(eventConstant);
-        methodsBuilder.append(", ");
-        methodsBuilder.appendQuoted(fieldName);
-        if (paramName != null) {
-            methodsBuilder.append(", ");
-            methodsBuilder.append(paramName);
-        }
-        methodsBuilder.appendln("));");
-        methodsBuilder.appendln("}");
     }
 
     private void generateMethodGetRange(JavaCodeFragmentBuilder methodBuilder, IIpsProject ipsProject)
