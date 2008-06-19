@@ -43,9 +43,6 @@ public class IntegerDatatype extends ValueClassDatatype implements NumericDataty
         if (StringUtils.isEmpty(s)) {
             return null;
         }
-        if (s.equals("")) {
-            return Integer.valueOf("0");
-        }
 		return Integer.valueOf(s);
 	}
 
