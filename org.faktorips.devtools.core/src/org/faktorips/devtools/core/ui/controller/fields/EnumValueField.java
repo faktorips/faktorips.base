@@ -28,7 +28,7 @@ import org.faktorips.values.EnumValue;
 public class EnumValueField extends ComboField {
     
     // array that contains all values used in the the combo box in the same order
-    private EnumValue[] enumValues;
+    private EnumValue[] usedEnumValues;
     
     /**
      * @param combo
@@ -36,13 +36,23 @@ public class EnumValueField extends ComboField {
     public EnumValueField(Combo combo, EnumType enumType) {
         super(combo);
         String[] items = combo.getItems();
-        enumValues = new EnumValue[items.length];
+        EnumValue[] allEnumValues = enumType.getValues();
+        usedEnumValues = new EnumValue[items.length];
         for (int i = 0; i < items.length; i++) {
-            enumValues[i] = enumType.getEnumValue(items[i]);
-            if (enumValues[i]==null) {
+            usedEnumValues[i] = getEnumValue(allEnumValues, items[i]);
+            if (usedEnumValues[i]==null) {
                 throw new RuntimeException("Not enum value for combo box item " + items[i]);
             }
         }
+    }
+    
+    private EnumValue getEnumValue(EnumValue[] allValues, String name) {
+        for (int i = 0; i < allValues.length; i++) {
+            if (allValues[i].getName().equals(name)) {
+                return allValues[i];
+            }
+        }
+        return null;
     }
     
     public EnumValue getEnumValue() {
@@ -50,7 +60,7 @@ public class EnumValueField extends ComboField {
         if (index==-1) {
             return null;
         }
-        return enumValues[index];
+        return usedEnumValues[index];
     }
 
     /**
