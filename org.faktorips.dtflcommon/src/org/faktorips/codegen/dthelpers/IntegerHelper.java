@@ -42,11 +42,16 @@ public class IntegerHelper extends AbstractDatatypeHelper {
         if (StringUtils.isEmpty(value)) {
             return nullExpression();
         }
+        value = value.trim();
+        if (value.charAt(0)!='0') {
+            return valueOfExpression(value);
+        }
+        // if value starts with a leading zero, we must generate Integer.valueOf("08") as
+        // new Integer(08) won't compile (try it out!)
         JavaCodeFragment fragment = new JavaCodeFragment();
-        fragment.append("new ");
         fragment.appendClassName(Integer.class);
-        fragment.append('(');
-        fragment.append(value);
+        fragment.append(".valueOf(");
+        fragment.appendQuoted(value);
         fragment.append(')');
         return fragment;
     }
@@ -55,7 +60,16 @@ public class IntegerHelper extends AbstractDatatypeHelper {
      * {@inheritDoc}
      */
     protected JavaCodeFragment valueOfExpression(String expression) {
-        return newInstance(expression);
+        if (StringUtils.isEmpty(expression)) {
+            return nullExpression();
+        }
+        JavaCodeFragment fragment = new JavaCodeFragment();
+        fragment.append("new ");
+        fragment.appendClassName(Integer.class);
+        fragment.append('(');
+        fragment.append(expression);
+        fragment.append(')');
+        return fragment;
     }
 
     /**
