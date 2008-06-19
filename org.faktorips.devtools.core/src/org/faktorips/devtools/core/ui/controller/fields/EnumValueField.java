@@ -18,7 +18,6 @@
 package org.faktorips.devtools.core.ui.controller.fields;
 
 import org.eclipse.swt.widgets.Combo;
-import org.faktorips.util.ArgumentCheck;
 import org.faktorips.values.EnumType;
 import org.faktorips.values.EnumValue;
 
@@ -28,15 +27,22 @@ import org.faktorips.values.EnumValue;
  */
 public class EnumValueField extends ComboField {
     
-    private EnumType enumType;
+    // array that contains all values used in the the combo box in the same order
+    private EnumValue[] enumValues;
     
     /**
      * @param combo
      */
-    public EnumValueField(Combo combo, EnumType type) {
+    public EnumValueField(Combo combo, EnumType enumType) {
         super(combo);
-        ArgumentCheck.notNull(type);
-        enumType = type;
+        String[] items = combo.getItems();
+        enumValues = new EnumValue[items.length];
+        for (int i = 0; i < items.length; i++) {
+            enumValues[i] = enumType.getEnumValue(items[i]);
+            if (enumValues[i]==null) {
+                throw new RuntimeException("Not enum value for combo box item " + items[i]);
+            }
+        }
     }
     
     public EnumValue getEnumValue() {
@@ -44,17 +50,23 @@ public class EnumValueField extends ComboField {
         if (index==-1) {
             return null;
         }
-        return enumType.getEnumValue(index);
+        return enumValues[index];
     }
 
-    public void setEnumValue(EnumValue newValue) {
-        getCombo().setText(newValue.getName());
-    }
-    
+    /**
+     * {@inheritDoc}
+     */
     public Object parseContent() {
         return getEnumValue();
     }
     
+    public void setEnumValue(EnumValue newValue) {
+        getCombo().setText(newValue.getName());
+    }
+
+    /**
+     * {@inheritDoc}
+     */
     public void setValue(Object newValue) {
         setEnumValue((EnumValue)newValue);
     }
