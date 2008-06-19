@@ -342,7 +342,7 @@ public class TestAttribute extends AtomicIpsObjectPart implements ITestAttribute
         
         // check if the attribute and the datatype are set together
         if (StringUtils.isNotEmpty(attribute) && StringUtils.isNotEmpty(datatype)){
-            String text = "Ein gleichzeitiges setzten des Attributes und des Datentyps ist nicht möglich.";
+            String text = Messages.TestAttribute_Error_AttributeAndDatatypeGiven;
             Message msg = new Message(MSGCODE_DATATYPE_AND_ATTRIBUTE_GIVEN, text, Message.ERROR, this, ITestAttribute.PROPERTY_DATATYPE);
             messageList.add(msg);
         }
