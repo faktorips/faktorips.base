@@ -24,6 +24,7 @@ import org.faktorips.runtime.IProductComponentGeneration;
 import org.faktorips.runtime.IRuntimeRepository;
 import org.w3c.dom.Element;
 
+
 /**
  * An abstract implementation of configurable policy component that leaves it open how to 
  * access the effective from date.  
@@ -86,23 +87,38 @@ public abstract class AbstractConfigurableModelObject extends AbstractModelObjec
     }
 
     /**
-     * Initializes the policy component's state with the data stored in the given xml element.
-     * 
-     * @param objectEl 
-     *      Xml element containing the state data.
-     * @param initWithProductDefaultsBeforeReadingXmlData
-     *      <code>true</code> if the policy component should be initialized with the product defaults.
-     * @param productRepository 
-     *      The repository that contains the product components.
-     * @param store
-     *      The store where unresolved references are stored in (so that they can be resolved after all
-     *      objects have been intialized from xml).
+     * {@inheritDoc}
      */
     public void initFromXml(
             Element objectEl, 
             boolean initWithProductDefaultsBeforeReadingXmlData,
             IRuntimeRepository productRepository, 
             IObjectReferenceStore store) {
+        initFromXml(objectEl, initWithProductDefaultsBeforeReadingXmlData, productRepository, store, null, null);
+    }
+    
+    /**
+     * {@inheritDoc}
+     */
+    public void initFromXml(
+            Element objectEl, 
+            boolean initWithProductDefaultsBeforeReadingXmlData,
+            IRuntimeRepository productRepository, 
+            IObjectReferenceStore store,
+            XmlCallback xmlCallback) {
+        initFromXml(objectEl, initWithProductDefaultsBeforeReadingXmlData, productRepository, store, xmlCallback, "");
+    }
+    
+    /**
+     * {@inheritDoc}
+     */  
+    public void initFromXml(
+            Element objectEl, 
+            boolean initWithProductDefaultsBeforeReadingXmlData,
+            IRuntimeRepository productRepository, 
+            IObjectReferenceStore store,
+            XmlCallback xmlCallback,
+            String currPath) {
         
         String productCmptId = objectEl.getAttribute("productCmpt");
         if (!"".equals(productCmptId)) {
@@ -112,6 +128,6 @@ public abstract class AbstractConfigurableModelObject extends AbstractModelObjec
         if (initWithProductDefaultsBeforeReadingXmlData) {
             this.initialize();
         }
-        super.initFromXml(objectEl, initWithProductDefaultsBeforeReadingXmlData, productRepository, store);
+        super.initFromXml(objectEl, initWithProductDefaultsBeforeReadingXmlData, productRepository, store, xmlCallback, currPath);
     }
 }

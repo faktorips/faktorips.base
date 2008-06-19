@@ -211,7 +211,7 @@ public abstract class AbstractModelObject implements IModelObject {
         initFromXml(objectEl, initWithProductDefaultsBeforeReadingXmlData, productRepository, store, xmlCallback, "");
     }
     
-    /*
+    /**
      * Initializes the policy component's state with the data stored in the given xml element.
      * 
      * @param objectEl 
@@ -228,7 +228,7 @@ public abstract class AbstractModelObject implements IModelObject {
      * @param currPath
      *      The path inside the XML tree structure. Starting from the root element.
      */
-    private void initFromXml(
+    protected void initFromXml(
             Element objectEl, 
             boolean initWithProductDefaultsBeforeReadingXmlData,
             IRuntimeRepository productRepository, 
