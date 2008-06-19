@@ -36,8 +36,6 @@ import org.faktorips.devtools.stdbuilder.StdBuilderHelper;
 import org.faktorips.devtools.stdbuilder.policycmpttype.GenPolicyCmptType;
 import org.faktorips.devtools.stdbuilder.productcmpttype.GenProductCmptType;
 import org.faktorips.runtime.IModelObjectChangedEvent;
-import org.faktorips.runtime.internal.MethodNames;
-import org.faktorips.runtime.internal.ModelObjectChangedEvent;
 import org.faktorips.util.ArgumentCheck;
 import org.faktorips.util.LocalizedStringsSet;
 import org.faktorips.valueset.EnumValueSet;
