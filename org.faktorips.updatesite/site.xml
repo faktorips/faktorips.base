@@ -51,6 +51,12 @@
    <feature url="features/org.faktorips.feature.nls1_2.0.1.jar" id="org.faktorips.feature.nls1" version="2.0.1">
       <category name="Faktor-IPS 2.0.1"/>
    </feature>
+   <feature url="features/org.faktorips.feature_2.1.0.ms1.jar" id="org.faktorips.feature" version="2.1.0.ms1">
+      <category name="Faktor-IPS 2.1.0.ms1"/>
+   </feature>
+   <feature url="features/org.faktorips.feature.nls1_2.1.0.ms1.jar" id="org.faktorips.feature.nls1" version="2.1.0.ms1">
+      <category name="Faktor-IPS 2.1.0.ms1"/>
+   </feature>
    <category-def name="Faktor-IPS 1.0.0" label="Faktor-IPS 1.0.0"/>
    <category-def name="Faktor-IPS 1.0.1" label="Faktor-IPS 1.0.1"/>
    <category-def name="Faktor-IPS 1.0.2" label="Faktor-IPS 1.0.2"/>
@@ -63,4 +69,5 @@
    </category-def>
    <category-def name="Faktor-IPS 2.0.0.rfinal" label="Faktor-IPS 2.0.0.rfinal"/>
    <category-def name="Faktor-IPS 2.0.1" label="Faktor-IPS 2.0.1"/>
+   <category-def name="Faktor-IPS 2.1.0.ms1" label="Faktor-IPS 2.1.0 Milestone 1"/>
 </site>
