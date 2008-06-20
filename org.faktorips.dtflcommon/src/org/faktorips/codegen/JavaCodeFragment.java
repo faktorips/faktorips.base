@@ -17,6 +17,7 @@
 
 package org.faktorips.codegen;
 
+import java.util.Iterator;
 import java.util.StringTokenizer;
 
 import org.apache.commons.lang.SystemUtils;
@@ -248,7 +249,16 @@ public class JavaCodeFragment {
             return;
 	    }
         qualifiedClassName = qualifiedClassName.replace('$', '.'); // for inner classes.
-        append(StringUtil.unqualifiedName(qualifiedClassName));
+        String unqualifiedClassName = StringUtil.unqualifiedName(qualifiedClassName);
+        // don't add two imports for the same unqualified name
+        for (Iterator iterator = importDecl.iterator(); iterator.hasNext();) {
+            String imp = (String)iterator.next();
+            if(imp.endsWith(unqualifiedClassName) && !imp.equals(qualifiedClassName)){
+                append(qualifiedClassName);
+                return;
+            }
+        }
+        append(unqualifiedClassName);
         if(qualifiedClassName.indexOf('.') < 0){
             return;
         }
