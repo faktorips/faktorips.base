@@ -208,8 +208,8 @@ public class ProductCmptGenImplClassBuilder extends BaseProductCmptTypeBuilder {
     private void generateMethodDoInitPropertiesFromXml(JavaCodeFragmentBuilder builder) throws CoreException {
 
         builder.javaDoc(getJavaDocCommentForOverriddenMethod(), ANNOTATION_GENERATED);
-        builder.methodBegin(Modifier.PROTECTED, Void.TYPE, "doInitPropertiesFromXml", new String[] { "configMap" },
-                new Class[] { Map.class });
+        builder.methodBegin(Modifier.PROTECTED, "void", "doInitPropertiesFromXml", new String[] { "configMap" },
+                new String[] { isUseTypesafeCollections()?Map.class.getName()+"<"+String.class.getName()+", "+Element.class.getName()+">":Map.class.getName() });
 
         builder.appendln("super.doInitPropertiesFromXml(configMap);");
 
@@ -495,7 +495,7 @@ public class ProductCmptGenImplClassBuilder extends BaseProductCmptTypeBuilder {
         String javaDoc = null;
         builder.javaDoc(javaDoc, ANNOTATION_GENERATED);
         String[] argNames = new String[] { "tableUsageMap" };
-        String[] argTypes = new String[] { Map.class.getName() };
+        String[] argTypes = new String[] { isUseTypesafeCollections()?Map.class.getName()+"<"+String.class.getName()+", "+Element.class.getName()+">":Map.class.getName() };
         builder.methodBegin(Modifier.PROTECTED, "void", "doInitTableUsagesFromXml", argNames, argTypes);
         builder.appendln("super.doInitTableUsagesFromXml(tableUsageMap);");
         builder.appendClassName(Element.class);
