@@ -82,16 +82,78 @@ public class GenProdAssociationTo1 extends GenProdAssociation {
             throws CoreException {
         if (generatesInterface) {
             generateMethodInterfaceGet1RelatedCmpt(builder);
+            if(isUseTypesafeCollections()){
+                generateMethodInterfaceGet1RelatedCmptLink(builder);
+            }
             if (association.findMatchingPolicyCmptTypeAssociation(ipsProject) != null) {
                 generateMethodGetCardinalityForAssociation(builder);
             }
         } else {
             generateMethodGet1RelatedCmpt(builder);
             generateMethodSet1RelatedCmpt(builder);
+            if(isUseTypesafeCollections()){
+                generateMethodGet1RelatedCmptLink(builder);
+            }
             if (association.findMatchingPolicyCmptTypeAssociation(ipsProject) != null) {
                 generateMethodGetCardinalityFor1To1Association(builder);
             }
         }
+    }
+
+    /**
+     * Java 5 code sample:
+     * 
+     * <pre>
+     * [Javadoc]
+     *  public ILink<ICoverageType> getLinkForMainCoverageType(){
+     *      return mainCoverageType;
+     *  }
+     * </pre>
+     * 
+     * @throws CoreException
+     */
+    private void generateMethodGet1RelatedCmptLink(JavaCodeFragmentBuilder methodsBuilder) throws CoreException {
+        methodsBuilder.javaDoc(getJavaDocCommentForOverriddenMethod(), JavaSourceFileBuilder.ANNOTATION_GENERATED);
+        generateSignatureGet1RelatedCmptLink(methodsBuilder);
+
+        methodsBuilder.openBracket();
+        methodsBuilder.append("return ");
+        methodsBuilder.append(getFieldNameTo1Association());
+        methodsBuilder.append(";");
+        methodsBuilder.closeBracket();
+    }
+
+    /**
+     * Code sample:
+     * 
+     * <pre>
+     * [Javadoc]
+     * public ILink<ICoverageType> getLinkForMainCoverageType();
+     * </pre>
+     * @throws CoreException 
+     */
+    private void generateMethodInterfaceGet1RelatedCmptLink(JavaCodeFragmentBuilder builder) throws CoreException {
+        appendLocalizedJavaDoc("METHOD_GET_1_RELATED_CMPT_LINK", association.getTargetRoleSingular(), builder);
+        generateSignatureGet1RelatedCmptLink(builder);
+        builder.appendln(";");
+    }
+
+    /**
+     * Code sample:
+     * 
+     * <pre>
+     * public ILink<ICoverageType> getLinkForMainCoverageType()
+     * </pre>
+     * @throws CoreException 
+     */
+    private void generateSignatureGet1RelatedCmptLink(JavaCodeFragmentBuilder builder) throws CoreException {
+        String methodName = getMethodNameGet1RelatedCmptLink();
+        String returnType = Java5ClassNames.ILink_QualifiedName+"<"+getQualifiedInterfaceClassNameForTarget()+">";
+        builder.signature(Modifier.PUBLIC, returnType, methodName, EMPTY_STRING_ARRAY, EMPTY_STRING_ARRAY);
+    }
+
+    private String getMethodNameGet1RelatedCmptLink() {
+        return getJavaNamingConvention().getMultiValueGetterMethodName("LinkFor"+getPropertyNameTo1Association());
     }
 
     private void generateMethodGetCardinalityFor1To1Association(JavaCodeFragmentBuilder methodsBuilder)
@@ -128,15 +190,6 @@ public class GenProdAssociationTo1 extends GenProdAssociation {
         frag.append("return null;");
         frag.appendCloseBracket();
         methodsBuilder.append(frag);
-    }
-
-    private String getFieldNameTo1Association() throws CoreException {
-        return getJavaNamingConvention().getMemberVarName(getPropertyNameTo1Association());
-    }
-
-    String getPropertyNameTo1Association() {
-        String role = StringUtils.capitalize(association.getTargetRoleSingular());
-        return getLocalizedText("PROPERTY_TO1_RELATION_NAME", role);
     }
 
     protected void generateCodeGetNumOfRelatedProductCmptsInternal(JavaCodeFragmentBuilder builder)

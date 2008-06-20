@@ -358,6 +358,15 @@ public abstract class GenProdAssociation extends GenProductCmptTypePart {
         generateSignatureGetManyRelatedCmpts(association, methodsBuilder);
     }
 
+    protected String getFieldNameTo1Association() throws CoreException {
+        return getJavaNamingConvention().getMemberVarName(getPropertyNameTo1Association());
+    }
+
+    String getPropertyNameTo1Association() {
+        String role = StringUtils.capitalize(association.getTargetRoleSingular());
+        return getLocalizedText("PROPERTY_TO1_RELATION_NAME", role);
+    }
+
     /**
      * Code sample:
      * 

@@ -16,6 +16,8 @@ package org.faktorips.devtools.stdbuilder.productcmpttype.association;
 
 import java.lang.reflect.Modifier;
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
@@ -89,6 +91,10 @@ public class GenProdAssociationToMany extends GenProdAssociation {
         if (generatesInterface) {
             generateMethodInterfaceGetManyRelatedCmpts(builder);
             generateMethodInterfaceGetRelatedCmptAtIndex(builder);
+            if (isUseTypesafeCollections()) {
+                generateMethodInterfaceGetManyRelatedCmptLinks(builder);
+                generateMethodInterfaceGetRelatedCmptLink(builder);
+            }
             if (association.findMatchingPolicyCmptTypeAssociation(ipsProject) != null) {
                 generateMethodGetCardinalityForAssociation(builder);
             }
@@ -96,12 +102,143 @@ public class GenProdAssociationToMany extends GenProdAssociation {
         } else {
             generateMethodGetManyRelatedCmpts(builder);
             generateMethodGetRelatedCmptAtIndex(builder);
+            if (isUseTypesafeCollections()) {
+                generateMethodGetManyRelatedCmptLinks(builder);
+                generateMethodGetRelatedCmptLink(builder);
+            }
             generateMethodAddRelatedCmpt(builder);
             if (association.findMatchingPolicyCmptTypeAssociation(ipsProject) != null) {
                 generateMethodGetCardinalityFor1ToManyAssociation(builder);
             }
             generateMethodGetNumOfRelatedProductCmpts(builder);
         }
+    }
+
+    /**
+     * Java 5 Code sample:
+     * 
+     * <pre>
+     * public ILink&lt;ICoverageType&gt; getLinkForCoverageType(ICoverageType productComponent);
+     * </pre>
+     * 
+     * @throws CoreException
+     */
+    private void generateMethodInterfaceGetRelatedCmptLink(JavaCodeFragmentBuilder methodsBuilder)
+            throws CoreException {
+        appendLocalizedJavaDoc("METHOD_GET_RELATED_CMPT_LINK", association.getTargetRoleSingular(),
+                methodsBuilder);
+        generateSignatureGetRelatedCmptLink(methodsBuilder);
+        methodsBuilder.appendln(";");
+    }
+
+    /**
+     * Java 5 Code sample:
+     * 
+     * <pre>
+     * public ILink&lt;ICoverageType&gt; getLinkForCoverageType(ICoverageType productComponent)
+     * </pre>
+     * 
+     * @throws CoreException
+     */
+    private void generateSignatureGetRelatedCmptLink(JavaCodeFragmentBuilder methodsBuilder)
+            throws CoreException {
+        String methodName = getMethodNameGetRelatedCmptLink();
+        String returnType = Java5ClassNames.ILink_QualifiedName + "<" + getQualifiedInterfaceClassNameForTarget() + ">";
+        methodsBuilder.signature(getJavaNamingConvention().getModifierForPublicInterfaceMethod(), returnType,
+                methodName, new String[] { "productComponent" },
+                new String[] { getQualifiedInterfaceClassNameForTarget() });
+    }
+
+    private String getMethodNameGetRelatedCmptLink() {
+        return getJavaNamingConvention().getMultiValueGetterMethodName("LinkFor" + association.getTargetRoleSingular());
+    }
+
+    /**
+     * Code sample: [Javadoc]
+     * 
+     * <pre>
+     * public Collection&lt;ILink&lt;ICoverageType&gt;&gt; getLinksForCoverageTypes();
+     * </pre>
+     * 
+     * @throws CoreException
+     */
+    private void generateMethodInterfaceGetManyRelatedCmptLinks(JavaCodeFragmentBuilder methodsBuilder)
+            throws CoreException {
+        appendLocalizedJavaDoc("METHOD_GET_MANY_RELATED_CMPTS", association.getTargetRolePlural(), methodsBuilder);
+        generateSignatureGetManyRelatedCmptLinks(methodsBuilder);
+        methodsBuilder.appendln(";");
+    }
+
+    /**
+     * Java 5 Code sample:
+     * 
+     * <pre>
+     * public Collection&lt;ILink&lt;ICoverageType&gt;&gt; getLinksForCoverageTypes()
+     * </pre>
+     * 
+     * @throws CoreException
+     */
+    private void generateSignatureGetManyRelatedCmptLinks(JavaCodeFragmentBuilder methodsBuilder) throws CoreException {
+        String methodName = getMethodNameGetManyRelatedCmptLinks();
+        String returnType = Collection.class.getName() + "<" + Java5ClassNames.ILink_QualifiedName + "<"
+                + getQualifiedInterfaceClassNameForTarget() + ">>";
+        methodsBuilder.signature(getJavaNamingConvention().getModifierForPublicInterfaceMethod(), returnType,
+                methodName, EMPTY_STRING_ARRAY, EMPTY_STRING_ARRAY);
+    }
+
+    private String getMethodNameGetManyRelatedCmptLinks() throws CoreException {
+        return getJavaNamingConvention().getMultiValueGetterMethodName(
+                "LinksFor" + StringUtils.capitalize(getFieldNameToManyAssociation()));
+    }
+
+    /**
+     * Java 5 code sample:
+     * 
+     * <pre>
+     * [Javadoc]
+     *  public Collection&lt;ILink&lt;ICoverageType&gt;&gt; getLinksForCoverageTypes(){
+     *      return productParts.get(productComponent.getId());
+     *  }
+     * </pre>
+     * 
+     * @throws CoreException
+     */
+    private void generateMethodGetRelatedCmptLink(JavaCodeFragmentBuilder methodsBuilder) throws CoreException {
+        methodsBuilder.javaDoc(getJavaDocCommentForOverriddenMethod(), JavaSourceFileBuilder.ANNOTATION_GENERATED);
+        generateSignatureGetRelatedCmptLink(methodsBuilder);
+
+        String fieldName = getFieldNameToManyAssociation();
+        methodsBuilder.openBracket();
+        methodsBuilder.append("return ");
+        methodsBuilder.append(fieldName);
+        methodsBuilder.appendln(".get(productComponent.getId());");
+        methodsBuilder.closeBracket();
+    }
+
+    /**
+     * Java 5 code sample:
+     * 
+     * <pre>
+     * [Javadoc]
+     *  public Collection&lt;ILink&lt;ICoverageType&gt;&gt; getLinksForCoverageTypes(){
+     *      return Collections.unmodifiableCollection(coverageTypes.values());
+     *  }
+     * </pre>
+     * 
+     * @throws CoreException
+     */
+    private void generateMethodGetManyRelatedCmptLinks(JavaCodeFragmentBuilder methodsBuilder) throws CoreException {
+        methodsBuilder.javaDoc(getJavaDocCommentForOverriddenMethod(), JavaSourceFileBuilder.ANNOTATION_GENERATED);
+        generateSignatureGetManyRelatedCmptLinks(methodsBuilder);
+
+        String fieldName = getFieldNameToManyAssociation();
+        methodsBuilder.openBracket();
+        methodsBuilder.append("return ");
+        methodsBuilder.appendClassName(Collections.class);
+        methodsBuilder.append(".unmodifiableCollection(");
+        methodsBuilder.append(fieldName);
+        methodsBuilder.appendln(".values());");
+        methodsBuilder.closeBracket();
     }
 
     private void generateMethodGetCardinalityFor1ToManyAssociation(JavaCodeFragmentBuilder methodsBuilder)
