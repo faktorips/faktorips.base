@@ -182,7 +182,7 @@ public class ModelTypeXmlBuilder extends AbstractXmlFileBuilder {
             if (extensionPropertyDefinition instanceof StringExtensionPropertyDefinition
                     && element.isExtPropertyDefinitionAvailable(propertyId)) {
                 // TODO enable non-String extension properties
-                Element extensionProperty = doc.createElement("ExtensionProperty");
+                Element extensionProperty = doc.createElement("Value");
                 extensionProperty.setAttribute("isNull", Boolean
                         .toString(element.getExtPropertyValue(propertyId) == null));
                 extensionProperty.setAttribute("id", propertyId);

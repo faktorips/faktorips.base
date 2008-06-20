@@ -296,7 +296,7 @@ public interface IRuntimeRepository {
      * Returns the <code>IModelType</code> containing the meta information for the given model object.
      * This is a convenience method calling <code>getModelType</code> with the model object's class.
      */
-    public IModelType getModelType(IConfigurableModelObject modelObject);
+    public IModelType getModelType(IModelObject modelObject);
     
     /**
      * Returns the <code>IModelType</code> containing the meta information for the given model object.

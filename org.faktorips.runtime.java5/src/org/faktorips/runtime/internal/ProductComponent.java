@@ -29,7 +29,7 @@ import org.w3c.dom.Element;
  * Base class for all product components.
  * <p>
  */
-public abstract class ProductComponent implements IProductComponent, IClRepositoryObject {
+public abstract class ProductComponent extends RuntimeObject implements IProductComponent, IClRepositoryObject {
 
     // the component's id that identifies it in the repository
     private String id;
@@ -143,6 +143,7 @@ public abstract class ProductComponent implements IProductComponent, IClReposito
      */
     public final void initFromXml(Element cmptElement) {
         validTo = DateTime.parseIso(cmptElement.getAttribute("validTo"));
+        initExtensionPropertiesFromXml(cmptElement);
     }
     
     /**

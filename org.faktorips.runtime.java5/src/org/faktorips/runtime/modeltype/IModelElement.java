@@ -37,7 +37,7 @@ public interface IModelElement {
     public Object getExtensionPropertyValue(String propertyId) throws IllegalArgumentException;
     
     /**
-     * @return an array of the extension property ids defined for this element.
+     * @return a set of the extension property ids defined for this element.
      */
     public Set<String> getExtensionPropertyIds();
 

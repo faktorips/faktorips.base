@@ -904,9 +904,6 @@ public class PolicyCmptImplClassBuilder extends BasePolicyCmptTypeBuilder {
             if (first) {
                 first = false;
                 builder.javaDoc(getJavaDocCommentForOverriddenMethod(), ANNOTATION_RESTRAINED_MODIFIABLE);
-                if (isUseTypesafeCollections()) {
-                    builder.annotation(ANNOTATION_SUPPRESS_WARNINGS_UNCHECKED);
-                }
                 builder.methodBegin(java.lang.reflect.Modifier.PROTECTED, Void.TYPE.getName(),
                         MethodNames.INIT_PROPERTIES_FROM_XML, new String[] { "propMap" },
                         new String[] { isUseTypesafeCollections() ? Map.class.getName() + "<" + String.class.getName()

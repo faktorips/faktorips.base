@@ -31,7 +31,7 @@ import javax.xml.stream.XMLStreamConstants;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 
-import org.faktorips.runtime.IConfigurableModelObject;
+import org.faktorips.runtime.IModelObject;
 import org.faktorips.runtime.IProductComponent;
 import org.faktorips.runtime.IProductComponentGeneration;
 import org.faktorips.runtime.IRuntimeRepository;
@@ -616,7 +616,7 @@ public abstract class AbstractRuntimeRepository implements IRuntimeRepository {
      * 
      * {@inheritDoc}
      */
-    public IModelType getModelType(IConfigurableModelObject modelObject) {
+    public IModelType getModelType(IModelObject modelObject) {
         return getModelType(modelObject.getClass());
     }
 

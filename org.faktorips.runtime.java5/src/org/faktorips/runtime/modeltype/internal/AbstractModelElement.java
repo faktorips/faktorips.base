@@ -78,7 +78,7 @@ public class AbstractModelElement implements IModelElement {
         for (int event = parser.next(); event != XMLStreamConstants.END_DOCUMENT; event = parser.next()) {
             switch (event) {
                 case XMLStreamConstants.START_ELEMENT:
-                    if (parser.getLocalName().equals("ExtensionProperty")) {
+                    if (parser.getLocalName().equals("Value")) {
                         initExtPropertyValueFromXML(parser);
                     }
                     break;
@@ -114,7 +114,7 @@ public class AbstractModelElement implements IModelElement {
                         value.append(parser.getText().trim());
                         break;
                     case XMLStreamConstants.END_ELEMENT:
-                        if (parser.getLocalName().equals("ExtensionProperty")) {
+                        if (parser.getLocalName().equals("Value")) {
                             extPropertyValues.put(id, value.toString());
                             return;
                         }

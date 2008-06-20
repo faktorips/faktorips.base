@@ -26,7 +26,7 @@ import org.faktorips.runtime.internal.DateTime;
  * 
  * @author Jan Ortmann
  */
-public interface IProductComponent {
+public interface IProductComponent extends IRuntimeObject{
 
     /**
      * Returns the repository this product component belongs to.

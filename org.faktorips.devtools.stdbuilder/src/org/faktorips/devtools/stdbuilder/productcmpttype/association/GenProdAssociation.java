@@ -224,32 +224,7 @@ public abstract class GenProdAssociation extends GenProductCmptTypePart {
     protected abstract void generateCodeGetNumOfRelatedProductCmpts(JavaCodeFragmentBuilder builder)
             throws CoreException;
 
-    protected void generateMethodGetCardinalityFor1ToManyAssociation(JavaCodeFragmentBuilder methodsBuilder)
-            throws CoreException {
-        methodsBuilder.javaDoc("@inheritDoc", JavaSourceFileBuilder.ANNOTATION_GENERATED);
-        generateSignatureGetCardinalityForAssociation(methodsBuilder);
-        String[][] params = getParamGetCardinalityForAssociation();
-        JavaCodeFragment frag = new JavaCodeFragment();
-        frag.appendOpenBracket();
-        frag.append("if(");
-        frag.append(params[0][0]);
-        frag.append(" != null)");
-        frag.appendOpenBracket();
-        frag.append("return ");
-        if (!isUseTypesafeCollections()) {
-            frag.append('(');
-            frag.appendClassName(IntegerRange.class);
-            frag.append(')');
-        }
-        frag.append(getFieldNameCardinalityForAssociation());
-        frag.append(".get(");
-        frag.append(params[0][0]);
-        frag.append(".getId());");
-        frag.appendCloseBracket();
-        frag.append("return null;");
-        frag.appendCloseBracket();
-        methodsBuilder.append(frag);
-    }
+    
 
     public void generateSignatureGetCardinalityForAssociation(JavaCodeFragmentBuilder methodsBuilder)
             throws CoreException {

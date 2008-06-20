@@ -20,6 +20,7 @@ package org.faktorips.runtime.internal;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.TimeZone;
 
@@ -33,7 +34,7 @@ import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
-public abstract class ProductComponentGeneration implements IProductComponentGeneration, IClRepositoryObject {
+public abstract class ProductComponentGeneration extends RuntimeObject implements IProductComponentGeneration, IClRepositoryObject {
 
     // the product component this generation belongs to.
     private ProductComponent productCmpt;
@@ -127,7 +128,7 @@ public abstract class ProductComponentGeneration implements IProductComponentGen
     /**
      * Initializes the links with the data in the map.
      */
-    protected void doInitReferencesFromXml(Map<String, ArrayList<Element>> map) {
+    protected void doInitReferencesFromXml(Map<String, List<Element>> map) {
         // nothing to do in the base class
         // 
         // Note that the method is deliberatly not declared as abstract to 
@@ -189,15 +190,15 @@ public abstract class ProductComponentGeneration implements IProductComponentGen
      * @throws NullPointerException if genElement is <code>null</code>.
      */
     // note: not private to allow acces by test case
-    final Map<String, ArrayList<Element>> getLinkElements(Element genElement) {
-        Map<String, ArrayList<Element>> elementMap = new HashMap<String, ArrayList<Element>>();
+    final Map<String, List<Element>> getLinkElements(Element genElement) {
+        Map<String, List<Element>> elementMap = new HashMap<String, List<Element>>();
         NodeList nl = genElement.getChildNodes();
         for (int i = 0; i < nl.getLength(); i++) {
             Node node = nl.item(i);
             if (node.getNodeType()==Node.ELEMENT_NODE && "Link".equals(node.getNodeName())) {
                 Element childElement = (Element) nl.item(i);
                 String association = childElement.getAttribute("association"); 
-                ArrayList<Element> associationElements = elementMap.get(association);
+                List<Element> associationElements = elementMap.get(association);
                 if (associationElements==null) {
                     associationElements = new ArrayList<Element>(1);
                     elementMap.put(association, associationElements);

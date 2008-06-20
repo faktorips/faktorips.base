@@ -181,9 +181,9 @@ public class ProductCmptGenImplClassBuilder extends BaseProductCmptTypeBuilder {
      *      super.doInitPropertiesFromXml(configMap);
      *      Element configElement = null;
      *      String value = null;
-     *      configElement = (Element)configMap.get("testTypeDecimal");
+     *      configElement = (Element)configMap.get(&quot;testTypeDecimal&quot;);
      *      if (configElement != null) {
-     *          value = ValueToXmlHelper.getValueFromElement(configElement, "Value");
+     *          value = ValueToXmlHelper.getValueFromElement(configElement, &quot;Value&quot;);
      *          testTypeDecimal = Decimal.valueOf(value);
      *      }
      *  }
@@ -193,15 +193,13 @@ public class ProductCmptGenImplClassBuilder extends BaseProductCmptTypeBuilder {
      * 
      * <pre>
      *  [javadoc]
-     *  @SuppressWarnings("unchecked")
-     *  protected void doInitPropertiesFromXml(Map configMap) {
+     *  protected void doInitPropertiesFromXml(Map&lt;String, Element&gt; configMap) {
      *      super.doInitPropertiesFromXml(configMap);
-     *      final Map<String, Element> checkedConfigMap = (Map<String, Element>)configMap;
      *      Element configElement = null;
      *      String value = null;
-     *      configElement = checkedConfigMap.get("testTypeDecimal");
+     *      configElement = configMap.get(&quot;testTypeDecimal&quot;);
      *      if (configElement != null) {
-     *          value = ValueToXmlHelper.getValueFromElement(configElement, "Value");
+     *          value = ValueToXmlHelper.getValueFromElement(configElement, &quot;Value&quot;);
      *          testTypeDecimal = Decimal.valueOf(value);
      *      }
      *  }
@@ -210,9 +208,6 @@ public class ProductCmptGenImplClassBuilder extends BaseProductCmptTypeBuilder {
     private void generateMethodDoInitPropertiesFromXml(JavaCodeFragmentBuilder builder) throws CoreException {
 
         builder.javaDoc(getJavaDocCommentForOverriddenMethod(), ANNOTATION_GENERATED);
-        if (isUseTypesafeCollections()) {
-            builder.annotation(ANNOTATION_SUPPRESS_WARNINGS_UNCHECKED);
-        }
         builder.methodBegin(Modifier.PROTECTED, Void.TYPE, "doInitPropertiesFromXml", new String[] { "configMap" },
                 new Class[] { Map.class });
 
@@ -226,7 +221,6 @@ public class ProductCmptGenImplClassBuilder extends BaseProductCmptTypeBuilder {
                 continue;
             }
             if (attributeFound == false) {
-                generateCheckedConfigMap(builder);
                 generateDefineLocalVariablesForXmlExtraction(builder);
                 attributeFound = true;
             }
@@ -244,7 +238,6 @@ public class ProductCmptGenImplClassBuilder extends BaseProductCmptTypeBuilder {
                 continue;
             }
             if (attributeFound == false) {
-                generateCheckedConfigMap(builder);
                 generateDefineLocalVariablesForXmlExtraction(builder);
                 attributeFound = true;
             }
@@ -261,24 +254,6 @@ public class ProductCmptGenImplClassBuilder extends BaseProductCmptTypeBuilder {
         builder.methodEnd();
     }
 
-    /**
-     * @param builder
-     */
-    private void generateCheckedConfigMap(JavaCodeFragmentBuilder builder) {
-        if (isUseTypesafeCollections()) {
-            JavaCodeFragment frag = new JavaCodeFragment();
-            frag.append('(');
-            frag.appendClassName(Map.class);
-            frag.append('<');
-            frag.appendClassName(String.class);
-            frag.append(", ");
-            frag.appendClassName(Element.class);
-            frag.append(">)configMap");
-            builder.varDeclaration(Modifier.FINAL, Map.class.getName() + "<" + String.class.getName() + ", "
-                    + Element.class.getName() + ">", "checkedConfigMap", frag);
-        }
-    }
-
     private void generateDefineLocalVariablesForXmlExtraction(JavaCodeFragmentBuilder builder) {
         builder.appendClassName(Element.class);
         builder.appendln(" configElement = null;");
@@ -288,7 +263,7 @@ public class ProductCmptGenImplClassBuilder extends BaseProductCmptTypeBuilder {
 
     private void generateGetElementFromConfigMapAndIfStatement(String attributeName, JavaCodeFragmentBuilder builder) {
         if (isUseTypesafeCollections()) {
-            builder.append("configElement = checkedConfigMap.get(\"");
+            builder.append("configElement = configMap.get(\"");
         } else {
             builder.append("configElement = (");
             builder.appendClassName(Element.class);
@@ -374,13 +349,13 @@ public class ProductCmptGenImplClassBuilder extends BaseProductCmptTypeBuilder {
      *  [javadoc]
      *  protected void doInitReferencesFromXml(Map elementsMap) {
      *      super.doInitReferencesFromXml(elementsMap);
-     *      List associationElements = (List)elementsMap.get("FtCoverageType");
+     *      List associationElements = (List)elementsMap.get(&quot;FtCoverageType&quot;);
      *      if (associationElements != null) {
      *          ftCoverageTypes = new String[associationElements.size()];
      *          cardinalitiesForFtCoverage = new HashMap(associationElements.size());
-     *          for (int i = 0; i < associationElements.size(); i++) {
+     *          for (int i = 0; i &lt; associationElements.size(); i++) {
      *              Element element = (Element)associationElements.get(i);
-     *              ftCoverageTypes[i] = element.getAttribute("targetRuntimeId");
+     *              ftCoverageTypes[i] = element.getAttribute(&quot;targetRuntimeId&quot;);
      *              addToCardinalityMap(cardinalitiesForFtCoverage, ftCoverageTypes[i], element);
      *          }
      *      }
@@ -391,20 +366,16 @@ public class ProductCmptGenImplClassBuilder extends BaseProductCmptTypeBuilder {
      * 
      * <pre>
      *  [javadoc]
-     *  @SuppressWarnings("unchecked")
-     *  protected void doInitReferencesFromXml(Map elementsMap) {
+     *  protected void doInitReferencesFromXml(Map&lt;String, Element&gt; elementsMap) {
      *      super.doInitReferencesFromXml(elementsMap);
-     *      final Map<String, List<Element>> checkedElementsMap = (Map<String, List<Element>>)elementsMap;
-     *      List<Element> associationElements = checkedElementsMap.get("FtCoverageType");
+     *      List&lt;Element&gt; associationElements = elementsMap.get(&quot;ProductPart&quot;);
      *      if (associationElements != null) {
-     *          ftCoverageTypes = new ArrayList<String>(associationElements.size());
-     *          cardinalitiesForFtCoverage = new HashMap<String, IntegerRange>(associationElements.size());
-     *          for (int i = 0; i < associationElements.size(); i++) {
-     *              Element element = associationElements.get(i);
-     *              ftCoverageTypes.add(element.getAttribute("targetRuntimeId"));
-     *              org.faktorips.runtime.internal.java5.ProductComponentGeneration.addToCardinalityMap(
-     *                  cardinalitiesForFtCoverage, ftCoverageTypes.get(i), element);
-     *          }
+     *         productParts = new LinkedHashMap&lt;String, ILink&lt;IProductPart&gt;&gt;(associationElements.size());
+     *         for (Element element: associationElements) {
+     *            ILink&lt;IProductPart&gt; link = new Link&lt;IProductPart&gt;(this);
+     *            link.initFromXml(element);
+     *            productParts.put(link.getTargetId(), link);
+     *         }
      *      }
      *  }
      * </pre>
@@ -420,11 +391,10 @@ public class ProductCmptGenImplClassBuilder extends BaseProductCmptTypeBuilder {
         }
         String javaDoc = null;
         builder.javaDoc(javaDoc, ANNOTATION_GENERATED);
-        if (isUseTypesafeCollections()) {
-            builder.annotation(ANNOTATION_SUPPRESS_WARNINGS_UNCHECKED);
-        }
         String[] argNames = new String[] { "elementsMap" };
-        String[] argTypes = new String[] { Map.class.getName() };
+        String[] argTypes = new String[] { isUseTypesafeCollections() ? Map.class.getName() + "<"
+                + String.class.getName() + ", " + List.class.getName() + "<" + Element.class.getName() + ">>"
+                : Map.class.getName() };
         builder.methodBegin(Modifier.PROTECTED, "void", "doInitReferencesFromXml", argNames, argTypes);
         builder.appendln("super.doInitReferencesFromXml(elementsMap);");
 
@@ -450,26 +420,11 @@ public class ProductCmptGenImplClassBuilder extends BaseProductCmptTypeBuilder {
         boolean associationFound = false;
         for (int i = 0; i < associations.length; i++) {
             IProductCmptTypeAssociation ass = (IProductCmptTypeAssociation)associations[i];
-            if(!ass.isValid()){
+            if (!ass.isValid()) {
                 continue;
             }
             if (!ass.isDerived()) {
                 if (associationFound == false) {
-                    if (isUseTypesafeCollections()) {
-                        JavaCodeFragment frag = new JavaCodeFragment();
-                        frag.append('(');
-                        frag.appendClassName(Map.class);
-                        frag.append('<');
-                        frag.appendClassName(String.class);
-                        frag.append(", ");
-                        frag.appendClassName(List.class);
-                        frag.append('<');
-                        frag.appendClassName(Element.class);
-                        frag.append(">>)elementsMap");
-                        builder.varDeclaration(Modifier.FINAL, Map.class.getName() + "<" + String.class.getName()
-                                + ", " + List.class.getName() + "<" + Element.class.getName() + ">>",
-                                "checkedElementsMap", frag);
-                    }
                     builder.appendln();
                     builder.appendClassName(List.class);
                     if (isUseTypesafeCollections()) {
@@ -481,14 +436,12 @@ public class ProductCmptGenImplClassBuilder extends BaseProductCmptTypeBuilder {
                     associationFound = true;
                 }
                 builder.append("associationElements = ");
-                if (isUseTypesafeCollections()) {
-                    builder.append("checkedElementsMap.get(");
-                } else {
-
+                if (!isUseTypesafeCollections()) {
                     builder.append("(");
                     builder.appendClassName(List.class);
-                    builder.append(") elementsMap.get(");
+                    builder.append(") ");
                 }
+                builder.append("elementsMap.get(");
                 builder.appendQuoted(ass.getName());
                 builder.appendln(");");
                 builder.append("if (associationElements != null) {");
@@ -509,9 +462,9 @@ public class ProductCmptGenImplClassBuilder extends BaseProductCmptTypeBuilder {
      *  protected void doInitTableUsagesFromXml(Map tableUsageMap) {
      *      super.doInitTableUsagesFromXml(tableUsageMap);
      *      Element element = null;
-     *      element = (Element)tableUsageMap.get("ratePlan");
+     *      element = (Element)tableUsageMap.get(&quot;ratePlan&quot;);
      *      if (element != null) {
-     *          ratePlanName = ValueToXmlHelper.getValueFromElement(element, "TableContentName");
+     *          ratePlanName = ValueToXmlHelper.getValueFromElement(element, &quot;TableContentName&quot;);
      *      }
      *  }
      * </pre>
@@ -520,14 +473,12 @@ public class ProductCmptGenImplClassBuilder extends BaseProductCmptTypeBuilder {
      * 
      * <pre>
      *  [javadoc]
-     *  @SuppressWarnings("unchecked")
-     *  protected void doInitTableUsagesFromXml(Map tableUsageMap) {
+     *  protected void doInitTableUsagesFromXml(Map&lt;String, Element&gt; tableUsageMap) {
      *      super.doInitTableUsagesFromXml(tableUsageMap);
-     *      final Map<String, Element> checkedTableUsageMap = (Map<String, Element>)tableUsageMap;
      *      Element element = null;
-     *      element = checkedTableUsageMap.get("ratePlan");
+     *      element = tableUsageMap.get(&quot;ratePlan&quot;);
      *      if (element != null) {
-     *          ratePlanName = ValueToXmlHelper.getValueFromElement(element, "TableContentName");
+     *          ratePlanName = ValueToXmlHelper.getValueFromElement(element, &quot;TableContentName&quot;);
      *      }
      *  }
      * </pre>
@@ -543,30 +494,15 @@ public class ProductCmptGenImplClassBuilder extends BaseProductCmptTypeBuilder {
         }
         String javaDoc = null;
         builder.javaDoc(javaDoc, ANNOTATION_GENERATED);
-        if (isUseTypesafeCollections()) {
-            builder.annotation(ANNOTATION_SUPPRESS_WARNINGS_UNCHECKED);
-        }
         String[] argNames = new String[] { "tableUsageMap" };
         String[] argTypes = new String[] { Map.class.getName() };
         builder.methodBegin(Modifier.PROTECTED, "void", "doInitTableUsagesFromXml", argNames, argTypes);
         builder.appendln("super.doInitTableUsagesFromXml(tableUsageMap);");
-        if (isUseTypesafeCollections()) {
-            JavaCodeFragment frag = new JavaCodeFragment();
-            frag.append('(');
-            frag.appendClassName(Map.class);
-            frag.append('<');
-            frag.appendClassName(String.class);
-            frag.append(", ");
-            frag.appendClassName(Element.class);
-            frag.append(">)tableUsageMap");
-            builder.varDeclaration(Modifier.FINAL, Map.class.getName() + "<" + String.class.getName() + ", "
-                    + Element.class.getName() + ">", "checkedTableUsageMap", frag);
-        }
         builder.appendClassName(Element.class);
         builder.appendln(" element = null;");
         for (int i = 0; i < tsus.length; i++) {
             if (isUseTypesafeCollections()) {
-                builder.append("element = checkedTableUsageMap.get(\"");
+                builder.append("element = tableUsageMap.get(\"");
             } else {
                 builder.append("element = (");
                 builder.appendClassName(Element.class);
@@ -586,13 +522,15 @@ public class ProductCmptGenImplClassBuilder extends BaseProductCmptTypeBuilder {
 
     /**
      * Generates the method to return the table content which is related to the specific role.<br>
-     * Example: <pre> 
-     *  public FtTable getRatePlan() {
-     *      if (ratePlanName == null) {
-     *          return null;
-     *      }
-     *      return (FtTable)getRepository().getTable(ratePlanName);
-     *  }
+     * Example:
+     * 
+     * <pre>
+     * public FtTable getRatePlan() {
+     *     if (ratePlanName == null) {
+     *         return null;
+     *     }
+     *     return (FtTable)getRepository().getTable(ratePlanName);
+     * }
      * </pre>
      */
     private void generateMethodGetTableStructure(ITableStructureUsage tsu, JavaCodeFragmentBuilder codeBuilder)

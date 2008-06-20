@@ -28,7 +28,7 @@ import java.util.TimeZone;
  * 
  * @author Jan Ortmann
  */
-public interface IProductComponentGeneration {
+public interface IProductComponentGeneration extends IRuntimeObject{
 
     /**
      * Returns the repository this product component generation belongs to.

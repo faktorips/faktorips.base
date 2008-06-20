@@ -88,7 +88,7 @@ public class ModelTypeAttribute extends AbstractModelElement implements IModelTy
         initExtPropertiesFromXml(parser);
     }
 
-    private Class<?> findDatatype() throws ClassNotFoundException {
+    protected Class<?> findDatatype() throws ClassNotFoundException {
         if(datatypeName.equals(int.class.getName())){
             return int.class;
         }

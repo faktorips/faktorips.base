@@ -114,6 +114,19 @@ public class XmlUtil {
         return null;
     }
 
+    /**
+     * Returns the node's first CDATA section if the node has one. If not, this returns the node's
+     * text child node or <code>null</code> if the node hasn't got a text node.
+     */
+    public final static String getCDATAorTextContent(Node node) {
+        if (getFirstCDataSection(node) != null) {
+            return getFirstCDataSection(node).getData();
+        } else if (getTextNode(node) != null) {
+            return getTextNode(node).getData();
+        }
+        return null;
+    }
+
     private XmlUtil() {
     }
 

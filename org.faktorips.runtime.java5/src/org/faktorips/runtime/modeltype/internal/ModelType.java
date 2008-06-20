@@ -96,7 +96,7 @@ public class ModelType extends AbstractModelElement implements IModelType {
      * 
      * @throws ClassNotFoundException
      */
-    public Class<?> getGeneratedClass() throws ClassNotFoundException {
+    public Class<?> getJavaClass() throws ClassNotFoundException {
         return this.getClass().getClassLoader().loadClass(className);
     }
 

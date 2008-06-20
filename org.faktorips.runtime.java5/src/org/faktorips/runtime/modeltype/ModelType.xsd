@@ -83,11 +83,11 @@
   <xs:element name="ExtensionProperties">
     <xs:complexType>
       <xs:sequence>
-        <xs:element ref="ExtensionProperty" minOccurs="1" maxOccurs="unbounded"/>
+        <xs:element ref="Value" minOccurs="1" maxOccurs="unbounded"/>
       </xs:sequence>
     </xs:complexType>
   </xs:element>
-  <xs:element name="ExtensionProperty">
+  <xs:element name="Value">
     <xs:complexType mixed="true">
       <xs:attribute name="isNull" use="required" type="xs:boolean">
       </xs:attribute>
