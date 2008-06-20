@@ -34,7 +34,7 @@ public class ChangesOverTimeNamingConvention implements
 		IChangesOverTimeNamingConvention {
 
 	private final static String pack = StringUtil.getPackageName(ChangesOverTimeNamingConvention.class.getName());
-	private final static String unqalifiedClassName = StringUtil.unqualifiedName(ChangesOverTimeNamingConvention.class.getName());
+	private final static String unqualifiedClassName = StringUtil.unqualifiedName(ChangesOverTimeNamingConvention.class.getName());
 	private final static String GENERATION_IMAGE_BASE = "Generation"; //$NON-NLS-1$
 	private final static String VERSION_IMAGE_BASE = "Version"; //$NON-NLS-1$
 	
@@ -42,7 +42,7 @@ public class ChangesOverTimeNamingConvention implements
 	private LocalizedStringsSet locStringSet;
 
 	public ChangesOverTimeNamingConvention(String id) {
-		this(id, new LocalizedStringsSet(pack + "." + id + unqalifiedClassName, ChangesOverTimeNamingConvention.class.getClassLoader())); //$NON-NLS-1$
+		this(id, new LocalizedStringsSet(pack + "." + id + unqualifiedClassName, ChangesOverTimeNamingConvention.class.getClassLoader())); //$NON-NLS-1$
 	}
 	
 	public ChangesOverTimeNamingConvention(String id, LocalizedStringsSet locStringSet) {

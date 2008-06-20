@@ -1025,7 +1025,7 @@ public class TestCase extends IpsObject implements ITestCase {
     boolean isTypeOrDefault(ITestParameter testParameter, TestParameterType type, TestParameterType defaultType) {
         // TODO Joerg: aufraeumen, Verwendung von TestParameterType.isTypeMatching
         try {
-            // compare the paramters type and return if the type matches the given type
+            // compare the parameters type and return if the type matches the given type
             if (testParameter.isInputParameter() && type.equals(TestParameterType.INPUT)) {
                 return true;
             }

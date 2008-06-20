@@ -34,23 +34,23 @@ public class AttributeType extends DefaultEnumValue {
     /**
      * Defines an attribute as being computed. In contrast to a derived attribute a computed 
      * attribute is computed by an explicit method call. E.g. a method calculatePremium() might 
-     * calculate severall computed attributes like netPremium and grossPremium. The computed 
+     * calculate several computed attributes like netPremium and grossPremium. The computed 
      * attributes keep their computed value until their are recalculated by another methodcall.
      * <p>
      * If a computed attribute is also product relevant the computation formula can be defined by the
-     * product developer. The IT developer defines the paramters that the product developer
+     * product developer. The IT developer defines the parameters that the product developer
      * can use.
      */
     public final static AttributeType DERIVED_BY_EXPLICIT_METHOD_CALL;
 
     /**
-     * Defines an attribute as being derived, that means the attrbutes value can
+     * Defines an attribute as being derived, that means the attributes value can
      * be derived from other attribute values. In contrast to computed attributes
      * the value of derived attributes are always calculated on the fly. E.g. the
      * gross premium could be derived on the fly from the net premium and the tax. 
      * <p>
      * If a derived attribute is product relevant the computation formula can be defined 
-     * by the product developer. The IT developer defines the paramters that the product developer
+     * by the product developer. The IT developer defines the parameters that the product developer
      * can use. 
      */
     public final static AttributeType DERIVED_ON_THE_FLY;

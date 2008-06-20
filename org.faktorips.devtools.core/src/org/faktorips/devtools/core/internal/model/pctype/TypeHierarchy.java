@@ -283,15 +283,15 @@ public class TypeHierarchy implements ITypeHierarchy {
         List attributes = new ArrayList();
         IPolicyCmptType[] types = getAllSupertypesInclSelf(type);
         
-        Map overriden = new HashMap();
+        Map overridden = new HashMap();
         
         for (int i=0; i<types.length; i++) {
         	IPolicyCmptTypeAttribute[] attrs = types[i].getPolicyCmptTypeAttributes();
         	for (int j = 0; j < attrs.length; j++) {
-				if (!overriden.containsKey(attrs[j].getName())) {
+				if (!overridden.containsKey(attrs[j].getName())) {
 					attributes.add(attrs[j]);
 					if (attrs[j].isOverwrite()) {
-						overriden.put(attrs[j].getName(), attrs[j]);
+						overridden.put(attrs[j].getName(), attrs[j]);
 					}
 				}
 			}

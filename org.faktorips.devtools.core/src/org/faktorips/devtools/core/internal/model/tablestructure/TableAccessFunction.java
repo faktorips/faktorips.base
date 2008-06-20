@@ -103,7 +103,7 @@ public class TableAccessFunction extends AtomicIpsObjectPart implements ITableAc
     }
 
 	/**
-	 * Overridden to avoid change-notifications on description changes. This method is neccessary, 
+	 * Overridden to avoid change-notifications on description changes. This method is necessary, 
 	 * because we hide the field holding the description in supertype.
 	 * {@inheritDoc}
 	 */

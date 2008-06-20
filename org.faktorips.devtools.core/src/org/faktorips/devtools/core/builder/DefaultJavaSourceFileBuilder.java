@@ -148,7 +148,7 @@ public abstract class DefaultJavaSourceFileBuilder extends JavaSourceFileBuilder
             return section;
         }
         throw new RuntimeException(
-                "This exception occures when the list for inner class sections has not been properly initialized. " + //$NON-NLS-1$
+                "This exception occurs when the list for inner class sections has not been properly initialized. " + //$NON-NLS-1$
                 "Initialization takes place in the generate() method of the class " +  //$NON-NLS-1$
                 DefaultJavaSourceFileBuilder.class);
     }

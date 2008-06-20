@@ -351,7 +351,7 @@ public abstract class JavaSourceFileBuilder extends AbstractArtefactBuilder {
     }
 
     /**
-     * This method has been overriden for convinence. Subclasses might need to implement this method
+     * This method has been overridden for convenience. Subclasses might need to implement this method
      * to clean up the state of the builder that was created during the generation.
      * 
      * @see org.faktorips.devtools.core.model.ipsproject.IIpsArtefactBuilder#afterBuild(org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile)
@@ -364,7 +364,7 @@ public abstract class JavaSourceFileBuilder extends AbstractArtefactBuilder {
     }
 
     /**
-     * This method has been overriden for convinence. Subclasses might need to implement this method
+     * This method has been overridden for convenience. Subclasses might need to implement this method
      * to set up a defined state before the generation starts.
      * 
      * @see org.faktorips.devtools.core.model.ipsproject.IIpsArtefactBuilder#beforeBuild(org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile,
@@ -475,7 +475,7 @@ public abstract class JavaSourceFileBuilder extends AbstractArtefactBuilder {
      * // TODO Implement the rule xyz.
      * </pre>
      * 
-     * @param element Any ips element used to access the ips project and determine the langauge for
+     * @param element Any ips element used to access the ips project and determine the language for
      *            the generated code.
      * @param keyPrefix A key prefix for the resource bundle, this method adds a "_TODO" to the
      *            prefix
@@ -492,7 +492,7 @@ public abstract class JavaSourceFileBuilder extends AbstractArtefactBuilder {
      * // TODO Implement the rule xyz.
      * </pre>
      * 
-     * @param element Any ips element used to access the ips project and determine the langauge for
+     * @param element Any ips element used to access the ips project and determine the language for
      *            the generated code.
      * @param keyPrefix A key prefix for the resource bundle, this method adds a "_TODO" to the
      *            prefix
@@ -503,7 +503,7 @@ public abstract class JavaSourceFileBuilder extends AbstractArtefactBuilder {
     }
 
     /**
-     * Inserts the localized Javadoc inclusing the annotations into the given
+     * Inserts the localized Javadoc including the annotations into the given
      * JavaCodeFragmentBuikder.
      * <p>
      * Calling this method is only allowed during the build cycle. If it is called outside the build
@@ -511,7 +511,7 @@ public abstract class JavaSourceFileBuilder extends AbstractArtefactBuilder {
      * builder a RuntimeException is thrown.
      * 
      * @param key prefix the key prefix that identifies the requested javadoc and annotation. The
-     *            javadoc is looked up in the localized text by adding _JAVADOC to the prefic. The
+     *            javadoc is looked up in the localized text by adding _JAVADOC to the prefix. The
      *            annotation is looked up in the localized text by adding _ANNOTATION to the prefic.
      * @param element the ips element used to access the ips project where the language to use is
      *            defined.
@@ -543,7 +543,7 @@ public abstract class JavaSourceFileBuilder extends AbstractArtefactBuilder {
     }
 
     /**
-     * Inserts the localized Javadoc inclusing the annotations into the given
+     * Inserts the localized Javadoc including the annotations into the given
      * JavaCodeFragmentBuikder.
      * <p>
      * Calling this method is only allowed during the build cycle. If it is called outside the build
@@ -551,8 +551,8 @@ public abstract class JavaSourceFileBuilder extends AbstractArtefactBuilder {
      * builder a RuntimeException is thrown.
      * 
      * @param key prefix the key prefix that identifies the requested javadoc and annotation. The
-     *            javadoc is looked up in the localized text by adding _JAVADOC to the prefic. The
-     *            annotation is looked up in the localized text by adding _ANNOTATION to the prefic.
+     *            javadoc is looked up in the localized text by adding _JAVADOC to the prefix. The
+     *            annotation is looked up in the localized text by adding _ANNOTATION to the prefix.
      * @param replacement Object that replaces the placeholder {0} in the property file
      * @param element the ips element used to access the ips project where the language to use is
      *            defined.
@@ -597,9 +597,9 @@ public abstract class JavaSourceFileBuilder extends AbstractArtefactBuilder {
      * builder a RuntimeException is thrown.
      * 
      * @param key prefix the key prefix that identifies the requested javadoc and annotation. The
-     *            javadoc is looked up in the localized text by adding _JAVADOC to the prefic. The
-     *            annotation is looked up in the localized text by adding _ANNOTATION to the prefic.
-     * @param replacements Objects that replaces the placeholdersw {0}, {1} etc. in the property
+     *            javadoc is looked up in the localized text by adding _JAVADOC to the prefix. The
+     *            annotation is looked up in the localized text by adding _ANNOTATION to the prefix.
+     * @param replacements Objects that replaces the placeholders {0}, {1} etc. in the property
      *            file
      * @param element the ips element used to access the ips project where the language to use is
      *            defined.

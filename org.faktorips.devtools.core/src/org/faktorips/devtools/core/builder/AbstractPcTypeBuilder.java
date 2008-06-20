@@ -74,7 +74,7 @@ public abstract class AbstractPcTypeBuilder extends AbstractTypeBuilder {
     /**
      * Returns the name (singular form) for the generation (changes over time) concept.
      * 
-     * @param element An ips element needed to access the ipsproject where the neccessary configuration
+     * @param element An ips element needed to access the ipsproject where the necessary configuration
      * information is stored.
      * 
      * @see org.faktorips.devtools.core.model.ipsproject.IChangesOverTimeNamingConvention
@@ -144,7 +144,7 @@ public abstract class AbstractPcTypeBuilder extends AbstractTypeBuilder {
      * @param attribute The attribute sourcecode should be generated for.
      * @param datatypeHelper The datatype code generation helper for the attribute's datatype.
      * @param constantBuilder The code fragment builder for the static section
-     * @param memberVarsBuilder The code fragment builder to build the memeber variabales section.
+     * @param memberVarsBuilder The code fragment builder to build the member variables section.
      * @param memberVarsBuilder The code fragment builder to build the method section.
      */
     protected abstract void generateCodeForProductCmptTypeAttribute(
@@ -159,7 +159,7 @@ public abstract class AbstractPcTypeBuilder extends AbstractTypeBuilder {
      * Generates the code for the validation rules of the ProductCmptType which is assigned to this
      * builder.
      * 
-     * @throws CoreException if an exception occures while generating code 
+     * @throws CoreException if an exception occurs while generating code 
      */
     protected void generateCodeForValidationRules(JavaCodeFragmentBuilder constantBuilder, 
             JavaCodeFragmentBuilder memberVarBuilder, 
@@ -226,7 +226,7 @@ public abstract class AbstractPcTypeBuilder extends AbstractTypeBuilder {
      * valid association defined in the policy component type we currently build sourcecode for.
      * 
      * @param association the association source code should be generated for
-     * @param fieldsBuilder the code fragment builder to build the memeber variabales section.
+     * @param fieldsBuilder the code fragment builder to build the member variables section.
      * @param fieldsBuilder the code fragment builder to build the method section.
      * @throws Exception Any exception thrown leads to an interruption of the
      *             current build cycle of this builder. Alternatively it is possible to catch an
@@ -245,7 +245,7 @@ public abstract class AbstractPcTypeBuilder extends AbstractTypeBuilder {
      * 
      * @param containerAssociation the container association that is common for the associations in the group
      * @param subAssociations a group of association instances that have the same container association
-     * @param memberVarsBuilder the code fragment builder to build the memeber variabales section.
+     * @param memberVarsBuilder the code fragment builder to build the member variables section.
      * @param memberVarsBuilder the code fragment builder to build the method section.
      * @throws Exception implementations of this method don't have to take care about rising checked
      *             exceptions. An exception that had been thrown leads to an interruption of the

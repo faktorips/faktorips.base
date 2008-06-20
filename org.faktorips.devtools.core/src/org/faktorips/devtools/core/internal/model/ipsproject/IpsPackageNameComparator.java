@@ -134,7 +134,7 @@ public class IpsPackageNameComparator implements Comparator {
      * @param pack1 The 1st IpsPackageFragment.
      * @param name1 The current segment to check of IpsPackageFragment 1.
      * @param name2 The current segment to check of IpsPackageFragment 2.
-     * @param segmentNr The current segment nummber.
+     * @param segmentNr The current segment number.
      * @return  a negative integer, zero, or a positive integer as the
      *         first argument is less than, equal to, or greater than the
      *         second

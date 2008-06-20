@@ -186,13 +186,13 @@ public interface IPolicyCmptType extends IType, Datatype {
     public void setAbstract(boolean newValue);
     
     /**
-     * Returns <code>true</code> if an exension comilation unit is generated whether it is neccessary 
-     * because of the presence of none abstract methods or valition rules or not. 
+     * Returns <code>true</code> if an extension compilation unit is generated whether it is necessary 
+     * because of the presence of none abstract methods or validation rules or not. 
      */
     public boolean isForceExtensionCompilationUnitGeneration();
     
     /**
-     * Sets if an exension comilation unit should be generated in any case.
+     * Sets if an extension compilation unit should be generated in any case.
      * <p>
      * The developer using FaktorIps can set this property, if he wants to override methods for
      * relation and attribute handling that are normally not overridden. 
@@ -228,7 +228,7 @@ public interface IPolicyCmptType extends IType, Datatype {
     public IPolicyCmptTypeAttribute getPolicyCmptTypeAttribute(String name);
 
     /**
-     * Searches this type and it's supertyes for an attribute with the given name.
+     * Searches this type and it's supertypes for an attribute with the given name.
      * If more than one attribute with the name exist, the first attribute with the name is returned.
      * Returns <code>null</code> if no attribute with the given name is found.
      * 
@@ -281,7 +281,7 @@ public interface IPolicyCmptType extends IType, Datatype {
     public IPolicyCmptTypeAttribute[] overrideAttributes(IPolicyCmptTypeAttribute[] attributes);
     
     /**
-     * Returns the type's vallidation rules.
+     * Returns the type's validation rules.
      */
     public IValidationRule[] getRules();
 

@@ -110,7 +110,7 @@ public class TestAttribute extends AtomicIpsObjectPart implements ITestAttribute
         this.attribute = policyCmptTypeAttribute.getName();
 
         // set the policy cmpt type only if the given attribute belongs to a different type the test policy
-        // cmpt type parameter belogs to. Because only in this case it is necessary, in all other cases
+        // cmpt type parameter belongs to. Because only in this case it is necessary, in all other cases
         // it is better to leave the policy cmpt type property empty to get a minimum dependency to the 
         // model objects (e.g. if the attribute will be moved to a other type in the hierarchy later on).
         String policyCmptTypeNameOfAttribute = policyCmptTypeAttribute.getPolicyCmptType().getQualifiedName();
@@ -203,7 +203,7 @@ public class TestAttribute extends AtomicIpsObjectPart implements ITestAttribute
         // a) if the policyCmptType property is not given then use the policy cmpt type 
         //   of the test policy cmpt type parameter 
         // b) if the policyCmptType property is set then use the specified policyCmptType, 
-        //   beacause maybe the test parameter points to a abstract (general)
+        //   because maybe the test parameter points to a abstract (general)
         //   policy cmpt type and this attribute is a attribute of a subclass.
         IPolicyCmptType pcType = null;
         if (StringUtils.isEmpty(policyCmptType)) {
@@ -396,7 +396,7 @@ public class TestAttribute extends AtomicIpsObjectPart implements ITestAttribute
         }
             
          if (modelAttribute != null) {
-            // check that derived (computed on the fly) arrtibutes are not supported
+            // check that derived (computed on the fly) attributes are not supported
             if (AttributeType.DERIVED_ON_THE_FLY.equals(modelAttribute.getAttributeType())) {
                 String text = Messages.TestAttribute_ValidationWarning_DerivedOnTheFlyAttributesAreNotSupported;
                 Message msg = new Message(MSGCODE_DERIVED_ON_THE_FLY_ATTRIBUTES_NOT_SUPPORTED, text, Message.WARNING,

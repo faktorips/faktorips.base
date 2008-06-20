@@ -29,7 +29,7 @@ public interface IKeyItem {
     
     /**
      * Returns the name for a parameter in a table access function. For columns this is
-     * the name of the column, for ranges this paramter can be specified.
+     * the name of the column, for ranges this parameter can be specified.
      */
     public String getAccessParameterName();
     

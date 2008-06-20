@@ -81,7 +81,7 @@ public class MessageFragment{
 	}
 
 	/**
-	 * Returns the number of paramters.
+	 * Returns the number of parameters.
 	 */
 	public int getNumberOfParameters(){
 		return parameterNames.length;

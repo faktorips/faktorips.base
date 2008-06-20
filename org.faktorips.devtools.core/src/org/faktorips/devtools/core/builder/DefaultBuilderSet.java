@@ -264,7 +264,7 @@ public abstract class DefaultBuilderSet extends AbstractBuilderSet {
     }
 
     /**
-     * Empty implementation. Might be overriden by subclasses that support the formula language.
+     * Empty implementation. Might be overridden by subclasses that support the formula language.
      */
     public CompilationResult getTableAccessCode(ITableContents tableContents, ITableAccessFunction fct, CompilationResult[] argResults) throws CoreException {
         return null;

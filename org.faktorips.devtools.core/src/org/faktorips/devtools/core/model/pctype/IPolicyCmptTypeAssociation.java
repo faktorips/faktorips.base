@@ -71,7 +71,7 @@ public interface IPolicyCmptTypeAssociation extends IAssociation {
     public final static String MSGCODE_INVERSE_ASSOCIATION_INCONSTENT_WITH_DERIVED_UNION = MSGCODE_PREFIX + "InverseAssociationInconsistentWithDerivedUnion"; //$NON-NLS-1$
     
     /**
-     * Validation message code to indicate that an association and it's inverse assoication must be marked as 
+     * Validation message code to indicate that an association and it's inverse association must be marked as 
      * container relations (or not).
      */
     public final static String MSGCODE_INVERSE_ASSOCIATIONS_MUST_BOTH_BE_MARKED_AS_CONTAINER = MSGCODE_PREFIX + "ReverseRelationOfContainerRelationMustBeContainerRelationToo"; //$NON-NLS-1$
@@ -82,7 +82,7 @@ public interface IPolicyCmptTypeAssociation extends IAssociation {
     public final static String MSGCODE_INVERSE_RELATION_INFO_NOT_NEEDED = MSGCODE_PREFIX + "InverseRelationNotNeeded"; //$NON-NLS-1$
     
     /**
-     * Validation message code to indicate that given a relation with an inreverse relation,
+     * Validation message code to indicate that given a relation with an inverse relation,
      * this inverse relation can be found but it does not specify the first relation as it's
      * inverse relation. 
      * This applies to associations only, as detail-to-master composition don't specify a 
@@ -127,7 +127,7 @@ public interface IPolicyCmptTypeAssociation extends IAssociation {
      * Returns <code>true</code> if the definition of an inverse relation makes sense for the
      * this relation. This is the case for
      * <ul>
-     * <li>biderectional associations and</li>
+     * <li>bidirectional associations and</li>
      * <li>master-to-detail compositions if the artefact builder set needs this information</li>
      * </ul>
      * Returns <code>false</code> if the definition of an inverse relation is superfluous. 
@@ -191,7 +191,7 @@ public interface IPolicyCmptTypeAssociation extends IAssociation {
     
     /**
      * Returns if the target role plural is required (or not) based on the relation's max cardinality
-     * and the aretfact builderset's information if it needs the plural form for to 1 relations.
+     * and the artefact builderset's information if it needs the plural form for to 1 relations.
      */
     public boolean isTargetRolePluralRequired();
     
@@ -244,7 +244,7 @@ public interface IPolicyCmptTypeAssociation extends IAssociation {
     /**
      * Searches the inverse relation and returns it, if it exists. Returns <code>null</code> if the inverse
      * relation exists. For detail-to-master relations the method always(!) returns <code>null</code>
-     * as severall master-to-detail relations can have the same detail-to-master relation.
+     * as several master-to-detail relations can have the same detail-to-master relation.
      *
      * @param ipsProject The ips project which ips object path is used to search.
      * 

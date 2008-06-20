@@ -118,7 +118,7 @@ public interface IIpsProjectProperties {
 	/**
 	 * Returns <code>true</code> if this is a project containing product definition
 	 * data, otherwise <code>false</code>. Product definition projects are shown
-	 * in the product defintion perspektive.
+	 * in the product definition perspective.
 	 */
 	public boolean isProductDefinitionProject();
 
@@ -231,7 +231,7 @@ public interface IIpsProjectProperties {
 	 * Returns <code>true</code> if the Java project belonging to the ips project, contains
 	 * (value) classes that are used as defined dynamic datatype, otherwise <code>false</code>.
 	 * <p>
-	 * Note that is preferable to develop and access these classes either in a seperate Java project or
+	 * Note that is preferable to develop and access these classes either in a separate Java project or
 	 * to provide them in a Jarfile. The reason for this is that in this scenario the clean build won't
 	 * work properly. When the IpsBuilder builds the project the dynamic datatype needs to load the 
 	 * class it is based upon. However as the Java builder hasn't compiled the Java sourcefile into

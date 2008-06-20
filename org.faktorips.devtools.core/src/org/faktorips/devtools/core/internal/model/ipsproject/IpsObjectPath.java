@@ -108,7 +108,7 @@ public class IpsObjectPath implements IIpsObjectPath {
     private String basePackageMergable = ""; //$NON-NLS-1$
     
     //output folder for generated sources that are marked as derived, more precise this output
-    //folder will be marked als derived and hence all members of it will be derived
+    //folder will be marked as derived and hence all members of it will be derived
     //derived resources will not be managed by the resource management system and will
     // output folder and base package for the extension Java files
     private IFolder outputFolderDerivedSources;
@@ -470,7 +470,7 @@ public class IpsObjectPath implements IIpsObjectPath {
     }
     
     /**
-     * Returns the first ips source file with the indicated qualified name tpye found
+     * Returns the first ips source file with the indicated qualified name type found
      * on the path. Returns <code>null</code> if no such object is found.
      */
     public IIpsSrcFile findIpsSrcFile(QualifiedNameType nameType, Set visitedEntries) throws CoreException {
@@ -501,7 +501,7 @@ public class IpsObjectPath implements IIpsObjectPath {
     }
     
     /**
-     * Searches all isp src files of the given type starting with the given prefix found on the path and adds
+     * Searches all ips src files of the given type starting with the given prefix found on the path and adds
      * them to the given result list.
      * 
      * @throws CoreException if an error occurs while searching for the source files. 

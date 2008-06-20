@@ -68,7 +68,7 @@ public interface IIpsSrcFile extends IIpsElement {
     public IIpsSrcFileMemento newMemento() throws CoreException;
     
     /**
-     * Update the file's state with the informaiton from the memento.
+     * Update the file's state with the information from the memento.
      * 
      * @throws CoreException if the memento wasn't taken from this file.
      */

@@ -78,7 +78,7 @@ public class MoveOperation implements IRunnableWithProgress {
 	private String[] targetNames;
 	
     /**
-     * The ips package fragment root defindes the ips src root where to place the moved objects.
+     * The ips package fragment root defines the ips src root where to place the moved objects.
      */
     private IIpsPackageFragmentRoot targetRoot;
 
@@ -90,21 +90,21 @@ public class MoveOperation implements IRunnableWithProgress {
 	 * 
 	 * @param source The product to rename.
 	 * @param target The new location/name.
-	 * @throws CoreException If the source does not exist or ist modiefied (if a product component) 
-	 * or if the target allready exists.
+	 * @throws CoreException If the source does not exist or is modified (if a product component) 
+	 * or if the target already exists.
 	 */
 	public MoveOperation(IProductCmpt source, String target) throws CoreException {
 		this(new IIpsElement[] {source}, new String[] {target});
 	}
 	
 	/**
-	 * Move all the given package fragements and product components to the given targets. 
+	 * Move all the given package fragments and product components to the given targets. 
 	 * 
 	 * @param sources An array containing <code>IProductCmpt</code> or <code>IIpsPackageFragement</code>
 	 * objects to move.
 	 * @param targets An array of the new, qualified names for the objects to move. The names are object-names, 
 	 * not filenames, so do not append any file extension to the name.
-	 * @throws CoreException if the both arrays are not of the same lenth.
+	 * @throws CoreException if the both arrays are not of the same length.
 	 */
 	public MoveOperation(IIpsElement[] sources, String[] targets) throws CoreException {
 		if (sources.length != targets.length) {
@@ -125,7 +125,7 @@ public class MoveOperation implements IRunnableWithProgress {
 	 * 
 	 * @param source The product to rename.
 	 * @param target The new location/name.
-	 * @throws CoreException If the source does not exist or ist modiefied or if the target allready exists.
+	 * @throws CoreException If the source does not exist or is modified or if the target already exists.
 	 */
 	public MoveOperation(Object[] sources, IIpsPackageFragment target) throws CoreException {
         this.sourceObjects = prepare(sources);
@@ -175,7 +175,7 @@ public class MoveOperation implements IRunnableWithProgress {
      * the target folder.
 	 *  
 	 * @param sources The objects to move
-	 * @param target The unqualified targt name of the resource to move to.
+	 * @param target The unqualified target name of the resource to move to.
      * @param targetFullPath The full location path (absolute) of the target
 	 */
 	private String[] getTargetNames(Object[] sources, String target, String targetFulPath) {
@@ -234,7 +234,7 @@ public class MoveOperation implements IRunnableWithProgress {
     }
     
     /*
-     * Returns true if the given IIpsElement array contains at least one IIpsProject, fals otherwise.
+     * Returns true if the given IIpsElement array contains at least one IIpsProject, false otherwise.
      */
     private static boolean canMoveSources(Object[] sources) {
         for (int i = 0; i < sources.length; i++) {
@@ -431,7 +431,7 @@ public class MoveOperation implements IRunnableWithProgress {
                     throw new CoreException(new IpsStatus(NLS.bind(Messages.MoveOperation_msgUnsupportedType, cmptFile.getName())));
                 }
 			} else {
-				// we dont have a IIpsSrcFile, so move the file as resource operation
+				// we do not have a IIpsSrcFile, so move the file as resource operation
 				IFolder folder = (IFolder)sourcePackage.getEnclosingResource(); 
 				IFile rawFile = folder.getFile(fileInfos[1]);
 				IPath destination = ((IFolder)targetPackage.getCorrespondingResource()).getFullPath().append(fileInfos[1]);
@@ -481,7 +481,7 @@ public class MoveOperation implements IRunnableWithProgress {
 	}
 	
 	/**
-	 * Builds a package name by concatenating the given parts wiht dots. Every of the three parts
+	 * Builds a package name by concatenating the given parts with dots. Each one of the three parts
 	 * can be empty.
 	 */
 	private String buildPackageName(String prefix, String middle, String postfix) {
@@ -527,8 +527,8 @@ public class MoveOperation implements IRunnableWithProgress {
 	}
 
 	/**
-	 * Returns the package name for the given, full qualified name (which means all segements 
-	 * except the last one, segments seperated by dots). The name must not be a filename with extension.
+	 * Returns the package name for the given, full qualified name (which means all segments 
+	 * except the last one, segments separated by dots). The name must not be a filename with extension.
 	 */
 	private String getPackageName(String qualifiedName) {
 		String result = ""; //$NON-NLS-1$
@@ -586,7 +586,7 @@ public class MoveOperation implements IRunnableWithProgress {
 		try {
             String runtimeId = source.getRuntimeId();
             
-			// first, find all objects refering the source (which will be deleted later)
+			// first, find all objects referring the source (which will be deleted later)
 			IProductCmptGeneration[] refs = source.getIpsProject().findReferencingProductCmptGenerations(source.getQualifiedNameType());
             ITestCase[] testCaseRefs = source.getIpsProject().findReferencingTestCases(source.getQualifiedName());
             
@@ -640,7 +640,7 @@ public class MoveOperation implements IRunnableWithProgress {
 	}
 	
 	/**
-	 * Resets the target of all realations of the given generation, if the target equals the 
+	 * Resets the target of all relations of the given generation, if the target equals the 
 	 * old name, to the new name.
 	 * 
 	 * @param generation The generation to fix the relations at.
@@ -844,9 +844,9 @@ public class MoveOperation implements IRunnableWithProgress {
                     return new IpsStatus(msg);
                 }
             } else {
-                // localisation of the following messages is neccessary because
-                // the exception is excpected to be
-                // catched later and the messages are expected to be displayed
+                // localisation of the following messages is necessary because
+                // the exception is expected to be
+                // caught later and the messages are expected to be displayed
                 // to the user.
                 String msg = null;
                 if (toTest instanceof IIpsObject) {
@@ -871,9 +871,9 @@ public class MoveOperation implements IRunnableWithProgress {
     
     /**
      * Check if the target is included in the source or child of source. Returns <code>true</code> if the given target
-     * IIpsPackageFragment is inside one of one source elements. The source elements wich will be checked are IIpsPackageFragmentRoots
+     * IIpsPackageFragment is inside one of one source elements. The source elements which will be checked are IIpsPackageFragmentRoots
      * or IIpsPackageFragment all other types will be ignored. Returns <code>false</code> if the target is not inside the sources.
-     * This check is very importend for the move operation, because the target will be deleted after the move operation, thus if the 
+     * This check is very important for the move operation, because the target will be deleted after the move operation, thus if the 
      * target is inside one of source this package will be deleted!
      */
     public static boolean isTargetIncludedInSources(Object[] sources, IIpsPackageFragment target) throws CoreException {

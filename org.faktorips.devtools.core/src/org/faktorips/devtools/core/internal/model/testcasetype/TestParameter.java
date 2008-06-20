@@ -164,7 +164,7 @@ public abstract class TestParameter extends IpsObjectPart implements ITestParame
         if (isRoot()) {
             testParameters = ((ITestCaseType)getParent()).getTestParameters();
         } else {
-            // get all elements on the same level (all childrens of the parent object)
+            // get all elements on the same level (all children of the parent object)
             IIpsElement[] childrenOfParent = ((ITestParameter)getParent()).getChildren();
             List testParameterChildrenOfParent = new ArrayList(childrenOfParent.length);
             for (int i = 0; i < childrenOfParent.length; i++) {

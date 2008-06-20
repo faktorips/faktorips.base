@@ -421,8 +421,8 @@ public class TestCaseType extends IpsObject implements ITestCaseType {
     }
     
     /**
-     * Removes the test parameter from the test case type. Package private because the paramter in
-     * this package removes itselfs from the list when delete is calling.
+     * Removes the test parameter from the test case type. Package private because the parameter in
+     * this package removes itself from the list when delete is calling.
      */
     void removeTestParameter(TestParameter param) {
         testParameters.remove(param);

@@ -115,7 +115,7 @@ public class IpsModel extends IpsElement implements IIpsModel, IResourceChangeLi
     // set of model change listeners that are notified about model changes
     private Set changeListeners = new HashSet(100);
 
-    // set of modifcation status change listeners
+    // set of modification status change listeners
     private Set modificationStatusChangeListeners = new HashSet(100);
 
     // a map that contains per thread if changes should be broadcasted to the registered listeners
@@ -768,7 +768,7 @@ public class IpsModel extends IpsElement implements IIpsModel, IResourceChangeLi
      * <code>IpsProject</code> <code>null</code> will be returned by this method. This method is
      * not part of the published interface.
      *
-     * @throws CoreException will be thrown if an error occures while trying to validated the
+     * @throws CoreException will be thrown if an error occurs while trying to validated the
      *             provided IpsProject.
      * @throws NullPointerException if the argument is null
      */

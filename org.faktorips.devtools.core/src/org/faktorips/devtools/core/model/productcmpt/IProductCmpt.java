@@ -110,7 +110,7 @@ public interface IProductCmpt extends ITimedIpsObject, IFixDifferencesToModelSup
      * Searches the product component type this product component is based on.
      *  
      * @param ipsProject The project which ips object path is used for the searched.
-     *                   This is not neccessarily the project this component is part of. 
+     *                   This is not necessarily the project this component is part of. 
      *      
      * @return The product component type this product component is based on 
      * or <code>null</code> if the product component type can't be found.
@@ -147,7 +147,7 @@ public interface IProductCmpt extends ITimedIpsObject, IFixDifferencesToModelSup
      * it's links to other components. The links are evaluated for the date defined by the user-set working date. 
      * 
      * @param ipsProject The project which ips object path is used for the searched.
-     *                   This is not neccessarily the project this component is part of. 
+     *                   This is not necessarily the project this component is part of. 
      * 
      * @throws CycleInProductStructureException If a circle is detected.
      */
@@ -155,15 +155,15 @@ public interface IProductCmpt extends ITimedIpsObject, IFixDifferencesToModelSup
     
     /**
      * Returns the product component structure representing the structure defined by relations. 
-     * The relations are evaluted for the given daten. The 
-     * structure is rootet at this product.
+     * The relations are evaluated for the given data. The 
+     * structure is rooted at this product.
      * 
      * @param date       The date the structure has to be valid for. That means that
      *                   the relations between the product components represented by
      *                   this structure are valid for the given date.
      *             
      * @param ipsProject The project which ips object path is used for the searched.
-     *                   This is not neccessarily the project this component is part of. 
+     *                   This is not necessarily the project this component is part of. 
      *                   
      * @throws CycleInProductStructureException If a circle is detected.
      */
@@ -178,7 +178,7 @@ public interface IProductCmpt extends ITimedIpsObject, IFixDifferencesToModelSup
 	 * Sets the given runtimeId for this product component.
 	 * 
 	 * Be aware of the problems that can be caused by setting a new runtime id
-	 * to an object where allready data with references to the old runtime id
+	 * to an object where already data with references to the old runtime id
 	 * exists...
 	 */
     public void setRuntimeId(String runtimeId);

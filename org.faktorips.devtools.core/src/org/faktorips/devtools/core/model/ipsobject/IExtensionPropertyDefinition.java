@@ -64,21 +64,21 @@ public interface IExtensionPropertyDefinition extends Comparable {
     public Class getExtendedType();
 
     /**
-     * Returns the unique property id. The id is the unqiue id of the extension that defines this property.
+     * Returns the unique property id. The id is the unique id of the extension that defines this property.
      * E.g. if an extension property is defined in a plugin with id 'foo.bar' and the extension id is 'attribute.prop0'
      * the resulting property is 'foo.bar.attribute.prop0';
-     * It is is recommended that the unqalified name of the extended type is include in the property id. E.g.
-     * if the ips model type IAttribute is extended with a 'prop0' property, the reccommended extension id
+     * It is is recommended that the unqualified name of the extended type is include in the property id. E.g.
+     * if the ips model type IAttribute is extended with a 'prop0' property, the recommended extension id
      * is 'attribute.prop0'.
      */
     public String getPropertyId();
     
     /**
-     * Returns the property's sort order of this extension property. The extenstion properties shown in 
+     * Returns the property's sort order of this extension property. The extension properties shown in 
      * the standard extension area are ordered according to this property.
      * <p>
      * It is recommended that all extension properties defined by a plugin use a small range e.g. 1000-1999
-     * so that extension properties of the same plugin are grouped together. Don't use sequentiel numbers
+     * so that extension properties of the same plugin are grouped together. Don't use sequential numbers
      * for your initial properties, so that you can insert others later.
      */
     public int getSortOrder();
@@ -148,7 +148,7 @@ public interface IExtensionPropertyDefinition extends Comparable {
      * @param ipsObjectPart  The ips object part which property value it is.
      * @param value The property value in string format.
      * 
-     * @return A list of messages decribing invalid property state or warnings about the state.
+     * @return A list of messages describing invalid property state or warnings about the state.
      * <code>null</code> if the value is valid.
      * 
      * @throws CoreException if an error occurs while validating the property.

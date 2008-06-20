@@ -58,7 +58,7 @@ public abstract class AbstractTypeBuilder extends DefaultJavaSourceFileBuilder {
     /**
      * Returns the abbreviation for the generation (changes over time) concept.
      * 
-     * @param element An ips element needed to access the ipsproject where the neccessary configuration
+     * @param element An ips element needed to access the ipsproject where the necessary configuration
      * information is stored.
      * 
      * @see org.faktorips.devtools.core.model.ipsproject.IChangesOverTimeNamingConvention
@@ -214,7 +214,7 @@ public abstract class AbstractTypeBuilder extends DefaultJavaSourceFileBuilder {
      * <p>
      * @param attribute The attribute sourcecode should be generated for.
      * @param datatypeHelper The datatype code generation helper for the attribute's datatype.
-     * @param fieldsBuilder The code fragment builder to build the member variabales section.
+     * @param fieldsBuilder The code fragment builder to build the member variables section.
      * @param methodsBuilder The code fragment builder to build the method section.
      */
     protected abstract void generateCodeForProductCmptTypeAttribute(

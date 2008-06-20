@@ -237,7 +237,7 @@ public class TestAttributeValue  extends AtomicIpsObjectPart implements ITestAtt
             if (testAttribute == null)
                 return type.equals(defaultType);
 
-            // compare the paramters type and return if the type matches the given type
+            // compare the parameters type and return if the type matches the given type
             if (testAttribute.isInputAttribute() && type.equals(TestParameterType.INPUT)) {
                 return true;
             }
