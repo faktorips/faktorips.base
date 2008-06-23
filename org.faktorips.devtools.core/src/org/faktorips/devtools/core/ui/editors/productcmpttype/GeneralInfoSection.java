@@ -27,6 +27,7 @@ import org.eclipse.ui.forms.widgets.Section;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
+import org.faktorips.devtools.core.ui.ExtensionPropertyControlFactory;
 import org.faktorips.devtools.core.ui.UIToolkit;
 import org.faktorips.devtools.core.ui.controls.Checkbox;
 import org.faktorips.devtools.core.ui.controls.PcTypeRefControl;
@@ -42,6 +43,8 @@ public class GeneralInfoSection extends IpsSection {
 
     private IProductCmptType type;
     
+    private ExtensionPropertyControlFactory extFactory;
+    
     /**
      * @param parent
      * @param style
@@ -51,6 +54,7 @@ public class GeneralInfoSection extends IpsSection {
     public GeneralInfoSection(IProductCmptType type, Composite parent, UIToolkit toolkit) {
         super(parent, Section.TITLE_BAR, GridData.FILL_HORIZONTAL, toolkit);
         this.type = type;
+        extFactory = new ExtensionPropertyControlFactory(type.getClass());
         initControls();
         setText(Messages.GeneralInfoSection_title);
     }
@@ -110,6 +114,9 @@ public class GeneralInfoSection extends IpsSection {
         PcTypeRefControl control = toolkit.createPcTypeRefControl(type.getIpsProject(), composite);
         bindingContext.bindContent(control, type, IProductCmptType.PROPERTY_POLICY_CMPT_TYPE); 
         bindingContext.bindEnabled(control, type, IProductCmptType.PROPERTY_CONFIGURATION_FOR_POLICY_CMPT_TYPE); 
+        
+        extFactory.createControls(composite,toolkit,type);
+        extFactory.bind(bindingContext);
     }
 
     /**

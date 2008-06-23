@@ -40,6 +40,7 @@ import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.IpsPreferences;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmpt;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
+import org.faktorips.devtools.core.ui.ExtensionPropertyControlFactory;
 import org.faktorips.devtools.core.ui.UIToolkit;
 import org.faktorips.devtools.core.ui.controller.CompositeUIController;
 import org.faktorips.devtools.core.ui.controller.IpsObjectUIController;
@@ -61,6 +62,8 @@ public class ComponentPropertiesSection extends IpsSection {
 	 * Product component which holds the informations to display
 	 */
 	private IProductCmpt product;
+    
+    private ExtensionPropertyControlFactory extFactory;
 	
 	/**
 	 * Pane which serves as parent for all controlls created inside this section.
@@ -95,6 +98,7 @@ public class ComponentPropertiesSection extends IpsSection {
 	public ComponentPropertiesSection(IProductCmpt product, Composite parent, UIToolkit toolkit, ProductCmptEditor editor) {
 		super(parent, Section.TITLE_BAR, GridData.FILL_BOTH, toolkit);
         this.product = product;
+        extFactory = new ExtensionPropertyControlFactory(product.getClass());
 		this.editor = editor;
 		initControls();
 		setText(Messages.ProductAttributesSection_attribute);
@@ -211,6 +215,9 @@ public class ComponentPropertiesSection extends IpsSection {
                 }
 			}
 		});
+        
+        extFactory.createControls(rootPane,toolkit,product);
+        extFactory.bind(bindingContext);
 	}
 
 	/**

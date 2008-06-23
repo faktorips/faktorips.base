@@ -32,18 +32,21 @@ import org.faktorips.devtools.core.model.productcmpt.IProductCmpt;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmptLink;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeAssociation;
+import org.faktorips.devtools.core.ui.ExtensionPropertyControlFactory;
 import org.faktorips.devtools.core.ui.controller.fields.CardinalityField;
 import org.faktorips.devtools.core.ui.controller.fields.TextButtonField;
 import org.faktorips.devtools.core.ui.controls.ProductCmptRefControl;
-import org.faktorips.devtools.core.ui.editors.IpsPartEditDialog;
+import org.faktorips.devtools.core.ui.editors.IpsPartEditDialog2;
 
 
 /**
  * A dialog to edit a relation.
  */
-public class LinkEditDialog extends IpsPartEditDialog {
+public class LinkEditDialog extends IpsPartEditDialog2 {
     
     private IProductCmptLink link;
+    
+    private ExtensionPropertyControlFactory extFactory;
     
     // edit fields
     private TextButtonField targetField;
@@ -56,6 +59,7 @@ public class LinkEditDialog extends IpsPartEditDialog {
     public LinkEditDialog(IProductCmptLink link, Shell parentShell) {
         super(link, parentShell, Messages.RelationEditDialog_editRelation, true);
         this.link = link;
+        extFactory = new ExtensionPropertyControlFactory(link.getClass());
     }
 
     /** 
@@ -103,17 +107,14 @@ public class LinkEditDialog extends IpsPartEditDialog {
         minCardinalityField = new CardinalityField(minCardinalityText);
         maxCardinalityField = new CardinalityField(maxCardinalityText);
 
+        bindingContext.bindContent(targetField, link, IPolicyCmptTypeAssociation.PROPERTY_TARGET);
+        bindingContext.bindContent(minCardinalityField, link, IPolicyCmptTypeAssociation.PROPERTY_MIN_CARDINALITY);
+        bindingContext.bindContent(maxCardinalityField, link, IPolicyCmptTypeAssociation.PROPERTY_MAX_CARDINALITY);
+        
+        extFactory.createControls(workArea,uiToolkit,link);
+        extFactory.bind(bindingContext);
+
         return c;
-    }
-    
-    /** 
-     * {@inheritDoc}
-     */
-    protected void connectToModel() {
-        super.connectToModel();
-        uiController.add(targetField, IPolicyCmptTypeAssociation.PROPERTY_TARGET);
-        uiController.add(minCardinalityField, IPolicyCmptTypeAssociation.PROPERTY_MIN_CARDINALITY);
-        uiController.add(maxCardinalityField, IPolicyCmptTypeAssociation.PROPERTY_MAX_CARDINALITY);
     }
     
     public void setProductCmptsToExclude(IProductCmpt[] toExclude) {
