@@ -40,7 +40,7 @@ import org.faktorips.devtools.core.ui.table.TableCellEditor;
  */
 public class BooleanControlFactory extends ValueDatatypeControlFactory {
     
-    public final static String TRUE_REPRESENATION = Messages.BooleanControlFactory_Yes;
+    public final static String TRUE_REPRESENTATION = Messages.BooleanControlFactory_Yes;
     public final static String FALSE_REPRESENTATION = Messages.BooleanControlFactory_No;
     
 	public BooleanControlFactory() {
@@ -58,7 +58,7 @@ public class BooleanControlFactory extends ValueDatatypeControlFactory {
 	 * {@inheritDoc}
 	 */
 	public EditField createEditField(UIToolkit toolkit, Composite parent, ValueDatatype datatype, IValueSet valueSet) {
-		return new BooleanComboField((Combo)createControl(toolkit, parent, datatype, valueSet), TRUE_REPRESENATION, FALSE_REPRESENTATION);
+		return new BooleanComboField((Combo)createControl(toolkit, parent, datatype, valueSet), TRUE_REPRESENTATION, FALSE_REPRESENTATION);
 
 	}
 

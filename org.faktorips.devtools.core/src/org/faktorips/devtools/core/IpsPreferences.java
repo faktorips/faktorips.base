@@ -278,7 +278,7 @@ public class IpsPreferences {
         }
         if (datatype instanceof BooleanDatatype || datatype instanceof PrimitiveBooleanDatatype) {
             if (Boolean.valueOf(value).booleanValue()) {
-                return BooleanControlFactory.TRUE_REPRESENATION;
+                return BooleanControlFactory.TRUE_REPRESENTATION;
             }
             return BooleanControlFactory.FALSE_REPRESENTATION;
         }
