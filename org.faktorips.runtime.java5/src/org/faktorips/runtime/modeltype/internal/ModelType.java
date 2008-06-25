@@ -109,8 +109,8 @@ public class ModelType extends AbstractModelElement implements IModelType {
         if (superTypeName != null && superTypeName.length() > 0) {
             try {
                 return getRepository().getModelType(
-                        (Class<? extends IConfigurableModelObject>)this.getClass().getClassLoader()
-                                .loadClass(superTypeName));
+                        (Class<? extends IConfigurableModelObject>)this.getClass().getClassLoader().loadClass(
+                                superTypeName));
             } catch (ClassNotFoundException e) {
                 return null;
             }
@@ -189,6 +189,19 @@ public class ModelType extends AbstractModelElement implements IModelType {
                     break;
             }
         }
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public String toString() {
+        StringBuilder sb = new StringBuilder(getName());
+        if (superTypeName != null && superTypeName.length() > 0) {
+            sb.append(" extends ");
+            sb.append(superTypeName);
+        }
+        return sb.toString();
     }
 
 }

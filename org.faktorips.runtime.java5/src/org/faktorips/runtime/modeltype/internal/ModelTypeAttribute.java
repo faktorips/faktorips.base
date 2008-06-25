@@ -42,7 +42,7 @@ public class ModelTypeAttribute extends AbstractModelElement implements IModelTy
      * @throws ClassNotFoundException
      */
     public Class<?> getDatatype() throws ClassNotFoundException {
-        if(datatype==null){
+        if (datatype == null) {
             datatype = findDatatype();
         }
         return datatype;
@@ -89,13 +89,33 @@ public class ModelTypeAttribute extends AbstractModelElement implements IModelTy
     }
 
     protected Class<?> findDatatype() throws ClassNotFoundException {
-        if(datatypeName.equals(int.class.getName())){
+        if (datatypeName.equals(int.class.getName())) {
             return int.class;
         }
-        if(datatypeName.equals(boolean.class.getName())){
+        if (datatypeName.equals(boolean.class.getName())) {
             return boolean.class;
         }
         return this.getClass().getClassLoader().loadClass(datatypeName);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public String toString() {
+        StringBuilder sb = new StringBuilder(getName());
+        sb.append(": ");
+        sb.append(datatypeName);
+        sb.append('(');
+        sb.append(attributeType);
+        sb.append(", ");
+        sb.append(valueSetType);
+        if (isProductRelevant) {
+            sb.append(", ");
+            sb.append("isProductRelevant");
+        }
+        sb.append(')');
+        return sb.toString();
     }
 
 }

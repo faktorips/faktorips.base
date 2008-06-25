@@ -69,14 +69,14 @@ public class ModelTypeAssociation extends AbstractModelElement implements IModel
 
     /**
      * {@inheritDoc}
-     * @throws ClassNotFoundException 
+     * 
+     * @throws ClassNotFoundException
      */
     @SuppressWarnings("unchecked")
     public IModelType getTarget() throws ClassNotFoundException {
         if (targetName != null && targetName.length() > 0) {
-                return getRepository().getModelType(
-                        (Class<? extends IConfigurableModelObject>)this.getClass().getClassLoader()
-                                .loadClass(targetName));
+            return getRepository().getModelType(
+                    (Class<? extends IConfigurableModelObject>)this.getClass().getClassLoader().loadClass(targetName));
         }
         return null;
     }
@@ -96,7 +96,7 @@ public class ModelTypeAssociation extends AbstractModelElement implements IModel
         for (int i = 0; i < parser.getAttributeCount(); i++) {
             if (parser.getAttributeLocalName(i).equals("namePlural")) {
                 this.namePlural = parser.getAttributeValue(i);
-                if(this.namePlural.length()==0){
+                if (this.namePlural.length() == 0) {
                     this.namePlural = null;
                 }
             } else if (parser.getAttributeLocalName(i).equals("target")) {
@@ -112,6 +112,28 @@ public class ModelTypeAssociation extends AbstractModelElement implements IModel
             }
         }
         initExtPropertiesFromXml(parser);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public String toString() {
+        StringBuilder sb = new StringBuilder(getName());
+        sb.append(": ");
+        sb.append(targetName);
+        sb.append('(');
+        sb.append(associationType);
+        sb.append(' ');
+        sb.append(minCardinality);
+        sb.append("..");
+        sb.append(maxCardinality == Integer.MAX_VALUE ? "*" : maxCardinality);
+        if (isProductRelevant) {
+            sb.append(", ");
+            sb.append("isProductRelevant");
+        }
+        sb.append(')');
+        return sb.toString();
     }
 
 }
