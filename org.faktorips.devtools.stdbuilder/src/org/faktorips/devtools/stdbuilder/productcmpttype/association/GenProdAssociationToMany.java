@@ -115,45 +115,6 @@ public class GenProdAssociationToMany extends GenProdAssociation {
     }
 
     /**
-     * Java 5 Code sample:
-     * 
-     * <pre>
-     * public ILink&lt;ICoverageType&gt; getLinkForCoverageType(ICoverageType productComponent);
-     * </pre>
-     * 
-     * @throws CoreException
-     */
-    private void generateMethodInterfaceGetRelatedCmptLink(JavaCodeFragmentBuilder methodsBuilder)
-            throws CoreException {
-        appendLocalizedJavaDoc("METHOD_GET_RELATED_CMPT_LINK", association.getTargetRoleSingular(),
-                methodsBuilder);
-        generateSignatureGetRelatedCmptLink(methodsBuilder);
-        methodsBuilder.appendln(";");
-    }
-
-    /**
-     * Java 5 Code sample:
-     * 
-     * <pre>
-     * public ILink&lt;ICoverageType&gt; getLinkForCoverageType(ICoverageType productComponent)
-     * </pre>
-     * 
-     * @throws CoreException
-     */
-    private void generateSignatureGetRelatedCmptLink(JavaCodeFragmentBuilder methodsBuilder)
-            throws CoreException {
-        String methodName = getMethodNameGetRelatedCmptLink();
-        String returnType = Java5ClassNames.ILink_QualifiedName + "<" + getQualifiedInterfaceClassNameForTarget() + ">";
-        methodsBuilder.signature(getJavaNamingConvention().getModifierForPublicInterfaceMethod(), returnType,
-                methodName, new String[] { "productComponent" },
-                new String[] { getQualifiedInterfaceClassNameForTarget() });
-    }
-
-    private String getMethodNameGetRelatedCmptLink() {
-        return getJavaNamingConvention().getMultiValueGetterMethodName("LinkFor" + association.getTargetRoleSingular());
-    }
-
-    /**
      * Code sample: [Javadoc]
      * 
      * <pre>
