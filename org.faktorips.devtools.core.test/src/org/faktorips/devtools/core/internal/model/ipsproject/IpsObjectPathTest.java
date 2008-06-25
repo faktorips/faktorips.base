@@ -430,4 +430,39 @@ public class IpsObjectPathTest extends AbstractIpsPluginTest {
         assertSame(ipsProject, path.getIpsProject());
     }
     
+    public void testMoveEntry() throws Exception {
+        IIpsObjectPath path = ipsProject.getIpsObjectPath();
+        
+        IIpsObjectPathEntry entry0 = path.getEntries()[0];      // default test project contains already 1 entry
+        IIpsSrcFolderEntry entry1 = path.newSourceFolderEntry(ipsProject.getProject().getFolder("src"));
+        IIpsSrcFolderEntry entry2 = path.newSourceFolderEntry(ipsProject.getProject().getFolder("src2"));
+        IIpsSrcFolderEntry entry3 = path.newSourceFolderEntry(ipsProject.getProject().getFolder("src3"));
+
+        assertEquals(4, path.getEntries().length); // default test project contains already 1 entry
+
+        assertFalse(path.moveEntry(0, 0));
+        assertFalse(path.moveEntry(-1, 1));
+        assertFalse(path.moveEntry(-1, -2));
+        assertFalse(path.moveEntry(1, -1));
+
+        assertEquals(entry0, path.getEntries()[0]);
+        assertEquals(entry1, path.getEntries()[1]);
+        assertEquals(entry2, path.getEntries()[2]);
+        assertEquals(entry3, path.getEntries()[3]);
+        
+        // move first entry to the bottom
+        assertTrue(path.moveEntry(0, 3));
+        assertEquals(4, path.getEntries().length);
+        assertEquals(entry1, path.getEntries()[0]);
+        assertEquals(entry2, path.getEntries()[1]);
+        assertEquals(entry3, path.getEntries()[2]);
+        assertEquals(entry0, path.getEntries()[3]);
+        
+        // move back last element to the top
+        assertTrue(path.moveEntry(3, 0));
+        assertEquals(entry0, path.getEntries()[0]);
+        assertEquals(entry1, path.getEntries()[1]);
+        assertEquals(entry2, path.getEntries()[2]);
+        assertEquals(entry3, path.getEntries()[3]);
+    }
 }
