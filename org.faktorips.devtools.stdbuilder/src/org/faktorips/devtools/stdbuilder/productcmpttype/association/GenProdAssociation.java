@@ -468,6 +468,6 @@ public abstract class GenProdAssociation extends GenProductCmptTypePart {
     }
 
     private String getMethodNameGetRelatedCmptLink() {
-        return getJavaNamingConvention().getMultiValueGetterMethodName("LinkFor" + association.getTargetRoleSingular());
+        return getJavaNamingConvention().getMultiValueGetterMethodName("LinkFor" + StringUtils.capitalize(association.getTargetRoleSingular()));
     }
 }
