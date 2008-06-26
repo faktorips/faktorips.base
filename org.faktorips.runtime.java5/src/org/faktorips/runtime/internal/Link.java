@@ -110,4 +110,18 @@ public class Link<E extends IProductComponent> extends RuntimeObject implements 
         return targetId;
     }
 
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public String toString() {
+        StringBuilder sb = new StringBuilder(targetId);
+        sb.append('(');
+        sb.append(cardinality.getLowerBound());
+        sb.append("..");
+        sb.append(cardinality.getUpperBound() == Integer.MAX_VALUE ? "*" : cardinality.getUpperBound());
+        sb.append(')');
+        return sb.toString();
+    }
+
 }
