@@ -14,6 +14,8 @@
 
 package org.faktorips.runtime.modeltype.internal;
 
+import java.lang.reflect.Array;
+
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 
@@ -89,13 +91,23 @@ public class ModelTypeAttribute extends AbstractModelElement implements IModelTy
     }
 
     protected Class<?> findDatatype() throws ClassNotFoundException {
+        Class<?> clazz = null;
+        int arrays = 0;
+        while (datatypeName.lastIndexOf('[') > 0) {
+            datatypeName = datatypeName.substring(0, datatypeName.lastIndexOf('['));
+            arrays++;
+        }
         if (datatypeName.equals(int.class.getName())) {
-            return int.class;
+            clazz = int.class;
+        } else if (datatypeName.equals(boolean.class.getName())) {
+            clazz = boolean.class;
+        } else {
+            clazz = this.getClass().getClassLoader().loadClass(datatypeName);
         }
-        if (datatypeName.equals(boolean.class.getName())) {
-            return boolean.class;
+        for (int i = 0; i < arrays; i++) {
+            clazz = Array.newInstance(clazz, 0).getClass();
         }
-        return this.getClass().getClassLoader().loadClass(datatypeName);
+        return clazz;
     }
 
     /**
