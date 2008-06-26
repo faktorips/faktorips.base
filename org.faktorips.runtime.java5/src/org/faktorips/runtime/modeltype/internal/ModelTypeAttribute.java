@@ -92,17 +92,18 @@ public class ModelTypeAttribute extends AbstractModelElement implements IModelTy
 
     protected Class<?> findDatatype() throws ClassNotFoundException {
         Class<?> clazz = null;
+        String actualName = datatypeName;
         int arrays = 0;
-        while (datatypeName.lastIndexOf('[') > 0) {
-            datatypeName = datatypeName.substring(0, datatypeName.lastIndexOf('['));
+        while (actualName.lastIndexOf('[') > 0) {
+            actualName = actualName.substring(0, actualName.lastIndexOf('['));
             arrays++;
         }
-        if (datatypeName.equals(int.class.getName())) {
+        if (actualName.equals(int.class.getName())) {
             clazz = int.class;
-        } else if (datatypeName.equals(boolean.class.getName())) {
+        } else if (actualName.equals(boolean.class.getName())) {
             clazz = boolean.class;
         } else {
-            clazz = this.getClass().getClassLoader().loadClass(datatypeName);
+            clazz = Class.forName(actualName);
         }
         for (int i = 0; i < arrays; i++) {
             clazz = Array.newInstance(clazz, 0).getClass();
