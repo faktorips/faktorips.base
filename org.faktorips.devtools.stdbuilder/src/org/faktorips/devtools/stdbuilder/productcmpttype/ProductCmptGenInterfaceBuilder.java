@@ -14,11 +14,13 @@
 
 package org.faktorips.devtools.stdbuilder.productcmpttype;
 
+import java.lang.reflect.Modifier;
 import java.util.List;
 
 import org.eclipse.core.runtime.CoreException;
 import org.faktorips.codegen.DatatypeHelper;
 import org.faktorips.codegen.JavaCodeFragmentBuilder;
+import org.faktorips.codegen.dthelpers.Java5ClassNames;
 import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.core.model.ipsproject.IIpsArtefactBuilderSet;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAttribute;
@@ -29,6 +31,7 @@ import org.faktorips.devtools.core.model.productcmpttype.ITableStructureUsage;
 import org.faktorips.devtools.core.model.type.IMethod;
 import org.faktorips.devtools.stdbuilder.StandardBuilderSet;
 import org.faktorips.devtools.stdbuilder.productcmpttype.association.GenProdAssociation;
+import org.faktorips.runtime.IProductComponent;
 import org.faktorips.runtime.IProductComponentGeneration;
 import org.faktorips.util.LocalizedStringsSet;
 import org.faktorips.util.StringUtil;
@@ -91,6 +94,9 @@ public class ProductCmptGenInterfaceBuilder extends BaseProductCmptTypeBuilder {
     protected void generateOtherCode(JavaCodeFragmentBuilder constantsBuilder,
             JavaCodeFragmentBuilder memberVarsBuilder,
             JavaCodeFragmentBuilder methodsBuilder) throws CoreException {
+        if (isUseTypesafeCollections()) {
+            generateMethodInterfaceGetLink(methodsBuilder);
+        }
         // nothing to do
     }
 
@@ -167,5 +173,34 @@ public class ProductCmptGenInterfaceBuilder extends BaseProductCmptTypeBuilder {
         if (generator != null) {
             generator.generate(generatesInterface(), getIpsProject(), getMainTypeSection());
         }
+    }
+
+    /**
+     * Java 5 code sample:
+     * 
+     * <pre>
+     *  public ILink&lt;? extends IProductComponent&gt; getLink(String linkName, IProductComponent target)
+     * </pre>
+     */
+    protected static void generateSignatureGetLink(JavaCodeFragmentBuilder methodsBuilder) {
+        methodsBuilder.signature(Modifier.PUBLIC, Java5ClassNames.ILink_QualifiedName + "<? extends "
+                + IProductComponent.class.getName() + ">", "getLink", new String[] { "linkName", "target" },
+                new String[] { String.class.getName(), IProductComponent.class.getName() });
+    }
+
+
+
+    /**
+     * Java 5 code sample:
+     * 
+     * <pre>
+     *  [Javadoc]
+     *  public ILink&lt;? extends IProductComponent&gt; getLink(String linkName, IProductComponent target);
+     * </pre>
+     */
+    private void generateMethodInterfaceGetLink(JavaCodeFragmentBuilder methodsBuilder) {
+        appendLocalizedJavaDoc("METHOD_GET_LINK", getProductCmptType(), methodsBuilder);
+        generateSignatureGetLink(methodsBuilder);
+        methodsBuilder.appendln(";");
     }
 }

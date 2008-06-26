@@ -451,7 +451,7 @@ public abstract class GenProdAssociation extends GenProductCmptTypePart {
     }
 
     /**
-     * Java 5 Code sample:
+     * Java 5 code sample:
      * 
      * <pre>
      * public ILink&lt;ICoverageType&gt; getLinkForCoverageType(ICoverageType productComponent)
@@ -469,5 +469,27 @@ public abstract class GenProdAssociation extends GenProductCmptTypePart {
 
     private String getMethodNameGetRelatedCmptLink() {
         return getJavaNamingConvention().getMultiValueGetterMethodName("LinkFor" + StringUtils.capitalize(association.getTargetRoleSingular()));
+    }
+    
+    /**
+     * Java 5 code sample:
+     *
+     * <pre>
+     *      if ("CoverageType".equals(linkName)) {
+     *          return getLinkForCoverageType((ICoverageType)target);
+     *      }
+     * </pre>
+     * @throws CoreException 
+     */
+    public void generateCodeForGetLink(JavaCodeFragmentBuilder methodsBuilder) throws CoreException{
+        methodsBuilder.append("if (\"");
+        methodsBuilder.append(association.getTargetRoleSingular());
+        methodsBuilder.appendln("\".equals(linkName)){");
+        methodsBuilder.append("return ");
+        methodsBuilder.append(getMethodNameGetRelatedCmptLink());
+        methodsBuilder.append("((");
+        methodsBuilder.appendClassName(getQualifiedInterfaceClassNameForTarget());
+        methodsBuilder.appendln(")target);");
+        methodsBuilder.appendln("}");
     }
 }

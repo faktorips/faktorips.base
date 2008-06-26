@@ -170,6 +170,9 @@ public class ProductCmptGenImplClassBuilder extends BaseProductCmptTypeBuilder {
         generateMethodDoInitPropertiesFromXml(methodsBuilder);
         generateMethodDoInitReferencesFromXml(methodsBuilder);
         generateMethodDoInitTableUsagesFromXml(methodsBuilder);
+        if (isUseTypesafeCollections()) {
+            generateMethodGetLink(methodsBuilder);
+        }
     }
 
     /**
@@ -209,7 +212,8 @@ public class ProductCmptGenImplClassBuilder extends BaseProductCmptTypeBuilder {
 
         builder.javaDoc(getJavaDocCommentForOverriddenMethod(), ANNOTATION_GENERATED);
         builder.methodBegin(Modifier.PROTECTED, "void", "doInitPropertiesFromXml", new String[] { "configMap" },
-                new String[] { isUseTypesafeCollections()?Map.class.getName()+"<"+String.class.getName()+", "+Element.class.getName()+">":Map.class.getName() });
+                new String[] { isUseTypesafeCollections() ? Map.class.getName() + "<" + String.class.getName() + ", "
+                        + Element.class.getName() + ">" : Map.class.getName() });
 
         builder.appendln("super.doInitPropertiesFromXml(configMap);");
 
@@ -495,7 +499,8 @@ public class ProductCmptGenImplClassBuilder extends BaseProductCmptTypeBuilder {
         String javaDoc = null;
         builder.javaDoc(javaDoc, ANNOTATION_GENERATED);
         String[] argNames = new String[] { "tableUsageMap" };
-        String[] argTypes = new String[] { isUseTypesafeCollections()?Map.class.getName()+"<"+String.class.getName()+", "+Element.class.getName()+">":Map.class.getName() };
+        String[] argTypes = new String[] { isUseTypesafeCollections() ? Map.class.getName() + "<"
+                + String.class.getName() + ", " + Element.class.getName() + ">" : Map.class.getName() };
         builder.methodBegin(Modifier.PROTECTED, "void", "doInitTableUsagesFromXml", argNames, argTypes);
         builder.appendln("super.doInitTableUsagesFromXml(tableUsageMap);");
         builder.appendClassName(Element.class);
@@ -676,6 +681,39 @@ public class ProductCmptGenImplClassBuilder extends BaseProductCmptTypeBuilder {
             return modifier;
         }
 
+    }
+
+    /**
+     * Java 5 code sample:
+     * 
+     * <pre>
+     *  [Javadoc]
+     *  public ILink&lt;? extends IProductComponent&gt; getLink(String linkName, IProductComponent target) {
+     *      if (&quot;ElementarProdukt&quot;.equals(linkName)) {
+     *          return getLinkForElementarProdukt((IElementarProdukt)target);
+     *      }
+     *      if (&quot;VersichertesObjekt&quot;.equals(linkName)) {
+     *          return getLinkForVersichertesObjekt((IVersichertesObjekt)target);
+     *      }
+     *      return null;
+     *  }
+     * </pre>
+     * 
+     * @throws CoreException
+     */
+    private void generateMethodGetLink(JavaCodeFragmentBuilder methodsBuilder) throws CoreException {
+        methodsBuilder.javaDoc(getJavaDocCommentForOverriddenMethod(), ANNOTATION_GENERATED);
+        ProductCmptGenInterfaceBuilder.generateSignatureGetLink(methodsBuilder);
+        methodsBuilder.openBracket();
+        IAssociation[] associations = getProductCmptType().getAssociations();
+        for (int i = 0; i < associations.length; i++) {
+            IProductCmptTypeAssociation a = (IProductCmptTypeAssociation)associations[i];
+            if (!associations[i].isDerivedUnion()) {
+                getGenerator(a).generateCodeForGetLink(methodsBuilder);
+            }
+        }
+        methodsBuilder.appendln("return null;");
+        methodsBuilder.closeBracket();
     }
 
 }

@@ -14,9 +14,6 @@
 
 package org.faktorips.devtools.stdbuilder.policycmpttype;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import org.apache.commons.lang.StringUtils;
 import org.eclipse.core.runtime.CoreException;
 import org.faktorips.codegen.JavaCodeFragment;
