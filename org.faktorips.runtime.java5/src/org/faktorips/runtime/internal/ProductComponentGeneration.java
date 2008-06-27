@@ -25,6 +25,7 @@ import java.util.Map;
 import java.util.TimeZone;
 
 import org.faktorips.runtime.IClRepositoryObject;
+import org.faktorips.runtime.ILink;
 import org.faktorips.runtime.IProductComponent;
 import org.faktorips.runtime.IProductComponentGeneration;
 import org.faktorips.runtime.IRuntimeRepository;
@@ -269,5 +270,12 @@ public abstract class ProductComponentGeneration extends RuntimeObject implement
      */
     protected void setProductCmpt(ProductComponent productCmpt) {
         this.productCmpt = productCmpt;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public ILink<? extends IProductComponent> getLink(String linkName, IProductComponent target) {
+        throw new RuntimeException("Not implemented yet.");
     }
 }

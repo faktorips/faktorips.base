@@ -25,6 +25,7 @@ import org.eclipse.core.runtime.CoreException;
 import org.faktorips.codegen.DatatypeHelper;
 import org.faktorips.codegen.JavaCodeFragment;
 import org.faktorips.codegen.JavaCodeFragmentBuilder;
+import org.faktorips.codegen.dthelpers.Java5ClassNames;
 import org.faktorips.datatype.ValueDatatype;
 import org.faktorips.devtools.core.IpsStatus;
 import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
@@ -50,6 +51,7 @@ import org.faktorips.devtools.stdbuilder.policycmpttype.attribute.GenAttribute;
 import org.faktorips.devtools.stdbuilder.productcmpttype.association.GenProdAssociation;
 import org.faktorips.devtools.stdbuilder.productcmpttype.attribute.GenProdAttribute;
 import org.faktorips.devtools.stdbuilder.table.TableImplBuilder;
+import org.faktorips.runtime.IProductComponent;
 import org.faktorips.runtime.ITable;
 import org.faktorips.runtime.internal.EnumValues;
 import org.faktorips.runtime.internal.MethodNames;
@@ -703,7 +705,7 @@ public class ProductCmptGenImplClassBuilder extends BaseProductCmptTypeBuilder {
      */
     private void generateMethodGetLink(JavaCodeFragmentBuilder methodsBuilder) throws CoreException {
         methodsBuilder.javaDoc(getJavaDocCommentForOverriddenMethod(), ANNOTATION_GENERATED);
-        ProductCmptGenInterfaceBuilder.generateSignatureGetLink(methodsBuilder);
+        generateSignatureGetLink(methodsBuilder);
         methodsBuilder.openBracket();
         IAssociation[] associations = getProductCmptType().getAssociations();
         for (int i = 0; i < associations.length; i++) {
@@ -714,6 +716,19 @@ public class ProductCmptGenImplClassBuilder extends BaseProductCmptTypeBuilder {
         }
         methodsBuilder.appendln("return null;");
         methodsBuilder.closeBracket();
+    }
+
+    /**
+     * Java 5 code sample:
+     * 
+     * <pre>
+     *  public ILink&lt;? extends IProductComponent&gt; getLink(String linkName, IProductComponent target)
+     * </pre>
+     */
+    private void generateSignatureGetLink(JavaCodeFragmentBuilder methodsBuilder) {
+        methodsBuilder.signature(Modifier.PUBLIC, Java5ClassNames.ILink_QualifiedName + "<? extends "
+                + IProductComponent.class.getName() + ">", "getLink", new String[] { "linkName", "target" },
+                new String[] { String.class.getName(), IProductComponent.class.getName() });
     }
 
 }
