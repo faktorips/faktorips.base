@@ -34,6 +34,7 @@ public class Messages extends NLS {
 	}
 
 	public static String PcTypePage_configuredByProductCmptType;
+    public static String PcTypePage_infoConfigurateByProductCmptType;
     public static String PcTypePage_title;
 
 }

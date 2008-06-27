@@ -159,7 +159,17 @@ public class PcTypePage extends TypePage {
                 pageOfAssociatedType.validatePage();
                 if(!StringUtils.isEmpty(pageOfAssociatedType.getErrorMessage())){
                     setErrorMessage(pageOfAssociatedType.getErrorMessage());
+                    return;
                 }
+            }
+        }
+        // show info message: 
+        // configured by product components, 
+        // because instances of the superclass are configured by product components
+        IPolicyCmptType superPcType = getIpsProject().findPolicyCmptType(getSuperType());
+        if(superPcType != null){
+            if(superPcType.isConfigurableByProductCmptType()){
+                setMessage(Messages.PcTypePage_infoConfigurateByProductCmptType, INFORMATION);
             }
         }
     }
