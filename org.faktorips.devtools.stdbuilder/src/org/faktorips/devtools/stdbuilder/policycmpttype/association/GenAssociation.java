@@ -831,7 +831,7 @@ public abstract class GenAssociation extends GenPolicyCmptTypePart {
      */
     public String getMethodNameGetRefObjectAtIndex() {
         // TODO extend JavaNamingConvensions for association accessor an mutator methods
-        return "get" + association.getTargetRoleSingular();
+        return "get" + StringUtils.capitalize(association.getTargetRoleSingular());
     }
 
     /**
