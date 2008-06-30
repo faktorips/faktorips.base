@@ -230,7 +230,7 @@ public class JavaCodeFragment {
                     qualifiedClassName.lastIndexOf('>')).split(",");
             for (int i = 0; i < classNames.length; i++) {
                 String className = classNames[i].trim();
-                if (className.indexOf("extends") > 0) {
+                if (className.indexOf("extends") > className.indexOf('>')) {
                     String prefix = className.substring(0, className.indexOf("extends")).trim();
                     append(prefix);
                     append(" extends ");
