@@ -42,5 +42,10 @@ public interface ILink<E extends IProductComponent> extends IRuntimeObject, IClR
      * @return the target product component's id.
      */
     public String getTargetId();
+    
+    /**
+     * @return the name of the association this link belongs to.
+     */
+    public String getAssociationName();
 
 }

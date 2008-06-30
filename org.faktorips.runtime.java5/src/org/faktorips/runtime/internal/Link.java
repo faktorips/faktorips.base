@@ -30,6 +30,7 @@ public class Link<E extends IProductComponent> extends RuntimeObject implements 
     private IProductComponentGeneration productComponentGeneration;
     private IntegerRange cardinality;
     private String targetId;
+    private String associationName;
 
     /**
      * Creates a new link for the given product component generation. Target and cardinality must be
@@ -70,6 +71,7 @@ public class Link<E extends IProductComponent> extends RuntimeObject implements 
      * {@inheritDoc}
      */
     public void initFromXml(Element element) {
+        associationName = element.getAttribute("association");
         targetId = element.getAttribute("targetRuntimeId");
         String maxStr = element.getAttribute("maxCardinality");
         Integer maxCardinality = null;
@@ -108,6 +110,13 @@ public class Link<E extends IProductComponent> extends RuntimeObject implements 
      */
     public String getTargetId() {
         return targetId;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public String getAssociationName() {
+        return associationName;
     }
 
     /**
