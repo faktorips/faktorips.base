@@ -230,7 +230,7 @@ public abstract class GenAssociation extends GenPolicyCmptTypePart {
      * Returns the name of the method to create a new child object and add it to the parent.
      */
     public String getMethodNameNewChild(IPolicyCmptTypeAssociation association) {
-        return getLocalizedText("METHOD_NEW_CHILD_NAME", association.getTargetRoleSingular());
+        return getLocalizedText("METHOD_NEW_CHILD_NAME", StringUtils.capitalize(association.getTargetRoleSingular()));
     }
 
     /**
@@ -275,14 +275,14 @@ public abstract class GenAssociation extends GenPolicyCmptTypePart {
      * newObject)
      */
     public String getMethodNameSetObject() {
-        return getLocalizedText("METHOD_SET_OBJECT_NAME", association.getTargetRoleSingular());
+        return getLocalizedText("METHOD_SET_OBJECT_NAME", StringUtils.capitalize(association.getTargetRoleSingular()));
     }
 
     /**
      * Returns the name of the method returning the single referenced object. e.g. getCoverage()
      */
     public String getMethodNameGetRefObject() {
-        return getLocalizedText("METHOD_GET_REF_OBJECT_NAME", association.getTargetRoleSingular());
+        return getLocalizedText("METHOD_GET_REF_OBJECT_NAME", StringUtils.capitalize(association.getTargetRoleSingular()));
     }
 
     /**
@@ -772,7 +772,7 @@ public abstract class GenAssociation extends GenPolicyCmptTypePart {
      * getNumOfCoverages()
      */
     public String getMethodNameContainsObject() {
-        return getLocalizedText("METHOD_CONTAINS_OBJECT_NAME", association.getTargetRoleSingular());
+        return getLocalizedText("METHOD_CONTAINS_OBJECT_NAME", StringUtils.capitalize(association.getTargetRoleSingular()));
     }
 
     /**
@@ -866,7 +866,7 @@ public abstract class GenAssociation extends GenPolicyCmptTypePart {
      * Returns the name of the method to create a new child object and add it to the parent.
      */
     public String getMethodNameNewChild() {
-        return getLocalizedText("METHOD_NEW_CHILD_NAME", association.getTargetRoleSingular());
+        return getLocalizedText("METHOD_NEW_CHILD_NAME", StringUtils.capitalize(association.getTargetRoleSingular()));
     }
 
     /**

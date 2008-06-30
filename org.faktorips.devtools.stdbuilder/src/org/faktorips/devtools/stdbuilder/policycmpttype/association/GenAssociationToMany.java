@@ -72,7 +72,7 @@ public class GenAssociationToMany extends GenAssociation {
      * getNumOfCoverages()
      */
     protected String getMethodNameContainsObject(IAssociation association) {
-        return getLocalizedText("METHOD_CONTAINS_OBJECT_NAME", association.getTargetRoleSingular());
+        return getLocalizedText("METHOD_CONTAINS_OBJECT_NAME", StringUtils.capitalize(association.getTargetRoleSingular()));
     }
 
     /**
@@ -105,7 +105,7 @@ public class GenAssociationToMany extends GenAssociation {
      */
     public String getMethodNameGetRefObjectAtIndex() {
         // TODO extend JavaNamingConvensions for association accessor an mutator methods
-        return "get" + association.getTargetRoleSingular();
+        return "get" + StringUtils.capitalize(association.getTargetRoleSingular());
     }
 
     /**
@@ -127,7 +127,7 @@ public class GenAssociationToMany extends GenAssociation {
      * addCoverage()
      */
     public String getMethodNameAddObject() {
-        return getLocalizedText("METHOD_ADD_OBJECT_NAME", association.getTargetRoleSingular());
+        return getLocalizedText("METHOD_ADD_OBJECT_NAME", StringUtils.capitalize(association.getTargetRoleSingular()));
     }
 
     /**
@@ -158,7 +158,7 @@ public class GenAssociationToMany extends GenAssociation {
      * removeCoverage()
      */
     public String getMethodNameRemoveObject() {
-        return getLocalizedText("METHOD_REMOVE_OBJECT_NAME", association.getTargetRoleSingular());
+        return getLocalizedText("METHOD_REMOVE_OBJECT_NAME", StringUtils.capitalize(association.getTargetRoleSingular()));
     }
 
     /**

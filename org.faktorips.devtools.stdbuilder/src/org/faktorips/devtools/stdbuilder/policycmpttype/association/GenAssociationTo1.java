@@ -80,7 +80,7 @@ public class GenAssociationTo1 extends GenAssociation {
      * newObject)
      */
     public String getMethodNameSetObject(IAssociation association) {
-        return getLocalizedText("METHOD_SET_OBJECT_NAME", association.getTargetRoleSingular());
+        return getLocalizedText("METHOD_SET_OBJECT_NAME", StringUtils.capitalize(association.getTargetRoleSingular()));
     }
 
     /**
@@ -96,7 +96,7 @@ public class GenAssociationTo1 extends GenAssociation {
      * removeCoverage()
      */
     public String getMethodNameRemoveObject() {
-        return getLocalizedText("METHOD_REMOVE_OBJECT_NAME", association.getTargetRoleSingular());
+        return getLocalizedText("METHOD_REMOVE_OBJECT_NAME", StringUtils.capitalize(association.getTargetRoleSingular()));
     }
 
     /**
@@ -104,7 +104,7 @@ public class GenAssociationTo1 extends GenAssociation {
      * removeCoverage()
      */
     public String getMethodNameRemoveObject(IAssociation association) {
-        return getLocalizedText("METHOD_REMOVE_OBJECT_NAME", association.getTargetRoleSingular());
+        return getLocalizedText("METHOD_REMOVE_OBJECT_NAME", StringUtils.capitalize(association.getTargetRoleSingular()));
     }
 
     /**

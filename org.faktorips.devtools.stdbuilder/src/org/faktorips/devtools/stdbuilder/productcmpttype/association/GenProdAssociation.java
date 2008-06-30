@@ -237,8 +237,8 @@ public abstract class GenProdAssociation extends GenProductCmptTypePart {
 
     public String getMethodNameGetCardinalityForAssociation() throws CoreException {
         return getJavaNamingConvention().getGetterMethodName(
-                getLocalizedText("METHOD_GET_CARDINALITY_FOR_NAME", association.findMatchingPolicyCmptTypeAssociation(
-                        association.getIpsProject()).getTargetRoleSingular()), IntegerRange.class);
+                getLocalizedText("METHOD_GET_CARDINALITY_FOR_NAME", StringUtils.capitalize(association.findMatchingPolicyCmptTypeAssociation(
+                        association.getIpsProject()).getTargetRoleSingular())), IntegerRange.class);
     }
 
     public String[][] getParamGetCardinalityForAssociation() throws CoreException {
