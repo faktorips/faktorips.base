@@ -249,7 +249,7 @@ public class JavaCodeFragment {
         // don't add two imports for the same unqualified name
         for (Iterator iterator = importDecl.iterator(); iterator.hasNext();) {
             String imp = (String)iterator.next();
-            if (imp.endsWith(unqualifiedClassName) && !imp.equals(qualifiedClassName)) {
+            if (imp.substring(imp.lastIndexOf('.')+1).equals(unqualifiedClassName) && !imp.equals(qualifiedClassName)) {
                 append(qualifiedClassName);
                 return;
             }
