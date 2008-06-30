@@ -30,7 +30,6 @@ import org.eclipse.core.runtime.CoreException;
 import org.faktorips.codegen.JavaCodeFragment;
 import org.faktorips.codegen.JavaCodeFragmentBuilder;
 import org.faktorips.codegen.dthelpers.Java5ClassNames;
-import org.faktorips.datatype.Datatype;
 import org.faktorips.devtools.core.builder.JavaSourceFileBuilder;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAssociation;
@@ -459,7 +458,8 @@ public class GenProdAssociationToMany extends GenProdAssociation {
     }
 
     public String getMethodNameGetRelatedCmptAtIndex() {
-        return getJavaNamingConvention().getGetterMethodName(association.getTargetRoleSingular(), Datatype.INTEGER);
+        // TODO extend JavaNamingConvensions for association accessor an mutator methods
+        return "get" + StringUtils.capitalize(association.getTargetRoleSingular());
     }
 
     /**
