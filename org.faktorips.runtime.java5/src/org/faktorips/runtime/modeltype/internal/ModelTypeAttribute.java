@@ -14,8 +14,6 @@
 
 package org.faktorips.runtime.modeltype.internal;
 
-import java.lang.reflect.Array;
-
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 
@@ -91,24 +89,54 @@ public class ModelTypeAttribute extends AbstractModelElement implements IModelTy
     }
 
     protected Class<?> findDatatype() throws ClassNotFoundException {
-        Class<?> clazz = null;
         String actualName = datatypeName;
-        int arrays = 0;
+        int arraydepth = 0;
         while (actualName.lastIndexOf('[') > 0) {
             actualName = actualName.substring(0, actualName.lastIndexOf('['));
-            arrays++;
+            arraydepth++;
         }
-        if (actualName.equals(int.class.getName())) {
-            clazz = int.class;
-        } else if (actualName.equals(boolean.class.getName())) {
-            clazz = boolean.class;
-        } else {
-            clazz = Class.forName(actualName);
+        if (arraydepth > 0) {
+            if ("boolean".equals(actualName)) {
+                actualName = "Z";
+            } else if ("byte".equals(actualName)) {
+                actualName = "B";
+            } else if ("char".equals(actualName)) {
+                actualName = "C";
+            } else if ("double".equals(actualName)) {
+                actualName = "D";
+            } else if ("float".equals(actualName)) {
+                actualName = "F";
+            } else if ("int".equals(actualName)) {
+                actualName = "I";
+            } else if ("long".equals(actualName)) {
+                actualName = "J";
+            } else if ("short".equals(actualName)) {
+                actualName = "S";
+            } else {
+                actualName = "L" + actualName + ";";
+            }
+            char[] da = new char[arraydepth];
+            java.util.Arrays.fill(da, '[');
+            actualName = new String(da) + actualName;
         }
-        for (int i = 0; i < arrays; i++) {
-            clazz = Array.newInstance(clazz, 0).getClass();
+        if (actualName.equals(boolean.class.getName())) {
+            return boolean.class;
+        } else if (actualName.equals(byte.class.getName())) {
+            return byte.class;
+        } else if (actualName.equals(char.class.getName())) {
+            return char.class;
+        } else if (actualName.equals(double.class.getName())) {
+            return double.class;
+        } else if (actualName.equals(float.class.getName())) {
+            return float.class;
+        } else if (actualName.equals(int.class.getName())) {
+            return int.class;
+        } else if (actualName.equals(long.class.getName())) {
+            return long.class;
+        } else if (actualName.equals(short.class.getName())) {
+            return short.class;
         }
-        return clazz;
+        return Class.forName(actualName);
     }
 
     /**
