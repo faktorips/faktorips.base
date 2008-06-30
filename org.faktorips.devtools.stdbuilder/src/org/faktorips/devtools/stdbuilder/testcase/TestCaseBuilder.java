@@ -255,10 +255,10 @@ public class TestCaseBuilder extends AbstractArtefactBuilder {
 
     private void resolveAssociations() {
         for (Iterator iter = targetObjectIdMap.keySet().iterator(); iter.hasNext();) {
-            ITestPolicyCmpt target = (ITestPolicyCmpt)iter.next();
+        	Element elem = (Element)iter.next();
+        	ITestPolicyCmpt target = (ITestPolicyCmpt)targetObjectIdMap.get(elem);
             String objectId = (String)objectIdMap.get(target);
             if (objectId != null) {
-                Element elem = (Element)targetObjectIdMap.get(target);
                 elem.setAttribute("targetId", objectId);
             }
         }
@@ -438,7 +438,7 @@ public class TestCaseBuilder extends AbstractArtefactBuilder {
                     testPolicyCmptElem.setAttribute("target", relations[i].getTarget());
                     testPolicyCmptElem.setAttribute("type", relationType);
                     ITestPolicyCmpt target = relations[i].findTarget();
-                    targetObjectIdMap.put(target, testPolicyCmptElem);
+                    targetObjectIdMap.put(testPolicyCmptElem, target);
                 }
             }
         }
