@@ -224,8 +224,6 @@ public abstract class GenProdAssociation extends GenProductCmptTypePart {
     protected abstract void generateCodeGetNumOfRelatedProductCmpts(JavaCodeFragmentBuilder builder)
             throws CoreException;
 
-    
-
     public void generateSignatureGetCardinalityForAssociation(JavaCodeFragmentBuilder methodsBuilder)
             throws CoreException {
         String methodName = getMethodNameGetCardinalityForAssociation();
@@ -237,8 +235,9 @@ public abstract class GenProdAssociation extends GenProductCmptTypePart {
 
     public String getMethodNameGetCardinalityForAssociation() throws CoreException {
         return getJavaNamingConvention().getGetterMethodName(
-                getLocalizedText("METHOD_GET_CARDINALITY_FOR_NAME", StringUtils.capitalize(association.findMatchingPolicyCmptTypeAssociation(
-                        association.getIpsProject()).getTargetRoleSingular())), IntegerRange.class);
+                getLocalizedText("METHOD_GET_CARDINALITY_FOR_NAME", StringUtils.capitalize(association
+                        .findMatchingPolicyCmptTypeAssociation(association.getIpsProject()).getTargetRoleSingular())),
+                IntegerRange.class);
     }
 
     public String[][] getParamGetCardinalityForAssociation() throws CoreException {
@@ -438,14 +437,15 @@ public abstract class GenProdAssociation extends GenProductCmptTypePart {
      * Java 5 Code sample:
      * 
      * <pre>
+     * [javadoc]
      * public ILink&lt;ICoverageType&gt; getLinkForCoverageType(ICoverageType productComponent);
      * </pre>
      * 
      * @throws CoreException
      */
-    protected void generateMethodInterfaceGetRelatedCmptLink(JavaCodeFragmentBuilder methodsBuilder) throws CoreException {
-        appendLocalizedJavaDoc("METHOD_GET_RELATED_CMPT_LINK", association.getTargetRoleSingular(),
-                methodsBuilder);
+    protected void generateMethodInterfaceGetRelatedCmptLink(JavaCodeFragmentBuilder methodsBuilder)
+            throws CoreException {
+        appendLocalizedJavaDoc("METHOD_GET_RELATED_CMPT_LINK", association.getTargetRoleSingular(), methodsBuilder);
         generateSignatureGetRelatedCmptLink(methodsBuilder);
         methodsBuilder.appendln(";");
     }
@@ -468,20 +468,22 @@ public abstract class GenProdAssociation extends GenProductCmptTypePart {
     }
 
     private String getMethodNameGetRelatedCmptLink() {
-        return getJavaNamingConvention().getMultiValueGetterMethodName("LinkFor" + StringUtils.capitalize(association.getTargetRoleSingular()));
+        return getJavaNamingConvention().getMultiValueGetterMethodName(
+                "LinkFor" + StringUtils.capitalize(association.getTargetRoleSingular()));
     }
-    
+
     /**
      * Java 5 code sample:
-     *
+     * 
      * <pre>
-     *      if ("CoverageType".equals(linkName)) {
-     *          return getLinkForCoverageType((ICoverageType)target);
-     *      }
+     * if (&quot;CoverageType&quot;.equals(linkName)) {
+     *     return getLinkForCoverageType((ICoverageType)target);
+     * }
      * </pre>
-     * @throws CoreException 
+     * 
+     * @throws CoreException
      */
-    public void generateCodeForGetLink(JavaCodeFragmentBuilder methodsBuilder) throws CoreException{
+    public void generateCodeForGetLink(JavaCodeFragmentBuilder methodsBuilder) throws CoreException {
         methodsBuilder.append("if (\"");
         methodsBuilder.append(association.getTargetRoleSingular());
         methodsBuilder.appendln("\".equals(linkName)){");
@@ -492,4 +494,6 @@ public abstract class GenProdAssociation extends GenProductCmptTypePart {
         methodsBuilder.appendln(")target);");
         methodsBuilder.appendln("}");
     }
+
+    public abstract void generateCodeForGetLinks(JavaCodeFragmentBuilder methodsBuilder) throws CoreException;
 }

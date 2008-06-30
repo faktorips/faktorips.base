@@ -671,4 +671,16 @@ public class GenProdAssociationToMany extends GenProdAssociation {
         builder.appendln(";");
     }
 
+    /**
+     * Java 5 code sample:
+     * 
+     * <pre>
+     *  list.addAll(getLinksForProducts());
+     * </pre>
+     * @throws CoreException 
+     */
+    public void generateCodeForGetLinks(JavaCodeFragmentBuilder methodsBuilder) throws CoreException {
+        methodsBuilder.appendln("list.addAll("+getMethodNameGetManyRelatedCmptLinks()+"());");
+    }
+
 }

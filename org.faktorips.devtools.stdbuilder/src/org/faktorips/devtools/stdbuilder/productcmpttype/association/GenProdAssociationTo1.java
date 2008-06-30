@@ -453,4 +453,15 @@ public class GenProdAssociationTo1 extends GenProdAssociation {
         }
     }
 
+    /**
+     * Java 5 code sample:
+     * 
+     * <pre>
+     *  list.addAll(getLinkForProduct());
+     * </pre>
+     */
+    public void generateCodeForGetLinks(JavaCodeFragmentBuilder methodsBuilder) {
+        methodsBuilder.appendln("list.add("+getMethodNameGet1RelatedCmptLink()+"());");
+    }
+
 }

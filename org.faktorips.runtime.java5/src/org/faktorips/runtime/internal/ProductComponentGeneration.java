@@ -278,4 +278,11 @@ public abstract class ProductComponentGeneration extends RuntimeObject implement
     public ILink<? extends IProductComponent> getLink(String linkName, IProductComponent target) {
         throw new RuntimeException("Not implemented yet.");
     }
+
+    /**
+     * {@inheritDoc}
+     */
+    public List<ILink<? extends IProductComponent>> getLinks() {
+        throw new RuntimeException("Not implemented yet.");
+    }
 }

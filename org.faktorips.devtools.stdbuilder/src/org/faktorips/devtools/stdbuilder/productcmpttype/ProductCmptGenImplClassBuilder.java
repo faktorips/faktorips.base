@@ -174,6 +174,7 @@ public class ProductCmptGenImplClassBuilder extends BaseProductCmptTypeBuilder {
         generateMethodDoInitTableUsagesFromXml(methodsBuilder);
         if (isUseTypesafeCollections()) {
             generateMethodGetLink(methodsBuilder);
+            generateMethodGetLinks(methodsBuilder);
         }
     }
 
@@ -729,6 +730,57 @@ public class ProductCmptGenImplClassBuilder extends BaseProductCmptTypeBuilder {
         methodsBuilder.signature(Modifier.PUBLIC, Java5ClassNames.ILink_QualifiedName + "<? extends "
                 + IProductComponent.class.getName() + ">", "getLink", new String[] { "linkName", "target" },
                 new String[] { String.class.getName(), IProductComponent.class.getName() });
+    }
+
+    /**
+     * Java 5 code sample:
+     * 
+     * <pre>
+     *  [Javadoc]
+     *  public List&lt;ILink&lt;? extends IProductComponent&gt;&gt; getLinks() {
+     *      List&lt;ILink&lt;? extends IProductComponent&gt;&gt; list = new ArrayList&lt;ILink&lt;? extends IProductComponent&gt;&gt;();
+     *      list.addAll(getLinksForInsuredObjects());
+     *      list.addAll(getLinkForProduct());
+     *      return list;
+     *  }
+     * </pre>
+     * 
+     * @throws CoreException
+     */
+    private void generateMethodGetLinks(JavaCodeFragmentBuilder methodsBuilder) throws CoreException {
+        methodsBuilder.javaDoc(getJavaDocCommentForOverriddenMethod(), ANNOTATION_GENERATED);
+        generateSignatureGetLinks(methodsBuilder);
+        methodsBuilder.openBracket();
+        methodsBuilder.appendClassName(List.class.getName() + "<" + Java5ClassNames.ILink_QualifiedName + "<? extends "
+                + IProductComponent.class.getName() + ">>");
+        methodsBuilder
+                .append(" list = new ");
+        methodsBuilder.appendClassName(ArrayList.class.getName() + "<" + Java5ClassNames.ILink_QualifiedName + "<? extends "
+                + IProductComponent.class.getName() + ">>");
+        methodsBuilder.appendln("();");
+        IAssociation[] associations = getProductCmptType().getAssociations();
+        for (int i = 0; i < associations.length; i++) {
+            IProductCmptTypeAssociation a = (IProductCmptTypeAssociation)associations[i];
+            if (!associations[i].isDerivedUnion()) {
+                getGenerator(a).generateCodeForGetLinks(methodsBuilder);
+            }
+        }
+        methodsBuilder.appendln("return list;");
+        methodsBuilder.closeBracket();
+    }
+
+    /**
+     * Java 5 code sample:
+     * 
+     * <pre>
+     *  public List&lt;ILink&lt;? extends IProductComponent&gt;&gt; getLinks()
+     * </pre>
+     */
+    private void generateSignatureGetLinks(JavaCodeFragmentBuilder methodsBuilder) {
+        String returnType = List.class.getName() + "<" + Java5ClassNames.ILink_QualifiedName + "<? extends "
+                + IProductComponent.class.getName() + ">>";
+        methodsBuilder.signature(getJavaNamingConvention().getModifierForPublicInterfaceMethod(), returnType,
+                "getLinks", new String[0], new String[0]);
     }
 
 }
