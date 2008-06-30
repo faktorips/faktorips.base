@@ -56,7 +56,7 @@ import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
 /**
- * An ips project's properties. The project can't keep the properties on it's own, as it is
+ * An ips project's properties. The project can't keep the properties on its own, as it is
  * a handle.
  * 
  * @author Jan Ortmann
@@ -855,7 +855,7 @@ public class IpsProjectProperties implements IIpsProjectProperties {
     private void createRequiredIpsFeaturesComment(Node parentEl) {
         String s = "Required Ips-Features" + SystemUtils.LINE_SEPARATOR + " " + SystemUtils.LINE_SEPARATOR  //$NON-NLS-1$ //$NON-NLS-2$
         + "In this section, all required features are listed with the minimum version for these features." + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$
-        + "By default, the feature with id  \"org.faktorips.feature\" is required allways (because this is the core " + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$
+        + "By default, the feature with id \"org.faktorips.feature\" is always required (because this is the core " + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$
         + "feature of Faktor-IPS. Other features can be required if plugins providing extensions for any extension points"  + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$
         + "defined by Faktor-IPS are used." + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$
         + "If a required feature is missing or a required feature has a version less than the minimum version number " + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$
