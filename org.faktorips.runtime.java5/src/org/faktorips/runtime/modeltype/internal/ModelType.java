@@ -97,7 +97,19 @@ public class ModelType extends AbstractModelElement implements IModelType {
      * @throws ClassNotFoundException
      */
     public Class<?> getJavaClass() throws ClassNotFoundException {
-        return this.getClass().getClassLoader().loadClass(className);
+        return Class.forName(className);
+    }
+
+    /**
+     * {@inheritDoc}
+     * 
+     * @throws ClassNotFoundException
+     */
+    public Class<?> getJavaInterface() throws ClassNotFoundException {
+        String interfaceName = className.replace(".internal", "");
+        interfaceName = interfaceName.substring(0, interfaceName.lastIndexOf('.') + 1) + 'I'
+                + interfaceName.substring(interfaceName.lastIndexOf('.') + 1);
+        return Class.forName(interfaceName);
     }
 
     /**

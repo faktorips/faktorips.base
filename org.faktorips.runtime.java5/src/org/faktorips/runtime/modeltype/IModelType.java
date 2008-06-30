@@ -24,10 +24,16 @@ import java.util.List;
 public interface IModelType extends IModelElement {
     
     /**
-     * @return the class generated for this type.
+     * @return the Java class for this type.
      * @throws ClassNotFoundException if the class could not be loaded.
      */
     public Class<?> getJavaClass() throws ClassNotFoundException;
+    
+    /**
+     * @return the Java interface for this type.
+     * @throws ClassNotFoundException if the class could not be loaded.
+     */
+    public Class<?> getJavaInterface() throws ClassNotFoundException;
     
     /**
      * @return this model type's super type or <code>null</code> if it has none.
