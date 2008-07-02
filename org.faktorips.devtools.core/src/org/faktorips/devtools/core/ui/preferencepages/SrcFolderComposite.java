@@ -362,7 +362,7 @@ public class SrcFolderComposite extends Composite {
                         IInputValidator validator = new IInputValidator() {
 
                             public String isValid(String folderName) {
-                                if (folderName == null || folderName.isEmpty())
+                                if (folderName == null || folderName.length() == 0)
                                     return Messages.SrcFolderComposite_enterFolderName_validator;
                                 if (ipsObjectPath.getIpsProject().getProject().getFolder(folderName).exists())
                                     return Messages.SrcFolderComposite_folder_already_exists_validator;
