@@ -29,8 +29,11 @@ import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Label;
+import org.eclipse.swt.widgets.Table;
 import org.faktorips.devtools.core.model.ipsproject.IIpsObjectPath;
+import org.faktorips.devtools.core.model.ipsproject.IIpsObjectPathEntry;
 import org.faktorips.devtools.core.ui.UIToolkit;
+import org.faktorips.devtools.core.util.ArrayElementMover;
 
 
 /**
@@ -42,10 +45,10 @@ public class ObjectPathOrderComposite extends Composite {
     private IIpsObjectPath ipsObjectPath;
     private UIToolkit toolkit;
     private TableViewer tableViewer;
-    private Button moveEntryUpButton;
-    private Button moveEntryDownButton;
-    private Button moveEntryTopButton;
-    private Button moveEntryBottomButton;
+    private Button moveUpButton;
+    private Button moveDownButton;
+    private Button moveTopButton;
+    private Button moveBottomButton;
 
 
     ObjectPathOrderComposite(Composite parent) {
@@ -95,8 +98,7 @@ public class ObjectPathOrderComposite extends Composite {
     
     
     private TableViewer createViewer(Composite parent, IpsPathOrderAdapter projectAdapter) {
-        // disallow multiple selection
-        TableViewer viewer = new TableViewer(parent, SWT.BORDER | SWT.SINGLE);
+        TableViewer viewer = new TableViewer(parent, SWT.BORDER | SWT.MULTI);
         viewer.setLabelProvider(new IpsObjectPathLabelProvider());
         viewer.addSelectionChangedListener(projectAdapter);
         
@@ -104,42 +106,42 @@ public class ObjectPathOrderComposite extends Composite {
     }
 
     private void createButtons(Composite buttons, IpsPathOrderAdapter projectAdapter) {
-        moveEntryUpButton = toolkit.createButton(buttons, Messages.ObjectPathOrderComposite_buttonUp_label);
-        moveEntryUpButton.setLayoutData(new GridData(GridData.HORIZONTAL_ALIGN_FILL | GridData.VERTICAL_ALIGN_BEGINNING));
-        moveEntryUpButton.addSelectionListener(projectAdapter);
+        moveUpButton = toolkit.createButton(buttons, Messages.ObjectPathOrderComposite_buttonUp_label);
+        moveUpButton.setLayoutData(new GridData(GridData.HORIZONTAL_ALIGN_FILL | GridData.VERTICAL_ALIGN_BEGINNING));
+        moveUpButton.addSelectionListener(projectAdapter);
         
-        moveEntryDownButton = toolkit.createButton(buttons, Messages.ObjectPathOrderComposite_buttonDown_label);
-        moveEntryDownButton.setLayoutData(new GridData(GridData.HORIZONTAL_ALIGN_FILL | GridData.VERTICAL_ALIGN_BEGINNING));
-        moveEntryDownButton.addSelectionListener(projectAdapter);
+        moveDownButton = toolkit.createButton(buttons, Messages.ObjectPathOrderComposite_buttonDown_label);
+        moveDownButton.setLayoutData(new GridData(GridData.HORIZONTAL_ALIGN_FILL | GridData.VERTICAL_ALIGN_BEGINNING));
+        moveDownButton.addSelectionListener(projectAdapter);
         
-        moveEntryTopButton = toolkit.createButton(buttons, Messages.ObjectPathOrderComposite_buttonTop_label);
-        moveEntryTopButton.setLayoutData(new GridData(GridData.HORIZONTAL_ALIGN_FILL | GridData.VERTICAL_ALIGN_BEGINNING));
-        moveEntryTopButton.addSelectionListener(projectAdapter);
+        moveTopButton = toolkit.createButton(buttons, Messages.ObjectPathOrderComposite_buttonTop_label);
+        moveTopButton.setLayoutData(new GridData(GridData.HORIZONTAL_ALIGN_FILL | GridData.VERTICAL_ALIGN_BEGINNING));
+        moveTopButton.addSelectionListener(projectAdapter);
         
-        moveEntryBottomButton = toolkit.createButton(buttons, Messages.ObjectPathOrderComposite_buttonBottom_label);
-        moveEntryBottomButton.setLayoutData(new GridData(GridData.HORIZONTAL_ALIGN_FILL | GridData.VERTICAL_ALIGN_BEGINNING));
-        moveEntryBottomButton.addSelectionListener(projectAdapter);
+        moveBottomButton = toolkit.createButton(buttons, Messages.ObjectPathOrderComposite_buttonBottom_label);
+        moveBottomButton.setLayoutData(new GridData(GridData.HORIZONTAL_ALIGN_FILL | GridData.VERTICAL_ALIGN_BEGINNING));
+        moveBottomButton.addSelectionListener(projectAdapter);
         
         setButtonEnabledStates(false);
     }
 
     private void setButtonEnabledStates(boolean enabled) {
-        moveEntryBottomButton.setEnabled(enabled);
-        moveEntryDownButton.setEnabled(enabled);
-        moveEntryTopButton.setEnabled(enabled);
-        moveEntryUpButton.setEnabled(enabled);
+        moveBottomButton.setEnabled(enabled);
+        moveDownButton.setEnabled(enabled);
+        moveTopButton.setEnabled(enabled);
+        moveUpButton.setEnabled(enabled);
     }
 
     // enable all buttons, then selectively disable buttons not applicable for the current selection
     private void setButtonEnabledStates(int index) {        
         setButtonEnabledStates(true);
         if (index == 0) {
-            moveEntryUpButton.setEnabled(false);
-            moveEntryTopButton.setEnabled(false);
+            moveUpButton.setEnabled(false);
+            moveTopButton.setEnabled(false);
         }
         if (index == tableViewer.getTable().getItemCount() - 1) {
-            moveEntryDownButton.setEnabled(false);
-            moveEntryBottomButton.setEnabled(false);                    
+            moveDownButton.setEnabled(false);
+            moveBottomButton.setEnabled(false);                    
         }
     }
     
@@ -164,21 +166,17 @@ public class ObjectPathOrderComposite extends Composite {
             }
             
             int newIndex = -1;
-            if (e.getSource() == moveEntryUpButton) {
-                newIndex = selectionIndex - 1;
-                ipsObjectPath.moveEntry(selectionIndex, newIndex);
+            if (e.getSource() == moveUpButton) {
+                moveEntries(true);
             }
-            else if (e.getSource() == moveEntryDownButton) {
-                newIndex = selectionIndex + 1;
-                ipsObjectPath.moveEntry(selectionIndex, newIndex);
+            else if (e.getSource() == moveDownButton) {
+                moveEntries(false);
             }
-            else if (e.getSource() == moveEntryTopButton) {
-                newIndex = 0;
-                ipsObjectPath.moveEntry(selectionIndex, newIndex);
+            else if (e.getSource() == moveTopButton) {
+                moveEntriesTopBottom(true);
             }
-            else if (e.getSource() == moveEntryBottomButton) {
-                newIndex = tableViewer.getTable().getItemCount() - 1;
-                ipsObjectPath.moveEntry(selectionIndex, newIndex);
+            else if (e.getSource() == moveBottomButton) {
+                moveEntriesTopBottom(false);
             }
             
             setButtonEnabledStates(newIndex);
@@ -188,4 +186,50 @@ public class ObjectPathOrderComposite extends Composite {
         public void widgetDefaultSelected(SelectionEvent e) { /* nothing to do */ }
     }
 
+
+    /**
+     * @param up, if true selected elements will be moved up by one if possible. Otherwise the elements will be moved down by one.
+     */
+    public void moveEntries(boolean up) {
+        Table table = tableViewer.getTable();
+        IIpsObjectPathEntry[] entries = ipsObjectPath.getEntries();
+        if (entries.length == 0) {
+            return;
+        }
+        
+        ArrayElementMover mover = new ArrayElementMover(entries);
+        
+        int[] newSelection;
+        if (up) {
+            newSelection = mover.moveUp(table.getSelectionIndices());
+        } else {
+            newSelection = mover.moveDown(table.getSelectionIndices());
+        }
+        ipsObjectPath.setEntries(entries);
+        tableViewer.refresh(false);
+        table.setSelection(newSelection);
+    }
+
+
+    /**
+     * @param top, if true selected elements will be moved to top, preserving the order of selected items. Otherwise the elements will
+     * be moved to the bottom. 
+     */
+    private void moveEntriesTopBottom(boolean top) {
+        int[] currentSelection = tableViewer.getTable().getSelectionIndices();
+        java.util.Arrays.sort(currentSelection);
+        if (currentSelection.length == 0)
+            return;
+        
+        if (top) {
+            for (int i = 0; i < currentSelection[currentSelection.length - 1]; i++) {
+                moveEntries(true);
+            }
+        } else {
+            for (int i = 0; i < tableViewer.getTable().getItemCount() - currentSelection.length; i++) {
+                moveEntries(false);
+            }
+        }
+    }
+    
 }

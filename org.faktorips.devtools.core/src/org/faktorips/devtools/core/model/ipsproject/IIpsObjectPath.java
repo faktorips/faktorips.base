@@ -193,13 +193,5 @@ public interface IIpsObjectPath {
      * Validates the object path and returns the result as list of messages.
      */
     public MessageList validate() throws CoreException;
-
-    /**
-     * Moves an entry at at the given fromIndex to the index toIndex and adjusts the positions of the
-     * elements in between accordingly. 
-     * @return true if the action was successfull, false if wrong indices were given. The original IpsObjectPath 
-     * is not touched in this case and remains valid. 
-     */
-    public boolean moveEntry(int fromIndex, int toIndex);
     
 }

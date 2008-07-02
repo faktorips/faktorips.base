@@ -677,25 +677,6 @@ public class IpsObjectPath implements IIpsObjectPath {
         return list;
     }
     
-    /**
-     * {@inheritDoc}
-     */
-    public boolean moveEntry(int fromIndex, int toIndex) {
-        if (fromIndex < 0 || toIndex < 0 || fromIndex == toIndex || fromIndex >= entries.length || toIndex >= entries.length ) {
-            return false;
-        }
-        
-        int sourceIndex = (fromIndex > toIndex) ? toIndex : fromIndex + 1;
-        int destIndex = (fromIndex > toIndex) ? toIndex + 1 : fromIndex;
-        int numEntriesToCopy = (fromIndex > toIndex) ? fromIndex - toIndex : toIndex - fromIndex;
-
-        IIpsObjectPathEntry tempEntry = entries[fromIndex];
-        System.arraycopy(entries, sourceIndex, entries, destIndex, numEntriesToCopy);
-        entries[toIndex] = tempEntry;
-
-        return true;
-    }
-
     /*
      * Validate that the given folder exists.
      */
