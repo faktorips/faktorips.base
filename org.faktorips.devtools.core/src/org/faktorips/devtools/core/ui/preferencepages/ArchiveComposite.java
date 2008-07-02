@@ -24,19 +24,17 @@ import java.util.List;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
-import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.jface.viewers.ArrayContentProvider;
+import org.eclipse.jface.viewers.DecoratingLabelProvider;
 import org.eclipse.jface.viewers.ISelectionChangedListener;
 import org.eclipse.jface.viewers.IStructuredSelection;
-import org.eclipse.jface.viewers.LabelProvider;
 import org.eclipse.jface.viewers.SelectionChangedEvent;
 import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.jface.window.Window;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.events.SelectionListener;
-import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
@@ -77,6 +75,10 @@ public class ArchiveComposite extends Composite {
         return dataChanged;
     }
 
+    /**
+     * 
+     * @param parent Composite
+     */
     public ArchiveComposite(Composite parent) {
         super(parent, SWT.NONE);
         
@@ -129,7 +131,10 @@ public class ArchiveComposite extends Composite {
         tableViewer = new TableViewer(table);
         tableViewer.addSelectionChangedListener(archiveAdapter);
         tableViewer.setContentProvider(new ArrayContentProvider());
-        tableViewer.setLabelProvider(new TableLabelProvider());
+        tableViewer.setLabelProvider(new DecoratingLabelProvider(
+                new IpsObjectPathLabelProvider(), 
+                IpsPlugin.getDefault().getWorkbench().getDecoratorManager().getLabelDecorator()
+        ));
         
         tableViewer.setInput(ipsObjectPath);
 
@@ -138,9 +143,9 @@ public class ArchiveComposite extends Composite {
 
     /**
      * Initializes the composite for an existing IPS Project
-     * @param ipsProject IPS project to initialize
+     * @param ipsObjectPath IPS object path used to initialize this composite, must not be null
      * @throws CoreException 
-     */    
+     */
     public void init(final IIpsObjectPath ipsObjectPath) {
         this.ipsObjectPath = ipsObjectPath;
 
@@ -220,33 +225,6 @@ public class ArchiveComposite extends Composite {
     }
     
     
-    private static class TableLabelProvider extends LabelProvider {
-
-        public Image getImage(Object element) {           
-            return IpsPlugin.getDefault().getImage("IpsAr.gif"); //$NON-NLS-1$
-        }
-
-        public String getText(Object element) {
-            if (element instanceof IIpsArchiveEntry) {
-                IIpsArchiveEntry ipsarEntry = (IIpsArchiveEntry) element;
-                StringBuffer result = new StringBuffer();
-                result.append(ipsarEntry.getArchiveFile().getName());
-                result.append(" - "); //$NON-NLS-1$
-                result.append(ipsarEntry.getArchiveFile().getProject().getName());
-                
-                int numSegments = ipsarEntry.getArchiveFile().getProjectRelativePath().segmentCount();
-                if ( numSegments > 1) { // append directory tree in which the IPS archive resides 
-                    for (int i = 0; i < numSegments - 1; i++) {
-                        result.append(IPath.SEPARATOR);
-                        result.append(ipsarEntry.getArchiveFile().getProjectRelativePath().segment(i));                        
-                    }
-                }
-                return result.toString();
-            }
-            return Messages.ArchiveComposite_labelProvider_invalid_element;
-        }
-    }
-
     private class IpsArchiveAdapter implements SelectionListener, ISelectionChangedListener {
 
         public void selectionChanged(SelectionChangedEvent event) {

@@ -17,7 +17,8 @@
 
 package org.faktorips.devtools.core.ui.preferencepages;
 
-import org.eclipse.core.resources.IFolder;
+import java.util.ArrayList;
+
 import org.eclipse.jface.viewers.ITreeContentProvider;
 import org.eclipse.jface.viewers.Viewer;
 import org.faktorips.devtools.core.model.ipsproject.IIpsObjectPath;
@@ -30,11 +31,6 @@ import org.faktorips.devtools.core.model.ipsproject.IIpsSrcFolderEntry;
  */
 public class IpsObjectPathContentProvider implements ITreeContentProvider {
 
-    // TODO: add missing IIpsObjectPathEntry code paths!!
-    
-    private Viewer viewer;
-    private IIpsObjectPath model;
-
     /**
      * {@inheritDoc}
      */
@@ -44,17 +40,69 @@ public class IpsObjectPathContentProvider implements ITreeContentProvider {
             IIpsObjectPath objectPath = entry.getIpsObjectPath();
             boolean outputDefinedPerSrcFolder = objectPath.isOutputDefinedPerSrcFolder();
 
-            IFolder[] specificFolders = null;
+            ArrayList attributes = new ArrayList();
             if (outputDefinedPerSrcFolder) {
-                specificFolders = new IFolder[2];
-                specificFolders[0] = entry.getSpecificOutputFolderForDerivedJavaFiles();
-                specificFolders[1] = entry.getSpecificOutputFolderForMergableJavaFiles();
+
+                // append the SrcFolderEntry's attributes (like basePackageDerived, basePackageMergable, outputFolderDerived, outputFolderMergable, 
+                // sourceFolder and tocPath)
+                IpsSrcFolderEntryAttribute attribute = newOutputFolderForDerivedJavaFiles(entry);
+                attributes.add(attribute);
+                
+                attribute = newOutputFolderForMergableJavaFiles(entry);
+                attributes.add(attribute);
+                
+                attribute = newTocPath(entry);
+                if (attribute != null) {
+                    attributes.add(attribute);
+                }
             }
 
-            return specificFolders;
+            return attributes.toArray();
         }
 
         return null;
+    }
+
+    private IpsSrcFolderEntryAttribute newTocPath(IIpsSrcFolderEntry entry) {
+        IpsSrcFolderEntryAttribute attribute = null;
+        
+        if (entry.getBasePackageRelativeTocPath() != null)
+            attribute = new IpsSrcFolderEntryAttribute(
+                    IIpsSrcFolderEntryAttribute.SPECIFIC_TOC_PATH,
+                    entry.getBasePackageRelativeTocPath());
+
+        return attribute;
+    }
+
+    private IpsSrcFolderEntryAttribute newOutputFolderForMergableJavaFiles(IIpsSrcFolderEntry entry) {
+        IpsSrcFolderEntryAttribute attribute;
+        
+        if (entry.getSpecificOutputFolderForMergableJavaFiles() == null)
+            attribute = new IpsSrcFolderEntryAttribute(
+                    IIpsSrcFolderEntryAttribute.DEFAULT_OUTPUT_FOLDER_FOR_MERGABLE_SOURCES, 
+                    entry.getIpsObjectPath().getOutputFolderForMergableSources());
+        else {
+            attribute = new IpsSrcFolderEntryAttribute(
+                    IIpsSrcFolderEntryAttribute.SPECIFIC_OUTPUT_FOLDER_FOR_MERGABLE_SOURCES,
+                    entry.getSpecificOutputFolderForMergableJavaFiles()
+            );
+        }
+        return attribute;
+    }
+
+    private IpsSrcFolderEntryAttribute newOutputFolderForDerivedJavaFiles(IIpsSrcFolderEntry entry) {
+        IpsSrcFolderEntryAttribute attribute;
+        if (entry.getSpecificOutputFolderForDerivedJavaFiles() == null)
+            attribute = new IpsSrcFolderEntryAttribute(
+                    IIpsSrcFolderEntryAttribute.DEFAULT_OUTPUT_FOLDER_FOR_DERIVED_SOURCES, 
+                    entry.getIpsObjectPath().getOutputFolderForDerivedSources());
+        else {
+            attribute = new IpsSrcFolderEntryAttribute(
+                    IIpsSrcFolderEntryAttribute.SPECIFIC_OUTPUT_FOLDER_FOR_DERIVED_SOURCES,
+                    entry.getSpecificOutputFolderForDerivedJavaFiles()
+            );
+        }
+        return attribute;
     }
 
     /**
@@ -90,20 +138,12 @@ public class IpsObjectPathContentProvider implements ITreeContentProvider {
     /**
      * {@inheritDoc}
      */
-    public void dispose() {
-        // TODO Auto-generated method stub
+    public void dispose() { /* nothing to do */  }
 
-    }
-
+    
     /**
      * {@inheritDoc}
      */
-    public void inputChanged(Viewer viewer, Object oldInput, Object newInput) {
-        this.viewer = viewer;
-        if (newInput instanceof IIpsObjectPath) {
-            model = (IIpsObjectPath) newInput;
-        } else {
-            model = null;
-        }
-    }
+    public void inputChanged(Viewer viewer, Object oldInput, Object newInput) { /* nothing to do */ }
+    
 }    

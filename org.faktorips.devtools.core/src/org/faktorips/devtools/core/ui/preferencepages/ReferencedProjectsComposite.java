@@ -19,6 +19,7 @@ import java.util.Iterator;
 
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jface.viewers.ArrayContentProvider;
+import org.eclipse.jface.viewers.DecoratingLabelProvider;
 import org.eclipse.jface.viewers.ISelectionChangedListener;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.LabelProvider;
@@ -111,8 +112,10 @@ public class ReferencedProjectsComposite extends Composite {
         tableViewer = new TableViewer(table);
         tableViewer.addSelectionChangedListener(projectAdapter);
         tableViewer.setContentProvider(new ArrayContentProvider());
-        tableViewer.setLabelProvider(new TableLabelProvider());
-
+        tableViewer.setLabelProvider(new  DecoratingLabelProvider(
+                new IpsObjectPathLabelProvider(),
+                IpsPlugin.getDefault().getWorkbench().getDecoratorManager().getLabelDecorator()
+        ));
         return tableViewer;
     }
 

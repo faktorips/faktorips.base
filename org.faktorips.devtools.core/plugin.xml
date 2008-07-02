@@ -954,6 +954,15 @@
             <objectClass name="org.faktorips.devtools.core.model.IIpsElement"/>
          </enablement>
       </decorator>
+      <decorator
+            adaptable="false"
+            class="org.faktorips.devtools.core.ui.preferencepages.ObjectPathEntryLabelDecorator"
+            id="org.faktorips.devtools.core.ipsobjectpathentrydecorator"
+            label="IpsObjectPathEntryDecorator"
+            lightweight="true"
+            location="BOTTOM_LEFT"
+            state="true">
+      </decorator>
    </extension>
    <extension
          point="org.eclipse.ui.ide.projectNatureImages">

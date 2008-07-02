@@ -179,6 +179,8 @@ public class IpsObjectPathContainer {
     public boolean saveToIpsProjectFile() {
         
         try {
+            // FIXME: only save on change!!!!!!!
+            //if (srcFolderComposite.isDataChanged() || )
             currentIpsProject.setIpsObjectPath(ipsObjectPath);
         } catch (CoreException e) {
             
