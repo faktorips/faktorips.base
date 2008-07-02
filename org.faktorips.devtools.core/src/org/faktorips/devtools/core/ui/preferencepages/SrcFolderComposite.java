@@ -288,15 +288,24 @@ public class SrcFolderComposite extends Composite {
         if (selection instanceof ITreeSelection) {
             ITreeSelection treeSelection = (ITreeSelection) selection;
             Object selectedElement = treeSelection.getFirstElement();
+            
+            IIpsSrcFolderEntry srcFolderEntry = (IIpsSrcFolderEntry) treeViewer.getTree().getSelection()[0].getParentItem().getData();
+                        
             if (selectedElement instanceof IpsSrcFolderEntryAttribute) {
                 IIpsSrcFolderEntryAttribute attribute = (IIpsSrcFolderEntryAttribute) selectedElement;
                 
                 AttributeEditDialog editDialog = null;
                 if (attribute.isFolderForDerivedSources()) {
-                    editDialog = new AttributeEditDialog(getShell(), ipsObjectPath.getIpsProject(), IIpsSrcFolderEntryAttribute.DEFAULT_OUTPUT_FOLDER_FOR_DERIVED_SOURCES);    
+                    editDialog = new AttributeEditDialog(getShell(), 
+                            ipsObjectPath.getIpsProject(), 
+                            IIpsSrcFolderEntryAttribute.SPECIFIC_OUTPUT_FOLDER_FOR_DERIVED_SOURCES,
+                            srcFolderEntry.getSpecificOutputFolderForDerivedJavaFiles() );    
                 }
                 else if (attribute.isFolderForMergableSources()) {
-                    editDialog = new AttributeEditDialog(getShell(), ipsObjectPath.getIpsProject(), IIpsSrcFolderEntryAttribute.DEFAULT_OUTPUT_FOLDER_FOR_MERGABLE_SOURCES);
+                    editDialog = new AttributeEditDialog(getShell(), 
+                            ipsObjectPath.getIpsProject(), 
+                            IIpsSrcFolderEntryAttribute.SPECIFIC_OUTPUT_FOLDER_FOR_MERGABLE_SOURCES,
+                            srcFolderEntry.getSpecificOutputFolderForMergableJavaFiles());
                 }
                 
                 if (editDialog != null && editDialog.open() == Window.OK) {
@@ -305,14 +314,13 @@ public class SrcFolderComposite extends Composite {
                         return;
                     }
                     
-                    IIpsSrcFolderEntry entry = (IIpsSrcFolderEntry) treeViewer.getTree().getSelection()[0].getParentItem().getData();
                     if (attribute.isFolderForDerivedSources()) {
-                        entry.setSpecificOutputFolderForDerivedJavaFiles( (IFolder) folder.getAdapter(IFolder.class));
+                        srcFolderEntry.setSpecificOutputFolderForDerivedJavaFiles( (IFolder) folder.getAdapter(IFolder.class));
                     }
                     else if (attribute.isFolderForMergableSources()) {
-                        entry.setSpecificOutputFolderForMergableJavaFiles( (IFolder) folder.getAdapter(IFolder.class));
+                        srcFolderEntry.setSpecificOutputFolderForMergableJavaFiles( (IFolder) folder.getAdapter(IFolder.class));
                     }
-                    treeViewer.refresh(entry, false);
+                    treeViewer.refresh(srcFolderEntry, false);
                 }
             }
         }

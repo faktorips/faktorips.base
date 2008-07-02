@@ -50,23 +50,26 @@ public class AttributeEditDialog extends StatusDialog {
     private Button buttonCustomFolderSelected;
     private String type;
     
-    private boolean customFolderSelected = false;    
+    private boolean customFolderSelected = false;
+    private IContainer selectedFolder;    
 
     /**
      * 
      * @param parent Composite
      * @param ipsProject for which the edit action has to be performed
      * @param type determines which attribute will be edited. It can be either 
-     * IIpsSrcFolderEntryAttribute.DEFAULT_OUTPUT_FOLDER_FOR_DERIVED_SOURCES or IIpsSrcFolderEntryAttribute.DEFAULT_OUTPUT_FOLDER_FOR_MERGABLE_SOURCES 
+     * IIpsSrcFolderEntryAttribute.SPECIFIC_OUTPUT_FOLDER_FOR_DERIVED_SOURCES or IIpsSrcFolderEntryAttribute.SPECIFIC_OUTPUT_FOLDER_FOR_MERGABLE_SOURCES
+     * @param initialFolder initially selected output folder 
      */
-    public AttributeEditDialog(Shell parent, IIpsProject ipsProject, String type) {
+    public AttributeEditDialog(Shell parent, IIpsProject ipsProject, String type, IContainer initialFolder) {
         super(parent);
         this.setTitle("Edit Attribute");
         this.setHelpAvailable(false);
         this.ipsProject = ipsProject;
+        this.selectedFolder = initialFolder;
         
-        if (IIpsSrcFolderEntryAttribute.DEFAULT_OUTPUT_FOLDER_FOR_DERIVED_SOURCES.equals(type) ||
-                IIpsSrcFolderEntryAttribute.DEFAULT_OUTPUT_FOLDER_FOR_MERGABLE_SOURCES.equals(type)) {
+        if (IIpsSrcFolderEntryAttribute.SPECIFIC_OUTPUT_FOLDER_FOR_DERIVED_SOURCES.equals(type) ||
+                IIpsSrcFolderEntryAttribute.SPECIFIC_OUTPUT_FOLDER_FOR_MERGABLE_SOURCES.equals(type)) {
             this.type = type;
         }
     }
@@ -81,14 +84,26 @@ public class AttributeEditDialog extends StatusDialog {
         Group group = new Group(parent, SWT.NONE);
         
         buttonDefaultFolderSelected = new Button(group, SWT.RADIO);
-        buttonDefaultFolderSelected.setSelection(true);
         buttonDefaultFolderSelected.setText("Use project default output folder (" +  getDefaultOutputFolder() + ").");
         buttonCustomFolderSelected = new Button(group, SWT.RADIO);
         buttonCustomFolderSelected.setText("Use package specific output folder (path relative to " + ipsProject.getName() + ").");
 
         folderSelectionControl = new FolderSelectionControl(group, new UIToolkit(null), "Browse");
         folderSelectionControl.setRoot(ipsProject.getProject());
-        folderSelectionControl.setEnabled(false);
+        
+        if (selectedFolder != null) {
+            // entry specific folder
+            buttonCustomFolderSelected.setSelection(true);
+            buttonDefaultFolderSelected.setSelection(false);
+            folderSelectionControl.setEnabled(true);
+            folderSelectionControl.setFolder(selectedFolder);
+        }
+        else {
+            // default IPS object path folders are used
+            buttonCustomFolderSelected.setSelection(false);
+            buttonDefaultFolderSelected.setSelection(true);
+            folderSelectionControl.setEnabled(false);            
+        }
         
         GridLayout layout = new GridLayout(1, true);
         layout.verticalSpacing = 10;
@@ -151,10 +166,10 @@ public class AttributeEditDialog extends StatusDialog {
         if (ipsProject != null) {
             IContainer folder = null;
             try {
-                if (IIpsSrcFolderEntryAttribute.DEFAULT_OUTPUT_FOLDER_FOR_DERIVED_SOURCES.equals(type)) {
+                if (IIpsSrcFolderEntryAttribute.SPECIFIC_OUTPUT_FOLDER_FOR_DERIVED_SOURCES.equals(type)) {
                     folder = ipsProject.getIpsObjectPath().getOutputFolderForDerivedSources();
                 }
-                else if (IIpsSrcFolderEntryAttribute.DEFAULT_OUTPUT_FOLDER_FOR_MERGABLE_SOURCES.equals(type)) {
+                else if (IIpsSrcFolderEntryAttribute.SPECIFIC_OUTPUT_FOLDER_FOR_MERGABLE_SOURCES.equals(type)) {
                     folder = ipsProject.getIpsObjectPath().getOutputFolderForMergableSources();
                 }
                 
