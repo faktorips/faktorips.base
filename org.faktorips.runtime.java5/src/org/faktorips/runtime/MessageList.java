@@ -23,7 +23,7 @@ import org.faktorips.runtime.Message.Severity;
  * 
  * @author Jan Ortmann
  */
-public class MessageList implements Serializable {
+public class MessageList implements Serializable, Iterable<Message> {
 
     private static final long serialVersionUID = 5518835977871253111L;
 
