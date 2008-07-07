@@ -196,21 +196,18 @@ public class ModelObjectDelta implements IModelObjectDelta {
      * @throws NullPointerException if modelObject and referenceModelObject are both <code>null</code>.
      */
 	private ModelObjectDelta(IModelObject original, IModelObject referenceModelObject, int kind, String association) {
-		this.original = original;
-		this.referenceObject = referenceModelObject;
-		if (original!=null) {
-            modelClass = original.getClass();
-        } else {
-            modelClass = referenceModelObject.getClass();
-        }
-        this.kind = kind;
-		this.kindOfChange = 0;
+	    this(original, referenceModelObject, kind, 0);
 		this.association = association;
 	}
 	
     private ModelObjectDelta(IModelObject original, IModelObject referenceModelObject, int deltaKind, int kindOfChange) {
         this.original = original;
         this.referenceObject = referenceModelObject;
+        if (original!=null) {
+            modelClass = original.getClass();
+        } else {
+            modelClass = referenceModelObject.getClass();
+        }
         this.kind = deltaKind;
         this.kindOfChange = kind;
     }
