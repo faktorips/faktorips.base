@@ -499,7 +499,7 @@ public class TableImplBuilder extends DefaultJavaSourceFileBuilder {
         }
         codeBuilder.method(Modifier.PROTECTED, Void.TYPE, "initKeyMaps", new String[0], new Class[0], methodBody,
                 getLocalizedText(getIpsObject(), INIT_KEY_MAPS_JAVADOC), ANNOTATION_GENERATED,
-                isUseTypesafeCollections()&&methodBody.getSourcecode().contains("<") ? new String[] { ANNOTATION_SUPPRESS_WARNINGS_UNCHECKED } : null);
+                isUseTypesafeCollections()&&methodBody.getSourcecode().indexOf("<")>0 ? new String[] { ANNOTATION_SUPPRESS_WARNINGS_UNCHECKED } : null);
     }
 
     private JavaCodeFragment createInitKeyMapsMethodBody(IUniqueKey[] keys) throws CoreException {
