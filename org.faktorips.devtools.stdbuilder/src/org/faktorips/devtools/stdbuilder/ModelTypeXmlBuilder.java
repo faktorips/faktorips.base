@@ -40,12 +40,15 @@ import org.faktorips.devtools.core.model.valueset.IEnumValueSet;
 import org.faktorips.devtools.core.model.valueset.IRangeValueSet;
 import org.faktorips.devtools.core.model.valueset.IValueSet;
 import org.faktorips.devtools.core.util.XmlUtil;
+import org.faktorips.devtools.stdbuilder.policycmpttype.attribute.GenAttribute;
+import org.faktorips.devtools.stdbuilder.productcmpttype.attribute.GenProdAttribute;
 import org.w3c.dom.DOMException;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
 /**
- * A builder writing meta information from design time objects to xml files for later use at runtime.
+ * A builder writing meta information from design time objects to xml files for later use at
+ * runtime.
  * 
  * @author Daniel Hohenberger
  */
@@ -150,14 +153,18 @@ public class ModelTypeXmlBuilder extends AbstractXmlFileBuilder {
                 Element modelTypeAttribute = doc.createElement("ModelTypeAttribute");
                 modelTypeAttributes.appendChild(modelTypeAttribute);
                 modelTypeAttribute.setAttribute("name", attribute.getName());
-                    if (model instanceof IPolicyCmptType) {
-                        modelTypeAttribute.setAttribute("datatype", ((StandardBuilderSet)getBuilderSet()).getGenerator(
-                                (IPolicyCmptType)model).getGenerator((IPolicyCmptTypeAttribute)attribute).getDatatype()
-                                .getJavaClassName());
-                    } else if (model instanceof IProductCmptType) {
-                        modelTypeAttribute.setAttribute("datatype", ((StandardBuilderSet)getBuilderSet()).getGenerator(
-                                (IProductCmptType)model).getGenerator((IProductCmptTypeAttribute)attribute).getDatatype()
-                                .getJavaClassName());
+                if (model instanceof IPolicyCmptType) {
+                    GenAttribute genAttribute = ((StandardBuilderSet)getBuilderSet()).getGenerator(
+                            (IPolicyCmptType)model).getGenerator((IPolicyCmptTypeAttribute)attribute);
+                    if (genAttribute != null) {
+                        modelTypeAttribute.setAttribute("datatype", genAttribute.getDatatype().getJavaClassName());
+                    }
+                } else if (model instanceof IProductCmptType) {
+                    GenProdAttribute genAttribute = ((StandardBuilderSet)getBuilderSet()).getGenerator(
+                            (IProductCmptType)model).getGenerator((IProductCmptTypeAttribute)attribute);
+                    if (genAttribute != null) {
+                        modelTypeAttribute.setAttribute("datatype", genAttribute.getDatatype().getJavaClassName());
+                    }
                 } else {
                     modelTypeAttribute.setAttribute("datatype", null);
                 }
