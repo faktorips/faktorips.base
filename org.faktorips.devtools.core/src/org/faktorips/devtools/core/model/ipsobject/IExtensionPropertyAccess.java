@@ -42,7 +42,7 @@ public interface IExtensionPropertyAccess {
      * 
      * @param propertyId The id of an extension property.
      * 
-     * @throws IllegalArgumentException if no exentension property with given id is defined for
+     * @throws IllegalArgumentException if no extension property with given id is defined for
      * this object's type.
      */
     public Object getExtPropertyValue(String propertyId);
@@ -54,7 +54,7 @@ public interface IExtensionPropertyAccess {
      * @param propertyId The id of an extension property.
      * @param value The object's new value for the property.
      * 
-     * @throws IllegalArgumentException if no exentension property with given id is defined for
+     * @throws IllegalArgumentException if no extension property with given id is defined for
      * this object's type.
      */
     public void setExtPropertyValue(String propertyId, Object value);

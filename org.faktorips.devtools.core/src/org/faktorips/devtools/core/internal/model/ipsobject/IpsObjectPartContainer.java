@@ -188,7 +188,7 @@ public abstract class IpsObjectPartContainer extends IpsElement implements IIpsO
     protected abstract void objectHasChanged();
     
     /**
-     * Hass to be called when a part was added to the container to trigger event
+     * Has to be called when a part was added to the container to trigger event
      * notification.
      */
     protected void partWasAdded(IIpsObjectPart part) {
