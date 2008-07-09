@@ -35,7 +35,7 @@ public class TableRowGenerator extends JetJavaContentGenerator
     return result;
   }
 
-  protected final String NL = nl == null ? (System.getProperties().getProperty("line.separator")) : nl;
+  public final String NL = nl == null ? (System.getProperties().getProperty("line.separator")) : nl;
   protected final String TEXT_1 = "package ";
   protected final String TEXT_2 = ";";
   protected final String TEXT_3 = NL + " ";
