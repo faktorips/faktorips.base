@@ -33,7 +33,7 @@ public interface IExtensionPropertyAccess {
      * 
      * @param propertyId The id of an extension property.
      * @return true if a definition of the extension property is available in the current eclipse
-     *         installation otherwise false.
+     *         installation, otherwise false.
      */
     public boolean isExtPropertyDefinitionAvailable(String propertyId);
     
