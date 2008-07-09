@@ -144,7 +144,7 @@ public abstract class ProductComponentGeneration extends RuntimeObject implement
     protected void doInitTableUsagesFromXml(Map<String, Element> map) {
         // nothing to do in the base class
         // 
-        // Note that the method is deliberatly not declared as abstract to 
+        // Note that the method is deliberately not declared as abstract to 
         // allow in subclasses calls to doInitTableUsagesFromXml(). 
     }
 
@@ -157,7 +157,7 @@ public abstract class ProductComponentGeneration extends RuntimeObject implement
      * @param genElement An xml element containing a product component generation's data.
      * @throws NullPointerException if genElement is <code>null</code>.
      */
-    // note: not private to allow acces by test case
+    // note: not private to allow access by test case
     final Map<String, Element> getPropertyElements(Element genElement) {
         Map<String, Element> elementMap = new HashMap<String, Element>();
         NodeList nl = genElement.getChildNodes();
@@ -190,7 +190,7 @@ public abstract class ProductComponentGeneration extends RuntimeObject implement
      * @param genElement An xml element containing a product component generation's data.
      * @throws NullPointerException if genElement is <code>null</code>.
      */
-    // note: not private to allow acces by test case
+    // note: not private to allow access by test case
     final Map<String, List<Element>> getLinkElements(Element genElement) {
         Map<String, List<Element>> elementMap = new HashMap<String, List<Element>>();
         NodeList nl = genElement.getChildNodes();
@@ -266,7 +266,7 @@ public abstract class ProductComponentGeneration extends RuntimeObject implement
     }
 
     /**
-     * Sets the product component this generation belogs to.
+     * Sets the product component this generation belongs to.
      */
     protected void setProductCmpt(ProductComponent productCmpt) {
         this.productCmpt = productCmpt;
