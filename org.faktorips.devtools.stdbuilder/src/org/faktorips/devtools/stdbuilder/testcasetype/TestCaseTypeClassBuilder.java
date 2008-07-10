@@ -844,7 +844,12 @@ public class TestCaseTypeClassBuilder extends DefaultJavaSourceFileBuilder {
     }
 
     private boolean buildXmlCallbackBodyFor(JavaCodeFragment body, ITestPolicyCmptTypeParameter parameter, String parentPath) throws CoreException {
-        String currentPath = parentPath + "/" + parameter.getName();
+    	IPolicyCmptType policyCmptType = parameter.findPolicyCmptType(getIpsProject());
+        if (policyCmptType == null){
+            throw new CoreException(new IpsStatus("Policy component type " + parameter.getPolicyCmptType()
+                    + " not found for test policy component type parameter " + parameter.getName()));
+        }
+    	String currentPath = parentPath + "/" + policyCmptType.getName();
 
         boolean extensionAttrExists = false;
         JavaCodeFragment childCodeFragment = new JavaCodeFragment();
