@@ -95,6 +95,12 @@ public interface ITestAttribute extends IIpsObjectPart {
      * thus if the attribute is given then the datatype should be empty and vice versa.
      */
     public final static String MSGCODE_DATATYPE_AND_ATTRIBUTE_GIVEN = MSGCODE_PREFIX + "DatatypeAndAttributeAreGiven"; //$NON-NLS-1$
+
+    /**
+	 * Validation message code to indicate that the name of the test attribute
+	 * is not a valid java field identifier.
+	 */    
+    public final static String MSGCODE_INVALID_TEST_ATTRIBUTE_NAME = MSGCODE_PREFIX + "InvalidTestAttributeName"; //$NON-NLS-1$
     
     /**
      * Sets the attribute's name.
@@ -233,6 +239,7 @@ public interface ITestAttribute extends IIpsObjectPart {
 
     /**
      * Returns <code>true</code> if the test attribute based on a model attribute (policy cmpt type attribute).
+     * This kind of attributes are also known as test extension attributes.
      */
     public boolean isBasedOnModelAttribute();
 }
