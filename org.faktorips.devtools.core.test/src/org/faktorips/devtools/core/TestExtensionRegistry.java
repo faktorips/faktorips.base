@@ -18,7 +18,6 @@ import org.eclipse.core.runtime.IExtension;
 import org.eclipse.core.runtime.IExtensionPoint;
 import org.eclipse.core.runtime.IExtensionRegistry;
 import org.eclipse.core.runtime.IRegistryChangeListener;
-import org.eclipse.core.runtime.IRegistryEventListener;
 import org.faktorips.util.ArgumentCheck;
 
 /**
@@ -30,8 +29,8 @@ import org.faktorips.util.ArgumentCheck;
  */
 public class TestExtensionRegistry implements IExtensionRegistry {
 
-    private final IExtensionPoint[] extensionPoints;
-
+    private IExtensionPoint[] extensionPoints;
+    
     /**
      * Creates a new TestExtensionRegistry for the provided {@link IExtensionPoint}s.
      */
@@ -39,7 +38,7 @@ public class TestExtensionRegistry implements IExtensionRegistry {
         ArgumentCheck.notNull(extensionPoints, this);
         this.extensionPoints = extensionPoints;
     }
-
+    
     /**
      * Throws RuntimeException
      */
@@ -184,41 +183,6 @@ public class TestExtensionRegistry implements IExtensionRegistry {
      * Throws RuntimeException
      */
     public void stop(Object token) throws IllegalArgumentException {
-        throw new RuntimeException("Not implemented");
-    }
-
-    /**
-     * Throws RuntimeException
-     */
-    public void addListener(IRegistryEventListener arg0) {
-        throw new RuntimeException("Not implemented");
-    }
-
-    /**
-     * Throws RuntimeException
-     */
-    public void addListener(IRegistryEventListener arg0, String arg1) {
-        throw new RuntimeException("Not implemented");
-    }
-
-    /**
-     * Throws RuntimeException
-     */
-    public IExtensionPoint[] getExtensionPoints(IContributor arg0) {
-        throw new RuntimeException("Not implemented");
-    }
-
-    /**
-     * Throws RuntimeException
-     */
-    public IExtension[] getExtensions(IContributor arg0) {
-        throw new RuntimeException("Not implemented");
-    }
-
-    /**
-     * Throws RuntimeException
-     */
-    public void removeListener(IRegistryEventListener arg0) {
         throw new RuntimeException("Not implemented");
     }
 
