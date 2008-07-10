@@ -35,3 +35,4 @@ Export-Package: org.faktorips.devtools.core,
  org.faktorips.devtools.core.ui.actions,
  org.faktorips.devtools.core.ui.editors.pctype,
  org.faktorips.devtools.core.ui.editors.productcmpt
+Bundle-RequiredExecutionEnvironment: J2SE-1.4
