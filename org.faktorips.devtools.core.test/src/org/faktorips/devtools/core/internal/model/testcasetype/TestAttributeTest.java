@@ -407,9 +407,6 @@ public class TestAttributeTest extends AbstractIpsPluginTest {
         testAttribute.setPolicyCmptType(policyCmptType.getQualifiedName());
         assertNotNull(testAttribute.findAttribute(ipsProject));
 
-        // FIXME Joerg ist dieses Verhalten so richtig, evtl. namen von getPolicyCmptType umbenennen um
-        // zu verdeutlichen, dass nur unter bestimmten umstaenden der policy cmpt type gesetzt ist?
-        // Benoetigen wir dazu eine migration?
         testAttribute.setAttribute(attr1);
         assertEquals("", testAttribute.getPolicyCmptType());
         assertEquals(policyCmptTypeSuper.getQualifiedName(), testAttribute.getCorrespondingPolicyCmptType());
@@ -417,5 +414,33 @@ public class TestAttributeTest extends AbstractIpsPluginTest {
         testAttribute.setAttribute(attr3);
         assertEquals(policyCmptType.getQualifiedName(), testAttribute.getPolicyCmptType());
         assertEquals(policyCmptType.getQualifiedName(), testAttribute.getCorrespondingPolicyCmptType());
+    }
+    
+    public void testValidateName() throws CoreException{
+    	MessageList ml;
+    	
+    	// test validate name for extension attribute
+    	// -> must be a valid java field identifier
+    	testAttribute.setName("validName");
+    	testAttribute.setDatatype("String");
+    	testAttribute.setAttribute((String)"");
+    	assertFalse(testAttribute.isBasedOnModelAttribute());
+    	ml = testAttribute.validate(ipsProject);
+        assertNull(ml.getMessageByCode(ITestAttribute.MSGCODE_INVALID_TEST_ATTRIBUTE_NAME));
+        testAttribute.setName("invalid Name");
+        ml = testAttribute.validate(ipsProject);
+        assertNotNull(ml.getMessageByCode(ITestAttribute.MSGCODE_INVALID_TEST_ATTRIBUTE_NAME));
+
+    	// test validate name for non extension attribute (test attributes based on model attribute)
+    	// -> must be not a valid java field identifier, for this kind of test attributes no name validation exists
+        IPolicyCmptType policyCmptType = newPolicyAndProductCmptType(ipsProject, "SubPolicy1", "SubProduct1");
+        IPolicyCmptTypeAttribute policyCmptTypeAttribute = policyCmptType.newPolicyCmptTypeAttribute();
+        policyCmptTypeAttribute.setName("modelAttribute");
+        testAttribute.setDatatype("");
+    	testAttribute.setAttribute(policyCmptTypeAttribute);
+        assertTrue(testAttribute.isBasedOnModelAttribute());
+        testAttribute.setName("no invalid Name");
+        ml = testAttribute.validate(ipsProject);
+        assertNull(ml.getMessageByCode(ITestAttribute.MSGCODE_INVALID_TEST_ATTRIBUTE_NAME));
     }
 }
