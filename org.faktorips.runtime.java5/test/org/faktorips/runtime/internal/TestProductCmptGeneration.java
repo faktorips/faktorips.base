@@ -4,8 +4,8 @@
  * Alle Rechte vorbehalten.
  *
  * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele,
- * Konfigurationen, etc.) duerfen nur unter den Bedingungen der 
- * Faktor-Zehn-Community Lizenzvereinbarung - Version 0.1 (vor Gruendung Community) 
+ * Konfigurationen, etc.) duerfen nur unter den Bedingungen der
+ * Faktor-Zehn-Community Lizenzvereinbarung - Version 0.1 (vor Gruendung Community)
  * genutzt werden, die Bestandteil der Auslieferung ist und auch unter
  *   http://www.faktorips.org/legal/cl-v01.html
  * eingesehen werden kann.
@@ -17,7 +17,10 @@
 
 package org.faktorips.runtime.internal;
 
+import java.util.List;
 import java.util.Map;
+
+import org.w3c.dom.Element;
 
 /**
  * ProductComponentGeneration for testing purposes.
@@ -30,10 +33,12 @@ public class TestProductCmptGeneration extends ProductComponentGeneration {
         super(productCmpt);
     }
 
-    protected void doInitPropertiesFromXml(Map map) {
+    @Override
+    protected void doInitPropertiesFromXml(Map<String, Element> map) {
     }
 
-    protected void doInitReferencesFromXml(Map map) {
+    @Override
+    protected void doInitReferencesFromXml(Map<String, List<Element>> map) {
     }
 
 

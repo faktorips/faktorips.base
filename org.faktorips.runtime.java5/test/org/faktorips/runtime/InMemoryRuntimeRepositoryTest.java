@@ -4,8 +4,8 @@
  * Alle Rechte vorbehalten.
  *
  * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele,
- * Konfigurationen, etc.) duerfen nur unter den Bedingungen der 
- * Faktor-Zehn-Community Lizenzvereinbarung - Version 0.1 (vor Gruendung Community) 
+ * Konfigurationen, etc.) duerfen nur unter den Bedingungen der
+ * Faktor-Zehn-Community Lizenzvereinbarung - Version 0.1 (vor Gruendung Community)
  * genutzt werden, die Bestandteil der Auslieferung ist und auch unter
  *   http://www.faktorips.org/legal/cl-v01.html
  * eingesehen werden kann.
@@ -28,6 +28,7 @@ import org.faktorips.runtime.internal.TestProductCmptGeneration;
 import org.faktorips.runtime.internal.TestProductComponent;
 import org.faktorips.runtime.internal.TestTable;
 import org.faktorips.runtime.test.IpsFormulaTestCase;
+import org.faktorips.runtime.test.IpsTest2;
 import org.faktorips.runtime.test.IpsTestCase2;
 import org.faktorips.runtime.test.IpsTestSuite;
 import org.faktorips.runtime.test.MyFormulaTestCase;
@@ -35,55 +36,56 @@ import org.faktorips.runtime.testrepository.test.TestPremiumCalculation;
 
 
 public class InMemoryRuntimeRepositoryTest extends TestCase {
-	
-	private InMemoryRuntimeRepository repository;
-	private ProductComponent a;
-	private ProductComponent b;
-	private ProductComponent c;
-    
-	/*
-	 * @see TestCase#setUp()
-	 */
-	protected void setUp() throws Exception {
-		super.setUp();
-		repository = new InMemoryRuntimeRepository();
-		a = new TestProductComponent(repository, "a", "aKind", "aVersion");
-		b = new TestProductComponent(repository, "b", "bKind", "bVersion");
-		c = new TestProductComponent(repository, "c", "cKind", "cVersion");
-		repository.putProductComponent(a);
-		repository.putProductComponent(b);
-		repository.putProductComponent(c);
-	}
-    
+
+    private InMemoryRuntimeRepository repository;
+    private ProductComponent a;
+    private ProductComponent b;
+    private ProductComponent c;
+
+    /*
+     * @see TestCase#setUp()
+     */
+    @Override
+    protected void setUp() throws Exception {
+        super.setUp();
+        repository = new InMemoryRuntimeRepository();
+        a = new TestProductComponent(repository, "a", "aKind", "aVersion");
+        b = new TestProductComponent(repository, "b", "bKind", "bVersion");
+        c = new TestProductComponent(repository, "c", "cKind", "cVersion");
+        repository.putProductComponent(a);
+        repository.putProductComponent(b);
+        repository.putProductComponent(c);
+    }
+
     public void testPutTable() {
         TestTable t1 = new TestTable();
         repository.putTable(t1);
         assertEquals(t1, repository.getTable(TestTable.class));
-        
+
         TestTable t2 = new TestTable();
         repository.putTable(t2);
-        assertEquals(t2, repository.getTable(TestTable.class)); 
-        
+        assertEquals(t2, repository.getTable(TestTable.class));
+
         // test if adding a subclass also removes the superclass instance
         // this is needed to give developers the possibility to mock tables.
         TestTable2 t3 = new TestTable2();
         repository.putTable(t3);
         assertEquals(t3, repository.getTable(TestTable2.class));
-        
+
         try {
             repository.putTable(null);
             fail();
         } catch (NullPointerException e) {
         }
     }
-    
+
     public void testPutTable_qName() {
         TestTable t1 = new TestTable();
         repository.putTable(t1, "motor.RateTable");
         assertEquals(t1, repository.getTable(TestTable.class));
         assertEquals(t1, repository.getTable("motor.RateTable"));
     }
-        
+
     public void testGetTable_qName() {
         assertNull(repository.getTable("motor.RateTable"));
         TestTable t1 = new TestTable();
@@ -92,15 +94,15 @@ public class InMemoryRuntimeRepositoryTest extends TestCase {
     }
 
     public void testGetProductComponent_id() {
-		assertEquals(b, repository.getProductComponent("b"));
-		assertNull(repository.getProductComponent("notExisting"));
-	}
-    
+        assertEquals(b, repository.getProductComponent("b"));
+        assertNull(repository.getProductComponent("notExisting"));
+    }
+
     public void testGetProductComponent_KindId_VersionId() {
         TestProductComponent cmpt = new TestProductComponent(repository, "MotorProduct 2005-01", "MotorProduct", "2005-01");
         repository.putProductComponent(cmpt);
         assertEquals(cmpt, repository.getProductComponent("MotorProduct", "2005-01"));
-        
+
         assertNull(repository.getProductComponent(null, "2005-01"));
         assertNull(repository.getProductComponent("unknown", "2005-01"));
     }
@@ -112,14 +114,14 @@ public class InMemoryRuntimeRepositoryTest extends TestCase {
         repository.putProductComponent(cmpt0);
         repository.putProductComponent(cmpt1);
         repository.putProductComponent(cmpt2);
-        List result = repository.getAllProductComponents("MotorProduct");
+        List<IProductComponent> result = repository.getAllProductComponents("MotorProduct");
         assertEquals(2, result.size());
         assertTrue(result.contains(cmpt0));
         assertTrue(result.contains(cmpt1));
-        
+
         result = repository.getAllProductComponents((String)null);
         assertEquals(0, result.size());
-        
+
         result = repository.getAllProductComponents("unknownId");
         assertEquals(0, result.size());
     }
@@ -128,7 +130,7 @@ public class InMemoryRuntimeRepositoryTest extends TestCase {
         GregorianCalendar date = new GregorianCalendar(2005, 0, 1);
         TestProductCmptGeneration gen = new TestProductCmptGeneration(a);
         gen.setValidFrom(DateTime.createDateOnly(date));
-        
+
         repository.putProductCmptGeneration(gen);
         assertEquals(gen, repository.getProductComponentGeneration("a", date));
         assertEquals(a, repository.getProductComponent("a"));
@@ -139,20 +141,20 @@ public class InMemoryRuntimeRepositoryTest extends TestCase {
         repository.putIpsTestCase(testCase);
         assertEquals(testCase, repository.getIpsTest("ipsTest"));
         assertEquals(1, repository.getAllIpsTestCases(repository).size());
-        
+
         IpsFormulaTestCase formulaTestCase = new MyFormulaTestCase("ipsFormulaTest");
         repository.putIpsTestCase(formulaTestCase);
         assertEquals(formulaTestCase, repository.getIpsTest("ipsFormulaTest"));
         assertEquals(2, repository.getAllIpsTestCases(repository).size());
     }
-    
+
     public void testGetProductComponentGeneration() {
         GregorianCalendar date0 = new GregorianCalendar(2005, 0, 1);
-        
+
         GregorianCalendar date1 = new GregorianCalendar(2006, 0, 1);
 
         assertNull(repository.getProductComponentGeneration("notExisting", date0));
-        
+
         TestProductCmptGeneration gen0 = new TestProductCmptGeneration(a);
         gen0.setValidFrom(DateTime.createDateOnly(date0));
         TestProductCmptGeneration gen1 = new TestProductCmptGeneration(a);
@@ -160,7 +162,7 @@ public class InMemoryRuntimeRepositoryTest extends TestCase {
 
         repository.putProductCmptGeneration(gen0);
         repository.putProductCmptGeneration(gen1);
-        
+
         assertNull(repository.getProductComponentGeneration("a", new GregorianCalendar(2000, 0, 1)));
         assertEquals(gen0, repository.getProductComponentGeneration("a", date0));
         assertEquals(gen0, repository.getProductComponentGeneration("a", new GregorianCalendar(2005, 10, 15)));
@@ -169,30 +171,30 @@ public class InMemoryRuntimeRepositoryTest extends TestCase {
     }
 
     public void testGetAllProductComponents() {
-		List list = repository.getAllProductComponents(TestProductComponent.class);
-		assertEquals(3, list.size());
-		assertTrue(list.contains(a));
-		assertTrue(list.contains(b));
+        List<IProductComponent> list = repository.getAllProductComponents(TestProductComponent.class);
+        assertEquals(3, list.size());
+        assertTrue(list.contains(a));
+        assertTrue(list.contains(b));
         assertTrue(list.contains(c));
 
-		list = repository.getAllProductComponents(String.class);
-		assertEquals(0, list.size());
-	}
-    
+        list = repository.getAllProductComponents(String.class);
+        assertEquals(0, list.size());
+    }
+
     public void testGetProductComponentGenerations() {
         GregorianCalendar date = new GregorianCalendar(2005, 0, 1);
         TestProductCmptGeneration gen = new TestProductCmptGeneration(a);
         gen.setValidFrom(DateTime.createDateOnly(date));
         repository.putProductCmptGeneration(gen);
-        
-        List result = repository.getProductComponentGenerations(a);
+
+        List<IProductComponentGeneration> result = repository.getProductComponentGenerations(a);
         assertEquals(1, result.size());
         assertEquals(gen, result.get(0));
-        
+
         TestProductCmptGeneration gen2 = new TestProductCmptGeneration(a);
         gen2.setValidFrom(DateTime.createDateOnly(new GregorianCalendar(2005, 1, 1)));
         repository.putProductCmptGeneration(gen2);
-        
+
         result = repository.getProductComponentGenerations(a);
         assertEquals(2, result.size());
         assertEquals(gen, result.get(0));
@@ -211,7 +213,7 @@ public class InMemoryRuntimeRepositoryTest extends TestCase {
         TestProductCmptGeneration aGen3 = new TestProductCmptGeneration(a);
         aGen3.setValidFrom(new DateTime(2006, 2, 1));
         repository.putProductCmptGeneration(aGen3);
-        
+
         b = new TestProductComponent(repository, "b", "bKind", "bVersion");
         TestProductCmptGeneration bGen1 = new TestProductCmptGeneration(b);
         bGen1.setValidFrom(new DateTime(2006, 0, 1));
@@ -223,7 +225,7 @@ public class InMemoryRuntimeRepositoryTest extends TestCase {
         numberOfGens = repository.getNumberOfProductComponentGenerations(b);
         assertEquals(1, numberOfGens);
     }
-    
+
     public void testGetNextProductComponentGeneration(){
         repository = new InMemoryRuntimeRepository();
         a = new TestProductComponent(repository, "a", "aKind", "aVersion");
@@ -273,14 +275,14 @@ public class InMemoryRuntimeRepositoryTest extends TestCase {
         TestProductCmptGeneration rep2bGen3 = new TestProductCmptGeneration(a);
         rep2bGen3.setValidFrom(new DateTime(2006, 2, 1));
         subRepository2.putProductCmptGeneration(rep2bGen3);
-        
+
         repository = new InMemoryRuntimeRepository();
         repository.addDirectlyReferencedRepository(subRepository1);
         repository.addDirectlyReferencedRepository(subRepository2);
-        
+
         IProductComponentGeneration expectedGen = repository.getPreviousProductComponentGeneration(aGen3);
         assertEquals(aGen2, expectedGen);
-        
+
         expectedGen = repository.getPreviousProductComponentGeneration(aGen2);
         assertEquals(aGen1, expectedGen);
 
@@ -289,7 +291,7 @@ public class InMemoryRuntimeRepositoryTest extends TestCase {
 
         expectedGen = repository.getPreviousProductComponentGeneration(rep2bGen3);
         assertEquals(rep2bGen2, expectedGen);
-        
+
         expectedGen = repository.getPreviousProductComponentGeneration(rep2bGen2);
         assertEquals(rep2bGen1, expectedGen);
 
@@ -297,7 +299,7 @@ public class InMemoryRuntimeRepositoryTest extends TestCase {
         assertNull(expectedGen);
 
     }
-    
+
     public void testGetPreviousProductComponentGeneration(){
         repository = new InMemoryRuntimeRepository();
         a = new TestProductComponent(repository, "a", "aKind", "aVersion");
@@ -313,14 +315,14 @@ public class InMemoryRuntimeRepositoryTest extends TestCase {
 
         IProductComponentGeneration expectedGen = repository.getPreviousProductComponentGeneration(aGen3);
         assertEquals(aGen2, expectedGen);
-        
+
         expectedGen = repository.getPreviousProductComponentGeneration(aGen2);
         assertEquals(aGen1, expectedGen);
 
         expectedGen = repository.getPreviousProductComponentGeneration(aGen1);
         assertNull(expectedGen);
     }
-    
+
     public void testGetLatestProductComponentGeneration(){
 
         repository = new InMemoryRuntimeRepository();
@@ -336,14 +338,14 @@ public class InMemoryRuntimeRepositoryTest extends TestCase {
         repository.putProductCmptGeneration(aGen3);
 
         assertEquals(aGen3, repository.getLatestProductComponentGeneration(a));
-        
+
         try{
             repository.getLatestProductComponentGeneration(null);
             fail();
         }
         catch(NullPointerException e){}
     }
-    
+
     //actually testing the AbstractRuntimeRepository
     public void testGetPreviousProductComponentGenerationInReferencedRepository(){
 
@@ -370,14 +372,14 @@ public class InMemoryRuntimeRepositoryTest extends TestCase {
         TestProductCmptGeneration rep2bGen3 = new TestProductCmptGeneration(a);
         rep2bGen3.setValidFrom(new DateTime(2006, 2, 1));
         subRepository2.putProductCmptGeneration(rep2bGen3);
-        
+
         repository = new InMemoryRuntimeRepository();
         repository.addDirectlyReferencedRepository(subRepository1);
         repository.addDirectlyReferencedRepository(subRepository2);
-        
+
         IProductComponentGeneration expectedGen = repository.getPreviousProductComponentGeneration(aGen3);
         assertEquals(aGen2, expectedGen);
-        
+
         expectedGen = repository.getPreviousProductComponentGeneration(aGen2);
         assertEquals(aGen1, expectedGen);
 
@@ -386,7 +388,7 @@ public class InMemoryRuntimeRepositoryTest extends TestCase {
 
         expectedGen = repository.getPreviousProductComponentGeneration(rep2bGen3);
         assertEquals(rep2bGen2, expectedGen);
-        
+
         expectedGen = repository.getPreviousProductComponentGeneration(rep2bGen2);
         assertEquals(rep2bGen1, expectedGen);
 
@@ -404,26 +406,26 @@ public class InMemoryRuntimeRepositoryTest extends TestCase {
         IpsTestCase2 testCase6 = putIpsTestCase("test.pack.ipsTest3");
 
         IpsTestSuite ipsTestSuite = null;
-        List tests = null;
-        
+        List<IpsTest2> tests = null;
+
         ipsTestSuite = repository.getIpsTestSuite("pack");
         tests = ipsTestSuite.getTests();
         assertTrue(tests.contains(testCase1));
         assertTrue(tests.contains(testCase2));
         assertTrue(tests.contains(testCase3));
-        
+
         ipsTestSuite = repository.getIpsTestSuite("pack.ips");
         tests = ipsTestSuite.getTests();
         assertTrue(tests.contains(testCase1));
         assertTrue(tests.contains(testCase2));
         assertTrue(tests.contains(testCase3));
-        
+
         ipsTestSuite = repository.getIpsTestSuite("");
         tests = ipsTestSuite.getTests();
         assertEquals(2, tests.size());
         IpsTestSuite ipsTestSuiteA = (IpsTestSuite)tests.get(0);
         assertEquals("pack", ipsTestSuiteA.getName());
-        List subTest = ipsTestSuiteA.getTests();
+        List<IpsTest2> subTest = ipsTestSuiteA.getTests();
         assertTrue(subTest.contains(testCase1));
         assertTrue(subTest.contains(testCase2));
         assertTrue(subTest.contains(testCase3));
@@ -438,7 +440,7 @@ public class InMemoryRuntimeRepositoryTest extends TestCase {
         assertTrue(tests.contains(testCase5));
         assertTrue(tests.contains(testCase6));
     }
-    
+
     public void testGetIpsTestCaseStartingWith() {
         IpsTestCase2 testCase1 = putIpsTestCase("pack.ipsTest1");
         IpsTestCase2 testCase2 = putIpsTestCase("pack.ipsTest2");
@@ -452,12 +454,12 @@ public class InMemoryRuntimeRepositoryTest extends TestCase {
         assertIpsTestCasesStartingWith("pack", new IpsTestCase2[]{testCase1, testCase2, testCase3, testCase4, testCase5, testCase6});
         assertIpsTestCasesStartingWith("ipsTest1", new IpsTestCase2[]{testCase7});
     }
-    
+
     private void assertIpsTestCasesStartingWith(String qNamePrefix, IpsTestCase2[] testCasesExpected) {
-        List result = repository.getIpsTestCasesStartingWith(qNamePrefix, repository);
+        List<IpsTest2> result = repository.getIpsTestCasesStartingWith(qNamePrefix, repository);
         assertEquals("Unexpected number of test cases", testCasesExpected.length, result.size());
-        for (int i = 0; i < testCasesExpected.length; i++) {
-            assertTrue("Missing test case: " + testCasesExpected[i], result.contains(testCasesExpected[i]));
+        for (IpsTestCase2 element : testCasesExpected) {
+            assertTrue("Missing test case: " + element, result.contains(element));
         }
     }
 
@@ -468,6 +470,6 @@ public class InMemoryRuntimeRepositoryTest extends TestCase {
     }
 
     class TestTable2 extends TestTable {
-        
+
     }
 }

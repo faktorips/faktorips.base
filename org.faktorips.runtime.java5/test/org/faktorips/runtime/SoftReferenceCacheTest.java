@@ -4,14 +4,14 @@
  * Alle Rechte vorbehalten.
  *
  * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele,
- * Konfigurationen, etc.) dürfen nur unter den Bedingungen der 
- * Faktor-Zehn-Community Lizenzvereinbarung – Version 0.1 (vor Gründung Community) 
+ * Konfigurationen, etc.) dürfen nur unter den Bedingungen der
+ * Faktor-Zehn-Community Lizenzvereinbarung – Version 0.1 (vor Gründung Community)
  * genutzt werden, die Bestandteil der Auslieferung ist und auch unter
  *   http://www.faktorips.org/legal/cl-v01.html
  * eingesehen werden kann.
  *
  * Mitwirkende:
- *   Faktor Zehn GmbH - initial API and implementation 
+ *   Faktor Zehn GmbH - initial API and implementation
  *
  *******************************************************************************/
 
@@ -32,16 +32,16 @@ import junit.framework.TestCase;
 public class SoftReferenceCacheTest extends TestCase {
     private final static int DUMMY_BLOCK_SIZE_IN_MB = 42;
     private final static int ENTRY_SIZE_IN_MB = 3;
-    
+
     public void testDummy(){
         // Remark: the test methods are not active, because the asserts depends on the JVM space properties (e.g. -Xmx).
         // If the SoftReferenceCache should be tested then the test methods could be activated by renaming
         // the methods from _test<MethodName> to test<MethodName> and manualy adapt the space usage constants
         // DUMMY_BLOCK_SIZE_IN_MB and ENTRY_SIZE_IN_MB or set the java max heap size (e.g. -Xmx63m).
     }
-    
+
     /*
-     * Test the SoftReferenceMap several times to increase the base memory usage of the JVM, 
+     * Test the SoftReferenceMap several times to increase the base memory usage of the JVM,
      * thus this base memory usage shouldn't influence the tests.
      */
     public void _testASoftReferenceMap0(){
@@ -49,18 +49,18 @@ public class SoftReferenceCacheTest extends TestCase {
         testMap(new SoftReferenceCache(5));
         System.out.println("=> Ok, no OutOfMemoryError by using SoftReferenceCache <=");
     }
-    
+
     public void _testBSoftReferenceMap1(){
         // no OutOfMemoryError expected by using the SoftReferenceCache
         testMap(new SoftReferenceCache(5));
         System.out.println("=> Ok, no OutOfMemoryError by using SoftReferenceCache <=");
     }
-    
+
     public void _testCHashMap(){
         boolean errorCatched = false;
-        
+
         try {
-            testMap(new HashMap(5));
+            testMap(new HashMap<String, BigEntry>(5));
         } catch (Error err) {
             // Expected OutOfMemoryError error
             if (err instanceof OutOfMemoryError) {
@@ -70,16 +70,16 @@ public class SoftReferenceCacheTest extends TestCase {
         }
         if (!errorCatched) {
             fail("Warning: OutOfMemoryError expected by using HashMap, but wasn't thrown. " +
-                    "Decrease the JVM heap size or increase the constants in this class");
+            "Decrease the JVM heap size or increase the constants in this class");
         }
     }
-    
+
     public void _testDSoftReferenceMap(){
         // no OutOfMemoryError expected by using the SoftReferenceCache
         testMap(new SoftReferenceCache(60));
         System.out.println("=> Ok, no OutOfMemoryError by using SoftReferenceCache <=");
     }
-    
+
     public void _testESoftReferenceMap(){
         // no OutOfMemoryError expected by using the SoftReferenceCache
         // the last 5 entries will be stored as hard references, and not removed
@@ -87,8 +87,8 @@ public class SoftReferenceCacheTest extends TestCase {
         testMap(new SoftReferenceCache(60, 5));
         System.out.println("=> Ok, no OutOfMemoryError by using SoftReferenceCache <=");
     }
-    
-    private static void print(Map map) {
+
+    private static void print(Map<String, BigEntry> map) {
         System.out.println("One=" + map.get("One"));
         System.out.println("Two=" + map.get("Two"));
         System.out.println("Three=" + map.get("Three"));
@@ -96,7 +96,7 @@ public class SoftReferenceCacheTest extends TestCase {
         System.out.println("Five=" + map.get("Five"));
         System.out.println("Six=" + map.get("Six"));
     }
-    
+
     private static void print(ICache map) {
         System.out.println("One=" + map.getObject("One"));
         System.out.println("Two=" + map.getObject("Two"));
@@ -105,8 +105,8 @@ public class SoftReferenceCacheTest extends TestCase {
         System.out.println("Five=" + map.getObject("Five"));
         System.out.println("Six=" + map.getObject("Six"));
     }
-    
-    private static void testMap(Map map) {
+
+    private static void testMap(Map<String, BigEntry> map) {
         System.out.println("Testing: " + map.getClass());
         map.put("One", new BigEntry(1));
         map.get("One");
@@ -139,19 +139,20 @@ public class SoftReferenceCacheTest extends TestCase {
         map.put("Five", new BigEntry(5));
         map.getObject("Five");
         map.put("Six", new BigEntry(6));
-        map.getObject("Six");        
+        map.getObject("Six");
         print(map);
         byte[] block = new byte[DUMMY_BLOCK_SIZE_IN_MB*1024*1024 ];
         print(map);
         block[0] = block[0];
     }
-    
+
     private static class BigEntry{
         byte[] block = new byte[ENTRY_SIZE_IN_MB*1024*1024];
-        private Integer value;
+        private final Integer value;
         public BigEntry(int value) {
             this.value = new Integer(value);
         }
+        @Override
         public String toString(){
             return ""+value;
         }

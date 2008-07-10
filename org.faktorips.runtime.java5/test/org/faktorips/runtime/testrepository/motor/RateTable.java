@@ -4,8 +4,8 @@
  * Alle Rechte vorbehalten.
  *
  * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele,
- * Konfigurationen, etc.) duerfen nur unter den Bedingungen der 
- * Faktor-Zehn-Community Lizenzvereinbarung - Version 0.1 (vor Gruendung Community) 
+ * Konfigurationen, etc.) duerfen nur unter den Bedingungen der
+ * Faktor-Zehn-Community Lizenzvereinbarung - Version 0.1 (vor Gruendung Community)
  * genutzt werden, die Bestandteil der Auslieferung ist und auch unter
  *   http://www.faktorips.org/legal/cl-v01.html
  * eingesehen werden kann.
@@ -28,10 +28,13 @@ import org.faktorips.runtime.internal.Table;
  */
 public class RateTable extends Table {
 
+    @Override
     protected void initKeyMaps() {
     }
 
+    @Override
+    @SuppressWarnings("unchecked")
     protected void addRow(List columns) {
-    }    
-    
+    }
+
 }
