@@ -29,6 +29,7 @@ import org.faktorips.devtools.core.model.productcmpt.IProductCmptLink;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeAssociation;
 import org.faktorips.devtools.core.model.type.IAssociation;
+import org.faktorips.util.message.Message;
 import org.faktorips.util.message.MessageList;
 import org.w3c.dom.Element;
 
@@ -201,7 +202,10 @@ public class ProductCmptLinkTest extends AbstractIpsPluginTest {
         link.setTarget(productCmpt.getQualifiedName());
         
         MessageList ml = link.validate(ipsProject);
-        assertNotNull(ml.getMessageByCode(IProductCmptLink.MSGCODE_INVALID_TARGET));
+        Message invalidTargetMessage = ml.getMessageByCode(IProductCmptLink.MSGCODE_INVALID_TARGET);
+        assertNotNull(invalidTargetMessage);
+        assertEquals(1, ml.getMessagesFor(link).getNoOfMessages());
+        assertEquals(invalidTargetMessage, ml.getMessagesFor(link).getMessage(0));
         
         link.setTarget(target.getQualifiedName());
         
