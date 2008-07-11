@@ -17,6 +17,8 @@
 
 package org.faktorips.devtools.core.ui.actions;
 
+import org.eclipse.core.resources.IProject;
+import org.eclipse.core.resources.IResource;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.ISelectionChangedListener;
 import org.eclipse.jface.viewers.ISelectionProvider;
@@ -24,6 +26,7 @@ import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.ui.IWorkbenchSite;
 import org.eclipse.ui.dialogs.PropertyDialogAction;
+import org.faktorips.devtools.core.model.ipsobject.IIpsObject;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 
 /**
@@ -86,5 +89,20 @@ public class IpsPropertiesAction extends IpsAction {
         public void setSelection(ISelection selection) {
             // do nothing
         }
+    }
+
+    /**
+     * Returns <code>true</code> if the property action supports the given object.
+     */
+    public boolean isEnabledFor(Object selected) {
+        if (selected instanceof IProject){
+            return true;
+        } else if (selected instanceof IIpsObject){
+            return true;
+        } else if (selected instanceof IResource){
+            return true;
+        }
+        // e.g. IIpsObjectPart
+        return false;
     }
 }
