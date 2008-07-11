@@ -39,18 +39,18 @@ import org.w3c.dom.NodeList;
  * constant part and the version id. 
  * <p>
  * When transforming a name to a Java identifier, special characters like 
- * blank and hypen (-) can be replaced with a String that is allowed
+ * blank and hyphen (-) can be replaced with a String that is allowed
  * in a Java identifier. These special characters can be registered along with
  * their replacement via the addSpecialCharReplacement() method.
  * <p>
  * Note that two special characters can't have the same replacement, as otherwise
  * two product component names (so unlikely) could result in the same Java class name.
  * <p>
- * The dot (.) is prohibited in names as it is use to separate the name from the
+ * The dot (.) is prohibited in names as it is used to separate the name from the
  * package information in qualified names.
  * <p>
  * By default the following replacement is used:<p>
- *  hypen (-) => two underscores
+ *  hyphen (-) => two underscores
  *  blank => three underscores
  *
  * @author Jan Ortmann
@@ -276,7 +276,7 @@ public abstract class AbstractProductCmptNamingStrategy implements
 	protected abstract void initSubclassFromXml(Element el);
 
 	/**
-	 * Appends the data from this abstract stratgey to the given element.
+	 * Appends the data from this abstract strategy to the given element.
 	 * Should be used by subclasses to add the date.
 	 */
 	public final Element toXml(Document doc) {
