@@ -27,6 +27,7 @@ import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.ui.IWorkbenchSite;
 import org.eclipse.ui.dialogs.PropertyDialogAction;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObject;
+import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPart;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 
 /**
@@ -95,14 +96,9 @@ public class IpsPropertiesAction extends IpsAction {
      * Returns <code>true</code> if the property action supports the given object.
      */
     public boolean isEnabledFor(Object selected) {
-        if (selected instanceof IProject || selected instanceof IIpsProject){
-            return true;
-        } else if (selected instanceof IIpsObject){
-            return true;
-        } else if (selected instanceof IResource){
-            return true;
+        if (selected instanceof IIpsObjectPart){
+            return false;
         }
-        // e.g. IIpsObjectPart
-        return false;
+        return true;
     }
 }
