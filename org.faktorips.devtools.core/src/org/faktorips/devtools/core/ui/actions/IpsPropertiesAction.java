@@ -95,7 +95,7 @@ public class IpsPropertiesAction extends IpsAction {
      * Returns <code>true</code> if the property action supports the given object.
      */
     public boolean isEnabledFor(Object selected) {
-        if (selected instanceof IProject){
+        if (selected instanceof IProject || selected instanceof IIpsProject){
             return true;
         } else if (selected instanceof IIpsObject){
             return true;
