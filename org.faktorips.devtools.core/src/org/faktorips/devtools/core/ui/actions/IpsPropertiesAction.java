@@ -17,7 +17,6 @@
 
 package org.faktorips.devtools.core.ui.actions;
 
-import org.eclipse.core.resources.IProject;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.ISelectionChangedListener;
 import org.eclipse.jface.viewers.ISelectionProvider;
@@ -28,8 +27,7 @@ import org.eclipse.ui.dialogs.PropertyDialogAction;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 
 /**
- * Opens a properties dialog for the selected project. <code>IProject</code>s are supported
- * as well as <code>IIpsProject</code>s.
+ * Opens a properties dialog for the selected object.
  * 
  * @author Stefan Widmaier
  */
@@ -51,18 +49,17 @@ public class IpsPropertiesAction extends IpsAction {
         Object selected= selection.getFirstElement();
         if(selected instanceof IIpsProject){
             openPropertiesDialog(((IIpsProject)selected).getProject());
-        }else if(selected instanceof IProject){
-            openPropertiesDialog((IProject)selected);
-        }
+        }else if(selected != null){
+            openPropertiesDialog(selected);
+        } 
     }
     
-    private void openPropertiesDialog(IProject project){
-        IStructuredSelection sel= new StructuredSelection(project);
+    private void openPropertiesDialog(Object selectedObject){
+        IStructuredSelection sel= new StructuredSelection(selectedObject);
         SelProvider provider= new SelProvider(sel);
         PropertyDialogAction action= new PropertyDialogAction(site, provider);
         action.run();
     }
-    
 
     /*
      * Helper class to simulate a selection provider

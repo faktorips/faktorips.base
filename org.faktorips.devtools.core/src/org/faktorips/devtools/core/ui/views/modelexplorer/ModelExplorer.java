@@ -635,11 +635,13 @@ public class ModelExplorer extends ViewPart implements IShowInTarget {
         }
         return false;
     }
-
+    
     protected class MenuBuilder implements IMenuListener {
         // hold references to enabled RetargetActions
         private ActionGroup openActionGroup =  new OpenActionGroup(ModelExplorer.this);
         private ModelExplorerDeleteAction deleteAction = new ModelExplorerDeleteAction(treeViewer, getSite().getShell());
+        private IpsPropertiesAction propertiesAction = new IpsPropertiesAction(getSite(), treeViewer);
+        
         private IWorkbenchAction copy = ActionFactory.COPY.create(getSite().getWorkbenchWindow());
         private IWorkbenchAction paste = ActionFactory.PASTE.create(getSite().getWorkbenchWindow());
         private IWorkbenchAction delete = ActionFactory.DELETE.create(getSite().getWorkbenchWindow());
@@ -647,6 +649,7 @@ public class ModelExplorer extends ViewPart implements IShowInTarget {
 
         private IWorkbenchAction rename = ActionFactory.RENAME.create(getSite().getWorkbenchWindow());
         private IWorkbenchAction move = ActionFactory.MOVE.create(getSite().getWorkbenchWindow());
+        private IWorkbenchAction properties = ActionFactory.PROPERTIES.create(getSite().getWorkbenchWindow());
 
         public MenuBuilder() {
             getViewSite().getActionBars().setGlobalActionHandler(ActionFactory.COPY.getId(),
@@ -660,6 +663,7 @@ public class ModelExplorer extends ViewPart implements IShowInTarget {
                     new RenameAction(getSite().getShell(), treeViewer));
             getViewSite().getActionBars().setGlobalActionHandler(ActionFactory.MOVE.getId(),
                     new MoveAction(getSite().getShell(), treeViewer));
+            getViewSite().getActionBars().setGlobalActionHandler(ActionFactory.PROPERTIES.getId(), propertiesAction);
         }
 
         /**
@@ -977,14 +981,8 @@ public class ModelExplorer extends ViewPart implements IShowInTarget {
         }
 
         protected void createPropertiesActions(IMenuManager manager, Object selected) {
-            if (selected instanceof IIpsProject) {
-                manager.add(new IpsPropertiesAction(getSite(), treeViewer));
-            }
-            else if (selected instanceof IProject) {
-                if (((IProject)selected).isOpen()) {
-                    manager.add(new IpsPropertiesAction(getSite(), treeViewer));
-                }
-            }
+            // all types of objects are supported
+            manager.add(properties);
         }
     }
 
