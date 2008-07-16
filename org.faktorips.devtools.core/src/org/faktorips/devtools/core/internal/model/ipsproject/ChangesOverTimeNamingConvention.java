@@ -168,7 +168,7 @@ public class ChangesOverTimeNamingConvention implements
 	 * {@inheritDoc}
 	 */
 	public String getGenerationConceptNameSingular() {
-		return getGenerationConceptNamePlural(IpsPlugin.getDefault().getUsedLanguagePackLocale(), false);
+		return getGenerationConceptNameSingular(IpsPlugin.getDefault().getUsedLanguagePackLocale(), false);
 	}
 
     /**
