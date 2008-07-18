@@ -31,6 +31,7 @@ import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.osgi.util.NLS;
+import org.eclipse.swt.widgets.Table;
 import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
 import org.faktorips.devtools.core.model.ipsobject.QualifiedNameType;
@@ -43,6 +44,7 @@ import org.faktorips.devtools.core.model.ipsproject.IIpsProjectRefEntry;
 import org.faktorips.devtools.core.model.ipsproject.IIpsSrcFolderEntry;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmpt;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
+import org.faktorips.devtools.core.util.ArrayElementMover;
 import org.faktorips.util.ArgumentCheck;
 import org.faktorips.util.message.Message;
 import org.faktorips.util.message.MessageList;
@@ -56,8 +58,7 @@ import org.w3c.dom.NodeList;
  * @author Jan Ortmann
  */
 public class IpsObjectPath implements IIpsObjectPath {
-    
-    
+
     /**
      * Returns a description of the xml format.
      */
@@ -734,6 +735,25 @@ public class IpsObjectPath implements IIpsObjectPath {
         }
         
         
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public int[] moveEntries(int[] indices, boolean up) {
+        
+        ArgumentCheck.notNull(indices, this);
+
+        ArrayElementMover mover = new ArrayElementMover(entries);
+        
+        int[] newSelection;
+        if (up) {
+            newSelection = mover.moveUp(indices);
+        } else {
+            newSelection = mover.moveDown(indices);
+        }
+        
+        return newSelection;
     }
 
 }

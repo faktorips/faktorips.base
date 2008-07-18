@@ -28,7 +28,6 @@ import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
-import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.TabFolder;
 import org.eclipse.swt.widgets.TabItem;
 import org.eclipse.swt.widgets.Widget;
@@ -48,15 +47,12 @@ public class IpsObjectPathContainer {
     
     private IIpsObjectPath ipsObjectPath;
     
-    private Control mainControl; 
-
     private int pageIndex;
 
     private ReferencedProjectsComposite refProjectsComposite;
     private ArchiveComposite archiveComposite;
     private SrcFolderComposite srcFolderComposite;
     private ObjectPathOrderComposite orderComposite;
-    
     
     public IpsObjectPathContainer(int pageToShow, IWorkbenchPreferenceContainer preferenceContainer) {
         pageIndex = pageToShow;
@@ -85,7 +81,6 @@ public class IpsObjectPathContainer {
      * @throws CoreException if the control could not be created
      */
     public Control createControl(Composite parent) throws CoreException {
-        mainControl = parent;
 
         Composite composite = new Composite(parent, SWT.NONE);
         composite.setFont(parent.getFont());
@@ -114,7 +109,6 @@ public class IpsObjectPathContainer {
         addTabItem(folder, "Path Order", 
                 IpsPlugin.getDefault().getImage("obj16" + IPath.SEPARATOR + "cp_order_obj.gif"), orderComposite); //$NON-NLS-1$
 
-
         srcFolderComposite.init(ipsObjectPath);
         refProjectsComposite.init(ipsObjectPath);
         archiveComposite.init(ipsObjectPath);
@@ -141,28 +135,6 @@ public class IpsObjectPathContainer {
         return item; 
     }
     
-    protected void updateUI() {
-        if (mainControl == null || mainControl.isDisposed()) {
-            return;
-        }
-        
-        if (Display.getCurrent() != null) {
-            doUpdateUI();
-        } else {
-            Display.getDefault().asyncExec(new Runnable() {
-                public void run() {
-                    if (mainControl == null || mainControl.isDisposed()) {
-                        return;
-                    }
-                    doUpdateUI();
-                }
-            });
-        }
-    }
-
-    protected void doUpdateUI() {
-        // TODO: to implement when more than one tab selectable 
-    }
     
     private void tabChanged(Widget widget) {
         if (widget instanceof TabItem) {
@@ -179,15 +151,27 @@ public class IpsObjectPathContainer {
     public boolean saveToIpsProjectFile() {
         
         try {
-            // FIXME: only save on change!!!!!!!
-            //if (srcFolderComposite.isDataChanged() || )
-            currentIpsProject.setIpsObjectPath(ipsObjectPath);
+            if (hasChangesInDialog()) {
+                currentIpsProject.setIpsObjectPath(ipsObjectPath);
+            }
         } catch (CoreException e) {
             
             IpsPlugin.logAndShowErrorDialog(e);
             return false;
         }
         return true;
+    }
+
+
+    /**
+     * Check whether values have been modified
+     * @return true if data has changed, false otherwise
+     */
+    public boolean hasChangesInDialog() {
+        return (archiveComposite.isDataChanged() 
+                || orderComposite.isDataChanged() 
+                || refProjectsComposite.isDataChanged() 
+                || srcFolderComposite.isDataChanged());
     }
 
 }

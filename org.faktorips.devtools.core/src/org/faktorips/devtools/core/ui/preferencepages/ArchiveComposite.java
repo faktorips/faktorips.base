@@ -18,6 +18,7 @@
 package org.faktorips.devtools.core.ui.preferencepages;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
 
@@ -25,7 +26,7 @@ import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IStatus;
-import org.eclipse.jface.viewers.ArrayContentProvider;
+import org.eclipse.core.runtime.Path;
 import org.eclipse.jface.viewers.DecoratingLabelProvider;
 import org.eclipse.jface.viewers.ISelectionChangedListener;
 import org.eclipse.jface.viewers.IStructuredSelection;
@@ -40,6 +41,7 @@ import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Display;
+import org.eclipse.swt.widgets.FileDialog;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Table;
 import org.eclipse.ui.dialogs.ElementTreeSelectionDialog;
@@ -66,7 +68,8 @@ public class ArchiveComposite extends Composite {
     private Table table;
     private IIpsObjectPath ipsObjectPath;
     private boolean dataChanged = false;
-
+    
+    
     /**
      * Referenced IPS archives for the current IPS projects have been modified
      * @return true if current project's archives have been modified, false otherwise
@@ -130,7 +133,11 @@ public class ArchiveComposite extends Composite {
         table = new Table(parent, SWT.BORDER | SWT.MULTI);
         tableViewer = new TableViewer(table);
         tableViewer.addSelectionChangedListener(archiveAdapter);
-        tableViewer.setContentProvider(new ArrayContentProvider());
+        
+        IpsObjectPathContentProvider contentProvider = new IpsObjectPathContentProvider();
+        contentProvider.setIncludedClasses(Arrays.asList(new Class[] {IIpsArchiveEntry.class}));
+        tableViewer.setContentProvider(contentProvider);
+        
         tableViewer.setLabelProvider(new DecoratingLabelProvider(
                 new IpsObjectPathLabelProvider(), 
                 IpsPlugin.getDefault().getWorkbench().getDecoratorManager().getLabelDecorator()
@@ -149,8 +156,7 @@ public class ArchiveComposite extends Composite {
     public void init(final IIpsObjectPath ipsObjectPath) {
         this.ipsObjectPath = ipsObjectPath;
 
-        IIpsArchiveEntry[] archiveEntries = ipsObjectPath.getArchiveEntries();
-        tableViewer.setInput(archiveEntries);
+        tableViewer.setInput(ipsObjectPath);
 
         if (Display.getCurrent() != null) {
             tableViewer.refresh();
@@ -164,17 +170,18 @@ public class ArchiveComposite extends Composite {
     }    
     
     private void addIpsArchives() {
-        
-        IIpsArchiveEntry[] archiveEntries = ipsObjectPath.getArchiveEntries();
-        List alreadyRefArchives = new ArrayList();
-        for  (int i = 0; i < archiveEntries.length; i++) {
-            alreadyRefArchives.add(archiveEntries[i].getArchiveFile());
-        }
-        
+                
         ElementTreeSelectionDialog dialog = new ElementTreeSelectionDialog(null, new WorkbenchLabelProvider(), new WorkbenchContentProvider());
         dialog.setInput(ResourcesPlugin.getWorkspace().getRoot());
         dialog.setMessage(Messages.ArchiveComposite_dialog_message_add);
         dialog.setTitle(Messages.ArchiveComposite_dialog_title_add);
+        
+        List alreadyRefArchives = new ArrayList();
+        IIpsArchiveEntry[] entries = ipsObjectPath.getArchiveEntries();
+        for (int i = 0; i < entries.length; i++) {
+            alreadyRefArchives.add(entries[i].getArchiveFile());
+        }
+        
         dialog.addFilter(new IpsarViewerFilter(alreadyRefArchives, true));
 
         ISelectionStatusValidator validator = new ISelectionStatusValidator() {
@@ -197,7 +204,10 @@ public class ArchiveComposite extends Composite {
 
                 for (int i = 0; i < selectedArchives.length; i++) {
                     IFile archiveFile = (IFile) selectedArchives[i];
-                    tableViewer.add(ipsObjectPath.newArchiveEntry(archiveFile));
+                    IIpsArchiveEntry newEntry = ipsObjectPath.newArchiveEntry(archiveFile);
+                    alreadyRefArchives.add(newEntry);
+                    
+                    tableViewer.refresh(false);
                 }
                 dataChanged = true;
             }
@@ -208,8 +218,31 @@ public class ArchiveComposite extends Composite {
     }
 
     private void addExternalIpsArchives() {
-        // TODO: impl
-        // Flyspray BUG ID: 1196
+        FileDialog fileDialog = new FileDialog(getShell(), SWT.OPEN);
+        fileDialog.setFilterExtensions(new String[] {"*.ipsar", "*.jar", "*.zip", "*.*"} );
+        String fileName = fileDialog.open(); 
+        
+        IFile file = ResourcesPlugin.getWorkspace().getRoot().getFile(new Path(fileName));
+        
+        try {
+            ipsObjectPath.newArchiveEntry(file);
+            tableViewer.refresh(false);
+            dataChanged = true;
+            
+        } catch (CoreException e) {
+            IpsPlugin.logAndShowErrorDialog(e);
+            return;
+        }
+
+//        FIXME: REMOVE CODE IF BUG IS FIXED 
+//        Flyspray BUG ID: 1196
+//        
+//        String debugInfo = "libFile: " + file + ", exists: " + file.exists();
+//        IIpsArchiveEntry[] archiveEntries = ipsObjectPath.getArchiveEntries(); 
+//        for (int i = 0; i < archiveEntries.length; i++) {
+//            debugInfo += "\n" + archiveEntries[i]; 
+//        }
+//        MessageDialog.openInformation(getShell(), "DEBUG", debugInfo);        
     }
 
     private void removeIpsArchives() {
@@ -218,10 +251,11 @@ public class ArchiveComposite extends Composite {
             dataChanged  = true;
             for (Iterator it = selection.iterator(); it.hasNext(); ) {
                 IIpsArchiveEntry archiveEntry = (IIpsArchiveEntry) it.next();
+                
                 ipsObjectPath.removeArchiveEntry(archiveEntry.getIpsArchive());
-                tableViewer.remove(archiveEntry);
             }
-        }        
+            tableViewer.refresh(false);
+        }    
     }
     
     
@@ -251,4 +285,3 @@ public class ArchiveComposite extends Composite {
     }
 
 }
-

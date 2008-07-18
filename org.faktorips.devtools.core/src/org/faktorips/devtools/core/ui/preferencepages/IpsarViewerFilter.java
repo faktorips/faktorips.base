@@ -56,7 +56,7 @@ public class IpsarViewerFilter extends ViewerFilter {
         if (element instanceof IFile) {
             if (excluded != null && excluded.contains(element))
                 return false;
-            return isIpsarFile(((IFile) element).getFullPath());
+            return isArchiveFile(((IFile) element).getFullPath());
         } else if (element instanceof IContainer) { // IProject, IFolder
             if (!recursive) {
                 return true;
@@ -81,8 +81,14 @@ public class IpsarViewerFilter extends ViewerFilter {
     }
 
 
-    private boolean isIpsarFile(IPath fullPath) {
-        return fullPath.getFileExtension().equalsIgnoreCase("ipsar");
+    private boolean isArchiveFile(IPath fullPath) {
+        boolean isArchive;
+        
+        String fileExtension = fullPath.getFileExtension();
+        isArchive = (fileExtension != null)
+            && (fileExtension.equals("ipsar") || fileExtension.equals("jar") || fileExtension.equals("zip"));
+        
+        return isArchive;
     }
 
 }

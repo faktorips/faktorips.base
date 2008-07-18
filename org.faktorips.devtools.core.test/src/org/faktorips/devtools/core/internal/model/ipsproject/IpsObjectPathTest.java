@@ -18,7 +18,9 @@
 package org.faktorips.devtools.core.internal.model.ipsproject;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 import org.eclipse.core.resources.IFile;
@@ -430,4 +432,54 @@ public class IpsObjectPathTest extends AbstractIpsPluginTest {
         assertSame(ipsProject, path.getIpsProject());
     }
     
+    public void testMoveEntries() throws Exception {
+        IIpsObjectPath path = ipsProject.getIpsObjectPath();
+        
+        IIpsObjectPathEntry entry0 = path.getEntries()[0];      // default test project contains already 1 entry
+        IIpsSrcFolderEntry entry1 = path.newSourceFolderEntry(ipsProject.getProject().getFolder("src"));
+        IIpsSrcFolderEntry entry2 = path.newSourceFolderEntry(ipsProject.getProject().getFolder("src2"));
+        IIpsSrcFolderEntry entry3 = path.newSourceFolderEntry(ipsProject.getProject().getFolder("src3"));
+
+        assertEquals(4, path.getEntries().length);
+
+        // move top two entries one position down
+        int[] newIndices = path.moveEntries(new int[] {0,1}, false);
+        assertEquals(4, path.getEntries().length);
+        assertEquals(2, newIndices.length);
+        assertTrue((newIndices[0] == 1) || (newIndices[1] == 1));   // check if the expected indices are contained in the 
+        assertTrue((newIndices[0] == 2) || (newIndices[1] == 2));   // returned array (no order guaranteed)
+        
+        assertEquals(entry2, path.getEntries()[0]);                 // check if the IPS object path was really modified in the
+        assertEquals(entry0, path.getEntries()[1]);                 // expected manner
+        assertEquals(entry1, path.getEntries()[2]);
+        assertEquals(entry3, path.getEntries()[3]);
+        
+        // now move last three entries one position up
+        newIndices = path.moveEntries(new int[] {3,1,2}, true);
+        assertEquals(4, path.getEntries().length);
+        assertEquals(3, newIndices.length);
+        assertTrue((newIndices[0] == 0) || (newIndices[1] == 0) || (newIndices[2] == 0)); 
+        assertTrue((newIndices[0] == 1) || (newIndices[1] == 1) || (newIndices[2] == 1)); 
+        assertTrue((newIndices[0] == 2) || (newIndices[1] == 2) || (newIndices[2] == 2)); 
+        
+        assertEquals(entry0, path.getEntries()[0]);
+        assertEquals(entry1, path.getEntries()[1]);
+        assertEquals(entry3, path.getEntries()[2]);
+        assertEquals(entry2, path.getEntries()[3]);
+        
+        // invalid values should not change the elements order
+        newIndices = path.moveEntries(new int[] {-2, 42}, true);
+        assertEquals(entry0, path.getEntries()[0]);
+        assertEquals(entry1, path.getEntries()[1]);
+        assertEquals(entry3, path.getEntries()[2]);
+        assertEquals(entry2, path.getEntries()[3]);
+
+        // invalid values should not change the elements order
+        newIndices = path.moveEntries(new int[] {-3, 21}, false);
+        assertEquals(entry0, path.getEntries()[0]);
+        assertEquals(entry1, path.getEntries()[1]);
+        assertEquals(entry3, path.getEntries()[2]);
+        assertEquals(entry2, path.getEntries()[3]);
+    }
+
 }

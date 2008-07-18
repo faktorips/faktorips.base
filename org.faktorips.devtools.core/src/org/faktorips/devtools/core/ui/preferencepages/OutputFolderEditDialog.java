@@ -18,9 +18,7 @@
 package org.faktorips.devtools.core.ui.preferencepages;
 
 import org.eclipse.core.resources.IContainer;
-import org.eclipse.core.resources.IProject;
-import org.eclipse.core.runtime.CoreException;
-import org.eclipse.core.runtime.IPath;
+import org.eclipse.core.resources.IFolder;
 import org.eclipse.jface.dialogs.StatusDialog;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionEvent;
@@ -31,46 +29,39 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Group;
 import org.eclipse.swt.widgets.Shell;
-import org.faktorips.devtools.core.IpsPlugin;
-import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
+import org.faktorips.devtools.core.model.ipsproject.IIpsSrcFolderEntry;
 import org.faktorips.devtools.core.ui.UIToolkit;
 import org.faktorips.devtools.core.ui.controls.FolderSelectionControl;
 
 /**
- * Dialog for editing the main attributes of IPS source path entries (in this case outputFolderDerived 
- * and outputFolderMergable).
+ * Dialog for editing output folders of IPS source folder entries 
  * @author Roman Grutza
  */
-public class AttributeEditDialog extends StatusDialog {
+public class OutputFolderEditDialog extends StatusDialog {
 
-    
-    private IIpsProject ipsProject;
     private FolderSelectionControl folderSelectionControl;
     private Button buttonDefaultFolderSelected;
     private Button buttonCustomFolderSelected;
-    private String type;
     
     private boolean customFolderSelected = false;
-    private IContainer selectedFolder;    
+    private IContainer selectedFolder;
+    private IIpsObjectPathEntryAttribute attribute;
+    private IIpsSrcFolderEntry srcFolderEntry;    
 
     /**
-     * 
      * @param parent Composite
-     * @param ipsProject for which the edit action has to be performed
-     * @param type determines which attribute will be edited. It can be either 
-     * IIpsSrcFolderEntryAttribute.SPECIFIC_OUTPUT_FOLDER_FOR_DERIVED_SOURCES or IIpsSrcFolderEntryAttribute.SPECIFIC_OUTPUT_FOLDER_FOR_MERGABLE_SOURCES
-     * @param initialFolder initially selected output folder 
+     * @param srcfolderEntry parent entry for which to alter an attribute
+     * @param the attribute to be changed
      */
-    public AttributeEditDialog(Shell parent, IIpsProject ipsProject, String type, IContainer initialFolder) {
+    public OutputFolderEditDialog(Shell parent, IIpsSrcFolderEntry srcFolderEntry, IIpsObjectPathEntryAttribute attribute) {
         super(parent);
-        this.setTitle("Edit Attribute");
+        this.setTitle("Edit Output Folder");
         this.setHelpAvailable(false);
-        this.ipsProject = ipsProject;
-        this.selectedFolder = initialFolder;
+        this.attribute = attribute;
+        this.srcFolderEntry = srcFolderEntry;
         
-        if (IIpsSrcFolderEntryAttribute.SPECIFIC_OUTPUT_FOLDER_FOR_DERIVED_SOURCES.equals(type) ||
-                IIpsSrcFolderEntryAttribute.SPECIFIC_OUTPUT_FOLDER_FOR_MERGABLE_SOURCES.equals(type)) {
-            this.type = type;
+        if (! (attribute.isFolderForDerivedSources() || attribute.isFolderForMergableSources())) {
+            throw new IllegalArgumentException("Attribute is not of type output folder.");
         }
     }
 
@@ -84,12 +75,19 @@ public class AttributeEditDialog extends StatusDialog {
         Group group = new Group(parent, SWT.NONE);
         
         buttonDefaultFolderSelected = new Button(group, SWT.RADIO);
-        buttonDefaultFolderSelected.setText("Use project default output folder (" +  getDefaultOutputFolder() + ").");
+        String defaultOutputFolder = (getDefaultOutputFolder() != null) ? " ("  + getDefaultOutputFolder().getName() + ")" : "";
+        buttonDefaultFolderSelected.setText("Use project default output folder" + defaultOutputFolder);
         buttonCustomFolderSelected = new Button(group, SWT.RADIO);
-        buttonCustomFolderSelected.setText("Use package specific output folder (path relative to " + ipsProject.getName() + ").");
+        buttonCustomFolderSelected.setText("Use specific output folder:");
 
         folderSelectionControl = new FolderSelectionControl(group, new UIToolkit(null), "Browse");
-        folderSelectionControl.setRoot(ipsProject.getProject());
+        folderSelectionControl.setRoot(srcFolderEntry.getIpsProject().getProject());
+
+        // initialize specific output folder
+        if (srcFolderEntry.getIpsObjectPath().isOutputDefinedPerSrcFolder()) {
+            folderSelectionControl.setFolder(getSpecificFolder());
+            selectedFolder = getSpecificFolder();    
+        }
         
         if (selectedFolder != null) {
             // entry specific folder
@@ -141,52 +139,34 @@ public class AttributeEditDialog extends StatusDialog {
     public IContainer getSelectedFolder() {
         IContainer resultContainer = null;
         
-        try {
-            if (customFolderSelected) {
-                resultContainer = folderSelectionControl.getFolder();
-            }
-            else if (IIpsSrcFolderEntryAttribute.DEFAULT_OUTPUT_FOLDER_FOR_DERIVED_SOURCES.equals(type)) {
-                resultContainer = ipsProject.getIpsObjectPath().getOutputFolderForDerivedSources();
-            }
-            else if (IIpsSrcFolderEntryAttribute.DEFAULT_OUTPUT_FOLDER_FOR_MERGABLE_SOURCES.equals(type)) {
-                resultContainer = ipsProject.getIpsObjectPath().getOutputFolderForMergableSources();
-            }
-        } catch (CoreException e) {
-            IpsPlugin.log(e);
+        if (customFolderSelected) {
+            resultContainer = folderSelectionControl.getFolder();
+        }
+        else  {
+            resultContainer = getDefaultOutputFolder();
         }
 
         return resultContainer; 
     }
+
     
-
-    private String getDefaultOutputFolder() {
+    private IFolder getDefaultOutputFolder() {
         
-        String rootFolder = "";
-
-        if (ipsProject != null) {
-            IContainer folder = null;
-            try {
-                if (IIpsSrcFolderEntryAttribute.SPECIFIC_OUTPUT_FOLDER_FOR_DERIVED_SOURCES.equals(type)) {
-                    folder = ipsProject.getIpsObjectPath().getOutputFolderForDerivedSources();
-                }
-                else if (IIpsSrcFolderEntryAttribute.SPECIFIC_OUTPUT_FOLDER_FOR_MERGABLE_SOURCES.equals(type)) {
-                    folder = ipsProject.getIpsObjectPath().getOutputFolderForMergableSources();
-                }
-                
-                if (folder != null) {
-                    rootFolder = ((IProject) ipsProject.getProject()).getName() + IPath.SEPARATOR;
-                    rootFolder += folder.getProjectRelativePath().toOSString();
-                }
-
-            } catch (CoreException e) {
-                IpsPlugin.log(e);
-                return "";
-            }
-            
+        IFolder outputFolder;
+        if (attribute.isFolderForDerivedSources()) {
+            outputFolder = srcFolderEntry.getIpsObjectPath().getOutputFolderForDerivedSources();
+        } else {
+            outputFolder = srcFolderEntry.getIpsObjectPath().getOutputFolderForMergableSources();
         }
-        
-        return rootFolder;
+        return outputFolder;
     }
-
+    
+    private IFolder getSpecificFolder() {
+        if (attribute.isFolderForDerivedSources()) {
+            return srcFolderEntry.getSpecificOutputFolderForDerivedJavaFiles();
+        } else {
+            return srcFolderEntry.getSpecificOutputFolderForMergableJavaFiles();
+        }
+    }
     
 }

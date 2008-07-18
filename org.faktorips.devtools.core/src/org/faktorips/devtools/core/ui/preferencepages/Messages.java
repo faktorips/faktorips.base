@@ -39,6 +39,11 @@ public class Messages extends NLS {
     public static String ArchiveComposite_labelProvider_invalid_element;
     public static String ArchiveComposite_viewer_label;
     public static String IpsObjectPathLabelProvider_label_output_folder;
+    public static String IpsObjectPathPropertyPage_1;
+    public static String IpsObjectPathPropertyPage_apply_button;
+    public static String IpsObjectPathPropertyPage_apply_later_button;
+    public static String IpsObjectPathPropertyPage_changes_in_dialog_title;
+    public static String IpsObjectPathPropertyPage_discard_button;
     public static String IpsObjectPathsPropertyPage_closed_project_message;
     public static String IpsObjectPathContainer_tab_projects;
     public static String ObjectPathOrderComposite_buttonBottom_label;

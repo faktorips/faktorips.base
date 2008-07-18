@@ -44,15 +44,15 @@ public class IpsObjectPathLabelProvider extends LabelProvider {
                    entry.getSourceFolder().getProjectRelativePath().toString();
         }
         else if (element instanceof IIpsProjectRefEntry) {
-            text =  ((IIpsProjectRefEntry) element).getReferencedIpsProject().getName();
+            text = ((IIpsProjectRefEntry) element).getReferencedIpsProject().getName();
         }
         else if (element instanceof IIpsArchiveEntry) {
             IIpsArchiveEntry entry = (IIpsArchiveEntry) element;
             text = entry.getArchiveFile().getName() + " - " + 
                    entry.getIpsProject().getName() + IPath.SEPARATOR + entry.getArchiveFile().getProjectRelativePath().toOSString();
         }
-        else if (element instanceof IIpsSrcFolderEntryAttribute) {
-            IIpsSrcFolderEntryAttribute att = (IIpsSrcFolderEntryAttribute) element;
+        else if (element instanceof IIpsObjectPathEntryAttribute) {
+            IIpsObjectPathEntryAttribute att = (IIpsObjectPathEntryAttribute) element;
             String label = getLabelFromAttributeType(att);
             String content = getContentFromAttribute(att);
             return label + ": " + content;
@@ -76,38 +76,49 @@ public class IpsObjectPathLabelProvider extends LabelProvider {
         else if (element instanceof IIpsArchiveEntry) {
             image = IpsPlugin.getDefault().getImage("IpsAr.gif"); //$NON-NLS-1$
         }
-        else if (element instanceof IIpsSrcFolderEntryAttribute) {
-            IIpsSrcFolderEntryAttribute att = (IIpsSrcFolderEntryAttribute) element;
-            if (att.getName().equals(IIpsSrcFolderEntryAttribute.SPECIFIC_TOC_PATH) ) {
+        else if (element instanceof IIpsObjectPathEntryAttribute) {
+            IIpsObjectPathEntryAttribute att = (IIpsObjectPathEntryAttribute) element;
+            if (att.isTocPath()) {
                 image = IpsPlugin.getDefault().getImage("TableContents.gif"); //$NON-NLS-1$
+            }
+            if (att.isPackageNameForDerivedSources() || att.isPackageNameForMergableSources()) {
+                image = IpsPlugin.getDefault().getImage("IpsPackageFragment.gif"); //$NON-NLS-1$
             }
         }
 
         return image;
     }
 
-    private String getLabelFromAttributeType(IIpsSrcFolderEntryAttribute attribute) {
+    private String getLabelFromAttributeType(IIpsObjectPathEntryAttribute attribute) {
         String result = "";
         
-        if (attribute.getName().equals( IIpsSrcFolderEntryAttribute.DEFAULT_BASE_PACKAGE_DERIVED)
-                || attribute.getName().equals( IIpsSrcFolderEntryAttribute.SPECIFIC_BASE_PACKAGE_DERIVED))
+        if (attribute.getType().equals( IIpsObjectPathEntryAttribute.DEFAULT_BASE_PACKAGE_DERIVED)
+                || attribute.getType().equals( IIpsObjectPathEntryAttribute.SPECIFIC_BASE_PACKAGE_DERIVED))
             result = "Base package derived";
         
-        if (attribute.getName().equals( IIpsSrcFolderEntryAttribute.DEFAULT_OUTPUT_FOLDER_FOR_DERIVED_SOURCES)
-                || attribute.getName().equals( IIpsSrcFolderEntryAttribute.SPECIFIC_OUTPUT_FOLDER_FOR_DERIVED_SOURCES))
+        if (attribute.getType().equals( IIpsObjectPathEntryAttribute.DEFAULT_OUTPUT_FOLDER_FOR_DERIVED_SOURCES)
+                || attribute.getType().equals( IIpsObjectPathEntryAttribute.SPECIFIC_OUTPUT_FOLDER_FOR_DERIVED_SOURCES))
             result = "Output folder derived sources";
         
-        if (attribute.getName().equals( IIpsSrcFolderEntryAttribute.DEFAULT_OUTPUT_FOLDER_FOR_MERGABLE_SOURCES)
-                || attribute.getName().equals( IIpsSrcFolderEntryAttribute.SPECIFIC_OUTPUT_FOLDER_FOR_MERGABLE_SOURCES))
+        if (attribute.getType().equals( IIpsObjectPathEntryAttribute.DEFAULT_OUTPUT_FOLDER_FOR_MERGABLE_SOURCES)
+                || attribute.getType().equals( IIpsObjectPathEntryAttribute.SPECIFIC_OUTPUT_FOLDER_FOR_MERGABLE_SOURCES))
             result = "Output folder mergable sources";
         
-        if (attribute.getName().equals( IIpsSrcFolderEntryAttribute.SPECIFIC_TOC_PATH))
+        if (attribute.getType().equals( IIpsObjectPathEntryAttribute.DEFAULT_BASE_PACKAGE_DERIVED)
+                || attribute.getType().equals( IIpsObjectPathEntryAttribute.SPECIFIC_BASE_PACKAGE_DERIVED))
+            result = "Package name for derived sources";
+        
+        if (attribute.getType().equals( IIpsObjectPathEntryAttribute.DEFAULT_BASE_PACKAGE_MERGABLE)
+                || attribute.getType().equals( IIpsObjectPathEntryAttribute.SPECIFIC_BASE_PACKAGE_MERGABLE))
+            result = "Package name for mergable sources";
+        
+        if (attribute.getType().equals( IIpsObjectPathEntryAttribute.SPECIFIC_TOC_PATH))
             result = "Table of contents";
         
         return result;
     }
 
-    private String getContentFromAttribute(IIpsSrcFolderEntryAttribute attribute) {
+    private String getContentFromAttribute(IIpsObjectPathEntryAttribute attribute) {
         String result = "(default)";
         
         // get path from IFolder instance

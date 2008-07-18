@@ -17,12 +17,13 @@
 
 package org.faktorips.devtools.core.ui.preferencepages;
 
+
 /**
- * This class maps IPS source path entry attributes to values. 
+ * This class maps IPS object path entry attributes to values. 
  * @author Roman Grutza
  */
 
-public interface IIpsSrcFolderEntryAttribute {
+public interface IIpsObjectPathEntryAttribute {
 
     public final static String DEFAULT_OUTPUT_FOLDER_FOR_MERGABLE_SOURCES = "defaultOutputFolderMergable";
     public final static String SPECIFIC_OUTPUT_FOLDER_FOR_MERGABLE_SOURCES = "specificOutputFolderMergable";
@@ -38,10 +39,6 @@ public interface IIpsSrcFolderEntryAttribute {
     
     public final static String SPECIFIC_TOC_PATH = "tocPath";
 
-    /**
-     * @return the name of the mapping
-     */
-    public String getName();
 
     /**
      * @return the mappings value, which can be any arbitrary object
@@ -56,16 +53,36 @@ public interface IIpsSrcFolderEntryAttribute {
     
     
     /**
-     * @return if this mapping is a derived folder mapping (either the IPS object path's default folder for derived sources,
-     * or a IpsSrcPathEntry-specific output folder) 
+     * @return the type of this entry as defined in this interface 
+     */
+    public String getType();
+
+    /**
+     * @return true if this mapping is a derived folder mapping (either the IPS object path's default folder for derived sources,
+     * or a IpsSrcPathEntry-specific output folder), false otherwise 
      */
     public boolean isFolderForDerivedSources();
-    
-    
+
     /**
-     * @return if this mapping is a mergable folder mapping (either the IPS object path's default folder for mergable sources,
-     * or a IpsSrcPathEntry-specific output folder) 
+     * @return true if this mapping is a mergable folder mapping (either the IPS object path's default folder for mergable sources,
+     * or a IpsSrcPathEntry-specific output folder), false otherwise 
      */
     public boolean isFolderForMergableSources();
-    
+
+    /**
+     * @return true if this mapping is toc file mapping, false otherwise 
+     */
+    public boolean isTocPath();
+
+    /**
+     * @return true if this mapping is a package name mapping for derived sources (either the IPS object path's default 
+     * package name for derived sources, or a IpsSrcPathEntry-specific package name), false otherwise 
+     */
+    public boolean isPackageNameForDerivedSources();
+
+    /**
+     * @return true if this mapping is a package name mapping for mergable sources (either the IPS object path's default 
+     * package name for mergable sources, or a IpsSrcPathEntry-specific package name), false otherwise 
+     */
+    public boolean isPackageNameForMergableSources();
 }

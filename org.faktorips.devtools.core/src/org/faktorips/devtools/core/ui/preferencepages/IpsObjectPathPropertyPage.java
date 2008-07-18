@@ -24,6 +24,7 @@ import org.eclipse.jdt.core.IJavaElement;
 import org.eclipse.jdt.core.IJavaProject;
 import org.eclipse.jface.dialogs.Dialog;
 import org.eclipse.jface.dialogs.IDialogSettings;
+import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.preference.IPreferencePageContainer;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Composite;
@@ -46,7 +47,7 @@ public class IpsObjectPathPropertyPage extends PropertyPage {
     private static final String PAGE_SETTINGS = "IpsObjectPathPropertyPage"; //$NON-NLS-1$
     private static final String INDEX = "pageIndex"; //$NON-NLS-1$
 
-    private IpsObjectPathContainer objectPathsBlock;
+    private IpsObjectPathContainer objectPathsContainer;
 
     /**
      * {@inheritDoc}
@@ -81,7 +82,7 @@ public class IpsObjectPathPropertyPage extends PropertyPage {
     private Control createForClosedProject(Composite parent) {
         Label label = new Label(parent, SWT.LEFT);
         label.setText(org.faktorips.devtools.core.ui.preferencepages.Messages.IpsObjectPathsPropertyPage_closed_project_message);
-        objectPathsBlock = null;
+        objectPathsContainer = null;
         setValid(true);
         return label;
     }
@@ -94,9 +95,9 @@ public class IpsObjectPathPropertyPage extends PropertyPage {
             pageContainer = (IWorkbenchPreferenceContainer)container;
         }
 
-        objectPathsBlock = new IpsObjectPathContainer(getSettings().getInt(INDEX), pageContainer);
-        objectPathsBlock.init(ipsProject, null);
-        return objectPathsBlock.createControl(parent);
+        objectPathsContainer = new IpsObjectPathContainer(getSettings().getInt(INDEX), pageContainer);
+        objectPathsContainer.init(ipsProject, null);
+        return objectPathsContainer.createControl(parent);
     }
 
     /*
@@ -141,9 +142,45 @@ public class IpsObjectPathPropertyPage extends PropertyPage {
     /**
      * {@inheritDoc}
      */
-    public boolean performOk() {
+    public void setVisible(boolean visible) {
+        
+        if (objectPathsContainer != null) {
+            if (! visible) {
+                if (objectPathsContainer.hasChangesInDialog()) {
+                    String title = Messages.IpsObjectPathPropertyPage_changes_in_dialog_title; 
+                    String message = Messages.IpsObjectPathPropertyPage_1; 
+                    String[] buttonLabels = new String[] { Messages.IpsObjectPathPropertyPage_apply_button, Messages.IpsObjectPathPropertyPage_discard_button, Messages.IpsObjectPathPropertyPage_apply_later_button };
 
-        boolean result = objectPathsBlock.saveToIpsProjectFile();
+                    MessageDialog dialog= new MessageDialog(getShell(), title, null, message, MessageDialog.QUESTION, buttonLabels, 0);
+                    int res= dialog.open();
+                    if (res == 0) {
+                        performOk();
+                    } else if (res == 1) {
+                        
+                        try {
+                            objectPathsContainer.init(getIpsProject(), null);
+                        } catch (CoreException e) {
+                            IpsPlugin.logAndShowErrorDialog(e);
+                        }
+                    } else {
+                        // keep unsaved
+                    }
+                }
+            }
+        }
+        super.setVisible(visible);
+    }
+    
+    /**
+     * {@inheritDoc}
+     */
+    public boolean performOk() {
+        
+        boolean result = false;
+        
+        if (objectPathsContainer.hasChangesInDialog()) {
+            result = objectPathsContainer.saveToIpsProjectFile();
+        }
         return result;
     }
 

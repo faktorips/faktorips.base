@@ -194,4 +194,15 @@ public interface IIpsObjectPath {
      */
     public MessageList validate() throws CoreException;
     
+    /**
+     * Moves the entries at at the given indices up/down and adjusts the positions of the
+     * elements in between accordingly.
+     * 
+     * @param indices an array with indices of the entries to be moved. If it contains negative indices 
+     * or indices greater than the number of entries the resulted operation is undefined.
+     * @ param up entries will be moved up one position if true, down otherwise 
+
+     * @return the indices of the entries' positions after the move operation
+     */
+    public int[] moveEntries(int[] indices, boolean up);    
 }

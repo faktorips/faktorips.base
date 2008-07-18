@@ -45,6 +45,7 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Tree;
+import org.eclipse.swt.widgets.TreeItem;
 import org.eclipse.ui.dialogs.ElementTreeSelectionDialog;
 import org.eclipse.ui.model.WorkbenchContentProvider;
 import org.eclipse.ui.model.WorkbenchLabelProvider;
@@ -56,6 +57,7 @@ import org.faktorips.devtools.core.ui.controller.fields.CheckboxField;
 import org.faktorips.devtools.core.ui.controller.fields.FieldValueChangedEvent;
 import org.faktorips.devtools.core.ui.controller.fields.ValueChangeListener;
 import org.faktorips.devtools.core.ui.controls.FolderSelectionControl;
+import org.faktorips.devtools.core.ui.controls.IpsPckFragmentRootRefControl;
 
 /**
  * Composite for modifying IPS source folders
@@ -74,11 +76,14 @@ public class SrcFolderComposite extends Composite {
     private FolderSelectionControl derivedSrcFolderControl;
     private FolderSelectionControl mergableSrcFolderControl;
     
+    private IpsPckFragmentRootRefControl basePackageDerivedControl;
+    private IpsPckFragmentRootRefControl basePackageMergableControl;
+    
     // separate output folders for model folders
     private CheckboxField multipleOutputCheckbutton;
     private boolean dataChanged = false;
 
-    
+
     /**
      * @param parent Composite
      */
@@ -129,6 +134,18 @@ public class SrcFolderComposite extends Composite {
         gd = new GridData(GridData.VERTICAL_ALIGN_BEGINNING | GridData.FILL_HORIZONTAL);
         gd.horizontalSpan = 2;
         mergableSrcFolderControl.setLayoutData(gd);
+        
+        toolkit.createLabel(tableWithButtons, "Base package derived:");
+        basePackageDerivedControl = new IpsPckFragmentRootRefControl(tableWithButtons, true, toolkit);
+        gd = new GridData(GridData.VERTICAL_ALIGN_BEGINNING | GridData.FILL_HORIZONTAL);
+        gd.horizontalSpan = 2;
+        basePackageDerivedControl.setLayoutData(gd);
+        
+        toolkit.createLabel(tableWithButtons, "Base package mergable:");
+        basePackageMergableControl = new IpsPckFragmentRootRefControl(tableWithButtons, true, toolkit);
+        gd = new GridData(GridData.VERTICAL_ALIGN_BEGINNING | GridData.FILL_HORIZONTAL);
+        gd.horizontalSpan = 2;
+        basePackageMergableControl.setLayoutData(gd);
     }
 
     
@@ -181,7 +198,13 @@ public class SrcFolderComposite extends Composite {
 
         mergableSrcFolderControl.setRoot(ipsObjectPath.getIpsProject().getProject());
         mergableSrcFolderControl.setFolder(ipsObjectPath.getOutputFolderForMergableSources());
+        
+        basePackageDerivedControl.setPdPckFragmentRoot(ipsObjectPath.getIpsProject().getIpsPackageFragmentRoot(
+                ipsObjectPath.getBasePackageNameForDerivedJavaClasses()));
 
+        basePackageMergableControl.setPdPckFragmentRoot(ipsObjectPath.getIpsProject().getIpsPackageFragmentRoot(
+                ipsObjectPath.getBasePackageNameForMergableJavaClasses()));
+        
         updateWidgetEnabledStates();
         treeViewer.refresh(false);
     }
@@ -194,18 +217,21 @@ public class SrcFolderComposite extends Composite {
         return dataChanged;
     }
 
-    
     private void updateWidgetEnabledStates() {
         
-        boolean multipleOutputFolders = ipsObjectPath.isOutputDefinedPerSrcFolder();
+        boolean multipleOutputFolders = (ipsObjectPath != null) && ipsObjectPath.isOutputDefinedPerSrcFolder();
+        
+        multipleOutputCheckbutton.getCheckbox().setChecked(multipleOutputFolders);
+        
+        mergableSrcFolderControl.setEnabled(! multipleOutputFolders);
+        derivedSrcFolderControl.setEnabled(! multipleOutputFolders);
+        basePackageDerivedControl.setEnabled(! multipleOutputFolders);
+        basePackageMergableControl.setEnabled(! multipleOutputFolders);
+        
         
         if (treeViewer.getSelection().isEmpty()) {
-            addSrcFolderButton.setEnabled(true);
             removeSrcFolderButton.setEnabled(false);
             editSelectionButton.setEnabled(false);
-            multipleOutputCheckbutton.getCheckbox().setChecked(multipleOutputFolders);
-            mergableSrcFolderControl.setEnabled(multipleOutputFolders);
-            derivedSrcFolderControl.setEnabled(multipleOutputFolders);
 
             return;
         }
@@ -213,25 +239,14 @@ public class SrcFolderComposite extends Composite {
         Object selectedElement = treeViewer.getTree().getSelection()[0].getData();
         if (selectedElement instanceof IIpsSrcFolderEntry) {
             removeSrcFolderButton.setEnabled(true);
-        }
-        else {
-            removeSrcFolderButton.setEnabled(false);
-        }
-            
-        
-        if (selectedElement instanceof IIpsSrcFolderEntryAttribute && 
-                ((IIpsSrcFolderEntryAttribute) selectedElement).getValue() instanceof IFolder) {
-            editSelectionButton.setEnabled(true);
-        }
-        else {
             editSelectionButton.setEnabled(false);
         }
         
-        multipleOutputCheckbutton.getCheckbox().setChecked(multipleOutputFolders);
-        mergableSrcFolderControl.setEnabled(multipleOutputFolders);
-        derivedSrcFolderControl.setEnabled(multipleOutputFolders);
+        if (selectedElement instanceof IIpsObjectPathEntryAttribute) {
+            removeSrcFolderButton.setEnabled(false);
+            editSelectionButton.setEnabled(true);
+        }
     }
-
 
     private void removeSrcFolders() {
         ISelection selection = treeViewer.getSelection();
@@ -268,65 +283,111 @@ public class SrcFolderComposite extends Composite {
                 IFolder folder = (IFolder) selectedFolders[i];
                 ipsObjectPath.newSourceFolderEntry(folder);
                 treeViewer.refresh(false);
+                
+                dataChanged = true;
             }
         }
     }
 
-    // enable/disable TextButton controls if multiple output folders are set/cleared
+    // enable/disable output folder TextButton controls if multiple output folders are set/cleared
     private void updateSpecificOutputFolders(boolean multipleEnabled) {
         mergableSrcFolderControl.setEnabled(multipleEnabled);
         derivedSrcFolderControl.setEnabled(multipleEnabled);
-        
-        ipsObjectPath.setOutputDefinedPerSrcFolder(! multipleEnabled);
     }
+    
+    // enable/disable package name TextButton controls if multiple output folders are set/cleared
+    private void updateSpecificPackageNames(boolean multipleEnabled) {
+        basePackageDerivedControl.setEnabled(multipleEnabled);
+        basePackageMergableControl.setEnabled(multipleEnabled);
+    }
+    
     
     private void editSelection() {
         ISelection selection = treeViewer.getSelection();
-        if (selection.isEmpty())
+        if (selection.isEmpty()) {
             return;
+        }
         
         if (selection instanceof ITreeSelection) {
             ITreeSelection treeSelection = (ITreeSelection) selection;
             Object selectedElement = treeSelection.getFirstElement();
             
-            IIpsSrcFolderEntry srcFolderEntry = (IIpsSrcFolderEntry) treeViewer.getTree().getSelection()[0].getParentItem().getData();
-                        
-            if (selectedElement instanceof IpsSrcFolderEntryAttribute) {
-                IIpsSrcFolderEntryAttribute attribute = (IIpsSrcFolderEntryAttribute) selectedElement;
-                
-                AttributeEditDialog editDialog = null;
-                if (attribute.isFolderForDerivedSources()) {
-                    editDialog = new AttributeEditDialog(getShell(), 
-                            ipsObjectPath.getIpsProject(), 
-                            IIpsSrcFolderEntryAttribute.SPECIFIC_OUTPUT_FOLDER_FOR_DERIVED_SOURCES,
-                            srcFolderEntry.getSpecificOutputFolderForDerivedJavaFiles() );    
-                }
-                else if (attribute.isFolderForMergableSources()) {
-                    editDialog = new AttributeEditDialog(getShell(), 
-                            ipsObjectPath.getIpsProject(), 
-                            IIpsSrcFolderEntryAttribute.SPECIFIC_OUTPUT_FOLDER_FOR_MERGABLE_SOURCES,
-                            srcFolderEntry.getSpecificOutputFolderForMergableJavaFiles());
-                }
-                
-                if (editDialog != null && editDialog.open() == Window.OK) {
-                    IContainer folder = editDialog.getSelectedFolder();
-                    if (folder == null) {
-                        return;
-                    }
+            TreeItem[] treeItems = treeViewer.getTree().getSelection();
+            IIpsSrcFolderEntry srcFolderEntry = (IIpsSrcFolderEntry) treeItems[0].getParentItem().getData();
+
+            if (selectedElement instanceof IpsObjectPathEntryAttribute) {
+                IIpsObjectPathEntryAttribute attribute = (IIpsObjectPathEntryAttribute) selectedElement;
+                                
+                if (attribute.isFolderForDerivedSources() || attribute.isFolderForMergableSources()) {
                     
-                    if (attribute.isFolderForDerivedSources()) {
-                        srcFolderEntry.setSpecificOutputFolderForDerivedJavaFiles( (IFolder) folder.getAdapter(IFolder.class));
+                    OutputFolderEditDialog editDialog = new OutputFolderEditDialog(getShell(), srcFolderEntry, attribute);
+                    if (editDialog.open() == Window.OK) {
+                        IContainer newOutputFolder = editDialog.getSelectedFolder();
+                        if (attribute.isFolderForDerivedSources()) {
+                            
+                            IFolder defaultOutputFolderForDerivedSources = ipsObjectPath.getOutputFolderForDerivedSources();
+                            if (defaultOutputFolderForDerivedSources.equals(newOutputFolder)) {
+                                srcFolderEntry.setSpecificOutputFolderForDerivedJavaFiles(null);
+                            } else {
+                                srcFolderEntry.setSpecificOutputFolderForDerivedJavaFiles( (IFolder) newOutputFolder.getAdapter(IFolder.class));
+                            }
+                        } else {
+                            IFolder defaultOutpuFolderForMergableSources = ipsObjectPath.getOutputFolderForMergableSources();
+                            if (defaultOutpuFolderForMergableSources.equals(newOutputFolder)) {
+                                srcFolderEntry.setSpecificOutputFolderForMergableJavaFiles(null);
+                            } else
+                                srcFolderEntry.setSpecificOutputFolderForMergableJavaFiles( (IFolder) newOutputFolder.getAdapter(IFolder.class));
+                        }
+                        dataChanged = true;
                     }
-                    else if (attribute.isFolderForMergableSources()) {
-                        srcFolderEntry.setSpecificOutputFolderForMergableJavaFiles( (IFolder) folder.getAdapter(IFolder.class));
+                } else if (attribute.isPackageNameForDerivedSources()) {
+                    
+                    PackageNameEditDialog editDialog = new PackageNameEditDialog(getShell(), srcFolderEntry, attribute);
+                    if (editDialog.open() == Window.OK) {
+                        String newPackageName = editDialog.getPackageName();
+                        String defaultName = ipsObjectPath.getBasePackageNameForDerivedJavaClasses();
+                        if (newPackageName.equals(defaultName)) {
+                            srcFolderEntry.setSpecificBasePackageNameForDerivedJavaClasses("");
+                        } else {
+                            srcFolderEntry.setSpecificBasePackageNameForDerivedJavaClasses(newPackageName);
+                        }
+                        dataChanged = true;                        
                     }
-                    treeViewer.refresh(srcFolderEntry, false);
+                }  else if (attribute.isPackageNameForMergableSources()) {
+                    PackageNameEditDialog editDialog = new PackageNameEditDialog(getShell(), srcFolderEntry, attribute);
+                    if (editDialog.open() == Window.OK) {
+                        String newPackageName = editDialog.getPackageName();
+                        String defaultName = ipsObjectPath.getBasePackageNameForMergableJavaClasses();
+                        if (newPackageName.equals(defaultName)) {
+                            srcFolderEntry.setSpecificBasePackageNameForMergableJavaClasses("");
+                        } else {
+                            srcFolderEntry.setSpecificBasePackageNameForMergableJavaClasses(newPackageName);
+                        }
+                        dataChanged = true;                        
+                    }                    
+                }
+                else if (attribute.isTocPath()) {
+                    
+                    String tocPath = srcFolderEntry.getBasePackageRelativeTocPath();
+                    IInputValidator inputValidator = new IInputValidator() {
+
+                        public String isValid(String newText) {
+                            if (newText == null || newText.length() < 1) {
+                                return "File name invalid";
+                            }
+                            return null;
+                        }};
+                    InputDialog newTocPathDialog = new InputDialog(getShell(), "Toc Path Configuration", "Enter name for table of contents file:", tocPath, inputValidator);
+                    
+                    if (newTocPathDialog.open() == Window.OK) {
+                        srcFolderEntry.setBasePackageRelativeTocPath(newTocPathDialog.getValue());
+                        dataChanged = true;                        
+                    }
                 }
             }
         }
-        
     }
-    
+        
     private ElementTreeSelectionDialog createSelectFolderDialog() {
         final IProject project = ipsObjectPath.getIpsProject().getProject();
 
@@ -370,7 +431,12 @@ public class SrcFolderComposite extends Composite {
                             }
                         };
                         
-                        InputDialog dialog = new InputDialog(getShell(), Messages.SrcFolderComposite_create_new_folder_title, Messages.SrcFolderComposite_create_new_folder_message, Messages.SrcFolderComposite_create_new_folder_defaultText, validator);
+                        InputDialog dialog = new InputDialog(getShell(), 
+                                Messages.SrcFolderComposite_create_new_folder_title, 
+                                Messages.SrcFolderComposite_create_new_folder_message, 
+                                Messages.SrcFolderComposite_create_new_folder_defaultText, 
+                                validator);
+                        
                         if (dialog.open() == Window.OK) {
                             IFolder newFolder = ipsObjectPath.getIpsProject().getProject().getFolder(dialog.getValue());
                             try {
@@ -421,6 +487,7 @@ public class SrcFolderComposite extends Composite {
             }
             if (e.getSource() == editSelectionButton) {
                 editSelection();
+                treeViewer.refresh(false);
             }
         }
 
@@ -433,8 +500,14 @@ public class SrcFolderComposite extends Composite {
          * {@inheritDoc}
          */
         public void valueChanged(FieldValueChangedEvent e) {
-            updateSpecificOutputFolders(! multipleOutputCheckbutton.getCheckbox().isChecked());
+            boolean multipleEnabled = multipleOutputCheckbutton.getCheckbox().isChecked();
+            updateSpecificOutputFolders(! multipleEnabled);
+            updateSpecificPackageNames(! multipleEnabled);
+            
+            ipsObjectPath.setOutputDefinedPerSrcFolder(multipleEnabled);
             treeViewer.refresh();
+            dataChanged = true;            
         }
+
     }
 }

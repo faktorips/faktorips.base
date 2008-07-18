@@ -17,6 +17,8 @@
 
 package org.faktorips.devtools.core.ui.preferencepages;
 
+import java.util.Arrays;
+
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jface.viewers.ISelectionChangedListener;
 import org.eclipse.jface.viewers.SelectionChangedEvent;
@@ -31,9 +33,7 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Table;
 import org.faktorips.devtools.core.model.ipsproject.IIpsObjectPath;
-import org.faktorips.devtools.core.model.ipsproject.IIpsObjectPathEntry;
 import org.faktorips.devtools.core.ui.UIToolkit;
-import org.faktorips.devtools.core.util.ArrayElementMover;
 
 
 /**
@@ -49,6 +49,7 @@ public class ObjectPathOrderComposite extends Composite {
     private Button moveDownButton;
     private Button moveTopButton;
     private Button moveBottomButton;
+    private boolean dataChanged = false;
 
 
     ObjectPathOrderComposite(Composite parent) {
@@ -133,15 +134,24 @@ public class ObjectPathOrderComposite extends Composite {
     }
 
     // enable all buttons, then selectively disable buttons not applicable for the current selection
-    private void setButtonEnabledStates(int index) {        
-        setButtonEnabledStates(true);
-        if (index == 0) {
-            moveUpButton.setEnabled(false);
-            moveTopButton.setEnabled(false);
+    private void setButtonEnabledStates(int[] indices) {        
+
+        int numSelections = indices.length;
+        setButtonEnabledStates(false);
+        if (numSelections == 0) {
+            return;
         }
-        if (index == tableViewer.getTable().getItemCount() - 1) {
-            moveDownButton.setEnabled(false);
-            moveBottomButton.setEnabled(false);                    
+        
+        Arrays.sort(indices);
+        
+        // groesster selected index > numSelections 
+        if (indices[numSelections - 1] >= numSelections) {
+            moveUpButton.setEnabled(true);
+            moveTopButton.setEnabled(true);
+        }
+        if (indices[0] < tableViewer.getTable().getItemCount() - numSelections) {
+            moveDownButton.setEnabled(true);
+            moveBottomButton.setEnabled(true);                    
         }
     }
     
@@ -154,23 +164,17 @@ public class ObjectPathOrderComposite extends Composite {
                 setButtonEnabledStates(false);
             }
             else {
-                setButtonEnabledStates(tableViewer.getTable().getSelectionIndex());
+                setButtonEnabledStates(tableViewer.getTable().getSelectionIndices());
             }
         }
 
         public void widgetSelected(SelectionEvent e) {
             
-            int selectionIndex = tableViewer.getTable().getSelectionIndex();
-            if (selectionIndex < 0) {
-                return;                 // nothing selected in tableViewer
-            }
-            
-            int newIndex = -1;
             if (e.getSource() == moveUpButton) {
-                moveEntries(true);
+                moveSelectedEntries(true);
             }
             else if (e.getSource() == moveDownButton) {
-                moveEntries(false);
+                moveSelectedEntries(false);
             }
             else if (e.getSource() == moveTopButton) {
                 moveEntriesTopBottom(true);
@@ -179,35 +183,23 @@ public class ObjectPathOrderComposite extends Composite {
                 moveEntriesTopBottom(false);
             }
             
-            setButtonEnabledStates(newIndex);
+            setButtonEnabledStates(tableViewer.getTable().getSelectionIndices());
             tableViewer.refresh(false);
         }
 
         public void widgetDefaultSelected(SelectionEvent e) { /* nothing to do */ }
     }
 
-
-    /**
-     * @param up, if true selected elements will be moved up by one if possible. Otherwise the elements will be moved down by one.
-     */
-    public void moveEntries(boolean up) {
+    private void moveSelectedEntries(boolean up) {
         Table table = tableViewer.getTable();
-        IIpsObjectPathEntry[] entries = ipsObjectPath.getEntries();
-        if (entries.length == 0) {
-            return;
-        }
         
-        ArrayElementMover mover = new ArrayElementMover(entries);
-        
-        int[] newSelection;
-        if (up) {
-            newSelection = mover.moveUp(table.getSelectionIndices());
-        } else {
-            newSelection = mover.moveDown(table.getSelectionIndices());
-        }
-        ipsObjectPath.setEntries(entries);
-        tableViewer.refresh(false);
+        int[] selectionIndices = table.getSelectionIndices();
+        int[] newSelection = ipsObjectPath.moveEntries(selectionIndices, up);
+
+        tableViewer.refresh(false);        
         table.setSelection(newSelection);
+        
+        dataChanged = true;
     }
 
 
@@ -217,19 +209,28 @@ public class ObjectPathOrderComposite extends Composite {
      */
     private void moveEntriesTopBottom(boolean top) {
         int[] currentSelection = tableViewer.getTable().getSelectionIndices();
-        java.util.Arrays.sort(currentSelection);
+
         if (currentSelection.length == 0)
             return;
         
         if (top) {
             for (int i = 0; i < currentSelection[currentSelection.length - 1]; i++) {
-                moveEntries(true);
+                moveSelectedEntries(true);
             }
         } else {
             for (int i = 0; i < tableViewer.getTable().getItemCount() - currentSelection.length; i++) {
-                moveEntries(false);
+                moveSelectedEntries(false);
             }
         }
+        dataChanged = true;
+    }
+
+    /**
+     * The order of IPS object path entries has been modified
+     * @return true if current project's order of object path entries has been modified, false otherwise
+     */
+    public boolean isDataChanged() {
+        return dataChanged;
     }
     
 }

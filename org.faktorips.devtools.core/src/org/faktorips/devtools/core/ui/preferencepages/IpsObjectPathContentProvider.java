@@ -18,9 +18,11 @@
 package org.faktorips.devtools.core.ui.preferencepages;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import org.eclipse.jface.viewers.ITreeContentProvider;
 import org.eclipse.jface.viewers.Viewer;
+import org.faktorips.devtools.core.model.ipsproject.IIpsArchiveEntry;
 import org.faktorips.devtools.core.model.ipsproject.IIpsObjectPath;
 import org.faktorips.devtools.core.model.ipsproject.IIpsObjectPathEntry;
 import org.faktorips.devtools.core.model.ipsproject.IIpsSrcFolderEntry;
@@ -31,78 +33,78 @@ import org.faktorips.devtools.core.model.ipsproject.IIpsSrcFolderEntry;
  */
 public class IpsObjectPathContentProvider implements ITreeContentProvider {
 
+    
+    private List includedClasses;
+
+    /**
+     * Only classes contained in the given list are returned or null.
+     * @param list of classes
+     */
+    public void setIncludedClasses(List includedClasses) {
+        this.includedClasses = includedClasses;
+    }
+    
+    public void removeClassFilter() {
+        this.includedClasses = null;
+    }
+    
     /**
      * {@inheritDoc}
      */
     public Object[] getChildren(Object parentElement) {
+        
+        Object[] result = null;
+        IIpsSrcFolderEntry entry = (IIpsSrcFolderEntry) parentElement;
+        IIpsObjectPath objectPath = entry.getIpsObjectPath();
+        
+        // handling attributes of IIpsSrcFolderEntries
         if (parentElement instanceof IIpsSrcFolderEntry) {
-            IIpsSrcFolderEntry entry = (IIpsSrcFolderEntry) parentElement;
-            IIpsObjectPath objectPath = entry.getIpsObjectPath();
-            boolean outputDefinedPerSrcFolder = objectPath.isOutputDefinedPerSrcFolder();
+//                && objectPath.isOutputDefinedPerSrcFolder()
+//                && passesFilter(IpsObjectPathEntryAttribute.class)) { 
 
             ArrayList attributes = new ArrayList();
-            if (outputDefinedPerSrcFolder) {
 
-                // append the SrcFolderEntry's attributes (like basePackageDerived, basePackageMergable, outputFolderDerived, outputFolderMergable, 
-                // sourceFolder and tocPath)
-                IpsSrcFolderEntryAttribute attribute = newOutputFolderForDerivedJavaFiles(entry);
+            // tocPath is always configurable
+            IIpsObjectPathEntryAttribute attribute = newTocPath(entry);
+            attributes.add(attribute);
+            
+            if (objectPath.isOutputDefinedPerSrcFolder()) {
+                attribute = newOutputFolderForDerivedJavaFiles(entry);
                 attributes.add(attribute);
-                
+
                 attribute = newOutputFolderForMergableJavaFiles(entry);
                 attributes.add(attribute);
                 
-                attribute = newTocPath(entry);
-                if (attribute != null) {
-                    attributes.add(attribute);
-                }
+                attribute = newBasePackageNameForDerivedJavaFiles(entry);
+                attributes.add(attribute);
+                
+                attribute = newBasePackageNameForMergableJavaFiles(entry);
+                attributes.add(attribute);
             }
 
-            return attributes.toArray();
+            result = attributes.toArray();
         }
 
-        return null;
+        return result;
     }
 
-    private IpsSrcFolderEntryAttribute newTocPath(IIpsSrcFolderEntry entry) {
-        IpsSrcFolderEntryAttribute attribute = null;
+    private boolean passesFilter(Object o) {
         
-        if (entry.getBasePackageRelativeTocPath() != null)
-            attribute = new IpsSrcFolderEntryAttribute(
-                    IIpsSrcFolderEntryAttribute.SPECIFIC_TOC_PATH,
-                    entry.getBasePackageRelativeTocPath());
-
-        return attribute;
-    }
-
-    private IpsSrcFolderEntryAttribute newOutputFolderForMergableJavaFiles(IIpsSrcFolderEntry entry) {
-        IpsSrcFolderEntryAttribute attribute;
+        if (includedClasses == null) {
+            return true;
+        } else {
         
-        if (entry.getSpecificOutputFolderForMergableJavaFiles() == null)
-            attribute = new IpsSrcFolderEntryAttribute(
-                    IIpsSrcFolderEntryAttribute.DEFAULT_OUTPUT_FOLDER_FOR_MERGABLE_SOURCES, 
-                    entry.getIpsObjectPath().getOutputFolderForMergableSources());
-        else {
-            attribute = new IpsSrcFolderEntryAttribute(
-                    IIpsSrcFolderEntryAttribute.SPECIFIC_OUTPUT_FOLDER_FOR_MERGABLE_SOURCES,
-                    entry.getSpecificOutputFolderForMergableJavaFiles()
-            );
+            for (int i = 0; i < includedClasses.size(); i++) {
+                Class c1 = o.getClass();
+                Class c2 = (Class) includedClasses.get(i);
+                if (c2.isAssignableFrom(c1)) {
+                      if (o instanceof IIpsArchiveEntry)
+                          this.equals(o);
+                    return true;
+                }
+            }
         }
-        return attribute;
-    }
-
-    private IpsSrcFolderEntryAttribute newOutputFolderForDerivedJavaFiles(IIpsSrcFolderEntry entry) {
-        IpsSrcFolderEntryAttribute attribute;
-        if (entry.getSpecificOutputFolderForDerivedJavaFiles() == null)
-            attribute = new IpsSrcFolderEntryAttribute(
-                    IIpsSrcFolderEntryAttribute.DEFAULT_OUTPUT_FOLDER_FOR_DERIVED_SOURCES, 
-                    entry.getIpsObjectPath().getOutputFolderForDerivedSources());
-        else {
-            attribute = new IpsSrcFolderEntryAttribute(
-                    IIpsSrcFolderEntryAttribute.SPECIFIC_OUTPUT_FOLDER_FOR_DERIVED_SOURCES,
-                    entry.getSpecificOutputFolderForDerivedJavaFiles()
-            );
-        }
-        return attribute;
+        return false;
     }
 
     /**
@@ -120,8 +122,7 @@ public class IpsObjectPathContentProvider implements ITreeContentProvider {
      */
     public boolean hasChildren(Object element) {
         if (element instanceof IIpsObjectPathEntry) {
-            IIpsObjectPath objectPath = ((IIpsObjectPathEntry) element).getIpsObjectPath() ;
-            return objectPath.isOutputDefinedPerSrcFolder();
+            return true;
         }
         return false;
     }
@@ -130,9 +131,29 @@ public class IpsObjectPathContentProvider implements ITreeContentProvider {
      * {@inheritDoc}
      */
     public Object[] getElements(Object inputElement) {
-        if (inputElement instanceof IIpsObjectPath)
-            return ((IIpsObjectPath) inputElement).getEntries();
-        return null;
+        
+        Object[] returnedElements = null;
+        if (inputElement instanceof IIpsObjectPath) {
+        
+            // must preserve the order of elements even if some types of entries are filtered
+            IIpsObjectPath ipsObjectPath = (IIpsObjectPath) inputElement;
+            IIpsObjectPathEntry[] entries = ipsObjectPath.getEntries();
+            
+            if (includedClasses == null) {
+                returnedElements = entries;
+            } else {
+                // do filtering
+                List passedEntries = new ArrayList();
+                for (int i = 0; i < entries.length; i++) {
+                    if (passesFilter(entries[i])) {
+                        passedEntries.add(entries[i]);
+                    }
+                }
+                returnedElements = passedEntries.toArray();
+            }
+        }
+
+        return returnedElements;
     }
 
     /**
@@ -146,4 +167,79 @@ public class IpsObjectPathContentProvider implements ITreeContentProvider {
      */
     public void inputChanged(Viewer viewer, Object oldInput, Object newInput) { /* nothing to do */ }
     
+    
+    private IIpsObjectPathEntryAttribute newTocPath(IIpsSrcFolderEntry entry) {
+        IIpsObjectPathEntryAttribute attribute = null;
+        
+        if (entry.getBasePackageRelativeTocPath() != null)
+            attribute = new IpsObjectPathEntryAttribute(
+                    IIpsObjectPathEntryAttribute.SPECIFIC_TOC_PATH,
+                    entry.getBasePackageRelativeTocPath());
+
+        return attribute;
+    }
+
+    private IIpsObjectPathEntryAttribute newOutputFolderForMergableJavaFiles(IIpsSrcFolderEntry entry) {
+        IIpsObjectPathEntryAttribute attribute;
+        
+        if (entry.getSpecificOutputFolderForMergableJavaFiles() == null) {
+            attribute = new IpsObjectPathEntryAttribute(
+                    IIpsObjectPathEntryAttribute.DEFAULT_OUTPUT_FOLDER_FOR_MERGABLE_SOURCES, 
+                    entry.getIpsObjectPath().getOutputFolderForMergableSources());
+        } else {
+            attribute = new IpsObjectPathEntryAttribute(
+                    IIpsObjectPathEntryAttribute.SPECIFIC_OUTPUT_FOLDER_FOR_MERGABLE_SOURCES,
+                    entry.getSpecificOutputFolderForMergableJavaFiles()
+            );
+        }
+        return attribute;
+    }
+
+    private IIpsObjectPathEntryAttribute newOutputFolderForDerivedJavaFiles(IIpsSrcFolderEntry entry) {
+        IIpsObjectPathEntryAttribute attribute;
+        
+        if (entry.getSpecificOutputFolderForDerivedJavaFiles() == null) {
+            attribute = new IpsObjectPathEntryAttribute(
+                    IIpsObjectPathEntryAttribute.DEFAULT_OUTPUT_FOLDER_FOR_DERIVED_SOURCES, 
+                    entry.getIpsObjectPath().getOutputFolderForDerivedSources());
+        } else {
+            attribute = new IpsObjectPathEntryAttribute(
+                    IIpsObjectPathEntryAttribute.SPECIFIC_OUTPUT_FOLDER_FOR_DERIVED_SOURCES,
+                    entry.getSpecificOutputFolderForDerivedJavaFiles()
+            );
+        }
+        return attribute;
+    }
+    
+    private IIpsObjectPathEntryAttribute newBasePackageNameForDerivedJavaFiles(IIpsSrcFolderEntry entry) {
+        IIpsObjectPathEntryAttribute attribute;
+        
+        if (entry.getSpecificBasePackageNameForDerivedJavaClasses() == null || entry.getSpecificBasePackageNameForDerivedJavaClasses().equals("")) {
+            attribute = new IpsObjectPathEntryAttribute(
+                    IIpsObjectPathEntryAttribute.DEFAULT_BASE_PACKAGE_DERIVED, 
+                    entry.getIpsObjectPath().getBasePackageNameForDerivedJavaClasses());
+        } else {
+            attribute = new IpsObjectPathEntryAttribute(
+                    IIpsObjectPathEntryAttribute.SPECIFIC_BASE_PACKAGE_DERIVED,
+                    entry.getSpecificBasePackageNameForDerivedJavaClasses()
+            );
+        }
+        return attribute;
+    }
+
+    private IIpsObjectPathEntryAttribute newBasePackageNameForMergableJavaFiles(IIpsSrcFolderEntry entry) {
+        IIpsObjectPathEntryAttribute attribute;
+        
+        if (entry.getSpecificBasePackageNameForMergableJavaClasses() == null || entry.getSpecificBasePackageNameForMergableJavaClasses().equals("")) {
+            attribute = new IpsObjectPathEntryAttribute(
+                    IIpsObjectPathEntryAttribute.DEFAULT_BASE_PACKAGE_MERGABLE, 
+                    entry.getIpsObjectPath().getBasePackageNameForMergableJavaClasses());
+        } else {
+            attribute = new IpsObjectPathEntryAttribute(
+                    IIpsObjectPathEntryAttribute.SPECIFIC_BASE_PACKAGE_MERGABLE,
+                    entry.getSpecificBasePackageNameForMergableJavaClasses()
+            );
+        }
+        return attribute;
+    }
 }    
