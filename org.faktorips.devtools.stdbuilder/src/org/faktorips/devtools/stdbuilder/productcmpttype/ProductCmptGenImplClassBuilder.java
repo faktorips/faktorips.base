@@ -712,7 +712,10 @@ public class ProductCmptGenImplClassBuilder extends BaseProductCmptTypeBuilder {
         for (int i = 0; i < associations.length; i++) {
             IProductCmptTypeAssociation a = (IProductCmptTypeAssociation)associations[i];
             if (!associations[i].isDerivedUnion()) {
-                getGenerator(a).generateCodeForGetLink(methodsBuilder);
+                GenProdAssociation genProdAssociation = getGenerator(a);
+                if (genProdAssociation != null) {
+                    genProdAssociation.generateCodeForGetLink(methodsBuilder);
+                }
             }
         }
         methodsBuilder.appendln("return null;");
@@ -753,10 +756,9 @@ public class ProductCmptGenImplClassBuilder extends BaseProductCmptTypeBuilder {
         methodsBuilder.openBracket();
         methodsBuilder.appendClassName(List.class.getName() + "<" + Java5ClassNames.ILink_QualifiedName + "<? extends "
                 + IProductComponent.class.getName() + ">>");
-        methodsBuilder
-                .append(" list = new ");
-        methodsBuilder.appendClassName(ArrayList.class.getName() + "<" + Java5ClassNames.ILink_QualifiedName + "<? extends "
-                + IProductComponent.class.getName() + ">>");
+        methodsBuilder.append(" list = new ");
+        methodsBuilder.appendClassName(ArrayList.class.getName() + "<" + Java5ClassNames.ILink_QualifiedName
+                + "<? extends " + IProductComponent.class.getName() + ">>");
         methodsBuilder.appendln("();");
         IAssociation[] associations = getProductCmptType().getAssociations();
         for (int i = 0; i < associations.length; i++) {
