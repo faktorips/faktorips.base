@@ -764,7 +764,10 @@ public class ProductCmptGenImplClassBuilder extends BaseProductCmptTypeBuilder {
         for (int i = 0; i < associations.length; i++) {
             IProductCmptTypeAssociation a = (IProductCmptTypeAssociation)associations[i];
             if (!associations[i].isDerivedUnion()) {
-                getGenerator(a).generateCodeForGetLinks(methodsBuilder);
+                GenProdAssociation genProdAssociation = getGenerator(a);
+                if (genProdAssociation != null) {
+                    genProdAssociation.generateCodeForGetLink(methodsBuilder);
+                }
             }
         }
         methodsBuilder.appendln("return list;");
