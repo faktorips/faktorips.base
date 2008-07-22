@@ -766,7 +766,7 @@ public class ProductCmptGenImplClassBuilder extends BaseProductCmptTypeBuilder {
             if (!associations[i].isDerivedUnion()) {
                 GenProdAssociation genProdAssociation = getGenerator(a);
                 if (genProdAssociation != null) {
-                    genProdAssociation.generateCodeForGetLink(methodsBuilder);
+                    genProdAssociation.generateCodeForGetLinks(methodsBuilder);
                 }
             }
         }
