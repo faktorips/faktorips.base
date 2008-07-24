@@ -29,20 +29,21 @@ import org.faktorips.runtime.IRuntimeRepository;
 public interface IModelElement {
 
     /**
-     * @param propertyId the id of the desired extension property.
-     * @return the value of the extension property defined by the given <code>propertyId</code> or
-     *         <code>null</code> if the extension property's <code>isNull</code> attribute is <code>true</code>.
+     * @param propertyId the id of the desired extension property. Returns the value of the
+     *            extension property defined by the given <code>propertyId</code> or
+     *            <code>null</code> if the extension property's <code>isNull</code> attribute is
+     *            <code>true</code>.
      * @throws IllegalArgumentException if no such property exists.
      */
     public Object getExtensionPropertyValue(String propertyId) throws IllegalArgumentException;
-    
+
     /**
-     * @return a set of the extension property ids defined for this element.
+     * Returns a set of the extension property ids defined for this element.
      */
     public Set<String> getExtensionPropertyIds();
 
     /**
-     * @return the name of this model type.
+     * Returns the name of this model type.
      */
     public String getName();
 
@@ -50,7 +51,7 @@ public interface IModelElement {
      * Initializes the model element's state with the data stored in the xml element at the parser's current position.
      */
     public void initFromXml(XMLStreamReader parser) throws XMLStreamException;
-    
+
     /**
      * Initializes the model element's extension properties with the data stored in the xml element at the parser's current position.
      * This method assumes that the element is <code>&lt;ExtensionProperties&gt;</code>.

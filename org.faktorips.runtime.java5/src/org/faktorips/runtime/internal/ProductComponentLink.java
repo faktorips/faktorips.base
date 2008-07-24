@@ -14,10 +14,9 @@
 
 package org.faktorips.runtime.internal;
 
-import org.faktorips.runtime.ILink;
 import org.faktorips.runtime.IProductComponent;
 import org.faktorips.runtime.IProductComponentGeneration;
-import org.faktorips.runtime.IRuntimeRepository;
+import org.faktorips.runtime.IProductComponentLink;
 import org.faktorips.valueset.java5.IntegerRange;
 import org.w3c.dom.Element;
 
@@ -25,9 +24,9 @@ import org.w3c.dom.Element;
  * 
  * @author Daniel Hohenberger
  */
-public class Link<E extends IProductComponent> extends RuntimeObject implements ILink<E> {
+public class ProductComponentLink<E extends IProductComponent> extends RuntimeObject implements IProductComponentLink<E> {
 
-    private IProductComponentGeneration productComponentGeneration;
+    private final IProductComponentGeneration source;
     private IntegerRange cardinality;
     private String targetId;
     private String associationName;
@@ -36,16 +35,16 @@ public class Link<E extends IProductComponent> extends RuntimeObject implements 
      * Creates a new link for the given product component generation. Target and cardinality must be
      * set by invoking <code>initFromXml</code>.
      */
-    public Link(IProductComponentGeneration productComponentGeneration) {
-        this.productComponentGeneration = productComponentGeneration;
+    public ProductComponentLink(IProductComponentGeneration source) {
+        this.source = source;
     }
 
     /**
      * Creates a new link to the given target for the given product component generation using the
      * cardinality (0,*).
      */
-    public Link(IProductComponentGeneration productComponentGeneration, E target) {
-        this.productComponentGeneration = productComponentGeneration;
+    public ProductComponentLink(IProductComponentGeneration source, E target) {
+        this.source = source;
         this.targetId = target.getId();
         cardinality = new IntegerRange(0, Integer.MAX_VALUE);
     }
@@ -54,8 +53,8 @@ public class Link<E extends IProductComponent> extends RuntimeObject implements 
      * Creates a new link with the given cardinality to the given target for the given product
      * component generation.
      */
-    public Link(IProductComponentGeneration productComponentGeneration, E target, IntegerRange cardinality) {
-        this.productComponentGeneration = productComponentGeneration;
+    public ProductComponentLink(IProductComponentGeneration source, E target, IntegerRange cardinality) {
+        this.source = source;
         this.targetId = target.getId();
         this.cardinality = cardinality;
     }
@@ -89,17 +88,10 @@ public class Link<E extends IProductComponent> extends RuntimeObject implements 
     /**
      * {@inheritDoc}
      */
-    public IRuntimeRepository getRepository() {
-        return productComponentGeneration.getRepository();
-    }
-
-    /**
-     * {@inheritDoc}
-     */
     @SuppressWarnings("unchecked")
     public E getTarget() {
         try {
-            return (E)getRepository().getExistingProductComponent(targetId);
+            return (E)source.getRepository().getExistingProductComponent(targetId);
         } catch (NullPointerException e) {
             return null;
         }
@@ -131,6 +123,10 @@ public class Link<E extends IProductComponent> extends RuntimeObject implements 
         sb.append(cardinality.getUpperBound() == Integer.MAX_VALUE ? "*" : cardinality.getUpperBound());
         sb.append(')');
         return sb.toString();
+    }
+
+    public IProductComponentGeneration getSource() {
+        return source;
     }
 
 }

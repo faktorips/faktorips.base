@@ -22,54 +22,60 @@ import java.util.List;
  * @author Daniel Hohenberger
  */
 public interface IModelType extends IModelElement {
-    
+
     /**
-     * @return the Java class for this type.
+     * Returns the Java class for this type.
+     * 
      * @throws ClassNotFoundException if the class could not be loaded.
      */
     public Class<?> getJavaClass() throws ClassNotFoundException;
-    
+
     /**
-     * @return the Java interface for this type.
+     * Returns the Java interface for this type.
+     * 
      * @throws ClassNotFoundException if the class could not be loaded.
      */
     public Class<?> getJavaInterface() throws ClassNotFoundException;
-    
+
     /**
-     * @return this model type's super type or <code>null</code> if it has none.
+     * Returns this model type's super type or <code>null</code> if it has none.
      */
     public IModelType getSuperType();
-    
+
     /**
-     * @return an array containing all attributes of this model type object.
+     * Returns an array containing all attributes of this model type object.
      */
     public List<IModelTypeAttribute> getAttributes();
-    
+
     /**
-     * @return the attribute at the given <code>index</code>.
+     * Returns the attribute at the given <code>index</code>.
+     * 
      * @throws IndexOutOfBoundsException if no attribute exists for the given <code>index</code>.
      */
     public IModelTypeAttribute getAttribute(int index) throws IndexOutOfBoundsException;
-    
+
     /**
-     * @return the attribute with the given <code>name</code>.
+     * Returns the attribute with the given <code>name</code>.
+     * 
      * @throws IllegalArgumentException if no attribute with the given <code>name</code> exists.
      */
     public IModelTypeAttribute getAttribute(String name) throws IllegalArgumentException;
 
     /**
-     * @return an array containing all associations of this model type object.
+     * Returns an array containing all associations of this model type object.
      */
     public List<IModelTypeAssociation> getAssociations();
 
     /**
-     * @return the association at the given <code>index</code>.
+     * Returns the association at the given <code>index</code>.
+     * 
      * @throws IndexOutOfBoundsException if no association exists for the given <code>index</code>.
      */
     public IModelTypeAssociation getAssociation(int index);
 
     /**
-     * @return the association with the given <code>name</code>.
+     * Returns the association with the given <code>name</code>.
+     * 
      * @throws IllegalArgumentException if no association with the given <code>name</code> exists.
      */
     public IModelTypeAssociation getAssociation(String name);

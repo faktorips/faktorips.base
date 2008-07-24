@@ -29,7 +29,7 @@ public class ModelTypeAttribute extends AbstractModelElement implements IModelTy
     private Class<?> datatype;
     private String datatypeName;
     private ValueSetType valueSetType = ValueSetType.AllValues;
-    private AttributeType attributeType = AttributeType.changeable;
+    private AttributeType attributeType = AttributeType.CHANGEABLE;
     private boolean isProductRelevant = false;
 
     public ModelTypeAttribute(IRuntimeRepository repository) {
@@ -72,17 +72,18 @@ public class ModelTypeAttribute extends AbstractModelElement implements IModelTy
     /**
      * {@inheritDoc}
      */
+    @Override
     public void initFromXml(XMLStreamReader parser) throws XMLStreamException {
         super.initFromXml(parser);
         for (int i = 0; i < parser.getAttributeCount(); i++) {
             if (parser.getAttributeLocalName(i).equals("datatype")) {
-                this.datatypeName = parser.getAttributeValue(i);
+                datatypeName = parser.getAttributeValue(i);
             } else if (parser.getAttributeLocalName(i).equals("valueSetType")) {
-                this.valueSetType = ValueSetType.valueOf(parser.getAttributeValue(i));
+                valueSetType = ValueSetType.valueOf(parser.getAttributeValue(i));
             } else if (parser.getAttributeLocalName(i).equals("attributeType")) {
-                this.attributeType = AttributeType.valueOf(parser.getAttributeValue(i));
+                attributeType = AttributeType.forName(parser.getAttributeValue(i));
             } else if (parser.getAttributeLocalName(i).equals("isProductRelevant")) {
-                this.isProductRelevant = Boolean.valueOf(parser.getAttributeValue(i));
+                isProductRelevant = Boolean.valueOf(parser.getAttributeValue(i));
             }
         }
         initExtPropertiesFromXml(parser);

@@ -17,7 +17,6 @@ package org.faktorips.runtime.modeltype.internal;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 
-import org.faktorips.runtime.IConfigurableModelObject;
 import org.faktorips.runtime.IRuntimeRepository;
 import org.faktorips.runtime.modeltype.IModelType;
 import org.faktorips.runtime.modeltype.IModelTypeAssociation;
@@ -32,7 +31,7 @@ public class ModelTypeAssociation extends AbstractModelElement implements IModel
     private int minCardinality = 0;
     private int maxCardinality = Integer.MAX_VALUE;
     private String namePlural = null;
-    private String targetName = null;
+    private String targetJavaClassName = null;
     private boolean isProductRelevant = false;
 
     public ModelTypeAssociation(IRuntimeRepository repository) {
@@ -72,11 +71,10 @@ public class ModelTypeAssociation extends AbstractModelElement implements IModel
      * 
      * @throws ClassNotFoundException
      */
-    @SuppressWarnings("unchecked")
     public IModelType getTarget() throws ClassNotFoundException {
-        if (targetName != null && targetName.length() > 0) {
+        if (targetJavaClassName != null && targetJavaClassName.length() > 0) {
             return getRepository().getModelType(
-                    (Class<? extends IConfigurableModelObject>)this.getClass().getClassLoader().loadClass(targetName));
+                    this.getClass().getClassLoader().loadClass(targetJavaClassName));
         }
         return null;
     }
@@ -91,24 +89,25 @@ public class ModelTypeAssociation extends AbstractModelElement implements IModel
     /**
      * {@inheritDoc}
      */
+    @Override
     public void initFromXml(XMLStreamReader parser) throws XMLStreamException {
         super.initFromXml(parser);
         for (int i = 0; i < parser.getAttributeCount(); i++) {
             if (parser.getAttributeLocalName(i).equals("namePlural")) {
-                this.namePlural = parser.getAttributeValue(i);
-                if (this.namePlural.length() == 0) {
-                    this.namePlural = null;
+                namePlural = parser.getAttributeValue(i);
+                if (namePlural.length() == 0) {
+                    namePlural = null;
                 }
             } else if (parser.getAttributeLocalName(i).equals("target")) {
-                this.targetName = parser.getAttributeValue(i);
+                targetJavaClassName = parser.getAttributeValue(i);
             } else if (parser.getAttributeLocalName(i).equals("minCardinality")) {
-                this.minCardinality = Integer.parseInt(parser.getAttributeValue(i));
+                minCardinality = Integer.parseInt(parser.getAttributeValue(i));
             } else if (parser.getAttributeLocalName(i).equals("maxCardinality")) {
-                this.maxCardinality = Integer.parseInt(parser.getAttributeValue(i));
+                maxCardinality = Integer.parseInt(parser.getAttributeValue(i));
             } else if (parser.getAttributeLocalName(i).equals("associationType")) {
-                this.associationType = AssociationType.valueOf(parser.getAttributeValue(i));
+                associationType = AssociationType.valueOf(parser.getAttributeValue(i));
             } else if (parser.getAttributeLocalName(i).equals("isProductRelevant")) {
-                this.isProductRelevant = Boolean.valueOf(parser.getAttributeValue(i));
+                isProductRelevant = Boolean.valueOf(parser.getAttributeValue(i));
             }
         }
         initExtPropertiesFromXml(parser);
@@ -121,7 +120,7 @@ public class ModelTypeAssociation extends AbstractModelElement implements IModel
     public String toString() {
         StringBuilder sb = new StringBuilder(getName());
         sb.append(": ");
-        sb.append(targetName);
+        sb.append(targetJavaClassName);
         sb.append('(');
         sb.append(associationType);
         sb.append(' ');

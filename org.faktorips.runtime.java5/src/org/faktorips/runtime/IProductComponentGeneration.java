@@ -54,14 +54,14 @@ public interface IProductComponentGeneration extends IRuntimeObject {
     Date getValidFrom(TimeZone zone);
 
     /**
-     * Returns the <code>ILink</code> for the association with the given role name to the given
+     * Returns the <code>IProductComponentLink</code> for the association with the given role name to the given
      * product component or <code>null</code> if no such association exists.
      */
-    public ILink<? extends IProductComponent> getLink(String linkName, IProductComponent target);
+    public IProductComponentLink<? extends IProductComponent> getLink(String linkName, IProductComponent target);
 
     /**
-     * Returns a <code>List</code> of all the <code>ILink</code>s from this product component
+     * Returns a <code>List</code> of all the <code>IProductComponentLink</code>s from this product component
      * generation to other product components.
      */
-    public List<ILink<? extends IProductComponent>> getLinks();
+    public List<IProductComponentLink<? extends IProductComponent>> getLinks();
 }

@@ -36,11 +36,40 @@ public interface IModelTypeAttribute extends IModelElement {
      * Enum defining the possible attribute types.
      */
     public enum AttributeType{
-        changeable, constant, derived, computed;
+        CHANGEABLE("changeable"),
+        CONSTANT("constant"),
+        DERIVED_ON_THE_FLY("derived"),
+        DERIVED_BY_EXPLICIT_METHOD_CALL("computed");
+        private final String xmlName;
+
+        private AttributeType(String xmlName) {
+            this.xmlName = xmlName;
+        }
+
+        @Override
+        public String toString() {
+            return xmlName;
+        }
+
+        public static AttributeType forName(String name) {
+            if ("changeable".equals(name)) {
+                return CHANGEABLE;
+            }
+            if ("constant".equals(name)) {
+                return CONSTANT;
+            }
+            if ("derived".equals(name)) {
+                return DERIVED_ON_THE_FLY;
+            }
+            if ("computed".equals(name)) {
+                return DERIVED_BY_EXPLICIT_METHOD_CALL;
+            }
+            return null;
+        }
     }
 
     /**
-     * @return the type of value set restricting this attribute
+     * Returns the type of value set restricting this attribute
      */
     public ValueSetType getValueSetType();
 
@@ -50,9 +79,9 @@ public interface IModelTypeAttribute extends IModelElement {
     public enum ValueSetType {
         Enum, Range, AllValues;
     }
-    
+
     /**
-     * @return if this attribute is product relevant.
+     * Returns if this attribute is product relevant.
      */
     public boolean isProductRelevant();
 

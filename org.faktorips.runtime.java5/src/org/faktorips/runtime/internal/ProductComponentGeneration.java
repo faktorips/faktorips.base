@@ -4,8 +4,8 @@
  * Alle Rechte vorbehalten.
  *
  * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele,
- * Konfigurationen, etc.) duerfen nur unter den Bedingungen der 
- * Faktor-Zehn-Community Lizenzvereinbarung - Version 0.1 (vor Gruendung Community) 
+ * Konfigurationen, etc.) duerfen nur unter den Bedingungen der
+ * Faktor-Zehn-Community Lizenzvereinbarung - Version 0.1 (vor Gruendung Community)
  * genutzt werden, die Bestandteil der Auslieferung ist und auch unter
  *   http://www.faktorips.org/legal/cl-v01.html
  * eingesehen werden kann.
@@ -25,9 +25,9 @@ import java.util.Map;
 import java.util.TimeZone;
 
 import org.faktorips.runtime.IClRepositoryObject;
-import org.faktorips.runtime.ILink;
 import org.faktorips.runtime.IProductComponent;
 import org.faktorips.runtime.IProductComponentGeneration;
+import org.faktorips.runtime.IProductComponentLink;
 import org.faktorips.runtime.IRuntimeRepository;
 import org.faktorips.runtime.IllegalRepositoryModificationException;
 import org.faktorips.valueset.java5.IntegerRange;
@@ -39,29 +39,29 @@ public abstract class ProductComponentGeneration extends RuntimeObject implement
 
     // the product component this generation belongs to.
     private ProductComponent productCmpt;
-    
+
     private DateTime validFrom;
-    
+
     public ProductComponentGeneration(ProductComponent productCmpt) {
         this.productCmpt = productCmpt;
     }
-    
+
     /**
      * {@inheritDoc}
      */
     public final IProductComponent getProductComponent() {
         return productCmpt;
     }
-    
-    
+
+
     public final IProductComponentGeneration getPreviousGeneration(){
         return getRepository().getPreviousProductComponentGeneration(this);
     }
-    
+
     public final IProductComponentGeneration getNextGeneration() {
         return getRepository().getNextProductComponentGeneration(this);
     }
-    
+
     /**
      * {@inheritDoc}
      */
@@ -79,13 +79,13 @@ public abstract class ProductComponentGeneration extends RuntimeObject implement
     public final Date getValidFrom(TimeZone zone) {
         return validFrom.toDate(zone);
     }
-    
+
     /**
      * Sets the new valid from date.
      * 
-     * @throws org.faktorips.runtime.IllegalRepositoryModificationException if the repository 
+     * @throws org.faktorips.runtime.IllegalRepositoryModificationException if the repository
      * this generation belongs to does not allow to modify it's contents. The method is
-     * provided to ease the development of test cases.  
+     * provided to ease the development of test cases.
      */
     public void setValidFrom(DateTime newValidFrom) {
         if (getRepository()!=null && !getRepository().isModifiable()) {
@@ -96,7 +96,7 @@ public abstract class ProductComponentGeneration extends RuntimeObject implement
         }
         validFrom = newValidFrom;
     }
-    
+
     /**
      * Initilizes the generation with the data from the xml element.
      * 
@@ -121,21 +121,21 @@ public abstract class ProductComponentGeneration extends RuntimeObject implement
      */
     protected void doInitPropertiesFromXml(Map<String, Element> map) {
         // nothing to do in the base class
-        // 
-        // Note that the method is deliberatly not declared as abstract to 
-        // allow in subclasses calls to super.doInitPropertiesFromXml(). 
+        //
+        // Note that the method is deliberatly not declared as abstract to
+        // allow in subclasses calls to super.doInitPropertiesFromXml().
     }
-    
+
     /**
      * Initializes the links with the data in the map.
      */
     protected void doInitReferencesFromXml(Map<String, List<Element>> map) {
         // nothing to do in the base class
-        // 
-        // Note that the method is deliberatly not declared as abstract to 
-        // allow in subclasses calls to doInitReferencesFromXml(). 
+        //
+        // Note that the method is deliberatly not declared as abstract to
+        // allow in subclasses calls to doInitReferencesFromXml().
     }
-    
+
     /**
      * Initializes the table content usages with the data in the map.
      * The map contains the table structure usage roles as key and the qualified
@@ -143,9 +143,9 @@ public abstract class ProductComponentGeneration extends RuntimeObject implement
      */
     protected void doInitTableUsagesFromXml(Map<String, Element> map) {
         // nothing to do in the base class
-        // 
-        // Note that the method is deliberately not declared as abstract to 
-        // allow in subclasses calls to doInitTableUsagesFromXml(). 
+        //
+        // Note that the method is deliberately not declared as abstract to
+        // allow in subclasses calls to doInitTableUsagesFromXml().
     }
 
     /**
@@ -172,19 +172,19 @@ public abstract class ProductComponentGeneration extends RuntimeObject implement
                     elementMap.put(childElement.getAttribute("attribute"), childElement);
                 } else if ("TableContentUsage".equals(node.getNodeName())) {
                     Element childElement = (Element) nl.item(i);
-                    String structureUsage = childElement.getAttribute("structureUsage"); 
+                    String structureUsage = childElement.getAttribute("structureUsage");
                     elementMap.put(structureUsage, childElement);
                 }
-                
+
             }
         }
-        return elementMap; 
+        return elementMap;
     }
-    
+
     /**
      * Returns a map containing the xml elements representing relations found in the indicated generation's
-     * xml element. For each policy component type relation (pcTypeRelation) the map contains an entry with 
-     * the pcTypeRelation as key. The value is an array list containing all relation elements for the 
+     * xml element. For each policy component type relation (pcTypeRelation) the map contains an entry with
+     * the pcTypeRelation as key. The value is an array list containing all relation elements for the
      * pcTypeRelation.
      * 
      * @param genElement An xml element containing a product component generation's data.
@@ -196,9 +196,9 @@ public abstract class ProductComponentGeneration extends RuntimeObject implement
         NodeList nl = genElement.getChildNodes();
         for (int i = 0; i < nl.getLength(); i++) {
             Node node = nl.item(i);
-            if (node.getNodeType()==Node.ELEMENT_NODE && "Link".equals(node.getNodeName())) {
+            if (node.getNodeType() == Node.ELEMENT_NODE && "Link".equals(node.getNodeName())) {
                 Element childElement = (Element) nl.item(i);
-                String association = childElement.getAttribute("association"); 
+                String association = childElement.getAttribute("association");
                 List<Element> associationElements = elementMap.get(association);
                 if (associationElements==null) {
                     associationElements = new ArrayList<Element>(1);
@@ -206,27 +206,27 @@ public abstract class ProductComponentGeneration extends RuntimeObject implement
                 }
                 associationElements.add(childElement);
             }
-            
+
         }
-        return elementMap; 
+        return elementMap;
     }
-    
+
     protected Element getRangeElement(Element configElement) {
         Element valueSetElement = getValueSetElement(configElement);
         return XmlUtil.getFirstElement(valueSetElement,"Range");
     }
-    
+
     protected NodeList getEnumNodeList(Element configElement) {
         Element enumElement = getEnumElement(configElement);
         NodeList nl = enumElement.getElementsByTagName("Value");
-        return nl;      
+        return nl;
     }
-    
+
     private Element getEnumElement(Element configElement) {
         Element valueSetElement = getValueSetElement(configElement);
         return XmlUtil.getFirstElement(valueSetElement,"Enum");
-    }       
-    
+    }
+
     private Element getValueSetElement(Element configElement) {
         if (configElement==null) {
             throw new NullPointerException();
@@ -238,11 +238,11 @@ public abstract class ProductComponentGeneration extends RuntimeObject implement
         return valueSetElement;
     }
 
-    
+
     /**
-     * This method for implementations of the <code>doInitReferencesFromXml</code> method to 
+     * This method for implementations of the <code>doInitReferencesFromXml</code> method to
      * read the cardinality bounds from an xml dom element. An IntegerRange object is created and
-     * added to the provided cardinalityMap. 
+     * added to the provided cardinalityMap.
      */
     public static void addToCardinalityMap(Map<String, IntegerRange> cardinalityMap, String targetId,  Element relationElement){
         String maxStr = relationElement.getAttribute("maxCardinality");
@@ -251,16 +251,17 @@ public abstract class ProductComponentGeneration extends RuntimeObject implement
             maxCardinality = new Integer(Integer.MAX_VALUE);
         }
         else{
-            maxCardinality = Integer.valueOf(maxStr); 
+            maxCardinality = Integer.valueOf(maxStr);
         }
-        
+
         Integer minCardinality = Integer.valueOf(relationElement.getAttribute("minCardinality"));
         cardinalityMap.put(targetId, new IntegerRange(minCardinality, maxCardinality));
     }
-    
+
     /**
      * {@inheritDoc}
      */
+    @Override
     public String toString(){
         return getProductComponent().getId() + "-" + validFrom;
     }
@@ -275,14 +276,14 @@ public abstract class ProductComponentGeneration extends RuntimeObject implement
     /**
      * {@inheritDoc}
      */
-    public ILink<? extends IProductComponent> getLink(String linkName, IProductComponent target) {
+    public IProductComponentLink<? extends IProductComponent> getLink(String linkName, IProductComponent target) {
         throw new RuntimeException("Not implemented yet.");
     }
 
     /**
      * {@inheritDoc}
      */
-    public List<ILink<? extends IProductComponent>> getLinks() {
+    public List<IProductComponentLink<? extends IProductComponent>> getLinks() {
         throw new RuntimeException("Not implemented yet.");
     }
 }

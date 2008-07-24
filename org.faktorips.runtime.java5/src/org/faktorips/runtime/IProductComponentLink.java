@@ -21,7 +21,7 @@ import org.faktorips.valueset.java5.IntegerRange;
  * 
  * @author Daniel Hohenberger
  */
-public interface ILink<E extends IProductComponent> extends IRuntimeObject, IClRepositoryObject {
+public interface IProductComponentLink<E extends IProductComponent> extends IRuntimeObject, IClRepositoryObject {
 
     /**
      * @return this link's min and max cardinality as a <code>IntegerRange</code>.
@@ -29,22 +29,23 @@ public interface ILink<E extends IProductComponent> extends IRuntimeObject, IClR
     public IntegerRange getCardinality();
 
     /**
-     * Returns the repository this link belongs to. This method never returns <code>null</code>.
+     * Returns the product component generation this link belongs to. This method never returns
+     * <code>null</code>.
      */
-    public IRuntimeRepository getRepository();
-    
+    public IProductComponentGeneration getSource();
+
     /**
-     * @return the target product component.
+     * Returns the target product component.
      */
     public E getTarget();
-    
+
     /**
-     * @return the target product component's id.
+     * Returns the target product component's id.
      */
     public String getTargetId();
-    
+
     /**
-     * @return the name of the association this link belongs to.
+     * Returns the name of the association this link belongs to.
      */
     public String getAssociationName();
 
