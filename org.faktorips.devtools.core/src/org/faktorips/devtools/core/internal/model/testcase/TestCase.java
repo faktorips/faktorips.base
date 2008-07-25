@@ -301,43 +301,37 @@ public class TestCase extends IpsObject implements ITestCase {
      * {@inheritDoc}
      */
     public void fixDifferences(ITestCaseTestCaseTypeDelta delta) throws CoreException {
-        // TODO Joerg, Methodenlaenge
-        // Test case side
-        ITestValue[] testValuesWithMissingTestValueParam = delta.getTestValuesWithMissingTestValueParam();
-        ITestPolicyCmpt[] testPolicyCmptsWithMissingTypeParam = delta.getTestPolicyCmptsWithMissingTypeParam();
-        ITestPolicyCmptLink[] testPolicyCmptLinksWithMissingTypeParam = delta.getTestPolicyCmptLinkWithMissingTypeParam();
-        ITestAttributeValue[] testAttributeValuesWithMissingTestAttribute = delta.getTestAttributeValuesWithMissingTestAttribute();
-        ITestRule[] testRulesWithMissingTestRuleParam = delta.getTestRulesWithMissingTestValueParam();
-        
-        // Test case type side
+        fixDifferencesTestCaseSide(delta);
+        fixDifferencesTestCaseTypeSide(delta);
+        fixDifferentOrder(delta);
+    }
+
+    private void fixDifferentOrder(ITestCaseTestCaseTypeDelta delta) throws CoreException {
+        if (delta.isDifferentTestParameterOrder()){
+            // fix the order of the root test objects
+            sortTestObjects();
+            
+            // fix child's
+            //  order links in order of the test parameter
+            ITestPolicyCmpt[] cmpts = delta.getTestPolicyCmptWithDifferentSortOrder();
+            for (int i = 0; i < cmpts.length; i++) {
+                ((TestPolicyCmpt)cmpts[i]).fixDifferentChildSortOrder();
+            }
+
+            // order test attributes
+            cmpts = delta.getTestPolicyCmptWithDifferentSortOrderTestAttr();
+            for (int i = 0; i < cmpts.length; i++) {
+                ((TestPolicyCmpt)cmpts[i]).fixDifferentTestAttrValueSortOrder();
+            }
+            
+            objectHasChanged();
+        }
+    }
+
+    private void fixDifferencesTestCaseTypeSide(ITestCaseTestCaseTypeDelta delta) throws CoreException {
         ITestValueParameter[] testValueParametersWithMissingTestValue = delta.getTestValueParametersWithMissingTestValue();
         ITestPolicyCmptTypeParameter[] testPolicyCmptTypeParametersWithMissingTestPolicyCmpt = delta.getTestPolicyCmptTypeParametersWithMissingTestPolicyCmpt();
         ITestAttribute[] testAttributesWithMissingTestAttributeValue = delta.getTestAttributesWithMissingTestAttributeValue();
-
-        /* Test case side */
-        
-        // delete test values
-        for (int i = 0; i < testValuesWithMissingTestValueParam.length; i++) {
-            testValuesWithMissingTestValueParam[i].delete();
-        }
-        // delta test rules
-        for (int i = 0; i < testRulesWithMissingTestRuleParam.length; i++) {
-            testRulesWithMissingTestRuleParam[i].delete();
-        }
-        // delete root and child test policy cmpts
-        for (int i = 0; i < testPolicyCmptsWithMissingTypeParam.length; i++) {
-            testPolicyCmptsWithMissingTypeParam[i].delete();
-        }
-        // delete test policy cmpt links
-        for (int i = 0; i < testPolicyCmptLinksWithMissingTypeParam.length; i++) {
-            testPolicyCmptLinksWithMissingTypeParam[i].delete();
-        }
-        // delete test attribute values
-        for (int i = 0; i < testAttributeValuesWithMissingTestAttribute.length; i++) {
-            testAttributeValuesWithMissingTestAttribute[i].delete();
-        }
-        
-        /* Test case type side */
         
         // add missing test value parameters
         for (int i = 0; i < testValueParametersWithMissingTestValue.length; i++) {
@@ -383,25 +377,35 @@ public class TestCase extends IpsObject implements ITestCase {
                 ((TestAttributeValue)testAttributeValue).setDefaultTestAttributeValueInternal(generation);
             }
         }
-        
-        if (delta.isDifferentTestParameterOrder()){
-            // fix the order of the root test objects
-            sortTestObjects();
-            
-            // fix childs
-            //  order links in order of the test parameter
-            ITestPolicyCmpt[] cmpts = delta.getTestPolicyCmptWithDifferentSortOrder();
-            for (int i = 0; i < cmpts.length; i++) {
-                ((TestPolicyCmpt)cmpts[i]).fixDifferentChildSortOrder();
-            }
+    }
 
-            // order test attributes
-            cmpts = delta.getTestPolicyCmptWithDifferentSortOrderTestAttr();
-            for (int i = 0; i < cmpts.length; i++) {
-                ((TestPolicyCmpt)cmpts[i]).fixDifferentTestAttrValueSortOrder();
-            }
-            
-            objectHasChanged();
+    private void fixDifferencesTestCaseSide(ITestCaseTestCaseTypeDelta delta) {
+        ITestValue[] testValuesWithMissingTestValueParam = delta.getTestValuesWithMissingTestValueParam();
+        ITestPolicyCmpt[] testPolicyCmptsWithMissingTypeParam = delta.getTestPolicyCmptsWithMissingTypeParam();
+        ITestPolicyCmptLink[] testPolicyCmptLinksWithMissingTypeParam = delta.getTestPolicyCmptLinkWithMissingTypeParam();
+        ITestAttributeValue[] testAttributeValuesWithMissingTestAttribute = delta.getTestAttributeValuesWithMissingTestAttribute();
+        ITestRule[] testRulesWithMissingTestRuleParam = delta.getTestRulesWithMissingTestValueParam();
+        
+        
+        // delete test values
+        for (int i = 0; i < testValuesWithMissingTestValueParam.length; i++) {
+            testValuesWithMissingTestValueParam[i].delete();
+        }
+        // delta test rules
+        for (int i = 0; i < testRulesWithMissingTestRuleParam.length; i++) {
+            testRulesWithMissingTestRuleParam[i].delete();
+        }
+        // delete root and child test policy cmpts
+        for (int i = 0; i < testPolicyCmptsWithMissingTypeParam.length; i++) {
+            testPolicyCmptsWithMissingTypeParam[i].delete();
+        }
+        // delete test policy cmpt links
+        for (int i = 0; i < testPolicyCmptLinksWithMissingTypeParam.length; i++) {
+            testPolicyCmptLinksWithMissingTypeParam[i].delete();
+        }
+        // delete test attribute values
+        for (int i = 0; i < testAttributeValuesWithMissingTestAttribute.length; i++) {
+            testAttributeValuesWithMissingTestAttribute[i].delete();
         }
     }
     
@@ -1026,10 +1030,10 @@ public class TestCase extends IpsObject implements ITestCase {
         // TODO Joerg: aufraeumen, Verwendung von TestParameterType.isTypeMatching
         try {
             // compare the parameters type and return if the type matches the given type
-            if (testParameter.isInputParameter() && type.equals(TestParameterType.INPUT)) {
+            if (testParameter.isInputOrCombinedParameter() && type.equals(TestParameterType.INPUT)) {
                 return true;
             }
-            if (testParameter.isExpextedResultParameter() && type.equals(TestParameterType.EXPECTED_RESULT)) {
+            if (testParameter.isExpextedResultOrCombinedParameter() && type.equals(TestParameterType.EXPECTED_RESULT)) {
                 return true;
             }
             if (testParameter.isCombinedParameter() && type.equals(TestParameterType.COMBINED)) {

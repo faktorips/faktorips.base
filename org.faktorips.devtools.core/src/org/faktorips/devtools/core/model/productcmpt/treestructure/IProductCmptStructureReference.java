@@ -17,6 +17,8 @@
 
 package org.faktorips.devtools.core.model.productcmpt.treestructure;
 
+import org.faktorips.devtools.core.model.ipsobject.IIpsObject;
+
 /**
  * A reference to unspecified objects (see subinterfaces / -classes for further
  * details) for used in a <code>IProductCmptStructure</code>.
@@ -31,4 +33,9 @@ public interface IProductCmptStructureReference {
 	 */
 	public IProductCmptTreeStructure getStructure();
 
+    /**
+     * @return The <code>IIpsObject</code> referenced by this object or <code>null</code>
+     * if the referenced ips object doesn't exists.
+     */
+    public IIpsObject getWrappedIpsObject();    
 }

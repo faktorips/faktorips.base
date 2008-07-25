@@ -74,7 +74,7 @@ public interface ITestParameter extends IIpsObjectPart {
      * Note if the parameter is a child parameter then the type (input, expected result, or combined) 
      * of the root test parameter will be checked. All childs inherit the type of the root parameter.
 	 */
-	public boolean isInputParameter();
+	public boolean isInputOrCombinedParameter();
 	
 	/**
 	 * Returns <code>true</code> if the parameter is an expected result parameter, 
@@ -82,7 +82,7 @@ public interface ITestParameter extends IIpsObjectPart {
      * Note if the parameter is a child parameter then the type (input, expected result, or combined) 
      * of the root test parameter will be checked. All childs inherit the type of the root parameter.
 	 */
-	public boolean isExpextedResultParameter();
+	public boolean isExpextedResultOrCombinedParameter();
 
 	/**
 	 * Returns <code>true</code> if the test parameter is a combined parameter, 

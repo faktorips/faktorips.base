@@ -982,6 +982,7 @@ public class ModelExplorer extends ViewPart implements IShowInTarget {
 
         protected void createPropertiesActions(IMenuManager manager, Object selected) {
             // all types of objects are supported
+            properties.setEnabled(propertiesAction.isEnabledFor(selected));
             manager.add(properties);
         }
     }

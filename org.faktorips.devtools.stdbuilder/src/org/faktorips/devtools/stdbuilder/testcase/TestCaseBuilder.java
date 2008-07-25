@@ -449,7 +449,7 @@ public class TestCaseBuilder extends AbstractArtefactBuilder {
         if (param == null) {
             return false;
         }
-        return param.isInputParameter() && isInput || param.isExpextedResultParameter() && !isInput;
+        return param.isInputOrCombinedParameter() && isInput || param.isExpextedResultOrCombinedParameter() && !isInput;
     }
 
     /*

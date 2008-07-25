@@ -55,15 +55,15 @@ public class TestRuleParameterTest extends AbstractIpsPluginTest {
         Element paramEl = XmlUtil.getElement(docEl, "RuleParameter", 0);
         ruleInput.initFromXml(paramEl);
         assertEquals("rule1", ruleInput.getName());
-        assertFalse(ruleInput.isInputParameter());
-        assertTrue(ruleInput.isExpextedResultParameter());
+        assertFalse(ruleInput.isInputOrCombinedParameter());
+        assertTrue(ruleInput.isExpextedResultOrCombinedParameter());
         assertFalse(ruleInput.isCombinedParameter());        
         
         paramEl = XmlUtil.getElement(docEl, "RuleParameter", 1);
         ruleInput.initFromXml(paramEl);
         assertEquals("rule2", ruleInput.getName());
-        assertFalse(ruleInput.isInputParameter());
-        assertTrue(ruleInput.isExpextedResultParameter());
+        assertFalse(ruleInput.isInputOrCombinedParameter());
+        assertTrue(ruleInput.isExpextedResultOrCombinedParameter());
         assertFalse(ruleInput.isCombinedParameter());                
     }
     
@@ -84,8 +84,8 @@ public class TestRuleParameterTest extends AbstractIpsPluginTest {
         
         ruleInput.initFromXml(el);
         assertEquals("rule3", ruleInput.getName());
-        assertFalse(ruleInput.isInputParameter());
-        assertTrue(ruleInput.isExpextedResultParameter());
+        assertFalse(ruleInput.isInputOrCombinedParameter());
+        assertTrue(ruleInput.isExpextedResultOrCombinedParameter());
         assertFalse(ruleInput.isCombinedParameter());
     }
     

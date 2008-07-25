@@ -74,8 +74,8 @@ public class TestPolicyCmptTypeParameterTest extends AbstractIpsPluginTest {
         policyCmptTypeParameterInput.initFromXml(paramEl);
         assertEquals(2, policyCmptTypeParameterInput.getTestPolicyCmptTypeParamChilds().length);
         assertEquals(3, policyCmptTypeParameterInput.getTestAttributes().length);
-        assertTrue(policyCmptTypeParameterInput.isInputParameter());
-        assertFalse(policyCmptTypeParameterInput.isExpextedResultParameter());
+        assertTrue(policyCmptTypeParameterInput.isInputOrCombinedParameter());
+        assertFalse(policyCmptTypeParameterInput.isExpextedResultOrCombinedParameter());
         assertFalse(policyCmptTypeParameterInput.isCombinedParameter());
         assertTargetTestPolicyCmptTypeParameter(policyCmptTypeParameterInput, "policyCmptType1", "base.Test1",
                 "association1", 2, 3, true, false, false);
@@ -89,8 +89,8 @@ public class TestPolicyCmptTypeParameterTest extends AbstractIpsPluginTest {
 
         paramEl = XmlUtil.getElement(docEl, "PolicyCmptTypeParameter", 1);
         policyCmptTypeParameterInput.initFromXml(paramEl);
-        assertFalse(policyCmptTypeParameterInput.isInputParameter());
-        assertTrue(policyCmptTypeParameterInput.isExpextedResultParameter());
+        assertFalse(policyCmptTypeParameterInput.isInputOrCombinedParameter());
+        assertTrue(policyCmptTypeParameterInput.isExpextedResultOrCombinedParameter());
         assertFalse(policyCmptTypeParameterInput.isCombinedParameter());
         assertTargetTestPolicyCmptTypeParameter(policyCmptTypeParameterInput
                 .getTestPolicyCmptTypeParamChild("policyCmptType4.1"), "policyCmptType4.1", "base.Test4.1",
@@ -98,8 +98,8 @@ public class TestPolicyCmptTypeParameterTest extends AbstractIpsPluginTest {
 
         paramEl = XmlUtil.getElement(docEl, "PolicyCmptTypeParameter", 2);
         policyCmptTypeParameterInput.initFromXml(paramEl);
-        assertTrue(policyCmptTypeParameterInput.isInputParameter());
-        assertTrue(policyCmptTypeParameterInput.isExpextedResultParameter());
+        assertTrue(policyCmptTypeParameterInput.isInputOrCombinedParameter());
+        assertTrue(policyCmptTypeParameterInput.isExpextedResultOrCombinedParameter());
         assertTrue(policyCmptTypeParameterInput.isCombinedParameter());
         assertTargetTestPolicyCmptTypeParameter(policyCmptTypeParameterInput
                 .getTestPolicyCmptTypeParamChild("policyCmptType5.1"), "policyCmptType5.1", "base.Test5.1",
@@ -109,8 +109,8 @@ public class TestPolicyCmptTypeParameterTest extends AbstractIpsPluginTest {
         // the parameter will be parsed and stored as unknown parameter type type
         paramEl = XmlUtil.getElement(docEl, "PolicyCmptTypeParameter", 3);
         policyCmptTypeParameterInput.initFromXml(paramEl);
-        assertFalse(policyCmptTypeParameterInput.isInputParameter());
-        assertFalse(policyCmptTypeParameterInput.isExpextedResultParameter());
+        assertFalse(policyCmptTypeParameterInput.isInputOrCombinedParameter());
+        assertFalse(policyCmptTypeParameterInput.isExpextedResultOrCombinedParameter());
         assertFalse(policyCmptTypeParameterInput.isCombinedParameter());
     }
 
@@ -176,8 +176,8 @@ public class TestPolicyCmptTypeParameterTest extends AbstractIpsPluginTest {
         assertEquals(associationName, targetChild.getAssociation());
         assertEquals(min, targetChild.getMinInstances());
         assertEquals(max, targetChild.getMaxInstances());
-        assertEquals(isInput, targetChild.isInputParameter());
-        assertEquals(isExpected, targetChild.isExpextedResultParameter());
+        assertEquals(isInput, targetChild.isInputOrCombinedParameter());
+        assertEquals(isExpected, targetChild.isExpextedResultOrCombinedParameter());
         assertEquals(isCombined, targetChild.isCombinedParameter());
     }
     

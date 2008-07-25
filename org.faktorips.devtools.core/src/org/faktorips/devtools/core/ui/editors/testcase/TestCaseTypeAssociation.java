@@ -121,14 +121,14 @@ public class TestCaseTypeAssociation implements Validatable {
 	 * Returns <code>true</code> if the test association type is an input parameter.
 	 */
 	public boolean isInput() {
-	    return testPolicyCmptTypeParameter.isInputParameter();
+	    return testPolicyCmptTypeParameter.isInputOrCombinedParameter();
 	}
 
     /**
 	 * Returns <code>true</code> if the test association type is an expected result parameter.
 	 */
 	public boolean isExpectedResult() {
-	    return testPolicyCmptTypeParameter.isExpextedResultParameter();
+	    return testPolicyCmptTypeParameter.isExpextedResultOrCombinedParameter();
 	}
 
 	/**

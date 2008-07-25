@@ -68,17 +68,20 @@ public class Row extends AtomicIpsObjectPart implements IRow {
     }
 
 
-    private int getNumOfColumns() {
+    private int getNumOfColumnsViaTableContents() {
         return ((ITableContents)getParent().getParent()).getNumOfColumns();
+    }
+    
+    private void initValues() {
+        initValues(getNumOfColumnsViaTableContents());
     }
     
     /*
      * Initializes the row's values with blanks
      */
-    private void initValues() {
-        int columns = getNumOfColumns();
-        values = new ArrayList(columns+5);
-        for (int i=0; i<columns; i++) {
+    private void initValues(int numOfColumns) {
+        values = new ArrayList(numOfColumns+5);
+        for (int i=0; i<numOfColumns; i++) {
             values.add(""); //$NON-NLS-1$
         }
     }
@@ -257,7 +260,7 @@ public class Row extends AtomicIpsObjectPart implements IRow {
 
     private void validateRowValue(MessageList list, ITableStructure structure, ValueDatatype[] datatypes){
         int numOfColumnsInStructure = structure.getNumOfColumns();
-        for (int i=0; i< getNumOfColumns(); i++) {
+        for (int i=0; i< getNumOfColumnsViaTableContents(); i++) {
             if (i >= numOfColumnsInStructure){
                 // datatypes couldn't be checked because structure contains no more columns
                 return;

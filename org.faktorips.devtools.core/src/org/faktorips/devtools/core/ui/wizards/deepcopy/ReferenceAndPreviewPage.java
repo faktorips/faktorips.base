@@ -47,17 +47,23 @@ import org.eclipse.swt.widgets.TreeItem;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.IpsStatus;
 import org.faktorips.devtools.core.internal.model.productcmpt.treestructure.ProductCmptTreeStructure;
+import org.faktorips.devtools.core.model.ipsobject.IIpsObject;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPartContainer;
 import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
 import org.faktorips.devtools.core.model.ipsproject.IIpsPackageFragment;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmpt;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmptNamingStrategy;
+import org.faktorips.devtools.core.model.productcmpt.ITableContentUsage;
 import org.faktorips.devtools.core.model.productcmpt.treestructure.IProductCmptReference;
 import org.faktorips.devtools.core.model.productcmpt.treestructure.IProductCmptStructureReference;
+import org.faktorips.devtools.core.model.productcmpt.treestructure.IProductCmptStructureTblUsageReference;
 import org.faktorips.devtools.core.model.productcmpt.treestructure.IProductCmptTreeStructure;
 import org.faktorips.devtools.core.model.productcmpt.treestructure.IProductCmptTypeRelationReference;
+import org.faktorips.devtools.core.model.tablecontents.ITableContents;
 import org.faktorips.devtools.core.ui.UIToolkit;
+import org.faktorips.util.StringUtil;
+import org.faktorips.util.message.MessageList;
 
 /**
  * Page to preview the changes to the names of copied products and to switch between a copy or a
@@ -295,9 +301,10 @@ public class ReferenceAndPreviewPage extends WizardPage {
     }
 
     /**
-     * Returns all product components to copy.
+     * Returns all product cmpt structure reference components to copy.
+     * References to product cmpts and table contents are returned.
      */
-    public IProductCmptReference[] getProductsToCopy() {
+    public IProductCmptStructureReference[] getProductCmptStructRefToCopy() {
         List allChecked = Arrays.asList(tree.getCheckedElements());
         ArrayList result = new ArrayList();
 
@@ -305,15 +312,17 @@ public class ReferenceAndPreviewPage extends WizardPage {
             Object element = iter.next();
             if (element instanceof IProductCmptReference) {
                 result.add(element);
+            }else if (element instanceof IProductCmptStructureTblUsageReference) {
+                result.add(element);
             }
         }
-        return (IProductCmptReference[])result.toArray(new IProductCmptReference[result.size()]);
+        return (IProductCmptStructureReference[])result.toArray(new IProductCmptStructureReference[result.size()]);
     }
 
     /**
      * Returns all product components where a reference to has to be kept.
      */
-    public IProductCmptReference[] getProductsToRefer() {
+    public IProductCmptStructureReference[] getProductsOrtTableContentsToRefer() {
         Object[] checked = sourcePage.getCheckedNodes();
         List toProcess = Arrays.asList(checked);
         List toCopy = Arrays.asList(tree.getCheckedElements());
@@ -325,16 +334,18 @@ public class ReferenceAndPreviewPage extends WizardPage {
 
             if (!toCopy.contains(element) && element instanceof IProductCmptReference) {
                 result.add(element);
+            } else if (!toCopy.contains(element) && element instanceof IProductCmptStructureTblUsageReference) {
+                result.add(element);
             }
         }
 
-        return (IProductCmptReference[])result.toArray(new IProductCmptReference[result.size()]);
+        return (IProductCmptStructureReference[])result.toArray(new IProductCmptStructureReference[result.size()]);
     }
 
     /**
      * Constructs the name of the target package
      */
-    private String buildTargetPackageName(IIpsPackageFragment targetBase, IProductCmpt source, int segmentsToIgnore) {
+    private String buildTargetPackageName(IIpsPackageFragment targetBase, IIpsObject source, int segmentsToIgnore) {
         IPath subPath = source.getIpsPackageFragment().getRelativePath().removeFirstSegments(segmentsToIgnore);
         String toAppend = subPath.toString().replace('/', '.');
 
@@ -351,13 +362,22 @@ public class ReferenceAndPreviewPage extends WizardPage {
      * Constructs the new name. If at least one of search pattern and replace text is empty, the new
      * name is the old name.
      */
-    private String getNewName(String oldName, IProductCmpt productCmpt) {
+    private String getNewName(String oldName) {
         String newName = oldName;
         IProductCmptNamingStrategy namingStrategy = sourcePage.getNamingStrategy();
-
+        boolean noKindIdFound = false;
+        
         if (type == DeepCopyWizard.TYPE_COPY_PRODUCT) {
             if (namingStrategy != null && namingStrategy.supportsVersionId()) {
-                newName = namingStrategy.getKindId(newName);
+                MessageList list = namingStrategy.validate(newName);
+                if (!list.containsErrorMsg()) {
+                    newName = namingStrategy.getKindId(newName);
+                } else {
+                    noKindIdFound = true;
+                    // could't determine kind id, thus add copy of in front of the name
+                    // to get an unique new name
+                    newName = Messages.ReferenceAndPreviewPage_namePrefixCopyOf + newName;
+                }
             }
             String searchPattern = sourcePage.getSearchPattern();
             String replaceText = sourcePage.getReplaceText();
@@ -365,7 +385,7 @@ public class ReferenceAndPreviewPage extends WizardPage {
                 newName = newName.replaceAll(searchPattern, replaceText);
             }
 
-            if (namingStrategy != null && namingStrategy.supportsVersionId()) {
+            if (!noKindIdFound && namingStrategy != null && namingStrategy.supportsVersionId()) {
                 newName = namingStrategy.getProductCmptName(newName, sourcePage.getVersion());
             }
         } else if (namingStrategy != null) {
@@ -392,7 +412,7 @@ public class ReferenceAndPreviewPage extends WizardPage {
             checkForInvalidTargets();
         }
 
-        if (getProductsToCopy().length == 0) {
+        if (getProductCmptStructRefToCopy().length == 0) {
             setMessage(Messages.ReferenceAndPreviewPage_msgSelectAtLeastOneProduct, WARNING);
             return false;
         }
@@ -411,7 +431,7 @@ public class ReferenceAndPreviewPage extends WizardPage {
             return;
         }
 
-        int segmentsToIgnore = sourcePage.getSegmentsToIgnore(getProductsToCopy());
+        int segmentsToIgnore = sourcePage.getSegmentsToIgnore(getProductCmptStructRefToCopy());
         IIpsPackageFragment base = sourcePage.getTargetPackage();
         validateTarget(modified, segmentsToIgnore, base);
     }
@@ -425,7 +445,7 @@ public class ReferenceAndPreviewPage extends WizardPage {
         filename2productMap = new Hashtable();
         product2filenameMap = new Hashtable();
 
-        IProductCmptReference[] toCopy = getProductsToCopy();
+        IProductCmptStructureReference[] toCopy = getProductCmptStructRefToCopy();
         int segmentsToIgnore = sourcePage.getSegmentsToIgnore(toCopy);
         IIpsPackageFragment base = sourcePage.getTargetPackage();
 
@@ -434,13 +454,23 @@ public class ReferenceAndPreviewPage extends WizardPage {
         }
     }
     
-    private void validateTarget(IProductCmptReference modified, int segmentsToIgnore, IIpsPackageFragment base) {
+    private void validateTarget(IProductCmptStructureReference modified, int segmentsToIgnore, IIpsPackageFragment base) {
+        IIpsObject correspondingIpsObject = sourcePage.getCorrespondingIpsObject(modified);
+        
         StringBuffer message = new StringBuffer();
-        String packageName = buildTargetPackageName(base, modified.getProductCmpt(), segmentsToIgnore);
+        String packageName = buildTargetPackageName(base, correspondingIpsObject, segmentsToIgnore);
         IIpsPackageFragment targetPackage = base.getRoot().getIpsPackageFragment(packageName);
         if (targetPackage.exists()) {
-            String newName = getNewName(modified.getProductCmpt().getName(), modified.getProductCmpt());
-            IIpsSrcFile file = targetPackage.getIpsSrcFile(IpsObjectType.PRODUCT_CMPT.getFileName(newName));
+            String newName = getNewName(correspondingIpsObject.getName());
+            IpsObjectType ipsObjectType;
+            if (modified instanceof IProductCmptReference){
+                ipsObjectType = IpsObjectType.PRODUCT_CMPT;
+            } else if (modified instanceof IProductCmptStructureTblUsageReference) {
+                ipsObjectType = IpsObjectType.TABLE_CONTENTS;
+            } else {
+                throw new RuntimeException("Not supported product cmpt structure reference: " + modified.getClass()); //$NON-NLS-1$
+            }
+            IIpsSrcFile file = targetPackage.getIpsSrcFile(ipsObjectType.getFileName(newName));
             if (file.exists()) {
                 message = new StringBuffer();
                 message.append(Messages.ReferenceAndPreviewPage_msgCanNotCreateFile).append(packageName);
@@ -451,11 +481,27 @@ public class ReferenceAndPreviewPage extends WizardPage {
                 addMessage(modified, message.toString());
             }
             String name = file.getEnclosingResource().getFullPath().toString();
-            IProductCmptReference node = (IProductCmptReference)filename2productMap.get(name);
-            if (node != null && node.getProductCmpt() != modified.getProductCmpt()) {
-                addMessage(modified, Messages.ReferenceAndPreviewPage_msgNameCollision);
-                addMessage((IProductCmptReference)filename2productMap.get(name),
-                        Messages.ReferenceAndPreviewPage_msgNameCollision);
+            IProductCmptStructureReference node = (IProductCmptStructureReference)filename2productMap.get(name);
+            if (node instanceof IProductCmptReference){
+                if (node != null && ((IProductCmptReference)node).getProductCmpt() != correspondingIpsObject) {
+                    addMessage(modified, Messages.ReferenceAndPreviewPage_msgNameCollision);
+                    addMessage((IProductCmptReference)filename2productMap.get(name),
+                            Messages.ReferenceAndPreviewPage_msgNameCollision);
+                }
+            } else if (node instanceof IProductCmptStructureTblUsageReference){
+                ITableContentUsage tableContentUsage = ((IProductCmptStructureTblUsageReference)node).getTableContentUsage();
+                ITableContents tableContents;
+                try {
+                    tableContents = tableContentUsage.findTableContents(getDeepCopyWizard().getIpsProject());
+                    if (node != null && (tableContents != correspondingIpsObject)) {
+                        addMessage(modified, Messages.ReferenceAndPreviewPage_msgNameCollision);
+                        addMessage((IProductCmptReference)filename2productMap.get(name),
+                                Messages.ReferenceAndPreviewPage_msgNameCollision);
+                    }
+                } catch (CoreException e) {
+                    // should be displayed as validation error before
+                    IpsPlugin.log(e);
+                }
             }
             else {
                 filename2productMap.put(name, modified);
@@ -502,17 +548,24 @@ public class ReferenceAndPreviewPage extends WizardPage {
             throw new CoreException(status);
         }
 
-        IProductCmptReference[] toCopy = getProductsToCopy();
+        IProductCmptStructureReference[] toCopy = getProductCmptStructRefToCopy();
         Hashtable result = new Hashtable();
 
         int segmentsToIgnore = sourcePage.getSegmentsToIgnore(toCopy);
         IIpsPackageFragment base = sourcePage.getTargetPackage();
 
         for (int i = 0; i < toCopy.length; i++) {
-            String packageName = buildTargetPackageName(base, toCopy[i].getProductCmpt(), segmentsToIgnore);
+            IIpsObject correspondingIpsObject = sourcePage.getCorrespondingIpsObject(toCopy[i]);
+            
+            String packageName = buildTargetPackageName(base,correspondingIpsObject, segmentsToIgnore);
             IIpsPackageFragment targetPackage = base.getRoot().getIpsPackageFragment(packageName);
-            String newName = getNewName(toCopy[i].getProductCmpt().getName(), toCopy[i].getProductCmpt());
-            IIpsSrcFile file = targetPackage.getIpsSrcFile(IpsObjectType.PRODUCT_CMPT.getFileName(newName));
+            String newName = getNewName(correspondingIpsObject.getName());
+            IIpsSrcFile file;
+            if (IpsObjectType.TABLE_CONTENTS.equals(correspondingIpsObject.getIpsObjectType()) ){
+                file = targetPackage.getIpsSrcFile(IpsObjectType.TABLE_CONTENTS.getFileName(newName));
+            } else {
+                file = targetPackage.getIpsSrcFile(IpsObjectType.PRODUCT_CMPT.getFileName(newName));
+            }
             result.put(toCopy[i], file);
         }
         return result;
@@ -524,7 +577,7 @@ public class ReferenceAndPreviewPage extends WizardPage {
     private boolean isInError(IProductCmptStructureReference object) {
         return errorElements.containsKey(object);
     }
-
+    
     /**
      * Returns the error message for the given object or <code>null</code>, if no message exists.
      */
@@ -550,9 +603,10 @@ public class ReferenceAndPreviewPage extends WizardPage {
         private Object getWrapped(Object in) {
             if (in instanceof IProductCmptReference) {
                 return ((IProductCmptReference)in).getProductCmpt();
-            }
-            else if (in instanceof IProductCmptTypeRelationReference) {
+            } else if (in instanceof IProductCmptTypeRelationReference) {
                 return ((IProductCmptTypeRelationReference)in).getRelation();
+            } else if (in instanceof IProductCmptStructureTblUsageReference) {
+                return ((IProductCmptStructureTblUsageReference)in).getTableContentUsage();
             }
             return null;
         }
@@ -560,9 +614,15 @@ public class ReferenceAndPreviewPage extends WizardPage {
         public Image getImage(Object element) {
             Object wrapped = getWrapped(element);
             if (wrapped instanceof IProductCmpt) {
-
                 if (!tree.getChecked(element)) {
                     return IpsPlugin.getDefault().getImage("LinkProductCmpt.gif"); //$NON-NLS-1$
+                }
+                if (isInError((IProductCmptStructureReference)element)) {
+                    return IpsPlugin.getDefault().getImage("error_tsk.gif"); //$NON-NLS-1$
+                }
+            } else if (wrapped instanceof ITableContentUsage) {
+                if (!tree.getChecked(element)) {
+                    return IpsPlugin.getDefault().getImage("LinkTableContents.gif"); //$NON-NLS-1$
                 }
                 if (isInError((IProductCmptStructureReference)element)) {
                     return IpsPlugin.getDefault().getImage("error_tsk.gif"); //$NON-NLS-1$
@@ -577,7 +637,17 @@ public class ReferenceAndPreviewPage extends WizardPage {
             if (wrapped instanceof IProductCmpt) {
                 String name = ((IProductCmpt)wrapped).getName();
                 if (tree.getChecked(element)) {
-                    name = getNewName(name, (IProductCmpt)wrapped);
+                    name = getNewName(name);
+                }
+                if (isInError((IProductCmptStructureReference)element)) {
+                    name = name + Messages.ReferenceAndPreviewPage_errorLabelInsert
+                            + getErrorMessage((IProductCmptStructureReference)element);
+                }
+                return name;
+            } else if (wrapped instanceof ITableContentUsage){
+                String name = StringUtil.unqualifiedName(((ITableContentUsage)wrapped).getTableContentName());
+                if (tree.getChecked(element)) {
+                    name = getNewName(name);
                 }
                 if (isInError((IProductCmptStructureReference)element)) {
                     name = name + Messages.ReferenceAndPreviewPage_errorLabelInsert
@@ -617,8 +687,7 @@ public class ReferenceAndPreviewPage extends WizardPage {
         }
 
         public Object[] getChildren(Object parentElement) {
-            IProductCmptStructureReference[] children = (IProductCmptStructureReference[])super
-                    .getChildren(parentElement);
+            IProductCmptStructureReference[] children = (IProductCmptStructureReference[])super.getChildren(parentElement);
             ArrayList result = new ArrayList();
             for (int i = 0; i < children.length; i++) {
                 if (isChecked(children[i])
@@ -689,5 +758,5 @@ public class ReferenceAndPreviewPage extends WizardPage {
 
     private DeepCopyWizard getDeepCopyWizard(){
         return (DeepCopyWizard)getWizard();
-    }    
+    }
 }

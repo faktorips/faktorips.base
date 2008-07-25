@@ -116,7 +116,7 @@ public class NewTestAttributeWizard extends Wizard  {
                         testAttribute = testPolicyCmptTypeParam.newExpectedResultTestAttribute();
                     else
                         testAttribute = testPolicyCmptTypeParam.newInputTestAttribute();
-                } else if (testPolicyCmptTypeParam.isExpextedResultParameter()){
+                } else if (testPolicyCmptTypeParam.isExpextedResultOrCombinedParameter()){
                     testAttribute = testPolicyCmptTypeParam.newExpectedResultTestAttribute();
                 } else {
                     // default is input

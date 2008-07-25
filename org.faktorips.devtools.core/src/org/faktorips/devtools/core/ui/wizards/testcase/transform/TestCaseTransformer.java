@@ -214,8 +214,8 @@ public class TestCaseTransformer implements IWorkspaceRunnable {
             ITestPolicyCmptTypeParameter param = testPolicyCmptFound.findTestPolicyCmptTypeParameter(ipsProject);
             if (param != null){
                 if (isInput && param.getTestParameterType().equals(TestParameterType.INPUT) && 
-                        (!isInput && param.isInputParameter() || (isInput && param
-                        .isExpextedResultParameter()))) {
+                        (!isInput && param.isInputOrCombinedParameter() || (isInput && param
+                        .isExpextedResultOrCombinedParameter()))) {
                     // the runtime xml contains and input or expected policy cmpt,
                     // but the corresponding test parameter doesn't specifies such type
                     // here!

@@ -56,8 +56,8 @@ public class TestValueParameterTest extends AbstractIpsPluginTest {
         valueParamInput.initFromXml(paramEl);
         assertEquals("Money", valueParamInput.getValueDatatype());
         assertEquals("newSumInsured1", valueParamInput.getName());
-        assertTrue(valueParamInput.isInputParameter());
-        assertFalse(valueParamInput.isExpextedResultParameter());
+        assertTrue(valueParamInput.isInputOrCombinedParameter());
+        assertFalse(valueParamInput.isExpextedResultOrCombinedParameter());
         assertFalse(valueParamInput.isCombinedParameter());  
     }
     
@@ -74,8 +74,8 @@ public class TestValueParameterTest extends AbstractIpsPluginTest {
         
         assertEquals("Money", valueParamInput.getValueDatatype());
         assertEquals("newSumInsured", valueParamInput.getName());
-        assertTrue(valueParamInput.isInputParameter());
-        assertFalse(valueParamInput.isExpextedResultParameter());
+        assertTrue(valueParamInput.isInputOrCombinedParameter());
+        assertFalse(valueParamInput.isExpextedResultOrCombinedParameter());
         assertFalse(valueParamInput.isCombinedParameter());
     }
 

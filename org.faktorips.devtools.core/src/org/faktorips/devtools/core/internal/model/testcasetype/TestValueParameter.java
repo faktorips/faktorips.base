@@ -170,7 +170,7 @@ public class TestValueParameter extends TestParameter implements
         }
         
         // check the correct type
-        if (isCombinedParameter() || (! isInputParameter()&& ! isExpextedResultParameter())){
+        if (isCombinedParameter() || (! isInputOrCombinedParameter()&& ! isExpextedResultOrCombinedParameter())){
             String text = NLS.bind(Messages.TestValueParameter_ValidationError_TypeNotAllowed, type.getName(), name);
             Message msg = new Message(MSGCODE_WRONG_TYPE, text, Message.ERROR, this, PROPERTY_TEST_PARAMETER_TYPE);
             list.add(msg);

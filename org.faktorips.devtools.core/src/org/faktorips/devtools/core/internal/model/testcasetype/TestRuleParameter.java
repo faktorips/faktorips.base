@@ -126,7 +126,7 @@ public class TestRuleParameter extends TestParameter implements ITestRuleParamet
         super.validateThis(list, ipsProject);
 
         // check if the validation rule has the expected result type
-        if (!isExpextedResultParameter()) {
+        if (!isExpextedResultOrCombinedParameter()) {
             String text = NLS.bind(Messages.TestRuleParameter_ValidationError_WrongParameterType, name);
             Message msg = new Message(MSGCODE_NOT_EXPECTED_RESULT, text, Message.ERROR, this, PROPERTY_TEST_PARAMETER_TYPE);
             list.add(msg);

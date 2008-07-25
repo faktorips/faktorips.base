@@ -25,7 +25,9 @@ import org.eclipse.jface.viewers.ILabelProviderListener;
 import org.eclipse.swt.graphics.Image;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.model.productcmpt.treestructure.IProductCmptReference;
+import org.faktorips.devtools.core.model.productcmpt.treestructure.IProductCmptStructureTblUsageReference;
 import org.faktorips.devtools.core.model.productcmpt.treestructure.IProductCmptTypeRelationReference;
+import org.faktorips.util.StringUtil;
 
 public class DeepCopyLabelProvider implements ILabelProvider {
 
@@ -65,10 +67,11 @@ public class DeepCopyLabelProvider implements ILabelProvider {
     public Image getImage(Object element) {
         if (element instanceof IProductCmptReference) {
             return ((IProductCmptReference)element).getProductCmpt().getImage();
-        }
-        else if (element instanceof IProductCmptTypeRelationReference) {
+        } else if (element instanceof IProductCmptTypeRelationReference) {
             return ((IProductCmptTypeRelationReference)element).getRelation().getImage();
-        }
+        } else if (element instanceof IProductCmptStructureTblUsageReference) {
+                return ((IProductCmptStructureTblUsageReference)element).getTableContentUsage().getImage();
+            }   
         
         return IpsPlugin.getDefault().getImage("<undefined>"); //$NON-NLS-1$
     }
@@ -79,9 +82,10 @@ public class DeepCopyLabelProvider implements ILabelProvider {
     public String getText(Object element) {
         if (element instanceof IProductCmptReference) {
             return ((IProductCmptReference)element).getProductCmpt().getName();
-        }
-        else if (element instanceof IProductCmptTypeRelationReference) {
+        } else if (element instanceof IProductCmptTypeRelationReference) {
             return ((IProductCmptTypeRelationReference)element).getRelation().getName();
+        } else if (element instanceof IProductCmptStructureTblUsageReference) {
+            return StringUtil.unqualifiedName(((IProductCmptStructureTblUsageReference)element).getTableContentUsage().getTableContentName());
         }
         return Messages.DeepCopyLabelProvider_textUndefined;
     }

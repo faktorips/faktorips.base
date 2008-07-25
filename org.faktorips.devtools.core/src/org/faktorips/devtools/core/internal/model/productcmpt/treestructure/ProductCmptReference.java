@@ -18,6 +18,7 @@
 package org.faktorips.devtools.core.internal.model.productcmpt.treestructure;
 
 import org.faktorips.devtools.core.model.IIpsElement;
+import org.faktorips.devtools.core.model.ipsobject.IIpsObject;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmpt;
 import org.faktorips.devtools.core.model.productcmpt.treestructure.CycleInProductStructureException;
 import org.faktorips.devtools.core.model.productcmpt.treestructure.IProductCmptReference;
@@ -56,5 +57,12 @@ public class ProductCmptReference extends ProductCmptStructureReference
 	IIpsElement getWrapped() {
 		return cmpt;
 	}
+
+	/**
+     * {@inheritDoc}
+     */
+    public IIpsObject getWrappedIpsObject() {
+        return cmpt;
+    }
 
 }

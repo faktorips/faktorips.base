@@ -91,9 +91,9 @@ public abstract class ProductCmptStructureReference implements
 			}
 		}
 	}
-
+	
 	/**
-	 * @return The <code>IIpsElement</code> referenced by this object.
-	 */
+     * @return The <code>IIpsElement</code> referenced by this object.
+     */
 	abstract IIpsElement getWrapped();
 }

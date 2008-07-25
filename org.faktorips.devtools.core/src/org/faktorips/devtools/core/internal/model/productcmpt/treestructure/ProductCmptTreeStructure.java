@@ -48,7 +48,8 @@ import org.faktorips.util.ArgumentCheck;
  * @author Thorsten Guenther
  */
 public class ProductCmptTreeStructure implements IProductCmptTreeStructure {
-	
+    private static final IProductCmptStructureReference[] EMPTY_PRODUCTCMPTSTRUCTUREREFERENCES = new IProductCmptStructureReference[0];
+    
     private IIpsProject ipsProject;
     private ProductCmptReference root;
 	private GregorianCalendar workingDate;
@@ -123,10 +124,6 @@ public class ProductCmptTreeStructure implements IProductCmptTreeStructure {
 		List result = new ArrayList();
         result.add(root);
 		addChildrenToList(root, result, productCmptOnly);
-		
-		if (productCmptOnly) {
-			return (IProductCmptReference[])result.toArray(new IProductCmptReference[result.size()]);
-		}
 		return (IProductCmptStructureReference[])result.toArray(new IProductCmptStructureReference[result.size()]);
 	}
 	
@@ -142,6 +139,7 @@ public class ProductCmptTreeStructure implements IProductCmptTreeStructure {
 			addChildrenToList(getChildProductCmptTypeRelationReferences(parent), list, productCmptOnly);
 		}
 		addChildrenToList(getChildProductCmptReferences(parent), list, productCmptOnly);
+		addChildrenToList(getChildProductCmptStructureTblUsageReference(parent), list, productCmptOnly);
 	}
 	
 	/**
@@ -323,23 +321,28 @@ public class ProductCmptTreeStructure implements IProductCmptTreeStructure {
 	 */
 	public IProductCmptTypeRelationReference[] getChildProductCmptTypeRelationReferences(IProductCmptStructureReference parent) {
 		if (parent instanceof IProductCmptReference) {
-			List relationReferences = new ArrayList();
+            List relationReferences = new ArrayList();
             IProductCmptStructureReference[] children = ((ProductCmptReference)parent).getChildren();
             for (int i = 0; i < children.length; i++) {
-                if (children[i] instanceof IProductCmptTypeRelationReference){
+                if (children[i] instanceof IProductCmptTypeRelationReference) {
                     relationReferences.add(children[i]);
                 }
             }
-			return (IProductCmptTypeRelationReference[]) relationReferences.toArray(new IProductCmptTypeRelationReference[relationReferences.size()]);
-		}
-		else {
-			ProductCmptStructureReference children[] = ((ProductCmptTypeRelationReference)parent).getChildren();
-			ArrayList result = new ArrayList();
-			for (int i = 0; i < children.length; i++) {
-				result.addAll(Arrays.asList(children[i].getChildren()));
-			}
-			return (IProductCmptTypeRelationReference[])result.toArray(new IProductCmptTypeRelationReference[result.size()]);
-		}
+            return (IProductCmptTypeRelationReference[])relationReferences
+                    .toArray(new IProductCmptTypeRelationReference[relationReferences.size()]);
+        } else if (parent instanceof ProductCmptStructureReference) {
+            ProductCmptStructureReference children[] = ((ProductCmptStructureReference)parent).getChildren();
+            ArrayList result = new ArrayList();
+            for (int i = 0; i < children.length; i++) {
+                if (children[i] instanceof IProductCmptTypeRelationReference) {
+                    result.add(children[i]);
+                }
+            }
+            return (IProductCmptTypeRelationReference[])result.toArray(new IProductCmptTypeRelationReference[result
+                    .size()]);
+        } else {
+            return new IProductCmptTypeRelationReference[0];
+        }
 	}
 
     /**
@@ -347,7 +350,7 @@ public class ProductCmptTreeStructure implements IProductCmptTreeStructure {
      */
     public IProductCmptStructureTblUsageReference[] getChildProductCmptStructureTblUsageReference(IProductCmptStructureReference parent) {
         List tblUsageReferences = new ArrayList();
-        IProductCmptStructureReference[] children = ((ProductCmptReference)parent).getChildren();
+        IProductCmptStructureReference[] children = getChildren(parent);
         for (int i = 0; i < children.length; i++) {
             if (children[i] instanceof ProductCmptStructureTblUsageReference) {
                 ProductCmptStructureTblUsageReference tblUsageReference = (ProductCmptStructureTblUsageReference)children[i];
@@ -358,5 +361,15 @@ public class ProductCmptTreeStructure implements IProductCmptTreeStructure {
         }
         return (IProductCmptStructureTblUsageReference[])tblUsageReferences
                 .toArray(new IProductCmptStructureTblUsageReference[tblUsageReferences.size()]);
+    }
+
+    private IProductCmptStructureReference[] getChildren(IProductCmptStructureReference parent) {
+        if (parent instanceof IProductCmptReference){
+            return ((ProductCmptReference)parent).getChildren();
+        } else if (parent instanceof IProductCmptStructureReference) {
+            return ((ProductCmptStructureReference)parent).getChildren();
+        } else {
+            return EMPTY_PRODUCTCMPTSTRUCTUREREFERENCES;
+        }
     }
 }

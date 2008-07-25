@@ -23,8 +23,8 @@ import java.util.Hashtable;
 import org.eclipse.core.runtime.CoreException;
 import org.faktorips.devtools.core.AbstractIpsPluginTest;
 import org.faktorips.devtools.core.IpsPlugin;
+import org.faktorips.devtools.core.model.ipsobject.IIpsObject;
 import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
-import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.pctype.AssociationType;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
@@ -33,6 +33,7 @@ import org.faktorips.devtools.core.model.productcmpt.IProductCmpt;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmptGeneration;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmptLink;
 import org.faktorips.devtools.core.model.productcmpt.treestructure.IProductCmptReference;
+import org.faktorips.devtools.core.model.productcmpt.treestructure.IProductCmptStructureReference;
 import org.faktorips.devtools.core.model.productcmpt.treestructure.IProductCmptTreeStructure;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeAssociation;
@@ -69,13 +70,13 @@ public class DeepCopyOperationTest extends AbstractIpsPluginTest {
         assertNotNull(productCmpt);
         
         IProductCmptTreeStructure structure = productCmpt.getStructure(ipsProject);
-        IProductCmptReference[] toCopy = (IProductCmptReference[])structure.toArray(true);
+        IProductCmptStructureReference[] toCopy = (IProductCmptStructureReference[])structure.toArray(true);
 
         Hashtable handles = new Hashtable();
 
         for (int i = 0; i < toCopy.length; i++) {
-        	IProductCmpt cmpt = toCopy[i].getProductCmpt();
-        	handles.put(toCopy[i], cmpt.getIpsPackageFragment().getIpsSrcFile("DeepCopyOf" + cmpt.getName() + ".ipsproduct"));
+        	IIpsObject ipsObject = toCopy[i].getWrappedIpsObject();
+        	handles.put(toCopy[i], ipsObject.getIpsPackageFragment().getIpsSrcFile("DeepCopyOf" + ipsObject.getName() + "." + ipsObject.getIpsObjectType().getFileExtension()));
         	assertFalse(((IIpsSrcFile)handles.get(toCopy[i])).exists());
 		}
         
@@ -182,13 +183,13 @@ public class DeepCopyOperationTest extends AbstractIpsPluginTest {
     public void testCopyWithNoGeneration() throws Exception {
         product = newProductCmpt(ipsProject, "EmptyProduct");
         IProductCmptTreeStructure structure = product.getStructure(ipsProject);
-        IProductCmptReference[] toCopy = (IProductCmptReference[])structure.toArray(true);
+        IProductCmptStructureReference[] toCopy = (IProductCmptStructureReference[])structure.toArray(true);
         
         Hashtable handles = new Hashtable();
 
         for (int i = 0; i < toCopy.length; i++) {
-            IProductCmpt cmpt = toCopy[i].getProductCmpt();
-            handles.put(toCopy[i], cmpt.getIpsPackageFragment().getIpsSrcFile("DeepCopy2Of" + cmpt.getName(), IpsObjectType.PRODUCT_CMPT));
+            IIpsObject ipsObject = toCopy[i].getWrappedIpsObject();
+            handles.put(toCopy[i], ipsObject.getIpsPackageFragment().getIpsSrcFile("DeepCopy2Of" + ipsObject.getName(), ipsObject.getIpsObjectType()));
             assertFalse(((IIpsSrcFile)handles.get(toCopy[i])).exists());
         }
         

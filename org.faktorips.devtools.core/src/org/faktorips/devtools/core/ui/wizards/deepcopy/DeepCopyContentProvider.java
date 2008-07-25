@@ -21,6 +21,7 @@ import org.eclipse.jface.viewers.ITreeContentProvider;
 import org.eclipse.jface.viewers.Viewer;
 import org.faktorips.devtools.core.model.productcmpt.treestructure.IProductCmptReference;
 import org.faktorips.devtools.core.model.productcmpt.treestructure.IProductCmptStructureReference;
+import org.faktorips.devtools.core.model.productcmpt.treestructure.IProductCmptStructureTblUsageReference;
 import org.faktorips.devtools.core.model.productcmpt.treestructure.IProductCmptTreeStructure;
 
 /**
@@ -57,17 +58,36 @@ public class DeepCopyContentProvider implements ITreeContentProvider {
      */
     public Object[] getChildren(Object parentElement) {
         if (!fShowRelationType && parentElement instanceof IProductCmptReference) {
-            return structure.getChildProductCmptReferences((IProductCmptReference)parentElement);
-        } 
-        else if (parentElement instanceof IProductCmptReference) {
-            return structure.getChildProductCmptTypeRelationReferences((IProductCmptReference)parentElement);
+            // returns the product cmpt references without the type
+            return getChildrenFor((IProductCmptReference)parentElement);
+        } else if (parentElement instanceof IProductCmptReference) {
+            // returns the relation type first
+            return getRefChildrenFor((IProductCmptReference)parentElement);
+        } else if (parentElement instanceof IProductCmptStructureReference) {
+            return getChildrenFor((IProductCmptStructureReference)parentElement);
+        } else {
+            return new IProductCmptStructureReference[0];
         }
-        else if (parentElement instanceof IProductCmptStructureReference) {
-            return structure.getChildProductCmptReferences((IProductCmptStructureReference)parentElement);
-        }
-        else {
-            return new Object[0];
-        }
+    }
+
+    private Object[] getChildrenFor(IProductCmptReference parentElement) {
+        return addTblUsages(parentElement, structure.getChildProductCmptReferences(parentElement));
+    }
+
+    private Object[] getRefChildrenFor(IProductCmptReference parentElement) {
+        return addTblUsages(parentElement,structure.getChildProductCmptTypeRelationReferences(parentElement));
+    }
+
+    private Object[] getChildrenFor(IProductCmptStructureReference parentElement) {
+        return addTblUsages(parentElement, structure.getChildProductCmptReferences(parentElement));
+    }
+
+    private Object[] addTblUsages(IProductCmptStructureReference parentElement, Object[] productCmptReferencesOrTypes) {
+        IProductCmptStructureTblUsageReference[] tblUsageReference = structure.getChildProductCmptStructureTblUsageReference(parentElement);
+        IProductCmptStructureReference[] result = new IProductCmptStructureReference[tblUsageReference.length + productCmptReferencesOrTypes.length];
+        System.arraycopy(productCmptReferencesOrTypes, 0, result, 0, productCmptReferencesOrTypes.length);
+        System.arraycopy(tblUsageReference, 0, result, productCmptReferencesOrTypes.length, tblUsageReference.length);
+        return result;
     }
 
     /**

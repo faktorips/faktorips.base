@@ -22,7 +22,9 @@ import org.eclipse.jface.viewers.CheckboxTreeViewer;
 import org.eclipse.jface.viewers.ICheckStateListener;
 import org.eclipse.swt.widgets.Tree;
 import org.eclipse.swt.widgets.TreeItem;
+import org.faktorips.devtools.core.model.productcmpt.IProductCmpt;
 import org.faktorips.devtools.core.model.productcmpt.treestructure.IProductCmptReference;
+import org.faktorips.devtools.core.model.productcmpt.treestructure.IProductCmptStructureTblUsageReference;
 import org.faktorips.devtools.core.model.productcmpt.treestructure.IProductCmptTypeRelationReference;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeAssociation;
 
@@ -85,7 +87,8 @@ public class CheckStateListener implements ICheckStateListener {
 		updateGrayState(items);
 		
 		if (page != null) {
-            if (modified instanceof IProductCmptReference) {
+            if (modified instanceof IProductCmptReference || 
+                modified instanceof IProductCmptStructureTblUsageReference) {
                 // set page complete, implicit validate all components in tree,
                 // because maybe the validate state of the parent objects has changed
                 page.setPageComplete(null, checked);
@@ -127,7 +130,8 @@ public class CheckStateListener implements ICheckStateListener {
 	 * are checked.
 	 */
 	private void checkRelationChildren(TreeItem node) {
-		if (!(getTreeItemContent(node) instanceof IProductCmptTypeAssociation)) {
+		Object treeItemContent = getTreeItemContent(node);
+        if (treeItemContent instanceof IProductCmpt) {
 			return;
 		}
 		

@@ -46,14 +46,15 @@ import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Text;
 import org.eclipse.swt.widgets.TreeItem;
 import org.faktorips.devtools.core.IpsPlugin;
-import org.faktorips.devtools.core.model.IIpsElement;
+import org.faktorips.devtools.core.model.ipsobject.IIpsObject;
 import org.faktorips.devtools.core.model.ipsproject.IIpsPackageFragment;
 import org.faktorips.devtools.core.model.ipsproject.IIpsPackageFragmentRoot;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmptNamingStrategy;
 import org.faktorips.devtools.core.model.productcmpt.treestructure.IProductCmptReference;
 import org.faktorips.devtools.core.model.productcmpt.treestructure.IProductCmptStructureReference;
+import org.faktorips.devtools.core.model.productcmpt.treestructure.IProductCmptStructureTblUsageReference;
 import org.faktorips.devtools.core.model.productcmpt.treestructure.IProductCmptTreeStructure;
-import org.faktorips.devtools.core.model.productcmpt.treestructure.IProductCmptTypeRelationReference;
+import org.faktorips.devtools.core.model.tablecontents.ITableContents;
 import org.faktorips.devtools.core.ui.UIToolkit;
 import org.faktorips.devtools.core.ui.controller.fields.FieldValueChangedEvent;
 import org.faktorips.devtools.core.ui.controller.fields.TextButtonField;
@@ -61,6 +62,8 @@ import org.faktorips.devtools.core.ui.controller.fields.TextField;
 import org.faktorips.devtools.core.ui.controller.fields.ValueChangeListener;
 import org.faktorips.devtools.core.ui.controls.IpsPckFragmentRefControl;
 import org.faktorips.devtools.core.ui.controls.IpsPckFragmentRootRefControl;
+import org.faktorips.devtools.core.ui.controls.Radiobutton;
+import org.faktorips.devtools.core.ui.controls.RadiobuttonGroup;
 import org.faktorips.util.message.MessageList;
 
 /**
@@ -68,7 +71,7 @@ import org.faktorips.util.message.MessageList;
  * 
  * @author Thorsten Guenther
  */
-public class SourcePage extends WizardPage implements ICheckStateListener, ValueChangeListener {
+public class SourcePage extends WizardPage implements ValueChangeListener, ICheckStateListener {
     static final String PAGE_ID = "deepCopyWizard.source"; //$NON-NLS-1$
 
     private IProductCmptTreeStructure structure;
@@ -101,6 +104,8 @@ public class SourcePage extends WizardPage implements ICheckStateListener, Value
 
 	// The working date format specified in the ips preferences
     private DateFormat dateFormat;
+
+    private Radiobutton createEmptyTableContentsBtn;
 
 
     private static String getTitle(int type) {
@@ -164,7 +169,12 @@ public class SourcePage extends WizardPage implements ICheckStateListener, Value
                 // ignored
             }
             public void focusLost(FocusEvent e) {
-                getDeepCopyWizard().applyWorkingDate();
+                Runnable runnable = new Runnable(){
+                    public void run() {
+                        getDeepCopyWizard().applyWorkingDate();
+                    }
+                };
+                getShell().getDisplay().asyncExec(runnable);
             }
         });
         
@@ -215,22 +225,28 @@ public class SourcePage extends WizardPage implements ICheckStateListener, Value
         TextField versionIdField = new TextField(versionId);
         versionIdField.addChangeListener(this);
 
+        // radio button: copy table contents, create emtpy table contents
+        RadiobuttonGroup group = toolkit.createRadiobuttonGroup(root, SWT.SHADOW_IN, Messages.SourcePage_labelGroupTableContents);
+        group.getGroup().setLayoutData(new GridData(SWT.FILL, SWT.NONE, true, false));
+        group.addRadiobutton(Messages.SourcePage_labelRadioBtnCopyTableContents).setChecked(true);
+        createEmptyTableContentsBtn = group.addRadiobutton(Messages.SourcePage_labelRadioBtnCreateEmptyTableContents);
+        
         tree = new CheckboxTreeViewer(root);
         tree.setUseHashlookup(true);
         tree.setLabelProvider(new DeepCopyLabelProvider());
         tree.setContentProvider(new DeepCopyContentProvider(true));
         refreshStructureAndVersionId(structure);
         tree.getControl().setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
-        tree.addCheckStateListener(this);
         checkStateListener = new CheckStateListener(null);
         tree.addCheckStateListener(checkStateListener);
+        tree.addCheckStateListener(this);
         
         // add Listener to the target text control (must be done here after the default is set)
         targetPackageControl.getTextControl().addModifyListener(new ModifyListener() {
             public void modifyText(ModifyEvent e) {
                 getWizard().getContainer().updateButtons();
             }
-        });        
+        });      
     }
 
     /**
@@ -258,26 +274,28 @@ public class SourcePage extends WizardPage implements ICheckStateListener, Value
 
     /**
      * Calculate the number of <code>IPath</code>-segements which are equal for all product
-     * components to copy.
+     * component structure refences to copy.
      * 
      * @return 0 if no elements are contained in toCopy, number of all segments, if only one product
      *         component is contained in toCopy and the calculated value as described above for all
      *         other cases.
      */
-    int getSegmentsToIgnore(IProductCmptReference[] toCopy) {
+    int getSegmentsToIgnore(IProductCmptStructureReference[] toCopy) {
         if (toCopy.length == 0) {
             return 0;
         }
 
-        IPath refPath = toCopy[0].getProductCmpt().getIpsPackageFragment().getRelativePath();
+        IIpsObject ipsObject = getCorrespondingIpsObject(toCopy[0]);
+        IPath refPath = ipsObject.getIpsPackageFragment().getRelativePath();
         if (toCopy.length == 1) {
             return refPath.segmentCount();
         }
 
         int ignore = Integer.MAX_VALUE;
         for (int i = 1; i < toCopy.length; i++) {
+            ipsObject = getCorrespondingIpsObject(toCopy[i]);
             int tmpIgnore;
-            IPath nextPath = toCopy[i].getProductCmpt().getIpsPackageFragment().getRelativePath();
+            IPath nextPath = ipsObject.getIpsPackageFragment().getRelativePath();
             tmpIgnore = nextPath.matchingFirstSegments(refPath);
             if (tmpIgnore < ignore) {
                 ignore = tmpIgnore;
@@ -287,8 +305,23 @@ public class SourcePage extends WizardPage implements ICheckStateListener, Value
         return ignore;
     }
     
+    IIpsObject getCorrespondingIpsObject(IProductCmptStructureReference productCmptStructureReference){
+        if (productCmptStructureReference instanceof IProductCmptReference){
+            return ((IProductCmptReference) productCmptStructureReference).getProductCmpt();
+        } else if (productCmptStructureReference instanceof IProductCmptStructureTblUsageReference){
+            ITableContents tableContents;
+            try {
+                tableContents = ((IProductCmptStructureTblUsageReference) productCmptStructureReference).getTableContentUsage().findTableContents(getDeepCopyWizard().getIpsProject());
+                return tableContents;
+            } catch (CoreException e) {
+                IpsPlugin.logAndShowErrorDialog(e);
+            }
+        }
+        return null;
+    }
+    
     IIpsPackageFragment getDefaultPackage() {
-        int ignore = getSegmentsToIgnore((IProductCmptReference[])structure.toArray(true));
+        int ignore = getSegmentsToIgnore((IProductCmptStructureReference[])structure.toArray(true));
         IIpsPackageFragment pack = structure.getRoot().getProductCmpt().getIpsPackageFragment();
         int segments = pack.getRelativePath().segmentCount();
         if (segments - ignore > 0) {
@@ -302,46 +335,54 @@ public class SourcePage extends WizardPage implements ICheckStateListener, Value
      * {@inheritDoc}
      */
     public boolean canFlipToNextPage() {
-        boolean pageComplete = tree != null && tree.getCheckedElements().length > 0;
+        validate();
+        return (getErrorMessage() == null);
+    }
+
+    private void validate() {
         setMessage(null);
         setErrorMessage(null);
 
+        if (!(tree != null && tree.getCheckedElements().length > 0)){
+            // no elements checked
+            setErrorMessage(Messages.SourcePage_msgNothingSelected);
+            return;
+        }
+        
         validateWorkingDate();
         if (getErrorMessage() != null){
-            return false;
+            return;
         }
         
         if (namingStrategy != null && namingStrategy.supportsVersionId() ) {
             MessageList ml = namingStrategy.validateVersionId(versionId.getText());
             if (!ml.isEmpty()) {
                 setErrorMessage(ml.getMessage(0).getText());
-                pageComplete = false;
-                
+                return;
             }
         }
 
         if (structure == null) {
             setErrorMessage(Messages.SourcePage_msgCircleRelationShort);
-            pageComplete = false;
+            return;
         }
 
         IIpsPackageFragmentRoot ipsPckFragmentRoot = targetPackRootControl.getIpsPckFragmentRoot();
         if (ipsPckFragmentRoot != null && !ipsPckFragmentRoot.exists()) {
             setErrorMessage(NLS.bind(Messages.SourcePage_msgMissingSourceFolder, ipsPckFragmentRoot.getName()));
-            pageComplete = false;
+            return;
         } else if (ipsPckFragmentRoot == null) {
             setErrorMessage(Messages.SourcePage_msgSelectSourceFolder);
-            pageComplete = false;
+            return;
         }
         
-        if (pageComplete && getTargetPackage() != null && !getTargetPackage().exists()) {
+        if (getTargetPackage() != null && !getTargetPackage().exists()) {
             setMessage(NLS.bind(Messages.SourcePage_msgWarningTargetWillBeCreated, getTargetPackage().getName()),
                     WARNING);
-        } else if (pageComplete && getTargetPackage() == null){
+        } else if (getTargetPackage() == null){
             setErrorMessage(Messages.SourcePage_msgBadTargetPackage);
+            return;
         }
-        
-        return pageComplete;
     }
 
     private void validateWorkingDate() {
@@ -417,48 +458,6 @@ public class SourcePage extends WizardPage implements ICheckStateListener, Value
         return targetPackageControl.getIpsPackageFragment();
     }
 
-    public void checkStateChanged(CheckStateChangedEvent event) {
-
-        // we have to check or uncheck all items which represent the same ipselement
-        // because the decision of copy or not copy is global.
-        IProductCmptStructureReference changed = (IProductCmptStructureReference)event.getElement();
-        IProductCmptReference root = structure.getRoot();
-
-        if (!(changed instanceof IProductCmptReference)) {
-            IProductCmptTypeRelationReference[] children = structure
-                    .getChildProductCmptTypeRelationReferences((IProductCmptStructureReference)event.getElement());
-            for (int i = 0; i < children.length; i++) {
-                setCheckState(children[i].getRelation(), new IProductCmptReference[] { root }, event.getChecked());
-            }
-        }
-        else {
-            setCheckState(((IProductCmptReference)changed).getProductCmpt(), new IProductCmptReference[] { root },
-                    event.getChecked());
-        }
-    }
-
-    private void setCheckState(IIpsElement toCompareWith, IProductCmptStructureReference[] nodes, boolean checked) {
-        if (nodes instanceof IProductCmptReference[]) {
-            for (int i = 0; i < nodes.length; i++) {
-                setCheckState(toCompareWith, structure.getChildProductCmptTypeRelationReferences(nodes[i]), checked);
-                if (((IProductCmptReference)nodes[i]).getProductCmpt().equals(toCompareWith)) {
-                    tree.setChecked(nodes[i], checked);
-                    checkStateListener.updateCheckState(tree, nodes[i], checked);
-                }
-            }
-        }
-        else {
-            for (int i = 0; i < nodes.length; i++) {
-                setCheckState(toCompareWith, structure.getChildProductCmptReferences(nodes[i]), checked);
-                if (((IProductCmptTypeRelationReference)nodes[i]).getRelation().equals(toCompareWith)) {
-                    tree.setChecked(nodes[i], checked);
-                    checkStateListener.updateCheckState(tree, nodes[i], checked);
-                }
-            }
-        }
-
-    }
-
     /**
      * {@inheritDoc}
      */
@@ -477,6 +476,7 @@ public class SourcePage extends WizardPage implements ICheckStateListener, Value
     }
 
     protected void updatePageComplete() {
+        validate();
         if (getErrorMessage()!=null) {
             setPageComplete(false);
             return;
@@ -493,5 +493,20 @@ public class SourcePage extends WizardPage implements ICheckStateListener, Value
 
     private DeepCopyWizard getDeepCopyWizard(){
         return (DeepCopyWizard)getWizard();
+    }
+
+    /**
+     * Returns <code>true</code> if the radio button "create empty table contents" is checked.
+     */
+    boolean isCreateEmptyTableContents() {
+        return createEmptyTableContentsBtn.isChecked();
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public void checkStateChanged(CheckStateChangedEvent event) {
+        validate();
+        getContainer().updateButtons();
     }
 }

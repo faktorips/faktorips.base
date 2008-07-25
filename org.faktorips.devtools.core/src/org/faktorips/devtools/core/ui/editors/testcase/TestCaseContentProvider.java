@@ -250,17 +250,7 @@ public class TestCaseContentProvider implements ITreeContentProvider {
 		// TODO Joerg: Methodenlaenge
         List elements = new ArrayList();
         if (inputElement instanceof ITestCase){
-			ITestCase testCase = (ITestCase) inputElement;
-			if (isCombined()){
-			    // return input and expected result objects
-                elements.addAll(Arrays.asList(testCase.getTestObjects()));
-			}else if(isExpectedResult()){
-				// return expected result objects
-                elements.addAll(Arrays.asList(testCase.getExpectedResultTestObjects()));
-			}else if(isInput()){
-			    // return input objects
-                elements.addAll(Arrays.asList(testCase.getInputTestObjects()));
-            }
+			addElementsFor((ITestCase)inputElement, elements);
 		}
         List orderedList = new ArrayList();
         HashMap name2elements = new HashMap();
@@ -310,6 +300,19 @@ public class TestCaseContentProvider implements ITreeContentProvider {
         }
 		return (Object[]) orderedList.toArray(new Object[0]);
 	}
+
+    private void addElementsFor(ITestCase testCase, List elements) {
+        if (isCombined()){
+            // return input and expected result objects
+            elements.addAll(Arrays.asList(testCase.getTestObjects()));
+        }else if(isExpectedResult()){
+        	// return expected result objects
+            elements.addAll(Arrays.asList(testCase.getExpectedResultTestObjects()));
+        }else if(isInput()){
+            // return input objects
+            elements.addAll(Arrays.asList(testCase.getInputTestObjects()));
+        }
+    }
 	
 	/**
 	 * {@inheritDoc}
@@ -484,8 +487,8 @@ public class TestCaseContentProvider implements ITreeContentProvider {
      * provider provides.
      */
     private boolean parameterMatchesType(ITestPolicyCmptTypeParameter parameter) {
-        return (isExpectedResult() && parameter.isExpextedResultParameter())
-                || (isInput() && parameter.isInputParameter());
+        return (isExpectedResult() && parameter.isExpextedResultOrCombinedParameter())
+                || (isInput() && parameter.isInputOrCombinedParameter());
     }
 
     /*

@@ -146,7 +146,7 @@ public class ProductCmptStructureTest extends AbstractIpsPluginTest {
     
     public void testToArray() throws Exception {
         IProductCmptStructureReference[] array = structure.toArray(true);
-        assertEquals(3, array.length);
-        
+        assertEquals(6, array.length);
+        // -> 3 table references: two different tables, with one in two different links
     }
 }

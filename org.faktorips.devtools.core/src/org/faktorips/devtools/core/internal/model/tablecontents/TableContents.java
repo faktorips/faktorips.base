@@ -122,7 +122,10 @@ public class TableContents extends TimedIpsObject implements ITableContents {
         return numOfColumns;
     }
 
-    protected void setNumOfColumnsInternal(int numOfColumns){
+    /**
+     * Sets the number of columns
+     */
+    public void setNumOfColumnsInternal(int numOfColumns){
         this.numOfColumns = numOfColumns;
     }
     

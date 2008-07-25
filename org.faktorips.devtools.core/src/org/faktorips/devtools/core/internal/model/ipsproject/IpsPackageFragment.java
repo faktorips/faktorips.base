@@ -42,6 +42,7 @@ import org.faktorips.devtools.core.IpsStatus;
 import org.faktorips.devtools.core.internal.model.IpsModel;
 import org.faktorips.devtools.core.internal.model.ipsobject.IpsSrcFile;
 import org.faktorips.devtools.core.internal.model.ipsobject.TimedIpsObject;
+import org.faktorips.devtools.core.internal.model.tablecontents.TableContents;
 import org.faktorips.devtools.core.model.IIpsElement;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObject;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObjectGeneration;
@@ -53,6 +54,7 @@ import org.faktorips.devtools.core.model.ipsproject.IIpsPackageFragmentArbitrary
 import org.faktorips.devtools.core.model.ipsproject.IIpsPackageFragmentSortDefinition;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmpt;
+import org.faktorips.devtools.core.model.tablecontents.ITableContents;
 import org.faktorips.devtools.core.util.XmlUtil;
 import org.faktorips.util.ArgumentCheck;
 import org.faktorips.util.StringUtil;
@@ -407,11 +409,17 @@ public class IpsPackageFragment extends AbstractIpsPackageFragment implements II
         try {
             model.stopBroadcastingChangesMadeByCurrentThread();
             TimedIpsObject newObject = (TimedIpsObject)file.getIpsObject();
-            newObject.newGeneration(source, IpsPlugin.getDefault().getIpsPreferences().getWorkingDate());
-
+            // FIXME Joerg was ist mit der Description und validTo auch uebernehmen
+            // instanceof unschoen
             if (template instanceof IProductCmpt) {
                 ((IProductCmpt)newObject).setProductCmptType(((IProductCmpt)template).getProductCmptType());
+            } else if (template instanceof ITableContents){
+                ((ITableContents)newObject).setTableStructure(((ITableContents)template).getTableStructure());
+                ((TableContents)newObject).setNumOfColumnsInternal(((ITableContents)template).getNumOfColumns());
             }
+
+            newObject.newGeneration(source, IpsPlugin.getDefault().getIpsPreferences().getWorkingDate());
+
             file.save(true, null);
         } finally {
             model.resumeBroadcastingChangesMadeByCurrentThread();

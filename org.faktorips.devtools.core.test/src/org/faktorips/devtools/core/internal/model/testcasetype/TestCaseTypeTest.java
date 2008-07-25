@@ -63,48 +63,48 @@ public class TestCaseTypeTest extends AbstractIpsPluginTest {
         assertNotNull(param);
         assertEquals(1, type.getInputTestParameters().length);
         assertEquals(0, type.getExpectedResultTestParameters().length);
-        assertTrue(param.isInputParameter());
-        assertFalse(param.isExpextedResultParameter());
+        assertTrue(param.isInputOrCombinedParameter());
+        assertFalse(param.isExpextedResultOrCombinedParameter());
         assertFalse(param.isCombinedParameter());
         
         ITestValueParameter param2 = type.newExpectedResultValueParameter();
         assertNotNull(param2);
         assertEquals(1, type.getExpectedResultTestParameters().length);
         assertEquals(1, type.getInputTestParameters().length);
-        assertFalse(param2.isInputParameter());
-        assertTrue(param2.isExpextedResultParameter());
+        assertFalse(param2.isInputOrCombinedParameter());
+        assertTrue(param2.isExpextedResultOrCombinedParameter());
         assertFalse(param2.isCombinedParameter());
         
         ITestPolicyCmptTypeParameter param3 = type.newInputTestPolicyCmptTypeParameter();
         assertNotNull(param3);
         assertEquals(2, type.getInputTestParameters().length);
         assertEquals(1, type.getExpectedResultTestParameters().length);
-        assertTrue(param3.isInputParameter());
-        assertFalse(param3.isExpextedResultParameter());
+        assertTrue(param3.isInputOrCombinedParameter());
+        assertFalse(param3.isExpextedResultOrCombinedParameter());
         assertFalse(param3.isCombinedParameter());        
         
         ITestPolicyCmptTypeParameter param4 = type.newExpectedResultPolicyCmptTypeParameter();
         assertNotNull(param4);
         assertEquals(2, type.getInputTestParameters().length);
         assertEquals(2, type.getExpectedResultTestParameters().length);
-        assertFalse(param4.isInputParameter());
-        assertTrue(param4.isExpextedResultParameter());
+        assertFalse(param4.isInputOrCombinedParameter());
+        assertTrue(param4.isExpextedResultOrCombinedParameter());
         assertFalse(param4.isCombinedParameter());  
         
         ITestPolicyCmptTypeParameter param5 = type.newCombinedPolicyCmptTypeParameter();
         assertNotNull(param5);
         assertEquals(3, type.getInputTestParameters().length);
         assertEquals(3, type.getExpectedResultTestParameters().length);
-        assertTrue(param5.isInputParameter());
-        assertTrue(param5.isExpextedResultParameter());
+        assertTrue(param5.isInputOrCombinedParameter());
+        assertTrue(param5.isExpextedResultOrCombinedParameter());
         assertTrue(param5.isCombinedParameter()); 
         
         ITestRuleParameter param6 = type.newExpectedResultRuleParameter();
         assertNotNull(param6);
         assertEquals(3, type.getInputTestParameters().length);
         assertEquals(4, type.getExpectedResultTestParameters().length);
-        assertFalse(param6.isInputParameter());
-        assertTrue(param6.isExpextedResultParameter());
+        assertFalse(param6.isInputOrCombinedParameter());
+        assertTrue(param6.isExpextedResultOrCombinedParameter());
         assertFalse(param6.isCombinedParameter()); 
         
         // assert the correct storing of elements
