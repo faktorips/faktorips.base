@@ -16,8 +16,8 @@ package org.faktorips.codegen.dthelpers;
 
 /**
  * Qualified and unqualified class names for classes in Java 5 projects. They can not be retrieved
- * via <code>getClass().getName()</code> because a reference from old code to those projects is
- * not desired.
+ * via <code>getClass().getName()</code> because a reference from old code to those projects is not
+ * desired.
  * 
  * @author Daniel Hohenberger
  */
@@ -40,14 +40,14 @@ public interface Java5ClassNames {
     public static final String MoneyRange_QualifiedName = ValuesetPackage + "." + MoneyRange_UnqualifiedName;
 
     public static final String RuntimePackage = "org.faktorips.runtime";
-    public static final String ILink_UnqualifiedName = "ILink";
+    public static final String ILink_UnqualifiedName = "IProductComponentLink";
     public static final String ILink_QualifiedName = RuntimePackage + "." + ILink_UnqualifiedName;
 
     public static final String RuntimePackageInternal = "org.faktorips.runtime.internal";
     public static final String ReadOnlyBinaryRangeTreeKeyType_UnqualifiedName = "ReadOnlyBinaryRangeTree.KeyType";
     public static final String ReadOnlyBinaryRangeTreeKeyType_QualifiedName = RuntimePackageInternal + "."
             + ReadOnlyBinaryRangeTreeKeyType_UnqualifiedName;
-    public static final String Link_UnqualifiedName = "Link";
+    public static final String Link_UnqualifiedName = "ProductComponentLink";
     public static final String Link_QualifiedName = RuntimePackageInternal + "." + Link_UnqualifiedName;
 
 }
