@@ -333,7 +333,7 @@ public class IpsSrcFolderEntry extends IpsObjectPathEntry implements IIpsSrcFold
             result.add(new Message(MSGCODE_OUTPUT_FOLDER_MERGABLE_DOESNT_EXIST, text, Message.ERROR)); //$NON-NLS-1$
         }
         if(getIpsObjectPath().isOutputDefinedPerSrcFolder() && outputFolderDerived != null && !outputFolderDerived.exists()){
-            String text = NLS.bind(Messages.IpsSrcFolderEntry_outputfolderdoesntexist, outputFolderMergable.getFullPath());
+            String text = NLS.bind(Messages.IpsSrcFolderEntry_outputfolderdoesntexist, outputFolderDerived.getFullPath());
             result.add(new Message(MSGCODE_OUTPUT_FOLDER_DERIVED_DOESNT_EXIST, text, Message.ERROR)); //$NON-NLS-1$
         }
         
