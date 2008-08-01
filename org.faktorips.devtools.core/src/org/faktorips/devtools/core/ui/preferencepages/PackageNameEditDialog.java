@@ -61,13 +61,13 @@ public class PackageNameEditDialog extends StatusDialog {
     public PackageNameEditDialog(Shell parent, IIpsSrcFolderEntry srcFolderEntry, IIpsObjectPathEntryAttribute attribute) {
         super(parent);
         
-        this.setTitle("Edit Package Name");
+        this.setTitle(Messages.PackageNameEditDialog_dialog_title);
         this.setHelpAvailable(false);
         this.attribute = attribute;
         this.srcFolderEntry = srcFolderEntry;
         
         if (! (attribute.isPackageNameForDerivedSources() || attribute.isPackageNameForMergableSources())) {
-            throw new IllegalArgumentException("Attribute is not of type 'package name'.");
+            throw new IllegalArgumentException("Attribute is not of type 'package name'."); //$NON-NLS-1$
         }
     }
     
@@ -82,9 +82,9 @@ public class PackageNameEditDialog extends StatusDialog {
         
         buttonDefaultPackageNameSelected = new Button(group, SWT.RADIO);
         String defaultPackageName = getDefaultPackageName();
-        buttonDefaultPackageNameSelected.setText("Use project default package name (" + defaultPackageName + ")");
+        buttonDefaultPackageNameSelected.setText(Messages.PackageNameEditDialog_button_text_use_default_folder + " (" + defaultPackageName + ")"); //$NON-NLS-2$ //$NON-NLS-3$
         buttonCustomPackageNameSelected = new Button(group, SWT.RADIO);
-        buttonCustomPackageNameSelected.setText("Use specific package name:");
+        buttonCustomPackageNameSelected.setText(Messages.PackageNameEditDialog_button_text_use_specific_folder);
 
         text = new Text(group, SWT.BORDER | SWT.SINGLE);
         
@@ -99,7 +99,7 @@ public class PackageNameEditDialog extends StatusDialog {
         text.setLayoutData(new GridData(SWT.HORIZONTAL));
         
         selectedPackageName = getSpecificPackageName();
-        if (selectedPackageName.equals("")) {
+        if (selectedPackageName.equals("")) { //$NON-NLS-1$
             // default IPS object path package name is used
             selectedPackageName = getDefaultPackageName();
             buttonCustomPackageNameSelected.setSelection(false);
@@ -152,7 +152,7 @@ public class PackageNameEditDialog extends StatusDialog {
     
     private String getSpecificPackageName() {
                 
-        String specificPackageName = "";
+        String specificPackageName = ""; //$NON-NLS-1$
         
         if (attribute.isPackageNameForDerivedSources()) {
             specificPackageName = srcFolderEntry.getSpecificBasePackageNameForDerivedJavaClasses();
@@ -166,7 +166,7 @@ public class PackageNameEditDialog extends StatusDialog {
 
     private String getDefaultPackageName() {
         
-        String projectName = "";
+        String projectName = ""; //$NON-NLS-1$
         if (attribute.isPackageNameForDerivedSources()) {
             projectName = srcFolderEntry.getIpsObjectPath().getBasePackageNameForDerivedJavaClasses();
         } else {

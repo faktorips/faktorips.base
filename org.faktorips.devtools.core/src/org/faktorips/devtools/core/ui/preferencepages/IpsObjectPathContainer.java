@@ -58,19 +58,17 @@ public class IpsObjectPathContainer {
         pageIndex = pageToShow;
     }
     
-
     
     /**
      * @param ipsProject The IPS project to configure.
-     * @param outputLocation The output location to be set in the page. If <code>null</code>
-     * is passed, IPS default settings are used, or - if the project is an existing IPS project- the
-     * output location of the existing project 
      * @throws CoreException 
      */ 
-    public void init(IIpsProject ipsProject, IPath outputLocation) throws CoreException {
+    public void init(IIpsProject ipsProject) throws CoreException {
 
         currentIpsProject = ipsProject;
         this.ipsObjectPath = ipsProject.getIpsObjectPath();
+
+        reinitComposites();
     }
     
     /**
@@ -100,14 +98,14 @@ public class IpsObjectPathContainer {
         archiveComposite = new ArchiveComposite(folder);
         orderComposite = new ObjectPathOrderComposite(folder);
         
-        addTabItem(folder, "Source", 
+        addTabItem(folder, Messages.IpsObjectPathContainer_tab_source, 
                 IpsPlugin.getDefault().getImage("IpsPackageFragmentRoot.gif"), srcFolderComposite); //$NON-NLS-1$
         addTabItem(folder, Messages.IpsObjectPathContainer_tab_projects, 
                 IpsPlugin.getDefault().getImage("IpsProject.gif"), refProjectsComposite); //$NON-NLS-1$
-        addTabItem(folder, "Archives", 
+        addTabItem(folder, Messages.IpsObjectPathContainer_tab_archives, 
                 IpsPlugin.getDefault().getImage("IpsAr.gif"), archiveComposite); //$NON-NLS-1$
-        addTabItem(folder, "Path Order", 
-                IpsPlugin.getDefault().getImage("obj16" + IPath.SEPARATOR + "cp_order_obj.gif"), orderComposite); //$NON-NLS-1$
+        addTabItem(folder, Messages.IpsObjectPathContainer_tab_path_order, 
+                IpsPlugin.getDefault().getImage("obj16" + IPath.SEPARATOR + "cp_order_obj.gif"), orderComposite); //$NON-NLS-1$ //$NON-NLS-2$
 
         srcFolderComposite.init(ipsObjectPath);
         refProjectsComposite.init(ipsObjectPath);
@@ -115,6 +113,7 @@ public class IpsObjectPathContainer {
         orderComposite.init(ipsObjectPath);
         
         folder.setSelection(pageIndex);
+        
         folder.addSelectionListener(new SelectionAdapter() {
             public void widgetSelected(SelectionEvent e) {
                 tabChanged(e.item);
@@ -141,6 +140,7 @@ public class IpsObjectPathContainer {
             TabItem tabItem = (TabItem)widget;
             pageIndex = tabItem.getParent().getSelectionIndex();
         }
+        doUpdateUI();
     }
 
     /**
@@ -174,4 +174,40 @@ public class IpsObjectPathContainer {
                 || srcFolderComposite.isDataChanged());
     }
 
+    /**
+     * Manually update the UI
+     */
+    public void doUpdateUI() {
+        switch(pageIndex) {
+            case 0:
+                srcFolderComposite.doUpdateUI();
+                break;
+            case 1:
+                refProjectsComposite.doUpdateUI();
+                break;
+            case 2:
+                archiveComposite.doUpdateUI();
+                break;
+            case 3:
+                orderComposite.doUpdateUI();
+                break;    
+        }
+    }
+
+
+    private void reinitComposites() {
+        if (archiveComposite != null) {
+            archiveComposite.init(ipsObjectPath);
+        }
+        if (orderComposite != null) {
+            orderComposite.init(ipsObjectPath);
+        }
+        if (refProjectsComposite != null) {
+            refProjectsComposite.init(ipsObjectPath);
+        }
+        if (srcFolderComposite != null) {
+            srcFolderComposite.init(ipsObjectPath);
+        }
+    }
+    
 }

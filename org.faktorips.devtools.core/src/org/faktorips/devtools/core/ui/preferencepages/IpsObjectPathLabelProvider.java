@@ -48,14 +48,14 @@ public class IpsObjectPathLabelProvider extends LabelProvider {
         }
         else if (element instanceof IIpsArchiveEntry) {
             IIpsArchiveEntry entry = (IIpsArchiveEntry) element;
-            text = entry.getArchiveFile().getName() + " - " + 
+            text = entry.getArchiveFile().getName() + " - " +  //$NON-NLS-1$
                    entry.getIpsProject().getName() + IPath.SEPARATOR + entry.getArchiveFile().getProjectRelativePath().toOSString();
         }
         else if (element instanceof IIpsObjectPathEntryAttribute) {
             IIpsObjectPathEntryAttribute att = (IIpsObjectPathEntryAttribute) element;
             String label = getLabelFromAttributeType(att);
             String content = getContentFromAttribute(att);
-            return label + ": " + content;
+            return label + ": " + content; //$NON-NLS-1$
         }
         
         return text;
@@ -90,36 +90,36 @@ public class IpsObjectPathLabelProvider extends LabelProvider {
     }
 
     private String getLabelFromAttributeType(IIpsObjectPathEntryAttribute attribute) {
-        String result = "";
+        String result = ""; //$NON-NLS-1$
         
         if (attribute.getType().equals( IIpsObjectPathEntryAttribute.DEFAULT_BASE_PACKAGE_DERIVED)
                 || attribute.getType().equals( IIpsObjectPathEntryAttribute.SPECIFIC_BASE_PACKAGE_DERIVED))
-            result = "Base package derived";
+            result = Messages.IpsObjectPathLabelProvider_base_package_derived;
         
         if (attribute.getType().equals( IIpsObjectPathEntryAttribute.DEFAULT_OUTPUT_FOLDER_FOR_DERIVED_SOURCES)
                 || attribute.getType().equals( IIpsObjectPathEntryAttribute.SPECIFIC_OUTPUT_FOLDER_FOR_DERIVED_SOURCES))
-            result = "Output folder derived sources";
+            result = Messages.IpsObjectPathLabelProvider_output_folder_derived;
         
         if (attribute.getType().equals( IIpsObjectPathEntryAttribute.DEFAULT_OUTPUT_FOLDER_FOR_MERGABLE_SOURCES)
                 || attribute.getType().equals( IIpsObjectPathEntryAttribute.SPECIFIC_OUTPUT_FOLDER_FOR_MERGABLE_SOURCES))
-            result = "Output folder mergable sources";
+            result = Messages.IpsObjectPathLabelProvider_output_folder_mergable;
         
         if (attribute.getType().equals( IIpsObjectPathEntryAttribute.DEFAULT_BASE_PACKAGE_DERIVED)
                 || attribute.getType().equals( IIpsObjectPathEntryAttribute.SPECIFIC_BASE_PACKAGE_DERIVED))
-            result = "Package name for derived sources";
+            result = Messages.IpsObjectPathLabelProvider_package_name_derived;
         
         if (attribute.getType().equals( IIpsObjectPathEntryAttribute.DEFAULT_BASE_PACKAGE_MERGABLE)
                 || attribute.getType().equals( IIpsObjectPathEntryAttribute.SPECIFIC_BASE_PACKAGE_MERGABLE))
-            result = "Package name for mergable sources";
+            result = Messages.IpsObjectPathLabelProvider_package_name_mergable;
         
         if (attribute.getType().equals( IIpsObjectPathEntryAttribute.SPECIFIC_TOC_PATH))
-            result = "Table of contents";
+            result = Messages.IpsObjectPathLabelProvider_toc_file;
         
         return result;
     }
 
     private String getContentFromAttribute(IIpsObjectPathEntryAttribute attribute) {
-        String result = "(default)";
+        String result = Messages.IpsObjectPathLabelProvider_default;
         
         // get path from IFolder instance
         if (attribute.getValue() instanceof IFolder) {

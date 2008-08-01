@@ -17,6 +17,9 @@
 
 package org.faktorips.devtools.core.ui.preferencepages;
 
+import org.eclipse.core.runtime.CoreException;
+import org.faktorips.util.message.MessageList;
+
 
 /**
  * This class maps IPS object path entry attributes to values. 
@@ -25,19 +28,19 @@ package org.faktorips.devtools.core.ui.preferencepages;
 
 public interface IIpsObjectPathEntryAttribute {
 
-    public final static String DEFAULT_OUTPUT_FOLDER_FOR_MERGABLE_SOURCES = "defaultOutputFolderMergable";
-    public final static String SPECIFIC_OUTPUT_FOLDER_FOR_MERGABLE_SOURCES = "specificOutputFolderMergable";
+    public final static String DEFAULT_OUTPUT_FOLDER_FOR_MERGABLE_SOURCES = "defaultOutputFolderMergable"; //$NON-NLS-1$
+    public final static String SPECIFIC_OUTPUT_FOLDER_FOR_MERGABLE_SOURCES = "specificOutputFolderMergable"; //$NON-NLS-1$
     
-    public final static String DEFAULT_OUTPUT_FOLDER_FOR_DERIVED_SOURCES = "defaultOutputFolderDerived";
-    public final static String SPECIFIC_OUTPUT_FOLDER_FOR_DERIVED_SOURCES = "specificOutputFolderDerived";
+    public final static String DEFAULT_OUTPUT_FOLDER_FOR_DERIVED_SOURCES = "defaultOutputFolderDerived"; //$NON-NLS-1$
+    public final static String SPECIFIC_OUTPUT_FOLDER_FOR_DERIVED_SOURCES = "specificOutputFolderDerived"; //$NON-NLS-1$
     
-    public final static String DEFAULT_BASE_PACKAGE_MERGABLE = "defaultBasePackageMergable";
-    public final static String SPECIFIC_BASE_PACKAGE_MERGABLE = "specificBasePackageMergable";
+    public final static String DEFAULT_BASE_PACKAGE_MERGABLE = "defaultBasePackageMergable"; //$NON-NLS-1$
+    public final static String SPECIFIC_BASE_PACKAGE_MERGABLE = "specificBasePackageMergable"; //$NON-NLS-1$
     
-    public final static String DEFAULT_BASE_PACKAGE_DERIVED = "defaultBasePackageDerived";
-    public final static String SPECIFIC_BASE_PACKAGE_DERIVED = "specificBasePackageDerived";
+    public final static String DEFAULT_BASE_PACKAGE_DERIVED = "defaultBasePackageDerived"; //$NON-NLS-1$
+    public final static String SPECIFIC_BASE_PACKAGE_DERIVED = "specificBasePackageDerived"; //$NON-NLS-1$
     
-    public final static String SPECIFIC_TOC_PATH = "tocPath";
+    public final static String SPECIFIC_TOC_PATH = "tocPath"; //$NON-NLS-1$
 
 
     /**
@@ -85,4 +88,9 @@ public interface IIpsObjectPathEntryAttribute {
      * package name for mergable sources, or a IpsSrcPathEntry-specific package name), false otherwise 
      */
     public boolean isPackageNameForMergableSources();
+    
+    /**
+     * Validates the object path entry attribute and returns the result as list of messages.
+     */
+    public MessageList validate() throws CoreException;
 }

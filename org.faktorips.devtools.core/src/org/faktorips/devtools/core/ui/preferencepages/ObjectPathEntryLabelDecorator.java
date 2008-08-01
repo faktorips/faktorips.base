@@ -37,7 +37,7 @@ import org.faktorips.util.message.MessageList;
 public class ObjectPathEntryLabelDecorator implements ILightweightLabelDecorator {
 
 
-    private static final ImageDescriptor WARNING_IMAGE_DESCRIPTOR = IpsPlugin.getDefault().getImageDescriptor("size8/WarningMessage.gif");
+    private static final ImageDescriptor WARNING_IMAGE_DESCRIPTOR = IpsPlugin.getDefault().getImageDescriptor("size8/WarningMessage.gif"); //$NON-NLS-1$
 
     
     /**
@@ -45,57 +45,56 @@ public class ObjectPathEntryLabelDecorator implements ILightweightLabelDecorator
      */
     public void decorate(Object element, IDecoration decoration) {
         
+        MessageList ml = null;
         try {
-            if (! (element instanceof IIpsObjectPathEntry)) {
+            if (element instanceof IIpsObjectPathEntry) {
+                ml = ((IIpsObjectPathEntry)element).validate();
+            } else if (element instanceof IIpsObjectPathEntryAttribute) {
+                ml = ((IIpsObjectPathEntryAttribute)element).validate();
+            } else {
                 return;
             }
-            
-            IIpsObjectPathEntry entry = (IIpsObjectPathEntry) element;
-            
-            // map error codes to _short_ messages
-            String decoratedShortMessage = "";
-            MessageList ml = entry.validate();
-
-            if (ml.containsErrorMsg()) {
-                decoration.addOverlay(WARNING_IMAGE_DESCRIPTOR);
-                Message message = ml.getFirstMessage(Message.ERROR);
-                
-                if (element instanceof IIpsSrcFolderEntry) {
-                    decoratedShortMessage = getMessageForSrcFolderEntry(message.getCode());
-                } 
-                else if (element instanceof IIpsProjectRefEntry) {
-                    decoratedShortMessage = getMessageForProjectRefEntry(message.getCode());
-                } 
-                else if (element instanceof IIpsArchiveEntry) {
-                    decoratedShortMessage = getMessageForArchiveEntry(message.getCode());
-                } 
-
-                decoration.addSuffix(decoratedShortMessage);
-            }
-        } catch(CoreException e) {
+        } catch (CoreException e) {
             IpsPlugin.log(e);
         }
 
+        // map error codes to _short_ messages
+        String decoratedShortMessage = ""; //$NON-NLS-1$
+
+        if (ml != null && ml.containsErrorMsg()) {
+            decoration.addOverlay(WARNING_IMAGE_DESCRIPTOR);
+            Message message = ml.getFirstMessage(Message.ERROR);
+
+            if (element instanceof IIpsSrcFolderEntry) {
+                decoratedShortMessage = getMessageForSrcFolderEntry(message.getCode());
+            } else if (element instanceof IIpsProjectRefEntry) {
+                decoratedShortMessage = getMessageForProjectRefEntry(message.getCode());
+            } else if (element instanceof IIpsArchiveEntry) {
+                decoratedShortMessage = getMessageForArchiveEntry(message.getCode());
+            }
+
+            decoration.addSuffix(decoratedShortMessage);
+        }
     }
 
     /*
-     * @param errorCode as defined in IIpsArchiveEntry
-     * @return short error description or an empty String if not available
+     * @param errorCode as defined in IIpsArchiveEntry @return short error description or an empty
+     * String if not available
      */
     private String getMessageForArchiveEntry(String errorCode) {
-        String decoratedShortMessage = "";
+        String decoratedShortMessage = ""; //$NON-NLS-1$
         
         if (errorCode.equals(IIpsArchiveEntry.MSGCODE_MISSING_ARCHVE)) {
-            decoratedShortMessage = " (missing)";
+            decoratedShortMessage = Messages.suffix_missing;
         }
         else if (errorCode.equals(IIpsArchiveEntry.MSGCODE_MISSING_FOLDER)) {
-            decoratedShortMessage = " (missing folder)";
+            decoratedShortMessage = Messages.suffix_missing_folder;
         }
         else if (errorCode.equals(IIpsArchiveEntry.MSGCODE_MISSING_PROJECT)) {
-            decoratedShortMessage = " (missing project)";
+            decoratedShortMessage = Messages.suffix_missing_project;
         }
         else if (errorCode.equals(IIpsArchiveEntry.MSGCODE_PROJECT_NOT_SPECIFIED)) {
-            decoratedShortMessage = " (project not specified)";
+            decoratedShortMessage = Messages.suffix_project_not_specified;
         }
         return decoratedShortMessage;
     }
@@ -105,13 +104,13 @@ public class ObjectPathEntryLabelDecorator implements ILightweightLabelDecorator
      * @return short error description or an empty String if not available
      */
     private String getMessageForProjectRefEntry(String errorCode) {
-        String decoratedShortMessage = "";
+        String decoratedShortMessage = ""; //$NON-NLS-1$
         
         if (errorCode.equals(IIpsObjectPathEntry.MSGCODE_PROJECT_NOT_SPECIFIED)) {
-            decoratedShortMessage = " (not specified)";
+            decoratedShortMessage = Messages.suffix_not_specified;
         }
         else if (errorCode.equals(IIpsObjectPathEntry.MSGCODE_MISSING_PROJECT)) {
-            decoratedShortMessage = " (missing)";
+            decoratedShortMessage = Messages.suffix_missing;
         }
         return decoratedShortMessage;
     }
@@ -121,25 +120,25 @@ public class ObjectPathEntryLabelDecorator implements ILightweightLabelDecorator
      * @return short error description or an empty String if not available
      */
     private String getMessageForSrcFolderEntry(String errorCode) {
-        String decoratedShortMessage = "";
+        String decoratedShortMessage = ""; //$NON-NLS-1$
         
         if (errorCode.equals(IIpsSrcFolderEntry.MSGCODE_MISSING_FOLDER)) {
-            decoratedShortMessage = " (missing)";
+            decoratedShortMessage = Messages.suffix_missing;
         }
         else if (errorCode.equals(IIpsSrcFolderEntry.MSGCODE_SRCFOLDER_MUST_BE_A_DIRECT_CHILD_OF_THE_PROHECT)) {
-            decoratedShortMessage = " (not direct child of project root)";
+            decoratedShortMessage = Messages.suffix_not_child_of_root;
         }
         else if (errorCode.equals(IIpsSrcFolderEntry.MSGCODE_OUTPUT_FOLDER_DERIVED_MISSING)) {
-            decoratedShortMessage = " (derived folder undefined)";
+            decoratedShortMessage = Messages.suffix_derived_folder_undefined;
         }
         else if (errorCode.equals(IIpsSrcFolderEntry.MSGCODE_OUTPUT_FOLDER_DERIVED_DOESNT_EXIST)) {
-            decoratedShortMessage = " (derived folder doesnt exist)";
+            decoratedShortMessage = Messages.suffix_derived_folder_not_existing;
         }
         else if (errorCode.equals(IIpsSrcFolderEntry.MSGCODE_OUTPUT_FOLDER_MERGABLE_DOESNT_EXIST)) {
-            decoratedShortMessage = " (mergable folder doesnt exist)";
+            decoratedShortMessage = Messages.suffix_mergable_folder_not_existing;
         }
         else if (errorCode.equals(IIpsSrcFolderEntry.MSGCODE_OUTPUT_FOLDER_MERGABLE_MISSING)) {
-            decoratedShortMessage = " (mergable folder undefined)";
+            decoratedShortMessage = Messages.suffix_mergable_folder_undefined;
         }
         return decoratedShortMessage;
     }

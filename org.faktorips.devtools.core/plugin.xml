@@ -970,6 +970,15 @@
             lightweight="true"
             location="BOTTOM_LEFT"
             state="true">
+         <enablement>
+            <or>
+               <objectClass
+                     name="org.faktorips.devtools.core.ui.preferencepages.IIpsObjectPathEntryAttribute">
+               </objectClass>
+               <objectClass
+                     name="org.faktorips.devtools.core.model.ipsproject.IIpsObjectPathEntry">
+               </objectClass></or>
+         </enablement>
       </decorator>
    </extension>
    <extension

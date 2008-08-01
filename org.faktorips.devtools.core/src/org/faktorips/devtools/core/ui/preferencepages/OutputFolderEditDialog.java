@@ -55,13 +55,13 @@ public class OutputFolderEditDialog extends StatusDialog {
      */
     public OutputFolderEditDialog(Shell parent, IIpsSrcFolderEntry srcFolderEntry, IIpsObjectPathEntryAttribute attribute) {
         super(parent);
-        this.setTitle("Edit Output Folder");
+        this.setTitle(Messages.OutputFolderEditDialog_dialog_title);
         this.setHelpAvailable(false);
         this.attribute = attribute;
         this.srcFolderEntry = srcFolderEntry;
         
         if (! (attribute.isFolderForDerivedSources() || attribute.isFolderForMergableSources())) {
-            throw new IllegalArgumentException("Attribute is not of type output folder.");
+            throw new IllegalArgumentException("Attribute is not of type output folder."); //$NON-NLS-1$
         }
     }
 
@@ -75,12 +75,12 @@ public class OutputFolderEditDialog extends StatusDialog {
         Group group = new Group(parent, SWT.NONE);
         
         buttonDefaultFolderSelected = new Button(group, SWT.RADIO);
-        String defaultOutputFolder = (getDefaultOutputFolder() != null) ? " ("  + getDefaultOutputFolder().getName() + ")" : "";
-        buttonDefaultFolderSelected.setText("Use project default output folder" + defaultOutputFolder);
+        String defaultOutputFolder = (getDefaultOutputFolder() != null) ? " ("  + getDefaultOutputFolder().getName() + ")" : ""; //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+        buttonDefaultFolderSelected.setText(Messages.OutputFolderEditDialog_use_default_label + defaultOutputFolder);
         buttonCustomFolderSelected = new Button(group, SWT.RADIO);
-        buttonCustomFolderSelected.setText("Use specific output folder:");
+        buttonCustomFolderSelected.setText(Messages.OutputFolderEditDialog_use_sepcific_label);
 
-        folderSelectionControl = new FolderSelectionControl(group, new UIToolkit(null), "Browse");
+        folderSelectionControl = new FolderSelectionControl(group, new UIToolkit(null), Messages.OutputFolderEditDialog_button_title_browse);
         folderSelectionControl.setRoot(srcFolderEntry.getIpsProject().getProject());
 
         // initialize specific output folder

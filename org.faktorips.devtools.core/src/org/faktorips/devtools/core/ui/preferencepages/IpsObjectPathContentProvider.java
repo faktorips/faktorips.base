@@ -59,8 +59,6 @@ public class IpsObjectPathContentProvider implements ITreeContentProvider {
         
         // handling attributes of IIpsSrcFolderEntries
         if (parentElement instanceof IIpsSrcFolderEntry) {
-//                && objectPath.isOutputDefinedPerSrcFolder()
-//                && passesFilter(IpsObjectPathEntryAttribute.class)) { 
 
             ArrayList attributes = new ArrayList();
 
@@ -69,16 +67,16 @@ public class IpsObjectPathContentProvider implements ITreeContentProvider {
             attributes.add(attribute);
             
             if (objectPath.isOutputDefinedPerSrcFolder()) {
-                attribute = newOutputFolderForDerivedJavaFiles(entry);
-                attributes.add(attribute);
-
                 attribute = newOutputFolderForMergableJavaFiles(entry);
                 attributes.add(attribute);
                 
-                attribute = newBasePackageNameForDerivedJavaFiles(entry);
+                attribute = newOutputFolderForDerivedJavaFiles(entry);
                 attributes.add(attribute);
                 
                 attribute = newBasePackageNameForMergableJavaFiles(entry);
+                attributes.add(attribute);
+
+                attribute = newBasePackageNameForDerivedJavaFiles(entry);
                 attributes.add(attribute);
             }
 
@@ -180,34 +178,20 @@ public class IpsObjectPathContentProvider implements ITreeContentProvider {
     }
 
     private IIpsObjectPathEntryAttribute newOutputFolderForMergableJavaFiles(IIpsSrcFolderEntry entry) {
-        IIpsObjectPathEntryAttribute attribute;
+
+        IIpsObjectPathEntryAttribute attribute = new IpsObjectPathEntryAttribute(
+                IIpsObjectPathEntryAttribute.SPECIFIC_OUTPUT_FOLDER_FOR_MERGABLE_SOURCES,
+                entry.getSpecificOutputFolderForMergableJavaFiles());
         
-        if (entry.getSpecificOutputFolderForMergableJavaFiles() == null) {
-            attribute = new IpsObjectPathEntryAttribute(
-                    IIpsObjectPathEntryAttribute.DEFAULT_OUTPUT_FOLDER_FOR_MERGABLE_SOURCES, 
-                    entry.getIpsObjectPath().getOutputFolderForMergableSources());
-        } else {
-            attribute = new IpsObjectPathEntryAttribute(
-                    IIpsObjectPathEntryAttribute.SPECIFIC_OUTPUT_FOLDER_FOR_MERGABLE_SOURCES,
-                    entry.getSpecificOutputFolderForMergableJavaFiles()
-            );
-        }
         return attribute;
     }
 
     private IIpsObjectPathEntryAttribute newOutputFolderForDerivedJavaFiles(IIpsSrcFolderEntry entry) {
-        IIpsObjectPathEntryAttribute attribute;
         
-        if (entry.getSpecificOutputFolderForDerivedJavaFiles() == null) {
-            attribute = new IpsObjectPathEntryAttribute(
-                    IIpsObjectPathEntryAttribute.DEFAULT_OUTPUT_FOLDER_FOR_DERIVED_SOURCES, 
-                    entry.getIpsObjectPath().getOutputFolderForDerivedSources());
-        } else {
-            attribute = new IpsObjectPathEntryAttribute(
-                    IIpsObjectPathEntryAttribute.SPECIFIC_OUTPUT_FOLDER_FOR_DERIVED_SOURCES,
-                    entry.getSpecificOutputFolderForDerivedJavaFiles()
-            );
-        }
+        IIpsObjectPathEntryAttribute attribute = new IpsObjectPathEntryAttribute(
+                IIpsObjectPathEntryAttribute.SPECIFIC_OUTPUT_FOLDER_FOR_DERIVED_SOURCES,
+                entry.getSpecificOutputFolderForDerivedJavaFiles());
+
         return attribute;
     }
     

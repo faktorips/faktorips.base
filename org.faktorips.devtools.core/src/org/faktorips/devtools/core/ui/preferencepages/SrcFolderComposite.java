@@ -22,7 +22,10 @@ import java.util.Iterator;
 import org.eclipse.core.resources.IContainer;
 import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.resources.IProject;
+import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.IPath;
+import org.eclipse.core.runtime.Path;
 import org.eclipse.jface.dialogs.IInputValidator;
 import org.eclipse.jface.dialogs.InputDialog;
 import org.eclipse.jface.viewers.DecoratingLabelProvider;
@@ -43,6 +46,7 @@ import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
+import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Tree;
 import org.eclipse.swt.widgets.TreeItem;
@@ -50,14 +54,18 @@ import org.eclipse.ui.dialogs.ElementTreeSelectionDialog;
 import org.eclipse.ui.model.WorkbenchContentProvider;
 import org.eclipse.ui.model.WorkbenchLabelProvider;
 import org.faktorips.devtools.core.IpsPlugin;
+import org.faktorips.devtools.core.IpsStatus;
 import org.faktorips.devtools.core.model.ipsproject.IIpsObjectPath;
+import org.faktorips.devtools.core.model.ipsproject.IIpsPackageFragment;
+import org.faktorips.devtools.core.model.ipsproject.IIpsPackageFragmentRoot;
 import org.faktorips.devtools.core.model.ipsproject.IIpsSrcFolderEntry;
 import org.faktorips.devtools.core.ui.UIToolkit;
 import org.faktorips.devtools.core.ui.controller.fields.CheckboxField;
 import org.faktorips.devtools.core.ui.controller.fields.FieldValueChangedEvent;
+import org.faktorips.devtools.core.ui.controller.fields.TextButtonField;
 import org.faktorips.devtools.core.ui.controller.fields.ValueChangeListener;
 import org.faktorips.devtools.core.ui.controls.FolderSelectionControl;
-import org.faktorips.devtools.core.ui.controls.IpsPckFragmentRootRefControl;
+import org.faktorips.devtools.core.ui.controls.IpsPckFragmentRefControl;
 
 /**
  * Composite for modifying IPS source folders
@@ -73,15 +81,22 @@ public class SrcFolderComposite extends Composite {
     private Button removeSrcFolderButton;
     private Button editSelectionButton;
 
-    private FolderSelectionControl derivedSrcFolderControl;
     private FolderSelectionControl mergableSrcFolderControl;
+    private TextButtonField mergableSrcFolderField;
     
-    private IpsPckFragmentRootRefControl basePackageDerivedControl;
-    private IpsPckFragmentRootRefControl basePackageMergableControl;
+    private FolderSelectionControl derivedSrcFolderControl;
+    private TextButtonField derivedSrcFolderField;
+    
+    private IpsPckFragmentRefControl basePackageMergableControl;
+    private TextButtonField basePackageMergableField;
+    
+    private IpsPckFragmentRefControl basePackageDerivedControl;
+    private TextButtonField basePackageDerivedField;
     
     // separate output folders for model folders
-    private CheckboxField multipleOutputCheckbutton;
+    private CheckboxField multipleOutputCheckBoxField;
     private boolean dataChanged = false;
+    private IpsSrcFolderAdapter srcFolderAdapter;
 
 
     /**
@@ -97,8 +112,7 @@ public class SrcFolderComposite extends Composite {
         Composite tableWithButtons = toolkit.createGridComposite(this, 2, false, true);
         tableWithButtons.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
 
-        IpsSrcFolderAdapter srcFolderAdapter = new IpsSrcFolderAdapter();
-        
+        srcFolderAdapter = new IpsSrcFolderAdapter();
         Label treeViewerLabel = new Label(tableWithButtons, SWT.NONE);
         treeViewerLabel.setText(Messages.SrcFolderComposite_treeViewer_label);
         GridData gd = new GridData(GridData.VERTICAL_ALIGN_BEGINNING);
@@ -117,35 +131,38 @@ public class SrcFolderComposite extends Composite {
         buttons.setLayout(buttonLayout);
         createButtons(buttons, srcFolderAdapter);
         
-        multipleOutputCheckbutton = new CheckboxField(toolkit.createCheckbox(tableWithButtons, Messages.SrcFolderComposite_multipleFolders_checkbox_label));
+        multipleOutputCheckBoxField = new CheckboxField(toolkit.createCheckbox(tableWithButtons, Messages.SrcFolderComposite_multipleFolders_checkbox_label));
         gd = new GridData(GridData.VERTICAL_ALIGN_BEGINNING | GridData.FILL_HORIZONTAL);
         gd.horizontalSpan = 2;
-        multipleOutputCheckbutton.getCheckbox().setLayoutData(gd);
-        multipleOutputCheckbutton.addChangeListener(srcFolderAdapter);
-        
-        toolkit.createLabel(tableWithButtons, Messages.SrcFolderComposite_derived_sources_label);        
-        derivedSrcFolderControl = new FolderSelectionControl(tableWithButtons, toolkit, Messages.SrcFolderComposite_browse_button_text);
-        gd = new GridData(GridData.VERTICAL_ALIGN_BEGINNING | GridData.FILL_HORIZONTAL);
-        gd.horizontalSpan = 2;
-        derivedSrcFolderControl.setLayoutData(gd);
+        multipleOutputCheckBoxField.getCheckbox().setLayoutData(gd);
         
         toolkit.createLabel(tableWithButtons, Messages.SrcFolderComposite_mergable_sources_label);
         mergableSrcFolderControl = new FolderSelectionControl(tableWithButtons, toolkit, Messages.SrcFolderComposite_browse_button_text);
+        mergableSrcFolderField = new TextButtonField(mergableSrcFolderControl);
         gd = new GridData(GridData.VERTICAL_ALIGN_BEGINNING | GridData.FILL_HORIZONTAL);
         gd.horizontalSpan = 2;
         mergableSrcFolderControl.setLayoutData(gd);
         
-        toolkit.createLabel(tableWithButtons, "Base package derived:");
-        basePackageDerivedControl = new IpsPckFragmentRootRefControl(tableWithButtons, true, toolkit);
+        toolkit.createLabel(tableWithButtons, Messages.SrcFolderComposite_derived_sources_label);        
+        derivedSrcFolderControl = new FolderSelectionControl(tableWithButtons, toolkit, Messages.SrcFolderComposite_browse_button_text);
+        derivedSrcFolderField = new TextButtonField(derivedSrcFolderControl);
         gd = new GridData(GridData.VERTICAL_ALIGN_BEGINNING | GridData.FILL_HORIZONTAL);
         gd.horizontalSpan = 2;
-        basePackageDerivedControl.setLayoutData(gd);
+        derivedSrcFolderControl.setLayoutData(gd);
         
-        toolkit.createLabel(tableWithButtons, "Base package mergable:");
-        basePackageMergableControl = new IpsPckFragmentRootRefControl(tableWithButtons, true, toolkit);
+        toolkit.createLabel(tableWithButtons, Messages.SrcFolderComposite_mergable_package_label);
+        basePackageMergableControl = new IpsPckFragmentRefControl(tableWithButtons, toolkit);
+        basePackageMergableField = new TextButtonField(basePackageMergableControl);
         gd = new GridData(GridData.VERTICAL_ALIGN_BEGINNING | GridData.FILL_HORIZONTAL);
         gd.horizontalSpan = 2;
         basePackageMergableControl.setLayoutData(gd);
+
+        toolkit.createLabel(tableWithButtons, Messages.SrcFolderComposite_derived_package_label);
+        basePackageDerivedControl = new IpsPckFragmentRefControl(tableWithButtons, toolkit);
+        basePackageDerivedField = new TextButtonField(basePackageDerivedControl);
+        gd = new GridData(GridData.VERTICAL_ALIGN_BEGINNING | GridData.FILL_HORIZONTAL);
+        gd.horizontalSpan = 2;
+        basePackageDerivedControl.setLayoutData(gd);
     }
 
     
@@ -181,7 +198,9 @@ public class SrcFolderComposite extends Composite {
      * @param ipsObjectPath, must not be null
      */
     public void init(IIpsObjectPath ipsObjectPath) {
+        
         this.ipsObjectPath = ipsObjectPath;
+        dataChanged = false;
 
         treeViewer.setContentProvider(new IpsObjectPathContentProvider());
         treeViewer.addFilter(new ViewerFilter() {
@@ -195,15 +214,39 @@ public class SrcFolderComposite extends Composite {
 
         derivedSrcFolderControl.setRoot(ipsObjectPath.getIpsProject().getProject());
         derivedSrcFolderControl.setFolder(ipsObjectPath.getOutputFolderForDerivedSources());
-
+        
         mergableSrcFolderControl.setRoot(ipsObjectPath.getIpsProject().getProject());
         mergableSrcFolderControl.setFolder(ipsObjectPath.getOutputFolderForMergableSources());
         
-        basePackageDerivedControl.setPdPckFragmentRoot(ipsObjectPath.getIpsProject().getIpsPackageFragmentRoot(
-                ipsObjectPath.getBasePackageNameForDerivedJavaClasses()));
+        try {
+            
+            IIpsPackageFragmentRoot[] ipsPackageFragmentRoots = ipsObjectPath.getIpsProject().getIpsPackageFragmentRoots();
+            if (ipsPackageFragmentRoots[0] == null) {
+                throw new CoreException(new IpsStatus("Could not retrieve IPS package fragment root for: " //$NON-NLS-1$
+                        + ipsObjectPath.getIpsProject().getName()));
+            }
 
-        basePackageMergableControl.setPdPckFragmentRoot(ipsObjectPath.getIpsProject().getIpsPackageFragmentRoot(
-                ipsObjectPath.getBasePackageNameForMergableJavaClasses()));
+            IIpsPackageFragmentRoot ipsPackageFragmentRoot = ipsPackageFragmentRoots[0];
+
+            basePackageMergableControl.setIpsPckFragmentRoot(ipsPackageFragmentRoot);
+            IIpsPackageFragment ipsPackageFragmentMergable = ipsPackageFragmentRoot.getIpsPackageFragment(ipsObjectPath
+                    .getBasePackageNameForMergableJavaClasses());
+            basePackageMergableControl.setIpsPackageFragment(ipsPackageFragmentMergable);
+            
+            basePackageDerivedControl.setIpsPckFragmentRoot(ipsPackageFragmentRoot);
+            IIpsPackageFragment ipsPackageFragmentDerived = ipsPackageFragmentRoot.getIpsPackageFragment(ipsObjectPath
+                    .getBasePackageNameForDerivedJavaClasses());
+            basePackageDerivedControl.setIpsPackageFragment(ipsPackageFragmentDerived);            
+            
+        } catch (CoreException e) {
+            IpsPlugin.logAndShowErrorDialog(e);
+        }
+        
+        multipleOutputCheckBoxField.addChangeListener(srcFolderAdapter);
+        mergableSrcFolderField.addChangeListener(srcFolderAdapter);
+        derivedSrcFolderField.addChangeListener(srcFolderAdapter);
+        basePackageMergableField.addChangeListener(srcFolderAdapter);
+        basePackageDerivedField.addChangeListener(srcFolderAdapter);
         
         updateWidgetEnabledStates();
         treeViewer.refresh(false);
@@ -221,14 +264,8 @@ public class SrcFolderComposite extends Composite {
         
         boolean multipleOutputFolders = (ipsObjectPath != null) && ipsObjectPath.isOutputDefinedPerSrcFolder();
         
-        multipleOutputCheckbutton.getCheckbox().setChecked(multipleOutputFolders);
-        
-        mergableSrcFolderControl.setEnabled(! multipleOutputFolders);
-        derivedSrcFolderControl.setEnabled(! multipleOutputFolders);
-        basePackageDerivedControl.setEnabled(! multipleOutputFolders);
-        basePackageMergableControl.setEnabled(! multipleOutputFolders);
-        
-        
+        multipleOutputCheckBoxField.getCheckbox().setChecked(multipleOutputFolders);
+
         if (treeViewer.getSelection().isEmpty()) {
             removeSrcFolderButton.setEnabled(false);
             editSelectionButton.setEnabled(false);
@@ -236,15 +273,18 @@ public class SrcFolderComposite extends Composite {
             return;
         }
         
-        Object selectedElement = treeViewer.getTree().getSelection()[0].getData();
-        if (selectedElement instanceof IIpsSrcFolderEntry) {
-            removeSrcFolderButton.setEnabled(true);
-            editSelectionButton.setEnabled(false);
-        }
-        
-        if (selectedElement instanceof IIpsObjectPathEntryAttribute) {
-            removeSrcFolderButton.setEnabled(false);
-            editSelectionButton.setEnabled(true);
+        TreeItem[] selection = treeViewer.getTree().getSelection();
+        if (selection.length > 0) {
+            Object selectedElement = selection[0].getData();
+            if (selectedElement instanceof IIpsSrcFolderEntry) {
+                removeSrcFolderButton.setEnabled(true);
+                editSelectionButton.setEnabled(false);
+            }
+
+            if (selectedElement instanceof IIpsObjectPathEntryAttribute) {
+                removeSrcFolderButton.setEnabled(false);
+                editSelectionButton.setEnabled(true);
+            }
         }
     }
 
@@ -288,19 +328,6 @@ public class SrcFolderComposite extends Composite {
             }
         }
     }
-
-    // enable/disable output folder TextButton controls if multiple output folders are set/cleared
-    private void updateSpecificOutputFolders(boolean multipleEnabled) {
-        mergableSrcFolderControl.setEnabled(multipleEnabled);
-        derivedSrcFolderControl.setEnabled(multipleEnabled);
-    }
-    
-    // enable/disable package name TextButton controls if multiple output folders are set/cleared
-    private void updateSpecificPackageNames(boolean multipleEnabled) {
-        basePackageDerivedControl.setEnabled(multipleEnabled);
-        basePackageMergableControl.setEnabled(multipleEnabled);
-    }
-    
     
     private void editSelection() {
         ISelection selection = treeViewer.getSelection();
@@ -324,19 +351,9 @@ public class SrcFolderComposite extends Composite {
                     if (editDialog.open() == Window.OK) {
                         IContainer newOutputFolder = editDialog.getSelectedFolder();
                         if (attribute.isFolderForDerivedSources()) {
-                            
-                            IFolder defaultOutputFolderForDerivedSources = ipsObjectPath.getOutputFolderForDerivedSources();
-                            if (defaultOutputFolderForDerivedSources.equals(newOutputFolder)) {
-                                srcFolderEntry.setSpecificOutputFolderForDerivedJavaFiles(null);
-                            } else {
-                                srcFolderEntry.setSpecificOutputFolderForDerivedJavaFiles( (IFolder) newOutputFolder.getAdapter(IFolder.class));
-                            }
+                            srcFolderEntry.setSpecificOutputFolderForDerivedJavaFiles( (IFolder) newOutputFolder.getAdapter(IFolder.class));
                         } else {
-                            IFolder defaultOutpuFolderForMergableSources = ipsObjectPath.getOutputFolderForMergableSources();
-                            if (defaultOutpuFolderForMergableSources.equals(newOutputFolder)) {
-                                srcFolderEntry.setSpecificOutputFolderForMergableJavaFiles(null);
-                            } else
-                                srcFolderEntry.setSpecificOutputFolderForMergableJavaFiles( (IFolder) newOutputFolder.getAdapter(IFolder.class));
+                            srcFolderEntry.setSpecificOutputFolderForMergableJavaFiles( (IFolder) newOutputFolder.getAdapter(IFolder.class));
                         }
                         dataChanged = true;
                     }
@@ -345,24 +362,14 @@ public class SrcFolderComposite extends Composite {
                     PackageNameEditDialog editDialog = new PackageNameEditDialog(getShell(), srcFolderEntry, attribute);
                     if (editDialog.open() == Window.OK) {
                         String newPackageName = editDialog.getPackageName();
-                        String defaultName = ipsObjectPath.getBasePackageNameForDerivedJavaClasses();
-                        if (newPackageName.equals(defaultName)) {
-                            srcFolderEntry.setSpecificBasePackageNameForDerivedJavaClasses("");
-                        } else {
-                            srcFolderEntry.setSpecificBasePackageNameForDerivedJavaClasses(newPackageName);
-                        }
+                        srcFolderEntry.setSpecificBasePackageNameForDerivedJavaClasses(newPackageName);
                         dataChanged = true;                        
                     }
                 }  else if (attribute.isPackageNameForMergableSources()) {
                     PackageNameEditDialog editDialog = new PackageNameEditDialog(getShell(), srcFolderEntry, attribute);
                     if (editDialog.open() == Window.OK) {
                         String newPackageName = editDialog.getPackageName();
-                        String defaultName = ipsObjectPath.getBasePackageNameForMergableJavaClasses();
-                        if (newPackageName.equals(defaultName)) {
-                            srcFolderEntry.setSpecificBasePackageNameForMergableJavaClasses("");
-                        } else {
-                            srcFolderEntry.setSpecificBasePackageNameForMergableJavaClasses(newPackageName);
-                        }
+                        srcFolderEntry.setSpecificBasePackageNameForMergableJavaClasses(newPackageName);
                         dataChanged = true;                        
                     }                    
                 }
@@ -373,11 +380,11 @@ public class SrcFolderComposite extends Composite {
 
                         public String isValid(String newText) {
                             if (newText == null || newText.length() < 1) {
-                                return "File name invalid";
+                                return Messages.SrcFolderComposite_filename_invalid_validator;
                             }
                             return null;
                         }};
-                    InputDialog newTocPathDialog = new InputDialog(getShell(), "Toc Path Configuration", "Enter name for table of contents file:", tocPath, inputValidator);
+                    InputDialog newTocPathDialog = new InputDialog(getShell(), Messages.SrcFolderComposite_tocpath_title, Messages.SrcFolderComposite_tocpath_message, tocPath, inputValidator);
                     
                     if (newTocPathDialog.open() == Window.OK) {
                         srcFolderEntry.setBasePackageRelativeTocPath(newTocPathDialog.getValue());
@@ -386,6 +393,7 @@ public class SrcFolderComposite extends Composite {
                 }
             }
         }
+        treeViewer.refresh();
     }
         
     private ElementTreeSelectionDialog createSelectFolderDialog() {
@@ -465,7 +473,83 @@ public class SrcFolderComposite extends Composite {
         return selectFolderDialog;
     }
     
+    /**
+     * Manually update the UI
+     */
+    public void doUpdateUI() {
+        if (Display.getCurrent() != null) {
+            treeViewer.setInput(ipsObjectPath);
+        } else {
+            Display.getDefault().asyncExec(new Runnable() {
+                public void run() {
+                    treeViewer.setInput(ipsObjectPath);
+                }
+            });
+        }
+    }
+
+
+    /**
+     * Sets the default output folder for mergable/derived sources
+     * @param mergable if true the mergable folder is changed, derived folder otherwise
+     */
+    private void handleDefaultOutputFolderChanged(boolean mergable) {
+        String folderName;
+        if (mergable) {
+            folderName = (String) mergableSrcFolderField.getValue();
+        }
+        else {
+            folderName = (String) derivedSrcFolderField.getValue();
+        }
+        if (folderName == null || "".equals(folderName)) { //$NON-NLS-1$
+            return;
+        }
         
+        // Folder field text can temporarily contain invalid values, because it is updated on each keystroke
+        // when typed in with keyboard. That's why exceptions are ignored here.
+        try {
+            IPath path = new Path(IPath.SEPARATOR + folderName);
+            IFolder folder = ResourcesPlugin.getWorkspace().getRoot().getFolder(path);
+
+            if (mergable) {
+                ipsObjectPath.setOutputFolderForMergableSources(folder);
+            }
+            else {
+                ipsObjectPath.setOutputFolderForDerivedSources(folder);
+            }
+        } catch (Exception e)  { /* ignore */}
+        
+        dataChanged = true;
+    }
+    
+
+    private void handleOutputDefinedPerSrcFolderChanged(boolean multipleEnabled) {
+
+        ipsObjectPath.setOutputDefinedPerSrcFolder(multipleEnabled);
+        treeViewer.refresh();
+        
+        dataChanged = true;
+    }
+
+
+    /**
+     * Sets the default package name for mergable/derived sources
+     * @param mergable if true the mergable package name is changed, otherwise the derived package name 
+     */
+    private void handleBasePackageNameChanged(boolean mergable) {
+        
+        if (mergable) {
+            String packageName = basePackageMergableField.getText();
+            ipsObjectPath.setBasePackageNameForMergableJavaClasses(packageName);
+        } else {
+            String packageName = basePackageDerivedField.getText();
+            ipsObjectPath.setBasePackageNameForDerivedJavaClasses(packageName);
+        }
+        
+        dataChanged = true;
+    }
+
+    
     private class IpsSrcFolderAdapter implements ISelectionChangedListener, SelectionListener, ValueChangeListener {
 
         /**
@@ -500,14 +584,25 @@ public class SrcFolderComposite extends Composite {
          * {@inheritDoc}
          */
         public void valueChanged(FieldValueChangedEvent e) {
-            boolean multipleEnabled = multipleOutputCheckbutton.getCheckbox().isChecked();
-            updateSpecificOutputFolders(! multipleEnabled);
-            updateSpecificPackageNames(! multipleEnabled);
+
+            if (e.field == mergableSrcFolderField) {
+                handleDefaultOutputFolderChanged(true);
             
-            ipsObjectPath.setOutputDefinedPerSrcFolder(multipleEnabled);
-            treeViewer.refresh();
-            dataChanged = true;            
+            } else if (e.field == derivedSrcFolderField) {
+                handleDefaultOutputFolderChanged(false);
+            
+            } else if (e.field == basePackageMergableField) {
+
+                handleBasePackageNameChanged(true);
+            } else if (e.field == basePackageDerivedField) {
+
+                handleBasePackageNameChanged(false);
+            } else if (e.field == multipleOutputCheckBoxField) {
+                boolean multipleEnabled = ((Boolean) multipleOutputCheckBoxField.getValue()).booleanValue();
+                handleOutputDefinedPerSrcFolderChanged(multipleEnabled);
+            }
         }
 
     }
+
 }

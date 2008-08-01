@@ -53,6 +53,7 @@ public class IpsObjectPathPropertyPage extends PropertyPage {
      * {@inheritDoc}
      */
     protected Control createContents(Composite parent) {
+        
         // ensure the page has no special buttons
         noDefaultAndApplyButton();
 
@@ -76,9 +77,6 @@ public class IpsObjectPathPropertyPage extends PropertyPage {
         return result;
     }
 
-    /*
-     * Create property page for closed projects.
-     */
     private Control createForClosedProject(Composite parent) {
         Label label = new Label(parent, SWT.LEFT);
         label.setText(org.faktorips.devtools.core.ui.preferencepages.Messages.IpsObjectPathsPropertyPage_closed_project_message);
@@ -86,7 +84,6 @@ public class IpsObjectPathPropertyPage extends PropertyPage {
         setValid(true);
         return label;
     }
-
 
     private Control createForIpsProject(Composite parent, IIpsProject ipsProject) throws CoreException {
         IWorkbenchPreferenceContainer pageContainer = null;
@@ -96,7 +93,7 @@ public class IpsObjectPathPropertyPage extends PropertyPage {
         }
 
         objectPathsContainer = new IpsObjectPathContainer(getSettings().getInt(INDEX), pageContainer);
-        objectPathsContainer.init(ipsProject, null);
+        objectPathsContainer.init(ipsProject);
         return objectPathsContainer.createControl(parent);
     }
 
@@ -156,14 +153,14 @@ public class IpsObjectPathPropertyPage extends PropertyPage {
                     if (res == 0) {
                         performOk();
                     } else if (res == 1) {
-                        
+                        // discard
                         try {
-                            objectPathsContainer.init(getIpsProject(), null);
+                            objectPathsContainer.init(getIpsProject());
                         } catch (CoreException e) {
                             IpsPlugin.logAndShowErrorDialog(e);
                         }
                     } else {
-                        // keep unsaved
+                        // apply later
                     }
                 }
             }
@@ -176,12 +173,11 @@ public class IpsObjectPathPropertyPage extends PropertyPage {
      */
     public boolean performOk() {
         
-        boolean result = false;
-        
         if (objectPathsContainer.hasChangesInDialog()) {
-            result = objectPathsContainer.saveToIpsProjectFile();
+            objectPathsContainer.saveToIpsProjectFile();
         }
-        return result;
+        
+        return super.performOk();
     }
 
 }

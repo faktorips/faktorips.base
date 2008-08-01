@@ -86,7 +86,7 @@ public class IpsarViewerFilter extends ViewerFilter {
         
         String fileExtension = fullPath.getFileExtension();
         isArchive = (fileExtension != null)
-            && (fileExtension.equals("ipsar") || fileExtension.equals("jar") || fileExtension.equals("zip"));
+            && (fileExtension.equals("ipsar") || fileExtension.equals("jar") || fileExtension.equals("zip")); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
         
         return isArchive;
     }

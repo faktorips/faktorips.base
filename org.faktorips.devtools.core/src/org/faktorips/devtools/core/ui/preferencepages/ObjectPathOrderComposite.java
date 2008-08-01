@@ -20,6 +20,7 @@ package org.faktorips.devtools.core.ui.preferencepages;
 import java.util.Arrays;
 
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.jface.viewers.DecoratingLabelProvider;
 import org.eclipse.jface.viewers.ISelectionChangedListener;
 import org.eclipse.jface.viewers.SelectionChangedEvent;
 import org.eclipse.jface.viewers.TableViewer;
@@ -30,8 +31,10 @@ import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Table;
+import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.model.ipsproject.IIpsObjectPath;
 import org.faktorips.devtools.core.ui.UIToolkit;
 
@@ -92,6 +95,8 @@ public class ObjectPathOrderComposite extends Composite {
     public void init(IIpsObjectPath ipsObjectPath) {
         
         this.ipsObjectPath = ipsObjectPath;
+        dataChanged = false;
+        
         tableViewer.setContentProvider(new IpsObjectPathContentProvider()); 
         
         tableViewer.setInput(this.ipsObjectPath);
@@ -100,7 +105,11 @@ public class ObjectPathOrderComposite extends Composite {
     
     private TableViewer createViewer(Composite parent, IpsPathOrderAdapter projectAdapter) {
         TableViewer viewer = new TableViewer(parent, SWT.BORDER | SWT.MULTI);
-        viewer.setLabelProvider(new IpsObjectPathLabelProvider());
+        viewer.setLabelProvider(new DecoratingLabelProvider(
+                new IpsObjectPathLabelProvider(),  
+                IpsPlugin.getDefault().getWorkbench().getDecoratorManager().getLabelDecorator()
+        ));
+        
         viewer.addSelectionChangedListener(projectAdapter);
         
         return viewer;
@@ -231,6 +240,21 @@ public class ObjectPathOrderComposite extends Composite {
      */
     public boolean isDataChanged() {
         return dataChanged;
+    }
+
+    /**
+     * Method to manually update the UI
+     */
+    public void doUpdateUI() {
+        if (Display.getCurrent() != null) {
+            tableViewer.refresh();
+        } else {
+            Display.getDefault().asyncExec(new Runnable() {
+                public void run() {
+                    tableViewer.refresh();
+                }
+            });
+        }
     }
     
 }

@@ -127,7 +127,8 @@ public class ReferencedProjectsComposite extends Composite {
     public void init(final IIpsObjectPath ipsObjectPath) {
         
         this.ipsObjectPath = ipsObjectPath;
-
+        dataChanged = false;
+        
         IIpsProjectRefEntry[] refEntries = ipsObjectPath.getProjectRefEntries();
         tableViewer.setInput(refEntries);
 
@@ -259,6 +260,21 @@ public class ReferencedProjectsComposite extends Composite {
         }
 
         public void widgetDefaultSelected(SelectionEvent e) { /* nothing to do */ }
+    }
+
+    /**
+     * Manually update the UI
+     */
+    public void doUpdateUI() {
+        if (Display.getCurrent() != null) {
+            tableViewer.refresh();
+        } else {
+            Display.getDefault().asyncExec(new Runnable() {
+                public void run() {
+                    tableViewer.refresh();
+                }
+            });
+        }
     }
 
 }

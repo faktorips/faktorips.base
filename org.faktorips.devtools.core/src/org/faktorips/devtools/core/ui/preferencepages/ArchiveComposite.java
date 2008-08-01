@@ -118,9 +118,14 @@ public class ArchiveComposite extends Composite {
         addIpsArchivesButton.setLayoutData(new GridData(GridData.HORIZONTAL_ALIGN_FILL | GridData.VERTICAL_ALIGN_BEGINNING));
         addIpsArchivesButton.addSelectionListener(archiveAdapter);
 
-        addExternalIpsArchivesButton = toolkit.createButton(buttons, Messages.ArchiveComposite_button_add_external_archive);
-        addExternalIpsArchivesButton.setLayoutData(new GridData(GridData.HORIZONTAL_ALIGN_FILL | GridData.VERTICAL_ALIGN_BEGINNING));
-        addExternalIpsArchivesButton.addSelectionListener(archiveAdapter);
+//      FIXME: Flyspray BUG ID: 1196  
+//      need to change archive handling in IpsModel. IFile instances can only reference 
+//      resources inside the workspace. -> use IPath
+
+//        TEMPORARILY DISABLED DUE TO Bug1196
+//        addExternalIpsArchivesButton = toolkit.createButton(buttons, Messages.ArchiveComposite_button_add_external_archive);
+//        addExternalIpsArchivesButton.setLayoutData(new GridData(GridData.HORIZONTAL_ALIGN_FILL | GridData.VERTICAL_ALIGN_BEGINNING));
+//        addExternalIpsArchivesButton.addSelectionListener(archiveAdapter);
 
         removeIpsArchivesButton = toolkit.createButton(buttons, Messages.ArchiveComposite_button_remove_archive);
         removeIpsArchivesButton.setLayoutData(new GridData(GridData.HORIZONTAL_ALIGN_FILL | GridData.VERTICAL_ALIGN_BEGINNING));
@@ -149,13 +154,14 @@ public class ArchiveComposite extends Composite {
     }
 
     /**
-     * Initializes the composite for an existing IPS Project
-     * @param ipsObjectPath IPS object path used to initialize this composite, must not be null
+     * Initializes the composite using the given IPS object path
      * @throws CoreException 
      */
     public void init(final IIpsObjectPath ipsObjectPath) {
+        
         this.ipsObjectPath = ipsObjectPath;
-
+        dataChanged = false;
+        
         tableViewer.setInput(ipsObjectPath);
 
         if (Display.getCurrent() != null) {
@@ -219,7 +225,7 @@ public class ArchiveComposite extends Composite {
 
     private void addExternalIpsArchives() {
         FileDialog fileDialog = new FileDialog(getShell(), SWT.OPEN);
-        fileDialog.setFilterExtensions(new String[] {"*.ipsar", "*.jar", "*.zip", "*.*"} );
+        fileDialog.setFilterExtensions(new String[] {"*.ipsar", "*.jar", "*.zip", "*.*"} ); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
         String fileName = fileDialog.open(); 
         
         IFile file = ResourcesPlugin.getWorkspace().getRoot().getFile(new Path(fileName));
@@ -233,16 +239,6 @@ public class ArchiveComposite extends Composite {
             IpsPlugin.logAndShowErrorDialog(e);
             return;
         }
-
-//        FIXME: REMOVE CODE IF BUG IS FIXED 
-//        Flyspray BUG ID: 1196
-//        
-//        String debugInfo = "libFile: " + file + ", exists: " + file.exists();
-//        IIpsArchiveEntry[] archiveEntries = ipsObjectPath.getArchiveEntries(); 
-//        for (int i = 0; i < archiveEntries.length; i++) {
-//            debugInfo += "\n" + archiveEntries[i]; 
-//        }
-//        MessageDialog.openInformation(getShell(), "DEBUG", debugInfo);        
     }
 
     private void removeIpsArchives() {
@@ -282,6 +278,21 @@ public class ArchiveComposite extends Composite {
         }
 
         public void widgetDefaultSelected(SelectionEvent e) { /* nothing to do */ }
+    }
+
+    /**
+     * Manually update the UI
+     */
+    public void doUpdateUI() {
+        if (Display.getCurrent() != null) {
+            tableViewer.refresh();
+        } else {
+            Display.getDefault().asyncExec(new Runnable() {
+                public void run() {
+                    tableViewer.refresh();
+                }
+            });
+        }
     }
 
 }
