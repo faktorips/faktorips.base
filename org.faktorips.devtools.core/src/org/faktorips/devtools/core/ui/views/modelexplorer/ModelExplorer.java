@@ -402,29 +402,27 @@ public class ModelExplorer extends ViewPart implements IShowInTarget {
 
         if (editorPart instanceof IpsObjectEditor) {
             IpsObjectEditor ipsEditor = (IpsObjectEditor)editorPart;
-
-            IStructuredSelection newSelection = new StructuredSelection(ipsEditor.getIpsSrcFile());
-            if (treeViewer.getSelection().equals(newSelection)) {
-                treeViewer.getTree().showSelection();
-            } else {
-                treeViewer.setSelection(newSelection, true);
-            }
-            return;
-        }
-
-        if (editorPart.getEditorInput() instanceof IFileEditorInput) {
+            setSelectionInTree(ipsEditor.getIpsSrcFile());
+        } else if (editorPart.getEditorInput() instanceof IFileEditorInput) {
             IFile file = ((IFileEditorInput)editorPart.getEditorInput()).getFile();
-
-            IStructuredSelection newSelection = new StructuredSelection(file);
-
-            if (treeViewer.getSelection().equals(newSelection)) {
-                treeViewer.getTree().showSelection();
+            IIpsElement ipsElement = IpsPlugin.getDefault().getIpsModel().getIpsElement(file);
+            if(ipsElement == null || !ipsElement.exists()){
+                setSelectionInTree(file);
             } else {
-                treeViewer.setSelection(newSelection, true);
+                setSelectionInTree(ipsElement);
             }
         }
     }
 
+    private void setSelectionInTree(Object objectToSelect){
+        IStructuredSelection newSelection = new StructuredSelection(objectToSelect);
+        if (treeViewer.getSelection().equals(newSelection)) {
+            treeViewer.getTree().showSelection();
+        } else {
+            treeViewer.setSelection(newSelection, true);
+        }
+    }
+    
     protected void createFilters(TreeViewer tree) {
     }
 
