@@ -55,9 +55,9 @@ public abstract class ProductCmptStructureReference implements
 	}
 
 	/**
-	 * @return The parent of this reference
+	 * {@inheritDoc}
 	 */
-	ProductCmptStructureReference getParent() {
+	public IProductCmptStructureReference getParent() {
 		return parent;
 	}
 

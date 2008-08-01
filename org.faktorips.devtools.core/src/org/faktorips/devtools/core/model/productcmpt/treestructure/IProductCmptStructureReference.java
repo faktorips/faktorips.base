@@ -37,5 +37,11 @@ public interface IProductCmptStructureReference {
      * @return The <code>IIpsObject</code> referenced by this object or <code>null</code>
      * if the referenced ips object doesn't exists.
      */
-    public IIpsObject getWrappedIpsObject();    
+    public IIpsObject getWrappedIpsObject();   
+    
+    /**
+     * Returns the parent structure object of <code>null</code> if this element is the root.
+     */
+    public IProductCmptStructureReference getParent();
+    
 }

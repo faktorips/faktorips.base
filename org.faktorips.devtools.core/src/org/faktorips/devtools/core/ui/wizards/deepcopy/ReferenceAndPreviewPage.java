@@ -332,9 +332,9 @@ public class ReferenceAndPreviewPage extends WizardPage {
         for (Iterator iter = toProcess.iterator(); iter.hasNext();) {
             Object element = iter.next();
 
-            if (!toCopy.contains(element) && element instanceof IProductCmptReference) {
+            if (!toCopy.contains(element) && element instanceof IProductCmptStructureTblUsageReference) {
                 result.add(element);
-            } else if (!toCopy.contains(element) && element instanceof IProductCmptStructureTblUsageReference) {
+            } else if (!toCopy.contains(element) && element instanceof IProductCmptReference) {
                 result.add(element);
             }
         }

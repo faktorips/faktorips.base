@@ -270,7 +270,7 @@ public class ProductCmptTreeStructure implements IProductCmptTreeStructure {
 	 */
 	public IProductCmptReference getParentProductCmptReference(IProductCmptStructureReference child) {
 		ProductCmptStructureReference ref = (ProductCmptStructureReference)child;
-		ProductCmptStructureReference result = ref.getParent();
+		IProductCmptStructureReference result = ref.getParent();
 		if (result instanceof IProductCmptReference) {
 			return (IProductCmptReference)result;
 		}
@@ -285,7 +285,7 @@ public class ProductCmptTreeStructure implements IProductCmptTreeStructure {
 	 */
 	public IProductCmptTypeRelationReference getParentProductCmptTypeRelationReference(IProductCmptStructureReference child) {
 		ProductCmptStructureReference ref = (ProductCmptStructureReference)child;
-		ProductCmptStructureReference result = ref.getParent();
+		IProductCmptStructureReference result = ref.getParent();
 		if (result instanceof IProductCmptTypeRelationReference) {
 			return (IProductCmptTypeRelationReference)result;
 		}
