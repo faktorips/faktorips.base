@@ -403,7 +403,7 @@ public class LinksSection extends IpsSection implements ISelectionProviderActiva
             try {
                 IIpsProject ipsProject = link.getIpsProject();
                 IProductCmptTypeAssociation association = link.findAssociation(ipsProject);
-                if (!association.constrainsPolicyCmptTypeAssociation(ipsProject)) {
+                if (association == null || !association.constrainsPolicyCmptTypeAssociation(ipsProject)) {
                     deactivateCardinalityPanel();
                     return;
                 }
