@@ -264,13 +264,18 @@ public class DeepCopyOperation implements IWorkspaceRunnable{
         ITableContentUsage[] tableContentUsages = generation.getTableContentUsages();
         for (int i = 0; i < tableContentUsages.length; i++) {
             TblContentUsageData tblContentsData = new TblContentUsageData(productCmptTemplate, tableContentUsages[i].getTableContentName());
+            
+            String newTarget = (String)tblContentData2newTableContentQName.get(tblContentsData);
+            if (newTarget != null){
+                // use new table contents
+                tableContentUsages[i].setTableContentName(newTarget); //$NON-NLS-1$
+            }
             if (objectsToRefer.contains(tblContentsData)){
                 // keep table usage to old table contents
                 continue;
             }
-            
-            String newTarget = (String)tblContentData2newTableContentQName.get(tblContentsData);
-            tableContentUsages[i].setTableContentName(newTarget==null?"":newTarget); //$NON-NLS-1$
+            // remove table contents usage
+            tableContentUsages[i].setTableContentName(""); //$NON-NLS-1$
         }
     }
     
@@ -300,14 +305,15 @@ public class DeepCopyOperation implements IWorkspaceRunnable{
                 IpsPlugin.logAndShowErrorDialog(e);
                 return;
             }
-            if (objectsToRefer.contains(linkData)){
-                // keep table usage to old table contents
-                continue;
-            }
+            
             String newTarget = (String)linkData2newProductCmptQName.get(linkData);
             if (newTarget != null){
                 links[i].setTarget(newTarget);
             } else {
+                if (objectsToRefer.contains(linkData)){
+                    // keep table usage to old table contents
+                    continue;
+                }
                 links[i].delete();
             }
         }
