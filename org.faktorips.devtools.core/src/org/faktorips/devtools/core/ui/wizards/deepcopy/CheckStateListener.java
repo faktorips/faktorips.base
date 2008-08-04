@@ -210,7 +210,7 @@ public class CheckStateListener implements ICheckStateListener {
 	private TreeItem find(TreeItem[] toSearch, Object toFind) {
 		TreeItem found = null;
 		for (int i = 0; i < toSearch.length && found == null; i++) {
-			if (toSearch[i].getData().equals(toFind)) {
+			if (toSearch[i].getData() != null && toSearch[i].getData().equals(toFind)) {
 				return toSearch[i];
 			}
 			found = find(toSearch[i].getItems(), toFind);
