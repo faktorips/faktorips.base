@@ -196,7 +196,7 @@ public class CheckStateListener implements ICheckStateListener {
 	}
 	
 	/**
-	 * Finds the first occurence of the object <code>toFind</code> in the tree using
+	 * Finds the first occurrence of the object <code>toFind</code> in the tree using
 	 * the depth first algorithm (first, check the childrens of the current node, then 
 	 * check its siblings).
 	 * <p>

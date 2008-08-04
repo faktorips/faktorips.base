@@ -89,5 +89,8 @@ public class DeepCopyLabelProvider implements ILabelProvider {
         }
         return Messages.DeepCopyLabelProvider_textUndefined;
     }
-
+	
+    public Image getErrorImage() {
+        return IpsPlugin.getDefault().getImage("error_tsk.gif"); //$NON-NLS-1$
+    }
 }

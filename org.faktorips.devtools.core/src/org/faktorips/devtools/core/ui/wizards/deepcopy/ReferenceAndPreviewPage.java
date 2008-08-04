@@ -63,6 +63,7 @@ import org.faktorips.devtools.core.model.productcmpt.treestructure.IProductCmptT
 import org.faktorips.devtools.core.model.tablecontents.ITableContents;
 import org.faktorips.devtools.core.ui.UIToolkit;
 import org.faktorips.util.StringUtil;
+import org.faktorips.util.message.Message;
 import org.faktorips.util.message.MessageList;
 
 /**
@@ -280,9 +281,10 @@ public class ReferenceAndPreviewPage extends WizardPage {
      * Checks for errors in the user input and sets page complete if no error was found.
      */
     void setPageComplete(IProductCmptReference modified, boolean checked) {
+        super.setMessage(null);
+        
         if (isValid(modified, checked)) {
             super.setPageComplete(true);
-            super.setMessage(null);
         }
         else {
             super.setPageComplete(false);
@@ -452,6 +454,20 @@ public class ReferenceAndPreviewPage extends WizardPage {
         for (int i = 0; i < toCopy.length; i++) {
             validateTarget(toCopy[i], segmentsToIgnore, base);
         }
+        
+        MessageList validationResult = new MessageList();
+        new SameOperationValidator(tree, getDeepCopyWizard().getStructure()).validateSameOperation(validationResult);
+        Message errorMsg = validationResult.getFirstMessage(Message.ERROR);
+        if (errorMsg != null){
+            super.setMessage(Messages.ReferenceAndPreviewPage_msgCopyNotPossible, ERROR);
+        }
+        
+        int noOfMessages = validationResult.getNoOfMessages();
+        for (int i = 0; i < noOfMessages; i++) {
+            Message currMessage = validationResult.getMessage(i);
+            final IProductCmptStructureReference object = (IProductCmptStructureReference)currMessage.getInvalidObjectProperties()[0].getObject();
+            addMessage(object, currMessage.getText());
+        }
     }
     
     private void validateTarget(IProductCmptStructureReference modified, int segmentsToIgnore, IIpsPackageFragment base) {
@@ -613,23 +629,24 @@ public class ReferenceAndPreviewPage extends WizardPage {
 
         public Image getImage(Object element) {
             Object wrapped = getWrapped(element);
+            Image image = ((IIpsObjectPartContainer)wrapped).getImage();
             if (wrapped instanceof IProductCmpt) {
                 if (!tree.getChecked(element)) {
-                    return IpsPlugin.getDefault().getImage("LinkProductCmpt.gif"); //$NON-NLS-1$
+                    image = IpsPlugin.getDefault().getImage("LinkProductCmpt.gif"); //$NON-NLS-1$
                 }
                 if (isInError((IProductCmptStructureReference)element)) {
                     return IpsPlugin.getDefault().getImage("error_tsk.gif"); //$NON-NLS-1$
                 }
+                return image;
             } else if (wrapped instanceof ITableContentUsage) {
                 if (!tree.getChecked(element)) {
-                    return IpsPlugin.getDefault().getImage("LinkTableContents.gif"); //$NON-NLS-1$
+                    image = IpsPlugin.getDefault().getImage("LinkTableContents.gif"); //$NON-NLS-1$
                 }
                 if (isInError((IProductCmptStructureReference)element)) {
                     return IpsPlugin.getDefault().getImage("error_tsk.gif"); //$NON-NLS-1$
                 }
             }
-
-            return ((IIpsObjectPartContainer)wrapped).getImage();
+            return image;
         }
 
         public String getText(Object element) {

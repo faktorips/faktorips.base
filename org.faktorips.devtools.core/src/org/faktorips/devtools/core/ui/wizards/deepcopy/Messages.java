@@ -33,6 +33,8 @@ public class Messages extends NLS {
     public static String DeepCopyLabelProvider_textUndefined;
     public static String DeepCopyWizard_title;
     public static String ReferenceAndPreviewPage_namePrefixCopyOf;
+    public static String SameOperationValidator_errorMsgInvalidSelectionOfProductCmpt;
+    public static String SourcePage_errorLabelInsert;
     public static String SourcePage_errorPrefixWorkingDateFormat;
     public static String SourcePage_errorWorkingDateFormat;
     public static String SourcePage_labelGroupTableContents;
@@ -40,6 +42,7 @@ public class Messages extends NLS {
     public static String SourcePage_labelRadioBtnCreateEmptyTableContents;
     public static String SourcePage_labelSourceFolder;
     public static String SourcePage_msgBadTargetPackage;
+    public static String SourcePage_msgCopyNotPossible;
     public static String SourcePage_msgMissingSourceFolder;
     public static String SourcePage_msgNothingSelected;
     public static String SourcePage_msgSelectSourceFolder;

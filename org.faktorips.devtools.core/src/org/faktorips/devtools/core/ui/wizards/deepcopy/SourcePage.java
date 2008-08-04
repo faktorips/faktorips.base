@@ -24,6 +24,8 @@ import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.regex.Pattern;
 import java.util.regex.PatternSyntaxException;
 
@@ -39,6 +41,7 @@ import org.eclipse.swt.events.FocusEvent;
 import org.eclipse.swt.events.FocusListener;
 import org.eclipse.swt.events.ModifyEvent;
 import org.eclipse.swt.events.ModifyListener;
+import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
@@ -64,6 +67,7 @@ import org.faktorips.devtools.core.ui.controls.IpsPckFragmentRefControl;
 import org.faktorips.devtools.core.ui.controls.IpsPckFragmentRootRefControl;
 import org.faktorips.devtools.core.ui.controls.Radiobutton;
 import org.faktorips.devtools.core.ui.controls.RadiobuttonGroup;
+import org.faktorips.util.message.Message;
 import org.faktorips.util.message.MessageList;
 
 /**
@@ -107,6 +111,7 @@ public class SourcePage extends WizardPage implements ValueChangeListener, IChec
 
     private Radiobutton createEmptyTableContentsBtn;
 
+    private Map errorElements = new HashMap();
 
     private static String getTitle(int type) {
         if (type == DeepCopyWizard.TYPE_COPY_PRODUCT) {
@@ -233,7 +238,7 @@ public class SourcePage extends WizardPage implements ValueChangeListener, IChec
         
         tree = new CheckboxTreeViewer(root);
         tree.setUseHashlookup(true);
-        tree.setLabelProvider(new DeepCopyLabelProvider());
+        tree.setLabelProvider(new DeepCopyLabelProviderWithError());
         tree.setContentProvider(new DeepCopyContentProvider(true));
         refreshStructureAndVersionId(structure);
         tree.getControl().setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
@@ -349,6 +354,8 @@ public class SourcePage extends WizardPage implements ValueChangeListener, IChec
             return;
         }
         
+        validateSameOperation();
+        
         validateWorkingDate();
         if (getErrorMessage() != null){
             return;
@@ -385,6 +392,26 @@ public class SourcePage extends WizardPage implements ValueChangeListener, IChec
         }
     }
 
+    private void validateSameOperation() {
+        errorElements.clear();
+        
+        SameOperationValidator operationValidator = new SameOperationValidator(tree, getDeepCopyWizard().getStructure());
+        MessageList messages = new MessageList();
+        operationValidator.validateSameOperation(messages);
+        Message errorMsg = messages.getFirstMessage(Message.ERROR);
+        if (errorMsg != null){
+            setErrorMessage(Messages.SourcePage_msgCopyNotPossible);
+        }
+        
+        int noOfMessages = messages.getNoOfMessages();
+        for (int i = 0; i < noOfMessages; i++) {
+            Message currMessage = messages.getMessage(i);
+            IProductCmptStructureReference object = (IProductCmptStructureReference)currMessage.getInvalidObjectProperties()[0].getObject();
+            errorElements.put(object, currMessage.getText());
+        }
+        tree.refresh();
+    }
+    
     private void validateWorkingDate() {
         try {
             Date date = dateFormat.parse(workingDateField.getText());
@@ -508,5 +535,31 @@ public class SourcePage extends WizardPage implements ValueChangeListener, IChec
     public void checkStateChanged(CheckStateChangedEvent event) {
         validate();
         getContainer().updateButtons();
+    }
+    
+    private boolean isInError(Object object){
+        return errorElements.containsKey(object);
+    }
+    
+    private String getErrorMessage(Object object) {
+        return (String)errorElements.get(object);
+    }
+    
+    private class DeepCopyLabelProviderWithError extends DeepCopyLabelProvider {
+
+        public Image getImage(Object element) {
+            if (isInError(element)){
+                return super.getErrorImage();
+            }
+            return super.getImage(element);
+        }
+
+        public String getText(Object element) {
+            if (isInError(element)){
+                return super.getText(element) + Messages.SourcePage_errorLabelInsert + getErrorMessage(element);
+            } else {
+                return super.getText(element);
+            }
+        }
     }
 }

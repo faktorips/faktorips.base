@@ -85,6 +85,7 @@ public class DeepCopyOperation implements IWorkspaceRunnable{
 
     /**
 	 * {@inheritDoc}
+	 * FIXME Joerg Testcases
 	 */
 	public void run(IProgressMonitor monitor) throws CoreException {
 		if (monitor == null) {
@@ -96,7 +97,6 @@ public class DeepCopyOperation implements IWorkspaceRunnable{
 
 		// stores all objects which refers old targets instead of changing to the new one
 		Set objectsToRefer = collectObjectsToRefer();
-	    
 		
 		// maps used to fix the targets (table usages or links) on the new productCmpt
 		HashMap tblContentData2newTableContentQName = new HashMap();

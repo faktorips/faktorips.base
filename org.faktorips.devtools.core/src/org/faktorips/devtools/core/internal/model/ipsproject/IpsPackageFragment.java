@@ -41,7 +41,7 @@ import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.IpsStatus;
 import org.faktorips.devtools.core.internal.model.IpsModel;
 import org.faktorips.devtools.core.internal.model.ipsobject.IpsSrcFile;
-import org.faktorips.devtools.core.internal.model.ipsobject.TimedIpsObject;
+import org.faktorips.devtools.core.internal.model.productcmpt.ProductCmpt;
 import org.faktorips.devtools.core.internal.model.tablecontents.TableContents;
 import org.faktorips.devtools.core.model.IIpsElement;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObject;
@@ -358,6 +358,7 @@ public class IpsPackageFragment extends AbstractIpsPackageFragment implements II
 
     /**
      * {@inheritDoc}
+     * FIXME Joerg Testcase
      */
     public IIpsSrcFile createIpsFileFromTemplate(String name,
             IIpsObject template,
@@ -370,27 +371,36 @@ public class IpsPackageFragment extends AbstractIpsPackageFragment implements II
         Document doc = IpsPlugin.getDefault().newDocumentBuilder().newDocument();
         Element element;
 
-        if (template instanceof ITimedIpsObject) {
-            return createIpsFileForTimedIpsObject(name, template, date, force, null);
-        }
-        else {
+        if (template instanceof IProductCmpt) {
+            return createProductCmptFromTemplateGeneration(name, (IProductCmpt)template, date, force, null);
+        } else {
+            IIpsSrcFile ipsSrcFile;
             element = template.toXml(doc);
             try {
                 String encoding = getIpsProject().getXmlFileCharset();
                 String contents = XmlUtil.nodeToString(element, encoding);
-                return createIpsFile(filename, contents, force, monitor);
-            }
-            catch (TransformerException e) {
+                ipsSrcFile = createIpsFile(filename, contents, force, monitor);
+            } catch (TransformerException e) {
                 throw new RuntimeException(e);
             }
+            if (template instanceof ITableContents){
+                initTableContentsFromTemplate((TableContents)ipsSrcFile.getIpsObject(), (TableContents)template);
+            }
+            return ipsSrcFile;
         }
+    }
+
+    private void initTableContentsFromTemplate(TableContents newTableContents, TableContents template) throws CoreException {
+        newTableContents.setTableStructure(template.getTableStructure());
+        newTableContents.setNumOfColumnsInternal(template.getNumOfColumns());
+        newTableContents.setDescription(template.getDescription());
     }
 
     /**
      * {@inheritDoc}
      */
-    private IIpsSrcFile createIpsFileForTimedIpsObject(String name,
-            IIpsObject template,
+    private IIpsSrcFile createProductCmptFromTemplateGeneration(String name,
+            IProductCmpt template,
             GregorianCalendar date,
             boolean force,
             IProgressMonitor monitor) throws CoreException {
@@ -408,18 +418,11 @@ public class IpsPackageFragment extends AbstractIpsPackageFragment implements II
         IpsModel model =(IpsModel)getIpsModel();
         try {
             model.stopBroadcastingChangesMadeByCurrentThread();
-            TimedIpsObject newObject = (TimedIpsObject)file.getIpsObject();
-            // FIXME Joerg was ist mit der Description und validTo auch uebernehmen
-            // instanceof unschoen
-            if (template instanceof IProductCmpt) {
-                ((IProductCmpt)newObject).setProductCmptType(((IProductCmpt)template).getProductCmptType());
-            } else if (template instanceof ITableContents){
-                ((ITableContents)newObject).setTableStructure(((ITableContents)template).getTableStructure());
-                ((TableContents)newObject).setNumOfColumnsInternal(((ITableContents)template).getNumOfColumns());
-            }
-
-            newObject.newGeneration(source, IpsPlugin.getDefault().getIpsPreferences().getWorkingDate());
-
+            ProductCmpt newProductCmpt = (ProductCmpt)file.getIpsObject();
+            newProductCmpt.setProductCmptType(template.getProductCmptType());
+            newProductCmpt.setValidTo(template.getValidTo());
+            newProductCmpt.setDescription(template.getDescription());
+            newProductCmpt.newGeneration(source, IpsPlugin.getDefault().getIpsPreferences().getWorkingDate());
             file.save(true, null);
         } finally {
             model.resumeBroadcastingChangesMadeByCurrentThread();
