@@ -105,12 +105,6 @@ public class DeepCopyOperation implements IWorkspaceRunnable{
 		Hashtable productNew2ProductOld = new Hashtable();
 		List newIpsObjects = new ArrayList();
 		
-		// lists to determine the consistent of the new copied products
-		// only one operation can be performed on the same productComponent
-		List productCmptStrRefOfCopiedTblContents = new ArrayList();
-		List productCmptStrRefOfCopiedProductCmpts = new ArrayList();
-		List productCmptToBeCopied = new ArrayList();
-		
 		for (int i = 0; i < toCopy.length; i++) {
             IIpsObject newIpsObject = createNewIpsObjectIfNecessary(toCopy[i], productNew2ProductOld, monitor);
             newIpsObjects.add(newIpsObject);
@@ -120,50 +114,14 @@ public class DeepCopyOperation implements IWorkspaceRunnable{
 			if (toCopy[i] instanceof IProductCmptReference){
 			    IProductCmptReference productCmptReference = (IProductCmptReference)toCopy[i];
 			    storeLinkToNewNewProductCmpt(productCmptReference, newIpsObject.getQualifiedName(), linkData2newProductCmptQName);
-			    
-			    // store productCmpt to assert consistent of fixed products
-			    productCmptToBeCopied.add(productCmptReference.getProductCmpt());
-			    IProductCmptStructureReference parent = productCmptReference.getParent();
-			    IProductCmptReference parentProductCmpt = parent!=null?((IProductCmptReference)parent.getParent()):null;
-                if (parent != null && parentProductCmpt != null){
-                    productCmptStrRefOfCopiedProductCmpts.add(parentProductCmpt.getProductCmpt());
-                }
 			} else if (toCopy[i] instanceof IProductCmptStructureTblUsageReference){
 			    IProductCmptStructureTblUsageReference productCmptStructureTblUsageReference = (IProductCmptStructureTblUsageReference)toCopy[i];
 			    storeTableUsageToNewTableContents(productCmptStructureTblUsageReference, newIpsObject.getQualifiedName(), tblContentData2newTableContentQName);
-
-			 // store productCmpt to assert consistent of fixed products
-			    productCmptStrRefOfCopiedTblContents.add(((IProductCmptReference)productCmptStructureTblUsageReference.getParent()).getProductCmpt());
 			}
 
 			monitor.worked(1);
 		}
 
-		// Assert copied to non copied products
-		// Note: must be checked in the GUI as validation error before (this is only be an assert)
-		Map numOfProductCmpts = countProductCmpt(productCmptToBeCopied);
-		Map numOfProductCmptsWhitCopiedTblContents = countProductCmpt(productCmptStrRefOfCopiedTblContents);
-		Map numOfProductCmptsWhitCopiedProductCmpts = countProductCmpt(productCmptStrRefOfCopiedProductCmpts);
-		for (Iterator iterator = numOfProductCmptsWhitCopiedTblContents.keySet().iterator(); iterator.hasNext();) {
-            IProductCmpt productCmpt = (IProductCmpt)iterator.next();
-            if (!isGreaterOrEquals(numOfProductCmptsWhitCopiedTblContents.get(productCmpt),numOfProductCmpts.get(productCmpt))){
-                throw new RuntimeException("Couldn't change table usage: remove and changing to a new table contents  is not possible!"); //$NON-NLS-1$
-            }
-        }
-        for (Iterator iterator = numOfProductCmptsWhitCopiedProductCmpts.keySet().iterator(); iterator.hasNext();) {
-            IProductCmpt productCmpt = (IProductCmpt)iterator.next();
-            if (!isGreaterOrEquals(numOfProductCmptsWhitCopiedProductCmpts.get(productCmpt),numOfProductCmpts.get(productCmpt))){
-                throw new RuntimeException("Couldn't change link: remove and changing to a new product component is not possible!"); //$NON-NLS-1$
-            }
-        }		
-		
-		// Assert that a copied productCmpt performs always the same child operations,
-		// e.g. if a product should be copied because it is used (and marked as copy) in two different productCmpt's
-		// then all tableContentUsages must either be copied or linked, a mix is not possible!
-        // Note: must be checked in the GUI as validation error before (this is only be an assert)
-		assertConsistentCopyOrLinkOperation(objectsToRefer, tblContentData2newTableContentQName,
-                linkData2newProductCmptQName);
-		
 		// fix links, on of the following options: 
 		//   a) change target to new (copied) productCmpt's: if the target should also be copied -> checked on the 1st wizard page and checked on the 2nd page
 		//   b) leave old target: if the target shouldn't be changed -> check on 1st wizard page and unchecked on the 2nd page
@@ -197,52 +155,6 @@ public class DeepCopyOperation implements IWorkspaceRunnable{
 		copiedRoot = (IProductCmpt)newIpsObjects.get(0);
 		monitor.done();
 	}
-
-    private boolean isGreaterOrEquals(Object int1, Object int2) {
-        return ((Integer)int1).intValue() >= ((Integer)int2).intValue();
-    }
-
-    private Map countProductCmpt(List productCmptToBeCopied) {
-        Map numOf = new HashMap();
-        for (Iterator iterator = productCmptToBeCopied.iterator(); iterator.hasNext();) {
-            Object obj = iterator.next();
-            Integer counter = (Integer)numOf.get(obj);
-            if (counter == null){
-                counter = new Integer(0);
-            }
-            numOf.put(obj, new Integer(counter.intValue() + 1));
-        }
-        return numOf;
-    }
-
-    private void assertConsistentCopyOrLinkOperation(Set objectsToRefer,
-            HashMap tblContentData2newTableContentQName,
-            HashMap linkData2newProductCmptQName) {
-        for (Iterator iterator = objectsToRefer.iterator(); iterator.hasNext();) {
-            Object toRefer = (Object)iterator.next();
-            if (toRefer instanceof TblContentUsageData){
-                if (tblContentData2newTableContentQName.containsKey(toRefer)) {
-                    TblContentUsageData tblContentUsageData = (TblContentUsageData)toRefer;
-                    String newTableContentsQName = (String)tblContentData2newTableContentQName.get(toRefer);
-                    throw new RuntimeException("Leave old table contents usage not possible (old product component " //$NON-NLS-1$
-                            + tblContentUsageData.getProductCmpt()
-                            + " ) because the copied product component used this table usage already to " //$NON-NLS-1$
-                            + newTableContentsQName);
-                }
-            } else if (toRefer instanceof LinkData){
-                if (linkData2newProductCmptQName.containsKey(toRefer)){
-                    LinkData linkData = (LinkData)toRefer;
-                    String newProductCmptQName = (String)linkData2newProductCmptQName.get(toRefer);
-                    throw new RuntimeException("Leave old link not possible (old product component " //$NON-NLS-1$
-                            + linkData.getSourceProductCmpt().getName()
-                            + ") because the copied product component used this link target already to " //$NON-NLS-1$
-                            + newProductCmptQName);
-                }
-            } else {
-                throw new RuntimeException("Unsupported object found: " + toRefer.getClass().getName()); //$NON-NLS-1$
-            }
-        }
-    }
 
     private IIpsObject createNewIpsObjectIfNecessary(final IProductCmptStructureReference toCopyProductCmptStructureReference,
             Hashtable productNew2ProductOld,
