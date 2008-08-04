@@ -15,6 +15,7 @@
 package org.faktorips.devtools.core.ui.preferencepages;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Iterator;
 
 import org.eclipse.core.runtime.CoreException;
@@ -108,14 +109,20 @@ public class ReferencedProjectsComposite extends Composite {
     }
 
     private TableViewer createViewer(Composite parent, IpsProjectsAdapter projectAdapter, UIToolkit toolkit) {
+        
         table = new Table(parent, SWT.BORDER | SWT.MULTI);
         tableViewer = new TableViewer(table);
         tableViewer.addSelectionChangedListener(projectAdapter);
-        tableViewer.setContentProvider(new ArrayContentProvider());
+        
+        IpsObjectPathContentProvider contentProvider = new IpsObjectPathContentProvider();
+        contentProvider.setIncludedClasses(Arrays.asList(new Class[] {IIpsProjectRefEntry.class}));
+        tableViewer.setContentProvider(contentProvider);
+
         tableViewer.setLabelProvider(new  DecoratingLabelProvider(
                 new IpsObjectPathLabelProvider(),
                 IpsPlugin.getDefault().getWorkbench().getDecoratorManager().getLabelDecorator()
         ));
+        
         return tableViewer;
     }
 
@@ -129,8 +136,7 @@ public class ReferencedProjectsComposite extends Composite {
         this.ipsObjectPath = ipsObjectPath;
         dataChanged = false;
         
-        IIpsProjectRefEntry[] refEntries = ipsObjectPath.getProjectRefEntries();
-        tableViewer.setInput(refEntries);
+        tableViewer.setInput(ipsObjectPath);
 
         if (Display.getCurrent() != null) {
             tableViewer.refresh();
@@ -173,8 +179,9 @@ public class ReferencedProjectsComposite extends Composite {
             Object[] selectedReferencedProjects = dialog.getResult();
             if (selectedReferencedProjects.length > 0) {
                 for (int i = 0; i < selectedReferencedProjects.length; i++) {
-                    IIpsProjectRefEntry refEntry = ipsObjectPath.newIpsProjectRefEntry( (IIpsProject) selectedReferencedProjects[i]);
-                    tableViewer.add(refEntry);
+
+                    ipsObjectPath.newIpsProjectRefEntry( (IIpsProject) selectedReferencedProjects[i]);
+                    tableViewer.refresh(false);
                 }
                 dataChanged = true;
             }
@@ -189,7 +196,7 @@ public class ReferencedProjectsComposite extends Composite {
             for (Iterator it = selection.iterator(); it.hasNext(); ) {
                 IIpsProjectRefEntry refEntry = (IIpsProjectRefEntry) it.next();
                 ipsObjectPath.removeProjectRefEntry( (refEntry).getReferencedIpsProject() );
-                tableViewer.remove(refEntry);
+                tableViewer.refresh(false);
             }
         }        
     }

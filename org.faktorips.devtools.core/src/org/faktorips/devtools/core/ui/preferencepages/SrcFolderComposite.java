@@ -17,6 +17,7 @@
 
 package org.faktorips.devtools.core.ui.preferencepages;
 
+import java.util.Arrays;
 import java.util.Iterator;
 
 import org.eclipse.core.resources.IContainer;
@@ -54,7 +55,6 @@ import org.eclipse.ui.dialogs.ElementTreeSelectionDialog;
 import org.eclipse.ui.model.WorkbenchContentProvider;
 import org.eclipse.ui.model.WorkbenchLabelProvider;
 import org.faktorips.devtools.core.IpsPlugin;
-import org.faktorips.devtools.core.IpsStatus;
 import org.faktorips.devtools.core.model.ipsproject.IIpsObjectPath;
 import org.faktorips.devtools.core.model.ipsproject.IIpsPackageFragment;
 import org.faktorips.devtools.core.model.ipsproject.IIpsPackageFragmentRoot;
@@ -202,7 +202,10 @@ public class SrcFolderComposite extends Composite {
         this.ipsObjectPath = ipsObjectPath;
         dataChanged = false;
 
-        treeViewer.setContentProvider(new IpsObjectPathContentProvider());
+        IpsObjectPathContentProvider contentProvider = new IpsObjectPathContentProvider();
+        contentProvider.setIncludedClasses(Arrays.asList(new Class[] {IIpsSrcFolderEntry.class}));
+        treeViewer.setContentProvider(contentProvider);
+        
         treeViewer.addFilter(new ViewerFilter() {
             public boolean select(Viewer viewer, Object parentElement, Object element) {
                 if (element instanceof IIpsSrcFolderEntry || parentElement instanceof IIpsSrcFolderEntry)
@@ -221,22 +224,20 @@ public class SrcFolderComposite extends Composite {
         try {
             
             IIpsPackageFragmentRoot[] ipsPackageFragmentRoots = ipsObjectPath.getIpsProject().getIpsPackageFragmentRoots();
-            if (ipsPackageFragmentRoots[0] == null) {
-                throw new CoreException(new IpsStatus("Could not retrieve IPS package fragment root for: " //$NON-NLS-1$
-                        + ipsObjectPath.getIpsProject().getName()));
+            if (ipsPackageFragmentRoots.length > 0) {
+
+                IIpsPackageFragmentRoot ipsPackageFragmentRoot = ipsPackageFragmentRoots[0];
+
+                basePackageMergableControl.setIpsPckFragmentRoot(ipsPackageFragmentRoot);
+                IIpsPackageFragment ipsPackageFragmentMergable = ipsPackageFragmentRoot.getIpsPackageFragment(ipsObjectPath
+                        .getBasePackageNameForMergableJavaClasses());
+                basePackageMergableControl.setIpsPackageFragment(ipsPackageFragmentMergable);
+
+                basePackageDerivedControl.setIpsPckFragmentRoot(ipsPackageFragmentRoot);
+                IIpsPackageFragment ipsPackageFragmentDerived = ipsPackageFragmentRoot.getIpsPackageFragment(ipsObjectPath
+                        .getBasePackageNameForDerivedJavaClasses());
+                basePackageDerivedControl.setIpsPackageFragment(ipsPackageFragmentDerived);            
             }
-
-            IIpsPackageFragmentRoot ipsPackageFragmentRoot = ipsPackageFragmentRoots[0];
-
-            basePackageMergableControl.setIpsPckFragmentRoot(ipsPackageFragmentRoot);
-            IIpsPackageFragment ipsPackageFragmentMergable = ipsPackageFragmentRoot.getIpsPackageFragment(ipsObjectPath
-                    .getBasePackageNameForMergableJavaClasses());
-            basePackageMergableControl.setIpsPackageFragment(ipsPackageFragmentMergable);
-            
-            basePackageDerivedControl.setIpsPckFragmentRoot(ipsPackageFragmentRoot);
-            IIpsPackageFragment ipsPackageFragmentDerived = ipsPackageFragmentRoot.getIpsPackageFragment(ipsObjectPath
-                    .getBasePackageNameForDerivedJavaClasses());
-            basePackageDerivedControl.setIpsPackageFragment(ipsPackageFragmentDerived);            
             
         } catch (CoreException e) {
             IpsPlugin.logAndShowErrorDialog(e);

@@ -19,6 +19,7 @@ package org.faktorips.devtools.core.ui.preferencepages;
 
 import org.eclipse.core.resources.IContainer;
 import org.eclipse.core.resources.IFolder;
+import org.eclipse.core.runtime.Assert;
 import org.eclipse.jface.dialogs.StatusDialog;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionEvent;
@@ -55,14 +56,16 @@ public class OutputFolderEditDialog extends StatusDialog {
      */
     public OutputFolderEditDialog(Shell parent, IIpsSrcFolderEntry srcFolderEntry, IIpsObjectPathEntryAttribute attribute) {
         super(parent);
+
+        Assert.isNotNull(attribute);
+        if (! (attribute.isFolderForDerivedSources() || attribute.isFolderForMergableSources())) {
+            throw new IllegalArgumentException("Attribute is not of type output folder."); //$NON-NLS-1$
+        }
+        
         this.setTitle(Messages.OutputFolderEditDialog_dialog_title);
         this.setHelpAvailable(false);
         this.attribute = attribute;
         this.srcFolderEntry = srcFolderEntry;
-        
-        if (! (attribute.isFolderForDerivedSources() || attribute.isFolderForMergableSources())) {
-            throw new IllegalArgumentException("Attribute is not of type output folder."); //$NON-NLS-1$
-        }
     }
 
 
