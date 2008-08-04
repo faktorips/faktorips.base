@@ -183,9 +183,11 @@ public class DeepCopyOperation implements IWorkspaceRunnable{
         		    // exception occurred thus create empty file below
         		    createEmptyFile = true;
         		}
-        	} else {
+        	}
+        	
+        	if (createEmptyFile) {
         	    // if table contents should be created empty or
-        	    // if the file could not be created from template then create an empty file
+        	    // or if the file could not be created from template then create an empty file
         		file = targetPackage.createIpsFile(templateObject.getIpsObjectType(), newName, false, monitor);
         		TimedIpsObject ipsObject = (TimedIpsObject)file.getIpsObject();
         		IIpsObjectGeneration generation = (IIpsObjectGeneration)ipsObject.newGeneration();
@@ -193,7 +195,6 @@ public class DeepCopyOperation implements IWorkspaceRunnable{
         		setPropertiesFromTemplate(templateObject, ipsObject);
         	}
         }
-
         
         IIpsObject newIpsObject = (IIpsObject)file.getIpsObject();
         if (newIpsObject instanceof IProductCmpt){
