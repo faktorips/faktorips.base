@@ -24,6 +24,7 @@ import java.util.Map;
 import org.apache.commons.lang.StringUtils;
 import org.eclipse.core.runtime.CoreException;
 import org.faktorips.codegen.JavaCodeFragmentBuilder;
+import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAssociation;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAttribute;
@@ -39,6 +40,7 @@ import org.faktorips.devtools.stdbuilder.policycmpttype.attribute.GenAttribute;
 import org.faktorips.devtools.stdbuilder.policycmpttype.attribute.GenChangeableAttribute;
 import org.faktorips.devtools.stdbuilder.policycmpttype.attribute.GenConstantAttribute;
 import org.faktorips.devtools.stdbuilder.policycmpttype.attribute.GenDerivedAttribute;
+import org.faktorips.devtools.stdbuilder.productcmpttype.GenProductCmptType;
 import org.faktorips.devtools.stdbuilder.productcmpttype.attribute.GenProdAttribute;
 import org.faktorips.devtools.stdbuilder.type.GenType;
 import org.faktorips.runtime.internal.MethodNames;
@@ -90,7 +92,7 @@ public class GenPolicyCmptType extends GenType {
     public IPolicyCmptType getPolicyCmptType() {
         return (IPolicyCmptType)getType();
     }
-
+    
     private void createGeneratorsForMethods() throws CoreException {
         IMethod[] methods = getPolicyCmptType().getMethods();
         for (int i = 0; i < methods.length; i++) {
@@ -256,6 +258,12 @@ public class GenPolicyCmptType extends GenType {
     public IProductCmptType getProductCmptType() throws CoreException {
         return getPolicyCmptType().findProductCmptType(getPolicyCmptType().getIpsProject());
     }
+    
+    public GenProductCmptType getGenProductCmptType() throws CoreException {
+        IIpsProject ipsProject = getBuilderSet().getIpsProject();
+        return getBuilderSet().getGenerator(getPolicyCmptType().findProductCmptType(ipsProject));
+    }
+           
 
     public String getPolicyCmptTypeName() throws CoreException {
         return StringUtils.capitalize(getPolicyCmptType().getName());

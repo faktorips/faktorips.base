@@ -31,6 +31,7 @@ import org.faktorips.codegen.JavaCodeFragment;
 import org.faktorips.codegen.JavaCodeFragmentBuilder;
 import org.faktorips.codegen.dthelpers.Java5ClassNames;
 import org.faktorips.datatype.Datatype;
+import org.faktorips.devtools.core.builder.DefaultBuilderSet;
 import org.faktorips.devtools.core.builder.DefaultJavaSourceFileBuilder;
 import org.faktorips.devtools.core.builder.TypeSection;
 import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
@@ -41,12 +42,14 @@ import org.faktorips.devtools.core.model.tablestructure.IColumnRange;
 import org.faktorips.devtools.core.model.tablestructure.IKeyItem;
 import org.faktorips.devtools.core.model.tablestructure.ITableStructure;
 import org.faktorips.devtools.core.model.tablestructure.IUniqueKey;
+import org.faktorips.devtools.core.util.QNameUtil;
 import org.faktorips.devtools.stdbuilder.StandardBuilderSet;
 import org.faktorips.runtime.IRuntimeRepository;
 import org.faktorips.runtime.internal.ReadOnlyBinaryRangeTree;
 import org.faktorips.runtime.internal.Table;
 import org.faktorips.runtime.internal.ReadOnlyBinaryRangeTree.TwoColumnKey;
 import org.faktorips.util.LocalizedStringsSet;
+import org.faktorips.util.StringUtil;
 
 /**
  * Important: This builder expects from the <code>IJavaPackageStructure</code> the qualified class
@@ -67,6 +70,13 @@ public class TableImplBuilder extends DefaultJavaSourceFileBuilder {
     private final static String KEY_CLASS_CONSTRUCTOR_JAVADOC = "TABLE_IMPL_BUILDER_KEY_CLASS_CONSTRUCTOR_JAVADOC";
     private final static String ADD_ROW_JAVADOC = "TABLE_IMPL_BUILDER_ADD_ROW_JAVADOC";
     private final static String INIT_KEY_MAPS_JAVADOC = "TABLE_IMPL_BUILDER_INIT_KEY_MAPS_JAVADOC";
+
+    // this method should be removed when the table generators are refactored to the new generator design (Jan)
+    public final static String getQualifiedClassName(IIpsSrcFile ipsSrcFile, IIpsArtefactBuilderSet builderSet) throws CoreException {
+        String pack = builderSet.getPackage(DefaultBuilderSet.KIND_TABLE_IMPL, ipsSrcFile);
+        String unqalifiedName = StringUtil.getFilenameWithoutExtension(ipsSrcFile.getName());
+        return QNameUtil.concat(pack, unqalifiedName);
+    }
 
     private TableRowBuilder tableRowBuilder;
 

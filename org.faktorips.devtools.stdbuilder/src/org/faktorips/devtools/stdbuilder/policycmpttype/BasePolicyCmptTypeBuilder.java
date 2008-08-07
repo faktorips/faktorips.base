@@ -14,11 +14,6 @@
 
 package org.faktorips.devtools.stdbuilder.policycmpttype;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.MultiStatus;
 import org.faktorips.codegen.DatatypeHelper;
@@ -45,11 +40,6 @@ import org.faktorips.util.message.MessageList;
  */
 public abstract class BasePolicyCmptTypeBuilder extends AbstractPcTypeBuilder {
 
-    private Map generatorsByPart = new HashMap();
-    private List genAttributes = new ArrayList();
-    private List genProdAttributes = new ArrayList();
-    private List genAssociations = new ArrayList();
-
     public BasePolicyCmptTypeBuilder(IIpsArtefactBuilderSet builderSet, String kindId, LocalizedStringsSet stringsSet) throws CoreException {
         super(builderSet, kindId, stringsSet);
     }
@@ -59,14 +49,6 @@ public abstract class BasePolicyCmptTypeBuilder extends AbstractPcTypeBuilder {
      */
     public void beforeBuild(IIpsSrcFile ipsSrcFile, MultiStatus status) throws CoreException {
         super.beforeBuild(ipsSrcFile, status);
-        initPartGenerators();
-    }
-
-    private void initPartGenerators() throws CoreException {
-        genAttributes.clear();
-        genProdAttributes.clear();
-        genAssociations.clear();
-        generatorsByPart.clear();
     }
 
     public boolean isGenerateChangeListenerSupport() {
@@ -168,4 +150,10 @@ public abstract class BasePolicyCmptTypeBuilder extends AbstractPcTypeBuilder {
         return ((StandardBuilderSet)getBuilderSet()).getGenerator(getProductCmptType());
     }
      
+    /**
+     * Returns the GenProductCmptType for this builder.
+     */
+    public GenPolicyCmptType getGenPolicyCmptType() throws CoreException {
+        return ((StandardBuilderSet)getBuilderSet()).getGenerator(getPcType());
+    }
 }

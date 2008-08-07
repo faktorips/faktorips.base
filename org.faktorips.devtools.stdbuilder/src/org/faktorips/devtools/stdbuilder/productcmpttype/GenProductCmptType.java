@@ -34,11 +34,13 @@ import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeAssociation;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeAttribute;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeMethod;
+import org.faktorips.devtools.core.model.productcmpttype.ITableStructureUsage;
 import org.faktorips.devtools.stdbuilder.StandardBuilderSet;
 import org.faktorips.devtools.stdbuilder.productcmpttype.association.GenProdAssociation;
 import org.faktorips.devtools.stdbuilder.productcmpttype.association.GenProdAssociationTo1;
 import org.faktorips.devtools.stdbuilder.productcmpttype.association.GenProdAssociationToMany;
 import org.faktorips.devtools.stdbuilder.productcmpttype.attribute.GenProdAttribute;
+import org.faktorips.devtools.stdbuilder.productcmpttype.tableusage.GenTableStructureUsage;
 import org.faktorips.devtools.stdbuilder.type.GenType;
 import org.faktorips.runtime.IllegalRepositoryModificationException;
 import org.faktorips.runtime.internal.MethodNames;
@@ -59,11 +61,12 @@ public class GenProductCmptType extends GenType {
     private List genProdAttributes = new ArrayList();
     private List genProdAssociations = new ArrayList();
     private List genMethods = new ArrayList();
+    private List genTableStructureUsages = new ArrayList();
+    
+    // TODO folgende variablen als static in die entsprechende Klasse verschieben und im Konstruktor verwenden.
     private LocalizedStringsSet methodStringsSet = new LocalizedStringsSet(GenProdMethod.class);
     private LocalizedStringsSet associationStringsSet = new LocalizedStringsSet(GenProdAssociation.class);
     private LocalizedStringsSet attributeStringsSet = new LocalizedStringsSet(GenProdAttribute.class);
-
-
     
     public GenProductCmptType(IProductCmptType productCmptType, StandardBuilderSet builderSet,
             LocalizedStringsSet stringsSet) throws CoreException {
@@ -71,6 +74,7 @@ public class GenProductCmptType extends GenType {
         createGeneratorsForProdAttributes();
         createGeneratorsForProdAssociations();
         createGeneratorsForMethods();
+        createGeneratorsForTableStructureUsages();
     }
 
     public IProductCmptType getProductCmptType() {
@@ -176,6 +180,17 @@ public class GenProductCmptType extends GenType {
             }
         }
     }
+    
+    private void createGeneratorsForTableStructureUsages() throws CoreException {
+        ITableStructureUsage[] tsus = getProductCmptType().getTableStructureUsages();
+        for (int i = 0; i < tsus.length; i++) {
+            if (tsus[i].isValid()) {
+                GenTableStructureUsage generator = new GenTableStructureUsage(this, tsus[i]);
+                genTableStructureUsages.add(generator);
+                generatorsByPart.put(tsus[i], generator);
+            }
+        }
+    }
 
     private GenProdAssociation createGenerator(IProductCmptTypeAssociation association, LocalizedStringsSet stringsSet)
             throws CoreException {
@@ -223,6 +238,10 @@ public class GenProductCmptType extends GenType {
             generatorsByPart.put(a, generator);
         }
         return generator;
+    }
+
+    public GenTableStructureUsage getGenerator(ITableStructureUsage tsu) throws CoreException {
+        return (GenTableStructureUsage)generatorsByPart.get(tsu);
     }
 
     public Iterator getGenProdAttributes() {

@@ -36,12 +36,16 @@ import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAssociation;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAttribute;
 import org.faktorips.devtools.core.model.pctype.IValidationRule;
+import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeAttribute;
+import org.faktorips.devtools.core.model.productcmpttype.ITableStructureUsage;
 import org.faktorips.devtools.stdbuilder.StandardBuilderSet;
 import org.faktorips.devtools.stdbuilder.policycmpttype.association.GenAssociation;
 import org.faktorips.devtools.stdbuilder.policycmpttype.attribute.GenAttribute;
 import org.faktorips.devtools.stdbuilder.policycmpttype.attribute.GenChangeableAttribute;
+import org.faktorips.devtools.stdbuilder.productcmpttype.GenProductCmptType;
 import org.faktorips.devtools.stdbuilder.productcmpttype.attribute.GenProdAttribute;
+import org.faktorips.devtools.stdbuilder.productcmpttype.tableusage.GenTableStructureUsage;
 import org.faktorips.devtools.stdbuilder.type.GenType;
 import org.faktorips.runtime.DefaultUnresolvedReference;
 import org.faktorips.runtime.IConfigurableModelObject;
@@ -151,6 +155,7 @@ public class PolicyCmptImplClassBuilder extends BasePolicyCmptTypeBuilder {
                 generateMethodSetProductCmpt(methodsBuilder);
             }
             generateMethodEffectiveFromHasChanged(methodsBuilder);
+            generateTableAccessMethods(methodsBuilder);
         }
         if (type.isAggregateRoot()) {
             if (type.isConfigurableByProductCmptType()) {
@@ -1190,4 +1195,66 @@ public class PolicyCmptImplClassBuilder extends BasePolicyCmptTypeBuilder {
         methodsBuilder.methodEnd();
     }
 
+    protected void generateTableAccessMethods(JavaCodeFragmentBuilder methodsBuilder) throws CoreException {
+        IProductCmptType productCmptType = getProductCmptType();
+        if (productCmptType==null) {
+            return;
+        }
+        ITableStructureUsage[] tsus = productCmptType.getTableStructureUsages();
+        for (int i = 0; i < tsus.length; i++) {
+            if (tsus[i].isValid()) {
+                generateMethodGetTable(methodsBuilder, tsus[i]);
+            }
+        }
+    }
+    
+    /**
+     * {@inheritDoc}
+     * 
+     * Code sample:
+     * 
+     * <pre>
+     * [Javadoc]
+     *     public TableStructure getTableStructure() {
+     *         ProductGen gen = (ProductGen)getProductGen();
+     *         if (gen==null) {
+     *            return null;
+     *         }
+     *         return gen.getTableRole();
+     *     }
+     * </pre>
+     * 
+     */
+    protected void generateMethodGetTable(JavaCodeFragmentBuilder builder, ITableStructureUsage usage)
+            throws CoreException {
+
+        appendLocalizedJavaDoc("METHOD_GET_TABLE", usage.getRoleName(), usage, builder);
+        GenTableStructureUsage genTsu = getTsuGeneratorForProductType(usage);
+        if (genTsu==null) {
+            return;
+        }
+        builder.methodBegin(Modifier.PUBLIC, genTsu.getReturnTypeOfMethodGetTableUsage(), genTsu.getMethodNameGetTableUsage(), EMPTY_STRING_ARRAY, EMPTY_STRING_ARRAY);
+        String productCmptGenClass = getGenProductCmptType().getQualifiedClassNameForProductCmptTypeGen(false);
+        builder.appendClassName(productCmptGenClass);
+        builder.append(" productCmpt = (");
+        builder.appendClassName(productCmptGenClass);
+        builder.append(")");
+        builder.append(getGenProductCmptType().getMethodNameGetGeneration());
+        builder.append("();");
+        builder.appendln("if (productCmpt==null) {");
+        builder.appendln("return null;");
+        builder.appendln("}");
+        builder.appendln("return productCmpt." + genTsu.getMethodNameGetTableUsage() + "();");
+        builder.closeBracket();
+    }
+    
+    private GenTableStructureUsage getTsuGeneratorForProductType(ITableStructureUsage tsu) throws CoreException {
+        GenProductCmptType genProductCmptType = ((StandardBuilderSet)getBuilderSet()).getGenerator(getProductCmptType());
+        if (genProductCmptType==null) {
+            return null;
+        }
+        return genProductCmptType.getGenerator(tsu);
+    }
+    
+    
 }

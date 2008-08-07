@@ -387,9 +387,6 @@ public class StandardBuilderSet extends DefaultBuilderSet {
 
         // policy component type builders
 
-        // product component type builders
-        productCmptGenImplClassBuilder.setTableImplBuilder(tableImplBuilder);
-
         // product component builders.
         productCmptGenerationImplBuilder.setProductCmptImplBuilder(productCmptImplClassBuilder);
         productCmptGenerationImplBuilder.setProductCmptGenImplBuilder(productCmptGenImplClassBuilder);

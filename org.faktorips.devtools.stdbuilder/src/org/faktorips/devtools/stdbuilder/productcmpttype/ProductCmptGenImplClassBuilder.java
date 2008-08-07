@@ -20,7 +20,6 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
-import org.apache.commons.lang.StringUtils;
 import org.eclipse.core.runtime.CoreException;
 import org.faktorips.codegen.DatatypeHelper;
 import org.faktorips.codegen.JavaCodeFragment;
@@ -29,7 +28,6 @@ import org.faktorips.codegen.dthelpers.Java5ClassNames;
 import org.faktorips.datatype.ValueDatatype;
 import org.faktorips.devtools.core.IpsStatus;
 import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
-import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
 import org.faktorips.devtools.core.model.ipsproject.IIpsArtefactBuilderSet;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
@@ -40,7 +38,6 @@ import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeAssocia
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeMethod;
 import org.faktorips.devtools.core.model.productcmpttype.ITableStructureUsage;
 import org.faktorips.devtools.core.model.productcmpttype.ProductCmptTypeHierarchyVisitor;
-import org.faktorips.devtools.core.model.tablestructure.ITableStructure;
 import org.faktorips.devtools.core.model.type.IAssociation;
 import org.faktorips.devtools.core.model.type.IMethod;
 import org.faktorips.devtools.core.model.valueset.ValueSetType;
@@ -50,11 +47,9 @@ import org.faktorips.devtools.stdbuilder.policycmpttype.GenPolicyCmptType;
 import org.faktorips.devtools.stdbuilder.policycmpttype.attribute.GenAttribute;
 import org.faktorips.devtools.stdbuilder.productcmpttype.association.GenProdAssociation;
 import org.faktorips.devtools.stdbuilder.productcmpttype.attribute.GenProdAttribute;
-import org.faktorips.devtools.stdbuilder.table.TableImplBuilder;
+import org.faktorips.devtools.stdbuilder.productcmpttype.tableusage.GenTableStructureUsage;
 import org.faktorips.runtime.IProductComponent;
-import org.faktorips.runtime.ITable;
 import org.faktorips.runtime.internal.EnumValues;
-import org.faktorips.runtime.internal.MethodNames;
 import org.faktorips.runtime.internal.ProductComponentGeneration;
 import org.faktorips.runtime.internal.Range;
 import org.faktorips.runtime.internal.ValueToXmlHelper;
@@ -70,20 +65,11 @@ import org.w3c.dom.Element;
  */
 public class ProductCmptGenImplClassBuilder extends BaseProductCmptTypeBuilder {
 
-    // property key for the constructor's Javadoc.
-    private final static String GET_TABLE_USAGE_METHOD_JAVADOC = "GET_TABLE_USAGE_METHOD_JAVADOC";
-
     public static final String XML_ATTRIBUTE_TARGET_RUNTIME_ID = "targetRuntimeId";
-
-    private TableImplBuilder tableImplBuilder;
 
     public ProductCmptGenImplClassBuilder(IIpsArtefactBuilderSet builderSet, String kindId) {
         super(builderSet, kindId, new LocalizedStringsSet(ProductCmptGenImplClassBuilder.class));
         setMergeEnabled(true);
-    }
-
-    public void setTableImplBuilder(TableImplBuilder tableImplBuilder) {
-        this.tableImplBuilder = tableImplBuilder;
     }
 
     /**
@@ -529,69 +515,6 @@ public class ProductCmptGenImplClassBuilder extends BaseProductCmptTypeBuilder {
     }
 
     /**
-     * Generates the method to return the table content which is related to the specific role.<br>
-     * Example:
-     * 
-     * <pre>
-     * public FtTable getRatePlan() {
-     *     if (ratePlanName == null) {
-     *         return null;
-     *     }
-     *     return (FtTable)getRepository().getTable(ratePlanName);
-     * }
-     * </pre>
-     */
-    private void generateMethodGetTableStructure(ITableStructureUsage tsu, JavaCodeFragmentBuilder codeBuilder)
-            throws CoreException {
-        // generate the method to return the corresponding table content
-        String methodName = getMethodNameGetTableUsage(tsu);
-        String[] tss = tsu.getTableStructures();
-        // get the class name of the instance which will be returned,
-        // if the usage contains only one table structure then the returned class will be the
-        // generated class of this table structure, otherwise the return class will be the ITable
-        // interface class
-        String tableStructureClassName = "";
-        if (tss.length == 1) {
-            tableStructureClassName = tss[0];
-            ITableStructure ts = (ITableStructure)getProductCmptType().getIpsProject().findIpsObject(
-                    IpsObjectType.TABLE_STRUCTURE, tableStructureClassName);
-            if (ts == null) {
-                // abort because table structure not found
-                return;
-            }
-            tableStructureClassName = tableImplBuilder.getQualifiedClassName(ts.getIpsSrcFile());
-        } else if (tss.length > 1) {
-            tableStructureClassName = ITable.class.getName();
-        } else {
-            // if no table structure is related, do nothing, this is a validation error
-            return;
-        }
-
-        String javaDoc = getLocalizedText(getIpsSrcFile(), GET_TABLE_USAGE_METHOD_JAVADOC, tsu.getRoleName());
-        String roleName = getTableStructureUsageRoleName(tsu);
-        JavaCodeFragment body = new JavaCodeFragment();
-        body.append("if (");
-        body.append(roleName);
-        body.appendln(" == null){");
-        body.appendln("return null;");
-        body.appendln("}");
-        body.append("return ");
-        body.append("(");
-        body.appendClassName(tableStructureClassName);
-        body.append(")");
-        body.append(MethodNames.GET_REPOSITORY);
-        body.append("().getTable(");
-        body.append(roleName);
-        body.appendln(");");
-        codeBuilder.method(Modifier.PUBLIC, tableStructureClassName, methodName, new String[0], new String[0], body,
-                javaDoc, ANNOTATION_GENERATED);
-    }
-
-    private String getMethodNameGetTableUsage(ITableStructureUsage tsu) {
-        return "get" + StringUtils.capitalize(tsu.getRoleName());
-    }
-
-    /**
      * Code sample:
      * 
      * <pre>
@@ -614,17 +537,15 @@ public class ProductCmptGenImplClassBuilder extends BaseProductCmptTypeBuilder {
     protected void generateCodeForTableUsage(ITableStructureUsage tsu,
             JavaCodeFragmentBuilder fieldsBuilder,
             JavaCodeFragmentBuilder methodsBuilder) throws CoreException {
-        // generate the code for the fields role name which will be initialized with the related
-        // table content qualified name
-        appendLocalizedJavaDoc("FIELD_TABLE_USAGE", tsu.getRoleName(), tsu, fieldsBuilder);
-        JavaCodeFragment expression = new JavaCodeFragment("null");
-        fieldsBuilder.varDeclaration(Modifier.PROTECTED, String.class, getTableStructureUsageRoleName(tsu), expression);
-        // generate the code for the table getter methods
-        generateMethodGetTableStructure(tsu, methodsBuilder);
+
+        GenTableStructureUsage generator = ((StandardBuilderSet)getBuilderSet()).getGenerator(getProductCmptType()).getGenerator(tsu);
+        generator.generate(false, getIpsProject(), getMainTypeSection());
+        
     }
 
-    public String getTableStructureUsageRoleName(ITableStructureUsage tsu) {
-        return tsu.getRoleName() + "Name";
+    public String getTableStructureUsageRoleName(ITableStructureUsage tsu) throws CoreException {
+        GenTableStructureUsage generator = ((StandardBuilderSet)getBuilderSet()).getGenerator(getProductCmptType()).getGenerator(tsu);
+        return generator.getMemberVarName();
     }
 
     /**
