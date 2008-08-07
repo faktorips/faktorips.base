@@ -74,6 +74,13 @@ public interface IPolicyCmptTypeAttribute extends IAttribute, IValueSetOwner, IP
     public final static String MSGCODE_COMPUTATION_METHOD_DOES_NOT_EXIST = MSGCODE_PREFIX + "ComputationMethodDoesNotExist"; //$NON-NLS-1$
     
     /**
+     * Validation message code to indicate that an attribute overwrittes another but has a different attribute type
+     * (which is not allowed).
+     */
+    public final static String MSGCODE_OVERWRITTEN_ATTRIBUTE_HAS_DIFFERENT_TYPE = MSGCODE_PREFIX + "ComputationMethodDoesNotExist"; //$NON-NLS-1$
+    
+    
+    /**
      * Returns the policy component type this attribute belongs to.
      */
     public IPolicyCmptType getPolicyCmptType();

@@ -50,6 +50,8 @@ public class Messages extends NLS {
 
     public static String PolicyCmptTypeAttribute_msg_ComputationMethodSignatureIsMissing;
 
+    public static String PolicyCmptTypeAttribute_TypeOfOverwrittenAttributeCantBeChanged;
+
     public static String Relation_msgSamePluralRolename;
 
     public static String Relation_msgSameSingularRoleName;

@@ -342,6 +342,29 @@ public class PolicyCmptTypeAttributeTest extends AbstractIpsPluginTest {
     	assertNull(ml.getMessageByCode(IPolicyCmptTypeAttribute.MSGCODE_NOTHING_TO_OVERWRITE));
     }
 
+    public void testValidate_OverwrittenAttributeHasDifferentType() throws Exception {
+        attribute.setName("name");
+        attribute.setDatatype("String");
+        attribute.setOverwrite(true);
+        attribute.setAttributeType(AttributeType.CHANGEABLE);
+        
+        MessageList ml = attribute.validate(ipsProject);
+        assertNull(ml.getMessageByCode(IPolicyCmptTypeAttribute.MSGCODE_OVERWRITTEN_ATTRIBUTE_HAS_DIFFERENT_TYPE));
+        
+        IPolicyCmptType supertype = newPolicyCmptType(ipsProject, "sup.SuperType");
+        pcType.setSupertype(supertype.getQualifiedName());
+        IPolicyCmptTypeAttribute superAttr = supertype.newPolicyCmptTypeAttribute();
+        superAttr.setName("name");
+        superAttr.setDatatype("String");
+        superAttr.setAttributeType(AttributeType.DERIVED_BY_EXPLICIT_METHOD_CALL);
+        
+        ml = attribute.validate(ipsProject);
+        assertNotNull(ml.getMessageByCode(IPolicyCmptTypeAttribute.MSGCODE_OVERWRITTEN_ATTRIBUTE_HAS_DIFFERENT_TYPE));
+        
+        attribute.setAttributeType(superAttr.getAttributeType());
+        ml = attribute.validate(ipsProject);
+        assertNull(ml.getMessageByCode(IPolicyCmptTypeAttribute.MSGCODE_OVERWRITTEN_ATTRIBUTE_HAS_DIFFERENT_TYPE));
+    }
 }
 
     
