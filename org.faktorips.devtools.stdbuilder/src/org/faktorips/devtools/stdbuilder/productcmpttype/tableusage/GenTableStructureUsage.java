@@ -78,7 +78,8 @@ public class GenTableStructureUsage extends GenProductCmptTypePart {
             throws CoreException {
         
         if (!generatesInterface) {
-            generateMethodGetTableStructure(builder);
+            generateMethodGetTable(builder);
+            generateMethodSetTableName(builder);        
         }
 
     }
@@ -96,29 +97,30 @@ public class GenTableStructureUsage extends GenProductCmptTypePart {
      * }
      * </pre>
      */
-    private void generateMethodGetTableStructure(JavaCodeFragmentBuilder codeBuilder)
+    private void generateMethodGetTable(JavaCodeFragmentBuilder codeBuilder)
             throws CoreException {
-        // generate the method to return the corresponding table content
+        
+        appendLocalizedJavaDoc("METHOD_GET_TABLE", tableStructureUsage.getRoleName(), codeBuilder);
+        
         String methodName = getMethodNameGetTableUsage();
         String tableStructureClassName = getReturnTypeOfMethodGetTableUsage();
-        String javaDoc = getLocalizedText("GET_TABLE_USAGE_METHOD_JAVADOC", tableStructureUsage.getRoleName());
         String roleName = getMemberVarName();
-        JavaCodeFragment body = new JavaCodeFragment();
-        body.append("if (");
-        body.append(roleName);
-        body.appendln(" == null){");
-        body.appendln("return null;");
-        body.appendln("}");
-        body.append("return ");
-        body.append("(");
-        body.appendClassName(tableStructureClassName);
-        body.append(")");
-        body.append(MethodNames.GET_REPOSITORY);
-        body.append("().getTable(");
-        body.append(roleName);
-        body.appendln(");");
-        codeBuilder.method(Modifier.PUBLIC, tableStructureClassName, methodName, new String[0], new String[0], body,
-                javaDoc, JavaSourceFileBuilder.ANNOTATION_GENERATED);
+        codeBuilder.signature(Modifier.PUBLIC, tableStructureClassName, methodName, EMPTY_STRING_ARRAY, EMPTY_STRING_ARRAY);
+        codeBuilder.openBracket();
+        codeBuilder.append("if (");
+        codeBuilder.append(roleName);
+        codeBuilder.appendln(" == null){");
+        codeBuilder.appendln("return null;");
+        codeBuilder.appendln("}");
+        codeBuilder.append("return ");
+        codeBuilder.append("(");
+        codeBuilder.appendClassName(tableStructureClassName);
+        codeBuilder.append(")");
+        codeBuilder.append(MethodNames.GET_REPOSITORY);
+        codeBuilder.append("().getTable(");
+        codeBuilder.append(roleName);
+        codeBuilder.appendln(");");
+        codeBuilder.closeBracket();
     }
     
     /**
@@ -139,8 +141,38 @@ public class GenTableStructureUsage extends GenProductCmptTypePart {
         return ITable.class.getName();
     }
 
+    /**
+     * Code sample:
+     * 
+     * <pre>
+     * [Javadoc]
+     * public void setRateTable(String tableName) {
+     *     if (getRepository()!=null &amp;&amp; !getRepository().isModifiable()) {
+     *         throw new IllegalRepositoryModificationException();
+     *     }
+     *     this.rateTableName = tableName;
+     * }
+     * </pre>
+     */
+    private void generateMethodSetTableName(JavaCodeFragmentBuilder methodsBuilder) throws CoreException {
+        appendLocalizedJavaDoc("METHOD_SET_TABLE_NAME", StringUtils.capitalize(getMemberVarName()), methodsBuilder);
+        String methodName = getMethodNameSetUsedTableName();
+        String[] paramNames = new String[] { "tableName" };
+        String[] paramTypes = new String[] { String.class.getName() };
+        methodsBuilder.signature(Modifier.PUBLIC, "void", methodName, paramNames, paramTypes);
+        methodsBuilder.openBracket();
+        methodsBuilder.append(getGenProductCmptType().generateFragmentCheckIfRepositoryIsModifiable());
+        methodsBuilder.append("this." + getMemberVarName());
+        methodsBuilder.appendln(" = tableName;");
+        methodsBuilder.closeBracket();
+    }
+    
     public String getMethodNameGetTableUsage() {
         return "get" + StringUtils.capitalize(tableStructureUsage.getRoleName());
+    }
+
+    public String getMethodNameSetUsedTableName() {
+        return "set" + StringUtils.capitalize(getMemberVarName());
     }
 
     public String getMemberVarName() {
