@@ -23,7 +23,6 @@ import org.faktorips.devtools.core.model.pctype.AttributeType;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAttribute;
 import org.faktorips.devtools.stdbuilder.policycmpttype.GenPolicyCmptType;
 import org.faktorips.util.ArgumentCheck;
-import org.faktorips.util.LocalizedStringsSet;
 
 /**
  * Code generator for a constant attribute.
@@ -32,9 +31,8 @@ import org.faktorips.util.LocalizedStringsSet;
  */
 public class GenConstantAttribute extends GenAttribute {
 
-    public GenConstantAttribute(GenPolicyCmptType genPolicyCmptType, IPolicyCmptTypeAttribute a,
-            LocalizedStringsSet stringsSet) throws CoreException {
-        super(genPolicyCmptType, a, stringsSet);
+    public GenConstantAttribute(GenPolicyCmptType genPolicyCmptType, IPolicyCmptTypeAttribute a) throws CoreException {
+        super(genPolicyCmptType, a);
         ArgumentCheck.isTrue(a.getAttributeType() == AttributeType.CONSTANT);
     }
 

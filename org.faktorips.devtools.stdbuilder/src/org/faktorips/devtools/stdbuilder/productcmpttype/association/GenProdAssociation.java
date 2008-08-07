@@ -42,6 +42,8 @@ import org.faktorips.valueset.IntegerRange;
  */
 public abstract class GenProdAssociation extends GenProductCmptTypePart {
 
+    private final static LocalizedStringsSet LOCALIZED_STRINGS = new LocalizedStringsSet(GenProdAssociation.class);
+
     protected IProductCmptTypeAssociation association;
     protected IProductCmptType target;
 
@@ -51,9 +53,8 @@ public abstract class GenProdAssociation extends GenProductCmptTypePart {
      * @param stringsSet
      * @throws CoreException
      */
-    public GenProdAssociation(GenProductCmptType genProductCmptType, IProductCmptTypeAssociation association,
-            LocalizedStringsSet stringsSet) throws CoreException {
-        super(genProductCmptType, association, stringsSet);
+    public GenProdAssociation(GenProductCmptType genProductCmptType, IProductCmptTypeAssociation association) throws CoreException {
+        super(genProductCmptType, association, LOCALIZED_STRINGS);
         this.association = association;
         target = association.findTargetProductCmptType(association.getIpsProject());
     }

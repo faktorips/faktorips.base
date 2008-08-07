@@ -30,7 +30,6 @@ import org.faktorips.devtools.core.model.type.IParameter;
 import org.faktorips.devtools.stdbuilder.StdBuilderHelper;
 import org.faktorips.devtools.stdbuilder.policycmpttype.GenPolicyCmptType;
 import org.faktorips.util.ArgumentCheck;
-import org.faktorips.util.LocalizedStringsSet;
 
 /**
  * Code generator for a derived attribute.
@@ -39,10 +38,8 @@ import org.faktorips.util.LocalizedStringsSet;
  */
 public class GenDerivedAttribute extends GenAttribute {
 
-    public GenDerivedAttribute(GenPolicyCmptType genPolicyCmptType, IPolicyCmptTypeAttribute a,
-            LocalizedStringsSet stringsSet) throws CoreException {
-
-        super(genPolicyCmptType, a, stringsSet);
+    public GenDerivedAttribute(GenPolicyCmptType genPolicyCmptType, IPolicyCmptTypeAttribute a) throws CoreException {
+        super(genPolicyCmptType, a);
         ArgumentCheck.isTrue(a.isDerived());
     }
 

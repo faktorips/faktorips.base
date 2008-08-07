@@ -40,6 +40,7 @@ import org.faktorips.devtools.stdbuilder.productcmpttype.association.GenProdAsso
 import org.faktorips.devtools.stdbuilder.productcmpttype.association.GenProdAssociationTo1;
 import org.faktorips.devtools.stdbuilder.productcmpttype.association.GenProdAssociationToMany;
 import org.faktorips.devtools.stdbuilder.productcmpttype.attribute.GenProdAttribute;
+import org.faktorips.devtools.stdbuilder.productcmpttype.method.GenProdMethod;
 import org.faktorips.devtools.stdbuilder.productcmpttype.tableusage.GenTableStructureUsage;
 import org.faktorips.devtools.stdbuilder.type.GenType;
 import org.faktorips.runtime.IllegalRepositoryModificationException;
@@ -57,20 +58,16 @@ import org.faktorips.util.LocalizedStringsSet;
  */
 public class GenProductCmptType extends GenType {
 
+    private final static LocalizedStringsSet LOCALIZED_STRINGS = new LocalizedStringsSet(GenProductCmptType.class);
+    
     private Map generatorsByPart = new HashMap();
     private List genProdAttributes = new ArrayList();
     private List genProdAssociations = new ArrayList();
     private List genMethods = new ArrayList();
     private List genTableStructureUsages = new ArrayList();
     
-    // TODO folgende variablen als static in die entsprechende Klasse verschieben und im Konstruktor verwenden.
-    private LocalizedStringsSet methodStringsSet = new LocalizedStringsSet(GenProdMethod.class);
-    private LocalizedStringsSet associationStringsSet = new LocalizedStringsSet(GenProdAssociation.class);
-    private LocalizedStringsSet attributeStringsSet = new LocalizedStringsSet(GenProdAttribute.class);
-    
-    public GenProductCmptType(IProductCmptType productCmptType, StandardBuilderSet builderSet,
-            LocalizedStringsSet stringsSet) throws CoreException {
-        super(productCmptType, builderSet, stringsSet);
+    public GenProductCmptType(IProductCmptType productCmptType, StandardBuilderSet builderSet) throws CoreException {
+        super(productCmptType, builderSet, LOCALIZED_STRINGS);
         createGeneratorsForProdAttributes();
         createGeneratorsForProdAssociations();
         createGeneratorsForMethods();
@@ -152,7 +149,7 @@ public class GenProductCmptType extends GenType {
         IProductCmptTypeAttribute[] attrs = getProductCmptType().getProductCmptTypeAttributes();
         for (int i = 0; i < attrs.length; i++) {
             if (attrs[i].isValid()) {
-                GenProdAttribute generator = new GenProdAttribute(this, attrs[i], attributeStringsSet);
+                GenProdAttribute generator = new GenProdAttribute(this, attrs[i]);
                 genProdAttributes.add(generator);
                 generatorsByPart.put(attrs[i], generator);
             }
@@ -163,7 +160,7 @@ public class GenProductCmptType extends GenType {
         IProductCmptTypeAssociation[] ass = getProductCmptType().getProductCmptTypeAssociations();
         for (int i = 0; i < ass.length; i++) {
             if (ass[i].isValid()) {
-                GenProdAssociation generator = createGenerator(ass[i], associationStringsSet);
+                GenProdAssociation generator = createGenerator(ass[i]);
                 genProdAssociations.add(generator);
                 generatorsByPart.put(ass[i], generator);
             }
@@ -174,7 +171,7 @@ public class GenProductCmptType extends GenType {
         IProductCmptTypeMethod[] methods = getProductCmptType().getProductCmptTypeMethods();
         for (int i = 0; i < methods.length; i++) {
             if (methods[i].isValid()) {
-                GenProdMethod generator = new GenProdMethod(this, methods[i], methodStringsSet);
+                GenProdMethod generator = new GenProdMethod(this, methods[i]);
                 genMethods.add(generator);
                 generatorsByPart.put(methods[i], generator);
             }
@@ -192,12 +189,12 @@ public class GenProductCmptType extends GenType {
         }
     }
 
-    private GenProdAssociation createGenerator(IProductCmptTypeAssociation association, LocalizedStringsSet stringsSet)
+    private GenProdAssociation createGenerator(IProductCmptTypeAssociation association)
             throws CoreException {
         if (association.is1ToMany()) {
-            return new GenProdAssociationToMany(this, association, stringsSet);
+            return new GenProdAssociationToMany(this, association);
         }
-        return new GenProdAssociationTo1(this, association, stringsSet);
+        return new GenProdAssociationTo1(this, association);
     }
 
     public GenProdAttribute getGenerator(IProductCmptTypeAttribute a) throws CoreException {
@@ -206,7 +203,7 @@ public class GenProductCmptType extends GenType {
             //generators for supertype attributes will be created on demand since it is expected that 
             //only a few exit. It will not be checked if the provided attribute is actually a supertype
             //attribute because of performance reasons.
-            generator = new GenProdAttribute(this, a, attributeStringsSet);
+            generator = new GenProdAttribute(this, a);
             genProdAttributes.add(generator);
             generatorsByPart.put(a, generator);
         }
@@ -220,7 +217,7 @@ public class GenProductCmptType extends GenType {
             //generators for supertype methods will be created on demand since it is expected that 
             //only a few exit. It will not be checked if the provided method is actually a supertype
             //method because of performance reasons.
-            generator = new GenProdMethod(this, method, methodStringsSet);
+            generator = new GenProdMethod(this, method);
             genMethods.add(generator);
             generatorsByPart.put(method, generator);
         }
@@ -233,7 +230,7 @@ public class GenProductCmptType extends GenType {
             //generators for supertype associations will be created on demand since it is expected that 
             //only a few exit. It will not be checked if the provided association is actually a supertype
             //assocation because of performance reasons.
-            generator = createGenerator(a, associationStringsSet);
+            generator = createGenerator(a);
             genProdAssociations.add(generator);
             generatorsByPart.put(a, generator);
         }

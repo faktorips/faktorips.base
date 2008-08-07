@@ -40,6 +40,8 @@ import org.faktorips.util.LocalizedStringsSet;
  */
 public abstract class GenAttribute extends GenPolicyCmptTypePart {
 
+    private final static LocalizedStringsSet LOCALIZED_STRINGS = new LocalizedStringsSet(GenAttribute.class);
+
     private IProductCmptType productCmptType;
 
     protected IAttribute attribute;
@@ -48,9 +50,8 @@ public abstract class GenAttribute extends GenPolicyCmptTypePart {
     protected String staticConstantPropertyName;
     protected String memberVarName;
 
-    public GenAttribute(GenPolicyCmptType genPolicyCmptType, IPolicyCmptTypeAttribute a, LocalizedStringsSet stringsSet)
-            throws CoreException {
-        super(genPolicyCmptType, a, stringsSet);
+    public GenAttribute(GenPolicyCmptType genPolicyCmptType, IPolicyCmptTypeAttribute a) throws CoreException {
+        super(genPolicyCmptType, a, LOCALIZED_STRINGS);
         attribute = a;
         attributeName = a.getName();
         datatypeHelper = a.getIpsProject().findDatatypeHelper(a.getDatatype());

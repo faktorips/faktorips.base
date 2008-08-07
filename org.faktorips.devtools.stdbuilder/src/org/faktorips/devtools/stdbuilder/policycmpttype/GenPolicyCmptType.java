@@ -40,6 +40,7 @@ import org.faktorips.devtools.stdbuilder.policycmpttype.attribute.GenAttribute;
 import org.faktorips.devtools.stdbuilder.policycmpttype.attribute.GenChangeableAttribute;
 import org.faktorips.devtools.stdbuilder.policycmpttype.attribute.GenConstantAttribute;
 import org.faktorips.devtools.stdbuilder.policycmpttype.attribute.GenDerivedAttribute;
+import org.faktorips.devtools.stdbuilder.policycmpttype.method.GenMethod;
 import org.faktorips.devtools.stdbuilder.productcmpttype.GenProductCmptType;
 import org.faktorips.devtools.stdbuilder.productcmpttype.attribute.GenProdAttribute;
 import org.faktorips.devtools.stdbuilder.type.GenType;
@@ -66,12 +67,6 @@ public class GenPolicyCmptType extends GenType {
     private List genValidationRules = new ArrayList();
     private List genMethods = new ArrayList();
 
-    private LocalizedStringsSet associationStringsSet = new LocalizedStringsSet(GenAssociation.class);
-    private LocalizedStringsSet attributeStringsSet = new LocalizedStringsSet(GenAttribute.class);
-    private LocalizedStringsSet ruleStringsSet = new LocalizedStringsSet(GenValidationRule.class);
-    private LocalizedStringsSet methodStringsSet = new LocalizedStringsSet(GenMethod.class);
-
-
     /**
      * @param policyCmptType
      * @param builder
@@ -97,7 +92,7 @@ public class GenPolicyCmptType extends GenType {
         IMethod[] methods = getPolicyCmptType().getMethods();
         for (int i = 0; i < methods.length; i++) {
             if (methods[i].isValid()) {
-                GenMethod generator = new GenMethod(this, methods[i], methodStringsSet);
+                GenMethod generator = new GenMethod(this, methods[i]);
                 genMethods.add(generator);
                 generatorsByPart.put(methods[i], generator);
             }
@@ -108,7 +103,7 @@ public class GenPolicyCmptType extends GenType {
         IValidationRule[] validationRules = getPolicyCmptType().getRules();
         for (int i = 0; i < validationRules.length; i++) {
             if (validationRules[i].isValid()) {
-                GenValidationRule generator = new GenValidationRule(this, validationRules[i], ruleStringsSet);
+                GenValidationRule generator = new GenValidationRule(this, validationRules[i]);
                 genValidationRules.add(generator);
                 generatorsByPart.put(validationRules[i], generator);
             }
@@ -119,7 +114,7 @@ public class GenPolicyCmptType extends GenType {
         IPolicyCmptTypeAttribute[] attrs = getPolicyCmptType().getPolicyCmptTypeAttributes();
         for (int i = 0; i < attrs.length; i++) {
             if (attrs[i].isValid()) {
-                GenAttribute generator = createGenerator(attrs[i], attributeStringsSet);
+                GenAttribute generator = createGenerator(attrs[i]);
                 genAttributes.add(generator);
                 generatorsByPart.put(attrs[i], generator);
             }
@@ -131,7 +126,7 @@ public class GenPolicyCmptType extends GenType {
         IPolicyCmptTypeAssociation[] ass = type.getPolicyCmptTypeAssociations();
         for (int i = 0; i < ass.length; i++) {
             if (ass[i].isValid()) {
-                GenAssociation generator = createGenerator(ass[i], associationStringsSet);
+                GenAssociation generator = createGenerator(ass[i]);
                 genAssociations.add(generator);
                 generatorsByPart.put(ass[i], generator);
             }
@@ -142,33 +137,31 @@ public class GenPolicyCmptType extends GenType {
         return genAttributes.iterator();
     }
 
-    private GenAttribute createGenerator(IPolicyCmptTypeAttribute a, LocalizedStringsSet stringsSet)
-            throws CoreException {
+    private GenAttribute createGenerator(IPolicyCmptTypeAttribute a) throws CoreException {
         if (a.isDerived()) {
-            return new GenDerivedAttribute(this, a, stringsSet);
+            return new GenDerivedAttribute(this, a);
         }
         if (a.isChangeable()) {
-            return new GenChangeableAttribute(this, a, stringsSet);
+            return new GenChangeableAttribute(this, a);
         }
-        return new GenConstantAttribute(this, a, stringsSet);
+        return new GenConstantAttribute(this, a);
     }
 
 
     /**
      * {@inheritDoc}
      */
-    private GenAssociation createGenerator(IPolicyCmptTypeAssociation association, LocalizedStringsSet stringsSet)
-            throws CoreException {
+    private GenAssociation createGenerator(IPolicyCmptTypeAssociation association) throws CoreException {
         if (association.is1ToMany()) {
-            return new GenAssociationToMany(this, association, stringsSet);
+            return new GenAssociationToMany(this, association);
         }
-        return new GenAssociationTo1(this, association, stringsSet);
+        return new GenAssociationTo1(this, association);
     }
 
     public GenMethod getGenerator(IMethod method) throws CoreException {
         GenMethod generator = (GenMethod)generatorsByPart.get(method);
         if (generator == null && method.isValid()) {
-            generator = new GenMethod(this, method, methodStringsSet);
+            generator = new GenMethod(this, method);
             genMethods.add(generator);
             generatorsByPart.put(method, generator);
         }
@@ -179,7 +172,7 @@ public class GenPolicyCmptType extends GenType {
     public GenAttribute getGenerator(IPolicyCmptTypeAttribute a) throws CoreException {
         GenAttribute generator = (GenAttribute)generatorsByPart.get(a);
         if (generator == null && a.isValid()) {
-            generator = createGenerator(a, attributeStringsSet);
+            generator = createGenerator(a);
             genAttributes.add(generator);
             generatorsByPart.put(a, generator);
         }
@@ -193,7 +186,7 @@ public class GenPolicyCmptType extends GenType {
     public GenAssociation getGenerator(IPolicyCmptTypeAssociation a) throws CoreException {
         GenAssociation generator = (GenAssociation)generatorsByPart.get(a);
         if (null == generator && a.isValid()) {
-            generator = createGenerator(a, associationStringsSet);
+            generator = createGenerator(a);
             genAssociations.add(generator);
             generatorsByPart.put(a, generator);
         }

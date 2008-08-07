@@ -32,7 +32,6 @@ import org.faktorips.devtools.core.util.QNameUtil;
 import org.faktorips.devtools.stdbuilder.policycmpttype.GenPolicyCmptType;
 import org.faktorips.runtime.internal.DependantObject;
 import org.faktorips.runtime.internal.MethodNames;
-import org.faktorips.util.LocalizedStringsSet;
 
 /**
  * 
@@ -40,9 +39,8 @@ import org.faktorips.util.LocalizedStringsSet;
  */
 public class GenAssociationToMany extends GenAssociation {
 
-    public GenAssociationToMany(GenPolicyCmptType genPolicyCmptType, IPolicyCmptTypeAssociation association,
-            LocalizedStringsSet stringsSet) throws CoreException {
-        super(genPolicyCmptType, association, stringsSet);
+    public GenAssociationToMany(GenPolicyCmptType genPolicyCmptType, IPolicyCmptTypeAssociation association) throws CoreException {
+        super(genPolicyCmptType, association);
     }
 
     /**

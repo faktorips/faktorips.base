@@ -44,6 +44,8 @@ import org.faktorips.valueset.IntegerRange;
  */
 public abstract class GenAssociation extends GenPolicyCmptTypePart {
 
+    private final static LocalizedStringsSet LOCALIZED_STRINGS = new LocalizedStringsSet(GenAssociation.class);
+
     protected IPolicyCmptTypeAssociation association;
     protected IPolicyCmptTypeAssociation reverseAssociation;
     protected IPolicyCmptType target;
@@ -57,10 +59,8 @@ public abstract class GenAssociation extends GenPolicyCmptTypePart {
 
     protected String fieldName;
 
-    public GenAssociation(GenPolicyCmptType genPolicyCmptType, IPolicyCmptTypeAssociation association,
-            LocalizedStringsSet stringsSet) throws CoreException {
-
-        super(genPolicyCmptType, association, stringsSet);
+    public GenAssociation(GenPolicyCmptType genPolicyCmptType, IPolicyCmptTypeAssociation association) throws CoreException {
+        super(genPolicyCmptType, association, LOCALIZED_STRINGS);
         this.association = association;
         reverseAssociation = association.findInverseAssociation(getGenPolicyCmptType().getIpsPart().getIpsProject());
         target = association.findTargetPolicyCmptType(association.getIpsProject());

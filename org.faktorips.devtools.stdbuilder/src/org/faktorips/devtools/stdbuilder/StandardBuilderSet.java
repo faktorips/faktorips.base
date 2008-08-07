@@ -175,7 +175,7 @@ public class StandardBuilderSet extends DefaultBuilderSet {
         }
         GenProductCmptType generator = (GenProductCmptType)ipsObjectTypeGenerators.get(productCmptType);
         if (generator == null) {
-            generator = new GenProductCmptType(productCmptType, this, new LocalizedStringsSet(GenProductCmptType.class));
+            generator = new GenProductCmptType(productCmptType, this);
             ipsObjectTypeGenerators.put(productCmptType, generator);
         }
         return generator;

@@ -39,15 +39,16 @@ import org.w3c.dom.Element;
  */
 public class GenProdAttribute extends GenProductCmptTypePart {
 
+    private final static LocalizedStringsSet LOCALIZED_STRINGS = new LocalizedStringsSet(GenProdAttribute.class);
+
     protected IProductCmptTypeAttribute attribute;
     protected String attributeName;
     protected DatatypeHelper datatypeHelper;
     protected String staticConstantPropertyName;
     protected String memberVarName;
 
-    public GenProdAttribute(GenProductCmptType genProductCmptType, IProductCmptTypeAttribute a,
-            LocalizedStringsSet stringsSet) throws CoreException {
-        super(genProductCmptType, a, stringsSet);
+    public GenProdAttribute(GenProductCmptType genProductCmptType, IProductCmptTypeAttribute a) throws CoreException {
+        super(genProductCmptType, a, LOCALIZED_STRINGS);
         attribute = a;
         attributeName = a.getName();
         datatypeHelper = a.getIpsProject().findDatatypeHelper(a.getDatatype());

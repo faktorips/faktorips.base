@@ -41,9 +41,10 @@ import org.faktorips.util.LocalizedStringsSet;
  */
 public class GenValidationRule extends GenPolicyCmptTypePart {
 
-    public GenValidationRule(GenPolicyCmptType genPolicyCmptType, IIpsObjectPartContainer part,
-            LocalizedStringsSet stringsSet) throws CoreException {
-        super(genPolicyCmptType, part, stringsSet);
+    private final static LocalizedStringsSet LOCALIZED_STRINGS = new LocalizedStringsSet(GenValidationRule.class);
+    
+    public GenValidationRule(GenPolicyCmptType genPolicyCmptType, IIpsObjectPartContainer part) throws CoreException {
+        super(genPolicyCmptType, part, LOCALIZED_STRINGS);
     }
 
     /**

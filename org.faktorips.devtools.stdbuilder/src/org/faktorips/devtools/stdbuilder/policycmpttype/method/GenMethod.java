@@ -12,7 +12,7 @@
  * 
  **************************************************************************************************/
 
-package org.faktorips.devtools.stdbuilder.policycmpttype;
+package org.faktorips.devtools.stdbuilder.policycmpttype.method;
 
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IStatus;
@@ -25,6 +25,8 @@ import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.model.type.IMethod;
 import org.faktorips.devtools.core.model.type.IParameter;
+import org.faktorips.devtools.stdbuilder.policycmpttype.GenPolicyCmptType;
+import org.faktorips.devtools.stdbuilder.policycmpttype.GenPolicyCmptTypePart;
 import org.faktorips.util.LocalizedStringsSet;
 
 /**
@@ -34,9 +36,10 @@ import org.faktorips.util.LocalizedStringsSet;
  */
 public class GenMethod extends GenPolicyCmptTypePart {
 
-    public GenMethod(GenPolicyCmptType genPolicyCmptType, IMethod method, LocalizedStringsSet stringsSet)
-            throws CoreException {
-        super(genPolicyCmptType, method, stringsSet);
+    private final static LocalizedStringsSet LOCALIZED_STRINGS = new LocalizedStringsSet(GenMethod.class); 
+        
+    public GenMethod(GenPolicyCmptType genPolicyCmptType, IMethod method) throws CoreException {
+        super(genPolicyCmptType, method, LOCALIZED_STRINGS);
     }
 
     /**

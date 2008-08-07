@@ -37,7 +37,6 @@ import org.faktorips.devtools.stdbuilder.policycmpttype.GenPolicyCmptType;
 import org.faktorips.devtools.stdbuilder.productcmpttype.GenProductCmptType;
 import org.faktorips.runtime.IModelObjectChangedEvent;
 import org.faktorips.util.ArgumentCheck;
-import org.faktorips.util.LocalizedStringsSet;
 import org.faktorips.valueset.EnumValueSet;
 
 /**
@@ -52,9 +51,8 @@ public class GenChangeableAttribute extends GenAttribute {
     // otherwise its the attribute's original datatype.
     protected DatatypeHelper wrapperDatatypeHelper;
 
-    public GenChangeableAttribute(GenPolicyCmptType genPolicyCmptType, IPolicyCmptTypeAttribute a,
-            LocalizedStringsSet stringsSet) throws CoreException {
-        super(genPolicyCmptType, a, stringsSet);
+    public GenChangeableAttribute(GenPolicyCmptType genPolicyCmptType, IPolicyCmptTypeAttribute a) throws CoreException {
+        super(genPolicyCmptType, a);
         ArgumentCheck.isTrue(a.isChangeable());
         wrapperDatatypeHelper = StdBuilderHelper.getDatatypeHelperForValueSet(a.getIpsProject(), datatypeHelper);
     }

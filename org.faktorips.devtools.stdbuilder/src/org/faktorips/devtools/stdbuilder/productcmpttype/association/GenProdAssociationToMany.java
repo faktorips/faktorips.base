@@ -37,7 +37,6 @@ import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeAssocia
 import org.faktorips.devtools.stdbuilder.productcmpttype.GenProductCmptType;
 import org.faktorips.devtools.stdbuilder.productcmpttype.ProductCmptGenImplClassBuilder;
 import org.faktorips.runtime.internal.MethodNames;
-import org.faktorips.util.LocalizedStringsSet;
 import org.faktorips.valueset.IntegerRange;
 import org.w3c.dom.Element;
 
@@ -53,9 +52,8 @@ public class GenProdAssociationToMany extends GenProdAssociation {
      * @param stringsSet
      * @throws CoreException
      */
-    public GenProdAssociationToMany(GenProductCmptType genProductCmptType, IProductCmptTypeAssociation association,
-            LocalizedStringsSet stringsSet) throws CoreException {
-        super(genProductCmptType, association, stringsSet);
+    public GenProdAssociationToMany(GenProductCmptType genProductCmptType, IProductCmptTypeAssociation association) throws CoreException {
+        super(genProductCmptType, association);
     }
 
     /**

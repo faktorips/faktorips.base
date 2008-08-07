@@ -12,7 +12,7 @@
  * 
  **************************************************************************************************/
 
-package org.faktorips.devtools.stdbuilder.productcmpttype;
+package org.faktorips.devtools.stdbuilder.productcmpttype.method;
 
 import java.lang.reflect.Modifier;
 import java.util.ArrayList;
@@ -30,6 +30,8 @@ import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeMethod;
 import org.faktorips.devtools.core.model.type.IParameter;
 import org.faktorips.devtools.stdbuilder.StdBuilderHelper;
+import org.faktorips.devtools.stdbuilder.productcmpttype.GenProductCmptType;
+import org.faktorips.devtools.stdbuilder.productcmpttype.GenProductCmptTypePart;
 import org.faktorips.runtime.FormulaExecutionException;
 import org.faktorips.util.LocalizedStringsSet;
 
@@ -39,11 +41,12 @@ import org.faktorips.util.LocalizedStringsSet;
  */
 public class GenProdMethod extends GenProductCmptTypePart {
 
+    private final static LocalizedStringsSet LOCALIZED_STRINGS = new LocalizedStringsSet(GenProdMethod.class);
+
     private IProductCmptTypeMethod method;
 
-    public GenProdMethod(GenProductCmptType genProductCmptType, IProductCmptTypeMethod method,
-            LocalizedStringsSet stringsSet) throws CoreException {
-        super(genProductCmptType, method, stringsSet);
+    public GenProdMethod(GenProductCmptType genProductCmptType, IProductCmptTypeMethod method) throws CoreException {
+        super(genProductCmptType, method, LOCALIZED_STRINGS);
         this.method = method;
     }
 

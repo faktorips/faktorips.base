@@ -20,7 +20,6 @@ import org.apache.commons.lang.StringUtils;
 import org.eclipse.core.runtime.CoreException;
 import org.faktorips.codegen.JavaCodeFragment;
 import org.faktorips.codegen.JavaCodeFragmentBuilder;
-import org.faktorips.devtools.core.builder.JavaSourceFileBuilder;
 import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
@@ -38,12 +37,12 @@ import org.faktorips.util.LocalizedStringsSet;
  */
 public class GenTableStructureUsage extends GenProductCmptTypePart {
 
-    private final static LocalizedStringsSet LOC_STRINGS = new LocalizedStringsSet(GenTableStructureUsage.class);  
+    private final static LocalizedStringsSet LOCALIZED_STRINGS = new LocalizedStringsSet(GenTableStructureUsage.class);  
     
     private ITableStructureUsage tableStructureUsage;
     
     public GenTableStructureUsage(GenProductCmptType genProductCmptType, ITableStructureUsage tsu) throws CoreException {
-        super(genProductCmptType, tsu, LOC_STRINGS);
+        super(genProductCmptType, tsu, LOCALIZED_STRINGS);
         this.tableStructureUsage = tsu;
     }
 

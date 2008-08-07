@@ -26,7 +26,6 @@ import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAssociation;
 import org.faktorips.devtools.core.model.type.IAssociation;
 import org.faktorips.devtools.stdbuilder.policycmpttype.GenPolicyCmptType;
 import org.faktorips.runtime.internal.MethodNames;
-import org.faktorips.util.LocalizedStringsSet;
 
 /**
  * 
@@ -34,9 +33,8 @@ import org.faktorips.util.LocalizedStringsSet;
  */
 public class GenAssociationTo1 extends GenAssociation {
 
-    public GenAssociationTo1(GenPolicyCmptType genPolicyCmptType, IPolicyCmptTypeAssociation association,
-            LocalizedStringsSet stringsSet) throws CoreException {
-        super(genPolicyCmptType, association, stringsSet);
+    public GenAssociationTo1(GenPolicyCmptType genPolicyCmptType, IPolicyCmptTypeAssociation association) throws CoreException {
+        super(genPolicyCmptType, association);
     }
 
     /**
