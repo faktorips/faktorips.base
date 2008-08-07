@@ -125,7 +125,9 @@ public abstract class AbstractProductCmptTypeBuilder extends AbstractTypeBuilder
         }
         ITableStructureUsage[] tsus = type.getTableStructureUsages();
         for (int i = 0; i < tsus.length; i++) {
-            generateCodeForTableUsage(tsus[i], fieldCodeBuilder, methodCodeBuilder);
+            if (tsus[i].isValid()) {
+                generateCodeForTableUsage(tsus[i], fieldCodeBuilder, methodCodeBuilder);
+            }
         }
     }
     
