@@ -200,7 +200,6 @@ public class SrcFolderComposite extends Composite {
     public void init(IIpsObjectPath ipsObjectPath) {
         
         this.ipsObjectPath = ipsObjectPath;
-        dataChanged = false;
 
         IpsObjectPathContentProvider contentProvider = new IpsObjectPathContentProvider();
         contentProvider.setIncludedClasses(Arrays.asList(new Class[] {IIpsSrcFolderEntry.class}));
@@ -249,6 +248,8 @@ public class SrcFolderComposite extends Composite {
         basePackageMergableField.addChangeListener(srcFolderAdapter);
         basePackageDerivedField.addChangeListener(srcFolderAdapter);
         
+        dataChanged = false;
+
         updateWidgetEnabledStates();
         treeViewer.refresh(false);
     }

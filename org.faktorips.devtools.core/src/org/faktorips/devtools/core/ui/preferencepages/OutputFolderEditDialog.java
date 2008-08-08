@@ -89,7 +89,8 @@ public class OutputFolderEditDialog extends StatusDialog {
         // initialize specific output folder
         if (srcFolderEntry.getIpsObjectPath().isOutputDefinedPerSrcFolder()) {
             folderSelectionControl.setFolder(getSpecificFolder());
-            selectedFolder = getSpecificFolder();    
+            selectedFolder = getSpecificFolder();
+            customFolderSelected  = true;
         }
         
         if (selectedFolder != null) {
@@ -103,7 +104,7 @@ public class OutputFolderEditDialog extends StatusDialog {
             // default IPS object path folders are used
             buttonCustomFolderSelected.setSelection(false);
             buttonDefaultFolderSelected.setSelection(true);
-            folderSelectionControl.setEnabled(false);            
+            folderSelectionControl.setEnabled(false);      
         }
         
         GridLayout layout = new GridLayout(1, true);

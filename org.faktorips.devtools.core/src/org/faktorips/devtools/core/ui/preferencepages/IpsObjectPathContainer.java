@@ -151,9 +151,7 @@ public class IpsObjectPathContainer {
     public boolean saveToIpsProjectFile() {
         
         try {
-            if (hasChangesInDialog()) {
-                currentIpsProject.setIpsObjectPath(ipsObjectPath);
-            }
+            currentIpsProject.setIpsObjectPath(ipsObjectPath);
         } catch (CoreException e) {
             
             IpsPlugin.logAndShowErrorDialog(e);

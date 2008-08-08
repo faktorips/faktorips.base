@@ -175,6 +175,11 @@ public class IpsObjectPathPropertyPage extends PropertyPage {
         
         if (objectPathsContainer.hasChangesInDialog()) {
             objectPathsContainer.saveToIpsProjectFile();
+            try {
+                objectPathsContainer.init(getIpsProject());
+            } catch (CoreException e) {
+                IpsPlugin.log(e);
+            }
         }
         
         return super.performOk();
