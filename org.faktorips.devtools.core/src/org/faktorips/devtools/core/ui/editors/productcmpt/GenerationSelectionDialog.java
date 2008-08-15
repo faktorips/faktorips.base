@@ -90,12 +90,12 @@ public class GenerationSelectionDialog extends TitleAreaDialog {
 	
 	private Map allButtons = new HashMap(3);
 	private Hashtable choices = new Hashtable(3);
-    /* User's choice was to create a new generation */
-	public static final int CHOICE_CREATE = 0;
     /* User's choice was to browse the generation effective at the current effective date. */
-	public static final int CHOICE_BROWSE = 1;
+	public static final int CHOICE_BROWSE = 0;
     /* User's choice was to switch the effective date to the effective from of one of the generations. */
-	public static final int CHOICE_SWITCH = 2;
+	public static final int CHOICE_SWITCH = 1;
+	/* User's choice was to create a new generation */
+	public static final int CHOICE_CREATE = 2;
 
 	private String formatedWorkingDate;
 	private GregorianCalendar workingDate;
@@ -434,11 +434,26 @@ public class GenerationSelectionDialog extends TitleAreaDialog {
 		}
 		
 		public void widgetSelected(SelectionEvent e) {
-			updateCurrentChoice((Button)e.widget);
+		    // get the current selected button, without using the event 
+		    // because maybe the event doesn't match the visible selection
+			updateCurrentChoice(getCurrentSelectedButton());
 			GenerationSelectionDialog.this.generationIndex = data.getSelectionIndex();
             validate();
 		}
 
+		/*
+		 * Returns the current selected radio button
+		 */
+		private Button getCurrentSelectedButton(){
+		    for (int i = 0; i < 3; i++) {
+		        Button button = (Button)allButtons.get(new Integer(i));
+		        if (button.getSelection()){
+		            return button;
+		        }
+            }
+		    throw new RuntimeException("Radiobutton has no selection.");
+		}
+		
 		public void widgetDefaultSelected(SelectionEvent e) {
 			widgetSelected(e);
 		}
