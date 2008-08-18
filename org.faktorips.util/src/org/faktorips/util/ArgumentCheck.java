@@ -1,7 +1,7 @@
 /*******************************************************************************
  * Copyright (c) 2005,2006 Faktor Zehn GmbH und andere.
  *
- * Alle Rechte vorbehalten.
+ * Alle Rechte vorbehalten. 
  *
  * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele,
  * Konfigurationen, etc.) duerfen nur unter den Bedingungen der 
