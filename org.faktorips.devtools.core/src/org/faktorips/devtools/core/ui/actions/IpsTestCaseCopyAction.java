@@ -31,7 +31,7 @@ public class IpsTestCaseCopyAction extends IpsAction {
     public IpsTestCaseCopyAction(Shell shell, ISelectionProvider selectionProvider) {
         super(selectionProvider);
         this.shell = shell;
-        setText("Kopiere Testfall");
+        setText(Messages.IpsTestCaseCopyAction_name);
         setImageDescriptor(IpsPlugin.getDefault().getImageDescriptor("NewTestCaseCopyWizard.gif")); //$NON-NLS-1$
     }
 
