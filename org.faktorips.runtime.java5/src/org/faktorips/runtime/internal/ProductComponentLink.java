@@ -17,7 +17,7 @@ package org.faktorips.runtime.internal;
 import org.faktorips.runtime.IProductComponent;
 import org.faktorips.runtime.IProductComponentGeneration;
 import org.faktorips.runtime.IProductComponentLink;
-import org.faktorips.valueset.java5.IntegerRange;
+import org.faktorips.valueset.IntegerRange;
 import org.w3c.dom.Element;
 
 /**

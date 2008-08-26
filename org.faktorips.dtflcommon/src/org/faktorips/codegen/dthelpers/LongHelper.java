@@ -69,11 +69,7 @@ public class LongHelper extends AbstractDatatypeHelper {
      * {@inheritDoc}
      */
     public String getRangeJavaClassName(boolean useTypesafeCollections) {
-        if (useTypesafeCollections) {
-            return Java5ClassNames.LongRange_QualifiedName;
-        } else {
             return LongRange.class.getName();
-        }
     }
 
     /**

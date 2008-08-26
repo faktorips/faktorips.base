@@ -15,12 +15,13 @@
  *
  *******************************************************************************/
 
-package org.faktorips.valueset.java5;
+package org.faktorips.valueset;
 
 import java.util.Set;
 
 import junit.framework.TestCase;
 
+import org.faktorips.valueset.IntegerRange;
 import org.faktorips.valueset.TestUtil;
 
 

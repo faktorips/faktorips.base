@@ -15,13 +15,14 @@
  *
  *******************************************************************************/
 
-package org.faktorips.valueset.java5;
+package org.faktorips.valueset;
 
 import java.util.Set;
 
 import junit.framework.TestCase;
 
 import org.faktorips.values.Money;
+import org.faktorips.valueset.MoneyRange;
 import org.faktorips.valueset.TestUtil;
 
 /**

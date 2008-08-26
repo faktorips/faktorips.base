@@ -100,11 +100,7 @@ public class DecimalHelper extends AbstractDatatypeHelper {
      * @see org.faktorips.codegen.DatatypeHelper#getRangeJavaClassName()
      */
     public String getRangeJavaClassName(boolean useTypesafeCollections) {
-        if(useTypesafeCollections){
-            return Java5ClassNames.DecimalRange_QualifiedName;
-        }else{
             return DecimalRange.class.getName();
-        }
     }
 
     /**

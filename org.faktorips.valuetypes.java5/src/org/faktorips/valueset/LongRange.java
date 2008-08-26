@@ -12,7 +12,7 @@
  * 
  **************************************************************************************************/
 
-package org.faktorips.valueset.java5;
+package org.faktorips.valueset;
 
 import java.math.BigInteger;
 
@@ -39,8 +39,8 @@ public class LongRange extends DefaultRange<Long> {
 
     /**
      * Creates a LongRange based on the indicated Strings. The Strings are parsed with the
-     * Long.valueOf() method. An empty String is interpreted as <code>null</code>. 
-     * If the parameter containsNull is true <code>null</code> is considered 
+     * Long.valueOf() method. An empty String is interpreted as <code>null</code>.
+     * If the parameter containsNull is true <code>null</code> is considered
      * to be included within this range.
      */
     public static LongRange valueOf(String lower, String upper, String step, boolean containsNull) {
@@ -71,27 +71,28 @@ public class LongRange extends DefaultRange<Long> {
     /**
      * {@inheritDoc}
      */
-    protected boolean checkIfValueCompliesToStepIncrement(Object value, Object bound) {
-        
-        if(((Long)getStep()).longValue() == 0L){
+    @Override
+    protected boolean checkIfValueCompliesToStepIncrement(Long value, Long bound) {
+        if (getStep().longValue() == 0L) {
             throw new IllegalArgumentException("The step size cannot be zero. Use null to indicate a continuous range.");
         }
         BigInteger diff = BigInteger.valueOf(Math.abs(getUpperBound() - getLowerBound()));
-        BigInteger[] divAndRemainder = diff.divideAndRemainder(BigInteger.valueOf(((Long)getStep()).longValue()));
+        BigInteger[] divAndRemainder = diff.divideAndRemainder(BigInteger.valueOf(getStep().longValue()));
         return divAndRemainder[1].longValue() == 0;
     }
 
     /**
      * {@inheritDoc}
      */
+    @Override
     protected int sizeForDiscreteValuesExcludingNull() {
         BigInteger diff = BigInteger.valueOf(Math.abs(getUpperBound() - getLowerBound()));
-        BigInteger[] divAndRemainder = diff.divideAndRemainder(BigInteger.valueOf(((Long)getStep()).longValue()));
+        BigInteger[] divAndRemainder = diff.divideAndRemainder(BigInteger.valueOf((getStep()).longValue()));
         BigInteger returnValue = divAndRemainder[0].add(BigInteger.valueOf(1));
 
         if (returnValue.longValue() > Integer.MAX_VALUE) {
             throw new RuntimeException(
-                    "The number of values contained within this range are to huge to be supported by this operation.");
+            "The number of values contained within this range are to huge to be supported by this operation.");
         }
 
         return returnValue.intValue();
@@ -100,6 +101,7 @@ public class LongRange extends DefaultRange<Long> {
     /**
      * {@inheritDoc}
      */
+    @Override
     protected Long getNextValue(Long currentValue) {
         return currentValue + getStep();
     }
@@ -107,6 +109,7 @@ public class LongRange extends DefaultRange<Long> {
     /**
      * {@inheritDoc}
      */
+    @Override
     protected Long getNullValue() {
         return null;
     }

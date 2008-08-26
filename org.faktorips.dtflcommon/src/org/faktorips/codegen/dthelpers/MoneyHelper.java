@@ -96,11 +96,7 @@ public class MoneyHelper extends AbstractDatatypeHelper {
      * @see org.faktorips.codegen.DatatypeHelper#getRangeJavaClassName()
      */
     public String getRangeJavaClassName(boolean useTypesafeCollections) {
-        if (useTypesafeCollections) {
-            return Java5ClassNames.MoneyRange_QualifiedName;
-        } else {
             return MoneyRange.class.getName();
-        }
     }
 
     /**

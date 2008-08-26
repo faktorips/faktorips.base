@@ -15,12 +15,13 @@
  *
  *******************************************************************************/
 
-package org.faktorips.valueset.java5;
+package org.faktorips.valueset;
 
 import java.util.Set;
 
 import junit.framework.TestCase;
 
+import org.faktorips.valueset.LongRange;
 import org.faktorips.valueset.TestUtil;
 
 public class LongRangeTest extends TestCase {

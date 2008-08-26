@@ -14,7 +14,7 @@
 
 package org.faktorips.runtime;
 
-import org.faktorips.valueset.java5.IntegerRange;
+import org.faktorips.valueset.IntegerRange;
 
 /**
  * This class represents a link between two product components.

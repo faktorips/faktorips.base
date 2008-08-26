@@ -12,7 +12,7 @@
  * 
  **************************************************************************************************/
 
-package org.faktorips.valueset.java5;
+package org.faktorips.valueset;
 
 import java.io.Serializable;
 import java.util.HashSet;
@@ -20,23 +20,22 @@ import java.util.Set;
 
 import org.faktorips.values.NullObject;
 import org.faktorips.values.NullObjectSupport;
-import org.faktorips.valueset.Util;
 
 
 /**
- * Abstract implementation of the <code>Range<code> interface. Implementations of this abstract 
- * range that support incremental steps must provide public factory methods instead of public 
- * constructors. Within the factory method the checkIfStepFitsIntoBounds() method has to be 
- * called on the created object to ensure that the step increment and the bounds of the 
+ * Abstract implementation of the <code>Range<code> interface. Implementations of this abstract
+ * range that support incremental steps must provide public factory methods instead of public
+ * constructors. Within the factory method the checkIfStepFitsIntoBounds() method has to be
+ * called on the created object to ensure that the step increment and the bounds of the
  * range are consistent.
  *
  * @author Jan Ortmann, Peter Erzberger
  * @author Daniel Hohenberger conversion to Java5
  */
-public class DefaultRange<T extends Comparable/*<? super T>*/> implements Range<T>, Serializable {
+public class DefaultRange<T extends Comparable<? super T>> implements Range<T>, Serializable {
 
     private static final long serialVersionUID = 8669778203942426507L;
-    
+
     private T lowerBound;
     private T upperBound;
     private T step;
@@ -157,8 +156,8 @@ public class DefaultRange<T extends Comparable/*<? super T>*/> implements Range<
         if (!checkIfValueCompliesToStepIncrement(getLowerBound(), getUpperBound())) {
             throw new IllegalArgumentException(
                     "The step doesn't fit into the specified bounds. The step has to comply to "
-                            + "the condition: the value of the expression abs(upperBound - lowerBound) / "
-                            + "step needs to be an integer.");
+                    + "the condition: the value of the expression abs(upperBound - lowerBound) / "
+                    + "step needs to be an integer.");
         }
     }
 
@@ -236,6 +235,7 @@ public class DefaultRange<T extends Comparable/*<? super T>*/> implements Range<
      * 
      * @see java.lang.Object#equals(java.lang.Object)
      */
+    @Override
     @SuppressWarnings("unchecked")
     public boolean equals(Object obj) {
         if (obj == null) {
@@ -246,13 +246,14 @@ public class DefaultRange<T extends Comparable/*<? super T>*/> implements Range<
         }
         Range<T> otherRange = (Range<T>)obj;
         return Util.equals(lowerBound, otherRange.getLowerBound())
-                && Util.equals(upperBound, otherRange.getUpperBound())
-                && Util.equals(step, otherRange.getStep());
+        && Util.equals(upperBound, otherRange.getUpperBound())
+        && Util.equals(step, otherRange.getStep());
     }
 
     /**
      * {@inheritDoc}
      */
+    @Override
     public int hashCode() {
 
         int result = 17;
@@ -265,24 +266,25 @@ public class DefaultRange<T extends Comparable/*<? super T>*/> implements Range<
     /**
      * Returns the range's String representation. Format is: lowerBound-upperBound, step, e.g. 5-10, 1
      */
+    @Override
     public String toString() {
         return lowerBound + "-" + upperBound + (step != null && !(step instanceof NullObject) ? ", " + step : "");
     }
 
     private boolean isLowerBoundNull(){
-        return lowerBound == null || (getLowerBound() instanceof NullObjectSupport ? 
-                ((NullObjectSupport)getLowerBound()).isNull() : false); 
+        return lowerBound == null || (getLowerBound() instanceof NullObjectSupport ?
+                ((NullObjectSupport)getLowerBound()).isNull() : false);
     }
-    
+
     private boolean isUpperBoundNull(){
-        return upperBound == null || (getUpperBound() instanceof NullObjectSupport ? 
-                ((NullObjectSupport)getUpperBound()).isNull() : false); 
+        return upperBound == null || (getUpperBound() instanceof NullObjectSupport ?
+                ((NullObjectSupport)getUpperBound()).isNull() : false);
     }
-    
+
     private boolean isStepNull(){
         return step == null || (step instanceof NullObjectSupport ? ((NullObjectSupport)step).isNull() : false);
     }
-    
+
     /**
      * {@inheritDoc}
      */
@@ -293,9 +295,9 @@ public class DefaultRange<T extends Comparable/*<? super T>*/> implements Range<
             }
             return false;
         }
-        
+
         boolean withinBounds = (isLowerBoundNull() || value.compareTo(lowerBound) >= 0)
-                && (isUpperBoundNull() || value.compareTo(upperBound) <= 0);
+        && (isUpperBoundNull() || value.compareTo(upperBound) <= 0);
 
         if (withinBounds) {
             if (!isStepNull()) {

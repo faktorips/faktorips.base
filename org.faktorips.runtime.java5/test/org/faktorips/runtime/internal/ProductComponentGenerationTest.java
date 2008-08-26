@@ -24,7 +24,7 @@ import java.util.Map;
 import org.faktorips.runtime.IRuntimeRepository;
 import org.faktorips.runtime.InMemoryRuntimeRepository;
 import org.faktorips.runtime.XmlAbstractTestCase;
-import org.faktorips.valueset.java5.IntegerRange;
+import org.faktorips.valueset.IntegerRange;
 import org.w3c.dom.Element;
 
 public class ProductComponentGenerationTest extends XmlAbstractTestCase {

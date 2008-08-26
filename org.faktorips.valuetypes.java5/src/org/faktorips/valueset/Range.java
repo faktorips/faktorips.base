@@ -12,7 +12,7 @@
  * 
  **************************************************************************************************/
 
-package org.faktorips.valueset.java5;
+package org.faktorips.valueset;
 
 /**
  * An interface for a range. Ranges with a lower bound higher than the upper bound are considered
@@ -23,7 +23,7 @@ package org.faktorips.valueset.java5;
  * @author Daniel Hohenberger conversion to Java5
  * @see java.lang.Comparable
  */
-public interface Range<T extends Comparable/*<? super T>*/> extends ValueSet<T> {
+public interface Range<T extends Comparable<? super T>> extends ValueSet<T> {
 
     /**
      * Returns the range's lower bound, <code>null</code> means that the range is unbounded.

@@ -12,7 +12,7 @@
  * 
  **************************************************************************************************/
 
-package org.faktorips.valueset.java5;
+package org.faktorips.valueset;
 
 import java.io.Serializable;
 import java.util.Collection;

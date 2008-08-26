@@ -12,7 +12,7 @@
  * 
  **************************************************************************************************/
 
-package org.faktorips.valueset.java5;
+package org.faktorips.valueset;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -22,6 +22,7 @@ import java.util.Set;
 
 import junit.framework.TestCase;
 
+import org.faktorips.valueset.OrderedValueSet;
 import org.faktorips.valueset.TestUtil;
 
 public class OrderedValueSetTest extends TestCase {

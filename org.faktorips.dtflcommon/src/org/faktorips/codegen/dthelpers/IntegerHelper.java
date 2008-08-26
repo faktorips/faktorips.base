@@ -83,11 +83,7 @@ public class IntegerHelper extends AbstractDatatypeHelper {
      * {@inheritDoc}
      */
     public String getRangeJavaClassName(boolean useTypesafeCollections) {
-        if (useTypesafeCollections) {
-            return Java5ClassNames.IntegerRange_QualifiedName;
-        } else {
             return IntegerRange.class.getName();
-        }
     }
 
     /**

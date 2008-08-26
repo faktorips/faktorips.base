@@ -71,13 +71,14 @@ public abstract class GenProdAssociation extends GenProductCmptTypePart {
             expression.append('<');
             expression.appendClassName(String.class);
             expression.append(", ");
-            expression.appendClassName(Java5ClassNames.IntegerRange_QualifiedName);
+            expression.appendClassName(IntegerRange.class);
             expression.append('>');
         }
         expression.append("(0)");
         fieldsBuilder.varDeclaration(Modifier.PRIVATE, Map.class.getName()
                 + (isUseTypesafeCollections() ? "<" + String.class.getName() + ", "
-                        + Java5ClassNames.IntegerRange_QualifiedName + ">" : ""),
+                        + IntegerRange.class.getName()
+                        + ">" : ""),
                         getFieldNameCardinalityForAssociation(), expression);
     }
 
@@ -232,8 +233,8 @@ public abstract class GenProdAssociation extends GenProductCmptTypePart {
         String methodName = getMethodNameGetCardinalityForAssociation();
         String[][] params = getParamGetCardinalityForAssociation();
         methodsBuilder.signature(Modifier.PUBLIC,
-                isUseTypesafeCollections() ? Java5ClassNames.IntegerRange_QualifiedName : IntegerRange.class.getName(),
-                        methodName, params[0], params[1]);
+                IntegerRange.class.getName(),
+                methodName, params[0], params[1]);
     }
 
     public String getMethodNameGetCardinalityForAssociation() throws CoreException {

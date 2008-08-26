@@ -74,11 +74,7 @@ public class DoubleHelper extends AbstractDatatypeHelper {
      * {@inheritDoc}
      */
     public String getRangeJavaClassName(boolean useTypesafeCollections) {
-        if (useTypesafeCollections) {
-            return Java5ClassNames.DoubleRange_QualifiedName;
-        } else {
             return DoubleRange.class.getName();
-        }
     }
 
     /**

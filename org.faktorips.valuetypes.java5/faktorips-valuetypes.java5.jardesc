@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <jardesc>
-    <jar path="E:/Ips4to5/runtime-workspace-FIPS/org.faktorips.integrationtest.java5/lib/faktorips-valuetypes.java5.jar"/>
+    <jar path="E:/Ips4to5/runtime-workspace-FIPS2/org.faktorips.integrationtest.java5/lib/faktorips-valuetypes.java5.jar"/>
     <options buildIfNeeded="true" compress="true" descriptionLocation="/org.faktorips.valuetypes.java5/faktorips-valuetypes.java5.jardesc" exportErrors="true" exportWarnings="true" includeDirectoryEntries="false" overwrite="true" saveDescription="true" storeRefactorings="false" useSourceFolders="false"/>
     <storedRefactorings deprecationInfo="true" structuralOnly="false"/>
     <selectedProjects/>
@@ -11,11 +11,15 @@
         </sealing>
     </manifest>
     <selectedElements exportClassFiles="true" exportJavaFiles="false" exportOutputFolder="false">
-        <javaElement handleIdentifier="=org.faktorips.valuetypes.java5"/>
-        <javaElement handleIdentifier="=org.faktorips.valuetypes/src&lt;org.faktorips.valueset{Util.java"/>
-        <javaElement handleIdentifier="=org.faktorips.valuetypes/test&lt;org.faktorips.valueset{TestUtil.java"/>
-        <javaElement handleIdentifier="=org.faktorips.valuetypes/test&lt;org.faktorips.valueset{UtilTest.java"/>
-        <javaElement handleIdentifier="=org.faktorips.valuetypes/src&lt;org.faktorips.values"/>
-        <javaElement handleIdentifier="=org.faktorips.valuetypes/test&lt;org.faktorips.values"/>
+        <file path="/org.faktorips.valuetypes.java5/faktorips-valuetypes.java5.jardesc"/>
+        <file path="/org.faktorips.valuetypes.java5/.project"/>
+        <file path="/org.faktorips.valuetypes.java5/build.properties"/>
+        <javaElement handleIdentifier="=org.faktorips.valuetypes.java5/src"/>
+        <file path="/org.faktorips.valuetypes.java5/faktorips-valuetypes.java5-src.jardesc"/>
+        <file path="/org.faktorips.valuetypes.java5/.cvsignore"/>
+        <folder path="/org.faktorips.valuetypes.java5/META-INF"/>
+        <javaElement handleIdentifier="=org.faktorips.valuetypes.java5/test"/>
+        <file path="/org.faktorips.valuetypes.java5/.classpath"/>
     </selectedElements>
+    <fatjar builder="org.eclipse.jdt.ui.plain_jar_builder" launchConfig=""/>
 </jardesc>
