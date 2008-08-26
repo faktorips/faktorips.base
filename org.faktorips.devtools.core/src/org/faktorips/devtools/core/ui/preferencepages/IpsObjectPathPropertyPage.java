@@ -145,7 +145,7 @@ public class IpsObjectPathPropertyPage extends PropertyPage {
             if (! visible) {
                 if (objectPathsContainer.hasChangesInDialog()) {
                     String title = Messages.IpsObjectPathPropertyPage_changes_in_dialog_title; 
-                    String message = Messages.IpsObjectPathPropertyPage_1; 
+                    String message = Messages.IpsObjectPathPropertyPage_apply_discard_applyLater_message; 
                     String[] buttonLabels = new String[] { Messages.IpsObjectPathPropertyPage_apply_button, Messages.IpsObjectPathPropertyPage_discard_button, Messages.IpsObjectPathPropertyPage_apply_later_button };
 
                     MessageDialog dialog= new MessageDialog(getShell(), title, null, message, MessageDialog.QUESTION, buttonLabels, 0);
@@ -167,12 +167,11 @@ public class IpsObjectPathPropertyPage extends PropertyPage {
         }
         super.setVisible(visible);
     }
-    
+
     /**
      * {@inheritDoc}
      */
     public boolean performOk() {
-        
         if (objectPathsContainer.hasChangesInDialog()) {
             objectPathsContainer.saveToIpsProjectFile();
             try {
@@ -181,7 +180,6 @@ public class IpsObjectPathPropertyPage extends PropertyPage {
                 IpsPlugin.log(e);
             }
         }
-        
         return super.performOk();
     }
 

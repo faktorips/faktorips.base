@@ -49,7 +49,7 @@ public class Messages extends NLS {
     public static String IpsObjectPathLabelProvider_package_name_derived;
     public static String IpsObjectPathLabelProvider_package_name_mergable;
     public static String IpsObjectPathLabelProvider_toc_file;
-    public static String IpsObjectPathPropertyPage_1;
+    public static String IpsObjectPathPropertyPage_apply_discard_applyLater_message;
     public static String IpsObjectPathPropertyPage_apply_button;
     public static String IpsObjectPathPropertyPage_apply_later_button;
     public static String IpsObjectPathPropertyPage_changes_in_dialog_title;
