@@ -20,6 +20,7 @@ package org.faktorips.devtools.core.model.ipsproject;
 import java.util.Map;
 
 import org.eclipse.core.runtime.IStatus;
+import org.faktorips.datatype.ValueDatatype;
 import org.faktorips.devtools.core.model.IIpsModel;
 import org.faktorips.util.message.Message;
 
@@ -36,6 +37,16 @@ public interface IIpsBuilderSetPropertyDef {
      */
     public String getName();
 
+    /**
+     * The name of this property definition in human readable form. 
+     */
+    public String getLabel();
+    
+    /**
+     * Returns the type specified in the plugin descriptor.
+     */
+    public ValueDatatype getType();
+    
     /**
      * Returns a description of this property definition if available. Otherwise <code>null</code>.
      */

@@ -139,13 +139,13 @@ public class IpsArtefactBuilderSetInfoTest extends TestCase {
                         return null;
                     }
                     if(((String)args[0]).equals("loggingConntectors")){
-                        return new IpsBuilderSetPropertyDef("loggingConntectors", "", "boolean", "false", "false", new ArrayList(), new ArrayList());
+                        return new IpsBuilderSetPropertyDef("loggingConntectors", "", "", "boolean", "false", "false", new ArrayList(), new ArrayList());
                     }
                     if(((String)args[0]).equals("useChangeListener")){
-                        return new IpsBuilderSetPropertyDef("useChangeListener", "", "boolean", "false", "false", new ArrayList(), new ArrayList());
+                        return new IpsBuilderSetPropertyDef("useChangeListener", "", "", "boolean", "false", "false", new ArrayList(), new ArrayList());
                     }
                     if(((String)args[0]).equals("coypSupport")){
-                        return new IpsBuilderSetPropertyDef("coypSupport", "", "boolean", "false", "false", new ArrayList(), new ArrayList());
+                        return new IpsBuilderSetPropertyDef("coypSupport", "", "", "boolean", "false", "false", new ArrayList(), new ArrayList());
                     }
                 }
                 return null;

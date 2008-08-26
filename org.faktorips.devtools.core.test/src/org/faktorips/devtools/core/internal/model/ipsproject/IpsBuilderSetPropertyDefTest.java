@@ -203,7 +203,7 @@ public class IpsBuilderSetPropertyDefTest extends TestCase {
         attributes.put("class", IpsBuilderSetPropertyDef.class.getName());
 
         HashMap executableExtensionMap = new HashMap();
-        IpsBuilderSetPropertyDef ownDefClass = new IpsBuilderSetPropertyDef("testProperty", "", "boolean", "true", "true", new ArrayList(), new ArrayList());
+        IpsBuilderSetPropertyDef ownDefClass = new IpsBuilderSetPropertyDef("testProperty", "", "", "boolean", "true", "true", new ArrayList(), new ArrayList());
         executableExtensionMap.put("class", ownDefClass);
         
         TestConfigurationElement propertyDefEl = new TestConfigurationElement("testProperty", attributes, null,

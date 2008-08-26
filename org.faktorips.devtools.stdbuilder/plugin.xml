@@ -11,40 +11,47 @@
                defaultValue="false"
                description="Enables the generation of change event mechanism"
                disableValue="false"
+               label="Generate change listener"
                name="generateChangeListener"
                type="boolean"/>
          <builderSetPropertyDef
                class="org.faktorips.devtools.stdbuilder.Java5BuilderSetPropertiesDef"
                description="Enables the generation of java 5 enumeration types"
+               label="Use Java enum types"
                name="useJavaEnumTypes"
                type="boolean"/>
          <builderSetPropertyDef
                class="org.faktorips.devtools.stdbuilder.Java5BuilderSetPropertiesDef"
                description="Enables the generation of java 5 generices for collections"
+               label="Use typesafe collections"
                name="useTypesafeCollections"
                type="boolean"/>
          <builderSetPropertyDef
                defaultValue="false"
                description="Enables the generation of a delta determining mechnism for model objects"
                disableValue="false"
+               label="Generate delta support"
                name="generateDeltaSupport"
                type="boolean"/>
          <builderSetPropertyDef
                defaultValue="false"
                description="Enables the generation of a model copy mechanism"
                disableValue="false"
+               label="Generate copy support"
                name="generateCopySupport"
                type="boolean"/>
          <builderSetPropertyDef
                defaultValue="false"
                description="Enables the generation of logging code"
                disableValue="false"
+               label="Generate logging statements"
                name="generateLoggingStatements"
                type="boolean"/>
          <builderSetPropertyDef
                defaultValue="false"
                description="Enables the generation of visitor code"
                disableValue="false"
+               label="Generate visitor support"
                name="generateVisitorSupport"
                type="boolean"/>
       </builderSet>

@@ -21,6 +21,7 @@ import java.util.Map;
 
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.osgi.util.NLS;
+import org.faktorips.datatype.ValueDatatype;
 import org.faktorips.devtools.core.builder.ComplianceCheck;
 import org.faktorips.devtools.core.model.IIpsModel;
 import org.faktorips.devtools.core.model.ipsproject.IIpsBuilderSetPropertyDef;
@@ -36,6 +37,7 @@ import org.faktorips.util.message.Message;
 public class Java5BuilderSetPropertiesDef implements IIpsBuilderSetPropertyDef {
 
     private String name;
+    private String label;
     private String description;
     
     /**
@@ -67,12 +69,17 @@ public class Java5BuilderSetPropertiesDef implements IIpsBuilderSetPropertyDef {
         return name;
     }
 
+    public String getLabel() {
+        return label;
+    }
+    
     public boolean hasDiscreteValues() {
         return false;
     }
 
     public IStatus initialize(IIpsModel ipsModel, Map properties) {
         name = (String)properties.get("name"); //$NON-NLS-1$
+        label = (String)properties.get("label");
         description = (String)properties.get("description"); //$NON-NLS-1$
         return null;
     }
@@ -102,6 +109,15 @@ public class Java5BuilderSetPropertiesDef implements IIpsBuilderSetPropertyDef {
             String text = NLS.bind(Messages.Java5BuilderSetPropertiesDef_0, value);
             return new Message("", text, Message.ERROR); //$NON-NLS-1$
         }
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public ValueDatatype getType() {
+        // FIXME: need access to nested class PropertyDefEnumDatatype in IpsBuilderSetPropertyDef
+        //  for now only boolean fields are taken into account, BROKEN!
+        return ValueDatatype.BOOLEAN;
     }
 
 }

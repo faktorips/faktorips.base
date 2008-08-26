@@ -25,12 +25,15 @@ import org.eclipse.core.runtime.ILog;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.jdt.core.JavaCore;
 import org.faktorips.datatype.Datatype;
+import org.faktorips.datatype.EnumDatatype;
+import org.faktorips.datatype.ValueDatatype;
 import org.faktorips.devtools.core.IpsStatus;
 import org.faktorips.devtools.core.model.IIpsModel;
 import org.faktorips.devtools.core.model.ipsproject.IIpsBuilderSetPropertyDef;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.util.ArgumentCheck;
 import org.faktorips.util.message.Message;
+import org.faktorips.util.message.MessageList;
 
 /**
  * The default implementation of the <code>org.faktorips.devtools.core.model.ipsproject.IIpsBuilderSetPropertyDef</code> interface.
@@ -42,6 +45,7 @@ import org.faktorips.util.message.Message;
 public class IpsBuilderSetPropertyDef implements IIpsBuilderSetPropertyDef{
 
     private String name;
+    private String label;
     private String description;
     private String type;
     private String defaultValue;
@@ -54,11 +58,12 @@ public class IpsBuilderSetPropertyDef implements IIpsBuilderSetPropertyDef{
      * This constructor is only public for test purposes. Regularly instances of this class are
      * created via the loadExtensions static method.
      */
-    public IpsBuilderSetPropertyDef(String name, String description, String type, String defaultValue,
+    public IpsBuilderSetPropertyDef(String name, String label, String description, String type, String defaultValue,
             String disableValue, List discretePropertyValues, List supportedJdkVersions) {
         super();
         ArgumentCheck.notNull(name, this);
         this.name = name;
+        this.label = label;
         this.description = description;
         this.type = type;
         this.discretePropertyValues = discretePropertyValues;
@@ -96,9 +101,17 @@ public class IpsBuilderSetPropertyDef implements IIpsBuilderSetPropertyDef{
     }
 
     /**
+     * {@inheritDoc}
+     */
+    public String getLabel() {
+        return label;
+    }
+    
+    
+    /**
      * Returns the type specified in the plugin descriptor.
      */
-    public String getType() {
+    public String getTypeInternal() {
         return type;
     }
 
@@ -178,7 +191,26 @@ public class IpsBuilderSetPropertyDef implements IIpsBuilderSetPropertyDef{
      * {@inheritDoc}
      */
     public Object[] getDiscreteValues() {
-        return discretePropertyValues.toArray();
+        return discretePropertyValues.toArray(new String[discretePropertyValues.size()]);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public ValueDatatype getType() {
+        if(getTypeInternal().equals("string")){
+            return Datatype.STRING;
+        }
+        if (getTypeInternal().equals("boolean")){
+            return Datatype.BOOLEAN;
+        }
+        if (getTypeInternal().equals("integer")){
+            return Datatype.INTEGER;
+        }
+        if(getTypeInternal().equals("enum") || getTypeInternal().equals("extensionPoint")){
+            return new PropertyDefEnumDatatype();
+        }
+        return null;
     }
 
     /**
@@ -253,7 +285,7 @@ public class IpsBuilderSetPropertyDef implements IIpsBuilderSetPropertyDef{
             Map properties,
             List discreteValues) {
 
-        String classValue = element.getAttribute("class");
+        String classValue = element.getAttribute("class"); //$NON-NLS-1$
         boolean classValueSpecified = !StringUtils.isEmpty(classValue);
 
         String name = element.getAttribute("name"); //$NON-NLS-1$
@@ -261,6 +293,13 @@ public class IpsBuilderSetPropertyDef implements IIpsBuilderSetPropertyDef{
             logger
             .log(new IpsStatus(
                     "The required attribute \"name\" of the builder set property " + element.getName() + " of the builder set " + builderSetId + " is missing.")); //$NON-NLS-1$
+            return false;
+        }
+        String label = element.getAttribute("label"); //$NON-NLS-1$
+        if (!classValueSpecified && StringUtils.isEmpty(label)) {
+            logger
+            .log(new IpsStatus(
+                    "The required attribute \"label\" of the builder set property " + element.getName() + " of the builder set " + builderSetId + " is missing.")); //$NON-NLS-1$
             return false;
         }
         String type = element.getAttribute("type"); //$NON-NLS-1$
@@ -299,6 +338,7 @@ public class IpsBuilderSetPropertyDef implements IIpsBuilderSetPropertyDef{
         }
 
         properties.put("name", name);
+        properties.put("label", label);
         properties.put("type", type);
         properties.put("defaultValue", defaultValue);
         properties.put("disableValue", disableValue);
@@ -345,13 +385,115 @@ public class IpsBuilderSetPropertyDef implements IIpsBuilderSetPropertyDef{
             }
         } else {
             String name = (String)properties.get("name");
+            String label = (String)properties.get("label");
             String description = (String)properties.get("description");
             String defaultValue = (String)properties.get("defaultValue");
             String disableValue = (String)properties.get("disableValue");
-            propertyDef = new IpsBuilderSetPropertyDef(name, description, type, defaultValue,
+            propertyDef = new IpsBuilderSetPropertyDef(name, label, description, type, defaultValue,
                     disableValue, discreteValues, jdkComplianceLevelList);
         }
         return propertyDef;
     }
+
+    
+    /**
+     * 
+     * @author Roman Grutza
+     */
+    public final class PropertyDefEnumDatatype implements EnumDatatype {
+        public String[] getAllValueIds(boolean includeNull) {
+                return (String[]) getDiscreteValues();
+        }
+
+        public String getValueName(String id) {
+            String[] discreteValues = (String[]) getDiscreteValues();
+            
+            for (int i = 0; i < discreteValues.length; i++) {
+                if (discreteValues[i].equals(id)) {
+                    return id;
+                }
+            }
+            return null;
+        }
+
+        public boolean isSupportingNames() {
+            return true;
+        }
+
+        public boolean areValuesEqual(String valueA, String valueB) {
+            return valueA.equals(valueB);
+        }
+
+        public MessageList checkReadyToUse() {
+            return null;
+        }
+
+        public int compare(String valueA, String valueB) throws UnsupportedOperationException {
+            return valueA.compareTo(valueB);
+        }
+
+        public String getDefaultValue() {
+            return defaultValue;
+        }
+
+        public ValueDatatype getWrapperType() {
+            return null;
+        }
+
+        public boolean isNull(String value) {
+            return (value == null);
+        }
+
+        public boolean isParsable(String value) {
+            if (value==null) {
+                return true;
+            }
+            String[] ids = (String[]) getDiscreteValues();
+            for (int i = 0; i < ids.length; i++) {
+                if (ids[i].equals(value)) {
+                    return true;
+                }
+            }
+            return false;
+        }
+
+        public boolean supportsCompare() {
+            return false;
+        }
+
+        public String getJavaClassName() {
+            // FIXME: ???
+            return "java.lang.String";
+        }
+
+        public String getName() {
+            return name;
+        }
+
+        public String getQualifiedName() {
+            return name;
+        }
+
+        public boolean hasNullObject() {
+            return false;
+        }
+
+        public boolean isPrimitive() {
+            return false;
+        }
+
+        public boolean isValueDatatype() {
+            return true;
+        }
+
+        public boolean isVoid() {
+            return false;
+        }
+
+        public int compareTo(Object arg0) {
+            return 0;
+        }
+    }
+
 
 }
