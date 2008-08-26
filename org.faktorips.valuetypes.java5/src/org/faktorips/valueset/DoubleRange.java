@@ -23,6 +23,8 @@ package org.faktorips.valueset;
  */
 public class DoubleRange extends DefaultRange<Double>{
 
+    private static final long serialVersionUID = 3093772484960108819L;
+
     public DoubleRange(Double lower, Double upper, boolean containsNull) {
         super(lower, upper, containsNull);
     }
@@ -30,8 +32,6 @@ public class DoubleRange extends DefaultRange<Double>{
     public DoubleRange(Double lower, Double upper) {
         this(lower, upper, false);
     }
-
-    private static final long serialVersionUID = 852049468927747406L;
 
     /**
      * Creates an DoubleRange based on the indicated Strings. The Strings are parsed with the

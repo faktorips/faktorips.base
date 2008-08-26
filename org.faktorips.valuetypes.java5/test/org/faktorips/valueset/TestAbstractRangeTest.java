@@ -1,24 +1,19 @@
-/*******************************************************************************
- * Copyright (c) 2005,2006 Faktor Zehn GmbH und andere.
- *
- * Alle Rechte vorbehalten.
- *
- * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele,
- * Konfigurationen, etc.) duerfen nur unter den Bedingungen der 
- * Faktor-Zehn-Community Lizenzvereinbarung - Version 0.1 (vor Gruendung Community) 
- * genutzt werden, die Bestandteil der Auslieferung ist und auch unter
- *   http://www.faktorips.org/legal/cl-v01.html
- * eingesehen werden kann.
- *
- * Mitwirkende:
- *   Faktor Zehn GmbH - initial API and implementation - http://www.faktorzehn.de
- *
- *******************************************************************************/
+/***************************************************************************************************
+ * Copyright (c) 2005-2008 Faktor Zehn AG und andere.
+ * 
+ * Alle Rechte vorbehalten.
+ * 
+ * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen,
+ * etc.) duerfen nur unter den Bedingungen der Faktor-Zehn-Community Lizenzvereinbarung - Version
+ * 0.1 (vor Gruendung Community) genutzt werden, die Bestandteil der Auslieferung ist und auch unter
+ * http://www.faktorzehn.org/f10-org:lizenzen:community eingesehen werden kann.
+ * 
+ * Mitwirkende: Faktor Zehn GmbH - initial API and implementation - http://www.faktorzehn.de
+ * 
+ **************************************************************************************************/
 
 package org.faktorips.valueset;
 
-
-import org.faktorips.valueset.IntegerRange;
 
 import junit.framework.TestCase;
 
@@ -29,11 +24,11 @@ import junit.framework.TestCase;
 public class TestAbstractRangeTest extends TestCase {
 
     public void testConstructor(){
-    
+
         IntegerRange range = new IntegerRange(null, new Integer(10));
         assertNull(range.getLowerBound());
         assertEquals(new Integer(10), range.getUpperBound());
-        
+
         range = new IntegerRange(new Integer(10), null);
         assertEquals(new Integer(10), range.getLowerBound());
         assertNull(range.getUpperBound());
@@ -49,12 +44,12 @@ public class TestAbstractRangeTest extends TestCase {
         range = IntegerRange.valueOf(null, null, new Integer(10), true);
         assertNull(range.getLowerBound());
         assertNull(range.getUpperBound());
-        
+
         range = IntegerRange.valueOf(new Integer(0), null, 10);
         assertEquals(new Integer(0), range.getLowerBound());
         assertNull(range.getUpperBound());
         assertEquals(new Integer(10), range.getStep());
-        
+
         range = IntegerRange.valueOf(null, new Integer(100), 10);
         assertNull(range.getLowerBound());
         assertEquals(new Integer(100), range.getUpperBound());
@@ -72,7 +67,7 @@ public class TestAbstractRangeTest extends TestCase {
         catch(IllegalArgumentException e){}
 
     }
-    
+
     public void testIsEmpty() {
         // range 5-10 should not be empty
         IntegerRange range = new IntegerRange(5, 10);
@@ -147,11 +142,11 @@ public class TestAbstractRangeTest extends TestCase {
         assertFalse(range1.equals(new IntegerRange(null, new Integer(10))));
         assertFalse(range1.equals(new IntegerRange(new Integer(5), null)));
         assertTrue(range1.equals(new IntegerRange(null, null)));
-        
+
         range1 = IntegerRange.valueOf(new Integer(10), new Integer(60), 5);
         IntegerRange range2 = IntegerRange.valueOf(new Integer(10), new Integer(60), 5);
         assertEquals(range1, range2);
-        
+
         range2 = IntegerRange.valueOf(new Integer(10), new Integer(60), 10);
         assertFalse(range1.equals(range2));
     }
@@ -161,23 +156,23 @@ public class TestAbstractRangeTest extends TestCase {
         IntegerRange range1 = IntegerRange.valueOf(new Integer(10), new Integer(60), 5);
         IntegerRange range2 = IntegerRange.valueOf(new Integer(10), new Integer(60), 5);
         assertEquals(range1.hashCode(), range2.hashCode());
-        
+
         range2 = IntegerRange.valueOf(new Integer(10), new Integer(60), 10);
         assertFalse(range1.hashCode() == range2.hashCode());
     }
 
     public void testIsDiscrete(){
-        
+
         IntegerRange range = IntegerRange.valueOf(new Integer(10), new Integer(60), null, true);
         assertFalse(range.isDiscrete());
         range = IntegerRange.valueOf(new Integer(10), new Integer(60), 5);
         assertTrue(range.isDiscrete());
     }
-    
+
     public void testContainsNull(){
         IntegerRange range = IntegerRange.valueOf(new Integer(10), new Integer(60), null, false);
         assertFalse(range.containsNull());
-        
+
         range = IntegerRange.valueOf(new Integer(10), new Integer(60), null, true);
         assertTrue(range.containsNull());
     }

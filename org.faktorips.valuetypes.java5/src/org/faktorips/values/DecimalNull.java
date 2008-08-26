@@ -27,7 +27,7 @@ import java.math.BigDecimal;
  */
 public class DecimalNull extends Decimal implements NullObject {
 
-    private static final long serialVersionUID = -2216601951904037094L;
+    private static final long serialVersionUID = -662857878963625638L;
 
     DecimalNull() {
         super(null);

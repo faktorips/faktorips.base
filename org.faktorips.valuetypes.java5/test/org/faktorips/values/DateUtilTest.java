@@ -1,26 +1,21 @@
-/*******************************************************************************
- * Copyright (c) 2005,2006 Faktor Zehn GmbH und andere.
- *
- * Alle Rechte vorbehalten.
- *
- * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele,
- * Konfigurationen, etc.) duerfen nur unter den Bedingungen der 
- * Faktor-Zehn-Community Lizenzvereinbarung - Version 0.1 (vor Gruendung Community) 
- * genutzt werden, die Bestandteil der Auslieferung ist und auch unter
- *   http://www.faktorips.org/legal/cl-v01.html
- * eingesehen werden kann.
- *
- * Mitwirkende:
- *   Faktor Zehn GmbH - initial API and implementation - http://www.faktorzehn.de
- *
- *******************************************************************************/
+/***************************************************************************************************
+ * Copyright (c) 2005-2008 Faktor Zehn AG und andere.
+ * 
+ * Alle Rechte vorbehalten.
+ * 
+ * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen,
+ * etc.) duerfen nur unter den Bedingungen der Faktor-Zehn-Community Lizenzvereinbarung - Version
+ * 0.1 (vor Gruendung Community) genutzt werden, die Bestandteil der Auslieferung ist und auch unter
+ * http://www.faktorzehn.org/f10-org:lizenzen:community eingesehen werden kann.
+ * 
+ * Mitwirkende: Faktor Zehn GmbH - initial API and implementation - http://www.faktorzehn.de
+ * 
+ **************************************************************************************************/
 
 package org.faktorips.values;
 
 import java.util.Date;
 import java.util.GregorianCalendar;
-
-import org.faktorips.values.DateUtil;
 
 import junit.framework.TestCase;
 
@@ -32,10 +27,11 @@ public class DateUtilTest extends TestCase {
     /*
      * @see TestCase#setUp()
      */
+    @Override
     protected void setUp() throws Exception {
         super.setUp();
     }
-    
+
     public void testGregorianCalendarToIsoDateString() {
         assertEquals("", DateUtil.gregorianCalendarToIsoDateString(null));
         GregorianCalendar date = new GregorianCalendar(2005, 8, 9);
@@ -43,7 +39,7 @@ public class DateUtilTest extends TestCase {
         date = new GregorianCalendar(2005, 9, 10);
         assertEquals("2005-10-10", DateUtil.gregorianCalendarToIsoDateString(date));
     }
-    
+
     public void testIsIsoDate() {
         assertTrue(DateUtil.isIsoDate("2008-01-01"));
         assertFalse(DateUtil.isIsoDate("01-01-2008"));
@@ -60,7 +56,7 @@ public class DateUtilTest extends TestCase {
         date = new GregorianCalendar(2005, 9, 10).getTime();
         assertEquals("2005-10-10", DateUtil.dateToIsoDateString(date));
     }
-    
+
     public void testParseIsoDateStringToGregorianCalendar() {
         assertNull(DateUtil.parseIsoDateStringToGregorianCalendar(""));
         GregorianCalendar date = new GregorianCalendar(2005, 8, 9);

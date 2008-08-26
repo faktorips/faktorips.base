@@ -16,18 +16,18 @@ package org.faktorips.valueset;
 
 
 /**
- * A Range class where upper and lower bounds are Integers. 
+ * A Range class where upper and lower bounds are Integers.
  * 
  * @author Jan Ortmann
  * @author Daniel Hohenberger conversion to Java5
  */
 public class IntegerRange extends DefaultRange<Integer>{
 
-	private static final long serialVersionUID = 9052583869840165108L;
+    private static final long serialVersionUID = 8454353227761904051L;
 
-	/**
-     * Creates an IntegerRange based on the indicated Strings. The Strings are parsed with the Integer.valueOf() method.
-     * An empty String is interpreted as <code>null</code>.
+    /**
+     * Creates an IntegerRange based on the indicated Strings. The Strings are parsed with the
+     * Integer.valueOf() method. An empty String is interpreted as <code>null</code>.
      */
     public static IntegerRange valueOf(String lower, String upper) {
         Integer min = (lower==null || lower.equals("")) ? null : Integer.valueOf(lower);
@@ -38,7 +38,7 @@ public class IntegerRange extends DefaultRange<Integer>{
 
     /**
      * Creates an IntegerRange based on the indicated Strings. The Strings are parsed with the Integer.valueOf() method.
-     * An empty String is interpreted as <code>null</code>. If the parameter containsNull is true <code>null</code> is considered 
+     * An empty String is interpreted as <code>null</code>. If the parameter containsNull is true <code>null</code> is considered
      * to be included within this range.
      */
     public static IntegerRange valueOf(String lower, String upper, String step, boolean containsNull) {
@@ -49,7 +49,7 @@ public class IntegerRange extends DefaultRange<Integer>{
     }
 
     /**
-     * Creates and new IntegerRange with the provided lower, upper bounds and step. 
+     * Creates and new IntegerRange with the provided lower, upper bounds and step.
      * 
      * @param lower the lower bound of the range. The parameter being null indicates that the range
      *          is unlimited on this side
@@ -57,7 +57,7 @@ public class IntegerRange extends DefaultRange<Integer>{
      *          is unlimited on this side
      * @param step the step increment of this range. The parameter being null indicates that the range
      *          is continuous
-     * @param containsNull if true than <code>null</code> is contained in the range         
+     * @param containsNull if true than <code>null</code> is contained in the range
      */
     public static IntegerRange valueOf(Integer lower, Integer upper, Integer step, boolean containsNull){
         IntegerRange range = new IntegerRange(lower, upper, step, containsNull);
@@ -66,7 +66,7 @@ public class IntegerRange extends DefaultRange<Integer>{
     }
 
     /**
-     * Creates and new IntegerRange with the provided lower, upper bounds and step. 
+     * Creates and new IntegerRange with the provided lower, upper bounds and step.
      * 
      * @param lower the lower bound of the range. The parameter being null indicates that the range
      *          is unlimited on this side
@@ -77,10 +77,10 @@ public class IntegerRange extends DefaultRange<Integer>{
     public static IntegerRange valueOf(Integer lower, Integer upper, int step){
         return valueOf(lower, upper, new Integer(step), false);
     }
-    
+
     /**
      * Creates and new IntegerRange with the provided lower and upper bounds. The step increment is 1
-     * and this range doesn't contain <code>null</code> 
+     * and this range doesn't contain <code>null</code>
      * 
      * @param lower the lower bound of the range. The parameter being null indicates that the range
      *          is unlimited on this side
@@ -90,7 +90,7 @@ public class IntegerRange extends DefaultRange<Integer>{
     public IntegerRange(Integer lower, Integer upper) {
         super(lower, upper, 1);
     }
-    
+
     private IntegerRange(Integer lower, Integer upper, Integer step, boolean containsNull) {
         super(lower, upper, step, containsNull);
     }
@@ -98,19 +98,21 @@ public class IntegerRange extends DefaultRange<Integer>{
     /**
      * {@inheritDoc}
      */
+    @Override
     protected boolean checkIfValueCompliesToStepIncrement(Integer value, Integer bound) {
-        
+
         if(getStep() == 0){
             throw new IllegalArgumentException("The step size cannot be zero. Use null to indicate a continuous range.");
         }
         int diff = Math.abs(bound - value);
         int remaining = diff % getStep();
-        return remaining == 0; 
+        return remaining == 0;
     }
 
     /**
      * {@inheritDoc}
      */
+    @Override
     protected int sizeForDiscreteValuesExcludingNull(){
         int lowerInt = getLowerBound();
         int upperInt = getUpperBound();
@@ -121,6 +123,7 @@ public class IntegerRange extends DefaultRange<Integer>{
     /**
      * {@inheritDoc}
      */
+    @Override
     protected Integer getNextValue(Integer currentValue) {
         return currentValue + getStep();
     }
@@ -128,9 +131,10 @@ public class IntegerRange extends DefaultRange<Integer>{
     /**
      * {@inheritDoc}
      */
+    @Override
     protected Integer getNullValue() {
         return null;
     }
-    
-    
+
+
 }

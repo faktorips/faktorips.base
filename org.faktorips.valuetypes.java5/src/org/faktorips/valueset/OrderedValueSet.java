@@ -29,11 +29,11 @@ import java.util.Set;
  */
 public class OrderedValueSet<E> implements Serializable, ValueSet<E> {
 
-    private static final long serialVersionUID = 2484960572251702320L;
+    private static final long serialVersionUID = 1735375680693336950L;
 
     private boolean containsNull;
     private E nullValue;
-    private LinkedHashSet<E> set = new LinkedHashSet<E>();
+    private final LinkedHashSet<E> set = new LinkedHashSet<E>();
 
     private int hashCode;
 
@@ -92,12 +92,12 @@ public class OrderedValueSet<E> implements Serializable, ValueSet<E> {
         }
         calculateHashCode();
     }
-    
+
     private void calculateHashCode(){
         int result = 17;
         for (E item : set) {
             if(item != null){
-                result = result * 37 + item.hashCode();    
+                result = result * 37 + item.hashCode();
             }
         }
         hashCode = result;
@@ -106,6 +106,7 @@ public class OrderedValueSet<E> implements Serializable, ValueSet<E> {
     /**
      * {@inheritDoc}
      */
+    @Override
     public int hashCode(){
         return hashCode;
     }
@@ -137,6 +138,7 @@ public class OrderedValueSet<E> implements Serializable, ValueSet<E> {
     /**
      * {@inheritDoc}
      */
+    @Override
     @SuppressWarnings("unchecked")
     public boolean equals(Object obj) {
         if (obj instanceof OrderedValueSet) {
@@ -158,6 +160,7 @@ public class OrderedValueSet<E> implements Serializable, ValueSet<E> {
     /**
      * {@inheritDoc}
      */
+    @Override
     public String toString() {
         StringBuilder buf = new StringBuilder();
         buf.append("[");

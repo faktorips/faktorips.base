@@ -25,7 +25,7 @@ import java.math.BigInteger;
  */
 public class LongRange extends DefaultRange<Long> {
 
-    private static final long serialVersionUID = -2447985085045161721L;
+    private static final long serialVersionUID = -785773839824461985L;
 
     /**
      * Creates a LongRange based on the indicated Strings. The Strings are parsed with the

@@ -27,7 +27,7 @@ import org.faktorips.values.Decimal;
  */
 public class DecimalRange extends DefaultRange<Decimal> {
 
-    private static final long serialVersionUID = -6546406279436404953L;
+    private static final long serialVersionUID = 5007646029371664759L;
 
     /**
      * Creates and new DecimalRange with the provided lower and upper bounds.
@@ -93,6 +93,7 @@ public class DecimalRange extends DefaultRange<Decimal> {
     /**
      * {@inheritDoc}
      */
+    @Override
     protected boolean checkIfValueCompliesToStepIncrement(Decimal value, Decimal bound) {
 
         Decimal step = getStep();
@@ -114,6 +115,7 @@ public class DecimalRange extends DefaultRange<Decimal> {
     /**
      * {@inheritDoc}
      */
+    @Override
     protected int sizeForDiscreteValuesExcludingNull() {
         return getUpperBound().subtract(getLowerBound()).abs().divide(getStep(), 0,
                 BigDecimal.ROUND_UNNECESSARY).intValue() + 1;
@@ -122,6 +124,7 @@ public class DecimalRange extends DefaultRange<Decimal> {
     /**
      * {@inheritDoc}
      */
+    @Override
     protected Decimal getNextValue(Decimal currentValue) {
         return currentValue.add(getStep());
     }
@@ -129,6 +132,7 @@ public class DecimalRange extends DefaultRange<Decimal> {
     /**
      * {@inheritDoc}
      */
+    @Override
     protected Decimal getNullValue() {
         return Decimal.NULL;
     }

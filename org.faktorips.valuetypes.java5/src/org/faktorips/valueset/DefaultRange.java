@@ -34,7 +34,7 @@ import org.faktorips.values.NullObjectSupport;
  */
 public class DefaultRange<T extends Comparable<? super T>> implements Range<T>, Serializable {
 
-    private static final long serialVersionUID = 8669778203942426507L;
+    private static final long serialVersionUID = -2886828952622682290L;
 
     private T lowerBound;
     private T upperBound;

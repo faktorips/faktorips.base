@@ -28,7 +28,7 @@ import org.faktorips.values.Money;
  */
 public class MoneyRange extends DefaultRange<Money>{
 
-    private static final long serialVersionUID = 4936838651486358909L;
+    private static final long serialVersionUID = 4750295893441094927L;
 
     /**
      * Creates a new MoneyRange with the provided lower and upper bounds parsed using the Money.valueOf(String s)

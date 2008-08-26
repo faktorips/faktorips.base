@@ -17,16 +17,14 @@ package org.faktorips.values;
 /**
  * NullObject for Money.
  * <p>
- * Overrides all money methods with appropriate NullObject behaviour, e.g.
- * add() called on a <code>null</code> value always returns an instance of MoneyNull.
+ * Overrides all money methods with appropriate NullObject behavior, e.g. add() called on a
+ * <code>null</code> value always returns an instance of MoneyNull.
  * <p>
- * The class is package private as the null behaviour is completly defined
- * in {@link Money}.
+ * The class is package private as the null behavior is completely defined in {@link Money}.
  */
 class MoneyNull extends Money implements NullObject {
 
-    private static final long serialVersionUID = 8738019943070784725L;
-
+    private static final long serialVersionUID = -3546233368167459967L;
 
     MoneyNull() {
         super(0, null);

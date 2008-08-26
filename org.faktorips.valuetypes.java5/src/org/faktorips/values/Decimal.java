@@ -31,7 +31,7 @@ import java.math.BigDecimal;
  */
 public class Decimal extends Number implements Comparable<Decimal>, NullObjectSupport, Serializable {
 
-    private static final long serialVersionUID = 7158161559555447905L;
+    private static final long serialVersionUID = -642726667937769164L;
 
     /**
      * Special case for the null value.

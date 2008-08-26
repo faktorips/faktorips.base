@@ -20,31 +20,28 @@ import java.util.Currency;
 /**
  * Value class representing an amount of money in any currency.
  * <p>
- * The class provides a special value for handling null. The value is available
- * via <code>Money.NULL</code> constant. The Money class provides a special
- * isNull() method to check if a money instance is the special case null or not.
- * The null object makes the implementation of calculation routines much simpler
- * as you don't have to check, if a money amount is null or not.
+ * The class provides a special value for handling null. The value is available via
+ * <code>Money.NULL</code> constant. The Money class provides a special isNull() method to check if
+ * a money instance is the special case null or not. The null object makes the implementation of
+ * calculation routines much simpler as you don't have to check, if a money amount is null or not.
  * <p>
  * Example: Given the expression a+b
  * <p>
- * You can write this using Money as: <code>a.add(b)</code>. If a or b is the
- * null value, also the rsult is the null value. And this is the correct
- * behaviour. If you don't know for example how much a is, you can't tell what
- * a+b is. If you would use for example Double objects you would have to write
- * code that checks if a or b is null which is very tedious and error prone.
+ * You can write this using Money as: <code>a.add(b)</code>. If a or b is the null value, also the
+ * result is the null value. And this is the correct behavior. If you don't know for example how
+ * much a is, you can't tell what a+b is. If you would use for example Double objects you would have
+ * to write code that checks if a or b is null which is very tedious and error prone.
  * <p>
- * The class does not provide any methods that work with <code>double</code>,
- * <code>float</code>, <code>java.lang.Double</code> or
- * <code>java.lang.Float</code> because of the loss of precision. If you want
- * to have exact numbers (and when it comes to money in most cases you will) you
- * should avoid these datatypes.
- *
+ * The class does not provide any methods that work with <code>double</code>, <code>float</code>,
+ * <code>java.lang.Double</code> or <code>java.lang.Float</code> because of the loss of precision.
+ * If you want to have exact numbers (and when it comes to money in most cases you will) you should
+ * avoid these datatypes.
+ * 
  * @author Jan Ortmann
  */
 public class Money implements Comparable<Money>, NullObjectSupport, Serializable {
 
-    private static final long serialVersionUID = -4222301934389972431L;
+    private static final long serialVersionUID = 5639586670329581901L;
 
     /**
      * Constant representing the <code>null</code> value.
