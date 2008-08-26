@@ -15,6 +15,7 @@
 package org.faktorips.devtools.stdbuilder.productcmpttype.association;
 
 import java.lang.reflect.Modifier;
+import java.util.Calendar;
 import java.util.HashMap;
 
 import org.apache.commons.lang.StringUtils;
@@ -53,7 +54,7 @@ public class GenProdAssociationTo1 extends GenProdAssociation {
      * {@inheritDoc}
      */
     protected void generateConstants(JavaCodeFragmentBuilder builder, IIpsProject ipsProject, boolean generatesInterface)
-            throws CoreException {
+    throws CoreException {
         // nothing to do
     }
 
@@ -77,9 +78,10 @@ public class GenProdAssociationTo1 extends GenProdAssociation {
      * {@inheritDoc}
      */
     protected void generateMethods(JavaCodeFragmentBuilder builder, IIpsProject ipsProject, boolean generatesInterface)
-            throws CoreException {
+    throws CoreException {
         if (generatesInterface) {
             generateMethodInterfaceGet1RelatedCmpt(builder);
+            generateMethodInterfaceGet1RelatedCmptGen(builder);
             if (isUseTypesafeCollections()) {
                 generateMethodInterfaceGet1RelatedCmptLink(builder);
                 generateMethodInterfaceGetRelatedCmptLink(builder);
@@ -89,6 +91,7 @@ public class GenProdAssociationTo1 extends GenProdAssociation {
             }
         } else {
             generateMethodGet1RelatedCmpt(builder);
+            generateMethodGet1RelatedCmptGen(builder);
             generateMethodSet1RelatedCmpt(builder);
             if (isUseTypesafeCollections()) {
                 generateMethodGet1RelatedCmptLink(builder);
@@ -183,7 +186,7 @@ public class GenProdAssociationTo1 extends GenProdAssociation {
     }
 
     private void generateMethodGetCardinalityFor1To1Association(JavaCodeFragmentBuilder methodsBuilder)
-            throws CoreException {
+    throws CoreException {
         methodsBuilder.javaDoc("@inheritDoc", JavaSourceFileBuilder.ANNOTATION_GENERATED);
         generateSignatureGetCardinalityForAssociation(methodsBuilder);
         String[][] params = getParamGetCardinalityForAssociation();
@@ -219,7 +222,7 @@ public class GenProdAssociationTo1 extends GenProdAssociation {
     }
 
     protected void generateCodeGetNumOfRelatedProductCmptsInternal(JavaCodeFragmentBuilder builder)
-            throws CoreException {
+    throws CoreException {
         builder.append(getFieldNameTo1Association() + "==null ? 0 : 1;");
     }
 
@@ -249,7 +252,7 @@ public class GenProdAssociationTo1 extends GenProdAssociation {
         memberVarsBuilder.varDeclaration(Modifier.PRIVATE,
                 isUseTypesafeCollections() ? Java5ClassNames.ILink_QualifiedName + "<"
                         + getQualifiedInterfaceClassNameForTarget() + ">" : String.class.getName(),
-                getFieldNameTo1Association(), new JavaCodeFragment("null"));
+                        getFieldNameTo1Association(), new JavaCodeFragment("null"));
     }
 
     /**
@@ -298,6 +301,53 @@ public class GenProdAssociationTo1 extends GenProdAssociation {
      * Code sample:
      * 
      * <pre>
+     * [javadoc]
+     * public ICoverageTypeGen getCoverageTypeGen(Calendar effectiveDate) {
+     *    return ((ICoverageType)getRepository().getExistingProductComponent(coverageType))
+     *            .getCoverageTypeGen(effectiveDate);
+     * }
+     * </pre>
+     * 
+     * Java 5 code sample:
+     * 
+     * <pre>
+     * [javadoc]
+     * public ICoverageTypeGen getCoverageTypeGen(Calendar effectiveDate) {
+     *    return coverageType != null ? coverageType.getTarget().getCoverageTypeGen(effectiveDate) : null;
+     * }
+     * </pre>
+     */
+    private void generateMethodGet1RelatedCmptGen(JavaCodeFragmentBuilder methodsBuilder) throws CoreException {
+
+        methodsBuilder.javaDoc(getJavaDocCommentForOverriddenMethod(), JavaSourceFileBuilder.ANNOTATION_GENERATED);
+        generateSignatureGet1RelatedCmptGen(methodsBuilder);
+        String fieldName = getFieldNameTo1Association();
+        String targetClass = getQualifiedInterfaceClassNameForTarget();
+        methodsBuilder.openBracket();
+        if (isUseTypesafeCollections()) {
+            methodsBuilder.append("return ");
+            methodsBuilder.append(fieldName);
+            methodsBuilder.append(" != null ? ");
+            methodsBuilder.append(fieldName);
+            methodsBuilder.append(".getTarget().");
+            methodsBuilder.append(getMethodNameGetProductCmptGenerationForTarget());
+            methodsBuilder.append("(effectiveDate) : null;");
+        } else {
+            methodsBuilder.append("return ((");
+            methodsBuilder.appendClassName(targetClass);
+            methodsBuilder.append(")getRepository()." + MethodNames.GET_EXISTING_PRODUCT_COMPONENT + "(");
+            methodsBuilder.append(fieldName);
+            methodsBuilder.append(")).");
+            methodsBuilder.append(getMethodNameGetProductCmptGenerationForTarget());
+            methodsBuilder.append("(effectiveDate);");
+        }
+        methodsBuilder.closeBracket();
+    }
+
+    /**
+     * Code sample:
+     * 
+     * <pre>
      * [Javadoc]
      * public CoverageType getMainCoverageType();
      * </pre>
@@ -305,6 +355,20 @@ public class GenProdAssociationTo1 extends GenProdAssociation {
     void generateMethodInterfaceGet1RelatedCmpt(JavaCodeFragmentBuilder builder) throws CoreException {
         appendLocalizedJavaDoc("METHOD_GET_1_RELATED_CMPT", association.getTargetRoleSingular(), builder);
         generateSignatureGet1RelatedCmpt(builder);
+        builder.appendln(";");
+    }
+
+    /**
+     * Code sample:
+     * 
+     * <pre>
+     * [Javadoc]
+     * public ICoverageTypeGen getMainCoverageType();
+     * </pre>
+     */
+    void generateMethodInterfaceGet1RelatedCmptGen(JavaCodeFragmentBuilder builder) throws CoreException {
+        appendLocalizedJavaDoc("METHOD_GET_1_RELATED_CMPT_GEN", association.getTargetRoleSingular(), builder);
+        generateSignatureGet1RelatedCmptGen(builder);
         builder.appendln(";");
     }
 
@@ -368,6 +432,21 @@ public class GenProdAssociationTo1 extends GenProdAssociation {
         String methodName = getMethodNameGet1RelatedCmpt();
         String returnType = getQualifiedInterfaceClassNameForTarget();
         builder.signature(Modifier.PUBLIC, returnType, methodName, EMPTY_STRING_ARRAY, EMPTY_STRING_ARRAY);
+    }
+
+    /**
+     * Code sample:
+     * 
+     * <pre>
+     * public ICoverageTypeGen getMainCoverageType()
+     * </pre>
+     */
+    void generateSignatureGet1RelatedCmptGen(JavaCodeFragmentBuilder builder) throws CoreException {
+        String methodName = getMethodNameGet1RelatedCmpt();
+        String returnType = getGenProductCmptType().getBuilderSet().getGenerator(target)
+                .getQualifiedClassNameForProductCmptTypeGen(true);
+        builder.signature(Modifier.PUBLIC, returnType, methodName, new String[] { "effectiveDate" },
+                new String[] { Calendar.class.getName() });
     }
 
     String getMethodNameGet1RelatedCmpt() throws CoreException {
