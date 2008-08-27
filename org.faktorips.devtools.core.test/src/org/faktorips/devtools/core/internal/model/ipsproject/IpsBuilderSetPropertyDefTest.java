@@ -57,6 +57,7 @@ public class IpsBuilderSetPropertyDefTest extends TestCase {
         attributes = new HashMap();
         attributes.put("name", "logLevel");
         attributes.put("type", "enum");
+        attributes.put("label", "Log Level");
         attributes.put("defaultValue", "first");
         attributes.put("disableValue", "second");
         attributes.put("description", "Hello");
@@ -103,6 +104,7 @@ public class IpsBuilderSetPropertyDefTest extends TestCase {
         HashMap attributes = new HashMap();
         attributes.put("name", "debugLevel");
         attributes.put("type", "integer");
+        attributes.put("label", "Debug Level");
         attributes.put("defaultValue", "1");
         attributes.put("disableValue", "0");
         attributes.put("description", "Hello");
@@ -136,6 +138,7 @@ public class IpsBuilderSetPropertyDefTest extends TestCase {
         HashMap attributes = new HashMap();
         attributes.put("name", "useChangeListener");
         attributes.put("type", "boolean");
+        attributes.put("label", "use Change  Listener");
         attributes.put("defaultValue", "true");
         attributes.put("disableValue", "false");
         attributes.put("description", "Hello");
@@ -160,6 +163,7 @@ public class IpsBuilderSetPropertyDefTest extends TestCase {
         HashMap attributes = new HashMap();
         attributes.put("name", "loggingConnectorRef");
         attributes.put("type", "extensionPoint");
+        attributes.put("label", "Logging Connector Ref");
         attributes.put("defaultValue", "javaLoggingConnector");
         attributes.put("disableValue", "null");
         attributes.put("description", "Hello");
@@ -238,6 +242,7 @@ public class IpsBuilderSetPropertyDefTest extends TestCase {
         attributes = new HashMap();
         attributes.put("name", "logLevel");
         attributes.put("type", "integer");
+        attributes.put("label", "Log Level");
         attributes.put("defaultValue", "1");
         attributes.put("disableValue", "0");
         attributes.put("description", "Hello");
