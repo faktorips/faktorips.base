@@ -27,6 +27,7 @@ import org.eclipse.jdt.core.ICompilationUnit;
 import org.eclipse.jdt.core.IJavaElement;
 import org.eclipse.jdt.core.IJavaProject;
 import org.eclipse.jdt.core.JavaModelException;
+import org.eclipse.jdt.ui.JavaUI;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.IMenuListener;
 import org.eclipse.jface.action.IMenuManager;
@@ -51,6 +52,7 @@ import org.eclipse.swt.widgets.TableItem;
 import org.eclipse.swt.widgets.ToolBar;
 import org.eclipse.ui.IEditorDescriptor;
 import org.eclipse.ui.IEditorInput;
+import org.eclipse.ui.IEditorPart;
 import org.eclipse.ui.actions.SelectionListenerAction;
 import org.eclipse.ui.ide.IDE;
 import org.eclipse.ui.part.FileEditorInput;
@@ -246,9 +248,12 @@ public class FailurePane implements IMenuListener {
         return ""; //$NON-NLS-1$
     }
     
-    private boolean containsTraceLineRelevantSourceFile(String traceLine){
-        TraceLineElement tli = new TraceLineElement(traceLine);
-        return tli.isValidProjectSourceElement();
+    private boolean containsTraceLineRelevantSourceFile(String traceLine) {
+        return true;
+        // the stacktrace will always be displayed
+        // it doesn't matter if the source is inside the projects source folder or not
+        // TraceLineElement tli = new TraceLineElement(traceLine);
+        // return tli.isValidProjectSourceElement();
     }
     
     /*
@@ -269,22 +274,25 @@ public class FailurePane implements IMenuListener {
                     return false;
             }
 
-            // don't support full JUnint class file editor support, only edit files which are in the source folder
-            // ITextEditor textEditor= (ITextEditor)EditorUtility.openInEditor(file, true);
-            
+            // try to get the editor input from the projects source folder
             IEditorInput editorInput = getEditorInput(file, tli.getFileName());
             if (editorInput == null){
-                MessageDialog.openInformation(viewPart.getShell(), 
-                        Messages.FailurePane_DialogClassNotFoundInSrcFolder_Title, NLS.bind(Messages.FailurePane_DialogClassNotFoundInSrcFolder_Description, tli.getTestName())); 
+                // maybe this is a java class file in an jar archive
+                IEditorPart part = JavaUI.openInEditor(file);
+                if (part == null) {
+                    MessageDialog.openInformation(viewPart.getShell(), 
+                            Messages.FailurePane_DialogClassNotFoundInSrcFolder_Title, NLS.bind(Messages.FailurePane_DialogClassNotFoundInSrcFolder_Description, tli.getTestName())); 
                     return false;
-            }
+                }
+                editorInput = part.getEditorInput();
+            } 
+            // goto corresponding line in the editor
             IEditorDescriptor editor = IDE.getEditorDescriptor(editorInput.getName());
             ITextEditor textEditor = (ITextEditor)IpsPlugin.getDefault().getWorkbench().getActiveWorkbenchWindow().getActivePage().openEditor(editorInput, editor.getId(), true);
-
-            // goto corresponding line in the editor
-            IDocument document= textEditor.getDocumentProvider().getDocument(textEditor.getEditorInput());
-            if (document == null)
+            IDocument document = textEditor.getDocumentProvider().getDocument(textEditor.getEditorInput());
+            if (document == null){
                 return false;
+            }
             textEditor.selectAndReveal(document.getLineOffset(tli.getLine()-1), document.getLineLength(tli.getLine()));
         } catch (BadLocationException x) {
             // marker refers to invalid text position -> do nothing
@@ -298,7 +306,7 @@ public class FailurePane implements IMenuListener {
     }
     
     /*
-     * Returns the editor input. Only files in the project source folder (compilation init) are supported.
+     * Returns the editor input. Only files in the project source folder (compilation unit) are supported.
      * Class files in e.g. Jar's with source attachment are not supported.
      */
     private IEditorInput getEditorInput(IJavaElement element, String name) throws JavaModelException {
@@ -306,15 +314,16 @@ public class FailurePane implements IMenuListener {
             if (element instanceof ICompilationUnit) {
                 ICompilationUnit unit = (ICompilationUnit)element;
                 IResource resource = unit.getResource();
-                if (resource instanceof IFile)
+                if (resource instanceof IFile){
                     return new FileEditorInput((IFile)resource);
+                }
             }
             element = element.getParent();
         }
 
         return null;
     }
-
+    
     /*
      * Find java element in the given java project by the given class name.
      */
