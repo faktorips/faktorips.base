@@ -52,6 +52,7 @@ public class IpsArtefactBuilderSetInfoTest extends TestCase {
         HashMap attributes = new HashMap();
         attributes.put("name", "loggingConntectors");
         attributes.put("type", "boolean");
+        attributes.put("label", "Logging Connectors");
         attributes.put("defaultValue", "true");
         attributes.put("disableValue", "false");
         attributes.put("description", "Hello");
@@ -61,6 +62,7 @@ public class IpsArtefactBuilderSetInfoTest extends TestCase {
         attributes = new HashMap();
         attributes.put("name", "useChangeListener");
         attributes.put("type", "boolean");
+        attributes.put("label", "Use Change Listener");
         attributes.put("defaultValue", "true");
         attributes.put("disableValue", "false");
         attributes.put("description", "Hello");
@@ -70,6 +72,7 @@ public class IpsArtefactBuilderSetInfoTest extends TestCase {
         attributes = new HashMap();
         attributes.put("name", "coypSupport");
         attributes.put("type", "boolean");
+        attributes.put("label", "Copy Support");
         attributes.put("defaultValue", "true");
         attributes.put("disableValue", "false");
         attributes.put("description", "Hello");
