@@ -78,23 +78,23 @@ public class ObjectPathEntryLabelDecorator implements ILightweightLabelDecorator
     }
 
     /*
-     * @param errorCode as defined in IIpsArchiveEntry @return short error description or an empty
-     * String if not available
+     * @param errorCode as defined in IIpsArchiveEntry 
+     * @return short error description or an empty String if not available
      */
     private String getMessageForArchiveEntry(String errorCode) {
         String decoratedShortMessage = ""; //$NON-NLS-1$
         
         if (errorCode.equals(IIpsArchiveEntry.MSGCODE_MISSING_ARCHVE)) {
-            decoratedShortMessage = Messages.suffix_missing;
+            decoratedShortMessage = Messages.ObjectPathEntryLabelDecorator_suffix_missing;
         }
         else if (errorCode.equals(IIpsArchiveEntry.MSGCODE_MISSING_FOLDER)) {
-            decoratedShortMessage = Messages.suffix_missing_folder;
+            decoratedShortMessage = Messages.ObjectPathEntryLabelDecorator_suffix_missing_folder;
         }
         else if (errorCode.equals(IIpsArchiveEntry.MSGCODE_MISSING_PROJECT)) {
-            decoratedShortMessage = Messages.suffix_missing_project;
+            decoratedShortMessage = Messages.ObjectPathEntryLabelDecorator_suffix_missing_project;
         }
         else if (errorCode.equals(IIpsArchiveEntry.MSGCODE_PROJECT_NOT_SPECIFIED)) {
-            decoratedShortMessage = Messages.suffix_project_not_specified;
+            decoratedShortMessage = Messages.ObjectPathEntryLabelDecorator_suffix_project_not_specified;
         }
         return decoratedShortMessage;
     }
@@ -107,10 +107,10 @@ public class ObjectPathEntryLabelDecorator implements ILightweightLabelDecorator
         String decoratedShortMessage = ""; //$NON-NLS-1$
         
         if (errorCode.equals(IIpsObjectPathEntry.MSGCODE_PROJECT_NOT_SPECIFIED)) {
-            decoratedShortMessage = Messages.suffix_not_specified;
+            decoratedShortMessage = Messages.ObjectPathEntryLabelDecorator_suffix_not_specified;
         }
         else if (errorCode.equals(IIpsObjectPathEntry.MSGCODE_MISSING_PROJECT)) {
-            decoratedShortMessage = Messages.suffix_missing;
+            decoratedShortMessage = Messages.ObjectPathEntryLabelDecorator_suffix_missing;
         }
         return decoratedShortMessage;
     }
@@ -123,22 +123,22 @@ public class ObjectPathEntryLabelDecorator implements ILightweightLabelDecorator
         String decoratedShortMessage = ""; //$NON-NLS-1$
         
         if (errorCode.equals(IIpsSrcFolderEntry.MSGCODE_MISSING_FOLDER)) {
-            decoratedShortMessage = Messages.suffix_missing;
+            decoratedShortMessage = Messages.ObjectPathEntryLabelDecorator_suffix_missing;
         }
         else if (errorCode.equals(IIpsSrcFolderEntry.MSGCODE_SRCFOLDER_MUST_BE_A_DIRECT_CHILD_OF_THE_PROHECT)) {
-            decoratedShortMessage = Messages.suffix_not_child_of_root;
+            decoratedShortMessage = Messages.ObjectPathEntryLabelDecorator_suffix_not_child_of_root;
         }
         else if (errorCode.equals(IIpsSrcFolderEntry.MSGCODE_OUTPUT_FOLDER_DERIVED_MISSING)) {
-            decoratedShortMessage = Messages.suffix_derived_folder_undefined;
+            decoratedShortMessage = Messages.ObjectPathEntryLabelDecorator_suffix_derived_folder_undefined;
         }
         else if (errorCode.equals(IIpsSrcFolderEntry.MSGCODE_OUTPUT_FOLDER_DERIVED_DOESNT_EXIST)) {
-            decoratedShortMessage = Messages.suffix_derived_folder_not_existing;
+            decoratedShortMessage = Messages.ObjectPathEntryLabelDecorator_suffix_derived_folder_not_existing;
         }
         else if (errorCode.equals(IIpsSrcFolderEntry.MSGCODE_OUTPUT_FOLDER_MERGABLE_DOESNT_EXIST)) {
-            decoratedShortMessage = Messages.suffix_mergable_folder_not_existing;
+            decoratedShortMessage = Messages.ObjectPathEntryLabelDecorator_suffix_mergable_folder_not_existing;
         }
         else if (errorCode.equals(IIpsSrcFolderEntry.MSGCODE_OUTPUT_FOLDER_MERGABLE_MISSING)) {
-            decoratedShortMessage = Messages.suffix_mergable_folder_undefined;
+            decoratedShortMessage = Messages.ObjectPathEntryLabelDecorator_suffix_mergable_folder_undefined;
         }
         return decoratedShortMessage;
     }
