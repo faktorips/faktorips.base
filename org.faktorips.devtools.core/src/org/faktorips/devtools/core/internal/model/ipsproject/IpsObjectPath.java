@@ -478,17 +478,17 @@ public class IpsObjectPath implements IIpsObjectPath {
         int maxEntriesToSearch = entries.length;
         CachedSrcFile cachedSrcFile = (CachedSrcFile)lookupCache.get(nameType);
         if (cachedSrcFile!=null) {
-            if (cachedSrcFile.entryIndex==0) {
-                // if the file was found via the first entry, it is not possible that a file with the same name
-                // has been added to another entry that now shadows the found file.
-                if (cachedSrcFile.file.exists()) {
+            if (!cachedSrcFile.file.exists()) {
+                lookupCache.remove(nameType);
+                cachedSrcFile = null;
+            } else {
+                if (cachedSrcFile.entryIndex==0) {
+                    // if the file was found via the first entry, it is not possible that a file with the same name
+                    // has been added to another entry that now shadows the found file.
                     return cachedSrcFile.file;
                 } else {
-                    lookupCache.remove(nameType);
-                    return null;
+                    maxEntriesToSearch = cachedSrcFile.entryIndex;
                 }
-            } else {
-                maxEntriesToSearch = cachedSrcFile.entryIndex;
             }
         }
         for (int i=0; i<maxEntriesToSearch; i++) {
