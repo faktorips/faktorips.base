@@ -40,6 +40,7 @@ import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.jdt.core.IClasspathEntry;
 import org.eclipse.jdt.core.IJavaProject;
+import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.IpsStatus;
 import org.faktorips.util.ArgumentCheck;
 
@@ -72,8 +73,8 @@ public class ClassLoaderProvider {
 	}
 	
 	/**
-	 * Returns the classloader for the Java project this is a provider for.
-	 */
+     * Returns the classloader for the Java project this is a provider for.
+     */
 	public ClassLoader getClassLoader() throws CoreException {
 		if (classLoader==null) {
 			try {
@@ -138,6 +139,8 @@ public class ClassLoaderProvider {
         if(project==null || !project.exists()) {
             return;
         }
+        
+        File tempFileDir = initTempDir(project);
 		IPath projectPath = project.getProject().getLocation();
 		IPath root = projectPath.removeLastSegments(project.getProject()
 				.getFullPath().segmentCount());
@@ -163,7 +166,7 @@ public class ClassLoaderProvider {
                     jarPath = entry[i].getPath();
                 }
                 
-				IPath copyPath = copyJar(jarPath);
+				IPath copyPath = copyJar(jarPath, tempFileDir);
 				if (copyPath!=null) {
 					urlsList.add(copyPath.toFile().toURL());
 					addClassfileContainer(jarPath, urlsList);
@@ -180,8 +183,39 @@ public class ClassLoaderProvider {
 		}
 	}
 	
-	private IPath copyJar(IPath jarPath) throws IOException, CoreException {
-		File jarFile = jarPath.toFile();
+	/*
+     * Creates a temporary directory in the plugin state location to store temporary jars. The
+     * plug-in state area is a file directory within the platform's metadata area where a plug-in is
+     * free to create files (see Plugin#getStateLocation()). Each project gets its own temporary
+     * directory because each project gets its own classloader provider. Cleanup the directory
+     * if it already exists; this is necessary because the virtual machine doesn't delete all
+     * temporary jars correctly. The jars from which a class was instantiated by the classloader are
+     * not deleted automatically when the virtual machine terminates.
+     */
+	private File initTempDir(IJavaProject project) {
+	    File tempFileDir = IpsPlugin.getDefault().getStateLocation().append(project.getProject().getName()).toFile();
+        if (tempFileDir.exists()){
+            cleanupTemp(tempFileDir);
+        }
+        tempFileDir.mkdirs();
+        return tempFileDir;
+    }
+
+    private void cleanupTemp(File root) {
+        File[] files = root.listFiles();
+        for (int i = 0; files != null && i < files.length; i++) {
+            if (files[i].isDirectory()){
+                cleanupTemp(files[i]);
+            }
+            files[i].delete();
+        }
+    }
+    
+    /*
+     * Copies the given jar as temporary jar.
+     */
+	private IPath copyJar(IPath jarPath, File tempFileDir) throws IOException, CoreException {
+	    File jarFile = jarPath.toFile();
 		if (jarFile==null) {
 			return null;
 		}
@@ -192,12 +226,12 @@ public class ClassLoaderProvider {
 		String name =  jarFile.getName();
 		File copy;
         if (index==-1) {
-            copy = File.createTempFile(name + "tmp", "jar"); //$NON-NLS-1$ //$NON-NLS-2$
+            copy = File.createTempFile(name + "tmp", "jar", tempFileDir); //$NON-NLS-1$ //$NON-NLS-2$
         } else if (index<3) {
             // File.createTempFile required that the prefix is at least three characters long!
-            copy = File.createTempFile(name.substring(0, index) + "tmp", name.substring(index)); //$NON-NLS-1$
+            copy = File.createTempFile(name.substring(0, index) + "tmp", name.substring(index), tempFileDir); //$NON-NLS-1$
         } else {
-            copy = File.createTempFile(name.substring(0, index),name.substring(index));
+            copy = File.createTempFile(name.substring(0, index),name.substring(index), tempFileDir);
         }
 		copy.deleteOnExit();
 		InputStream is = new FileInputStream(jarFile);
@@ -213,9 +247,9 @@ public class ClassLoaderProvider {
 		is.close();
 		os.close();
 		return new Path(copy.getPath());
-}
-	
-	/**
+	}
+
+    /**
 	 * @param containerLocation is the full path in the filesytem.
 	 */
 	private void addClassfileContainer(IPath containerLocation, List urls) throws MalformedURLException {
@@ -226,16 +260,19 @@ public class ClassLoaderProvider {
 	
 	private class ChangeListener implements IResourceChangeListener {
 
-		public void resourceChanged(IResourceChangeEvent event) {
+        public void resourceChanged(IResourceChangeEvent event) {
 			if (event.getType() == IResourceChangeEvent.PRE_BUILD
 					&& event.getBuildKind() == IncrementalProjectBuilder.CLEAN_BUILD) {
 				return;
 			}
-			for (Iterator it=classfileContainers.iterator(); it.hasNext();) {
+
+			// check if one of the previous container have changed and notify that the classloader
+            // must re reconstructed next time
+            for (Iterator it=classfileContainers.iterator(); it.hasNext();) {
 				IPath container = (IPath)it.next();
 				IResourceDelta delta = event.getDelta().findMember(container);
 				if (delta!=null) {
-					classpathContentsChanged();
+				    classpathContentsChanged();
 					break;
 				}
 			}
