@@ -323,7 +323,7 @@ public class ModelExplorer extends ViewPart implements IShowInTarget {
     protected ModelContentProvider createContentProvider() {
         return new ModelContentProvider(config, isFlatLayout);
     }
-
+    
     public void createPartControl(Composite parent) {
         // init saved state
         contentProvider.setExcludeNoIpsProjects(excludeNoIpsProjects);
@@ -331,7 +331,6 @@ public class ModelExplorer extends ViewPart implements IShowInTarget {
         labelProvider = new ModelLabelProvider();
         treeViewer = new TreeViewer(parent);
         treeViewer.setContentProvider(contentProvider);
-        treeViewer.setLabelProvider(labelProvider);
         treeViewer.setSorter(new ModelExplorerSorter());
         treeViewer.setInput(IpsPlugin.getDefault().getIpsModel());
 
@@ -388,7 +387,7 @@ public class ModelExplorer extends ViewPart implements IShowInTarget {
 
         editorActivationListener = new ActivationListener(getSite().getPage());
     }
-    
+
     /**
      * Show an IPS File or normal File in the navigator view corresponding to
      * the active editor if "link with editor" is enabled.
