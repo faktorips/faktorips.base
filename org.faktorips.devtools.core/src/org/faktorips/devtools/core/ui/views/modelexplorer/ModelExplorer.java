@@ -331,6 +331,10 @@ public class ModelExplorer extends ViewPart implements IShowInTarget {
         labelProvider = new ModelLabelProvider();
         treeViewer = new TreeViewer(parent);
         treeViewer.setContentProvider(contentProvider);
+        IDecoratorManager decoManager = IpsPlugin.getDefault().getWorkbench().getDecoratorManager();
+        DecoratingLabelProvider decoProvider = new DecoratingLabelProvider(labelProvider, decoManager
+                .getLabelDecorator());
+        treeViewer.setLabelProvider(decoProvider);
         treeViewer.setSorter(new ModelExplorerSorter());
         treeViewer.setInput(IpsPlugin.getDefault().getIpsModel());
 
@@ -339,11 +343,6 @@ public class ModelExplorer extends ViewPart implements IShowInTarget {
                 new IpsElementDragListener(treeViewer));
         treeViewer.addDropSupport(DND.DROP_MOVE, new Transfer[] { FileTransfer.getInstance() },
                 new ModelExplorerDropListener());
-
-        IDecoratorManager decoManager = IpsPlugin.getDefault().getWorkbench().getDecoratorManager();
-        DecoratingLabelProvider decoProvider = new DecoratingLabelProvider(labelProvider, decoManager
-                .getLabelDecorator());
-        treeViewer.setLabelProvider(decoProvider);
 
         createFilters(treeViewer);
 
