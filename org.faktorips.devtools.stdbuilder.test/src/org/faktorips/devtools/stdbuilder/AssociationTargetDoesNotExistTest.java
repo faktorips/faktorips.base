@@ -29,13 +29,13 @@ import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAssociation;
  * 
  * @author Jan Ortmann
  */
-public class AssociationTargetDoesNotExist extends AbstractIpsPluginTest {
+public class AssociationTargetDoesNotExistTest extends AbstractIpsPluginTest {
 
-    public AssociationTargetDoesNotExist() {
+    public AssociationTargetDoesNotExistTest() {
         super();
     }
 
-    public AssociationTargetDoesNotExist(String name) {
+    public AssociationTargetDoesNotExistTest(String name) {
         super(name);
     }
 
