@@ -1150,7 +1150,6 @@ public class IpsProjectTest extends AbstractIpsPluginTest {
         ipsProject.getJavaProject().setRawClasspath(result, null);
         
         Object[] nonIpsResources= ipsProject.getNonIpsResources();
-        assertEquals(5, nonIpsResources.length);
         List list= Arrays.asList(nonIpsResources);
         assertTrue(list.contains(nonIpsRoot));
         assertTrue(list.contains(nonIpsFile));
@@ -1158,7 +1157,14 @@ public class IpsProjectTest extends AbstractIpsPluginTest {
         assertTrue(list.contains(projectHandle.getFile(".project")));
         assertTrue(list.contains(projectHandle.getFile(".ipsproject")));
         assertTrue(list.contains(projectHandle.getFile(".classpath")));
-        
+        // assert number of resources returned
+        int expectedNumOfResources = 5;
+        // @see EclipsePreferences.DEFAULT_PREFERENCES_DIRNAME
+        if (list.contains(projectHandle.getFolder(".settings"))){
+            expectedNumOfResources++;
+        }
+        assertEquals(expectedNumOfResources, nonIpsResources.length);
+
         assertFalse(list.contains(classpathFolder));
         assertFalse(list.contains(classpathFile));
         assertFalse(list.contains(outputFolder));
