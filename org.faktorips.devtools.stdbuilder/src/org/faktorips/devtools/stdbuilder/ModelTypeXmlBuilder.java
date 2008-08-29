@@ -111,28 +111,33 @@ public class ModelTypeXmlBuilder extends AbstractXmlFileBuilder {
                 modelTypeAssociation.setAttribute("name", association.getTargetRoleSingular());
                 modelTypeAssociation.setAttribute("namePlural", association.getTargetRolePlural());
                 String targetName = association.getTarget();
+                modelTypeAssociation.setAttribute("target", null);
                 if (targetName != null && targetName.length() > 0) {
                     if (model instanceof IPolicyCmptType) {
-                        modelTypeAssociation.setAttribute("target", ((StandardBuilderSet)getBuilderSet()).getGenerator(
-                                getIpsProject().findPolicyCmptType(targetName)).getQualifiedName(false));
+                        IPolicyCmptType targetType = getIpsProject().findPolicyCmptType(targetName);
+                        if (targetType != null) {
+                            modelTypeAssociation.setAttribute("target", ((StandardBuilderSet)getBuilderSet()).getGenerator(
+                                    targetType).getQualifiedName(false));
+                        }
                     } else if (model instanceof IProductCmptType) {
-                        modelTypeAssociation.setAttribute("target", ((StandardBuilderSet)getBuilderSet()).getGenerator(
-                                getIpsProject().findProductCmptType(targetName)).getQualifiedName(false));
+                        IProductCmptType targetType = getIpsProject().findProductCmptType(targetName);
+                        if (targetType != null) {
+                            modelTypeAssociation.setAttribute("target", ((StandardBuilderSet)getBuilderSet()).getGenerator(
+                                    targetType).getQualifiedName(false));
+                        }
                     }
-                } else {
-                    modelTypeAssociation.setAttribute("target", null);
                 }
                 modelTypeAssociation.setAttribute("minCardinality", Integer.toString(association.getMinCardinality()));
                 modelTypeAssociation.setAttribute("maxCardinality", Integer.toString(association.getMaxCardinality()));
                 modelTypeAssociation.setAttribute("associationType", getAssociantionType(association));
                 try {
                     modelTypeAssociation
-                            .setAttribute(
-                                    "isProductRelevant",
-                                    Boolean
-                                            .toString(association instanceof IPolicyCmptTypeAssociation ? ((IPolicyCmptTypeAssociation)association)
-                                                    .isConstrainedByProductStructure(getIpsProject())
-                                                    : true));
+                    .setAttribute(
+                            "isProductRelevant",
+                            Boolean
+                            .toString(association instanceof IPolicyCmptTypeAssociation ? ((IPolicyCmptTypeAssociation)association)
+                                    .isConstrainedByProductStructure(getIpsProject())
+                                    : true));
                 } catch (DOMException e) {
                     // don't bother
                 } catch (CoreException e) {
@@ -179,8 +184,8 @@ public class ModelTypeXmlBuilder extends AbstractXmlFileBuilder {
     }
 
     private void addExtensionProperties(Element modelElement, IExtensionPropertyAccess element) {
-        IExtensionPropertyDefinition[] extensionPropertyDefinitions = this.getIpsProject().getIpsModel()
-                .getExtensionPropertyDefinitions(element.getClass(), true);
+        IExtensionPropertyDefinition[] extensionPropertyDefinitions = getIpsProject().getIpsModel()
+        .getExtensionPropertyDefinitions(element.getClass(), true);
         Element extensionProperties = doc.createElement("ExtensionProperties");
         modelElement.appendChild(extensionProperties);
         for (int i = 0; i < extensionPropertyDefinitions.length; i++) {
