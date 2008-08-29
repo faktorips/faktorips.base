@@ -106,44 +106,43 @@ public class ModelTypeXmlBuilder extends AbstractXmlFileBuilder {
             modelType.appendChild(modelTypeAssociations);
             for (int i = 0; i < associations.length; i++) {
                 IAssociation association = associations[i];
-                Element modelTypeAssociation = doc.createElement("ModelTypeAssociation");
-                modelTypeAssociations.appendChild(modelTypeAssociation);
-                modelTypeAssociation.setAttribute("name", association.getTargetRoleSingular());
-                modelTypeAssociation.setAttribute("namePlural", association.getTargetRolePlural());
-                String targetName = association.getTarget();
-                modelTypeAssociation.setAttribute("target", null);
-                if (targetName != null && targetName.length() > 0) {
-                    if (model instanceof IPolicyCmptType) {
-                        IPolicyCmptType targetType = getIpsProject().findPolicyCmptType(targetName);
-                        if (targetType != null) {
+                if (association.isValid()) {
+                    Element modelTypeAssociation = doc.createElement("ModelTypeAssociation");
+                    modelTypeAssociations.appendChild(modelTypeAssociation);
+                    modelTypeAssociation.setAttribute("name", association.getTargetRoleSingular());
+                    modelTypeAssociation.setAttribute("namePlural", association.getTargetRolePlural());
+                    String targetName = association.getTarget();
+                    if (targetName != null && targetName.length() > 0) {
+                        if (model instanceof IPolicyCmptType) {
                             modelTypeAssociation.setAttribute("target", ((StandardBuilderSet)getBuilderSet()).getGenerator(
-                                    targetType).getQualifiedName(false));
-                        }
-                    } else if (model instanceof IProductCmptType) {
-                        IProductCmptType targetType = getIpsProject().findProductCmptType(targetName);
-                        if (targetType != null) {
+                                    getIpsProject().findPolicyCmptType(targetName)).getQualifiedName(
+                                            false));
+                        } else if (model instanceof IProductCmptType) {
                             modelTypeAssociation.setAttribute("target", ((StandardBuilderSet)getBuilderSet()).getGenerator(
-                                    targetType).getQualifiedName(false));
+                                    getIpsProject().findProductCmptType(targetName)).getQualifiedName(
+                                            false));
                         }
+                    } else {
+                        modelTypeAssociation.setAttribute("target", null);
                     }
+                    modelTypeAssociation.setAttribute("minCardinality", Integer.toString(association.getMinCardinality()));
+                    modelTypeAssociation.setAttribute("maxCardinality", Integer.toString(association.getMaxCardinality()));
+                    modelTypeAssociation.setAttribute("associationType", getAssociantionType(association));
+                    try {
+                        modelTypeAssociation
+                        .setAttribute(
+                                "isProductRelevant",
+                                Boolean
+                                .toString(association instanceof IPolicyCmptTypeAssociation ? ((IPolicyCmptTypeAssociation)association)
+                                        .isConstrainedByProductStructure(getIpsProject())
+                                        : true));
+                    } catch (DOMException e) {
+                        // don't bother
+                    } catch (CoreException e) {
+                        // don't bother
+                    }
+                    addExtensionProperties(modelTypeAssociation, association);
                 }
-                modelTypeAssociation.setAttribute("minCardinality", Integer.toString(association.getMinCardinality()));
-                modelTypeAssociation.setAttribute("maxCardinality", Integer.toString(association.getMaxCardinality()));
-                modelTypeAssociation.setAttribute("associationType", getAssociantionType(association));
-                try {
-                    modelTypeAssociation
-                    .setAttribute(
-                            "isProductRelevant",
-                            Boolean
-                            .toString(association instanceof IPolicyCmptTypeAssociation ? ((IPolicyCmptTypeAssociation)association)
-                                    .isConstrainedByProductStructure(getIpsProject())
-                                    : true));
-                } catch (DOMException e) {
-                    // don't bother
-                } catch (CoreException e) {
-                    // don't bother
-                }
-                addExtensionProperties(modelTypeAssociation, association);
             }
         }
     }
@@ -155,30 +154,32 @@ public class ModelTypeXmlBuilder extends AbstractXmlFileBuilder {
             modelType.appendChild(modelTypeAttributes);
             for (int i = 0; i < attributes.length; i++) {
                 IAttribute attribute = attributes[i];
-                Element modelTypeAttribute = doc.createElement("ModelTypeAttribute");
-                modelTypeAttributes.appendChild(modelTypeAttribute);
-                modelTypeAttribute.setAttribute("name", attribute.getName());
-                if (model instanceof IPolicyCmptType) {
-                    GenAttribute genAttribute = ((StandardBuilderSet)getBuilderSet()).getGenerator(
-                            (IPolicyCmptType)model).getGenerator((IPolicyCmptTypeAttribute)attribute);
-                    if (genAttribute != null) {
-                        modelTypeAttribute.setAttribute("datatype", genAttribute.getDatatype().getJavaClassName());
+                if (attribute.isValid()) {
+                    Element modelTypeAttribute = doc.createElement("ModelTypeAttribute");
+                    modelTypeAttributes.appendChild(modelTypeAttribute);
+                    modelTypeAttribute.setAttribute("name", attribute.getName());
+                    if (model instanceof IPolicyCmptType) {
+                        GenAttribute genAttribute = ((StandardBuilderSet)getBuilderSet()).getGenerator(
+                                (IPolicyCmptType)model).getGenerator((IPolicyCmptTypeAttribute)attribute);
+                        if (genAttribute != null) {
+                            modelTypeAttribute.setAttribute("datatype", genAttribute.getDatatype().getJavaClassName());
+                        }
+                    } else if (model instanceof IProductCmptType) {
+                        GenProdAttribute genAttribute = ((StandardBuilderSet)getBuilderSet()).getGenerator(
+                                (IProductCmptType)model).getGenerator((IProductCmptTypeAttribute)attribute);
+                        if (genAttribute != null) {
+                            modelTypeAttribute.setAttribute("datatype", genAttribute.getDatatype().getJavaClassName());
+                        }
+                    } else {
+                        modelTypeAttribute.setAttribute("datatype", null);
                     }
-                } else if (model instanceof IProductCmptType) {
-                    GenProdAttribute genAttribute = ((StandardBuilderSet)getBuilderSet()).getGenerator(
-                            (IProductCmptType)model).getGenerator((IProductCmptTypeAttribute)attribute);
-                    if (genAttribute != null) {
-                        modelTypeAttribute.setAttribute("datatype", genAttribute.getDatatype().getJavaClassName());
-                    }
-                } else {
-                    modelTypeAttribute.setAttribute("datatype", null);
+                    modelTypeAttribute.setAttribute("valueSetType", getValueSetType(attribute));
+                    modelTypeAttribute.setAttribute("attributeType", getAttributeType(attribute));
+                    modelTypeAttribute.setAttribute("isProductRelevant", Boolean
+                            .toString(attribute instanceof IPolicyCmptTypeAttribute ? ((IPolicyCmptTypeAttribute)attribute)
+                                    .isProductRelevant() : true));
+                    addExtensionProperties(modelTypeAttribute, attribute);
                 }
-                modelTypeAttribute.setAttribute("valueSetType", getValueSetType(attribute));
-                modelTypeAttribute.setAttribute("attributeType", getAttributeType(attribute));
-                modelTypeAttribute.setAttribute("isProductRelevant", Boolean
-                        .toString(attribute instanceof IPolicyCmptTypeAttribute ? ((IPolicyCmptTypeAttribute)attribute)
-                                .isProductRelevant() : true));
-                addExtensionProperties(modelTypeAttribute, attribute);
             }
         }
     }
