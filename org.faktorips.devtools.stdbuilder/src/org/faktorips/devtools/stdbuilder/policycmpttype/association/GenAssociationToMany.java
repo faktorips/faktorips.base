@@ -29,6 +29,7 @@ import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAssociation;
 import org.faktorips.devtools.core.model.type.IAssociation;
 import org.faktorips.devtools.core.util.QNameUtil;
+import org.faktorips.devtools.stdbuilder.changelistener.ChangeEventType;
 import org.faktorips.devtools.stdbuilder.policycmpttype.GenPolicyCmptType;
 import org.faktorips.runtime.internal.DependantObject;
 import org.faktorips.runtime.internal.MethodNames;
@@ -198,7 +199,7 @@ public class GenAssociationToMany extends GenAssociation {
      */
 
     protected void generateMethods(JavaCodeFragmentBuilder builder, IIpsProject ipsProject, boolean generatesInterface)
-            throws CoreException {
+    throws CoreException {
         super.generateMethods(builder, ipsProject, generatesInterface);
         if (generatesInterface) {
             generateMethodGetNumOfRefObjects(builder);
@@ -236,7 +237,7 @@ public class GenAssociationToMany extends GenAssociation {
      * </pre>
      */
     private void generateMethodGetNumOfForNoneContainerAssociation(JavaCodeFragmentBuilder methodsBuilder)
-            throws CoreException {
+    throws CoreException {
         methodsBuilder.javaDoc(getJavaDocCommentForOverriddenMethod(), JavaSourceFileBuilder.ANNOTATION_GENERATED);
         generateSignatureGetNumOfRefObjects(methodsBuilder);
         methodsBuilder.openBracket();
@@ -259,7 +260,7 @@ public class GenAssociationToMany extends GenAssociation {
      * </pre>
      */
     protected void generateMethodContainsObjectForNoneContainerAssociation(JavaCodeFragmentBuilder methodsBuilder)
-            throws CoreException {
+    throws CoreException {
 
         String paramName = getParamNameForContainsObject();
         methodsBuilder.javaDoc(getJavaDocCommentForOverriddenMethod(), JavaSourceFileBuilder.ANNOTATION_GENERATED);
@@ -289,7 +290,7 @@ public class GenAssociationToMany extends GenAssociation {
      * </pre>
      */
     protected void generateMethodGetAllObjectsForNoneDerivedUnion(JavaCodeFragmentBuilder methodsBuilder)
-            throws CoreException {
+    throws CoreException {
 
         methodsBuilder.javaDoc(getJavaDocCommentForOverriddenMethod(), JavaSourceFileBuilder.ANNOTATION_GENERATED);
         generateSignatureGetAllRefObjects(methodsBuilder);
@@ -353,11 +354,11 @@ public class GenAssociationToMany extends GenAssociation {
      * <pre>
      * [Javadoc]
      * public void addCoverage(ICoverage objectToAdd) {
-     *     if(objectToAdd == null) { 
+     *     if(objectToAdd == null) {
      *         throw new IllegalArgumentException(&quot;Can't add null to ...&quot;);
      *     }
-     *     if (coverages.contains(objectToAdd)) { 
-     *         return; 
+     *     if (coverages.contains(objectToAdd)) {
+     *         return;
      *     }
      *     coverages.add(objectToAdd);
      * }
@@ -387,7 +388,7 @@ public class GenAssociationToMany extends GenAssociation {
             methodsBuilder.append(getGenPolicyCmptType().getBuilderSet().getGenerator(target).getGenerator(
                     reverseAssociation).generateCodeToSynchronizeReverseAssoziation(paramName, targetInterfaceName));
         }
-        generateChangeListenerSupport(methodsBuilder, "RELATION_OBJECT_ADDED", paramName);
+        generateChangeListenerSupport(methodsBuilder, ChangeEventType.RELATION_OBJECT_ADDED, paramName);
         methodsBuilder.closeBracket();
     }
 
@@ -433,7 +434,7 @@ public class GenAssociationToMany extends GenAssociation {
         } else {
             methodsBuilder.append(';');
         }
-        generateChangeListenerSupport(methodsBuilder, "RELATION_OBJECT_REMOVED", paramName);
+        generateChangeListenerSupport(methodsBuilder, ChangeEventType.RELATION_OBJECT_REMOVED, paramName);
         methodsBuilder.closeBracket();
     }
 
@@ -447,7 +448,7 @@ public class GenAssociationToMany extends GenAssociation {
         }
         if (reverseAssociation.is1ToMany()) {
             String removeMethod = ((GenAssociationToMany)getGenPolicyCmptType().getGenerator(reverseAssociation))
-                    .getMethodNameRemoveObject();
+            .getMethodNameRemoveObject();
             body.append(varToCleanUp + "." + removeMethod + "(this);");
         } else {
             String targetClass = getGenPolicyCmptType().getBuilderSet().getGenerator(
@@ -521,7 +522,7 @@ public class GenAssociationToMany extends GenAssociation {
      * </pre>
      */
     protected void generateMethodGetRefObjectAtIndexInterface(JavaCodeFragmentBuilder methodBuilder)
-            throws CoreException {
+    throws CoreException {
         generateSignatureGetRefObjectAtIndex(methodBuilder);
         methodBuilder.append(';');
     }
@@ -556,7 +557,7 @@ public class GenAssociationToMany extends GenAssociation {
     }
 
     protected void generateConstants(JavaCodeFragmentBuilder builder, IIpsProject ipsProject, boolean generatesInterface)
-            throws CoreException {
+    throws CoreException {
         super.generateConstants(builder, ipsProject, generatesInterface);
     }
 
@@ -575,7 +576,7 @@ public class GenAssociationToMany extends GenAssociation {
      * </pre>
      */
     public void generateMethodCopyPropertiesForAssociation(String paramName, JavaCodeFragmentBuilder methodsBuilder)
-            throws CoreException {
+    throws CoreException {
         String field = getFieldNameForAssociation();
         methodsBuilder.appendln(paramName + "." + field + ".addAll(" + field + ");");
     }
@@ -631,7 +632,7 @@ public class GenAssociationToMany extends GenAssociation {
      * @throws CoreException
      */
     public void generateCodeForRemoveChildModelObjectInternal(JavaCodeFragmentBuilder methodsBuilder, String paramName)
-            throws CoreException {
+    throws CoreException {
         String fieldName = getFieldNameForAssociation();
         methodsBuilder.appendln(fieldName + ".remove(" + paramName + ");");
     }
@@ -787,9 +788,9 @@ public class GenAssociationToMany extends GenAssociation {
      * <pre>
      * [Javadoc]
      * public int getNumOfCoveragesInternal() {
-     *     int num = 0; 
+     *     int num = 0;
      *     num += super.getNumOfCollisionCoverages(); // generated only if class has none abstract superclass
-     *     num += getNumOfCollisionsCoverages(); 
+     *     num += getNumOfCollisionsCoverages();
      *     num += tplCoverage==null ? 0 : 1;
      *     return num;
      * }
@@ -887,7 +888,7 @@ public class GenAssociationToMany extends GenAssociation {
     }
 
     public JavaCodeFragment generateCodeToSynchronizeReverseAssoziation(String varName, String varClassName)
-            throws CoreException {
+    throws CoreException {
         JavaCodeFragment code = new JavaCodeFragment();
         code.append("if(");
         if (!reverseAssociation.is1ToMany()) {
@@ -924,7 +925,7 @@ public class GenAssociationToMany extends GenAssociation {
         if (isUseTypesafeCollections()) {
             builder.append("for (");
             builder.appendClassName(targetInterfaceName);
-            builder.appendln(" " + varName + " : "+fieldName+") {"); 
+            builder.appendln(" " + varName + " : "+fieldName+") {");
         }else{
             builder.append("for (");
             builder.appendClassName(Iterator.class);
@@ -932,10 +933,10 @@ public class GenAssociationToMany extends GenAssociation {
             builder.appendClassName(targetInterfaceName);
             builder.appendln(" " + varName + " = (");
             builder.appendClassName(targetInterfaceName);
-            builder.appendln(")it.next();"); 
+            builder.appendln(")it.next();");
         }
         builder.appendln(varName + "." + MethodNames.ACCEPT_VISITOR + "(" + paramName + ");");
         builder.appendln("}");
     }
-    
+
 }

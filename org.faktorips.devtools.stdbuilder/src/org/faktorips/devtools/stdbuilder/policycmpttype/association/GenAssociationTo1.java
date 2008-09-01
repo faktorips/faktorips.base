@@ -24,6 +24,7 @@ import org.faktorips.devtools.core.builder.JavaSourceFileBuilder;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAssociation;
 import org.faktorips.devtools.core.model.type.IAssociation;
+import org.faktorips.devtools.stdbuilder.changelistener.ChangeEventType;
 import org.faktorips.devtools.stdbuilder.policycmpttype.GenPolicyCmptType;
 import org.faktorips.runtime.internal.MethodNames;
 
@@ -151,7 +152,7 @@ public class GenAssociationTo1 extends GenAssociation {
      * {@inheritDoc}
      */
     protected void generateMethods(JavaCodeFragmentBuilder builder, IIpsProject ipsProject, boolean generatesInterface)
-            throws CoreException {
+    throws CoreException {
         super.generateMethods(builder, ipsProject, generatesInterface);
         if (generatesInterface) {
             generateMethodGetRefObject(builder);
@@ -219,7 +220,7 @@ public class GenAssociationTo1 extends GenAssociation {
         builder.appendClassName(targetImplClassName);
         builder.append(")" + paramName + ";");
 
-        generateChangeListenerSupport(builder, "RELATION_OBJECT_CHANGED", paramName);
+        generateChangeListenerSupport(builder, ChangeEventType.RELATION_OBJECT_CHANGED, paramName);
         builder.closeBracket();
     }
 
@@ -244,7 +245,7 @@ public class GenAssociationTo1 extends GenAssociation {
      * </pre>
      */
     protected void generateMethodSetRefObjectForAssociation(JavaCodeFragmentBuilder methodsBuilder)
-            throws CoreException {
+    throws CoreException {
 
         String paramName = getParamNameForSetObject();
         methodsBuilder.javaDoc(getJavaDocCommentForOverriddenMethod(), JavaSourceFileBuilder.ANNOTATION_GENERATED);
@@ -271,7 +272,7 @@ public class GenAssociationTo1 extends GenAssociation {
             methodsBuilder.append(getGenPolicyCmptType().getBuilderSet().getGenerator(target).getGenerator(
                     reverseAssociation).generateCodeToSynchronizeReverseAssoziation(fieldName, targetImplClassName));
         }
-        generateChangeListenerSupport(methodsBuilder, "RELATION_OBJECT_CHANGED", paramName);
+        generateChangeListenerSupport(methodsBuilder, ChangeEventType.RELATION_OBJECT_CHANGED, paramName);
         methodsBuilder.closeBracket();
     }
 
@@ -296,7 +297,7 @@ public class GenAssociationTo1 extends GenAssociation {
     }
 
     public JavaCodeFragment generateCodeToSynchronizeReverseAssoziation(String varName, String varClassName)
-            throws CoreException {
+    throws CoreException {
         JavaCodeFragment code = new JavaCodeFragment();
         code.append("if(");
         if (!reverseAssociation.is1ToMany()) {
@@ -330,7 +331,7 @@ public class GenAssociationTo1 extends GenAssociation {
      * </pre>
      */
     protected void generateMethodGetRefObjectBasedOnMemberVariable(JavaCodeFragmentBuilder methodsBuilder)
-            throws CoreException {
+    throws CoreException {
         methodsBuilder.javaDoc(getJavaDocCommentForOverriddenMethod(), JavaSourceFileBuilder.ANNOTATION_GENERATED);
         generateSignatureGetRefObject(methodsBuilder);
         methodsBuilder.openBracket();
@@ -394,7 +395,7 @@ public class GenAssociationTo1 extends GenAssociation {
     }
 
     protected void generateConstants(JavaCodeFragmentBuilder builder, IIpsProject ipsProject, boolean generatesInterface)
-            throws CoreException {
+    throws CoreException {
         super.generateConstants(builder, ipsProject, generatesInterface);
     }
 
@@ -413,7 +414,7 @@ public class GenAssociationTo1 extends GenAssociation {
      * </pre>
      */
     public void generateMethodCopyPropertiesForAssociation(String paramName, JavaCodeFragmentBuilder methodsBuilder)
-            throws CoreException {
+    throws CoreException {
         String field = getFieldNameForAssociation();
         methodsBuilder.appendln(paramName + "." + field + " = " + field + ";");
     }
@@ -424,7 +425,7 @@ public class GenAssociationTo1 extends GenAssociation {
      * @throws CoreException
      */
     public void generateCodeForRemoveChildModelObjectInternal(JavaCodeFragmentBuilder methodsBuilder, String paramName)
-            throws CoreException {
+    throws CoreException {
         String fieldName = getFieldNameForAssociation();
         methodsBuilder.appendln("if (" + fieldName + "==" + paramName + ") {");
         methodsBuilder.appendln(fieldName + " = null;");
@@ -437,12 +438,12 @@ public class GenAssociationTo1 extends GenAssociation {
      * <pre>
      * [Javadoc]
      * public ICoverage getCoverage() {
-     *     if(getTplCoverage()!=null) { 
-     *         return getTplCoverage(); 
-     *     } 
-     *     if (getCollisionCoverage()!=null) { 
-     *         return getCollisionCoverage(); 
-     *     } 
+     *     if(getTplCoverage()!=null) {
+     *         return getTplCoverage();
+     *     }
+     *     if (getCollisionCoverage()!=null) {
+     *         return getCollisionCoverage();
+     *     }
      *     return null;
      * }
      * </pre>

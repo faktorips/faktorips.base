@@ -39,6 +39,8 @@ import org.faktorips.devtools.core.model.tablestructure.ITableStructure;
 import org.faktorips.devtools.core.model.type.IAttribute;
 import org.faktorips.devtools.core.model.type.IParameter;
 import org.faktorips.devtools.core.model.type.IType;
+import org.faktorips.devtools.stdbuilder.changelistener.ClassicIpsChangeListenerSupportBuilder;
+import org.faktorips.devtools.stdbuilder.changelistener.IChangeListenerSupportBuilder;
 import org.faktorips.devtools.stdbuilder.enums.EnumClassesBuilder;
 import org.faktorips.devtools.stdbuilder.enums.EnumTypeInterfaceBuilder;
 import org.faktorips.devtools.stdbuilder.formulatest.FormulaTestBuilder;
@@ -119,7 +121,9 @@ public class StandardBuilderSet extends DefaultBuilderSet {
     private ProductCmptGenInterfaceBuilder productCmptGenInterfaceBuilder;
     private EnumClassesBuilder enumClassesBuilder;
     private String version;
-    private Map ipsObjectTypeGenerators = new HashMap(1000);
+    private final Map ipsObjectTypeGenerators = new HashMap(1000);
+
+    private IChangeListenerSupportBuilder changeListenerSupportBuilder;
 
     public StandardBuilderSet() {
         initVersion();
@@ -191,45 +195,45 @@ public class StandardBuilderSet extends DefaultBuilderSet {
         DatatypeHelper returnTypeHelper = fct.getIpsProject().findDatatypeHelper(returnType.getQualifiedName());
         JavaCodeFragment code = new JavaCodeFragment();
         ITableStructure tableStructure = fct.getTableStructure();
-        code.append("(("); //$NON-NLS-1$
+        code.append("((");
         code.appendClassName(returnType.getJavaClassName());
         code.append(")"); //$NON-NLS-1$
-        code.append("(new "); //$NON-NLS-1$
+        code.append("(new ");
         code.appendClassName(TableFunctionExecution.class);
-        code.append("()"); //$NON-NLS-1$
+        code.append("()");
         code.appendOpenBracket();
-        code.append("public Object execute()"); //$NON-NLS-1$
+        code.append("public Object execute()");
         code.appendOpenBracket();
         code.appendClassName(tableRowBuilder.getQualifiedClassName(tableStructure.getIpsSrcFile()));
-        code.append(" row = "); //$NON-NLS-1$
+        code.append(" row = ");
         CompilationResultImpl result = new CompilationResultImpl(code, returnType);
         result.addAllIdentifierUsed(argResults);
         code.appendClassName(tableImplBuilder.getQualifiedClassName(tableStructure.getIpsSrcFile()));
         // create get instance method by using the qualified name of the table content
         code.append(".getInstance(" + MethodNames.GET_REPOSITORY + "(), \"" + tableContents.getQualifiedName() //$NON-NLS-1$ //$NON-NLS-2$
-                + "\").findRow("); //$NON-NLS-1$
+                + "\").findRow(");
         // TODO pk: findRow is not correct in general
         for (int i = 0; i < argResults.length; i++) {
             if (i > 0) {
-                code.append(", "); //$NON-NLS-1$
+                code.append(", ");
             }
             code.append(argResults[i].getCodeFragment());
             result.addMessages(argResults[i].getMessages());
         }
-        code.append(");"); //$NON-NLS-1$
+        code.append(");");
         code.appendln();
-        code.append("if(row != null)"); //$NON-NLS-1$
+        code.append("if(row != null)");
         code.appendOpenBracket();
-        code.append("return row.get"); //$NON-NLS-1$
+        code.append("return row.get");
         code.append(StringUtils.capitalize(fct.findAccessedColumn().getName()));
-        code.append("();"); //$NON-NLS-1$
+        code.append("();");
         code.appendCloseBracket();
-        code.append("return "); //$NON-NLS-1$
+        code.append("return ");
         code.append(returnTypeHelper.nullExpression());
         code.append(';');
         code.appendCloseBracket();
         code.appendCloseBracket();
-        code.append(").execute())"); //$NON-NLS-1$
+        code.append(").execute())");
         return result;
     }
 
@@ -408,6 +412,9 @@ public class StandardBuilderSet extends DefaultBuilderSet {
         tocFileBuilder.setTestCaseBuilder(testCaseBuilder);
         tocFileBuilder.setFormulaTestBuilder(formulaTestBuilder);
 
+        // change listener support builder
+        changeListenerSupportBuilder = new ClassicIpsChangeListenerSupportBuilder(this, KIND_POLICY_CMPT_IMPL);
+
         if (ComplianceCheck.isComplianceLevelAtLeast5(getIpsProject())) {
             IIpsArtefactBuilder policyModelTypeBuilder = new ModelTypeXmlBuilder(IpsObjectType.POLICY_CMPT_TYPE, this,
                     KIND_MODEL_TYPE);
@@ -419,14 +426,15 @@ public class StandardBuilderSet extends DefaultBuilderSet {
                     policyCmptImplClassBuilder, policyCmptInterfaceBuilder, productCmptGenerationImplBuilder,
                     tableContentCopyBuilder, productCmptContentCopyBuilder, testCaseTypeClassBuilder, testCaseBuilder,
                     formulaTestBuilder, enumClassesBuilder, enumTypeInterfaceBuilder, tocFileBuilder,
-                    policyModelTypeBuilder, productModelTypeBuilder };
+                    policyModelTypeBuilder, productModelTypeBuilder, changeListenerSupportBuilder };
         } else {
 
             return new IIpsArtefactBuilder[] { tableImplBuilder, tableRowBuilder, productCmptGenInterfaceBuilder,
                     productCmptGenImplClassBuilder, productCmptInterfaceBuilder, productCmptImplClassBuilder,
                     policyCmptImplClassBuilder, policyCmptInterfaceBuilder, productCmptGenerationImplBuilder,
                     tableContentCopyBuilder, productCmptContentCopyBuilder, testCaseTypeClassBuilder, testCaseBuilder,
-                    formulaTestBuilder, enumClassesBuilder, enumTypeInterfaceBuilder, tocFileBuilder };
+                    formulaTestBuilder, enumClassesBuilder, enumTypeInterfaceBuilder, tocFileBuilder,
+                    changeListenerSupportBuilder };
         }
     }
 
@@ -444,7 +452,11 @@ public class StandardBuilderSet extends DefaultBuilderSet {
 
     public boolean isGenerateChangeListener() {
         return getConfig().getPropertyValueAsBoolean(StandardBuilderSet.CONFIG_PROPERTY_GENERATE_CHANGELISTENER)
-                .booleanValue();
+        .booleanValue();
+    }
+
+    public IChangeListenerSupportBuilder getChangeListenerSupportBuilder() {
+        return changeListenerSupportBuilder;
     }
 
     /**
@@ -459,6 +471,6 @@ public class StandardBuilderSet extends DefaultBuilderSet {
      */
     public boolean isUseTypesafeCollections() {
         return getConfig().getPropertyValueAsBoolean(StandardBuilderSet.CONFIG_PROPERTY_USE_TYPESAFE_COLLECTIONS)
-                .booleanValue();
+        .booleanValue();
     }
 }

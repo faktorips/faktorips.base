@@ -27,10 +27,10 @@ import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAssociation;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
+import org.faktorips.devtools.stdbuilder.changelistener.ChangeEventType;
 import org.faktorips.devtools.stdbuilder.policycmpttype.GenPolicyCmptType;
 import org.faktorips.devtools.stdbuilder.policycmpttype.GenPolicyCmptTypePart;
 import org.faktorips.devtools.stdbuilder.type.GenType;
-import org.faktorips.runtime.IModelObjectChangedEvent;
 import org.faktorips.runtime.internal.DependantObject;
 import org.faktorips.runtime.internal.MethodNames;
 import org.faktorips.util.LocalizedStringsSet;
@@ -263,10 +263,9 @@ public abstract class GenAssociation extends GenPolicyCmptTypePart {
     }
 
     protected void generateChangeListenerSupport(JavaCodeFragmentBuilder methodsBuilder,
-            String eventConstant,
+            ChangeEventType eventType,
             String paramName) {
-        getGenPolicyCmptType().generateChangeListenerSupport(methodsBuilder, IModelObjectChangedEvent.class.getName(),
-                eventConstant, fieldName, paramName);
+        getGenPolicyCmptType().generateChangeListenerSupport(methodsBuilder, eventType, fieldName, paramName);
     }
 
     /**

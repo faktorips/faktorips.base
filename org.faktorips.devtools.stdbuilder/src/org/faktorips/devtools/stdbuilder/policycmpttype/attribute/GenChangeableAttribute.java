@@ -33,9 +33,9 @@ import org.faktorips.devtools.core.model.valueset.IEnumValueSet;
 import org.faktorips.devtools.core.model.valueset.IRangeValueSet;
 import org.faktorips.devtools.core.model.valueset.ValueSetType;
 import org.faktorips.devtools.stdbuilder.StdBuilderHelper;
+import org.faktorips.devtools.stdbuilder.changelistener.ChangeEventType;
 import org.faktorips.devtools.stdbuilder.policycmpttype.GenPolicyCmptType;
 import org.faktorips.devtools.stdbuilder.productcmpttype.GenProductCmptType;
-import org.faktorips.runtime.IModelObjectChangedEvent;
 import org.faktorips.util.ArgumentCheck;
 import org.faktorips.valueset.EnumValueSet;
 
@@ -73,7 +73,7 @@ public class GenChangeableAttribute extends GenAttribute {
      * {@inheritDoc}
      */
     protected void generateConstants(JavaCodeFragmentBuilder builder, IIpsProject ipsProject, boolean generatesInterface)
-            throws CoreException {
+    throws CoreException {
         if (isOverwritten()) {
             return;
         }
@@ -154,7 +154,7 @@ public class GenChangeableAttribute extends GenAttribute {
                 | java.lang.reflect.Modifier.STATIC,
                 isUseTypesafeCollections() ? Java5ClassNames.OrderedValueSet_QualifiedName + "<"
                         + wrapperDatatypeHelper.getJavaClassName() + ">" : EnumValueSet.class.getName(),
-                getFieldNameMaxAllowedValues(), frag);
+                        getFieldNameMaxAllowedValues(), frag);
     }
 
     protected String getFieldNameMaxAllowedValues() {
@@ -190,12 +190,12 @@ public class GenChangeableAttribute extends GenAttribute {
      * @param datatype
      */
     public void generateSignatureGetAllowedValuesFor(Datatype datatype, JavaCodeFragmentBuilder methodsBuilder)
-            throws CoreException {
+    throws CoreException {
         String methodName = getMethodNameGetAllowedValuesFor(datatype);
         methodsBuilder.signature(Modifier.PUBLIC,
                 isUseTypesafeCollections() ? Java5ClassNames.OrderedValueSet_QualifiedName + "<"
                         + datatype.getJavaClassName() + ">" : EnumValueSet.class.getName(), methodName,
-                new String[] { "businessFunction" }, new String[] { String.class.getName() });
+                        new String[] { "businessFunction" }, new String[] { String.class.getName() });
     }
 
     public String getMethodNameGetAllowedValuesFor(Datatype datatype) {
@@ -205,7 +205,7 @@ public class GenChangeableAttribute extends GenAttribute {
     }
 
     public void generateMethodGetAllowedValuesFor(Datatype datatype, JavaCodeFragmentBuilder methodsBuilder)
-            throws CoreException {
+    throws CoreException {
         appendLocalizedJavaDoc("METHOD_GET_ALLOWED_VALUES_FOR", getPolicyCmptTypeAttribute().getName(), methodsBuilder);
         generateSignatureGetAllowedValuesFor(datatype, methodsBuilder);
         methodsBuilder.append(';');
@@ -218,14 +218,14 @@ public class GenChangeableAttribute extends GenAttribute {
     }
 
     public void generateMethodGetRangeFor(DatatypeHelper helper, JavaCodeFragmentBuilder methodsBuilder)
-            throws CoreException {
+    throws CoreException {
         appendLocalizedJavaDoc("METHOD_GET_RANGE_FOR", getPolicyCmptTypeAttribute().getName(), methodsBuilder);
         generateSignatureGetRangeFor(helper, methodsBuilder);
         methodsBuilder.append(';');
     }
 
     public void generateSignatureGetRangeFor(DatatypeHelper helper, JavaCodeFragmentBuilder methodsBuilder)
-            throws CoreException {
+    throws CoreException {
         String methodName = getMethodNameGetRangeFor(helper.getDatatype());
         String rangeClassName = helper.getRangeJavaClassName(isUseTypesafeCollections());
         methodsBuilder.signature(Modifier.PUBLIC, rangeClassName, methodName, new String[] { "businessFunction" },
@@ -240,7 +240,7 @@ public class GenChangeableAttribute extends GenAttribute {
      * </pre>
      */
     void generateSignatureGetDefaultValue(DatatypeHelper datatypeHelper, JavaCodeFragmentBuilder builder)
-            throws CoreException {
+    throws CoreException {
         String methodName = getMethodNameGetDefaultValue(datatypeHelper);
         builder.signature(Modifier.PUBLIC, datatypeHelper.getJavaClassName(), methodName, EMPTY_STRING_ARRAY,
                 EMPTY_STRING_ARRAY);
@@ -292,7 +292,7 @@ public class GenChangeableAttribute extends GenAttribute {
      * {@inheritDoc}
      */
     protected void generateMethods(JavaCodeFragmentBuilder builder, IIpsProject ipsProject, boolean generatesInterface)
-            throws CoreException {
+    throws CoreException {
         if (!generatesInterface) {
             if (isOverwritten()) {
                 return;
@@ -398,13 +398,13 @@ public class GenChangeableAttribute extends GenAttribute {
         methodsBuilder.append("this.");
         methodsBuilder.append(getMemberVarName());
         methodsBuilder.appendln(" = " + getParamNameForSetterMethod() + ";");
-        getGenPolicyCmptType().generateChangeListenerSupport(methodsBuilder, IModelObjectChangedEvent.class.getName(),
-                "MUTABLE_PROPERTY_CHANGED", getMemberVarName(), null);
+        getGenPolicyCmptType().generateChangeListenerSupport(methodsBuilder, ChangeEventType.MUTABLE_PROPERTY_CHANGED,
+                getMemberVarName(), null);
         methodsBuilder.closeBracket();
     }
 
     private void generateMethodGetRange(JavaCodeFragmentBuilder methodBuilder, IIpsProject ipsProject)
-            throws CoreException {
+    throws CoreException {
         methodBuilder.javaDoc("{@inheritDoc}", JavaSourceFileBuilder.ANNOTATION_GENERATED);
         generateSignatureGetRangeFor(wrapperDatatypeHelper, methodBuilder);
         JavaCodeFragment body = new JavaCodeFragment();
@@ -440,7 +440,7 @@ public class GenChangeableAttribute extends GenAttribute {
     }
 
     private void generateMethodGetAllowedValues(JavaCodeFragmentBuilder methodBuilder, IIpsProject ipsProject)
-            throws CoreException {
+    throws CoreException {
         methodBuilder.javaDoc("{@inheritDoc}", JavaSourceFileBuilder.ANNOTATION_GENERATED);
         generateSignatureGetAllowedValuesFor(wrapperDatatypeHelper.getDatatype(), methodBuilder);
         JavaCodeFragment body = new JavaCodeFragment();
@@ -459,7 +459,7 @@ public class GenChangeableAttribute extends GenAttribute {
     }
 
     private void generateMethodGetRangeForProd(DatatypeHelper helper, JavaCodeFragmentBuilder methodsBuilder)
-            throws CoreException {
+    throws CoreException {
         methodsBuilder.javaDoc("{@inheritDoc}", JavaSourceFileBuilder.ANNOTATION_GENERATED);
         generateSignatureGetRangeFor(helper, methodsBuilder);
         JavaCodeFragment body = new JavaCodeFragment();
@@ -472,7 +472,7 @@ public class GenChangeableAttribute extends GenAttribute {
     }
 
     private void generateMethodGetAllowedValuesForProd(Datatype datatype, JavaCodeFragmentBuilder methodsBuilder)
-            throws CoreException {
+    throws CoreException {
         methodsBuilder.javaDoc("{@inheritDoc}", JavaSourceFileBuilder.ANNOTATION_GENERATED);
         generateSignatureGetAllowedValuesFor(datatype, methodsBuilder);
         JavaCodeFragment body = new JavaCodeFragment();
@@ -495,7 +495,7 @@ public class GenChangeableAttribute extends GenAttribute {
         memberVarBuilder.varDeclaration(Modifier.PRIVATE,
                 isUseTypesafeCollections() ? Java5ClassNames.OrderedValueSet_QualifiedName + "<"
                         + wrapperDatatypeHelper.getJavaClassName() + ">" : EnumValueSet.class.getName(),
-                getFieldNameAllowedValuesFor());
+                        getFieldNameAllowedValuesFor());
     }
 
     /**
@@ -507,7 +507,7 @@ public class GenChangeableAttribute extends GenAttribute {
      * </pre>
      */
     private void generateFieldDefaultValue(DatatypeHelper datatypeHelper, JavaCodeFragmentBuilder memberVarsBuilder)
-            throws CoreException {
+    throws CoreException {
         appendLocalizedJavaDoc("FIELD_DEFAULTVALUE", getPolicyCmptTypeAttribute().getName(), memberVarsBuilder);
         JavaCodeFragment defaultValueExpression = datatypeHelper.newInstance(getPolicyCmptTypeAttribute()
                 .getDefaultValue());
@@ -544,7 +544,7 @@ public class GenChangeableAttribute extends GenAttribute {
     }
 
     public void generateInitializationForOverrideAttributes(JavaCodeFragmentBuilder builder, IIpsProject ipsProject)
-            throws CoreException {
+    throws CoreException {
         JavaCodeFragment initialValueExpression = datatypeHelper.newInstance(attribute.getDefaultValue());
         generateCallToMethodSetPropertyValue(initialValueExpression, builder);
     }

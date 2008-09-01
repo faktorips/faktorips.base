@@ -33,6 +33,7 @@ import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeAttribute;
 import org.faktorips.devtools.core.model.type.IMethod;
 import org.faktorips.devtools.stdbuilder.StandardBuilderSet;
+import org.faktorips.devtools.stdbuilder.changelistener.ChangeEventType;
 import org.faktorips.devtools.stdbuilder.policycmpttype.association.GenAssociation;
 import org.faktorips.devtools.stdbuilder.policycmpttype.association.GenAssociationTo1;
 import org.faktorips.devtools.stdbuilder.policycmpttype.association.GenAssociationToMany;
@@ -44,14 +45,12 @@ import org.faktorips.devtools.stdbuilder.policycmpttype.method.GenMethod;
 import org.faktorips.devtools.stdbuilder.productcmpttype.GenProductCmptType;
 import org.faktorips.devtools.stdbuilder.productcmpttype.attribute.GenProdAttribute;
 import org.faktorips.devtools.stdbuilder.type.GenType;
-import org.faktorips.runtime.internal.MethodNames;
-import org.faktorips.runtime.internal.ModelObjectChangedEvent;
 import org.faktorips.util.ArgumentCheck;
 import org.faktorips.util.LocalizedStringsSet;
 import org.faktorips.util.StringUtil;
 
 /**
- * A generator for <code>IPolicyCmptType</code>s. It provides access to generators for attributes, methods and associations of the 
+ * A generator for <code>IPolicyCmptType</code>s. It provides access to generators for attributes, methods and associations of the
  * policy component type. Typically when the generator is created all the generators of its parts are also greated accept the ones
  * in the super type hierarchy. These are created on demand since it is expected that only a few of them will be overridden. It is necessary
  * to provide an own generator instance for those overridden parts in this generator and not to delegate to the generator of the super
@@ -61,11 +60,11 @@ import org.faktorips.util.StringUtil;
  */
 public class GenPolicyCmptType extends GenType {
 
-    private Map generatorsByPart = new HashMap();
-    private List genAttributes = new ArrayList();
-    private List genAssociations = new ArrayList();
-    private List genValidationRules = new ArrayList();
-    private List genMethods = new ArrayList();
+    private final Map generatorsByPart = new HashMap();
+    private final List genAttributes = new ArrayList();
+    private final List genAssociations = new ArrayList();
+    private final List genValidationRules = new ArrayList();
+    private final List genMethods = new ArrayList();
 
     /**
      * @param policyCmptType
@@ -87,7 +86,7 @@ public class GenPolicyCmptType extends GenType {
     public IPolicyCmptType getPolicyCmptType() {
         return (IPolicyCmptType)getType();
     }
-    
+
     private void createGeneratorsForMethods() throws CoreException {
         IMethod[] methods = getPolicyCmptType().getMethods();
         for (int i = 0; i < methods.length; i++) {
@@ -166,7 +165,7 @@ public class GenPolicyCmptType extends GenType {
             generatorsByPart.put(method, generator);
         }
         return generator;
-        
+
     }
 
     public GenAttribute getGenerator(IPolicyCmptTypeAttribute a) throws CoreException {
@@ -217,26 +216,13 @@ public class GenPolicyCmptType extends GenType {
     }
 
     public void generateChangeListenerSupport(JavaCodeFragmentBuilder methodsBuilder,
-            String eventClassName,
-            String eventConstant,
+            ChangeEventType eventType,
             String fieldName,
             String paramName) {
         if (isGenerateChangeListenerSupport()) {
-            methodsBuilder.appendln("if (" + MethodNames.EXISTS_CHANGE_LISTENER_TO_BE_INFORMED + "()) {");
-            methodsBuilder.append(MethodNames.NOTIFIY_CHANGE_LISTENERS + "(new ");
-            methodsBuilder.appendClassName(ModelObjectChangedEvent.class);
-            methodsBuilder.append("(this, ");
-            methodsBuilder.appendClassName(eventClassName);
-            methodsBuilder.append('.');
-            methodsBuilder.append(eventConstant);
-            methodsBuilder.append(", ");
-            methodsBuilder.appendQuoted(fieldName);
-            if (paramName != null) {
-                methodsBuilder.append(", ");
-                methodsBuilder.append(paramName);
-            }
-            methodsBuilder.appendln("));");
-            methodsBuilder.appendln("}");
+            getBuilderSet().getChangeListenerSupportBuilder().generateChangeListenerSupport(methodsBuilder,
+                    eventType,
+                    fieldName, paramName);
         }
     }
 
@@ -251,12 +237,12 @@ public class GenPolicyCmptType extends GenType {
     public IProductCmptType getProductCmptType() throws CoreException {
         return getPolicyCmptType().findProductCmptType(getPolicyCmptType().getIpsProject());
     }
-    
+
     public GenProductCmptType getGenProductCmptType() throws CoreException {
         IIpsProject ipsProject = getBuilderSet().getIpsProject();
         return getBuilderSet().getGenerator(getPolicyCmptType().findProductCmptType(ipsProject));
     }
-           
+
 
     public String getPolicyCmptTypeName() throws CoreException {
         return StringUtils.capitalize(getPolicyCmptType().getName());
