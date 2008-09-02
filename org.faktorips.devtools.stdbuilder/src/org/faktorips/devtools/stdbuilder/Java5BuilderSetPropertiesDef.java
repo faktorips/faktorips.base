@@ -114,10 +114,10 @@ public class Java5BuilderSetPropertiesDef implements IIpsBuilderSetPropertyDef {
     /**
      * {@inheritDoc}
      */
-    public ValueDatatype getType() {
+    public String getType() {
         // FIXME: need access to nested class PropertyDefEnumDatatype in IpsBuilderSetPropertyDef
         //  for now only boolean fields are taken into account, BROKEN!
-        return ValueDatatype.BOOLEAN;
+        return "boolean";
     }
 
 }

@@ -45,7 +45,7 @@ public interface IIpsBuilderSetPropertyDef {
     /**
      * Returns the type specified in the plugin descriptor.
      */
-    public ValueDatatype getType();
+    public String getType();
     
     /**
      * Returns a description of this property definition if available. Otherwise <code>null</code>.

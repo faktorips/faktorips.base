@@ -15,17 +15,21 @@
 package org.faktorips.devtools.core.ui.preferencepages;
 
 import org.eclipse.jface.viewers.CellEditor;
-import org.eclipse.jface.viewers.ColumnViewer;
 import org.eclipse.jface.viewers.EditingSupport;
 import org.eclipse.jface.viewers.TableViewer;
-import org.faktorips.devtools.core.IpsPlugin;
+import org.eclipse.swt.SWT;
+import org.eclipse.swt.widgets.Combo;
+import org.eclipse.swt.widgets.Text;
 import org.faktorips.devtools.core.model.ipsproject.IIpsArtefactBuilderSetConfigModel;
 import org.faktorips.devtools.core.model.ipsproject.IIpsBuilderSetPropertyDef;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
+import org.faktorips.devtools.core.model.pctype.AttributeType;
 import org.faktorips.devtools.core.ui.UIToolkit;
-import org.faktorips.devtools.core.ui.ValueDatatypeControlFactory;
-import org.faktorips.devtools.core.ui.table.TableCellEditor;
+import org.faktorips.devtools.core.ui.table.ComboCellEditor;
+import org.faktorips.devtools.core.ui.table.TextCellEditor;
 import org.faktorips.util.ArgumentCheck;
+import org.faktorips.values.DefaultEnumType;
+import org.faktorips.values.DefaultEnumValue;
 
 /**
  * Enables cell editing for builder set properties.
@@ -36,9 +40,7 @@ public class BuilderSetPropertyEditingSupport extends EditingSupport {
     private IIpsProject ipsProject;
     private IIpsArtefactBuilderSetConfigModel builderSetConfigModel;
 
-    private ColumnViewer viewer;
-    private UIToolkit toolkit;
-    
+    private TableViewer viewer;
 
     /**
      * @param viewer The viewer for which to enable editing support
@@ -59,7 +61,6 @@ public class BuilderSetPropertyEditingSupport extends EditingSupport {
         this.viewer = viewer;
         this.ipsProject = ipsProject;
         this.builderSetConfigModel = builderSetConfigModel;
-        this.toolkit = new UIToolkit(null);
     }
 
     /**
@@ -81,11 +82,28 @@ public class BuilderSetPropertyEditingSupport extends EditingSupport {
     protected CellEditor getCellEditor(Object element) {
         if (element instanceof IIpsBuilderSetPropertyDef) {
             IIpsBuilderSetPropertyDef propertyDef = (IIpsBuilderSetPropertyDef)element;
-            ValueDatatypeControlFactory datatypeFactory = IpsPlugin.getDefault().getValueDatatypeControlFactory(
-                    propertyDef.getType());
-            TableCellEditor cellEditor = datatypeFactory.createCellEditor(toolkit, propertyDef.getType(), null,
-                    (TableViewer)viewer, 0);
-            return cellEditor;
+            String type = propertyDef.getType();
+            UIToolkit toolkit = new UIToolkit(null);
+            CellEditor editor = null;
+            
+            if(type.equals("string")){
+                editor = new TextCellEditor(viewer, 0, new Text(viewer.getTable(), SWT.NONE));
+            } else if (type.equals("boolean")) {
+                Combo combo = toolkit.createComboForBoolean(viewer.getTable(), false, "true", "false");
+                editor = new ComboCellEditor(viewer, 0, combo);
+            } else if (type.equals("integer")) {
+                editor = new TextCellEditor(viewer, 0, new Text(viewer.getTable(), SWT.NONE));
+            } else if (type.equals("enum") || type.equals("extensionPoint")) {
+                DefaultEnumType propertyDefEnum = new DefaultEnumType("builderSetPropertyType", AttributeType.class);
+                Object[] discreteValues = propertyDef.getDiscreteValues();
+                DefaultEnumValue[] values = new DefaultEnumValue[discreteValues.length];
+                for (int i = 0; i < discreteValues.length; i++) {
+                    values[i] = new DefaultEnumValue(propertyDefEnum, (String) discreteValues[i]);
+                }
+                Combo combo = toolkit.createCombo(viewer.getTable(), values);
+                editor = new ComboCellEditor(viewer, 0, combo);
+            }
+            return editor;
         }
         return null;
     }

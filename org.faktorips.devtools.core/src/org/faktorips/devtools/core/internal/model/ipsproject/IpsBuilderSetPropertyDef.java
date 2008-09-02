@@ -111,7 +111,7 @@ public class IpsBuilderSetPropertyDef implements IIpsBuilderSetPropertyDef{
     /**
      * Returns the type specified in the plugin descriptor.
      */
-    public String getTypeInternal() {
+    public String getType() {
         return type;
     }
 
@@ -192,25 +192,6 @@ public class IpsBuilderSetPropertyDef implements IIpsBuilderSetPropertyDef{
      */
     public Object[] getDiscreteValues() {
         return discretePropertyValues.toArray(new String[discretePropertyValues.size()]);
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    public ValueDatatype getType() {
-        if(getTypeInternal().equals("string")){
-            return Datatype.STRING;
-        }
-        if (getTypeInternal().equals("boolean")){
-            return Datatype.BOOLEAN;
-        }
-        if (getTypeInternal().equals("integer")){
-            return Datatype.INTEGER;
-        }
-        if(getTypeInternal().equals("enum") || getTypeInternal().equals("extensionPoint")){
-            return new PropertyDefEnumDatatype();
-        }
-        return null;
     }
 
     /**

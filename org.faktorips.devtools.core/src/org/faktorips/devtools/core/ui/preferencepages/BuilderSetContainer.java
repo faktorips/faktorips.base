@@ -21,21 +21,32 @@ import java.util.List;
 
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.runtime.CoreException;
-import org.eclipse.core.runtime.IExtension;
-import org.eclipse.core.runtime.IExtensionPoint;
 import org.eclipse.core.runtime.Platform;
+import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.viewers.CellLabelProvider;
+import org.eclipse.jface.viewers.ColumnViewerEditor;
+import org.eclipse.jface.viewers.ColumnViewerEditorActivationEvent;
+import org.eclipse.jface.viewers.ColumnViewerEditorActivationStrategy;
+import org.eclipse.jface.viewers.FocusCellOwnerDrawHighlighter;
 import org.eclipse.jface.viewers.IColorProvider;
 import org.eclipse.jface.viewers.IStructuredContentProvider;
 import org.eclipse.jface.viewers.ITableLabelProvider;
 import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.jface.viewers.TableViewerColumn;
+import org.eclipse.jface.viewers.TableViewerEditor;
+import org.eclipse.jface.viewers.TableViewerFocusCellManager;
 import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.jface.viewers.ViewerCell;
 import org.eclipse.jface.viewers.ViewerSorter;
+import org.eclipse.jface.viewers.CellEditor.LayoutData;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.custom.TableEditor;
+import org.eclipse.swt.events.KeyEvent;
+import org.eclipse.swt.events.KeyListener;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.events.SelectionListener;
+import org.eclipse.swt.events.TraverseEvent;
+import org.eclipse.swt.events.TraverseListener;
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.layout.GridData;
@@ -44,6 +55,7 @@ import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Display;
+import org.eclipse.swt.widgets.Item;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Table;
 import org.faktorips.devtools.core.IpsPlugin;
@@ -66,8 +78,6 @@ import org.faktorips.util.ArgumentCheck;
  */
 public class BuilderSetContainer {
 
-    private static final String LOGGING_FRAMEWORK_CONNECTOR_EXTENSION_POINT = "org.faktorips.devtools.core.loggingFrameworkConnector";
-
     private static final int COLUMNS_COUNT = 3;
     public static final int PROPERTY_NAME_COLUMN_INDEX = 0;
     public static final int PROPERTY_VALUE_COLUMN_INDEX = 1;
@@ -84,7 +94,6 @@ public class BuilderSetContainer {
 
     private TableViewer tableViewer;
     private ComboField builderSetComboField;
-    private ComboField logFrameworkComboField;
     private TableViewerColumn[] columns;
 
     /**
@@ -117,7 +126,6 @@ public class BuilderSetContainer {
         composite.setLayout(layout);
 
         createBuilderSetCombo(composite);
-        createLoggingFrameworkConnectorCombo(composite);
 
         Label label = new Label(composite, SWT.HORIZONTAL | SWT.BAR);
         GridData gd = new GridData(GridData.FILL_HORIZONTAL);
@@ -199,34 +207,8 @@ public class BuilderSetContainer {
         builderSetComboField.getCombo().select(currentBuilderSetIndex);
     }
     
-    private void createLoggingFrameworkConnectorCombo(Composite parent) {
-        Label l = new Label(parent, SWT.NONE);
-        l.setLayoutData(new GridData(GridData.FILL, GridData.CENTER, false, false));
-        l.setText("Logging Framework Connector:");
-
-        Combo logFrameworkCombo = new Combo(parent, SWT.DROP_DOWN | SWT.READ_ONLY);
-        logFrameworkCombo.setLayoutData(new GridData(GridData.FILL, GridData.FILL, false, false));
-        logFrameworkComboField = new ComboField(logFrameworkCombo);
-        logFrameworkComboField.addChangeListener(new ValueChangeListener() {
-            public void valueChanged(FieldValueChangedEvent e) {
-                ipsProjectProperties.setLoggingFrameworkConnectorId((String)e.field.getValue());
-            }
-        });
-
-        String[] loggingFrameworkConnectors = getSimpleExtensions(LOGGING_FRAMEWORK_CONNECTOR_EXTENSION_POINT);
-        logFrameworkComboField.getCombo().setItems(loggingFrameworkConnectors);
-        int logFrameworkConnectorIndex = -1;
-        for (int i = 0; i < loggingFrameworkConnectors.length; i++) {
-            if (ipsProjectProperties.getLoggingFrameworkConnectorId().equals(loggingFrameworkConnectors[i])) {
-                logFrameworkConnectorIndex = i;
-                break;
-            }
-        }
-        logFrameworkComboField.getCombo().select(logFrameworkConnectorIndex);
-    }
-
     private void createTableViewer(Composite parent) {
-        Table table = new Table(parent, SWT.BORDER | SWT.V_SCROLL | SWT.H_SCROLL | SWT.FULL_SELECTION);
+        final Table table = new Table(parent, SWT.BORDER | SWT.V_SCROLL | SWT.H_SCROLL | SWT.SINGLE | SWT.FULL_SELECTION);
         table.setLinesVisible(true);
         table.setHeaderVisible(true);
         GridData gridData = new GridData(GridData.FILL_BOTH);
@@ -237,7 +219,7 @@ public class BuilderSetContainer {
 
         tableViewer = new TableViewer(table);
         tableViewer.setContentProvider(new BuilderSetContentProvider());
-
+        
         String[] columnNames = new String[COLUMNS_COUNT];
         columnNames[PROPERTY_NAME_COLUMN_INDEX] = "Property";
         columnNames[PROPERTY_VALUE_COLUMN_INDEX] = "Value";
@@ -249,6 +231,26 @@ public class BuilderSetContainer {
             columns[i].getColumn().setText(columnNames[i]);
         }
 
+        TableViewerFocusCellManager focusCellManager = new TableViewerFocusCellManager(tableViewer,
+                new FocusCellOwnerDrawHighlighter(tableViewer));
+
+        ColumnViewerEditorActivationStrategy actSupport = new ColumnViewerEditorActivationStrategy(tableViewer) {
+            protected boolean isEditorActivationEvent(ColumnViewerEditorActivationEvent event) {
+                return event.eventType == ColumnViewerEditorActivationEvent.TRAVERSAL
+                        || event.eventType == ColumnViewerEditorActivationEvent.MOUSE_CLICK_SELECTION
+                        || (event.eventType == ColumnViewerEditorActivationEvent.KEY_PRESSED /*
+                                                                                                 * &&
+                                                                                                 * event.keyCode ==
+                                                                                                 * SWT.CR
+                                                                                                 */)
+                        || event.eventType == ColumnViewerEditorActivationEvent.PROGRAMMATIC;
+            }
+
+        };
+        TableViewerEditor.create(tableViewer, focusCellManager, actSupport, ColumnViewerEditor.TABBING_HORIZONTAL
+                | ColumnViewerEditor.TABBING_MOVE_TO_ROW_NEIGHBOR | ColumnViewerEditor.TABBING_VERTICAL
+                | ColumnViewerEditor.KEYBOARD_ACTIVATION);
+
         // sort property name column if clicked on column header
         columns[PROPERTY_NAME_COLUMN_INDEX].getColumn().addSelectionListener(new SelectionListener() {
             public void widgetDefaultSelected(SelectionEvent e) {
@@ -259,7 +261,7 @@ public class BuilderSetContainer {
                     int direction = (tableViewer.getTable().getSortDirection() == SWT.DOWN) ? SWT.UP : SWT.DOWN;
                     tableViewer.getTable().setSortDirection(direction);
                     tableViewer.getTable().setSortColumn(columns[PROPERTY_NAME_COLUMN_INDEX].getColumn());
-                    tableViewer.setSorter(new BuilderSetPropertyDefSorter(ipsProject));
+//                     tableViewer.setSorter(new BuilderSetPropertyDefSorter(ipsProject));
                 }
             }
         });
@@ -317,9 +319,6 @@ public class BuilderSetContainer {
         tableViewer.setSorter(new BuilderSetPropertyDefSorter(ipsProject));
         tableViewer.setInput(builderSetId);
 
-        String loggingFrameworkConnectorId = ipsProjectProperties.getLoggingFrameworkConnectorId();
-        logFrameworkComboField.setText(loggingFrameworkConnectorId);
-
         updateColumnWidths();
     }
 
@@ -345,23 +344,6 @@ public class BuilderSetContainer {
             buf.append(builderSetConfigModel.getPropertyValue(propertyNames[i])).append(";");
         }
         return buf.toString();
-    }
-
-    // return an array of extensions for the given extension point suitable for display (short)
-    private String[] getSimpleExtensions(String extensionPointId) {
-
-        // FIXME: use a map of uniqueId/humanReadableId in order to be able to attach the key-value
-        // pairs to a widget
-        String[] extensions;
-        IExtensionPoint extensionPoint = Platform.getExtensionRegistry().getExtensionPoint(extensionPointId);
-        IExtension[] registeredExtensions = extensionPoint.getExtensions();
-
-        extensions = new String[registeredExtensions.length];
-        for (int i = 0; i < registeredExtensions.length; i++) {
-            extensions[i] = registeredExtensions[i].getSimpleIdentifier();
-        }
-
-        return extensions;
     }
 
     private List getBuilderSetInfos(IIpsProject project) {
