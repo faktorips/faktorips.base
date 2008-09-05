@@ -253,4 +253,12 @@ public class ModelTypeXmlBuilder extends AbstractXmlFileBuilder {
         return null;
     }
 
+    /**
+     * {@inheritDoc}
+     */
+    public boolean buildsDerivedArtefacts() {
+        return true;
+    }
+
+    
 }
