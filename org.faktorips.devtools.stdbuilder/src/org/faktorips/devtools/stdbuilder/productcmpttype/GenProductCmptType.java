@@ -20,13 +20,13 @@ import java.util.Calendar;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 
 import org.apache.commons.lang.StringUtils;
 import org.eclipse.core.runtime.CoreException;
 import org.faktorips.codegen.JavaCodeFragment;
 import org.faktorips.codegen.JavaCodeFragmentBuilder;
-import org.faktorips.devtools.core.builder.AbstractProductCmptTypeBuilder;
 import org.faktorips.devtools.core.model.ipsproject.IChangesOverTimeNamingConvention;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
@@ -259,10 +259,9 @@ public class GenProductCmptType extends GenType {
     public String getMethodNameGetGeneration() throws CoreException {
         IChangesOverTimeNamingConvention convention = getProductCmptType().getIpsProject()
                 .getChangesInTimeNamingConventionForGeneratedCode();
-        String generationConceptName = convention.getGenerationConceptNameSingular(getProductCmptType().getIpsProject()
-                .getGeneratedJavaSourcecodeDocumentationLanguage());
-        String generationConceptAbbreviation = convention.getGenerationConceptNameAbbreviation(getProductCmptType()
-                .getIpsProject().getGeneratedJavaSourcecodeDocumentationLanguage());
+        Locale locale = getLanguageUsedInGeneratedSourceCode();
+        String generationConceptName = convention.getGenerationConceptNameSingular(locale);
+        String generationConceptAbbreviation = convention.getGenerationConceptNameAbbreviation(locale);
         return getLocalizedText("METHOD_GET_GENERATION_NAME", new String[] { getProductCmptType().getName(),
                 generationConceptAbbreviation, generationConceptName });
     }
@@ -291,11 +290,14 @@ public class GenProductCmptType extends GenType {
     /**
      * Returns the variable or parameter name for the effetiveDate.
      * 
-     * @param element An isp element that gives access to the ips project.
+     * @param element An ips element that gives access to the ips project.
      * @see org.faktorips.devtools.core.builder.AbstractProductCmptTypeBuilder#getVarNameEffectiveDate
      */
     public String getVarNameEffectiveDate() {
-        return AbstractProductCmptTypeBuilder.getVarNameEffectiveDate(getProductCmptType());
+        IChangesOverTimeNamingConvention convention = getChangesInTimeNamingConvention();
+        Locale locale = getLanguageUsedInGeneratedSourceCode();
+        String conceptName = convention.getEffectiveDateConceptName(locale);
+        return StringUtils.uncapitalize(conceptName);
     }
 
     /**

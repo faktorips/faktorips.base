@@ -12,7 +12,6 @@ package org.faktorips.devtools.core.internal.model.ipsproject;
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
 import java.lang.reflect.Proxy;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
@@ -84,19 +83,22 @@ public class IpsBuilderSetPropertyDefTest extends TestCase {
         propertyDef = IpsBuilderSetPropertyDef.loadExtensions(propertyDefEl, null, "builderSetId", logger, null);
         assertEquals(1, logger.getLogEntries().size());
 
-        //add the type attribute and remove the required defaultValue attribute
+        //add the type attribute and remove the required defaultValue attribute. In this case since null is an always an allowed value
+        //as a defaultValue null is the default value. It depends on the program that evaluates the default value how to treat null.
         attributes.put("type", "enum");
         attributes.remove("defaultValue");
         logger.reset();
         propertyDef = IpsBuilderSetPropertyDef.loadExtensions(propertyDefEl, null, "builderSetId", logger, null);
-        assertEquals(1, logger.getLogEntries().size());
-
-        //add the defaultValue attribute and remove the required disableValue attribute
+        assertEquals(0, logger.getLogEntries().size());
+        assertNull(propertyDef.getDefaultValue(null));
+        
+        //add the defaultValue attribute and remove the required disableValue attribute. Here the same applies as to the default value above
         attributes.put("defaultValue", "enum");
         attributes.remove("disableValue");
         logger.reset();
         propertyDef = IpsBuilderSetPropertyDef.loadExtensions(propertyDefEl, null, "builderSetId", logger, null);
-        assertEquals(1, logger.getLogEntries().size());
+        assertEquals(0, logger.getLogEntries().size());
+        assertNull(propertyDef.getDisableValue(null));
     }
     
     public void testloadExtensionsIntegerValue() {
@@ -164,40 +166,41 @@ public class IpsBuilderSetPropertyDefTest extends TestCase {
         attributes.put("name", "loggingConnectorRef");
         attributes.put("type", "extensionPoint");
         attributes.put("label", "Logging Connector Ref");
-        attributes.put("defaultValue", "javaLoggingConnector");
-        attributes.put("disableValue", "null");
+        attributes.put("defaultValue", IpsPlugin.PLUGIN_ID + ".javaLoggingConnector");
+        attributes.put("disableValue", "None");
         attributes.put("description", "Hello");
         attributes.put("pluginId", IpsPlugin.PLUGIN_ID);
-        attributes.put("extensionPoint", "loggingConnector");
+        attributes.put("extensionPointId", IpsPlugin.PLUGIN_ID + ".loggingFrameworkConnector");
         
         TestConfigurationElement propertyDefEl = new TestConfigurationElement("loggingConnectorElement", attributes, null,
                 new IConfigurationElement[] {});
         
-        TestExtension loggingConnectorExt1 = new TestExtension(new IConfigurationElement[] {}, "javaLoggingConnector");
-        TestExtension loggingConnectorExt2 = new TestExtension(new IConfigurationElement[] {}, "log4jLoggingConnector");
-        TestExtension loggingConnectorExt3 = new TestExtension(new IConfigurationElement[] {}, "ownLoggingConnector");
+        TestExtension loggingConnectorExt1 = new TestExtension(new IConfigurationElement[] {}, IpsPlugin.PLUGIN_ID, "javaLoggingConnector");
+        TestExtension loggingConnectorExt2 = new TestExtension(new IConfigurationElement[] {}, IpsPlugin.PLUGIN_ID, "log4jLoggingConnector");
+        TestExtension loggingConnectorExt3 = new TestExtension(new IConfigurationElement[] {}, IpsPlugin.PLUGIN_ID, "ownLoggingConnector");
+        TestExtension loggingConnectorExt4 = new TestExtension(new IConfigurationElement[] {}, "None");
 
         TestExtensionPoint loggingConnectorExtensionPoint = new TestExtensionPoint(new IExtension[] {
-                loggingConnectorExt1, loggingConnectorExt2, loggingConnectorExt3 }, IpsPlugin.PLUGIN_ID,
-                "loggingConnector");
+                loggingConnectorExt1, loggingConnectorExt2, loggingConnectorExt3, loggingConnectorExt4 }, IpsPlugin.PLUGIN_ID,
+                "loggingFrameworkConnector");
         TestExtensionRegistry registry = new TestExtensionRegistry(new IExtensionPoint[] { loggingConnectorExtensionPoint });
         
         TestLogger logger = new TestLogger();
         IIpsBuilderSetPropertyDef propertyDef = IpsBuilderSetPropertyDef.loadExtensions(propertyDefEl, registry, "builderSetId", logger, null);
         
-        assertEquals("javaLoggingConnector", propertyDef.getDefaultValue(null));
-        assertEquals("javaLoggingConnector", propertyDef.parseValue(propertyDef.getDefaultValue(null)));
+        assertEquals(IpsPlugin.PLUGIN_ID + ".javaLoggingConnector", propertyDef.getDefaultValue(null));
+        assertEquals(IpsPlugin.PLUGIN_ID + ".javaLoggingConnector", propertyDef.parseValue(propertyDef.getDefaultValue(null)));
         
-        assertEquals("null", propertyDef.getDisableValue(null));
-        assertNull(propertyDef.parseValue(propertyDef.getDisableValue(null)));
+        assertEquals("None", propertyDef.getDisableValue(null));
+        assertEquals("None", propertyDef.parseValue(propertyDef.getDisableValue(null)));
         
         assertNotNull(propertyDef.validateValue("anotherConnector"));
-        assertNull(propertyDef.validateValue("javaLoggingConnector"));
+        assertNull(propertyDef.validateValue(IpsPlugin.PLUGIN_ID + ".javaLoggingConnector"));
         
         List values = Arrays.asList(propertyDef.getDiscreteValues());
-        assertTrue(values.contains("javaLoggingConnector"));
-        assertTrue(values.contains("log4jLoggingConnector"));
-        assertTrue(values.contains("ownLoggingConnector"));
+        assertTrue(values.contains(IpsPlugin.PLUGIN_ID + ".javaLoggingConnector"));
+        assertTrue(values.contains(IpsPlugin.PLUGIN_ID + ".log4jLoggingConnector"));
+        assertTrue(values.contains(IpsPlugin.PLUGIN_ID + ".ownLoggingConnector"));
         
     }
     
@@ -207,7 +210,15 @@ public class IpsBuilderSetPropertyDefTest extends TestCase {
         attributes.put("class", IpsBuilderSetPropertyDef.class.getName());
 
         HashMap executableExtensionMap = new HashMap();
-        IpsBuilderSetPropertyDef ownDefClass = new IpsBuilderSetPropertyDef("testProperty", "", "", "boolean", "true", "true", new ArrayList(), new ArrayList());
+
+        HashMap properties = new HashMap();
+        properties.put("name", "testProperty");
+        properties.put("type", "boolean");
+        properties.put("defaultValue", "true");
+        properties.put("disableValue", "true");
+        
+        IpsBuilderSetPropertyDef ownDefClass = new IpsBuilderSetPropertyDef();
+        ownDefClass.initialize(null, properties);
         executableExtensionMap.put("class", ownDefClass);
         
         TestConfigurationElement propertyDefEl = new TestConfigurationElement("testProperty", attributes, null,

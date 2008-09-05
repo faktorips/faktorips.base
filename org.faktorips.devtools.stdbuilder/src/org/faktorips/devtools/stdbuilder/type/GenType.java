@@ -18,11 +18,9 @@ import java.util.Locale;
 
 import org.eclipse.core.runtime.CoreException;
 import org.faktorips.datatype.Datatype;
-import org.faktorips.devtools.core.builder.AbstractPcTypeBuilder;
-import org.faktorips.devtools.core.builder.AbstractTypeBuilder;
 import org.faktorips.devtools.core.builder.JavaGeneratorForIpsPart;
-import org.faktorips.devtools.core.builder.JavaSourceFileBuilder;
 import org.faktorips.devtools.core.model.ipsproject.IChangesOverTimeNamingConvention;
+import org.faktorips.devtools.core.model.ipsproject.IIpsArtefactBuilderSet;
 import org.faktorips.devtools.core.model.type.IType;
 import org.faktorips.devtools.stdbuilder.StandardBuilderSet;
 import org.faktorips.util.ArgumentCheck;
@@ -46,8 +44,8 @@ public abstract class GenType extends JavaGeneratorForIpsPart {
      * @param builder
      * @throws CoreException
      */
-    public GenType(IType type, StandardBuilderSet builderSet, LocalizedStringsSet stringsSet) {
-        super(type, stringsSet);
+    public GenType(IType type, StandardBuilderSet builderSet, LocalizedStringsSet localizedStringsSet) {
+        super(type, localizedStringsSet);
         ArgumentCheck.notNull(type, this);
         ArgumentCheck.notNull(builderSet, this);
         this.type = type;
@@ -127,7 +125,8 @@ public abstract class GenType extends JavaGeneratorForIpsPart {
      * @see org.faktorips.devtools.core.builder.AbstractTypeBuilder#getAbbreviationForGenerationConcept
      */
     public String getAbbreviationForGenerationConcept() {
-        return AbstractTypeBuilder.getAbbreviationForGenerationConcept(type);
+        return getChangesInTimeNamingConvention().getGenerationConceptNameAbbreviation(
+                getLanguageUsedInGeneratedSourceCode());
     }
 
     /**
@@ -136,16 +135,16 @@ public abstract class GenType extends JavaGeneratorForIpsPart {
      * @see org.faktorips.devtools.core.builder.JavaSourceFileBuilder#getChangesInTimeNamingConvention
      */
     public IChangesOverTimeNamingConvention getChangesInTimeNamingConvention() {
-        return JavaSourceFileBuilder.getChangesInTimeNamingConvention(type);
+        return builderSet.getIpsProject().getChangesInTimeNamingConventionForGeneratedCode();
     }
 
     /**
      * Returns the language in that variables, methods are named and and Java docs are written in.
      * 
-     * @see org.faktorips.devtools.core.builder.JavaSourceFileBuilder#getLanguageUsedInGeneratedSourceCode
+     * @see IIpsArtefactBuilderSet#getLanguageUsedInGeneratedSourceCode()
      */
     public Locale getLanguageUsedInGeneratedSourceCode() {
-        return JavaSourceFileBuilder.getLanguageUsedInGeneratedSourceCode(type);
+        return builderSet.getLanguageUsedInGeneratedSourceCode();
     }
 
     /**
@@ -158,7 +157,8 @@ public abstract class GenType extends JavaGeneratorForIpsPart {
      * @see org.faktorips.devtools.core.builder.AbstractPcTypeBuilder#getNameForGenerationConcept
      */
     public String getNameForGenerationConcept() {
-        return AbstractPcTypeBuilder.getNameForGenerationConcept(type);
+        return getChangesInTimeNamingConvention().getGenerationConceptNameSingular(
+                getLanguageUsedInGeneratedSourceCode());
     }
 
     /**

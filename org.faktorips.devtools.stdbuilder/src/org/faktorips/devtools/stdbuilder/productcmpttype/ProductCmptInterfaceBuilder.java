@@ -128,7 +128,7 @@ public class ProductCmptInterfaceBuilder extends BaseProductCmptTypeBuilder {
     private void generateMethodGetGeneration(JavaCodeFragmentBuilder methodsBuilder) throws CoreException {
         IChangesOverTimeNamingConvention convention = getChangesInTimeNamingConvention(getIpsSrcFile());
         String generationConceptName = convention
-                .getGenerationConceptNameSingular(getLanguageUsedInGeneratedSourceCode(getIpsObject()));
+                .getGenerationConceptNameSingular(getLanguageUsedInGeneratedSourceCode());
         appendLocalizedJavaDoc("METHOD_GET_GENERATION", generationConceptName, getIpsObject(), methodsBuilder);
         ((StandardBuilderSet)getBuilderSet()).getGenerator(getProductCmptType()).generateSignatureGetGeneration(
                 methodsBuilder);

@@ -14,6 +14,8 @@
 
 package org.faktorips.devtools.stdbuilder.productcmpttype;
 
+import java.util.Locale;
+
 import org.eclipse.core.runtime.CoreException;
 import org.faktorips.devtools.core.builder.DefaultJavaGeneratorForIpsPart;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPartContainer;
@@ -29,6 +31,13 @@ public abstract class GenProductCmptTypePart extends DefaultJavaGeneratorForIpsP
         super(part, stringsSet);
         ArgumentCheck.notNull(genProductCmptType, this);
         this.genProductCmptType = genProductCmptType;
+    }
+    
+    /**
+     * {@inheritDoc}
+     */
+    public Locale getLanguageUsedInGeneratedSourceCode() {
+        return genProductCmptType.getLanguageUsedInGeneratedSourceCode();
     }
 
     public GenProductCmptType getGenProductCmptType() {

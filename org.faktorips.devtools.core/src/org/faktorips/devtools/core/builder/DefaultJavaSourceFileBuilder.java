@@ -33,6 +33,7 @@ import org.eclipse.jdt.core.JavaModelException;
 import org.faktorips.codegen.ImportDeclaration;
 import org.faktorips.codegen.JavaCodeFragment;
 import org.faktorips.codegen.JavaCodeFragmentBuilder;
+import org.faktorips.devtools.core.model.IIpsElement;
 import org.faktorips.devtools.core.model.ipsproject.IIpsArtefactBuilderSet;
 import org.faktorips.devtools.core.model.ipsproject.IIpsLoggingFrameworkConnector;
 import org.faktorips.util.LocalizedStringsSet;
@@ -65,15 +66,15 @@ import org.faktorips.util.StringUtil;
 public abstract class DefaultJavaSourceFileBuilder extends JavaSourceFileBuilder {
 
     /**
-     * Configuration property that is supposed to be used to read a configuration value from
-     * the IIpsArtefactBuilderSetConfig object provided by the initialize method of an
-     * IIpsArtefactBuilderSet instance.
+     * Configuration property that is supposed to be used to read a configuration value from the
+     * IIpsArtefactBuilderSetConfig object provided by the initialize method of an
+     * IIpsArtefactBuilderSet instance. It specifies the type of logging framework connector.
      */
-    public final static String CONFIG_PROPERTY_GENERATE_LOGGING = "generateLoggingStatements"; //$NON-NLS-1$
+    public final static String CONFIG_PROPERTY_LOGGING_FRAMEWORK_CONNECTOR = "loggingFrameworkConnector"; //$NON-NLS-1$
+
 
     protected static final String[] EMPTY_STRING_ARRAY = new String[0];
     
-    private boolean loggingGenerationEnabled = false;
     private TypeSection mainSection;
     private List innerClassesSections;
     private boolean loggerInstanceGenerated = false;
@@ -189,6 +190,14 @@ public abstract class DefaultJavaSourceFileBuilder extends JavaSourceFileBuilder
     }
     
     /**
+     * To use the capabilities of the generation of logging code of this builder it must be provided with a builder set that supports
+     * the configuration property <code>CONFIG_PROPERTY_LOGGING_FRAMEWORK_CONNECTOR</code> of this builder.
+     */
+    public IIpsLoggingFrameworkConnector getIpsLoggingFrameworkConnector(){
+        return (IIpsLoggingFrameworkConnector)getBuilderSet().getConfig().getPropertyValue(CONFIG_PROPERTY_LOGGING_FRAMEWORK_CONNECTOR);
+    }
+    
+    /**
      * This method is the entry point for implementations of this abstract builder. Within this
      * method the specific code generation has to be implemented. Typically the generated code is
      * written to sub sections of the main <code>TypeSection</code> retrieved by the
@@ -227,10 +236,7 @@ public abstract class DefaultJavaSourceFileBuilder extends JavaSourceFileBuilder
      * Log statements should be generated if is enabled and a logging framework connector exists. 
      */
     private boolean checkLoggingGenerationConditions(){
-        Boolean generateLogging = getBuilderSet().getConfig().getPropertyValueAsBoolean(
-                DefaultJavaSourceFileBuilder.CONFIG_PROPERTY_GENERATE_LOGGING);
-        generateLogging = generateLogging != null ? generateLogging : Boolean.FALSE; 
-        return generateLogging.booleanValue() && getBuilderSet().getIpsLoggingFrameworkConnector() != null;
+        return getIpsLoggingFrameworkConnector() != null;
     }
     
     private void addLoggingConnectorImports(List usedClasses, JavaCodeFragment frag){
@@ -252,9 +258,9 @@ public abstract class DefaultJavaSourceFileBuilder extends JavaSourceFileBuilder
             return;
         }
         ArrayList usedClasses = new ArrayList();
-        IIpsLoggingFrameworkConnector connector = getBuilderSet().getIpsLoggingFrameworkConnector();
+        IIpsLoggingFrameworkConnector connector = getIpsLoggingFrameworkConnector();
         JavaCodeFragment value = new JavaCodeFragment();
-        value.append(getBuilderSet().getIpsLoggingFrameworkConnector().getLoggerInstanceStmt(getUnqualifiedClassName() + ".class.getName()", usedClasses)); //$NON-NLS-1$
+        value.append(connector.getLoggerInstanceStmt(getUnqualifiedClassName() + ".class.getName()", usedClasses)); //$NON-NLS-1$
         addLoggingConnectorImports(usedClasses, value);
         builder.varDeclaration(Modifier.PUBLIC | Modifier.FINAL | Modifier.STATIC, 
                 connector.getLoggerClassName(), getLoggerInstanceExpession(), value);
@@ -273,7 +279,7 @@ public abstract class DefaultJavaSourceFileBuilder extends JavaSourceFileBuilder
         }
         generateLoggerConstantIfNecessary();
         ArrayList usedClasses = new ArrayList();
-        String loggingStmt = getBuilderSet().getIpsLoggingFrameworkConnector().getLogStmtForMessageExp(
+        String loggingStmt = getIpsLoggingFrameworkConnector().getLogStmtForMessageExp(
                 level, messageExp, getLoggerInstanceExpession(), usedClasses);
         frag.append(loggingStmt);
         frag.append(";"); //$NON-NLS-1$
@@ -287,7 +293,7 @@ public abstract class DefaultJavaSourceFileBuilder extends JavaSourceFileBuilder
         generateLoggerConstantIfNecessary();
         ArrayList usedClasses = new ArrayList();
         frag.append("if ("); //$NON-NLS-1$
-        frag.append(getBuilderSet().getIpsLoggingFrameworkConnector().getLogConditionExp(
+        frag.append(getIpsLoggingFrameworkConnector().getLogConditionExp(
                 level, getLoggerInstanceExpession(), usedClasses));
         frag.append(")"); //$NON-NLS-1$
         frag.appendOpenBracket();
@@ -302,7 +308,7 @@ public abstract class DefaultJavaSourceFileBuilder extends JavaSourceFileBuilder
         }
         generateLoggerConstantIfNecessary();
         ArrayList usedClasses = new ArrayList();
-        String loggingStmt = getBuilderSet().getIpsLoggingFrameworkConnector().getLogStmtForMessage(
+        String loggingStmt = getIpsLoggingFrameworkConnector().getLogStmtForMessage(
                 level, message, getLoggerInstanceExpession(), usedClasses);
         frag.append(loggingStmt);
         frag.append(";"); //$NON-NLS-1$
@@ -315,7 +321,7 @@ public abstract class DefaultJavaSourceFileBuilder extends JavaSourceFileBuilder
         }
         generateLoggerConstantIfNecessary();
         ArrayList usedClasses = new ArrayList();
-        frag.append(getBuilderSet().getIpsLoggingFrameworkConnector().getLogConditionExp(
+        frag.append(getIpsLoggingFrameworkConnector().getLogConditionExp(
                 level, getLoggerInstanceExpession(), usedClasses));
         addLoggingConnectorImports(usedClasses, frag);
     }
@@ -327,7 +333,7 @@ public abstract class DefaultJavaSourceFileBuilder extends JavaSourceFileBuilder
         generateLoggerConstantIfNecessary();
         ArrayList usedClasses = new ArrayList();
         frag.append("if ("); //$NON-NLS-1$
-        frag.append(getBuilderSet().getIpsLoggingFrameworkConnector().getLogConditionExp(
+        frag.append(getIpsLoggingFrameworkConnector().getLogConditionExp(
                 level, getLoggerInstanceExpession(), usedClasses));
         frag.append(")"); //$NON-NLS-1$
         frag.appendOpenBracket();
@@ -513,4 +519,18 @@ public abstract class DefaultJavaSourceFileBuilder extends JavaSourceFileBuilder
     protected final void generateErrorLoggingStmtWithCondition(JavaCodeFragment frag, String message) throws CoreException{
         generateLoggingStmtWithCondition(IIpsLoggingFrameworkConnector.LEVEL_ERROR, frag, message);
     }
+    
+    /**
+     * Returns the name (singular form) for the generation (changes over time) concept.
+     * 
+     * @param element An ips element needed to access the ipsproject where the necessary configuration
+     * information is stored.
+     * 
+     * @see org.faktorips.devtools.core.model.ipsproject.IChangesOverTimeNamingConvention
+     */
+    public String getNameForGenerationConcept(IIpsElement element) {
+        return getChangesInTimeNamingConvention(element).
+            getGenerationConceptNameSingular(getLanguageUsedInGeneratedSourceCode());
+    }
+
 }

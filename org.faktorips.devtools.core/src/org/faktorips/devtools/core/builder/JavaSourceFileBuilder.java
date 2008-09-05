@@ -215,8 +215,8 @@ public abstract class JavaSourceFileBuilder extends AbstractArtefactBuilder {
     /**
      * Returns the language in that variables, methods are named and and Java docs are written in.
      */
-    public static Locale getLanguageUsedInGeneratedSourceCode(IIpsElement element) {
-        return element.getIpsProject().getGeneratedJavaSourcecodeDocumentationLanguage();
+    public Locale getLanguageUsedInGeneratedSourceCode() {
+        return getBuilderSet().getLanguageUsedInGeneratedSourceCode();
     }
 
     /**
@@ -225,7 +225,7 @@ public abstract class JavaSourceFileBuilder extends AbstractArtefactBuilder {
     public JavaNamingConvention getJavaNamingConvention() {
         return JavaNamingConvention.ECLIPSE_STANDARD;
     }
-
+    
     /**
      * Implementations of this class must override this method to provide the content of the java
      * source file.
@@ -449,7 +449,7 @@ public abstract class JavaSourceFileBuilder extends AbstractArtefactBuilder {
             throw new RuntimeException(
                     "A LocalizedStringSet has to be set to this builder to be able to call this method."); //$NON-NLS-1$
         }
-        return getLocalizedStringSet().getString(key, getLanguageUsedInGeneratedSourceCode(element));
+        return getLocalizedStringSet().getString(key, getLanguageUsedInGeneratedSourceCode());
     }
 
     /**
@@ -661,7 +661,7 @@ public abstract class JavaSourceFileBuilder extends AbstractArtefactBuilder {
             throw new RuntimeException(
                     "A LocalizedStringSet has to be set to this builder to be able to call this method."); //$NON-NLS-1$
         }
-        return getLocalizedStringSet().getString(key, getLanguageUsedInGeneratedSourceCode(element), replacement);
+        return getLocalizedStringSet().getString(key, getLanguageUsedInGeneratedSourceCode(), replacement);
     }
 
     /**
@@ -681,7 +681,7 @@ public abstract class JavaSourceFileBuilder extends AbstractArtefactBuilder {
             throw new RuntimeException(
                     "A LocalizedStringSet has to be set to this builder to be able to call this method."); //$NON-NLS-1$
         }
-        return getLocalizedStringSet().getString(key, getLanguageUsedInGeneratedSourceCode(element), replacements);
+        return getLocalizedStringSet().getString(key, getLanguageUsedInGeneratedSourceCode(), replacements);
     }
 
     /**
@@ -900,8 +900,6 @@ public abstract class JavaSourceFileBuilder extends AbstractArtefactBuilder {
         }
         model.initialize(facadeHelper, getJMergeDefaultConfigLocation(project));
     }
-
-    
 
     private String getJMergeDefaultConfigLocation(IIpsProject ipsProject) {
         StringBuffer mergeFile = new StringBuffer();

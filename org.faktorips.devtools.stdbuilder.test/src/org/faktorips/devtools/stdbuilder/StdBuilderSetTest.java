@@ -19,29 +19,41 @@ package org.faktorips.devtools.stdbuilder;
 
 import java.util.ArrayList;
 
+import org.eclipse.core.runtime.CoreException;
 import org.faktorips.devtools.core.AbstractIpsPluginTest;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.model.ipsproject.IIpsArtefactBuilderSetInfo;
 import org.faktorips.devtools.core.model.ipsproject.IIpsBuilderSetPropertyDef;
+import org.faktorips.devtools.core.model.ipsproject.IIpsLoggingFrameworkConnector;
+import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 
 public class StdBuilderSetTest extends AbstractIpsPluginTest {
 
-    public void testStdBuilderSetPropertyDefinitions(){
+    public void testStdBuilderSetPropertyDefinitions() throws CoreException{
+        IIpsProject ipsProject = newIpsProject();
         IIpsArtefactBuilderSetInfo builderSetInfo = IpsPlugin.getDefault().getIpsModel().getIpsArtefactBuilderSetInfo("org.faktorips.devtools.stdbuilder.ipsstdbuilderset");
         assertNotNull(builderSetInfo);
         IIpsBuilderSetPropertyDef[] propertyDefs = builderSetInfo.getPropertyDefinitions();
-        assertEquals(7, propertyDefs.length);
+        assertEquals(8, propertyDefs.length);
         
         ArrayList propertyDefNames = new ArrayList();
         for (int i = 0; i < propertyDefs.length; i++) {
             propertyDefNames.add(propertyDefs[i].getName());
         }
+        
         assertTrue(propertyDefNames.contains("generateChangeListener"));
         assertTrue(propertyDefNames.contains("useJavaEnumTypes"));
+        assertTrue(propertyDefNames.contains("generatorLocale"));
         assertTrue(propertyDefNames.contains("useTypesafeCollections"));
         assertTrue(propertyDefNames.contains("generateDeltaSupport"));
         assertTrue(propertyDefNames.contains("generateCopySupport"));
-        assertTrue(propertyDefNames.contains("generateLoggingStatements"));
         assertTrue(propertyDefNames.contains("generateVisitorSupport"));
+        assertTrue(propertyDefNames.contains("loggingFrameworkConnector"));
+        
+        IIpsBuilderSetPropertyDef loggingConnectorPropertyDef = builderSetInfo.getPropertyDefinition("loggingFrameworkConnector");
+        IIpsLoggingFrameworkConnector connector = (IIpsLoggingFrameworkConnector)loggingConnectorPropertyDef.parseValue(
+                loggingConnectorPropertyDef.getDefaultValue(ipsProject));
+        assertNull(connector);
+        
     }
 }

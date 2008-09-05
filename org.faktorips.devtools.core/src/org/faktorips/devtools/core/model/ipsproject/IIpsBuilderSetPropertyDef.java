@@ -20,7 +20,6 @@ package org.faktorips.devtools.core.model.ipsproject;
 import java.util.Map;
 
 import org.eclipse.core.runtime.IStatus;
-import org.faktorips.datatype.ValueDatatype;
 import org.faktorips.devtools.core.model.IIpsModel;
 import org.faktorips.util.message.Message;
 
@@ -32,6 +31,17 @@ import org.faktorips.util.message.Message;
  */
 public interface IIpsBuilderSetPropertyDef {
 
+    /**
+     * Prefix for all message codes of this class.
+     */
+    public final static String MSGCODE_PREFIX = "BUILDER_SET_PROPERTY_DEF-"; //$NON-NLS-1$
+
+    /**
+     * Validation message code to indicate that the string value is not parsable by the parseValue(String) method. 
+     */
+    public final static String MSGCODE_NON_PARSABLE_VALUE = MSGCODE_PREFIX
+            + "NonParsableValue"; //$NON-NLS-1$
+    
     /**
      * The identifing name of this property definition.
      */
@@ -73,10 +83,11 @@ public interface IIpsBuilderSetPropertyDef {
     /**
      * The discrete values if this property definition has discrete values. 
      */
-    public Object[] getDiscreteValues();
+    public String[] getDiscreteValues();
     
     /**
-     * Converts the string representation of a value supported by this property definition into the actual object  
+     * Converts the string representation of a value supported by this property definition into the actual object.
+     * If <code>null</code> is provided as parameter value <code>null</code> will be returned.   
      */
     public Object parseValue(String value);
     
@@ -87,6 +98,8 @@ public interface IIpsBuilderSetPropertyDef {
 
     /**
      * Validates if the provided string representation can be converted into an object described by this property definition.
+     * If the validation fails a message object will be returned otherwise <code>null</code> will be returned.
+     * If <code>null</code> is provided as parameter <code>null</code> will be returned.
      */
     public Message validateValue(String value);
     

@@ -17,8 +17,6 @@
 
 package org.faktorips.devtools.core.internal.model.ipsproject;
 
-import java.util.Locale;
-
 import org.eclipse.core.runtime.CoreException;
 import org.faktorips.devtools.core.AbstractIpsPluginTest;
 import org.faktorips.devtools.core.internal.model.DynamicEnumDatatype;
@@ -86,7 +84,6 @@ public class IpsProjectPropertiesTest extends AbstractIpsPluginTest {
 		IpsProjectProperties props = new IpsProjectProperties();
 		props.setModelProject(true);
 		props.setProductDefinitionProject(true);
-		props.setJavaSrcLanguage(Locale.ITALIAN);
         props.setJavaProjectContainsClassesForDynamicDatatypes(true);
 		props.setChangesOverTimeNamingConventionIdForGeneratedCode("myConvention");
 		props.setBuilderSetId("myBuilder");
@@ -127,7 +124,6 @@ public class IpsProjectPropertiesTest extends AbstractIpsPluginTest {
         assertTrue(props.isDerivedUnionIsImplementedRuleEnabled());
         assertTrue(props.isReferencedProductComponentsAreValidOnThisGenerationsValidFromDateRuleEnabled());
 		assertEquals("newRuntimeIdPrefix", props.getRuntimeIdPrefix());
-		assertEquals(Locale.ITALIAN, props.getJavaSrcLanguage());
         assertTrue(props.isJavaProjectContainsClassesForDynamicDatatypes());
 		assertEquals("myConvention", props.getChangesOverTimeNamingConventionIdForGeneratedCode());
 		assertEquals("myBuilder", props.getBuilderSetId());
@@ -188,7 +184,6 @@ public class IpsProjectPropertiesTest extends AbstractIpsPluginTest {
 		props.initFromXml(ipsProject, docEl);
 		assertTrue(props.isModelProject());
 		assertTrue(props.isProductDefinitionProject());
-		assertEquals(Locale.ITALIAN, props.getJavaSrcLanguage());
         assertTrue(props.isJavaProjectContainsClassesForDynamicDatatypes());
         assertTrue(props.isDerivedUnionIsImplementedRuleEnabled());
         assertTrue(props.isReferencedProductComponentsAreValidOnThisGenerationsValidFromDateRuleEnabled());
@@ -229,13 +224,5 @@ public class IpsProjectPropertiesTest extends AbstractIpsPluginTest {
         // test resource filter
         assertTrue(props.isResourceExcludedFromProductDefinition("src"));
         assertTrue(props.isResourceExcludedFromProductDefinition("build/build.xml"));
-	}
-	
-	public void testGetLocale() {
-		assertEquals(Locale.ENGLISH, IpsProjectProperties.getLocale(""));
-		assertEquals(Locale.ENGLISH, IpsProjectProperties.getLocale(Locale.ENGLISH.toString()));
-		assertEquals(Locale.GERMANY, IpsProjectProperties.getLocale(Locale.GERMANY.toString()));
-		assertEquals(new Locale("de", "DE", "variantA"), IpsProjectProperties.getLocale("de_DE_variantA"));
-		
 	}
 }

@@ -310,15 +310,6 @@ public interface IIpsProject extends IIpsElement, IProjectNature {
     public Locale getExpressionLanguageFunctionsLanguage();
     
     /**
-     * Returns the language (as a locale) in that the generated Java sourcecode
-     * is documented. 
-     * <p>
-     * E.g. in English we could generate getNumOfCoverages(), in German we could 
-     * generate getAnzahlCoverages().
-     */
-    public Locale getGeneratedJavaSourcecodeDocumentationLanguage();
-    
-    /**
      * Returns the naming convention for changes over time used in the generated Java sourcecode.
      */
     public IChangesOverTimeNamingConvention getChangesInTimeNamingConventionForGeneratedCode();
@@ -629,15 +620,6 @@ public interface IIpsProject extends IIpsElement, IProjectNature {
      * IpsArtefactBuilderSet is active for this project an <code>EmptyBuilderSet</code> is returned.
      */
     public IIpsArtefactBuilderSet getIpsArtefactBuilderSet();
-
-    /**
-     * Returns the <code>{@link IIpsLoggingFrameworkConnector}</code> for the IpsProject property
-     * <i>loggingFrameworkConnector</i> configured in the .ipsproject file for this project. If no
-     * connector counld be found for the declared IpsProject property  <code>null</code> will be returned.
-     * Valid connector ids are the ids of the extensions of the extension-point 
-     * <code>org.faktorips.devtools.core.loggingFrameworkConnector</code>.
-     */
-    public IIpsLoggingFrameworkConnector getIpsLoggingFrameworkConnector();
     
     /**
      * Reinitializes the <code>IpsProject</code>s <code>IpsArtefactBuilderSet</code>.

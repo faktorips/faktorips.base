@@ -71,9 +71,8 @@ public class GenPolicyCmptType extends GenType {
      * @param builder
      * @throws CoreException
      */
-    public GenPolicyCmptType(IPolicyCmptType policyCmptType, StandardBuilderSet builderSet,
-            LocalizedStringsSet stringsSet) throws CoreException {
-        super(policyCmptType, builderSet, stringsSet);
+    public GenPolicyCmptType(IPolicyCmptType policyCmptType, StandardBuilderSet builderSet) throws CoreException {
+        super(policyCmptType, builderSet, new LocalizedStringsSet(GenPolicyCmptType.class));
         ArgumentCheck.notNull(policyCmptType, this);
         ArgumentCheck.notNull(builderSet, this);
 

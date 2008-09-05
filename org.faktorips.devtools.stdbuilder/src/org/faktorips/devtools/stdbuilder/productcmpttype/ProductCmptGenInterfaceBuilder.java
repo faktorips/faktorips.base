@@ -84,7 +84,7 @@ public class ProductCmptGenInterfaceBuilder extends BaseProductCmptTypeBuilder {
 
     protected void generateTypeJavadoc(JavaCodeFragmentBuilder builder) throws CoreException {
         String generationConceptName = getChangesInTimeNamingConvention(getIpsObject())
-                .getGenerationConceptNameSingular(getLanguageUsedInGeneratedSourceCode(getIpsObject()));
+                .getGenerationConceptNameSingular(getLanguageUsedInGeneratedSourceCode());
         appendLocalizedJavaDoc("INTERFACE", new String[] { generationConceptName, getProductCmptType().getName() },
                 getIpsObject(), builder);
     }

@@ -66,7 +66,6 @@ import org.faktorips.runtime.ICopySupport;
 import org.faktorips.runtime.IDeltaSupport;
 import org.faktorips.runtime.TableFunctionExecution;
 import org.faktorips.runtime.internal.MethodNames;
-import org.faktorips.util.LocalizedStringsSet;
 
 /**
  * A IpsArtefactBuilderSet implementation that assembles the standard FaktorIPS artefact builders.
@@ -104,13 +103,13 @@ public class StandardBuilderSet extends DefaultBuilderSet {
     public final static String CONFIG_PROPERTY_GENERATE_CHANGELISTENER = "generateChangeListener";
 
     /**
-     * Configuration property that enanbles/disables the use of typesafe collections, if supported
+     * Configuration property that enables/disables the use of typesafe collections, if supported
      * by the target java version.
      */
     public final static String CONFIG_PROPERTY_USE_TYPESAFE_COLLECTIONS = "useTypesafeCollections";
 
     /**
-     * Configuration property that enanbles/disables the use of enums, if supported by the target
+     * Configuration property that enables/disables the use of enums, if supported by the target
      * java version.
      */
     public final static String CONFIG_PROPERTY_USE_ENUMS = "useJavaEnumTypes";
@@ -167,7 +166,7 @@ public class StandardBuilderSet extends DefaultBuilderSet {
         }
         GenPolicyCmptType generator = (GenPolicyCmptType)ipsObjectTypeGenerators.get(policyCmptType);
         if (generator == null) {
-            generator = new GenPolicyCmptType(policyCmptType, this, new LocalizedStringsSet(GenPolicyCmptType.class));
+            generator = new GenPolicyCmptType(policyCmptType, this);
             ipsObjectTypeGenerators.put(policyCmptType, generator);
         }
         return generator;

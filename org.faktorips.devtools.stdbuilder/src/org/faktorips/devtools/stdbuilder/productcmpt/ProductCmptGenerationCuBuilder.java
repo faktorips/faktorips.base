@@ -130,7 +130,7 @@ public class ProductCmptGenerationCuBuilder extends DefaultJavaSourceFileBuilder
      * policyComponentType); } </pre>
      */
     private void buildConstructor(JavaCodeFragmentBuilder codeBuilder) throws CoreException {
-        Locale language = getLanguageUsedInGeneratedSourceCode(generation);
+        Locale language = getLanguageUsedInGeneratedSourceCode();
         String genName = getChangesInTimeNamingConvention(generation).getGenerationConceptNameSingular(language);
         String javaDoc = getLocalizedText(getIpsSrcFile(), CONSTRUCTOR_JAVADOC, genName);
         String className = getUnqualifiedClassName();

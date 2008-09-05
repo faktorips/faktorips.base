@@ -14,6 +14,8 @@
 
 package org.faktorips.devtools.stdbuilder.policycmpttype;
 
+import java.util.Locale;
+
 import org.eclipse.core.runtime.CoreException;
 import org.faktorips.devtools.core.builder.DefaultJavaGeneratorForIpsPart;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPartContainer;
@@ -34,6 +36,14 @@ public abstract class GenPolicyCmptTypePart extends DefaultJavaGeneratorForIpsPa
 
     public GenPolicyCmptType getGenPolicyCmptType() {
         return genPolicyCmptType;
+    }
+
+    
+    /**
+     * {@inheritDoc}
+     */
+    public Locale getLanguageUsedInGeneratedSourceCode() {
+        return genPolicyCmptType.getLanguageUsedInGeneratedSourceCode();
     }
 
     /**

@@ -17,8 +17,6 @@
 
 package org.faktorips.devtools.stdbuilder.table;
 
-import java.util.Locale;
-
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IncrementalProjectBuilder;
 import org.eclipse.core.runtime.CoreException;
@@ -38,7 +36,6 @@ public class TableImplBuilderTest extends AbstractIpsPluginTest {
         super.setUp();
         project = newIpsProject("TestProject");
         IIpsProjectProperties props = project.getProperties();
-        props.setJavaSrcLanguage(Locale.GERMAN);
         project.setProperties(props);
         structure = (ITableStructure)newIpsObject(project, IpsObjectType.TABLE_STRUCTURE, "TestTable");
     }

@@ -61,7 +61,6 @@ public class AbstractParameterIdentifierResolverTest extends AbstractIpsPluginTe
         locale = Locale.GERMAN;
         ipsProject = this.newIpsProject();
         IIpsProjectProperties props = ipsProject.getProperties();
-        props.setJavaSrcLanguage(Locale.GERMAN);
         props.setBuilderSetId(StdBuilderPlugin.STANDARD_BUILDER_EXTENSION_ID);
         ipsProject.setProperties(props);
         ipsProject.getValueDatatypes(false);

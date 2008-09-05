@@ -21,7 +21,6 @@ import java.util.Enumeration;
 import java.util.HashSet;
 import java.util.Hashtable;
 import java.util.Iterator;
-import java.util.Locale;
 import java.util.Set;
 import java.util.StringTokenizer;
 
@@ -31,6 +30,7 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.osgi.util.NLS;
 import org.faktorips.datatype.ValueDatatype;
 import org.faktorips.devtools.core.IpsPlugin;
+import org.faktorips.devtools.core.IpsStatus;
 import org.faktorips.devtools.core.internal.model.DynamicValueDatatype;
 import org.faktorips.devtools.core.internal.model.productcmpt.DateBasedProductCmptNamingStrategy;
 import org.faktorips.devtools.core.internal.model.productcmpt.NoVersionIdProductCmptNamingStrategy;
@@ -70,17 +70,14 @@ public class IpsProjectProperties implements IIpsProjectProperties {
 	}
 	
 	final static String TAG_NAME = "IpsProject"; //$NON-NLS-1$
-	final static String GENERATED_CODE_TAG_NAME = "GeneratedSourcecode";  //$NON-NLS-1$
 		
 	private boolean createdFromParsableFileContents = true;
 	
 	private boolean modelProject;
 	private boolean productDefinitionProject;
-	private Locale javaSrcLanguage = Locale.ENGLISH;
 	private String changesInTimeConventionIdForGeneratedCode = IChangesOverTimeNamingConvention.VAA;
 	private IProductCmptNamingStrategy productCmptNamingStrategy = new NoVersionIdProductCmptNamingStrategy();
 	private String builderSetId = ""; //$NON-NLS-1$
-    private String loggingFrameworkConnectorId=""; //$NON-NLS-1$
     private IIpsArtefactBuilderSetConfigModel builderSetConfig = new IpsArtefactBuilderSetConfigModel();
 	private IIpsObjectPath path = new IpsObjectPath(new IpsProject());
 	private String[] predefinedDatatypesUsed = new String[0];
@@ -115,17 +112,22 @@ public class IpsProjectProperties implements IIpsProjectProperties {
 	 * {@inheritDoc}
 	 */
 	public MessageList validate(IIpsProject ipsProject) throws CoreException {
-		MessageList list = new MessageList();
-		if(validateBuilderSetId(ipsProject, list)){
-		    validateBuilderSetConfig(ipsProject, list);
+        try{
+    		MessageList list = new MessageList();
+    		if(validateBuilderSetId(ipsProject, list)){
+    		    validateBuilderSetConfig(ipsProject, list);
+            }
+    		validateUsedPredefinedDatatype(ipsProject, list);
+            validateIpsObjectPath(ipsProject, list);
+            validateRequiredFeatures(ipsProject, list);
+    		for (int i = 0; i < definedDatatypes.length; i++) {
+    			list.add(definedDatatypes[i].checkReadyToUse());
+    		}
+    		return list;
+        } catch(RuntimeException e){
+            //if runtime exceptions are not converted into core exceptions the stack trace gets lost in loggin file and they are hared to find
+            throw new CoreException(new IpsStatus(e));
         }
-		validateUsedPredefinedDatatype(ipsProject, list);
-        validateIpsObjectPath(ipsProject, list);
-        validateRequiredFeatures(ipsProject, list);
-		for (int i = 0; i < definedDatatypes.length; i++) {
-			list.add(definedDatatypes[i].checkReadyToUse());
-		}
-		return list;
 	}
 	
     private void validateBuilderSetConfig(IIpsProject ipsProject, MessageList msgList){
@@ -242,20 +244,6 @@ public class IpsProjectProperties implements IIpsProjectProperties {
 	/**
 	 * {@inheritDoc}
 	 */
-	public Locale getJavaSrcLanguage() {
-		return javaSrcLanguage;
-	}
-
-	/**
-	 * {@inheritDoc}
-	 */
-	public void setJavaSrcLanguage(Locale javaSrcLanguage) {
-		this.javaSrcLanguage = javaSrcLanguage;
-	}
-	
-	/**
-	 * {@inheritDoc}
-	 */
 	public IProductCmptNamingStrategy getProductCmptNamingStrategy() {
 		return productCmptNamingStrategy;
 	}
@@ -338,6 +326,7 @@ public class IpsProjectProperties implements IIpsProjectProperties {
 		projectEl.setAttribute("productDefinitionProject", "" + productDefinitionProject); //$NON-NLS-1$ //$NON-NLS-2$
 		projectEl.setAttribute("runtimeIdPrefix", runtimeIdPrefix); //$NON-NLS-1$
 		projectEl.setAttribute("javaProjectContainsClassesForDynamicDatatypes", "" + javaProjectContainsClassesForDynamicDatatypes); //$NON-NLS-1$ //$NON-NLS-2$
+		projectEl.setAttribute("changesInTimeNamingConvention", changesInTimeConventionIdForGeneratedCode);
         
         // required features
         createRequiredIpsFeaturesComment(projectEl);
@@ -358,16 +347,8 @@ public class IpsProjectProperties implements IIpsProjectProperties {
         Element builderSetEl = doc.createElement(IIpsArtefactBuilderSet.XML_ELEMENT);
         projectEl.appendChild(builderSetEl);
         builderSetEl.setAttribute("id", builderSetId); //$NON-NLS-1$
-        builderSetEl.setAttribute("loggingFrameworkConnectorId", loggingFrameworkConnectorId); //$NON-NLS-1$
         builderSetEl.appendChild(builderSetConfig.toXml(doc));
         
-        // generated sourcecode
-        createGeneratedSourcecodeDescriptionComment(projectEl);
-        Element generatedCodeEl = doc.createElement(GENERATED_CODE_TAG_NAME);
-		projectEl.appendChild(generatedCodeEl);
-        generatedCodeEl.setAttribute("docLanguage", javaSrcLanguage.toString()); //$NON-NLS-1$
-		generatedCodeEl.setAttribute("changesInTimeNamingConvention", changesInTimeConventionIdForGeneratedCode); //$NON-NLS-1$
-
 		// naming strategy
         createProductCmptNamingStrategyDescriptionComment(projectEl);
         projectEl.appendChild(productCmptNamingStrategy.toXml(doc));
@@ -429,22 +410,14 @@ public class IpsProjectProperties implements IIpsProjectProperties {
         productDefinitionProject = Boolean.valueOf(element.getAttribute("productDefinitionProject")).booleanValue(); //$NON-NLS-1$
         runtimeIdPrefix = element.getAttribute("runtimeIdPrefix"); //$NON-NLS-1$
         javaProjectContainsClassesForDynamicDatatypes = Boolean.valueOf(element.getAttribute("javaProjectContainsClassesForDynamicDatatypes")).booleanValue();  //$NON-NLS-1$
+        changesInTimeConventionIdForGeneratedCode = element.getAttribute("changesInTimeNamingConvention");
+        changesInTimeConventionIdForGeneratedCode = StringUtils.isEmpty(changesInTimeConventionIdForGeneratedCode) ? IChangesOverTimeNamingConvention.VAA : changesInTimeConventionIdForGeneratedCode;  
         
-        Element generatedCodeEl = XmlUtil.getFirstElement(element, GENERATED_CODE_TAG_NAME);
-        if (generatedCodeEl!=null) {
-    	    javaSrcLanguage = getLocale(generatedCodeEl.getAttribute("docLanguage")); //$NON-NLS-1$
-    	    changesInTimeConventionIdForGeneratedCode = generatedCodeEl.getAttribute("changesInTimeNamingConvention"); //$NON-NLS-1$
-        } else {
-        	javaSrcLanguage = Locale.ENGLISH;
-        	changesInTimeConventionIdForGeneratedCode = IChangesOverTimeNamingConvention.VAA;
-        }
         Element artefactEl = XmlUtil.getFirstElement(element, IIpsArtefactBuilderSet.XML_ELEMENT);
         if(artefactEl != null) {
             builderSetId = artefactEl.getAttribute("id"); //$NON-NLS-1$
-            loggingFrameworkConnectorId = artefactEl.getAttribute("loggingFrameworkConnectorId"); //$NON-NLS-1$
         } else {
         	builderSetId = ""; //$NON-NLS-1$
-            loggingFrameworkConnectorId = ""; //$NON-NLS-1$
         }
         Element artefactConfigEl = XmlUtil.getFirstElement(artefactEl, IIpsArtefactBuilderSetConfigModel.XML_ELEMENT);
         if(artefactConfigEl != null){
@@ -597,23 +570,6 @@ public class IpsProjectProperties implements IIpsProjectProperties {
 		}
 	}
 
-    public static Locale getLocale(String s) {
-    	StringTokenizer tokenzier = new StringTokenizer(s, "_"); //$NON-NLS-1$
-    	if (!tokenzier.hasMoreTokens()) {
-    		return Locale.ENGLISH;
-    	}
-    	String language = tokenzier.nextToken();
-    	if (!tokenzier.hasMoreTokens()) {
-    		return new Locale(language);
-    	}
-    	String country = tokenzier.nextToken();
-    	if (!tokenzier.hasMoreTokens()) {
-    		return new Locale(language, country);
-    	}
-    	String variant = tokenzier.nextToken();
-    	return new Locale(language, country, variant);
-    }
-
     /**
      * {@inheritDoc}
      */
@@ -722,6 +678,7 @@ public class IpsProjectProperties implements IIpsProjectProperties {
         + "    productDefinitionProject                           True if this project contains elements of the product definition." + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$
         + "    modelProject                                       True if this project contains the model or part of it." + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$
         + "    runtimeIdPrefix                                    " + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$
+        + "    changesInTimeNamingConvention                      Specifes the naming convensions for changes in time that are used throughout the system. Possible values are VAA and PM" + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$
         + "    javaProjectContainsClassesForDynamicDatatypes      see discussion above" + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$
         + "    <IpsArtefactBuilderSet/>                           The generator used. Details below." + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$
         + "    <GeneratedSourcecode/>                             See details below." + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$
@@ -731,20 +688,6 @@ public class IpsProjectProperties implements IIpsProjectProperties {
         + "    <OptionalConstraints/>                             Definition of optional constraints. Details below." + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$
         + "</IpsProject>" + SystemUtils.LINE_SEPARATOR; //$NON-NLS-1$
         createDescriptionComment(s, parentEl, "    "); //$NON-NLS-1$
-    }
-    
-    private void createGeneratedSourcecodeDescriptionComment(Element parentEl) {
-        String s = "GeneratedSourcecode" + SystemUtils.LINE_SEPARATOR  //$NON-NLS-1$
-        + " " + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$
-        + "<GeneratedSourcecode>" + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$
-        + "    docLanguage=\"en\"                      Language in that the sourcecode and the Javadoc is generated." + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$
-        + "                                          Currently English (en) and German (de) are supported." + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$
-        + "    changesInTimeNamingConvention=\"VAA\"   Naming convention used for product changes over time. " + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$
-        + "                                          Currently we support the German VAA standard (Version, Generation)" + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$
-        + "                                          and the Product-Manager convention (Generation, Anpassungsstufe)." + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$
-        + "                                          Both naming conventions are available in English and German." + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$
-        + "</GeneratedSourcecode>" + SystemUtils.LINE_SEPARATOR; //$NON-NLS-1$
-        createDescriptionComment(s, parentEl);
     }
     
     private void createProductCmptNamingStrategyDescriptionComment(Element parentEl) {
@@ -811,21 +754,22 @@ public class IpsProjectProperties implements IIpsProjectProperties {
         + "A builder set is activated for an Ips project by defining the IpsArtefactBuilderSet tag." + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$
         + "The attribute \"id\" specifies the builder set implementation that is registered as an extension." + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$
         + "The unique identifier of the extension is to specify." + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$
-        + "With the optional attribute \"loggingFrameworkConnectorId\" a logging framework connector can be specified for a builder set. " + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$
+        + "<IpsArtefactBuilderSet id=\"org.faktorips.devtools.stdbuilder.ipsstdbuilderset\" " + SystemUtils.LINE_SEPARATOR//$NON-NLS-1$
+        + "To enable logging for the standard builder set the following configuration has to be set. The generation of logging code can only be enabled if a logging framework connector is specified in this configuration:" + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$
+        + "     <IpsArtefactBuilderSetConfig>" + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$
+        + "         <Property name=\"generateLoggingStatements\" value=\"true\"/>" + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$ 
+        + "     </IpsArtefactBuilderSetConfig>" + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$
+        + " " + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$
+        + "To set the logging framework connector that is used when the logging is enabled for the standard builder set the following configuration has to be set.:" + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$
+        + "     <IpsArtefactBuilderSetConfig>" + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$
+        + "         <Property name=\"loggingFrameworkConnector\" value=\"org.faktorips.devtools.core.javaUtilLoggingConnector\"/>" + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$ 
+        + "     </IpsArtefactBuilderSetConfig>" + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$
         + "Logging framework connectors can be used by builder sets to generate logging statements for the registered logging framework." + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$
         + "Logging framework connectors have to be registered as eclipse plugins with the extension point" + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$
         + "\"org.faktorips.devtools.core.loggingFrameworkConnector\"" + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$
         + "Faktor-IPS provides two implementations for logging framework connectors. A connector to the java util logging framework and" + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$
         + "one to the log4j framework. Java util logging is specified by the id=\"org.faktorips.devtools.core.javaUtilLoggingConnector\"" + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$
         + "The log4j framework is specified by the id=\"org.faktorips.devtools.core.log4jLoggingConnector\"" + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$
-        + " " + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$
-        + "<IpsArtefactBuilderSet id=\"org.faktorips.devtools.stdbuilder.ipsstdbuilderset\" " //$NON-NLS-1$
-        + "loggingFrameworkConnectorId=\"org.faktorips.devtools.core.javaUtilLoggingConnector\"/> " + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$
-        + " " + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$
-        + "To enable logging for the standard builder set the following configuration has to be set.:" + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$
-        + "     <IpsArtefactBuilderSetConfig>" + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$
-        + "         <Property name=\"generateLoggingStatements\" value=\"true\"/>" + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$ 
-        + "     </IpsArtefactBuilderSetConfig>" + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$
         + " " + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$
         + "To enable the generation of a change listerner mechanism with the standard build set add the following configuration: " + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$
         + "     <IpsArtefactBuilderSetConfig>" + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$
@@ -960,20 +904,6 @@ public class IpsProjectProperties implements IIpsProjectProperties {
      */
     public void setMinRequiredVersionNumber(String featureId, String version) {
         requiredFeatures.put(featureId, version);
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    public String getLoggingFrameworkConnectorId() {
-        return loggingFrameworkConnectorId;
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    public void setLoggingFrameworkConnectorId(String loggingFrameworkConnectorId) {
-        this.loggingFrameworkConnectorId = loggingFrameworkConnectorId;
     }
 
     /**

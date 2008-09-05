@@ -28,7 +28,6 @@ import java.util.ArrayList;
 import java.util.GregorianCalendar;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Locale;
 
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IFolder;
@@ -312,10 +311,8 @@ public abstract class AbstractIpsPluginTest extends XmlAbstractTestCase {
 		// Dies muss ueberarbeitet werden
 		IIpsProjectProperties props = ipsProject.getProperties();
 		props.setBuilderSetId("org.faktorips.devtools.stdbuilder.ipsstdbuilderset");
-        props.setLoggingFrameworkConnectorId("org.faktorips.devtools.core.javaUtilLoggingConnector");
 		props.setPredefinedDatatypesUsed(new String[] { "Decimal", "Money", "Integer",
 				"String", "Boolean" });
-		props.setJavaSrcLanguage(Locale.GERMAN);
 
         props.setMinRequiredVersionNumber("org.faktorips.feature", (String)Platform.getBundle("org.faktorips.devtools.core").getHeaders().get("Bundle-Version")); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
         ipsProject.setProperties(props);

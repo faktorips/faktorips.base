@@ -151,8 +151,9 @@ public class IpsBuilderTest extends AbstractIpsPluginTest {
         
         /**
          * @param builderSet
+         * @throws CoreException 
          */
-        public AssertThatFullBuildIsTriggeredBuilder() {
+        public AssertThatFullBuildIsTriggeredBuilder() throws CoreException {
             super(new TestIpsArtefactBuilderSet());
         }
         
@@ -194,8 +195,9 @@ public class IpsBuilderTest extends AbstractIpsPluginTest {
 
         /**
          * @param builderSet
+         * @throws CoreException 
          */
-        public TestRemoveIpsArtefactBuilder() {
+        public TestRemoveIpsArtefactBuilder() throws CoreException {
             super(new TestIpsArtefactBuilderSet());
         }
 
@@ -231,8 +233,9 @@ public class IpsBuilderTest extends AbstractIpsPluginTest {
 
         /**
          * @param builderSet
+         * @throws CoreException 
          */
-        public TestDependencyIpsArtefactBuilder() {
+        public TestDependencyIpsArtefactBuilder() throws CoreException {
             super(new TestIpsArtefactBuilderSet());
         }
 

@@ -34,7 +34,6 @@ import org.faktorips.codegen.JavaCodeFragmentBuilder;
 import org.faktorips.datatype.Datatype;
 import org.faktorips.datatype.ValueDatatype;
 import org.faktorips.devtools.core.IpsStatus;
-import org.faktorips.devtools.core.builder.AbstractPcTypeBuilder;
 import org.faktorips.devtools.core.builder.DefaultBuilderSet;
 import org.faktorips.devtools.core.builder.DefaultJavaSourceFileBuilder;
 import org.faktorips.devtools.core.builder.TypeSection;
@@ -523,8 +522,7 @@ public class FormulaTestBuilder extends DefaultJavaSourceFileBuilder {
         body.append("\"");
         body.appendln(");");
 
-        appendLocalizedJavaDoc("METHOD_TEST_METHODS", AbstractPcTypeBuilder
-                .getNameForGenerationConcept(productCmptType), getIpsObject(), builder);
+        appendLocalizedJavaDoc("METHOD_TEST_METHODS", getNameForGenerationConcept(productCmptType), getIpsObject(), builder);
 
         builder.signature(Modifier.PUBLIC, "void", testMethodName, new String[] { "productCmpt", "result" },
                 new String[] { IProductComponent.class.getName(), IpsTestResult.class.getName() });

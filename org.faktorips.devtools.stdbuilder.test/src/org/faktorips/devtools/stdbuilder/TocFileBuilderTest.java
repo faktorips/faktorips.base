@@ -18,7 +18,6 @@
 package org.faktorips.devtools.stdbuilder;
 
 import java.util.GregorianCalendar;
-import java.util.Locale;
 
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IncrementalProjectBuilder;
@@ -67,7 +66,6 @@ public class TocFileBuilderTest extends AbstractIpsPluginTest {
         super.setUp();
         project = newIpsProject("TestProject");
         IIpsProjectProperties props = project.getProperties();
-        props.setJavaSrcLanguage(Locale.GERMAN);
         project.setProperties(props);
         builderSet = (StandardBuilderSet)project.getIpsArtefactBuilderSet();
         tableImplBuilder = (TableImplBuilder)builderSet.getBuilder(TableImplBuilder.class);

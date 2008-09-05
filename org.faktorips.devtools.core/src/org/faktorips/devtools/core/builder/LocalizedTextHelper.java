@@ -35,15 +35,12 @@ import org.faktorips.util.LocalizedStringsSet;
 public class LocalizedTextHelper {
 
     private LocalizedStringsSet localizedStringsSet;
-    private Locale locale;
     private Integer javaOptionsSplitLength;
     private Integer javaOptionsTabSize;
     
-    //TODO remove Integer javaOptionsSplitLength, Integer javaOptionsTabSize 
-    public LocalizedTextHelper(LocalizedStringsSet localizedStringsSet, Locale locale, Integer javaOptionsSplitLength, Integer javaOptionsTabSize) {
+    public LocalizedTextHelper(LocalizedStringsSet localizedStringsSet) {
         super();
         this.localizedStringsSet = localizedStringsSet;
-        this.locale = locale;
         initJavaOptions();
     }
     
@@ -64,7 +61,7 @@ public class LocalizedTextHelper {
      * @param key the key that identifies the requested text
      * @return the requested text
      */
-    public String getLocalizedText(String key) {
+    public String getLocalizedText(String key, Locale locale) {
         return localizedStringsSet.getString(key, locale);
     }
     
@@ -75,8 +72,8 @@ public class LocalizedTextHelper {
      * @param element Any ips element used to access the ips project and determine the langauge for the generated code.
      * @param keyPrefix A key prefix for the resource bundle, this method adds a "_TODO" to the prefix
      */
-    public String getLocalizedToDo(String keyPrefix, JavaCodeFragmentBuilder builder) {
-        return getLocalizedToDo(keyPrefix, new Object[0]);
+    public String getLocalizedToDo(String keyPrefix, JavaCodeFragmentBuilder builder, Locale locale) {
+        return getLocalizedToDo(keyPrefix, new Object[0], locale);
     }
 
     /**
@@ -86,8 +83,8 @@ public class LocalizedTextHelper {
      * @param keyPrefix A key prefix for the resource bundle, this method adds a "_TODO" to the prefix
      * @param replacement An object to replace the wildcard in the message text.
      */
-    public String getLocalizedToDo(String keyPrefix, Object replacement) {
-        return getLocalizedToDo(keyPrefix, new Object[]{replacement});
+    public String getLocalizedToDo(String keyPrefix, Object replacement, Locale locale) {
+        return getLocalizedToDo(keyPrefix, new Object[]{replacement}, locale);
     }
 
     /**
@@ -98,8 +95,8 @@ public class LocalizedTextHelper {
      * @param keyPrefix A key prefix for the resource bundle, this method adds a "_TODO" to the prefix
      * @param replacements Any objects to replace wildcards in the message text.
      */
-    public String getLocalizedToDo(String keyPrefix, Object[] replacements) {
-        return "// TODO " + getLocalizedText(keyPrefix + "_TODO", replacements); //$NON-NLS-1$ //$NON-NLS-2$
+    public String getLocalizedToDo(String keyPrefix, Object[] replacements, Locale locale) {
+        return "// TODO " + getLocalizedText(keyPrefix + "_TODO", replacements, locale); //$NON-NLS-1$ //$NON-NLS-2$
     }
 
     /**
@@ -116,9 +113,10 @@ public class LocalizedTextHelper {
      */
     public void appendLocalizedJavaDoc(String keyPrefix,
             String modelDescription,
-            JavaCodeFragmentBuilder builder) {
-        String text = getLocalizedText(keyPrefix + "_JAVADOC"); //$NON-NLS-1$
-        String[] annotations = new String[] { getLocalizedText(keyPrefix + "_ANNOTATION") }; //$NON-NLS-1$
+            JavaCodeFragmentBuilder builder,
+            Locale locale) {
+        String text = getLocalizedText(keyPrefix + "_JAVADOC", locale); //$NON-NLS-1$
+        String[] annotations = new String[] { getLocalizedText(keyPrefix + "_ANNOTATION", locale) }; //$NON-NLS-1$
         StringBuffer buf = new StringBuffer();
         buf.append(text);
         if (modelDescription != null) {
@@ -131,8 +129,8 @@ public class LocalizedTextHelper {
      * Like {@link #appendLocalizedJavaDoc(String, String, JavaCodeFragmentBuilder)}
      * without a description that is expected to be provided by the model.
      */
-    public void appendLocalizedJavaDoc(String keyPrefix, JavaCodeFragmentBuilder builder) {
-        appendLocalizedJavaDoc(keyPrefix, (String)null, builder);
+    public void appendLocalizedJavaDoc(String keyPrefix, JavaCodeFragmentBuilder builder, Locale locale) {
+        appendLocalizedJavaDoc(keyPrefix, (String)null, builder, locale);
     }
 
     /**
@@ -151,9 +149,10 @@ public class LocalizedTextHelper {
     public void appendLocalizedJavaDoc(String keyPrefix,
             Object replacement,
             String modelDescription,
-            JavaCodeFragmentBuilder builder) {
-        String text = getLocalizedText(keyPrefix + "_JAVADOC", replacement); //$NON-NLS-1$
-        String[] annotations = new String[] { getLocalizedText(keyPrefix + "_ANNOTATION") }; //$NON-NLS-1$
+            JavaCodeFragmentBuilder builder,
+            Locale locale) {
+        String text = getLocalizedText(keyPrefix + "_JAVADOC", replacement, locale); //$NON-NLS-1$
+        String[] annotations = new String[] { getLocalizedText(keyPrefix + "_ANNOTATION", locale) }; //$NON-NLS-1$
         StringBuffer buf = new StringBuffer();
         buf.append(text);
         if (modelDescription != null) {
@@ -168,8 +167,9 @@ public class LocalizedTextHelper {
      */
     public void appendLocalizedJavaDoc(String keyPrefix,
             Object replacement,
-            JavaCodeFragmentBuilder builder) {
-        appendLocalizedJavaDoc(keyPrefix, replacement, null, builder);
+            JavaCodeFragmentBuilder builder,
+            Locale locale) {
+        appendLocalizedJavaDoc(keyPrefix, replacement, null, builder, locale);
     }
 
     /**
@@ -188,10 +188,11 @@ public class LocalizedTextHelper {
     public void appendLocalizedJavaDoc(String keyPrefix,
             Object[] replacements,
             String modelDescription,
-            JavaCodeFragmentBuilder builder) {
+            JavaCodeFragmentBuilder builder,
+            Locale locale) {
         
-        String text = getLocalizedText(keyPrefix + "_JAVADOC", replacements); //$NON-NLS-1$
-        String[] annotations = new String[] { getLocalizedText(keyPrefix + "_ANNOTATION") }; //$NON-NLS-1$
+        String text = getLocalizedText(keyPrefix + "_JAVADOC", replacements, locale); //$NON-NLS-1$
+        String[] annotations = new String[] { getLocalizedText(keyPrefix + "_ANNOTATION", locale) }; //$NON-NLS-1$
         StringBuffer buf = new StringBuffer();
         buf.append(text);
         if (modelDescription != null) {
@@ -206,8 +207,9 @@ public class LocalizedTextHelper {
      */
     public void appendLocalizedJavaDoc(String keyPrefix,
             Object[] replacements,
-            JavaCodeFragmentBuilder builder) {
-        appendLocalizedJavaDoc(keyPrefix, replacements, null, builder);
+            JavaCodeFragmentBuilder builder,
+            Locale locale) {
+        appendLocalizedJavaDoc(keyPrefix, replacements, null, builder, locale);
     }
     
     /**
@@ -218,7 +220,7 @@ public class LocalizedTextHelper {
      *            representation of this value
      * @return the requested text
      */
-    public String getLocalizedText(String key, Object replacement) {
+    public String getLocalizedText(String key, Object replacement, Locale locale) {
         if (localizedStringsSet == null) {
             throw new RuntimeException(
                     "A LocalizedStringSet has to be set to this builder to be able to call this method."); //$NON-NLS-1$
@@ -234,7 +236,7 @@ public class LocalizedTextHelper {
      *            representations of these values.
      * @return the requested text
      */
-    public String getLocalizedText(String key, Object[] replacements) {
+    public String getLocalizedText(String key, Object[] replacements, Locale locale) {
         return localizedStringsSet.getString(key, locale, replacements);
     }
 

@@ -113,7 +113,19 @@ public class TestExtensionRegistry implements IExtensionRegistry {
      * Throws RuntimeException
      */
     public IExtensionPoint getExtensionPoint(String extensionPointId) {
-        throw new RuntimeException("Not implemented");
+        if(extensionPointId == null){
+            return null;
+        }
+        int index = extensionPointId.lastIndexOf('.');
+        String namespace = "";
+        String extensionPointName = "";
+        if(index != -1){
+            namespace = extensionPointId.substring(0, index);
+            extensionPointName = extensionPointId.substring(index + 1);
+        } else {
+            extensionPointName = extensionPointId;
+        }
+        return getExtensionPoint(namespace, extensionPointName);
     }
 
     /**

@@ -18,7 +18,6 @@
 package org.faktorips.devtools.stdbuilder.productcmpt;
 
 import java.util.GregorianCalendar;
-import java.util.Locale;
 
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IncrementalProjectBuilder;
@@ -56,7 +55,6 @@ public class ProductCmptBuilderTest extends AbstractIpsPluginTest {
         super.setUp();
         project = newIpsProject("TestProject");
         IIpsProjectProperties props = project.getProperties();
-        props.setJavaSrcLanguage(Locale.GERMAN);
         project.setProperties(props);
         type = newPolicyAndProductCmptType(project, "Policy", "Product");
         

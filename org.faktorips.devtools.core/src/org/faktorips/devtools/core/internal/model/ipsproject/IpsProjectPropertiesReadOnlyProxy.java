@@ -95,20 +95,6 @@ public class IpsProjectPropertiesReadOnlyProxy implements IIpsProjectProperties 
     }
 
     /**
-     * {@inheritDoc}
-     */
-    public Locale getJavaSrcLanguage() {
-        return propertiesInternal.getJavaSrcLanguage();
-    }
-
-    /**
-     * Returns the value of the unterlying IIpsProjectProperties instance.
-     */
-    public String getLoggingFrameworkConnectorId() {
-        return propertiesInternal.getLoggingFrameworkConnectorId();
-    }
-
-    /**
      * Returns the value of the unterlying IIpsProjectProperties instance.
      */
     public String getMinRequiredVersionNumber(String featureId) {

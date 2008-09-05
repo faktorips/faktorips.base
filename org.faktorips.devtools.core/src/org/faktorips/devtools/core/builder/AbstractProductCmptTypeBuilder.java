@@ -21,17 +21,14 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
-import org.apache.commons.lang.StringUtils;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IStatus;
 import org.faktorips.codegen.DatatypeHelper;
 import org.faktorips.codegen.JavaCodeFragmentBuilder;
 import org.faktorips.datatype.Datatype;
 import org.faktorips.devtools.core.IpsStatus;
-import org.faktorips.devtools.core.model.IIpsElement;
 import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
-import org.faktorips.devtools.core.model.ipsproject.IChangesOverTimeNamingConvention;
 import org.faktorips.devtools.core.model.ipsproject.IIpsArtefactBuilderSet;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
@@ -242,18 +239,6 @@ public abstract class AbstractProductCmptTypeBuilder extends AbstractTypeBuilder
             JavaCodeFragmentBuilder fieldsBuilder,
             JavaCodeFragmentBuilder methodsBuilder) throws Exception;
 
-
-    /**
-     * Returns the variable or parameter name for the effetiveDate.
-     * 
-     * @param element An isp element that gives access to the ips project.
-     */
-    public static String getVarNameEffectiveDate(IIpsElement element) {
-        IChangesOverTimeNamingConvention convention = element.getIpsProject().getChangesInTimeNamingConventionForGeneratedCode();
-        String conceptName = convention.getEffectiveDateConceptName(element.getIpsProject().getGeneratedJavaSourcecodeDocumentationLanguage());
-        return StringUtils.uncapitalize(conceptName);
-    }
-    
     class CodeGeneratorForContainerAssosImpl extends ProductCmptTypeHierarchyCodeGenerator {
 
         private HashMap containerImplMap; 

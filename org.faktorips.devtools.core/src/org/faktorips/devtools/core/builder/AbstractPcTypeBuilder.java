@@ -27,7 +27,6 @@ import org.faktorips.codegen.DatatypeHelper;
 import org.faktorips.codegen.JavaCodeFragmentBuilder;
 import org.faktorips.datatype.Datatype;
 import org.faktorips.devtools.core.IpsStatus;
-import org.faktorips.devtools.core.model.IIpsElement;
 import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
 import org.faktorips.devtools.core.model.ipsproject.IIpsArtefactBuilderSet;
@@ -69,19 +68,6 @@ public abstract class AbstractPcTypeBuilder extends AbstractTypeBuilder {
      */
     public boolean isBuilderFor(IIpsSrcFile ipsSrcFile) throws CoreException {
         return ipsSrcFile.getIpsObjectType().equals(IpsObjectType.POLICY_CMPT_TYPE);
-    }
-
-    /**
-     * Returns the name (singular form) for the generation (changes over time) concept.
-     * 
-     * @param element An ips element needed to access the ipsproject where the necessary configuration
-     * information is stored.
-     * 
-     * @see org.faktorips.devtools.core.model.ipsproject.IChangesOverTimeNamingConvention
-     */
-    public static String getNameForGenerationConcept(IIpsElement element) {
-        return getChangesInTimeNamingConvention(element).
-            getGenerationConceptNameSingular(getLanguageUsedInGeneratedSourceCode(element));
     }
 
     /**

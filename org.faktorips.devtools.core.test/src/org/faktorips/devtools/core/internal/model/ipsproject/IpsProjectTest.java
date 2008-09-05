@@ -49,7 +49,6 @@ import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.TestEnumType;
 import org.faktorips.devtools.core.TestIpsFeatureVersionManager;
 import org.faktorips.devtools.core.builder.DefaultBuilderSet;
-import org.faktorips.devtools.core.builder.JavaUtilLoggingFrameworkConnector;
 import org.faktorips.devtools.core.builder.TestArtefactBuilderSetInfo;
 import org.faktorips.devtools.core.internal.model.TableContentsEnumDatatypeAdapter;
 import org.faktorips.devtools.core.internal.model.tablestructure.TableStructureType;
@@ -1485,11 +1484,6 @@ public class IpsProjectTest extends AbstractIpsPluginTest {
         assertTrue(result.contains(f));
         assertTrue(result.contains(g));
         assertTrue(result.contains(h));
-    }
-    
-    public void testGetIpsLoggingFrameworkConnector(){
-        JavaUtilLoggingFrameworkConnector connector = (JavaUtilLoggingFrameworkConnector)ipsProject.getIpsLoggingFrameworkConnector();
-        assertNotNull(connector);
     }
     
     public void testFindTableContents() throws CoreException{

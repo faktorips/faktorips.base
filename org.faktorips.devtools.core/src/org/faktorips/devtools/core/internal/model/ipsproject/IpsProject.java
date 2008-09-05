@@ -74,7 +74,6 @@ import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
 import org.faktorips.devtools.core.model.ipsobject.QualifiedNameType;
 import org.faktorips.devtools.core.model.ipsproject.IChangesOverTimeNamingConvention;
 import org.faktorips.devtools.core.model.ipsproject.IIpsArtefactBuilderSet;
-import org.faktorips.devtools.core.model.ipsproject.IIpsLoggingFrameworkConnector;
 import org.faktorips.devtools.core.model.ipsproject.IIpsObjectPath;
 import org.faktorips.devtools.core.model.ipsproject.IIpsObjectPathEntry;
 import org.faktorips.devtools.core.model.ipsproject.IIpsPackageFragmentRoot;
@@ -641,14 +640,6 @@ public class IpsProject extends IpsElement implements IIpsProject {
      */
     public Locale getExpressionLanguageFunctionsLanguage() {
         return Locale.GERMAN;
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    public Locale getGeneratedJavaSourcecodeDocumentationLanguage() {
-    	IpsProjectProperties properties = getPropertiesInternal();
-    	return properties.getJavaSrcLanguage();
     }
 
     /**
@@ -1307,14 +1298,6 @@ public class IpsProject extends IpsElement implements IIpsProject {
      */
     public void reinitializeIpsArtefactBuilderSet() throws CoreException {
         ((IpsModel)getIpsModel()).getIpsArtefactBuilderSet(this, true);
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    public IIpsLoggingFrameworkConnector getIpsLoggingFrameworkConnector() {
-        return IpsPlugin.getDefault().getIpsLoggingFrameworkConnector(
-                getPropertiesInternal().getLoggingFrameworkConnectorId());
     }
     
     /**

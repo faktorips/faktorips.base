@@ -17,8 +17,6 @@
 
 package org.faktorips.devtools.core.model.ipsproject;
 
-import java.util.Locale;
-
 import org.eclipse.core.runtime.CoreException;
 import org.faktorips.datatype.ValueDatatype;
 import org.faktorips.devtools.core.internal.model.DynamicValueDatatype;
@@ -127,19 +125,6 @@ public interface IIpsProjectProperties {
 	 */
 	public void setProductDefinitionProject(
 			boolean productDefinitionProject);
-
-	/**
-	 * Returns the Locale that is used to generate names and identifiers in the 
-	 * generated source code.
-	 */
-	public Locale getJavaSrcLanguage();
-
-	/**
-	 * Sets the locale that is used to generate the names and identifiers
-	 * in the generated source code.
-	 * @param javaSrcLanguage
-	 */
-	public void setJavaSrcLanguage(Locale javaSrcLanguage);
 
 	/**
 	 * Returns the strategy how product component names are composed. 
@@ -293,20 +278,5 @@ public interface IIpsProjectProperties {
      * @param version The minimum version number for this feature.
      */
     public void setMinRequiredVersionNumber(String featureId, String version);
-    
-    /**
-     * Returns the id of the logging framework connector that will be used for this project.
-     * Possible values for this id are the ids of the extensions of the extension-point
-     * <code>org.faktorips.devtools.core.loggingFrameworkConnector</code>
-     */
-    public String getLoggingFrameworkConnectorId();
-
-    /**
-     * Sets the id of the logging framework connector that will be used for this project. Possible
-     * values for this id are the ids of the extensions of the extension-point
-     * <code>org.faktorips.devtools.core.loggingFrameworkConnector</code>
-     */
-    public void setLoggingFrameworkConnectorId(String loggingFrameworkConnectorId);
-
 
 }

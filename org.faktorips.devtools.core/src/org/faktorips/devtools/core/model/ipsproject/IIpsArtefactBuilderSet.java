@@ -9,6 +9,8 @@
 
 package org.faktorips.devtools.core.model.ipsproject;
 
+import java.util.Locale;
+
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.runtime.CoreException;
 import org.faktorips.codegen.DatatypeHelper;
@@ -146,6 +148,12 @@ public interface IIpsArtefactBuilderSet extends IJavaPackageStructure {
      */
     public String getTocFilePackageName(IIpsPackageFragmentRoot root) throws CoreException;
 
+    
+    /**
+     * Returns the locale of the language that is used by the generator to generate source code and documentation.
+     */
+    public Locale getLanguageUsedInGeneratedSourceCode();
+    
     /**
      * When the builder set is loaded by the faktor ips plugin the extension id is set by means of
      * this method. This method is called before initialization.
@@ -177,19 +185,6 @@ public interface IIpsArtefactBuilderSet extends IJavaPackageStructure {
      * that do not change the generated code a not reflected in this version identifier.
      */
     public String getVersion();
-
-    /**
-     * The framework sets the <code>IIpsLoggingFrameworkConnector</code> that is registered with
-     * the IIpsProject to this <code>IIpsArtefactBuilderSet</code> at initialization time. This
-     * method is not supposed to be called by clients of this class.
-     */
-    public void setIpsLoggingFrameworkConnector(IIpsLoggingFrameworkConnector logStmtBuilder);
-
-    /**
-     * Returns the <code>IIpsLoggingFrameworkConnector</code> of this
-     * <code>IIpsArtefactBuilderSet</code>.
-     */
-    public IIpsLoggingFrameworkConnector getIpsLoggingFrameworkConnector();
 
     /**
      * Initializes this set. Creation of IpsArtefactBuilders has to go here instead of the

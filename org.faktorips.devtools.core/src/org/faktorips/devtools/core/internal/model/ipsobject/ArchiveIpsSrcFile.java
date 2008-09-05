@@ -28,7 +28,6 @@ import org.faktorips.devtools.core.internal.model.ipsproject.ArchiveIpsPackageFr
 import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFileMemento;
 import org.faktorips.devtools.core.model.ipsproject.IIpsArchive;
-import org.faktorips.devtools.core.model.ipsproject.IIpsObjectPathEntry;
 import org.w3c.dom.Document;
 
 /**

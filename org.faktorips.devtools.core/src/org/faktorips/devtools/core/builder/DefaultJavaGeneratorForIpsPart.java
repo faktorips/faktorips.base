@@ -28,8 +28,8 @@ public abstract class DefaultJavaGeneratorForIpsPart extends JavaGeneratorForIps
     
     public DefaultJavaGeneratorForIpsPart(
             IIpsObjectPartContainer part, 
-            LocalizedStringsSet stringsSet) throws CoreException {
-        super(part, stringsSet);
+            LocalizedStringsSet localizedStringsSet) throws CoreException {
+        super(part, localizedStringsSet);
     }
     
     /**

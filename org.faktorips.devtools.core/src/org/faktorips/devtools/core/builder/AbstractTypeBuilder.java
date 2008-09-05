@@ -63,9 +63,9 @@ public abstract class AbstractTypeBuilder extends DefaultJavaSourceFileBuilder {
      * 
      * @see org.faktorips.devtools.core.model.ipsproject.IChangesOverTimeNamingConvention
      */
-    public static String getAbbreviationForGenerationConcept(IIpsElement element) {
+    public String getAbbreviationForGenerationConcept(IIpsElement element) {
         return getChangesInTimeNamingConvention(element).
-            getGenerationConceptNameAbbreviation(getLanguageUsedInGeneratedSourceCode(element));
+            getGenerationConceptNameAbbreviation(getLanguageUsedInGeneratedSourceCode());
     }
     
     protected abstract void generateCodeForPolicyCmptTypeAttributes(TypeSection typeSection) throws CoreException;

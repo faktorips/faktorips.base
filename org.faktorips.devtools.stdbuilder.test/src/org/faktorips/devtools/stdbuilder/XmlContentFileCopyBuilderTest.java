@@ -17,8 +17,6 @@
 
 package org.faktorips.devtools.stdbuilder;
 
-import java.util.Locale;
-
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.resources.IncrementalProjectBuilder;
@@ -31,7 +29,6 @@ import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProjectProperties;
 import org.faktorips.devtools.core.model.tablecontents.ITableContents;
 import org.faktorips.devtools.core.model.tablestructure.ITableStructure;
-import org.faktorips.devtools.stdbuilder.StandardBuilderSet;
 
 public class XmlContentFileCopyBuilderTest extends AbstractIpsPluginTest {
 
@@ -45,7 +42,6 @@ public class XmlContentFileCopyBuilderTest extends AbstractIpsPluginTest {
         super.setUp();
         project = newIpsProject("TestProject");
         IIpsProjectProperties props = project.getProperties();
-        props.setJavaSrcLanguage(Locale.GERMAN);
         project.setProperties(props);
         structure = (ITableStructure)newIpsObject(project, IpsObjectType.TABLE_STRUCTURE,
             "TestTable");

@@ -17,14 +17,18 @@
 
 package org.faktorips.devtools.core.builder;
 
+import java.util.HashMap;
+import java.util.Locale;
+import java.util.Map;
+
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.ILog;
 import org.faktorips.codegen.DatatypeHelper;
 import org.faktorips.devtools.core.internal.model.TableContentsEnumDatatypeAdapter;
+import org.faktorips.devtools.core.internal.model.ipsproject.IpsArtefactBuilderSetConfig;
 import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.core.model.ipsproject.IIpsArtefactBuilder;
-import org.faktorips.devtools.core.model.ipsproject.IIpsArtefactBuilderSetConfig;
 import org.faktorips.devtools.core.model.ipsproject.IIpsPackageFragmentRoot;
 import org.faktorips.devtools.core.model.productcmpt.IFormula;
 import org.faktorips.devtools.core.model.tablecontents.ITableContents;
@@ -41,12 +45,16 @@ public class TestIpsArtefactBuilderSet extends AbstractBuilderSet {
     private boolean roleNamePluralRequiredForTo1Relations = true;
     private boolean isAggregateRootBuilder = false;
 
-    public TestIpsArtefactBuilderSet(){
+    public TestIpsArtefactBuilderSet() throws CoreException{
         this(new IIpsArtefactBuilder[0]);
     }
 
-    public TestIpsArtefactBuilderSet(IIpsArtefactBuilder[] builders){
+    public TestIpsArtefactBuilderSet(IIpsArtefactBuilder[] builders) throws CoreException{
         super(builders);
+        Map properties = new HashMap();
+        properties.put(CONFIG_PROPERTY_GENERATOR_LOCALE, Locale.GERMAN.getLanguage());
+        IpsArtefactBuilderSetConfig config = new IpsArtefactBuilderSetConfig(properties);
+        initialize(config);
     }
     
     /**
@@ -168,9 +176,5 @@ public class TestIpsArtefactBuilderSet extends AbstractBuilderSet {
      */
     public String getVersion() {
         return null;
-    }
-
-    public void initialize(IIpsArtefactBuilderSetConfig config) throws CoreException {
-        
     }
 }

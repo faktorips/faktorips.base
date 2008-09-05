@@ -17,8 +17,6 @@
 
 package org.faktorips.devtools.stdbuilder.policycmpttype;
 
-import java.util.Locale;
-
 import org.eclipse.core.resources.IncrementalProjectBuilder;
 import org.eclipse.core.runtime.CoreException;
 import org.faktorips.datatype.Datatype;
@@ -53,7 +51,6 @@ public class PolicyCmptImplClassBuilderTest extends AbstractIpsPluginTest {
         super.setUp();
         project = newIpsProject("TestProject");
         IIpsProjectProperties props = project.getProperties();
-        props.setJavaSrcLanguage(Locale.GERMAN);
         project.setProperties(props);
     }
     

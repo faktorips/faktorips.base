@@ -113,7 +113,7 @@ public class ProductCmptImplClassBuilder extends BaseProductCmptTypeBuilder {
     protected void generateConstructors(JavaCodeFragmentBuilder builder) throws CoreException {
         String className = getUnqualifiedClassName();
         appendLocalizedJavaDoc("CONSTRUCTOR", className, getIpsObject(), builder);
-        Locale locale = getLanguageUsedInGeneratedSourceCode(getIpsObject());
+        Locale locale = getLanguageUsedInGeneratedSourceCode();
         String versionParam = getChangesInTimeNamingConvention(getIpsObject()).getVersionConceptNameSingular(locale);
         versionParam = StringUtils.uncapitalize(versionParam) + "Id";
         String[] argNames = new String[] { "repository", "id", "kindId", versionParam };

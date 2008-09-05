@@ -167,6 +167,7 @@ public class IpsArtefactBuilderSetInfo implements IIpsArtefactBuilderSetInfo{
      * Validates the property value of the property of an IpsArtefactBuilderSetConfig specified by the propertyName. It returns <code>null</code>
      * if validation is correct otherwise a {@link Message} object is returned.
      */
+    //TODO translate messages
     public Message validateIpsBuilderSetPropertyValue(IIpsProject ipsProject, String propertyName, String propertyValue) {
         
         IIpsBuilderSetPropertyDef propertyDef = (IIpsBuilderSetPropertyDef)propertyDefinitions.get(propertyName);
@@ -178,7 +179,8 @@ public class IpsArtefactBuilderSetInfo implements IIpsArtefactBuilderSetInfo{
         if(msg != null){
             return msg;
         }
-        if (!propertyDef.isAvailable(ipsProject) && !propertyDef.getDisableValue(ipsProject).equals(propertyValue)) {
+        String disableValue = propertyDef.getDisableValue(ipsProject);
+        if (!propertyDef.isAvailable(ipsProject) && !((disableValue == null && propertyValue == null) || disableValue.equals(propertyValue))) {
             return new Message(MSG_CODE_PROPERTY_NO_JDK_COMPLIANCE,
                     "This property is not in accordance with the JDK compliance level of this java project.",
                     Message.ERROR);

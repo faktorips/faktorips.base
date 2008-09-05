@@ -9,11 +9,13 @@
 
 package org.faktorips.devtools.core.builder;
 
+import java.util.Locale;
+import java.util.StringTokenizer;
+
 import org.eclipse.core.runtime.CoreException;
 import org.faktorips.devtools.core.model.ipsproject.IIpsArtefactBuilder;
 import org.faktorips.devtools.core.model.ipsproject.IIpsArtefactBuilderSet;
 import org.faktorips.devtools.core.model.ipsproject.IIpsArtefactBuilderSetConfig;
-import org.faktorips.devtools.core.model.ipsproject.IIpsLoggingFrameworkConnector;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.util.ArgumentCheck;
 
@@ -24,10 +26,17 @@ import org.faktorips.util.ArgumentCheck;
  */
 public abstract class AbstractBuilderSet implements IIpsArtefactBuilderSet {
 
+    /**
+     * Configuration property for this builder. IIpsArtefactBuilderSets that use this builder
+     * can provide values of this property via the IIpsArtefactBuilderSetConfig object that 
+     * is provided by the initialize method of an IIpsArtefactBuilderSet.
+     */
+    public final static String CONFIG_PROPERTY_GENERATOR_LOCALE = "generatorLocale"; //$NON-NLS-1$
+    
+    
     private String id;
     private String label;
     private IIpsProject ipsProject;
-    private IIpsLoggingFrameworkConnector logStatementBuilder;
     private IIpsArtefactBuilderSetConfig config;
     private IIpsArtefactBuilder[] builders;
     
@@ -84,27 +93,6 @@ public abstract class AbstractBuilderSet implements IIpsArtefactBuilderSet {
         this.ipsProject = ipsProject;
     }
 
-    /**
-     * {@inheritDoc}
-     */
-    public IIpsLoggingFrameworkConnector getIpsLoggingFrameworkConnector() {
-        return logStatementBuilder;
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    public boolean hasLogStatementBuilder() {
-        return logStatementBuilder != null;
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    public void setIpsLoggingFrameworkConnector(IIpsLoggingFrameworkConnector logStmtBuilder) {
-        logStatementBuilder = logStmtBuilder;
-    }
-
     public String toString() {
         return id;
     }
@@ -151,6 +139,34 @@ public abstract class AbstractBuilderSet implements IIpsArtefactBuilderSet {
         ArgumentCheck.notNull(config);
         this.config = config;
         builders = createBuilders();
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public Locale getLanguageUsedInGeneratedSourceCode() {
+        String localeString = getConfig().getPropertyValueAsString(CONFIG_PROPERTY_GENERATOR_LOCALE);
+        if(localeString == null){
+            return Locale.ENGLISH;
+        }
+        return getLocale(localeString);
+    }
+
+    public static Locale getLocale(String s) {
+        StringTokenizer tokenzier = new StringTokenizer(s, "_"); //$NON-NLS-1$
+        if (!tokenzier.hasMoreTokens()) {
+            return Locale.ENGLISH;
+        }
+        String language = tokenzier.nextToken();
+        if (!tokenzier.hasMoreTokens()) {
+            return new Locale(language);
+        }
+        String country = tokenzier.nextToken();
+        if (!tokenzier.hasMoreTokens()) {
+            return new Locale(language, country);
+        }
+        String variant = tokenzier.nextToken();
+        return new Locale(language, country, variant);
     }
 
     /**

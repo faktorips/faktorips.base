@@ -733,7 +733,7 @@ public class IpsModel extends IpsElement implements IIpsModel, IResourceChangeLi
 
     private IIpsArtefactBuilderSet registerBuilderSet(IIpsProject project) {
         IpsProjectProperties data = getIpsProjectProperties((IpsProject)project);
-        IIpsArtefactBuilderSet builderSet = createIpsArtefactBuilderSet(data.getBuilderSetId(), data.getLoggingFrameworkConnectorId(), project);
+        IIpsArtefactBuilderSet builderSet = createIpsArtefactBuilderSet(data.getBuilderSetId(), project);
         if(builderSet == null || !initBuilderSet(builderSet, project, data)){
             return new EmptyBuilderSet();
         }
@@ -950,7 +950,6 @@ public class IpsModel extends IpsElement implements IIpsModel, IResourceChangeLi
      * <code>EmptyBuilderSet</code> will be returned.
      */
     private IIpsArtefactBuilderSet createIpsArtefactBuilderSet(String builderSetId,
-            String loggingFrameworkConnectorId,
             IIpsProject ipsProject) {
         ArgumentCheck.notNull(builderSetId);
         ArgumentCheck.notNull(ipsProject);
