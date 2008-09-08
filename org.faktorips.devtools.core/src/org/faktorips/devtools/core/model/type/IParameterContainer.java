@@ -28,13 +28,13 @@ public interface IParameterContainer extends IIpsObjectPart {
 
     /**
      * Returns the method's parameters. Returns an empty array if the method
-     * doeen't have any parameter.
+     * doesn't have any parameter.
      */
     public IParameter[] getParameters();
     
     /**
      * Returns the method's parameter names. Returns an empty array if the method
-     * doeen't have any parameter.
+     * doesn't have any parameter.
      */
     public String[] getParameterNames();
     
