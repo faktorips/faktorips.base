@@ -727,26 +727,6 @@
                value="org.faktorips.devtools.core.ipsnature">
          </filter>
         </page>
-        <page
-              class="org.faktorips.devtools.core.ui.preferencepages.BuilderSetPropertyPage"
-              id="org.faktorips.devtools.core.ui.propertyPages.BuilderSetPropertyPage"
-              name="%org.faktorips.ipsbuildersetpropertypage"
-              objectClass="org.eclipse.core.resources.IProject"> 
-         <filter
-               name="nature"
-               value="org.faktorips.devtools.core.ipsnature">
-         </filter>
-        </page>
-        <page
-              class="org.faktorips.devtools.core.ui.preferencepages.BuilderSetPropertyPage"
-              id="org.faktorips.devtools.core.ui.propertyPages.BuilderSetPropertyPage"
-              name="%org.faktorips.ipsbuildersetpropertypage"
-              objectClass="org.eclipse.jdt.core.IJavaProject"> 
-         <filter
-               name="nature"
-               value="org.faktorips.devtools.core.ipsnature">
-         </filter>
-        </page>
 	    <page
 	          class="org.eclipse.ui.internal.ide.dialogs.ResourceInfoPage"
 	          id="org.faktorips.devtools.core.ui.propertyPages.IpsObjectResourceInfoPage"
