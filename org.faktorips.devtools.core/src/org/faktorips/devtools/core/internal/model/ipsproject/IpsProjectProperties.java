@@ -69,7 +69,7 @@ public class IpsProjectProperties implements IIpsProjectProperties {
 		return data;
 	}
 	
-	final static String TAG_NAME = "IpsProject"; //$NON-NLS-1$
+	public final static String TAG_NAME = "IpsProject"; //$NON-NLS-1$
 		
 	private boolean createdFromParsableFileContents = true;
 	

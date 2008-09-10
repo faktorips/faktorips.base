@@ -25,7 +25,7 @@ import org.faktorips.util.message.MessageList;
 
 /**
  * Base class for migrating a single ips project one version to another. Note that if the project
- * needs severall faktor-ips features, than all features are migrated.
+ * needs several Faktor-IPS features, than all features are migrated.
  * 
  * Note that it is essential <strong>NOT TO SAVE ANY CHANGES</strong> made by this migration
  * operation. This is because we need the ability to rollback all changes if any error occurs later
