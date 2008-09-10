@@ -87,6 +87,11 @@ public interface Datatype extends Comparable {
      * Datatype representing the primitive <code>int</code>.
      */
     public final static ValueDatatype PRIMITIVE_INT = new PrimitiveIntegerDatatype();
+
+    /**
+     * Datatype representing the primitive <code>long</code>.
+     */
+    public final static ValueDatatype PRIMITIVE_LONG = new PrimitiveLongDatatype();
     
     /**
      * Datatype representing <code>java.lang.String</code>

@@ -49,9 +49,17 @@ public class ConversionCodeGenerator implements ConversionMatrix {
         ccg.add(new BooleanToPrimitiveBooleanCg());
         ccg.add(new IntegerToDecimalCg());
         ccg.add(new IntegerToPrimitiveIntCg());
+        ccg.add(new IntegerToLongCg());
+        ccg.add(new LongToDecimalCg());
+        ccg.add(new LongToPrimitiveLongCg());
+        ccg.add(new LongToIntegerCg());
         ccg.add(new PrimitiveBooleanToBooleanCg());
         ccg.add(new PrimitiveIntToDecimalCg());
         ccg.add(new PrimitiveIntToIntegerCg());
+        ccg.add(new PrimitiveIntToLongCg());
+        ccg.add(new PrimitiveIntToPrimitiveLongCg());
+        ccg.add(new PrimitiveLongToLongCg());
+        ccg.add(new PrimitiveLongToPrimitiveIntCg());
         return ccg;
     }
     
