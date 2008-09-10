@@ -481,7 +481,6 @@ public abstract class Type extends BaseIpsObject implements IType {
         }
     }
     
-    
     protected DuplicatePropertyNameValidator createDuplicatePropertyNameValidator(IIpsProject ipsProject) {
         return new DuplicatePropertyNameValidator(ipsProject);
     }

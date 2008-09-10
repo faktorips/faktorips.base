@@ -18,13 +18,16 @@
 package org.faktorips.devtools.core.internal.model.type;
 
 import org.eclipse.core.runtime.CoreException;
+import org.faktorips.datatype.Datatype;
 import org.faktorips.devtools.core.AbstractIpsPluginTest;
 import org.faktorips.devtools.core.model.ipsobject.Modifier;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
+import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.model.type.IMethod;
 import org.faktorips.devtools.core.model.type.IParameter;
 import org.faktorips.devtools.core.model.type.IType;
 import org.faktorips.devtools.core.util.XmlUtil;
+import org.faktorips.util.message.MessageList;
 import org.w3c.dom.Element;
 
 /**
@@ -216,4 +219,26 @@ public class MethodTest extends AbstractIpsPluginTest {
         assertFalse(method.overrides(other));
     }
 
+    public void testValidate() throws Exception{
+        IPolicyCmptType pcType = newPolicyCmptType(ipsProject, "aType");
+        method = pcType.newMethod();
+        method.setModifier(Modifier.PUBLIC);
+        method.setName("calculate");
+        method.setDatatype("String");
+        method.newParameter(Datatype.STRING.getName(), "strategy");
+        method.newParameter(Datatype.INTEGER.getName(), "index");
+        
+        MessageList msgList = method.validate(this.ipsProject);
+        assertTrue(msgList.isEmpty());
+        
+        method = pcType.newMethod();
+        method.setModifier(Modifier.PUBLIC);
+        method.setName("calculate");
+        method.setDatatype("String");
+        method.newParameter(Datatype.STRING.getName(), "strategy");
+        method.newParameter(Datatype.INTEGER.getName(), "index");
+
+        msgList = method.validate(this.ipsProject);
+        assertNotNull(msgList.getMessageByCode(IMethod.MSGCODE_DUBLICATE_SIGNATURE));
+    }
 }

@@ -292,8 +292,22 @@ public class Method extends BaseIpsObjectPart implements IMethod {
         if (isAbstract() && !getType().isAbstract()) {
             result.add(new Message("", NLS.bind(Messages.Method_msg_abstractMethodError, getName()), Message.ERROR, this, PROPERTY_ABSTRACT)); //$NON-NLS-1$
         }
+        validateDuplicateMethodInSameType(result);
     }
     
+    private void validateDuplicateMethodInSameType(MessageList msgList){
+        IMethod[] methods = getType().getMethods();
+        String thisSignature = getSignatureString();
+        for (int i = 0; i < methods.length; i++) {
+            if(methods[i].equals(this)){
+                continue;
+            }
+            if(methods[i].getSignatureString().equals(thisSignature)){
+                msgList.add(new Message(MSGCODE_DUBLICATE_SIGNATURE, Messages.Method_duplicateSignature, Message.ERROR, this));
+            }
+        }
+    }
+
     public String toString() {
         StringBuffer buffer = new StringBuffer();
         buffer.append(getType().getQualifiedName());

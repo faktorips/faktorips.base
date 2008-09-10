@@ -39,6 +39,7 @@ public interface IMethod extends IParameterContainer {
      */
     public final static String MSGCODE_PREFIX = "METHOD-"; //$NON-NLS-1$
     
+    public final static String MSGCODE_DUBLICATE_SIGNATURE = MSGCODE_PREFIX + "duplicateSignature";
     /**
      * Returns the type this method belongs to.
      */

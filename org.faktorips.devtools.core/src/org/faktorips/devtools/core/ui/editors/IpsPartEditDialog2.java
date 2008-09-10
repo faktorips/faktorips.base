@@ -17,6 +17,8 @@
 
 package org.faktorips.devtools.core.ui.editors;
 
+import org.eclipse.core.runtime.CoreException;
+import org.eclipse.jface.dialogs.IMessageProvider;
 import org.eclipse.jface.window.Window;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionEvent;
@@ -35,6 +37,8 @@ import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPart;
 import org.faktorips.devtools.core.ui.binding.BindingContext;
 import org.faktorips.devtools.core.ui.controller.fields.TextField;
 import org.faktorips.util.memento.Memento;
+import org.faktorips.util.message.Message;
+import org.faktorips.util.message.MessageList;
 
 
 /**
@@ -113,6 +117,7 @@ public abstract class IpsPartEditDialog2 extends EditDialog implements ContentsC
 	    Control control = super.createContents(parent);
         bindingContext.updateUI();
         setTitle(buildTitle());
+        updateMessageArea();
         return control;
 	}
     
@@ -158,8 +163,41 @@ public abstract class IpsPartEditDialog2 extends EditDialog implements ContentsC
     public void contentsChanged(ContentChangeEvent event) {
         if (event.getIpsSrcFile().equals(getIpsPart().getIpsSrcFile())) {
             updateTitleInTitleArea();
+            updateMessageArea();
+            contentsChangedInternal();
         }
     }
 
+    protected void updateMessageArea(){
+        try {
+            MessageList msgList = part.validate(part.getIpsProject());
+            Message msg = null;
+            if(msgList.getNoOfMessages() > 0){
+                msg = msgList.getFirstMessage(Message.ERROR);
+                if(msg != null){
+                    setMessage(msg.getText(), IMessageProvider.ERROR);
+                    return;
+                }
+                msg = msgList.getFirstMessage(Message.WARNING);
+                if(msg != null){
+                    setMessage(msg.getText(), IMessageProvider.WARNING);
+                    return;
+                }
+                msg = msgList.getFirstMessage(Message.INFO);
+                if(msg != null){
+                    setMessage(msg.getText(), IMessageProvider.INFORMATION);
+                    return;
+                }
+            }
+            setMessage(null);
+        } catch (CoreException e) {
+            IpsPlugin.log(e);
+        }
+    }
     
+    /**
+     * Method for sub classes to hook into the changed notification.
+     */
+    protected void contentsChangedInternal(){
+    }
 }
