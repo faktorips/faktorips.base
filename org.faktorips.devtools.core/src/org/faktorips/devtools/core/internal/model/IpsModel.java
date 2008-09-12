@@ -1273,7 +1273,9 @@ public class IpsModel extends IpsElement implements IIpsModel, IResourceChangeLi
         ArgumentCheck.notNull(ipsProject);
         ClassLoaderProvider provider = (ClassLoaderProvider)classLoaderProviderMap.get(ipsProject);
         if (provider == null) {
-            provider = new ClassLoaderProvider(ipsProject.getJavaProject(), ipsProject.getReadOnlyProperties().isJavaProjectContainsClassesForDynamicDatatypes());
+            // if this is a new provider make sure that the old temporary jars will be deleted first
+            // @see ClassLoaderProviders#initTempDir
+            provider = new ClassLoaderProvider(ipsProject.getJavaProject(), ipsProject.getReadOnlyProperties().isJavaProjectContainsClassesForDynamicDatatypes(), true);
             classLoaderProviderMap.put(ipsProject, provider);
         }
         return provider;

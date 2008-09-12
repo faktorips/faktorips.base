@@ -51,10 +51,13 @@ import org.faktorips.util.ArgumentCheck;
  */
 public class ClassLoaderProvider {
 
-	// private IIpsProject ipsProject;
     private boolean includeProjectsOutputLocation;
     private IJavaProject javaProject;
 	private URLClassLoader classLoader;
+    
+	// <code>true</code> if previous copied jars should be deleted before creating a new class
+    // loader otherwise <code>false</code>
+	private boolean deletePreviousTempJars = false;
 	
 	// a list of IResources that contain the class files, either an IFile if it's a Jar-File or an
 	// IFolder if it's a directory containing class files.
@@ -65,14 +68,15 @@ public class ClassLoaderProvider {
 	
 	// resource change listener that is used to test for changes of the classpath elements (jars and class directories)
 	private IResourceChangeListener changeListener; 
-	
-	public ClassLoaderProvider(IJavaProject project, boolean includeProjectsOutputLocation) {
+    
+	public ClassLoaderProvider(IJavaProject project, boolean includeProjectsOutputLocation, boolean deletePreviousJars) {
 		ArgumentCheck.notNull(project);
 		javaProject = project;
         this.includeProjectsOutputLocation = includeProjectsOutputLocation;
+        this.deletePreviousTempJars = deletePreviousJars;
 	}
 	
-	/**
+    /**
      * Returns the classloader for the Java project this is a provider for.
      */
 	public ClassLoader getClassLoader() throws CoreException {
@@ -139,7 +143,7 @@ public class ClassLoaderProvider {
         if(project==null || !project.exists()) {
             return;
         }
-        
+       
         File tempFileDir = initTempDir(project);
 		IPath projectPath = project.getProject().getLocation();
 		IPath root = projectPath.removeLastSegments(project.getProject()
@@ -184,20 +188,22 @@ public class ClassLoaderProvider {
 	}
 	
 	/*
-     * Creates a temporary directory in the plugin state location to store temporary jars. The
+     * Creates a temporary directory to store temporary jars in the plugin state location. (The
      * plug-in state area is a file directory within the platform's metadata area where a plug-in is
      * free to create files (see Plugin#getStateLocation()). Each project gets its own temporary
-     * directory because each project gets its own classloader provider. Cleanup the directory
-     * if it already exists; this is necessary because the virtual machine doesn't delete all
-     * temporary jars correctly. The jars from which a class was instantiated by the classloader are
+     * directory because each project gets its own classloader provider.) Cleanup the directory
+     * if it already exists. NOTE: this is necessary because the virtual machine doesn't delete all
+     * temporary jars correctly, the jars from which a class was instantiated by the classloader are
      * not deleted automatically when the virtual machine terminates.
      */
 	private File initTempDir(IJavaProject project) {
 	    File tempFileDir = IpsPlugin.getDefault().getStateLocation().append(project.getProject().getName()).toFile();
-        if (tempFileDir.exists()){
+        if (tempFileDir.exists() && deletePreviousTempJars){
             cleanupTemp(tempFileDir);
         }
-        tempFileDir.mkdirs();
+        if (!tempFileDir.exists()){
+            tempFileDir.mkdirs();
+        }
         return tempFileDir;
     }
 
