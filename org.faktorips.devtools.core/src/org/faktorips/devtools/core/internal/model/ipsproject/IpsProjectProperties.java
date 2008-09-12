@@ -681,7 +681,6 @@ public class IpsProjectProperties implements IIpsProjectProperties {
         + "    changesInTimeNamingConvention                      Specifes the naming convensions for changes in time that are used throughout the system. Possible values are VAA and PM" + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$
         + "    javaProjectContainsClassesForDynamicDatatypes      see discussion above" + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$
         + "    <IpsArtefactBuilderSet/>                           The generator used. Details below." + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$
-        + "    <GeneratedSourcecode/>                             See details below." + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$
         + "    <IpsObjectPath/>                                   The object path to search for model and product definition objects. Details below." + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$
         + "    <ProductCmptNamingStrategy/>                       The strategy used for product component names. Details below." + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$
         + "    <Datatypes/>                                       The datatypes used in the model. Details below." + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$
