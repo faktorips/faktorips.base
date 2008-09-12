@@ -171,6 +171,9 @@ public abstract class IpsPartEditDialog2 extends EditDialog implements ContentsC
     protected void updateMessageArea(){
         try {
             MessageList msgList = part.validate(part.getIpsProject());
+            MessageList objMsgList = part.getIpsObject().validate(part.getIpsProject());
+            msgList.add(objMsgList.getMessagesFor(part));
+            
             Message msg = null;
             if(msgList.getNoOfMessages() > 0){
                 msg = msgList.getFirstMessage(Message.ERROR);

@@ -728,7 +728,8 @@ public class ProductCmptType extends Type implements IProductCmptType {
                 String text = NLS.bind(Messages.ProductCmptType_DuplicateFormulaName, propertyName);
                 return new Message(MSGCODE_DUPLICATE_FORMULA_NAME_IN_HIERARCHY, text, Message.ERROR, invalidObjProperties);
             } else {
-                return new Message(IType.MSGCODE_DUPLICATE_PROPERTY_NAME, Messages.ProductCmptType_multiplePropertyNames, Message.ERROR, invalidObjProperties);
+                String text = NLS.bind(Messages.ProductCmptType_multiplePropertyNames, propertyName);
+                return new Message(IType.MSGCODE_DUPLICATE_PROPERTY_NAME, text, Message.ERROR, invalidObjProperties);
             }
         }
 
