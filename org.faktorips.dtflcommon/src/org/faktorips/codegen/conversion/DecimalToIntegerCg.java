@@ -24,14 +24,14 @@ import org.faktorips.datatype.Datatype;
 /**
  *
  */
-public class PrimitiveIntToPrimitiveLongCg extends AbstractSingleConversionCg {
+public class DecimalToIntegerCg extends AbstractSingleConversionCg {
 
     /**
      * @param from
      * @param to
      */
-    public PrimitiveIntToPrimitiveLongCg() {
-        super(Datatype.PRIMITIVE_INT, Datatype.PRIMITIVE_LONG);
+    public DecimalToIntegerCg() {
+        super(Datatype.DECIMAL, Datatype.INTEGER);
     }
 
     /** 
@@ -39,8 +39,13 @@ public class PrimitiveIntToPrimitiveLongCg extends AbstractSingleConversionCg {
      * @see org.faktorips.codegen.SingleConversionCg#getConversionCode()
      */
     public JavaCodeFragment getConversionCode(JavaCodeFragment fromValue) {
+//        new Integer(Decimal.valueOf("").intValue());
         JavaCodeFragment fragment = new JavaCodeFragment();
+        fragment.append("new ");
+        fragment.appendClassName(Integer.class);
+        fragment.append("(");
         fragment.append(fromValue);
+        fragment.append(".intValue())");
         return fragment;
     }
 

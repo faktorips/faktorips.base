@@ -47,6 +47,7 @@ public class ConversionCodeGenerator implements ConversionMatrix {
     public final static ConversionCodeGenerator getDefault() {
         ConversionCodeGenerator ccg = new ConversionCodeGenerator();
         ccg.add(new BooleanToPrimitiveBooleanCg());
+        ccg.add(new DecimalToIntegerCg());
         ccg.add(new IntegerToDecimalCg());
         ccg.add(new IntegerToPrimitiveIntCg());
         ccg.add(new IntegerToLongCg());

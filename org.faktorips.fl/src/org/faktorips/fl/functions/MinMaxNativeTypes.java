@@ -20,6 +20,7 @@ package org.faktorips.fl.functions;
 import org.faktorips.codegen.ConversionCodeGenerator;
 import org.faktorips.codegen.JavaCodeFragment;
 import org.faktorips.datatype.Datatype;
+import org.faktorips.datatype.ValueDatatype;
 import org.faktorips.fl.CompilationResult;
 import org.faktorips.fl.CompilationResultImpl;
 import org.faktorips.fl.ExprCompiler;
@@ -44,6 +45,37 @@ public abstract class MinMaxNativeTypes extends AbstractFlFunction {
         errorCodeSuffix = isMax ? "MAX" : "MIN";
     }
 
+    /**
+     * {@inheritDoc}
+     */
+    public boolean match(String name, Datatype[] otherArgTypes) {
+        if (!this.getName().equals(name)) {
+            return false;
+        }
+        Datatype[] args = getArgTypes();
+        if(args.length != otherArgTypes.length){
+            return false;
+        }
+        for (int i = 0; i < otherArgTypes.length; i++) {
+            if(args[i].equals(otherArgTypes[i])){
+                continue;
+            }
+            ValueDatatype argType = (ValueDatatype)args[i];
+            if(argType.isPrimitive()){
+                if(argType.getWrapperType().equals(otherArgTypes[i])){
+                    continue;
+                }
+            } else if(otherArgTypes[i] instanceof ValueDatatype) {
+                ValueDatatype other = (ValueDatatype)otherArgTypes[i];
+                if(argType.equals(other.getWrapperType())){
+                   continue; 
+                }
+            }
+            return false;
+        }
+        return true;
+    }
+    
     /** 
      * {@inheritDoc}
      */
@@ -58,7 +90,7 @@ public abstract class MinMaxNativeTypes extends AbstractFlFunction {
         if(first == null){
             return createErrorCompilationResult(datatype1);
         }
-        CompilationResult second = convertIfNecessay(datatype1, ccg, argResults[1]);
+        CompilationResult second = convertIfNecessay(datatype2, ccg, argResults[1]);
         if(second == null){
             return createErrorCompilationResult(datatype2);
         }
