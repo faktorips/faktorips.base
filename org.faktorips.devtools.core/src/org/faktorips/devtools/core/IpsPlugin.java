@@ -256,11 +256,11 @@ public class IpsPlugin extends AbstractUIPlugin {
     /**
      * Returns the image with the indicated name from the <code>icons</code> folder and overlays
      * it with the product relevant image. If the given image is not found return the missing image
-     * overlayed with the product relevant image.
+     * overlaid with the product relevant image.
      * 
      * @see IpsPlugin#getImage(String)
      * 
-     * @param baseImageName The name of the image which will be overlayed with the product relevant
+     * @param baseImageName The name of the image which will be overlaid with the product relevant
      *            image.
      */
     public Image getProductRelevantImage(String baseImageName) {
