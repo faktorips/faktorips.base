@@ -51,7 +51,7 @@ public class ClassLoaderProviderTest extends AbstractIpsPluginTest {
         super.setUp();
         ipsProject = newIpsProject("TestProject");
         javaProject = ipsProject.getJavaProject();
-        provider = new ClassLoaderProvider(javaProject, true);
+        provider = new ClassLoaderProvider(javaProject, true, true);
     }
 
     /**

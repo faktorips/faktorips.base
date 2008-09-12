@@ -1273,8 +1273,9 @@ public class IpsModel extends IpsElement implements IIpsModel, IResourceChangeLi
         ArgumentCheck.notNull(ipsProject);
         ClassLoaderProvider provider = (ClassLoaderProvider)classLoaderProviderMap.get(ipsProject);
         if (provider == null) {
-            // if this is a new provider make sure that the old temporary jars will be deleted first
-            // @see ClassLoaderProviders#initTempDir
+            // create a new classloader provider, make sure that the jars (inside the provided
+            // classloader) will be copied, this fixed the problem if the classloader is used
+            // to load classes for DynamicValueDatatype
             provider = new ClassLoaderProvider(ipsProject.getJavaProject(), ipsProject.getReadOnlyProperties().isJavaProjectContainsClassesForDynamicDatatypes(), true);
             classLoaderProviderMap.put(ipsProject, provider);
         }

@@ -270,9 +270,8 @@ public class IpsProject extends IpsElement implements IIpsProject {
      * @throws CoreException 
      */
     public ClassLoader getClassLoaderForJavaProject() throws CoreException {
-        // creates always a new classloader using the classloader provider
-        // don't delete previous temp jars, because the cached class loader provider takes care about it
-        // @see this#getClassLoaderProviderForJavaProject
+        // creates always a new classloader,
+        // don't copy the jars used in the returned classloader
         final ClassLoaderProvider classLoaderProvider = new ClassLoaderProvider(getJavaProject(), true, false);
         return classLoaderProvider.getClassLoader();
     }

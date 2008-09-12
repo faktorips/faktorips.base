@@ -55,9 +55,8 @@ public class ClassLoaderProvider {
     private IJavaProject javaProject;
 	private URLClassLoader classLoader;
     
-	// <code>true</code> if previous copied jars should be deleted before creating a new class
-    // loader otherwise <code>false</code>
-	private boolean deletePreviousTempJars = false;
+	// <code>true</code> if the jars should be copied as temporary jars
+	private boolean copyJars = false;
 	
 	// a list of IResources that contain the class files, either an IFile if it's a Jar-File or an
 	// IFolder if it's a directory containing class files.
@@ -69,11 +68,11 @@ public class ClassLoaderProvider {
 	// resource change listener that is used to test for changes of the classpath elements (jars and class directories)
 	private IResourceChangeListener changeListener; 
     
-	public ClassLoaderProvider(IJavaProject project, boolean includeProjectsOutputLocation, boolean deletePreviousJars) {
+	public ClassLoaderProvider(IJavaProject project, boolean includeProjectsOutputLocation, boolean copyJars) {
 		ArgumentCheck.notNull(project);
 		javaProject = project;
         this.includeProjectsOutputLocation = includeProjectsOutputLocation;
-        this.deletePreviousTempJars = deletePreviousJars;
+        this.copyJars = copyJars;
 	}
 	
     /**
@@ -139,12 +138,13 @@ public class ClassLoaderProvider {
 
 	private void accumulateClasspath(IJavaProject project, List urlsList)
 			throws IOException, CoreException {
+	    File tempFileDir = null;
 		
         if(project==null || !project.exists()) {
             return;
         }
        
-        File tempFileDir = initTempDir(project);
+        
 		IPath projectPath = project.getProject().getLocation();
 		IPath root = projectPath.removeLastSegments(project.getProject()
 				.getFullPath().segmentCount());
@@ -170,9 +170,18 @@ public class ClassLoaderProvider {
                     jarPath = entry[i].getPath();
                 }
                 
-				IPath copyPath = copyJar(jarPath, tempFileDir);
-				if (copyPath!=null) {
-					urlsList.add(copyPath.toFile().toURL());
+                
+				IPath currentPath;
+				if (copyJars){
+				    if (tempFileDir == null){
+				        tempFileDir = initTempDir(project);
+				    }
+				    currentPath = copyJar(jarPath, tempFileDir);
+				} else {
+				    currentPath = jarPath;
+				}
+				if (currentPath!=null) {
+					urlsList.add(currentPath.toFile().toURL());
 					addClassfileContainer(jarPath, urlsList);
 				}
 			}
@@ -198,7 +207,7 @@ public class ClassLoaderProvider {
      */
 	private File initTempDir(IJavaProject project) {
 	    File tempFileDir = IpsPlugin.getDefault().getStateLocation().append(project.getProject().getName()).toFile();
-        if (tempFileDir.exists() && deletePreviousTempJars){
+        if (tempFileDir.exists()){
             cleanupTemp(tempFileDir);
         }
         if (!tempFileDir.exists()){
