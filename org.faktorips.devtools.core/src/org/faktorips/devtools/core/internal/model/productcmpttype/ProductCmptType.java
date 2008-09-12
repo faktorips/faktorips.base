@@ -20,7 +20,6 @@ package org.faktorips.devtools.core.internal.model.productcmpttype;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
@@ -54,7 +53,6 @@ import org.faktorips.devtools.core.model.productcmpttype.ProductCmptTypeHierarch
 import org.faktorips.devtools.core.model.productcmpttype.ProductCmptTypeValidations;
 import org.faktorips.devtools.core.model.type.IMethod;
 import org.faktorips.devtools.core.model.type.IType;
-import org.faktorips.devtools.core.model.type.TypeHierarchyVisitor;
 import org.faktorips.devtools.core.model.type.TypeValidations;
 import org.faktorips.util.message.Message;
 import org.faktorips.util.message.MessageList;
@@ -482,28 +480,10 @@ public class ProductCmptType extends Type implements IProductCmptType {
             }
         }
         validateProductCmptTypeAbstractWhenPolicyCmptTypeAbstract(list, ipsProject);
-        DuplicateFormulaNameInHierarchyValidator validator = new DuplicateFormulaNameInHierarchyValidator(ipsProject);
-        validator.start(this);
-        validator.addMessagesForDuplicates(list);
-        validateIfDuplicateFormulaNameInSameType(list);
         validateIfAnOverrideOfOverloadedFormulaExists(list, ipsProject);
         list.add(TypeValidations.validateOtherTypeWithSameNameTypeInIpsObjectPath(IpsObjectType.POLICY_CMPT_TYPE, getQualifiedName(), ipsProject, this));
     }
 
-    private void validateIfDuplicateFormulaNameInSameType(MessageList msgList){
-        IProductCmptTypeMethod[] formulaMethods = getProductCmptTypeMethods(); 
-        for(int i = 0; i < formulaMethods.length; i++){
-            for(int r = i+1; r < formulaMethods.length; r++){
-                if(!StringUtils.isEmpty(formulaMethods[i].getFormulaName()) && formulaMethods[i].getFormulaName().equals(formulaMethods[r].getFormulaName())){
-                    String text = Messages.ProductCmptType_msgDuplicateFormulasNotAllowedInSameType;
-                    msgList.add(new Message(MSGCODE_DUPLICATE_FORMULAS_NOT_ALLOWED_IN_SAME_TYPE, text, Message.ERROR, formulaMethods[i], IProductCmptTypeMethod.PROPERTY_FORMULA_NAME));
-                    msgList.add(new Message(MSGCODE_DUPLICATE_FORMULAS_NOT_ALLOWED_IN_SAME_TYPE, text, Message.ERROR, formulaMethods[r], IProductCmptTypeMethod.PROPERTY_FORMULA_NAME));
-                }
-                
-            }
-        }
-    }
-    
     //TODO pk: write test case
     private void validateIfAnOverrideOfOverloadedFormulaExists(MessageList msgList, IIpsProject ipsProject) throws CoreException{
         ArrayList overloadedSupertypeFormulaSignatures = new ArrayList();
@@ -533,7 +513,7 @@ public class ProductCmptType extends Type implements IProductCmptType {
      * {@inheritDoc}
      */
     protected DuplicatePropertyNameValidator createDuplicatePropertyNameValidator(IIpsProject ipsProject) {
-        return new MyDuplicatePropertyNameValidator(ipsProject);
+        return new ProductCmptTypeDuplicatePropertyNameValidator(ipsProject);
     }
 
     private void validateProductCmptTypeAbstractWhenPolicyCmptTypeAbstract(MessageList msgList, IIpsProject ipsProject)
@@ -713,10 +693,43 @@ public class ProductCmptType extends Type implements IProductCmptType {
     }
 
     
-    private static class MyDuplicatePropertyNameValidator extends DuplicatePropertyNameValidator {
+    private static class ProductCmptTypeDuplicatePropertyNameValidator extends DuplicatePropertyNameValidator {
 
-        public MyDuplicatePropertyNameValidator(IIpsProject ipsProject) {
+        public ProductCmptTypeDuplicatePropertyNameValidator(IIpsProject ipsProject) {
             super(ipsProject);
+        }
+
+        protected Message createMessage(String propertyName, ObjectProperty[] invalidObjProperties){
+            //test if only formulas are involved
+            boolean onlyFormulas = true;
+            boolean onlyFormulasInSameType = true;
+            IProductCmptType prodType = null;
+            for (int i = 0; i < invalidObjProperties.length; i++) {
+                Object obj = invalidObjProperties[i].getObject();
+                if(!(obj instanceof IProductCmptTypeMethod)){
+                    onlyFormulas = false;
+                    onlyFormulasInSameType = false;
+                    break;
+                } else {
+                    if(prodType == null){
+                        prodType = ((IProductCmptTypeMethod)obj).getProductCmptType();
+                        onlyFormulasInSameType = true;
+                    }
+                    if(onlyFormulasInSameType && !prodType.equals(((IProductCmptTypeMethod)obj).getProductCmptType())){
+                        onlyFormulasInSameType = false;
+                    }
+                }
+            }
+            if(onlyFormulasInSameType){
+                String text = Messages.ProductCmptType_msgDuplicateFormulasNotAllowedInSameType;
+                return new Message(MSGCODE_DUPLICATE_FORMULAS_NOT_ALLOWED_IN_SAME_TYPE, text, Message.ERROR, invalidObjProperties);
+            }
+            else if(onlyFormulas){
+                String text = NLS.bind(Messages.ProductCmptType_DuplicateFormulaName, propertyName);
+                return new Message(MSGCODE_DUPLICATE_FORMULA_NAME_IN_HIERARCHY, text, Message.ERROR, invalidObjProperties);
+            } else {
+                return new Message(IType.MSGCODE_DUPLICATE_PROPERTY_NAME, Messages.ProductCmptType_multiplePropertyNames, Message.ERROR, invalidObjProperties);
+            }
         }
 
         /**
@@ -729,64 +742,15 @@ public class ProductCmptType extends Type implements IProductCmptType {
                 ITableStructureUsage tsu = (ITableStructureUsage)it.next();
                 add(tsu.getRoleName(), new ObjectProperty(tsu, ITableStructureUsage.PROPERTY_ROLENAME));
             }
-            // note: formula names arent compared as their name is often similiar to the policy component type attribute 
-            // they calculate the value for
-            return true;
-        }        
-    }
-    
-    private static class DuplicateFormulaNameInHierarchyValidator extends TypeHierarchyVisitor {
-
-        private Map formulaNames = new HashMap();
-        private List duplicateFormulaNames = new ArrayList();
-        
-        public DuplicateFormulaNameInHierarchyValidator(IIpsProject ipsProject) {
-            super(ipsProject);
-        }
-        
-        public void addMessagesForDuplicates(MessageList messages) {
-            for (Iterator it=duplicateFormulaNames.iterator(); it.hasNext(); ) {
-                String formulaName = (String)it.next();
-                List ops = (List)formulaNames.get(formulaName);
-                ObjectProperty[] invalidObjProperties = (ObjectProperty[])ops.toArray(new ObjectProperty[ops.size()]);
-                String text = NLS.bind(Messages.ProductCmptType_DuplicateFormulaName, formulaName);
-                messages.add(new Message(MSGCODE_DUPLICATE_FORMULA_NAME, text, Message.ERROR, invalidObjProperties));
-            }
-        }
-        
-        /**
-         * {@inheritDoc}
-         */
-        protected boolean visit(IType currentType) throws CoreException {
-            Type currType = (Type)currentType;
-            for (Iterator it=currType.getIteratorForMethods(); it.hasNext(); ) {
+            for (Iterator it = productCmptType.getIteratorForMethods(); it.hasNext();) {
                 IProductCmptTypeMethod method = (IProductCmptTypeMethod)it.next();
                 if (method.isFormulaSignatureDefinition() && 
-                    StringUtils.isNotEmpty(method.getFormulaName()) && 
-                    !method.isOverloadsFormula()) {
-                    add(method);
+                        StringUtils.isNotEmpty(method.getFormulaName()) && 
+                        !method.isOverloadsFormula()) {
+                    add(method.getFormulaName(), new ObjectProperty(method, IProductCmptTypeMethod.PROPERTY_FORMULA_NAME));
                 }
             }
             return true;
-        }
-        
-        protected void add(IProductCmptTypeMethod formulaSignature) {
-            ObjectProperty wrapper = new ObjectProperty(formulaSignature, IProductCmptTypeMethod.PROPERTY_FORMULA_NAME);
-            String formulaName = formulaSignature.getFormulaName();
-            Object objInMap = formulaNames.get(formulaName);
-            if (objInMap==null) {
-                formulaNames.put(formulaName, wrapper);
-                return;
-            }
-            if (objInMap instanceof List) {
-                ((List)objInMap).add(wrapper);
-                return;
-            }
-            List objects = new ArrayList(2);
-            objects.add(objInMap);
-            objects.add(wrapper);
-            formulaNames.put(formulaName, objects);
-            duplicateFormulaNames.add(formulaName);
-        }
+        }        
     }
 }

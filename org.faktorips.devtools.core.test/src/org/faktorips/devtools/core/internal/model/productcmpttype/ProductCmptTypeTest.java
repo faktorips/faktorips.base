@@ -94,20 +94,20 @@ public class ProductCmptTypeTest extends AbstractIpsPluginTest implements Conten
         // formula in same type
         IProductCmptTypeMethod formula1 = productCmptType.newFormulaSignature("formula");
         MessageList result = productCmptType.validate(ipsProject);
-        assertNotNull(result.getMessageByCode(IProductCmptType.MSGCODE_DUPLICATE_FORMULA_NAME));
+        assertNotNull(result.getMessageByCode(IProductCmptType.MSGCODE_DUPLICATE_FORMULAS_NOT_ALLOWED_IN_SAME_TYPE));
 
         formula1.setFormulaName("formula1");
         result = productCmptType.validate(ipsProject);
-        assertNull(result.getMessageByCode(IProductCmptType.MSGCODE_DUPLICATE_FORMULA_NAME));
+        assertNull(result.getMessageByCode(IProductCmptType.MSGCODE_DUPLICATE_FORMULAS_NOT_ALLOWED_IN_SAME_TYPE));
         
         // formula in supertype
         IProductCmptTypeMethod formula2 = superProductCmptType.newFormulaSignature("formula");
         result = productCmptType.validate(ipsProject);
-        assertNotNull(result.getMessageByCode(IProductCmptType.MSGCODE_DUPLICATE_FORMULA_NAME));
+        assertNotNull(result.getMessageByCode(IProductCmptType.MSGCODE_DUPLICATE_FORMULA_NAME_IN_HIERARCHY));
 
         formula2.setFormulaName("formula2");
         result = productCmptType.validate(ipsProject);
-        assertNull(result.getMessageByCode(IProductCmptType.MSGCODE_DUPLICATE_FORMULA_NAME));
+        assertNull(result.getMessageByCode(IProductCmptType.MSGCODE_DUPLICATE_FORMULA_NAME_IN_HIERARCHY));
     }
     
     public void testValidate_PolicyCmptTypeDoesNotSpecifyThisOneAsConfigurationType() throws CoreException {

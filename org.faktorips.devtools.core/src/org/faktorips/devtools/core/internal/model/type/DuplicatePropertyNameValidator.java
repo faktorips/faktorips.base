@@ -43,13 +43,17 @@ public class DuplicatePropertyNameValidator extends TypeHierarchyVisitor {
         super(ipsProject);
     }
     
+    protected Message createMessage(String propertyName, ObjectProperty[] invalidObjProperties){
+        String text = NLS.bind(Messages.DuplicatePropertyNameValidator_msg, propertyName);
+        return new Message(IType.MSGCODE_DUPLICATE_PROPERTY_NAME, text, Message.ERROR, invalidObjProperties);
+    }
+    
     public void addMessagesForDuplicates(MessageList messages) {
         for (Iterator it=duplicateProperties.iterator(); it.hasNext(); ) {
             String propertyName = (String)it.next();
             List objects = (List)properties.get(propertyName);
             ObjectProperty[] invalidObjProperties = (ObjectProperty[])objects.toArray(new ObjectProperty[objects.size()]);
-            String text = NLS.bind(Messages.DuplicatePropertyNameValidator_msg, propertyName);
-            messages.add(new Message(IType.MSGCODE_DUPLICATE_PROPERTY_NAME, text, Message.ERROR, invalidObjProperties));
+            messages.add(createMessage(propertyName, invalidObjProperties));
         }
     }
     
@@ -66,8 +70,8 @@ public class DuplicatePropertyNameValidator extends TypeHierarchyVisitor {
         }
         for (Iterator it=currType.getIteratorForAssociations(); it.hasNext(); ) {
             IAssociation ass = (IAssociation)it.next();
-            //TODO it needs to be clarified if we should ask the builder set which naming convensions are used and instead of just
-            //uncapitalize ask the naming convension how it is handled
+            //TODO it needs to be clarified if we should ask the builder set which naming conventions are used and instead of just
+            //uncapitalize ask the naming convention how it is handled
             if (ass.is1ToMany()) {
                 add(ass.getTargetRolePlural().toLowerCase(), new ObjectProperty(ass, IAssociation.PROPERTY_TARGET_ROLE_PLURAL));
             } else {

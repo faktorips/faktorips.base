@@ -44,6 +44,8 @@ public class Messages extends NLS {
 
     public static String ProductCmptType_msgProductCmptTypeAbstractWhenPolicyCmptTypeAbstract;
 
+    public static String ProductCmptType_multiplePropertyNames;
+
     public static String ProductCmptType_notMarkedAsConfigurable;
 
     public static String ProductCmptType_PolicyCmptTypeDoesNotExist;

@@ -75,7 +75,7 @@ public interface IProductCmptType extends IIpsObject, IType {
     /**
      * Validation message code to indicate that at least two formula signatures have the same name.
      */
-    public final static String MSGCODE_DUPLICATE_FORMULA_NAME = MSGCODE_PREFIX + "DuplicateFormulaName"; //$NON-NLS-1$
+    public final static String MSGCODE_DUPLICATE_FORMULA_NAME_IN_HIERARCHY = MSGCODE_PREFIX + "DuplicateFormulaNameInHierarchy"; //$NON-NLS-1$
 
     /**
      * Validation message code to indicate that at least two formula signatures have the same name.
