@@ -594,7 +594,7 @@ public class GenAssociationToMany extends GenAssociation {
             String field,
             IPolicyCmptType targetType,
             String targetTypeQName) throws CoreException {
-        String varOrig = QNameUtil.getUnqualifiedName(targetTypeQName);
+        String varOrig = StringUtils.uncapitalize(QNameUtil.getUnqualifiedName(targetTypeQName));
         String varCopy = "copy" + StringUtils.capitalize(varOrig);
         methodsBuilder.append("for (");
         methodsBuilder.appendClassName(Iterator.class);
