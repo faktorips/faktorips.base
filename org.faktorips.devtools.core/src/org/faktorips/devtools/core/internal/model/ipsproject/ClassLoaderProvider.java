@@ -157,7 +157,7 @@ public class ClassLoaderProvider {
 		if (project!=javaProject || includeProjectsOutputLocation) {
 			IPath outLocation = project.getOutputLocation();
 			IPath output = root.append(outLocation);
-			urlsList.add(output.toFile().toURL());
+			urlsList.add(output.toFile().toURI().toURL());
 			addClassfileContainer(output, urlsList);
 		}
 		IClasspathEntry[] entry = project.getRawClasspath();
@@ -186,7 +186,7 @@ public class ClassLoaderProvider {
 				    currentPath = jarPath;
 				}
 				if (currentPath!=null) {
-					urlsList.add(currentPath.toFile().toURL());
+					urlsList.add(currentPath.toFile().toURI().toURL());
 					addClassfileContainer(jarPath, urlsList);
 				}
 			}
