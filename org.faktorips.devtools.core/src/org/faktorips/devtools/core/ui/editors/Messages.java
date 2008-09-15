@@ -48,5 +48,6 @@ public class Messages extends NLS {
 	public static String DescriptionPage_description;
 	public static String DescriptionSection_description;
     public static String UnparsableFilePage_fileContentIsNotParsable;
+    public static String UnreachableFilePage_msgUnreachableFile;
 
 }

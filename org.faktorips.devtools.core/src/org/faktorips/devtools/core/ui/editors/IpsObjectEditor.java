@@ -177,6 +177,9 @@ public abstract class IpsObjectEditor extends FormEditor
         if (input instanceof IFileEditorInput) {
             IFile file = ((IFileEditorInput)input).getFile();
             ipsSrcFile = (IIpsSrcFile)model.getIpsElement(file);
+            if(ipsSrcFile == null){
+                return;
+            }
             //for what ever reason they made setTitle deprecated. This method does something different than the offered alternatives
             setTitle(ipsSrcFile.getName());
         } else if (input instanceof IpsArchiveEditorInput) {
@@ -278,6 +281,13 @@ public abstract class IpsObjectEditor extends FormEditor
         }        
         pagesForParsableSrcFileShown = false;
         try {
+            if(getIpsSrcFile() == null){
+                if (TRACE) {
+                    log("addPages(): Page for unreachable file created."); //$NON-NLS-1$
+                }
+                addPage(new UnreachableFilePage(this));
+                return;
+            }
             if (!getIpsSrcFile().isContentParsable()) {
                 if (TRACE) {
                     log("addPages(): Page for unparsable files created."); //$NON-NLS-1$
@@ -384,7 +394,8 @@ public abstract class IpsObjectEditor extends FormEditor
         if (updatingPageStructure) {
             return;
         }
-        if (!ipsSrcFile.exists()) {
+        //ipsSrcFile can be null if the editor is opend on a ips source file that is not in a ips package
+        if (ipsSrcFile == null || !ipsSrcFile.exists()) {
             return;
         }
         try {

@@ -75,14 +75,16 @@ public abstract class IpsObjectEditorPage extends FormPage implements IDataChang
      * (e.g. if the src file is stored outside an ips package)
      */
     protected IIpsObject getIpsObject() {
-        if (getIpsObjectEditor().getIpsSrcFile().exists()){
+        //null checking is necessary since in might be the case that the ips source file cannot be determined. E.g. in the special case
+        //that one tries to open a ips source file which is not in a ips package.
+        if (getIpsObjectEditor() != null && getIpsObjectEditor().getIpsSrcFile() != null && getIpsObjectEditor().getIpsSrcFile().exists()){
             return getIpsObjectEditor().getIpsObject();
         } else {
             return null;
         }
     }
     
-	protected final void createFormContent(IManagedForm managedForm) {
+	protected void createFormContent(IManagedForm managedForm) {
 		super.createFormContent(managedForm);
 		ScrolledForm form = managedForm.getForm();
         if (getIpsObject() == null){
@@ -114,7 +116,14 @@ public abstract class IpsObjectEditorPage extends FormPage implements IDataChang
         
     }
 
-	protected abstract void createPageContent(Composite formBody, UIToolkit toolkit);
+    /**
+     * Subclasses might implement this method to provide the visiable content of this page.
+     * 
+     * @param formBody the root composite where the content of this page needs to be added to 
+     * @param toolkit the layout conform toolkit to create widgets with
+     */
+	protected void createPageContent(Composite formBody, UIToolkit toolkit){
+	}
 	
 	/**
 	 * Creates a grid layout for the page with the indicated number of columns
