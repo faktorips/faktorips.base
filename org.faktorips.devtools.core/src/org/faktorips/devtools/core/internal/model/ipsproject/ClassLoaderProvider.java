@@ -33,6 +33,7 @@ import org.apache.commons.lang.StringUtils;
 import org.eclipse.core.resources.IResourceChangeEvent;
 import org.eclipse.core.resources.IResourceChangeListener;
 import org.eclipse.core.resources.IResourceDelta;
+import org.eclipse.core.resources.IWorkspace;
 import org.eclipse.core.resources.IncrementalProjectBuilder;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
@@ -54,7 +55,7 @@ public class ClassLoaderProvider {
     private boolean includeProjectsOutputLocation;
     private IJavaProject javaProject;
 	private URLClassLoader classLoader;
-    
+
 	// <code>true</code> if the jars should be copied as temporary jars
 	private boolean copyJars = false;
 	
@@ -66,7 +67,7 @@ public class ClassLoaderProvider {
 	private List classpathContentsChangeListeners = new ArrayList();
 	
 	// resource change listener that is used to test for changes of the classpath elements (jars and class directories)
-	private IResourceChangeListener changeListener; 
+	private IResourceChangeListener resourceChangeListener; 
     
 	public ClassLoaderProvider(IJavaProject project, boolean includeProjectsOutputLocation, boolean copyJars) {
 		ArgumentCheck.notNull(project);
@@ -82,9 +83,13 @@ public class ClassLoaderProvider {
 		if (classLoader==null) {
 			try {
 				classLoader = getProjectClassloader(javaProject);
-				changeListener = new ChangeListener();
+				IWorkspace workspace = javaProject.getProject().getWorkspace();
+				if (resourceChangeListener!=null) {
+				    workspace.removeResourceChangeListener(resourceChangeListener);
+				}
+				resourceChangeListener = new ChangeListener();
 				javaProject.getProject().getWorkspace().addResourceChangeListener(
-						changeListener,
+						resourceChangeListener,
 						IResourceChangeEvent.POST_CHANGE
 								| IResourceChangeEvent.PRE_BUILD);
 				
