@@ -58,7 +58,7 @@ public class EnumClassesBuilder extends DefaultJavaSourceFileBuilder {
 
     public final static String PACKAGE_STRUCTURE_KIND_ID = "EnumClassesBuilder.enums.stdbuilder.devtools.faktorips.org"; //$NON-NLS-1$
 
-    private EnumTypeInterfaceBuilder enumTypeInterfaceBuilder;
+    private final EnumTypeInterfaceBuilder enumTypeInterfaceBuilder;
 
     /**
      * See super class constructor.
@@ -206,7 +206,7 @@ public class EnumClassesBuilder extends DefaultJavaSourceFileBuilder {
      * Code sample: <pre> [Javadoc] private Integer id; </pre>
      */
     private void generateField(JavaCodeFragmentBuilder memberBuilder, IColumn column, Datatype datatype)
-            throws CoreException {
+    throws CoreException {
         memberBuilder.javaDoc(null, ANNOTATION_GENERATED);
         memberBuilder.varDeclaration(Modifier.PRIVATE, datatype.getJavaClassName(), getFieldName(column));
     }
@@ -300,13 +300,13 @@ public class EnumClassesBuilder extends DefaultJavaSourceFileBuilder {
      * Code sample:
      * 
      * <pre>
-     *  
+     * 
      * [Javadoc]
-     * public static final GeneratedGender MALE = new GeneratedGender(new Integer(1), &quot;male&quot;, &quot;Male&quot;); 
+     * public static final GeneratedGender MALE = new GeneratedGender(new Integer(1), &quot;male&quot;, &quot;Male&quot;);
      * </pre>
      */
     private void generateConstantsForEnumValues(JavaCodeFragmentBuilder constantBuilder, ITableStructure structure)
-            throws CoreException {
+    throws CoreException {
 
         String className = getTableContents().getName();
         IColumn[] columns = structure.getColumns();
@@ -354,7 +354,7 @@ public class EnumClassesBuilder extends DefaultJavaSourceFileBuilder {
      * </pre>
      */
     private void generateEnumInitialization(JavaCodeFragmentBuilder enumDefinitionBuilder, ITableStructure structure)
-            throws CoreException {
+    throws CoreException {
 
         IColumn[] columns = structure.getColumns();
         if (!checkTableColumns(columns)) {
@@ -367,6 +367,9 @@ public class EnumClassesBuilder extends DefaultJavaSourceFileBuilder {
         int numberOfColumns = Math.min(getTableContents().getNumOfColumns(), columns.length);
         List datatypeHelpers = getDatatypeHelpers(columns, numberOfColumns);
         IRow[] rows = getValidTableContentRows();
+        if (rows.length == 0) {
+            enumDefinitionBuilder.appendln(";");
+        }
         for (int i = 0; i < rows.length; i++) {
             JavaCodeFragment value = new JavaCodeFragment();
             appendLocalizedJavaDoc("ENUM_VALUE", rows[i], enumDefinitionBuilder);
@@ -376,10 +379,10 @@ public class EnumClassesBuilder extends DefaultJavaSourceFileBuilder {
                 DatatypeHelper helper = (DatatypeHelper)datatypeHelpers.get(j);
                 // use autoboxing if possible to reduce static code size
                 if(helper instanceof IntegerHelper){
-                    helper = DatatypeHelper.PRIMITIVE_INTEGER; 
+                    helper = DatatypeHelper.PRIMITIVE_INTEGER;
                 }
                 if(helper instanceof BooleanHelper){
-                    helper = DatatypeHelper.PRIMITIVE_BOOLEAN; 
+                    helper = DatatypeHelper.PRIMITIVE_BOOLEAN;
                 }
                 value.append(helper.newInstance(rows[i].getValue(j)));
                 if (j < numberOfColumns - 1) {
@@ -411,11 +414,11 @@ public class EnumClassesBuilder extends DefaultJavaSourceFileBuilder {
      * Code sample:
      * 
      * <pre>
-     *  
-     * [Javadoc] 
+     * 
+     * [Javadoc]
      * public static final GeneratedGender[] getGeneratedGenders() {
-     *      return new GeneratedGender[] { MALE, FEMALE }; 
-     * } 
+     *      return new GeneratedGender[] { MALE, FEMALE };
+     * }
      * </pre>
      * 
      * Not generated for Java5 enums, use .values() instead
