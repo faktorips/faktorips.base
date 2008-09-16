@@ -705,7 +705,9 @@ public class ParametersEditControl extends Composite implements  IDataChangeable
 				param.setName((String) value);
 			else if (property.equals(PROPERTIES[TYPE_PROP]))
 				param.setDatatype((String) value);
-			ParametersEditControl.this.fTableViewer.update(param, new String[] { property });
+			//it is necessary to update all parameters at this point since there can be dependencies between the parameters.
+			//e.g. if the parameter name of two parameters is the same then an error is to display for both parameters.
+			ParametersEditControl.this.fTableViewer.update(paramContainer.getParameters(), new String[] { property });
 		}
 	}
 

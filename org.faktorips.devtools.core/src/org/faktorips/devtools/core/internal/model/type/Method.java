@@ -17,7 +17,10 @@
 
 package org.faktorips.devtools.core.internal.model.type;
 
+import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Set;
 
 import org.apache.commons.lang.StringUtils;
@@ -40,6 +43,7 @@ import org.faktorips.devtools.core.model.type.IType;
 import org.faktorips.devtools.core.model.type.TypeHierarchyVisitor;
 import org.faktorips.util.message.Message;
 import org.faktorips.util.message.MessageList;
+import org.faktorips.util.message.ObjectProperty;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
@@ -293,6 +297,34 @@ public class Method extends BaseIpsObjectPart implements IMethod {
             result.add(new Message("", NLS.bind(Messages.Method_msg_abstractMethodError, getName()), Message.ERROR, this, PROPERTY_ABSTRACT)); //$NON-NLS-1$
         }
         validateDuplicateMethodInSameType(result);
+        validateMultipleParameterNames(result);
+    }
+    
+    private void validateMultipleParameterNames(MessageList msgList){
+        List parameterNames = new ArrayList();
+        Set multipleNames = new HashSet();
+        for (Iterator it = parameters.iterator(); it.hasNext();) {
+            IParameter p = (IParameter)it.next();
+            if(parameterNames.contains(p.getName())){
+                multipleNames.add(p.getName());
+            }
+            parameterNames.add(p.getName());
+        }
+        if(multipleNames.isEmpty()){
+            return;
+        }
+        for (Iterator it = multipleNames.iterator(); it.hasNext();) {
+            String paramName = (String)it.next();
+            ArrayList objProps = new ArrayList();
+            for (int j = 0; j < parameterNames.size(); j++) {
+                if(parameterNames.get(j).equals(paramName)){
+                    objProps.add(new ObjectProperty(getParameter(j), PROPERTY_PARAMETERS, j));
+                }
+            }
+            ObjectProperty[] objectProperties = (ObjectProperty[])objProps.toArray(new ObjectProperty[objProps.size()]);
+            String text = NLS.bind("The parameter name {0} is used for several parameters.", paramName);
+            msgList.add(new Message(MSGCODE_MULTIPLE_USE_OF_SAME_PARAMETER_NAME, text, Message.ERROR, objectProperties));
+        }
     }
     
     private void validateDuplicateMethodInSameType(MessageList msgList){

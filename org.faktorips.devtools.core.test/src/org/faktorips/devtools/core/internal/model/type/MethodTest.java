@@ -241,4 +241,26 @@ public class MethodTest extends AbstractIpsPluginTest {
         msgList = method.validate(this.ipsProject);
         assertNotNull(msgList.getMessageByCode(IMethod.MSGCODE_DUBLICATE_SIGNATURE));
     }
+    
+    public void testValidateMultipleParameterNames() throws CoreException{
+        IPolicyCmptType pcType = newPolicyCmptType(ipsProject, "aType");
+        method = pcType.newMethod();
+        method.setModifier(Modifier.PUBLIC);
+        method.setName("calculate");
+        method.setDatatype("String");
+        method.newParameter(Datatype.STRING.getName(), "param1");
+        IParameter p2 = method.newParameter(Datatype.INTEGER.getName(), "param2");
+        
+        MessageList msgList = method.validate(this.ipsProject);
+        assertTrue(msgList.isEmpty());
+        
+        p2.setName("param1");
+        msgList = method.validate(this.ipsProject);
+        assertNotNull(msgList.getMessageByCode(IMethod.MSGCODE_MULTIPLE_USE_OF_SAME_PARAMETER_NAME));
+
+        p2.setName("param2");
+        msgList = method.validate(this.ipsProject);
+        assertNull(msgList.getMessageByCode(IMethod.MSGCODE_MULTIPLE_USE_OF_SAME_PARAMETER_NAME));
+        
+    }
 }
