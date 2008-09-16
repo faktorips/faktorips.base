@@ -32,7 +32,7 @@ import org.faktorips.values.NullObjectSupport;
  * @author Jan Ortmann, Peter Erzberger
  * @author Daniel Hohenberger conversion to Java5
  */
-public class DefaultRange<T extends Comparable<? super T>> implements Range<T>, Serializable {
+public abstract class DefaultRange<T extends Comparable<? super T>> implements Range<T>, Serializable {
 
     private static final long serialVersionUID = -2886828952622682290L;
 
@@ -245,9 +245,22 @@ public class DefaultRange<T extends Comparable<? super T>> implements Range<T>, 
             return false;
         }
         Range<T> otherRange = (Range<T>)obj;
-        return Util.equals(lowerBound, otherRange.getLowerBound())
-        && Util.equals(upperBound, otherRange.getUpperBound())
-        && Util.equals(step, otherRange.getStep());
+        return equals(lowerBound, otherRange.getLowerBound()) && equals(upperBound, otherRange.getUpperBound())
+                && equals(step, otherRange.getStep());
+    }
+
+    /**
+     * Compares the two objects for equality considering the case that the parameters can be null.
+     * If both parameters are null this method returns true.
+     */
+    private static boolean equals(Object first, Object second) {
+        if (first == second) {
+            return true;
+        }
+        if ((first == null) || (second == null)) {
+            return false;
+        }
+        return first.equals(second);
     }
 
     /**
