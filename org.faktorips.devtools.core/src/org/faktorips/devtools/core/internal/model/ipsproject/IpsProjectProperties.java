@@ -654,35 +654,37 @@ public class IpsProjectProperties implements IIpsProjectProperties {
     }
     
     private void createIpsProjectDescriptionComment(Node parentEl) {
-        String s = "This XML file contains the properties of the enclosing ips project. It contains the following information:" + SystemUtils.LINE_SEPARATOR  //$NON-NLS-1$
-        + " " + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$
+        String s = "This XML file contains the properties of the enclosing ips project. It contains the following " + SystemUtils.LINE_SEPARATOR  //$NON-NLS-1$
+        + " information:" + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$
         + "The generator used to transform the model to Java sourcecode and the product definition into the runtime format." + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$
-        + "The path where to search for model and product definition files. This is basically the same concept as the  Java classpath." + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$
-        + "A strategy that defines how to name product components and what names are valid." + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$
+        + "The path where to search for model and product definition files. This is basically the same concept as the  Java " + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$
+        + "classpath. A strategy that defines how to name product components and what names are valid." + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$
         + "The datatypes that can be used in the model. Datatypes used in the model fall into two categeories:" + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$
         + " * Predefined datatype" + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$
         + "   Predefined datatypes are defined by the datatype definition extension. Faktor-IPS predefines datatypes for" + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$
         + "   the standard Java classes like Boolean, String, Integer, etc. and some additionals, for example Money." + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$
         + "   You can add you own datatype be providing an extension and then use it from every ips project." + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$
         + " * User defined datatype (or dynamic datatype)" + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$
-        + "   If you want to use a Java class that represents a value as datatype, but do not want to provide an exension for it," + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$
-        + "   you can register this class as datatype in this file. See the details in the description of the datatype section " + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$
-        + "   below how to register the class. Naturallyt the class must be availabl via the project's Java classpath." + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$
-        + "   There you have different options. It is strongly recommended to provide the class via a Jar file or in a separate Java" + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$
-        + "   project. However cou can also implement the class in this project itself. In this case you have to set the " + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$
+        + "   If you want to use a Java class that represents a value as datatype, but do not want to provide an exension for" + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$
+        + "   it, you can register this class as datatype in this file. See the details in the description of the datatype " + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$
+        + "   section below how to register the class. Naturallyt the class must be availabl via the project's Java classpath." + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$
+        + "   There you have different options. It is strongly recommended to provide the class via a Jar file or in a separate" + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$
+        + "   Java project. However cou can also implement the class in this project itself. In this case you have to set the " + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$
         + "   javaProjectContainsClassesForDynamicDatatypes property to true so that Faktor-IPS also looks in this project " + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$
         + "   for the class. The disadvantage of this approach is that a clean build won't work properly. At the beginning" + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$
-        + "   of the clean build the Java class is deleted, then Faktor-IPS checks the model, doesn't find the class and reports" + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$
-        + "   problems." + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$
+        + "   of the clean build the Java class is deleted, then Faktor-IPS checks the model, doesn't find the class and" + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$
+        + "   reports problems." + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$
         + " " + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$
         + "<IpsProject>" + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$
         + "    productDefinitionProject                           True if this project contains elements of the product definition." + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$
         + "    modelProject                                       True if this project contains the model or part of it." + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$
         + "    runtimeIdPrefix                                    " + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$
-        + "    changesInTimeNamingConvention                      Specifes the naming convensions for changes in time that are used throughout the system. Possible values are VAA and PM" + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$
+        + "    changesInTimeNamingConvention                      Specifes the naming convensions for changes in time that " + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$
+        + "                                                       are used throughout the system. Possible values are VAA and PM" + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$
         + "    javaProjectContainsClassesForDynamicDatatypes      see discussion above" + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$
         + "    <IpsArtefactBuilderSet/>                           The generator used. Details below." + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$
-        + "    <IpsObjectPath/>                                   The object path to search for model and product definition objects. Details below." + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$
+        + "    <IpsObjectPath/>                                   The object path to search for model and product definition" + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$
+        + "                                                       objects. Details below." + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$
         + "    <ProductCmptNamingStrategy/>                       The strategy used for product component names. Details below." + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$
         + "    <Datatypes/>                                       The datatypes used in the model. Details below." + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$
         + "    <OptionalConstraints/>                             Definition of optional constraints. Details below." + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$
@@ -702,10 +704,14 @@ public class IpsProjectProperties implements IIpsProjectProperties {
         + "   The product component name is made up of a \"unversioned\" name and a date format for the version id." + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$
         + "   <ProductCmptNamingStrategy id=\"org.faktorips.devtools.core.DateBasedProductCmptNamingStrategy\">" + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$
         + "       <DateBasedProductCmptNamingStrategy " + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$
-        + "           dateFormatPattern=\"yyyy-MM\"                           Format of the version id according to java.text.DateFormat" + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$
-        + "           postfixAllowed=\"true\"                                 True if the date format can be followed by an optional postfix. " + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$
-        + "           versionIdSeparator=\" \">                               The separator between \"unversioned name\" and version id." + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$
-        + "           <JavaIdentifierCharReplacements>                      Definition replacements for charcacters invalid in Java identifiers." + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$
+        + "           dateFormatPattern=\"yyyy-MM\"                           Format of the version id according to" + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$
+        + "                                                                   java.text.DateFormat" + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$
+        + "           postfixAllowed=\"true\"                                 True if the date format can be followed by" + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$
+        + "                                                                   an optional postfix." + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$
+        + "           versionIdSeparator=\" \">                               The separator between \"unversioned name\"" + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$
+        + "                                                                   and version id." + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$
+        + "           <JavaIdentifierCharReplacements>                        Definition replacements for charcacters invalid " + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$
+        + "                                                                   in Java identifiers." + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$
         + "               <Replacement replacedChar=\" \" replacement=\"___\"/> Example: Replace Blank with three underscores" + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$
         + "               <Replacement replacedChar=\"-\" replacement=\"__\"/>  Example: Replace Hyphen with two underscores" + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$
         + "           </JavaIdentifierCharReplacements>" + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$
@@ -728,16 +734,25 @@ public class IpsProjectProperties implements IIpsProjectProperties {
         + "    <Datatype id=\"PaymentMode\"                             The datatype's id used in the model to refer to it." + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$
         + "        valueClass=\"org.faktorips.sample.PaymentMode\"      The Java class the datatype represents" + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$
         + "        isEnumType=\"true\"                                  True if this is an enumeration of values." + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$
-        + "        valueOfMethod=\"getPaymentMode\"                     Name of the method that takes a String a returns an object instance." + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$
-        + "        isParsableMethod=\"isPaymentMode\"                   Name of the method that evaluates if a given string can be parsed to an instance." + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$
-        + "        valueToStringMethod=\"toString\"                     Name of the method that transforms an object instance to a String (that can be parsed via the valueOfMethod)" + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$
+        + "        valueOfMethod=\"getPaymentMode\"                     Name of the method that takes a String a returns an" + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$
+        + "                                                             object instance." + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$
+        + "        isParsableMethod=\"isPaymentMode\"                   Name of the method that evaluates if a given string" + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$
+        + "                                                             can be parsed to an instance." + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$
+        + "        valueToStringMethod=\"toString\"                     Name of the method that transforms an object instance" + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$
+        + "                                                              to a String (that can be parsed via the valueOfMethod)" + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$
         + "        getAllValuesMethod=\"getAllPaymentModes\"            For enums only: The name of the method that returns all values" + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$
-        + "        isSupportingNames=\"true\"                           For enums only: True indicates that a string representation for the user other than the one defined by the valueToStringMethod exists." + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$
-        + "        getNameMethod=\"getName\">                           For enums only: The name of the method that returns the string representation for the user, if isSupportingNames=true" + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$
-        + "        <NullObjectId isNull=\"false\">n</NullObjectId>      Marks a value as a NullObject. This has to be used, if the Java class implements the null object pattern, " + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$
-        + "                                                           otherwise omitt this element. The element's text defines the null object's id. Calling the valueOfMethod " + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$
-        + "                                                           with this name must return the null object instance. If the null object's id is null, leave the text empty" + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$
-        + "                                                           and set the isNull attribute to true." + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$
+        + "        isSupportingNames=\"true\"                           For enums only: True indicates that a string" + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$
+        + "                                                             representation for the user other than the one defined by the valueToStringMethod exists. + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$"
+        + "        getNameMethod=\"getName\">                           For enums only: The name of the method that returns" + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$
+        + "                                                             the string representation for the user, if" + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$
+        + "                                                             isSupportingNames=true" + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$
+        + "        <NullObjectId isNull=\"false\">n</NullObjectId>      Marks a value as a NullObject. This has to be used," + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$
+        + "                                                             if the Java class implements the null object pattern," + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$"
+        + "                                                             otherwise omitt this element. The element's text" + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$
+        + "                                                             defines the null object's id. Calling the valueOfMethod" + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$
+        + "                                                             with this name must return the null object instance. If" + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$
+        + "                                                             the null object's id is null, leave the text empty" + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$
+        + "                                                             and set the isNull attribute to true." + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$
         + "    </Datatype>" + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$
         + "</DatatypeDefinitions>" + SystemUtils.LINE_SEPARATOR; //$NON-NLS-1$
         createDescriptionComment(s, parentEl);
@@ -800,7 +815,8 @@ public class IpsProjectProperties implements IIpsProjectProperties {
         + "<OptionalConstraints>" + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$
         + "    <!-- True if Faktor-IPS checks if all derived unions are implemented in none abstract classes. -->" + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$
         + "    <Constraint name=\"derivedUnionIsImplemented\" enable=\"true\"/>" + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$
-        + "    <!-- True if Faktor-IPS checks if referenced product components are valid on the effective date of the referencing product component generation. -->"  + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$
+        + "    <!-- True if Faktor-IPS checks if referenced product components are valid on the effective date " + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$
+        + "		    of the referencing product component generation. -->"  + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$
         + "    <Constraint name=\"referencedProductComponentsAreValidOnThisGenerationsValidFromDate\" enable=\"true\"/>" + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$
         + "</OptionalConstraints>" + SystemUtils.LINE_SEPARATOR; //$NON-NLS-1$
         createDescriptionComment(s, parentEl);
