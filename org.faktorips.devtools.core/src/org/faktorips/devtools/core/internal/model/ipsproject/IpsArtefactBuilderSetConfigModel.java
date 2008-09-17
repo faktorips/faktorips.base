@@ -29,8 +29,10 @@ import org.faktorips.devtools.core.model.ipsproject.IIpsBuilderSetPropertyDef;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.util.ArgumentCheck;
 import org.faktorips.util.message.MessageList;
+import org.w3c.dom.Comment;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
+import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
 /**
@@ -41,12 +43,14 @@ import org.w3c.dom.NodeList;
 public class IpsArtefactBuilderSetConfigModel implements IIpsArtefactBuilderSetConfigModel {
 
     private Map properties;
+    private Map propertiesDescription;
     
     /**
-     * Creates an empty ips artefact builder set configuration instances.
+     * Creates an empty IPS artifact builder set configuration instances.
      */
     public IpsArtefactBuilderSetConfigModel() {
         properties = new HashMap();
+        propertiesDescription = new HashMap();
     }
 
     /**
@@ -55,20 +59,37 @@ public class IpsArtefactBuilderSetConfigModel implements IIpsArtefactBuilderSetC
     public IpsArtefactBuilderSetConfigModel(Map properties) {
         ArgumentCheck.notNull(properties);
         this.properties = properties;
+        propertiesDescription = new HashMap();
     }
 
     /**
-     * Creates and returns an ips artefact builder set configuration instance from the provided dom element.
+     * Creates and returns an IPS artifact builder set configuration instance from the provided dom element.
      */
     public final void initFromXml(Element el){
         properties = new HashMap();
+        propertiesDescription = new HashMap();
         NodeList nl = el.getElementsByTagName("Property"); //$NON-NLS-1$
         for (int i = 0; i < nl.getLength(); i++) {
             Element propertyEl = (Element)nl.item(i);
             String key = propertyEl.getAttribute("name"); //$NON-NLS-1$
             String value = propertyEl.getAttribute("value"); //$NON-NLS-1$
+            NodeList propertyElNodeList = propertyEl.getChildNodes();
+            for (int j = 0; j < propertyElNodeList.getLength(); j++) {
+                Node node = propertyElNodeList.item(j);
+                if(node instanceof Comment){
+                    Comment comment = (Comment)node;
+                    propertiesDescription.put(key, comment.getData());
+                }
+            }
             properties.put(key, value);
         }
+    }
+    
+    /**
+     * {@inheritDoc}
+     */
+    public String getPropertyDescription(String propertyName){
+        return (String) propertiesDescription.get(propertyName);
     }
     
     /**
@@ -84,10 +105,13 @@ public class IpsArtefactBuilderSetConfigModel implements IIpsArtefactBuilderSetC
      * @param propertyName the name of the property
      * @param value the value of the property
      */
-    public void setPropertyValue(String propertyName, String value){
+    public void setPropertyValue(String propertyName, String value, String description){
         ArgumentCheck.notNull(propertyName);
         ArgumentCheck.notNull(value);
         properties.put(propertyName, value);
+        if(description != null){
+            propertiesDescription.put(propertyName, description);
+        }
     }
     
     /**
@@ -100,6 +124,11 @@ public class IpsArtefactBuilderSetConfigModel implements IIpsArtefactBuilderSetC
             String key = (String)iter.next();
             String value = (String)properties.get(key);
             Element prop = doc.createElement("Property"); //$NON-NLS-1$
+            String description = (String)propertiesDescription.get(key);
+            if(description != null){
+                Comment comment = doc.createComment(description);
+                prop.appendChild(comment);
+            }
             root.appendChild(prop);
             prop.setAttribute("name", key); //$NON-NLS-1$
             prop.setAttribute("value", value); //$NON-NLS-1$
@@ -113,7 +142,7 @@ public class IpsArtefactBuilderSetConfigModel implements IIpsArtefactBuilderSetC
     public String[] getPropertyNames() {
         return (String[])properties.keySet().toArray(new String[properties.size()]);
     }
-
+    
     /**
      * {@inheritDoc}
      */

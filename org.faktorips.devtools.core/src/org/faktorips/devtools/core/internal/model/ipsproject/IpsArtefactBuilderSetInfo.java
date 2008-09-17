@@ -95,7 +95,7 @@ public class IpsArtefactBuilderSetInfo implements IIpsArtefactBuilderSetInfo{
         IpsArtefactBuilderSetConfigModel configModel = new IpsArtefactBuilderSetConfigModel();
         for (Iterator it = propertyDefinitions.values().iterator(); it.hasNext();) {
             IIpsBuilderSetPropertyDef propertyDef = (IIpsBuilderSetPropertyDef)it.next();
-            configModel.setPropertyValue(propertyDef.getName(), propertyDef.getDefaultValue(ipsProject));
+            configModel.setPropertyValue(propertyDef.getName(), propertyDef.getDefaultValue(ipsProject), propertyDef.getDescription());
         }
         return configModel;
     }

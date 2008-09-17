@@ -9,7 +9,7 @@
       <builderSet class="org.faktorips.devtools.stdbuilder.StandardBuilderSet">
          <builderSetPropertyDef
                defaultValue="false"
-               description="Enables the generation of change event mechanism"
+               description="Enables the generation of a notification mechanism"
                disableValue="false"
                label="Generate change listener"
                name="generateChangeListener"
@@ -50,7 +50,7 @@
          <builderSetPropertyDef
                class="org.faktorips.devtools.core.builder.IpsLoggingFrameworkConnectorPropertyDef"
                defaultValue="org.faktorips.devtools.core.javaUtilLoggingConnector"
-               description="The logging connector that is used if generation of logging code is enabled"
+               description="The logging connector that is used for the generation of logging code. The generation of logging code is disabled if the value &quot;None&quot; is specified. Possible values are the IDs of extensions of the extension point &quot;org.faktorips.devtools.core.loggingFrameworkConnector&quot;. Two extension come with the standard &quot;org.faktorips.devtools.core.javaUtilLoggingConnector&quot; and &quot;org.faktorips.devtools.core.log4jLoggingConnector&quot;"
                extensionPoint="loggingFrameworkConnector"
                extensionPointId="org.faktorips.devtools.core.loggingFrameworkConnector"
                label="Logging Framework Connector"
@@ -59,7 +59,7 @@
                type="extensionPoint"/>
          <builderSetPropertyDef
                defaultValue="de"
-               description="The language in which the code documentation is generated. Currently supported are the values de and en."
+               description="The language in which the code and documentation is generated. Currently supported are the values de and en."
                label="Generator Language"
                name="generatorLocale"
                type="enum">

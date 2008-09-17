@@ -146,6 +146,7 @@ public class IpsProjectProperties implements IIpsProjectProperties {
         }
     }
 
+    
     private void validateUsedPredefinedDatatype(IIpsProject ipsProject, MessageList list) {
 		IIpsModel model = ipsProject.getIpsModel();
 		for (int i = 0; i < predefinedDatatypesUsed.length; i++) {
@@ -745,52 +746,17 @@ public class IpsProjectProperties implements IIpsProjectProperties {
     private void createIpsArtefactBuilderSetDescriptionComment(Node parentEl) {
         String s = "Artefact builder set" + SystemUtils.LINE_SEPARATOR  //$NON-NLS-1$
         + " " + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$
-        + "In this section the artefact builder set (code generator) is defined." + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$
-        + "Faktor-IPS comes with a standard builder set. However the build / generator mechanism is completly decoupled " + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$
-        + "from the modeling and product definition capabilities and you can write your own builder/generators." + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$
-        + "A different builder set is defined by providing an extension for the extension point" + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$
-        + "\"org.faktorips.devtools.core.artefactbuilderset\" defined by Faktor-IPS" + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$
-        + "A builder set is activated for an Ips project by defining the IpsArtefactBuilderSet tag." + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$
-        + "The attribute \"id\" specifies the builder set implementation that is registered as an extension." + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$
-        + "The unique identifier of the extension is to specify." + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$
-        + "<IpsArtefactBuilderSet id=\"org.faktorips.devtools.stdbuilder.ipsstdbuilderset\" " + SystemUtils.LINE_SEPARATOR//$NON-NLS-1$
-        + "To enable logging for the standard builder set the following configuration has to be set. The generation of logging code can only be enabled if a logging framework connector is specified in this configuration:" + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$
-        + "     <IpsArtefactBuilderSetConfig>" + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$
-        + "         <Property name=\"generateLoggingStatements\" value=\"true\"/>" + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$ 
-        + "     </IpsArtefactBuilderSetConfig>" + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$
-        + " " + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$
-        + "To set the logging framework connector that is used when the logging is enabled for the standard builder set the following configuration has to be set.:" + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$
-        + "     <IpsArtefactBuilderSetConfig>" + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$
-        + "         <Property name=\"loggingFrameworkConnector\" value=\"org.faktorips.devtools.core.javaUtilLoggingConnector\"/>" + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$ 
-        + "     </IpsArtefactBuilderSetConfig>" + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$
-        + "Logging framework connectors can be used by builder sets to generate logging statements for the registered logging framework." + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$
-        + "Logging framework connectors have to be registered as eclipse plugins with the extension point" + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$
-        + "\"org.faktorips.devtools.core.loggingFrameworkConnector\"" + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$
-        + "Faktor-IPS provides two implementations for logging framework connectors. A connector to the java util logging framework and" + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$
-        + "one to the log4j framework. Java util logging is specified by the id=\"org.faktorips.devtools.core.javaUtilLoggingConnector\"" + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$
-        + "The log4j framework is specified by the id=\"org.faktorips.devtools.core.log4jLoggingConnector\"" + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$
-        + " " + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$
-        + "To enable the generation of a change listerner mechanism with the standard build set add the following configuration: " + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$
-        + "     <IpsArtefactBuilderSetConfig>" + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$
-        + "         <Property name=\"generateChangeListener\" value=\"true\"/>" + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$ 
-        + "     </IpsArtefactBuilderSetConfig>" + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$
-        + " " + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$
-        + "To enable delta computation for model objects the following configuration has to be set.:" + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$
-        + "     <IpsArtefactBuilderSetConfig>" + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$
-        + "         <Property name=\"generateDeltaSupport\" value=\"true\"/>" + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$ 
-        + "     </IpsArtefactBuilderSetConfig>" + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$
-        + " " + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$
-        + "When the target java version is 5.0 or above, to enable the use of java enums for enum table contents, use:" + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$
-        + "     <IpsArtefactBuilderSetConfig>" + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$
-        + "         <Property name=\"useJavaEnumTypes\" value=\"true\"/>" + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$ 
-        + "     </IpsArtefactBuilderSetConfig>" + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$
-        + " " + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$
-        + "When the target java version is 5.0 or above, to enable the use of typesafe collections, use:" + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$
-        + "     <IpsArtefactBuilderSetConfig>" + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$
-        + "         <Property name=\"useTypesafeCollections\" value=\"true\"/>" + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$ 
-        + "     </IpsArtefactBuilderSetConfig>" + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$
-        + " " + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$
-        + "</IpsArtefactBuilderSet>"  //$NON-NLS-1$
+        + "In this section the artefact builder set (code generator) is defined. Faktor-IPS comes with a standard builder set." + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$
+        + "However the build and generation mechanism is completly decoupled from the modeling and product definition capabilities" + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$
+        + "and you can write your own builders and generators. A different builder set is defined by providing an extension for" + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$
+        + "the extension point \"org.faktorips.devtools.core.artefactbuilderset\" defined by Faktor-IPS plugin" + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$
+        + "A builder set is activated for an IPS project by defining the IpsArtefactBuilderSet tag. The attribute \"id\" specifies" + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$
+        + "the builder set implementation that is registered as an extension. Note: The unique identifier of the extension is to specify." + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$
+        + "<IpsArtefactBuilderSet id=\"org.faktorips.devtools.stdbuilder.ipsstdbuilderset\"/> A builder set can be configured by specifing a " + SystemUtils.LINE_SEPARATOR//$NON-NLS-1$
+        + "nested tag <IpsArtefactBuilderSetConfig/>. A configuration contains a set of properties which are specified by nested" + SystemUtils.LINE_SEPARATOR//$NON-NLS-1$
+        + "<Property name=\"\" value=\"\"/> tags. The possible properties and their values is specific to the selected builder set." + SystemUtils.LINE_SEPARATOR//$NON-NLS-1$
+        + "The initially generated .ipsproject file contains the set of possible configuration properties for the selected builder set" + SystemUtils.LINE_SEPARATOR//$NON-NLS-1$
+        + "including their descriptions."
         + SystemUtils.LINE_SEPARATOR;
         createDescriptionComment(s, parentEl);
     }

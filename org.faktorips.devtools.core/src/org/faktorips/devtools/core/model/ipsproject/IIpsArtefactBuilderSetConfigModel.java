@@ -50,14 +50,26 @@ public interface IIpsArtefactBuilderSetConfigModel{
     public String[] getPropertyNames();
 
     /**
+     * Returns the description of the property if specified.
+     * 
+     * @param propertyName the name for which the description is requested. Cannot be <code>null</code>
+     * @return the description of the specified property or <code>null</code> if no description is available
+     */
+    public String getPropertyDescription(String propertyName);
+    
+    /**
      * Returns the value of the property of the provided property name.
      */
     public String getPropertyValue(String propertyName);
 
     /**
      * Sets the value of the property specified by the property name
+     * 
+     * @param propertyName the name of the property. Cannot be <code>null</code>
+     * @param value the value of the property. Cannot be <code>null</code>
+     * @param description optional description of the property. Can be null
      */
-    public void setPropertyValue(String propertyName, String value);
+    public void setPropertyValue(String propertyName, String value, String description);
     
     /**
      * @param doc The document to create the element with.
