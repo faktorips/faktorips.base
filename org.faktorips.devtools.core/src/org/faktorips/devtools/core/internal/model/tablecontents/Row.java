@@ -214,6 +214,11 @@ public class Row extends AtomicIpsObjectPart implements IRow {
         if(!structure.isModelEnumType()){
             return;
         }
+        
+        if (!structure.getIpsProject().getIpsArtefactBuilderSet().isTableBasedEnumValidationRequired()) {
+        	return;
+        }
+        
        //TODO pk: this is already implemented in UniqueKey. Can we get rid of this?
         if(uniqueKeys.length < 2){
             return;

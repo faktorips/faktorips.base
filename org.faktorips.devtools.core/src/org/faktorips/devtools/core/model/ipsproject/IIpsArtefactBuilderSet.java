@@ -81,6 +81,12 @@ public interface IIpsArtefactBuilderSet extends IJavaPackageStructure {
     public boolean isInverseRelationLinkRequiredFor2WayCompositions();
 
     /**
+     * @return <code>true</code> if the validations for the Table as Enum-Datatype is required (as
+     *         by the standard Faktor-IPS generator, <code>false</code> otherwise.
+     */
+    public boolean isTableBasedEnumValidationRequired();
+    
+    /**
      * Returns a compilation result that gives access to a table via the indicated function. Returns
      * <code>null</code> if this builder set does not support table access.
      * 

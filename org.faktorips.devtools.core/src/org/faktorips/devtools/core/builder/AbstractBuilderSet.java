@@ -200,4 +200,8 @@ public abstract class AbstractBuilderSet implements IIpsArtefactBuilderSet {
         throw new RuntimeException("No builder of class " + builderClass + " defined."); //$NON-NLS-1$ //$NON-NLS-2$
     }
 
+	public boolean isTableBasedEnumValidationRequired() {
+		return true;
+	}
+
 }

@@ -594,7 +594,7 @@ public class TableStructure extends IpsObject implements ITableStructure {
     protected void validateThis(MessageList list, IIpsProject ipsProject) throws CoreException {
         super.validateThis(list, ipsProject);
         IUniqueKey[] keys = getUniqueKeys();
-        if(isModelEnumType()){
+        if(isModelEnumType() && ipsProject.getIpsArtefactBuilderSet().isTableBasedEnumValidationRequired()){
             if(keys.length < 2){
                 list.add(new Message(MSGCODE_STRUCTURE_NEEDS_TWO_KEYS_WHEN_ENUM_STRUCTURE, 
                         Messages.TableStructure_needsTwoKeys, Message.ERROR, this, ITableStructure.PROPERTY_TYPE)); //$NON-NLS-1$

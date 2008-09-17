@@ -41,7 +41,11 @@ public class TableContentsValidations {
      * @return a message object if the validation fails if not <code>null</code> will be returned
      */
     public static Message validateNameOfStructureAndContentsNotTheSameWhenEnum(ITableStructure tableStructure, String contentsUnqualifiedName, ITableContents thisTableContents){
-        if(tableStructure.isModelEnumType() && tableStructure.getName().equals(contentsUnqualifiedName)){
+        if (!tableStructure.getIpsProject().getIpsArtefactBuilderSet().isTableBasedEnumValidationRequired()) {
+        	return null;
+        }
+        
+    	if(tableStructure.isModelEnumType() && tableStructure.getName().equals(contentsUnqualifiedName)){
             return new Message(ITableContents.MSGCODE_NAME_OF_STRUCTURE_AND_CONTENTS_NOT_THE_SAME_WHEN_ENUM, 
                     Messages.TableContents_msgNameStructureAndContentsNotSameWhenEnum, Message.ERROR, 
                     thisTableContents != null ? new ObjectProperty[]{new ObjectProperty(thisTableContents, null)} : new ObjectProperty[0], 
