@@ -19,11 +19,11 @@ package org.faktorips.devtools.core.model.pctype;
 
 import org.eclipse.jface.dialogs.IMessageProvider;
 import org.faktorips.codegen.JavaCodeFragment;
+import org.faktorips.devtools.core.enums.DefaultEnumType;
+import org.faktorips.devtools.core.enums.DefaultEnumValue;
+import org.faktorips.devtools.core.enums.EnumType;
 import org.faktorips.runtime.Message;
 import org.faktorips.util.ArgumentCheck;
-import org.faktorips.values.DefaultEnumType;
-import org.faktorips.values.DefaultEnumValue;
-import org.faktorips.values.EnumType;
 
 /**
  * 

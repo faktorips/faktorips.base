@@ -15,10 +15,10 @@
  *
  *******************************************************************************/
 
-package org.faktorips.datatype;
+package org.faktorips.devtools.core.enums;
 
-import org.faktorips.values.DefaultEnumType;
-import org.faktorips.values.DefaultEnumValue;
+import org.faktorips.devtools.core.enums.DefaultEnumType;
+import org.faktorips.devtools.core.enums.DefaultEnumValue;
 
 import junit.framework.TestCase;
 

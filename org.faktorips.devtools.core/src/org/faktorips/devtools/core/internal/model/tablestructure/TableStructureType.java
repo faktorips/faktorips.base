@@ -17,9 +17,9 @@
 
 package org.faktorips.devtools.core.internal.model.tablestructure;
 
-import org.faktorips.values.DefaultEnumType;
-import org.faktorips.values.DefaultEnumValue;
-import org.faktorips.values.EnumType;
+import org.faktorips.devtools.core.enums.DefaultEnumType;
+import org.faktorips.devtools.core.enums.DefaultEnumValue;
+import org.faktorips.devtools.core.enums.EnumType;
 
 /**
  * This enumeration defines all possible value for the type of the table structure. 

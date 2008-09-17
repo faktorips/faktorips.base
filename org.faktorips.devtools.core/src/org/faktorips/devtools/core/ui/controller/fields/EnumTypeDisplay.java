@@ -4,8 +4,8 @@
  * Alle Rechte vorbehalten.
  *
  * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele,
- * Konfigurationen, etc.) dürfen nur unter den Bedingungen der 
- * Faktor-Zehn-Community Lizenzvereinbarung – Version 0.1 (vor Gründung Community) 
+ * Konfigurationen, etc.) dï¿½rfen nur unter den Bedingungen der 
+ * Faktor-Zehn-Community Lizenzvereinbarung ï¿½ Version 0.1 (vor Grï¿½ndung Community) 
  * genutzt werden, die Bestandteil der Auslieferung ist und auch unter
  *   http://www.faktorips.org/legal/cl-v01.html
  * eingesehen werden kann.
@@ -17,8 +17,8 @@
 
 package org.faktorips.devtools.core.ui.controller.fields;
 
-import org.faktorips.values.DefaultEnumType;
-import org.faktorips.values.DefaultEnumValue;
+import org.faktorips.devtools.core.enums.DefaultEnumType;
+import org.faktorips.devtools.core.enums.DefaultEnumValue;
 
 /**
  * Enum class, to specify the display type of enum type controls.

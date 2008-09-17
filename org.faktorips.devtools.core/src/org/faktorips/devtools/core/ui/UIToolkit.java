@@ -35,6 +35,8 @@ import org.eclipse.ui.forms.widgets.FormToolkit;
 import org.eclipse.ui.forms.widgets.Hyperlink;
 import org.faktorips.datatype.EnumDatatype;
 import org.faktorips.devtools.core.IpsPlugin;
+import org.faktorips.devtools.core.enums.EnumType;
+import org.faktorips.devtools.core.enums.EnumValue;
 import org.faktorips.devtools.core.model.ipsproject.IIpsPackageFragmentRoot;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.valueset.IEnumValueSet;
@@ -51,8 +53,6 @@ import org.faktorips.devtools.core.ui.controls.TableContentsRefControl;
 import org.faktorips.devtools.core.ui.controls.TableStructureRefControl;
 import org.faktorips.devtools.core.ui.controls.TestCaseTypeRefControl;
 import org.faktorips.util.message.Message;
-import org.faktorips.values.EnumType;
-import org.faktorips.values.EnumValue;
 
 /**
  * A toolkit to create controls with a common look and feel.

@@ -18,9 +18,9 @@
 package org.faktorips.devtools.core.model.ipsobject;
 
 import org.eclipse.jdt.core.Flags;
-import org.faktorips.values.DefaultEnumType;
-import org.faktorips.values.DefaultEnumValue;
-import org.faktorips.values.EnumType;
+import org.faktorips.devtools.core.enums.DefaultEnumType;
+import org.faktorips.devtools.core.enums.DefaultEnumValue;
+import org.faktorips.devtools.core.enums.EnumType;
 
 /**
  * The kind of modifiers. 

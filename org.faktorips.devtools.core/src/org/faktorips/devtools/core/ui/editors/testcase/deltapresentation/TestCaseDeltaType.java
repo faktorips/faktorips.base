@@ -19,8 +19,8 @@ package org.faktorips.devtools.core.ui.editors.testcase.deltapresentation;
 
 import org.eclipse.swt.graphics.Image;
 import org.faktorips.devtools.core.IpsPlugin;
-import org.faktorips.values.DefaultEnumType;
-import org.faktorips.values.DefaultEnumValue;
+import org.faktorips.devtools.core.enums.DefaultEnumType;
+import org.faktorips.devtools.core.enums.DefaultEnumValue;
 
 /**
  * Type for test case deltas. The following types are supported:

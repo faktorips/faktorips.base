@@ -17,15 +17,15 @@
 
 package org.faktorips.devtools.core.model.valueset;
 
+import org.faktorips.devtools.core.enums.DefaultEnumType;
+import org.faktorips.devtools.core.enums.DefaultEnumValue;
+import org.faktorips.devtools.core.enums.EnumType;
+import org.faktorips.devtools.core.enums.EnumValue;
 import org.faktorips.devtools.core.internal.model.ipsobject.DescriptionHelper;
 import org.faktorips.devtools.core.internal.model.valueset.AllValuesValueSet;
 import org.faktorips.devtools.core.internal.model.valueset.EnumValueSet;
 import org.faktorips.devtools.core.internal.model.valueset.RangeValueSet;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPart;
-import org.faktorips.values.DefaultEnumType;
-import org.faktorips.values.DefaultEnumValue;
-import org.faktorips.values.EnumType;
-import org.faktorips.values.EnumValue;
 import org.w3c.dom.Element;
 
 /**

@@ -84,6 +84,7 @@ import org.eclipse.ui.forms.widgets.ScrolledForm;
 import org.eclipse.ui.forms.widgets.Section;
 import org.faktorips.datatype.ValueDatatype;
 import org.faktorips.devtools.core.IpsPlugin;
+import org.faktorips.devtools.core.enums.EnumValue;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPart;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPartContainer;
 import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
@@ -118,7 +119,6 @@ import org.faktorips.devtools.core.ui.forms.IpsSection;
 import org.faktorips.util.ArgumentCheck;
 import org.faktorips.util.memento.Memento;
 import org.faktorips.util.message.MessageList;
-import org.faktorips.values.EnumValue;
 
 /**
  * Section to display and edit the test case type.

@@ -25,6 +25,8 @@ import org.faktorips.datatype.Datatype;
 import org.faktorips.datatype.PrimitiveIntegerDatatype;
 import org.faktorips.datatype.ValueDatatype;
 import org.faktorips.devtools.core.AbstractIpsPluginTest;
+import org.faktorips.devtools.core.enums.DefaultEnumType;
+import org.faktorips.devtools.core.enums.DefaultEnumValue;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProjectProperties;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
@@ -38,8 +40,6 @@ import org.faktorips.devtools.core.model.valueset.IValueSet;
 import org.faktorips.devtools.core.util.XmlUtil;
 import org.faktorips.util.message.Message;
 import org.faktorips.util.message.MessageList;
-import org.faktorips.values.DefaultEnumType;
-import org.faktorips.values.DefaultEnumValue;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 

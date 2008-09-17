@@ -17,9 +17,9 @@
 
 package org.faktorips.devtools.core.model.testcase;
 
-import org.faktorips.values.DefaultEnumType;
-import org.faktorips.values.DefaultEnumValue;
-import org.faktorips.values.EnumType;
+import org.faktorips.devtools.core.enums.DefaultEnumType;
+import org.faktorips.devtools.core.enums.DefaultEnumValue;
+import org.faktorips.devtools.core.enums.EnumType;
 
 /**
  * Test rule violation type. Supported types are violated or not violated.

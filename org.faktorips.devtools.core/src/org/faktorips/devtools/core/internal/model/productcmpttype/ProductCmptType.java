@@ -30,6 +30,7 @@ import java.util.Set;
 import org.apache.commons.lang.StringUtils;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.osgi.util.NLS;
+import org.faktorips.devtools.core.enums.EnumValue;
 import org.faktorips.devtools.core.internal.model.ipsobject.IpsObjectPartCollection;
 import org.faktorips.devtools.core.internal.model.type.DuplicatePropertyNameValidator;
 import org.faktorips.devtools.core.internal.model.type.Type;
@@ -57,7 +58,6 @@ import org.faktorips.devtools.core.model.type.TypeValidations;
 import org.faktorips.util.message.Message;
 import org.faktorips.util.message.MessageList;
 import org.faktorips.util.message.ObjectProperty;
-import org.faktorips.values.EnumValue;
 import org.w3c.dom.Element;
 
 /**

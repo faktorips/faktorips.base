@@ -18,8 +18,8 @@
 package org.faktorips.devtools.core.ui.controller.fields;
 
 import org.eclipse.swt.widgets.Combo;
-import org.faktorips.values.EnumType;
-import org.faktorips.values.EnumValue;
+import org.faktorips.devtools.core.enums.EnumType;
+import org.faktorips.devtools.core.enums.EnumValue;
 
 
 /**

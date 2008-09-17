@@ -35,6 +35,8 @@ import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Text;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.IpsStatus;
+import org.faktorips.devtools.core.enums.DefaultEnumValue;
+import org.faktorips.devtools.core.enums.EnumType;
 import org.faktorips.devtools.core.model.ContentChangeEvent;
 import org.faktorips.devtools.core.model.ContentsChangeListener;
 import org.faktorips.devtools.core.model.ipsobject.IExtensionPropertyAccess;
@@ -58,8 +60,6 @@ import org.faktorips.devtools.core.ui.controls.AbstractCheckbox;
 import org.faktorips.devtools.core.ui.controls.TextButtonControl;
 import org.faktorips.util.message.Message;
 import org.faktorips.util.message.MessageList;
-import org.faktorips.values.DefaultEnumValue;
-import org.faktorips.values.EnumType;
 
 
 /**

@@ -17,8 +17,8 @@
 
 package org.faktorips.devtools.core.model.tablestructure;
 
-import org.faktorips.values.DefaultEnumType;
-import org.faktorips.values.DefaultEnumValue;
+import org.faktorips.devtools.core.enums.DefaultEnumType;
+import org.faktorips.devtools.core.enums.DefaultEnumValue;
 
 /**
  * Instances of this class indicate the type of range that is represented by a ColumnRange instance.
