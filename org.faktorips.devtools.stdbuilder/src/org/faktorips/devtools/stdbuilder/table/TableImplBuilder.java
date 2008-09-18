@@ -906,8 +906,20 @@ public class TableImplBuilder extends DefaultJavaSourceFileBuilder {
         methodBody.appendln(';');
         generateMethodExitingLoggingStmt(methodBody, keyClassName, methodName, returnVariableName);
         methodBody.appendln();
+        
+        methodBody.append("if(");
+        methodBody.append(returnVariableName);
+        methodBody.append(" != null)");
+        methodBody.appendOpenBracket();
         methodBody.append("return ");
         methodBody.append(returnVariableName);
+        methodBody.append(";");
+        methodBody.appendln();
+        methodBody.appendCloseBracket();
+        methodBody.append("return ");
+        methodBody.appendClassName(tableRowBuilder.getQualifiedClassName(getIpsSrcFile()));
+        methodBody.append('.');
+        methodBody.append(tableRowBuilder.getFieldNameForNullRow());
         methodBody.appendln();
     }
 

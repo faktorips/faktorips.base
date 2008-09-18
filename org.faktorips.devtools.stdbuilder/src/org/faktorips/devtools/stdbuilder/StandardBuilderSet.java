@@ -64,7 +64,6 @@ import org.faktorips.fl.CompilationResultImpl;
 import org.faktorips.fl.IdentifierResolver;
 import org.faktorips.runtime.ICopySupport;
 import org.faktorips.runtime.IDeltaSupport;
-import org.faktorips.runtime.TableFunctionExecution;
 import org.faktorips.runtime.internal.MethodNames;
 
 /**
@@ -191,20 +190,9 @@ public class StandardBuilderSet extends DefaultBuilderSet {
             ITableAccessFunction fct,
             CompilationResult[] argResults) throws CoreException {
         Datatype returnType = fct.getIpsProject().findDatatype(fct.getType());
-        DatatypeHelper returnTypeHelper = fct.getIpsProject().findDatatypeHelper(returnType.getQualifiedName());
         JavaCodeFragment code = new JavaCodeFragment();
         ITableStructure tableStructure = fct.getTableStructure();
-        code.append("((");
-        code.appendClassName(returnType.getJavaClassName());
-        code.append(")"); //$NON-NLS-1$
-        code.append("(new ");
-        code.appendClassName(TableFunctionExecution.class);
-        code.append("()");
-        code.appendOpenBracket();
-        code.append("public Object execute()");
-        code.appendOpenBracket();
-        code.appendClassName(tableRowBuilder.getQualifiedClassName(tableStructure.getIpsSrcFile()));
-        code.append(" row = ");
+
         CompilationResultImpl result = new CompilationResultImpl(code, returnType);
         result.addAllIdentifierUsed(argResults);
         code.appendClassName(tableImplBuilder.getQualifiedClassName(tableStructure.getIpsSrcFile()));
@@ -219,20 +207,9 @@ public class StandardBuilderSet extends DefaultBuilderSet {
             code.append(argResults[i].getCodeFragment());
             result.addMessages(argResults[i].getMessages());
         }
-        code.append(");");
-        code.appendln();
-        code.append("if(row != null)");
-        code.appendOpenBracket();
-        code.append("return row.get");
+        code.append(").get");
         code.append(StringUtils.capitalize(fct.findAccessedColumn().getName()));
-        code.append("();");
-        code.appendCloseBracket();
-        code.append("return ");
-        code.append(returnTypeHelper.nullExpression());
-        code.append(';');
-        code.appendCloseBracket();
-        code.appendCloseBracket();
-        code.append(").execute())");
+        code.append("()");
         return result;
     }
 

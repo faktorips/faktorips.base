@@ -1,4 +1,8 @@
-<%@ jet package="org.faktorips.devtools.stdbuilder.table" imports="org.faktorips.devtools.core.model.tablestructure.* org.apache.commons.lang.StringUtils" class="TableRowGenerator" skeleton="Skeleton.java" %>
+<%@ jet package="org.faktorips.devtools.stdbuilder.table" imports="org.faktorips.devtools.core.model.tablestructure.* org.apache.commons.lang.StringUtils
+		org.faktorips.codegen.DatatypeHelper org.faktorips.datatype.ValueDatatype org.faktorips.devtools.core.model.ipsproject.IIpsProject
+		org.faktorips.codegen.JavaCodeFragment" class="TableRowGenerator" skeleton="Skeleton.java" %>
+
+
 package <%=getJavaSourceFileBuilder().getPackage(ipsSrcFile)%>;
 <%ITableStructure tableStructure = (ITableStructure)ipsSrcFile.getIpsObject();
     IColumn[] columns = tableStructure.getColumns();
@@ -22,6 +26,18 @@ package <%=getJavaSourceFileBuilder().getPackage(ipsSrcFile)%>;
  * <%=getLocalizedText(ipsSrcFile, CLASS_JAVADOC)%>
  */ 
 public class <%=getJavaSourceFileBuilder().getUnqualifiedClassName(ipsSrcFile)%>{
+
+	public final static <%=getJavaSourceFileBuilder().getUnqualifiedClassName(ipsSrcFile)%> <%=((TableRowBuilder)getJavaSourceFileBuilder()).getFieldNameForNullRow()%> = new <%=getJavaSourceFileBuilder().getUnqualifiedClassName(ipsSrcFile)%>(<%
+    for (int i = 0; validationStatus && i < columns.length; i++) {
+    		IIpsProject ipsProject = ipsSrcFile.getIpsProject();
+    		ValueDatatype datatype = columns[i].findValueDatatype(ipsProject);
+    		DatatypeHelper helper = ipsProject.getDatatypeHelper(datatype);
+    		JavaCodeFragment nullExp = helper.nullExpression();
+    		%><%=nullExp.getSourcecode()%><%
+    		if(i < columns.length - 1){
+    				%>,<%
+    		}
+    }%>); 
 
 <%			for (int i = 0; validationStatus && i < columns.length; i++) {
             String columnName = columns[i].getName();

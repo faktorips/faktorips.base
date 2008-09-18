@@ -54,6 +54,10 @@ public class TableRowBuilder extends JavaSourceFileBuilder {
         return StringUtil.getFilenameWithoutExtension(ipsSrcFile.getName()) + "Row";
     }
 
+    public String getFieldNameForNullRow(){
+        return "NULL_ROW";
+    }
+    
     private IImportContainer getImportContainer() throws CoreException {
         IFile file = getJavaFile(getIpsSrcFile());
         ICompilationUnit cu = JavaCore.createCompilationUnitFrom(file);
