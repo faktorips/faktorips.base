@@ -1186,11 +1186,19 @@ public class PolicyCmptImplClassBuilder extends BasePolicyCmptTypeBuilder {
         if (productCmptType==null) {
             return;
         }
+        IPolicyCmptType policyCmptType = getPcType();
         ITableStructureUsage[] tsus = productCmptType.getTableStructureUsages();
         for (int i = 0; i < tsus.length; i++) {
-            if (tsus[i].isValid()) {
-                generateMethodGetTable(methodsBuilder, tsus[i]);
+            if (!tsus[i].isValid()) {
+                continue;
             }
+            if (policyCmptType.findAttribute(tsus[i].getRoleName(), getIpsProject())!=null) {
+                continue; // if the policy component type has an attribute with the table usage's role name, don't generate an access method for the table
+            }
+            if (policyCmptType.findAssociation(tsus[i].getRoleName(), getIpsProject())!=null) {
+                continue; // same for association
+            }
+            generateMethodGetTable(methodsBuilder, tsus[i]);
         }
     }
 
