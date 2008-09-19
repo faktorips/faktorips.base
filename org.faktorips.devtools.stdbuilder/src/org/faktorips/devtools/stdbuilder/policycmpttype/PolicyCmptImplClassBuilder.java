@@ -1192,10 +1192,18 @@ public class PolicyCmptImplClassBuilder extends BasePolicyCmptTypeBuilder {
             if (!tsus[i].isValid()) {
                 continue;
             }
-            if (policyCmptType.findAttribute(tsus[i].getRoleName(), getIpsProject())!=null) {
+            String roleCapitalized = StringUtils.capitalize(tsus[i].getRoleName());
+            String roleUncapitalized = StringUtils.uncapitalize(tsus[i].getRoleName());
+            if (policyCmptType.findAttribute(roleCapitalized, getIpsProject())!=null) {
                 continue; // if the policy component type has an attribute with the table usage's role name, don't generate an access method for the table
             }
-            if (policyCmptType.findAssociation(tsus[i].getRoleName(), getIpsProject())!=null) {
+            if (policyCmptType.findAttribute(roleUncapitalized, getIpsProject())!=null) {
+                continue; // if the policy component type has an attribute with the table usage's role name, don't generate an access method for the table
+            }
+            if (policyCmptType.findAssociation(roleCapitalized, getIpsProject())!=null && policyCmptType.findAssociation(tsus[i].getRoleName(), getIpsProject())!=null) {
+                continue; // same for association
+            }
+            if (policyCmptType.findAssociation(roleUncapitalized, getIpsProject())!=null && policyCmptType.findAssociation(tsus[i].getRoleName(), getIpsProject())!=null) {
                 continue; // same for association
             }
             generateMethodGetTable(methodsBuilder, tsus[i]);
