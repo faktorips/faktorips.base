@@ -198,7 +198,7 @@ public class StandardBuilderSet extends DefaultBuilderSet {
         code.appendClassName(tableImplBuilder.getQualifiedClassName(tableStructure.getIpsSrcFile()));
         // create get instance method by using the qualified name of the table content
         code.append(".getInstance(" + MethodNames.GET_REPOSITORY + "(), \"" + tableContents.getQualifiedName() //$NON-NLS-1$ //$NON-NLS-2$
-                + "\").findRow(");
+                + "\").findRowNullRowReturnedForEmtpyResult(");
         // TODO pk: findRow is not correct in general
         for (int i = 0; i < argResults.length; i++) {
             if (i > 0) {

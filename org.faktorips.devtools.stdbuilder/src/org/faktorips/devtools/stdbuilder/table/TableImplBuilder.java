@@ -444,9 +444,13 @@ public class TableImplBuilder extends DefaultJavaSourceFileBuilder {
             StringBuffer methodName = new StringBuffer();
             methodName.append("findRow");
             methodName.append(findMethodNames[i]);
-            createFindMethod(methodName.toString(), qualifiedTableRowName, (String[])fAllItemParameterTypes.get(i),
-                    (String[])fAllItemNamesAsParameters.get(i), (String[])fKeyClassParameterNames.get(i),
+            createFindMethodRegular(methodName.toString(), qualifiedTableRowName, (String[])fAllItemParameterTypes
+                    .get(i), (String[])fAllItemNamesAsParameters.get(i), (String[])fKeyClassParameterNames.get(i),
                     fKeyVariableNames[i], fKeyClassNames[i], keys[i], codeBuilder);
+            createFindMethodWithNullValueRow(methodName.toString(), qualifiedTableRowName,
+                    (String[])fAllItemParameterTypes.get(i), (String[])fAllItemNamesAsParameters.get(i),
+                    (String[])fKeyClassParameterNames.get(i), fKeyVariableNames[i], fKeyClassNames[i], keys[i],
+                    codeBuilder);
         }
     }
 
@@ -838,7 +842,7 @@ public class TableImplBuilder extends DefaultJavaSourceFileBuilder {
                 getLocalizedText(getIpsObject(), KEY_CLASS_HASHCODE_JAVADOC), ANNOTATION_GENERATED);
     }
 
-    private void createFindMethod(String methodName,
+    private void createFindMethodWithNullValueRow(String methodName,
             String returnTypeName,
             String[] parameterTypes,
             String[] parameterNames,
@@ -847,12 +851,28 @@ public class TableImplBuilder extends DefaultJavaSourceFileBuilder {
             String keyClassName,
             IUniqueKey key,
             JavaCodeFragmentBuilder codeBuilder) throws CoreException {
-        JavaCodeFragment methodBody = new JavaCodeFragment();
-
-        // logging
-        generateMethodEnteringLoggingStmt(methodBody, keyClassName, methodName, parameterNames);
-        methodBody.appendln();
-
+        methodName = methodName + "NullRowReturnedForEmtpyResult";
+        createFindMethod(methodName, returnTypeName, parameterTypes, parameterNames, keyClassParameterNames,
+                combinedKeyName, keyClassName, key, codeBuilder, true);
+    }
+    
+    private void createFindMethodRegular(String methodName,
+            String returnTypeName,
+            String[] parameterTypes,
+            String[] parameterNames,
+            String[] keyClassParameterNames,
+            String combinedKeyName,
+            String keyClassName,
+            IUniqueKey key,
+            JavaCodeFragmentBuilder codeBuilder) throws CoreException {
+        createFindMethod(methodName, returnTypeName, parameterTypes, parameterNames, keyClassParameterNames,
+                combinedKeyName, keyClassName, key, codeBuilder, false);
+    }
+    
+    private void generateFindMethodParameterCheckingBlock(JavaCodeFragment methodBody,
+            String methodName,
+            String[] parameterNames,
+            String keyClassName, boolean useNullValueRow) throws CoreException {
         if (parameterNames.length > 0) {
             methodBody.appendln("if (");
 
@@ -865,11 +885,42 @@ public class TableImplBuilder extends DefaultJavaSourceFileBuilder {
             }
             methodBody.append(")");
             methodBody.appendOpenBracket();
-            generateMethodExitingLoggingStmt(methodBody, keyClassName, methodName, "null");
-            methodBody.appendln("return null;");
+            if(useNullValueRow){
+                generateMethodExitingLoggingStmt(methodBody, keyClassName, methodName, tableRowBuilder
+                        .getQualifiedClassName(getIpsSrcFile())
+                        + '.' + tableRowBuilder.getFieldNameForNullRow());
+                methodBody.append("return ");
+                methodBody.appendClassName(tableRowBuilder.getQualifiedClassName(getIpsSrcFile()));
+                methodBody.append('.');
+                methodBody.append(tableRowBuilder.getFieldNameForNullRow());
+                methodBody.append(';');
+                methodBody.appendln();
+            } else {
+                generateMethodExitingLoggingStmt(methodBody, keyClassName, methodName, "null");
+                methodBody.appendln("return null;");
+            }
             methodBody.appendCloseBracket();
-
         }
+    }
+    
+    private void createFindMethod(String methodName,
+            String returnTypeName,
+            String[] parameterTypes,
+            String[] parameterNames,
+            String[] keyClassParameterNames,
+            String combinedKeyName,
+            String keyClassName,
+            IUniqueKey key,
+            JavaCodeFragmentBuilder codeBuilder,
+            boolean useNullValueRow) throws CoreException {
+        JavaCodeFragment methodBody = new JavaCodeFragment();
+
+        // logging
+        generateMethodEnteringLoggingStmt(methodBody, keyClassName, methodName, parameterNames);
+        methodBody.appendln();
+
+        generateFindMethodParameterCheckingBlock(methodBody, methodName, parameterNames, keyClassName, useNullValueRow);
+
         String mapName = StringUtils.uncapitalize(combinedKeyName) + "Map";
         String treeName = StringUtils.uncapitalize(combinedKeyName) + "Tree";
         String returnVariableName = "returnValue";
@@ -880,15 +931,15 @@ public class TableImplBuilder extends DefaultJavaSourceFileBuilder {
                         rangeParameterNames.length);
                 generateReturnFindMethodReturnStmt(methodBody, returnTypeName, returnVariableName, keyClassName,
                         methodName, createFindMethodGetValueFrag(false, mapName, keyClassName, keyClassParameterNames,
-                                rangeParameterNames));
+                                rangeParameterNames), useNullValueRow);
             } else {
                 generateReturnFindMethodReturnStmt(methodBody, returnTypeName, returnVariableName, keyClassName,
-                        methodName, createFindMethodGetMapEntryFrag(mapName, keyClassName, keyClassParameterNames));
+                        methodName, createFindMethodGetMapEntryFrag(mapName, keyClassName, keyClassParameterNames), useNullValueRow);
             }
         } else {
             generateReturnFindMethodReturnStmt(methodBody, returnTypeName, returnVariableName, keyClassName,
                     methodName, createFindMethodGetValueFrag(true, treeName, keyClassName, keyClassParameterNames,
-                            parameterNames));
+                            parameterNames), useNullValueRow);
         }
         methodBody.appendln(';');
         codeBuilder.method(Modifier.PUBLIC, returnTypeName, methodName, parameterNames, parameterTypes, methodBody,
@@ -900,26 +951,30 @@ public class TableImplBuilder extends DefaultJavaSourceFileBuilder {
             String returnVariableName,
             String keyClassName,
             String methodName,
-            JavaCodeFragment getValueFrag) throws CoreException {
+            JavaCodeFragment getValueFrag,
+            boolean useNullValueRow) throws CoreException {
         methodBody.append(createFindMethodReturnVariable(returnVariableName, returnTypeName));
         methodBody.append(getValueFrag);
         methodBody.appendln(';');
         generateMethodExitingLoggingStmt(methodBody, keyClassName, methodName, returnVariableName);
         methodBody.appendln();
         
-        methodBody.append("if(");
-        methodBody.append(returnVariableName);
-        methodBody.append(" != null)");
-        methodBody.appendOpenBracket();
-        methodBody.append("return ");
-        methodBody.append(returnVariableName);
-        methodBody.append(";");
+        if(useNullValueRow){
+            methodBody.append("if(");
+            methodBody.append(returnVariableName);
+            methodBody.append(" == null)");
+            methodBody.appendOpenBracket();
+            methodBody.append("return ");
+            methodBody.appendClassName(tableRowBuilder.getQualifiedClassName(getIpsSrcFile()));
+            methodBody.append('.');
+            methodBody.append(tableRowBuilder.getFieldNameForNullRow());
+            methodBody.append(";");
+            methodBody.appendln();
+            methodBody.appendCloseBracket();
+        }
         methodBody.appendln();
-        methodBody.appendCloseBracket();
         methodBody.append("return ");
-        methodBody.appendClassName(tableRowBuilder.getQualifiedClassName(getIpsSrcFile()));
-        methodBody.append('.');
-        methodBody.append(tableRowBuilder.getFieldNameForNullRow());
+        methodBody.append(returnVariableName);
         methodBody.appendln();
     }
 
