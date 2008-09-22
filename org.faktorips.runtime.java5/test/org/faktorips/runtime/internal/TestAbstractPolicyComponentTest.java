@@ -4,32 +4,34 @@
  * Alle Rechte vorbehalten.
  *
  * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele,
- * Konfigurationen, etc.) dürfen nur unter den Bedingungen der 
- * Faktor-Zehn-Community Lizenzvereinbarung – Version 0.1 (vor Gründung Community) 
+ * Konfigurationen, etc.) dürfen nur unter den Bedingungen der
+ * Faktor-Zehn-Community Lizenzvereinbarung – Version 0.1 (vor Gründung Community)
  * genutzt werden, die Bestandteil der Auslieferung ist und auch unter
  *   http://www.faktorips.org/legal/cl-v01.html
  * eingesehen werden kann.
  *
  * Mitwirkende:
- *   Faktor Zehn GmbH - initial API and implementation 
+ *   Faktor Zehn GmbH - initial API and implementation
  *
  *******************************************************************************/
 
 package org.faktorips.runtime.internal;
 
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
 import java.lang.reflect.Method;
 import java.util.Map;
 
+import org.faktorips.runtime.AssociationChangedEvent;
 import org.faktorips.runtime.DefaultObjectReferenceStore;
 import org.faktorips.runtime.DefaultUnresolvedReference;
 import org.faktorips.runtime.IModelObject;
-import org.faktorips.runtime.IModelObjectChangeListener;
-import org.faktorips.runtime.IModelObjectChangedEvent;
+import org.faktorips.runtime.INotificationSupport;
 import org.faktorips.runtime.IUnresolvedReference;
+import org.faktorips.runtime.IpsPropertyChangeSupport;
 import org.faktorips.runtime.Message;
 import org.faktorips.runtime.MessageList;
 import org.faktorips.runtime.XmlAbstractTestCase;
-import org.faktorips.runtime.IModelObjectChangedEvent.Type;
 import org.w3c.dom.Element;
 
 /**
@@ -38,21 +40,21 @@ import org.w3c.dom.Element;
  */
 public class TestAbstractPolicyComponentTest extends XmlAbstractTestCase {
 
-    
+
     public void testValidate() {
         PcB b = new PcB();
         PcA a = new PcA(b);
-        
+
         a.valid = true;
         b.valid = true;
         MessageList list = a.validate(null);
         assertEquals(0, list.getNoOfMessages());
-        
+
         a.valid = false;
         list = a.validate(null);
         assertEquals(1, list.getNoOfMessages());
         assertEquals("A", list.getMessage(0).getCode());
-        
+
         b.valid = false;
         list = a.validate(null);
         assertEquals(2, list.getNoOfMessages());
@@ -64,13 +66,13 @@ public class TestAbstractPolicyComponentTest extends XmlAbstractTestCase {
         assertEquals(1, list.getNoOfMessages());
         assertEquals("B", list.getMessage(0).getCode());
     }
-    
+
     public void testInitFromXml() {
         DefaultObjectReferenceStore store = new DefaultObjectReferenceStore();
         XmlPc pc = new XmlPc();
         pc.prop0 = "";
         pc.prop1 = "";
-        Element docEl = getTestDocument().getDocumentElement(); 
+        Element docEl = getTestDocument().getDocumentElement();
         pc.initFromXml(XmlUtil.getFirstElement(docEl), true, null, store);
         assertEquals("blabla", pc.prop0);
         assertNull(pc.prop1);
@@ -82,7 +84,7 @@ public class TestAbstractPolicyComponentTest extends XmlAbstractTestCase {
     }
 
     public void testInitFromXml_KeepObjectValueIfNotSpecifiedInXml() {
-        Element docEl = getTestDocument().getDocumentElement(); 
+        Element docEl = getTestDocument().getDocumentElement();
         DefaultObjectReferenceStore store = new DefaultObjectReferenceStore();
         XmlPc pc = new XmlPc();
         pc.prop0 = "bla";
@@ -90,33 +92,33 @@ public class TestAbstractPolicyComponentTest extends XmlAbstractTestCase {
         assertEquals("bla", pc.prop0); // make sure prop0 is not set to null
         // xml datat does not contain any information about prop0
     }
-    
+
     public void testListenerMechanism() {
         PcB pc = new PcB();
         ChangeListener listener = new ChangeListener();
-        pc.addChangeListener(listener);
-        IModelObjectChangedEvent event = new ModelObjectChangedEvent(pc, Type.OBJECT_HAS_CHANGED, "prop");
+        pc.addPropertyChangeListener(listener);
+        PropertyChangeEvent event = new PropertyChangeEvent(pc, "prop", 0, 1);
         pc.notifyChangeListeners(event);
-        assertEquals(pc, listener.lastEvent.getChangedObject());
+        assertEquals(pc, listener.lastEvent.getSource());
 
-        pc.removeChangeListener(listener);
-        pc.notifyChangeListeners(new ModelObjectChangedEvent(pc, Type.OBJECT_HAS_CHANGED, "prop"));
+        pc.removePropertyChangeListener(listener);
+        pc.notifyChangeListeners(new PropertyChangeEvent(pc, "prop", 2, 3));
         assertEquals(event, listener.lastEvent);
     }
-    
-    private class ChangeListener implements IModelObjectChangeListener {
 
-        IModelObjectChangedEvent lastEvent;
-        
+    private class ChangeListener implements PropertyChangeListener {
+
+        PropertyChangeEvent lastEvent;
+
         /**
          * {@inheritDoc}
          */
-        public void modelObjectChanged(IModelObjectChangedEvent event) {
-            lastEvent = event;
+        public void propertyChange(PropertyChangeEvent evt) {
+            lastEvent = evt;
         }
-        
+
     }
-        
+
     private class PcA extends AbstractModelObject {
 
         protected boolean valid = true;
@@ -126,10 +128,12 @@ public class TestAbstractPolicyComponentTest extends XmlAbstractTestCase {
             this.b = b;
         }
 
+        @Override
         protected void validateDependants(MessageList list, String businessFunction) {
             b.validate(list, businessFunction);
         }
 
+        @Override
         protected boolean validateSelf(MessageList list, String businessFunction) {
             if (!valid) {
                 list.add(Message.newError("A", "A is not valid!"));
@@ -140,18 +144,20 @@ public class TestAbstractPolicyComponentTest extends XmlAbstractTestCase {
         /**
          * {@inheritDoc}
          */
+        @Override
         public void removeChildModelObjectInternal(IModelObject child) {
         }
     }
-    
-    private class PcB extends AbstractModelObject {
-        
+
+    private class PcB extends AbstractModelObject implements INotificationSupport {
+
         protected boolean valid = true;
 
         protected PcB() {
             super();
         }
-        
+
+        @Override
         protected boolean validateSelf(MessageList list, String businessFunction) {
             if (!valid) {
                 list.add(Message.newError("B", "B is not valid!"));
@@ -162,12 +168,87 @@ public class TestAbstractPolicyComponentTest extends XmlAbstractTestCase {
         /**
          * {@inheritDoc}
          */
+        @Override
         public void removeChildModelObjectInternal(IModelObject child) {
         }
+
+        /**
+         * Helper object for Changelistener.
+         * 
+         * @generated
+         */
+        protected final IpsPropertyChangeSupport propertyChangeSupport = new IpsPropertyChangeSupport(this);
+
+        /**
+         * {@inheritDoc}
+         * 
+         * @generated
+         */
+        public void notifyChangeListeners(PropertyChangeEvent event) {
+            if (event instanceof AssociationChangedEvent) {
+                propertyChangeSupport.fireAssociationChange((AssociationChangedEvent)event);
+            } else {
+                propertyChangeSupport.firePropertyChange(event);
+            }
+        }
+
+        /**
+         * {@inheritDoc}
+         * 
+         * @generated
+         */
+        public void addPropertyChangeListener(PropertyChangeListener listener) {
+            propertyChangeSupport.addPropertyChangeListener(listener);
+        }
+
+        /**
+         * {@inheritDoc}
+         * 
+         * @generated
+         */
+        public void addPropertyChangeListener(PropertyChangeListener listener, boolean propagateEventsFromChildren) {
+            propertyChangeSupport.addPropertyChangeListener(listener, propagateEventsFromChildren);
+        }
+
+        /**
+         * {@inheritDoc}
+         * 
+         * @generated
+         */
+        public void addPropertyChangeListener(String propertyName, PropertyChangeListener listener) {
+            propertyChangeSupport.addPropertyChangeListener(propertyName, listener);
+        }
+
+        /**
+         * {@inheritDoc}
+         * 
+         * @generated
+         */
+        public boolean hasListeners(String propertyName) {
+            return propertyChangeSupport.hasListeners(propertyName);
+        }
+
+        /**
+         * {@inheritDoc}
+         * 
+         * @generated
+         */
+        public void removePropertyChangeListener(PropertyChangeListener listener) {
+            propertyChangeSupport.removePropertyChangeListener(listener);
+        }
+
+        /**
+         * {@inheritDoc}
+         * 
+         * @generated
+         */
+        public void removePropertyChangeListener(String propertyName, PropertyChangeListener listener) {
+            propertyChangeSupport.removePropertyChangeListener(propertyName, listener);
+        }
     }
-    
+
     private class XmlPc extends AbstractModelObject {
-        
+
         String prop0;
         String prop1;
         ChildXmlPc child;
@@ -176,15 +257,16 @@ public class TestAbstractPolicyComponentTest extends XmlAbstractTestCase {
             super();
         }
 
+        @Override
         protected void initPropertiesFromXml(Map<String, String> propMap) {
             if (propMap.containsKey("prop0")) {
-                prop0 = (String)propMap.get("prop0");
+                prop0 = propMap.get("prop0");
             }
             if (propMap.containsKey("prop1")) {
-                prop1 = (String)propMap.get("prop1");
+                prop1 = propMap.get("prop1");
             }
         }
-        
+
         public void setChild(ChildXmlPc child) {
             this.child = child;
         }
@@ -192,6 +274,7 @@ public class TestAbstractPolicyComponentTest extends XmlAbstractTestCase {
         /**
          * {@inheritDoc}
          */
+        @Override
         protected AbstractModelObject createChildFromXml(Element childEl) {
             if ("Child".equals(childEl.getNodeName())) {
                 child = new ChildXmlPc();
@@ -200,13 +283,14 @@ public class TestAbstractPolicyComponentTest extends XmlAbstractTestCase {
             }
             return null;
         }
-        
+
         public void setInsuredPerson(PcA person) {
         }
 
         /**
          * {@inheritDoc}
          */
+        @Override
         protected IUnresolvedReference createUnresolvedReference(Object objectId, String targetRole, String targetId) throws SecurityException, NoSuchMethodException {
             if ("InsuredPerson".equals(targetRole)) {
                 Method m = getClass().getMethod("setInsuredPerson", new Class[]{PcA.class});
@@ -218,23 +302,25 @@ public class TestAbstractPolicyComponentTest extends XmlAbstractTestCase {
         /**
          * {@inheritDoc}
          */
+        @Override
         public void removeChildModelObjectInternal(IModelObject child) {
         }
 
     }
-    
+
     private class ChildXmlPc extends AbstractModelObject {
 
         private XmlPc parent;
-        
+
         String prop0;
 
+        @Override
         protected void initPropertiesFromXml(Map<String, String> propMap) {
             if (propMap.containsKey("prop0")) {
-                prop0 = (String)propMap.get("prop0");
+                prop0 = propMap.get("prop0");
             }
         }
-        
+
         public void setParent(XmlPc parent) {
             this.parent = parent;
         }
@@ -249,7 +335,8 @@ public class TestAbstractPolicyComponentTest extends XmlAbstractTestCase {
         /**
          * {@inheritDoc}
          */
+        @Override
         public void removeChildModelObjectInternal(IModelObject child) {
-        }        
+        }
     }
 }

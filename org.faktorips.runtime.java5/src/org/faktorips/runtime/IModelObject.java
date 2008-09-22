@@ -35,30 +35,4 @@ public interface IModelObject {
      */
     public MessageList validate(String businessFunction);
     
-    /**
-     * Adds the given listener to the set of listeners that are notified when this policy component
-     * or one of it's children changed.
-     * 
-     * <p><strong>
-     * The listener support is experimental in this version.
-     * The API might change without notice until it is finalized in a future version.
-     * </strong>
-     * 
-     * @param listener The listener to add.
-     */
-    public void addChangeListener(IModelObjectChangeListener listener);
-
-    /**
-     * Remoces the given listener from the set of listeners that are notified when this policy component
-     * or one of it's children changed. Does nothing if listener is <code>null</code>.
-     * 
-     * <p><strong>
-     * The listener support is experimental in this version.
-     * The API might change without notice until it is finalized in a future version.
-     * </strong>
-     * 
-     * @param listener The listener to remove.
-     */
-    public void removeChangeListener(IModelObjectChangeListener listener);
-    
 }

@@ -25,7 +25,6 @@ import junit.framework.TestCase;
 import org.faktorips.runtime.IDeltaComputationOptions;
 import org.faktorips.runtime.IDeltaSupport;
 import org.faktorips.runtime.IModelObject;
-import org.faktorips.runtime.IModelObjectChangeListener;
 import org.faktorips.runtime.IModelObjectDelta;
 import org.faktorips.runtime.IModelObjectDeltaVisitor;
 import org.faktorips.runtime.MessageList;
@@ -36,8 +35,8 @@ import org.faktorips.runtime.MessageList;
  */
 public class ModelObjectDeltaTest extends TestCase {
 
-    private MyModelObject objectA = new MyModelObject("A");
-    private MyModelObject objectB = new MyModelObject("B");
+    private final MyModelObject objectA = new MyModelObject("A");
+    private final MyModelObject objectB = new MyModelObject("B");
     
     public void testNewEmptyDelta() {
         ModelObjectDelta delta = ModelObjectDelta.newEmptyDelta(objectA, objectB);
@@ -339,7 +338,7 @@ public class ModelObjectDeltaTest extends TestCase {
 
     class MyModelObject implements IModelObject, IDeltaSupport {
 
-        private String id;
+        private final String id;
         private int property;
         
         public MyModelObject(String id) {
@@ -357,22 +356,11 @@ public class ModelObjectDeltaTest extends TestCase {
         /**
          * {@inheritDoc}
          */
-        public void addChangeListener(IModelObjectChangeListener listener) {
-        }
-
-        /**
-         * {@inheritDoc}
-         */
-        public void removeChangeListener(IModelObjectChangeListener listener) {
-        }
-
-        /**
-         * {@inheritDoc}
-         */
         public MessageList validate(String businessFunction) {
             return null;
         }
 
+        @Override
         public String toString() {
             return id;
         }
@@ -383,15 +371,15 @@ public class ModelObjectDeltaTest extends TestCase {
         public IModelObjectDelta computeDelta(IModelObject otherObject, IDeltaComputationOptions options) {
             MyModelObject other = (MyModelObject)otherObject;
             ModelObjectDelta delta = ModelObjectDelta.newEmptyDelta(this, otherObject);
-            delta.checkPropertyChange("property", this.property, other.property, options);
+            delta.checkPropertyChange("property", property, other.property, options);
             return delta;
         }
     }
     
     class Visitor implements IModelObjectDeltaVisitor {
 
-        private boolean rc;
-        private Set<IModelObjectDelta> visitedDeltas = new HashSet<IModelObjectDelta>();
+        private final boolean rc;
+        private final Set<IModelObjectDelta> visitedDeltas = new HashSet<IModelObjectDelta>();
         
         public Visitor(boolean rc) {
             super();
@@ -407,7 +395,7 @@ public class ModelObjectDeltaTest extends TestCase {
     
     class Options implements IDeltaComputationOptions {
 
-        private ComputationMethod computationMethod;
+        private final ComputationMethod computationMethod;
         
         public Options(ComputationMethod computationMethod) {
             super();

@@ -20,7 +20,6 @@ package org.faktorips.runtime.test;
 import junit.framework.TestCase;
 
 import org.faktorips.runtime.IModelObject;
-import org.faktorips.runtime.IModelObjectChangeListener;
 import org.faktorips.runtime.MessageList;
 
 
@@ -82,12 +81,6 @@ public class IpsTestCase2Test extends TestCase {
     }
     
     private class MyModelObject implements IModelObject {
-        public void addChangeListener(IModelObjectChangeListener listener) {
-            throw new RuntimeException();
-        }
-        public void removeChangeListener(IModelObjectChangeListener listener) {
-            throw new RuntimeException();
-        }
         public MessageList validate(String businessFunction) {
             throw new RuntimeException();
         }

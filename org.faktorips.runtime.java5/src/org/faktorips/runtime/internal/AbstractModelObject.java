@@ -17,15 +17,10 @@
 
 package org.faktorips.runtime.internal;
 
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
 import java.util.Map;
 
 import org.faktorips.runtime.IModelObject;
-import org.faktorips.runtime.IModelObjectChangeListener;
-import org.faktorips.runtime.IModelObjectChangedEvent;
 import org.faktorips.runtime.IObjectReferenceStore;
 import org.faktorips.runtime.IRuntimeRepository;
 import org.faktorips.runtime.IUnresolvedReference;
@@ -40,8 +35,6 @@ import org.w3c.dom.Text;
  * @author Jan Ortmann
  */
 public abstract class AbstractModelObject implements IModelObject {
-
-    private List<IModelObjectChangeListener> changeListeners = null;
     
     public AbstractModelObject() {
         super();
@@ -107,63 +100,6 @@ public abstract class AbstractModelObject implements IModelObject {
      */
     protected boolean validateSelf(MessageList list, String businessFunction) {
         return true;
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    public void addChangeListener(IModelObjectChangeListener listener) {
-        if (changeListeners==null) {
-            changeListeners = new ArrayList<IModelObjectChangeListener>(1);
-        }
-        changeListeners.add(listener);
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    public void removeChangeListener(IModelObjectChangeListener listener) {
-        if (changeListeners==null) {
-            return;
-        }
-        changeListeners.remove(listener);
-    }
-    
-    /**
-     * Returns <code>true</code> if at least one change listener is registered in this policy
-     * component or one of it's parents that needsto be informed about changes, 
-     * otherwise <code>false</code>.
-     */
-    public boolean existsChangeListenerToBeInformed() {
-        return changeListeners!=null && !changeListeners.isEmpty();
-    }
-    
-    /**
-     * Notifies all registered change listeners that this policy component has changed.
-     * 
-     * <strong>Note that it is the listener's responsibility to implement a proper exception handling!!!
-     * This method will squeeze any exceptions thrown by any listener and go on to notify the others.</strong>
-     * 
-     * @param event The event to broadcast
-     * 
-     * @throws NullPointerException if event is <code>null</code>.
-     */
-    public void notifyChangeListeners(IModelObjectChangedEvent event) {
-        if (event==null) {
-            throw new NullPointerException();
-        }
-        if (changeListeners==null) {
-            return;
-        }
-        List<IModelObjectChangeListener> listeners = new ArrayList<IModelObjectChangeListener>(changeListeners); // copy to avoid concurrent notification exceptions!
-        for (Iterator<IModelObjectChangeListener> it=listeners.iterator(); it.hasNext(); ) {
-            IModelObjectChangeListener listener = it.next();
-            try {
-                listener.modelObjectChanged(event);
-            } catch (Exception e) {
-                // squeeze excpetion, see javadoc!
-            }
-        }
     }
 
     /**
