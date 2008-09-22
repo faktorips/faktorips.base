@@ -16,6 +16,7 @@ package org.faktorips.devtools.stdbuilder.table;
 
 import java.lang.reflect.Modifier;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -318,23 +319,26 @@ public class TableImplBuilder extends DefaultJavaSourceFileBuilder {
         createHashKeyClasses();
     }
 
-    // TODO: auf List<> umstellen
     private void createAllRowsMethod(JavaCodeFragmentBuilder codeBuilder) throws CoreException {
         JavaCodeFragment methodBody = new JavaCodeFragment();
-        methodBody.appendClassName(qualifiedTableRowName);
-        methodBody.append("[]");
-        methodBody.append("rowsArray");
-        methodBody.append(" = ");
-        methodBody.append("new ");
-        methodBody.appendClassName(qualifiedTableRowName);
-        methodBody.append("[rows.size()];");
-        methodBody.appendln();
-        methodBody.append("rows.toArray(rowsArray);");
-        methodBody.appendln();
-        methodBody.append("return rowsArray;");
-        codeBuilder.method(Modifier.PUBLIC, qualifiedTableRowName + "[]", "getAllRows", new String[0], new String[0],
-                methodBody, getLocalizedText(getIpsObject(), GET_ALL_ROWS_JAVADOC), ANNOTATION_GENERATED,
-                isUseTypesafeCollections() ? new String[] { ANNOTATION_SUPPRESS_WARNINGS_UNCHECKED } : null);
+        if (isUseTypesafeCollections()) {
+            methodBody.append("return ");
+            methodBody.appendClassName(Collections.class);
+            methodBody.appendln(".unmodifiableList(rows);");
+            codeBuilder.method(Modifier.PUBLIC, List.class.getName() + "<" + qualifiedTableRowName + ">", "getAllRows",
+                    new String[0], new String[0], methodBody, getLocalizedText(getIpsObject(), GET_ALL_ROWS_JAVADOC),
+                    ANNOTATION_GENERATED, new String[] { ANNOTATION_SUPPRESS_WARNINGS_UNCHECKED });
+        } else {
+            methodBody.appendClassName(qualifiedTableRowName);
+            methodBody.append("[] rowsArray  =  new ");
+            methodBody.appendClassName(qualifiedTableRowName);
+            methodBody.appendln("[rows.size()];");
+            methodBody.appendln("rows.toArray(rowsArray);");
+            methodBody.append("return rowsArray;");
+            codeBuilder.method(Modifier.PUBLIC, qualifiedTableRowName + "[]", "getAllRows", new String[0],
+                    new String[0], methodBody, getLocalizedText(getIpsObject(), GET_ALL_ROWS_JAVADOC),
+                    ANNOTATION_GENERATED, null);
+        }
     }
 
     private void createGetInstanceMethodForSingleContent(JavaCodeFragmentBuilder codeBuilder) throws CoreException {
@@ -856,7 +860,7 @@ public class TableImplBuilder extends DefaultJavaSourceFileBuilder {
         createFindMethod(methodName, returnTypeName, parameterTypes, parameterNames, keyClassParameterNames,
                 combinedKeyName, keyClassName, key, codeBuilder, true);
     }
-    
+
     private void createFindMethodRegular(String methodName,
             String returnTypeName,
             String[] parameterTypes,
@@ -869,7 +873,7 @@ public class TableImplBuilder extends DefaultJavaSourceFileBuilder {
         createFindMethod(methodName, returnTypeName, parameterTypes, parameterNames, keyClassParameterNames,
                 combinedKeyName, keyClassName, key, codeBuilder, false);
     }
-    
+
     private void generateFindMethodParameterCheckingBlock(JavaCodeFragment methodBody,
             String methodName,
             String[] parameterNames,
@@ -903,7 +907,7 @@ public class TableImplBuilder extends DefaultJavaSourceFileBuilder {
             methodBody.appendCloseBracket();
         }
     }
-    
+
     private void createFindMethod(String methodName,
             String returnTypeName,
             String[] parameterTypes,
@@ -959,7 +963,7 @@ public class TableImplBuilder extends DefaultJavaSourceFileBuilder {
         methodBody.appendln(';');
         generateMethodExitingLoggingStmt(methodBody, keyClassName, methodName, returnVariableName);
         methodBody.appendln();
-        
+
         if(useNullValueRow){
             methodBody.append("if(");
             methodBody.append(returnVariableName);
