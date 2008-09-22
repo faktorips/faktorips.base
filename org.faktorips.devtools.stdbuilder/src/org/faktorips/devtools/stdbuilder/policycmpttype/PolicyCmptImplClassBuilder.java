@@ -95,10 +95,6 @@ public class PolicyCmptImplClassBuilder extends BasePolicyCmptTypeBuilder {
         if (supertype != null) {
             return getQualifiedClassName(supertype);
         }
-        if (isGenerateChangeListenerSupport()) {
-            return ((StandardBuilderSet)getBuilderSet()).getChangeListenerSupportBuilder().getSuperclass(
-                    getPcType().isConfigurableByProductCmptType());
-        }
         if (getPcType().isConfigurableByProductCmptType()) {
             return AbstractConfigurableModelObject.class.getName();
         } else {
@@ -166,6 +162,9 @@ public class PolicyCmptImplClassBuilder extends BasePolicyCmptTypeBuilder {
             }
         } else if (isFirstDependantTypeInHierarchy(type)) {
             generateCodeForDependantObjectBaseClass(memberVarsBuilder, methodsBuilder);
+        }
+        if (getPcType().getSupertype().length() == 0 && isGenerateChangeListenerSupport()) {
+            generateChangeListenerMethods(methodsBuilder);
         }
         generateMethodRemoveChildModelObjectInternal(methodsBuilder);
         generateMethodInitPropertiesFromXml(methodsBuilder);
@@ -1062,9 +1061,14 @@ public class PolicyCmptImplClassBuilder extends BasePolicyCmptTypeBuilder {
         }
         generateMethodGetParentModelObject(methodBuilder);
         generateMethodSetParentModelObjectInternal(methodBuilder);
-        if (isGenerateChangeListenerSupport()) {
-            generateMethodExistsChangeListenerToBeInformed(methodBuilder);
-            generateMethodNotifyChangeListeners(methodBuilder);
+    }
+
+
+    protected void generateConstants(JavaCodeFragmentBuilder builder) throws CoreException {
+        super.generateConstants(builder);
+        if (getPcType().getSupertype().length() == 0 && isGenerateChangeListenerSupport()) {
+            ((StandardBuilderSet)getBuilderSet()).getChangeListenerSupportBuilder().generateChangeListenerConstants(
+                    builder);
         }
     }
 
@@ -1120,37 +1124,9 @@ public class PolicyCmptImplClassBuilder extends BasePolicyCmptTypeBuilder {
         methodBuilder.methodEnd();
     }
 
-    /**
-     * <pre>
-     * protected boolean existsChangeListenerToBeInformed() {
-     *     if (super.existsChangeListenerToBeInformed()) {
-     *         return true;
-     *     }
-     *     if (parentModelObject == null) {
-     *         return false;
-     *     }
-     *     return parentModelObject.existsChangeListenerToBeInformed();
-     * }
-     * </pre>
-     */
-    private void generateMethodExistsChangeListenerToBeInformed(JavaCodeFragmentBuilder methodBuilder) {
-        methodBuilder.javaDoc(getJavaDocCommentForOverriddenMethod(), ANNOTATION_GENERATED);
-        methodBuilder.methodBegin(Modifier.PUBLIC, Boolean.TYPE, MethodNames.EXISTS_CHANGE_LISTENER_TO_BE_INFORMED,
-                new String[] {}, new Class[] {});
-        methodBuilder.appendln("if (super." + MethodNames.EXISTS_CHANGE_LISTENER_TO_BE_INFORMED + "()) {");
-        methodBuilder.appendln("return true;");
-        methodBuilder.appendln("}");
-        methodBuilder.appendln("if (" + FIELD_PARENT_MODEL_OBJECT + "==null) {");
-        methodBuilder.appendln("return false;");
-        methodBuilder.appendln("}");
-        methodBuilder.appendln("return " + FIELD_PARENT_MODEL_OBJECT + "."
-                + MethodNames.EXISTS_CHANGE_LISTENER_TO_BE_INFORMED + "();");
-        methodBuilder.methodEnd();
-    }
-
-    private void generateMethodNotifyChangeListeners(JavaCodeFragmentBuilder methodBuilder) {
-        ((StandardBuilderSet)getBuilderSet()).getChangeListenerSupportBuilder().generateMethodNotifyChangeListeners(
-                methodBuilder, FIELD_PARENT_MODEL_OBJECT);
+    private void generateChangeListenerMethods(JavaCodeFragmentBuilder methodBuilder) throws CoreException {
+        ((StandardBuilderSet)getBuilderSet()).getChangeListenerSupportBuilder().generateChangeListenerMethods(
+                methodBuilder, FIELD_PARENT_MODEL_OBJECT, isFirstDependantTypeInHierarchy(getPcType()));
     }
 
     /**

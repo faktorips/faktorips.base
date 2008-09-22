@@ -382,13 +382,14 @@ public class GenAssociationToMany extends GenAssociation {
                 methodsBuilder.append(generateCodeToSynchronizeReverseComposition(paramName, "this"));
             }
         }
+        generateChangeListenerSupportBeforeChange(methodsBuilder, ChangeEventType.RELATION_OBJECT_ADDED, paramName);
         methodsBuilder.append(fieldName);
         methodsBuilder.append(".add(" + paramName + ");");
         if (association.isAssoziation() && reverseAssociation != null) {
             methodsBuilder.append(getGenPolicyCmptType().getBuilderSet().getGenerator(target).getGenerator(
                     reverseAssociation).generateCodeToSynchronizeReverseAssoziation(paramName, targetInterfaceName));
         }
-        generateChangeListenerSupport(methodsBuilder, ChangeEventType.RELATION_OBJECT_ADDED, paramName);
+        generateChangeListenerSupportAfterChange(methodsBuilder, ChangeEventType.RELATION_OBJECT_ADDED, paramName);
         methodsBuilder.closeBracket();
     }
 
@@ -418,6 +419,7 @@ public class GenAssociationToMany extends GenAssociation {
         methodsBuilder.openBracket();
         methodsBuilder.append("if(" + paramName + "== null) {return;}");
 
+        generateChangeListenerSupportBeforeChange(methodsBuilder, ChangeEventType.RELATION_OBJECT_REMOVED, paramName);
         if (reverseAssociation != null || association.isComposition() && target != null && target.isDependantType()) {
             methodsBuilder.append("if(");
         }
@@ -434,7 +436,7 @@ public class GenAssociationToMany extends GenAssociation {
         } else {
             methodsBuilder.append(';');
         }
-        generateChangeListenerSupport(methodsBuilder, ChangeEventType.RELATION_OBJECT_REMOVED, paramName);
+        generateChangeListenerSupportAfterChange(methodsBuilder, ChangeEventType.RELATION_OBJECT_REMOVED, paramName);
         methodsBuilder.closeBracket();
     }
 

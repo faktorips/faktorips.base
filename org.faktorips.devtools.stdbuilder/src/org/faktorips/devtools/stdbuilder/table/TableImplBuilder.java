@@ -318,6 +318,7 @@ public class TableImplBuilder extends DefaultJavaSourceFileBuilder {
         createHashKeyClasses();
     }
 
+    // TODO: auf List<> umstellen
     private void createAllRowsMethod(JavaCodeFragmentBuilder codeBuilder) throws CoreException {
         JavaCodeFragment methodBody = new JavaCodeFragment();
         methodBody.appendClassName(qualifiedTableRowName);
@@ -362,7 +363,7 @@ public class TableImplBuilder extends DefaultJavaSourceFileBuilder {
 
         codeBuilder.method(Modifier.PUBLIC | Modifier.STATIC | Modifier.FINAL, qualifiedClassName, "getInstance",
                 new String[] { "repository", "qualifiedTableName" }, new String[] { IRuntimeRepository.class.getName(),
-                        String.class.getName() }, methodBody, getLocalizedText(getIpsObject(), GET_INSTANCE_JAVADOC),
+                String.class.getName() }, methodBody, getLocalizedText(getIpsObject(), GET_INSTANCE_JAVADOC),
                 ANNOTATION_GENERATED);
     }
 
@@ -483,7 +484,7 @@ public class TableImplBuilder extends DefaultJavaSourceFileBuilder {
     }
 
     private JavaCodeFragment buildAddKeyFragment(String combinedKeyName, String keyClassName, String[] keyItems)
-            throws CoreException {
+    throws CoreException {
         JavaCodeFragment methodBody = new JavaCodeFragment();
         methodBody.append(StringUtils.uncapitalize(combinedKeyName));
         methodBody.append("Map.put(new ");
@@ -590,8 +591,8 @@ public class TableImplBuilder extends DefaultJavaSourceFileBuilder {
                     } else {
                         String paramName = range == null ? rangeParameterNames[j] : range.getColumnRangeType()
                                 .isOneColumnFrom() ? range.getFromColumn() : range.getToColumn();
-                        getMapSecondParameter.add("row.get" + StringUtils.capitalize(paramName) + "()");
-                        getMapThirdParameter.add(null);
+                                getMapSecondParameter.add("row.get" + StringUtils.capitalize(paramName) + "()");
+                                getMapThirdParameter.add(null);
                     }
                 }
                 for (int j = 1; j < getMapFirstParameter.size(); j++) {
@@ -753,7 +754,7 @@ public class TableImplBuilder extends DefaultJavaSourceFileBuilder {
     }
 
     private void createHashKeyClass(String hashKeyClassName, String[] keyNames, String[] keyItemTypes)
-            throws CoreException {
+    throws CoreException {
 
         TypeSection innerClassBody = createInnerClassSection();
         innerClassBody.getJavaDocForTypeBuilder().javaDoc(getLocalizedText(getIpsObject(), KEY_CLASS_JAVADOC),
@@ -785,7 +786,7 @@ public class TableImplBuilder extends DefaultJavaSourceFileBuilder {
     }
 
     private void createKeyClassCalHashCodeMethod(String[] keyNames, JavaCodeFragmentBuilder codeBuilder)
-            throws CoreException {
+    throws CoreException {
         JavaCodeFragment methodBody = new JavaCodeFragment();
         methodBody.appendln("int result = 17;");
         for (int i = 0; i < keyNames.length; i++) {
@@ -833,7 +834,7 @@ public class TableImplBuilder extends DefaultJavaSourceFileBuilder {
     }
 
     private void createKeyClassHashCodeMethod(String[] combineKeyNames, JavaCodeFragmentBuilder codeBuilder)
-            throws CoreException {
+    throws CoreException {
 
         JavaCodeFragment methodBody = new JavaCodeFragment();
         methodBody.append("return hashCode;");

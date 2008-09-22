@@ -395,11 +395,17 @@ public class GenChangeableAttribute extends GenAttribute {
         methodsBuilder.javaDoc(getJavaDocCommentForOverriddenMethod(), JavaSourceFileBuilder.ANNOTATION_GENERATED);
         generateSetterSignature(methodsBuilder);
         methodsBuilder.openBracket();
+        getGenPolicyCmptType().generateChangeListenerSupportBeforeChange(methodsBuilder,
+                ChangeEventType.MUTABLE_PROPERTY_CHANGED, getDatatype().getJavaClassName(), getMemberVarName(),
+                getParamNameForSetterMethod(),
+                getStaticConstantPropertyName());
         methodsBuilder.append("this.");
         methodsBuilder.append(getMemberVarName());
         methodsBuilder.appendln(" = " + getParamNameForSetterMethod() + ";");
-        getGenPolicyCmptType().generateChangeListenerSupport(methodsBuilder, ChangeEventType.MUTABLE_PROPERTY_CHANGED,
-                getMemberVarName(), null);
+        getGenPolicyCmptType().generateChangeListenerSupportAfterChange(methodsBuilder, ChangeEventType.MUTABLE_PROPERTY_CHANGED,
+                getDatatype().getJavaClassName(), getMemberVarName(),
+                getParamNameForSetterMethod(),
+                getStaticConstantPropertyName());
         methodsBuilder.closeBracket();
     }
 

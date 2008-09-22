@@ -22,8 +22,6 @@ import org.faktorips.devtools.core.builder.JavaSourceFileBuilder;
 import org.faktorips.devtools.core.model.ipsproject.IIpsArtefactBuilderSet;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.runtime.IModelObjectChangedEvent;
-import org.faktorips.runtime.internal.AbstractConfigurableModelObject;
-import org.faktorips.runtime.internal.AbstractModelObject;
 import org.faktorips.runtime.internal.MethodNames;
 import org.faktorips.runtime.internal.ModelObjectChangedEvent;
 import org.faktorips.util.LocalizedStringsSet;
@@ -42,12 +40,26 @@ IChangeListenerSupportBuilder {
     }
 
     /**
+     * 
      * {@inheritDoc}
      */
-    public void generateChangeListenerSupport(JavaCodeFragmentBuilder methodsBuilder,
+    public void generateChangeListenerSupportBeforeChange(JavaCodeFragmentBuilder methodsBuilder,
             ChangeEventType eventType,
+            String fieldType,
             String fieldName,
-            String paramName) {
+            String paramName,
+            String fieldNameConstant) {
+        // nothing to do
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public void generateChangeListenerSupportAfterChange(JavaCodeFragmentBuilder methodsBuilder,
+            ChangeEventType eventType,
+            String fieldType,
+            String fieldName,
+            String paramName, String fieldNameConstant) {
         methodsBuilder.appendln("if (" + MethodNames.EXISTS_CHANGE_LISTENER_TO_BE_INFORMED + "()) {");
         methodsBuilder.append(MethodNames.NOTIFIY_CHANGE_LISTENERS + "(new ");
         methodsBuilder.appendClassName(ModelObjectChangedEvent.class);
@@ -57,12 +69,22 @@ IChangeListenerSupportBuilder {
         methodsBuilder.append(eventType.getName());
         methodsBuilder.append(", ");
         methodsBuilder.appendQuoted(fieldName);
-        if (paramName != null) {
+        if (paramName != null && !eventType.equals(ChangeEventType.MUTABLE_PROPERTY_CHANGED)) {
             methodsBuilder.append(", ");
             methodsBuilder.append(paramName);
         }
         methodsBuilder.appendln("));");
         methodsBuilder.appendln("}");
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public void generateChangeListenerMethods(JavaCodeFragmentBuilder methodBuilder,
+            String parentModelObjectName,
+            boolean generateParentNotification) {
+        generateMethodNotifyChangeListeners(methodBuilder, parentModelObjectName);
+        generateMethodExistsChangeListenerToBeInformed(methodBuilder, parentModelObjectName);
     }
 
     /**
@@ -87,24 +109,60 @@ IChangeListenerSupportBuilder {
         methodBuilder.methodEnd();
     }
 
+    /**
+     * 
+     * {@inheritDoc}
+     */
     protected String generate() throws CoreException {
         return null; // nothing to do as we don't build our own classes.
     }
 
+    /**
+     * 
+     * {@inheritDoc}
+     */
     public void beforeBuildProcess(IIpsProject project, int buildKind) throws CoreException {
         super.beforeBuildProcess(project, buildKind);
         // TODO generate common base classes
     }
 
-    public String getSuperclass(boolean isConfigurableByProductCmptType) {
-        if (isConfigurableByProductCmptType) {
-            // TODO replace with generated superclasses
-            return AbstractConfigurableModelObject.class.getName();
-        } else {
-            return AbstractModelObject.class.getName();
-        }
+
+    /**
+     * <pre>
+     * protected boolean existsChangeListenerToBeInformed() {
+     *     if (super.existsChangeListenerToBeInformed()) {
+     *         return true;
+     *     }
+     *     if (parentModelObject == null) {
+     *         return false;
+     *     }
+     *     return parentModelObject.existsChangeListenerToBeInformed();
+     * }
+     * </pre>
+     */
+    private void generateMethodExistsChangeListenerToBeInformed(JavaCodeFragmentBuilder methodBuilder,
+            String parentModelObjectName) {
+        methodBuilder.javaDoc(getJavaDocCommentForOverriddenMethod(), ANNOTATION_GENERATED);
+        methodBuilder.methodBegin(Modifier.PUBLIC, Boolean.TYPE, MethodNames.EXISTS_CHANGE_LISTENER_TO_BE_INFORMED,
+                new String[] {}, new Class[] {});
+        methodBuilder.appendln("if (super." + MethodNames.EXISTS_CHANGE_LISTENER_TO_BE_INFORMED + "()) {");
+        methodBuilder.appendln("return true;");
+        methodBuilder.appendln("}");
+        methodBuilder.appendln("if (" + parentModelObjectName + "==null) {");
+        methodBuilder.appendln("return false;");
+        methodBuilder.appendln("}");
+        methodBuilder.appendln("return " + parentModelObjectName + "."
+                + MethodNames.EXISTS_CHANGE_LISTENER_TO_BE_INFORMED + "();");
+        methodBuilder.methodEnd();
     }
 
+    public void generateChangeListenerConstants(JavaCodeFragmentBuilder builder) {
+        // nothing to do
+    }
 
+    public String getNotificationSupportInterfaceName() {
+        // TODO Auto-generated method stub
+        return null;
+    }
 
 }

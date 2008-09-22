@@ -214,14 +214,28 @@ public class GenPolicyCmptType extends GenType {
         return "initialize";
     }
 
-    public void generateChangeListenerSupport(JavaCodeFragmentBuilder methodsBuilder,
+    public void generateChangeListenerSupportBeforeChange(JavaCodeFragmentBuilder methodsBuilder,
             ChangeEventType eventType,
+            String fieldType,
             String fieldName,
-            String paramName) {
+            String paramName,
+            String fieldNameConstant) {
         if (isGenerateChangeListenerSupport()) {
-            getBuilderSet().getChangeListenerSupportBuilder().generateChangeListenerSupport(methodsBuilder,
+            getBuilderSet().getChangeListenerSupportBuilder().generateChangeListenerSupportBeforeChange(methodsBuilder,
+                    eventType, fieldType, fieldName, paramName, fieldNameConstant);
+        }
+    }
+
+    public void generateChangeListenerSupportAfterChange(JavaCodeFragmentBuilder methodsBuilder,
+            ChangeEventType eventType,
+            String fieldType,
+            String fieldName,
+            String paramName,
+            String fieldNameConstant) {
+        if (isGenerateChangeListenerSupport()) {
+            getBuilderSet().getChangeListenerSupportBuilder().generateChangeListenerSupportAfterChange(methodsBuilder,
                     eventType,
-                    fieldName, paramName);
+                    fieldType, fieldName, paramName, fieldNameConstant);
         }
     }
 

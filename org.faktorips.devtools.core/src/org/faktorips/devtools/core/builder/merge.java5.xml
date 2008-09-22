@@ -24,7 +24,7 @@
     	This rule doesn't work. The interfaces are not added but overriden. A look in the source code
     	suggests a false implementation.
     -->
-    <merge:pull sourceMarkup="^gen$" sourceGet="Type/getSuperInterfaces" targetPut="Type/addSuperInterface"/>
+    <merge:pull sourceMarkup="^gen$" sourceGet="Type/getSuperInterfaces" targetPut="Type/setSuperInterfaces"/>
 
     <!-- 
         Pull rules for JMerge. The following configuration forces JMerge to look for the "generated" meta-attribute

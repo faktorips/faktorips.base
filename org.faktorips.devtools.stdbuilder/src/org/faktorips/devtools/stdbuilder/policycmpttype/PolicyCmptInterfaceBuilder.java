@@ -27,6 +27,7 @@ import org.faktorips.devtools.core.model.ipsproject.IIpsArtefactBuilderSet;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAssociation;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeAttribute;
+import org.faktorips.devtools.stdbuilder.StandardBuilderSet;
 import org.faktorips.runtime.IConfigurableModelObject;
 import org.faktorips.runtime.ICopySupport;
 import org.faktorips.runtime.IDeltaSupport;
@@ -94,10 +95,18 @@ public class PolicyCmptInterfaceBuilder extends BasePolicyCmptTypeBuilder {
             if (isGenerateVisitorSupport()) {
                 interfaces.add(IVisitorSupport.class.getName());
             }
+            if (isGenerateChangeListenerSupport()) {
+                String notificationSupportInterfaceName = ((StandardBuilderSet)getBuilderSet())
+                        .getChangeListenerSupportBuilder().getNotificationSupportInterfaceName();
+                if (notificationSupportInterfaceName != null) {
+                    interfaces.add(notificationSupportInterfaceName);
+                }
+            }
         }
         if (isFirstDependantTypeInHierarchy(type)) {
             interfaces.add(IDependantObject.class.getName());
         }
+
         return (String[])interfaces.toArray(new String[interfaces.size()]);
     }
 

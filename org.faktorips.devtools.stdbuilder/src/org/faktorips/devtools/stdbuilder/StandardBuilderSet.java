@@ -39,7 +39,7 @@ import org.faktorips.devtools.core.model.tablestructure.ITableStructure;
 import org.faktorips.devtools.core.model.type.IAttribute;
 import org.faktorips.devtools.core.model.type.IParameter;
 import org.faktorips.devtools.core.model.type.IType;
-import org.faktorips.devtools.stdbuilder.changelistener.ClassicIpsChangeListenerSupportBuilder;
+import org.faktorips.devtools.stdbuilder.changelistener.BeanChangeListenerSupportBuilder;
 import org.faktorips.devtools.stdbuilder.changelistener.IChangeListenerSupportBuilder;
 import org.faktorips.devtools.stdbuilder.enums.EnumClassesBuilder;
 import org.faktorips.devtools.stdbuilder.enums.EnumTypeInterfaceBuilder;
@@ -389,7 +389,7 @@ public class StandardBuilderSet extends DefaultBuilderSet {
         tocFileBuilder.setFormulaTestBuilder(formulaTestBuilder);
 
         // change listener support builder
-        changeListenerSupportBuilder = new ClassicIpsChangeListenerSupportBuilder(this, KIND_POLICY_CMPT_IMPL);
+        changeListenerSupportBuilder = new BeanChangeListenerSupportBuilder(this);
 
         if (ComplianceCheck.isComplianceLevelAtLeast5(getIpsProject())) {
             IIpsArtefactBuilder policyModelTypeBuilder = new ModelTypeXmlBuilder(IpsObjectType.POLICY_CMPT_TYPE, this,
@@ -402,15 +402,14 @@ public class StandardBuilderSet extends DefaultBuilderSet {
                     policyCmptImplClassBuilder, policyCmptInterfaceBuilder, productCmptGenerationImplBuilder,
                     tableContentCopyBuilder, productCmptContentCopyBuilder, testCaseTypeClassBuilder, testCaseBuilder,
                     formulaTestBuilder, enumClassesBuilder, enumTypeInterfaceBuilder, tocFileBuilder,
-                    policyModelTypeBuilder, productModelTypeBuilder, changeListenerSupportBuilder };
+                    policyModelTypeBuilder, productModelTypeBuilder };
         } else {
 
             return new IIpsArtefactBuilder[] { tableImplBuilder, tableRowBuilder, productCmptGenInterfaceBuilder,
                     productCmptGenImplClassBuilder, productCmptInterfaceBuilder, productCmptImplClassBuilder,
                     policyCmptImplClassBuilder, policyCmptInterfaceBuilder, productCmptGenerationImplBuilder,
                     tableContentCopyBuilder, productCmptContentCopyBuilder, testCaseTypeClassBuilder, testCaseBuilder,
-                    formulaTestBuilder, enumClassesBuilder, enumTypeInterfaceBuilder, tocFileBuilder,
-                    changeListenerSupportBuilder };
+                    formulaTestBuilder, enumClassesBuilder, enumTypeInterfaceBuilder, tocFileBuilder };
         }
     }
 

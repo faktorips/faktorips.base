@@ -58,6 +58,8 @@ public abstract class GenAssociation extends GenPolicyCmptTypePart {
 
     protected String fieldName;
 
+    protected String staticConstantAssociationName;
+
     public GenAssociation(GenPolicyCmptType genPolicyCmptType, IPolicyCmptTypeAssociation association) throws CoreException {
         super(genPolicyCmptType, association, LOCALIZED_STRINGS);
         this.association = association;
@@ -66,6 +68,7 @@ public abstract class GenAssociation extends GenPolicyCmptTypePart {
         targetInterfaceName = GenType.getQualifiedName(target, genPolicyCmptType.getBuilderSet(), true);
         targetImplClassName = GenType.getQualifiedName(target, genPolicyCmptType.getBuilderSet(), false);
         fieldName = computeFieldName();
+        staticConstantAssociationName = getLocalizedText("FIELD_ASSOCIATION_NAME", StringUtils.upperCase(fieldName));
     }
 
     /**
@@ -262,10 +265,43 @@ public abstract class GenAssociation extends GenPolicyCmptTypePart {
         return code;
     }
 
-    protected void generateChangeListenerSupport(JavaCodeFragmentBuilder methodsBuilder,
+    protected void generateChangeListenerSupportBeforeChange(JavaCodeFragmentBuilder methodsBuilder,
             ChangeEventType eventType,
-            String paramName) {
-        getGenPolicyCmptType().generateChangeListenerSupport(methodsBuilder, eventType, fieldName, paramName);
+            String paramName) throws CoreException {
+        getGenPolicyCmptType().generateChangeListenerSupportBeforeChange(methodsBuilder, eventType,
+                getQualifiedClassName(target, true), fieldName,
+                paramName, getStaticConstantAssociationName());
+    }
+
+    protected void generateChangeListenerSupportAfterChange(JavaCodeFragmentBuilder methodsBuilder,
+            ChangeEventType eventType,
+            String paramName) throws CoreException {
+        getGenPolicyCmptType().generateChangeListenerSupportAfterChange(methodsBuilder, eventType,
+                getQualifiedClassName(target, true), fieldName, paramName,
+                getStaticConstantAssociationName());
+    }
+
+    /**
+     * Code sample:
+     * 
+     * <pre>
+     * [Javadoc]
+     * public final static String PROPERTY_PREMIUM = &quot;premium&quot;;
+     * </pre>
+     */
+    protected void generateAssociationNameConstant(JavaCodeFragmentBuilder builder) throws CoreException {
+        appendLocalizedJavaDoc("FIELD_ASSOCIATION_NAME", fieldName, builder);
+        builder.append("public final static ");
+        builder.appendClassName(String.class);
+        builder.append(' ');
+        builder.append(getStaticConstantAssociationName());
+        builder.append(" = ");
+        builder.appendQuoted(fieldName);
+        builder.appendln(";");
+    }
+
+    public String getStaticConstantAssociationName() {
+        return staticConstantAssociationName;
     }
 
     /**
@@ -952,6 +988,7 @@ public abstract class GenAssociation extends GenPolicyCmptTypePart {
             if (!association.isDerivedUnion() && !association.getAssociationType().isCompositionDetailToMaster()) {
                 generateFieldGetMaxCardinalityFor(builder);
             }
+            generateAssociationNameConstant(builder);
         }
     }
 
