@@ -30,8 +30,8 @@ import org.apache.commons.lang.SystemUtils;
  * code is UnresolvedSymbol independent of the concrete symbol and locale.
  * <p>
  * In addition a message can provides access to the objects and their properties
- * the message relates to. E.g. if a message reads that "the relation's minimum
- * cardinality can't be greater than the maximum cardinality" than the relation's minimum and
+ * the message relates to. E.g. if a message reads that "the association's minimum
+ * cardinality can't be greater than the maximum cardinality" than the association's minimum and
  * maximum cardinality are invalid. This information can be used for example
  * to mark controls in the UI that show these properties.  
  * <p>
