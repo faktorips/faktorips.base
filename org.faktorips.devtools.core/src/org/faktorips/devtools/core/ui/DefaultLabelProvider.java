@@ -29,6 +29,7 @@ import org.faktorips.devtools.core.model.IIpsElement;
 import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
 import org.faktorips.devtools.core.model.ipsproject.IIpsPackageFragment;
+import org.faktorips.devtools.core.model.type.IAssociation;
 import org.faktorips.devtools.core.model.type.IAttribute;
 import org.faktorips.devtools.core.model.type.IMethod;
 import org.faktorips.devtools.core.model.type.IParameter;
@@ -119,21 +120,29 @@ public class DefaultLabelProvider extends LabelProvider {
                 return Messages.DefaultLabelProvider_labelDefaultPackage;
             }
         }
+        if (element instanceof IAttribute) {
+            IAttribute attribute = (IAttribute)element;
+            return getAttributeLabel(attribute);
+        }
+        if (element instanceof IAssociation) {
+            IAssociation association = (IAssociation)element;
+            return getAssociationLabel(association);
+        }
         if (element instanceof IMethod) {
             return getMethodLabel((IMethod)element);
         }
-        if (element instanceof IAttribute) {
-            IAttribute a = (IAttribute)element;
-            StringBuffer sb = new StringBuffer();
-            if (a.isDerived()) {
-                sb.append("/"); //$NON-NLS-1$
-            }
-            sb.append(a.getName());
-            sb.append(" : "); //$NON-NLS-1$
-            sb.append(a.getDatatype());
-            return sb.toString();
-        }
         return ipsElement.getName();
+    }
+
+    private String getAttributeLabel(IAttribute a) {
+        StringBuffer sb = new StringBuffer();
+        if (a.isDerived()) {
+            sb.append("/"); //$NON-NLS-1$
+        }
+        sb.append(a.getName());
+        sb.append(" : "); //$NON-NLS-1$
+        sb.append(a.getDatatype());
+        return sb.toString();
     }
     
     private String getMappedNameForIpsSrcFile(IIpsSrcFile file) {
@@ -149,6 +158,13 @@ public class DefaultLabelProvider extends LabelProvider {
         }
     }   
     
+    private String getAssociationLabel(IAssociation association) {
+        if (association.is1ToMany()) {
+            return association.getTargetRolePlural();
+        }
+        return association.getTargetRoleSingular();
+    }
+
     private String getMethodLabel(IMethod method) {
         StringBuffer buffer = new StringBuffer(method.getName());
         buffer.append('(');
@@ -199,7 +215,7 @@ public class DefaultLabelProvider extends LabelProvider {
         }
         return abstractAndOverloadedMethodImage;
     }
-
+    
     private static class AbstractPropertyImageDescriptor extends CompositeImageDescriptor {
 
         private final static Point DEFAULT_SIZE = new Point(16, 16);

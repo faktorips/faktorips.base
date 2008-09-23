@@ -30,24 +30,22 @@ public class AssociationsLabelProvider extends DefaultLabelProvider {
         if (!(element instanceof IAssociation)) {
             return super.getText(element);    
         }
-        IAssociation relation = (IAssociation)element;
-        String targetName = relation.getTarget();
+        IAssociation association = (IAssociation)element;
+        String targetName = association.getTarget();
         int pos = targetName.lastIndexOf('.');
         if (pos>0) {
             targetName = targetName.substring(pos+1);
         }
         
         String maxC;
-        if (relation.getMaxCardinality() == Integer.MAX_VALUE) {
+        if (association.getMaxCardinality() == Integer.MAX_VALUE) {
         	maxC = "*"; //$NON-NLS-1$
+        } else {
+        	maxC = "" + association.getMaxCardinality(); //$NON-NLS-1$
         }
-        else {
-        	maxC = ""+relation.getMaxCardinality(); //$NON-NLS-1$
-        }
-        
-        return relation.getTargetRoleSingular() +
-            " : " + targetName +  //$NON-NLS-1$
-        	" [" + relation.getMinCardinality() + //$NON-NLS-1$
+        String role = association.is1ToMany() ? association.getTargetRolePlural() : association.getTargetRoleSingular();
+        return role + " : " + targetName +  //$NON-NLS-1$
+        	" [" + association.getMinCardinality() + //$NON-NLS-1$
         	".." + maxC + "]"; //$NON-NLS-1$ //$NON-NLS-2$
     }
 }

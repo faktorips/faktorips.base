@@ -71,7 +71,7 @@ public class AssociationsSection extends SimpleIpsPartsSection {
      * {@inheritDoc}
 	 */
     protected IpsPartsComposite createIpsPartsComposite(Composite parent, UIToolkit toolkit) {
-        return new RelationsComposite((IPolicyCmptType)getIpsObject(), parent, toolkit);
+        return new AssociationsComposite((IPolicyCmptType)getIpsObject(), parent, toolkit);
     }
 
     /*
@@ -109,14 +109,14 @@ public class AssociationsSection extends SimpleIpsPartsSection {
     }
     
     /**
-     * A composite that shows a policy component's relations in a viewer and 
-     * allows to edit relations in a dialog, create new relations and delete relations.
+     * A composite that shows a policy component's associations in a viewer and 
+     * allows to edit associations in a dialog, create new associations and delete associations.
      */
-    private class RelationsComposite extends IpsPartsComposite {
+    private class AssociationsComposite extends IpsPartsComposite {
     	private Button wizardNewButton;
         private OpenTargetPcTypeInEditorAction openAction ;
         
-        RelationsComposite(IIpsObject pdObject, Composite parent,
+        AssociationsComposite(IIpsObject pdObject, Composite parent,
                 UIToolkit toolkit) {
         	// create default buttons without the new button, 
         	//   because the new button will be overridden with wizard functionality
