@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: FaktorIPS-DevToolsFl-Common
 Bundle-SymbolicName: org.faktorips.dtflcommon
-Bundle-Version: 2.1.0.ms2
+Bundle-Version: 2.1.0.rfinal
 Bundle-Vendor: FaktorZehn
 Bundle-Localization: plugin
 Require-Bundle: org.faktorips.util,
