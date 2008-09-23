@@ -37,7 +37,7 @@ public class Migration_2_1_0_ms2 extends AbstractIpsProjectMigrationOperation {
      * {@inheritDoc}
      */
     public String getDescription() {
-        return "Some bugs fixed."; //$NON-NLS-1$
+        return "The structure of the .ipsproject file has changed and must be converted. All other Faktor-IPS files remain unchanged."; //$NON-NLS-1$
     }
 
     /**
