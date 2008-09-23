@@ -141,7 +141,7 @@ public class GenAssociationTo1 extends GenAssociation {
             boolean generatesInterface) throws CoreException {
         super.generateMemberVariables(builder, ipsProject, generatesInterface);
         if (!isDerivedUnion() && !isCompositionDetailToMaster()) {
-            String comment = getLocalizedText("FIELD_RELATION_JAVADOC", association.getName());
+            String comment = getLocalizedText("FIELD_ASSOCIATION_JAVADOC", association.getName());
             builder.javaDoc(comment, JavaSourceFileBuilder.ANNOTATION_GENERATED);
             builder.varDeclaration(java.lang.reflect.Modifier.PRIVATE, targetImplClassName, fieldName,
                     new JavaCodeFragment("null"));

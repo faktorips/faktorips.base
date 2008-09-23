@@ -254,7 +254,7 @@ public class GenProdAssociationToMany extends GenProdAssociation {
      */
     private void generateFieldToManyAssociation(JavaCodeFragmentBuilder memberVarsBuilder) throws CoreException {
         String role = StringUtils.capitalize(association.getTargetRolePlural());
-        appendLocalizedJavaDoc("FIELD_TOMANY_RELATION", role, memberVarsBuilder);
+        appendLocalizedJavaDoc("FIELD_TOMANY_ASSOCIATION", role, memberVarsBuilder);
         if (isUseTypesafeCollections()) {
             String type = Map.class.getName() + "<" + String.class.getName() + ","
             + Java5ClassNames.ILink_QualifiedName + "<" + getQualifiedInterfaceClassNameForTarget() + ">>";

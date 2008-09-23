@@ -248,7 +248,7 @@ public class GenProdAssociationTo1 extends GenProdAssociation {
      */
     private void generateFieldTo1Association(JavaCodeFragmentBuilder memberVarsBuilder) throws CoreException {
         String role = StringUtils.capitalize(association.getTargetRoleSingular());
-        appendLocalizedJavaDoc("FIELD_TO1_RELATION", role, memberVarsBuilder);
+        appendLocalizedJavaDoc("FIELD_TO1_ASSOCIATION", role, memberVarsBuilder);
         memberVarsBuilder.varDeclaration(Modifier.PRIVATE,
                 isUseTypesafeCollections() ? Java5ClassNames.ILink_QualifiedName + "<"
                         + getQualifiedInterfaceClassNameForTarget() + ">" : String.class.getName(),

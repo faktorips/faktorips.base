@@ -186,7 +186,7 @@ public class GenAssociationToMany extends GenAssociation {
                 initialValueExpression.append(">");
             }
             initialValueExpression.append("()");
-            String comment = getLocalizedText("FIELD_RELATION_JAVADOC", association.getName());
+            String comment = getLocalizedText("FIELD_ASSOCIATION_JAVADOC", association.getName());
             builder.javaDoc(comment, JavaSourceFileBuilder.ANNOTATION_GENERATED);
             builder.varDeclaration(java.lang.reflect.Modifier.PRIVATE, List.class.getName()
                     + (isUseTypesafeCollections() ? "<" + targetInterfaceName + ">" : ""), fieldName,

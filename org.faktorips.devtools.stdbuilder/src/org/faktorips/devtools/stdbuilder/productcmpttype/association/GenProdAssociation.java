@@ -354,7 +354,7 @@ public abstract class GenProdAssociation extends GenProductCmptTypePart {
 
     String getPropertyNameToManyAssociation(IProductCmptTypeAssociation association) {
         String role = StringUtils.capitalize(association.getTargetRolePlural());
-        return getLocalizedText("PROPERTY_TOMANY_RELATION_NAME", role);
+        return getLocalizedText("PROPERTY_TOMANY_ASSOCIATION_NAME", role);
     }
 
     void generateSignatureDerivedUnionAssociation(JavaCodeFragmentBuilder methodsBuilder) throws CoreException {
@@ -367,7 +367,7 @@ public abstract class GenProdAssociation extends GenProductCmptTypePart {
 
     String getPropertyNameTo1Association() {
         String role = StringUtils.capitalize(association.getTargetRoleSingular());
-        return getLocalizedText("PROPERTY_TO1_RELATION_NAME", role);
+        return getLocalizedText("PROPERTY_TO1_ASSOCIATION_NAME", role);
     }
 
     /**
