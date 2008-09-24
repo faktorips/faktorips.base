@@ -609,7 +609,7 @@ public class IpsProject extends IpsElement implements IIpsProject {
 	private boolean isPackageFragmentRoot(IResource res) throws CoreException {
 		IIpsPackageFragmentRoot[] roots= getIpsPackageFragmentRoots();
 		for (int i = 0; i < roots.length; i++) {
-			if(roots[i].getCorrespondingResource().equals(res)){
+			if(res.equals(roots[i].getCorrespondingResource())){
 				return true;
 			}
 		}

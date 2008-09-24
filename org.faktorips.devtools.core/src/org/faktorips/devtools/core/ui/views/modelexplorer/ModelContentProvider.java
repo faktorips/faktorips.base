@@ -7,6 +7,7 @@ import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
+import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IAdaptable;
 import org.eclipse.core.runtime.IPath;
@@ -176,7 +177,7 @@ public class ModelContentProvider implements ITreeContentProvider {
      * in the ips object path, otherwise return <code>false</code>.
      */
     private boolean isIpsArchiveFromIpsObjectPath(IProject project, IResource resource) {
-        if (! (resource instanceof IFile)){
+    	if (! (resource instanceof IFile)){
             return false;
         }
         try {
@@ -185,7 +186,9 @@ public class ModelContentProvider implements ITreeContentProvider {
                 IIpsProject ipsProject = IpsPlugin.getDefault().getIpsModel().getIpsProject(project.getName());
                 IIpsArchiveEntry[] archiveEntries = ipsProject.getIpsObjectPath().getArchiveEntries();
                 for (int i = 0; i < archiveEntries.length; i++) {
-                    if (archiveEntries[i].getArchiveFile().equals(resource)){
+                    IPath archivePath = archiveEntries[i].getArchivePath();
+                    IFile archiveFile = ResourcesPlugin.getWorkspace().getRoot().getFile(archivePath);
+					if (resource.equals(archiveFile)){
                         return true;
                     }
                 }

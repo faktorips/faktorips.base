@@ -731,7 +731,7 @@ public class IpsProjectTest extends AbstractIpsPluginTest {
         createArchive(archiveProject, archiveFile);
         
         IIpsObjectPath path = ipsProject.getIpsObjectPath();
-        path.newArchiveEntry(archiveFile);
+        path.newArchiveEntry(archiveFile.getLocation());
         ipsProject.setIpsObjectPath(path);
         
         IIpsSrcFile foundFile = ipsProject.findIpsSrcFile(type.getQualifiedNameType());
@@ -806,10 +806,10 @@ public class IpsProjectTest extends AbstractIpsPluginTest {
     public void testFindProductCmptsWithIpsArchive() throws Exception{
         IFile archiveFile = ipsProject.getProject().getFile("test.ipsar");
         createArchive(ipsProject, archiveFile);
-        new IpsArchive(archiveFile);
+        new IpsArchive(ipsProject, archiveFile.getLocation());
         
         IIpsObjectPath path = ipsProject.getIpsObjectPath();
-        path.newArchiveEntry(archiveFile);
+        path.newArchiveEntry(archiveFile.getLocation());
         ipsProject.setIpsObjectPath(path);
         
         ipsProject.findAllProductCmpts(null, true);
@@ -979,7 +979,7 @@ public class IpsProjectTest extends AbstractIpsPluginTest {
         createArchive(archiveProject, archiveFile);
         
         IIpsObjectPath path = ipsProject.getIpsObjectPath();
-        path.newArchiveEntry(archiveFile);
+        path.newArchiveEntry(archiveFile.getLocation());
         ipsProject.setIpsObjectPath(path);
         IPolicyCmptType basePolicy = newPolicyCmptType(ipsProject, "basePolicy");
         

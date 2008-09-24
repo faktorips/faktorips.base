@@ -25,7 +25,6 @@ import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.CoreException;
 import org.faktorips.devtools.core.AbstractIpsPluginTest;
-import org.faktorips.devtools.core.model.ipsobject.IIpsObject;
 import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
 import org.faktorips.devtools.core.model.ipsobject.QualifiedNameType;
@@ -63,13 +62,13 @@ public class ArchiveIpsPackageFragmentRootTest extends AbstractIpsPluginTest {
         createArchive(archiveProject, archiveFile);
 
         IIpsObjectPath path = project.getIpsObjectPath();
-        entry = (IpsArchiveEntry)path.newArchiveEntry(archiveFile);
+        entry = (IpsArchiveEntry)path.newArchiveEntry(archiveFile.getLocation());
         project.setIpsObjectPath(path);
         root = (ArchiveIpsPackageFragmentRoot)project.getIpsPackageFragmentRoots()[1];
     }
 
     public void testGetIpsObjectPathEntry() throws CoreException {
-        assertEquals(entry.getArchiveFile(), root.getIpsArchive().getArchiveFile());
+        assertEquals(entry.getArchivePath(), root.getIpsArchive().getArchivePath());
     }
 
     public void testGetParent() {

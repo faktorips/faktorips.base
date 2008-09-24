@@ -17,7 +17,9 @@
 
 package org.faktorips.devtools.core.ui.preferencepages;
 
+import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IFolder;
+import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.jface.viewers.LabelProvider;
 import org.eclipse.swt.graphics.Image;
@@ -48,8 +50,13 @@ public class IpsObjectPathLabelProvider extends LabelProvider {
         }
         else if (element instanceof IIpsArchiveEntry) {
             IIpsArchiveEntry entry = (IIpsArchiveEntry) element;
-            text = entry.getArchiveFile().getName() + " - " +  //$NON-NLS-1$
-                   entry.getIpsProject().getName() + IPath.SEPARATOR + entry.getArchiveFile().getProjectRelativePath().toOSString();
+            IPath archivePath = entry.getArchivePath();
+            IFile archiveFileInWorkspace = ResourcesPlugin.getWorkspace().getRoot().getFileForLocation(archivePath);
+			boolean isExternal = (archiveFileInWorkspace == null);
+            
+			text = archivePath.lastSegment() + " - " + 
+                (isExternal ? archivePath.toOSString()
+                		    : archiveFileInWorkspace.getFullPath().toOSString());
         }
         else if (element instanceof IIpsObjectPathEntryAttribute) {
             IIpsObjectPathEntryAttribute att = (IIpsObjectPathEntryAttribute) element;

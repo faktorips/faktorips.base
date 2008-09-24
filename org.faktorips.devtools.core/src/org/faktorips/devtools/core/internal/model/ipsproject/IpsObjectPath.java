@@ -26,9 +26,9 @@ import java.util.Map;
 import java.util.Set;
 
 import org.apache.commons.lang.SystemUtils;
-import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.osgi.util.NLS;
 import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
@@ -244,9 +244,9 @@ public class IpsObjectPath implements IIpsObjectPath {
     /**
      * {@inheritDoc}
      */
-    public IIpsArchiveEntry newArchiveEntry(IFile archiveFile) throws CoreException {
+    public IIpsArchiveEntry newArchiveEntry(IPath archivePath) throws CoreException {
         IIpsArchiveEntry newEntry = new IpsArchiveEntry(this);
-        newEntry.setArchiveFile(archiveFile);
+        newEntry.setArchivePath(ipsProject, archivePath);
         IIpsObjectPathEntry[] newEntries = new IIpsObjectPathEntry[entries.length+1];
         System.arraycopy(entries, 0, newEntries, 0, entries.length);
         newEntries[newEntries.length-1] = newEntry;

@@ -57,7 +57,7 @@ public class CreateIpsArchiveOperationTest extends AbstractIpsPluginTest {
 
         assertTrue(archiveFile.exists());
         
-        IIpsArchive archive = new IpsArchive(archiveFile);
+        IIpsArchive archive = new IpsArchive(project, archiveFile.getLocation());
         String[] packs = archive.getNonEmptyPackages();
         assertEquals(2, packs.length);
         assertEquals("mycompany.home", packs[0]);

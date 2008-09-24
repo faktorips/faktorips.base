@@ -17,6 +17,7 @@
 
 package org.faktorips.devtools.core.internal.model.ipsproject;
 
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
@@ -37,6 +38,8 @@ import java.util.jar.JarFile;
 
 import org.apache.commons.lang.StringUtils;
 import org.eclipse.core.resources.IFile;
+import org.eclipse.core.resources.IWorkspaceRoot;
+import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.faktorips.devtools.core.IpsStatus;
@@ -45,6 +48,7 @@ import org.faktorips.devtools.core.model.ipsobject.QualifiedNameType;
 import org.faktorips.devtools.core.model.ipsproject.IIpsArchive;
 import org.faktorips.devtools.core.model.ipsproject.IIpsPackageFragment;
 import org.faktorips.devtools.core.model.ipsproject.IIpsPackageFragmentRoot;
+import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.util.StreamUtil;
 
 /**
@@ -60,7 +64,7 @@ public class IpsArchive implements IIpsArchive {
 
     private final static int IPSOBJECT_FOLDER_NAME_LENGTH = IIpsArchive.IPSOBJECTS_FOLDER.length(); 
     
-    private IFile archiveFile;
+    private IPath archivePath;
     private long modificationStamp;
     
     IIpsPackageFragmentRoot root;
@@ -71,23 +75,34 @@ public class IpsArchive implements IIpsArchive {
     // map with qNameTypes as keys and IpsObjectProperties as values.
     private LinkedHashMap qNameTypes = null;
     
-    public IpsArchive(IFile file) {
-        this.archiveFile = file;
-        root = new ArchiveIpsPackageFragmentRoot(file);
+    public IpsArchive(IIpsProject ipsProject, IPath path) {
+        this.archivePath = path;
+        root = new ArchiveIpsPackageFragmentRoot(ipsProject, archivePath);
     }
 
     /**
      * {@inheritDoc}
      */
-    public IFile getArchiveFile() {
-        return archiveFile;
+    public IPath getArchivePath() {
+        return archivePath;
     }
     
     /**
      * {@inheritDoc}
      */
     public boolean exists() {
-        return archiveFile!=null && archiveFile.exists();
+    	if (archivePath == null) {
+    		return false;
+    	}
+    	IFile archiveFileInWorkspace = ResourcesPlugin.getWorkspace().getRoot().getFile(archivePath);
+
+    	// check existence within workspace
+    	boolean fileExists = (archiveFileInWorkspace != null) && archiveFileInWorkspace.exists(); 
+		
+    	// check existence in local filesystem if file is not within workspace
+    	fileExists = fileExists || archivePath.toFile().exists();
+		
+		return fileExists;
     }
     
     /**
@@ -271,7 +286,8 @@ public class IpsArchive implements IIpsArchive {
         }
         JarFile archive;
         try {
-            archive = new JarFile(archiveFile.getLocation().toFile());
+        	File archiveFile = getFileFromPath();
+            archive = new JarFile(archiveFile);
         } catch (IOException e) {
             throw new CoreException(new IpsStatus("Error opening jar for " + this, e)); //$NON-NLS-1$
         }
@@ -296,33 +312,36 @@ public class IpsArchive implements IIpsArchive {
     
     private void readArchiveContentIfNecessary() throws CoreException {
         synchronized (this) {
-            if (archiveFile==null) {
+            if (archivePath==null) {
                 return;
             }
-            if (packs==null) {
+            if (packs==null || qNameTypes == null) {
                 readArchiveContent();
             }
-            if ((archiveFile.getModificationStamp()!=modificationStamp)) {
+            if ((archivePath.toFile().lastModified()!=modificationStamp)) {
                 readArchiveContent();
             }
         }
     }
     
     private void readArchiveContent() throws CoreException {
-        if (!archiveFile.exists()) {
-            throw new CoreException(new IpsStatus("IpsArchive file " + archiveFile + " does not exists!")); //$NON-NLS-1$ //$NON-NLS-2$
+        if (!exists()) {
+            throw new CoreException(new IpsStatus("IpsArchive file " + archivePath + " does not exist!")); //$NON-NLS-1$ //$NON-NLS-2$
         }
         if (IpsModel.TRACE_MODEL_MANAGEMENT) {
             System.out.println("Reading archive content from disk: " + this); //$NON-NLS-1$
         }
         packs = new HashMap(200);
         SortedMap qntTemp = new TreeMap();
-        modificationStamp = archiveFile.getModificationStamp();
+        
+        File file = getFileFromPath();        
+        
+		modificationStamp = file.lastModified();
         JarFile jar;
         try {
-            jar = new JarFile(archiveFile.getLocation().toFile());
+            jar = new JarFile(file);
         } catch (IOException e) {
-            throw new CoreException(new IpsStatus("Error reading ips archive " + archiveFile, e)); //$NON-NLS-1$
+            throw new CoreException(new IpsStatus("Error reading ips archive " + archivePath, e)); //$NON-NLS-1$
         }
         Properties ipsObjectProperties = readIpsObjectsProperties(jar);
         for (Enumeration e=jar.entries(); e.hasMoreElements(); ) {
@@ -349,9 +368,22 @@ public class IpsArchive implements IIpsArchive {
         try {
             jar.close();
         } catch (IOException e) {
-            throw new CoreException(new IpsStatus("Error closing ips archive " + archiveFile)); //$NON-NLS-1$
+            throw new CoreException(new IpsStatus("Error closing ips archive " + archivePath)); //$NON-NLS-1$
         }
     }
+
+	private File getFileFromPath() {
+		// is there an easier way to convert to java.io.File?
+        // IPath.toFile() fails for workspace absolute paths like "/Project/lib/archive.jar", so we must
+        // convert to file system absolute path, e.g. "/home/x/workspace/Project/lib/archive.jar" using the following construct
+        IWorkspaceRoot workspaceRoot = ResourcesPlugin.getWorkspace().getRoot();
+        IPath location = workspaceRoot.getFile(archivePath).getLocation(); 
+        if (location == null) {
+        	location = archivePath;
+        }
+        
+		return location.toFile();
+	}
     
     private Properties readIpsObjectsProperties(JarFile archive) throws CoreException {
         JarEntry entry = archive.getJarEntry(IIpsArchive.JAVA_MAPPING_ENTRY_NAME);
@@ -384,7 +416,7 @@ public class IpsArchive implements IIpsArchive {
     }
     
     public String toString() {
-        return "Archive " + archiveFile; //$NON-NLS-1$
+        return "Archive " + archivePath; //$NON-NLS-1$
     }
     
     private List getParentPackagesIncludingSelf(String pack) {

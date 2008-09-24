@@ -48,7 +48,7 @@ public class IpsObjectPathEntryTest extends AbstractIpsPluginTest {
         IIpsObjectPathEntry entry0 = path.getEntries()[0];
         assertEquals(0, entry0.getIndex());
         
-        IIpsObjectPathEntry entry1 = path.newArchiveEntry(ipsProject.getProject().getFile("someArchive.jar"));
+        IIpsObjectPathEntry entry1 = path.newArchiveEntry(ipsProject.getProject().getFile("someArchive.jar").getFullPath());
         assertEquals(0, entry0.getIndex());
         assertEquals(1, entry1.getIndex());
     }

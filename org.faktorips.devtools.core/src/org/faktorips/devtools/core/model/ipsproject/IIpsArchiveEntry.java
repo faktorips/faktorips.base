@@ -17,7 +17,7 @@
 
 package org.faktorips.devtools.core.model.ipsproject;
 
-import org.eclipse.core.resources.IFile;
+import org.eclipse.core.runtime.IPath;
 
 /**
  * An object path entry for an ips archive.
@@ -34,14 +34,14 @@ public interface IIpsArchiveEntry extends IIpsObjectPathEntry {
     public IIpsArchive getIpsArchive();
     
     /**
-     * Returns the archive file. Note that the file might not exist.
+     * Returns the archive path. Note that the underlying file might not exist and the file might exists outside the workspace.
      */
-    public IFile getArchiveFile();
+    public IPath getArchivePath();
     
     /**
-     * Sets the new archive file.
+     * Sets the new archive path.
      */
-    public void setArchiveFile(IFile archiveFile);
+    public void setArchivePath(IIpsProject ipsProject, IPath archiveFile);
     
     
 }

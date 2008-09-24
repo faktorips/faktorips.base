@@ -20,7 +20,6 @@ package org.faktorips.devtools.core.model.ipsproject;
 import java.io.InputStream;
 import java.util.Set;
 
-import org.eclipse.core.resources.IFile;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.faktorips.devtools.core.model.ipsobject.QualifiedNameType;
@@ -50,9 +49,10 @@ public interface IIpsArchive {
     public final static String PROPERTY_POSTFIX_EXTENSION_PACKAGE = "extensionPackage"; //$NON-NLS-1$
 
     /**
-     * Returns the underlying file. 
+     * Returns the path to the underlying file. Note that the file might exists outside the workspace or might not 
+     * exists at all.
      */
-    public IFile getArchiveFile();
+    public IPath getArchivePath();
 
     /**
      * Returns <code>true</code> if the archive exists, otherwise <code>false</code>.

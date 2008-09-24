@@ -28,6 +28,7 @@ import org.eclipse.core.resources.IResourceChangeEvent;
 import org.eclipse.core.resources.IResourceChangeListener;
 import org.eclipse.core.resources.IncrementalProjectBuilder;
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.core.runtime.Path;
 import org.faktorips.devtools.core.AbstractIpsPluginTest;
@@ -553,15 +554,16 @@ public class IpsBuilderTest extends AbstractIpsPluginTest {
     }
 
     public void testIsFullBuildTriggeredAfterChangesToIpsArchiveOnObjectPath() throws CoreException {
-        IFile archive = ipsProject.getProject().getFile("archive.ipsar");
+        IFile archiveFile = ipsProject.getProject().getFile("archive.ipsar");
+        IPath archivePath = archiveFile.getLocation();
         IIpsProject project2 = newIpsProject("Project2");
-        CreateIpsArchiveOperation op = new CreateIpsArchiveOperation(project2, archive.getLocation().toFile());
+        CreateIpsArchiveOperation op = new CreateIpsArchiveOperation(project2, archiveFile.getLocation().toFile());
         op.run(null);
-        archive.refreshLocal(1, null);
-        assertTrue(archive.exists());
+        archiveFile.refreshLocal(1, null);
+        assertTrue(archiveFile.exists());
         
         IIpsObjectPath path = ipsProject.getIpsObjectPath();
-        path.newArchiveEntry(archive);
+        path.newArchiveEntry(archivePath);
         ipsProject.setIpsObjectPath(path);
         
         AssertThatFullBuildIsTriggeredBuilder builder = new AssertThatFullBuildIsTriggeredBuilder();
@@ -572,7 +574,7 @@ public class IpsBuilderTest extends AbstractIpsPluginTest {
         
         builder.buildKind = -1;
         builder.called = false;
-        archive.touch(null);
+        archiveFile.touch(null);
         ipsProject.getProject().build(IncrementalProjectBuilder.INCREMENTAL_BUILD, null);
         assertTrue(builder.called);
         assertEquals(IncrementalProjectBuilder.FULL_BUILD, builder.buildKind);
@@ -883,9 +885,10 @@ public class IpsBuilderTest extends AbstractIpsPluginTest {
 
         IIpsProject project2 = newIpsProject("TestProject2");
         IFile archiveFile2 = project2.getProject().getFile(archiveFile.getLocation());
-
+        IPath archivePath2 = archiveFile2.getLocation();
+        
         IpsArchiveEntry archiveEntry = new IpsArchiveEntry((IpsObjectPath)project2.getIpsObjectPath());
-        archiveEntry.setArchiveFile(archiveFile2);
+        archiveEntry.setArchivePath(project2, archivePath2);
         IIpsObjectPathEntry[] entries = project2.getIpsObjectPath().getEntries();
         IIpsObjectPathEntry[] newEntries = new IIpsObjectPathEntry[entries.length + 1];
         System.arraycopy(entries, 0, newEntries, 0, entries.length);

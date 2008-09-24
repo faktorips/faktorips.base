@@ -24,6 +24,7 @@ import java.util.Set;
 
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.IPath;
 import org.faktorips.devtools.core.AbstractIpsPluginTest;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObject;
 import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
@@ -49,6 +50,7 @@ public class IpsArchiveEntryTest extends AbstractIpsPluginTest {
     private IIpsProject project;
     private IpsArchiveEntry entry;
     private IFile archiveFile;
+	private IPath archivePath;
     
     private QualifiedNameType qntMotorPolicy;
     private QualifiedNameType qntMotorCollision;
@@ -65,11 +67,12 @@ public class IpsArchiveEntryTest extends AbstractIpsPluginTest {
         
         project = newIpsProject();
         archiveFile = project.getProject().getFile("test.ipsar");
+        archivePath = archiveFile.getLocation();
         
         createArchive(archiveProject, archiveFile);
         
         IIpsObjectPath path = project.getIpsObjectPath();
-        entry = (IpsArchiveEntry)path.newArchiveEntry(archiveFile);
+        entry = (IpsArchiveEntry)path.newArchiveEntry(archivePath);
         project.setIpsObjectPath(path);
     }
     
@@ -118,16 +121,17 @@ public class IpsArchiveEntryTest extends AbstractIpsPluginTest {
         Element docEl = getTestDocument().getDocumentElement();
         entry.initFromXml(XmlUtil.getElement(docEl, 0), project.getProject());
         IFile archiveFile = project.getProject().getFolder("lib").getFile("test.ipsar");
-        assertEquals(archiveFile, entry.getArchiveFile());
+        IPath archivePath = archiveFile.getFullPath();
+        assertEquals(archivePath, entry.getArchivePath());
         
         entry.initFromXml(XmlUtil.getElement(docEl, 1), project.getProject());
-        assertNull(entry.getArchiveFile());
+        assertNull(entry.getArchivePath());
     }
     
     public void testGetIpsArchive() throws CoreException {
         IIpsArchive archive = entry.getIpsArchive();
         assertNotNull(archive);
-        assertEquals(archiveFile, archive.getArchiveFile());
+        assertEquals(archivePath, archive.getArchivePath());
     }
     
     public void testGetIpsPackageFragementRootName() throws CoreException {
@@ -142,10 +146,10 @@ public class IpsArchiveEntryTest extends AbstractIpsPluginTest {
     
     public void testToXml() throws CoreException {
         Element el = entry.toXml(newDocument());
-        IFile dummyArchiveFile = project.getIpsProjectPropertiesFile(); // to create a new entry we need a handle to an existing file 
-        IpsArchiveEntry newEntry = (IpsArchiveEntry )project.getIpsObjectPath().newArchiveEntry(dummyArchiveFile);
+        IPath dummyArchivePath = project.getIpsProjectPropertiesFile().getLocation(); // to create a new entry we need a handle to an existing file path 
+        IpsArchiveEntry newEntry = (IpsArchiveEntry )project.getIpsObjectPath().newArchiveEntry(dummyArchivePath);
         newEntry.initFromXml(el, project.getProject());
-        assertEquals(archiveFile, newEntry.getArchiveFile());
+        assertEquals(archivePath, newEntry.getArchivePath());
     }
     
     public void testValidate() throws CoreException {
@@ -156,13 +160,13 @@ public class IpsArchiveEntryTest extends AbstractIpsPluginTest {
         IIpsObjectPath path = props.getIpsObjectPath();
         IIpsArchiveEntry[] archiveEntries = path.getArchiveEntries();
         assertEquals(1, archiveEntries.length);
-        assertEquals(entry.getArchiveFile(), archiveEntries[0].getArchiveFile());
+        assertEquals(entry.getArchivePath(), archiveEntries[0].getArchivePath());
         
-        entry.setArchiveFile(project.getProject().getFile("NoneExistingFile"));
+        entry.setArchivePath(project, project.getProject().getFile("NoneExistingFile").getLocation());
         ml = entry.validate();
         assertNotNull(ml.getMessageByCode(IIpsObjectPathEntry.MSGCODE_MISSING_ARCHVE));
         
-        entry.setArchiveFile(null);
+        entry.setArchivePath(null, null);
         ml = entry.validate();
         assertNotNull(ml.getMessageByCode(IIpsObjectPathEntry.MSGCODE_MISSING_ARCHVE));
         

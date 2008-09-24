@@ -23,11 +23,12 @@ import java.util.Set;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.SystemUtils;
-import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.osgi.util.NLS;
+import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.internal.model.ipsobject.ArchiveIpsSrcFile;
 import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
@@ -36,6 +37,7 @@ import org.faktorips.devtools.core.model.ipsproject.IIpsArchive;
 import org.faktorips.devtools.core.model.ipsproject.IIpsArchiveEntry;
 import org.faktorips.devtools.core.model.ipsproject.IIpsObjectPathEntry;
 import org.faktorips.devtools.core.model.ipsproject.IIpsPackageFragmentRoot;
+import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.util.message.Message;
 import org.faktorips.util.message.MessageList;
 import org.w3c.dom.Document;
@@ -79,27 +81,27 @@ public class IpsArchiveEntry extends IpsObjectPathEntry implements IIpsArchiveEn
     /**
      * {@inheritDoc}
      */
-    public IFile getArchiveFile() {
+    public IPath getArchivePath() {
         if (archive==null) {
             return null;
         }
-        return archive.getArchiveFile();
+        return archive.getArchivePath();
     }
     
     /**
      * {@inheritDoc}
      */
-    public void setArchiveFile(IFile newArchiveFile) {
-        if (newArchiveFile==null) {
+    public void setArchivePath(IIpsProject ipsProject, IPath newArchivePath) {
+        if (newArchivePath==null) {
             archive = null;
             root = null;
             return;
         }
-        if (archive!=null && newArchiveFile.equals(archive.getArchiveFile())) {
+        if (archive!=null && newArchivePath.equals(archive.getArchivePath())) {
             return;
         }
-        archive = new IpsArchive(newArchiveFile);
-        root = new ArchiveIpsPackageFragmentRoot(newArchiveFile);
+        archive = new IpsArchive(ipsProject, newArchivePath);
+        root = new ArchiveIpsPackageFragmentRoot(ipsProject, newArchivePath);
     }
     
     /**
@@ -113,7 +115,7 @@ public class IpsArchiveEntry extends IpsObjectPathEntry implements IIpsArchiveEn
      * {@inheritDoc}
      */
     public String getIpsPackageFragmentRootName() {
-        return getIpsArchive().getArchiveFile().getName();
+        return getIpsArchive().getArchivePath().lastSegment();
     }
 
     /**
@@ -188,10 +190,11 @@ public class IpsArchiveEntry extends IpsObjectPathEntry implements IIpsArchiveEn
      */
     public void initFromXml(Element element, IProject project) {
         String path = element.getAttribute("file"); //$NON-NLS-1$
+        IIpsProject ipsProject = IpsPlugin.getDefault().getIpsModel().getIpsProject(project);
         if (StringUtils.isEmpty(path)) {
-            setArchiveFile(null);
+            setArchivePath(ipsProject, null);
         } else {
-            setArchiveFile(project.getFile(new Path(path)));
+            setArchivePath(ipsProject, new Path(path));
         }
     }
 
@@ -201,7 +204,7 @@ public class IpsArchiveEntry extends IpsObjectPathEntry implements IIpsArchiveEn
     public Element toXml(Document doc) {
         Element element = doc.createElement(XML_ELEMENT);
         element.setAttribute("type", TYPE_ARCHIVE); //$NON-NLS-1$
-        element.setAttribute("file", archive.getArchiveFile().getProjectRelativePath().toString()); //$NON-NLS-1$
+        element.setAttribute("file", archive.getArchivePath().toString()); //$NON-NLS-1$
         return element;
     }
 
@@ -211,7 +214,7 @@ public class IpsArchiveEntry extends IpsObjectPathEntry implements IIpsArchiveEn
     public MessageList validate() throws CoreException {
         MessageList result = new MessageList();
         if (archive == null || !archive.exists()){
-            String text = NLS.bind(Messages.IpsArchiveEntry_archiveDoesNotExist, archive == null ? null : archive.getArchiveFile().toString());
+            String text = NLS.bind(Messages.IpsArchiveEntry_archiveDoesNotExist, archive == null ? null : archive.getArchivePath().toString());
             Message msg = new Message(IIpsObjectPathEntry.MSGCODE_MISSING_ARCHVE, text, Message.ERROR, this);
             result.add(msg);
         }
@@ -222,6 +225,6 @@ public class IpsArchiveEntry extends IpsObjectPathEntry implements IIpsArchiveEn
      * {@inheritDoc}
      */
     public String toString() {
-        return "ArchiveEntry[" + getArchiveFile().getProjectRelativePath().toString() + "]"; //$NON-NLS-1$ //$NON-NLS-2$
+        return "ArchiveEntry[" + getArchivePath().toString() + "]"; //$NON-NLS-1$ //$NON-NLS-2$
     }
 }

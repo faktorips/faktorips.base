@@ -137,7 +137,12 @@ public abstract class AbstractIpsSrcFile extends IpsElement implements IIpsSrcFi
         if (!exists()) {
             throw new CoreException(new IpsStatus("Can't get ips object because file does not exist." + this)); //$NON-NLS-1$
         }
-        return getContent().getIpsObject();
+        
+        IpsSrcFileContent content = getContent();
+        if (content == null) {
+        	throw new CoreException(new IpsStatus("Could not read content." + this)); //$NON-NLS-1$
+        }
+        return content.getIpsObject();
     }
 
     /**

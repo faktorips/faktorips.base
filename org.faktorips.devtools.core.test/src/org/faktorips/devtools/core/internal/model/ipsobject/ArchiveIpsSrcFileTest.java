@@ -19,6 +19,7 @@ package org.faktorips.devtools.core.internal.model.ipsobject;
 
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.IPath;
 import org.faktorips.devtools.core.AbstractIpsPluginTest;
 import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
@@ -52,10 +53,11 @@ public class ArchiveIpsSrcFileTest extends AbstractIpsPluginTest {
         
         project = newIpsProject();
         IFile archiveFile = project.getProject().getFile("test.ipsar");
+        IPath archivePath = archiveFile.getLocation();
         createArchive(archiveProject, archiveFile);
         
         IIpsObjectPath path = project.getIpsObjectPath();
-        path.newArchiveEntry(archiveFile);
+        path.newArchiveEntry(archivePath);
         project.setIpsObjectPath(path);
         
         root = project.getIpsPackageFragmentRoots()[1];

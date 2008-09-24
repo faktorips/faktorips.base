@@ -1333,7 +1333,7 @@ public class IpsModel extends IpsElement implements IIpsModel, IResourceChangeLi
             ipsObjectsMap.put(file, content);
             return content;
         }
-        
+
         // existing, synchronized content
         if (content.getModificationStamp() == resourceModStamp) {
             return checkSynchronizedContent(content, loadCompleteContent);

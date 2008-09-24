@@ -25,6 +25,7 @@ import java.util.List;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.jface.viewers.DecoratingLabelProvider;
@@ -118,14 +119,9 @@ public class ArchiveComposite extends Composite {
         addIpsArchivesButton.setLayoutData(new GridData(GridData.HORIZONTAL_ALIGN_FILL | GridData.VERTICAL_ALIGN_BEGINNING));
         addIpsArchivesButton.addSelectionListener(archiveAdapter);
 
-//      FIXME: Flyspray BUG ID: 1196  
-//      need to change archive handling in IpsModel. IFile instances can only reference 
-//      resources inside the workspace. -> use IPath
-
-//        TEMPORARILY DISABLED DUE TO Bug1196
-//        addExternalIpsArchivesButton = toolkit.createButton(buttons, Messages.ArchiveComposite_button_add_external_archive);
-//        addExternalIpsArchivesButton.setLayoutData(new GridData(GridData.HORIZONTAL_ALIGN_FILL | GridData.VERTICAL_ALIGN_BEGINNING));
-//        addExternalIpsArchivesButton.addSelectionListener(archiveAdapter);
+        addExternalIpsArchivesButton = toolkit.createButton(buttons, Messages.ArchiveComposite_button_add_external_archive);
+        addExternalIpsArchivesButton.setLayoutData(new GridData(GridData.HORIZONTAL_ALIGN_FILL | GridData.VERTICAL_ALIGN_BEGINNING));
+        addExternalIpsArchivesButton.addSelectionListener(archiveAdapter);
 
         removeIpsArchivesButton = toolkit.createButton(buttons, Messages.ArchiveComposite_button_remove_archive);
         removeIpsArchivesButton.setLayoutData(new GridData(GridData.HORIZONTAL_ALIGN_FILL | GridData.VERTICAL_ALIGN_BEGINNING));
@@ -185,7 +181,7 @@ public class ArchiveComposite extends Composite {
         List alreadyRefArchives = new ArrayList();
         IIpsArchiveEntry[] entries = ipsObjectPath.getArchiveEntries();
         for (int i = 0; i < entries.length; i++) {
-            alreadyRefArchives.add(entries[i].getArchiveFile());
+            alreadyRefArchives.add(entries[i].getArchivePath());
         }
         
         dialog.addFilter(new IpsarViewerFilter(alreadyRefArchives, true));
@@ -210,7 +206,8 @@ public class ArchiveComposite extends Composite {
 
                 for (int i = 0; i < selectedArchives.length; i++) {
                     IFile archiveFile = (IFile) selectedArchives[i];
-                    IIpsArchiveEntry newEntry = ipsObjectPath.newArchiveEntry(archiveFile);
+                    IPath archivePath = archiveFile.getFullPath();
+                    IIpsArchiveEntry newEntry = ipsObjectPath.newArchiveEntry(archivePath);
                     alreadyRefArchives.add(newEntry);
                     
                     tableViewer.refresh(false);
@@ -227,17 +224,17 @@ public class ArchiveComposite extends Composite {
         FileDialog fileDialog = new FileDialog(getShell(), SWT.OPEN);
         fileDialog.setFilterExtensions(new String[] {"*.ipsar", "*.jar", "*.zip", "*.*"} ); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
         String fileName = fileDialog.open(); 
-        
-        IFile file = ResourcesPlugin.getWorkspace().getRoot().getFile(new Path(fileName));
-        
-        try {
-            ipsObjectPath.newArchiveEntry(file);
-            tableViewer.refresh(false);
-            dataChanged = true;
-            
-        } catch (CoreException e) {
-            IpsPlugin.logAndShowErrorDialog(e);
-            return;
+        if (fileName != null) {
+        	IPath path = new Path(fileName);
+        	try {
+        		ipsObjectPath.newArchiveEntry(path);
+        		tableViewer.refresh(false);
+        		dataChanged = true;
+
+        	} catch (CoreException e) {
+        		IpsPlugin.logAndShowErrorDialog(e);
+        		return;
+        	}
         }
     }
 

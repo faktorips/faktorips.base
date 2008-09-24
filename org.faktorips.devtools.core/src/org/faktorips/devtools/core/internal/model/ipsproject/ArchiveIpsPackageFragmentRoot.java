@@ -25,7 +25,10 @@ import java.util.Set;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.resources.IResource;
+import org.eclipse.core.resources.IWorkspaceRoot;
+import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.swt.graphics.Image;
 import org.faktorips.devtools.core.IpsPlugin;
@@ -36,6 +39,7 @@ import org.faktorips.devtools.core.model.ipsobject.QualifiedNameType;
 import org.faktorips.devtools.core.model.ipsproject.IIpsArchive;
 import org.faktorips.devtools.core.model.ipsproject.IIpsPackageFragment;
 import org.faktorips.devtools.core.model.ipsproject.IIpsPackageFragmentRoot;
+import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 
 /**
  *
@@ -43,15 +47,15 @@ import org.faktorips.devtools.core.model.ipsproject.IIpsPackageFragmentRoot;
  */
 public class ArchiveIpsPackageFragmentRoot extends AbstractIpsPackageFragmentRoot implements IIpsPackageFragmentRoot {
 
-    private IFile archiveFile;
+    private IPath archivePath;
 
     /**
-     * @param parent
-     * @param name
+     * @param ipsProject IPS project
+     * @param archivePath Path to an IPS archive
      */
-    public ArchiveIpsPackageFragmentRoot(IFile archiveFile) {
-        super(IpsPlugin.getDefault().getIpsModel().getIpsProject(archiveFile.getProject()), archiveFile.getName());
-        this.archiveFile = archiveFile;
+    public ArchiveIpsPackageFragmentRoot(IIpsProject ipsProject, IPath archivePath) {
+    	super(ipsProject, archivePath.lastSegment());
+    	this.archivePath = archivePath;
     }
 
     /**
@@ -138,10 +142,26 @@ public class ArchiveIpsPackageFragmentRoot extends AbstractIpsPackageFragmentRoo
      * {@inheritDoc}
      */
     public IResource getCorrespondingResource() {
-        return archiveFile;
+    	if (isExternal()) {
+    		return null;
+    	}
+    	IWorkspaceRoot workspaceRoot = ResourcesPlugin.getWorkspace().getRoot();
+		IFile resource = workspaceRoot.getFileForLocation(archivePath);
+    	if (resource == null) {
+    		resource = workspaceRoot.getFile(archivePath);
+    	}
+    	return resource;
     }
 
-    private CoreException newExceptionMethodNotAvailableForArchvies() {
+    private boolean isExternal() {
+    	IWorkspaceRoot root = ResourcesPlugin.getWorkspace().getRoot();
+    	boolean isExternal = (root.getFileForLocation(archivePath) == null);
+    	isExternal = isExternal && (root.getFile(archivePath).exists() == false);
+    	
+    	return isExternal;
+    }
+    
+	private CoreException newExceptionMethodNotAvailableForArchvies() {
         return new CoreException(new IpsStatus("Not possible for archives because they are not modifiable.")); //$NON-NLS-1$
     }
 

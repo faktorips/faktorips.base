@@ -155,7 +155,7 @@ public class ModelExplorerConfigurationTest extends AbstractIpsPluginTest {
         assertTrue(config.representsFile(pcType));
         
         IIpsObjectPath path = proj.getIpsObjectPath();
-        path.newArchiveEntry(proj.getProject().getFile("Archive.ipsar"));
+        path.newArchiveEntry(proj.getProject().getFile("Archive.ipsar").getLocation());
         proj.setIpsObjectPath(path);
         IIpsPackageFragmentRoot archiveRoot = proj.findIpsPackageFragmentRoot("Archive.ipsar");
         assertTrue(archiveRoot.isBasedOnIpsArchive());

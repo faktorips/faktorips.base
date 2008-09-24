@@ -80,7 +80,7 @@ public class IpsPasteActionTest extends AbstractIpsPluginTest {
 
         IFile archiveFile = createIpsArchiveFile(root);
         IIpsObjectPath objectPath = project.getIpsObjectPath();
-        objectPath.newArchiveEntry(archiveFile);
+        objectPath.newArchiveEntry(archiveFile.getLocation());
         project.setIpsObjectPath(objectPath);
         
         folder = project.getProject().getFolder("testFolder");

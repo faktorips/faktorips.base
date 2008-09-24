@@ -18,14 +18,18 @@
 package org.faktorips.devtools.core.internal.model.ipsproject;
 
 import java.io.File;
+import java.io.IOException;
 import java.util.Set;
 
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IResource;
+import org.eclipse.core.resources.IWorkspaceRoot;
 import org.eclipse.core.resources.IncrementalProjectBuilder;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.NullProgressMonitor;
+import org.eclipse.core.runtime.Path;
 import org.faktorips.devtools.core.AbstractIpsPluginTest;
 import org.faktorips.devtools.core.model.CreateIpsArchiveOperation;
 import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
@@ -43,8 +47,12 @@ public class IpsArchiveTest extends AbstractIpsPluginTest {
     private IIpsProject project;
     private IIpsArchive archive;
     private IFile archiveFile;
-    
+	private File externalArchiveFile;
+    private IPath archivePath;
+	private Path externalArchivePath;
+	
     private IPolicyCmptType motorPolicyType;
+
     
     /*
      * @see TestCase#setUp()
@@ -58,8 +66,15 @@ public class IpsArchiveTest extends AbstractIpsPluginTest {
         newPolicyCmptTypeWithoutProductCmptType(project, "home.base.HomePolicy");
         
         archiveFile = project.getProject().getFile("test.ipsar");
+		archivePath = archiveFile.getLocation();
         createArchive(project, archiveFile);
-        archive = new IpsArchive(archiveFile);
+        archive = new IpsArchive(project, archivePath);
+        
+		externalArchiveFile = File.createTempFile("externalArchiveFile", ".ipsar");
+    	externalArchiveFile.deleteOnExit();
+    	CreateIpsArchiveOperation op = new CreateIpsArchiveOperation(project, externalArchiveFile);
+    	ResourcesPlugin.getWorkspace().run(op, null);
+    	externalArchivePath = new Path(externalArchiveFile.getAbsolutePath());
     }
     
     /**
@@ -102,15 +117,28 @@ public class IpsArchiveTest extends AbstractIpsPluginTest {
         
     }
 
-    public void testGetArchiveFile() {
-        assertEquals(archiveFile, archive.getArchiveFile());
+    public void testGetArchivePath() {
+        assertEquals(archivePath, archive.getArchivePath());
     }
 
-    public void testExists() {
+    public void testExists_FileInWorkspace() {
         assertTrue(archive.exists());
         
-        archive = new IpsArchive(project.getProject().getFile("UnknownFile"));
+        archive = new IpsArchive(project, project.getProject().getFile("UnknownFile").getFullPath());
         assertFalse(archive.exists());
+    }
+
+    public void testExists_FileOutsideWorkspace() throws IOException {
+    	// assert temp file is created outside of workspace directory
+    	IWorkspaceRoot workspaceRoot = ResourcesPlugin.getWorkspace().getRoot();
+    	assertNull(workspaceRoot.getFileForLocation(externalArchivePath));
+    	
+    	IpsArchive archive = new IpsArchive(project, externalArchivePath);
+    	assertNotNull(archive);
+    	assertTrue(archive.exists());
+    	
+    	archive = new IpsArchive(project, new Path("/path/does/not/exist"));
+    	assertFalse(archive.exists());
     }
 
     public void testGetNoneEmptyPackages() throws CoreException {
@@ -137,7 +165,7 @@ public class IpsArchiveTest extends AbstractIpsPluginTest {
         assertEquals(0, subpacks.length);
     }
 
-    public void testGetQNameTypes() throws CoreException {
+    public void testGetQNameTypes_FileInWorkspace() throws CoreException {
         Set qnt = archive.getQNameTypes();
         assertEquals(4, qnt.size());
         QualifiedNameType[] qntArray = new QualifiedNameType[qnt.size()];
@@ -149,6 +177,23 @@ public class IpsArchiveTest extends AbstractIpsPluginTest {
         assertEquals(new QualifiedNameType("motor.collision.SimpleCollisionCoverage", IpsObjectType.POLICY_CMPT_TYPE), qntArray[3]);
     }
     
+    public void testGetQNameTypes_FileOutsideWorkspace() throws CoreException, IOException {
+    	IIpsArchive archiveOutsideWorkspace = new IpsArchive(project, externalArchivePath);
+    	assertNotNull(archiveOutsideWorkspace);
+    	
+        Set qnt = archiveOutsideWorkspace.getQNameTypes();
+        
+        // same as in testGetQNameTypes_FileInWorkspace()
+        assertEquals(4, qnt.size());
+        QualifiedNameType[] qntArray = new QualifiedNameType[qnt.size()];
+        qnt.toArray(qntArray);
+        
+        assertEquals(new QualifiedNameType("home.base.HomePolicy", IpsObjectType.POLICY_CMPT_TYPE), qntArray[0]);
+        assertEquals(new QualifiedNameType("motor.MotorPolicy", IpsObjectType.POLICY_CMPT_TYPE), qntArray[1]);
+        assertEquals(new QualifiedNameType("motor.collision.ExtendedCollisionCoverage", IpsObjectType.POLICY_CMPT_TYPE), qntArray[2]);
+        assertEquals(new QualifiedNameType("motor.collision.SimpleCollisionCoverage", IpsObjectType.POLICY_CMPT_TYPE), qntArray[3]);    	
+    }
+
     public void testGetQNameType_Pack() throws CoreException {
         Set qnt = archive.getQNameTypes(null);
         assertEquals(0, qnt.size());
