@@ -52,11 +52,6 @@ public abstract class BasePolicyCmptTypeBuilder extends AbstractPcTypeBuilder {
         super.beforeBuild(ipsSrcFile, status);
     }
 
-    public boolean isGenerateChangeListenerSupport() {
-        return getBuilderSet().getConfig().getPropertyValueAsBoolean(
-                StandardBuilderSet.CONFIG_PROPERTY_GENERATE_CHANGELISTENER).booleanValue();
-    }
-    
     public boolean isGenerateDeltaSupport() {
         return getBuilderSet().getConfig().getPropertyValueAsBoolean(
                 StandardBuilderSet.CONFIG_PROPERTY_GENERATE_DELTA_SUPPORT).booleanValue();

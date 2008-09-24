@@ -20,9 +20,9 @@ import java.lang.reflect.Modifier;
 
 import org.eclipse.core.runtime.CoreException;
 import org.faktorips.codegen.JavaCodeFragmentBuilder;
-import org.faktorips.devtools.core.builder.DefaultBuilderSet;
 import org.faktorips.devtools.core.builder.JavaSourceFileBuilder;
-import org.faktorips.devtools.core.model.ipsproject.IIpsArtefactBuilderSet;
+import org.faktorips.devtools.core.builder.LocalizedTextHelper;
+import org.faktorips.devtools.stdbuilder.policycmpttype.GenPolicyCmptType;
 import org.faktorips.runtime.AssociationChangedEvent;
 import org.faktorips.runtime.INotificationSupport;
 import org.faktorips.runtime.IpsPropertyChangeSupport;
@@ -35,12 +35,14 @@ import org.faktorips.util.LocalizedStringsSet;
  * 
  * @author Daniel Hohenberger
  */
-public class BeanChangeListenerSupportBuilder extends JavaSourceFileBuilder implements
+public class BeanChangeListenerSupportBuilder implements
 IChangeListenerSupportBuilder {
+    private final LocalizedTextHelper localizedTextHelper = new LocalizedTextHelper(new LocalizedStringsSet(
+            BeanChangeListenerSupportBuilder.class));
+    private final GenPolicyCmptType genPolicyCmptType;
 
-    public BeanChangeListenerSupportBuilder(IIpsArtefactBuilderSet builderSet) {
-        super(builderSet, DefaultBuilderSet.KIND_POLICY_CMPT_IMPL, new LocalizedStringsSet(
-                BeanChangeListenerSupportBuilder.class));
+    public BeanChangeListenerSupportBuilder(GenPolicyCmptType genPolicyCmptType) {
+        this.genPolicyCmptType = genPolicyCmptType;
     }
 
     /**
@@ -182,7 +184,8 @@ IChangeListenerSupportBuilder {
     public void generateMethodNotifyChangeListeners(JavaCodeFragmentBuilder methodBuilder,
             String parentModelObjectName,
             boolean generateParentNotification) {
-        methodBuilder.javaDoc(getJavaDocCommentForOverriddenMethod(), ANNOTATION_GENERATED);
+        methodBuilder.javaDoc(genPolicyCmptType.getJavaDocCommentForOverriddenMethod(),
+                JavaSourceFileBuilder.ANNOTATION_GENERATED);
         methodBuilder.methodBegin(Modifier.PUBLIC, Void.TYPE, MethodNames.NOTIFIY_CHANGE_LISTENERS,
                 new String[] { "event" }, new Class[] { PropertyChangeEvent.class });
         methodBuilder.append("if (event instanceof ");
@@ -212,7 +215,8 @@ IChangeListenerSupportBuilder {
             String[] argName,
             Class[] argClass,
             String delegateName) {
-        methodBuilder.javaDoc(getJavaDocCommentForOverriddenMethod(), ANNOTATION_GENERATED);
+        methodBuilder.javaDoc(genPolicyCmptType.getJavaDocCommentForOverriddenMethod(),
+                JavaSourceFileBuilder.ANNOTATION_GENERATED);
         methodBuilder.methodBegin(modifier, returnType, methodName, argName, argClass);
         if (!returnType.equals(Void.TYPE)) {
             methodBuilder.append("return ");
@@ -236,7 +240,8 @@ IChangeListenerSupportBuilder {
      * </pre>
      */
     public void generateChangeListenerConstants(JavaCodeFragmentBuilder builder) {
-        appendLocalizedJavaDoc("FIELD_PROPERTY_CHANGE_SUPPORT", null, builder);
+        localizedTextHelper.appendLocalizedJavaDoc("FIELD_PROPERTY_CHANGE_SUPPORT", builder, genPolicyCmptType
+                .getLanguageUsedInGeneratedSourceCode());
         builder.appendJavaModifier(Modifier.PROTECTED);
         builder.append(' ');
         builder.appendJavaModifier(Modifier.FINAL);

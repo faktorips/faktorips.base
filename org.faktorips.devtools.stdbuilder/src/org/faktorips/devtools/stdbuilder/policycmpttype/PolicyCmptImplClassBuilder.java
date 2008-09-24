@@ -163,8 +163,9 @@ public class PolicyCmptImplClassBuilder extends BasePolicyCmptTypeBuilder {
         } else if (isFirstDependantTypeInHierarchy(type)) {
             generateCodeForDependantObjectBaseClass(memberVarsBuilder, methodsBuilder);
         }
-        if (getPcType().getSupertype().length() == 0 && isGenerateChangeListenerSupport()) {
-            generateChangeListenerMethods(methodsBuilder);
+        if (getPcType().getSupertype().length() == 0) {
+            getGenerator().generateChangeListenerMethods(methodsBuilder,
+                    FIELD_PARENT_MODEL_OBJECT, isFirstDependantTypeInHierarchy(getPcType()));
         }
         generateMethodRemoveChildModelObjectInternal(methodsBuilder);
         generateMethodInitPropertiesFromXml(methodsBuilder);
@@ -1066,9 +1067,8 @@ public class PolicyCmptImplClassBuilder extends BasePolicyCmptTypeBuilder {
 
     protected void generateConstants(JavaCodeFragmentBuilder builder) throws CoreException {
         super.generateConstants(builder);
-        if (getPcType().getSupertype().length() == 0 && isGenerateChangeListenerSupport()) {
-            ((StandardBuilderSet)getBuilderSet()).getChangeListenerSupportBuilder().generateChangeListenerConstants(
-                    builder);
+        if (getPcType().getSupertype().length() == 0) {
+            getGenerator().generateChangeListenerConstants(builder);
         }
     }
 
@@ -1122,11 +1122,6 @@ public class PolicyCmptImplClassBuilder extends BasePolicyCmptTypeBuilder {
         methodBuilder.appendln("}");
         methodBuilder.appendln(FIELD_PARENT_MODEL_OBJECT + "=newParent;");
         methodBuilder.methodEnd();
-    }
-
-    private void generateChangeListenerMethods(JavaCodeFragmentBuilder methodBuilder) throws CoreException {
-        ((StandardBuilderSet)getBuilderSet()).getChangeListenerSupportBuilder().generateChangeListenerMethods(
-                methodBuilder, FIELD_PARENT_MODEL_OBJECT, isFirstDependantTypeInHierarchy(getPcType()));
     }
 
     /**

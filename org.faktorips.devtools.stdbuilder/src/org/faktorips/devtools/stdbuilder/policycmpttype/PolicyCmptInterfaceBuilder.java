@@ -72,6 +72,13 @@ public class PolicyCmptInterfaceBuilder extends BasePolicyCmptTypeBuilder {
     }
 
     /**
+     * Returns the <code>GenPolicyCmptType</code> for this builder.
+     */
+    private GenPolicyCmptType getGenerator() throws CoreException {
+        return ((StandardBuilderSet)getBuilderSet()).getGenerator(getPcType());
+    }
+
+    /**
      * {@inheritDoc}
      */
     protected String[] getExtendedInterfaces() throws CoreException {
@@ -95,12 +102,9 @@ public class PolicyCmptInterfaceBuilder extends BasePolicyCmptTypeBuilder {
             if (isGenerateVisitorSupport()) {
                 interfaces.add(IVisitorSupport.class.getName());
             }
-            if (isGenerateChangeListenerSupport()) {
-                String notificationSupportInterfaceName = ((StandardBuilderSet)getBuilderSet())
-                        .getChangeListenerSupportBuilder().getNotificationSupportInterfaceName();
-                if (notificationSupportInterfaceName != null) {
-                    interfaces.add(notificationSupportInterfaceName);
-                }
+            String notificationSupportInterfaceName = getGenerator().getNotificationSupportInterfaceName();
+            if (notificationSupportInterfaceName != null) {
+                interfaces.add(notificationSupportInterfaceName);
             }
         }
         if (isFirstDependantTypeInHierarchy(type)) {

@@ -33,7 +33,9 @@ import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeAttribute;
 import org.faktorips.devtools.core.model.type.IMethod;
 import org.faktorips.devtools.stdbuilder.StandardBuilderSet;
+import org.faktorips.devtools.stdbuilder.changelistener.BeanChangeListenerSupportBuilder;
 import org.faktorips.devtools.stdbuilder.changelistener.ChangeEventType;
+import org.faktorips.devtools.stdbuilder.changelistener.IChangeListenerSupportBuilder;
 import org.faktorips.devtools.stdbuilder.policycmpttype.association.GenAssociation;
 import org.faktorips.devtools.stdbuilder.policycmpttype.association.GenAssociationTo1;
 import org.faktorips.devtools.stdbuilder.policycmpttype.association.GenAssociationToMany;
@@ -65,6 +67,7 @@ public class GenPolicyCmptType extends GenType {
     private final List genAssociations = new ArrayList();
     private final List genValidationRules = new ArrayList();
     private final List genMethods = new ArrayList();
+    private final IChangeListenerSupportBuilder changeListenerSupportBuilder;
 
     /**
      * @param policyCmptType
@@ -80,6 +83,7 @@ public class GenPolicyCmptType extends GenType {
         createGeneratorsForMethods();
         createGeneratorsForValidationRules();
         createGeneratorsForAssociations();
+        changeListenerSupportBuilder = new BeanChangeListenerSupportBuilder(this);
     }
 
     public IPolicyCmptType getPolicyCmptType() {
@@ -221,7 +225,7 @@ public class GenPolicyCmptType extends GenType {
             String paramName,
             String fieldNameConstant) {
         if (isGenerateChangeListenerSupport()) {
-            getBuilderSet().getChangeListenerSupportBuilder().generateChangeListenerSupportBeforeChange(methodsBuilder,
+            changeListenerSupportBuilder.generateChangeListenerSupportBeforeChange(methodsBuilder,
                     eventType, fieldType, fieldName, paramName, fieldNameConstant);
         }
     }
@@ -233,14 +237,15 @@ public class GenPolicyCmptType extends GenType {
             String paramName,
             String fieldNameConstant) {
         if (isGenerateChangeListenerSupport()) {
-            getBuilderSet().getChangeListenerSupportBuilder().generateChangeListenerSupportAfterChange(methodsBuilder,
+            changeListenerSupportBuilder.generateChangeListenerSupportAfterChange(methodsBuilder,
                     eventType,
                     fieldType, fieldName, paramName, fieldNameConstant);
         }
     }
 
     private boolean isGenerateChangeListenerSupport() {
-        return getBuilderSet().isGenerateChangeListener();
+        return getBuilderSet().getConfig().getPropertyValueAsBoolean(
+                StandardBuilderSet.CONFIG_PROPERTY_GENERATE_CHANGELISTENER).booleanValue();
     }
 
     protected GenProdAttribute getGenerator(IProductCmptTypeAttribute a) throws CoreException {
@@ -281,6 +286,28 @@ public class GenPolicyCmptType extends GenType {
     public String getMethodNameCreatePolicyCmpt() throws CoreException {
         String policyCmptConceptName = getPolicyCmptTypeName();
         return getLocalizedText("METHOD_CREATE_POLICY_CMPT_NAME", policyCmptConceptName);
+    }
+
+    public void generateChangeListenerConstants(JavaCodeFragmentBuilder builder) {
+        if (isGenerateChangeListenerSupport()) {
+            changeListenerSupportBuilder.generateChangeListenerConstants(builder);
+        }
+    }
+
+    public void generateChangeListenerMethods(JavaCodeFragmentBuilder methodsBuilder,
+            String parentModelObjectName,
+            boolean generateParentNotification) {
+        if (isGenerateChangeListenerSupport()) {
+            changeListenerSupportBuilder.generateChangeListenerMethods(methodsBuilder, parentModelObjectName,
+                    generateParentNotification);
+        }
+    }
+
+    public String getNotificationSupportInterfaceName() {
+        if (isGenerateChangeListenerSupport()) {
+            return changeListenerSupportBuilder.getNotificationSupportInterfaceName();
+        }
+        return null;
     }
 
 }

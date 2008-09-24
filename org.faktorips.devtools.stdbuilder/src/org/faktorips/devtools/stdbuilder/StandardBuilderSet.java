@@ -39,8 +39,6 @@ import org.faktorips.devtools.core.model.tablestructure.ITableStructure;
 import org.faktorips.devtools.core.model.type.IAttribute;
 import org.faktorips.devtools.core.model.type.IParameter;
 import org.faktorips.devtools.core.model.type.IType;
-import org.faktorips.devtools.stdbuilder.changelistener.BeanChangeListenerSupportBuilder;
-import org.faktorips.devtools.stdbuilder.changelistener.IChangeListenerSupportBuilder;
 import org.faktorips.devtools.stdbuilder.enums.EnumClassesBuilder;
 import org.faktorips.devtools.stdbuilder.enums.EnumTypeInterfaceBuilder;
 import org.faktorips.devtools.stdbuilder.formulatest.FormulaTestBuilder;
@@ -120,8 +118,6 @@ public class StandardBuilderSet extends DefaultBuilderSet {
     private EnumClassesBuilder enumClassesBuilder;
     private String version;
     private final Map ipsObjectTypeGenerators = new HashMap(1000);
-
-    private IChangeListenerSupportBuilder changeListenerSupportBuilder;
 
     public StandardBuilderSet() {
         initVersion();
@@ -388,9 +384,6 @@ public class StandardBuilderSet extends DefaultBuilderSet {
         tocFileBuilder.setTestCaseBuilder(testCaseBuilder);
         tocFileBuilder.setFormulaTestBuilder(formulaTestBuilder);
 
-        // change listener support builder
-        changeListenerSupportBuilder = new BeanChangeListenerSupportBuilder(this);
-
         if (ComplianceCheck.isComplianceLevelAtLeast5(getIpsProject())) {
             IIpsArtefactBuilder policyModelTypeBuilder = new ModelTypeXmlBuilder(IpsObjectType.POLICY_CMPT_TYPE, this,
                     KIND_MODEL_TYPE);
@@ -423,15 +416,6 @@ public class StandardBuilderSet extends DefaultBuilderSet {
      */
     public String getVersion() {
         return version;
-    }
-
-    public boolean isGenerateChangeListener() {
-        return getConfig().getPropertyValueAsBoolean(StandardBuilderSet.CONFIG_PROPERTY_GENERATE_CHANGELISTENER)
-        .booleanValue();
-    }
-
-    public IChangeListenerSupportBuilder getChangeListenerSupportBuilder() {
-        return changeListenerSupportBuilder;
     }
 
     /**
