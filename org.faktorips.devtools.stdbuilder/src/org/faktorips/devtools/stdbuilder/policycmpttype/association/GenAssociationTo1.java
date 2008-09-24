@@ -215,13 +215,13 @@ public class GenAssociationTo1 extends GenAssociation {
             builder.appendln("}");
         }
 
-        generateChangeListenerSupportBeforeChange(builder, ChangeEventType.RELATION_OBJECT_CHANGED, paramName);
+        generateChangeListenerSupportBeforeChange(builder, ChangeEventType.ASSOCIATION_OBJECT_CHANGED, paramName);
         builder.append(fieldName);
         builder.append(" = (");
         builder.appendClassName(targetImplClassName);
         builder.append(")" + paramName + ";");
 
-        generateChangeListenerSupportAfterChange(builder, ChangeEventType.RELATION_OBJECT_CHANGED, paramName);
+        generateChangeListenerSupportAfterChange(builder, ChangeEventType.ASSOCIATION_OBJECT_CHANGED, paramName);
         builder.closeBracket();
     }
 
@@ -265,7 +265,7 @@ public class GenAssociationTo1 extends GenAssociation {
             methodsBuilder.append(" = null;");
             methodsBuilder.append(generateCodeToCleanupOldReference("oldRefObject"));
         }
-        generateChangeListenerSupportBeforeChange(methodsBuilder, ChangeEventType.RELATION_OBJECT_CHANGED, paramName);
+        generateChangeListenerSupportBeforeChange(methodsBuilder, ChangeEventType.ASSOCIATION_OBJECT_CHANGED, paramName);
         methodsBuilder.append(fieldName);
         methodsBuilder.append(" = (");
         methodsBuilder.appendClassName(targetImplClassName);
@@ -274,7 +274,7 @@ public class GenAssociationTo1 extends GenAssociation {
             methodsBuilder.append(getGenPolicyCmptType().getBuilderSet().getGenerator(target).getGenerator(
                     reverseAssociation).generateCodeToSynchronizeReverseAssoziation(fieldName, targetImplClassName));
         }
-        generateChangeListenerSupportAfterChange(methodsBuilder, ChangeEventType.RELATION_OBJECT_CHANGED, paramName);
+        generateChangeListenerSupportAfterChange(methodsBuilder, ChangeEventType.ASSOCIATION_OBJECT_CHANGED, paramName);
         methodsBuilder.closeBracket();
     }
 

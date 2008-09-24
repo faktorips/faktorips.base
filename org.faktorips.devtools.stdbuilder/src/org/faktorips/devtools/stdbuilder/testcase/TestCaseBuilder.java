@@ -405,47 +405,47 @@ public class TestCaseBuilder extends AbstractArtefactBuilder {
     }
 
     /*
-     * Add the given relations to the given element.
+     * Add the given associations to the given element.
      */
     private void addAssociations(Document doc,
             Element parent,
-            ITestPolicyCmptLink[] relations,
+            ITestPolicyCmptLink[] associations,
             boolean isInput,
             ObjectId objectId) throws CoreException {
-        if (relations == null) {
+        if (associations == null) {
             return;
         }
-        if (relations.length > 0) {
-            for (int i = 0; i < relations.length; i++) {
-                if (!relations[i].isValid()) {
+        if (associations.length > 0) {
+            for (int i = 0; i < associations.length; i++) {
+                if (!associations[i].isValid()) {
                     continue;
                 }
-                if (!relationsParentSameType(relations[i], isInput)) {
+                if (!associationsParentSameType(associations[i], isInput)) {
                     continue;
                 }
-                String relationType = "";
-                if (relations[i].isComposition()) {
+                String associationType = "";
+                if (associations[i].isComposition()) {
                     try {
-                        addTestPolicyCmpts(doc, parent, new ITestPolicyCmpt[] { relations[i].findTarget() },
-                                relations[i], isInput, objectId);
+                        addTestPolicyCmpts(doc, parent, new ITestPolicyCmpt[] { associations[i].findTarget() },
+                                associations[i], isInput, objectId);
                     } catch (CoreException e) {
                         throw new RuntimeException(e);
                     }
-                } else if (relations[i].isAccoziation()) {
-                    relationType = "association"; // @see AbstractModelObject
-                    Element testPolicyCmptElem = XmlUtil.addNewChild(doc, parent, relations[i]
+                } else if (associations[i].isAccoziation()) {
+                    associationType = "association"; // @see AbstractModelObject
+                    Element testPolicyCmptElem = XmlUtil.addNewChild(doc, parent, associations[i]
                             .getTestPolicyCmptTypeParameter());
-                    testPolicyCmptElem.setAttribute("target", relations[i].getTarget());
-                    testPolicyCmptElem.setAttribute("type", relationType);
-                    ITestPolicyCmpt target = relations[i].findTarget();
+                    testPolicyCmptElem.setAttribute("target", associations[i].getTarget());
+                    testPolicyCmptElem.setAttribute("type", associationType);
+                    ITestPolicyCmpt target = associations[i].findTarget();
                     targetObjectIdMap.put(testPolicyCmptElem, target);
                 }
             }
         }
     }
 
-    private boolean relationsParentSameType(ITestPolicyCmptLink relation, boolean isInput) throws CoreException {
-        ITestPolicyCmptTypeParameter param = relation.findTestPolicyCmptTypeParameter(getIpsProject());
+    private boolean associationsParentSameType(ITestPolicyCmptLink association, boolean isInput) throws CoreException {
+        ITestPolicyCmptTypeParameter param = association.findTestPolicyCmptTypeParameter(getIpsProject());
         if (param == null) {
             return false;
         }

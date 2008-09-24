@@ -38,20 +38,20 @@ public final class ChangeEventType {
     public final static ChangeEventType DERIVED_PROPERTY_CHANGED = new ChangeEventType("DERIVED_PROPERTY_CHANGED");
 
     /**
-     * Type that indicates that an object was added to one of the model object's relations.
+     * Type that indicates that an object was added to one of the model object's associations.
      */
-    public final static ChangeEventType RELATION_OBJECT_ADDED = new ChangeEventType("RELATION_OBJECT_ADDED");
+    public final static ChangeEventType ASSOCIATION_OBJECT_ADDED = new ChangeEventType("ASSOCIATION_OBJECT_ADDED");
 
     /**
-     * Type that indicates that an object was removed from one of the model object's relations.
+     * Type that indicates that an object was removed from one of the model object's associations.
      */
-    public final static ChangeEventType RELATION_OBJECT_REMOVED = new ChangeEventType("RELATION_OBJECT_REMOVED");
+    public final static ChangeEventType ASSOCIATION_OBJECT_REMOVED = new ChangeEventType("ASSOCIATION_OBJECT_REMOVED");
 
     /**
      * Type that indicates that the referenced object has changed for one of the model object's 1-1
-     * relations.
+     * associations.
      */
-    public final static ChangeEventType RELATION_OBJECT_CHANGED = new ChangeEventType("RELATION_OBJECT_CHANGED");
+    public final static ChangeEventType ASSOCIATION_OBJECT_CHANGED = new ChangeEventType("ASSOCIATION_OBJECT_CHANGED");
 
     private final String name;
 

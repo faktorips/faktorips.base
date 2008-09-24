@@ -56,7 +56,7 @@ IChangeListenerSupportBuilder {
         if (eventType.equals(ChangeEventType.OBJECT_HAS_CHANGED)
                 || eventType.equals(ChangeEventType.DERIVED_PROPERTY_CHANGED)
                 || eventType.equals(ChangeEventType.MUTABLE_PROPERTY_CHANGED)
-                || eventType.equals(ChangeEventType.RELATION_OBJECT_CHANGED)) {
+                || eventType.equals(ChangeEventType.ASSOCIATION_OBJECT_CHANGED)) {
             methodsBuilder.appendClassName(fieldType);
             methodsBuilder.append(' ');
             methodsBuilder.append(getOldFieldName(fieldName));
@@ -91,7 +91,7 @@ IChangeListenerSupportBuilder {
             methodsBuilder.append(", ");
             appendFieldAccess(methodsBuilder, fieldType, fieldName);
             methodsBuilder.appendln("));");
-        } else if (eventType.equals(ChangeEventType.RELATION_OBJECT_ADDED)) {
+        } else if (eventType.equals(ChangeEventType.ASSOCIATION_OBJECT_ADDED)) {
             methodsBuilder.append(MethodNames.NOTIFIY_CHANGE_LISTENERS + "(new ");
             methodsBuilder.appendClassName(AssociationChangedEvent.class);
             methodsBuilder.append("(this, ");
@@ -99,7 +99,7 @@ IChangeListenerSupportBuilder {
             methodsBuilder.append(", null, ");
             methodsBuilder.append(paramName);
             methodsBuilder.appendln("));");
-        } else if (eventType.equals(ChangeEventType.RELATION_OBJECT_REMOVED)) {
+        } else if (eventType.equals(ChangeEventType.ASSOCIATION_OBJECT_REMOVED)) {
             methodsBuilder.append(MethodNames.NOTIFIY_CHANGE_LISTENERS + "(new ");
             methodsBuilder.appendClassName(AssociationChangedEvent.class);
             methodsBuilder.append("(this, ");
@@ -107,7 +107,7 @@ IChangeListenerSupportBuilder {
             methodsBuilder.append(", ");
             methodsBuilder.append(paramName);
             methodsBuilder.appendln(", null));");
-        } else if (eventType.equals(ChangeEventType.RELATION_OBJECT_CHANGED)) {
+        } else if (eventType.equals(ChangeEventType.ASSOCIATION_OBJECT_CHANGED)) {
             methodsBuilder.append(MethodNames.NOTIFIY_CHANGE_LISTENERS + "(new ");
             methodsBuilder.appendClassName(AssociationChangedEvent.class);
             methodsBuilder.append("(this, ");
