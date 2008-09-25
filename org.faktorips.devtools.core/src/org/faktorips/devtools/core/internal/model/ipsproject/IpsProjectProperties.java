@@ -654,7 +654,7 @@ public class IpsProjectProperties implements IIpsProjectProperties {
     }
     
     private void createIpsProjectDescriptionComment(Node parentEl) {
-        String s = "This XML file contains the properties of the enclosing ips project. It contains the following " + SystemUtils.LINE_SEPARATOR  //$NON-NLS-1$
+        String s = "This XML file contains the properties of the enclosing IPS project. It contains the following " + SystemUtils.LINE_SEPARATOR  //$NON-NLS-1$
         + " information:" + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$
         + "The generator used to transform the model to Java sourcecode and the product definition into the runtime format." + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$
         + "The path where to search for model and product definition files. This is basically the same concept as the  Java " + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$
@@ -662,14 +662,14 @@ public class IpsProjectProperties implements IIpsProjectProperties {
         + "The datatypes that can be used in the model. Datatypes used in the model fall into two categeories:" + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$
         + " * Predefined datatype" + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$
         + "   Predefined datatypes are defined by the datatype definition extension. Faktor-IPS predefines datatypes for" + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$
-        + "   the standard Java classes like Boolean, String, Integer, etc. and some additionals, for example Money." + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$
-        + "   You can add you own datatype be providing an extension and then use it from every ips project." + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$
+        + "   the standard Java classes like Boolean, String, Integer, etc. and some additional types, for example Money." + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$
+        + "   You can add you own datatype be providing an extension and then use it from every IPS project." + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$
         + " * User defined datatype (or dynamic datatype)" + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$
-        + "   If you want to use a Java class that represents a value as datatype, but do not want to provide an exension for" + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$
+        + "   If you want to use a Java class that represents a value as datatype, but do not want to provide an extension for" + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$
         + "   it, you can register this class as datatype in this file. See the details in the description of the datatype " + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$
-        + "   section below how to register the class. Naturallyt the class must be availabl via the project's Java classpath." + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$
-        + "   There you have different options. It is strongly recommended to provide the class via a Jar file or in a separate" + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$
-        + "   Java project. However cou can also implement the class in this project itself. In this case you have to set the " + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$
+        + "   section below how to register the class. Naturally, the class must be available via the project's Java classpath." + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$
+        + "   There you have different options. It is strongly recommended to provide the class via a JAR file or in a separate" + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$
+        + "   Java project. However you can also implement the class in this project itself. In this case you have to set the " + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$
         + "   javaProjectContainsClassesForDynamicDatatypes property to true so that Faktor-IPS also looks in this project " + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$
         + "   for the class. The disadvantage of this approach is that a clean build won't work properly. At the beginning" + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$
         + "   of the clean build the Java class is deleted, then Faktor-IPS checks the model, doesn't find the class and" + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$
@@ -679,7 +679,7 @@ public class IpsProjectProperties implements IIpsProjectProperties {
         + "    productDefinitionProject                           True if this project contains elements of the product definition." + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$
         + "    modelProject                                       True if this project contains the model or part of it." + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$
         + "    runtimeIdPrefix                                    " + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$
-        + "    changesInTimeNamingConvention                      Specifes the naming convensions for changes in time that " + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$
+        + "    changesInTimeNamingConvention                      Specifies the naming convensions for changes in time that " + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$
         + "                                                       are used throughout the system. Possible values are VAA and PM" + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$
         + "    javaProjectContainsClassesForDynamicDatatypes      see discussion above" + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$
         + "    <IpsArtefactBuilderSet/>                           The generator used. Details below." + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$
