@@ -42,7 +42,7 @@ public final class Util {
      * 
      * @throws CoreException
      */
-    public final static void addNature(IProject project, String natureId) 
+    public final static void addNature(IProject project, Strin natureId) 
     throws CoreException {
 		IProjectDescription description= project.getDescription();
 		String[] natures = description.getNatureIds(); 
