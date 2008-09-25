@@ -22,14 +22,14 @@ import org.eclipse.core.runtime.Status;
 
 /**
  * Extension of status that sets the correct plugin id and provides some
- * conveniance constructors.
+ * convenience constructors.
  * 
  * @author Jan Ortmann 
  */
 public class IpsStatus extends Status {
 
     /**
-     * Creates a new error status based on the given throwable.
+     * Creates a new error status based on the given {@code Throwable}.
      */
     public IpsStatus(Throwable throwable) {
         super(IStatus.ERROR, IpsPlugin.PLUGIN_ID, 0, 
@@ -38,7 +38,7 @@ public class IpsStatus extends Status {
     }
     
     /**
-     * Creates a new error status based on the given throwable.
+     * Creates a new error status based on the given message.
      */
     public IpsStatus(String msg) {
         super(IStatus.ERROR, IpsPlugin.PLUGIN_ID, 0, msg, null);
@@ -53,7 +53,7 @@ public class IpsStatus extends Status {
     }
 
     /**
-     * Creates a new error status based on the given message and throwable.
+     * Creates a new error status based on the given message and {@code Throwable}.
      */
     public IpsStatus(String msg, Throwable t) {
         super(IStatus.ERROR, IpsPlugin.PLUGIN_ID, 0, msg, t);
