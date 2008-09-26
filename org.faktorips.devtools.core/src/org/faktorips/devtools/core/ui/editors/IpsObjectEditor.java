@@ -51,7 +51,6 @@ import org.faktorips.devtools.core.model.ModificationStatusChangedEvent;
 import org.faktorips.devtools.core.model.ipsobject.IFixDifferencesToModelSupport;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObject;
 import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
-import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.ui.views.IpsProblemsLabelDecorator;
 
@@ -235,24 +234,7 @@ public abstract class IpsObjectEditor extends FormEditor
             if (path == null) {
                 return;
             }
-
-            String extension = IpsObjectType.PRODUCT_CMPT.getFileExtension();
-            int nameIndex = path.lastSegment().indexOf(extension);
-
-            IpsObjectType[] types = IpsObjectType.ALL_TYPES;
-            for (int i = 0; i < types.length; i++) {
-                extension = types[i].getFileExtension();
-                nameIndex = path.lastSegment().indexOf(extension);
-                if (nameIndex != -1) {
-                    break;
-                }
-            }
-
-            if (nameIndex == -1) {
-                return;
-            }
-            String name = path.lastSegment().substring(0, nameIndex) + extension;
-            ipsSrcFile = new IpsSrcFileImmutable(name, storage.getContents());
+            ipsSrcFile = new IpsSrcFileImmutable(path.lastSegment(), storage.getContents());
             if (TRACE) {
                 logMethodFinished("initFromStorageEditorInput"); //$NON-NLS-1$
             }

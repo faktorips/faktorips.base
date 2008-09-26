@@ -145,6 +145,7 @@ public class ProductCmptBuilder extends AbstractArtefactBuilder {
             // if the type can't be found, nothing can be generated.
             return false;
         }
+        //TODO pk 25-09-2008 I think at this point it needs to be checked if file comes from an archive
         return true;
     }
 

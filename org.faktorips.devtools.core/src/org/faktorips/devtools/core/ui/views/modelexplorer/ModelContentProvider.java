@@ -186,6 +186,7 @@ public class ModelContentProvider implements ITreeContentProvider {
                 IIpsProject ipsProject = IpsPlugin.getDefault().getIpsModel().getIpsProject(project.getName());
                 IIpsArchiveEntry[] archiveEntries = ipsProject.getIpsObjectPath().getArchiveEntries();
                 for (int i = 0; i < archiveEntries.length; i++) {
+                    //TODO pk archivelocation not valid for external files 25-09-2008
                     IPath archivePath = archiveEntries[i].getArchivePath();
                     IFile archiveFile = ResourcesPlugin.getWorkspace().getRoot().getFile(archivePath);
 					if (resource.equals(archiveFile)){

@@ -38,10 +38,14 @@ import java.util.jar.JarFile;
 
 import org.apache.commons.lang.StringUtils;
 import org.eclipse.core.resources.IFile;
+import org.eclipse.core.resources.IProject;
+import org.eclipse.core.resources.IResource;
+import org.eclipse.core.resources.IResourceDelta;
 import org.eclipse.core.resources.IWorkspaceRoot;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
+import org.eclipse.core.runtime.Path;
 import org.faktorips.devtools.core.IpsStatus;
 import org.faktorips.devtools.core.internal.model.IpsModel;
 import org.faktorips.devtools.core.model.ipsobject.QualifiedNameType;
@@ -49,6 +53,7 @@ import org.faktorips.devtools.core.model.ipsproject.IIpsArchive;
 import org.faktorips.devtools.core.model.ipsproject.IIpsPackageFragment;
 import org.faktorips.devtools.core.model.ipsproject.IIpsPackageFragmentRoot;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
+import org.faktorips.util.ArgumentCheck;
 import org.faktorips.util.StreamUtil;
 
 /**
@@ -65,10 +70,10 @@ public class IpsArchive implements IIpsArchive {
     private final static int IPSOBJECT_FOLDER_NAME_LENGTH = IIpsArchive.IPSOBJECTS_FOLDER.length(); 
     
     private IPath archivePath;
+    private IPath location;
     private long modificationStamp;
-    
-    IIpsPackageFragmentRoot root;
-    
+    private ArchiveIpsPackageFragmentRoot root;
+
     // package name as key, content as value. content stored as a set of qNameTypes
     private HashMap packs = null;
 
@@ -76,10 +81,58 @@ public class IpsArchive implements IIpsArchive {
     private LinkedHashMap qNameTypes = null;
     
     public IpsArchive(IIpsProject ipsProject, IPath path) {
+        ArgumentCheck.notNull(ipsProject, "The parameter ipsproject cannot be null.");
         this.archivePath = path;
-        root = new ArchiveIpsPackageFragmentRoot(ipsProject, archivePath);
+        this.root = new ArchiveIpsPackageFragmentRoot(ipsProject, this);
+        determineLocation();
     }
 
+    private void determineLocation(){
+        if(archivePath == null){
+            return;
+        }
+        //try to find the file assuming a path relative to the workspace
+        IWorkspaceRoot wsRoot = root.getIpsProject().getProject().getWorkspace().getRoot();
+        IFile file = wsRoot.getFile(archivePath);
+        if(file != null && file.exists()){
+            location = file.getLocation();
+            return;
+        }
+        
+        //try to find the file assuming a path relative to the project
+        IProject project = root.getIpsProject().getProject();
+        file = project.getFile(archivePath);
+        if(file != null && file.exists()){
+            location = file.getLocation();
+            return;
+        }
+        //try to find the file outside the workspace in the file system
+        File extFile = archivePath.toFile();
+        if(extFile.exists()){
+            location = Path.fromOSString(extFile.getAbsolutePath());
+        }
+        
+        //TODO pk: support for path variables is missing 26-09-2008
+        //location is null if it could not be determined through the above algorithm 
+    }
+
+    boolean isContained(IResourceDelta delta) {
+        //TODO comment wann geht das
+        IWorkspaceRoot wsRoot = root.getIpsProject().getProject().getWorkspace().getRoot();
+        IFile file = wsRoot.getFileForLocation(getLocation());
+        if (delta.findMember(file.getProjectRelativePath()) != null) {
+            return true;
+        }
+        return false;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public IPath getLocation(){
+        return location;
+    }
+    
     /**
      * {@inheritDoc}
      */
@@ -94,15 +147,10 @@ public class IpsArchive implements IIpsArchive {
     	if (archivePath == null) {
     		return false;
     	}
-    	IFile archiveFileInWorkspace = ResourcesPlugin.getWorkspace().getRoot().getFile(archivePath);
-
-    	// check existence within workspace
-    	boolean fileExists = (archiveFileInWorkspace != null) && archiveFileInWorkspace.exists(); 
-		
-    	// check existence in local filesystem if file is not within workspace
-    	fileExists = fileExists || archivePath.toFile().exists();
-		
-		return fileExists;
+    	if(getLocation() != null){
+    	    return true;
+    	}
+    	return false;
     }
     
     /**
@@ -224,55 +272,6 @@ public class IpsArchive implements IIpsArchive {
         return null;
     }
     
-    /*
-     * The specified path to the resource within the jar file needs to be relative to the
-     * IIpsArchive.IPSOBJECTS_FOLDER. Additionally the path doesn't need to start with a path separator.
-     */
-//    TODO pk 2007-11-11 intermedia state
-//    private InputStream getResource(String path) throws CoreException{
-//        if (path == null) {
-//            return null;
-//        }
-//        JarFile archive;
-//        try {
-//            archive = new JarFile(archiveFile.getLocation().toFile());
-//        } catch (IOException e) {
-//            throw new CoreException(new IpsStatus("Error opening jar for " + this, e)); //$NON-NLS-1$
-//        }
-//        JarEntry entry = archive.getJarEntry(IIpsArchive.IPSOBJECTS_FOLDER + IPath.SEPARATOR + path);
-//        if (entry == null) {
-//            return null;
-//        }
-//        try {
-//            return StreamUtil.copy(archive.getInputStream(entry), 1024);
-//        } catch (IOException e) {
-//            throw new CoreException(new IpsStatus("Error reading data from archive for " + this, e)); //$NON-NLS-1$
-//        } finally {
-//            try {
-//                archive.close();
-//            } catch (Exception e) {
-//                throw new CoreException(new IpsStatus("Error closing stream or archive for " + this, e)); //$NON-NLS-1$
-//            }
-//        }
-//    }
-
-//  TODO pk 2007-11-11 intermedia state
-//    public InputStream getContent(QualifiedNameType qnt) throws CoreException {
-//        if (qnt == null) {
-//            return null;
-//        }
-//        readArchiveContentIfNecessary();
-//        if (!qNameTypes.containsKey(qnt)) {
-//            return null;
-//        }
-//        InputStream is = getResource(qnt.toPath().toString());
-//        if (is == null) {
-//            throw new CoreException(new IpsStatus("Entry not found in archive for " + this)); //$NON-NLS-1$
-//        }
-//        return is;
-//    }
-    
-    
     /**
      * {@inheritDoc}
      */
@@ -307,18 +306,17 @@ public class IpsArchive implements IIpsArchive {
                 throw new CoreException(new IpsStatus("Error closing stream or archive for " + this, e)); //$NON-NLS-1$
             }
         }
-
     }
     
     private void readArchiveContentIfNecessary() throws CoreException {
         synchronized (this) {
-            if (archivePath==null) {
+            if (getLocation() == null) {
                 return;
             }
             if (packs==null || qNameTypes == null) {
                 readArchiveContent();
             }
-            if ((archivePath.toFile().lastModified()!=modificationStamp)) {
+            if ((getLocation().toFile().lastModified()!=modificationStamp)) {
                 readArchiveContent();
             }
         }
@@ -326,7 +324,7 @@ public class IpsArchive implements IIpsArchive {
     
     private void readArchiveContent() throws CoreException {
         if (!exists()) {
-            throw new CoreException(new IpsStatus("IpsArchive file " + archivePath + " does not exist!")); //$NON-NLS-1$ //$NON-NLS-2$
+            throw new CoreException(new IpsStatus("IpsArchive file " + getLocation() + " does not exist!")); //$NON-NLS-1$ //$NON-NLS-2$
         }
         if (IpsModel.TRACE_MODEL_MANAGEMENT) {
             System.out.println("Reading archive content from disk: " + this); //$NON-NLS-1$
@@ -341,7 +339,7 @@ public class IpsArchive implements IIpsArchive {
         try {
             jar = new JarFile(file);
         } catch (IOException e) {
-            throw new CoreException(new IpsStatus("Error reading ips archive " + archivePath, e)); //$NON-NLS-1$
+            throw new CoreException(new IpsStatus("Error reading ips archive " + getLocation(), e)); //$NON-NLS-1$
         }
         Properties ipsObjectProperties = readIpsObjectsProperties(jar);
         for (Enumeration e=jar.entries(); e.hasMoreElements(); ) {
@@ -368,21 +366,12 @@ public class IpsArchive implements IIpsArchive {
         try {
             jar.close();
         } catch (IOException e) {
-            throw new CoreException(new IpsStatus("Error closing ips archive " + archivePath)); //$NON-NLS-1$
+            throw new CoreException(new IpsStatus("Error closing ips archive " + getLocation())); //$NON-NLS-1$
         }
     }
 
 	private File getFileFromPath() {
-		// is there an easier way to convert to java.io.File?
-        // IPath.toFile() fails for workspace absolute paths like "/Project/lib/archive.jar", so we must
-        // convert to file system absolute path, e.g. "/home/x/workspace/Project/lib/archive.jar" using the following construct
-        IWorkspaceRoot workspaceRoot = ResourcesPlugin.getWorkspace().getRoot();
-        IPath location = workspaceRoot.getFile(archivePath).getLocation(); 
-        if (location == null) {
-        	location = archivePath;
-        }
-        
-		return location.toFile();
+        return getLocation().toFile();
 	}
     
     private Properties readIpsObjectsProperties(JarFile archive) throws CoreException {
@@ -416,7 +405,7 @@ public class IpsArchive implements IIpsArchive {
     }
     
     public String toString() {
-        return "Archive " + archivePath; //$NON-NLS-1$
+        return "Archive " + getLocation(); //$NON-NLS-1$
     }
     
     private List getParentPackagesIncludingSelf(String pack) {
@@ -460,6 +449,23 @@ public class IpsArchive implements IIpsArchive {
         return props.extensionPackage;
     }
 
+    /**
+     * Returns an IResource only if the resource can be located by the {@link IWorkspaceRoot#getFileForLocation(IPath)} method. 
+     */
+    IResource getCorrespondingResource() {
+        IWorkspaceRoot workspaceRoot = ResourcesPlugin.getWorkspace().getRoot();
+        IFile resource = workspaceRoot.getFileForLocation(getLocation());
+        if (resource == null) {
+            resource = workspaceRoot.getFile(getLocation());
+        }
+        return resource;
+    }
+
+
+    public IIpsPackageFragmentRoot getRoot() {
+        return root;
+    }
+    
     class IpsObjectProperties {
         
         String basePackage;

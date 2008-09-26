@@ -55,6 +55,17 @@ public interface IIpsArchive {
     public IPath getArchivePath();
 
     /**
+     * Returns the absolute path in the local file system to this resource, 
+     * or <code>null</code> if no path can be determined.
+     */
+    public IPath getLocation();
+
+    /**
+     * Returns the package fragment root that is represented by this archive.
+     */
+    public IIpsPackageFragmentRoot getRoot();
+    
+    /**
      * Returns <code>true</code> if the archive exists, otherwise <code>false</code>.
      */
     public boolean exists();

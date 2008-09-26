@@ -17,6 +17,7 @@
 
 package org.faktorips.devtools.core.model.ipsproject;
 
+import org.eclipse.core.resources.IResourceDelta;
 import org.eclipse.core.runtime.IPath;
 
 /**
@@ -42,6 +43,13 @@ public interface IIpsArchiveEntry extends IIpsObjectPathEntry {
      * Sets the new archive path.
      */
     public void setArchivePath(IIpsProject ipsProject, IPath archiveFile);
+    
+    /**
+     * Returns true if a representation of this entry is part of the provided delta or one of its
+     * children. <p/> Note: For changes of files outside the workspace which are referenced from the
+     * project in any kind no IResourceDelta will be created.
+     */
+    public boolean isContained(IResourceDelta delta);
     
     
 }

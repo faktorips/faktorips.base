@@ -17,6 +17,8 @@
 
 package org.faktorips.devtools.core.ui.views.modelexplorer;
 
+import java.io.ByteArrayInputStream;
+
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.resources.IProject;
@@ -155,6 +157,8 @@ public class ModelExplorerConfigurationTest extends AbstractIpsPluginTest {
         assertTrue(config.representsFile(pcType));
         
         IIpsObjectPath path = proj.getIpsObjectPath();
+        IFile file = proj.getProject().getFile("Archive.ipsar");
+        file.create(new ByteArrayInputStream("".getBytes()), true, null);
         path.newArchiveEntry(proj.getProject().getFile("Archive.ipsar").getLocation());
         proj.setIpsObjectPath(path);
         IIpsPackageFragmentRoot archiveRoot = proj.findIpsPackageFragmentRoot("Archive.ipsar");

@@ -23,7 +23,10 @@ import java.util.Set;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.SystemUtils;
+import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IProject;
+import org.eclipse.core.resources.IResourceDelta;
+import org.eclipse.core.resources.IWorkspaceRoot;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Path;
@@ -62,7 +65,6 @@ public class IpsArchiveEntry extends IpsObjectPathEntry implements IIpsArchiveEn
     }
     
     private IIpsArchive archive;
-    private IIpsPackageFragmentRoot root;
     
     /**
      * @param path
@@ -94,14 +96,12 @@ public class IpsArchiveEntry extends IpsObjectPathEntry implements IIpsArchiveEn
     public void setArchivePath(IIpsProject ipsProject, IPath newArchivePath) {
         if (newArchivePath==null) {
             archive = null;
-            root = null;
             return;
         }
         if (archive!=null && newArchivePath.equals(archive.getArchivePath())) {
             return;
         }
         archive = new IpsArchive(ipsProject, newArchivePath);
-        root = new ArchiveIpsPackageFragmentRoot(ipsProject, newArchivePath);
     }
     
     /**
@@ -122,7 +122,7 @@ public class IpsArchiveEntry extends IpsObjectPathEntry implements IIpsArchiveEn
      * {@inheritDoc}
      */
     public IIpsPackageFragmentRoot getIpsPackageFragmentRoot() throws CoreException {
-        return root;
+        return archive.getRoot();
     }
     
     /**
@@ -180,8 +180,8 @@ public class IpsArchiveEntry extends IpsObjectPathEntry implements IIpsArchiveEn
     }
 
     private IIpsSrcFile getIpsSrcFile(QualifiedNameType qNameType) throws CoreException {
-        root.getIpsPackageFragment(qNameType.getPackageName());
-        ArchiveIpsPackageFragment pack = new ArchiveIpsPackageFragment((ArchiveIpsPackageFragmentRoot)root, qNameType.getPackageName()); 
+        archive.getRoot().getIpsPackageFragment(qNameType.getPackageName());
+        ArchiveIpsPackageFragment pack = new ArchiveIpsPackageFragment((ArchiveIpsPackageFragmentRoot)archive.getRoot(), qNameType.getPackageName()); 
         return new ArchiveIpsSrcFile(pack, qNameType.getFileName()); 
     }
     
@@ -226,5 +226,19 @@ public class IpsArchiveEntry extends IpsObjectPathEntry implements IIpsArchiveEn
      */
     public String toString() {
         return "ArchiveEntry[" + getArchivePath().toString() + "]"; //$NON-NLS-1$ //$NON-NLS-2$
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public boolean isContained(IResourceDelta delta) {
+        IWorkspaceRoot root = this.archive.getRoot().getIpsProject().getProject().getWorkspace().getRoot();
+        //this method can locate a file for an absolute path that leads to a location within the workspace
+        //If the path location is outside the workspace null will be returned.
+        IFile file = root.getFileForLocation(archive.getLocation());
+        if (delta.findMember(file.getProjectRelativePath()) != null) {
+            return true;
+        }
+        return false;
     }
 }

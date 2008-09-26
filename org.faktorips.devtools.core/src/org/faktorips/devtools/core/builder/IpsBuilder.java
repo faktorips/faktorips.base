@@ -17,16 +17,13 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.resources.IMarker;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.IResourceDelta;
 import org.eclipse.core.resources.IResourceDeltaVisitor;
-import org.eclipse.core.resources.IWorkspaceRoot;
 import org.eclipse.core.resources.IncrementalProjectBuilder;
-import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
@@ -198,10 +195,7 @@ public class IpsBuilder extends IncrementalProjectBuilder {
         }
         IIpsArchiveEntry[] entries = ipsProject.getIpsObjectPath().getArchiveEntries();
         for (int i = 0; i < entries.length; i++) {
-            IPath archivePath = entries[i].getArchivePath();
-            IWorkspaceRoot root = ResourcesPlugin.getWorkspace().getRoot();
-            IFile archiveFile = root.getFileForLocation(archivePath);
-            if (archiveFile  != null && delta.findMember(archiveFile.getProjectRelativePath()) != null) {
+            if(entries[i].isContained(delta)){
                 return true;
             }
         }

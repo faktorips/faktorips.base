@@ -42,6 +42,9 @@ import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
  * 
  * @author Jan Ortmann
  */
+//TODO test mit pfad relativ zum workspace Testprojekt/lib/archive.jar
+//TODO test von isContained() Methode im IpsArcheEntry
+
 public class IpsArchiveTest extends AbstractIpsPluginTest {
 
     private IIpsProject project;
@@ -116,7 +119,7 @@ public class IpsArchiveTest extends AbstractIpsPluginTest {
         assertFalse(archive.containsPackage("unknwon"));
         
     }
-
+    
     public void testGetArchivePath() {
         assertEquals(archivePath, archive.getArchivePath());
     }
