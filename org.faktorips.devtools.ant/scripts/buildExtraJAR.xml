@@ -7,7 +7,7 @@
 	<property name="plugin.destination" value="${basedir}"/>
 	<property name="build.result.folder" value="${basedir}/ant_tasks"/>
 	<property name="version.suffix" value="_3.1.0"/>
-	<property name="eclipsehome" value="/usr/lib/eclipse-3.2.2/" />
+	<property name="eclipsehome" value="/usr/lib/eclipse-3.4-test/" />
 	
 	<target name="main" depends="clean, test">
 	</target>

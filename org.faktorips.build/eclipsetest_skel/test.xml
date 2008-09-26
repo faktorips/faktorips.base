@@ -116,7 +116,7 @@
    	    
 		<echo message="extracting eclipse-test" />
 	    <exec dir="." executable="unzip" failonerror="true">
-	    		<arg line="-o -qq eclipse322-test.zip -d ${install}" />
+	    		<arg line="-o -qq eclipse34-test.zip -d ${install}" />
 	    </exec>
 		<echo message="extracting faktorips-test feature" />	 
         <exec dir="." executable="unzip" failonerror="true" >
