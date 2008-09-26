@@ -116,8 +116,8 @@ public class IpsArchive implements IIpsArchive {
         //location is null if it could not be determined through the above algorithm 
     }
 
-    boolean isContained(IResourceDelta delta) {
-        //TODO comment wann geht das
+    public boolean isContained(IResourceDelta delta) {
+        //see javadoc IIpsArchiveEntry#isContained(IResourceDelta)
         IWorkspaceRoot wsRoot = root.getIpsProject().getProject().getWorkspace().getRoot();
         IFile file = wsRoot.getFileForLocation(getLocation());
         if (delta.findMember(file.getProjectRelativePath()) != null) {

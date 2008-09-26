@@ -23,10 +23,8 @@ import java.util.Set;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.SystemUtils;
-import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResourceDelta;
-import org.eclipse.core.resources.IWorkspaceRoot;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Path;
@@ -232,13 +230,6 @@ public class IpsArchiveEntry extends IpsObjectPathEntry implements IIpsArchiveEn
      * {@inheritDoc}
      */
     public boolean isContained(IResourceDelta delta) {
-        IWorkspaceRoot root = this.archive.getRoot().getIpsProject().getProject().getWorkspace().getRoot();
-        //this method can locate a file for an absolute path that leads to a location within the workspace
-        //If the path location is outside the workspace null will be returned.
-        IFile file = root.getFileForLocation(archive.getLocation());
-        if (delta.findMember(file.getProjectRelativePath()) != null) {
-            return true;
-        }
-        return false;
+        return ((IpsArchive)archive).isContained(delta);
     }
 }
