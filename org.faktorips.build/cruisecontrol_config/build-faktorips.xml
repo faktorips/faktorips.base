@@ -235,7 +235,7 @@
                 <cvs command="co org.faktorips.build" dest="${dir}" cvsroot="${cvsroot}" quiet="true" />
 		
                 <!-- execute buildscript which is managed in cvs-module org.faktorips.build/bootstrap/run.sh -->
-                <exec executable="/bin/bash" failonerror="true" output="/dev/null" logError="true">
+                <exec executable="/bin/bash" failonerror="true" logError="true">
                         <arg line="${dir}/org.faktorips.build/bootstrap/run.sh" />
                 </exec>
 
@@ -435,7 +435,7 @@
                 <cvs command="co de.bbv.faktorips.build" dest="${dir}" cvsroot="${cvsroot}" quiet="true" />
 		
                 <!-- execute buildscript which is managed in cvs-module de.bbv.faktorips.build/bootstrap/run.sh -->
-                <exec executable="/bin/bash" failonerror="true" output="/dev/null" logError="true">
+                <exec executable="/bin/bash" failonerror="true"  logError="true">
                         <arg line="${dir}/de.bbv.faktorips.build/bootstrap/run.sh" />
                 </exec>
 
