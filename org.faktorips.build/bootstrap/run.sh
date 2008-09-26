@@ -15,6 +15,7 @@ arch=-x86
 #usePserver=${RDT_USE_PSERVER:+-DusePserver=true}
 #testClean=${RDT_TEST_CLEAN:+-Dclean=true}
 #dontRunTests=${RDT_DONT_RUN_TESTS:+-DdontRunTests=true}
+verboseAnt="-v"
 
 #REM reset ant command line args
 ANT_CMD_LINE_ARGS=
