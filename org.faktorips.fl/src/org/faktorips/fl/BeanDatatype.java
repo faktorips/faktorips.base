@@ -26,7 +26,7 @@ import org.faktorips.datatype.Datatype;
  */
 public interface BeanDatatype extends Datatype {
 
-    /** 
+    /**  
      * Returns the property datatype representing the property with the given name.
      */
     
