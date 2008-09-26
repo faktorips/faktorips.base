@@ -18,6 +18,7 @@ import org.eclipse.core.runtime.IExtension;
 import org.eclipse.core.runtime.IExtensionPoint;
 import org.eclipse.core.runtime.IExtensionRegistry;
 import org.eclipse.core.runtime.IRegistryChangeListener;
+import org.eclipse.core.runtime.IRegistryEventListener;
 import org.faktorips.util.ArgumentCheck;
 
 /**
@@ -199,29 +200,29 @@ public class TestExtensionRegistry implements IExtensionRegistry {
     }
 
     
-//    // @since Eclipse 3.4 (Ganymede)
-//	public void addListener(IRegistryEventListener arg0) {
-//		throw new RuntimeException("Not implemented");
-//	}
-//	
-//    // @since Eclipse 3.4 (Ganymede)
-//	public void addListener(IRegistryEventListener arg0, String arg1) {
-//		throw new RuntimeException("Not implemented");
-//	}
-//	
-//    // @since Eclipse 3.4 (Ganymede)
-//	public IExtensionPoint[] getExtensionPoints(IContributor arg0) {
-//		throw new RuntimeException("Not implemented");
-//	}
-//	
-//    // @since Eclipse 3.4 (Ganymede)
-//	public IExtension[] getExtensions(IContributor arg0) {
-//		throw new RuntimeException("Not implemented");
-//	}
-//	
-//    // @since Eclipse 3.4 (Ganymede)
-//	public void removeListener(IRegistryEventListener arg0) {
-//		throw new RuntimeException("Not implemented");
-//	}
-//
+    // @since Eclipse 3.4 (Ganymede)
+	public void addListener(IRegistryEventListener arg0) {
+		throw new RuntimeException("Not implemented");
+	}
+	
+    // @since Eclipse 3.4 (Ganymede)
+	public void addListener(IRegistryEventListener arg0, String arg1) {
+		throw new RuntimeException("Not implemented");
+	}
+	
+    // @since Eclipse 3.4 (Ganymede)
+	public IExtensionPoint[] getExtensionPoints(IContributor arg0) {
+		throw new RuntimeException("Not implemented");
+	}
+	
+    // @since Eclipse 3.4 (Ganymede)
+	public IExtension[] getExtensions(IContributor arg0) {
+		throw new RuntimeException("Not implemented");
+	}
+	
+    // @since Eclipse 3.4 (Ganymede)
+	public void removeListener(IRegistryEventListener arg0) {
+		throw new RuntimeException("Not implemented");
+	}
+
 }
