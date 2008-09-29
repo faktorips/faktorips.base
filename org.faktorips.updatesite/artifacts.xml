@@ -1,16 +1,16 @@
 <?xml version='1.0' encoding='UTF-8'?>
 <?artifactRepository class='org.eclipse.equinox.internal.p2.artifact.repository.simple.SimpleArtifactRepository' version='1.0.0'?>
-<repository name='file:/F:/projekte/workspace34/org.faktorips.updatesite/ - artifacts' type='org.eclipse.equinox.p2.artifact.repository.simpleRepository' version='1'>
+<repository name='file:/F:/projekte/workspace34/org.faktorips.updatesite/ - artifacts' type='org.eclipse.equinox.p2.artifact.repository.simpleRepository' version='1.0.0'>
   <properties size='2'>
     <property name='p2.compressed' value='false'/>
-    <property name='p2.timestamp' value='1222524865151'/>
+    <property name='p2.timestamp' value='1222697453453'/>
   </properties>
   <mappings size='3'>
     <rule filter='(&amp; (classifier=osgi.bundle))' output='${repoUrl}/plugins/${id}_${version}.jar'/>
     <rule filter='(&amp; (classifier=binary))' output='${repoUrl}/binary/${id}_${version}'/>
     <rule filter='(&amp; (classifier=org.eclipse.update.feature))' output='${repoUrl}/features/${id}_${version}.jar'/>
   </mappings>
-  <artifacts size='211'>
+  <artifacts size='218'>
     <artifact classifier='osgi.bundle' id='org.faktorips.devtools.core' version='1.0.0.rc1'>
       <properties size='3'>
         <property name='artifact.size' value='5154175'/>
@@ -77,6 +77,13 @@
       <properties size='2'>
         <property name='artifact.size' value='2587'/>
         <property name='download.size' value='2587'/>
+      </properties>
+    </artifact>
+    <artifact classifier='osgi.bundle' id='org.faktorips.valuetypes.java5' version='2.1.0.rfinal'>
+      <properties size='3'>
+        <property name='artifact.size' value='28573'/>
+        <property name='download.size' value='28573'/>
+        <property name='download.contentType' value='application/zip'/>
       </properties>
     </artifact>
     <artifact classifier='osgi.bundle' id='org.faktorips.devtools.stdbuilder' version='1.0.0.rc3'>
@@ -168,17 +175,17 @@
         <property name='download.contentType' value='application/zip'/>
       </properties>
     </artifact>
-    <artifact classifier='osgi.bundle' id='org.faktorips.devtools.core' version='0.9.41'>
-      <properties size='3'>
-        <property name='artifact.size' value='6065376'/>
-        <property name='download.size' value='6065376'/>
-        <property name='download.contentType' value='application/zip'/>
-      </properties>
-    </artifact>
     <artifact classifier='osgi.bundle' id='org.faktorips.nls.devtools.core.nl1' version='1.0.3'>
       <properties size='3'>
         <property name='artifact.size' value='179831'/>
         <property name='download.size' value='179831'/>
+        <property name='download.contentType' value='application/zip'/>
+      </properties>
+    </artifact>
+    <artifact classifier='osgi.bundle' id='org.faktorips.devtools.core' version='0.9.41'>
+      <properties size='3'>
+        <property name='artifact.size' value='6065376'/>
+        <property name='download.size' value='6065376'/>
         <property name='download.contentType' value='application/zip'/>
       </properties>
     </artifact>
@@ -259,6 +266,20 @@
         <property name='download.contentType' value='application/zip'/>
       </properties>
     </artifact>
+    <artifact classifier='osgi.bundle' id='org.faktorips.feature.source' version='2.1.0.rfinal'>
+      <properties size='3'>
+        <property name='artifact.size' value='2807802'/>
+        <property name='download.size' value='2807802'/>
+        <property name='download.contentType' value='application/zip'/>
+      </properties>
+    </artifact>
+    <artifact classifier='osgi.bundle' id='org.faktorips.devtools.ant' version='2.1.0.rfinal'>
+      <properties size='3'>
+        <property name='artifact.size' value='12083'/>
+        <property name='download.size' value='12083'/>
+        <property name='download.contentType' value='application/zip'/>
+      </properties>
+    </artifact>
     <artifact classifier='osgi.bundle' id='org.faktorips.dtflcommon' version='0.9.41'>
       <properties size='3'>
         <property name='artifact.size' value='291847'/>
@@ -326,17 +347,17 @@
         <property name='download.size' value='441'/>
       </properties>
     </artifact>
-    <artifact classifier='osgi.bundle' id='org.faktorips.dtflcommon' version='2.0.0.rc2'>
-      <properties size='3'>
-        <property name='artifact.size' value='297066'/>
-        <property name='download.size' value='297066'/>
-        <property name='download.contentType' value='application/zip'/>
-      </properties>
-    </artifact>
     <artifact classifier='osgi.bundle' id='org.faktorips.fl' version='0.9.39'>
       <properties size='3'>
         <property name='artifact.size' value='398495'/>
         <property name='download.size' value='398495'/>
+        <property name='download.contentType' value='application/zip'/>
+      </properties>
+    </artifact>
+    <artifact classifier='osgi.bundle' id='org.faktorips.dtflcommon' version='2.0.0.rc2'>
+      <properties size='3'>
+        <property name='artifact.size' value='297066'/>
+        <property name='download.size' value='297066'/>
         <property name='download.contentType' value='application/zip'/>
       </properties>
     </artifact>
@@ -514,6 +535,12 @@
         <property name='artifact.size' value='246399'/>
         <property name='download.size' value='246399'/>
         <property name='download.contentType' value='application/zip'/>
+      </properties>
+    </artifact>
+    <artifact classifier='org.eclipse.update.feature' id='org.faktorips.feature.nls1' version='2.1.0.rfinal'>
+      <properties size='2'>
+        <property name='artifact.size' value='2897'/>
+        <property name='download.size' value='2897'/>
       </properties>
     </artifact>
     <artifact classifier='osgi.bundle' id='org.faktorips.runtime' version='2.0.1'>
@@ -1059,6 +1086,13 @@
         <property name='download.contentType' value='application/zip'/>
       </properties>
     </artifact>
+    <artifact classifier='osgi.bundle' id='org.faktorips.nls.devtools.core.nl1' version='2.1.0.rfinal'>
+      <properties size='3'>
+        <property name='artifact.size' value='141598'/>
+        <property name='download.size' value='141598'/>
+        <property name='download.contentType' value='application/zip'/>
+      </properties>
+    </artifact>
     <artifact classifier='osgi.bundle' id='org.faktorips.dtflcommon' version='2.0.1'>
       <properties size='3'>
         <property name='artifact.size' value='209722'/>
@@ -1111,6 +1145,13 @@
       <properties size='3'>
         <property name='artifact.size' value='91672'/>
         <property name='download.size' value='91672'/>
+        <property name='download.contentType' value='application/zip'/>
+      </properties>
+    </artifact>
+    <artifact classifier='osgi.bundle' id='org.faktorips.runtime' version='2.1.0.rfinal'>
+      <properties size='3'>
+        <property name='artifact.size' value='113180'/>
+        <property name='download.size' value='113180'/>
         <property name='download.contentType' value='application/zip'/>
       </properties>
     </artifact>
@@ -1249,6 +1290,12 @@
         <property name='download.contentType' value='application/zip'/>
       </properties>
     </artifact>
+    <artifact classifier='org.eclipse.update.feature' id='org.faktorips.feature' version='2.1.0.rfinal'>
+      <properties size='2'>
+        <property name='artifact.size' value='3053'/>
+        <property name='download.size' value='3053'/>
+      </properties>
+    </artifact>
     <artifact classifier='osgi.bundle' id='org.faktorips.feature.source' version='2.0.1'>
       <properties size='3'>
         <property name='artifact.size' value='2139469'/>
@@ -1277,6 +1324,13 @@
         <property name='download.contentType' value='application/zip'/>
       </properties>
     </artifact>
+    <artifact classifier='osgi.bundle' id='org.faktorips.nls.devtools.core.nl1' version='0.9.39'>
+      <properties size='3'>
+        <property name='artifact.size' value='101395'/>
+        <property name='download.size' value='101395'/>
+        <property name='download.contentType' value='application/zip'/>
+      </properties>
+    </artifact>
     <artifact classifier='org.eclipse.update.feature' id='org.faktorips.feature.source' version='2.1.0.ms1'>
       <properties size='2'>
         <property name='artifact.size' value='2515'/>
@@ -1287,13 +1341,6 @@
       <properties size='3'>
         <property name='artifact.size' value='2404633'/>
         <property name='download.size' value='2404633'/>
-        <property name='download.contentType' value='application/zip'/>
-      </properties>
-    </artifact>
-    <artifact classifier='osgi.bundle' id='org.faktorips.nls.devtools.core.nl1' version='0.9.39'>
-      <properties size='3'>
-        <property name='artifact.size' value='101395'/>
-        <property name='download.size' value='101395'/>
         <property name='download.contentType' value='application/zip'/>
       </properties>
     </artifact>

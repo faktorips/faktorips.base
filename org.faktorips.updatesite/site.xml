@@ -63,7 +63,7 @@
    <feature url="features/org.faktorips.feature.nls1_2.1.0.ms2.jar" id="org.faktorips.feature.nls1" version="2.1.0.ms2">
       <category name="Faktor-IPS 2.1.0.ms2"/>
    </feature>
-   <feature url="features/org.faktorips.feature.java5_2.1.0.rfinal.jar" id="org.faktorips.feature.java5" version="2.1.0.rfinal">
+   <feature url="features/org.faktorips.feature_2.1.0.rfinal.jar" id="org.faktorips.feature" version="2.1.0.rfinal">
       <category name="Faktor-IPS 2.1.0.rfinal"/>
    </feature>
    <feature url="features/org.faktorips.feature.nls1_2.1.0.rfinal.jar" id="org.faktorips.feature.nls1" version="2.1.0.rfinal">
