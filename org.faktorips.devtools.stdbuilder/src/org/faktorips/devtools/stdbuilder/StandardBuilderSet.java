@@ -132,7 +132,7 @@ public class StandardBuilderSet extends DefaultBuilderSet {
     }
 
     private void initVersion() {
-        version = "2.0.1";
+        version = "2.1.0";
         // Version versionObj =
         // Version.parseVersion((String)StdBuilderPlugin.getDefault().getBundle().getHeaders().get(org.osgi.framework.Constants.BUNDLE_VERSION));
         // StringBuffer buf = new StringBuffer();
