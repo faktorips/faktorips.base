@@ -24,7 +24,7 @@ import java.util.Locale;
  * <p>
  * Example:
  * <blockquote>
- * <pre>
+ * <pre> 
  * 2 * a + 3
  * </pre>
  * </blockquote>
