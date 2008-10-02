@@ -425,7 +425,7 @@ public class EnumClassesBuilder extends DefaultJavaSourceFileBuilder {
      */
     private void generateMethodGetAllEnumValues(JavaCodeFragmentBuilder methodBuilder) throws CoreException {
 
-        // TODO java naming convensions
+        // TODO java naming conventions
         String methodName = "getAllValues";
 
         JavaCodeFragment methodBody = new JavaCodeFragment();
@@ -449,7 +449,7 @@ public class EnumClassesBuilder extends DefaultJavaSourceFileBuilder {
     }
 
     private String getMethodNameGetEnumValue(ITableContents tableContents) {
-        // TODO java naming convensions
+        // TODO java naming conventions
         return "get" + StringUtils.capitalize(tableContents.getName());
     }
 
@@ -547,7 +547,7 @@ public class EnumClassesBuilder extends DefaultJavaSourceFileBuilder {
         methodBody.append(")");
         methodBody.append(" != null;");
 
-        // TODO java naming convensions
+        // TODO java naming conventions
         String methodName = "is" + StringUtils.capitalize(getTableContents().getName());
         String[] parameterNames = new String[] { idKeyItem.getName() };
         String[] parameterClasses = new String[] { idDatatype.getJavaClassName() };

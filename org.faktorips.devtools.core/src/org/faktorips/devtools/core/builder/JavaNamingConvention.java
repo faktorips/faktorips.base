@@ -72,7 +72,7 @@ public class JavaNamingConvention {
     
     /**
      * Converts the provided name of a constant class variable according to these 
-     * namings convension and returns it.
+     * naming convention and returns it.
      */
     public String getConstantClassVarName(String propertyName){
     	return StringUtils.upperCase(propertyName);

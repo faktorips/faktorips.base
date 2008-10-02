@@ -103,7 +103,7 @@ public class GenAssociationToMany extends GenAssociation {
      * Returns the name of the method that returns a reference object at a specified index.
      */
     public String getMethodNameGetRefObjectAtIndex() {
-        // TODO extend JavaNamingConvensions for association accessor an mutator methods
+        // TODO extend JavaNamingConventions for association accessor an mutator methods
         return "get" + StringUtils.capitalize(association.getTargetRoleSingular());
     }
 

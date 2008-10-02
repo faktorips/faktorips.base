@@ -583,7 +583,7 @@ public class GenProdAssociationToMany extends GenProdAssociation {
     }
 
     public String getMethodNameGetRelatedCmptAtIndex() {
-        // TODO extend JavaNamingConvensions for association accessor an mutator methods
+        // TODO extend JavaNamingConventions for association accessor an mutator methods
         return "get" + StringUtils.capitalize(association.getTargetRoleSingular());
     }
 

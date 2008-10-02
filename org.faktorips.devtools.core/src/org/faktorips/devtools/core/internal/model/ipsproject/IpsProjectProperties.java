@@ -679,7 +679,7 @@ public class IpsProjectProperties implements IIpsProjectProperties {
         + "    productDefinitionProject                           True if this project contains elements of the product definition." + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$
         + "    modelProject                                       True if this project contains the model or part of it." + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$
         + "    runtimeIdPrefix                                    " + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$
-        + "    changesInTimeNamingConvention                      Specifies the naming convensions for changes in time that " + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$
+        + "    changesInTimeNamingConvention                      Specifies the naming conventions for changes in time that " + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$
         + "                                                       are used throughout the system. Possible values are VAA and PM" + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$
         + "    javaProjectContainsClassesForDynamicDatatypes      see discussion above" + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$
         + "    <IpsArtefactBuilderSet/>                           The generator used. Details below." + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$
