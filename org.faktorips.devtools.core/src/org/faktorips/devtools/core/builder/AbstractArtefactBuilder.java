@@ -16,7 +16,7 @@
  *******************************************************************************/
 
 package org.faktorips.devtools.core.builder;
-
+ 
 import java.io.ByteArrayInputStream;
 
 import org.eclipse.core.resources.IContainer;
