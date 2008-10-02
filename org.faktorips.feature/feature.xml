@@ -219,4 +219,16 @@ Es gilt das Recht der Bundesrepublik Deutschland.
          version="2.1.0.rfinal"
          unpack="false"/>
 
+   <plugin
+         id="org.faktorips.runtime.java5"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"/>
+
+   <plugin
+         id="org.faktorips.valuetypes.java5"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"/>
+
 </feature>
