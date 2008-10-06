@@ -38,6 +38,17 @@ public class Messages extends NLS {
     public static String ArchiveComposite_dialog_warning_select_archive;
     public static String ArchiveComposite_labelProvider_invalid_element;
     public static String ArchiveComposite_viewer_label;
+    public static String BuilderSetContainer_builderSetComboLabel;
+    public static String BuilderSetContainer_tableColumnLabel_Description;
+    public static String BuilderSetContainer_tableColumnLabel_Property;
+    public static String BuilderSetContainer_tableColumnLabel_Value;
+    public static String BuilderSetContainer_tableViewerLabel;
+    public static String BuilderSetPropertyEditingSupport_validatorErrorMessage;
+    public static String BuilderSetPropertyPage_saveDialog_Apply;
+    public static String BuilderSetPropertyPage_saveDialog_ApplyLater;
+    public static String BuilderSetPropertyPage_saveDialog_Discard;
+    public static String BuilderSetPropertyPage_saveDialog_Message;
+    public static String BuilderSetPropertyPage_saveDialog_Title;
     public static String IpsObjectPathContainer_tab_archives;
     public static String IpsObjectPathContainer_tab_path_order;
     public static String IpsObjectPathContainer_tab_source;
