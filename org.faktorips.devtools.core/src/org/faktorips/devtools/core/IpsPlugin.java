@@ -332,10 +332,15 @@ public class IpsPlugin extends AbstractUIPlugin {
     /**
      * Logs the status and shows the status in a standard error dialog.
      */
-    public final static void logAndShowErrorDialog(IStatus status) {
+    public final static void logAndShowErrorDialog(final IStatus status) {
         plugin.getLog().log(status);
-        ErrorDialog.openError(Display.getCurrent().getActiveShell(), Messages.IpsPlugin_titleErrorDialog,
-                Messages.IpsPlugin_msgUnexpectedError, status);
+        Display display = Display.getCurrent() != null ? Display.getCurrent() : Display.getDefault(); 
+        display.asyncExec(new Runnable(){
+            public void run() {
+                ErrorDialog.openError(Display.getDefault().getActiveShell(), Messages.IpsPlugin_titleErrorDialog,
+                        Messages.IpsPlugin_msgUnexpectedError, status);
+            }
+        });
     }
 
     /**
