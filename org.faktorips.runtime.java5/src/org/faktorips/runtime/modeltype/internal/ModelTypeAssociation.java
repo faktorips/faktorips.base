@@ -17,7 +17,7 @@ package org.faktorips.runtime.modeltype.internal;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 
-import org.faktorips.runtime.IRuntimeRepository;
+import org.faktorips.runtime.internal.AbstractRuntimeRepository;
 import org.faktorips.runtime.modeltype.IModelType;
 import org.faktorips.runtime.modeltype.IModelTypeAssociation;
 
@@ -34,7 +34,7 @@ public class ModelTypeAssociation extends AbstractModelElement implements IModel
     private String targetJavaClassName = null;
     private boolean isProductRelevant = false;
 
-    public ModelTypeAssociation(IRuntimeRepository repository) {
+    public ModelTypeAssociation(AbstractRuntimeRepository repository) {
         super(repository);
     }
 

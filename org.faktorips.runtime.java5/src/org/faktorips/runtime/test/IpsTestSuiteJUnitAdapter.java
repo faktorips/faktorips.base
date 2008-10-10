@@ -26,6 +26,23 @@ import junit.framework.TestSuite;
  * @author Joerg Ortmann
  */
 public class IpsTestSuiteJUnitAdapter extends TestSuite {
+    
+    public IpsTestSuiteJUnitAdapter() {
+        super();
+    }
+
+    public IpsTestSuiteJUnitAdapter(String name) {
+        super(name);
+    }
+    
+    /**
+     * Dummy test method to avoid a warning when running all JUnit tests in this project.
+     * Without this method, Eclpise's JUnit support would create a warning that his suite hasn't got any tests.
+     */
+    public void testDummy() {
+        
+    }
+
     /**
      * Creates an adapter test for the given ips test.
      */

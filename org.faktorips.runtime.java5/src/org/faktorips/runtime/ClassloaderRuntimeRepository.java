@@ -272,6 +272,13 @@ public class ClassloaderRuntimeRepository extends AbstractTocBasedRuntimeReposit
         this.docBuilder = docBuilder;
         reload();
     }
+    
+    /**
+     * {@inheritDoc}
+     */
+    public ClassLoader getClassLoader() {
+        return cl;
+    }
 
     /**
      * {@inheritDoc}

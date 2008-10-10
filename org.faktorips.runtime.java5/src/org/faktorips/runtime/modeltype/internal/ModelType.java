@@ -24,8 +24,7 @@ import javax.xml.stream.XMLStreamConstants;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 
-import org.faktorips.runtime.IConfigurableModelObject;
-import org.faktorips.runtime.IRuntimeRepository;
+import org.faktorips.runtime.internal.AbstractRuntimeRepository;
 import org.faktorips.runtime.modeltype.IModelType;
 import org.faktorips.runtime.modeltype.IModelTypeAssociation;
 import org.faktorips.runtime.modeltype.IModelTypeAttribute;
@@ -45,7 +44,7 @@ public class ModelType extends AbstractModelElement implements IModelType {
     private String className;
     private String superTypeName;
 
-    public ModelType(IRuntimeRepository repository) {
+    public ModelType(AbstractRuntimeRepository repository) {
         super(repository);
     }
 
@@ -62,7 +61,7 @@ public class ModelType extends AbstractModelElement implements IModelType {
     public IModelTypeAssociation getAssociation(String name) {
         return associationsByName.get(name);
     }
-
+    
     /**
      * {@inheritDoc}
      */
@@ -97,7 +96,7 @@ public class ModelType extends AbstractModelElement implements IModelType {
      * @throws ClassNotFoundException
      */
     public Class<?> getJavaClass() throws ClassNotFoundException {
-        return Class.forName(className);
+        return getRepositoryClassLoader().loadClass(className);
     }
 
     /**
@@ -109,7 +108,7 @@ public class ModelType extends AbstractModelElement implements IModelType {
         String interfaceName = className.replace(".internal", "");
         interfaceName = interfaceName.substring(0, interfaceName.lastIndexOf('.') + 1) + 'I'
                 + interfaceName.substring(interfaceName.lastIndexOf('.') + 1);
-        return Class.forName(interfaceName);
+        return getRepositoryClassLoader().loadClass(interfaceName);
     }
 
     /**
@@ -120,11 +119,10 @@ public class ModelType extends AbstractModelElement implements IModelType {
     public IModelType getSuperType() {
         if (superTypeName != null && superTypeName.length() > 0) {
             try {
-                return getRepository().getModelType(
-                        (Class<? extends IConfigurableModelObject>)this.getClass().getClassLoader().loadClass(
-                                superTypeName));
+                Class superclass = getRepositoryClassLoader().loadClass(superTypeName);
+                return getRepository().getModelType(superclass);
             } catch (ClassNotFoundException e) {
-                return null;
+                throw new RuntimeException(e);
             }
         }
         return null;
@@ -165,7 +163,7 @@ public class ModelType extends AbstractModelElement implements IModelType {
             switch (event) {
                 case XMLStreamConstants.START_ELEMENT:
                     if (parser.getLocalName().equals("ModelTypeAttribute")) {
-                        IModelTypeAttribute attribute = new ModelTypeAttribute(getRepository());
+                        IModelTypeAttribute attribute = new ModelTypeAttribute(getAbstractRepository());
                         attribute.initFromXml(parser);
                         attributes.add(attribute);
                         attributesByName.put(attribute.getName(), attribute);
@@ -188,7 +186,7 @@ public class ModelType extends AbstractModelElement implements IModelType {
             switch (event) {
                 case XMLStreamConstants.START_ELEMENT:
                     if (parser.getLocalName().equals("ModelTypeAssociation")) {
-                        IModelTypeAssociation association = new ModelTypeAssociation(getRepository());
+                        IModelTypeAssociation association = new ModelTypeAssociation(getAbstractRepository());
                         association.initFromXml(parser);
                         associations.add(association);
                         associationsByName.put(association.getName(), association);

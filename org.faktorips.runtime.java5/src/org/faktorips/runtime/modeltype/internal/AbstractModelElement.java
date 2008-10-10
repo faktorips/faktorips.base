@@ -23,6 +23,7 @@ import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 
 import org.faktorips.runtime.IRuntimeRepository;
+import org.faktorips.runtime.internal.AbstractRuntimeRepository;
 import org.faktorips.runtime.modeltype.IModelElement;
 
 /**
@@ -33,9 +34,9 @@ public class AbstractModelElement implements IModelElement {
 
     private Map<String, Object> extPropertyValues = new HashMap<String, Object>();
     private String name = null;
-    private IRuntimeRepository repository;
+    private AbstractRuntimeRepository repository;
     
-    public AbstractModelElement(IRuntimeRepository repository){
+    public AbstractModelElement(AbstractRuntimeRepository repository){
         this.repository = repository;
     }
 
@@ -130,6 +131,18 @@ public class AbstractModelElement implements IModelElement {
      */
     public IRuntimeRepository getRepository() {
         return repository;
+    }
+
+    protected AbstractRuntimeRepository getAbstractRepository() {
+        return repository;
+    }
+    
+    /**
+     * Returns the class loader that is used by the abstract runtime repository to load Java classes.
+     * @return
+     */
+    protected ClassLoader getRepositoryClassLoader() {
+        return repository.getClassLoader();
     }
 
 }
