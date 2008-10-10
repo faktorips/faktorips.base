@@ -73,8 +73,8 @@ public class ModelTypeAssociation extends AbstractModelElement implements IModel
      */
     public IModelType getTarget() throws ClassNotFoundException {
         if (targetJavaClassName != null && targetJavaClassName.length() > 0) {
-            return getRepository().getModelType(
-                    this.getClass().getClassLoader().loadClass(targetJavaClassName));
+            Class<?> targetClass = loadClass(targetJavaClassName);
+            return getRepository().getModelType(targetClass);
         }
         return null;
     }

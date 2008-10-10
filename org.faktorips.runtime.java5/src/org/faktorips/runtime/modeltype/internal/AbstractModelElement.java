@@ -138,11 +138,13 @@ public class AbstractModelElement implements IModelElement {
     }
     
     /**
-     * Returns the class loader that is used by the abstract runtime repository to load Java classes.
-     * @return
+     * Loads the class indicated by the given name using the repository's class loader.
      */
-    protected ClassLoader getRepositoryClassLoader() {
-        return repository.getClassLoader();
+    Class<?> loadClass(String className) {
+        try {
+            return repository.getClassLoader().loadClass(className);
+        } catch (ClassNotFoundException e) {
+            throw new RuntimeException(e);
+        }
     }
-
 }

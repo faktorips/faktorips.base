@@ -137,7 +137,7 @@ public class ModelTypeAttribute extends AbstractModelElement implements IModelTy
         } else if (actualName.equals(short.class.getName())) {
             return short.class;
         }
-        return Class.forName(actualName);
+        return loadClass(actualName);
     }
 
     /**

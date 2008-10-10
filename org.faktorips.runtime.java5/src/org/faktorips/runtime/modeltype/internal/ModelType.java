@@ -96,7 +96,7 @@ public class ModelType extends AbstractModelElement implements IModelType {
      * @throws ClassNotFoundException
      */
     public Class<?> getJavaClass() throws ClassNotFoundException {
-        return getRepositoryClassLoader().loadClass(className);
+        return loadClass(className);
     }
 
     /**
@@ -108,7 +108,7 @@ public class ModelType extends AbstractModelElement implements IModelType {
         String interfaceName = className.replace(".internal", "");
         interfaceName = interfaceName.substring(0, interfaceName.lastIndexOf('.') + 1) + 'I'
                 + interfaceName.substring(interfaceName.lastIndexOf('.') + 1);
-        return getRepositoryClassLoader().loadClass(interfaceName);
+        return loadClass(interfaceName);
     }
 
     /**
@@ -118,12 +118,8 @@ public class ModelType extends AbstractModelElement implements IModelType {
     @SuppressWarnings("unchecked")
     public IModelType getSuperType() {
         if (superTypeName != null && superTypeName.length() > 0) {
-            try {
-                Class superclass = getRepositoryClassLoader().loadClass(superTypeName);
-                return getRepository().getModelType(superclass);
-            } catch (ClassNotFoundException e) {
-                throw new RuntimeException(e);
-            }
+            Class superclass = loadClass(superTypeName);
+            return getRepository().getModelType(superclass);
         }
         return null;
     }
