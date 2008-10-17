@@ -130,7 +130,6 @@ public class BuilderSetContainer {
 
         Label label = new Label(mainComposite, SWT.HORIZONTAL | SWT.BAR);
         GridData gd = new GridData(GridData.FILL_HORIZONTAL);
-        gd.heightHint = 20;
         gd.horizontalSpan = 3;
         label.setLayoutData(gd);
 
@@ -158,6 +157,7 @@ public class BuilderSetContainer {
         List builderSetInfos = getBuilderSetInfos(ipsProject);
         String[] builderSetLabels = new String[builderSetInfos.size()];
 
+        // indices out of bounds are ignored in Combo.select()
         int currentBuilderSetIndex = -1;
         for (int i = 0; i < builderSetInfos.size(); i++) {
             IIpsArtefactBuilderSetInfo info = (IIpsArtefactBuilderSetInfo)builderSetInfos.get(i);
@@ -205,7 +205,9 @@ public class BuilderSetContainer {
         columns[PROPERTY_VALUE_COLUMN_INDEX].setLabelProvider(new BuilderSetPropertyLabelProvider(ipsProject,
                 builderSetConfigModel));
         columns[PROPERTY_DESCRIPTION_COLUMN_INDEX].setLabelProvider(new ColumnLabelProvider() {
-            public String getText(Object element) {
+            private static final int TOOLTIP_LINE_LENGTH = 75;
+
+			public String getText(Object element) {
                 return ((IIpsBuilderSetPropertyDef)element).getDescription();
             }
 
@@ -213,7 +215,7 @@ public class BuilderSetContainer {
                 if (element instanceof IIpsBuilderSetPropertyDef) {
                     IIpsBuilderSetPropertyDef propertyDef = (IIpsBuilderSetPropertyDef)element;
                     String description = propertyDef.getDescription();
-                    String wrappedText = StringUtils.wrapText(description, 75, "\n"); //$NON-NLS-1$
+                    String wrappedText = StringUtils.wrapText(description, TOOLTIP_LINE_LENGTH, "\n"); //$NON-NLS-1$
                     return wrappedText;
                 }
                 return ""; //$NON-NLS-1$
@@ -311,7 +313,16 @@ public class BuilderSetContainer {
     private void updateColumnWidths() {
         columns[PROPERTY_NAME_COLUMN_INDEX].getColumn().pack();
         columns[PROPERTY_VALUE_COLUMN_INDEX].getColumn().pack();
-        columns[PROPERTY_DESCRIPTION_COLUMN_INDEX].getColumn().setWidth(30);
+        
+        // avoid the horizontal scrollbar to be shown by decreasing the width of the 
+        // third tableViewerColumn by 5 pixels (taking a minimal width of 150 into account)
+        int thirdColWidth = 150;
+        thirdColWidth = Math.max(thirdColWidth, 
+        		tableViewer.getControl().getSize().x - 5
+        		- columns[PROPERTY_NAME_COLUMN_INDEX].getColumn().getWidth()
+        		- columns[PROPERTY_VALUE_COLUMN_INDEX].getColumn().getWidth());
+        
+        columns[PROPERTY_DESCRIPTION_COLUMN_INDEX].getColumn().setWidth(thirdColWidth);
     }
 
     private void initializeTimeStamps() {
@@ -556,9 +567,8 @@ public class BuilderSetContainer {
                 } else if (propertyDef.getName().equals("loggingFrameworkConnector")) { //$NON-NLS-1$
                     // Special treatment of qualified names:
                     // Prevent the table column to be too wide by removing package information from
-                    // the
-                    // following type. The full qualified name is shown only when the combo box is
-                    // opened.
+                    // the following type. The full qualified name is shown only when the combo box
+                    // is opened.
                     propertyValue = StringUtil.unqualifiedName(propertyValue);
                 }
                 return propertyValue;
