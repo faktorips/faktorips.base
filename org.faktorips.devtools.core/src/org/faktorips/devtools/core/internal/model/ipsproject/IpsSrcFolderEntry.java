@@ -258,7 +258,7 @@ public class IpsSrcFolderEntry extends IpsObjectPathEntry implements IIpsSrcFold
             return null;
         }
         IIpsSrcFile file = pack.getIpsSrcFile(qnt.getFileName());
-        if (!file.exists()) {
+        if (file == null || !file.exists()) {
             return null;
         }
         return file;

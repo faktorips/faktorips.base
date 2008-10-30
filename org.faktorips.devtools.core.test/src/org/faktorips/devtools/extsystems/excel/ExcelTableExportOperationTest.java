@@ -114,8 +114,8 @@ public class ExcelTableExportOperationTest extends AbstractIpsPluginTest {
         file = new File(filename);
         file.delete();
         assertTrue(file.createNewFile());
-
     }
+    
 
     protected void tearDownExtension() throws Exception {
         file.delete();

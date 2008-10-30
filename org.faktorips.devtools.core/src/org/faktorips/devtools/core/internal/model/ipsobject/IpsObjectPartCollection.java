@@ -1,18 +1,15 @@
 /*******************************************************************************
  * Copyright (c) 2005,2006 Faktor Zehn GmbH und andere.
- *
+ * 
  * Alle Rechte vorbehalten.
- *
- * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele,
- * Konfigurationen, etc.) dürfen nur unter den Bedingungen der 
- * Faktor-Zehn-Community Lizenzvereinbarung – Version 0.1 (vor Gründung Community) 
- * genutzt werden, die Bestandteil der Auslieferung ist und auch unter
- *   http://www.faktorips.org/legal/cl-v01.html
- * eingesehen werden kann.
- *
- * Mitwirkende:
- *   Faktor Zehn GmbH - initial API and implementation 
- *
+ * 
+ * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen,
+ * etc.) dürfen nur unter den Bedingungen der Faktor-Zehn-Community Lizenzvereinbarung – Version 0.1
+ * (vor Gründung Community) genutzt werden, die Bestandteil der Auslieferung ist und auch unter
+ * http://www.faktorips.org/legal/cl-v01.html eingesehen werden kann.
+ * 
+ * Mitwirkende: Faktor Zehn GmbH - initial API and implementation
+ * 
  *******************************************************************************/
 
 package org.faktorips.devtools.core.internal.model.ipsobject;
@@ -30,16 +27,16 @@ import org.faktorips.util.ArgumentCheck;
 import org.w3c.dom.Element;
 
 /**
- * A collection of ips object parts. This class is used togehter with BaseIpsObject and BaseIpsObjectPart
- * to ease the development of new ips object subclasses. An ips object part collection is 
- * a collection of parts of the same type. E.g. a collection holds only methods or only attributes
- * but not both. In constrast an IpsObjectPartContainer is a container for ips object parts of
- * any kind.
+ * A collection of ips object parts. This class is used together with BaseIpsObject and
+ * BaseIpsObjectPart to ease the development of new ips object subclasses. An ips object part
+ * collection is a collection of parts of the same type. E.g. a collection holds only methods or
+ * only attributes but not both. As opposed to an IpsObjectPartContainer which is a container for
+ * ips object parts of any kind.
  * 
  * @see IpsObjectPartContainer
  * @see BaseIpsObject
  * @see BaseIpsObjectPart
- *  
+ * 
  * @since 2.0
  * 
  * @author Jan Ortmann
@@ -51,23 +48,24 @@ public class IpsObjectPartCollection {
     private Class partsBaseClass;
     private Class partsPublishedInterface;
     private Constructor constructor;
-    
+
     private List parts = new ArrayList();
-    
+
     public IpsObjectPartCollection(BaseIpsObject ipsObject, Class partsClazz, Class publishedInterface, String xmlTag) {
         this(partsClazz, publishedInterface, xmlTag);
         ArgumentCheck.notNull(ipsObject);
         this.parent = ipsObject;
         ipsObject.addPartCollection(this);
     }
-    
-    public IpsObjectPartCollection(BaseIpsObjectPart ipsObjectPart, Class partsClazz, Class publishedInterface, String xmlTag) {
+
+    public IpsObjectPartCollection(BaseIpsObjectPart ipsObjectPart, Class partsClazz, Class publishedInterface,
+            String xmlTag) {
         this(partsClazz, publishedInterface, xmlTag);
         ArgumentCheck.notNull(ipsObjectPart);
         this.parent = ipsObjectPart;
         ipsObjectPart.addPartCollection(this);
     }
-    
+
     private IpsObjectPartCollection(Class partsClazz, Class publishedInterface, String xmlTag) {
         ArgumentCheck.notNull(partsClazz);
         ArgumentCheck.notNull(publishedInterface);
@@ -77,12 +75,12 @@ public class IpsObjectPartCollection {
         this.xmlTag = xmlTag;
         constructor = getConstructor();
     }
-    
+
     private Constructor getConstructor() {
         Constructor[] constructors = partsBaseClass.getConstructors();
         for (int i = 0; i < constructors.length; i++) {
             Class[] params = constructors[i].getParameterTypes();
-            if (params.length!=2) {
+            if (params.length != 2) {
                 continue;
             }
             if (params[1].equals(Integer.TYPE)) {
@@ -96,57 +94,88 @@ public class IpsObjectPartCollection {
         }
         throw new RuntimeException(this + ", Part class hasn't got an appropriate constructor."); //$NON-NLS-1$
     }
-    
+
     public void clear() {
         parts.clear();
     }
-    
+
     public int size() {
         return parts.size();
     }
-    
+
     public IIpsObjectPart getPart(int index) {
         return (IIpsObjectPart)parts.get(index);
     }
-    
+
     public Iterator iterator() {
         return parts.iterator();
     }
-    
+
     public Object[] toArray(Object[] emptyArray) {
         return parts.toArray(emptyArray);
     }
-    
+
     /**
-     * Returns the underlying list that stores the parts. 
+     * Returns the underlying list that stores the parts.
      */
     public List getBackingList() {
         return parts;
     }
-    
+
     public IIpsObjectPart[] getParts() {
         return (IIpsObjectPart[])parts.toArray(new IIpsObjectPart[parts.size()]);
     }
-    
-    
+
     /**
-     * Returns the part with the given name contained in this collection.
-     * If more than one part with the name exist, the first part with the name is returned.
-     * Returns <code>null</code> if no part with the given name exists or name is <code>null</code>.
+     * Returns the part with the given name contained in this collection. If more than one part with
+     * the name exist, the first part with the name is returned. Returns <code>null</code> if no
+     * part with the given name exists or name is <code>null</code>.
      */
     public IIpsObjectPart getPartByName(String name) {
-        if (name==null) {
+        if (name == null) {
             return null;
         }
-        for (Iterator it=parts.iterator(); it.hasNext(); ) {
+        for (Iterator it = parts.iterator(); it.hasNext();) {
             IIpsObjectPart part = (IIpsObjectPart)it.next();
             if (name.equals(part.getName())) {
                 return part;
             }
         }
         return null;
-        
+
     }
+
+    /**
+     * Returns the part with the given id contained in this collection. Returns <code>null</code> if
+     * no part with the given id exists.
+     */
+    public IIpsObjectPart getPartById(int id) {
+        for (Iterator it = parts.iterator(); it.hasNext();) {
+            IIpsObjectPart part = (IIpsObjectPart)it.next();
+            if (id == part.getId()) {
+                return part;
+            }
+        }
+        return null;
+    }
+
+    /**
+     * This method creates a new <code>IpsObjectPart</code> according to the configuration of this
+     * object. The provided initializer can set the new <code>IpsObjectPart</code> into a valid
+     * state before a <code>ContentChangeEvent.TYPE_PART_ADDED</code> is fired. This method is not
+     * part of the published interface. Subclasses that want to provide a factory method for a
+     * specific <code>IpsObjectPart</code> can use this method and add their method to the published
+     * interface if desired.
+     * 
+     * @return the new IpsPart
+     */
+    protected IpsObjectPart newPart(IIpsObjectPartInitializer initializer) {
+        IpsObjectPart part = newPartInternal(parent.getNextPartId());
+        initializer.initialize(part);
+        parent.partWasAdded(part);
+        return part;
+    }
+
     /**
      * {@inheritDoc}
      */
@@ -171,8 +200,8 @@ public class IpsObjectPartCollection {
     }
 
     /**
-     * Returns <code>true</code> if the part was contained in this collection (before this call)
-     * and was removed. Returns <code>false</code> otherwise.
+     * Returns <code>true</code> if the part was contained in this collection (before this call) and
+     * was removed. Returns <code>false</code> otherwise.
      */
     public boolean readdPart(IIpsObjectPart part) {
         if (this.partsBaseClass.isAssignableFrom(part.getClass())) {
@@ -187,20 +216,19 @@ public class IpsObjectPartCollection {
     }
 
     /**
-     * Creates a new part without updating the src file.
-     * Subclasses have to instantiate a new object of the concrete
-     * subclass of IpsObjectPart.
+     * Creates a new part without updating the src file. Subclasses have to instantiate a new object
+     * of the concrete subclass of IpsObjectPart.
      */
     private IpsObjectPart newPartInternal(int id) {
         try {
-            IpsObjectPart newPart = (IpsObjectPart)constructor.newInstance(new Object[]{parent, new Integer(id)});
+            IpsObjectPart newPart = (IpsObjectPart)constructor.newInstance(new Object[] { parent, new Integer(id) });
             parts.add(newPart);
             return newPart;
         } catch (Exception e) {
             throw new RuntimeException(this + ", Error creating new instance via constructor " + constructor, e); //$NON-NLS-1$
         }
     }
-    
+
     public int[] moveParts(int[] indexes, boolean up) {
         ListElementMover mover = new ListElementMover(parts);
         int[] newIndexes = mover.move(indexes, up);
@@ -210,5 +238,21 @@ public class IpsObjectPartCollection {
 
     public String toString() {
         return "Part collection for " + partsBaseClass.getName(); //$NON-NLS-1$
+    }
+
+    /**
+     * An implementations of this interface is required by the newPart(IIpsObjectPartCollection)
+     * method. It is supposed to be used for additional initialization of a new IpsObjectPart before
+     * its creation and addition to the according IpsObject is communicated to
+     * ContentChangeListeners.
+     * 
+     * @author Peter Erzberger
+     */
+    public interface IIpsObjectPartInitializer {
+
+        /**
+         * Initializes the provided IpsObjectPart.
+         */
+        public void initialize(IpsObjectPart part);
     }
 }

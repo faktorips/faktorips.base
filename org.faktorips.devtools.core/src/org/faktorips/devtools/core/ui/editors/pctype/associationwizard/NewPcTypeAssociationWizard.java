@@ -575,6 +575,7 @@ public class NewPcTypeAssociationWizard extends Wizard implements ContentsChange
      * 
      * @throws CoreException
      */
+    //TODO pk 30-09-2008 shouldn't this method be a method of IPolicyCmptTypeAssociation?
      public static List getCorrespondingTargetAssociations(IPolicyCmptTypeAssociation sourceAssociation,
             IPolicyCmptType target) throws CoreException {
         String source = sourceAssociation.getPolicyCmptType().getQualifiedName();
@@ -692,7 +693,7 @@ public class NewPcTypeAssociationWizard extends Wizard implements ContentsChange
         mementoTargetBeforeNewAssociation = targetPolicyCmptType.newMemento();
     }
     
-    public void storeInverseAssociation(IPolicyCmptTypeAssociation inverseAssociation) {
+    private void storeInverseAssociation(IPolicyCmptTypeAssociation inverseAssociation) {
         this.inverseAssociation = inverseAssociation;
         if (inverseAssociation != null && inverseAssociation.isAssoziation()){
             association.setInverseAssociation(inverseAssociation.getTargetRoleSingular());
