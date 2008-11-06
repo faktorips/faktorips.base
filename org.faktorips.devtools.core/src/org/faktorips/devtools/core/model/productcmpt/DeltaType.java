@@ -23,6 +23,7 @@ import org.faktorips.devtools.core.enums.DefaultEnumType;
 import org.faktorips.devtools.core.enums.DefaultEnumValue;
 
 /**
+ * Type of a delta.
  * 
  * @author Jan Ortmann
  */
@@ -51,10 +52,10 @@ public class DeltaType extends DefaultEnumValue {
         ALL_TYPES = new DeltaType[]{MISSING_PROPERTY_VALUE, VALUE_WITHOUT_PROPERTY, PROPERTY_TYPE_MISMATCH, VALUE_SET_MISMATCH, LINK_WITHOUT_ASSOCIATION, WRONG_ORDER_ENTRY};
     }
     
-    private Image image;
+    private String imageName;
 
     public Image getImage() {
-        return image;
+        return IpsPlugin.getDefault().getImage(imageName);
     }
     
     public String getDescription() {
@@ -63,7 +64,7 @@ public class DeltaType extends DefaultEnumValue {
     
     private DeltaType(DefaultEnumType type, String id, String name, String image) {
         super(type, id, name);
-        this.image = IpsPlugin.getDefault().getImage(image);
+        this.imageName = image;
     }
 
 }
