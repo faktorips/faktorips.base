@@ -1,9 +1,9 @@
 Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
-Bundle-Name: Core Fragment
+Bundle-Name: Faktor-IPS German language pack
 Bundle-SymbolicName: org.faktorips.nls.devtools.core.nl1
 Bundle-Version: 2.1.0.rfinal
-Bundle-Vendor: FaktorZehn GmbH
+Bundle-Vendor: Faktor Zehn AG
 Fragment-Host: org.faktorips.devtools.core
 Bundle-Localization: nlfragment
 Bundle-ClassPath: nl1.jar

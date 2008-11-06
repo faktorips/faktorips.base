@@ -1,9 +1,9 @@
 Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
-Bundle-Name: FaktorIPS-DevToolsFl-Common
+Bundle-Name: Faktor- IPS Common code for Devtools and Formula Language
 Bundle-SymbolicName: org.faktorips.dtflcommon
 Bundle-Version: 2.1.0.rfinal
-Bundle-Vendor: FaktorZehn
+Bundle-Vendor: Faktor Zehn AG
 Bundle-Localization: plugin
 Require-Bundle: org.faktorips.util,
  org.faktorips.valuetypes,

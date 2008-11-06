@@ -1,10 +1,10 @@
 Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
-Bundle-Name: FaktorIPS-StandardBuilder
+Bundle-Name: Faktor-IPS Standard Code Generator
 Bundle-SymbolicName: org.faktorips.devtools.stdbuilder; singleton:=true
 Bundle-Version: 2.1.0.rfinal
 Bundle-Activator: org.faktorips.devtools.stdbuilder.StdBuilderPlugin
-Bundle-Vendor: FaktorZehn
+Bundle-Vendor: Faktor Zehn AG
 Bundle-Localization: plugin
 Require-Bundle: org.eclipse.ui,
  org.eclipse.core.runtime,
