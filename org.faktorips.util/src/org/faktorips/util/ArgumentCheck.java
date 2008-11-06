@@ -23,7 +23,6 @@ import org.w3c.dom.Node;
 /**
  * A class that provides static methods to check method arguments, e.g.
  * check if an argument is not null or is an instance of a specific class. 
- * All methods throw an IllegalArgumentExcpetion if the check fails.
  * <p>
  * All methods have an "optional" context parameter. If the check fails, the 
  * context's toString method is called and put into the IllegalArgumentException
