@@ -351,6 +351,7 @@ public class AttributeEditDialog extends IpsPartEditDialog2 implements ContentsC
         }
         createConfigGroupContent();
         configGroup.layout();
+        bindingContext.updateUI();
     }
     
     private void createConfigGroupContent() {
@@ -395,6 +396,7 @@ public class AttributeEditDialog extends IpsPartEditDialog2 implements ContentsC
         ContentAssistHandler.createHandlerForText(compuationMethodText, CompletionUtil.createContentAssistant(processor));
         
         bindingContext.bindContent(compuationMethodText, attribute, IPolicyCmptTypeAttribute.PROPERTY_COMPUTATION_METHOD_SIGNATURE);
+        bindingContext.bindEnabled(compuationMethodText, attribute, IPolicyCmptTypeAttribute.PROPERTY_PRODUCT_RELEVANT);
         
         Link link = new Link(area, SWT.NONE);
         link.setText(Messages.AttributeEditDialog_createNewMethod);
