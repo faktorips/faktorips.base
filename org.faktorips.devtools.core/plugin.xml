@@ -794,6 +794,9 @@
       <datatypeDefinition 
 		        datatypeClass="org.faktorips.datatype.PrimitiveIntegerDatatype"
       			helperClass="org.faktorips.codegen.dthelpers.PrimitiveIntegerHelper"/>
+      <datatypeDefinition 
+		        datatypeClass="org.faktorips.datatype.PrimitiveLongDatatype"
+      			helperClass="org.faktorips.codegen.dthelpers.PrimitiveLongHelper"/>
    </extension>
 
 <!-- 
