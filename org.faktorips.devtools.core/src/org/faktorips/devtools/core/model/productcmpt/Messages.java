@@ -34,11 +34,7 @@ public class Messages extends NLS {
 		NLS.initializeMessages(BUNDLE_NAME, Messages.class);
 	}
 
-	public static String ConfigElementType_productAttribute;
-
 	public static String ConfigElementType_policyAttribute;
-
-	public static String ConfigElementType_formula;
 
     public static String DeltaType_LinksNotFoundInTheModel;
 

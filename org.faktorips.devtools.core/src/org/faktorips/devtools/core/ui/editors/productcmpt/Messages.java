@@ -178,8 +178,6 @@ public class Messages extends NLS {
 
 	public static String GenerationSelectionDialog_labelCreate;
 
-	public static String GenerationSelectionDialog_labelBrowse;
-
 	public static String GenerationSelectionDialog_labelSwitch;
 
 	public static String GenerationSelectionDialog_description;

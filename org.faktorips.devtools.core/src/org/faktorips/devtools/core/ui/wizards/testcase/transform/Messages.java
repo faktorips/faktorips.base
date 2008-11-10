@@ -50,11 +50,9 @@ public class Messages extends NLS {
 	public static String TransformRuntimeTestCaseWizard_Error_TestCaseTypeNotExists;
 	public static String TestCaseTransformer_Error_NoTypeAttributeSpecified;
 	public static String TestCaseTransformer_Error_PackageFragmentNotFound;
-	public static String TestCaseTransformer_Error_Unknown;
 	public static String TestCaseTransformer_Job_Title;
 	public static String TestCaseTransformer_Error_ImportPackageEqualsTargetPackage;
 	public static String TestCaseTransformer_Error_Skip_Because_ImportPackageEqualsTargetPackage;
     public static String TestCaseTransformer_Error_TestCaseType_Not_Found;
     public static String TestCaseTransformer_Error_WrongTypeOfTestPolicyCmpt;
-    public static String TestCaseTransformer_Error_TestAttributeNotExists;
 }

@@ -99,5 +99,5 @@ public class Messages extends NLS {
     public static String IpsProjectProperties_msgMissingMinFeatureId;
 
     public static String IpsProject_msgRuntimeIDCollision;
-
+    
 }

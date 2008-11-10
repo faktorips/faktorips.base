@@ -36,7 +36,6 @@ public class Messages extends NLS {
     public static String ArchiveComposite_dialog_message_add;
     public static String ArchiveComposite_dialog_title_add;
     public static String ArchiveComposite_dialog_warning_select_archive;
-    public static String ArchiveComposite_labelProvider_invalid_element;
     public static String ArchiveComposite_viewer_label;
     public static String BuilderSetContainer_builderSetComboLabel;
     public static String BuilderSetContainer_tableColumnLabel_Description;
@@ -54,7 +53,6 @@ public class Messages extends NLS {
     public static String IpsObjectPathContainer_tab_source;
     public static String IpsObjectPathLabelProvider_base_package_derived;
     public static String IpsObjectPathLabelProvider_default;
-    public static String IpsObjectPathLabelProvider_label_output_folder;
     public static String IpsObjectPathLabelProvider_output_folder_derived;
     public static String IpsObjectPathLabelProvider_output_folder_mergable;
     public static String IpsObjectPathLabelProvider_package_name_derived;
