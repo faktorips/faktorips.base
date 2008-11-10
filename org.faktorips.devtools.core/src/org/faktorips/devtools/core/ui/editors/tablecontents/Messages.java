@@ -34,18 +34,6 @@ public class Messages extends NLS {
 		NLS.initializeMessages(BUNDLE_NAME, Messages.class);
 	}
 
-	public static String ContentPage_ConfirmDialogDirtyEditor_text;
-
-    public static String ContentPage_ConfirmDialogDirtyEditor_Title;
-
-    public static String ContentPage_ExportTableAction_label;
-
-    public static String ContentPage_ExportTableAction_tooltip;
-
-    public static String ContentPage_ImportTableAction_label;
-
-    public static String ContentPage_ImportTableAction_tooltip;
-
 	public static String ContentPage_title;
 
     public static String NavigateToTableStructureAction_Label;

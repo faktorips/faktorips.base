@@ -76,11 +76,7 @@ public class Messages extends NLS {
 
 	public static String ConfigElement_msgAttrNotDefined;
 
-	public static String ConfigElement_msgFormulaNotDefined;
-
 	public static String ConfigElement_msgDatatypeMissing;
-
-	public static String ConfigElement_msgReturnTypeMissmatch;
 
 	public static String ConfigElement_msgUndknownDatatype;
 

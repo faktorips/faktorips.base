@@ -52,10 +52,6 @@ public class Messages extends NLS {
 
     public static String PolicyCmptTypeAttribute_TypeOfOverwrittenAttributeCantBeChanged;
 
-    public static String Relation_msgSamePluralRolename;
-
-    public static String Relation_msgSameSingularRoleName;
-
     public static String Association_msg_InverseAssociationInconsistentWithDerivedUnion;
 
 	public static String Association_msg_AssociationNotFoundInTarget;
@@ -90,14 +86,8 @@ public class Messages extends NLS {
 
 	public static String Attribute_msgAttributeCantBeProductRelevantIfTypeIsNot;
 
-	public static String Attribute_msgNameCollision;
-
-	public static String Attribute_msgpartUnknown;
-
 	public static String Attribute_msgNothingToOverwrite;
     
-	public static String Attribute_msgNameCollisionLocal;
-
     public static String Attribute_proposalForRuleName;
 
     public static String Attribute_proposalForMsgCode;
