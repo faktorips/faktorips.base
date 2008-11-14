@@ -69,6 +69,9 @@
    <feature url="features/org.faktorips.feature.nls1_2.1.0.rfinal.jar" id="org.faktorips.feature.nls1" version="2.1.0.rfinal">
       <category name="Faktor-IPS 2.1.0.rfinal"/>
    </feature>
+   <feature url="features/org.faktorips.uml.feature_1.0.0.jar" id="org.faktorips.uml.feature" version="1.0.0">
+      <category name="Faktor-IPS UML 1.0.0"/>
+   </feature>
    <category-def name="Faktor-IPS 1.0.0" label="Faktor-IPS 1.0.0"/>
    <category-def name="Faktor-IPS 1.0.1" label="Faktor-IPS 1.0.1"/>
    <category-def name="Faktor-IPS 1.0.2" label="Faktor-IPS 1.0.2"/>
@@ -84,4 +87,5 @@
    <category-def name="Faktor-IPS 2.1.0.ms1" label="Faktor-IPS 2.1.0 Milestone 1"/>
    <category-def name="Faktor-IPS 2.1.0.ms2" label="Faktor-IPS 2.1.0 Milestone 2"/>
    <category-def name="Faktor-IPS 2.1.0.rfinal" label="Faktor-IPS 2.1.0 Final Release"/>
+   <category-def name="Faktor-IPS UML 1.0.0" label="Faktor-IPS UML 1.0.0"/>
 </site>
