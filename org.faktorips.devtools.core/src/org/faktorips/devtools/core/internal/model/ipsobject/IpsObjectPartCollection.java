@@ -169,7 +169,7 @@ public class IpsObjectPartCollection {
      * 
      * @return the new IpsPart
      */
-    protected IpsObjectPart newPart(IIpsObjectPartInitializer initializer) {
+    protected IpsObjectPart newPart(IpsObjectPartInitializer initializer) {
         IpsObjectPart part = newPartInternal(parent.getNextPartId());
         initializer.initialize(part);
         parent.partWasAdded(part);
@@ -248,7 +248,7 @@ public class IpsObjectPartCollection {
      * 
      * @author Peter Erzberger
      */
-    public interface IIpsObjectPartInitializer {
+    public interface IpsObjectPartInitializer {
 
         /**
          * Initializes the provided IpsObjectPart.

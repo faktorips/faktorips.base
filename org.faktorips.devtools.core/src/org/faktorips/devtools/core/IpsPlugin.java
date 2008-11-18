@@ -208,7 +208,7 @@ public class IpsPlugin extends AbstractUIPlugin {
         
         ResourcesPlugin.getWorkspace().addSaveParticipant(this, saveParticipant);
         
-        IpsObjectType.POLICY_CMPT_TYPE.getName(); // force loading of class before model is created!
+        IpsObjectType.POLICY_CMPT_TYPE.getId(); // force loading of class before model is created!
         model = new IpsModel();
         model.startListeningToResourceChanges();
     }

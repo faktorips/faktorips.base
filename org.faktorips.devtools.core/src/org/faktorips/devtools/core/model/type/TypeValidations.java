@@ -54,13 +54,13 @@ public class TypeValidations {
         if (file != null) {
             if (ipsProject.equals(file.getIpsProject())) {
                 return new Message(IType.MSGCODE_OTHER_TYPE_WITH_SAME_NAME_EXISTS, NLS.bind(
-                        Messages.Type_msgOtherTypeWithSameQNameInSameProject, otherIpsObjectType.getName()),
+                        Messages.Type_msgOtherTypeWithSameQNameInSameProject, otherIpsObjectType.getDisplayName()),
                         Message.ERROR, thisType != null ? new ObjectProperty[] { new ObjectProperty(thisType, null) }
                                 : new ObjectProperty[0]);
             }
             return new Message(IType.MSGCODE_OTHER_TYPE_WITH_SAME_NAME_IN_DEPENDENT_PROJECT_EXISTS, NLS.bind(
                     Messages.Type_msgOtherTypeWithSameQNameInDependentProject, new Object[] {
-                            otherIpsObjectType.getName(), file.getIpsProject() }), Message.WARNING,
+                            otherIpsObjectType.getId(), file.getIpsProject() }), Message.WARNING,
                     thisType != null ? new ObjectProperty[] { new ObjectProperty(thisType, null) }
                             : new ObjectProperty[0]);
 

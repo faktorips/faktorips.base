@@ -68,17 +68,17 @@ public abstract class IpsObjectRefControl extends TextButtonControl {
             String dialogMessage,
             ILabelProvider labelProvider) {
         super(parent, toolkit, Messages.IpsObjectRefControl_title);
-        this.ipsProject = project;
         this.dialogTitle = dialogTitle;
         this.dialogMessage = dialogMessage;
         this.labelProvider = labelProvider;
-        completionProcessor = new IpsObjectCompletionProcessor(this);
-        ContentAssistHandler.createHandlerForText(text, CompletionUtil.createContentAssistant(completionProcessor));
+        setIpsProject(project);
     }
     
     public void setIpsProject(IIpsProject project) {
         this.ipsProject = project;
         setButtonEnabled(project!=null && project.exists());
+        completionProcessor = new IpsObjectCompletionProcessor(this);
+        ContentAssistHandler.createHandlerForText(text, CompletionUtil.createContentAssistant(completionProcessor));
     }
     
     public IIpsProject getIpsProject() {

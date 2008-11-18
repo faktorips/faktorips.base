@@ -851,7 +851,7 @@ public class MoveOperation implements IRunnableWithProgress {
                 String msg = null;
                 if (toTest instanceof IIpsObject) {
                     msg = NLS.bind(Messages.MoveOperation_msgUnsupportedType, ((IIpsObject)toTest).getIpsObjectType()
-                            .getName());
+                            .getDisplayName());
                 } else if (toTest != null) {
                     msg = NLS.bind(Messages.MoveOperation_msgUnsupportedObject, toTest.getName());
                 } else {

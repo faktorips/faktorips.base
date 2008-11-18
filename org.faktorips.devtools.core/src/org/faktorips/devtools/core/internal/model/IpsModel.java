@@ -1544,7 +1544,7 @@ public class IpsModel extends IpsElement implements IIpsModel, IResourceChangeLi
      */
     public IpsObjectType getIpsObjectType(String name) {
         for (int i=0; i<ipsObjectTypes.length; i++) {
-            if (ipsObjectTypes[i].getName().equals(name)) {
+            if (ipsObjectTypes[i].getId().equals(name)) {
                 return ipsObjectTypes[i];
             }
         }

@@ -42,55 +42,55 @@ public class IpsObjectType {
      * Type for business function.
      */
     public final static IpsObjectType BUSINESS_FUNCTION = 
-        new IpsObjectType("BusinessFunction", Messages.IpsObjectType_nameBusinessFunction, "ipsbf", false, false, "BusinessFunction.gif", "BusinessFunctionDisabled.gif"); //$NON-NLS-1$  //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
+        new IpsObjectType("BusinessFunction", "BusinessFunction", Messages.IpsObjectType_nameBusinessFunction, "ipsbf", false, false, "BusinessFunction.gif", "BusinessFunctionDisabled.gif"); //$NON-NLS-1$  //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
     
     /**
      * Type for Policy component type.
      */
     public final static IpsObjectType POLICY_CMPT_TYPE = 
-        new IpsObjectType("PolicyCmptType", Messages.IpsObjectType_namePolicyClass, "ipspolicycmpttype", true, false, "PolicyCmptType.gif", "PolicyCmptTypeDisabled.gif"); //$NON-NLS-1$  //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
+        new IpsObjectType("PolicyCmptType", "PolicyCmptType", Messages.IpsObjectType_namePolicyClass, "ipspolicycmpttype", true, false, "PolicyCmptType.gif", "PolicyCmptTypeDisabled.gif"); //$NON-NLS-1$  //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
 
     /**
      * Type for product component type.
      */
     public final static IpsObjectType PRODUCT_CMPT_TYPE_V2 = 
-        new IpsObjectType("ProductCmptType2", Messages.IpsObjectType_nameProductClass, "ipsproductcmpttype", true, false, "ProductCmptType.gif", "ProductCmptTypeDisabled.gif"); //$NON-NLS-1$  //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
+        new IpsObjectType("ProductCmptType2", "ProductCmptType2", Messages.IpsObjectType_nameProductClass, "ipsproductcmpttype", true, false, "ProductCmptType.gif", "ProductCmptTypeDisabled.gif"); //$NON-NLS-1$  //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
 
     /**
      * Type for product component type.
      */
     public final static IpsObjectType OLD_PRODUCT_CMPT_TYPE = 
-        new IpsObjectType("ProductCmptType", Messages.IpsObjectType_nameProductClass, "ipsproductcmpttype", false, false, "PolicyCmptType.gif", "PolicyCmptTypeDisabled.gif"); //$NON-NLS-1$  //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
+        new IpsObjectType("ProductCmptType", "ProductCmptType", Messages.IpsObjectType_nameProductClass, "ipsproductcmpttype", false, false, "PolicyCmptType.gif", "PolicyCmptTypeDisabled.gif"); //$NON-NLS-1$  //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
 
     /**
      * Type for table structures.
      */
     public final static IpsObjectType TABLE_STRUCTURE = 
-        new IpsObjectType("TableStructure", Messages.IpsObjectType_nameTableStructure, "ipstablestructure", false, false, "TableStructure.gif", "TableStructureDisabled.gif"); //$NON-NLS-1$  //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
+        new IpsObjectType("TableStructure", "TableStructure", Messages.IpsObjectType_nameTableStructure, "ipstablestructure", false, false, "TableStructure.gif", "TableStructureDisabled.gif"); //$NON-NLS-1$  //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
     
     /**
      * Type for product components.
      */
     public final static IpsObjectType PRODUCT_CMPT = 
-        new IpsObjectType("ProductCmpt", Messages.IpsObjectType_nameProductComponent, "ipsproduct", false, true, "ProductCmpt.gif", "ProductCmptDisabled.gif"); //$NON-NLS-1$  //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
+        new IpsObjectType("ProductCmpt", "ProductCmpt", Messages.IpsObjectType_nameProductComponent, "ipsproduct", false, true, "ProductCmpt.gif", "ProductCmptDisabled.gif"); //$NON-NLS-1$  //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
     
     /**
      * Type for tables contents objects.
      */
     public final static IpsObjectType TABLE_CONTENTS = 
-        new IpsObjectType("TableContents", Messages.IpsObjectType_nameTableContents, "ipstablecontents", false, true, "TableContents.gif", "TableContentsDisabled.gif"); //$NON-NLS-1$  //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
+        new IpsObjectType("TableContents", "TableContents", Messages.IpsObjectType_nameTableContents, "ipstablecontents", false, true, "TableContents.gif", "TableContentsDisabled.gif"); //$NON-NLS-1$  //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
     
     /**
      * Type for test case types.
      */
     public final static IpsObjectType TEST_CASE_TYPE =  
-        new IpsObjectType("TestCaseType", Messages.IpsObjectType_nameTestCaseType, "ipstestcasetype", false, false, "TestCaseType.gif", "TestCaseTypeDisabled.gif");   //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
+        new IpsObjectType("TestCaseType", "TestCaseType", Messages.IpsObjectType_nameTestCaseType, "ipstestcasetype", false, false, "TestCaseType.gif", "TestCaseTypeDisabled.gif");   //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
 
     /**
      * Type for test cases.
      */
     public final static IpsObjectType TEST_CASE =  
-        new IpsObjectType("TestCase", Messages.IpsObjectType_nameTestCase, "ipstestcase", false, true, "TestCase.gif", "TestCaseDisabled.gif");  //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
+        new IpsObjectType("TestCase", "TestCase", Messages.IpsObjectType_nameTestCase, "ipstestcase", false, true, "TestCase.gif", "TestCaseDisabled.gif");  //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
 
     //  TODO refactor: use IpsModel.getIpsObjectTypes!!!
     public static IpsObjectType[] ALL_TYPES = null;  
@@ -99,7 +99,7 @@ public class IpsObjectType {
      * Ips source file type for ips objects in none ips source folder.
      */
     public final static IpsObjectType IPS_SOURCE_FILE =  
-        new IpsObjectType("Unknown", "Ips Source file", "*", false, true, "IpsSrcFile.gif", "IpsSrcFileDisabled.gif");  //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$ //$NON-NLS-5$
+        new IpsObjectType("Unknown", "Unknown", "Ips Source file", "*", false, true, "IpsSrcFile.gif", "IpsSrcFileDisabled.gif");  //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$ //$NON-NLS-5$
 
     
     /**
@@ -123,15 +123,18 @@ public class IpsObjectType {
 	 */
 	public final static IpsObjectType getTypeForName(String name) {
         for (int i=0; i<ALL_TYPES.length; i++) {
-			if (ALL_TYPES[i].name.equals(name)) {
+			if (ALL_TYPES[i].id.equals(name)) {
 				return ALL_TYPES[i];
 			}
 		}
 		return null;
 	}
 	
-    // the human readable type's name
-    private String name;
+	// the human readable type's name
+	private String displayName;
+	
+    // the identifying name of this type
+    private String id;
     
     // Name of xml elements that represent objects of this type. 
     private String xmlElementName;
@@ -183,10 +186,17 @@ public class IpsObjectType {
 	/**
 	 * Returns the type's name. 
 	 */
-	public final String getName() {
-		return name;
+	public final String getId() {
+		return id;
 	}
     
+	/**
+	 * Returns the display name of this type.
+	 */
+	public final String getDisplayName() {
+	    return displayName;
+	}
+	
 	/**
 	 * Returns the name of Xml elements that represent the state of PdObjects
 	 * of that type. 
@@ -269,7 +279,8 @@ public class IpsObjectType {
     
     public IpsObjectType(
             String xmlElementName, 
-            String name, 
+            String name,
+            String displayName,
             String fileExtension,
             boolean datatype,
             boolean productDefinitionType,
@@ -282,7 +293,8 @@ public class IpsObjectType {
 		ArgumentCheck.notNull(enabledImage);
 		
         this.xmlElementName = xmlElementName;
-        this.name = name;
+        this.id = name;
+        this.displayName = displayName;
         this.fileExtension = fileExtension;
         this.datatype = datatype;
         this.productDefinitionType = productDefinitionType;

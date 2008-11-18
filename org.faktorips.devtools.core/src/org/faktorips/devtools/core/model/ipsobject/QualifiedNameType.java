@@ -179,7 +179,7 @@ public class QualifiedNameType implements Serializable, Comparable {
      */
     private void writeObject(ObjectOutputStream s) throws IOException {
         s.defaultWriteObject();
-        s.writeObject(type.getName());
+        s.writeObject(type.getId());
     }
 
     private void readObject(ObjectInputStream s) throws IOException, ClassNotFoundException {
@@ -210,7 +210,7 @@ public class QualifiedNameType implements Serializable, Comparable {
         if (c!=0) {
             return c;
         }
-        return getIpsObjectType().getName().compareTo(other.getIpsObjectType().getName());
+        return getIpsObjectType().getId().compareTo(other.getIpsObjectType().getId());
     }
     
     

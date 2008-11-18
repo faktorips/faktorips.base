@@ -131,7 +131,7 @@ public class OpenIpsObjectAction extends Action implements IWorkbenchWindowActio
         for (int i = 0; i < ipsSrcFiles.length; i++) {
             IIpsSrcFile srcFile = ipsSrcFiles[i];
             IpsObjectType type = srcFile.getIpsObjectType();
-            map.put(type.getName(), type);
+            map.put(type.getId(), type);
         }
         return (IpsObjectType[])map.values().toArray(new IpsObjectType[map.size()]);
     }
