@@ -30,6 +30,7 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Group;
 import org.eclipse.swt.widgets.Label;
+import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.forms.widgets.FormToolkit;
 import org.eclipse.ui.forms.widgets.Hyperlink;
@@ -664,6 +665,13 @@ public class UIToolkit {
 		Label line = new Label(parent, SWT.SEPARATOR | SWT.HORIZONTAL);
 		line.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
 		return line;
+	}
+	
+	public Table createTable(Composite parent, int style){
+	    if(formToolkit != null){
+	        return formToolkit.createTable(parent, style);
+	    }
+	    return new Table(parent, style);
 	}
 	
 	/**
