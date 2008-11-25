@@ -27,6 +27,7 @@ import org.faktorips.devtools.core.builder.AbstractParameterIdentifierResolver;
 import org.faktorips.devtools.core.builder.ComplianceCheck;
 import org.faktorips.devtools.core.builder.DefaultBuilderSet;
 import org.faktorips.devtools.core.internal.model.TableContentsEnumDatatypeAdapter;
+import org.faktorips.devtools.core.model.bf.BusinessFunctionIpsObjectType;
 import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
 import org.faktorips.devtools.core.model.ipsproject.IIpsArtefactBuilder;
@@ -39,6 +40,7 @@ import org.faktorips.devtools.core.model.tablestructure.ITableStructure;
 import org.faktorips.devtools.core.model.type.IAttribute;
 import org.faktorips.devtools.core.model.type.IParameter;
 import org.faktorips.devtools.core.model.type.IType;
+import org.faktorips.devtools.stdbuilder.bf.BusinessFunctionBuilder;
 import org.faktorips.devtools.stdbuilder.enums.EnumClassesBuilder;
 import org.faktorips.devtools.stdbuilder.enums.EnumTypeInterfaceBuilder;
 import org.faktorips.devtools.stdbuilder.formulatest.FormulaTestBuilder;
@@ -100,8 +102,8 @@ public class StandardBuilderSet extends DefaultBuilderSet {
     public final static String CONFIG_PROPERTY_GENERATE_CHANGELISTENER = "generateChangeListener";
 
     /**
-     * Configuration property that enables/disables the use of typesafe collections, if supported
-     * by the target java version.
+     * Configuration property that enables/disables the use of typesafe collections, if supported by
+     * the target java version.
      */
     public final static String CONFIG_PROPERTY_USE_TYPESAFE_COLLECTIONS = "useTypesafeCollections";
 
@@ -293,9 +295,11 @@ public class StandardBuilderSet extends DefaultBuilderSet {
                 && EnumClassesBuilder.PACKAGE_STRUCTURE_KIND_ID.equals(kind)) {
             return getPackageName(ipsSrcFile);
         }
-
         if (IpsObjectType.TABLE_STRUCTURE.equals(ipsSrcFile.getIpsObjectType())
                 && EnumTypeInterfaceBuilder.PACKAGE_STRUCTURE_KIND_ID.equals(kind)) {
+            return getPackageName(ipsSrcFile);
+        }
+        if (BusinessFunctionIpsObjectType.getInstance().equals(ipsSrcFile.getIpsObjectType())) {
             return getPackageName(ipsSrcFile);
         }
 
@@ -357,6 +361,8 @@ public class StandardBuilderSet extends DefaultBuilderSet {
                 EnumTypeInterfaceBuilder.PACKAGE_STRUCTURE_KIND_ID);
         enumClassesBuilder = new EnumClassesBuilder(this, EnumClassesBuilder.PACKAGE_STRUCTURE_KIND_ID,
                 enumTypeInterfaceBuilder);
+        
+        BusinessFunctionBuilder businessFunctionBuilder = new BusinessFunctionBuilder(this, BusinessFunctionBuilder.PACKAGE_STRUCTURE_KIND_ID);
         //
         // wire up the builders
         //
@@ -395,14 +401,14 @@ public class StandardBuilderSet extends DefaultBuilderSet {
                     policyCmptImplClassBuilder, policyCmptInterfaceBuilder, productCmptGenerationImplBuilder,
                     tableContentCopyBuilder, productCmptContentCopyBuilder, testCaseTypeClassBuilder, testCaseBuilder,
                     formulaTestBuilder, enumClassesBuilder, enumTypeInterfaceBuilder, tocFileBuilder,
-                    policyModelTypeBuilder, productModelTypeBuilder };
+                    policyModelTypeBuilder, productModelTypeBuilder, businessFunctionBuilder };
         } else {
 
             return new IIpsArtefactBuilder[] { tableImplBuilder, tableRowBuilder, productCmptGenInterfaceBuilder,
                     productCmptGenImplClassBuilder, productCmptInterfaceBuilder, productCmptImplClassBuilder,
                     policyCmptImplClassBuilder, policyCmptInterfaceBuilder, productCmptGenerationImplBuilder,
                     tableContentCopyBuilder, productCmptContentCopyBuilder, testCaseTypeClassBuilder, testCaseBuilder,
-                    formulaTestBuilder, enumClassesBuilder, enumTypeInterfaceBuilder, tocFileBuilder };
+                    formulaTestBuilder, enumClassesBuilder, enumTypeInterfaceBuilder, tocFileBuilder, businessFunctionBuilder };
         }
     }
 
@@ -430,6 +436,6 @@ public class StandardBuilderSet extends DefaultBuilderSet {
      */
     public boolean isUseTypesafeCollections() {
         return getConfig().getPropertyValueAsBoolean(StandardBuilderSet.CONFIG_PROPERTY_USE_TYPESAFE_COLLECTIONS)
-        .booleanValue();
+                .booleanValue();
     }
 }

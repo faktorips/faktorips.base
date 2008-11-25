@@ -100,7 +100,7 @@ public abstract class IpsObjectPage extends WizardPage implements ValueChangeLis
      * @param selection
      * @throws JavaModelException
      */
-    public IpsObjectPage(IpsObjectType ipsObjectType, IStructuredSelection selection, String pageName) throws JavaModelException {
+    public IpsObjectPage(IpsObjectType ipsObjectType, IStructuredSelection selection, String pageName) {
         super(pageName);
         ArgumentCheck.notNull(ipsObjectType, this);
         ArgumentCheck.notNull(pageName, this);

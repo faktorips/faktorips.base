@@ -1176,5 +1176,10 @@
             id="org.faktorips.feature.versionmanagerv2"
             basedOnFeatureManager=""/>
    </extension>
-   
+   <extension
+         point="org.faktorips.devtools.core.ipsobjecttype">
+    	<ipsobjecttype
+            class="org.faktorips.devtools.core.model.bf.BusinessFunctionIpsObjectType">
+		</ipsobjecttype>
+	</extension>
 </plugin>

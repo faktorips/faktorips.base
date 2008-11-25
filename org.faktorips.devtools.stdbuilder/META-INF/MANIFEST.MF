@@ -17,8 +17,7 @@ Require-Bundle: org.eclipse.ui,
  org.faktorips.util,
  org.faktorips.valuetypes,
  org.faktorips.dtflcommon,
- org.faktorips.runtime,
- org.faktorips.devtools.bf;bundle-version="1.0.0"
+ org.faktorips.runtime
 Eclipse-LazyStart: true
 Export-Package: org.faktorips.devtools.stdbuilder,
  org.faktorips.devtools.stdbuilder.policycmpttype,

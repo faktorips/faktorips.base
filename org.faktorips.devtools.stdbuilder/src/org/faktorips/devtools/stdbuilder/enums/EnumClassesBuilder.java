@@ -168,9 +168,6 @@ public class EnumClassesBuilder extends DefaultJavaSourceFileBuilder {
     }
 
     /**
-     * Returns true for ips table structures and table contents if the tablestructure of the
-     * contents is a structure for an enumeration type.
-     * 
      * {@inheritDoc}
      */
     public final boolean isBuilderFor(IIpsSrcFile ipsSrcFile) throws CoreException {

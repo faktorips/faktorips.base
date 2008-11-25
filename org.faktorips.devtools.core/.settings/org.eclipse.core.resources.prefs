@@ -1,6 +1,8 @@
-#Wed Jan 30 20:03:33 CET 2008
+#Tue Nov 25 09:12:45 CET 2008
 eclipse.preferences.version=1
 encoding//src/org/faktorips/devtools/core/internal/model/productcmpt/deltaentries/messages.properties=8859_1
+encoding//src/org/faktorips/devtools/core/model/bf/Business\ Function\ Model.uml=UTF-8
+encoding//src/org/faktorips/devtools/core/model/bf/Business\ Function\ Model.umlclass=UTF-8
 encoding//src/org/faktorips/devtools/core/model/pctype/messages.properties=8859_1
 encoding//src/org/faktorips/devtools/core/ui/controlfactories/messages.properties=8859_1
 encoding//src/org/faktorips/devtools/core/ui/controller/messages.properties=8859_1
