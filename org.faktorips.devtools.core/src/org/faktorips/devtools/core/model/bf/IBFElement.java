@@ -19,6 +19,7 @@ import java.util.List;
 import org.eclipse.draw2d.geometry.Dimension;
 import org.eclipse.draw2d.geometry.Point;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPart;
+import org.faktorips.devtools.core.model.ipsproject.IIpsProjectNamingConventions;
 
 public interface IBFElement extends IIpsObjectPart {
 
@@ -29,6 +30,11 @@ public interface IBFElement extends IIpsObjectPart {
     public final static String PROPERTY_SIZE = "size";
     public final static String PROPERTY_INCOMMING_EDGES = "incommingEdges";
     public final static String PROPERTY_OUTGOING_EDGES = "outgoingEdges";
+    
+    public static final String MSGCODE_PREFIX = "BFELEMENT-";
+    public static final String MSGCODE_NAME_NOT_SPECIFIED = MSGCODE_PREFIX + "nameNotSpecified";
+    public static final String MSGCODE_NAME_NOT_VALID = IIpsProjectNamingConventions.INVALID_NAME;
+
 
     public IBusinessFunction getBusinessFunction();
     

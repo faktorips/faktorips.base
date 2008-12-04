@@ -3,8 +3,11 @@ package org.faktorips.devtools.core.internal.model.bf;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.commons.lang.StringUtils;
+import org.eclipse.core.runtime.CoreException;
 import org.eclipse.draw2d.geometry.Dimension;
 import org.eclipse.draw2d.geometry.Point;
+import org.eclipse.osgi.util.NLS;
 import org.eclipse.swt.graphics.Image;
 import org.faktorips.devtools.core.internal.model.ipsobject.IpsObjectPart;
 import org.faktorips.devtools.core.model.IIpsElement;
@@ -14,6 +17,9 @@ import org.faktorips.devtools.core.model.bf.IBusinessFunction;
 import org.faktorips.devtools.core.model.bf.IControlFlow;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObject;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPart;
+import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
+import org.faktorips.util.message.Message;
+import org.faktorips.util.message.MessageList;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
@@ -21,17 +27,16 @@ import org.w3c.dom.NodeList;
 public class BFElement extends IpsObjectPart implements IBFElement {
 
     Point location;
-    private Dimension size = new Dimension(100, 50);
+    private Dimension size = new Dimension(100, 60);
     BFElementType type;
 
     private List<Integer> incommingControlFlows = new ArrayList<Integer>();
     private List<Integer> outgoingControlFlows = new ArrayList<Integer>();
 
-
-    public BFElement(IIpsObject parent, int id){
+    public BFElement(IIpsObject parent, int id) {
         super(parent, id);
     }
-    
+
     @Override
     public void delete() {
         super.delete();
@@ -46,7 +51,7 @@ public class BFElement extends IpsObjectPart implements IBFElement {
     }
 
     void setType(BFElementType type) {
-        //no event triggering since this method is only call at object creation time
+        // no event triggering since this method is only call at object creation time
         this.type = type;
     }
 
@@ -64,7 +69,7 @@ public class BFElement extends IpsObjectPart implements IBFElement {
         List<IControlFlow> controlFlowList = getBusinessFunction().getControlFlows();
         for (IControlFlow controlFlow : controlFlowList) {
             for (Integer id : incommingControlFlows) {
-                if(id.equals(controlFlow.getId())){
+                if (id.equals(controlFlow.getId())) {
                     inList.add(controlFlow);
                 }
             }
@@ -102,7 +107,7 @@ public class BFElement extends IpsObjectPart implements IBFElement {
         List<IControlFlow> controlFlowList = getBusinessFunction().getControlFlows();
         for (IControlFlow controlFlow : controlFlowList) {
             for (Integer id : outgoingControlFlows) {
-                if(id.equals(controlFlow.getId())){
+                if (id.equals(controlFlow.getId())) {
                     outList.add(controlFlow);
                 }
             }
@@ -144,7 +149,7 @@ public class BFElement extends IpsObjectPart implements IBFElement {
         this.name = name;
         valueChanged(old, name);
     }
-    
+
     public IBusinessFunction getBusinessFunction() {
         return (IBusinessFunction)getParent();
     }
@@ -166,14 +171,14 @@ public class BFElement extends IpsObjectPart implements IBFElement {
             Element posElement = (Element)nl.item(i);
             String xPos = posElement.getAttribute("xlocation");
             String yPos = posElement.getAttribute("ylocation");
-            this.location = new Point(Integer.parseInt(xPos), Integer.parseInt(yPos)); 
+            this.location = new Point(Integer.parseInt(xPos), Integer.parseInt(yPos));
         }
         nl = element.getElementsByTagName("Size");
         for (int i = 0; i < nl.getLength(); i++) {
             Element posElement = (Element)nl.item(i);
             String width = posElement.getAttribute("width");
             String height = posElement.getAttribute("height");
-            this.size = new Dimension(Integer.parseInt(width), Integer.parseInt(height)); 
+            this.size = new Dimension(Integer.parseInt(width), Integer.parseInt(height));
         }
         nl = element.getElementsByTagName("ControlFlow");
         incommingControlFlows.clear();
@@ -182,10 +187,10 @@ public class BFElement extends IpsObjectPart implements IBFElement {
             Element posElement = (Element)nl.item(i);
             String type = posElement.getAttribute("type");
             String controlFlowId = posElement.getAttribute("id");
-            if(type.equals("in")){
+            if (type.equals("in")) {
                 incommingControlFlows.add(Integer.valueOf(controlFlowId));
             }
-            if(type.equals("out")){
+            if (type.equals("out")) {
                 outgoingControlFlows.add(Integer.valueOf(controlFlowId));
             }
         }
@@ -196,10 +201,10 @@ public class BFElement extends IpsObjectPart implements IBFElement {
      */
     protected void propertiesToXml(Element element) {
         super.propertiesToXml(element);
-        element.setAttribute(PROPERTY_NAME, name); 
+        element.setAttribute(PROPERTY_NAME, name);
         element.setAttribute(PROPERTY_TYPE, type.getId());
         Document doc = element.getOwnerDocument();
-        
+
         Element locationEl = doc.createElement("Location");
         locationEl.setAttribute("xlocation", String.valueOf(getLocation().x));
         locationEl.setAttribute("ylocation", String.valueOf(getLocation().y));
@@ -209,15 +214,15 @@ public class BFElement extends IpsObjectPart implements IBFElement {
         sizeEl.setAttribute("width", String.valueOf(getSize().width));
         sizeEl.setAttribute("height", String.valueOf(getSize().height));
         element.appendChild(sizeEl);
-        
-        for (Integer controlFlowId: this.outgoingControlFlows) {
+
+        for (Integer controlFlowId : this.outgoingControlFlows) {
             Element controlFlowEl = doc.createElement("ControlFlow");
             element.appendChild(controlFlowEl);
             controlFlowEl.setAttribute("type", "out");
             controlFlowEl.setAttribute("id", String.valueOf(controlFlowId));
         }
 
-        for (Integer controlFlowId: this.incommingControlFlows) {
+        for (Integer controlFlowId : this.incommingControlFlows) {
             Element controlFlowEl = doc.createElement("ControlFlow");
             element.appendChild(controlFlowEl);
             controlFlowEl.setAttribute("type", "in");
@@ -225,7 +230,6 @@ public class BFElement extends IpsObjectPart implements IBFElement {
         }
     }
 
-    
     @Override
     public IIpsElement[] getChildren() {
         return new IIpsElement[0];
@@ -258,4 +262,55 @@ public class BFElement extends IpsObjectPart implements IBFElement {
         // TODO image handling
         return null;
     }
+
+    /**
+     * Can be used within subclass validation methods to validate the name of the business function
+     * element. This method validates if the name has been specified and if the name is valid
+     * according to java naming conventions.
+     * 
+     * @throws CoreException if an exception occurs during the course of validation
+     */
+    protected final void validateName(MessageList msgList, IIpsProject ipsProject) throws CoreException {
+        if (StringUtils.isEmpty(getName())) {
+            msgList
+                    .add(new Message(MSGCODE_NAME_NOT_SPECIFIED, "The name needs to be specified.", Message.ERROR, this));
+            return;
+        }
+        Message msg = getIpsProject().getNamingConventions().validateIfValidJavaIdentifier(getName(),
+                "The name is not a valid.", this, ipsProject);
+        if (msg != null) {
+            msgList.add(msg);
+            return;
+        }
+    }
+
+    /**
+     * Can be used within subclass validation methods to validate the name of the business function
+     * element. This method checks if the name is equal to the not allowed values <i>execute</i>,
+     * <i>start</i>, <i>end</i>.
+     * 
+     * @param name the name to be checked
+     * @param nameOfName the error message that is created by this method refers to the name. Here
+     *            there is to specify how to call that name within the error message
+     * @param msgList the message list to which the message is appended
+     * 
+     * @throws CoreException if an exception occurs during the course of validation
+     */
+    protected final void validateNotAllowedNames(String name, String nameOfName, MessageList msgList) {
+        String uncapName = StringUtils.uncapitalize(name);
+        if (uncapName.equals("execute") || uncapName.equals("start") || uncapName.equals("end")) {
+            String text = NLS.bind("The specified " + nameOfName + " : {0} is not an allowed name.", name);
+            msgList.add(new Message(MSGCODE_NAME_NOT_VALID, text, Message.ERROR, this));
+        }
+    }
+
+    @Override
+    protected void validateThis(MessageList list, IIpsProject ipsProject) throws CoreException {
+        if (getType().equals(BFElementType.DECISION) || getType().equals(BFElementType.MERGE)
+                || getType().equals(BFElementType.ACTION_INLINE) || getType().equals(BFElementType.PARAMETER)) {
+            validateName(list, ipsProject);
+            validateNotAllowedNames(getName(), "name", list);
+        }
+    }
+
 }

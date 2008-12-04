@@ -74,7 +74,7 @@ public class DecisionBFE extends BFElement implements IDecisionBFE {
 
     @Override
     protected void validateThis(MessageList list, IIpsProject ipsProject) throws CoreException {
-
+        super.validateThis(list, ipsProject);
         // datatype specified
         if (StringUtils.isEmpty(datatype)) {
             list.add(new Message(MSGCODE_DATATYPE_NOT_SPECIFIED, "The datatype needs to be specified.", Message.ERROR,

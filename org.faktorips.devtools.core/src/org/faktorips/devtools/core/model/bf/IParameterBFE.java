@@ -16,7 +16,6 @@ package org.faktorips.devtools.core.model.bf;
 
 import org.eclipse.core.runtime.CoreException;
 import org.faktorips.datatype.Datatype;
-import org.faktorips.devtools.core.model.ipsproject.IIpsProjectNamingConventions;
 
 
 public interface IParameterBFE extends IBFElement {
@@ -25,8 +24,6 @@ public interface IParameterBFE extends IBFElement {
     public final static String PROPERTY_DATATYPE = "datatype";
     
     public static final String MSGCODE_PREFIX = "PARAMETERBFE-";
-    public static final String MSGCODE_NAME_NOT_SPECIFIED = MSGCODE_PREFIX + "nameNotSpecified";
-    public static final String MSGCODE_NAME_NOT_VALID = IIpsProjectNamingConventions.INVALID_NAME;
     public static final String MSGCODE_NAME_DUBLICATE = MSGCODE_PREFIX + "nameDuplicate";
     public static final String MSGCODE_DATATYPE_NOT_SPECIFIED = MSGCODE_PREFIX + "datatypeNotSpecified";
     public static final String MSGCODE_DATATYPE_DOES_NOT_EXISIT = MSGCODE_PREFIX + "datatypeDoesNotExists";

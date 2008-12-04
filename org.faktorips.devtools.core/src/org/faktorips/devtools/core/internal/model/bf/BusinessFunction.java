@@ -287,11 +287,32 @@ public class BusinessFunction extends BaseIpsObject implements IBusinessFunction
             List<IBFElement> list = elements.get(key);
             if (list.size() > 1) {
                 for (IBFElement element : list) {
-                    String text = NLS.bind("The name of this element: {0} collides with the name of another element.", key);
-                    msgList.add(new Message(MSGCODE_ELEMENT_NAME_COLLISION, text, Message.ERROR, element));
+                    if (!(checkIfOnlyMethodCallActions(list) || checkIfOnlyBusinessFunctionCallActions(list))) {
+                        String text = NLS.bind(
+                                "The name of this element: {0} collides with the name of another element.", key);
+                        msgList.add(new Message(MSGCODE_ELEMENT_NAME_COLLISION, text, Message.ERROR, element));
+                    }
                 }
             }
         }
+    }
+
+    private boolean checkIfOnlyMethodCallActions(List<IBFElement> list) {
+        for (IBFElement element : list) {
+            if (!element.getType().equals(BFElementType.ACTION_METHODCALL)) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    private boolean checkIfOnlyBusinessFunctionCallActions(List<IBFElement> list) {
+        for (IBFElement element : list) {
+            if (!element.getType().equals(BFElementType.ACTION_BUSINESSFUNCTIONCALL)) {
+                return false;
+            }
+        }
+        return true;
     }
 
     private List<IBFElement> getValue(Map<String, List<IBFElement>> elements, String key) {
@@ -323,11 +344,13 @@ public class BusinessFunction extends BaseIpsObject implements IBusinessFunction
     private void validateBFElementsConnected(MessageList list) {
         boolean startOrEndMissing = false;
         if (getStart() == null) {
-            list.add(new Message(MSGCODE_START_DEFINITION_MISSING, "The start of this business function has to be defined", Message.ERROR, this));
+            list.add(new Message(MSGCODE_START_DEFINITION_MISSING,
+                    "The start of this business function has to be defined", Message.ERROR, this));
             startOrEndMissing = true;
         }
         if (getEnd() == null) {
-            list.add(new Message(MSGCODE_END_DEFINITION_MISSING, "The end of this business function has to be defined", Message.ERROR, this));
+            list.add(new Message(MSGCODE_END_DEFINITION_MISSING, "The end of this business function has to be defined",
+                    Message.ERROR, this));
             startOrEndMissing = true;
         }
         if (startOrEndMissing) {
@@ -350,7 +373,10 @@ public class BusinessFunction extends BaseIpsObject implements IBusinessFunction
                 continue;
             }
             if (!successfullyCheckedForStart.contains(element)) {
-                String text = NLS.bind("This element: {0} is not directly or indirectly connected to the start of this business function.", element.getDisplayString());
+                String text = NLS
+                        .bind(
+                                "This element: {0} is not directly or indirectly connected to the start of this business function.",
+                                element.getDisplayString());
                 list.add(new Message(MSGCODE_NOT_CONNECTED_WITH_START, text, Message.ERROR, element));
             }
         }
@@ -360,7 +386,9 @@ public class BusinessFunction extends BaseIpsObject implements IBusinessFunction
                 continue;
             }
             if (!successfullyCheckedForEnd.contains(element)) {
-                String text = NLS.bind("This element: is not directly or indirectly connected to the end of this business function.", element.getDisplayString());
+                String text = NLS.bind(
+                        "This element: is not directly or indirectly connected to the end of this business function.",
+                        element.getDisplayString());
                 list.add(new Message(MSGCODE_NOT_CONNECTED_WITH_END, text, Message.ERROR, element));
             }
         }

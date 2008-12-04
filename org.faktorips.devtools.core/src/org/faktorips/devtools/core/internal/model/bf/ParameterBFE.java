@@ -82,15 +82,7 @@ public class ParameterBFE extends BFElement implements IParameterBFE {
 
     @Override
     protected void validateThis(MessageList list, IIpsProject ipsProject) throws CoreException {
-        if (StringUtils.isEmpty(getName())) {
-            String text = "The name needs to be specified.";
-            list.add(new Message(MSGCODE_NAME_NOT_SPECIFIED, text, Message.ERROR, this));
-        }
-        Message msg = getIpsProject().getNamingConventions().validateIfValidJavaIdentifier(
-                getName(), "The name is not a valid.", this, getIpsProject()); 
-        if (msg != null) {
-            list.add(msg);
-        }
+        validateName(list, ipsProject);
         validateDuplicateName(list);
         if (StringUtils.isEmpty(getDatatype())) {
             String text = "The datatype needs to be specified.";

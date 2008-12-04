@@ -16,7 +16,6 @@ package org.faktorips.devtools.core.internal.model.bf;
 
 import org.apache.commons.lang.StringUtils;
 import org.eclipse.core.runtime.CoreException;
-import org.eclipse.osgi.util.NLS;
 import org.faktorips.datatype.Datatype;
 import org.faktorips.devtools.core.model.bf.BFElementType;
 import org.faktorips.devtools.core.model.bf.BusinessFunctionIpsObjectType;
@@ -96,7 +95,7 @@ public class ActionBFE extends BFElement implements IActionBFE {
             if (index == -1) {
                 return getTarget();
             }
-            return getTarget().substring(index, getTarget().length() - 1);
+            return getTarget().substring(index + 1, getTarget().length());
         }
         return null;
     }
@@ -124,34 +123,9 @@ public class ActionBFE extends BFElement implements IActionBFE {
 
     @Override
     protected void validateThis(MessageList list, IIpsProject ipsProject) throws CoreException {
+        super.validateThis(list, ipsProject);
         validateMethodCallAction(list);
         validateBusinessFunctionCallAction(list);
-        validateInlineAction(list, ipsProject);
-    }
-
-    private void validateNotAllowedNames(String name, String nameOfName, MessageList msgList){
-        String uncapName = StringUtils.uncapitalize(name); 
-        if(uncapName.equals("execute") || uncapName.equals("start") || uncapName.equals("end")){
-            String text = NLS.bind("The specified " + nameOfName + " : {0} is not an allowed name.", name);
-            msgList.add(new Message(MSGCODE_NAME_NOT_VALID, text, Message.ERROR, this));
-        }
-    }
-    
-    private void validateInlineAction(MessageList msgList, IIpsProject ipsProject) throws CoreException{
-        if(getType().equals(BFElementType.ACTION_INLINE)){
-            if(StringUtils.isEmpty(getName())){
-                msgList.add(new Message(MSGCODE_NAME_NOT_SPECIFIED, "The name needs to be specified.",
-                        Message.ERROR, this));
-                return;
-            }
-            Message msg = getIpsProject().getNamingConventions().validateIfValidJavaIdentifier(
-                    getName(), "The name is not a valid.", this, ipsProject); 
-            if (msg != null) {
-                msgList.add(msg);
-                return;
-            }
-            validateNotAllowedNames(getName(), "name", msgList);
-        }
     }
     
     private void validateBusinessFunctionCallAction(MessageList msgList) throws CoreException{
