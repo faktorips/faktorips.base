@@ -24,6 +24,7 @@ import org.apache.commons.lang.StringUtils;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.jdt.core.JavaConventions;
+import org.eclipse.jdt.core.JavaCore;
 import org.eclipse.osgi.util.NLS;
 import org.faktorips.devtools.core.internal.model.testcase.IpsTestRunner;
 import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
@@ -276,5 +277,18 @@ public class DefaultIpsProjectNamingConventions implements IIpsProjectNamingConv
      */
     public MessageList validateIpsPackageRootName(String name) throws CoreException {
         return new MessageList();
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public Message validateIfValidJavaIdentifier(String name, String text, Object validatedObject, IIpsProject ipsProject) throws CoreException {
+        String compliance = ipsProject.getJavaProject().getOption(JavaCore.COMPILER_COMPLIANCE, true);
+        String sourceLevel = ipsProject.getJavaProject().getOption(JavaCore.COMPILER_SOURCE, true);
+        IStatus status = JavaConventions.validateIdentifier(name, sourceLevel, compliance);
+        if(!status.isOK()){
+            return new Message(INVALID_NAME, text, Message.ERROR, validatedObject);
+        }
+        return null;
     }    
 }

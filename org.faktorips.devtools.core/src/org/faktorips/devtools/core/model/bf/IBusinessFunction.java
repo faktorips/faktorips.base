@@ -31,6 +31,15 @@ public interface IBusinessFunction extends IIpsObject {
     public static final String PROPERTY_CONTROLFLOWS = "ControlFlows";
     public static final String XML_TAG = "BusinessFunction";
 
+    public static final String MSGCODE_PREFIX = "BUSINESSFUNCTION-";
+    public static final String MSGCODE_START_SINGLE_OCCURRENCE = MSGCODE_PREFIX + "startSingleOccurrence";
+    public static final String MSGCODE_END_SINGLE_OCCURRENCE = MSGCODE_PREFIX + "endSingleOccurrence";
+    public static final String MSGCODE_ELEMENT_NAME_COLLISION = MSGCODE_PREFIX + "elementNameCollision";
+    public static final String MSGCODE_START_DEFINITION_MISSING = MSGCODE_PREFIX + "startDefinitionMissing";
+    public static final String MSGCODE_END_DEFINITION_MISSING = MSGCODE_PREFIX + "endDefinitionMissing";
+    public static final String MSGCODE_NOT_CONNECTED_WITH_START = MSGCODE_PREFIX + "notConnectedWithStart";
+    public static final String MSGCODE_NOT_CONNECTED_WITH_END = MSGCODE_PREFIX + "notConnectedWithEnd";
+    
     public IControlFlow newControlFlow();
     
     public List<IControlFlow> getControlFlows();

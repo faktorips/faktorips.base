@@ -14,15 +14,41 @@
 
 package org.faktorips.devtools.core.internal.model.bf;
 
+import org.apache.commons.lang.StringUtils;
+import org.eclipse.core.runtime.CoreException;
+import org.faktorips.datatype.Datatype;
+import org.faktorips.datatype.ValueDatatype;
 import org.faktorips.devtools.core.model.bf.IDecisionBFE;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObject;
+import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
+import org.faktorips.util.message.Message;
+import org.faktorips.util.message.MessageList;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
-public class DecisionBFE extends BFElement implements IDecisionBFE{
+public class DecisionBFE extends BFElement implements IDecisionBFE {
+
+    private String datatype = "";
 
     public DecisionBFE(IIpsObject parent, int id) {
         super(parent, id);
+    }
+
+    public String getDatatype() {
+        return datatype;
+    }
+
+    public void setDatatype(String datatype) {
+        String old = this.datatype;
+        this.datatype = datatype;
+        valueChanged(old, datatype);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public ValueDatatype findDatatype(IIpsProject ipsProject) throws CoreException {
+        return ipsProject.findValueDatatype(datatype);
     }
 
     /**
@@ -30,6 +56,7 @@ public class DecisionBFE extends BFElement implements IDecisionBFE{
      */
     protected void initPropertiesFromXml(Element element, Integer id) {
         super.initPropertiesFromXml(element, id);
+        datatype = element.getAttribute(PROPERTY_DATATYPE);
     }
 
     /**
@@ -37,11 +64,35 @@ public class DecisionBFE extends BFElement implements IDecisionBFE{
      */
     protected void propertiesToXml(Element element) {
         super.propertiesToXml(element);
+        element.setAttribute(PROPERTY_DATATYPE, datatype);
     }
 
     @Override
     protected Element createElement(Document doc) {
         return doc.createElement(IDecisionBFE.XML_TAG);
+    }
+
+    @Override
+    protected void validateThis(MessageList list, IIpsProject ipsProject) throws CoreException {
+
+        // datatype specified
+        if (StringUtils.isEmpty(datatype)) {
+            list.add(new Message(MSGCODE_DATATYPE_NOT_SPECIFIED, "The datatype needs to be specified.", Message.ERROR,
+                    this));
+            return;
+        }
+        // datatype exists
+        Datatype datatype = findDatatype(ipsProject);
+        if (datatype == null) {
+            list.add(new Message(MSGCODE_DATATYPE_DOES_NOT_EXIST, "The specified datatype does not exist.",
+                    Message.ERROR, this));
+            return;
+        }
+        // datatype only none primitive valuedatatype
+        if (!datatype.isValueDatatype() || datatype.isPrimitive()) {
+            list.add(new Message(MSGCODE_DATATYPE_ONLY_NONE_PRIM_VALUEDATATYPE,
+                    "The datatype needs to be a none primitive value datatype.", Message.ERROR, this));
+        }
     }
 
 }

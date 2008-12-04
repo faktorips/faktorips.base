@@ -16,21 +16,26 @@ package org.faktorips.devtools.core.internal.model.bf;
 
 import org.apache.commons.lang.StringUtils;
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.osgi.util.NLS;
+import org.faktorips.datatype.Datatype;
 import org.faktorips.devtools.core.model.bf.BFElementType;
 import org.faktorips.devtools.core.model.bf.BusinessFunctionIpsObjectType;
 import org.faktorips.devtools.core.model.bf.IActionBFE;
 import org.faktorips.devtools.core.model.bf.IBusinessFunction;
 import org.faktorips.devtools.core.model.bf.IParameterBFE;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObject;
+import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
+import org.faktorips.devtools.core.model.type.IType;
+import org.faktorips.util.message.Message;
+import org.faktorips.util.message.MessageList;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
 public class ActionBFE extends BFElement implements IActionBFE {
 
-    private String executableMethodName;
-    private String target;
+    private String executableMethodName = "";
+    private String target = "";
 
-    
     public ActionBFE(IIpsObject parent, int id) {
         super(parent, id);
     }
@@ -45,10 +50,10 @@ public class ActionBFE extends BFElement implements IActionBFE {
     }
 
     public String getDisplayString() {
-        if(BFElementType.ACTION_METHODCALL.equals(getType())){
+        if (BFElementType.ACTION_METHODCALL.equals(getType())) {
             return target + ':' + executableMethodName;
         }
-        if(BFElementType.ACTION_BUSINESSFUNCTIONCALL.equals(getType())){
+        if (BFElementType.ACTION_BUSINESSFUNCTIONCALL.equals(getType())) {
             return target;
         }
         return getName();
@@ -68,7 +73,6 @@ public class ActionBFE extends BFElement implements IActionBFE {
         return doc.createElement(IActionBFE.XML_TAG);
     }
 
-    
     public String getExecutableMethodName() {
         return executableMethodName;
     }
@@ -77,32 +81,33 @@ public class ActionBFE extends BFElement implements IActionBFE {
         return target;
     }
 
-    //TODO test missing
-    public String getReferencedBfQualifiedName(){
-        if(getType().equals(BFElementType.ACTION_BUSINESSFUNCTIONCALL)){
+    // TODO test missing
+    public String getReferencedBfQualifiedName() {
+        if (getType().equals(BFElementType.ACTION_BUSINESSFUNCTIONCALL)) {
             return getTarget();
         }
         return null;
     }
-    
-    //TODO test missing
-    public String getReferencedBfUnqualifedName(){
-        if(getType().equals(BFElementType.ACTION_BUSINESSFUNCTIONCALL)){
+
+    // TODO test missing
+    public String getReferencedBfUnqualifedName() {
+        if (getType().equals(BFElementType.ACTION_BUSINESSFUNCTIONCALL)) {
             int index = StringUtils.lastIndexOf(getTarget(), '.');
-            if(index == -1){
+            if (index == -1) {
                 return getTarget();
             }
             return getTarget().substring(index, getTarget().length() - 1);
         }
         return null;
     }
-    
-    public IParameterBFE getParameter(){
+
+    public IParameterBFE getParameter() {
         return getBusinessFunction().getParameterBFE(getTarget());
     }
-    
-    public IBusinessFunction findBusinessFunction() throws CoreException{
-        return (IBusinessFunction)getIpsProject().findIpsObject(BusinessFunctionIpsObjectType.getInstance(), getTarget());
+
+    public IBusinessFunction findReferencedBusinessFunction() throws CoreException {
+        return (IBusinessFunction)getIpsProject().findIpsObject(BusinessFunctionIpsObjectType.getInstance(),
+                getTarget());
     }
 
     public void setExecutableMethodName(String name) {
@@ -112,9 +117,98 @@ public class ActionBFE extends BFElement implements IActionBFE {
     }
 
     public void setTarget(String target) {
-        String old = this.target; 
+        String old = this.target;
         this.target = target;
         valueChanged(old, target);
+    }
+
+    @Override
+    protected void validateThis(MessageList list, IIpsProject ipsProject) throws CoreException {
+        validateMethodCallAction(list);
+        validateBusinessFunctionCallAction(list);
+        validateInlineAction(list, ipsProject);
+    }
+
+    private void validateNotAllowedNames(String name, String nameOfName, MessageList msgList){
+        String uncapName = StringUtils.uncapitalize(name); 
+        if(uncapName.equals("execute") || uncapName.equals("start") || uncapName.equals("end")){
+            String text = NLS.bind("The specified " + nameOfName + " : {0} is not an allowed name.", name);
+            msgList.add(new Message(MSGCODE_NAME_NOT_VALID, text, Message.ERROR, this));
+        }
+    }
+    
+    private void validateInlineAction(MessageList msgList, IIpsProject ipsProject) throws CoreException{
+        if(getType().equals(BFElementType.ACTION_INLINE)){
+            if(StringUtils.isEmpty(getName())){
+                msgList.add(new Message(MSGCODE_NAME_NOT_SPECIFIED, "The name needs to be specified.",
+                        Message.ERROR, this));
+                return;
+            }
+            Message msg = getIpsProject().getNamingConventions().validateIfValidJavaIdentifier(
+                    getName(), "The name is not a valid.", this, ipsProject); 
+            if (msg != null) {
+                msgList.add(msg);
+                return;
+            }
+            validateNotAllowedNames(getName(), "name", msgList);
+        }
+    }
+    
+    private void validateBusinessFunctionCallAction(MessageList msgList) throws CoreException{
+        if(getType().equals(BFElementType.ACTION_BUSINESSFUNCTIONCALL)){
+            // business function has to be specified
+            if (StringUtils.isEmpty(target)) {
+                msgList.add(new Message(MSGCODE_TARGET_NOT_SPECIFIED, "The business function needs to be specified.",
+                        Message.ERROR, this));
+            }
+            validateNotAllowedNames(target, "business function name", msgList);
+            //business function exists
+            IBusinessFunction refBf = findReferencedBusinessFunction();
+            if(refBf == null){
+                msgList.add(new Message(MSGCODE_TARGET_DOES_NOT_EXIST, "The specified business function does not exist.",
+                        Message.ERROR, this));
+            }
+        }
+    }
+    
+    private void validateMethodCallAction(MessageList list) throws CoreException {
+        if (getType().equals(BFElementType.ACTION_METHODCALL)) {
+            // parameter has to be specified
+            if (StringUtils.isEmpty(target)) {
+                list.add(new Message(MSGCODE_TARGET_NOT_SPECIFIED, "The parameter needs to be specified.",
+                        Message.ERROR, this));
+            }
+            // method has to be specified
+            if (StringUtils.isEmpty(getExecutableMethodName())) {
+                list.add(new Message(MSGCODE_METHOD_NOT_SPECIFIED, "The method needs to be specified.", Message.ERROR,
+                        this));
+            }
+            validateNotAllowedNames(getExecutableMethodName(), "method name", list);
+            // parameter has to exist
+            if (getParameter() == null) {
+                list.add(new Message(MSGCODE_TARGET_DOES_NOT_EXIST,
+                        "The specified parameter does not exist within this business function.", Message.ERROR, this));
+                return;
+            }
+            Datatype datatype = getParameter().findDatatype();
+            if (datatype == null) {
+                // this case has to be handled in the parameter validation
+                return;
+            }
+            // only parameters with IType datatypes are allowed
+            if (!(datatype instanceof IType)) {
+                list.add(new Message(MSGCODE_TARGET_NOT_VALID_TYPE,
+                        "The specified datatype is not a policy oder product component type", Message.ERROR, this));
+                return;
+            }
+            // method has to exist
+            IType type = (IType)datatype;
+            if (type.getMethod(getExecutableMethodName(), new String[0]) == null) {
+                list.add(new Message(MSGCODE_METHOD_DOES_NOT_EXIST,
+                        "This method doesn't exist on the parameter. Only methods without parameters are considered.",
+                        Message.ERROR, this));
+            }
+        }
     }
 
 }

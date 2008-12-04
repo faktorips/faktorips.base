@@ -85,7 +85,7 @@ public class DatatypeRefControl extends TextButtonControl {
     protected void buttonClicked() {
         try {
             DatatypeSelectionDialog dialog = new DatatypeSelectionDialog(getShell());
-            dialog.setElements(ipsProject.findDatatypes(isOnlyValueDatatypesAllowed(), isVoidAllowed()));
+            dialog.setElements(ipsProject.findDatatypes(isOnlyValueDatatypesAllowed(), isVoidAllowed(), getPrimitivesAllowed()));
             if (dialog.open()==Window.OK) {
                 String textToSet = ""; //$NON-NLS-1$
                 if (dialog.getResult().length>0) {

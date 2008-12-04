@@ -25,6 +25,12 @@ public interface IControlFlow extends IIpsObjectPart {
     public static final String PROPERTY_BENDPOINT = "bendPoint";
     public static final String PROPERTY_TARGET = "target";
     public static final String PROPERTY_SOURCE = "source";
+    public static final String PROPERTY_CONDITION_VALUE = "conditionValue";
+    
+    public static final String MSGCODE_PREFIX = "DECISIONBFE-";
+    public static final String MSGCODE_VALUE_NOT_SPECIFIED = MSGCODE_PREFIX + "valueNotSpecified";
+    public static final String MSGCODE_VALUE_NOT_VALID = MSGCODE_PREFIX + "valueNotValid";
+
     
     public IBusinessFunction getBusinessFunction();
     
@@ -43,5 +49,9 @@ public interface IControlFlow extends IIpsObjectPart {
     public void addBendpoint(int index, Bendpoint bendpoint);
     
     public void removeBendpoint(int index);
+
+    public String getConditionValue();
+
+    public void setConditionValue(String value);
 
 }

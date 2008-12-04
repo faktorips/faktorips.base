@@ -16,6 +16,7 @@ package org.faktorips.devtools.stdbuilder.bf;
 
 import java.lang.reflect.Modifier;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
 
@@ -33,6 +34,7 @@ import org.faktorips.devtools.core.model.bf.IActionBFE;
 import org.faktorips.devtools.core.model.bf.IBFElement;
 import org.faktorips.devtools.core.model.bf.IBusinessFunction;
 import org.faktorips.devtools.core.model.bf.IControlFlow;
+import org.faktorips.devtools.core.model.bf.IDecisionBFE;
 import org.faktorips.devtools.core.model.bf.IParameterBFE;
 import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.core.model.ipsproject.IIpsArtefactBuilderSet;
@@ -64,6 +66,7 @@ public class BusinessFunctionBuilder extends DefaultJavaSourceFileBuilder {
         mainSection.setUnqualifiedName(getBusinessFunction().getName());
         mainSection.setClassModifier(Modifier.PUBLIC | Modifier.FINAL);
         mainSection.setClass(true);
+        mainSection.getJavaDocForTypeBuilder().javaDoc(getBusinessFunction().getDescription(), ANNOTATION_GENERATED);
         // TODO add IBusinessFunction interface to runtime
         // mainSection.setExtendedInterfaces(new String[] { IBusinessFunction.class.getName()});
 
@@ -78,19 +81,23 @@ public class BusinessFunctionBuilder extends DefaultJavaSourceFileBuilder {
         generateCodeForInlineActions(methodBuilder);
         generateMethodCallBusinessFunctionAction(methodBuilder);
         generateMethodForMerges(methodBuilder);
-        generateMethodForDecisions(methodBuilder);
+        generateCodeForDecisions(methodBuilder);
         generateConstructor(mainSection.getConstructorBuilder());
         generateMethodCreateCallBusinessFunction(methodBuilder);
     }
 
     private void generateStartMethod(JavaCodeFragmentBuilder methodBuilder) {
-        methodBuilder.method(Modifier.PUBLIC, Void.TYPE, "start", new String[0], new Class[0], new JavaCodeFragment(),
-                "JavaDoc");
+        methodBuilder.method(Modifier.PRIVATE, Void.TYPE, "start", new String[0], new Class[0], new JavaCodeFragment(),
+                "", ANNOTATION_GENERATED);
     }
 
     private void generateEndMethod(JavaCodeFragmentBuilder methodBuilder) {
-        methodBuilder.method(Modifier.PUBLIC, Void.TYPE, "end", new String[0], new Class[0], new JavaCodeFragment(),
-                "JavaDoc");
+        methodBuilder.method(Modifier.PRIVATE, Void.TYPE, "end", new String[0], new Class[0], new JavaCodeFragment(),
+                "", ANNOTATION_GENERATED);
+    }
+
+    private String getMethodNameInlineAction(IActionBFE action) {
+        return StringUtils.uncapitalize(action.getName());
     }
 
     private void generateCodeForInlineActions(JavaCodeFragmentBuilder methodBuilder) {
@@ -99,45 +106,63 @@ public class BusinessFunctionBuilder extends DefaultJavaSourceFileBuilder {
         for (Iterator it = bfElements.iterator(); it.hasNext();) {
             IBFElement element = (IBFElement)it.next();
             if (element.getType().equals(BFElementType.ACTION_INLINE)) {
-                methodBuilder.method(Modifier.PUBLIC, Void.TYPE, element.getName(), new String[0], new Class[0],
-                        new JavaCodeFragment(), "JavaDoc");
+                methodBuilder.method(Modifier.PRIVATE, Void.TYPE, getMethodNameInlineAction((IActionBFE)element),
+                        new String[0], new Class[0], new JavaCodeFragment(), element.getDescription(),
+                        ANNOTATION_GENERATED);
             }
         }
     }
 
     private void generateMethodCallMethodAction(JavaCodeFragmentBuilder methodBuilder) throws CoreException {
         List bfElements = getBusinessFunction().getBFElements();
-        // TODO call validation
+        // TODO call validation^
+        List alreadyGenerated = new ArrayList();
         for (Iterator it = bfElements.iterator(); it.hasNext();) {
             IBFElement element = (IBFElement)it.next();
             if (element.getType().equals(BFElementType.ACTION_METHODCALL)) {
                 IActionBFE actionBFE = (IActionBFE)element;
+                if (alreadyGenerated.contains(actionBFE.getExecutableMethodName())) {
+                    continue;
+                }
                 IParameterBFE parameter = actionBFE.getParameter();
                 JavaCodeFragment body = new JavaCodeFragment();
                 body.append(parameter.getName());
                 body.append('.');
                 body.append(actionBFE.getExecutableMethodName());
                 body.append("();");
-                String methodName = getCallMethodName(actionBFE);
-                methodBuilder.method(Modifier.PUBLIC, Void.TYPE, methodName, new String[0], new Class[0], body,
-                        "JavaDoc");
+                String methodName = getMethodNameCallMethodAction(actionBFE);
+                String javaDoc = "Calls the method " + actionBFE.getExecutableMethodName() + " on the parameter "
+                        + parameter.getName() + ".";
+                ArrayList annotatios = new ArrayList();
+                annotatios.addAll(Arrays.asList(ANNOTATION_GENERATED));
+                annotatios.add("see " + parameter.findDatatype().getQualifiedName() + "#"
+                        + actionBFE.getExecutableMethodName());
+                methodBuilder.method(Modifier.PRIVATE, Void.TYPE, methodName, new String[0], new Class[0], body,
+                        javaDoc, (String[])annotatios.toArray(new String[annotatios.size()]));
+                alreadyGenerated.add(actionBFE.getExecutableMethodName());
             }
         }
     }
 
-    private String getCallMethodName(IActionBFE actionBFE) {
+    private String getMethodNameCallMethodAction(IActionBFE actionBFE) {
         return StringUtils.uncapitalize(actionBFE.getExecutableMethodName());
     }
 
     private void generateMemberVariableForCallBusinessFunctionAction(JavaCodeFragmentBuilder memberVarBuilder) {
         List bfElements = getBusinessFunction().getBFElements();
         // TODO call validation
+        List alreadyGenerated = new ArrayList();
         for (Iterator it = bfElements.iterator(); it.hasNext();) {
             IBFElement element = (IBFElement)it.next();
             if (element.getType().equals(BFElementType.ACTION_BUSINESSFUNCTIONCALL)) {
                 IActionBFE actionBFE = (IActionBFE)element;
+                if (alreadyGenerated.contains(actionBFE.getReferencedBfQualifiedName())) {
+                    continue;
+                }
+                memberVarBuilder.javaDoc("", ANNOTATION_GENERATED);
                 memberVarBuilder.varDeclaration(Modifier.PRIVATE, actionBFE.getReferencedBfQualifiedName(),
                         getCallBusinessFunctionVarName(actionBFE));
+                alreadyGenerated.add(actionBFE.getReferencedBfQualifiedName());
             }
         }
     }
@@ -149,31 +174,44 @@ public class BusinessFunctionBuilder extends DefaultJavaSourceFileBuilder {
     private void generateMethodCallBusinessFunctionAction(JavaCodeFragmentBuilder methodBuilder) {
         List bfElements = getBusinessFunction().getBFElements();
         // TODO call validation
+        List alreadyGenerated = new ArrayList();
         for (Iterator it = bfElements.iterator(); it.hasNext();) {
             IBFElement element = (IBFElement)it.next();
             if (element.getType().equals(BFElementType.ACTION_BUSINESSFUNCTIONCALL)) {
                 IActionBFE action = (IActionBFE)element;
+                if (alreadyGenerated.contains(getMethodNameCallBusinessFunctionAction(action))) {
+                    continue;
+                }
                 JavaCodeFragment body = new JavaCodeFragment();
                 body.append(getCallBusinessFunctionVarName(action));
                 body.append('.');
                 // TODO define method name in model
                 body.append(getExecuteMethodName());
                 body.append("();");
-                methodBuilder.method(Modifier.PUBLIC, Void.TYPE, getMethodNameCallBusinessFunctionAction(action), new String[0], new Class[0], body,
-                        "JavaDoc");
+                StringBuffer doc = new StringBuffer();
+                doc.append("Executes the business function ");
+                doc.append(action.getReferencedBfUnqualifedName());
+                doc.append(".");
+                doc.append("\n");
+                doc.append("{@link ");
+                doc.append(action.getReferencedBfQualifiedName());
+                doc.append("}");
+                methodBuilder.method(Modifier.PRIVATE, Void.TYPE, getMethodNameCallBusinessFunctionAction(action),
+                        new String[0], new Class[0], body, doc.toString(), ANNOTATION_GENERATED);
+                alreadyGenerated.add(getMethodNameCallBusinessFunctionAction(action));
             }
         }
     }
 
-    private String getMethodNameCallBusinessFunctionAction(IActionBFE action){
-        return StringUtils.uncapitalize(action.getTarget()); 
+    private String getMethodNameCallBusinessFunctionAction(IActionBFE action) {
+        return StringUtils.uncapitalize(action.getTarget());
     }
-    
-    private String getStartMethodName() {
+
+    private String getMethodNameStart() {
         return "start";
     }
 
-    private String getEndMethodName() {
+    private String getMethodNameEnd() {
         return "end";
     }
 
@@ -181,18 +219,18 @@ public class BusinessFunctionBuilder extends DefaultJavaSourceFileBuilder {
         return "execute";
     }
 
-    private void generateMethodExecute(JavaCodeFragmentBuilder methodBuilder) {
+    private void generateMethodExecute(JavaCodeFragmentBuilder methodBuilder) throws CoreException {
         JavaCodeFragment body = new JavaCodeFragment();
-        body.append(getStartMethodName());
+        body.append(getMethodNameStart());
         body.append("();");
         generateControlFlowMethodBody(body, getBusinessFunction().getStart(), methodBuilder);
-        body.append(getEndMethodName());
+        body.append(getMethodNameEnd());
         body.append("();");
         methodBuilder.method(Modifier.PUBLIC, Void.TYPE, getExecuteMethodName(), new String[0], new Class[0], body,
-                "javadoc");
+                "Executes this business function.", ANNOTATION_GENERATED);
     }
 
-    private void generateMethodForMerges(JavaCodeFragmentBuilder methodBuilder) {
+    private void generateMethodForMerges(JavaCodeFragmentBuilder methodBuilder) throws CoreException {
         List merges = getBusinessFunction().getBFElements();
         for (Iterator it = merges.iterator(); it.hasNext();) {
             IBFElement merge = (IBFElement)it.next();
@@ -202,51 +240,63 @@ public class BusinessFunctionBuilder extends DefaultJavaSourceFileBuilder {
         }
     }
 
-    private void generateMethodForMerge(IBFElement merge, JavaCodeFragmentBuilder methodBuilder) {
+    private void generateMethodForMerge(IBFElement merge, JavaCodeFragmentBuilder methodBuilder) throws CoreException {
         JavaCodeFragment body = new JavaCodeFragment();
         generateControlFlowMethodBody(body, merge, methodBuilder);
-        methodBuilder.method(Modifier.PRIVATE, Void.TYPE, getDecisionBFEMethodName(merge), new String[0], new Class[0],
-                body, "javadoc");
+        methodBuilder.method(Modifier.PRIVATE, Void.TYPE, getMethodNameDecision(merge), new String[0], new Class[0],
+                body, "", ANNOTATION_GENERATED);
     }
 
-    private void generateMethodForDecisions(JavaCodeFragmentBuilder methodBuilder) {
+    private void generateCodeForDecisions(JavaCodeFragmentBuilder methodBuilder) throws CoreException {
         List decisions = getBusinessFunction().getBFElements();
         for (Iterator it = decisions.iterator(); it.hasNext();) {
             IBFElement decision = (IBFElement)it.next();
             if (decision.getType().equals(BFElementType.DECISION)) {
                 generateMethodForDecision(decision, methodBuilder);
+                generateMethodGetConditionValue(methodBuilder, (IDecisionBFE)decision);
             }
         }
     }
 
     // TODO search for better method name since usage is for merge and decision
-    private String getDecisionBFEMethodName(IBFElement decision) {
+    private String getMethodNameDecision(IBFElement decision) {
         return StringUtils.uncapitalize(decision.getName());
     }
 
+    private String getMethodNameMerge(IBFElement merge) {
+        return StringUtils.uncapitalize(merge.getName());
+    }
+
     private void appendMethodCall(IBFElement element, JavaCodeFragment body) {
-        if (element.getType().equals(BFElementType.DECISION) || element.getType().equals(BFElementType.MERGE)
-                || element.getType().equals(BFElementType.ACTION_INLINE)) {
-            body.append(StringUtils.uncapitalize(element.getName()));
+        if (element.getType().equals(BFElementType.DECISION)) {
+            body.append(getMethodNameDecision(element));
+            body.append("();");
+            return;
+        }
+        if (element.getType().equals(BFElementType.MERGE)) {
+            body.append(getMethodNameMerge(element));
+            body.append("();");
+            return;
+        }
+        if (element.getType().equals(BFElementType.ACTION_INLINE)) {
+            body.append(getMethodNameInlineAction((IActionBFE)element));
             body.append("();");
             return;
         }
         if (element.getType().equals(BFElementType.ACTION_BUSINESSFUNCTIONCALL)) {
-            body.append(getCallBusinessFunctionVarName((IActionBFE)element));
-            body.append('.');
-            body.append(getExecuteMethodName());
+            body.append(getMethodNameCallBusinessFunctionAction((IActionBFE)element));
             body.append("();");
         }
         if (element.getType().equals(BFElementType.ACTION_METHODCALL)) {
-            body.append(getCallMethodName((IActionBFE)element));
+            body.append(getMethodNameCallMethodAction((IActionBFE)element));
             body.append("();");
         }
         if (element.getType().equals(BFElementType.START)) {
-            body.append(getStartMethodName());
+            body.append(getMethodNameStart());
             body.append("();");
         }
         if (element.getType().equals(BFElementType.END)) {
-            body.append(getEndMethodName());
+            body.append(getMethodNameEnd());
             body.append("();");
         }
     }
@@ -254,20 +304,44 @@ public class BusinessFunctionBuilder extends DefaultJavaSourceFileBuilder {
     // TODO if-else blocks for decisions are missing
     private void generateControlFlowMethodBody(JavaCodeFragment body,
             IBFElement inputElement,
-            JavaCodeFragmentBuilder methodBuilder) {
+            JavaCodeFragmentBuilder methodBuilder) throws CoreException {
         List outgoingFlows = inputElement.getOutgoingControlFlow();
         if (inputElement.getType().equals(BFElementType.DECISION)) {
-            body.append("if(true)");
-            body.appendOpenBracket();
-            for (Iterator it = outgoingFlows.iterator(); it.hasNext();) {
-                IControlFlow controlFlow = (IControlFlow)it.next();
-                generateSingleControlFlowMethodBody(methodBuilder, body, controlFlow);
-                body.appendCloseBracket();
-                if (it.hasNext()) {
-                    body.append("else if(true)");
+            IDecisionBFE decision = (IDecisionBFE)inputElement;
+            Datatype datatype = decision.findDatatype(getIpsProject());
+            DatatypeHelper helper = getIpsProject().findDatatypeHelper(datatype.getQualifiedName());
+
+            body.appendClassName(datatype.getJavaClassName());
+            body.append(" conditionValue = ");
+            body.append(getMethodNameGetConditionValue(decision));
+            body.appendln("();");
+            // TODO call validation
+            for (int i = 0; i < outgoingFlows.size(); i++) {
+                IControlFlow controlFlow = (IControlFlow)outgoingFlows.get(i);
+                String value = controlFlow.getConditionValue();
+                if (i == 0) {
+                    body.append("if(conditionValue.equals(");
+                    body.append(helper.newInstance(value));
+                    body.append("))");
                     body.appendOpenBracket();
+                    generateSingleControlFlowMethodBody(methodBuilder, body, controlFlow);
+                    body.appendCloseBracket();
+                    continue;
+                }
+                if (i < outgoingFlows.size()) {
+                    body.append("else if(conditionValue.equals(");
+                    body.append(helper.newInstance(value));
+                    body.append("))");
+                    body.appendOpenBracket();
+                    generateSingleControlFlowMethodBody(methodBuilder, body, controlFlow);
+                    body.appendCloseBracket();
                 }
             }
+            body.append("else");
+            body.appendOpenBracket();
+            body.append("throw new RuntimeException(\"Unhandled condition value=\" + conditionValue);");
+            body.appendCloseBracket();
+
             return;
         }
         if (!outgoingFlows.isEmpty()) {
@@ -275,9 +349,27 @@ public class BusinessFunctionBuilder extends DefaultJavaSourceFileBuilder {
         }
     }
 
+    private String getMethodNameGetConditionValue(IDecisionBFE decision) {
+        return "get" + StringUtils.capitalize(decision.getName()) + "Value";
+    }
+
+    private void generateMethodGetConditionValue(JavaCodeFragmentBuilder methodBuilder, IDecisionBFE decision)
+            throws CoreException {
+        Datatype datatype = decision.findDatatype(getIpsProject());
+        DatatypeHelper helper = getIpsProject().findDatatypeHelper(datatype.getQualifiedName());
+        JavaCodeFragment body = new JavaCodeFragment();
+        body.appendln("//TODO implementation of the condition logic for the decision \"" + decision.getName()
+                + "\" goes here.");
+        body.append("return ");
+        body.append(helper.nullExpression());
+        body.append(";");
+        methodBuilder.method(Modifier.PRIVATE, datatype.getJavaClassName(), getMethodNameGetConditionValue(decision),
+                new String[0], new String[0], body, "", ANNOTATION_GENERATED);
+    }
+
     private void generateSingleControlFlowMethodBody(JavaCodeFragmentBuilder methodBuilder,
             JavaCodeFragment body,
-            IControlFlow controlFlow) {
+            IControlFlow controlFlow) throws CoreException {
         IBFElement element = controlFlow.getTarget();
         if (element.getType().equals(BFElementType.END)) {
             return;
@@ -289,11 +381,12 @@ public class BusinessFunctionBuilder extends DefaultJavaSourceFileBuilder {
         }
     }
 
-    private void generateMethodForDecision(IBFElement decision, JavaCodeFragmentBuilder methodBuilder) {
+    private void generateMethodForDecision(IBFElement decision, JavaCodeFragmentBuilder methodBuilder)
+            throws CoreException {
         JavaCodeFragment body = new JavaCodeFragment();
         generateControlFlowMethodBody(body, decision, methodBuilder);
-        methodBuilder.method(Modifier.PRIVATE, Void.TYPE, getDecisionBFEMethodName(decision), new String[0],
-                new Class[0], body, "javadoc");
+        methodBuilder.method(Modifier.PRIVATE, Void.TYPE, getMethodNameDecision(decision), new String[0], new Class[0],
+                body, decision.getDescription(), ANNOTATION_GENERATED);
     }
 
     private String getParameterBFEVarName(IParameterBFE parameterBFE) {
@@ -319,13 +412,15 @@ public class BusinessFunctionBuilder extends DefaultJavaSourceFileBuilder {
             IParameterBFE parameter = (IParameterBFE)it.next();
             Datatype datatype = parameter.findDatatype();
             String javaClassName = getJavaClassName(datatype);
+            memberBuilder.javaDoc("", ANNOTATION_GENERATED);
             memberBuilder.varDeclaration(Modifier.PRIVATE, javaClassName, getParameterBFEVarName(parameter));
             JavaCodeFragment body = new JavaCodeFragment();
             body.append("return ");
             body.append(parameter.getName());
             body.append(';');
             methodBuilder.method(Modifier.PUBLIC, javaClassName, StringUtils.capitalize(parameter.getName()),
-                    new String[0], new String[0], body, "JavaDoc");
+                    new String[0], new String[0], body, "Returns the value of the parameter " + parameter.getName()
+                            + ".", ANNOTATION_GENERATED);
         }
     }
 
@@ -335,16 +430,26 @@ public class BusinessFunctionBuilder extends DefaultJavaSourceFileBuilder {
 
     private void generateMethodCreateCallBusinessFunction(JavaCodeFragmentBuilder methodBuilder) {
         List elements = getBusinessFunction().getBFElements();
+        List alreadyGenerated = new ArrayList();
         for (Iterator it = elements.iterator(); it.hasNext();) {
             IBFElement element = (IBFElement)it.next();
-            if(!element.getType().equals(BFElementType.ACTION_BUSINESSFUNCTIONCALL)){
+            if (!element.getType().equals(BFElementType.ACTION_BUSINESSFUNCTIONCALL)) {
                 continue;
             }
             IActionBFE action = (IActionBFE)element;
-            if (action.getType().equals(BFElementType.ACTION_BUSINESSFUNCTIONCALL)) {
-                methodBuilder.method(Modifier.PRIVATE, action.getReferencedBfQualifiedName(), getMethodNameCreateCallBusinessFunction(action),
-                        new String[0], new String[0], new JavaCodeFragment("return null;"), "javadoc");
+            if (alreadyGenerated.contains(getMethodNameCreateCallBusinessFunction(action))) {
+                continue;
             }
+            JavaCodeFragment body = new JavaCodeFragment();
+            body.appendln("//TODO the creation of the business function \"" + action.getReferencedBfUnqualifedName()
+                    + "\" needs to be implemented here.");
+            body.append("return null;");
+            methodBuilder
+                    .method(Modifier.PRIVATE, action.getReferencedBfQualifiedName(),
+                            getMethodNameCreateCallBusinessFunction(action), new String[0], new String[0], body,
+                            "Factory method to create the business function \""
+                                    + action.getReferencedBfUnqualifedName() + "\"", ANNOTATION_GENERATED);
+            alreadyGenerated.add(getMethodNameCreateCallBusinessFunction(action));
         }
     }
 
@@ -373,22 +478,27 @@ public class BusinessFunctionBuilder extends DefaultJavaSourceFileBuilder {
         }
 
         List bfActions = getBusinessFunction().getBFElements();
+        List alreadyGenerated = new ArrayList();
         for (Iterator it = bfActions.iterator(); it.hasNext();) {
             IBFElement element = (IBFElement)it.next();
             if (element.getType().equals(BFElementType.ACTION_BUSINESSFUNCTIONCALL)) {
                 IActionBFE action = (IActionBFE)element;
+                if (alreadyGenerated.contains(action.getReferencedBfQualifiedName())) {
+                    continue;
+                }
                 body.append(getCallBusinessFunctionVarName(action));
                 body.append(" = ");
                 body.append(getMethodNameCreateCallBusinessFunction(action));
                 body.append("();");
-                if(it.hasNext()){
+                if (it.hasNext()) {
                     body.appendln();
+                    alreadyGenerated.add(action.getReferencedBfQualifiedName());
                 }
             }
         }
         constructorBuilder.method(Modifier.PUBLIC, null, getBusinessFunction().getName(), (String[])parameterNames
                 .toArray(new String[parameterNames.size()]), (String[])parameterTypes.toArray(new String[parameterTypes
-                .size()]), body, "javadoc");
+                .size()]), body, "Creates a new " + getBusinessFunction().getName() + ".", ANNOTATION_GENERATED);
     }
 
     public IBusinessFunction getBusinessFunction() {

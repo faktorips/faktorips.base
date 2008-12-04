@@ -14,12 +14,13 @@
 
 package org.faktorips.devtools.core.internal.model.bf;
 
+import org.eclipse.core.runtime.CoreException;
 import org.faktorips.datatype.Datatype;
 import org.faktorips.devtools.core.AbstractIpsPluginTest;
-import org.faktorips.devtools.core.internal.model.bf.BusinessFunction;
 import org.faktorips.devtools.core.model.bf.BusinessFunctionIpsObjectType;
 import org.faktorips.devtools.core.model.bf.IParameterBFE;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
+import org.faktorips.util.message.MessageList;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
@@ -92,4 +93,67 @@ public class ParameterBFETest extends AbstractIpsPluginTest {
 
     }
 
+    public void testValidateNameSpecified() throws Exception {
+        IParameterBFE p = bf.newParameter();
+        MessageList msgList = p.validate(ipsProject);
+        assertNotNull(msgList.getMessageByCode(IParameterBFE.MSGCODE_NAME_NOT_SPECIFIED));
+
+        p.setName("policy");
+        msgList = p.validate(ipsProject);
+        assertNull(msgList.getMessageByCode(IParameterBFE.MSGCODE_NAME_NOT_SPECIFIED));
+    }
+
+    public void testValidateNameValidIdenifier() throws Exception {
+        IParameterBFE p = bf.newParameter();
+        p.setName("policy");
+        MessageList msgList = p.validate(ipsProject);
+        assertNull(msgList.getMessageByCode(IParameterBFE.MSGCODE_NAME_NOT_VALID));
+
+        p.setName("policy-");
+        msgList = p.validate(ipsProject);
+        assertNotNull(msgList.getMessageByCode(IParameterBFE.MSGCODE_NAME_NOT_VALID));
+    }
+
+    public void testValidateDatatypeSpecified() throws Exception {
+        IParameterBFE p = bf.newParameter();
+        p.setName("policy");
+        MessageList msgList = p.validate(ipsProject);
+        assertNotNull(msgList.getMessageByCode(IParameterBFE.MSGCODE_DATATYPE_NOT_SPECIFIED));
+        
+        p.setDatatype(Datatype.STRING.getQualifiedName());
+        msgList = p.validate(ipsProject);
+        assertNull(msgList.getMessageByCode(IParameterBFE.MSGCODE_DATATYPE_NOT_SPECIFIED));
+    }
+
+    public void testValidateDatatypeExists() throws Exception {
+        IParameterBFE p = bf.newParameter();
+        p.setName("policy");
+        p.setDatatype(Datatype.STRING.getQualifiedName());
+        MessageList msgList = p.validate(ipsProject);
+        assertNull(msgList.getMessageByCode(IParameterBFE.MSGCODE_DATATYPE_DOES_NOT_EXISIT));
+        
+        p.setDatatype("abc");
+        msgList = p.validate(ipsProject);
+        assertNotNull(msgList.getMessageByCode(IParameterBFE.MSGCODE_DATATYPE_DOES_NOT_EXISIT));
+    }
+    
+    public void testValidateDuplicateNames() throws Exception{
+        IParameterBFE p1 = bf.newParameter();
+        p1.setName("p1");
+        IParameterBFE p2 = bf.newParameter();
+        p2.setName("p2");
+        
+        MessageList msgList = p1.validate(ipsProject);
+        assertNull(msgList.getMessageByCode(IParameterBFE.MSGCODE_NAME_DUBLICATE));
+        
+        msgList = p2.validate(ipsProject);
+        assertNull(msgList.getMessageByCode(IParameterBFE.MSGCODE_NAME_DUBLICATE));
+        
+        p2.setName("p1");
+        msgList = p1.validate(ipsProject);
+        assertNotNull(msgList.getMessageByCode(IParameterBFE.MSGCODE_NAME_DUBLICATE));
+        
+        msgList = p2.validate(ipsProject);
+        assertNotNull(msgList.getMessageByCode(IParameterBFE.MSGCODE_NAME_DUBLICATE));
+    }
 }

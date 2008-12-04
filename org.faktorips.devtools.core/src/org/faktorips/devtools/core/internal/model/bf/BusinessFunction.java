@@ -3,11 +3,15 @@ package org.faktorips.devtools.core.internal.model.bf;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.draw2d.geometry.Dimension;
 import org.eclipse.draw2d.geometry.Point;
+import org.eclipse.osgi.util.NLS;
 import org.faktorips.devtools.core.internal.model.ipsobject.BaseIpsObject;
 import org.faktorips.devtools.core.internal.model.ipsobject.IpsObjectPart;
 import org.faktorips.devtools.core.internal.model.ipsobject.IpsObjectPartCollection;
@@ -75,7 +79,7 @@ public class BusinessFunction extends BaseIpsObject implements IBusinessFunction
     public IBFElement getEnd() {
         for (IIpsObjectPart part : simpleElements.getParts()) {
             IBFElement element = (IBFElement)part;
-            if (element.getType().equals(BFElementType.START)) {
+            if (element.getType().equals(BFElementType.END)) {
                 return element;
             }
         }
@@ -253,30 +257,84 @@ public class BusinessFunction extends BaseIpsObject implements IBusinessFunction
     @Override
     protected void validateThis(MessageList list, IIpsProject ipsProject) throws CoreException {
         super.validateThis(list, ipsProject);
+        validateBFElementsConnected(list);
+        validateOnlyOneElementAllowed(list, BFElementType.START, MSGCODE_START_SINGLE_OCCURRENCE);
+        validateOnlyOneElementAllowed(list, BFElementType.END, MSGCODE_END_SINGLE_OCCURRENCE);
+        validateBFElementNameCollision(list);
+    }
 
-        List<IBFElement> elements = getBFElements();
-        if (elements.isEmpty()) {
-            return;
+    private void validateBFElementNameCollision(MessageList msgList) {
+        Map<String, List<IBFElement>> elements = new HashMap<String, List<IBFElement>>();
+
+        for (IBFElement element : getBFElements()) {
+            String key;
+            if (element.getType().equals(BFElementType.START) || element.getType().equals(BFElementType.END)
+                    || element.getType().equals(BFElementType.PARAMETER)) {
+                continue;
+            } else if (element.getType().equals(BFElementType.ACTION_METHODCALL)) {
+                key = ((IActionBFE)element).getExecutableMethodName();
+            } else if (element.getType().equals(BFElementType.ACTION_BUSINESSFUNCTIONCALL)) {
+                key = ((IActionBFE)element).getTarget();
+            } else {
+                // decision, merge, inline action,
+                key = element.getName();
+            }
+            List<IBFElement> list = getValue(elements, key);
+            list.add(element);
         }
-        List<IParameterBFE> parameters = getParameterBFEs();
-        // if only parameters are defined there is nothing to do here
-        if (elements.size() == parameters.size()) {
-            return;
+
+        for (String key : elements.keySet()) {
+            List<IBFElement> list = elements.get(key);
+            if (list.size() > 1) {
+                for (IBFElement element : list) {
+                    String text = NLS.bind("The name of this element: {0} collides with the name of another element.", key);
+                    msgList.add(new Message(MSGCODE_ELEMENT_NAME_COLLISION, text, Message.ERROR, element));
+                }
+            }
         }
+    }
+
+    private List<IBFElement> getValue(Map<String, List<IBFElement>> elements, String key) {
+        List<IBFElement> list = (List<IBFElement>)elements.get(key);
+        if (list == null) {
+            list = new ArrayList<IBFElement>();
+            elements.put(key, list);
+        }
+        return list;
+    }
+
+    @SuppressWarnings("unchecked")
+    private void validateOnlyOneElementAllowed(MessageList msgList, BFElementType type, String msgCode) {
+        List<IBFElement> startElements = new ArrayList<IBFElement>();
+        for (Iterator<IBFElement> it = simpleElements.iterator(); it.hasNext();) {
+            IBFElement element = it.next();
+            if (element.getType().equals(type)) {
+                startElements.add(element);
+            }
+        }
+        if (startElements.size() > 1) {
+            String text = "The " + type.getName() + " element can only occur once in a business function.";
+            for (IBFElement element : startElements) {
+                msgList.add(new Message(msgCode, text, Message.ERROR, element));
+            }
+        }
+    }
+
+    private void validateBFElementsConnected(MessageList list) {
         boolean startOrEndMissing = false;
         if (getStart() == null) {
-            list.add(new Message("code", "The start of this business function has to be defined", Message.ERROR, this));
+            list.add(new Message(MSGCODE_START_DEFINITION_MISSING, "The start of this business function has to be defined", Message.ERROR, this));
             startOrEndMissing = true;
         }
         if (getEnd() == null) {
-            list.add(new Message("code", "The end of this business function has to be defined", Message.ERROR, this));
+            list.add(new Message(MSGCODE_END_DEFINITION_MISSING, "The end of this business function has to be defined", Message.ERROR, this));
             startOrEndMissing = true;
         }
         if (startOrEndMissing) {
             return;
         }
 
-        elements = getBFElementsWithoutParameters();
+        List<IBFElement> elements = getBFElementsWithoutParameters();
         ArrayList<IBFElement> successfullyCheckedForStart = new ArrayList<IBFElement>(elements.size());
         for (IBFElement element : elements) {
             traceToStart(element, successfullyCheckedForStart, new ArrayList<IBFElement>(elements.size()));
@@ -292,9 +350,8 @@ public class BusinessFunction extends BaseIpsObject implements IBusinessFunction
                 continue;
             }
             if (!successfullyCheckedForStart.contains(element)) {
-                list.add(new Message("code", "This element: " + element.getDisplayString()
-                        + " is not directly or indirectly connected to the start of this business function.",
-                        Message.ERROR, element));
+                String text = NLS.bind("This element: {0} is not directly or indirectly connected to the start of this business function.", element.getDisplayString());
+                list.add(new Message(MSGCODE_NOT_CONNECTED_WITH_START, text, Message.ERROR, element));
             }
         }
 
@@ -303,15 +360,14 @@ public class BusinessFunction extends BaseIpsObject implements IBusinessFunction
                 continue;
             }
             if (!successfullyCheckedForEnd.contains(element)) {
-                list.add(new Message("code", "This element: " + element.getDisplayString()
-                        + " is not directly or indirectly connected to the end of this business function.",
-                        Message.ERROR, element));
+                String text = NLS.bind("This element: is not directly or indirectly connected to the end of this business function.", element.getDisplayString());
+                list.add(new Message(MSGCODE_NOT_CONNECTED_WITH_END, text, Message.ERROR, element));
             }
         }
     }
 
     private void traceToStart(IBFElement current, List<IBFElement> successfullyChecked, List<IBFElement> currentTrace) {
-        if(current == null ){
+        if (current == null) {
             return;
         }
         if (BFElementType.START.equals(current.getType())) {
@@ -329,14 +385,14 @@ public class BusinessFunction extends BaseIpsObject implements IBusinessFunction
 
         if (in.size() == 1) {
             IBFElement source = in.get(0).getSource();
-            if(addIfPredecessorValid(source, current, successfullyChecked, currentTrace)){
+            if (addIfPredecessorValid(source, current, successfullyChecked, currentTrace)) {
                 return;
             }
             traceToStart(source, successfullyChecked, currentTrace);
         }
         for (IControlFlow controlFlow : in) {
             IBFElement source = controlFlow.getSource();
-            if(addIfPredecessorValid(source, current, successfullyChecked, currentTrace)){
+            if (addIfPredecessorValid(source, current, successfullyChecked, currentTrace)) {
                 continue;
             }
             ArrayList<IBFElement> newTrace = new ArrayList<IBFElement>(currentTrace.size() + 10);
@@ -345,7 +401,10 @@ public class BusinessFunction extends BaseIpsObject implements IBusinessFunction
         }
     }
 
-    private boolean addIfPredecessorValid(IBFElement source, IBFElement current, List<IBFElement> successfullyChecked, List<IBFElement> currentTrace){
+    private boolean addIfPredecessorValid(IBFElement source,
+            IBFElement current,
+            List<IBFElement> successfullyChecked,
+            List<IBFElement> currentTrace) {
         if (successfullyChecked.contains(source)) {
             if (current != null && !successfullyChecked.contains(current)) {
                 successfullyChecked.add(current);
@@ -355,9 +414,9 @@ public class BusinessFunction extends BaseIpsObject implements IBusinessFunction
         currentTrace.add(current);
         return false;
     }
-    
+
     private void traceToEnd(IBFElement current, List<IBFElement> successfullyChecked, List<IBFElement> currentTrace) {
-        if(current == null){
+        if (current == null) {
             return;
         }
         if (BFElementType.END.equals(current.getType())) {
@@ -374,14 +433,14 @@ public class BusinessFunction extends BaseIpsObject implements IBusinessFunction
         List<IControlFlow> in = current.getOutgoingControlFlow();
         if (in.size() == 1) {
             IBFElement target = in.get(0).getTarget();
-            if(addIfPredecessorValid(target, current, successfullyChecked, currentTrace)){
+            if (addIfPredecessorValid(target, current, successfullyChecked, currentTrace)) {
                 return;
             }
             traceToEnd(target, successfullyChecked, currentTrace);
         }
         for (IControlFlow controlFlow : in) {
             IBFElement target = controlFlow.getTarget();
-            if(addIfPredecessorValid(target, current, successfullyChecked, currentTrace)){
+            if (addIfPredecessorValid(target, current, successfullyChecked, currentTrace)) {
                 continue;
             }
             ArrayList<IBFElement> newTrace = new ArrayList<IBFElement>(currentTrace.size() + 10);

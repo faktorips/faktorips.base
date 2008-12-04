@@ -19,13 +19,15 @@ import java.util.List;
 import org.eclipse.draw2d.AbsoluteBendpoint;
 import org.eclipse.draw2d.Bendpoint;
 import org.eclipse.draw2d.geometry.Point;
+import org.faktorips.datatype.Datatype;
 import org.faktorips.devtools.core.AbstractIpsPluginTest;
-import org.faktorips.devtools.core.internal.model.bf.BusinessFunction;
-import org.faktorips.devtools.core.internal.model.bf.ControlFlow;
 import org.faktorips.devtools.core.model.bf.BusinessFunctionIpsObjectType;
+import org.faktorips.devtools.core.model.bf.IActionBFE;
 import org.faktorips.devtools.core.model.bf.IBFElement;
 import org.faktorips.devtools.core.model.bf.IControlFlow;
+import org.faktorips.devtools.core.model.bf.IDecisionBFE;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
+import org.faktorips.util.message.MessageList;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
@@ -202,10 +204,25 @@ public class ControlFlowTest extends AbstractIpsPluginTest {
         cf.setTarget(null);
         assertTrue(listener.getIpsObjectParts().contains(target));
         assertTrue(target.getIncomingControlFlow().isEmpty());
-        
-        
     }
 
+    public void testValidateValue() throws Exception{
+        IDecisionBFE decisionBFE = bf.newDecision(new Point(10, 10));
+        decisionBFE.setDatatype(Datatype.INTEGER.getQualifiedName());
+        IActionBFE actionBFE = bf.newOpaqueAction(new Point(10, 10));
+        IControlFlow cf = bf.newControlFlow();
+        cf.setSource(decisionBFE);
+        cf.setTarget(actionBFE);
+        MessageList msgList = cf.validate(ipsProject);
+        assertNotNull(msgList.getMessageByCode(IControlFlow.MSGCODE_VALUE_NOT_SPECIFIED));
+        
+        cf.setConditionValue("abc");
+        msgList = cf.validate(ipsProject);
+        assertNull(msgList.getMessageByCode(IControlFlow.MSGCODE_VALUE_NOT_SPECIFIED));
+        assertNotNull(msgList.getMessageByCode(IControlFlow.MSGCODE_VALUE_NOT_VALID));
 
-
+        cf.setConditionValue("100");
+        msgList = cf.validate(ipsProject);
+        assertNull(msgList.getMessageByCode(IControlFlow.MSGCODE_VALUE_NOT_VALID));
+    }
 }

@@ -1,0 +1,80 @@
+/***************************************************************************************************
+ * Copyright (c) 2005-2008 Faktor Zehn AG und andere.
+ * 
+ * Alle Rechte vorbehalten.
+ * 
+ * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen,
+ * etc.) duerfen nur unter den Bedingungen der Faktor-Zehn-Community Lizenzvereinbarung - Version
+ * 0.1 (vor Gruendung Community) genutzt werden, die Bestandteil der Auslieferung ist und auch unter
+ * http://www.faktorzehn.org/f10-org:lizenzen:community eingesehen werden kann.
+ * 
+ * Mitwirkende: Faktor Zehn AG - initial API and implementation - http://www.faktorzehn.de
+ * 
+ **************************************************************************************************/
+
+package org.faktorips.devtools.bf.ui.edit;
+
+import org.eclipse.draw2d.geometry.Point;
+import org.eclipse.gef.EditPart;
+import org.faktorips.devtools.core.AbstractIpsPluginTest;
+import org.faktorips.devtools.core.model.bf.BFElementType;
+import org.faktorips.devtools.core.model.bf.BusinessFunctionIpsObjectType;
+import org.faktorips.devtools.core.model.bf.IBusinessFunction;
+import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
+
+public class BusinessFunctionEditPartFactoryTest extends AbstractIpsPluginTest {
+
+    private IIpsProject ipsProject;
+    
+    public void setUp() throws Exception{
+        super.setUp();
+        ipsProject = newIpsProject("TestProject");
+    }
+    
+    public void testCreateEditPart() throws Exception {
+        BusinessFunctionEditPartFactory factory = new BusinessFunctionEditPartFactory();
+        IBusinessFunction bf = (IBusinessFunction)newIpsObject(ipsProject, BusinessFunctionIpsObjectType.getInstance(), "bf");
+        EditPart editPart = factory.createEditPart(null, bf);
+        assertTrue(editPart instanceof BusinessFunctionEditPart);
+
+        editPart = factory.createEditPart(null, bf.newControlFlow());
+        assertTrue(editPart instanceof ControlFlowEditPart);
+
+        editPart = factory.createEditPart(null, bf.newDecision(new Point(1, 1)));
+        assertTrue(editPart instanceof DecisionEditPart);
+
+        editPart = factory.createEditPart(null, bf.newMethodCallAction(new Point(1, 1)));
+        assertTrue(editPart instanceof ActionEditPart);
+
+        editPart = factory.createEditPart(null, bf.newOpaqueAction(new Point(1, 1)));
+        assertTrue(editPart instanceof ActionEditPart);
+
+        editPart = factory.createEditPart(null, bf.newBusinessFunctionCallAction(new Point(1, 1)));
+        assertTrue(editPart instanceof ActionEditPart);
+
+        editPart = factory.createEditPart(null, bf.newParameter());
+        assertNull(editPart);
+
+        editPart = factory.createEditPart(null, bf.newSimpleBFElement(BFElementType.START, new Point(1, 1)));
+        assertTrue(editPart instanceof StartEditPart);
+
+        editPart = factory.createEditPart(null, bf.newSimpleBFElement(BFElementType.END, new Point(1, 1)));
+        assertTrue(editPart instanceof EndEditPart);
+
+        editPart = factory.createEditPart(null, bf.newSimpleBFElement(BFElementType.MERGE, new Point(1, 1)));
+        assertTrue(editPart instanceof MergeEditPart);
+
+        try{
+            editPart = factory.createEditPart(null, null);
+            fail();
+        } catch(IllegalArgumentException e) {
+        }
+
+        try{
+            editPart = factory.createEditPart(null, newPolicyCmptType(ipsProject, "pctype"));
+            fail();
+        } catch(IllegalArgumentException e) {
+        }
+    }
+
+}

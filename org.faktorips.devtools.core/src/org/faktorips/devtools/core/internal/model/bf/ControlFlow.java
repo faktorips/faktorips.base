@@ -4,28 +4,35 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+import org.apache.commons.lang.StringUtils;
+import org.eclipse.core.runtime.CoreException;
 import org.eclipse.draw2d.AbsoluteBendpoint;
 import org.eclipse.draw2d.Bendpoint;
 import org.eclipse.draw2d.geometry.Point;
 import org.eclipse.swt.graphics.Image;
+import org.faktorips.datatype.ValueDatatype;
 import org.faktorips.devtools.core.internal.model.ipsobject.IpsObjectPart;
 import org.faktorips.devtools.core.model.IIpsElement;
+import org.faktorips.devtools.core.model.bf.BFElementType;
 import org.faktorips.devtools.core.model.bf.IBFElement;
 import org.faktorips.devtools.core.model.bf.IBusinessFunction;
 import org.faktorips.devtools.core.model.bf.IControlFlow;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObject;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPart;
+import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
+import org.faktorips.util.message.Message;
+import org.faktorips.util.message.MessageList;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
 
 public class ControlFlow extends IpsObjectPart implements IControlFlow {
 
+    private String conditionValue = "";
     private Integer targetId;
     private Integer sourceId;
     private List<Bendpoint> bendpoints = new ArrayList<Bendpoint>();
 
-    
     public ControlFlow(IIpsObject parent, int id) {
         super(parent, id);
     }
@@ -34,14 +41,14 @@ public class ControlFlow extends IpsObjectPart implements IControlFlow {
         return Collections.unmodifiableList(bendpoints);
     }
 
-    public void setBendpoint(int index, Bendpoint bendpoint){
+    public void setBendpoint(int index, Bendpoint bendpoint) {
         if (bendpoint == null || bendpoints.contains(bendpoint)) {
             return;
         }
         bendpoints.set(index, bendpoint);
         objectHasChanged();
     }
-    
+
     public void addBendpoint(int index, Bendpoint bendpoint) {
         if (bendpoint == null || bendpoints.contains(bendpoint)) {
             return;
@@ -56,27 +63,38 @@ public class ControlFlow extends IpsObjectPart implements IControlFlow {
         }
     }
 
-    public IBusinessFunction getBusinessFunction(){
+    public String getConditionValue() {
+        return conditionValue;
+    }
+
+    // TODO test
+    public void setConditionValue(String value) {
+        String old = conditionValue;
+        this.conditionValue = value;
+        valueChanged(old, conditionValue);
+    }
+
+    public IBusinessFunction getBusinessFunction() {
         return (IBusinessFunction)getParent();
     }
-    
+
     public IBFElement getTarget() {
         return getBusinessFunction().getBFElement(targetId);
     }
 
     public void setTarget(IBFElement target) {
-        if(this.targetId == null && target == null){
+        if (this.targetId == null && target == null) {
             return;
         }
         if (this.targetId != null && target != null && this.targetId.equals(target.getId())) {
             return;
         }
-        if(getTarget() != null){
+        if (getTarget() != null) {
             getTarget().removeIncomingControlFlow(this);
         }
         this.targetId = (target == null) ? null : target.getId();
         objectHasChanged();
-        if(getTarget() != null){
+        if (getTarget() != null) {
             getTarget().addIncomingControlFlow(this);
         }
     }
@@ -86,22 +104,22 @@ public class ControlFlow extends IpsObjectPart implements IControlFlow {
     }
 
     public void setSource(IBFElement source) {
-        if(this.sourceId == null && source == null){
+        if (this.sourceId == null && source == null) {
             return;
         }
         if (this.sourceId != null && source != null && this.sourceId.equals(source.getId())) {
             return;
         }
-        if(getSource() != null){
+        if (getSource() != null) {
             getSource().removeOutgoingControlFlow(this);
         }
         this.sourceId = (source == null) ? null : source.getId();
         objectHasChanged();
-        if(getSource() != null){
+        if (getSource() != null) {
             getSource().addOutgoingControlFlow(this);
         }
     }
-    
+
     @Override
     protected void initPropertiesFromXml(Element element, Integer id) {
         super.initPropertiesFromXml(element, id);
@@ -110,6 +128,8 @@ public class ControlFlow extends IpsObjectPart implements IControlFlow {
         sourceId = sourceValue.isEmpty() ? null : Integer.parseInt(sourceValue);
         String targetValue = element.getAttribute(PROPERTY_TARGET);
         targetId = targetValue.isEmpty() ? null : Integer.parseInt(targetValue);
+        // TODO test
+        conditionValue = element.getAttribute(PROPERTY_CONDITION_VALUE);
         NodeList nl = element.getElementsByTagName("Bendpoint");
         bendpoints.clear();
         for (int i = 0; i < nl.getLength(); i++) {
@@ -126,6 +146,8 @@ public class ControlFlow extends IpsObjectPart implements IControlFlow {
         element.setAttribute(PROPERTY_NAME, name);
         element.setAttribute(PROPERTY_SOURCE, sourceId == null ? "" : String.valueOf(sourceId));
         element.setAttribute(PROPERTY_TARGET, targetId == null ? "" : String.valueOf(targetId));
+        // TODO test
+        element.setAttribute(PROPERTY_CONDITION_VALUE, conditionValue);
         Document doc = element.getOwnerDocument();
         for (Bendpoint bendpoint : this.bendpoints) {
             Element bendpointEl = doc.createElement("Bendpoint");
@@ -168,8 +190,30 @@ public class ControlFlow extends IpsObjectPart implements IControlFlow {
         return null;
     }
 
-    //TODO image access 
+    // TODO image access
     public Image getImage() {
         return null;
     }
+
+    @Override
+    protected void validateThis(MessageList list, IIpsProject ipsProject) throws CoreException {
+        IBFElement source = getSource();
+        if (source != null && source.getType().equals(BFElementType.DECISION)) {
+            if (StringUtils.isEmpty(getConditionValue())) {
+                list.add(new Message(MSGCODE_VALUE_NOT_SPECIFIED, "The value of this control flow must be specified.",
+                        Message.ERROR, this));
+                return;
+            }
+            DecisionBFE decisionSource = (DecisionBFE)source;
+            ValueDatatype datatype = decisionSource.findDatatype(ipsProject);
+            if (datatype != null) {
+                if (!datatype.isParsable(getConditionValue())) {
+                    list.add(new Message(MSGCODE_VALUE_NOT_VALID,
+                            "The value of this control flow doesn't comply to the datatype specified in the decision.",
+                            Message.ERROR, this));
+                }
+            }
+        }
+    }
+
 }
