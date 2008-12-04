@@ -20,7 +20,14 @@ import org.eclipse.draw2d.geometry.Dimension;
 import org.eclipse.draw2d.geometry.Point;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObject;
 
-
+/**
+ * This interface describes a business function. A business function is a course grained definition
+ * of a function focusing on the business relevant steps leaving out technical imponderabilities.
+ * Elements of a business functions are start, end, actions, decision, merge. The connection between
+ * two elements is called a control flow.
+ * 
+ * @author Peter Erzberger
+ */
 public interface IBusinessFunction extends IIpsObject {
 
     public static final String PROPERTY_PARAMETER_RECTANGLE_SIZE = "ParameterRectangleSize";
@@ -39,43 +46,123 @@ public interface IBusinessFunction extends IIpsObject {
     public static final String MSGCODE_END_DEFINITION_MISSING = MSGCODE_PREFIX + "endDefinitionMissing";
     public static final String MSGCODE_NOT_CONNECTED_WITH_START = MSGCODE_PREFIX + "notConnectedWithStart";
     public static final String MSGCODE_NOT_CONNECTED_WITH_END = MSGCODE_PREFIX + "notConnectedWithEnd";
-    
+
+    /**
+     * Creates and returns a control flow and adds it to the set of control flows that belongs to
+     * this business function.
+     */
     public IControlFlow newControlFlow();
-    
+
+    /**
+     * Returns all control flow of this business function.
+     */
     public List<IControlFlow> getControlFlows();
-    
+
+    /**
+     * Returns the control flow with the specified id or <code>null</code> if none is found.
+     */
     public IControlFlow getControlFlow(int id);
-    
+
+    /**
+     * Creates and returns a business function elements and adds it to the set of elements that
+     * belong to this business function. With this method only start, end and merge element can be
+     * created.
+     * 
+     * @param type the business function element type. Only <code>BFElementType.START</code>,
+     *            <code>BFElementType.START</code>, <code>BFElementType.MERGE</code>.
+     * @param location the initial graphical location of the created element
+     */
     public IBFElement newSimpleBFElement(BFElementType type, Point location);
-    
+
+    /**
+     * Creates and returns a in line action and adds it to the set of actions that belong to this
+     * business function.
+     * 
+     * @param location the initial graphical location of the created action
+     */
     public IActionBFE newOpaqueAction(Point location);
-    
+
+    /**
+     * Creates and returns a method call action and adds it to the set of actions that belong to
+     * this business function.
+     * 
+     * @param location the initial graphical location of the created action
+     */
     public IActionBFE newMethodCallAction(Point location);
-    
+
+    /**
+     * Creates and returns a business function call action and adds it to the set of actions that
+     * belong to this business function.
+     * 
+     * @param location the initial graphical location of the created action
+     */
     public IActionBFE newBusinessFunctionCallAction(Point location);
-    
+
+    /**
+     * Creates and returns a decision element and adds it to the set of elements that belong to this
+     * business function.
+     * 
+     * @param location the initial graphical location of the created action
+     */
     public IDecisionBFE newDecision(Point location);
-    
+
+    /**
+     * Creates and returns a parameter element and adds it to the set of elements that belong to
+     * this business function.
+     */
     public IParameterBFE newParameter();
-    
+
+    /**
+     * Returns the parameters of this business function.
+     */
     public List<IParameterBFE> getParameterBFEs();
 
+    /**
+     * Returns the parameter with the specified name and <code>null</code> if none is found.
+     */
     public IParameterBFE getParameterBFE(String name);
-    
+
+    /**
+     * Returns all business function elements.
+     */
     public List<IBFElement> getBFElements();
-    
+
+    /**
+     * Returns the business function element with the specified id and <code>null</code> if none is
+     * found.
+     */
     public IBFElement getBFElement(Integer id);
-    
+
+    /**
+     * Return the size of the graphical element representing the parameters of this business
+     * function.
+     */
     public Dimension getParameterRectangleSize();
-    
+
+    /**
+     * Sets the size of the graphical element representing the parameters of this business function.
+     */
     public void setParameterRectangleSize(Dimension parameterRectangleSize);
-    
+
+    /**
+     * Return the location of the graphical element representing the parameters of this business
+     * function.
+     */
     public Point getParameterRectangleLocation();
-    
+
+    /**
+     * Returns the start element.
+     */
     public IBFElement getStart();
 
+    /**
+     * Returns the end element.
+     */
     public IBFElement getEnd();
-    
+
+    /**
+     * Returns all business function elements except for the parameters.
+     */
     public List<IBFElement> getBFElementsWithoutParameters();
 
 }

@@ -17,22 +17,38 @@ package org.faktorips.devtools.core.model.bf;
 import org.eclipse.core.runtime.CoreException;
 import org.faktorips.datatype.Datatype;
 
-
+/**
+ * A business function can have parameters that are represented by this interface. A parameter has a
+ * datatype which can be a value datatype or a policy or product component type. Parameters can be
+ * modified by the business function.
+ * 
+ * @author Peter Erzberger
+ */
 public interface IParameterBFE extends IBFElement {
 
     public final static String XML_TAG = "Parameter";
     public final static String PROPERTY_DATATYPE = "datatype";
-    
+
     public static final String MSGCODE_PREFIX = "PARAMETERBFE-";
     public static final String MSGCODE_NAME_DUBLICATE = MSGCODE_PREFIX + "nameDuplicate";
     public static final String MSGCODE_DATATYPE_NOT_SPECIFIED = MSGCODE_PREFIX + "datatypeNotSpecified";
     public static final String MSGCODE_DATATYPE_DOES_NOT_EXISIT = MSGCODE_PREFIX + "datatypeDoesNotExists";
 
-    
+    /**
+     * Returns the parameters datatype.
+     */
     public String getDatatype();
-    
+
+    /**
+     * Sets the parameters datatype.
+     */
     public void setDatatype(String datatype);
-    
+
+    /**
+     * Returns the datatype object or <code>null</code> if none is found.
+     * 
+     * @throws CoreException is throw if an exception occurs during the course of searching 
+     */
     public Datatype findDatatype() throws CoreException;
 
 }

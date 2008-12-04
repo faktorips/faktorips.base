@@ -21,6 +21,9 @@ import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
 
 /**
+ * The ips object type of a business function. A reference to this class is made in an
+ * extension of the extension-point <code>org.faktorips.devtools.core.ipsobjecttype</code>
+ * 
  * @author Peter Erzberger
  */
 public class BusinessFunctionIpsObjectType extends IpsObjectType {
@@ -32,10 +35,16 @@ public class BusinessFunctionIpsObjectType extends IpsObjectType {
                 "BusinessFunctionDisabled.gif");
     }
 
+    /**
+     * Returns the unique instance of this class.
+     */
     public final static BusinessFunctionIpsObjectType getInstance() {
         return (BusinessFunctionIpsObjectType)IpsPlugin.getDefault().getIpsModel().getIpsObjectType(ID);
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public IIpsObject newObject(IIpsSrcFile file) {
         return new BusinessFunction(file);

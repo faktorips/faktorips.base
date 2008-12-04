@@ -20,6 +20,12 @@ import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.swt.graphics.Image;
 import org.faktorips.devtools.core.IpsPlugin;
 
+/**
+ * This enumeration defines the possible type of business function elements. Each instance of a
+ * business function element has a reference to its type.
+ * 
+ * @author Peter Erzberger
+ */
 public enum BFElementType {
 
     ACTION_INLINE("inlineAction", "Inline Action", "OpaqueAction.gif") {
@@ -86,27 +92,51 @@ public enum BFElementType {
     private ImageDescriptor imageDescriptor;
     private String imageName;
 
+    /**
+     * Returns the describing name of the business function element type.
+     */
     public String getName() {
         return name;
     }
 
+    /**
+     * Returns the unique id of the business function element type.
+     * @return
+     */
     public String getId() {
         return id;
     }
 
-    public ImageDescriptor getImageDescriptor(){
-        if(imageDescriptor == null){
+    /**
+     * Returns the image descriptor of the image that specific for business function elements of this type.
+     */
+    public ImageDescriptor getImageDescriptor() {
+        if (imageDescriptor == null) {
             imageDescriptor = IpsPlugin.getDefault().getImageDescriptor("/obj16/" + imageName);
         }
         return imageDescriptor;
     }
-    
-    public Image getImage(){
+
+    /**
+     * The image of this type.
+     */
+    public Image getImage() {
         return IpsPlugin.getDefault().getImage(getImageDescriptor());
     }
-    
+
+    /**
+     * Creates a new instance of a business function element of this type.
+     * 
+     * @param businessFunction the business function to which the created type belongs to
+     * @param location the graphical location of the display element of this type 
+     */
     public abstract IBFElement newBFElement(IBusinessFunction businessFunction, Point location);
 
+    /**
+     * Returns the type for the specified id. If none is found and {@link IllegalArgumentException} will be thrown.
+     * 
+     * @throws IllegalArgumentException if no type is found for the specified id
+     */
     public final static BFElementType getType(String id) {
         if (id.equals(ACTION_INLINE.id)) {
             return ACTION_INLINE;

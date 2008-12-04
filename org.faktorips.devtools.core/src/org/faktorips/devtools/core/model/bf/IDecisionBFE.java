@@ -18,7 +18,15 @@ import org.eclipse.core.runtime.CoreException;
 import org.faktorips.datatype.ValueDatatype;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 
-
+/**
+ * A decision business function element has one incoming and one or more outgoing control flows.
+ * Which outgoing control flow is actually chosen at execution time depends on the condition
+ * value that is calculated. The calculated condition value is compared to the values assigned
+ * to the outgoing control flows. The one which value is equal to the calculated value is where 
+ * the control flow continues.
+ * 
+ * @author Peter Erzberger
+ */
 public interface IDecisionBFE extends IBFElement {
 
     public final static String XML_TAG = "Decision";
@@ -29,9 +37,21 @@ public interface IDecisionBFE extends IBFElement {
     public static final String MSGCODE_DATATYPE_DOES_NOT_EXIST = MSGCODE_PREFIX + "datatypeDoesNotExist";
     public static final String MSGCODE_DATATYPE_ONLY_NONE_PRIM_VALUEDATATYPE = MSGCODE_PREFIX + "datatypeOnlyNonePrimValuedatatype";
 
+    /**
+     * Returns the datatype of the condition value.
+     */
     public String getDatatype();
 
+    /**
+     * Sets the datatype of the condition value.
+     */
     public void setDatatype(String datatype);
-    
+
+    /**
+     * Returns the datatype object for the specified datatype. If none is found <code>null</code> will
+     * be returned. Only value datatypes are allowed.
+     * 
+     * @throws CoreException is throw if an exception occurs during the course of searching 
+     */
     public ValueDatatype findDatatype(IIpsProject ipsProject) throws CoreException;
 }
