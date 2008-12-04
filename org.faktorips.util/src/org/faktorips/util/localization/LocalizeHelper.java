@@ -394,6 +394,16 @@ public class LocalizeHelper {
                     }
                 }
                 
+                // remove keys in target that don't exist in the source file
+                Set targetKeys = targetProps.keySet();
+                for (Iterator it = targetKeys.iterator(); it.hasNext();) {
+                    String key = (String)it.next();
+                    if (sourceProps.get(key)==null) {
+                        it.remove();
+                        modified = true;
+                    }
+                }
+                
                 if (modified) {
                     modifiedFiles.add(targetFile);
                     // store the target in same order as the source
