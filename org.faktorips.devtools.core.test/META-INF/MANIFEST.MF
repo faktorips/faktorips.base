@@ -18,7 +18,7 @@ Require-Bundle: org.eclipse.ui,
  org.eclipse.search,
  org.eclipse.compare,
  org.eclipse.ui.ide,
- org.eclipse.gef;bundle-version="3.4.1"
+ org.eclipse.gef
 Eclipse-LazyStart: true
 Export-Package: org.faktorips.devtools.core,
  org.faktorips.devtools.core.builder,
