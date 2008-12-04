@@ -166,7 +166,7 @@ public abstract class AbstractRuntimeRepository implements IRuntimeRepository {
     }
 
     /**
-     * Same as getProductComponent(String id) but seaches only in this repository and not the ones,
+     * Same as getProductComponent(String id) but searches only in this repository and not the ones,
      * this repository depends on.
      */
     protected abstract IProductComponent getProductComponentInternal(String id);
