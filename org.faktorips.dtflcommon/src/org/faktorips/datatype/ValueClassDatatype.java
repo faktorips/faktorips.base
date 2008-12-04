@@ -193,7 +193,7 @@ public abstract class ValueClassDatatype extends AbstractDatatype implements Val
      * @deprecated During development time Faktor-IPS maintains all values with their string representation.
      * This allows to change the value's datatype without the need to convert the value from one class 
      * to another (e.g. if the string representation is 42 you can change the datatype from integer to string
-     * with converting the integer object to a string object. 
+     * without converting the integer object to a string object. 
      */
     public abstract Object getValue(String value);
 }
