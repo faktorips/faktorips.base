@@ -9,7 +9,7 @@
             default="true"
             extensions="ipsbusinessfunction"
             id="org.faktorips.devtools.bf.ui.editor"
-            name="Business Function Editor">
+            name="%editor.name.0">
       </editor>
    </extension>
    <extension
@@ -17,7 +17,7 @@
         <wizard
         	class="org.faktorips.devtools.bf.ui.wizard.NewBFWizard"
             id="org.faktorips.devtools.bf.ui.wizard"
-            name="New Business Function">
+            name="%wizard.name.0">
 		<selection
                class="org.eclipse.core.resources.IResource">
         </selection>
@@ -39,13 +39,13 @@
          <propertyTab
                category="BusinessFunction"
                id="businessfunction.general"
-               label="General">
+               label="%org.faktorips.devtools.bf.ui.editor.BusinessFunction.General">
          </propertyTab>
          <propertyTab
                afterTab="businessfunction.general"
                category="BusinessFunction"
                id="businessfunction.description"
-               label="Description">
+               label="%org.faktorips.devtools.bf.ui.editor.BusinessFunction.Description">
          </propertyTab>
       </propertyTabs>
    </extension>

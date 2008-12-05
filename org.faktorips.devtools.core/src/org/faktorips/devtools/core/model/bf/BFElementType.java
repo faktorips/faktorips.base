@@ -28,37 +28,37 @@ import org.faktorips.devtools.core.IpsPlugin;
  */
 public enum BFElementType {
 
-    ACTION_INLINE("inlineAction", "Inline Action", "OpaqueAction.gif") { //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+    ACTION_INLINE("inlineAction", Messages.getString("BFElementType.inlineAction"), "OpaqueAction.gif") { //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
         @Override
         public IBFElement newBFElement(IBusinessFunction businessFunction, Point location) {
             return businessFunction.newOpaqueAction(location);
         }
     },
-    ACTION_METHODCALL("methodCallAction", "Method Call Action", "CallOperationAction.gif") { //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+    ACTION_METHODCALL("methodCallAction", Messages.getString("BFElementType.methodCallAction"), "CallOperationAction.gif") { //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
         @Override
         public IBFElement newBFElement(IBusinessFunction businessFunction, Point location) {
             return businessFunction.newMethodCallAction(location);
         }
     },
-    ACTION_BUSINESSFUNCTIONCALL("businessFunctionCallAction", "Business Function Call Action", "CallBehaviorAction.gif") { //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+    ACTION_BUSINESSFUNCTIONCALL("businessFunctionCallAction", Messages.getString("BFElementType.bfCallAction"), "CallBehaviorAction.gif") { //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
         @Override
         public IBFElement newBFElement(IBusinessFunction businessFunction, Point location) {
             return businessFunction.newBusinessFunctionCallAction(location);
         }
     },
-    DECISION("decision", "Decision", "DecisionNode.gif") { //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+    DECISION("decision", Messages.getString("BFElementType.decision"), "DecisionNode.gif") { //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
         @Override
         public IBFElement newBFElement(IBusinessFunction businessFunction, Point location) {
             return businessFunction.newDecision(location);
         }
     },
-    MERGE("merge", "Merge", "MergeNode.gif") { //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+    MERGE("merge", Messages.getString("BFElementType.merge"), "MergeNode.gif") { //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
         @Override
         public IBFElement newBFElement(IBusinessFunction businessFunction, Point location) {
             return businessFunction.newSimpleBFElement(BFElementType.MERGE, location);
         }
     },
-    END("end", "End", "ActivityFinalNode.gif") { //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+    END("end", Messages.getString("BFElementType.end"), "ActivityFinalNode.gif") { //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
         @Override
         public IBFElement newBFElement(IBusinessFunction businessFunction, Point location) {
             IBFElement element = businessFunction.newSimpleBFElement(BFElementType.END, location);
@@ -66,7 +66,7 @@ public enum BFElementType {
             return element;
         }
     },
-    START("start", "Start", "InitialNode.gif") { //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+    START("start", Messages.getString("BFElementType.start"), "InitialNode.gif") { //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
         @Override
         public IBFElement newBFElement(IBusinessFunction businessFunction, Point location) {
             IBFElement element = businessFunction.newSimpleBFElement(BFElementType.START, location);
@@ -74,7 +74,7 @@ public enum BFElementType {
             return element;
         }
     },
-    PARAMETER("parameter", "Parameter", null) { //$NON-NLS-1$ //$NON-NLS-2$
+    PARAMETER("parameter", Messages.getString("BFElementType.parameter"), null) { //$NON-NLS-1$ //$NON-NLS-2$
         @Override
         public IBFElement newBFElement(IBusinessFunction businessFunction, Point location) {
             return businessFunction.newParameter();

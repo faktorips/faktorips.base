@@ -61,24 +61,24 @@ public class PaletteBuilder {
 
 		image = BFElementType.DECISION.getImageDescriptor();
 		CombinedTemplateCreationEntry decisionEntry = new CombinedTemplateCreationEntry(
-				"Decision", Messages.getString("PaletteBuilder.decisionDesc"), new BFElementFactory(BFElementType.DECISION), image, image); //$NON-NLS-1$ //$NON-NLS-2$
+		        BFElementType.DECISION.getName(), Messages.getString("PaletteBuilder.decisionDesc"), new BFElementFactory(BFElementType.DECISION), image, image); //$NON-NLS-1$ //$NON-NLS-2$
 		entries.add(decisionEntry);
 
 		image = BFElementType.START.getImageDescriptor();
 		CombinedTemplateCreationEntry startEntry = new CombinedTemplateCreationEntry(
-				"Start", Messages.getString("PaletteBuilder.startDec"), //$NON-NLS-1$ //$NON-NLS-2$
+		        BFElementType.START.getName(), Messages.getString("PaletteBuilder.startDec"), //$NON-NLS-1$ //$NON-NLS-2$
 				new BFElementFactory(BFElementType.START), image, image);
 		entries.add(startEntry);
 
 		image = BFElementType.END.getImageDescriptor();
 		CombinedTemplateCreationEntry endEntry = new CombinedTemplateCreationEntry(
-				"End", Messages.getString("PaletteBuilder.endDesc"), new BFElementFactory(BFElementType.END), //$NON-NLS-1$ //$NON-NLS-2$
+		        BFElementType.END.getName(), Messages.getString("PaletteBuilder.endDesc"), new BFElementFactory(BFElementType.END), //$NON-NLS-1$ //$NON-NLS-2$
 				image, image);
 		entries.add(endEntry);
 
 		image = BFElementType.MERGE.getImageDescriptor();
 		CombinedTemplateCreationEntry mergeEntry = new CombinedTemplateCreationEntry(
-				"Merge", Messages.getString("PaletteBuilder.mergeDesc"), //$NON-NLS-1$ //$NON-NLS-2$
+		        BFElementType.MERGE.getName(), Messages.getString("PaletteBuilder.mergeDesc"), //$NON-NLS-1$ //$NON-NLS-2$
 				new BFElementFactory(BFElementType.MERGE), image, image);
 		entries.add(mergeEntry);
 
@@ -86,7 +86,7 @@ public class PaletteBuilder {
 
 		image = IpsPlugin.getDefault().getImageDescriptor("/obj16/" + "ControlFlow.gif"); //$NON-NLS-1$ //$NON-NLS-2$
 		ToolEntry controlflowEntry = new ConnectionCreationToolEntry(
-				"Control Flow", //$NON-NLS-1$
+				Messages.getString("PaletteBuilder.controlflow"), //$NON-NLS-1$
 				Messages.getString("PaletteBuilder.controlFlowDesc"), //$NON-NLS-1$
 				null, image,
 				image);
