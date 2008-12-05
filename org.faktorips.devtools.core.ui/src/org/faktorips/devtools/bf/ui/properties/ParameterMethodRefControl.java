@@ -37,7 +37,7 @@ public class ParameterMethodRefControl extends TextButtonControl {
     private IType parameterType;
 
     public ParameterMethodRefControl(Composite parent, UIToolkit toolkit) {
-        super(parent, toolkit, "Choose Method...");
+        super(parent, toolkit, Messages.getString("ParameterMethodRefControl.ChooseMethodLabel")); //$NON-NLS-1$
     }
 
     public void setParameterType(IType type) {
@@ -64,9 +64,9 @@ public class ParameterMethodRefControl extends TextButtonControl {
         try {
             ElementListSelectionDialog selectDialog = new ElementListSelectionDialog(getShell(),
                     new DefaultLabelProvider());
-            selectDialog.setTitle("Choose Method");
-            selectDialog.setMessage("Select a method from the parameter: "
-                    + (parameterType == null ? "" : parameterType.getName()));
+            selectDialog.setTitle(Messages.getString("ParameterMethodRefControl.ChooseMethodTitle")); //$NON-NLS-1$
+            selectDialog.setMessage(Messages.getString("ParameterMethodRefControl.dialogDescription") //$NON-NLS-1$
+                    + (parameterType == null ? "" : parameterType.getName())); //$NON-NLS-1$
             selectDialog.setElements(getSelectableMethods());
             selectDialog.setFilter(StringUtil.unqualifiedName(super.getText()));
             if (selectDialog.open() == Window.OK) {

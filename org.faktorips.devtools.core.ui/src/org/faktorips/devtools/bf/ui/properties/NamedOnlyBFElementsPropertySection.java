@@ -50,7 +50,7 @@ public class NamedOnlyBFElementsPropertySection extends AbstractPropertySection 
         Composite panel = uiToolkit.createGridComposite(parent, 1, true, true);
         bindingContext = new BindingContext();
         Composite content = uiToolkit.createLabelEditColumnComposite(panel);
-        uiToolkit.createLabel(content, "Name");
+        uiToolkit.createLabel(content, Messages.getString("NamedOnlyBFElementsPropertySection.nameLabel")); //$NON-NLS-1$
         nameField = uiToolkit.createText(content);
         GridData data = new GridData();
         data.grabExcessHorizontalSpace = false;

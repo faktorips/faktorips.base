@@ -155,12 +155,12 @@ public class ParametersEditControl extends Composite {
         tc = new TableColumn(table, SWT.NONE, TYPE_PROP);
         tc.setResizable(true);
         tc.setWidth(200);
-        tc.setText("Datatype");
+        tc.setText(Messages.getString("ParametersEditControl.datatypeLabel")); //$NON-NLS-1$
 
         tc = new TableColumn(table, SWT.NONE, NEWNAME_PROP);
         tc.setResizable(true);
         tc.setWidth(200);
-        tc.setText("Parameter Name");
+        tc.setText(Messages.getString("ParametersEditControl.parameterNameLabel")); //$NON-NLS-1$
 
         fTableViewer = new TableViewer(table);
         fTableViewer.setUseHashlookup(true);
@@ -293,7 +293,7 @@ public class ParametersEditControl extends Composite {
     }
 
     private Button createAddButton(Composite buttonComposite) {
-        Button button = uiToolkit.createButton(buttonComposite, "Add");
+        Button button = uiToolkit.createButton(buttonComposite, Messages.getString("ParametersEditControl.AddLabel")); //$NON-NLS-1$
         button.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
         button.addSelectionListener(new SelectionAdapter() {
             public void widgetSelected(SelectionEvent e) {
@@ -311,7 +311,7 @@ public class ParametersEditControl extends Composite {
     }
 
     private Button createRemoveButton(Composite buttonComposite) {
-        final Button button = uiToolkit.createButton(buttonComposite, "Remove");
+        final Button button = uiToolkit.createButton(buttonComposite, Messages.getString("ParametersEditControl.RemoveLabel")); //$NON-NLS-1$
         button.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
         button.addSelectionListener(new SelectionAdapter() {
             public void widgetSelected(SelectionEvent e) {
@@ -501,7 +501,6 @@ public class ParametersEditControl extends Composite {
             if (columnIndex == MESSAGE_PROP)
                 return ""; //$NON-NLS-1$
             if (columnIndex == TYPE_PROP) {
-                System.out.println("labelprovider datatype: " + info.getDatatype());
                 return info.getDatatype();
             }
             if (columnIndex == NEWNAME_PROP)

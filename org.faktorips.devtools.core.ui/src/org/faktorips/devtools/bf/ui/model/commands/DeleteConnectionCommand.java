@@ -26,7 +26,7 @@ public class DeleteConnectionCommand extends Command {
     private Memento businessFunctionState;
 
     public DeleteConnectionCommand(IBusinessFunction businessFunction, IControlFlow controlFlow) {
-        super("Delete Connection");
+        super("Delete Connection"); //$NON-NLS-1$
         this.businessFunction = businessFunction;
         this.controlFlow = controlFlow;
         ArgumentCheck.notNull(controlFlow, this);
@@ -45,7 +45,7 @@ public class DeleteConnectionCommand extends Command {
     }
 
     public String getLabel() {
-        return "Delete Connection";
+        return Messages.getString("DeleteConnectionCommand.deleteConnection"); //$NON-NLS-1$
     }
 
     public IControlFlow getControlFlow() {

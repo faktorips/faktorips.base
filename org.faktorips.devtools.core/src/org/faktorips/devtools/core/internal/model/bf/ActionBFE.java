@@ -32,8 +32,8 @@ import org.w3c.dom.Element;
 
 public class ActionBFE extends BFElement implements IActionBFE {
 
-    private String executableMethodName = "";
-    private String target = "";
+    private String executableMethodName = ""; //$NON-NLS-1$
+    private String target = ""; //$NON-NLS-1$
 
     public ActionBFE(IIpsObject parent, int id) {
         super(parent, id);
@@ -44,8 +44,8 @@ public class ActionBFE extends BFElement implements IActionBFE {
      */
     protected void initPropertiesFromXml(Element element, Integer id) {
         super.initPropertiesFromXml(element, id);
-        this.target = element.getAttribute("target");
-        this.executableMethodName = element.getAttribute("executableMethodName");
+        this.target = element.getAttribute("target"); //$NON-NLS-1$
+        this.executableMethodName = element.getAttribute("executableMethodName"); //$NON-NLS-1$
     }
 
     public String getDisplayString() {
@@ -63,8 +63,8 @@ public class ActionBFE extends BFElement implements IActionBFE {
      */
     protected void propertiesToXml(Element element) {
         super.propertiesToXml(element);
-        element.setAttribute("executableMethodName", this.executableMethodName);
-        element.setAttribute("target", this.target);
+        element.setAttribute("executableMethodName", this.executableMethodName); //$NON-NLS-1$
+        element.setAttribute("target", this.target); //$NON-NLS-1$
     }
 
     @Override
@@ -132,14 +132,14 @@ public class ActionBFE extends BFElement implements IActionBFE {
         if(getType().equals(BFElementType.ACTION_BUSINESSFUNCTIONCALL)){
             // business function has to be specified
             if (StringUtils.isEmpty(target)) {
-                msgList.add(new Message(MSGCODE_TARGET_NOT_SPECIFIED, "The business function needs to be specified.",
+                msgList.add(new Message(MSGCODE_TARGET_NOT_SPECIFIED, Messages.getString("ActionBFE.bfMustBeSpecified"), //$NON-NLS-1$
                         Message.ERROR, this));
             }
-            validateNotAllowedNames(target, "business function name", msgList);
+            validateNotAllowedNames(target, Messages.getString("ActionBFE.bfName"), msgList); //$NON-NLS-1$
             //business function exists
             IBusinessFunction refBf = findReferencedBusinessFunction();
             if(refBf == null){
-                msgList.add(new Message(MSGCODE_TARGET_DOES_NOT_EXIST, "The specified business function does not exist.",
+                msgList.add(new Message(MSGCODE_TARGET_DOES_NOT_EXIST, Messages.getString("ActionBFE.bfDoesNotExist"), //$NON-NLS-1$
                         Message.ERROR, this));
             }
         }
@@ -149,19 +149,19 @@ public class ActionBFE extends BFElement implements IActionBFE {
         if (getType().equals(BFElementType.ACTION_METHODCALL)) {
             // parameter has to be specified
             if (StringUtils.isEmpty(target)) {
-                list.add(new Message(MSGCODE_TARGET_NOT_SPECIFIED, "The parameter needs to be specified.",
+                list.add(new Message(MSGCODE_TARGET_NOT_SPECIFIED, Messages.getString("ActionBFE.parameterNotSpecified"), //$NON-NLS-1$
                         Message.ERROR, this));
             }
             // method has to be specified
             if (StringUtils.isEmpty(getExecutableMethodName())) {
-                list.add(new Message(MSGCODE_METHOD_NOT_SPECIFIED, "The method needs to be specified.", Message.ERROR,
+                list.add(new Message(MSGCODE_METHOD_NOT_SPECIFIED, Messages.getString("ActionBFE.methodMustBeSpecified"), Message.ERROR, //$NON-NLS-1$
                         this));
             }
-            validateNotAllowedNames(getExecutableMethodName(), "method name", list);
+            validateNotAllowedNames(getExecutableMethodName(), Messages.getString("ActionBFE.methodName"), list); //$NON-NLS-1$
             // parameter has to exist
             if (getParameter() == null) {
                 list.add(new Message(MSGCODE_TARGET_DOES_NOT_EXIST,
-                        "The specified parameter does not exist within this business function.", Message.ERROR, this));
+                        Messages.getString("ActionBFE.parameterMissing"), Message.ERROR, this)); //$NON-NLS-1$
                 return;
             }
             Datatype datatype = getParameter().findDatatype();
@@ -172,14 +172,14 @@ public class ActionBFE extends BFElement implements IActionBFE {
             // only parameters with IType datatypes are allowed
             if (!(datatype instanceof IType)) {
                 list.add(new Message(MSGCODE_TARGET_NOT_VALID_TYPE,
-                        "The specified datatype is not a policy oder product component type", Message.ERROR, this));
+                        Messages.getString("ActionBFE.parameterNoType"), Message.ERROR, this)); //$NON-NLS-1$
                 return;
             }
             // method has to exist
             IType type = (IType)datatype;
             if (type.getMethod(getExecutableMethodName(), new String[0]) == null) {
                 list.add(new Message(MSGCODE_METHOD_DOES_NOT_EXIST,
-                        "This method doesn't exist on the parameter. Only methods without parameters are considered.",
+                        Messages.getString("ActionBFE.methodDoesNotExistOnParameter"), //$NON-NLS-1$
                         Message.ERROR, this));
             }
         }

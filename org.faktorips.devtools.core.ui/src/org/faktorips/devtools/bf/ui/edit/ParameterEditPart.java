@@ -90,7 +90,7 @@ public class ParameterEditPart extends AbstractGraphicalEditPart implements Cont
         upperRectangle.setLayoutManager(layout);
         figure.add(upperRectangle, BorderLayout.TOP);
 
-        Label parameterLabel = new Label("Parameters");
+        Label parameterLabel = new Label(Messages.getString("ParameterEditPart.parameter")); //$NON-NLS-1$
         parameterLabel.setForegroundColor(ColorConstants.black);
         MarginBorder border = new MarginBorder(10);
         parameterLabel.setBorder(border);

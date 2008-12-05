@@ -148,8 +148,8 @@ public class BusinessFunction extends BaseIpsObject implements IBusinessFunction
 
     public IBFElement newSimpleBFElement(BFElementType type, Point location) {
         if (!(BFElementType.END == type || BFElementType.START == type || BFElementType.MERGE == type)) {
-            throw new IllegalArgumentException("Only BFElement of the types: " + BFElementType.START + ", "
-                    + BFElementType.END + ", " + BFElementType.MERGE + " can be created with this method.");
+            throw new IllegalArgumentException("Only BFElement of the types: " + BFElementType.START + ", " //$NON-NLS-1$ //$NON-NLS-2$
+                    + BFElementType.END + ", " + BFElementType.MERGE + " can be created with this method."); //$NON-NLS-1$ //$NON-NLS-2$
         }
         BFElement element = (BFElement)simpleElements.newBFElement(location, type);
         return element;
@@ -216,21 +216,21 @@ public class BusinessFunction extends BaseIpsObject implements IBusinessFunction
     @Override
     protected void initPropertiesFromXml(Element element, Integer id) {
         super.initPropertiesFromXml(element, id);
-        int width = Integer.parseInt(element.getAttribute("parameterRectangleWidth"));
-        int height = Integer.parseInt(element.getAttribute("parameterRectangleHeight"));
+        int width = Integer.parseInt(element.getAttribute("parameterRectangleWidth")); //$NON-NLS-1$
+        int height = Integer.parseInt(element.getAttribute("parameterRectangleHeight")); //$NON-NLS-1$
         parameterRectangleSize = new Dimension(width, height);
-        int xLocation = Integer.parseInt(element.getAttribute("parameterRectangleX"));
-        int yLocation = Integer.parseInt(element.getAttribute("parameterRectangleY"));
+        int xLocation = Integer.parseInt(element.getAttribute("parameterRectangleX")); //$NON-NLS-1$
+        int yLocation = Integer.parseInt(element.getAttribute("parameterRectangleY")); //$NON-NLS-1$
         parameterRectangleLocation = new Point(xLocation, yLocation);
     }
 
     @Override
     protected void propertiesToXml(Element element) {
         super.propertiesToXml(element);
-        element.setAttribute("parameterRectangleWidth", String.valueOf(getParameterRectangleSize().width));
-        element.setAttribute("parameterRectangleHeight", String.valueOf(getParameterRectangleSize().height));
-        element.setAttribute("parameterRectangleX", String.valueOf(getParameterRectangleLocation().x));
-        element.setAttribute("parameterRectangleY", String.valueOf(getParameterRectangleLocation().y));
+        element.setAttribute("parameterRectangleWidth", String.valueOf(getParameterRectangleSize().width)); //$NON-NLS-1$
+        element.setAttribute("parameterRectangleHeight", String.valueOf(getParameterRectangleSize().height)); //$NON-NLS-1$
+        element.setAttribute("parameterRectangleX", String.valueOf(getParameterRectangleLocation().x)); //$NON-NLS-1$
+        element.setAttribute("parameterRectangleY", String.valueOf(getParameterRectangleLocation().y)); //$NON-NLS-1$
     }
 
     private static class BFElementIpsObjectPartCollection extends IpsObjectPartCollection {
@@ -289,7 +289,7 @@ public class BusinessFunction extends BaseIpsObject implements IBusinessFunction
                 for (IBFElement element : list) {
                     if (!(checkIfOnlyMethodCallActions(list) || checkIfOnlyBusinessFunctionCallActions(list))) {
                         String text = NLS.bind(
-                                "The name of this element: {0} collides with the name of another element.", key);
+                                Messages.getString("BusinessFunction.duplicateNames"), key); //$NON-NLS-1$
                         msgList.add(new Message(MSGCODE_ELEMENT_NAME_COLLISION, text, Message.ERROR, element));
                     }
                 }
@@ -334,7 +334,7 @@ public class BusinessFunction extends BaseIpsObject implements IBusinessFunction
             }
         }
         if (startElements.size() > 1) {
-            String text = "The " + type.getName() + " element can only occur once in a business function.";
+            String text = NLS.bind(Messages.getString("BusinessFunction.elementOnlyOnce"), type.getName()); //$NON-NLS-1$ //$NON-NLS-2$
             for (IBFElement element : startElements) {
                 msgList.add(new Message(msgCode, text, Message.ERROR, element));
             }
@@ -345,11 +345,11 @@ public class BusinessFunction extends BaseIpsObject implements IBusinessFunction
         boolean startOrEndMissing = false;
         if (getStart() == null) {
             list.add(new Message(MSGCODE_START_DEFINITION_MISSING,
-                    "The start of this business function has to be defined", Message.ERROR, this));
+                    Messages.getString("BusinessFunction.startMissing"), Message.ERROR, this)); //$NON-NLS-1$
             startOrEndMissing = true;
         }
         if (getEnd() == null) {
-            list.add(new Message(MSGCODE_END_DEFINITION_MISSING, "The end of this business function has to be defined",
+            list.add(new Message(MSGCODE_END_DEFINITION_MISSING, Messages.getString("BusinessFunction.endMissing"), //$NON-NLS-1$
                     Message.ERROR, this));
             startOrEndMissing = true;
         }
@@ -375,7 +375,7 @@ public class BusinessFunction extends BaseIpsObject implements IBusinessFunction
             if (!successfullyCheckedForStart.contains(element)) {
                 String text = NLS
                         .bind(
-                                "This element: {0} is not directly or indirectly connected to the start of this business function.",
+                                Messages.getString("BusinessFunction.elementNotConnectedWithStart"), //$NON-NLS-1$
                                 element.getDisplayString());
                 list.add(new Message(MSGCODE_NOT_CONNECTED_WITH_START, text, Message.ERROR, element));
             }
@@ -387,7 +387,7 @@ public class BusinessFunction extends BaseIpsObject implements IBusinessFunction
             }
             if (!successfullyCheckedForEnd.contains(element)) {
                 String text = NLS.bind(
-                        "This element: is not directly or indirectly connected to the end of this business function.",
+                        Messages.getString("BusinessFunction.elementNotConnectedWithEnd"), //$NON-NLS-1$
                         element.getDisplayString());
                 list.add(new Message(MSGCODE_NOT_CONNECTED_WITH_END, text, Message.ERROR, element));
             }

@@ -22,7 +22,7 @@ public class StartFigure extends Shape {
     private boolean showError;
 
     public StartFigure() {
-        errorImage = IpsPlugin.getDefault().getImage("size8/ErrorMessage.gif");
+        errorImage = IpsPlugin.getDefault().getImage("size8/ErrorMessage.gif"); //$NON-NLS-1$
     }
 
     protected void fillShape(Graphics graphics) {

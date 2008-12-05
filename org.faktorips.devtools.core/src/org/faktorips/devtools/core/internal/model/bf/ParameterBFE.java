@@ -32,14 +32,14 @@ import org.w3c.dom.Element;
 
 public class ParameterBFE extends BFElement implements IParameterBFE {
 
-    private String datatype = "";
+    private String datatype = ""; //$NON-NLS-1$
 
     public ParameterBFE(IIpsObject parent, int id) {
         super(parent, id);
     }
 
     public String getDisplayString() {
-        return getDatatype() + ":" + getName();
+        return getDatatype() + ":" + getName(); //$NON-NLS-1$
     }
 
     public String getDatatype() {
@@ -85,13 +85,13 @@ public class ParameterBFE extends BFElement implements IParameterBFE {
         validateName(list, ipsProject);
         validateDuplicateName(list);
         if (StringUtils.isEmpty(getDatatype())) {
-            String text = "The datatype needs to be specified.";
+            String text = Messages.getString("ParameterBFE.datatypeNotSpecified"); //$NON-NLS-1$
             list.add(new Message(MSGCODE_DATATYPE_NOT_SPECIFIED, text, Message.ERROR, this));
             return;
         }
         Datatype datatype = findDatatype();
         if (datatype == null) {
-            String text = NLS.bind("The specified datatype {0} of the parameter {1} does not exist.", new String[] {
+            String text = NLS.bind(Messages.getString("ParameterBFE.parameterOrDatatypeMissing"), new String[] { //$NON-NLS-1$
                     getDatatype(), getName() });
             list.add(new Message(MSGCODE_DATATYPE_DOES_NOT_EXISIT, text, Message.ERROR, this));
         }
@@ -104,7 +104,7 @@ public class ParameterBFE extends BFElement implements IParameterBFE {
                 continue;
             }
             if (parameter.getName().equals(getName())) {
-                msgList.add(new Message(MSGCODE_NAME_DUBLICATE, "There exists another parameter with the same name.",
+                msgList.add(new Message(MSGCODE_NAME_DUBLICATE, Messages.getString("ParameterBFE.duplicateParameter"), //$NON-NLS-1$
                         Message.ERROR, parameter));
             }
         }

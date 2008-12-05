@@ -29,13 +29,13 @@ import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
  */
 public interface IDecisionBFE extends IBFElement {
 
-    public final static String XML_TAG = "Decision";
-    public final static String PROPERTY_DATATYPE = "datatype";
+    public final static String XML_TAG = "Decision"; //$NON-NLS-1$
+    public final static String PROPERTY_DATATYPE = "datatype"; //$NON-NLS-1$
     
-    public static final String MSGCODE_PREFIX = "DECISIONBFE-";
-    public static final String MSGCODE_DATATYPE_NOT_SPECIFIED = MSGCODE_PREFIX + "datatypeNotSpecified";
-    public static final String MSGCODE_DATATYPE_DOES_NOT_EXIST = MSGCODE_PREFIX + "datatypeDoesNotExist";
-    public static final String MSGCODE_DATATYPE_ONLY_NONE_PRIM_VALUEDATATYPE = MSGCODE_PREFIX + "datatypeOnlyNonePrimValuedatatype";
+    public static final String MSGCODE_PREFIX = "DECISIONBFE-"; //$NON-NLS-1$
+    public static final String MSGCODE_DATATYPE_NOT_SPECIFIED = MSGCODE_PREFIX + "datatypeNotSpecified"; //$NON-NLS-1$
+    public static final String MSGCODE_DATATYPE_DOES_NOT_EXIST = MSGCODE_PREFIX + "datatypeDoesNotExist"; //$NON-NLS-1$
+    public static final String MSGCODE_DATATYPE_ONLY_NONE_PRIM_VALUEDATATYPE = MSGCODE_PREFIX + "datatypeOnlyNonePrimValuedatatype"; //$NON-NLS-1$
 
     /**
      * Returns the datatype of the condition value.

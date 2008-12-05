@@ -64,7 +64,7 @@ public class BusinessFunctionLabelProvider implements ILabelProvider {
             return BFElementType.DECISION.getImage(); 
         }
         if(editPart instanceof ControlFlowEditPart){
-            return IpsPlugin.getDefault().getImage("/obj16/" + "ControlFlow.gif");
+            return IpsPlugin.getDefault().getImage("/obj16/" + "ControlFlow.gif"); //$NON-NLS-1$ //$NON-NLS-2$
         }
         IIpsElement ipsElement = (IIpsElement)editPart.getModel();
         return ipsElement.getImage();
@@ -78,35 +78,35 @@ public class BusinessFunctionLabelProvider implements ILabelProvider {
         EditPart editPart = (EditPart)sel.getFirstElement();
         if (editPart instanceof BusinessFunctionEditPart) {
             IBusinessFunction bf = (IBusinessFunction)editPart.getModel();
-            return "Business Function: " + bf.getName();
+            return Messages.getString("BusinessFunctionLabelProvider.bf") + bf.getName(); //$NON-NLS-1$
         }
         if (editPart instanceof ParameterEditPart) {
-            return "Parameters";
+            return Messages.getString("BusinessFunctionLabelProvider.parameters"); //$NON-NLS-1$
         }
         IIpsElement ipsElement = (IIpsElement)editPart.getModel();
         if(ipsElement == null){
-            return "";
+            return ""; //$NON-NLS-1$
         }
         if(editPart instanceof ControlFlowEditPart){
-            return "";
+            return ""; //$NON-NLS-1$
         }
         String displayName = ((IBFElement)ipsElement).getDisplayString();
         if (editPart instanceof CallBusinessFunctionActionEditPart) {
-            return "Call Business Function Action: " + displayName;
+            return Messages.getString("BusinessFunctionLabelProvider.callBfAction") + displayName; //$NON-NLS-1$
         }
         if (editPart instanceof InlineActionEditPart) {
-            return "Opaque Action: " + displayName;
+            return Messages.getString("BusinessFunctionLabelProvider.inlineAction") + displayName; //$NON-NLS-1$
         }
         if (editPart instanceof CallMethodActionEditPart) {
-            return "Call Method Action: " + displayName;
+            return Messages.getString("BusinessFunctionLabelProvider.callMethodAction") + displayName; //$NON-NLS-1$
         }
         if (editPart instanceof DecisionEditPart) {
-            return "Decision: " + displayName;
+            return Messages.getString("BusinessFunctionLabelProvider.decision") + displayName; //$NON-NLS-1$
         }
         if (editPart instanceof MergeEditPart) {
-            return "Merge: " + displayName;
+            return Messages.getString("BusinessFunctionLabelProvider.merge") + displayName; //$NON-NLS-1$
         }
-        return "";
+        return ""; //$NON-NLS-1$
     }
 
     /**

@@ -172,7 +172,7 @@ public class ControlFlowEditPart extends AbstractConnectionEditPart implements C
 
     private void showError(MessageList msgList){
         if(!msgList.isEmpty()){
-            label.setImage(IpsPlugin.getDefault().getImage("size8/ErrorMessage.gif"));
+            label.setImage(IpsPlugin.getDefault().getImage("size8/ErrorMessage.gif")); //$NON-NLS-1$
             label.setSize(label.computeSize(-1, -1));
         } else {
             label.setImage(null);

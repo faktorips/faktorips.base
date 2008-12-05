@@ -28,7 +28,7 @@ import org.w3c.dom.Element;
 
 public class DecisionBFE extends BFElement implements IDecisionBFE {
 
-    private String datatype = "";
+    private String datatype = ""; //$NON-NLS-1$
 
     public DecisionBFE(IIpsObject parent, int id) {
         super(parent, id);
@@ -77,21 +77,21 @@ public class DecisionBFE extends BFElement implements IDecisionBFE {
         super.validateThis(list, ipsProject);
         // datatype specified
         if (StringUtils.isEmpty(datatype)) {
-            list.add(new Message(MSGCODE_DATATYPE_NOT_SPECIFIED, "The datatype needs to be specified.", Message.ERROR,
+            list.add(new Message(MSGCODE_DATATYPE_NOT_SPECIFIED, Messages.getString("DecisionBFE.datatypeNotSpecified"), Message.ERROR, //$NON-NLS-1$
                     this));
             return;
         }
         // datatype exists
         Datatype datatype = findDatatype(ipsProject);
         if (datatype == null) {
-            list.add(new Message(MSGCODE_DATATYPE_DOES_NOT_EXIST, "The specified datatype does not exist.",
+            list.add(new Message(MSGCODE_DATATYPE_DOES_NOT_EXIST, Messages.getString("DecisionBFE.datatypeDoesNotExist"), //$NON-NLS-1$
                     Message.ERROR, this));
             return;
         }
         // datatype only none primitive valuedatatype
         if (!datatype.isValueDatatype() || datatype.isPrimitive()) {
             list.add(new Message(MSGCODE_DATATYPE_ONLY_NONE_PRIM_VALUEDATATYPE,
-                    "The datatype needs to be a none primitive value datatype.", Message.ERROR, this));
+                    Messages.getString("DecisionBFE.DatatypeMustBeNotPrimitive"), Message.ERROR, this)); //$NON-NLS-1$
         }
     }
 

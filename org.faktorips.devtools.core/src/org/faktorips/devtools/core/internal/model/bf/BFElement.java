@@ -166,31 +166,31 @@ public class BFElement extends IpsObjectPart implements IBFElement {
         super.initPropertiesFromXml(element, id);
         name = element.getAttribute(PROPERTY_NAME);
         type = BFElementType.getType(element.getAttribute(PROPERTY_TYPE));
-        NodeList nl = element.getElementsByTagName("Location");
+        NodeList nl = element.getElementsByTagName("Location"); //$NON-NLS-1$
         for (int i = 0; i < nl.getLength(); i++) {
             Element posElement = (Element)nl.item(i);
-            String xPos = posElement.getAttribute("xlocation");
-            String yPos = posElement.getAttribute("ylocation");
+            String xPos = posElement.getAttribute("xlocation"); //$NON-NLS-1$
+            String yPos = posElement.getAttribute("ylocation"); //$NON-NLS-1$
             this.location = new Point(Integer.parseInt(xPos), Integer.parseInt(yPos));
         }
-        nl = element.getElementsByTagName("Size");
+        nl = element.getElementsByTagName("Size"); //$NON-NLS-1$
         for (int i = 0; i < nl.getLength(); i++) {
             Element posElement = (Element)nl.item(i);
-            String width = posElement.getAttribute("width");
-            String height = posElement.getAttribute("height");
+            String width = posElement.getAttribute("width"); //$NON-NLS-1$
+            String height = posElement.getAttribute("height"); //$NON-NLS-1$
             this.size = new Dimension(Integer.parseInt(width), Integer.parseInt(height));
         }
-        nl = element.getElementsByTagName("ControlFlow");
+        nl = element.getElementsByTagName("ControlFlow"); //$NON-NLS-1$
         incommingControlFlows.clear();
         outgoingControlFlows.clear();
         for (int i = 0; i < nl.getLength(); i++) {
             Element posElement = (Element)nl.item(i);
-            String type = posElement.getAttribute("type");
-            String controlFlowId = posElement.getAttribute("id");
-            if (type.equals("in")) {
+            String type = posElement.getAttribute("type"); //$NON-NLS-1$
+            String controlFlowId = posElement.getAttribute("id"); //$NON-NLS-1$
+            if (type.equals("in")) { //$NON-NLS-1$
                 incommingControlFlows.add(Integer.valueOf(controlFlowId));
             }
-            if (type.equals("out")) {
+            if (type.equals("out")) { //$NON-NLS-1$
                 outgoingControlFlows.add(Integer.valueOf(controlFlowId));
             }
         }
@@ -205,28 +205,28 @@ public class BFElement extends IpsObjectPart implements IBFElement {
         element.setAttribute(PROPERTY_TYPE, type.getId());
         Document doc = element.getOwnerDocument();
 
-        Element locationEl = doc.createElement("Location");
-        locationEl.setAttribute("xlocation", String.valueOf(getLocation().x));
-        locationEl.setAttribute("ylocation", String.valueOf(getLocation().y));
+        Element locationEl = doc.createElement("Location"); //$NON-NLS-1$
+        locationEl.setAttribute("xlocation", String.valueOf(getLocation().x)); //$NON-NLS-1$
+        locationEl.setAttribute("ylocation", String.valueOf(getLocation().y)); //$NON-NLS-1$
         element.appendChild(locationEl);
 
-        Element sizeEl = doc.createElement("Size");
-        sizeEl.setAttribute("width", String.valueOf(getSize().width));
-        sizeEl.setAttribute("height", String.valueOf(getSize().height));
+        Element sizeEl = doc.createElement("Size"); //$NON-NLS-1$
+        sizeEl.setAttribute("width", String.valueOf(getSize().width)); //$NON-NLS-1$
+        sizeEl.setAttribute("height", String.valueOf(getSize().height)); //$NON-NLS-1$
         element.appendChild(sizeEl);
 
         for (Integer controlFlowId : this.outgoingControlFlows) {
-            Element controlFlowEl = doc.createElement("ControlFlow");
+            Element controlFlowEl = doc.createElement("ControlFlow"); //$NON-NLS-1$
             element.appendChild(controlFlowEl);
-            controlFlowEl.setAttribute("type", "out");
-            controlFlowEl.setAttribute("id", String.valueOf(controlFlowId));
+            controlFlowEl.setAttribute("type", "out"); //$NON-NLS-1$ //$NON-NLS-2$
+            controlFlowEl.setAttribute("id", String.valueOf(controlFlowId)); //$NON-NLS-1$
         }
 
         for (Integer controlFlowId : this.incommingControlFlows) {
-            Element controlFlowEl = doc.createElement("ControlFlow");
+            Element controlFlowEl = doc.createElement("ControlFlow"); //$NON-NLS-1$
             element.appendChild(controlFlowEl);
-            controlFlowEl.setAttribute("type", "in");
-            controlFlowEl.setAttribute("id", String.valueOf(controlFlowId));
+            controlFlowEl.setAttribute("type", "in"); //$NON-NLS-1$ //$NON-NLS-2$
+            controlFlowEl.setAttribute("id", String.valueOf(controlFlowId)); //$NON-NLS-1$
         }
     }
 
@@ -273,11 +273,11 @@ public class BFElement extends IpsObjectPart implements IBFElement {
     protected final void validateName(MessageList msgList, IIpsProject ipsProject) throws CoreException {
         if (StringUtils.isEmpty(getName())) {
             msgList
-                    .add(new Message(MSGCODE_NAME_NOT_SPECIFIED, "The name needs to be specified.", Message.ERROR, this));
+                    .add(new Message(MSGCODE_NAME_NOT_SPECIFIED, Messages.getString("BFElement.nameNotSpecified"), Message.ERROR, this)); //$NON-NLS-1$
             return;
         }
         Message msg = getIpsProject().getNamingConventions().validateIfValidJavaIdentifier(getName(),
-                "The name is not a valid.", this, ipsProject);
+                Messages.getString("BFElement.nameNotValid"), this, ipsProject); //$NON-NLS-1$
         if (msg != null) {
             msgList.add(msg);
             return;
@@ -298,8 +298,8 @@ public class BFElement extends IpsObjectPart implements IBFElement {
      */
     protected final void validateNotAllowedNames(String name, String nameOfName, MessageList msgList) {
         String uncapName = StringUtils.uncapitalize(name);
-        if (uncapName.equals("execute") || uncapName.equals("start") || uncapName.equals("end")) {
-            String text = NLS.bind("The specified " + nameOfName + " : {0} is not an allowed name.", name);
+        if (uncapName.equals("execute") || uncapName.equals("start") || uncapName.equals("end")) { //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+            String text = NLS.bind(Messages.getString("BFElement.nameNotAllowed"), name); //$NON-NLS-1$ //$NON-NLS-2$
             msgList.add(new Message(MSGCODE_NAME_NOT_VALID, text, Message.ERROR, this));
         }
     }
@@ -309,7 +309,7 @@ public class BFElement extends IpsObjectPart implements IBFElement {
         if (getType().equals(BFElementType.DECISION) || getType().equals(BFElementType.MERGE)
                 || getType().equals(BFElementType.ACTION_INLINE) || getType().equals(BFElementType.PARAMETER)) {
             validateName(list, ipsProject);
-            validateNotAllowedNames(getName(), "name", list);
+            validateNotAllowedNames(getName(), "name", list); //$NON-NLS-1$
         }
     }
 

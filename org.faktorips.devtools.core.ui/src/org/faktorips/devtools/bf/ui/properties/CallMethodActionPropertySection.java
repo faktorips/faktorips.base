@@ -71,13 +71,13 @@ public class CallMethodActionPropertySection extends AbstractPropertySection imp
         Composite panel = uiToolkit.createGridComposite(parent, 1, true, true);
         bindingContext = new BindingContext();
         Composite content = uiToolkit.createLabelEditColumnComposite(panel);
-        uiToolkit.createLabel(content, "Parameter");
+        uiToolkit.createLabel(content, Messages.getString("CallMethodActionPropertySection.parameterLabel")); //$NON-NLS-1$
         parameterSelectionControl = uiToolkit.createText(content);
         GridData data = new GridData();
         data.grabExcessHorizontalSpace = false;
         data.widthHint = 300;
         parameterSelectionControl.setLayoutData(data);
-        uiToolkit.createLabel(content, "Method");
+        uiToolkit.createLabel(content, Messages.getString("CallMethodActionPropertySection.MethodLabel")); //$NON-NLS-1$
         methodSelectionField = new ParameterMethodRefControl(content, uiToolkit);
         data = new GridData();
         data.grabExcessHorizontalSpace = false;

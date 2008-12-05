@@ -28,11 +28,11 @@ import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
  */
 public class BusinessFunctionIpsObjectType extends IpsObjectType {
 
-    public final static String ID = "org.faktorips.devtools.bf.model.BusinessFunction";
+    public final static String ID = "org.faktorips.devtools.bf.model.BusinessFunction"; //$NON-NLS-1$
 
     public BusinessFunctionIpsObjectType() {
-        super("BusinessFunction", ID, "BusinessFunction", "ipsbusinessfunction", false, false, "BusinessFunction.gif",
-                "BusinessFunctionDisabled.gif");
+        super("BusinessFunction", ID, "BusinessFunction", "ipsbusinessfunction", false, false, "BusinessFunction.gif", //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
+                "BusinessFunctionDisabled.gif"); //$NON-NLS-1$
     }
 
     /**

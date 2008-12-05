@@ -35,7 +35,7 @@ public class BusinessFunctionRefControl extends IpsObjectRefControl {
     private IBusinessFunction currentBusinessFunction;
     
     public BusinessFunctionRefControl(Composite parent, UIToolkit toolkit) {
-        super(null, parent, toolkit, "Business Function Selection Dialog", "Select a Business Function");
+        super(null, parent, toolkit, Messages.getString("BusinessFunctionRefControl.title"), Messages.getString("BusinessFunctionRefControl.dialogMessage")); //$NON-NLS-1$ //$NON-NLS-2$
     }
 
     public void setCurrentBusinessFunction(IBusinessFunction businessFunction){

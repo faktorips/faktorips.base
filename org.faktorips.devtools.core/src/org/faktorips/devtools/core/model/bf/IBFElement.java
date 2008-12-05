@@ -33,17 +33,17 @@ import org.faktorips.devtools.core.model.ipsproject.IIpsProjectNamingConventions
  */
 public interface IBFElement extends IIpsObjectPart {
 
-    public final static String XML_TAG = "BFElement";
+    public final static String XML_TAG = "BFElement"; //$NON-NLS-1$
 
-    public final static String PROPERTY_TYPE = "type";
-    public final static String PROPERTY_LOCATION = "location";
-    public final static String PROPERTY_SIZE = "size";
-    public final static String PROPERTY_INCOMMING_EDGES = "incommingEdges";
-    public final static String PROPERTY_OUTGOING_EDGES = "outgoingEdges";
+    public final static String PROPERTY_TYPE = "type"; //$NON-NLS-1$
+    public final static String PROPERTY_LOCATION = "location"; //$NON-NLS-1$
+    public final static String PROPERTY_SIZE = "size"; //$NON-NLS-1$
+    public final static String PROPERTY_INCOMMING_EDGES = "incommingEdges"; //$NON-NLS-1$
+    public final static String PROPERTY_OUTGOING_EDGES = "outgoingEdges"; //$NON-NLS-1$
 
     //validation message codes
-    public static final String MSGCODE_PREFIX = "BFELEMENT-";
-    public static final String MSGCODE_NAME_NOT_SPECIFIED = MSGCODE_PREFIX + "nameNotSpecified";
+    public static final String MSGCODE_PREFIX = "BFELEMENT-"; //$NON-NLS-1$
+    public static final String MSGCODE_NAME_NOT_SPECIFIED = MSGCODE_PREFIX + "nameNotSpecified"; //$NON-NLS-1$
     public static final String MSGCODE_NAME_NOT_VALID = IIpsProjectNamingConventions.INVALID_NAME;
 
     /**

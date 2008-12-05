@@ -28,37 +28,37 @@ import org.faktorips.devtools.core.IpsPlugin;
  */
 public enum BFElementType {
 
-    ACTION_INLINE("inlineAction", "Inline Action", "OpaqueAction.gif") {
+    ACTION_INLINE("inlineAction", "Inline Action", "OpaqueAction.gif") { //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
         @Override
         public IBFElement newBFElement(IBusinessFunction businessFunction, Point location) {
             return businessFunction.newOpaqueAction(location);
         }
     },
-    ACTION_METHODCALL("methodCallAction", "Method Call Action", "CallOperationAction.gif") {
+    ACTION_METHODCALL("methodCallAction", "Method Call Action", "CallOperationAction.gif") { //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
         @Override
         public IBFElement newBFElement(IBusinessFunction businessFunction, Point location) {
             return businessFunction.newMethodCallAction(location);
         }
     },
-    ACTION_BUSINESSFUNCTIONCALL("businessFunctionCallAction", "Business Function Call Action", "CallBehaviorAction.gif") {
+    ACTION_BUSINESSFUNCTIONCALL("businessFunctionCallAction", "Business Function Call Action", "CallBehaviorAction.gif") { //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
         @Override
         public IBFElement newBFElement(IBusinessFunction businessFunction, Point location) {
             return businessFunction.newBusinessFunctionCallAction(location);
         }
     },
-    DECISION("decision", "Decision", "DecisionNode.gif") {
+    DECISION("decision", "Decision", "DecisionNode.gif") { //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
         @Override
         public IBFElement newBFElement(IBusinessFunction businessFunction, Point location) {
             return businessFunction.newDecision(location);
         }
     },
-    MERGE("merge", "Merge", "MergeNode.gif") {
+    MERGE("merge", "Merge", "MergeNode.gif") { //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
         @Override
         public IBFElement newBFElement(IBusinessFunction businessFunction, Point location) {
             return businessFunction.newSimpleBFElement(BFElementType.MERGE, location);
         }
     },
-    END("end", "End", "ActivityFinalNode.gif") {
+    END("end", "End", "ActivityFinalNode.gif") { //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
         @Override
         public IBFElement newBFElement(IBusinessFunction businessFunction, Point location) {
             IBFElement element = businessFunction.newSimpleBFElement(BFElementType.END, location);
@@ -66,7 +66,7 @@ public enum BFElementType {
             return element;
         }
     },
-    START("start", "Start", "InitialNode.gif") {
+    START("start", "Start", "InitialNode.gif") { //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
         @Override
         public IBFElement newBFElement(IBusinessFunction businessFunction, Point location) {
             IBFElement element = businessFunction.newSimpleBFElement(BFElementType.START, location);
@@ -74,7 +74,7 @@ public enum BFElementType {
             return element;
         }
     },
-    PARAMETER("parameter", "Parameter", null) {
+    PARAMETER("parameter", "Parameter", null) { //$NON-NLS-1$ //$NON-NLS-2$
         @Override
         public IBFElement newBFElement(IBusinessFunction businessFunction, Point location) {
             return businessFunction.newParameter();
@@ -112,7 +112,7 @@ public enum BFElementType {
      */
     public ImageDescriptor getImageDescriptor() {
         if (imageDescriptor == null) {
-            imageDescriptor = IpsPlugin.getDefault().getImageDescriptor("/obj16/" + imageName);
+            imageDescriptor = IpsPlugin.getDefault().getImageDescriptor("/obj16/" + imageName); //$NON-NLS-1$
         }
         return imageDescriptor;
     }
@@ -162,6 +162,6 @@ public enum BFElementType {
         if (id.equals(PARAMETER.id)) {
             return PARAMETER;
         }
-        throw new IllegalArgumentException("Unexpected type id: " + id);
+        throw new IllegalArgumentException("Unexpected type id: " + id); //$NON-NLS-1$
     }
 }

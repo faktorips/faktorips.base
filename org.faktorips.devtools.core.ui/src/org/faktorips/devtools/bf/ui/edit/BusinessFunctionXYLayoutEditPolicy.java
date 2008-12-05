@@ -37,7 +37,7 @@ public class BusinessFunctionXYLayoutEditPolicy extends XYLayoutEditPolicy {
         Rectangle constraint = (Rectangle)getConstraintFor(request);
         CreateBFElementCommand create = new CreateBFElementCommand(bfElementType, (IBusinessFunction)getHost()
                 .getModel(), constraint.getLocation());
-        create.setLabel("Creating Business Function Element");
+        create.setLabel(Messages.getString("BusinessFunctionXYLayoutEditPolicy.createBFE")); //$NON-NLS-1$
         return create;
     }
 

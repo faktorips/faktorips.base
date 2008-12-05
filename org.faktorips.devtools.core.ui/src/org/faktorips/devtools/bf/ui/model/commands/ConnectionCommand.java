@@ -25,7 +25,7 @@ public class ConnectionCommand extends Command {
     private boolean reconnect = false;
 
     public ConnectionCommand(boolean reconnect) {
-        super("Connection");
+        super("Connection"); //$NON-NLS-1$
         this.reconnect = reconnect;
     }
 
@@ -34,7 +34,7 @@ public class ConnectionCommand extends Command {
     }
 
     public boolean canExecute() {
-        System.out.println("source: " + sourceNode + " target: " + targetNode);
+        System.out.println("source: " + sourceNode + " target: " + targetNode); //$NON-NLS-1$ //$NON-NLS-2$
         if (sourceNode != null) {
             if (sourceNode.getType() == BFElementType.START && !sourceNode.getOutgoingControlFlow().isEmpty()) {
                 return false;
@@ -84,7 +84,7 @@ public class ConnectionCommand extends Command {
     }
 
     public String getLabel() {
-        return "Create Connection";
+        return Messages.getString("ConnectionCommand.createConnection"); //$NON-NLS-1$
     }
 
     public IBFElement getSource() {

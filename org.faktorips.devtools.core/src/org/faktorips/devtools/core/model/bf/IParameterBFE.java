@@ -26,13 +26,13 @@ import org.faktorips.datatype.Datatype;
  */
 public interface IParameterBFE extends IBFElement {
 
-    public final static String XML_TAG = "Parameter";
-    public final static String PROPERTY_DATATYPE = "datatype";
+    public final static String XML_TAG = "Parameter"; //$NON-NLS-1$
+    public final static String PROPERTY_DATATYPE = "datatype"; //$NON-NLS-1$
 
-    public static final String MSGCODE_PREFIX = "PARAMETERBFE-";
-    public static final String MSGCODE_NAME_DUBLICATE = MSGCODE_PREFIX + "nameDuplicate";
-    public static final String MSGCODE_DATATYPE_NOT_SPECIFIED = MSGCODE_PREFIX + "datatypeNotSpecified";
-    public static final String MSGCODE_DATATYPE_DOES_NOT_EXISIT = MSGCODE_PREFIX + "datatypeDoesNotExists";
+    public static final String MSGCODE_PREFIX = "PARAMETERBFE-"; //$NON-NLS-1$
+    public static final String MSGCODE_NAME_DUBLICATE = MSGCODE_PREFIX + "nameDuplicate"; //$NON-NLS-1$
+    public static final String MSGCODE_DATATYPE_NOT_SPECIFIED = MSGCODE_PREFIX + "datatypeNotSpecified"; //$NON-NLS-1$
+    public static final String MSGCODE_DATATYPE_DOES_NOT_EXISIT = MSGCODE_PREFIX + "datatypeDoesNotExists"; //$NON-NLS-1$
 
     /**
      * Returns the parameters datatype.

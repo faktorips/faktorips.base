@@ -46,7 +46,7 @@ public class BusinessFunctionEditPartFactory implements EditPartFactory {
         } else if (model instanceof IControlFlow) {
             child = new ControlFlowEditPart();
         } else {
-            throw new IllegalArgumentException("No EditPart can be created for the provided model object: " + model);
+            throw new IllegalArgumentException("No EditPart can be created for the provided model object: " + model); //$NON-NLS-1$
         }
         child.setModel(model);
         return child;

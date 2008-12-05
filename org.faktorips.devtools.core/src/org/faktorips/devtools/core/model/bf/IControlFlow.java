@@ -33,15 +33,15 @@ import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPart;
  */
 public interface IControlFlow extends IIpsObjectPart {
 
-    public final static String XML_TAG = "ControlFlow";
-    public static final String PROPERTY_BENDPOINT = "bendPoint";
-    public static final String PROPERTY_TARGET = "target";
-    public static final String PROPERTY_SOURCE = "source";
-    public static final String PROPERTY_CONDITION_VALUE = "conditionValue";
+    public final static String XML_TAG = "ControlFlow"; //$NON-NLS-1$
+    public static final String PROPERTY_BENDPOINT = "bendPoint"; //$NON-NLS-1$
+    public static final String PROPERTY_TARGET = "target"; //$NON-NLS-1$
+    public static final String PROPERTY_SOURCE = "source"; //$NON-NLS-1$
+    public static final String PROPERTY_CONDITION_VALUE = "conditionValue"; //$NON-NLS-1$
 
-    public static final String MSGCODE_PREFIX = "DECISIONBFE-";
-    public static final String MSGCODE_VALUE_NOT_SPECIFIED = MSGCODE_PREFIX + "valueNotSpecified";
-    public static final String MSGCODE_VALUE_NOT_VALID = MSGCODE_PREFIX + "valueNotValid";
+    public static final String MSGCODE_PREFIX = "DECISIONBFE-"; //$NON-NLS-1$
+    public static final String MSGCODE_VALUE_NOT_SPECIFIED = MSGCODE_PREFIX + "valueNotSpecified"; //$NON-NLS-1$
+    public static final String MSGCODE_VALUE_NOT_VALID = MSGCODE_PREFIX + "valueNotValid"; //$NON-NLS-1$
 
     /**
      * The business function to which this control flow belongs to.

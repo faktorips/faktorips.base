@@ -53,7 +53,7 @@ public class ControlFlowPropertySection extends AbstractPropertySection {
         Composite panel = uiToolkit.createGridComposite(parent, 1, true, true);
         bindingContext = new BindingContext();
         contentPanel = uiToolkit.createLabelEditColumnComposite(panel);
-        uiToolkit.createLabel(contentPanel, "Value");
+        uiToolkit.createLabel(contentPanel, Messages.getString("ControlFlowPropertySection.valueLabel")); //$NON-NLS-1$
         conditionValueField = uiToolkit.createText(contentPanel);
         GridData data = new GridData();
         data.grabExcessHorizontalSpace = false;

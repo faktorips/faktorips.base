@@ -33,17 +33,17 @@ import org.eclipse.core.runtime.CoreException;
  */
 public interface IActionBFE extends IBFElement {
 
-    public final static String XML_TAG = "Action";
-    public final static String PROPERTY_TARGET = "target";
-    public final static String PROPERTY_EXECUTABLE_METHOD_NAME = "executableMethodName";
+    public final static String XML_TAG = "Action"; //$NON-NLS-1$
+    public final static String PROPERTY_TARGET = "target"; //$NON-NLS-1$
+    public final static String PROPERTY_EXECUTABLE_METHOD_NAME = "executableMethodName"; //$NON-NLS-1$
 
     // validation message codes
-    public static final String MSGCODE_PREFIX = "ACTIONBFE-";
-    public static final String MSGCODE_TARGET_NOT_SPECIFIED = MSGCODE_PREFIX + "targetNotSpecified";
-    public static final String MSGCODE_TARGET_DOES_NOT_EXIST = MSGCODE_PREFIX + "targetDoesNotExist";
-    public static final String MSGCODE_TARGET_NOT_VALID_TYPE = MSGCODE_PREFIX + "targetNotValidType";
-    public static final String MSGCODE_METHOD_NOT_SPECIFIED = MSGCODE_PREFIX + "methodNotSpecified";
-    public static final String MSGCODE_METHOD_DOES_NOT_EXIST = MSGCODE_PREFIX + "methodDoesNotExist";
+    public static final String MSGCODE_PREFIX = "ACTIONBFE-"; //$NON-NLS-1$
+    public static final String MSGCODE_TARGET_NOT_SPECIFIED = MSGCODE_PREFIX + "targetNotSpecified"; //$NON-NLS-1$
+    public static final String MSGCODE_TARGET_DOES_NOT_EXIST = MSGCODE_PREFIX + "targetDoesNotExist"; //$NON-NLS-1$
+    public static final String MSGCODE_TARGET_NOT_VALID_TYPE = MSGCODE_PREFIX + "targetNotValidType"; //$NON-NLS-1$
+    public static final String MSGCODE_METHOD_NOT_SPECIFIED = MSGCODE_PREFIX + "methodNotSpecified"; //$NON-NLS-1$
+    public static final String MSGCODE_METHOD_DOES_NOT_EXIST = MSGCODE_PREFIX + "methodDoesNotExist"; //$NON-NLS-1$
 
     /**
      * The target of this action. A target is not relevant for an in line action. For a method call

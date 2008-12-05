@@ -25,7 +25,7 @@ public class CreateBFElementCommand extends BFElementCommand {
     private BFElementType bfElementType;
 
     public CreateBFElementCommand(BFElementType bfElementType, IBusinessFunction businessFunction, Point location) {
-        super("Create Object", businessFunction);
+        super("Create Object", businessFunction); //$NON-NLS-1$
         ArgumentCheck.notNull(bfElementType, this);
         ArgumentCheck.notNull(location, this);
         this.bfElementType = bfElementType;

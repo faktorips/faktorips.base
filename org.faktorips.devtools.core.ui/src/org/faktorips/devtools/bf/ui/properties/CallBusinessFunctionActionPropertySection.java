@@ -57,7 +57,7 @@ public class CallBusinessFunctionActionPropertySection extends AbstractPropertyS
         Composite panel = uiToolkit.createGridComposite(parent, 1, true, true);
         bindingContext = new BindingContext();
         Composite content = uiToolkit.createLabelEditColumnComposite(panel);
-        uiToolkit.createLabel(content, "Business Function");
+        uiToolkit.createLabel(content, Messages.getString("CallBusinessFunctionActionPropertySection.bfLabel")); //$NON-NLS-1$
         businessFunctionField = new BusinessFunctionRefControl(content, uiToolkit);
         GridData data = new GridData();
         data.grabExcessHorizontalSpace = false;

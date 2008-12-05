@@ -28,7 +28,7 @@ import org.w3c.dom.NodeList;
 
 public class ControlFlow extends IpsObjectPart implements IControlFlow {
 
-    private String conditionValue = "";
+    private String conditionValue = ""; //$NON-NLS-1$
     private Integer targetId;
     private Integer sourceId;
     private List<Bendpoint> bendpoints = new ArrayList<Bendpoint>();
@@ -130,12 +130,12 @@ public class ControlFlow extends IpsObjectPart implements IControlFlow {
         targetId = targetValue.isEmpty() ? null : Integer.parseInt(targetValue);
         // TODO test
         conditionValue = element.getAttribute(PROPERTY_CONDITION_VALUE);
-        NodeList nl = element.getElementsByTagName("Bendpoint");
+        NodeList nl = element.getElementsByTagName("Bendpoint"); //$NON-NLS-1$
         bendpoints.clear();
         for (int i = 0; i < nl.getLength(); i++) {
             Element bendpointEl = (Element)nl.item(i);
-            int locationX = Integer.parseInt(bendpointEl.getAttribute("locationX"));
-            int locationY = Integer.parseInt(bendpointEl.getAttribute("locationY"));
+            int locationX = Integer.parseInt(bendpointEl.getAttribute("locationX")); //$NON-NLS-1$
+            int locationY = Integer.parseInt(bendpointEl.getAttribute("locationY")); //$NON-NLS-1$
             bendpoints.add(new AbsoluteBendpoint(locationX, locationY));
         }
     }
@@ -144,16 +144,16 @@ public class ControlFlow extends IpsObjectPart implements IControlFlow {
     protected void propertiesToXml(Element element) {
         super.propertiesToXml(element);
         element.setAttribute(PROPERTY_NAME, name);
-        element.setAttribute(PROPERTY_SOURCE, sourceId == null ? "" : String.valueOf(sourceId));
-        element.setAttribute(PROPERTY_TARGET, targetId == null ? "" : String.valueOf(targetId));
+        element.setAttribute(PROPERTY_SOURCE, sourceId == null ? "" : String.valueOf(sourceId)); //$NON-NLS-1$
+        element.setAttribute(PROPERTY_TARGET, targetId == null ? "" : String.valueOf(targetId)); //$NON-NLS-1$
         // TODO test
         element.setAttribute(PROPERTY_CONDITION_VALUE, conditionValue);
         Document doc = element.getOwnerDocument();
         for (Bendpoint bendpoint : this.bendpoints) {
-            Element bendpointEl = doc.createElement("Bendpoint");
+            Element bendpointEl = doc.createElement("Bendpoint"); //$NON-NLS-1$
             Point location = bendpoint.getLocation();
-            bendpointEl.setAttribute("locationX", String.valueOf(location.x));
-            bendpointEl.setAttribute("locationY", String.valueOf(location.y));
+            bendpointEl.setAttribute("locationX", String.valueOf(location.x)); //$NON-NLS-1$
+            bendpointEl.setAttribute("locationY", String.valueOf(location.y)); //$NON-NLS-1$
             element.appendChild(bendpointEl);
         }
     }
@@ -200,7 +200,7 @@ public class ControlFlow extends IpsObjectPart implements IControlFlow {
         IBFElement source = getSource();
         if (source != null && source.getType().equals(BFElementType.DECISION)) {
             if (StringUtils.isEmpty(getConditionValue())) {
-                list.add(new Message(MSGCODE_VALUE_NOT_SPECIFIED, "The value of this control flow must be specified.",
+                list.add(new Message(MSGCODE_VALUE_NOT_SPECIFIED, Messages.getString("ControlFlow.valueMustBeSpecified"), //$NON-NLS-1$
                         Message.ERROR, this));
                 return;
             }
@@ -209,7 +209,7 @@ public class ControlFlow extends IpsObjectPart implements IControlFlow {
             if (datatype != null) {
                 if (!datatype.isParsable(getConditionValue())) {
                     list.add(new Message(MSGCODE_VALUE_NOT_VALID,
-                            "The value of this control flow doesn't comply to the datatype specified in the decision.",
+                            Messages.getString("ControlFlow.valueNotValid"), //$NON-NLS-1$
                             Message.ERROR, this));
                 }
             }

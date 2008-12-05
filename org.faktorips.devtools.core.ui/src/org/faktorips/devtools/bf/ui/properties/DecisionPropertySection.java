@@ -33,7 +33,7 @@ public class DecisionPropertySection extends NamedOnlyBFElementsPropertySection 
     private DatatypeRefControl datatypeField;
 
     protected void createControlsInternal(Composite parent, TabbedPropertySheetPage tabbedPropertySheetPage) {
-        uiToolkit.createLabel(parent, "Datatype");
+        uiToolkit.createLabel(parent, Messages.getString("DecisionPropertySection.datatypeLabel")); //$NON-NLS-1$
         datatypeField = uiToolkit.createDatatypeRefEdit(null, parent);
         datatypeField.setOnlyValueDatatypesAllowed(true);
         datatypeField.setPrimitivesAllowed(false);

@@ -110,7 +110,7 @@ public void contributeToToolBar(IToolBarManager tbm) {
  */
 public void contributeToMenu(IMenuManager menubar) {
 	super.contributeToMenu(menubar);
-	MenuManager viewMenu = new MenuManager("View");
+	MenuManager viewMenu = new MenuManager("View"); //$NON-NLS-1$
 	viewMenu.add(getAction(GEFActionConstants.ZOOM_IN));
 	viewMenu.add(getAction(GEFActionConstants.ZOOM_OUT));
 	viewMenu.add(new Separator());

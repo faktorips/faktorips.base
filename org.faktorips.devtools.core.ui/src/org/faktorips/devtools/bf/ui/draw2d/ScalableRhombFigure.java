@@ -30,7 +30,7 @@ public class ScalableRhombFigure extends Shape {
         this.addPoint(new Point(40, 20));
         this.addPoint(new Point(20, 40));
         this.addPoint(new Point(0, 20));
-        errorImage = IpsPlugin.getDefault().getImage("size8/ErrorMessage.gif");
+        errorImage = IpsPlugin.getDefault().getImage("size8/ErrorMessage.gif"); //$NON-NLS-1$
     }
 
     public void addPoint(Point point) {

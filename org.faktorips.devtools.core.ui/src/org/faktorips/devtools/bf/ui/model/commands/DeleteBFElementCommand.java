@@ -26,7 +26,7 @@ public class DeleteBFElementCommand extends BFElementCommand {
 	private IBFElement bfElement;
 	
 	public DeleteBFElementCommand(IBusinessFunction businessFunction, IBFElement element) {
-		super("Delete Node", businessFunction);
+		super("Delete Node", businessFunction); //$NON-NLS-1$
 		ArgumentCheck.notNull(element, this);
 		this.bfElement = element;
 	}

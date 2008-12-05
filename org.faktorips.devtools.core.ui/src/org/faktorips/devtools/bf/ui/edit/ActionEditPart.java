@@ -102,7 +102,7 @@ public abstract class ActionEditPart extends NodeEditPart {
         iconSection.setOutline(false);
         iconSection.setFill(false);
         Label iconLabel = new Label();
-        iconLabel.setIcon(IpsPlugin.getDefault().getImage("size8/ErrorMessage.gif"));
+        iconLabel.setIcon(IpsPlugin.getDefault().getImage("size8/ErrorMessage.gif")); //$NON-NLS-1$
         iconLabel.setLocation(new Point(0, 0));
         iconLabel.setSize(new Dimension(20, 20));
         iconSection.add(iconLabel);
