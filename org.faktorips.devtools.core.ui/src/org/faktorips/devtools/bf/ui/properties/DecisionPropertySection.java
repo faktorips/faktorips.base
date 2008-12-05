@@ -22,6 +22,12 @@ import org.eclipse.ui.views.properties.tabbed.TabbedPropertySheetPage;
 import org.faktorips.devtools.core.model.bf.IDecisionBFE;
 import org.faktorips.devtools.core.ui.controls.DatatypeRefControl;
 
+/**
+ * A section that is displayed in the property view. The properties of a control flow object
+ * can be edited with it. 
+ * 
+ * @author Peter Erzberger
+ */
 public class DecisionPropertySection extends NamedOnlyBFElementsPropertySection {
 
     private DatatypeRefControl datatypeField;

@@ -14,7 +14,6 @@ package org.faktorips.devtools.bf.ui.properties;
  * 
  *******************************************************************************/
 
-
 import java.util.List;
 
 import org.eclipse.core.runtime.CoreException;
@@ -64,6 +63,9 @@ import org.faktorips.util.ArgumentCheck;
 import org.faktorips.util.message.MessageList;
 
 /**
+ * A control consisting of a table and an add and remove button by means of which parameters of a
+ * business function can be defined.
+ * 
  * @author Peter Erzberger
  */
 public class ParametersEditControl extends Composite {
@@ -510,8 +512,7 @@ public class ParametersEditControl extends Composite {
 
     private class ParametersCellModifier implements ICellModifier {
         public boolean canModify(Object element, String property) {
-            if(PROPERTIES[TYPE_PROP].equals(property) || 
-                    PROPERTIES[NEWNAME_PROP].equals(property)){
+            if (PROPERTIES[TYPE_PROP].equals(property) || PROPERTIES[NEWNAME_PROP].equals(property)) {
                 return true;
             }
             return false;
@@ -519,10 +520,9 @@ public class ParametersEditControl extends Composite {
 
         public Object getValue(Object element, String property) {
             IParameterBFE param = (IParameterBFE)element;
-            if (property.equals(PROPERTIES[TYPE_PROP])){
+            if (property.equals(PROPERTIES[TYPE_PROP])) {
                 return param.getDatatype();
-            }
-            else if (property.equals(PROPERTIES[NEWNAME_PROP]))
+            } else if (property.equals(PROPERTIES[NEWNAME_PROP]))
                 return param.getName();
             return null;
         }

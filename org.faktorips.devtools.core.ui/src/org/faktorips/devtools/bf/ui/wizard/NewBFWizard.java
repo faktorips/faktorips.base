@@ -18,6 +18,11 @@ import org.eclipse.jface.viewers.IStructuredSelection;
 import org.faktorips.devtools.core.ui.wizards.IpsObjectPage;
 import org.faktorips.devtools.core.ui.wizards.NewIpsObjectWizard;
 
+/**
+ * A wizard responsible for the creation of a new business function.
+ * 
+ * @author Peter Erzberger
+ */
 public class NewBFWizard extends NewIpsObjectWizard {
 
     @Override

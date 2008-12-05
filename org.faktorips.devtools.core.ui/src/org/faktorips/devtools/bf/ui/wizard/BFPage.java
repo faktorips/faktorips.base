@@ -15,14 +15,18 @@
 package org.faktorips.devtools.bf.ui.wizard;
 
 import org.eclipse.jface.viewers.IStructuredSelection;
-import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.model.bf.BusinessFunctionIpsObjectType;
 import org.faktorips.devtools.core.ui.wizards.IpsObjectPage;
 
+/**
+ * The wizard page for the new business function wizard.
+ * 
+ * @author Peter Erzberger
+ */
 public class BFPage extends IpsObjectPage {
 
     public BFPage(IStructuredSelection selection) {
-        super(IpsPlugin.getDefault().getIpsModel().getIpsObjectType(BusinessFunctionIpsObjectType.ID), selection,
+        super(BusinessFunctionIpsObjectType.getInstance(), selection,
                 "New Business Function");
     }
 }

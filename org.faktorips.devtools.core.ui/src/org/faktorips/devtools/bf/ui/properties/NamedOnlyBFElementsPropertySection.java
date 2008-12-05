@@ -30,12 +30,17 @@ import org.faktorips.devtools.core.model.bf.IBFElement;
 import org.faktorips.devtools.core.ui.UIToolkit;
 import org.faktorips.devtools.core.ui.binding.BindingContext;
 
+/**
+ * A section that is displayed in the property view. The name property of a business function
+ * element can be edited with it.
+ * 
+ * @author Peter Erzberger
+ */
 public class NamedOnlyBFElementsPropertySection extends AbstractPropertySection {
 
     private Text nameField;
     protected BindingContext bindingContext;
     protected UIToolkit uiToolkit;
-    
 
     @Override
     public final void createControls(Composite parent, TabbedPropertySheetPage tabbedPropertySheetPage) {
@@ -54,18 +59,21 @@ public class NamedOnlyBFElementsPropertySection extends AbstractPropertySection 
         createControlsInternal(content, tabbedPropertySheetPage);
     }
 
+    /**
+     * This method can be overridden by subclasses to add additional editing field to this section. 
+     */
     protected void createControlsInternal(Composite parent, TabbedPropertySheetPage tabbedPropertySheetPage) {
     }
-    
+
     @Override
     public void dispose() {
         super.dispose();
     }
 
-    public IBFElement getBFElement(){
+    public IBFElement getBFElement() {
         return ((NodeEditPart)((IStructuredSelection)getSelection()).getFirstElement()).getBFElement();
     }
-    
+
     @Override
     public void setInput(IWorkbenchPart part, ISelection selection) {
         super.setInput(part, selection);

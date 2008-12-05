@@ -34,6 +34,7 @@ public class ConnectionCommand extends Command {
     }
 
     public boolean canExecute() {
+        System.out.println("source: " + sourceNode + " target: " + targetNode);
         if (sourceNode != null) {
             if (sourceNode.getType() == BFElementType.START && !sourceNode.getOutgoingControlFlow().isEmpty()) {
                 return false;
@@ -44,20 +45,17 @@ public class ConnectionCommand extends Command {
             if (sourceNode.getType() == BFElementType.MERGE && !sourceNode.getOutgoingControlFlow().isEmpty()) {
                 return false;
             }
-        }
-        if (sourceNode != null && targetNode != null) {
-            if (sourceNode == targetNode) {
+            if ((sourceNode.getType() == BFElementType.ACTION_BUSINESSFUNCTIONCALL
+                    || sourceNode.getType() == BFElementType.ACTION_INLINE || sourceNode.getType() == BFElementType.ACTION_METHODCALL)
+                    && !sourceNode.getOutgoingControlFlow().isEmpty()) {
                 return false;
             }
+        }
+        if (targetNode != null) {
             if (targetNode.getType() == BFElementType.DECISION && !targetNode.getIncomingControlFlow().isEmpty()) {
                 return false;
             }
             if (targetNode.getType() == BFElementType.END && !targetNode.getIncomingControlFlow().isEmpty()) {
-                return false;
-            }
-            if ((sourceNode.getType() == BFElementType.ACTION_BUSINESSFUNCTIONCALL
-                    || sourceNode.getType() == BFElementType.ACTION_INLINE || sourceNode.getType() == BFElementType.ACTION_METHODCALL)
-                    && !sourceNode.getOutgoingControlFlow().isEmpty()) {
                 return false;
             }
             if ((targetNode.getType() == BFElementType.ACTION_BUSINESSFUNCTIONCALL
@@ -65,6 +63,9 @@ public class ConnectionCommand extends Command {
                     && !targetNode.getIncomingControlFlow().isEmpty()) {
                 return false;
             }
+        }
+        if(targetNode == sourceNode){
+            return false;
         }
         return true;
     }

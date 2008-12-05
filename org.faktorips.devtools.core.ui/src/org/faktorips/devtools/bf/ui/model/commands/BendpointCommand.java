@@ -14,6 +14,11 @@ import org.faktorips.devtools.core.model.bf.IControlFlow;
 import org.faktorips.util.ArgumentCheck;
 import org.faktorips.util.memento.Memento;
 
+/**
+ * Abstract class for the commands handling bend points. This class handles undo and redo functionality.
+ * 
+ * @author Peter Erzberger
+ */
 public abstract class BendpointCommand extends Command {
 
     protected int index;
@@ -29,31 +34,37 @@ public abstract class BendpointCommand extends Command {
         this.controlFlow = controlFlow;
     }
 
-    protected int getIndex() {
+    protected final int getIndex() {
         return index;
     }
 
-    protected Point getLocation() {
+    protected final Point getLocation() {
         return location;
     }
 
-    protected IControlFlow getControlFlow() {
+    protected final IControlFlow getControlFlow() {
         return controlFlow;
     }
 
+    @Override
     public final void execute(){
         controlFlowState = controlFlow.newMemento();
         executeInternal();
     }
     
+    /**
+     * Subclasses implement the execution of the command here.
+     */
     protected abstract void executeInternal();
     
+   @Override
     public final void undo(){
         Memento currentState = controlFlow.newMemento();
         controlFlow.setState(controlFlowState);
         controlFlowState = currentState;
     }
     
+   @Override
     public final void redo() {
         undo();
     }

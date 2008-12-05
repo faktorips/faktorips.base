@@ -14,7 +14,11 @@ import org.eclipse.draw2d.AbsoluteBendpoint;
 import org.eclipse.draw2d.geometry.Point;
 import org.faktorips.devtools.core.model.bf.IControlFlow;
 
-
+/**
+ * A command that adds a bend point to a control flow.
+ * 
+ * @author Peter Erzberger
+ */
 public class CreateBendpointCommand extends BendpointCommand {
 
 	public CreateBendpointCommand(int index, Point location, IControlFlow controlFlow) {

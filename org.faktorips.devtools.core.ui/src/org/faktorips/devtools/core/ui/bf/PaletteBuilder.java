@@ -20,6 +20,11 @@ import org.eclipse.jface.resource.ImageDescriptor;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.model.bf.BFElementType;
 
+/**
+ * Builds the palette that is needed by the business function edtior.
+ * 
+ * @author Peter Erzberger
+ */
 public class PaletteBuilder {
 
     public PaletteBuilder(){
@@ -119,6 +124,9 @@ public class PaletteBuilder {
 		return controlGroup;
 	}
 
+	/**
+	 * Builds and returns the palette.
+	 */
 	public PaletteRoot buildPalette() {
 		PaletteRoot logicPalette = new PaletteRoot();
 		logicPalette.addAll(createCategories(logicPalette));

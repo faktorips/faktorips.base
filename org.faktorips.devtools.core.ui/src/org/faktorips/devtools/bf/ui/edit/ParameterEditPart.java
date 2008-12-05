@@ -25,6 +25,16 @@ import org.faktorips.devtools.core.model.bf.IBusinessFunction;
 import org.faktorips.devtools.core.model.bf.IParameterBFE;
 import org.faktorips.devtools.core.ui.DefaultLabelProvider;
 
+/**
+ * The edit part for the parameter business function element. Since there is only one figure that
+ * displays all parameters of a business function this edit part cannot be created via the
+ * {@link BusinessFunctionEditPartFactory} like all other edit parts. Instead it is created within
+ * the <code>refreshchildren()</code> method of the {@link BusinessFunctionEditPart}. The rectangular
+ * figure that displays all parameters is always position in the upper left corner of the business
+ * function editor.
+ * 
+ * @author Peter Erzberger
+ */
 public class ParameterEditPart extends AbstractGraphicalEditPart implements ContentsChangeListener {
 
     private RectangleFigure lowerRectangle;
@@ -37,7 +47,7 @@ public class ParameterEditPart extends AbstractGraphicalEditPart implements Cont
         if (isActive())
             return;
         super.activate();
-        //unfortunately this listener is neccessary to ensure that the parameter rectangle is alway in
+        //unfortunately this listener is neccessary to ensure that the parameter rectangle is always in
         //the upper left corner while scrolling the viewport of the editor
         viewportScolllistener = new SelectionListener(){
 
@@ -62,6 +72,9 @@ public class ParameterEditPart extends AbstractGraphicalEditPart implements Cont
         getBusinessFunction().getIpsModel().removeChangeListener(this);
     }
 
+    /**
+     * Empty implementation.
+     */
     @Override
     protected void createEditPolicies() {
     }
@@ -123,6 +136,9 @@ public class ParameterEditPart extends AbstractGraphicalEditPart implements Cont
         }
     }
 
+    /**
+     * {@inheritDoc}
+     */
     public void contentsChanged(ContentChangeEvent event) {
         if (event.isAffected(getBusinessFunction())) {
             refreshVisuals();

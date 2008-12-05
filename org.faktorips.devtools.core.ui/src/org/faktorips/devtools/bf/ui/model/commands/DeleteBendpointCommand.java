@@ -12,6 +12,11 @@ package org.faktorips.devtools.bf.ui.model.commands;
 
 import org.faktorips.devtools.core.model.bf.IControlFlow;
 
+/**
+ * A command that deletes the bend point of a control flow at the index that is provided to it.
+ * 
+ * @author Peter Erzberger
+ */
 public class DeleteBendpointCommand extends BendpointCommand {
 
     public DeleteBendpointCommand(int index, IControlFlow controlFlow) {

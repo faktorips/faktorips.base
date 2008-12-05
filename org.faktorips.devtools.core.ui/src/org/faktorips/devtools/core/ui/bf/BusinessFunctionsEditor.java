@@ -32,6 +32,11 @@ import org.faktorips.devtools.core.model.IIpsModel;
 import org.faktorips.devtools.core.model.bf.IBusinessFunction;
 import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
 
+/**
+ * The editor for business functions.
+ * 
+ * @author Peter Erzberger
+ */
 public class BusinessFunctionsEditor extends GraphicalEditorWithFlyoutPalette implements ContentsChangeListener,
         ITabbedPropertySheetPageContributor {
 
@@ -47,8 +52,8 @@ public class BusinessFunctionsEditor extends GraphicalEditorWithFlyoutPalette im
         return paletteRoot;
     }
 
-    /*
-     * Overriden to activate correct dirty behaviour of the editor. (e.g. show the star in the tab,
+    /**
+     * Overridden to activate correct dirty behavior of the editor. (e.g. show the star in the tab,
      * when the editor input has changed)
      */
     @Override
@@ -67,6 +72,9 @@ public class BusinessFunctionsEditor extends GraphicalEditorWithFlyoutPalette im
         });
     }
 
+    /**
+     * Returns the business function of this editor.
+     */
     public IBusinessFunction getBusinessFunction() {
         return businessFunction;
     }
@@ -82,12 +90,14 @@ public class BusinessFunctionsEditor extends GraphicalEditorWithFlyoutPalette im
         viewer.setEditPartFactory(new BusinessFunctionEditPartFactory());
     }
 
+    @Override
     protected void initializeGraphicalViewer() {
         super.initializeGraphicalViewer();
         getGraphicalViewer().setContents(getBusinessFunction());
     }
 
     // TODO part of this code is duplicate in IpsObjectEditor
+    @Override
     public void init(IEditorSite site, IEditorInput input) throws PartInitException {
         IIpsModel model = IpsPlugin.getDefault().getIpsModel();
 
@@ -117,6 +127,7 @@ public class BusinessFunctionsEditor extends GraphicalEditorWithFlyoutPalette im
         super.init(site, input);
     }
 
+    @Override
     public boolean isDirty() {
         if (super.isDirty()) {
             return true;
@@ -125,19 +136,16 @@ public class BusinessFunctionsEditor extends GraphicalEditorWithFlyoutPalette im
     }
 
     /**
-     * {@inheritDoc}
-     * <p/>
      * Unregisters this editor as model change listener.
      */
+    @Override
     public void dispose() {
         super.dispose();
         IpsPlugin.getDefault().getIpsModel().removeChangeListener(this);
     }
 
     /**
-     * {@inheritDoc}
-     * <p/>
-     * Registers this editor as model change listener.
+     * Fires a dirty event if the model has changed.
      */
     public void contentsChanged(ContentChangeEvent event) {
         if (ipsSrcFile.equals(event.getIpsSrcFile())) {
@@ -150,6 +158,7 @@ public class BusinessFunctionsEditor extends GraphicalEditorWithFlyoutPalette im
     }
 
     @SuppressWarnings("unchecked")
+    @Override
     public Object getAdapter(Class adapter) {
         if (adapter == IPropertySheetPage.class) {
             TabbedPropertySheetPage page = new TabbedPropertySheetPage(this);

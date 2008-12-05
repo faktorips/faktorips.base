@@ -12,7 +12,11 @@ import org.eclipse.swt.graphics.Image;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.util.message.MessageList;
 
-//TODO clean up
+/**
+ * The figure for the decision and merge business function elements.
+ * 
+ * @author Peter Erzberger
+ */
 public class ScalableRhombFigure extends Shape {
 
     private final PointList myTemplate = new PointList();

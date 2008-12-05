@@ -38,7 +38,7 @@ public class ConnectionCommandTest extends AbstractIpsPluginTest {
         
     }
     public void testCanExecute() throws Exception {
-        assertTrue(command.canExecute());
+        assertFalse(command.canExecute());
 
         IBFElement source = bf.newSimpleBFElement(BFElementType.START, new Point(10, 10));
         IControlFlow out = bf.newControlFlow();

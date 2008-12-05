@@ -7,11 +7,15 @@ import org.eclipse.draw2d.IFigure;
 import org.faktorips.devtools.bf.ui.draw2d.ScalableRhombFigure;
 import org.faktorips.util.message.MessageList;
 
+/**
+ * The edit part for the decision model object. 
+ * 
+ * @author Peter Erzberger
+ */
 public class DecisionEditPart extends NodeEditPart {
 
     private ScalableRhombFigure errorDisplay;
     
-    @Override
     protected void createConnectionAnchor(Figure figure) {
         setTargetConnectionAnchor(new ChopboxAnchor(figure));
         setSourceConnectionAnchor(new ChopboxAnchor(figure));
@@ -33,6 +37,7 @@ public class DecisionEditPart extends NodeEditPart {
         return figure;
     }
 
+    @Override
     protected void showError(MessageList msgList){
         if(!msgList.isEmpty()){
             errorDisplay.showError(true);

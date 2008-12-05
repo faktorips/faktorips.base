@@ -31,6 +31,12 @@ import org.faktorips.devtools.core.model.bf.IDecisionBFE;
 import org.faktorips.devtools.core.ui.UIToolkit;
 import org.faktorips.devtools.core.ui.binding.BindingContext;
 
+/**
+ * A section that is displayed in the property view. The properties of a control flow object
+ * can be edited with it. 
+ * 
+ * @author Peter Erzberger
+ */
 public class ControlFlowPropertySection extends AbstractPropertySection {
 
     private Composite contentPanel;

@@ -5,7 +5,6 @@ import java.util.List;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.draw2d.ColorConstants;
 import org.eclipse.draw2d.ConnectionAnchor;
-import org.eclipse.draw2d.Figure;
 import org.eclipse.draw2d.IFigure;
 import org.eclipse.draw2d.Label;
 import org.eclipse.draw2d.MarginBorder;
@@ -23,6 +22,14 @@ import org.faktorips.devtools.core.model.ContentsChangeListener;
 import org.faktorips.devtools.core.model.bf.IBFElement;
 import org.faktorips.util.message.MessageList;
 
+/**
+ * The base edit part for all edit parts of this package. It provides an anchor for incoming and one for outgoing
+ * connections. It registers itself as {@link ContentsChangeListener} to the faktor ips model so that it refreshs
+ * its ui components like its figure and connects according to content change events. It provides a label that
+ * can show the name and the error state of the associated model object.
+ * 
+ * @author Peter Erzberger
+ */
 public abstract class NodeEditPart extends AbstractGraphicalEditPart implements org.eclipse.gef.NodeEditPart,
         ContentsChangeListener {
 
@@ -30,29 +37,45 @@ public abstract class NodeEditPart extends AbstractGraphicalEditPart implements 
     private ConnectionAnchor sourceConnectionAnchor;
     private ConnectionAnchor targetConnectionAnchor;
 
+    /**
+     * Sets the source connection anchor.
+     */
     protected final void setSourceConnectionAnchor(ConnectionAnchor anchor) {
         this.sourceConnectionAnchor = anchor;
     }
 
+    /**
+     * Sets the target connection anchor.
+     */
     protected final void setTargetConnectionAnchor(ConnectionAnchor anchor) {
         this.targetConnectionAnchor = anchor;
     }
 
-    protected abstract void createConnectionAnchor(Figure figure);
-
+    /**
+     * Returns the {@link IBFElement} that is assigned to this edit part by the {@link BusinessFunctionEditPartFactory}.
+     */
     public IBFElement getBFElement() {
         return (IBFElement)getModel();
     }
 
+    /**
+     * {@inheritDoc}
+     */
     public final IFigure createFigure(){
         nameLabel = new Label();
         nameLabel.setForegroundColor(ColorConstants.black);
         nameLabel.setBorder(new MarginBorder(0, 5, 0, 5));
         return createFigureInternal();
     }
-    
+   
+    /**
+     * Template method that is called by createFigure().
+     */
     protected abstract IFigure createFigureInternal();
-    
+
+    /**
+     * {@inheritDoc}
+     */
     @Override
     protected void refreshVisuals() {
         Point loc = getBFElement().getLocation();
@@ -65,6 +88,12 @@ public abstract class NodeEditPart extends AbstractGraphicalEditPart implements 
         ((GraphicalEditPart)getParent()).setLayoutConstraint(this, getFigure(), r);
     }
 
+    /**
+     * Is called by refreshVisuals(). It requests the display string of the {@link IBFElement} and displays it
+     * on the name label. It calls the validate method of the element and delegates the message list to the
+     * showError(MessageList) method. <p/>
+     * Subclass can override this method to do more model updating. 
+     */
     protected void refreshVisualsFromModel() {
         nameLabel.setText(getBFElement().getDisplayString());
         try {
@@ -77,6 +106,9 @@ public abstract class NodeEditPart extends AbstractGraphicalEditPart implements 
         }
     }
 
+    /**
+     * Empty implementation. Subclasses implement the error display with this method. 
+     */
     protected void showError(MessageList msgList){
     }
     
@@ -92,18 +124,30 @@ public abstract class NodeEditPart extends AbstractGraphicalEditPart implements 
         return getBFElement().getIncomingControlFlow();
     }
 
+    /**
+     * {@inheritDoc}
+     */
     public ConnectionAnchor getSourceConnectionAnchor(ConnectionEditPart connection) {
         return sourceConnectionAnchor;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     public ConnectionAnchor getSourceConnectionAnchor(Request request) {
         return sourceConnectionAnchor;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     public ConnectionAnchor getTargetConnectionAnchor(ConnectionEditPart connection) {
         return targetConnectionAnchor;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     public ConnectionAnchor getTargetConnectionAnchor(Request request) {
         return targetConnectionAnchor;
     }
@@ -114,6 +158,9 @@ public abstract class NodeEditPart extends AbstractGraphicalEditPart implements 
         installEditPolicy(EditPolicy.GRAPHICAL_NODE_ROLE, new NodeEditPolicy());
     }
 
+    /**
+     * Registers this edit part as {@link ContentsChangeListener}.
+     */
     @Override
     public void activate() {
         if (isActive())
@@ -122,6 +169,9 @@ public abstract class NodeEditPart extends AbstractGraphicalEditPart implements 
         getBFElement().getIpsModel().addChangeListener(this);
     }
 
+    /**
+     * Unregisters this edit part as {@link ContentsChangeListener}.
+     */
     @Override
     public void deactivate() {
         if (!isActive())
@@ -130,6 +180,10 @@ public abstract class NodeEditPart extends AbstractGraphicalEditPart implements 
         getBFElement().getIpsModel().removeChangeListener(this);
     }
 
+    /**
+     * Implementation of the {@link ContentsChangeListener} interface. It updates the visuals and connections
+     * when a <code>ContentChangeEvent.TYPE_PROPERTY_CHANGED</code> occurs.
+     */
     public void contentsChanged(ContentChangeEvent event) {
         if (event.isAffected(getBFElement()) && event.getEventType() == ContentChangeEvent.TYPE_PROPERTY_CHANGED) {
             refreshVisuals();

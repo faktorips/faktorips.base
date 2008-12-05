@@ -375,6 +375,9 @@ public class BusinessFunctionBuilder extends DefaultJavaSourceFileBuilder {
             JavaCodeFragment body,
             IControlFlow controlFlow) throws CoreException {
         IBFElement element = controlFlow.getTarget();
+        if(!element.isValid()){
+            return;
+        }
         if (element.getType().equals(BFElementType.END)) {
             return;
         }

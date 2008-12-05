@@ -22,6 +22,12 @@ import org.faktorips.devtools.core.model.ContentsChangeListener;
 import org.faktorips.devtools.core.model.bf.IControlFlow;
 import org.faktorips.util.message.MessageList;
 
+/**
+ * The edit part for the control flow model object. In addition to its figure this edit part has a label widget
+ * for which it is the controller for. The label positioned to the line figure. 
+ * 
+ * @author Peter Erzberger
+ */
 public class ControlFlowEditPart extends AbstractConnectionEditPart implements ContentsChangeListener {
 
     private CLabel label;
@@ -96,13 +102,14 @@ public class ControlFlowEditPart extends AbstractConnectionEditPart implements C
         }
     }
 
+    @Override
     public void removeNotify() {
         super.removeNotify();
         label.dispose();
         labelBackground.dispose();
     }
 
-    public void setText(String text) {
+    private void setText(String text) {
         label.setText(text);
         if(StringUtils.isEmpty(text)){
             label.setSize(0, 0);
@@ -156,6 +163,9 @@ public class ControlFlowEditPart extends AbstractConnectionEditPart implements C
         super.deactivate();
     }
 
+    /**
+     * Returns the control flow object which is the model object of this edit part.
+     */
     public IControlFlow getControlFlow() {
         return (IControlFlow)getModel();
     }
@@ -168,6 +178,7 @@ public class ControlFlowEditPart extends AbstractConnectionEditPart implements C
             label.setImage(null);
         }
     }
+    
     @Override
     protected void refreshVisuals() {
         getConnectionFigure().setRoutingConstraint(getControlFlow().getBendpoints());
@@ -179,6 +190,9 @@ public class ControlFlowEditPart extends AbstractConnectionEditPart implements C
         }
     }
 
+    /**
+     * {@inheritDoc}
+     */
     public void contentsChanged(ContentChangeEvent event) {
         if (event.isAffected(getControlFlow()) && event.getEventType() == ContentChangeEvent.TYPE_PROPERTY_CHANGED) {
             refreshVisuals();

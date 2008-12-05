@@ -31,6 +31,12 @@ import org.faktorips.devtools.core.model.bf.IActionBFE;
 import org.faktorips.devtools.core.ui.UIToolkit;
 import org.faktorips.devtools.core.ui.binding.BindingContext;
 
+/**
+ * A section that is displayed in the property view. The description property of business function
+ * elements can be edited with it. 
+ * 
+ * @author Peter Erzberger
+ */
 public class DescriptionPropertySection extends AbstractPropertySection {
 
     private Text descriptionField;

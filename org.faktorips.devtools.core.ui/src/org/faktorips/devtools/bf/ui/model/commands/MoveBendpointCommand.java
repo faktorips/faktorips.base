@@ -12,6 +12,11 @@ import org.eclipse.draw2d.AbsoluteBendpoint;
 import org.eclipse.draw2d.geometry.Point;
 import org.faktorips.devtools.core.model.bf.IControlFlow;
 
+/**
+ * This command moves a control flow from to the specified location.
+ * 
+ * @author Peter Erzberger
+ */
 public class MoveBendpointCommand extends BendpointCommand {
 
     public MoveBendpointCommand(int index, Point location, IControlFlow controlFlow) {

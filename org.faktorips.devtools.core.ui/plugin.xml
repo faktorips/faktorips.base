@@ -58,7 +58,7 @@
                id="businessfunction.general.opaqueaction"
                tab="businessfunction.general">
             <input
-                  type="org.faktorips.devtools.bf.ui.edit.OpaqueActionEditPart">
+                  type="org.faktorips.devtools.bf.ui.edit.InlineActionEditPart">
             </input>
          </propertySection>
          <propertySection
@@ -115,7 +115,7 @@
                id="businessfunction.description.opaqueaction"
                tab="businessfunction.description">
             <input
-                  type="org.faktorips.devtools.bf.ui.edit.OpaqueActionEditPart">
+                  type="org.faktorips.devtools.bf.ui.edit.InlineActionEditPart">
             </input>
          </propertySection>
          <propertySection

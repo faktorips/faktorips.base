@@ -24,6 +24,12 @@ import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.core.ui.UIToolkit;
 import org.faktorips.devtools.core.ui.controls.IpsObjectRefControl;
 
+/**
+ * A control consisting of a text field and a browse button by means of which business functions within
+ * the provided ips project and referenced projects can be selected from.
+ * 
+ * @author Peter Erzberger
+ */
 public class BusinessFunctionRefControl extends IpsObjectRefControl {
 
     private IBusinessFunction currentBusinessFunction;

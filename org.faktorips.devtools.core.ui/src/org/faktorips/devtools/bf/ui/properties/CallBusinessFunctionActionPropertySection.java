@@ -29,6 +29,12 @@ import org.faktorips.devtools.core.model.bf.IBFElement;
 import org.faktorips.devtools.core.ui.UIToolkit;
 import org.faktorips.devtools.core.ui.binding.BindingContext;
 
+/**
+ * A section that is displayed in the property view. The properties of a business function
+ * call action can be edited with it. 
+ * 
+ * @author Peter Erzberger
+ */
 public class CallBusinessFunctionActionPropertySection extends AbstractPropertySection {
 
     private BusinessFunctionRefControl businessFunctionField;

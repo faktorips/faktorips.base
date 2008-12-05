@@ -13,9 +13,16 @@ package org.faktorips.devtools.bf.ui.edit;
 import org.eclipse.draw2d.PolylineConnection;
 import org.eclipse.gef.GraphicalEditPart;
 
+/**
+ * In addition to the standard connection end point edit policy this policy increases the line width
+ * of the connection figure when it is selected.  
+ * 
+ * @author Peter Erzberger
+ */
 public class ControlFlowEndpointEditPolicy extends
 		org.eclipse.gef.editpolicies.ConnectionEndpointEditPolicy {
 
+    @Override
 	protected void addSelectionHandles() {
 		super.addSelectionHandles();
 		getConnectionFigure().setLineWidth(2);
@@ -25,6 +32,7 @@ public class ControlFlowEndpointEditPolicy extends
 		return (PolylineConnection) ((GraphicalEditPart) getHost()).getFigure();
 	}
 
+	@Override
 	protected void removeSelectionHandles() {
 		super.removeSelectionHandles();
 		getConnectionFigure().setLineWidth(0);

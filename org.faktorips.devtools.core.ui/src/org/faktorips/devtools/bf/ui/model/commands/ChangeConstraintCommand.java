@@ -13,6 +13,11 @@ import org.faktorips.devtools.core.model.bf.IBFElement;
 import org.faktorips.util.ArgumentCheck;
 import org.faktorips.util.memento.Memento;
 
+/**
+ * A command that updates the position and size of a business function element.
+ * 
+ * @author Peter Erzberger
+ */
 public class ChangeConstraintCommand extends org.eclipse.gef.commands.Command {
 
     private Rectangle contraint;
@@ -27,16 +32,19 @@ public class ChangeConstraintCommand extends org.eclipse.gef.commands.Command {
         this.contraint = contraint;
     }
 
+    @Override
     public void execute() {
         bfElementState = bfElement.newMemento();
         bfElement.setSize(contraint.getSize());
         bfElement.setLocation(contraint.getLocation());
     }
 
+    @Override
     public void redo() {
         undo();
     }
 
+    @Override
     public void undo() {
         Memento currentState = bfElement.newMemento();
         bfElement.setState(bfElementState);

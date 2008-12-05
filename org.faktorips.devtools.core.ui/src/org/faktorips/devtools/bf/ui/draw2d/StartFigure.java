@@ -11,6 +11,11 @@ import org.eclipse.draw2d.geometry.Rectangle;
 import org.eclipse.swt.graphics.Image;
 import org.faktorips.devtools.core.IpsPlugin;
 
+/**
+ * The figure for the start business function element.
+ * 
+ * @author Peter Erzberger
+ */
 public class StartFigure extends Shape {
 
     private Image errorImage;

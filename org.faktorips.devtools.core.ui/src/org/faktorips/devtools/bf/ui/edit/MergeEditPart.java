@@ -8,11 +8,15 @@ import org.eclipse.swt.graphics.Color;
 import org.faktorips.devtools.bf.ui.draw2d.ScalableRhombFigure;
 import org.faktorips.util.message.MessageList;
 
+/**
+ * The edit part of the merge business function element.
+ * 
+ * @author Peter Erzberger
+ */
 public class MergeEditPart extends NodeEditPart {
 
     private ScalableRhombFigure errorDisplay;
 
-    @Override
     protected void createConnectionAnchor(Figure figure) {
         setTargetConnectionAnchor(new ChopboxAnchor(figure));
         setSourceConnectionAnchor(new ChopboxAnchor(figure));

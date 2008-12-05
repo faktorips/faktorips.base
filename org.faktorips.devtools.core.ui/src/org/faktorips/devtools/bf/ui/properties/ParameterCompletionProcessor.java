@@ -23,14 +23,20 @@ import org.faktorips.devtools.core.model.bf.IParameterBFE;
 import org.faktorips.devtools.core.model.type.IType;
 import org.faktorips.devtools.core.ui.AbstractCompletionProcessor;
 
+/**
+ * A completion processor that completes the parameter names of the parameters of a business
+ * function.
+ * 
+ * @author Peter Erzberger
+ */
 public class ParameterCompletionProcessor extends AbstractCompletionProcessor {
 
     private IBusinessFunction businessFunction;
 
-    public void setBusinessFunction(IBusinessFunction businessFunction){
+    public void setBusinessFunction(IBusinessFunction businessFunction) {
         this.businessFunction = businessFunction;
     }
-    
+
     @Override
     @SuppressWarnings("unchecked")
     protected void doComputeCompletionProposals(String prefix, int documentOffset, List result) throws Exception {
@@ -38,7 +44,7 @@ public class ParameterCompletionProcessor extends AbstractCompletionProcessor {
         String match = prefix.toLowerCase();
         for (IParameterBFE parameter : businessFunction.getParameterBFEs()) {
             Datatype datatype = parameter.findDatatype();
-            if(!(datatype instanceof IType)){
+            if (!(datatype instanceof IType)) {
                 continue;
             }
             if (parameter.getName().startsWith(match)) {

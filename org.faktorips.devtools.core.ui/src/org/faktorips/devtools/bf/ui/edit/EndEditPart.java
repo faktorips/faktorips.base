@@ -13,6 +13,11 @@ import org.eclipse.gef.requests.CreateRequest;
 import org.faktorips.devtools.bf.ui.draw2d.EndFigure;
 import org.faktorips.util.message.MessageList;
 
+/**
+ * An edit part that provides a nonresizable figure for the end business function element.
+ * 
+ * @author Peter Erzberger
+ */
 public class EndEditPart extends NodeEditPart {
 
 	@Override
@@ -54,14 +59,9 @@ public class EndEditPart extends NodeEditPart {
 	}
 	
 	@Override
-	protected void createConnectionAnchor(Figure figure) {
-		setTargetConnectionAnchor(new ChopboxAnchor(figure));
-	}
-
-	@Override
 	protected IFigure createFigureInternal() {
 	    Figure figure = new EndFigure();
-		createConnectionAnchor(figure);
+	    setTargetConnectionAnchor(new ChopboxAnchor(figure));
 		return figure;
 	}
 	

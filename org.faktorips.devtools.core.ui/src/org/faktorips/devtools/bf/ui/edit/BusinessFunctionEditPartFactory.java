@@ -7,8 +7,16 @@ import org.faktorips.devtools.core.model.bf.IBFElement;
 import org.faktorips.devtools.core.model.bf.IBusinessFunction;
 import org.faktorips.devtools.core.model.bf.IControlFlow;
 
+/**
+ * Creates edit parts for the business function and all of its children.
+ * 
+ * @author Peter Erzberger
+ */
 public class BusinessFunctionEditPartFactory implements EditPartFactory {
 
+    /**
+     * {@inheritDoc}
+     */
     public EditPart createEditPart(EditPart context, Object model) {
         EditPart child = null;
 
@@ -21,7 +29,7 @@ public class BusinessFunctionEditPartFactory implements EditPartFactory {
             if (element.getType().equals(BFElementType.ACTION_BUSINESSFUNCTIONCALL)) {
                 child = new CallBusinessFunctionActionEditPart();
             } else if(element.getType().equals(BFElementType.ACTION_INLINE)){
-                child = new OpaqueActionEditPart();
+                child = new InlineActionEditPart();
             } else if(element.getType().equals(BFElementType.ACTION_METHODCALL)){
                 child = new CallMethodActionEditPart();
             } else if (element.getType().equals(BFElementType.DECISION)) {

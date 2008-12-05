@@ -16,8 +16,12 @@ import org.faktorips.devtools.core.model.ContentChangeEvent;
 import org.faktorips.devtools.core.model.ContentsChangeListener;
 import org.faktorips.devtools.core.model.bf.IBFElement;
 import org.faktorips.devtools.core.model.bf.IBusinessFunction;
-import org.faktorips.devtools.core.model.bf.IParameterBFE;
 
+/**
+ * The edit part of the business function object. 
+ * 
+ * @author Peter Erzberger
+ */
 public class BusinessFunctionEditPart extends AbstractGraphicalEditPart implements ContentsChangeListener {
 
     @Override
@@ -39,23 +43,25 @@ public class BusinessFunctionEditPart extends AbstractGraphicalEditPart implemen
         installEditPolicy(EditPolicy.LAYOUT_ROLE, new BusinessFunctionXYLayoutEditPolicy());
     }
 
+    /**
+     * Returns the business function which is the model object of this edit part. 
+     */
     public IBusinessFunction getBusinessFunction() {
         return (IBusinessFunction)getModel();
     }
 
+    /**
+     * Returns all {@link IBFElement} except for the parameters. 
+     */
     @Override
     @SuppressWarnings("unchecked")
     protected List getModelChildren() {
-        List<IBFElement> elements = getBusinessFunction().getBFElements();
-        for (Iterator it = elements.iterator(); it.hasNext();) {
-            IBFElement element = (IBFElement)it.next();
-            if(element instanceof IParameterBFE){
-                it.remove();
-            }
-        }
-        return elements;
+        return getBusinessFunction().getBFElementsWithoutParameters();
     }
-    
+
+    /**
+     * Registers itself as {@link ContentsChangeListener} to the ips model.
+     */
     @Override
     public void activate() {
         if (isActive())
@@ -64,7 +70,12 @@ public class BusinessFunctionEditPart extends AbstractGraphicalEditPart implemen
         getBusinessFunction().getIpsModel().addChangeListener(this);
     }
 
+    /**
+     * In addition to the super class method behavior special treatment is taken for the parameters of a business
+     * function since parameters are all displayed in one figure. 
+     */
     @SuppressWarnings("unchecked")
+    @Override
     public void refreshChildren(){
         List<EditPart> childs = getChildren();
         for (Iterator<EditPart> it = childs.iterator(); it.hasNext();) {
@@ -79,7 +90,10 @@ public class BusinessFunctionEditPart extends AbstractGraphicalEditPart implemen
         editPart.setModel(getBusinessFunction());
         addChild(editPart, getChildren().size());
     }
-    
+
+    /**
+     * Unregisters itself as {@link ContentsChangeListener} to the ips model.
+     */
     @Override
     public void deactivate() {
         if (!isActive())
@@ -88,6 +102,10 @@ public class BusinessFunctionEditPart extends AbstractGraphicalEditPart implemen
         getBusinessFunction().getIpsModel().removeChangeListener(this);
     }
 
+    /**
+     * Updates the children of this edit part when an <code>ContentChangeEvent.TYPE_PART_ADDED</code> or 
+     * <code>ContentChangeEvent.TYPE_PART_REMOVED</code> occurs.  
+     */
     public void contentsChanged(ContentChangeEvent event) {
         if (!event.getIpsSrcFile().equals(getBusinessFunction().getIpsSrcFile())) {
             return;

@@ -14,18 +14,23 @@ import org.faktorips.devtools.core.model.bf.IControlFlow;
 import org.faktorips.util.ArgumentCheck;
 import org.faktorips.util.memento.Memento;
 
+/**
+ * This command deletes the control flow object that is provided to it.
+ * 
+ * @author Peter Erzberger
+ */
 public class DeleteConnectionCommand extends Command {
 
     private IBusinessFunction businessFunction;
     private IControlFlow controlFlow;
     private Memento businessFunctionState;
 
-    public DeleteConnectionCommand() {
+    public DeleteConnectionCommand(IBusinessFunction businessFunction, IControlFlow controlFlow) {
         super("Delete Connection");
-    }
-
-    public void setBusinessFunction(IBusinessFunction businessFunction) {
         this.businessFunction = businessFunction;
+        this.controlFlow = controlFlow;
+        ArgumentCheck.notNull(controlFlow, this);
+        ArgumentCheck.notNull(businessFunction, this);
     }
 
     public boolean canExecute() {
@@ -33,8 +38,6 @@ public class DeleteConnectionCommand extends Command {
     }
 
     public void execute() {
-        ArgumentCheck.notNull(controlFlow, this);
-        ArgumentCheck.notNull(businessFunction, this);
         businessFunctionState = businessFunction.newMemento();
         controlFlow.setTarget(null);
         controlFlow.setSource(null);
@@ -53,10 +56,6 @@ public class DeleteConnectionCommand extends Command {
         Memento currentState = businessFunction.newMemento();
         businessFunction.setState(businessFunctionState);
         businessFunctionState = currentState;
-    }
-
-    public void setControlFlow(IControlFlow controlFlow) {
-        this.controlFlow = controlFlow;
     }
 
     public void undo() {

@@ -10,6 +10,12 @@ import org.faktorips.devtools.core.model.bf.IBFElement;
 import org.faktorips.devtools.core.model.bf.IBusinessFunction;
 import org.faktorips.devtools.core.model.bf.IControlFlow;
 
+/**
+ * This policy creates the ConnectionCreateion command which is reponsible for establishing a
+ * connection and reconnection of a control flow object.
+ * 
+ * @author Peter Erzberger
+ */
 public class NodeEditPolicy extends GraphicalNodeEditPolicy {
 
     @Override
@@ -36,11 +42,11 @@ public class NodeEditPolicy extends GraphicalNodeEditPolicy {
         return command;
     }
 
-    public NodeEditPart getNodeEditPart() {
+    private NodeEditPart getNodeEditPart() {
         return (NodeEditPart)getHost();
     }
 
-    public IBFElement getNode() {
+    private IBFElement getNode() {
         return (IBFElement)getHost().getModel();
     }
 

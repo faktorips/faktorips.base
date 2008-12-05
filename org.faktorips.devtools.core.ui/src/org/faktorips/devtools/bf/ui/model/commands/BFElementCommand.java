@@ -12,6 +12,12 @@ import org.faktorips.devtools.core.model.bf.IBusinessFunction;
 import org.faktorips.util.ArgumentCheck;
 import org.faktorips.util.memento.Memento;
 
+/**
+ * An abstract command class for all business function element commands. It handles undo and
+ * redo functionality.
+ * 
+ * @author Peter Erzberger
+ */
 public abstract class BFElementCommand extends org.eclipse.gef.commands.Command {
 
     protected IBusinessFunction businessFunction;
@@ -23,17 +29,23 @@ public abstract class BFElementCommand extends org.eclipse.gef.commands.Command 
         this.businessFunction = businessFunction;
     }
 
+    @Override
     public final void execute() {
         businessFunctionState = businessFunction.newMemento();
         executeInternal();
     }
 
+    /**
+     * Subclasses implement the execution of the command here.
+     */
     protected abstract void executeInternal();
 
+    @Override
     public final void redo() {
         undo();
     }
 
+    @Override
     public final void undo() {
         Memento oldState = businessFunction.newMemento();
         businessFunction.setState(businessFunctionState);

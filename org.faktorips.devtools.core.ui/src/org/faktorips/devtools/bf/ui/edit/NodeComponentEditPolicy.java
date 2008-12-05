@@ -14,6 +14,11 @@ import org.faktorips.devtools.bf.ui.model.commands.DeleteBFElementCommand;
 import org.faktorips.devtools.core.model.bf.IBFElement;
 import org.faktorips.devtools.core.model.bf.IBusinessFunction;
 
+/**
+ * This policy creates the deletion command for business function elements.
+ * 
+ * @author Peter Erzberger
+ */
 public class NodeComponentEditPolicy extends org.eclipse.gef.editpolicies.ComponentEditPolicy {
 
     protected Command createDeleteCommand(GroupRequest request) {

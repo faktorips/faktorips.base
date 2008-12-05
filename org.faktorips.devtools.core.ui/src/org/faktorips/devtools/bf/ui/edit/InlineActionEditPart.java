@@ -8,10 +8,9 @@ import org.faktorips.devtools.core.model.bf.BFElementType;
  * 
  * @author Peter Erzberger
  */
-public class CallMethodActionEditPart extends ActionEditPart {
+public class InlineActionEditPart extends ActionEditPart {
 
-    public CallMethodActionEditPart() {
-        super(BFElementType.ACTION_METHODCALL.getImageDescriptor());
+    public InlineActionEditPart() {
+        super(BFElementType.ACTION_INLINE.getImageDescriptor());
     }
-
 }

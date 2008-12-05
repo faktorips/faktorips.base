@@ -16,6 +16,12 @@ import org.faktorips.devtools.core.model.bf.IActionBFE;
 import org.faktorips.util.ArgumentCheck;
 import org.faktorips.util.message.MessageList;
 
+/**
+ * A specialization of {@link NodeEditPart} that creates the figure for an action, creates the connection anchores and
+ * implements the error display.
+ * 
+ * @author Peter Erzberger
+ */
 public abstract class ActionEditPart extends NodeEditPart {
 
     private ImageDescriptor image;
@@ -30,8 +36,7 @@ public abstract class ActionEditPart extends NodeEditPart {
         return (IActionBFE)getModel();
     }
     
-    @Override
-    protected void createConnectionAnchor(Figure figure) {
+    private void createConnectionAnchor(Figure figure) {
         setTargetConnectionAnchor(new ChopboxAnchor(figure));
         setSourceConnectionAnchor(new ChopboxAnchor(figure));
     }

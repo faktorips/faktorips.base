@@ -13,6 +13,11 @@ import org.faktorips.devtools.core.model.bf.IBusinessFunction;
 import org.faktorips.util.ArgumentCheck;
 import org.faktorips.util.memento.Memento;
 
+/**
+ * This command resizes the rectangular figure that displays the parameters of a business function.
+ * 
+ * @author Peter Erzberger
+ */
 public class ParameterFigureConstraintCommand extends org.eclipse.gef.commands.Command {
 
     private Rectangle contraint;
@@ -27,15 +32,18 @@ public class ParameterFigureConstraintCommand extends org.eclipse.gef.commands.C
         this.contraint = contraint;
     }
 
+    @Override
     public void execute() {
         bfElementState = businessFunction.newMemento();
         businessFunction.setParameterRectangleSize(contraint.getSize());
     }
 
+    @Override
     public void redo() {
         undo();
     }
 
+    @Override
     public void undo() {
         Memento currentState = businessFunction.newMemento();
         businessFunction.setState(bfElementState);

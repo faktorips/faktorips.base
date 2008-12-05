@@ -39,6 +39,12 @@ import org.faktorips.devtools.core.ui.CompletionUtil;
 import org.faktorips.devtools.core.ui.UIToolkit;
 import org.faktorips.devtools.core.ui.binding.BindingContext;
 
+/**
+ * A section that is displayed in the property view. The properties of a method
+ * call action can be edited with it. 
+ * 
+ * @author Peter Erzberger
+ */
 public class CallMethodActionPropertySection extends AbstractPropertySection implements ContentsChangeListener{
 
     private Text parameterSelectionControl;

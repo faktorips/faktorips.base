@@ -15,6 +15,12 @@ import org.faktorips.devtools.core.model.bf.IBusinessFunction;
 import org.faktorips.devtools.core.model.bf.IControlFlow;
 import org.faktorips.util.ArgumentCheck;
 
+/**
+ * This command deletes the provided business function element and the control flows pointing to or 
+ * starting from it.
+ * 
+ * @author Peter Erzberger
+ */
 public class DeleteBFElementCommand extends BFElementCommand {
 
 	private IBFElement bfElement;
@@ -25,6 +31,7 @@ public class DeleteBFElementCommand extends BFElementCommand {
 		this.bfElement = element;
 	}
 
+	@Override
 	public void executeInternal() {
 	    for (IControlFlow controlFlow: bfElement.getOutgoingControlFlow()) {
             controlFlow.setSource(null);

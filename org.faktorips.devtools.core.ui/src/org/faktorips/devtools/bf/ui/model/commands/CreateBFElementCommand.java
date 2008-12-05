@@ -13,6 +13,12 @@ import org.faktorips.devtools.core.model.bf.BFElementType;
 import org.faktorips.devtools.core.model.bf.IBusinessFunction;
 import org.faktorips.util.ArgumentCheck;
 
+/**
+ * A command that creates a new business function element according to the {@link BFElementType} that
+ * is provided to it.
+ * 
+ * @author Peter Erzberger
+ */
 public class CreateBFElementCommand extends BFElementCommand {
 
     private Point location;

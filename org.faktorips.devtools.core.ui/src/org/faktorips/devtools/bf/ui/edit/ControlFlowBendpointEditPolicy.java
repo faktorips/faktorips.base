@@ -10,14 +10,21 @@ package org.faktorips.devtools.bf.ui.edit;
 
 import org.eclipse.draw2d.geometry.Point;
 import org.eclipse.gef.commands.Command;
+import org.eclipse.gef.editpolicies.BendpointEditPolicy;
 import org.eclipse.gef.requests.BendpointRequest;
 import org.faktorips.devtools.bf.ui.model.commands.CreateBendpointCommand;
 import org.faktorips.devtools.bf.ui.model.commands.DeleteBendpointCommand;
 import org.faktorips.devtools.bf.ui.model.commands.MoveBendpointCommand;
 import org.faktorips.devtools.core.model.bf.IControlFlow;
 
+/**
+ * A specialization of {@link BendpointEditPolicy} that implements the necessary methods to create commands.
+ * 
+ * @author Peter Erzberger
+ */
 public class ControlFlowBendpointEditPolicy extends org.eclipse.gef.editpolicies.BendpointEditPolicy {
 
+    @Override
     protected Command getCreateBendpointCommand(BendpointRequest request) {
         Point location = request.getLocation();
         getConnection().translateToRelative(location);
@@ -25,6 +32,7 @@ public class ControlFlowBendpointEditPolicy extends org.eclipse.gef.editpolicies
                 .getModel());
     }
 
+    @Override
     protected Command getMoveBendpointCommand(BendpointRequest request) {
         Point location = request.getLocation();
         getConnection().translateToRelative(location);
@@ -32,6 +40,7 @@ public class ControlFlowBendpointEditPolicy extends org.eclipse.gef.editpolicies
                 .getModel());
     }
 
+    @Override
     protected Command getDeleteBendpointCommand(BendpointRequest request) {
         return new DeleteBendpointCommand(request.getIndex(), (IControlFlow)request.getSource()
                 .getModel());

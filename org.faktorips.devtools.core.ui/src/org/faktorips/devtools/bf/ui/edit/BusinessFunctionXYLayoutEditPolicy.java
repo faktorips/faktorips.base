@@ -15,7 +15,12 @@ import org.faktorips.devtools.core.model.bf.BFElementType;
 import org.faktorips.devtools.core.model.bf.IBFElement;
 import org.faktorips.devtools.core.model.bf.IBusinessFunction;
 
-
+/**
+ * An implementation of {@link XYLayoutEditPolicy} that provides the implementations for creation of 
+ * commands and policies.
+ * 
+ * @author Peter Erzberger
+ */
 public class BusinessFunctionXYLayoutEditPolicy extends XYLayoutEditPolicy {
 
     @Override

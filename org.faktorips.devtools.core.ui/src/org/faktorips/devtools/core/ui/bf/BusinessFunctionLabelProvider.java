@@ -25,7 +25,7 @@ import org.faktorips.devtools.bf.ui.edit.CallMethodActionEditPart;
 import org.faktorips.devtools.bf.ui.edit.ControlFlowEditPart;
 import org.faktorips.devtools.bf.ui.edit.DecisionEditPart;
 import org.faktorips.devtools.bf.ui.edit.MergeEditPart;
-import org.faktorips.devtools.bf.ui.edit.OpaqueActionEditPart;
+import org.faktorips.devtools.bf.ui.edit.InlineActionEditPart;
 import org.faktorips.devtools.bf.ui.edit.ParameterEditPart;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.model.IIpsElement;
@@ -34,9 +34,14 @@ import org.faktorips.devtools.core.model.bf.IBFElement;
 import org.faktorips.devtools.core.model.bf.IBusinessFunction;
 
 //TODO string externalization
+/**
+ * Provides display text and images for business function elements. It is used by the property view.
+ */
 public class BusinessFunctionLabelProvider implements ILabelProvider {
 
-    
+    /**
+     * {@inheritDoc}
+     */
     public Image getImage(Object element) {
         IStructuredSelection sel = (IStructuredSelection)element;
         EditPart editPart = (EditPart)sel.getFirstElement();
@@ -46,7 +51,7 @@ public class BusinessFunctionLabelProvider implements ILabelProvider {
         if(editPart instanceof CallMethodActionEditPart){
             return BFElementType.ACTION_METHODCALL.getImage(); 
         }
-        if(editPart instanceof OpaqueActionEditPart){
+        if(editPart instanceof InlineActionEditPart){
             return BFElementType.ACTION_INLINE.getImage(); 
         }
         if(editPart instanceof CallBusinessFunctionActionEditPart){
@@ -65,6 +70,9 @@ public class BusinessFunctionLabelProvider implements ILabelProvider {
         return ipsElement.getImage();
     }
 
+    /**
+     * {@inheritDoc}
+     */
     public String getText(Object element) {
         IStructuredSelection sel = (IStructuredSelection)element;
         EditPart editPart = (EditPart)sel.getFirstElement();
@@ -86,7 +94,7 @@ public class BusinessFunctionLabelProvider implements ILabelProvider {
         if (editPart instanceof CallBusinessFunctionActionEditPart) {
             return "Call Business Function Action: " + displayName;
         }
-        if (editPart instanceof OpaqueActionEditPart) {
+        if (editPart instanceof InlineActionEditPart) {
             return "Opaque Action: " + displayName;
         }
         if (editPart instanceof CallMethodActionEditPart) {
@@ -101,16 +109,28 @@ public class BusinessFunctionLabelProvider implements ILabelProvider {
         return "";
     }
 
+    /**
+     * Empty implementation.
+     */
     public void addListener(ILabelProviderListener listener) {
     }
 
+    /**
+     * Empty implementation.
+     */
     public void dispose() {
     }
 
+    /**
+     * Returns false.
+     */
     public boolean isLabelProperty(Object element, String property) {
         return false;
     }
 
+    /**
+     * Empty implementation.
+     */
     public void removeListener(ILabelProviderListener listener) {
     }
 

@@ -6,17 +6,17 @@ import org.eclipse.draw2d.IFigure;
 import org.faktorips.devtools.bf.ui.draw2d.StartFigure;
 import org.faktorips.util.message.MessageList;
 
+/**
+ * An edit part that provides a nonresizable figure for the start business function element.
+ * 
+ * @author Peter Erzberger
+ */
 public class StartEditPart extends NodeEditPart {
-
-    @Override
-    protected void createConnectionAnchor(Figure figure) {
-        setSourceConnectionAnchor(new ChopboxAnchor(figure));
-    }
 
     @Override
     protected IFigure createFigureInternal() {
         Figure figure = new StartFigure();
-        createConnectionAnchor(figure);
+        setSourceConnectionAnchor(new ChopboxAnchor(figure));
         return figure;
     }
 
