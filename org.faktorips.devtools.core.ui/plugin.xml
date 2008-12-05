@@ -15,9 +15,10 @@
    <extension
          point="org.eclipse.ui.newWizards">
         <wizard
-        	class="org.faktorips.devtools.bf.ui.wizard.NewBFWizard"
-            id="org.faktorips.devtools.bf.ui.wizard"
-            name="%wizard.name.0">
+              category="org.faktorips.devtools"
+              class="org.faktorips.devtools.bf.ui.wizard.NewBFWizard"
+              id="org.faktorips.devtools.bf.ui.wizard"
+              name="%NewBfWizard.name">
 		<selection
                class="org.eclipse.core.resources.IResource">
         </selection>

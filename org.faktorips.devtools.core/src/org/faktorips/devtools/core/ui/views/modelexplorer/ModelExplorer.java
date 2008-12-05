@@ -56,6 +56,7 @@ import org.eclipse.ui.part.ShowInContext;
 import org.eclipse.ui.part.ViewPart;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.model.IIpsElement;
+import org.faktorips.devtools.core.model.bf.IBusinessFunction;
 import org.faktorips.devtools.core.model.ipsobject.IFixDifferencesToModelSupport;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObject;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPart;
@@ -309,6 +310,7 @@ public class ModelExplorer extends ViewPart implements IShowInTarget {
                     IProductCmptGeneration.class,
                     ITableStructure.class,
                     ITableContents.class,
+                    IBusinessFunction.class,
                     IAttribute.class, 
                     IAssociation.class,
                     IMethod.class,
