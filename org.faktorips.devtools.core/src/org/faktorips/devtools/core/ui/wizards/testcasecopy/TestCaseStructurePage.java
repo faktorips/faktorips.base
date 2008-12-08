@@ -300,6 +300,10 @@ public class TestCaseStructurePage extends WizardPage {
      * @param targetTestCase
      */
     public void setTargetTestCase(ITestCase targetTestCase) {
+        // Note: creating a new tree viewer is necessary because the checked elements are cached
+        // inside the viewer and if the target test case has changed on the first page the old
+        // child referenced are returned by using getCheckedElements later
+        treeViewer = new ContainerCheckedTreeViewer(treeViewer.getTree());
         testCaseContentProvider = new TestCaseContentProvider(TestCaseContentProvider.COMBINED, getTestCaseCopyWizard()
                 .getTargetTestCase());
         treeViewer.setContentProvider(testCaseContentProvider);

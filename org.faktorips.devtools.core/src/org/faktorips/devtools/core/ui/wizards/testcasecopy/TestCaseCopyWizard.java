@@ -111,7 +111,7 @@ public class TestCaseCopyWizard extends ResizableWizard {
      * Creates the new target test case based on the source test case.
      */
     void createNewTargetTestCase() {
-        IIpsPackageFragment targetIpsPackageFragment = testCaseCopyDestinationPage.getTargetIpsPackageFragment();
+        final IIpsPackageFragment targetIpsPackageFragment = testCaseCopyDestinationPage.getTargetIpsPackageFragment();
         if (targetIpsPackageFragment == null){
             throw new RuntimeException("Target package fragment not specified!"); //$NON-NLS-1$
         }
@@ -122,39 +122,48 @@ public class TestCaseCopyWizard extends ResizableWizard {
         }
 
         try {
-            IIpsSrcFile targetTestCaseSrcFile = targetIpsPackageFragment.createIpsFileFromTemplate(testCaseCopyDestinationPage.getTargetTestCaseName(),
-                    sourceTestCase, null, true, null);
-            targetTestCase = (ITestCase)targetTestCaseSrcFile.getIpsObject();
-            // replace product cmpts of root objetcs
-            ITestObject[] testObjects = sourceTestCase.getTestObjects();
-            ITestObject[] testObjectsTarget = targetTestCase.getTestObjects();
-            for (int i = 0; i < testObjects.length; i++) {
-                if (testObjects[i] instanceof ITestPolicyCmpt){
-                    ITestPolicyCmpt testPolicyCmpt = (ITestPolicyCmpt)testObjects[i];
-                    ITestPolicyCmptTypeParameter parameter = testPolicyCmpt.findTestPolicyCmptTypeParameter(testPolicyCmpt.getIpsProject());
-                    if (parameter == null || !parameter.isRequiresProductCmpt()){
-                        continue;
-                    }
-                    IProductCmpt productCmpt = testPolicyCmpt.findProductCmpt(testPolicyCmpt.getIpsProject());
-                    if (productCmpt == null){
-                        continue;
-                    }
-                    IIpsSrcFile newProductCmptScrFile = testCaseCopyDestinationPage.getProductCmptToReplace(testPolicyCmpt);
-                    if (newProductCmptScrFile == null){
-                        // no change of product cmpt
-                        continue;
-                    }
-                    IProductCmpt newProductCmpt = (IProductCmpt)newProductCmptScrFile.getIpsObject();
-                    if (productCmpt.equals(newProductCmpt)){
-                        // same product cmpt, product cmpt will not changed
-                        continue;
-                    }
+            IWorkspaceRunnable runnable = new IWorkspaceRunnable() {
+                public void run(IProgressMonitor monitor) throws CoreException {
+                    IIpsSrcFile targetTestCaseSrcFile = targetIpsPackageFragment.createIpsFileFromTemplate(
+                            testCaseCopyDestinationPage.getTargetTestCaseName(), sourceTestCase, null, true, null);
+                    targetTestCase = (ITestCase)targetTestCaseSrcFile.getIpsObject();
+                    // replace product cmpts of root objetcs
+                    ITestObject[] testObjects = sourceTestCase.getTestObjects();
+                    ITestObject[] testObjectsTarget = targetTestCase.getTestObjects();
+                    for (int i = 0; i < testObjects.length; i++) {
+                        if (testObjects[i] instanceof ITestPolicyCmpt) {
+                            ITestPolicyCmpt testPolicyCmpt = (ITestPolicyCmpt)testObjects[i];
+                            ITestPolicyCmptTypeParameter parameter = testPolicyCmpt
+                                    .findTestPolicyCmptTypeParameter(testPolicyCmpt.getIpsProject());
+                            if (parameter == null || !parameter.isRequiresProductCmpt()) {
+                                continue;
+                            }
+                            IProductCmpt productCmpt = testPolicyCmpt.findProductCmpt(testPolicyCmpt.getIpsProject());
+                            if (productCmpt == null) {
+                                continue;
+                            }
+                            IIpsSrcFile newProductCmptScrFile = testCaseCopyDestinationPage
+                                    .getProductCmptToReplace(testPolicyCmpt);
+                            if (newProductCmptScrFile == null) {
+                                // no change of product cmpt
+                                continue;
+                            }
+                            IProductCmpt newProductCmpt = (IProductCmpt)newProductCmptScrFile.getIpsObject();
+                            if (productCmpt.equals(newProductCmpt)) {
+                                // same product cmpt, product cmpt will not changed
+                                continue;
+                            }
 
-                    // replace all product cmpts
-                    // (because the target is a copy of the source we could use the same index: testObjectsTarget[i])
-                    replaceAllProductCmpts((ITestPolicyCmpt)testObjectsTarget[i], productCmpt, newProductCmpt);
+                            // replace all product cmpts
+                            // (because the target is a copy of the source we could use the same
+                            // index: testObjectsTarget[i])
+                            replaceAllProductCmpts((ITestPolicyCmpt)testObjectsTarget[i], productCmpt, newProductCmpt);
+                        }
+                    }
                 }
-            }
+            };
+            IpsPlugin.getDefault().getIpsModel().runAndQueueChangeEvents(runnable, null);
+
             testCaseCopyDestinationPage.setNeedRecreateTarget(false);
         } catch (CoreException e) {
             IpsPlugin.logAndShowErrorDialog(e);
@@ -222,7 +231,9 @@ public class TestCaseCopyWizard extends ResizableWizard {
         if (targetIpsPackageFragment == null){
             return null;
         }
-        return targetIpsPackageFragment.getName() + "." + testCaseCopyDestinationPage.getTargetTestCaseName(); //$NON-NLS-1$
+        
+        String pckFrgmtName = targetIpsPackageFragment.getName();
+        return (pckFrgmtName.length()>0?pckFrgmtName+".":"") + testCaseCopyDestinationPage.getTargetTestCaseName(); //$NON-NLS-1$
     }
 
     /**
