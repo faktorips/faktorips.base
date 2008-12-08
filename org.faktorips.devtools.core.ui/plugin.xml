@@ -8,6 +8,7 @@
             contributorClass="org.faktorips.devtools.bf.ui.actions.BfActionBarContributor"
             default="true"
             extensions="ipsbusinessfunction"
+            icon="icons/BusinessFunction.gif"
             id="org.faktorips.devtools.bf.ui.editor"
             name="%editor.name.0">
       </editor>
@@ -17,6 +18,7 @@
         <wizard
               category="org.faktorips.devtools"
               class="org.faktorips.devtools.bf.ui.wizard.NewBFWizard"
+              icon="icons/wizards/NewBusinessFunction.gif"
               id="org.faktorips.devtools.bf.ui.wizard"
               name="%NewBfWizard.name">
 		<selection

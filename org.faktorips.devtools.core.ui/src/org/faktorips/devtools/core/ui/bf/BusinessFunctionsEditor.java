@@ -1,9 +1,9 @@
 package org.faktorips.devtools.core.ui.bf;
 
-
 import java.util.EventObject;
 
 import org.eclipse.core.resources.IFile;
+import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.SafeRunner;
@@ -16,6 +16,8 @@ import org.eclipse.gef.palette.PaletteRoot;
 import org.eclipse.gef.ui.parts.GraphicalEditorWithFlyoutPalette;
 import org.eclipse.gef.ui.parts.ScrollingGraphicalViewer;
 import org.eclipse.jface.util.SafeRunnable;
+import org.eclipse.swt.graphics.Image;
+import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.IEditorPart;
 import org.eclipse.ui.IEditorSite;
@@ -31,6 +33,8 @@ import org.faktorips.devtools.core.model.ContentsChangeListener;
 import org.faktorips.devtools.core.model.IIpsModel;
 import org.faktorips.devtools.core.model.bf.IBusinessFunction;
 import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
+import org.faktorips.devtools.core.ui.editors.IIpsProblemChangedListener;
+import org.faktorips.devtools.core.ui.views.IpsProblemsLabelDecorator;
 
 /**
  * The editor for business functions.
@@ -38,18 +42,63 @@ import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
  * @author Peter Erzberger
  */
 public class BusinessFunctionsEditor extends GraphicalEditorWithFlyoutPalette implements ContentsChangeListener,
-        ITabbedPropertySheetPageContributor {
+        ITabbedPropertySheetPageContributor, IIpsProblemChangedListener {
 
     private IIpsSrcFile ipsSrcFile;
     private IBusinessFunction businessFunction;
     private PaletteRoot paletteRoot;
+    private IpsProblemsLabelDecorator decorator;
 
     public BusinessFunctionsEditor() {
+        decorator = new IpsProblemsLabelDecorator();
     }
 
     @Override
     protected PaletteRoot getPaletteRoot() {
         return paletteRoot;
+    }
+
+    /**
+     * Returns the image of the ips object inside the ips object editor which is optional decorated
+     * with an ips marker image if a marker exists.
+     * 
+     * @throws CoreException
+     */
+    // TODO duplicate code in IpsObjectEditor
+    private Image getDecoratedImage() throws CoreException {
+        Image titleImage = ipsSrcFile.getIpsObjectType().getImage(true);
+        return decorator.decorateImage(titleImage, ipsSrcFile.getIpsObject());
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    // TODO duplicate code in IpsObjectEditor
+    public void problemsChanged(IResource[] changedResources) {
+        IResource correspondingResource = ipsSrcFile.getCorrespondingResource();
+        if (correspondingResource != null) {
+            for (int i = 0; i < changedResources.length; i++) {
+                if (changedResources[i].equals(correspondingResource)) {
+                    postImageChange();
+                }
+            }
+        }
+    }
+
+    // TODO duplicate code in IpsObjectEditor
+    private void postImageChange() {
+        Shell shell = getEditorSite().getShell();
+        if (shell != null && !shell.isDisposed()) {
+            shell.getDisplay().syncExec(new Runnable() {
+                public void run() {
+                    try {
+                        setTitleImage(getDecoratedImage());
+                    } catch (CoreException e) {
+                        IpsPlugin.log(e);
+                    }
+                }
+            });
+        }
     }
 
     /**
@@ -124,6 +173,7 @@ public class BusinessFunctionsEditor extends GraphicalEditorWithFlyoutPalette im
         }
         paletteRoot = new PaletteBuilder().buildPalette();
         setEditDomain(new DefaultEditDomain(this));
+        IpsPlugin.getDefault().getIpsProblemMarkerManager().addListener(this);
         super.init(site, input);
     }
 
@@ -142,6 +192,8 @@ public class BusinessFunctionsEditor extends GraphicalEditorWithFlyoutPalette im
     public void dispose() {
         super.dispose();
         IpsPlugin.getDefault().getIpsModel().removeChangeListener(this);
+        decorator.dispose();
+        IpsPlugin.getDefault().getIpsProblemMarkerManager().removeListener(this);
     }
 
     /**
