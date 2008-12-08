@@ -9,6 +9,7 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.draw2d.AbsoluteBendpoint;
 import org.eclipse.draw2d.Bendpoint;
 import org.eclipse.draw2d.geometry.Point;
+import org.eclipse.osgi.util.NLS;
 import org.eclipse.swt.graphics.Image;
 import org.faktorips.datatype.ValueDatatype;
 import org.faktorips.devtools.core.internal.model.ipsobject.IpsObjectPart;
@@ -17,6 +18,7 @@ import org.faktorips.devtools.core.model.bf.BFElementType;
 import org.faktorips.devtools.core.model.bf.IBFElement;
 import org.faktorips.devtools.core.model.bf.IBusinessFunction;
 import org.faktorips.devtools.core.model.bf.IControlFlow;
+import org.faktorips.devtools.core.model.bf.IDecisionBFE;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObject;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPart;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
@@ -200,7 +202,8 @@ public class ControlFlow extends IpsObjectPart implements IControlFlow {
         IBFElement source = getSource();
         if (source != null && source.getType().equals(BFElementType.DECISION)) {
             if (StringUtils.isEmpty(getConditionValue())) {
-                list.add(new Message(MSGCODE_VALUE_NOT_SPECIFIED, Messages.getString("ControlFlow.valueMustBeSpecified"), //$NON-NLS-1$
+                list.add(new Message(MSGCODE_VALUE_NOT_SPECIFIED, Messages
+                        .getString("ControlFlow.valueMustBeSpecified"), //$NON-NLS-1$
                         Message.ERROR, this));
                 return;
             }
@@ -208,10 +211,26 @@ public class ControlFlow extends IpsObjectPart implements IControlFlow {
             ValueDatatype datatype = decisionSource.findDatatype(ipsProject);
             if (datatype != null) {
                 if (!datatype.isParsable(getConditionValue())) {
-                    list.add(new Message(MSGCODE_VALUE_NOT_VALID,
-                            Messages.getString("ControlFlow.valueNotValid"), //$NON-NLS-1$
+                    list.add(new Message(MSGCODE_VALUE_NOT_VALID, Messages.getString("ControlFlow.valueNotValid"), //$NON-NLS-1$
                             Message.ERROR, this));
                 }
+            }
+            validateDublicateValues(decisionSource, list);
+        }
+    }
+
+    private void validateDublicateValues(IDecisionBFE decision, MessageList msgList) {
+        List<IControlFlow> cfs = decision.getOutgoingControlFlow();
+        for (IControlFlow controlFlow : cfs) {
+            if (controlFlow == this) {
+                continue;
+            }
+            if (StringUtils.isEmpty(controlFlow.getConditionValue()) || StringUtils.isEmpty(getConditionValue())) {
+                continue;
+            }
+            if (controlFlow.getConditionValue().equals(getConditionValue())) {
+                String text = NLS.bind(Messages.getString("ControlFlow.duplicateControlFlowValue"), new String[]{decision.getName(), getConditionValue()}); //$NON-NLS-1$
+                msgList.add(new Message(MSGCODE_DUBLICATE_VALUES, text, Message.ERROR, this));
             }
         }
     }

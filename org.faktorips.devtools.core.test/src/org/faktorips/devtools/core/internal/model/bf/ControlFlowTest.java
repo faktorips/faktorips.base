@@ -16,6 +16,7 @@ package org.faktorips.devtools.core.internal.model.bf;
 
 import java.util.List;
 
+import org.eclipse.core.runtime.CoreException;
 import org.eclipse.draw2d.AbsoluteBendpoint;
 import org.eclipse.draw2d.Bendpoint;
 import org.eclipse.draw2d.geometry.Point;
@@ -224,5 +225,35 @@ public class ControlFlowTest extends AbstractIpsPluginTest {
         cf.setConditionValue("100");
         msgList = cf.validate(ipsProject);
         assertNull(msgList.getMessageByCode(IControlFlow.MSGCODE_VALUE_NOT_VALID));
+    }
+    
+    public void testValidateDuplicateValue() throws Exception{
+        IDecisionBFE decisionBFE = bf.newDecision(new Point(10, 10));
+        decisionBFE.setDatatype(Datatype.INTEGER.getQualifiedName());
+        
+        IActionBFE action1 = bf.newOpaqueAction(new Point(10, 10));
+        IControlFlow cf = bf.newControlFlow();
+        cf.setSource(decisionBFE);
+        cf.setTarget(action1);
+        cf.setConditionValue("1");
+
+        IActionBFE action2 = bf.newOpaqueAction(new Point(10, 10));
+        IControlFlow cf2 = bf.newControlFlow();
+        cf2.setSource(decisionBFE);
+        cf2.setTarget(action2);
+        cf2.setConditionValue("2");
+
+        IActionBFE action3 = bf.newOpaqueAction(new Point(10, 10));
+        cf = bf.newControlFlow();
+        cf.setSource(decisionBFE);
+        cf.setTarget(action3);
+        cf.setConditionValue("3");
+        
+        MessageList msgList = bf.validate(ipsProject);
+        assertNull(msgList.getMessageByCode(IControlFlow.MSGCODE_DUBLICATE_VALUES));
+        
+        cf2.setConditionValue("1");
+        msgList = bf.validate(ipsProject);
+        assertNotNull(msgList.getMessageByCode(IControlFlow.MSGCODE_DUBLICATE_VALUES));
     }
 }

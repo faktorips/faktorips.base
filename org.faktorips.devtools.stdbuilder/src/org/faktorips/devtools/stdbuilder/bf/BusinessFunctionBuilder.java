@@ -103,7 +103,6 @@ public class BusinessFunctionBuilder extends DefaultJavaSourceFileBuilder {
 
     private void generateCodeForInlineActions(JavaCodeFragmentBuilder methodBuilder) throws CoreException {
         List bfElements = getBusinessFunction().getBFElements();
-        // TODO call validation
         for (Iterator it = bfElements.iterator(); it.hasNext();) {
             IBFElement element = (IBFElement)it.next();
             if (element.getType().equals(BFElementType.ACTION_INLINE) && element.isValid()) {
@@ -116,7 +115,6 @@ public class BusinessFunctionBuilder extends DefaultJavaSourceFileBuilder {
 
     private void generateMethodCallMethodAction(JavaCodeFragmentBuilder methodBuilder) throws CoreException {
         List bfElements = getBusinessFunction().getBFElements();
-        // TODO call validation^
         List alreadyGenerated = new ArrayList();
         for (Iterator it = bfElements.iterator(); it.hasNext();) {
             IBFElement element = (IBFElement)it.next();
@@ -221,10 +219,10 @@ public class BusinessFunctionBuilder extends DefaultJavaSourceFileBuilder {
     private void generateMethodExecute(JavaCodeFragmentBuilder methodBuilder) throws CoreException {
         JavaCodeFragment body = new JavaCodeFragment();
         body.append(getMethodNameStart());
-        body.append("();");
+        body.appendln("();");
         generateControlFlowMethodBody(body, getBusinessFunction().getStart(), methodBuilder);
         body.append(getMethodNameEnd());
-        body.append("();");
+        body.appendln("();");
         methodBuilder.method(Modifier.PUBLIC, Void.TYPE, getExecuteMethodName(), new String[0], new Class[0], body,
                 "Executes this business function.", ANNOTATION_GENERATED);
     }
@@ -269,34 +267,38 @@ public class BusinessFunctionBuilder extends DefaultJavaSourceFileBuilder {
     private void appendMethodCall(IBFElement element, JavaCodeFragment body) {
         if (element.getType().equals(BFElementType.DECISION)) {
             body.append(getMethodNameDecision(element));
-            body.append("();");
+            body.appendln("();");
             return;
         }
         if (element.getType().equals(BFElementType.MERGE)) {
             body.append(getMethodNameMerge(element));
-            body.append("();");
+            body.appendln("();");
             return;
         }
         if (element.getType().equals(BFElementType.ACTION_INLINE)) {
             body.append(getMethodNameInlineAction((IActionBFE)element));
-            body.append("();");
+            body.appendln("();");
             return;
         }
         if (element.getType().equals(BFElementType.ACTION_BUSINESSFUNCTIONCALL)) {
             body.append(getMethodNameCallBusinessFunctionAction((IActionBFE)element));
-            body.append("();");
+            body.appendln("();");
+            return;
         }
         if (element.getType().equals(BFElementType.ACTION_METHODCALL)) {
             body.append(getMethodNameCallMethodAction((IActionBFE)element));
-            body.append("();");
+            body.appendln("();");
+            return;
         }
         if (element.getType().equals(BFElementType.START)) {
             body.append(getMethodNameStart());
-            body.append("();");
+            body.appendln("();");
+            return;
         }
         if (element.getType().equals(BFElementType.END)) {
             body.append(getMethodNameEnd());
-            body.append("();");
+            body.appendln("();");
+            return;
         }
     }
 
@@ -304,6 +306,7 @@ public class BusinessFunctionBuilder extends DefaultJavaSourceFileBuilder {
             IBFElement inputElement,
             JavaCodeFragmentBuilder methodBuilder) throws CoreException {
         if(inputElement == null || !inputElement.isValid()){
+            body.appendln();
             return;
         }
         List outgoingFlows = inputElement.getOutgoingControlFlow();
@@ -316,20 +319,24 @@ public class BusinessFunctionBuilder extends DefaultJavaSourceFileBuilder {
             body.append(" conditionValue = ");
             body.append(getMethodNameGetConditionValue(decision));
             body.appendln("();");
-            // TODO call validation
-            for (int i = 0; i < outgoingFlows.size(); i++) {
+            boolean ifBlockExists = false;
+            //the addition counter variable r is necessary to create code fragment that is still parsable by jmerge. Otherwise jmerge
+            //rises an exception.
+            for (int r = 0, i = 0; i < outgoingFlows.size(); i++, r++) {
                 IControlFlow controlFlow = (IControlFlow)outgoingFlows.get(i);
                 if(!controlFlow.isValid()){
+                    r--;
                     continue;
                 }
                 String value = controlFlow.getConditionValue();
-                if (i == 0) {
+                if (r == 0) {
                     body.append("if(conditionValue.equals(");
                     body.append(helper.newInstance(value));
                     body.append("))");
                     body.appendOpenBracket();
                     generateSingleControlFlowMethodBody(methodBuilder, body, controlFlow);
                     body.appendCloseBracket();
+                    ifBlockExists = true;
                     continue;
                 }
                 if (i < outgoingFlows.size()) {
@@ -341,11 +348,14 @@ public class BusinessFunctionBuilder extends DefaultJavaSourceFileBuilder {
                     body.appendCloseBracket();
                 }
             }
-            body.append("else");
-            body.appendOpenBracket();
-            body.append("throw new RuntimeException(\"Unhandled condition value=\" + conditionValue);");
-            body.appendCloseBracket();
-
+            //the ifBlockExists check is only necessary so that jmerge doesn't throw an exception when it tries
+            //to merge inconsistent code
+            if(ifBlockExists){
+                body.append("else");
+                body.appendOpenBracket();
+                body.appendln("throw new RuntimeException(\"Unhandled condition value=\" + conditionValue);");
+                body.appendCloseBracket();
+            }
             return;
         }
         if (!outgoingFlows.isEmpty()) {

@@ -94,5 +94,6 @@ public class DecisionBFE extends BFElement implements IDecisionBFE {
                     Messages.getString("DecisionBFE.DatatypeMustBeNotPrimitive"), Message.ERROR, this)); //$NON-NLS-1$
         }
     }
+    
 
 }

@@ -42,6 +42,7 @@ public interface IControlFlow extends IIpsObjectPart {
     public static final String MSGCODE_PREFIX = "DECISIONBFE-"; //$NON-NLS-1$
     public static final String MSGCODE_VALUE_NOT_SPECIFIED = MSGCODE_PREFIX + "valueNotSpecified"; //$NON-NLS-1$
     public static final String MSGCODE_VALUE_NOT_VALID = MSGCODE_PREFIX + "valueNotValid"; //$NON-NLS-1$
+    public static final String MSGCODE_DUBLICATE_VALUES = MSGCODE_PREFIX + "duplicateValues"; //$NON-NLS-1$
 
     /**
      * The business function to which this control flow belongs to.
