@@ -402,6 +402,11 @@ public class ContentPage extends IpsObjectEditorPage {
     }
 
     private void checkDifferences(Composite formBody, UIToolkit toolkit) {
+        if (isInsideArchive()){
+            // no set table structure dialog and fix differences supported
+            // because table contents is read only
+            return;
+        }
         try {
             ITableStructure structure = getTableStructure();
             if (structure == null) {
@@ -469,7 +474,6 @@ public class ContentPage extends IpsObjectEditorPage {
             throw new RuntimeException(e);
         }
     }    
-
 
     private void insertColumnsAt(String insertIndices) {
 		int[] indices = getIndices(insertIndices);
@@ -579,6 +583,13 @@ public class ContentPage extends IpsObjectEditorPage {
 			return null;
 		}
 	}
+	
+    /*
+     * Returns <code>true</code> if the table contents is inside an archive otherwise <code>false</code>
+     */
+    private boolean isInsideArchive() {
+        return getTableContents().getIpsPackageFragment().getRoot().isBasedOnIpsArchive();
+    }
     
     /**
      * Redraws the table.

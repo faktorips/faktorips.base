@@ -663,7 +663,11 @@ public class IpsPlugin extends AbstractUIPlugin {
             IEditorDescriptor editor = workbench.getEditorRegistry().getDefaultEditor(srcFile.getName());
             IpsArchiveEditorInput input = new IpsArchiveEditorInput(srcFile);
             try {
-                return IDE.openEditor(workbench.getActiveWorkbenchWindow().getActivePage(), input, editor.getId());
+                IWorkbenchPage page = workbench.getActiveWorkbenchWindow().getActivePage();
+                if (page == null) {
+                    return null;
+                }
+                return page.openEditor(input, editor.getId());
             } catch (PartInitException e) {
                 IpsPlugin.logAndShowErrorDialog(e);
             }

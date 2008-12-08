@@ -311,6 +311,9 @@ public class FormulaEditDialog extends IpsPartEditDialog {
     protected void connectToModel() {
         super.connectToModel();
         uiController.add(formulaField, IFormula.PROPERTY_EXPRESSION);
+        if (signature == null){
+            return;
+        }
         List infos = ParameterInfo.createInfosAsList(signature.getParameters());
         parametersControl.setInput(infos);
     }
@@ -320,7 +323,7 @@ public class FormulaEditDialog extends IpsPartEditDialog {
      * the attribute this formula relates to.
      */
     protected String buildTitle() {
-    	return formula.getFormulaSignature() + " - " + signature.getDatatype(); //$NON-NLS-1$
+    	return formula.getFormulaSignature() + (signature!=null?" - " + signature.getDatatype():""); //$NON-NLS-1$
     }
 
     protected void okPressed() {

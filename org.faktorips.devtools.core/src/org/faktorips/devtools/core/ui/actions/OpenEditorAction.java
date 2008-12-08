@@ -28,6 +28,7 @@ import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.ui.IEditorPart;
 import org.faktorips.devtools.core.IpsPlugin;
+import org.faktorips.devtools.core.internal.model.ipsobject.ArchiveIpsSrcFile;
 import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmptGeneration;
 import org.faktorips.devtools.core.ui.editors.productcmpt.ProductCmptEditor;
@@ -96,10 +97,22 @@ public class OpenEditorAction extends IpsAction {
         List newSelection = new ArrayList();
         for (Iterator iter = selection.iterator(); iter.hasNext();) {
             Object object = iter.next();
-            if (object instanceof IProductCmptGeneration){
-                IProductCmptGeneration generation = (IProductCmptGeneration) object;
-                IEditorPart part = IpsPlugin.getDefault().openEditor(ProductCmptEditorInput.createWithGeneration(generation));
-                if (part instanceof ProductCmptEditor){
+            if (object instanceof IProductCmptGeneration) {
+                IProductCmptGeneration generation = (IProductCmptGeneration)object;
+                IIpsSrcFile ipsSrcFile = generation.getIpsObject().getIpsSrcFile();
+                IEditorPart part = null;
+                if (!(ipsSrcFile  instanceof ArchiveIpsSrcFile)){
+                    // open the editor skipping the generation mismatch dialog.
+                    // If the ipsSrcFile is used instead of the productCmptEditorInput,
+                    // we cannot decide if the dialog should be shown or ignored
+                    part = IpsPlugin.getDefault().openEditor(ProductCmptEditorInput.createWithGeneration(generation));
+                } else {
+                    // open editor directly
+                    // the generation mismatch dialog will never be displayed, 
+                    // because objects within archives are always be opened in read-only mode
+                    part = IpsPlugin.getDefault().openEditor(ipsSrcFile);
+                }
+                if (part instanceof ProductCmptEditor) {
                     ((ProductCmptEditor)part).showGenerationEffectiveOn(generation.getValidFrom());
                 }
             } else {

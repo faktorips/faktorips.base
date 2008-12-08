@@ -24,7 +24,7 @@ import org.faktorips.devtools.core.model.productcmpt.IProductCmptGeneration;
 
 /**
  * Product cmpt editor input based on file editor input. Contains product cmpt relevant information
- * for the product cmpt editor.
+ * for the product cmpt editor. 
  * 
  * @author Joerg Ortmann
  */
@@ -45,8 +45,8 @@ public class ProductCmptEditorInput extends FileEditorInput {
     }
 
     /**
-     * Returns <code>true</code> if a missmatch of the working date should be ignored by the editor
-     * (e.g. no missmatch dialog will be shown).
+     * Returns <code>true</code> if a mismatch of the working date should be ignored by the editor
+     * (e.g. no mismatch dialog will be shown).
      */
     public boolean isIgnoreWorkingDateMissmatch() {
         return ignoreWorkingDateMissmatch;

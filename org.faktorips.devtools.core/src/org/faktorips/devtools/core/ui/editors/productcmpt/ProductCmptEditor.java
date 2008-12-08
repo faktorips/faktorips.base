@@ -84,6 +84,8 @@ public class ProductCmptEditor extends TimedIpsObjectEditor implements IModelDes
      */
     public void init(IEditorSite site, IEditorInput input) throws PartInitException {
         super.init(site, input);
+        // if the editor was opened by using the generation
+        // then no generation mismatch dialog should be displayed
         if (input instanceof ProductCmptEditorInput){
             ignoreHandlingOfWorkingDateMissmatch = ((ProductCmptEditorInput)input).isIgnoreWorkingDateMissmatch();
         }
@@ -95,7 +97,7 @@ public class ProductCmptEditor extends TimedIpsObjectEditor implements IModelDes
 	protected void addPagesForParsableSrcFile() throws PartInitException , CoreException {
 		IProductCmpt cmpt = (ProductCmpt)getIpsObject();
         IIpsObjectEditorSettings settings = getSettings();
-        // open the select template dialog if the templ. is missing and the data is changeable
+        // open the select template dialog if the template is missing and the data is changeable
 		if (getProductCmpt().findProductCmptType(getIpsProject()) == null
                 && couldDateBeChangedIfProductCmptTypeWasntMissing()
                 && !IpsPlugin.getDefault().isTestMode()
@@ -239,6 +241,11 @@ public class ProductCmptEditor extends TimedIpsObjectEditor implements IModelDes
 			}
 			return;
 		}
+        if (isInsideArchive()){
+            // no check of working date mismatch
+            // because product component is read only
+            return;
+        }		
         handleWorkingDateMissmatch();
 	}
 
@@ -342,7 +349,7 @@ public class ProductCmptEditor extends TimedIpsObjectEditor implements IModelDes
         IpsPreferences prefs = IpsPlugin.getDefault().getIpsPreferences();
         
         // following if statement is there as closing the dialog triggers a window activated event
-        // and handling the evant calls this method.
+        // and handling the event calls this method.
         if (isHandlingWorkingDateMismatch) {
             return;
         }
@@ -466,5 +473,10 @@ public class ProductCmptEditor extends TimedIpsObjectEditor implements IModelDes
         this.ignoreHandlingOfWorkingDateMissmatch = ignoreHandlingOfWorkingDateMissmatch;
     }
     
-    
+    /*
+     * Returns <code>true</code> if the table contents is inside an archive otherwise <code>false</code>
+     */
+    private boolean isInsideArchive() {
+        return getProductCmpt().getIpsPackageFragment().getRoot().isBasedOnIpsArchive();
+    }
 }
