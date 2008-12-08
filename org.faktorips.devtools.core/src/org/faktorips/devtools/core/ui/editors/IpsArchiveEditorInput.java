@@ -89,4 +89,21 @@ public class IpsArchiveEditorInput implements IEditorInput {
         return null;
     }
 
+    /**
+     * {@inheritDoc}
+     * 
+     * returns the equality of the underlying <code>IpsSrcFile</code> resources. Note: the default
+     * UI functionality uses this method to decide if a new editor should be opened or an
+     * already open editor will be reactivated.
+     */
+    public boolean equals(Object obj) {
+        if (this == obj) {
+            return true;
+        }
+        if (!(obj instanceof IpsArchiveEditorInput)) {
+            return false;
+        }
+        IpsArchiveEditorInput other = (IpsArchiveEditorInput) obj;
+        return srcFile.equals(other.getIpsSrcFile());
+    }
 }
