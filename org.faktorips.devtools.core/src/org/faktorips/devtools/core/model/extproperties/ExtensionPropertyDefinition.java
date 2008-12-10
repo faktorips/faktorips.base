@@ -18,13 +18,8 @@
 package org.faktorips.devtools.core.model.extproperties;
 
 import org.eclipse.core.runtime.CoreException;
-import org.eclipse.swt.widgets.Composite;
-import org.eclipse.swt.widgets.Text;
 import org.faktorips.devtools.core.model.ipsobject.IExtensionPropertyDefinition;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPartContainer;
-import org.faktorips.devtools.core.ui.UIToolkit;
-import org.faktorips.devtools.core.ui.controller.EditField;
-import org.faktorips.devtools.core.ui.controller.fields.TextField;
 import org.faktorips.util.ArgumentCheck;
 import org.faktorips.util.message.MessageList;
 import org.w3c.dom.CDATASection;
@@ -164,15 +159,6 @@ public abstract class ExtensionPropertyDefinition implements IExtensionPropertyD
      */
     public boolean beforeSetValue(IIpsObjectPartContainer ipsObjectPart, Object value) {
         return true;
-    }
-
-    /**
-     * Adds a <code>Text</code> control to the extension area and returns a <code>TextField</code> based
-     * on it.
-     */
-    public EditField newEditField(IIpsObjectPartContainer ipsObjectPart, Composite extensionArea, UIToolkit toolkit) {
-        Text text = toolkit.createText(extensionArea);
-        return new TextField(text);
     }
     
     /**

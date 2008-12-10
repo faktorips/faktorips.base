@@ -23,13 +23,7 @@ import java.util.GregorianCalendar;
 
 import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.jface.util.IPropertyChangeListener;
-import org.faktorips.datatype.EnumDatatype;
-import org.faktorips.datatype.PrimitiveBooleanDatatype;
-import org.faktorips.datatype.ValueDatatype;
-import org.faktorips.datatype.classtypes.BooleanDatatype;
 import org.faktorips.devtools.core.model.ipsproject.IChangesOverTimeNamingConvention;
-import org.faktorips.devtools.core.ui.controlfactories.BooleanControlFactory;
-import org.faktorips.devtools.core.ui.controller.fields.EnumTypeDisplay;
 import org.faktorips.devtools.core.util.XmlUtil;
 import org.faktorips.util.ArgumentCheck;
 
@@ -131,6 +125,8 @@ public class IpsPreferences {
      */
     public final static String RANGE_EDIT_FIELDS_IN_ONE_ROW = IpsPlugin.PLUGIN_ID + ".rangeEditFieldsInOneRow"; //$NON-NLS-1$
     
+    private DatatypeFormatter datatypeFormatter;
+    
     private IPreferenceStore prefStore;
     
     public IpsPreferences(IPreferenceStore prefStore) {
@@ -148,6 +144,7 @@ public class IpsPreferences {
         prefStore.setDefault(ADVANCED_TEAM_FUNCTIONS_IN_PRODUCT_DEF_EXPLORER, false);
         prefStore.setDefault(SECTIONS_IN_TYPE_EDITORS, TWO_SECTIONS_IN_TYPE_EDITOR_PAGE);
         prefStore.setDefault(RANGE_EDIT_FIELDS_IN_ONE_ROW, true);
+        datatypeFormatter = new DatatypeFormatter(this);
     }
     
     public void addChangeListener(IPropertyChangeListener listener) {
@@ -255,87 +252,7 @@ public class IpsPreferences {
     public String getIpsTestRunnerMaxHeapSize(){
         return prefStore.getString(IPSTESTRUNNER_MAX_HEAP_SIZE);
     }
-    
-    /**
-     * Formats the given value according to the user preferences.
-     *  
-     * @param datatype The datatype the value is a value of.
-     * @param value The value as string
-     * @return
-     * 
-     * @see #ENUM_TYPE_DISPLAY
-     * @see #NULL_REPRESENTATION_STRING
-     */
-    public String formatValue(ValueDatatype datatype, String value) {
-        if (value==null) {
-            return getNullPresentation();
-        }
-        if (datatype==null) {
-            return value;
-        }
-        if (datatype instanceof EnumDatatype) {
-            return formatValue((EnumDatatype)datatype, value);
-        }
-        if (datatype instanceof BooleanDatatype || datatype instanceof PrimitiveBooleanDatatype) {
-            if (Boolean.valueOf(value).booleanValue()) {
-                return BooleanControlFactory.TRUE_REPRESENTATION;
-            }
-            return BooleanControlFactory.FALSE_REPRESENTATION;
-        }
-        return value;
-    }
-    
-    /**
-     * Formats the given value according to the user preferences.
-     *  
-     * @param datatype The datatype the value is a value of.
-     * @param value The value as string
-     * @return
-     * 
-     * @see #ENUM_TYPE_DISPLAY
-     * @see #NULL_REPRESENTATION_STRING
-     */
-    public String formatValue(EnumDatatype datatype, String id) {
-        if (id==null) {
-            return getNullPresentation();
-        }
-        if (datatype==null) {
-            return id;
-        }
-        if (!datatype.isSupportingNames()) {
-            return id;
-        }
-        EnumTypeDisplay enumTypeDisplay = getEnumTypeDisplay();
-        if (enumTypeDisplay.equals(EnumTypeDisplay.ID)) {
-            return id;
-        }
-        if (!datatype.isParsable(id)) {
-            return id;
-        }
-        String name = datatype.getValueName(id);
-        if (enumTypeDisplay.equals(EnumTypeDisplay.NAME_AND_ID)){
-            return name + " (" + id + ")"; //$NON-NLS-1$ //$NON-NLS-2$
-        } else {
-            return name;
-        } 
-    }
-    
-    /**
-     * Returns the to be displayed text of an enumeration. 
-     * The property ENUM_TYPE_DISPLAY specifies how the name and id will be formated.
-     * E.g. display only id or only name, or display both.
-     */
-    public String getFormatedEnumText(String id, String name){
-        EnumTypeDisplay enumTypeDisplay = getEnumTypeDisplay();
-        if (enumTypeDisplay.equals(EnumTypeDisplay.NAME_AND_ID)){
-            return name + " (" + id + ")"; //$NON-NLS-1$ //$NON-NLS-2$
-        } else if (enumTypeDisplay.equals(EnumTypeDisplay.NAME)){
-            return name;
-        } else {
-            return id;
-        }
-    }
-    
+
     /**
      * Returns the enum type display. Specifies the text display of enum type edit fields. E.g.
      * display id or name only, or display both.
@@ -414,7 +331,7 @@ public class IpsPreferences {
         //identity on purpose!!
         if (!(numberOfSections == TWO_SECTIONS_IN_TYPE_EDITOR_PAGE || numberOfSections == FOUR_SECTIONS_IN_TYPE_EDITOR_PAGE)) {
             throw new IllegalArgumentException(
-                    "Valid argument values are the constants TWO_SECTIONS_IN_TYPE_EDITOR_PAGE or FOUR_SECTIONS_IN_TYPE_EDITOR_PAGE of the IpsPreferences.");
+                    "Valid argument values are the constants TWO_SECTIONS_IN_TYPE_EDITOR_PAGE or FOUR_SECTIONS_IN_TYPE_EDITOR_PAGE of the IpsPreferences."); //$NON-NLS-1$
         }
         prefStore.setValue(SECTIONS_IN_TYPE_EDITORS, numberOfSections);
     }
@@ -438,5 +355,12 @@ public class IpsPreferences {
      */
     public void setRangeEditFieldsInOneRow(boolean enabled){
         prefStore.setValue(RANGE_EDIT_FIELDS_IN_ONE_ROW, enabled);
-    }    
+    }
+    
+    /**
+     * Returns the formatter for Faktor-IPS datatypes.
+     */
+    public DatatypeFormatter getDatatypeFormatter(){
+        return datatypeFormatter;
+    }
 }

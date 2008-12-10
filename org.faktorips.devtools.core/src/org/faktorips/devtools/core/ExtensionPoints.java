@@ -33,6 +33,22 @@ import org.faktorips.util.ArgumentCheck;
  */
 public class ExtensionPoints {
 
+    private IExtensionRegistry registry;
+    private String nameSpace;
+    
+    
+    public ExtensionPoints(IExtensionRegistry registry, String nameSpace) {
+        super();
+        ArgumentCheck.notNull(registry, this);
+        ArgumentCheck.notNull(nameSpace, this);
+        this.registry = registry;
+        this.nameSpace = nameSpace;
+    }
+
+    public ExtensionPoints(String nameSpace) {
+        this(Platform.getExtensionRegistry(), nameSpace);
+    }
+
     /**
      * IpsPlugin relative id of the extension point for IpsObjectTypes.
      * 
@@ -47,10 +63,9 @@ public class ExtensionPoints {
      * @throws NullPointerException if pointId is <code>null</code>.
      * @throws IllegalArgumentException if no extension point with id pointId exists.
      */
-    public final static IExtension[] getExtension(String pointId) {
+    public final IExtension[] getExtension(String pointId) {
         ArgumentCheck.notNull(pointId);
-        IExtensionRegistry registry = Platform.getExtensionRegistry();
-        IExtensionPoint point = registry.getExtensionPoint(IpsPlugin.PLUGIN_ID, pointId);
+        IExtensionPoint point = registry.getExtensionPoint(nameSpace, pointId);
         if (point==null) {
             IpsPlugin.log(new IpsStatus("ExtensionPoint " + pointId + " not found!")); //$NON-NLS-1$ //$NON-NLS-2$
             throw new IllegalArgumentException("Unknown extension point " + pointId); //$NON-NLS-1$

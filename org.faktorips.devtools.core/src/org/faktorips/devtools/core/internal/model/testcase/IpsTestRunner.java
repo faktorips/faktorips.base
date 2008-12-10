@@ -77,7 +77,6 @@ import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProjectNamingConventions;
 import org.faktorips.devtools.core.model.testcase.IIpsTestRunListener;
 import org.faktorips.devtools.core.model.testcase.IIpsTestRunner;
-import org.faktorips.devtools.core.ui.test.IpsTestRunnerDelegate;
 import org.faktorips.runtime.test.AbstractIpsTestRunner;
 import org.faktorips.runtime.test.SocketIpsTestRunner;
 import org.faktorips.util.StringUtil;
@@ -89,7 +88,12 @@ import org.faktorips.util.message.MessageList;
  * 
  * @author Joerg Ortmann
  */
-public class IpsTestRunner implements IIpsTestRunner { 
+public class IpsTestRunner implements IIpsTestRunner {
+    public static final String ID_IPSTEST_LAUNCH_CONFIGURATION_TYPE = "org.faktorips.devtools.core.ipsTestLaunchConfigurationType"; //$NON-NLS-1$
+    public static final String ATTR_PACKAGEFRAGMENTROOT = IpsPlugin.PLUGIN_ID + ".ATTR_PACKAGEFRAGMENTROOT"; //$NON-NLS-1$
+    public static final String ATTR_TESTCASES = IpsPlugin.PLUGIN_ID + ".ATTR_TESTCASES"; //$NON-NLS-1$
+    public static final String ATTR_MAX_HEAP_SIZE = IpsPlugin.PLUGIN_ID + ".ATTR_MAX_HEAP_SIZE"; //$NON-NLS-1$
+
     public static String INVALID_NAME = IIpsProjectNamingConventions.INVALID_NAME;
 
     /*
@@ -363,7 +367,7 @@ public class IpsTestRunner implements IIpsTestRunner {
         
         ILaunchConfiguration launchConfiguration = launch.getLaunchConfiguration();
         // overwrite default max heap size if specified in the current lauch
-        String maxHeapSizeInConfiguration = launchConfiguration.getAttribute(IpsTestRunnerDelegate.ATTR_MAX_HEAP_SIZE,
+        String maxHeapSizeInConfiguration = launchConfiguration.getAttribute(ATTR_MAX_HEAP_SIZE,
                 ""); //$NON-NLS-1$
         if (StringUtils.isNotEmpty(maxHeapSizeInConfiguration)) {
             setVmConfigMaxHeapSize(vmConfig, maxHeapSizeInConfiguration);
@@ -472,8 +476,8 @@ public class IpsTestRunner implements IIpsTestRunner {
     }
     
     private boolean checkLaunchConfigurationSameAttributes(ILaunchConfiguration configuration, ILaunchConfigurationWorkingCopy wc) throws CoreException {
-        if (configuration.getAttribute(IpsTestRunnerDelegate.ATTR_PACKAGEFRAGMENTROOT, "").equals(wc.getAttribute(IpsTestRunnerDelegate.ATTR_PACKAGEFRAGMENTROOT, ""))&&  //$NON-NLS-1$ //$NON-NLS-2$
-            configuration.getAttribute(IpsTestRunnerDelegate.ATTR_TESTCASES, "").equals(wc.getAttribute(IpsTestRunnerDelegate.ATTR_TESTCASES, ""))){ //$NON-NLS-1$ //$NON-NLS-2$
+        if (configuration.getAttribute(ATTR_PACKAGEFRAGMENTROOT, "").equals(wc.getAttribute(ATTR_PACKAGEFRAGMENTROOT, ""))&&  //$NON-NLS-1$ //$NON-NLS-2$
+            configuration.getAttribute(ATTR_TESTCASES, "").equals(wc.getAttribute(ATTR_TESTCASES, ""))){ //$NON-NLS-1$ //$NON-NLS-2$
             return true;
         }
         return false;
@@ -481,8 +485,8 @@ public class IpsTestRunner implements IIpsTestRunner {
 
     private ILaunchConfigurationWorkingCopy createNewLaunchConfiguration(ILaunchConfigurationType configType, String name, String classpathRepositories, String testsuites) throws CoreException{
         ILaunchConfigurationWorkingCopy wc = configType.newInstance(null, name);
-        wc.setAttribute(IpsTestRunnerDelegate.ATTR_PACKAGEFRAGMENTROOT, classpathRepositories);
-        wc.setAttribute(IpsTestRunnerDelegate.ATTR_TESTCASES, testsuites);
+        wc.setAttribute(ATTR_PACKAGEFRAGMENTROOT, classpathRepositories);
+        wc.setAttribute(ATTR_TESTCASES, testsuites);
         wc.setAttribute(IDebugUIConstants.ATTR_PRIVATE, false); 
         wc.setAttribute(IDebugUIConstants.ATTR_LAUNCH_IN_BACKGROUND, true);
         return wc;
@@ -493,9 +497,9 @@ public class IpsTestRunner implements IIpsTestRunner {
      */
     private ILaunchConfigurationType getLaunchConfigType() {
         ILaunchManager lm = DebugPlugin.getDefault().getLaunchManager();
-        ILaunchConfigurationType launchConfigurationType = lm.getLaunchConfigurationType(IpsTestRunnerDelegate.ID_IPSTEST_LAUNCH_CONFIGURATION_TYPE);
+        ILaunchConfigurationType launchConfigurationType = lm.getLaunchConfigurationType(ID_IPSTEST_LAUNCH_CONFIGURATION_TYPE);
         if (launchConfigurationType == null){
-            throw new RuntimeException("Lauch configuration type not found: " + IpsTestRunnerDelegate.ID_IPSTEST_LAUNCH_CONFIGURATION_TYPE); //$NON-NLS-1$
+            throw new RuntimeException("Lauch configuration type not found: " + ID_IPSTEST_LAUNCH_CONFIGURATION_TYPE); //$NON-NLS-1$
         }
         return launchConfigurationType;
     }

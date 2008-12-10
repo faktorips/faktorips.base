@@ -134,39 +134,4 @@ public class ModelManagementTest extends AbstractIpsPluginTest {
             System.out.println("===== Finished testChangeDirectlyOnDiskWithoutUsingTheEclipseApi() =====");
         }
     }
-
-    /**
-     * Same as above but with an open editor on the file.
-     * @throws Exception
-     */
-    public void testChangeDirectlyOnDiskWithoutUsingTheEclipseApiAndOpenEditor() throws Exception {
-        if (IpsModel.TRACE_MODEL_MANAGEMENT) {
-            System.out.println("===== Start testChangeDirectlyOnDiskWithoutUsingTheEclipseApiAndOpenEditor() =====");
-        }
-        IpsPlugin.getDefault().openEditor(type);
-        IIpsSrcFile ipsFile = type.getIpsSrcFile();
-        type.setDescription("Blabla");
-        ipsFile.save(true, null);
-        Thread.sleep(2000); // wait for 2 seconds, so that the file definitly has a 
-        // different timestamp, otherwise refreshLocal won't refresh! 
-        // file timestamps (at least under windows xp) only differ in seconds, not milliseconds!  
-        String encoding = type.getIpsProject().getXmlFileCharset();
-        IFile file = type.getIpsSrcFile().getCorrespondingFile();
-        String content = StringUtil.readFromInputStream(file.getContents(), encoding);
-        content = content.replaceAll("Blabla", "NewBlabla");
-        File ioFile = file.getLocation().toFile();
-        FileWriter writer = new FileWriter(ioFile);
-        writer.write(content);
-        writer.flush();
-        writer.close();
-        
-        // now refresh the file from disk
-        file.refreshLocal(IResource.DEPTH_INFINITE, null);
-        
-        type = (IPolicyCmptType)ipsFile.getIpsObject(); // forces a reload
-        assertEquals("NewBlabla", type.getDescription());
-        if (IpsModel.TRACE_MODEL_MANAGEMENT) {
-            System.out.println("===== Finished testChangeDirectlyOnDiskWithoutUsingTheEclipseApiAndOpenEditor() =====");
-        }
-    }
 }

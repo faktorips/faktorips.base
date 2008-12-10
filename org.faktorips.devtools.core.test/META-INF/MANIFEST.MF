@@ -31,10 +31,6 @@ Export-Package: org.faktorips.devtools.core,
  org.faktorips.devtools.core.model,
  org.faktorips.devtools.core.model.extproperties,
  org.faktorips.devtools.core.model.pctype,
- org.faktorips.devtools.core.test,
- org.faktorips.devtools.core.ui,
- org.faktorips.devtools.core.ui.actions,
- org.faktorips.devtools.core.ui.editors.pctype,
- org.faktorips.devtools.core.ui.editors.productcmpt
+ org.faktorips.devtools.core.test
 Bundle-RequiredExecutionEnvironment: J2SE-1.4
 Bundle-Vendor: Faktor Zehn AG

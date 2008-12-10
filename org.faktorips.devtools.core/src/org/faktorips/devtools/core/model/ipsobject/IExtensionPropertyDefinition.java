@@ -18,9 +18,6 @@
 package org.faktorips.devtools.core.model.ipsobject;
 
 import org.eclipse.core.runtime.CoreException;
-import org.eclipse.swt.widgets.Composite;
-import org.faktorips.devtools.core.ui.UIToolkit;
-import org.faktorips.devtools.core.ui.controller.EditField;
 import org.faktorips.util.message.MessageList;
 import org.w3c.dom.Element;
 
@@ -178,16 +175,4 @@ public interface IExtensionPropertyDefinition extends Comparable {
      */
     public String getDisplayName();
 
-    /**
-     * Returns a new EditField that allows to edit the property value. Can return <code>null</code> if 
-     * <code>isEditedInStandardExtensionArea()</code> returns <code>false</code>.
-     * 
-     * @param ipsObjectPart The ips object part which extension property an edit field is created for.
-     * @param extensionArea The standard extension area composite. A new control that allows editing the property
-     * value has to be added to this composite in subclasses. The EditField has to be constructed based on
-     * the control. 
-     * @param toolkit The ui toolkit to be used to create the control to ensure a consistent user interface.
-     */
-    public EditField newEditField(IIpsObjectPartContainer ipsObjectPart, Composite extensionArea, UIToolkit toolkit);
-    
 }

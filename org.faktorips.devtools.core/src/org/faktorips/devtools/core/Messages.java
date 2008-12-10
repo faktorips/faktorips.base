@@ -34,7 +34,17 @@ public class Messages extends NLS {
 		NLS.initializeMessages(BUNDLE_NAME, Messages.class);
 	}
 
-	public static String IpsPlugin_infoDefaultTextEditorWasOpened;
+	public static String DatatypeFormatter_booleanFalse;
+
+    public static String DatatypeFormatter_booleanTrue;
+
+    public static String EnumTypeDisplay_id;
+
+    public static String EnumTypeDisplay_name;
+
+    public static String EnumTypeDisplay_nameAndId;
+
+    public static String IpsPlugin_infoDefaultTextEditorWasOpened;
 
     public static String IpsPlugin_titleErrorDialog;
 
@@ -47,4 +57,5 @@ public class Messages extends NLS {
 	public static String IpsPlugin_languagePackVariant;
 	
 	public static String IpsPlugin_errorNoDatatypeControlFactoryFound;
+
 }

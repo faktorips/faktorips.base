@@ -76,7 +76,7 @@ import org.faktorips.devtools.core.model.productcmpt.IProductCmpt;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
 import org.faktorips.devtools.core.model.versionmanager.IIpsFeatureVersionManager;
 import org.faktorips.devtools.core.test.XmlAbstractTestCase;
-import org.faktorips.devtools.core.ui.binding.BeanUtil;
+import org.faktorips.devtools.core.util.BeanUtil;
 import org.faktorips.util.StringUtil;
 
 /**

@@ -41,7 +41,7 @@ import org.faktorips.devtools.core.model.ModificationStatusChangedEvent;
 import org.faktorips.devtools.core.model.XmlSaxSupport;
 import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.core.model.ipsobject.IpsSrcFileSaxHelper;
-import org.faktorips.devtools.core.ui.binding.BeanUtil;
+import org.faktorips.devtools.core.util.BeanUtil;
 import org.faktorips.devtools.core.util.XmlUtil;
 import org.faktorips.util.ArgumentCheck;
 import org.w3c.dom.Document;

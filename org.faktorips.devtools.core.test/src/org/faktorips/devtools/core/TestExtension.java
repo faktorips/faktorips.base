@@ -72,7 +72,7 @@ public class TestExtension implements IExtension {
      * Throws RuntimeException
      */
     public String getExtensionPointUniqueIdentifier() throws InvalidRegistryObjectException {
-        throw new RuntimeException("Not implemented yet.");
+        return namespaceIdentifier + "." + simpleIdentifier;
     }
 
     /**

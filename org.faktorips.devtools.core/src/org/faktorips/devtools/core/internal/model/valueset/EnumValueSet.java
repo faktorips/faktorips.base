@@ -293,7 +293,7 @@ public class EnumValueSet extends ValueSet implements IEnumValueSet {
             List result = new ArrayList(elements.size());
             for (Iterator iter = elements.iterator(); iter.hasNext();) {
                 String id = (String)iter.next();
-                String formatedEnumText = IpsPlugin.getDefault().getIpsPreferences().formatValue(type, id);
+                String formatedEnumText = IpsPlugin.getDefault().getIpsPreferences().getDatatypeFormatter().formatValue(type, id);
                 result.add(formatedEnumText);
             }
             return result.toString();

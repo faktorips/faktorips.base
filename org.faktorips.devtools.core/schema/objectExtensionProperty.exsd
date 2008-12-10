@@ -1,16 +1,21 @@
 <?xml version='1.0' encoding='UTF-8'?>
 <!-- Schema file written by PDE -->
-<schema targetNamespace="org.faktorips.plugin">
+<schema targetNamespace="org.faktorips.plugin" xmlns="http://www.w3.org/2001/XMLSchema">
 <annotation>
-      <appInfo>
+      <appinfo>
          <meta.schema plugin="org.faktorips.plugin" id="objectExtensionProperty" name="ObjectExtensionProperty"/>
-      </appInfo>
+      </appinfo>
       <documentation>
          [Enter description of this extension point.]
       </documentation>
    </annotation>
 
    <element name="extension">
+      <annotation>
+         <appinfo>
+            <meta.element />
+         </appinfo>
+      </annotation>
       <complexType>
          <sequence minOccurs="1" maxOccurs="unbounded">
             <element ref="property"/>
@@ -42,16 +47,15 @@
    <element name="property">
       <complexType>
          <sequence>
-            <element ref="editorExtension"/>
          </sequence>
          <attribute name="class" type="string" use="required">
             <annotation>
                <documentation>
                   
                </documentation>
-               <appInfo>
+               <appinfo>
                   <meta.attribute kind="java" basedOn="org.faktorips.devtools.core.model.IIpsObjectExtensionProperty"/>
-               </appInfo>
+               </appinfo>
             </annotation>
          </attribute>
          <attribute name="extendedType" type="string" use="required">
@@ -59,6 +63,9 @@
                <documentation>
                   
                </documentation>
+               <appinfo>
+                  <meta.attribute kind="java" basedOn=":org.faktorips.devtools.core.model.IIpsElement"/>
+               </appinfo>
             </annotation>
          </attribute>
          <attribute name="defaultValue" type="string">
@@ -68,12 +75,20 @@
                </documentation>
             </annotation>
          </attribute>
-         <attribute name="editedInStandardExtensionArea" type="string" use="required">
+         <attribute name="editedInStandardExtensionArea" use="required">
             <annotation>
                <documentation>
                   
                </documentation>
             </annotation>
+            <simpleType>
+               <restriction base="string">
+                  <enumeration value="top">
+                  </enumeration>
+                  <enumeration value="bottom">
+                  </enumeration>
+               </restriction>
+            </simpleType>
          </attribute>
          <attribute name="sortOrder" type="string">
             <annotation>
@@ -85,68 +100,41 @@
       </complexType>
    </element>
 
-   <element name="editorExtension">
-      <complexType>
-         <attribute name="class" type="string">
-            <annotation>
-               <documentation>
-                  
-               </documentation>
-            </annotation>
-         </attribute>
-         <attribute name="page" type="string">
-            <annotation>
-               <documentation>
-                  
-               </documentation>
-            </annotation>
-         </attribute>
-      </complexType>
-   </element>
-
    <annotation>
-      <appInfo>
+      <appinfo>
          <meta.section type="since"/>
-      </appInfo>
+      </appinfo>
       <documentation>
          [Enter the first release in which this extension point appears.]
       </documentation>
    </annotation>
 
    <annotation>
-      <appInfo>
+      <appinfo>
          <meta.section type="examples"/>
-      </appInfo>
+      </appinfo>
       <documentation>
          [Enter extension point usage example here.]
       </documentation>
    </annotation>
 
    <annotation>
-      <appInfo>
+      <appinfo>
          <meta.section type="apiInfo"/>
-      </appInfo>
+      </appinfo>
       <documentation>
          [Enter API information here.]
       </documentation>
    </annotation>
 
    <annotation>
-      <appInfo>
+      <appinfo>
          <meta.section type="implementation"/>
-      </appInfo>
+      </appinfo>
       <documentation>
          [Enter information about supplied implementation of this extension point.]
       </documentation>
    </annotation>
 
-   <annotation>
-      <appInfo>
-         <meta.section type="copyright"/>
-      </appInfo>
-      <documentation>
-         
-      </documentation>
-   </annotation>
 
 </schema>
