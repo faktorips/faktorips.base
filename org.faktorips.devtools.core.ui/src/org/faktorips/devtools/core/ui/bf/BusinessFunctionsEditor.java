@@ -33,6 +33,7 @@ import org.faktorips.devtools.core.model.ContentsChangeListener;
 import org.faktorips.devtools.core.model.IIpsModel;
 import org.faktorips.devtools.core.model.bf.IBusinessFunction;
 import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
+import org.faktorips.devtools.core.ui.IpsUIPlugin;
 import org.faktorips.devtools.core.ui.editors.IIpsProblemChangedListener;
 import org.faktorips.devtools.core.ui.views.IpsProblemsLabelDecorator;
 
@@ -173,7 +174,7 @@ public class BusinessFunctionsEditor extends GraphicalEditorWithFlyoutPalette im
         }
         paletteRoot = new PaletteBuilder().buildPalette();
         setEditDomain(new DefaultEditDomain(this));
-        IpsPlugin.getDefault().getIpsProblemMarkerManager().addListener(this);
+        IpsUIPlugin.getDefault().getIpsProblemMarkerManager().addListener(this);
         super.init(site, input);
     }
 
@@ -193,7 +194,7 @@ public class BusinessFunctionsEditor extends GraphicalEditorWithFlyoutPalette im
         super.dispose();
         IpsPlugin.getDefault().getIpsModel().removeChangeListener(this);
         decorator.dispose();
-        IpsPlugin.getDefault().getIpsProblemMarkerManager().removeListener(this);
+        IpsUIPlugin.getDefault().getIpsProblemMarkerManager().removeListener(this);
     }
 
     /**

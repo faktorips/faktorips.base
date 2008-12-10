@@ -18,6 +18,7 @@ import org.eclipse.draw2d.AbsoluteBendpoint;
 import org.eclipse.gef.editparts.ScalableFreeformRootEditPart;
 import org.eclipse.gef.ui.parts.ScrollingGraphicalViewer;
 import org.eclipse.swt.widgets.Display;
+import org.eclipse.swt.widgets.Shell;
 import org.faktorips.devtools.core.AbstractIpsPluginTest;
 import org.faktorips.devtools.core.model.bf.BusinessFunctionIpsObjectType;
 import org.faktorips.devtools.core.model.bf.IBusinessFunction;
@@ -31,6 +32,7 @@ public class ControlFlowEditPartTest extends AbstractIpsPluginTest {
     private IControlFlow controlFlow;
     private ControlFlowEditPart editPart;
     private boolean refreshChildrenCalled;
+    private Shell shell;
     
     
     public void setUp() throws Exception{
@@ -40,7 +42,8 @@ public class ControlFlowEditPartTest extends AbstractIpsPluginTest {
         controlFlow = businessFunction.newControlFlow();
         refreshChildrenCalled = false;
         ScrollingGraphicalViewer viewer = new ScrollingGraphicalViewer();
-        viewer.createControl(Display.getDefault().getActiveShell());
+        shell = new Shell(Display.getDefault());
+        viewer.createControl(shell);
         ScalableFreeformRootEditPart root = new ScalableFreeformRootEditPart();
         root.setViewer(viewer);
         viewer.setRootEditPart(root);
@@ -58,6 +61,9 @@ public class ControlFlowEditPartTest extends AbstractIpsPluginTest {
         editPart.setParent(root);
     }
 
+    public void tearDownExtension(){
+        shell.dispose();
+    }
     public void testActivate() {
         editPart.activate();
         controlFlow.addBendpoint(0, new AbsoluteBendpoint(1, 1));

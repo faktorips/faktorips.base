@@ -18,6 +18,7 @@ import java.util.Arrays;
 import java.util.List;
 
 import org.eclipse.swt.widgets.Display;
+import org.eclipse.swt.widgets.Shell;
 import org.faktorips.devtools.core.AbstractIpsPluginTest;
 import org.faktorips.devtools.core.model.bf.BusinessFunctionIpsObjectType;
 import org.faktorips.devtools.core.model.bf.IBusinessFunction;
@@ -26,11 +27,21 @@ import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.ui.UIToolkit;
 
 public class BusinessFunctionRefControlTest extends AbstractIpsPluginTest {
+
+    private Shell shell;
+    
+    public void setUp() throws Exception{
+        super.setUp();
+        shell = new Shell(Display.getDefault());
+    }
+    
+    public void tearDownExtension(){
+        shell.dispose();
+    }
     
     public void testGetIpsSrcFiles() throws Exception {
         UIToolkit toolkit = new UIToolkit(null);
-        Display display = Display.getDefault();
-        BusinessFunctionRefControl control = new BusinessFunctionRefControl(display.getActiveShell(), toolkit);
+        BusinessFunctionRefControl control = new BusinessFunctionRefControl(shell, toolkit);
         assertEquals(0, control.getIpsSrcFiles().length);
         
         IIpsProject ipsProject = newIpsProject("TestProject");
