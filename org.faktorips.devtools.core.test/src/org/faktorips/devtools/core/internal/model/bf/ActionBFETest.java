@@ -221,6 +221,45 @@ public class ActionBFETest extends AbstractIpsPluginTest {
         action.setTarget("start");
         msgList = action.validate(ipsProject);
         assertNotNull(msgList.getMessageByCode(IActionBFE.MSGCODE_NAME_NOT_VALID));
+    }
+    
+    public void testGetReferencedBFQualifiedName(){
+        IActionBFE action = bf.newBusinessFunctionCallAction(new Point(10, 10));
+        action.setTarget("aTarget");
+        assertEquals("aTarget", action.getReferencedBfQualifiedName());
+        
+        action = bf.newOpaqueAction(new Point(10, 10));
+        action.setTarget("aTarget");
+        assertNull(action.getReferencedBfQualifiedName());
+    }
+    
+    public void testGetReferencedBFUnqualifiedName(){
+        IActionBFE action = bf.newBusinessFunctionCallAction(new Point(10, 10));
+        
+        action.setTarget("a.b.c.target");
+        assertEquals("target", action.getReferencedBfUnqualifedName());
+        
+        action.setTarget("");
+        assertEquals("", action.getReferencedBfUnqualifedName());
 
+        action = bf.newOpaqueAction(new Point(10, 10));
+        action.setTarget("a.b.c.target");
+        assertNull(action.getReferencedBfUnqualifedName());
+
+    }
+    
+    public void testGetDisplayString(){
+        IActionBFE action = bf.newBusinessFunctionCallAction(new Point(10, 10));
+        action.setTarget("aTarget");
+        assertEquals("aTarget", action.getDisplayString());
+        
+        action = bf.newMethodCallAction(new Point(10, 10));
+        action.setTarget("policy");
+        action.setExecutableMethodName("aMethod");
+        assertEquals("policy:aMethod", action.getDisplayString());
+        
+        action = bf.newOpaqueAction(new Point(10, 10));
+        action.setName("action");
+        assertEquals("action", action.getDisplayString());
     }
 }

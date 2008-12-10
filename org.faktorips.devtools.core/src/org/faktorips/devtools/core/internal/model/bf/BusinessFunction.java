@@ -58,6 +58,7 @@ public class BusinessFunction extends BaseIpsObject implements IBusinessFunction
         return parameterRectangleSize;
     }
 
+    //TODO test
     public void setParameterRectangleSize(Dimension parameterRectangleSize) {
         Dimension old = this.parameterRectangleSize;
         this.parameterRectangleSize = parameterRectangleSize;

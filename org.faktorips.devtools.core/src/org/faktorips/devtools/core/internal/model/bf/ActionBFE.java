@@ -80,7 +80,6 @@ public class ActionBFE extends BFElement implements IActionBFE {
         return target;
     }
 
-    // TODO test missing
     public String getReferencedBfQualifiedName() {
         if (getType().equals(BFElementType.ACTION_BUSINESSFUNCTIONCALL)) {
             return getTarget();
@@ -88,7 +87,6 @@ public class ActionBFE extends BFElement implements IActionBFE {
         return null;
     }
 
-    // TODO test missing
     public String getReferencedBfUnqualifedName() {
         if (getType().equals(BFElementType.ACTION_BUSINESSFUNCTIONCALL)) {
             int index = StringUtils.lastIndexOf(getTarget(), '.');
