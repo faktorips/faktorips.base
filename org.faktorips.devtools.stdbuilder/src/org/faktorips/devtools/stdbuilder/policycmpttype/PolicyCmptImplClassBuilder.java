@@ -911,7 +911,7 @@ public class PolicyCmptImplClassBuilder extends BasePolicyCmptTypeBuilder {
             }
             if (first) {
                 first = false;
-                builder.javaDoc(getJavaDocCommentForOverriddenMethod(), ANNOTATION_RESTRAINED_MODIFIABLE);
+                builder.javaDoc(getJavaDocCommentForOverriddenMethod(), ANNOTATION_GENERATED);
                 builder.methodBegin(java.lang.reflect.Modifier.PROTECTED, Void.TYPE.getName(),
                         MethodNames.INIT_PROPERTIES_FROM_XML, new String[] { "propMap" },
                         new String[] { isUseTypesafeCollections() ? Map.class.getName() + "<" + String.class.getName()
@@ -921,9 +921,6 @@ public class PolicyCmptImplClassBuilder extends BasePolicyCmptTypeBuilder {
             generator.generateInitPropertiesFromXml(builder);
         }
         if (!first) {
-            // there is at least one attribute
-            builder.appendln(MARKER_BEGIN_USER_CODE);
-            builder.appendln(MARKER_END_USER_CODE);
             builder.methodEnd();
         }
     }

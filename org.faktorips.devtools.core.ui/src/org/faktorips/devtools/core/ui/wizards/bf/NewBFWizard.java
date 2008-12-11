@@ -12,7 +12,7 @@
  * 
  **************************************************************************************************/
 
-package org.faktorips.devtools.bf.ui.wizard;
+package org.faktorips.devtools.core.ui.wizards.bf;
 
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.faktorips.devtools.core.ui.wizards.IpsObjectPage;

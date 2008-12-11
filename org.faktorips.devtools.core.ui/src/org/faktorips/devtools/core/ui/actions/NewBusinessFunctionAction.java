@@ -16,8 +16,8 @@ package org.faktorips.devtools.core.ui.actions;
 
 import org.eclipse.jface.action.Action;
 import org.eclipse.ui.IWorkbenchWindow;
-import org.faktorips.devtools.bf.ui.wizard.OpenNewBFWizardAction;
 import org.faktorips.devtools.core.ui.IpsUIPlugin;
+import org.faktorips.devtools.core.ui.wizards.bf.OpenNewBFWizardAction;
 
 /**
  * Opens the wizard for creating a new BusinessFunction.

@@ -1,4 +1,4 @@
-package org.faktorips.devtools.bf.ui.wizard;
+package org.faktorips.devtools.core.ui.wizards.bf;
 
 import org.eclipse.ui.INewWizard;
 import org.faktorips.devtools.core.ui.wizards.OpenNewWizardAction;

@@ -12,10 +12,11 @@
  * 
  **************************************************************************************************/
 
-package org.faktorips.devtools.bf.ui.wizard;
+package org.faktorips.devtools.core.ui.wizards.bf;
 
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.faktorips.devtools.core.model.bf.BusinessFunctionIpsObjectType;
+import org.faktorips.devtools.core.ui.IpsUIPlugin;
 import org.faktorips.devtools.core.ui.wizards.IpsObjectPage;
 
 /**
@@ -26,7 +27,7 @@ import org.faktorips.devtools.core.ui.wizards.IpsObjectPage;
 public class BFPage extends IpsObjectPage {
 
     public BFPage(IStructuredSelection selection) {
-        super(BusinessFunctionIpsObjectType.getInstance(), selection,
-                Messages.getString("BFPage.Title")); //$NON-NLS-1$
+        super(BusinessFunctionIpsObjectType.getInstance(), selection, Messages.getString("BFPage.Title")); //$NON-NLS-1$
+        setImageDescriptor(IpsUIPlugin.getDefault().getImageDescriptor("wizards/NewBusinessFunctionWizard.png")); //$NON-NLS-1$
     }
 }

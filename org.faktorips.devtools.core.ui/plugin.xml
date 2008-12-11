@@ -63,8 +63,8 @@
                id="org.faktorips.devtools.actions.OpenNewPcTypeWizardAction">
          </action>
          <action
-               class="org.faktorips.devtools.bf.ui.wizard.OpenNewBFWizardAction"
-               icon="icons/wizards/NewBusinessFunction.gif"
+               class="org.faktorips.devtools.core.ui.wizards.bf.OpenNewBFWizardAction"
+               icon="icons/NewBusinessFunction.gif"
                id="org.faktorips.devtools.bf.ui.wizard.OpenNewBFWizardAction"
                label="%org.faktorips.devtools.bf.ui.wizard.OpenNewBFWizardAction.label"
                style="push"
@@ -556,8 +556,8 @@
 		</wizard>
 		<wizard
 			category="org.faktorips.devtools"
-			class="org.faktorips.devtools.bf.ui.wizard.NewBFWizard"
-			icon="icons/wizards/NewBusinessFunction.gif"
+			class="org.faktorips.devtools.core.ui.wizards.bf.NewBFWizard"
+			icon="icons/NewBusinessFunction.gif"
 			id="org.faktorips.devtools.bf.ui.wizard"
 			name="%NewBfWizard.name">
 			<selection
