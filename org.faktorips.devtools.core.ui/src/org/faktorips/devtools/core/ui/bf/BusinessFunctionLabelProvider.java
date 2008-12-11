@@ -88,7 +88,7 @@ public class BusinessFunctionLabelProvider implements ILabelProvider {
             return ""; //$NON-NLS-1$
         }
         if(editPart instanceof ControlFlowEditPart){
-            return ""; //$NON-NLS-1$
+            return Messages.getString("BusinessFunctionLabelProvider.controlFlow"); //$NON-NLS-1$
         }
         String displayName = ((IBFElement)ipsElement).getDisplayString();
         if (editPart instanceof CallBusinessFunctionActionEditPart) {
