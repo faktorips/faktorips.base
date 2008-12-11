@@ -62,6 +62,7 @@ import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.model.testcase.IIpsTestRunListener;
 import org.faktorips.devtools.core.model.testcase.IIpsTestRunner;
 import org.faktorips.devtools.core.model.testcase.TestRuleViolationType;
+import org.faktorips.devtools.core.ui.IpsUIPlugin;
 import org.faktorips.util.StringUtil;
 
 /**
@@ -178,9 +179,9 @@ public class IpsTestRunnerViewPart extends ViewPart implements IIpsTestRunListen
         public LockScrollAction() {
             super(Messages.IpsTestRunnerViewPart_Menu_ScrollLock, Action.AS_CHECK_BOX);
             setToolTipText(Messages.IpsTestRunnerViewPart_Menu_ScrollLockTooltip); 
-            setDisabledImageDescriptor(IpsPlugin.getDefault().getImageDescriptor("dlcl16/lock.gif")); //$NON-NLS-1$
-            setHoverImageDescriptor(IpsPlugin.getDefault().getImageDescriptor("elcl16/lock.gif")); //$NON-NLS-1$
-            setImageDescriptor(IpsPlugin.getDefault().getImageDescriptor("elcl16/lock.gif")); //$NON-NLS-1$
+            setDisabledImageDescriptor(IpsUIPlugin.getDefault().getImageDescriptor("dlcl16/lock.gif")); //$NON-NLS-1$
+            setHoverImageDescriptor(IpsUIPlugin.getDefault().getImageDescriptor("elcl16/lock.gif")); //$NON-NLS-1$
+            setImageDescriptor(IpsUIPlugin.getDefault().getImageDescriptor("elcl16/lock.gif")); //$NON-NLS-1$
         }
         
         public void run(){
@@ -195,9 +196,9 @@ public class IpsTestRunnerViewPart extends ViewPart implements IIpsTestRunListen
         public StopTestRunAction() {
             setText(Messages.IpsTestRunnerViewPart_Action_StopTest); 
             setToolTipText(Messages.IpsTestRunnerViewPart_Action_StopTest_ToolTip); 
-            setDisabledImageDescriptor(IpsPlugin.getDefault().getImageDescriptor("dlcl16/stop.gif")); //$NON-NLS-1$
-            setHoverImageDescriptor(IpsPlugin.getDefault().getImageDescriptor("elcl16/stop.gif")); //$NON-NLS-1$
-            setImageDescriptor(IpsPlugin.getDefault().getImageDescriptor("elcl16/stop.gif")); //$NON-NLS-1$
+            setDisabledImageDescriptor(IpsUIPlugin.getDefault().getImageDescriptor("dlcl16/stop.gif")); //$NON-NLS-1$
+            setHoverImageDescriptor(IpsUIPlugin.getDefault().getImageDescriptor("elcl16/stop.gif")); //$NON-NLS-1$
+            setImageDescriptor(IpsUIPlugin.getDefault().getImageDescriptor("elcl16/stop.gif")); //$NON-NLS-1$
             setEnabled(false);
         }
         
@@ -217,9 +218,9 @@ public class IpsTestRunnerViewPart extends ViewPart implements IIpsTestRunListen
 		public RerunLastAction() {
 			setText(Messages.IpsTestRunnerViewPart_Action_RerunLastTest_Text); 
 			setToolTipText(Messages.IpsTestRunnerViewPart_Action_RerunLastTest_ToolTip); 
-			setDisabledImageDescriptor(IpsPlugin.getDefault().getImageDescriptor("dlcl16/relaunch.gif")); //$NON-NLS-1$
-			setHoverImageDescriptor(IpsPlugin.getDefault().getImageDescriptor("elcl16/relaunch.gif")); //$NON-NLS-1$
-			setImageDescriptor(IpsPlugin.getDefault().getImageDescriptor("elcl16/relaunch.gif")); //$NON-NLS-1$
+			setDisabledImageDescriptor(IpsUIPlugin.getDefault().getImageDescriptor("dlcl16/relaunch.gif")); //$NON-NLS-1$
+			setHoverImageDescriptor(IpsUIPlugin.getDefault().getImageDescriptor("elcl16/relaunch.gif")); //$NON-NLS-1$
+			setImageDescriptor(IpsUIPlugin.getDefault().getImageDescriptor("elcl16/relaunch.gif")); //$NON-NLS-1$
 			setEnabled(false);
 		}
 		
@@ -239,9 +240,9 @@ public class IpsTestRunnerViewPart extends ViewPart implements IIpsTestRunListen
         public ShowNextErrorAction() {
             setText(Messages.IpsTestRunnerViewPart_Action_NextFailure); 
             setToolTipText(Messages.IpsTestRunnerViewPart_Action_NextFailureToolTip); 
-            setDisabledImageDescriptor(IpsPlugin.getDefault().getImageDescriptor("dlcl16/select_next.gif")); //$NON-NLS-1$
-            setHoverImageDescriptor(IpsPlugin.getDefault().getImageDescriptor("elcl16/select_next.gif")); //$NON-NLS-1$
-            setImageDescriptor(IpsPlugin.getDefault().getImageDescriptor("elcl16/select_next.gif")); //$NON-NLS-1$
+            setDisabledImageDescriptor(IpsUIPlugin.getDefault().getImageDescriptor("dlcl16/select_next.gif")); //$NON-NLS-1$
+            setHoverImageDescriptor(IpsUIPlugin.getDefault().getImageDescriptor("elcl16/select_next.gif")); //$NON-NLS-1$
+            setImageDescriptor(IpsUIPlugin.getDefault().getImageDescriptor("elcl16/select_next.gif")); //$NON-NLS-1$
             setEnabled(false);
         }
         public void run(){
@@ -256,9 +257,9 @@ public class IpsTestRunnerViewPart extends ViewPart implements IIpsTestRunListen
         public ShowPreviousErrorAction() {
             setText(Messages.IpsTestRunnerViewPart_Action_PrevFailure); 
             setToolTipText(Messages.IpsTestRunnerViewPart_Action_PrevFailureToolTip); 
-            setDisabledImageDescriptor(IpsPlugin.getDefault().getImageDescriptor("dlcl16/select_prev.gif")); //$NON-NLS-1$
-            setHoverImageDescriptor(IpsPlugin.getDefault().getImageDescriptor("elcl16/select_prev.gif")); //$NON-NLS-1$
-            setImageDescriptor(IpsPlugin.getDefault().getImageDescriptor("elcl16/select_prev.gif")); //$NON-NLS-1$
+            setDisabledImageDescriptor(IpsUIPlugin.getDefault().getImageDescriptor("dlcl16/select_prev.gif")); //$NON-NLS-1$
+            setHoverImageDescriptor(IpsUIPlugin.getDefault().getImageDescriptor("elcl16/select_prev.gif")); //$NON-NLS-1$
+            setImageDescriptor(IpsUIPlugin.getDefault().getImageDescriptor("elcl16/select_prev.gif")); //$NON-NLS-1$
             setEnabled(false);
         }
         public void run(){
@@ -276,13 +277,13 @@ public class IpsTestRunnerViewPart extends ViewPart implements IIpsTestRunListen
             super("", AS_RADIO_BUTTON); //$NON-NLS-1$
             if (orientation == IpsTestRunnerViewPart.VIEW_ORIENTATION_HORIZONTAL) {
                 setText(Messages.IpsTestRunnerViewPart_Menu_HorizontalOrientation); 
-                setImageDescriptor(IpsPlugin.getDefault().getImageDescriptor("elcl16/th_horizontal.gif")); //$NON-NLS-1$                
+                setImageDescriptor(IpsUIPlugin.getDefault().getImageDescriptor("elcl16/th_horizontal.gif")); //$NON-NLS-1$                
             } else if (orientation == IpsTestRunnerViewPart.VIEW_ORIENTATION_VERTICAL) {
                 setText(Messages.IpsTestRunnerViewPart_Menu_VerticalOrientation); 
-                setImageDescriptor(IpsPlugin.getDefault().getImageDescriptor("elcl16/th_vertical.gif")); //$NON-NLS-1$              
+                setImageDescriptor(IpsUIPlugin.getDefault().getImageDescriptor("elcl16/th_vertical.gif")); //$NON-NLS-1$              
             } else if (orientation == IpsTestRunnerViewPart.VIEW_ORIENTATION_AUTOMATIC) {
                 setText(Messages.IpsTestRunnerViewPart_Menu_AutomaticOrientation);  
-                setImageDescriptor(IpsPlugin.getDefault().getImageDescriptor("elcl16/th_automatic.gif")); //$NON-NLS-1$             
+                setImageDescriptor(IpsUIPlugin.getDefault().getImageDescriptor("elcl16/th_automatic.gif")); //$NON-NLS-1$             
             }
             fActionOrientation = orientation;
         }

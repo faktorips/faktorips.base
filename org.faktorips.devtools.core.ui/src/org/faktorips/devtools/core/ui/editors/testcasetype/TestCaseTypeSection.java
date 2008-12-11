@@ -1053,7 +1053,7 @@ public class TestCaseTypeSection extends IpsSection {
         };
         actionAll.setChecked(showAll);
         actionAll.setToolTipText(Messages.TestCaseTypeSection_Action_ShowAll_ToolTip);
-        actionAll.setImageDescriptor(IpsPlugin.getDefault().getImageDescriptor("TestCase_flatView.gif")); //$NON-NLS-1$
+        actionAll.setImageDescriptor(IpsUIPlugin.getDefault().getImageDescriptor("TestCase_flatView.gif")); //$NON-NLS-1$
         form.getToolBarManager().add(actionAll);
         form.updateToolBar();
     }

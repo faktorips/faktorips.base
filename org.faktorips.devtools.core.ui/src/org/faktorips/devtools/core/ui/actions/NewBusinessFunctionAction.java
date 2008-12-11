@@ -16,7 +16,8 @@ package org.faktorips.devtools.core.ui.actions;
 
 import org.eclipse.jface.action.Action;
 import org.eclipse.ui.IWorkbenchWindow;
-import org.faktorips.devtools.core.IpsPlugin;
+import org.faktorips.devtools.bf.ui.wizard.OpenNewBFWizardAction;
+import org.faktorips.devtools.core.ui.IpsUIPlugin;
 
 /**
  * Opens the wizard for creating a new BusinessFunction.
@@ -29,13 +30,14 @@ public class NewBusinessFunctionAction extends Action {
     public NewBusinessFunctionAction(IWorkbenchWindow window) {
         super();
         this.window = window;
-        setText("Business Function");
-        setImageDescriptor(IpsPlugin.getDefault().getImageDescriptor("missing")); //$NON-NLS-1$
+        setText(Messages.NewBusinessFunctionAction_title);
+        setImageDescriptor(IpsUIPlugin.getDefault().getImageDescriptor("wizards/NewBusinessFunction.gif")); //$NON-NLS-1$
     }
 
     public void run() {
-        // TODO needs to be implemented. Therefore this class the Modelexplorer and all depending
-        // classes need to be moved to the core.ui. plugin
+        OpenNewBFWizardAction action = new OpenNewBFWizardAction();
+        action.init(window);
+        action.run(this);
     }
 
 }

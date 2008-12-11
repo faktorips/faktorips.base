@@ -16,7 +16,7 @@ package org.faktorips.devtools.core.ui.actions;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.ui.IWorkbenchWindow;
-import org.faktorips.devtools.core.IpsPlugin;
+import org.faktorips.devtools.core.ui.IpsUIPlugin;
 import org.faktorips.devtools.core.ui.wizards.fixdifferences.OpenFixDifferencesToModelWizardAction;
 
 /**
@@ -32,7 +32,7 @@ public class FixDifferencesAction extends Action {
         this.window = window;
         this.selection = selection;
         setText(Messages.FixDifferencesAction_text);
-        setImageDescriptor(IpsPlugin.getDefault().getImageDescriptor("FixDifferencesToModel.gif")); //$NON-NLS-1$
+        setImageDescriptor(IpsUIPlugin.getDefault().getImageDescriptor("FixDifferencesToModel.gif")); //$NON-NLS-1$
         this.setEnabled(true);
     }
 

@@ -21,6 +21,7 @@ import org.eclipse.jface.viewers.ISelectionProvider;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.wizard.WizardDialog;
 import org.faktorips.devtools.core.IpsPlugin;
+import org.faktorips.devtools.core.ui.IpsUIPlugin;
 import org.faktorips.devtools.core.ui.wizards.ipsarchiveexport.IpsArchiveExportWizard;
 
 /**
@@ -40,7 +41,7 @@ public class CreateIpsArchiveAction extends IpsAction {
         super.setText(Messages.CreateIpsArchiveAction_Name);
         super.setDescription(Messages.CreateIpsArchiveAction_Description);
         super.setToolTipText(Messages.CreateIpsArchiveAction_Tooltip);
-        super.setImageDescriptor(IpsPlugin.getDefault().getImageDescriptor("ExportIpsArchive.gif")); //$NON-NLS-1$
+        super.setImageDescriptor(IpsUIPlugin.getDefault().getImageDescriptor("ExportIpsArchive.gif")); //$NON-NLS-1$
     }
 
     /**

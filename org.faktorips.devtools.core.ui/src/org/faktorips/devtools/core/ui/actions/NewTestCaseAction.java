@@ -19,7 +19,7 @@ package org.faktorips.devtools.core.ui.actions;
 
 import org.eclipse.jface.action.Action;
 import org.eclipse.ui.IWorkbenchWindow;
-import org.faktorips.devtools.core.IpsPlugin;
+import org.faktorips.devtools.core.ui.IpsUIPlugin;
 import org.faktorips.devtools.core.ui.wizards.testcase.OpenNewTestCaseWizardAction;
 
 /**
@@ -34,7 +34,7 @@ public class NewTestCaseAction extends Action {
 		super();
 		this.window = window;
 		setText(Messages.NewTestCaseAction_name);
-        setImageDescriptor(IpsPlugin.getDefault().getImageDescriptor("NewTestCase.gif")); //$NON-NLS-1$
+        setImageDescriptor(IpsUIPlugin.getDefault().getImageDescriptor("NewTestCase.gif")); //$NON-NLS-1$
 	}
 	
 	public void run(){

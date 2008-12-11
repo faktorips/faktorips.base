@@ -29,6 +29,7 @@ import org.eclipse.ui.IViewReference;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmpt;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmptNamingStrategy;
+import org.faktorips.devtools.core.ui.IpsUIPlugin;
 import org.faktorips.devtools.core.ui.views.productstructureexplorer.ProductStructureExplorer;
 import org.faktorips.devtools.core.ui.wizards.deepcopy.DeepCopyWizard;
 
@@ -65,7 +66,7 @@ public class IpsDeepCopyAction extends IpsAction {
 
 		if (type == DeepCopyWizard.TYPE_COPY_PRODUCT) {
 			setText(Messages.IpsDeepCopyAction_name);
-            setImageDescriptor(IpsPlugin.getDefault().getImageDescriptor("DeepCopyWizard.gif")); //$NON-NLS-1$
+            setImageDescriptor(IpsUIPlugin.getDefault().getImageDescriptor("DeepCopyWizard.gif")); //$NON-NLS-1$
 		} else {
 			setText(NLS.bind(Messages.IpsDeepCopyAction_nameNewVersion, IpsPlugin.getDefault().getIpsPreferences().getChangesOverTimeNamingConvention().getVersionConceptNameSingular()));
             setImageDescriptor(IpsPlugin.getDefault().getImageDescriptor("NewVersionWizard.gif")); //$NON-NLS-1$

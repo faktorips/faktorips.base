@@ -61,6 +61,7 @@ import org.faktorips.devtools.core.internal.model.productcmpt.DateBasedProductCm
 import org.faktorips.devtools.core.model.ipsproject.IIpsArtefactBuilderSetInfo;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProjectProperties;
+import org.faktorips.devtools.core.ui.IpsUIPlugin;
 import org.faktorips.devtools.core.ui.UIToolkit;
 import org.faktorips.devtools.core.ui.controls.Radiobutton;
 import org.faktorips.devtools.core.ui.controls.RadiobuttonGroup;
@@ -494,7 +495,7 @@ public class AddIpsNatureAction extends ActionDelegate {
 
             Control contents = super.createContents(parent);
             setTitle(Messages.AddIpsNatureAction_dialogTitle);
-            dlgTitleImage = IpsPlugin.getDefault().getImageDescriptor("wizards/AddIpsNatureWizard.png").createImage(); //$NON-NLS-1$
+            dlgTitleImage = IpsUIPlugin.getDefault().getImageDescriptor("wizards/AddIpsNatureWizard.png").createImage(); //$NON-NLS-1$
             setTitleImage(dlgTitleImage);
             setMessage(Messages.AddIpsNatureAction_dialogMessage);
 

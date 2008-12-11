@@ -257,12 +257,12 @@ public class TestCaseSection extends IpsSection implements IIpsTestRunListener {
             if (actionContentType == TestCaseContentProvider.INPUT) {
                 buttonChecked();
                 setText(Messages.TestCaseSection_FilterInput);
-                setImageDescriptor(IpsPlugin.getDefault().getImageDescriptor("TestCaseInput.gif")); //$NON-NLS-1$
+                setImageDescriptor(IpsUIPlugin.getDefault().getImageDescriptor("TestCaseInput.gif")); //$NON-NLS-1$
                 setToolTipText(Messages.TestCaseSection_FilterInput_ToolTip);
             } else if (actionContentType == TestCaseContentProvider.EXPECTED_RESULT) {
                 buttonChecked();
                 setText(Messages.TestCaseSection_FilterExpected); 
-                setImageDescriptor(IpsPlugin.getDefault().getImageDescriptor("TestCaseExpResult.gif")); //$NON-NLS-1$
+                setImageDescriptor(IpsUIPlugin.getDefault().getImageDescriptor("TestCaseExpResult.gif")); //$NON-NLS-1$
                 setToolTipText(Messages.TestCaseSection_FilterExpected_ToolTip);
             } else if (actionContentType == TestCaseContentProvider.COMBINED) {     
                 buttonChecked();
@@ -450,7 +450,7 @@ public class TestCaseSection extends IpsSection implements IIpsTestRunListener {
                 actionStoreActualValue.setText(Messages.TestCaseSection_Action_StoreExpectedResult);
                 actionStoreActualValue.setToolTipText(Messages.TestCaseSection_Action_ToolTipStoreExpectedResult);
             }
-            actionStoreActualValue.setImageDescriptor(IpsPlugin.getDefault().getImageDescriptor("TestCaseStoreExpResult.gif")); //$NON-NLS-1$
+            actionStoreActualValue.setImageDescriptor(IpsUIPlugin.getDefault().getImageDescriptor("TestCaseStoreExpResult.gif")); //$NON-NLS-1$
             
             manager.add(actionStoreActualValue);
         }
@@ -1021,7 +1021,7 @@ public class TestCaseSection extends IpsSection implements IIpsTestRunListener {
 		};
 		actionAssociation.setChecked(false);
 		actionAssociation.setToolTipText(Messages.TestCaseSection_ToolBar_WithoutAssociation);
-		actionAssociation.setImageDescriptor(IpsPlugin.getDefault().getImageDescriptor("ShowAssociationTypeNodes.gif")); //$NON-NLS-1$
+		actionAssociation.setImageDescriptor(IpsUIPlugin.getDefault().getImageDescriptor("ShowAssociationTypeNodes.gif")); //$NON-NLS-1$
 		
         // Toolbar item show all
 		actionAll = new Action("structureAll", Action.AS_CHECK_BOX) { //$NON-NLS-1$

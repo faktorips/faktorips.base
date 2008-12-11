@@ -78,6 +78,7 @@ import org.faktorips.devtools.core.model.testcasetype.ITestCaseType;
 import org.faktorips.devtools.core.model.type.IAssociation;
 import org.faktorips.devtools.core.model.type.IAttribute;
 import org.faktorips.devtools.core.model.type.IMethod;
+import org.faktorips.devtools.core.ui.IpsUIPlugin;
 import org.faktorips.devtools.core.ui.actions.CreateIpsArchiveAction;
 import org.faktorips.devtools.core.ui.actions.ExpandCollapseAllAction;
 import org.faktorips.devtools.core.ui.actions.FindPolicyReferencesAction;
@@ -94,6 +95,7 @@ import org.faktorips.devtools.core.ui.actions.IpsTestCaseCopyAction;
 import org.faktorips.devtools.core.ui.actions.MigrateProjectAction;
 import org.faktorips.devtools.core.ui.actions.ModelExplorerDeleteAction;
 import org.faktorips.devtools.core.ui.actions.MoveAction;
+import org.faktorips.devtools.core.ui.actions.NewBusinessFunctionAction;
 import org.faktorips.devtools.core.ui.actions.NewFileResourceAction;
 import org.faktorips.devtools.core.ui.actions.NewFolderAction;
 import org.faktorips.devtools.core.ui.actions.NewIpsPacketAction;
@@ -432,7 +434,7 @@ public class ModelExplorer extends ViewPart implements IShowInTarget {
     private void createMenu(IMenuManager menuManager) {
         IAction flatLayoutAction = new LayoutAction(this, true);
         flatLayoutAction.setText(Messages.ModelExplorer_actionFlatLayout);
-        flatLayoutAction.setImageDescriptor(IpsPlugin.getDefault().getImageDescriptor("ModelExplorerFlatLayout.gif")); //$NON-NLS-1$
+        flatLayoutAction.setImageDescriptor(IpsUIPlugin.getDefault().getImageDescriptor("ModelExplorerFlatLayout.gif")); //$NON-NLS-1$
         IAction hierarchicalLayoutAction = new LayoutAction(this, false);
         hierarchicalLayoutAction.setText(Messages.ModelExplorer_actionHierarchicalLayout);
         hierarchicalLayoutAction.setImageDescriptor(IpsPlugin.getDefault().getImageDescriptor(
@@ -733,6 +735,9 @@ public class ModelExplorer extends ViewPart implements IShowInTarget {
                 }
                 if (config.isAllowedIpsElementType(ITestCaseType.class)) {
                     newMenu.add(new NewTestCaseTypeAction(getSite().getWorkbenchWindow()));
+                }
+                if (config.isAllowedIpsElementType(IBusinessFunction.class)) {
+                    newMenu.add(new NewBusinessFunctionAction(getSite().getWorkbenchWindow()));
                 }
 
                 // add copy actions depend on selected ips object type

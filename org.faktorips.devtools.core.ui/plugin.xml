@@ -62,6 +62,15 @@
                toolbarPath="org.faktorips.devtools"
                id="org.faktorips.devtools.actions.OpenNewPcTypeWizardAction">
          </action>
+         <action
+               class="org.faktorips.devtools.bf.ui.wizard.OpenNewBFWizardAction"
+               icon="icons/wizards/NewBusinessFunction.gif"
+               id="org.faktorips.devtools.bf.ui.wizard.OpenNewBFWizardAction"
+               label="%org.faktorips.devtools.bf.ui.wizard.OpenNewBFWizardAction.label"
+               style="push"
+               toolbarPath="org.faktorips.devtools"
+               tooltip="%org.faktorips.devtools.bf.ui.wizard.OpenNewBFWizardAction.tooltip">
+         </action>
          
       </actionSet>
 
@@ -554,6 +563,9 @@
 			<selection
 				class="org.eclipse.core.resources.IResource">
 			</selection>
+   <description>
+      %NewBfWizard.description
+   </description>
       	</wizard>
 	</extension>
     <extension

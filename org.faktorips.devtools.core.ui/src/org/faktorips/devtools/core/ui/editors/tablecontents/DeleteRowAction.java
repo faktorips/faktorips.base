@@ -19,8 +19,8 @@ package org.faktorips.devtools.core.ui.editors.tablecontents;
 
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.TableViewer;
-import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.model.tablecontents.IRow;
+import org.faktorips.devtools.core.ui.IpsUIPlugin;
 import org.faktorips.devtools.core.ui.actions.IpsAction;
 import org.faktorips.devtools.core.ui.actions.Messages;
 
@@ -46,7 +46,7 @@ public class DeleteRowAction extends IpsAction {
         setControlWithDataChangeableSupport(page);
         setText(Messages.DeleteRowAction_Label);
         setToolTipText(Messages.DeleteRowAction_Tooltip);
-        setImageDescriptor(IpsPlugin.getDefault().getImageDescriptor("Delete.gif")); //$NON-NLS-1$
+        setImageDescriptor(IpsUIPlugin.getDefault().getImageDescriptor("Delete.gif")); //$NON-NLS-1$
     }
     
     /**

@@ -30,6 +30,7 @@ import org.faktorips.devtools.core.model.IIpsElement;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPart;
 import org.faktorips.devtools.core.model.ipsproject.IIpsPackageFragmentRoot;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
+import org.faktorips.devtools.core.ui.IpsUIPlugin;
 
 /**
  * Problemdecorator for Ips-projects. This decorator marks IpsObjects themselves, packagefragments,
@@ -194,7 +195,7 @@ public class IpsProblemsLabelDecorator implements ILabelDecorator, ILightweightL
         try {
             int adornmentFlags = computeAdornmentFlags(element);
             if (adornmentFlags == JavaElementImageDescriptor.ERROR) {
-                decoration.addOverlay(IpsPlugin.getDefault().getImageDescriptor("ovr16/error_co.gif")); //$NON-NLS-1$
+                decoration.addOverlay(IpsUIPlugin.getDefault().getImageDescriptor("ovr16/error_co.gif")); //$NON-NLS-1$
             } else if (adornmentFlags == JavaElementImageDescriptor.WARNING) {
                 decoration.addOverlay(IpsPlugin.getDefault().getImageDescriptor("ovr16/warning_co.gif")); //$NON-NLS-1$
             }

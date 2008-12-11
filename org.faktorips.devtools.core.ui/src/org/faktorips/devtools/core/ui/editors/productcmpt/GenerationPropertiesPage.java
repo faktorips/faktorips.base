@@ -33,6 +33,7 @@ import org.eclipse.ui.forms.widgets.ScrolledForm;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObjectGeneration;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmptGeneration;
+import org.faktorips.devtools.core.ui.IpsUIPlugin;
 import org.faktorips.devtools.core.ui.UIToolkit;
 import org.faktorips.devtools.core.ui.editors.IpsObjectEditor;
 import org.faktorips.devtools.core.ui.editors.IpsObjectEditorPage;
@@ -137,7 +138,7 @@ public class GenerationPropertiesPage extends IpsObjectEditorPage {
 
         public GotoGenerationAction(GenerationPropertiesPage generationPropertiesPage, String imageName) {
             this.generationPropertiesPage = generationPropertiesPage;
-            setImageDescriptor(IpsPlugin.getDefault().getImageDescriptor(imageName));
+            setImageDescriptor(IpsUIPlugin.getDefault().getImageDescriptor(imageName));
             update();
         }
 

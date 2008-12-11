@@ -34,6 +34,7 @@ import org.faktorips.devtools.core.model.IIpsModel;
 import org.faktorips.devtools.core.model.tablecontents.ITableContents;
 import org.faktorips.devtools.core.model.tablecontents.ITableContentsGeneration;
 import org.faktorips.devtools.core.model.tablestructure.ITableStructure;
+import org.faktorips.devtools.core.ui.IpsUIPlugin;
 import org.faktorips.devtools.core.ui.WorkbenchRunnableAdapter;
 import org.faktorips.devtools.core.ui.wizards.ResultDisplayer;
 import org.faktorips.devtools.extsystems.AbstractExternalTableFormat;
@@ -62,9 +63,9 @@ public class TableImportWizard extends Wizard implements IImportWizard {
     public TableImportWizard() {
         super();
         setWindowTitle(Messages.TableImport_title);
-        this.setDefaultPageImageDescriptor(IpsPlugin.getDefault().getImageDescriptor("wizards/TableImportWizard.png")); //$NON-NLS-1$
+        this.setDefaultPageImageDescriptor(IpsUIPlugin.getDefault().getImageDescriptor("wizards/TableImportWizard.png")); //$NON-NLS-1$
 
-        IDialogSettings workbenchSettings= IpsPlugin.getDefault().getDialogSettings();
+        IDialogSettings workbenchSettings= IpsUIPlugin.getDefault().getDialogSettings();
         IDialogSettings section= workbenchSettings.getSection(DIALOG_SETTINGS_KEY); //$NON-NLS-1$
         if (section == null)
             hasNewDialogSettings = true;

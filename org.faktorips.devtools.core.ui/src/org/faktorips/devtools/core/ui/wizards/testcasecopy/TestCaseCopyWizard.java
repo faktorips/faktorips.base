@@ -59,14 +59,14 @@ public class TestCaseCopyWizard extends ResizableWizard {
     private List packageFrgmtsCreatedByWizard = new ArrayList(5);
 
     public TestCaseCopyWizard(ITestCase sourceTestCase) {
-        super("TestCaseCopyWizard", IpsPlugin.getDefault().getDialogSettings(), 600, 800); //$NON-NLS-1$
+        super("TestCaseCopyWizard", IpsUIPlugin.getDefault().getDialogSettings(), 600, 800); //$NON-NLS-1$
 
         this.sourceTestCase = sourceTestCase;
 
         toolkit = new UIToolkit(null);
 
         super.setWindowTitle(Messages.TestCaseCopyWizard_title);
-        super.setDefaultPageImageDescriptor(IpsPlugin.getDefault().getImageDescriptor("wizards/NewTestCaseCopyWizard.png")); //$NON-NLS-1$
+        super.setDefaultPageImageDescriptor(IpsUIPlugin.getDefault().getImageDescriptor("wizards/NewTestCaseCopyWizard.png")); //$NON-NLS-1$
     }
 
     /**

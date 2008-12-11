@@ -22,6 +22,7 @@ import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.wizard.WizardDialog;
 import org.eclipse.swt.widgets.Shell;
 import org.faktorips.devtools.core.IpsPlugin;
+import org.faktorips.devtools.core.ui.IpsUIPlugin;
 import org.faktorips.devtools.core.ui.wizards.ipspackage.NewIpsPackageWizard;
 
 /**
@@ -40,7 +41,7 @@ public class NewIpsPacketAction extends IpsAction {
         super(selectionProvider);
         this.shell = shell;
         setText(Messages.NewIpsPacketAction_name);
-        setImageDescriptor(IpsPlugin.getDefault().getImageDescriptor("NewIpsPackageFragment.gif")); //$NON-NLS-1$
+        setImageDescriptor(IpsUIPlugin.getDefault().getImageDescriptor("NewIpsPackageFragment.gif")); //$NON-NLS-1$
     }
 
     /**

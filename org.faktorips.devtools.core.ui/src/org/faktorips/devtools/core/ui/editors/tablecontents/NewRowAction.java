@@ -19,10 +19,10 @@ package org.faktorips.devtools.core.ui.editors.tablecontents;
 
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.TableViewer;
-import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.model.tablecontents.IRow;
 import org.faktorips.devtools.core.model.tablecontents.ITableContents;
 import org.faktorips.devtools.core.model.tablecontents.ITableContentsGeneration;
+import org.faktorips.devtools.core.ui.IpsUIPlugin;
 import org.faktorips.devtools.core.ui.actions.IpsAction;
 
 /**
@@ -49,7 +49,7 @@ public class NewRowAction extends IpsAction {
         setControlWithDataChangeableSupport(page);
         setText(Messages.NewRowAction_Label);
         setToolTipText(Messages.NewRowAction_Tooltip);
-        setImageDescriptor(IpsPlugin.getDefault().getImageDescriptor("InsertRowAfter.gif")); //$NON-NLS-1$
+        setImageDescriptor(IpsUIPlugin.getDefault().getImageDescriptor("InsertRowAfter.gif")); //$NON-NLS-1$
     }
     
     /**

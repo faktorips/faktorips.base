@@ -25,6 +25,7 @@ import org.eclipse.jface.viewers.ISelectionProvider;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.ui.IActionDelegate;
 import org.faktorips.devtools.core.IpsPlugin;
+import org.faktorips.devtools.core.ui.IpsUIPlugin;
 
 /**
  * Generic action wrapping action delegates defined by other plugins.
@@ -78,7 +79,7 @@ public class WrapperAction extends IpsAction {
     public WrapperAction(ISelectionProvider selectionProvider, String label, String tooltip, String imageName, String actionSetId, String actionId) {
         this(selectionProvider, label, tooltip, actionSetId, actionId);
         if(imageName!=null){
-            ImageDescriptor imageDescriptor= IpsPlugin.getDefault().getImageDescriptor(imageName);
+            ImageDescriptor imageDescriptor= IpsUIPlugin.getDefault().getImageDescriptor(imageName);
             if(imageDescriptor!=null){
                 setImageDescriptor(imageDescriptor);
             }

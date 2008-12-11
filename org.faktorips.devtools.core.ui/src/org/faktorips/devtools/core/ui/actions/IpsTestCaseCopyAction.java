@@ -21,8 +21,8 @@ import org.eclipse.jface.viewers.ISelectionProvider;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.wizard.WizardDialog;
 import org.eclipse.swt.widgets.Shell;
-import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.model.testcase.ITestCase;
+import org.faktorips.devtools.core.ui.IpsUIPlugin;
 import org.faktorips.devtools.core.ui.wizards.testcasecopy.TestCaseCopyWizard;
 
 public class IpsTestCaseCopyAction extends IpsAction {
@@ -32,7 +32,7 @@ public class IpsTestCaseCopyAction extends IpsAction {
         super(selectionProvider);
         this.shell = shell;
         setText(Messages.IpsTestCaseCopyAction_name);
-        setImageDescriptor(IpsPlugin.getDefault().getImageDescriptor("NewTestCaseCopyWizard.gif")); //$NON-NLS-1$
+        setImageDescriptor(IpsUIPlugin.getDefault().getImageDescriptor("NewTestCaseCopyWizard.gif")); //$NON-NLS-1$
     }
 
     public void run(IStructuredSelection selection) {

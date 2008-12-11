@@ -20,7 +20,7 @@ package org.faktorips.devtools.core.ui.actions;
 import org.eclipse.jdt.ui.actions.RefreshAction;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.ui.IWorkbenchPartSite;
-import org.faktorips.devtools.core.IpsPlugin;
+import org.faktorips.devtools.core.ui.IpsUIPlugin;
 
 /**
  * Action for refreshButton in the toolbar of a TreeViewer. Used in <code>ModelExplorer</code>,
@@ -37,7 +37,7 @@ public class TreeViewerRefreshAction extends RefreshAction {
      * {@inheritDoc}
      */
     public ImageDescriptor getImageDescriptor() {
-        return IpsPlugin.getDefault().getImageDescriptor("Refresh.gif"); //$NON-NLS-1$
+        return IpsUIPlugin.getDefault().getImageDescriptor("Refresh.gif"); //$NON-NLS-1$
     }
     
     /**

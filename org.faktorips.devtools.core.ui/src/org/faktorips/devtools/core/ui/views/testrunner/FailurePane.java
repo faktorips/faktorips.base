@@ -58,6 +58,7 @@ import org.eclipse.ui.ide.IDE;
 import org.eclipse.ui.part.FileEditorInput;
 import org.eclipse.ui.texteditor.ITextEditor;
 import org.faktorips.devtools.core.IpsPlugin;
+import org.faktorips.devtools.core.ui.IpsUIPlugin;
 
 /**
  * Test runner failure pane shows all errors or failures in a table.
@@ -90,9 +91,9 @@ public class FailurePane implements IMenuListener {
             super("", AS_RADIO_BUTTON); //$NON-NLS-1$
             setText(Messages.IpsTestRunnerViewPart_Action_ShowStackTrace); 
             setToolTipText(Messages.IpsTestRunnerViewPart_Action_ShowStackTraceToolTip); 
-            setDisabledImageDescriptor(IpsPlugin.getDefault().getImageDescriptor("dlcl16/cfilter.gif")); //$NON-NLS-1$
-            setHoverImageDescriptor(IpsPlugin.getDefault().getImageDescriptor("elcl16/cfilter.gif")); //$NON-NLS-1$
-            setImageDescriptor(IpsPlugin.getDefault().getImageDescriptor("elcl16/cfilter.gif")); //$NON-NLS-1$
+            setDisabledImageDescriptor(IpsUIPlugin.getDefault().getImageDescriptor("dlcl16/cfilter.gif")); //$NON-NLS-1$
+            setHoverImageDescriptor(IpsUIPlugin.getDefault().getImageDescriptor("elcl16/cfilter.gif")); //$NON-NLS-1$
+            setImageDescriptor(IpsUIPlugin.getDefault().getImageDescriptor("elcl16/cfilter.gif")); //$NON-NLS-1$
             setEnabled(showStackTrace);
         }
         public void run(){

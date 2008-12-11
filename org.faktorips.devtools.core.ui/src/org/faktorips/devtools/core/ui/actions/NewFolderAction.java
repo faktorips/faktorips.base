@@ -26,6 +26,7 @@ import org.eclipse.swt.widgets.Shell;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.model.IIpsElement;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
+import org.faktorips.devtools.core.ui.IpsUIPlugin;
 
 /**
  * Opens a dialog to let the user specify a foldername and creates the folder in the filesystem. It
@@ -47,7 +48,7 @@ public class NewFolderAction extends IpsAction {
         super(selectionProvider);
         this.shell = shell;
         setText(Messages.NewFolderAction_name);
-        setImageDescriptor(IpsPlugin.getDefault().getImageDescriptor("NewFolder.gif")); //$NON-NLS-1$
+        setImageDescriptor(IpsUIPlugin.getDefault().getImageDescriptor("NewFolder.gif")); //$NON-NLS-1$
     }
 
     /**

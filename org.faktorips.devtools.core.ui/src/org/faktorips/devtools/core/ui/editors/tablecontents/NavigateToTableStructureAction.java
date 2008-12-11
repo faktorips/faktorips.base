@@ -34,7 +34,7 @@ class NavigateToTableStructureAction extends Action {
         this.tableContents = tableContents;
         setText(Messages.NavigateToTableStructureAction_Label);
         setToolTipText(Messages.NavigateToTableStructureAction_ToolTip);
-        setImageDescriptor(IpsPlugin.getDefault().getImageDescriptor("TableStructure.gif")); //$NON-NLS-1$
+        setImageDescriptor(IpsUIPlugin.getDefault().getImageDescriptor("TableStructure.gif")); //$NON-NLS-1$
     }
 
     /**

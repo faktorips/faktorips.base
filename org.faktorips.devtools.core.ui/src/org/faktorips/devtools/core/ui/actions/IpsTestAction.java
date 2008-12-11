@@ -46,6 +46,7 @@ import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmpt;
 import org.faktorips.devtools.core.model.testcase.IIpsTestRunner;
 import org.faktorips.devtools.core.model.testcase.ITestCase;
+import org.faktorips.devtools.core.ui.IpsUIPlugin;
 import org.faktorips.devtools.core.ui.editors.testcase.TestCaseEditor;
 import org.faktorips.devtools.core.ui.views.testrunner.IpsTestRunnerViewPart;
 
@@ -69,7 +70,7 @@ public class IpsTestAction extends IpsAction {
         super.setText(Messages.IpsTestCaseAction_name);
         super.setDescription(Messages.IpsTestCaseAction_description);
         super.setToolTipText(Messages.IpsTestCaseAction_tooltip);
-        super.setImageDescriptor(IpsPlugin.getDefault().getImageDescriptor("TestCaseRun.gif")); //$NON-NLS-1$
+        super.setImageDescriptor(IpsUIPlugin.getDefault().getImageDescriptor("TestCaseRun.gif")); //$NON-NLS-1$
 	}
 
     public IpsTestAction(ISelectionProvider selectionProvider, String mode){

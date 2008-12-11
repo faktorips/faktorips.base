@@ -19,7 +19,7 @@ package org.faktorips.devtools.core.ui.actions;
 
 import org.eclipse.jface.action.Action;
 import org.eclipse.ui.IWorkbenchWindow;
-import org.faktorips.devtools.core.IpsPlugin;
+import org.faktorips.devtools.core.ui.IpsUIPlugin;
 import org.faktorips.devtools.core.ui.wizards.tablecontents.OpenNewTableContentsWizardAction;
 
 /**
@@ -35,7 +35,7 @@ public class NewTableContentAction extends Action {
 		super();
 		this.window = window;
 		setText(Messages.NewTableContentAction_name);
-        setImageDescriptor(IpsPlugin.getDefault().getImageDescriptor("NewTableContentsWizard.gif")); //$NON-NLS-1$
+        setImageDescriptor(IpsUIPlugin.getDefault().getImageDescriptor("NewTableContentsWizard.gif")); //$NON-NLS-1$
 	}
 
 	/** 

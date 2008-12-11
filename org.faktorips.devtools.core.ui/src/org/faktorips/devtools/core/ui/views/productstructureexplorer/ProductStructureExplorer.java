@@ -79,6 +79,7 @@ import org.faktorips.devtools.core.model.productcmpt.ITableContentUsage;
 import org.faktorips.devtools.core.model.productcmpt.treestructure.CycleInProductStructureException;
 import org.faktorips.devtools.core.model.productcmpt.treestructure.IProductCmptReference;
 import org.faktorips.devtools.core.model.productcmpt.treestructure.IProductCmptTreeStructure;
+import org.faktorips.devtools.core.ui.IpsUIPlugin;
 import org.faktorips.devtools.core.ui.actions.FindProductReferencesAction;
 import org.faktorips.devtools.core.ui.actions.OpenEditorAction;
 import org.faktorips.devtools.core.ui.views.IpsElementDragListener;
@@ -273,7 +274,7 @@ public class ProductStructureExplorer extends ViewPart implements ContentsChange
     private Action createShowAssociationNodeAction() {
         return new Action(Messages.ProductStructureExplorer_menuShowAssociationNodes_name, Action.AS_CHECK_BOX) {
             public ImageDescriptor getImageDescriptor() {
-                return IpsPlugin.getDefault().getImageDescriptor("ShowAssociationTypeNodes.gif"); //$NON-NLS-1$
+                return IpsUIPlugin.getDefault().getImageDescriptor("ShowAssociationTypeNodes.gif"); //$NON-NLS-1$
             }
             public void run() {
                 contentProvider.setAssociationTypeShowing(!contentProvider.isAssociationTypeShowing());
@@ -289,7 +290,7 @@ public class ProductStructureExplorer extends ViewPart implements ContentsChange
     private void initToolBar(IToolBarManager toolBarManager) {
         Action refreshAction= new Action() {
             public ImageDescriptor getImageDescriptor() {
-                return IpsPlugin.getDefault().getImageDescriptor("Refresh.gif"); //$NON-NLS-1$
+                return IpsUIPlugin.getDefault().getImageDescriptor("Refresh.gif"); //$NON-NLS-1$
             }
             
             public void run() {
@@ -314,7 +315,7 @@ public class ProductStructureExplorer extends ViewPart implements ContentsChange
             }
         
             public ImageDescriptor getImageDescriptor() {
-                return IpsPlugin.getDefault().getImageDescriptor("CollapseAll.gif"); //$NON-NLS-1$
+                return IpsUIPlugin.getDefault().getImageDescriptor("CollapseAll.gif"); //$NON-NLS-1$
             }
 
             public String getToolTipText() {
@@ -331,7 +332,7 @@ public class ProductStructureExplorer extends ViewPart implements ContentsChange
             }
         
             public ImageDescriptor getImageDescriptor() {
-                return IpsPlugin.getDefault().getImageDescriptor("Clear.gif"); //$NON-NLS-1$
+                return IpsUIPlugin.getDefault().getImageDescriptor("Clear.gif"); //$NON-NLS-1$
             }
 
             public String getToolTipText() {

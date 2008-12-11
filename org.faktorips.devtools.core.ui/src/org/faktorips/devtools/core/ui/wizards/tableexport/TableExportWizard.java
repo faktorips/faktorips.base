@@ -39,6 +39,7 @@ import org.eclipse.ui.actions.WorkspaceModifyOperation;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.IpsStatus;
 import org.faktorips.devtools.core.model.tablecontents.ITableContents;
+import org.faktorips.devtools.core.ui.IpsUIPlugin;
 import org.faktorips.devtools.core.ui.wizards.ResultDisplayer;
 import org.faktorips.devtools.extsystems.AbstractExternalTableFormat;
 import org.faktorips.util.message.MessageList;
@@ -65,9 +66,9 @@ public class TableExportWizard extends Wizard implements IExportWizard {
 	public TableExportWizard() {
 		super();
 		setWindowTitle(Messages.TableExport_title);
-        this.setDefaultPageImageDescriptor(IpsPlugin.getDefault().getImageDescriptor("wizards/TableExportWizard.png")); //$NON-NLS-1$
+        this.setDefaultPageImageDescriptor(IpsUIPlugin.getDefault().getImageDescriptor("wizards/TableExportWizard.png")); //$NON-NLS-1$
 
-        IDialogSettings workbenchSettings= IpsPlugin.getDefault().getDialogSettings();
+        IDialogSettings workbenchSettings= IpsUIPlugin.getDefault().getDialogSettings();
         IDialogSettings section= workbenchSettings.getSection(DIALOG_SETTINGS_KEY); //$NON-NLS-1$
         if (section == null)
             hasNewDialogSettings = true;

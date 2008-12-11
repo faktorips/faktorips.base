@@ -59,7 +59,7 @@ public class OpenIpsObjectAction extends Action implements IWorkbenchWindowActio
         setDescription(Messages.OpenIpsObjectAction_description);
         setToolTipText(Messages.OpenIpsObjectAction_tooltip);
         setAccelerator(SWT.CTRL | SWT.SHIFT | 'I');
-        setImageDescriptor(IpsPlugin.getDefault().getImageDescriptor("OpenIpsObject.gif")); //$NON-NLS-1$
+        setImageDescriptor(IpsUIPlugin.getDefault().getImageDescriptor("OpenIpsObject.gif")); //$NON-NLS-1$
     }
     
     public void run() {

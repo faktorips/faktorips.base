@@ -19,7 +19,7 @@ package org.faktorips.devtools.core.ui.wizards.tablecontents;
 
 import org.eclipse.jdt.core.JavaModelException;
 import org.eclipse.jface.viewers.IStructuredSelection;
-import org.faktorips.devtools.core.IpsPlugin;
+import org.faktorips.devtools.core.ui.IpsUIPlugin;
 import org.faktorips.devtools.core.ui.wizards.IpsObjectPage;
 import org.faktorips.devtools.core.ui.wizards.NewIpsObjectWizard;
 
@@ -32,7 +32,7 @@ public class NewTableContentsWizard extends NewIpsObjectWizard {
     private TableContentsPage page;
     
     public NewTableContentsWizard() {
-        this.setDefaultPageImageDescriptor(IpsPlugin.getDefault().getImageDescriptor("wizards/NewTableContentsWizard.png")); //$NON-NLS-1$
+        this.setDefaultPageImageDescriptor(IpsUIPlugin.getDefault().getImageDescriptor("wizards/NewTableContentsWizard.png")); //$NON-NLS-1$
     }
     
     /** 

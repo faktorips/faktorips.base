@@ -23,6 +23,7 @@ import org.eclipse.jface.wizard.WizardDialog;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.wizards.newresource.BasicNewFileResourceWizard;
 import org.faktorips.devtools.core.IpsPlugin;
+import org.faktorips.devtools.core.ui.IpsUIPlugin;
 
 public class NewFileResourceAction extends IpsAction {
 
@@ -34,7 +35,7 @@ public class NewFileResourceAction extends IpsAction {
         this.setDescription(Messages.NewFileResourceAction_description);
         this.setText(Messages.NewFileResourceAction_name);
         this.setToolTipText(this.getDescription());
-        setImageDescriptor(IpsPlugin.getDefault().getImageDescriptor("NewFileWizard.gif")); //$NON-NLS-1$
+        setImageDescriptor(IpsUIPlugin.getDefault().getImageDescriptor("NewFileWizard.gif")); //$NON-NLS-1$
 	}
 	
 	/**

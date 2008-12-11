@@ -42,6 +42,7 @@ import org.eclipse.ui.forms.widgets.TableWrapData;
 import org.eclipse.ui.forms.widgets.TableWrapLayout;
 import org.eclipse.ui.part.Page;
 import org.faktorips.devtools.core.IpsPlugin;
+import org.faktorips.devtools.core.ui.IpsUIPlugin;
 
 /**
  * A page for presenting {@link DescriptionItem}s similiar to the outline view.
@@ -247,7 +248,7 @@ abstract public class DefaultModelDescriptionPage extends Page {
             setDescription(Messages.DefaultModelDescriptionPage_SortDescription);
 
             // get image: "alphabetical sort enabled"
-            ImageDescriptor descriptor = IpsPlugin.getDefault().getImageDescriptor("elcl16/alphab_sort_co.gif"); //$NON-NLS-1$
+            ImageDescriptor descriptor = IpsUIPlugin.getDefault().getImageDescriptor("elcl16/alphab_sort_co.gif"); //$NON-NLS-1$
             this.setHoverImageDescriptor(descriptor);
             this.setImageDescriptor(descriptor);
 

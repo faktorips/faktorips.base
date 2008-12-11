@@ -19,7 +19,7 @@ package org.faktorips.devtools.core.ui.actions;
 
 import org.eclipse.jface.action.Action;
 import org.eclipse.ui.IWorkbenchWindow;
-import org.faktorips.devtools.core.IpsPlugin;
+import org.faktorips.devtools.core.ui.IpsUIPlugin;
 import org.faktorips.devtools.core.ui.wizards.productcmpttype.OpenNewProductCmptTypeWizardAction;
 
 /**
@@ -34,7 +34,7 @@ public class NewProductCmptTypeAction extends Action {
 		super();
 		this.window = window;
 		setText(Messages.NewProductCmptTypeAction_name);
-        setImageDescriptor(IpsPlugin.getDefault().getImageDescriptor("NewProductCmptTypeWizard.gif")); //$NON-NLS-1$
+        setImageDescriptor(IpsUIPlugin.getDefault().getImageDescriptor("NewProductCmptTypeWizard.gif")); //$NON-NLS-1$
 	}
 	
 	public void run(){

@@ -48,7 +48,7 @@ public class CopyProductCmptWizard extends Wizard implements INewIpsObjectWizard
     public CopyProductCmptWizard(IProductCmpt productCmpt) {
         ArgumentCheck.notNull(productCmpt);
         setWindowTitle(Messages.CopyProductCmptWizard_titleCopyProductComponent);
-        this.setDefaultPageImageDescriptor(IpsPlugin.getDefault().getImageDescriptor("wizards/NewProductCmptWizard.png")); //$NON-NLS-1$
+        this.setDefaultPageImageDescriptor(IpsUIPlugin.getDefault().getImageDescriptor("wizards/NewProductCmptWizard.png")); //$NON-NLS-1$
         sourceProductCmpt = productCmpt;
     }
     

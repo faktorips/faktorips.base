@@ -37,6 +37,7 @@ import org.faktorips.devtools.core.model.productcmpttype.ProductCmptTypeValidati
 import org.faktorips.devtools.core.model.type.IType;
 import org.faktorips.devtools.core.model.type.TypeHierarchyVisitor;
 import org.faktorips.devtools.core.model.type.TypeValidations;
+import org.faktorips.devtools.core.ui.IpsUIPlugin;
 import org.faktorips.devtools.core.ui.UIToolkit;
 import org.faktorips.devtools.core.ui.controller.fields.FieldValueChangedEvent;
 import org.faktorips.devtools.core.ui.controller.fields.TextButtonField;
@@ -59,7 +60,7 @@ public class ProductCmptTypePage extends TypePage {
     public ProductCmptTypePage(IStructuredSelection selection, PcTypePage pcTypePage) throws JavaModelException {
         super(IpsObjectType.PRODUCT_CMPT_TYPE_V2, selection, Messages.ProductCmptTypePage_title);
         this.pageOfAssociatedType = pcTypePage;
-        setImageDescriptor(IpsPlugin.getDefault().getImageDescriptor("wizards/NewProductCmptTypeWizard.png")); //$NON-NLS-1$
+        setImageDescriptor(IpsUIPlugin.getDefault().getImageDescriptor("wizards/NewProductCmptTypeWizard.png")); //$NON-NLS-1$
     }
     
     /**

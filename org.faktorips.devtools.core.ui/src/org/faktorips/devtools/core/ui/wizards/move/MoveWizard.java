@@ -37,6 +37,7 @@ import org.faktorips.devtools.core.model.ipsproject.IIpsPackageFragment;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmpt;
 import org.faktorips.devtools.core.model.tablecontents.ITableContents;
 import org.faktorips.devtools.core.model.testcase.ITestCase;
+import org.faktorips.devtools.core.ui.IpsUIPlugin;
 
 /**
  * A wizard to move and/or rename package fragements or product components.
@@ -85,11 +86,11 @@ public class MoveWizard extends Wizard {
 		this.operation = operation;
 		if (operation == OPERATION_MOVE) {
 			super.setWindowTitle(Messages.MoveWizard_titleMove);
-            super.setDefaultPageImageDescriptor(IpsPlugin.getDefault().getImageDescriptor("wizards/MoveAndRenameWizard.png")); //$NON-NLS-1$
+            super.setDefaultPageImageDescriptor(IpsUIPlugin.getDefault().getImageDescriptor("wizards/MoveAndRenameWizard.png")); //$NON-NLS-1$
 		} 
 		else if (operation == OPERATION_RENAME) {
 			super.setWindowTitle(Messages.MoveWizard_titleRename);
-            super.setDefaultPageImageDescriptor(IpsPlugin.getDefault().getImageDescriptor("wizards/RenameWizard.png")); //$NON-NLS-1$
+            super.setDefaultPageImageDescriptor(IpsUIPlugin.getDefault().getImageDescriptor("wizards/RenameWizard.png")); //$NON-NLS-1$
 		}
 		else {
 			String msg = NLS.bind(Messages.MoveWizard_warnInvalidOperation, ""+operation); //$NON-NLS-1$

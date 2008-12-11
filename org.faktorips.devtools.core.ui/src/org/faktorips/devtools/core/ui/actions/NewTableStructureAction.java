@@ -20,7 +20,7 @@ package org.faktorips.devtools.core.ui.actions;
 import org.eclipse.jface.action.Action;
 import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.IWorkbenchWindowActionDelegate;
-import org.faktorips.devtools.core.IpsPlugin;
+import org.faktorips.devtools.core.ui.IpsUIPlugin;
 import org.faktorips.devtools.core.ui.wizards.tablestructure.OpenNewTableStructureWizardAction;
 
 /**
@@ -35,7 +35,7 @@ public class NewTableStructureAction extends Action {
         super();
         this.window = window;
         setText(Messages.NewTableStructureAction_name);
-        setImageDescriptor(IpsPlugin.getDefault().getImageDescriptor("NewTableStructureWizard.gif")); //$NON-NLS-1$
+        setImageDescriptor(IpsUIPlugin.getDefault().getImageDescriptor("NewTableStructureWizard.gif")); //$NON-NLS-1$
     }
     
     public void run(){

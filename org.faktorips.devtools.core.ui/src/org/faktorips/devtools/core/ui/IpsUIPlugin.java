@@ -1,5 +1,6 @@
 package org.faktorips.devtools.core.ui;
 
+import java.net.URL;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -14,7 +15,10 @@ import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.content.IContentType;
 import org.eclipse.core.runtime.content.IContentTypeManager;
+import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.osgi.util.NLS;
+import org.eclipse.swt.graphics.Image;
+import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.IEditorDescriptor;
 import org.eclipse.ui.IEditorPart;
 import org.eclipse.ui.IEditorSite;
@@ -27,11 +31,13 @@ import org.eclipse.ui.part.FileEditorInput;
 import org.eclipse.ui.plugin.AbstractUIPlugin;
 import org.faktorips.datatype.ValueDatatype;
 import org.faktorips.devtools.core.ExtensionPoints;
+import org.faktorips.devtools.core.ImageDescriptorRegistry;
 import org.faktorips.devtools.core.IpsCompositeSaveParticipant;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.IpsStatus;
 import org.faktorips.devtools.core.Messages;
 import org.faktorips.devtools.core.internal.model.ipsobject.ArchiveIpsSrcFile;
+import org.faktorips.devtools.core.internal.model.pctype.ProductRelevantIcon;
 import org.faktorips.devtools.core.model.IIpsElement;
 import org.faktorips.devtools.core.model.IIpsModel;
 import org.faktorips.devtools.core.model.bf.BFElementType;
@@ -78,6 +84,9 @@ public class IpsUIPlugin extends AbstractUIPlugin {
 
     private IExtensionRegistry registry;
 
+    // registry for image descriptors
+    private ImageDescriptorRegistry imageDescriptorRegistry;
+
     /**
      * The constructor
      */
@@ -116,6 +125,9 @@ public class IpsUIPlugin extends AbstractUIPlugin {
     public void stop(BundleContext context) throws Exception {
         plugin = null;
         super.stop(context);
+        if (imageDescriptorRegistry != null) {
+            imageDescriptorRegistry.dispose();
+        }
     }
 
     /**
@@ -279,6 +291,27 @@ public class IpsUIPlugin extends AbstractUIPlugin {
         return null;
     }
 
+    /**
+     * Returns the image with the indicated name from the <code>icons</code> folder and overlays
+     * it with the product relevant image. If the given image is not found return the missing image
+     * overlaid with the product relevant image.
+     * 
+     * @see IpsPlugin#getImage(String)
+     * 
+     * @param baseImageName The name of the image which will be overlaid with the product relevant
+     *            image.
+     */
+    public Image getProductRelevantImage(String baseImageName) {
+        String overlayedImageName = "ProductRelevantOverlay.gif_" + baseImageName; //$NON-NLS-1$
+        Image image = getImageRegistry().get(overlayedImageName);
+        if (image == null) {
+            image = ProductRelevantIcon.createProductRelevantImage(getImage(baseImageName));
+            ImageDescriptor imageDescriptor = ImageDescriptor.createFromImage(image);
+            getImageRegistry().put(overlayedImageName, imageDescriptor);
+        }
+        return image;
+    }
+
     /*
      * Open the given file with the default text editor. And show an information message in the
      * editors status bar to inform the user about using the text editor instead of the ips object
@@ -310,7 +343,7 @@ public class IpsUIPlugin extends AbstractUIPlugin {
             // show information in the status bar about using the default text editor instead of
             // using the default ips object editor
             ((IEditorSite)editorPart.getSite()).getActionBars().getStatusLineManager().setMessage(
-                    IpsPlugin.getDefault().getImage("size8/InfoMessage.gif"), //$NON-NLS-1$
+                    IpsUIPlugin.getDefault().getImage("size8/InfoMessage.gif"), //$NON-NLS-1$
                     Messages.IpsPlugin_infoDefaultTextEditorWasOpened);
             return editorPart;
         } catch (PartInitException e) {
@@ -382,5 +415,56 @@ public class IpsUIPlugin extends AbstractUIPlugin {
             extensionPropertyEditFieldFactoryMap.put(propertyId, factory);
         }
         return factory;
+    }
+
+    public Image getImage(ImageDescriptor descriptor) {
+        return getImageDescriptorRegistry().get(descriptor);
+    }
+
+    /**
+     * Returns the image with the indicated name from the <code>icons</code> folder. If no image
+     * with the indicated name is found, a missing image is returned.
+     * 
+     * @param name The image name, e.g. <code>IpsProject.gif</code>
+     */
+    public Image getImage(String name) {
+        return getImage(name, false);
+    }
+
+    /**
+     * Returns the image with the indicated name from the <code>icons</code> folder. If no image
+     * is found and <code>returnNull</code> is true, null is returned. Otherwise (no image found,
+     * but <code>returnNull</code> is false), the missing image is returned.
+     * 
+     * @param name The name of the image.
+     * @param returnNull <code>true</code> to get null as return value if the image is not found,
+     *            <code>false</code> to get the missing image in this case.
+     */
+    public Image getImage(String name, boolean returnNull) {
+        Image image = getImageRegistry().get(name);
+        if (image == null) {
+            URL url = getBundle().getEntry("icons/" + name); //$NON-NLS-1$
+            if (url == null && returnNull) {
+                return null;
+            }
+            ImageDescriptor descriptor = ImageDescriptor.createFromURL(url);
+            getImageRegistry().put(name, descriptor);
+            image = getImageRegistry().get(name);
+        }
+        return image;
+    }
+
+    public ImageDescriptor getImageDescriptor(String name) {
+        URL url = getBundle().getEntry("icons/" + name); //$NON-NLS-1$
+        return ImageDescriptor.createFromURL(url);
+    }
+
+    private ImageDescriptorRegistry getImageDescriptorRegistry() {
+        // must use lazy initialization, as the current display is not necessarily
+        // available when the plugin is started.
+        if (this.imageDescriptorRegistry == null) {
+            imageDescriptorRegistry = new ImageDescriptorRegistry(Display.getCurrent());
+        }
+        return imageDescriptorRegistry;
     }
 }

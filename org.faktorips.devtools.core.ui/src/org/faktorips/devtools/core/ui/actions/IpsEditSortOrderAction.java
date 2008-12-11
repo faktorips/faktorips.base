@@ -23,9 +23,9 @@ import org.eclipse.jface.viewers.ISelectionProvider;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.widgets.Display;
-import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.model.IIpsElement;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
+import org.faktorips.devtools.core.ui.IpsUIPlugin;
 import org.faktorips.devtools.core.ui.dialogs.IpsPackageSortDefDialog;
 
 
@@ -43,7 +43,7 @@ public class IpsEditSortOrderAction extends IpsAction {
         super.setText(Messages.IpsEditSortOrderAction_text);
         super.setDescription(Messages.IpsEditSortOrderAction_description);
         super.setToolTipText(Messages.IpsEditSortOrderAction_tooltip);
-        super.setImageDescriptor(IpsPlugin.getDefault().getImageDescriptor("elcl16/alphab_sort_co.gif")); //$NON-NLS-1$
+        super.setImageDescriptor(IpsUIPlugin.getDefault().getImageDescriptor("elcl16/alphab_sort_co.gif")); //$NON-NLS-1$
 
     }
 

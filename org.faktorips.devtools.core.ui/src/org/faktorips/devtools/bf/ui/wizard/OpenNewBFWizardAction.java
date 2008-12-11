@@ -1,7 +1,6 @@
 package org.faktorips.devtools.bf.ui.wizard;
 
 import org.eclipse.ui.INewWizard;
-import org.faktorips.devtools.bf.ui.wizard.NewBFWizard;
 import org.faktorips.devtools.core.ui.wizards.OpenNewWizardAction;
 
 //TODO has to be registered

@@ -22,45 +22,58 @@ import org.faktorips.devtools.core.model.bf.IBusinessFunction;
 import org.faktorips.devtools.core.model.bf.IControlFlow;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 
-public class DeleteBFElementCommandTest extends AbstractIpsPluginTest {
+public class DeleteConnectionCommandTest extends AbstractIpsPluginTest {
 
     private IIpsProject ipsProject;
     private IBusinessFunction bf;
-    private DeleteBFElementCommand command;
     
     public void setUp() throws Exception{
         super.setUp();
         ipsProject = newIpsProject("TestProject");
         bf = (IBusinessFunction)newIpsObject(ipsProject, BusinessFunctionIpsObjectType.getInstance(), "bf");
     }
+    
+    public void testCanExecute() {
+        IControlFlow cf = bf.newControlFlow();
+        DeleteConnectionCommand command = new DeleteConnectionCommand(bf, cf);        
+        assertTrue(command.canExecute());
+    }
 
     public void testExecute() {
-        IActionBFE action = bf.newOpaqueAction(new Point(10, 10));
-        command = new DeleteBFElementCommand(bf, action);
-        assertEquals(1, bf.getBFElements().size());
+        IActionBFE source = bf.newOpaqueAction(new Point(10, 10));
+        IActionBFE target = bf.newOpaqueAction(new Point(10, 10));
+        IControlFlow cf = bf.newControlFlow();
+        cf.setSource(source);
+        cf.setTarget(target);
+        assertEquals(source, cf.getSource());
+        assertEquals(target, cf.getTarget());
+        DeleteConnectionCommand command = new DeleteConnectionCommand(bf, cf);        
         command.execute();
-        assertEquals(0, bf.getBFElements().size());
-
-        action = bf.newOpaqueAction(new Point(10, 10));
-        IControlFlow inCf = bf.newControlFlow();
-        action.addIncomingControlFlow(inCf);
-        IControlFlow outCf = bf.newControlFlow();
-        action.addOutgoingControlFlow(outCf);
-        command = new DeleteBFElementCommand(bf, action);
-        command.execute();
-        assertEquals(0, bf.getBFElements().size());
-        assertTrue(action.getAllControlFlows().isEmpty());
+        assertNull(cf.getSource());
+        assertNull(cf.getTarget());
+        assertTrue(cf.isDeleted());
     }
 
-    public void testUndoRedo() {
-        IActionBFE action = bf.newOpaqueAction(new Point(10, 10));
-        command = new DeleteBFElementCommand(bf, action);
-        assertEquals(1, bf.getBFElements().size());
+    public void testRedoUndo() {
+        IActionBFE source = bf.newOpaqueAction(new Point(10, 10));
+        IActionBFE target = bf.newOpaqueAction(new Point(10, 10));
+        IControlFlow cf = bf.newControlFlow();
+        int cfId = cf.getId();
+        cf.setSource(source);
+        cf.setTarget(target);
+        DeleteConnectionCommand command = new DeleteConnectionCommand(bf, cf);        
         command.execute();
-        assertEquals(0, bf.getBFElements().size());
+        assertNull(cf.getSource());
+        assertNull(cf.getTarget());
+        assertTrue(cf.isDeleted());
+        
         command.undo();
-        assertEquals(1, bf.getBFElements().size());
-        command.redo();
-        assertEquals(0, bf.getBFElements().size());
+        cf = bf.getControlFlow(cfId);
+        assertEquals(source, cf.getSource());
+        assertEquals(target, cf.getTarget());
+        assertFalse(cf.isDeleted());
+        
     }
+    
+
 }

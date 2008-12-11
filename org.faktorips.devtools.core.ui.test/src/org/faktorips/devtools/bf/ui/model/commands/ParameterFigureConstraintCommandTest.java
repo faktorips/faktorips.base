@@ -14,19 +14,17 @@
 
 package org.faktorips.devtools.bf.ui.model.commands;
 
-import org.eclipse.draw2d.geometry.Point;
+import org.eclipse.draw2d.geometry.Dimension;
+import org.eclipse.draw2d.geometry.Rectangle;
 import org.faktorips.devtools.core.AbstractIpsPluginTest;
 import org.faktorips.devtools.core.model.bf.BusinessFunctionIpsObjectType;
-import org.faktorips.devtools.core.model.bf.IActionBFE;
 import org.faktorips.devtools.core.model.bf.IBusinessFunction;
-import org.faktorips.devtools.core.model.bf.IControlFlow;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 
-public class DeleteBFElementCommandTest extends AbstractIpsPluginTest {
+public class ParameterFigureConstraintCommandTest extends AbstractIpsPluginTest {
 
     private IIpsProject ipsProject;
     private IBusinessFunction bf;
-    private DeleteBFElementCommand command;
     
     public void setUp() throws Exception{
         super.setUp();
@@ -35,32 +33,21 @@ public class DeleteBFElementCommandTest extends AbstractIpsPluginTest {
     }
 
     public void testExecute() {
-        IActionBFE action = bf.newOpaqueAction(new Point(10, 10));
-        command = new DeleteBFElementCommand(bf, action);
-        assertEquals(1, bf.getBFElements().size());
+        bf.setParameterRectangleSize(new Dimension(0, 0));
+        Rectangle bounds = new Rectangle(-1, -1, 30, 40);
+        ParameterFigureConstraintCommand command = new ParameterFigureConstraintCommand(bf, bounds);
         command.execute();
-        assertEquals(0, bf.getBFElements().size());
-
-        action = bf.newOpaqueAction(new Point(10, 10));
-        IControlFlow inCf = bf.newControlFlow();
-        action.addIncomingControlFlow(inCf);
-        IControlFlow outCf = bf.newControlFlow();
-        action.addOutgoingControlFlow(outCf);
-        command = new DeleteBFElementCommand(bf, action);
-        command.execute();
-        assertEquals(0, bf.getBFElements().size());
-        assertTrue(action.getAllControlFlows().isEmpty());
+        assertEquals(new Dimension(30, 40), bf.getParameterRectangleSize());
     }
 
-    public void testUndoRedo() {
-        IActionBFE action = bf.newOpaqueAction(new Point(10, 10));
-        command = new DeleteBFElementCommand(bf, action);
-        assertEquals(1, bf.getBFElements().size());
+    public void testUndo() {
+        bf.setParameterRectangleSize(new Dimension(0, 0));
+        Rectangle bounds = new Rectangle(-1, -1, 30, 40);
+        ParameterFigureConstraintCommand command = new ParameterFigureConstraintCommand(bf, bounds);
         command.execute();
-        assertEquals(0, bf.getBFElements().size());
         command.undo();
-        assertEquals(1, bf.getBFElements().size());
-        command.redo();
-        assertEquals(0, bf.getBFElements().size());
+        assertEquals(new Dimension(0, 0), bf.getParameterRectangleSize());
+        
     }
+
 }

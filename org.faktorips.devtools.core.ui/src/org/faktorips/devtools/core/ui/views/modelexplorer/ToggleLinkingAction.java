@@ -20,7 +20,7 @@ package org.faktorips.devtools.core.ui.views.modelexplorer;
 
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.resource.ImageDescriptor;
-import org.faktorips.devtools.core.IpsPlugin;
+import org.faktorips.devtools.core.ui.IpsUIPlugin;
 import org.faktorips.devtools.core.ui.actions.Messages;
 
 /**
@@ -41,7 +41,7 @@ public class ToggleLinkingAction extends Action {
             setDescription(Messages.ToggleLinkingAction_Description); 
             setToolTipText(Messages.ToggleLinkingAction_ToolTipText);
             
-            ImageDescriptor descriptor = IpsPlugin.getDefault().getImageDescriptor("elcl16/synced.gif"); //$NON-NLS-1$
+            ImageDescriptor descriptor = IpsUIPlugin.getDefault().getImageDescriptor("elcl16/synced.gif"); //$NON-NLS-1$
             this.setHoverImageDescriptor(descriptor);
             this.setImageDescriptor(descriptor);         
     

@@ -19,7 +19,7 @@ package org.faktorips.devtools.core.ui.actions;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.jface.viewers.AbstractTreeViewer;
-import org.faktorips.devtools.core.IpsPlugin;
+import org.faktorips.devtools.core.ui.IpsUIPlugin;
 
 /**
  * Action for expanding and collapsing all folders in a given treeViewer. When run, this action will 
@@ -72,9 +72,9 @@ public class ExpandCollapseAllAction extends Action {
      */
     public ImageDescriptor getImageDescriptor() {
         if(expand){
-            return IpsPlugin.getDefault().getImageDescriptor("ExpandAll.gif"); //$NON-NLS-1$
+            return IpsUIPlugin.getDefault().getImageDescriptor("ExpandAll.gif"); //$NON-NLS-1$
         }else{
-            return IpsPlugin.getDefault().getImageDescriptor("CollapseAll.gif"); //$NON-NLS-1$
+            return IpsUIPlugin.getDefault().getImageDescriptor("CollapseAll.gif"); //$NON-NLS-1$
         }
     }
     /**

@@ -33,6 +33,7 @@ import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
 import org.faktorips.devtools.core.model.ipsproject.IIpsPackageFragment;
 import org.faktorips.devtools.core.model.ipsproject.IIpsPackageFragmentRoot;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
+import org.faktorips.devtools.core.ui.IpsUIPlugin;
 import org.faktorips.devtools.core.ui.UIToolkit;
 import org.faktorips.devtools.core.ui.WorkbenchRunnableAdapter;
 
@@ -60,7 +61,7 @@ public class TransformRuntimeTestCaseWizard extends Wizard implements IImportWiz
 	public TransformRuntimeTestCaseWizard(){
 		super();
 		setWindowTitle(Messages.TransformWizard_title);
-        this.setDefaultPageImageDescriptor(IpsPlugin.getDefault().getImageDescriptor("wizards/NewTestCaseWizard.png")); //$NON-NLS-1$
+        this.setDefaultPageImageDescriptor(IpsUIPlugin.getDefault().getImageDescriptor("wizards/NewTestCaseWizard.png")); //$NON-NLS-1$
 	}
 	
 	/**

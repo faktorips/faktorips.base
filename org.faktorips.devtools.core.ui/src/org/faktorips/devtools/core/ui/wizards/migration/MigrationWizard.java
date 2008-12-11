@@ -31,6 +31,7 @@ import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.IWorkbenchWizard;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
+import org.faktorips.devtools.core.ui.IpsUIPlugin;
 
 
 /**
@@ -45,7 +46,7 @@ public class MigrationWizard extends Wizard implements IWorkbenchWizard {
     public MigrationWizard(ArrayList preSelected) {
         setNeedsProgressMonitor(true);
         setWindowTitle(Messages.MigrationWizard_title);
-        setDefaultPageImageDescriptor(IpsPlugin.getDefault().getImageDescriptor("wizards/MigrationWizard.png")); //$NON-NLS-1$
+        setDefaultPageImageDescriptor(IpsUIPlugin.getDefault().getImageDescriptor("wizards/MigrationWizard.png")); //$NON-NLS-1$
         this.preSelected = preSelected;
     }
     
