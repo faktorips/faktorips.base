@@ -42,7 +42,9 @@ public class ControlFlowEditPart extends AbstractConnectionEditPart implements C
             Point p2 = points.getPoint(1);
             int x = p1.x + (p2.x - p1.x) / 2;
             int y = p1.y + (p2.y - p1.y) / 2;
-            label.setLocation(x, y);
+            Point location = new Point(x, y);
+            conn.translateToAbsolute(location);
+            label.setLocation(location.x, location.y);
         }
     }
 
