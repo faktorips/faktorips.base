@@ -142,7 +142,7 @@ public class AbstractModelElement implements IModelElement {
      */
     Class<?> loadClass(String className) {
         try {
-            return repository.getClassLoader().loadClass(className);
+            return Class.forName(className, true, repository.getClassLoader());
         } catch (ClassNotFoundException e) {
             throw new RuntimeException(e);
         }
