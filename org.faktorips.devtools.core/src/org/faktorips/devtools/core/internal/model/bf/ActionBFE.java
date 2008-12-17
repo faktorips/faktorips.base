@@ -16,6 +16,7 @@ package org.faktorips.devtools.core.internal.model.bf;
 
 import org.apache.commons.lang.StringUtils;
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.osgi.util.NLS;
 import org.faktorips.datatype.Datatype;
 import org.faktorips.devtools.core.model.bf.BFElementType;
 import org.faktorips.devtools.core.model.bf.BusinessFunctionIpsObjectType;
@@ -125,34 +126,37 @@ public class ActionBFE extends BFElement implements IActionBFE {
         validateMethodCallAction(list);
         validateBusinessFunctionCallAction(list);
     }
-    
-    private void validateBusinessFunctionCallAction(MessageList msgList) throws CoreException{
-        if(getType().equals(BFElementType.ACTION_BUSINESSFUNCTIONCALL)){
+
+    private void validateBusinessFunctionCallAction(MessageList msgList) throws CoreException {
+        if (getType().equals(BFElementType.ACTION_BUSINESSFUNCTIONCALL)) {
             // business function has to be specified
             if (StringUtils.isEmpty(target)) {
-                msgList.add(new Message(MSGCODE_TARGET_NOT_SPECIFIED, Messages.getString("ActionBFE.bfMustBeSpecified"), //$NON-NLS-1$
+                msgList.add(new Message(MSGCODE_TARGET_NOT_SPECIFIED,
+                        Messages.getString("ActionBFE.bfMustBeSpecified"), //$NON-NLS-1$
                         Message.ERROR, this));
             }
             validateNotAllowedNames(target, Messages.getString("ActionBFE.bfName"), msgList); //$NON-NLS-1$
-            //business function exists
+            // business function exists
             IBusinessFunction refBf = findReferencedBusinessFunction();
-            if(refBf == null){
+            if (refBf == null) {
                 msgList.add(new Message(MSGCODE_TARGET_DOES_NOT_EXIST, Messages.getString("ActionBFE.bfDoesNotExist"), //$NON-NLS-1$
                         Message.ERROR, this));
             }
         }
     }
-    
+
     private void validateMethodCallAction(MessageList list) throws CoreException {
         if (getType().equals(BFElementType.ACTION_METHODCALL)) {
             // parameter has to be specified
             if (StringUtils.isEmpty(target)) {
-                list.add(new Message(MSGCODE_TARGET_NOT_SPECIFIED, Messages.getString("ActionBFE.parameterNotSpecified"), //$NON-NLS-1$
+                list.add(new Message(MSGCODE_TARGET_NOT_SPECIFIED, Messages
+                        .getString("ActionBFE.parameterNotSpecified"), //$NON-NLS-1$
                         Message.ERROR, this));
             }
             // method has to be specified
             if (StringUtils.isEmpty(getExecutableMethodName())) {
-                list.add(new Message(MSGCODE_METHOD_NOT_SPECIFIED, Messages.getString("ActionBFE.methodMustBeSpecified"), Message.ERROR, //$NON-NLS-1$
+                list.add(new Message(MSGCODE_METHOD_NOT_SPECIFIED, Messages
+                        .getString("ActionBFE.methodMustBeSpecified"), Message.ERROR, //$NON-NLS-1$
                         this));
             }
             validateNotAllowedNames(getExecutableMethodName(), Messages.getString("ActionBFE.methodName"), list); //$NON-NLS-1$
@@ -176,9 +180,10 @@ public class ActionBFE extends BFElement implements IActionBFE {
             // method has to exist
             IType type = (IType)datatype;
             if (type.getMethod(getExecutableMethodName(), new String[0]) == null) {
-                list.add(new Message(MSGCODE_METHOD_DOES_NOT_EXIST,
-                        Messages.getString("ActionBFE.methodDoesNotExistOnParameter"), //$NON-NLS-1$
-                        Message.ERROR, this));
+                String text = NLS
+                        .bind(
+                                Messages.getString("ActionBFE.methodDoesNotExistOnParameter"), new String[] { getExecutableMethodName(), getTarget() }); //$NON-NLS-1$
+                list.add(new Message(MSGCODE_METHOD_DOES_NOT_EXIST, text, Message.ERROR, this));
             }
         }
     }

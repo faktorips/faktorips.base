@@ -15,14 +15,22 @@ import org.eclipse.gef.editparts.ScalableFreeformRootEditPart;
 import org.eclipse.gef.palette.PaletteRoot;
 import org.eclipse.gef.ui.parts.GraphicalEditorWithFlyoutPalette;
 import org.eclipse.gef.ui.parts.ScrollingGraphicalViewer;
+import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.util.SafeRunnable;
 import org.eclipse.swt.graphics.Image;
+import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.IEditorPart;
 import org.eclipse.ui.IEditorSite;
 import org.eclipse.ui.IFileEditorInput;
+import org.eclipse.ui.IPartListener;
+import org.eclipse.ui.IPartService;
+import org.eclipse.ui.IWindowListener;
+import org.eclipse.ui.IWorkbenchPart;
+import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.PartInitException;
+import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.views.properties.IPropertySheetPage;
 import org.eclipse.ui.views.properties.tabbed.ITabbedPropertySheetPageContributor;
 import org.eclipse.ui.views.properties.tabbed.TabbedPropertySheetPage;
@@ -35,6 +43,7 @@ import org.faktorips.devtools.core.model.bf.IBusinessFunction;
 import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.core.ui.IpsUIPlugin;
 import org.faktorips.devtools.core.ui.editors.IIpsProblemChangedListener;
+import org.faktorips.devtools.core.ui.editors.Messages;
 import org.faktorips.devtools.core.ui.views.IpsProblemsLabelDecorator;
 
 /**
@@ -42,15 +51,26 @@ import org.faktorips.devtools.core.ui.views.IpsProblemsLabelDecorator;
  * 
  * @author Peter Erzberger
  */
-public class BusinessFunctionsEditor extends GraphicalEditorWithFlyoutPalette implements ContentsChangeListener,
+public class BusinessFunctionEditor extends GraphicalEditorWithFlyoutPalette implements ContentsChangeListener,
         ITabbedPropertySheetPageContributor, IIpsProblemChangedListener {
 
     private IIpsSrcFile ipsSrcFile;
     private IBusinessFunction businessFunction;
     private PaletteRoot paletteRoot;
     private IpsProblemsLabelDecorator decorator;
+    private ScrollingGraphicalViewer viewer;
+    
+    /*
+     * Storage for the user's decision not to load the changes made directly in the
+     * file system.
+     */
+    private boolean dontLoadChanges = false;
+    
+    private boolean isCheckingForChangesMadeOutsideEclipse = false;
 
-    public BusinessFunctionsEditor() {
+    private ActivationListener activationListener;
+    
+    public BusinessFunctionEditor() {
         decorator = new IpsProblemsLabelDecorator();
     }
 
@@ -86,6 +106,13 @@ public class BusinessFunctionsEditor extends GraphicalEditorWithFlyoutPalette im
         }
     }
 
+    /**
+     * Returns <code>true</code> if this is the active editor, otherwise <code>false</code>. 
+     */
+    private boolean isActive() {
+        return this==getSite().getPage().getActiveEditor();
+    }
+
     // TODO duplicate code in IpsObjectEditor
     private void postImageChange() {
         Shell shell = getEditorSite().getShell();
@@ -93,6 +120,9 @@ public class BusinessFunctionsEditor extends GraphicalEditorWithFlyoutPalette im
             shell.getDisplay().syncExec(new Runnable() {
                 public void run() {
                     try {
+                        if(isActive()){
+                            refresh();
+                        }
                         setTitleImage(getDecoratedImage());
                     } catch (CoreException e) {
                         IpsPlugin.log(e);
@@ -132,7 +162,7 @@ public class BusinessFunctionsEditor extends GraphicalEditorWithFlyoutPalette im
     @Override
     protected void configureGraphicalViewer() {
         super.configureGraphicalViewer();
-        ScrollingGraphicalViewer viewer = (ScrollingGraphicalViewer)getGraphicalViewer();
+        viewer = (ScrollingGraphicalViewer)getGraphicalViewer();
         ScalableFreeformRootEditPart root = new ScalableFreeformRootEditPart();
         viewer.setRootEditPart(root);
         ConnectionLayer connectionLayer = (ConnectionLayer)root.getLayer(LayerConstants.CONNECTION_LAYER);
@@ -175,6 +205,7 @@ public class BusinessFunctionsEditor extends GraphicalEditorWithFlyoutPalette im
         paletteRoot = new PaletteBuilder().buildPalette();
         setEditDomain(new DefaultEditDomain(this));
         IpsUIPlugin.getDefault().getIpsProblemMarkerManager().addListener(this);
+        activationListener = new ActivationListener(site.getPage());
         super.init(site, input);
     }
 
@@ -195,6 +226,9 @@ public class BusinessFunctionsEditor extends GraphicalEditorWithFlyoutPalette im
         IpsPlugin.getDefault().getIpsModel().removeChangeListener(this);
         decorator.dispose();
         IpsUIPlugin.getDefault().getIpsProblemMarkerManager().removeListener(this);
+        if(activationListener != null){
+            activationListener.dispose();
+        }
     }
 
     /**
@@ -219,4 +253,143 @@ public class BusinessFunctionsEditor extends GraphicalEditorWithFlyoutPalette im
         }
         return super.getAdapter(adapter);
     }
+    
+    /**
+     * Refreshes the controls on the active page with the data from the model.<br>
+     * Calls to this refresh method are ignored if the activate attribute is set to
+     * <code>false</code>.
+     */
+    private void refresh() {
+        //ipsSrcFile can be null if the editor is opend on a ips source file that is not in a ips package
+        if (ipsSrcFile == null || !ipsSrcFile.exists()) {
+            return;
+        }
+        try {
+            if (!ipsSrcFile.isContentParsable()) {
+                return;
+            }
+            // here we have to request the ips object once, to make sure that 
+            // it's state is is synchronized with the enclosing resource.
+            // otherwise if some part of the ui keeps a reference to the ips object, it won't contain
+            // the correct state.
+            ipsSrcFile.getIpsObject(); 
+        } catch (CoreException e) {
+            IpsPlugin.log(e);
+        }
+        if(viewer != null){
+            viewer.getContents().refresh();
+        }
+    }
+
+    private void handleEditorActivation() {
+        checkForChangesMadeOutsideEclipse();
+        refresh();
+    }
+    
+    private void checkForChangesMadeOutsideEclipse() {
+        if (dontLoadChanges || isCheckingForChangesMadeOutsideEclipse) {
+            return;
+        }
+        try {
+            isCheckingForChangesMadeOutsideEclipse = true;
+            if (ipsSrcFile.isMutable() && !ipsSrcFile.getEnclosingResource().isSynchronized(0)) {
+                MessageDialog dlg = new MessageDialog(Display.getCurrent().getActiveShell(), Messages.IpsObjectEditor_fileHasChangesOnDiskTitle, (Image)null, 
+                        Messages.IpsObjectEditor_fileHasChangesOnDiskMessage, MessageDialog.QUESTION,
+                        new String[]{Messages.IpsObjectEditor_fileHasChangesOnDiskYesButton, Messages.IpsObjectEditor_fileHasChangesOnDiskNoButton}, 0);
+                dlg.open();
+                if (dlg.getReturnCode()==0) {
+                    try {
+                        ipsSrcFile.getEnclosingResource().refreshLocal(0, null);
+                        refresh();
+                    } catch (CoreException e) {
+                        throw new RuntimeException(e);
+                    }
+                } else {
+                    dontLoadChanges = true;
+                }
+                
+            }
+        } finally {
+            isCheckingForChangesMadeOutsideEclipse = false;
+        }
+    }
+
+    
+    /**
+     * Internal part and shell activation listener.
+     * 
+     * 
+     * Copied from AbstractTextEditor.
+     */
+    private class ActivationListener implements IPartListener, IWindowListener {
+
+        private IPartService partService;
+        
+        /**
+         * Creates this activation listener.
+         *
+         * @param partService the part service on which to add the part listener
+         * @since 3.1
+         */
+        public ActivationListener(IPartService partService) {
+            this.partService = partService;
+            partService.addPartListener(this);
+            PlatformUI.getWorkbench().addWindowListener(this);
+        }
+
+        /**
+         * Disposes this activation listener.
+         *
+         * @since 3.1
+         */
+        public void dispose() {
+            partService.removePartListener(this);
+            PlatformUI.getWorkbench().removeWindowListener(this);
+            partService= null;
+        }
+
+        public void partActivated(IWorkbenchPart part) {
+            if (part!=BusinessFunctionEditor.this) {
+                return;
+            }
+            handleEditorActivation();
+        }
+
+        public void partBroughtToTop(IWorkbenchPart part) {
+        }
+
+        public void partClosed(IWorkbenchPart part) {
+            if (part!=BusinessFunctionEditor.this) {
+                return;
+            }
+            ipsSrcFile.discardChanges();
+            removeListeners();
+        }
+
+        public void partDeactivated(IWorkbenchPart part) {
+        }
+        
+        private void removeListeners() {
+            IpsPlugin.getDefault().getIpsModel().removeChangeListener(BusinessFunctionEditor.this);
+        }
+        
+        public void partOpened(IWorkbenchPart part) {
+        }
+
+        public void windowActivated(IWorkbenchWindow window) {
+            if (window == getEditorSite().getWorkbenchWindow()) {
+                checkForChangesMadeOutsideEclipse();
+            }
+        }
+
+        public void windowDeactivated(IWorkbenchWindow window) {
+        }
+
+        public void windowClosed(IWorkbenchWindow window) {
+        }
+
+        public void windowOpened(IWorkbenchWindow window) {
+        }
+    }
+
 }

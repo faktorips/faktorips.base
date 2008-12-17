@@ -82,7 +82,9 @@ public class BusinessFunctionEditPart extends AbstractGraphicalEditPart implemen
             EditPart editPart = it.next();
             if(editPart instanceof ParameterEditPart){
                 it.remove();
+                continue;
             }
+            editPart.refresh();
         }
         super.refreshChildren();
         EditPart editPart = new ParameterEditPart();

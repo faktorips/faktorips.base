@@ -15,6 +15,8 @@ import org.eclipse.osgi.util.NLS;
 import org.faktorips.devtools.core.internal.model.ipsobject.BaseIpsObject;
 import org.faktorips.devtools.core.internal.model.ipsobject.IpsObjectPart;
 import org.faktorips.devtools.core.internal.model.ipsobject.IpsObjectPartCollection;
+import org.faktorips.devtools.core.model.IDependency;
+import org.faktorips.devtools.core.model.IpsObjectDependency;
 import org.faktorips.devtools.core.model.bf.BFElementType;
 import org.faktorips.devtools.core.model.bf.BusinessFunctionIpsObjectType;
 import org.faktorips.devtools.core.model.bf.IActionBFE;
@@ -26,6 +28,7 @@ import org.faktorips.devtools.core.model.bf.IParameterBFE;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPart;
 import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
+import org.faktorips.devtools.core.model.ipsobject.QualifiedNameType;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.util.message.Message;
 import org.faktorips.util.message.MessageList;
@@ -58,7 +61,6 @@ public class BusinessFunction extends BaseIpsObject implements IBusinessFunction
         return parameterRectangleSize;
     }
 
-    //TODO test
     public void setParameterRectangleSize(Dimension parameterRectangleSize) {
         Dimension old = this.parameterRectangleSize;
         this.parameterRectangleSize = parameterRectangleSize;
@@ -234,27 +236,6 @@ public class BusinessFunction extends BaseIpsObject implements IBusinessFunction
         element.setAttribute("parameterRectangleY", String.valueOf(getParameterRectangleLocation().y)); //$NON-NLS-1$
     }
 
-    private static class BFElementIpsObjectPartCollection extends IpsObjectPartCollection {
-
-        @SuppressWarnings("unchecked")
-        public BFElementIpsObjectPartCollection(BaseIpsObject ipsObject, Class partsClazz, Class publishedInterface,
-                String xmlTag) {
-            super(ipsObject, partsClazz, publishedInterface, xmlTag);
-        }
-
-        public IBFElement newBFElement(final Point location, final BFElementType type) {
-            IpsObjectPartInitializer initializer = new IpsObjectPartInitializer() {
-
-                public void initialize(IpsObjectPart part) {
-                    BFElement element = (BFElement)part;
-                    element.location = location;
-                    element.type = type;
-                }
-            };
-            return (BFElement)newPart(initializer);
-        }
-    }
-
     @Override
     protected void validateThis(MessageList list, IIpsProject ipsProject) throws CoreException {
         super.validateThis(list, ipsProject);
@@ -289,8 +270,7 @@ public class BusinessFunction extends BaseIpsObject implements IBusinessFunction
             if (list.size() > 1) {
                 for (IBFElement element : list) {
                     if (!(checkIfOnlyMethodCallActions(list) || checkIfOnlyBusinessFunctionCallActions(list))) {
-                        String text = NLS.bind(
-                                Messages.getString("BusinessFunction.duplicateNames"), key); //$NON-NLS-1$
+                        String text = NLS.bind(Messages.getString("BusinessFunction.duplicateNames"), key); //$NON-NLS-1$
                         msgList.add(new Message(MSGCODE_ELEMENT_NAME_COLLISION, text, Message.ERROR, element));
                     }
                 }
@@ -374,10 +354,8 @@ public class BusinessFunction extends BaseIpsObject implements IBusinessFunction
                 continue;
             }
             if (!successfullyCheckedForStart.contains(element)) {
-                String text = NLS
-                        .bind(
-                                Messages.getString("BusinessFunction.elementNotConnectedWithStart"), //$NON-NLS-1$
-                                element.getDisplayString());
+                String text = NLS.bind(Messages.getString("BusinessFunction.elementNotConnectedWithStart"), //$NON-NLS-1$
+                        element.getDisplayString());
                 list.add(new Message(MSGCODE_NOT_CONNECTED_WITH_START, text, Message.ERROR, element));
             }
         }
@@ -387,8 +365,7 @@ public class BusinessFunction extends BaseIpsObject implements IBusinessFunction
                 continue;
             }
             if (!successfullyCheckedForEnd.contains(element)) {
-                String text = NLS.bind(
-                        Messages.getString("BusinessFunction.elementNotConnectedWithEnd"), //$NON-NLS-1$
+                String text = NLS.bind(Messages.getString("BusinessFunction.elementNotConnectedWithEnd"), //$NON-NLS-1$
                         element.getDisplayString());
                 list.add(new Message(MSGCODE_NOT_CONNECTED_WITH_END, text, Message.ERROR, element));
             }
@@ -475,6 +452,46 @@ public class BusinessFunction extends BaseIpsObject implements IBusinessFunction
             ArrayList<IBFElement> newTrace = new ArrayList<IBFElement>(currentTrace.size() + 10);
             newTrace.addAll(currentTrace);
             traceToEnd(target, successfullyChecked, newTrace);
+        }
+    }
+
+    // TODO testing
+    @Override
+    public IDependency[] dependsOn() throws CoreException {
+        List<IDependency> dependencies = new ArrayList<IDependency>();
+        for (IIpsObjectPart part : actions.getParts()) {
+            IActionBFE action = (IActionBFE)part;
+            if (action.getType() == BFElementType.ACTION_BUSINESSFUNCTIONCALL) {
+                dependencies.add(IpsObjectDependency.createReferenceDependency(getQualifiedNameType(), new QualifiedNameType(
+                        action.getTarget(), BusinessFunctionIpsObjectType.getInstance())));
+                continue;
+            }
+            if (action.getType() == BFElementType.ACTION_METHODCALL) {
+                dependencies.add(IpsObjectDependency.createReferenceDependency(getQualifiedNameType(), new QualifiedNameType(
+                        action.getParameter().getDatatype(), IpsObjectType.POLICY_CMPT_TYPE)));
+            }
+        }
+        return dependencies.toArray(new IDependency[dependencies.size()]);
+    }
+
+    private static class BFElementIpsObjectPartCollection extends IpsObjectPartCollection {
+
+        @SuppressWarnings("unchecked")
+        public BFElementIpsObjectPartCollection(BaseIpsObject ipsObject, Class partsClazz, Class publishedInterface,
+                String xmlTag) {
+            super(ipsObject, partsClazz, publishedInterface, xmlTag);
+        }
+
+        public IBFElement newBFElement(final Point location, final BFElementType type) {
+            IpsObjectPartInitializer initializer = new IpsObjectPartInitializer() {
+
+                public void initialize(IpsObjectPart part) {
+                    BFElement element = (BFElement)part;
+                    element.location = location;
+                    element.type = type;
+                }
+            };
+            return (BFElement)newPart(initializer);
         }
     }
 

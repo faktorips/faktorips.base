@@ -463,7 +463,7 @@
             id="testCaseTypeEditor"
             name="%testCaseTypeEditor"/>   
 		<editor
-			class="org.faktorips.devtools.core.ui.bf.BusinessFunctionsEditor"
+			class="org.faktorips.devtools.core.ui.bf.BusinessFunctionEditor"
 			contributorClass="org.faktorips.devtools.bf.ui.actions.BfActionBarContributor"
 			default="true"
 			extensions="ipsbusinessfunction"

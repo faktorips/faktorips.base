@@ -21,6 +21,8 @@ import org.eclipse.draw2d.geometry.Dimension;
 import org.eclipse.draw2d.geometry.Point;
 import org.faktorips.datatype.Datatype;
 import org.faktorips.devtools.core.AbstractIpsPluginTest;
+import org.faktorips.devtools.core.model.IDependency;
+import org.faktorips.devtools.core.model.IpsObjectDependency;
 import org.faktorips.devtools.core.model.bf.BFElementType;
 import org.faktorips.devtools.core.model.bf.BusinessFunctionIpsObjectType;
 import org.faktorips.devtools.core.model.bf.IActionBFE;
@@ -427,5 +429,45 @@ public class BusinessFunctionTest extends AbstractIpsPluginTest {
         assertNull(msgAction2.getMessageByCode(IBusinessFunction.MSGCODE_NOT_CONNECTED_WITH_START));
         assertNull(msgAction2.getMessageByCode(IBusinessFunction.MSGCODE_NOT_CONNECTED_WITH_END));
 
+    }
+    
+    public void testDependsOn() throws Exception{
+        BusinessFunction bf = (BusinessFunction)newIpsObject(ipsProject, BusinessFunctionIpsObjectType.getInstance(),
+        "bf");
+     
+        IDependency[] dependencies = bf.dependsOn();
+        assertEquals(0, dependencies.length);
+        
+        BusinessFunction bf2 = (BusinessFunction)newIpsObject(ipsProject, BusinessFunctionIpsObjectType.getInstance(),
+        "bf2");
+       
+        IActionBFE action = bf.newBusinessFunctionCallAction(new Point(10, 10));
+        action.setTarget(bf2.getQualifiedName());
+        
+        dependencies = bf.dependsOn();
+        assertEquals(1, dependencies.length);
+        assertEquals(IpsObjectDependency.createReferenceDependency(bf.getQualifiedNameType(), bf2.getQualifiedNameType()), dependencies[0]);
+
+        action.delete();
+        dependencies = bf.dependsOn();
+        assertEquals(0, dependencies.length);
+
+        IPolicyCmptType pcType = newPolicyCmptType(ipsProject, "policy");
+        IMethod method = pcType.newMethod();
+        method.setDatatype(Datatype.INTEGER.getQualifiedName());
+        method.setModifier(Modifier.PUBLIC);
+        method.setName("calculate");
+        
+        IParameterBFE param = bf.newParameter();
+        param.setDatatype(pcType.getQualifiedName());
+        param.setName("policy");
+        
+        action = bf.newMethodCallAction(new Point(10, 10));
+        action.setTarget(param.getName());
+        action.setExecutableMethodName(method.getName());
+        
+        dependencies = bf.dependsOn();
+        assertEquals(1, dependencies.length);
+        assertEquals(IpsObjectDependency.createReferenceDependency(bf.getQualifiedNameType(), pcType.getQualifiedNameType()), dependencies[0]);
     }
 }
