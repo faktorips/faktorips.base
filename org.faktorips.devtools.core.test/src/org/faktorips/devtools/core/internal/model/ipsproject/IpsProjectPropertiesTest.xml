@@ -31,7 +31,8 @@
 		</UsedPredefinedDatatypes>
 		<DatatypeDefinitions>
 			<Datatype id="PaymentMode" 
-				valueClass="org.faktorips.sample.model.PaymentMode" 
+				valueObject="true"
+				javaClass="org.faktorips.sample.model.PaymentMode" 
 		        valueOfMethod="getPaymentMode"
 		        isParsableMethod="isPaymentMode"
 		        valueToStringMethod="getId"
@@ -39,13 +40,15 @@
 		       	isEnumType="true"
 		        getAllValuesMethod="getAllValues"/>
 			<Datatype id="PaymentMode" 
-				valueClass="org.faktorips.sample.model.PaymentMode" 
+				valueObject="true"
+				javaClass="org.faktorips.sample.model.PaymentMode" 
 		        valueOfMethod="getPaymentMode"
 		        isParsableMethod="isPaymentMode"
 		        valueToStringMethod="getId"
 		        specialNullValue="n"
 		       	isEnumType="false"
 		        getAllValuesMethod=""/>
+		        <Datatype id="MessageList" valueObject="false" javaClass="org.MessageList"/>
 		</DatatypeDefinitions>
 	</Datatypes>
 	<ResourcesExcludedFromProductDefinition>

@@ -17,7 +17,13 @@
 
 package org.faktorips.devtools.core.internal.model.ipsproject;
 
+import java.util.List;
+
+import javax.xml.transform.TransformerException;
+
 import org.eclipse.core.runtime.CoreException;
+import org.faktorips.datatype.Datatype;
+import org.faktorips.datatype.JavaClass2DatatypeAdaptor;
 import org.faktorips.devtools.core.AbstractIpsPluginTest;
 import org.faktorips.devtools.core.internal.model.DynamicEnumDatatype;
 import org.faktorips.devtools.core.internal.model.DynamicValueDatatype;
@@ -25,6 +31,7 @@ import org.faktorips.devtools.core.internal.model.productcmpt.DateBasedProductCm
 import org.faktorips.devtools.core.model.ipsproject.IIpsObjectPath;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProjectProperties;
+import org.faktorips.devtools.core.util.XmlUtil;
 import org.faktorips.util.message.MessageList;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -80,7 +87,7 @@ public class IpsProjectPropertiesTest extends AbstractIpsPluginTest {
         }
     }
 	
-	public void testToXml() {
+	public void testToXml() throws TransformerException {
 		IpsProjectProperties props = new IpsProjectProperties();
 		props.setModelProject(true);
 		props.setProductDefinitionProject(true);
@@ -110,13 +117,16 @@ public class IpsProjectPropertiesTest extends AbstractIpsPluginTest {
         DynamicEnumDatatype datatype = new DynamicEnumDatatype(ipsProject);
         datatype.setIsSupportingNames(true);
         datatype.setGetNameMethodName("getMe");
+        datatype.setQualifiedName("org.foo.SomeType");
+        datatype.setAdaptedClassName("org.foo.SomeClass");
         props.addDefinedDatatype(datatype);
+        JavaClass2DatatypeAdaptor messageListDatatype = new JavaClass2DatatypeAdaptor("MessageList", "org.faktorips.MessageList");
+        props.addDefinedDatatype(messageListDatatype);
         
         props.addResourcesPathExcludedFromTheProductDefiniton("a.xml");
         props.addResourcesPathExcludedFromTheProductDefiniton("src/a");
         
 		Element projectEl = props.toXml(newDocument());
-
 		props = new IpsProjectProperties();
 		props.initFromXml(ipsProject, projectEl);
 		assertTrue(props.isModelProject());
@@ -143,10 +153,14 @@ public class IpsProjectPropertiesTest extends AbstractIpsPluginTest {
         assertEquals("versionNumber", props.getMinRequiredVersionNumber("featureId"));
         assertEquals("yyy", props.getBuilderSetConfig().getPropertyValue("xxx"));
         
-        assertEquals(1, props.getDefinedDatatypes().length);
-        DynamicEnumDatatype newDatatype = (DynamicEnumDatatype)props.getDefinedDatatypes()[0];
+        assertEquals(2, props.getDefinedDatatypes().size());
+        DynamicEnumDatatype newDatatype = (DynamicEnumDatatype)props.getDefinedDatatypes().get(0);
         assertEquals("getMe", newDatatype.getGetNameMethodName());
         assertTrue(newDatatype.isSupportingNames());
+        JavaClass2DatatypeAdaptor newDatatype2 = (JavaClass2DatatypeAdaptor)props.getDefinedDatatypes().get(1);
+        assertFalse(newDatatype2.isValueDatatype()); 
+        assertEquals("MessageList", newDatatype2.getQualifiedName());
+        assertEquals("org.faktorips.MessageList", newDatatype2.getJavaClassName());
         
         assertTrue(props.isResourceExcludedFromProductDefinition("a.xml"));
         assertTrue(props.isResourceExcludedFromProductDefinition("src/a"));
@@ -158,24 +172,28 @@ public class IpsProjectPropertiesTest extends AbstractIpsPluginTest {
 		DynamicValueDatatype type1 = new DynamicValueDatatype(ipsProject);
 		type1.setQualifiedName("type1");
 		props.addDefinedDatatype(type1);
-		assertEquals(type1, props.getDefinedDatatypes()[0]);
+		assertEquals(type1, props.getDefinedValueDatatypes()[0]);
 		
 		DynamicValueDatatype type2 = new DynamicValueDatatype(ipsProject);
 		type2.setQualifiedName("type2");
 		props.addDefinedDatatype(type2);
-		assertEquals(type1, props.getDefinedDatatypes()[0]);
-		assertEquals(type2, props.getDefinedDatatypes()[1]);
+		assertEquals(type1, props.getDefinedValueDatatypes()[0]);
+		assertEquals(type2, props.getDefinedValueDatatypes()[1]);
 		
 		DynamicValueDatatype type1b = new DynamicValueDatatype(ipsProject);
 		type1b.setQualifiedName("type1");
 		props.addDefinedDatatype(type1b);
-		assertEquals(type1b, props.getDefinedDatatypes()[0]);
-		assertEquals(type2, props.getDefinedDatatypes()[1]);
+		assertEquals(type1b, props.getDefinedValueDatatypes()[0]);
+		assertEquals(type2, props.getDefinedValueDatatypes()[1]);
 
 		// type with qName=null
 		DynamicValueDatatype type3 = new DynamicValueDatatype(ipsProject);
 		props.addDefinedDatatype(type3);
-		assertEquals(type3, props.getDefinedDatatypes()[2]);
+		assertEquals(type3, props.getDefinedValueDatatypes()[2]);
+		
+		JavaClass2DatatypeAdaptor type4 = new JavaClass2DatatypeAdaptor("org.Message");
+        props.addDefinedDatatype(type4);
+        assertEquals(type4, props.getDefinedDatatypes().get(3));
 	}
 
 	public void testInitFromXml() {
@@ -211,12 +229,14 @@ public class IpsProjectPropertiesTest extends AbstractIpsPluginTest {
 		assertEquals("Integer", datatypes[1]);
         
         // datatype definitions
-        DynamicValueDatatype[] dynTypes = props.getDefinedDatatypes();
-        assertEquals(2, dynTypes.length);
-        assertEquals("PaymentMode", dynTypes[0].getQualifiedName());
-        assertTrue(dynTypes[0] instanceof DynamicEnumDatatype);
-        assertEquals("PaymentMode", dynTypes[1].getQualifiedName());
-        assertTrue(!(dynTypes[1] instanceof DynamicEnumDatatype));
+        List<Datatype> definedTypes = props.getDefinedDatatypes();
+        assertEquals(3, definedTypes.size());
+        assertEquals("PaymentMode", definedTypes.get(0).getQualifiedName());
+        assertTrue(definedTypes.get(0) instanceof DynamicEnumDatatype);
+        assertEquals("PaymentMode", definedTypes.get(1).getQualifiedName());
+        assertTrue(!(definedTypes.get(1) instanceof DynamicEnumDatatype));
+        assertEquals("MessageList", definedTypes.get(2).getQualifiedName());
+        assertTrue(definedTypes.get(2) instanceof JavaClass2DatatypeAdaptor);
         
         assertEquals("min.Version", props.getMinRequiredVersionNumber("required.id"));
         assertEquals(2, props.getRequiredIpsFeatureIds().length);

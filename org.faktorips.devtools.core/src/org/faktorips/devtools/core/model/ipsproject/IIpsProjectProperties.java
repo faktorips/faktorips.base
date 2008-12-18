@@ -17,7 +17,10 @@
 
 package org.faktorips.devtools.core.model.ipsproject;
 
+import java.util.List;
+
 import org.eclipse.core.runtime.CoreException;
+import org.faktorips.datatype.Datatype;
 import org.faktorips.datatype.ValueDatatype;
 import org.faktorips.devtools.core.internal.model.DynamicValueDatatype;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmptNamingStrategy;
@@ -185,14 +188,24 @@ public interface IIpsProjectProperties {
 	/**
 	 * Returns the value datatypes that are defined in this project.
 	 */
-	public DynamicValueDatatype[] getDefinedDatatypes();
+	public DynamicValueDatatype[] getDefinedValueDatatypes();
 
+    /**
+     * Returns all (value and other) datatypes that are defined in this project.
+     */
+	public List<Datatype> getDefinedDatatypes();
+	
 	/**
 	 * Sets the value datatypes that are defined in this project.
 	 */
 	public void setDefinedDatatypes(DynamicValueDatatype[] datatypes);
 	
-	/**
+    /**
+     * Sets the datatypes that are defined in this project.
+     */
+    public void setDefinedDatatypes(Datatype[] datatypes);
+    
+    /**
 	 * Adds the defined value datatype. If the project properties contain another
 	 * datatype with the same id, the new datatype replaces the old one.
 	 * 
@@ -200,7 +213,15 @@ public interface IIpsProjectProperties {
 	 */
 	public void addDefinedDatatype(DynamicValueDatatype datatype);
 
-	/**
+    /**
+     * Adds the defined datatype. If the project properties contain another
+     * datatype with the same id, the new datatype replaces the old one.
+     * 
+     * @throws NullPointerException if datatype is <code>null</code>.
+     */
+    public void addDefinedDatatype(Datatype datatype);
+
+    /**
 	 * Returns the prefix to be used for new runtime-ids for product components.
 	 */
 	public String getRuntimeIdPrefix();

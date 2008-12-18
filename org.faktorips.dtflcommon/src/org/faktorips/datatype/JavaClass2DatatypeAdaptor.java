@@ -14,6 +14,7 @@
 
 package org.faktorips.datatype;
 
+import org.faktorips.util.ArgumentCheck;
 import org.faktorips.util.StringUtil;
 
 /**
@@ -23,7 +24,7 @@ import org.faktorips.util.StringUtil;
  *  
  * @author Jan Ortmann
  */
-public class JavaClass2DatatypeAdaptor implements Datatype {
+public class JavaClass2DatatypeAdaptor extends AbstractDatatype {
 
     private String qualifiedName;
     private String javaClassName;
@@ -33,6 +34,8 @@ public class JavaClass2DatatypeAdaptor implements Datatype {
     }
 
     public JavaClass2DatatypeAdaptor(String name, String javaClassName) {
+        ArgumentCheck.notNull(name);
+        ArgumentCheck.notNull(javaClassName);
         this.qualifiedName = name;
         this.javaClassName = javaClassName;
     }
@@ -69,13 +72,6 @@ public class JavaClass2DatatypeAdaptor implements Datatype {
     /**
      * {@inheritDoc}
      */
-    public boolean hasNullObject() {
-        return false;
-    }
-
-    /**
-     * {@inheritDoc}
-     */
     public boolean isPrimitive() {
         return false;
     }
@@ -87,21 +83,4 @@ public class JavaClass2DatatypeAdaptor implements Datatype {
         return false;
     }
 
-    /**
-     * {@inheritDoc}
-     */
-    public boolean isVoid() {
-        return false;
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    public int compareTo(Object arg0) {
-        return 0;
-    }
-
-    public String toString() {
-        return qualifiedName;
-    }
 }

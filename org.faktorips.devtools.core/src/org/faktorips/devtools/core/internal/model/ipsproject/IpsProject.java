@@ -975,78 +975,28 @@ public class IpsProject extends IpsElement implements IIpsProject {
      * {@inheritDoc}
      */
     public ValueDatatype[] getValueDatatypes(boolean includeVoid) {
-        Set result = new LinkedHashSet();
-        getValueDatatypes(includeVoid, true, result);
-        return (ValueDatatype[])result.toArray(new ValueDatatype[result.size()]);
+        return getValueDatatypes(includeVoid, true);
     }
     
     /**
 	 * {@inheritDoc}
 	 */
 	public ValueDatatype[] getValueDatatypes(boolean includeVoid, boolean includePrimitives) {
-        Set result = new LinkedHashSet();
-        getValueDatatypes(includeVoid, includePrimitives, result);
+        Set<Datatype> result = new LinkedHashSet<Datatype>();
+        try {
+            getDatatypesDefinedInProjectPropertiesInclSubprojects(true, includeVoid, includePrimitives, result);
+            findEnumDatatypesBasedOnTables(result);
+            // TODO Core Exception werfen!
+        } catch (CoreException e) {
+            throw new RuntimeException(e);
+        }
         return (ValueDatatype[])result.toArray(new ValueDatatype[result.size()]);
 	}
-
-	private void getValueDatatypes(boolean includeVoid, boolean includePrimitives, Set result) {
-        if (includeVoid) {
-            result.add(Datatype.VOID);
-        }
-        
-        // add enum types defined in tables
-		try {
-			IIpsSrcFile[] structureSrcFiles = findIpsSrcFiles(IpsObjectType.TABLE_STRUCTURE);
-	        for (int i = 0; i < structureSrcFiles.length; i++) {
-                if (!structureSrcFiles[i].exists()) {
-                    continue;
-                }
-                ITableStructure structure = (ITableStructure)structureSrcFiles[i].getIpsObject(); 
-				if (structure.isModelEnumType()) {
-                    ArrayList enumTableContents = new ArrayList(structureSrcFiles.length);
-                    findTableContents(structure, enumTableContents);
-                    for (Iterator it = enumTableContents.iterator(); it.hasNext();) {
-                        ITableContents contents = (ITableContents)it.next();
-                        result.add(new TableContentsEnumDatatypeAdapter(contents, this));
-                    }
-				}
-			}
-		} catch (CoreException e) {
-			throw new RuntimeException(e);
-		}
-        
-        getValueDatatypes(this, result, new HashSet());
-        if (!includePrimitives) {
-        	// remove primitives from the result
-        	for (Iterator it=result.iterator(); it.hasNext(); ) {
-        		ValueDatatype type = (ValueDatatype)it.next();
-        		if (type.isPrimitive()) {
-        			it.remove();
-        		}
-        	}
-        }
-    }
-    
-    private void getValueDatatypes(IIpsProject ipsProject, Set result, Set visitedProjects){
-        try {
-            ((IpsModel)getIpsModel()).getValueDatatypes(ipsProject, result);
-            IIpsProject[] projects = ((IpsProject)ipsProject).getIpsObjectPathInternal().getReferencedIpsProjects();
-            for (int i = 0; i < projects.length; i++) {
-                if(!visitedProjects.contains(projects[i])){
-                	visitedProjects.add(projects[i]);
-                	getValueDatatypes(projects[i], result, visitedProjects);
-                }
-            }
-        } catch (CoreException e) {
-            IpsPlugin.log(e);
-        }
-    }
-
+	
     /**
      * {@inheritDoc}
      */
-    public Datatype[] findDatatypes(boolean valuetypesOnly, boolean includeVoid)
-            throws CoreException {
+    public Datatype[] findDatatypes(boolean valuetypesOnly, boolean includeVoid) throws CoreException {
     	return findDatatypes(valuetypesOnly, includeVoid, true);
     }
     
@@ -1054,27 +1004,65 @@ public class IpsProject extends IpsElement implements IIpsProject {
 	 * {@inheritDoc}
 	 */
 	public Datatype[] findDatatypes(boolean valuetypesOnly, boolean includeVoid, boolean includePrimitives) throws CoreException {
-        Set result = new LinkedHashSet();
-        getValueDatatypes(includeVoid, includePrimitives, result);
+        Set<Datatype> result = new LinkedHashSet<Datatype>();
+        getDatatypesDefinedInProjectPropertiesInclSubprojects(valuetypesOnly, includeVoid, includePrimitives, result);
+        findEnumDatatypesBasedOnTables(result);
         if (!valuetypesOnly) {
-            List refDatatypeFiles = new ArrayList();
-            IpsObjectType[] objectTypes = IpsObjectType.ALL_TYPES;
-            for (int i = 0; i < objectTypes.length; i++) {
-                if (objectTypes[i].isDatatype()) {
-                    findAllIpsSrcFiles(refDatatypeFiles, objectTypes[i]);
-                }
+            findDatatypesDefinedByIpsObjects(result);
+        }
+        return result.toArray(new Datatype[result.size()]);
+	}
+
+    private void getDatatypesDefinedInProjectPropertiesInclSubprojects(boolean valuetypesOnly, boolean includeVoid, boolean includePrimitives, Set<Datatype> result) throws CoreException {
+        if (includeVoid) {
+            result.add(Datatype.VOID);
+        }
+        Set<IIpsProject> visitedProjects = new HashSet<IIpsProject>();
+        getDatatypesDefinedInProjectPropertiesInclSubprojects(this, valuetypesOnly, includePrimitives, visitedProjects, result);
+    }
+
+    private void getDatatypesDefinedInProjectPropertiesInclSubprojects(IpsProject ipsProject, boolean valuetypesOnly, boolean includePrimitives, Set<IIpsProject>visitedProjects, Set<Datatype> result) throws CoreException {
+        ((IpsModel)getIpsModel()).getDatatypesDefinedInProject(ipsProject, valuetypesOnly, includePrimitives, result); 
+        IIpsProject[] projects = ipsProject.getIpsObjectPathInternal().getReferencedIpsProjects();
+        for (int i = 0; i < projects.length; i++) {
+            if(!visitedProjects.contains(projects[i])){
+                visitedProjects.add(projects[i]);
+                getDatatypesDefinedInProjectPropertiesInclSubprojects(((IpsProject)projects[i]), valuetypesOnly, includePrimitives, visitedProjects, result);
             }
-            for (Iterator it=refDatatypeFiles.iterator(); it.hasNext();) {
-                IIpsSrcFile file = (IIpsSrcFile)it.next();
-                if (file.exists()) {
-                    result.add(file.getIpsObject());
+        }
+    }
+
+    private void findEnumDatatypesBasedOnTables(Set<Datatype> result) throws CoreException {
+        IIpsSrcFile[] structureSrcFiles = findIpsSrcFiles(IpsObjectType.TABLE_STRUCTURE);
+        for (int i = 0; i < structureSrcFiles.length; i++) {
+            if (!structureSrcFiles[i].exists()) {
+                continue;
+            }
+            ITableStructure structure = (ITableStructure)structureSrcFiles[i].getIpsObject(); 
+            if (structure.isModelEnumType()) {
+                ArrayList<ITableContents> enumTableContents = new ArrayList<ITableContents>(structureSrcFiles.length);
+                findTableContents(structure, enumTableContents);
+                for (ITableContents tableContents : enumTableContents) {
+                    result.add(new TableContentsEnumDatatypeAdapter(tableContents, this));
                 }
             }
         }
-        Datatype[] array = new Datatype[result.size()];
-        result.toArray(array);
-        return array;
-	}
+    }
+    
+    private void findDatatypesDefinedByIpsObjects(Set<Datatype> result) throws CoreException {
+        List<IIpsSrcFile> refDatatypeFiles = new ArrayList<IIpsSrcFile>();
+        IpsObjectType[] objectTypes = IpsObjectType.ALL_TYPES;
+        for (int i = 0; i < objectTypes.length; i++) {
+            if (objectTypes[i].isDatatype()) {
+                findAllIpsSrcFiles(refDatatypeFiles, objectTypes[i]);
+            }
+        }
+        for (IIpsSrcFile file : refDatatypeFiles) {
+            if (file.exists()) {
+                result.add((Datatype)file.getIpsObject());
+            }
+        }
+    }
 
 	/**
      * {@inheritDoc}
@@ -1100,7 +1088,7 @@ public class IpsProject extends IpsElement implements IIpsProject {
     	if (qualifiedName.equals(Datatype.VOID.getQualifiedName())) {
     		return Datatype.VOID;
     	}
-    	Datatype type = findValueDatatype(qualifiedName);
+    	Datatype type = findDatatypeDefinedInProjectPropertiesInclSubprojects(qualifiedName);
         if (type!=null) {
         	return type;
         }
@@ -1176,6 +1164,54 @@ public class IpsProject extends IpsElement implements IIpsProject {
         return null;
     }
 
+    public Datatype findDatatypeDefinedInProjectPropertiesInclSubprojects(String qualifiedName) throws CoreException {
+        if (qualifiedName==null) {
+            return null;
+        }
+        int arrayDimension = ArrayOfValueDatatype.getDimension(qualifiedName);
+        if(arrayDimension > 0){
+            qualifiedName = ArrayOfValueDatatype.getBasicDatatypeName(qualifiedName);
+        }
+        Datatype type = findDatatypeDefinedInProjectPropertiesInclSubprojects(this, qualifiedName, new HashSet<IIpsProject>());
+        if (arrayDimension==0) {
+            return type;
+        }
+        if(type instanceof ValueDatatype){
+            return new ArrayOfValueDatatype(type, arrayDimension);
+        }
+        throw new IllegalArgumentException("The qualified name: \"" + qualifiedName +  //$NON-NLS-1$
+                "\" specifies an array of a non value datatype. This is currently not supported."); //$NON-NLS-1$
+    }
+
+    
+    private Datatype findDatatypeDefinedInProjectPropertiesInclSubprojects(IpsProject ipsProject, String qualifiedName, HashSet<IIpsProject> visitedProjects)
+            throws CoreException {
+
+        Datatype datatype = ((IpsModel)getIpsModel()).getDefinedDatatype(ipsProject, qualifiedName);
+        if (datatype != null) {
+            return datatype;
+        }
+
+        ITableContents contents = (ITableContents)ipsProject.findIpsObject(IpsObjectType.TABLE_CONTENTS, qualifiedName);
+        if (contents != null) {
+            ITableStructure structure = contents.findTableStructure(ipsProject);
+            if (structure != null && structure.isModelEnumType()) {
+                return new TableContentsEnumDatatypeAdapter(contents, ipsProject);
+            }
+        }
+        IIpsProject[] projects = ((IpsProject)ipsProject).getIpsObjectPathInternal().getReferencedIpsProjects();
+        for (int i = 0; i < projects.length; i++) {
+            if (!visitedProjects.contains(projects[i])) {
+                visitedProjects.add(projects[i]);
+                datatype = findDatatypeDefinedInProjectPropertiesInclSubprojects((IpsProject)projects[i], qualifiedName, visitedProjects);
+                if (datatype != null) {
+                    return datatype;
+                }
+            }
+        }
+        return null;
+    }
+    
     /**
      * {@inheritDoc}
      */
@@ -1418,6 +1454,9 @@ public class IpsProject extends IpsElement implements IIpsProject {
 		return getPropertiesInternal().getProductCmptNamingStrategy();
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	public void addDynamicValueDataType(DynamicValueDatatype newDatatype) throws CoreException  {
 		((IpsProjectProperties)getPropertiesInternal()).addDefinedDatatype(newDatatype);
 		saveProjectProperties(getProperties());

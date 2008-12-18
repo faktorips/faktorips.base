@@ -17,10 +17,12 @@
 
 package org.faktorips.devtools.core.internal.model.ipsproject;
 
+import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.HashSet;
 import java.util.Hashtable;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Set;
 import java.util.StringTokenizer;
 
@@ -28,6 +30,8 @@ import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.SystemUtils;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.osgi.util.NLS;
+import org.faktorips.datatype.Datatype;
+import org.faktorips.datatype.JavaClass2DatatypeAdaptor;
 import org.faktorips.datatype.ValueDatatype;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.IpsStatus;
@@ -81,7 +85,7 @@ public class IpsProjectProperties implements IIpsProjectProperties {
     private IIpsArtefactBuilderSetConfigModel builderSetConfig = new IpsArtefactBuilderSetConfigModel();
 	private IIpsObjectPath path = new IpsObjectPath(new IpsProject());
 	private String[] predefinedDatatypesUsed = new String[0];
-    private DynamicValueDatatype[] definedDatatypes = new DynamicValueDatatype[0]; 
+    private List<Datatype> definedDatatypes = new ArrayList<Datatype>(0); // all datatypes defined in the project including(!) the value datatypes.
     private String runtimeIdPrefix = ""; //$NON-NLS-1$
     private boolean javaProjectContainsClassesForDynamicDatatypes = false;
     private boolean derivedUnionIsImplementedRuleEnabled = true;
@@ -120,12 +124,13 @@ public class IpsProjectProperties implements IIpsProjectProperties {
     		validateUsedPredefinedDatatype(ipsProject, list);
             validateIpsObjectPath(ipsProject, list);
             validateRequiredFeatures(ipsProject, list);
-    		for (int i = 0; i < definedDatatypes.length; i++) {
-    			list.add(definedDatatypes[i].checkReadyToUse());
-    		}
-    		return list;
+            DynamicValueDatatype[] valuetypes = getDefinedValueDatatypes();
+            for (int i = 0; i < valuetypes.length; i++) {
+                list.add(valuetypes[i].checkReadyToUse());
+            }
+            return list;
         } catch(RuntimeException e){
-            //if runtime exceptions are not converted into core exceptions the stack trace gets lost in loggin file and they are hared to find
+            //if runtime exceptions are not converted into core exceptions the stack trace gets lost in the logging file and they are hard to find
             throw new CoreException(new IpsStatus(e));
         }
 	}
@@ -309,18 +314,44 @@ public class IpsProjectProperties implements IIpsProjectProperties {
 	/**
 	 * {@inheritDoc}
 	 */
-    public DynamicValueDatatype[] getDefinedDatatypes() {
+	public List<Datatype> getDefinedDatatypes() {
         return definedDatatypes;
+    }
+
+    /**
+	 * {@inheritDoc}
+	 */
+    public DynamicValueDatatype[] getDefinedValueDatatypes() {
+        List<DynamicValueDatatype> valuetypes = new ArrayList<DynamicValueDatatype>(definedDatatypes.size());
+        for (Datatype datatype : definedDatatypes) {
+            if (datatype.isValueDatatype()) {
+                valuetypes.add((DynamicValueDatatype)datatype);
+            }
+        }
+        return valuetypes.toArray(new DynamicValueDatatype[valuetypes.size()]);
     }
     
     /**
 	 * {@inheritDoc}
 	 */
     public void setDefinedDatatypes(DynamicValueDatatype[] datatypes) {
-        definedDatatypes = datatypes;
+        definedDatatypes = new ArrayList<Datatype>(datatypes.length);
+        for (int i = 0; i < datatypes.length; i++) {
+            definedDatatypes.add(datatypes[i]);
+        }
     }
 
-	public Element toXml(Document doc) {
+    /**
+     * {@inheritDoc}
+     */
+    public void setDefinedDatatypes(Datatype[] datatypes) {
+        definedDatatypes = new ArrayList<Datatype>(datatypes.length);
+        for (int i = 0; i < datatypes.length; i++) {
+            definedDatatypes.add(datatypes[i]);
+        }
+    }
+    
+    public Element toXml(Document doc) {
         createIpsProjectDescriptionComment(doc);
 		Element projectEl = doc.createElement(TAG_NAME);
 		projectEl.setAttribute("modelProject", "" + modelProject); //$NON-NLS-1$ //$NON-NLS-2$
@@ -435,7 +466,7 @@ public class IpsProjectProperties implements IIpsProjectProperties {
         Element datatypesEl = XmlUtil.getFirstElement(element, "Datatypes"); //$NON-NLS-1$
         if (datatypesEl==null) {
         	predefinedDatatypesUsed = new String[0];
-            definedDatatypes = new DynamicValueDatatype[0];
+            definedDatatypes.clear();
         	return;
         }
         initUsedPredefinedDatatypesFromXml(XmlUtil.getFirstElement(datatypesEl, "UsedPredefinedDatatypes")); //$NON-NLS-1$
@@ -491,14 +522,25 @@ public class IpsProjectProperties implements IIpsProjectProperties {
     
     private void initDefinedDatatypesFromXml(IIpsProject ipsProject, Element element) {
         if (element==null) {
-            definedDatatypes = new DynamicValueDatatype[0];
+            definedDatatypes.clear();
             return;
         }
         NodeList nl = element.getElementsByTagName("Datatype"); //$NON-NLS-1$
-        definedDatatypes = new DynamicValueDatatype[nl.getLength()];
+        definedDatatypes = new ArrayList<Datatype>(nl.getLength());
         for (int i=0; i<nl.getLength(); i++) {
-            definedDatatypes[i] = DynamicValueDatatype.createFromXml(ipsProject, (Element)nl.item(i));
+            Element el = (Element)nl.item(i);
+            Datatype datatype = createDefinedDatatype(ipsProject, el);
+            definedDatatypes.add(datatype);
         }
+    }
+    
+    private Datatype createDefinedDatatype(IIpsProject ipsProject, Element element) {
+        if (!element.hasAttribute("valueObject") || Boolean.valueOf(element.getAttribute("valueObject")).booleanValue()) {
+            return DynamicValueDatatype.createFromXml(ipsProject, element);
+        } 
+        String javaClass = element.getAttribute("javaClass"); //$NON-NLS-1$
+        String qName = element.getAttribute("id"); //$NON-NLS-1$
+        return new JavaClass2DatatypeAdaptor(qName, javaClass);
     }
     
     private void initResourcesExcludedFromProductDefinition(Element element) {
@@ -564,33 +606,44 @@ public class IpsProjectProperties implements IIpsProjectProperties {
     }
     
     private void writeDefinedDataTypesToXML(Document doc, Element parent) {
-		for (int i=0; i<definedDatatypes.length; i++) {
-			Element datatypeEl = doc.createElement("Datatype"); //$NON-NLS-1$
-			definedDatatypes[i].writeToXml(datatypeEl);
-			parent.appendChild(datatypeEl);
-		}
+        for (Datatype datatype : definedDatatypes) {
+            Element datatypeEl = doc.createElement("Datatype"); //$NON-NLS-1$
+            if (datatype.getQualifiedName() != null) {
+                datatypeEl.setAttribute("id", datatype.getQualifiedName()); //$NON-NLS-1$
+            }
+            if (datatype instanceof DynamicValueDatatype) {
+                datatypeEl.setAttribute("valueObject", "true");
+                ((DynamicValueDatatype)datatype).writeToXml(datatypeEl);
+            } else {
+                JavaClass2DatatypeAdaptor javaClassDatatype = (JavaClass2DatatypeAdaptor)datatype;
+                datatypeEl.setAttribute("valueObject", "false");
+                datatypeEl.setAttribute("javaClass", javaClassDatatype.getJavaClassName());
+            }
+            parent.appendChild(datatypeEl);
+        }
 	}
 
     /**
      * {@inheritDoc}
      */
-	public void addDefinedDatatype(DynamicValueDatatype newDatatype) {
-		DynamicValueDatatype [] oldValue = definedDatatypes;
-		int i;
-		/* replace, if Datatype already registered */
-		for (i = 0; i < definedDatatypes.length; i++) {
-			if(definedDatatypes[i].getQualifiedName()!=null && 
-					newDatatype.getQualifiedName()!=null && 
-					definedDatatypes[i].getQualifiedName().equals(newDatatype.getQualifiedName())) {
-				definedDatatypes[i] = newDatatype;
-				return;
-			}
-		}
-		definedDatatypes = new DynamicValueDatatype [oldValue.length + 1];
-		for (i = 0; i < oldValue.length; i++) {
-			definedDatatypes[i]=oldValue[i];
-		}
-		definedDatatypes[i]=newDatatype;
+    public void addDefinedDatatype(DynamicValueDatatype newDatatype) {
+        addDefinedDatatype((Datatype)newDatatype);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+	public void addDefinedDatatype(Datatype newDatatype) {
+        /* replace, if Datatype already registered */
+	    for (int i = 0; i < definedDatatypes.size(); i++) {
+            if(definedDatatypes.get(i).getQualifiedName()!=null && 
+                    newDatatype.getQualifiedName()!=null && 
+                    definedDatatypes.get(i).getQualifiedName().equals(newDatatype.getQualifiedName())) {
+                definedDatatypes.set(i, newDatatype);
+                return;
+            }
+        }
+	    definedDatatypes.add(newDatatype);
 	}
 	
 	/**
@@ -732,10 +785,12 @@ public class IpsProjectProperties implements IIpsProjectProperties {
         + " " + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$
         + "<DatatypeDefinitions>" + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$
         + "    <Datatype id=\"PaymentMode\"                             The datatype's id used in the model to refer to it." + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$
-        + "        valueClass=\"org.faktorips.sample.PaymentMode\"      The Java class the datatype represents" + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$
-        + "        isEnumType=\"true\"                                  True if this is an enumeration of values." + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$
-        + "        valueOfMethod=\"getPaymentMode\"                     Name of the method that takes a String a returns an" + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$
-        + "                                                             object instance." + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$
+        + "        javaClass=\"org.faktorips.sample.PaymentMode\"       The Java class the datatype represents" + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$
+        + "        valueObject=\"true|false\"                           True indicates this is a value object (according to the value object pattern.) " + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$
+        + "        --- the following attributes are only needed for value objects ---" + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$
+        + "        isEnumType=\"true|false\"                            True if this is an enumeration of values." + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$
+        + "        valueOfMethod=\"getPaymentMode\"                     Name of the method that takes a String and returns an" + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$
+        + "                                                             object instance/value." + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$
         + "        isParsableMethod=\"isPaymentMode\"                   Name of the method that evaluates if a given string" + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$
         + "                                                             can be parsed to an instance." + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$
         + "        valueToStringMethod=\"toString\"                     Name of the method that transforms an object instance" + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$

@@ -22,9 +22,9 @@ import org.faktorips.devtools.core.IpsStatus;
 import org.faktorips.devtools.core.builder.JavaSourceFileBuilder;
 import org.faktorips.devtools.core.model.ipsobject.Modifier;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
-import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.model.type.IMethod;
 import org.faktorips.devtools.core.model.type.IParameter;
+import org.faktorips.devtools.stdbuilder.StandardBuilderSet;
 import org.faktorips.devtools.stdbuilder.policycmpttype.GenPolicyCmptType;
 import org.faktorips.devtools.stdbuilder.policycmpttype.GenPolicyCmptTypePart;
 import org.faktorips.util.LocalizedStringsSet;
@@ -142,22 +142,12 @@ public class GenMethod extends GenPolicyCmptTypePart {
             Datatype[] paramTypes,
             JavaCodeFragmentBuilder methodsBuilder) throws CoreException {
 
+        StandardBuilderSet builderset = getGenPolicyCmptType().getBuilderSet();
         String[] paramClassNames = new String[paramTypes.length];
         for (int i = 0; i < paramClassNames.length; i++) {
-            if (paramTypes[i] instanceof IPolicyCmptType) {
-                paramClassNames[i] = getGenPolicyCmptType().getBuilderSet()
-                        .getGenerator((IPolicyCmptType)paramTypes[i]).getQualifiedName(true);
-            } else {
-                paramClassNames[i] = paramTypes[i].getJavaClassName();
-            }
+            paramClassNames[i] = builderset.getJavaClassName(paramTypes[i]);
         }
-        String returnClassName;
-        if (returnType instanceof IPolicyCmptType) {
-            returnClassName = getGenPolicyCmptType().getBuilderSet().getGenerator((IPolicyCmptType)returnType)
-                    .getQualifiedName(true);
-        } else {
-            returnClassName = returnType.getJavaClassName();
-        }
+        String returnClassName = builderset.getJavaClassName(returnType);
         methodsBuilder.signature(javaModifier, returnClassName, method.getName(), method.getParameterNames(),
                 paramClassNames);
     }

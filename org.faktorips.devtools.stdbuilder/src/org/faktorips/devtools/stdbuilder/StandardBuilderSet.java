@@ -438,4 +438,19 @@ public class StandardBuilderSet extends DefaultBuilderSet {
         return getConfig().getPropertyValueAsBoolean(StandardBuilderSet.CONFIG_PROPERTY_USE_TYPESAFE_COLLECTIONS)
                 .booleanValue();
     }
+    
+    /**
+     * @param datatype
+     * @return
+     */
+    public String getJavaClassName(Datatype datatype) throws CoreException {
+        if (datatype instanceof IPolicyCmptType) {
+            return getGenerator((IPolicyCmptType)datatype).getQualifiedName(true);
+        }
+        if (datatype instanceof IProductCmptType) {
+            return getGenerator((IProductCmptType)datatype).getQualifiedName(true);
+        }
+        return datatype.getJavaClassName();
+    }
+
 }

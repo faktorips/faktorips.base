@@ -591,7 +591,7 @@ public abstract class AbstractIpsPluginTest extends XmlAbstractTestCase {
 
         ArrayList dataTypes = new ArrayList(adaptedClass.length);
         IIpsProjectProperties properties = project.getProperties();
-        DynamicValueDatatype[] definedDatatypes = properties.getDefinedDatatypes();
+        DynamicValueDatatype[] definedDatatypes = properties.getDefinedValueDatatypes();
         for (int i = 0; i < definedDatatypes.length; i++) {
             dataTypes.add(definedDatatypes[i]);
         }

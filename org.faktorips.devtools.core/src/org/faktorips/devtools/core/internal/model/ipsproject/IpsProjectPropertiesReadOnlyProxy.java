@@ -17,9 +17,11 @@
 
 package org.faktorips.devtools.core.internal.model.ipsproject;
 
+import java.util.List;
 import java.util.Locale;
 
 import org.eclipse.core.runtime.CoreException;
+import org.faktorips.datatype.Datatype;
 import org.faktorips.datatype.ValueDatatype;
 import org.faktorips.devtools.core.internal.model.DynamicValueDatatype;
 import org.faktorips.devtools.core.model.ipsproject.IIpsArtefactBuilderSetConfigModel;
@@ -58,30 +60,37 @@ public class IpsProjectPropertiesReadOnlyProxy implements IIpsProjectProperties 
     }
 
     /**
-     * Returns the value of the unterlying IIpsProjectProperties instance.
+     * Returns the value of the underlying IIpsProjectProperties instance.
      */
     public IIpsArtefactBuilderSetConfigModel getBuilderSetConfig() {
         return propertiesInternal.getBuilderSetConfig();
     }
 
     /**
-     * Returns the value of the unterlying IIpsProjectProperties instance.
+     * Returns the value of the underlying IIpsProjectProperties instance.
      */
     public String getBuilderSetId() {
         return propertiesInternal.getBuilderSetId();
     }
 
     /**
-     * Returns the value of the unterlying IIpsProjectProperties instance.
+     * Returns the value of the underlying IIpsProjectProperties instance.
      */
     public String getChangesOverTimeNamingConventionIdForGeneratedCode() {
         return propertiesInternal.getChangesOverTimeNamingConventionIdForGeneratedCode();
     }
 
     /**
-     * Returns the value of the unterlying IIpsProjectProperties instance.
+     * Returns the value of the underlying IIpsProjectProperties instance.
      */
-    public DynamicValueDatatype[] getDefinedDatatypes() {
+    public DynamicValueDatatype[] getDefinedValueDatatypes() {
+        return propertiesInternal.getDefinedValueDatatypes();
+    }
+    
+    /**
+     * Returns the value of the underlying IIpsProjectProperties instance.
+     */
+    public List<Datatype> getDefinedDatatypes() {
         return propertiesInternal.getDefinedDatatypes();
     }
 
@@ -95,70 +104,70 @@ public class IpsProjectPropertiesReadOnlyProxy implements IIpsProjectProperties 
     }
 
     /**
-     * Returns the value of the unterlying IIpsProjectProperties instance.
+     * Returns the value of the underlying IIpsProjectProperties instance.
      */
     public String getMinRequiredVersionNumber(String featureId) {
         return propertiesInternal.getMinRequiredVersionNumber(featureId);
     }
 
     /**
-     * Returns the value of the unterlying IIpsProjectProperties instance.
+     * Returns the value of the underlying IIpsProjectProperties instance.
      */
     public String[] getPredefinedDatatypesUsed() {
         return propertiesInternal.getPredefinedDatatypesUsed();
     }
 
     /**
-     * Returns the value of the unterlying IIpsProjectProperties instance.
+     * Returns the value of the underlying IIpsProjectProperties instance.
      */
     public IProductCmptNamingStrategy getProductCmptNamingStrategy() {
         return propertiesInternal.getProductCmptNamingStrategy();
     }
 
     /**
-     * Returns the value of the unterlying IIpsProjectProperties instance.
+     * Returns the value of the underlying IIpsProjectProperties instance.
      */
     public String[] getRequiredIpsFeatureIds() {
         return propertiesInternal.getRequiredIpsFeatureIds();
     }
 
     /**
-     * Returns the value of the unterlying IIpsProjectProperties instance.
+     * Returns the value of the underlying IIpsProjectProperties instance.
      */
     public String getRuntimeIdPrefix() {
         return propertiesInternal.getRuntimeIdPrefix();
     }
 
     /**
-     * Returns the value of the unterlying IIpsProjectProperties instance.
+     * Returns the value of the underlying IIpsProjectProperties instance.
      */
     public boolean isDerivedUnionIsImplementedRuleEnabled() {
         return propertiesInternal.isDerivedUnionIsImplementedRuleEnabled();
     }
 
     /**
-     * Returns the value of the unterlying IIpsProjectProperties instance.
+     * Returns the value of the underlying IIpsProjectProperties instance.
      */
     public boolean isJavaProjectContainsClassesForDynamicDatatypes() {
         return propertiesInternal.isJavaProjectContainsClassesForDynamicDatatypes();
     }
 
     /**
-     * Returns the value of the unterlying IIpsProjectProperties instance.
+     * Returns the value of the underlying IIpsProjectProperties instance.
      */
     public boolean isModelProject() {
         return propertiesInternal.isModelProject();
     }
 
     /**
-     * Returns the value of the unterlying IIpsProjectProperties instance.
+     * Returns the value of the underlying IIpsProjectProperties instance.
      */
     public boolean isProductDefinitionProject() {
         return propertiesInternal.isProductDefinitionProject();
     }
 
     /**
-     * Returns the value of the unterlying IIpsProjectProperties instance.
+     * Returns the value of the underlying IIpsProjectProperties instance.
      */
     public boolean isReferencedProductComponentsAreValidOnThisGenerationsValidFromDateRuleEnabled() {
         return propertiesInternal.isReferencedProductComponentsAreValidOnThisGenerationsValidFromDateRuleEnabled();
@@ -189,6 +198,20 @@ public class IpsProjectPropertiesReadOnlyProxy implements IIpsProjectProperties 
      * Throws a runtime exceptions since manipulation of this object is disallowed.
      */
     public void setDefinedDatatypes(DynamicValueDatatype[] datatypes) {
+        throw new RuntimeException("This is a read only object and can therefor not be manipulated.");
+    }
+    
+    /**
+     * {@inheritDoc}
+     */
+    public void addDefinedDatatype(Datatype datatype) {
+        throw new RuntimeException("This is a read only object and can therefor not be manipulated.");
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public void setDefinedDatatypes(Datatype[] datatypes) {
         throw new RuntimeException("This is a read only object and can therefor not be manipulated.");
     }
 
@@ -284,14 +307,14 @@ public class IpsProjectPropertiesReadOnlyProxy implements IIpsProjectProperties 
     }
 
     /**
-     * Returns the value of the unterlying IIpsProjectProperties instance.
+     * Returns the value of the underlying IIpsProjectProperties instance.
      */    
     public MessageList validate(IIpsProject ipsProject) throws CoreException {
         return propertiesInternal.validate(ipsProject);
     }
 
     /**
-     * Returns the value of the unterlying IIpsProjectProperties instance.
+     * Returns the value of the underlying IIpsProjectProperties instance.
      */    
     public Long getLastPersistentModificationTimestamp() {
         return propertiesInternal.getLastPersistentModificationTimestamp();

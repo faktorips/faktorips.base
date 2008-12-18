@@ -18,6 +18,7 @@ import java.util.Comparator;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
+import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
@@ -50,6 +51,7 @@ import org.eclipse.ui.PlatformUI;
 import org.faktorips.codegen.DatatypeHelper;
 import org.faktorips.codegen.dthelpers.GenericValueDatatypeHelper;
 import org.faktorips.datatype.Datatype;
+import org.faktorips.datatype.GenericValueDatatype;
 import org.faktorips.datatype.ValueDatatype;
 import org.faktorips.devtools.core.ExtensionPoints;
 import org.faktorips.devtools.core.IpsPlugin;
@@ -140,13 +142,14 @@ public class IpsModel extends IpsElement implements IIpsModel, IResourceChangeLi
 
     // a map containing a set of datatypes per ips project. The map's key is the
     // project name.
-    private Map projectDatatypesMap = Collections.synchronizedMap(new HashMap());
+    private Map<String, LinkedHashMap<String, Datatype>> projectDatatypesMap = 
+        Collections.synchronizedMap(new HashMap<String, LinkedHashMap<String, Datatype>>());
 
-    // a map containing a map per ips project. The map's key is the project
-    // name.
+    // a map containing a map per ips project. The map's key is the project name.
     // The maps contained in the map, contain the datatypes as keys and the
     // datatype helper as values.
-    private Map projectDatatypeHelpersMap = Collections.synchronizedMap(new HashMap());
+    private Map<String, Map<ValueDatatype, DatatypeHelper>> projectDatatypeHelpersMap = 
+        Collections.synchronizedMap(new HashMap<String, Map<ValueDatatype, DatatypeHelper>>());
 
     private Map projectToBuilderSetMap = Collections.synchronizedMap(new HashMap());
 
@@ -190,7 +193,7 @@ public class IpsModel extends IpsElement implements IIpsModel, IResourceChangeLi
         if (TRACE_MODEL_MANAGEMENT) {
             System.out.println("IpsModel.initIpsObjectType: start."); //$NON-NLS-1$
         }
-        List types = new ArrayList();
+        List<IpsObjectType> types = new ArrayList<IpsObjectType>();
         types.add(IpsObjectType.PRODUCT_CMPT);
         types.add(IpsObjectType.TEST_CASE);
         types.add(IpsObjectType.POLICY_CMPT_TYPE);
@@ -677,34 +680,60 @@ public class IpsModel extends IpsElement implements IIpsModel, IResourceChangeLi
     /**
      * Adds the value datatypes defined for the IPS project to the set of datatypes.
      */
-    public void getValueDatatypes(IIpsProject ipsProject, Set datatypes) {
-        reinitIpsProjectPropertiesIfNecessary((IpsProject)ipsProject);
-        Set set = (Set)projectDatatypesMap.get(ipsProject.getName());
-        if (set == null) {
-            getDatatypes(ipsProject);
-            set = (Set)projectDatatypesMap.get(ipsProject.getName());
+    public void getValueDatatypes(IIpsProject ipsProject, Set<Datatype> datatypes) {
+        Map<String, Datatype> map = getDatatypesDefinedInProject(ipsProject);
+        for (Datatype datatype : map.values()) {
+            if (datatype.isValueDatatype()) {
+                datatypes.add(datatype);
+            }
         }
-        datatypes.addAll(set);
         return;
     }
 
     /**
-     * Adds the value datatypes defined for the IPS project to the set of datatypes.
+     * Returns the value datatype identified by the given qualified name or null, if the ips project
+     * does not contain such a datatype.
      */
     public ValueDatatype getValueDatatype(IIpsProject ipsProject, String qName) {
-        reinitIpsProjectPropertiesIfNecessary((IpsProject)ipsProject);
-        Set set = (Set)projectDatatypesMap.get(ipsProject.getName());
-        if (set == null) {
-            getDatatypes(ipsProject);
-            set = (Set)projectDatatypesMap.get(ipsProject.getName());
-        }
-        for (Iterator it = set.iterator(); it.hasNext();) {
-            Datatype type = (Datatype)it.next();
-            if (type.getQualifiedName().equals(qName) && type instanceof ValueDatatype) {
-                return (ValueDatatype)type;
-            }
+        Datatype datatype = getDefinedDatatype(ipsProject, qName);
+        if (datatype!=null && datatype.isValueDatatype()) {
+            return (ValueDatatype)datatype;
         }
         return null;
+    }
+
+    /**
+     * Returns the datatype identified by the given qualified name or null, if the ips project
+     * does not contain such a datatype.
+     */
+    public Datatype getDefinedDatatype(IIpsProject ipsProject, String qName) {
+        Map<String, Datatype> map = getDatatypesDefinedInProject(ipsProject);
+        return map.get(qName);
+    }
+
+    /**
+     * Adds the datatypes defined for the IPS project to the set of datatypes.
+     */
+    public void getDatatypesDefinedInProject(IIpsProject ipsProject, boolean valuetypesOnly, boolean includePrimitives, Set<Datatype> datatypes) {
+        Map<String, Datatype> map = getDatatypesDefinedInProject(ipsProject);
+        for (Datatype datatype : map.values()) {
+            if (!valuetypesOnly || datatype.isValueDatatype()) {
+                if (includePrimitives || !datatype.isPrimitive()) {
+                    datatypes.add(datatype);
+                }
+            }
+        }
+        return;
+    }
+
+    public Map<String, Datatype> getDatatypesDefinedInProject(IIpsProject ipsProject) {
+        reinitIpsProjectPropertiesIfNecessary((IpsProject)ipsProject);
+        Map<String, Datatype> map = projectDatatypesMap.get(ipsProject.getName());
+        if (map == null) {
+            initDatatypes(ipsProject);
+            map = projectDatatypesMap.get(ipsProject.getName());
+        }
+        return map;
     }
 
     /**
@@ -814,7 +843,7 @@ public class IpsModel extends IpsElement implements IIpsModel, IResourceChangeLi
         reinitIpsProjectPropertiesIfNecessary((IpsProject)ipsProject);
         Map map = (Map)projectDatatypeHelpersMap.get(ipsProject.getName());
         if (map == null) {
-            getDatatypes(ipsProject);
+            initDatatypes(ipsProject);
             map = (Map)projectDatatypeHelpersMap.get(ipsProject.getName());
         }
         return (DatatypeHelper)map.get(datatype);
@@ -901,12 +930,12 @@ public class IpsModel extends IpsElement implements IIpsModel, IResourceChangeLi
     /*
      * Intializes the datatypes and their helpers for the project.
      */
-    private void getDatatypes(IIpsProject project) {
+    private void initDatatypes(IIpsProject project) {
         if (datatypes == null) {
-            initDatatypeDefintionsFromConfiguration();
+            initDatatypesDefinedViaExtension();
         }
-        Set projectTypes = new LinkedHashSet();
-        Map projectHelperMap = new HashMap();
+        LinkedHashMap<String, Datatype> projectTypes = new LinkedHashMap<String, Datatype>();
+        Map<ValueDatatype, DatatypeHelper> projectHelperMap = new HashMap<ValueDatatype, DatatypeHelper>();
         projectDatatypesMap.put(project.getName(), projectTypes);
         projectDatatypeHelpersMap.put(project.getName(), projectHelperMap);
 
@@ -917,16 +946,22 @@ public class IpsModel extends IpsElement implements IIpsModel, IResourceChangeLi
             if (datatype == null) {
                 continue;
             }
-            projectTypes.add(datatype);
-            DatatypeHelper helper = (DatatypeHelper)datatypeHelpersMap.get(datatype);
-            if (helper != null) {
-                projectHelperMap.put(datatype, helper);
+            projectTypes.put(datatypeIds[i], datatype);
+            if (datatype.isValueDatatype()) {
+                ValueDatatype valueDatatype = (ValueDatatype)datatype;
+                DatatypeHelper helper = (DatatypeHelper)datatypeHelpersMap.get(valueDatatype);
+                if (helper != null) {
+                    projectHelperMap.put(valueDatatype, helper);
+                }
             }
         }
-        DynamicValueDatatype[] dynamicTypes = props.getDefinedDatatypes();
-        for (int i = 0; i < dynamicTypes.length; i++) {
-            projectTypes.add(dynamicTypes[i]);
-            projectHelperMap.put(dynamicTypes[i], new GenericValueDatatypeHelper(dynamicTypes[i]));
+        List<Datatype> definedDatatypes = props.getDefinedDatatypes();
+        for (Datatype datatype : definedDatatypes) {
+            projectTypes.put(datatype.getQualifiedName(), datatype);
+            if (datatype instanceof GenericValueDatatype) {
+                GenericValueDatatype valueDatatype = (GenericValueDatatype)datatype;
+                projectHelperMap.put(valueDatatype, new GenericValueDatatypeHelper(valueDatatype));
+            }
         }
     }
 
@@ -1126,7 +1161,7 @@ public class IpsModel extends IpsElement implements IIpsModel, IResourceChangeLi
         Collections.sort(props);
     }
 
-    private void initDatatypeDefintionsFromConfiguration() {
+    private void initDatatypesDefinedViaExtension() {
         datatypes = new HashMap();
         datatypeHelpersMap = new HashMap();
         IExtensionRegistry registry = Platform.getExtensionRegistry();
@@ -1192,7 +1227,7 @@ public class IpsModel extends IpsElement implements IIpsModel, IResourceChangeLi
      */
     public ValueDatatype[] getPredefinedValueDatatypes() {
         if (datatypes == null) {
-            this.initDatatypeDefintionsFromConfiguration();
+            this.initDatatypesDefinedViaExtension();
         }
         Collection c = datatypes.values();
         return (ValueDatatype[])c.toArray(new ValueDatatype[c.size()]);
@@ -1203,7 +1238,7 @@ public class IpsModel extends IpsElement implements IIpsModel, IResourceChangeLi
      */
     public boolean isPredefinedValueDatatype(String valueDatatypeId) {
         if (datatypes == null) {
-            this.initDatatypeDefintionsFromConfiguration();
+            this.initDatatypesDefinedViaExtension();
         }
         return datatypes.containsKey(valueDatatypeId);
     }

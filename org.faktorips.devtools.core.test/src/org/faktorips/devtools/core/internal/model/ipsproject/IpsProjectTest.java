@@ -43,6 +43,7 @@ import org.faktorips.codegen.dthelpers.MoneyHelper;
 import org.faktorips.datatype.ArrayOfValueDatatype;
 import org.faktorips.datatype.Datatype;
 import org.faktorips.datatype.EnumDatatype;
+import org.faktorips.datatype.JavaClass2DatatypeAdaptor;
 import org.faktorips.datatype.ValueDatatype;
 import org.faktorips.devtools.core.AbstractIpsPluginTest;
 import org.faktorips.devtools.core.IpsPlugin;
@@ -404,7 +405,7 @@ public class IpsProjectTest extends AbstractIpsPluginTest {
     	props.setBuilderSetId("newBuilder");
     	assertEquals("myBuilder", ipsProject.getProperties().getBuilderSetId());
     }
-
+    
     public void testGetValueDatatypes() throws Exception {
     	IIpsProjectProperties props = ipsProject.getProperties();
     	props.setPredefinedDatatypesUsed(new String[]{Datatype.DECIMAL.getQualifiedName()});
@@ -421,6 +422,18 @@ public class IpsProjectTest extends AbstractIpsPluginTest {
 	    assertEquals(Datatype.MONEY, types[1]);
 	    assertEquals(TestEnumType.class.getName(), types[2].getJavaClassName());
         
+	    // make sure none-valuedatatypes defined in the project are filtered out
+	    props = ipsProject.getProperties();
+	    Datatype messageListDatatype = new JavaClass2DatatypeAdaptor("org.faktorips.MessageList");
+	    props.addDefinedDatatype(messageListDatatype);
+	    ipsProject.setProperties(props);
+	    
+        types = ipsProject.getValueDatatypes(false);
+        assertEquals(3, types.length);
+        assertEquals(Datatype.DECIMAL, types[0]);
+        assertEquals(Datatype.MONEY, types[1]);
+        assertEquals(TestEnumType.class.getName(), types[2].getJavaClassName());
+	    
 	    types = ipsProject.getValueDatatypes(true);
 	    assertEquals(4, types.length);
 	    assertEquals(Datatype.VOID, types[0]);
@@ -445,7 +458,7 @@ public class IpsProjectTest extends AbstractIpsPluginTest {
         contents3.newGeneration();
         
         ValueDatatype[] datatypes = ipsProject.getValueDatatypes(false);
-        List datatypeList = new ArrayList();
+        List<String> datatypeList = new ArrayList<String>();
         for (int i = 0; i < datatypes.length; i++) {
             datatypeList.add(datatypes[i].getQualifiedName());
         }
@@ -454,7 +467,6 @@ public class IpsProjectTest extends AbstractIpsPluginTest {
         assertFalse(datatypeList.contains("EnumType"));
         assertFalse(datatypeList.contains("EnumType2"));
         assertFalse(datatypeList.contains("AgeCalculationStrategy"));
-        
     }
     
     public void testGetValueDatatypes_boolean_boolean() throws CoreException {
@@ -474,6 +486,8 @@ public class IpsProjectTest extends AbstractIpsPluginTest {
     public void testFindDatatype() throws CoreException {
         IIpsProjectProperties props = ipsProject.getProperties();
         props.setPredefinedDatatypesUsed(new String[]{Datatype.DECIMAL.getQualifiedName(), Datatype.PRIMITIVE_INT.getQualifiedName()});
+        JavaClass2DatatypeAdaptor messageListDatatype = new JavaClass2DatatypeAdaptor("MessageList", "org.MessageList");
+        props.addDefinedDatatype(messageListDatatype);
         ipsProject.setProperties(props);
 
         IPolicyCmptType pcType = newPolicyCmptType(ipsProject, "Policy");
@@ -483,6 +497,8 @@ public class IpsProjectTest extends AbstractIpsPluginTest {
         assertEquals(Datatype.VOID, ipsProject.findDatatype("void"));
         
         assertEquals(Datatype.DECIMAL, ipsProject.findDatatype("Decimal"));
+        assertEquals(messageListDatatype, ipsProject.findDatatype("MessageList"));
+        
         ArrayOfValueDatatype type = (ArrayOfValueDatatype)ipsProject.findDatatype("Decimal[][]");
         assertEquals(Datatype.DECIMAL, type.getBasicDatatype());
         assertEquals(2, type.getDimension());
@@ -572,9 +588,13 @@ public class IpsProjectTest extends AbstractIpsPluginTest {
     
     public void testFindDatatypes() throws Exception {
     	IIpsProjectProperties props = ipsProject.getProperties();
+
     	props.setPredefinedDatatypesUsed(new String[]{Datatype.DECIMAL.getQualifiedName()});
-        ipsProject.setProperties(props);
-        IIpsPackageFragment pack = ipsProject.getIpsPackageFragmentRoots()[0].getIpsPackageFragment("");
+    	Datatype messageListDatatype = new JavaClass2DatatypeAdaptor("org.MessageList");
+    	props.addDefinedDatatype(messageListDatatype);
+    	ipsProject.setProperties(props);
+
+    	IIpsPackageFragment pack = ipsProject.getIpsPackageFragmentRoots()[0].getIpsPackageFragment("");
         IIpsSrcFile file1 = pack.createIpsFile(IpsObjectType.POLICY_CMPT_TYPE, "TestObject1", true, null);
         IPolicyCmptType pcType1 = (IPolicyCmptType)file1.getIpsObject();
         
@@ -591,9 +611,10 @@ public class IpsProjectTest extends AbstractIpsPluginTest {
         
         // all types, void not included
 	    types = ipsProject.findDatatypes(false, false);
-	    assertEquals(2, types.length);
+	    assertEquals(3, types.length);
 	    assertEquals(Datatype.DECIMAL, types[0]);
-	    assertEquals(pcType1, types[1]);
+	    assertEquals(messageListDatatype, types[1]);
+	    assertEquals(pcType1, types[2]);
 	    
 	    // setup dependency to other project, these datatypes of the refenreced project must also be included.
 	    IIpsProject refProject = createRefProject();
@@ -618,34 +639,32 @@ public class IpsProjectTest extends AbstractIpsPluginTest {
 	    
         // all types, void not included
 	    types = ipsProject.findDatatypes(false, false);
-	    assertEquals(5, types.length);
-	    assertEquals(Datatype.DECIMAL, types[0]);
-	    assertEquals(Datatype.MONEY, types[1]);
-	    assertEquals(TestEnumType.class.getName(), types[2].getJavaClassName());
-	    assertEquals(pcType1, types[3]);
-	    assertEquals(pcType2, types[4]);
-	    
-	    
-        // all types, void included
-	    types = ipsProject.findDatatypes(false, true);
 	    assertEquals(6, types.length);
-	    assertEquals(Datatype.VOID, types[0]);
-	    assertEquals(Datatype.DECIMAL, types[1]);
+	    assertEquals(Datatype.DECIMAL, types[0]);
+        assertEquals(messageListDatatype, types[1]);
 	    assertEquals(Datatype.MONEY, types[2]);
 	    assertEquals(TestEnumType.class.getName(), types[3].getJavaClassName());
 	    assertEquals(pcType1, types[4]);
 	    assertEquals(pcType2, types[5]);
 	    
+        // all types, void included
+	    types = ipsProject.findDatatypes(false, true);
+	    assertEquals(7, types.length);
+	    assertEquals(Datatype.VOID, types[0]);
+	    assertEquals(Datatype.DECIMAL, types[1]);
+        assertEquals(messageListDatatype, types[2]);
+	    assertEquals(Datatype.MONEY, types[3]);
+	    assertEquals(TestEnumType.class.getName(), types[4].getJavaClassName());
+	    assertEquals(pcType1, types[5]);
+	    assertEquals(pcType2, types[6]);
     }
     
     public void testFindDatatypes3Parameters() throws Exception{
-    
         IPolicyCmptType a = newPolicyAndProductCmptType(ipsProject, "a", "aConfig");
         List datatypes = Arrays.asList(ipsProject.findDatatypes(false, false, false));
         assertTrue(datatypes.contains(a));
         IProductCmptType aConfig = a.findProductCmptType(ipsProject);
         assertTrue(datatypes.contains(aConfig));
-        
     }
     
     /*
