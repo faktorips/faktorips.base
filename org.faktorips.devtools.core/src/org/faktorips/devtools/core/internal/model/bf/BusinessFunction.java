@@ -467,8 +467,14 @@ public class BusinessFunction extends BaseIpsObject implements IBusinessFunction
                 continue;
             }
             if (action.getType() == BFElementType.ACTION_METHODCALL) {
-                dependencies.add(IpsObjectDependency.createReferenceDependency(getQualifiedNameType(), new QualifiedNameType(
-                        action.getParameter().getDatatype(), IpsObjectType.POLICY_CMPT_TYPE)));
+            	IParameterBFE param = action.getParameter();
+            	if(param != null){
+            		String datatype = param.getDatatype();
+            		if(datatype != null){
+            			dependencies.add(IpsObjectDependency.createReferenceDependency(getQualifiedNameType(), new QualifiedNameType(
+            					datatype, IpsObjectType.POLICY_CMPT_TYPE)));
+            		}
+            	}
             }
         }
         return dependencies.toArray(new IDependency[dependencies.size()]);

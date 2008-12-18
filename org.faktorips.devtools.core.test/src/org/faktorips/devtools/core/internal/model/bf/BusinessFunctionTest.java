@@ -463,9 +463,11 @@ public class BusinessFunctionTest extends AbstractIpsPluginTest {
         param.setName("policy");
         
         action = bf.newMethodCallAction(new Point(10, 10));
+        dependencies = bf.dependsOn();
+        assertEquals(0, dependencies.length);
+
         action.setTarget(param.getName());
         action.setExecutableMethodName(method.getName());
-        
         dependencies = bf.dependsOn();
         assertEquals(1, dependencies.length);
         assertEquals(IpsObjectDependency.createReferenceDependency(bf.getQualifiedNameType(), pcType.getQualifiedNameType()), dependencies[0]);
