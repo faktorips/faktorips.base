@@ -210,9 +210,8 @@ public class ValidationRuleTest extends AbstractIpsPluginTest {
     	rule.addValidatedAttribute("a");
     	messageList = rule.validate(ipsSrcFile.getIpsProject()).getMessagesFor(rule, "validatedAttributes");
     	assertEquals(1, messageList.getNoOfMessages());
-
     }
-    
+
     public void testValidateBusinessFunctions() throws CoreException{
         rule.setAppliedForAllBusinessFunctions(true);
         MessageList msgList = rule.validate(ipsSrcFile.getIpsProject());

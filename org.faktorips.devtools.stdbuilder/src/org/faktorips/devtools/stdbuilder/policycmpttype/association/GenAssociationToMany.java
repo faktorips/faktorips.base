@@ -877,7 +877,7 @@ public class GenAssociationToMany extends GenAssociation {
             body.append(" rel : ");
             body.append(getMethodNameGetAllRefObjects());
             body.append("())");
-            body.append("{ ml.add(rel.validate(businessFunction)); } }");
+            body.append("{ ml.add(rel.validate(context)); } }");
         } else {
             body.appendClassName(getQualifiedClassName(target, true));
             body.append("[]");
@@ -885,7 +885,7 @@ public class GenAssociationToMany extends GenAssociation {
             body.append(getMethodNameGetAllRefObjects());
             body.append("();");
             body.append("for (int i = 0; i < rels.length; i++)");
-            body.append("{ ml.add(rels[i].validate(businessFunction)); } }");
+            body.append("{ ml.add(rels[i].validate(context)); } }");
         }
     }
 

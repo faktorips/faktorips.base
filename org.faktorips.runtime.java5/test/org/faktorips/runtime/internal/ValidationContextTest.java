@@ -12,24 +12,28 @@
  * 
  **************************************************************************************************/
 
-package org.faktorips.devtools.core.ui.wizards.bf;
+package org.faktorips.runtime.internal;
 
-import java.util.MissingResourceException;
-import java.util.ResourceBundle;
+import java.util.Locale;
 
-public class Messages {
-    private static final String BUNDLE_NAME = "org.faktorips.devtools.core.ui.wizards.bf.messages"; //$NON-NLS-1$
+import org.faktorips.values.Money;
 
-    private static final ResourceBundle RESOURCE_BUNDLE = ResourceBundle.getBundle(BUNDLE_NAME);
+import junit.framework.TestCase;
 
-    private Messages() {
+public class ValidationContextTest extends TestCase {
+
+    public void testGetLocale() {
+        ValidationContext context = new ValidationContext();
+        assertEquals(Locale.getDefault(), context.getLocale());
+
+        context = new ValidationContext(Locale.ENGLISH);
+        assertEquals(Locale.ENGLISH, context.getLocale());
     }
 
-    public static String getString(String key) {
-        try {
-            return RESOURCE_BUNDLE.getString(key);
-        } catch (MissingResourceException e) {
-            return '!' + key + '!';
-        }
+    public void testGetValue() {
+        ValidationContext context = new ValidationContext();
+        context.setValue("a", Money.euro(100));
+        context.setValue("b", new Integer(1));
+        assertEquals(Money.euro(100), context.getValue("a"));
     }
 }

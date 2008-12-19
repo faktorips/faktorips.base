@@ -37,7 +37,16 @@
                label="%org.faktorips.devtools.actions.OpenNewTestCaseTypeWizardAction.label"
                style="push"
                toolbarPath="org.faktorips.devtools"
-               tooltip="%org.faktorips.devtools.actions.OpenNewTestCaseTypeWizardAction.tooltip"/>               
+               tooltip="%org.faktorips.devtools.actions.OpenNewTestCaseTypeWizardAction.tooltip"/>
+         <action
+               class="org.faktorips.devtools.core.ui.wizards.bf.OpenNewBFWizardAction"
+               icon="icons/NewBusinessFunction.gif"
+               id="org.faktorips.devtools.bf.ui.wizard.OpenNewBFWizardAction"
+               label="%org.faktorips.devtools.core.ui.wizards.bf.OpenNewBFWizardAction.label"
+               style="push"
+               toolbarPath="org.faktorips.devtools"
+               tooltip="%org.faktorips.devtools.core.ui.wizards.bf.OpenNewBFWizardAction.tooltip">
+         </action>               
          <action
                label="%org.faktorips.devtools.actions.OpenNewTableStructureWizardAction.label"
                icon="icons/NewTableStructureWizard.gif"
@@ -61,15 +70,6 @@
                class="org.faktorips.devtools.core.ui.wizards.policycmpttype.OpenNewPcTypeWizardAction"
                toolbarPath="org.faktorips.devtools"
                id="org.faktorips.devtools.actions.OpenNewPcTypeWizardAction">
-         </action>
-         <action
-               class="org.faktorips.devtools.core.ui.wizards.bf.OpenNewBFWizardAction"
-               icon="icons/NewBusinessFunction.gif"
-               id="org.faktorips.devtools.bf.ui.wizard.OpenNewBFWizardAction"
-               label="%org.faktorips.devtools.bf.ui.wizard.OpenNewBFWizardAction.label"
-               style="push"
-               toolbarPath="org.faktorips.devtools"
-               tooltip="%org.faktorips.devtools.bf.ui.wizard.OpenNewBFWizardAction.tooltip">
          </action>
          
       </actionSet>
@@ -527,6 +527,19 @@
     	   <description>%NewTableContentsWizard.description</description>
     	   <selection class="org.eclipse.core.resources.IResource"/>
 	    </wizard>
+		<wizard
+			category="org.faktorips.devtools"
+			class="org.faktorips.devtools.core.ui.wizards.bf.NewBFWizard"
+			icon="icons/NewBusinessFunction.gif"
+			id="org.faktorips.devtools.bf.ui.wizard"
+			name="%NewBfWizard.name">
+			<selection
+				class="org.eclipse.core.resources.IResource">
+			</selection>
+   <description>
+      %NewBfWizard.description
+   </description>
+      	</wizard>
       <wizard
             category="org.faktorips.devtools"
             class="org.faktorips.devtools.core.ui.wizards.testcasetype.NewTestCaseTypeWizard"
@@ -554,19 +567,6 @@
 			<description>%NewIpsPackageWizard.description</description>
 			<selection class="org.eclipse.core.resources.IResource"/>
 		</wizard>
-		<wizard
-			category="org.faktorips.devtools"
-			class="org.faktorips.devtools.core.ui.wizards.bf.NewBFWizard"
-			icon="icons/NewBusinessFunction.gif"
-			id="org.faktorips.devtools.bf.ui.wizard"
-			name="%NewBfWizard.name">
-			<selection
-				class="org.eclipse.core.resources.IResource">
-			</selection>
-   <description>
-      %NewBfWizard.description
-   </description>
-      	</wizard>
 	</extension>
     <extension
         point = "org.eclipse.ui.exportWizards">

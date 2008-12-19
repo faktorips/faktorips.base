@@ -28,6 +28,7 @@ import org.faktorips.codegen.DatatypeHelper;
 import org.faktorips.codegen.JavaCodeFragment;
 import org.faktorips.codegen.JavaCodeFragmentBuilder;
 import org.faktorips.datatype.Datatype;
+import org.faktorips.devtools.core.builder.BuilderHelper;
 import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
 import org.faktorips.devtools.core.model.ipsproject.IIpsArtefactBuilderSet;
@@ -54,6 +55,7 @@ import org.faktorips.runtime.IModelObject;
 import org.faktorips.runtime.IModelObjectDelta;
 import org.faktorips.runtime.IModelObjectVisitor;
 import org.faktorips.runtime.IUnresolvedReference;
+import org.faktorips.runtime.IValidationContext;
 import org.faktorips.runtime.MessageList;
 import org.faktorips.runtime.internal.AbstractConfigurableModelObject;
 import org.faktorips.runtime.internal.AbstractModelObject;
@@ -164,8 +166,8 @@ public class PolicyCmptImplClassBuilder extends BasePolicyCmptTypeBuilder {
             generateCodeForDependantObjectBaseClass(memberVarsBuilder, methodsBuilder);
         }
         if (getPcType().getSupertype().length() == 0) {
-            getGenerator().generateChangeListenerMethods(methodsBuilder,
-                    FIELD_PARENT_MODEL_OBJECT, isFirstDependantTypeInHierarchy(getPcType()));
+            getGenerator().generateChangeListenerMethods(methodsBuilder, FIELD_PARENT_MODEL_OBJECT,
+                    isFirstDependantTypeInHierarchy(getPcType()));
         }
         generateMethodRemoveChildModelObjectInternal(methodsBuilder);
         generateMethodInitPropertiesFromXml(methodsBuilder);
@@ -440,7 +442,7 @@ public class PolicyCmptImplClassBuilder extends BasePolicyCmptTypeBuilder {
      * helper method for generateMethodComputeDelta
      */
     private void generateCodeToCastOtherObject(String varOther, JavaCodeFragmentBuilder methodsBuilder)
-    throws CoreException {
+            throws CoreException {
         methodsBuilder.append(getUnqualifiedClassName());
         methodsBuilder.append(varOther);
         methodsBuilder.append(" = (");
@@ -456,7 +458,7 @@ public class PolicyCmptImplClassBuilder extends BasePolicyCmptTypeBuilder {
     }
 
     protected void generateMethodGetEffectiveFromAsCalendarForAggregateRoot(JavaCodeFragmentBuilder methodsBuilder)
-    throws CoreException {
+            throws CoreException {
         methodsBuilder.javaDoc(getJavaDocCommentForOverriddenMethod(), ANNOTATION_GENERATED);
         methodsBuilder.methodBegin(java.lang.reflect.Modifier.PUBLIC, Calendar.class,
                 MethodNames.GET_EFFECTIVE_FROM_AS_CALENDAR, EMPTY_STRING_ARRAY, new Class[0]);
@@ -539,7 +541,7 @@ public class PolicyCmptImplClassBuilder extends BasePolicyCmptTypeBuilder {
     }
 
     protected void generateMethodRemoveChildModelObjectInternal(JavaCodeFragmentBuilder methodsBuilder)
-    throws CoreException {
+            throws CoreException {
         methodsBuilder.javaDoc(getJavaDocCommentForOverriddenMethod(), ANNOTATION_GENERATED);
         String paramName = "childToRemove";
         methodsBuilder.methodBegin(java.lang.reflect.Modifier.PUBLIC, Void.TYPE,
@@ -621,10 +623,13 @@ public class PolicyCmptImplClassBuilder extends BasePolicyCmptTypeBuilder {
         String methodName = "validateDependants";
         IPolicyCmptTypeAssociation[] associations = getPcType().getPolicyCmptTypeAssociations();
 
+        String parameterValidationContext = "context";
         JavaCodeFragment body = new JavaCodeFragment();
         body.append("super.");
         body.append(methodName);
-        body.append("(ml, businessFunction);");
+        body.append("(ml, ");
+        body.append(parameterValidationContext);
+        body.append(");");
         for (int i = 0; i < associations.length; i++) {
             IPolicyCmptTypeAssociation r = associations[i];
             GenAssociation gen = getGenerator(r);
@@ -640,8 +645,8 @@ public class PolicyCmptImplClassBuilder extends BasePolicyCmptTypeBuilder {
         String javaDoc = getLocalizedText(getPcType(), "VALIDATE_DEPENDANTS_JAVADOC", getPcType().getName());
 
         builder.method(java.lang.reflect.Modifier.PUBLIC, Datatype.VOID.getJavaClassName(), methodName, new String[] {
-            "ml", "businessFunction" }, new String[] { MessageList.class.getName(), String.class.getName() }, body,
-            javaDoc, ANNOTATION_GENERATED);
+                "ml", parameterValidationContext }, new String[] { MessageList.class.getName(),
+                IValidationContext.class.getName() }, body, javaDoc, ANNOTATION_GENERATED);
     }
 
     /**
@@ -654,15 +659,18 @@ public class PolicyCmptImplClassBuilder extends BasePolicyCmptTypeBuilder {
      * </pre>
      */
     private void generateMethodValidateSelf(JavaCodeFragmentBuilder builder, IPolicyCmptTypeAttribute[] attributes)
-    throws CoreException {
+            throws CoreException {
         String methodName = "validateSelf";
         String javaDoc = getLocalizedText(getIpsObject(), "VALIDATE_SELF_JAVADOC", getPcType().getName());
 
+        String parameterNameContext = "context";
         JavaCodeFragment body = new JavaCodeFragment();
         body.append("if(!");
         body.append("super.");
         body.append(methodName);
-        body.append("(ml, businessFunction))");
+        body.append("(ml, ");
+        body.append(parameterNameContext);
+        body.append("))");
         body.appendOpenBracket();
         body.append(" return false;");
         body.appendCloseBracket();
@@ -671,7 +679,7 @@ public class PolicyCmptImplClassBuilder extends BasePolicyCmptTypeBuilder {
             IValidationRule r = rules[i];
             if (r.validate(getIpsProject()).isEmpty()) {
                 body.append("if(!");
-                body.append(getMethodExpressionExecRule(r, "ml", "businessFunction"));
+                body.append(getMethodExpressionExecRule(r, "ml", parameterNameContext));
                 body.append(')');
                 body.appendOpenBracket();
                 body.append(" return false;");
@@ -681,8 +689,8 @@ public class PolicyCmptImplClassBuilder extends BasePolicyCmptTypeBuilder {
         body.appendln(" return true;");
         // buildValidationValueSet(body, attributes); wegschmeissen ??
         builder.method(java.lang.reflect.Modifier.PUBLIC, Datatype.PRIMITIVE_BOOLEAN.getJavaClassName(), methodName,
-                new String[] { "ml", "businessFunction" }, new String[] { MessageList.class.getName(),
-            String.class.getName() }, body, javaDoc, ANNOTATION_GENERATED);
+                new String[] { "ml", parameterNameContext }, new String[] { MessageList.class.getName(),
+                        IValidationContext.class.getName() }, body, javaDoc, ANNOTATION_GENERATED);
     }
 
     /**
@@ -733,7 +741,7 @@ public class PolicyCmptImplClassBuilder extends BasePolicyCmptTypeBuilder {
             if (attributes[i].isChangeable() && attributes[i].isOverwrite()
                     && attributes[i].validate(getIpsProject()).isEmpty()) {
                 ((GenChangeableAttribute)getGenerator().getGenerator(attributes[i]))
-                .generateInitializationForOverrideAttributes(builder, getPcType().getIpsProject());
+                        .generateInitializationForOverrideAttributes(builder, getPcType().getIpsProject());
             }
         }
     }
@@ -859,7 +867,7 @@ public class PolicyCmptImplClassBuilder extends BasePolicyCmptTypeBuilder {
     }
 
     private String getMethodNameExecRule(IValidationRule r) {
-        return "execRule" + StringUtils.capitalize(r.getName());
+        return StringUtils.uncapitalize(r.getName());
     }
 
     private String getMethodExpressionExecRule(IValidationRule r, String messageList, String businessFunction) {
@@ -914,8 +922,9 @@ public class PolicyCmptImplClassBuilder extends BasePolicyCmptTypeBuilder {
                 builder.javaDoc(getJavaDocCommentForOverriddenMethod(), ANNOTATION_GENERATED);
                 builder.methodBegin(java.lang.reflect.Modifier.PROTECTED, Void.TYPE.getName(),
                         MethodNames.INIT_PROPERTIES_FROM_XML, new String[] { "propMap" },
-                        new String[] { isUseTypesafeCollections() ? Map.class.getName() + "<" + String.class.getName()
-                                + "," + String.class.getName() + ">" : HashMap.class.getName() });
+                        new String[] { BuilderHelper.javaComplianceGreateEqual5(getIpsProject()) ? Map.class.getName()
+                                + "<" + String.class.getName() + "," + String.class.getName() + ">" : HashMap.class
+                                .getName() });
                 builder.appendln("super." + MethodNames.INIT_PROPERTIES_FROM_XML + "(propMap);");
             }
             generator.generateInitPropertiesFromXml(builder);
@@ -996,7 +1005,7 @@ public class PolicyCmptImplClassBuilder extends BasePolicyCmptTypeBuilder {
                 builder.appendln("();");
             } else {
                 builder
-                .appendln("throw new RuntimeException(childEl.toString() + \": Attribute className is missing.\");");
+                        .appendln("throw new RuntimeException(childEl.toString() + \": Attribute className is missing.\");");
             }
             builder.appendln("}");
         }
@@ -1060,7 +1069,6 @@ public class PolicyCmptImplClassBuilder extends BasePolicyCmptTypeBuilder {
         generateMethodGetParentModelObject(methodBuilder);
         generateMethodSetParentModelObjectInternal(methodBuilder);
     }
-
 
     protected void generateConstants(JavaCodeFragmentBuilder builder) throws CoreException {
         super.generateConstants(builder);
@@ -1133,7 +1141,7 @@ public class PolicyCmptImplClassBuilder extends BasePolicyCmptTypeBuilder {
      * </pre>
      */
     protected void generateMethodGetEffectiveFromAsCalendarForDependantObjectBaseClass(JavaCodeFragmentBuilder methodsBuilder)
-    throws CoreException {
+            throws CoreException {
         methodsBuilder.javaDoc(getJavaDocCommentForOverriddenMethod(), ANNOTATION_GENERATED);
         methodsBuilder.methodBegin(java.lang.reflect.Modifier.PUBLIC, Calendar.class,
                 MethodNames.GET_EFFECTIVE_FROM_AS_CALENDAR, EMPTY_STRING_ARRAY, new Class[0]);
@@ -1151,7 +1159,7 @@ public class PolicyCmptImplClassBuilder extends BasePolicyCmptTypeBuilder {
 
     protected void generateTableAccessMethods(JavaCodeFragmentBuilder methodsBuilder) throws CoreException {
         IProductCmptType productCmptType = getProductCmptType();
-        if (productCmptType==null) {
+        if (productCmptType == null) {
             return;
         }
         IPolicyCmptType policyCmptType = getPcType();
@@ -1162,16 +1170,20 @@ public class PolicyCmptImplClassBuilder extends BasePolicyCmptTypeBuilder {
             }
             String roleCapitalized = StringUtils.capitalize(tsus[i].getRoleName());
             String roleUncapitalized = StringUtils.uncapitalize(tsus[i].getRoleName());
-            if (policyCmptType.findAttribute(roleCapitalized, getIpsProject())!=null) {
-                continue; // if the policy component type has an attribute with the table usage's role name, don't generate an access method for the table
+            if (policyCmptType.findAttribute(roleCapitalized, getIpsProject()) != null) {
+                continue; // if the policy component type has an attribute with the table usage's
+                          // role name, don't generate an access method for the table
             }
-            if (policyCmptType.findAttribute(roleUncapitalized, getIpsProject())!=null) {
-                continue; // if the policy component type has an attribute with the table usage's role name, don't generate an access method for the table
+            if (policyCmptType.findAttribute(roleUncapitalized, getIpsProject()) != null) {
+                continue; // if the policy component type has an attribute with the table usage's
+                          // role name, don't generate an access method for the table
             }
-            if (policyCmptType.findAssociation(roleCapitalized, getIpsProject())!=null && policyCmptType.findAssociation(tsus[i].getRoleName(), getIpsProject())!=null) {
+            if (policyCmptType.findAssociation(roleCapitalized, getIpsProject()) != null
+                    && policyCmptType.findAssociation(tsus[i].getRoleName(), getIpsProject()) != null) {
                 continue; // same for association
             }
-            if (policyCmptType.findAssociation(roleUncapitalized, getIpsProject())!=null && policyCmptType.findAssociation(tsus[i].getRoleName(), getIpsProject())!=null) {
+            if (policyCmptType.findAssociation(roleUncapitalized, getIpsProject()) != null
+                    && policyCmptType.findAssociation(tsus[i].getRoleName(), getIpsProject()) != null) {
                 continue; // same for association
             }
             generateMethodGetTable(methodsBuilder, tsus[i]);
@@ -1196,14 +1208,15 @@ public class PolicyCmptImplClassBuilder extends BasePolicyCmptTypeBuilder {
      * 
      */
     protected void generateMethodGetTable(JavaCodeFragmentBuilder builder, ITableStructureUsage usage)
-    throws CoreException {
+            throws CoreException {
 
         appendLocalizedJavaDoc("METHOD_GET_TABLE", usage.getRoleName(), usage, builder);
         GenTableStructureUsage genTsu = getTsuGeneratorForProductType(usage);
-        if (genTsu==null) {
+        if (genTsu == null) {
             return;
         }
-        builder.methodBegin(Modifier.PUBLIC, genTsu.getReturnTypeOfMethodGetTableUsage(), genTsu.getMethodNameGetTableUsage(), EMPTY_STRING_ARRAY, EMPTY_STRING_ARRAY);
+        builder.methodBegin(Modifier.PUBLIC, genTsu.getReturnTypeOfMethodGetTableUsage(), genTsu
+                .getMethodNameGetTableUsage(), EMPTY_STRING_ARRAY, EMPTY_STRING_ARRAY);
         String productCmptGenClass = getGenProductCmptType().getQualifiedClassNameForProductCmptTypeGen(false);
         builder.appendClassName(productCmptGenClass);
         builder.append(" productCmpt = (");
@@ -1219,12 +1232,12 @@ public class PolicyCmptImplClassBuilder extends BasePolicyCmptTypeBuilder {
     }
 
     private GenTableStructureUsage getTsuGeneratorForProductType(ITableStructureUsage tsu) throws CoreException {
-        GenProductCmptType genProductCmptType = ((StandardBuilderSet)getBuilderSet()).getGenerator(getProductCmptType());
-        if (genProductCmptType==null) {
+        GenProductCmptType genProductCmptType = ((StandardBuilderSet)getBuilderSet())
+                .getGenerator(getProductCmptType());
+        if (genProductCmptType == null) {
             return null;
         }
         return genProductCmptType.getGenerator(tsu);
     }
-
 
 }

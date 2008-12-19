@@ -1,18 +1,15 @@
 /*******************************************************************************
  * Copyright (c) 2005,2006 Faktor Zehn GmbH und andere.
- *
+ * 
  * Alle Rechte vorbehalten.
- *
- * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele,
- * Konfigurationen, etc.) dürfen nur unter den Bedingungen der 
- * Faktor-Zehn-Community Lizenzvereinbarung – Version 0.1 (vor Gründung Community) 
- * genutzt werden, die Bestandteil der Auslieferung ist und auch unter
- *   http://www.faktorips.org/legal/cl-v01.html
- * eingesehen werden kann.
- *
- * Mitwirkende:
- *   Faktor Zehn GmbH - initial API and implementation 
- *
+ * 
+ * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen,
+ * etc.) dürfen nur unter den Bedingungen der Faktor-Zehn-Community Lizenzvereinbarung – Version
+ * 0.1 (vor Gründung Community) genutzt werden, die Bestandteil der Auslieferung ist und auch unter
+ * http://www.faktorips.org/legal/cl-v01.html eingesehen werden kann.
+ * 
+ * Mitwirkende: Faktor Zehn GmbH - initial API and implementation
+ * 
  *******************************************************************************/
 
 package org.faktorips.runtime;
@@ -29,10 +26,10 @@ public interface IModelObject {
      * method returns an empty list. Note that also messages like warnings or informations can be
      * returned for valid objects.
      * 
-     * @param businessFunction a rule might check against the provided business function if it is to
-     *          be applied. This parameter can be null. Implementations have to check for null before
-     *          they check against the provided business function
+     * @param context provides additional external information that might be necessary to execute the
+     *            validation. E.g. the business context, the locale to provide locale specific
+     *            message texts, user information. The parameter must not be <code>null</code>.
      */
-    public MessageList validate(String businessFunction);
-    
+    public MessageList validate(IValidationContext context);
+
 }

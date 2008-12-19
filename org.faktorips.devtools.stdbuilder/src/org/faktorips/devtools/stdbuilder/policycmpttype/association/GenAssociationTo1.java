@@ -477,7 +477,7 @@ public class GenAssociationTo1 extends GenAssociation {
     public void generateCodeForValidateDependants(JavaCodeFragment body) throws CoreException {
         String field = getFieldNameForAssociation();
         body.append("if (" + field + "!=null) {");
-        body.append("ml.add(" + field + ".validate(businessFunction));");
+        body.append("ml.add(" + field + ".validate(context));");
         body.append("}");
     }
 

@@ -28,6 +28,7 @@ import org.faktorips.runtime.DefaultUnresolvedReference;
 import org.faktorips.runtime.IModelObject;
 import org.faktorips.runtime.INotificationSupport;
 import org.faktorips.runtime.IUnresolvedReference;
+import org.faktorips.runtime.IValidationContext;
 import org.faktorips.runtime.IpsPropertyChangeSupport;
 import org.faktorips.runtime.Message;
 import org.faktorips.runtime.MessageList;
@@ -129,12 +130,12 @@ public class TestAbstractPolicyComponentTest extends XmlAbstractTestCase {
         }
 
         @Override
-        protected void validateDependants(MessageList list, String businessFunction) {
-            b.validate(list, businessFunction);
+        protected void validateDependants(MessageList list, IValidationContext context) {
+            b.validate(list, context);
         }
 
         @Override
-        protected boolean validateSelf(MessageList list, String businessFunction) {
+        protected boolean validateSelf(MessageList list, IValidationContext context) {
             if (!valid) {
                 list.add(Message.newError("A", "A is not valid!"));
             }
@@ -158,7 +159,7 @@ public class TestAbstractPolicyComponentTest extends XmlAbstractTestCase {
         }
 
         @Override
-        protected boolean validateSelf(MessageList list, String businessFunction) {
+        protected boolean validateSelf(MessageList list, IValidationContext context) {
             if (!valid) {
                 list.add(Message.newError("B", "B is not valid!"));
             }

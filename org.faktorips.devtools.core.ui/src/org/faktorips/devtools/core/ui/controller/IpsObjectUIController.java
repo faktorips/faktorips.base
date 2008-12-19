@@ -38,12 +38,21 @@ import org.faktorips.util.message.MessageList;
 public class IpsObjectUIController extends DefaultUIController {
 
     private IIpsObjectPartContainer partContainer;
-
+    private boolean enableWholeIpsObjectValidation = false;
+    
 	public IpsObjectUIController(IIpsObjectPartContainer partContainer) {
 		super();
         this.partContainer = partContainer;
 	}
     
+	/**
+	 * If set to true the validate method of the ips object of the ips object part container is called
+	 * instead of the one of the ips object part container. By default this is set to <code>false</code>. 
+	 */
+	public void setEnableWholeIpsObjectValidation(boolean enable){
+	    this.enableWholeIpsObjectValidation = enable;
+	}
+	
     public IIpsObject getIpsObject() {
         return partContainer.getIpsObject();
     }
@@ -95,7 +104,11 @@ public class IpsObjectUIController extends DefaultUIController {
             return new MessageList();
         }
         try {
-            MessageList list = partContainer.validate(partContainer.getIpsProject());
+            IIpsObjectPartContainer validatee = partContainer;
+            if(enableWholeIpsObjectValidation){
+                validatee = partContainer.getIpsObject();
+            }
+            MessageList list = validatee.validate(partContainer.getIpsProject());
             for (Iterator it=mappings.iterator(); it.hasNext();) {
                 FieldPropertyMapping mapping = (FieldPropertyMapping)it.next();
                 Control c = mapping.getField().getControl();

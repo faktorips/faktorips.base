@@ -28,6 +28,7 @@ import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAttribute;
 import org.faktorips.devtools.core.model.pctype.IValidationRule;
 import org.faktorips.devtools.core.model.valueset.ValueSetType;
 import org.faktorips.devtools.stdbuilder.policycmpttype.attribute.GenAttribute;
+import org.faktorips.runtime.IValidationContext;
 import org.faktorips.runtime.Message;
 import org.faktorips.runtime.MessageList;
 import org.faktorips.runtime.MsgReplacementParameter;
@@ -97,7 +98,7 @@ public class GenValidationRule extends GenPolicyCmptTypePart {
      */
     private void generateMethodExecRule(JavaCodeFragmentBuilder builder) throws CoreException {
         IValidationRule rule = (IValidationRule)getIpsPart();
-        String parameterBusinessFunction = "businessFunction";
+        String parameterValidationContext = "context";
         String javaDoc = getLocalizedText("EXEC_RULE_JAVADOC", rule.getName());
         JavaCodeFragment body = new JavaCodeFragment();
         body.appendln();
@@ -110,8 +111,8 @@ public class GenValidationRule extends GenPolicyCmptTypePart {
                     body.append(businessFunctions[j]);
                     body.append("\"");
                     body.append(".equals(");
-                    body.append(parameterBusinessFunction);
-                    body.append(")");
+                    body.append(parameterValidationContext);
+                    body.append(".getValue(\"businessFunction\"))");
                     if (j < businessFunctions.length - 1) {
                         body.appendln(" || ");
                     }
@@ -140,7 +141,7 @@ public class GenValidationRule extends GenPolicyCmptTypePart {
                 body.append(genAttribute.getMethodNameGetRangeFor());
             }
             body.append("(");
-            body.append(parameterBusinessFunction);
+            body.append(parameterValidationContext);
             body.append(").contains(");
             body.append(genAttribute.getGetterMethodName());
             body.append("()))");
@@ -193,8 +194,8 @@ public class GenValidationRule extends GenPolicyCmptTypePart {
         }
 
         builder.method(java.lang.reflect.Modifier.PROTECTED, Datatype.PRIMITIVE_BOOLEAN.getJavaClassName(),
-                getMethodNameExecRule(rule), new String[] { "ml", parameterBusinessFunction }, new String[] {
-                        MessageList.class.getName(), String.class.getName() }, body, javaDoc, javaDocAnnotation);
+                getMethodNameExecRule(rule), new String[] { "ml", parameterValidationContext }, new String[] {
+                        MessageList.class.getName(), IValidationContext.class.getName() }, body, javaDoc, javaDocAnnotation);
     }
 
     /**
@@ -377,6 +378,6 @@ public class GenValidationRule extends GenPolicyCmptTypePart {
     }
 
     private String getMethodNameExecRule(IValidationRule r) {
-        return "execRule" + StringUtils.capitalize(r.getName());
+        return StringUtils.uncapitalize(r.getName());
     }
 }

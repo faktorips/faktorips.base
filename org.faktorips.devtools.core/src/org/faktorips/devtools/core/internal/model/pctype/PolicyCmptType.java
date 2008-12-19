@@ -4,7 +4,8 @@
  * etc.) duerfen nur unter den Bedingungen der  * Faktor-Zehn-Community Lizenzvereinbarung - Version
  * 0.1 (vor Gruendung Community)  * genutzt werden, die Bestandteil der Auslieferung ist und auch
  * unter  *   http://www.faktorips.org/legal/cl-v01.html  * eingesehen werden kann.  *  *
- * Mitwirkende:  *   Faktor Zehn GmbH - initial API and implementation - http://www.faktorzehn.de  *  
+ * Mitwirkende:  *   Faktor Zehn GmbH - initial API and implementation - http://www.faktorzehn.de  *
+ *  
  **************************************************************************************************/
 
 package org.faktorips.devtools.core.internal.model.pctype;
@@ -76,14 +77,16 @@ public class PolicyCmptType extends Type implements IPolicyCmptType {
      * {@inheritDoc}
      */
     protected IpsObjectPartCollection createCollectionForAssociations() {
-        return new IpsObjectPartCollection(this, PolicyCmptTypeAssociation.class, IPolicyCmptTypeAssociation.class, PolicyCmptTypeAssociation.TAG_NAME);
+        return new IpsObjectPartCollection(this, PolicyCmptTypeAssociation.class, IPolicyCmptTypeAssociation.class,
+                PolicyCmptTypeAssociation.TAG_NAME);
     }
-    
+
     /**
      * {@inheritDoc}
      */
     protected IpsObjectPartCollection createCollectionForAttributes() {
-        return new IpsObjectPartCollection(this, PolicyCmptTypeAttribute.class, IPolicyCmptTypeAttribute.class, PolicyCmptTypeAttribute.TAG_NAME);
+        return new IpsObjectPartCollection(this, PolicyCmptTypeAttribute.class, IPolicyCmptTypeAttribute.class,
+                PolicyCmptTypeAttribute.TAG_NAME);
     }
 
     /**
@@ -194,8 +197,7 @@ public class PolicyCmptType extends Type implements IPolicyCmptType {
                 if (!attribute.isProductRelevant()) {
                     return true;
                 }
-            }
-            else if (attribute.getAttributeType() == AttributeType.DERIVED_ON_THE_FLY) {
+            } else if (attribute.getAttributeType() == AttributeType.DERIVED_ON_THE_FLY) {
                 return true;
             }
         }
@@ -221,7 +223,8 @@ public class PolicyCmptType extends Type implements IPolicyCmptType {
     /**
      * {@inheritDoc}
      */
-    public IPolicyCmptTypeAttribute findPolicyCmptTypeAttribute(String name, IIpsProject ipsProject) throws CoreException {
+    public IPolicyCmptTypeAttribute findPolicyCmptTypeAttribute(String name, IIpsProject ipsProject)
+            throws CoreException {
         return (IPolicyCmptTypeAttribute)findAttribute(name, ipsProject);
     }
 
@@ -363,7 +366,9 @@ public class PolicyCmptType extends Type implements IPolicyCmptType {
     protected void validateThis(MessageList list, IIpsProject ipsProject) throws CoreException {
         super.validateThis(list, ipsProject);
         validateProductSide(list, ipsProject);
-        list.add(TypeValidations.validateOtherTypeWithSameNameTypeInIpsObjectPath(IpsObjectType.PRODUCT_CMPT_TYPE_V2, getQualifiedName(), ipsProject, this));
+        list.add(TypeValidations.validateOtherTypeWithSameNameTypeInIpsObjectPath(IpsObjectType.PRODUCT_CMPT_TYPE_V2,
+                getQualifiedName(), ipsProject, this));
+        validateDuplicateRulesNames(list);
     }
 
     private void validateProductSide(MessageList list, IIpsProject ipsProject) throws CoreException {
@@ -372,15 +377,17 @@ public class PolicyCmptType extends Type implements IPolicyCmptType {
                 String text = Messages.PolicyCmptType_msg_ProductCmptTypeNameMissing;
                 list.add(new Message(MSGCODE_PRODUCT_CMPT_TYPE_NAME_MISSING, text, Message.ERROR, this,
                         IPolicyCmptType.PROPERTY_PRODUCT_CMPT_TYPE));
-            }
-            else {
-                IProductCmptType productCmptTypeObj = (IProductCmptType)ValidationUtils.checkIpsObjectReference2(productCmptType, IpsObjectType.PRODUCT_CMPT_TYPE_V2,
-                        Messages.PolicyCmptType_productCmptType, this, IPolicyCmptType.PROPERTY_PRODUCT_CMPT_TYPE,
+            } else {
+                IProductCmptType productCmptTypeObj = (IProductCmptType)ValidationUtils.checkIpsObjectReference2(
+                        productCmptType, IpsObjectType.PRODUCT_CMPT_TYPE_V2, Messages.PolicyCmptType_productCmptType,
+                        this, IPolicyCmptType.PROPERTY_PRODUCT_CMPT_TYPE,
                         IPolicyCmptType.MSGCODE_PRODUCT_CMPT_TYPE_NOT_FOUND, list, ipsProject);
-                if (productCmptTypeObj!=null) {
-                    if (productCmptTypeObj.findPolicyCmptType(ipsProject)!=this) {
-                        String text = NLS.bind(Messages.PolicyCmptType_TheTypeDoesNotConfigureThisType, productCmptType);
-                        list.add(new Message(IPolicyCmptType.MSGCODE_PRODUCT_CMPT_TYPE_DOES_NOT_CONFIGURE_THIS_TYPE, text, Message.ERROR, this, IPolicyCmptType.PROPERTY_PRODUCT_CMPT_TYPE));
+                if (productCmptTypeObj != null) {
+                    if (productCmptTypeObj.findPolicyCmptType(ipsProject) != this) {
+                        String text = NLS
+                                .bind(Messages.PolicyCmptType_TheTypeDoesNotConfigureThisType, productCmptType);
+                        list.add(new Message(IPolicyCmptType.MSGCODE_PRODUCT_CMPT_TYPE_DOES_NOT_CONFIGURE_THIS_TYPE,
+                                text, Message.ERROR, this, IPolicyCmptType.PROPERTY_PRODUCT_CMPT_TYPE));
                     }
                 }
             }
@@ -398,14 +405,20 @@ public class PolicyCmptType extends Type implements IPolicyCmptType {
             if (superPolicyCmptType != null) {
                 if (superPolicyCmptType.isConfigurableByProductCmptType()) {
                     list.add(new Message(MSGCODE_SUPERTYPE_CONFIGURABLE_FORCES_THIS_TYPE_IS_CONFIGURABLE,
-                            Messages.PolicyCmptType_msgSubtypeConfigurableWhenSupertypeConfigurable,
-                            Message.ERROR, this, IPolicyCmptType.PROPERTY_CONFIGURABLE_BY_PRODUCTCMPTTYPE));
+                            Messages.PolicyCmptType_msgSubtypeConfigurableWhenSupertypeConfigurable, Message.ERROR,
+                            this, IPolicyCmptType.PROPERTY_CONFIGURABLE_BY_PRODUCTCMPTTYPE));
                 }
             }
         }
 
     }
 
+    public void validateDuplicateRulesNames(MessageList msgList) throws CoreException {
+        for (IValidationRule rule : getRules()) {
+            CheckValidationRuleVisitor visitor = new CheckValidationRuleVisitor(rule, msgList);
+            visitor.start(this);
+        }
+    }
 
     /**
      * {@inheritDoc}
@@ -479,16 +492,17 @@ public class PolicyCmptType extends Type implements IPolicyCmptType {
      */
     public IDependency[] dependsOn() throws CoreException {
         Set dependencies = new HashSet();
-        if(!StringUtils.isEmpty(getProductCmptType())){
-            dependencies.add(IpsObjectDependency.createReferenceDependency(getQualifiedNameType(), new QualifiedNameType(getProductCmptType(), IpsObjectType.PRODUCT_CMPT_TYPE_V2)));
+        if (!StringUtils.isEmpty(getProductCmptType())) {
+            dependencies.add(IpsObjectDependency.createReferenceDependency(getQualifiedNameType(),
+                    new QualifiedNameType(getProductCmptType(), IpsObjectType.PRODUCT_CMPT_TYPE_V2)));
         }
-        //to force a check is a product component type exists with the same qualified name
-        dependencies.add(IpsObjectDependency.createReferenceDependency(getQualifiedNameType(), new QualifiedNameType(getQualifiedName(), IpsObjectType.PRODUCT_CMPT_TYPE_V2)));
+        // to force a check is a product component type exists with the same qualified name
+        dependencies.add(IpsObjectDependency.createReferenceDependency(getQualifiedNameType(), new QualifiedNameType(
+                getQualifiedName(), IpsObjectType.PRODUCT_CMPT_TYPE_V2)));
         dependsOn(dependencies);
         return (IDependency[])dependencies.toArray(new IDependency[dependencies.size()]);
     }
 
-    
     private static class IsAggregrateRootVisitor extends PolicyCmptTypeHierarchyVisitor {
 
         private boolean root = true;
@@ -514,4 +528,42 @@ public class PolicyCmptType extends Type implements IPolicyCmptType {
 
     }
 
+    private static class CheckValidationRuleVisitor extends PolicyCmptTypeHierarchyVisitor {
+
+        private IValidationRule rule;
+        private MessageList msgList;
+
+        public CheckValidationRuleVisitor(IValidationRule rule, MessageList msgList) {
+            super();
+            this.rule = rule;
+            this.msgList = msgList;
+        }
+
+        /**
+         * {@inheritDoc}
+         */
+        protected boolean visit(IPolicyCmptType currentType) {
+            for (IValidationRule validationRule : currentType.getRules()) {
+                if (validationRule == rule) {
+                    continue;
+                }
+                if (validationRule.getName().equals(rule.getName())) {
+                    String text = "There exists another validation rule with the same name in this type or within the supertype hierarchy.";
+                    msgList.add(new Message(IValidationRule.MSGCODE_DUPLICATE_RULE_NAME, text, Message.ERROR, rule, IValidationRule.PROPERTY_NAME));
+                }
+            }
+            for (IMethod method : currentType.getMethods()) {
+                if (method.getNumOfParameters() == 0 && method.getName().equals(rule.getName())) {
+                    String text = NLS
+                            .bind(
+                                    "The name of this validation rule: {0} collides with the name of a method within this type or within the supertype hierarchy.",
+                                    rule.getName());
+                    msgList.add(new Message(IValidationRule.MSGCODE_VALIDATION_RULE_METHOD_NAME_COLLISION, text, Message.ERROR, rule, IValidationRule.PROPERTY_NAME));
+                }
+            }
+            return true;
+        }
+
+    }
+    
 }

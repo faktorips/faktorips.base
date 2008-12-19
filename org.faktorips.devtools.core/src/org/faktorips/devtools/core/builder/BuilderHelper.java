@@ -20,7 +20,10 @@ package org.faktorips.devtools.core.builder;
 import java.util.ArrayList;
 
 import org.apache.commons.lang.StringUtils;
+import org.eclipse.jdt.core.JavaCore;
+import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.type.IParameter;
+import org.faktorips.values.Decimal;
 
 /**
  * A collection of static helper methods.
@@ -90,6 +93,19 @@ public class BuilderHelper {
 		return transformedMessage;    	
     }    
 
+    /**
+     * Returns true if the compliance level of the java project that is associated with the provided ips project
+     * is equal or greater that 1.5. Otherwise false is returned.
+     */
+    public final static boolean javaComplianceGreateEqual5(IIpsProject ipsProject){
+        Decimal complianceLevel = Decimal.valueOf(ipsProject.getJavaProject().getOption(JavaCore.COMPILER_COMPLIANCE, true));
+        if(complianceLevel.greaterThanOrEqual(Decimal.valueOf(15, 1))){
+            return true;
+        }
+        return false;
+    }
+
+    
     private BuilderHelper() {
         super();
     }

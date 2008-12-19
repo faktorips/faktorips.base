@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: Faktor-IPS Util
 Bundle-SymbolicName: org.faktorips.util
-Bundle-Version: 2.1.0.rfinal
+Bundle-Version: 2.2.0.rc1
 Bundle-Vendor: Faktor Zehn AG
 Bundle-Localization: plugin
 Export-Package: org.apache.commons.lang,

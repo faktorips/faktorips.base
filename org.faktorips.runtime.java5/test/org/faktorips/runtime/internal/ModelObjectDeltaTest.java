@@ -27,6 +27,7 @@ import org.faktorips.runtime.IDeltaSupport;
 import org.faktorips.runtime.IModelObject;
 import org.faktorips.runtime.IModelObjectDelta;
 import org.faktorips.runtime.IModelObjectDeltaVisitor;
+import org.faktorips.runtime.IValidationContext;
 import org.faktorips.runtime.MessageList;
 
 /**
@@ -356,7 +357,7 @@ public class ModelObjectDeltaTest extends TestCase {
         /**
          * {@inheritDoc}
          */
-        public MessageList validate(String businessFunction) {
+        public MessageList validate(IValidationContext context) {
             return null;
         }
 

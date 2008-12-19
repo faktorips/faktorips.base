@@ -36,6 +36,7 @@ import org.faktorips.devtools.stdbuilder.StdBuilderHelper;
 import org.faktorips.devtools.stdbuilder.changelistener.ChangeEventType;
 import org.faktorips.devtools.stdbuilder.policycmpttype.GenPolicyCmptType;
 import org.faktorips.devtools.stdbuilder.productcmpttype.GenProductCmptType;
+import org.faktorips.runtime.IValidationContext;
 import org.faktorips.util.ArgumentCheck;
 import org.faktorips.valueset.EnumValueSet;
 
@@ -195,7 +196,7 @@ public class GenChangeableAttribute extends GenAttribute {
         methodsBuilder.signature(Modifier.PUBLIC,
                 isUseTypesafeCollections() ? Java5ClassNames.OrderedValueSet_QualifiedName + "<"
                         + datatype.getJavaClassName() + ">" : EnumValueSet.class.getName(), methodName,
-                        new String[] { "businessFunction" }, new String[] { String.class.getName() });
+                        new String[] { "context" }, new String[] { IValidationContext.class.getName() });
     }
 
     public String getMethodNameGetAllowedValuesFor(Datatype datatype) {
@@ -228,8 +229,8 @@ public class GenChangeableAttribute extends GenAttribute {
     throws CoreException {
         String methodName = getMethodNameGetRangeFor(helper.getDatatype());
         String rangeClassName = helper.getRangeJavaClassName(isUseTypesafeCollections());
-        methodsBuilder.signature(Modifier.PUBLIC, rangeClassName, methodName, new String[] { "businessFunction" },
-                new String[] { String.class.getName() });
+        methodsBuilder.signature(Modifier.PUBLIC, rangeClassName, methodName, new String[] { "context" },
+                new String[] { IValidationContext.class.getName() });
     }
 
     /**
@@ -419,7 +420,7 @@ public class GenChangeableAttribute extends GenAttribute {
         if (getPolicyCmptTypeAttribute().isProductRelevant() && getProductCmptType(ipsProject) != null) {
             generateGenerationAccess(body, ipsProject);
             body.append(getMethodNameGetRangeFor(wrapperDatatypeHelper.getDatatype()));
-            body.appendln("(businessFunction);");
+            body.appendln("(context);");
         } else {
             body.append(getFieldNameMaxRange());
             body.appendln(";");
@@ -455,7 +456,7 @@ public class GenChangeableAttribute extends GenAttribute {
         if (!isAllValuesValueSet() && isConfigurableByProduct() && getProductCmptType(ipsProject) != null) {
             generateGenerationAccess(body, ipsProject);
             body.append(getMethodNameGetAllowedValuesFor(wrapperDatatypeHelper.getDatatype()));
-            body.appendln("(businessFunction);");
+            body.appendln("(context);");
         } else {
             body.append(getFieldNameMaxAllowedValues());
             body.appendln(";");

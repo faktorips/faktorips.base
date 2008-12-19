@@ -36,6 +36,7 @@ import org.eclipse.swt.widgets.TabItem;
 import org.eclipse.swt.widgets.Text;
 import org.faktorips.devtools.core.model.ContentChangeEvent;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPart;
+import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPartContainer;
 import org.faktorips.devtools.core.model.pctype.IValidationRule;
 import org.faktorips.devtools.core.model.pctype.MessageSeverity;
 import org.faktorips.devtools.core.ui.controller.IpsObjectUIController;
@@ -208,8 +209,9 @@ public class RuleEditDialog extends IpsPartEditDialog {
 	
     class UIController extends IpsObjectUIController {
 
-        public UIController(IIpsObjectPart pdPart) {
-            super(pdPart);
+        public UIController(IIpsObjectPartContainer ipsObjectPartContainer) {
+            super(ipsObjectPartContainer);
+            setEnableWholeIpsObjectValidation(true);
         }
         
         protected MessageList validatePartContainerAndUpdateUI() {

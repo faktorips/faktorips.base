@@ -761,6 +761,30 @@ public class PolicyCmptTypeTest extends AbstractIpsPluginTest implements Content
         assertNotNull(msgList.getMessageByCode(IType.MSGCODE_OTHER_TYPE_WITH_SAME_NAME_IN_DEPENDENT_PROJECT_EXISTS));
     }
     
+    public void testValidateDuplicateRulesNames() throws Exception{
+        IValidationRule rule1 = policyCmptType.newRule();
+        rule1.setName("aRule");
+        MessageList msgList = policyCmptType.validate(ipsProject);
+        assertNull(msgList.getMessageByCode(IValidationRule.MSGCODE_DUPLICATE_RULE_NAME));
+        IValidationRule rule2 = policyCmptType.newRule();
+        rule2.setName("aRule");
+        msgList = policyCmptType.validate(ipsProject);
+        assertNotNull(msgList.getMessageByCode(IValidationRule.MSGCODE_DUPLICATE_RULE_NAME));
+        
+        rule2.delete();
+        msgList = policyCmptType.validate(ipsProject);
+        assertNull(msgList.getMessageByCode(IValidationRule.MSGCODE_DUPLICATE_RULE_NAME));
+        
+        IMethod method = policyCmptType.newMethod();
+        method.setName("aRule");
+        method.setDatatype(Datatype.VOID.getName());
+        msgList = policyCmptType.validate(ipsProject);
+        assertNotNull(msgList.getMessageByCode(IValidationRule.MSGCODE_VALIDATION_RULE_METHOD_NAME_COLLISION));
+        
+        method.newParameter(Datatype.STRING.getQualifiedName(), "aParam");
+        msgList = policyCmptType.validate(ipsProject);
+        assertNull(msgList.getMessageByCode(IValidationRule.MSGCODE_VALIDATION_RULE_METHOD_NAME_COLLISION));
+    }
     
     private class AggregateRootBuilderSet extends EmptyBuilderSet {
 

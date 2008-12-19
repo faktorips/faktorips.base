@@ -20,6 +20,7 @@ package org.faktorips.runtime.test;
 import junit.framework.TestCase;
 
 import org.faktorips.runtime.IModelObject;
+import org.faktorips.runtime.IValidationContext;
 import org.faktorips.runtime.MessageList;
 
 
@@ -81,7 +82,7 @@ public class IpsTestCase2Test extends TestCase {
     }
     
     private class MyModelObject implements IModelObject {
-        public MessageList validate(String businessFunction) {
+        public MessageList validate(IValidationContext context) {
             throw new RuntimeException();
         }
     }
