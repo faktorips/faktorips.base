@@ -95,7 +95,6 @@ Export-Package: org.apache.poi.ddf,
  org.faktorips.devtools.core.model.type,
  org.faktorips.devtools.core.model.valueset,
  org.faktorips.devtools.core.model.versionmanager,
- org.faktorips.devtools.core.ui,
  org.faktorips.devtools.core.util,
  org.faktorips.devtools.extsystems,
  org.faktorips.devtools.extsystems.excel
