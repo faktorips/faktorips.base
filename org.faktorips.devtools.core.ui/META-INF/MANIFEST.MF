@@ -32,11 +32,11 @@ Require-Bundle: org.eclipse.ui,
  org.faktorips.runtime;bundle-version="2.1.0"
 Bundle-ActivationPolicy: lazy
 Bundle-RequiredExecutionEnvironment: J2SE-1.5
-Export-Package: org.faktorips.devtools.bf.ui.edit,
- org.faktorips.devtools.bf.ui.model.commands,
- org.faktorips.devtools.bf.ui.properties,
- org.faktorips.devtools.core.ui,
+Export-Package: org.faktorips.devtools.core.ui,
  org.faktorips.devtools.core.ui.actions,
+ org.faktorips.devtools.core.ui.bf.edit,
+ org.faktorips.devtools.core.ui.bf.model.commands,
+ org.faktorips.devtools.core.ui.bf.properties,
  org.faktorips.devtools.core.ui.binding,
  org.faktorips.devtools.core.ui.controlfactories,
  org.faktorips.devtools.core.ui.controller,

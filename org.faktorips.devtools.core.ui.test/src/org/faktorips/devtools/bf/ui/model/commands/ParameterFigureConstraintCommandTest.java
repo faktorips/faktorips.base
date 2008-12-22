@@ -20,6 +20,7 @@ import org.faktorips.devtools.core.AbstractIpsPluginTest;
 import org.faktorips.devtools.core.model.bf.BusinessFunctionIpsObjectType;
 import org.faktorips.devtools.core.model.bf.IBusinessFunction;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
+import org.faktorips.devtools.core.ui.bf.model.commands.ParameterFigureConstraintCommand;
 
 public class ParameterFigureConstraintCommandTest extends AbstractIpsPluginTest {
 

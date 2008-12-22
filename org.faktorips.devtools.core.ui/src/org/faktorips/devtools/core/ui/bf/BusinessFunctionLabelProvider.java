@@ -19,19 +19,19 @@ import org.eclipse.jface.viewers.ILabelProvider;
 import org.eclipse.jface.viewers.ILabelProviderListener;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.swt.graphics.Image;
-import org.faktorips.devtools.bf.ui.edit.BusinessFunctionEditPart;
-import org.faktorips.devtools.bf.ui.edit.CallBusinessFunctionActionEditPart;
-import org.faktorips.devtools.bf.ui.edit.CallMethodActionEditPart;
-import org.faktorips.devtools.bf.ui.edit.ControlFlowEditPart;
-import org.faktorips.devtools.bf.ui.edit.DecisionEditPart;
-import org.faktorips.devtools.bf.ui.edit.InlineActionEditPart;
-import org.faktorips.devtools.bf.ui.edit.MergeEditPart;
-import org.faktorips.devtools.bf.ui.edit.ParameterEditPart;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.model.IIpsElement;
 import org.faktorips.devtools.core.model.bf.BFElementType;
 import org.faktorips.devtools.core.model.bf.IBFElement;
 import org.faktorips.devtools.core.model.bf.IBusinessFunction;
+import org.faktorips.devtools.core.ui.bf.edit.BusinessFunctionEditPart;
+import org.faktorips.devtools.core.ui.bf.edit.CallBusinessFunctionActionEditPart;
+import org.faktorips.devtools.core.ui.bf.edit.CallMethodActionEditPart;
+import org.faktorips.devtools.core.ui.bf.edit.ControlFlowEditPart;
+import org.faktorips.devtools.core.ui.bf.edit.DecisionEditPart;
+import org.faktorips.devtools.core.ui.bf.edit.InlineActionEditPart;
+import org.faktorips.devtools.core.ui.bf.edit.MergeEditPart;
+import org.faktorips.devtools.core.ui.bf.edit.ParameterEditPart;
 
 //TODO string externalization
 /**

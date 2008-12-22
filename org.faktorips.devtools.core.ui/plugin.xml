@@ -464,7 +464,7 @@
             name="%testCaseTypeEditor"/>   
 		<editor
 			class="org.faktorips.devtools.core.ui.bf.BusinessFunctionEditor"
-			contributorClass="org.faktorips.devtools.bf.ui.actions.BfActionBarContributor"
+			contributorClass="org.faktorips.devtools.core.ui.bf.actions.BfActionBarContributor"
 			default="true"
 			extensions="ipsbusinessfunction"
 			icon="icons/BusinessFunction.gif"
@@ -985,108 +985,108 @@
       <propertySections
             contributorId="org.faktorips.devtools.bf.ui.editor">
          <propertySection
-               class="org.faktorips.devtools.bf.ui.properties.NamedOnlyBFElementsPropertySection"
+               class="org.faktorips.devtools.core.ui.bf.properties.NamedOnlyBFElementsPropertySection"
                id="businessfunction.general.opaqueaction"
                tab="businessfunction.general">
             <input
-                  type="org.faktorips.devtools.bf.ui.edit.InlineActionEditPart">
+                  type="org.faktorips.devtools.core.ui.bf.edit.InlineActionEditPart">
             </input>
          </propertySection>
          <propertySection
-               class="org.faktorips.devtools.bf.ui.properties.NamedOnlyBFElementsPropertySection"
+               class="org.faktorips.devtools.core.ui.bf.properties.NamedOnlyBFElementsPropertySection"
                id="businessfunction.general.merge"
                tab="businessfunction.general">
             <input
-                  type="org.faktorips.devtools.bf.ui.edit.MergeEditPart">
+                  type="org.faktorips.devtools.core.ui.bf.edit.MergeEditPart">
             </input>
          </propertySection>
          <propertySection
-               class="org.faktorips.devtools.bf.ui.properties.DecisionPropertySection"
+               class="org.faktorips.devtools.core.ui.bf.properties.DecisionPropertySection"
                id="businessfunction.general.decision"
                tab="businessfunction.general">
             <input
-                  type="org.faktorips.devtools.bf.ui.edit.DecisionEditPart">
+                  type="org.faktorips.devtools.core.ui.bf.edit.DecisionEditPart">
             </input>
          </propertySection>
          <propertySection
-               class="org.faktorips.devtools.bf.ui.properties.ControlFlowPropertySection"
+               class="org.faktorips.devtools.core.ui.bf.properties.ControlFlowPropertySection"
                id="businessfunction.general.controlFlow"
                tab="businessfunction.general">
             <input
-                  type="org.faktorips.devtools.bf.ui.edit.ControlFlowEditPart">
+                  type="org.faktorips.devtools.core.ui.bf.edit.ControlFlowEditPart">
             </input>
          </propertySection>
          <propertySection
-               class="org.faktorips.devtools.bf.ui.properties.ParameterBFElementPropertySection"
+               class="org.faktorips.devtools.core.ui.bf.properties.ParameterBFElementPropertySection"
                id="businessfunction.general.parameters"
                tab="businessfunction.general">
             <input
-                  type="org.faktorips.devtools.bf.ui.edit.ParameterEditPart">
+                  type="org.faktorips.devtools.core.ui.bf.edit.ParameterEditPart">
             </input>
          </propertySection>
          <propertySection
-               class="org.faktorips.devtools.bf.ui.properties.CallMethodActionPropertySection"
+               class="org.faktorips.devtools.core.ui.bf.properties.CallMethodActionPropertySection"
                id="businessfunction.general.callmethodaction"
                tab="businessfunction.general">
             <input
-                  type="org.faktorips.devtools.bf.ui.edit.CallMethodActionEditPart">
+                  type="org.faktorips.devtools.core.ui.bf.edit.CallMethodActionEditPart">
             </input>
          </propertySection>
          <propertySection
-               class="org.faktorips.devtools.bf.ui.properties.CallBusinessFunctionActionPropertySection"
+               class="org.faktorips.devtools.core.ui.bf.properties.CallBusinessFunctionActionPropertySection"
                id="businessfunction.general.callbusinessfunctionaction"
                tab="businessfunction.general">
             <input
-                  type="org.faktorips.devtools.bf.ui.edit.CallBusinessFunctionActionEditPart">
+                  type="org.faktorips.devtools.core.ui.bf.edit.CallBusinessFunctionActionEditPart">
             </input>
          </propertySection>
          <propertySection
                afterSection="businessfunction.general.opaqueaction"
-               class="org.faktorips.devtools.bf.ui.properties.DescriptionPropertySection"
+               class="org.faktorips.devtools.core.ui.bf.properties.DescriptionPropertySection"
                id="businessfunction.description.opaqueaction"
                tab="businessfunction.description">
             <input
-                  type="org.faktorips.devtools.bf.ui.edit.InlineActionEditPart">
+                  type="org.faktorips.devtools.core.ui.bf.edit.InlineActionEditPart">
             </input>
          </propertySection>
          <propertySection
-               class="org.faktorips.devtools.bf.ui.properties.DescriptionPropertySection"
+               class="org.faktorips.devtools.core.ui.bf.properties.DescriptionPropertySection"
                id="businessfunction.description.merge"
                tab="businessfunction.description">
             <input
-                  type="org.faktorips.devtools.bf.ui.edit.MergeEditPart">
+                  type="org.faktorips.devtools.core.ui.bf.edit.MergeEditPart">
             </input>
          </propertySection>
          <propertySection
-               class="org.faktorips.devtools.bf.ui.properties.DescriptionPropertySection"
+               class="org.faktorips.devtools.core.ui.bf.properties.DescriptionPropertySection"
                id="businessfunction.description.decision"
                tab="businessfunction.description">
             <input
-                  type="org.faktorips.devtools.bf.ui.edit.DecisionEditPart">
+                  type="org.faktorips.devtools.core.ui.bf.edit.DecisionEditPart">
             </input>
          </propertySection>
          <propertySection
-               class="org.faktorips.devtools.bf.ui.properties.DescriptionPropertySection"
+               class="org.faktorips.devtools.core.ui.bf.properties.DescriptionPropertySection"
                id="businessfunction.description.callmethodaction"
                tab="businessfunction.description">
             <input
-                  type="org.faktorips.devtools.bf.ui.edit.CallMethodActionEditPart">
+                  type="org.faktorips.devtools.core.ui.bf.edit.CallMethodActionEditPart">
             </input>
          </propertySection>
          <propertySection
-               class="org.faktorips.devtools.bf.ui.properties.DescriptionPropertySection"
+               class="org.faktorips.devtools.core.ui.bf.properties.DescriptionPropertySection"
                id="businessfunction.description.callbusinessfunctionaction"
                tab="businessfunction.description">
             <input
-                  type="org.faktorips.devtools.bf.ui.edit.CallBusinessFunctionActionEditPart">
+                  type="org.faktorips.devtools.core.ui.bf.edit.CallBusinessFunctionActionEditPart">
             </input>
          </propertySection>
          <propertySection
-               class="org.faktorips.devtools.bf.ui.properties.DescriptionPropertySection"
+               class="org.faktorips.devtools.core.ui.bf.properties.DescriptionPropertySection"
                id="businessfunction.description"
                tab="businessfunction.description">
             <input
-                  type="org.faktorips.devtools.bf.ui.edit.BusinessFunctionEditPart">
+                  type="org.faktorips.devtools.core.ui.bf.edit.BusinessFunctionEditPart">
             </input>
          </propertySection>
       </propertySections>

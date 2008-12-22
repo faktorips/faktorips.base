@@ -22,6 +22,7 @@ import org.faktorips.devtools.core.model.bf.BusinessFunctionIpsObjectType;
 import org.faktorips.devtools.core.model.bf.IActionBFE;
 import org.faktorips.devtools.core.model.bf.IBusinessFunction;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
+import org.faktorips.devtools.core.ui.bf.model.commands.ChangeConstraintCommand;
 
 public class ChangeConstraintCommandTest extends AbstractIpsPluginTest {
 

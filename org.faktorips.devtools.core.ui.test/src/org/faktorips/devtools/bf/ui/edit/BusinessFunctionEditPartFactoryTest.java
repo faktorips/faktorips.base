@@ -21,6 +21,14 @@ import org.faktorips.devtools.core.model.bf.BFElementType;
 import org.faktorips.devtools.core.model.bf.BusinessFunctionIpsObjectType;
 import org.faktorips.devtools.core.model.bf.IBusinessFunction;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
+import org.faktorips.devtools.core.ui.bf.edit.ActionEditPart;
+import org.faktorips.devtools.core.ui.bf.edit.BusinessFunctionEditPart;
+import org.faktorips.devtools.core.ui.bf.edit.BusinessFunctionEditPartFactory;
+import org.faktorips.devtools.core.ui.bf.edit.ControlFlowEditPart;
+import org.faktorips.devtools.core.ui.bf.edit.DecisionEditPart;
+import org.faktorips.devtools.core.ui.bf.edit.EndEditPart;
+import org.faktorips.devtools.core.ui.bf.edit.MergeEditPart;
+import org.faktorips.devtools.core.ui.bf.edit.StartEditPart;
 
 public class BusinessFunctionEditPartFactoryTest extends AbstractIpsPluginTest {
 

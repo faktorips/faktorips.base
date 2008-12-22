@@ -25,6 +25,7 @@ import org.faktorips.devtools.core.model.bf.IBusinessFunction;
 import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.ui.UIToolkit;
+import org.faktorips.devtools.core.ui.bf.properties.BusinessFunctionRefControl;
 
 public class BusinessFunctionRefControlTest extends AbstractIpsPluginTest {
 
