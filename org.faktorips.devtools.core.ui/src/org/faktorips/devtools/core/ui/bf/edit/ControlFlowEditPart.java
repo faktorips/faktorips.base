@@ -32,7 +32,8 @@ public class ControlFlowEditPart extends AbstractConnectionEditPart implements C
 
     private CLabel label;
     private Color labelBackground;
-
+    private LabelPositioner labelPositioner;
+    
     private class LabelPositioner implements FigureListener {
 
         public void figureMoved(IFigure source) {
@@ -74,6 +75,7 @@ public class ControlFlowEditPart extends AbstractConnectionEditPart implements C
         label = new CLabel(viewerComp, SWT.CENTER | SWT.SHADOW_NONE);
         labelBackground = new Color(viewerComp.getDisplay(), new RGB(240, 240, 240));
         label.setBackground(labelBackground);
+        labelPositioner = new LabelPositioner();
         PolylineDecoration df = new PolylineDecoration();
         PointList pl = new PointList();
         pl.addPoint(-2, -1);
@@ -99,12 +101,13 @@ public class ControlFlowEditPart extends AbstractConnectionEditPart implements C
     @Override
     public void activate() {
         super.activate();
-        getPolylineConnection().addFigureListener(new LabelPositioner());
+        getPolylineConnection().addFigureListener(labelPositioner);
         getControlFlow().getIpsModel().addChangeListener(this);
     }
 
     @Override
     public void deactivate() {
+        getPolylineConnection().removeFigureListener(labelPositioner);
         getControlFlow().getIpsModel().removeChangeListener(this);
         super.deactivate();
     }
@@ -144,5 +147,4 @@ public class ControlFlowEditPart extends AbstractConnectionEditPart implements C
             refreshVisuals();
         }
     }
-
 }
