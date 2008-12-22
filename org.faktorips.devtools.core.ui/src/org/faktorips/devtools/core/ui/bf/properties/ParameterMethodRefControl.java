@@ -16,6 +16,7 @@ package org.faktorips.devtools.core.ui.bf.properties;
 
 import java.util.ArrayList;
 
+import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jface.window.Window;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.ui.dialogs.ElementListSelectionDialog;
@@ -44,12 +45,12 @@ public class ParameterMethodRefControl extends TextButtonControl {
         this.parameterType = type;
     }
 
-    private IMethod[] getSelectableMethods() {
+    private IMethod[] getSelectableMethods() throws CoreException {
         if (parameterType == null) {
             return new IMethod[0];
         }
         ArrayList<IMethod> methods = new ArrayList<IMethod>();
-        for (IMethod method : parameterType.getMethods()) {
+        for (IMethod method : parameterType.findAllMethods(parameterType.getIpsProject())) {
             if (method.getParameters().length == 0) {
                 methods.add(method);
             }
@@ -62,8 +63,9 @@ public class ParameterMethodRefControl extends TextButtonControl {
      */
     protected void buttonClicked() {
         try {
-            ElementListSelectionDialog selectDialog = new ElementListSelectionDialog(getShell(),
-                    new DefaultLabelProvider());
+            DefaultLabelProvider lp = new DefaultLabelProvider();
+            lp.setShowAssociatedType(true);
+            ElementListSelectionDialog selectDialog = new ElementListSelectionDialog(getShell(), lp);
             selectDialog.setTitle(Messages.getString("ParameterMethodRefControl.ChooseMethodTitle")); //$NON-NLS-1$
             selectDialog.setMessage(Messages.getString("ParameterMethodRefControl.dialogDescription") //$NON-NLS-1$
                     + (parameterType == null ? "" : parameterType.getName())); //$NON-NLS-1$

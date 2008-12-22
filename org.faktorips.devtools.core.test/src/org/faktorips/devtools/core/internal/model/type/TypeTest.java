@@ -331,6 +331,41 @@ public class TypeTest extends AbstractIpsPluginTest {
         assertNull(type.findMethod("unknown", new String[0], ipsProject));
     }
     
+    public void testFindAllMethods() throws Exception{
+        assertTrue(type.findAllMethods(ipsProject).isEmpty());
+        
+        IType supertype = newProductCmptType(ipsProject, "Product");
+        type.setSupertype(supertype.getQualifiedName());
+        
+        IMethod method1 = type.newMethod();
+        method1.setName("aMethod");
+        
+        IMethod method2 = type.newMethod();
+        method2.setName("aMethod");
+        method2.newParameter("Integer", "i");
+        method2.newParameter("String", "s");
+        
+        IMethod method3 = supertype.newMethod();
+        method3.setName("aMethod");
+        method3.newParameter("Integer", "i");
+        method3.newParameter("String", "d");
+        
+        IMethod method4 = supertype.newMethod();
+        method4.setName("bMethod");
+        List<IMethod> methods = type.findAllMethods(ipsProject);
+        assertEquals(3, methods.size());
+        assertTrue(methods.contains(method1));
+        assertTrue(methods.contains(method2));
+        assertTrue(methods.contains(method4));
+        
+        methods = supertype.findAllMethods(ipsProject);
+        assertEquals(2, methods.size());
+        assertTrue(methods.contains(method3));
+        assertTrue(methods.contains(method4));
+        
+        
+    }
+    
     public void testFindAttribute() throws CoreException {
         assertNull(type.findAttribute("unknown", ipsProject));
         

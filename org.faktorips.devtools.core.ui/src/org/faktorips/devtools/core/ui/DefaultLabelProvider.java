@@ -54,6 +54,12 @@ public class DefaultLabelProvider extends LabelProvider {
     private boolean ispSourceFile2IpsObjectMapping = false;
     
     /**
+     * If set to <code>true</code> the name of the type is shown after the display of the type followed
+     * by a hyphen. This is only relevant for the display of methods and attributes.
+     */
+    private boolean showAssociatedType = false;
+    
+    /**
      * Creates an DefaultLabelProvider with additional IpsSourceFile mapping support: In case of an
      * IpsSourceFile the text and the image of the corresponding IpsObject will be returned.s
      */
@@ -74,6 +80,13 @@ public class DefaultLabelProvider extends LabelProvider {
         this.ispSourceFile2IpsObjectMapping = ispSourceFile2IpsObjectMapping;
     }
 
+    /**
+     * @see #showAssociatedType
+     */
+    public void setShowAssociatedType(boolean show){
+        this.showAssociatedType = show;
+    }
+    
     /** 
      * {@inheritDoc}
      */
@@ -142,6 +155,10 @@ public class DefaultLabelProvider extends LabelProvider {
         sb.append(a.getName());
         sb.append(" : "); //$NON-NLS-1$
         sb.append(a.getDatatype());
+        if(showAssociatedType){
+            sb.append(" - ");
+            sb.append(a.getType().getName());
+        }
         return sb.toString();
     }
     
@@ -177,6 +194,10 @@ public class DefaultLabelProvider extends LabelProvider {
         }
         buffer.append(") : "); //$NON-NLS-1$
         buffer.append(QNameUtil.getUnqualifiedName(method.getDatatype()));
+        if(showAssociatedType){
+            buffer.append(" - ");
+            buffer.append(method.getType().getName());
+        }
         return buffer.toString();
     }
     

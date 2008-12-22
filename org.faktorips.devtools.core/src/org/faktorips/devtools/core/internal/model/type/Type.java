@@ -188,8 +188,17 @@ public abstract class Type extends BaseIpsObject implements IType {
     /**
      * {@inheritDoc}
      */
+    public List<IMethod> findAllMethods(IIpsProject ipsProject) throws CoreException {
+        AllMethodsFinder finder = new AllMethodsFinder(ipsProject);
+        finder.start(this);
+        return finder.getMethodes();
+    }
+    
+    /**
+     * {@inheritDoc}
+     */
     public IAttribute[] findAllAttributes(IIpsProject ipsProject) throws CoreException {
-        AllAttributeFinder finder = new AllAttributeFinder(getIpsProject());
+        AllAttributeFinder finder = new AllAttributeFinder(ipsProject);
         finder.start(this);
         return finder.getAttributes();
     }
@@ -803,6 +812,37 @@ public abstract class Type extends BaseIpsObject implements IType {
         }
     }
 
+    
+    private static class AllMethodsFinder extends TypeHierarchyVisitor {
+
+        private List<IMethod> methods;
+        private Set<String> methodSignatures;
+        
+        public AllMethodsFinder(IIpsProject ipsProject) {
+            super(ipsProject);
+            methods = new ArrayList<IMethod>();
+            methodSignatures = new HashSet<String>();
+        }
+
+        /**
+         * {@inheritDoc}
+         */
+        protected boolean visit(IType currentType) throws CoreException {
+            //considers overridden methods
+            for (IMethod method : currentType.getMethods()) {
+                if(!methodSignatures.contains(method.getSignatureString())){
+                    methods.add(method);
+                    methodSignatures.add(method.getSignatureString());
+                }
+            }
+            return true;
+        }
+        
+        private List<IMethod> getMethodes(){
+            return methods;
+        }
+    }
+    
     private static class AllAttributeFinder extends TypeHierarchyVisitor {
 
         private List attributes;

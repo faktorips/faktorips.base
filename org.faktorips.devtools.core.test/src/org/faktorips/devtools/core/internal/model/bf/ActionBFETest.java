@@ -174,6 +174,22 @@ public class ActionBFETest extends AbstractIpsPluginTest {
 
         msgList = actionBFE.validate(ipsProject);
         assertNull(msgList.getMessageByCode(IActionBFE.MSGCODE_METHOD_DOES_NOT_EXIST));
+        
+        method.delete();
+        msgList = actionBFE.validate(ipsProject);
+        assertNotNull(msgList.getMessageByCode(IActionBFE.MSGCODE_METHOD_DOES_NOT_EXIST));
+
+        IPolicyCmptType superPolicy = newPolicyCmptTypeWithoutProductCmptType(ipsProject, "superPolicy");
+        policy.setSupertype(superPolicy.getQualifiedName());
+        
+        method = superPolicy.newMethod();
+        method.setName("aMethod");
+        method.setDatatype(Datatype.STRING.getQualifiedName());
+        method.setModifier(Modifier.PUBLIC);
+
+        msgList = actionBFE.validate(ipsProject);
+        assertNull(msgList.getMessageByCode(IActionBFE.MSGCODE_METHOD_DOES_NOT_EXIST));
+
     }
     
     public void testValidateInlineAction() throws Exception{

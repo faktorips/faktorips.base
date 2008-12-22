@@ -123,7 +123,7 @@ public class ActionBFE extends BFElement implements IActionBFE {
     @Override
     protected void validateThis(MessageList list, IIpsProject ipsProject) throws CoreException {
         super.validateThis(list, ipsProject);
-        validateMethodCallAction(list);
+        validateMethodCallAction(list, ipsProject);
         validateBusinessFunctionCallAction(list);
     }
 
@@ -145,7 +145,7 @@ public class ActionBFE extends BFElement implements IActionBFE {
         }
     }
 
-    private void validateMethodCallAction(MessageList list) throws CoreException {
+    private void validateMethodCallAction(MessageList list, IIpsProject ipsProject) throws CoreException {
         if (getType().equals(BFElementType.ACTION_METHODCALL)) {
             // parameter has to be specified
             if (StringUtils.isEmpty(target)) {
@@ -179,7 +179,7 @@ public class ActionBFE extends BFElement implements IActionBFE {
             }
             // method has to exist
             IType type = (IType)datatype;
-            if (type.getMethod(getExecutableMethodName(), new String[0]) == null) {
+            if (type.findMethod(getExecutableMethodName(), new String[0], ipsProject) == null) {
                 String text = NLS
                         .bind(
                                 Messages.getString("ActionBFE.methodDoesNotExistOnParameter"), new String[] { getExecutableMethodName(), getTarget() }); //$NON-NLS-1$

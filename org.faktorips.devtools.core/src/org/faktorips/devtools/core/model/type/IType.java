@@ -17,6 +17,8 @@
 
 package org.faktorips.devtools.core.model.type;
 
+import java.util.List;
+
 import org.eclipse.core.runtime.CoreException;
 import org.faktorips.datatype.Datatype;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObject;
@@ -283,6 +285,14 @@ public interface IType extends IIpsObject, Datatype {
      * an association.
      */
     public int[] moveAssociations(int[] indexes, boolean up);
+    
+    /**
+     * Returns all methods of this type including the methods of the types within the supertype hierarchy.
+     * 
+     * @param ipsProject the ips project that is used to determine the types within the supertype hierarchy.
+     * @throws CoreException if an exception ocurres during the execution of this method
+     */
+    public List<IMethod> findAllMethods(IIpsProject ipsProject) throws CoreException;
     
     /**
      * Returns the type's methods. 
