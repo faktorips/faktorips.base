@@ -17,7 +17,6 @@ package org.faktorips.devtools.bf.ui.edit;
 import org.eclipse.draw2d.geometry.Point;
 import org.eclipse.gef.EditPart;
 import org.faktorips.devtools.core.AbstractIpsPluginTest;
-import org.faktorips.devtools.core.model.bf.BFElementType;
 import org.faktorips.devtools.core.model.bf.BusinessFunctionIpsObjectType;
 import org.faktorips.devtools.core.model.bf.IBusinessFunction;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
@@ -63,13 +62,13 @@ public class BusinessFunctionEditPartFactoryTest extends AbstractIpsPluginTest {
         editPart = factory.createEditPart(null, bf.newParameter());
         assertNull(editPart);
 
-        editPart = factory.createEditPart(null, bf.newSimpleBFElement(BFElementType.START, new Point(1, 1)));
+        editPart = factory.createEditPart(null, bf.newStart(new Point(1, 1)));
         assertTrue(editPart instanceof StartEditPart);
 
-        editPart = factory.createEditPart(null, bf.newSimpleBFElement(BFElementType.END, new Point(1, 1)));
+        editPart = factory.createEditPart(null, bf.newEnd(new Point(1, 1)));
         assertTrue(editPart instanceof EndEditPart);
 
-        editPart = factory.createEditPart(null, bf.newSimpleBFElement(BFElementType.MERGE, new Point(1, 1)));
+        editPart = factory.createEditPart(null, bf.newMerge(new Point(1, 1)));
         assertTrue(editPart instanceof MergeEditPart);
 
         try{

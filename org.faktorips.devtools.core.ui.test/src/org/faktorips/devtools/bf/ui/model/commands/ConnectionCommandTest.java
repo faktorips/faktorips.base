@@ -17,7 +17,6 @@ package org.faktorips.devtools.bf.ui.model.commands;
 import org.eclipse.draw2d.geometry.Point;
 import org.faktorips.datatype.Datatype;
 import org.faktorips.devtools.core.AbstractIpsPluginTest;
-import org.faktorips.devtools.core.model.bf.BFElementType;
 import org.faktorips.devtools.core.model.bf.BusinessFunctionIpsObjectType;
 import org.faktorips.devtools.core.model.bf.IBFElement;
 import org.faktorips.devtools.core.model.bf.IBusinessFunction;
@@ -43,7 +42,7 @@ public class ConnectionCommandTest extends AbstractIpsPluginTest {
     public void testCanExecute() throws Exception {
         assertFalse(command.canExecute());
 
-        IBFElement source = bf.newSimpleBFElement(BFElementType.START, new Point(10, 10));
+        IBFElement source = bf.newStart(new Point(10, 10));
         IControlFlow out = bf.newControlFlow();
         source.addOutgoingControlFlow(out);
         command.setSource(source);
@@ -51,13 +50,13 @@ public class ConnectionCommandTest extends AbstractIpsPluginTest {
         
         bf = (IBusinessFunction)newIpsObject(ipsProject, BusinessFunctionIpsObjectType.getInstance(), "bf1");
         command = new ConnectionCommand(false);
-        source = bf.newSimpleBFElement(BFElementType.END, new Point(10, 10));
+        source = bf.newEnd(new Point(10, 10));
         command.setSource(source);
         assertFalse(command.canExecute());
 
         bf = (IBusinessFunction)newIpsObject(ipsProject, BusinessFunctionIpsObjectType.getInstance(), "bf2");
         command = new ConnectionCommand(false);
-        source = bf.newSimpleBFElement(BFElementType.MERGE, new Point(10, 10));
+        source = bf.newMerge(new Point(10, 10));
         out = bf.newControlFlow();
         source.addOutgoingControlFlow(out);
         command.setSource(source);
@@ -187,6 +186,7 @@ public class ConnectionCommandTest extends AbstractIpsPluginTest {
         
         command = new ConnectionCommand(false);
         command.setBusinessFunction(bf);
+        
         decision.removeAllOutgoingControlFlows();
         action1.removeAllIncommingControlFlows();
         action2.removeAllIncommingControlFlows();

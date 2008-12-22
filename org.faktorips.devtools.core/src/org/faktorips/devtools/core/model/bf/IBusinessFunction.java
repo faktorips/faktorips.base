@@ -63,17 +63,12 @@ public interface IBusinessFunction extends IIpsObject {
      */
     public IControlFlow getControlFlow(int id);
 
-    /**
-     * Creates and returns a business function elements and adds it to the set of elements that
-     * belong to this business function. With this method only start, end and merge element can be
-     * created.
-     * 
-     * @param type the business function element type. Only <code>BFElementType.START</code>,
-     *            <code>BFElementType.START</code>, <code>BFElementType.MERGE</code>.
-     * @param location the initial graphical location of the created element
-     */
-    public IBFElement newSimpleBFElement(BFElementType type, Point location);
-
+    public IBFElement newStart(Point location);
+    
+    public IBFElement newEnd(Point location);
+    
+    public IBFElement newMerge(Point location);
+    
     /**
      * Creates and returns a in line action and adds it to the set of actions that belong to this
      * business function.

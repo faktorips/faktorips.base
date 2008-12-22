@@ -14,7 +14,6 @@
 
 package org.faktorips.devtools.core.model.bf;
 
-import org.eclipse.draw2d.geometry.Dimension;
 import org.eclipse.draw2d.geometry.Point;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.swt.graphics.Image;
@@ -55,23 +54,19 @@ public enum BFElementType {
     MERGE("merge", Messages.getString("BFElementType.merge"), "MergeNode.gif") { //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
         @Override
         public IBFElement newBFElement(IBusinessFunction businessFunction, Point location) {
-            return businessFunction.newSimpleBFElement(BFElementType.MERGE, location);
+            return businessFunction.newMerge(location);
         }
     },
     END("end", Messages.getString("BFElementType.end"), "ActivityFinalNode.gif") { //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
         @Override
         public IBFElement newBFElement(IBusinessFunction businessFunction, Point location) {
-            IBFElement element = businessFunction.newSimpleBFElement(BFElementType.END, location);
-            element.setSize(new Dimension(30, 30));
-            return element;
+            return businessFunction.newEnd(location);
         }
     },
     START("start", Messages.getString("BFElementType.start"), "InitialNode.gif") { //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
         @Override
         public IBFElement newBFElement(IBusinessFunction businessFunction, Point location) {
-            IBFElement element = businessFunction.newSimpleBFElement(BFElementType.START, location);
-            element.setSize(new Dimension(30, 30));
-            return element;
+            return businessFunction.newStart(location);
         }
     },
     PARAMETER("parameter", Messages.getString("BFElementType.parameter"), null) { //$NON-NLS-1$ //$NON-NLS-2$

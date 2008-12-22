@@ -149,12 +149,19 @@ public class BusinessFunction extends BaseIpsObject implements IBusinessFunction
         return controlFlowList;
     }
 
-    public IBFElement newSimpleBFElement(BFElementType type, Point location) {
-        if (!(BFElementType.END == type || BFElementType.START == type || BFElementType.MERGE == type)) {
-            throw new IllegalArgumentException("Only BFElement of the types: " + BFElementType.START + ", " //$NON-NLS-1$ //$NON-NLS-2$
-                    + BFElementType.END + ", " + BFElementType.MERGE + " can be created with this method."); //$NON-NLS-1$ //$NON-NLS-2$
-        }
-        BFElement element = (BFElement)simpleElements.newBFElement(location, type);
+    public IBFElement newEnd(Point location) {
+        BFElement element = (BFElement)simpleElements.newBFElement(location, BFElementType.END);
+        element.setSize(new Dimension(30, 30));
+        return element;
+    }
+
+    public IBFElement newMerge(Point location) {
+        return (BFElement)simpleElements.newBFElement(location, BFElementType.MERGE);
+    }
+
+    public IBFElement newStart(Point location) {
+        BFElement element = (BFElement)simpleElements.newBFElement(location, BFElementType.START);
+        element.setSize(new Dimension(30, 30));
         return element;
     }
 
@@ -500,5 +507,4 @@ public class BusinessFunction extends BaseIpsObject implements IBusinessFunction
             return (BFElement)newPart(initializer);
         }
     }
-
 }

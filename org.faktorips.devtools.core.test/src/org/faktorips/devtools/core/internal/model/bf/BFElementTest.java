@@ -167,7 +167,7 @@ public class BFElementTest extends AbstractIpsPluginTest {
     public void testGetBusinessFunction() throws Exception {
         BusinessFunction bf = (BusinessFunction)newIpsObject(ipsProject, BusinessFunctionIpsObjectType.getInstance(),
                 "bf");
-        IBFElement bfe = bf.newSimpleBFElement(BFElementType.MERGE, new Point(10, 10));
+        IBFElement bfe = bf.newMerge(new Point(10, 10));
         assertEquals(bf, bfe.getBusinessFunction());
 
     }

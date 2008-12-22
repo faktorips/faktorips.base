@@ -56,7 +56,7 @@ public class BusinessFunctionTest extends AbstractIpsPluginTest {
     public void testNewPartClass() throws CoreException {
         BusinessFunction bf = (BusinessFunction)newIpsObject(ipsProject, BusinessFunctionIpsObjectType.getInstance(),
                 "bf");
-        IBFElement bfe = bf.newSimpleBFElement(BFElementType.END, new Point(1, 1));
+        IBFElement bfe = bf.newEnd(new Point(1, 1));
         assertEquals(bfe.getType(), BFElementType.END);
     }
 
@@ -106,9 +106,9 @@ public class BusinessFunctionTest extends AbstractIpsPluginTest {
         IActionBFE opaqueAction = bf.newOpaqueAction(new Point(3, 3));
         IBFElement decision = bf.newDecision(new Point(4, 4));
         IBFElement parameter = bf.newParameter();
-        IBFElement end = bf.newSimpleBFElement(BFElementType.END, new Point(10, 10));
-        IBFElement start = bf.newSimpleBFElement(BFElementType.START, new Point(20, 20));
-        IBFElement merge = bf.newSimpleBFElement(BFElementType.MERGE, new Point(30, 30));
+        IBFElement end = bf.newEnd(new Point(10, 10));
+        IBFElement start = bf.newStart(new Point(20, 20));
+        IBFElement merge = bf.newMerge(new Point(30, 30));
         IControlFlow cf1 = bf.newControlFlow();
         IControlFlow cf2 = bf.newControlFlow();
         Document doc = getDocumentBuilder().newDocument();
@@ -204,10 +204,10 @@ public class BusinessFunctionTest extends AbstractIpsPluginTest {
     public void testValidateStartOnlyOnce() throws Exception{
         BusinessFunction bf = (BusinessFunction)newIpsObject(ipsProject, BusinessFunctionIpsObjectType.getInstance(),
         "bf");
-        IBFElement start1 = bf.newSimpleBFElement(BFElementType.START, new Point(10, 10));
+        IBFElement start1 = bf.newStart(new Point(10, 10));
         MessageList msgList = bf.validate(ipsProject);
         assertNull(msgList.getMessageByCode(IBusinessFunction.MSGCODE_START_SINGLE_OCCURRENCE));
-        IBFElement start2 = bf.newSimpleBFElement(BFElementType.START, new Point(10, 10));
+        IBFElement start2 = bf.newStart(new Point(10, 10));
         msgList = bf.validate(ipsProject);
 
         MessageList list1 = msgList.getMessagesFor(start1);
@@ -221,10 +221,10 @@ public class BusinessFunctionTest extends AbstractIpsPluginTest {
     public void testValidateEndOnlyOnce() throws Exception{
         BusinessFunction bf = (BusinessFunction)newIpsObject(ipsProject, BusinessFunctionIpsObjectType.getInstance(),
         "bf");
-        IBFElement end1 = bf.newSimpleBFElement(BFElementType.END, new Point(10, 10));
+        IBFElement end1 = bf.newEnd(new Point(10, 10));
         MessageList msgList = bf.validate(ipsProject);
         assertNull(msgList.getMessageByCode(IBusinessFunction.MSGCODE_END_SINGLE_OCCURRENCE));
-        IBFElement end2 = bf.newSimpleBFElement(BFElementType.END, new Point(10, 10));
+        IBFElement end2 = bf.newEnd(new Point(10, 10));
         msgList = bf.validate(ipsProject);
         
         MessageList list1 = msgList.getMessagesFor(end1);
@@ -305,7 +305,7 @@ public class BusinessFunctionTest extends AbstractIpsPluginTest {
         MessageList msgList = bf.validate(ipsProject);
         assertNotNull(msgList.getMessageByCode(IBusinessFunction.MSGCODE_START_DEFINITION_MISSING));
         
-        bf.newSimpleBFElement(BFElementType.START, new Point(10, 10));
+        bf.newStart(new Point(10, 10));
         msgList = bf.validate(ipsProject);
         assertNull(msgList.getMessageByCode(IBusinessFunction.MSGCODE_START_DEFINITION_MISSING));
     }
@@ -316,7 +316,7 @@ public class BusinessFunctionTest extends AbstractIpsPluginTest {
         MessageList msgList = bf.validate(ipsProject);
         assertNotNull(msgList.getMessageByCode(IBusinessFunction.MSGCODE_END_DEFINITION_MISSING));
         
-        bf.newSimpleBFElement(BFElementType.END, new Point(10, 10));
+        bf.newEnd(new Point(10, 10));
         msgList = bf.validate(ipsProject);
         assertNull(msgList.getMessageByCode(IBusinessFunction.MSGCODE_END_DEFINITION_MISSING));
     }
@@ -324,8 +324,8 @@ public class BusinessFunctionTest extends AbstractIpsPluginTest {
     public void testValidateNotConnected1() throws Exception{
         BusinessFunction bf = (BusinessFunction)newIpsObject(ipsProject, BusinessFunctionIpsObjectType.getInstance(),
         "bf");
-        IBFElement start = bf.newSimpleBFElement(BFElementType.START, new Point(10, 10));
-        IBFElement end = bf.newSimpleBFElement(BFElementType.END, new Point(10, 10));
+        IBFElement start = bf.newStart(new Point(10, 10));
+        IBFElement end = bf.newEnd(new Point(10, 10));
         
         MessageList msgList = bf.validate(ipsProject);
 
@@ -347,12 +347,12 @@ public class BusinessFunctionTest extends AbstractIpsPluginTest {
     public void testValidateNotConnected2() throws Exception{
         BusinessFunction bf = (BusinessFunction)newIpsObject(ipsProject, BusinessFunctionIpsObjectType.getInstance(),
         "bf");
-        IBFElement start = bf.newSimpleBFElement(BFElementType.START, new Point(10, 10));
-        IBFElement end = bf.newSimpleBFElement(BFElementType.END, new Point(10, 10));
+        IBFElement start = bf.newStart(new Point(10, 10));
+        IBFElement end = bf.newEnd(new Point(10, 10));
         IBFElement action1 = bf.newOpaqueAction(new Point(10, 10));
         IBFElement action2 = bf.newOpaqueAction(new Point(10, 10));
         IBFElement decision = bf.newDecision(new Point(10, 10));
-        IBFElement merge = bf.newSimpleBFElement(BFElementType.MERGE, new Point(10, 10));
+        IBFElement merge = bf.newMerge(new Point(10, 10));
         
         //check unconnected elements
         MessageList msgList = bf.validate(ipsProject);
