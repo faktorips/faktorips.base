@@ -42,6 +42,7 @@ public abstract class IpsObjectRefControl extends TextButtonControl {
     
     private String dialogTitle;
     private String dialogMessage;
+    private ContentAssistHandler handler;
     
     private IpsObjectCompletionProcessor completionProcessor;
 
@@ -77,8 +78,10 @@ public abstract class IpsObjectRefControl extends TextButtonControl {
     public void setIpsProject(IIpsProject project) {
         this.ipsProject = project;
         setButtonEnabled(project!=null && project.exists());
-        completionProcessor = new IpsObjectCompletionProcessor(this);
-        ContentAssistHandler.createHandlerForText(text, CompletionUtil.createContentAssistant(completionProcessor));
+        if(handler != null){
+            handler.setEnabled(false);
+        }
+        handler = ContentAssistHandler.createHandlerForText(text, CompletionUtil.createContentAssistant(new IpsObjectCompletionProcessor(this)));
     }
     
     public IIpsProject getIpsProject() {

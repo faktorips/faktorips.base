@@ -104,6 +104,7 @@ public class CallMethodActionPropertySection extends AbstractPropertySection imp
         IActionBFE action = (IActionBFE)getBFElement();
         processor.setBusinessFunction(action.getBusinessFunction());
         processor.setIpsProject(action.getIpsProject());
+        methodSelectionField.setIpsProject(action.getIpsProject());
         bindingContext.removeBindings(parameterSelectionControl);
         bindingContext.removeBindings(methodSelectionField);
         bindingContext.bindContent(parameterSelectionControl, getBFElement(), IActionBFE.PROPERTY_TARGET);

@@ -15,14 +15,21 @@ package org.faktorips.devtools.core.ui.bf.properties;
  *******************************************************************************/
 
 import java.util.ArrayList;
+import java.util.List;
 
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.jface.contentassist.SubjectControlContentAssistant;
+import org.eclipse.jface.text.contentassist.CompletionProposal;
 import org.eclipse.jface.window.Window;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.ui.contentassist.ContentAssistHandler;
 import org.eclipse.ui.dialogs.ElementListSelectionDialog;
 import org.faktorips.devtools.core.IpsPlugin;
+import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.type.IMethod;
 import org.faktorips.devtools.core.model.type.IType;
+import org.faktorips.devtools.core.ui.AbstractCompletionProcessor;
+import org.faktorips.devtools.core.ui.CompletionUtil;
 import org.faktorips.devtools.core.ui.DefaultLabelProvider;
 import org.faktorips.devtools.core.ui.UIToolkit;
 import org.faktorips.devtools.core.ui.controls.TextButtonControl;
@@ -35,10 +42,16 @@ import org.faktorips.util.StringUtil;
  * @author Peter Erzberger
  */
 public class ParameterMethodRefControl extends TextButtonControl {
+
     private IType parameterType;
+    private ParameterMethodCompletionProcessor processor;
 
     public ParameterMethodRefControl(Composite parent, UIToolkit toolkit) {
         super(parent, toolkit, Messages.getString("ParameterMethodRefControl.ChooseMethodLabel")); //$NON-NLS-1$
+        processor = new ParameterMethodCompletionProcessor();
+        processor.setComputeProposalForEmptyPrefix(true);
+        SubjectControlContentAssistant assistant = CompletionUtil.createContentAssistant(processor);
+        ContentAssistHandler.createHandlerForText(getTextControl(), assistant);
     }
 
     public void setParameterType(IType type) {
@@ -81,6 +94,25 @@ public class ParameterMethodRefControl extends TextButtonControl {
             }
         } catch (Exception e) {
             IpsPlugin.logAndShowErrorDialog(e);
+        }
+    }
+
+    public void setIpsProject(IIpsProject ipsProject) {
+        processor.setIpsProject(ipsProject);
+    }
+
+    private class ParameterMethodCompletionProcessor extends AbstractCompletionProcessor {
+        @Override
+        @SuppressWarnings("unchecked")
+        protected void doComputeCompletionProposals(String prefix, int documentOffset, List result) throws Exception {
+
+            String match = prefix.toLowerCase();
+            for (IMethod method : getSelectableMethods()) {
+                if (method.getName().startsWith(match)) {
+                    result.add(new CompletionProposal(method.getName(), 0, documentOffset, method.getName().length(),
+                            method.getImage(), method.getSignatureString(), null, method.getDescription()));
+                }
+            }
         }
     }
 }

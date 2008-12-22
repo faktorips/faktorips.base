@@ -40,7 +40,8 @@ public class CallBusinessFunctionActionPropertySection extends AbstractPropertyS
     private BusinessFunctionRefControl businessFunctionField;
     protected BindingContext bindingContext;
     protected UIToolkit uiToolkit;
-
+    private boolean avoidDoubleCall = false;
+    
     @Override
     public void aboutToBeHidden() {
     }
@@ -65,11 +66,6 @@ public class CallBusinessFunctionActionPropertySection extends AbstractPropertyS
         businessFunctionField.setLayoutData(data);
     }
 
-    @Override
-    public void dispose() {
-        super.dispose();
-    }
-
     public IBFElement getBFElement() {
         return ((NodeEditPart)((IStructuredSelection)getSelection()).getFirstElement()).getBFElement();
     }
@@ -77,11 +73,16 @@ public class CallBusinessFunctionActionPropertySection extends AbstractPropertyS
     @Override
     public void setInput(IWorkbenchPart part, ISelection selection) {
         super.setInput(part, selection);
-        businessFunctionField.setIpsProject(getBFElement().getIpsProject());
-        businessFunctionField.setCurrentBusinessFunction(getBFElement().getBusinessFunction());
-        bindingContext.removeBindings(businessFunctionField);
-        bindingContext.bindContent(businessFunctionField, getBFElement(), IActionBFE.PROPERTY_TARGET);
-        bindingContext.updateUI();
+        if(!avoidDoubleCall){
+            businessFunctionField.setIpsProject(getBFElement().getIpsProject());
+            businessFunctionField.setCurrentBusinessFunction(getBFElement().getBusinessFunction());
+            bindingContext.removeBindings(businessFunctionField);
+            bindingContext.bindContent(businessFunctionField, getBFElement(), IActionBFE.PROPERTY_TARGET);
+            bindingContext.updateUI();
+            avoidDoubleCall = true;
+            return;
+        }
+        avoidDoubleCall = false;
     }
 
 }
