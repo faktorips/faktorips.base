@@ -28,7 +28,7 @@ import org.w3c.dom.Element;
 
 public class DecisionBFE extends BFElement implements IDecisionBFE {
 
-    private String datatype = ""; //$NON-NLS-1$
+    private String datatype = Datatype.BOOLEAN.getQualifiedName();
 
     public DecisionBFE(IIpsObject parent, int id) {
         super(parent, id);

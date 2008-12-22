@@ -123,6 +123,17 @@ public interface IBFElement extends IIpsObjectPart {
     public boolean removeOutgoingControlFlow(IControlFlow controlFlow);
 
     /**
+     * Removes all incoming control flows from this element.
+     */
+    public void removeAllIncommingControlFlows();
+    
+    /**
+     * Removes all outgoing control flows from this element.
+     */
+    public void removeAllOutgoingControlFlows();
+
+    
+    /**
      * Returns all control flows that are connected to this element.
      */
     public List<IControlFlow> getAllControlFlows();

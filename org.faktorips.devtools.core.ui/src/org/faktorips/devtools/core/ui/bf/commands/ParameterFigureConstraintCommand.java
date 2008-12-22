@@ -6,37 +6,36 @@
  * 
  * Contributors: IBM Corporation - initial API and implementation
  *******************************************************************************/
-package org.faktorips.devtools.core.ui.bf.model.commands;
+package org.faktorips.devtools.core.ui.bf.commands;
 
 import org.eclipse.draw2d.geometry.Rectangle;
-import org.faktorips.devtools.core.model.bf.IBFElement;
+import org.faktorips.devtools.core.model.bf.IBusinessFunction;
 import org.faktorips.util.ArgumentCheck;
 import org.faktorips.util.memento.Memento;
 
 /**
- * A command that updates the position and size of a business function element.
+ * This command resizes the rectangular figure that displays the parameters of a business function.
  * 
  * @author Peter Erzberger
  */
-public class ChangeConstraintCommand extends org.eclipse.gef.commands.Command {
+public class ParameterFigureConstraintCommand extends org.eclipse.gef.commands.Command {
 
     private Rectangle contraint;
-    private IBFElement bfElement;
+    private IBusinessFunction businessFunction;
     private Memento bfElementState;
 
     
-    public ChangeConstraintCommand(IBFElement element, Rectangle contraint) {
-        ArgumentCheck.notNull(element, this);
+    public ParameterFigureConstraintCommand(IBusinessFunction bf, Rectangle contraint) {
+        ArgumentCheck.notNull(bf, this);
         ArgumentCheck.notNull(contraint, this);
-        this.bfElement = element;
+        this.businessFunction = bf;
         this.contraint = contraint;
     }
 
     @Override
     public void execute() {
-        bfElementState = bfElement.newMemento();
-        bfElement.setSize(contraint.getSize());
-        bfElement.setLocation(contraint.getLocation());
+        bfElementState = businessFunction.newMemento();
+        businessFunction.setParameterRectangleSize(contraint.getSize());
     }
 
     @Override
@@ -46,8 +45,8 @@ public class ChangeConstraintCommand extends org.eclipse.gef.commands.Command {
 
     @Override
     public void undo() {
-        Memento currentState = bfElement.newMemento();
-        bfElement.setState(bfElementState);
+        Memento currentState = businessFunction.newMemento();
+        businessFunction.setState(bfElementState);
         bfElementState = currentState;
     }
 

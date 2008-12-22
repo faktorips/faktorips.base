@@ -93,6 +93,14 @@ public class BFElement extends IpsObjectPart implements IBFElement {
         return false;
     }
 
+    public void removeAllIncommingControlFlows(){
+        incommingControlFlows.clear();
+    }
+    
+    public void removeAllOutgoingControlFlows(){
+        outgoingControlFlows.clear();
+    }
+    
     public void addOutgoingControlFlow(IControlFlow controlFlow) {
         if (outgoingControlFlows.contains(controlFlow.getId())) {
             return;

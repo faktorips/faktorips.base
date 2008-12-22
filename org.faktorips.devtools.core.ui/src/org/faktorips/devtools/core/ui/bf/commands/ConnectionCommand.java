@@ -6,13 +6,19 @@
  * 
  * Contributors: IBM Corporation - initial API and implementation
  *******************************************************************************/
-package org.faktorips.devtools.core.ui.bf.model.commands;
+package org.faktorips.devtools.core.ui.bf.commands;
 
+import java.util.List;
+
+import org.eclipse.core.runtime.CoreException;
 import org.eclipse.gef.commands.Command;
+import org.faktorips.datatype.Datatype;
+import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.model.bf.BFElementType;
 import org.faktorips.devtools.core.model.bf.IBFElement;
 import org.faktorips.devtools.core.model.bf.IBusinessFunction;
 import org.faktorips.devtools.core.model.bf.IControlFlow;
+import org.faktorips.devtools.core.model.bf.IDecisionBFE;
 import org.faktorips.util.memento.Memento;
 
 public class ConnectionCommand extends Command {
@@ -34,7 +40,6 @@ public class ConnectionCommand extends Command {
     }
 
     public boolean canExecute() {
-        System.out.println("source: " + sourceNode + " target: " + targetNode); //$NON-NLS-1$ //$NON-NLS-2$
         if (sourceNode != null) {
             if (sourceNode.getType() == BFElementType.START && !sourceNode.getOutgoingControlFlow().isEmpty()) {
                 return false;
@@ -64,7 +69,7 @@ public class ConnectionCommand extends Command {
                 return false;
             }
         }
-        if(targetNode == sourceNode){
+        if (targetNode == sourceNode) {
             return false;
         }
         return true;
@@ -76,10 +81,38 @@ public class ConnectionCommand extends Command {
             controlFlow = businessFunction.newControlFlow();
         }
         if (sourceNode != null) {
+            setDefaultConditionValueForBooleanDecisionSourceNode();
             controlFlow.setSource(sourceNode);
         }
         if (targetNode != null) {
             controlFlow.setTarget(targetNode);
+        }
+    }
+
+    private void setDefaultConditionValueForBooleanDecisionSourceNode() {
+        if (!reconnect && sourceNode instanceof IDecisionBFE) {
+            IDecisionBFE decision = (IDecisionBFE)sourceNode;
+            try {
+                Datatype datatype = decision.findDatatype(sourceNode.getIpsProject());
+                if (datatype.equals(Datatype.BOOLEAN)) {
+                    List<IControlFlow> outs = decision.getOutgoingControlFlow();
+                    if (outs.isEmpty()) {
+                        controlFlow.setConditionValue(Boolean.TRUE.toString());
+                    } else if (outs.size() == 1) {
+                        IControlFlow out1 = outs.get(0);
+                        Boolean conditionValue = Boolean.parseBoolean(out1.getConditionValue());
+                        if (conditionValue != null) {
+                            if (conditionValue.equals(Boolean.TRUE)) {
+                                controlFlow.setConditionValue(Boolean.FALSE.toString());
+                            } else {
+                                controlFlow.setConditionValue(Boolean.TRUE.toString());
+                            }
+                        }
+                    }
+                }
+            } catch (CoreException e) {
+                IpsPlugin.log(e);
+            }
         }
     }
 

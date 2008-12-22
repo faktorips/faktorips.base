@@ -8,24 +8,26 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-package org.faktorips.devtools.core.ui.bf.model.commands;
+package org.faktorips.devtools.core.ui.bf.commands;
 
+import org.eclipse.draw2d.AbsoluteBendpoint;
+import org.eclipse.draw2d.geometry.Point;
 import org.faktorips.devtools.core.model.bf.IControlFlow;
 
 /**
- * A command that deletes the bend point of a control flow at the index that is provided to it.
+ * A command that adds a bend point to a control flow.
  * 
  * @author Peter Erzberger
  */
-public class DeleteBendpointCommand extends BendpointCommand {
+public class CreateBendpointCommand extends BendpointCommand {
 
-    public DeleteBendpointCommand(int index, IControlFlow controlFlow) {
-        super(index, null, controlFlow);
+	public CreateBendpointCommand(int index, Point location, IControlFlow controlFlow) {
+        super(index, location, controlFlow);
     }
 
     @Override
     protected void executeInternal() {
-        getControlFlow().removeBendpoint(getIndex());
+        getControlFlow().addBendpoint(getIndex(), new AbsoluteBendpoint(getLocation()));
     }
 
 }

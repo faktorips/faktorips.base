@@ -15,14 +15,16 @@
 package org.faktorips.devtools.bf.ui.model.commands;
 
 import org.eclipse.draw2d.geometry.Point;
+import org.faktorips.datatype.Datatype;
 import org.faktorips.devtools.core.AbstractIpsPluginTest;
 import org.faktorips.devtools.core.model.bf.BFElementType;
 import org.faktorips.devtools.core.model.bf.BusinessFunctionIpsObjectType;
 import org.faktorips.devtools.core.model.bf.IBFElement;
 import org.faktorips.devtools.core.model.bf.IBusinessFunction;
 import org.faktorips.devtools.core.model.bf.IControlFlow;
+import org.faktorips.devtools.core.model.bf.IDecisionBFE;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
-import org.faktorips.devtools.core.ui.bf.model.commands.ConnectionCommand;
+import org.faktorips.devtools.core.ui.bf.commands.ConnectionCommand;
 
 public class ConnectionCommandTest extends AbstractIpsPluginTest {
 
@@ -162,6 +164,42 @@ public class ConnectionCommandTest extends AbstractIpsPluginTest {
         assertEquals(1, bf.getControlFlows().size());
         assertEquals(bf.getControlFlows().get(0), source.getOutgoingControlFlow().get(0));
         assertEquals(target, source.getOutgoingControlFlow().get(0).getTarget());
+    }
+    
+    public void testExecuteWithBooleanDecisionSourceNode(){
+        IDecisionBFE decision = bf.newDecision(new Point(10, 10 ));
+        decision.setName("decision");
+        decision.setDatatype(Datatype.BOOLEAN.getQualifiedName());
+        IBFElement action1 = bf.newOpaqueAction(new Point(10, 10));
+        action1.setName("action1");
+        IBFElement action2 = bf.newOpaqueAction(new Point(10, 10));
+        action2.setName("action2");
+        
+        command.setSource(decision);
+        command.setTarget(action1);
+        command.execute();
+        assertEquals(Boolean.TRUE.toString(), command.getControlFlow().getConditionValue());
+        
+        command.setSource(decision);
+        command.setTarget(action2);
+        command.execute();
+        assertEquals(Boolean.FALSE.toString(), command.getControlFlow().getConditionValue());
+        
+        command = new ConnectionCommand(false);
+        command.setBusinessFunction(bf);
+        decision.removeAllOutgoingControlFlows();
+        action1.removeAllIncommingControlFlows();
+        action2.removeAllIncommingControlFlows();
+        
+        IControlFlow cf = bf.newControlFlow();
+        cf.setSource(decision);
+        cf.setTarget(action1);
+        cf.setConditionValue(Boolean.TRUE.toString());
+
+        command.setSource(decision);
+        command.setTarget(action1);
+        command.execute();
+        assertEquals(Boolean.FALSE.toString(), command.getControlFlow().getConditionValue());
     }
 
 }

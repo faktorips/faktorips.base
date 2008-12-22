@@ -6,7 +6,7 @@
  * 
  * Contributors: IBM Corporation - initial API and implementation
  *******************************************************************************/
-package org.faktorips.devtools.core.ui.bf.model.commands;
+package org.faktorips.devtools.core.ui.bf.commands;
 
 import org.eclipse.draw2d.geometry.Point;
 import org.faktorips.devtools.core.model.bf.BFElementType;

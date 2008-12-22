@@ -34,8 +34,8 @@ Bundle-ActivationPolicy: lazy
 Bundle-RequiredExecutionEnvironment: J2SE-1.5
 Export-Package: org.faktorips.devtools.core.ui,
  org.faktorips.devtools.core.ui.actions,
+ org.faktorips.devtools.core.ui.bf.commands,
  org.faktorips.devtools.core.ui.bf.edit,
- org.faktorips.devtools.core.ui.bf.model.commands,
  org.faktorips.devtools.core.ui.bf.properties,
  org.faktorips.devtools.core.ui.binding,
  org.faktorips.devtools.core.ui.controlfactories,

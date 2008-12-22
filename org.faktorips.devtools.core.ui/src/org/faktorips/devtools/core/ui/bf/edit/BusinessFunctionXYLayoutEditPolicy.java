@@ -11,9 +11,9 @@ import org.eclipse.gef.requests.CreateRequest;
 import org.faktorips.devtools.core.model.bf.BFElementType;
 import org.faktorips.devtools.core.model.bf.IBFElement;
 import org.faktorips.devtools.core.model.bf.IBusinessFunction;
-import org.faktorips.devtools.core.ui.bf.model.commands.ChangeConstraintCommand;
-import org.faktorips.devtools.core.ui.bf.model.commands.CreateBFElementCommand;
-import org.faktorips.devtools.core.ui.bf.model.commands.ParameterFigureConstraintCommand;
+import org.faktorips.devtools.core.ui.bf.commands.ChangeConstraintCommand;
+import org.faktorips.devtools.core.ui.bf.commands.CreateBFElementCommand;
+import org.faktorips.devtools.core.ui.bf.commands.ParameterFigureConstraintCommand;
 
 /**
  * An implementation of {@link XYLayoutEditPolicy} that provides the implementations for creation of 

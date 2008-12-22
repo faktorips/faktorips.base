@@ -21,8 +21,8 @@ import org.faktorips.devtools.core.model.bf.BusinessFunctionIpsObjectType;
 import org.faktorips.devtools.core.model.bf.IBusinessFunction;
 import org.faktorips.devtools.core.model.bf.IControlFlow;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
-import org.faktorips.devtools.core.ui.bf.model.commands.BendpointCommand;
-import org.faktorips.devtools.core.ui.bf.model.commands.MoveBendpointCommand;
+import org.faktorips.devtools.core.ui.bf.commands.BendpointCommand;
+import org.faktorips.devtools.core.ui.bf.commands.MoveBendpointCommand;
 
 public class MoveBendpointCommandTest extends AbstractIpsPluginTest {
 
