@@ -22,7 +22,7 @@
 			<property name="log" location="logs" />
 
 			<!-- javac source/target VM version -->
-			<property name="vmversion" value="1.4" />
+			<property name="vmversion" value="1.5" />
 
 	    <!-- wipes out -->
 		<target name="clean">
@@ -69,7 +69,10 @@
         	<!-- compile with debug=on to keep source line numbers -->
         	<echo message="Compile with source/target VM-Version: ${vmversion}" />
 			<javac encoding="UTF-8" srcdir="${src}" destdir="${classes}" classpathref="classpath" 
-				debug="on" target="${vmversion}" source="${vmversion}"/>
+				debug="on" target="${vmversion}" source="${vmversion}">
+        		<compilerarg value="-Xlint:unchecked" />
+        		<compilerarg value="-Xlint:deprecation" />
+        	</javac>
         	
         	<copy todir="${test_classes}">
         	    <fileset dir="${test_src}">
@@ -103,7 +106,7 @@
 	    			<include name="**/*.xml" />
 	    		</fileset>
 	    	</delete>
-	    	
+    	
 	    	<junit fork="yes" haltonerror="yes" haltonfailure="yes" printsummary="withOutAndErr" timeout="10000"  showoutput="yes">
 	    		<jvmarg value="-Djava.endorsed.dirs=${src}/../endorsed/"/>
 	    		<formatter type="xml" usefile="true"/>
@@ -113,9 +116,8 @@
 	    		    <pathelement path="${java.class.path}"/> 
 	    			<path refid="classpath" />
 	    		</classpath>
-	    		
-				<batchtest filtertrace="off"  todir="logs/"> 
-					<fileset dir="${classes}">
+				<batchtest filtertrace="off"  todir="logs"> 
+					<fileset dir="${test_classes}">
 						<patternset id="test.sources">
 						    <exclude name="**/*.java"/>
 							<exclude name="**/*AbstractTest*"/>
