@@ -479,7 +479,7 @@
 		<cvs command="co ${cvsPluginbuildermodule}" dest="${projectPluginbuilderDir}" cvsroot="${cvsroot}" quiet="true"/>
 		
 		<ant dir="${projectPluginbuilderDir}/org.faktorips.pluginbuilder/" antfile="build.xml" target="main-cc">
-			<param name="label" value="HEAD"/>
+			<property name="label" value="HEAD"/>
 		</ant>
     </target>
 
