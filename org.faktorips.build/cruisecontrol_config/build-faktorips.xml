@@ -135,6 +135,20 @@
           <ant dir="${projectFlDir}/${cvsFlmodule}/build/" antfile="build.xml" target="clean"  />
           <ant dir="${projectFlDir}/${cvsFlmodule}/build/" antfile="build.xml" target="buildjar"  />
         </target>
+	
+	
+        <target name="devtools.core.ui" depends="updateBuildTemplate">
+          
+          <property name="cvsCoreUimodule" value="org.faktorips.devtools.core.ui" />
+          <property name="projectCoreUiDir" value="checkout/" />
+          
+          <!-- checkout/update project -->
+          <cvs command="co ${cvsCoreUimodule}" dest="${projectCoreUiDir}" cvsroot="${cvsroot}" quiet="true"/>
+          
+          <!-- Call the target that does everything -->
+          <ant dir="${projectCoreUiDir}/${cvsCoreUimodule}/build/" antfile="build.xml" target="clean"  />
+          <ant dir="${projectCoreUiDir}/${cvsCoreUimodule}/build/" antfile="build.xml" target="buildjar"  />
+        </target>
 
         
         <target name="devtools.stdbuilder" depends="updateBuildTemplate">
