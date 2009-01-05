@@ -7,7 +7,6 @@
 		<filelist dir="/var/lib/">
 				<file name="junit.jar"/>
 		</filelist>
-		
 		<!-- eclipse libraries -->
 		<fileset dir="/usr/lib/eclipse-3.4-test/">
 			<patternset>
@@ -26,9 +25,10 @@
 					<include name="plugins/org.eclipse.debug.ui*.jar" />
   				    <include name="plugins/org.eclipse.equinox*.jar" />
   				    <include name="plugins/com.ibm.icu*.jar" />
+  				    <include name="plugins/org.eclipse.draw2d*.jar" />
 			</patternset>
 		</fileset>
-		
+
 		<!-- devtools.core depends on org.faktorips.valuetypes -->
 		<fileset dir="../../org.faktorips.valuetypes/" >
 		    <patternset> 
