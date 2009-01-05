@@ -16,6 +16,7 @@ package org.faktorips.runtime.internal;
 
 import java.util.Locale;
 
+import org.faktorips.runtime.ValidationContext;
 import org.faktorips.values.Money;
 
 import junit.framework.TestCase;

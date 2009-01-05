@@ -14,6 +14,10 @@
 
 package org.faktorips.devtools.stdbuilder.policycmpttype;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+
 import org.apache.commons.lang.StringUtils;
 import org.eclipse.core.runtime.CoreException;
 import org.faktorips.codegen.JavaCodeFragment;
@@ -43,7 +47,7 @@ import org.faktorips.util.LocalizedStringsSet;
 public class GenValidationRule extends GenPolicyCmptTypePart {
 
     private final static LocalizedStringsSet LOCALIZED_STRINGS = new LocalizedStringsSet(GenValidationRule.class);
-    
+
     public GenValidationRule(GenPolicyCmptType genPolicyCmptType, IIpsObjectPartContainer part) throws CoreException {
         super(genPolicyCmptType, part, LOCALIZED_STRINGS);
     }
@@ -154,8 +158,9 @@ public class GenValidationRule extends GenPolicyCmptTypePart {
         body.append(getMethodNameCreateMessageForRule(rule));
         MessageFragment msgFrag = MessageFragment.createMessageFragment(rule.getMessageText(),
                 MessageFragment.VALUES_AS_PARAMETER_NAMES);
-        body.append('(');
+        body.append("(context");
         if (msgFrag.hasParameters()) {
+            body.append(", ");
             String[] parameterNames = msgFrag.getParameterNames();
             for (int j = 0; j < parameterNames.length; j++) {
                 body.append("null");
@@ -168,9 +173,7 @@ public class GenValidationRule extends GenPolicyCmptTypePart {
 
         if (rule.isValidatedAttrSpecifiedInSrc()) {
             generateToDo = true;
-            if (msgFrag.hasParameters()) {
-                body.append(", ");
-            }
+            body.append(", ");
             body.append("new ");
             body.appendClassName(ObjectProperty.class);
             body.append("[0]");
@@ -194,8 +197,9 @@ public class GenValidationRule extends GenPolicyCmptTypePart {
         }
 
         builder.method(java.lang.reflect.Modifier.PROTECTED, Datatype.PRIMITIVE_BOOLEAN.getJavaClassName(),
-                getMethodNameExecRule(rule), new String[] { "ml", parameterValidationContext }, new String[] {
-                        MessageList.class.getName(), IValidationContext.class.getName() }, body, javaDoc, javaDocAnnotation);
+                getMethodNameExecRule(rule), new String[] {"ml", parameterValidationContext }, new String[] {
+                        MessageList.class.getName(), IValidationContext.class.getName() }, body, javaDoc,
+                javaDocAnnotation);
     }
 
     /**
@@ -226,19 +230,16 @@ public class GenValidationRule extends GenPolicyCmptTypePart {
                 MessageFragment.VALUES_AS_PARAMETER_NAMES);
 
         // determine method parameters (name and type)
-        String[] methodParamNames;
-        String[] methodParamTypes;
+        List methodParamNames = new ArrayList(msgFrag.getNumberOfParameters() + 2);
+        List methodParamTypes = new ArrayList(msgFrag.getNumberOfParameters() + 2);
+        methodParamNames.add("context");
+        methodParamTypes.add(IValidationContext.class.getName());
+        methodParamNames.addAll(Arrays.asList(msgFrag.getParameterNames()));
+        methodParamTypes.addAll(Arrays.asList(msgFrag.getParameterClasses()));
         if (!rule.isValidatedAttrSpecifiedInSrc()) {
-            methodParamNames = msgFrag.getParameterNames();
-            methodParamTypes = msgFrag.getParameterClasses();
         } else {
-            int numberOfMethodParams = msgFrag.getNumberOfParameters() + 1;
-            methodParamNames = new String[numberOfMethodParams];
-            methodParamTypes = new String[numberOfMethodParams];
-            System.arraycopy(msgFrag.getParameterNames(), 0, methodParamNames, 0, msgFrag.getNumberOfParameters());
-            System.arraycopy(msgFrag.getParameterClasses(), 0, methodParamTypes, 0, msgFrag.getNumberOfParameters());
-            methodParamNames[methodParamNames.length - 1] = localVarObjectProperties;
-            methodParamTypes[methodParamTypes.length - 1] = ObjectProperty.class.getName() + "[]";
+            methodParamNames.add(localVarObjectProperties);
+            methodParamTypes.add(ObjectProperty.class.getName() + "[]");
         }
 
         // code for objectProperties
@@ -277,7 +278,7 @@ public class GenValidationRule extends GenPolicyCmptTypePart {
 
         String javaDoc = getLocalizedText("CREATE_MESSAGE_JAVADOC", rule.getName());
         builder.method(java.lang.reflect.Modifier.PROTECTED, Message.class.getName(),
-                getMethodNameCreateMessageForRule(rule), methodParamNames, methodParamTypes, body, javaDoc,
+                getMethodNameCreateMessageForRule(rule), (String[])methodParamNames.toArray(new String[methodParamNames.size()]), (String[])methodParamTypes.toArray(new String[methodParamTypes.size()]), body, javaDoc,
                 JavaSourceFileBuilder.ANNOTATION_GENERATED);
     }
 
@@ -328,7 +329,8 @@ public class GenValidationRule extends GenPolicyCmptTypePart {
      */
     private JavaCodeFragment generateCodeForMsgReplacementParameters(String localVar, String[] parameterNames) {
         JavaCodeFragment code = new JavaCodeFragment();
-        // MsgReplacementParameter[] replacementParameters = new MsgReplacementParameter[] {
+        // MsgReplacementParameter[] replacementParameters = new
+        // MsgReplacementParameter[] {
         code.appendClassName(MsgReplacementParameter.class);
         code.append("[] " + localVar + " = new ");
         code.appendClassName(MsgReplacementParameter.class);

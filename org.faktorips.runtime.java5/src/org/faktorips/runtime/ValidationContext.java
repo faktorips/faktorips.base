@@ -12,13 +12,12 @@
  * 
  **************************************************************************************************/
 
-package org.faktorips.runtime.internal;
+package org.faktorips.runtime;
 
 import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
 
-import org.faktorips.runtime.IValidationContext;
 
 /**
  * Default implementation of {@link IValidationContext}.
