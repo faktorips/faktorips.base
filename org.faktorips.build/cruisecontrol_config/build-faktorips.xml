@@ -472,20 +472,6 @@
 
 	<!-- this target build the faktorips features and runs the plugin tests -->
 	<target name="pluginbuilder.faktorips">
-    	<property name="dir" value="pluginbuilder/" />
-
-        <!-- delete all files, excluding the environment-folder -->
-        <delete includeemptydirs="true" >
-                <fileset dir="${dir}">
-                        <exclude name="environment/**" />
-                </fileset>
-        </delete>
-		<delete includeemptydirs="true">
-				<fileset dir="${dir}" >
-            	    <include name="environment/results/xml/" />
-				</fileset>
-		</delete>
-    	
 		<property name="cvsPluginbuildermodule" value="org.faktorips.pluginbuilder" />
 		<property name="projectPluginbuilderDir" value="checkout/" />
 		
