@@ -127,9 +127,9 @@ public class ControlFlow extends IpsObjectPart implements IControlFlow {
         super.initPropertiesFromXml(element, id);
         name = element.getAttribute(PROPERTY_NAME);
         String sourceValue = element.getAttribute(PROPERTY_SOURCE);
-        sourceId = sourceValue.isEmpty() ? null : Integer.parseInt(sourceValue);
+        sourceId = StringUtils.isEmpty(sourceValue) ? null : Integer.parseInt(sourceValue);
         String targetValue = element.getAttribute(PROPERTY_TARGET);
-        targetId = targetValue.isEmpty() ? null : Integer.parseInt(targetValue);
+        targetId = StringUtils.isEmpty(targetValue) ? null : Integer.parseInt(targetValue);
         // TODO test
         conditionValue = element.getAttribute(PROPERTY_CONDITION_VALUE);
         NodeList nl = element.getElementsByTagName("Bendpoint"); //$NON-NLS-1$

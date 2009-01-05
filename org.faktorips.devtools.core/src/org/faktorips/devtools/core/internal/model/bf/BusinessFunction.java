@@ -145,7 +145,7 @@ public class BusinessFunction extends BaseIpsObject implements IBusinessFunction
     public List<IControlFlow> getControlFlows() {
         IIpsObjectPart[] controlFlowParts = controlFlows.getParts();
         ArrayList<IControlFlow> controlFlowList = new ArrayList<IControlFlow>(controlFlowParts.length);
-        controlFlowList.addAll((Collection<? extends IControlFlow>)Arrays.asList(controlFlowParts));
+        controlFlowList.addAll((Collection)Arrays.asList(controlFlowParts));
         return controlFlowList;
     }
 
@@ -196,26 +196,25 @@ public class BusinessFunction extends BaseIpsObject implements IBusinessFunction
 
         List<IBFElement> nodeList = new ArrayList<IBFElement>();
         IIpsObjectPart[] bFParts = simpleElements.getParts();
-        nodeList.addAll((Collection<? extends IBFElement>)Arrays.asList(bFParts));
+        nodeList.addAll((Collection)Arrays.asList(bFParts));
         bFParts = actions.getParts();
-        nodeList.addAll((Collection<? extends IBFElement>)Arrays.asList(bFParts));
+        nodeList.addAll((Collection)Arrays.asList(bFParts));
         bFParts = decisions.getParts();
-        nodeList.addAll((Collection<? extends IBFElement>)Arrays.asList(bFParts));
+        nodeList.addAll((Collection)Arrays.asList(bFParts));
         return nodeList;
     }
 
     @SuppressWarnings("unchecked")
     public List<IBFElement> getBFElements() {
-
         List<IBFElement> nodeList = new ArrayList<IBFElement>();
         IIpsObjectPart[] bFParts = simpleElements.getParts();
-        nodeList.addAll((Collection<? extends IBFElement>)Arrays.asList(bFParts));
+        nodeList.addAll((Collection)Arrays.asList(bFParts));
         bFParts = actions.getParts();
-        nodeList.addAll((Collection<? extends IBFElement>)Arrays.asList(bFParts));
+        nodeList.addAll((Collection)Arrays.asList(bFParts));
         bFParts = decisions.getParts();
-        nodeList.addAll((Collection<? extends IBFElement>)Arrays.asList(bFParts));
+        nodeList.addAll((Collection)Arrays.asList(bFParts));
         bFParts = parameters.getParts();
-        nodeList.addAll((Collection<? extends IBFElement>)Arrays.asList(bFParts));
+        nodeList.addAll((Collection)Arrays.asList(bFParts));
         return nodeList;
     }
 
@@ -474,14 +473,14 @@ public class BusinessFunction extends BaseIpsObject implements IBusinessFunction
                 continue;
             }
             if (action.getType() == BFElementType.ACTION_METHODCALL) {
-            	IParameterBFE param = action.getParameter();
-            	if(param != null){
-            		String datatype = param.getDatatype();
-            		if(datatype != null){
-            			dependencies.add(IpsObjectDependency.createReferenceDependency(getQualifiedNameType(), new QualifiedNameType(
-            					datatype, IpsObjectType.POLICY_CMPT_TYPE)));
-            		}
-            	}
+                IParameterBFE param = action.getParameter();
+                if(param != null){
+                    String datatype = param.getDatatype();
+                    if(datatype != null){
+                        dependencies.add(IpsObjectDependency.createReferenceDependency(getQualifiedNameType(), new QualifiedNameType(
+                                datatype, IpsObjectType.POLICY_CMPT_TYPE)));
+                    }
+                }
             }
         }
         return dependencies.toArray(new IDependency[dependencies.size()]);
