@@ -22,7 +22,7 @@
 			<property name="log" location="logs" />
 
 			<!-- javac source/target VM version -->
-			<property name="vmversion" value="1.5" />
+			<property name="vmversion" value="1.4" />
 
 	    <!-- wipes out -->
 		<target name="clean">
