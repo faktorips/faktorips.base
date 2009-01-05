@@ -70,8 +70,8 @@
         	<echo message="Compile with source/target VM-Version: ${vmversion}" />
 			<javac encoding="UTF-8" srcdir="${src}" destdir="${classes}" classpathref="classpath" 
 				debug="on" target="${vmversion}" source="${vmversion}">
-        		<compilerarg value="-Xlint:unchecked" />
-        		<compilerarg value="-Xlint:deprecation" />
+        		<!--<compilerarg value="-Xlint:unchecked" />
+        		<compilerarg value="-Xlint:deprecation" />-->
         	</javac>
         	
         	<copy todir="${test_classes}">
