@@ -209,11 +209,7 @@
           <ant dir="${projectFlDir}/${cvsFlmodule}/build/" antfile="build.xml" target="clean"  />
           <ant dir="${projectFlDir}/${cvsFlmodule}/build/" antfile="build.xml" target="buildjar"  />
         </target>
-
-
-
-
-
+	
         <!-- this target builds faktorips and faktorips-test features and executes testcases 
              results in environment/results/xml will be merged by cruisecontrol                  -->
         <target name="eclipsetest">
@@ -460,6 +456,45 @@
 
         </target>
 
+	<!-- this target build the faktorips features and runs the plugin tests -->
+	<target name="pluginbuilder.faktorips">
+    	<property name="dir" value="pluginbuilder/" />
+
+        <!-- delete all files, excluding the environment-folder -->
+        <delete includeemptydirs="true" >
+                <fileset dir="${dir}">
+                        <exclude name="environment/**" />
+                </fileset>
+        </delete>
+		<delete includeemptydirs="true">
+				<fileset dir="${dir}" >
+            	    <include name="environment/results/xml/" />
+				</fileset>
+		</delete>
+    	
+		<property name="cvsPluginbuildermodule" value="org.faktorips.pluginbuilder" />
+		<property name="projectPluginbuilderDir" value="checkout/" />
+		
+    	<!-- checkout org.faktorips.pluginbuilder project -->
+		<cvs command="co ${cvsPluginbuildermodule}" dest="${projectPluginbuilderDir}" cvsroot="${cvsroot}" quiet="true"/>
+		
+		<ant dir="${projectPluginbuilderDir}/org.faktorips.pluginbuilder/" antfile="build.xml" target="main-cc">
+			<param name="label" value="HEAD"/>
+		</ant>
+    </target>
+
+	<!-- this target runs the integrationtest, the target org.faktorips.pluginbuilder must be executed before this will be handled by cruisecontrol -->
+	<target name="pluginbuilder.eclipsetest">
+		<property name="projectPluginbuilderDir" value="checkout/" />
+		
+		<property name="cvsIntegrationtestmodule" value="org.faktorips.integrationtest" />
+		<property name="projectIntegrationtestDir" value="checkout/" />
+			
+    	<!-- checkout org.faktorips.integrationtest project -->
+		<cvs command="co ${projectIntegrationtestDir}" dest="${cvsIntegrationtestmodule}" cvsroot="${cvsroot}" quiet="true"/>
+		
+		<ant dir="${projectPluginbuilderDir}/org.faktorips.pluginbuilder/" antfile="build.xml" target="integrationtest">
+		</ant>
+    </target>
        
 </project>
-
