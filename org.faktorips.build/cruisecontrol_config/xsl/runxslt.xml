@@ -1,0 +1,16 @@
+<!-- Ausfuehren der XSL Transformation, zum Generieren der CruiseControl config.xml Datei -->
+<!-- Eingabe: faktorips.projects.xml -->
+<!-- Ausgabe: config.xml -->
+<project name="runXslt" basedir=".." default="generate.config.xml">
+	<target name="generate.config.xml">
+		<xslt in="faktorips.projects.xml" out="config.xml"
+		      style="xsl/createcruisecontrolconfig.xsl"
+			  force="true">
+		  <outputproperty name="method" value="xml"/>
+		  <outputproperty name="encoding" value="UTF-8"/>
+		  <outputproperty name="indent" value="yes"/>
+		  <param name="usecvs" expression="1"/>
+		  <param name="htmlemail" expression="0"/>
+		</xslt>
+	</target>
+</project>

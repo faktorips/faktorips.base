@@ -1,0 +1,110 @@
+<faktoripscruisecontrol>
+    <property name="workdir" value="checkout"/>
+    <property name="mainbuildfile" value="build-faktorips.xml"/>
+    <property name="logdir" value="logs"/>
+    <property name="cvsroot" value="/usr/local/cvsroot"/>
+    
+    <htmlemail 
+        buildresultsurl="http://www.faktorzehn.org/cruisecontrol/buildresults/${project.name}"
+        mailhost="62.245.204.82"
+        username=""
+        password=""
+        returnaddress="cc@faktorips.org"
+        skipusers="false" 
+        spamwhilebroken="false"
+        returnname="faktorips-buildqueue"
+        subjectprefix="[CC ${project.name}]"
+        reportsuccess="always"
+        xsldir="/opt/cc/webapps/cruisecontrol/xsl/"
+        css="/opt/cc/docs/cruisecontrol.css">
+        
+        <failure reportWhenFixed="true" address="faktorips-devel@faktorzehn.de" />
+        
+        <!-- define cvs-user mailaddresses -->
+        <map alias="senf" address="marcel.senf@faktorzehn.de"/>
+        <map alias="guenther" address="thorsten.guenther@faktorzehn.de"/>
+        <map alias="eidenschink" address="max.eidenschink@faktorzehn.de"/>
+        <map alias="ortmann" address="jan.ortmann@faktorzehn.de"/>
+        <map alias="hums" address="renate.hums@faktorzehn.de"/>
+        <map alias="erzberger" address="peter.erzberger@faktorzehn.de"/>
+        <map alias="hinz" address="martin.hinz@faktorzehn.de"/>
+        <map alias="waertel" address="thorsten.waertel@kqv.de"/> 
+        <map alias="hohenberger" address="daniel.hohenberger@faktorzehn.de"/>
+	</htmlemail>
+	    
+    <projects>
+        <project name="org.faktorips.util" mainbuildtarget="util">
+        </project>
+        <project name="org.faktorips.valuetypes" mainbuildtarget="valuetypes">
+            <depends>
+                <project name="org.faktorips.util"/>
+            </depends>
+        </project>
+        <project name="org.faktorips.dtflcommon" mainbuildtarget="dtflcommon">
+            <depends>
+                <project name="org.faktorips.valuetypes"/>
+                <project name="org.faktorips.util"/>
+            </depends>            
+        </project>
+        <project name="org.faktorips.runtime" mainbuildtarget="runtime">
+            <depends>
+                <project name="org.faktorips.valuetypes"/>
+                <project name="org.faktorips.util"/>
+            </depends>               
+        </project>
+        <project name="org.faktorips.fl" mainbuildtarget="fl">
+            <depends>
+                <project name="org.faktorips.dtflcommon"/>
+            </depends>                      
+        </project>
+        <project name="org.faktorips.devtools.core" mainbuildtarget="devtools.core">
+            <depends>
+                <project name="org.faktorips.fl"/>
+            </depends>
+        </project>
+        <project name="org.faktorips.devtools.stdbuilder" mainbuildtarget="devtools.stdbuilder">
+            <depends>
+                <project name="org.faktorips.fl"/>
+                <project name="org.faktorips.runtime"/>
+                <project name="org.faktorips.devtools.core"/>
+            </depends>            
+        </project>
+        <project name="org.faktorips.devtools.core.ui" mainbuildtarget="devtools.core.ui">
+            <depends>
+                <project name="org.faktorips.devtools.core"/>
+            </depends>
+        </project>
+        <project name="org.faktorips.devtools.ant" mainbuildtarget="devtools.ant" 
+            testresult="${workdir}/${project.name}/scripts/">
+        </project>
+
+        <project name="org.faktorips.pluginbuilder" mainbuildtarget="pluginbuilder.faktorips"
+            testresult="${workdir}/../pluginbuilder_tmp/org.faktorips.pluginbuilder/results/testresults/xml" 
+            testmerge="*test.xml" >
+            <depends>
+                <project name="org.faktorips.util"/>
+                <project name="org.faktorips.valuetypes"/>
+                <project name="org.faktorips.dtflcommon"/>
+                <project name="org.faktorips.runtime"/>
+                <project name="org.faktorips.fl"/>
+                <project name="org.faktorips.devtools.core"/>
+                <project name="org.faktorips.devtools.stdbuilder"/>
+                <project name="org.faktorips.devtools.core.ui"/>
+                <project name="org.faktorips.devtools.ant"/>
+            </depends>      
+        </project>
+
+        <project name="org.faktorips.integrationtest" mainbuildtarget="pluginbuilder.integrationtest" javaprojectname="org.faktorips.pluginbuilder"
+            testresult="${workdir}/../pluginbuilder_tmp/org.faktorips.pluginbuilder/workspace/org.faktorips.integrationtest/results/xml" 
+            testmerge="*Test.xml">
+            <depends>
+                <project name="org.faktorips.pluginbuilder"/>
+            </depends>         
+        </project>
+
+<!-- TODO bbv, kqv und msgp 
+     runtime und valuetypes 1.5?
+-->
+    </projects>
+   
+</faktoripscruisecontrol>

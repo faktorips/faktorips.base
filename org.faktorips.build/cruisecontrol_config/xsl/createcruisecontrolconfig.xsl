@@ -1,0 +1,128 @@
+<xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" version="1.0">
+    <xsl:output method="xml" version="1.0" encoding="UTF-8" indent="yes"/>
+    
+    <xsl:param name="usecvs"/>
+    <xsl:param name="htmlemail"/>
+    
+    <!-- root node -->
+    <xsl:template match="faktoripscruisecontrol">
+        <cruisecontrol>
+            <!-- print properties -->
+            <xsl:apply-templates select="property"/>
+            <!-- print project definitions -->
+            <xsl:apply-templates select="projects/project"/>
+        </cruisecontrol>
+    </xsl:template>
+
+    <!-- print property -->
+    <xsl:template match="property">
+        <xsl:copy-of select="."/>
+    </xsl:template>
+
+    <!-- print project definition -->
+    <xsl:template match="project">
+        <!-- init variables -->
+        <xsl:variable name="javaprojectname">
+            <xsl:choose>
+                <xsl:when test="string-length(@javaprojectname)>0">
+                    <xsl:value-of select="@javaprojectname"/>
+                </xsl:when>
+    		    <xsl:otherwise><xsl:value-of select="@name"/></xsl:otherwise>
+            </xsl:choose>
+        </xsl:variable>        
+        <xsl:variable name="projectlocation">${workdir}/<xsl:value-of select="$javaprojectname"/></xsl:variable>
+        <xsl:variable name="buildfile">
+            <xsl:choose>
+                <xsl:when test="string-length(@buildfile)>0">
+                    <xsl:value-of select="@buildfile"/>
+                </xsl:when>
+    		    <xsl:otherwise><xsl:value-of select="'build/build.xml'"/></xsl:otherwise>
+            </xsl:choose>
+        </xsl:variable>
+        <xsl:variable name="testresultdir">
+            <xsl:choose>
+                <xsl:when test="string-length(@testresult)>0">
+                    <xsl:value-of select="@testresult"/>
+                </xsl:when>
+    		    <xsl:otherwise><xsl:value-of select="concat($projectlocation,'/build/logs')"/></xsl:otherwise>
+            </xsl:choose>
+        </xsl:variable>
+ 
+        <!-- start cruisecontrol definitions -->
+        <xsl:comment>=====================================================</xsl:comment>
+        <xsl:comment>Project definition: <xsl:value-of select="@name"/></xsl:comment>
+        <xsl:comment>=====================================================</xsl:comment>
+        <project buildafterfailed="false"><xsl:attribute name="name"><xsl:value-of select="@name"/></xsl:attribute>
+            <!-- listeners -->
+            <listeners>
+                <currentbuildstatuslistener>
+                    <xsl:attribute name="file"><![CDATA[${logdir}/${project.name}/buildStatus.txt]]></xsl:attribute>
+                </currentbuildstatuslistener>
+            </listeners>
+            
+            <!-- bootstrappers -->
+            <bootstrappers>
+                <!-- call clean target -->
+                <!-- if using cvs then the clean target will be performed implicitly -->
+                <xsl:choose>
+                    <xsl:when test="$usecvs!=1">
+                        <antbootstrapper anthome="apache-ant-1.7.0" target="clean">
+                            <xsl:attribute name="buildfile"><xsl:value-of select="concat($projectlocation,'/',$buildfile)"/></xsl:attribute>
+                        </antbootstrapper>                        
+                    </xsl:when>
+                </xsl:choose>
+            </bootstrappers>
+            
+            <!-- modificationset cvs or local file system -->
+            <modificationset>
+            <xsl:for-each select="depends/project">
+                <!-- used to trigger a build when another CruiseControl project has a successful build -->
+                <buildstatus>
+                    <xsl:attribute name="logdir"><![CDATA[${logdir}/]]><xsl:value-of select="@name"/></xsl:attribute>
+                </buildstatus>
+		    </xsl:for-each>
+    		<xsl:choose>
+    			<xsl:when test="$usecvs=1">
+                   <!-- cvs modificationset -->
+                   <cvs module="$javaprojectname">
+                      <xsl:attribute name="cvsroot"><![CDATA[${cvsroot}]]></xsl:attribute>
+                      <xsl:attribute name="module"><xsl:value-of select="$javaprojectname"/></xsl:attribute>
+                   </cvs>
+    			  </xsl:when>
+    			  <xsl:otherwise>
+                  <!-- filesystem modificationset -->
+                  <filesystem>
+                      <xsl:attribute name="folder"><xsl:value-of select="$projectlocation"/><![CDATA[/src]]></xsl:attribute>
+                  </filesystem>
+    			</xsl:otherwise>
+    		</xsl:choose>
+            </modificationset>
+
+            <!-- schedule -->
+            <schedule interval="60">
+               <!-- ant call -->
+    		   <ant uselogger="true" usedebug="false">
+                    <xsl:attribute name="buildfile"><![CDATA[${mainbuildfile}]]></xsl:attribute>
+                    <xsl:attribute name="target"><xsl:value-of select="@mainbuildtarget"/></xsl:attribute>	    	        
+    		   </ant>
+    	    </schedule>     
+            
+            <!-- log -->
+            <log>
+                <xsl:attribute name="logdir"><![CDATA[${logdir}/${project.name}/]]></xsl:attribute>
+                <merge>
+                    <xsl:attribute name="dir"><xsl:value-of select="$testresultdir"/></xsl:attribute>
+                    <xsl:if test="string-length(@testmerge)>0">
+                        <xsl:attribute name="pattern"><xsl:value-of select="@testmerge"/></xsl:attribute>
+                    </xsl:if>
+                </merge>
+            </log>  
+            
+            <!-- publishers -->
+            <xsl:if test="$htmlemail=1">
+                 <xsl:copy-of select="/faktoripscruisecontrol/htmlemail"/>
+            </xsl:if>
+        </project>
+    </xsl:template>
+
+</xsl:stylesheet>
