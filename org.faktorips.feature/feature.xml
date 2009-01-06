@@ -231,4 +231,11 @@ Es gilt das Recht der Bundesrepublik Deutschland.
          install-size="0"
          version="2.2.0.rc1"/>
 
+   <plugin
+         id="org.faktorips.devtools.core.ui"
+         download-size="0"
+         install-size="0"
+         version="1.0.0"
+         unpack="false"/>
+
 </feature>
