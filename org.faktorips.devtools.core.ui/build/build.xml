@@ -1,7 +1,0 @@
-<project name="org.faktorips.pluginbuilder" default="buildjar">
-	<!-- TODO replace dummy targets -->
-	<target name="buildjar">
-	</target>
-	<target name="clean">
-	</target>	
-</project>
