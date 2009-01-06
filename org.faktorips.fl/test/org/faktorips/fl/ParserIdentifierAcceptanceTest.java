@@ -1,18 +1,14 @@
 /*******************************************************************************
- * Copyright (c) 2005,2006 Faktor Zehn GmbH und andere.
- *
+ * Copyright (c) 2005-2009 Faktor Zehn AG und andere.
+ * 
  * Alle Rechte vorbehalten.
- *
- * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele,
- * Konfigurationen, etc.) dÃ¼rfen nur unter den Bedingungen der 
- * Faktor-Zehn-Community Lizenzvereinbarung â€“ Version 0.1 (vor GrÃ¼ndung Community) 
- * genutzt werden, die Bestandteil der Auslieferung ist und auch unter
- *   http://www.faktorips.org/legal/cl-v01.html
- * eingesehen werden kann.
- *
- * Mitwirkende:
- *   Faktor Zehn GmbH - initial API and implementation 
- *
+ * 
+ * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen, 
+ * etc.) duerfen nur unter den Bedingungen der Faktor-Zehn-Community Lizenzvereinbarung - Version
+ * 0.1 (vor Gruendung Community) genutzt werden, die Bestandteil der Auslieferung ist und auch unter
+ * http://www.faktorzehn.org/f10-org:lizenzen:community eingesehen werden kann.
+ * 
+ * Mitwirkende: Faktor Zehn AG - initial API and implementation - http://www.faktorzehn.de
  *******************************************************************************/
 
 package org.faktorips.fl;
@@ -57,15 +53,15 @@ public class ParserIdentifierAcceptanceTest extends TestCase {
     public void testParserWithUmlaut() throws Exception{
         compiler = new ExprCompiler();
         DefaultIdentifierResolver resolver = new DefaultIdentifierResolver();
-        resolver.register("Ã¤", new JavaCodeFragment("a"), Datatype.INTEGER);
-        resolver.register("Ã„", new JavaCodeFragment("a"), Datatype.INTEGER);
-        resolver.register("Ã¼", new JavaCodeFragment("a"), Datatype.INTEGER);
-        resolver.register("Ãœ", new JavaCodeFragment("a"), Datatype.INTEGER);
-        resolver.register("Ã¶", new JavaCodeFragment("a"), Datatype.INTEGER);
-        resolver.register("Ã–", new JavaCodeFragment("a"), Datatype.INTEGER);
+        resolver.register("ä", new JavaCodeFragment("a"), Datatype.INTEGER);
+        resolver.register("Ä", new JavaCodeFragment("a"), Datatype.INTEGER);
+        resolver.register("ü", new JavaCodeFragment("a"), Datatype.INTEGER);
+        resolver.register("Ü", new JavaCodeFragment("a"), Datatype.INTEGER);
+        resolver.register("ö", new JavaCodeFragment("a"), Datatype.INTEGER);
+        resolver.register("Ö", new JavaCodeFragment("a"), Datatype.INTEGER);
         compiler.setIdentifierResolver(resolver);
 
-        CompilationResult result = compiler.compile("1 + Ã¤ + Ã„ + Ã¼ + Ãœ + Ã¶ + Ã–");
+        CompilationResult result = compiler.compile("1 + ä + Ä + ü + Ü + ö + Ö");
         MessageList msgList = result.getMessages();
         assertTrue(msgList.isEmpty());
     }

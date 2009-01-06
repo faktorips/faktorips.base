@@ -1,16 +1,15 @@
-/***************************************************************************************************
- * Copyright (c) 2005,2006 Faktor Zehn GmbH und andere.
+/*******************************************************************************
+ * Copyright (c) 2005-2009 Faktor Zehn AG und andere.
  * 
  * Alle Rechte vorbehalten.
  * 
- * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen,
- * etc.) d√ºrfen nur unter den Bedingungen der Faktor-Zehn-Community Lizenzvereinbarung ‚Äì Version 0.1
- * (vor Gr√ºndung Community) genutzt werden, die Bestandteil der Auslieferung ist und auch unter
- * http://www.faktorips.org/legal/cl-v01.html eingesehen werden kann.
+ * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen, 
+ * etc.) duerfen nur unter den Bedingungen der Faktor-Zehn-Community Lizenzvereinbarung - Version
+ * 0.1 (vor Gruendung Community) genutzt werden, die Bestandteil der Auslieferung ist und auch unter
+ * http://www.faktorzehn.org/f10-org:lizenzen:community eingesehen werden kann.
  * 
- * Mitwirkende: Faktor Zehn GmbH - initial API and implementation
- * 
- **************************************************************************************************/
+ * Mitwirkende: Faktor Zehn AG - initial API and implementation - http://www.faktorzehn.de
+ *******************************************************************************/
 
 package org.faktorips.devtools.extsystems.excel;
 
@@ -223,7 +222,7 @@ public class ExcelTableImportOperationTest extends AbstractIpsPluginTest {
         row2.createCell((short)4).setCellValue(Integer.MIN_VALUE);
         row2.createCell((short)5).setCellValue(Long.MIN_VALUE);
         row2.createCell((short)6).setCellValue("1EUR");
-        row2.createCell((short)7).setCellValue("√∂√§√º√ñ√Ñ√ú√ü{[]}");
+        row2.createCell((short)7).setCellValue("ˆ‰¸÷ƒ‹ﬂ{[]}");
 
         row3.createCell((short)0).setCellValue("NULL");
         row3.createCell((short)1).setCellValue("NULL");
