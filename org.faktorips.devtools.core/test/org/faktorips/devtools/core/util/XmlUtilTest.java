@@ -1,19 +1,15 @@
 /*******************************************************************************
- * Copyright (c) 2005,2006 Faktor Zehn GmbH und andere.
- *
- * Alle Rechte vorbehalten.
- *
- * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele,
- * Konfigurationen, etc.) duerfen nur unter den Bedingungen der 
- * Faktor-Zehn-Community Lizenzvereinbarung - Version 0.1 (vor Gruendung Community) 
- * genutzt werden, die Bestandteil der Auslieferung ist und auch unter
- *   http://www.faktorips.org/legal/cl-v01.html
- * eingesehen werden kann.
- *
- * Mitwirkende:
- *   Faktor Zehn GmbH - initial API and implementation - http://www.faktorzehn.de
- *
- *******************************************************************************/
+ * Copyright (c) 2005-2009 Faktor Zehn AG und andere.
+ * 
+ * Alle Rechte vorbehalten.
+ * 
+ * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen, 
+ * etc.) duerfen nur unter den Bedingungen der Faktor-Zehn-Community Lizenzvereinbarung - Version
+ * 0.1 (vor Gruendung Community) genutzt werden, die Bestandteil der Auslieferung ist und auch unter
+ * http://www.faktorzehn.org/f10-org:lizenzen:community eingesehen werden kann.
+ * 
+ * Mitwirkende: Faktor Zehn AG - initial API and implementation - http://www.faktorzehn.de
+ *******************************************************************************/
 
 package org.faktorips.devtools.core.util;
 
@@ -69,7 +65,7 @@ public class XmlUtilTest extends XmlAbstractTestCase {
         assertNotNull(docElement);
         Element testElement = XmlUtil.getFirstElement(docElement, "TestElement"); //$NON-NLS-1$
         assertNotNull(testElement);
-        assertEquals("öäüÖÄÜß", testElement.getAttribute("value")); //$NON-NLS-1$ //$NON-NLS-2$
+        assertEquals("�������", testElement.getAttribute("value")); //$NON-NLS-1$ //$NON-NLS-2$
         assertNull(XmlUtil.getFirstElement(docElement, "UnknownElement")); //$NON-NLS-1$
     }
     
@@ -86,7 +82,7 @@ public class XmlUtilTest extends XmlAbstractTestCase {
 
         Element testElement = XmlUtil.getElement(docElement, "TestElement", 0); //$NON-NLS-1$
         assertNotNull(testElement);
-        assertEquals("öäüÖÄÜß", testElement.getAttribute("value")); //$NON-NLS-1$ //$NON-NLS-2$
+        assertEquals("�������", testElement.getAttribute("value")); //$NON-NLS-1$ //$NON-NLS-2$
         
         testElement = XmlUtil.getElement(docElement, "TestElement", 1); //$NON-NLS-1$
         assertNotNull(testElement);
