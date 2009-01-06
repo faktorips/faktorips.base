@@ -88,7 +88,7 @@ public class LocalizeHelper {
          * {@inheritDoc}
          */
         public synchronized void load(InputStream is) throws IOException {
-            BufferedReader br = new BufferedReader(new InputStreamReader(is));
+            BufferedReader br = new BufferedReader(new InputStreamReader(is, "8859_1"));
             String line = null;
             while ((line = br.readLine()) != null) {
                 if (line.indexOf("=")>0){
@@ -288,6 +288,9 @@ public class LocalizeHelper {
      * the target-dir, files with language- and/or region-code appended). Differences are fixed.
      */
     private void run() {
+        System.out.println("<source-dir> " + sourceRoot);
+        System.out.println("<target-dir> " + targetRoot);
+        System.out.println("<target-lang> " + targetLang);
         Hashtable sourceProperties = new Hashtable();
         Hashtable targetProperties = new Hashtable();
         findProperties(sourceRoot, sourceProperties, sourceRoot.getAbsolutePath().length(), "");
