@@ -204,4 +204,23 @@
       <merge dir="${workdir}/../pluginbuilder_tmp/org.faktorips.pluginbuilder/results/testresults/xml" pattern="*test.xml"/>
     </log>
   </project>
+  <!--=====================================================-->
+  <!--Project definition: org.faktorips.integrationtest-->
+  <!--=====================================================-->
+  <project buildafterfailed="false" name="org.faktorips.integrationtest">
+    <listeners>
+      <currentbuildstatuslistener file="${logdir}/${project.name}/buildStatus.txt"/>
+    </listeners>
+    <bootstrappers/>
+    <modificationset>
+      <buildstatus logdir="${logdir}/org.faktorips.pluginbuilder"/>
+      <cvs module="org.faktorips.pluginbuilder" cvsroot="${cvsroot}"/>
+    </modificationset>
+    <schedule interval="60">
+      <ant usedebug="false" uselogger="true" buildfile="${mainbuildfile}" target="pluginbuilder.integrationtest"/>
+    </schedule>
+    <log logdir="${logdir}/${project.name}/">
+      <merge dir="${workdir}/../pluginbuilder_tmp/org.faktorips.pluginbuilder/workspace/org.faktorips.integrationtest/results/xml" pattern="*Test.xml"/>
+    </log>
+  </project>
 </cruisecontrol>

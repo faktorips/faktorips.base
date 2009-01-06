@@ -500,7 +500,7 @@
 		<property name="projectIntegrationtestDir" value="checkout/" />
 			
     	<!-- checkout org.faktorips.integrationtest project -->
-		<cvs command="co ${projectIntegrationtestDir}" dest="${cvsIntegrationtestmodule}" cvsroot="${cvsroot}" quiet="true"/>
+		<cvs command="co ${cvsIntegrationtestmodule}" dest="${projectIntegrationtestDir}" cvsroot="${cvsroot}" quiet="true"/>
 		
 		<ant dir="${projectPluginbuilderDir}/org.faktorips.pluginbuilder/" antfile="build.xml" target="integrationtest">
 		</ant>
