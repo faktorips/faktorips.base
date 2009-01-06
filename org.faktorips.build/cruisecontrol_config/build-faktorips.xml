@@ -483,6 +483,9 @@
 		<cvs command="co org.faktorips.feature.test" dest="${projectPluginbuilderDir}" cvsroot="${cvsroot}" quiet="true"/>
 		<cvs command="co org.faktorips.devtools.core.test" dest="${projectPluginbuilderDir}" cvsroot="${cvsroot}" quiet="true"/>
 		
+		<cvs command="co org.faktorips.runtime.java5" dest="${projectPluginbuilderDir}" cvsroot="${cvsroot}" quiet="true"/>
+		<cvs command="co org.faktorips.valuetypes.java5" dest="${projectPluginbuilderDir}" cvsroot="${cvsroot}" quiet="true"/>
+		
 		<ant dir="${projectPluginbuilderDir}/org.faktorips.pluginbuilder/" antfile="build.xml" target="main-cc">
 			<property name="label" value="HEAD"/>
 		</ant>
