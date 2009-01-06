@@ -477,6 +477,11 @@
 		
     	<!-- checkout org.faktorips.pluginbuilder project -->
 		<cvs command="co ${cvsPluginbuildermodule}" dest="${projectPluginbuilderDir}" cvsroot="${cvsroot}" quiet="true"/>
+		<cvs command="co org.faktorips.feature" dest="${projectPluginbuilderDir}" cvsroot="${cvsroot}" quiet="true"/>
+		<cvs command="co org.faktorips.feature.nls1" dest="${projectPluginbuilderDir}" cvsroot="${cvsroot}" quiet="true"/>
+		<cvs command="co org.faktorips.nls.devtools.core.nl1" dest="${projectPluginbuilderDir}" cvsroot="${cvsroot}" quiet="true"/>
+		<cvs command="co org.faktorips.feature.test" dest="${projectPluginbuilderDir}" cvsroot="${cvsroot}" quiet="true"/>
+		<cvs command="co org.faktorips.devtools.core.test" dest="${projectPluginbuilderDir}" cvsroot="${cvsroot}" quiet="true"/>
 		
 		<ant dir="${projectPluginbuilderDir}/org.faktorips.pluginbuilder/" antfile="build.xml" target="main-cc">
 			<property name="label" value="HEAD"/>
