@@ -493,7 +493,7 @@
     </target>
 
 	<!-- this target runs the integrationtest, the target org.faktorips.pluginbuilder must be executed before this will be handled by cruisecontrol -->
-	<target name="pluginbuilder.eclipsetest">
+	<target name="pluginbuilder.integrationtest">
 		<property name="projectPluginbuilderDir" value="checkout/" />
 		
 		<property name="cvsIntegrationtestmodule" value="org.faktorips.integrationtest" />
