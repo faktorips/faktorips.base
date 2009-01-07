@@ -211,7 +211,6 @@
 		         usedebug="false"
 		         target="publish.pluginbuilder.faktorips.testdetails.html">
 		        <property name="testdetails.dir" value="${logdir}/${project.name}/_cache"/>
-		        <property name="lastbuildtimestamp" value="${cclastbuildtimestamp}"/>
 		    </antpublisher>
 		</onsuccess>
 		<onfailure>
@@ -221,7 +220,6 @@
 		         usedebug="false"
 		         target="publish.pluginbuilder.faktorips.testdetails.html">
 		        <property name="testdetails.dir" value="${logdir}/${project.name}/_cache"/>
-		        <property name="lastbuildtimestamp" value="${cclastbuildtimestamp}"/>
 		    </antpublisher>
 		</onfailure>
 	</publishers>
