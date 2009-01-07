@@ -203,24 +203,26 @@
     <log logdir="${logdir}/${project.name}/">
       <merge dir="${workdir}/../pluginbuilder_tmp/org.faktorips.pluginbuilder/results/testresults/xml" pattern="*test.xml"/>
     </log>
-	<onsuccess>
-	    <antpublisher 
-	         buildfile="${mainbuildfile}"
-	         uselogger="true"
-	         usedebug="false"
-	         target="publish.pluginbuilder.faktorips.testdetails.html">
-	        <property name="testdetails.html" value="${logdir}/${project.name}/_cache/log${lastbuild}Lbuild.${label}-testdetails.html"/>
-	    </antpublisher>
-	<onsuccess>
-	<onfailure>
-	    <antpublisher 
-	         buildfile="${mainbuildfile}"
-	         uselogger="true"
-	         usedebug="false"
-	         target="publish.pluginbuilder.faktorips.testdetails.html">
-	        <property name="testdetails.html" value="${logdir}/${project.name}/_cache/log${lastbuild}-testdetails.html"/>
-	    </antpublisher>
-	<onfailure>
+	<publishers>
+		<onsuccess>
+		    <antpublisher 
+		         buildfile="${mainbuildfile}"
+		         uselogger="true"
+		         usedebug="false"
+		         target="publish.pluginbuilder.faktorips.testdetails.html">
+		        <property name="testdetails.html" value="${logdir}/${project.name}/_cache/log${lastbuild}Lbuild.${label}-testdetails.html"/>
+		    </antpublisher>
+		</onsuccess>
+		<onfailure>
+		    <antpublisher 
+		         buildfile="${mainbuildfile}"
+		         uselogger="true"
+		         usedebug="false"
+		         target="publish.pluginbuilder.faktorips.testdetails.html">
+		        <property name="testdetails.html" value="${logdir}/${project.name}/_cache/log${lastbuild}-testdetails.html"/>
+		    </antpublisher>
+		</onfailure>
+	</publishers>
   </project>
   <!--=====================================================-->
   <!--Project definition: org.faktorips.integrationtest-->
