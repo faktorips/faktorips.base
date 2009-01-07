@@ -515,10 +515,17 @@
 	
 	<target name="release">
 		<property name="projectPluginbuilderDir" value="checkout/" />
+		<property name="downloadDir" value="/var/www/localhost/htdocs/update.faktorzehn.org/faktorips/downloads" />
 		
 		<fail unless="build.version" message="Please specify the build.version, e.g. ant ... -Dbuild.version=2.2.0.rfinal"/>
+		
 		<ant dir="${projectPluginbuilderDir}/org.faktorips.pluginbuilder/" antfile="build.xml" target="integrationtest">
 			<property name="build.version" value="${build.version}"/>
 		</ant>
+		
+		<copy file="pluginbuilder_tmp/org.faktorips.pluginbuilder/results/org.faktorips.feature-${build.version}.zip" 
+			tofile="${downloadDir}/faktorips_${build.version}.zip" overwrite="false"/>
+		<!-- TODO org.faktorips.feature.nls1-${build.version}.zip
+		          updateSite-${build.version}.zip -->
 	</target>
 </project>
