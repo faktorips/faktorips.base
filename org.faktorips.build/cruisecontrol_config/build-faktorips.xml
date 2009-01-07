@@ -495,10 +495,10 @@
 		</ant>
     </target>
 	<target name="publish.pluginbuilder.faktorips.testdetails.html">
-		<condition property="testdetails.html" value="${testdetails.dir}/log${lastbuild}Lbuild.${label}-testdetails.html">
+		<condition property="testdetails.html" value="${testdetails.dir}/log${lastbuildtimestamp}Lbuild.${label}-testdetails.html">
 			<equals arg1="${thisbuildsuccessful}" arg2="true"/>
 		</condition>
-		<condition property="testdetails.html" value="${testdetails.dir}/log${lastbuild}-testdetails.html">
+		<condition property="testdetails.html" value="${testdetails.dir}/log${lastbuildtimestamp}-testdetails.html">
 			<not>
 				<equals arg1="${thisbuildsuccessful}" arg2="true"/>
 			</not>
