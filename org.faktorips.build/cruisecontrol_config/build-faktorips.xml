@@ -480,18 +480,25 @@
 		<cvs command="co org.faktorips.feature" dest="${projectPluginbuilderDir}" cvsroot="${cvsroot}" quiet="true"/>
 		<cvs command="co org.faktorips.feature.nls1" dest="${projectPluginbuilderDir}" cvsroot="${cvsroot}" quiet="true"/>
 		<cvs command="co org.faktorips.nls.devtools.core.nl1" dest="${projectPluginbuilderDir}" cvsroot="${cvsroot}" quiet="true"/>
+
 		<cvs command="co org.faktorips.feature.test" dest="${projectPluginbuilderDir}" cvsroot="${cvsroot}" quiet="true"/>
 		<cvs command="co org.faktorips.devtools.core.test" dest="${projectPluginbuilderDir}" cvsroot="${cvsroot}" quiet="true"/>
+		<cvs command="co org.faktorips.devtools.core.ui.test" dest="${projectPluginbuilderDir}" cvsroot="${cvsroot}" quiet="true"/>
+		<cvs command="co org.faktorips.devtools.stdbuilder.test" dest="${projectPluginbuilderDir}" cvsroot="${cvsroot}" quiet="true"/>
 		
+		<!-- TODO add own cruise control projects for java5 projects -->
 		<cvs command="co org.faktorips.runtime.java5" dest="${projectPluginbuilderDir}" cvsroot="${cvsroot}" quiet="true"/>
 		<cvs command="co org.faktorips.valuetypes.java5" dest="${projectPluginbuilderDir}" cvsroot="${cvsroot}" quiet="true"/>
-		<cvs command="co org.faktorips.devtools.stdbuilder.test" dest="${projectPluginbuilderDir}" cvsroot="${cvsroot}" quiet="true"/>
 		
 		<ant dir="${projectPluginbuilderDir}/org.faktorips.pluginbuilder/" antfile="build.xml" target="main-cc">
 			<property name="label" value="HEAD"/>
 		</ant>
     </target>
-
+	<target name="publish.pluginbuilder.faktorips.testdetails.html">
+		<copy file="${testdetails.html}" tofile="${testdetails.html}_save" overwrite="true" />
+		<copy file="pluginbuilder_tmp/org.faktorips.pluginbuilder/results/testresults/html/testReport_N-${label}.html" tofile="${testdetails.html}" overwrite="true" />
+	</target>
+	
 	<!-- this target runs the integrationtest, the target org.faktorips.pluginbuilder must be executed before this will be handled by cruisecontrol -->
 	<target name="pluginbuilder.integrationtest">
 		<property name="projectPluginbuilderDir" value="checkout/" />
@@ -505,5 +512,13 @@
 		<ant dir="${projectPluginbuilderDir}/org.faktorips.pluginbuilder/" antfile="build.xml" target="integrationtest">
 		</ant>
     </target>
-       
+	
+	<target name="release">
+		<property name="projectPluginbuilderDir" value="checkout/" />
+		
+		<fail unless="build.version" message="Please specify the build.version, e.g. ant ... -Dbuild.version=2.2.0.rfinal"/>
+		<ant dir="${projectPluginbuilderDir}/org.faktorips.pluginbuilder/" antfile="build.xml" target="integrationtest">
+			<property name="build.version" value="${build.version}"/>
+		</ant>
+	</target>
 </project>
