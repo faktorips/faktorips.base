@@ -210,7 +210,7 @@
 		         uselogger="true"
 		         usedebug="false"
 		         target="publish.pluginbuilder.faktorips.testdetails.html">
-		        <property name="testdetails.html" value="${logdir}/${project.name}/_cache/log${lastbuild}Lbuild.${label}-testdetails.html"/>
+		        <property name="testdetails.dir" value="${logdir}/${project.name}/_cache"/>
 		    </antpublisher>
 		</onsuccess>
 		<onfailure>
@@ -219,7 +219,7 @@
 		         uselogger="true"
 		         usedebug="false"
 		         target="publish.pluginbuilder.faktorips.testdetails.html">
-		        <property name="testdetails.html" value="${logdir}/${project.name}/_cache/log${lastbuild}-testdetails.html"/>
+		        <property name="testdetails.dir" value="${logdir}/${project.name}/_cache"/>
 		    </antpublisher>
 		</onfailure>
 	</publishers>

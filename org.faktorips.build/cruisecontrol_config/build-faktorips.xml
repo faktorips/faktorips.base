@@ -495,6 +495,15 @@
 		</ant>
     </target>
 	<target name="publish.pluginbuilder.faktorips.testdetails.html">
+		<condition property="testdetails.html" value="${testdetails.dir}/log${lastbuild}Lbuild.${label}-testdetails.html">
+			<equals arg1="${thisbuildsuccessful}" arg2="true"/>
+		</condition>
+		<condition property="testdetails.html" value="${testdetails.dir}/log${lastbuild}-testdetails.html">
+			<not>
+				<equals arg1="${thisbuildsuccessful}" arg2="true"/>
+			</not>
+		</condition>
+
 		<copy file="${testdetails.html}" tofile="${testdetails.html}_save" overwrite="true" />
 		<copy file="pluginbuilder_tmp/org.faktorips.pluginbuilder/results/testresults/html/testReport_N-${label}.html" tofile="${testdetails.html}" overwrite="true" />
 	</target>
@@ -521,6 +530,7 @@
 		
 		<ant dir="${projectPluginbuilderDir}/org.faktorips.pluginbuilder/" antfile="build.xml" target="integrationtest">
 			<property name="build.version" value="${build.version}"/>
+			<property name="buildDirectory" value="pluginbuilder_tmp/org.faktorips.pluginbuilder_release"/>			
 		</ant>
 		
 		<copy file="pluginbuilder_tmp/org.faktorips.pluginbuilder/results/org.faktorips.feature-${build.version}.zip" 
