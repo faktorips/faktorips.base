@@ -60,6 +60,8 @@ public class DecisionBFETest extends AbstractIpsPluginTest {
 
     public void testValidateThis() throws Exception {
         IDecisionBFE decision = bf.newDecision(new Point(10, 10));
+        //by default the inital datatype is set to boolean. To test that it is not specified it has to be set to null 
+        decision.setDatatype(null);
         MessageList msgList = decision.validate(ipsProject);
         assertNotNull(msgList.getMessageByCode(IDecisionBFE.MSGCODE_DATATYPE_NOT_SPECIFIED));
         
