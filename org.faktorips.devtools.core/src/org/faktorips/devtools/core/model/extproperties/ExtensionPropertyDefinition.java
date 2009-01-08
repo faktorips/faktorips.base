@@ -100,14 +100,14 @@ public abstract class ExtensionPropertyDefinition implements IExtensionPropertyD
         this.editedInStandardExtensionArea = editedInStandardExtensionArea;
     }
 
-	public String getEditedInStandardTextArea() {
+	public String getPosition() {
 		return editedInStandardExtensionArea;
 	}
     
     /**
      * {@inheritDoc}
      */
-    public String getDisplayName() {
+    public String getName() {
         return displayName;
     }
     
@@ -118,7 +118,7 @@ public abstract class ExtensionPropertyDefinition implements IExtensionPropertyD
     /**
      * {@inheritDoc}
      */
-    public int getSortOrder() {
+    public int getOrder() {
         return sortOrder;
     }
 
@@ -162,10 +162,10 @@ public abstract class ExtensionPropertyDefinition implements IExtensionPropertyD
      */
     public int compareTo(Object o) {
         IExtensionPropertyDefinition other = (IExtensionPropertyDefinition)o;
-        if (this.sortOrder == other.getSortOrder()) {
+        if (this.sortOrder == other.getOrder()) {
             return propertyId.compareTo(other.getPropertyId());
         }
-        return sortOrder - other.getSortOrder();
+        return sortOrder - other.getOrder();
     }
 
     public String toString() {

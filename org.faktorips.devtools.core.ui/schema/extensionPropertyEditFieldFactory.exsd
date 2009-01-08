@@ -62,7 +62,7 @@
          <attribute name="propertyId" type="string" use="required">
             <annotation>
                <documentation>
-                  The id of the property for which this factory creates a UI wiget. The id has to include the namespace and the simple identifier. E.g. if there exists an extension property &quot;foo&quot; in the plugin with the plugin ID &quot;FooPlugin&quot; then the id to specify in this field would be &quot;FooPlugin.foo&quot;
+                  The id of the property for which this factory creates a UI widget. The id has to include the namespace and the simple identifier. E.g. if there exists an extension property &quot;foo&quot; in the plugin with the plugin ID &quot;FooPlugin&quot; then the id to specify in this field would be &quot;FooPlugin.foo&quot;
                </documentation>
             </annotation>
          </attribute>

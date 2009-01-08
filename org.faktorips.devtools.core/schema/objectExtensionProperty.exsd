@@ -46,8 +46,6 @@
 
    <element name="property">
       <complexType>
-         <sequence>
-         </sequence>
          <attribute name="class" type="string" use="required">
             <annotation>
                <documentation>
@@ -75,7 +73,7 @@
                </documentation>
             </annotation>
          </attribute>
-         <attribute name="editedInStandardExtensionArea" use="required">
+         <attribute name="position" use="required">
             <annotation>
                <documentation>
                   
@@ -90,7 +88,7 @@
                </restriction>
             </simpleType>
          </attribute>
-         <attribute name="sortOrder" type="string">
+         <attribute name="order" type="string">
             <annotation>
                <documentation>
                   

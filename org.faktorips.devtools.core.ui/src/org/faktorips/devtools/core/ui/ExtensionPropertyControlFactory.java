@@ -46,7 +46,7 @@ public class ExtensionPropertyControlFactory {
     
     public boolean needsToCreateControlsFor(IIpsObjectPartContainer ipsObjectPart, String position) {
         for (int i = 0; i < extPropData.length; i++) {
-            if (extPropData[i].extProperty.getEditedInStandardTextArea().equals(position)
+            if (extPropData[i].extProperty.getPosition().equals(position)
                     && (extPropData[i].editField == null)) {
                 return true;
             }
@@ -63,7 +63,7 @@ public class ExtensionPropertyControlFactory {
         // find all extension property definitions for the given position
         ArrayList extPropertiesForPosition = new ArrayList();
         for (int i = 0; i < extPropData.length; i++) {
-            if (extPropData[i].extProperty.getEditedInStandardTextArea().equals(position)) {
+            if (extPropData[i].extProperty.getPosition().equals(position)) {
                 extPropertiesForPosition.add(extPropData[i]);
             }
         }
@@ -80,7 +80,7 @@ public class ExtensionPropertyControlFactory {
         // find all extension property definitions for the given position
         ArrayList extPropertiesForPosition = new ArrayList();
         for (int i = 0; i < extPropData.length; i++) {
-            if (!extPropData[i].extProperty.getEditedInStandardTextArea().equals("false")) {
+            if (!extPropData[i].extProperty.getPosition().equals("false")) {
                 extPropertiesForPosition.add(extPropData[i]);
             }
         }
@@ -109,7 +109,7 @@ public class ExtensionPropertyControlFactory {
             IIpsObjectPartContainer ipsObjectPart,
             ExtPropControlData extPropertyData) {
 
-        uiToolkit.createFormLabel(workArea, extPropertyData.extProperty.getDisplayName() + ":"); //$NON-NLS-1$
+        uiToolkit.createFormLabel(workArea, extPropertyData.extProperty.getName() + ":"); //$NON-NLS-1$
         IExtensionPropertyEditFieldFactory factory;
         try {
             factory = IpsUIPlugin.getDefault().getExtensionPropertyEditFieldFactory(extPropertyData.extProperty.getPropertyId());
