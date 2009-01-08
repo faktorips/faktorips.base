@@ -15,7 +15,6 @@ package org.faktorips.devtools.core.ui.bf.actions;
 
 import org.eclipse.draw2d.PositionConstants;
 import org.eclipse.gef.editparts.ZoomManager;
-import org.eclipse.gef.internal.GEFMessages;
 import org.eclipse.gef.ui.actions.ActionBarContributor;
 import org.eclipse.gef.ui.actions.AlignmentRetargetAction;
 import org.eclipse.gef.ui.actions.GEFActionConstants;
@@ -61,14 +60,14 @@ protected void buildActions() {
 	
 	addRetargetAction(new RetargetAction(
 			GEFActionConstants.TOGGLE_RULER_VISIBILITY, 
-			GEFMessages.ToggleRulerVisibility_Label, IAction.AS_CHECK_BOX));
+			"&Rulers", IAction.AS_CHECK_BOX)); //$NON-NLS-1$
 	
 	addRetargetAction(new RetargetAction(
 			GEFActionConstants.TOGGLE_SNAP_TO_GEOMETRY, 
-			GEFMessages.ToggleSnapToGeometry_Label, IAction.AS_CHECK_BOX));
+			"Snap to Geo&metry", IAction.AS_CHECK_BOX)); //$NON-NLS-1$
 
 	addRetargetAction(new RetargetAction(GEFActionConstants.TOGGLE_GRID_VISIBILITY, 
-			GEFMessages.ToggleGrid_Label, IAction.AS_CHECK_BOX));
+			"&Grid", IAction.AS_CHECK_BOX)); //$NON-NLS-1$
 }
 
 /**
