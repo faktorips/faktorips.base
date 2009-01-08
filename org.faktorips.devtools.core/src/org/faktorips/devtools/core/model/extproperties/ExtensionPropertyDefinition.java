@@ -38,7 +38,7 @@ public abstract class ExtensionPropertyDefinition implements IExtensionPropertyD
     private String propertyId;
     protected Object defaultValue; // protected because setter has to be implemented in subclasses.
     private String displayName;
-    private String editedInStandardExtensionArea;
+    private String position;
     private int sortOrder = DEFAULT_SORT_ORDER;
     
     /**
@@ -87,21 +87,14 @@ public abstract class ExtensionPropertyDefinition implements IExtensionPropertyD
     public abstract void setDefaultValue(String s);
     
     /**
-     * Returns <code>true</code>.
+     * @param position The position to set.
      */
-    public boolean isEditedInStandardExtensionArea() {
-        return !editedInStandardExtensionArea.equals("false"); //$NON-NLS-1$
-    }
-
-    /**
-     * @param editedInStandardExtensionArea The editedInStandardExtensionArea to set.
-     */
-    public void setEditedInStandardExtensionArea(String editedInStandardExtensionArea) {
-        this.editedInStandardExtensionArea = editedInStandardExtensionArea;
+    public void setPosition(String position) {
+        this.position = position;
     }
 
 	public String getPosition() {
-		return editedInStandardExtensionArea;
+		return position;
 	}
     
     /**
