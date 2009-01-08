@@ -70,6 +70,13 @@ public class ControlFlowEditPart extends AbstractConnectionEditPart implements C
     }
 
     private void setText(String text) {
+        //since the label is added to the canvas of the viewer directly and hence doesn't fit into the
+        //framework the life cycle of the label is different than the one of the figure. Especially
+        //there can be scenarios where the label is already disposed but the deactivate() method
+        //has not been called
+        if(label.isDisposed()){
+            return;
+        }
         label.setText(text);
         if (StringUtils.isEmpty(text)) {
             label.setSize(0, 0);
@@ -133,6 +140,9 @@ public class ControlFlowEditPart extends AbstractConnectionEditPart implements C
     }
 
     private void showError(MessageList msgList) {
+        if(label.isDisposed()){
+            return;
+        }
         if (!msgList.isEmpty()) {
             label.setImage(IpsPlugin.getDefault().getImage("size8/ErrorMessage.gif")); //$NON-NLS-1$
             label.setSize(label.computeSize(-1, -1));
