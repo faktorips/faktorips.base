@@ -39,7 +39,7 @@ public abstract class ExtensionPropertyDefinition implements IExtensionPropertyD
     protected Object defaultValue; // protected because setter has to be implemented in subclasses.
     private String displayName;
     private String position;
-    private int sortOrder = DEFAULT_SORT_ORDER;
+    private int sortOrder = DEFAULT_ORDER;
     
     /**
      * Empty constructor needed because of Eclipse's extension point mechanism.

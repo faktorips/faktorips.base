@@ -50,7 +50,7 @@ public interface IExtensionPropertyDefinition extends Comparable {
     /**
      * Default sort order.
      */
-    public final static int DEFAULT_SORT_ORDER = 10000;
+    public final static int DEFAULT_ORDER = 10000;
 
     /**
      * Returns the type this object defines a property for, e.g.
