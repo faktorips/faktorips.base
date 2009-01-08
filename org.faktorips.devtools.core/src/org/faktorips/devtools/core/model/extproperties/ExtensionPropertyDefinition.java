@@ -37,9 +37,9 @@ public abstract class ExtensionPropertyDefinition implements IExtensionPropertyD
     private Class extendedType;
     private String propertyId;
     protected Object defaultValue; // protected because setter has to be implemented in subclasses.
-    private String displayName;
+    private String name;
     private String position;
-    private int sortOrder = DEFAULT_ORDER;
+    private int order = DEFAULT_ORDER;
     
     /**
      * Empty constructor needed because of Eclipse's extension point mechanism.
@@ -101,25 +101,25 @@ public abstract class ExtensionPropertyDefinition implements IExtensionPropertyD
      * {@inheritDoc}
      */
     public String getName() {
-        return displayName;
+        return name;
     }
     
-    public void setDisplayName(String name) {
-        this.displayName = name;
+    public void setName(String name) {
+        this.name = name;
     }
     
     /**
      * {@inheritDoc}
      */
     public int getOrder() {
-        return sortOrder;
+        return order;
     }
 
     /**
      * Sets the sort order.
      */
     public void setSortOrder(int sortOrder) {
-        this.sortOrder = sortOrder;
+        this.order = sortOrder;
     }
     
     /**
@@ -155,10 +155,10 @@ public abstract class ExtensionPropertyDefinition implements IExtensionPropertyD
      */
     public int compareTo(Object o) {
         IExtensionPropertyDefinition other = (IExtensionPropertyDefinition)o;
-        if (this.sortOrder == other.getOrder()) {
+        if (this.order == other.getOrder()) {
             return propertyId.compareTo(other.getPropertyId());
         }
-        return sortOrder - other.getOrder();
+        return order - other.getOrder();
     }
 
     public String toString() {
