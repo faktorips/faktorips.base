@@ -40,7 +40,7 @@ public class BusinessFunctionEditPartTest extends AbstractIpsPluginTest {
         businessFunction = (IBusinessFunction)newIpsObject(ipsProject, BusinessFunctionIpsObjectType.getInstance(), "bf");
         refreshChildrenCalled = false;
         ScrollingGraphicalViewer viewer = new ScrollingGraphicalViewer();
-        viewer.createControl(Display.getDefault().getActiveShell());
+        viewer.createControl(Display.getCurrent().getActiveShell());
         ScalableFreeformRootEditPart root = new ScalableFreeformRootEditPart();
         root.setViewer(viewer);
         viewer.setRootEditPart(root);

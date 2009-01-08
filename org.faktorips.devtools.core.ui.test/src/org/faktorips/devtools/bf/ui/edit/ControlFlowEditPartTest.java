@@ -42,7 +42,7 @@ public class ControlFlowEditPartTest extends AbstractIpsPluginTest {
         controlFlow = businessFunction.newControlFlow();
         refreshChildrenCalled = false;
         ScrollingGraphicalViewer viewer = new ScrollingGraphicalViewer();
-        shell = new Shell(Display.getDefault());
+        shell = new Shell(Display.getCurrent());
         viewer.createControl(shell);
         ScalableFreeformRootEditPart root = new ScalableFreeformRootEditPart();
         root.setViewer(viewer);

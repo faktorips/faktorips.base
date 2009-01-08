@@ -32,7 +32,7 @@ public class BusinessFunctionRefControlTest extends AbstractIpsPluginTest {
     
     public void setUp() throws Exception{
         super.setUp();
-        shell = new Shell(Display.getDefault());
+        shell = new Shell(Display.getCurrent());
     }
     
     public void tearDownExtension(){
