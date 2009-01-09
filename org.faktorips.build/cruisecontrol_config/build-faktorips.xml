@@ -270,9 +270,11 @@
             <property name="buildDirectory" value="${buildDirectory}"/>
         </ant>
         <!--copy zipped features into the faktorips download directory, fails if files already exists-->
-        <!--TODO add overwite switch as property-->
-    	<copy file="${buildDirectory}/results/org.faktorips.feature-${build.version}.zip" tofile="${downloadDir}/faktorips_${build.version}.zip" overwrite="false"/>
-        <copy file="${buildDirectory}/results/org.faktorips.feature.nls1-${build.version}.zip" tofile="${downloadDir}/faktorips.nls1_${build.version}.zip" overwrite="false"/>
+        <!--TODO add overwite switch as property, assert if exists above-->
+    	<copy file="${buildDirectory}/results/org.faktorips.feature-${build.version}.zip" 
+    		tofile="${downloadDir}/faktorips_${build.version}.zip" overwrite="false" verbose="true" failonerror="true"/>
+        <copy file="${buildDirectory}/results/org.faktorips.feature.nls1-${build.version}.zip" 
+        	tofile="${downloadDir}/faktorips.nls1_${build.version}.zip" overwrite="false" verbose="true" failonerror="true"/>
         <!--install the features on updatesite-->
         <!--1. generate a new site.xml on the updatesite, including all previous and new feature versions-->
         <ant dir="${projectPluginbuilderDir}/org.faktorips.pluginbuilder/build-files" antfile="postBuild.xml" target="-createNightlyBuildSiteXml">
@@ -287,14 +289,16 @@
         </ant>
         <!--2. copy all features and plugins to the updatesite-->
         <copy todir="${projectPluginbuilderDir}/org.faktorips.updatesite/plugins" overwrite="false">
-            <fileset dir="${buildDirectory}/updateSite/plugins" includes="*.jar"/>
+            <fileset dir="${buildDirectory}/updateSite/plugins" includes="*.jar" verbose="true"/>
         </copy>
         <copy todir="${projectPluginbuilderDir}/org.faktorips.updatesite/features" overwrite="false">
-            <fileset dir="${buildDirectory}/updateSite/features" includes="*.jar"/>
+            <fileset dir="${buildDirectory}/updateSite/features" includes="*.jar" verbose="true"/>
         </copy>
+    	
         <!--3. merge the generated site.xml with the previous site.xml as new site.xml-->
         <antcall inheritall="true" target="-merge.updatesite.xml"/>
-        <!--checkin updatesite-->
+        
+    	<!--checkin updatesite-->
         <antcall inheritall="true" target="-checkin.updatesite"/>
     	
     	<!--4. checkout on faktorips updatesite website directory -->
@@ -311,7 +315,7 @@
         	package="org.faktorips.updatesite" dest="checkout/" cvsroot="${cvsroot}" quiet="true"/>
     </target>
     <target name="-checkout.updatesite.on.faktorips.org" if="isUseCvs">
-    	<property name="faktorips.org.updatesite.dir" value="/var/www/localhost/htdocs/update.faktorzehn.org/faktorips/org.faktorips.updatesite/" />
+    	<property name="faktorips.org.updatesite.dir" value="/var/www/localhost/htdocs/update.faktorzehn.org/faktorips/" />
     	<cvs command="co org.faktorips.updatesite" dest="${faktorips.org.updatesite.dir}" cvsroot="${cvsroot}" quiet="true"/>
     </target>
 
