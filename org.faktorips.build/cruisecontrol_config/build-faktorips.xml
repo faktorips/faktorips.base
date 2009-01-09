@@ -215,7 +215,8 @@
 		
 		<!-- copy autoamted test html report -->
 		<copy file="${basedir}/pluginbuilder_tmp/org.faktorips.pluginbuilder/results/testresults/html/testReport_N-${label}.html" 
-			todir="${ccProjectDir}/${cctimestamp}" overwrite="true"/>
+			todir="${ccProjectDir}/${cctimestamp}"
+			failonerror="false" verbose="true"/>
 	</target>
 	<!-- target to publish the automated test result to the cc log directory -->
     <target name="publish.pluginbuilder.faktorips.testdetails.html" description="helper target to publish the automated test result html file from the previous faktorips build">

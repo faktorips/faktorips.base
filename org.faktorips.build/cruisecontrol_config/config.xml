@@ -570,6 +570,9 @@
                 <!--active faktorips developer-->
                 <map alias="ortmann2" address="joerg.ortmann@faktorzehn.de"/>
             </htmlemail>
+            <antpublisher buildfile="${mainbuildfile}" uselogger="true" usedebug="false" target="copy.artifacts.pluginbuilder.faktorips">
+                <property name="ccProjectDir" value="${logdir}/${project.name}"/>
+            </antpublisher>
         </publishers>
     </project>
 </cruisecontrol>

@@ -137,7 +137,16 @@ TODO bbv, kqv und msgp
             </htmlemail>
         </publisher>
         
-        <!-- publisher for 'org.faktorips.pluginbuilder' -->
+        <!-- publisher to copy build artefacts to the cc log directory -->
+        <publisher project="org.faktorips.integrationtest" id="copy.artifacts">
+            <antpublisher 
+                     buildfile="${mainbuildfile}"
+                     uselogger="true"
+                     usedebug="false"
+                     target="copy.artifacts.pluginbuilder.faktorips">
+                    <property name="ccProjectDir" value="${logdir}/${project.name}"/>
+                </antpublisher>
+        </publisher>
         
         <!-- publisher to copy build artefacts to the cc log directory -->
         <publisher project="org.faktorips.pluginbuilder" id="copy.artifacts">
