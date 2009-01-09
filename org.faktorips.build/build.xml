@@ -24,6 +24,13 @@
 			<!-- javac source/target VM version -->
 			<property name="vmversion" value="1.5" />
 
+        <!-- jars for the xml pretty print utility target -->
+        <path id="xml.pretty.classpath">
+             <fileset dir="./lib/xmlbeans/">
+                 <include name="**/*.jar" />
+             </fileset>
+         </path>
+         	
 	    <!-- wipes out -->
 		<target name="clean">
 			<delete failonerror="false" includeemptydirs="true" >
@@ -210,4 +217,21 @@
     	<delete file="${temp_jarfile}"/>
     </target>	
 	
+	<!-- xml pretty print utility target -->
+	<!-- input properties: input.xml - specifies the xml file which will be pretty printed -->
+	<!-- output: file with the name '<input.xml>_pretty', e.g. if the input filename is 'a.xml' then the output file name is 'a.xml_pretty' -->
+	<!-- not if running in eclipse the eclipse variable ${file_prompt} could be used as value for ${input.xml} to open a file prompt dialog -->
+    <target name="xml.pretty.print" description="pretty prints a given XML file">
+    	<fail unless="input.xml" message="Please specify the input xml file"/>
+    	
+    	<!-- using xmlbeans PrettyPrinter to format the generated xml file in a pretty style -->
+        <java classname="org.apache.xmlbeans.impl.tool.PrettyPrinter" fork="true" failonerror="true"
+             classpathref="xml.pretty.classpath" outputproperty="xml.pretty">
+             <arg value="-indent" />
+             <arg value="4" />
+             <arg value="${input.xml}" />
+         </java>
+         <echo file="${input.xml}_pretty" append="false">${xml.pretty}</echo>
+         <echo message="${input.xml}_pretty successfully created"/>
+    </target>	
 </project>
