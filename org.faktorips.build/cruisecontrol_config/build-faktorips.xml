@@ -322,7 +322,7 @@
     <target name="-checkin.updatesite" if="isUseCvs">
         <cvs command="commit -m 'release build: ${build.version}'" 
         	package="org.faktorips.updatesite" dest="checkout/" cvsroot="${cvsroot}" quiet="true"/>
-        <cvs command="commit -m 'release build: ${build.version}' add checkout/org.faktorips.updatesite" 
+        <cvs command="add checkout/org.faktorips.updatesite -m 'release build: ${build.version}' " 
         	cvsroot="${cvsroot}" quiet="true"/>
     </target>
     <target name="-checkout.updatesite.on.faktorips.org" if="isUseCvs">
