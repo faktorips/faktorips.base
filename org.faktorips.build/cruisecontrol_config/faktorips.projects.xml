@@ -147,7 +147,6 @@ TODO bbv, kqv und msgp
                      usedebug="false"
                      target="copy.artifacts.pluginbuilder.faktorips">
                     <property name="ccProjectDir" value="${logdir}/${project.name}"/>
-                    <property name="lastbuildtimestamp" value="${cclastbuildtimestamp}"/>
                 </antpublisher>
         </publisher>
         
@@ -161,7 +160,6 @@ TODO bbv, kqv und msgp
                      usedebug="false"
                      target="publish.pluginbuilder.faktorips.testdetails.html">
                     <property name="testdetails.dir" value="${logdir}/${project.name}/_cache"/>
-                    <property name="lastbuildtimestamp" value="${cclastbuildtimestamp}"/>
                 </antpublisher>
             </onsuccess>
             <onfailure>
@@ -171,7 +169,6 @@ TODO bbv, kqv und msgp
                      usedebug="false"
                      target="publish.pluginbuilder.faktorips.testdetails.html">
                     <property name="testdetails.dir" value="${logdir}/${project.name}/_cache"/>
-                    <property name="lastbuildtimestamp" value="${cclastbuildtimestamp}"/>
                 </antpublisher>
             </onfailure>        
         </publisher>
