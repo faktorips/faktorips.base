@@ -263,15 +263,13 @@
         <available type="file" file="${projectPluginbuilderDir}/org.faktorips.pluginbuilder/releases/${build.version}.properties" property="releasePropertiesExists"/>
         <fail message="Could not find ${build.version}.properties in ${projectPluginbuilderDir}/org.faktorips.pluginbuilder/releases/" unless="releasePropertiesExists"/>
     	<!--3. check previous release build with same target, check file exists in download dir -->
-        <fail message="release already exists: ${faktoripsReleaseDownloadZipPath}">
-             <condition>
-                <or> 
-                  <available file="${faktoripsReleaseDownloadZipPath}"/>
-                  <available file="${faktoripsNls1ReleaseDownloadZipPath}"/>
-                </or> 
-              </condition>
+        <fail message="Release zip already exists: ${faktoripsReleaseDownloadZipPath}">
+             <condition><available file="${faktoripsReleaseDownloadZipPath}"/></condition>
          </fail>
-    	
+        <fail message="Release zip already exists: ${faktoripsNls1ReleaseDownloadZipPath}">
+             <condition><available file="${faktoripsNls1ReleaseDownloadZipPath}"/></condition>
+         </fail>
+
     	<!-- TODO checkout org.faktorips.pluginbulder using build.version in pluginbuilder_release_tmp -->
 
         <!--checkout updatesite-->
