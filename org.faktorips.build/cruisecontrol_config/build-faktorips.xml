@@ -70,7 +70,7 @@
         <ant dir="${projectRuntimeDir}/${cvsRuntimemodule}/build/" antfile="build.xml" target="buildjar"/>
     </target>
 	
-    <target name="runtime5" depends="updateBuildTemplate" description="builds the 'org.faktorips.runtime.java5' project">
+    <target name="runtime.java5" depends="updateBuildTemplate" description="builds the 'org.faktorips.runtime.java5' project">
         <property name="cvsRuntimemodule" value="org.faktorips.runtime.java5"/>
         <property name="projectRuntimeDir" value="checkout/"/>
         <!--checkout/update project-->
