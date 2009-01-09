@@ -271,6 +271,13 @@
         </ant>
         <!--copy zipped features into the faktorips download directory, fails if files already exists-->
         <!--TODO add overwite switch as property, assert if exists above-->
+    	
+    	<fail message="release already exists">
+    	    <condition>
+    	       	<available file="${downloadDir}/faktorips_${build.version}.zip"/>
+    	     </condition>
+    	</fail>
+    	
     	<copy file="${buildDirectory}/results/org.faktorips.feature-${build.version}.zip" 
     		tofile="${downloadDir}/faktorips_${build.version}.zip" overwrite="false" verbose="true" failonerror="true"/>
         <copy file="${buildDirectory}/results/org.faktorips.feature.nls1-${build.version}.zip" 
