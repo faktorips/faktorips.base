@@ -119,7 +119,7 @@ public class ProductComponentLink<E extends IProductComponent> extends RuntimeOb
         sb.append('(');
         sb.append(cardinality.getLowerBound());
         sb.append("..");
-        sb.append(cardinality.getUpperBound() == Integer.MAX_VALUE ? "*" : cardinality.getUpperBound());
+        sb.append(new Integer(Integer.MAX_VALUE).equals(cardinality.getUpperBound()) ? "*" : cardinality.getUpperBound());
         sb.append(')');
         return sb.toString();
     }
