@@ -516,6 +516,10 @@
                 <!--active faktorips developer-->
                 <map alias="ortmann2" address="joerg.ortmann@faktorzehn.de"/>
             </htmlemail>
+            <antpublisher buildfile="${mainbuildfile}" uselogger="true" usedebug="false" target="copy.artifacts.pluginbuilder.faktorips">
+                <property name="ccProjectDir" value="${logdir}/${project.name}"/>
+                <property name="lastbuildtimestamp" value="${cclastbuildtimestamp}"/>
+            </antpublisher>
             <onsuccess>
                 <antpublisher buildfile="${mainbuildfile}" uselogger="true" usedebug="false" target="publish.pluginbuilder.faktorips.testdetails.html">
                     <property name="testdetails.dir" value="${logdir}/${project.name}/_cache"/>

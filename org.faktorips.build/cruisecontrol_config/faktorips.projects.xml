@@ -136,7 +136,21 @@ TODO bbv, kqv und msgp
             </htmlemail>
         </publisher>
         
-        <!-- publisher for 'org.faktorips.pluginbuilder' copies the result of the automated test run to the cc log directory, 
+        <!-- publisher for 'org.faktorips.pluginbuilder' -->
+        
+        <!-- publisher to copy build artefacts to the cc log directory -->
+        <publisher project="org.faktorips.pluginbuilder" id="copy.artifacts">
+            <antpublisher 
+                     buildfile="${mainbuildfile}"
+                     uselogger="true"
+                     usedebug="false"
+                     target="copy.artifacts.pluginbuilder.faktorips">
+                    <property name="ccProjectDir" value="${logdir}/${project.name}"/>
+                    <property name="lastbuildtimestamp" value="${cclastbuildtimestamp}"/>
+                </antpublisher>
+        </publisher>
+        
+        <!-- publisher copies the result of the automated test run to the cc log directory, 
              to bring it to the cc website -->
         <publisher project="org.faktorips.pluginbuilder" id="test.result.automated.test.result">
             <onsuccess>
