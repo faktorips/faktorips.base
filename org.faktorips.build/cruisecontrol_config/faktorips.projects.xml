@@ -1,37 +1,29 @@
+<!DOCTYPE project [ <!ENTITY mailmapping SYSTEM "mailmapping.txt"> ]>
+
+<!--======================================================================================================-->
+<!-- Faktor IPS project definition for Cruise Control (cc)                                                -->
+<!-- by using the ant script './generate.cc.config.xml' a new config.xml file could be re-generated       -->
+<!-- based on the project definition defined in this file                                                 -->
+<!--======================================================================================================-->
 <faktoripscruisecontrol>
+
+    <!-- global properties -->
     <property name="workdir" value="checkout"/>
     <property name="mainbuildfile" value="build-faktorips.xml"/>
     <property name="logdir" value="logs"/>
+
+    <!-- cvs property -->
     <property name="cvsroot" value="/usr/local/cvsroot"/>
+    <property name="buildresultsurl" value="http://www.faktorzehn.org/cruisecontrol/buildresults"/>
     
-    <htmlemail 
-        buildresultsurl="http://www.faktorzehn.org/cruisecontrol/buildresults/${project.name}"
-        mailhost="62.245.204.82"
-        username=""
-        password=""
-        returnaddress="cc@faktorips.org"
-        skipusers="false" 
-        spamwhilebroken="false"
-        returnname="faktorips-buildqueue"
-        subjectprefix="[CC ${project.name}]"
-        reportsuccess="always"
-        xsldir="/opt/cc/webapps/cruisecontrol/xsl/"
-        css="/opt/cc/docs/cruisecontrol.css">
-        
-        <failure reportWhenFixed="true" address="faktorips-devel@faktorzehn.de" />
-        
-        <!-- define cvs-user mailaddresses -->
-        <map alias="senf" address="marcel.senf@faktorzehn.de"/>
-        <map alias="guenther" address="thorsten.guenther@faktorzehn.de"/>
-        <map alias="eidenschink" address="max.eidenschink@faktorzehn.de"/>
-        <map alias="ortmann" address="jan.ortmann@faktorzehn.de"/>
-        <map alias="hums" address="renate.hums@faktorzehn.de"/>
-        <map alias="erzberger" address="peter.erzberger@faktorzehn.de"/>
-        <map alias="hinz" address="martin.hinz@faktorzehn.de"/>
-        <map alias="waertel" address="thorsten.waertel@kqv.de"/> 
-        <map alias="hohenberger" address="daniel.hohenberger@faktorzehn.de"/>
-	</htmlemail>
-	    
+    <!-- mail properties -->
+    <property name="htmlemail.mailhost" value="/usr/local/cvsroot"/>
+    <property name="htmlemail.returnaddress" value="cc@faktorips.org"/>
+    <property name="htmlemail.xsldir" value="/opt/cc/webapps/cruisecontrol/xsl/"/>
+    <property name="htmlemail.css" value="/opt/cc/docs/cruisecontrol.css"/>
+    <property name="htlmemail.reportWhenFixed.address" value="faktorips-devel@faktorzehn.de"/>
+
+    <!-- cc project definitions -->
     <projects>
         <project name="org.faktorips.util" mainbuildtarget="util">
         </project>
@@ -40,6 +32,11 @@
                 <project name="org.faktorips.util"/>
             </depends>
         </project>
+        <project name="org.faktorips.valuetypes.java5" mainbuildtarget="valuetypes.java5">
+            <depends>
+                <project name="org.faktorips.util"/>
+            </depends>
+        </project>        
         <project name="org.faktorips.dtflcommon" mainbuildtarget="dtflcommon">
             <depends>
                 <project name="org.faktorips.valuetypes"/>
@@ -52,6 +49,12 @@
                 <project name="org.faktorips.util"/>
             </depends>               
         </project>
+        <project name="org.faktorips.runtime.java5" mainbuildtarget="runtime.java5">
+            <depends>
+                <project name="org.faktorips.valuetypes.java5"/>
+                <project name="org.faktorips.util"/>
+            </depends>               
+        </project>        
         <project name="org.faktorips.fl" mainbuildtarget="fl">
             <depends>
                 <project name="org.faktorips.dtflcommon"/>
@@ -101,10 +104,62 @@
                 <project name="org.faktorips.pluginbuilder"/>
             </depends>         
         </project>
-
-<!-- TODO bbv, kqv und msgp 
-     runtime und valuetypes 1.5?
+        
+<!-- 
+TODO bbv, kqv und msgp 
 -->
     </projects>
    
+    <!-- cc publisher for several faktorips projects s-->
+    <publishers>
+        <!-- publisher htmlemail used in all projects -->
+        <publisher id="htmlemail">
+            <htmlemail 
+                buildresultsurl="${buildresultsurl}/${project.name}"
+                mailhost="${htmlemail.mailhost}"
+                username=""
+                password=""
+                returnaddress="${htmlemail.returnaddress}"
+                skipusers="false" 
+                spamwhilebroken="false"
+                returnname="faktorips-buildqueue"
+                subjectprefix="[CC ${project.name}]"
+                reportsuccess="always"
+                xsldir="${htmlemail.xsldir}"
+                css="${htmlemail.css}">
+                
+                <failure reportWhenFixed="true" address="htlmemail.reportWhenFixed.address" />
+                
+                <!-- mail mappings are specified in ENTITY mailmapping see this xml header -->
+                &mailmapping;
+
+            </htmlemail>
+        </publisher>
+        
+        <!-- publisher for 'org.faktorips.pluginbuilder' copies the result of the automated test run to the cc log directory, 
+             to bring it to the cc website -->
+        <publisher project="org.faktorips.pluginbuilder" id="test.result.automated.test.result">
+            <onsuccess>
+                <antpublisher 
+                     buildfile="${mainbuildfile}"
+                     uselogger="true"
+                     usedebug="false"
+                     target="publish.pluginbuilder.faktorips.testdetails.html">
+                    <property name="testdetails.dir" value="${logdir}/${project.name}/_cache"/>
+                    <property name="lastbuildtimestamp" value="${cclastbuildtimestamp}"/>
+                </antpublisher>
+            </onsuccess>
+            <onfailure>
+                <antpublisher 
+                     buildfile="${mainbuildfile}"
+                     uselogger="true"
+                     usedebug="false"
+                     target="publish.pluginbuilder.faktorips.testdetails.html">
+                    <property name="testdetails.dir" value="${logdir}/${project.name}/_cache"/>
+                    <property name="lastbuildtimestamp" value="${cclastbuildtimestamp}"/>
+                </antpublisher>
+            </onfailure>        
+        </publisher>
+    </publishers>
+    
 </faktoripscruisecontrol>

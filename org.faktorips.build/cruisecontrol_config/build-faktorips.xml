@@ -245,7 +245,8 @@
         <condition property="isUseCvs" value="true">
             <equals arg1="${useCvs}" arg2="true"/>
         </condition>
-        <!-- TODO create plugin builder property file using build.version -->
+        <!-- TODO create plugin builder property file using build.version 
+             cvs tag depending on the build.version -->
     	<!--asserts-->
         <!--1. check if the build.version property is given-->
         <fail unless="build.version" message="Please specify the build.version, e.g. ant ... -Dbuild.version=2.2.0.rfinal"/>

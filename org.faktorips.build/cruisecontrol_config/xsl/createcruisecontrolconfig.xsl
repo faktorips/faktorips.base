@@ -6,6 +6,7 @@
     
     <!-- root node -->
     <xsl:template match="faktoripscruisecontrol">
+        <xsl:call-template name="print.header"/>
         <cruisecontrol>
             <!-- print properties -->
             <xsl:apply-templates select="property"/>
@@ -14,6 +15,14 @@
         </cruisecontrol>
     </xsl:template>
 
+    <xsl:template name="print.header">
+        <xsl:comment>======================================================================================================</xsl:comment>
+        <xsl:comment> Cruise Control configuration for all faktorips projects and eclipse features</xsl:comment>
+        <xsl:comment> note that this file could be re-generated based on the project definition in </xsl:comment>
+        <xsl:comment> 'faktorips.projects.xml', using the ant script './generate.cc.config.xml'</xsl:comment>
+        <xsl:comment>======================================================================================================</xsl:comment>    
+    </xsl:template>
+    
     <!-- print property -->
     <xsl:template match="property">
         <xsl:copy-of select="."/>
@@ -22,6 +31,7 @@
     <!-- print project definition -->
     <xsl:template match="project">
         <!-- init variables -->
+        <xsl:variable name="projectname"><xsl:value-of select="@name"/></xsl:variable>
         <xsl:variable name="javaprojectname">
             <xsl:choose>
                 <xsl:when test="string-length(@javaprojectname)>0">
@@ -65,7 +75,7 @@
                 <!-- call clean target -->
                 <!-- if using cvs then the clean target will be performed implicitly -->
                 <xsl:choose>
-                    <xsl:when test="$usecvs!=1">
+                    <xsl:when test="$usecvs!='true'">
                         <antbootstrapper anthome="apache-ant-1.7.0" target="clean">
                             <xsl:attribute name="buildfile"><xsl:value-of select="concat($projectlocation,'/',$buildfile)"/></xsl:attribute>
                         </antbootstrapper>                        
@@ -82,7 +92,7 @@
                 </buildstatus>
 		    </xsl:for-each>
     		<xsl:choose>
-    			<xsl:when test="$usecvs=1">
+    			<xsl:when test="$usecvs='true'">
                    <!-- cvs modificationset -->
                    <cvs module="$javaprojectname">
                       <xsl:attribute name="cvsroot"><![CDATA[${cvsroot}]]></xsl:attribute>
@@ -119,9 +129,14 @@
             </log>  
             
             <!-- publishers -->
-            <xsl:if test="$htmlemail=1">
-                 <xsl:copy-of select="/faktoripscruisecontrol/htmlemail"/>
-            </xsl:if>
+            <publishers>
+                <!-- global htmlmail publisher -->
+                <xsl:if test="$htmlemail='true'">
+                     <xsl:copy-of select="/faktoripscruisecontrol/publishers/publisher[@id='htmlemail']/child::node()"/>
+                </xsl:if>
+                <!-- project specific publisher -->
+                <xsl:copy-of select="/faktoripscruisecontrol/publishers/publisher[@project=$projectname]/child::node()"/>
+            </publishers>
         </project>
     </xsl:template>
 
