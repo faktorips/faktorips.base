@@ -288,6 +288,10 @@
         <antcall inheritall="true" target="-merge.updatesite.xml"/>
         <!--checkin updatesite-->
         <antcall inheritall="true" target="-checkin.updatesite"/>
+    	
+    	<!--4. checkout on faktorips updatesite website directory -->
+    	<antcall inheritall="true" target="-checkout.updatesite.on.faktorips.org"/>
+    	
     </target>
 	
     <!--helper targets-->
@@ -295,8 +299,14 @@
         <cvs command="co org.faktorips.updatesite" dest="checkout/" cvsroot="${cvsroot}" quiet="true"/>
     </target>
     <target name="-checkin.updatesite" if="isUseCvs">
-        <cvs command="ci org.faktorips.updatesite -m 'release build: ${build.version}'" dest="checkout/" cvsroot="${cvsroot}" quiet="true"/>
+        <cvs command="commit -m 'release build: ${build.version}'" 
+        	package="org.faktorips.updatesite" dest="checkout/" cvsroot="${cvsroot}" quiet="true"/>
     </target>
+    <target name="-checkout.updatesite.on.faktorips.org" if="isUseCvs">
+    	<property name="faktorips.org.updatesite.dir" value="/var/www/localhost/htdocs/update.faktorzehn.org/faktorips/org.faktorips.updatesite/" />
+    	<cvs command="co org.faktorips.updatesite" dest="${faktorips.org.updatesite.dir}" cvsroot="${cvsroot}" quiet="true"/>
+    </target>
+
     <target name="-merge.updatesite.xml">
         <xslt in="${projectPluginbuilderDir}/org.faktorips.updatesite/site.xml" out="${projectPluginbuilderDir}/org.faktorips.updatesite/site_merge.xml" style="${projectPluginbuilderDir}/org.faktorips.build/cruisecontrol_config/xsl/mergeupdatesite.xsl" force="true">
             <outputproperty name="method" value="xml"/>
