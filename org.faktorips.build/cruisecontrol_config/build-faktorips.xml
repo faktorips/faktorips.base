@@ -244,7 +244,10 @@
         <property name="useCvs" value="true"/>
         <property name="projectPluginbuilderDir" value="checkout/"/>
         <property name="downloadDir" value="/var/www/localhost/htdocs/update.faktorzehn.org/faktorips/downloads"/>
-        <property name="buildDirectory" value="${basedir}/pluginbuilder_release_tmp/org.faktorips.pluginbuilder_release"/>
+    	<property name="buildDirectory" value="${basedir}/pluginbuilder_release_tmp/org.faktorips.pluginbuilder_release"/>
+        <!-- download zip file names -->        
+    	<property name="faktoripsReleaseDownloadZipPath" value="${downloadDir}/faktorips_${build.version}.zip"/>
+        <property name="faktoripsNls1ReleaseDownloadZipPath" value="${downloadDir}/faktorips.nls1_${build.version}.zip"/>
         
     	<condition property="isUseCvs" value="true">
             <equals arg1="${useCvs}" arg2="true"/>
@@ -259,6 +262,15 @@
     	<!--2. check if the build.verion property file exists-->
         <available type="file" file="${projectPluginbuilderDir}/org.faktorips.pluginbuilder/releases/${build.version}.properties" property="releasePropertiesExists"/>
         <fail message="Could not find ${build.version}.properties in ${projectPluginbuilderDir}/org.faktorips.pluginbuilder/releases/" unless="releasePropertiesExists"/>
+    	<!--3. check previous release build with same target, check file exists in download dir -->
+        <fail message="release already exists: ${faktoripsReleaseDownloadZipPath}">
+             <condition>
+                <or> 
+                  <available file="${faktoripsReleaseDownloadZipPath}"/>
+                  <available file="${faktoripsNls1ReleaseDownloadZipPath}"/>
+                </or> 
+              </condition>
+         </fail>
     	
     	<!-- TODO checkout org.faktorips.pluginbulder using build.version in pluginbuilder_release_tmp -->
 
@@ -269,20 +281,14 @@
             <property name="build.version" value="${build.version}"/>
             <property name="buildDirectory" value="${buildDirectory}"/>
         </ant>
+    	
         <!--copy zipped features into the faktorips download directory, fails if files already exists-->
-        <!--TODO add overwite switch as property, assert if exists above-->
-    	
-    	<fail message="release already exists">
-    	    <condition>
-    	       	<available file="${downloadDir}/faktorips_${build.version}.zip"/>
-    	     </condition>
-    	</fail>
-    	
     	<copy file="${buildDirectory}/results/org.faktorips.feature-${build.version}.zip" 
-    		tofile="${downloadDir}/faktorips_${build.version}.zip" overwrite="false" verbose="true" failonerror="true"/>
+    		tofile="${faktoripsReleaseDownloadZipPath}" overwrite="false" verbose="true" failonerror="true"/>
         <copy file="${buildDirectory}/results/org.faktorips.feature.nls1-${build.version}.zip" 
-        	tofile="${downloadDir}/faktorips.nls1_${build.version}.zip" overwrite="false" verbose="true" failonerror="true"/>
-        <!--install the features on updatesite-->
+        	tofile="${faktoripsNls1ReleaseDownloadZipPath}" overwrite="false" verbose="true" failonerror="true"/>
+        
+    	<!--install the features on updatesite-->
         <!--1. generate a new site.xml on the updatesite, including all previous and new feature versions-->
         <ant dir="${projectPluginbuilderDir}/org.faktorips.pluginbuilder/build-files" antfile="postBuild.xml" target="-createNightlyBuildSiteXml">
             <property name="siteXmlFile" value="${basedir}/${projectPluginbuilderDir}/org.faktorips.updatesite/site_tmp.xml"/>
@@ -301,14 +307,12 @@
         <copy todir="${projectPluginbuilderDir}/org.faktorips.updatesite/features" overwrite="false">
             <fileset dir="${buildDirectory}/updateSite/features" includes="*.jar" verbose="true"/>
         </copy>
-    	
         <!--3. merge the generated site.xml with the previous site.xml as new site.xml-->
         <antcall inheritall="true" target="-merge.updatesite.xml"/>
-        
-    	<!--checkin updatesite-->
+    	<!--4. checkin updatesite-->
         <antcall inheritall="true" target="-checkin.updatesite"/>
     	
-    	<!--4. checkout on faktorips updatesite website directory -->
+    	<!--5. checkout on faktorips updatesite website directory -->
     	<antcall inheritall="true" target="-checkout.updatesite.on.faktorips.org"/>
     	
     </target>
