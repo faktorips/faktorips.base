@@ -323,7 +323,7 @@
         <cvs command="commit -m 'release build: ${build.version}'" 
         	package="org.faktorips.updatesite" dest="checkout/" cvsroot="${cvsroot}" quiet="true"/>
         <cvs command="add -m 'release build: ${build.version}' " 
-        	package="org.faktorips.updatesite" dest="checkout/org.faktorips.updatesite" cvsroot="${cvsroot}" quiet="true"/>
+        	package="org.faktorips.updatesite" dest="checkout/" cvsroot="${cvsroot}" quiet="true"/>
     </target>
     <target name="-checkout.updatesite.on.faktorips.org" if="isUseCvs">
     	<property name="updatesite.path" value="/var/www/localhost/htdocs/update.faktorzehn.org/faktorips/"/>
