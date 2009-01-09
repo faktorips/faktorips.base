@@ -158,29 +158,7 @@ TODO bbv, kqv und msgp
                     <property name="ccProjectDir" value="${logdir}/${project.name}"/>
                 </antpublisher>
         </publisher>
-        
-        <!-- publisher copies the result of the automated test run to the cc log directory, 
-             to bring it to the cc website -->
-        <publisher project="org.faktorips.pluginbuilder" id="test.result.automated.test.result">
-            <onsuccess>
-                <antpublisher 
-                     buildfile="${mainbuildfile}"
-                     uselogger="true"
-                     usedebug="false"
-                     target="publish.pluginbuilder.faktorips.testdetails.html">
-                    <property name="testdetails.dir" value="${logdir}/${project.name}/_cache"/>
-                </antpublisher>
-            </onsuccess>
-            <onfailure>
-                <antpublisher 
-                     buildfile="${mainbuildfile}"
-                     uselogger="true"
-                     usedebug="false"
-                     target="publish.pluginbuilder.faktorips.testdetails.html">
-                    <property name="testdetails.dir" value="${logdir}/${project.name}/_cache"/>
-                </antpublisher>
-            </onfailure>        
-        </publisher>
+ 
     </publishers>
     
 </faktoripscruisecontrol>

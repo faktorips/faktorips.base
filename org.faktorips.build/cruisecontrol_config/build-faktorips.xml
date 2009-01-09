@@ -205,7 +205,7 @@
     </target>
 	<!-- target to copy cc build artefacts -->
 	<target name="copy.artifacts.pluginbuilder.faktorips" description="target to copy cc build artefacts">
-		<!-- properties from cc: ccProjectDir, cctimestamp-->
+		<!-- properties from cc: ccProjectDir (defined in config.xml), cctimestamp (see cc reference)-->
 		
 		<!-- copy eclipse workspace logfile -->
 		<mkdir dir="${ccProjectDir}/${cctimestamp}"/>
@@ -218,19 +218,6 @@
 			todir="${ccProjectDir}/${cctimestamp}"
 			failonerror="false" verbose="true"/>
 	</target>
-	<!-- target to publish the automated test result to the cc log directory -->
-    <target name="publish.pluginbuilder.faktorips.testdetails.html" description="helper target to publish the automated test result html file from the previous faktorips build">
-        <condition property="testdetails.html" value="${testdetails.dir}/log${cctimestamp}L${label}-testdetails.html">
-            <equals arg1="${thisbuildsuccessful}" arg2="true"/>
-        </condition>
-        <condition property="testdetails.html" value="${testdetails.dir}/log${cctimestamp}-testdetails.html">
-            <not>
-                <equals arg1="${thisbuildsuccessful}" arg2="true"/>
-            </not>
-        </condition>
-        <copy file="${testdetails.html}" tofile="${testdetails.html}_save" overwrite="true"/>
-        <copy file="${basedir}/pluginbuilder_tmp/org.faktorips.pluginbuilder/results/testresults/html/testReport_N-${label}.html" tofile="${testdetails.html}" overwrite="true"/>
-    </target>
 	
     <!--this target runs the integrationtest, 
        the target org.faktorips.pluginbuilder must be executed before, this will be handled by cruisecontrol-->

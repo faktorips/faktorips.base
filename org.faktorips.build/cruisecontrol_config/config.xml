@@ -519,16 +519,6 @@
             <antpublisher buildfile="${mainbuildfile}" uselogger="true" usedebug="false" target="copy.artifacts.pluginbuilder.faktorips">
                 <property name="ccProjectDir" value="${logdir}/${project.name}"/>
             </antpublisher>
-            <onsuccess>
-                <antpublisher buildfile="${mainbuildfile}" uselogger="true" usedebug="false" target="publish.pluginbuilder.faktorips.testdetails.html">
-                    <property name="testdetails.dir" value="${logdir}/${project.name}/_cache"/>
-                </antpublisher>
-            </onsuccess>
-            <onfailure>
-                <antpublisher buildfile="${mainbuildfile}" uselogger="true" usedebug="false" target="publish.pluginbuilder.faktorips.testdetails.html">
-                    <property name="testdetails.dir" value="${logdir}/${project.name}/_cache"/>
-                </antpublisher>
-            </onfailure>
         </publishers>
     </project>
     <!--=====================================================-->
