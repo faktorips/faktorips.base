@@ -65,7 +65,7 @@ public class XmlUtilTest extends XmlAbstractTestCase {
         assertNotNull(docElement);
         Element testElement = XmlUtil.getFirstElement(docElement, "TestElement"); //$NON-NLS-1$
         assertNotNull(testElement);
-        assertEquals("öäüÖÄÜß", testElement.getAttribute("value")); //$NON-NLS-1$ //$NON-NLS-2$
+        assertEquals("Ã¶Ã¤Ã¼Ã–Ã„ÃœÃŸ", testElement.getAttribute("value")); //$NON-NLS-1$ //$NON-NLS-2$
         assertNull(XmlUtil.getFirstElement(docElement, "UnknownElement")); //$NON-NLS-1$
     }
     
@@ -82,7 +82,7 @@ public class XmlUtilTest extends XmlAbstractTestCase {
 
         Element testElement = XmlUtil.getElement(docElement, "TestElement", 0); //$NON-NLS-1$
         assertNotNull(testElement);
-        assertEquals("öäüÖÄÜß", testElement.getAttribute("value")); //$NON-NLS-1$ //$NON-NLS-2$
+        assertEquals("Ã¶Ã¤Ã¼Ã–Ã„ÃœÃŸ", testElement.getAttribute("value")); //$NON-NLS-1$ //$NON-NLS-2$
         
         testElement = XmlUtil.getElement(docElement, "TestElement", 1); //$NON-NLS-1$
         assertNotNull(testElement);
