@@ -21,7 +21,8 @@
     <property name="htmlemail.returnaddress" value="cc@faktorips.org"/>
     <property name="htmlemail.xsldir" value="/opt/cc/webapps/cruisecontrol/xsl/"/>
     <property name="htmlemail.css" value="/opt/cc/docs/cruisecontrol.css"/>
-    <property name="htlmemail.reportWhenFixed.address" value="faktorips-devel@faktorzehn.de"/>
+<!--    <property name="htlmemail.reportWhenFixed.address" value="faktorips-devel@faktorzehn.de"/> -->
+    <property name="htlmemail.reportWhenFixed.address" value="joerg.ortmann@faktorzehn.de"/>
 
     <!-- cc project definitions -->
     <projects>
@@ -128,7 +129,7 @@ TODO bbv, kqv und msgp
                 xsldir="${htmlemail.xsldir}"
                 css="${htmlemail.css}">
                 
-                <failure reportWhenFixed="true" address="htlmemail.reportWhenFixed.address" />
+                <failure reportWhenFixed="true" address="${htlmemail.reportWhenFixed.address}" />
                 
                 <!-- mail mappings are specified in ENTITY mailmapping see this xml header -->
                 &mailmapping;

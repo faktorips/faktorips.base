@@ -14,7 +14,7 @@
     <property name="htmlemail.returnaddress" value="cc@faktorips.org"/>
     <property name="htmlemail.xsldir" value="/opt/cc/webapps/cruisecontrol/xsl/"/>
     <property name="htmlemail.css" value="/opt/cc/docs/cruisecontrol.css"/>
-    <property name="htlmemail.reportWhenFixed.address" value="faktorips-devel@faktorzehn.de"/>
+    <property name="htlmemail.reportWhenFixed.address" value="joerg.ortmann@faktorzehn.de"/>
     <!--=====================================================-->
     <!--Project definition: org.faktorips.util-->
     <!--=====================================================-->
@@ -34,7 +34,7 @@
         </log>
         <publishers>
             <htmlemail buildresultsurl="${buildresultsurl}/${project.name}" mailhost="${htmlemail.mailhost}" username="" password="" returnaddress="${htmlemail.returnaddress}" skipusers="false" spamwhilebroken="false" returnname="faktorips-buildqueue" subjectprefix="[CC ${project.name}]" reportsuccess="always" xsldir="${htmlemail.xsldir}" css="${htmlemail.css}">
-                <failure reportWhenFixed="true" address="htlmemail.reportWhenFixed.address"/>
+                <failure reportWhenFixed="true" address="${htlmemail.reportWhenFixed.address}"/>
                 <!--mail mappings are specified in ENTITY mailmapping see this xml header-->
                 <!--define cvs-user mailaddresses-->
                 <!--inactive
@@ -75,7 +75,7 @@
         </log>
         <publishers>
             <htmlemail buildresultsurl="${buildresultsurl}/${project.name}" mailhost="${htmlemail.mailhost}" username="" password="" returnaddress="${htmlemail.returnaddress}" skipusers="false" spamwhilebroken="false" returnname="faktorips-buildqueue" subjectprefix="[CC ${project.name}]" reportsuccess="always" xsldir="${htmlemail.xsldir}" css="${htmlemail.css}">
-                <failure reportWhenFixed="true" address="htlmemail.reportWhenFixed.address"/>
+                <failure reportWhenFixed="true" address="${htlmemail.reportWhenFixed.address}"/>
                 <!--mail mappings are specified in ENTITY mailmapping see this xml header-->
                 <!--define cvs-user mailaddresses-->
                 <!--inactive
@@ -116,7 +116,7 @@
         </log>
         <publishers>
             <htmlemail buildresultsurl="${buildresultsurl}/${project.name}" mailhost="${htmlemail.mailhost}" username="" password="" returnaddress="${htmlemail.returnaddress}" skipusers="false" spamwhilebroken="false" returnname="faktorips-buildqueue" subjectprefix="[CC ${project.name}]" reportsuccess="always" xsldir="${htmlemail.xsldir}" css="${htmlemail.css}">
-                <failure reportWhenFixed="true" address="htlmemail.reportWhenFixed.address"/>
+                <failure reportWhenFixed="true" address="${htlmemail.reportWhenFixed.address}"/>
                 <!--mail mappings are specified in ENTITY mailmapping see this xml header-->
                 <!--define cvs-user mailaddresses-->
                 <!--inactive
@@ -158,7 +158,7 @@
         </log>
         <publishers>
             <htmlemail buildresultsurl="${buildresultsurl}/${project.name}" mailhost="${htmlemail.mailhost}" username="" password="" returnaddress="${htmlemail.returnaddress}" skipusers="false" spamwhilebroken="false" returnname="faktorips-buildqueue" subjectprefix="[CC ${project.name}]" reportsuccess="always" xsldir="${htmlemail.xsldir}" css="${htmlemail.css}">
-                <failure reportWhenFixed="true" address="htlmemail.reportWhenFixed.address"/>
+                <failure reportWhenFixed="true" address="${htlmemail.reportWhenFixed.address}"/>
                 <!--mail mappings are specified in ENTITY mailmapping see this xml header-->
                 <!--define cvs-user mailaddresses-->
                 <!--inactive
@@ -200,7 +200,7 @@
         </log>
         <publishers>
             <htmlemail buildresultsurl="${buildresultsurl}/${project.name}" mailhost="${htmlemail.mailhost}" username="" password="" returnaddress="${htmlemail.returnaddress}" skipusers="false" spamwhilebroken="false" returnname="faktorips-buildqueue" subjectprefix="[CC ${project.name}]" reportsuccess="always" xsldir="${htmlemail.xsldir}" css="${htmlemail.css}">
-                <failure reportWhenFixed="true" address="htlmemail.reportWhenFixed.address"/>
+                <failure reportWhenFixed="true" address="${htlmemail.reportWhenFixed.address}"/>
                 <!--mail mappings are specified in ENTITY mailmapping see this xml header-->
                 <!--define cvs-user mailaddresses-->
                 <!--inactive
@@ -242,7 +242,7 @@
         </log>
         <publishers>
             <htmlemail buildresultsurl="${buildresultsurl}/${project.name}" mailhost="${htmlemail.mailhost}" username="" password="" returnaddress="${htmlemail.returnaddress}" skipusers="false" spamwhilebroken="false" returnname="faktorips-buildqueue" subjectprefix="[CC ${project.name}]" reportsuccess="always" xsldir="${htmlemail.xsldir}" css="${htmlemail.css}">
-                <failure reportWhenFixed="true" address="htlmemail.reportWhenFixed.address"/>
+                <failure reportWhenFixed="true" address="${htlmemail.reportWhenFixed.address}"/>
                 <!--mail mappings are specified in ENTITY mailmapping see this xml header-->
                 <!--define cvs-user mailaddresses-->
                 <!--inactive
@@ -283,7 +283,7 @@
         </log>
         <publishers>
             <htmlemail buildresultsurl="${buildresultsurl}/${project.name}" mailhost="${htmlemail.mailhost}" username="" password="" returnaddress="${htmlemail.returnaddress}" skipusers="false" spamwhilebroken="false" returnname="faktorips-buildqueue" subjectprefix="[CC ${project.name}]" reportsuccess="always" xsldir="${htmlemail.xsldir}" css="${htmlemail.css}">
-                <failure reportWhenFixed="true" address="htlmemail.reportWhenFixed.address"/>
+                <failure reportWhenFixed="true" address="${htlmemail.reportWhenFixed.address}"/>
                 <!--mail mappings are specified in ENTITY mailmapping see this xml header-->
                 <!--define cvs-user mailaddresses-->
                 <!--inactive
@@ -324,7 +324,7 @@
         </log>
         <publishers>
             <htmlemail buildresultsurl="${buildresultsurl}/${project.name}" mailhost="${htmlemail.mailhost}" username="" password="" returnaddress="${htmlemail.returnaddress}" skipusers="false" spamwhilebroken="false" returnname="faktorips-buildqueue" subjectprefix="[CC ${project.name}]" reportsuccess="always" xsldir="${htmlemail.xsldir}" css="${htmlemail.css}">
-                <failure reportWhenFixed="true" address="htlmemail.reportWhenFixed.address"/>
+                <failure reportWhenFixed="true" address="${htlmemail.reportWhenFixed.address}"/>
                 <!--mail mappings are specified in ENTITY mailmapping see this xml header-->
                 <!--define cvs-user mailaddresses-->
                 <!--inactive
@@ -367,7 +367,7 @@
         </log>
         <publishers>
             <htmlemail buildresultsurl="${buildresultsurl}/${project.name}" mailhost="${htmlemail.mailhost}" username="" password="" returnaddress="${htmlemail.returnaddress}" skipusers="false" spamwhilebroken="false" returnname="faktorips-buildqueue" subjectprefix="[CC ${project.name}]" reportsuccess="always" xsldir="${htmlemail.xsldir}" css="${htmlemail.css}">
-                <failure reportWhenFixed="true" address="htlmemail.reportWhenFixed.address"/>
+                <failure reportWhenFixed="true" address="${htlmemail.reportWhenFixed.address}"/>
                 <!--mail mappings are specified in ENTITY mailmapping see this xml header-->
                 <!--define cvs-user mailaddresses-->
                 <!--inactive
@@ -408,7 +408,7 @@
         </log>
         <publishers>
             <htmlemail buildresultsurl="${buildresultsurl}/${project.name}" mailhost="${htmlemail.mailhost}" username="" password="" returnaddress="${htmlemail.returnaddress}" skipusers="false" spamwhilebroken="false" returnname="faktorips-buildqueue" subjectprefix="[CC ${project.name}]" reportsuccess="always" xsldir="${htmlemail.xsldir}" css="${htmlemail.css}">
-                <failure reportWhenFixed="true" address="htlmemail.reportWhenFixed.address"/>
+                <failure reportWhenFixed="true" address="${htlmemail.reportWhenFixed.address}"/>
                 <!--mail mappings are specified in ENTITY mailmapping see this xml header-->
                 <!--define cvs-user mailaddresses-->
                 <!--inactive
@@ -448,7 +448,7 @@
         </log>
         <publishers>
             <htmlemail buildresultsurl="${buildresultsurl}/${project.name}" mailhost="${htmlemail.mailhost}" username="" password="" returnaddress="${htmlemail.returnaddress}" skipusers="false" spamwhilebroken="false" returnname="faktorips-buildqueue" subjectprefix="[CC ${project.name}]" reportsuccess="always" xsldir="${htmlemail.xsldir}" css="${htmlemail.css}">
-                <failure reportWhenFixed="true" address="htlmemail.reportWhenFixed.address"/>
+                <failure reportWhenFixed="true" address="${htlmemail.reportWhenFixed.address}"/>
                 <!--mail mappings are specified in ENTITY mailmapping see this xml header-->
                 <!--define cvs-user mailaddresses-->
                 <!--inactive
@@ -497,7 +497,7 @@
         </log>
         <publishers>
             <htmlemail buildresultsurl="${buildresultsurl}/${project.name}" mailhost="${htmlemail.mailhost}" username="" password="" returnaddress="${htmlemail.returnaddress}" skipusers="false" spamwhilebroken="false" returnname="faktorips-buildqueue" subjectprefix="[CC ${project.name}]" reportsuccess="always" xsldir="${htmlemail.xsldir}" css="${htmlemail.css}">
-                <failure reportWhenFixed="true" address="htlmemail.reportWhenFixed.address"/>
+                <failure reportWhenFixed="true" address="${htlmemail.reportWhenFixed.address}"/>
                 <!--mail mappings are specified in ENTITY mailmapping see this xml header-->
                 <!--define cvs-user mailaddresses-->
                 <!--inactive
@@ -554,7 +554,7 @@
         </log>
         <publishers>
             <htmlemail buildresultsurl="${buildresultsurl}/${project.name}" mailhost="${htmlemail.mailhost}" username="" password="" returnaddress="${htmlemail.returnaddress}" skipusers="false" spamwhilebroken="false" returnname="faktorips-buildqueue" subjectprefix="[CC ${project.name}]" reportsuccess="always" xsldir="${htmlemail.xsldir}" css="${htmlemail.css}">
-                <failure reportWhenFixed="true" address="htlmemail.reportWhenFixed.address"/>
+                <failure reportWhenFixed="true" address="${htlmemail.reportWhenFixed.address}"/>
                 <!--mail mappings are specified in ENTITY mailmapping see this xml header-->
                 <!--define cvs-user mailaddresses-->
                 <!--inactive
