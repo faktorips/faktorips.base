@@ -206,10 +206,16 @@
 	<!-- target to copy cc build artefacts -->
 	<target name="copy.artifacts.pluginbuilder.faktorips" description="target to copy cc build artefacts">
 		<!-- properties from cc: lastbuildtimestamp, ccProjectDir -->
+		
+		<!-- copy eclipse workspace logfile -->
 		<mkdir dir="${ccProjectDir}/${lastbuildtimestamp}"/>
 		<copy file="${basedir}/pluginbuilder_tmp/org.faktorips.pluginbuilder/workspace/.metadata/.log" 
 			tofile="${ccProjectDir}/${lastbuildtimestamp}/eclipse_workspace.log"
 		    failonerror="false" verbose="true"/>
+		
+		<!-- copy autoamted test html report -->
+		<copy file="${basedir}/pluginbuilder_tmp/org.faktorips.pluginbuilder/results/testresults/html/testReport_N-${label}.html" 
+			todir="${ccProjectDir}/${lastbuildtimestamp}" overwrite="true"/>
 	</target>
 	<!-- target to publish the automated test result to the cc log directory -->
     <target name="publish.pluginbuilder.faktorips.testdetails.html" description="helper target to publish the automated test result html file from the previous faktorips build">
