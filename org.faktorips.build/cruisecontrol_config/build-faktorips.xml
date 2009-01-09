@@ -259,8 +259,11 @@
     	<!--2. check if the build.verion property file exists-->
         <available type="file" file="${projectPluginbuilderDir}/org.faktorips.pluginbuilder/releases/${build.version}.properties" property="releasePropertiesExists"/>
         <fail message="Could not find ${build.version}.properties in ${projectPluginbuilderDir}/org.faktorips.pluginbuilder/releases/" unless="releasePropertiesExists"/>
+    	
+    	<!-- TODO checkout org.faktorips.pluginbulder using build.version in pluginbuilder_release_tmp -->
+
         <!--checkout updatesite-->
-        <antcall inheritall="true" target="-checkout.updatesite"/>
+    	<antcall inheritall="true" target="-checkout.updatesite"/>
         <!--build release unsing pluginbuilder main target-->
         <ant dir="${projectPluginbuilderDir}/org.faktorips.pluginbuilder/" antfile="build.xml" target="main">
             <property name="build.version" value="${build.version}"/>
@@ -317,7 +320,7 @@
             <outputproperty name="method" value="xml"/>
             <outputproperty name="encoding" value="UTF-8"/>
             <outputproperty name="indent" value="yes"/>
-            <param name="doc2" expression="${projectPluginbuilderDir}/org.faktorips.updatesite/site_tmp.xml"/>
+            <param name="doc2" expression="${basedir}/${projectPluginbuilderDir}/org.faktorips.updatesite/site_tmp.xml"/>
         </xslt>
         <delete file="${projectPluginbuilderDir}/org.faktorips.updatesite/site_tmp.xml" verbose="false"/>
         <copy file="${projectPluginbuilderDir}/org.faktorips.updatesite/site_merge.xml" tofile="${projectPluginbuilderDir}/org.faktorips.updatesite/site.xml" verbose="false" overwrite="true"/>
