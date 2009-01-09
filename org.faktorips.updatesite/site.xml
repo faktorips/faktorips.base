@@ -161,4 +161,11 @@
 <category name="Faktor-IPS 2.2.0.rc1"/>
 </feature>
 <category-def name="Faktor-IPS 2.2.0.rc1" label="Faktor-IPS 2.2.0.rc1"/>
+<feature url="features/org.faktorips.feature_2.2.0.rc1.jar" id="org.faktorips.feature" version="2.2.0.rc1">
+<category name="Faktor-IPS 2.2.0.rc1"/>
+</feature>
+<feature url="features/org.faktorips.feature.nls1_2.2.0.rc1.jar" id="org.faktorips.feature.nls1" version="2.2.0.rc1">
+<category name="Faktor-IPS 2.2.0.rc1"/>
+</feature>
+<category-def name="Faktor-IPS 2.2.0.rc1" label="Faktor-IPS 2.2.0.rc1"/>
 </site>
