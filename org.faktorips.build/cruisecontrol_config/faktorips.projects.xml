@@ -17,7 +17,7 @@
     <property name="buildresultsurl" value="http://www.faktorzehn.org/cruisecontrol/buildresults"/>
     
     <!-- mail properties -->
-    <property name="htmlemail.mailhost" value="/usr/local/cvsroot"/>
+    <property name="htmlemail.mailhost" value="62.245.204.82"/>
     <property name="htmlemail.returnaddress" value="cc@faktorips.org"/>
     <property name="htmlemail.xsldir" value="/opt/cc/webapps/cruisecontrol/xsl/"/>
     <property name="htmlemail.css" value="/opt/cc/docs/cruisecontrol.css"/>
