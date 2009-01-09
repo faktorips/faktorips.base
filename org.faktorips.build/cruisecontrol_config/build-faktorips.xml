@@ -299,11 +299,11 @@
             <property name="updateSiteUrl" value="http://update.faktorzehn.org/faktorips"/>
         </ant>
         <!--2. copy all features and plugins to the updatesite-->
-        <copy todir="${projectPluginbuilderDir}/org.faktorips.updatesite/plugins" overwrite="false">
-            <fileset dir="${buildDirectory}/updateSite/plugins" includes="*.jar" verbose="true"/>
+        <copy todir="${projectPluginbuilderDir}/org.faktorips.updatesite/plugins" overwrite="false" verbose="true">
+            <fileset dir="${buildDirectory}/updateSite/plugins" includes="*.jar"/>
         </copy>
-        <copy todir="${projectPluginbuilderDir}/org.faktorips.updatesite/features" overwrite="false">
-            <fileset dir="${buildDirectory}/updateSite/features" includes="*.jar" verbose="true"/>
+        <copy todir="${projectPluginbuilderDir}/org.faktorips.updatesite/features" overwrite="false" verbose="true">
+            <fileset dir="${buildDirectory}/updateSite/features" includes="*.jar"/>
         </copy>
         <!--3. merge the generated site.xml with the previous site.xml as new site.xml-->
         <antcall inheritall="true" target="-merge.updatesite.xml"/>
