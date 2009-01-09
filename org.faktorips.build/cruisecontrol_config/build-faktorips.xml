@@ -231,28 +231,32 @@
         <ant dir="${projectPluginbuilderDir}/org.faktorips.pluginbuilder/" antfile="build.xml" target="integrationtest"/>
     </target>
 	
-    <!--this target builds the faktorips release-->
-    <!--mandatory input properties: build.version-->
+    <!--this target builds the faktorips release madatory parameter: 
+           -Dbuild.version -> the version which will be released -->
     <!--note that if this script is running local without cvs the following parameter must be set:
-           -DuseCvs=false -> no cvs support
+        optional parameters:
+           -DuseCvs=false -> no cvs support 
            -Dall.map=all_copy.map -> copy features and plugins from the workspace instead of using a releas tag with cvs 
-           -Dbuild.version -> the version which will be released
            -DprojectPluginbuilderDir -> the root dir of all plugin projects
            -DbaseDir -> the parent dir of the dir specified in projectPluginbuilderDir
          additionaly make sure that the build_host_<hostname>.properies exists in the pluginbuilder project-->
-    <target name="release" description="release build for an specified faktorips release version, builds the complete feature,                  executes the junit plugin tests and distributes the result to the update site and download directory">
+    <target name="release.faktorips" description="release build for an specified faktorips release version, builds the complete feature,                  executes the junit plugin tests and distributes the result to the update site and download directory">
         <property name="useCvs" value="true"/>
         <property name="projectPluginbuilderDir" value="checkout/"/>
         <property name="downloadDir" value="/var/www/localhost/htdocs/update.faktorzehn.org/faktorips/downloads"/>
-        <condition property="isUseCvs" value="true">
+        <property name="buildDirectory" value="${basedir}/pluginbuilder_release_tmp/org.faktorips.pluginbuilder_release"/>
+        
+    	<condition property="isUseCvs" value="true">
             <equals arg1="${useCvs}" arg2="true"/>
         </condition>
+    	
         <!-- TODO create plugin builder property file using build.version 
              cvs tag depending on the build.version -->
+    	
     	<!--asserts-->
         <!--1. check if the build.version property is given-->
         <fail unless="build.version" message="Please specify the build.version, e.g. ant ... -Dbuild.version=2.2.0.rfinal"/>
-        <!--2. check if the build.verion property file exists-->
+    	<!--2. check if the build.verion property file exists-->
         <available type="file" file="${projectPluginbuilderDir}/org.faktorips.pluginbuilder/releases/${build.version}.properties" property="releasePropertiesExists"/>
         <fail message="Could not find ${build.version}.properties in ${projectPluginbuilderDir}/org.faktorips.pluginbuilder/releases/" unless="releasePropertiesExists"/>
         <!--checkout updatesite-->
@@ -260,17 +264,18 @@
         <!--build release unsing pluginbuilder main target-->
         <ant dir="${projectPluginbuilderDir}/org.faktorips.pluginbuilder/" antfile="build.xml" target="main">
             <property name="build.version" value="${build.version}"/>
-            <property name="buildDirectory" value="${basedir}/pluginbuilder_tmp/org.faktorips.pluginbuilder_release"/>
+            <property name="buildDirectory" value="${buildDirectory}"/>
         </ant>
         <!--copy zipped features into the faktorips download directory, fails if files already exists-->
-        <copy file="${basedir}/pluginbuilder_tmp/org.faktorips.pluginbuilder_release/results/org.faktorips.feature-${build.version}.zip" tofile="${downloadDir}/faktorips_${build.version}.zip" overwrite="false"/>
-        <copy file="${basedir}/pluginbuilder_tmp/org.faktorips.pluginbuilder_release/results/org.faktorips.feature.nls1-${build.version}.zip" tofile="${downloadDir}/faktorips.nls1_${build.version}.zip" overwrite="false"/>
+        <!--TODO add overwite switch as property-->
+    	<copy file="${buildDirectory}/results/org.faktorips.feature-${build.version}.zip" tofile="${downloadDir}/faktorips_${build.version}.zip" overwrite="false"/>
+        <copy file="${buildDirectory}/results/org.faktorips.feature.nls1-${build.version}.zip" tofile="${downloadDir}/faktorips.nls1_${build.version}.zip" overwrite="false"/>
         <!--install the features on updatesite-->
         <!--1. generate a new site.xml on the updatesite, including all previous and new feature versions-->
         <ant dir="${projectPluginbuilderDir}/org.faktorips.pluginbuilder/build-files" antfile="postBuild.xml" target="-createNightlyBuildSiteXml">
-            <property name="siteXmlFile" value="${projectPluginbuilderDir}/org.faktorips.updatesite/site_tmp.xml"/>
+            <property name="siteXmlFile" value="${basedir}/${projectPluginbuilderDir}/org.faktorips.updatesite/site_tmp.xml"/>
             <property name="pluginbuilder.features" value="org.faktorips.feature,org.faktorips.feature.nls1"/>
-            <property name="buildDirectory" value="${basedir}/pluginbuilder_tmp/org.faktorips.pluginbuilder_release"/>
+            <property name="buildDirectory" value="${buildDirectory}"/>
             <property name="buildHome" value="${projectPluginbuilderDir}/org.faktorips.pluginbuilder"/>
             <property name="updateSiteCategoryName" value="Faktor-IPS ${build.version}"/>
             <property name="updateSiteCategoryLabel" value="Faktor-IPS ${build.version}"/>
@@ -279,10 +284,10 @@
         </ant>
         <!--2. copy all features and plugins to the updatesite-->
         <copy todir="${projectPluginbuilderDir}/org.faktorips.updatesite/plugins" overwrite="false">
-            <fileset dir="${basedir}/pluginbuilder_tmp/org.faktorips.pluginbuilder_release/updateSite/plugins" includes="*.jar"/>
+            <fileset dir="${buildDirectory}/updateSite/plugins" includes="*.jar"/>
         </copy>
         <copy todir="${projectPluginbuilderDir}/org.faktorips.updatesite/features" overwrite="false">
-            <fileset dir="${basedir}/pluginbuilder_tmp/org.faktorips.pluginbuilder_release/updateSite/features" includes="*.jar"/>
+            <fileset dir="${buildDirectory}/updateSite/features" includes="*.jar"/>
         </copy>
         <!--3. merge the generated site.xml with the previous site.xml as new site.xml-->
         <antcall inheritall="true" target="-merge.updatesite.xml"/>
