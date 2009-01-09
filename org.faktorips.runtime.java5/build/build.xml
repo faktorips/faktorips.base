@@ -45,7 +45,13 @@
 		    		<include name="build/results/*.jar" />
 		    </patternset>
 		</fileset>
-
+		
+        <!-- jars in own project lib directory -->
+        <fileset dir="../lib/">
+            <patternset>
+                <include name="*.jar"/>
+            </patternset>
+        </fileset>
 	</path>
 	
 	<!-- calls default-target of template-buildfile -->
