@@ -276,7 +276,7 @@
             <property name="siteXmlFile" value="${basedir}/${projectPluginbuilderDir}/org.faktorips.updatesite/site_tmp.xml"/>
             <property name="pluginbuilder.features" value="org.faktorips.feature,org.faktorips.feature.nls1"/>
             <property name="buildDirectory" value="${buildDirectory}"/>
-            <property name="buildHome" value="${projectPluginbuilderDir}/org.faktorips.pluginbuilder"/>
+            <property name="buildHome" value="${basedir}/${projectPluginbuilderDir}/org.faktorips.pluginbuilder"/>
             <property name="updateSiteCategoryName" value="Faktor-IPS ${build.version}"/>
             <property name="updateSiteCategoryLabel" value="Faktor-IPS ${build.version}"/>
             <property name="updateSiteDescription" value="FaktorIPS update site"/>
