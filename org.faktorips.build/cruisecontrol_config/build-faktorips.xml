@@ -262,7 +262,7 @@
             <property name="build.version" value="${build.version}"/>
             <property name="buildDirectory" value="${basedir}/pluginbuilder_tmp/org.faktorips.pluginbuilder_release"/>
         </ant>
-        <!--copy zipped features into the faktorips download directory-->
+        <!--copy zipped features into the faktorips download directory, fails if files already exists-->
         <copy file="${basedir}/pluginbuilder_tmp/org.faktorips.pluginbuilder_release/results/org.faktorips.feature-${build.version}.zip" tofile="${downloadDir}/faktorips_${build.version}.zip" overwrite="false"/>
         <copy file="${basedir}/pluginbuilder_tmp/org.faktorips.pluginbuilder_release/results/org.faktorips.feature.nls1-${build.version}.zip" tofile="${downloadDir}/faktorips.nls1_${build.version}.zip" overwrite="false"/>
         <!--install the features on updatesite-->
@@ -295,7 +295,7 @@
         <cvs command="co org.faktorips.updatesite" dest="checkout/" cvsroot="${cvsroot}" quiet="true"/>
     </target>
     <target name="-checkin.updatesite" if="isUseCvs">
-        <cvs command="ci org.faktorips.updatesite" dest="checkout/" cvsroot="${cvsroot}" quiet="true"/>
+        <cvs command="ci org.faktorips.updatesite -m 'release build: ${build.version}'" dest="checkout/" cvsroot="${cvsroot}" quiet="true"/>
     </target>
     <target name="-merge.updatesite.xml">
         <xslt in="${projectPluginbuilderDir}/org.faktorips.updatesite/site.xml" out="${projectPluginbuilderDir}/org.faktorips.updatesite/site_merge.xml" style="${projectPluginbuilderDir}/org.faktorips.build/cruisecontrol_config/xsl/mergeupdatesite.xsl" force="true">
