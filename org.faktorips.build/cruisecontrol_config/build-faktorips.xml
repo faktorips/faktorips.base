@@ -281,7 +281,7 @@
         <!--checkout updatesite-->
     	<antcall inheritall="true" target="-checkout.updatesite"/>
     	
-        <!--build release unsing pluginbuilder main target-->
+        <!-- check if test should be run or not, property 'pluginbuilder.is.runtests' could be overwritten -->
         <loadproperties srcfile="${release.properties}">
           <filterchain>
             <linecontains>
@@ -289,14 +289,14 @@
             </linecontains>
           </filterchain>
         </loadproperties>
+    	<echo message="pluginbuilder.is.runtests: ${pluginbuilder.is.runtests}"/>
 
-        <!-- check if test should be run or not, property 'pluginbuilder.is.runtests' could be overwritten -->
+        <!--build release unsing pluginbuilder main target-->
     	<ant dir="${projectsRootDir}/org.faktorips.pluginbuilder/" antfile="build.xml" target="main">
             <property name="build.version" value="${build.version}"/>
             <property name="buildDirectory" value="${buildDirectory}"/>
             <property name="pluginbuilder.is.runtests" value="${pluginbuilder.is.runtests}"/>
         </ant>
-    	<echo message="pluginbuilder.is.runtests: ${pluginbuilder.is.runtests}"/>
     	
         <!--copy zipped features into the faktorips download directory, fails if files already exists-->
     	<copy file="${buildDirectory}/results/org.faktorips.feature-${build.version}.zip" 
