@@ -255,6 +255,10 @@
     	
         <!-- TODO create plugin builder property file using build.version 
              cvs tag depending on the build.version -->
+
+    	<!--checkout pluginbuilder, build project -->
+    	<antcall inheritall="true" target="-checkout.pluginbuilder"/>
+    	<antcall inheritall="true" target="-checkout.build"/>
     	
     	<!--asserts-->
         <!--1. check if the build.version property is given-->
@@ -270,9 +274,6 @@
              <condition><available file="${faktoripsNls1ReleaseDownloadZipPath}"/></condition>
          </fail>
 
-        <!--checkout pluginbuilder, build project -->
-    	<antcall inheritall="true" target="-checkout.pluginbuilder"/>
-    	<antcall inheritall="true" target="-checkout.build"/>
         
         <!--checkout updatesite-->
     	<antcall inheritall="true" target="-checkout.updatesite"/>
