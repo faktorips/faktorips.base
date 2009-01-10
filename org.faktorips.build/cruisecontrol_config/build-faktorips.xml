@@ -274,6 +274,10 @@
              <condition><available file="${faktoripsNls1ReleaseDownloadZipPath}"/></condition>
          </fail>
 
+    	<!-- checkout pluginbuilder with correct build.version -->
+    	<antcall inheritall="true" target="-checkout.pluginbuilder.build.version">
+    	     <property name="release.properties" value="${projectsRootDir}/org.faktorips.pluginbuilder/releases/${build.version}.properties"/>
+    	</antcall>
         
         <!--checkout updatesite-->
     	<antcall inheritall="true" target="-checkout.updatesite"/>
@@ -322,8 +326,18 @@
 	
     <!--helper targets-->
     <target name="-checkout.pluginbuilder" if="isUseCvs">
-    	<!-- TODO use build.version -->
         <cvs command="co org.faktorips.pluginbuilder" dest="${projectsRootDir}" cvsroot="${cvsroot}" quiet="true"/>
+    </target>
+    <target name="-checkout.pluginbuilder.build.version" if="isUseCvs">
+    	<loadproperties srcfile="${release.properties}">
+          <filterchain>
+            <linecontains>
+              <contains value="fetchTag"/>
+            </linecontains>
+          </filterchain>
+    	</loadproperties>
+        <delete includeemptydirs="true" dir="${projectsRootDir}/org.faktorips.pluginbuilder"/>
+    	<cvs command="co -r ${fetchTag} org.faktorips.pluginbuilder" dest="${projectsRootDir}" cvsroot="${cvsroot}" quiet="true"/>
     </target>
     <target name="-checkout.build" if="isUseCvs">
         <cvs command="co org.faktorips.build" dest="${projectsRootDir}" cvsroot="${cvsroot}" quiet="true"/>
