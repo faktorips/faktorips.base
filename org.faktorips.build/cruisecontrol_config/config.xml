@@ -37,7 +37,7 @@
                 <failure reportWhenFixed="true" address="${htlmemail.reportWhenFixed.address}"/>
                 <!--mail mappings are specified in ENTITY mailmapping see this xml header-->
                 <!--define cvs-user mailaddresses-->
-                <!--inactive
+                <!--inactive user
 <map alias="senf" address="marcel.senf@faktorzehn.de"/>
 <map alias="guenther" address="thorsten.guenther@faktorzehn.de"/>
 <map alias="eidenschink" address="max.eidenschink@faktorzehn.de"/>
@@ -45,12 +45,12 @@
 <map alias="hinz" address="martin.hinz@faktorzehn.de"/>
 <map alias="waertel" address="thorsten.waertel@kqv.de"/> 
 <map alias="widmaier" address="stefan.widmaier@faktorzehn.de"/>               
-<map alias="mornau" address="franz.mornau@faktorzehn.de" />
-<map alias="ortmann" address="jan.ortmann@faktorzehn.de"/>
-<map alias="erzberger" address="peter.erzberger@faktorzehn.de"/>
-<map alias="hohenberger" address="daniel.hohenberger@faktorzehn.de"/>
-<map alias="alexander" address="alexander.weickmann@faktorzehn.de"/>-->
-                <!--active faktorips developer-->
+<map alias="mornau" address="franz.mornau@faktorzehn.de" />-->
+                <!--active user-->
+                <map alias="ortmann" address="jan.ortmann@faktorzehn.de"/>
+                <map alias="erzberger" address="peter.erzberger@faktorzehn.de"/>
+                <map alias="hohenberger" address="daniel.hohenberger@faktorzehn.de"/>
+                <map alias="alexander" address="alexander.weickmann@faktorzehn.de"/>
                 <map alias="ortmann2" address="joerg.ortmann@faktorzehn.de"/>
             </htmlemail>
         </publishers>
@@ -78,7 +78,7 @@
                 <failure reportWhenFixed="true" address="${htlmemail.reportWhenFixed.address}"/>
                 <!--mail mappings are specified in ENTITY mailmapping see this xml header-->
                 <!--define cvs-user mailaddresses-->
-                <!--inactive
+                <!--inactive user
 <map alias="senf" address="marcel.senf@faktorzehn.de"/>
 <map alias="guenther" address="thorsten.guenther@faktorzehn.de"/>
 <map alias="eidenschink" address="max.eidenschink@faktorzehn.de"/>
@@ -86,12 +86,12 @@
 <map alias="hinz" address="martin.hinz@faktorzehn.de"/>
 <map alias="waertel" address="thorsten.waertel@kqv.de"/> 
 <map alias="widmaier" address="stefan.widmaier@faktorzehn.de"/>               
-<map alias="mornau" address="franz.mornau@faktorzehn.de" />
-<map alias="ortmann" address="jan.ortmann@faktorzehn.de"/>
-<map alias="erzberger" address="peter.erzberger@faktorzehn.de"/>
-<map alias="hohenberger" address="daniel.hohenberger@faktorzehn.de"/>
-<map alias="alexander" address="alexander.weickmann@faktorzehn.de"/>-->
-                <!--active faktorips developer-->
+<map alias="mornau" address="franz.mornau@faktorzehn.de" />-->
+                <!--active user-->
+                <map alias="ortmann" address="jan.ortmann@faktorzehn.de"/>
+                <map alias="erzberger" address="peter.erzberger@faktorzehn.de"/>
+                <map alias="hohenberger" address="daniel.hohenberger@faktorzehn.de"/>
+                <map alias="alexander" address="alexander.weickmann@faktorzehn.de"/>
                 <map alias="ortmann2" address="joerg.ortmann@faktorzehn.de"/>
             </htmlemail>
         </publishers>
@@ -119,7 +119,7 @@
                 <failure reportWhenFixed="true" address="${htlmemail.reportWhenFixed.address}"/>
                 <!--mail mappings are specified in ENTITY mailmapping see this xml header-->
                 <!--define cvs-user mailaddresses-->
-                <!--inactive
+                <!--inactive user
 <map alias="senf" address="marcel.senf@faktorzehn.de"/>
 <map alias="guenther" address="thorsten.guenther@faktorzehn.de"/>
 <map alias="eidenschink" address="max.eidenschink@faktorzehn.de"/>
@@ -127,12 +127,12 @@
 <map alias="hinz" address="martin.hinz@faktorzehn.de"/>
 <map alias="waertel" address="thorsten.waertel@kqv.de"/> 
 <map alias="widmaier" address="stefan.widmaier@faktorzehn.de"/>               
-<map alias="mornau" address="franz.mornau@faktorzehn.de" />
-<map alias="ortmann" address="jan.ortmann@faktorzehn.de"/>
-<map alias="erzberger" address="peter.erzberger@faktorzehn.de"/>
-<map alias="hohenberger" address="daniel.hohenberger@faktorzehn.de"/>
-<map alias="alexander" address="alexander.weickmann@faktorzehn.de"/>-->
-                <!--active faktorips developer-->
+<map alias="mornau" address="franz.mornau@faktorzehn.de" />-->
+                <!--active user-->
+                <map alias="ortmann" address="jan.ortmann@faktorzehn.de"/>
+                <map alias="erzberger" address="peter.erzberger@faktorzehn.de"/>
+                <map alias="hohenberger" address="daniel.hohenberger@faktorzehn.de"/>
+                <map alias="alexander" address="alexander.weickmann@faktorzehn.de"/>
                 <map alias="ortmann2" address="joerg.ortmann@faktorzehn.de"/>
             </htmlemail>
         </publishers>
@@ -161,7 +161,7 @@
                 <failure reportWhenFixed="true" address="${htlmemail.reportWhenFixed.address}"/>
                 <!--mail mappings are specified in ENTITY mailmapping see this xml header-->
                 <!--define cvs-user mailaddresses-->
-                <!--inactive
+                <!--inactive user
 <map alias="senf" address="marcel.senf@faktorzehn.de"/>
 <map alias="guenther" address="thorsten.guenther@faktorzehn.de"/>
 <map alias="eidenschink" address="max.eidenschink@faktorzehn.de"/>
@@ -169,12 +169,12 @@
 <map alias="hinz" address="martin.hinz@faktorzehn.de"/>
 <map alias="waertel" address="thorsten.waertel@kqv.de"/> 
 <map alias="widmaier" address="stefan.widmaier@faktorzehn.de"/>               
-<map alias="mornau" address="franz.mornau@faktorzehn.de" />
-<map alias="ortmann" address="jan.ortmann@faktorzehn.de"/>
-<map alias="erzberger" address="peter.erzberger@faktorzehn.de"/>
-<map alias="hohenberger" address="daniel.hohenberger@faktorzehn.de"/>
-<map alias="alexander" address="alexander.weickmann@faktorzehn.de"/>-->
-                <!--active faktorips developer-->
+<map alias="mornau" address="franz.mornau@faktorzehn.de" />-->
+                <!--active user-->
+                <map alias="ortmann" address="jan.ortmann@faktorzehn.de"/>
+                <map alias="erzberger" address="peter.erzberger@faktorzehn.de"/>
+                <map alias="hohenberger" address="daniel.hohenberger@faktorzehn.de"/>
+                <map alias="alexander" address="alexander.weickmann@faktorzehn.de"/>
                 <map alias="ortmann2" address="joerg.ortmann@faktorzehn.de"/>
             </htmlemail>
         </publishers>
@@ -203,7 +203,7 @@
                 <failure reportWhenFixed="true" address="${htlmemail.reportWhenFixed.address}"/>
                 <!--mail mappings are specified in ENTITY mailmapping see this xml header-->
                 <!--define cvs-user mailaddresses-->
-                <!--inactive
+                <!--inactive user
 <map alias="senf" address="marcel.senf@faktorzehn.de"/>
 <map alias="guenther" address="thorsten.guenther@faktorzehn.de"/>
 <map alias="eidenschink" address="max.eidenschink@faktorzehn.de"/>
@@ -211,12 +211,12 @@
 <map alias="hinz" address="martin.hinz@faktorzehn.de"/>
 <map alias="waertel" address="thorsten.waertel@kqv.de"/> 
 <map alias="widmaier" address="stefan.widmaier@faktorzehn.de"/>               
-<map alias="mornau" address="franz.mornau@faktorzehn.de" />
-<map alias="ortmann" address="jan.ortmann@faktorzehn.de"/>
-<map alias="erzberger" address="peter.erzberger@faktorzehn.de"/>
-<map alias="hohenberger" address="daniel.hohenberger@faktorzehn.de"/>
-<map alias="alexander" address="alexander.weickmann@faktorzehn.de"/>-->
-                <!--active faktorips developer-->
+<map alias="mornau" address="franz.mornau@faktorzehn.de" />-->
+                <!--active user-->
+                <map alias="ortmann" address="jan.ortmann@faktorzehn.de"/>
+                <map alias="erzberger" address="peter.erzberger@faktorzehn.de"/>
+                <map alias="hohenberger" address="daniel.hohenberger@faktorzehn.de"/>
+                <map alias="alexander" address="alexander.weickmann@faktorzehn.de"/>
                 <map alias="ortmann2" address="joerg.ortmann@faktorzehn.de"/>
             </htmlemail>
         </publishers>
@@ -245,7 +245,7 @@
                 <failure reportWhenFixed="true" address="${htlmemail.reportWhenFixed.address}"/>
                 <!--mail mappings are specified in ENTITY mailmapping see this xml header-->
                 <!--define cvs-user mailaddresses-->
-                <!--inactive
+                <!--inactive user
 <map alias="senf" address="marcel.senf@faktorzehn.de"/>
 <map alias="guenther" address="thorsten.guenther@faktorzehn.de"/>
 <map alias="eidenschink" address="max.eidenschink@faktorzehn.de"/>
@@ -253,12 +253,12 @@
 <map alias="hinz" address="martin.hinz@faktorzehn.de"/>
 <map alias="waertel" address="thorsten.waertel@kqv.de"/> 
 <map alias="widmaier" address="stefan.widmaier@faktorzehn.de"/>               
-<map alias="mornau" address="franz.mornau@faktorzehn.de" />
-<map alias="ortmann" address="jan.ortmann@faktorzehn.de"/>
-<map alias="erzberger" address="peter.erzberger@faktorzehn.de"/>
-<map alias="hohenberger" address="daniel.hohenberger@faktorzehn.de"/>
-<map alias="alexander" address="alexander.weickmann@faktorzehn.de"/>-->
-                <!--active faktorips developer-->
+<map alias="mornau" address="franz.mornau@faktorzehn.de" />-->
+                <!--active user-->
+                <map alias="ortmann" address="jan.ortmann@faktorzehn.de"/>
+                <map alias="erzberger" address="peter.erzberger@faktorzehn.de"/>
+                <map alias="hohenberger" address="daniel.hohenberger@faktorzehn.de"/>
+                <map alias="alexander" address="alexander.weickmann@faktorzehn.de"/>
                 <map alias="ortmann2" address="joerg.ortmann@faktorzehn.de"/>
             </htmlemail>
         </publishers>
@@ -286,7 +286,7 @@
                 <failure reportWhenFixed="true" address="${htlmemail.reportWhenFixed.address}"/>
                 <!--mail mappings are specified in ENTITY mailmapping see this xml header-->
                 <!--define cvs-user mailaddresses-->
-                <!--inactive
+                <!--inactive user
 <map alias="senf" address="marcel.senf@faktorzehn.de"/>
 <map alias="guenther" address="thorsten.guenther@faktorzehn.de"/>
 <map alias="eidenschink" address="max.eidenschink@faktorzehn.de"/>
@@ -294,12 +294,12 @@
 <map alias="hinz" address="martin.hinz@faktorzehn.de"/>
 <map alias="waertel" address="thorsten.waertel@kqv.de"/> 
 <map alias="widmaier" address="stefan.widmaier@faktorzehn.de"/>               
-<map alias="mornau" address="franz.mornau@faktorzehn.de" />
-<map alias="ortmann" address="jan.ortmann@faktorzehn.de"/>
-<map alias="erzberger" address="peter.erzberger@faktorzehn.de"/>
-<map alias="hohenberger" address="daniel.hohenberger@faktorzehn.de"/>
-<map alias="alexander" address="alexander.weickmann@faktorzehn.de"/>-->
-                <!--active faktorips developer-->
+<map alias="mornau" address="franz.mornau@faktorzehn.de" />-->
+                <!--active user-->
+                <map alias="ortmann" address="jan.ortmann@faktorzehn.de"/>
+                <map alias="erzberger" address="peter.erzberger@faktorzehn.de"/>
+                <map alias="hohenberger" address="daniel.hohenberger@faktorzehn.de"/>
+                <map alias="alexander" address="alexander.weickmann@faktorzehn.de"/>
                 <map alias="ortmann2" address="joerg.ortmann@faktorzehn.de"/>
             </htmlemail>
         </publishers>
@@ -327,7 +327,7 @@
                 <failure reportWhenFixed="true" address="${htlmemail.reportWhenFixed.address}"/>
                 <!--mail mappings are specified in ENTITY mailmapping see this xml header-->
                 <!--define cvs-user mailaddresses-->
-                <!--inactive
+                <!--inactive user
 <map alias="senf" address="marcel.senf@faktorzehn.de"/>
 <map alias="guenther" address="thorsten.guenther@faktorzehn.de"/>
 <map alias="eidenschink" address="max.eidenschink@faktorzehn.de"/>
@@ -335,12 +335,12 @@
 <map alias="hinz" address="martin.hinz@faktorzehn.de"/>
 <map alias="waertel" address="thorsten.waertel@kqv.de"/> 
 <map alias="widmaier" address="stefan.widmaier@faktorzehn.de"/>               
-<map alias="mornau" address="franz.mornau@faktorzehn.de" />
-<map alias="ortmann" address="jan.ortmann@faktorzehn.de"/>
-<map alias="erzberger" address="peter.erzberger@faktorzehn.de"/>
-<map alias="hohenberger" address="daniel.hohenberger@faktorzehn.de"/>
-<map alias="alexander" address="alexander.weickmann@faktorzehn.de"/>-->
-                <!--active faktorips developer-->
+<map alias="mornau" address="franz.mornau@faktorzehn.de" />-->
+                <!--active user-->
+                <map alias="ortmann" address="jan.ortmann@faktorzehn.de"/>
+                <map alias="erzberger" address="peter.erzberger@faktorzehn.de"/>
+                <map alias="hohenberger" address="daniel.hohenberger@faktorzehn.de"/>
+                <map alias="alexander" address="alexander.weickmann@faktorzehn.de"/>
                 <map alias="ortmann2" address="joerg.ortmann@faktorzehn.de"/>
             </htmlemail>
         </publishers>
@@ -370,7 +370,7 @@
                 <failure reportWhenFixed="true" address="${htlmemail.reportWhenFixed.address}"/>
                 <!--mail mappings are specified in ENTITY mailmapping see this xml header-->
                 <!--define cvs-user mailaddresses-->
-                <!--inactive
+                <!--inactive user
 <map alias="senf" address="marcel.senf@faktorzehn.de"/>
 <map alias="guenther" address="thorsten.guenther@faktorzehn.de"/>
 <map alias="eidenschink" address="max.eidenschink@faktorzehn.de"/>
@@ -378,12 +378,12 @@
 <map alias="hinz" address="martin.hinz@faktorzehn.de"/>
 <map alias="waertel" address="thorsten.waertel@kqv.de"/> 
 <map alias="widmaier" address="stefan.widmaier@faktorzehn.de"/>               
-<map alias="mornau" address="franz.mornau@faktorzehn.de" />
-<map alias="ortmann" address="jan.ortmann@faktorzehn.de"/>
-<map alias="erzberger" address="peter.erzberger@faktorzehn.de"/>
-<map alias="hohenberger" address="daniel.hohenberger@faktorzehn.de"/>
-<map alias="alexander" address="alexander.weickmann@faktorzehn.de"/>-->
-                <!--active faktorips developer-->
+<map alias="mornau" address="franz.mornau@faktorzehn.de" />-->
+                <!--active user-->
+                <map alias="ortmann" address="jan.ortmann@faktorzehn.de"/>
+                <map alias="erzberger" address="peter.erzberger@faktorzehn.de"/>
+                <map alias="hohenberger" address="daniel.hohenberger@faktorzehn.de"/>
+                <map alias="alexander" address="alexander.weickmann@faktorzehn.de"/>
                 <map alias="ortmann2" address="joerg.ortmann@faktorzehn.de"/>
             </htmlemail>
         </publishers>
@@ -411,7 +411,7 @@
                 <failure reportWhenFixed="true" address="${htlmemail.reportWhenFixed.address}"/>
                 <!--mail mappings are specified in ENTITY mailmapping see this xml header-->
                 <!--define cvs-user mailaddresses-->
-                <!--inactive
+                <!--inactive user
 <map alias="senf" address="marcel.senf@faktorzehn.de"/>
 <map alias="guenther" address="thorsten.guenther@faktorzehn.de"/>
 <map alias="eidenschink" address="max.eidenschink@faktorzehn.de"/>
@@ -419,12 +419,12 @@
 <map alias="hinz" address="martin.hinz@faktorzehn.de"/>
 <map alias="waertel" address="thorsten.waertel@kqv.de"/> 
 <map alias="widmaier" address="stefan.widmaier@faktorzehn.de"/>               
-<map alias="mornau" address="franz.mornau@faktorzehn.de" />
-<map alias="ortmann" address="jan.ortmann@faktorzehn.de"/>
-<map alias="erzberger" address="peter.erzberger@faktorzehn.de"/>
-<map alias="hohenberger" address="daniel.hohenberger@faktorzehn.de"/>
-<map alias="alexander" address="alexander.weickmann@faktorzehn.de"/>-->
-                <!--active faktorips developer-->
+<map alias="mornau" address="franz.mornau@faktorzehn.de" />-->
+                <!--active user-->
+                <map alias="ortmann" address="jan.ortmann@faktorzehn.de"/>
+                <map alias="erzberger" address="peter.erzberger@faktorzehn.de"/>
+                <map alias="hohenberger" address="daniel.hohenberger@faktorzehn.de"/>
+                <map alias="alexander" address="alexander.weickmann@faktorzehn.de"/>
                 <map alias="ortmann2" address="joerg.ortmann@faktorzehn.de"/>
             </htmlemail>
         </publishers>
@@ -451,7 +451,7 @@
                 <failure reportWhenFixed="true" address="${htlmemail.reportWhenFixed.address}"/>
                 <!--mail mappings are specified in ENTITY mailmapping see this xml header-->
                 <!--define cvs-user mailaddresses-->
-                <!--inactive
+                <!--inactive user
 <map alias="senf" address="marcel.senf@faktorzehn.de"/>
 <map alias="guenther" address="thorsten.guenther@faktorzehn.de"/>
 <map alias="eidenschink" address="max.eidenschink@faktorzehn.de"/>
@@ -459,12 +459,12 @@
 <map alias="hinz" address="martin.hinz@faktorzehn.de"/>
 <map alias="waertel" address="thorsten.waertel@kqv.de"/> 
 <map alias="widmaier" address="stefan.widmaier@faktorzehn.de"/>               
-<map alias="mornau" address="franz.mornau@faktorzehn.de" />
-<map alias="ortmann" address="jan.ortmann@faktorzehn.de"/>
-<map alias="erzberger" address="peter.erzberger@faktorzehn.de"/>
-<map alias="hohenberger" address="daniel.hohenberger@faktorzehn.de"/>
-<map alias="alexander" address="alexander.weickmann@faktorzehn.de"/>-->
-                <!--active faktorips developer-->
+<map alias="mornau" address="franz.mornau@faktorzehn.de" />-->
+                <!--active user-->
+                <map alias="ortmann" address="jan.ortmann@faktorzehn.de"/>
+                <map alias="erzberger" address="peter.erzberger@faktorzehn.de"/>
+                <map alias="hohenberger" address="daniel.hohenberger@faktorzehn.de"/>
+                <map alias="alexander" address="alexander.weickmann@faktorzehn.de"/>
                 <map alias="ortmann2" address="joerg.ortmann@faktorzehn.de"/>
             </htmlemail>
         </publishers>
@@ -500,7 +500,7 @@
                 <failure reportWhenFixed="true" address="${htlmemail.reportWhenFixed.address}"/>
                 <!--mail mappings are specified in ENTITY mailmapping see this xml header-->
                 <!--define cvs-user mailaddresses-->
-                <!--inactive
+                <!--inactive user
 <map alias="senf" address="marcel.senf@faktorzehn.de"/>
 <map alias="guenther" address="thorsten.guenther@faktorzehn.de"/>
 <map alias="eidenschink" address="max.eidenschink@faktorzehn.de"/>
@@ -508,12 +508,12 @@
 <map alias="hinz" address="martin.hinz@faktorzehn.de"/>
 <map alias="waertel" address="thorsten.waertel@kqv.de"/> 
 <map alias="widmaier" address="stefan.widmaier@faktorzehn.de"/>               
-<map alias="mornau" address="franz.mornau@faktorzehn.de" />
-<map alias="ortmann" address="jan.ortmann@faktorzehn.de"/>
-<map alias="erzberger" address="peter.erzberger@faktorzehn.de"/>
-<map alias="hohenberger" address="daniel.hohenberger@faktorzehn.de"/>
-<map alias="alexander" address="alexander.weickmann@faktorzehn.de"/>-->
-                <!--active faktorips developer-->
+<map alias="mornau" address="franz.mornau@faktorzehn.de" />-->
+                <!--active user-->
+                <map alias="ortmann" address="jan.ortmann@faktorzehn.de"/>
+                <map alias="erzberger" address="peter.erzberger@faktorzehn.de"/>
+                <map alias="hohenberger" address="daniel.hohenberger@faktorzehn.de"/>
+                <map alias="alexander" address="alexander.weickmann@faktorzehn.de"/>
                 <map alias="ortmann2" address="joerg.ortmann@faktorzehn.de"/>
             </htmlemail>
             <antpublisher buildfile="${mainbuildfile}" uselogger="true" usedebug="false" target="copy.artifacts.pluginbuilder.faktorips">
@@ -544,7 +544,7 @@
                 <failure reportWhenFixed="true" address="${htlmemail.reportWhenFixed.address}"/>
                 <!--mail mappings are specified in ENTITY mailmapping see this xml header-->
                 <!--define cvs-user mailaddresses-->
-                <!--inactive
+                <!--inactive user
 <map alias="senf" address="marcel.senf@faktorzehn.de"/>
 <map alias="guenther" address="thorsten.guenther@faktorzehn.de"/>
 <map alias="eidenschink" address="max.eidenschink@faktorzehn.de"/>
@@ -552,12 +552,12 @@
 <map alias="hinz" address="martin.hinz@faktorzehn.de"/>
 <map alias="waertel" address="thorsten.waertel@kqv.de"/> 
 <map alias="widmaier" address="stefan.widmaier@faktorzehn.de"/>               
-<map alias="mornau" address="franz.mornau@faktorzehn.de" />
-<map alias="ortmann" address="jan.ortmann@faktorzehn.de"/>
-<map alias="erzberger" address="peter.erzberger@faktorzehn.de"/>
-<map alias="hohenberger" address="daniel.hohenberger@faktorzehn.de"/>
-<map alias="alexander" address="alexander.weickmann@faktorzehn.de"/>-->
-                <!--active faktorips developer-->
+<map alias="mornau" address="franz.mornau@faktorzehn.de" />-->
+                <!--active user-->
+                <map alias="ortmann" address="jan.ortmann@faktorzehn.de"/>
+                <map alias="erzberger" address="peter.erzberger@faktorzehn.de"/>
+                <map alias="hohenberger" address="daniel.hohenberger@faktorzehn.de"/>
+                <map alias="alexander" address="alexander.weickmann@faktorzehn.de"/>
                 <map alias="ortmann2" address="joerg.ortmann@faktorzehn.de"/>
             </htmlemail>
             <antpublisher buildfile="${mainbuildfile}" uselogger="true" usedebug="false" target="copy.artifacts.pluginbuilder.faktorips">
