@@ -357,14 +357,14 @@
         <cvs command="co org.faktorips.updatesite" dest="${projectsRootDir}" cvsroot="${cvsroot}" quiet="true"/>
     </target>
     <target name="-checkin.updatesite" if="isUseCvs">
-        <fail message="not implemented"/>
     	<cvs command="commit -m 'release build: ${build.version}'" 
         	package="org.faktorips.updatesite" dest="${projectsRootDir}" cvsroot="${cvsroot}" quiet="true"/>
+        <!-- 
         <cvs command="add -m 'release build: ${build.version}' " 
         	package="org.faktorips.updatesite" dest="${projectsRootDir}" cvsroot="${cvsroot}" quiet="true"/>
+        -->
     </target>
     <target name="-checkout.updatesite.on.faktorips.org" if="isUseCvs">
-        <fail message="not implemented"/>
     	<property name="updatesite.path" value="/var/www/localhost/htdocs/update.faktorzehn.org/faktorips/"/>
     	<echo message="update faktorips.org updatesite: ${updatesite.path}"/>
     	<property name="faktorips.org.updatesite.dir" value="${updatesite.path}" />
