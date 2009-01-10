@@ -235,11 +235,7 @@ public abstract class IpsObjectEditor extends FormEditor
         }
         try {
             IStorage storage = input.getStorage();
-            IPath path = storage.getFullPath();
-            if (path == null) {
-                return;
-            }
-            ipsSrcFile = new IpsSrcFileImmutable(path.lastSegment(), storage.getContents());
+            ipsSrcFile = new IpsSrcFileImmutable(storage.getName(), storage.getContents());
             if (TRACE) {
                 logMethodFinished("initFromStorageEditorInput"); //$NON-NLS-1$
             }
