@@ -69,3 +69,4 @@ Export-Package: org.faktorips.devtools.core.ui,
  org.faktorips.devtools.core.ui.wizards.tablestructure
 Bundle-Localization: plugin
 Bundle-ClassPath: .
+Bundle-Vendor: Faktor Zehn AG
