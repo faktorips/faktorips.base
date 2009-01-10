@@ -85,6 +85,12 @@
          This feature enables migration of Faktor-IPS projects based on version 1.0.4 to version 2.0.0.rfinal.
       </description>
 </category-def>
+<category-def name="Faktor-IPS 2.0.0.rfinal" label="Faktor-IPS 2.0.0.rfinal"/>
+<category-def name="Faktor-IPS 2.0.1" label="Faktor-IPS 2.0.1"/>
+<category-def name="Faktor-IPS 2.1.0.ms1" label="Faktor-IPS 2.1.0 Milestone 1"/>
+<category-def name="Faktor-IPS 2.1.0.ms2" label="Faktor-IPS 2.1.0 Milestone 2"/>
+<category-def name="Faktor-IPS 2.1.0.rfinal" label="Faktor-IPS 2.1.0 Final Release"/>
+<category-def name="Faktor-IPS UML 1.1.0" label="Faktor-IPS UML 1.1.0"/>
 <feature url="features/org.faktorips.feature_2.2.0.rc1.jar" id="org.faktorips.feature" version="2.2.0.rc1">
 <category name="Faktor-IPS 2.2.0.rc1"/>
 </feature>
