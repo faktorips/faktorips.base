@@ -87,7 +87,7 @@
     <target name="buildProdJar">
         <!--different name, because buildJar depends on this target-->
         <ant antfile="../../org.faktorips.build/build.xml" target="buildjar">
-            <property name="projectname" value="devtools.core"/>
+            <property name="projectname" value="devtools.core.ui"/>
             <reference refid="classpath" torefid="classpath"/>
         </ant>
     </target>
