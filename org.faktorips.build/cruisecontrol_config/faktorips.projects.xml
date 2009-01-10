@@ -18,11 +18,10 @@
     
     <!-- mail properties -->
     <property name="htmlemail.mailhost" value="62.245.204.82"/>
-    <property name="htmlemail.returnaddress" value="cc@faktorips.org"/>
+    <property name="htmlemail.returnaddress" value="cruise@faktorips.org"/>
     <property name="htmlemail.xsldir" value="/opt/cc/webapps/cruisecontrol/xsl/"/>
     <property name="htmlemail.css" value="/opt/cc/docs/cruisecontrol.css"/>
-<!--    <property name="htlmemail.reportWhenFixed.address" value="faktorips-devel@faktorzehn.de"/> -->
-    <property name="htlmemail.reportWhenFixed.address" value="joerg.ortmann@faktorzehn.de"/>
+    <property name="htlmemail.reportWhenFixed.address" value="faktorips-devel@faktorzehn.de"/>
 
     <!-- cc project definitions -->
     <projects>
