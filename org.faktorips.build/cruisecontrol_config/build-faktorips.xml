@@ -240,7 +240,8 @@
            -DprojectsRootDir -> the root dir of all plugin projects
            -DbaseDir -> the parent dir of the dir specified in projectsRootDir
          additionaly make sure that the build_host_<hostname>.properies exists in the pluginbuilder project-->
-    <target name="release.faktorips" description="release build for an specified faktorips release version, builds the complete feature,                  executes the junit plugin tests and distributes the result to the update site and download directory">
+    <target name="release.faktorips" 
+    	description="release build for an specified faktorips release version, builds the complete feature, executes the junit plugin tests and distributes the result to the update site and download directory">
         <property name="useCvs" value="true"/>
         <property name="projectsRootDir" value="checkout_release/"/>
         <property name="downloadDir" value="/var/www/localhost/htdocs/update.faktorzehn.org/faktorips/downloads"/>
@@ -299,11 +300,8 @@
         </ant>
     	
         <!--copy zipped features into the faktorips download directory, fails if files already exists-->
-    	<copy file="${buildDirectory}/results/org.faktorips.feature-${build.version}.zip" 
-    		tofile="${faktoripsReleaseDownloadZipPath}" overwrite="false" verbose="true" failonerror="true"/>
-        <copy file="${buildDirectory}/results/org.faktorips.feature.nls1-${build.version}.zip" 
-        	tofile="${faktoripsNls1ReleaseDownloadZipPath}" overwrite="false" verbose="true" failonerror="true"/>
-        
+    	<antcall inheritall="true" target="-copy.updatesite.to.download.dir"/>
+
     	<!--install the features on updatesite-->
         <!--1. generate a new site.xml on the updatesite, including all previous and new feature versions-->
         <ant dir="${projectsRootDir}/org.faktorips.pluginbuilder/build-files" antfile="postBuild.xml" target="-createNightlyBuildSiteXml">
@@ -317,7 +315,7 @@
             <property name="updateSiteUrl" value="http://update.faktorzehn.org/faktorips"/>
         </ant>
         <!--2. copy all features and plugins to the updatesite-->
-    	<antcall inheritall="true" target="-copy.updatesite.to.download.dir"/>
+    	<antcall inheritall="true" target="-copy.updatesite.to.updatesite.project"/>
 
         <!--3. merge the generated site.xml with the previous site.xml as new site.xml-->
         <antcall inheritall="true" target="-merge.updatesite.xml"/>
@@ -371,12 +369,28 @@
     	<cvs command="co org.faktorips.updatesite" dest="${faktorips.org.updatesite.dir}" cvsroot="${cvsroot}" quiet="true"/>
     </target>
     <target name="-copy.updatesite.to.download.dir">
+    	<!-- unzip, add eclipse folder and zip in download dir -->
+    	<property name="zip.dir" value="${buildDirectory}/zip_tmp/eclipse"/>
+
+    	<!-- eclipse feature -->
+    	<mkdir dir="${zip.dir}"/>
+    	<unzip src="${buildDirectory}/results/org.faktorips.feature-${build.version}.zip" dest="${buildDirectory}/zip_tmp/eclipse"></unzip>
+    	<zip destfile="${faktoripsReleaseDownloadZipPath}" basedir="${zip.dir}" />
+
+    	<delete includeemptydirs="true" dir="${zip.dir}"/>
+        
+    	<!-- eclipse nls1 feature -->
+    	<mkdir dir="${zip.dir}"/>
+        <unzip src="org.faktorips.feature.nls1-${build.version}.zip" dest="${buildDirectory}/zip_tmp/eclipse"></unzip>
+        <zip destfile="${faktoripsNls1ReleaseDownloadZipPath}" basedir="${zip.dir}" />
+    </target>
+    <target name="-copy.updatesite.to.updatesite.project">
         <copy todir="${projectsRootDir}/org.faktorips.updatesite/plugins" overwrite="false" verbose="true">
             <fileset dir="${buildDirectory}/updateSite/plugins" includes="*.jar"/>
         </copy>
         <copy todir="${projectsRootDir}/org.faktorips.updatesite/features" overwrite="false" verbose="true">
             <fileset dir="${buildDirectory}/updateSite/features" includes="*.jar"/>
-        </copy>    	
+        </copy>
     </target>
     <target name="-copy.updatesite.to.faktorips.org">
     	<property name="updatesite.path" value="/var/www/localhost/htdocs/update.faktorzehn.org/faktorips/"/>
