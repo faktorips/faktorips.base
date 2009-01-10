@@ -248,7 +248,8 @@
         <!-- download zip file names -->        
     	<property name="faktoripsReleaseDownloadZipPath" value="${downloadDir}/faktorips_${build.version}.zip"/>
         <property name="faktoripsNls1ReleaseDownloadZipPath" value="${downloadDir}/faktorips.nls1_${build.version}.zip"/>
-        
+        <property name="release.properties" value="${projectsRootDir}/org.faktorips.pluginbuilder/releases/${build.version}.properties"/>
+    	
     	<condition property="isUseCvs" value="true">
             <equals arg1="${useCvs}" arg2="true"/>
         </condition>
@@ -264,7 +265,7 @@
         <!--1. check if the build.version property is given-->
         <fail unless="build.version" message="Please specify the build.version, e.g. ant ... -Dbuild.version=2.2.0.rfinal"/>
     	<!--2. check if the build.verion property file exists-->
-        <available type="file" file="${projectsRootDir}/org.faktorips.pluginbuilder/releases/${build.version}.properties" property="releasePropertiesExists"/>
+        <available type="file" file="${release.properties}" property="releasePropertiesExists"/>
         <fail message="Could not find ${build.version}.properties in ${projectsRootDir}/org.faktorips.pluginbuilder/releases/" unless="releasePropertiesExists"/>
     	<!--3. check previous release build with same target, check file exists in download dir -->
         <fail message="Release zip already exists: ${faktoripsReleaseDownloadZipPath}">
@@ -275,9 +276,7 @@
          </fail>
 
     	<!-- checkout pluginbuilder with correct build.version -->
-    	<antcall inheritall="true" target="-checkout.pluginbuilder.build.version">
-    	     <property name="release.properties" value="${projectsRootDir}/org.faktorips.pluginbuilder/releases/${build.version}.properties"/>
-    	</antcall>
+    	<antcall inheritall="true" target="-checkout.pluginbuilder.build.version"/>
         
         <!--checkout updatesite-->
     	<antcall inheritall="true" target="-checkout.updatesite"/>
