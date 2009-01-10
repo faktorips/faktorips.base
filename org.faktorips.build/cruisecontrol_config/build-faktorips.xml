@@ -314,7 +314,7 @@
             <property name="updateSiteDescription" value="FaktorIPS update site"/>
             <property name="updateSiteUrl" value="http://update.faktorzehn.org/faktorips"/>
         </ant>
-        <!--2. copy all features and plugins to the updatesite-->
+        <!--2. copy all features and plugins to the updatesite project-->
     	<antcall inheritall="true" target="-copy.updatesite.to.updatesite.project"/>
 
         <!--3. merge the generated site.xml with the previous site.xml as new site.xml-->
@@ -375,14 +375,14 @@
     	<!-- eclipse feature -->
     	<mkdir dir="${zip.dir}"/>
     	<unzip src="${buildDirectory}/results/org.faktorips.feature-${build.version}.zip" dest="${buildDirectory}/zip_tmp/eclipse"></unzip>
-    	<zip destfile="${faktoripsReleaseDownloadZipPath}" basedir="${zip.dir}" />
+    	<zip destfile="${faktoripsReleaseDownloadZipPath}" basedir="${zip.dir}/.." />
 
     	<delete includeemptydirs="true" dir="${zip.dir}"/>
         
     	<!-- eclipse nls1 feature -->
     	<mkdir dir="${zip.dir}"/>
-        <unzip src="org.faktorips.feature.nls1-${build.version}.zip" dest="${buildDirectory}/zip_tmp/eclipse"></unzip>
-        <zip destfile="${faktoripsNls1ReleaseDownloadZipPath}" basedir="${zip.dir}" />
+        <unzip src="${buildDirectory}/results/org.faktorips.feature.nls1-${build.version}.zip" dest="${buildDirectory}/zip_tmp/eclipse"></unzip>
+        <zip destfile="${faktoripsNls1ReleaseDownloadZipPath}" basedir="${zip.dir}/.." />
     </target>
     <target name="-copy.updatesite.to.updatesite.project">
         <copy todir="${projectsRootDir}/org.faktorips.updatesite/plugins" overwrite="false" verbose="true">
