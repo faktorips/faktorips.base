@@ -207,8 +207,8 @@
 	<target name="copy.artifacts.pluginbuilder.faktorips" description="target to copy cc build artefacts">
 		<!-- properties from cc: ccProjectDir (defined in config.xml), cctimestamp (see cc reference)-->
 
-		<defaultexcludes remove=".log"/>
-		
+		<defaultexcludes remove="**/._*"/>
+			
 		<!-- copy eclipse workspace logfile -->
 		<mkdir dir="${ccProjectDir}/${cctimestamp}"/>
 		<copy file="${basedir}/pluginbuilder_tmp/org.faktorips.pluginbuilder/workspace/.metadata/.log" 
