@@ -145,6 +145,7 @@ TODO bbv, kqv und msgp
                      usedebug="false"
                      target="copy.artifacts.pluginbuilder.faktorips">
                     <property name="ccProjectDir" value="${logdir}/${project.name}"/>
+                    <property name="workspaceName" value="workspace_integrationtest"/>
                 </antpublisher>
         </publisher>
         
@@ -156,6 +157,7 @@ TODO bbv, kqv und msgp
                      usedebug="false"
                      target="copy.artifacts.pluginbuilder.faktorips">
                     <property name="ccProjectDir" value="${logdir}/${project.name}"/>
+                    <property name="workspaceName" value="workspace"/>
                 </antpublisher>
         </publisher>
  

@@ -518,6 +518,7 @@
             </htmlemail>
             <antpublisher buildfile="${mainbuildfile}" uselogger="true" usedebug="false" target="copy.artifacts.pluginbuilder.faktorips">
                 <property name="ccProjectDir" value="${logdir}/${project.name}"/>
+                <property name="workspaceName" value="workspace"/>
             </antpublisher>
         </publishers>
     </project>
@@ -562,6 +563,7 @@
             </htmlemail>
             <antpublisher buildfile="${mainbuildfile}" uselogger="true" usedebug="false" target="copy.artifacts.pluginbuilder.faktorips">
                 <property name="ccProjectDir" value="${logdir}/${project.name}"/>
+                <property name="workspaceName" value="workspace_integrationtest"/>
             </antpublisher>
         </publishers>
     </project>

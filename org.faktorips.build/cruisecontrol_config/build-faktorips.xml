@@ -216,14 +216,15 @@
     
 	<!-- target to copy cc build artefacts -->
 	<target name="copy.artifacts.pluginbuilder.faktorips" description="target to copy cc build artefacts">
-		<!-- properties from cc: ccProjectDir (defined in config.xml), cctimestamp (see cc reference)-->
+		<!-- properties from cc: ccProjectDir (defined in config.xml), cctimestamp (see cc reference)
+		                         workspaceName (constant in config.xml) -->
 
 		<defaultexcludes remove="**/._*"/>
 			
 		<!-- copy eclipse workspace logfile -->
 		<!-- problems if the workspace has been created, but there is an error or exception in the workspace-->
 		<mkdir dir="${ccProjectDir}/${cctimestamp}"/>
-		<copy file="${basedir}/pluginbuilder_tmp/org.faktorips.pluginbuilder/workspace/.metadata/.log" 
+		<copy file="${basedir}/pluginbuilder_tmp/org.faktorips.pluginbuilder/${workspaceName}/.metadata/.log" 
 			tofile="${ccProjectDir}/${cctimestamp}/eclipse_workspace.log"
 		    failonerror="false" verbose="true"/>
 		
