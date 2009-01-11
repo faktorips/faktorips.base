@@ -230,6 +230,8 @@
 		<!-- copy eclipse configuration log -->
 		<!-- problems if the workspace hasn't been created in case of errors, e.g. feature not found -->
         <antcall inheritall="true" target="-copy.eclipse.configuration.log"/>
+
+		<antcall inheritall="true" target="-copy.pluginbuilder.compile.error"/>
 		
 		<!-- copy autoamted test html report -->
 		<copy file="${basedir}/pluginbuilder_tmp/org.faktorips.pluginbuilder/results/testresults/html/testReport_N-${label}.html" 
@@ -432,6 +434,11 @@
     	<delete failonerror="false" verbose="false" quiet="true">
     		<fileset dir="${basedir}/pluginbuilder_tmp/pluginbuilder_eclipse/eclipse/configuration" includes="*.log"/>
     	</delete>
+    </target>
+    <target name="-copy.pluginbuilder.compile.error">
+        <copy todir="${ccProjectDir}/${cctimestamp}" failonerror="false" verbose="false">
+            <fileset dir="${basedir}/pluginbuilder_tmp/pluginbuilder_eclipse/org.faktorips.pluginbuilder/plugins" includes="**/*dot.bin.log"/>
+        </copy>
     </target>
     
     <target name="-merge.updatesite.xml">
