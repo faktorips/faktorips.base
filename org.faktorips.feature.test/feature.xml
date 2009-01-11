@@ -38,18 +38,28 @@
          id="org.faktorips.devtools.stdbuilder.test"
          download-size="0"
          install-size="0"
-         version="1.0.0"/>
+         version="1.0.0"
+         unpack="false"/>
 
    <plugin
          id="org.faktorips.devtools.core.test"
          download-size="0"
          install-size="0"
-         version="1.0.0"/>
+         version="1.0.0"
+         unpack="false"/>
 
    <plugin
          id="org.faktorips.devtools.core.ui.test"
          download-size="0"
          install-size="0"
-         version="1.0.0"/>
+         version="1.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="org.faktorips.uml.test"
+         download-size="0"
+         install-size="0"
+         version="2.2.0.rc2"
+         unpack="false"/>
 
 </feature>
