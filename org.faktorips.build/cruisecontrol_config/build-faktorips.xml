@@ -216,11 +216,17 @@
     
 	<!-- target to copy cc build artefacts -->
 	<target name="copy.artifacts.pluginbuilder.faktorips" description="target to copy cc build artefacts">
-		<!-- properties from cc: ccProjectDir (defined in config.xml), cctimestamp (see cc reference)
+		<!-- properties from cc: ccProjectDir (defined in config.xml), 
+		                         cctimestamp (see cc reference), 
+		                         thisbuildsuccessful (see cc reference),
 		                         workspaceName (constant in config.xml) -->
 
 		<defaultexcludes remove="**/._*"/>
 			
+	    <condition property="is.thisbuildsuccessful" value="true">
+	        <equals arg1="${thisbuildsuccessful}" arg2="true"/>
+	    </condition>
+		
 		<!-- copy eclipse workspace logfile -->
 		<!-- problems if the workspace has been created, but there is an error or exception in the workspace-->
 		<mkdir dir="${ccProjectDir}/${cctimestamp}"/>
@@ -240,9 +246,7 @@
 			failonerror="false" verbose="true"/>
 		
 		<!-- copy java output, eclipse output from org.eclipse.equinox.launcher.Main --> 
-		<copy file="${basedir}/pluginbuilder_tmp/org.faktorips.pluginbuilder/javaoutput.txt" 
-		            todir="${ccProjectDir}/${cctimestamp}"
-		            failonerror="false" verbose="true"/>
+		<antcall inheritall="true" target="-copy.javaoutput"/>
 		
 	</target>
 	
@@ -446,6 +450,11 @@
         <copy todir="${ccProjectDir}/${cctimestamp}" failonerror="false" verbose="false">
             <fileset dir="${basedir}/pluginbuilder_tmp/org.faktorips.pluginbuilder/plugins" includes="**/*dot.bin.log"/>
         </copy>
+    </target>
+    <target name="-copy.javaoutput" unless="is.thisbuildsuccessful">
+        <copy file="${basedir}/pluginbuilder_tmp/org.faktorips.pluginbuilder/javaoutput.txt" 
+                     todir="${ccProjectDir}/${cctimestamp}"
+                     failonerror="false" verbose="true"/>
     </target>
     
     <target name="-merge.updatesite.xml">
