@@ -32,6 +32,7 @@
       <import plugin="org.eclipse.jdt.core"/>
       <import plugin="org.eclipse.jdt.launching"/>
       <import plugin="org.eclipse.jface.text"/>
+      <import plugin="org.faktorips.uml"/>
    </requires>
 
    <plugin
