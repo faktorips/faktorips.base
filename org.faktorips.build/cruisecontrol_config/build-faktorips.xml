@@ -238,6 +238,12 @@
 		<copy file="${basedir}/pluginbuilder_tmp/org.faktorips.pluginbuilder/results/testresults/html/testReport_N-${label}.html" 
 			todir="${ccProjectDir}/${cctimestamp}"
 			failonerror="false" verbose="true"/>
+		
+		<!-- copy java output, eclipse output from org.eclipse.equinox.launcher.Main --> 
+		<copy file="${basedir}/pluginbuilder_tmp/org.faktorips.pluginbuilder/javaoutput.txt" 
+		            todir="${ccProjectDir}/${cctimestamp}"
+		            failonerror="false" verbose="true"/>
+		
 	</target>
 	
     <!--this target runs the integrationtest, 
@@ -438,7 +444,7 @@
     </target>
     <target name="-copy.pluginbuilder.compile.error">
         <copy todir="${ccProjectDir}/${cctimestamp}" failonerror="false" verbose="false">
-            <fileset dir="${basedir}/pluginbuilder_tmp/pluginbuilder_eclipse/org.faktorips.pluginbuilder/plugins" includes="**/*dot.bin.log"/>
+            <fileset dir="${basedir}/pluginbuilder_tmp/org.faktorips.pluginbuilder/plugins" includes="**/*dot.bin.log"/>
         </copy>
     </target>
     
