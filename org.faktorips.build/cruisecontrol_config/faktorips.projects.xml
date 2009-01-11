@@ -94,6 +94,7 @@
                 <project name="org.faktorips.devtools.stdbuilder"/>
                 <project name="org.faktorips.devtools.core.ui"/>
                 <project name="org.faktorips.devtools.ant"/>
+                <project name="org.faktorips.uml"/>
             </depends>      
         </project>
 

@@ -424,12 +424,12 @@
         </copy>
     </target>
     <target name="-copy.eclipse.configuration.log">
-        <copy todir="${ccProjectDir}/${cctimestamp}" failonerror="false" verbose="true">
+        <copy todir="${ccProjectDir}/${cctimestamp}" failonerror="false" verbose="false">
             <fileset dir="${basedir}/pluginbuilder_tmp/pluginbuilder_eclipse/eclipse/configuration" includes="*.log"/>
         </copy>
     </target>
     <target name="-delete.eclipse.configuration.log">
-    	<delete failonerror="false">
+    	<delete failonerror="false" verbose="false" quiet="true">
     		<fileset dir="${basedir}/pluginbuilder_tmp/pluginbuilder_eclipse/eclipse/configuration" includes="*.log"/>
     	</delete>
     </target>
