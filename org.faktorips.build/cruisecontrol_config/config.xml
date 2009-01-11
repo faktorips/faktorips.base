@@ -490,7 +490,9 @@
             <cvs module="org.faktorips.pluginbuilder" cvsroot="${cvsroot}"/>
         </modificationset>
         <schedule interval="60">
-            <ant uselogger="true" usedebug="false" buildfile="${mainbuildfile}" target="pluginbuilder.faktorips"/>
+            <ant uselogger="true" usedebug="false" buildfile="${mainbuildfile}" target="pluginbuilder.faktorips">
+                <jvmarg arg="-Xmx1024m"/>
+            </ant>
         </schedule>
         <log logdir="${logdir}/${project.name}/">
             <merge dir="${workdir}/../pluginbuilder_tmp/org.faktorips.pluginbuilder/results/testresults/xml" pattern="*test.xml"/>

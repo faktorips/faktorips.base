@@ -83,7 +83,8 @@
 
         <project name="org.faktorips.pluginbuilder" mainbuildtarget="pluginbuilder.faktorips"
             testresult="${workdir}/../pluginbuilder_tmp/org.faktorips.pluginbuilder/results/testresults/xml" 
-            testmerge="*test.xml" >
+            testmerge="*test.xml"
+            jvmargarg="-Xmx1024m">
             <depends>
                 <project name="org.faktorips.util"/>
                 <project name="org.faktorips.valuetypes"/>
