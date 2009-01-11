@@ -487,7 +487,6 @@
             <buildstatus logdir="${logdir}/org.faktorips.devtools.stdbuilder"/>
             <buildstatus logdir="${logdir}/org.faktorips.devtools.core.ui"/>
             <buildstatus logdir="${logdir}/org.faktorips.devtools.ant"/>
-            <buildstatus logdir="${logdir}/org.faktorips.uml"/>
             <cvs module="org.faktorips.pluginbuilder" cvsroot="${cvsroot}"/>
         </modificationset>
         <schedule interval="60">
