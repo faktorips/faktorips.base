@@ -429,7 +429,7 @@
         </copy>
     </target>
     <target name="-delete.eclipse.configuration.log">
-    	<delete>
+    	<delete failonerror="false">
     		<fileset dir="${basedir}/pluginbuilder_tmp/pluginbuilder_eclipse/eclipse/configuration" includes="*.log"/>
     	</delete>
     </target>
