@@ -237,8 +237,8 @@
 
 		<!-- copy eclipse workspace logfile -->
 		<!-- problems if the workspace has been created, but there is an error or exception in the workspace -->
-        <antcall inheritall="true" target="-copy.eclipse.workspace.log"/>
-        <antcall inheritall="true" target="-copy.eclipse.test.workspace.log"/>
+        <antcall inheritall="true" target="-copy.eclipse.workspace.log"/> <!-- if build fails, and this is the plugin or integrationtest workspace -->
+        <antcall inheritall="true" target="-copy.eclipse.test.workspace.log"/> <!-- if build fails and this is the plugin workspace -->
 		
 		<!-- copy eclipse configuration log -->
 		<!-- problems if the workspace hasn't been created in case of errors, e.g. feature not found -->
@@ -430,7 +430,7 @@
             tofile="${ccProjectDir}/${cctimestamp}/eclipse_workspace.log"
             failonerror="false" verbose="true"/>
     </target>
-    <target name="-copy.eclipse.test.workspace.log" if="is.plugintest">
+    <target name="-copy.eclipse.test.workspace.log" if="is.plugintest" unless="is.thisbuildsuccessful">
         <copy file="${basedir}/pluginbuilder_tmp/org.faktorips.pluginbuilder/test-workspace/.metadata/.log" 
             tofile="${ccProjectDir}/${cctimestamp}/eclipse_test-workspace.log"
             failonerror="false" verbose="true"/>
