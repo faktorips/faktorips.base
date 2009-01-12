@@ -18,47 +18,38 @@
    </license>
 
    <requires>
+      <import plugin="org.faktorips.devtools.stdbuilder"/>
       <import plugin="org.faktorips.dtflcommon"/>
       <import plugin="org.faktorips.fl"/>
       <import plugin="org.faktorips.runtime"/>
+      <import plugin="org.faktorips.util"/>
       <import plugin="org.faktorips.valuetypes"/>
       <import plugin="org.junit"/>
       <import plugin="org.eclipse.core.resources"/>
       <import plugin="org.eclipse.core.runtime"/>
-      <import plugin="org.faktorips.devtools.stdbuilder"/>
       <import plugin="org.faktorips.devtools.core"/>
       <import plugin="org.eclipse.ui"/>
       <import plugin="org.eclipse.jdt.core"/>
       <import plugin="org.eclipse.jdt.launching"/>
       <import plugin="org.eclipse.jface.text"/>
-      <import plugin="org.eclipse.search"/>
-      <import plugin="org.eclipse.compare"/>
-      <import plugin="org.eclipse.ui.ide"/>
-      <import plugin="org.eclipse.gef"/>
-      <import plugin="org.faktorips.devtools.core.ui" version="1.0.0" match="greaterOrEqual"/>
-      <import plugin="org.eclipse.ui.forms"/>
-      <import plugin="org.eclipse.jdt" version="3.4.0" match="greaterOrEqual"/>
    </requires>
 
    <plugin
          id="org.faktorips.devtools.stdbuilder.test"
          download-size="0"
          install-size="0"
-         version="1.0.0"
-         unpack="false"/>
+         version="1.0.0"/>
 
    <plugin
          id="org.faktorips.devtools.core.test"
          download-size="0"
          install-size="0"
-         version="1.0.0"
-         unpack="false"/>
+         version="1.0.0"/>
 
    <plugin
          id="org.faktorips.devtools.core.ui.test"
          download-size="0"
          install-size="0"
-         version="1.0.0"
-         unpack="false"/>
+         version="1.0.0"/>
 
 </feature>
