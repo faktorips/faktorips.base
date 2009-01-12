@@ -154,4 +154,11 @@ Es gilt das Recht der Bundesrepublik Deutschland.
          version="2.2.0.rc1"
          fragment="true"/>
 
+   <plugin
+         id="org.faktorips.nls.devtools.core.ui.nl1"
+         download-size="0"
+         install-size="0"
+         version="2.2.0.rc1"
+         fragment="true"/>
+
 </feature>
