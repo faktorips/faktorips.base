@@ -277,7 +277,7 @@
            -Dbuild.version -> the version which will be released -->
     <!--note that if this script is running local without cvs the following parameter must be set:
         optional parameters:
-           -runtests=false -> run or ignore junit plugin tests 
+           -Druntests=false -> run or ignore junit plugin tests 
            -DuseCvs=false -> no cvs support 
            -Dall.map=all_copy.map -> copy features and plugins from the workspace instead of using a releas tag with cvs 
            -DprojectsRootDir -> the root dir of all plugin projects
@@ -293,9 +293,14 @@
     	<property name="faktoripsReleaseDownloadZipPath" value="${downloadDir}/faktorips-${build.version}.zip"/>
         <property name="faktoripsNls1ReleaseDownloadZipPath" value="${downloadDir}/faktorips.nls1-${build.version}.zip"/>
         <property name="release.properties" value="${projectsRootDir}/org.faktorips.pluginbuilder/releases/${build.version}.properties"/>
+        <property name="pluginbuilder.config" value="${projectsRootDir}/org.faktorips.pluginbuilder/pluginbuilder.config"/>
     	
     	<condition property="isUseCvs" value="true">
             <equals arg1="${useCvs}" arg2="true"/>
+        </condition>
+
+    	<condition property="isIgnoreTests" value="true">
+            <equals arg1="${runtests}" arg2="false"/>
         </condition>
     	
         <!-- TODO create plugin builder property file using build.version 
@@ -321,15 +326,16 @@
 
     	<!-- checkout pluginbuilder with correct build.version -->
     	<antcall inheritall="true" target="-checkout.pluginbuilder.build.version"/>
-        
+    	<!-- patch run test property -->
+    	<antcall inheritall="true" target="-disable.automated.test" />
+    	
         <!--checkout updatesite-->
     	<antcall inheritall="true" target="-checkout.updatesite"/>
-
+        
         <!--build release unsing pluginbuilder main target-->
     	<ant dir="${projectsRootDir}/org.faktorips.pluginbuilder/" antfile="build.xml" target="main">
             <property name="build.version" value="${build.version}"/>
             <property name="buildDirectory" value="${buildDirectory}"/>
-            <property name="runtests" value="${runtests}"/>
         </ant>
     	
         <!--copy zipped features into the faktorips download directory, fails if files already exists-->
@@ -445,6 +451,9 @@
         <copy file="${basedir}/pluginbuilder_tmp/org.faktorips.pluginbuilder/javaoutput.txt" 
                      todir="${ccProjectDir}/${cctimestamp}"
                      failonerror="false" verbose="true"/>
+    </target>
+    <target name="-disable.automated.test" if="isIgnoreTests">
+    	<replace file="${pluginbuilder.config}" token="pluginbuilder.is.runtests=true" value="pluginbuilder.is.runtests=false"/>
     </target>
     
     <target name="-merge.updatesite.xml">
