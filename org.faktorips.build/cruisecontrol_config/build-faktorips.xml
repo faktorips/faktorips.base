@@ -287,15 +287,21 @@
          additionaly make sure that the build_host_<hostname>.properies exists in the pluginbuilder project-->
     <target name="release.faktorips" 
     	description="release build for an specified faktorips release version, builds the complete feature, executes the junit plugin tests and distributes the result to the update site and download directory">
-        <property name="useCvs" value="true"/>
+        <!-- defauls properties -->
+    	<property name="useCvs" value="true"/>
+    	<!-- directories on server -->
         <property name="projectsRootDir" value="checkout_release/"/>
-        <property name="downloadDir" value="/var/www/localhost/htdocs/update.faktorzehn.org/faktorips/downloads"/>
+    	<property name="updatesite.path" value="/var/www/localhost/htdocs/update.faktorzehn.org/faktorips/"/>
+    	<property name="downloadDir" value="/var/www/localhost/htdocs/update.faktorzehn.org/faktorips/downloads"/>
     	<property name="buildDirectory" value="${basedir}/pluginbuilder_release_tmp/org.faktorips.pluginbuilder_release"/>
-        <!-- download zip file names -->        
+        <!-- download zip file names -->       
     	<property name="faktoripsReleaseDownloadZipPath" value="${downloadDir}/faktorips-${build.version}.zip"/>
         <property name="faktoripsNls1ReleaseDownloadZipPath" value="${downloadDir}/faktorips.nls1-${build.version}.zip"/>
-        <property name="release.properties" value="${projectsRootDir}/org.faktorips.pluginbuilder/releases/${build.version}.properties"/>
+    	<!-- pluginbuilder configuration files -->
+    	<property name="release.properties" value="${projectsRootDir}/org.faktorips.pluginbuilder/releases/${build.version}.properties"/>
         <property name="pluginbuilder.config" value="${projectsRootDir}/org.faktorips.pluginbuilder/pluginbuilder.config"/>
+    	<!-- features to integrate in site.xml -->
+    	<property name="pluginbuilder.features" value="org.faktorips.feature,org.faktorips.feature.nls1"/>
     	
     	<condition property="isUseCvs" value="true">
             <equals arg1="${useCvs}" arg2="true"/>
@@ -358,7 +364,7 @@
         <!--1. generate a new site.xml on the updatesite, including all previous and new feature versions-->
         <ant dir="${projectsRootDir}/org.faktorips.pluginbuilder/build-files" antfile="postBuild.xml" target="-createNightlyBuildSiteXml">
             <property name="siteXmlFile" value="${basedir}/${projectsRootDir}/org.faktorips.updatesite/site_tmp.xml"/>
-            <property name="pluginbuilder.features" value="org.faktorips.feature,org.faktorips.feature.nls1"/>
+            <property name="pluginbuilder.features" value="${pluginbuilder.features}"/>
             <property name="buildDirectory" value="${buildDirectory}"/>
             <property name="buildHome" value="${basedir}/${projectsRootDir}/org.faktorips.pluginbuilder"/>
             <property name="updateSiteCategoryName" value="Faktor-IPS ${build.category}"/>
@@ -377,6 +383,14 @@
     	<!--   copy to faktorips updatesite website directory -->
     	<antcall inheritall="true" target="-checkout.updatesite.on.faktorips.org"/>
     	<antcall inheritall="true" target="-copy.updatesite.to.faktorips.org"/>
+    	
+    	<!-- report -->
+    	<echo message="finished."/>
+    	<echo message="-> features in release: ${pluginbuilder.features}"/>
+    	<echo message="-> updatesite: ${updatesite.path}"/>
+    	<echo message="-> download zip files: "/>
+    	<echo message=" 1. ${faktoripsReleaseDownloadZipPath}"/>
+    	<echo message=" 2. ${faktoripsNls1ReleaseDownloadZipPath}"/>
     	
     </target>
 	
@@ -407,7 +421,6 @@
         	package="org.faktorips.updatesite" dest="${projectsRootDir}" cvsroot="${cvsroot}" quiet="true"/>
     </target>
     <target name="-checkout.updatesite.on.faktorips.org" if="isUseCvs">
-        <property name="updatesite.path" value="/var/www/localhost/htdocs/update.faktorzehn.org/faktorips/"/>
         <echo message="update faktorips.org updatesite: ${updatesite.path}"/>
         <cvs command="co org.faktorips.updatesite" dest="${updatesite.path}" cvsroot="${cvsroot}" quiet="true"/>
     </target>	
@@ -428,7 +441,6 @@
         <zip destfile="${faktoripsNls1ReleaseDownloadZipPath}" basedir="${zip.dir}/.." />
     </target>
     <target name="-copy.updatesite.to.faktorips.org">
-    	<property name="updatesite.path" value="/var/www/localhost/htdocs/update.faktorzehn.org/faktorips/"/>
         <copy todir="${updatesite.path}/plugins" overwrite="true" verbose="true">
             <fileset dir="${buildDirectory}/updateSite/plugins" includes="*.jar"/>
         </copy>
