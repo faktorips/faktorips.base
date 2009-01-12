@@ -226,15 +226,17 @@
 	    <condition property="is.thisbuildsuccessful" value="true">
 	        <equals arg1="${thisbuildsuccessful}" arg2="true"/>
 	    </condition>
+	    <condition property="is.plugintest" value="true">
+	        <equals arg1="${workspaceName}" arg2="workspace"/>
+	    </condition>
 		
 		<!-- create the cc artifact directory for the current build -->
 		<mkdir dir="${ccProjectDir}/${cctimestamp}"/>
 
 		<!-- copy eclipse workspace logfile -->
 		<!-- problems if the workspace has been created, but there is an error or exception in the workspace -->
-		<copy file="${basedir}/pluginbuilder_tmp/org.faktorips.pluginbuilder/${workspaceName}/.metadata/.log" 
-			tofile="${ccProjectDir}/${cctimestamp}/eclipse_workspace.log"
-		    failonerror="false" verbose="true"/>
+        <antcall inheritall="true" target="-copy.eclipse.workspace.log"/>
+        <antcall inheritall="true" target="-copy.eclipse.test.workspace.log"/>
 		
 		<!-- copy eclipse configuration log -->
 		<!-- problems if the workspace hasn't been created in case of errors, e.g. feature not found -->
@@ -438,6 +440,16 @@
         <copy todir="${updatesite.path}/features" overwrite="true" verbose="true">
             <fileset dir="${buildDirectory}/updateSite/features" includes="*.jar"/>
         </copy>
+    </target>
+    <target name="-copy.eclipse.workspace.log">
+        <copy file="${basedir}/pluginbuilder_tmp/org.faktorips.pluginbuilder/${workspaceName}/.metadata/.log" 
+            tofile="${ccProjectDir}/${cctimestamp}/eclipse_workspace.log"
+            failonerror="false" verbose="true"/>
+    </target>
+    <target name="-copy.eclipse.test.workspace.log" if="is.plugintest">
+        <copy file="${basedir}/pluginbuilder_tmp/org.faktorips.pluginbuilder/test-workspace/.metadata/.log" 
+            tofile="${ccProjectDir}/${cctimestamp}/eclipse_test-workspace.log"
+            failonerror="false" verbose="true"/>
     </target>
     <target name="-copy.eclipse.configuration.log">
         <copy todir="${ccProjectDir}/${cctimestamp}" failonerror="false" verbose="false">
