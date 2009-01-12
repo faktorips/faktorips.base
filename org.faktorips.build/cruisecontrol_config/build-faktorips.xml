@@ -202,6 +202,7 @@
         <cvs command="co org.faktorips.devtools.core.ui.test" dest="${projectsRootDir}" cvsroot="${cvsroot}" quiet="true"/>
         <cvs command="co org.faktorips.devtools.stdbuilder.test" dest="${projectsRootDir}" cvsroot="${cvsroot}" quiet="true"/>
     	<!-- checkout faktorips uml plugins and feature -->
+        <cvs command="co org.faktorips.uml.feature.test" dest="${projectsRootDir}" cvsroot="${cvsroot}" quiet="true"/>
         <cvs command="co org.faktorips.uml" dest="${projectsRootDir}" cvsroot="${cvsroot}" quiet="true"/>
         <cvs command="co org.faktorips.uml.nl1" dest="${projectsRootDir}" cvsroot="${cvsroot}" quiet="true"/>
         <cvs command="co org.faktorips.uml.test" dest="${projectsRootDir}" cvsroot="${cvsroot}" quiet="true"/>
@@ -297,11 +298,14 @@
         <!-- download zip file names -->       
     	<property name="faktoripsReleaseDownloadZipPath" value="${downloadDir}/faktorips-${build.version}.zip"/>
         <property name="faktoripsNls1ReleaseDownloadZipPath" value="${downloadDir}/faktorips.nls1-${build.version}.zip"/>
+        <property name="faktoripsUmlReleaseDownloadZipPath" value="${downloadDir}/faktorips.uml-${build.version}.zip"/>
+        <property name="faktoripsUmlNls1ReleaseDownloadZipPath" value="${downloadDir}/faktorips.uml.nls1-${build.version}.zip"/>
     	<!-- pluginbuilder configuration files -->
     	<property name="release.properties" value="${projectsRootDir}/org.faktorips.pluginbuilder/releases/${build.version}.properties"/>
         <property name="pluginbuilder.config" value="${projectsRootDir}/org.faktorips.pluginbuilder/pluginbuilder.config"/>
     	<!-- features to integrate in site.xml -->
     	<property name="pluginbuilder.features" value="org.faktorips.feature,org.faktorips.feature.nls1"/>
+    	<property name="pluginbuilder.features.uml" value="org.faktorips.uml.feature,org.faktorips.uml.feature.nls1"/>
     	
     	<condition property="isUseCvs" value="true">
             <equals arg1="${useCvs}" arg2="true"/>
@@ -326,22 +330,18 @@
         <available type="file" file="${release.properties}" property="releasePropertiesExists"/>
         <fail message="Could not find ${build.version}.properties in ${projectsRootDir}/org.faktorips.pluginbuilder/releases/" unless="releasePropertiesExists"/>
     	<!--3. check previous release build with same target, check file exists in download dir -->
-        <fail message="Release zip already exists: ${faktoripsReleaseDownloadZipPath} (delete or use -Doverwrite=true)">
-             <condition>
-             	<and>
-             		<available file="${faktoripsReleaseDownloadZipPath}"/>
-             		<not><equals arg1="${overwrite}" arg2="true"/></not>
-             	</and>
-             </condition>
-         </fail>
-        <fail message="Release zip already exists: ${faktoripsNls1ReleaseDownloadZipPath} (delete or use -Doverwrite=true)">
-             <condition>
-                <and>     	
-                    <available file="${faktoripsNls1ReleaseDownloadZipPath}"/>
-                	<not><equals arg1="${overwrite}" arg2="true"/></not>
-                </and>     	
-             </condition>
-         </fail>
+    	<antcall inheritall="true" target="-fail.if.file.exists">
+    	    <param name="file" value="${faktoripsReleaseDownloadZipPath}"/>
+    	</antcall>
+    	<antcall inheritall="true" target="-fail.if.file.exists">
+    	    <param name="file" value="${faktoripsNls1ReleaseDownloadZipPath}"/>
+    	</antcall>
+    	<antcall inheritall="true" target="-fail.if.file.exists">
+    	    <param name="file" value="${faktoripsUmlReleaseDownloadZipPath}"/>
+    	</antcall>
+    	<antcall inheritall="true" target="-fail.if.file.exists">
+    	    <param name="file" value="${faktoripsUmlNls1ReleaseDownloadZipPath}"/>
+    	</antcall>
 
     	<!-- checkout pluginbuilder with correct build.version -->
     	<antcall inheritall="true" target="-checkout.pluginbuilder.build.version"/>
@@ -361,7 +361,7 @@
     	<antcall inheritall="true" target="-copy.faktorips.release.to.download.dir"/>
 
     	<!--install the features on updatesite-->
-        <!--1. generate a new site.xml on the updatesite, including all previous and new feature versions-->
+        <!--  generate a new site.xml on the updatesite, including all previous and new feature versions-->
         <ant dir="${projectsRootDir}/org.faktorips.pluginbuilder/build-files" antfile="postBuild.xml" target="-createNightlyBuildSiteXml">
             <property name="siteXmlFile" value="${basedir}/${projectsRootDir}/org.faktorips.updatesite/site_tmp.xml"/>
             <property name="pluginbuilder.features" value="${pluginbuilder.features}"/>
@@ -372,28 +372,45 @@
             <property name="updateSiteDescription" value="FaktorIPS update site"/>
             <property name="updateSiteUrl" value="http://update.faktorzehn.org/faktorips"/>
         </ant>
-    	
-        <!--3. merge the generated site.xml with the previous site.xml as new site.xml-->
+        <!--  merge the generated site.xml with the previous site.xml as new site.xml-->
         <antcall inheritall="true" target="-merge.updatesite.xml"/>
     
-    	<!--4. checkin updatesite, only site.xml will be commited, TODO features and plugin jars are not 'add' to cvs-->
+        <!--  generate a new site.xml on the updatesite, including all previous and new feature versions-->
+        <ant dir="${projectsRootDir}/org.faktorips.pluginbuilder/build-files" antfile="postBuild.xml" target="-createNightlyBuildSiteXml">
+            <property name="siteXmlFile" value="${basedir}/${projectsRootDir}/org.faktorips.updatesite/site_tmp.xml"/>
+            <property name="pluginbuilder.features" value="${pluginbuilder.features.uml}"/>
+            <property name="buildDirectory" value="${buildDirectory}"/>
+            <property name="buildHome" value="${basedir}/${projectsRootDir}/org.faktorips.pluginbuilder"/>
+            <property name="updateSiteCategoryName" value="Faktor-IPS UML"/>
+            <property name="updateSiteCategoryLabel" value="Faktor-IPS UML"/>
+            <property name="updateSiteDescription" value="FaktorIPS update site"/>
+            <property name="updateSiteUrl" value="http://update.faktorzehn.org/faktorips"/>
+        </ant>
+        <!--  merge the generated site.xml with the previous site.xml as new site.xml-->
+        <antcall inheritall="true" target="-merge.updatesite.xml"/>
+    
+    	<!--  checkin updatesite, only site.xml will be commited, TODO features and plugin jars are not 'add' to cvs-->
         <antcall inheritall="true" target="-checkin.updatesite"/>
     	
-    	<!--5. checkout site.xml -->
+    	<!--  checkout site.xml -->
     	<!--   copy to faktorips updatesite website directory -->
     	<antcall inheritall="true" target="-checkout.updatesite.on.faktorips.org"/>
     	<antcall inheritall="true" target="-copy.updatesite.to.faktorips.org"/>
     	
     	<!-- report -->
+    	<echo message=""/>
     	<echo message="finished."/>
-    	<echo message="-> features in release: ${pluginbuilder.features}"/>
+    	<echo message="-> builded features: ${pluginbuilder.features}"/>
+    	<echo message="-> builded features uml: ${pluginbuilder.features.uml}"/>
     	<echo message="-> updatesite: ${updatesite.path}"/>
     	<echo message="-> download zip files: "/>
     	<echo message=" 1. ${faktoripsReleaseDownloadZipPath}"/>
     	<echo message=" 2. ${faktoripsNls1ReleaseDownloadZipPath}"/>
+    	<echo message=" 3. ${faktoripsUmlReleaseDownloadZipPath}"/>
+    	<echo message=" 4. ${faktoripsUmlNls1ReleaseDownloadZipPath}"/>
     	
     </target>
-	
+
     <!--helper targets-->
     <target name="-checkout.pluginbuilder.delete.previous" if="isUseCvs">
     	<delete includeemptydirs="true" dir="${projectsRootDir}/org.faktorips.pluginbuilder"/>
@@ -482,6 +499,17 @@
     	<replace file="${pluginbuilder.config}" token="pluginbuilder.is.runtests=true" value="pluginbuilder.is.runtests=false"/>
     </target>
     
+    <target name="-fail.if.file.exists">
+        <fail message="Release zip already exists: ${file} (delete or use -Doverwrite=true)">
+              <condition>
+                 <and>
+                     <available file="${file}"/>
+                     <not><equals arg1="${overwrite}" arg2="true"/></not>
+                 </and>
+              </condition>
+          </fail>
+    </target>
+              	
     <target name="-merge.updatesite.xml">
         <xslt in="${projectsRootDir}/org.faktorips.updatesite/site.xml" out="${projectsRootDir}/org.faktorips.updatesite/site_merge.xml" 
         	style="${projectsRootDir}/org.faktorips.build/cruisecontrol_config/xsl/mergeupdatesite.xsl" force="true">
