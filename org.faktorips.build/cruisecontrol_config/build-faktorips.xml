@@ -276,12 +276,12 @@
     <!--this target builds the faktorips release madatory parameter: 
            -Dbuild.version -> the version which will be released
            -Dbuild.category -> the version of the category in the updatesite site.xml file -->
-    <!--note that if this script is running local without cvs the following parameter must be set:
-        optional parameters:
+    <!--optional parameters:
            -Doverwrite=true -> to overwrite previous build version or throw a build fail if version exists
            -Druntests=false -> run or ignore junit plugin tests 
+        optional parameter for a local build:   
            -DuseCvs=false -> no cvs support 
-           -Dall.map=all_copy.map -> copy features and plugins from the workspace instead of using a releas tag with cvs 
+           -Dall.map=all_copy.map -> copy features and plugins from the workspace instead of using a release tag with cvs 
            -DprojectsRootDir -> the root dir of all plugin projects
            -DbaseDir -> the parent dir of the dir specified in projectsRootDir
          additionaly make sure that the build_host_<hostname>.properies exists in the pluginbuilder project-->
@@ -309,7 +309,7 @@
              cvs tag depending on the build.version -->
 
     	<!--checkout pluginbuilder, build project -->
-    	<antcall inheritall="true" target="-checkout.pluginbuilder"/>
+    	<antcall inheritall="true" target="-checkout.pluginbuilder.delete.previous"/>
     	<antcall inheritall="true" target="-checkout.build"/>
     	
     	<!--asserts-->
@@ -381,7 +381,8 @@
     </target>
 	
     <!--helper targets-->
-    <target name="-checkout.pluginbuilder" if="isUseCvs">
+    <target name="-checkout.pluginbuilder.delete.previous" if="isUseCvs">
+    	<delete includeemptydirs="true" dir="${projectsRootDir}/org.faktorips.pluginbuilder"/>
         <cvs command="co org.faktorips.pluginbuilder" dest="${projectsRootDir}" cvsroot="${cvsroot}" quiet="true"/>
     </target>
     <target name="-checkout.pluginbuilder.build.version" if="isUseCvs">
