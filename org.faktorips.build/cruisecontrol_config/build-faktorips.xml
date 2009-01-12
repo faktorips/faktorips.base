@@ -274,9 +274,11 @@
     </target>
 	
     <!--this target builds the faktorips release madatory parameter: 
-           -Dbuild.version -> the version which will be released -->
+           -Dbuild.version -> the version which will be released
+           -Dbuild.category -> the version of the category in the updatesite site.xml file -->
     <!--note that if this script is running local without cvs the following parameter must be set:
         optional parameters:
+           -Doverwrite=true -> to overwrite previous build version or throw a build fail if version exists
            -Druntests=false -> run or ignore junit plugin tests 
            -DuseCvs=false -> no cvs support 
            -Dall.map=all_copy.map -> copy features and plugins from the workspace instead of using a releas tag with cvs 
@@ -313,15 +315,26 @@
     	<!--asserts-->
         <!--1. check if the build.version property is given-->
         <fail unless="build.version" message="Please specify the build.version, e.g. ant ... -Dbuild.version=2.2.0.rfinal"/>
+        <fail unless="build.category" message="Please specify the build.category, e.g. ant ... -Dbuild.category=2.2"/>
     	<!--2. check if the build.verion property file exists-->
         <available type="file" file="${release.properties}" property="releasePropertiesExists"/>
         <fail message="Could not find ${build.version}.properties in ${projectsRootDir}/org.faktorips.pluginbuilder/releases/" unless="releasePropertiesExists"/>
     	<!--3. check previous release build with same target, check file exists in download dir -->
         <fail message="Release zip already exists: ${faktoripsReleaseDownloadZipPath}">
-             <condition><available file="${faktoripsReleaseDownloadZipPath}"/></condition>
+             <condition>
+             	<and>
+             		<available file="${faktoripsReleaseDownloadZipPath}"/>
+             		<not><equals arg1="${overwrite}" arg2="true"/></not>
+             	</and>
+             </condition>
          </fail>
         <fail message="Release zip already exists: ${faktoripsNls1ReleaseDownloadZipPath}">
-             <condition><available file="${faktoripsNls1ReleaseDownloadZipPath}"/></condition>
+             <condition>
+                <and>     	
+                    <available file="${faktoripsNls1ReleaseDownloadZipPath}"/>
+                	<not><equals arg1="${overwrite}" arg2="true"/></not>
+                </and>     	
+             </condition>
          </fail>
 
     	<!-- checkout pluginbuilder with correct build.version -->
@@ -348,8 +361,8 @@
             <property name="pluginbuilder.features" value="org.faktorips.feature,org.faktorips.feature.nls1"/>
             <property name="buildDirectory" value="${buildDirectory}"/>
             <property name="buildHome" value="${basedir}/${projectsRootDir}/org.faktorips.pluginbuilder"/>
-            <property name="updateSiteCategoryName" value="Faktor-IPS ${build.version}"/>
-            <property name="updateSiteCategoryLabel" value="Faktor-IPS ${build.version}"/>
+            <property name="updateSiteCategoryName" value="Faktor-IPS ${build.category}"/>
+            <property name="updateSiteCategoryLabel" value="Faktor-IPS ${build.category}"/>
             <property name="updateSiteDescription" value="FaktorIPS update site"/>
             <property name="updateSiteUrl" value="http://update.faktorzehn.org/faktorips"/>
         </ant>
@@ -468,5 +481,5 @@
         <copy file="${projectsRootDir}/org.faktorips.updatesite/site_merge.xml" tofile="${projectsRootDir}/org.faktorips.updatesite/site.xml" verbose="false" overwrite="true"/>
         <delete file="${projectsRootDir}/org.faktorips.updatesite/site_merge.xml" verbose="false"/>
     </target>
-	
+
 </project>
