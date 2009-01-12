@@ -227,9 +227,11 @@
 	        <equals arg1="${thisbuildsuccessful}" arg2="true"/>
 	    </condition>
 		
-		<!-- copy eclipse workspace logfile -->
-		<!-- problems if the workspace has been created, but there is an error or exception in the workspace-->
+		<!-- create the cc artifact directory for the current build -->
 		<mkdir dir="${ccProjectDir}/${cctimestamp}"/>
+
+		<!-- copy eclipse workspace logfile -->
+		<!-- problems if the workspace has been created, but there is an error or exception in the workspace -->
 		<copy file="${basedir}/pluginbuilder_tmp/org.faktorips.pluginbuilder/${workspaceName}/.metadata/.log" 
 			tofile="${ccProjectDir}/${cctimestamp}/eclipse_workspace.log"
 		    failonerror="false" verbose="true"/>
@@ -238,12 +240,13 @@
 		<!-- problems if the workspace hasn't been created in case of errors, e.g. feature not found -->
         <antcall inheritall="true" target="-copy.eclipse.configuration.log"/>
 
-		<antcall inheritall="true" target="-copy.pluginbuilder.compile.error"/>
-		
 		<!-- copy autoamted test html report -->
 		<copy file="${basedir}/pluginbuilder_tmp/org.faktorips.pluginbuilder/results/testresults/html/testReport_N-${label}.html" 
 			todir="${ccProjectDir}/${cctimestamp}"
 			failonerror="false" verbose="true"/>
+
+		<!-- copy plugin compile errors -->
+		<antcall inheritall="true" target="-copy.pluginbuilder.compile.error"/>
 		
 		<!-- copy java output, eclipse output from org.eclipse.equinox.launcher.Main --> 
 		<antcall inheritall="true" target="-copy.javaoutput"/>
@@ -446,7 +449,7 @@
     		<fileset dir="${basedir}/pluginbuilder_tmp/pluginbuilder_eclipse/eclipse/configuration" includes="*.log"/>
     	</delete>
     </target>
-    <target name="-copy.pluginbuilder.compile.error">
+    <target name="-copy.pluginbuilder.compile.error" unless="is.thisbuildsuccessful">
         <copy todir="${ccProjectDir}/${cctimestamp}" failonerror="false" verbose="false">
             <fileset dir="${basedir}/pluginbuilder_tmp/org.faktorips.pluginbuilder/plugins" includes="**/*dot.bin.log"/>
         </copy>
@@ -458,7 +461,8 @@
     </target>
     
     <target name="-merge.updatesite.xml">
-        <xslt in="${projectsRootDir}/org.faktorips.updatesite/site.xml" out="${projectsRootDir}/org.faktorips.updatesite/site_merge.xml" style="${projectsRootDir}/org.faktorips.build/cruisecontrol_config/xsl/mergeupdatesite.xsl" force="true">
+        <xslt in="${projectsRootDir}/org.faktorips.updatesite/site.xml" out="${projectsRootDir}/org.faktorips.updatesite/site_merge.xml" 
+        	style="${projectsRootDir}/org.faktorips.build/cruisecontrol_config/xsl/mergeupdatesite.xsl" force="true">
             <outputproperty name="method" value="xml"/>
             <outputproperty name="encoding" value="UTF-8"/>
             <outputproperty name="indent" value="yes"/>
