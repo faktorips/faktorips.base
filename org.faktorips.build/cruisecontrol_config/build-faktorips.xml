@@ -195,7 +195,9 @@
         <cvs command="co org.faktorips.feature" dest="${projectsRootDir}" cvsroot="${cvsroot}" quiet="true"/>
         <cvs command="co org.faktorips.feature.nls1" dest="${projectsRootDir}" cvsroot="${cvsroot}" quiet="true"/>
         <cvs command="co org.faktorips.nls.devtools.core.nl1" dest="${projectsRootDir}" cvsroot="${cvsroot}" quiet="true"/>
-        <cvs command="co org.faktorips.feature.test" dest="${projectsRootDir}" cvsroot="${cvsroot}" quiet="true"/>
+    	<cvs command="co org.faktorips.nls.devtools.core.ui.nl1" dest="${projectsRootDir}" cvsroot="${cvsroot}" quiet="true"/>
+        
+    	<cvs command="co org.faktorips.feature.test" dest="${projectsRootDir}" cvsroot="${cvsroot}" quiet="true"/>
         <cvs command="co org.faktorips.devtools.core.test" dest="${projectsRootDir}" cvsroot="${cvsroot}" quiet="true"/>
         <cvs command="co org.faktorips.devtools.core.ui.test" dest="${projectsRootDir}" cvsroot="${cvsroot}" quiet="true"/>
         <cvs command="co org.faktorips.devtools.stdbuilder.test" dest="${projectsRootDir}" cvsroot="${cvsroot}" quiet="true"/>
