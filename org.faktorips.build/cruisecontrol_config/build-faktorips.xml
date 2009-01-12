@@ -289,8 +289,8 @@
         <property name="downloadDir" value="/var/www/localhost/htdocs/update.faktorzehn.org/faktorips/downloads"/>
     	<property name="buildDirectory" value="${basedir}/pluginbuilder_release_tmp/org.faktorips.pluginbuilder_release"/>
         <!-- download zip file names -->        
-    	<property name="faktoripsReleaseDownloadZipPath" value="${downloadDir}/faktorips_${build.version}.zip"/>
-        <property name="faktoripsNls1ReleaseDownloadZipPath" value="${downloadDir}/faktorips.nls1_${build.version}.zip"/>
+    	<property name="faktoripsReleaseDownloadZipPath" value="${downloadDir}/faktorips-${build.version}.zip"/>
+        <property name="faktoripsNls1ReleaseDownloadZipPath" value="${downloadDir}/faktorips.nls1-${build.version}.zip"/>
         <property name="release.properties" value="${projectsRootDir}/org.faktorips.pluginbuilder/releases/${build.version}.properties"/>
     	
     	<condition property="isUseCvs" value="true">
@@ -342,7 +342,7 @@
         </ant>
     	
         <!--copy zipped features into the faktorips download directory, fails if files already exists-->
-    	<antcall inheritall="true" target="-copy.updatesite.to.download.dir"/>
+    	<antcall inheritall="true" target="-copy.faktorips.release.to.download.dir"/>
 
     	<!--install the features on updatesite-->
         <!--1. generate a new site.xml on the updatesite, including all previous and new feature versions-->
@@ -356,21 +356,16 @@
             <property name="updateSiteDescription" value="FaktorIPS update site"/>
             <property name="updateSiteUrl" value="http://update.faktorzehn.org/faktorips"/>
         </ant>
-        <!--2. copy all features and plugins to the updatesite project-->
-    	<antcall inheritall="true" target="-copy.updatesite.to.updatesite.project"/>
-
+    	
         <!--3. merge the generated site.xml with the previous site.xml as new site.xml-->
         <antcall inheritall="true" target="-merge.updatesite.xml"/>
     
     	<!--4. checkin updatesite, only site.xml will be commited, TODO features and plugin jars are not 'add' to cvs-->
         <antcall inheritall="true" target="-checkin.updatesite"/>
     	
-    	<!-- TODO 5. checkout on faktorips updatesite website directory -->
-    	<!--
+    	<!--5. checkout site.xml -->
+    	<!--   copy to faktorips updatesite website directory -->
     	<antcall inheritall="true" target="-checkout.updatesite.on.faktorips.org"/>
-    	-->
-
-    	<!--5. copy to faktorips updatesite website directory -->
     	<antcall inheritall="true" target="-copy.updatesite.to.faktorips.org"/>
     	
     </target>
@@ -399,18 +394,13 @@
     <target name="-checkin.updatesite" if="isUseCvs">
     	<cvs command="commit -m 'release build: ${build.version}'" 
         	package="org.faktorips.updatesite" dest="${projectsRootDir}" cvsroot="${cvsroot}" quiet="true"/>
-        <!-- 
-        <cvs command="add -m 'release build: ${build.version}' " 
-        	package="org.faktorips.updatesite" dest="${projectsRootDir}" cvsroot="${cvsroot}" quiet="true"/>
-        -->
     </target>
     <target name="-checkout.updatesite.on.faktorips.org" if="isUseCvs">
-    	<property name="updatesite.path" value="/var/www/localhost/htdocs/update.faktorzehn.org/faktorips/"/>
-    	<echo message="update faktorips.org updatesite: ${updatesite.path}"/>
-    	<property name="faktorips.org.updatesite.dir" value="${updatesite.path}" />
-    	<cvs command="co org.faktorips.updatesite" dest="${faktorips.org.updatesite.dir}" cvsroot="${cvsroot}" quiet="true"/>
-    </target>
-    <target name="-copy.updatesite.to.download.dir">
+        <property name="updatesite.path" value="/var/www/localhost/htdocs/update.faktorzehn.org/faktorips/"/>
+        <echo message="update faktorips.org updatesite: ${updatesite.path}"/>
+        <cvs command="co org.faktorips.updatesite" dest="${updatesite.path}" cvsroot="${cvsroot}" quiet="true"/>
+    </target>	
+    <target name="-copy.faktorips.release.to.download.dir">
     	<!-- unzip, add eclipse folder and zip in download dir -->
     	<property name="zip.dir" value="${buildDirectory}/zip_tmp/eclipse"/>
 
@@ -425,14 +415,6 @@
     	<mkdir dir="${zip.dir}"/>
         <unzip src="${buildDirectory}/results/org.faktorips.feature.nls1-${build.version}.zip" dest="${buildDirectory}/zip_tmp/eclipse"></unzip>
         <zip destfile="${faktoripsNls1ReleaseDownloadZipPath}" basedir="${zip.dir}/.." />
-    </target>
-    <target name="-copy.updatesite.to.updatesite.project">
-        <copy todir="${projectsRootDir}/org.faktorips.updatesite/plugins" overwrite="false" verbose="true">
-            <fileset dir="${buildDirectory}/updateSite/plugins" includes="*.jar"/>
-        </copy>
-        <copy todir="${projectsRootDir}/org.faktorips.updatesite/features" overwrite="false" verbose="true">
-            <fileset dir="${buildDirectory}/updateSite/features" includes="*.jar"/>
-        </copy>
     </target>
     <target name="-copy.updatesite.to.faktorips.org">
     	<property name="updatesite.path" value="/var/www/localhost/htdocs/update.faktorzehn.org/faktorips/"/>
