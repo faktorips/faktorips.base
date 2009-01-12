@@ -277,6 +277,7 @@
            -Dbuild.version -> the version which will be released -->
     <!--note that if this script is running local without cvs the following parameter must be set:
         optional parameters:
+           -runtests=false -> run or ignore junit plugin tests 
            -DuseCvs=false -> no cvs support 
            -Dall.map=all_copy.map -> copy features and plugins from the workspace instead of using a releas tag with cvs 
            -DprojectsRootDir -> the root dir of all plugin projects
@@ -323,22 +324,12 @@
         
         <!--checkout updatesite-->
     	<antcall inheritall="true" target="-checkout.updatesite"/>
-    	
-        <!-- check if test should be run or not, property 'pluginbuilder.is.runtests' could be overwritten -->
-        <loadproperties srcfile="${release.properties}">
-          <filterchain>
-            <linecontains>
-              <contains value="pluginbuilder.is.runtests"/>
-            </linecontains>
-          </filterchain>
-        </loadproperties>
-    	<echo message="pluginbuilder.is.runtests: ${pluginbuilder.is.runtests}"/>
 
         <!--build release unsing pluginbuilder main target-->
     	<ant dir="${projectsRootDir}/org.faktorips.pluginbuilder/" antfile="build.xml" target="main">
             <property name="build.version" value="${build.version}"/>
             <property name="buildDirectory" value="${buildDirectory}"/>
-            <property name="pluginbuilder.is.runtests" value="${pluginbuilder.is.runtests}"/>
+            <property name="runtests" value="${runtests}"/>
         </ant>
     	
         <!--copy zipped features into the faktorips download directory, fails if files already exists-->
@@ -468,4 +459,5 @@
         <copy file="${projectsRootDir}/org.faktorips.updatesite/site_merge.xml" tofile="${projectsRootDir}/org.faktorips.updatesite/site.xml" verbose="false" overwrite="true"/>
         <delete file="${projectsRootDir}/org.faktorips.updatesite/site_merge.xml" verbose="false"/>
     </target>
+	
 </project>
