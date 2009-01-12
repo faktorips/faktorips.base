@@ -326,7 +326,7 @@
         <available type="file" file="${release.properties}" property="releasePropertiesExists"/>
         <fail message="Could not find ${build.version}.properties in ${projectsRootDir}/org.faktorips.pluginbuilder/releases/" unless="releasePropertiesExists"/>
     	<!--3. check previous release build with same target, check file exists in download dir -->
-        <fail message="Release zip already exists: ${faktoripsReleaseDownloadZipPath}">
+        <fail message="Release zip already exists: ${faktoripsReleaseDownloadZipPath} (delete or use -Doverwrite=true)">
              <condition>
              	<and>
              		<available file="${faktoripsReleaseDownloadZipPath}"/>
@@ -334,7 +334,7 @@
              	</and>
              </condition>
          </fail>
-        <fail message="Release zip already exists: ${faktoripsNls1ReleaseDownloadZipPath}">
+        <fail message="Release zip already exists: ${faktoripsNls1ReleaseDownloadZipPath} (delete or use -Doverwrite=true)">
              <condition>
                 <and>     	
                     <available file="${faktoripsNls1ReleaseDownloadZipPath}"/>
