@@ -77,11 +77,9 @@
                 <project name="org.faktorips.devtools.core"/>
             </depends>
         </project>
-        <!-- TODO fix tests
         <project name="org.faktorips.devtools.ant" mainbuildtarget="devtools.ant" 
             testresult="${workdir}/${project.name}/scripts/">
         </project>
-        --> 
         <project name="org.faktorips.pluginbuilder" mainbuildtarget="pluginbuilder.faktorips"
             testresult="${workdir}/../pluginbuilder_tmp/org.faktorips.pluginbuilder/results/testresults/xml" 
             testmerge="*test.xml"
