@@ -129,9 +129,12 @@ TODO bbv, kqv und msgp
                 reportsuccess="always"
                 xsldir="${htmlemail.xsldir}"
                 css="${htmlemail.css}">
-                
-                <failure reportWhenFixed="true" address="${htlmemail.reportWhenFixed.address}" />
-                
+                 
+                <!-- the failure node with attribute reportWhenFixed, will be created
+                     dynamically using all developer addresses 
+                     <failure reportWhenFixed="true" address="${htlmemail.reportWhenFixed.address}" />
+                -->
+                 
                 <!-- mail mappings are specified in ENTITY mailmapping see this xml header -->
                 &mailmapping;
 

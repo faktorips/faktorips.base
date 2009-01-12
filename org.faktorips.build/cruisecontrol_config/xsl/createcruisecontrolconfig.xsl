@@ -137,12 +137,28 @@
             <publishers>
                 <!-- global htmlmail publisher -->
                 <xsl:if test="$htmlemail='true'">
-                     <xsl:copy-of select="/faktoripscruisecontrol/publishers/publisher[@id='htmlemail']/child::node()"/>
+                    <htmlemail>
+                        <xsl:copy-of select="/faktoripscruisecontrol/publishers/publisher[@id='htmlemail']/child::node()/@*"/>
+                        <xsl:copy-of select="/faktoripscruisecontrol/publishers/publisher[@id='htmlemail']/child::node()/*"/>
+                        <failure>
+                            <xsl:attribute name="reportWhenFixed"><xsl:value-of select="'true'"/></xsl:attribute>
+                            <xsl:attribute name="address">
+                                <xsl:call-template name="all.developeraddress.as.string">
+                                    <xsl:with-param name="addresses" select="/faktoripscruisecontrol/publishers/publisher[@id='htmlemail']/child::node()/map" />
+                                </xsl:call-template>
+                            </xsl:attribute>
+                        </failure>
+                    </htmlemail>
                 </xsl:if>
                 <!-- project specific publisher -->
                 <xsl:copy-of select="/faktoripscruisecontrol/publishers/publisher[@project=$projectname]/child::node()"/>
             </publishers>
         </project>
+    </xsl:template>
+
+    <xsl:template name="all.developeraddress.as.string">
+        <xsl:param name="addresses"/>
+        <xsl:for-each select="$addresses"><xsl:value-of select="@address"/>;</xsl:for-each>
     </xsl:template>
 
 </xsl:stylesheet>
