@@ -27,6 +27,7 @@ import org.faktorips.devtools.core.internal.model.ipsobject.IpsObjectPartCollect
 import org.faktorips.devtools.core.model.DatatypeDependency;
 import org.faktorips.devtools.core.model.IpsObjectDependency;
 import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
+import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
 import org.faktorips.devtools.core.model.ipsobject.QualifiedNameType;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProjectProperties;
@@ -237,6 +238,15 @@ public abstract class Type extends BaseIpsObject implements IType {
         finder.start(this);
         return finder.association;
     }
+    
+    /**
+     * {@inheritDoc}
+     */
+    public IAssociation findAssociationByRoleNamePlural(String roleNamePlural, IIpsProject ipsProject) throws CoreException {
+        AssociationFinderPlural finder = new AssociationFinderPlural(ipsProject, roleNamePlural);
+        finder.start(this);
+        return finder.association;
+    }
 
     /**
      * {@inheritDoc}
@@ -255,6 +265,23 @@ public abstract class Type extends BaseIpsObject implements IType {
      */
     public IAssociation getAssociation(String name) {
         return (IAssociation)associations.getPartByName(name);
+    }
+    
+    /**
+     * {@inheritDoc}
+     */
+    public IAssociation getAssociationByRoleNamePlural(String roleNamePlural) {
+        if (roleNamePlural==null) {
+            return null;
+        }
+        int size = associations.size();
+        for (int i = 0; i < size; i++) {
+            IAssociation association = (IAssociation)associations.getPart(i);
+            if (roleNamePlural.equals(association.getTargetRolePlural())) {
+                return association;
+            }
+        }
+        return null;
     }
 
     /**
@@ -707,6 +734,25 @@ public abstract class Type extends BaseIpsObject implements IType {
          */
         protected boolean visit(IType currentType) {
             association = currentType.getAssociation(associationName);
+            return association==null;
+        }
+    }
+    
+    private static class AssociationFinderPlural extends TypeHierarchyVisitor {
+
+        private String associationName;
+        private IAssociation association = null;
+        
+        public AssociationFinderPlural(IIpsProject project, String associationName) {
+            super(project);
+            this.associationName = associationName;
+        }
+
+        /**
+         * {@inheritDoc}
+         */
+        protected boolean visit(IType currentType) {
+            association = currentType.getAssociationByRoleNamePlural(associationName);
             return association==null;
         }
     }

@@ -19,6 +19,7 @@ import java.util.Iterator;
 import java.util.List;
 
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.search.ui.NewSearchUI;
 import org.faktorips.devtools.core.AbstractIpsPluginTest;
 import org.faktorips.devtools.core.model.ipsobject.Modifier;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
@@ -523,6 +524,58 @@ public class TypeTest extends AbstractIpsPluginTest {
         assertEquals(a2, attributes[0]);
         assertEquals(a3, attributes[1]);
         assertEquals(a1, attributes[2]);
+    }
+    
+    public void testGetAssociation() {
+        assertNull(type.getAssociation(null));
+        assertNull(type.getAssociation("OtherType"));
+        
+        IAssociation ass1 = type.newAssociation();
+        ass1.setTargetRoleSingular("OtherType");
+        assertEquals(ass1, type.getAssociation("OtherTypes"));
+        
+        IAssociation ass2 = type.newAssociation();
+        ass2.setTargetRoleSingular("AnotherType");
+        assertEquals(ass1, type.getAssociationByRoleNamePlural("OtherType"));
+        assertEquals(ass2, type.getAssociationByRoleNamePlural("AnotherType"));
+        assertNull(type.getAssociation("UnknownRole"));
+    }
+    
+    public void testGetAssociationByRoleNamePlural() {
+        assertNull(type.getAssociationByRoleNamePlural(null));
+        assertNull(type.getAssociationByRoleNamePlural("OtherTypes"));
+        
+        IAssociation ass1 = type.newAssociation();
+        ass1.setTargetRolePlural("OtherTypes");
+        assertEquals(ass1, type.getAssociationByRoleNamePlural("OtherTypes"));
+        
+        IAssociation ass2 = type.newAssociation();
+        ass2.setTargetRolePlural("MoreTypes");
+        assertEquals(ass1, type.getAssociationByRoleNamePlural("OtherTypes"));
+        assertEquals(ass2, type.getAssociationByRoleNamePlural("MoreTypes"));
+        assertNull(type.getAssociationByRoleNamePlural("UnknownRole"));
+    }
+    
+    public void testFindAssociationByRoleNamePlural() throws CoreException {
+        assertNull(type.findAssociationByRoleNamePlural(null, ipsProject));
+        assertNull(type.findAssociationByRoleNamePlural("OtherTypes", ipsProject));
+        
+        IAssociation ass1 = type.newAssociation();
+        ass1.setTargetRolePlural("OtherTypes");
+        assertEquals(ass1, type.findAssociationByRoleNamePlural("OtherTypes", ipsProject));
+        
+        IAssociation ass2 = type.newAssociation();
+        ass2.setTargetRolePlural("MoreTypes");
+        assertEquals(ass1, type.findAssociationByRoleNamePlural("OtherTypes", ipsProject));
+        assertEquals(ass2, type.findAssociationByRoleNamePlural("MoreTypes", ipsProject));
+        assertNull(type.findAssociationByRoleNamePlural("UnknownRole", ipsProject));
+        
+        IIpsProject ipsProject2 = newIpsProject("TestProject2");
+        IType subtype = newProductCmptType(ipsProject2, "Subtype");
+        subtype.setSupertype(type.getQualifiedName());
+        assertEquals(ass1, subtype.findAssociationByRoleNamePlural("OtherTypes", ipsProject));
+        assertEquals(ass2, subtype.findAssociationByRoleNamePlural("MoreTypes", ipsProject));
+        assertNull(subtype.findAssociationByRoleNamePlural("UnknownRole", ipsProject));
     }
     
     public void testGetAssociationsForTarget() {

@@ -214,9 +214,21 @@ public interface IType extends IIpsObject, Datatype {
      * (This method does not search the supertype hierarchy.)
      * If more than one association with the name exist, the first one is returned.
      * Returns <code>null</code> if no association with the given name exists or name is <code>null</code>.
+     * 
+     * @param name The association's role name singular 
      */
     public IAssociation getAssociation(String name);
     
+    /**
+     * Returns the association with the given role name in plural form defined in <strong>this</strong> type.
+     * (This method does not search the supertype hierarchy.)
+     * If more than one association with the name exist, the first one is returned.
+     * Returns <code>null</code> if no association with the given name exists or name is <code>null</code>.
+     * 
+     * @param name The association's role name plural
+     */
+    public IAssociation getAssociationByRoleNamePlural(String roleNamePlural);
+
     /**
      * Searches an association with the given name in the type and it's supertype hierarchy and returns it. 
      * Returns <code>null</code> if no such association exists.
@@ -229,6 +241,18 @@ public interface IType extends IIpsObject, Datatype {
      */
     public IAssociation findAssociation(String name, IIpsProject ipsProject) throws CoreException;
 
+    /**
+     * Searches an association with the given role name plural in the type and it's supertype hierarchy and returns it. 
+     * Returns <code>null</code> if no such association exists.
+     * 
+     * @param name          The association's role name in plural form.
+     * @param ipsProject    The project which ips object path is used for the search.
+     *                      This is not necessarily the project this type is part of. 
+     * 
+     * @throws CoreException if an error occurs while searching.
+     */
+    public IAssociation findAssociationByRoleNamePlural(String roleNamePlural, IIpsProject ipsProject) throws CoreException;
+    
     /**
      * Returns all associations that have the indicated target and association type in the current type and
      * it's supertype hierarchy. Returns an empty array if no such association exists or target or
