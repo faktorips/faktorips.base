@@ -381,8 +381,8 @@
             <property name="pluginbuilder.features" value="${pluginbuilder.features.uml}"/>
             <property name="buildDirectory" value="${buildDirectory}"/>
             <property name="buildHome" value="${basedir}/${projectsRootDir}/org.faktorips.pluginbuilder"/>
-            <property name="updateSiteCategoryName" value="Faktor-IPS UML"/>
-            <property name="updateSiteCategoryLabel" value="Faktor-IPS UML"/>
+            <property name="updateSiteCategoryName" value="Faktor-IPS ${build.category}"/>
+            <property name="updateSiteCategoryLabel" value="Faktor-IPS ${build.category}"/>
             <property name="updateSiteDescription" value="FaktorIPS update site"/>
             <property name="updateSiteUrl" value="http://update.faktorzehn.org/faktorips"/>
         </ant>
