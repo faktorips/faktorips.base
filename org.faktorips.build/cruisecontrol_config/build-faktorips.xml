@@ -304,7 +304,7 @@
     	<property name="release.properties" value="${projectsRootDir}/org.faktorips.pluginbuilder/releases/${build.version}.properties"/>
         <property name="pluginbuilder.config" value="${projectsRootDir}/org.faktorips.pluginbuilder/pluginbuilder.config"/>
     	<!-- features to integrate in site.xml -->
-    	<property name="pluginbuilder.features" value="org.faktorips.feature,org.faktorips.feature.nls1"/>
+    	<property name="pluginbuilder.features" value="org.faktorips.feature,org.faktorips.feature.nls1,org.faktorips.feature.source"/>
     	<property name="pluginbuilder.features.uml" value="org.faktorips.uml.feature,org.faktorips.uml.feature.nls1"/>
     	
     	<condition property="isUseCvs" value="true">
