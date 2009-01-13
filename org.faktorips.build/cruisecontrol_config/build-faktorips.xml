@@ -400,8 +400,8 @@
     	<!-- report -->
     	<echo message=""/>
     	<echo message="finished."/>
-    	<echo message="-> builded features: ${pluginbuilder.features}"/>
-    	<echo message="-> builded features uml: ${pluginbuilder.features.uml}"/>
+    	<echo message="-> new faktorips ips features: ${pluginbuilder.features}"/>
+    	<echo message="-> new faktorips uml features: ${pluginbuilder.features.uml}"/>
     	<echo message="-> updatesite: ${updatesite.path}"/>
     	<echo message="-> download zip files: "/>
     	<echo message=" 1. ${faktoripsReleaseDownloadZipPath}"/>
