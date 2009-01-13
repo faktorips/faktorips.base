@@ -789,10 +789,9 @@ public abstract class JavaSourceFileBuilder extends AbstractArtefactBuilder {
         if (content == null) {
             return content;
         }
-        // with parameter null the CodeFormatter is configured with the
-        // preferences that are
-        // currently set
         CodeFormatter formatter = ToolFactory.createCodeFormatter(null);
+        // with parameter null the CodeFormatter is configured with the
+        // preferences that are currently set
         TextEdit edit = formatter.format(CodeFormatter.K_COMPILATION_UNIT, content, 0, content.length(), 0, StringUtil
                 .getSystemLineSeparator());
 
