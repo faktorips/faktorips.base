@@ -396,7 +396,7 @@
             <ant usedebug="false" uselogger="true" buildfile="${mainbuildfile}" target="pluginbuilder.integrationtest"/>
         </schedule>
         <log logdir="${logdir}/${project.name}/">
-            <merge dir="${workdir}/../pluginbuilder_tmp/org.faktorips.pluginbuilder/workspace/org.faktorips.integrationtest/results/xml" pattern="*Test.xml"/>
+            <merge dir="${workdir}/../pluginbuilder_tmp/org.faktorips.pluginbuilder/workspace_integrationtest/org.faktorips.integrationtest/results/xml" pattern="*Test.xml"/>
         </log>
         <publishers>
             <htmlemail buildresultsurl="${buildresultsurl}/${project.name}" mailhost="${htmlemail.mailhost}" username="" password="" returnaddress="${htmlemail.returnaddress}" skipusers="false" spamwhilebroken="false" returnname="faktorips-buildqueue" subjectprefix="[CC ${project.name}]" reportsuccess="always" xsldir="${htmlemail.xsldir}" css="${htmlemail.css}">

@@ -99,7 +99,7 @@
         </project>
 
         <project name="org.faktorips.integrationtest" mainbuildtarget="pluginbuilder.integrationtest" javaprojectname="org.faktorips.pluginbuilder"
-            testresult="${workdir}/../pluginbuilder_tmp/org.faktorips.pluginbuilder/workspace/org.faktorips.integrationtest/results/xml" 
+            testresult="${workdir}/../pluginbuilder_tmp/org.faktorips.pluginbuilder/workspace_integrationtest/org.faktorips.integrationtest/results/xml" 
             testmerge="*Test.xml">
             <depends>
                 <project name="org.faktorips.pluginbuilder"/>
