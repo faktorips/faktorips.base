@@ -1,28 +1,28 @@
-<project name="org.faktorips.util" default="buildjar">
+<project name="org.faktorips.build" default="buildjar">
 	
-			<!-- set global properties for this build -->
-	
-			<!-- src -->
-			<property name="src" location="../src"/>
-			<property name="test_src" location="../test" />
-		
-			<!-- classes -->
-		  	<property name="classes" location="classes/java"/>
-		  	<property name="test_classes" location="classes/test"/>
-		
-			<!-- jars -->
-			<property name="temp_jarfile" location="results/temp_faktorips-${projectname}.jar" />
-		    <property name="jarfile" location="results/faktorips-${projectname}.jar" />
-		    <property name="src_jarfile" location="results/faktorips-${projectname}-src.zip" />
-	
-			<!-- classpath -->
-			<path id="classpath" refid="classpath" />
-	
-			<!-- logdir -->
-			<property name="log" location="logs" />
+		<!-- set global properties for this build -->
 
-			<!-- javac source/target VM version -->
-			<property name="vmversion" value="1.5" />
+		<!-- src -->
+		<property name="src" location="../src"/>
+		<property name="test_src" location="../test" />
+	
+		<!-- classes -->
+	  	<property name="classes" location="classes/java"/>
+	  	<property name="test_classes" location="classes/test"/>
+	
+		<!-- jars -->
+		<property name="temp_jarfile" location="results/temp_faktorips-${projectname}.jar" />
+	    <property name="jarfile" location="results/faktorips-${projectname}.jar" />
+	    <property name="src_jarfile" location="results/faktorips-${projectname}-src.zip" />
+
+		<!-- classpath -->
+		<path id="classpath" refid="classpath" />
+
+		<!-- logdir -->
+		<property name="log" location="logs" />
+
+		<!-- javac source/target VM version -->
+		<property name="vmversion" value="1.5" />
 
         <!-- jars for the xml pretty print utility target -->
         <path id="xml.pretty.classpath">
@@ -46,12 +46,8 @@
 				</fileset>
 			</delete>
 			
-			<!--
-			
 			<delete file="${jarfile}" />
-			<delete file="${test_jarfile}" /> -->
 			<delete file="${temp_jarfile}" />
-			
 			
 			<delete includeemptydirs="true" >
 				<fileset dir="${log}">
@@ -61,17 +57,13 @@
 			</delete>
         </target>
 
-	
 		<!-- init directories -->
-	    <target name="init" >
+	    <target name="init" depends="clean">
 			<mkdir dir="${classes}"/>
 			<mkdir dir="${test_classes}"/>
 	    </target>
-	    	
 	
-	
-	
-	<!--Compile -->
+	   <!--Compile -->
         <target name="compile" depends="init">
         	<!-- compile with debug=on to keep source line numbers -->
         	<echo message="Compile with source/target VM-Version: ${vmversion}" />
@@ -99,12 +91,8 @@
         	<javac encoding="UTF-8" srcdir="${test_src}:${src}" destdir="${test_classes}" classpathref="classpath" 
         		debug="on" target="${vmversion}" source="${vmversion}" />
         </target>
-
 	
-	
-	
-	
-	<!-- perform Junit Tests -->
+	   <!-- perform Junit Tests -->
 	    <target name="test" depends="compile" >
 		
 	    	<!-- delete previos junit-logging -->
@@ -136,9 +124,6 @@
 			</junit>
 
 	    </target>
-
-	
-	
 	
 	
 		<!-- build jarfile -->
