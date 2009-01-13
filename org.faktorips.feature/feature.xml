@@ -147,7 +147,8 @@ Es gilt das Recht der Bundesrepublik Deutschland.
 
    <includes
          id="org.faktorips.feature.source"
-         version="0.0.0"/>
+         version="0.0.0"
+         name="Faktor-IPS Source"/>
 
    <requires>
       <import plugin="org.eclipse.ui"/>
