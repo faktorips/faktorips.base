@@ -109,7 +109,15 @@
             </modificationset>
 
             <!-- schedule -->
-            <schedule interval="60">
+            <schedule>
+               <xsl:attribute name="interval">
+                    <xsl:choose>
+                        <xsl:when test="string-length(@scheduleintervall)>0">
+                            <xsl:value-of select="@scheduleintervall"/>
+                        </xsl:when>
+                        <xsl:otherwise>60</xsl:otherwise> <!-- 1 minute -->
+                    </xsl:choose>               
+               </xsl:attribute>
                <!-- ant call -->
     		   <ant uselogger="true" usedebug="false">
                     <xsl:attribute name="buildfile"><![CDATA[${mainbuildfile}]]></xsl:attribute>

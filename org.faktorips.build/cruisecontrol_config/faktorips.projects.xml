@@ -83,7 +83,8 @@
         <project name="org.faktorips.pluginbuilder" mainbuildtarget="pluginbuilder.faktorips"
             testresult="${workdir}/../pluginbuilder_tmp/org.faktorips.pluginbuilder/results/testresults/xml" 
             testmerge="*test.xml"
-            jvmargarg="-Xmx1024m">
+            jvmargarg="-Xmx1024m"
+            scheduleintervall="300"> <!-- 300 = 5 minutes -->
             <depends>
                 <project name="org.faktorips.util"/>
                 <project name="org.faktorips.valuetypes"/>
@@ -100,7 +101,7 @@
 
         <project name="org.faktorips.integrationtest" mainbuildtarget="pluginbuilder.integrationtest" javaprojectname="org.faktorips.pluginbuilder"
             testresult="${workdir}/../pluginbuilder_tmp/org.faktorips.pluginbuilder/workspace_integrationtest/org.faktorips.integrationtest/results/xml" 
-            testmerge="*Test.xml">
+            testmerge="*Test.xml" scheduleintervall="300">
             <depends>
                 <project name="org.faktorips.pluginbuilder"/>
             </depends>         

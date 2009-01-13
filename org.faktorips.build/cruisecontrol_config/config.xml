@@ -357,7 +357,7 @@
             <buildstatus logdir="${logdir}/org.faktorips.devtools.ant"/>
             <cvs module="org.faktorips.pluginbuilder" cvsroot="${cvsroot}"/>
         </modificationset>
-        <schedule interval="60">
+        <schedule interval="300">
             <ant usedebug="false" uselogger="true" buildfile="${mainbuildfile}" target="pluginbuilder.faktorips">
                 <jvmarg arg="-Xmx1024m"/>
             </ant>
@@ -392,7 +392,7 @@
             <buildstatus logdir="${logdir}/org.faktorips.pluginbuilder"/>
             <cvs module="org.faktorips.pluginbuilder" cvsroot="${cvsroot}"/>
         </modificationset>
-        <schedule interval="60">
+        <schedule interval="300">
             <ant usedebug="false" uselogger="true" buildfile="${mainbuildfile}" target="pluginbuilder.integrationtest"/>
         </schedule>
         <log logdir="${logdir}/${project.name}/">
