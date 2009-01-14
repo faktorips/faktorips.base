@@ -31,6 +31,7 @@ import org.faktorips.devtools.core.builder.BuilderHelper;
 import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
 import org.faktorips.devtools.core.model.ipsproject.IIpsArtefactBuilderSet;
+import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.pctype.AssociationType;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAssociation;
@@ -1163,26 +1164,32 @@ public class PolicyCmptImplClassBuilder extends BasePolicyCmptTypeBuilder {
         }
         IPolicyCmptType policyCmptType = getPcType();
         ITableStructureUsage[] tsus = productCmptType.getTableStructureUsages();
+        IIpsProject ipsProject = getIpsProject();
         for (int i = 0; i < tsus.length; i++) {
             if (!tsus[i].isValid()) {
                 continue;
             }
             String roleCapitalized = StringUtils.capitalize(tsus[i].getRoleName());
             String roleUncapitalized = StringUtils.uncapitalize(tsus[i].getRoleName());
-            if (policyCmptType.findAttribute(roleCapitalized, getIpsProject()) != null) {
+            if (policyCmptType.findAttribute(roleCapitalized, ipsProject) != null) {
                 continue; // if the policy component type has an attribute with the table usage's
                           // role name, don't generate an access method for the table
             }
-            if (policyCmptType.findAttribute(roleUncapitalized, getIpsProject()) != null) {
+            if (policyCmptType.findAttribute(roleUncapitalized, ipsProject) != null) {
                 continue; // if the policy component type has an attribute with the table usage's
                           // role name, don't generate an access method for the table
             }
-            if (policyCmptType.findAssociation(roleCapitalized, getIpsProject()) != null
-                    && policyCmptType.findAssociation(tsus[i].getRoleName(), getIpsProject()) != null) {
+            
+            if (policyCmptType.findAssociation(roleCapitalized, ipsProject) != null) {
                 continue; // same for association
             }
-            if (policyCmptType.findAssociation(roleUncapitalized, getIpsProject()) != null
-                    && policyCmptType.findAssociation(tsus[i].getRoleName(), getIpsProject()) != null) {
+            if (policyCmptType.findAssociation(roleUncapitalized, ipsProject) != null) {
+                continue; // same for association
+            }
+            if (policyCmptType.findAssociationByRoleNamePlural(roleCapitalized, ipsProject) != null) {
+                continue; // same for association
+            }
+            if (policyCmptType.findAssociationByRoleNamePlural(roleUncapitalized, ipsProject)!=null) {
                 continue; // same for association
             }
             generateMethodGetTable(methodsBuilder, tsus[i]);
