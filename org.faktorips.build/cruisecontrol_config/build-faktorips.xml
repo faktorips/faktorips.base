@@ -130,7 +130,16 @@
         <ant dir="${projectFlDir}/${cvsFlmodule}/build/" antfile="build.xml" target="clean"/>
         <ant dir="${projectFlDir}/${cvsFlmodule}/build/" antfile="build.xml" target="buildjar"/>
     </target>
-	
+
+	<target name="uml" depends="updateBuildTemplate" description="builds the 'org.faktorips.uml' project">
+        <property name="cvsUmlmodule" value="org.faktorips.uml"/>
+        <property name="projectUmlDir" value="checkout/"/>
+        <!--checkout/update project-->
+        <cvs command="co ${cvsUmlmodule}" dest="${projectUmlDir}" cvsroot="${cvsroot}" quiet="true"/>
+        <!--Call the target that does everything-->
+        <ant dir="${projectUmlDir}/${cvsUmlmodule}/build/" antfile="build.xml" target="clean"/>
+        <ant dir="${projectUmlDir}/${cvsUmlmodule}/build/" antfile="build.xml" target="buildjar"/>
+    </target>
 	
     <!--============================================================================================-->
     <!--project targets for additional customers plugins, e.g. BBV, KQV-->
@@ -320,6 +329,8 @@
         <!-- TODO create plugin builder property file using build.version 
              cvs tag depending on the build.version -->
 
+    	<!-- TODO release nr aus den  -->
+    	
     	<!--checkout pluginbuilder, build project -->
     	<antcall inheritall="true" target="-checkout.pluginbuilder.delete.previous"/>
     	<antcall inheritall="true" target="-checkout.build"/>

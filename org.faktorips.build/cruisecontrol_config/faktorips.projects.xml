@@ -124,6 +124,13 @@
         <project name="org.faktorips.devtools.ant" mainbuildtarget="devtools.ant" 
             testresult="${workdir}/${project.name}/scripts/">
         </project>
+
+        <!--=====================================================-->
+        <!--Project definition: org.faktorips.devtools.ant-->
+        <!--=====================================================-->           
+        <project name="org.faktorips.uml" mainbuildtarget="uml" 
+            testresult="${workdir}/${project.name}/scripts/">
+        </project>
         
         <!--=====================================================-->
         <!--Project definition: org.faktorips.pluginbuilder-->
