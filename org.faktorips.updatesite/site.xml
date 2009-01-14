@@ -34,10 +34,10 @@
 <category name="Faktor-IPS 2.1"/>
 </feature>
 <feature url="features/org.faktorips.uml.feature_1.1.0.jar" id="org.faktorips.uml.feature" version="1.1.0">
-<category name="Faktor-IPS 2.2"/>
+<category name="Faktor-IPS 2.1"/>
 </feature>
 <feature url="features/org.faktorips.uml.feature.nls1_1.1.0.jar" id="org.faktorips.uml.feature.nls1" version="1.1.0">
-<category name="Faktor-IPS 2.2"/>
+<category name="Faktor-IPS 2.1"/>
 </feature>
 <category-def name="Faktor-IPS 2.0" label="Faktor-IPS 2.0"/>
 <category-def name="Faktor-IPS 2.1" label="Faktor-IPS 2.1"/>
