@@ -19,7 +19,6 @@ import java.util.Iterator;
 import java.util.List;
 
 import org.eclipse.core.runtime.CoreException;
-import org.eclipse.search.ui.NewSearchUI;
 import org.faktorips.devtools.core.AbstractIpsPluginTest;
 import org.faktorips.devtools.core.model.ipsobject.Modifier;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
@@ -81,7 +80,7 @@ public class TypeTest extends AbstractIpsPluginTest {
         Message msg = result.getMessageByCode(IType.MSGCODE_DUPLICATE_PROPERTY_NAME);
         assertNotNull(msg);
         ObjectProperty[] op = msg.getInvalidObjectProperties();
-        List invalidObjects = new ArrayList();
+        List<Object> invalidObjects = new ArrayList<Object>();
         for (int i = 0; i < op.length; i++) {
             invalidObjects.add(op[i].getObject());
         }
@@ -447,7 +446,7 @@ public class TypeTest extends AbstractIpsPluginTest {
         IAttribute a3 = superSupertype.newAttribute();
         a3.setName("a3");
         
-        List all = Arrays.asList(type.findAllAttributes(ipsProject));
+        List<IAttribute> all = Arrays.asList(type.findAllAttributes(ipsProject));
         assertTrue(all.contains(a1));
         assertTrue(all.contains(a2));
         assertTrue(all.contains(a3));
@@ -460,8 +459,8 @@ public class TypeTest extends AbstractIpsPluginTest {
         assertTrue(all.contains(a2));
         assertTrue(all.contains(a3));
         
-        for (Iterator it = all.iterator(); it.hasNext();) {
-            IAttribute attribute = (IAttribute)it.next();
+        for (Iterator<IAttribute> it = all.iterator(); it.hasNext();) {
+            IAttribute attribute = it.next();
             if(attribute == a1Supertype){
                 fail("the attribute is expected to be overridden.");
             }
@@ -532,12 +531,12 @@ public class TypeTest extends AbstractIpsPluginTest {
         
         IAssociation ass1 = type.newAssociation();
         ass1.setTargetRoleSingular("OtherType");
-        assertEquals(ass1, type.getAssociation("OtherTypes"));
+        assertEquals(ass1, type.getAssociation("OtherType"));
         
         IAssociation ass2 = type.newAssociation();
         ass2.setTargetRoleSingular("AnotherType");
-        assertEquals(ass1, type.getAssociationByRoleNamePlural("OtherType"));
-        assertEquals(ass2, type.getAssociationByRoleNamePlural("AnotherType"));
+        assertEquals(ass1, type.getAssociation("OtherType"));
+        assertEquals(ass2, type.getAssociation("AnotherType"));
         assertNull(type.getAssociation("UnknownRole"));
     }
     
@@ -570,8 +569,7 @@ public class TypeTest extends AbstractIpsPluginTest {
         assertEquals(ass2, type.findAssociationByRoleNamePlural("MoreTypes", ipsProject));
         assertNull(type.findAssociationByRoleNamePlural("UnknownRole", ipsProject));
         
-        IIpsProject ipsProject2 = newIpsProject("TestProject2");
-        IType subtype = newProductCmptType(ipsProject2, "Subtype");
+        IType subtype = newProductCmptType(ipsProject, "Subtype");
         subtype.setSupertype(type.getQualifiedName());
         assertEquals(ass1, subtype.findAssociationByRoleNamePlural("OtherTypes", ipsProject));
         assertEquals(ass2, subtype.findAssociationByRoleNamePlural("MoreTypes", ipsProject));
