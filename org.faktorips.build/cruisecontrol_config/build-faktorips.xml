@@ -308,9 +308,9 @@
     	<property name="buildDirectory" value="${basedir}/pluginbuilder_release_tmp/org.faktorips.pluginbuilder_release"/>
         <!-- download zip file names -->       
     	<property name="faktoripsReleaseDownloadZipPath" value="${downloadDir}/faktorips-${build.version}.zip"/>
-        <property name="faktoripsNls1ReleaseDownloadZipPath" value="${downloadDir}/faktorips.nls1-${build.version}.zip"/>
-        <property name="faktoripsUmlReleaseDownloadZipPath" value="${downloadDir}/faktorips.uml-${build.version}.zip"/>
-        <property name="faktoripsUmlNls1ReleaseDownloadZipPath" value="${downloadDir}/faktorips.uml.nls1-${build.version}.zip"/>
+        <property name="faktoripsNls1ReleaseDownloadZipPath" value="${downloadDir}/faktorips-nls1-${build.version}.zip"/>
+        <property name="faktoripsUmlReleaseDownloadZipPath" value="${downloadDir}/faktorips-uml-${build.version}.zip"/>
+        <property name="faktoripsUmlNls1ReleaseDownloadZipPath" value="${downloadDir}/faktorips-uml-nls1-${build.version}.zip"/>
     	<!-- pluginbuilder configuration files -->
     	<property name="release.properties" value="${projectsRootDir}/org.faktorips.pluginbuilder/releases/${build.version}.properties"/>
         <property name="pluginbuilder.config" value="${projectsRootDir}/org.faktorips.pluginbuilder/pluginbuilder.config"/>
@@ -329,7 +329,9 @@
         <!-- TODO create plugin builder property file using build.version 
              cvs tag depending on the build.version -->
 
-    	<!-- TODO release nr aus den  -->
+    	<!-- TODO release nr in den features rausnehmen 0.0.0.0 -->
+
+    	<!-- TODO tag projects -->
     	
     	<!--checkout pluginbuilder, build project -->
     	<antcall inheritall="true" target="-checkout.pluginbuilder.delete.previous"/>
@@ -371,8 +373,25 @@
         </ant>
     	
         <!--copy zipped features into the faktorips download directory, fails if files already exists-->
-    	<antcall inheritall="true" target="-copy.faktorips.release.to.download.dir"/>
-
+    	<!-- faktorips -->
+    	<antcall inheritall="true" target="-copy.faktorips.release.to.download.dir">
+    	    <param name="dest.name" value="${faktoripsReleaseDownloadZipPath}" />
+         	<param name="source" value="org.faktorips.feature-${build.version}.zip" />
+    	</antcall>
+    	<antcall inheritall="true" target="-copy.faktorips.release.to.download.dir">
+    	    <param name="dest.name" value="${faktoripsNls1ReleaseDownloadZipPath}" />
+    		<param name="source" value="org.faktorips.feature.nls1-${build.version}.zip" />
+    	</antcall>
+    	<!-- uml -->
+    	<antcall inheritall="true" target="-copy.faktorips.release.to.download.dir">
+    	    <param name="dest.name" value="${faktoripsUmlReleaseDownloadZipPath}" />
+         	<param name="source" value="org.faktorips.uml.feature-${build.version}.zip" />
+    	</antcall>
+    	<antcall inheritall="true" target="-copy.faktorips.release.to.download.dir">
+    	    <param name="dest.name" value="${faktoripsUmlNls1ReleaseDownloadZipPath}" />
+    		<param name="source" value="org.faktorips.uml.feature.nls1-${build.version}.zip" />
+    	</antcall>
+    		
     	<!--install the features on updatesite-->
         <!--  generate a new site.xml on the updatesite, including all previous and new feature versions-->
         <ant dir="${projectsRootDir}/org.faktorips.pluginbuilder/build-files" antfile="postBuild.xml" target="-createNightlyBuildSiteXml">
@@ -459,20 +478,15 @@
         <cvs command="co org.faktorips.updatesite" dest="${updatesite.path}" cvsroot="${cvsroot}" quiet="true"/>
     </target>	
     <target name="-copy.faktorips.release.to.download.dir">
+    	<!-- input: dest.name -->
+    	<!--        source    -->
     	<!-- unzip, add eclipse folder and zip in download dir -->
     	<property name="zip.dir" value="${buildDirectory}/zip_tmp/eclipse"/>
-
-    	<!-- eclipse feature -->
-    	<mkdir dir="${zip.dir}"/>
-    	<unzip src="${buildDirectory}/results/org.faktorips.feature-${build.version}.zip" dest="${buildDirectory}/zip_tmp/eclipse"></unzip>
-    	<zip destfile="${faktoripsReleaseDownloadZipPath}" basedir="${zip.dir}/.." />
-
     	<delete includeemptydirs="true" dir="${zip.dir}"/>
-        
-    	<!-- eclipse nls1 feature -->
+
     	<mkdir dir="${zip.dir}"/>
-        <unzip src="${buildDirectory}/results/org.faktorips.feature.nls1-${build.version}.zip" dest="${buildDirectory}/zip_tmp/eclipse"></unzip>
-        <zip destfile="${faktoripsNls1ReleaseDownloadZipPath}" basedir="${zip.dir}/.." />
+    	<unzip src="${buildDirectory}/results/${dest.name}" dest="${buildDirectory}/zip_tmp/eclipse"></unzip>
+    	<zip destfile="${source}" basedir="${zip.dir}/.." />
     </target>
     <target name="-copy.updatesite.to.faktorips.org" unless="skipPublish">
         <copy todir="${updatesite.path}/plugins" overwrite="true" verbose="true">
