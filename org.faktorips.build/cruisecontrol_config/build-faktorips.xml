@@ -485,8 +485,8 @@
     	<delete includeemptydirs="true" dir="${zip.dir}"/>
 
     	<mkdir dir="${zip.dir}"/>
-    	<unzip src="${buildDirectory}/results/${dest.name}" dest="${buildDirectory}/zip_tmp/eclipse"></unzip>
-    	<zip destfile="${source}" basedir="${zip.dir}/.." />
+    	<unzip src="${buildDirectory}/results/${source}" dest="${zip.dir}"></unzip>
+    	<zip destfile="${dest.name}" basedir="${zip.dir}/.." />
     </target>
     <target name="-copy.updatesite.to.faktorips.org" unless="skipPublish">
         <copy todir="${updatesite.path}/plugins" overwrite="true" verbose="true">
