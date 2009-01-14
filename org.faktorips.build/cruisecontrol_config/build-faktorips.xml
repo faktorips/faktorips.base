@@ -296,7 +296,7 @@
            -DprojectsRootDir -> the root dir of all plugin projects
            -DbaseDir -> the parent dir of the dir specified in projectsRootDir
          additionaly make sure that the build_host_<hostname>.properies exists in the pluginbuilder project-->
-    <target name="release.faktorips" 
+    <target name="release" 
     	description="release build for an specified faktorips release version, builds the complete feature, executes the junit plugin tests and distributes the result to the update site and download directory">
         <!-- defauls properties -->
     	<property name="useCvs" value="true"/>
@@ -316,7 +316,7 @@
         <property name="pluginbuilder.config" value="${projectsRootDir}/org.faktorips.pluginbuilder/pluginbuilder.config"/>
     	<!-- features to integrate in site.xml -->
     	<property name="pluginbuilder.features" value="org.faktorips.feature,org.faktorips.feature.nls1,org.faktorips.feature.source"/>
-    	<property name="pluginbuilder.features.uml" value="org.faktorips.uml.feature,org.faktorips.uml.feature.nls1"/>
+    	<property name="pluginbuilder.features.uml" value="org.faktorips.uml.feature,org.faktorips.uml.feature.nls1,org.faktorips.uml.feature.source"/>
     	
     	<condition property="isUseCvs" value="true">
             <equals arg1="${useCvs}" arg2="true"/>
