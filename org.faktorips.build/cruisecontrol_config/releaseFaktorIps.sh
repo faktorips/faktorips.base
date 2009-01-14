@@ -43,6 +43,7 @@ do  case "$1" in
 done
 
 if [ $BUILD_VERSION = "NONE" ] ; then
+  echo 'Fehler keine version gegeben!'
   SHOWHELP=true
 fi
 
@@ -67,7 +68,7 @@ if $SHOWHELP ; then
   echo '                         '
   echo 'e.g.: '$0' -version 2.2.0.rc1 -skipTest <== builds the release with version 2.2.0.rc1, category 2.2 \ 
        and skip running the tests during the build'
-  exit
+  exit 1
 fi
 
 if [ $BUILD_CATEGORY = "NONE" ]
@@ -87,7 +88,7 @@ echo
 
 read answer
 if [ ! "$ANSWER" = "j" ]
- then echo "Abbruch"; exit
+ then echo "Abbruch"; exit 1
 fi
 
 ANT_HOME=/opt/cc/apache-ant-1.6.5
