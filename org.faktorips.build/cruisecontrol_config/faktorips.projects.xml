@@ -25,46 +25,82 @@
 
     <!-- cc project definitions -->
     <projects>
+    
+        <!--=====================================================-->
+        <!--Project definition: org.faktorips.util-->
+        <!--=====================================================-->
         <project name="org.faktorips.util" mainbuildtarget="util">
         </project>
+    
+        <!--=====================================================-->
+        <!--Project definition: org.faktorips.valuetypes-->
+        <!--=====================================================-->        
         <project name="org.faktorips.valuetypes" mainbuildtarget="valuetypes">
             <depends>
                 <project name="org.faktorips.util"/>
             </depends>
         </project>
+        
+        <!--=====================================================-->
+        <!--Project definition: org.faktorips.java5-->
+        <!--=====================================================-->             
         <project name="org.faktorips.valuetypes.java5" mainbuildtarget="valuetypes.java5">
             <depends>
                 <project name="org.faktorips.util"/>
             </depends>
-        </project>        
+        </project>       
+        
+        <!--=====================================================-->
+        <!--Project definition: org.faktorips.dtflcommon-->
+        <!--=====================================================-->            
         <project name="org.faktorips.dtflcommon" mainbuildtarget="dtflcommon">
             <depends>
                 <project name="org.faktorips.valuetypes"/>
                 <project name="org.faktorips.util"/>
             </depends>            
         </project>
+        
+        <!--=====================================================-->
+        <!--Project definition: org.faktorips.runtime-->
+        <!--=====================================================-->          
         <project name="org.faktorips.runtime" mainbuildtarget="runtime">
             <depends>
                 <project name="org.faktorips.valuetypes"/>
                 <project name="org.faktorips.util"/>
             </depends>               
         </project>
+        
+        <!--=====================================================-->
+        <!--Project definition: org.faktorips.runtime.java5-->
+        <!--=====================================================-->         
         <project name="org.faktorips.runtime.java5" mainbuildtarget="runtime.java5">
             <depends>
                 <project name="org.faktorips.valuetypes.java5"/>
                 <project name="org.faktorips.util"/>
             </depends>               
-        </project>        
+        </project>   
+        
+        <!--=====================================================-->
+        <!--Project definition: org.faktorips.fl-->
+        <!--=====================================================-->                 
         <project name="org.faktorips.fl" mainbuildtarget="fl">
             <depends>
                 <project name="org.faktorips.dtflcommon"/>
             </depends>                      
         </project>
+        
+        <!--=====================================================-->
+        <!--Project definition: org.faktorips.devtools.core-->
+        <!--=====================================================-->           
         <project name="org.faktorips.devtools.core" mainbuildtarget="devtools.core">
             <depends>
                 <project name="org.faktorips.fl"/>
             </depends>
         </project>
+        
+        <!--=====================================================-->
+        <!--Project definition: org.faktorips.devtools.stdbuilder-->
+        <!--=====================================================-->           
         <project name="org.faktorips.devtools.stdbuilder" mainbuildtarget="devtools.stdbuilder">
             <depends>
                 <project name="org.faktorips.fl"/>
@@ -72,14 +108,26 @@
                 <project name="org.faktorips.devtools.core"/>
             </depends>            
         </project>
+        
+        <!--=====================================================-->
+        <!--Project definition: org.faktorips.devtools.cor.ui-->
+        <!--=====================================================-->          
         <project name="org.faktorips.devtools.core.ui" mainbuildtarget="devtools.core.ui">
             <depends>
                 <project name="org.faktorips.devtools.core"/>
             </depends>
         </project>
+        
+        <!--=====================================================-->
+        <!--Project definition: org.faktorips.devtools.ant-->
+        <!--=====================================================-->           
         <project name="org.faktorips.devtools.ant" mainbuildtarget="devtools.ant" 
             testresult="${workdir}/${project.name}/scripts/">
         </project>
+        
+        <!--=====================================================-->
+        <!--Project definition: org.faktorips.pluginbuilder-->
+        <!--=====================================================-->          
         <project name="org.faktorips.pluginbuilder" mainbuildtarget="pluginbuilder.faktorips"
             testresult="${workdir}/../pluginbuilder_tmp/org.faktorips.pluginbuilder/results/testresults/xml" 
             testmerge="*test.xml"
@@ -99,7 +147,10 @@
             </depends>      
         </project>
 
-        <project name="org.faktorips.integrationtest" mainbuildtarget="pluginbuilder.integrationtest" javaprojectname="org.faktorips.pluginbuilder"
+        <!--=====================================================-->
+        <!--Project definition: org.faktorips.integrationtest-->
+        <!--=====================================================-->    
+        <project name="org.faktorips.integrationtest" mainbuildtarget="pluginbuilder.integrationtest" javaprojectname="org.faktorips.integrationtest"
             testresult="${workdir}/../pluginbuilder_tmp/org.faktorips.pluginbuilder/workspace_integrationtest/org.faktorips.integrationtest/results/xml" 
             testmerge="*Test.xml" scheduleintervall="300">
             <depends>
@@ -114,7 +165,9 @@ TODO bbv, kqv und msgp
    
     <!-- cc publisher for several faktorips projects s-->
     <publishers>
-        <!-- publisher htmlemail used in all projects -->
+        <!--=====================================================-->
+        <!-- publisher for all projects, htmlemail used in all projects -->
+        <!--=====================================================-->
         <publisher id="htmlemail">
             <htmlemail 
                 buildresultsurl="${buildresultsurl}/${project.name}"
@@ -131,7 +184,7 @@ TODO bbv, kqv und msgp
                 css="${htmlemail.css}">
                  
                 <!-- the failure node with attribute reportWhenFixed, will be created
-                     dynamically using all developer addresses 
+                     dynamically using all developer addresses see xsl/cretatecruisecontrolconfig.xsl
                      <failure reportWhenFixed="true" address="${htlmemail.reportWhenFixed.address}" />
                 -->
                  
@@ -141,7 +194,9 @@ TODO bbv, kqv und msgp
             </htmlemail>
         </publisher>
         
-        <!-- publisher to copy build artefacts to the cc log directory -->
+        <!--===========================================================================================-->
+        <!-- publisher for org.faktorips.integrationtest, copy build artefacts to the cc log directory -->
+        <!--===========================================================================================-->
         <publisher project="org.faktorips.integrationtest" id="copy.artifacts">
             <antpublisher 
                      buildfile="${mainbuildfile}"
@@ -153,7 +208,9 @@ TODO bbv, kqv und msgp
                 </antpublisher>
         </publisher>
         
-        <!-- publisher to copy build artefacts to the cc log directory -->
+        <!--===========================================================================================-->
+        <!-- publisher for org.faktorips.pluginbuilder, copy build artefacts to the cc log directory -->
+        <!--===========================================================================================-->
         <publisher project="org.faktorips.pluginbuilder" id="copy.artifacts">
             <antpublisher 
                      buildfile="${mainbuildfile}"

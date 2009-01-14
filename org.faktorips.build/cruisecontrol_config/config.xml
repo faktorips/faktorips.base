@@ -390,7 +390,7 @@
         <bootstrappers/>
         <modificationset>
             <buildstatus logdir="${logdir}/org.faktorips.pluginbuilder"/>
-            <cvs module="org.faktorips.pluginbuilder" cvsroot="${cvsroot}"/>
+            <cvs module="org.faktorips.integrationtest" cvsroot="${cvsroot}"/>
         </modificationset>
         <schedule interval="300">
             <ant usedebug="false" uselogger="true" buildfile="${mainbuildfile}" target="pluginbuilder.integrationtest"/>
