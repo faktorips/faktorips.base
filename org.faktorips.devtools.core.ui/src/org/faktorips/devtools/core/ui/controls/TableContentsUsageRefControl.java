@@ -44,6 +44,7 @@ public class TableContentsUsageRefControl extends TableContentsRefControl {
     public TableContentsUsageRefControl(IIpsProject project, Composite parent, UIToolkit toolkit, ITableStructureUsage structureUsage) {
         super(project, parent, toolkit);
         this.structureUsage = structureUsage;
+        setDialogFilterEnabled(false);
     }
 
     protected IIpsSrcFile[] getIpsSrcFiles() throws CoreException {

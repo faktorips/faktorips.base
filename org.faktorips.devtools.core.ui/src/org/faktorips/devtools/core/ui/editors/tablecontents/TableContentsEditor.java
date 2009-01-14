@@ -48,7 +48,7 @@ public class TableContentsEditor extends TimedIpsObjectEditor implements IModelD
      * {@inheritDoc}
      */
     protected String getUniformPageTitle() {
-    	return Messages.TableContentsEditor_TableContentsEditor_title2 + " " + getTableContents().getName(); //$NON-NLS-1$
+    	return Messages.TableContentsEditor_TableContentsEditor_title2 + " " + getTableContents().getName() + " (" + getTableContents().getTableStructure() + ")"; //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
     	/* pk: We need a general concept for historical changes of table contents see flyspray entry 131
 	        ITableContentsGeneration generation = (ITableContentsGeneration) getPreferredGeneration();
 			String gen = IpsPlugin.getDefault().getIpsPreferences()

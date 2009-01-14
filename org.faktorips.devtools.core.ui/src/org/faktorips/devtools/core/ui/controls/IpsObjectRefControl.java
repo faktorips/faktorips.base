@@ -37,6 +37,7 @@ public abstract class IpsObjectRefControl extends TextButtonControl {
     private IIpsProject ipsProject;
     
     private String dialogTitle;
+    private boolean enableDialogFilter = true;
     private String dialogMessage;
     private ContentAssistHandler handler;
     
@@ -96,7 +97,9 @@ public abstract class IpsObjectRefControl extends TextButtonControl {
             }
         });
         try {
-            dialog.setFilter(StringUtil.unqualifiedName(super.getText()));
+            if(isDialogFilterEnabled()){
+                dialog.setFilter(StringUtil.unqualifiedName(super.getText()));
+            }
             if (dialog.open() == Window.OK) {
                 if (dialog.getResult().length > 0) {
                     IIpsSrcFile ipsSrcFile = (IIpsSrcFile)dialog.getResult()[0];
@@ -108,6 +111,14 @@ public abstract class IpsObjectRefControl extends TextButtonControl {
         } catch (Exception e) {
             IpsPlugin.logAndShowErrorDialog(e);
         }
+    }
+
+    public boolean isDialogFilterEnabled() {
+        return enableDialogFilter;
+    }
+
+    public void setDialogFilterEnabled(boolean enable) {
+        this.enableDialogFilter = enable;
     }
 
     /**
