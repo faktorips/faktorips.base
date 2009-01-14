@@ -54,4 +54,7 @@
 <feature url="features/org.faktorips.uml.feature.nls1_2.2.0.rc1.jar" id="org.faktorips.uml.feature.nls1" version="2.2.0.rc1">
 <category name="Faktor-IPS 2.2"/>
 </feature>
+<feature url="features/org.faktorips.feature.source_2.2.0.rc1.jar" id="org.faktorips.feature.source" version="2.2.0.rc1">
+<category name="Faktor-IPS 2.2"/>
+</feature>
 </site>
