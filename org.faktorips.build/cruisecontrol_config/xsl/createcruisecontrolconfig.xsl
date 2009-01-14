@@ -166,7 +166,7 @@
 
     <xsl:template name="all.developeraddress.as.string">
         <xsl:param name="addresses"/>
-        <xsl:for-each select="$addresses"><xsl:value-of select="@address"/><xsl:if test="not(position() = count($addresses))">;</xsl:if></xsl:for-each>
+        <xsl:for-each select="$addresses"><xsl:value-of select="@address"/><xsl:if test="not(position() = count($addresses))">,</xsl:if></xsl:for-each>
     </xsl:template>
 
 </xsl:stylesheet>
