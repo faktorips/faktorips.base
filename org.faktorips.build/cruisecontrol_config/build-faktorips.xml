@@ -533,7 +533,7 @@
             <outputproperty name="method" value="xml"/>
             <outputproperty name="encoding" value="UTF-8"/>
             <outputproperty name="indent" value="yes"/>
-            <param name="doc2" expression="${basedir}/${projectsRootDir}/org.faktorips.updatesite/${site.xml}.xml"/>
+            <param name="doc2" expression="${basedir}/${projectsRootDir}/org.faktorips.updatesite/${site.xml}"/>
         </xslt>
         <delete file="${projectsRootDir}/org.faktorips.updatesite/${site.xml}" verbose="false"/>
         <copy file="${projectsRootDir}/org.faktorips.updatesite/site_merge.xml" tofile="${projectsRootDir}/org.faktorips.updatesite/site.xml" verbose="false" overwrite="true"/>
