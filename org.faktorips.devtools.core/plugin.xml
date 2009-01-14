@@ -327,16 +327,27 @@
          point="org.eclipse.core.runtime.products">
       <product
             application="org.faktorips.devtools.core.productDefinitionTool"
-            name="FaktorIPS">
+            name="Faktor-IPS">
          <property
-               name="aboutText"
-               value="%org.faktorips.aboutText"/>
+               name="appName"
+               value="Faktor-IPS">
+         </property>
+         <property
+               name="preferenceCustomization"
+               value="plugin_customization.ini">
+         </property>
          <property
                name="aboutImage"
-               value="icons/FaktorIpsIcon128.gif"/>
+               value="icons/FaktorIpsIcon128.gif">
+         </property>
+         <property
+               name="aboutText"
+               value="%org.faktorips.aboutText">
+         </property>
          <property
                name="windowImages"
-               value="icons/FaktorIpsIcon16.gif,icons/FaktorIpsIcon32.gif"/>
+               value="icons/FaktorIpsIcon16.gif,icons/FaktorIpsIcon32.gif">
+         </property>
       </product>
    </extension>
 

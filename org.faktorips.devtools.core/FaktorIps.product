@@ -29,6 +29,7 @@
       </win>
    </launcher>
 
+
    <plugins>
       <plugin id="com.jcraft.jsch"/>
       <plugin id="org.apache.ant"/>
@@ -210,15 +211,11 @@
 
    <features>
       <feature id="org.eclipse.jdt" version="3.2.2.r322_v20070104-R4CR0Znkvtfjv9-"/>
-      <feature id="org.eclipse.jdt.nls1" version="3.2.0.v200606220026"/>
       <feature id="org.eclipse.platform" version="3.2.2.r322_v20070119-RQghndJN8IM0MsK"/>
-      <feature id="org.eclipse.platform.nls1" version="3.2.0.v200606220026"/>
       <feature id="org.eclipse.rcp" version="3.2.2.r322_v20070104-8pcviKVqd8J7C1U"/>
-      <feature id="org.eclipse.rcp.nls1" version="3.2.0.v200606220026"/>
       <feature id="org.eclipse.emf" version="2.2.2.v200702131851"/>
       <feature id="org.eclipse.gef" version="3.4.0.v20080115-677-8082A5696H274A"/>
       <feature id="org.faktorips.feature" version="2.0.1"/>
-      <feature id="org.faktorips.feature.nls1" version="2.0.1"/>
    </features>
 
 </product>
