@@ -47,6 +47,8 @@ public class BusinessFunctionEditPartFactory implements EditPartFactory {
                 child = new CallMethodActionEditPart();
             } else if (element.getType().equals(BFElementType.DECISION)) {
                 child = new DecisionEditPart();
+            } else if (element.getType().equals(BFElementType.DECISION_METHODCALL)) {
+                child = new CallMethodDecisionEditPart();
             } else if (element.getType().equals(BFElementType.MERGE)) {
                 child = new MergeEditPart();
             } else if (element.getType().equals(BFElementType.START)) {

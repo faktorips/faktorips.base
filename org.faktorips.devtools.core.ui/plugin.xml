@@ -1025,7 +1025,7 @@
             </input>
          </propertySection>
          <propertySection
-               class="org.faktorips.devtools.core.ui.bf.properties.CallMethodActionPropertySection"
+               class="org.faktorips.devtools.core.ui.bf.properties.CallMethodPropertySection"
                id="businessfunction.general.callmethodaction"
                tab="businessfunction.general">
             <input
@@ -1087,6 +1087,22 @@
                tab="businessfunction.description">
             <input
                   type="org.faktorips.devtools.core.ui.bf.edit.BusinessFunctionEditPart">
+            </input>
+         </propertySection>
+         <propertySection
+               class="org.faktorips.devtools.core.ui.bf.properties.CallMethodDecisionPropertySection"
+               id="businessfunction.general.callmethoddecision"
+               tab="businessfunction.general">
+            <input
+                  type="org.faktorips.devtools.core.ui.bf.edit.CallMethodDecisionEditPart">
+            </input>
+         </propertySection>
+         <propertySection
+               class="org.faktorips.devtools.core.ui.bf.properties.DescriptionPropertySection"
+               id="businessfunction.description.callmethoddecision"
+               tab="businessfunction.description">
+            <input
+                  type="org.faktorips.devtools.core.ui.bf.edit.CallMethodDecisionEditPart">
             </input>
          </propertySection>
       </propertySections>

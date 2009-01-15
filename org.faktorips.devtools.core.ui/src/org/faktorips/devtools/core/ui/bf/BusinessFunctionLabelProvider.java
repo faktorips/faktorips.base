@@ -26,6 +26,7 @@ import org.faktorips.devtools.core.model.bf.IBusinessFunction;
 import org.faktorips.devtools.core.ui.bf.edit.BusinessFunctionEditPart;
 import org.faktorips.devtools.core.ui.bf.edit.CallBusinessFunctionActionEditPart;
 import org.faktorips.devtools.core.ui.bf.edit.CallMethodActionEditPart;
+import org.faktorips.devtools.core.ui.bf.edit.CallMethodDecisionEditPart;
 import org.faktorips.devtools.core.ui.bf.edit.ControlFlowEditPart;
 import org.faktorips.devtools.core.ui.bf.edit.DecisionEditPart;
 import org.faktorips.devtools.core.ui.bf.edit.InlineActionEditPart;
@@ -61,6 +62,9 @@ public class BusinessFunctionLabelProvider implements ILabelProvider {
         }
         if(editPart instanceof DecisionEditPart){
             return BFElementType.DECISION.getImage(); 
+        }
+        if(editPart instanceof CallMethodDecisionEditPart){
+            return BFElementType.DECISION_METHODCALL.getImage(); 
         }
         if(editPart instanceof ControlFlowEditPart){
             return IpsPlugin.getDefault().getImage("/obj16/" + "ControlFlow.gif"); //$NON-NLS-1$ //$NON-NLS-2$
@@ -100,6 +104,9 @@ public class BusinessFunctionLabelProvider implements ILabelProvider {
             return Messages.getString("BusinessFunctionLabelProvider.callMethodAction") + displayName; //$NON-NLS-1$
         }
         if (editPart instanceof DecisionEditPart) {
+            return Messages.getString("BusinessFunctionLabelProvider.decision") + displayName; //$NON-NLS-1$
+        }
+        if (editPart instanceof CallMethodDecisionEditPart) {
             return Messages.getString("BusinessFunctionLabelProvider.decision") + displayName; //$NON-NLS-1$
         }
         if (editPart instanceof MergeEditPart) {

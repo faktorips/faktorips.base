@@ -50,6 +50,12 @@ public enum BFElementType {
             return businessFunction.newDecision(location);
         }
     },
+    DECISION_METHODCALL("methodCallDecision", Messages.getString("BFElementType.methodCallDecision"), "DecisionNode.gif") { //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+        @Override
+        public IBFElement newBFElement(IBusinessFunction businessFunction, Point location) {
+            return businessFunction.newMethodCallDecision(location);
+        }
+    },
     MERGE("merge", Messages.getString("BFElementType.merge"), "MergeNode.gif") { //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
         @Override
         public IBFElement newBFElement(IBusinessFunction businessFunction, Point location) {
@@ -143,6 +149,9 @@ public enum BFElementType {
         }
         if (id.equals(DECISION.id)) {
             return DECISION;
+        }
+        if (id.equals(DECISION_METHODCALL.id)) {
+            return BFElementType.DECISION_METHODCALL;
         }
         if (id.equals(MERGE.id)) {
             return MERGE;

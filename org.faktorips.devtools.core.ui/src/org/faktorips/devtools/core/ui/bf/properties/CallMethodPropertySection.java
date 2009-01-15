@@ -1,15 +1,16 @@
-/*******************************************************************************
- * Copyright (c) 2005-2009 Faktor Zehn AG und andere.
+/***************************************************************************************************
+ * Copyright (c) 2005-2008 Faktor Zehn AG und andere.
  * 
  * Alle Rechte vorbehalten.
  * 
- * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen, 
+ * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen,
  * etc.) duerfen nur unter den Bedingungen der Faktor-Zehn-Community Lizenzvereinbarung - Version
  * 0.1 (vor Gruendung Community) genutzt werden, die Bestandteil der Auslieferung ist und auch unter
  * http://www.faktorzehn.org/f10-org:lizenzen:community eingesehen werden kann.
  * 
  * Mitwirkende: Faktor Zehn AG - initial API and implementation - http://www.faktorzehn.de
- *******************************************************************************/
+ * 
+ **************************************************************************************************/
 
 package org.faktorips.devtools.core.ui.bf.properties;
 
@@ -30,8 +31,8 @@ import org.faktorips.datatype.Datatype;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.model.ContentChangeEvent;
 import org.faktorips.devtools.core.model.ContentsChangeListener;
-import org.faktorips.devtools.core.model.bf.IActionBFE;
 import org.faktorips.devtools.core.model.bf.IBFElement;
+import org.faktorips.devtools.core.model.bf.IMethodCallBFE;
 import org.faktorips.devtools.core.model.type.IType;
 import org.faktorips.devtools.core.ui.CompletionUtil;
 import org.faktorips.devtools.core.ui.UIToolkit;
@@ -44,10 +45,10 @@ import org.faktorips.devtools.core.ui.binding.BindingContext;
  * 
  * @author Peter Erzberger
  */
-public class CallMethodActionPropertySection extends AbstractPropertySection implements ContentsChangeListener{
+public class CallMethodPropertySection extends AbstractPropertySection implements ContentsChangeListener{
 
-    private Text parameterSelectionControl;
-    private ParameterMethodRefControl methodSelectionField;
+    protected Text parameterSelectionControl;
+    protected ParameterMethodRefControl methodSelectionField;
     protected BindingContext bindingContext;
     protected UIToolkit uiToolkit;
     private ParameterCompletionProcessor processor;
@@ -82,12 +83,17 @@ public class CallMethodActionPropertySection extends AbstractPropertySection imp
         data.grabExcessHorizontalSpace = false;
         data.widthHint = 300;
         methodSelectionField.setLayoutData(data);
+        extendControlArea(content, uiToolkit, bindingContext);
         processor = new ParameterCompletionProcessor();
         processor.setComputeProposalForEmptyPrefix(true);
         SubjectControlContentAssistant assistant = CompletionUtil.createContentAssistant(processor);
         ContentAssistHandler.createHandlerForText(parameterSelectionControl, assistant);
     }
 
+    protected void extendControlArea(Composite area, UIToolkit uiToolkit, BindingContext bindingContext){
+        
+    }
+    
     @Override
     public void dispose() {
         super.dispose();
@@ -100,26 +106,26 @@ public class CallMethodActionPropertySection extends AbstractPropertySection imp
     @Override
     public void setInput(IWorkbenchPart part, ISelection selection) {
         super.setInput(part, selection);
-        IActionBFE action = (IActionBFE)getBFElement();
-        processor.setBusinessFunction(action.getBusinessFunction());
-        processor.setIpsProject(action.getIpsProject());
-        methodSelectionField.setIpsProject(action.getIpsProject());
+        IMethodCallBFE methodCallBFE = (IMethodCallBFE)getBFElement();
+        processor.setBusinessFunction(methodCallBFE.getBusinessFunction());
+        processor.setIpsProject(methodCallBFE.getIpsProject());
+        methodSelectionField.setIpsProject(methodCallBFE.getIpsProject());
         bindingContext.removeBindings(parameterSelectionControl);
         bindingContext.removeBindings(methodSelectionField);
-        bindingContext.bindContent(parameterSelectionControl, getBFElement(), IActionBFE.PROPERTY_TARGET);
-        bindingContext.bindContent(methodSelectionField, getBFElement(), IActionBFE.PROPERTY_EXECUTABLE_METHOD_NAME);
+        bindingContext.bindContent(parameterSelectionControl, getBFElement(), IMethodCallBFE.PROPERTY_TARGET);
+        bindingContext.bindContent(methodSelectionField, getBFElement(), IMethodCallBFE.PROPERTY_EXECUTABLE_METHOD_NAME);
         updateMethodSelectionControl();
         bindingContext.updateUI();
     }
 
     private void updateMethodSelectionControl(){
         try {
-            IActionBFE action = (IActionBFE)getBFElement();
-            if(action.getParameter() == null){
+            IMethodCallBFE methodCallBFE = (IMethodCallBFE)getBFElement();
+            if(methodCallBFE.getParameter() == null){
                 methodSelectionField.setParameterType(null);
                 return;
             }
-            Datatype datatype = action.getParameter().findDatatype();
+            Datatype datatype = methodCallBFE.getParameter().findDatatype();
             if(datatype instanceof IType){
                 methodSelectionField.setParameterType((IType)datatype);
             } else {
@@ -131,13 +137,15 @@ public class CallMethodActionPropertySection extends AbstractPropertySection imp
         
     }
     
+    protected void updateFromModel(ContentChangeEvent event){
+    }
+    
     public void contentsChanged(ContentChangeEvent event) {
-        IActionBFE action = (IActionBFE)getBFElement();
-        if(!event.getIpsSrcFile().equals(action.getIpsSrcFile())){
+        if(!event.getIpsSrcFile().equals(getBFElement().getIpsSrcFile())){
             return;
         }
         updateMethodSelectionControl();
-        
+        updateFromModel(event);
     }
 
 }

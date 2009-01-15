@@ -121,6 +121,7 @@ public class ActionBFETest extends AbstractIpsPluginTest {
         p.setDatatype(Datatype.STRING.getQualifiedName());
         
         IActionBFE actionBFE = bf.newMethodCallAction(new Point(10, 10));
+        actionBFE.setExecutableMethodName("aMethod");
         actionBFE.setTarget("p");
         MessageList msgList = actionBFE.validate(ipsProject);
         assertNotNull(msgList.getMessageByCode(IActionBFE.MSGCODE_TARGET_NOT_VALID_TYPE));

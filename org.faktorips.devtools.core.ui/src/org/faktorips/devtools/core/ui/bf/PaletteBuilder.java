@@ -77,6 +77,11 @@ public class PaletteBuilder {
 		        BFElementType.DECISION.getName(), Messages.getString("PaletteBuilder.decisionDesc"), new BFElementFactory(BFElementType.DECISION), image, image); //$NON-NLS-1$ //$NON-NLS-2$
 		entries.add(decisionEntry);
 
+		image = BFElementType.DECISION_METHODCALL.getImageDescriptor();
+		CombinedTemplateCreationEntry methodCallDecisionEntry = new CombinedTemplateCreationEntry(
+		        BFElementType.DECISION_METHODCALL.getName(), Messages.getString("PaletteBuilder.methodCallDecisionDesc"), new BFElementFactory(BFElementType.DECISION_METHODCALL), image, image); //$NON-NLS-1$ //$NON-NLS-2$
+		entries.add(methodCallDecisionEntry);
+
 		image = BFElementType.START.getImageDescriptor();
 		CombinedTemplateCreationEntry startEntry = new CombinedTemplateCreationEntry(
 		        BFElementType.START.getName(), Messages.getString("PaletteBuilder.startDec"), //$NON-NLS-1$ //$NON-NLS-2$

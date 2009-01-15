@@ -213,7 +213,9 @@ public class ControlFlow extends IpsObjectPart implements IControlFlow {
     @Override
     protected void validateThis(MessageList list, IIpsProject ipsProject) throws CoreException {
         IBFElement source = getSource();
-        if (source != null && source.getType().equals(BFElementType.DECISION)) {
+        if (source != null
+                && (source.getType().equals(BFElementType.DECISION) || source.getType().equals(
+                        BFElementType.DECISION_METHODCALL))) {
             if (StringUtils.isEmpty(getConditionValue())) {
                 list.add(new Message(MSGCODE_VALUE_NOT_SPECIFIED, Messages
                         .getString("ControlFlow.valueMustBeSpecified"), //$NON-NLS-1$
@@ -224,8 +226,9 @@ public class ControlFlow extends IpsObjectPart implements IControlFlow {
             ValueDatatype datatype = decisionSource.findDatatype(ipsProject);
             if (datatype != null) {
                 if (!datatype.isParsable(getConditionValue())) {
-                    list.add(new Message(MSGCODE_VALUE_NOT_VALID, Messages.getString("ControlFlow.valueNotValid"), //$NON-NLS-1$
-                            Message.ERROR, this));
+                    String text = NLS.bind(Messages.getString("ControlFlow.valueNotValid"), new String[] {
+                            getConditionValue(), datatype.getQualifiedName() }); //$NON-NLS-1$
+                    list.add(new Message(MSGCODE_VALUE_NOT_VALID, text, Message.ERROR, this));
                 }
             }
             validateDublicateValues(decisionSource, list);
@@ -242,7 +245,9 @@ public class ControlFlow extends IpsObjectPart implements IControlFlow {
                 continue;
             }
             if (controlFlow.getConditionValue().equals(getConditionValue())) {
-                String text = NLS.bind(Messages.getString("ControlFlow.duplicateControlFlowValue"), new String[]{decision.getName(), getConditionValue()}); //$NON-NLS-1$
+                String text = NLS
+                        .bind(
+                                Messages.getString("ControlFlow.duplicateControlFlowValue"), new String[] { decision.getName(), getConditionValue() }); //$NON-NLS-1$
                 msgList.add(new Message(MSGCODE_DUBLICATE_VALUES, text, Message.ERROR, this));
             }
         }

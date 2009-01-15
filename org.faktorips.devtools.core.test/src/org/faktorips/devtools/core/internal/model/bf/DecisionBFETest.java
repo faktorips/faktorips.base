@@ -19,7 +19,10 @@ import org.faktorips.devtools.core.AbstractIpsPluginTest;
 import org.faktorips.devtools.core.model.bf.BusinessFunctionIpsObjectType;
 import org.faktorips.devtools.core.model.bf.IBusinessFunction;
 import org.faktorips.devtools.core.model.bf.IDecisionBFE;
+import org.faktorips.devtools.core.model.bf.IParameterBFE;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
+import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
+import org.faktorips.devtools.core.model.type.IMethod;
 import org.faktorips.util.message.MessageList;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -79,6 +82,52 @@ public class DecisionBFETest extends AbstractIpsPluginTest {
         assertNotNull(msgList.getMessageByCode(IDecisionBFE.MSGCODE_DATATYPE_ONLY_NONE_PRIM_VALUEDATATYPE));
     }
 
+    public void testValidateThisMethodCallDecision() throws Exception{
+        IDecisionBFE decision = bf.newMethodCallDecision(new Point(10, 10));
+        MessageList msgList = decision.validate(ipsProject);
+        assertNotNull(msgList.getMessageByCode(IDecisionBFE.MSGCODE_TARGET_NOT_SPECIFIED));
+        
+        decision.setTarget("aPolicy");
+        msgList = decision.validate(ipsProject);
+        assertNull(msgList.getMessageByCode(IDecisionBFE.MSGCODE_TARGET_NOT_SPECIFIED));
+        assertNotNull(msgList.getMessageByCode(IDecisionBFE.MSGCODE_TARGET_DOES_NOT_EXIST));
+        
+        IPolicyCmptType aPolicy = newPolicyCmptTypeWithoutProductCmptType(ipsProject, "aPolicy");
+        IParameterBFE param = bf.newParameter();
+        param.setDatatype(aPolicy.getQualifiedName());
+        param.setName("aPolicy");
+
+        msgList = decision.validate(ipsProject);
+        assertNull(msgList.getMessageByCode(IDecisionBFE.MSGCODE_TARGET_DOES_NOT_EXIST));
+        assertNotNull(msgList.getMessageByCode(IDecisionBFE.MSGCODE_METHOD_NOT_SPECIFIED));
+        
+        decision.setExecutableMethodName("aMethod");
+        msgList = decision.validate(ipsProject);
+        assertNull(msgList.getMessageByCode(IDecisionBFE.MSGCODE_METHOD_NOT_SPECIFIED));
+        assertNotNull(msgList.getMessageByCode(IDecisionBFE.MSGCODE_METHOD_DOES_NOT_EXIST));
+
+        IMethod method = aPolicy.newMethod();
+        method.setName("aMethod");
+        method.setDatatype(Datatype.INTEGER.getQualifiedName());
+
+        msgList = decision.validate(ipsProject);
+        assertNull(msgList.getMessageByCode(IDecisionBFE.MSGCODE_METHOD_DOES_NOT_EXIST));
+
+        param.setDatatype(Datatype.INTEGER.getQualifiedName());
+        msgList = decision.validate(ipsProject);
+        assertNotNull(msgList.getMessageByCode(IDecisionBFE.MSGCODE_TARGET_NOT_VALID_TYPE));
+
+        //check that is it is a method call decision the validations for the regular decisions are never called
+        decision = bf.newMethodCallDecision(new Point(10, 10));
+        msgList = decision.validate(ipsProject);
+        assertNull(msgList.getMessageByCode(IDecisionBFE.MSGCODE_DATATYPE_NOT_SPECIFIED));
+
+    }
+    
+    public void testFindDatatypeMethodCallDecision(){
+        
+    }
+    
     public void testSetDatatype() {
         listener.clear();
         IDecisionBFE decision = bf.newDecision(new Point(10, 10));
@@ -92,7 +141,6 @@ public class DecisionBFETest extends AbstractIpsPluginTest {
         assertEquals(Datatype.STRING, decision.findDatatype(ipsProject));
         decision.setDatatype("abc");
         assertNull(decision.findDatatype(ipsProject));
-        
     }
 
 }

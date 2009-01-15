@@ -62,7 +62,8 @@ public class ConnectionCommand extends Command {
             }
         }
         if (targetNode != null) {
-            if (targetNode.getType() == BFElementType.DECISION && !targetNode.getIncomingControlFlow().isEmpty()) {
+            if ((targetNode.getType() == BFElementType.DECISION || targetNode.getType() == BFElementType.DECISION_METHODCALL)
+                    && !targetNode.getIncomingControlFlow().isEmpty()) {
                 return false;
             }
             if (targetNode.getType() == BFElementType.END && !targetNode.getIncomingControlFlow().isEmpty()) {
@@ -95,11 +96,13 @@ public class ConnectionCommand extends Command {
     }
 
     private void setDefaultConditionValueForBooleanDecisionSourceNode() {
-        if (!reconnect && sourceNode instanceof IDecisionBFE) {
+        if (!reconnect
+                && (sourceNode.getType().equals(BFElementType.DECISION) || sourceNode.getType().equals(
+                        BFElementType.DECISION_METHODCALL))) {
             IDecisionBFE decision = (IDecisionBFE)sourceNode;
             try {
                 Datatype datatype = decision.findDatatype(sourceNode.getIpsProject());
-                if (datatype.equals(Datatype.BOOLEAN)) {
+                if (Datatype.BOOLEAN.equals(datatype)) {
                     List<IControlFlow> outs = decision.getOutgoingControlFlow();
                     if (outs.isEmpty()) {
                         controlFlow.setConditionValue(Boolean.TRUE.toString());

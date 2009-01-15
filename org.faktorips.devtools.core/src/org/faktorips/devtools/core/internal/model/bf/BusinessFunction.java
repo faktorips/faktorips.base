@@ -1,16 +1,3 @@
-/*******************************************************************************
- * Copyright (c) 2005-2009 Faktor Zehn AG und andere.
- * 
- * Alle Rechte vorbehalten.
- * 
- * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen, 
- * etc.) duerfen nur unter den Bedingungen der Faktor-Zehn-Community Lizenzvereinbarung - Version
- * 0.1 (vor Gruendung Community) genutzt werden, die Bestandteil der Auslieferung ist und auch unter
- * http://www.faktorzehn.org/f10-org:lizenzen:community eingesehen werden kann.
- * 
- * Mitwirkende: Faktor Zehn AG - initial API and implementation - http://www.faktorzehn.de
- *******************************************************************************/
-
 package org.faktorips.devtools.core.internal.model.bf;
 
 import java.util.ArrayList;
@@ -70,17 +57,25 @@ public class BusinessFunction extends BaseIpsObject implements IBusinessFunction
                 IControlFlow.XML_TAG);
     }
 
+    /**
+     * {@inheritDoc}
+     */
     public Dimension getParameterRectangleSize() {
         return parameterRectangleSize;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     public void setParameterRectangleSize(Dimension parameterRectangleSize) {
         Dimension old = this.parameterRectangleSize;
         this.parameterRectangleSize = parameterRectangleSize;
         valueChanged(old, parameterRectangleSize);
     }
 
-    // TODO test
+    /**
+     * {@inheritDoc}
+     */
     public IBFElement getStart() {
         for (IIpsObjectPart part : simpleElements.getParts()) {
             IBFElement element = (IBFElement)part;
@@ -91,7 +86,9 @@ public class BusinessFunction extends BaseIpsObject implements IBusinessFunction
         return null;
     }
 
-    // TODO test
+    /**
+     * {@inheritDoc}
+     */
     public IBFElement getEnd() {
         for (IIpsObjectPart part : simpleElements.getParts()) {
             IBFElement element = (IBFElement)part;
@@ -102,10 +99,16 @@ public class BusinessFunction extends BaseIpsObject implements IBusinessFunction
         return null;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     public Point getParameterRectangleLocation() {
         return parameterRectangleLocation;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     public List<IParameterBFE> getParameterBFEs() {
         ArrayList<IParameterBFE> returnValue = new ArrayList<IParameterBFE>();
         for (IIpsObjectPart parameterBFE : parameters.getParts()) {
@@ -114,6 +117,9 @@ public class BusinessFunction extends BaseIpsObject implements IBusinessFunction
         return returnValue;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     public IParameterBFE getParameterBFE(String name) {
         for (IIpsObjectPart parameterBFE : parameters.getParts()) {
             if (parameterBFE.getName().equals(name)) {
@@ -123,6 +129,9 @@ public class BusinessFunction extends BaseIpsObject implements IBusinessFunction
         return null;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     public IBFElement getBFElement(Integer id) {
         if (id == null) {
             return null;
@@ -140,10 +149,16 @@ public class BusinessFunction extends BaseIpsObject implements IBusinessFunction
         return element;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     public IControlFlow newControlFlow() {
         return (IControlFlow)controlFlows.newPart();
     }
 
+    /**
+     * {@inheritDoc}
+     */
     public IControlFlow getControlFlow(int id) {
         IIpsObjectPart[] parts = controlFlows.getParts();
         for (IIpsObjectPart ipsObjectPart : parts) {
@@ -154,6 +169,9 @@ public class BusinessFunction extends BaseIpsObject implements IBusinessFunction
         return null;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @SuppressWarnings("unchecked")
     public List<IControlFlow> getControlFlows() {
         IIpsObjectPart[] controlFlowParts = controlFlows.getParts();
@@ -162,48 +180,81 @@ public class BusinessFunction extends BaseIpsObject implements IBusinessFunction
         return controlFlowList;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     public IBFElement newEnd(Point location) {
         BFElement element = (BFElement)simpleElements.newBFElement(location, BFElementType.END);
         element.setSize(new Dimension(30, 30));
         return element;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     public IBFElement newMerge(Point location) {
         return (BFElement)simpleElements.newBFElement(location, BFElementType.MERGE);
     }
 
+    /**
+     * {@inheritDoc}
+     */
     public IBFElement newStart(Point location) {
         BFElement element = (BFElement)simpleElements.newBFElement(location, BFElementType.START);
         element.setSize(new Dimension(30, 30));
         return element;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     public IActionBFE newOpaqueAction(Point location) {
         ActionBFE element = (ActionBFE)actions.newBFElement(location, BFElementType.ACTION_INLINE);
         return element;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     public IActionBFE newMethodCallAction(Point location) {
         ActionBFE element = (ActionBFE)actions.newBFElement(location, BFElementType.ACTION_METHODCALL);
         return element;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     public IActionBFE newBusinessFunctionCallAction(Point location) {
         ActionBFE element = (ActionBFE)actions.newBFElement(location, BFElementType.ACTION_BUSINESSFUNCTIONCALL);
         return element;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     public IDecisionBFE newDecision(Point location) {
         DecisionBFE element = (DecisionBFE)decisions.newBFElement(location, BFElementType.DECISION);
         return element;
     }
 
+    /**
+     * {@inheritDoc}
+     */
+    // TODO testing
+    public IDecisionBFE newMethodCallDecision(Point location) {
+        DecisionBFE element = (DecisionBFE)decisions.newBFElement(location, BFElementType.DECISION_METHODCALL);
+        return element;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
     public IParameterBFE newParameter() {
         ParameterBFE element = (ParameterBFE)parameters.newBFElement(null, BFElementType.PARAMETER);
         return element;
     }
 
-    // TODO test
+    /**
     @SuppressWarnings("unchecked")
     public List<IBFElement> getBFElementsWithoutParameters() {
 
@@ -217,6 +268,9 @@ public class BusinessFunction extends BaseIpsObject implements IBusinessFunction
         return nodeList;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @SuppressWarnings("unchecked")
     public List<IBFElement> getBFElements() {
         List<IBFElement> nodeList = new ArrayList<IBFElement>();
@@ -231,6 +285,9 @@ public class BusinessFunction extends BaseIpsObject implements IBusinessFunction
         return nodeList;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     public IpsObjectType getIpsObjectType() {
         return BusinessFunctionIpsObjectType.getInstance();
     }
@@ -264,6 +321,7 @@ public class BusinessFunction extends BaseIpsObject implements IBusinessFunction
         validateBFElementNameCollision(list);
     }
 
+    // TODO testing Decision_MethodCall
     private void validateBFElementNameCollision(MessageList msgList) {
         Map<String, List<IBFElement>> elements = new HashMap<String, List<IBFElement>>();
 
@@ -276,6 +334,8 @@ public class BusinessFunction extends BaseIpsObject implements IBusinessFunction
                 key = ((IActionBFE)element).getExecutableMethodName();
             } else if (element.getType().equals(BFElementType.ACTION_BUSINESSFUNCTIONCALL)) {
                 key = ((IActionBFE)element).getTarget();
+            } else if (element.getType().equals(BFElementType.DECISION_METHODCALL)) {
+                key = ((IDecisionBFE)element).getExecutableMethodName();
             } else {
                 // decision, merge, inline action,
                 key = element.getName();
@@ -288,7 +348,7 @@ public class BusinessFunction extends BaseIpsObject implements IBusinessFunction
             List<IBFElement> list = elements.get(key);
             if (list.size() > 1) {
                 for (IBFElement element : list) {
-                    if (!(checkIfOnlyMethodCallActions(list) || checkIfOnlyBusinessFunctionCallActions(list))) {
+                    if (!(checkIfOnlyMethodCallActions(list) || checkIfOnlyBusinessFunctionCallActions(list) || checkIfOnlyMethodCallDecisions(list))) {
                         String text = NLS.bind(Messages.getString("BusinessFunction.duplicateNames"), key); //$NON-NLS-1$
                         msgList.add(new Message(MSGCODE_ELEMENT_NAME_COLLISION, text, Message.ERROR, element));
                     }
@@ -298,17 +358,20 @@ public class BusinessFunction extends BaseIpsObject implements IBusinessFunction
     }
 
     private boolean checkIfOnlyMethodCallActions(List<IBFElement> list) {
-        for (IBFElement element : list) {
-            if (!element.getType().equals(BFElementType.ACTION_METHODCALL)) {
-                return false;
-            }
-        }
-        return true;
+        return checkIfOnlyOneTypeInList(list, BFElementType.ACTION_METHODCALL);
+    }
+
+    private boolean checkIfOnlyMethodCallDecisions(List<IBFElement> list) {
+        return checkIfOnlyOneTypeInList(list, BFElementType.DECISION_METHODCALL);
     }
 
     private boolean checkIfOnlyBusinessFunctionCallActions(List<IBFElement> list) {
+        return checkIfOnlyOneTypeInList(list, BFElementType.ACTION_BUSINESSFUNCTIONCALL);
+    }
+
+    private boolean checkIfOnlyOneTypeInList(List<IBFElement> list, BFElementType type) {
         for (IBFElement element : list) {
-            if (!element.getType().equals(BFElementType.ACTION_BUSINESSFUNCTIONCALL)) {
+            if (!element.getType().equals(type)) {
                 return false;
             }
         }
@@ -474,29 +537,45 @@ public class BusinessFunction extends BaseIpsObject implements IBusinessFunction
         }
     }
 
-    // TODO testing
     @Override
     public IDependency[] dependsOn() throws CoreException {
         List<IDependency> dependencies = new ArrayList<IDependency>();
         for (IIpsObjectPart part : actions.getParts()) {
             IActionBFE action = (IActionBFE)part;
             if (action.getType() == BFElementType.ACTION_BUSINESSFUNCTIONCALL) {
-                dependencies.add(IpsObjectDependency.createReferenceDependency(getQualifiedNameType(), new QualifiedNameType(
-                        action.getTarget(), BusinessFunctionIpsObjectType.getInstance())));
+                dependencies.add(IpsObjectDependency.createReferenceDependency(getQualifiedNameType(),
+                        new QualifiedNameType(action.getTarget(), BusinessFunctionIpsObjectType.getInstance())));
                 continue;
             }
             if (action.getType() == BFElementType.ACTION_METHODCALL) {
                 IParameterBFE param = action.getParameter();
-                if(param != null){
+                if (param != null) {
                     String datatype = param.getDatatype();
-                    if(datatype != null){
-                        dependencies.add(IpsObjectDependency.createReferenceDependency(getQualifiedNameType(), new QualifiedNameType(
-                                datatype, IpsObjectType.POLICY_CMPT_TYPE)));
+                    if (datatype != null) {
+                        dependencies.add(IpsObjectDependency.createReferenceDependency(getQualifiedNameType(),
+                                new QualifiedNameType(datatype, IpsObjectType.POLICY_CMPT_TYPE)));
                     }
                 }
             }
         }
         return dependencies.toArray(new IDependency[dependencies.size()]);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    // TODO test
+    @SuppressWarnings("unchecked")
+    public List<IBFElement> getBFElementsWithoutParameters() {
+    
+        List<IBFElement> nodeList = new ArrayList<IBFElement>();
+        IIpsObjectPart[] bFParts = simpleElements.getParts();
+        nodeList.addAll((Collection<? extends IBFElement>)Arrays.asList(bFParts));
+        bFParts = actions.getParts();
+        nodeList.addAll((Collection<? extends IBFElement>)Arrays.asList(bFParts));
+        bFParts = decisions.getParts();
+        nodeList.addAll((Collection<? extends IBFElement>)Arrays.asList(bFParts));
+        return nodeList;
     }
 
     private static class BFElementIpsObjectPartCollection extends IpsObjectPartCollection {

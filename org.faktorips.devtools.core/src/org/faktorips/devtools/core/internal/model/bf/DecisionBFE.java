@@ -17,15 +17,17 @@ import org.apache.commons.lang.StringUtils;
 import org.eclipse.core.runtime.CoreException;
 import org.faktorips.datatype.Datatype;
 import org.faktorips.datatype.ValueDatatype;
+import org.faktorips.devtools.core.model.bf.BFElementType;
 import org.faktorips.devtools.core.model.bf.IDecisionBFE;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObject;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
+import org.faktorips.devtools.core.model.type.IMethod;
 import org.faktorips.util.message.Message;
 import org.faktorips.util.message.MessageList;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
-public class DecisionBFE extends BFElement implements IDecisionBFE {
+public class DecisionBFE extends MethodCallBFE implements IDecisionBFE {
 
     private String datatype = Datatype.BOOLEAN.getQualifiedName();
 
@@ -43,10 +45,29 @@ public class DecisionBFE extends BFElement implements IDecisionBFE {
         valueChanged(old, datatype);
     }
 
+    @Override
+    public String getDisplayString() {
+        if(getType().equals(BFElementType.DECISION)){
+            return getName();
+        }
+        return super.getDisplayString();
+    }
+
     /**
      * {@inheritDoc}
      */
     public ValueDatatype findDatatype(IIpsProject ipsProject) throws CoreException {
+        if(getType().equals(BFElementType.DECISION_METHODCALL)){
+            IMethod method = findMethod(ipsProject);
+            if(method == null){
+                return null;
+            }
+            Datatype datatype = method.findDatatype(ipsProject);
+            if(datatype.isValueDatatype()){
+                return (ValueDatatype)datatype;
+            }
+            return null;
+        }
         return ipsProject.findValueDatatype(datatype);
     }
 
@@ -73,6 +94,10 @@ public class DecisionBFE extends BFElement implements IDecisionBFE {
 
     @Override
     protected void validateThis(MessageList list, IIpsProject ipsProject) throws CoreException {
+        if(getType().equals(BFElementType.DECISION_METHODCALL)){
+            validateMethodCall(list, ipsProject);
+            return;
+        }
         super.validateThis(list, ipsProject);
         // datatype specified
         if (StringUtils.isEmpty(datatype)) {
@@ -93,6 +118,4 @@ public class DecisionBFE extends BFElement implements IDecisionBFE {
                     Messages.getString("DecisionBFE.DatatypeMustBeNotPrimitive"), Message.ERROR, this)); //$NON-NLS-1$
         }
     }
-    
-
 }

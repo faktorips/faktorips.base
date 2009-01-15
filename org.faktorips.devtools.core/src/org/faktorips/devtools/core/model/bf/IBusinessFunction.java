@@ -1,15 +1,16 @@
-/*******************************************************************************
- * Copyright (c) 2005-2009 Faktor Zehn AG und andere.
+/***************************************************************************************************
+ * Copyright (c) 2005-2008 Faktor Zehn AG und andere.
  * 
  * Alle Rechte vorbehalten.
  * 
- * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen, 
+ * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen,
  * etc.) duerfen nur unter den Bedingungen der Faktor-Zehn-Community Lizenzvereinbarung - Version
  * 0.1 (vor Gruendung Community) genutzt werden, die Bestandteil der Auslieferung ist und auch unter
  * http://www.faktorzehn.org/f10-org:lizenzen:community eingesehen werden kann.
  * 
  * Mitwirkende: Faktor Zehn AG - initial API and implementation - http://www.faktorzehn.de
- *******************************************************************************/
+ * 
+ **************************************************************************************************/
 
 package org.faktorips.devtools.core.model.bf;
 
@@ -99,6 +100,14 @@ public interface IBusinessFunction extends IIpsObject {
      * @param location the initial graphical location of the created action
      */
     public IDecisionBFE newDecision(Point location);
+
+    /**
+     * Creates and returns a method call decision element and adds it to the set of elements that belong to this
+     * business function.
+     * 
+     * @param location the initial graphical location of the created action
+     */
+    public IDecisionBFE newMethodCallDecision(Point location);
 
     /**
      * Creates and returns a parameter element and adds it to the set of elements that belong to
