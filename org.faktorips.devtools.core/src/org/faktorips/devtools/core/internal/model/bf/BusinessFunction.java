@@ -564,17 +564,16 @@ public class BusinessFunction extends BaseIpsObject implements IBusinessFunction
     /**
      * {@inheritDoc}
      */
-    // TODO test
     @SuppressWarnings("unchecked")
     public List<IBFElement> getBFElementsWithoutParameters() {
     
         List<IBFElement> nodeList = new ArrayList<IBFElement>();
         IIpsObjectPart[] bFParts = simpleElements.getParts();
-        nodeList.addAll((Collection<? extends IBFElement>)Arrays.asList(bFParts));
+        nodeList.addAll((Collection)Arrays.asList(bFParts));
         bFParts = actions.getParts();
-        nodeList.addAll((Collection<? extends IBFElement>)Arrays.asList(bFParts));
+        nodeList.addAll((Collection)Arrays.asList(bFParts));
         bFParts = decisions.getParts();
-        nodeList.addAll((Collection<? extends IBFElement>)Arrays.asList(bFParts));
+        nodeList.addAll((Collection)Arrays.asList(bFParts));
         return nodeList;
     }
 
