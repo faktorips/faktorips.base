@@ -43,7 +43,10 @@ do  case "$1" in
 done
 
 if [ $BUILD_VERSION = "NONE" ] ; then
-  echo 'Fehler keine version gegeben!'
+  if [ $SHOWHELP = "false" ] ; then
+    echo '--> Fehler keine version gegeben!'
+    echo '  '
+  fi
   SHOWHELP=true
 fi
 
