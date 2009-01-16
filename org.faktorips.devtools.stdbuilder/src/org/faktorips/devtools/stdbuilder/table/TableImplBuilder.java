@@ -652,7 +652,7 @@ public class TableImplBuilder extends DefaultJavaSourceFileBuilder {
             fragment.append("(");
             fragment.append(StringUtils.uncapitalize(fKeyVariableNames[i]));
             fragment.append("MapTemp, new ");
-            if (BuilderHelper.javaComplianceGreateEqual5(getIpsProject())) {
+            if (isUseTypesafeCollections()) {
                 fragment.appendClassName(Java5ClassNames.ReadOnlyBinaryRangeTreeKeyType_QualifiedName);
             } else {
                 fragment.appendClassName(Integer.TYPE);

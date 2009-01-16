@@ -922,7 +922,7 @@ public class PolicyCmptImplClassBuilder extends BasePolicyCmptTypeBuilder {
                 builder.javaDoc(getJavaDocCommentForOverriddenMethod(), ANNOTATION_GENERATED);
                 builder.methodBegin(java.lang.reflect.Modifier.PROTECTED, Void.TYPE.getName(),
                         MethodNames.INIT_PROPERTIES_FROM_XML, new String[] { "propMap" },
-                        new String[] { BuilderHelper.javaComplianceGreateEqual5(getIpsProject()) ? Map.class.getName()
+                        new String[] { isUseTypesafeCollections() ? Map.class.getName()
                                 + "<" + String.class.getName() + "," + String.class.getName() + ">" : HashMap.class
                                 .getName() });
                 builder.appendln("super." + MethodNames.INIT_PROPERTIES_FROM_XML + "(propMap);");
