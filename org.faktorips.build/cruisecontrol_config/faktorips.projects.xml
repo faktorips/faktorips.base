@@ -168,6 +168,13 @@
         <!--============================================================-->
         <!--TODO Project definition: org.faktorips.integrationtest.java5-->
         <!--============================================================-->    
+        <project name="org.faktorips.integrationtest.java5" mainbuildtarget="pluginbuilder.integrationtest.java5" javaprojectname="org.faktorips.integrationtest.java5"
+            testresult="${workdir}/../pluginbuilder_tmp/org.faktorips.pluginbuilder/workspace_integrationtest_java5/org.faktorips.integrationtest.java5/results/xml" 
+            testmerge="*Test.xml" scheduleintervall="300">
+            <depends>
+                <project name="org.faktorips.pluginbuilder"/>
+            </depends>         
+        </project>
         
 <!-- 
 TODO bbv, kqv und msgp 
@@ -216,6 +223,20 @@ TODO bbv, kqv und msgp
                      target="copy.artifacts.pluginbuilder.faktorips">
                     <property name="ccProjectDir" value="${logdir}/${project.name}"/>
                     <property name="workspaceName" value="workspace_integrationtest"/>
+                </antpublisher>
+        </publisher>
+
+        <!--===========================================================================================-->
+        <!-- publisher for org.faktorips.integrationtest.java5, copy build artefacts to the cc log directory -->
+        <!--===========================================================================================-->
+        <publisher project="org.faktorips.integrationtest.java5" id="copy.artifacts">
+            <antpublisher 
+                     buildfile="${mainbuildfile}"
+                     uselogger="true"
+                     usedebug="false"
+                     target="copy.artifacts.pluginbuilder.faktorips">
+                    <property name="ccProjectDir" value="${logdir}/${project.name}"/>
+                    <property name="workspaceName" value="workspace_integrationtest_java5"/>
                 </antpublisher>
         </publisher>
         

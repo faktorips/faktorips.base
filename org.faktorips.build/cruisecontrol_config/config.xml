@@ -441,4 +441,37 @@
             </antpublisher>
         </publishers>
     </project>
+    <!--=====================================================-->
+    <!--Project definition: org.faktorips.integrationtest.java5-->
+    <!--=====================================================-->
+    <project buildafterfailed="false" name="org.faktorips.integrationtest.java5">
+        <listeners>
+            <currentbuildstatuslistener file="${logdir}/${project.name}/buildStatus.txt"/>
+        </listeners>
+        <bootstrappers/>
+        <modificationset>
+            <buildstatus logdir="${logdir}/org.faktorips.pluginbuilder"/>
+            <cvs module="org.faktorips.integrationtest.java5" cvsroot="${cvsroot}"/>
+        </modificationset>
+        <schedule interval="300">
+            <ant usedebug="false" uselogger="true" buildfile="${mainbuildfile}" target="pluginbuilder.integrationtest.java5"/>
+        </schedule>
+        <log logdir="${logdir}/${project.name}/">
+            <merge dir="${workdir}/../pluginbuilder_tmp/org.faktorips.pluginbuilder/workspace_integrationtest_java5/org.faktorips.integrationtest.java5/results/xml" pattern="*Test.xml"/>
+        </log>
+        <publishers>
+            <htmlemail buildresultsurl="${buildresultsurl}/${project.name}" mailhost="${htmlemail.mailhost}" username="" password="" returnaddress="${htmlemail.returnaddress}" skipusers="false" spamwhilebroken="false" returnname="faktorips-buildqueue" subjectprefix="[CC ${project.name}]" reportsuccess="always" xsldir="${htmlemail.xsldir}" css="${htmlemail.css}">
+                <map alias="ortmann" address="jan.ortmann@faktorzehn.de"/>
+                <map alias="erzberger" address="peter.erzberger@faktorzehn.de"/>
+                <map alias="hohenberger" address="daniel.hohenberger@faktorzehn.de"/>
+                <map alias="weickmann" address="alexander.weickmann@faktorzehn.de"/>
+                <map alias="ortmann2" address="joerg.ortmann@faktorzehn.de"/>
+                <failure reportWhenFixed="true" address="jan.ortmann@faktorzehn.de,peter.erzberger@faktorzehn.de,daniel.hohenberger@faktorzehn.de,alexander.weickmann@faktorzehn.de,joerg.ortmann@faktorzehn.de"/>
+            </htmlemail>
+            <antpublisher buildfile="${mainbuildfile}" uselogger="true" usedebug="false" target="copy.artifacts.pluginbuilder.faktorips">
+                <property name="ccProjectDir" value="${logdir}/${project.name}"/>
+                <property name="workspaceName" value="workspace_integrationtest_java5"/>
+            </antpublisher>
+        </publishers>
+    </project>
 </cruisecontrol>
