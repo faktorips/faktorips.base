@@ -296,7 +296,9 @@
            -DprojectsRootDir -> the root dir of all plugin projects
            -DbaseDir -> the parent dir of the dir specified in projectsRootDir
          additionaly make sure that the build_host_<hostname>.properies exists in the pluginbuilder project-->
-    <target name="release" 
+    <!-- Note: to tag and to creating the release.properties, please use the releaseFaktorIps.sh script 
+               the releaseFaktorIps.sh script uses implicit this ant target -->
+	<target name="release" 
     	description="release build for an specified faktorips release version, builds the complete feature, executes the junit plugin tests and distributes the result to the update site and download directory">
         <!-- defauls properties -->
     	<property name="useCvs" value="true"/>
@@ -325,14 +327,9 @@
     	<condition property="isIgnoreTests" value="true">
             <equals arg1="${runtests}" arg2="false"/>
         </condition>
-    	
-        <!-- TODO create plugin builder property file using build.version 
-             cvs tag depending on the build.version -->
 
     	<!-- TODO release nr in den features rausnehmen 0.0.0.0 -->
 
-    	<!-- TODO tag projects -->
-    	
     	<!--checkout pluginbuilder, build project -->
     	<antcall inheritall="true" target="-checkout.pluginbuilder.delete.previous"/>
     	<antcall inheritall="true" target="-checkout.build"/>
@@ -372,24 +369,24 @@
             <property name="buildDirectory" value="${buildDirectory}"/>
         </ant>
     	
-        <!--copy zipped features into the faktorips download directory, fails if files already exists-->
+        <!--copy zipped features into the faktorips download directory -->
     	<!-- faktorips -->
     	<antcall inheritall="true" target="-copy.faktorips.release.to.download.dir">
-    	    <param name="dest.name" value="${faktoripsReleaseDownloadZipPath}" />
          	<param name="source" value="org.faktorips.feature-${build.version}.zip" />
+    	    <param name="dest.name" value="${faktoripsReleaseDownloadZipPath}" />
     	</antcall>
     	<antcall inheritall="true" target="-copy.faktorips.release.to.download.dir">
-    	    <param name="dest.name" value="${faktoripsNls1ReleaseDownloadZipPath}" />
     		<param name="source" value="org.faktorips.feature.nls1-${build.version}.zip" />
+    	    <param name="dest.name" value="${faktoripsNls1ReleaseDownloadZipPath}" />
     	</antcall>
     	<!-- uml -->
     	<antcall inheritall="true" target="-copy.faktorips.release.to.download.dir">
-    	    <param name="dest.name" value="${faktoripsUmlReleaseDownloadZipPath}" />
          	<param name="source" value="org.faktorips.uml.feature-${build.version}.zip" />
+    	    <param name="dest.name" value="${faktoripsUmlReleaseDownloadZipPath}" />
     	</antcall>
     	<antcall inheritall="true" target="-copy.faktorips.release.to.download.dir">
-    	    <param name="dest.name" value="${faktoripsUmlNls1ReleaseDownloadZipPath}" />
     		<param name="source" value="org.faktorips.uml.feature.nls1-${build.version}.zip" />
+    	    <param name="dest.name" value="${faktoripsUmlNls1ReleaseDownloadZipPath}" />
     	</antcall>
     		
     	<!--install the features on updatesite-->
@@ -477,7 +474,7 @@
         <echo message="update faktorips.org updatesite: ${updatesite.path}"/>
         <cvs command="co org.faktorips.updatesite" dest="${updatesite.path}" cvsroot="${cvsroot}" quiet="true"/>
     </target>	
-    <target name="-copy.faktorips.release.to.download.dir">
+    <target name="-copy.faktorips.release.to.download.dir" unless="skipPublish">
     	<!-- input: dest.name -->
     	<!--        source    -->
     	<!-- unzip, add eclipse folder and zip in download dir -->

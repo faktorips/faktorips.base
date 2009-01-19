@@ -5,8 +5,9 @@
 #                  -version [version] : the version which should be generated and published, e.g. 2.2.0.rc1
 # optional input: 
 #                  -category [category]: the feature category used on the update site, 
-#                                        default =  the first two numbers from the build version (e.g. 2.2)
-#                  -overwrite : overwrite previous version (otherwise if the release exists then the release build fails)
+#                                        default = the first two numbers from the build version (e.g. 2.2)
+#                  -overwrite : to overwrite a previous version 
+#                               (if not set then the release build fails, if the release was build before)
 #                               default don't overwrite
 #                  -skipTest : don't run the junit plugin tests
 #                              default run tests
@@ -16,8 +17,10 @@
 #                                default is tag projects
 ##########################################################################################################
 
+# environment
 WORKING_DIR=/opt/cc/work
-CHECKOUT_WORKSPACE=$WORKING_DIR/checkout
+CHECKOUT_WORKSPACE=$WORKING_DIR/checkout_release
+CVS_ROOT=/usr/local/cvsroot
 
 export DISPLAY=:0.0
 export ANT_OPTS=-Xmx1024m
@@ -30,9 +33,6 @@ BUILD_VERSION=NONE
 BUILD_CATEGORY=NONE
 SHOWHELP=false
 SKIPTAGCVS=false
-
-# change to working directory
-cd $WORKING_DIR
 
 # parse arguments
 while [ $# != 0 ]
@@ -54,7 +54,7 @@ do  case "$1" in
   shift
 done
 
-# check if version is givem
+# check if version is given
 if [ $BUILD_VERSION = "NONE" ] ; then
   if [ $SHOWHELP = "false" ] ; then
     echo '--> Fehler keine version gegeben!'
@@ -106,24 +106,33 @@ echo "  Run tests (-skipTest)=$RUNTESTS"
 echo "  No publish (-skipPublish) (Updatesite and DownloadDir)=$SKIPPUBLISH"
 echo "  Skip tagging cvs projects (-skipTagCvs)=$SKIPTAGCVS"
 echo "  ---------------------------------"
-echo "Start release build (y)es?"
+echo "=> Start release build (y)es?"
 echo 
 read ANSWER
 if [ ! "$ANSWER" = "y" ]
  then echo "Cancel"; exit 1
 fi
 
+#
+# perform the build
+#
+
+# change to working directory
+cd $WORKING_DIR
+
 # tag cvs projects and generate release.properties
 if [ ! "$SKIPTAGCVS" = "true" ]; then 
-  RELEASE_PROPERTY_DIR=$CHECKOUT_WORKSPACE/org.faktorips.pluginbuilder/releases
-  RELEASE_PROPERTIES=$RELEASE_PROPERTIE_DIR/$BUILD_VERSION.properties
+  PLUGINBUILDER_PROJECT_NAME=/org.faktorips.pluginbuilder
+  PLUGINBUILDER_PROJECT_DIR=$CHECKOUT_WORKSPACE/PLUGINBUILDER_PROJECT_NAME
+  RELEASE_PROPERTY_DIR=$PLUGINBUILDER_PROJECT_DIR/releases
+  RELEASE_PROPERTIES=$RELEASE_PROPERTY_DIR/$BUILD_VERSION.properties
 
-  # 1. checkout pluginbuilder release properties
-  cvs -d /usr/local/cvsroot co -d $RELEASE_PROPERTY_DIR org.faktorips.pluginbuilder/releases
+  # 1. checkout previous pluginbuilder release properties
+  cvs -d $CVS_ROOT co -d $RELEASE_PROPERTY_DIR org.faktorips.pluginbuilder/releases
   
-  # 2. assert if properties exist and overwite is false
+  # 2. assert if properties exist and overwrite is false
   if [ ! "$OVERWRITE" = "true" -a -f $RELEASE_PROPERTIES  ]
-    then echo "Cancel build: release already exists ($RELEASE_PROPERTIES)"; exit 1
+    then echo "=> Cancel build: release already exists ($RELEASE_PROPERTIES)"; exit 1
   fi
   
   # 3. generate release.properties
@@ -138,16 +147,25 @@ if [ ! "$SKIPTAGCVS" = "true" ]; then
   echo version.qualifier=$VERSION_QUALIFIER  >> $RELEASE_PROPERTIES
   echo buildTypePresentation=  >> $RELEASE_PROPERTIES
 
-  # 4. checkin (add) generated release.properties
+  # 4. checkin (add and commit) generated release.properties
+  if [ ! -f $RELEASE_PROPERTIES ] ; then
+    # only a new file will be added
+    cvs -d $CVS_ROOT add $RELEASE_PROPERTIES
+  fi
+  # update file in cvs
+  cvs -d $CVS_ROOT commit -m "release build $BUILD_VERSION" $RELEASE_PROPERTIES
   
-  
-  # 5. tag all projects defined in the pluginbuilder project if skip tag is false
+  # 5. tag all projects defined in the pluginbuilder project (move tag if already exists)
+  #    if skip tag is true then don't tag project, the previous tagged versions are used for the build
   if [ ! "$SKIPTAGCVS" = "true" ] ; then
-    for project in $(cat $CHECKOUT_WORKSPACE/org.faktorips.pluginbuilder/maps/all_copy.map | sed -r "s/.*COPY,@WORKSPACE@,(.*)/\1/g")
-      do echo $project
+    # a) tag pluginbuilder project -> rtag = tag current versions of projects in repository
+    cvs -d $CVS_ROOT rtag -F -R $FETCH_TAG $PLUGINBUILDER_PROJECT_NAME
+
+    # b) tag all projects specified in the pluginbuilder map file (all necessary plugin and feature projects)
+    for project in $(cat $PLUGINBUILDER_PROJECT_DIR/maps/all_copy.map | sed -r "s/.*COPY,@WORKSPACE@,(.*)/\1/g")
+      cvs -d $CVS_ROOT rtag -F -R $FETCH_TAG $project
     done
   fi
-  exit 1
 fi
 
 # call ant to perform the specified release build

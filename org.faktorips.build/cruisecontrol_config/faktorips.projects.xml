@@ -126,7 +126,7 @@
         </project>
 
         <!--=====================================================-->
-        <!--Project definition: org.faktorips.devtools.ant-->
+        <!--Project definition: org.faktorips.uml-->
         <!--=====================================================-->           
         <project name="org.faktorips.uml" mainbuildtarget="uml" 
             testresult="${workdir}/${project.name}/scripts/">
@@ -164,6 +164,10 @@
                 <project name="org.faktorips.pluginbuilder"/>
             </depends>         
         </project>
+
+        <!--============================================================-->
+        <!--TODO Project definition: org.faktorips.integrationtest.java5-->
+        <!--============================================================-->    
         
 <!-- 
 TODO bbv, kqv und msgp 
