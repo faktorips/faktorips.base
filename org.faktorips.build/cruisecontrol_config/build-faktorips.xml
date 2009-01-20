@@ -199,24 +199,32 @@
         <property name="cvsPluginbuildermodule" value="org.faktorips.pluginbuilder"/>
         <property name="projectsRootDir" value="checkout/"/>
 
-    	<!-- checkout faktorips plugins and feature -->
+    	<!-- checkout features -->
     	<cvs command="co ${cvsPluginbuildermodule}" dest="${projectsRootDir}" cvsroot="${cvsroot}" quiet="true"/>
         <cvs command="co org.faktorips.feature" dest="${projectsRootDir}" cvsroot="${cvsroot}" quiet="true"/>
         <cvs command="co org.faktorips.feature.nls1" dest="${projectsRootDir}" cvsroot="${cvsroot}" quiet="true"/>
-        <cvs command="co org.faktorips.nls.devtools.core.nl1" dest="${projectsRootDir}" cvsroot="${cvsroot}" quiet="true"/>
+    	<cvs command="co org.faktorips.feature.test" dest="${projectsRootDir}" cvsroot="${cvsroot}" quiet="true"/>
+
+    	<!-- checkout plugins -->
+    	<!-- note: the plugin projects are already updated (checkout) by the corresponding cruise control target -->
+    	
+    	<!-- checkout nl1 plugins -->
+    	<cvs command="co org.faktorips.nls.devtools.core.nl1" dest="${projectsRootDir}" cvsroot="${cvsroot}" quiet="true"/>
     	<cvs command="co org.faktorips.nls.devtools.core.ui.nl1" dest="${projectsRootDir}" cvsroot="${cvsroot}" quiet="true"/>
         
-    	<cvs command="co org.faktorips.feature.test" dest="${projectsRootDir}" cvsroot="${cvsroot}" quiet="true"/>
+    	<!-- checkout test plugins -->
         <cvs command="co org.faktorips.devtools.core.test" dest="${projectsRootDir}" cvsroot="${cvsroot}" quiet="true"/>
         <cvs command="co org.faktorips.devtools.core.ui.test" dest="${projectsRootDir}" cvsroot="${cvsroot}" quiet="true"/>
         <cvs command="co org.faktorips.devtools.stdbuilder.test" dest="${projectsRootDir}" cvsroot="${cvsroot}" quiet="true"/>
+    	<cvs command="co org.faktorips.devtools.ant.test" dest="${projectsRootDir}" cvsroot="${cvsroot}" quiet="true"/>
+    	
     	<!-- checkout faktorips uml plugins and feature -->
+        <cvs command="co org.faktorips.uml.feature" dest="${projectsRootDir}" cvsroot="${cvsroot}" quiet="true"/>
+        <cvs command="co org.faktorips.uml.feature.nls1" dest="${projectsRootDir}" cvsroot="${cvsroot}" quiet="true"/>
         <cvs command="co org.faktorips.uml.feature.test" dest="${projectsRootDir}" cvsroot="${cvsroot}" quiet="true"/>
         <cvs command="co org.faktorips.uml" dest="${projectsRootDir}" cvsroot="${cvsroot}" quiet="true"/>
         <cvs command="co org.faktorips.uml.nl1" dest="${projectsRootDir}" cvsroot="${cvsroot}" quiet="true"/>
         <cvs command="co org.faktorips.uml.test" dest="${projectsRootDir}" cvsroot="${cvsroot}" quiet="true"/>
-        <cvs command="co org.faktorips.uml.feature" dest="${projectsRootDir}" cvsroot="${cvsroot}" quiet="true"/>
-        <cvs command="co org.faktorips.uml.feature.nls1" dest="${projectsRootDir}" cvsroot="${cvsroot}" quiet="true"/>
     	
     	<antcall inheritall="true" target="-delete.eclipse.configuration.log"/>
     	
@@ -307,13 +315,17 @@
            -Druntests=false -> run or ignore junit plugin tests 
            -DskipPublish=true -> don't publish the result to the download and updatesite
         optional parameter for a local build:   
-           -DuseCvs=false -> no cvs support 
-           -Dall.map=all_copy.map -> copy features and plugins from the workspace instead of using a release tag with cvs 
-           -DprojectsRootDir -> the root dir of all plugin projects
-           -DbaseDir -> the parent dir of the dir specified in projectsRootDir
+           -DuseCvs=false -> no cvs support (the features and plugins will be copied from the workspace
+           -DprojectsRootDir -> the root dir of all plugin projects (relativ!)
+           -Dbasedir -> e.g. the parent dir of the dir specified in projectsRootDir, this will be the working dir
          additionaly make sure that the build_host_<hostname>.properies exists in the pluginbuilder project-->
     <!-- Note: to tag and to creating the release.properties, please use the releaseFaktorIps.sh script 
                the releaseFaktorIps.sh script uses implicit this ant target -->
+	<!-- Example local release build:
+	   ant -buildfile [workspace]\org.faktorips.build\cruisecontrol_config\build-faktorips.xml 
+	       -Dbuild.version=2.2.0.rc1 -Dbuild.category=2.2 -Doverwrite=true -Druntests=false -DskipPublish=true 
+	       -DuseCvs=false -DprojectsRootDir=[workspace must be relativ!] -Dbasedir=[workspace]\.. release
+	-->
 	<target name="release" 
     	description="release build for an specified faktorips release version, builds the complete feature, executes the junit plugin tests and distributes the result to the update site and download directory">
         <!-- defauls properties -->
@@ -343,9 +355,13 @@
     	<condition property="isIgnoreTests" value="true">
             <equals arg1="${runtests}" arg2="false"/>
         </condition>
-
-    	<!-- TODO release nr in den features rausnehmen 0.0.0.0 -->
-
+		
+		<!-- check if the copy all.map should be used, if useCvs is false 
+		     otherwise the cvs all.map is used to fetch the sources from cvs -->
+    	<condition property="all.map" value="all_copy.map">
+            <not><equals arg1="${isUseCvs}" arg2="true"/></not>
+        </condition>
+		
     	<!--checkout pluginbuilder, build project -->
     	<antcall inheritall="true" target="-checkout.pluginbuilder.delete.previous"/>
     	<antcall inheritall="true" target="-checkout.build"/>
@@ -407,6 +423,7 @@
     		
     	<!--install the features on updatesite-->
         <!--  generate a new site.xml on the updatesite, including all previous and new feature versions-->
+		<!--  faktorips features -->
         <ant dir="${projectsRootDir}/org.faktorips.pluginbuilder/build-files" antfile="postBuild.xml" target="-createNightlyBuildSiteXml">
             <property name="siteXmlFile" value="${basedir}/${projectsRootDir}/org.faktorips.updatesite/site_tmp.xml"/>
             <property name="pluginbuilder.features" value="${pluginbuilder.features}"/>
@@ -423,6 +440,7 @@
         </antcall> 
     
         <!--  generate a new site.xml on the updatesite, including all previous and new feature versions-->
+		<!--  uml features -->
         <ant dir="${projectsRootDir}/org.faktorips.pluginbuilder/build-files" antfile="postBuild.xml" target="-createNightlyBuildSiteXml">
             <property name="siteXmlFile" value="${basedir}/${projectsRootDir}/org.faktorips.updatesite/site_uml_tmp.xml"/>
             <property name="pluginbuilder.features" value="${pluginbuilder.features.uml}"/>
@@ -448,20 +466,22 @@
     	
     	<!-- report -->
     	<echo message=""/>
-    	<echo message="finished."/>
+    	<echo message="finished. Release: ${build.version}"/>
     	<echo message="-> new faktorips ips features: ${pluginbuilder.features}"/>
     	<echo message="-> new faktorips uml features: ${pluginbuilder.features.uml}"/>
-    	<echo message="-> updatesite: ${updatesite.path}"/>
-    	<echo message="-> download zip files: "/>
-    	<echo message=" 1. ${faktoripsReleaseDownloadZipPath}"/>
-    	<echo message=" 2. ${faktoripsNls1ReleaseDownloadZipPath}"/>
-    	<echo message=" 3. ${faktoripsUmlReleaseDownloadZipPath}"/>
-    	<echo message=" 4. ${faktoripsUmlNls1ReleaseDownloadZipPath}"/>
-    	
+		<antcall inheritall="true" target="-print.publish.info"/>
     </target>
 
     <!--helper targets-->
-    <target name="-checkout.pluginbuilder.delete.previous" if="isUseCvs">
+    <target name="-print.publish.info" unless="skipPublish">
+        <echo message="-> updatesite: ${updatesite.path}"/>
+        <echo message="-> download zip files: "/>
+        <echo message="   1. ${faktoripsReleaseDownloadZipPath}"/>
+        <echo message="   2. ${faktoripsNls1ReleaseDownloadZipPath}"/>
+        <echo message="   3. ${faktoripsUmlReleaseDownloadZipPath}"/>
+        <echo message="   4. ${faktoripsUmlNls1ReleaseDownloadZipPath}"/>    	
+    </target> 
+	<target name="-checkout.pluginbuilder.delete.previous" if="isUseCvs">
     	<delete includeemptydirs="true" dir="${projectsRootDir}/org.faktorips.pluginbuilder"/>
         <cvs command="co org.faktorips.pluginbuilder" dest="${projectsRootDir}" cvsroot="${cvsroot}" quiet="true"/>
     </target>
