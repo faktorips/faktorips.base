@@ -6,7 +6,6 @@
 	<property name="temp.folder" value="${basedir}/temp.folder"/>
 	<property name="plugin.destination" value="${basedir}"/>
 	<property name="build.result.folder" value="${basedir}/ant_tasks"/>
-	<property name="version.suffix" value="_3.1.0"/>
 	<property name="eclipsehome" value="/usr/lib/eclipse-3.4-test/" />
 	
 	<target name="main" depends="clean, test">
@@ -33,7 +32,7 @@
 				<include name="plugins/org.eclipse.osgi*.jar"/>
 				<include name="plugins/org.eclipse.ant.core*.jar"/>
 				<include name="plugins/org.eclipse.jdt.core*.jar"/>
-				<include name="plugins/org.junit_3.8.1/*.jar"/>
+				<include name="plugins/org.junit*/*.jar"/>
 			</fileset>
 			
 			<!-- dependency to org.faktorips.devtools.core -->
@@ -103,7 +102,6 @@
 		<junit fork="yes" haltonerror="yes" haltonfailure="yes" printsummary="withOutAndErr" timeout="10000"  showoutput="yes">
     		<formatter type="xml" usefile="true"/>
     		<classpath refid="path"/>
-
     		
     		<!-- put result logfiles into given logdir (passed by cruisecontrol-config.xml in project org.faktorips.eclipsetest -->
 			<batchtest filtertrace="off"  todir="${basedir}/scripts/"> 

@@ -1,3 +1,3 @@
-#Tue Sep 12 12:40:51 CEST 2006
+#Tue Jan 20 00:01:00 CET 2009
 eclipse.preferences.version=1
-selfhosting.binExcludes=/org.faktorips.ant/ant_tasks_bin
+selfhosting.binExcludes=/org.faktorips.devtools.ant/ant_tasks_bin
