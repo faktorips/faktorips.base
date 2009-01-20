@@ -113,6 +113,16 @@ if [ ! "$ANSWER" = "y" ]
  then echo "Cancel"; exit 1
 fi
 
+# assert correct bundle version in core plugin
+TMP_CHECKOUTDIR=$CHECKOUT_WORKSPACE/tmp_release_build
+mkdir $TMP_CHECKOUTDIR
+cvs -d $CVS_ROOT co -d $TMP_CHECKOUTDIR org.faktorips.devtools.core/META-INF
+CORE_BUNDLE_VERSION=$(cat $TMP_CHECKOUTDIR/org.faktorips.devtools.core/META-INF/MANIFEST.MF | grep Bundle-Version | sed -r "s/.*:\ *(.*)/\1/g")
+rm -R $TMP_CHECKOUTDIR
+if [ ! "$CORE_BUNDLE_VERSION" = "$BUILD_VERSION" ]
+  then echo "=> Cancel build: wrong bundle version in plugin org.faktorips.devtools.core $CORE_BUNDLE_VERSION, expected $BUILD_VERSION"; exit 1
+fi 
+
 #
 # perform the build
 #
@@ -135,16 +145,6 @@ if [ ! "$SKIPTAGCVS" = "true" ]; then
   if [ ! "$OVERWRITE" = "true" -a -f $RELEASE_PROPERTIES  ]
     then echo "=> Cancel build: release already exists ($RELEASE_PROPERTIES)"; exit 1
   fi
-  #    b) ckeck correct bundle version in core plugin
-  TMP_CHECKOUTDIR=$CHECKOUT_WORKSPACE/tmp_release_build
-  mkdir $TMP_CHECKOUTDIR
-  cvs -d $CVS_ROOT co -d $TMP_CHECKOUTDIR org.faktorips.devtools.core/META-INF
-  CORE_BUNDLE_VERSION=$(cat $TMP_CHECKOUTDIR/org.faktorips.devtools.core/META-INF/MANIFEST.MF \
-                        | grep Bundle-Version | sed -r "s/.*:\ *(.*)/\1/g")
-  rm -R $TMP_CHECKOUTDIR
-  if [ ! "$CORE_BUNDLE_VERSION" = "$BUILD_VERSION" ]
-    then echo "=> Cancel build: wrong bundle version in plugin org.faktorips.devtools.core $CORE_BUNDLE_VERSION expected $BUILD_VERSION; exit 1
-  fi 
 
   # 3. generate release.properties
   VERSION_QUALIFIER=$(echo $BUILD_VERSION | sed -r "s/([0-9]*)\.([0-9]*)\.([0-9]*)\.(.*)/\4/g")
