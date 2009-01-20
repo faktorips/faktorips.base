@@ -2,7 +2,7 @@
 <feature
       id="org.faktorips.feature.source"
       label="Faktor-IPS Source"
-      version="2.2.0.rc1"
+      version="0.0.0"
       provider-name="Faktor Zehn AG">
 
    <description url="http://www.faktorips.org">
@@ -147,6 +147,6 @@ Es gilt das Recht der Bundesrepublik Deutschland.
          id="org.faktorips.feature.source"
          download-size="0"
          install-size="0"
-         version="2.2.0.rc1"/>
+         version="0.0.0"/>
 
 </feature>

@@ -267,6 +267,11 @@
 			todir="${ccProjectDir}/${cctimestamp}"
 			failonerror="false" verbose="true"/>
 
+		<!-- copy emma coverage report -->
+        <copy file="${basedir}/pluginbuilder_tmp/org.faktorips.pluginbuilder/results/testresults/coverage/coverage.html" 
+            todir="${ccProjectDir}/${cctimestamp}"
+            failonerror="false" verbose="true"/>
+		
 		<!-- copy plugin compile errors -->
 		<antcall inheritall="true" target="-copy.pluginbuilder.compile.error"/>
 		

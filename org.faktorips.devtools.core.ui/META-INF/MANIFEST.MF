@@ -2,12 +2,12 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: Faktor-IPS Development Tools UI
 Bundle-SymbolicName: org.faktorips.devtools.core.ui;singleton:=true
-Bundle-Version: 2.2.0.rc1
+Bundle-Version: 0.0.0
 Bundle-Activator: org.faktorips.devtools.core.ui.IpsUIPlugin
 Require-Bundle: org.eclipse.ui,
  org.eclipse.core.runtime,
  org.eclipse.gef;bundle-version="3.4.0",
- org.faktorips.devtools.core;bundle-version="2.1.0",
+ org.faktorips.devtools.core,
  org.eclipse.core.resources;bundle-version="3.4.0",
  org.eclipse.jface.text;bundle-version="3.4.0",
  org.eclipse.ui.forms,
@@ -20,7 +20,7 @@ Require-Bundle: org.eclipse.ui,
  org.eclipse.jdt.ui;bundle-version="3.4.0",
  org.eclipse.jdt.debug.ui;bundle-version="3.3.0",
  org.eclipse.debug.core;bundle-version="3.4.0",
- org.faktorips.fl;bundle-version="2.1.0",
+ org.faktorips.fl,
  org.eclipse.debug.ui;bundle-version="3.4.0",
  org.eclipse.search;bundle-version="3.4.0",
  org.eclipse.compare;bundle-version="3.4.0",
@@ -28,8 +28,8 @@ Require-Bundle: org.eclipse.ui,
  org.eclipse.team.ui;bundle-version="3.4.0",
  org.eclipse.team.cvs.core,
  org.eclipse.team.cvs.ui;bundle-version="3.3.100",
- org.faktorips.valuetypes;bundle-version="2.1.0",
- org.faktorips.runtime;bundle-version="2.1.0"
+ org.faktorips.valuetypes,
+ org.faktorips.runtime
 Bundle-ActivationPolicy: lazy
 Bundle-RequiredExecutionEnvironment: J2SE-1.5
 Export-Package: org.faktorips.devtools.core.ui,

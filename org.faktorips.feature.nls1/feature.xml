@@ -2,7 +2,7 @@
 <feature
       id="org.faktorips.feature.nls1"
       label="Faktor-IPS German Language Pack"
-      version="2.2.0.rc1"
+      version="0.0.0"
       provider-name="Faktor Zehn AG">
 
    <description url="http://www.faktorips.org">
@@ -151,14 +151,14 @@ Es gilt das Recht der Bundesrepublik Deutschland.
          id="org.faktorips.nls.devtools.core.nl1"
          download-size="0"
          install-size="0"
-         version="2.2.0.rc1"
+         version="0.0.0"
          fragment="true"/>
 
    <plugin
          id="org.faktorips.nls.devtools.core.ui.nl1"
          download-size="0"
          install-size="0"
-         version="2.2.0.rc1"
+         version="0.0.0"
          fragment="true"/>
 
 </feature>
