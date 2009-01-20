@@ -117,10 +117,10 @@ fi
 TMP_CHECKOUTDIR=$CHECKOUT_WORKSPACE/tmp_release_build
 mkdir $TMP_CHECKOUTDIR
 cvs -d $CVS_ROOT co -d $TMP_CHECKOUTDIR org.faktorips.devtools.core/META-INF
-CORE_BUNDLE_VERSION=$(cat $TMP_CHECKOUTDIR/org.faktorips.devtools.core/META-INF/MANIFEST.MF | grep Bundle-Version | sed -r "s/.*:\ *(.*)/\1/g")
+CORE_BUNDLE_VERSION=$(cat $TMP_CHECKOUTDIR/MANIFEST.MF | grep Bundle-Version | sed -r "s/.*:\ *(.*)/\1/g")
 rm -R $TMP_CHECKOUTDIR
 if [ ! "$CORE_BUNDLE_VERSION" = "$BUILD_VERSION" ]
-  then echo "=> Cancel build: wrong bundle version in plugin org.faktorips.devtools.core $CORE_BUNDLE_VERSION, expected $BUILD_VERSION"; exit 1
+  then echo "=> Cancel build: wrong bundle version in plugin org.faktorips.devtools.core found '$CORE_BUNDLE_VERSION', but expected '$BUILD_VERSION'"; exit 1
 fi 
 
 #
