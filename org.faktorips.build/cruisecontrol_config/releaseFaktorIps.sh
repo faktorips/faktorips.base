@@ -97,16 +97,16 @@ fi
 # print parameter and ask to build
 echo 
 echo Release build parameter:
-echo "  ---------------------------------"
+echo "  -----------------------------------------------------"
 echo "  Release Version=$BUILD_VERSION"
 echo "  Feature Category=$BUILD_CATEGORY"
-echo "  ---------------------------------"
-echo "  Overwrite previous version (-overwrite)=$OVERWRITE"
-echo "  Run tests (-skipTest)=$RUNTESTS"
-echo "  No publish (-skipPublish) (Updatesite and DownloadDir)=$SKIPPUBLISH"
-echo "  Skip tagging cvs projects (-skipTagCvs)=$SKIPTAGCVS"
-echo "  ---------------------------------"
-echo "=> Start release build (y)es?"
+echo "  -----------------------------------------------------"
+echo "  Overwrite previous version = $OVERWRITE"
+echo "  Run tests = $RUNTESTS"
+echo "  No publish (to Updatesite and to DownloadDir) = $SKIPPUBLISH"
+echo "  Skip tagging cvs projects = $SKIPTAGCVS"
+echo "  -----------------------------------------------------"
+echo "=> Start release build (y)es? <="
 echo 
 read ANSWER
 if [ ! "$ANSWER" = "y" ]
