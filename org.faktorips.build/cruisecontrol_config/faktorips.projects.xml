@@ -150,7 +150,6 @@
                 <project name="org.faktorips.devtools.stdbuilder"/>
                 <project name="org.faktorips.devtools.core.ui"/>
                 <project name="org.faktorips.devtools.ant"/>
-                <!-- TODO cc project <project name="org.faktorips.uml"/>-->
             </depends>      
         </project>
 
@@ -166,7 +165,7 @@
         </project>
 
         <!--============================================================-->
-        <!--TODO Project definition: org.faktorips.integrationtest.java5-->
+        <!--Project definition: org.faktorips.integrationtest.java5-->
         <!--============================================================-->    
         <project name="org.faktorips.integrationtest.java5" mainbuildtarget="pluginbuilder.integrationtest.java5" javaprojectname="org.faktorips.integrationtest.java5"
             testresult="${workdir}/../pluginbuilder_tmp/org.faktorips.pluginbuilder/workspace_integrationtest_java5/org.faktorips.integrationtest.java5/results/xml" 
@@ -175,7 +174,6 @@
                 <project name="org.faktorips.pluginbuilder"/>
             </depends>         
         </project>
-        
 <!-- 
 TODO bbv, kqv und msgp 
 -->

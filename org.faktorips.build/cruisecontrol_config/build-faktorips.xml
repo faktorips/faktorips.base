@@ -462,7 +462,7 @@
             <param name="site.xml" value="site_uml_tmp.xml"/> 
         </antcall> 
     
-    	<!--  checkin updatesite, only site.xml will be commited, TODO features and plugin jars are not 'add' to cvs-->
+    	<!--  checkin updatesite, only site.xml will be commited, features and plugin jars are not added to cvs-->
         <antcall inheritall="true" target="-checkin.updatesite"/>
     	
     	<!--  checkout site.xml -->
