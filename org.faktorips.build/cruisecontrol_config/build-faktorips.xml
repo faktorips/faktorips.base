@@ -391,6 +391,7 @@
     	<antcall inheritall="true" target="-checkout.pluginbuilder.build.version"/>
     	<!-- patch run test property -->
     	<antcall inheritall="true" target="-disable.automated.test" />
+    	<antcall inheritall="true" target="-enable.automated.test" />
     	
         <!--checkout updatesite-->
     	<antcall inheritall="true" target="-checkout.updatesite"/>
@@ -561,6 +562,9 @@
     </target>
     <target name="-disable.automated.test" if="isIgnoreTests">
     	<replace file="${pluginbuilder.config}" token="pluginbuilder.is.runtests=true" value="pluginbuilder.is.runtests=false"/>
+    </target>
+    <target name="-enable.automated.test" unless="isIgnoreTests">
+    	<replace file="${pluginbuilder.config}" token="pluginbuilder.is.runtests=false" value="pluginbuilder.is.runtests=true"/>
     </target>
     
     <target name="-fail.if.file.exists">
