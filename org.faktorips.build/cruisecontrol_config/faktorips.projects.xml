@@ -138,7 +138,7 @@
         <project name="org.faktorips.pluginbuilder" mainbuildtarget="pluginbuilder.faktorips"
             testresult="${workdir}/../pluginbuilder_tmp/org.faktorips.pluginbuilder/results/testresults/xml" 
             testmerge="*test.xml"
-            jvmargarg="-Xmx1024m"
+            jvmargarg="-Xms124m -Xmx1024m"
             scheduleintervall="300"> <!-- 300 = 5 minutes -->
             <depends>
                 <project name="org.faktorips.util"/>
