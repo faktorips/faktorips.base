@@ -144,10 +144,10 @@
         <project name="org.faktorips.pluginbuilder" mainbuildtarget="pluginbuilder.faktorips"
             testresult="${workdir}/../pluginbuilder_tmp/org.faktorips.pluginbuilder/results/testresults/xml" 
             testmerge="*test.xml"
-            jvmargarg="-Xms124m -Xmx1024m"
             scheduleintervall="300"> <!-- 300 = 5 minutes -->
+            <jvmarg arg="-Dprg=cruise.pluginbuilder"/> <!-- info only -->
             <jvmarg arg="-Xms124m"/>
-            <jvmarg arg="-Xmx1024m"/>
+            <jvmarg arg="-Xmx512m"/>
             <depends>
                 <project name="org.faktorips.util"/>
                 <project name="org.faktorips.valuetypes"/>

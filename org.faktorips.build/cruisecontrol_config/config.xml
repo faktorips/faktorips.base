@@ -339,8 +339,9 @@
         </modificationset>
         <schedule interval="300">
             <ant usedebug="false" uselogger="true" buildfile="${mainbuildfile}" target="pluginbuilder.faktorips">
+                <jvmarg arg="-Dprg=cruise.pluginbuilder"/>
                 <jvmarg arg="-Xms124m"/>
-                <jvmarg arg="-Xmx1024m"/>
+                <jvmarg arg="-Xmx512m"/>
             </ant>
         </schedule>
         <log logdir="${logdir}/${project.name}/">
