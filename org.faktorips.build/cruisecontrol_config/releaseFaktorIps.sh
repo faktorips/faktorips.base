@@ -114,6 +114,7 @@ if [ ! "$ANSWER" = "y" ]
 fi
 
 # assert correct bundle version in core plugin
+#   checkout core plugin and compare bundle version with given release version
 TMP_CHECKOUTDIR=$CHECKOUT_WORKSPACE/tmp_release_build
 mkdir $TMP_CHECKOUTDIR
 cvs -d $CVS_ROOT co -d $TMP_CHECKOUTDIR org.faktorips.devtools.core/META-INF
