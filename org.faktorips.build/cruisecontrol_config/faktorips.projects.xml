@@ -231,7 +231,7 @@ TODO bbv und msgp
                  
                 <!-- mail mappings are specified in ENTITY mailmapping see this xml header -->
                 &mailmapping;
-
+                
             </htmlemail>
         </publisher>
         

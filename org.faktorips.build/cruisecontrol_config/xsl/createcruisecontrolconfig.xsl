@@ -146,6 +146,14 @@
                     <htmlemail>
                         <xsl:copy-of select="/faktoripscruisecontrol/publishers/publisher[@id='htmlemail']/child::node()/@*"/>
                         <xsl:copy-of select="/faktoripscruisecontrol/publishers/publisher[@id='htmlemail']/child::node()/*"/>
+                        <!-- buildstatus cc projects see http://cruisecontrol.sourceforge.net/main/configxml.html#buildstatus -->
+                        <xsl:comment>dummy aliases for buildstatus projects (cc-projectname)</xsl:comment>
+                        <xsl:for-each select="/faktoripscruisecontrol/projects/project">
+                            <map>
+                                <xsl:attribute name="alias">cc-<xsl:value-of select="@name"/></xsl:attribute>
+                                <xsl:attribute name="address"></xsl:attribute>
+                            </map>
+                        </xsl:for-each>
                         <failure>
                             <xsl:attribute name="reportWhenFixed"><xsl:value-of select="'true'"/></xsl:attribute>
                             <xsl:attribute name="address">
