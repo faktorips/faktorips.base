@@ -22,6 +22,7 @@ import org.eclipse.core.runtime.CoreException;
 import org.faktorips.codegen.DatatypeHelper;
 import org.faktorips.codegen.JavaCodeFragment;
 import org.faktorips.datatype.Datatype;
+import org.faktorips.devtools.core.IpsStatus;
 import org.faktorips.devtools.core.builder.AbstractParameterIdentifierResolver;
 import org.faktorips.devtools.core.builder.ComplianceCheck;
 import org.faktorips.devtools.core.builder.DefaultBuilderSet;
@@ -58,6 +59,7 @@ import org.faktorips.devtools.stdbuilder.table.TableImplBuilder;
 import org.faktorips.devtools.stdbuilder.table.TableRowBuilder;
 import org.faktorips.devtools.stdbuilder.testcase.TestCaseBuilder;
 import org.faktorips.devtools.stdbuilder.testcasetype.TestCaseTypeClassBuilder;
+import org.faktorips.devtools.stdbuilder.type.GenType;
 import org.faktorips.fl.CompilationResult;
 import org.faktorips.fl.CompilationResultImpl;
 import org.faktorips.fl.IdentifierResolver;
@@ -155,7 +157,20 @@ public class StandardBuilderSet extends DefaultBuilderSet {
     private void clearGenerators() {
         ipsObjectTypeGenerators.clear();
     }
-
+    
+    public GenType getGenerator(IType type) throws CoreException {
+        if (type==null) {
+            return null;
+        }
+        if (type instanceof IPolicyCmptType) {
+            return getGenerator((IPolicyCmptType)type);
+        }
+        if (type instanceof IProductCmptType) {
+            return getGenerator((IProductCmptType)type);
+        }
+        throw new CoreException(new IpsStatus("Unkown subclass " + type.getClass()));
+    }
+    
     public GenPolicyCmptType getGenerator(IPolicyCmptType policyCmptType) throws CoreException {
         if (policyCmptType == null) {
             return null;

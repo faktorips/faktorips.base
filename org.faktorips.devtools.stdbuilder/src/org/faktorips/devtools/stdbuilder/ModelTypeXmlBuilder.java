@@ -64,35 +64,24 @@ public class ModelTypeXmlBuilder extends AbstractXmlFileBuilder {
      * {@inheritDoc}
      */
     public void build(IIpsSrcFile ipsSrcFile) throws CoreException {
-        IType model = (IType)ipsSrcFile.getIpsObject();
+        StandardBuilderSet stdBuilderSet = (StandardBuilderSet)getBuilderSet();
+        IType type = (IType)ipsSrcFile.getIpsObject();
         doc = IpsPlugin.getDefault().newDocumentBuilder().newDocument();
-        Element modelType = doc.createElement("ModelType");
-        modelType.setAttribute("name", model.getQualifiedName());
-        if (model instanceof IPolicyCmptType) {
-            modelType.setAttribute("class", ((StandardBuilderSet)getBuilderSet()).getGenerator((IPolicyCmptType)model)
-                    .getQualifiedName(false));
-        } else if (model instanceof IProductCmptType) {
-            modelType.setAttribute("class", ((StandardBuilderSet)getBuilderSet()).getGenerator((IProductCmptType)model)
-                    .getQualifiedName(false));
-        }
-        String superTypeName = model.getSupertype();
-        if (superTypeName != null && superTypeName.length() > 0) {
-            if (model instanceof IPolicyCmptType) {
-                modelType.setAttribute("supertype", ((StandardBuilderSet)getBuilderSet()).getGenerator(
-                        getIpsProject().findPolicyCmptType(superTypeName)).getQualifiedName(false));
-            } else if (model instanceof IProductCmptType) {
-                modelType.setAttribute("supertype", ((StandardBuilderSet)getBuilderSet()).getGenerator(
-                        getIpsProject().findProductCmptType(superTypeName)).getQualifiedName(false));
-            }
+        Element modelTypeEl = doc.createElement("ModelType");
+        modelTypeEl.setAttribute("name", type.getQualifiedName());
+        modelTypeEl.setAttribute("class", stdBuilderSet.getGenerator(type).getQualifiedName(false));
+        IType supertype = type.findSupertype(getIpsProject());
+        if (supertype != null) {
+            modelTypeEl.setAttribute("supertype", stdBuilderSet.getGenerator(supertype).getQualifiedName(false));
         } else {
-            modelType.setAttribute("supertype", null);
+            modelTypeEl.setAttribute("supertype", null);
         }
-        addExtensionProperties(modelType, model);
-        addAssociations(model, modelType);
-        addAttributes(model, modelType);
+        addExtensionProperties(modelTypeEl, type);
+        addAssociations(type, modelTypeEl);
+        addAttributes(type, modelTypeEl);
 
         try {
-            super.build(ipsSrcFile, XmlUtil.nodeToString(modelType, ipsSrcFile.getIpsProject().getXmlFileCharset()));
+            super.build(ipsSrcFile, XmlUtil.nodeToString(modelTypeEl, ipsSrcFile.getIpsProject().getXmlFileCharset()));
         } catch (TransformerException e) {
             throw new CoreException(new IpsStatus(e));
         }
