@@ -122,10 +122,8 @@
     		   <ant uselogger="true" usedebug="false">
                     <xsl:attribute name="buildfile"><![CDATA[${mainbuildfile}]]></xsl:attribute>
                     <xsl:attribute name="target"><xsl:value-of select="@mainbuildtarget"/></xsl:attribute>	  
-                    <xsl:if test="string-length(@jvmargarg)>0">
-                        <jvmarg>
-                            <xsl:attribute name="arg"><xsl:value-of select="@jvmargarg"/></xsl:attribute>	    	        
-                        </jvmarg>
+                    <xsl:if test="count(jvmarg)>0">
+                        <xsl:copy-of select="jvmarg"/>
                     </xsl:if>        
     		   </ant>
     	    </schedule>

@@ -146,6 +146,8 @@
             testmerge="*test.xml"
             jvmargarg="-Xms124m -Xmx1024m"
             scheduleintervall="300"> <!-- 300 = 5 minutes -->
+            <jvmarg arg="-Xms124m"/>
+            <jvmarg arg="-Xmx1024m"/>
             <depends>
                 <project name="org.faktorips.util"/>
                 <project name="org.faktorips.valuetypes"/>
