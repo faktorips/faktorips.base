@@ -21,7 +21,6 @@
     <property name="htmlemail.returnaddress" value="cruise@faktorips.org"/>
     <property name="htmlemail.xsldir" value="/opt/cc/webapps/cruisecontrol/xsl/"/>
     <property name="htmlemail.css" value="/opt/cc/docs/cruisecontrol.css"/>
-    <property name="htlmemail.reportWhenFixed.address" value="faktorips-devel@faktorzehn.de"/>
 
     <!-- cc project definitions -->
     

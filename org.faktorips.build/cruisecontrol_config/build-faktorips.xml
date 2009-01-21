@@ -232,8 +232,8 @@
         <!-- delegate to the pluginbuilder target -->
     	<ant dir="${projectsRootDir}/org.faktorips.pluginbuilder/" antfile="build.xml" target="main-cc">
             <property name="label" value="HEAD"/>
-            <property name="xms.megabytes" value="124"/>
-            <property name="xmx.megabytes" value="512"/>
+            <property name="xms.megabytes" value="-Xms125m"/>
+            <property name="xmx.megabytes" value="-Xmx256m"/>
         </ant>
     </target>
     
