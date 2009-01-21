@@ -371,7 +371,9 @@
             <cvs module="org.faktorips.integrationtest" cvsroot="${cvsroot}"/>
         </modificationset>
         <schedule interval="300">
-            <ant usedebug="false" uselogger="true" buildfile="${mainbuildfile}" target="pluginbuilder.integrationtest"/>
+            <ant usedebug="false" uselogger="true" buildfile="${mainbuildfile}" target="pluginbuilder.integrationtest">
+                <jvmarg arg="-Dprg=cruise.integrationtest"/>
+            </ant>
         </schedule>
         <log logdir="${logdir}/${project.name}/">
             <merge dir="${workdir}/../pluginbuilder_tmp/org.faktorips.pluginbuilder/workspace_integrationtest/org.faktorips.integrationtest/results/xml" pattern="*Test.xml"/>
@@ -400,7 +402,9 @@
             <cvs module="org.faktorips.integrationtest.java5" cvsroot="${cvsroot}"/>
         </modificationset>
         <schedule interval="300">
-            <ant usedebug="false" uselogger="true" buildfile="${mainbuildfile}" target="pluginbuilder.integrationtest.java5"/>
+            <ant usedebug="false" uselogger="true" buildfile="${mainbuildfile}" target="pluginbuilder.integrationtest.java5">
+                <jvmarg arg="-Dprg=cruise.integrationtest.java5"/>
+            </ant>
         </schedule>
         <log logdir="${logdir}/${project.name}/">
             <merge dir="${workdir}/../pluginbuilder_tmp/org.faktorips.pluginbuilder/workspace_integrationtest_java5/org.faktorips.integrationtest.java5/results/xml" pattern="*Test.xml"/>
