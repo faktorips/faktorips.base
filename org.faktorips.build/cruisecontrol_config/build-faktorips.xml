@@ -145,6 +145,16 @@
     <!--project targets for additional customers plugins, e.g. BBV, KQV-->
     <!--============================================================================================-->
     
+    <target name="de.qv.faktorips" depends="updateBuildTemplate" description="builds the 'de.qv.faktorips' project">
+        <property name="cvsModule" value="de.qv.faktorips"/>
+        <property name="projectDir" value="checkout/"/>
+        <!--checkout/update project-->
+        <cvs command="co ${cvsModule}" dest="${projectDir}" cvsroot="${cvsroot}" quiet="true"/>
+        <!--Call the target that does everything-->
+        <ant dir="${projectDir}/${cvsModule}/build/" antfile="build.xml" target="clean"/>
+        <ant dir="${projectDir}/${cvsModule}/build/" antfile="build.xml" target="buildjar"/>
+    </target>
+
 	<target name="de.bbv.faktorips.runtime" depends="updateBuildTemplate" description="builds the 'de.bbv.faktorips.runtime' project">
         <property name="cvsFlmodule" value="de.bbv.faktorips.runtime"/>
         <property name="projectFlDir" value="checkout/"/>
@@ -167,15 +177,6 @@
         <ant dir="${projectFlDir}/${cvsFlmodule}/build/" antfile="build.xml" target="buildjar"/>
     </target>
 	
-    <target name="de.qv.faktorips" depends="updateBuildTemplate" description="builds the 'de.qv.faktorips' project">
-        <property name="cvsFlmodule" value="de.qv.faktorips"/>
-        <property name="projectFlDir" value="checkout/"/>
-        <!--checkout/update project-->
-        <cvs command="co ${cvsFlmodule}" dest="${projectFlDir}" cvsroot="${cvsroot}" quiet="true"/>
-        <!--Call the target that does everything-->
-        <ant dir="${projectFlDir}/${cvsFlmodule}/build/" antfile="build.xml" target="clean"/>
-        <ant dir="${projectFlDir}/${cvsFlmodule}/build/" antfile="build.xml" target="buildjar"/>
-    </target>
 	
     <target name="devtools.msgpm" depends="updateBuildTemplate" description="builds the  project">
         <property name="cvsFlmodule" value="org.faktorips.devtools.msgpm"/>

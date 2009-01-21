@@ -474,4 +474,33 @@
             </antpublisher>
         </publishers>
     </project>
+    <!--=====================================================-->
+    <!--Project definition: de.qv.faktorips-->
+    <!--=====================================================-->
+    <project buildafterfailed="false" name="de.qv.faktorips">
+        <listeners>
+            <currentbuildstatuslistener file="${logdir}/${project.name}/buildStatus.txt"/>
+        </listeners>
+        <bootstrappers/>
+        <modificationset>
+            <buildstatus logdir="${logdir}/org.faktorips.devtools.core"/>
+            <cvs module="de.qv.faktorips" cvsroot="${cvsroot}"/>
+        </modificationset>
+        <schedule interval="60">
+            <ant usedebug="false" uselogger="true" buildfile="${mainbuildfile}" target="de.qv.faktorips"/>
+        </schedule>
+        <log logdir="${logdir}/${project.name}/">
+            <merge dir="${workdir}/de.qv.faktorips/build/logs"/>
+        </log>
+        <publishers>
+            <htmlemail buildresultsurl="${buildresultsurl}/${project.name}" mailhost="${htmlemail.mailhost}" username="" password="" returnaddress="${htmlemail.returnaddress}" skipusers="false" spamwhilebroken="false" returnname="faktorips-buildqueue" subjectprefix="[CC ${project.name}]" reportsuccess="always" xsldir="${htmlemail.xsldir}" css="${htmlemail.css}">
+                <map alias="ortmann" address="jan.ortmann@faktorzehn.de"/>
+                <map alias="erzberger" address="peter.erzberger@faktorzehn.de"/>
+                <map alias="hohenberger" address="daniel.hohenberger@faktorzehn.de"/>
+                <map alias="weickmann" address="alexander.weickmann@faktorzehn.de"/>
+                <map alias="ortmann2" address="joerg.ortmann@faktorzehn.de"/>
+                <failure reportWhenFixed="true" address="jan.ortmann@faktorzehn.de,peter.erzberger@faktorzehn.de,daniel.hohenberger@faktorzehn.de,alexander.weickmann@faktorzehn.de,joerg.ortmann@faktorzehn.de"/>
+            </htmlemail>
+        </publishers>
+    </project>
 </cruisecontrol>

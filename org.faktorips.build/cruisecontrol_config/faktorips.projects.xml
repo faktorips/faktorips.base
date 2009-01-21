@@ -24,8 +24,14 @@
     <property name="htlmemail.reportWhenFixed.address" value="faktorips-devel@faktorzehn.de"/>
 
     <!-- cc project definitions -->
+    
     <projects>
     
+        
+        <!--*****************************************************-->
+        <!-- Faktor IPS projects -->
+        <!--*****************************************************-->
+        
         <!--=====================================================-->
         <!--Project definition: org.faktorips.util-->
         <!--=====================================================-->
@@ -174,9 +180,25 @@
                 <project name="org.faktorips.pluginbuilder"/>
             </depends>         
         </project>
+
+        <!--*****************************************************-->
+        <!-- Customer projects -->
+        <!--*****************************************************-->
+
+        <!--============================================================-->
+        <!--Project definition: de.qv.faktorips -->
+        <!--============================================================-->    
+        <project name="de.qv.faktorips" mainbuildtarget="de.qv.faktorips">
+            <!-- TODO mail nur an developer bei der kqv -->
+            <depends>
+                <project name="org.faktorips.devtools.core"/>
+            </depends>         
+        </project>
+        
 <!-- 
-TODO bbv, kqv und msgp 
+TODO bbv und msgp 
 -->
+
     </projects>
    
     <!-- cc publisher for several faktorips projects s-->
