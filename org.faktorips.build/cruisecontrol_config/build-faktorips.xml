@@ -232,8 +232,8 @@
         <!-- delegate to the pluginbuilder target -->
     	<ant dir="${projectsRootDir}/org.faktorips.pluginbuilder/" antfile="build.xml" target="main-cc">
             <property name="label" value="HEAD"/>
-            <property name="xms.megabytes" value="-Xms125m"/>
-            <property name="xmx.megabytes" value="-Xmx256m"/>
+            <property name="xms.megabytes" value=""/> <!-- -Xms124m -->
+            <property name="xmx.megabytes" value=""/> <!-- -Xmx256m -->
         </ant>
     </target>
     
@@ -297,7 +297,10 @@
     	<antcall inheritall="true" target="-delete.eclipse.configuration.log"/>
         
     	<!--delegate to the pluginbuilder integrationtest target-->
-        <ant dir="${projectsRootDir}/org.faktorips.pluginbuilder/" antfile="build.xml" target="integrationtest"/>
+        <ant dir="${projectsRootDir}/org.faktorips.pluginbuilder/" antfile="build.xml" target="integrationtest">
+            <property name="xms.megabytes" value=""/> <!-- -Xms124m -->
+            <property name="xmx.megabytes" value=""/> <!-- -Xmx256m -->
+        </ant>	
     </target>
 
 	<!--this target runs the integrationtest for java5, 
@@ -313,7 +316,10 @@
     	<antcall inheritall="true" target="-delete.eclipse.configuration.log"/>
         
     	<!--delegate to the pluginbuilder integrationtest target-->
-        <ant dir="${projectsRootDir}/org.faktorips.pluginbuilder/" antfile="build.xml" target="integrationtest.java5"/>
+        <ant dir="${projectsRootDir}/org.faktorips.pluginbuilder/" antfile="build.xml" target="integrationtest.java5">
+            <property name="xms.megabytes" value=""/> <!-- -Xms124m -->
+            <property name="xmx.megabytes" value=""/> <!-- -Xmx256m -->
+        </ant>
     </target>
 	
     <!--this target builds the faktorips release madatory parameter: 
@@ -333,7 +339,7 @@
 	<!-- Example local release build:
 	   ant -buildfile [workspace]\org.faktorips.build\cruisecontrol_config\build-faktorips.xml 
 	       -Dbuild.version=2.2.0.rc1 -Dbuild.category=2.2 -Doverwrite=true -Druntests=false -DskipPublish=true 
-	       -DuseCvs=false -DprojectsRootDir=[workspace must be relativ!] -Dbasedir=[workspace]\.. release
+	       -DuseCvs=false -DprojectsRootDir=[workspace must be relativ!] -Dbasedir=[workspace must be absolut]\.. release
 	-->
 	<target name="release" 
     	description="release build for an specified faktorips release version, builds the complete feature, executes the junit plugin tests and distributes the result to the update site and download directory">
@@ -409,6 +415,8 @@
     	<ant dir="${projectsRootDir}/org.faktorips.pluginbuilder/" antfile="build.xml" target="main">
             <property name="build.version" value="${build.version}"/>
             <property name="buildDirectory" value="${buildDirectory}"/>
+            <property name="xms.megabytes" value=""/> <!-- -Xms124m -->
+            <property name="xmx.megabytes" value=""/> <!-- -Xmx256m -->    		
         </ant>
     	
         <!--copy zipped features into the faktorips download directory -->
