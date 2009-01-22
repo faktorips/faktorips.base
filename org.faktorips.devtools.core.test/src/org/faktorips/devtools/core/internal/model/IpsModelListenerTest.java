@@ -148,10 +148,12 @@ public class IpsModelListenerTest extends AbstractIpsPluginTest {
         ContentsChangeListener listener = new ContentsChangeListener() {
             
             public void contentsChanged(ContentChangeEvent event) {
-                assertEquals(file, contentChangeListener.lastEvent.getIpsSrcFile());
-                assertEquals(ContentChangeEvent.TYPE_WHOLE_CONTENT_CHANGED, contentChangeListener.lastEvent.getEventType());
-                assertNull(contentChangeListener.lastEvent.getPart());
-                assertEquals(0, contentChangeListener.lastEvent.getMovedParts().length);
+                // NOTE: If these assserts fails, the exception is only shown in the error log as the IpsModel just logs the excpetions
+                // even if the IpsModel would rethrow them, Eclipse would log the exception as the notficiation takes place in a resource change notification. 
+                assertEquals(file, event.getIpsSrcFile());
+                assertEquals(ContentChangeEvent.TYPE_WHOLE_CONTENT_CHANGED, event.getEventType());
+                assertNull(event.getPart());
+                assertEquals(0, event.getMovedParts().length);
                 IpsPlugin.getDefault().getIpsModel().removeChangeListener(this);
             }
             
