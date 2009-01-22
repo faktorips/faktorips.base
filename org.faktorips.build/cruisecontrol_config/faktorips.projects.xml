@@ -139,12 +139,14 @@
         
         <!--=====================================================-->
         <!--Project definition: org.faktorips.pluginbuilder-->
-        <!--=====================================================-->          
+        <!--=====================================================-->
+        <!-- 300 = 5 minutes -->
+<!--          
         <project name="org.faktorips.pluginbuilder" mainbuildtarget="pluginbuilder.faktorips"
             testresult="${workdir}/../pluginbuilder_tmp/org.faktorips.pluginbuilder/results/testresults/xml" 
             testmerge="*test.xml"
-            scheduleintervall="300"> <!-- 300 = 5 minutes -->
-            <jvmarg arg="-Dprg=cruise.pluginbuilder"/> <!-- info only -->
+            scheduleintervall="300"> 
+            <jvmarg arg="-Dprg=cruise.pluginbuilder"/>
             <jvmarg arg="-Xms124m"/>
             <jvmarg arg="-Xmx512m"/>
             <depends>
@@ -159,31 +161,33 @@
                 <project name="org.faktorips.devtools.ant"/>
             </depends>      
         </project>
-
+-->
         <!--=====================================================-->
         <!--Project definition: org.faktorips.integrationtest-->
         <!--=====================================================-->    
+<!--
         <project name="org.faktorips.integrationtest" mainbuildtarget="pluginbuilder.integrationtest" javaprojectname="org.faktorips.integrationtest"
             testresult="${workdir}/../pluginbuilder_tmp/org.faktorips.pluginbuilder/workspace_integrationtest/org.faktorips.integrationtest/results/xml" 
             testmerge="*Test.xml" scheduleintervall="300">
-            <jvmarg arg="-Dprg=cruise.integrationtest"/> <!-- info only -->
+            <jvmarg arg="-Dprg=cruise.integrationtest"/>
             <depends>
                 <project name="org.faktorips.pluginbuilder"/>
             </depends>         
         </project>
-
+-->
         <!--============================================================-->
         <!--Project definition: org.faktorips.integrationtest.java5-->
         <!--============================================================-->    
+<!--
         <project name="org.faktorips.integrationtest.java5" mainbuildtarget="pluginbuilder.integrationtest.java5" javaprojectname="org.faktorips.integrationtest.java5"
             testresult="${workdir}/../pluginbuilder_tmp/org.faktorips.pluginbuilder/workspace_integrationtest_java5/org.faktorips.integrationtest.java5/results/xml" 
             testmerge="*Test.xml" scheduleintervall="300">
-            <jvmarg arg="-Dprg=cruise.integrationtest.java5"/> <!-- info only -->
+            <jvmarg arg="-Dprg=cruise.integrationtest.java5"/>
             <depends>
                 <project name="org.faktorips.pluginbuilder"/>
             </depends>         
         </project>
-
+-->
         <!--*****************************************************-->
         <!-- Customer projects -->
         <!--*****************************************************-->

@@ -185,7 +185,7 @@ ANT_HOME=/opt/cc/apache-ant-1.6.5
 JAVA_HOME=/opt/sun-jdk-1.5.0.08
 FAKTOR_IPS_BUILD_HOME=/opt/cc/work
 
-EXEC="$ANT_HOME/ant -buildfile $FAKTOR_IPS_BUILD_HOME/build-faktorips.xml release \
+EXEC="$ANT_HOME/bin/ant -buildfile $FAKTOR_IPS_BUILD_HOME/build-faktorips.xml release \
  -Dbuild.version=$BUILD_VERSION \
  -Dbuild.category=$BUILD_CATEGORY \
  -Doverwrite=$OVERWRITE \
