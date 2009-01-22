@@ -270,9 +270,8 @@
 			todir="${ccProjectDir}/${cctimestamp}"
 			failonerror="false" verbose="true"/>
 
-		<!-- copy emma coverage report -->
-		<mkdir dir="${ccProjectDir}/${cctimestamp}/coverage"/>
-        <copy todir="${ccProjectDir}/${cctimestamp}/coverage" failonerror="false" verbose="true">
+		<!-- copy emma coverage report if available -->
+        <copy todir="${ccProjectDir}/${cctimestamp}" failonerror="false" verbose="true">
             <fileset dir="${basedir}/pluginbuilder_tmp/org.faktorips.pluginbuilder/results/testresults/coverage" includes="**/*"/>
         </copy>
 		
