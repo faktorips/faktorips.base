@@ -198,7 +198,7 @@
 	<!--this target build the faktorips features and runs the plugin tests-->
     <target name="pluginbuilder.faktorips" description="builds the complete faktorips feature and executes all junit plugin test">
         <property name="cvsPluginbuildermodule" value="org.faktorips.pluginbuilder"/>
-        <property name="projectsRootDir" value="checkout/"/>
+        <property name="projectsRootDir" value="${basedir}/checkout/"/>
 
     	<!-- checkout features -->
     	<cvs command="co ${cvsPluginbuildermodule}" dest="${projectsRootDir}" cvsroot="${cvsroot}" quiet="true"/>
@@ -286,7 +286,7 @@
     <!--this target runs the integrationtest, 
        the target org.faktorips.pluginbuilder must be executed before, this will be handled by cruisecontrol-->
     <target name="pluginbuilder.integrationtest" description="target to run the faktorips integrationtest, using the previous build faktorips feature">
-        <property name="projectsRootDir" value="checkout/"/>
+        <property name="projectsRootDir" value="${basedir}/checkout/"/>
         <property name="cvsIntegrationtestmodule" value="org.faktorips.integrationtest"/>
         <property name="projectIntegrationtestDir" value="checkout/"/>
         
@@ -305,7 +305,7 @@
 	<!--this target runs the integrationtest for java5, 
        the target org.faktorips.pluginbuilder must be executed before, this will be handled by cruisecontrol-->
     <target name="pluginbuilder.integrationtest.java5" description="target to run the faktorips integrationtest for java5, using the previous build faktorips feature">
-        <property name="projectsRootDir" value="checkout/"/>
+        <property name="projectsRootDir" value="${basedir}/checkout/"/>
         <property name="cvsIntegrationtestmodule" value="org.faktorips.integrationtest.java5"/>
         <property name="projectIntegrationtestDir" value="checkout/"/>
         
@@ -329,8 +329,8 @@
            -Druntests=false -> run or ignore junit plugin tests 
            -DskipPublish=true -> don't publish the result to the download and updatesite
         optional parameter for a local build:   
-           -DuseCvs=false -> no cvs support (the features and plugins will be copied from the workspace
-           -DprojectsRootDir -> the root dir of all plugin projects (relativ!)
+           -DnoCvs=true -> no cvs support (the features and plugins will be copied from the workspace
+           -DprojectsRootDir -> the root dir of all plugin projects
            -Dbasedir -> e.g. the parent dir of the dir specified in projectsRootDir, this will be the working dir
          additionaly make sure that the build_host_<hostname>.properies exists in the pluginbuilder project-->
     <!-- Note: to tag and to creating the release.properties, please use the releaseFaktorIps.sh script 
@@ -338,19 +338,19 @@
 	<!-- Example local release build:
 	   ant -buildfile [workspace]\org.faktorips.build\cruisecontrol_config\build-faktorips.xml 
 	       -Dbuild.version=2.2.0.rc1 -Dbuild.category=2.2 -Doverwrite=true -Druntests=false -DskipPublish=true 
-	       -DuseCvs=false -DprojectsRootDir=[workspace must be relativ!] -Dbasedir=[workspace must be absolut]\.. release
+	       -DnoCvs=true -DprojectsRootDir=[workspace] -Dbasedir=[workspace]\.. release
 	-->
 	<target name="release" 
     	description="release build for an specified faktorips release version, builds the complete feature, executes the junit plugin tests and distributes the result to the update site and download directory">
         <!-- defauls properties -->
-    	<property name="useCvs" value="true"/>
+    	<property name="noCvs" value="false"/>
     	<property name="publishResult" value="false"/>
     	<!-- directories on server -->
-        <property name="projectsRootDir" value="checkout_release/"/>
+        <property name="projectsRootDir" value="${basedir}/checkout_release/"/>
     	<property name="updatesite.path" value="/var/www/localhost/htdocs/update.faktorzehn.org/faktorips/"/>
     	<property name="downloadDir" value="/var/www/localhost/htdocs/update.faktorzehn.org/faktorips/downloads"/>
     	<property name="buildDirectory" value="${basedir}/pluginbuilder_release_tmp/org.faktorips.pluginbuilder_release"/>
-        <!-- download zip file names -->       
+        <!-- download zip file names -->
     	<property name="faktoripsReleaseDownloadZipPath" value="${downloadDir}/faktorips-${build.version}.zip"/>
         <property name="faktoripsNls1ReleaseDownloadZipPath" value="${downloadDir}/faktorips-nls1-${build.version}.zip"/>
         <property name="faktoripsUmlReleaseDownloadZipPath" value="${downloadDir}/faktorips-uml-${build.version}.zip"/>
@@ -363,7 +363,7 @@
     	<property name="pluginbuilder.features.uml" value="org.faktorips.uml.feature,org.faktorips.uml.feature.nls1,org.faktorips.uml.feature.source"/>
     	
     	<condition property="isUseCvs" value="true">
-            <equals arg1="${useCvs}" arg2="true"/>
+            <equals arg1="${noCvs}" arg2="false"/>
         </condition>
 
     	<condition property="isIgnoreTests" value="true">
@@ -442,10 +442,10 @@
         <!--  generate a new site.xml on the updatesite, including all previous and new feature versions-->
 		<!--  faktorips features -->
         <ant dir="${projectsRootDir}/org.faktorips.pluginbuilder/build-files" antfile="postBuild.xml" target="-createNightlyBuildSiteXml">
-            <property name="siteXmlFile" value="${basedir}/${projectsRootDir}/org.faktorips.updatesite/site_tmp.xml"/>
+            <property name="siteXmlFile" value="${projectsRootDir}/org.faktorips.updatesite/site_tmp.xml"/>
             <property name="pluginbuilder.features" value="${pluginbuilder.features}"/>
             <property name="buildDirectory" value="${buildDirectory}"/>
-            <property name="buildHome" value="${basedir}/${projectsRootDir}/org.faktorips.pluginbuilder"/>
+            <property name="buildHome" value="${projectsRootDir}/org.faktorips.pluginbuilder"/>
             <property name="updateSiteCategoryName" value="Faktor-IPS ${build.category}"/>
             <property name="updateSiteCategoryLabel" value="Faktor-IPS ${build.category}"/>
             <property name="updateSiteDescription" value="FaktorIPS update site"/>
@@ -459,10 +459,10 @@
         <!--  generate a new site.xml on the updatesite, including all previous and new feature versions-->
 		<!--  uml features -->
         <ant dir="${projectsRootDir}/org.faktorips.pluginbuilder/build-files" antfile="postBuild.xml" target="-createNightlyBuildSiteXml">
-            <property name="siteXmlFile" value="${basedir}/${projectsRootDir}/org.faktorips.updatesite/site_uml_tmp.xml"/>
+            <property name="siteXmlFile" value="${projectsRootDir}/org.faktorips.updatesite/site_uml_tmp.xml"/>
             <property name="pluginbuilder.features" value="${pluginbuilder.features.uml}"/>
             <property name="buildDirectory" value="${buildDirectory}"/>
-            <property name="buildHome" value="${basedir}/${projectsRootDir}/org.faktorips.pluginbuilder"/>
+            <property name="buildHome" value="${projectsRootDir}/org.faktorips.pluginbuilder"/>
             <property name="updateSiteCategoryName" value="Faktor-IPS ${build.category}"/>
             <property name="updateSiteCategoryLabel" value="Faktor-IPS ${build.category}"/>
             <property name="updateSiteDescription" value="FaktorIPS update site"/>
@@ -583,7 +583,7 @@
     	<replace file="${pluginbuilder.config}" token="pluginbuilder.is.runtests=false" value="pluginbuilder.is.runtests=true"/>
     </target>
     
-    <target name="-fail.if.file.exists">
+    <target name="-fail.if.file.exists" unless="skipPublish">
         <fail message="Release zip already exists: ${file} (delete or use -Doverwrite=true)">
               <condition>
                  <and>
@@ -600,7 +600,7 @@
             <outputproperty name="method" value="xml"/>
             <outputproperty name="encoding" value="UTF-8"/>
             <outputproperty name="indent" value="yes"/>
-            <param name="doc2" expression="${basedir}/${projectsRootDir}/org.faktorips.updatesite/${site.xml}"/>
+            <param name="doc2" expression="${projectsRootDir}/org.faktorips.updatesite/${site.xml}"/>
         </xslt>
         <delete file="${projectsRootDir}/org.faktorips.updatesite/${site.xml}" verbose="false"/>
         <copy file="${projectsRootDir}/org.faktorips.updatesite/site_merge.xml" tofile="${projectsRootDir}/org.faktorips.updatesite/site.xml" verbose="false" overwrite="true"/>
