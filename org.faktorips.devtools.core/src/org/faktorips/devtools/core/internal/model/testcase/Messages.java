@@ -46,9 +46,14 @@ public class Messages extends NLS {
 	public static String TestCase_ValidateError_TestCaseTypeNotFound;
     public static String TestPolicyCmpt_Error_MoveNotPossibleBelongsToNoLink;
 	public static String TestPolicyCmpt_Error_LinkNotFound;
+    public static String TestPolicyCmpt_Error_ProductCmpAndPolicyCmptTypeGiven;
+    public static String TestPolicyCmpt_TestPolicyCmpt_ValidationError_PolicyCmptIsAbstract;
+    public static String TestPolicyCmpt_TestPolicyCmpt_ValidationError_PolicyCmptTypeNotAllowedIfProductCmptIsSet;
+    public static String TestPolicyCmpt_TestPolicyCmpt_ValidationError_PolicyCmptTypeNotExists;
     public static String TestPolicyCmpt_TestPolicyCmpt_ValidationError_ProductCmpCouldNotValidatedParentNotFound;
     public static String TestPolicyCmpt_TestPolicyCmpt_ValidationError_ProductCmpNotAllowed;
     public static String TestPolicyCmpt_TestPolicyCmpt_ValidationError_ProductCmpNotAllowedRoot;
+    public static String TestPolicyCmpt_TestPolicyCmpt_ValidationErrorPolicyCmptTypeNoSubtypeOrSameTypeParam;
 	public static String TestPolicyCmpt_ValidationError_TestCaseTypeParamNotFound;
 	public static String TestPolicyCmpt_ValidationError_ProductCmptRequired;
 	public static String TestPolicyCmptLink_ValidationError_TestCaseTypeParamNotFound;
