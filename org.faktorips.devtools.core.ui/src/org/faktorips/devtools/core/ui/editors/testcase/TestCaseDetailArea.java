@@ -343,6 +343,7 @@ public class TestCaseDetailArea {
         try {
             ITestAttribute testAttribute = attributeValue.findTestAttribute(ipsProject);
             if (testAttribute != null && !testAttribute.isBasedOnModelAttribute()){
+                // the attribute is an extension attribute
                 datatype = testAttribute.findDatatype(ipsProject);
                 ctrlFactory = IpsUIPlugin.getDefault().getValueDatatypeControlFactory(datatype);
             } else {

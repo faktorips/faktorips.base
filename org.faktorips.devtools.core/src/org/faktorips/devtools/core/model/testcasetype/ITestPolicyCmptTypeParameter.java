@@ -272,4 +272,5 @@ public interface ITestPolicyCmptTypeParameter extends ITestParameter {
      * Returns an empty array if no product cmpts are found as valid product cmpt.
      */
     public IIpsSrcFile[] getAllowedProductCmpt(IIpsProject ipsProjectToSearch, IProductCmpt parentProductCmpt) throws CoreException ;
+
 }

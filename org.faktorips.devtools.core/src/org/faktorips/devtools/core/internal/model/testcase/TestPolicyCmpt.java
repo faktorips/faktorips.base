@@ -66,6 +66,9 @@ public class TestPolicyCmpt extends TestObject implements ITestPolicyCmpt {
 	private String testPolicyCmptType = ""; //$NON-NLS-1$
 	
 	private String productCmpt = ""; //$NON-NLS-1$
+
+	// if productCmpt is empty then the test policy cmpt is stored
+	private String policyCmptType = ""; //$NON-NLS-1$
 	
 	private List testAttributeValues = new ArrayList(0);
 	
@@ -83,7 +86,7 @@ public class TestPolicyCmpt extends TestObject implements ITestPolicyCmpt {
 	 * {@inheritDoc}
 	 */
 	public IIpsElement[] getChildren() {
-		int numOfChildren = testAttributeValues.size() + testPolicyCmptLinks.size();
+	    int numOfChildren = testAttributeValues.size() + testPolicyCmptLinks.size();
 		IIpsElement[] childrenArray = new IIpsElement[numOfChildren];
 		List childrenList = new ArrayList(numOfChildren);
 		childrenList.addAll(testAttributeValues);
@@ -246,7 +249,8 @@ public class TestPolicyCmpt extends TestObject implements ITestPolicyCmpt {
 	protected void initPropertiesFromXml(Element element, Integer id) {
 		super.initPropertiesFromXml(element, id);
         name = element.getAttribute(PROPERTY_NAME);
-		testPolicyCmptType = element.getAttribute(PROPERTY_POLICYCMPTTYPE);
+		testPolicyCmptType = element.getAttribute(PROPERTY_TESTPOLICYCMPTTYPE);
+		policyCmptType = element.getAttribute(PROPERTY_POLICYCMPTTYPE);
 		productCmpt = element.getAttribute(PROPERTY_PRODUCTCMPT);
 	}
 
@@ -256,7 +260,8 @@ public class TestPolicyCmpt extends TestObject implements ITestPolicyCmpt {
 	protected void propertiesToXml(Element element) {
 		super.propertiesToXml(element);
 		element.setAttribute(PROPERTY_NAME, name);
-		element.setAttribute(PROPERTY_POLICYCMPTTYPE, testPolicyCmptType);
+		element.setAttribute(PROPERTY_TESTPOLICYCMPTTYPE, testPolicyCmptType);
+		element.setAttribute(PROPERTY_POLICYCMPTTYPE, policyCmptType);
 		element.setAttribute(PROPERTY_PRODUCTCMPT, productCmpt);
 	}
 	
@@ -431,8 +436,11 @@ public class TestPolicyCmpt extends TestObject implements ITestPolicyCmpt {
 	/**
 	 * {@inheritDoc}
 	 */
-	public ITestPolicyCmptLink addTestPcTypeLink(ITestPolicyCmptTypeParameter typeParam, String productCmpt, String targetName) throws CoreException {
+	public ITestPolicyCmptLink addTestPcTypeLink(ITestPolicyCmptTypeParameter typeParam, String productCmpt, String policyCmptType, String targetName) throws CoreException {
 		ArgumentCheck.notNull(typeParam);
+		if (! StringUtils.isEmpty(productCmpt) && ! StringUtils.isEmpty(policyCmptType)){
+		    throw new CoreException(new IpsStatus("The product cmpt and the policy cmpt type couldn't be set together"));
+		}
 		
 		IPolicyCmptTypeAssociation link = typeParam.findAssociation(typeParam.getIpsProject());
 		if (link == null){
@@ -449,6 +457,7 @@ public class TestPolicyCmpt extends TestObject implements ITestPolicyCmpt {
 			ITestPolicyCmpt newTestPolicyCmpt = newTestPcTypeLink.newTargetTestPolicyCmptChild();
 			newTestPolicyCmpt.setTestPolicyCmptTypeParameter(typeParam.getName());
 			newTestPolicyCmpt.setProductCmpt(StringUtils.isEmpty(productCmpt)?"":productCmpt); //$NON-NLS-1$
+			newTestPolicyCmpt.setPolicyCmptType(StringUtils.isEmpty(policyCmptType)?"":policyCmptType);
 			
 			// sets the label for the new child test policy component
 			String name = ""; //$NON-NLS-1$
@@ -658,7 +667,7 @@ public class TestPolicyCmpt extends TestObject implements ITestPolicyCmpt {
         
 		if (param == null){
 			String text = NLS.bind(Messages.TestPolicyCmpt_ValidationError_TestCaseTypeParamNotFound, testPolicyCmptType);
-			Message msg = new Message(MSGCODE_TEST_CASE_TYPE_PARAM_NOT_FOUND, text, Message.ERROR, this, PROPERTY_POLICYCMPTTYPE); //$NON-NLS-1$
+			Message msg = new Message(MSGCODE_TEST_CASE_TYPE_PARAM_NOT_FOUND, text, Message.ERROR, this, PROPERTY_TESTPOLICYCMPTTYPE); //$NON-NLS-1$
 			list.add(msg);
 		} else {
 			// check if the param defines the requirement for a product component but not product component is specified
@@ -668,11 +677,41 @@ public class TestPolicyCmpt extends TestObject implements ITestPolicyCmpt {
 				list.add(msg);
 			}
 			// check if the policy component type exists
-			if (param.findPolicyCmptType(ipsProject) == null){
+			final IPolicyCmptType policyCmptTypeDefinedInTestType = param.findPolicyCmptType(ipsProject);
+            if (policyCmptTypeDefinedInTestType == null){
 			    String text = NLS.bind(Messages.TestPolicyCmpt_ValidationWarning_PolicyCmptNotExists, param.getPolicyCmptType(), testPolicyCmptType);
-			    Message msg = new Message(ITestPolicyCmptTypeParameter.MSGCODE_POLICY_CMPT_TYPE_NOT_EXISTS, text, Message.WARNING, this, PROPERTY_PRODUCTCMPT); //$NON-NLS-1$
+			    Message msg = new Message(ITestPolicyCmptTypeParameter.MSGCODE_POLICY_CMPT_TYPE_NOT_EXISTS, text, Message.WARNING, this, PROPERTY_POLICYCMPTTYPE); //$NON-NLS-1$
 			    list.add(msg);
 			}
+		    // check if the policy component type used in the test case is not abstract
+            // a) note that the used policy component type in the test case could differ to the specified in the 
+            // test case type parameter, because in the type parameter super-(abstract)-types could be added and in the
+            // test case sub-types could by used
+		    // b) note that using the test case editor, abstract types couldn't be added to an ips test cases
+		    // but the abstract flag could be changed afterwards and then we need to the element as error
+            IPolicyCmptType policyCmptTypeUsed = findPolicyCmptType();
+            if (policyCmptTypeUsed != null){
+                if (policyCmptTypeUsed.isAbstract()){
+    		        String text = NLS.bind("The policy component type {0} is abstract and couldn't be used in test cases", policyCmptTypeUsed.getQualifiedName());
+    		        Message msg = new Message(ITestPolicyCmpt.MSGCODE_POLICY_CMPT_TYPE_IS_ABSTRACT, text, Message.ERROR, this, PROPERTY_POLICYCMPTTYPE);
+    		        list.add(msg);
+    		    } else {
+    		        // check if the policy cmpt type is assignable to the type defined in the test parameter
+    		        if (policyCmptTypeDefinedInTestType != null){
+    		            if (!policyCmptTypeUsed.isSubtypeOrSameType(policyCmptTypeDefinedInTestType)){
+    		                String text = NLS.bind("The policy component type {0} is no subtype or same of the policy component type specified in the test case type parameter {1}", policyCmptTypeUsed.getQualifiedName(), policyCmptTypeDefinedInTestType.getQualifiedName());
+    		                Message msg = new Message(ITestPolicyCmpt.MSGCODE_POLICY_CMPT_TYPE_NOT_ASSIGNABLE, text, Message.ERROR, this, PROPERTY_POLICYCMPTTYPE);
+    		                list.add(msg);
+    		            }
+    		        }
+    		    }
+            } else {
+                // policy cmpt type not found
+                String policyCmptTypeUsedQName = findPolicyCmptTypeQName(ipsProject);
+                String text = NLS.bind("The policy component type {0} specified in the test case does not exists .", policyCmptTypeUsedQName);
+                Message msg = new Message(ITestPolicyCmptTypeParameter.MSGCODE_POLICY_CMPT_TYPE_NOT_EXISTS, text, Message.ERROR, this, PROPERTY_POLICYCMPTTYPE); //$NON-NLS-1$
+                list.add(msg);
+            }
 		}
    
 		// check if the product component exists
@@ -718,10 +757,50 @@ public class TestPolicyCmpt extends TestObject implements ITestPolicyCmpt {
             }
         }
         
+        // check that only one, the product component or the policy cmpt type is given
+        if (StringUtils.isNotEmpty(policyCmptType) && StringUtils.isNotEmpty(productCmpt)){
+            String text = "The policy component type couln't be set if the product component is set.";
+            Message msg = new Message(MSGCODE_POLICY_CMPT_TYPE_AND_PRODUCT_CMPT_TYPE_GIVEN, text, Message.ERROR, this,
+                    ITestPolicyCmpt.PROPERTY_POLICYCMPTTYPE);
+            list.add(msg);
+        }
+        
         // check correct product cmpt 
          validateAllowedProductCmpt(list, param, productCmptObj, ipsProject);
 	}
 
+    /*
+     * Returns the qualified name of the corresponding policy component type,
+     * if a product is assigned then the qualified name of the policy cmpt type of the product will be returned
+     * otherwise if a policy component type is assign (without a product) then this qualified name will be returned,
+     * if both are empty then the policy component type defined in the testPolicyCmptTypeParameter will be returned.
+     * Returns null if the no related policy component found.
+     */
+    private String findPolicyCmptTypeQName(IIpsProject ipsProject) throws CoreException{
+        if (StringUtils.isNotEmpty(productCmpt)){
+            // find using the product cmpt
+            IProductCmpt productCmptFound = findProductCmpt(ipsProject);
+            if (productCmptFound!= null){
+                IPolicyCmptType policyCmptType = productCmptFound.findPolicyCmptType(ipsProject);
+                if (policyCmptType == null){
+                    return null;
+                }
+                return policyCmptType.getQualifiedName();
+            }
+        } else {
+            // "find" using the given policy cmpt type
+            if (!StringUtils.isEmpty(this.policyCmptType)){
+                return this.policyCmptType;
+            } else {
+                ITestPolicyCmptTypeParameter testPolicyCmptTypeParam = findTestPolicyCmptTypeParameter(ipsProject);
+                if (testPolicyCmptTypeParam != null){
+                    return testPolicyCmptTypeParam.getPolicyCmptType();
+                }
+            }
+        }
+        return null;
+    }
+    
     private void validateAllowedProductCmpt(MessageList list, ITestPolicyCmptTypeParameter param, 
             IProductCmpt productCmptCandidateObj, IIpsProject ipsProject) throws CoreException {
         // abort validation if no product cmpt was found/or specified
@@ -819,5 +898,38 @@ public class TestPolicyCmpt extends TestObject implements ITestPolicyCmpt {
             return null;
         }
         return pct.findPolicyCmptTypeAttribute(attribute, ipsProject);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public IPolicyCmptType findPolicyCmptType() {
+        IIpsProject ipsProject = getTestCase().getIpsProject();
+        try {
+            final String policyCmptTypeQName = findPolicyCmptTypeQName(ipsProject);
+            if (policyCmptTypeQName == null){
+                return null;
+            }
+            return ipsProject.findPolicyCmptType(policyCmptTypeQName);
+        } catch (CoreException e) {
+            IpsPlugin.logAndShowErrorDialog(e);
+        }
+        return null;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public String getPolicyCmptType() {
+        return policyCmptType;
+    }
+    
+    /**
+     * {@inheritDoc}
+     */
+    public void setPolicyCmptType(String policyCmptType) {
+        String oldPolicyCmptType = this.policyCmptType;
+        this.policyCmptType = policyCmptType;
+        valueChanged(oldPolicyCmptType, policyCmptType);
     }
 }

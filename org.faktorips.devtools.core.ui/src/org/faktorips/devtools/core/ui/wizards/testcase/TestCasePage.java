@@ -143,6 +143,7 @@ public class TestCasePage extends IpsObjectPage implements ValueChangeListener {
                 testPolicyCmpt.setTestPolicyCmptTypeParameter(parameter[i].getName());
                 testPolicyCmpt.setName(testCase.generateUniqueNameForTestPolicyCmpt(testPolicyCmpt, testPolicyCmpt
                         .getTestPolicyCmptTypeParameter()));
+                testPolicyCmpt.setPolicyCmptType(testCaseTypeParam.getPolicyCmptType());
                 // add the attributes which are defined in the test case type parameter
                 ITestAttribute attributes[] = testCaseTypeParam.getTestAttributes();
                 for (int j = 0; j < attributes.length; j++) {

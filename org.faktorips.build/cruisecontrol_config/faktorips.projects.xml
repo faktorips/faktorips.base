@@ -140,8 +140,7 @@
         <!--=====================================================-->
         <!--Project definition: org.faktorips.pluginbuilder-->
         <!--=====================================================-->
-        <!-- 300 = 5 minutes -->
-<!--          
+        <!-- scheduleintervall: 300 = 5 minutes -->
         <project name="org.faktorips.pluginbuilder" mainbuildtarget="pluginbuilder.faktorips"
             testresult="${workdir}/../pluginbuilder_tmp/org.faktorips.pluginbuilder/results/testresults/xml" 
             testmerge="*test.xml"
@@ -161,11 +160,10 @@
                 <project name="org.faktorips.devtools.ant"/>
             </depends>      
         </project>
--->
+
         <!--=====================================================-->
         <!--Project definition: org.faktorips.integrationtest-->
         <!--=====================================================-->    
-<!--
         <project name="org.faktorips.integrationtest" mainbuildtarget="pluginbuilder.integrationtest" javaprojectname="org.faktorips.integrationtest"
             testresult="${workdir}/../pluginbuilder_tmp/org.faktorips.pluginbuilder/workspace_integrationtest/org.faktorips.integrationtest/results/xml" 
             testmerge="*Test.xml" scheduleintervall="300">
@@ -174,11 +172,10 @@
                 <project name="org.faktorips.pluginbuilder"/>
             </depends>         
         </project>
--->
+
         <!--============================================================-->
         <!--Project definition: org.faktorips.integrationtest.java5-->
         <!--============================================================-->    
-<!--
         <project name="org.faktorips.integrationtest.java5" mainbuildtarget="pluginbuilder.integrationtest.java5" javaprojectname="org.faktorips.integrationtest.java5"
             testresult="${workdir}/../pluginbuilder_tmp/org.faktorips.pluginbuilder/workspace_integrationtest_java5/org.faktorips.integrationtest.java5/results/xml" 
             testmerge="*Test.xml" scheduleintervall="300">
@@ -187,7 +184,7 @@
                 <project name="org.faktorips.pluginbuilder"/>
             </depends>         
         </project>
--->
+
         <!--*****************************************************-->
         <!-- Customer projects -->
         <!--*****************************************************-->

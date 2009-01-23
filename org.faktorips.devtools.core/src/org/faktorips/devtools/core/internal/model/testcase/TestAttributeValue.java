@@ -25,6 +25,7 @@ import org.faktorips.devtools.core.model.ipsobject.IIpsObject;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPart;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.pctype.AttributeType;
+import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAttribute;
 import org.faktorips.devtools.core.model.productcmpt.IConfigElement;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmptGeneration;
@@ -110,16 +111,21 @@ public class TestAttributeValue  extends AtomicIpsObjectPart implements ITestAtt
      * {@inheritDoc}
      */
     public IAttribute findAttribute(IIpsProject ipsProject) throws CoreException {
-        ITestPolicyCmpt testPolicyCmpt = getTestPolicyCmpt();
         ITestAttribute testAttr = findTestAttribute(ipsProject);
         if (testAttr == null) {
             return null;
+        }
+        
+        ITestPolicyCmpt testPolicyCmpt = getTestPolicyCmpt();
+        if (! StringUtils.isEmpty(testPolicyCmpt.getPolicyCmptType())){
+            IPolicyCmptType policyCmptType = testPolicyCmpt.findPolicyCmptType();
+            return policyCmptType.findAttribute(testAttr.getAttribute(), ipsProject);
+        }
+        
+        if (!testPolicyCmpt.isProductRelevant()) {
+            return testAttr.findAttribute(ipsProject);
         } else {
-            if (!testPolicyCmpt.isProductRelevant()) {
-                return testAttr.findAttribute(ipsProject);
-            } else {
-                return testPolicyCmpt.findProductCmptTypeAttribute(testAttr.getAttribute(), ipsProject);
-            }
+            return testPolicyCmpt.findProductCmptTypeAttribute(testAttr.getAttribute(), ipsProject);
         }
     }
 

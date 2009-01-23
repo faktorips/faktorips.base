@@ -21,6 +21,7 @@ import org.eclipse.swt.graphics.Image;
 import org.faktorips.devtools.core.internal.model.pctype.PolicyCmptType;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPart;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
+import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.model.pctype.IValidationRule;
 import org.faktorips.devtools.core.model.testcase.ITestObject;
 import org.faktorips.devtools.core.model.testcase.ITestPolicyCmpt;
@@ -30,6 +31,7 @@ import org.faktorips.devtools.core.model.testcase.ITestValue;
 import org.faktorips.devtools.core.model.testcase.TestCaseHierarchyPath;
 import org.faktorips.devtools.core.model.testcasetype.ITestParameter;
 import org.faktorips.devtools.core.model.testcasetype.ITestPolicyCmptTypeParameter;
+import org.faktorips.util.StringUtil;
 
 /**
  * Label provider for the test case domain.
@@ -80,7 +82,16 @@ public class TestCaseLabelProvider implements ILabelProvider {
 	public String getText(Object element) {
 		if (element instanceof ITestPolicyCmpt) {
 			ITestPolicyCmpt tstPolicyCmpt = (ITestPolicyCmpt) element;
-			return tstPolicyCmpt.getName();
+			String name = tstPolicyCmpt.getName();
+			IPolicyCmptType policyCmptType = tstPolicyCmpt.findPolicyCmptType();
+			if (policyCmptType == null){
+			    return name;
+			}
+			String unqualifiedPolicyCmptTypeName = StringUtil.unqualifiedName(policyCmptType.getQualifiedName());
+			if (!name.equals(unqualifiedPolicyCmptTypeName)){
+			    return name + " : " + unqualifiedPolicyCmptTypeName; 
+			}
+			return name;
 		} else if (element instanceof ITestPolicyCmptLink) {
 			ITestPolicyCmptLink testPcTypeLink = (ITestPolicyCmptLink) element;
 			String text = ""; //$NON-NLS-1$
@@ -90,8 +101,8 @@ public class TestCaseLabelProvider implements ILabelProvider {
 				if (typeParam != null && typeParam.isRequiresProductCmpt())
 					text += Messages.TestCaseLabelProvider_LabelSuffix_RequiresProductCmpt;
 			} catch (CoreException e) {
-				// ignore model error, the model consitence between the test case type and the test case
-				// will be check when openening the editor, therefor we can ignore is here
+				// ignore model error, the model check between the test case type and the test case
+				// will be check when open the editor, therefore we can ignore it here
 			}
 			return text;
 		} else if (element instanceof ITestRule){
@@ -136,13 +147,22 @@ public class TestCaseLabelProvider implements ILabelProvider {
     /**
      * Returns the title text of a section which displays the given test policy cmpt.<br>
      * Returns the name of the test policy cmpt and if the name is not equal to the test policy cmpt
-     * type param name the name of the parm after " : "<br>
-     * Return format: name : test policy cmpt type param name
+     * name then additionally the name of the test policy cmpt after " : "<br>
+     * Return format: test policy cmpt name : policy cmpt type name
      */
     public String getTextForSection(ITestPolicyCmpt testPolicyCmpt){
         String sectionText = testPolicyCmpt.getName();
-        if (! testPolicyCmpt.getName().equals(testPolicyCmpt.getTestPolicyCmptTypeParameter()))
-            sectionText += " : " + testPolicyCmpt.getTestPolicyCmptTypeParameter(); //$NON-NLS-1$
+
+        IPolicyCmptType policyCmptType = testPolicyCmpt.findPolicyCmptType();
+        if (policyCmptType == null){
+            return sectionText;
+        }
+
+        String unqualifiedPolicyCmptTypeName = StringUtil.unqualifiedName(policyCmptType.getQualifiedName());
+        if (!sectionText.equals(unqualifiedPolicyCmptTypeName)){
+            return sectionText + " : " + unqualifiedPolicyCmptTypeName; 
+        }
+        
         return sectionText;
     }
 

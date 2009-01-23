@@ -78,7 +78,7 @@ public class TestCaseAndTestCaseTypeTest extends AbstractIpsPluginTest {
         pc.setTestPolicyCmptTypeParameter("inputTestPolicyCmptTypeParam1");
         pc.setTestPolicyCmptTypeParameter(tp.getName());
         pc.setName(tp.getName());
-        ITestPolicyCmptLink pcr = pc.addTestPcTypeLink(tpChild, "", "");
+        ITestPolicyCmptLink pcr = pc.addTestPcTypeLink(tpChild, "", "", "");
         ITestPolicyCmpt pcChild = pcr.findTarget();
         pathToTestPolicyCmptInput = new TestCaseHierarchyPath(pcChild).getHierarchyPath();
         testCase.newTestValue().setTestValueParameter("inputValueParameter1");
@@ -116,9 +116,9 @@ public class TestCaseAndTestCaseTypeTest extends AbstractIpsPluginTest {
         assertNotNull(ml.getMessageByCode(ITestPolicyCmpt.MSGCODE_MIN_INSTANCES_NOT_REACHED));
         
         ITestPolicyCmpt parent = (ITestPolicyCmpt) pcr.getParent();
-        parent.addTestPcTypeLink(param, "", "");
-        parent.addTestPcTypeLink(param, "", "");
-        parent.addTestPcTypeLink(param, "", "");
+        parent.addTestPcTypeLink(param, "", "", "");
+        parent.addTestPcTypeLink(param, "", "", "");
+        parent.addTestPcTypeLink(param, "", "", "");
         ml = pcParent.validate(project);
         assertNotNull(ml.getMessageByCode(ITestPolicyCmpt.MSGCODE_MAX_INSTANCES_REACHED));
         

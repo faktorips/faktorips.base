@@ -843,12 +843,22 @@ public class TestCaseTypeClassBuilder extends DefaultJavaSourceFileBuilder {
     }
 
     private boolean buildXmlCallbackBodyFor(JavaCodeFragment body, ITestPolicyCmptTypeParameter parameter, String parentPath) throws CoreException {
-    	IPolicyCmptType policyCmptType = parameter.findPolicyCmptType(getIpsProject());
-        if (policyCmptType == null){
-            throw new CoreException(new IpsStatus("Policy component type " + parameter.getPolicyCmptType()
-                    + " not found for test policy component type parameter " + parameter.getName()));
-        }
-    	String currentPath = parentPath + "/" + policyCmptType.getName();
+    	String pathElement = null;
+        // evaluate the path, the current path element is: a) in case of root elements the name of the
+        // test parameter (because the xml node name is equal to the test parameter name)
+        // otherwise b) in case of child elements the name of the policyCmptType
+    	// (because the element is identified by the association in the xml file)
+        if (!parameter.isRoot()){
+            IPolicyCmptType policyCmptType = parameter.findPolicyCmptType(getIpsProject());
+            if (policyCmptType == null){
+                throw new CoreException(new IpsStatus("Policy component type " + parameter.getPolicyCmptType()
+                        + " not found for test policy component type parameter " + parameter.getName()));
+            }
+            pathElement = policyCmptType.getName();
+    	} else {
+    	    pathElement = parameter.getName();
+    	}
+    	String currentPath = parentPath + "/" + pathElement;
 
         boolean extensionAttrExists = false;
         JavaCodeFragment childCodeFragment = new JavaCodeFragment();

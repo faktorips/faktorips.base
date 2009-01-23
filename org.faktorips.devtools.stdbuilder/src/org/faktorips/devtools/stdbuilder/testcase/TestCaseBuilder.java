@@ -330,13 +330,20 @@ public class TestCaseBuilder extends AbstractArtefactBuilder {
             testPolicyCmptElem.setAttribute("objectId", "" + currObjectId);
 
             String policyCmptTypeQName = null;
+            // get the policyCmptTypeQName 
             if (testPolicyCmpts[i].isProductRelevant()) {
                 // the test policy cmpt type parameter is product relevant
+                // the the product cmpt will be used to search the policy cmpt type qualified name
                 ITestPolicyCmpt testPolicyCmpt = testPolicyCmpts[i];
                 policyCmptTypeQName = getPolicyCmptTypeNameAndSetProductCmptAttr(testPolicyCmpt, testPolicyCmptElem);
             } else {
                 // the test policy cmpt type parameter is not product relevant
-                policyCmptTypeQName = getPolicyCmptTypeName(testPolicyCmpts[i]);
+                // then the policy cmpt qualified name is stored on the test policy cmpt
+                policyCmptTypeQName = testPolicyCmpts[i].getPolicyCmptType();
+                if (StringUtils.isEmpty(policyCmptTypeQName)){
+                    // attribute policyCmptType not set, get the policy cmpt type from test parameter
+                    policyCmptTypeQName = getPolicyCmptTypeNameFromParameter(testPolicyCmpts[i]);
+                }
             }
 
             IIpsSrcFile policyCmptTypeSrcFile = testPolicyCmpts[i].getIpsProject().findIpsSrcFile(
@@ -370,12 +377,12 @@ public class TestCaseBuilder extends AbstractArtefactBuilder {
         return productCmptTypeSrcFile.getPropertyValue(IProductCmptType.PROPERTY_POLICY_CMPT_TYPE);
     }
 
-    private String getPolicyCmptTypeName(ITestPolicyCmpt testPolicyCmpt) throws CoreException {
+    private String getPolicyCmptTypeNameFromParameter(ITestPolicyCmpt testPolicyCmpt) throws CoreException {
         ITestPolicyCmptTypeParameter parameter = testPolicyCmpt.findTestPolicyCmptTypeParameter(getIpsProject());
         if (parameter == null) {
             throw new CoreException(new IpsStatus(NLS.bind(
                     "The test policy component type parameter {0} was not found.", testPolicyCmpt
-                            .getTestPolicyCmptTypeParameter())));
+                    .getTestPolicyCmptTypeParameter())));
         }
         return parameter.getPolicyCmptType();
     }

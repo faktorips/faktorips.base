@@ -689,7 +689,7 @@ public class TestCaseTest extends AbstractIpsPluginTest {
             ITestPolicyCmpt param3 = testCase.newTestPolicyCmpt();
             param3.setTestPolicyCmptTypeParameter("inputTestPolicyCmpt0");
             param3.setName("inputTestPolicyCmpt0");
-            ITestPolicyCmptLink link = param3.addTestPcTypeLink(policyCmptTypeParameterChild0, null, "link0");
+            ITestPolicyCmptLink link = param3.addTestPcTypeLink(policyCmptTypeParameterChild0, null, null, "link0");
             ITestPolicyCmpt childPolicyCmpt = link.newTargetTestPolicyCmptChild();
             childPolicyCmpt.setTestPolicyCmptTypeParameter("inputTestPolicyCmptChild0");
             
