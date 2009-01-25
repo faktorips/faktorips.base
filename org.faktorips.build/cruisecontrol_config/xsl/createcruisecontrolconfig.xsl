@@ -93,11 +93,18 @@
 		    </xsl:for-each>
     		<xsl:choose>
     			<xsl:when test="$usecvs='true'">
-                   <!-- cvs modificationset -->
+                   <!-- cvs default modificationset -->
                    <cvs module="$javaprojectname">
                       <xsl:attribute name="cvsroot"><![CDATA[${cvsroot}]]></xsl:attribute>
                       <xsl:attribute name="module"><xsl:value-of select="$javaprojectname"/></xsl:attribute>
-                   </cvs>
+                  </cvs>
+                  <xsl:for-each select="depends/cvs">
+                   <!-- cvs additional modificationset -->
+                       <cvs module="$javaprojectname">
+                          <xsl:attribute name="cvsroot"><![CDATA[${cvsroot}]]></xsl:attribute>
+                          <xsl:attribute name="module"><xsl:value-of select="@module"/></xsl:attribute>
+                      </cvs>
+                  </xsl:for-each>                  
     			  </xsl:when>
     			  <xsl:otherwise>
                   <!-- filesystem modificationset -->

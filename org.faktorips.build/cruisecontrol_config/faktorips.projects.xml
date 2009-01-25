@@ -158,6 +158,12 @@
                 <project name="org.faktorips.devtools.stdbuilder"/>
                 <project name="org.faktorips.devtools.core.ui"/>
                 <project name="org.faktorips.devtools.ant"/>
+                <!-- plugin test dependencies-->
+                <cvs module="org.faktorips.devtools.core.test"/>
+                <cvs module="org.faktorips.devtools.stdbuilder.test"/>
+                <cvs module="org.faktorips.devtools.core.ui.test"/>            
+                <cvs module="org.faktorips.devtools.ant.test"/>            
+                <cvs module="org.faktorips.uml.test"/>                
             </depends>      
         </project>
 

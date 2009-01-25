@@ -587,6 +587,11 @@
             <buildstatus logdir="${logdir}/org.faktorips.devtools.core.ui"/>
             <buildstatus logdir="${logdir}/org.faktorips.devtools.ant"/>
             <cvs module="org.faktorips.pluginbuilder" cvsroot="${cvsroot}"/>
+            <cvs module="org.faktorips.devtools.core.test" cvsroot="${cvsroot}"/>
+            <cvs module="org.faktorips.devtools.stdbuilder.test" cvsroot="${cvsroot}"/>
+            <cvs module="org.faktorips.devtools.core.ui.test" cvsroot="${cvsroot}"/>
+            <cvs module="org.faktorips.devtools.ant.test" cvsroot="${cvsroot}"/>
+            <cvs module="org.faktorips.uml.test" cvsroot="${cvsroot}"/>
         </modificationset>
         <schedule interval="300">
             <ant usedebug="false" uselogger="true" buildfile="${mainbuildfile}" target="pluginbuilder.faktorips">
