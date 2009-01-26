@@ -483,6 +483,8 @@
     	
     	<!-- report -->
     	<echo message=""/>
+    	<echo message="result directory: ${buildDirectory}/results/"/>
+    	<echo message=""/>
     	<echo message="finished. Release: ${build.version}"/>
     	<echo message="-> new faktorips ips features: ${pluginbuilder.features}"/>
     	<echo message="-> new faktorips uml features: ${pluginbuilder.features.uml}"/>
@@ -547,14 +549,18 @@
         </copy>
     </target>
     <target name="-copy.eclipse.workspace.log">
-        <copy file="${basedir}/pluginbuilder_tmp/org.faktorips.pluginbuilder/${workspaceName}/.metadata/.log" 
+        <property name="logfile" value="${basedir}/pluginbuilder_tmp/org.faktorips.pluginbuilder/${workspaceName}/.metadata/.log"/>
+    	<copy file="${logfile}" 
             tofile="${ccProjectDir}/${cctimestamp}/eclipse_workspace.log"
             failonerror="false" verbose="true"/>
+    	<delete file="${logfile}" failonerror="false" verbose="false"/>
     </target>
     <target name="-copy.eclipse.test.workspace.log" if="is.plugintest" unless="is.thisbuildsuccessful">
-        <copy file="${basedir}/pluginbuilder_tmp/org.faktorips.pluginbuilder/test-workspace/.metadata/.log" 
+    	<property name="logfile" value="${basedir}/pluginbuilder_tmp/org.faktorips.pluginbuilder/test-workspace/.metadata/.log"/>
+    	<copy file="${logfile}" 
             tofile="${ccProjectDir}/${cctimestamp}/eclipse_test-workspace.log"
             failonerror="false" verbose="true"/>
+    	<delete file="${logfile}" failonerror="false" verbose="false"/>
     </target>
     <target name="-copy.eclipse.configuration.log">
         <copy todir="${ccProjectDir}/${cctimestamp}" failonerror="false" verbose="false">

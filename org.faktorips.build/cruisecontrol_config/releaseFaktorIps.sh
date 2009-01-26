@@ -47,6 +47,28 @@
 #############################################################################################################################
 
 #################################################
+# Functions
+#################################################
+
+printBoolean ()
+{
+if [ "$1" = "true" ] ; then
+  echo -e "\e[32mtrue\e[0m"
+else
+  echo -e "\e[31mfalse\e[0m"
+fi
+}
+
+negation ()
+{
+if [ "$1" = "true" ] ; then
+  echo "false"
+else
+  echo "true"
+fi
+}
+
+#################################################
 # init variables and parameters
 #################################################
 
@@ -148,7 +170,7 @@ if [ ! -e $BUILDFILE ] ; then
   SHOWHELP=true
 fi
 
-# extract build category from given version, if not given
+# extract build category from given version, if no category is given
 if [ $BUILD_CATEGORY = "NONE" ]
   then BUILD_CATEGORY=$(echo $BUILD_VERSION | sed -r "s/([0-9]*)\.([0-9]*)\.([0-9]*)\.(.*)/\1\.\2/g")
 fi 
@@ -197,23 +219,23 @@ fi
 echo 
 echo Release build parameter:
 echo "  --------------------------------------------------------------------------------------"
-echo -e "  Release Version=\e[32m$BUILD_VERSION\e[0m"
-echo -e "  Feature Category=\e[32m$BUILD_CATEGORY\e[0m"
+echo -e "  Release Version=\e[35m$BUILD_VERSION\e[0m"
+echo -e "  Feature Category=\e[35m$BUILD_CATEGORY\e[0m"
 echo "  --------------------------------------------------------------------------------------"
-echo -e "  -overwite        : Overwrite previous version =>\e[32m$OVERWRITE\e[0m<="
-echo -e "  -skipTest        : No tests are executed =>\e[32m$RUNTESTS\e[0m<="
-echo -e "  -skipPublish     : No publish (to updatesite and to download directory) =>\e[32m$SKIPPUBLISH\e[0m<="
-echo -e "  -skipTaggingCvs  : Skip tagging cvs projects =>\e[32m$SKIPTAGCVS\e[0m<="
-echo -e "  -noCvs           : Not using cvs =>\e[32m$NOCVS\e[0m<="
-echo -e "  -projectsrootdir : Checkout/Copysource directory =>\e[32m$PROJECTSROOTDIR\e[0m<="
-echo -e "  -workingdir      : Work directory =>\e[32m$WORKINGDIR\e[0m<="
+echo -e "  -overwite        : Fail if version exists "$(printBoolean $( negation $OVERWRITE))
+echo -e "  -skipTest        : Run tests "$(printBoolean $RUNTESTS)
+echo -e "  -skipPublish     : Publish result (to updatesite and to download directory) "$(printBoolean $(negation $SKIPPUBLISH))
+echo -e "  -skipTaggingCvs  : Tag cvs projects "$(printBoolean $(negation $SKIPTAGCVS))
+echo -e "  -noCvs           : Use cvs "$(printBoolean $(negation $NOCVS))
+echo -e "  -projectsrootdir : Checkout/Copysource directory \e[35m$PROJECTSROOTDIR\e[0m"
+echo -e "  -workingdir      : Work directory \e[35m$WORKINGDIR\e[0m"
 if [ ! "$SKIPPUBLISH" = "true" ] ; then
   echo    "  Published result"
-  echo -e "  -resultDir       : Result/Download directory =>\e[32m$PUBLISH_DOWNLOAD_DIR\e[0m<="
-  echo -e "  -updatesiteDir   : Updatesite directory =>\e[32m$PUBLISH_UPDATESITE_DIR\e[0m<="
+  echo -e "  -resultDir       : Result/Download directory \e[35m$PUBLISH_DOWNLOAD_DIR\e[0m"
+  echo -e "  -updatesiteDir   : Updatesite directory \e[35m$PUBLISH_UPDATESITE_DIR\e[0m"
 fi
 echo "  --------------------------------------------------------------------------------------"
-echo -e "=> Start release build (\e[31my\e[0m)es? <="
+echo -e "=> Start release build (\e[33my\e[0m)es? <="
 echo 
 read ANSWER
 if [ ! "$ANSWER" = "y" ]
@@ -265,7 +287,7 @@ RELEASE_PROPERTIES=$RELEASE_PROPERTY_DIR/$BUILD_VERSION.properties
 
 if [ ! "$NOCVS" = "true" ] ; then
   # 1. checkout previous pluginbuilder release properties
-  cvs -d $CVS_ROOT co -d $RELEASE_PROPERTY_DIR org.faktorips.pluginbuilder/releases
+  cvs -d $CVS_ROOT co -d $RELEASE_PROPERTY_DIR $PLUGINBUILDER_PROJECT_NAME/releases
 fi
 
 # 2. asserts 
@@ -281,6 +303,7 @@ RELEASE_PROPERTIES_EXISTS=false
 if [ -f $RELEASE_PROPERTIES ] ; then
   RELEASE_PROPERTIES_EXISTS=true
 fi
+# overwrite if exists 
 VERSION_QUALIFIER=$(echo $BUILD_VERSION | sed -r "s/([0-9]*)\.([0-9]*)\.([0-9]*)\.(.*)/\4/g")
 VERSION=$(echo $BUILD_VERSION | sed -r "s/([0-9]*)\.([0-9]*)\.([0-9]*)\.(.*)/\1\.\2\.\3/g")
 FETCH_TAG=$(echo $BUILD_VERSION | sed -r "s/([0-9]*)\.([0-9]*)\.([0-9]*)\.(.*)/v\1_\2_\3_\4/g")
@@ -309,6 +332,7 @@ if [ ! "$SKIPTAGCVS" = "true" ] ; then
   cvs -d $CVS_ROOT rtag -F -R $FETCH_TAG $PLUGINBUILDER_PROJECT_NAME
 
   # b) tag all projects specified in the pluginbuilder map file (all necessary plugin and feature projects)
+  cvs -d $CVS_ROOT co -r $FETCH_TAG -d $RELEASE_PROPERTY_DIR $PLUGINBUILDER_PROJECT_DIR/maps/all_copy.map
   for project in $( cat $PLUGINBUILDER_PROJECT_DIR/maps/all_copy.map | sed -r "s/.*COPY,@WORKSPACE@,(.*)/\1/g" ) ; do
     cvs -d $CVS_ROOT rtag -F -R $FETCH_TAG $project
   done
