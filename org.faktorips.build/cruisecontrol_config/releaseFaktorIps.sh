@@ -72,6 +72,9 @@ fi
 # init variables and parameters
 #################################################
 
+# use cruise control ant
+ANT_HOME=/opt/cc/apache-ant-1.6.5
+
 # default build environment
 WORKINGDIR=/opt/cc/work
 PROJECTSROOTDIR=$WORKINGDIR/checkout_release
