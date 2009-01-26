@@ -42,40 +42,55 @@ public interface IModelType extends IModelElement {
     public IModelType getSuperType();
 
     /**
-     * Returns an array containing all attributes of this model type object.
+     * Returns a list containing all attributes declared in this model type. Attributes defined
+     * in the type's supertypes are not returned.
+     */
+    public List<IModelTypeAttribute> getDeclaredAttributes();
+
+    /**
+     * Returns a list containing the type's attributes including those defined in the type's supertypes.
      */
     public List<IModelTypeAttribute> getAttributes();
 
     /**
-     * Returns the attribute at the given <code>index</code>.
+     * Returns the declared attribute at the given <code>index</code>.
      * 
      * @throws IndexOutOfBoundsException if no attribute exists for the given <code>index</code>.
      */
-    public IModelTypeAttribute getAttribute(int index) throws IndexOutOfBoundsException;
+    public IModelTypeAttribute getDeclaredAttribute(int index) throws IndexOutOfBoundsException;
 
     /**
-     * Returns the attribute with the given <code>name</code>.
+     * Returns the attribute with the given <code>name</code> declared in this type.
+     * Attributes defined in the type's supertypes are not returned.
      * 
      * @throws IllegalArgumentException if no attribute with the given <code>name</code> exists.
      */
-    public IModelTypeAttribute getAttribute(String name) throws IllegalArgumentException;
+    public IModelTypeAttribute getDeclaredAttribute(String name) throws IllegalArgumentException;
 
     /**
-     * Returns an array containing all associations of this model type object.
+     * Returns a list containing all associations declared in this model type.
+     * Associations defined in the type's supertypes are not returned.
+     */
+    public List<IModelTypeAssociation> getDeclaredAssociations();
+
+    /**
+     * Returns the type's associations including those defined in it's supertypes.
      */
     public List<IModelTypeAssociation> getAssociations();
 
     /**
      * Returns the association at the given <code>index</code>.
+     * Associations defined in the type's supertypes are not returned.
      * 
      * @throws IndexOutOfBoundsException if no association exists for the given <code>index</code>.
      */
-    public IModelTypeAssociation getAssociation(int index);
+    public IModelTypeAssociation getDeclaredAssociation(int index);
 
     /**
-     * Returns the association with the given <code>name</code>.
+     * Returns the association with the given <code>name</code> declared in this type.
+     * Associations defined in the type's supertypes are not considered.
      * 
      * @throws IllegalArgumentException if no association with the given <code>name</code> exists.
      */
-    public IModelTypeAssociation getAssociation(String name);
+    public IModelTypeAssociation getDeclaredAssociation(String name);
 }

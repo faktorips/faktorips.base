@@ -27,6 +27,7 @@ import org.faktorips.runtime.internal.AbstractRuntimeRepository;
 import org.faktorips.runtime.modeltype.IModelType;
 import org.faktorips.runtime.modeltype.IModelTypeAssociation;
 import org.faktorips.runtime.modeltype.IModelTypeAttribute;
+import org.faktorips.runtime.modeltype.TypeHierarchyVisitor;
 
 /**
  * 
@@ -50,45 +51,63 @@ public class ModelType extends AbstractModelElement implements IModelType {
     /**
      * {@inheritDoc}
      */
-    public IModelTypeAssociation getAssociation(int index) {
+    public IModelTypeAssociation getDeclaredAssociation(int index) {
         return associations.get(index);
     }
 
     /**
      * {@inheritDoc}
      */
-    public IModelTypeAssociation getAssociation(String name) {
+    public IModelTypeAssociation getDeclaredAssociation(String name) {
         return associationsByName.get(name);
     }
     
     /**
      * {@inheritDoc}
      */
-    public List<IModelTypeAssociation> getAssociations() {
+    public List<IModelTypeAssociation> getDeclaredAssociations() {
         return Collections.unmodifiableList(associations);
+    }
+    
+    /**
+     * {@inheritDoc}
+     */
+    public List<IModelTypeAssociation> getAssociations() {
+        AssociationsCollector asscCollector = new AssociationsCollector();
+        asscCollector.visitHierarchy(this);
+        return asscCollector.result;
     }
 
     /**
      * {@inheritDoc}
      */
-    public IModelTypeAttribute getAttribute(int index) throws IndexOutOfBoundsException {
+    public IModelTypeAttribute getDeclaredAttribute(int index) throws IndexOutOfBoundsException {
         return attributes.get(index);
     }
 
     /**
      * {@inheritDoc}
      */
-    public IModelTypeAttribute getAttribute(String name) throws IllegalArgumentException {
+    public IModelTypeAttribute getDeclaredAttribute(String name) throws IllegalArgumentException {
         return attributesByName.get(name);
+    }
+    
+    /**
+     * {@inheritDoc}
+     */
+    public List<IModelTypeAttribute> getDeclaredAttributes() {
+        return Collections.unmodifiableList(attributes);
     }
 
     /**
      * {@inheritDoc}
      */
     public List<IModelTypeAttribute> getAttributes() {
-        return Collections.unmodifiableList(attributes);
+        AttributeCollector attrCollector = new AttributeCollector();
+        attrCollector.visitHierarchy(this);
+        return attrCollector.result;
     }
-
+    
     /**
      * {@inheritDoc}
      * 
@@ -209,4 +228,28 @@ public class ModelType extends AbstractModelElement implements IModelType {
         return sb.toString();
     }
 
+    static class AttributeCollector extends TypeHierarchyVisitor {
+
+        List<IModelTypeAttribute> result = new ArrayList<IModelTypeAttribute>(30);
+        
+        @Override
+        public boolean visitType(IModelType type) {
+            result.addAll(type.getDeclaredAttributes());
+            return true;
+        }
+        
+    }
+    
+    static class AssociationsCollector extends TypeHierarchyVisitor {
+
+        List<IModelTypeAssociation> result = new ArrayList<IModelTypeAssociation>();
+        
+        @Override
+        public boolean visitType(IModelType type) {
+            result.addAll(type.getDeclaredAssociations());
+            return true;
+        }
+        
+    }
+    
 }
