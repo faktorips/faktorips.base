@@ -125,7 +125,7 @@ fi
 
 # check parameter combinations
 #  fail if cvs should be tagged but no cvs is used
-if [ $NOCVS -a ! $SKIPTAGCVS ] ; then
+if [ "$NOCVS" = "true" -a ! "$SKIPTAGCVS" = "true" ] ; then
   echo '--> Error: cvs should be tagged ('skipTaggingCvs' is not set) but no cvs is used ('noCvs' is set)'
   echo '  '
   SHOWHELP=true
@@ -226,7 +226,7 @@ fi
 
 # assert correct bundle version in core plugin
 #   the bundle version stored in the core plugin must be equal to the given version
-if [ ! $NOCVS ] ; then
+if [ ! "$NOCVS" = "true" ] ; then
     #  checkout core plugin and check bundle version
     PLUGINBUILDER_PROJECT_DIR=$PROJECTSROOTDIR/$PLUGINBUILDER_PROJECT_NAME
     TMP_CHECKOUTDIR=$PROJECTSROOTDIR/tmp_release_build
@@ -263,7 +263,7 @@ cd $WORKING_DIR
 RELEASE_PROPERTY_DIR=$PLUGINBUILDER_PROJECT_DIR/releases
 RELEASE_PROPERTIES=$RELEASE_PROPERTY_DIR/$BUILD_VERSION.properties
 
-if [ ! $NOCVS ] ; then
+if [ ! "$NOCVS" = "true" ] ; then
   # 1. checkout previous pluginbuilder release properties
   cvs -d $CVS_ROOT co -d $RELEASE_PROPERTY_DIR org.faktorips.pluginbuilder/releases
 fi
@@ -289,7 +289,7 @@ echo version.qualifier=$VERSION_QUALIFIER  >> $RELEASE_PROPERTIES
 echo buildTypePresentation=  >> $RELEASE_PROPERTIES
 
 # 4. checkin (add+commit) generated release.properties
-if [ ! $NOCVS ] ; then
+if [ ! "$NOCVS" = "true" ] ; then
   if [ ! -f $RELEASE_PROPERTIES ] ; then
     # only a new file will be added
     cvs -d $CVS_ROOT add $RELEASE_PROPERTIES
