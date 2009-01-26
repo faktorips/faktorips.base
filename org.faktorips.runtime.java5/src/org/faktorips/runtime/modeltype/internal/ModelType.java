@@ -89,9 +89,25 @@ public class ModelType extends AbstractModelElement implements IModelType {
      * {@inheritDoc}
      */
     public IModelTypeAttribute getDeclaredAttribute(String name) throws IllegalArgumentException {
-        return attributesByName.get(name);
+        IModelTypeAttribute attr = attributesByName.get(name);
+        if (attr==null) {
+            throw new IllegalArgumentException("The type " + this + " hasn't got a declared attribute "  + name);
+        }
+        return attr;
     }
     
+    /**
+     * {@inheritDoc}
+     */
+    public IModelTypeAttribute getAttribute(String name) throws IllegalArgumentException {
+        AttributeFinder finder = new AttributeFinder(name);
+        finder.visitHierarchy(this);
+        if (finder.attribute==null) {
+            throw new IllegalArgumentException("The type " + this + "(or one of it's supertypes) hasn't got an attribute "  + name);
+        }
+        return finder.attribute;
+    }
+
     /**
      * {@inheritDoc}
      */
@@ -240,6 +256,24 @@ public class ModelType extends AbstractModelElement implements IModelType {
         
     }
     
+    static class AttributeFinder extends TypeHierarchyVisitor {
+
+        private String attrName;
+        private IModelTypeAttribute attribute = null;
+        
+        public AttributeFinder(String attrName) {
+            super();
+            this.attrName = attrName;
+        }
+
+
+        @Override
+        public boolean visitType(IModelType type) {
+            attribute = ((ModelType)type).attributesByName.get(attrName);
+            return attribute==null;
+        }
+        
+    }
     static class AssociationsCollector extends TypeHierarchyVisitor {
 
         List<IModelTypeAssociation> result = new ArrayList<IModelTypeAssociation>();

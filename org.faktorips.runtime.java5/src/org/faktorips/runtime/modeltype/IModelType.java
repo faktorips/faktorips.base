@@ -68,6 +68,13 @@ public interface IModelType extends IModelElement {
     public IModelTypeAttribute getDeclaredAttribute(String name) throws IllegalArgumentException;
 
     /**
+     * Returns the attribute with the given <code>name</code> declared in this type or one of it's supertype.
+     * 
+     * @throws IllegalArgumentException if no attribute with the given <code>name</code> exists.
+     */
+    public IModelTypeAttribute getAttribute(String name) throws IllegalArgumentException;
+
+    /**
      * Returns a list containing all associations declared in this model type.
      * Associations defined in the type's supertypes are not returned.
      */
