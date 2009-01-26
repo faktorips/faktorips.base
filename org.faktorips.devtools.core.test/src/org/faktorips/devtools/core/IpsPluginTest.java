@@ -13,14 +13,20 @@
 
 package org.faktorips.devtools.core;
 
+import java.io.ByteArrayInputStream;
+import java.io.IOException;
+import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.List;
+
+import javax.xml.parsers.DocumentBuilder;
 
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.jface.util.IPropertyChangeListener;
 import org.eclipse.jface.util.PropertyChangeEvent;
 import org.faktorips.devtools.core.model.ipsproject.IIpsLoggingFrameworkConnector;
+import org.xml.sax.SAXException;
 
 /**
  * 
@@ -47,6 +53,12 @@ public class IpsPluginTest extends AbstractIpsPluginTest {
     protected void tearDownExtension() {
         pref.setNullPresentation(oldPresentationString);
     }
+    
+    public void testGetDocumentBuilder() throws UnsupportedEncodingException, SAXException, IOException {
+        DocumentBuilder docBuilder = IpsPlugin.getDefault().newDocumentBuilder();
+        String xml = "<?xml version=\"1.0\" encoding=\"UTF-8\"?><abc/>" ;
+        docBuilder.parse(new ByteArrayInputStream(xml.getBytes("UTF-8")));
+    }
 
     public void testIpsPreferencesInclListener() {
         
@@ -70,7 +82,7 @@ public class IpsPluginTest extends AbstractIpsPluginTest {
     
     public void testGetIpsLoggingFrameworkConnectors() throws CoreException{
         IIpsLoggingFrameworkConnector[] connectors = IpsPlugin.getDefault().getIpsLoggingFrameworkConnectors();
-        List connectorIds = new ArrayList();
+        List<String> connectorIds = new ArrayList<String>();
         for (int i = 0; i < connectors.length; i++) {
             connectorIds.add(connectors[i].getId());
         }

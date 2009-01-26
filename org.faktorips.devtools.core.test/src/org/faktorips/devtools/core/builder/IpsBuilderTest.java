@@ -597,7 +597,8 @@ public class IpsBuilderTest extends AbstractIpsPluginTest {
     
     public void testMarkerForNotParsableIpsSrcFiles() throws CoreException{
         IFile file = ((IContainer)root.getCorrespondingResource()).getFile(new Path("test." + IpsObjectType.POLICY_CMPT_TYPE.getFileExtension()));
-        file.create(new ByteArrayInputStream("".getBytes()), true, null);
+        String xml = "<?xml version=\"1.0\" encoding=\"UTF-8\"?><abc/>";
+        file.create(new ByteArrayInputStream(xml.getBytes()), true, null);
         ipsProject.getProject().build(IncrementalProjectBuilder.INCREMENTAL_BUILD, new NullProgressMonitor());
         IMarker[] markers = file.findMarkers(IMarker.PROBLEM, true, 0);
         boolean isMessageThere = false;
@@ -608,7 +609,6 @@ public class IpsBuilderTest extends AbstractIpsPluginTest {
             }
         }
         assertTrue("The expected message could not be found", isMessageThere);
-        
     }
     
     public void testRemoveResource() throws CoreException {
