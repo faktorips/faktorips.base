@@ -304,7 +304,7 @@ fi
 
 # 5. tag all projects defined in the pluginbuilder project (move tag if already exists)
 #    if skip tag is true then don't tag project, the previous tagged versions are used for the build
-if [ ! "$SKIPTAGCVS" ] ; then
+if [ ! "$SKIPTAGCVS" = "true" ] ; then
   # a) tag pluginbuilder project -> rtag = tag current versions of projects in repository
   cvs -d $CVS_ROOT rtag -F -R $FETCH_TAG $PLUGINBUILDER_PROJECT_NAME
 
