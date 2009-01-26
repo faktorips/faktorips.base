@@ -197,8 +197,8 @@ fi
 echo 
 echo Release build parameter:
 echo "  --------------------------------------------------------------------------------------"
-echo "  Release Version=\e[32m$BUILD_VERSION\e[0m"
-echo "  Feature Category=\e[32m$BUILD_CATEGORY\e[0m"
+echo -e "  Release Version=\e[32m$BUILD_VERSION\e[0m"
+echo -e "  Feature Category=\e[32m$BUILD_CATEGORY\e[0m"
 echo "  --------------------------------------------------------------------------------------"
 echo -e "  -overwite        : Overwrite previous version =>\e[32m$OVERWRITE\e[0m<="
 echo -e "  -skipTest        : No tests are executed =>\e[32m$RUNTESTS\e[0m<="
