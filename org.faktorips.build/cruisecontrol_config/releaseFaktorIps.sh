@@ -281,7 +281,6 @@ RELEASE_PROPERTIES_EXISTS=false
 if [ -f $RELEASE_PROPERTIES ] ; then
   RELEASE_PROPERTIES_EXISTS=true
 fi
-
 VERSION_QUALIFIER=$(echo $BUILD_VERSION | sed -r "s/([0-9]*)\.([0-9]*)\.([0-9]*)\.(.*)/\4/g")
 VERSION=$(echo $BUILD_VERSION | sed -r "s/([0-9]*)\.([0-9]*)\.([0-9]*)\.(.*)/\1\.\2\.\3/g")
 FETCH_TAG=$(echo $BUILD_VERSION | sed -r "s/([0-9]*)\.([0-9]*)\.([0-9]*)\.(.*)/v\1_\2_\3_\4/g")
@@ -295,7 +294,7 @@ echo buildTypePresentation=  >> $RELEASE_PROPERTIES
 
 # 4. checkin (add+commit) generated release.properties
 if [ ! "$NOCVS" = "true" ] ; then
-  if [ "$RELEASE_PROPERTIES" = "false" ] ; then
+  if [ "$RELEASE_PROPERTIES_EXISTS" = "false" ] ; then
     # only a new file will be added
     cvs -d $CVS_ROOT add $RELEASE_PROPERTIES
   fi
