@@ -597,7 +597,7 @@ public class IpsBuilderTest extends AbstractIpsPluginTest {
     
     public void testMarkerForNotParsableIpsSrcFiles() throws CoreException{
         IFile file = ((IContainer)root.getCorrespondingResource()).getFile(new Path("test." + IpsObjectType.POLICY_CMPT_TYPE.getFileExtension()));
-        String xml = "<?xml version=\"1.0\" encoding=\"UTF-8\"?><abc/>";
+        String xml = "invalid xml";
         file.create(new ByteArrayInputStream(xml.getBytes()), true, null);
         ipsProject.getProject().build(IncrementalProjectBuilder.INCREMENTAL_BUILD, new NullProgressMonitor());
         IMarker[] markers = file.findMarkers(IMarker.PROBLEM, true, 0);
