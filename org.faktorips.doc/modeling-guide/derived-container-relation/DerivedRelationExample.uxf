@@ -1,6 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?><umlet_diagram><element><type>com.umlet.element.base.Relation</type><coordinates><x>120</x><y>10</y><w>140</w><h>190</h></coordinates><panel_attributes>lt=&lt;&lt;&lt;&lt;-
-m2=1 MainCoverage</panel_attributes><additional_attributes>20;20;120;20;120;170;20;170</additional_attributes></element><element><type>com.umlet.element.base.Relation</type><coordinates><x>55</x><y>30</y><w>70</w><h>160</h></coordinates><panel_attributes>lt=&lt;&lt;&lt;&lt;-
-m2= *
-r2=Coverages</panel_attributes><additional_attributes>35;20;35;140</additional_attributes></element><element><type>com.umlet.element.base.Class</type><coordinates><x>40</x><y>170</y><w>100</w><h>50</h></coordinates><panel_attributes>Coverage
---
-sumInsured</panel_attributes><additional_attributes></additional_attributes></element><element><type>com.umlet.element.base.Class</type><coordinates><x>40</x><y>20</y><w>100</w><h>30</h></coordinates><panel_attributes>Policy</panel_attributes><additional_attributes></additional_attributes></element></umlet_diagram>
