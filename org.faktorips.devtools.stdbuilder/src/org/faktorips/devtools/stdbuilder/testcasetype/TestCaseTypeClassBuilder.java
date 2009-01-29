@@ -75,7 +75,15 @@ public class TestCaseTypeClassBuilder extends DefaultJavaSourceFileBuilder {
     private final static String EXECUTEBUSINESSLOGIC_JAVADOC = "EXECUTEBUSINESSLOGIC_JAVADOC";
     private static final String EXECUTEASSERTS_JAVADOC = "EXECUTEASSERTS_JAVADOC";
     private static final String EXECUTEBUSINESSLOGIC_TODO = "EXECUTEBUSINESSLOGIC_TODO";
-    private static final String ASSERT_TODO = "ASSERT_TODO";
+    private static final String ASSERT_TODO_0 = "ASSERT_TODO_0";
+    private static final String ASSERT_TODO_1 = "ASSERT_TODO_1";
+    private static final String ASSERT_TODO_2 = "ASSERT_TODO_2";
+    private static final String ASSERT_TODO_3 = "ASSERT_TODO_3";
+    private static final String ASSERT_TODO_4 = "ASSERT_TODO_4";
+    private static final String ASSERT_TODO_5 = "ASSERT_TODO_5";
+    private static final String ASSERT_TODO_6 = "ASSERT_TODO_6";
+    private static final String ASSERT_TODO_7 = "ASSERT_TODO_7";
+    private static final String ASSERT_TODO_8 = "ASSERT_TODO_8";
     private static final String RUNTIME_EXCEPTION_NO_ASSERTS = "RUNTIME_EXCEPTION_NO_ASSERTS";
     private static final String INPUT_PREFIX = "INPUT_PREFIX";
     private static final String EXPECTED_RESULT_PREFIX = "EXPECTED_RESULT_PREFIX";
@@ -623,7 +631,15 @@ public class TestCaseTypeClassBuilder extends DefaultJavaSourceFileBuilder {
         JavaCodeFragment body = new JavaCodeFragment();
 
         // generate dummy assert with todo remark
-        body.appendln("// TODO " + getLocalizedText(getIpsSrcFile(), ASSERT_TODO));
+        body.appendln("// TODO " + getLocalizedText(getIpsSrcFile(), ASSERT_TODO_0));
+        body.appendln(getLocalizedText(getIpsSrcFile(), ASSERT_TODO_1));
+        body.appendln(getLocalizedText(getIpsSrcFile(), ASSERT_TODO_2));
+        body.appendln(getLocalizedText(getIpsSrcFile(), ASSERT_TODO_3));
+        body.appendln(getLocalizedText(getIpsSrcFile(), ASSERT_TODO_4));
+        body.appendln(getLocalizedText(getIpsSrcFile(), ASSERT_TODO_5));
+        body.appendln(getLocalizedText(getIpsSrcFile(), ASSERT_TODO_6));
+        body.appendln(getLocalizedText(getIpsSrcFile(), ASSERT_TODO_7));
+        body.appendln(getLocalizedText(getIpsSrcFile(), ASSERT_TODO_8));
         body.appendln("throw new ");
         body.appendClassName(RuntimeException.class);
         body.append("(\"");

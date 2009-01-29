@@ -81,7 +81,6 @@ public class DeepCopyOperation implements IWorkspaceRunnable{
 
     /**
 	 * {@inheritDoc}
-	 * FIXME Joerg Testcases
 	 */
 	public void run(IProgressMonitor monitor) throws CoreException {
 		if (monitor == null) {

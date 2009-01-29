@@ -358,7 +358,6 @@ public class IpsPackageFragment extends AbstractIpsPackageFragment implements II
 
     /**
      * {@inheritDoc}
-     * FIXME Joerg Testcase
      */
     public IIpsSrcFile createIpsFileFromTemplate(String name,
             IIpsObject template,
