@@ -290,6 +290,7 @@ RELEASE_PROPERTIES=$RELEASE_PROPERTY_DIR/$BUILD_VERSION.properties
 
 if [ ! "$NOCVS" = "true" ] ; then
   # 1. checkout previous pluginbuilder release properties
+  rm -R $RELEASE_PROPERTY_DIR
   cvs -d $CVS_ROOT co -d $RELEASE_PROPERTY_DIR $PLUGINBUILDER_PROJECT_NAME/releases
 fi
 
