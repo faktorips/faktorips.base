@@ -53,7 +53,6 @@ import org.faktorips.devtools.core.internal.model.ipsobject.ArchiveIpsSrcFile;
 import org.faktorips.devtools.core.internal.model.pctype.ProductRelevantIcon;
 import org.faktorips.devtools.core.model.IIpsElement;
 import org.faktorips.devtools.core.model.IIpsModel;
-import org.faktorips.devtools.core.model.bf.BFElementType;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObject;
 import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.core.ui.controlfactories.BooleanControlFactory;
@@ -120,8 +119,6 @@ public class IpsUIPlugin extends AbstractUIPlugin {
         super.start(context);
         plugin = this;
         registry = Platform.getExtensionRegistry();
-        // ensure that this class is loaded in time
-        BFElementType.ACTION_BUSINESSFUNCTIONCALL.getImage();
         ipsEditorSettings = new IpsObjectEditorSettings();
         ipsEditorSettings.load(getStateLocation());
         IpsCompositeSaveParticipant saveParticipant = new IpsCompositeSaveParticipant();

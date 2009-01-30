@@ -42,6 +42,7 @@ import org.faktorips.devtools.core.internal.model.pctype.ProductRelevantIcon;
 import org.faktorips.devtools.core.internal.model.testcase.IpsTestRunner;
 import org.faktorips.devtools.core.internal.model.versionmanager.IpsFeatureMigrationOperation;
 import org.faktorips.devtools.core.model.IIpsModel;
+import org.faktorips.devtools.core.model.bf.BFElementType;
 import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
 import org.faktorips.devtools.core.model.ipsproject.IIpsLoggingFrameworkConnector;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
@@ -171,6 +172,8 @@ public class IpsPlugin extends AbstractUIPlugin {
         ResourcesPlugin.getWorkspace().addSaveParticipant(this, saveParticipant);
         
         IpsObjectType.POLICY_CMPT_TYPE.getId(); // force loading of class before model is created!
+        // ensure that this class is loaded in time
+        BFElementType.ACTION_BUSINESSFUNCTIONCALL.getImage();
         model = new IpsModel();
         model.startListeningToResourceChanges();
     }
