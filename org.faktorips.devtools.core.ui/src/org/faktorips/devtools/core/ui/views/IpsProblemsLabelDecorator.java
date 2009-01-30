@@ -30,7 +30,6 @@ import org.eclipse.swt.graphics.Rectangle;
 import org.faktorips.devtools.core.ImageDescriptorRegistry;
 import org.faktorips.devtools.core.ImageImageDescriptor;
 import org.faktorips.devtools.core.IpsPlugin;
-import org.faktorips.devtools.core.internal.model.ipsproject.IpsObjectPath;
 import org.faktorips.devtools.core.model.IIpsElement;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPart;
 import org.faktorips.devtools.core.model.ipsproject.IIpsPackageFragmentRoot;
@@ -143,20 +142,11 @@ public class IpsProblemsLabelDecorator implements ILabelDecorator, ILightweightL
         IIpsPackageFragmentRoot[] roots= project.getIpsPackageFragmentRoots();
         int flag= 0;
         for (int i = 0; i < roots.length; i++) {
-            // TODO Joerg pruefen: wenn im ersten IpsPackageFragmentRoot ein Fehler ist
-            // wird decorate ein Fehler im zweiten Root nicht korrekt angezeigt, weil im Decorator auf 
-            // == JavaElementImageDescriptor.ERROR geprueft wird und nicht bool. =
-            // ist das richtig? // siehe #decorate
             flag= flag | computeAdornmentFlags(roots[i]);
-        }
-        if (flag == JavaElementImageDescriptor.ERROR) {
-            return flag;
         }
         
         // check for errors in .ipsproject file
-        if (JavaElementImageDescriptor.ERROR == computeAdornmentFlags(project.getIpsProjectPropertiesFile())){
-            return JavaElementImageDescriptor.ERROR;
-        }
+        flag= flag | computeAdornmentFlags(project.getIpsProjectPropertiesFile());
         
         return flag;
     }
@@ -219,9 +209,9 @@ public class IpsProblemsLabelDecorator implements ILabelDecorator, ILightweightL
     public void decorate(Object element, IDecoration decoration) {
         try {
             int adornmentFlags = computeAdornmentFlags(element);
-            if (adornmentFlags == JavaElementImageDescriptor.ERROR) {
+            if ((adornmentFlags & JavaElementImageDescriptor.ERROR) == JavaElementImageDescriptor.ERROR) {
                 decoration.addOverlay(IpsUIPlugin.getDefault().getImageDescriptor("ovr16/error_co.gif")); //$NON-NLS-1$
-            } else if (adornmentFlags == JavaElementImageDescriptor.WARNING) {
+            } else if ((adornmentFlags & JavaElementImageDescriptor.WARNING) == JavaElementImageDescriptor.WARNING) {
                 decoration.addOverlay(IpsPlugin.getDefault().getImageDescriptor("ovr16/warning_co.gif")); //$NON-NLS-1$
             }
         } catch (CoreException e) {
