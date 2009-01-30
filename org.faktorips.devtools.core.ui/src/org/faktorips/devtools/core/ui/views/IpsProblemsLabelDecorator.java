@@ -30,6 +30,7 @@ import org.eclipse.swt.graphics.Rectangle;
 import org.faktorips.devtools.core.ImageDescriptorRegistry;
 import org.faktorips.devtools.core.ImageImageDescriptor;
 import org.faktorips.devtools.core.IpsPlugin;
+import org.faktorips.devtools.core.internal.model.ipsproject.IpsObjectPath;
 import org.faktorips.devtools.core.model.IIpsElement;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPart;
 import org.faktorips.devtools.core.model.ipsproject.IIpsPackageFragmentRoot;
@@ -47,6 +48,8 @@ import org.faktorips.devtools.core.ui.IpsUIPlugin;
  * @author Stefan Widmaier
  */
 public class IpsProblemsLabelDecorator implements ILabelDecorator, ILightweightLabelDecorator {
+    private static final IMarker[] EMPTY_MARKER_ARRAY = new IMarker[0];
+
     /**
      * Indicates if the LabelDecorator works with a flat or hierarchical viewstructure. True means
      * flat layout, false means hierarchical layout. Default is false for use with the hierarchical
@@ -80,50 +83,55 @@ public class IpsProblemsLabelDecorator implements ILabelDecorator, ILightweightL
     }
 
     private int computeAdornmentFlags(Object element) throws CoreException {
+        int flag = 0;
+        IMarker[] markers = EMPTY_MARKER_ARRAY;
+        IResource res = null;
         if (element instanceof IIpsElement) {
             IIpsElement ipsElement = ((IIpsElement)element);
             if (ipsElement != null) {
-                // Prevent errors in IIpsObject from being displayed by its parts (even if they are themselves the error source)
-                if(ipsElement instanceof IIpsObjectPart){
+                // Prevent errors in IIpsObject from being displayed by its parts (even if they are
+                // themselves the error source)
+                if (ipsElement instanceof IIpsObjectPart) {
                     return 0;
-                }else if(ipsElement instanceof IIpsProject){
+                } else if (ipsElement instanceof IIpsProject) {
                     return computeAdornmentFlagsProject((IIpsProject)ipsElement);
-                }else{
-                    IResource res = ipsElement.getEnclosingResource();
+                } else {
+                    res = ipsElement.getEnclosingResource();
                     if (res == null || !res.isAccessible()) {
                         return 0;
                     }
-
-                    int flag = 0;
-
-                    IMarker[] markers;
                     if (isFlatLayout && !(element instanceof IIpsPackageFragmentRoot)) {
                         /*
-                         * In flat layout every packagefragment is represented in its own treeitem, thus
-                         * packagefragments of parentfolders should not be decorated. Only search the
-                         * packagefragments children (files) for problems, no search is needed in the
-                         * tree of subfolders. PackageFragmentRoots on the other hand should always be
-                         * decorated with the problem markers of their packagefragments.
+                         * In flat layout every packagefragment is represented in its own treeitem,
+                         * thus packagefragments of parentfolders should not be decorated. Only
+                         * search the packagefragments children (files) for problems, no search is
+                         * needed in the tree of subfolders. PackageFragmentRoots on the other hand
+                         * should always be decorated with the problem markers of their
+                         * packagefragments.
                          */
                         markers = res.findMarkers(IpsPlugin.PROBLEM_MARKER, true, IResource.DEPTH_ONE);
                     } else {
                         markers = res.findMarkers(IpsPlugin.PROBLEM_MARKER, true, IResource.DEPTH_INFINITE);
                     }
-                    for (int i = 0; i < markers.length && (flag != JavaElementImageDescriptor.ERROR); i++) {
-                        if (markers[i].exists()) {
-                            int prio = markers[i].getAttribute(IMarker.SEVERITY, -1);
-                            if (prio == IMarker.SEVERITY_WARNING) {
-                                flag = JavaElementImageDescriptor.WARNING;
-                            } else if (prio == IMarker.SEVERITY_ERROR) {
-                                flag = JavaElementImageDescriptor.ERROR;
-                            }
-                        }
-                    }
-                    return flag;
+                }
+            }
+        } else if (element instanceof IResource) {
+            markers = ((IResource)element).findMarkers(IpsPlugin.PROBLEM_MARKER, false, IResource.DEPTH_ONE);
+        } else {
+            return 0;
+        }
+        
+        for (int i = 0; i < markers.length && (flag != JavaElementImageDescriptor.ERROR); i++) {
+            if (markers[i].exists()) {
+                int prio = markers[i].getAttribute(IMarker.SEVERITY, -1);
+                if (prio == IMarker.SEVERITY_WARNING) {
+                    flag = JavaElementImageDescriptor.WARNING;
+                } else if (prio == IMarker.SEVERITY_ERROR) {
+                    flag = JavaElementImageDescriptor.ERROR;
                 }
             }
         }
-        return 0;
+        return flag;
     }
 
     /**
@@ -135,8 +143,21 @@ public class IpsProblemsLabelDecorator implements ILabelDecorator, ILightweightL
         IIpsPackageFragmentRoot[] roots= project.getIpsPackageFragmentRoots();
         int flag= 0;
         for (int i = 0; i < roots.length; i++) {
+            // TODO Joerg pruefen: wenn im ersten IpsPackageFragmentRoot ein Fehler ist
+            // wird decorate ein Fehler im zweiten Root nicht korrekt angezeigt, weil im Decorator auf 
+            // == JavaElementImageDescriptor.ERROR geprueft wird und nicht bool. =
+            // ist das richtig? // siehe #decorate
             flag= flag | computeAdornmentFlags(roots[i]);
         }
+        if (flag == JavaElementImageDescriptor.ERROR) {
+            return flag;
+        }
+        
+        // check for errors in .ipsproject file
+        if (JavaElementImageDescriptor.ERROR == computeAdornmentFlags(project.getIpsProjectPropertiesFile())){
+            return JavaElementImageDescriptor.ERROR;
+        }
+        
         return flag;
     }
 
