@@ -173,7 +173,7 @@ public class IpsPlugin extends AbstractUIPlugin {
         
         IpsObjectType.POLICY_CMPT_TYPE.getId(); // force loading of class before model is created!
         // ensure that this class is loaded in time
-        BFElementType.ACTION_BUSINESSFUNCTIONCALL.getImage();
+        BFElementType.ACTION_BUSINESSFUNCTIONCALL.getClass();
         model = new IpsModel();
         model.startListeningToResourceChanges();
     }
