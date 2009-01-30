@@ -311,7 +311,7 @@ fi
 VERSION_QUALIFIER=$(echo $BUILD_VERSION | sed -r "s/([0-9]*)\.([0-9]*)\.([0-9]*)\.(.*)/\4/g")
 VERSION=$(echo $BUILD_VERSION | sed -r "s/([0-9]*)\.([0-9]*)\.([0-9]*)\.(.*)/\1\.\2\.\3/g")
 FETCH_TAG=$(echo $BUILD_VERSION | sed -r "s/([0-9]*)\.([0-9]*)\.([0-9]*)\.(.*)/v\1_\2_\3_\4/g")
-echo "# written from $0" > $RELEASE_PROPERTIES
+echo "# written by $0" > $RELEASE_PROPERTIES
 echo "# $(date)" >> $RELEASE_PROPERTIES
 echo buildType= >> $RELEASE_PROPERTIES
 echo version=$VERSION  >> $RELEASE_PROPERTIES
