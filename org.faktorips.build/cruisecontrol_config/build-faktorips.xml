@@ -370,6 +370,10 @@
             <equals arg1="${runtests}" arg2="false"/>
         </condition>
 		
+	    <condition property="isSkipPublish" value="true">
+	    	 <equals arg1="${skipPublish}" arg2="true"/>
+	    </condition>
+		
 		<!-- check if the copy all.map should be used, if useCvs is false 
 		     otherwise the cvs all.map is used to fetch the sources from cvs -->
     	<condition property="all.map" value="all_copy.map">
@@ -492,7 +496,7 @@
     </target>
 
     <!--helper targets-->
-    <target name="-print.publish.info" unless="skipPublish">
+    <target name="-print.publish.info" unless="isSkipPublish">
         <echo message="-> updatesite: ${updatesite.path}"/>
         <echo message="-> download zip files: "/>
         <echo message="   1. ${faktoripsReleaseDownloadZipPath}"/>
@@ -521,15 +525,15 @@
     <target name="-checkout.updatesite" if="isUseCvs">
         <cvs command="co org.faktorips.updatesite" dest="${projectsRootDir}" cvsroot="${cvsroot}" quiet="true"/>
     </target>
-    <target name="-checkin.updatesite" if="isUseCvs" unless="skipPublish">
+    <target name="-checkin.updatesite" if="isUseCvs" unless="isSkipPublish">
     	<cvs command="commit -m 'release build: ${build.version}'" 
         	package="org.faktorips.updatesite" dest="${projectsRootDir}" cvsroot="${cvsroot}" quiet="true"/>
     </target>
-    <target name="-checkout.updatesite.on.faktorips.org" if="isUseCvs" unless="skipPublish">
+    <target name="-checkout.updatesite.on.faktorips.org" if="isUseCvs" unless="isSkipPublish">
         <echo message="update faktorips.org updatesite: ${updatesite.path}"/>
         <cvs command="co org.faktorips.updatesite" dest="${updatesite.path}" cvsroot="${cvsroot}" quiet="true"/>
     </target>	
-    <target name="-copy.faktorips.release.to.download.dir" unless="skipPublish">
+    <target name="-copy.faktorips.release.to.download.dir" unless="isSkipPublish">
     	<!-- input: dest.name -->
     	<!--        source    -->
     	<!-- unzip, add eclipse folder and zip in download dir -->
@@ -540,7 +544,7 @@
     	<unzip src="${buildDirectory}/results/${source}" dest="${zip.dir}"></unzip>
     	<zip destfile="${dest.name}" basedir="${zip.dir}/.." />
     </target>
-    <target name="-copy.updatesite.to.faktorips.org" unless="skipPublish">
+    <target name="-copy.updatesite.to.faktorips.org" unless="isSkipPublish">
         <copy todir="${updatesite.path}/plugins" overwrite="true" verbose="true">
             <fileset dir="${buildDirectory}/updateSite/plugins" includes="*.jar"/>
         </copy>
@@ -589,7 +593,7 @@
     	<replace file="${pluginbuilder.config}" token="pluginbuilder.is.runtests=false" value="pluginbuilder.is.runtests=true"/>
     </target>
     
-    <target name="-fail.if.file.exists" unless="skipPublish">
+    <target name="-fail.if.file.exists" unless="isSkipPublish">
         <fail message="Release zip already exists: ${file} (delete or use -Doverwrite=true)">
               <condition>
                  <and>
@@ -600,7 +604,7 @@
           </fail>
     </target>
               	
-    <target name="-merge.updatesite.xml" unless="skipPublish">
+    <target name="-merge.updatesite.xml" unless="isSkipPublish">
         <xslt in="${projectsRootDir}/org.faktorips.updatesite/site.xml" out="${projectsRootDir}/org.faktorips.updatesite/site_merge.xml" 
         	style="${projectsRootDir}/org.faktorips.build/cruisecontrol_config/xsl/mergeupdatesite.xsl" force="true">
             <outputproperty name="method" value="xml"/>
