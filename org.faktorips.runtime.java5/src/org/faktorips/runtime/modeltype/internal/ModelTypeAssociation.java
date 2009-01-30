@@ -16,7 +16,6 @@ package org.faktorips.runtime.modeltype.internal;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 
-import org.faktorips.runtime.internal.AbstractRuntimeRepository;
 import org.faktorips.runtime.modeltype.IModelType;
 import org.faktorips.runtime.modeltype.IModelTypeAssociation;
 
@@ -26,6 +25,7 @@ import org.faktorips.runtime.modeltype.IModelTypeAssociation;
  */
 public class ModelTypeAssociation extends AbstractModelElement implements IModelTypeAssociation {
 
+    private ModelType modelType;
     private AssociationType associationType = AssociationType.Association;
     private int minCardinality = 0;
     private int maxCardinality = Integer.MAX_VALUE;
@@ -33,8 +33,16 @@ public class ModelTypeAssociation extends AbstractModelElement implements IModel
     private String targetJavaClassName = null;
     private boolean isProductRelevant = false;
 
-    public ModelTypeAssociation(AbstractRuntimeRepository repository) {
-        super(repository);
+    public ModelTypeAssociation(ModelType modelType) {
+        super(modelType.getAbstractRepository());
+        this.modelType = modelType;
+    }
+    
+    /**
+     * {@inheritDoc}
+     */
+    public IModelType getModelType() {
+        return modelType;
     }
 
     /**

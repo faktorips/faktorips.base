@@ -21,6 +21,11 @@ package org.faktorips.runtime.modeltype;
 public interface IModelTypeAttribute extends IModelElement {
 
     /**
+     * Returns the model type this attribute belongs to.
+     */
+    public IModelType getModelType();
+    
+    /**
      * @return this attribute's datatype <code>Class</code>.
      * @throws ClassNotFoundException if the datatype's class can not be loaded.
      */

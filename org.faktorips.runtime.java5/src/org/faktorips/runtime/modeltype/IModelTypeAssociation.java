@@ -21,6 +21,11 @@ package org.faktorips.runtime.modeltype;
 public interface IModelTypeAssociation extends IModelElement {
 
     /**
+     * Returns the model type this association belongs to.
+     */
+    public IModelType getModelType();
+
+    /**
      * Returns the target model type object of this association.
      * 
      * @throws ClassNotFoundException if the target class could not be loaded.

@@ -193,7 +193,7 @@ public class ModelType extends AbstractModelElement implements IModelType {
             switch (event) {
                 case XMLStreamConstants.START_ELEMENT:
                     if (parser.getLocalName().equals("ModelTypeAttribute")) {
-                        IModelTypeAttribute attribute = new ModelTypeAttribute(getAbstractRepository());
+                        IModelTypeAttribute attribute = new ModelTypeAttribute(this);
                         attribute.initFromXml(parser);
                         attributes.add(attribute);
                         attributesByName.put(attribute.getName(), attribute);
@@ -216,7 +216,7 @@ public class ModelType extends AbstractModelElement implements IModelType {
             switch (event) {
                 case XMLStreamConstants.START_ELEMENT:
                     if (parser.getLocalName().equals("ModelTypeAssociation")) {
-                        IModelTypeAssociation association = new ModelTypeAssociation(getAbstractRepository());
+                        IModelTypeAssociation association = new ModelTypeAssociation(this);
                         association.initFromXml(parser);
                         associations.add(association);
                         associationsByName.put(association.getName(), association);
