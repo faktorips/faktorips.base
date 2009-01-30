@@ -40,6 +40,10 @@ public class GenerationSelectionDialogTest extends AbstractIpsPluginTest {
         shell = new Shell(Display.getCurrent());
     }
 
+    public void tearDownExtension(){
+        shell.dispose();
+    }
+    
     public void testCreatedChoiceBtns() throws CoreException{
         GenerationSelectionDialog dialog = null;
         IIpsObjectGeneration[] generations = new IIpsObjectGeneration[10];

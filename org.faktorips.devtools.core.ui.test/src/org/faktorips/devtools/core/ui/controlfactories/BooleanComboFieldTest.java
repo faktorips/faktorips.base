@@ -37,6 +37,10 @@ public class BooleanComboFieldTest extends TestCase {
         this.shell = new Shell(Display.getCurrent());
     }
 
+    public void tearDownExtension(){
+        shell.dispose();
+    }
+    
     public void testSetText() {
         Combo c = new Combo(shell, SWT.READ_ONLY);
         c.setItems(new String[]{"true", "false"});

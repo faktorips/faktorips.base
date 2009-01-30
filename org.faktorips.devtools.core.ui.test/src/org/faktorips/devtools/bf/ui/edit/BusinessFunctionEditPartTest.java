@@ -19,6 +19,7 @@ import org.eclipse.gef.EditPart;
 import org.eclipse.gef.editparts.ScalableFreeformRootEditPart;
 import org.eclipse.gef.ui.parts.ScrollingGraphicalViewer;
 import org.eclipse.swt.widgets.Display;
+import org.eclipse.swt.widgets.Shell;
 import org.faktorips.devtools.core.AbstractIpsPluginTest;
 import org.faktorips.devtools.core.model.bf.BusinessFunctionIpsObjectType;
 import org.faktorips.devtools.core.model.bf.IBusinessFunction;
@@ -33,14 +34,19 @@ public class BusinessFunctionEditPartTest extends AbstractIpsPluginTest {
     private IBusinessFunction businessFunction;
     private BusinessFunctionEditPart editPart;
     private boolean refreshChildrenCalled;
+
+    private Shell shell;
     
     public void setUp() throws Exception{
         super.setUp();
+        
+        shell = new Shell(Display.getCurrent());
+        
         ipsProject = newIpsProject("TestProject");
         businessFunction = (IBusinessFunction)newIpsObject(ipsProject, BusinessFunctionIpsObjectType.getInstance(), "bf");
         refreshChildrenCalled = false;
         ScrollingGraphicalViewer viewer = new ScrollingGraphicalViewer();
-        viewer.createControl(Display.getCurrent().getActiveShell());
+        viewer.createControl(shell);
         ScalableFreeformRootEditPart root = new ScalableFreeformRootEditPart();
         root.setViewer(viewer);
         viewer.setRootEditPart(root);
@@ -58,6 +64,10 @@ public class BusinessFunctionEditPartTest extends AbstractIpsPluginTest {
         editPart.setModel(businessFunction);
     }
 
+    public void tearDownExtension(){
+        shell.dispose();
+    }
+    
     public void testActivate() {
         editPart.activate();
         businessFunction.newControlFlow();
