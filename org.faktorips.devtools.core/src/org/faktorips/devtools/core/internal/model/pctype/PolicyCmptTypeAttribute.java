@@ -310,8 +310,7 @@ public class PolicyCmptTypeAttribute extends Attribute implements IPolicyCmptTyp
                 superAttr.getValueSet().containsValueSet(valueSet, result, valueSet, null);
                 if (!attributeType.equals(superAttr.getAttributeType())) {
                     String text = Messages.PolicyCmptTypeAttribute_TypeOfOverwrittenAttributeCantBeChanged;
-                    result.add(new Message(MSGCODE_OVERWRITTEN_ATTRIBUTE_HAS_DIFFERENT_TYPE, text, Message.ERROR, this, new String[] { PROPERTY_ATTRIBUTE_TYPE }));
-                    // String text = "Der Typ des überschriebenen Attributs kann nicht geändert werden!"); 
+                    result.add(new Message(MSGCODE_OVERWRITTEN_ATTRIBUTE_HAS_DIFFERENT_TYPE, text, Message.ERROR, this, new String[] { PROPERTY_ATTRIBUTE_TYPE })); 
                 }
             }
         }
