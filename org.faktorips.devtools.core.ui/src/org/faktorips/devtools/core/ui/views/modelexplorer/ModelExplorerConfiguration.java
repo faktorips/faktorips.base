@@ -156,6 +156,12 @@ public class ModelExplorerConfiguration {
      * <code>IIpsProject</code>, false otherwise.
      */
     public boolean representsFile(Object item) {
+        if (item instanceof IIpsPackageFragmentRoot) {
+            IIpsPackageFragmentRoot root = (IIpsPackageFragmentRoot)item;
+            if (root.isBasedOnIpsArchive()) {
+                return true;
+            }
+        }
         if(item instanceof IIpsElement){
             IIpsElement ipsElement = (IIpsElement)item;
             IResource resource = ipsElement.getEnclosingResource();
