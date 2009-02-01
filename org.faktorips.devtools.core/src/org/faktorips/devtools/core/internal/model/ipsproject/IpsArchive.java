@@ -427,8 +427,8 @@ public class IpsArchive implements IIpsArchive {
      */
     public IResource getCorrespondingResource() {
         if (archivePath.isAbsolute()) {
-            if (archivePath.getDevice()!=null) {
-                return null; 
+            if (archivePath.getDevice()!=null || archivePath.isUNC()) {
+                return null; // file outside the workspace
             }
             IWorkspaceRoot wsRoot = root.getIpsProject().getProject().getWorkspace().getRoot();
             return wsRoot.getFile(archivePath);

@@ -143,6 +143,10 @@ public class IpsArchiveTest extends AbstractIpsPluginTest {
     	
     	externalArchiveFile.delete();
     	assertFalse(archive.exists());
+    	
+    	externalArchivePath = new Path("//server/freigabe/abc.jar"); // UNC-Path
+        archive = new IpsArchive(project, externalArchivePath);
+        assertFalse(archive.exists());
     }
 
     public void testGetNoneEmptyPackages() throws CoreException {
