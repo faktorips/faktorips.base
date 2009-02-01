@@ -302,31 +302,34 @@ if [ ! "$OVERWRITE" = "true" -a -f $RELEASE_PROPERTIES  ] ; then
   exit 1
 fi
 
+VERSION_QUALIFIER=$(echo $BUILD_VERSION | sed -r "s/([0-9]*)\.([0-9]*)\.([0-9]*)\.(.*)/\4/g")
+VERSION=$(echo $BUILD_VERSION | sed -r "s/([0-9]*)\.([0-9]*)\.([0-9]*)\.(.*)/\1\.\2\.\3/g")
+FETCH_TAG=$(echo $BUILD_VERSION | sed -r "s/([0-9]*)\.([0-9]*)\.([0-9]*)\.(.*)/v\1_\2_\3_\4/g")
+
 # 3. generate release.properties
 RELEASE_PROPERTIES_EXISTS=false
 if [ -f $RELEASE_PROPERTIES ] ; then
   RELEASE_PROPERTIES_EXISTS=true
 fi
-# overwrite if exists 
-VERSION_QUALIFIER=$(echo $BUILD_VERSION | sed -r "s/([0-9]*)\.([0-9]*)\.([0-9]*)\.(.*)/\4/g")
-VERSION=$(echo $BUILD_VERSION | sed -r "s/([0-9]*)\.([0-9]*)\.([0-9]*)\.(.*)/\1\.\2\.\3/g")
-FETCH_TAG=$(echo $BUILD_VERSION | sed -r "s/([0-9]*)\.([0-9]*)\.([0-9]*)\.(.*)/v\1_\2_\3_\4/g")
-echo "# written by $0" > $RELEASE_PROPERTIES
-echo "# $(date)" >> $RELEASE_PROPERTIES
-echo buildType= >> $RELEASE_PROPERTIES
-echo version=$VERSION  >> $RELEASE_PROPERTIES
-echo fetchTag=$FETCH_TAG  >> $RELEASE_PROPERTIES
-echo version.qualifier=$VERSION_QUALIFIER  >> $RELEASE_PROPERTIES
-echo buildTypePresentation=  >> $RELEASE_PROPERTIES
-
-# 4. checkin (add+commit) generated release.properties
-if [ ! "$NOCVS" = "true" ] ; then
-  if [ "$RELEASE_PROPERTIES_EXISTS" = "false" ] ; then
-    # only a new file will be added
-    cvs -d $CVS_ROOT add $RELEASE_PROPERTIES
+# create release property file if not exists or overwrite is true
+if [ "$RELEASE_PROPERTIES_EXISTS" = "false" -o "$OVERWRITE" = "true" ] ; then
+  echo "# written by $0" > $RELEASE_PROPERTIES
+  echo "# $(date)" >> $RELEASE_PROPERTIES
+  echo buildType= >> $RELEASE_PROPERTIES
+  echo version=$VERSION  >> $RELEASE_PROPERTIES
+  echo fetchTag=$FETCH_TAG  >> $RELEASE_PROPERTIES
+  echo version.qualifier=$VERSION_QUALIFIER  >> $RELEASE_PROPERTIES
+  echo buildTypePresentation=  >> $RELEASE_PROPERTIES
+  
+  # 4. checkin (add+commit) generated release.properties
+  if [ ! "$NOCVS" = "true" ] ; then
+    if [ "$RELEASE_PROPERTIES_EXISTS" = "false" ] ; then
+      # only a new file will be added
+      cvs -d $CVS_ROOT add $RELEASE_PROPERTIES
+    fi
+    # update file in cvs
+    cvs -d $CVS_ROOT commit -m "release build $BUILD_VERSION" $RELEASE_PROPERTIES
   fi
-  # update file in cvs
-  cvs -d $CVS_ROOT commit -m "release build $BUILD_VERSION" $RELEASE_PROPERTIES
 fi
 
 # 5. tag all projects defined in the pluginbuilder project (move tag if already exists)
