@@ -161,7 +161,7 @@ public class ExcelTableExportOperation implements IWorkspaceRunnable {
 
         monitor.worked(1);
 
-        // FS#1188 — Tabelleninhalte exportieren: Checkbox "mit Spaltenüberschrift" und Zielordner
+        // FS#1188 Tabelleninhalte exportieren: Checkbox "mit Spaltenueberschrift" und Zielordner
         createHeader(sheet, structure.getColumns(), exportColumnHeaderRow);
 
         monitor.worked(1);
