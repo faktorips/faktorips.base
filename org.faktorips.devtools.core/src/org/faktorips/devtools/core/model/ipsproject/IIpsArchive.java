@@ -52,7 +52,7 @@ public interface IIpsArchive {
 
     /**
      * Returns the absolute path in the local file system to this resource, 
-     * or <code>null</code> if no path can be determined.
+     * or <code>null</code> if no path can't be determined.
      */
     public IPath getLocation();
 

@@ -31,6 +31,8 @@ import org.faktorips.devtools.core.model.CreateIpsArchiveOperation;
 import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
 import org.faktorips.devtools.core.model.ipsobject.QualifiedNameType;
 import org.faktorips.devtools.core.model.ipsproject.IIpsArchive;
+import org.faktorips.devtools.core.model.ipsproject.IIpsObjectPath;
+import org.faktorips.devtools.core.model.ipsproject.IIpsPackageFragmentRoot;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 
@@ -44,7 +46,7 @@ import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 public class IpsArchiveTest extends AbstractIpsPluginTest {
 
     private IIpsProject project;
-    private IIpsArchive archive;
+    private IpsArchive archive;
     private IFile archiveFile;
 	private File externalArchiveFile;
     private IPath archivePath;
@@ -65,7 +67,7 @@ public class IpsArchiveTest extends AbstractIpsPluginTest {
         newPolicyCmptTypeWithoutProductCmptType(project, "home.base.HomePolicy");
         
         archiveFile = project.getProject().getFile("test.ipsar");
-		archivePath = archiveFile.getLocation();
+		archivePath = archiveFile.getProjectRelativePath();
         createArchive(project, archiveFile);
         archive = new IpsArchive(project, archivePath);
         
@@ -120,20 +122,23 @@ public class IpsArchiveTest extends AbstractIpsPluginTest {
         assertEquals(archivePath, archive.getArchivePath());
     }
 
-    public void testExists_FileInWorkspace() {
+    public void testExists_FileInSameProject() throws CoreException {
         assertTrue(archive.exists());
-        
-        archive = new IpsArchive(project, project.getProject().getFile("UnknownFile").getFullPath());
+        archiveFile.delete(true, null);
         assertFalse(archive.exists());
     }
 
+    public void testExists_FileInWorkspaceButDifferentProject() throws CoreException {
+        IIpsProject project2 = newIpsProject("Project2");
+        IIpsArchive archive2 = new IpsArchive(project2, archiveFile.getFullPath());
+        
+        assertTrue(archive2.exists());
+        archiveFile.delete(true, null);
+        assertFalse(archive2.exists());
+    }
+
     public void testExists_FileOutsideWorkspace() throws IOException {
-    	// assert temp file is created outside of workspace directory
-    	IWorkspaceRoot workspaceRoot = ResourcesPlugin.getWorkspace().getRoot();
-    	assertNull(workspaceRoot.getFileForLocation(externalArchivePath));
-    	
     	IpsArchive archive = new IpsArchive(project, externalArchivePath);
-    	assertNotNull(archive);
     	assertTrue(archive.exists());
     	
     	archive = new IpsArchive(project, new Path("/path/does/not/exist"));
@@ -146,6 +151,22 @@ public class IpsArchiveTest extends AbstractIpsPluginTest {
         assertEquals("home.base", packs[0]);
         assertEquals("motor", packs[1]);
         assertEquals("motor.collision", packs[2]);
+    }
+    
+    public void testGetCorrespondingResource_FileInSameProject() {
+        assertEquals(archiveFile, archive.getCorrespondingResource());
+    }
+
+    public void testGetCorrespondingResource_FileInWorkspaceButDifferentProject() throws CoreException {
+        IIpsProject project2 = newIpsProject("Project2");
+        IpsArchive archive2 = new IpsArchive(project2, archiveFile.getFullPath());
+
+        assertEquals(archiveFile, archive2.getCorrespondingResource());
+    }
+
+    public void testGetCorrespondingResource_FileOutsideWorkspace() {
+        IpsArchive ipsArchive = new IpsArchive(project, externalArchivePath);
+        assertNull(ipsArchive.getCorrespondingResource());
     }
 
     public void testGetNoneEmptySubpackages() throws CoreException {

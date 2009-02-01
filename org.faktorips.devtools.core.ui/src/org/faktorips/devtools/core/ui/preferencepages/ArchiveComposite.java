@@ -202,7 +202,12 @@ public class ArchiveComposite extends Composite {
 
                 for (int i = 0; i < selectedArchives.length; i++) {
                     IFile archiveFile = (IFile) selectedArchives[i];
-                    IPath archivePath = archiveFile.getFullPath();
+                    IPath archivePath = null;
+                    if (ipsObjectPath.getIpsProject().getProject().equals(archiveFile.getProject())) {
+                        archivePath = archiveFile.getProjectRelativePath();
+                    } else {
+                        archivePath = archiveFile.getFullPath();                        
+                    }
                     IIpsArchiveEntry newEntry = ipsObjectPath.newArchiveEntry(archivePath);
                     alreadyRefArchives.add(newEntry);
                     

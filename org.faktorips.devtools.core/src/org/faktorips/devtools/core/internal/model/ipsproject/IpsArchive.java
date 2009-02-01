@@ -66,7 +66,6 @@ public class IpsArchive implements IIpsArchive {
     private final static int IPSOBJECT_FOLDER_NAME_LENGTH = IIpsArchive.IPSOBJECTS_FOLDER.length(); 
     
     private IPath archivePath;
-    private IPath location;
     private long modificationStamp;
     private ArchiveIpsPackageFragmentRoot root;
 
@@ -80,36 +79,21 @@ public class IpsArchive implements IIpsArchive {
         ArgumentCheck.notNull(ipsProject, "The parameter ipsproject cannot be null.");
         this.archivePath = path;
         this.root = new ArchiveIpsPackageFragmentRoot(ipsProject, this);
-        determineLocation();
     }
 
-    private void determineLocation(){
+    /**
+     * {@inheritDoc}
+     */
+    public IPath getLocation() {
         if(archivePath == null){
-            return;
+            return null;
         }
-        //try to find the file assuming a path relative to the workspace
-        IWorkspaceRoot wsRoot = root.getIpsProject().getProject().getWorkspace().getRoot();
-        IFile file = wsRoot.getFile(archivePath);
-        if(file != null && file.exists()){
-            location = file.getLocation();
-            return;
+        IResource resource = getCorrespondingResource();
+        if (resource!=null) {
+            return resource.getLocation();
         }
-        
-        //try to find the file assuming a path relative to the project
-        IProject project = root.getIpsProject().getProject();
-        file = project.getFile(archivePath);
-        if(file != null && file.exists()){
-            location = file.getLocation();
-            return;
-        }
-        //try to find the file outside the workspace in the file system
         File extFile = archivePath.toFile();
-        if(extFile.exists()){
-            location = Path.fromOSString(extFile.getAbsolutePath());
-        }
-        
-        //TODO pk: support for path variables is missing 26-09-2008
-        //location is null if it could not be determined through the above algorithm 
+        return Path.fromOSString(extFile.getAbsolutePath());
     }
 
     public boolean isContained(IResourceDelta delta) {
@@ -125,13 +109,6 @@ public class IpsArchive implements IIpsArchive {
     /**
      * {@inheritDoc}
      */
-    public IPath getLocation(){
-        return location;
-    }
-    
-    /**
-     * {@inheritDoc}
-     */
     public IPath getArchivePath() {
         return archivePath;
     }
@@ -140,13 +117,13 @@ public class IpsArchive implements IIpsArchive {
      * {@inheritDoc}
      */
     public boolean exists() {
-    	if (archivePath == null) {
-    		return false;
-    	}
-    	if(getLocation() != null){
-    	    return true;
-    	}
-    	return false;
+        IResource resource = getCorrespondingResource();
+        if (resource==null) {
+            // its a file outside the workspace
+            File extFile = archivePath.toFile();
+            return extFile.exists();
+        }
+        return resource.exists();
     }
     
     /**
@@ -448,13 +425,16 @@ public class IpsArchive implements IIpsArchive {
     /**
      * Returns an IResource only if the resource can be located by the {@link IWorkspaceRoot#getFileForLocation(IPath)} method. 
      */
-    IResource getCorrespondingResource() {
-        IWorkspaceRoot workspaceRoot = ResourcesPlugin.getWorkspace().getRoot();
-        IFile resource = workspaceRoot.getFileForLocation(getLocation());
-        if (resource == null) {
-            resource = workspaceRoot.getFile(getLocation());
+    public IResource getCorrespondingResource() {
+        if (archivePath.isAbsolute()) {
+            if (archivePath.getDevice()!=null) {
+                return null; 
+            }
+            IWorkspaceRoot wsRoot = root.getIpsProject().getProject().getWorkspace().getRoot();
+            return wsRoot.getFile(archivePath);
         }
-        return resource;
+        IProject project = root.getIpsProject().getProject();
+        return project.getFile(archivePath);
     }
 
 

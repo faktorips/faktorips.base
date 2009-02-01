@@ -13,14 +13,19 @@
 
 package org.faktorips.devtools.core.internal.model.ipsproject;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IResource;
+import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.IPath;
+import org.eclipse.core.runtime.Path;
 import org.faktorips.devtools.core.AbstractIpsPluginTest;
+import org.faktorips.devtools.core.model.CreateIpsArchiveOperation;
 import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
 import org.faktorips.devtools.core.model.ipsobject.QualifiedNameType;
@@ -58,9 +63,46 @@ public class ArchiveIpsPackageFragmentRootTest extends AbstractIpsPluginTest {
         createArchive(archiveProject, archiveFile);
 
         IIpsObjectPath path = project.getIpsObjectPath();
-        entry = (IpsArchiveEntry)path.newArchiveEntry(archiveFile.getLocation());
+        entry = (IpsArchiveEntry)path.newArchiveEntry(archiveFile.getProjectRelativePath());
         project.setIpsObjectPath(path);
         root = (ArchiveIpsPackageFragmentRoot)project.getIpsPackageFragmentRoots()[1];
+    }
+    
+    public void testExists_ArchiveInSameProject() throws CoreException {
+        assertTrue(root.exists());
+        archiveFile.delete(true, null);
+        assertFalse(root.exists());
+    }
+
+    public void testExists_ArchiveInWorkspaceButDifferentProject() throws CoreException {
+        IIpsProject project2 = newIpsProject("Project2");
+        IIpsObjectPath path2 = project2.getIpsObjectPath();
+        entry = (IpsArchiveEntry)path2.newArchiveEntry(archiveFile.getFullPath());
+        project2.setIpsObjectPath(path2);
+        root = (ArchiveIpsPackageFragmentRoot)project2.getIpsPackageFragmentRoots()[1];
+        
+        assertTrue(root.exists());
+        archiveFile.delete(true, null);
+        assertFalse(root.exists());
+    }
+
+    public void testExists_ArchiveOutsideWorkspace() throws Exception {
+
+        File externalArchiveFile = File.createTempFile("externalArchiveFile", ".ipsar");
+        externalArchiveFile.deleteOnExit();
+        CreateIpsArchiveOperation op = new CreateIpsArchiveOperation(project, externalArchiveFile);
+        ResourcesPlugin.getWorkspace().run(op, null);
+        IPath externalArchivePath = new Path(externalArchiveFile.getAbsolutePath());
+        
+        IIpsObjectPath path = project.getIpsObjectPath();
+        entry = (IpsArchiveEntry)path.newArchiveEntry(externalArchivePath);
+        project.setIpsObjectPath(path);
+        root = (ArchiveIpsPackageFragmentRoot)project.getIpsPackageFragmentRoots()[2];
+        
+        assertTrue(root.exists());
+        
+        externalArchiveFile.delete();
+        assertFalse(root.exists());
     }
 
     public void testGetIpsObjectPathEntry() throws CoreException {

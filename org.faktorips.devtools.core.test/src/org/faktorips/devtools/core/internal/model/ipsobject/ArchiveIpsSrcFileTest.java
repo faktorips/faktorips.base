@@ -49,7 +49,7 @@ public class ArchiveIpsSrcFileTest extends AbstractIpsPluginTest {
         
         project = newIpsProject();
         IFile archiveFile = project.getProject().getFile("test.ipsar");
-        IPath archivePath = archiveFile.getLocation();
+        IPath archivePath = archiveFile.getProjectRelativePath();
         createArchive(archiveProject, archiveFile);
         
         IIpsObjectPath path = project.getIpsObjectPath();

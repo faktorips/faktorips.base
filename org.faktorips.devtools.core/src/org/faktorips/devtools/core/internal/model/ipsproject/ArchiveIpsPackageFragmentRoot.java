@@ -56,6 +56,20 @@ public class ArchiveIpsPackageFragmentRoot extends AbstractIpsPackageFragmentRoo
     public IIpsArchive getIpsArchive() throws CoreException {
         return ((IpsArchiveEntry)getIpsObjectPathEntry()).getIpsArchive();
     }
+    
+    @Override
+    public boolean exists() {
+        IIpsArchive archive;
+        try {
+            archive = getIpsArchive();
+        } catch (CoreException e) {
+            return false;
+        }
+        if (archive==null) {
+            return false;
+        }
+        return archive.exists();
+    }
 
     /**
      * {@inheritDoc}
