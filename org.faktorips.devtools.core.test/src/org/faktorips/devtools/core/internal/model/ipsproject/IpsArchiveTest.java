@@ -141,7 +141,7 @@ public class IpsArchiveTest extends AbstractIpsPluginTest {
     	IpsArchive archive = new IpsArchive(project, externalArchivePath);
     	assertTrue(archive.exists());
     	
-    	archive = new IpsArchive(project, new Path("/path/does/not/exist"));
+    	externalArchiveFile.delete();
     	assertFalse(archive.exists());
     }
 

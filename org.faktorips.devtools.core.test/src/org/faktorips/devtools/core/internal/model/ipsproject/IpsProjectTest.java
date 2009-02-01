@@ -746,7 +746,7 @@ public class IpsProjectTest extends AbstractIpsPluginTest {
         createArchive(archiveProject, archiveFile);
         
         IIpsObjectPath path = ipsProject.getIpsObjectPath();
-        path.newArchiveEntry(archiveFile.getLocation());
+        path.newArchiveEntry(archiveFile.getProjectRelativePath());
         ipsProject.setIpsObjectPath(path);
         
         IIpsSrcFile foundFile = ipsProject.findIpsSrcFile(type.getQualifiedNameType());
@@ -821,7 +821,7 @@ public class IpsProjectTest extends AbstractIpsPluginTest {
     public void testFindProductCmptsWithIpsArchive() throws Exception{
         IFile archiveFile = ipsProject.getProject().getFile("test.ipsar");
         createArchive(ipsProject, archiveFile);
-        new IpsArchive(ipsProject, archiveFile.getLocation());
+        new IpsArchive(ipsProject, archiveFile.getProjectRelativePath());
         
         IIpsObjectPath path = ipsProject.getIpsObjectPath();
         path.newArchiveEntry(archiveFile.getLocation());
