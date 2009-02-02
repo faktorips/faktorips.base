@@ -98,7 +98,7 @@ public class IpsArchive implements IIpsArchive {
 
     public boolean isContained(IResourceDelta delta) {
         //see javadoc IIpsArchiveEntry#isContained(IResourceDelta)
-        IWorkspaceRoot wsRoot = root.getIpsProject().getProject().getWorkspace().getRoot();
+        IWorkspaceRoot wsRoot = ResourcesPlugin.getWorkspace().getRoot();
         IFile file = wsRoot.getFileForLocation(getLocation());
         if (delta.findMember(file.getProjectRelativePath()) != null) {
             return true;
@@ -283,21 +283,32 @@ public class IpsArchive implements IIpsArchive {
     
     private void readArchiveContentIfNecessary() throws CoreException {
         synchronized (this) {
-            if (getLocation() == null) {
+            if (!exists()) {
+                packs = new HashMap();
+                qNameTypes = new LinkedHashMap();
                 return;
             }
             if (packs==null || qNameTypes == null) {
                 readArchiveContent();
+                return;
             }
-            if ((getLocation().toFile().lastModified()!=modificationStamp)) {
-                readArchiveContent();
+            if (getCorrespondingResource()!=null) {
+                if (getCorrespondingResource().getModificationStamp()!=modificationStamp) {
+                    readArchiveContent();
+                    return;
+                }
+            } else {
+                if ((getLocation().toFile().lastModified()!=modificationStamp)) {
+                    readArchiveContent();
+                    return;
+                }
             }
         }
     }
     
     private void readArchiveContent() throws CoreException {
         if (!exists()) {
-            throw new CoreException(new IpsStatus("IpsArchive file " + getLocation() + " does not exist!")); //$NON-NLS-1$ //$NON-NLS-2$
+            throw new CoreException(new IpsStatus("IpsArchive file " + archivePath + " does not exist!")); //$NON-NLS-1$ //$NON-NLS-2$
         }
         if (IpsModel.TRACE_MODEL_MANAGEMENT) {
             System.out.println("Reading archive content from disk: " + this); //$NON-NLS-1$
@@ -307,7 +318,11 @@ public class IpsArchive implements IIpsArchive {
         
         File file = getFileFromPath();        
         
-		modificationStamp = file.lastModified();
+        if (getCorrespondingResource()!=null) {
+            modificationStamp = getCorrespondingResource().getModificationStamp();
+        } else {
+            modificationStamp = file.lastModified();
+        }
         JarFile jar;
         try {
             jar = new JarFile(file);
@@ -378,7 +393,7 @@ public class IpsArchive implements IIpsArchive {
     }
     
     public String toString() {
-        return "Archive " + getLocation(); //$NON-NLS-1$
+        return "Archive " + archivePath; //$NON-NLS-1$
     }
     
     private List getParentPackagesIncludingSelf(String pack) {
@@ -430,7 +445,7 @@ public class IpsArchive implements IIpsArchive {
             if (archivePath.getDevice()!=null || archivePath.isUNC()) {
                 return null; // file outside the workspace
             }
-            IWorkspaceRoot wsRoot = root.getIpsProject().getProject().getWorkspace().getRoot();
+            IWorkspaceRoot wsRoot = ResourcesPlugin.getWorkspace().getRoot();
             return wsRoot.getFile(archivePath);
         }
         IProject project = root.getIpsProject().getProject();

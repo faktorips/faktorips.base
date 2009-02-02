@@ -50,7 +50,7 @@ public class IpsArchiveTest extends AbstractIpsPluginTest {
     private IFile archiveFile;
 	private File externalArchiveFile;
     private IPath archivePath;
-	private Path externalArchivePath;
+	private IPath externalArchivePath;
 	
     private IPolicyCmptType motorPolicyType;
 
@@ -74,8 +74,8 @@ public class IpsArchiveTest extends AbstractIpsPluginTest {
 		externalArchiveFile = File.createTempFile("externalArchiveFile", ".ipsar");
     	externalArchiveFile.deleteOnExit();
     	CreateIpsArchiveOperation op = new CreateIpsArchiveOperation(project, externalArchiveFile);
-    	ResourcesPlugin.getWorkspace().run(op, null);
-    	externalArchivePath = new Path(externalArchiveFile.getAbsolutePath());
+    	op.run(null);
+    	externalArchivePath = Path.fromOSString(externalArchiveFile.getAbsolutePath());
     }
     
     /**
@@ -171,6 +171,21 @@ public class IpsArchiveTest extends AbstractIpsPluginTest {
     public void testGetCorrespondingResource_FileOutsideWorkspace() {
         IpsArchive ipsArchive = new IpsArchive(project, externalArchivePath);
         assertNull(ipsArchive.getCorrespondingResource());
+    }
+    
+    public void testGetLocation_FileInSameProject() {
+        assertEquals(archiveFile.getLocation(), archive.getLocation());
+    }
+    
+    public void testGetLocation_FileInWorkspaceButDifferentProject() throws CoreException {
+        IpsArchive ipsArchive = new IpsArchive(project, externalArchivePath);
+        assertEquals(externalArchivePath, ipsArchive.getLocation());
+    }
+    
+    public void testGetLocation_FileOutsideWorkspace() throws CoreException {
+        IIpsProject project2 = newIpsProject("Project2");
+        IpsArchive archive2 = new IpsArchive(project2, archiveFile.getFullPath());
+        assertEquals(archiveFile.getLocation(), archive2.getLocation());
     }
 
     public void testGetNoneEmptySubpackages() throws CoreException {
