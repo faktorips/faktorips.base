@@ -292,17 +292,19 @@ public class IpsArchive implements IIpsArchive {
                 readArchiveContent();
                 return;
             }
-            if (getCorrespondingResource()!=null) {
-                if (getCorrespondingResource().getModificationStamp()!=modificationStamp) {
-                    readArchiveContent();
-                    return;
-                }
-            } else {
-                if ((getLocation().toFile().lastModified()!=modificationStamp)) {
-                    readArchiveContent();
-                    return;
-                }
+            if (getActualFileModificationStamp()!=modificationStamp) {
+                readArchiveContent();
+                return;
             }
+        }
+    }
+    
+    private long getActualFileModificationStamp() {
+        IResource resource = getCorrespondingResource();
+        if (resource==null) {
+            return getLocation().toFile().lastModified();
+        } else {
+            return resource.getModificationStamp();
         }
     }
     
@@ -318,11 +320,7 @@ public class IpsArchive implements IIpsArchive {
         
         File file = getFileFromPath();        
         
-        if (getCorrespondingResource()!=null) {
-            modificationStamp = getCorrespondingResource().getModificationStamp();
-        } else {
-            modificationStamp = file.lastModified();
-        }
+        modificationStamp = getActualFileModificationStamp();
         JarFile jar;
         try {
             jar = new JarFile(file);
@@ -443,15 +441,25 @@ public class IpsArchive implements IIpsArchive {
     public IResource getCorrespondingResource() {
         if (archivePath.isAbsolute()) {
             if (archivePath.getDevice()!=null || archivePath.isUNC()) {
-                return null; // file outside the workspace
+                // on Windows we can determin files outside the workspace with the device (like C:)
+                return null;
             }
             IWorkspaceRoot wsRoot = ResourcesPlugin.getWorkspace().getRoot();
+            if (archivePath.segmentCount()==0) {
+                return null;
+            }
+            // on Unix, absolute paths always start with a slash (/). 
+            // It is not possible to distinguish between workspace absolut paths and absolute path to locations outside the workspace 
+            // So we check, if the first segment identifies a project. 
+            if (!wsRoot.getProject(archivePath.segment(0)).exists()) {
+                return null;
+                // the archive is not located in the workspace
+            }
             return wsRoot.getFile(archivePath);
         }
         IProject project = root.getIpsProject().getProject();
         return project.getFile(archivePath);
     }
-
 
     public IIpsPackageFragmentRoot getRoot() {
         return root;
