@@ -17,6 +17,7 @@ import java.util.List;
 import java.util.NoSuchElementException;
 
 import org.eclipse.core.runtime.CoreException;
+import org.faktorips.datatype.Datatype;
 
 /**
  * <p>
@@ -51,7 +52,7 @@ import org.eclipse.core.runtime.CoreException;
  * 
  * @since 2.3
  */
-public interface IEnumType extends IEnumValueContainer {
+public interface IEnumType extends IEnumValueContainer, Datatype {
 
     /** The xml tag for this ips object. */
     public final static String XML_TAG = "EnumType"; //$NON-NLS-1$

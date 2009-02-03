@@ -21,9 +21,9 @@ import org.eclipse.core.runtime.CoreException;
 import org.faktorips.devtools.core.internal.model.ipsobject.IpsObjectPartCollection;
 import org.faktorips.devtools.core.model.enumtype.IEnumAttribute;
 import org.faktorips.devtools.core.model.enumtype.IEnumAttributeValue;
+import org.faktorips.devtools.core.model.enumtype.IEnumContent;
 import org.faktorips.devtools.core.model.enumtype.IEnumType;
 import org.faktorips.devtools.core.model.enumtype.IEnumValue;
-import org.faktorips.devtools.core.model.enumtype.IEnumContent;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPart;
 import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
@@ -294,6 +294,48 @@ public class EnumType extends EnumValueContainer implements IEnumType {
         }
 
         enumAttributeToDelete.delete();
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public String getJavaClassName() {
+        throw new UnsupportedOperationException();
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public boolean hasNullObject() {
+        return false;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public boolean isPrimitive() {
+        return false;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public boolean isValueDatatype() {
+        return false;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public boolean isVoid() {
+        return false;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public int compareTo(Object o) {
+        return 0;
     }
 
 }

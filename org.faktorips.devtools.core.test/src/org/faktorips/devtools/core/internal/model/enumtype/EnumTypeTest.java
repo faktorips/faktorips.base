@@ -21,8 +21,8 @@ import javax.xml.parsers.ParserConfigurationException;
 import org.eclipse.core.runtime.CoreException;
 import org.faktorips.devtools.core.model.enumtype.IEnumAttribute;
 import org.faktorips.devtools.core.model.enumtype.IEnumAttributeValue;
-import org.faktorips.devtools.core.model.enumtype.IEnumType;
 import org.faktorips.devtools.core.model.enumtype.IEnumContent;
+import org.faktorips.devtools.core.model.enumtype.IEnumType;
 import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
 import org.w3c.dom.Element;
 
@@ -244,5 +244,33 @@ public class EnumTypeTest extends AbstractIpsEnumPluginTest {
         genderEnumType.deleteEnumAttributeWithValues(genderEnumAttributeName);
         assertEquals(0, genderEnumType.getEnumAttributes().size());
         assertEquals(0, genderEnumMaleValue.getEnumAttributeValues().size());
+    }
+
+    public void testGetJavaClassName() {
+        try {
+            genderEnumType.getJavaClassName();
+        } catch (UnsupportedOperationException e) {
+        }
+    }
+
+    public void testHasNullObject() {
+        assertFalse(genderEnumType.hasNullObject());
+    }
+
+    public void testIsPrimitive() {
+        assertFalse(genderEnumType.isPrimitive());
+    }
+
+    public void testIsValueDatatype() {
+        assertFalse(genderEnumType.isValueDatatype());
+    }
+
+    public void testIsVoid() {
+        assertFalse(genderEnumType.isVoid());
+    }
+
+    @SuppressWarnings("unchecked")
+    public void testCompareTo() {
+        assertEquals(0, genderEnumType.compareTo(new Object()));
     }
 }
