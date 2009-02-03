@@ -11,24 +11,27 @@
  * Mitwirkende: Faktor Zehn AG - initial API and implementation - http://www.faktorzehn.de
  *******************************************************************************/
 
-package org.faktorips.devtools.core.model;
+package org.faktorips.devtools.core.internal.model.enumtype;
 
-import junit.framework.TestCase;
+import org.faktorips.devtools.core.model.enumtype.IEnumValue;
 
-import org.faktorips.devtools.core.IpsPlugin;
-import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
+public class EnumValueContainerTest extends AbstractIpsEnumPluginTest {
 
-/**
- *
- */
-public class IpsObjectTypeTest extends TestCase {
+    public void setUp() throws Exception {
+        super.setUp();
+    }
 
-    public void testNewObject() {
-        IpsObjectType[] types = IpsPlugin.getDefault().getIpsModel().getIpsObjectTypes();
-        assertEquals(types.length, IpsObjectType.ALL_TYPES.length);
-        for (int i = 0; i < types.length; i++) {
-            assertNotNull(types[i].newObject(null));
-        }
+    public void testGetEnumValues() {
+        assertEquals(2, genderEnumValues.getEnumValues().size());
+    }
+
+    public void testGetEnumValue() {
+        assertEquals(genderEnumMaleValue, genderEnumValues.getEnumValue(0));
+    }
+
+    public void testNewEnumValue() {
+        IEnumValue newEnumValue = genderEnumValues.newEnumValue();
+        assertEquals(newEnumValue, genderEnumValues.getEnumValue(2));
     }
 
 }

@@ -3,7 +3,7 @@
  * 
  * Alle Rechte vorbehalten.
  * 
- * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen, 
+ * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen,
  * etc.) duerfen nur unter den Bedingungen der Faktor-Zehn-Community Lizenzvereinbarung - Version
  * 0.1 (vor Gruendung Community) genutzt werden, die Bestandteil der Auslieferung ist und auch unter
  * http://www.faktorzehn.org/f10-org:lizenzen:community eingesehen werden kann.
@@ -20,15 +20,17 @@ import org.eclipse.osgi.util.NLS;
  * @author Thorsten Guenther
  */
 public class Messages extends NLS {
-	private static final String BUNDLE_NAME = "org.faktorips.devtools.core.internal.model.messages"; //$NON-NLS-1$
 
-	private Messages() {
-	}
+    private static final String BUNDLE_NAME = "org.faktorips.devtools.core.internal.model.messages"; //$NON-NLS-1$
 
-	static {
-		// initialize resource bundle
-		NLS.initializeMessages(BUNDLE_NAME, Messages.class);
-	}
+    private Messages() {
+
+    }
+
+    static {
+        // initialize resource bundle
+        NLS.initializeMessages(BUNDLE_NAME, Messages.class);
+    }
 
     public static String TableContentsEnumDatatypeAdapter_1;
 
@@ -36,16 +38,16 @@ public class Messages extends NLS {
 
     public static String ValidationUtils_msgObjectDoesNotExist;
 
-	public static String ValidationUtils_msgDatatypeDoesNotExist;
+    public static String ValidationUtils_msgDatatypeDoesNotExist;
 
-	public static String ValidationUtils_msgVoidNotAllowed;
+    public static String ValidationUtils_msgVoidNotAllowed;
 
-	public static String ValidationUtils_msgPropertyMissing;
+    public static String ValidationUtils_msgPropertyMissing;
 
-	public static String ValidationUtils_VALUE_VALUEDATATYPE_NOT_FOUND;
+    public static String ValidationUtils_VALUE_VALUEDATATYPE_NOT_FOUND;
 
-	public static String ValidationUtils_VALUEDATATYPE_INVALID;
+    public static String ValidationUtils_VALUEDATATYPE_INVALID;
 
-	public static String ValidationUtils_NO_INSTANCE_OF_VALUEDATATYPE;
+    public static String ValidationUtils_NO_INSTANCE_OF_VALUEDATATYPE;
 
 }

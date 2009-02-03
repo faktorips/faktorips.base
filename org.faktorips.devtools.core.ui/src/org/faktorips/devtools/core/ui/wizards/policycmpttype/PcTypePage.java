@@ -3,7 +3,7 @@
  * 
  * Alle Rechte vorbehalten.
  * 
- * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen, 
+ * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen,
  * etc.) duerfen nur unter den Bedingungen der Faktor-Zehn-Community Lizenzvereinbarung - Version
  * 0.1 (vor Gruendung Community) genutzt werden, die Bestandteil der Auslieferung ist und auch unter
  * http://www.faktorzehn.org/f10-org:lizenzen:community eingesehen werden kann.
@@ -36,14 +36,13 @@ import org.faktorips.devtools.core.ui.controls.IpsObjectRefControl;
 import org.faktorips.devtools.core.ui.wizards.productcmpttype.ProductCmptTypePage;
 import org.faktorips.devtools.core.ui.wizards.type.TypePage;
 
-
 /**
- * An IpsObjectPage for the IpsObjectType PolicyCmptType. 
+ * An IpsObjectPage for the IpsObjectType PolicyCmptType.
  */
 public class PcTypePage extends TypePage {
-    
+
     private CheckboxField configurableField;
-    
+
     /**
      * @param pageName
      * @param selection
@@ -64,19 +63,21 @@ public class PcTypePage extends TypePage {
     /**
      * Associates the product component type page
      */
-    public void setProductCmptTypePage(ProductCmptTypePage page){
+    public void setProductCmptTypePage(ProductCmptTypePage page) {
         this.pageOfAssociatedType = page;
     }
-    
+
     /**
      * {@inheritDoc}
      */
     protected void fillNameComposite(Composite nameComposite, UIToolkit toolkit) {
         super.fillNameComposite(nameComposite, toolkit);
-        
+
         toolkit.createLabel(nameComposite, ""); //$NON-NLS-1$
-        configurableField = new CheckboxField(toolkit.createCheckbox(nameComposite, Messages.PcTypePage_configuredByProductCmptType));
-        configurableField.setValue(Boolean.valueOf(getSettings().getBoolean(IProductCmptType.PROPERTY_CONFIGURATION_FOR_POLICY_CMPT_TYPE)));
+        configurableField = new CheckboxField(toolkit.createCheckbox(nameComposite,
+                Messages.PcTypePage_configuredByProductCmptType));
+        configurableField.setValue(Boolean.valueOf(getSettings().getBoolean(
+                IProductCmptType.PROPERTY_CONFIGURATION_FOR_POLICY_CMPT_TYPE)));
         configurableField.addChangeListener(this);
         addAbstractField(nameComposite, toolkit);
     }
@@ -87,11 +88,11 @@ public class PcTypePage extends TypePage {
     public boolean canFlipToNextPage() {
         return isPolicyCmptTypeConfigurable();
     }
-    
+
     /**
      * Returns the value of the configurable field.
      */
-    public boolean isPolicyCmptTypeConfigurable(){
+    public boolean isPolicyCmptTypeConfigurable() {
         return Boolean.TRUE.equals(configurableField.getValue());
     }
 
@@ -102,30 +103,31 @@ public class PcTypePage extends TypePage {
         return isPageComplete() && !isPolicyCmptTypeConfigurable();
     }
 
-    private IDialogSettings getSettings(){
+    private IDialogSettings getSettings() {
         IDialogSettings settings = IpsPlugin.getDefault().getDialogSettings().getSection("NewPcTypeWizard.PcTypePage"); //$NON-NLS-1$
-        if(settings == null){
+        if (settings == null) {
             return IpsPlugin.getDefault().getDialogSettings().addNewSection("NewPcTypeWizard.PcTypePage"); //$NON-NLS-1$
         }
         return settings;
     }
-    
+
     protected void valueChangedExtension(FieldValueChangedEvent e) throws CoreException {
         super.valueChangedExtension(e);
-        if(e.field == configurableField){
+        if (e.field == configurableField) {
             IDialogSettings settings = getSettings();
-            settings.put(IProductCmptType.PROPERTY_CONFIGURATION_FOR_POLICY_CMPT_TYPE, ((Boolean)configurableField.getValue()).booleanValue());
+            settings.put(IProductCmptType.PROPERTY_CONFIGURATION_FOR_POLICY_CMPT_TYPE, ((Boolean)configurableField
+                    .getValue()).booleanValue());
         }
     }
 
     /**
      * Sets the configurable property to true if the supertype is also configurable and disables it.
      */
-    protected void supertypeChanged(TextButtonField supertypeField) throws CoreException{
+    protected void supertypeChanged(TextButtonField supertypeField) throws CoreException {
         String qualifiedName = (String)supertypeField.getValue();
         IPolicyCmptType superPcType = getIpsProject().findPolicyCmptType(qualifiedName);
-        if(superPcType != null){
-            if(superPcType.isConfigurableByProductCmptType()){
+        if (superPcType != null) {
+            if (superPcType.isConfigurableByProductCmptType()) {
                 configurableField.setValue(Boolean.TRUE);
                 configurableField.getCheckbox().setEnabled(false);
             } else {
@@ -136,7 +138,7 @@ public class PcTypePage extends TypePage {
             configurableField.getCheckbox().setEnabled(true);
         }
     }
-    
+
     protected void validateName() throws CoreException {
         super.validateName();
         if (getIpsProject() == null) {
@@ -145,38 +147,39 @@ public class PcTypePage extends TypePage {
         setErrorMessage(TypeValidations.validateOtherTypeWithSameNameTypeInIpsObjectPath(
                 IpsObjectType.PRODUCT_CMPT_TYPE_V2, getQualifiedIpsObjectName(), getIpsProject(), null));
     }
-    
+
     /**
      * {@inheritDoc}
      */
     protected void validatePageExtension() throws CoreException {
         super.validatePageExtension();
-        if(isPolicyCmptTypeConfigurable()){
-            if(getErrorMessage() == null && pageOfAssociatedType != null && pageOfAssociatedType.isAlreadyBeenEntered()){
+        if (isPolicyCmptTypeConfigurable()) {
+            if (getErrorMessage() == null && pageOfAssociatedType != null
+                    && pageOfAssociatedType.isAlreadyBeenEntered()) {
                 pageOfAssociatedType.validatePage();
-                if(!StringUtils.isEmpty(pageOfAssociatedType.getErrorMessage())){
+                if (!StringUtils.isEmpty(pageOfAssociatedType.getErrorMessage())) {
                     setErrorMessage(pageOfAssociatedType.getErrorMessage());
                     return;
                 }
             }
         }
-        // show info message: 
-        // configured by product components, 
+        // show info message:
+        // configured by product components,
         // because instances of the superclass are configured by product components
         IPolicyCmptType superPcType = getIpsProject().findPolicyCmptType(getSuperType());
-        if(superPcType != null){
-            if(superPcType.isConfigurableByProductCmptType()){
+        if (superPcType != null) {
+            if (superPcType.isConfigurableByProductCmptType()) {
                 setMessage(Messages.PcTypePage_infoConfigurateByProductCmptType, INFORMATION);
             }
         }
     }
 
-    /** 
+    /**
      * {@inheritDoc}
      */
     protected void finishIpsObjects(IIpsObject newIpsObject, List modifiedIpsObjects) throws CoreException {
         super.finishIpsObjects(newIpsObject, modifiedIpsObjects);
-        if(isPolicyCmptTypeConfigurable()){
+        if (isPolicyCmptTypeConfigurable()) {
             IPolicyCmptType type = (IPolicyCmptType)newIpsObject;
             type.setConfigurableByProductCmptType(true);
             type.setProductCmptType(pageOfAssociatedType.getQualifiedIpsObjectName());

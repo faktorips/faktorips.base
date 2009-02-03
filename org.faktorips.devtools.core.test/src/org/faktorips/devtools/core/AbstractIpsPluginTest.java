@@ -3,7 +3,7 @@
  * 
  * Alle Rechte vorbehalten.
  * 
- * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen, 
+ * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen,
  * etc.) duerfen nur unter den Bedingungen der Faktor-Zehn-Community Lizenzvereinbarung - Version
  * 0.1 (vor Gruendung Community) genutzt werden, die Bestandteil der Auslieferung ist und auch unter
  * http://www.faktorzehn.org/f10-org:lizenzen:community eingesehen werden kann.
@@ -56,6 +56,8 @@ import org.faktorips.devtools.core.builder.TestArtefactBuilderSetInfo;
 import org.faktorips.devtools.core.internal.model.DynamicEnumDatatype;
 import org.faktorips.devtools.core.internal.model.DynamicValueDatatype;
 import org.faktorips.devtools.core.internal.model.IpsModel;
+import org.faktorips.devtools.core.internal.model.enumtype.EnumType;
+import org.faktorips.devtools.core.internal.model.enumtype.EnumValues;
 import org.faktorips.devtools.core.internal.model.ipsproject.IpsPackageFragment;
 import org.faktorips.devtools.core.internal.model.pctype.PolicyCmptType;
 import org.faktorips.devtools.core.internal.model.productcmpt.ProductCmpt;
@@ -296,7 +298,8 @@ public abstract class AbstractIpsPluginTest extends XmlAbstractTestCase {
         // Dies muss ueberarbeitet werden
         IIpsProjectProperties props = ipsProject.getProperties();
         props.setBuilderSetId("org.faktorips.devtools.stdbuilder.ipsstdbuilderset");
-        props.setPredefinedDatatypesUsed(new String[] { "Decimal", "Money", "Integer", "int", "boolean", "String", "Boolean" });
+        props.setPredefinedDatatypesUsed(new String[] { "Decimal", "Money", "Integer", "int", "boolean", "String",
+                "Boolean" });
 
         props
                 .setMinRequiredVersionNumber(
@@ -352,7 +355,7 @@ public abstract class AbstractIpsPluginTest extends XmlAbstractTestCase {
             newRootFolder = parentFolder.getFolder(name);
         }
         newRootFolder.create(false, true, null);
-        
+
         IIpsObjectPath path = ipsProject.getIpsObjectPath();
         path.newSourceFolderEntry(newRootFolder);
         ipsProject.setIpsObjectPath(path);
@@ -417,6 +420,68 @@ public abstract class AbstractIpsPluginTest extends XmlAbstractTestCase {
         ResourcesPlugin.getWorkspace().run(runnable, null);
         IIpsPackageFragment pack = root.getIpsPackageFragment(packName);
         return pack.getIpsSrcFile(type.getFileName(unqualifiedName)).getIpsObject();
+    }
+
+    /**
+     * Creates a new enum values in the indicated package fragment root. If the qualified name
+     * includes a package name, the package is created if it does not already exists.
+     * 
+     * @param root The package fragment root in which to create the new enum values.
+     * @param qualifiedName The qualified name of the new enum values.
+     * 
+     * @return The newly created enum values.
+     * 
+     * @throws CoreException If the enum values could not be created.
+     */
+    protected EnumValues newEnumValues(final IIpsPackageFragmentRoot root, final String qualifiedName)
+            throws CoreException {
+     
+        return (EnumValues)newIpsObject(root, IpsObjectType.ENUM_VALUES, qualifiedName);
+    }
+
+    /**
+     * Creates a new enum values in the project's first package fragment root. If the qualified name
+     * includes a package name, the package is created if it does not already exist.
+     * 
+     * @param ipsProject The ips project in which to create the new enum values.
+     * @param qualifiedName The qualified name of the new enum values.
+     * 
+     * @return The newly created enum values.
+     * 
+     * @throws CoreException If the enum values could not be created.
+     */
+    protected EnumValues newEnumValues(final IIpsProject ipsProject, final String qualifiedName) throws CoreException {
+        return (EnumValues)newIpsObject(ipsProject, IpsObjectType.ENUM_VALUES, qualifiedName);
+    }
+
+    /**
+     * Creates a new enum type in the indicated package fragment root. If the qualified name
+     * includes a package name, the package is created if it does not already exists.
+     * 
+     * @param root The package fragment root in which to create the new enum type.
+     * @param qualifiedName The qualified name of the new enum type.
+     * 
+     * @return The newly created enum type.
+     * 
+     * @throws CoreException If the enum type could not be created.
+     */
+    protected EnumType newEnumType(final IIpsPackageFragmentRoot root, final String qualifiedName) throws CoreException {
+        return (EnumType)newIpsObject(root, IpsObjectType.ENUM_TYPE, qualifiedName);
+    }
+
+    /**
+     * Creates a new enum type in the project's first package fragment root. If the qualified name
+     * includes a package name, the package is created if it does not already exist.
+     * 
+     * @param ipsProject The ips project in which to create the new enum type.
+     * @param qualifiedName The qualified name of the new enum type.
+     * 
+     * @return The newly created enum type.
+     * 
+     * @throws CoreException If the enum type could not be created.
+     */
+    protected EnumType newEnumType(final IIpsProject ipsProject, final String qualifiedName) throws CoreException {
+        return (EnumType)newIpsObject(ipsProject, IpsObjectType.ENUM_TYPE, qualifiedName);
     }
 
     /**

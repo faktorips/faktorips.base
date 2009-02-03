@@ -3,7 +3,7 @@
  * 
  * Alle Rechte vorbehalten.
  * 
- * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen, 
+ * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen,
  * etc.) duerfen nur unter den Bedingungen der Faktor-Zehn-Community Lizenzvereinbarung - Version
  * 0.1 (vor Gruendung Community) genutzt werden, die Bestandteil der Auslieferung ist und auch unter
  * http://www.faktorzehn.org/f10-org:lizenzen:community eingesehen werden kann.
@@ -108,13 +108,15 @@ public class IpsModel extends IpsElement implements IIpsModel, IResourceChangeLi
     static {
         TRACE_MODEL_MANAGEMENT = Boolean.valueOf(
                 Platform.getDebugOption("org.faktorips.devtools.core/trace/modelmanagement")).booleanValue(); //$NON-NLS-1$
-        TRACE_MODEL_CHANGE_LISTENERS= Boolean.valueOf(Platform.getDebugOption("org.faktorips.devtools.core/trace/modelchangelisteners")) //$NON-NLS-1$
+        TRACE_MODEL_CHANGE_LISTENERS = Boolean.valueOf(
+                Platform.getDebugOption("org.faktorips.devtools.core/trace/modelchangelisteners")) //$NON-NLS-1$
                 .booleanValue();
         TRACE_VALIDATION = Boolean.valueOf(Platform.getDebugOption("org.faktorips.devtools.core/trace/validation")) //$NON-NLS-1$
-        .booleanValue();
+                .booleanValue();
     }
-    
-    // resource delta visitor used to generate ips sourcefile contents changed events and trigger a build after 
+
+    // resource delta visitor used to generate ips sourcefile contents changed events and trigger a
+    // build after
     // changes to the ips project properties file.
     private ResourceDeltaVisitor resourceDeltaVisitor;
 
@@ -146,19 +148,19 @@ public class IpsModel extends IpsElement implements IIpsModel, IResourceChangeLi
 
     // a map containing a set of datatypes per ips project. The map's key is the
     // project name.
-    private Map<String, LinkedHashMap<String, Datatype>> projectDatatypesMap = 
-        Collections.synchronizedMap(new HashMap<String, LinkedHashMap<String, Datatype>>());
+    private Map<String, LinkedHashMap<String, Datatype>> projectDatatypesMap = Collections
+            .synchronizedMap(new HashMap<String, LinkedHashMap<String, Datatype>>());
 
     // a map containing a map per ips project. The map's key is the project name.
     // The maps contained in the map, contain the datatypes as keys and the
     // datatype helper as values.
-    private Map<String, Map<ValueDatatype, DatatypeHelper>> projectDatatypeHelpersMap = 
-        Collections.synchronizedMap(new HashMap<String, Map<ValueDatatype, DatatypeHelper>>());
+    private Map<String, Map<ValueDatatype, DatatypeHelper>> projectDatatypeHelpersMap = Collections
+            .synchronizedMap(new HashMap<String, Map<ValueDatatype, DatatypeHelper>>());
 
     private Map projectToBuilderSetMap = Collections.synchronizedMap(new HashMap());
 
     private List builderSetInfoList = null;
-    
+
     // extension properties (as list) per ips object (or part) type, e.g.
     // IAttribute.
     private Map typeExtensionPropertiesMap = null; // null as long as they
@@ -173,7 +175,7 @@ public class IpsModel extends IpsElement implements IIpsModel, IResourceChangeLi
 
     // map containing IpsSrcFileContents as values and IpsSrcFiles as keys.
     private HashMap ipsObjectsMap = new HashMap(1000);
-    
+
     // validation result cache
     private ValidationResultCache validationResultCache = new ValidationResultCache();
 
@@ -183,14 +185,14 @@ public class IpsModel extends IpsElement implements IIpsModel, IResourceChangeLi
     private Map sortOrderCache = new HashMap();
     private Map lastIpSortOrderModifications = new HashMap();
 
-
     public IpsModel() {
         super(null, "IpsModel"); //$NON-NLS-1$
         if (TRACE_MODEL_MANAGEMENT) {
             System.out.println("IpsModel.Constructor(): IpsModel created."); //$NON-NLS-1$
         }
         initIpsObjectTypes();
-        resourceDeltaVisitor = new ResourceDeltaVisitor(); // has to be done after the ips object types are initialized!
+        resourceDeltaVisitor = new ResourceDeltaVisitor(); // has to be done after the ips object
+        // types are initialized!
     }
 
     private void initIpsObjectTypes() {
@@ -206,16 +208,19 @@ public class IpsModel extends IpsElement implements IIpsModel, IResourceChangeLi
         types.add(IpsObjectType.TABLE_CONTENTS);
         types.add(IpsObjectType.TEST_CASE_TYPE);
         types.add(IpsObjectType.BUSINESS_FUNCTION);
+        types.add(IpsObjectType.ENUM_TYPE);
+        types.add(IpsObjectType.ENUM_VALUES);
         ExtensionPoints extensionPoints = new ExtensionPoints(IpsPlugin.PLUGIN_ID);
         IExtension[] extensions = extensionPoints.getExtension(ExtensionPoints.IPS_OBJECT_TYPE);
         for (int i = 0; i < extensions.length; i++) {
             IpsObjectType type = createIpsObjectType(extensions[i]);
-            if (type!=null) {
+            if (type != null) {
                 types.add(type);
             }
         }
-        ipsObjectTypes = (IpsObjectType[])types.toArray(new IpsObjectType[types.size()]);
-        IpsObjectType.ALL_TYPES = ipsObjectTypes;
+        IpsObjectType[] typesArray = types.toArray(new IpsObjectType[types.size()]);
+        ipsObjectTypes = typesArray;
+        IpsObjectType.ALL_TYPES = typesArray;
         if (TRACE_MODEL_MANAGEMENT) {
             System.out.println("IpsModel.initIpsObjectType: finished."); //$NON-NLS-1$
         }
@@ -235,7 +240,7 @@ public class IpsModel extends IpsElement implements IIpsModel, IResourceChangeLi
             type = (IpsObjectType)ExtensionPoints.createExecutableExtension(extension, configElements[i],
                     "class", IpsObjectType.class); //$NON-NLS-1$
         }
-        if (type==null) {
+        if (type == null) {
             String text = "Illegal ips object type definition" + extension.getUniqueIdentifier(); //$NON-NLS-1$
             IpsPlugin.log(new IpsStatus(text));
         }
@@ -266,7 +271,7 @@ public class IpsModel extends IpsElement implements IIpsModel, IResourceChangeLi
             int flags,
             IProgressMonitor monitor) throws CoreException {
 
-        if (changeListeners.size()==0 && modificationStatusChangeListeners.size() == 0) {
+        if (changeListeners.size() == 0 && modificationStatusChangeListeners.size() == 0) {
             getWorkspace().run(action, rule, flags, monitor);
             return;
         }
@@ -281,19 +286,19 @@ public class IpsModel extends IpsElement implements IIpsModel, IResourceChangeLi
         };
         changeListeners.clear();
         this.addChangeListener(batchListener);
-        
+
         HashSet copyOfCurrentModifyListeners = new HashSet(modificationStatusChangeListeners);
         final Set modifiedSrcFiles = new LinkedHashSet(0);
-        IModificationStatusChangeListener batchModifiyListener = new IModificationStatusChangeListener(){
+        IModificationStatusChangeListener batchModifiyListener = new IModificationStatusChangeListener() {
 
             public void modificationStatusHasChanged(ModificationStatusChangedEvent event) {
                 modifiedSrcFiles.add(event.getIpsSrcFile());
             }
-            
+
         };
         modificationStatusChangeListeners.clear();
         this.addModifcationStatusChangeListener(batchModifiyListener);
-        
+
         try {
             getWorkspace().run(action, rule, flags, monitor);
         } finally {
@@ -307,7 +312,7 @@ public class IpsModel extends IpsElement implements IIpsModel, IResourceChangeLi
                 ContentChangeEvent event = ContentChangeEvent.newWholeContentChangedEvent(file);
                 notifyChangeListeners(event);
             }
-            
+
             removeModificationStatusChangeListener(batchModifiyListener);
             modificationStatusChangeListeners = copyOfCurrentModifyListeners;
             for (Iterator it = modifiedSrcFiles.iterator(); it.hasNext();) {
@@ -442,7 +447,7 @@ public class IpsModel extends IpsElement implements IIpsModel, IResourceChangeLi
         IIpsProject ipsProject = getIpsProject(resource.getProject().getName());
         String[] segments = resource.getProjectRelativePath().segments();
         IIpsPackageFragmentRoot root = ipsProject.getIpsPackageFragmentRoot(segments[0]);
-        if (root == null){
+        if (root == null) {
             return null;
         }
 
@@ -464,7 +469,7 @@ public class IpsModel extends IpsElement implements IIpsModel, IResourceChangeLi
             return root.getIpsPackageFragment(folderName.toString());
         }
         IIpsPackageFragment ipsFolder = root.getIpsPackageFragment(folderName.toString());
-        if (ipsFolder == null){
+        if (ipsFolder == null) {
             return null;
         }
 
@@ -475,67 +480,67 @@ public class IpsModel extends IpsElement implements IIpsModel, IResourceChangeLi
      * {@inheritDoc}
      */
     public IIpsElement findIpsElement(IResource resource) {
-        if(resource==null){
+        if (resource == null) {
             return null;
         }
         IIpsElement element = getIpsElement(resource);
-        if(element != null && element.exists()){
+        if (element != null && element.exists()) {
             return element;
         }
         return null;
     }
 
     /**
-     * Tells the model to stop broadcasting any changes made to ips objects by the current
-     * thread. By default changes are broadcasted until this method is called.
-     * To restart brodcasting changes the method resumeBroadcastingChangesMadeByCurrentThread() has to
-     * be called.
-     *
-     * <strong>Note<strong> that these to method have a "nested transaction behaviour". That means broadcasting
-     * resumes only if the resume method has been called as many times as the stop method. This
-     * allows to implement method that stop/resume broadcasting to call other method that use these methods
-     * without resuming broadcasting to early.
+     * Tells the model to stop broadcasting any changes made to ips objects by the current thread.
+     * By default changes are broadcasted until this method is called. To restart brodcasting
+     * changes the method resumeBroadcastingChangesMadeByCurrentThread() has to be called.
+     * 
+     * <strong>Note<strong> that these to method have a "nested transaction behaviour". That means
+     * broadcasting resumes only if the resume method has been called as many times as the stop
+     * method. This allows to implement method that stop/resume broadcasting to call other method
+     * that use these methods without resuming broadcasting to early.
      */
     public void stopBroadcastingChangesMadeByCurrentThread() {
         Integer level = (Integer)listenerNoticicationLevelMap.get(Thread.currentThread());
-        if (level==null) {
+        if (level == null) {
             level = new Integer(1);
         } else {
-            level = new Integer(level.intValue()+1);
+            level = new Integer(level.intValue() + 1);
         }
         listenerNoticicationLevelMap.put(Thread.currentThread(), level);
         if (TRACE_MODEL_CHANGE_LISTENERS) {
-            System.out.println("IpsModel.stopBroadcastingChangesMadeByCurrentThread(): Thread=" + Thread.currentThread() + ", new level=" + level); //$NON-NLS-1$ //$NON-NLS-2$
+            System.out
+                    .println("IpsModel.stopBroadcastingChangesMadeByCurrentThread(): Thread=" + Thread.currentThread() + ", new level=" + level); //$NON-NLS-1$ //$NON-NLS-2$
         }
     }
 
     /**
-     * Tells the model to resume broadcasting any changes made to ips objects by the current
-     * thread.
-     *
-     * <strong>Note<strong> that these to method have a "nested transaction behaviour". That means broadcasting
-     * resumes only if the resume method has been called as many times as the stop method. This
-     * allows to implement method that stop/resume broadcasting to call other method that use these methods
-     * without resuming broadcasting to early.
+     * Tells the model to resume broadcasting any changes made to ips objects by the current thread.
+     * 
+     * <strong>Note<strong> that these to method have a "nested transaction behaviour". That means
+     * broadcasting resumes only if the resume method has been called as many times as the stop
+     * method. This allows to implement method that stop/resume broadcasting to call other method
+     * that use these methods without resuming broadcasting to early.
      */
     public void resumeBroadcastingChangesMadeByCurrentThread() {
         Integer level = (Integer)listenerNoticicationLevelMap.get(Thread.currentThread());
-        if (level!=null && level.intValue()>0) {
-            level = new Integer(level.intValue()-1);
+        if (level != null && level.intValue() > 0) {
+            level = new Integer(level.intValue() - 1);
         }
         listenerNoticicationLevelMap.put(Thread.currentThread(), level);
         if (TRACE_MODEL_CHANGE_LISTENERS) {
-            System.out.println("IpsModel.restartBroadcastingChangesMadeByCurrentThread(): Thread=" + Thread.currentThread() + ", new level=" + level); //$NON-NLS-1$ //$NON-NLS-2$
+            System.out
+                    .println("IpsModel.restartBroadcastingChangesMadeByCurrentThread(): Thread=" + Thread.currentThread() + ", new level=" + level); //$NON-NLS-1$ //$NON-NLS-2$
         }
     }
 
     /**
-     * Returns <code>true</code> if the model is currently broadcasting changes made to
-     * an ips object by the current thread.
+     * Returns <code>true</code> if the model is currently broadcasting changes made to an ips
+     * object by the current thread.
      */
     public boolean isBroadcastingChangesForCurrentThread() {
         Integer level = (Integer)listenerNoticicationLevelMap.get(Thread.currentThread());
-        if (level==null || level.intValue()==0) {
+        if (level == null || level.intValue() == 0) {
             return true;
         }
         return false;
@@ -561,7 +566,8 @@ public class IpsModel extends IpsElement implements IIpsModel, IResourceChangeLi
         if (modificationStatusChangeListeners != null) {
             boolean wasRemoved = modificationStatusChangeListeners.remove(listener);
             if (TRACE_MODEL_CHANGE_LISTENERS) {
-                System.out.println("IpsModel.removeModificationStatusChangeListener(): " + listener + ", was removed=" + wasRemoved); //$NON-NLS-1$ //$NON-NLS-2$
+                System.out
+                        .println("IpsModel.removeModificationStatusChangeListener(): " + listener + ", was removed=" + wasRemoved); //$NON-NLS-1$ //$NON-NLS-2$
             }
         }
     }
@@ -571,21 +577,27 @@ public class IpsModel extends IpsElement implements IIpsModel, IResourceChangeLi
             return;
         }
         if (TRACE_MODEL_CHANGE_LISTENERS) {
-            System.out.println("IpsModel.notifyModificationStatusChangeListener(): " + modificationStatusChangeListeners.size() + " listeners"); //$NON-NLS-1$  //$NON-NLS-2$
+            System.out
+                    .println("IpsModel.notifyModificationStatusChangeListener(): " + modificationStatusChangeListeners.size() + " listeners"); //$NON-NLS-1$  //$NON-NLS-2$
         }
         Display display = IpsPlugin.getDefault().getWorkbench().getDisplay();
         display.syncExec(new Runnable() {
             public void run() {
-                List copy = new ArrayList(modificationStatusChangeListeners); // copy do avoid concurrent modifications while iterating
+                List copy = new ArrayList(modificationStatusChangeListeners); // copy do avoid
+                // concurrent
+                // modifications while
+                // iterating
                 for (Iterator it = copy.iterator(); it.hasNext();) {
                     try {
                         IModificationStatusChangeListener listener = (IModificationStatusChangeListener)it.next();
                         if (TRACE_MODEL_CHANGE_LISTENERS) {
-                            System.out.println("IpsModel.notfiyChangeListeners(): Start notifying listener: " + listener); //$NON-NLS-1$
+                            System.out
+                                    .println("IpsModel.notfiyChangeListeners(): Start notifying listener: " + listener); //$NON-NLS-1$
                         }
                         listener.modificationStatusHasChanged(event);
                         if (TRACE_MODEL_CHANGE_LISTENERS) {
-                            System.out.println("IpsModel.notifyModificationStatusChangeListener(): Finished notifying listener: " + listener); //$NON-NLS-1$
+                            System.out
+                                    .println("IpsModel.notifyModificationStatusChangeListener(): Finished notifying listener: " + listener); //$NON-NLS-1$
                         }
                     } catch (Exception e) {
                         IpsPlugin.log(new IpsStatus("Error notifying IPS model ModificationStatusChangeListeners", //$NON-NLS-1$
@@ -625,7 +637,8 @@ public class IpsModel extends IpsElement implements IIpsModel, IResourceChangeLi
         }
         final Runnable notifier = new Runnable() {
             public void run() {
-                List copy = new ArrayList(changeListeners); // copy do avoid concurrent modifications while iterating
+                List copy = new ArrayList(changeListeners); // copy do avoid concurrent
+                // modifications while iterating
                 for (Iterator it = copy.iterator(); it.hasNext();) {
                     if (!event.getIpsSrcFile().exists()) {
                         break;
@@ -633,11 +646,13 @@ public class IpsModel extends IpsElement implements IIpsModel, IResourceChangeLi
                     try {
                         ContentsChangeListener listener = (ContentsChangeListener)it.next();
                         if (TRACE_MODEL_CHANGE_LISTENERS) {
-                            System.out.println("IpsModel.notfiyChangeListeners(): Start notifying listener: " + listener); //$NON-NLS-1$
+                            System.out
+                                    .println("IpsModel.notfiyChangeListeners(): Start notifying listener: " + listener); //$NON-NLS-1$
                         }
                         listener.contentsChanged(event);
                         if (TRACE_MODEL_CHANGE_LISTENERS) {
-                            System.out.println("IpsModel.notfiyChangeListeners(): Finished notifying listener: " + listener); //$NON-NLS-1$
+                            System.out
+                                    .println("IpsModel.notfiyChangeListeners(): Finished notifying listener: " + listener); //$NON-NLS-1$
                         }
                     } catch (Exception e) {
                         IpsPlugin.log(new IpsStatus("Error notifying IPS model change listener", //$NON-NLS-1$
@@ -700,15 +715,15 @@ public class IpsModel extends IpsElement implements IIpsModel, IResourceChangeLi
      */
     public ValueDatatype getValueDatatype(IIpsProject ipsProject, String qName) {
         Datatype datatype = getDefinedDatatype(ipsProject, qName);
-        if (datatype!=null && datatype.isValueDatatype()) {
+        if (datatype != null && datatype.isValueDatatype()) {
             return (ValueDatatype)datatype;
         }
         return null;
     }
 
     /**
-     * Returns the datatype identified by the given qualified name or null, if the ips project
-     * does not contain such a datatype.
+     * Returns the datatype identified by the given qualified name or null, if the ips project does
+     * not contain such a datatype.
      */
     public Datatype getDefinedDatatype(IIpsProject ipsProject, String qName) {
         Map<String, Datatype> map = getDatatypesDefinedInProject(ipsProject);
@@ -718,7 +733,10 @@ public class IpsModel extends IpsElement implements IIpsModel, IResourceChangeLi
     /**
      * Adds the datatypes defined for the IPS project to the set of datatypes.
      */
-    public void getDatatypesDefinedInProject(IIpsProject ipsProject, boolean valuetypesOnly, boolean includePrimitives, Set<Datatype> datatypes) {
+    public void getDatatypesDefinedInProject(IIpsProject ipsProject,
+            boolean valuetypesOnly,
+            boolean includePrimitives,
+            Set<Datatype> datatypes) {
         Map<String, Datatype> map = getDatatypesDefinedInProject(ipsProject);
         for (Datatype datatype : map.values()) {
             if (!valuetypesOnly || datatype.isValueDatatype()) {
@@ -759,7 +777,7 @@ public class IpsModel extends IpsElement implements IIpsModel, IResourceChangeLi
             return registerBuilderSet(project);
         }
 
-        if(reinit){
+        if (reinit) {
             initBuilderSet(builderSet, project, data);
         }
         return builderSet;
@@ -768,7 +786,7 @@ public class IpsModel extends IpsElement implements IIpsModel, IResourceChangeLi
     private IIpsArtefactBuilderSet registerBuilderSet(IIpsProject project) {
         IpsProjectProperties data = getIpsProjectProperties((IpsProject)project);
         IIpsArtefactBuilderSet builderSet = createIpsArtefactBuilderSet(data.getBuilderSetId(), project);
-        if(builderSet == null || !initBuilderSet(builderSet, project, data)){
+        if (builderSet == null || !initBuilderSet(builderSet, project, data)) {
             return new EmptyBuilderSet();
         }
         projectToBuilderSetMap.put(project, builderSet);
@@ -778,14 +796,18 @@ public class IpsModel extends IpsElement implements IIpsModel, IResourceChangeLi
     /**
      * @return true if the initialization was successful
      */
-    private boolean initBuilderSet(IIpsArtefactBuilderSet builderSet, IIpsProject ipsProject, IIpsProjectProperties properties){
+    private boolean initBuilderSet(IIpsArtefactBuilderSet builderSet,
+            IIpsProject ipsProject,
+            IIpsProjectProperties properties) {
         try {
             IIpsArtefactBuilderSetInfo builderSetInfo = getIpsArtefactBuilderSetInfo(builderSet.getId());
-            if(builderSetInfo == null){
-                IpsPlugin.log(new IpsStatus("There is no builder set info registered with the id: " + builderSet.getId())); //$NON-NLS-1$
+            if (builderSetInfo == null) {
+                IpsPlugin.log(new IpsStatus(
+                        "There is no builder set info registered with the id: " + builderSet.getId())); //$NON-NLS-1$
                 return false;
             }
-            IIpsArtefactBuilderSetConfig builderSetConfig = properties.getBuilderSetConfig().create(ipsProject, builderSetInfo);
+            IIpsArtefactBuilderSetConfig builderSetConfig = properties.getBuilderSetConfig().create(ipsProject,
+                    builderSetInfo);
             builderSet.initialize(builderSetConfig);
             return true;
         } catch (CoreException e) {
@@ -798,10 +820,10 @@ public class IpsModel extends IpsElement implements IIpsModel, IResourceChangeLi
 
     /**
      * Returns the <code>DependencyGraph</code> of the provided <code>IpsProject</code>. If the
-     * provided IpsProject doesn't exist or if it isn't a valid
-     * <code>IpsProject</code> <code>null</code> will be returned by this method. This method is
-     * not part of the published interface.
-     *
+     * provided IpsProject doesn't exist or if it isn't a valid <code>IpsProject</code>
+     * <code>null</code> will be returned by this method. This method is not part of the published
+     * interface.
+     * 
      * @throws CoreException will be thrown if an error occurs while trying to validated the
      *             provided IpsProject.
      * @throws NullPointerException if the argument is null
@@ -811,37 +833,37 @@ public class IpsModel extends IpsElement implements IIpsModel, IResourceChangeLi
     public DependencyGraph getDependencyGraph(IIpsProject ipsProject) throws CoreException {
         ArgumentCheck.notNull(ipsProject, this);
         DependencyGraph graph = (DependencyGraph)dependencyGraphForProjectsMap.get(ipsProject);
-        if(graph == null){
+        if (graph == null) {
             graph = IpsPlugin.getDefault().getDependencyGraphPersistenceManager().getDependencyGraph(ipsProject);
-            if(graph != null){
+            if (graph != null) {
                 dependencyGraphForProjectsMap.put(ipsProject, graph);
                 return graph;
             }
-            if(ipsProject.exists()){
+            if (ipsProject.exists()) {
                 graph = new DependencyGraph(ipsProject);
                 dependencyGraphForProjectsMap.put(ipsProject, graph);
             }
             return graph;
         }
-        
+
         return graph;
     }
 
     /**
      * Returns the dependency graph objects that are currently hold by this model. This method
      * doesn't guarantee to return the dependency graph objects for all IpsProjects within the
-     * workspace but only for those whom have already been instantiated. 
+     * workspace but only for those whom have already been instantiated.
      * <p>
      * This method is not part of the published interface.
      */
-    public DependencyGraph[] getCachedDependencyGraphs(){
+    public DependencyGraph[] getCachedDependencyGraphs() {
         Collection graphs = dependencyGraphForProjectsMap.values();
         return (DependencyGraph[])graphs.toArray(new DependencyGraph[graphs.size()]);
     }
-    
+
     /**
-     * Returns the datatype helper for the given value datatype or <code>null</code> if no helper
-     * is defined for the value datatype.
+     * Returns the datatype helper for the given value datatype or <code>null</code> if no helper is
+     * defined for the value datatype.
      */
     public DatatypeHelper getDatatypeHelper(IIpsProject ipsProject, ValueDatatype datatype) {
         reinitIpsProjectPropertiesIfNecessary((IpsProject)ipsProject);
@@ -875,11 +897,11 @@ public class IpsModel extends IpsElement implements IIpsModel, IResourceChangeLi
         return data;
     }
 
-    private void reinitIpsProjectPropertiesIfNecessary(IpsProject ipsProject){
+    private void reinitIpsProjectPropertiesIfNecessary(IpsProject ipsProject) {
         getIpsProjectProperties(ipsProject);
     }
 
-    private void clearIpsProjectPropertiesCache(IpsProject ipsProject){
+    private void clearIpsProjectPropertiesCache(IpsProject ipsProject) {
         projectDatatypesMap.remove(ipsProject.getName());
         projectDatatypeHelpersMap.remove(ipsProject.getName());
         projectPropertiesMap.remove(ipsProject.getName());
@@ -989,8 +1011,7 @@ public class IpsModel extends IpsElement implements IIpsModel, IResourceChangeLi
      * <code>builderSetId</code> at the artefact builder set extension point. Otherwise an
      * <code>EmptyBuilderSet</code> will be returned.
      */
-    private IIpsArtefactBuilderSet createIpsArtefactBuilderSet(String builderSetId,
-            IIpsProject ipsProject) {
+    private IIpsArtefactBuilderSet createIpsArtefactBuilderSet(String builderSetId, IIpsProject ipsProject) {
         ArgumentCheck.notNull(builderSetId);
         ArgumentCheck.notNull(ipsProject);
 
@@ -1008,7 +1029,7 @@ public class IpsModel extends IpsElement implements IIpsModel, IResourceChangeLi
      * This method is for test purposes only. Usually the builder set infos are loaded via the
      * according extension point.
      */
-    public void setIpsArtefactBuilderSetInfos(IIpsArtefactBuilderSetInfo[] builderSetInfos){
+    public void setIpsArtefactBuilderSetInfos(IIpsArtefactBuilderSetInfo[] builderSetInfos) {
         builderSetInfoList = new ArrayList(Arrays.asList(builderSetInfos));
     }
 
@@ -1022,11 +1043,12 @@ public class IpsModel extends IpsElement implements IIpsModel, IResourceChangeLi
         }
         Set result = new HashSet();
         getIpsObjectExtensionProperties(type, includeSupertypesAndInterfaces, result);
-        IExtensionPropertyDefinition[] properties = (IExtensionPropertyDefinition[])result.toArray(new IExtensionPropertyDefinition[result.size()]);
-        
-        // Sort extension property definitions by id to avoid random arrangement at return  
+        IExtensionPropertyDefinition[] properties = (IExtensionPropertyDefinition[])result
+                .toArray(new IExtensionPropertyDefinition[result.size()]);
+
+        // Sort extension property definitions by id to avoid random arrangement at return
         Arrays.sort(properties, new Comparator() {
-            
+
             public int compare(Object o1, Object o2) {
                 if (!(o1 instanceof IExtensionPropertyDefinition) || !(o2 instanceof IExtensionPropertyDefinition)) {
                     return 0;
@@ -1035,7 +1057,7 @@ public class IpsModel extends IpsElement implements IIpsModel, IResourceChangeLi
                 IExtensionPropertyDefinition def2 = (IExtensionPropertyDefinition)o2;
                 return def1.getPropertyId().compareTo(def2.getPropertyId());
             }
-        
+
         });
         return properties;
     }
@@ -1306,7 +1328,7 @@ public class IpsModel extends IpsElement implements IIpsModel, IResourceChangeLi
 
     /**
      * Returns the ClassLoaderProvider for the given ips project.
-     *
+     * 
      * @throws NullPointerException if ipsProject is <code>null</code>.
      */
     public ClassLoaderProvider getClassLoaderProvider(IIpsProject ipsProject) {
@@ -1316,7 +1338,8 @@ public class IpsModel extends IpsElement implements IIpsModel, IResourceChangeLi
             // create a new classloader provider, make sure that the jars (inside the provided
             // classloader) will be copied, this fixed the problem if the classloader is used
             // to load classes for DynamicValueDatatype
-            provider = new ClassLoaderProvider(ipsProject.getJavaProject(), ipsProject.getReadOnlyProperties().isJavaProjectContainsClassesForDynamicDatatypes(), true);
+            provider = new ClassLoaderProvider(ipsProject.getJavaProject(), ipsProject.getReadOnlyProperties()
+                    .isJavaProjectContainsClassesForDynamicDatatypes(), true);
             classLoaderProviderMap.put(ipsProject, provider);
         }
         return provider;
@@ -1333,7 +1356,7 @@ public class IpsModel extends IpsElement implements IIpsModel, IResourceChangeLi
      * Returns the content for the given IpsSrcFile.
      */
     synchronized public void removeIpsSrcFileContent(IIpsSrcFile file) {
-        if(file != null){
+        if (file != null) {
             ipsObjectsMap.remove(file);
         }
     }
@@ -1341,10 +1364,10 @@ public class IpsModel extends IpsElement implements IIpsModel, IResourceChangeLi
     /**
      * Returns true if the IIpsSrcFileContents of the provided IIpsSrcFile has been cached.
      */
-    public boolean isCached(IIpsSrcFile file){
+    public boolean isCached(IIpsSrcFile file) {
         return ipsObjectsMap.get(file) != null;
     }
-    
+
     /**
      * Returns the content for the given ips src file. If the ips source file's corresponding
      * resource does not exist, the method returns <code>null</code>. If loadCompleteContent is
@@ -1378,20 +1401,20 @@ public class IpsModel extends IpsElement implements IIpsModel, IResourceChangeLi
         if (content.getModificationStamp() == resourceModStamp) {
             return checkSynchronizedContent(content, loadCompleteContent);
         }
-        
+
         // existing, but unsynchronized content
-        if (loadCompleteContent){
+        if (loadCompleteContent) {
             content.initContentFromFile();
         } else {
             content.initRootPropertiesFromFile();
         }
         return content;
     }
-    
+
     private IpsSrcFileContent readContentFromFile(IIpsSrcFile file, boolean loadCompleteContent) {
         IpsSrcFileContent content = new IpsSrcFileContent((IpsObject)file.getIpsObjectType().newObject(file));
 
-        if (loadCompleteContent){
+        if (loadCompleteContent) {
             logTraceMessage("New content created", file); //$NON-NLS-1$
             content.initContentFromFile();
         } else {
@@ -1400,7 +1423,7 @@ public class IpsModel extends IpsElement implements IIpsModel, IResourceChangeLi
         }
         return content;
     }
-    
+
     private IpsSrcFileContent checkSynchronizedContent(IpsSrcFileContent content, boolean loadCompleteContent) {
         if (loadCompleteContent) {
             if (content.isInitialized()) {
@@ -1427,10 +1450,10 @@ public class IpsModel extends IpsElement implements IIpsModel, IResourceChangeLi
     synchronized public IpsSrcFileContent getIpsSrcFileContent(IIpsSrcFile file) {
         return getIpsSrcFileContent(file, true);
     }
-    
+
     /**
-     * Returns <code>true</code> if the ips source file' content is in sync with the
-     * enclosing resource storing it's contents.
+     * Returns <code>true</code> if the ips source file' content is in sync with the enclosing
+     * resource storing it's contents.
      */
     public synchronized boolean isInSyncWithEnclosingResource(IIpsSrcFile file) {
         IResource enclResource = file.getEnclosingResource();
@@ -1438,7 +1461,7 @@ public class IpsModel extends IpsElement implements IIpsModel, IResourceChangeLi
             return false;
         }
         IpsSrcFileContent content = (IpsSrcFileContent)ipsObjectsMap.get(file);
-        if (content==null) {
+        if (content == null) {
             return true;
         }
         return content.getModificationStamp() == enclResource.getModificationStamp();
@@ -1454,7 +1477,7 @@ public class IpsModel extends IpsElement implements IIpsModel, IResourceChangeLi
         notifyChangeListeners(event);
         if (IpsModel.TRACE_MODEL_MANAGEMENT) {
             System.out.println("IpsModel.ipsSrcFileHasChanged(), file=" //$NON-NLS-1$
-                    + event.getIpsSrcFile()+ ", Thead: " + Thread.currentThread().getName()); //$NON-NLS-1$
+                    + event.getIpsSrcFile() + ", Thead: " + Thread.currentThread().getName()); //$NON-NLS-1$
         }
     }
 
@@ -1466,9 +1489,9 @@ public class IpsModel extends IpsElement implements IIpsModel, IResourceChangeLi
      * ResourceDeltaVisitor to generate ips model change events.
      */
     private class ResourceDeltaVisitor implements IResourceDeltaVisitor {
-        
+
         private Set fileExtensionsOfInterest = new HashSet(20);
-        
+
         public ResourceDeltaVisitor() {
             IpsObjectType[] types = getIpsObjectTypes();
             for (int i = 0; i < types.length; i++) {
@@ -1491,28 +1514,28 @@ public class IpsModel extends IpsElement implements IIpsModel, IResourceChangeLi
                     validationResultCache.clear();
                     return false;
                 }
-                if(delta.getKind() == IResourceDelta.REMOVED){
+                if (delta.getKind() == IResourceDelta.REMOVED) {
                     IIpsElement ipsElement = getIpsElement(resource);
-                    if(ipsElement instanceof IIpsSrcFile){
+                    if (ipsElement instanceof IIpsSrcFile) {
                         removeIpsSrcFileContent((IIpsSrcFile)ipsElement);
                         return false;
                     }
                 }
-                
+
                 final IIpsElement element = findIpsElement(resource);
                 if (!(element instanceof IIpsSrcFile)) { // this includes element==null!
                     return true;
                 }
                 IpsSrcFile srcFile = (IpsSrcFile)element;
                 IpsSrcFileContent content = getIpsSrcFileContent(srcFile);
-                boolean isInSync = content==null || content.wasModStampCreatedBySave(srcFile.getEnclosingResource().getModificationStamp());
+                boolean isInSync = content == null
+                        || content.wasModStampCreatedBySave(srcFile.getEnclosingResource().getModificationStamp());
                 if (IpsModel.TRACE_MODEL_MANAGEMENT) {
                     System.out
                             .println("IpsModel.ResourceDeltaVisitor.visit(): Received notification of IpsSrcFile change/delete on disk with modStamp " //$NON-NLS-1$
                                     + resource.getModificationStamp() + ", Sync status=" + isInSync //$NON-NLS-1$
                                     + ", " //$NON-NLS-1$
-                                    + srcFile
-                                    + " Thread: " //$NON-NLS-1$
+                                    + srcFile + " Thread: " //$NON-NLS-1$
                                     + Thread.currentThread().getName());
                 }
                 if (!isInSync) {
@@ -1547,43 +1570,44 @@ public class IpsModel extends IpsElement implements IIpsModel, IResourceChangeLi
                     this);
         }
     }
-    
+
     /**
-     * Returns an array of IpsArtefactBuilderSetInfo objects. Each IpsArtefactBuilderSetInfo object represents an
-     * IpsArtefactBuilderSet that is a registered at the corresponding extension point.
+     * Returns an array of IpsArtefactBuilderSetInfo objects. Each IpsArtefactBuilderSetInfo object
+     * represents an IpsArtefactBuilderSet that is a registered at the corresponding extension
+     * point.
      */
     public IIpsArtefactBuilderSetInfo[] getIpsArtefactBuilderSetInfos() {
         createIpsArtefactBuilderSetInfosIfNecessary();
-        return (IIpsArtefactBuilderSetInfo[])builderSetInfoList.toArray(
-                new IIpsArtefactBuilderSetInfo[builderSetInfoList.size()]);
+        return (IIpsArtefactBuilderSetInfo[])builderSetInfoList
+                .toArray(new IIpsArtefactBuilderSetInfo[builderSetInfoList.size()]);
     }
 
     /**
      * {@inheritDoc}
      */
-    public IIpsArtefactBuilderSetInfo getIpsArtefactBuilderSetInfo(String id){
+    public IIpsArtefactBuilderSetInfo getIpsArtefactBuilderSetInfo(String id) {
         createIpsArtefactBuilderSetInfosIfNecessary();
         for (Iterator it = builderSetInfoList.iterator(); it.hasNext();) {
             IIpsArtefactBuilderSetInfo builderSetInfo = (IIpsArtefactBuilderSetInfo)it.next();
-            if(builderSetInfo.getBuilderSetId().equals(id)){
+            if (builderSetInfo.getBuilderSetId().equals(id)) {
                 return builderSetInfo;
             }
         }
         return null;
     }
-    
+
     /**
      * {@inheritDoc}
      */
     public IpsObjectType[] getIpsObjectTypes() {
         return ipsObjectTypes;
     }
-    
+
     /**
      * {@inheritDoc}
      */
     public IpsObjectType getIpsObjectType(String name) {
-        for (int i=0; i<ipsObjectTypes.length; i++) {
+        for (int i = 0; i < ipsObjectTypes.length; i++) {
             if (ipsObjectTypes[i].getId().equals(name)) {
                 return ipsObjectTypes[i];
             }
@@ -1595,7 +1619,7 @@ public class IpsModel extends IpsElement implements IIpsModel, IResourceChangeLi
      * {@inheritDoc}
      */
     public IpsObjectType getIpsObjectTypeByFileExtension(String fileExtension) {
-        for (int i=0; i<ipsObjectTypes.length; i++) {
+        for (int i = 0; i < ipsObjectTypes.length; i++) {
             if (ipsObjectTypes[i].getFileExtension().equals(fileExtension)) {
                 return ipsObjectTypes[i];
             }
@@ -1606,45 +1630,53 @@ public class IpsModel extends IpsElement implements IIpsModel, IResourceChangeLi
     private static void logTraceMessage(String text, IIpsSrcFile ipsSrcFile) {
         if (IpsModel.TRACE_MODEL_MANAGEMENT) {
             IResource enclosingResource = ipsSrcFile.getEnclosingResource();
-            System.out.println(NLS.bind("IpsModel.getIpsSrcFileContent(): {0}, file={1}, FileModStamp={2}, Thread={3}", //$NON-NLS-1$
-                    new String[] { text, "" + ipsSrcFile, "" + enclosingResource.getModificationStamp(), Thread.currentThread().getName() })); //$NON-NLS-1$ //$NON-NLS-2$
+            System.out
+                    .println(NLS
+                            .bind(
+                                    "IpsModel.getIpsSrcFileContent(): {0}, file={1}, FileModStamp={2}, Thread={3}", //$NON-NLS-1$
+                                    new String[] {
+                                            text,
+                                            "" + ipsSrcFile, "" + enclosingResource.getModificationStamp(), Thread.currentThread().getName() })); //$NON-NLS-1$ //$NON-NLS-2$
         }
     }
 
     /**
-     * Add the key/value pair to the cache:
-     * key = IIpsPackageFragment; value = IIpsPackageFragmentSortDefinition
-     *
+     * Add the key/value pair to the cache: key = IIpsPackageFragment; value =
+     * IIpsPackageFragmentSortDefinition
+     * 
      * @param fragment Key of the hash table entry. The fragment is part of the sortDefinition.
      * @param sortDefinition Value of the hash table entry.
      * @param lastModification
      */
-    private void addSortDefinition(IIpsPackageFragment fragment, IIpsPackageFragmentSortDefinition sortDefinition, Long lastModification) {
+    private void addSortDefinition(IIpsPackageFragment fragment,
+            IIpsPackageFragmentSortDefinition sortDefinition,
+            Long lastModification) {
         sortOrderCache.put(fragment, sortDefinition);
         lastIpSortOrderModifications.put(sortDefinition, lastModification);
     }
 
-
     /**
-     * Get a IIpsPackageFragmentSortDefinition for a given IIpsPackageFragment. Returns the object from the cache if the file exists and didn't change, otherwise
-     * update sort order from the filesystem.
-     *
+     * Get a IIpsPackageFragmentSortDefinition for a given IIpsPackageFragment. Returns the object
+     * from the cache if the file exists and didn't change, otherwise update sort order from the
+     * filesystem.
+     * 
      * @param fragment Key of the hash table entry. The fragment is part of the sortDefinition.
-     * @return A IIpsPackageFragmentSortDefinition implementation. THe return value should always be not <code>null</code>.
+     * @return A IIpsPackageFragmentSortDefinition implementation. THe return value should always be
+     *         not <code>null</code>.
      */
     public IIpsPackageFragmentSortDefinition getSortDefinition(IIpsPackageFragment fragment) {
 
         // SortDefinitions are cached in IpsModel
         IIpsPackageFragmentSortDefinition sortDef = (IIpsPackageFragmentSortDefinition)sortOrderCache.get(fragment);
 
-         if (sortDef != null) {
-           // sortdefinition cached, check modification
-           IFile file = fragment.getSortOrderFile();
+        if (sortDef != null) {
+            // sortdefinition cached, check modification
+            IFile file = fragment.getSortOrderFile();
 
             if (file != null && file.exists()) {
-                Long lastModification = (Long) lastIpSortOrderModifications.get(sortDef);
+                Long lastModification = (Long)lastIpSortOrderModifications.get(sortDef);
 
-                if (! lastModification.equals( new Long(file.getModificationStamp()))) {
+                if (!lastModification.equals(new Long(file.getModificationStamp()))) {
                     // update current fragment
                     sortOrderCache.remove(fragment);
                     lastIpSortOrderModifications.remove(sortDef);
@@ -1665,12 +1697,12 @@ public class IpsModel extends IpsElement implements IIpsModel, IResourceChangeLi
             Long lastModification;
 
             try {
-                if(file != null && file.exists()){
+                if (file != null && file.exists()) {
                     sortDef = ((IpsPackageFragment)fragment).loadSortDefinition();
                 }
 
                 // use default sort order if no sort definition is set.
-                if(sortDef == null){
+                if (sortDef == null) {
                     sortDef = new IpsPackageFragmentDefaultSortDefinition();
                     lastModification = new Long(0);
                 } else {

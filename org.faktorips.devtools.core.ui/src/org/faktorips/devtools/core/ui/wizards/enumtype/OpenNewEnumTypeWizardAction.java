@@ -11,24 +11,33 @@
  * Mitwirkende: Faktor Zehn AG - initial API and implementation - http://www.faktorzehn.de
  *******************************************************************************/
 
-package org.faktorips.devtools.core.model;
+package org.faktorips.devtools.core.ui.wizards.enumtype;
 
-import junit.framework.TestCase;
-
-import org.faktorips.devtools.core.IpsPlugin;
-import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
+import org.eclipse.ui.INewWizard;
+import org.faktorips.devtools.core.ui.wizards.OpenNewWizardAction;
 
 /**
- *
+ * This action is responsible for opening the new enum type wizard.
+ * 
+ * @author Alexander Weickmann
+ * 
+ * @since 2.3
  */
-public class IpsObjectTypeTest extends TestCase {
+public class OpenNewEnumTypeWizardAction extends OpenNewWizardAction {
 
-    public void testNewObject() {
-        IpsObjectType[] types = IpsPlugin.getDefault().getIpsModel().getIpsObjectTypes();
-        assertEquals(types.length, IpsObjectType.ALL_TYPES.length);
-        for (int i = 0; i < types.length; i++) {
-            assertNotNull(types[i].newObject(null));
-        }
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public INewWizard createWizard() {
+        return new NewEnumTypeWizard();
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public void dispose() {
+        // Nothing to do
     }
 
 }

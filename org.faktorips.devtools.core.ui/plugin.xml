@@ -37,7 +37,15 @@
                label="%org.faktorips.devtools.actions.OpenNewTestCaseTypeWizardAction.label"
                style="push"
                toolbarPath="org.faktorips.devtools"
-               tooltip="%org.faktorips.devtools.actions.OpenNewTestCaseTypeWizardAction.tooltip"/>
+               tooltip="%org.faktorips.devtools.actions.OpenNewTestCaseTypeWizardAction.tooltip"/>               
+         <action
+               label="%org.faktorips.devtools.actions.OpenNewTableStructureWizardAction.label"
+               icon="icons/NewTableStructureWizard.gif"
+               tooltip="%org.faktorips.devtools.actions.OpenNewTableStructureWizardAction.tooltip"
+               class="org.faktorips.devtools.core.ui.wizards.tablestructure.OpenNewTableStructureWizardAction"
+               toolbarPath="org.faktorips.devtools"
+               id="org.faktorips.devtools.actions.OpenNewTableStructureWizardAction">
+         </action>
          <action
                class="org.faktorips.devtools.core.ui.wizards.bf.OpenNewBFWizardAction"
                icon="icons/NewBusinessFunction.gif"
@@ -46,14 +54,15 @@
                style="push"
                toolbarPath="org.faktorips.devtools"
                tooltip="%org.faktorips.devtools.core.ui.wizards.bf.OpenNewBFWizardAction.tooltip">
-         </action>               
+         </action>
          <action
-               label="%org.faktorips.devtools.actions.OpenNewTableStructureWizardAction.label"
-               icon="icons/NewTableStructureWizard.gif"
-               tooltip="%org.faktorips.devtools.actions.OpenNewTableStructureWizardAction.tooltip"
-               class="org.faktorips.devtools.core.ui.wizards.tablestructure.OpenNewTableStructureWizardAction"
+               class="org.faktorips.devtools.core.ui.wizards.enumtype.OpenNewEnumTypeWizardAction"
+               icon="icons/NewEnumType.gif"
+               id="org.faktorips.devtools.enumtype.ui.wizard.OpenNewEnumTypeWizardAction"
+               label="%org.faktorips.devtools.core.ui.wizards.enumtype.OpenNewEnumTypeWizardAction.label"
+               style="push"
                toolbarPath="org.faktorips.devtools"
-               id="org.faktorips.devtools.actions.OpenNewTableStructureWizardAction">
+               tooltip="%org.faktorips.devtools.core.ui.wizards.enumtype.OpenNewEnumTypeWizardAction.tooltip">
          </action>
          <action
                label="%org.faktorips.devtools.core.ui.wizards.productcmpttype.OpenNewProductCmptTypeWizardAction.label"
@@ -500,6 +509,19 @@
     	   <description>%NewPcTypeWizard.description</description>
     	   <selection class="org.eclipse.core.resources.IResource"/>
 	    </wizard>
+  <wizard
+        category="org.faktorips.devtools"
+        class="org.faktorips.devtools.core.ui.wizards.enumtype.NewEnumTypeWizard"
+        icon="icons/NewEnumType.gif"
+        id="org.faktorips.devtools.enumtype.ui.wizard"
+        name="%NewEnumTypeWizard.name">
+     <description>
+        %NewEnumTypeWizard.description
+     </description>
+     <selection
+           class="org.eclipse.core.resources.IResource">
+     </selection>
+  </wizard>
       <wizard
             category="org.faktorips.devtools"
             class="org.faktorips.devtools.core.ui.wizards.productcmpt.NewProductCmptWizard"
