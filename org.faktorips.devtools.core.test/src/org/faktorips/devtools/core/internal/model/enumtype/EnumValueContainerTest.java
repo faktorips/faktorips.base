@@ -22,16 +22,16 @@ public class EnumValueContainerTest extends AbstractIpsEnumPluginTest {
     }
 
     public void testGetEnumValues() {
-        assertEquals(2, genderEnumValues.getEnumValues().size());
+        assertEquals(2, genderEnumContent.getEnumValues().size());
     }
 
     public void testGetEnumValue() {
-        assertEquals(genderEnumMaleValue, genderEnumValues.getEnumValue(0));
+        assertEquals(genderEnumMaleValue, genderEnumContent.getEnumValue(0));
     }
 
     public void testNewEnumValue() {
-        IEnumValue newEnumValue = genderEnumValues.newEnumValue();
-        assertEquals(newEnumValue, genderEnumValues.getEnumValue(2));
+        IEnumValue newEnumValue = genderEnumContent.newEnumValue();
+        assertEquals(newEnumValue, genderEnumContent.getEnumValue(2));
     }
 
 }

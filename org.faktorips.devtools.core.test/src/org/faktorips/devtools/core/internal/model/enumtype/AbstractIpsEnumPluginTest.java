@@ -20,7 +20,7 @@ import org.faktorips.devtools.core.model.enumtype.IEnumAttribute;
 import org.faktorips.devtools.core.model.enumtype.IEnumAttributeValue;
 import org.faktorips.devtools.core.model.enumtype.IEnumType;
 import org.faktorips.devtools.core.model.enumtype.IEnumValue;
-import org.faktorips.devtools.core.model.enumtype.IEnumValues;
+import org.faktorips.devtools.core.model.enumtype.IEnumContent;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.w3c.dom.Document;
 
@@ -30,7 +30,7 @@ import org.w3c.dom.Document;
  * </p>
  * <p>
  * There is a gender enum type, the values are stored separated from the enum type in a gender enum
- * values object.
+ * content object.
  * </p>
  * <p>
  * Utility methods and helpful string constants are provided.
@@ -46,7 +46,7 @@ public abstract class AbstractIpsEnumPluginTest extends AbstractIpsPluginTest {
     protected final String GENDER_ENUM_TYPE_NAME = "GenderEnum";
     protected final String GENDER_ENUM_ATTRIBUTE_ID_NAME = "Id";
     protected final String GENDER_ENUM_ATTRIBUTE_NAME_NAME = "Name";
-    protected final String GENDER_ENUM_VALUES_NAME = "GenderEnumValues";
+    protected final String GENDER_ENUM_CONTENT_NAME = "GenderEnumContent";
 
     protected final String ENUM_LITERAL_MALE_ID = "m";
     protected final String ENUM_LITERAL_FEMALE_ID = "w";
@@ -58,7 +58,7 @@ public abstract class AbstractIpsEnumPluginTest extends AbstractIpsPluginTest {
     protected IEnumType genderEnumType;
     protected IEnumAttribute genderEnumAttributeId;
     protected IEnumAttribute genderEnumAttributeName;
-    protected IEnumValues genderEnumValues;
+    protected IEnumContent genderEnumContent;
     protected IEnumValue genderEnumMaleValue;
     protected IEnumValue genderEnumFemaleValue;
 
@@ -77,11 +77,11 @@ public abstract class AbstractIpsEnumPluginTest extends AbstractIpsPluginTest {
         genderEnumAttributeName.setName(GENDER_ENUM_ATTRIBUTE_NAME_NAME);
         genderEnumAttributeName.setDatatype(STRING_DATATYPE_NAME);
 
-        genderEnumValues = newEnumValues(ipsProject, GENDER_ENUM_VALUES_NAME);
-        genderEnumValues.setEnumType(genderEnumType.getQualifiedName());
+        genderEnumContent = newEnumContent(ipsProject, GENDER_ENUM_CONTENT_NAME);
+        genderEnumContent.setEnumType(genderEnumType.getQualifiedName());
 
-        genderEnumMaleValue = genderEnumValues.newEnumValue();
-        genderEnumFemaleValue = genderEnumValues.newEnumValue();
+        genderEnumMaleValue = genderEnumContent.newEnumValue();
+        genderEnumFemaleValue = genderEnumContent.newEnumValue();
 
         initEnumValues();
     }

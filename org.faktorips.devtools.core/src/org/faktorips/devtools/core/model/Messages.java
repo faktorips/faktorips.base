@@ -32,7 +32,7 @@ public class Messages extends NLS {
         NLS.initializeMessages(BUNDLE_NAME, Messages.class);
     }
 
-    public static String IpsObjectType_nameEnumValues;
+    public static String IpsObjectType_nameEnumContent;
     
     public static String IpsObjectType_nameEnumType;
     

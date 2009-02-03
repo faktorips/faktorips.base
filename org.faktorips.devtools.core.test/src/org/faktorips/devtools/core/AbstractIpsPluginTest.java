@@ -57,7 +57,7 @@ import org.faktorips.devtools.core.internal.model.DynamicEnumDatatype;
 import org.faktorips.devtools.core.internal.model.DynamicValueDatatype;
 import org.faktorips.devtools.core.internal.model.IpsModel;
 import org.faktorips.devtools.core.internal.model.enumtype.EnumType;
-import org.faktorips.devtools.core.internal.model.enumtype.EnumValues;
+import org.faktorips.devtools.core.internal.model.enumtype.EnumContent;
 import org.faktorips.devtools.core.internal.model.ipsproject.IpsPackageFragment;
 import org.faktorips.devtools.core.internal.model.pctype.PolicyCmptType;
 import org.faktorips.devtools.core.internal.model.productcmpt.ProductCmpt;
@@ -423,35 +423,35 @@ public abstract class AbstractIpsPluginTest extends XmlAbstractTestCase {
     }
 
     /**
-     * Creates a new enum values in the indicated package fragment root. If the qualified name
+     * Creates a new enum content in the indicated package fragment root. If the qualified name
      * includes a package name, the package is created if it does not already exists.
      * 
-     * @param root The package fragment root in which to create the new enum values.
-     * @param qualifiedName The qualified name of the new enum values.
+     * @param root The package fragment root in which to create the new enum content.
+     * @param qualifiedName The qualified name of the new enum content.
      * 
-     * @return The newly created enum values.
+     * @return The newly created enum content.
      * 
-     * @throws CoreException If the enum values could not be created.
+     * @throws CoreException If the enum content could not be created.
      */
-    protected EnumValues newEnumValues(final IIpsPackageFragmentRoot root, final String qualifiedName)
+    protected EnumContent newEnumContent(final IIpsPackageFragmentRoot root, final String qualifiedName)
             throws CoreException {
-     
-        return (EnumValues)newIpsObject(root, IpsObjectType.ENUM_VALUES, qualifiedName);
+
+        return (EnumContent)newIpsObject(root, IpsObjectType.ENUM_CONTENT, qualifiedName);
     }
 
     /**
-     * Creates a new enum values in the project's first package fragment root. If the qualified name
-     * includes a package name, the package is created if it does not already exist.
+     * Creates a new enum content in the project's first package fragment root. If the qualified
+     * name includes a package name, the package is created if it does not already exist.
      * 
-     * @param ipsProject The ips project in which to create the new enum values.
-     * @param qualifiedName The qualified name of the new enum values.
+     * @param ipsProject The ips project in which to create the new enum content.
+     * @param qualifiedName The qualified name of the new enum content.
      * 
-     * @return The newly created enum values.
+     * @return The newly created enum content.
      * 
-     * @throws CoreException If the enum values could not be created.
+     * @throws CoreException If the enum content could not be created.
      */
-    protected EnumValues newEnumValues(final IIpsProject ipsProject, final String qualifiedName) throws CoreException {
-        return (EnumValues)newIpsObject(ipsProject, IpsObjectType.ENUM_VALUES, qualifiedName);
+    protected EnumContent newEnumContent(final IIpsProject ipsProject, final String qualifiedName) throws CoreException {
+        return (EnumContent)newIpsObject(ipsProject, IpsObjectType.ENUM_CONTENT, qualifiedName);
     }
 
     /**

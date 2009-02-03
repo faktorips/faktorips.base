@@ -40,7 +40,7 @@ import org.eclipse.core.runtime.CoreException;
  * </ul>
  * <p>
  * Enum values can be defined directly in the enum type itself or separate from the enum type by the
- * product side.
+ * product side (as enum content).
  * </p>
  * <p>
  * At least one enum attribute needs to be marked as <em>identifier</em> which implies that each
@@ -182,14 +182,14 @@ public interface IEnumType extends IEnumValueContainer {
     public void moveEnumAttributeDown(IEnumAttribute enumAttribute) throws CoreException;
 
     /**
-     * Searches and returns all enum values that are built upon this enum type. If none are found an
-     * empty list will be returned. This method never returns <code>null</code>.
+     * Searches and returns all enum contents that are built upon this enum type. If none are found
+     * an empty list will be returned. This method never returns <code>null</code>.
      * 
-     * @return A list containing all enum values that are built upon this enum type.
+     * @return A list containing all enum contents that are built upon this enum type.
      * 
-     * @throws CoreException If an error occurs while searching for the enum values objects.
+     * @throws CoreException If an error occurs while searching for the enum content objects.
      */
-    public List<IEnumValues> findReferencingEnumValues() throws CoreException;
+    public List<IEnumContent> findReferencingEnumContents() throws CoreException;
 
     /**
      * Deletes the given enum attribute and all enum attribute values that refer to it.

@@ -16,11 +16,11 @@ package org.faktorips.devtools.core.internal.model.enumtype;
 import javax.xml.parsers.ParserConfigurationException;
 
 import org.eclipse.core.runtime.CoreException;
-import org.faktorips.devtools.core.model.enumtype.IEnumValues;
+import org.faktorips.devtools.core.model.enumtype.IEnumContent;
 import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
 import org.w3c.dom.Element;
 
-public class EnumValuesTest extends AbstractIpsEnumPluginTest {
+public class EnumContentTest extends AbstractIpsEnumPluginTest {
 
     @Override
     public void setUp() throws Exception {
@@ -28,29 +28,31 @@ public class EnumValuesTest extends AbstractIpsEnumPluginTest {
     }
 
     public void testGetSetEnumType() throws CoreException {
-        assertEquals(genderEnumType.getQualifiedName(), genderEnumValues.getEnumType());
+        assertEquals(genderEnumType.getQualifiedName(), genderEnumContent.getEnumType());
         try {
-            genderEnumValues.setEnumType(null);
+            genderEnumContent.setEnumType(null);
             fail();
         } catch (NullPointerException e) {
         }
     }
 
     public void testGetIpsObjectType() {
-        assertEquals(IpsObjectType.ENUM_VALUES, genderEnumValues.getIpsObjectType());
+        assertEquals(IpsObjectType.ENUM_CONTENT, genderEnumContent.getIpsObjectType());
     }
 
     public void testFindEnumType() throws CoreException {
-        assertEquals(genderEnumType, genderEnumValues.findEnumType());
+        assertEquals(genderEnumType, genderEnumContent.findEnumType());
+        genderEnumContent.setEnumType("");
+        assertNull(genderEnumContent.findEnumType());
     }
 
     public void testXml() throws ParserConfigurationException, CoreException {
-        Element xmlElement = genderEnumValues.toXml(createXmlDocument(IEnumValues.XML_TAG));
-        assertEquals(genderEnumType.getQualifiedName(), xmlElement.getAttribute(IEnumValues.XML_ATTRIBUTE_ENUM_TYPE));
+        Element xmlElement = genderEnumContent.toXml(createXmlDocument(IEnumContent.XML_TAG));
+        assertEquals(genderEnumType.getQualifiedName(), xmlElement.getAttribute(IEnumContent.XML_ATTRIBUTE_ENUM_TYPE));
 
-        IEnumValues loadedEnumValues = newEnumValues(ipsProject, "LoadedEnumValues");
-        loadedEnumValues.initFromXml(xmlElement);
-        assertEquals(genderEnumType.getQualifiedName(), loadedEnumValues.getEnumType());
+        IEnumContent loadedEnumContent = newEnumContent(ipsProject, "LoadedEnumValues");
+        loadedEnumContent.initFromXml(xmlElement);
+        assertEquals(genderEnumType.getQualifiedName(), loadedEnumContent.getEnumType());
     }
 
 }

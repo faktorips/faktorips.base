@@ -18,7 +18,7 @@ import javax.xml.parsers.ParserConfigurationException;
 import org.eclipse.core.runtime.CoreException;
 import org.faktorips.devtools.core.model.enumtype.IEnumAttribute;
 import org.faktorips.devtools.core.model.enumtype.IEnumAttributeValue;
-import org.faktorips.devtools.core.model.enumtype.IEnumValues;
+import org.faktorips.devtools.core.model.enumtype.IEnumContent;
 import org.w3c.dom.Element;
 
 public class EnumValueTest extends AbstractIpsEnumPluginTest {
@@ -30,7 +30,7 @@ public class EnumValueTest extends AbstractIpsEnumPluginTest {
 
     public void testNewEnumAttributeValue() throws CoreException {
         try {
-            genderEnumValues.newEnumValue().newEnumAttributeValue();
+            genderEnumContent.newEnumValue().newEnumAttributeValue();
             fail("It is not allowed to have more enum attribute values than enum attributes.");
         } catch (IllegalStateException e) {
         }
@@ -110,12 +110,12 @@ public class EnumValueTest extends AbstractIpsEnumPluginTest {
     }
 
     public void testXml() throws ParserConfigurationException, CoreException {
-        Element xmlElement = genderEnumValues.toXml(createXmlDocument(IEnumValues.XML_TAG));
+        Element xmlElement = genderEnumContent.toXml(createXmlDocument(IEnumContent.XML_TAG));
         assertEquals(1 + 2, xmlElement.getChildNodes().getLength());
 
-        IEnumValues loadedEnumValues = newEnumValues(ipsProject, "LoadedEnumValues");
-        loadedEnumValues.initFromXml(xmlElement);
-        assertEquals(2, loadedEnumValues.getEnumValues().size());
+        IEnumContent loadedEnumContent = newEnumContent(ipsProject, "LoadedEnumValues");
+        loadedEnumContent.initFromXml(xmlElement);
+        assertEquals(2, loadedEnumContent.getEnumValues().size());
     }
 
 }

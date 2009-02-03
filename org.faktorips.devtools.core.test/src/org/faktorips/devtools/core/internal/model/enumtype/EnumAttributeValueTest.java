@@ -17,7 +17,7 @@ import javax.xml.parsers.ParserConfigurationException;
 
 import org.eclipse.core.runtime.CoreException;
 import org.faktorips.devtools.core.model.enumtype.IEnumAttributeValue;
-import org.faktorips.devtools.core.model.enumtype.IEnumValues;
+import org.faktorips.devtools.core.model.enumtype.IEnumContent;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 
@@ -48,16 +48,16 @@ public class EnumAttributeValueTest extends AbstractIpsEnumPluginTest {
     }
 
     public void testXml() throws ParserConfigurationException, CoreException {
-        Element xmlElement = genderEnumValues.toXml(createXmlDocument(IEnumValues.XML_TAG));
+        Element xmlElement = genderEnumContent.toXml(createXmlDocument(IEnumContent.XML_TAG));
         // Get first enum attribute value of the first enum value
         Node firstEnumAttributeValue = xmlElement.getChildNodes().item(1).getChildNodes().item(1);
         assertEquals(ENUM_LITERAL_MALE_ID, firstEnumAttributeValue.getAttributes().getNamedItem(
                 IEnumAttributeValue.XML_ATTRIBUTE_VALUE).getTextContent());
         assertEquals(1 + 2, xmlElement.getChildNodes().getLength());
 
-        IEnumValues loadedEnumValues = newEnumValues(ipsProject, "LoadedEnumValues");
-        loadedEnumValues.initFromXml(xmlElement);
-        assertEquals(ENUM_LITERAL_MALE_ID, loadedEnumValues.getEnumValues().get(0).getEnumAttributeValue(0).getValue());
-        assertEquals(2, loadedEnumValues.getEnumValues().size());
+        IEnumContent loadedEnumContent = newEnumContent(ipsProject, "LoadedEnumValues");
+        loadedEnumContent.initFromXml(xmlElement);
+        assertEquals(ENUM_LITERAL_MALE_ID, loadedEnumContent.getEnumValues().get(0).getEnumAttributeValue(0).getValue());
+        assertEquals(2, loadedEnumContent.getEnumValues().size());
     }
 }

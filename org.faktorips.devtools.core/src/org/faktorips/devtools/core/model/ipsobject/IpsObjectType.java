@@ -17,7 +17,7 @@ import org.eclipse.swt.graphics.Image;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.internal.model.businessfct.BusinessFunctionImpl;
 import org.faktorips.devtools.core.internal.model.enumtype.EnumType;
-import org.faktorips.devtools.core.internal.model.enumtype.EnumValues;
+import org.faktorips.devtools.core.internal.model.enumtype.EnumContent;
 import org.faktorips.devtools.core.internal.model.pctype.PolicyCmptType;
 import org.faktorips.devtools.core.internal.model.productcmpt.ProductCmpt;
 import org.faktorips.devtools.core.internal.model.productcmpttype.ProductCmptType;
@@ -36,10 +36,10 @@ import org.faktorips.util.ArgumentCheck;
 public class IpsObjectType {
 
     /**
-     * Type for enum values.
+     * Type for enum content.
      */
-    public final static IpsObjectType ENUM_VALUES = new IpsObjectType(
-            "EnumValues", "EnumValues", Messages.IpsObjectType_nameEnumValues, "ipsenumvalues", false, true, "EnumValues.gif", "EnumValuesDisabled.gif"); //$NON-NLS-1$  //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
+    public final static IpsObjectType ENUM_CONTENT = new IpsObjectType(
+            "EnumContent", "EnumContent", Messages.IpsObjectType_nameEnumContent, "ipsenumcontent", false, true, "EnumContent.gif", "EnumContentDisabled.gif"); //$NON-NLS-1$  //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
 
     /**
      * Type for enum type.
@@ -113,10 +113,11 @@ public class IpsObjectType {
      * @deprecated Deprecated since 2.3: Use IpsModel.getIpsObjectTypes() instead.
      */
     public static IpsObjectType[] ALL_TYPES = null;
-    
+
     /**
      * Returns the ips object type that has the given file extension. Returns <code>null</code>, if
-     * no type with the given file extension exists or <code>null</code> has been given as file extension..
+     * no type with the given file extension exists or <code>null</code> has been given as file
+     * extension..
      * 
      * @param fileExtension The file extension of the searched ips object type.
      * 
@@ -214,10 +215,10 @@ public class IpsObjectType {
         if (this == ENUM_TYPE) {
             return new EnumType(file);
         }
-        if (this == ENUM_VALUES) {
-            return new EnumValues(file);
+        if (this == ENUM_CONTENT) {
+            return new EnumContent(file);
         }
-        
+
         throw new RuntimeException("Can't create object for type " + this); //$NON-NLS-1$
     }
 

@@ -23,7 +23,7 @@ import org.faktorips.devtools.core.model.enumtype.IEnumAttribute;
 import org.faktorips.devtools.core.model.enumtype.IEnumAttributeValue;
 import org.faktorips.devtools.core.model.enumtype.IEnumType;
 import org.faktorips.devtools.core.model.enumtype.IEnumValue;
-import org.faktorips.devtools.core.model.enumtype.IEnumValues;
+import org.faktorips.devtools.core.model.enumtype.IEnumContent;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPart;
 import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
@@ -140,8 +140,8 @@ public class EnumType extends EnumValueContainer implements IEnumType {
         IEnumAttribute newEnumAttribute = (IEnumAttribute)newPart(IEnumAttribute.class);
 
         // Create new enum attribute value objects on all referencing enum values
-        for (IEnumValues currentEnumValues : findReferencingEnumValues()) {
-            for (IEnumValue currentEnumValue : currentEnumValues.getEnumValues()) {
+        for (IEnumContent currentEnumContent : findReferencingEnumContents()) {
+            for (IEnumValue currentEnumValue : currentEnumContent.getEnumValues()) {
                 currentEnumValue.newEnumAttributeValue();
             }
         }
@@ -232,8 +232,8 @@ public class EnumType extends EnumValueContainer implements IEnumType {
                 enumAttributes.moveParts(new int[] { i }, up);
 
                 // Also move the refering enum attribute values
-                for (IEnumValues currentEnumValues : findReferencingEnumValues()) {
-                    for (IEnumValue currentEnumValue : currentEnumValues.getEnumValues()) {
+                for (IEnumContent currentEnumContent : findReferencingEnumContents()) {
+                    for (IEnumValue currentEnumValue : currentEnumContent.getEnumValues()) {
                         if (up) {
                             currentEnumValue.moveEnumAttributeValueUp(currentEnumAttribute);
                         } else {
@@ -251,17 +251,17 @@ public class EnumType extends EnumValueContainer implements IEnumType {
     /**
      * {@inheritDoc}
      */
-    public List<IEnumValues> findReferencingEnumValues() throws CoreException {
-        List<IEnumValues> referencingEnumValues = new ArrayList<IEnumValues>();
-        IIpsSrcFile[] enumValuesSrcFiles = getIpsProject().findIpsSrcFiles(IpsObjectType.ENUM_VALUES);
-        for (IIpsSrcFile currentIpsSrcFile : enumValuesSrcFiles) {
-            IEnumValues currentEnumValues = (IEnumValues)currentIpsSrcFile.getIpsObject();
-            if (currentEnumValues.getEnumType().equals(this.getQualifiedName())) {
-                referencingEnumValues.add((IEnumValues)currentIpsSrcFile.getIpsObject());
+    public List<IEnumContent> findReferencingEnumContents() throws CoreException {
+        List<IEnumContent> referencingEnumContents = new ArrayList<IEnumContent>();
+        IIpsSrcFile[] enumContentsSrcFiles = getIpsProject().findIpsSrcFiles(IpsObjectType.ENUM_CONTENT);
+        for (IIpsSrcFile currentIpsSrcFile : enumContentsSrcFiles) {
+            IEnumContent currentEnumContent = (IEnumContent)currentIpsSrcFile.getIpsObject();
+            if (currentEnumContent.getEnumType().equals(this.getQualifiedName())) {
+                referencingEnumContents.add((IEnumContent)currentIpsSrcFile.getIpsObject());
             }
         }
 
-        return referencingEnumValues;
+        return referencingEnumContents;
     }
 
     /**
@@ -277,8 +277,8 @@ public class EnumType extends EnumValueContainer implements IEnumType {
      * {@inheritDoc}
      */
     public void deleteEnumAttributeWithValues(int id) throws CoreException {
-        for (IEnumValues currentEnumValues : findReferencingEnumValues()) {
-            for (IEnumValue currentEnumValue : currentEnumValues.getEnumValues()) {
+        for (IEnumContent currentEnumContent : findReferencingEnumContents()) {
+            for (IEnumValue currentEnumValue : currentEnumContent.getEnumValues()) {
                 for (IEnumAttributeValue currentEnumAttributeValue : currentEnumValue.getEnumAttributeValues()) {
                     if (currentEnumAttributeValue.getEnumAttribute().getId() == id) {
                         currentEnumAttributeValue.delete();

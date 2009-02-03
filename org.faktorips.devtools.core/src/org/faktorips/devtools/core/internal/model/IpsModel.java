@@ -209,7 +209,7 @@ public class IpsModel extends IpsElement implements IIpsModel, IResourceChangeLi
         types.add(IpsObjectType.TEST_CASE_TYPE);
         types.add(IpsObjectType.BUSINESS_FUNCTION);
         types.add(IpsObjectType.ENUM_TYPE);
-        types.add(IpsObjectType.ENUM_VALUES);
+        types.add(IpsObjectType.ENUM_CONTENT);
         ExtensionPoints extensionPoints = new ExtensionPoints(IpsPlugin.PLUGIN_ID);
         IExtension[] extensions = extensionPoints.getExtension(ExtensionPoints.IPS_OBJECT_TYPE);
         for (int i = 0; i < extensions.length; i++) {

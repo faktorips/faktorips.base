@@ -145,7 +145,7 @@ public class EnumValue extends BaseIpsObjectPart implements IEnumValue {
                         return;
                     }
                 } else {
-                    if (i == enumAttributeValuesList.size()) {
+                    if (i == enumAttributeValuesList.size() - 1) {
                         return;
                     }
                 }

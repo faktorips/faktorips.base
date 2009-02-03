@@ -15,32 +15,32 @@ package org.faktorips.devtools.core.internal.model.enumtype;
 
 import org.eclipse.core.runtime.CoreException;
 import org.faktorips.devtools.core.model.enumtype.IEnumType;
-import org.faktorips.devtools.core.model.enumtype.IEnumValues;
+import org.faktorips.devtools.core.model.enumtype.IEnumContent;
 import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
 import org.faktorips.util.ArgumentCheck;
 import org.w3c.dom.Element;
 
 /**
- * Implementation of IEnumValues, see the corresponding interface for more details.
+ * Implementation of IEnumContent, see the corresponding interface for more details.
  * 
- * @see org.faktorips.devtools.core.model.enumtype.IEnumValues
+ * @see org.faktorips.devtools.core.model.enumtype.IEnumContent
  * 
  * @author Alexander Weickmann
  * 
  * @since 2.3
  */
-public class EnumValues extends EnumValueContainer implements IEnumValues {
+public class EnumContent extends EnumValueContainer implements IEnumContent {
 
     // The enum type this enum values is build upon
     private String enumType;
 
     /**
-     * Creates a new enum values.
+     * Creates a new enum content.
      * 
-     * @param file The ips source file in which this enum values will be stored in.
+     * @param file The ips source file in which this enum content will be stored in.
      */
-    public EnumValues(IIpsSrcFile file) {
+    public EnumContent(IIpsSrcFile file) {
         super(file);
 
         this.enumType = null;
@@ -50,7 +50,7 @@ public class EnumValues extends EnumValueContainer implements IEnumValues {
      * {@inheritDoc}
      */
     public IpsObjectType getIpsObjectType() {
-        return IpsObjectType.ENUM_VALUES;
+        return IpsObjectType.ENUM_CONTENT;
     }
 
     /**

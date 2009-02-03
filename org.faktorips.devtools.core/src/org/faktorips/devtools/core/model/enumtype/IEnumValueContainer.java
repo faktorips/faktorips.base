@@ -23,7 +23,7 @@ import org.faktorips.devtools.core.model.ipsobject.IIpsObject;
  * This is the published interface for EnumValueContainer.
  * </p>
  * <p>
- * EnumValueContainer is the supertype for EnumType and EnumValues. This is, because in Faktor-IPS
+ * EnumValueContainer is the supertype for EnumType and EnumContent. This is, because in Faktor-IPS
  * the values of an enumeration can be defined directly in the enum type or separate from it by the
  * product side.
  * </p>

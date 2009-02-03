@@ -19,7 +19,7 @@ package org.faktorips.devtools.core.model.enumtype;
  * directly in the enum type itself but separate from it by the product side.
  * </p>
  * <p>
- * An enum values always refers to a specific enum type which defines the structure of the
+ * An enum content always refers to a specific enum type which defines the structure of the
  * enumeration.
  * </p>
  * 
@@ -27,27 +27,27 @@ package org.faktorips.devtools.core.model.enumtype;
  * 
  * @since 2.3
  */
-public interface IEnumValues extends IEnumValueContainer {
+public interface IEnumContent extends IEnumValueContainer {
 
     /** The xml tag for this ips object. */
-    public final static String XML_TAG = "EnumValues"; //$NON-NLS-1$
+    public final static String XML_TAG = "EnumContent"; //$NON-NLS-1$
 
     /** Name of the xml attribute for the enumType property. */
     public final static String XML_ATTRIBUTE_ENUM_TYPE = "enumType"; //$NON-NLS-1$
 
     /**
-     * Sets the enum type this enum values is based upon.
+     * Sets the enum type this enum content is based upon.
      * 
-     * @param enumType The qualified name of the enum type this enum values shall be based upon.
+     * @param enumType The qualified name of the enum type this enum content shall be based upon.
      * 
      * @throws NullPointerException If enumType is <code>null</code>.
      */
     public void setEnumType(String enumType);
 
     /**
-     * Returns the enum type this enum values is based upon.
+     * Returns the enum type this enum content is based upon.
      * 
-     * @return A string representing the qualified name of the enum type this enum values is based
+     * @return A string representing the qualified name of the enum type this enum content is based
      *         upon.
      */
     public String getEnumType();

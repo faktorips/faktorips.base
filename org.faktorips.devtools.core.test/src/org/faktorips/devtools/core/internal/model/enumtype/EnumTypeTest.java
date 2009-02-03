@@ -22,7 +22,7 @@ import org.eclipse.core.runtime.CoreException;
 import org.faktorips.devtools.core.model.enumtype.IEnumAttribute;
 import org.faktorips.devtools.core.model.enumtype.IEnumAttributeValue;
 import org.faktorips.devtools.core.model.enumtype.IEnumType;
-import org.faktorips.devtools.core.model.enumtype.IEnumValues;
+import org.faktorips.devtools.core.model.enumtype.IEnumContent;
 import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
 import org.w3c.dom.Element;
 
@@ -188,12 +188,12 @@ public class EnumTypeTest extends AbstractIpsEnumPluginTest {
         assertEquals(valueId, genderEnumMaleValue.getEnumAttributeValues().get(2));
     }
 
-    public void testFindReferencingEnumValues() throws CoreException {
-        newEnumValues(ipsProject, "NotReferencingEnumValues");
+    public void testFindReferencingEnumContents() throws CoreException {
+        newEnumContent(ipsProject, "NotReferencingEnumValues");
 
-        List<IEnumValues> referencingEnumValues = genderEnumType.findReferencingEnumValues();
-        assertEquals(1, referencingEnumValues.size());
-        assertEquals(genderEnumValues, referencingEnumValues.get(0));
+        List<IEnumContent> referencingEnumContents = genderEnumType.findReferencingEnumContents();
+        assertEquals(1, referencingEnumContents.size());
+        assertEquals(genderEnumContent, referencingEnumContents.get(0));
     }
 
     public void testXml() throws CoreException, ParserConfigurationException {
@@ -225,6 +225,10 @@ public class EnumTypeTest extends AbstractIpsEnumPluginTest {
         genderEnumType.deleteEnumAttributeWithValues(0);
         List<IEnumAttribute> enumAttributes = genderEnumType.getEnumAttributes();
         assertEquals(1, enumAttributes.size());
+        assertEquals(genderEnumAttributeName, enumAttributes.get(0));
+        List<IEnumAttributeValue> enumAttributeValues = genderEnumMaleValue.getEnumAttributeValues();
+        assertEquals(1, enumAttributeValues.size());
+        assertEquals(ENUM_LITERAL_MALE, enumAttributeValues.get(0).getValue());
 
         try {
             genderEnumType.deleteEnumAttributeWithValues(null);
@@ -236,5 +240,9 @@ public class EnumTypeTest extends AbstractIpsEnumPluginTest {
             fail();
         } catch (NoSuchElementException e) {
         }
+
+        genderEnumType.deleteEnumAttributeWithValues(genderEnumAttributeName);
+        assertEquals(0, genderEnumType.getEnumAttributes().size());
+        assertEquals(0, genderEnumMaleValue.getEnumAttributeValues().size());
     }
 }
