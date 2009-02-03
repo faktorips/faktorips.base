@@ -158,6 +158,10 @@ public interface IEnumType extends IEnumValueContainer, Datatype {
      * If the given enum attribute is already the first enum attribute then absolutely nothing will
      * be done.
      * </p>
+     * <p>
+     * Note that all referencing enum attribute values will also be moved one position upwards in
+     * their collection.
+     * </p>
      * 
      * @param enumAttribute The enum attribute to move further up in the order.
      * 
@@ -174,6 +178,10 @@ public interface IEnumType extends IEnumValueContainer, Datatype {
      * If the given enum attribute is already the last enum attribute then absolutely nothing will
      * be done.
      * </p>
+     * <p>
+     * Note that all referencing enum attribute values will also be moved one position downwards in
+     * their collection.
+     * </p>
      * 
      * @param enumAttribute The enum attribute to move further down in the order.
      * 
@@ -183,8 +191,14 @@ public interface IEnumType extends IEnumValueContainer, Datatype {
     public void moveEnumAttributeDown(IEnumAttribute enumAttribute) throws CoreException;
 
     /**
+     * <p>
      * Searches and returns all enum contents that are built upon this enum type. If none are found
      * an empty list will be returned. This method never returns <code>null</code>.
+     * </p>
+     * <p>
+     * Note that this operation does not differentiate whether the values are part of the model or
+     * not.
+     * </p>
      * 
      * @return A list containing all enum contents that are built upon this enum type.
      * 
@@ -193,7 +207,13 @@ public interface IEnumType extends IEnumValueContainer, Datatype {
     public List<IEnumContent> findReferencingEnumContents() throws CoreException;
 
     /**
+     * <p>
      * Deletes the given enum attribute and all enum attribute values that refer to it.
+     * </p>
+     * <p>
+     * Note that this operation does not differentiate whether the values are part of the model or
+     * not: all referencing enum attribute values will be deleted.
+     * </p>
      * 
      * @param enumAttribute The enum attribute to delete.
      * 
@@ -204,8 +224,14 @@ public interface IEnumType extends IEnumValueContainer, Datatype {
     public void deleteEnumAttributeWithValues(IEnumAttribute enumAttribute) throws CoreException;
 
     /**
+     * <p>
      * Deletes the enum attribute identified by the given id and all enum attribute values that
      * refer to it.
+     * </p>
+     * <p>
+     * Note that this operation does not differentiate whether the values are part of the model or
+     * not: all referencing enum attribute values will be deleted.
+     * </p>
      * 
      * @param id The id that identifies the enum attribute to delete.
      * 

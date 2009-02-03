@@ -15,6 +15,7 @@ package org.faktorips.devtools.core.internal.model.enumtype;
 
 import javax.xml.parsers.ParserConfigurationException;
 
+import org.eclipse.core.runtime.CoreException;
 import org.faktorips.devtools.core.AbstractIpsPluginTest;
 import org.faktorips.devtools.core.model.enumtype.IEnumAttribute;
 import org.faktorips.devtools.core.model.enumtype.IEnumAttributeValue;
@@ -35,6 +36,10 @@ import org.w3c.dom.Document;
  * <p>
  * Utility methods and helpful string constants are provided.
  * </p>
+ * <p>
+ * Another enum type is provided called difficulty enum type. In the difficulty enum type the enum
+ * values are stored directly in the enum type itself.
+ * </p>
  * 
  * @author Alexander Weickmann
  */
@@ -43,15 +48,26 @@ public abstract class AbstractIpsEnumPluginTest extends AbstractIpsPluginTest {
     protected final String STRING_DATATYPE_NAME = "String";
     protected final String INTEGER_DATATYPE_NAME = "Integer";
 
-    protected final String GENDER_ENUM_TYPE_NAME = "GenderEnum";
+    protected final String GENDER_ENUM_TYPE_NAME = "GenderEnumType";
     protected final String GENDER_ENUM_ATTRIBUTE_ID_NAME = "Id";
     protected final String GENDER_ENUM_ATTRIBUTE_NAME_NAME = "Name";
     protected final String GENDER_ENUM_CONTENT_NAME = "GenderEnumContent";
 
-    protected final String ENUM_LITERAL_MALE_ID = "m";
-    protected final String ENUM_LITERAL_FEMALE_ID = "w";
-    protected final String ENUM_LITERAL_MALE = "male";
-    protected final String ENUM_LITERAL_FEMALE = "female";
+    protected final String GENDER_ENUM_LITERAL_MALE_ID = "m";
+    protected final String GENDER_ENUM_LITERAL_FEMALE_ID = "w";
+    protected final String GENDER_ENUM_LITERAL_MALE_NAME = "male";
+    protected final String GENDER_ENUM_LITERAL_FEMALE_NAME = "female";
+
+    protected final String DIFFICULTY_ENUM_TYPE_NAME = "DifficultyEnumType";
+    protected final String DIFFICULTY_ENUM_ATTRIBUTE_ID_NAME = "Id";
+    protected final String DIFFICULTY_ENUM_ATTRIBUTE_LABEL_NAME = "Label";
+
+    protected final String DIFFICULTY_ENUM_LITERAL_EASY_ID = "e";
+    protected final String DIFFICULTY_ENUM_LITERAL_MEDIUM_ID = "m";
+    protected final String DIFFICULTY_ENUM_LITERAL_HARD_ID = "h";
+    protected final String DIFFICULTY_ENUM_LITERAL_EASY_LABEL = "easy";
+    protected final String DIFFICULTY_ENUM_LITERAL_MEDIUM_LABEL = "medium";
+    protected final String DIFFICULTY_ENUM_LITERAL_HARD_LABEL = "hard";
 
     protected IIpsProject ipsProject;
 
@@ -59,8 +75,15 @@ public abstract class AbstractIpsEnumPluginTest extends AbstractIpsPluginTest {
     protected IEnumAttribute genderEnumAttributeId;
     protected IEnumAttribute genderEnumAttributeName;
     protected IEnumContent genderEnumContent;
-    protected IEnumValue genderEnumMaleValue;
-    protected IEnumValue genderEnumFemaleValue;
+    protected IEnumValue genderEnumValueMale;
+    protected IEnumValue genderEnumValueFemale;
+
+    protected IEnumType difficultyEnumType;
+    protected IEnumAttribute difficultyEnumAttributeId;
+    protected IEnumAttribute difficultyEnumAttributeLabel;
+    protected IEnumValue difficultyEnumValueEasy;
+    protected IEnumValue difficultyEnumValueMedium;
+    protected IEnumValue difficultyEnumValueHard;
 
     @Override
     public void setUp() throws Exception {
@@ -68,7 +91,19 @@ public abstract class AbstractIpsEnumPluginTest extends AbstractIpsPluginTest {
 
         ipsProject = newIpsProject("EnumTestProject");
 
+        createGenderEnum();
+        initGenderEnumValues();
+
+        createDifficultyEnum();
+        initDifficultyEnumValues();
+    }
+
+    private void createGenderEnum() throws CoreException {
         genderEnumType = newEnumType(ipsProject, GENDER_ENUM_TYPE_NAME);
+        genderEnumType.setIsAbstract(false);
+        genderEnumType.setValuesArePartOfModel(false);
+        genderEnumType.setSuperEnumType("");
+
         genderEnumAttributeId = genderEnumType.newEnumAttribute();
         genderEnumAttributeId.setName(GENDER_ENUM_ATTRIBUTE_ID_NAME);
         genderEnumAttributeId.setDatatype(STRING_DATATYPE_NAME);
@@ -80,24 +115,60 @@ public abstract class AbstractIpsEnumPluginTest extends AbstractIpsPluginTest {
         genderEnumContent = newEnumContent(ipsProject, GENDER_ENUM_CONTENT_NAME);
         genderEnumContent.setEnumType(genderEnumType.getQualifiedName());
 
-        genderEnumMaleValue = genderEnumContent.newEnumValue();
-        genderEnumFemaleValue = genderEnumContent.newEnumValue();
-
-        initEnumValues();
+        genderEnumValueMale = genderEnumContent.newEnumValue();
+        genderEnumValueFemale = genderEnumContent.newEnumValue();
     }
 
-    private void initEnumValues() {
+    private void initGenderEnumValues() {
         IEnumAttributeValue tempAttributeValueRef;
 
-        tempAttributeValueRef = genderEnumMaleValue.getEnumAttributeValue(0);
-        tempAttributeValueRef.setValue(ENUM_LITERAL_MALE_ID);
-        tempAttributeValueRef = genderEnumMaleValue.getEnumAttributeValue(1);
-        tempAttributeValueRef.setValue(ENUM_LITERAL_MALE);
+        tempAttributeValueRef = genderEnumValueMale.getEnumAttributeValue(0);
+        tempAttributeValueRef.setValue(GENDER_ENUM_LITERAL_MALE_ID);
+        tempAttributeValueRef = genderEnumValueMale.getEnumAttributeValue(1);
+        tempAttributeValueRef.setValue(GENDER_ENUM_LITERAL_MALE_NAME);
 
-        tempAttributeValueRef = genderEnumFemaleValue.getEnumAttributeValue(0);
-        tempAttributeValueRef.setValue(ENUM_LITERAL_FEMALE_ID);
-        tempAttributeValueRef = genderEnumFemaleValue.getEnumAttributeValue(1);
-        tempAttributeValueRef.setValue(ENUM_LITERAL_FEMALE);
+        tempAttributeValueRef = genderEnumValueFemale.getEnumAttributeValue(0);
+        tempAttributeValueRef.setValue(GENDER_ENUM_LITERAL_FEMALE_ID);
+        tempAttributeValueRef = genderEnumValueFemale.getEnumAttributeValue(1);
+        tempAttributeValueRef.setValue(GENDER_ENUM_LITERAL_FEMALE_NAME);
+    }
+
+    private void createDifficultyEnum() throws CoreException {
+        difficultyEnumType = newEnumType(ipsProject, DIFFICULTY_ENUM_TYPE_NAME);
+        difficultyEnumType.setIsAbstract(false);
+        difficultyEnumType.setValuesArePartOfModel(true);
+        difficultyEnumType.setSuperEnumType("");
+
+        difficultyEnumAttributeId = difficultyEnumType.newEnumAttribute();
+        difficultyEnumAttributeId.setName(DIFFICULTY_ENUM_ATTRIBUTE_ID_NAME);
+        difficultyEnumAttributeId.setDatatype(STRING_DATATYPE_NAME);
+        difficultyEnumAttributeId.setIsIdentifier(true);
+        difficultyEnumAttributeLabel = difficultyEnumType.newEnumAttribute();
+        difficultyEnumAttributeLabel.setName(DIFFICULTY_ENUM_ATTRIBUTE_LABEL_NAME);
+        difficultyEnumAttributeLabel.setDatatype(STRING_DATATYPE_NAME);
+
+        difficultyEnumValueEasy = difficultyEnumType.newEnumValue();
+        difficultyEnumValueMedium = difficultyEnumType.newEnumValue();
+        difficultyEnumValueHard = difficultyEnumType.newEnumValue();
+    }
+
+    private void initDifficultyEnumValues() {
+        IEnumAttributeValue tempAttributeValueRef;
+
+        tempAttributeValueRef = difficultyEnumValueEasy.getEnumAttributeValue(0);
+        tempAttributeValueRef.setValue(DIFFICULTY_ENUM_LITERAL_EASY_ID);
+        tempAttributeValueRef = difficultyEnumValueEasy.getEnumAttributeValue(1);
+        tempAttributeValueRef.setValue(DIFFICULTY_ENUM_LITERAL_EASY_LABEL);
+
+        tempAttributeValueRef = difficultyEnumValueMedium.getEnumAttributeValue(0);
+        tempAttributeValueRef.setValue(DIFFICULTY_ENUM_LITERAL_MEDIUM_ID);
+        tempAttributeValueRef = difficultyEnumValueMedium.getEnumAttributeValue(1);
+        tempAttributeValueRef.setValue(DIFFICULTY_ENUM_LITERAL_MEDIUM_LABEL);
+
+        tempAttributeValueRef = difficultyEnumValueHard.getEnumAttributeValue(0);
+        tempAttributeValueRef.setValue(DIFFICULTY_ENUM_LITERAL_HARD_ID);
+        tempAttributeValueRef = difficultyEnumValueHard.getEnumAttributeValue(1);
+        tempAttributeValueRef.setValue(DIFFICULTY_ENUM_LITERAL_HARD_LABEL);
     }
 
     protected Document createXmlDocument(String xmlTag) throws ParserConfigurationException {

@@ -29,7 +29,7 @@ public class EnumAttributeValueTest extends AbstractIpsEnumPluginTest {
     public void setUp() throws Exception {
         super.setUp();
 
-        maleIdAttributeValue = genderEnumMaleValue.getEnumAttributeValue(0);
+        maleIdAttributeValue = genderEnumValueMale.getEnumAttributeValue(0);
     }
 
     public void testGetEnumAttribute() {
@@ -51,13 +51,14 @@ public class EnumAttributeValueTest extends AbstractIpsEnumPluginTest {
         Element xmlElement = genderEnumContent.toXml(createXmlDocument(IEnumContent.XML_TAG));
         // Get first enum attribute value of the first enum value
         Node firstEnumAttributeValue = xmlElement.getChildNodes().item(1).getChildNodes().item(1);
-        assertEquals(ENUM_LITERAL_MALE_ID, firstEnumAttributeValue.getAttributes().getNamedItem(
+        assertEquals(GENDER_ENUM_LITERAL_MALE_ID, firstEnumAttributeValue.getAttributes().getNamedItem(
                 IEnumAttributeValue.XML_ATTRIBUTE_VALUE).getTextContent());
         assertEquals(1 + 2, xmlElement.getChildNodes().getLength());
 
         IEnumContent loadedEnumContent = newEnumContent(ipsProject, "LoadedEnumValues");
         loadedEnumContent.initFromXml(xmlElement);
-        assertEquals(ENUM_LITERAL_MALE_ID, loadedEnumContent.getEnumValues().get(0).getEnumAttributeValue(0).getValue());
+        assertEquals(GENDER_ENUM_LITERAL_MALE_ID, loadedEnumContent.getEnumValues().get(0).getEnumAttributeValue(0)
+                .getValue());
         assertEquals(2, loadedEnumContent.getEnumValues().size());
     }
 }
