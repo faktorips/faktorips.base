@@ -16,6 +16,7 @@ package org.faktorips.devtools.core.internal.model.enumtype;
 import javax.xml.parsers.ParserConfigurationException;
 
 import org.eclipse.core.runtime.CoreException;
+import org.faktorips.devtools.core.model.IIpsModel;
 import org.faktorips.devtools.core.model.enumtype.IEnumContent;
 import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
 import org.w3c.dom.Element;
@@ -48,11 +49,32 @@ public class EnumContentTest extends AbstractIpsEnumPluginTest {
 
     public void testXml() throws ParserConfigurationException, CoreException {
         Element xmlElement = genderEnumContent.toXml(createXmlDocument(IEnumContent.XML_TAG));
-        assertEquals(genderEnumType.getQualifiedName(), xmlElement.getAttribute(IEnumContent.XML_ATTRIBUTE_ENUM_TYPE));
+        assertEquals(genderEnumType.getQualifiedName(), xmlElement.getAttribute(IEnumContent.PROPERTY_ENUM_TYPE));
 
         IEnumContent loadedEnumContent = newEnumContent(ipsProject, "LoadedEnumValues");
         loadedEnumContent.initFromXml(xmlElement);
         assertEquals(genderEnumType.getQualifiedName(), loadedEnumContent.getEnumType());
+    }
+
+    public void testValidateThis() throws CoreException {
+        assertTrue(genderEnumContent.isValid());
+
+        IIpsModel ipsModel = getIpsModel();
+        
+        ipsModel.clearValidationCache();
+        genderEnumContent.setEnumType("");
+        assertEquals(1, genderEnumContent.validate(ipsProject).getNoOfMessages());
+        genderEnumContent.setEnumType(genderEnumType.getQualifiedName());
+        
+        ipsModel.clearValidationCache();
+        genderEnumContent.setEnumType("FooBar");
+        assertEquals(1, genderEnumContent.validate(ipsProject).getNoOfMessages());
+        genderEnumContent.setEnumType(genderEnumType.getQualifiedName());
+        
+        ipsModel.clearValidationCache();
+        genderEnumType.setValuesArePartOfModel(true);
+        assertEquals(1, genderEnumContent.validate(ipsProject).getNoOfMessages());
+        genderEnumType.setValuesArePartOfModel(false);
     }
 
 }

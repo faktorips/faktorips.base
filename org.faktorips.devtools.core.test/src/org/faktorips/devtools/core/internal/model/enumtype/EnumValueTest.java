@@ -16,6 +16,7 @@ package org.faktorips.devtools.core.internal.model.enumtype;
 import javax.xml.parsers.ParserConfigurationException;
 
 import org.eclipse.core.runtime.CoreException;
+import org.faktorips.devtools.core.model.IIpsModel;
 import org.faktorips.devtools.core.model.enumtype.IEnumAttribute;
 import org.faktorips.devtools.core.model.enumtype.IEnumAttributeValue;
 import org.faktorips.devtools.core.model.enumtype.IEnumContent;
@@ -116,6 +117,16 @@ public class EnumValueTest extends AbstractIpsEnumPluginTest {
         IEnumContent loadedEnumContent = newEnumContent(ipsProject, "LoadedEnumValues");
         loadedEnumContent.initFromXml(xmlElement);
         assertEquals(2, loadedEnumContent.getEnumValues().size());
+    }
+
+    public void testValidateThis() throws CoreException {
+        assertTrue(genderEnumValueFemale.isValid());
+
+        IIpsModel ipsModel = getIpsModel();
+
+        ipsModel.clearValidationCache();
+        genderEnumValueFemale.getEnumAttributeValue(0).delete();
+        assertEquals(1, genderEnumValueFemale.validate(ipsProject).getNoOfMessages());
     }
 
 }

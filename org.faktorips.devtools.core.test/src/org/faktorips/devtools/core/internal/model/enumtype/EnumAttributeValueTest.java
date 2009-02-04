@@ -52,7 +52,7 @@ public class EnumAttributeValueTest extends AbstractIpsEnumPluginTest {
         // Get first enum attribute value of the first enum value
         Node firstEnumAttributeValue = xmlElement.getChildNodes().item(1).getChildNodes().item(1);
         assertEquals(GENDER_ENUM_LITERAL_MALE_ID, firstEnumAttributeValue.getAttributes().getNamedItem(
-                IEnumAttributeValue.XML_ATTRIBUTE_VALUE).getTextContent());
+                IEnumAttributeValue.PROPERTY_VALUE).getTextContent());
         assertEquals(1 + 2, xmlElement.getChildNodes().getLength());
 
         IEnumContent loadedEnumContent = newEnumContent(ipsProject, "LoadedEnumValues");

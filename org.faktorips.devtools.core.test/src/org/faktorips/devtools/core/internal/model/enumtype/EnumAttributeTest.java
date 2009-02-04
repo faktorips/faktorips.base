@@ -16,6 +16,7 @@ package org.faktorips.devtools.core.internal.model.enumtype;
 import javax.xml.parsers.ParserConfigurationException;
 
 import org.eclipse.core.runtime.CoreException;
+import org.faktorips.devtools.core.model.IIpsModel;
 import org.faktorips.devtools.core.model.enumtype.IEnumAttribute;
 import org.faktorips.devtools.core.model.enumtype.IEnumType;
 import org.w3c.dom.Element;
@@ -63,10 +64,9 @@ public class EnumAttributeTest extends AbstractIpsEnumPluginTest {
     public void testXml() throws ParserConfigurationException, CoreException {
         Element xmlElement = genderEnumType.toXml(createXmlDocument(IEnumAttribute.XML_TAG));
         NamedNodeMap attributes = xmlElement.getChildNodes().item(1).getAttributes();
-        assertEquals(STRING_DATATYPE_NAME, attributes.getNamedItem(IEnumAttribute.XML_ATTRIBUTE_DATATYPE)
-                .getTextContent());
-        assertTrue(Boolean.parseBoolean(attributes.getNamedItem(IEnumAttribute.XML_ATTRIBUTE_IS_IDENTIFIER)
-                .getTextContent()));
+        assertEquals(STRING_DATATYPE_NAME, attributes.getNamedItem(IEnumAttribute.PROPERTY_DATATYPE).getTextContent());
+        assertTrue(Boolean
+                .parseBoolean(attributes.getNamedItem(IEnumAttribute.PROPERTY_IS_IDENTIFIER).getTextContent()));
         assertEquals(1 + 2, xmlElement.getChildNodes().getLength());
 
         IEnumType loadedEnumType = newEnumType(ipsProject, "LoadedEnumType");
@@ -75,6 +75,32 @@ public class EnumAttributeTest extends AbstractIpsEnumPluginTest {
         assertEquals(STRING_DATATYPE_NAME, idAttribute.getDatatype());
         assertTrue(idAttribute.isIdentifier());
         assertEquals(2, loadedEnumType.getEnumAttributes().size());
+    }
+
+    public void testValidateThis() throws CoreException {
+        assertTrue(genderEnumAttributeId.isValid());
+
+        IIpsModel ipsModel = getIpsModel();
+        
+        ipsModel.clearValidationCache();
+        genderEnumAttributeId.setName("");
+        assertEquals(1, genderEnumAttributeId.validate(ipsProject).getNoOfMessages());
+        genderEnumAttributeId.setName(GENDER_ENUM_ATTRIBUTE_ID_NAME);
+
+        ipsModel.clearValidationCache();
+        genderEnumAttributeId.setName(GENDER_ENUM_ATTRIBUTE_NAME_NAME);
+        assertEquals(1, genderEnumAttributeId.validate(ipsProject).getNoOfMessages());
+        genderEnumAttributeId.setName(GENDER_ENUM_ATTRIBUTE_ID_NAME);
+
+        ipsModel.clearValidationCache();
+        genderEnumAttributeId.setDatatype("");
+        assertEquals(1, genderEnumAttributeId.validate(ipsProject).getNoOfMessages());
+        genderEnumAttributeId.setDatatype(STRING_DATATYPE_NAME);
+
+        ipsModel.clearValidationCache();
+        genderEnumAttributeId.setDatatype("FooBar");
+        assertEquals(1, genderEnumAttributeId.validate(ipsProject).getNoOfMessages());
+        genderEnumAttributeId.setDatatype(STRING_DATATYPE_NAME);
     }
 
 }

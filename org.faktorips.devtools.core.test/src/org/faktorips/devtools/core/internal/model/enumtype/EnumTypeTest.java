@@ -69,9 +69,20 @@ public class EnumTypeTest extends AbstractIpsEnumPluginTest {
         assertEquals(GENDER_ENUM_ATTRIBUTE_NAME_NAME, attributes.get(1).getName());
     }
 
-    public void testGetEnumAttribute() {
+    public void testGetEnumAttributeById() {
         assertEquals(genderEnumAttributeId, genderEnumType.getEnumAttribute(0));
         assertEquals(genderEnumAttributeName, genderEnumType.getEnumAttribute(1));
+    }
+
+    public void testGetEnumAttributeByName() {
+        try {
+            genderEnumType.getEnumAttribute(null);
+            fail();
+        } catch (NullPointerException e) {
+        }
+
+        assertEquals(genderEnumAttributeId, genderEnumType.getEnumAttribute(GENDER_ENUM_ATTRIBUTE_ID_NAME));
+        assertEquals(genderEnumAttributeName, genderEnumType.getEnumAttribute(GENDER_ENUM_ATTRIBUTE_NAME_NAME));
     }
 
     public void testGetNumberEnumAttributes() {
@@ -233,9 +244,9 @@ public class EnumTypeTest extends AbstractIpsEnumPluginTest {
         newEnumType.newEnumAttribute();
 
         Element xmlElement = newEnumType.toXml(createXmlDocument(IEnumType.XML_TAG));
-        assertTrue(Boolean.parseBoolean(xmlElement.getAttribute(IEnumType.XML_ATTRIBUTE_ABSTRACT)));
-        assertTrue(Boolean.parseBoolean(xmlElement.getAttribute(IEnumType.XML_ATTRIBUTE_VALUES_ARE_PART_OF_MODEL)));
-        assertEquals(genderEnumType.getQualifiedName(), xmlElement.getAttribute(IEnumType.XML_ATTRIBUTE_SUPERTYPE));
+        assertTrue(Boolean.parseBoolean(xmlElement.getAttribute(IEnumType.PROPERTY_ABSTRACT)));
+        assertTrue(Boolean.parseBoolean(xmlElement.getAttribute(IEnumType.PROPERTY_VALUES_ARE_PART_OF_MODEL)));
+        assertEquals(genderEnumType.getQualifiedName(), xmlElement.getAttribute(IEnumType.PROPERTY_SUPERTYPE));
 
         IEnumType loadedEnumType = newEnumType(ipsProject, "LoadedEnumType");
         loadedEnumType.initFromXml(xmlElement);
@@ -306,4 +317,24 @@ public class EnumTypeTest extends AbstractIpsEnumPluginTest {
     public void testCompareTo() {
         assertEquals(0, genderEnumType.compareTo(new Object()));
     }
+
+    public void testEnumAttributeExists() {
+        try {
+            genderEnumType.enumAttributeExists(null);
+            fail();
+        } catch (NullPointerException e) {
+        }
+
+        assertTrue(genderEnumType.enumAttributeExists(GENDER_ENUM_ATTRIBUTE_ID_NAME));
+        assertFalse(genderEnumType.enumAttributeExists("FooBar"));
+    }
+
+    public void testValidateThis() throws CoreException {
+        assertTrue(genderEnumType.isValid());
+
+        getIpsModel().clearValidationCache();
+        genderEnumType.setSuperEnumType("FooBar");
+        assertEquals(1, genderEnumType.validate(ipsProject).getNoOfMessages());
+    }
+
 }
