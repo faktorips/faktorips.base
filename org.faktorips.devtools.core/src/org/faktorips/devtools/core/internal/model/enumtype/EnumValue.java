@@ -169,12 +169,14 @@ public class EnumValue extends BaseIpsObjectPart implements IEnumValue {
         super.validateThis(list, ipsProject);
 
         IEnumType enumType = ((IEnumValueContainer)getParent()).findEnumType();
-        if (enumType.getNumberEnumAttributes() != getNumberEnumAttributeValues()) {
-            String text = NLS.bind(Messages.EnumValue_NumberAttributeValuesDoesNotCorrespondToNumberAttributes,
-                    enumType.getQualifiedName());
-            Message message = new Message(MSGCODE_NUMBER_ATTRIBUTE_VALUES_DOES_NOT_CORRESPOND_TO_NUMBER_ATTRIBUTES,
-                    text, Message.ERROR, this);
-            list.add(message);
+        if (enumType != null) {
+            if (enumType.getNumberEnumAttributes() != getNumberEnumAttributeValues()) {
+                String text = NLS.bind(Messages.EnumValue_NumberAttributeValuesDoesNotCorrespondToNumberAttributes,
+                        enumType.getQualifiedName());
+                Message message = new Message(MSGCODE_NUMBER_ATTRIBUTE_VALUES_DOES_NOT_CORRESPOND_TO_NUMBER_ATTRIBUTES,
+                        text, Message.ERROR, this);
+                list.add(message);
+            }
         }
     }
 
