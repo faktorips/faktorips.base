@@ -31,6 +31,7 @@ import org.faktorips.datatype.ValueDatatype;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.internal.model.DynamicValueDatatype;
 import org.faktorips.devtools.core.model.IIpsElement;
+import org.faktorips.devtools.core.model.enumtype.IEnumType;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObject;
 import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
@@ -52,6 +53,9 @@ import org.faktorips.util.message.MessageList;
  */
 public interface IIpsProject extends IIpsElement, IProjectNature {
 
+    /**
+     * The id of the Faktor-IPS project nature.
+     */
     public final static String NATURE_ID = IpsPlugin.PLUGIN_ID + ".ipsnature"; //$NON-NLS-1$
 
     /**
@@ -72,7 +76,7 @@ public interface IIpsProject extends IIpsElement, IProjectNature {
 
     /**
      * Validation message code to indicate that no version manager was installed for a required
-     * feature
+     * feature.
      */
     public final static String MSGCODE_NO_VERSIONMANAGER = MSGCODE_PREFIX + "NoVersionManager"; //$NON-NLS-1$
 
@@ -89,7 +93,7 @@ public interface IIpsProject extends IIpsElement, IProjectNature {
 
     /**
      * Validation message code to indicate that the version of the required feature is *not*
-     * compatible
+     * compatible.
      */
     public final static String MSGCODE_INCOMPATIBLE_VERSIONS = MSGCODE_PREFIX + "IncompatibleVersions"; //$NON-NLS-1$
 
@@ -369,28 +373,46 @@ public interface IIpsProject extends IIpsElement, IProjectNature {
     public IIpsObject findIpsObject(QualifiedNameType nameType) throws CoreException;
 
     /**
-     * Returns the first policy component type the qualified name found on the path. Returns
-     * <code>null</code> if no such type is found. Returns <code>null</code> if the qualified name
-     * is <code>null</code>.
+     * Returns the first policy component type with the given qualified name found on the path.
+     * Returns <code>null</code> if no such type is found. Returns <code>null</code> if the
+     * qualified name is <code>null</code>.
      * 
      * @throws CoreException if an error occurs while searching.
      */
     public IPolicyCmptType findPolicyCmptType(String qualifiedName) throws CoreException;
 
     /**
-     * Returns the first product component type with given the qualified name found on the path.
+     * Returns the first product component type with the given qualified name found on the path.
      */
     public IProductCmptType findProductCmptType(String qualifiedName) throws CoreException;
 
     /**
      * Returns the product component with the given qualified name or <code>null</code> if no such
-     * product component exists. If more than one product component with the given id exists, the
+     * product component exists. If more than one product component with the given name exists, the
      * first one found is returned.
      * 
-     * @param qualifiedName the name to find the product component for
-     * @throws CoreException if an error occurs during search.
+     * @param qualifiedName The qualified name to find the product component for.
+     * 
+     * @return The first product component identified by the given qualified name that has been
+     *         found.
+     * 
+     * @throws CoreException If an error occurs during the search.
      */
     public IProductCmpt findProductCmpt(String qualifiedName) throws CoreException;
+
+    /**
+     * Returns the enum type with the given qualified name or <code>null</code> if no such enum type
+     * exists. If more than one enum type with the given name exists, the first one found is
+     * returned.
+     * 
+     * @param qualifiedName The qualified name to find the enum type for.
+     * 
+     * @return The first enum type identified by the given qualified name that has been found.
+     * 
+     * @throws CoreException If an error occurs during the search.
+     * @throws NullPointerException If qualifiedName is <code>null</code>.
+     */
+    public IEnumType findEnumType(String qualifiedName) throws CoreException;
 
     /**
      * Returns the product component with the given runtime id or <code>null</code> if no such
@@ -651,12 +673,14 @@ public interface IIpsProject extends IIpsElement, IProjectNature {
     public IProductCmptNamingStrategy getProductCmptNamingStrategy() throws CoreException;
 
     /**
-     * Adds a new DynamicValueDataType to the Project at runtime
+     * Adds a new <code>DynamicValueDataType</code> to the project at runtime.
      * 
      * @param newDatatype
+     * 
      * @throws CoreException
      * 
-     * @deprecated use IIpsProjectProperties to change the project properties
+     * @deprecated Use {@link org.faktorips.devtools.core.model.ipsproject.IIpsProjectProperties} to
+     *             change the project properties.
      */
     public void addDynamicValueDataType(DynamicValueDatatype newDatatype) throws CoreException;
 
