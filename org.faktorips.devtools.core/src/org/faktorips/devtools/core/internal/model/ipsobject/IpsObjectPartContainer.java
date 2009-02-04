@@ -65,15 +65,15 @@ public abstract class IpsObjectPartContainer extends IpsElement implements IIpsO
     protected final static String XML_ATTRIBUTE_EXTPROPERTYID = "id"; //$NON-NLS-1$
 
     /**
-     * Name of the value element's attribute that stores the information if the value is null or
-     * not.
+     * Name of the value element's attribute that stores the information if the value is
+     * <code>null</code> or not.
      */
     protected final static String XML_ATTRIBUTE_ISNULL = "isNull"; //$NON-NLS-1$
 
-    // map containing extension property ids as keys and their values.
+    // Map containing extension property ids as keys and their values.
     private HashMap<String, Object> extPropertyValues = null;
 
-    // validation start time used for tracing in debug mode
+    // Validation start time used for tracing in debug mode
     private long validationStartTime;
 
     public IpsObjectPartContainer(IIpsElement parent, String name) {
@@ -81,7 +81,7 @@ public abstract class IpsObjectPartContainer extends IpsElement implements IIpsO
     }
 
     /**
-     * for testing purposes
+     * Only for testing purposes.
      */
     public IpsObjectPartContainer() {
         super();
@@ -156,27 +156,54 @@ public abstract class IpsObjectPartContainer extends IpsElement implements IIpsO
         property.afterSetValue(this, value);
     }
 
+    /**
+     * 
+     * @param oldValue
+     * @param newValue
+     * 
+     * @return
+     */
+    // TODO javadoc
     protected final boolean valueChanged(Object oldValue, Object newValue) {
         boolean changed = !ObjectUtils.equals(oldValue, newValue);
         if (changed) {
             objectHasChanged();
         }
+        
         return changed;
     }
 
+    /**
+     * 
+     * @param oldValue
+     * @param newValue
+     * 
+     * @return
+     */
+    // TODO javadoc
     protected final boolean valueChanged(boolean oldValue, boolean newValue) {
         boolean changed = oldValue != newValue;
         if (changed) {
             objectHasChanged();
         }
+        
         return changed;
     }
 
+    /**
+     * 
+     * @param oldValue
+     * @param newValue
+     * 
+     * @return
+     */
+    // TODO javadoc
     protected final boolean valueChanged(int oldValue, int newValue) {
         boolean changed = oldValue != newValue;
         if (changed) {
             objectHasChanged();
         }
+        
         return changed;
     }
 
@@ -187,16 +214,29 @@ public abstract class IpsObjectPartContainer extends IpsElement implements IIpsO
 
     /**
      * Has to be called when a part was added to the container to trigger event notification.
+     * 
+     * @param part
      */
+    // TODO javadoc
     protected void partWasAdded(IIpsObjectPart part) {
         objectHasChanged(ContentChangeEvent.newPartAddedEvent(part));
     }
 
+    /**
+     * 
+     * @param parts
+     */
+    // TODO javadoc
     protected void partsMoved(IIpsObjectPart[] parts) {
         ContentChangeEvent event = ContentChangeEvent.newPartsChangedPositionsChangedEvent(getIpsSrcFile(), parts);
         objectHasChanged(event);
     }
 
+    /**
+     * 
+     * @param event
+     */
+    // TODO javadoc
     protected void objectHasChanged(ContentChangeEvent event) {
         IpsModel model = (IpsModel)getIpsModel();
         IpsSrcFileContent content = model.getIpsSrcFileContent(getIpsSrcFile());
@@ -295,6 +335,12 @@ public abstract class IpsObjectPartContainer extends IpsElement implements IIpsO
         initFromXml(element, null);
     }
 
+    /**
+     * 
+     * @param element
+     * @param id
+     */
+    // TODO javadoc
     protected void initFromXml(Element element, Integer id) {
         initPropertiesFromXml(element, id);
         initPartContainersFromXml(element);
@@ -365,7 +411,7 @@ public abstract class IpsObjectPartContainer extends IpsElement implements IIpsO
      */
     private void initExtPropertyFromXml(Element valueElement,
             HashMap<String, IExtensionPropertyDefinition> extPropertyDefinitions) {
-        
+
         String propertyId = valueElement.getAttribute(IpsObjectPartContainer.XML_ATTRIBUTE_EXTPROPERTYID);
         Object value = null;
         String isNull = valueElement.getAttribute(IpsObjectPartContainer.XML_ATTRIBUTE_ISNULL);
@@ -637,6 +683,7 @@ public abstract class IpsObjectPartContainer extends IpsElement implements IIpsO
         if (!memento.getOriginator().equals(this)) {
             throw new IllegalArgumentException("Memento " + memento + " wasn't created by " + this); //$NON-NLS-1$ //$NON-NLS-2$
         }
+        
         initFromXml(((XmlMemento)memento).getState());
         objectHasChanged();
     }
