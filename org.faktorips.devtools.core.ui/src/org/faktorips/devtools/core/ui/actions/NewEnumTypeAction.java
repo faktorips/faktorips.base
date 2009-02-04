@@ -16,7 +16,7 @@ package org.faktorips.devtools.core.ui.actions;
 import org.eclipse.jface.action.Action;
 import org.eclipse.ui.IWorkbenchWindow;
 import org.faktorips.devtools.core.ui.IpsUIPlugin;
-import org.faktorips.devtools.core.ui.wizards.bf.OpenNewBFWizardAction;
+import org.faktorips.devtools.core.ui.wizards.enumtype.OpenNewEnumTypeWizardAction;
 
 /**
  * Opens the wizard for creating a new enum type.
@@ -39,7 +39,7 @@ public class NewEnumTypeAction extends Action {
         super();
 
         this.window = window;
-        setText(Messages.NewBusinessFunctionAction_title);
+        setText(Messages.NewEnumTypeAction_title);
         setImageDescriptor(IpsUIPlugin.getDefault().getImageDescriptor(IMAGE));
     }
 
@@ -48,7 +48,7 @@ public class NewEnumTypeAction extends Action {
      */
     @Override
     public void run() {
-        OpenNewBFWizardAction action = new OpenNewBFWizardAction();
+        OpenNewEnumTypeWizardAction action = new OpenNewEnumTypeWizardAction();
         action.init(window);
         action.run(this);
     }
