@@ -32,9 +32,9 @@ public interface IEnumAttributeValue extends IIpsObjectPart {
 
     /** The xml tag for this ips object part. */
     public final static String XML_TAG = "EnumAttributeValue"; //$NON-NLS-1$
-    
-    /** Name of the xml attribute for the value property. */
-    public final static String XML_ATTRIBUTE_VALUE = "value"; //$NON-NLS-1$
+
+    /** Name of the value property. */
+    public final static String PROPERTY_VALUE = "value"; //$NON-NLS-1$
 
     /**
      * Returns the enum attribute this enum attribute value refers to.
@@ -46,7 +46,7 @@ public interface IEnumAttributeValue extends IIpsObjectPart {
     /**
      * Returns the value as string.
      * 
-     * @return A string representing the actual value.
+     * @return A <code>String</code> representing the actual value.
      */
     public String getValue();
 

@@ -38,6 +38,16 @@ public interface IEnumValue extends IIpsObjectPart {
     /** The xml tag for this ips object part. */
     public final static String XML_TAG = "EnumValue"; //$NON-NLS-1$
 
+    /** Prefix for all message codes of this class. */
+    public final static String MSGCODE_PREFIX = "ENUMVALUE-"; //$NON-NLS-1$
+
+    /**
+     * Validation message code to indicate that there are not as many enum attribute values as enum
+     * attributes in the enum type.
+     */
+    public final static String MSGCODE_NUMBER_ATTRIBUTE_VALUES_DOES_NOT_CORRESPOND_TO_NUMBER_ATTRIBUTES = MSGCODE_PREFIX
+            + "NumberAttributeValuesDoesNotCorrespondToNumberAttributes"; //$NON-NLS-1$
+
     /**
      * Returns a list containing all enum attribute values.
      * 

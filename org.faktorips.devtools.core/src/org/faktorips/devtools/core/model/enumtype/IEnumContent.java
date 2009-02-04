@@ -32,8 +32,31 @@ public interface IEnumContent extends IEnumValueContainer {
     /** The xml tag for this ips object. */
     public final static String XML_TAG = "EnumContent"; //$NON-NLS-1$
 
-    /** Name of the xml attribute for the enumType property. */
-    public final static String XML_ATTRIBUTE_ENUM_TYPE = "enumType"; //$NON-NLS-1$
+    /** Name of the enumType property. */
+    public final static String PROPERTY_ENUM_TYPE = "enumType"; //$NON-NLS-1$
+
+    /** Prefix for all message codes of this class. */
+    public final static String MSGCODE_PREFIX = "ENUMCONTENT-"; //$NON-NLS-1$
+
+    /**
+     * Validation message code to indicate that the enum type this enum content is built upon is not
+     * specified.
+     */
+    public final static String MSGCODE_ENUM_CONTENT_ENUM_TYPE_MISSING = MSGCODE_PREFIX + "EnumContentEnumTypeMissing"; //$NON-NLS-1$
+
+    /**
+     * Validation message code to indicate that the enum type this enum content is built upon does
+     * not exist.
+     */
+    public final static String MSGCODE_ENUM_CONTENT_ENUM_TYPE_DOES_NOT_EXIST = MSGCODE_PREFIX
+            + "EnumContentEnumTypeDoesNotExist"; //$NON-NLS-1$
+
+    /**
+     * Validation message code to indicate that the values of the enum type this enum content refers
+     * to are defined in the model instead inside of a separate enum content object.
+     */
+    public final static String MSGCODE_ENUM_CONTENT_VALUES_ARE_PART_OF_MODEL = MSGCODE_PREFIX
+            + "EnumContentValuesArePartOfModel"; //$NON-NLS-1$
 
     /**
      * Sets the enum type this enum content is based upon.

@@ -18,6 +18,7 @@ import java.util.List;
 import java.util.NoSuchElementException;
 
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.osgi.util.NLS;
 import org.faktorips.devtools.core.internal.model.ipsobject.IpsObjectPartCollection;
 import org.faktorips.devtools.core.model.enumtype.IEnumAttribute;
 import org.faktorips.devtools.core.model.enumtype.IEnumAttributeValue;
@@ -27,7 +28,10 @@ import org.faktorips.devtools.core.model.enumtype.IEnumValue;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPart;
 import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
+import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.util.ArgumentCheck;
+import org.faktorips.util.message.Message;
+import org.faktorips.util.message.MessageList;
 import org.w3c.dom.Element;
 
 /**
@@ -168,10 +172,9 @@ public class EnumType extends EnumValueContainer implements IEnumType {
      */
     @Override
     protected void initFromXml(Element element, Integer id) {
-        isAbstract = Boolean.parseBoolean(element.getAttribute(IEnumType.XML_ATTRIBUTE_ABSTRACT));
-        valuesArePartOfModel = Boolean.parseBoolean(element
-                .getAttribute(IEnumType.XML_ATTRIBUTE_VALUES_ARE_PART_OF_MODEL));
-        superEnumType = element.getAttribute(IEnumType.XML_ATTRIBUTE_SUPERTYPE);
+        isAbstract = Boolean.parseBoolean(element.getAttribute(IEnumType.PROPERTY_ABSTRACT));
+        valuesArePartOfModel = Boolean.parseBoolean(element.getAttribute(IEnumType.PROPERTY_VALUES_ARE_PART_OF_MODEL));
+        superEnumType = element.getAttribute(IEnumType.PROPERTY_SUPERTYPE);
 
         super.initFromXml(element, id);
     }
@@ -183,9 +186,9 @@ public class EnumType extends EnumValueContainer implements IEnumType {
     protected void propertiesToXml(Element element) {
         super.propertiesToXml(element);
 
-        element.setAttribute(XML_ATTRIBUTE_SUPERTYPE, superEnumType);
-        element.setAttribute(XML_ATTRIBUTE_ABSTRACT, String.valueOf(isAbstract));
-        element.setAttribute(XML_ATTRIBUTE_VALUES_ARE_PART_OF_MODEL, String.valueOf(valuesArePartOfModel));
+        element.setAttribute(PROPERTY_SUPERTYPE, superEnumType);
+        element.setAttribute(PROPERTY_ABSTRACT, String.valueOf(isAbstract));
+        element.setAttribute(PROPERTY_VALUES_ARE_PART_OF_MODEL, String.valueOf(valuesArePartOfModel));
     }
 
     /**
@@ -353,6 +356,53 @@ public class EnumType extends EnumValueContainer implements IEnumType {
      */
     public int compareTo(Object o) {
         return 0;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public boolean enumAttributeExists(String name) {
+        ArgumentCheck.notNull(name);
+
+        for (IEnumAttribute currentEnumAttribute : getEnumAttributes()) {
+            if (currentEnumAttribute.getName().equals(name)) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public IEnumAttribute getEnumAttribute(String name) {
+        ArgumentCheck.notNull(name);
+
+        for (IEnumAttribute currentEnumAttribute : getEnumAttributes()) {
+            if (currentEnumAttribute.getName().equals(name)) {
+                return currentEnumAttribute;
+            }
+        }
+
+        return null;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    protected void validateThis(MessageList list, IIpsProject ipsProject) throws CoreException {
+        super.validateThis(list, ipsProject);
+
+        if (!(superEnumType.equals(""))) {
+            if (getIpsProject().findEnumType(superEnumType) == null) {
+                String text = NLS.bind(Messages.EnumType_SupertypeDoesNotExist, superEnumType);
+                Message message = new Message(MSGCODE_ENUM_TYPE_SUPERTYPE_DOES_NOT_EXIST, text, Message.ERROR, this,
+                        PROPERTY_SUPERTYPE);
+                list.add(message);
+            }
+        }
     }
 
 }

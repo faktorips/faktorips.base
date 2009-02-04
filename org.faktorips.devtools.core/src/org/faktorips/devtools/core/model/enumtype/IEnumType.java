@@ -57,20 +57,27 @@ public interface IEnumType extends IEnumValueContainer, Datatype {
     /** The xml tag for this ips object. */
     public final static String XML_TAG = "EnumType"; //$NON-NLS-1$
 
-    /** Name of the xml attribute for the supertype property. */
-    public final static String XML_ATTRIBUTE_SUPERTYPE = "supertype"; //$NON-NLS-1$
+    /** Name of the supertype property. */
+    public final static String PROPERTY_SUPERTYPE = "supertype"; //$NON-NLS-1$
 
-    /** Name of the xml attribute for the isAbstract property. */
-    public final static String XML_ATTRIBUTE_ABSTRACT = "abstract"; //$NON-NLS-1$
+    /** Name of the isAbstract property. */
+    public final static String PROPERTY_ABSTRACT = "abstract"; //$NON-NLS-1$
 
-    /** Name of the xml attribute for the valuesArePartOfModel property. */
-    public final static String XML_ATTRIBUTE_VALUES_ARE_PART_OF_MODEL = "valuesArePartOfModel"; //$NON-NLS-1$
+    /** Name of the valuesArePartOfModel property. */
+    public final static String PROPERTY_VALUES_ARE_PART_OF_MODEL = "valuesArePartOfModel"; //$NON-NLS-1$
+
+    /** Prefix for all message codes of this class. */
+    public final static String MSGCODE_PREFIX = "ENUMTYPE-"; //$NON-NLS-1$
+
+    /** Validation message code to indicate that the supertype of this enum type does not exist. */
+    public final static String MSGCODE_ENUM_TYPE_SUPERTYPE_DOES_NOT_EXIST = MSGCODE_PREFIX
+            + "EnumTypeSupertypeDoesNotExist"; //$NON-NLS-1$
 
     /**
      * Returns the qualified name of the super enum type of this enum type.
      * 
-     * @return A string representing the qualified name of the super enum type. An empty string is
-     *         returned if this enum type does not have a super enum type.
+     * @return A <code>String</code> representing the qualified name of the super enum type. An
+     *         empty string is returned if this enum type does not have a super enum type.
      */
     public String getSuperEnumType();
 
@@ -133,6 +140,19 @@ public interface IEnumType extends IEnumValueContainer, Datatype {
      *         enum attribute could be found.
      */
     public IEnumAttribute getEnumAttribute(int id);
+
+    /**
+     * Returns the enum attribute with the given name or <code>null</code> if there is no enum
+     * attribute with the given name.
+     * 
+     * @param name The name of the enum attribute to obtain.
+     * 
+     * @return The enum attribute identified by the given name or <code>null</code> if no such enum
+     *         attribute could be found.
+     * 
+     * @throws NullPointerException If name is <code>null</code>.
+     */
+    public IEnumAttribute getEnumAttribute(String name);
 
     /**
      * Creates a new enum attribute and returns a reference to it.
@@ -239,5 +259,17 @@ public interface IEnumType extends IEnumValueContainer, Datatype {
      * @throws NoSuchElementException If there is no enum attribute with the given id.
      */
     public void deleteEnumAttributeWithValues(int id) throws CoreException;
+
+    /**
+     * Checks whether an enum attribute with the given name exists.
+     * 
+     * @param name The name of the enum attribute that will be checked for existence.
+     * 
+     * @return A boolean flag that is <code>true</code> if an enum attribute with the given name
+     *         exists and <code>false</code> if not.
+     * 
+     * @throws NullPointerException If name is <code>null</code>.
+     */
+    public boolean enumAttributeExists(String name);
 
 }

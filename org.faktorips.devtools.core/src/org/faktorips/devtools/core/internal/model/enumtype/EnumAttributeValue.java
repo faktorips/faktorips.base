@@ -72,7 +72,7 @@ public class EnumAttributeValue extends AtomicIpsObjectPart implements IEnumAttr
     protected void propertiesToXml(Element element) {
         super.propertiesToXml(element);
 
-        element.setAttribute(XML_ATTRIBUTE_VALUE, value);
+        element.setAttribute(PROPERTY_VALUE, value);
     }
 
     /**
@@ -80,7 +80,7 @@ public class EnumAttributeValue extends AtomicIpsObjectPart implements IEnumAttr
      */
     @Override
     protected void initFromXml(Element element, Integer id) {
-        value = element.getAttribute(XML_ATTRIBUTE_VALUE);
+        value = element.getAttribute(PROPERTY_VALUE);
 
         super.initFromXml(element, id);
     }
