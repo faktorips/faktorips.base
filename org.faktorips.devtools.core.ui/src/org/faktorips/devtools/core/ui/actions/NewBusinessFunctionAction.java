@@ -24,8 +24,14 @@ import org.faktorips.devtools.core.ui.wizards.bf.OpenNewBFWizardAction;
  * @author Peter Erzberger
  */
 public class NewBusinessFunctionAction extends Action {
+    
     private IWorkbenchWindow window;
 
+    /**
+     * Creates a new <code>NewBusinessFunctionAction</code>.
+     * 
+     * @param window
+     */
     public NewBusinessFunctionAction(IWorkbenchWindow window) {
         super();
         
