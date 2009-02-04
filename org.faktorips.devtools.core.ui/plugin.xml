@@ -35,7 +35,6 @@
                icon="icons/NewTestCaseType.gif"
                id="org.faktorips.devtools.actions.OpenNewTestCaseTypeWizardAction"
                label="%org.faktorips.devtools.actions.OpenNewTestCaseTypeWizardAction.label"
-               style="push"
                toolbarPath="org.faktorips.devtools"
                tooltip="%org.faktorips.devtools.actions.OpenNewTestCaseTypeWizardAction.tooltip"/>               
          <action
@@ -51,7 +50,6 @@
                icon="icons/NewBusinessFunction.gif"
                id="org.faktorips.devtools.bf.ui.wizard.OpenNewBFWizardAction"
                label="%org.faktorips.devtools.core.ui.wizards.bf.OpenNewBFWizardAction.label"
-               style="push"
                toolbarPath="org.faktorips.devtools"
                tooltip="%org.faktorips.devtools.core.ui.wizards.bf.OpenNewBFWizardAction.tooltip">
          </action>
@@ -60,7 +58,6 @@
                icon="icons/NewEnumType.gif"
                id="org.faktorips.devtools.enumtype.ui.wizard.OpenNewEnumTypeWizardAction"
                label="%org.faktorips.devtools.core.ui.wizards.enumtype.OpenNewEnumTypeWizardAction.label"
-               style="push"
                toolbarPath="org.faktorips.devtools"
                tooltip="%org.faktorips.devtools.core.ui.wizards.enumtype.OpenNewEnumTypeWizardAction.tooltip">
          </action>
@@ -92,7 +89,6 @@
                icon="icons/NewTestCase.gif"
                id="org.faktorips.devtools.actions.OpenNewTestCaseWizardAction"
                label="%org.faktorips.devtools.actions.OpenNewTestCaseWizardAction.label"
-               style="push"
                toolbarPath="org.faktorips.devtools"
                tooltip="%org.faktorips.devtools.actions.OpenNewTestCaseWizardAction.tooltip"/>             
          <action
@@ -121,7 +117,6 @@
       </actionSet>
       <actionSet
             label="IPS Navigation"
-            description="IPS Navigation Action Set"
             visible="false"
             id="org.faktorips.devtools.actions.NavigationActionSet">
          <action
@@ -427,16 +422,16 @@
             icon="icons/ProductCmptType.gif"
             id="productCmptTypeEditor"
             name="%productCmptTypeEditor">
-      	</editor>
-      	<editor
-            class="org.faktorips.devtools.core.ui.editors.productcmpt.ProductCmptEditor"
-            contributorClass="org.faktorips.devtools.core.ui.editors.productcmpt.ProductCmptEditorActionContributor"
-            default="true"
-            extensions="ipsproduct"
-            icon="icons/ProductCmpt.gif"
-            id="productCmptEditor"
-            name="%productCmptEditor">
-      	</editor>
+      	</editor>   
+		<editor
+			class="org.faktorips.devtools.core.ui.bf.BusinessFunctionEditor"
+			contributorClass="org.faktorips.devtools.core.ui.bf.actions.BfActionBarContributor"
+			default="true"
+			extensions="ipsbusinessfunction"
+			icon="icons/BusinessFunction.gif"
+			id="org.faktorips.devtools.bf.ui.editor"
+			name="%businessFunctionEditor">
+		</editor>
       	<editor
             class="org.faktorips.devtools.core.ui.editors.tablestructure.TableStructureEditor"
             contributorClass="org.faktorips.devtools.core.ui.editors.IpsObjectEditorActionContributor"
@@ -445,6 +440,23 @@
             icon="icons/TableStructure.gif"
             id="tableStructureEditor"
             name="%tableStructureEditor">
+      	</editor>
+		<editor
+      		class="org.faktorips.devtools.core.ui.editors.testcasetype.TestCaseTypeEditor"
+            contributorClass="org.faktorips.devtools.core.ui.editors.IpsObjectEditorActionContributor"
+            default="true"
+            extensions="ipstestcasetype"
+            icon="icons/TestCaseType.gif"
+            id="testCaseTypeEditor"
+            name="%testCaseTypeEditor"/>
+      	<editor
+            class="org.faktorips.devtools.core.ui.editors.productcmpt.ProductCmptEditor"
+            contributorClass="org.faktorips.devtools.core.ui.editors.productcmpt.ProductCmptEditorActionContributor"
+            default="true"
+            extensions="ipsproduct"
+            icon="icons/ProductCmpt.gif"
+            id="productCmptEditor"
+            name="%productCmptEditor">
       	</editor>
       	<editor
             class="org.faktorips.devtools.core.ui.editors.tablecontents.TableContentsEditor"
@@ -463,23 +475,6 @@
             icon="icons/TestCase.gif"
             id="testCaseEditor"
             name="%testCaseEditor"/>
-		<editor
-      		class="org.faktorips.devtools.core.ui.editors.testcasetype.TestCaseTypeEditor"
-            contributorClass="org.faktorips.devtools.core.ui.editors.IpsObjectEditorActionContributor"
-            default="true"
-            extensions="ipstestcasetype"
-            icon="icons/TestCaseType.gif"
-            id="testCaseTypeEditor"
-            name="%testCaseTypeEditor"/>   
-		<editor
-			class="org.faktorips.devtools.core.ui.bf.BusinessFunctionEditor"
-			contributorClass="org.faktorips.devtools.core.ui.bf.actions.BfActionBarContributor"
-			default="true"
-			extensions="ipsbusinessfunction"
-			icon="icons/BusinessFunction.gif"
-			id="org.faktorips.devtools.bf.ui.editor"
-			name="%editor.name.0">
-		</editor>
 	</extension>
 
 <!-- 
@@ -522,6 +517,19 @@
            class="org.eclipse.core.resources.IResource">
      </selection>
   </wizard>
+		<wizard
+			category="org.faktorips.devtools"
+			class="org.faktorips.devtools.core.ui.wizards.bf.NewBFWizard"
+			icon="icons/NewBusinessFunction.gif"
+			id="org.faktorips.devtools.bf.ui.wizard"
+			name="%NewBfWizard.name">
+			<selection
+				class="org.eclipse.core.resources.IResource">
+			</selection>
+   <description>
+      %NewBfWizard.description
+   </description>
+      	</wizard>
       <wizard
             category="org.faktorips.devtools"
             class="org.faktorips.devtools.core.ui.wizards.productcmpt.NewProductCmptWizard"
@@ -542,33 +550,20 @@
 	    </wizard>
       <wizard
             category="org.faktorips.devtools"
-            class="org.faktorips.devtools.core.ui.wizards.tablecontents.NewTableContentsWizard"
-            icon="icons/NewTableContentsWizard.gif"
-            id="newTableContentsWizard"
-            name="%NewTableContentsWizard.name">
-    	   <description>%NewTableContentsWizard.description</description>
-    	   <selection class="org.eclipse.core.resources.IResource"/>
-	    </wizard>
-		<wizard
-			category="org.faktorips.devtools"
-			class="org.faktorips.devtools.core.ui.wizards.bf.NewBFWizard"
-			icon="icons/NewBusinessFunction.gif"
-			id="org.faktorips.devtools.bf.ui.wizard"
-			name="%NewBfWizard.name">
-			<selection
-				class="org.eclipse.core.resources.IResource">
-			</selection>
-   <description>
-      %NewBfWizard.description
-   </description>
-      	</wizard>
-      <wizard
-            category="org.faktorips.devtools"
             class="org.faktorips.devtools.core.ui.wizards.testcasetype.NewTestCaseTypeWizard"
             icon="icons/NewTestCaseType.gif"
             id="newTestCaseTypeWizard"
             name="%NewTestCaseTypeWizard.name">
     	   <description>%NewTestCaseTypeWizard.description</description>
+    	   <selection class="org.eclipse.core.resources.IResource"/>
+	    </wizard>
+      <wizard
+            category="org.faktorips.devtools"
+            class="org.faktorips.devtools.core.ui.wizards.tablecontents.NewTableContentsWizard"
+            icon="icons/NewTableContentsWizard.gif"
+            id="newTableContentsWizard"
+            name="%NewTableContentsWizard.name">
+    	   <description>%NewTableContentsWizard.description</description>
     	   <selection class="org.eclipse.core.resources.IResource"/>
 	    </wizard>
       <wizard
