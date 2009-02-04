@@ -3,7 +3,7 @@
  * 
  * Alle Rechte vorbehalten.
  * 
- * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen, 
+ * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen,
  * etc.) duerfen nur unter den Bedingungen der Faktor-Zehn-Community Lizenzvereinbarung - Version
  * 0.1 (vor Gruendung Community) genutzt werden, die Bestandteil der Auslieferung ist und auch unter
  * http://www.faktorzehn.org/f10-org:lizenzen:community eingesehen werden kann.
@@ -149,21 +149,24 @@ public class AddIpsNatureAction extends ActionDelegate {
             props.setRuntimeIdPrefix(runtimeIdPrefix);
             props.setProductDefinitionProject(isProductDefinitionProject);
             props.setModelProject(isModelProject);
-            
+
             // use the first registered builder set info as default
-            IIpsArtefactBuilderSetInfo[] builderSetInfos = IpsPlugin.getDefault().getIpsModel().getIpsArtefactBuilderSetInfos();
+            IIpsArtefactBuilderSetInfo[] builderSetInfos = IpsPlugin.getDefault().getIpsModel()
+                    .getIpsArtefactBuilderSetInfos();
             props.setBuilderSetId(builderSetInfos.length > 0 ? builderSetInfos[0].getBuilderSetId() : "");
-            
+
             props.setPredefinedDatatypesUsed(IpsPlugin.getDefault().getIpsModel().getPredefinedValueDatatypes());
             DateBasedProductCmptNamingStrategy namingStrategy = new DateBasedProductCmptNamingStrategy(
                     " ", "yyyy-MM", true); //$NON-NLS-1$ //$NON-NLS-2$
             props.setProductCmptNamingStrategy(namingStrategy);
-            props.setMinRequiredVersionNumber(
+            props
+                    .setMinRequiredVersionNumber(
                             "org.faktorips.feature", (String)Platform.getBundle("org.faktorips.devtools.core").getHeaders().get("Bundle-Version")); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
             props.setChangesOverTimeNamingConventionIdForGeneratedCode(IpsPlugin.getDefault().getIpsPreferences()
                     .getChangesOverTimeNamingConvention().getId());
-            IIpsArtefactBuilderSetInfo builderSetInfo = IpsPlugin.getDefault().getIpsModel().getIpsArtefactBuilderSetInfo(props.getBuilderSetId());
-            if(builderSetInfo != null){
+            IIpsArtefactBuilderSetInfo builderSetInfo = IpsPlugin.getDefault().getIpsModel()
+                    .getIpsArtefactBuilderSetInfo(props.getBuilderSetId());
+            if (builderSetInfo != null) {
                 props.setBuilderSetConfig(builderSetInfo.createDefaultConfiguration(ipsProject));
             }
             ipsProject.setProperties(props);
@@ -212,7 +215,7 @@ public class AddIpsNatureAction extends ActionDelegate {
                 entries[oldEntries.length + i] = JavaCore.newVariableEntry(jarPath, srcZipPath, null);
             }
             javaProject.setRawClasspath(entries, null);
-        }else{
+        } else {
             int numOfJars = FaktorIpsClasspathVariableInitializer.IPS_VARIABLES_BIN.length;
             IClasspathEntry[] entries = new IClasspathEntry[oldEntries.length + numOfJars];
             System.arraycopy(oldEntries, 0, entries, 0, oldEntries.length);
@@ -228,11 +231,10 @@ public class AddIpsNatureAction extends ActionDelegate {
         }
     }
 
-    //TODO do not change the targetVersion coming from the java options
+    // TODO do not change the targetVersion coming from the java options
     private boolean targetVersionIsAtLeast5(IJavaProject javaProject) {
-        
-        String[] targetVersion = javaProject.getOption(JavaCore.COMPILER_CODEGEN_TARGET_PLATFORM, true)
-                .split("\\.");
+
+        String[] targetVersion = javaProject.getOption(JavaCore.COMPILER_CODEGEN_TARGET_PLATFORM, true).split("\\.");
         return (Integer.parseInt(targetVersion[0]) == 1 && Integer.parseInt(targetVersion[1]) >= 5)
                 || Integer.parseInt(targetVersion[0]) > 1;
     }
@@ -290,7 +292,9 @@ public class AddIpsNatureAction extends ActionDelegate {
         /*
          * (non-Javadoc)
          * 
-         * @see org.eclipse.jface.dialogs.Dialog#createButtonsForButtonBar(org.eclipse.swt.widgets.Composite)
+         * @see
+         * org.eclipse.jface.dialogs.Dialog#createButtonsForButtonBar(org.eclipse.swt.widgets.Composite
+         * )
          */
         protected void createButtonsForButtonBar(Composite parent) {
             // create OK and Cancel buttons by default
@@ -502,8 +506,8 @@ public class AddIpsNatureAction extends ActionDelegate {
         }
 
         /**
-         * This implementation of this <code>Window</code> method disposes of the banner image
-         * when the dialog is closed.
+         * This implementation of this <code>Window</code> method disposes of the banner image when
+         * the dialog is closed.
          */
         public boolean close() {
             if (dlgTitleImage != null) {
