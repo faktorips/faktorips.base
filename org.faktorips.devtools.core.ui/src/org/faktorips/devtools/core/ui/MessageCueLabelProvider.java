@@ -77,7 +77,7 @@ public class MessageCueLabelProvider extends LabelProvider {
 
         // get the cached problem descriptor for the base image
         String key = getKey(baseImage, list.getSeverity());
-        ProblemImageDescriptor descriptor = (ProblemImageDescriptor)cachedProblemImageDescriptors.get(key);
+        ProblemImageDescriptor descriptor = cachedProblemImageDescriptors.get(key);
         if (descriptor == null && baseImage != null) {
             descriptor = new ProblemImageDescriptor(baseImage, list.getSeverity());
             cachedProblemImageDescriptors.put(key, descriptor);
@@ -86,7 +86,9 @@ public class MessageCueLabelProvider extends LabelProvider {
         return IpsPlugin.getDefault().getImage(descriptor);
     }
 
-    // Returns a unique key for the given image and severity compination
+    /*
+     * Returns a unique key for the given image and severity compination
+     */
     private String getKey(Image image, int severity) {
         if (image == null) {
             return null;
@@ -135,9 +137,10 @@ public class MessageCueLabelProvider extends LabelProvider {
     /**
      * Disposes all images managed by this label provider.
      */
+    @Override
     public void dispose() {
         for (Iterator<ProblemImageDescriptor> iter = cachedProblemImageDescriptors.values().iterator(); iter.hasNext();) {
-            ProblemImageDescriptor problemImageDescriptor = (ProblemImageDescriptor)iter.next();
+            ProblemImageDescriptor problemImageDescriptor = iter.next();
             Image problemImage = IpsPlugin.getDefault().getImage(problemImageDescriptor);
             if (problemImage != null) {
                 problemImage.dispose();

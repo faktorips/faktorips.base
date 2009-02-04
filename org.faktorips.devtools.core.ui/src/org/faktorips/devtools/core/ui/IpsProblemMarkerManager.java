@@ -3,7 +3,7 @@
  * 
  * Alle Rechte vorbehalten.
  * 
- * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen, 
+ * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen,
  * etc.) duerfen nur unter den Bedingungen der Faktor-Zehn-Community Lizenzvereinbarung - Version
  * 0.1 (vor Gruendung Community) genutzt werden, die Bestandteil der Auslieferung ist und auch unter
  * http://www.faktorzehn.org/f10-org:lizenzen:community eingesehen werden kann.
@@ -12,24 +12,6 @@
  *******************************************************************************/
 
 package org.faktorips.devtools.core.ui;
-
-/*******************************************************************************
- * Copyright (c) 2005,2006 Faktor Zehn GmbH und andere.
- *
- * Alle Rechte vorbehalten.
- *
- * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele,
- * Konfigurationen, etc.) dürfen nur unter den Bedingungen der 
- * Faktor-Zehn-Community Lizenzvereinbarung – Version 0.1 (vor Gründung Community) 
- * genutzt werden, die Bestandteil der Auslieferung ist und auch unter
- *   http://www.faktorips.org/legal/cl-v01.html
- * eingesehen werden kann.
- *
- * Mitwirkende:
- *   Faktor Zehn GmbH - initial API and implementation 
- *
- *******************************************************************************/
-
 
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -50,14 +32,14 @@ import org.faktorips.devtools.core.ui.editors.IIpsProblemChangedListener;
 
 /**
  * Listens to resource deltas and filters for marker changes of type IpsPlugin.PROBLEM_MARKER
- * Viewers or editors showing error ticks should register as listener to
- * this type.
+ * Viewers or editors showing error ticks should register as listener to this type.
  * 
  * @author Joerg Ortmann
  */
 public class IpsProblemMarkerManager implements IResourceChangeListener {
-    private List listeners = new ArrayList();
-    
+
+    private List<IIpsProblemChangedListener> listeners = new ArrayList<IIpsProblemChangedListener>();
+
     public IpsProblemMarkerManager() {
         super();
         ResourcesPlugin.getWorkspace().addResourceChangeListener(this, IResourceChangeEvent.POST_BUILD);
@@ -81,11 +63,11 @@ public class IpsProblemMarkerManager implements IResourceChangeListener {
      * {@inheritDoc}
      */
     public void resourceChanged(IResourceChangeEvent event) {
-        HashSet changedElements= new HashSet();
-        
+        HashSet<IResource> changedElements = new HashSet<IResource>();
+
         try {
-            IResourceDelta delta= event.getDelta();
-            if (delta != null){
+            IResourceDelta delta = event.getDelta();
+            if (delta != null) {
                 delta.accept(new ProjectErrorVisitor(changedElements));
             }
         } catch (CoreException e) {
@@ -93,15 +75,15 @@ public class IpsProblemMarkerManager implements IResourceChangeListener {
         }
 
         if (!changedElements.isEmpty()) {
-            fireChanges((IResource[]) changedElements.toArray(new IResource[changedElements.size()]), true);
+            fireChanges((IResource[])changedElements.toArray(new IResource[changedElements.size()]), true);
         }
     }
-    
+
     /*
      * inform all registered ips problem change listener about the ips problem changes
      */
     private void fireChanges(IResource[] changes, boolean b) {
-        for (Iterator iter = listeners.iterator(); iter.hasNext();) {
+        for (Iterator<IIpsProblemChangedListener> iter = listeners.iterator(); iter.hasNext();) {
             ((IIpsProblemChangedListener)iter.next()).problemsChanged(changes);
         }
     }
@@ -110,33 +92,36 @@ public class IpsProblemMarkerManager implements IResourceChangeListener {
      * Visitors used to look if the element change delta contains a relevant marker change.
      */
     private static class ProjectErrorVisitor implements IResourceDeltaVisitor {
-        private HashSet changedElements; 
-        
-        public ProjectErrorVisitor(HashSet changedElements) {
-            this.changedElements= changedElements;
+
+        private HashSet<IResource> changedElements;
+
+        public ProjectErrorVisitor(HashSet<IResource> changedElements) {
+            this.changedElements = changedElements;
         }
-        
+
         /**
          * {@inheritDoc}
          */
         public boolean visit(IResourceDelta delta) throws CoreException {
-            IResource res= delta.getResource();
+            IResource res = delta.getResource();
             if (res instanceof IProject && delta.getKind() == IResourceDelta.CHANGED) {
-                IProject project= (IProject) res;
+                IProject project = (IProject)res;
                 if (!project.isAccessible()) {
-                    // only track open projects
+                    // Only track open projects
                     return false;
                 }
             }
+
             checkInvalidate(delta, res);
+
             return true;
         }
-        
+
         /*
-         * check the delta for relevant resources
+         * Check the delta for relevant resources
          */
         private void checkInvalidate(IResourceDelta delta, IResource resource) throws CoreException {
-            int kind= delta.getKind();
+            int kind = delta.getKind();
             if (kind == IResourceDelta.REMOVED || kind == IResourceDelta.ADDED
                     || (kind == IResourceDelta.CHANGED && isErrorDelta(delta))) {
                 // invalidate the resource and all parents
@@ -145,20 +130,22 @@ public class IpsProblemMarkerManager implements IResourceChangeListener {
                 }
             }
         }
-        
+
         /*
-         * check if there is an ips problem marker change on the given delta
+         * Check if there is an ips problem marker change on the given delta
          */
         private boolean isErrorDelta(IResourceDelta delta) {
             if ((delta.getFlags() & IResourceDelta.MARKERS) != 0) {
-                IMarkerDelta[] markerDeltas= delta.getMarkerDeltas();
-                for (int i= 0; i < markerDeltas.length; i++) {
+                IMarkerDelta[] markerDeltas = delta.getMarkerDeltas();
+                for (int i = 0; i < markerDeltas.length; i++) {
                     if (markerDeltas[i].isSubtypeOf(IpsPlugin.PROBLEM_MARKER)) {
                         return true;
                     }
                 }
             }
+
             return false;
         }
+
     }
 }
