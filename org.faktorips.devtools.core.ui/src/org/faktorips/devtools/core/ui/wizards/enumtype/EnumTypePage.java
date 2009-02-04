@@ -18,16 +18,19 @@ import java.util.List;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.swt.widgets.Composite;
+import org.faktorips.devtools.core.model.enumtype.EnumTypeValidations;
 import org.faktorips.devtools.core.model.enumtype.IEnumType;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObject;
 import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
 import org.faktorips.devtools.core.model.ipsproject.IIpsPackageFragmentRoot;
+import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.ui.IpsUIPlugin;
 import org.faktorips.devtools.core.ui.UIToolkit;
 import org.faktorips.devtools.core.ui.controller.fields.CheckboxField;
 import org.faktorips.devtools.core.ui.controller.fields.TextButtonField;
 import org.faktorips.devtools.core.ui.controls.IpsObjectRefControl;
 import org.faktorips.devtools.core.ui.wizards.IpsObjectPage;
+import org.faktorips.util.message.Message;
 
 /**
  * The wizard page for the new enum type wizard.
@@ -89,6 +92,7 @@ public class EnumTypePage extends IpsObjectPage {
     @Override
     protected void sourceFolderChanged() {
         super.sourceFolderChanged();
+
         IIpsPackageFragmentRoot root = getIpsPackageFragmentRoot();
         if (root != null) {
             ((IpsObjectRefControl)supertypeField.getControl()).setIpsProject(root.getIpsProject());
@@ -112,6 +116,23 @@ public class EnumTypePage extends IpsObjectPage {
 
         modifiedIpsObjects.add(newEnumType);
         newEnumType.getIpsSrcFile().markAsDirty();
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    protected void validatePageExtension() throws CoreException {
+        super.validatePageExtension();
+
+        String superTypeFieldText = supertypeField.getText();
+        IIpsProject ipsProject = ((IpsObjectRefControl)supertypeField.getControl()).getIpsProject();
+        if (!(superTypeFieldText.equals("")) && ipsProject != null) {
+            Message validationMessage = EnumTypeValidations.validateSuperEnumType(null, superTypeFieldText, ipsProject);
+            if (validationMessage != null) {
+                setErrorMessage(validationMessage.getText());
+            }
+        }
     }
 
 }

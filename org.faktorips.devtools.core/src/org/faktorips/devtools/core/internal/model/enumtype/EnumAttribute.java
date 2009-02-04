@@ -141,12 +141,13 @@ public class EnumAttribute extends AtomicIpsObjectPart implements IEnumAttribute
         super.validateThis(list, ipsProject);
 
         String text;
-        Message message;
+        Message validationMessage;
 
         if (name.equals("")) {
             text = Messages.EnumAttribute_NameMissing;
-            message = new Message(MSGCODE_ENUM_ATTRIBUTE_NAME_MISSING, text, Message.ERROR, this, PROPERTY_NAME);
-            list.add(message);
+            validationMessage = new Message(MSGCODE_ENUM_ATTRIBUTE_NAME_MISSING, text, Message.ERROR, this,
+                    PROPERTY_NAME);
+            list.add(validationMessage);
         }
 
         List<IEnumAttribute> enumAttributes = ((IEnumType)getParent()).getEnumAttributes();
@@ -157,22 +158,24 @@ public class EnumAttribute extends AtomicIpsObjectPart implements IEnumAttribute
             }
             if (numberEnumAttributesThisName > 1) {
                 text = NLS.bind(Messages.EnumAttribute_DuplicateName, name);
-                message = new Message(MSGCODE_ENUM_ATTRIBUTE_DUPLICATE_NAME, text, Message.ERROR, this, PROPERTY_NAME);
-                list.add(message);
+                validationMessage = new Message(MSGCODE_ENUM_ATTRIBUTE_DUPLICATE_NAME, text, Message.ERROR, this,
+                        PROPERTY_NAME);
+                list.add(validationMessage);
                 break;
             }
         }
 
         if (datatype.equals("")) {
             text = Messages.EnumAttribute_DatatypeMissing;
-            message = new Message(MSGCODE_ENUM_ATTRIBUTE_DATATYPE_MISSING, text, Message.ERROR, this, PROPERTY_DATATYPE);
-            list.add(message);
+            validationMessage = new Message(MSGCODE_ENUM_ATTRIBUTE_DATATYPE_MISSING, text, Message.ERROR, this,
+                    PROPERTY_DATATYPE);
+            list.add(validationMessage);
         } else {
             if (getIpsProject().findDatatype(datatype) == null) {
                 text = NLS.bind(Messages.EnumAttribute_DatatypeDoesNotExist, datatype);
-                message = new Message(MSGCODE_ENUM_ATTRIBUTE_DATATYPE_DOES_NOT_EXIST, text, Message.ERROR, this,
-                        PROPERTY_DATATYPE);
-                list.add(message);
+                validationMessage = new Message(MSGCODE_ENUM_ATTRIBUTE_DATATYPE_DOES_NOT_EXIST, text, Message.ERROR,
+                        this, PROPERTY_DATATYPE);
+                list.add(validationMessage);
             }
         }
     }

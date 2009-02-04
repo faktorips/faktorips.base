@@ -18,8 +18,8 @@ import java.util.List;
 import java.util.NoSuchElementException;
 
 import org.eclipse.core.runtime.CoreException;
-import org.eclipse.osgi.util.NLS;
 import org.faktorips.devtools.core.internal.model.ipsobject.IpsObjectPartCollection;
+import org.faktorips.devtools.core.model.enumtype.EnumTypeValidations;
 import org.faktorips.devtools.core.model.enumtype.IEnumAttribute;
 import org.faktorips.devtools.core.model.enumtype.IEnumAttributeValue;
 import org.faktorips.devtools.core.model.enumtype.IEnumContent;
@@ -396,11 +396,9 @@ public class EnumType extends EnumValueContainer implements IEnumType {
         super.validateThis(list, ipsProject);
 
         if (!(superEnumType.equals(""))) {
-            if (getIpsProject().findEnumType(superEnumType) == null) {
-                String text = NLS.bind(Messages.EnumType_SupertypeDoesNotExist, superEnumType);
-                Message message = new Message(MSGCODE_ENUM_TYPE_SUPERTYPE_DOES_NOT_EXIST, text, Message.ERROR, this,
-                        PROPERTY_SUPERTYPE);
-                list.add(message);
+            Message validationMessage = EnumTypeValidations.validateSuperEnumType(this, superEnumType, ipsProject);
+            if (validationMessage != null) {
+                list.add(validationMessage);
             }
         }
     }

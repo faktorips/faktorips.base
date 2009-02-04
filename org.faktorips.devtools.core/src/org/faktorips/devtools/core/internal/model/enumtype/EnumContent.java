@@ -114,25 +114,26 @@ public class EnumContent extends EnumValueContainer implements IEnumContent {
         super.validateThis(list, ipsProject);
 
         String text;
-        Message message;
+        Message validationMessage;
 
         if (enumType.equals("")) {
             text = Messages.EnumContent_EnumTypeMissing;
-            message = new Message(MSGCODE_ENUM_CONTENT_ENUM_TYPE_MISSING, text, Message.ERROR, this, PROPERTY_ENUM_TYPE);
-            list.add(message);
+            validationMessage = new Message(MSGCODE_ENUM_CONTENT_ENUM_TYPE_MISSING, text, Message.ERROR, this,
+                    PROPERTY_ENUM_TYPE);
+            list.add(validationMessage);
         } else {
             IEnumType enumTypeRef = getIpsProject().findEnumType(enumType);
             if (enumTypeRef == null) {
                 text = NLS.bind(Messages.EnumContent_EnumTypeDoesNotExist, enumType);
-                message = new Message(MSGCODE_ENUM_CONTENT_ENUM_TYPE_DOES_NOT_EXIST, text, Message.ERROR, this,
-                        PROPERTY_ENUM_TYPE);
-                list.add(message);
+                validationMessage = new Message(MSGCODE_ENUM_CONTENT_ENUM_TYPE_DOES_NOT_EXIST, text, Message.ERROR,
+                        this, PROPERTY_ENUM_TYPE);
+                list.add(validationMessage);
             } else {
                 if (enumTypeRef.valuesArePartOfModel()) {
                     text = NLS.bind(Messages.EnumContent_ValuesArePartOfModel, enumType);
-                    message = new Message(MSGCODE_ENUM_CONTENT_VALUES_ARE_PART_OF_MODEL, text, Message.ERROR, this,
-                            PROPERTY_ENUM_TYPE);
-                    list.add(message);
+                    validationMessage = new Message(MSGCODE_ENUM_CONTENT_VALUES_ARE_PART_OF_MODEL, text, Message.ERROR,
+                            this, PROPERTY_ENUM_TYPE);
+                    list.add(validationMessage);
                 }
             }
         }
