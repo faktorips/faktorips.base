@@ -36,8 +36,13 @@ import org.faktorips.devtools.core.ui.wizards.IpsObjectPage;
  */
 public class EnumTypePage extends IpsObjectPage {
 
+    // The text field to choose the supertype for the new enum type
     private TextButtonField supertypeField;
-    private CheckboxField abstractField;
+
+    // The checkbox field to mark the new enum type as being abstract
+    private CheckboxField isAbstractField;
+
+    // The checkbox field to mark the new enum type that its values are defined in the model
     private CheckboxField valuesArePartOfModelField;
 
     /**
@@ -65,8 +70,8 @@ public class EnumTypePage extends IpsObjectPage {
 
         // Abstract
         toolkit.createLabel(nameComposite, ""); //$NON-NLS-1$
-        abstractField = new CheckboxField(toolkit.createCheckbox(nameComposite, Messages.Fields_Abstract));
-        abstractField.addChangeListener(this);
+        isAbstractField = new CheckboxField(toolkit.createCheckbox(nameComposite, Messages.Fields_Abstract));
+        isAbstractField.addChangeListener(this);
 
         // Values are part of model
         toolkit.createLabel(nameComposite, ""); //$NON-NLS-1$
@@ -98,7 +103,7 @@ public class EnumTypePage extends IpsObjectPage {
         super.finishIpsObjects(newIpsObject, modifiedIpsObjects);
 
         IEnumType newEnumType = (IEnumType)newIpsObject;
-        newEnumType.setIsAbstract((Boolean)abstractField.getValue());
+        newEnumType.setIsAbstract((Boolean)isAbstractField.getValue());
         newEnumType.setValuesArePartOfModel((Boolean)valuesArePartOfModelField.getValue());
         newEnumType.setSuperEnumType(supertypeField.getText());
 
