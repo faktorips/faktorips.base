@@ -23,6 +23,8 @@ public class Messages extends NLS {
 
     private static final String BUNDLE_NAME = "org.faktorips.devtools.core.ui.wizards.enumtype.messages"; //$NON-NLS-1$
 
+    public static String Page_Title;
+    
     public static String Fields_SuperEnumType;
     public static String Fields_Abstract;
     public static String Fields_ValuesArePartOfModel;

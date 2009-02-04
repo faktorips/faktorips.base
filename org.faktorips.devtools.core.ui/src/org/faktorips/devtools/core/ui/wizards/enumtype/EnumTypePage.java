@@ -36,6 +36,9 @@ import org.faktorips.devtools.core.ui.wizards.IpsObjectPage;
  */
 public class EnumTypePage extends IpsObjectPage {
 
+    // The image for the wizard page
+    private final String PAGE_IMAGE = "wizards/NewEnumTypeWizard.png"; //$NON-NLS-1$
+
     // The text field to choose the supertype for the new enum type
     private TextButtonField supertypeField;
 
@@ -51,8 +54,8 @@ public class EnumTypePage extends IpsObjectPage {
      * @param selection
      */
     public EnumTypePage(IStructuredSelection selection) {
-        super(IpsObjectType.ENUM_TYPE, selection, "PAGE NAME"); //$NON-NLS-1$
-        setImageDescriptor(IpsUIPlugin.getDefault().getImageDescriptor("wizards/NewEnumTypeWizard.png")); //$NON-NLS-1$
+        super(IpsObjectType.ENUM_TYPE, selection, Messages.Page_Title);
+        setImageDescriptor(IpsUIPlugin.getDefault().getImageDescriptor(PAGE_IMAGE));
     }
 
     /**
