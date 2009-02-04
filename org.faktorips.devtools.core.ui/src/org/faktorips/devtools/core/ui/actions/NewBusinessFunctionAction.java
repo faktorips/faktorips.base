@@ -19,7 +19,7 @@ import org.faktorips.devtools.core.ui.IpsUIPlugin;
 import org.faktorips.devtools.core.ui.wizards.bf.OpenNewBFWizardAction;
 
 /**
- * Opens the wizard for creating a new BusinessFunction.
+ * Opens the wizard for creating a new business function.
  * 
  * @author Peter Erzberger
  */
@@ -28,11 +28,16 @@ public class NewBusinessFunctionAction extends Action {
 
     public NewBusinessFunctionAction(IWorkbenchWindow window) {
         super();
+        
         this.window = window;
         setText(Messages.NewBusinessFunctionAction_title);
-        setImageDescriptor(IpsUIPlugin.getDefault().getImageDescriptor("wizards/NewBusinessFunction.gif")); //$NON-NLS-1$
+        setImageDescriptor(IpsUIPlugin.getDefault().getImageDescriptor("NewBusinessFunction.gif")); //$NON-NLS-1$
     }
 
+    /**
+     * {@inheritDoc}
+     */
+    @Override
     public void run() {
         OpenNewBFWizardAction action = new OpenNewBFWizardAction();
         action.init(window);
