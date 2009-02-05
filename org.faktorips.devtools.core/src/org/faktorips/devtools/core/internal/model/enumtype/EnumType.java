@@ -224,7 +224,9 @@ public class EnumType extends EnumValueContainer implements IEnumType {
         moveEnumAttribute(enumAttribute, true);
     }
 
-    // Moves the given enum attribute up or down in the collection order by 1
+    /*
+     * Moves the given enum attribute up or down in the collection order by 1
+     */
     @SuppressWarnings("unchecked")
     private void moveEnumAttribute(IEnumAttribute enumAttribute, boolean up) throws CoreException {
         List<IEnumAttribute> enumAttributesList = enumAttributes.getBackingList();
@@ -249,8 +251,10 @@ public class EnumType extends EnumValueContainer implements IEnumType {
         }
     }
 
-    // Moves the enum attribute value corresponding to the given enum attribute in each given enum
-    // value up or down in the collection order by 1
+    /*
+     * Moves the enum attribute value corresponding to the given enum attribute in each given enum
+     * value up or down in the collection order by 1
+     */
     private void moveEnumAttributeValues(IEnumAttribute enumAttribute, List<IEnumValue> enumValues, boolean up) {
         for (IEnumValue currentEnumValue : enumValues) {
             if (up) {
@@ -303,8 +307,10 @@ public class EnumType extends EnumValueContainer implements IEnumType {
         enumAttributeToDelete.delete();
     }
 
-    // Deletes all enum attribute values in the given enum values that refer to the enum attribute
-    // identified by the given id
+    /*
+     * Deletes all enum attribute values in the given enum values that refer to the enum attribute
+     * identified by the given id
+     */
     private void deleteEnumAttributeValues(int enumAttributeId, List<IEnumValue> enumValues) {
         for (IEnumValue currentEnumValue : enumValues) {
             for (IEnumAttributeValue currentEnumAttributeValue : currentEnumValue.getEnumAttributeValues()) {

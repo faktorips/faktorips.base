@@ -135,8 +135,10 @@ public class EnumValue extends BaseIpsObjectPart implements IEnumValue {
         moveEnumAttributeValue(enumAttribute, true);
     }
 
-    // Moves the enum attribute value refering to the given enum attribute up or down in the
-    // collection order by 1
+    /*
+     * Moves the enum attribute value refering to the given enum attribute up or down in the
+     * collection order by 1
+     */
     private void moveEnumAttributeValue(IEnumAttribute enumAttribute, boolean up) {
         List<IEnumAttributeValue> enumAttributeValuesList = getEnumAttributeValues();
         for (int i = 0; i < enumAttributeValuesList.size(); i++) {
@@ -181,7 +183,9 @@ public class EnumValue extends BaseIpsObjectPart implements IEnumValue {
         }
     }
 
-    // Returns the number of enum attribute values in this enum value
+    /*
+     * Returns the number of enum attribute values in this enum value
+     */
     private int getNumberEnumAttributeValues() {
         return enumAttributeValues.size();
     }
