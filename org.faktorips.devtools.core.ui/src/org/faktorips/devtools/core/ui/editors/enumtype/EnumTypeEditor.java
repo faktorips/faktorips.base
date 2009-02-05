@@ -14,6 +14,7 @@
 package org.faktorips.devtools.core.ui.editors.enumtype;
 
 import org.eclipse.ui.PartInitException;
+import org.faktorips.devtools.core.model.enumtype.IEnumType;
 import org.faktorips.devtools.core.ui.editors.type.TypeEditor;
 
 /**
@@ -48,6 +49,10 @@ public class EnumTypeEditor extends TypeEditor {
     @Override
     protected String getUniformPageTitle() {
         return Messages.EnumTypeEditor_title + getIpsObject().getName();
+    }
+
+    IEnumType getEnumType() {
+        return (IEnumType)getIpsObject();
     }
 
 }

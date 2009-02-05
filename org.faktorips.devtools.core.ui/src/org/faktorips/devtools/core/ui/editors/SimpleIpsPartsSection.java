@@ -3,7 +3,7 @@
  * 
  * Alle Rechte vorbehalten.
  * 
- * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen, 
+ * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen,
  * etc.) duerfen nur unter den Bedingungen der Faktor-Zehn-Community Lizenzvereinbarung - Version
  * 0.1 (vor Gruendung Community) genutzt werden, die Bestandteil der Auslieferung ist und auch unter
  * http://www.faktorzehn.org/f10-org:lizenzen:community eingesehen werden kann.
@@ -23,70 +23,94 @@ import org.faktorips.devtools.core.ui.UIToolkit;
 import org.faktorips.devtools.core.ui.forms.IpsSection;
 import org.faktorips.util.ArgumentCheck;
 
-
 /**
  * A section that shows parts in a single composite.
  */
 public abstract class SimpleIpsPartsSection extends IpsSection {
-    
+
     private IIpsObject ipsObject;
     private IpsPartsComposite partsComposite;
 
-    public SimpleIpsPartsSection(
-            IIpsObject pdObject, 
-            Composite parent,
-            String title,
-            UIToolkit toolkit) {
+    /**
+     * Creates a new <code>SimpleIpsPartsSection</code>.
+     * 
+     * @param pdObject
+     * @param parent
+     * @param title
+     * @param toolkit
+     */
+    public SimpleIpsPartsSection(IIpsObject pdObject, Composite parent, String title, UIToolkit toolkit) {
         super(parent, Section.TITLE_BAR, GridData.FILL_BOTH, toolkit);
+
         ArgumentCheck.notNull(pdObject);
+
         this.ipsObject = pdObject;
         initControls();
         setText(title);
     }
-    
-    public SimpleIpsPartsSection(
-            IIpsObject ipsObject, 
-            Composite parent,
-            int style,
-            String title,
-            UIToolkit toolkit) {
+
+    /**
+     * Creates a new <code>SimpleIpsPartsSection</code>.
+     * 
+     * @param ipsObject
+     * @param parent
+     * @param style
+     * @param title
+     * @param toolkit
+     */
+    public SimpleIpsPartsSection(IIpsObject ipsObject, Composite parent, int style, String title, UIToolkit toolkit) {
         super(parent, style, GridData.FILL_BOTH, toolkit);
+
         ArgumentCheck.notNull(ipsObject);
+
         this.ipsObject = ipsObject;
         initControls();
         setText(title);
     }
-    
-    /** 
+
+    /**
      * {@inheritDoc}
      */
     protected final void initClientComposite(Composite client, UIToolkit toolkit) {
-		partsComposite = createIpsPartsComposite(client, toolkit);
-		addFocusControl(partsComposite);
+        partsComposite = createIpsPartsComposite(client, toolkit);
+        addFocusControl(partsComposite);
     }
-    
+
+    /**
+     * Subclasses must implement this method by creating the <code>IpsPartsComposite</code> to show
+     * inside this <code>SimpleIpsPartsSection</code>.
+     * 
+     * @param parent The parent ui composite.
+     * @param toolkit The ui toolkit to use for creating ui elements.
+     * 
+     * @return The <code>IpsPartsComposite</code> to show inside this
+     *         <code>SimpleIpsPartsSection</code>.
+     */
     protected abstract IpsPartsComposite createIpsPartsComposite(Composite parent, UIToolkit toolkit);
-    
+
+    /**
+     * 
+     */
     public IIpsObject getIpsObject() {
         return ipsObject;
     }
-    
+
     /**
      * {@inheritDoc}
      */
     protected void performRefresh() {
         partsComposite.refresh();
     }
-    
+
     /**
-     * Adds the listener as one being notified when the selected part changes.
-     * On notification the listener can query the selected part by calling
-     * <code>getSelectedPart</code> on this object.
+     * Adds the listener as one being notified when the selected part changes. On notification the
+     * listener can query the selected part by calling <code>getSelectedPart()</code> on this
+     * object.
      */
     public void addSelectionChangedListener(ISelectionChangedListener listener) {
         partsComposite.addSelectionChangedListener(listener);
     }
-    
+
     /**
      * Removes the listener as one being notified when the selected part changes.
      */
@@ -95,7 +119,7 @@ public abstract class SimpleIpsPartsSection extends IpsSection {
     }
 
     /**
-     * Returns the part selected in the section or null if no part is selected.
+     * Returns the part selected in the section or <code>null</code> if no part is selected.
      */
     public final IIpsObjectPart getSelectedPart() {
         return partsComposite.getSelectedPart();

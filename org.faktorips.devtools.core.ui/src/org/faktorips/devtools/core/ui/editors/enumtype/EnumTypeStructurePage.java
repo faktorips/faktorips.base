@@ -27,6 +27,8 @@ import org.faktorips.devtools.core.ui.editors.type.TypeEditorStructurePage;
  */
 public class EnumTypeStructurePage extends TypeEditorStructurePage {
 
+    private EnumTypeEditor enumTypeEditor;
+
     /**
      * Creates a new <code>EnumTypeStructurePage</code>.
      * 
@@ -35,7 +37,9 @@ public class EnumTypeStructurePage extends TypeEditorStructurePage {
      *            be part of the page.
      */
     public EnumTypeStructurePage(EnumTypeEditor editor, boolean splittedStructure) {
-        super(editor, true, Messages.EnumTypeStructurePage_Title);
+        super(editor, true, Messages.EnumTypeStructurePage_title);
+
+        enumTypeEditor = editor;
     }
 
     /**
@@ -44,6 +48,7 @@ public class EnumTypeStructurePage extends TypeEditorStructurePage {
     @Override
     protected void createContentForSingleStructurePage(Composite parentContainer, UIToolkit toolkit) {
         // TODO single structur page content
+        new EnumAttributesSection(enumTypeEditor.getEnumType(), parentContainer, toolkit);
     }
 
     /**
@@ -52,6 +57,7 @@ public class EnumTypeStructurePage extends TypeEditorStructurePage {
     @Override
     protected void createContentForSplittedStructurePage(Composite parentContainer, UIToolkit toolkit) {
         // TODO splitted structure page content
+        new EnumAttributesSection(enumTypeEditor.getEnumType(), parentContainer, toolkit);
     }
 
     /**

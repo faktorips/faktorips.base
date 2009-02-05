@@ -3,7 +3,7 @@
  * 
  * Alle Rechte vorbehalten.
  * 
- * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen, 
+ * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen,
  * etc.) duerfen nur unter den Bedingungen der Faktor-Zehn-Community Lizenzvereinbarung - Version
  * 0.1 (vor Gruendung Community) genutzt werden, die Bestandteil der Auslieferung ist und auch unter
  * http://www.faktorzehn.org/f10-org:lizenzen:community eingesehen werden kann.
@@ -33,84 +33,57 @@ import org.faktorips.devtools.core.ui.UIToolkit;
 import org.faktorips.devtools.core.ui.binding.BindingContext;
 import org.faktorips.util.ArgumentCheck;
 
-
 /**
  * A section is an area of the user interface.
  */
-public abstract class IpsSection extends Composite implements IDataChangeableReadWriteAccess, IDataChangeableReadAccessWithListenerSupport, DisposeListener  {
-    
+public abstract class IpsSection extends Composite implements IDataChangeableReadWriteAccess,
+        IDataChangeableReadAccessWithListenerSupport, DisposeListener {
+
     private Section section;
     private boolean isRefreshing = false;
 
     private int style;
     private int layoutData;
     private UIToolkit toolkit;
-    
-    private boolean changeable = true;
-    
-    protected BindingContext bindingContext = new BindingContext();
-    
-    private ArrayList dataChangeableStateChangeListeners;
 
-    /**
-     * The section to delegate the call of <code>setFocus()</code> to
-     * if this section does not contain a control that has to get the focus.
+    private boolean changeable = true;
+
+    protected BindingContext bindingContext = new BindingContext();
+
+    private ArrayList<IDataChangeableStateChangeListener> dataChangeableStateChangeListeners;
+
+    /*
+     * The section to delegate the call of <code>setFocus()</code> to if this section does not
+     * contain a control that has to get the focus.
      */
     private IpsSection focusSuccessor;
-    
-    /**
-     * The section which will delegate the call of <code>setFocus()</code>
-     * if it does not contain a control that has to get the focus.
+
+    /*
+     * The section which will delegate the call of <code>setFocus()</code> if it does not contain a
+     * control that has to get the focus.
      */
     private IpsSection focusPredecessor;
-    
-    /**
-     * The control that has to be focussed if <code>setFocus()</code> of this
-     * section is called.
-     */
-	private Control focusCtrl;
-	
-	/**
-	 * Listener to keep track of the last focussed control of this section. 
-	 */
-	private FocusListener focusHandler = new FocusListener() {
-	
-		public void focusGained(FocusEvent e) {
-			focusCtrl = (Control)e.getSource();
-			
-			// to avoid that another sections focusCtrl requests the focus, too, we tell all
-			// other sections not to request the focus next time.
-			for (IpsSection pre = focusPredecessor; pre != null; pre = pre.focusPredecessor) {
-				pre.dontRequestNextFocus();
-			}
-			for (IpsSection next = focusSuccessor; next != null; next = next.focusSuccessor) {
-				next.dontRequestNextFocus();
-			}
-		}
-	
-		public void focusLost(FocusEvent e) {
-		}
-	};
 
-    public IpsSection(
-            Composite parent, 
-            int style, 
-            int layoutData, 
-            UIToolkit toolkit) {
+    /**
+     * The control that has to be focussed if <code>setFocus()</code> of this section is called.
+     */
+    private Control focusCtrl;
+
+    public IpsSection(Composite parent, int style, int layoutData, UIToolkit toolkit) {
         super(parent, SWT.NONE);
+
         this.style = style;
         this.layoutData = layoutData;
         this.toolkit = toolkit;
         addDisposeListener(this);
     }
-    
+
     /**
-     * Constructs the section's controls. This has to to be called explicitly
-     * by subclasses <b>after</b> they have initialized any subclass specific
-     * instance variables. The <code>IpsSection</code> does not call this
-     * method in it's constructor, because in subclasses in might be neccessary
-     * to initialize instance variable first, but the call to the super constructor
-     * has to be the first statement in the subclass constructor.  
+     * Constructs the section's controls. This has to to be called explicitly by subclasses
+     * <b>after</b> they have initialized any subclass specific instance variables. The
+     * <code>IpsSection</code> does not call this method in it's constructor, because in subclasses
+     * in might be neccessary to initialize instance variable first, but the call to the super
+     * constructor has to be the first statement in the subclass constructor.
      */
     public void initControls() {
         toolkit.getFormToolkit().adapt(this);
@@ -126,23 +99,23 @@ public abstract class IpsSection extends Composite implements IDataChangeableRea
     }
 
     protected abstract void initClientComposite(Composite client, UIToolkit toolkit);
-    
+
     protected Section getSectionControl() {
         return section;
     }
-    
+
     public void setText(String text) {
         section.setText(text);
     }
-    
+
     public void setDescription(String description) {
         section.setDescription(description);
     }
-    
+
     public boolean isRefreshing() {
         return isRefreshing;
     }
-    
+
     /**
      * Refreshes the section with the date from the model object(s).
      */
@@ -150,12 +123,11 @@ public abstract class IpsSection extends Composite implements IDataChangeableRea
         isRefreshing = true;
         try {
             performRefresh();
-        }
-        finally {
+        } finally {
             isRefreshing = false;
         }
     }
-    
+
     protected abstract void performRefresh();
 
     /**
@@ -165,32 +137,37 @@ public abstract class IpsSection extends Composite implements IDataChangeableRea
     public boolean isDataChangeable() {
         return changeable;
     }
-    
+
     /**
      * Enables or disables that the section's content can be changed by the user.
      */
     public void setDataChangeable(boolean changeable) {
         this.changeable = changeable;
         toolkit.setDataChangeable(section.getClient(), changeable);
-        if (dataChangeableStateChangeListeners==null) {
+
+        if (dataChangeableStateChangeListeners == null) {
             return;
         }
-        List listeners = new ArrayList(dataChangeableStateChangeListeners);
-        for (Iterator it = listeners.iterator(); it.hasNext();) {
-            ((IDataChangeableStateChangeListener)it.next()).dataChangeableStateHasChanged(this);
+
+        List<IDataChangeableStateChangeListener> listeners = new ArrayList<IDataChangeableStateChangeListener>(
+                dataChangeableStateChangeListeners);
+        for (Iterator<IDataChangeableStateChangeListener> it = listeners.iterator(); it.hasNext();) {
+            it.next().dataChangeableStateHasChanged(this);
         }
     }
-    
+
     /**
      * {@inheritDoc}
      */
     public void addDataChangeableStateChangeListener(IDataChangeableStateChangeListener listener) {
-        if (listener==null) {
+        if (listener == null) {
             return;
         }
-        if (dataChangeableStateChangeListeners==null) {
-            dataChangeableStateChangeListeners = new ArrayList(1);
+
+        if (dataChangeableStateChangeListeners == null) {
+            dataChangeableStateChangeListeners = new ArrayList<IDataChangeableStateChangeListener>(1);
         }
+
         this.dataChangeableStateChangeListeners.add(listener);
     }
 
@@ -198,85 +175,115 @@ public abstract class IpsSection extends Composite implements IDataChangeableRea
      * {@inheritDoc}
      */
     public void removeDataChangeableStateChangeListener(IDataChangeableStateChangeListener listener) {
-        if (dataChangeableStateChangeListeners==null) {
+        if (dataChangeableStateChangeListeners == null) {
             return;
         }
+
         dataChangeableStateChangeListeners.remove(listener);
     }
-    
+
     /**
-     * Set the successor for focus handling. This successor is only needed
-     * if no focusControl is set for this section. If so, the initial setFocus-call
-     * is passed to the successor;
+     * Set the successor for focus handling. This successor is only needed if no focusControl is set
+     * for this section. If so, the initial setFocus-call is passed to the successor;
      * 
      * @throws NullPointerException if the given successor is <code>null</code>.
      */
     public void setFocusSuccessor(IpsSection successor) {
-    	ArgumentCheck.notNull(successor);
-    	focusSuccessor = successor;
-    	successor.setFocusPredecessor(this);
+        ArgumentCheck.notNull(successor);
+
+        focusSuccessor = successor;
+        successor.setFocusPredecessor(this);
     }
-    
+
     /**
-	 * Add a control that can gain the focus (by user operation or by system calls).
-	 * The first control added to this section is the one focussed if this section is initially 
-	 * displayed (if there is no focus predecessor).
+     * Add a control that can gain the focus (by user operation or by system calls). The first
+     * control added to this section is the one focussed if this section is initially displayed (if
+     * there is no focus predecessor).
      * 
      * @throws NullPointerException if the given focusControl is <code>null</code>.
-	 */
-	public void addFocusControl(Control focusControl) {
-		ArgumentCheck.notNull(focusControl);
-		if (focusCtrl == null) {
-			focusCtrl = focusControl;
-		}
-		focusControl.addFocusListener(focusHandler);
-	}
+     */
+    public void addFocusControl(Control focusControl) {
+        ArgumentCheck.notNull(focusControl);
 
-	/**
-	 * Set focus to the appropriate control. This is the first editable input available
-	 * if the focus was not set before or the control that had the focus gained at last. 
-	 * 
-	 * {@inheritDoc}
-	 */
-	public boolean setFocus() {
-		if (focusCtrl != null) {
-			focusCtrl.setFocus();
-		} else if (focusSuccessor != null) {
-			focusSuccessor.setFocus();
-		}
-		return true;
-	}
+        if (focusCtrl == null) {
+            focusCtrl = focusControl;
+        }
 
-	/**
-	 * Until a control added with <code>addFocusControl</code> gains the Focus
-	 * by user operation, no focus will be requested by this section after a 
-	 * call to this method.
-	 */
-	private void dontRequestNextFocus() {
-		focusCtrl = null;
-	}
+        focusControl.addFocusListener(focusHandler);
+    }
 
-	/**
-	 * Set the focus predecessor
-	 */
-	private void setFocusPredecessor(IpsSection predecessor) {
-		focusPredecessor = predecessor;
-	}
+    /**
+     * Set focus to the appropriate control. This is the first editable input available if the focus
+     * was not set before or the control that had the focus gained at last.
+     * 
+     * {@inheritDoc}
+     */
+    @Override
+    public boolean setFocus() {
+        if (focusCtrl != null) {
+            focusCtrl.setFocus();
+        } else if (focusSuccessor != null) {
+            focusSuccessor.setFocus();
+        }
+
+        return true;
+    }
+
+    /*
+     * Until a control added with <code>addFocusControl</code> gains the Focus by user operation, no
+     * focus will be requested by this section after a call to this method.
+     */
+    private void dontRequestNextFocus() {
+        focusCtrl = null;
+    }
+
+    /*
+     * Set the focus predecessor
+     */
+    private void setFocusPredecessor(IpsSection predecessor) {
+        focusPredecessor = predecessor;
+    }
 
     /**
      * 
      * {@inheritDoc}
      */
     public void widgetDisposed(DisposeEvent e) {
-       if (e.widget==this) {
-           bindingContext.dispose();
-       }
+        if (e.widget == this) {
+            bindingContext.dispose();
+        }
     }
 
     /**
-     * @return Returns the toolkit.
+     * @return Returns the ui toolkit.
      */
     public UIToolkit getToolkit() {
         return toolkit;
     }
+
+    /*
+     * Listener to keep track of the last focussed control of this section.
+     */
+    private FocusListener focusHandler = new FocusListener() {
+
+        public void focusGained(FocusEvent e) {
+            focusCtrl = (Control)e.getSource();
+
+            /*
+             * to avoid that another sections focusCtrl requests the focus, too, we tell all other
+             * sections not to request the focus next time.
+             */
+            for (IpsSection pre = focusPredecessor; pre != null; pre = pre.focusPredecessor) {
+                pre.dontRequestNextFocus();
+            }
+            for (IpsSection next = focusSuccessor; next != null; next = next.focusSuccessor) {
+                next.dontRequestNextFocus();
+            }
+        }
+
+        public void focusLost(FocusEvent e) {
+
+        }
+    };
+
 }

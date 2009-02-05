@@ -59,8 +59,8 @@ public abstract class TypeEditorStructurePage extends IpsObjectEditorPage {
     }
 
     /**
-     * The creation of the general page information section which is displayed at the top right
-     * below the title of the page has to be implemented here.
+     * The creation of the general page information section which is displayed at the top below the
+     * title of the page has to be implemented here.
      */
     protected abstract void createGeneralPageInfoSection(Composite parentContainer, UIToolkit toolkit);
 
