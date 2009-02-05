@@ -14,7 +14,7 @@
 package org.faktorips.devtools.core.internal.model.enumtype;
 
 import org.eclipse.core.runtime.CoreException;
-import org.eclipse.osgi.util.NLS;
+import org.faktorips.devtools.core.model.enumtype.EnumContentValidations;
 import org.faktorips.devtools.core.model.enumtype.IEnumContent;
 import org.faktorips.devtools.core.model.enumtype.IEnumType;
 import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
@@ -113,31 +113,10 @@ public class EnumContent extends EnumValueContainer implements IEnumContent {
     protected void validateThis(MessageList list, IIpsProject ipsProject) throws CoreException {
         super.validateThis(list, ipsProject);
 
-        String text;
-        Message validationMessage;
-
-        if (enumType.equals("")) {
-            text = Messages.EnumContent_EnumTypeMissing;
-            validationMessage = new Message(MSGCODE_ENUM_CONTENT_ENUM_TYPE_MISSING, text, Message.ERROR, this,
-                    PROPERTY_ENUM_TYPE);
+        Message validationMessage = EnumContentValidations.validateEnumType(this, enumType, ipsProject);
+        if (validationMessage != null) {
             list.add(validationMessage);
-        } else {
-            IEnumType enumTypeRef = getIpsProject().findEnumType(enumType);
-            if (enumTypeRef == null) {
-                text = NLS.bind(Messages.EnumContent_EnumTypeDoesNotExist, enumType);
-                validationMessage = new Message(MSGCODE_ENUM_CONTENT_ENUM_TYPE_DOES_NOT_EXIST, text, Message.ERROR,
-                        this, PROPERTY_ENUM_TYPE);
-                list.add(validationMessage);
-            } else {
-                if (enumTypeRef.valuesArePartOfModel()) {
-                    text = NLS.bind(Messages.EnumContent_ValuesArePartOfModel, enumType);
-                    validationMessage = new Message(MSGCODE_ENUM_CONTENT_VALUES_ARE_PART_OF_MODEL, text, Message.ERROR,
-                            this, PROPERTY_ENUM_TYPE);
-                    list.add(validationMessage);
-                }
-            }
         }
-
     }
 
 }

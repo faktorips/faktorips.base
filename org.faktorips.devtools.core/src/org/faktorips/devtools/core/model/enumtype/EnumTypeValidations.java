@@ -52,11 +52,12 @@ public abstract class EnumTypeValidations {
      * @param superEnumTypeQualifiedName The qualified name of the super enum type.
      * @param ipsProject The ips object path of this ips project will be searched.
      * 
-     * @return A proper validation message or <code>null</code> if the validation was successful.
+     * @return An appropriate validation message or <code>null</code> if the validation was
+     *         successful.
      * 
      * @throws CoreException If an error occurs while searching for the super enum type.
      * @throws IllegalArgumentException If superEnumTypeQualifiedName is an empty string.
-     * @throws NullPointerException If superEnumTypeQualifiedName or ipsProject is <code>null</code>
+     * @throws NullPointerException If superEnumTypeQualifiedName or ipsProject is <code>null</code>.
      */
     public static Message validateSuperEnumType(IEnumType enumType,
             String superEnumTypeQualifiedName,
