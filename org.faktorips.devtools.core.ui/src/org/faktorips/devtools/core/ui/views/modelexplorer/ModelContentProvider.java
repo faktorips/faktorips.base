@@ -3,7 +3,7 @@
  * 
  * Alle Rechte vorbehalten.
  * 
- * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen, 
+ * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen,
  * etc.) duerfen nur unter den Bedingungen der Faktor-Zehn-Community Lizenzvereinbarung - Version
  * 0.1 (vor Gruendung Community) genutzt werden, die Bestandteil der Auslieferung ist und auch unter
  * http://www.faktorzehn.org/f10-org:lizenzen:community eingesehen werden kann.
@@ -47,7 +47,7 @@ import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAttribute;
  * Class for calculation the content of the ModelExplorer tree. The returned Lists of
  * PackageFragments are dependant on the current layout style indicated by the
  * <code>isFlatLayout</code> flag.
- *
+ * 
  * @author Stefan Widmaier
  */
 public class ModelContentProvider implements ITreeContentProvider {
@@ -76,8 +76,8 @@ public class ModelContentProvider implements ITreeContentProvider {
     }
 
     /**
-     * Returns the array of children of the given parentElement without filtering out children of a specific type
-     * or with a specific name.
+     * Returns the array of children of the given parentElement without filtering out children of a
+     * specific type or with a specific name.
      */
     protected Object[] getUnfilteredChildren(Object parentElement) {
         if (parentElement instanceof IIpsElement) {
@@ -92,7 +92,7 @@ public class ModelContentProvider implements ITreeContentProvider {
                 } else if (parentElement instanceof IIpsPackageFragment) {
                     return getPackageFragmentContent((IIpsPackageFragment)parentElement);
                 } else if (parentElement instanceof IIpsSrcFile) {
-                    if (IpsObjectType.TABLE_CONTENTS.equals(((IIpsSrcFile)parentElement).getIpsObjectType())){
+                    if (IpsObjectType.TABLE_CONTENTS.equals(((IIpsSrcFile)parentElement).getIpsObjectType())) {
                         return EMPTY_ARRAY;
                     }
                     IIpsObject ipsObject = ((IIpsSrcFile)parentElement).getIpsObject();
@@ -133,15 +133,14 @@ public class ModelContentProvider implements ITreeContentProvider {
      */
     private Object[] getProjectContent(IIpsProject project) throws CoreException {
         IIpsPackageFragmentRoot[] roots = project.getIpsPackageFragmentRoots();
-        List existingRoots = new ArrayList();
+        List<IIpsPackageFragmentRoot> existingRoots = new ArrayList<IIpsPackageFragmentRoot>();
         for (int i = 0; i < roots.length; i++) {
             if (roots[i].exists()) {
                 existingRoots.add(roots[i]);
             }
         }
-        Object[] result= concatenate(existingRoots.toArray(), project.getNonIpsResources());
-        return result
-        ;
+        Object[] result = concatenate(existingRoots.toArray(), project.getNonIpsResources());
+        return result;
     }
 
     /*
@@ -149,8 +148,7 @@ public class ModelContentProvider implements ITreeContentProvider {
      * entries and outputlocations the folder is contained in. If the given folder does not contain
      * any children an empty array is returned. If the <code>IProject</code> returned by
      * <code>IResource#getProject()</code> is null or does not have java nature, an empty array is
-     * returned.<br>
-     * And filter ips archive files which are specified in the ips object path.
+     * returned.<br> And filter ips archive files which are specified in the ips object path.
      */
     private Object[] getNonJavaResourcesAndNonActiveIpsArchives(IFolder folder) {
         try {
@@ -165,9 +163,9 @@ public class ModelContentProvider implements ITreeContentProvider {
             IJavaProject javaProject = JavaCore.create(project);
             // javaProject.open(null);
 
-            List childResources = new ArrayList();
+            List<IResource> childResources = new ArrayList<IResource>();
             for (int i = 0; i < children.length; i++) {
-                if (isIpsArchiveFromIpsObjectPath(project, (IResource)children[i])){
+                if (isIpsArchiveFromIpsObjectPath(project, (IResource)children[i])) {
                     // filter out ips archive files which are specified in the ipsobjectpath
                     continue;
                 }
@@ -186,23 +184,23 @@ public class ModelContentProvider implements ITreeContentProvider {
     }
 
     /*
-     * Returns <code>true</code> if the given resource is a ips archive file which is specified
-     * in the ips object path, otherwise return <code>false</code>.
+     * Returns <code>true</code> if the given resource is a ips archive file which is specified in
+     * the ips object path, otherwise return <code>false</code>.
      */
     private boolean isIpsArchiveFromIpsObjectPath(IProject project, IResource resource) {
-    	if (! (resource instanceof IFile)){
+        if (!(resource instanceof IFile)) {
             return false;
         }
         try {
-            if (project.hasNature(IIpsProject.NATURE_ID)){
+            if (project.hasNature(IIpsProject.NATURE_ID)) {
                 // check if one of the archive entries in the ips object path is the given file
                 IIpsProject ipsProject = IpsPlugin.getDefault().getIpsModel().getIpsProject(project.getName());
                 IIpsArchiveEntry[] archiveEntries = ipsProject.getIpsObjectPath().getArchiveEntries();
                 for (int i = 0; i < archiveEntries.length; i++) {
-                    //TODO pk archivelocation not valid for external files 25-09-2008
+                    // TODO pk archivelocation not valid for external files 25-09-2008
                     IPath archivePath = archiveEntries[i].getArchivePath();
                     IFile archiveFile = ResourcesPlugin.getWorkspace().getRoot().getFile(archivePath);
-					if (resource.equals(archiveFile)){
+                    if (resource.equals(archiveFile)) {
                         return true;
                     }
                 }
@@ -215,12 +213,13 @@ public class ModelContentProvider implements ITreeContentProvider {
 
     /*
      * Examins the given <code>JavaProject</code> and its relation to the given
-     * <code>IResource</code>. Returns true if the given resource corresponds to a classpath
-     * entry of the javaproject. Returns true if the given resource corresponds to a folder that is
-     * either the javaprojects default output location or the output location of one of the projects
+     * <code>IResource</code>. Returns true if the given resource corresponds to a classpath entry
+     * of the javaproject. Returns true if the given resource corresponds to a folder that is either
+     * the javaprojects default output location or the output location of one of the projects
      * classpathentries. False otherwise.
-     *
+     * 
      * @param resource
+     * 
      * @return
      */
     private boolean isJavaResource(IJavaProject jProject, IResource resource) {
@@ -251,7 +250,7 @@ public class ModelContentProvider implements ITreeContentProvider {
      * child-packagefragments of the defaultpackage are returned. The defaultpackage of the given
      * <code>IpsPackageFragmentRoot</code> is contained in the returned array if it contains files
      * (has children).
-     *
+     * 
      * @throws CoreException
      */
     protected Object[] getPackageFragmentRootContent(IIpsPackageFragmentRoot root) throws CoreException {
@@ -267,7 +266,7 @@ public class ModelContentProvider implements ITreeContentProvider {
             // filter out empty packagefragments if their IFolders do not contain files and at the
             // same time contain subfolders (subpackages) (this prevents empty or newly created
             // packagefragments from being hidden in the view)
-            List filteredFragments = new ArrayList();
+            List<IIpsPackageFragment> filteredFragments = new ArrayList<IIpsPackageFragment>();
             for (int i = 0; i < fragments.length; i++) {
                 if (hasChildren(fragments[i]) || fragments[i].getChildIpsPackageFragments().length == 0) {
                     filteredFragments.add(fragments[i]);
@@ -289,9 +288,9 @@ public class ModelContentProvider implements ITreeContentProvider {
     /*
      * This method returns all files and <code>IpsPackageFragment</code>s contained in the given
      * <code>IpsPackageFragment</code>. If the given <code>IpsPackageFragment</code> is the
-     * defaultPackageFragment of its <code>IpsPackageFragmentRoot</code>, only the contained
-     * files are returned.
-     *
+     * defaultPackageFragment of its <code>IpsPackageFragmentRoot</code>, only the contained files
+     * are returned.
+     * 
      * @throws CoreException
      */
     private Object[] getPackageFragmentContent(IIpsPackageFragment fragment) throws CoreException {
@@ -304,9 +303,9 @@ public class ModelContentProvider implements ITreeContentProvider {
 
     /*
      * Returns an empty array in flat layout style. In hierarchical layout returns all
-     * <code>IpsPacakgeFragment</code>s that correspond to a subfolder of the given
-     * packagefragments underlying folder.
-     *
+     * <code>IpsPacakgeFragment</code>s that correspond to a subfolder of the given packagefragments
+     * underlying folder.
+     * 
      * @throws CoreException
      */
     private Object[] getFolderContent(IIpsPackageFragment fragment) throws CoreException {
@@ -321,17 +320,17 @@ public class ModelContentProvider implements ITreeContentProvider {
     /**
      * Returns all files contained in the given <code>IpsPackageFragment</code>. This includes
      * IpsElements as well as general files.
-     *
+     * 
      * @throws CoreException
      */
     protected Object[] getFileContent(IIpsPackageFragment fragment) throws CoreException {
         IIpsElement[] files = fragment.getChildren();
 
-        List pcts = new ArrayList();
+        List<IIpsElement> pcts = new ArrayList<IIpsElement>();
         for (int i = 0, size = files.length; i < size; i++) {
             if (files[i] instanceof IIpsSrcFile) {
                 IFile file = ((IIpsSrcFile)files[i]).getCorrespondingFile();
-                if (file!=null && !file.isSynchronized(IResource.DEPTH_ZERO)) {
+                if (file != null && !file.isSynchronized(IResource.DEPTH_ZERO)) {
                     file.getParent().refreshLocal(IResource.DEPTH_ONE, null);
                 }
                 pcts.add(files[i]);
@@ -353,22 +352,26 @@ public class ModelContentProvider implements ITreeContentProvider {
      * returned. An exception to this rule is the ".ipsproject"-file.
      */
     private Object[] filter(Object[] elements) {
-        List filtered = new ArrayList();
+        List<Object> filtered = new ArrayList<Object>();
 
         for (int i = 0; i < elements.length; i++) {
+
             if (elements[i] instanceof IIpsElement) {
                 if (configuration.isAllowedIpsElement((IIpsElement)elements[i])) {
                     filtered.add(elements[i]);
                 }
             } else if (elements[i] instanceof IResource) {
 
-                // filter out hidden files and folders, except the ".ipsproject"-file and ".sortorder"-file
+                // filter out hidden files and folders, except the ".ipsproject"-file and
+                // ".sortorder"-file
                 if (elements[i] instanceof IFile | elements[i] instanceof IFolder) {
                     if (((IResource)elements[i]).getName().indexOf(".") == 0) { //$NON-NLS-1$
-                        IIpsProject project= IpsPlugin.getDefault().getIpsModel().getIpsProject(((IResource)elements[i]).getProject());
+                        IIpsProject project = IpsPlugin.getDefault().getIpsModel().getIpsProject(
+                                ((IResource)elements[i]).getProject());
 
-                        if((!elements[i].equals(project.getIpsProjectPropertiesFile()))
-                            && ((IResource)elements[i]).getName().compareTo(IIpsPackageFragment.SORT_ORDER_FILE_NAME) != 0 ){ //$NON-NLS-1$
+                        if ((!elements[i].equals(project.getIpsProjectPropertiesFile()))
+                                && ((IResource)elements[i]).getName().compareTo(
+                                        IIpsPackageFragment.SORT_ORDER_FILE_NAME) != 0) { //$NON-NLS-1$
                             continue;
                         }
                     }
@@ -382,7 +385,9 @@ public class ModelContentProvider implements ITreeContentProvider {
                     filtered.add(elements[i]);
                 }
             }
+
         }
+
         return filtered.toArray();
     }
 
@@ -433,7 +438,7 @@ public class ModelContentProvider implements ITreeContentProvider {
         if (inputElement instanceof IIpsModel) {
             try {
                 IIpsModel model = (IIpsModel)inputElement;
-                if (excludeNoIpsProjects){
+                if (excludeNoIpsProjects) {
                     // return only ips projects and closed projects
                     return concatenate(model.getIpsProjects(), getClosedProjects(model));
                 } else {
@@ -454,13 +459,13 @@ public class ModelContentProvider implements ITreeContentProvider {
      */
     private IProject[] getClosedProjects(IIpsModel model) throws CoreException {
         IResource[] nonIpsProjects = model.getNonIpsProjects();
-        List closedProjects = new ArrayList();
+        List<IResource> closedProjects = new ArrayList<IResource>();
         for (int i = 0; i < nonIpsProjects.length; i++) {
-            if (nonIpsProjects[i] instanceof IProject && ! ((IProject)nonIpsProjects[i]).isOpen()){
+            if (nonIpsProjects[i] instanceof IProject && !((IProject)nonIpsProjects[i]).isOpen()) {
                 closedProjects.add(nonIpsProjects[i]);
             }
         }
-        return (IProject[]) closedProjects.toArray(new IProject[closedProjects.size()]);
+        return (IProject[])closedProjects.toArray(new IProject[closedProjects.size()]);
     }
 
     public void dispose() {
@@ -472,7 +477,7 @@ public class ModelContentProvider implements ITreeContentProvider {
 
     /**
      * Sets the flag for flat respectivly hierarchical PackageFragments
-     *
+     * 
      * @param b
      */
     /* package */void setIsFlatLayout(boolean b) {
@@ -493,7 +498,8 @@ public class ModelContentProvider implements ITreeContentProvider {
     }
 
     /**
-     * Set <code>true</code> to exlude no ips projects or <code>false</code> to show no ips projects.
+     * Set <code>true</code> to exlude no ips projects or <code>false</code> to show no ips
+     * projects.
      */
     public void setExcludeNoIpsProjects(boolean excludeNoIpsProjects) {
         this.excludeNoIpsProjects = excludeNoIpsProjects;

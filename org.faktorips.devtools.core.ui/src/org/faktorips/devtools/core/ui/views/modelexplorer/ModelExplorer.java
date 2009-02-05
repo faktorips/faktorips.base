@@ -588,7 +588,9 @@ public class ModelExplorer extends ViewPart implements IShowInTarget {
 
     }
 
-    // Create menu for layout styles.
+    /*
+     * Create menu for layout styles
+     */
     private void createMenu(IMenuManager menuManager) {
         IAction flatLayoutAction = new LayoutAction(this, true);
         flatLayoutAction.setText(Messages.ModelExplorer_actionFlatLayout);
@@ -655,7 +657,9 @@ public class ModelExplorer extends ViewPart implements IShowInTarget {
 
     }
 
-    // Answers whether this part shows the packagFragments flat or hierarchical
+    /*
+     * Answers whether this part shows the packagFragments flat or hierarchical
+     */
     private boolean isFlatLayout() {
         return isFlatLayout;
     }
