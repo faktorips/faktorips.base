@@ -356,6 +356,13 @@ public abstract class IpsObjectEditor extends FormEditor implements ContentsChan
         }
     }
 
+    /**
+     * This method extends the <code>addPages()</code> operation and must be implemented by
+     * subclasses by adding the pages to edit the ips object with.
+     * 
+     * @throws PartInitException
+     * @throws CoreException
+     */
     protected abstract void addPagesForParsableSrcFile() throws PartInitException, CoreException;
 
     protected void updatePageStructure() {
