@@ -69,6 +69,7 @@ import org.eclipse.ui.part.ViewPart;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.model.IIpsElement;
 import org.faktorips.devtools.core.model.bf.IBusinessFunction;
+import org.faktorips.devtools.core.model.enumtype.IEnumContent;
 import org.faktorips.devtools.core.model.enumtype.IEnumType;
 import org.faktorips.devtools.core.model.ipsobject.IFixDifferencesToModelSupport;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObject;
@@ -109,6 +110,7 @@ import org.faktorips.devtools.core.ui.actions.MigrateProjectAction;
 import org.faktorips.devtools.core.ui.actions.ModelExplorerDeleteAction;
 import org.faktorips.devtools.core.ui.actions.MoveAction;
 import org.faktorips.devtools.core.ui.actions.NewBusinessFunctionAction;
+import org.faktorips.devtools.core.ui.actions.NewEnumContentAction;
 import org.faktorips.devtools.core.ui.actions.NewEnumTypeAction;
 import org.faktorips.devtools.core.ui.actions.NewFileResourceAction;
 import org.faktorips.devtools.core.ui.actions.NewFolderAction;
@@ -467,13 +469,39 @@ public class ModelExplorer extends ViewPart implements IShowInTarget {
      * ----------------------------------------------------------
      */
 
-    // TODO javadoc
+    /**
+     * Creates and returns a <code>ModelExplorerConfiguration</code> with the following allowed
+     * types:
+     * 
+     * <ul>
+     * <li>IPolicyCmptType</li>
+     * <li>IProductCmptType</li>
+     * <li>IEnumType</li>
+     * <li>IEnumContent</li>
+     * <li>IProductCmpt</li>
+     * <li>IProductCmptGeneration</li>
+     * <li>ITableStructure</li>
+     * <li>ITableContents</li>
+     * <li>IBusinessFunction</li>
+     * <li>IAttribute</li>
+     * <li>IAssociation</li>
+     * <li>IMethod</li>
+     * <li>ITableStructureUsage</li>
+     * <li>ITestCase</li>
+     * <li>ITestCaseType</li>
+     * </ul>
+     * 
+     * @see #ModelExplorerConfiguration
+     * 
+     * @return A <code>ModelExplorerConfiguration</code> object with the above listed allowed types,
+     *         never returns <code>null</code>.
+     */
     protected ModelExplorerConfiguration createConfig() {
         return new ModelExplorerConfiguration(new Class[] { IPolicyCmptType.class, IProductCmptType.class,
-                IEnumType.class, IProductCmpt.class, IProductCmptGeneration.class, ITableStructure.class,
-                ITableContents.class, IBusinessFunction.class, IAttribute.class, IAssociation.class, IMethod.class,
-                ITableStructureUsage.class, ITestCase.class, ITestCaseType.class }, new Class[] { IFolder.class,
-                IFile.class, IProject.class });
+                IEnumType.class, IEnumContent.class, IProductCmpt.class, IProductCmptGeneration.class,
+                ITableStructure.class, ITableContents.class, IBusinessFunction.class, IAttribute.class,
+                IAssociation.class, IMethod.class, ITableStructureUsage.class, ITestCase.class, ITestCaseType.class },
+                new Class[] { IFolder.class, IFile.class, IProject.class });
     }
 
     // TODO javadoc
@@ -980,6 +1008,9 @@ public class ModelExplorer extends ViewPart implements IShowInTarget {
                 IWorkbenchWindow workbenchWindow = getSite().getWorkbenchWindow();
                 if (config.isAllowedIpsElementType(IProductCmpt.class)) {
                     newMenu.add(new NewProductComponentAction(workbenchWindow));
+                }
+                if (config.isAllowedIpsElementType(IEnumContent.class)) {
+                    newMenu.add(new NewEnumContentAction(workbenchWindow));
                 }
                 if (config.isAllowedIpsElementType(ITableContents.class)) {
                     newMenu.add(new NewTableContentAction(workbenchWindow));

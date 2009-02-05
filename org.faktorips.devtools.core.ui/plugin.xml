@@ -56,7 +56,7 @@
          <action
                class="org.faktorips.devtools.core.ui.wizards.enumtype.OpenNewEnumTypeWizardAction"
                icon="icons/NewEnumType.gif"
-               id="org.faktorips.devtools.enumtype.ui.wizard.OpenNewEnumTypeWizardAction"
+               id="org.faktorips.devtools.core.ui.wizards.enumtype.OpenNewEnumTypeWizardAction"
                label="%org.faktorips.devtools.core.ui.wizards.enumtype.OpenNewEnumTypeWizardAction.label"
                toolbarPath="org.faktorips.devtools"
                tooltip="%org.faktorips.devtools.core.ui.wizards.enumtype.OpenNewEnumTypeWizardAction.tooltip">
@@ -100,6 +100,14 @@
                id="org.faktorips.devtools.actions.OpenNewTableContentsWizardAction">
          </action>
          <action
+               class="org.faktorips.devtools.core.ui.wizards.enumcontent.OpenNewEnumContentWizardAction"
+               icon="icons/NewEnumContent.gif"
+               id="org.faktorips.devtools.core.ui.wizards.enumcontent.OpenNewEnumContentWizardAction"
+               label="%org.faktorips.devtools.core.ui.wizards.enumcontent.OpenNewEnumContentWizardAction.label"
+               toolbarPath="org.faktorips.devtools"
+               tooltip="%org.faktorips.devtools.core.ui.wizards.enumcontent.OpenNewEnumContentWizardAction.tooltip">
+         </action>
+         <action
                class="org.faktorips.devtools.core.ui.wizards.productcmpt.OpenNewProductCmptWizardAction"
                icon="icons/NewProductCmptWizard.gif"
                id="org.faktorips.devtools.actions.OpenNewProductCmptWizardAction"
@@ -116,7 +124,7 @@
                tooltip="%org.faktorips.devtools.core.ChangeWorkingDateAction.tooltip"/>
       </actionSet>
       <actionSet
-            label="IPS Navigation"
+            label="Faktor-IPS Navigation"
             visible="false"
             id="org.faktorips.devtools.actions.NavigationActionSet">
          <action
@@ -508,7 +516,7 @@
         category="org.faktorips.devtools"
         class="org.faktorips.devtools.core.ui.wizards.enumtype.NewEnumTypeWizard"
         icon="icons/NewEnumType.gif"
-        id="org.faktorips.devtools.enumtype.ui.wizard"
+        id="newEnumTypeWizard"
         name="%NewEnumTypeWizard.name">
      <description>
         %NewEnumTypeWizard.description
@@ -539,6 +547,19 @@
     	   <description>%NewProductCmptWizard.description</description>
     	   <selection class="org.eclipse.core.resources.IResource"/>
 	    </wizard>
+      <wizard
+            category="org.faktorips.devtools"
+            class="org.faktorips.devtools.core.ui.wizards.enumcontent.NewEnumContentWizard"
+            icon="icons/NewEnumContent.gif"
+            id="newEnumContentWizard"
+            name="%NewEnumContentWizard.name">
+         <description>
+            %NewEnumContentWizard.description
+         </description>
+         <selection
+               class="org.eclipse.core.resources.IResource">
+         </selection>
+      </wizard>
       <wizard
             category="org.faktorips.devtools"
             class="org.faktorips.devtools.core.ui.wizards.tablestructure.NewTableStructureWizard"
