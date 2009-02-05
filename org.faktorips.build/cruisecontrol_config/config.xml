@@ -26,13 +26,13 @@
             <cvs module="org.faktorips.util" cvsroot="${cvsroot}"/>
         </modificationset>
         <schedule interval="60">
-            <ant usedebug="false" uselogger="true" buildfile="${mainbuildfile}" target="util"/>
+            <ant uselogger="true" usedebug="false" buildfile="${mainbuildfile}" target="util"/>
         </schedule>
         <log logdir="${logdir}/${project.name}/">
             <merge dir="${workdir}/org.faktorips.util/build/logs"/>
         </log>
         <publishers>
-            <htmlemail buildresultsurl="${buildresultsurl}/${project.name}" mailhost="${htmlemail.mailhost}" username="" password="" returnaddress="${htmlemail.returnaddress}" skipusers="false" spamwhilebroken="false" returnname="faktorips-buildqueue" subjectprefix="[CC ${project.name}]" reportsuccess="always" xsldir="${htmlemail.xsldir}" css="${htmlemail.css}">
+            <htmlemail buildresultsurl="${buildresultsurl}/${project.name}" mailhost="${htmlemail.mailhost}" username="" password="" returnaddress="${htmlemail.returnaddress}" skipusers="false" spamwhilebroken="true" returnname="faktorips-buildqueue" subjectprefix="[CC ${project.name}]" reportsuccess="always" xsldir="${htmlemail.xsldir}" css="${htmlemail.css}">
                 <map alias="ortmann" address="jan.ortmann@faktorzehn.de"/>
                 <map alias="erzberger" address="peter.erzberger@faktorzehn.de"/>
                 <map alias="hohenberger" address="daniel.hohenberger@faktorzehn.de"/>
@@ -72,13 +72,13 @@
             <cvs module="org.faktorips.valuetypes" cvsroot="${cvsroot}"/>
         </modificationset>
         <schedule interval="60">
-            <ant usedebug="false" uselogger="true" buildfile="${mainbuildfile}" target="valuetypes"/>
+            <ant uselogger="true" usedebug="false" buildfile="${mainbuildfile}" target="valuetypes"/>
         </schedule>
         <log logdir="${logdir}/${project.name}/">
             <merge dir="${workdir}/org.faktorips.valuetypes/build/logs"/>
         </log>
         <publishers>
-            <htmlemail buildresultsurl="${buildresultsurl}/${project.name}" mailhost="${htmlemail.mailhost}" username="" password="" returnaddress="${htmlemail.returnaddress}" skipusers="false" spamwhilebroken="false" returnname="faktorips-buildqueue" subjectprefix="[CC ${project.name}]" reportsuccess="always" xsldir="${htmlemail.xsldir}" css="${htmlemail.css}">
+            <htmlemail buildresultsurl="${buildresultsurl}/${project.name}" mailhost="${htmlemail.mailhost}" username="" password="" returnaddress="${htmlemail.returnaddress}" skipusers="false" spamwhilebroken="true" returnname="faktorips-buildqueue" subjectprefix="[CC ${project.name}]" reportsuccess="always" xsldir="${htmlemail.xsldir}" css="${htmlemail.css}">
                 <map alias="ortmann" address="jan.ortmann@faktorzehn.de"/>
                 <map alias="erzberger" address="peter.erzberger@faktorzehn.de"/>
                 <map alias="hohenberger" address="daniel.hohenberger@faktorzehn.de"/>
@@ -118,13 +118,13 @@
             <cvs module="org.faktorips.valuetypes.java5" cvsroot="${cvsroot}"/>
         </modificationset>
         <schedule interval="60">
-            <ant usedebug="false" uselogger="true" buildfile="${mainbuildfile}" target="valuetypes.java5"/>
+            <ant uselogger="true" usedebug="false" buildfile="${mainbuildfile}" target="valuetypes.java5"/>
         </schedule>
         <log logdir="${logdir}/${project.name}/">
             <merge dir="${workdir}/org.faktorips.valuetypes.java5/build/logs"/>
         </log>
         <publishers>
-            <htmlemail buildresultsurl="${buildresultsurl}/${project.name}" mailhost="${htmlemail.mailhost}" username="" password="" returnaddress="${htmlemail.returnaddress}" skipusers="false" spamwhilebroken="false" returnname="faktorips-buildqueue" subjectprefix="[CC ${project.name}]" reportsuccess="always" xsldir="${htmlemail.xsldir}" css="${htmlemail.css}">
+            <htmlemail buildresultsurl="${buildresultsurl}/${project.name}" mailhost="${htmlemail.mailhost}" username="" password="" returnaddress="${htmlemail.returnaddress}" skipusers="false" spamwhilebroken="true" returnname="faktorips-buildqueue" subjectprefix="[CC ${project.name}]" reportsuccess="always" xsldir="${htmlemail.xsldir}" css="${htmlemail.css}">
                 <map alias="ortmann" address="jan.ortmann@faktorzehn.de"/>
                 <map alias="erzberger" address="peter.erzberger@faktorzehn.de"/>
                 <map alias="hohenberger" address="daniel.hohenberger@faktorzehn.de"/>
@@ -165,13 +165,13 @@
             <cvs module="org.faktorips.dtflcommon" cvsroot="${cvsroot}"/>
         </modificationset>
         <schedule interval="60">
-            <ant usedebug="false" uselogger="true" buildfile="${mainbuildfile}" target="dtflcommon"/>
+            <ant uselogger="true" usedebug="false" buildfile="${mainbuildfile}" target="dtflcommon"/>
         </schedule>
         <log logdir="${logdir}/${project.name}/">
             <merge dir="${workdir}/org.faktorips.dtflcommon/build/logs"/>
         </log>
         <publishers>
-            <htmlemail buildresultsurl="${buildresultsurl}/${project.name}" mailhost="${htmlemail.mailhost}" username="" password="" returnaddress="${htmlemail.returnaddress}" skipusers="false" spamwhilebroken="false" returnname="faktorips-buildqueue" subjectprefix="[CC ${project.name}]" reportsuccess="always" xsldir="${htmlemail.xsldir}" css="${htmlemail.css}">
+            <htmlemail buildresultsurl="${buildresultsurl}/${project.name}" mailhost="${htmlemail.mailhost}" username="" password="" returnaddress="${htmlemail.returnaddress}" skipusers="false" spamwhilebroken="true" returnname="faktorips-buildqueue" subjectprefix="[CC ${project.name}]" reportsuccess="always" xsldir="${htmlemail.xsldir}" css="${htmlemail.css}">
                 <map alias="ortmann" address="jan.ortmann@faktorzehn.de"/>
                 <map alias="erzberger" address="peter.erzberger@faktorzehn.de"/>
                 <map alias="hohenberger" address="daniel.hohenberger@faktorzehn.de"/>
@@ -212,13 +212,13 @@
             <cvs module="org.faktorips.runtime" cvsroot="${cvsroot}"/>
         </modificationset>
         <schedule interval="60">
-            <ant usedebug="false" uselogger="true" buildfile="${mainbuildfile}" target="runtime"/>
+            <ant uselogger="true" usedebug="false" buildfile="${mainbuildfile}" target="runtime"/>
         </schedule>
         <log logdir="${logdir}/${project.name}/">
             <merge dir="${workdir}/org.faktorips.runtime/build/logs"/>
         </log>
         <publishers>
-            <htmlemail buildresultsurl="${buildresultsurl}/${project.name}" mailhost="${htmlemail.mailhost}" username="" password="" returnaddress="${htmlemail.returnaddress}" skipusers="false" spamwhilebroken="false" returnname="faktorips-buildqueue" subjectprefix="[CC ${project.name}]" reportsuccess="always" xsldir="${htmlemail.xsldir}" css="${htmlemail.css}">
+            <htmlemail buildresultsurl="${buildresultsurl}/${project.name}" mailhost="${htmlemail.mailhost}" username="" password="" returnaddress="${htmlemail.returnaddress}" skipusers="false" spamwhilebroken="true" returnname="faktorips-buildqueue" subjectprefix="[CC ${project.name}]" reportsuccess="always" xsldir="${htmlemail.xsldir}" css="${htmlemail.css}">
                 <map alias="ortmann" address="jan.ortmann@faktorzehn.de"/>
                 <map alias="erzberger" address="peter.erzberger@faktorzehn.de"/>
                 <map alias="hohenberger" address="daniel.hohenberger@faktorzehn.de"/>
@@ -259,13 +259,13 @@
             <cvs module="org.faktorips.runtime.java5" cvsroot="${cvsroot}"/>
         </modificationset>
         <schedule interval="60">
-            <ant usedebug="false" uselogger="true" buildfile="${mainbuildfile}" target="runtime.java5"/>
+            <ant uselogger="true" usedebug="false" buildfile="${mainbuildfile}" target="runtime.java5"/>
         </schedule>
         <log logdir="${logdir}/${project.name}/">
             <merge dir="${workdir}/org.faktorips.runtime.java5/build/logs"/>
         </log>
         <publishers>
-            <htmlemail buildresultsurl="${buildresultsurl}/${project.name}" mailhost="${htmlemail.mailhost}" username="" password="" returnaddress="${htmlemail.returnaddress}" skipusers="false" spamwhilebroken="false" returnname="faktorips-buildqueue" subjectprefix="[CC ${project.name}]" reportsuccess="always" xsldir="${htmlemail.xsldir}" css="${htmlemail.css}">
+            <htmlemail buildresultsurl="${buildresultsurl}/${project.name}" mailhost="${htmlemail.mailhost}" username="" password="" returnaddress="${htmlemail.returnaddress}" skipusers="false" spamwhilebroken="true" returnname="faktorips-buildqueue" subjectprefix="[CC ${project.name}]" reportsuccess="always" xsldir="${htmlemail.xsldir}" css="${htmlemail.css}">
                 <map alias="ortmann" address="jan.ortmann@faktorzehn.de"/>
                 <map alias="erzberger" address="peter.erzberger@faktorzehn.de"/>
                 <map alias="hohenberger" address="daniel.hohenberger@faktorzehn.de"/>
@@ -305,13 +305,13 @@
             <cvs module="org.faktorips.fl" cvsroot="${cvsroot}"/>
         </modificationset>
         <schedule interval="60">
-            <ant usedebug="false" uselogger="true" buildfile="${mainbuildfile}" target="fl"/>
+            <ant uselogger="true" usedebug="false" buildfile="${mainbuildfile}" target="fl"/>
         </schedule>
         <log logdir="${logdir}/${project.name}/">
             <merge dir="${workdir}/org.faktorips.fl/build/logs"/>
         </log>
         <publishers>
-            <htmlemail buildresultsurl="${buildresultsurl}/${project.name}" mailhost="${htmlemail.mailhost}" username="" password="" returnaddress="${htmlemail.returnaddress}" skipusers="false" spamwhilebroken="false" returnname="faktorips-buildqueue" subjectprefix="[CC ${project.name}]" reportsuccess="always" xsldir="${htmlemail.xsldir}" css="${htmlemail.css}">
+            <htmlemail buildresultsurl="${buildresultsurl}/${project.name}" mailhost="${htmlemail.mailhost}" username="" password="" returnaddress="${htmlemail.returnaddress}" skipusers="false" spamwhilebroken="true" returnname="faktorips-buildqueue" subjectprefix="[CC ${project.name}]" reportsuccess="always" xsldir="${htmlemail.xsldir}" css="${htmlemail.css}">
                 <map alias="ortmann" address="jan.ortmann@faktorzehn.de"/>
                 <map alias="erzberger" address="peter.erzberger@faktorzehn.de"/>
                 <map alias="hohenberger" address="daniel.hohenberger@faktorzehn.de"/>
@@ -351,13 +351,13 @@
             <cvs module="org.faktorips.devtools.core" cvsroot="${cvsroot}"/>
         </modificationset>
         <schedule interval="60">
-            <ant usedebug="false" uselogger="true" buildfile="${mainbuildfile}" target="devtools.core"/>
+            <ant uselogger="true" usedebug="false" buildfile="${mainbuildfile}" target="devtools.core"/>
         </schedule>
         <log logdir="${logdir}/${project.name}/">
             <merge dir="${workdir}/org.faktorips.devtools.core/build/logs"/>
         </log>
         <publishers>
-            <htmlemail buildresultsurl="${buildresultsurl}/${project.name}" mailhost="${htmlemail.mailhost}" username="" password="" returnaddress="${htmlemail.returnaddress}" skipusers="false" spamwhilebroken="false" returnname="faktorips-buildqueue" subjectprefix="[CC ${project.name}]" reportsuccess="always" xsldir="${htmlemail.xsldir}" css="${htmlemail.css}">
+            <htmlemail buildresultsurl="${buildresultsurl}/${project.name}" mailhost="${htmlemail.mailhost}" username="" password="" returnaddress="${htmlemail.returnaddress}" skipusers="false" spamwhilebroken="true" returnname="faktorips-buildqueue" subjectprefix="[CC ${project.name}]" reportsuccess="always" xsldir="${htmlemail.xsldir}" css="${htmlemail.css}">
                 <map alias="ortmann" address="jan.ortmann@faktorzehn.de"/>
                 <map alias="erzberger" address="peter.erzberger@faktorzehn.de"/>
                 <map alias="hohenberger" address="daniel.hohenberger@faktorzehn.de"/>
@@ -399,13 +399,13 @@
             <cvs module="org.faktorips.devtools.stdbuilder" cvsroot="${cvsroot}"/>
         </modificationset>
         <schedule interval="60">
-            <ant usedebug="false" uselogger="true" buildfile="${mainbuildfile}" target="devtools.stdbuilder"/>
+            <ant uselogger="true" usedebug="false" buildfile="${mainbuildfile}" target="devtools.stdbuilder"/>
         </schedule>
         <log logdir="${logdir}/${project.name}/">
             <merge dir="${workdir}/org.faktorips.devtools.stdbuilder/build/logs"/>
         </log>
         <publishers>
-            <htmlemail buildresultsurl="${buildresultsurl}/${project.name}" mailhost="${htmlemail.mailhost}" username="" password="" returnaddress="${htmlemail.returnaddress}" skipusers="false" spamwhilebroken="false" returnname="faktorips-buildqueue" subjectprefix="[CC ${project.name}]" reportsuccess="always" xsldir="${htmlemail.xsldir}" css="${htmlemail.css}">
+            <htmlemail buildresultsurl="${buildresultsurl}/${project.name}" mailhost="${htmlemail.mailhost}" username="" password="" returnaddress="${htmlemail.returnaddress}" skipusers="false" spamwhilebroken="true" returnname="faktorips-buildqueue" subjectprefix="[CC ${project.name}]" reportsuccess="always" xsldir="${htmlemail.xsldir}" css="${htmlemail.css}">
                 <map alias="ortmann" address="jan.ortmann@faktorzehn.de"/>
                 <map alias="erzberger" address="peter.erzberger@faktorzehn.de"/>
                 <map alias="hohenberger" address="daniel.hohenberger@faktorzehn.de"/>
@@ -445,13 +445,13 @@
             <cvs module="org.faktorips.devtools.core.ui" cvsroot="${cvsroot}"/>
         </modificationset>
         <schedule interval="60">
-            <ant usedebug="false" uselogger="true" buildfile="${mainbuildfile}" target="devtools.core.ui"/>
+            <ant uselogger="true" usedebug="false" buildfile="${mainbuildfile}" target="devtools.core.ui"/>
         </schedule>
         <log logdir="${logdir}/${project.name}/">
             <merge dir="${workdir}/org.faktorips.devtools.core.ui/build/logs"/>
         </log>
         <publishers>
-            <htmlemail buildresultsurl="${buildresultsurl}/${project.name}" mailhost="${htmlemail.mailhost}" username="" password="" returnaddress="${htmlemail.returnaddress}" skipusers="false" spamwhilebroken="false" returnname="faktorips-buildqueue" subjectprefix="[CC ${project.name}]" reportsuccess="always" xsldir="${htmlemail.xsldir}" css="${htmlemail.css}">
+            <htmlemail buildresultsurl="${buildresultsurl}/${project.name}" mailhost="${htmlemail.mailhost}" username="" password="" returnaddress="${htmlemail.returnaddress}" skipusers="false" spamwhilebroken="true" returnname="faktorips-buildqueue" subjectprefix="[CC ${project.name}]" reportsuccess="always" xsldir="${htmlemail.xsldir}" css="${htmlemail.css}">
                 <map alias="ortmann" address="jan.ortmann@faktorzehn.de"/>
                 <map alias="erzberger" address="peter.erzberger@faktorzehn.de"/>
                 <map alias="hohenberger" address="daniel.hohenberger@faktorzehn.de"/>
@@ -490,13 +490,13 @@
             <cvs module="org.faktorips.devtools.ant" cvsroot="${cvsroot}"/>
         </modificationset>
         <schedule interval="60">
-            <ant usedebug="false" uselogger="true" buildfile="${mainbuildfile}" target="devtools.ant"/>
+            <ant uselogger="true" usedebug="false" buildfile="${mainbuildfile}" target="devtools.ant"/>
         </schedule>
         <log logdir="${logdir}/${project.name}/">
             <merge dir="${workdir}/${project.name}/scripts/"/>
         </log>
         <publishers>
-            <htmlemail buildresultsurl="${buildresultsurl}/${project.name}" mailhost="${htmlemail.mailhost}" username="" password="" returnaddress="${htmlemail.returnaddress}" skipusers="false" spamwhilebroken="false" returnname="faktorips-buildqueue" subjectprefix="[CC ${project.name}]" reportsuccess="always" xsldir="${htmlemail.xsldir}" css="${htmlemail.css}">
+            <htmlemail buildresultsurl="${buildresultsurl}/${project.name}" mailhost="${htmlemail.mailhost}" username="" password="" returnaddress="${htmlemail.returnaddress}" skipusers="false" spamwhilebroken="true" returnname="faktorips-buildqueue" subjectprefix="[CC ${project.name}]" reportsuccess="always" xsldir="${htmlemail.xsldir}" css="${htmlemail.css}">
                 <map alias="ortmann" address="jan.ortmann@faktorzehn.de"/>
                 <map alias="erzberger" address="peter.erzberger@faktorzehn.de"/>
                 <map alias="hohenberger" address="daniel.hohenberger@faktorzehn.de"/>
@@ -535,13 +535,13 @@
             <cvs module="org.faktorips.uml" cvsroot="${cvsroot}"/>
         </modificationset>
         <schedule interval="60">
-            <ant usedebug="false" uselogger="true" buildfile="${mainbuildfile}" target="uml"/>
+            <ant uselogger="true" usedebug="false" buildfile="${mainbuildfile}" target="uml"/>
         </schedule>
         <log logdir="${logdir}/${project.name}/">
             <merge dir="${workdir}/${project.name}/scripts/"/>
         </log>
         <publishers>
-            <htmlemail buildresultsurl="${buildresultsurl}/${project.name}" mailhost="${htmlemail.mailhost}" username="" password="" returnaddress="${htmlemail.returnaddress}" skipusers="false" spamwhilebroken="false" returnname="faktorips-buildqueue" subjectprefix="[CC ${project.name}]" reportsuccess="always" xsldir="${htmlemail.xsldir}" css="${htmlemail.css}">
+            <htmlemail buildresultsurl="${buildresultsurl}/${project.name}" mailhost="${htmlemail.mailhost}" username="" password="" returnaddress="${htmlemail.returnaddress}" skipusers="false" spamwhilebroken="true" returnname="faktorips-buildqueue" subjectprefix="[CC ${project.name}]" reportsuccess="always" xsldir="${htmlemail.xsldir}" css="${htmlemail.css}">
                 <map alias="ortmann" address="jan.ortmann@faktorzehn.de"/>
                 <map alias="erzberger" address="peter.erzberger@faktorzehn.de"/>
                 <map alias="hohenberger" address="daniel.hohenberger@faktorzehn.de"/>
@@ -594,7 +594,7 @@
             <cvs module="org.faktorips.uml.test" cvsroot="${cvsroot}"/>
         </modificationset>
         <schedule interval="300">
-            <ant usedebug="false" uselogger="true" buildfile="${mainbuildfile}" target="pluginbuilder.faktorips">
+            <ant uselogger="true" usedebug="false" buildfile="${mainbuildfile}" target="pluginbuilder.faktorips">
                 <jvmarg arg="-Dprg=cruise.pluginbuilder"/>
                 <jvmarg arg="-Xms124m"/>
                 <jvmarg arg="-Xmx512m"/>
@@ -604,7 +604,7 @@
             <merge dir="${workdir}/../pluginbuilder_tmp/org.faktorips.pluginbuilder/results/testresults/xml" pattern="*test.xml"/>
         </log>
         <publishers>
-            <htmlemail buildresultsurl="${buildresultsurl}/${project.name}" mailhost="${htmlemail.mailhost}" username="" password="" returnaddress="${htmlemail.returnaddress}" skipusers="false" spamwhilebroken="false" returnname="faktorips-buildqueue" subjectprefix="[CC ${project.name}]" reportsuccess="always" xsldir="${htmlemail.xsldir}" css="${htmlemail.css}">
+            <htmlemail buildresultsurl="${buildresultsurl}/${project.name}" mailhost="${htmlemail.mailhost}" username="" password="" returnaddress="${htmlemail.returnaddress}" skipusers="false" spamwhilebroken="true" returnname="faktorips-buildqueue" subjectprefix="[CC ${project.name}]" reportsuccess="always" xsldir="${htmlemail.xsldir}" css="${htmlemail.css}">
                 <map alias="ortmann" address="jan.ortmann@faktorzehn.de"/>
                 <map alias="erzberger" address="peter.erzberger@faktorzehn.de"/>
                 <map alias="hohenberger" address="daniel.hohenberger@faktorzehn.de"/>
@@ -648,7 +648,7 @@
             <cvs module="org.faktorips.integrationtest" cvsroot="${cvsroot}"/>
         </modificationset>
         <schedule interval="300">
-            <ant usedebug="false" uselogger="true" buildfile="${mainbuildfile}" target="pluginbuilder.integrationtest">
+            <ant uselogger="true" usedebug="false" buildfile="${mainbuildfile}" target="pluginbuilder.integrationtest">
                 <jvmarg arg="-Dprg=cruise.integrationtest"/>
             </ant>
         </schedule>
@@ -656,7 +656,7 @@
             <merge dir="${workdir}/../pluginbuilder_tmp/org.faktorips.pluginbuilder/workspace_integrationtest/org.faktorips.integrationtest/results/xml" pattern="*Test.xml"/>
         </log>
         <publishers>
-            <htmlemail buildresultsurl="${buildresultsurl}/${project.name}" mailhost="${htmlemail.mailhost}" username="" password="" returnaddress="${htmlemail.returnaddress}" skipusers="false" spamwhilebroken="false" returnname="faktorips-buildqueue" subjectprefix="[CC ${project.name}]" reportsuccess="always" xsldir="${htmlemail.xsldir}" css="${htmlemail.css}">
+            <htmlemail buildresultsurl="${buildresultsurl}/${project.name}" mailhost="${htmlemail.mailhost}" username="" password="" returnaddress="${htmlemail.returnaddress}" skipusers="false" spamwhilebroken="true" returnname="faktorips-buildqueue" subjectprefix="[CC ${project.name}]" reportsuccess="always" xsldir="${htmlemail.xsldir}" css="${htmlemail.css}">
                 <map alias="ortmann" address="jan.ortmann@faktorzehn.de"/>
                 <map alias="erzberger" address="peter.erzberger@faktorzehn.de"/>
                 <map alias="hohenberger" address="daniel.hohenberger@faktorzehn.de"/>
@@ -700,7 +700,7 @@
             <cvs module="org.faktorips.integrationtest.java5" cvsroot="${cvsroot}"/>
         </modificationset>
         <schedule interval="300">
-            <ant usedebug="false" uselogger="true" buildfile="${mainbuildfile}" target="pluginbuilder.integrationtest.java5">
+            <ant uselogger="true" usedebug="false" buildfile="${mainbuildfile}" target="pluginbuilder.integrationtest.java5">
                 <jvmarg arg="-Dprg=cruise.integrationtest.java5"/>
             </ant>
         </schedule>
@@ -708,7 +708,7 @@
             <merge dir="${workdir}/../pluginbuilder_tmp/org.faktorips.pluginbuilder/workspace_integrationtest_java5/org.faktorips.integrationtest.java5/results/xml" pattern="*Test.xml"/>
         </log>
         <publishers>
-            <htmlemail buildresultsurl="${buildresultsurl}/${project.name}" mailhost="${htmlemail.mailhost}" username="" password="" returnaddress="${htmlemail.returnaddress}" skipusers="false" spamwhilebroken="false" returnname="faktorips-buildqueue" subjectprefix="[CC ${project.name}]" reportsuccess="always" xsldir="${htmlemail.xsldir}" css="${htmlemail.css}">
+            <htmlemail buildresultsurl="${buildresultsurl}/${project.name}" mailhost="${htmlemail.mailhost}" username="" password="" returnaddress="${htmlemail.returnaddress}" skipusers="false" spamwhilebroken="true" returnname="faktorips-buildqueue" subjectprefix="[CC ${project.name}]" reportsuccess="always" xsldir="${htmlemail.xsldir}" css="${htmlemail.css}">
                 <map alias="ortmann" address="jan.ortmann@faktorzehn.de"/>
                 <map alias="erzberger" address="peter.erzberger@faktorzehn.de"/>
                 <map alias="hohenberger" address="daniel.hohenberger@faktorzehn.de"/>
@@ -752,13 +752,13 @@
             <cvs module="de.qv.faktorips" cvsroot="${cvsroot}"/>
         </modificationset>
         <schedule interval="60">
-            <ant usedebug="false" uselogger="true" buildfile="${mainbuildfile}" target="de.qv.faktorips"/>
+            <ant uselogger="true" usedebug="false" buildfile="${mainbuildfile}" target="de.qv.faktorips"/>
         </schedule>
         <log logdir="${logdir}/${project.name}/">
             <merge dir="${workdir}/de.qv.faktorips/build/logs"/>
         </log>
         <publishers>
-            <htmlemail buildresultsurl="${buildresultsurl}/${project.name}" mailhost="${htmlemail.mailhost}" username="" password="" returnaddress="${htmlemail.returnaddress}" skipusers="false" spamwhilebroken="false" returnname="faktorips-buildqueue" subjectprefix="[CC ${project.name}]" reportsuccess="always" xsldir="${htmlemail.xsldir}" css="${htmlemail.css}">
+            <htmlemail buildresultsurl="${buildresultsurl}/${project.name}" mailhost="${htmlemail.mailhost}" username="" password="" returnaddress="${htmlemail.returnaddress}" skipusers="false" spamwhilebroken="true" returnname="faktorips-buildqueue" subjectprefix="[CC ${project.name}]" reportsuccess="always" xsldir="${htmlemail.xsldir}" css="${htmlemail.css}">
                 <map alias="ortmann" address="jan.ortmann@faktorzehn.de"/>
                 <map alias="erzberger" address="peter.erzberger@faktorzehn.de"/>
                 <map alias="hohenberger" address="daniel.hohenberger@faktorzehn.de"/>

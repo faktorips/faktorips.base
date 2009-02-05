@@ -215,6 +215,9 @@ TODO bbv und msgp
     <publishers>
         <!--=====================================================-->
         <!-- publisher for all projects, htmlemail used in all projects -->
+        <!--   attribute spamwhilebroken=true : e-mail reports -->
+        <!--     on failed builds will continue for subsequent failed builds. -->
+        <!--     see http://cruisecontrol.sourceforge.net/main/configxml.html#email -->
         <!--=====================================================-->
         <publisher id="htmlemail">
             <htmlemail 
@@ -224,7 +227,7 @@ TODO bbv und msgp
                 password=""
                 returnaddress="${htmlemail.returnaddress}"
                 skipusers="false" 
-                spamwhilebroken="false"
+                spamwhilebroken="true"
                 returnname="faktorips-buildqueue"
                 subjectprefix="[CC ${project.name}]"
                 reportsuccess="always"
