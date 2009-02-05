@@ -3,7 +3,7 @@
  * 
  * Alle Rechte vorbehalten.
  * 
- * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen, 
+ * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen,
  * etc.) duerfen nur unter den Bedingungen der Faktor-Zehn-Community Lizenzvereinbarung - Version
  * 0.1 (vor Gruendung Community) genutzt werden, die Bestandteil der Auslieferung ist und auch unter
  * http://www.faktorzehn.org/f10-org:lizenzen:community eingesehen werden kann.
@@ -26,14 +26,15 @@ import org.faktorips.devtools.core.ui.editors.type.TypeEditorStructurePage;
 public class StructurePage extends TypeEditorStructurePage {
 
     /**
-     * @param editor
-     * @param id
-     * @param tabPageName
+     * Creates a new <code>StructurePage</code>.
+     * 
+     * @param editor The editor to which the new page belongs to.
+     * @param twoSectionsWhenTrueOtherwiseFour
      */
     public StructurePage(ProductCmptTypeEditor editor, boolean twoSectionsWhenTrueOtherwiseFour) {
         super(editor, twoSectionsWhenTrueOtherwiseFour, Messages.StructurePage_structurePageTitle);
     }
-    
+
     private IProductCmptType getProductCmptType() {
         return (IProductCmptType)getIpsObject();
     }
@@ -42,7 +43,7 @@ public class StructurePage extends TypeEditorStructurePage {
      * {@inheritDoc}
      */
     protected void createGeneralPageInfoSection(Composite formBody, UIToolkit toolkit) {
-        new GeneralInfoSection(getProductCmptType(), formBody, toolkit); 
+        new GeneralInfoSection(getProductCmptType(), formBody, toolkit);
     }
 
     /**
@@ -64,6 +65,5 @@ public class StructurePage extends TypeEditorStructurePage {
         new AttributesSection(getProductCmptType(), members, toolkit);
         new AssociationsSection(getProductCmptType(), members, toolkit);
     }
-
 
 }

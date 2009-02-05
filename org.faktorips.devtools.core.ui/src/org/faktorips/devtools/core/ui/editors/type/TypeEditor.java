@@ -3,7 +3,7 @@
  * 
  * Alle Rechte vorbehalten.
  * 
- * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen, 
+ * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen,
  * etc.) duerfen nur unter den Bedingungen der Faktor-Zehn-Community Lizenzvereinbarung - Version
  * 0.1 (vor Gruendung Community) genutzt werden, die Bestandteil der Auslieferung ist und auch unter
  * http://www.faktorzehn.org/f10-org:lizenzen:community eingesehen werden kann.
@@ -21,7 +21,7 @@ import org.faktorips.devtools.core.ui.editors.DescriptionPage;
 import org.faktorips.devtools.core.ui.editors.IpsObjectEditor;
 
 /**
- * Provides common behaviour for the subclass type editors for policy and product component type.
+ * Provides common behaviour for all type editors.
  * 
  * @author Peter Erzberger
  */
@@ -32,22 +32,25 @@ public abstract class TypeEditor extends IpsObjectEditor {
      */
     protected final void addPagesForParsableSrcFile() throws PartInitException, CoreException {
         String sections = IpsPlugin.getDefault().getIpsPreferences().getSectionsInTypeEditors();
-        if(IpsPreferences.FOUR_SECTIONS_IN_TYPE_EDITOR_PAGE.equals(sections)){
+        if (IpsPreferences.FOUR_SECTIONS_IN_TYPE_EDITOR_PAGE.equals(sections)) {
             addAllInOneSinglePage();
         }
-        if(IpsPreferences.TWO_SECTIONS_IN_TYPE_EDITOR_PAGE.equals(sections)){
+        if (IpsPreferences.TWO_SECTIONS_IN_TYPE_EDITOR_PAGE.equals(sections)) {
             addSplittedInMorePages();
         }
         addPage(new DescriptionPage(this));
     }
-    
+
     /**
-     * This method is called when according to the preference settings all sections are to display on one page 
+     * This method is called when according to the preference settings all sections are to display
+     * on one page.
      */
     protected abstract void addAllInOneSinglePage() throws PartInitException;
 
     /**
-     * This method is called when according to the preference settings the sections are to display on two pages 
+     * This method is called when according to the preference settings the sections are to display
+     * on two pages.
      */
     protected abstract void addSplittedInMorePages() throws PartInitException;
+    
 }

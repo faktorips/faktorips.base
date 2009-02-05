@@ -42,6 +42,7 @@ public class BehaviourPage extends IpsObjectEditorPage {
     /**
      * {@inheritDoc}
      */
+    @Override
     protected void createPageContent(Composite formBody, UIToolkit toolkit) {
         formBody.setLayout(createPageLayout(2, true));
         new MethodsAndFormulaSection(getProductCmptType(), formBody, toolkit);

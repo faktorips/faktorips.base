@@ -430,7 +430,16 @@
             icon="icons/ProductCmptType.gif"
             id="productCmptTypeEditor"
             name="%productCmptTypeEditor">
-      	</editor>   
+      	</editor>
+       <editor
+             class="org.faktorips.devtools.core.ui.editors.enumtype.EnumTypeEditor"
+             contributorClass="org.faktorips.devtools.core.ui.editors.IpsObjectEditorActionContributor"
+             default="true"
+             extensions="ipsenumtype"
+             icon="icons/EnumType.gif"
+             id="enumTypeEditor"
+             name="%enumTypeEditor">
+       </editor>   
 		<editor
 			class="org.faktorips.devtools.core.ui.bf.BusinessFunctionEditor"
 			contributorClass="org.faktorips.devtools.core.ui.bf.actions.BfActionBarContributor"
