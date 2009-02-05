@@ -3,7 +3,7 @@
  * 
  * Alle Rechte vorbehalten.
  * 
- * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen, 
+ * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen,
  * etc.) duerfen nur unter den Bedingungen der Faktor-Zehn-Community Lizenzvereinbarung - Version
  * 0.1 (vor Gruendung Community) genutzt werden, die Bestandteil der Auslieferung ist und auch unter
  * http://www.faktorzehn.org/f10-org:lizenzen:community eingesehen werden kann.
@@ -36,121 +36,180 @@ import org.faktorips.util.memento.Memento;
 import org.faktorips.util.message.Message;
 import org.faktorips.util.message.MessageList;
 
-
 /**
- * Base class for dialogs that allows to edit an ips object part.
- * In contrast to the original IpsPartEditDialog this version uses the new databinding. 
+ * Base class for dialogs that allows to edit an ips object part. In contrast to the original
+ * <code>IpsPartEditDialog</code> this version uses the new databinding.
  * 
  * @since 2.0
- *  
+ * 
  * @see BindingContext
  * 
  * @author Jan Ortmann
  */
 public abstract class IpsPartEditDialog2 extends EditDialog implements ContentsChangeListener {
-    
-    protected BindingContext bindingContext = new BindingContext();;
+
+    protected BindingContext bindingContext = new BindingContext();
+
     private IIpsObjectPart part;
     private TextField descriptionField;
     private Memento oldState;
     private boolean dirty = false;
 
-    public IpsPartEditDialog2(
-            IIpsObjectPart part, 
-            Shell parentShell, 
-            String windowTitle) {
+    /**
+     * Creates a new <code>IpsPartEditDialog2</code>.
+     * 
+     * @param part The ips object part to edit.
+     * @param parentShell
+     * @param windowTitle The window title of the dialog.
+     */
+    public IpsPartEditDialog2(IIpsObjectPart part, Shell parentShell, String windowTitle) {
         this(part, parentShell, windowTitle, false);
     }
-    
-    public IpsPartEditDialog2(
-            IIpsObjectPart part, 
-            Shell parentShell, 
-            String windowTitle,
-            boolean useTabFolder) {
+
+    /**
+     * Creates a new <code>IpsPartEditDialog2</code>.
+     * 
+     * @param part The ips object part to edit.
+     * @param parentShell
+     * @param windowTitle The window title of the dialog.
+     * @param useTabFolder
+     */
+    public IpsPartEditDialog2(IIpsObjectPart part, Shell parentShell, String windowTitle, boolean useTabFolder) {
         super(parentShell, windowTitle, useTabFolder);
+
         this.part = part;
         oldState = part.getIpsObject().newMemento();
         dirty = part.getIpsObject().getIpsSrcFile().isDirty();
         IpsPlugin.getDefault().getIpsModel().addChangeListener(this);
     }
-    
-    // overwritten to be sure to get the cancel-button as soon as possible...
+
+    /**
+     * {@inheritDoc}
+     * 
+     * <p>
+     * Overwritten to be sure to get the cancel-button as soon as possible ...
+     * </p>
+     */
+    @Override
     protected void createButtonsForButtonBar(Composite parent) {
-    	super.createButtonsForButtonBar(parent);
+        super.createButtonsForButtonBar(parent);
         super.getButton(Window.CANCEL).addSelectionListener(new SelectionListener() {
-		
-			public void widgetDefaultSelected(SelectionEvent e) {
-				widgetSelected(e);
-			}
-		
-			public void widgetSelected(SelectionEvent e) {
-				handleAbortion();
-			}
-		});
+
+            public void widgetDefaultSelected(SelectionEvent e) {
+                widgetSelected(e);
+            }
+
+            public void widgetSelected(SelectionEvent e) {
+                handleAbortion();
+            }
+        });
     }
-    
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
     protected void handleShellCloseEvent() {
-		handleAbortion();
-    	super.handleShellCloseEvent();
+        handleAbortion();
+        super.handleShellCloseEvent();
     }
-    
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
     public boolean close() {
-        if (bindingContext!=null) {
+        if (bindingContext != null) {
             bindingContext.dispose();
         }
+
         IpsPlugin.getDefault().getIpsModel().removeChangeListener(this);
+
         return super.close();
     }
-    
+
     private void handleAbortion() {
-		part.getIpsObject().setState(oldState);
-		if (!dirty) {
-			part.getIpsObject().getIpsSrcFile().markAsClean();
-		}
+        part.getIpsObject().setState(oldState);
+        if (!dirty) {
+            part.getIpsObject().getIpsSrcFile().markAsClean();
+        }
     }
-    
-	protected Control createContents(Composite parent) {
-	    Control control = super.createContents(parent);
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    protected Control createContents(Composite parent) {
+        Control control = super.createContents(parent);
         bindingContext.updateUI();
         setTitle(buildTitle());
         updateMessageArea();
+
         return control;
-	}
-    
-	protected TabItem createDescriptionTabItem(TabFolder folder) {
-	    Composite c = createTabItemComposite(folder, 1, false);
-	    Text text = uiToolkit.createMultilineText(c);
+    }
+
+    /**
+     * Creates the description tab.
+     * 
+     * @param folder
+     * 
+     * @return
+     */
+    protected TabItem createDescriptionTabItem(TabFolder folder) {
+        Composite c = createTabItemComposite(folder, 1, false);
+        Text text = uiToolkit.createMultilineText(c);
         bindingContext.bindContent(text, getIpsPart(), IIpsObjectPart.PROPERTY_DESCRIPTION);
-	    TabItem item = new TabItem(folder, SWT.NONE);
-	    item.setText(Messages.IpsPartEditDialog_description);
-	    item.setControl(c);
-	    return item;
-	}
-    
+        TabItem item = new TabItem(folder, SWT.NONE);
+        item.setText(Messages.IpsPartEditDialog_description);
+        item.setControl(c);
+
+        return item;
+    }
+
     /**
      * Returns the part being edited.
+     * 
+     * @return The <code>IIpsObjectPart</code> that is being edited by this ips object part edit
+     *         dialog.
      */
     public IIpsObjectPart getIpsPart() {
         return part;
     }
-    
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
     protected void updateTitleInTitleArea() {
         setTitle(buildTitle());
     }
-    
+
+    /**
+     * Creates the title of this dialog. The title will include the name of the ips object the ips
+     * object part belongs to and the name of the ips object part itself.
+     * 
+     * @return A <code>String</code> following this format:<br />
+     *         <code>part.getIpsObject().getName() + '.' +
+     *         part.getName()</code>
+     */
     protected String buildTitle() {
         IIpsObjectPart part = getIpsPart();
         if (part.getParent() instanceof IIpsObjectGeneration) {
-            return part.getIpsObject().getName() + " "  //$NON-NLS-1$
-            	+ part.getParent().getName() + "." + part.getName(); //$NON-NLS-1$
+            return part.getIpsObject().getName() + ' ' + part.getParent().getName() + '.' + part.getName();
         }
-        return part.getIpsObject().getName() + "." + part.getName(); //$NON-NLS-1$
+        return part.getIpsObject().getName() + '.' + part.getName();
     }
-    
+
+    /**
+     * Enables / disables the description field.
+     * 
+     * @param enabled Enables the description field if <code>true</code>, disables it if
+     *            <code>false</code>.
+     */
     protected void setEnabledDescription(boolean enabled) {
-    	if (descriptionField != null) {
-    		descriptionField.getControl().setEnabled(enabled);
-    	}
+        if (descriptionField != null) {
+            descriptionField.getControl().setEnabled(enabled);
+        }
     }
 
     /**
@@ -164,39 +223,49 @@ public abstract class IpsPartEditDialog2 extends EditDialog implements ContentsC
         }
     }
 
-    protected void updateMessageArea(){
+    /**
+     * Updates the message area at the top of the dialog beneath the title with up-to-date
+     * validation information.
+     */
+    protected void updateMessageArea() {
         try {
+
             MessageList msgList = part.validate(part.getIpsProject());
             MessageList objMsgList = part.getIpsObject().validate(part.getIpsProject());
             msgList.add(objMsgList.getMessagesFor(part));
-            
+
             Message msg = null;
-            if(msgList.getNoOfMessages() > 0){
+            if (msgList.getNoOfMessages() > 0) {
                 msg = msgList.getFirstMessage(Message.ERROR);
-                if(msg != null){
+                if (msg != null) {
                     setMessage(msg.getText(), IMessageProvider.ERROR);
                     return;
                 }
+
                 msg = msgList.getFirstMessage(Message.WARNING);
-                if(msg != null){
+                if (msg != null) {
                     setMessage(msg.getText(), IMessageProvider.WARNING);
                     return;
                 }
+
                 msg = msgList.getFirstMessage(Message.INFO);
-                if(msg != null){
+                if (msg != null) {
                     setMessage(msg.getText(), IMessageProvider.INFORMATION);
                     return;
                 }
             }
+
             setMessage(null);
+
         } catch (CoreException e) {
             IpsPlugin.log(e);
         }
     }
-    
+
     /**
-     * Method for sub classes to hook into the changed notification.
+     * Method for sub classes to hook into the contents changed notification.
      */
-    protected void contentsChangedInternal(){
+    protected void contentsChangedInternal() {
+
     }
 }
