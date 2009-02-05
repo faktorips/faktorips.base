@@ -3,7 +3,7 @@
  * 
  * Alle Rechte vorbehalten.
  * 
- * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen, 
+ * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen,
  * etc.) duerfen nur unter den Bedingungen der Faktor-Zehn-Community Lizenzvereinbarung - Version
  * 0.1 (vor Gruendung Community) genutzt werden, die Bestandteil der Auslieferung ist und auch unter
  * http://www.faktorzehn.org/f10-org:lizenzen:community eingesehen werden kann.
@@ -21,7 +21,6 @@ import org.eclipse.core.resources.IStorage;
 import org.eclipse.core.resources.IWorkspaceRunnable;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
-import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.jface.dialogs.Dialog;
 import org.eclipse.jface.dialogs.MessageDialog;
@@ -60,101 +59,129 @@ import org.faktorips.devtools.core.ui.IpsUIPlugin;
 import org.faktorips.devtools.core.ui.views.IpsProblemsLabelDecorator;
 
 /**
+ * <p>
  * Base class for all editors to edit ips objects.
+ * </p>
  * 
- * <p>This editor uses an implementation of ISelectionProvider where ISelectionProviders
- * used on the different pages of this editor can be registered. The ISelectionProvider of this
- * editor is registered at the selection service of the workbench so that only this selection
- * provider is the active one within the workbench when this editor is active. Implementations of
- * ISelectionProvider that are used on the pages of this editor have to be registered at the
- * SelectionProviderDispatcher the ISelectionProvider of this editor. The dispatcher finds the
- * currently active of all registered selection providers and forwards requests to it. There are two
- * ways of registering with the SelectionProviderDispatcher.
+ * <p>
+ * This editor uses an implementation of <code>ISelectionProvider</code> where
+ * <code>ISelectionProvider</code> objects used on the different pages of this editor can be
+ * registered.
+ * </p>
+ * 
+ * <p>
+ * The <code>ISelectionProvider</code> of this editor is registered at the selection service of the
+ * workbench so that only this selection provider is the active one within the workbench when this
+ * editor is active.
+ * </p>
+ * 
+ * <p>
+ * Implementations of <code>ISelectionProvider</code> that are used on the pages of this editor have
+ * to be registered at the <code>SelectionProviderDispatcher</code> of the
+ * <code>ISelectionProvider</code> of this editor. The dispatcher finds the currently active of all
+ * registered selection providers and forwards requests to it.
+ * </p>
+ * 
+ * <p>
+ * There are two ways of registering with the <code>SelectionProviderDispatcher</code>:
+ * </p>
+ * 
  * <ol>
- * <li>The <code>Composite</code> where the control of the ISelectionProvider implementation e.g. a
- * TreeViewer is added to has to implement the {@link ISelectionProviderActivation} interface. The
- * editor will track all the implementations of this interface at initialization time and register
- * them with the dispatcher. 
- * </li> 
- * <li>The dispatcher can be retrieved by the
- * getSelectionProviderDispatcher() method of this editor and an
- * {@link ISelectionProviderActivation} can be registered manually.
- * </li>
+ * <li>The <code>Composite</code> where the control of the <code>ISelectionProvider</code>
+ * implementation e.g. a <code>TreeViewer</code> is added to has to implement the
+ * {@link ISelectionProviderActivation} interface. The editor will track all the implementations of
+ * this interface at initialization time and register them with the dispatcher.</li>
+ * <li>The dispatcher can be retrieved by the <code>getSelectionProviderDispatcher()</code> method
+ * of this editor and an {@link ISelectionProviderActivation} can be registered manually.</li>
  * </ol>
+ * 
+ * @see org.eclipse.jface.viewers.ISelectionProvider
  */
-public abstract class IpsObjectEditor extends FormEditor 
-    implements ContentsChangeListener, IModificationStatusChangeListener,
-        IResourceChangeListener, IPropertyChangeListener {
+public abstract class IpsObjectEditor extends FormEditor implements ContentsChangeListener,
+        IModificationStatusChangeListener, IResourceChangeListener, IPropertyChangeListener {
 
     public final static boolean TRACE = IpsPlugin.TRACE_UI;
 
     /*
-     * Setting key for user's decision not to fix the differences between the
-     * product definition structure and the model structure
+     * Setting key for user's decision not to fix the differences between the product definition
+     * structure and the model structure
      */
     private final static String SETTING_DONT_FIX_DIFFERENCES = "dontFixDifferences"; //$NON-NLS-1$
 
-    // the file that's being edited (if any)
+    // The file that's being edited (if any)
     private IIpsSrcFile ipsSrcFile;
 
-    // dirty flag
+    // Dirty flag
     private boolean dirty = false;
 
     private Boolean contentChangeable = null;
-    
-    // the editor's ISelectionProvider 
+
+    // The editor's ISelectionProvider
     private SelectionProviderDispatcher selectionProviderDispatcher;
 
     /*
-     * Storage for the user's decision not to load the changes made directly in the
-     * file system.
+     * Storage for the user's decision not to load the changes made directly in the file system.
      */
     private boolean dontLoadChanges = false;
-    
+
     private boolean isCheckingForChangesMadeOutsideEclipse = false;
-    
+
     /*
-     * True if the editor contains the pages that are shown for a parsable ips source file,
-     * false if an error page is shown.
+     * True if the editor contains the pages that are shown for a parsable ips source file, false if
+     * an error page is shown.
      */
     private boolean pagesForParsableSrcFileShown;
-    
+
     private boolean updatingPageStructure = false;
-    
+
     private ActivationListener activationListener;
 
     /* Updates the title image if there are ips marker changes on the editor's input */
     private IpsObjectEditorErrorMarkerUpdater errorTickupdater;
-    
+
+    /**
+     * Creates a new <code>IpsObjectEditor</code>.
+     */
     public IpsObjectEditor() {
         super();
         errorTickupdater = new IpsObjectEditorErrorMarkerUpdater(this);
     }
 
     /**
-     * Returns the file being edited.
+     * Returns the ips src file being edited.
+     * 
+     * @return Returns the ips src file to be edited by this editor.
      */
     public IIpsSrcFile getIpsSrcFile() {
         return ipsSrcFile;
     }
-    
+
     /**
-     * Shortcut for getIpsSrcFile().getIpsProject().
+     * <p>
+     * Returns the ips project of the ips src file to be edited.
+     * </p>
+     * <p>
+     * This is a shortcut for <code>getIpsSrcFile().getIpsProject()</code>.
+     * </p>
+     * 
+     * @return The ips project that contains the ips src file to be edited by this editor.
      */
     public IIpsProject getIpsProject() {
         return ipsSrcFile.getIpsProject();
     }
 
     /**
-     * Returns the ips object of the ips src file currently edited, returns <code>null</code> if
-     * the ips object not exists (e.g. if the ips src file is outside an ips package.
+     * Returns the ips object that is contained in the ips src file currently edited, returns
+     * <code>null</code> if the ips object does not exist (e.g. if the ips src file is outside an
+     * ips package).
+     * 
+     * @return The ips object contained in the ips src file to be edited by this editor.
      */
     public IIpsObject getIpsObject() {
         try {
             if (getIpsSrcFile().exists()) {
                 return getIpsSrcFile().getIpsObject();
-            }
-            else {
+            } else {
                 return null;
             }
         } catch (Exception e) {
@@ -165,38 +192,51 @@ public abstract class IpsObjectEditor extends FormEditor
 
     /**
      * Returns the title that is shown on every page.
+     * 
+     * @return A <code>String</code> representing the title for every page of this editor.
      */
     protected abstract String getUniformPageTitle();
 
     /**
      * {@inheritDoc}
      */
+    @Override
     public void init(IEditorSite site, IEditorInput input) throws PartInitException {
         if (TRACE) {
             logMethodStarted("init"); //$NON-NLS-1$
         }
+
         super.init(site, input);
+
         IIpsModel model = IpsPlugin.getDefault().getIpsModel();
 
+        String title = "";
         if (input instanceof IFileEditorInput) {
             IFile file = ((IFileEditorInput)input).getFile();
             ipsSrcFile = (IIpsSrcFile)model.getIpsElement(file);
-            if(ipsSrcFile == null){
+            if (ipsSrcFile == null) {
                 return;
             }
-            //for what ever reason they made setTitle deprecated. This method does something different than the offered alternatives
-            setTitle(ipsSrcFile.getName());
+
+            title = ipsSrcFile.getName();
         } else if (input instanceof IpsArchiveEditorInput) {
             ipsSrcFile = ((IpsArchiveEditorInput)input).getIpsSrcFile();
-            setTitle(ipsSrcFile.getName());
+            title = ipsSrcFile.getName();
         } else if (input instanceof IStorageEditorInput) {
             initFromStorageEditorInput((IStorageEditorInput)input);
-            setTitle(((IStorageEditorInput)input).getName());
+            title = ((IStorageEditorInput)input).getName();
         }
+
+        // for what ever reason they made setTitle deprecated. This method does something
+        // different than the offered alternatives
+        // TODO: what does it do different?
+        // setPartName(title);
+        // setContentDescription(title);
+        setTitle(title);
 
         if (ipsSrcFile == null) {
             throw new PartInitException("Unsupported editor input type " + input.getClass().getName()); //$NON-NLS-1$
-        } 
+        }
 
         if (ipsSrcFile.isMutable() && !ipsSrcFile.getEnclosingResource().isSynchronized(0)) {
             try {
@@ -205,7 +245,7 @@ public abstract class IpsObjectEditor extends FormEditor
                 throw new PartInitException("Error refreshing resource " + ipsSrcFile.getEnclosingResource()); //$NON-NLS-1$
             }
         }
-        
+
         // check if the ips src file is valid and could be edited in the editor,
         // if the ips src file doesn't exists (e.g. ips src file outside ips package)
         // close the editor and open the current file in the default text editor
@@ -222,8 +262,9 @@ public abstract class IpsObjectEditor extends FormEditor
             selectionProviderDispatcher = new SelectionProviderDispatcher();
             site.setSelectionProvider(selectionProviderDispatcher);
         }
-        
+
         setDataChangeable(computeDataChangeableState());
+
         if (TRACE) {
             logMethodFinished("init"); //$NON-NLS-1$
         }
@@ -246,31 +287,40 @@ public abstract class IpsObjectEditor extends FormEditor
             throw new PartInitException(e.getMessage());
         }
     }
-    
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
     protected void createPages() {
         super.createPages();
+
         ResourcesPlugin.getWorkspace().addResourceChangeListener(IpsObjectEditor.this);
         IpsPlugin.getDefault().getIpsModel().addChangeListener(IpsObjectEditor.this);
         IpsPlugin.getDefault().getIpsModel().addModifcationStatusChangeListener(IpsObjectEditor.this);
         IpsPlugin.getDefault().getIpsPreferences().addChangeListener(IpsObjectEditor.this);
     }
-    
+
     /**
      * {@inheritDoc}
      */
     final protected void addPages() {
         if (TRACE) {
             logMethodStarted("addPages"); //$NON-NLS-1$
-        }        
+        }
+
         pagesForParsableSrcFileShown = false;
+
         try {
-            if(getIpsSrcFile() == null){
+
+            if (getIpsSrcFile() == null) {
                 if (TRACE) {
                     log("addPages(): Page for unreachable file created."); //$NON-NLS-1$
                 }
                 addPage(new UnreachableFilePage(this));
                 return;
             }
+
             if (!getIpsSrcFile().isContentParsable()) {
                 if (TRACE) {
                     log("addPages(): Page for unparsable files created."); //$NON-NLS-1$
@@ -278,6 +328,7 @@ public abstract class IpsObjectEditor extends FormEditor
                 addPage(new UnparsableFilePage(this));
                 return;
             }
+
             if (!ipsSrcFile.exists()) {
                 if (TRACE) {
                     log("addPages(): Page for missing files created."); //$NON-NLS-1$
@@ -285,83 +336,99 @@ public abstract class IpsObjectEditor extends FormEditor
                 addPage(new MissingResourcePage(this));
                 return;
             }
+
             if (TRACE) {
                 logMethodStarted("addPagesForParsableSrcFile()"); //$NON-NLS-1$
             }
             addPagesForParsableSrcFile();
+
             if (TRACE) {
                 logMethodFinished("addPagesForParsableSrcFile()"); //$NON-NLS-1$
             }
+
             pagesForParsableSrcFileShown = true;
             if (TRACE) {
                 logMethodFinished("addPages"); //$NON-NLS-1$
-            }        
+            }
+
         } catch (Exception e) {
             IpsPlugin.log(e);
         }
     }
-    
+
     protected abstract void addPagesForParsableSrcFile() throws PartInitException, CoreException;
-    
+
     protected void updatePageStructure() {
         if (TRACE) {
             logMethodStarted("updatePageStructure"); //$NON-NLS-1$
-        }        
+        }
+
         try {
-            if (getIpsSrcFile().isContentParsable()==pagesForParsableSrcFileShown) {
+            if (getIpsSrcFile().isContentParsable() == pagesForParsableSrcFileShown) {
                 return;
             }
+
             updatingPageStructure = true;
             ipsSrcFile.getIpsObject();
             // remove all pages
-            for (int i=getPageCount(); i>0; i--) {
+            for (int i = getPageCount(); i > 0; i--) {
                 removePage(0);
             }
+
             if (TRACE) {
                 System.out.println("updatePageStructure(): Existing pages removed. Must recreate."); //$NON-NLS-1$
             }
             addPages();
             updatingPageStructure = false;
+
             super.setActivePage(0); // also triggers the refresh
+
             if (TRACE) {
                 logMethodFinished("updatePageStructure"); //$NON-NLS-1$
-            }        
+            }
+
         } catch (CoreException e) {
             updatingPageStructure = false;
             IpsPlugin.log(e);
             return;
-        } 
+        }
     }
 
     /**
      * {@inheritDoc}
      */
+    @Override
     protected void setActivePage(int pageIndex) {
         super.setActivePage(pageIndex);
         refresh();
     }
 
     /**
-     * Returns the active IpsObjectEditorPage. If the active page is not an instance of IpsObjectEditorPage 
-     * <code>null</code> will be returned.
+     * Returns the active <code>IpsObjectEditorPage</code>. If the active page is not an instance of
+     * <code>IpsObjectEditorPage</code> <code>null</code> will be returned.
      */
-    public IpsObjectEditorPage getActiveIpsObjectEditorPage(){
+    public IpsObjectEditorPage getActiveIpsObjectEditorPage() {
         IFormPage page = getActivePageInstance();
-        if(page instanceof IpsObjectEditorPage){
+        if (page instanceof IpsObjectEditorPage) {
             return (IpsObjectEditorPage)getActivePageInstance();
         }
+
         return null;
     }
 
     /**
      * {@inheritDoc}
      */
+    @Override
     protected void pageChange(int newPageIndex) {
         if (TRACE) {
             logMethodStarted("pageChange(): newPage=" + newPageIndex); //$NON-NLS-1$
         }
-        super.pageChange(newPageIndex); // must be called even if the file isn't parsable, 
-        // (otherwise the unparsable file page wouldn't be shown)
+
+        // must be called even if the file isn't parsable,
+        // otherwise the unparsable file page wouldn't be shown
+        super.pageChange(newPageIndex);
+
         refresh();
         if (TRACE) {
             logMethodFinished("pageChange(): newPage=" + newPageIndex); //$NON-NLS-1$
@@ -369,7 +436,7 @@ public abstract class IpsObjectEditor extends FormEditor
     }
 
     /**
-     * Refreshes the controls on the active page with the data from the model.<br>
+     * Refreshes the controls on the active page with the data from the model.<br />
      * Calls to this refresh method are ignored if the activate attribute is set to
      * <code>false</code>.
      */
@@ -377,36 +444,49 @@ public abstract class IpsObjectEditor extends FormEditor
         if (updatingPageStructure) {
             return;
         }
-        //ipsSrcFile can be null if the editor is opend on a ips source file that is not in a ips package
+
+        /*
+         * ipsSrcFile can be null if the editor is opened on an ips source file that is not in an
+         * ips package
+         */
+
         if (ipsSrcFile == null || !ipsSrcFile.exists()) {
             return;
         }
+
         try {
             if (!ipsSrcFile.isContentParsable()) {
                 return;
             }
-            // here we have to request the ips object once, to make sure that 
-            // it's state is is synchronized with the enclosing resource.
-            // otherwise if some part of the ui keeps a reference to the ips object, it won't contain
-            // the correct state.
-            ipsSrcFile.getIpsObject(); 
+            /*
+             * here we have to request the ips object once, to make sure that it's state is
+             * synchronized with the enclosing resource.
+             * 
+             * otherwise if some part of the ui keeps a reference to the ips object, it won't
+             * contain the correct state.
+             */
+            ipsSrcFile.getIpsObject();
         } catch (CoreException e) {
             IpsPlugin.log(e);
         }
+
         if (TRACE) {
             logMethodStarted("refresh"); //$NON-NLS-1$
-        }        
+        }
+
         IEditorPart editor = getActivePageInstance();
         if (editor instanceof IpsObjectEditorPage) {
             IpsObjectEditorPage page = (IpsObjectEditorPage)editor;
             page.refresh();
         }
+
         updateDataChangeableState();
+
         if (TRACE) {
             logMethodFinished("refresh"); //$NON-NLS-1$
-        }        
+        }
     }
-    
+
     /**
      * Evaluates the new data changeable state and updates it, if it has changed.
      */
@@ -414,51 +494,65 @@ public abstract class IpsObjectEditor extends FormEditor
         if (TRACE) {
             logMethodStarted("updateDataChangeable"); //$NON-NLS-1$
         }
+
         boolean newState = computeDataChangeableState();
+
         if (TRACE) {
             log("Next data changeable state=" + newState + ", oldState=" + isDataChangeable()); //$NON-NLS-1$ //$NON-NLS-2$
-        }        
+        }
+
         setDataChangeable(newState);
         IEditorPart editor = getActivePageInstance();
         if (editor instanceof IpsObjectEditorPage) {
             IpsObjectEditorPage page = (IpsObjectEditorPage)editor;
             page.updateDataChangeableState();
         }
+
         if (TRACE) {
             logMethodFinished("updateDataChangeable"); //$NON-NLS-1$
-        }        
+        }
     }
-    
+
     /**
-     * Evaluates if if the data shown in this editor is changeable by the user. 
-     * The data is changeable if the the ips source file shown
-     * in the editor is mutable and the working mode preference is set to edit mode.
-     * 
+     * <p>
+     * Evaluates whether the data shown in this editor is changeable by the user.
+     * </p>
+     * <p>
+     * The data is changeable if the ips source file shown in the editor is mutable and the working
+     * mode preference is set to edit mode.
+     * </p>
+     * <p>
      * Subclasses may override this method.
+     * </p>
      */
     protected boolean computeDataChangeableState() {
         return ipsSrcFile.isMutable() && IpsPlugin.getDefault().getIpsPreferences().isWorkingModeEdit();
     }
-    
+
     /**
-     * Returns <code>true</code> if the data shown in this editor is changeable by the user, 
-     * otherwise <code>false</code>. 
+     * Returns <code>true</code> if the data shown in this editor is changeable by the user,
+     * otherwise <code>false</code>.
      */
     public final Boolean isDataChangeable() {
         return contentChangeable;
     }
-    
+
     /**
-     * Sets the content changeable state. This method is final. If you want to change an editor's
-     * data changeable behaviour override {@link #computeDataChangeableState()}.
+     * <p>
+     * Sets the content changeable state.
+     * </p>
+     * <p>
+     * This method is final. If you want to change an editor's data changeable behaviour override
+     * {@link #computeDataChangeableState()}.
+     * </p>
      */
     final protected void setDataChangeable(boolean changeable) {
         this.contentChangeable = Boolean.valueOf(changeable);
-        if (getIpsSrcFile()!=null) {
+        if (getIpsSrcFile() != null) {
             this.setTitleImage(errorTickupdater.getDecoratedImage());
         }
     }
-    
+
     /**
      * {@inheritDoc}
      */
@@ -466,25 +560,28 @@ public abstract class IpsObjectEditor extends FormEditor
         if (!event.getIpsSrcFile().equals(ipsSrcFile)) {
             return;
         }
+
         Display display = IpsPlugin.getDefault().getWorkbench().getDisplay();
         display.syncExec(new Runnable() {
 
             public void run() {
                 if (TRACE) {
                     logMethodStarted("contentsChanged(): Received content changed event for the file being edited." + event.getEventType()); //$NON-NLS-1$
-                }        
-                if (event.getEventType()==ContentChangeEvent.TYPE_WHOLE_CONTENT_CHANGED) {
+                }
+
+                if (event.getEventType() == ContentChangeEvent.TYPE_WHOLE_CONTENT_CHANGED) {
                     updatePageStructure();
                 } else {
                     refresh();
                 }
+
                 if (TRACE) {
                     logMethodFinished("contentChanged()"); //$NON-NLS-1$
                 }
             }
         });
     }
-    
+
     /**
      * {@inheritDoc}
      */
@@ -492,6 +589,7 @@ public abstract class IpsObjectEditor extends FormEditor
         if (!ipsSrcFile.equals(event.getIpsSrcFile())) {
             return;
         }
+
         setDirty(ipsSrcFile.isDirty());
     }
 
@@ -499,6 +597,7 @@ public abstract class IpsObjectEditor extends FormEditor
         if (dirty == newValue) {
             return;
         }
+
         dirty = newValue;
         firePropertyChange(IEditorPart.PROP_DIRTY);
     }
@@ -506,6 +605,7 @@ public abstract class IpsObjectEditor extends FormEditor
     /**
      * {@inheritDoc}
      */
+    @Override
     public boolean isDirty() {
         return dirty;
     }
@@ -519,6 +619,7 @@ public abstract class IpsObjectEditor extends FormEditor
         } catch (Exception e) {
             IpsPlugin.logAndShowErrorDialog(e);
         }
+
         setDirty(ipsSrcFile.isDirty());
     }
 
@@ -526,6 +627,7 @@ public abstract class IpsObjectEditor extends FormEditor
      * {@inheritDoc}
      */
     public void doSaveAs() {
+
     }
 
     /**
@@ -536,9 +638,11 @@ public abstract class IpsObjectEditor extends FormEditor
     }
 
     /**
-     * We have to close the editor if the underlying resource is removed. 
-     * 
      * {@inheritDoc}
+     * 
+     * <p>
+     * We have to close the editor if the underlying resource is removed.
+     * </p>
      */
     public void resourceChanged(IResourceChangeEvent event) {
         IResource enclResource = ipsSrcFile.getEnclosingResource();
@@ -546,40 +650,45 @@ public abstract class IpsObjectEditor extends FormEditor
                 || event.getDelta().findMember(enclResource.getFullPath()) == null) {
             return;
         }
+
         if (TRACE) {
             logMethodStarted("resourceChanged(): Received resource changed event for the file being edited."); //$NON-NLS-1$
         }
+
         if (!ipsSrcFile.exists()) {
             this.close(false);
         }
+
         if (TRACE) {
             logMethodFinished("resourceChanged()"); //$NON-NLS-1$
         }
     }
 
     /**
-     * Returns <code>true</code> if the <code>IIpsSrcFile</code> this editor is based on exists
+     * Returns <code>true</code> if the <code>IIpsSrcFile</code> this editor is based upon exists
      * and is in sync.
      */
     protected boolean isSrcFileUsable() {
         return ipsSrcFile != null && ipsSrcFile.exists()
                 && ipsSrcFile.getEnclosingResource().isSynchronized(IResource.DEPTH_ONE);
     }
-    
+
     /**
-     * Returns <code>true</code> if this is the active editor, otherwise <code>false</code>. 
+     * Returns <code>true</code> if this is the active editor, otherwise <code>false</code>.
      */
     protected boolean isActive() {
-        return this==getSite().getPage().getActiveEditor();
+        return this == getSite().getPage().getActiveEditor();
     }
 
     protected void handleEditorActivation() {
         if (TRACE) {
             logMethodStarted("handleEditorActivation()"); //$NON-NLS-1$
         }
+
         checkForChangesMadeOutsideEclipse();
         editorActivated();
         refresh();
+
         if (TRACE) {
             logMethodFinished("handleEditorActivation()"); //$NON-NLS-1$
         }
@@ -589,17 +698,22 @@ public abstract class IpsObjectEditor extends FormEditor
         if (dontLoadChanges || isCheckingForChangesMadeOutsideEclipse) {
             return;
         }
+
         try {
+
             isCheckingForChangesMadeOutsideEclipse = true;
             if (TRACE) {
                 logMethodStarted("checkForChangesMadeOutsideEclipse()"); //$NON-NLS-1$
             }
+
             if (getIpsSrcFile().isMutable() && !getIpsSrcFile().getEnclosingResource().isSynchronized(0)) {
-                MessageDialog dlg = new MessageDialog(Display.getCurrent().getActiveShell(), Messages.IpsObjectEditor_fileHasChangesOnDiskTitle, (Image)null, 
-                        Messages.IpsObjectEditor_fileHasChangesOnDiskMessage, MessageDialog.QUESTION,
-                        new String[]{Messages.IpsObjectEditor_fileHasChangesOnDiskYesButton, Messages.IpsObjectEditor_fileHasChangesOnDiskNoButton}, 0);
+                MessageDialog dlg = new MessageDialog(Display.getCurrent().getActiveShell(),
+                        Messages.IpsObjectEditor_fileHasChangesOnDiskTitle, (Image)null,
+                        Messages.IpsObjectEditor_fileHasChangesOnDiskMessage, MessageDialog.QUESTION, new String[] {
+                                Messages.IpsObjectEditor_fileHasChangesOnDiskYesButton,
+                                Messages.IpsObjectEditor_fileHasChangesOnDiskNoButton }, 0);
                 dlg.open();
-                if (dlg.getReturnCode()==0) {
+                if (dlg.getReturnCode() == 0) {
                     try {
                         if (TRACE) {
                             log("checkForChangesMadeOutsideEclipse(): Change found, sync file with filesystem (refreshLocal)"); //$NON-NLS-1$
@@ -612,11 +726,13 @@ public abstract class IpsObjectEditor extends FormEditor
                 } else {
                     dontLoadChanges = true;
                 }
-                
+
             }
+
             if (TRACE) {
                 logMethodFinished("checkForChangesMadeOutsideEclipse()"); //$NON-NLS-1$
             }
+
         } finally {
             isCheckingForChangesMadeOutsideEclipse = false;
         }
@@ -629,12 +745,14 @@ public abstract class IpsObjectEditor extends FormEditor
         if (TRACE) {
             logMethodStarted("editorActivated()"); //$NON-NLS-1$
         }
+
         checkForInconsistenciesToModel();
+
         if (TRACE) {
             logMethodFinished("editorActivated()"); //$NON-NLS-1$
         }
     }
-    
+
     /**
      * Does what the methodname says :-)
      */
@@ -642,46 +760,55 @@ public abstract class IpsObjectEditor extends FormEditor
         if (TRACE) {
             logMethodStarted("checkForInconsistenciesToModel"); //$NON-NLS-1$
         }
-        if (isDataChangeable()==null || !isDataChangeable().booleanValue()) {
+
+        if (isDataChangeable() == null || !isDataChangeable().booleanValue()) {
             if (TRACE) {
                 logMethodFinished("checkForInconsistenciesToModel - no need to check, content is read-only."); //$NON-NLS-1$
             }
             return;
         }
-        if (!getIpsSrcFile().exists()){
+
+        if (!getIpsSrcFile().exists()) {
             if (TRACE) {
                 logMethodFinished("checkForInconsistenciesToModel - no need to check, file does not exists."); //$NON-NLS-1$
             }
             return;
         }
+
         if (getSettings().getBoolean(getIpsSrcFile(), SETTING_DONT_FIX_DIFFERENCES)) {
             if (TRACE) {
                 logMethodFinished("checkForInconsistenciesToModel - no need to check, user decided no to fix."); //$NON-NLS-1$
             }
             return;
-        }           
+        }
+
         if (getContainer() == null) {
             // do nothing, we will be called again later. This avoids that the user
             // is shown the differences-dialog twice if openening the editor...
             return;
         }
+
         if (!(getIpsObject() instanceof IFixDifferencesToModelSupport)) {
             return;
         }
+
         final IFixDifferencesToModelSupport toFixIpsObject = (IFixDifferencesToModelSupport)getIpsObject();
+
         try {
-            if (!toFixIpsObject.containsDifferenceToModel(getIpsProject())){
+
+            if (!toFixIpsObject.containsDifferenceToModel(getIpsProject())) {
                 if (TRACE) {
                     logMethodFinished("checkForInconsistenciesToModel - no differences found."); //$NON-NLS-1$
                 }
                 return;
             }
+
             Dialog dialog = createDialogToFixDifferencesToModel();
             if (dialog.open() == Dialog.OK) {
                 if (TRACE) {
                     log("checkForInconsistenciesToModel - differences found, start fixing differenced."); //$NON-NLS-1$
                 }
-                IWorkspaceRunnable fix = new IWorkspaceRunnable(){
+                IWorkspaceRunnable fix = new IWorkspaceRunnable() {
                     public void run(IProgressMonitor monitor) throws CoreException {
                         toFixIpsObject.fixAllDifferencesToModel(getIpsProject());
                     }
@@ -691,60 +818,70 @@ public abstract class IpsObjectEditor extends FormEditor
             } else {
                 getSettings().put(getIpsSrcFile(), SETTING_DONT_FIX_DIFFERENCES, true);
             }
+
             if (TRACE) {
                 logMethodFinished("checkForInconsistenciesToModel"); //$NON-NLS-1$
             }
+
         } catch (CoreException e) {
             IpsPlugin.logAndShowErrorDialog(e);
             return;
         }
-    }    
-    
+    }
+
     /**
      * Creates a dialog to disblay the differences to the model and ask the user if the
      * inconsistencies should be fixed. Specific logic has to be implemented in subclasses.
      * 
-     * @throws CoreException Throws in case of an error
+     * @throws CoreException May be thrown if any error occurs.
      */
-    protected Dialog createDialogToFixDifferencesToModel() throws CoreException{
+    protected Dialog createDialogToFixDifferencesToModel() throws CoreException {
         throw new UnsupportedOperationException();
     }
-    
+
     /**
      * Refreshes the UI and can handle structural changes which means not only the content of the
      * controls is updated but also new controls are created or existing ones are disposed if
      * neccessary.
      */
-    protected void refreshInclStructuralChanges(){
+    protected void refreshInclStructuralChanges() {
         if (updatingPageStructure) {
             return;
         }
+
         refresh();
     }
-    
+
     /**
-     * Returns the SelectionProviderDispatcher which is the ISelectionProvider for this IEditorPart.
+     * Returns the <code>SelectionProviderDispatcher</code> which is the
+     * <code>ISelectionProvider</code> for this <code>IEditorPart</code>.
      */
     public SelectionProviderDispatcher getSelectionProviderDispatcher() {
         return selectionProviderDispatcher;
     }
-    
+
     /**
      * {@inheritDoc}
      */
+    @Override
     public final void dispose() {
         super.dispose();
-        if (selectionProviderDispatcher!=null) {
+
+        if (selectionProviderDispatcher != null) {
             selectionProviderDispatcher.dispose();
         }
-        if (activationListener!=null) {
+
+        if (activationListener != null) {
             activationListener.dispose();
         }
+
         ResourcesPlugin.getWorkspace().removeResourceChangeListener(this);
-        if (errorTickupdater!=null) {
+        if (errorTickupdater != null) {
             errorTickupdater.dispose();
         }
+
         disposeInternal();
+
         if (TRACE) {
             log("disposed."); //$NON-NLS-1$
         }
@@ -754,6 +891,7 @@ public abstract class IpsObjectEditor extends FormEditor
      * Empty. Can be overridden by subclasses for dispose purposes.
      */
     protected void disposeInternal() {
+
     }
 
     /**
@@ -763,65 +901,71 @@ public abstract class IpsObjectEditor extends FormEditor
         if (TRACE) {
             logMethodStarted("propertyChange(): Received property changed event " + event); //$NON-NLS-1$
         }
+
         if (!isActive()) {
             return;
         }
+
         if (event.getProperty().equals(IpsPreferences.WORKING_MODE)) {
-            refresh();        
+            refresh();
         }
+
         if (TRACE) {
             logMethodFinished("propertyChange()"); //$NON-NLS-1$
         }
     }
-    
+
     /**
      * Returns the settings for ips object editors. This method never returns <code>null</code>.
      */
     protected IIpsObjectEditorSettings getSettings() {
         return IpsUIPlugin.getDefault().getIpsEditorSettings();
     }
-    
+
+    @Override
     public String toString() {
         return "Editor for " + getIpsSrcFile(); //$NON-NLS-1$
     }
-    
 
     private void logMethodStarted(String msg) {
         logInternal("." + msg + " - started"); //$NON-NLS-1$ //$NON-NLS-2$ $NON-NLS-2$
     }
-    
+
     private void logMethodFinished(String msg) {
         logInternal("." + msg + " - finished"); //$NON-NLS-1$ //$NON-NLS-2$ $NON-NLS-2$
     }
-    
+
     private void log(String msg) {
         logInternal(": " + msg); //$NON-NLS-1$
     }
 
     private void logInternal(String msg) {
-        String file = ipsSrcFile==null ? "null" : ipsSrcFile.getName(); // $NON-NLS-1$ //$NON-NLS-1$
-        System.out.println(getLogPrefix() + msg + ", IpsSrcFile=" + file + ", Thread=" + Thread.currentThread().getName()); //$NON-NLS-1$ //$NON-NLS-2$ $NON-NLS-2$
+        String file = ipsSrcFile == null ? "null" : ipsSrcFile.getName(); // $NON-NLS-1$ //$NON-NLS-1$
+        System.out.println(getLogPrefix() + msg
+                + ", IpsSrcFile=" + file + ", Thread=" + Thread.currentThread().getName()); //$NON-NLS-1$ //$NON-NLS-2$ $NON-NLS-2$
     }
-    
+
     private String getLogPrefix() {
         return "IpsObjectEditor"; //$NON-NLS-1$
     }
 
-
     /**
+     * <p>
      * Internal part and shell activation listener.
-     * 
-     * 
-     * Copied from AbstractTextEditor.
+     * </p>
+     * <p>
+     * Copied from <code>AbstractTextEditor</code>.
+     * </p>
      */
     private class ActivationListener implements IPartListener, IWindowListener {
 
         private IPartService partService;
-        
+
         /**
          * Creates this activation listener.
-         *
+         * 
          * @param partService the part service on which to add the part listener
+         * 
          * @since 3.1
          */
         public ActivationListener(IPartService partService) {
@@ -832,31 +976,35 @@ public abstract class IpsObjectEditor extends FormEditor
 
         /**
          * Disposes this activation listener.
-         *
+         * 
          * @since 3.1
          */
         public void dispose() {
             partService.removePartListener(this);
             PlatformUI.getWorkbench().removeWindowListener(this);
-            partService= null;
+            partService = null;
         }
 
         public void partActivated(IWorkbenchPart part) {
-            if (part!=IpsObjectEditor.this) {
+            if (part != IpsObjectEditor.this) {
                 return;
             }
+
             handleEditorActivation();
         }
 
         public void partBroughtToTop(IWorkbenchPart part) {
+
         }
 
         public void partClosed(IWorkbenchPart part) {
-            if (part!=IpsObjectEditor.this) {
+            if (part != IpsObjectEditor.this) {
                 return;
             }
+
             ipsSrcFile.discardChanges();
             removeListeners();
+
             if (!IpsPlugin.getDefault().getWorkbench().isClosing()) {
                 IIpsObjectEditorSettings settings = IpsUIPlugin.getDefault().getIpsEditorSettings();
                 settings.remove(ipsSrcFile);
@@ -864,15 +1012,17 @@ public abstract class IpsObjectEditor extends FormEditor
         }
 
         public void partDeactivated(IWorkbenchPart part) {
+
         }
-        
+
         private void removeListeners() {
             IpsPlugin.getDefault().getIpsModel().removeChangeListener(IpsObjectEditor.this);
             IpsPlugin.getDefault().getIpsModel().removeModificationStatusChangeListener(IpsObjectEditor.this);
             IpsPlugin.getDefault().getIpsPreferences().removeChangeListener(IpsObjectEditor.this);
         }
-        
+
         public void partOpened(IWorkbenchPart part) {
+
         }
 
         public void windowActivated(IWorkbenchWindow window) {
@@ -882,24 +1032,26 @@ public abstract class IpsObjectEditor extends FormEditor
         }
 
         public void windowDeactivated(IWorkbenchWindow window) {
+
         }
 
         public void windowClosed(IWorkbenchWindow window) {
+
         }
 
         public void windowOpened(IWorkbenchWindow window) {
+
         }
     }
 
-    
     /*
-     * The <code>IpsObjectEditorErrorMarkerUpdater</code> will register as a IIpsProblemChangedListener
-     * to listen on ips problem changes that correspond to the editor's input. It updates the title images and refreshes
-     * the editor if it is active.
+     * The <code>IpsObjectEditorErrorMarkerUpdater</code> will register as a
+     * IIpsProblemChangedListener to listen on ips problem changes that correspond to the editor's
+     * input. It updates the title images and refreshes the editor if it is active.
      * 
      * @author Joerg Ortmann, Peter Erzberger
      */
-    private class IpsObjectEditorErrorMarkerUpdater implements IIpsProblemChangedListener{
+    private class IpsObjectEditorErrorMarkerUpdater implements IIpsProblemChangedListener {
 
         private IpsObjectEditor ipsObjectEditor;
         private IpsProblemsLabelDecorator decorator;
@@ -925,15 +1077,15 @@ public abstract class IpsObjectEditor extends FormEditor
         }
 
         /**
-         * Returns the image of the ips object inside the ips object editor which is optional decorated
-         * with an ips marker image if a marker exists.
+         * Returns the image of the ips object inside the ips object editor which is optional
+         * decorated with an ips marker image if a marker exists.
          */
         Image getDecoratedImage() {
             Image titleImage = ipsObjectEditor.getIpsSrcFile().getIpsObjectType().getImage(
                     ipsObjectEditor.isDataChangeable().booleanValue());
             return decorator.decorateImage(titleImage, ipsObjectEditor.getIpsObject());
         }
-        
+
         private void updateEditorImage(IResource changedResources) {
             Image image = getDecoratedImage();
             postImageChange(image);
@@ -944,7 +1096,7 @@ public abstract class IpsObjectEditor extends FormEditor
             if (shell != null && !shell.isDisposed()) {
                 shell.getDisplay().syncExec(new Runnable() {
                     public void run() {
-                        if(isActive()){
+                        if (isActive()) {
                             refresh();
                         }
                         setTitleImage(newImage);
