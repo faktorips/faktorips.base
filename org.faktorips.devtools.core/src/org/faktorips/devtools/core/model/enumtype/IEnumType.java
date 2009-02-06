@@ -185,10 +185,12 @@ public interface IEnumType extends IEnumValueContainer, Datatype {
      * 
      * @param enumAttribute The enum attribute to move further up in the order.
      * 
+     * @return The new index of the enum attribute.
+     * 
      * @throws CoreException If an error occurs while moving the enum attributes.
      * @throws NullPointerException If enumAttribute is <code>null</code>.
      */
-    public void moveEnumAttributeUp(IEnumAttribute enumAttribute) throws CoreException;
+    public int moveEnumAttributeUp(IEnumAttribute enumAttribute) throws CoreException;
 
     /**
      * <p>
@@ -205,10 +207,12 @@ public interface IEnumType extends IEnumValueContainer, Datatype {
      * 
      * @param enumAttribute The enum attribute to move further down in the order.
      * 
+     * @return The new index of the enum attribute.
+     * 
      * @throws CoreException If an error occurs while moving the enum attributes.
      * @throws NullPointerException If enumAttribute is <code>null</code>.
      */
-    public void moveEnumAttributeDown(IEnumAttribute enumAttribute) throws CoreException;
+    public int moveEnumAttributeDown(IEnumAttribute enumAttribute) throws CoreException;
 
     /**
      * <p>

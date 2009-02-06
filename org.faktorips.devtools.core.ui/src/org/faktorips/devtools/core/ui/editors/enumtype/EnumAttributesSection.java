@@ -13,6 +13,8 @@
 
 package org.faktorips.devtools.core.ui.editors.enumtype;
 
+import java.util.List;
+
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jface.viewers.IStructuredContentProvider;
 import org.eclipse.jface.viewers.Viewer;
@@ -128,6 +130,29 @@ public class EnumAttributesSection extends SimpleIpsPartsSection {
             throw new RuntimeException(possibleException);
         }
 
+        /**
+         * {@inheritDoc}
+         */
+        @Override
+        protected int[] moveParts(int[] indexes, boolean up) {
+            int newIndex = indexes[0];
+            List<IEnumAttribute> enumAttributes = enumType.getEnumAttributes();
+
+            for (int currentIndex : indexes) {
+                IEnumAttribute enumAttributeToMove = enumAttributes.get(currentIndex);
+                try {
+                    if (up) {
+                        newIndex = enumType.moveEnumAttributeUp(enumAttributeToMove);
+                    } else {
+                        newIndex = enumType.moveEnumAttributeDown(enumAttributeToMove);
+                    }
+                } catch (CoreException e) {
+                    IpsPlugin.logAndShowErrorDialog(e);
+                }
+            }
+
+            return new int[] { newIndex };
+        }
     }
 
 }

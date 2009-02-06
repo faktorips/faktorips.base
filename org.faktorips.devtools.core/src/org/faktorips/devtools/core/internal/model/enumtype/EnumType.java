@@ -201,40 +201,41 @@ public class EnumType extends EnumValueContainer implements IEnumType {
     /**
      * {@inheritDoc}
      */
-    public void moveEnumAttributeDown(IEnumAttribute enumAttribute) throws CoreException {
+    public int moveEnumAttributeDown(IEnumAttribute enumAttribute) throws CoreException {
         ArgumentCheck.notNull(enumAttribute);
 
         if (enumAttribute == enumAttributes.getPart(enumAttributes.size() - 1)) {
-            return;
+            return getIndexOfEnumAttribute(enumAttribute);
         }
 
-        moveEnumAttribute(enumAttribute, false);
+        return moveEnumAttribute(enumAttribute, false);
     }
 
     /**
      * {@inheritDoc}
      */
-    public void moveEnumAttributeUp(IEnumAttribute enumAttribute) throws CoreException {
+    public int moveEnumAttributeUp(IEnumAttribute enumAttribute) throws CoreException {
         ArgumentCheck.notNull(enumAttribute);
 
         if (enumAttribute == enumAttributes.getPart(0)) {
-            return;
+            return getIndexOfEnumAttribute(enumAttribute);
         }
 
-        moveEnumAttribute(enumAttribute, true);
+        return moveEnumAttribute(enumAttribute, true);
     }
 
     /*
-     * Moves the given enum attribute up or down in the collection order by 1
+     * Moves the given enum attribute up or down in the collection order by 1 and returns the new
+     * index
      */
     @SuppressWarnings("unchecked")
-    private void moveEnumAttribute(IEnumAttribute enumAttribute, boolean up) throws CoreException {
+    private int moveEnumAttribute(IEnumAttribute enumAttribute, boolean up) throws CoreException {
         List<IEnumAttribute> enumAttributesList = enumAttributes.getBackingList();
         for (int i = 0; i < enumAttributesList.size(); i++) {
             IEnumAttribute currentEnumAttribute = enumAttributesList.get(i);
             if (currentEnumAttribute == enumAttribute) {
 
-                enumAttributes.moveParts(new int[] { i }, up);
+                int[] newIndexes = enumAttributes.moveParts(new int[] { i }, up);
 
                 // Also move the refering enum attribute values
                 if (!valuesArePartOfModel) {
@@ -245,10 +246,26 @@ public class EnumType extends EnumValueContainer implements IEnumType {
                     moveEnumAttributeValues(currentEnumAttribute, getEnumValues(), up);
                 }
 
-                break;
+                return newIndexes[0];
 
             }
         }
+
+        throw new NoSuchElementException();
+    }
+
+    // Returns the index of the given enum attribute in the enum attributes collection
+    @SuppressWarnings("unchecked")
+    private int getIndexOfEnumAttribute(IEnumAttribute enumAttribute) {
+        List<IEnumAttribute> enumAttributesList = enumAttributes.getBackingList();
+        for (int i = 0; i < enumAttributesList.size(); i++) {
+            IEnumAttribute currentEnumAttribute = enumAttributesList.get(i);
+            if (currentEnumAttribute == enumAttribute) {
+                return i;
+            }
+        }
+
+        throw new NoSuchElementException();
     }
 
     /*
