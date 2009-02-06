@@ -108,6 +108,7 @@ public class EnumAttribute extends AtomicIpsObjectPart implements IEnumAttribute
      */
     @Override
     protected void initFromXml(Element element, Integer id) {
+        name = element.getAttribute(PROPERTY_NAME);
         datatype = element.getAttribute(PROPERTY_DATATYPE);
         isIdentifier = Boolean.parseBoolean(element.getAttribute(PROPERTY_IDENTIFIER));
 
@@ -121,6 +122,7 @@ public class EnumAttribute extends AtomicIpsObjectPart implements IEnumAttribute
     protected void propertiesToXml(Element element) {
         super.propertiesToXml(element);
 
+        element.setAttribute(PROPERTY_NAME, name);
         element.setAttribute(PROPERTY_DATATYPE, datatype);
         element.setAttribute(PROPERTY_IDENTIFIER, String.valueOf(isIdentifier));
     }

@@ -64,6 +64,8 @@ public class EnumAttributeTest extends AbstractIpsEnumPluginTest {
     public void testXml() throws ParserConfigurationException, CoreException {
         Element xmlElement = genderEnumType.toXml(createXmlDocument(IEnumAttribute.XML_TAG));
         NamedNodeMap attributes = xmlElement.getChildNodes().item(1).getAttributes();
+        assertEquals(GENDER_ENUM_ATTRIBUTE_ID_NAME, attributes.getNamedItem(IEnumAttribute.PROPERTY_NAME)
+                .getTextContent());
         assertEquals(STRING_DATATYPE_NAME, attributes.getNamedItem(IEnumAttribute.PROPERTY_DATATYPE).getTextContent());
         assertTrue(Boolean.parseBoolean(attributes.getNamedItem(IEnumAttribute.PROPERTY_IDENTIFIER).getTextContent()));
         assertEquals(1 + 2, xmlElement.getChildNodes().getLength());
@@ -71,6 +73,7 @@ public class EnumAttributeTest extends AbstractIpsEnumPluginTest {
         IEnumType loadedEnumType = newEnumType(ipsProject, "LoadedEnumType");
         loadedEnumType.initFromXml(xmlElement);
         IEnumAttribute idAttribute = loadedEnumType.getEnumAttribute(0);
+        assertEquals(GENDER_ENUM_ATTRIBUTE_ID_NAME, idAttribute.getName());
         assertEquals(STRING_DATATYPE_NAME, idAttribute.getDatatype());
         assertTrue(idAttribute.isIdentifier());
         assertEquals(2, loadedEnumType.getEnumAttributes().size());
