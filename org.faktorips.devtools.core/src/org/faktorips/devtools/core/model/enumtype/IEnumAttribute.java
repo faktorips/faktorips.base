@@ -39,7 +39,7 @@ public interface IEnumAttribute extends IIpsObjectPart {
     public final static String PROPERTY_DATATYPE = "datatype"; //$NON-NLS-1$
 
     /** Name of the the isIdentifier property. */
-    public final static String PROPERTY_IS_IDENTIFIER = "isIdentifier"; //$NON-NLS-1$
+    public final static String PROPERTY_IDENTIFIER = "identifier"; //$NON-NLS-1$
 
     /** Prefix for all message codes of this class. */
     public final static String MSGCODE_PREFIX = "ENUMATTRIBUTE-"; //$NON-NLS-1$
@@ -94,8 +94,8 @@ public interface IEnumAttribute extends IIpsObjectPart {
     /**
      * Sets whether this enum attribute is an identifier.
      * 
-     * @param isIdentifier Flag indicating whether this enum attribute will be an identifier.
+     * @param identifier Flag indicating whether this enum attribute will be an identifier.
      */
-    public void setIsIdentifier(boolean isIdentifier);
+    public void setIdentifier(boolean identifier);
 
 }

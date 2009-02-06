@@ -107,7 +107,7 @@ public abstract class AbstractIpsEnumPluginTest extends AbstractIpsPluginTest {
         genderEnumAttributeId = genderEnumType.newEnumAttribute();
         genderEnumAttributeId.setName(GENDER_ENUM_ATTRIBUTE_ID_NAME);
         genderEnumAttributeId.setDatatype(STRING_DATATYPE_NAME);
-        genderEnumAttributeId.setIsIdentifier(true);
+        genderEnumAttributeId.setIdentifier(true);
         genderEnumAttributeName = genderEnumType.newEnumAttribute();
         genderEnumAttributeName.setName(GENDER_ENUM_ATTRIBUTE_NAME_NAME);
         genderEnumAttributeName.setDatatype(STRING_DATATYPE_NAME);
@@ -142,7 +142,7 @@ public abstract class AbstractIpsEnumPluginTest extends AbstractIpsPluginTest {
         difficultyEnumAttributeId = difficultyEnumType.newEnumAttribute();
         difficultyEnumAttributeId.setName(DIFFICULTY_ENUM_ATTRIBUTE_ID_NAME);
         difficultyEnumAttributeId.setDatatype(STRING_DATATYPE_NAME);
-        difficultyEnumAttributeId.setIsIdentifier(true);
+        difficultyEnumAttributeId.setIdentifier(true);
         difficultyEnumAttributeLabel = difficultyEnumType.newEnumAttribute();
         difficultyEnumAttributeLabel.setName(DIFFICULTY_ENUM_ATTRIBUTE_LABEL_NAME);
         difficultyEnumAttributeLabel.setDatatype(STRING_DATATYPE_NAME);

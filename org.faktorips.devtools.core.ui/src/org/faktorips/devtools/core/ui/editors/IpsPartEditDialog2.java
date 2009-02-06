@@ -48,6 +48,7 @@ import org.faktorips.util.message.MessageList;
  */
 public abstract class IpsPartEditDialog2 extends EditDialog implements ContentsChangeListener {
 
+    /** The binding context to use to bind model object properties to ui controls. */
     protected BindingContext bindingContext = new BindingContext();
 
     private IIpsObjectPart part;

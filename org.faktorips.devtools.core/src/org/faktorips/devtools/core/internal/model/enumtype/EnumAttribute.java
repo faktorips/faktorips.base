@@ -91,7 +91,7 @@ public class EnumAttribute extends AtomicIpsObjectPart implements IEnumAttribute
     /**
      * {@inheritDoc}
      */
-    public void setIsIdentifier(boolean isIdentifier) {
+    public void setIdentifier(boolean isIdentifier) {
         this.isIdentifier = isIdentifier;
     }
 
@@ -109,7 +109,7 @@ public class EnumAttribute extends AtomicIpsObjectPart implements IEnumAttribute
     @Override
     protected void initFromXml(Element element, Integer id) {
         datatype = element.getAttribute(PROPERTY_DATATYPE);
-        isIdentifier = Boolean.parseBoolean(element.getAttribute(PROPERTY_IS_IDENTIFIER));
+        isIdentifier = Boolean.parseBoolean(element.getAttribute(PROPERTY_IDENTIFIER));
 
         super.initFromXml(element, id);
     }
@@ -122,7 +122,7 @@ public class EnumAttribute extends AtomicIpsObjectPart implements IEnumAttribute
         super.propertiesToXml(element);
 
         element.setAttribute(PROPERTY_DATATYPE, datatype);
-        element.setAttribute(PROPERTY_IS_IDENTIFIER, String.valueOf(isIdentifier));
+        element.setAttribute(PROPERTY_IDENTIFIER, String.valueOf(isIdentifier));
     }
 
     /**

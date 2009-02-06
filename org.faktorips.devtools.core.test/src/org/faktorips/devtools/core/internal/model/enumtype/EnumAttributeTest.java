@@ -57,7 +57,7 @@ public class EnumAttributeTest extends AbstractIpsEnumPluginTest {
         assertTrue(genderEnumAttributeId.isIdentifier());
         assertFalse(genderEnumAttributeName.isIdentifier());
 
-        genderEnumAttributeName.setIsIdentifier(true);
+        genderEnumAttributeName.setIdentifier(true);
         assertTrue(genderEnumAttributeName.isIdentifier());
     }
 
@@ -65,8 +65,7 @@ public class EnumAttributeTest extends AbstractIpsEnumPluginTest {
         Element xmlElement = genderEnumType.toXml(createXmlDocument(IEnumAttribute.XML_TAG));
         NamedNodeMap attributes = xmlElement.getChildNodes().item(1).getAttributes();
         assertEquals(STRING_DATATYPE_NAME, attributes.getNamedItem(IEnumAttribute.PROPERTY_DATATYPE).getTextContent());
-        assertTrue(Boolean
-                .parseBoolean(attributes.getNamedItem(IEnumAttribute.PROPERTY_IS_IDENTIFIER).getTextContent()));
+        assertTrue(Boolean.parseBoolean(attributes.getNamedItem(IEnumAttribute.PROPERTY_IDENTIFIER).getTextContent()));
         assertEquals(1 + 2, xmlElement.getChildNodes().getLength());
 
         IEnumType loadedEnumType = newEnumType(ipsProject, "LoadedEnumType");
@@ -81,7 +80,7 @@ public class EnumAttributeTest extends AbstractIpsEnumPluginTest {
         assertTrue(genderEnumAttributeId.isValid());
 
         IIpsModel ipsModel = getIpsModel();
-        
+
         ipsModel.clearValidationCache();
         genderEnumAttributeId.setName("");
         assertEquals(1, genderEnumAttributeId.validate(ipsProject).getNoOfMessages());
