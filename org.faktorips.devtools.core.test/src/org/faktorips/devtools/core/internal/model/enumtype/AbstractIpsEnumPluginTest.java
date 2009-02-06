@@ -100,7 +100,7 @@ public abstract class AbstractIpsEnumPluginTest extends AbstractIpsPluginTest {
 
     private void createGenderEnum() throws CoreException {
         genderEnumType = newEnumType(ipsProject, GENDER_ENUM_TYPE_NAME);
-        genderEnumType.setIsAbstract(false);
+        genderEnumType.setAbstract(false);
         genderEnumType.setValuesArePartOfModel(false);
         genderEnumType.setSuperEnumType("");
 
@@ -135,7 +135,7 @@ public abstract class AbstractIpsEnumPluginTest extends AbstractIpsPluginTest {
 
     private void createDifficultyEnum() throws CoreException {
         difficultyEnumType = newEnumType(ipsProject, DIFFICULTY_ENUM_TYPE_NAME);
-        difficultyEnumType.setIsAbstract(false);
+        difficultyEnumType.setAbstract(false);
         difficultyEnumType.setValuesArePartOfModel(true);
         difficultyEnumType.setSuperEnumType("");
 

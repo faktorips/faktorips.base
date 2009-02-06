@@ -29,7 +29,7 @@ import org.faktorips.devtools.core.ui.UIToolkit;
 import org.faktorips.devtools.core.ui.controller.fields.TextButtonField;
 import org.faktorips.devtools.core.ui.controls.IpsObjectRefControl;
 import org.faktorips.devtools.core.ui.wizards.IpsObjectPage;
-import org.faktorips.util.message.Message;
+import org.faktorips.util.message.MessageList;
 
 /**
  * The wizard page for the new enum content wizard.
@@ -110,9 +110,10 @@ public class EnumContentPage extends IpsObjectPage {
         String enumTypeFieldText = enumTypeField.getText();
         IIpsProject ipsProject = ((IpsObjectRefControl)enumTypeField.getControl()).getIpsProject();
         if (ipsProject != null) {
-            Message validationMessage = EnumContentValidations.validateEnumType(null, enumTypeFieldText, ipsProject);
-            if (validationMessage != null) {
-                setErrorMessage(validationMessage.getText());
+            MessageList validationMessages = EnumContentValidations.validateEnumType(null, enumTypeFieldText,
+                    ipsProject);
+            if (!(validationMessages.isEmpty())) {
+                setErrorMessage(validationMessages.getMessage(0));
             }
         }
     }

@@ -90,7 +90,7 @@ public class EnumType extends EnumValueContainer implements IEnumType {
     /**
      * {@inheritDoc}
      */
-    public void setIsAbstract(boolean isAbstract) {
+    public void setAbstract(boolean isAbstract) {
         this.isAbstract = isAbstract;
     }
 

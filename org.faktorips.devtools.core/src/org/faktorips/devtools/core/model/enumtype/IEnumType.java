@@ -100,11 +100,11 @@ public interface IEnumType extends IEnumValueContainer, Datatype {
     public boolean isAbstract();
 
     /**
-     * Sets the isAbstract property for this enum type.
+     * Sets the abstract property for this enum type.
      * 
      * @param isAbstract Flag indicating whether this enum type shall be abstract or not.
      */
-    public void setIsAbstract(boolean isAbstract);
+    public void setAbstract(boolean isAbstract);
 
     /**
      * Returns true if the values for this enum type are defined in the enum type itself.

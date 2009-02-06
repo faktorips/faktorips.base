@@ -60,21 +60,26 @@ public class EnumContentTest extends AbstractIpsEnumPluginTest {
         assertTrue(genderEnumContent.isValid());
 
         IIpsModel ipsModel = getIpsModel();
-        
+
         ipsModel.clearValidationCache();
         genderEnumContent.setEnumType("");
         assertEquals(1, genderEnumContent.validate(ipsProject).getNoOfMessages());
         genderEnumContent.setEnumType(genderEnumType.getQualifiedName());
-        
+
         ipsModel.clearValidationCache();
         genderEnumContent.setEnumType("FooBar");
         assertEquals(1, genderEnumContent.validate(ipsProject).getNoOfMessages());
         genderEnumContent.setEnumType(genderEnumType.getQualifiedName());
-        
+
         ipsModel.clearValidationCache();
         genderEnumType.setValuesArePartOfModel(true);
         assertEquals(1, genderEnumContent.validate(ipsProject).getNoOfMessages());
         genderEnumType.setValuesArePartOfModel(false);
+
+        ipsModel.clearValidationCache();
+        genderEnumType.setAbstract(true);
+        assertEquals(1, genderEnumContent.validate(ipsProject).getNoOfMessages());
+        genderEnumType.setAbstract(false);
     }
 
 }

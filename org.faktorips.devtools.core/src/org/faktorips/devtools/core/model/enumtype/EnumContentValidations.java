@@ -19,6 +19,7 @@ import org.faktorips.devtools.core.internal.model.enumtype.Messages;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.util.ArgumentCheck;
 import org.faktorips.util.message.Message;
+import org.faktorips.util.message.MessageList;
 import org.faktorips.util.message.ObjectProperty;
 
 /**
@@ -38,15 +39,16 @@ public abstract class EnumContentValidations {
      * Validates the enum type property of the given enum content.
      * </p>
      * <p>
-     * An appropriate validation message will be returned if:
+     * An appropriate validation message list will be returned if:
      * </p>
      * <ul>
      * <li>The qualified name of the enum type equals an empty string (enum type is missing)</li>
      * <li>The enum type is specified but does not exist</li>
      * <li>The enum type does exist but its values are defined in the model</li>
+     * <li>The enum type exist but is abstract</li>
      * </ul>
      * <p>
-     * If the enum type property is valid <code>null</code> will be returned.
+     * If the enum type property is valid an empty validation message list will be returned.
      * </p>
      * 
      * @param enumContent The enum content that might be invalid or <code>null</code> if that
@@ -55,42 +57,48 @@ public abstract class EnumContentValidations {
      *            upon.
      * @param ipsProject The ips object path of this ips project will be searched.
      * 
-     * @return A proper validation message or <code>null</code> if the validation was successful.
+     * @return A proper validation message list or an empty validation message list if the
+     *         validation was successful.
      * 
      * @throws CoreException If an error occurs while searching for the enum type.
      * @throws NullPointerException If enumTypeQualifiedName or ipsProject is <code>null</code>.
      */
-    public static Message validateEnumType(IEnumContent enumContent,
+    public static MessageList validateEnumType(IEnumContent enumContent,
             String enumTypeQualifiedName,
             IIpsProject ipsProject) throws CoreException {
 
         ArgumentCheck.notNull(new Object[] { enumTypeQualifiedName, ipsProject });
 
         String text;
-        Message validationMessage = null;
+        MessageList validationMessageList = new MessageList();
         ObjectProperty[] objectProperties = (enumContent != null) ? new ObjectProperty[] { new ObjectProperty(
                 enumContent, IEnumContent.PROPERTY_ENUM_TYPE) } : new ObjectProperty[0];
 
         if (enumTypeQualifiedName.equals("")) {
             text = Messages.EnumContent_EnumTypeMissing;
-            validationMessage = new Message(IEnumContent.MSGCODE_ENUM_CONTENT_ENUM_TYPE_MISSING, text, Message.ERROR,
-                    objectProperties);
+            validationMessageList.add(new Message(IEnumContent.MSGCODE_ENUM_CONTENT_ENUM_TYPE_MISSING, text,
+                    Message.ERROR, objectProperties));
         } else {
             IEnumType enumTypeRef = ipsProject.findEnumType(enumTypeQualifiedName);
             if (enumTypeRef == null) {
                 text = NLS.bind(Messages.EnumContent_EnumTypeDoesNotExist, enumTypeQualifiedName);
-                validationMessage = new Message(IEnumContent.MSGCODE_ENUM_CONTENT_ENUM_TYPE_DOES_NOT_EXIST, text,
-                        Message.ERROR, objectProperties);
+                validationMessageList.add(new Message(IEnumContent.MSGCODE_ENUM_CONTENT_ENUM_TYPE_DOES_NOT_EXIST, text,
+                        Message.ERROR, objectProperties));
             } else {
                 if (enumTypeRef.valuesArePartOfModel()) {
                     text = NLS.bind(Messages.EnumContent_ValuesArePartOfModel, enumTypeQualifiedName);
-                    validationMessage = new Message(IEnumContent.MSGCODE_ENUM_CONTENT_VALUES_ARE_PART_OF_MODEL, text,
-                            Message.ERROR, objectProperties);
+                    validationMessageList.add(new Message(IEnumContent.MSGCODE_ENUM_CONTENT_VALUES_ARE_PART_OF_MODEL,
+                            text, Message.ERROR, objectProperties));
+                }
+                if (enumTypeRef.isAbstract()) {
+                    text = NLS.bind(Messages.EnumContent_EnumTypeIsAbstract, enumTypeQualifiedName);
+                    validationMessageList.add(new Message(IEnumContent.MSGCODE_ENUM_CONTENT_ENUM_TYPE_IS_ABSTRACT,
+                            text, Message.ERROR, objectProperties));
                 }
             }
         }
 
-        return validationMessage;
+        return validationMessageList;
     }
 
     // Prohibit initialization

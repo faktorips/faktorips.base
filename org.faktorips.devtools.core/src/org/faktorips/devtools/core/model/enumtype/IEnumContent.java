@@ -52,6 +52,13 @@ public interface IEnumContent extends IEnumValueContainer {
             + "EnumContentEnumTypeDoesNotExist"; //$NON-NLS-1$
 
     /**
+     * Validation message code to indicate that the enum type this enum content is built upon is
+     * abstract.
+     */
+    public final static String MSGCODE_ENUM_CONTENT_ENUM_TYPE_IS_ABSTRACT = MSGCODE_PREFIX
+            + "EnumContentEnumTypeIsAbstract"; //$NON-NLS-1$
+
+    /**
      * Validation message code to indicate that the values of the enum type this enum content refers
      * to are defined in the model instead inside of a separate enum content object.
      */

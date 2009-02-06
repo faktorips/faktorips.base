@@ -21,7 +21,6 @@ import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.util.ArgumentCheck;
-import org.faktorips.util.message.Message;
 import org.faktorips.util.message.MessageList;
 import org.w3c.dom.Element;
 
@@ -113,10 +112,7 @@ public class EnumContent extends EnumValueContainer implements IEnumContent {
     protected void validateThis(MessageList list, IIpsProject ipsProject) throws CoreException {
         super.validateThis(list, ipsProject);
 
-        Message validationMessage = EnumContentValidations.validateEnumType(this, enumType, ipsProject);
-        if (validationMessage != null) {
-            list.add(validationMessage);
-        }
+        list.add(EnumContentValidations.validateEnumType(this, enumType, ipsProject));
     }
 
 }

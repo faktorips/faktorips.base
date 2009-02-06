@@ -48,7 +48,7 @@ public class EnumTypeTest extends AbstractIpsEnumPluginTest {
 
     public void testGetSetAbstract() {
         assertFalse(genderEnumType.isAbstract());
-        genderEnumType.setIsAbstract(true);
+        genderEnumType.setAbstract(true);
         assertTrue(genderEnumType.isAbstract());
     }
 
@@ -238,7 +238,7 @@ public class EnumTypeTest extends AbstractIpsEnumPluginTest {
 
     public void testXml() throws CoreException, ParserConfigurationException {
         IEnumType newEnumType = newEnumType(ipsProject, "NewEnumType");
-        newEnumType.setIsAbstract(true);
+        newEnumType.setAbstract(true);
         newEnumType.setValuesArePartOfModel(true);
         newEnumType.setSuperEnumType(genderEnumType.getQualifiedName());
         newEnumType.newEnumAttribute();

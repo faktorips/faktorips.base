@@ -112,7 +112,7 @@ public class EnumTypePage extends IpsObjectPage {
         super.finishIpsObjects(newIpsObject, modifiedIpsObjects);
 
         IEnumType newEnumType = (IEnumType)newIpsObject;
-        newEnumType.setIsAbstract((Boolean)isAbstractField.getValue());
+        newEnumType.setAbstract((Boolean)isAbstractField.getValue());
         newEnumType.setValuesArePartOfModel((Boolean)valuesArePartOfModelField.getValue());
         newEnumType.setSuperEnumType(supertypeField.getText());
 
