@@ -20,11 +20,13 @@ import java.util.Comparator;
 import java.util.List;
 
 import org.apache.commons.lang.StringUtils;
+import org.eclipse.core.runtime.Assert;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.IToolBarManager;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.BusyIndicator;
+import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Label;
@@ -56,13 +58,15 @@ abstract public class DefaultModelDescriptionPage extends Page {
     private ScrolledForm form;
     private Composite expandableContainer;
 
-    private List defaultList; // List of DescriptionItems sorted by parent.
-    private List activeList; // defaultList sorted lexical or not.
+    private List<DescriptionItem> defaultList; // List of DescriptionItems sorted by parent.
+    private List<DescriptionItem> activeList; // defaultList sorted lexical or not.
     private String title;
 
+    private Color colorGray;
+
     public DefaultModelDescriptionPage () {
-        defaultList = new ArrayList();
-        activeList= new ArrayList();
+        defaultList = new ArrayList<DescriptionItem>();
+        activeList= new ArrayList<DescriptionItem>();
     }
 
     /**
@@ -97,7 +101,9 @@ abstract public class DefaultModelDescriptionPage extends Page {
      * Create the DescrptionPage by DescriptionItems.
      */
     private void createForm() {
-         form.setText(title);
+        colorGray = form.getDisplay().getSystemColor(SWT.COLOR_GRAY);
+        
+        form.setText(title);
 
         // collect all attributes in one container
         expandableContainer = toolkit.createComposite(form.getBody());
@@ -150,22 +156,30 @@ abstract public class DefaultModelDescriptionPage extends Page {
 
         // Set faktorips.attribute description
         FormText client = toolkit.createFormText(excomposite, true);
+        client.setColor("gray", colorGray); //$NON-NLS-1$
+
         //don't ignore whitespaces and newlines
         client.setWhitespaceNormalized(false);
-
-        String tmp = item.getDescription().trim();
-        if ( StringUtils.isEmpty( tmp ) ) {
-            client.setText(Messages.DefaultModelDescriptionPage_NoDescriptionAvailable, false, true);
-        } else {
-            client.setText(tmp, false, true);
+        
+        StringBuffer sb = new StringBuffer();
+        String description = item.getDescription().trim();
+        sb.append("<form>"); //$NON-NLS-1$
+        if ( StringUtils.isEmpty( description ) ) {
+            // if no desription is given show the default text in gray forground color
+            sb.append("<p><span color=\"gray\">"); //$NON-NLS-1$
+            sb.append(Messages.DefaultModelDescriptionPage_NoDescriptionAvailable);
+            sb.append("</span></p>"); //$NON-NLS-1$
+        }  else {
+            sb.append(description);
         }
-
+        sb.append("</form>"); //$NON-NLS-1$
+        client.setText(sb.toString(), true, true);
+        
         client.setBackground(excomposite.getBackground());
         client.setLayoutData(new TableWrapData(TableWrapData.FILL_GRAB));
 //        client.setBackground(parent.getDisplay().getSystemColor(SWT.COLOR_RED));
 
         excomposite.setClient(client);
-
         Label spacer = toolkit.createLabel(parent, ""); //$NON-NLS-1$
         TableWrapData layoutData = new TableWrapData();
         layoutData.heightHint = 10;
@@ -288,24 +302,14 @@ abstract public class DefaultModelDescriptionPage extends Page {
      *
      * @author Markus Blum
      */
-    class DescriptionItemComparator implements Comparator {
-
+    class DescriptionItemComparator implements Comparator<DescriptionItem> {
         /**
          * {@inheritDoc}
          */
-        public int compare(Object o1, Object o2) {
-
-            if (o1 instanceof DescriptionItem) {
-                DescriptionItem item1 = (DescriptionItem)o1;
-
-                if (o2 instanceof DescriptionItem) {
-                    DescriptionItem item2 = (DescriptionItem)o2;
-
-                    return item1.getName().compareTo(item2.getName());
-                }
-            }
-
-            return 0;
+        public int compare(DescriptionItem item1, DescriptionItem item2) {
+            Assert.isNotNull(item1, "DescriptionItem1"); //$NON-NLS-1$
+            Assert.isNotNull(item2, "DescriptionItem2"); //$NON-NLS-1$
+            return item1.getName().compareTo(item2.getName());
         }
     }
 
