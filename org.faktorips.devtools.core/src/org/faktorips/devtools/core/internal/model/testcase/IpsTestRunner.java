@@ -137,13 +137,13 @@ public class IpsTestRunner implements IIpsTestRunner {
     private String testsuites;
     
     // List storing the registered ips test run listeners
-    private List fIpsTestRunListeners = new ArrayList();
+    private List<IIpsTestRunListener> fIpsTestRunListeners = new ArrayList<IIpsTestRunListener>();
 	
     //  Shared instance of the test runner
     private static IpsTestRunner ipsTestRunner;
     
     // Error details in case multiline errors
-    private ArrayList errorDetailList;
+    private ArrayList<String> errorDetailList;
     
     // The qualified test name in case of an error, necessary to store the name between two socket receives
     // the stack trace of the error will be send in several lines
@@ -242,8 +242,9 @@ public class IpsTestRunner implements IIpsTestRunner {
         return builderSet.getRuntimeRepositoryTocResourceName(root);
     }
 
+    @SuppressWarnings("unchecked")
     public static IIpsProject getIpsProjectFromTocPath(String tocPaths) throws CoreException{
-        List reps = AbstractIpsTestRunner.extractListFromString(tocPaths);
+        List<String> reps = AbstractIpsTestRunner.extractListFromString(tocPaths);
         if (!(reps.size()>0)){
             return null;
         }
@@ -259,7 +260,7 @@ public class IpsTestRunner implements IIpsTestRunner {
         }
         return null;
     }
-
+    
     /*
      * Run the test with the given launch.
      */
@@ -295,7 +296,7 @@ public class IpsTestRunner implements IIpsTestRunner {
         //   the run method will be called later by using a new UI Job and a given launch
         if (launch == null) {
             ILaunchManager manager = DebugPlugin.getDefault().getLaunchManager();
-            trace("Create new lauch configuration."); //$NON-NLS-1$
+                        
             ILaunchConfiguration launchConfiguration = createConfiguration(classpathRepositories, testsuites, manager);
 
             launch = new Launch(launchConfiguration, mode, null);
@@ -346,12 +347,16 @@ public class IpsTestRunner implements IIpsTestRunner {
         args[2] = testsuites;
         args[3] = ""; //$NON-NLS-1$
         // create the string containing the additional repository packages
-        for (Iterator iter = getAllRepositoryPackagesAsString(ipsProject).iterator(); iter.hasNext();) {
+        for (Iterator<String> iter = getAllRepositoryPackagesAsString(ipsProject).iterator(); iter.hasNext();) {
             args[3] += "{" + (String) iter.next() + "}"; //$NON-NLS-1$ //$NON-NLS-2$
         }
         
         vmConfig.setProgramArguments(args);
-
+        
+        // Environment variables
+        String[] envp= getEnvironment(launch.getLaunchConfiguration());        
+        vmConfig.setEnvironment(envp);
+        
         // sets the max heap size of the test runner virtual machine
         if (StringUtils.isEmpty(testRunnerMaxHeapSize)){
             // set the default size to 64
@@ -447,9 +452,10 @@ public class IpsTestRunner implements IIpsTestRunner {
     /*
      * Creates a dummy non persistent lauch configuration
      */
+    @SuppressWarnings("unchecked")
     private ILaunchConfiguration createConfiguration(String classpathRepositories, String testsuites, ILaunchManager manager) throws CoreException {
         String confName = Messages.IpsTestRunner_lauchConfigurationDefaultName;
-        List tests = AbstractIpsTestRunner.extractListFromString(testsuites);
+        List<String> tests = AbstractIpsTestRunner.extractListFromString(testsuites);
         if (tests.size()==1){
             String testName = (String)tests.get(0);
             if (StringUtils.isNotEmpty(testName)){
@@ -459,12 +465,15 @@ public class IpsTestRunner implements IIpsTestRunner {
         confName = manager.generateUniqueLaunchConfigurationNameFrom(confName);
         
         ILaunchConfigurationType configType = getLaunchConfigType();
+        trace("Create launch configuration: " + confName); //$NON-NLS-1$
         ILaunchConfigurationWorkingCopy wc = createNewLaunchConfiguration(configType, confName, classpathRepositories, testsuites);
-        
         ILaunchConfiguration[] confs = manager.getLaunchConfigurations(configType);
         for (int i = 0; i < confs.length; i++) {
             if (checkLaunchConfigurationSameAttributes(confs[i], wc)){
+                // reuse existing configuration
+                trace("Existing launch configuration found, reuse: " + confs[i].getName()); //$NON-NLS-1$
                 wc = createNewLaunchConfiguration(configType, confs[i].getName(), classpathRepositories, testsuites);
+                wc.setAttributes(confs[i].getAttributes());
                 break;
             }
         }
@@ -513,14 +522,14 @@ public class IpsTestRunner implements IIpsTestRunner {
 
         // get source container from the project
         ISourceContainer sc = new ProjectSourceContainer(ipsProject.getProject(), true);
-        List sourceContainer = new ArrayList(Arrays.asList(sc.getSourceContainers()));
+        List<ISourceContainer> sourceContainer = new ArrayList<ISourceContainer>(Arrays.asList(sc.getSourceContainers()));
 
         // get source container from the workspace
         sc = new WorkspaceSourceContainer();
         sourceContainer.addAll(Arrays.asList(sc.getSourceContainers()));
 
         // get source container from the classpath
-        List classpaths = new ArrayList();
+        List<IRuntimeClasspathEntry> classpaths = new ArrayList<IRuntimeClasspathEntry>();
         classpaths.addAll(Arrays.asList(JavaRuntime.computeUnresolvedRuntimeClasspath(ipsProject.getJavaProject())));
         IRuntimeClasspathEntry[] entries = new IRuntimeClasspathEntry[classpaths.size()];
         classpaths.toArray(entries);
@@ -674,7 +683,7 @@ public class IpsTestRunner implements IIpsTestRunner {
         	// format: qualifiedName|testObject|testedAttribute|expectedValue|actualValue|message
             String failureDetailsLine = line.substring(SocketIpsTestRunner.TEST_FAILED.length());
             String qualifiedTestName = failureDetailsLine.substring(0, failureDetailsLine.indexOf(SocketIpsTestRunner.TEST_FAILED_DELIMITERS));
-            ArrayList failureTokens = new ArrayList(5);
+            ArrayList<String> failureTokens = new ArrayList<String>(5);
         	while(failureDetailsLine.length()>0){
         		String token = ""; //$NON-NLS-1$
         		int end = failureDetailsLine.indexOf(SocketIpsTestRunner.TEST_FAILED_DELIMITERS);
@@ -691,7 +700,7 @@ public class IpsTestRunner implements IIpsTestRunner {
         	notifyTestFailureOccured(qualifiedTestName, (String[])failureTokens.toArray(new String[0]));
         }else if(line.startsWith(SocketIpsTestRunner.TEST_ERROR)){
         	// format qualifiedTestName{message}{StacktraceElem1}{StacktraceElem2}...{StacktraceElemN}
-            errorDetailList = new ArrayList();
+            errorDetailList = new ArrayList<String>();
         	String errorDetails = line.substring(SocketIpsTestRunner.TEST_ERROR.length());  //$NON-NLS-1$
         	qualifiedTestName = errorDetails.substring(0, errorDetails.indexOf("{")); //$NON-NLS-1$
             parseErrorStack(errorDetailList, errorDetails);
@@ -729,7 +738,7 @@ public class IpsTestRunner implements IIpsTestRunner {
         return fullPath;
     }
 
-    private void parseErrorStack(ArrayList errorDetailList, String errorDetails) {
+    private void parseErrorStack(ArrayList<String> errorDetailList, String errorDetails) {
         if (errorDetails.length() == 0)
             return;
         
@@ -778,8 +787,8 @@ public class IpsTestRunner implements IIpsTestRunner {
      * Returns a list off repository packages of the given ips project and its referenced projects
      * and referenced projects by the referenced projects ...
      */
-     private List getAllRepositoryPackagesAsString(IIpsProject ipsProject) throws CoreException{
-         List repositoryPackages = new ArrayList();
+     private List<String> getAllRepositoryPackagesAsString(IIpsProject ipsProject) throws CoreException{
+         List<String> repositoryPackages = new ArrayList<String>();
          getRepositoryPackages(ipsProject, repositoryPackages);
          IIpsProject[] ipsProjects = ipsProject.getReferencedIpsProjects();
          for (int i = 0; i < ipsProjects.length; i++) {
@@ -792,7 +801,7 @@ public class IpsTestRunner implements IIpsTestRunner {
       * Adds all repository packages of the given ips project to the given list. Add the repository
       * package only if the toc file exists.
       */
-     private void getRepositoryPackages(IIpsProject ipsProject, List repositoryPackages) throws CoreException {
+     private void getRepositoryPackages(IIpsProject ipsProject, List<String> repositoryPackages) throws CoreException {
          IIpsPackageFragmentRoot[] ipsRoots = ipsProject.getIpsPackageFragmentRoots();
          for (int i = 0; i < ipsRoots.length; i++) {
              IIpsArtefactBuilderSet builderSet = ipsProject.getIpsArtefactBuilderSet();
@@ -827,21 +836,21 @@ public class IpsTestRunner implements IIpsTestRunner {
 	/**
 	 * Returns all registered ips test run listener.
 	 */
-	public List getIpsTestRunListener(){
+	public List<IIpsTestRunListener> getIpsTestRunListener(){
 		return fIpsTestRunListeners;
 	}
 	
     private void notifyTestEntry(String qualifiedName, String fullPath) {
-        List copy = new ArrayList(fIpsTestRunListeners);
-        for (Iterator iter = copy.iterator(); iter.hasNext();) {
+        List<IIpsTestRunListener> copy = new ArrayList<IIpsTestRunListener>(fIpsTestRunListeners);
+        for (Iterator<IIpsTestRunListener> iter = copy.iterator(); iter.hasNext();) {
 			IIpsTestRunListener listener = (IIpsTestRunListener) iter.next();
 			listener.testTableEntry(qualifiedName, fullPath);
 		}
     }
     
     private void notifyTestEntries(String[] qualifiedNames, String[] fullPaths) {
-        List copy = new ArrayList(fIpsTestRunListeners);
-        for (Iterator iter = copy.iterator(); iter.hasNext();) {
+        List<IIpsTestRunListener> copy = new ArrayList<IIpsTestRunListener>(fIpsTestRunListeners);
+        for (Iterator<IIpsTestRunListener> iter = copy.iterator(); iter.hasNext();) {
             IIpsTestRunListener listener = (IIpsTestRunListener) iter.next();
             listener.testTableEntries(qualifiedNames, fullPaths);
         }
@@ -857,8 +866,8 @@ public class IpsTestRunner implements IIpsTestRunner {
             }
         testRunnerMonitor.subTask(qualifiedTestName);
         
-        List copy = new ArrayList(fIpsTestRunListeners);
-        for (Iterator iter = copy.iterator(); iter.hasNext();) {
+        List<IIpsTestRunListener> copy = new ArrayList<IIpsTestRunListener>(fIpsTestRunListeners);
+        for (Iterator<IIpsTestRunListener> iter = copy.iterator(); iter.hasNext();) {
 			IIpsTestRunListener listener = (IIpsTestRunListener) iter.next();
 			listener.testStarted(qualifiedTestName);
 		}
@@ -866,8 +875,8 @@ public class IpsTestRunner implements IIpsTestRunner {
     
     private void notifyTestFinished(String qualifiedTestName) {
         testRunnerMonitor.worked(1);
-        List copy = new ArrayList(fIpsTestRunListeners);
-        for (Iterator iter = copy.iterator(); iter.hasNext();) {
+        List<IIpsTestRunListener> copy = new ArrayList<IIpsTestRunListener>(fIpsTestRunListeners);
+        for (Iterator<IIpsTestRunListener> iter = copy.iterator(); iter.hasNext();) {
             IIpsTestRunListener listener = (IIpsTestRunListener)iter.next();
             listener.testFinished(qualifiedTestName);
         }
@@ -875,8 +884,8 @@ public class IpsTestRunner implements IIpsTestRunner {
     
     private void notifyTestFailureOccured(String testFailureOccured, String[] failureDetails) {
         // defensive copy to avoid concurrent modification exceptions
-        List copy = new ArrayList(fIpsTestRunListeners);        
-        for (Iterator iter = copy.iterator(); iter.hasNext();) {
+        List<IIpsTestRunListener> copy = new ArrayList<IIpsTestRunListener>(fIpsTestRunListeners);        
+        for (Iterator<IIpsTestRunListener> iter = copy.iterator(); iter.hasNext();) {
 			IIpsTestRunListener listener = (IIpsTestRunListener) iter.next();
 			listener.testFailureOccured(testFailureOccured, failureDetails);
 		}
@@ -884,24 +893,24 @@ public class IpsTestRunner implements IIpsTestRunner {
     
 	private void notifyTestRunStarted(int count, String repositoryPackage, String testPackage) {
         testRunnerMonitor.beginTask(Messages.IpsTestRunner_Job_Name, count);
-        List copy = new ArrayList(fIpsTestRunListeners); 
-        for (Iterator iter = copy.iterator(); iter.hasNext();) {
+        List<IIpsTestRunListener> copy = new ArrayList<IIpsTestRunListener>(fIpsTestRunListeners); 
+        for (Iterator<IIpsTestRunListener> iter = copy.iterator(); iter.hasNext();) {
 			IIpsTestRunListener listener = (IIpsTestRunListener) iter.next();
 			listener.testRunStarted(count, repositoryPackage, testPackage);
 		}		
 	} 
 	
 	private void notifyTestRunEnded(String elapsedTime) {
-        List copy = new ArrayList(fIpsTestRunListeners); 
-        for (Iterator iter = copy.iterator(); iter.hasNext();) {
+        List<IIpsTestRunListener> copy = new ArrayList<IIpsTestRunListener>(fIpsTestRunListeners); 
+        for (Iterator<IIpsTestRunListener> iter = copy.iterator(); iter.hasNext();) {
 			IIpsTestRunListener listener = (IIpsTestRunListener) iter.next();
 			listener.testRunEnded(elapsedTime);
 		}		
 	} 
 
 	private void notifyTestErrorOccured(String qualifiedTestName, String[] errorDetails) {
-        List copy = new ArrayList(fIpsTestRunListeners); 
-        for (Iterator iter = copy.iterator(); iter.hasNext();) {
+        List<IIpsTestRunListener> copy = new ArrayList<IIpsTestRunListener>(fIpsTestRunListeners); 
+        for (Iterator<IIpsTestRunListener> iter = copy.iterator(); iter.hasNext();) {
 			IIpsTestRunListener listener = (IIpsTestRunListener) iter.next();
 			listener.testErrorOccured(qualifiedTestName, errorDetails);
 		}
@@ -971,14 +980,14 @@ public class IpsTestRunner implements IIpsTestRunner {
         job.setSystem(false);
         // we don't need to specify a rule here, because the ips test runner
         // didn't depend on a rule, there will be no blocking events (e.g. builder could be depend
-        // on job finishing or somthing else)
+        // on job finishing or something else)
         //   IWorkspace workspace = ResourcesPlugin.getWorkspace();
         //   job.setRule(workspace.getRoot());
         try {
             // wait until the build has finished
             // the join invocation will block until the auto-build job completes, 
             // or until the join is interrupted or canceled.
-            Platform.getJobManager().join(ResourcesPlugin.FAMILY_AUTO_BUILD, null);
+            Job.getJobManager().join(ResourcesPlugin.FAMILY_AUTO_BUILD, null);
         } catch (OperationCanceledException ignored) {
         } catch (InterruptedException ignored) {
         }
@@ -1008,5 +1017,13 @@ public class IpsTestRunner implements IIpsTestRunner {
      */
     private boolean isInsideTimeIntervall(long timeToCheck){
         return System.currentTimeMillis() < (timeToCheck + MAX_START_TIME_INTERVAL);
+    }    
+    
+    /** 
+     * Returns an array of environment variables to be used when
+     * launching the given configuration or <code>null</code> if unspecified.
+     */ 
+    public String[] getEnvironment(ILaunchConfiguration configuration) throws CoreException {
+        return DebugPlugin.getDefault().getLaunchManager().getEnvironment(configuration);
     }    
 }
