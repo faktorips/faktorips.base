@@ -24,6 +24,10 @@ public class Messages extends NLS {
     private static final String BUNDLE_NAME = "org.faktorips.devtools.core.ui.editors.enumtype.messages"; //$NON-NLS-1$
 
     public static String EnumTypeEditor_title;
+    public static String EnumTypeGeneralInfoSection_title;
+    public static String EnumTypeGeneralInfoSection_linkSuperclass;
+    public static String EnumTypeGeneralInfoSection_labelAbstract;
+    public static String EnumTypeGeneralInfoSection_labelValuesArePartOfModel;
     public static String EnumTypeStructurePage_title;
     public static String EnumAttributesSection_title;
     public static String EnumAttributeEditDialog_title;

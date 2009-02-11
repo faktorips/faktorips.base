@@ -105,4 +105,8 @@ public class EnumAttributeTest extends AbstractIpsEnumPluginTest {
         genderEnumAttributeId.setDatatype(STRING_DATATYPE_NAME);
     }
 
+    public void testGetImage() {
+        assertNotNull(genderEnumAttributeId.getImage());
+    }
+
 }

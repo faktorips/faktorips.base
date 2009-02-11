@@ -426,4 +426,19 @@ public class EnumType extends EnumValueContainer implements IEnumType {
         }
     }
 
+    /**
+     * {@inheritDoc}
+     */
+    public IEnumType findSuperEnumType() throws CoreException {
+        IIpsSrcFile[] enumTypeSrcFiles = getIpsProject().findIpsSrcFiles(IpsObjectType.ENUM_TYPE);
+        for (IIpsSrcFile currentIpsSrcFile : enumTypeSrcFiles) {
+            IEnumType currentEnumType = (IEnumType)currentIpsSrcFile.getIpsObject();
+            if (currentEnumType.getQualifiedName().equals(superEnumType)) {
+                return currentEnumType;
+            }
+        }
+
+        return null;
+    }
+
 }

@@ -79,11 +79,18 @@ public abstract class IpsSection extends Composite implements IDataChangeableRea
     }
 
     /**
-     * Constructs the section's controls. This has to to be called explicitly by subclasses
-     * <b>after</b> they have initialized any subclass specific instance variables. The
-     * <code>IpsSection</code> does not call this method in it's constructor, because in subclasses
-     * in might be neccessary to initialize instance variable first, but the call to the super
-     * constructor has to be the first statement in the subclass constructor.
+     * <p>
+     * Constructs the section's controls.
+     * </p>
+     * <p>
+     * This has to to be called explicitly by subclasses <b>after</b> they have initialized any
+     * subclass specific instance variables.
+     * </p>
+     * <p>
+     * The <code>IpsSection</code> does not call this method in it's constructor, because in
+     * subclasses in might be neccessary to initialize instance variable first, but the call to the
+     * super constructor has to be the first statement in the subclass constructor.
+     * </p>
      */
     public void initControls() {
         toolkit.getFormToolkit().adapt(this);
@@ -98,6 +105,13 @@ public abstract class IpsSection extends Composite implements IDataChangeableRea
         toolkit.getFormToolkit().paintBordersFor(client);
     }
 
+    /**
+     * Creates the ui controls for this section. All subclasses must implement this method on their
+     * own.
+     * 
+     * @param client The composite to create the ui elements into.
+     * @param toolkit The ui toolkit used to create new ui elements.
+     */
     protected abstract void initClientComposite(Composite client, UIToolkit toolkit);
 
     protected Section getSectionControl() {
@@ -128,6 +142,7 @@ public abstract class IpsSection extends Composite implements IDataChangeableRea
         }
     }
 
+    // TODO javadoc
     protected abstract void performRefresh();
 
     /**

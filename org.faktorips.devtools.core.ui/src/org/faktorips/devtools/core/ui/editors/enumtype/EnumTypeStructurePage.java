@@ -27,6 +27,7 @@ import org.faktorips.devtools.core.ui.editors.type.TypeEditorStructurePage;
  */
 public class EnumTypeStructurePage extends TypeEditorStructurePage {
 
+    // The enum type editor this page belongs to
     private EnumTypeEditor enumTypeEditor;
 
     /**
@@ -65,7 +66,7 @@ public class EnumTypeStructurePage extends TypeEditorStructurePage {
      */
     @Override
     protected void createGeneralPageInfoSection(Composite parentContainer, UIToolkit toolkit) {
-        // TODO
+        new EnumTypeGeneralInfoSection(enumTypeEditor.getEnumType(), parentContainer, toolkit);
     }
 
 }

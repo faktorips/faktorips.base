@@ -41,7 +41,7 @@ public class EnumAttributeEditDialog extends IpsPartEditDialog2 {
     // The enum attribute being edited
     private IEnumAttribute enumAttribute;
 
-    // The extension property factory
+    // The extension property factory that may extend the controls
     private ExtensionPropertyControlFactory extFactory;
 
     /**
@@ -78,8 +78,9 @@ public class EnumAttributeEditDialog extends IpsPartEditDialog2 {
     private Control createGeneralPage(TabFolder tabFolder) {
         Composite control = createTabItemComposite(tabFolder, 1, false);
         Group generalGroup = uiToolkit.createGroup(control, Messages.EnumAttributeEditDialog_generalGroup);
-
         Composite workArea = uiToolkit.createLabelEditColumnComposite(generalGroup);
+
+        // Create extension properties on position top
         extFactory.createControls(workArea, uiToolkit, enumAttribute, IExtensionPropertyDefinition.POSITION_TOP);
 
         uiToolkit.createFormLabel(workArea, Messages.EnumAttributeEditDialog_labelName);
@@ -96,7 +97,8 @@ public class EnumAttributeEditDialog extends IpsPartEditDialog2 {
         Checkbox identifierCheckbox = uiToolkit.createCheckbox(workArea);
         bindingContext.bindContent(identifierCheckbox, enumAttribute, IEnumAttribute.PROPERTY_IDENTIFIER);
 
-        extFactory.createControls(workArea, uiToolkit, enumAttribute, IExtensionPropertyDefinition.POSITION_TOP);
+        // Create extension properties on position bottom
+        extFactory.createControls(workArea, uiToolkit, enumAttribute, IExtensionPropertyDefinition.POSITION_BOTTOM);
         extFactory.bind(bindingContext);
 
         return control;

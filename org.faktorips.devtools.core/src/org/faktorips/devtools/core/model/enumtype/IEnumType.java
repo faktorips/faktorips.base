@@ -58,7 +58,7 @@ public interface IEnumType extends IEnumValueContainer, Datatype {
     public final static String XML_TAG = "EnumType"; //$NON-NLS-1$
 
     /** Name of the supertype property. */
-    public final static String PROPERTY_SUPERTYPE = "supertype"; //$NON-NLS-1$
+    public final static String PROPERTY_SUPERTYPE = "superEnumType"; //$NON-NLS-1$
 
     /** Name of the isAbstract property. */
     public final static String PROPERTY_ABSTRACT = "abstract"; //$NON-NLS-1$
@@ -90,6 +90,16 @@ public interface IEnumType extends IEnumValueContainer, Datatype {
      * @throws NullPointerException If superEnumTypeQualifiedName is <code>null</code>.
      */
     public void setSuperEnumType(String superEnumTypeQualifiedName);
+
+    /**
+     * Searches and returns the super enum type of this enum type if any is specified.
+     * 
+     * @return A reference to the super enum type or <code>null</code> if none is specified.
+     * 
+     * @throws CoreException If an error occurs while searching the ips project for the super enum
+     *             type.
+     */
+    public IEnumType findSuperEnumType() throws CoreException;
 
     /**
      * Returns <code>true</code> if this enum type is abstract in terms of the object oriented
