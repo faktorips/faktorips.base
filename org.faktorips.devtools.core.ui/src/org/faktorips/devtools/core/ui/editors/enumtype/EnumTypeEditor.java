@@ -51,6 +51,11 @@ public class EnumTypeEditor extends TypeEditor {
         return Messages.EnumTypeEditor_title + getIpsObject().getName();
     }
 
+    /**
+     * Returns the enum type this editor is currently editing.
+     * 
+     * @return A reference to the enum type that is currently being edited by this editor.
+     */
     IEnumType getEnumType() {
         return (IEnumType)getIpsObject();
     }
