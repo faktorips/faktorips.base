@@ -93,6 +93,7 @@ public class EnumTypeGeneralInfoSection extends IpsSection {
         });
 
         EnumTypeRefControl supertypeRefControl = toolkit.createEnumTypeRefControl(enumType.getIpsProject(), composite);
+        supertypeRefControl.setCurrentEnumType(enumType);
         bindingContext.bindContent(supertypeRefControl, enumType, IEnumType.PROPERTY_SUPERTYPE);
 
         Composite checkBoxesComposite = toolkit.createLabelEditColumnComposite(client);
