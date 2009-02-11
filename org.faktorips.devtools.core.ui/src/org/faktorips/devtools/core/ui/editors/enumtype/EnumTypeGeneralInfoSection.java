@@ -76,7 +76,10 @@ public class EnumTypeGeneralInfoSection extends IpsSection {
 
         Hyperlink link = toolkit.createHyperlink(composite, Messages.EnumTypeGeneralInfoSection_linkSuperclass);
         link.addHyperlinkListener(new HyperlinkAdapter() {
-
+            /**
+             * {@inheritDoc}
+             */
+            @Override
             public void linkActivated(HyperlinkEvent event) {
                 try {
                     IEnumType supertype = enumType.findSuperEnumType();
@@ -86,9 +89,7 @@ public class EnumTypeGeneralInfoSection extends IpsSection {
                 } catch (Exception e) {
                     IpsPlugin.logAndShowErrorDialog(e);
                 }
-
             }
-
         });
 
         EnumTypeRefControl supertypeRefControl = toolkit.createEnumTypeRefControl(enumType.getIpsProject(), composite);
