@@ -122,7 +122,7 @@ public interface IEnumType extends IEnumValueContainer, Datatype {
      * @return Flag indicating whether the values for this enum type are defined in the enum type
      *         itself.
      */
-    public boolean valuesArePartOfModel();
+    public boolean getValuesArePartOfModel();
 
     /**
      * Allows to set the property whether the values for this enum type will be defined in the enum

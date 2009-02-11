@@ -53,9 +53,9 @@ public class EnumTypeTest extends AbstractIpsEnumPluginTest {
     }
 
     public void testGetSetValuesPartOfModel() {
-        assertFalse(genderEnumType.valuesArePartOfModel());
+        assertFalse(genderEnumType.getValuesArePartOfModel());
         genderEnumType.setValuesArePartOfModel(true);
-        assertTrue(genderEnumType.valuesArePartOfModel());
+        assertTrue(genderEnumType.getValuesArePartOfModel());
     }
 
     public void testGetIpsObjectType() {
@@ -263,7 +263,7 @@ public class EnumTypeTest extends AbstractIpsEnumPluginTest {
         IEnumType loadedEnumType = newEnumType(ipsProject, "LoadedEnumType");
         loadedEnumType.initFromXml(xmlElement);
         assertTrue(loadedEnumType.isAbstract());
-        assertTrue(loadedEnumType.valuesArePartOfModel());
+        assertTrue(loadedEnumType.getValuesArePartOfModel());
         assertEquals(genderEnumType.getQualifiedName(), loadedEnumType.getSuperEnumType());
     }
 

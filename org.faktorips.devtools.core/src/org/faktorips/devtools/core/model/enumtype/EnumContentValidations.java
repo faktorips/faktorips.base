@@ -85,7 +85,7 @@ public abstract class EnumContentValidations {
                 validationMessageList.add(new Message(IEnumContent.MSGCODE_ENUM_CONTENT_ENUM_TYPE_DOES_NOT_EXIST, text,
                         Message.ERROR, objectProperties));
             } else {
-                if (enumTypeRef.valuesArePartOfModel()) {
+                if (enumTypeRef.getValuesArePartOfModel()) {
                     text = NLS.bind(Messages.EnumContent_ValuesArePartOfModel, enumTypeQualifiedName);
                     validationMessageList.add(new Message(IEnumContent.MSGCODE_ENUM_CONTENT_VALUES_ARE_PART_OF_MODEL,
                             text, Message.ERROR, objectProperties));

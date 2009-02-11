@@ -97,7 +97,7 @@ public class EnumType extends EnumValueContainer implements IEnumType {
     /**
      * {@inheritDoc}
      */
-    public boolean valuesArePartOfModel() {
+    public boolean getValuesArePartOfModel() {
         return valuesArePartOfModel;
     }
 
