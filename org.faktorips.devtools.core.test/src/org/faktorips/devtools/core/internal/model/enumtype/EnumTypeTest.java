@@ -129,7 +129,9 @@ public class EnumTypeTest extends AbstractIpsEnumPluginTest {
         assertEquals(valueName, genderEnumValueMale.getEnumAttributeValues().get(1));
         assertEquals(valueNew, genderEnumValueMale.getEnumAttributeValues().get(2));
 
-        genderEnumType.moveEnumAttributeUp(newEnumAttribute);
+        int newIndex;
+        newIndex = genderEnumType.moveEnumAttributeUp(newEnumAttribute);
+        assertEquals(1, newIndex);
         assertEquals(genderEnumAttributeId, genderEnumType.getEnumAttributes().get(0));
         assertEquals(newEnumAttribute, genderEnumType.getEnumAttributes().get(1));
         assertEquals(genderEnumAttributeName, genderEnumType.getEnumAttributes().get(2));
@@ -137,7 +139,8 @@ public class EnumTypeTest extends AbstractIpsEnumPluginTest {
         assertEquals(valueNew, genderEnumValueMale.getEnumAttributeValues().get(1));
         assertEquals(valueName, genderEnumValueMale.getEnumAttributeValues().get(2));
 
-        genderEnumType.moveEnumAttributeUp(newEnumAttribute);
+        newIndex = genderEnumType.moveEnumAttributeUp(newEnumAttribute);
+        assertEquals(0, newIndex);
         assertEquals(newEnumAttribute, genderEnumType.getEnumAttributes().get(0));
         assertEquals(genderEnumAttributeId, genderEnumType.getEnumAttributes().get(1));
         assertEquals(genderEnumAttributeName, genderEnumType.getEnumAttributes().get(2));
@@ -146,7 +149,8 @@ public class EnumTypeTest extends AbstractIpsEnumPluginTest {
         assertEquals(valueName, genderEnumValueMale.getEnumAttributeValues().get(2));
 
         // Nothing must change if the enum attribute is the first one already
-        genderEnumType.moveEnumAttributeUp(newEnumAttribute);
+        newIndex = genderEnumType.moveEnumAttributeUp(newEnumAttribute);
+        assertEquals(0, newIndex);
         assertEquals(newEnumAttribute, genderEnumType.getEnumAttributes().get(0));
         assertEquals(genderEnumAttributeId, genderEnumType.getEnumAttributes().get(1));
         assertEquals(genderEnumAttributeName, genderEnumType.getEnumAttributes().get(2));
@@ -188,7 +192,9 @@ public class EnumTypeTest extends AbstractIpsEnumPluginTest {
         assertEquals(valueName, genderEnumValueMale.getEnumAttributeValues().get(1));
         assertEquals(valueNew, genderEnumValueMale.getEnumAttributeValues().get(2));
 
-        genderEnumType.moveEnumAttributeDown(genderEnumAttributeId);
+        int newIndex;
+        newIndex = genderEnumType.moveEnumAttributeDown(genderEnumAttributeId);
+        assertEquals(1, newIndex);
         assertEquals(genderEnumAttributeName, genderEnumType.getEnumAttributes().get(0));
         assertEquals(genderEnumAttributeId, genderEnumType.getEnumAttributes().get(1));
         assertEquals(newEnumAttribute, genderEnumType.getEnumAttributes().get(2));
@@ -196,7 +202,8 @@ public class EnumTypeTest extends AbstractIpsEnumPluginTest {
         assertEquals(valueId, genderEnumValueMale.getEnumAttributeValues().get(1));
         assertEquals(valueNew, genderEnumValueMale.getEnumAttributeValues().get(2));
 
-        genderEnumType.moveEnumAttributeDown(genderEnumAttributeId);
+        newIndex = genderEnumType.moveEnumAttributeDown(genderEnumAttributeId);
+        assertEquals(2, newIndex);
         assertEquals(genderEnumAttributeName, genderEnumType.getEnumAttributes().get(0));
         assertEquals(newEnumAttribute, genderEnumType.getEnumAttributes().get(1));
         assertEquals(genderEnumAttributeId, genderEnumType.getEnumAttributes().get(2));
@@ -205,7 +212,8 @@ public class EnumTypeTest extends AbstractIpsEnumPluginTest {
         assertEquals(valueId, genderEnumValueMale.getEnumAttributeValues().get(2));
 
         // Nothing must change if the enum attribute is the last one already
-        genderEnumType.moveEnumAttributeDown(genderEnumAttributeId);
+        newIndex = genderEnumType.moveEnumAttributeDown(genderEnumAttributeId);
+        assertEquals(2, newIndex);
         assertEquals(genderEnumAttributeName, genderEnumType.getEnumAttributes().get(0));
         assertEquals(newEnumAttribute, genderEnumType.getEnumAttributes().get(1));
         assertEquals(genderEnumAttributeId, genderEnumType.getEnumAttributes().get(2));
