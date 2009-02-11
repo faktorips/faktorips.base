@@ -89,6 +89,10 @@ public class EnumTypeTest extends AbstractIpsEnumPluginTest {
         assertEquals(2, genderEnumType.getNumberEnumAttributes());
     }
 
+    public void testGetChildren() throws CoreException {
+        assertEquals(2, genderEnumType.getChildren().length);
+    }
+
     public void testNewEnumAttribute() throws CoreException {
         IEnumAttribute description = genderEnumType.newEnumAttribute();
         description.setName("Description");

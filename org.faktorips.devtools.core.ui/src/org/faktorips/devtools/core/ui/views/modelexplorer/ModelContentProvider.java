@@ -34,6 +34,7 @@ import org.eclipse.ui.model.IWorkbenchAdapter;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.model.IIpsElement;
 import org.faktorips.devtools.core.model.IIpsModel;
+import org.faktorips.devtools.core.model.enumtype.IEnumAttribute;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObject;
 import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
@@ -44,9 +45,9 @@ import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAttribute;
 
 /**
- * Class for calculation the content of the ModelExplorer tree. The returned Lists of
- * PackageFragments are dependant on the current layout style indicated by the
- * <code>isFlatLayout</code> flag.
+ * Class for calculation the content of the model explorer tree. The returned lists of package
+ * fragments are dependant on the current layout style indicated by the <code>isFlatLayout</code>
+ * flag.
  * 
  * @author Stefan Widmaier
  */
@@ -61,7 +62,8 @@ public class ModelContentProvider implements ITreeContentProvider {
     private boolean excludeNoIpsProjects;
 
     /**
-     * Constructs a ModelContentProvider using the given Configuration and the given layout style.
+     * Constructs a new <code>ModelContentProvider</code> using the given configuration and the
+     * given layout style.
      */
     public ModelContentProvider(ModelExplorerConfiguration config, boolean flatLayout) {
         configuration = config;
@@ -84,6 +86,10 @@ public class ModelContentProvider implements ITreeContentProvider {
             if (parentElement instanceof IPolicyCmptTypeAttribute) {
                 return EMPTY_ARRAY;
             }
+            if (parentElement instanceof IEnumAttribute) {
+                return EMPTY_ARRAY;
+            }
+
             try {
                 if (parentElement instanceof IIpsProject) {
                     return getProjectContent((IIpsProject)parentElement);
@@ -104,10 +110,12 @@ public class ModelContentProvider implements ITreeContentProvider {
                 IpsPlugin.log(e);
                 return EMPTY_ARRAY;
             }
+
         } else if (parentElement instanceof IResource) {
             if (parentElement instanceof IAdaptable) {
                 IWorkbenchAdapter adapter = (IWorkbenchAdapter)((IAdaptable)parentElement)
                         .getAdapter(IWorkbenchAdapter.class);
+
                 if (adapter != null) {
                     // filter out java classpath entries and outputlocations
                     // (used for folders in IpsProjects)
@@ -117,19 +125,24 @@ public class ModelContentProvider implements ITreeContentProvider {
                 }
             }
         }
+
         return EMPTY_ARRAY;
     }
 
     /**
-     * Returns an array containing all (non-IPS) folders in the given project and all
-     * packageFragmentRoots that exist as folders in the filesystem.
+     * <p>
+     * Returns an array containing all (non-IPS) folders in the given project and all package
+     * fragment roots that exist as folders in the filesystem.
+     * </p>
      * <p>
      * When calling <code>IpsProject#getIpsPackageFragmentRoots()</code> the project retrieves all
      * entries from the IpsObjectPath and returns them as handles without checking if the underlying
-     * resources actually exist. Thus the filtering of packagefragment roots is necessary to prevent
-     * these handles from being displayed in the tree.
+     * resources actually exist. Thus the filtering of package fragment roots is necessary to
+     * prevent these handles from being displayed in the tree.
+     * </p>
      * <p>
      * This problem does not occur with <code>IResource</code>s.
+     * </p>
      */
     private Object[] getProjectContent(IIpsProject project) throws CoreException {
         IIpsPackageFragmentRoot[] roots = project.getIpsPackageFragmentRoots();
@@ -139,6 +152,7 @@ public class ModelContentProvider implements ITreeContentProvider {
                 existingRoots.add(roots[i]);
             }
         }
+
         Object[] result = concatenate(existingRoots.toArray(), project.getNonIpsResources());
         return result;
     }
@@ -152,6 +166,7 @@ public class ModelContentProvider implements ITreeContentProvider {
      */
     private Object[] getNonJavaResourcesAndNonActiveIpsArchives(IFolder folder) {
         try {
+
             IProject project = folder.getProject();
             IResource[] children = folder.members();
             if (project == null) {
@@ -173,10 +188,13 @@ public class ModelContentProvider implements ITreeContentProvider {
                     childResources.add(children[i]);
                 }
             }
+
             return childResources.toArray(new IResource[childResources.size()]);
+
         } catch (JavaModelException e) {
             IpsPlugin.log(e);
             return EMPTY_ARRAY;
+
         } catch (CoreException e) {
             IpsPlugin.log(e);
             return EMPTY_ARRAY;
@@ -191,6 +209,7 @@ public class ModelContentProvider implements ITreeContentProvider {
         if (!(resource instanceof IFile)) {
             return false;
         }
+
         try {
             if (project.hasNature(IIpsProject.NATURE_ID)) {
                 // check if one of the archive entries in the ips object path is the given file
@@ -208,6 +227,7 @@ public class ModelContentProvider implements ITreeContentProvider {
         } catch (CoreException e) {
             IpsPlugin.log(e);
         }
+
         return false;
     }
 
@@ -229,15 +249,19 @@ public class ModelContentProvider implements ITreeContentProvider {
             if (resource.getFullPath().equals(outputPath)) {
                 return true;
             }
+
             for (int i = 0; i < entries.length; i++) {
                 if (resource.getFullPath().equals(entries[i].getOutputLocation())) {
                     return true;
                 }
             }
+
             if (jProject.isOnClasspath(resource)) {
                 return true;
             }
+
             return false;
+
         } catch (JavaModelException e) {
             IpsPlugin.log(e);
             return false;
@@ -414,10 +438,13 @@ public class ModelContentProvider implements ITreeContentProvider {
                     parent = parent.getParent();
                 }
             }
+
             return parent;
+
         } else if (element instanceof IResource) {
             return ((IResource)element).getParent();
         }
+
         return null;
     }
 
@@ -473,6 +500,7 @@ public class ModelContentProvider implements ITreeContentProvider {
     }
 
     public void inputChanged(Viewer viewer, Object oldInput, Object newInput) {
+
     }
 
     /**
@@ -494,6 +522,7 @@ public class ModelContentProvider implements ITreeContentProvider {
         Object[] result = new Object[length1 + length2];
         System.arraycopy(arr1, 0, result, 0, length1);
         System.arraycopy(arr2, 0, result, length1, length2);
+
         return result;
     }
 

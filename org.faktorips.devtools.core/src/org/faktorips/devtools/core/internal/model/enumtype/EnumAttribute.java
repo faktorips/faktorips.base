@@ -18,6 +18,7 @@ import java.util.List;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.osgi.util.NLS;
 import org.eclipse.swt.graphics.Image;
+import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.internal.model.ipsobject.AtomicIpsObjectPart;
 import org.faktorips.devtools.core.model.enumtype.IEnumAttribute;
 import org.faktorips.devtools.core.model.enumtype.IEnumType;
@@ -38,6 +39,9 @@ import org.w3c.dom.Element;
  * @since 2.3
  */
 public class EnumAttribute extends AtomicIpsObjectPart implements IEnumAttribute {
+
+    // The icon representing an enum attribute
+    private final String ICON = "EnumAttribute.gif";
 
     // The datatype of this attribute
     private String datatype;
@@ -131,8 +135,7 @@ public class EnumAttribute extends AtomicIpsObjectPart implements IEnumAttribute
      * {@inheritDoc}
      */
     public Image getImage() {
-        // TODO Image handling
-        return null;
+        return IpsPlugin.getDefault().getImage(ICON); //$NON-NLS-1$
     }
 
     /**

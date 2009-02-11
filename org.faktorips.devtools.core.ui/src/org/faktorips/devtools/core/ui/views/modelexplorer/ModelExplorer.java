@@ -69,6 +69,7 @@ import org.eclipse.ui.part.ViewPart;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.model.IIpsElement;
 import org.faktorips.devtools.core.model.bf.IBusinessFunction;
+import org.faktorips.devtools.core.model.enumtype.IEnumAttribute;
 import org.faktorips.devtools.core.model.enumtype.IEnumContent;
 import org.faktorips.devtools.core.model.enumtype.IEnumType;
 import org.faktorips.devtools.core.model.ipsobject.IFixDifferencesToModelSupport;
@@ -409,7 +410,9 @@ public class ModelExplorer extends ViewPart implements IShowInTarget {
      */
     protected ModelLabelProvider labelProvider;
 
-    // TODO javadoc
+    /**
+     * The model explorer configuration containing the allowed types.
+     */
     protected ModelExplorerConfiguration config;
 
     /**
@@ -483,6 +486,7 @@ public class ModelExplorer extends ViewPart implements IShowInTarget {
      * <li>ITableStructure</li>
      * <li>ITableContents</li>
      * <li>IBusinessFunction</li>
+     * <li>IEnumAttribute</li>
      * <li>IAttribute</li>
      * <li>IAssociation</li>
      * <li>IMethod</li>
@@ -500,11 +504,17 @@ public class ModelExplorer extends ViewPart implements IShowInTarget {
         return new ModelExplorerConfiguration(new Class[] { IPolicyCmptType.class, IProductCmptType.class,
                 IEnumType.class, IEnumContent.class, IProductCmpt.class, IProductCmptGeneration.class,
                 ITableStructure.class, ITableContents.class, IBusinessFunction.class, IAttribute.class,
-                IAssociation.class, IMethod.class, ITableStructureUsage.class, ITestCase.class, ITestCaseType.class },
-                new Class[] { IFolder.class, IFile.class, IProject.class });
+                IEnumAttribute.class, IAssociation.class, IMethod.class, ITableStructureUsage.class, ITestCase.class,
+                ITestCaseType.class }, new Class[] { IFolder.class, IFile.class, IProject.class });
     }
 
-    // TODO javadoc
+    /**
+     * Creates the <code>ModelContentProvider</code> that is used by the model explorer to show
+     * contents.
+     * 
+     * @return A reference to the <code>ModelContentProvider</code> to be used by the model
+     *         explorer.
+     */
     protected ModelContentProvider createContentProvider() {
         return new ModelContentProvider(config, isFlatLayout);
     }
@@ -611,7 +621,12 @@ public class ModelExplorer extends ViewPart implements IShowInTarget {
         }
     }
 
-    // TODO javadoc
+    /**
+     * This operation is empty by default. Subclasses may overwrite to create filters for filtering
+     * out specific content from the model explorer.
+     * 
+     * @param tree
+     */
     protected void createFilters(TreeViewer tree) {
 
     }
@@ -655,7 +670,9 @@ public class ModelExplorer extends ViewPart implements IShowInTarget {
 
     }
 
-    // TODO javadoc
+    /**
+     * Creates the context menu for the model explorer.
+     */
     protected void createContextMenu() {
         MenuManager manager = new MenuManager();
         manager.setRemoveAllWhenShown(true);
