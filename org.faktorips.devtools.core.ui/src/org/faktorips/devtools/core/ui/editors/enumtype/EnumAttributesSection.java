@@ -28,6 +28,7 @@ import org.faktorips.devtools.core.ui.UIToolkit;
 import org.faktorips.devtools.core.ui.editors.EditDialog;
 import org.faktorips.devtools.core.ui.editors.IpsPartsComposite;
 import org.faktorips.devtools.core.ui.editors.SimpleIpsPartsSection;
+import org.faktorips.util.ArgumentCheck;
 
 /**
  * The ui section for the enum type structure page that contains the enum attributes of the enum
@@ -75,10 +76,14 @@ public class EnumAttributesSection extends SimpleIpsPartsSection {
          * 
          * @param enumType The enum type to show the attributes of.
          * @param parent The parent ui composite.
-         * @param toolkit The ui toolkit to create ui elements with.
+         * @param toolkit The ui toolkit to create new ui elements with.
+         * 
+         * @throws NullPointerException If enumType is <code>null</code>.
          */
         public EnumAttributesComposite(IEnumType enumType, Composite parent, UIToolkit toolkit) {
             super(enumType, parent, toolkit);
+
+            ArgumentCheck.notNull(enumType);
 
             this.enumType = enumType;
         }

@@ -21,14 +21,12 @@ import org.eclipse.osgi.util.NLS;
 import org.eclipse.swt.graphics.Image;
 import org.faktorips.devtools.core.internal.model.ipsobject.BaseIpsObjectPart;
 import org.faktorips.devtools.core.internal.model.ipsobject.IpsObjectPartCollection;
-import org.faktorips.devtools.core.model.enumtype.IEnumAttribute;
 import org.faktorips.devtools.core.model.enumtype.IEnumAttributeValue;
 import org.faktorips.devtools.core.model.enumtype.IEnumType;
 import org.faktorips.devtools.core.model.enumtype.IEnumValue;
 import org.faktorips.devtools.core.model.enumtype.IEnumValueContainer;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPart;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
-import org.faktorips.util.ArgumentCheck;
 import org.faktorips.util.message.Message;
 import org.faktorips.util.message.MessageList;
 import org.w3c.dom.Document;
@@ -110,57 +108,56 @@ public class EnumValue extends BaseIpsObjectPart implements IEnumValue {
      * {@inheritDoc}
      */
     public IEnumAttributeValue newEnumAttributeValue() throws CoreException {
-        if (((IEnumValueContainer)getParent()).findEnumType().getNumberEnumAttributes() <= enumAttributeValues.size()) {
-            throw new IllegalStateException("There are already as many enum attribute values as enum attributes.");
-        }
-
         return (IEnumAttributeValue)newPart(IEnumAttributeValue.class);
     }
 
-    /**
-     * {@inheritDoc}
+    /*
+     * Moves the enum attribute value that has been assigned to the given enum attribute identified
+     * by the its index one position down in the collection order.
+     * 
+     * If no corresponding enum attribute value can be found or the enum attribute value is already
+     * the last one then nothing will be done.
+     * 
+     * @param enumAttributeIndex The index of the enum attribute, that the enum attribute value that
+     * is to be moved downwards, refers to.
      */
-    public void moveEnumAttributeValueDown(IEnumAttribute enumAttribute) {
-        ArgumentCheck.notNull(enumAttribute);
-
-        moveEnumAttributeValue(enumAttribute, false);
+    void moveEnumAttributeValueDown(int enumAttributeIndex) {
+        moveEnumAttributeValue(enumAttributeIndex, false);
     }
 
-    /**
-     * {@inheritDoc}
+    /*
+     * Moves the enum attribute value that has been assigned to the given enum attribute identified
+     * by the its index one position up in the collection order.
+     * 
+     * If no corresponding enum attribute value can be found or the enum attribute value is already
+     * the first one then nothing will be done.
+     * 
+     * @param enumAttributeIndex The index of the enum attribute, that the enum attribute value that
+     * is to be moved upwards, refers to.
      */
-    public void moveEnumAttributeValueUp(IEnumAttribute enumAttribute) {
-        ArgumentCheck.notNull(enumAttribute);
-
-        moveEnumAttributeValue(enumAttribute, true);
+    void moveEnumAttributeValueUp(int enumAttributeIndex) {
+        moveEnumAttributeValue(enumAttributeIndex, true);
     }
 
     /*
      * Moves the enum attribute value refering to the given enum attribute up or down in the
      * collection order by 1
      */
-    private void moveEnumAttributeValue(IEnumAttribute enumAttribute, boolean up) {
+    private void moveEnumAttributeValue(int enumAttributeIndex, boolean up) {
         List<IEnumAttributeValue> enumAttributeValuesList = getEnumAttributeValues();
-        for (int i = 0; i < enumAttributeValuesList.size(); i++) {
-            IEnumAttributeValue currentEnumAttributeValue = enumAttributeValuesList.get(i);
-            if (currentEnumAttributeValue.getEnumAttribute() == enumAttribute) {
 
-                // Return if element is already the first / last one
-                if (up) {
-                    if (i == 0) {
-                        return;
-                    }
-                } else {
-                    if (i == enumAttributeValuesList.size() - 1) {
-                        return;
-                    }
-                }
-
-                enumAttributeValues.moveParts(new int[] { i }, up);
-                break;
-
+        // Return if element is already the first / last one
+        if (up) {
+            if (enumAttributeIndex == 0) {
+                return;
+            }
+        } else {
+            if (enumAttributeIndex == enumAttributeValuesList.size() - 1) {
+                return;
             }
         }
+
+        enumAttributeValues.moveParts(new int[] { enumAttributeIndex }, up);
     }
 
     /**

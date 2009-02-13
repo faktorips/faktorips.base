@@ -13,6 +13,8 @@
 
 package org.faktorips.devtools.core.internal.model.enumtype;
 
+import java.util.List;
+
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.swt.graphics.Image;
 import org.faktorips.devtools.core.internal.model.ipsobject.AtomicIpsObjectPart;
@@ -35,9 +37,6 @@ import org.w3c.dom.Element;
  */
 public class EnumAttributeValue extends AtomicIpsObjectPart implements IEnumAttributeValue {
 
-    // The enum attribute this enum attribute value refers to
-    private IEnumAttribute enumAttribute;
-
     // The actual value
     private String value;
 
@@ -52,8 +51,6 @@ public class EnumAttributeValue extends AtomicIpsObjectPart implements IEnumAttr
     public EnumAttributeValue(IEnumValue parent, int id) throws CoreException {
         super(parent, id);
 
-        IEnumValueContainer valueContainer = (IEnumValueContainer)parent.getParent();
-        this.enumAttribute = (IEnumAttribute)valueContainer.findEnumType().getEnumAttribute(id);
         this.value = "";
     }
 
@@ -89,15 +86,25 @@ public class EnumAttributeValue extends AtomicIpsObjectPart implements IEnumAttr
      * {@inheritDoc}
      */
     public Image getImage() {
-        // TODO Image handling
         return null;
     }
 
     /**
      * {@inheritDoc}
      */
-    public IEnumAttribute getEnumAttribute() {
-        return enumAttribute;
+    public IEnumAttribute findEnumAttribute() throws CoreException {
+        IEnumValueContainer valueContainer = (IEnumValueContainer)parent.getParent();
+
+        int index;
+        List<IEnumAttributeValue> enumAttributeValuesList = ((IEnumValue)parent).getEnumAttributeValues();
+        for (index = 0; index < enumAttributeValuesList.size(); index++) {
+            IEnumAttributeValue currentEnumAttributeValue = enumAttributeValuesList.get(index);
+            if (currentEnumAttributeValue == this) {
+                break;
+            }
+        }
+
+        return (IEnumAttribute)valueContainer.findEnumType().getEnumAttributes().get(index);
     }
 
     /**

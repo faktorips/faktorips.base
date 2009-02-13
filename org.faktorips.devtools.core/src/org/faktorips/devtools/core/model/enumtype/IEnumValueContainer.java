@@ -66,4 +66,11 @@ public interface IEnumValueContainer extends IIpsObject {
      */
     public IEnumType findEnumType() throws CoreException;
 
+    /**
+     * Returns how many enum values this enum value container currently contains.
+     * 
+     * @return The number of enum values that this enum value container is currently containing.
+     */
+    public int getNumberEnumValues();
+
 }

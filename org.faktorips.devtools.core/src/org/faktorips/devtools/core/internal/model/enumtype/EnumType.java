@@ -120,8 +120,9 @@ public class EnumType extends EnumValueContainer implements IEnumType {
      */
     public void setSuperEnumType(String superEnumTypeQualifiedName) {
         ArgumentCheck.notNull(superEnumTypeQualifiedName);
-
+        String oldSupertype = superEnumType;
         superEnumType = superEnumTypeQualifiedName;
+        valueChanged(oldSupertype, superEnumType);
     }
 
     /**
@@ -204,6 +205,7 @@ public class EnumType extends EnumValueContainer implements IEnumType {
     public int moveEnumAttributeDown(IEnumAttribute enumAttribute) throws CoreException {
         ArgumentCheck.notNull(enumAttribute);
 
+        // Can't move further down any more
         if (enumAttribute == enumAttributes.getPart(enumAttributes.size() - 1)) {
             return getIndexOfEnumAttribute(enumAttribute);
         }
@@ -217,6 +219,7 @@ public class EnumType extends EnumValueContainer implements IEnumType {
     public int moveEnumAttributeUp(IEnumAttribute enumAttribute) throws CoreException {
         ArgumentCheck.notNull(enumAttribute);
 
+        // Can't move further up any more
         if (enumAttribute == enumAttributes.getPart(0)) {
             return getIndexOfEnumAttribute(enumAttribute);
         }
@@ -235,18 +238,19 @@ public class EnumType extends EnumValueContainer implements IEnumType {
             IEnumAttribute currentEnumAttribute = enumAttributesList.get(i);
             if (currentEnumAttribute == enumAttribute) {
 
-                int[] newIndexes = enumAttributes.moveParts(new int[] { i }, up);
+                int[] newIndex = enumAttributes.moveParts(new int[] { i }, up);
 
                 // Also move the refering enum attribute values
+                int modifier = (up) ? 1 : -1;
                 if (!valuesArePartOfModel) {
                     for (IEnumContent currentEnumContent : findReferencingEnumContents()) {
-                        moveEnumAttributeValues(currentEnumAttribute, currentEnumContent.getEnumValues(), up);
+                        moveEnumAttributeValues(newIndex[0] + modifier, currentEnumContent.getEnumValues(), up);
                     }
                 } else {
-                    moveEnumAttributeValues(currentEnumAttribute, getEnumValues(), up);
+                    moveEnumAttributeValues(newIndex[0] + modifier, getEnumValues(), up);
                 }
 
-                return newIndexes[0];
+                return newIndex[0];
 
             }
         }
@@ -269,15 +273,17 @@ public class EnumType extends EnumValueContainer implements IEnumType {
     }
 
     /*
-     * Moves the enum attribute value corresponding to the given enum attribute in each given enum
-     * value up or down in the collection order by 1
+     * Moves the enum attribute value corresponding to the given enum attribute identified by its
+     * index in each given enum value up or down in the collection order by 1
      */
-    private void moveEnumAttributeValues(IEnumAttribute enumAttribute, List<IEnumValue> enumValues, boolean up) {
+    private void moveEnumAttributeValues(int enumAttributeIndex, List<IEnumValue> enumValues, boolean up)
+            throws CoreException {
+
         for (IEnumValue currentEnumValue : enumValues) {
             if (up) {
-                currentEnumValue.moveEnumAttributeValueUp(enumAttribute);
+                ((EnumValue)currentEnumValue).moveEnumAttributeValueUp(enumAttributeIndex);
             } else {
-                currentEnumValue.moveEnumAttributeValueDown(enumAttribute);
+                ((EnumValue)currentEnumValue).moveEnumAttributeValueDown(enumAttributeIndex);
             }
         }
     }
@@ -328,10 +334,10 @@ public class EnumType extends EnumValueContainer implements IEnumType {
      * Deletes all enum attribute values in the given enum values that refer to the enum attribute
      * identified by the given id
      */
-    private void deleteEnumAttributeValues(int enumAttributeId, List<IEnumValue> enumValues) {
+    private void deleteEnumAttributeValues(int enumAttributeId, List<IEnumValue> enumValues) throws CoreException {
         for (IEnumValue currentEnumValue : enumValues) {
             for (IEnumAttributeValue currentEnumAttributeValue : currentEnumValue.getEnumAttributeValues()) {
-                if (currentEnumAttributeValue.getEnumAttribute().getId() == enumAttributeId) {
+                if (currentEnumAttributeValue.findEnumAttribute().getId() == enumAttributeId) {
                     currentEnumAttributeValue.delete();
                     break;
                 }

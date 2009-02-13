@@ -17,6 +17,7 @@ import org.faktorips.devtools.core.model.enumtype.IEnumValue;
 
 public class EnumValueContainerTest extends AbstractIpsEnumPluginTest {
 
+    @Override
     public void setUp() throws Exception {
         super.setUp();
     }
@@ -32,6 +33,11 @@ public class EnumValueContainerTest extends AbstractIpsEnumPluginTest {
     public void testNewEnumValue() {
         IEnumValue newEnumValue = genderEnumContent.newEnumValue();
         assertEquals(newEnumValue, genderEnumContent.getEnumValue(2));
+    }
+
+    public void testGetNumberEnumValues() {
+        assertEquals(2, genderEnumContent.getNumberEnumValues());
+        assertEquals(0, genderEnumType.getNumberEnumValues());
     }
 
 }

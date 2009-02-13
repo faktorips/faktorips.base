@@ -75,4 +75,11 @@ public abstract class EnumValueContainer extends BaseIpsObject implements IEnumV
         return (IEnumValue)enumValues.getPartById(id);
     }
 
+    /**
+     * {@inheritDoc}
+     */
+    public int getNumberEnumValues() {
+        return enumValues.size();
+    }
+
 }

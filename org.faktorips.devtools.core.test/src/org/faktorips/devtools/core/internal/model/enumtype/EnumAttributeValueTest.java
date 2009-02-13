@@ -24,16 +24,19 @@ import org.w3c.dom.Node;
 public class EnumAttributeValueTest extends AbstractIpsEnumPluginTest {
 
     private IEnumAttributeValue maleIdAttributeValue;
+    private IEnumAttributeValue maleNameAttributeValue;
 
     @Override
     public void setUp() throws Exception {
         super.setUp();
 
         maleIdAttributeValue = genderEnumValueMale.getEnumAttributeValue(0);
+        maleNameAttributeValue = genderEnumValueMale.getEnumAttributeValue(1);
     }
 
-    public void testGetEnumAttribute() {
-        assertEquals(genderEnumAttributeId, maleIdAttributeValue.getEnumAttribute());
+    public void testFindEnumAttribute() throws CoreException {
+        assertEquals(genderEnumAttributeId, maleIdAttributeValue.findEnumAttribute());
+        assertEquals(genderEnumAttributeName, maleNameAttributeValue.findEnumAttribute());
     }
 
     public void testGetSetValue() {

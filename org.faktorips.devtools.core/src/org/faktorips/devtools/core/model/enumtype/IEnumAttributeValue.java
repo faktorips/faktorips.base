@@ -13,6 +13,7 @@
 
 package org.faktorips.devtools.core.model.enumtype;
 
+import org.eclipse.core.runtime.CoreException;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPart;
 
 /**
@@ -37,11 +38,15 @@ public interface IEnumAttributeValue extends IIpsObjectPart {
     public final static String PROPERTY_VALUE = "value"; //$NON-NLS-1$
 
     /**
-     * Returns the enum attribute this enum attribute value refers to.
+     * Searches the enum attribute this enum attribute value refers to or <code>null</code> if it
+     * doesn't refer to any.
      * 
-     * @return A reference to the enum attribute this enum attribute value refers to.
+     * @return A reference to the enum attribute this enum attribute value refers to or
+     *         <code>null</code> if it doesn't refer to any.
+     * 
+     * @throws CoreException If an error occurs while searching for the enum attribute
      */
-    public IEnumAttribute getEnumAttribute();
+    public IEnumAttribute findEnumAttribute() throws CoreException;
 
     /**
      * Returns the value as string.

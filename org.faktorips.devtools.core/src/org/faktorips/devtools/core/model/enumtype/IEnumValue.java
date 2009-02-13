@@ -76,38 +76,4 @@ public interface IEnumValue extends IIpsObjectPart {
      */
     public IEnumAttributeValue newEnumAttributeValue() throws CoreException;
 
-    /**
-     * <p>
-     * Moves the enum attribute value that has been assigned to the given enum attribute one
-     * position up in the collection order.
-     * </p>
-     * <p>
-     * If no corresponding enum attribute value can be found or the enum attribute value is already
-     * the first one then nothing will be done.
-     * </p>
-     * 
-     * @param enumAttribute The enum attribute, that the enum attribute value that is to be moved
-     *            upwards, refers to.
-     * 
-     * @throws NullPointerException If enumAttribute is <code>null</code>.
-     */
-    public void moveEnumAttributeValueUp(IEnumAttribute enumAttribute);
-
-    /**
-     * <p>
-     * Moves the enum attribute value that has been assigned to the given enum attribute one
-     * position down in the collection order.
-     * </p>
-     * <p>
-     * If no corresponding enum attribute value can be found or the enum attribute value is already
-     * the last one then nothing will be done.
-     * </p>
-     * 
-     * @param enumAttribute The enum attribute, that the enum attribute value that is to be moved
-     *            downwards, refers to.
-     * 
-     * @throws NullPointerException If enumAttribute is <code>null</code>.
-     */
-    public void moveEnumAttributeValueDown(IEnumAttribute enumAttribute);
-
 }
