@@ -67,7 +67,10 @@ public class EnumAttribute extends AtomicIpsObjectPart implements IEnumAttribute
      */
     public void setName(String name) {
         ArgumentCheck.notNull(name);
+
+        String oldName = this.name;
         this.name = name;
+        valueChanged(oldName, name);
     }
 
     /**
@@ -82,7 +85,10 @@ public class EnumAttribute extends AtomicIpsObjectPart implements IEnumAttribute
      */
     public void setDatatype(String datatype) {
         ArgumentCheck.notNull(datatype);
+
+        String oldDatatype = this.datatype;
         this.datatype = datatype;
+        valueChanged(oldDatatype, datatype);
     }
 
     /**
@@ -96,7 +102,9 @@ public class EnumAttribute extends AtomicIpsObjectPart implements IEnumAttribute
      * {@inheritDoc}
      */
     public void setIdentifier(boolean isIdentifier) {
+        boolean oldIsIdentifier = this.isIdentifier;
         this.isIdentifier = isIdentifier;
+        valueChanged(oldIsIdentifier, isIdentifier);
     }
 
     /**

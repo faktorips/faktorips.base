@@ -119,7 +119,10 @@ public class EnumAttributeValue extends AtomicIpsObjectPart implements IEnumAttr
      */
     public void setValue(String value) {
         ArgumentCheck.notNull(value);
+
+        String oldValue = this.value;
         this.value = value;
+        valueChanged(oldValue, value);
     }
 
 }

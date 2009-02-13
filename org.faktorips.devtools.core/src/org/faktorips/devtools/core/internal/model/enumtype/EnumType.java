@@ -91,7 +91,9 @@ public class EnumType extends EnumValueContainer implements IEnumType {
      * {@inheritDoc}
      */
     public void setAbstract(boolean isAbstract) {
+        boolean oldIsAbstract = this.isAbstract;
         this.isAbstract = isAbstract;
+        valueChanged(oldIsAbstract, isAbstract);
     }
 
     /**
@@ -105,7 +107,9 @@ public class EnumType extends EnumValueContainer implements IEnumType {
      * {@inheritDoc}
      */
     public void setValuesArePartOfModel(boolean valuesArePartOfModel) {
+        boolean oldValuesArePartOfModel = this.valuesArePartOfModel;
         this.valuesArePartOfModel = valuesArePartOfModel;
+        valueChanged(oldValuesArePartOfModel, valuesArePartOfModel);
     }
 
     /**
@@ -120,6 +124,7 @@ public class EnumType extends EnumValueContainer implements IEnumType {
      */
     public void setSuperEnumType(String superEnumTypeQualifiedName) {
         ArgumentCheck.notNull(superEnumTypeQualifiedName);
+
         String oldSupertype = superEnumType;
         superEnumType = superEnumTypeQualifiedName;
         valueChanged(oldSupertype, superEnumType);

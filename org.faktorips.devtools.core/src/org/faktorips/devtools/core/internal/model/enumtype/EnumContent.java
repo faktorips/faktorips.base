@@ -75,7 +75,10 @@ public class EnumContent extends EnumValueContainer implements IEnumContent {
      */
     public void setEnumType(String enumType) {
         ArgumentCheck.notNull(enumType);
+
+        String oldEnumType = this.enumType;
         this.enumType = enumType;
+        valueChanged(oldEnumType, enumType);
     }
 
     /**
