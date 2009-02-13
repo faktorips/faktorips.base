@@ -330,6 +330,9 @@
            -DskipPublish=true -> don't publish the result to the download and updatesite
         optional parameter for a local build:   
            -DnoCvs=true -> no cvs support (the features and plugins will be copied from the workspace
+           -DbuildProduct -> build the given product instead of features and plugins
+                             the given value must be the project name where the FaktorIps.product exists
+                             e.g. org.faktorips.devtools.core or de.qv.faktorips
            -DprojectsRootDir -> the root dir of all plugin projects
            -Dbasedir -> e.g. the parent dir of the dir specified in projectsRootDir, this will be the working dir
          additionaly make sure that the build_host_<hostname>.properies exists in the pluginbuilder project-->
@@ -373,6 +376,11 @@
 	    <condition property="isSkipPublish" value="true">
 	    	 <equals arg1="${skipPublish}" arg2="true"/>
 	    </condition>
+
+		<condition property="is.product.build" value="true">
+	    	 <isset property="productProject"/>
+	    </condition>
+		
 		
 		<!-- check if the copy all.map should be used, if useCvs is false 
 		     otherwise the cvs all.map is used to fetch the sources from cvs -->
@@ -418,6 +426,8 @@
     	<ant dir="${projectsRootDir}/org.faktorips.pluginbuilder/" antfile="build.xml" target="main">
             <property name="build.version" value="${build.version}"/>
             <property name="buildDirectory" value="${buildDirectory}"/>
+            <property name="pluginbuilder.is.rcpbuild" value="${is.product.build}"/>
+    		<property name="product.project" value="${productProject}"/>
             <property name="xms.megabytes" value=""/> <!-- -Xms124m -->
             <property name="xmx.megabytes" value=""/> <!-- -Xmx256m -->    		
         </ant>
@@ -493,6 +503,7 @@
     	<echo message="-> new faktorips ips features: ${pluginbuilder.features}"/>
     	<echo message="-> new faktorips uml features: ${pluginbuilder.features.uml}"/>
 		<antcall inheritall="true" target="-print.publish.info"/>
+		<!-- TODO Info ueber gebautes Produkt und nach Download kopieren -->
     </target>
 
     <!--helper targets-->

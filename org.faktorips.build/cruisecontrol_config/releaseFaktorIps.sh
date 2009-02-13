@@ -23,6 +23,8 @@
 #                                    default publish the result
 #           -skipTaggingCvs        : don't tag the projects before the release build will be performed, 
 #                                    default is tag projects
+#           -buildProduct [product project dir]
+#                                  : builds the product in the given project instead of building the features and plugins
 #
 # additional environment parameters (useful when the release must be build local)
 # -------------------------------------------------------------------------------
@@ -68,12 +70,16 @@ else
 fi
 }
 
+echo '  '
+
 #################################################
 # init variables and parameters
 #################################################
 
-# use cruise control ant
-ANT_HOME=/opt/cc/apache-ant-1.6.5
+# use cruise's ant
+if [ $(whoami) = "cruise" ] ; then 
+  ANT_HOME=/opt/cc/apache-ant-1.6.5
+fi
 
 # default build environment
 WORKINGDIR=/opt/cc/work
@@ -93,6 +99,7 @@ if [ -z "$JAVA_HOME" ] ; then
   JAVA_HOME=$DEFAULT_JAVA_HOME
 fi
 
+
 FAKTORIPS_CORE_PLUGIN_NAME=org.faktorips.devtools.core
 PLUGINBUILDER_PROJECT_NAME=org.faktorips.pluginbuilder
 
@@ -108,6 +115,7 @@ BUILD_CATEGORY=NONE
 SHOWHELP=false
 SKIPTAGCVS=false
 NOCVS=false
+BUILDPRODUCT=
 
 #################################################
 # parse arguments
@@ -124,7 +132,7 @@ do  case "$1" in
   -skipTest)      RUNTESTS=false ;;
   -skipPublish)   SKIPPUBLISH=true ;;
   -skipTaggingCvs) SKIPTAGCVS=true ;;
-  -skipTaggingCvs) SKIPTAGCVS=true ;;
+  -buildProduct)  BUILDPRODUCT=$2 ; shift ;;
   -resultDir)     PUBLISH_DOWNLOAD_DIR=$2 ; shift ;;
   -updatesiteDir) PUBLISH_UPDATESITE_DIR=$2 ; shift ;;
   -noCvs)         NOCVS=true ;;
@@ -138,6 +146,13 @@ do  case "$1" in
   esac
   shift
 done
+
+# assert environment
+if [ ! -e $ANT_HOME/bin/ant ] ; then
+  echo 'Error ant not found '$ANT_HOME/bin/ant' - Please set ANT_HOME.' 
+  echo '  '
+  SHOWHELP=true
+fi
 
 # check if version is given as parameter
 if [ $BUILD_VERSION = "NONE" ] ; then
@@ -183,7 +198,7 @@ fi
 # or wrong parameter given
 #################################################
 
-if $SHOWHELP ; then
+if [ $SHOWHELP = "true" ] ; then
   echo 'Faktor IPS Release Build Script'
   echo 'usage:  '
   echo $0 '[script options]'
@@ -204,9 +219,11 @@ if $SHOWHELP ; then
   echo '                         default = tag projects before build'
   echo '  -noCvs                 do not use cvs to get faktorips projects, if given then the projects will copied from the projectsrootdir'
   echo '                         default is use cvs'
-  echo '  -workingdir            the directory where the release will be build in '
+  echo '  -buildProduct [product project dir]'
+  echo '                         builds the products in the given project instead of building the features and plugins'
+  echo '  -workingdir [dir]      the directory where the release will be build in '
   echo '                         the default is: ' $WORKINGDIR
-  echo '  -projectsrootdir       the root/parent dir of all projects, all projects will be checkedout here'
+  echo '  -projectsrootdir [dir] the root/parent dir of all projects, all projects will be checkedout here'
   echo '                         if no cvs is used \(e.g. local copy\) then all projects must be exists here'
   echo '                         the default is: ' $PROJECTSROOTDIR
   echo '                         '
@@ -230,6 +247,7 @@ echo -e "  -skipTest        : Run tests "$(printBoolean $RUNTESTS)
 echo -e "  -skipPublish     : Publish result (to updatesite and to download directory) "$(printBoolean $(negation $SKIPPUBLISH))
 echo -e "  -skipTaggingCvs  : Tag cvs projects "$(printBoolean $(negation $SKIPTAGCVS))
 echo -e "  -noCvs           : Use cvs "$(printBoolean $(negation $NOCVS))
+echo -e "  -buildProduct    : Build product \e[35m$BUILDPRODUCT\e[0m"
 echo -e "  -projectsrootdir : Checkout/Copysource directory \e[35m$PROJECTSROOTDIR\e[0m"
 echo -e "  -workingdir      : Work directory \e[35m$WORKINGDIR\e[0m"
 if [ ! "$SKIPPUBLISH" = "true" ] ; then
@@ -361,6 +379,7 @@ EXEC="$ANT_HOME/bin/ant -buildfile $BUILDFILE release \
  -DnoCvs=$NOCVS \
  -DdownloadDir=$PUBLISH_DOWNLOAD_DIR \
  -Dupdatesite.path=$PUBLISH_UPDATESITE_DIR \
+ -DproductProject=$BUILDPRODUCT \
  "
 echo $EXEC
 exec $EXEC
