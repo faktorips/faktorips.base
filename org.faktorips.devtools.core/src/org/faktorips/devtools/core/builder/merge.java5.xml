@@ -43,6 +43,9 @@
     <merge:pull targetMarkup="^gen$" sourceGet="Enum/getSuperInterfaces" targetPut="Enum/addSuperInterface"/>
   	<merge:pull targetMarkup="^gen$" sourceGet="EnumConstant/getArguments" targetPut="EnumConstant/setArguments"/>
   	<merge:pull targetMarkup="^gen$" sourceGet="EnumConstant/getBody" targetPut="EnumConstant/setBody"/>
+	<!-- Sets the content of annotations if the parent is marked with gen --> 
+    <merge:pull sourceGet="Annotation/getContents" targetParentMarkup="^gen$" targetPut="Annotation/setContents"/>
+  	
     <!--
         The sweep rule looks in the target content if there exist Members that are indicated with the "generated"
         meta-attribute that are not available in the source content. If so it deletes the member in the target
@@ -55,5 +58,8 @@
     	swept away because of a model validation error. 
     -->
     <!-- merge:sweep markup="^restrained$" select="Member"/-->
-    
+
+	<!-- Remove annotations of generated target nodes if the annotation is not in the source -->
+	<merge:sweep parentMarkup="^gen$" select="Annotation"/>
+	
 </merge:options>
