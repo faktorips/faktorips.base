@@ -141,6 +141,18 @@ public interface IEnumType extends IEnumValueContainer, Datatype {
     public List<IEnumAttribute> getEnumAttributes();
 
     /**
+     * Returns the index of the given enum attribute in the enum attributes collection.
+     * 
+     * @param enumAttribute The enum attribute to obtain its index for.
+     * 
+     * @return The index identifying the given enum attribute in the enum attributes collection.
+     * 
+     * @throws NoSuchElementException If there is no such enum attribute in this enum type.
+     * @throws NullPointerException If enumAttribute is <code>null</code>.
+     */
+    public int getIndexOfEnumAttribute(IEnumAttribute enumAttribute);
+
+    /**
      * Returns the enum attribute with the given id or <code>null</code> if there is no enum
      * attribute with the given id.
      * 

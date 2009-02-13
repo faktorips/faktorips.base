@@ -50,7 +50,7 @@ public class NewEnumValueAction extends IpsAction {
     @Override
     public void run(IStructuredSelection selection) {
         IEnumValueContainer enumValueContainer = (IEnumValueContainer)tableViewer.getInput();
-        enumValueContainer.newEnumValue().getEnumAttributeValues().get(0).setValue("hallo");
+        enumValueContainer.newEnumValue();
         tableViewer.refresh(true);
     }
 

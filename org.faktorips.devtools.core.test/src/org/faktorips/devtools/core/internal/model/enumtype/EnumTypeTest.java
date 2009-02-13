@@ -94,9 +94,12 @@ public class EnumTypeTest extends AbstractIpsEnumPluginTest {
     }
 
     public void testNewEnumAttribute() throws CoreException {
+        IEnumValue modelSideEnumValue = genderEnumType.newEnumValue();
         IEnumAttribute description = genderEnumType.newEnumAttribute();
         description.setName("Description");
         description.setDatatype(STRING_DATATYPE_NAME);
+
+        assertEquals(3, modelSideEnumValue.getEnumAttributeValues().size());
 
         List<IEnumAttribute> attributes = genderEnumType.getEnumAttributes();
         assertEquals(3, attributes.size());
@@ -353,6 +356,15 @@ public class EnumTypeTest extends AbstractIpsEnumPluginTest {
         IEnumType subEnumType = newEnumType(ipsProject, "SubEnumType");
         subEnumType.setSuperEnumType(genderEnumType.getQualifiedName());
         assertEquals(genderEnumType, subEnumType.findSuperEnumType());
+    }
+
+    public void testGetIndexOfEnumAttribute() throws CoreException {
+        assertEquals(0, genderEnumType.getIndexOfEnumAttribute(genderEnumAttributeId));
+        assertEquals(1, genderEnumType.getIndexOfEnumAttribute(genderEnumAttributeName));
+
+        genderEnumType.moveEnumAttributeUp(genderEnumAttributeName);
+        assertEquals(1, genderEnumType.getIndexOfEnumAttribute(genderEnumAttributeId));
+        assertEquals(0, genderEnumType.getIndexOfEnumAttribute(genderEnumAttributeName));
     }
 
 }

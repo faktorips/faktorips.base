@@ -149,11 +149,16 @@ public class EnumType extends EnumValueContainer implements IEnumType {
     public IEnumAttribute newEnumAttribute() throws CoreException {
         IEnumAttribute newEnumAttribute = (IEnumAttribute)newPart(IEnumAttribute.class);
 
-        // Create new enum attribute value objects on all referencing enum values
+        // Create new enum attribute value objects on all enum values of referencing enum contents
         for (IEnumContent currentEnumContent : findReferencingEnumContents()) {
             for (IEnumValue currentEnumValue : currentEnumContent.getEnumValues()) {
                 currentEnumValue.newEnumAttributeValue();
             }
+        }
+
+        // Create new enum attribute value objects an the enum values of this enum type
+        for (IEnumValue currentEnumValue : getEnumValues()) {
+            currentEnumValue.newEnumAttributeValue();
         }
 
         return newEnumAttribute;
@@ -263,9 +268,13 @@ public class EnumType extends EnumValueContainer implements IEnumType {
         throw new NoSuchElementException();
     }
 
-    // Returns the index of the given enum attribute in the enum attributes collection
+    /**
+     * {@inheritDoc}
+     */
     @SuppressWarnings("unchecked")
-    private int getIndexOfEnumAttribute(IEnumAttribute enumAttribute) {
+    public int getIndexOfEnumAttribute(IEnumAttribute enumAttribute) {
+        ArgumentCheck.notNull(enumAttribute);
+        
         List<IEnumAttribute> enumAttributesList = enumAttributes.getBackingList();
         for (int i = 0; i < enumAttributesList.size(); i++) {
             IEnumAttribute currentEnumAttribute = enumAttributesList.get(i);

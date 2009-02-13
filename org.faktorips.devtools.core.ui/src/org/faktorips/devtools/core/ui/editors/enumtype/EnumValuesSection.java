@@ -36,11 +36,14 @@ import org.eclipse.swt.widgets.TableColumn;
 import org.eclipse.swt.widgets.ToolBar;
 import org.eclipse.ui.forms.widgets.Section;
 import org.faktorips.devtools.core.IpsPlugin;
+import org.faktorips.devtools.core.model.ContentChangeEvent;
+import org.faktorips.devtools.core.model.ContentsChangeListener;
 import org.faktorips.devtools.core.model.enumtype.IEnumAttribute;
 import org.faktorips.devtools.core.model.enumtype.IEnumAttributeValue;
 import org.faktorips.devtools.core.model.enumtype.IEnumType;
 import org.faktorips.devtools.core.model.enumtype.IEnumValue;
 import org.faktorips.devtools.core.model.enumtype.IEnumValueContainer;
+import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPart;
 import org.faktorips.devtools.core.ui.UIToolkit;
 import org.faktorips.devtools.core.ui.forms.IpsSection;
 import org.faktorips.util.ArgumentCheck;
@@ -147,10 +150,7 @@ public class EnumValuesSection extends IpsSection {
             for (IEnumAttributeValue currentEnumAttributeValue : enumAttributeValues) {
                 IEnumAttribute currentEnumAttribute = currentEnumAttributeValue.findEnumAttribute();
                 String columnName = (currentEnumAttribute != null) ? currentEnumAttribute.getName() : "";
-                TableColumn currentColumn = new TableColumn(enumValuesTable, SWT.LEFT);
-                currentColumn.setText(columnName);
-                currentColumn.setWidth(300);
-                enumValuesTableColumnNames.add(columnName);
+                addTableColumnToEnumValuesTable(columnName);
             }
 
         } else {
@@ -160,10 +160,7 @@ public class EnumValuesSection extends IpsSection {
             List<IEnumAttribute> enumAttributes = enumType.getEnumAttributes();
             for (IEnumAttribute currentEnumAttribute : enumAttributes) {
                 String columnName = currentEnumAttribute.getName();
-                TableColumn currentColumn = new TableColumn(enumValuesTable, SWT.LEFT);
-                currentColumn.setText(columnName);
-                currentColumn.setWidth(300);
-                enumValuesTableColumnNames.add(columnName);
+                addTableColumnToEnumValuesTable(columnName);
             }
 
         }
@@ -203,10 +200,33 @@ public class EnumValuesSection extends IpsSection {
         bindingContext.updateUI();
     }
 
+    // Adds a column to the enum values table
+    private void addTableColumnToEnumValuesTable(String columnName) {
+        TableColumn newColumn = new TableColumn(enumValuesTable, SWT.LEFT);
+        newColumn.setText(columnName);
+        newColumn.setWidth(200);
+        enumValuesTableColumnNames.add(columnName);
+    }
+
+    // Removes the column identified by the given index from the enum values table
+    private void removeTableColumnFromEnumValuesTable(int index) {
+        TableColumn columnToBeRemoved = enumValuesTable.getColumn(index);
+        columnToBeRemoved.dispose();
+        enumValuesTableColumnNames.remove(index);
+    }
+
     /*
      * The content provider for the enum values table viewer.
      */
-    private class EnumValuesContentProvider implements IStructuredContentProvider {
+    private class EnumValuesContentProvider implements IStructuredContentProvider, ContentsChangeListener {
+
+        /**
+         * Creates the content provider for the enum values table viewer and registers itself as
+         * content change listener to the ips model.
+         */
+        public EnumValuesContentProvider() {
+            enumValueContainer.getIpsModel().addChangeListener(this);
+        }
 
         /**
          * {@inheritDoc}
@@ -219,7 +239,7 @@ public class EnumValuesSection extends IpsSection {
          * {@inheritDoc}
          */
         public void dispose() {
-
+            enumValueContainer.getIpsModel().removeChangeListener(this);
         }
 
         /**
@@ -227,6 +247,50 @@ public class EnumValuesSection extends IpsSection {
          */
         public void inputChanged(Viewer viewer, Object oldInput, Object newInput) {
 
+        }
+
+        /**
+         * {@inheritDoc}
+         */
+        public void contentsChanged(ContentChangeEvent event) {
+            // Return if the content changed was not the enum value container to be edited
+            if (!(event.getIpsSrcFile().equals(enumValueContainer.getIpsSrcFile()))) {
+                return;
+            }
+
+            switch (event.getEventType()) {
+                case ContentChangeEvent.TYPE_PART_ADDED:
+                    IIpsObjectPart addedPart = event.getPart();
+                    if (addedPart != null) {
+                        if (addedPart instanceof IEnumAttribute) {
+                            IEnumAttribute addedEnumAttribute = (IEnumAttribute)addedPart;
+                            EnumValuesSection.this.addTableColumnToEnumValuesTable(addedEnumAttribute.getName());
+                        }
+                    }
+                    
+                    break;
+                    
+                case ContentChangeEvent.TYPE_PART_REMOVED:
+                    IIpsObjectPart removedPart = event.getPart();
+                    if (removedPart != null) {
+                        if (removedPart instanceof IEnumAttribute) {
+                            IEnumAttribute removedEnumAttribute = (IEnumAttribute)removedPart;
+                            IEnumType enumType = null;
+                            try {
+                                enumType = enumValueContainer.findEnumType();
+                            } catch (CoreException e) {
+                                IpsPlugin.logAndShowErrorDialog(e);
+                            }
+                            EnumValuesSection.this.removeTableColumnFromEnumValuesTable(enumType
+                                    .getIndexOfEnumAttribute(removedEnumAttribute));
+                        }
+                    }
+                    
+                    break;
+                    
+                default:
+                    break;
+            }
         }
 
     }
