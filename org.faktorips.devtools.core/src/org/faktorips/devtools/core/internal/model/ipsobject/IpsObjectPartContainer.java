@@ -106,6 +106,7 @@ public abstract class IpsObjectPartContainer extends IpsElement implements IIpsO
      * 
      * @see org.faktorips.devtools.core.model.IIpsElement#getChildren()
      */
+    @Override
     public abstract IIpsElement[] getChildren();
 
     /**
@@ -157,53 +158,45 @@ public abstract class IpsObjectPartContainer extends IpsElement implements IIpsO
     }
 
     /**
+     * Informs the entire system that this model object has been changed. Subclasses should fire
+     * this event if any property of the object changes.
      * 
-     * @param oldValue
-     * @param newValue
+     * @param oldValue The old value of the property.
+     * @param newValue The new value of the property.
      * 
-     * @return
+     * @return A flag indicating whether the valueChanged event has been fired successfully (it does
+     *         not if the old value and new value are considered to be equal).
      */
-    // TODO javadoc
     protected final boolean valueChanged(Object oldValue, Object newValue) {
         boolean changed = !ObjectUtils.equals(oldValue, newValue);
         if (changed) {
             objectHasChanged();
         }
-        
+
         return changed;
     }
 
     /**
-     * 
-     * @param oldValue
-     * @param newValue
-     * 
-     * @return
+     * @see #valueChanged(Object, Object)
      */
-    // TODO javadoc
     protected final boolean valueChanged(boolean oldValue, boolean newValue) {
         boolean changed = oldValue != newValue;
         if (changed) {
             objectHasChanged();
         }
-        
+
         return changed;
     }
 
     /**
-     * 
-     * @param oldValue
-     * @param newValue
-     * 
-     * @return
+     * @see #valueChanged(Object, Object)
      */
-    // TODO javadoc
     protected final boolean valueChanged(int oldValue, int newValue) {
         boolean changed = oldValue != newValue;
         if (changed) {
             objectHasChanged();
         }
-        
+
         return changed;
     }
 
@@ -644,9 +637,7 @@ public abstract class IpsObjectPartContainer extends IpsElement implements IIpsO
      * 
      * @throws NullPointerException if list is <code>null</code>.
      */
-    // TODO Document parameter ipsProject
     protected void validateThis(MessageList list, IIpsProject ipsProject) throws CoreException {
-        // TODO Argument Check?
         return;
     }
 
@@ -683,7 +674,7 @@ public abstract class IpsObjectPartContainer extends IpsElement implements IIpsO
         if (!memento.getOriginator().equals(this)) {
             throw new IllegalArgumentException("Memento " + memento + " wasn't created by " + this); //$NON-NLS-1$ //$NON-NLS-2$
         }
-        
+
         initFromXml(((XmlMemento)memento).getState());
         objectHasChanged();
     }
