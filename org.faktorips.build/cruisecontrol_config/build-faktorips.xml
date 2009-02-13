@@ -226,6 +226,9 @@
         <cvs command="co org.faktorips.uml" dest="${projectsRootDir}" cvsroot="${cvsroot}" quiet="true"/>
         <cvs command="co org.faktorips.uml.nl1" dest="${projectsRootDir}" cvsroot="${cvsroot}" quiet="true"/>
         <cvs command="co org.faktorips.uml.test" dest="${projectsRootDir}" cvsroot="${cvsroot}" quiet="true"/>
+
+    	<!-- checkout de.qv.faktorips.feature -->
+    	<cvs command="co de.qv.faktorips.feature" dest="${projectsRootDir}" cvsroot="${cvsroot}" quiet="true"/>
     	
     	<antcall inheritall="true" target="-delete.eclipse.configuration.log"/>
     	
