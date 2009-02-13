@@ -3,7 +3,7 @@
  * 
  * Alle Rechte vorbehalten.
  * 
- * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen, 
+ * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen,
  * etc.) duerfen nur unter den Bedingungen der Faktor-Zehn-Community Lizenzvereinbarung - Version
  * 0.1 (vor Gruendung Community) genutzt werden, die Bestandteil der Auslieferung ist und auch unter
  * http://www.faktorzehn.org/f10-org:lizenzen:community eingesehen werden kann.
@@ -103,8 +103,8 @@ public interface IIpsModel extends IIpsElement {
     public IIpsProject getIpsProject(IProject project);
 
     /**
-     * Returns all <code>IProject</code>s in the workspace, that do not have an IpsProject
-     * nature. Ignores closed projects.
+     * Returns all <code>IProject</code>s in the workspace, that do not have an IpsProject nature.
+     * Ignores closed projects.
      * 
      * @throws CoreException if an exception occurs while accessing project-natures.
      */
@@ -124,8 +124,16 @@ public interface IIpsModel extends IIpsElement {
     public IIpsElement findIpsElement(IResource resource);
 
     /**
+     * <p>
      * Adds a listener that is notified when something in the model was changed. The notifications
      * are made in the ui-thread.
+     * </p>
+     * <p>
+     * <strong>Important</strong>: Do not forget to <strong>remove the listener again</strong> if no
+     * longer needed to prevent memory leaks.
+     * </p>
+     * 
+     * @see #removeChangeListener(ContentsChangeListener)
      */
     public void addChangeListener(ContentsChangeListener listener);
 
@@ -135,7 +143,15 @@ public interface IIpsModel extends IIpsElement {
     public void removeChangeListener(ContentsChangeListener listener);
 
     /**
+     * <p>
      * Adds the modification status change listener.
+     * </p>
+     * <p>
+     * <strong>Important</strong>: Do not forget to <strong>remove the listener again</strong> if no
+     * longer needed to prevent memory leaks.
+     * </p>
+     * 
+     * @see #removeModificationStatusChangeListener(IModificationStatusChangeListener)
      */
     public void addModifcationStatusChangeListener(IModificationStatusChangeListener listener);
 
@@ -158,9 +174,9 @@ public interface IIpsModel extends IIpsElement {
      * 
      * @param type The published interface of the ips object or part e.g.
      *            <code>org.faktorips.plugin.model.pctype.IAttribute</code>
-     * @param <code>true</code> if not only the extension properties defined for for the type
-     *            itself should be returned, but also the ones registered for it's supertype(s) and
-     *            it's interfaces.
+     * @param <code>true</code> if not only the extension properties defined for for the type itself
+     *        should be returned, but also the ones registered for it's supertype(s) and it's
+     *        interfaces.
      */
     public IExtensionPropertyDefinition[] getExtensionPropertyDefinitions(Class type,
             boolean includeSupertypesAndInterfaces);
@@ -172,9 +188,9 @@ public interface IIpsModel extends IIpsElement {
      * @param type The published interface of the ips object or part e.g.
      *            <code>or.faktorips.plugin.model.pctype.Attribute</code>
      * @param propertyId the extension property id
-     * @param <code>true</code> if not only the extension properties defined for for the type
-     *            itself should be returned, but also the ones registered for it's supertype(s) and
-     *            it's interfaces.
+     * @param <code>true</code> if not only the extension properties defined for for the type itself
+     *        should be returned, but also the ones registered for it's supertype(s) and it's
+     *        interfaces.
      */
     public IExtensionPropertyDefinition getExtensionPropertyDefinition(Class type,
             String propertyId,
@@ -186,9 +202,9 @@ public interface IIpsModel extends IIpsElement {
     public ValueDatatype[] getPredefinedValueDatatypes();
 
     /**
-     * Returns <code>true</code> if the datatype is predefined (via the datatypeDefinition
-     * extension point), otherwise <code>false</code>. Returns <code>false</code> if datatypeId
-     * is <code>null</code>.
+     * Returns <code>true</code> if the datatype is predefined (via the datatypeDefinition extension
+     * point), otherwise <code>false</code>. Returns <code>false</code> if datatypeId is
+     * <code>null</code>.
      */
     public boolean isPredefinedValueDatatype(String datatypeId);
 
@@ -224,13 +240,13 @@ public interface IIpsModel extends IIpsElement {
     public IpsObjectType getIpsObjectType(String name);
 
     /**
-     * Returns the type identified by the given file extension or <code>null</code> if no such
-     * type exists.
+     * Returns the type identified by the given file extension or <code>null</code> if no such type
+     * exists.
      */
     public IpsObjectType getIpsObjectTypeByFileExtension(String fileExtension);
-    
+
     /**
-     *  Returns all registered IpsArtefactBuilderSetInfo objects.
+     * Returns all registered IpsArtefactBuilderSetInfo objects.
      */
     public IIpsArtefactBuilderSetInfo[] getIpsArtefactBuilderSetInfos();
 
@@ -239,6 +255,5 @@ public interface IIpsModel extends IIpsElement {
      * <code>null</code> will be returned.
      */
     public IIpsArtefactBuilderSetInfo getIpsArtefactBuilderSetInfo(String id);
-
 
 }
