@@ -149,15 +149,17 @@
             <jvmarg arg="-Xms124m"/>
             <jvmarg arg="-Xmx512m"/>
             <depends>
-                <project name="org.faktorips.util"/>
-                <project name="org.faktorips.valuetypes"/>
-                <project name="org.faktorips.dtflcommon"/>
-                <project name="org.faktorips.runtime"/>
-                <project name="org.faktorips.fl"/>
-                <project name="org.faktorips.devtools.core"/>
-                <project name="org.faktorips.devtools.stdbuilder"/>
-                <project name="org.faktorips.devtools.core.ui"/>
-                <project name="org.faktorips.devtools.ant"/>
+                <!-- 'cvs' instead of 'project' dependency, to receive email on successful build--> 
+                <cvs module="org.faktorips.util"/>
+                <cvs module="org.faktorips.valuetypes"/>
+                <cvs module="org.faktorips.dtflcommon"/>
+                <cvs module="org.faktorips.runtime"/>
+                <cvs module="org.faktorips.fl"/>
+                <cvs module="org.faktorips.devtools.core"/>
+                <cvs module="org.faktorips.devtools.stdbuilder"/>
+                <cvs module="org.faktorips.devtools.core.ui"/>
+                <cvs module="org.faktorips.devtools.ant"/>
+                
                 <!-- plugin test dependencies-->
                 <cvs module="org.faktorips.devtools.core.test"/>
                 <cvs module="org.faktorips.devtools.stdbuilder.test"/>

@@ -577,16 +577,16 @@
         </listeners>
         <bootstrappers/>
         <modificationset>
-            <buildstatus logdir="${logdir}/org.faktorips.util"/>
-            <buildstatus logdir="${logdir}/org.faktorips.valuetypes"/>
-            <buildstatus logdir="${logdir}/org.faktorips.dtflcommon"/>
-            <buildstatus logdir="${logdir}/org.faktorips.runtime"/>
-            <buildstatus logdir="${logdir}/org.faktorips.fl"/>
-            <buildstatus logdir="${logdir}/org.faktorips.devtools.core"/>
-            <buildstatus logdir="${logdir}/org.faktorips.devtools.stdbuilder"/>
-            <buildstatus logdir="${logdir}/org.faktorips.devtools.core.ui"/>
-            <buildstatus logdir="${logdir}/org.faktorips.devtools.ant"/>
             <cvs module="org.faktorips.pluginbuilder" cvsroot="${cvsroot}"/>
+            <cvs module="org.faktorips.util" cvsroot="${cvsroot}"/>
+            <cvs module="org.faktorips.valuetypes" cvsroot="${cvsroot}"/>
+            <cvs module="org.faktorips.dtflcommon" cvsroot="${cvsroot}"/>
+            <cvs module="org.faktorips.runtime" cvsroot="${cvsroot}"/>
+            <cvs module="org.faktorips.fl" cvsroot="${cvsroot}"/>
+            <cvs module="org.faktorips.devtools.core" cvsroot="${cvsroot}"/>
+            <cvs module="org.faktorips.devtools.stdbuilder" cvsroot="${cvsroot}"/>
+            <cvs module="org.faktorips.devtools.core.ui" cvsroot="${cvsroot}"/>
+            <cvs module="org.faktorips.devtools.ant" cvsroot="${cvsroot}"/>
             <cvs module="org.faktorips.devtools.core.test" cvsroot="${cvsroot}"/>
             <cvs module="org.faktorips.devtools.stdbuilder.test" cvsroot="${cvsroot}"/>
             <cvs module="org.faktorips.devtools.core.ui.test" cvsroot="${cvsroot}"/>
