@@ -436,10 +436,16 @@ public class EnumValuesSection extends IpsSection {
          */
         public String getColumnText(Object element, int columnIndex) {
             String columnText = null;
+            // There need to be at least one column to be able to obtain label information
             if (enumValuesTableColumnNames.size() > 0) {
                 IEnumValue enumValue = (IEnumValue)element;
-                IEnumAttributeValue enumAttributeValue = enumValue.getEnumAttributeValues().get(columnIndex);
-                columnText = enumAttributeValue.getValue();
+
+                // For a requested column there must already be an enum attribute value
+                List<IEnumAttributeValue> enumAttributeValues = enumValue.getEnumAttributeValues();
+                if (enumAttributeValues.size() - 1 >= columnIndex) {
+                    IEnumAttributeValue enumAttributeValue = enumAttributeValues.get(columnIndex);
+                    columnText = enumAttributeValue.getValue();
+                }
             }
 
             return columnText;
