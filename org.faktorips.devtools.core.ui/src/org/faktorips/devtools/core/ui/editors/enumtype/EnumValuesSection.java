@@ -169,10 +169,32 @@ public class EnumValuesSection extends IpsSection {
     // Creates the table viewer for the enum values table widget
     private void createTableViewer() {
         // Create and setup general properties
-        String[] columnNames = enumValuesTableColumnNames.toArray(new String[enumValuesTableColumnNames.size()]);
         enumValuesTableViewer = new TableViewer(enumValuesTable);
         enumValuesTableViewer.setUseHashlookup(true);
-        enumValuesTableViewer.setColumnProperties(columnNames);
+
+        // Create cell editors and set column properties
+        updateTableViewer();
+
+        // Assign the content provider and the label provider
+        enumValuesTableViewer.setContentProvider(new EnumValuesContentProvider());
+        enumValuesTableViewer.setLabelProvider(new EnumValuesLabelProvider());
+        enumValuesTableViewer.setInput(enumValueContainer);
+
+        // Set the cell modifier
+        enumValuesTableViewer.setCellModifier(new EnumCellModifier());
+    }
+
+    /*
+     * Updates the cell editors for the enum values table viewer by creating them anew and
+     * overwrites the column properties with actual data. Also refreshes the viewer with actual
+     * model data.
+     */
+    private void updateTableViewer() {
+        if (enumValuesTableViewer == null) {
+            return;
+        }
+
+        String[] columnNames = enumValuesTableColumnNames.toArray(new String[enumValuesTableColumnNames.size()]);
 
         // Create cell editors
         CellEditor[] cellEditors = new CellEditor[columnNames.length];
@@ -183,13 +205,11 @@ public class EnumValuesSection extends IpsSection {
         // Assign the cell editors to the table viewer
         enumValuesTableViewer.setCellEditors(cellEditors);
 
-        // Assign the content provider and the label provider
-        enumValuesTableViewer.setContentProvider(new EnumValuesContentProvider());
-        enumValuesTableViewer.setLabelProvider(new EnumValuesLabelProvider());
-        enumValuesTableViewer.setInput(enumValueContainer);
+        // Update column properties
+        enumValuesTableViewer.setColumnProperties(columnNames);
 
-        // Set the cell modifier
-        enumValuesTableViewer.setCellModifier(new EnumCellModifier());
+        // Refresh the viewer
+        enumValuesTableViewer.refresh();
     }
 
     /**
@@ -206,6 +226,8 @@ public class EnumValuesSection extends IpsSection {
         newColumn.setText(columnName);
         newColumn.setWidth(200);
         enumValuesTableColumnNames.add(columnName);
+
+        updateTableViewer();
     }
 
     // Removes the column identified by the given enum attribute from the enum values table
@@ -217,6 +239,16 @@ public class EnumValuesSection extends IpsSection {
             }
         }
         enumValuesTableColumnNames.remove(name);
+
+        updateTableViewer();
+    }
+
+    // Updates the column in the enum values table that represents the given enum attribute
+    private void updateTableColumnInEnumValuesTable(IEnumAttribute enumAttribute) throws CoreException {
+        int index = enumValueContainer.findEnumType().getIndexOfEnumAttribute(enumAttribute);
+        enumValuesTable.getColumn(index).setText(enumAttribute.getName());
+
+        updateTableViewer();
     }
 
     /*
@@ -274,6 +306,21 @@ public class EnumValuesSection extends IpsSection {
 
                     break;
 
+                case ContentChangeEvent.TYPE_PROPERTY_CHANGED:
+                    IIpsObjectPart modifiedPart = event.getPart();
+                    if (modifiedPart != null) {
+                        if (modifiedPart instanceof IEnumAttribute) {
+                            IEnumAttribute modifiedEnumAttribute = (IEnumAttribute)modifiedPart;
+                            try {
+                                EnumValuesSection.this.updateTableColumnInEnumValuesTable(modifiedEnumAttribute);
+                            } catch (CoreException e) {
+                                IpsPlugin.logAndShowErrorDialog(e);
+                            }
+                        }
+                    }
+
+                    break;
+
                 case ContentChangeEvent.TYPE_PART_REMOVED:
                     IIpsObjectPart removedPart = event.getPart();
                     if (removedPart != null) {
@@ -308,9 +355,14 @@ public class EnumValuesSection extends IpsSection {
          * {@inheritDoc}
          */
         public String getColumnText(Object element, int columnIndex) {
-            IEnumValue enumValue = (IEnumValue)element;
-            IEnumAttributeValue enumAttributeValue = enumValue.getEnumAttributeValues().get(columnIndex);
-            return enumAttributeValue.getValue();
+            String columnText = null;
+            if (enumValuesTableColumnNames.size() > 0) {
+                IEnumValue enumValue = (IEnumValue)element;
+                IEnumAttributeValue enumAttributeValue = enumValue.getEnumAttributeValues().get(columnIndex);
+                columnText = enumAttributeValue.getValue();
+            }
+            
+            return columnText;
         }
 
         /**

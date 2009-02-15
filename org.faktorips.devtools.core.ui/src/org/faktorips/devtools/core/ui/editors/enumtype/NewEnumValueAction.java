@@ -49,6 +49,11 @@ public class NewEnumValueAction extends IpsAction {
      */
     @Override
     public void run(IStructuredSelection selection) {
+        // Do nothing if there are no columns yet
+        if (tableViewer.getColumnProperties().length <= 0) {
+            return;
+        }
+
         IEnumValueContainer enumValueContainer = (IEnumValueContainer)tableViewer.getInput();
         enumValueContainer.newEnumValue();
         tableViewer.refresh(true);
