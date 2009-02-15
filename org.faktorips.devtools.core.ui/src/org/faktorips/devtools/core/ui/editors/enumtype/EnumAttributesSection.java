@@ -68,6 +68,7 @@ public class EnumAttributesSection extends SimpleIpsPartsSection {
      */
     private class EnumAttributesComposite extends IpsPartsComposite {
 
+        // The enum type being edited by the editor
         private IEnumType enumType;
 
         /**
@@ -133,6 +134,15 @@ public class EnumAttributesSection extends SimpleIpsPartsSection {
             }
 
             throw new RuntimeException(possibleException);
+        }
+
+        /**
+         * {@inheritDoc}
+         */
+        @Override
+        protected void deleteIpsPart(IIpsObjectPart partToDelete) throws CoreException {
+            IEnumAttribute enumAttributeToDelete = (IEnumAttribute)partToDelete;
+            enumType.deleteEnumAttributeWithValues(enumAttributeToDelete);
         }
 
         /**

@@ -531,8 +531,10 @@ public abstract class IpsPartsComposite extends ViewerButtonComposite implements
     /**
      * Subclasses may overwrite this operation to perform additional tasks to be done when deleting
      * the given ips part.
+     * 
+     * @throws CoreException May throw this exception at any time.
      */
-    protected void deleteIpsPart(IIpsObjectPart partToDelete) {
+    protected void deleteIpsPart(IIpsObjectPart partToDelete) throws CoreException {
         partToDelete.delete();
     }
 
