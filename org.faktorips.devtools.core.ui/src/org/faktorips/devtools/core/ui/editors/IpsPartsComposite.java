@@ -481,7 +481,7 @@ public abstract class IpsPartsComposite extends ViewerButtonComposite implements
             int selectedIndexAfterDeletion = Math.min(table.getSelectionIndex(), table.getItemCount() - 2);
             IIpsObjectPart part = getSelectedPart();
             fireAboutToDelete(part);
-            part.delete();
+            deleteIpsPart(part);
             if (selectedIndexAfterDeletion >= 0) {
                 Object selected = viewer.getElementAt(selectedIndexAfterDeletion);
                 viewer.setSelection(new StructuredSelection(selected), true);
@@ -527,6 +527,14 @@ public abstract class IpsPartsComposite extends ViewerButtonComposite implements
      * Creates a new part.
      */
     protected abstract IIpsObjectPart newIpsPart();
+
+    /**
+     * Subclasses may overwrite this operation to perform additional tasks to be done when deleting
+     * the given ips part.
+     */
+    protected void deleteIpsPart(IIpsObjectPart partToDelete) {
+        partToDelete.delete();
+    }
 
     /**
      * Creates a dialog to edit the part.
