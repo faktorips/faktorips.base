@@ -17,6 +17,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.jface.action.IAction;
 import org.eclipse.jface.action.ToolBarManager;
 import org.eclipse.jface.viewers.CellEditor;
 import org.eclipse.jface.viewers.ICellModifier;
@@ -44,6 +45,7 @@ import org.faktorips.devtools.core.model.enumtype.IEnumContent;
 import org.faktorips.devtools.core.model.enumtype.IEnumType;
 import org.faktorips.devtools.core.model.enumtype.IEnumValue;
 import org.faktorips.devtools.core.model.enumtype.IEnumValueContainer;
+import org.faktorips.devtools.core.model.ipsobject.IIpsObject;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPart;
 import org.faktorips.devtools.core.ui.UIToolkit;
 import org.faktorips.devtools.core.ui.forms.IpsSection;
@@ -73,6 +75,12 @@ public class EnumValuesSection extends IpsSection {
     // The names of the columns for the enum values table ui widget
     private List<String> enumValuesTableColumnNames;
 
+    // Action to add new enum values
+    private IAction newEnumValueAction;
+
+    // Action to delete enum values
+    private IAction deleteEnumValueAction;
+
     /**
      * Creates a new <code>EnumValuesSection</code> containing the enum values of the given enum
      * value container.
@@ -94,6 +102,12 @@ public class EnumValuesSection extends IpsSection {
         createToolbar();
 
         setText(Messages.EnumValuesSection_title);
+
+        try {
+            updateEnabledStates();
+        } catch (CoreException e) {
+            IpsPlugin.logAndShowErrorDialog(e);
+        }
     }
 
     // Creates the section's toolbar
@@ -106,11 +120,36 @@ public class EnumValuesSection extends IpsSection {
         toolbar.setLocation(220, toolbar.getLocation().y + 1);
 
         // Create and add the actions to the toolbar
-        toolBarManager.add(new NewEnumValueAction(enumValuesTableViewer));
-        toolBarManager.add(new DeleteEnumValueAction(enumValuesTableViewer));
+        newEnumValueAction = new NewEnumValueAction(enumValuesTableViewer);
+        deleteEnumValueAction = new DeleteEnumValueAction(enumValuesTableViewer);
+        toolBarManager.add(newEnumValueAction);
+        toolBarManager.add(deleteEnumValueAction);
 
         // Update the toolbar with the new information
         toolBarManager.update(true);
+    }
+
+    /*
+     * Updates the enabled states of the enum values table and its actions. The enabled states
+     * result from the fact whether this enum values section is used for an enum type or for an enum
+     * content and whether the (referenced) enum type defines its values in the model or not.
+     */
+    private void updateEnabledStates() throws CoreException {
+        IEnumType enumType = enumValueContainer.findEnumType();
+        boolean valuesArePartOfModel = enumType.getValuesArePartOfModel();
+
+        if (enumValueContainer instanceof IEnumType) {
+            newEnumValueAction.setEnabled(valuesArePartOfModel);
+            deleteEnumValueAction.setEnabled(valuesArePartOfModel);
+            enumValuesTable.setEnabled(valuesArePartOfModel);
+            getSectionControl().setEnabled(valuesArePartOfModel);
+
+        } else if (enumValueContainer instanceof IEnumContent) {
+            newEnumValueAction.setEnabled(!(valuesArePartOfModel));
+            deleteEnumValueAction.setEnabled(!(valuesArePartOfModel));
+            enumValuesTable.setEnabled(!(valuesArePartOfModel));
+            getSectionControl().setEnabled(!(valuesArePartOfModel));
+        }
     }
 
     /**
@@ -332,6 +371,20 @@ public class EnumValuesSection extends IpsSection {
                             IEnumAttribute removedEnumAttribute = (IEnumAttribute)removedPart;
                             enumAttributeRemoved(removedEnumAttribute);
                         }
+                    }
+
+                    break;
+
+                case ContentChangeEvent.TYPE_WHOLE_CONTENT_CHANGED:
+                    try {
+                        IIpsObject changedIpsObject = event.getIpsSrcFile().getIpsObject();
+                        if (changedIpsObject instanceof IEnumType) {
+                            if ((IEnumType)changedIpsObject == enumValueContainer) {
+                                updateEnabledStates();
+                            }
+                        }
+                    } catch (CoreException e) {
+                        IpsPlugin.logAndShowErrorDialog(e);
                     }
 
                     break;
