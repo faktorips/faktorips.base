@@ -341,12 +341,12 @@ public class EnumValuesSection extends IpsSection {
             }
 
             // Switch based upon event type
+            IIpsObjectPart part = event.getPart();
             switch (event.getEventType()) {
                 case ContentChangeEvent.TYPE_PART_ADDED:
-                    IIpsObjectPart addedPart = event.getPart();
-                    if (addedPart != null) {
-                        if (addedPart instanceof IEnumAttribute) {
-                            IEnumAttribute addedEnumAttribute = (IEnumAttribute)addedPart;
+                    if (part != null) {
+                        if (part instanceof IEnumAttribute) {
+                            IEnumAttribute addedEnumAttribute = (IEnumAttribute)part;
                             EnumValuesSection.this.addTableColumnToEnumValuesTable(addedEnumAttribute.getName());
                         }
                     }
@@ -354,10 +354,9 @@ public class EnumValuesSection extends IpsSection {
                     break;
 
                 case ContentChangeEvent.TYPE_PROPERTY_CHANGED:
-                    IIpsObjectPart modifiedPart = event.getPart();
-                    if (modifiedPart != null) {
-                        if (modifiedPart instanceof IEnumAttribute) {
-                            IEnumAttribute modifiedEnumAttribute = (IEnumAttribute)modifiedPart;
+                    if (part != null) {
+                        if (part instanceof IEnumAttribute) {
+                            IEnumAttribute modifiedEnumAttribute = (IEnumAttribute)part;
                             EnumValuesSection.this.updateTableColumnInEnumValuesTable(modifiedEnumAttribute);
                         }
                     }
@@ -365,13 +364,19 @@ public class EnumValuesSection extends IpsSection {
                     break;
 
                 case ContentChangeEvent.TYPE_PART_REMOVED:
-                    IIpsObjectPart removedPart = event.getPart();
-                    if (removedPart != null) {
-                        if (removedPart instanceof IEnumAttribute) {
-                            IEnumAttribute removedEnumAttribute = (IEnumAttribute)removedPart;
+                    if (part != null) {
+                        if (part instanceof IEnumAttribute) {
+                            IEnumAttribute removedEnumAttribute = (IEnumAttribute)part;
                             enumAttributeRemoved(removedEnumAttribute);
                         }
                     }
+
+                    break;
+
+                case ContentChangeEvent.TYPE_PARTS_CHANGED_POSITIONS:
+                    // TODO
+                    event.getMovedParts();
+                    // enumValuesTable.setColumnOrder(order);
 
                     break;
 
@@ -387,9 +392,6 @@ public class EnumValuesSection extends IpsSection {
                         IpsPlugin.logAndShowErrorDialog(e);
                     }
 
-                    break;
-
-                default:
                     break;
             }
         }
