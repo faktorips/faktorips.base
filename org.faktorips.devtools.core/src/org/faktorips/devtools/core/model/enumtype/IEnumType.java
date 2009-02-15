@@ -269,10 +269,6 @@ public interface IEnumType extends IEnumValueContainer, Datatype {
      * Deletes all the given enum attribute and all the enum attribute values that refer to it.
      * </p>
      * <p>
-     * If the given enum attribute is the last attribute of its enum type all enum value objects
-     * that refer to that type will be deleted also.
-     * </p>
-     * <p>
      * Note that this operation does not differentiate whether the values are part of the model or
      * not: all referencing enum attribute values will be deleted.
      * </p>

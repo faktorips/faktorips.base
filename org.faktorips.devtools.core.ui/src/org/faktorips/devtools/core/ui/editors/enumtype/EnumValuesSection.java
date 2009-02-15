@@ -40,6 +40,7 @@ import org.faktorips.devtools.core.model.ContentChangeEvent;
 import org.faktorips.devtools.core.model.ContentsChangeListener;
 import org.faktorips.devtools.core.model.enumtype.IEnumAttribute;
 import org.faktorips.devtools.core.model.enumtype.IEnumAttributeValue;
+import org.faktorips.devtools.core.model.enumtype.IEnumContent;
 import org.faktorips.devtools.core.model.enumtype.IEnumType;
 import org.faktorips.devtools.core.model.enumtype.IEnumValue;
 import org.faktorips.devtools.core.model.enumtype.IEnumValueContainer;
@@ -244,9 +245,15 @@ public class EnumValuesSection extends IpsSection {
     }
 
     // Updates the column in the enum values table that represents the given enum attribute
-    private void updateTableColumnInEnumValuesTable(IEnumAttribute enumAttribute) throws CoreException {
-        int index = enumValueContainer.findEnumType().getIndexOfEnumAttribute(enumAttribute);
+    private void updateTableColumnInEnumValuesTable(IEnumAttribute enumAttribute) {
+        int index = ((IEnumType)enumAttribute.getParent()).getIndexOfEnumAttribute(enumAttribute);
         enumValuesTable.getColumn(index).setText(enumAttribute.getName());
+
+        // Build new column names
+        enumValuesTableColumnNames.clear();
+        for (TableColumn currentTableColumn : enumValuesTable.getColumns()) {
+            enumValuesTableColumnNames.add(currentTableColumn.getText());
+        }
 
         updateTableViewer();
     }
@@ -294,6 +301,7 @@ public class EnumValuesSection extends IpsSection {
                 return;
             }
 
+            // Switch based upon event type
             switch (event.getEventType()) {
                 case ContentChangeEvent.TYPE_PART_ADDED:
                     IIpsObjectPart addedPart = event.getPart();
@@ -311,11 +319,7 @@ public class EnumValuesSection extends IpsSection {
                     if (modifiedPart != null) {
                         if (modifiedPart instanceof IEnumAttribute) {
                             IEnumAttribute modifiedEnumAttribute = (IEnumAttribute)modifiedPart;
-                            try {
-                                EnumValuesSection.this.updateTableColumnInEnumValuesTable(modifiedEnumAttribute);
-                            } catch (CoreException e) {
-                                IpsPlugin.logAndShowErrorDialog(e);
-                            }
+                            EnumValuesSection.this.updateTableColumnInEnumValuesTable(modifiedEnumAttribute);
                         }
                     }
 
@@ -326,7 +330,7 @@ public class EnumValuesSection extends IpsSection {
                     if (removedPart != null) {
                         if (removedPart instanceof IEnumAttribute) {
                             IEnumAttribute removedEnumAttribute = (IEnumAttribute)removedPart;
-                            EnumValuesSection.this.removeTableColumnFromEnumValuesTable(removedEnumAttribute);
+                            enumAttributeRemoved(removedEnumAttribute);
                         }
                     }
 
@@ -335,6 +339,29 @@ public class EnumValuesSection extends IpsSection {
                 default:
                     break;
             }
+        }
+
+        // Things to do when an enum attribute has been removed from the referenced enum type
+        private void enumAttributeRemoved(IEnumAttribute removedEnumAttribute) {
+            // Delete referencing enum values if there are no more enum attributes
+            IEnumType enumType = (IEnumType)removedEnumAttribute.getParent();
+            if (enumType.getNumberEnumAttributes() == 0) {
+                for (IEnumValue currentEnumValue : enumType.getEnumValues()) {
+                    currentEnumValue.delete();
+                }
+                try {
+                    for (IEnumContent currentEnumContent : enumType.findReferencingEnumContents()) {
+                        for (IEnumValue currentEnumValue : currentEnumContent.getEnumValues()) {
+                            currentEnumValue.delete();
+                        }
+                    }
+                } catch (CoreException e) {
+                    IpsPlugin.logAndShowErrorDialog(e);
+                }
+            }
+
+            // Remove the table column of the enum attribute
+            EnumValuesSection.this.removeTableColumnFromEnumValuesTable(removedEnumAttribute);
         }
 
     }
@@ -361,7 +388,7 @@ public class EnumValuesSection extends IpsSection {
                 IEnumAttributeValue enumAttributeValue = enumValue.getEnumAttributeValues().get(columnIndex);
                 columnText = enumAttributeValue.getValue();
             }
-            
+
             return columnText;
         }
 

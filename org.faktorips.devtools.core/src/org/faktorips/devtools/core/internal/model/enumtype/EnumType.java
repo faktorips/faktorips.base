@@ -433,18 +433,6 @@ public class EnumType extends EnumValueContainer implements IEnumType {
         }
 
         enumAttribute.delete();
-
-        // If this was the last attribute then delete all enum value objects
-        if (enumAttributes.size() == 0) {
-            for (IEnumValue currentEnumValue : getEnumValues()) {
-                currentEnumValue.delete();
-            }
-            for (IEnumContent currentEnumContent : findReferencingEnumContents()) {
-                for (IEnumValue currentEnumValue : currentEnumContent.getEnumValues()) {
-                    currentEnumValue.delete();
-                }
-            }
-        }
     }
 
     /*
