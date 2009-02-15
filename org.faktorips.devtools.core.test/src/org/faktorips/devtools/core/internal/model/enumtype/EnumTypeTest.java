@@ -14,7 +14,6 @@
 package org.faktorips.devtools.core.internal.model.enumtype;
 
 import java.util.List;
-import java.util.NoSuchElementException;
 
 import javax.xml.parsers.ParserConfigurationException;
 
@@ -271,15 +270,17 @@ public class EnumTypeTest extends AbstractIpsEnumPluginTest {
     }
 
     public void testDeleteEnumAttributeWithValues() throws CoreException {
+        IEnumType newEnumType = newEnumType(ipsProject, "NewEnumType");
+        IEnumAttribute newEnumAttribute = newEnumType.newEnumAttribute();
         try {
-            genderEnumType.deleteEnumAttributeWithValues(99);
+            genderEnumType.deleteEnumAttributeWithValues(newEnumAttribute);
             fail();
-        } catch (NoSuchElementException e) {
+        } catch (IllegalArgumentException e) {
         }
 
         IEnumValue modelValue = genderEnumType.newEnumValue();
 
-        genderEnumType.deleteEnumAttributeWithValues(0);
+        genderEnumType.deleteEnumAttributeWithValues(genderEnumAttributeId);
         List<IEnumAttribute> enumAttributes = genderEnumType.getEnumAttributes();
         assertEquals(1, enumAttributes.size());
         assertEquals(genderEnumAttributeName, enumAttributes.get(0));
@@ -296,7 +297,7 @@ public class EnumTypeTest extends AbstractIpsEnumPluginTest {
         try {
             genderEnumType.deleteEnumAttributeWithValues(genderEnumAttributeId);
             fail();
-        } catch (NoSuchElementException e) {
+        } catch (IllegalArgumentException e) {
         }
 
         genderEnumType.deleteEnumAttributeWithValues(genderEnumAttributeName);

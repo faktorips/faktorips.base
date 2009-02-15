@@ -38,13 +38,11 @@ public interface IEnumAttributeValue extends IIpsObjectPart {
     public final static String PROPERTY_VALUE = "value"; //$NON-NLS-1$
 
     /**
-     * Searches the enum attribute this enum attribute value refers to or <code>null</code> if it
-     * doesn't refer to any.
+     * Searches and returns the enum attribute this enum attribute value refers to.
      * 
-     * @return A reference to the enum attribute this enum attribute value refers to or
-     *         <code>null</code> if it doesn't refer to any.
+     * @return A reference to the enum attribute this enum attribute value refers to.
      * 
-     * @throws CoreException If an error occurs while searching for the enum attribute
+     * @throws CoreException If an error occurs while searching for the enum attribute.
      */
     public IEnumAttribute findEnumAttribute() throws CoreException;
 

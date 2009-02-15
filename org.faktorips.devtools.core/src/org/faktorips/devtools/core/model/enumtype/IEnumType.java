@@ -253,40 +253,6 @@ public interface IEnumType extends IEnumValueContainer, Datatype {
     public List<IEnumContent> findReferencingEnumContents() throws CoreException;
 
     /**
-     * <p>
-     * Deletes the given enum attribute and all enum attribute values that refer to it.
-     * </p>
-     * <p>
-     * Note that this operation does not differentiate whether the values are part of the model or
-     * not: all referencing enum attribute values will be deleted.
-     * </p>
-     * 
-     * @param enumAttribute The enum attribute to delete.
-     * 
-     * @throws CoreException If an error occurs while delete the enum attribute.
-     * @throws NoSuchElementException If there is no such enum attribute in this enum type.
-     * @throws NullPointerException If enumAttribute is <code>null</code>.
-     */
-    public void deleteEnumAttributeWithValues(IEnumAttribute enumAttribute) throws CoreException;
-
-    /**
-     * <p>
-     * Deletes the enum attribute identified by the given id and all enum attribute values that
-     * refer to it.
-     * </p>
-     * <p>
-     * Note that this operation does not differentiate whether the values are part of the model or
-     * not: all referencing enum attribute values will be deleted.
-     * </p>
-     * 
-     * @param id The id that identifies the enum attribute to delete.
-     * 
-     * @throws CoreException If an error occurs while delete the enum attribute.
-     * @throws NoSuchElementException If there is no enum attribute with the given id.
-     */
-    public void deleteEnumAttributeWithValues(int id) throws CoreException;
-
-    /**
      * Checks whether an enum attribute with the given name exists.
      * 
      * @param name The name of the enum attribute that will be checked for existence.
@@ -297,5 +263,22 @@ public interface IEnumType extends IEnumValueContainer, Datatype {
      * @throws NullPointerException If name is <code>null</code>.
      */
     public boolean enumAttributeExists(String name);
+
+    /**
+     * <p>
+     * Deletes all the given enum attribute and all the enum attribute values that refer to it.
+     * </p>
+     * <p>
+     * Note that this operation does not differentiate whether the values are part of the model or
+     * not: all referencing enum attribute values will be deleted.
+     * </p>
+     * 
+     * @param enumAttribute The enum attribute to delete.
+     * 
+     * @throws CoreException If an error occurs while delete the enum attribute.
+     * @throws IllegalArgumentException If the given enum attribute is not part of this enum type.
+     * @throws NullPointerException If enumAttribute is <code>null</code>.
+     */
+    public void deleteEnumAttributeWithValues(IEnumAttribute enumAttribute) throws CoreException;
 
 }

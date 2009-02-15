@@ -95,6 +95,7 @@ public class EnumAttributeValue extends AtomicIpsObjectPart implements IEnumAttr
     public IEnumAttribute findEnumAttribute() throws CoreException {
         IEnumValueContainer valueContainer = (IEnumValueContainer)parent.getParent();
 
+        // Calculate index
         int index;
         List<IEnumAttributeValue> enumAttributeValuesList = ((IEnumValue)parent).getEnumAttributeValues();
         for (index = 0; index < enumAttributeValuesList.size(); index++) {

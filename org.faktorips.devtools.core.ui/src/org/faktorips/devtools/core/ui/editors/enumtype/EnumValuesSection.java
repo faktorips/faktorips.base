@@ -208,11 +208,15 @@ public class EnumValuesSection extends IpsSection {
         enumValuesTableColumnNames.add(columnName);
     }
 
-    // Removes the column identified by the given index from the enum values table
-    private void removeTableColumnFromEnumValuesTable(int index) {
-        TableColumn columnToBeRemoved = enumValuesTable.getColumn(index);
-        columnToBeRemoved.dispose();
-        enumValuesTableColumnNames.remove(index);
+    // Removes the column identified by the given enum attribute from the enum values table
+    private void removeTableColumnFromEnumValuesTable(IEnumAttribute enumAttribute) {
+        String name = enumAttribute.getName();
+        for (TableColumn currentColumn : enumValuesTable.getColumns()) {
+            if (currentColumn.getText().equals(name)) {
+                currentColumn.dispose();
+            }
+        }
+        enumValuesTableColumnNames.remove(name);
     }
 
     /*
@@ -267,27 +271,20 @@ public class EnumValuesSection extends IpsSection {
                             EnumValuesSection.this.addTableColumnToEnumValuesTable(addedEnumAttribute.getName());
                         }
                     }
-                    
+
                     break;
-                    
+
                 case ContentChangeEvent.TYPE_PART_REMOVED:
                     IIpsObjectPart removedPart = event.getPart();
                     if (removedPart != null) {
                         if (removedPart instanceof IEnumAttribute) {
                             IEnumAttribute removedEnumAttribute = (IEnumAttribute)removedPart;
-                            IEnumType enumType = null;
-                            try {
-                                enumType = enumValueContainer.findEnumType();
-                            } catch (CoreException e) {
-                                IpsPlugin.logAndShowErrorDialog(e);
-                            }
-                            EnumValuesSection.this.removeTableColumnFromEnumValuesTable(enumType
-                                    .getIndexOfEnumAttribute(removedEnumAttribute));
+                            EnumValuesSection.this.removeTableColumnFromEnumValuesTable(removedEnumAttribute);
                         }
                     }
-                    
+
                     break;
-                    
+
                 default:
                     break;
             }
