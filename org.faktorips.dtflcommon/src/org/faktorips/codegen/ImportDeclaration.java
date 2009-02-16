@@ -172,7 +172,7 @@ public class ImportDeclaration {
             || importSpec.equals(Double.TYPE.getName())
             || importSpec.equals(Long.TYPE.getName())
             || importSpec.equals("void")) {
-            return true; // this is a primtive type
+            return true; // this is a primitive type
         }
         if (isPackageImport(importSpec)) {
             if (JAVA_LANG_ASTERIX.equals(importSpec)) {
