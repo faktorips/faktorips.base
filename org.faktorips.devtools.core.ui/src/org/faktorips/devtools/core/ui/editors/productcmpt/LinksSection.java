@@ -30,6 +30,7 @@ import org.eclipse.jface.viewers.ILabelProvider;
 import org.eclipse.jface.viewers.ISelectionChangedListener;
 import org.eclipse.jface.viewers.ISelectionProvider;
 import org.eclipse.jface.viewers.IStructuredSelection;
+import org.eclipse.jface.viewers.ITreeSelection;
 import org.eclipse.jface.viewers.SelectionChangedEvent;
 import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.swt.SWT;
@@ -45,6 +46,7 @@ import org.eclipse.swt.events.MouseAdapter;
 import org.eclipse.swt.events.MouseEvent;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.events.SelectionListener;
+import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
@@ -251,8 +253,25 @@ public class LinksSection extends IpsSection implements ISelectionProviderActiva
     private void registerOpenLinkListener() {
         MouseAdapter adapter = new MouseAdapter() {
             public void mouseDown(MouseEvent e) {
+                // the following conditions must be fit fulfilled to open
+                // the item in a new editor:
+                //   1. ctrl must be pressed
+                //   2. only one item is selected
+                //   3. the current selected item is the item under the mouse cursor
+                //     because otherwise if two items are selected and an item will be deselected using ctrl
+                //     the other (previous) selected item will be opened
                 if ((e.stateMask & SWT.CTRL) != 0){
-                    openLink();
+                    ITreeSelection selection = (ITreeSelection)treeViewer.getSelection();
+                    if (selection.size() == 1){
+                        Object firstElement = selection.getFirstElement();
+                        TreeItem item = treeViewer.getTree().getItem(new Point(e.x,e.y));
+                        if (item == null){
+                            return;
+                        }
+                        if (firstElement.equals(item.getData())){
+                            openLink();
+                        }
+                    }
                 }
             }
 
