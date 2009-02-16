@@ -51,13 +51,16 @@ import org.faktorips.util.LocalizedStringsSet;
 import org.faktorips.util.StringUtil;
 
 /**
- * A generator for <code>IPolicyCmptType</code>s. It provides access to generators for attributes,
+ * A generator for <code>IPolicyCmptType</code>s.
+ * 
+ * <p>It provides access to generators for attributes,
  * methods and associations of the policy component type. Typically when the generator is created
- * all the generators of its parts are also greated accept the ones in the super type hierarchy.
+ * all the generators of its parts are also created except the ones in the super type hierarchy.
  * These are created on demand since it is expected that only a few of them will be overridden. It
  * is necessary to provide an own generator instance for those overridden parts in this generator
  * and not to delegate to the generator of the super class since otherwise it would not be possible
  * to determine if code has to be generated with respect to the super type.
+ * </p>
  * 
  * @author Peter Erzberger
  */
