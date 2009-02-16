@@ -294,7 +294,7 @@ public class Money implements Comparable<Money>, NullObjectSupport, Serializable
      * @param factor The int factor this money amount is multiplied with.
      *
      * @return new money amount with the same currency and a value of
-     *         <code>this * factor<code>
+     *         <code>this * factor</code>
      */
     public Money multiply(int factor) {
         return new Money(internalAmount * factor, currency);
@@ -305,7 +305,7 @@ public class Money implements Comparable<Money>, NullObjectSupport, Serializable
      *
      * @param factor The int factor this money amount is multiplied with.
      *
-     * @return new money amount with the same currency and a value of <code>this * factor<code>.
+     * @return new money amount with the same currency and a value of <code>this * factor</code>.
      *         Returns <code>Money.NULL</code> if either this is <code>Money.NULL</code> or factor is <code>null</code>.
      */
     public Money multiply(Integer factor) {
@@ -321,7 +321,7 @@ public class Money implements Comparable<Money>, NullObjectSupport, Serializable
      * @param factor The long factor this money amount is multiplied with.
      *
      * @return new money amount with the same currency and a value of
-     *         <code>this * factor<code>
+     *         <code>this * factor</code>
      */
     public Money multiply(long factor) {
         return new Money(internalAmount * factor, currency);
@@ -336,7 +336,7 @@ public class Money implements Comparable<Money>, NullObjectSupport, Serializable
      * @param roundingMode One of the rounding modes defined in <code>BigDecimal</code>
      *
      * @return new money amount with the same currency and a value of
-     *         <code>this * d<code>
+     *         <code>this * d</code>
      *
      * @throws NullPointerException if d is <code>null</code>.
      */
@@ -357,7 +357,7 @@ public class Money implements Comparable<Money>, NullObjectSupport, Serializable
      * @param roundingMode One of the rounding modes defined in <code>BigDecimal</code>
      *
      * @return new money amount with the same currency and a value of
-     * 			<code>this / d<code> rounded to the frational digits defined by the money's
+     * 			<code>this / d</code> rounded to the fractional digits defined by the money's
      * 			currency using the given rounding mode.
      * 			<p>
      * 			Returns <code>Money.null</code> if this is the Money.NULL object.
@@ -378,7 +378,7 @@ public class Money implements Comparable<Money>, NullObjectSupport, Serializable
      * @param roundingMode One of the rounding modes defined in <code>BigDecimal</code>
      *
      * @return new money amount with the same currency and a value of
-     * 			<code>this / d<code> rounded to the frational digits defined by the money's
+     * 			<code>this / d</code> rounded to the fractional digits defined by the money's
      * 			currency using the given rounding mode.
      * 			<p>
      * 			Returns <code>Money.null</code> if this is the Money.NULL object.
@@ -399,7 +399,7 @@ public class Money implements Comparable<Money>, NullObjectSupport, Serializable
      * @param roundingMode One of the rounding modes defined in <code>BigDecimal</code>
      *
      * @return new money amount with the same currency and a value of
-     * 			<code>this / d<code> rounded to the frational digits defined by the money's
+     * 			<code>this / d</code> rounded to the fractional digits defined by the money's
      * 			currency using the given rounding mode.
      * 			<p>
      * 			Returns <code>Money.null</code> if this is the Money.NULL object or the divisor
@@ -425,7 +425,7 @@ public class Money implements Comparable<Money>, NullObjectSupport, Serializable
      * @throws NullPointerException if the other money object is <code>null</code>.
      */
     public int compareTo(Money other) {
-        // First check the currencys
+        // First check the currencies
         if (other.isNull()) {
             throw new NullPointerException();
         }
