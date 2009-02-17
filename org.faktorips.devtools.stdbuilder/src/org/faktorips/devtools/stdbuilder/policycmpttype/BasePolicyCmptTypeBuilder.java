@@ -15,7 +15,6 @@ package org.faktorips.devtools.stdbuilder.policycmpttype;
 
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.MultiStatus;
-import org.eclipse.jdt.core.JavaCore;
 import org.faktorips.codegen.DatatypeHelper;
 import org.faktorips.codegen.JavaCodeFragmentBuilder;
 import org.faktorips.devtools.core.builder.AbstractPcTypeBuilder;
@@ -34,7 +33,6 @@ import org.faktorips.devtools.stdbuilder.policycmpttype.method.GenMethod;
 import org.faktorips.devtools.stdbuilder.productcmpttype.GenProductCmptType;
 import org.faktorips.util.LocalizedStringsSet;
 import org.faktorips.util.message.MessageList;
-import org.faktorips.values.Decimal;
 
 /**
  * 
