@@ -13,7 +13,7 @@
 	<!--
 	    This dictionary pattern defines a regular expression in the "match" attribute and a location where
 	    to look for a string that matches in the "select" attribute. If a pull rule wants to use this dictionary 
-	    pattern it declars in the sourceMarkup or targetMarkup attribute the string that is in parentheses 
+	    pattern it declares in the sourceMarkup or targetMarkup attribute the string that is in parentheses 
 	    surrounded by the characters ^$. 
 	 -->
     <merge:dictionaryPattern name="generatedMember" select="Member/getComment" match="\s*@\s*(gen)erated\s*\n"/>
@@ -21,7 +21,7 @@
     
 		
     <!--
-    	This rule doesn't work. The interfaces are not added but overriden. A look in the source code
+    	This rule doesn't work. The interfaces are not added but overridden. A look in the source code
     	suggests a false implementation.
     -->
     <merge:pull sourceMarkup="^gen$" sourceGet="Type/getSuperInterfaces" targetPut="Type/setSuperInterfaces"/>
