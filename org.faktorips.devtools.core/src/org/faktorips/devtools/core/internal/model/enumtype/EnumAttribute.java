@@ -155,7 +155,9 @@ public class EnumAttribute extends AtomicIpsObjectPart implements IEnumAttribute
 
         String text;
         Message validationMessage;
+        List<IEnumAttribute> enumAttributesThisType = ((IEnumType)getParent()).getEnumAttributes();
 
+        // Check for name missing
         if (name.equals("")) {
             text = Messages.EnumAttribute_NameMissing;
             validationMessage = new Message(MSGCODE_ENUM_ATTRIBUTE_NAME_MISSING, text, Message.ERROR, this,
@@ -163,9 +165,9 @@ public class EnumAttribute extends AtomicIpsObjectPart implements IEnumAttribute
             list.add(validationMessage);
         }
 
-        List<IEnumAttribute> enumAttributes = ((IEnumType)getParent()).getEnumAttributes();
+        // Check for other attributes with the same name
         int numberEnumAttributesThisName = 0;
-        for (IEnumAttribute currentEnumAttribute : enumAttributes) {
+        for (IEnumAttribute currentEnumAttribute : enumAttributesThisType) {
             if (currentEnumAttribute.getName().equals(name)) {
                 numberEnumAttributesThisName++;
             }
@@ -178,6 +180,7 @@ public class EnumAttribute extends AtomicIpsObjectPart implements IEnumAttribute
             }
         }
 
+        // Check for missing datatype or datatype not existing
         if (datatype.equals("")) {
             text = Messages.EnumAttribute_DatatypeMissing;
             validationMessage = new Message(MSGCODE_ENUM_ATTRIBUTE_DATATYPE_MISSING, text, Message.ERROR, this,
@@ -189,6 +192,23 @@ public class EnumAttribute extends AtomicIpsObjectPart implements IEnumAttribute
                 validationMessage = new Message(MSGCODE_ENUM_ATTRIBUTE_DATATYPE_DOES_NOT_EXIST, text, Message.ERROR,
                         this, PROPERTY_DATATYPE);
                 list.add(validationMessage);
+            }
+        }
+
+        // Check for other attributes being marked as identifier
+        if (isIdentifier) {
+            int numberEnumAttributesIdentifier = 0;
+            for (IEnumAttribute currentEnumAttribute : enumAttributesThisType) {
+                if (currentEnumAttribute.isIdentifier()) {
+                    numberEnumAttributesIdentifier++;
+                }
+                if (numberEnumAttributesIdentifier > 1) {
+                    text = Messages.EnumAttribute_DuplicateIdentifier;
+                    validationMessage = new Message(MSGCODE_ENUM_ATTRIBUTE_DUPLICATE_IDENTIFIER, text, Message.ERROR,
+                            this, PROPERTY_IDENTIFIER);
+                    list.add(validationMessage);
+                    break;
+                }
             }
         }
     }

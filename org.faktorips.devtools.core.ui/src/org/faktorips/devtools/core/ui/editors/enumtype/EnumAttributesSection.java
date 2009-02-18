@@ -162,7 +162,7 @@ public class EnumAttributesSection extends SimpleIpsPartsSection {
                         newIndex = enumType.moveEnumAttributeDown(enumAttributeToMove);
                     }
                 } catch (CoreException e) {
-                    IpsPlugin.logAndShowErrorDialog(e);
+                    throw new RuntimeException(e);
                 }
             }
 

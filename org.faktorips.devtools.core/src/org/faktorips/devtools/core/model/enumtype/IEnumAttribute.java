@@ -59,6 +59,13 @@ public interface IEnumAttribute extends IIpsObjectPart {
             + "EnumAttributeDatatypeDoesNotExist"; //$NON-NLS-1$
 
     /**
+     * Validation message code to indicate that there are other enum attributes marked as
+     * identifier.
+     */
+    public final static String MSGCODE_ENUM_ATTRIBUTE_DUPLICATE_IDENTIFIER = MSGCODE_PREFIX
+            + "EnumAttributeDuplicateIdentifier"; //$NON-NLS-1$
+
+    /**
      * Sets the name of this enum attribute.
      * 
      * @param name The new name for this enum attribute.

@@ -13,6 +13,7 @@
 
 package org.faktorips.devtools.core.ui.editors.enumtype;
 
+import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.TableViewer;
 import org.faktorips.devtools.core.model.enumtype.IEnumValue;
@@ -67,11 +68,14 @@ public class MoveEnumValueAction extends AbstractEnumAction {
         IEnumValue enumValue = (IEnumValue)selection.getFirstElement();
         if (enumValue != null) {
             IEnumValueContainer enumValueContainer = (IEnumValueContainer)enumValue.getParent();
-            // TODO move enum value up / down
-            if (up) {
-
-            } else {
-
+            try {
+                if (up) {
+                    enumValueContainer.moveEnumValueUp(enumValue);
+                } else {
+                    enumValueContainer.moveEnumValueDown(enumValue);
+                }
+            } catch (CoreException e) {
+                throw new RuntimeException(e);
             }
 
             tableViewer.refresh(true);

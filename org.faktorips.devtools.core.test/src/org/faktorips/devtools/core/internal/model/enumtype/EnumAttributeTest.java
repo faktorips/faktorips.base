@@ -103,6 +103,11 @@ public class EnumAttributeTest extends AbstractIpsEnumPluginTest {
         genderEnumAttributeId.setDatatype("FooBar");
         assertEquals(1, genderEnumAttributeId.validate(ipsProject).getNoOfMessages());
         genderEnumAttributeId.setDatatype(STRING_DATATYPE_NAME);
+
+        ipsModel.clearValidationCache();
+        genderEnumAttributeName.setIdentifier(true);
+        assertEquals(1, genderEnumAttributeId.validate(ipsProject).getNoOfMessages());
+        genderEnumAttributeName.setIdentifier(false);
     }
 
     public void testGetImage() {
