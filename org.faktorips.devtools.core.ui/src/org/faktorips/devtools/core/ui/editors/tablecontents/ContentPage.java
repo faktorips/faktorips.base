@@ -3,7 +3,7 @@
  * 
  * Alle Rechte vorbehalten.
  * 
- * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen, 
+ * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen,
  * etc.) duerfen nur unter den Bedingungen der Faktor-Zehn-Community Lizenzvereinbarung - Version
  * 0.1 (vor Gruendung Community) genutzt werden, die Bestandteil der Auslieferung ist und auch unter
  * http://www.faktorzehn.org/f10-org:lizenzen:community eingesehen werden kann.
@@ -63,88 +63,91 @@ import org.faktorips.devtools.core.ui.table.TableCellEditor;
 import org.faktorips.util.message.MessageList;
 
 /**
- * The content-page for the <code>TableContentsEditor</code>. Allows the editing of <code>TableContents</code>
- * using a <code>TableViewer</code>.
+ * The content-page for the <code>TableContentsEditor</code>. Allows the editing of
+ * <code>TableContents</code> using a <code>TableViewer</code>.
  * 
  * @author Stefan Widmaier
  */
 public class ContentPage extends IpsObjectEditorPage {
     /*
      * SWT event type for the measure item event
-     * @since 3.2
-     * defined here to ensure compatibility to lower SWT versions
+     * 
+     * @since 3.2 defined here to ensure compatibility to lower SWT versions
      */
     private static final int SWT_MeasureItem = 41;
-    
-	final static String PAGE_ID = "Contents"; //$NON-NLS-1$
-    
+
+    final static String PAGE_ID = "Contents"; //$NON-NLS-1$
+
     private TableViewer tableViewer;
 
     private Table table;
 
     private class TableImportExportActionInEditor extends TableImportExportAction {
-        
+
         protected TableImportExportActionInEditor(Shell shell, ITableContents tableContents, boolean isImport) {
             super(shell, tableContents);
-            if (isImport){
+            if (isImport) {
                 initImportAction();
             } else {
                 initExportAction();
             }
         }
-        
+
         /**
          * {@inheritDoc}
          */
         public void run(IStructuredSelection selection) {
-            if  (super.runInternal(selection)){
+            if (super.runInternal(selection)) {
                 tableViewer.setInput(getTableContents());
                 tableViewer.refresh(true);
                 redrawTable();
             }
         }
     }
-    
-	public ContentPage(IpsObjectEditor editor) {
-		super(editor, PAGE_ID, Messages.ContentPage_title);
-	}
 
+    public ContentPage(IpsObjectEditor editor) {
+        super(editor, PAGE_ID, Messages.ContentPage_title);
+    }
 
-	/**
-	 * {@inheritDoc}
-	 */
-	protected void createPageContent(Composite formBody, UIToolkit toolkit) {
+    /**
+     * {@inheritDoc}
+     */
+    protected void createPageContent(Composite formBody, UIToolkit toolkit) {
         checkDifferences(formBody, toolkit);
-        
+
         GridLayout layout = new GridLayout(1, false);
         formBody.setLayout(layout);
-          
-        table= createTable(formBody);
+
+        table = createTable(formBody);
         initTableViewer(table, toolkit, formBody);
         NewRowAction newRowAction = new NewRowAction(tableViewer, this);
         DeleteRowAction deleteRowAction = new DeleteRowAction(tableViewer, this);
         initTablePopupMenu(table, deleteRowAction, newRowAction);
 
-        /* Create a single row if an empty tablecontents is opened. 
-         * Otherwise no editing is possible.
+        /*
+         * Create a single row if an empty tablecontents is opened. Otherwise no editing is
+         * possible.
          */
-        if(getActiveGeneration().getNumOfRows()==0){
+        if (getActiveGeneration().getNumOfRows() == 0) {
             getActiveGeneration().newRow();
         }
-        
+
         tableViewer.setInput(getTableContents());
 
-        ScrolledForm form= getManagedForm().getForm();
+        ScrolledForm form = getManagedForm().getForm();
         form.getToolBarManager().add(newRowAction);
         form.getToolBarManager().add(deleteRowAction);
         form.getToolBarManager().add(new Separator());
-        
-        // create own TableImportExportActionInEditor because the editor must be refreshed after 
-        // importing of the table contents othwise the old content is visible until the editor is reopened
-        // Workaround see 
-        TableImportExportActionInEditor importAction = new TableImportExportActionInEditor(getSite().getShell(), getTableContents(), true);
-        TableImportExportActionInEditor exportAction = new TableImportExportActionInEditor(getSite().getShell(), getTableContents(), false);
-        
+
+        // create own TableImportExportActionInEditor because the editor must be refreshed after
+        // importing of the table contents othwise the old content is visible until the editor is
+        // reopened
+        // Workaround see
+        TableImportExportActionInEditor importAction = new TableImportExportActionInEditor(getSite().getShell(),
+                getTableContents(), true);
+        TableImportExportActionInEditor exportAction = new TableImportExportActionInEditor(getSite().getShell(),
+                getTableContents(), false);
+
         form.getToolBarManager().add(importAction);
         form.getToolBarManager().add(exportAction);
         if (IpsPlugin.getDefault().getIpsPreferences().canNavigateToModelOrSourceCode()) {
@@ -153,27 +156,30 @@ public class ContentPage extends IpsObjectEditorPage {
         }
         form.updateToolBar();
 
-        // FS#822 workaround to activate the correct cell editor (row and column), 
+        // FS#822 workaround to activate the correct cell editor (row and column),
         // after scrolling and activating another cell the table on a different page.
-        // To fix this problem selection listeners will be added to deactivate the current cell editor first
+        // To fix this problem selection listeners will be added to deactivate the current cell
+        // editor first
         // if the user scrolls to another cell in the table
-        table.getVerticalBar().addSelectionListener(new SelectionListener(){
+        table.getVerticalBar().addSelectionListener(new SelectionListener() {
             public void widgetDefaultSelected(SelectionEvent e) {
                 deactivateCellEditors();
             }
+
             public void widgetSelected(SelectionEvent e) {
                 deactivateCellEditors();
             }
         });
-        table.getHorizontalBar().addSelectionListener(new SelectionListener(){
+        table.getHorizontalBar().addSelectionListener(new SelectionListener() {
             public void widgetDefaultSelected(SelectionEvent e) {
                 deactivateCellEditors();
             }
+
             public void widgetSelected(SelectionEvent e) {
                 deactivateCellEditors();
             }
-        });        
-	}
+        });
+    }
 
     /*
      * Deactivates all active cell editor (i.e. the current active cell editor)
@@ -184,7 +190,7 @@ public class ContentPage extends IpsObjectEditorPage {
             cellEditors[i].deactivate();
         }
     }
-    
+
     /**
      * Creates a Table with the given formBody as a parent and returns it. Inits the look, layout of
      * the table and adds a KeyListener that enables the editing of the first cell in the currently
@@ -195,78 +201,82 @@ public class ContentPage extends IpsObjectEditorPage {
      */
     private Table createTable(Composite formBody) {
         // Table: scroll both vertically and horizontally
-        Table table= new Table(formBody, SWT.H_SCROLL | SWT.V_SCROLL | SWT.NO_FOCUS | SWT.SINGLE | SWT.FULL_SELECTION);
+        Table table = new Table(formBody, SWT.H_SCROLL | SWT.V_SCROLL | SWT.NO_FOCUS | SWT.SINGLE | SWT.FULL_SELECTION);
         table.setHeaderVisible(true);
         table.setLinesVisible(true);
         // occupy all available space
-        GridData tableGridData= new GridData(SWT.FILL, SWT.FILL, true, true);
-        tableGridData.widthHint= formBody.getClientArea().width;
-        tableGridData.heightHint= formBody.getClientArea().height;
+        GridData tableGridData = new GridData(SWT.FILL, SWT.FILL, true, true);
+        tableGridData.widthHint = formBody.getClientArea().width;
+        tableGridData.heightHint = formBody.getClientArea().height;
         table.setLayoutData(tableGridData);
-        table.addKeyListener(new KeyAdapter(){
+        table.addKeyListener(new KeyAdapter() {
             public void keyReleased(KeyEvent e) {
-                if(e.keyCode==SWT.F2){
-                    IRow selectedRow= (IRow) ((IStructuredSelection)tableViewer.getSelection()).getFirstElement();
-                    if(selectedRow!=null){
+                if (e.keyCode == SWT.F2) {
+                    IRow selectedRow = (IRow)((IStructuredSelection)tableViewer.getSelection()).getFirstElement();
+                    if (selectedRow != null) {
                         tableViewer.editElement(selectedRow, 0);
                     }
                 }
             }
         });
-        
-// TODO VIRTUAL table causes exceptions when creating and deleting rows dynamically, see FS#533
-//        table.addListener(SWT.SetData, new VirtualTableListener(table, getTableContents()));
-        
+
+        // TODO VIRTUAL table causes exceptions when creating and deleting rows dynamically, see
+        // FS#533
+        // table.addListener(SWT.SetData, new VirtualTableListener(table, getTableContents()));
+
         return table;
     }
-    
 
     /**
-     * Inits the <code>TableViewer</code> for this page. Sets content- and labelprovider, column headers and
-     * widths, column properties, cell editors, sorter. Inits popupmenu and hoverservice. 
+     * Inits the <code>TableViewer</code> for this page. Sets content- and labelprovider, column
+     * headers and widths, column properties, cell editors, sorter. Inits popupmenu and
+     * hoverservice.
+     * 
      * @param table
      * @param toolkit
      * @param formBody
      */
-    private void initTableViewer(Table table, UIToolkit toolkit, Composite formBody){
-        try{            
+    private void initTableViewer(Table table, UIToolkit toolkit, Composite formBody) {
+        try {
             table.removeAll();
             increaseHeightOfTableRow(table, getTableContents().getNumOfColumns());
-            
-            tableViewer= new TableViewer(table);
+
+            tableViewer = new TableViewer(table);
             tableViewer.setUseHashlookup(true);
             tableViewer.setContentProvider(new TableContentsContentProvider());
             TableContentsLabelProvider labelProvider = new TableContentsLabelProvider();
             tableViewer.setLabelProvider(labelProvider);
-            
-            ITableStructure tableStructure= getTableStructure();
-            String[] columnProperties= new String[getTableContents().getNumOfColumns()];
+
+            ITableStructure tableStructure = getTableStructure();
+            String[] columnProperties = new String[getTableContents().getNumOfColumns()];
             for (int i = 0; i < getTableContents().getNumOfColumns(); i++) {
                 String columnName;
-                if (tableStructure==null) {
-                    columnName = Messages.ContentPage_Column + (i+1);
+                if (tableStructure == null) {
+                    columnName = Messages.ContentPage_Column + (i + 1);
                 } else {
                     columnName = tableStructure.getColumn(i).getName();
                 }
-                TableColumn column= new TableColumn(table, SWT.LEFT, i);
+                TableColumn column = new TableColumn(table, SWT.LEFT, i);
                 column.setWidth(125);
                 column.setText(columnName);
-                columnProperties[i]= columnName;
+                columnProperties[i] = columnName;
             }
             tableViewer.setCellModifier(new TableContentsCellModifier(tableViewer, this));
-            tableViewer.setColumnProperties(columnProperties); 
+            tableViewer.setColumnProperties(columnProperties);
 
             // column properties must be set before cellEditors are created.
             ValueDatatype[] datatypes = new ValueDatatype[getTableContents().getNumOfColumns()];
-            if (tableStructure!=null) {
+            if (tableStructure != null) {
                 // use the number of columns in the contents as only those can be edited.
-                CellEditor[] editors= new CellEditor[getTableContents().getNumOfColumns()];
+                CellEditor[] editors = new CellEditor[getTableContents().getNumOfColumns()];
                 for (int i = 0; i < getTableContents().getNumOfColumns(); i++) {
-                    ValueDatatype dataType = tableStructure.getColumn(i).findValueDatatype(tableStructure.getIpsProject());
-                    ValueDatatypeControlFactory factory= IpsUIPlugin.getDefault().getValueDatatypeControlFactory(dataType);
-                    TableCellEditor cellEditor= factory.createCellEditor(toolkit, dataType, null, tableViewer, i);
+                    ValueDatatype dataType = tableStructure.getColumn(i).findValueDatatype(
+                            tableStructure.getIpsProject());
+                    ValueDatatypeControlFactory factory = IpsUIPlugin.getDefault().getValueDatatypeControlFactory(
+                            dataType);
+                    TableCellEditor cellEditor = factory.createCellEditor(toolkit, dataType, null, tableViewer, i);
                     cellEditor.setRowCreating(true);
-                    editors[i]= cellEditor;
+                    editors[i] = cellEditor;
                     datatypes[i] = dataType;
                 }
                 tableViewer.setCellEditors(editors);
@@ -274,25 +284,27 @@ public class ContentPage extends IpsObjectEditorPage {
             labelProvider.setValueDatatypes(datatypes);
             tableViewer.setSorter(new TableSorter());
             tableViewer.addSelectionChangedListener(new RowDeletor());
-            
-            new TableMessageHoverService(tableViewer){
+
+            new TableMessageHoverService(tableViewer) {
                 protected MessageList getMessagesFor(Object element) throws CoreException {
-                    if(element!=null){
+                    if (element != null) {
                         return ((IRow)element).validate(((IRow)element).getIpsProject());
                     }
                     return null;
                 }
             };
-        }catch(CoreException e){
+        } catch (CoreException e) {
             IpsPlugin.log(e);
         }
     }
+
     /**
      * Adds the given deleteRowAction to the popupmenu of th given table.
+     * 
      * @param table
      * @param deleteRowAction
      */
-    private void initTablePopupMenu(Table table, DeleteRowAction deleteRowAction, NewRowAction newRowAction){
+    private void initTablePopupMenu(Table table, DeleteRowAction deleteRowAction, NewRowAction newRowAction) {
         // popupmenu
         MenuManager menuMgr = new MenuManager("#PopupMenu"); //$NON-NLS-1$
         menuMgr.setRemoveAllWhenShown(false);
@@ -300,10 +312,9 @@ public class ContentPage extends IpsObjectEditorPage {
         menuMgr.add(deleteRowAction);
         Menu menu = menuMgr.createContextMenu(table);
         table.setMenu(menu);
-//        do not register to avoid mb additions
-//        getSite().registerContextMenu(menuMgr, tableViewer);
+        // do not register to avoid mb additions
+        // getSite().registerContextMenu(menuMgr, tableViewer);
     }
-
 
     private void increaseHeightOfTableRow(Table table, final int numOfColumns) {
         // add paint lister to increase the height of the table row,
@@ -311,9 +322,9 @@ public class ContentPage extends IpsObjectEditorPage {
         // text is hidden
         Listener paintListener = new Listener() {
             public void handleEvent(Event event) {
-                switch(event.type) {        
+                switch (event.type) {
                     case SWT_MeasureItem: {
-                        if (numOfColumns == 0){
+                        if (numOfColumns == 0) {
                             return;
                         }
                         TableItem item = (TableItem)event.item;
@@ -329,6 +340,7 @@ public class ContentPage extends IpsObjectEditorPage {
                     }
                 }
             }
+
             String getText(TableItem item, int column) {
                 String text = item.getText(column);
                 return text;
@@ -336,22 +348,24 @@ public class ContentPage extends IpsObjectEditorPage {
         };
         table.addListener(SWT_MeasureItem, paintListener);
     }
-    
+
     /**
-     * Listener that reacts to <code>SelectionChangedEvent</code>s by deleting all empty rows
-     * at the bottom of the table.
+     * Listener that reacts to <code>SelectionChangedEvent</code>s by deleting all empty rows at the
+     * bottom of the table.
      * <p>
      * The mechanism to create new row dynamically is realized in the <code>TableCellEditor</code>.
+     * 
      * @see TableCellEditor
      * @author Stefan Widmaier
      */
-    private class RowDeletor implements ISelectionChangedListener{
+    private class RowDeletor implements ISelectionChangedListener {
         public void selectionChanged(SelectionChangedEvent event) {
             removeRedundantRows();
         }
+
         /**
-         * Checks every row from the last up to the currently selected row for emptyness and
-         * deletes every empty row until a non-empty row is found.
+         * Checks every row from the last up to the currently selected row for emptyness and deletes
+         * every empty row until a non-empty row is found.
          * <p>
          * Only tries to delete rows if table has more than one row.
          * 
@@ -370,15 +384,14 @@ public class ContentPage extends IpsObjectEditorPage {
                     break;
                 }
             }
-            /* TODO Bug in TableViewer:
-             * CellEditor position is not updated after deletion of rows.
-             * The fix is to update the position artificially by scrolling 
-             * the table/Tableviewer.
-             * Problem: tableViewer#scrollDown(x, y) calls the Viewer implementation
-             * which does nothing.
-             */ 
+            /*
+             * TODO Bug in TableViewer: CellEditor position is not updated after deletion of rows.
+             * The fix is to update the position artificially by scrolling the table/Tableviewer.
+             * Problem: tableViewer#scrollDown(x, y) calls the Viewer implementation which does
+             * nothing.
+             */
         }
-        
+
         /**
          * Checks whether a row is empty or not. Returns <code>true</code> if all the given row's
          * values (columns) contain a whitespace string.
@@ -387,10 +400,10 @@ public class ContentPage extends IpsObjectEditorPage {
          * values is not empty.
          */
         private boolean isRowEmpty(IRow row) {
-            int columnNumber= row.getTableContents().getNumOfColumns();
+            int columnNumber = row.getTableContents().getNumOfColumns();
             for (int i = 0; i < columnNumber; i++) {
-                String value= row.getValue(i);
-                if(value==null || !value.trim().equals("")){ //$NON-NLS-1$
+                String value = row.getValue(i);
+                if (value == null || !value.trim().equals("")) { //$NON-NLS-1$
                     return false;
                 }
             }
@@ -399,7 +412,7 @@ public class ContentPage extends IpsObjectEditorPage {
     }
 
     private void checkDifferences(Composite formBody, UIToolkit toolkit) {
-        if (isInsideArchive()){
+        if (isInsideArchive()) {
             // no set table structure dialog and fix differences supported
             // because table contents is read only
             return;
@@ -407,53 +420,47 @@ public class ContentPage extends IpsObjectEditorPage {
         try {
             ITableStructure structure = getTableStructure();
             if (structure == null) {
-                String msg = NLS.bind(Messages.ContentPage_msgMissingStructure,
-                        getTableContents().getTableStructure());
-                SetStructureDialog dialog = new SetStructureDialog(
-                        getTableContents(), getSite().getShell(), msg);
+                String msg = NLS.bind(Messages.ContentPage_msgMissingStructure, getTableContents().getTableStructure());
+                SetStructureDialog dialog = new SetStructureDialog(getTableContents(), getSite().getShell(), msg);
                 int button = dialog.open();
                 if (button != SetStructureDialog.OK) {
-                    msg = NLS.bind(Messages.ContentPage_msgNoStructureFound,
-                            getTableContents().getTableStructure());
+                    msg = NLS.bind(Messages.ContentPage_msgNoStructureFound, getTableContents().getTableStructure());
                     toolkit.createLabel(formBody, msg);
                     return;
                 } else {
                     structure = getTableStructure();
                 }
             }
-            if (structure == null){
+            if (structure == null) {
                 return;
             }
             int difference = structure.getColumns().length - getTableContents().getNumOfColumns();
-            
+
             if (difference != 0) {
                 IInputValidator validator = new Validator(difference);
-                
+
                 String msg = null;
                 String title = null;
                 if (difference > 1) {
                     title = Messages.ContentPage_titleMissingColumns;
-                    msg = NLS.bind(Messages.ContentPage_msgAddMany, String
-                            .valueOf(difference), String
+                    msg = NLS.bind(Messages.ContentPage_msgAddMany, String.valueOf(difference), String
                             .valueOf(getTableContents().getNumOfColumns()));
-                    
+
                 } else if (difference == 1) {
                     title = Messages.ContentPage_titleMissingColumn;
-                    msg = NLS.bind(Messages.ContentPage_msgAddOne, String
-                            .valueOf(getTableContents().getNumOfColumns()));
+                    msg = NLS
+                            .bind(Messages.ContentPage_msgAddOne, String.valueOf(getTableContents().getNumOfColumns()));
                 } else if (difference == -1) {
                     title = Messages.ContentPage_titleTooMany;
-                    msg = NLS.bind(Messages.ContentPage_msgRemoveOne, String
-                            .valueOf(getTableContents().getNumOfColumns()));
+                    msg = NLS.bind(Messages.ContentPage_msgRemoveOne, String.valueOf(getTableContents()
+                            .getNumOfColumns()));
                 } else if (difference < -1) {
                     title = Messages.ContentPage_titleTooMany;
-                    msg = NLS.bind(Messages.ContentPage_msgRemoveMany, String
-                            .valueOf(Math.abs(difference)), String
+                    msg = NLS.bind(Messages.ContentPage_msgRemoveMany, String.valueOf(Math.abs(difference)), String
                             .valueOf(getTableContents().getNumOfColumns()));
                 }
-                
-                InputDialog dialog = new InputDialog(getSite().getShell(),
-                        title, msg, "", validator); //$NON-NLS-1$
+
+                InputDialog dialog = new InputDialog(getSite().getShell(), title, msg, "", validator); //$NON-NLS-1$
                 int state = dialog.open();
                 if (state == InputDialog.OK) {
                     if (difference > 0) {
@@ -462,48 +469,46 @@ public class ContentPage extends IpsObjectEditorPage {
                         removeColumns(dialog.getValue());
                     }
                 } else {
-                    toolkit.createLabel(formBody,
-                            Messages.ContentPage_msgCantShowContent);
+                    toolkit.createLabel(formBody, Messages.ContentPage_msgCantShowContent);
                     return;
                 }
             }
         } catch (CoreException e) {
             throw new RuntimeException(e);
         }
-    }    
+    }
 
     private void insertColumnsAt(String insertIndices) {
-		int[] indices = getIndices(insertIndices);
-		for (int i = 0; i < indices.length; i++) {
-			((TableContents) getTableContents())
-					.newColumnAt(indices[i] + i, ""); //$NON-NLS-1$
-		}
-	}
+        int[] indices = getIndices(insertIndices);
+        for (int i = 0; i < indices.length; i++) {
+            ((TableContents)getTableContents()).newColumnAt(indices[i] + i, ""); //$NON-NLS-1$
+        }
+    }
 
-	private void removeColumns(String removeIndices) {
-		int[] indices = getIndices(removeIndices);
-		for (int i = 0; i < indices.length; i++) {
-			((TableContents) getTableContents()).deleteColumn(indices[i] - i);
-		}
-	}
+    private void removeColumns(String removeIndices) {
+        int[] indices = getIndices(removeIndices);
+        for (int i = 0; i < indices.length; i++) {
+            ((TableContents)getTableContents()).deleteColumn(indices[i] - i);
+        }
+    }
 
-	private int[] getIndices(String indices) {
-		StringTokenizer tokenizer = getTokenizer(indices);
-		int[] result = new int[tokenizer.countTokens()];
-		for (int i = 0; tokenizer.hasMoreTokens(); i++) {
-			result[i] = Integer.valueOf(tokenizer.nextToken()).intValue();
-		}
+    private int[] getIndices(String indices) {
+        StringTokenizer tokenizer = getTokenizer(indices);
+        int[] result = new int[tokenizer.countTokens()];
+        for (int i = 0; tokenizer.hasMoreTokens(); i++) {
+            result[i] = Integer.valueOf(tokenizer.nextToken()).intValue();
+        }
 
-		Arrays.sort(result);
-		return result;
-	}
+        Arrays.sort(result);
+        return result;
+    }
 
-	private StringTokenizer getTokenizer(String tokens) {
-		return new StringTokenizer(tokens, ",", false); //$NON-NLS-1$
-	}
-    
+    private StringTokenizer getTokenizer(String tokens) {
+        return new StringTokenizer(tokens, ",", false); //$NON-NLS-1$
+    }
+
     private TableContentsEditor getTableEditor() {
-        return (TableContentsEditor) getEditor();
+        return (TableContentsEditor)getEditor();
     }
 
     private ITableContents getTableContents() {
@@ -513,85 +518,76 @@ public class ContentPage extends IpsObjectEditorPage {
     private ITableStructure getTableStructure() throws CoreException {
         return getTableContents().findTableStructure(getTableContents().getIpsProject());
     }
-    
-    private ITableContentsGeneration getActiveGeneration(){
-        return (ITableContentsGeneration) getTableEditor().getTableContents().getFirstGeneration();
+
+    private ITableContentsGeneration getActiveGeneration() {
+        return (ITableContentsGeneration)getTableEditor().getTableContents().getFirstGeneration();
     }
-    
 
-	private class Validator implements IInputValidator {
-		private int indexCount = 0;
+    private class Validator implements IInputValidator {
+        private int indexCount = 0;
 
-		public Validator(int requiredIndexCount) {
-			this.indexCount = requiredIndexCount;
-		}
+        public Validator(int requiredIndexCount) {
+            this.indexCount = requiredIndexCount;
+        }
 
-		/**
-		 * {@inheritDoc}
-		 */
-		public String isValid(String newText) {
-			StringTokenizer tokenizer = getTokenizer(newText);
-			int tokenizerItemCount = tokenizer.countTokens();
+        /**
+         * {@inheritDoc}
+         */
+        public String isValid(String newText) {
+            StringTokenizer tokenizer = getTokenizer(newText);
+            int tokenizerItemCount = tokenizer.countTokens();
 
-			ArrayList values = new ArrayList(tokenizerItemCount);
-			while (tokenizer.hasMoreTokens()) {
-				String token = tokenizer.nextToken();
-				try {
-					Integer value = Integer.valueOf(token);
-					if (values.contains(value) && indexCount < 0) {
-						return Messages.ContentPage_errorNoDuplicateIndices;
-					}
-					if (indexCount < 0
-							&& (value.intValue() >= getTableContents()
-									.getNumOfColumns() || value.intValue() < 0)) {
-						return NLS.bind(
-								Messages.ContentPage_errorIndexOutOfRange,
-								value);
-					}
-					values.add(value);
-				} catch (NumberFormatException e) {
-					if (indexCount == 1) {
-						return NLS.bind(
-								Messages.ContentPage_errorInvalidValueOne,
-								token);
-					} else {
-						return NLS.bind(
-								Messages.ContentPage_errorInvalidValueMany,
-								token);
-					}
-				}
-			}
+            ArrayList<Integer> values = new ArrayList<Integer>(tokenizerItemCount);
+            while (tokenizer.hasMoreTokens()) {
+                String token = tokenizer.nextToken();
+                try {
+                    Integer value = Integer.valueOf(token);
+                    if (values.contains(value) && indexCount < 0) {
+                        return Messages.ContentPage_errorNoDuplicateIndices;
+                    }
+                    if (indexCount < 0
+                            && (value.intValue() >= getTableContents().getNumOfColumns() || value.intValue() < 0)) {
+                        return NLS.bind(Messages.ContentPage_errorIndexOutOfRange, value);
+                    }
+                    values.add(value);
+                } catch (NumberFormatException e) {
+                    if (indexCount == 1) {
+                        return NLS.bind(Messages.ContentPage_errorInvalidValueOne, token);
+                    } else {
+                        return NLS.bind(Messages.ContentPage_errorInvalidValueMany, token);
+                    }
+                }
+            }
 
-			int difference = Math.abs(indexCount) - tokenizerItemCount;
-			if (difference < 0) {
-				if (indexCount == 1 || indexCount == -1) {
-					return Messages.ContentPage_errorTooManyOne;
-				} else {
-					return NLS.bind(Messages.ContentPage_errorTooManyMany,
-							String.valueOf(Math.abs(indexCount)));
-				}
-			} else if (difference == 1) {
-				return Messages.ContentPage_errorOneMore;
-			} else if (difference > 1) {
-				return NLS.bind(Messages.ContentPage_errorManyMore, String
-						.valueOf(difference));
-			}
+            int difference = Math.abs(indexCount) - tokenizerItemCount;
+            if (difference < 0) {
+                if (indexCount == 1 || indexCount == -1) {
+                    return Messages.ContentPage_errorTooManyOne;
+                } else {
+                    return NLS.bind(Messages.ContentPage_errorTooManyMany, String.valueOf(Math.abs(indexCount)));
+                }
+            } else if (difference == 1) {
+                return Messages.ContentPage_errorOneMore;
+            } else if (difference > 1) {
+                return NLS.bind(Messages.ContentPage_errorManyMore, String.valueOf(difference));
+            }
 
-			return null;
-		}
-	}
-	
+            return null;
+        }
+    }
+
     /*
-     * Returns <code>true</code> if the table contents is inside an archive otherwise <code>false</code>
+     * Returns <code>true</code> if the table contents is inside an archive otherwise
+     * <code>false</code>
      */
     private boolean isInsideArchive() {
         return getTableContents().getIpsPackageFragment().getRoot().isBasedOnIpsArchive();
     }
-    
+
     /**
      * Redraws the table.
      */
-    void redrawTable(){
+    void redrawTable() {
         table.redraw();
     }
 }
