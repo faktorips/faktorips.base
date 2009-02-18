@@ -42,6 +42,7 @@ import org.eclipse.swt.widgets.TableItem;
 import org.eclipse.swt.widgets.ToolBar;
 import org.eclipse.ui.forms.widgets.Section;
 import org.faktorips.datatype.ValueDatatype;
+import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.model.ContentChangeEvent;
 import org.faktorips.devtools.core.model.ContentsChangeListener;
 import org.faktorips.devtools.core.model.enumtype.IEnumAttribute;
@@ -59,6 +60,7 @@ import org.faktorips.devtools.core.ui.actions.TableImportExportAction;
 import org.faktorips.devtools.core.ui.forms.IpsSection;
 import org.faktorips.devtools.core.ui.table.TableCellEditor;
 import org.faktorips.util.ArgumentCheck;
+import org.faktorips.util.message.MessageList;
 
 /**
  * The ui section for the enum type pages and the enum content page that contains the enum values to
@@ -663,11 +665,43 @@ public class EnumValuesSection extends IpsSection {
      */
     private class EnumValuesLabelProvider implements ITableLabelProvider {
 
+        /* Images */
+        private final Image errorImage = IpsPlugin.getDefault().getImage("ovr16/error_co.gif"); //$NON-NLS-1$
+        private final Image keyColumnImage = IpsUIPlugin.getDefault().getImage("TableKeyColumn.gif"); //$NON-NLS-1$
+
         /**
          * {@inheritDoc}
          */
         public Image getColumnImage(Object element, int columnIndex) {
+            // Test for errors
+            if (hasErrorsAt((IEnumValue)element, columnIndex)) {
+                return errorImage;
+            }
+
+            // Find the correct enum attribute by the table column's name
+            String columnName = enumValuesTable.getColumn(columnIndex).getText();
+            IEnumAttribute enumAttribute = enumType.getEnumAttribute(columnName);
+
+            if (enumAttribute.isIdentifier()) {
+                return keyColumnImage;
+            }
+
             return null;
+        }
+
+        /*
+         * Returns <code>true</code> if the given enum value validation detects an error at the
+         * given columnIndex, <code>false</code> otherwise.
+         */
+        private boolean hasErrorsAt(IEnumValue enumValue, int columnIndex) {
+            try {
+                MessageList messageList = enumValue.validate(enumValue.getIpsProject());
+                messageList = messageList.getMessagesFor(enumValue.getEnumAttributeValues().get(columnIndex),
+                        IEnumAttributeValue.PROPERTY_VALUE);
+                return !(messageList.isEmpty());
+            } catch (CoreException e) {
+                throw new RuntimeException(e);
+            }
         }
 
         /**
