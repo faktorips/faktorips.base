@@ -195,10 +195,10 @@ public class Money implements Comparable<Money>, NullObjectSupport, Serializable
      * is greater than the currency's default fraction digits, the indicated rounding mode
      * is applied to set the value's scale to the currency's default fraction digits.
      *
-     * @param value The money amount's value
-     * @param currency The money amount's currency
-     * @param roundingMode The roudining mode according to the definition in BigDecimal to
-     * be applied when the value's scale is greater than the currency's default fraction digits.
+     * @param value the money amount's value
+     * @param currency the money amount's currency
+     * @param roundingMode the rouding mode according to the definition in BigDecimal to
+     * be applied when the value's scale is greater than the currency's default fraction digits
      */
     public final static Money valueOf(Decimal value, Currency currency, int roundingMode) {
         if (value==null || currency==null || value.isNull() ) {
@@ -219,7 +219,7 @@ public class Money implements Comparable<Money>, NullObjectSupport, Serializable
     }
 
     /**
-     * Returns the amount fo money, e.g. for 13.45EUR the method returns 13.45.
+     * Returns the amount of money, e.g. for 13.45EUR the method returns 13.45.
      * For the special case MoneyNull the method returns <code>Decimal.NULL</code>.
      */
     public Decimal getAmount() {
@@ -258,8 +258,8 @@ public class Money implements Comparable<Money>, NullObjectSupport, Serializable
      *         Money.NULL object, or the other value is the Money.NULL object.
      *
      * @throws IllegalArgumentException
-     *             if the two money values have different currencies.
-     * @throws NullPointerException if value is <code>null</code>.
+     *             if the two money values have different currencies
+     * @throws NullPointerException if value is <code>null</code>
      */
     public Money add(Money value) {
         if (value.isNull()) {
@@ -281,8 +281,8 @@ public class Money implements Comparable<Money>, NullObjectSupport, Serializable
      *         object, or the other value is the Money.NULL object.
      *
      * @throws IllegalArgumentException
-     *             if the two money values have different currencies.
-     * @throws NullPointerException if value is <code>null</code>.
+     *             if the two money values have different currencies
+     * @throws NullPointerException if value is <code>null</code>
      */
     public Money subtract(Money value) {
         return new Money(internalAmount - value.internalAmount, currency);
