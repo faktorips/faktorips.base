@@ -106,6 +106,7 @@ public class ContentChangeEvent  {
         return part;
     }
     
+    // TODO JAVADOC!
     public IIpsObjectPart[] getMovedParts() {
         if (movedParts==null) {
             return new IIpsObjectPart[0];
