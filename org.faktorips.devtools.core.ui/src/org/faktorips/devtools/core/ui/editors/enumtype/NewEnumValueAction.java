@@ -17,7 +17,6 @@ import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.TableViewer;
 import org.faktorips.devtools.core.model.enumtype.IEnumValueContainer;
 import org.faktorips.devtools.core.ui.IpsUIPlugin;
-import org.faktorips.devtools.core.ui.actions.IpsAction;
 
 /**
  * This action is used by the <code>EnumValuesSection</code> for adding new enum values.
@@ -28,10 +27,7 @@ import org.faktorips.devtools.core.ui.actions.IpsAction;
  * 
  * @since 2.3
  */
-public class NewEnumValueAction extends IpsAction {
-
-    // The table viewer linking the ui table widget with the model data
-    private TableViewer tableViewer;
+public class NewEnumValueAction extends AbstractEnumAction {
 
     /**
      * Creates a new <code>NewEnumValueAction</code>.
@@ -40,8 +36,10 @@ public class NewEnumValueAction extends IpsAction {
      */
     public NewEnumValueAction(TableViewer tableViewer) {
         super(tableViewer);
-        this.tableViewer = tableViewer;
+        
         setImageDescriptor(IpsUIPlugin.getDefault().getImageDescriptor("InsertRowAfter.gif"));
+        setText(Messages.EnumValuesSection_labelNewValue);
+        setToolTipText(Messages.EnumValuesSection_tooltipNewValue);
     }
 
     /**

@@ -29,13 +29,19 @@ public class Messages extends NLS {
     public static String EnumTypeGeneralInfoSection_labelAbstract;
     public static String EnumTypeGeneralInfoSection_labelValuesArePartOfModel;
     public static String EnumTypeStructurePage_title;
-    
+
     public static String EnumAttributesSection_title;
-    
+
     public static String EnumValuesSection_title;
     public static String EnumValuesSection_labelNewValue;
+    public static String EnumValuesSection_tooltipNewValue;
     public static String EnumValuesSection_labelDeleteValue;
-    
+    public static String EnumValuesSection_tooltipDeleteValue;
+    public static String EnumValuesSection_labelMoveEnumValueUp;
+    public static String EnumValuesSection_tooltipMoveEnumValueUp;
+    public static String EnumValuesSection_labelMoveEnumValueDown;
+    public static String EnumValuesSection_tooltipMoveEnumValueDown;
+
     public static String EnumAttributeEditDialog_title;
     public static String EnumAttributeEditDialog_generalTitle;
     public static String EnumAttributeEditDialog_generalGroup;

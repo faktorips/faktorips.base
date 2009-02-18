@@ -19,6 +19,7 @@ import java.util.NoSuchElementException;
 
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jface.action.IAction;
+import org.eclipse.jface.action.Separator;
 import org.eclipse.jface.action.ToolBarManager;
 import org.eclipse.jface.viewers.CellEditor;
 import org.eclipse.jface.viewers.ICellModifier;
@@ -91,6 +92,12 @@ public class EnumValuesSection extends IpsSection {
     // Action to delete enum values
     private IAction deleteEnumValueAction;
 
+    // Action to move enum values up by 1
+    private IAction moveEnumValueUpAction;
+
+    // Action to move enum values down by 1
+    private IAction moveEnumValueDownAction;
+
     /**
      * Creates a new <code>EnumValuesSection</code> containing the enum values of the given enum
      * value container.
@@ -133,8 +140,14 @@ public class EnumValuesSection extends IpsSection {
         // Create and add the actions to the toolbar
         newEnumValueAction = new NewEnumValueAction(enumValuesTableViewer);
         deleteEnumValueAction = new DeleteEnumValueAction(enumValuesTableViewer);
+        moveEnumValueUpAction = new MoveEnumValueUpAction(enumValuesTableViewer);
+        moveEnumValueDownAction = new MoveEnumValueDownAction(enumValuesTableViewer);
         toolBarManager.add(newEnumValueAction);
         toolBarManager.add(deleteEnumValueAction);
+        toolBarManager.add(new Separator());
+        toolBarManager.add(moveEnumValueUpAction);
+        toolBarManager.add(moveEnumValueDownAction);
+        toolBarManager.add(new Separator());
 
         // Update the toolbar with the new information
         toolBarManager.update(true);
@@ -151,12 +164,16 @@ public class EnumValuesSection extends IpsSection {
         if (enumValueContainer instanceof IEnumType) {
             newEnumValueAction.setEnabled(valuesArePartOfModel);
             deleteEnumValueAction.setEnabled(valuesArePartOfModel);
+            moveEnumValueUpAction.setEnabled(valuesArePartOfModel);
+            moveEnumValueDownAction.setEnabled(valuesArePartOfModel);
             enumValuesTable.setEnabled(valuesArePartOfModel);
             getSectionControl().setEnabled(valuesArePartOfModel);
 
         } else if (enumValueContainer instanceof IEnumContent) {
             newEnumValueAction.setEnabled(!(valuesArePartOfModel));
             deleteEnumValueAction.setEnabled(!(valuesArePartOfModel));
+            moveEnumValueUpAction.setEnabled(!(valuesArePartOfModel));
+            moveEnumValueDownAction.setEnabled(!(valuesArePartOfModel));
             enumValuesTable.setEnabled(!(valuesArePartOfModel));
             getSectionControl().setEnabled(!(valuesArePartOfModel));
         }
