@@ -13,6 +13,7 @@
 
 package org.faktorips.devtools.core.ui.editors.enumtype;
 
+import org.eclipse.core.runtime.CoreException;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.widgets.Composite;
 import org.faktorips.devtools.core.model.enumtype.IEnumType;
@@ -61,7 +62,11 @@ public class EnumTypeStructurePage extends TypeEditorStructurePage {
         Composite members = createGridComposite(toolkit, parentContainer, 1, true, GridData.FILL_BOTH);
 
         new EnumAttributesSection(enumType, members, toolkit);
-        new EnumValuesSection(enumType, parentContainer, toolkit);
+        try {
+            new EnumValuesSection(enumType, parentContainer, toolkit);
+        } catch (CoreException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     /**

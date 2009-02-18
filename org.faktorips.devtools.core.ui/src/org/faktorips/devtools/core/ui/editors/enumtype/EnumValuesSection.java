@@ -15,6 +15,7 @@ package org.faktorips.devtools.core.ui.editors.enumtype;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.NoSuchElementException;
 
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jface.action.IAction;
@@ -25,18 +26,21 @@ import org.eclipse.jface.viewers.ILabelProviderListener;
 import org.eclipse.jface.viewers.IStructuredContentProvider;
 import org.eclipse.jface.viewers.ITableLabelProvider;
 import org.eclipse.jface.viewers.TableViewer;
-import org.eclipse.jface.viewers.TextCellEditor;
 import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Image;
+import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Item;
+import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.TableColumn;
+import org.eclipse.swt.widgets.TableItem;
 import org.eclipse.swt.widgets.ToolBar;
 import org.eclipse.ui.forms.widgets.Section;
-import org.faktorips.devtools.core.IpsPlugin;
+import org.faktorips.datatype.ValueDatatype;
 import org.faktorips.devtools.core.model.ContentChangeEvent;
 import org.faktorips.devtools.core.model.ContentsChangeListener;
 import org.faktorips.devtools.core.model.enumtype.IEnumAttribute;
@@ -47,8 +51,11 @@ import org.faktorips.devtools.core.model.enumtype.IEnumValue;
 import org.faktorips.devtools.core.model.enumtype.IEnumValueContainer;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObject;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPart;
+import org.faktorips.devtools.core.ui.IpsUIPlugin;
 import org.faktorips.devtools.core.ui.UIToolkit;
+import org.faktorips.devtools.core.ui.ValueDatatypeControlFactory;
 import org.faktorips.devtools.core.ui.forms.IpsSection;
+import org.faktorips.devtools.core.ui.table.TableCellEditor;
 import org.faktorips.util.ArgumentCheck;
 
 /**
@@ -65,6 +72,9 @@ public class EnumValuesSection extends IpsSection {
 
     // The enum value container holding the enum values to be edited
     private IEnumValueContainer enumValueContainer;
+
+    // The enum type that is referenced by the ips object being edited
+    private IEnumType enumType;
 
     // The ui table widget
     private Table enumValuesTable;
@@ -89,25 +99,26 @@ public class EnumValuesSection extends IpsSection {
      * @param parent The parent ui composite.
      * @param toolkit The ui toolkit that shall be used to create ui elements.
      * 
+     * @throws CoreException If an error occurs while searching for the enum type referenced by the
+     *             ips object being edited.
      * @throws NullPointerException If enumValueContainer is <code>null</code>.
      */
-    public EnumValuesSection(IEnumValueContainer enumValueContainer, Composite parent, UIToolkit toolkit) {
+    public EnumValuesSection(IEnumValueContainer enumValueContainer, Composite parent, UIToolkit toolkit)
+            throws CoreException {
+
         super(parent, Section.TITLE_BAR, GridData.FILL_BOTH, toolkit);
 
         ArgumentCheck.notNull(enumValueContainer);
         this.enumValueContainer = enumValueContainer;
         this.enumValuesTableColumnNames = new ArrayList<String>(4);
+        this.enumType = enumValueContainer.findEnumType();
 
         initControls();
         createToolbar();
 
         setText(Messages.EnumValuesSection_title);
 
-        try {
-            updateEnabledStates();
-        } catch (CoreException e) {
-            IpsPlugin.logAndShowErrorDialog(e);
-        }
+        updateEnabledStates();
     }
 
     // Creates the section's toolbar
@@ -134,8 +145,7 @@ public class EnumValuesSection extends IpsSection {
      * result from the fact whether this enum values section is used for an enum type or for an enum
      * content and whether the (referenced) enum type defines its values in the model or not.
      */
-    private void updateEnabledStates() throws CoreException {
-        IEnumType enumType = enumValueContainer.findEnumType();
+    private void updateEnabledStates() {
         boolean valuesArePartOfModel = enumType.getValuesArePartOfModel();
 
         if (enumValueContainer instanceof IEnumType) {
@@ -159,10 +169,10 @@ public class EnumValuesSection extends IpsSection {
     protected void initClientComposite(Composite client, UIToolkit toolkit) {
         try {
             createTable(client, toolkit);
+            createTableViewer();
         } catch (CoreException e) {
-            IpsPlugin.logAndShowErrorDialog(e);
+            throw new RuntimeException(e);
         }
-        createTableViewer();
     }
 
     // Creates the ui table for editing enum values
@@ -175,7 +185,7 @@ public class EnumValuesSection extends IpsSection {
         GridData tableGridData = new GridData(SWT.FILL, SWT.FILL, true, true);
         tableGridData.widthHint = parent.getClientArea().width;
         tableGridData.heightHint = parent.getClientArea().height;
-        enumValuesTable.setLayoutData(tableGridData);;
+        enumValuesTable.setLayoutData(tableGridData);
 
         /*
          * Create the columns based upon the enum attribute values of the first enum value if there
@@ -196,7 +206,6 @@ public class EnumValuesSection extends IpsSection {
         } else {
 
             // Create columns based upon enum attributes of the enum type
-            IEnumType enumType = enumValueContainer.findEnumType();
             List<IEnumAttribute> enumAttributes = enumType.getEnumAttributes();
             for (IEnumAttribute currentEnumAttribute : enumAttributes) {
                 String columnName = currentEnumAttribute.getName();
@@ -204,10 +213,45 @@ public class EnumValuesSection extends IpsSection {
             }
 
         }
+
+        increaseHeightOfTableRows();
+    }
+
+    // Increases the height of the table rows slightly
+    private void increaseHeightOfTableRows() {
+        Listener paintListener = new Listener() {
+
+            public void handleEvent(Event event) {
+                switch (event.type) {
+                    case SWT.MeasureItem: {
+                        if (enumValuesTable.getColumnCount() == 0) {
+                            return;
+                        }
+
+                        TableItem item = (TableItem)event.item;
+                        String text = getText(item, event.index);
+                        Point size = event.gc.textExtent(text);
+
+                        // The height will be increased by 5 pixel
+                        event.height = Math.max(event.height, size.y + 5);
+
+                        break;
+                    }
+                }
+            }
+
+            String getText(TableItem item, int column) {
+                String text = item.getText(column);
+                return text;
+            }
+
+        };
+
+        enumValuesTable.addListener(SWT.MeasureItem, paintListener);
     }
 
     // Creates the table viewer for the enum values table widget
-    private void createTableViewer() {
+    private void createTableViewer() throws CoreException {
         // Create and setup general properties
         enumValuesTableViewer = new TableViewer(enumValuesTable);
         enumValuesTableViewer.setUseHashlookup(true);
@@ -229,27 +273,43 @@ public class EnumValuesSection extends IpsSection {
      * overwrites the column properties with actual data. Also refreshes the viewer with actual
      * model data.
      */
-    private void updateTableViewer() {
+    private void updateTableViewer() throws CoreException {
         if (enumValuesTableViewer == null) {
             return;
         }
 
         String[] columnNames = enumValuesTableColumnNames.toArray(new String[enumValuesTableColumnNames.size()]);
 
+        // Update column properties
+        enumValuesTableViewer.setColumnProperties(columnNames);
+
         // Create cell editors
-        CellEditor[] cellEditors = new CellEditor[columnNames.length];
-        for (int i = 0; i < cellEditors.length; i++) {
-            cellEditors[i] = new TextCellEditor(enumValuesTable);
-        }
+        CellEditor[] cellEditors = createCellEditors(columnNames);
 
         // Assign the cell editors to the table viewer
         enumValuesTableViewer.setCellEditors(cellEditors);
 
-        // Update column properties
-        enumValuesTableViewer.setColumnProperties(columnNames);
-
         // Refresh the viewer
         enumValuesTableViewer.refresh();
+    }
+
+    // Updates the cell editors for the enum values table by recreating them
+    private CellEditor[] createCellEditors(String[] columnNames) throws CoreException {
+        CellEditor[] cellEditors = new CellEditor[columnNames.length];
+        for (int i = 0; i < cellEditors.length; i++) {
+            String datatypeQualifiedName = enumType.getEnumAttributes().get(i).getDatatype();
+            ValueDatatype datatype = enumValueContainer.getIpsProject().findValueDatatype(datatypeQualifiedName);
+            ValueDatatypeControlFactory valueDatatypeControlFactory = IpsUIPlugin.getDefault()
+                    .getValueDatatypeControlFactory(datatype);
+
+            TableCellEditor cellEditor = valueDatatypeControlFactory.createCellEditor(getToolkit(), datatype, null,
+                    enumValuesTableViewer, i);
+            cellEditor.setRowCreating(true);
+
+            cellEditors[i] = cellEditor;
+        }
+
+        return cellEditors;
     }
 
     /**
@@ -261,7 +321,7 @@ public class EnumValuesSection extends IpsSection {
     }
 
     // Adds a column to the enum values table
-    private void addTableColumnToEnumValuesTable(String columnName) {
+    private void addTableColumnToEnumValuesTable(String columnName) throws CoreException {
         TableColumn newColumn = new TableColumn(enumValuesTable, SWT.LEFT);
         newColumn.setText(columnName);
         newColumn.setWidth(200);
@@ -271,7 +331,7 @@ public class EnumValuesSection extends IpsSection {
     }
 
     // Removes the column identified by the given enum attribute from the enum values table
-    private void removeTableColumnFromEnumValuesTable(IEnumAttribute enumAttribute) {
+    private void removeTableColumnFromEnumValuesTable(IEnumAttribute enumAttribute) throws CoreException {
         String name = enumAttribute.getName();
         for (TableColumn currentColumn : enumValuesTable.getColumns()) {
             if (currentColumn.getText().equals(name)) {
@@ -284,17 +344,27 @@ public class EnumValuesSection extends IpsSection {
     }
 
     // Updates the column in the enum values table that represents the given enum attribute
-    private void updateTableColumnInEnumValuesTable(IEnumAttribute enumAttribute) {
+    private void updateTableColumnInEnumValuesTable(IEnumAttribute enumAttribute) throws CoreException {
         int index = ((IEnumType)enumAttribute.getParent()).getIndexOfEnumAttribute(enumAttribute);
         enumValuesTable.getColumn(index).setText(enumAttribute.getName());
 
-        // Build new column names
-        enumValuesTableColumnNames.clear();
-        for (TableColumn currentTableColumn : enumValuesTable.getColumns()) {
-            enumValuesTableColumnNames.add(currentTableColumn.getText());
-        }
-
+        updateColumnNames();
         updateTableViewer();
+    }
+
+    // Updates the column names list (column order taken into account)
+    private void updateColumnNames() {
+        enumValuesTableColumnNames.clear();
+
+        /*
+         * Go over all table columns and add them to the column names list in the same order as the
+         * column order is.
+         */
+        TableColumn[] tableColumns = enumValuesTable.getColumns();
+        int[] columnOrder = enumValuesTable.getColumnOrder();
+        for (int i = 0; i < columnOrder.length; i++) {
+            enumValuesTableColumnNames.add(tableColumns[columnOrder[i]].getText());
+        }
     }
 
     /*
@@ -302,12 +372,35 @@ public class EnumValuesSection extends IpsSection {
      */
     private class EnumValuesContentProvider implements IStructuredContentProvider, ContentsChangeListener {
 
+        /* Structure to track the table column order */
+        private class ColumnOrderInfo {
+            private int orderNumber;
+            private IEnumAttribute enumAttribute;
+
+            private ColumnOrderInfo(int orderNumber, IEnumAttribute enumAttribute) {
+                ArgumentCheck.notNull(enumAttribute);
+                this.orderNumber = orderNumber;
+                this.enumAttribute = enumAttribute;
+            }
+        }
+
+        // Column order info list
+        private List<ColumnOrderInfo> columnOrderInfos;
+
         /**
          * Creates the content provider for the enum values table viewer and registers itself as
          * content change listener to the ips model.
          */
         public EnumValuesContentProvider() {
+            // Register as listener
             enumValueContainer.getIpsModel().addChangeListener(this);
+
+            // Create column order info
+            List<IEnumAttribute> enumAttributes = enumType.getEnumAttributes();
+            columnOrderInfos = new ArrayList<ColumnOrderInfo>(enumValuesTableColumnNames.size());
+            for (int i = 0; i < enumAttributes.size(); i++) {
+                columnOrderInfos.add(new ColumnOrderInfo(i, enumAttributes.get(i)));
+            }
         }
 
         /**
@@ -346,8 +439,11 @@ public class EnumValuesSection extends IpsSection {
                 case ContentChangeEvent.TYPE_PART_ADDED:
                     if (part != null) {
                         if (part instanceof IEnumAttribute) {
-                            IEnumAttribute addedEnumAttribute = (IEnumAttribute)part;
-                            EnumValuesSection.this.addTableColumnToEnumValuesTable(addedEnumAttribute.getName());
+                            try {
+                                enumAttributeAdded((IEnumAttribute)part);
+                            } catch (CoreException e) {
+                                throw new RuntimeException(e);
+                            }
                         }
                     }
 
@@ -357,7 +453,11 @@ public class EnumValuesSection extends IpsSection {
                     if (part != null) {
                         if (part instanceof IEnumAttribute) {
                             IEnumAttribute modifiedEnumAttribute = (IEnumAttribute)part;
-                            EnumValuesSection.this.updateTableColumnInEnumValuesTable(modifiedEnumAttribute);
+                            try {
+                                EnumValuesSection.this.updateTableColumnInEnumValuesTable(modifiedEnumAttribute);
+                            } catch (CoreException e) {
+                                throw new RuntimeException(e);
+                            }
                         }
                     }
 
@@ -366,17 +466,35 @@ public class EnumValuesSection extends IpsSection {
                 case ContentChangeEvent.TYPE_PART_REMOVED:
                     if (part != null) {
                         if (part instanceof IEnumAttribute) {
-                            IEnumAttribute removedEnumAttribute = (IEnumAttribute)part;
-                            enumAttributeRemoved(removedEnumAttribute);
+                            try {
+                                enumAttributeRemoved((IEnumAttribute)part);
+                            } catch (CoreException e) {
+                                throw new RuntimeException(e);
+                            }
                         }
                     }
 
                     break;
 
                 case ContentChangeEvent.TYPE_PARTS_CHANGED_POSITIONS:
-                    // TODO
-                    event.getMovedParts();
-                    // enumValuesTable.setColumnOrder(order);
+                    IIpsObjectPart[] movedParts = event.getMovedParts();
+                    IEnumAttribute[] movedEnumAttributes = new IEnumAttribute[movedParts.length];
+                    int i;
+                    for (i = 0; i < movedParts.length; i++) {
+                        if (movedParts[i] instanceof IEnumAttribute) {
+                            movedEnumAttributes[i] = (IEnumAttribute)movedParts[i];
+                        }
+                    }
+                    if (i > 0) {
+                        if (movedEnumAttributes[0] != null) {
+                            try {
+                                enumAttributesMoved(movedEnumAttributes);
+                            } catch (CoreException e) {
+                                throw new RuntimeException(e);
+                            }
+                        }
+                    }
+                    enumValuesTableViewer.refresh();
 
                     break;
 
@@ -389,15 +507,73 @@ public class EnumValuesSection extends IpsSection {
                             }
                         }
                     } catch (CoreException e) {
-                        IpsPlugin.logAndShowErrorDialog(e);
+                        throw new RuntimeException(e);
                     }
 
                     break;
             }
         }
 
+        // Builds and sets the current column order from the column order info list
+        private void buildAndSetColumnOrder() {
+            // Build the new column order array for the table
+            int[] columnOrder = new int[columnOrderInfos.size()];
+            for (int i = 0; i < columnOrderInfos.size(); i++) {
+                columnOrder[i] = columnOrderInfos.get(i).orderNumber;
+            }
+
+            // Set the column order
+            enumValuesTable.setColumnOrder(columnOrder);
+        }
+
+        // Things to do when an enum attribute has been added
+        private void enumAttributeAdded(IEnumAttribute addedEnumAttribute) throws CoreException {
+            // Add table column
+            EnumValuesSection.this.addTableColumnToEnumValuesTable(addedEnumAttribute.getName());
+
+            // Add column order info
+            columnOrderInfos.add(new ColumnOrderInfo(columnOrderInfos.size(), addedEnumAttribute));
+
+            buildAndSetColumnOrder();
+        }
+
+        // Things to do when enum attributes have been moved
+        private void enumAttributesMoved(IEnumAttribute[] movedEnumAttributes) throws CoreException {
+            // Get the new indizes
+            int index1 = -1;
+            int index2 = -1;
+            for (int i = 0; i < movedEnumAttributes.length; i++) {
+                if (columnOrderInfos.get(i).enumAttribute != movedEnumAttributes[i]) {
+                    if (index1 == -1) {
+                        index1 = i;
+                    } else {
+                        index2 = i;
+                    }
+                }
+                if (index1 != -1 && index2 != -1) {
+                    break;
+                }
+            }
+
+            // Get current column info for the enum attributes
+            ColumnOrderInfo columnOrderInfo1 = columnOrderInfos.get(index1);
+            ColumnOrderInfo columnOrderInfo2 = columnOrderInfos.get(index2);
+
+            // Temporary save the contents of the first column order info for swapping
+            IEnumAttribute tempInfo1Attribute = columnOrderInfo1.enumAttribute;
+            int tempInfo1OrderNumber = columnOrderInfo1.orderNumber;
+
+            // Swap the contents of the column order infos
+            columnOrderInfo1.enumAttribute = columnOrderInfo2.enumAttribute;
+            columnOrderInfo1.orderNumber = columnOrderInfo2.orderNumber;
+            columnOrderInfo2.enumAttribute = tempInfo1Attribute;
+            columnOrderInfo2.orderNumber = tempInfo1OrderNumber;
+
+            buildAndSetColumnOrder();
+        }
+
         // Things to do when an enum attribute has been removed from the referenced enum type
-        private void enumAttributeRemoved(IEnumAttribute removedEnumAttribute) {
+        private void enumAttributeRemoved(IEnumAttribute removedEnumAttribute) throws CoreException {
             // Delete referencing enum values if there are no more enum attributes
             IEnumType enumType = (IEnumType)removedEnumAttribute.getParent();
             if (enumType.getNumberEnumAttributes() == 0) {
@@ -411,12 +587,41 @@ public class EnumValuesSection extends IpsSection {
                         }
                     }
                 } catch (CoreException e) {
-                    IpsPlugin.logAndShowErrorDialog(e);
+                    throw new RuntimeException(e);
                 }
             }
 
             // Remove the table column of the enum attribute
             EnumValuesSection.this.removeTableColumnFromEnumValuesTable(removedEnumAttribute);
+
+            // Remove column order info entry
+            int indexToRemove = -1;
+            for (int i = 0; i < columnOrderInfos.size(); i++) {
+                if (columnOrderInfos.get(i).enumAttribute == removedEnumAttribute) {
+                    indexToRemove = i;
+                    break;
+                }
+            }
+            if (indexToRemove == -1) {
+                // Should theoretically never happen
+                throw new NoSuchElementException();
+            }
+            ColumnOrderInfo removedColumnOrderInfo = columnOrderInfos.remove(indexToRemove);
+
+            /*
+             * Now we removed the column order info entry but we still need to decrement some order
+             * numbers by 1 because we now have one column less. If we had 4 column order entries
+             * before and now have 3 our order numbers go only to 2 instead to 3. If we removed the
+             * entry with order number 1 for example we need to decrement the order numbers of all
+             * other entries with a higher order number to make the gap.
+             */
+            for (ColumnOrderInfo currentColumnOrderInfo : columnOrderInfos) {
+                if (currentColumnOrderInfo.orderNumber > removedColumnOrderInfo.orderNumber) {
+                    currentColumnOrderInfo.orderNumber--;
+                }
+            }
+
+            buildAndSetColumnOrder();
         }
 
     }
@@ -442,11 +647,23 @@ public class EnumValuesSection extends IpsSection {
             if (enumValuesTableColumnNames.size() > 0) {
                 IEnumValue enumValue = (IEnumValue)element;
 
-                // For a requested column there must already be an enum attribute value
+                // For each requested column there must already be an enum attribute value
                 List<IEnumAttributeValue> enumAttributeValues = enumValue.getEnumAttributeValues();
                 if (enumAttributeValues.size() - 1 >= columnIndex) {
-                    IEnumAttributeValue enumAttributeValue = enumAttributeValues.get(columnIndex);
-                    columnText = enumAttributeValue.getValue();
+
+                    // Find the correct enum attribute value by the requested column's name
+                    String columnName = enumValuesTable.getColumn(columnIndex).getText();
+                    for (IEnumAttributeValue currentEnumAttributeValue : enumAttributeValues) {
+                        try {
+                            if (currentEnumAttributeValue.findEnumAttribute().getName().equals(columnName)) {
+                                columnText = currentEnumAttributeValue.getValue();
+                                break;
+                            }
+                        } catch (CoreException e) {
+                            throw new RuntimeException(e);
+                        }
+                    }
+
                 }
             }
 
@@ -502,13 +719,27 @@ public class EnumValuesSection extends IpsSection {
             if (element instanceof IEnumValue) {
                 IEnumValue enumValue = (IEnumValue)element;
 
-                int columnIndex = enumValuesTableColumnNames.indexOf(property);
+                int columnIndex = getColumnIndexByName(property);
                 if (columnIndex != -1) {
                     return enumValue.getEnumAttributeValues().get(columnIndex).getValue();
                 }
             }
 
             return null;
+        }
+
+        // Returns the current index of the column identified by the given name
+        private int getColumnIndexByName(String columnName) {
+            int[] columnOrder = enumValuesTable.getColumnOrder();
+            int columnIndex = -1;
+            for (int i = 0; i < enumValuesTable.getColumnCount(); i++) {
+                if (enumValuesTable.getColumn(columnOrder[i]).getText().equals(columnName)) {
+                    columnIndex = i;
+                    break;
+                }
+            }
+
+            return columnIndex;
         }
 
         /**
@@ -525,7 +756,7 @@ public class EnumValuesSection extends IpsSection {
                 return;
             }
 
-            int columnIndex = enumValuesTableColumnNames.indexOf(property);
+            int columnIndex = getColumnIndexByName(property);
             if (columnIndex != -1) {
                 enumValue.getEnumAttributeValues().get(columnIndex).setValue((String)value);
                 enumValuesTableViewer.refresh(true);
