@@ -15,13 +15,16 @@ package org.faktorips.devtools.core.internal.model.enumtype;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.NoSuchElementException;
 
+import org.eclipse.core.runtime.CoreException;
 import org.faktorips.devtools.core.internal.model.ipsobject.BaseIpsObject;
 import org.faktorips.devtools.core.internal.model.ipsobject.IpsObjectPartCollection;
 import org.faktorips.devtools.core.model.enumtype.IEnumValue;
 import org.faktorips.devtools.core.model.enumtype.IEnumValueContainer;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPart;
 import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
+import org.faktorips.util.ArgumentCheck;
 
 /**
  * Implementation of IEnumValueContainer, see the corresponding interface for more details.
@@ -78,8 +81,69 @@ public abstract class EnumValueContainer extends BaseIpsObject implements IEnumV
     /**
      * {@inheritDoc}
      */
-    public int getNumberEnumValues() {
+    // TODO rename to count
+    public int getEnumValuesCount() {
         return enumValues.size();
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public int moveEnumValueUp(IEnumValue enumValue) throws CoreException {
+        ArgumentCheck.notNull(enumValue);
+
+        // Can't move further up any more
+        if (enumValue == enumValues.getPart(0)) {
+            return getIndexOfEnumValue(enumValue);
+        }
+
+        return moveEnumValue(enumValue, true);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public int moveEnumValueDown(IEnumValue enumValue) throws CoreException {
+        ArgumentCheck.notNull(enumValue);
+
+        // Can't move further down any more
+        if (enumValue == enumValues.getPart(enumValues.size() - 1)) {
+            return getIndexOfEnumValue(enumValue);
+        }
+
+        return moveEnumValue(enumValue, false);
+    }
+
+    /*
+     * Moves the given enum value up or down in the collection order by 1 and returns the new index
+     */
+    @SuppressWarnings("unchecked")
+    private int moveEnumValue(IEnumValue enumValue, boolean up) throws CoreException {
+        List<IEnumValue> enumValuesList = enumValues.getBackingList();
+        for (int i = 0; i < enumValuesList.size(); i++) {
+            IEnumValue currentEnumValue = enumValuesList.get(i);
+            if (currentEnumValue == enumValue) {
+                int[] newIndex = enumValues.moveParts(new int[] { i }, up);
+                return newIndex[0];
+            }
+        }
+
+        throw new NoSuchElementException();
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public int getIndexOfEnumValue(IEnumValue enumValue) {
+        ArgumentCheck.notNull(enumValue);
+
+        for (int i = 0; i < enumValues.size(); i++) {
+            if (enumValues.getBackingList().get(i) == enumValue) {
+                return i;
+            }
+        }
+
+        throw new NoSuchElementException();
     }
 
 }

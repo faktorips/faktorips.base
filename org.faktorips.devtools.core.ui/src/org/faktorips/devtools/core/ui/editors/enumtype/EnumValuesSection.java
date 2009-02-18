@@ -55,6 +55,7 @@ import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPart;
 import org.faktorips.devtools.core.ui.IpsUIPlugin;
 import org.faktorips.devtools.core.ui.UIToolkit;
 import org.faktorips.devtools.core.ui.ValueDatatypeControlFactory;
+import org.faktorips.devtools.core.ui.actions.TableImportExportAction;
 import org.faktorips.devtools.core.ui.forms.IpsSection;
 import org.faktorips.devtools.core.ui.table.TableCellEditor;
 import org.faktorips.util.ArgumentCheck;
@@ -98,6 +99,12 @@ public class EnumValuesSection extends IpsSection {
     // Action to move enum values down by 1
     private IAction moveEnumValueDownAction;
 
+    // Action to import the enum values table
+    private IAction tableImportAction;
+
+    // Action to export the enum values table
+    private IAction tableExportAction;
+
     /**
      * Creates a new <code>EnumValuesSection</code> containing the enum values of the given enum
      * value container.
@@ -140,14 +147,18 @@ public class EnumValuesSection extends IpsSection {
         // Create and add the actions to the toolbar
         newEnumValueAction = new NewEnumValueAction(enumValuesTableViewer);
         deleteEnumValueAction = new DeleteEnumValueAction(enumValuesTableViewer);
-        moveEnumValueUpAction = new MoveEnumValueUpAction(enumValuesTableViewer);
-        moveEnumValueDownAction = new MoveEnumValueDownAction(enumValuesTableViewer);
+        moveEnumValueUpAction = new MoveEnumValueAction(enumValuesTableViewer, true);
+        moveEnumValueDownAction = new MoveEnumValueAction(enumValuesTableViewer, false);
+        tableImportAction = TableImportExportAction.createTableImportAction(getShell(), enumValuesTableViewer);
+        tableExportAction = TableImportExportAction.createTableExportAction(getShell(), enumValuesTableViewer);
         toolBarManager.add(newEnumValueAction);
         toolBarManager.add(deleteEnumValueAction);
         toolBarManager.add(new Separator());
         toolBarManager.add(moveEnumValueUpAction);
         toolBarManager.add(moveEnumValueDownAction);
         toolBarManager.add(new Separator());
+        toolBarManager.add(tableImportAction);
+        toolBarManager.add(tableExportAction);
 
         // Update the toolbar with the new information
         toolBarManager.update(true);
@@ -166,6 +177,8 @@ public class EnumValuesSection extends IpsSection {
             deleteEnumValueAction.setEnabled(valuesArePartOfModel);
             moveEnumValueUpAction.setEnabled(valuesArePartOfModel);
             moveEnumValueDownAction.setEnabled(valuesArePartOfModel);
+            tableImportAction.setEnabled(valuesArePartOfModel);
+            tableExportAction.setEnabled(valuesArePartOfModel);
             enumValuesTable.setEnabled(valuesArePartOfModel);
             getSectionControl().setEnabled(valuesArePartOfModel);
 
@@ -174,6 +187,8 @@ public class EnumValuesSection extends IpsSection {
             deleteEnumValueAction.setEnabled(!(valuesArePartOfModel));
             moveEnumValueUpAction.setEnabled(!(valuesArePartOfModel));
             moveEnumValueDownAction.setEnabled(!(valuesArePartOfModel));
+            tableImportAction.setEnabled(!(valuesArePartOfModel));
+            tableExportAction.setEnabled(!(valuesArePartOfModel));
             enumValuesTable.setEnabled(!(valuesArePartOfModel));
             getSectionControl().setEnabled(!(valuesArePartOfModel));
         }
@@ -209,7 +224,7 @@ public class EnumValuesSection extends IpsSection {
          * are any enum values yet. If there are no enum values yet we create the columns based on
          * the enum attributes of the enum type.
          */
-        if (enumValueContainer.getNumberEnumValues() > 0) {
+        if (enumValueContainer.getEnumValuesCount() > 0) {
 
             // Create columns based upon enum attribute values
             IEnumValue enumValue = enumValueContainer.getEnumValues().get(0);
@@ -593,7 +608,7 @@ public class EnumValuesSection extends IpsSection {
         private void enumAttributeRemoved(IEnumAttribute removedEnumAttribute) throws CoreException {
             // Delete referencing enum values if there are no more enum attributes
             IEnumType enumType = (IEnumType)removedEnumAttribute.getParent();
-            if (enumType.getNumberEnumAttributes() == 0) {
+            if (enumType.getEnumAttributesCount() == 0) {
                 for (IEnumValue currentEnumValue : enumType.getEnumValues()) {
                     currentEnumValue.delete();
                 }

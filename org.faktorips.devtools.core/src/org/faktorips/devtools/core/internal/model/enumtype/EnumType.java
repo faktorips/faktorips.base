@@ -174,7 +174,7 @@ public class EnumType extends EnumValueContainer implements IEnumType {
     /**
      * {@inheritDoc}
      */
-    public int getNumberEnumAttributes() {
+    public int getEnumAttributesCount() {
         return enumAttributes.size();
     }
 
@@ -250,15 +250,10 @@ public class EnumType extends EnumValueContainer implements IEnumType {
 
                 int[] newIndex = enumAttributes.moveParts(new int[] { i }, up);
 
-                // Also move the refering enum attribute values
+                // Also move the refering enum attribute values that are defined directly in this
+                // enum type
                 int modifier = (up) ? 1 : -1;
-                if (!valuesArePartOfModel) {
-                    for (IEnumContent currentEnumContent : findReferencingEnumContents()) {
-                        moveEnumAttributeValues(newIndex[0] + modifier, currentEnumContent.getEnumValues(), up);
-                    }
-                } else {
-                    moveEnumAttributeValues(newIndex[0] + modifier, getEnumValues(), up);
-                }
+                moveEnumAttributeValues(newIndex[0] + modifier, getEnumValues(), up);
 
                 return newIndex[0];
 

@@ -169,7 +169,7 @@ public class EnumValue extends BaseIpsObjectPart implements IEnumValue {
 
         IEnumType enumType = ((IEnumValueContainer)getParent()).findEnumType();
         if (enumType != null) {
-            if (enumType.getNumberEnumAttributes() != getNumberEnumAttributeValues()) {
+            if (enumType.getEnumAttributesCount() != getNumberEnumAttributeValues()) {
                 String text = NLS.bind(Messages.EnumValue_NumberAttributeValuesDoesNotCorrespondToNumberAttributes,
                         enumType.getQualifiedName());
                 Message validationMessage = new Message(

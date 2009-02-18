@@ -20,7 +20,7 @@ import org.faktorips.devtools.core.model.enumtype.IEnumValueContainer;
 import org.faktorips.devtools.core.ui.IpsUIPlugin;
 
 /**
- * This action is used by the <code>EnumValuesSection</code> for moving enum values down.
+ * This action is used by the <code>EnumValuesSection</code> for moving enum values.
  * 
  * @see EnumValuesSection
  * 
@@ -28,19 +28,31 @@ import org.faktorips.devtools.core.ui.IpsUIPlugin;
  * 
  * @since 2.3
  */
-public class MoveEnumValueDownAction extends AbstractEnumAction {
+public class MoveEnumValueAction extends AbstractEnumAction {
+
+    // Move up or down?
+    private boolean up;
 
     /**
-     * Creates a new <code>MoveEnumValueDownAction</code>.
+     * Creates a new <code>MoveEnumValueAction</code>.
      * 
      * @param tableViewer The table viewer linking the ui table widget with the model data.
+     * @param up Flag indicating whether the selected enum value shall be moved upwards or
+     *            downwards.
      */
-    public MoveEnumValueDownAction(TableViewer tableViewer) {
+    public MoveEnumValueAction(TableViewer tableViewer, boolean up) {
         super(tableViewer);
-        
-        setImageDescriptor(IpsUIPlugin.getDefault().getImageDescriptor("ArrowDown.gif"));
-        setText(Messages.EnumValuesSection_labelMoveEnumValueDown);
-        setToolTipText(Messages.EnumValuesSection_tooltipMoveEnumValueDown);
+        this.up = up;
+
+        if (up) {
+            setImageDescriptor(IpsUIPlugin.getDefault().getImageDescriptor("ArrowUp.gif"));
+            setText(Messages.EnumValuesSection_labelMoveEnumValueUp);
+            setToolTipText(Messages.EnumValuesSection_tooltipMoveEnumValueUp);
+        } else {
+            setImageDescriptor(IpsUIPlugin.getDefault().getImageDescriptor("ArrowDown.gif"));
+            setText(Messages.EnumValuesSection_labelMoveEnumValueDown);
+            setToolTipText(Messages.EnumValuesSection_tooltipMoveEnumValueDown);
+        }
     }
 
     /**
@@ -55,7 +67,12 @@ public class MoveEnumValueDownAction extends AbstractEnumAction {
         IEnumValue enumValue = (IEnumValue)selection.getFirstElement();
         if (enumValue != null) {
             IEnumValueContainer enumValueContainer = (IEnumValueContainer)enumValue.getParent();
-            // TODO move enum value down
+            // TODO move enum value up / down
+            if (up) {
+
+            } else {
+
+            }
 
             tableViewer.refresh(true);
         }

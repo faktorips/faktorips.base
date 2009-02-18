@@ -14,6 +14,7 @@
 package org.faktorips.devtools.core.model.enumtype;
 
 import java.util.List;
+import java.util.NoSuchElementException;
 
 import org.eclipse.core.runtime.CoreException;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObject;
@@ -71,6 +72,52 @@ public interface IEnumValueContainer extends IIpsObject {
      * 
      * @return The number of enum values that this enum value container is currently containing.
      */
-    public int getNumberEnumValues();
+    public int getEnumValuesCount();
+
+    /**
+     * <p>
+     * Moves the given enum value one position upwards in the enum values collection.
+     * </p>
+     * <p>
+     * If the given enum value is already the first enum value then absolutely nothing will be done.
+     * </p>
+     * 
+     * @param enumValue The enum value to move further up in the order.
+     * 
+     * @return The new index of the enum value.
+     * 
+     * @throws CoreException If an error occurs while moving the enum values.
+     * @throws NullPointerException If enumValue is <code>null</code>.
+     */
+    public int moveEnumValueUp(IEnumValue enumValue) throws CoreException;
+
+    /**
+     * <p>
+     * Moves the given enum value one position downwards in the enum values collection.
+     * </p>
+     * <p>
+     * If the given enum value is already the last enum value then absolutely nothing will be done.
+     * </p>
+     * 
+     * @param enumValue The enum value to move further down in the order.
+     * 
+     * @return The new index of the enum value.
+     * 
+     * @throws CoreException If an error occurs while moving the enum values.
+     * @throws NullPointerException If enumValue is <code>null</code>.
+     */
+    public int moveEnumValueDown(IEnumValue enumValue) throws CoreException;
+
+    /**
+     * Returns the index of the given enum value in the enum values collection.
+     * 
+     * @param enumValue The enum value to obtain its index for.
+     * 
+     * @return The index identifying the given enum value in the enum values collection.
+     * 
+     * @throws NoSuchElementException If there is no such enum value in this enum value container.
+     * @throws NullPointerException If enumValue is <code>null</code>.
+     */
+    public int getIndexOfEnumValue(IEnumValue enumValue);
 
 }

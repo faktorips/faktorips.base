@@ -190,7 +190,7 @@ public interface IEnumType extends IEnumValueContainer, Datatype {
      * 
      * @return The number of enum attributes currently assigned to this enum type.
      */
-    public int getNumberEnumAttributes();
+    public int getEnumAttributesCount();
 
     /**
      * <p>
