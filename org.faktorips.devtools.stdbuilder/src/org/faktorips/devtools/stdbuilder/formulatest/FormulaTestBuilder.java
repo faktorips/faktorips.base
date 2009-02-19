@@ -261,7 +261,7 @@ public class FormulaTestBuilder extends DefaultJavaSourceFileBuilder {
             List testParameterNames = (List)testParameterNamesForGeneration.get(formula.getName() + "#" + generationId);
             List testParameterTypes = (List)testParameterTypesForGeneration.get(formula.getName() + "#" + generationId);
             if (testParameterNames == null || testParameterTypes == null) {
-                throw new CoreException(new IpsStatus("No formula paramter names and types found for generation id: "
+                throw new CoreException(new IpsStatus("No formula parameter names and types found for generation id: "
                         + generationId));
             }
             generationBuilder.generateMethodForFormula(formula, builder, getComputeTestMethodSuffix(generationId
