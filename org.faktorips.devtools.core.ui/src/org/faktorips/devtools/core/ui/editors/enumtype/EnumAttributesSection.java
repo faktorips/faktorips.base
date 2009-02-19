@@ -40,6 +40,7 @@ import org.faktorips.util.ArgumentCheck;
  * 
  * @since 2.3
  */
+// TODO Reduce the vertical size of this section
 public class EnumAttributesSection extends SimpleIpsPartsSection {
 
     /**
