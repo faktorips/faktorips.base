@@ -16,8 +16,11 @@ package org.faktorips.devtools.core.internal.model.enumtype;
 import javax.xml.parsers.ParserConfigurationException;
 
 import org.eclipse.core.runtime.CoreException;
+import org.faktorips.devtools.core.model.IIpsModel;
+import org.faktorips.devtools.core.model.enumtype.IEnumAttribute;
 import org.faktorips.devtools.core.model.enumtype.IEnumAttributeValue;
 import org.faktorips.devtools.core.model.enumtype.IEnumContent;
+import org.faktorips.devtools.core.model.enumtype.IEnumValue;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 
@@ -37,6 +40,9 @@ public class EnumAttributeValueTest extends AbstractIpsEnumPluginTest {
     public void testFindEnumAttribute() throws CoreException {
         assertEquals(genderEnumAttributeId, maleIdAttributeValue.findEnumAttribute());
         assertEquals(genderEnumAttributeName, maleNameAttributeValue.findEnumAttribute());
+
+        genderEnumContent.setEnumType("");
+        assertNull(maleIdAttributeValue.findEnumAttribute());
     }
 
     public void testGetSetValue() {
@@ -64,4 +70,50 @@ public class EnumAttributeValueTest extends AbstractIpsEnumPluginTest {
                 .getValue());
         assertEquals(2, loadedEnumContent.getEnumValues().size());
     }
+
+    public void testValidateThis() throws CoreException {
+        IEnumAttribute stringAttribute = genderEnumType.newEnumAttribute();
+        stringAttribute.setDatatype(STRING_DATATYPE_NAME);
+        stringAttribute.setName("StringAttribute");
+
+        IEnumAttribute integerAttribute = genderEnumType.newEnumAttribute();
+        integerAttribute.setDatatype(INTEGER_DATATYPE_NAME);
+        integerAttribute.setName("IntegerAttribute");
+
+        IEnumAttribute booleanAttribute = genderEnumType.newEnumAttribute();
+        booleanAttribute.setDatatype(BOOLEAN_DATATYPE_NAME);
+        booleanAttribute.setName("BooleanAttribute");
+
+        genderEnumType.setValuesArePartOfModel(true);
+        IEnumValue newEnumValue = genderEnumType.newEnumValue();
+
+        IEnumAttributeValue stringNewAttributeValue = newEnumValue.getEnumAttributeValues().get(2);
+        IEnumAttributeValue integerNewAttributeValue = newEnumValue.getEnumAttributeValues().get(3);
+        IEnumAttributeValue booleanNewAttributeValue = newEnumValue.getEnumAttributeValues().get(4);
+
+        stringNewAttributeValue.setValue("String");
+        integerNewAttributeValue.setValue("4");
+        booleanNewAttributeValue.setValue("false");
+
+        assertTrue(stringNewAttributeValue.isValid());
+        assertTrue(integerNewAttributeValue.isValid());
+        assertTrue(booleanNewAttributeValue.isValid());
+
+        IIpsModel ipsModel = getIpsModel();
+
+        ipsModel.clearValidationCache();
+        integerNewAttributeValue.setValue("fooBar");
+        assertEquals(1, integerNewAttributeValue.validate(ipsProject).getNoOfMessages());
+        integerNewAttributeValue.setValue("4");
+
+        ipsModel.clearValidationCache();
+        booleanNewAttributeValue.setValue("fooBar");
+        assertEquals(1, booleanNewAttributeValue.validate(ipsProject).getNoOfMessages());
+        booleanNewAttributeValue.setValue("false");
+    }
+
+    public void testGetImage() {
+        assertNull(genderEnumValueMale.getEnumAttributeValues().get(0).getImage());
+    }
+
 }

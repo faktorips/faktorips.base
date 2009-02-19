@@ -98,18 +98,15 @@ public class EnumTypeTest extends AbstractIpsEnumPluginTest {
         description.setName("Description");
         description.setDatatype(STRING_DATATYPE_NAME);
 
-        assertEquals(3, modelSideEnumValue.getEnumAttributeValues().size());
-
         List<IEnumAttribute> attributes = genderEnumType.getEnumAttributes();
         assertEquals(3, attributes.size());
         assertEquals("Description", attributes.get(2).getName());
 
-        List<IEnumAttributeValue> maleEnumAttributeValues = genderEnumValueMale.getEnumAttributeValues();
-        List<IEnumAttributeValue> femaleEnumAttributeValues = genderEnumValueFemale.getEnumAttributeValues();
-        assertEquals(3, maleEnumAttributeValues.size());
-        assertEquals(description, maleEnumAttributeValues.get(2).findEnumAttribute());
-        assertEquals(3, femaleEnumAttributeValues.size());
-        assertEquals(description, femaleEnumAttributeValues.get(2).findEnumAttribute());
+        List<IEnumAttributeValue> attributeValues = modelSideEnumValue.getEnumAttributeValues();
+        assertEquals(3, attributeValues.size());
+        assertEquals(attributes.get(0), attributeValues.get(0).findEnumAttribute());
+        assertEquals(attributes.get(1), attributeValues.get(1).findEnumAttribute());
+        assertEquals(attributes.get(2), attributeValues.get(2).findEnumAttribute());
     }
 
     public void testFindEnumType() throws CoreException {
@@ -291,8 +288,7 @@ public class EnumTypeTest extends AbstractIpsEnumPluginTest {
         assertEquals(1, enumAttributes.size());
         assertEquals(genderEnumAttributeName, enumAttributes.get(0));
         List<IEnumAttributeValue> enumAttributeValues = genderEnumValueMale.getEnumAttributeValues();
-        assertEquals(1, enumAttributeValues.size());
-        assertEquals(GENDER_ENUM_LITERAL_MALE_NAME, enumAttributeValues.get(0).getValue());
+        assertEquals(2, enumAttributeValues.size());
         assertEquals(1, modelValue.getEnumAttributeValues().size());
 
         try {
@@ -308,7 +304,7 @@ public class EnumTypeTest extends AbstractIpsEnumPluginTest {
 
         genderEnumType.deleteEnumAttributeWithValues(genderEnumAttributeName);
         assertEquals(0, genderEnumType.getEnumAttributes().size());
-        assertEquals(0, genderEnumValueMale.getEnumAttributeValues().size());
+        assertEquals(2, genderEnumValueMale.getEnumAttributeValues().size());
         assertEquals(0, modelValue.getEnumAttributeValues().size());
     }
 

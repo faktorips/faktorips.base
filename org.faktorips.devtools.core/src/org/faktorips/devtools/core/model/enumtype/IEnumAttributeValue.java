@@ -37,10 +37,21 @@ public interface IEnumAttributeValue extends IIpsObjectPart {
     /** Name of the value property. */
     public final static String PROPERTY_VALUE = "value"; //$NON-NLS-1$
 
+    /** Prefix for all message codes of this class. */
+    public final static String MSGCODE_PREFIX = "ENUMATTRIBUTEVALUE-"; //$NON-NLS-1$
+
+    /**
+     * Validation message code to indicate that the value of this enum attribute value does not
+     * correspond to the datatype defined in the enum attribute being referenced.
+     */
+    public final static String MSGCODE_ENUM_ATTRIBUTE_VALUE_NOT_PARSABLE = MSGCODE_PREFIX
+            + "EnumAttributeValueNotParsable"; //$NON-NLS-1$
+
     /**
      * Searches and returns the enum attribute this enum attribute value refers to.
      * 
-     * @return A reference to the enum attribute this enum attribute value refers to.
+     * @return A reference to the enum attribute this enum attribute value refers to or
+     *         <code>null</code> if none could be found.
      * 
      * @throws CoreException If an error occurs while searching for the enum attribute.
      */

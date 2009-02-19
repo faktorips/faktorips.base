@@ -37,6 +37,8 @@ public class Messages extends NLS {
     public static String EnumAttribute_DatatypeMissing;
     public static String EnumAttribute_DatatypeDoesNotExist;
     public static String EnumAttribute_DuplicateIdentifier;
+    
+    public static String EnumAttributeValue_NotParsable;
 
     static {
         // initialize resource bundle

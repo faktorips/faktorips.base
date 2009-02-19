@@ -149,14 +149,7 @@ public class EnumType extends EnumValueContainer implements IEnumType {
     public IEnumAttribute newEnumAttribute() throws CoreException {
         IEnumAttribute newEnumAttribute = (IEnumAttribute)newPart(IEnumAttribute.class);
 
-        // Create new enum attribute value objects on all enum values of referencing enum contents
-        for (IEnumContent currentEnumContent : findReferencingEnumContents()) {
-            for (IEnumValue currentEnumValue : currentEnumContent.getEnumValues()) {
-                currentEnumValue.newEnumAttributeValue();
-            }
-        }
-
-        // Create new enum attribute value objects an the enum values of this enum type
+        // Create new enum attribute value objects on the enum values of this enum type
         for (IEnumValue currentEnumValue : getEnumValues()) {
             currentEnumValue.newEnumAttributeValue();
         }
@@ -250,8 +243,10 @@ public class EnumType extends EnumValueContainer implements IEnumType {
 
                 int[] newIndex = enumAttributes.moveParts(new int[] { i }, up);
 
-                // Also move the refering enum attribute values that are defined directly in this
-                // enum type
+                /*
+                 * Also move the refering enum attribute values that are defined directly in this
+                 * enum type.
+                 */
                 int modifier = (up) ? 1 : -1;
                 moveEnumAttributeValues(newIndex[0] + modifier, getEnumValues(), up);
 
@@ -423,10 +418,6 @@ public class EnumType extends EnumValueContainer implements IEnumType {
         ArgumentCheck.isTrue(enumAttributes.getBackingList().contains(enumAttribute));
 
         deleteEnumAttributeValues(enumAttribute, getEnumValues());
-        for (IEnumContent currentEnumContent : findReferencingEnumContents()) {
-            deleteEnumAttributeValues(enumAttribute, currentEnumContent.getEnumValues());
-        }
-
         enumAttribute.delete();
     }
 

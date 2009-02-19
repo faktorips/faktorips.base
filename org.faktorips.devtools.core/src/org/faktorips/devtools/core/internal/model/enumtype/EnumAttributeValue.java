@@ -16,13 +16,19 @@ package org.faktorips.devtools.core.internal.model.enumtype;
 import java.util.List;
 
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.osgi.util.NLS;
 import org.eclipse.swt.graphics.Image;
+import org.faktorips.datatype.ValueDatatype;
 import org.faktorips.devtools.core.internal.model.ipsobject.AtomicIpsObjectPart;
 import org.faktorips.devtools.core.model.enumtype.IEnumAttribute;
 import org.faktorips.devtools.core.model.enumtype.IEnumAttributeValue;
+import org.faktorips.devtools.core.model.enumtype.IEnumType;
 import org.faktorips.devtools.core.model.enumtype.IEnumValue;
 import org.faktorips.devtools.core.model.enumtype.IEnumValueContainer;
+import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.util.ArgumentCheck;
+import org.faktorips.util.message.Message;
+import org.faktorips.util.message.MessageList;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
@@ -105,7 +111,12 @@ public class EnumAttributeValue extends AtomicIpsObjectPart implements IEnumAttr
             }
         }
 
-        return (IEnumAttribute)valueContainer.findEnumType().getEnumAttributes().get(index);
+        IEnumType enumType = valueContainer.findEnumType();
+        if (enumType == null) {
+            return null;
+        }
+
+        return enumType.getEnumAttributes().get(index);
     }
 
     /**
@@ -124,6 +135,28 @@ public class EnumAttributeValue extends AtomicIpsObjectPart implements IEnumAttr
         String oldValue = this.value;
         this.value = value;
         valueChanged(oldValue, value);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    protected void validateThis(MessageList list, IIpsProject ipsProject) throws CoreException {
+        super.validateThis(list, ipsProject);
+
+        // Value parsable?
+        IEnumAttribute enumAttribute = findEnumAttribute();
+        if (enumAttribute != null) {
+            String datatypeQualifiedName = enumAttribute.getDatatype();
+            ValueDatatype valueDatatype = ipsProject.findValueDatatype(datatypeQualifiedName);
+            if (!(valueDatatype.isParsable(value))) {
+                String text = NLS.bind(Messages.EnumAttributeValue_NotParsable, enumAttribute.getName(), valueDatatype
+                        .getName());
+                Message validationMessage = new Message(MSGCODE_ENUM_ATTRIBUTE_VALUE_NOT_PARSABLE, text, Message.ERROR,
+                        this, PROPERTY_VALUE);
+                list.add(validationMessage);
+            }
+        }
     }
 
 }

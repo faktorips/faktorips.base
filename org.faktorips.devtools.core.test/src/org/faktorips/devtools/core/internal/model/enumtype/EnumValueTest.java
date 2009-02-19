@@ -54,4 +54,8 @@ public class EnumValueTest extends AbstractIpsEnumPluginTest {
         assertEquals(1, genderEnumValueFemale.validate(ipsProject).getNoOfMessages());
     }
 
+    public void testGetImage() {
+        assertNull(genderEnumValueMale.getImage());
+    }
+
 }

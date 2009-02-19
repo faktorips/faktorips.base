@@ -177,7 +177,13 @@ public interface IEnumType extends IEnumValueContainer, Datatype {
     public IEnumAttribute getEnumAttribute(String name);
 
     /**
+     * <p>
      * Creates a new enum attribute and returns a reference to it.
+     * </p>
+     * <p>
+     * Note that all enum values <strong>that are defined directly in this enum type</strong> will
+     * get new <code>EnumAttributeValue</code> objects for the new enum attribute.
+     * </p>
      * 
      * @return A reference to the newly created enum attribute.
      * 
@@ -201,8 +207,8 @@ public interface IEnumType extends IEnumValueContainer, Datatype {
      * be done.
      * </p>
      * <p>
-     * Note that all referencing enum attribute values will also be moved one position upwards in
-     * their collection.
+     * Note that all referencing enum attribute values <strong>that are defined in this enum
+     * type</strong> will also be moved one position upwards in their collection.
      * </p>
      * 
      * @param enumAttribute The enum attribute to move further up in the order.
@@ -223,8 +229,8 @@ public interface IEnumType extends IEnumValueContainer, Datatype {
      * be done.
      * </p>
      * <p>
-     * Note that all referencing enum attribute values will also be moved one position downwards in
-     * their collection.
+     * Note that all referencing enum attribute values <strong>that are defined in this enum
+     * type</strong> will also be moved one position downwards in their collection.
      * </p>
      * 
      * @param enumAttribute The enum attribute to move further down in the order.
@@ -240,10 +246,6 @@ public interface IEnumType extends IEnumValueContainer, Datatype {
      * <p>
      * Searches and returns all enum contents that are built upon this enum type. If none are found
      * an empty list will be returned. This method never returns <code>null</code>.
-     * </p>
-     * <p>
-     * Note that this operation does not differentiate whether the values are part of the model or
-     * not.
      * </p>
      * 
      * @return A list containing all enum contents that are built upon this enum type.
@@ -266,11 +268,8 @@ public interface IEnumType extends IEnumValueContainer, Datatype {
 
     /**
      * <p>
-     * Deletes all the given enum attribute and all the enum attribute values that refer to it.
-     * </p>
-     * <p>
-     * Note that this operation does not differentiate whether the values are part of the model or
-     * not: all referencing enum attribute values will be deleted.
+     * Deletes the given enum attribute and all the <code>EnumAttributeValue</code> objects
+     * <strong>that are defined in the enum type itself</strong> refering to it.
      * </p>
      * 
      * @param enumAttribute The enum attribute to delete.

@@ -47,7 +47,8 @@ public abstract class AbstractIpsEnumPluginTest extends AbstractIpsPluginTest {
 
     protected final String STRING_DATATYPE_NAME = "String";
     protected final String INTEGER_DATATYPE_NAME = "Integer";
-
+    protected final String BOOLEAN_DATATYPE_NAME = "Boolean";
+    
     protected final String GENDER_ENUM_TYPE_NAME = "GenderEnumType";
     protected final String GENDER_ENUM_ATTRIBUTE_ID_NAME = "Id";
     protected final String GENDER_ENUM_ATTRIBUTE_NAME_NAME = "Name";

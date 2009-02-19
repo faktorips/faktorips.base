@@ -81,7 +81,6 @@ public abstract class EnumValueContainer extends BaseIpsObject implements IEnumV
     /**
      * {@inheritDoc}
      */
-    // TODO rename to count
     public int getEnumValuesCount() {
         return enumValues.size();
     }

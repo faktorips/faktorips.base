@@ -80,7 +80,6 @@ public class EnumValue extends BaseIpsObjectPart implements IEnumValue {
      * {@inheritDoc}
      */
     public Image getImage() {
-        // TODO Image handling
         return null;
     }
 
