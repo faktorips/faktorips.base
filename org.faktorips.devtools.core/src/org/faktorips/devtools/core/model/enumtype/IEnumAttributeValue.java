@@ -67,9 +67,7 @@ public interface IEnumAttributeValue extends IIpsObjectPart {
     /**
      * Sets the actual value.
      * 
-     * @param value The new value.
-     * 
-     * @throws NullPointerException If value is <code>null</code>.
+     * @param value The new value. May also be <code>null</code>.
      */
     public void setValue(String value);
 

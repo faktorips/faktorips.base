@@ -76,4 +76,17 @@ public interface IEnumValue extends IIpsObjectPart {
      */
     public IEnumAttributeValue newEnumAttributeValue() throws CoreException;
 
+    /**
+     * <p>
+     * Returns the enum value container this enum value is being stored in.
+     * </p>
+     * <p>
+     * This is a shortcut for:<br />
+     * <code>IEnumValueContainer enumValueContainer = (IEnumValueContainer)enumValue.getParent();</code>
+     * </p>
+     * 
+     * @return The enum value container this enum value belongs to.
+     */
+    public IEnumValueContainer getEnumValueContainer();
+
 }

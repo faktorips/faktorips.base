@@ -20,9 +20,9 @@ import org.eclipse.jface.viewers.IStructuredContentProvider;
 import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Shell;
-import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.model.enumtype.IEnumAttribute;
 import org.faktorips.devtools.core.model.enumtype.IEnumType;
+import org.faktorips.devtools.core.model.enumtype.IEnumValue;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPart;
 import org.faktorips.devtools.core.ui.UIToolkit;
 import org.faktorips.devtools.core.ui.editors.EditDialog;
@@ -124,16 +124,27 @@ public class EnumAttributesSection extends SimpleIpsPartsSection {
          */
         @Override
         protected IIpsObjectPart newIpsPart() {
-            CoreException possibleException;
-
             try {
-                return enumType.newEnumAttribute();
-            } catch (CoreException e) {
-                possibleException = e;
-                IpsPlugin.logAndShowErrorDialog(e);
-            }
 
-            throw new RuntimeException(possibleException);
+                IEnumAttribute newEnumAttribute = enumType.newEnumAttribute();
+                /*
+                 * If this is the first attribute to be created and the values are being defined in
+                 * the enum type then make sure that there will be one enum value available for
+                 * editing.
+                 */
+                if (enumType.getEnumAttributesCount() == 1) {
+                    if (enumType.getValuesArePartOfModel()) {
+                        if (enumType.getEnumValuesCount() == 0) {
+                            enumType.newEnumValue();
+                        }
+                    }
+                }
+
+                return newEnumAttribute;
+
+            } catch (CoreException e) {
+                throw new RuntimeException(e);
+            }
         }
 
         /**
@@ -143,6 +154,11 @@ public class EnumAttributesSection extends SimpleIpsPartsSection {
         protected void deleteIpsPart(IIpsObjectPart partToDelete) throws CoreException {
             IEnumAttribute enumAttributeToDelete = (IEnumAttribute)partToDelete;
             enumType.deleteEnumAttributeWithValues(enumAttributeToDelete);
+
+            // Delete all enum values if there are no more enum attributes
+            for (IEnumValue currentEnumValue : enumType.getEnumValues()) {
+                currentEnumValue.delete();
+            }
         }
 
         /**

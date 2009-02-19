@@ -26,7 +26,6 @@ import org.faktorips.devtools.core.model.enumtype.IEnumType;
 import org.faktorips.devtools.core.model.enumtype.IEnumValue;
 import org.faktorips.devtools.core.model.enumtype.IEnumValueContainer;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
-import org.faktorips.util.ArgumentCheck;
 import org.faktorips.util.message.Message;
 import org.faktorips.util.message.MessageList;
 import org.w3c.dom.Document;
@@ -130,8 +129,6 @@ public class EnumAttributeValue extends AtomicIpsObjectPart implements IEnumAttr
      * {@inheritDoc}
      */
     public void setValue(String value) {
-        ArgumentCheck.notNull(value);
-
         String oldValue = this.value;
         this.value = value;
         valueChanged(oldValue, value);
@@ -149,12 +146,14 @@ public class EnumAttributeValue extends AtomicIpsObjectPart implements IEnumAttr
         if (enumAttribute != null) {
             String datatypeQualifiedName = enumAttribute.getDatatype();
             ValueDatatype valueDatatype = ipsProject.findValueDatatype(datatypeQualifiedName);
-            if (!(valueDatatype.isParsable(value))) {
-                String text = NLS.bind(Messages.EnumAttributeValue_NotParsable, enumAttribute.getName(), valueDatatype
-                        .getName());
-                Message validationMessage = new Message(MSGCODE_ENUM_ATTRIBUTE_VALUE_NOT_PARSABLE, text, Message.ERROR,
-                        this, PROPERTY_VALUE);
-                list.add(validationMessage);
+            if (valueDatatype != null) {
+                if (!(valueDatatype.isParsable(value))) {
+                    String text = NLS.bind(Messages.EnumAttributeValue_NotParsable, enumAttribute.getName(),
+                            valueDatatype.getName());
+                    Message validationMessage = new Message(MSGCODE_ENUM_ATTRIBUTE_VALUE_NOT_PARSABLE, text,
+                            Message.ERROR, this, PROPERTY_VALUE);
+                    list.add(validationMessage);
+                }
             }
         }
     }

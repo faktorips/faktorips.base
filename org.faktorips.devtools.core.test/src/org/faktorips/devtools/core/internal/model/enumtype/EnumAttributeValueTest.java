@@ -48,12 +48,6 @@ public class EnumAttributeValueTest extends AbstractIpsEnumPluginTest {
     public void testGetSetValue() {
         maleIdAttributeValue.setValue("otherValue");
         assertEquals("otherValue", maleIdAttributeValue.getValue());
-
-        try {
-            maleIdAttributeValue.setValue(null);
-            fail();
-        } catch (NullPointerException e) {
-        }
     }
 
     public void testXml() throws ParserConfigurationException, CoreException {

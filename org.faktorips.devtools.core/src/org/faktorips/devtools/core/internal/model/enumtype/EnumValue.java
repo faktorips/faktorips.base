@@ -190,4 +190,11 @@ public class EnumValue extends BaseIpsObjectPart implements IEnumValue {
         return enumAttributeValues.size();
     }
 
+    /**
+     * {@inheritDoc}
+     */
+    public IEnumValueContainer getEnumValueContainer() {
+        return (IEnumValueContainer)getParent();
+    }
+
 }
