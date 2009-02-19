@@ -62,6 +62,10 @@ public class EnumValue extends BaseIpsObjectPart implements IEnumValue {
                 IEnumAttributeValue.class, IEnumAttributeValue.XML_TAG);
 
         // Add as many enum attribute values as there are enum attributes in the enum type
+        /*
+         * TODO this will lead to problems when implementing the enum content stuff when the enum
+         * type has not yet been specified so this will return null
+         */
         IEnumType enumType = parent.findEnumType();
         for (int i = 0; i < enumType.getEnumAttributes().size(); i++) {
             newEnumAttributeValue();
