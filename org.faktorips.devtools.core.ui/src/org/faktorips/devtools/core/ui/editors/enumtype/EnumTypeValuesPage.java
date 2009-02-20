@@ -14,16 +14,14 @@
 package org.faktorips.devtools.core.ui.editors.enumtype;
 
 import org.eclipse.core.runtime.CoreException;
-import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.widgets.Composite;
 import org.faktorips.devtools.core.model.enumtype.IEnumType;
 import org.faktorips.devtools.core.ui.UIToolkit;
 import org.faktorips.devtools.core.ui.editors.type.TypeEditorStructurePage;
 
 /**
- * The <code>EnumTypeStructurePage</code> provides controls to edit the properties and the
- * attributes of an <code>IEnumType</code> and is intended to be used with the
- * <code>EnumTypeEditor</code>.
+ * The <code>EnumTypeValuesPage</code> provides controls to edit the values of an
+ * <code>IEnumType</code> and is intended to be used with the <code>EnumTypeEditor</code>.
  * 
  * @see EnumTypeEditor
  * 
@@ -31,20 +29,20 @@ import org.faktorips.devtools.core.ui.editors.type.TypeEditorStructurePage;
  * 
  * @since 2.3
  */
-public class EnumTypeStructurePage extends TypeEditorStructurePage {
+public class EnumTypeValuesPage extends TypeEditorStructurePage {
 
     // The enum type the enum type editor this page belongs to is currently editing
     private IEnumType enumType;
 
     /**
-     * Creates a new <code>EnumTypeStructurePage</code>.
+     * Creates a new <code>EnumTypeValuesPage</code>.
      * 
      * @param editor The <code>EnumTypeEditor</code> this page belongs to.
      * @param splittedStructure If this flag is set to <code>true</code> the enum values table won't
      *            be part of the page.
      */
-    public EnumTypeStructurePage(EnumTypeEditor editor, boolean splittedStructure) {
-        super(editor, splittedStructure, Messages.EnumTypeStructurePage_title);
+    public EnumTypeValuesPage(EnumTypeEditor editor, boolean splittedStructure) {
+        super(editor, splittedStructure, Messages.EnumTypeValuesPage_title);
 
         enumType = editor.getEnumType();
     }
@@ -54,9 +52,6 @@ public class EnumTypeStructurePage extends TypeEditorStructurePage {
      */
     @Override
     protected void createContentForSingleStructurePage(Composite parentContainer, UIToolkit toolkit) {
-        Composite members = createGridComposite(toolkit, parentContainer, 1, true, GridData.FILL_HORIZONTAL);
-
-        new EnumAttributesSection(enumType, members, toolkit);
         try {
             new EnumValuesSection(enumType, parentContainer, toolkit);
         } catch (CoreException e) {
@@ -69,7 +64,11 @@ public class EnumTypeStructurePage extends TypeEditorStructurePage {
      */
     @Override
     protected void createContentForSplittedStructurePage(Composite parentContainer, UIToolkit toolkit) {
-        new EnumAttributesSection(enumType, parentContainer, toolkit);
+        try {
+            new EnumValuesSection(enumType, parentContainer, toolkit);
+        } catch (CoreException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     /**
@@ -77,7 +76,7 @@ public class EnumTypeStructurePage extends TypeEditorStructurePage {
      */
     @Override
     protected void createGeneralPageInfoSection(Composite parentContainer, UIToolkit toolkit) {
-        new EnumTypeGeneralInfoSection(enumType, parentContainer, toolkit);
+        // nothing to do
     }
 
 }

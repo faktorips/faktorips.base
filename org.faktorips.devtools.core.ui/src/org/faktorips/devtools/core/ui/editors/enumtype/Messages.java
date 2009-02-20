@@ -29,6 +29,7 @@ public class Messages extends NLS {
     public static String EnumTypeGeneralInfoSection_labelAbstract;
     public static String EnumTypeGeneralInfoSection_labelValuesArePartOfModel;
     public static String EnumTypeStructurePage_title;
+    public static String EnumTypeValuesPage_title;
 
     public static String EnumAttributesSection_title;
 
