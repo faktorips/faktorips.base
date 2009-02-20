@@ -427,7 +427,7 @@ public class StandardBuilderSet extends DefaultBuilderSet {
 
         // New enum type builder
         org.faktorips.devtools.stdbuilder.enumtype.EnumTypeInterfaceBuilder newEnumTypeInterfaceBuilder = new org.faktorips.devtools.stdbuilder.enumtype.EnumTypeInterfaceBuilder(
-                this, org.faktorips.devtools.stdbuilder.enumtype.EnumTypeInterfaceBuilder.PACKAGE_STRUCTURE_KIND_ID);
+                this);
 
         // product component builders.
         productCmptGenerationImplBuilder.setProductCmptImplBuilder(productCmptImplClassBuilder);
