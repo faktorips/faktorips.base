@@ -71,7 +71,8 @@ public class EnumTypeInterfaceBuilder extends DefaultJavaSourceFileBuilder {
         TypeSection mainSection = getMainTypeSection();
         mainSection.setUnqualifiedName(getEnumType().getName());
         mainSection.setClassModifier(Modifier.PUBLIC);
-        mainSection.setClass(true);
+        mainSection.setClass(false);
+        mainSection.setEnum(!(getEnumType().isAbstract()));
     }
 
     // Returns the enum type for that code is being generated
