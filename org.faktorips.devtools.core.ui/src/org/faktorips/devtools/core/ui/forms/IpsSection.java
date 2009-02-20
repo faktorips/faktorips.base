@@ -124,7 +124,7 @@ public abstract class IpsSection extends Composite implements IDataChangeableRea
         // Create the ui section widget that is being wrapped by this composite
         section = toolkit.getFormToolkit().createSection(this, style);
         section.setLayoutData(new GridData(layoutData));
-
+        
         // Create the client composite for the section
         Composite client = toolkit.createGridComposite(section, 1, false, false);
         client.setLayoutData(new GridData(layoutData));

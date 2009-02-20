@@ -147,8 +147,7 @@ public class EnumValuesSection extends IpsSection {
 
     // Creates the section's toolbar
     /*
-     * TODO align the toolbar at the right of the section title bar (this might require changing the
-     * super class IpsSection)
+     * TODO align the toolbar at the right of the section title bar
      */
     private void createToolbar() {
         // Create the toolbar
