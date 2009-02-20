@@ -71,7 +71,7 @@ public abstract class AbstractRuntimeRepository implements IRuntimeRepository {
     /**
      * Returns the class loader that is used to load Java classes by this repository.
      * <p>
-     * The default implmentation returns the class loader with which this repository class has been loaded.  
+     * The default implementation returns the class loader with which this repository class has been loaded.  
      */
     public ClassLoader getClassLoader() {
         return getClass().getClassLoader();
@@ -188,7 +188,7 @@ public abstract class AbstractRuntimeRepository implements IRuntimeRepository {
     }
 
     /**
-     * Same as getProductComponent(String kindId, String versionId) but seaches only in this
+     * Same as getProductComponent(String kindId, String versionId) but searches only in this
      * repository and not the ones, this repository depends on.
      */
     protected abstract IProductComponent getProductComponentInternal(String kindId, String versionId);
@@ -621,7 +621,6 @@ public abstract class AbstractRuntimeRepository implements IRuntimeRepository {
     }
 
     /**
-     * 
      * {@inheritDoc}
      */
     public IModelType getModelType(IModelObject modelObject) {
@@ -629,7 +628,6 @@ public abstract class AbstractRuntimeRepository implements IRuntimeRepository {
     }
 
     /**
-     * 
      * {@inheritDoc}
      */
     public IModelType getModelType(IProductComponent modelObject) {
