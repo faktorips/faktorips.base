@@ -18,7 +18,7 @@ import java.util.Calendar;
 import org.faktorips.runtime.internal.DateTime;
 
 /**
- * Superclass for all product components.
+ * Interface for all product components.
  * 
  * @author Jan Ortmann
  */
