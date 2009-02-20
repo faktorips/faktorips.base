@@ -27,8 +27,8 @@ import org.w3c.dom.Element;
 
 /**
  * Gives access to the method names defined in the runtime that the generated code refers to,
- * e.g. by implementing a method with the given name. The reference to the acutal
- * method is documented in the javadoc "see" tags.
+ * e.g. by implementing a method with the given name. The reference to the actual
+ * method is documented in the Javadoc "see" tags.
  * <p>
  * The constants are used by the code generator.
  * 
