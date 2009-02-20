@@ -60,7 +60,6 @@ import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPart;
 import org.faktorips.devtools.core.ui.IpsUIPlugin;
 import org.faktorips.devtools.core.ui.UIToolkit;
 import org.faktorips.devtools.core.ui.ValueDatatypeControlFactory;
-import org.faktorips.devtools.core.ui.actions.TableImportExportAction;
 import org.faktorips.devtools.core.ui.editors.TableMessageHoverService;
 import org.faktorips.devtools.core.ui.forms.IpsSection;
 import org.faktorips.devtools.core.ui.table.TableCellEditor;
@@ -105,12 +104,6 @@ public class EnumValuesSection extends IpsSection {
 
     // Action to move enum values down by 1
     private IAction moveEnumValueDownAction;
-
-    // Action to import the enum values table
-    private IAction tableImportAction;
-
-    // Action to export the enum values table
-    private IAction tableExportAction;
 
     /**
      * Creates a new <code>EnumValuesSection</code> containing the enum values of the given enum
@@ -165,16 +158,11 @@ public class EnumValuesSection extends IpsSection {
         toolbar.setLocation(220, toolbar.getLocation().y + 1);
 
         // Add the actions to the toolbar
-        tableImportAction = TableImportExportAction.createTableImportAction(getShell(), enumValuesTableViewer);
-        tableExportAction = TableImportExportAction.createTableExportAction(getShell(), enumValuesTableViewer);
         toolBarManager.add(newEnumValueAction);
         toolBarManager.add(deleteEnumValueAction);
         toolBarManager.add(new Separator());
         toolBarManager.add(moveEnumValueUpAction);
         toolBarManager.add(moveEnumValueDownAction);
-        toolBarManager.add(new Separator());
-        toolBarManager.add(tableImportAction);
-        toolBarManager.add(tableExportAction);
 
         // Update the toolbar with the new information
         toolBarManager.update(true);
@@ -193,8 +181,6 @@ public class EnumValuesSection extends IpsSection {
             deleteEnumValueAction.setEnabled(valuesArePartOfModel);
             moveEnumValueUpAction.setEnabled(valuesArePartOfModel);
             moveEnumValueDownAction.setEnabled(valuesArePartOfModel);
-            tableImportAction.setEnabled(valuesArePartOfModel);
-            tableExportAction.setEnabled(valuesArePartOfModel);
             enumValuesTable.setEnabled(valuesArePartOfModel);
             getSectionControl().setEnabled(valuesArePartOfModel);
 
@@ -203,8 +189,6 @@ public class EnumValuesSection extends IpsSection {
             deleteEnumValueAction.setEnabled(!(valuesArePartOfModel));
             moveEnumValueUpAction.setEnabled(!(valuesArePartOfModel));
             moveEnumValueDownAction.setEnabled(!(valuesArePartOfModel));
-            tableImportAction.setEnabled(!(valuesArePartOfModel));
-            tableExportAction.setEnabled(!(valuesArePartOfModel));
             enumValuesTable.setEnabled(!(valuesArePartOfModel));
             getSectionControl().setEnabled(!(valuesArePartOfModel));
         }
@@ -718,9 +702,16 @@ public class EnumValuesSection extends IpsSection {
          * given columnIndex, <code>false</code> otherwise.
          */
         private boolean hasErrorsAt(IEnumValue enumValue, int columnIndex) {
+            List<IEnumAttributeValue> enumAttributeValues = enumValue.getEnumAttributeValues();
+
+            // Don't validate if the indicated column does not exist
+            if (enumAttributeValues.size() <= columnIndex) {
+                return false;
+            }
+
             try {
                 MessageList messageList = enumValue.validate(enumValue.getIpsProject());
-                messageList = messageList.getMessagesFor(enumValue.getEnumAttributeValues().get(columnIndex),
+                messageList = messageList.getMessagesFor(enumAttributeValues.get(columnIndex),
                         IEnumAttributeValue.PROPERTY_VALUE);
                 return !(messageList.isEmpty());
             } catch (CoreException e) {

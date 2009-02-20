@@ -59,7 +59,7 @@ public class EnumTypeStructurePage extends TypeEditorStructurePage {
      */
     @Override
     protected void createContentForSplittedStructurePage(Composite parentContainer, UIToolkit toolkit) {
-        Composite members = createGridComposite(toolkit, parentContainer, 1, true, GridData.FILL_BOTH);
+        Composite members = createGridComposite(toolkit, parentContainer, 1, true, GridData.FILL_HORIZONTAL);
 
         new EnumAttributesSection(enumType, members, toolkit);
         try {

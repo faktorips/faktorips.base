@@ -17,7 +17,6 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
-import org.eclipse.swt.widgets.Group;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.TabFolder;
 import org.eclipse.swt.widgets.TabItem;
@@ -77,8 +76,7 @@ public class EnumAttributeEditDialog extends IpsPartEditDialog2 {
     // Creates the general tab
     private Control createGeneralPage(TabFolder tabFolder) {
         Composite control = createTabItemComposite(tabFolder, 1, false);
-        Group generalGroup = uiToolkit.createGroup(control, Messages.EnumAttributeEditDialog_generalGroup);
-        Composite workArea = uiToolkit.createLabelEditColumnComposite(generalGroup);
+        Composite workArea = uiToolkit.createLabelEditColumnComposite(control);
 
         // Create extension properties on position top
         extFactory.createControls(workArea, uiToolkit, enumAttribute, IExtensionPropertyDefinition.POSITION_TOP);
@@ -90,7 +88,7 @@ public class EnumAttributeEditDialog extends IpsPartEditDialog2 {
         uiToolkit.createFormLabel(workArea, Messages.EnumAttributeEditDialog_labelDatatype);
         DatatypeRefControl datatypeControl = uiToolkit.createDatatypeRefEdit(enumAttribute.getIpsProject(), workArea);
         datatypeControl.setVoidAllowed(false);
-        datatypeControl.setPrimitivesAllowed(false); // TODO right so?
+        datatypeControl.setPrimitivesAllowed(false);
         datatypeControl.setOnlyValueDatatypesAllowed(true);
         bindingContext.bindContent(datatypeControl, enumAttribute, IEnumAttribute.PROPERTY_DATATYPE);
 

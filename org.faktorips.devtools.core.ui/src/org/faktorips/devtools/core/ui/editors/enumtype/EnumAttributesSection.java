@@ -40,7 +40,6 @@ import org.faktorips.util.ArgumentCheck;
  * 
  * @since 2.3
  */
-// TODO Reduce the vertical size of this section
 public class EnumAttributesSection extends SimpleIpsPartsSection {
 
     /**
@@ -157,8 +156,10 @@ public class EnumAttributesSection extends SimpleIpsPartsSection {
             enumType.deleteEnumAttributeWithValues(enumAttributeToDelete);
 
             // Delete all enum values if there are no more enum attributes
-            for (IEnumValue currentEnumValue : enumType.getEnumValues()) {
-                currentEnumValue.delete();
+            if (enumType.getEnumAttributesCount() == 0) {
+                for (IEnumValue currentEnumValue : enumType.getEnumValues()) {
+                    currentEnumValue.delete();
+                }
             }
         }
 
