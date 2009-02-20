@@ -75,15 +75,15 @@ public class GenAssociationTo1 extends GenAssociation {
 
     /**
      * Returns the name of the method setting the referenced object. e.g. setCoverage(ICoverage
-     * newObject)
+     * newObject).
      */
     public String getMethodNameSetObject(IAssociation association) {
         return getLocalizedText("METHOD_SET_OBJECT_NAME", StringUtils.capitalize(association.getTargetRoleSingular()));
     }
 
     /**
-     * Returns the name of the paramter for the method that tests if an object is references in a
-     * multi-value association, e.g. objectToTest
+     * Returns the name of the parameter for the method that tests if an object is references in a
+     * multi-value association, e.g. objectToTest.
      */
     public String getParamNameForSetObject() {
         return getLocalizedText("PARAM_OBJECT_TO_SET_NAME", association.getTargetRoleSingular());
@@ -91,7 +91,7 @@ public class GenAssociationTo1 extends GenAssociation {
 
     /**
      * Returns the name of the method removing an object from a multi-value association, e.g.
-     * removeCoverage()
+     * removeCoverage().
      */
     public String getMethodNameRemoveObject() {
         return getLocalizedText("METHOD_REMOVE_OBJECT_NAME", StringUtils.capitalize(association.getTargetRoleSingular()));
@@ -99,7 +99,7 @@ public class GenAssociationTo1 extends GenAssociation {
 
     /**
      * Returns the name of the method removing an object from a multi-value association, e.g.
-     * removeCoverage()
+     * removeCoverage().
      */
     public String getMethodNameRemoveObject(IAssociation association) {
         return getLocalizedText("METHOD_REMOVE_OBJECT_NAME", StringUtils.capitalize(association.getTargetRoleSingular()));
