@@ -121,7 +121,7 @@ public class StandardBuilderSet extends DefaultBuilderSet {
     private ProductCmptGenInterfaceBuilder productCmptGenInterfaceBuilder;
     private EnumClassesBuilder enumClassesBuilder;
     private String version;
-    private final Map<IType, GenType> ipsObjectTypeGenerators = new HashMap<IType, GenType>(1000);
+    private final Map ipsObjectTypeGenerators = new HashMap(1000);
 
     public StandardBuilderSet() {
         initVersion();
