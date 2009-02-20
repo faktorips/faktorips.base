@@ -20,7 +20,7 @@ import org.w3c.dom.NodeList;
 
 /**
  * A read-only table contents for the runtime repository. The table of contents contains a list
- * of tox entries that contain the information needed to identify and load the objects
+ * of toc entries that contain the information needed to identify and load the objects
  * stored in the repository.
  *   
  * @author Jan Ortmann

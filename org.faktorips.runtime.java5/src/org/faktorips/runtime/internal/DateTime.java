@@ -20,11 +20,11 @@ import java.util.StringTokenizer;
 import java.util.TimeZone;
 
 /**
- * Represents date and time information like 2006-01-01 10:00pm independant of the time zone. To convert 
+ * Represents date and time information like 2006-01-01 10:00pm independent of the time zone. To convert 
  * a date and time object to a point in time (represented in the Java class libraries by Date and Calendar) 
  * a time zone has to be provided in the conversion method toDate().
  * 
- * @sse java.util.Date
+ * @see java.util.Date
  * @see java.util.GregorianCalendar
  * @see java.util.TimeZone
  * 
@@ -39,7 +39,7 @@ public class DateTime implements Comparable<DateTime>, Serializable {
 
     /**
      * Parses the given String s to a DateTime object. The string should have
-     * the iso date format (YYYY-MM-DD). Time information is initialized with 0.
+     * the ISO date format (YYYY-MM-DD). Time information is initialized with 0.
      * Returns <code>null</code> if s if <code>null</code> or an empty String.
      * 
      * @throws IllegalArgumentException if s has a wrong format and can't be parsed.
@@ -61,7 +61,7 @@ public class DateTime implements Comparable<DateTime>, Serializable {
     
     /**
      * Creates a new date time object with the year, month and day information
-     * from the gregorian calendar. Time information is initialized with 0.
+     * from the GregorianCalendar. Time information is initialized with 0.
      * Returns <code>null</code> if calendar is<code>null</code>.
      */
     public final static DateTime createDateOnly(GregorianCalendar calendar) {
