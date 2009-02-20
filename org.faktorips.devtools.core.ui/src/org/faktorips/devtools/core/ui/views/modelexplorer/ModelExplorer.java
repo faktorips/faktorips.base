@@ -1019,22 +1019,9 @@ public class ModelExplorer extends ViewPart implements IShowInTarget {
             }
 
             if ((selected instanceof IIpsElement) && !(selected instanceof IIpsProject)) {
-                newMenu.add(new NewIpsPacketAction(getSite().getShell(), treeViewer));
-                newMenu.add(new NewFileResourceAction(getSite().getShell(), treeViewer));
-
                 IWorkbenchWindow workbenchWindow = getSite().getWorkbenchWindow();
-                if (config.isAllowedIpsElementType(IProductCmpt.class)) {
-                    newMenu.add(new NewProductComponentAction(workbenchWindow));
-                }
-                if (config.isAllowedIpsElementType(IEnumContent.class)) {
-                    newMenu.add(new NewEnumContentAction(workbenchWindow));
-                }
-                if (config.isAllowedIpsElementType(ITableContents.class)) {
-                    newMenu.add(new NewTableContentAction(workbenchWindow));
-                }
-                if (config.isAllowedIpsElementType(ITestCase.class)) {
-                    newMenu.add(new NewTestCaseAction(workbenchWindow));
-                }
+
+                // Model side elements
                 if (config.isAllowedIpsElementType(IPolicyCmptType.class)) {
                     newMenu.add(new NewPolicyComponentTypeAction(workbenchWindow));
                 }
@@ -1053,6 +1040,28 @@ public class ModelExplorer extends ViewPart implements IShowInTarget {
                 if (config.isAllowedIpsElementType(ITestCaseType.class)) {
                     newMenu.add(new NewTestCaseTypeAction(workbenchWindow));
                 }
+
+                newMenu.add(new Separator());
+
+                // Product side elements
+                if (config.isAllowedIpsElementType(IProductCmpt.class)) {
+                    newMenu.add(new NewProductComponentAction(workbenchWindow));
+                }
+                if (config.isAllowedIpsElementType(IEnumContent.class)) {
+                    newMenu.add(new NewEnumContentAction(workbenchWindow));
+                }
+                if (config.isAllowedIpsElementType(ITableContents.class)) {
+                    newMenu.add(new NewTableContentAction(workbenchWindow));
+                }
+                if (config.isAllowedIpsElementType(ITestCase.class)) {
+                    newMenu.add(new NewTestCaseAction(workbenchWindow));
+                }
+
+                newMenu.add(new Separator());
+
+                // Ips package and default file actions
+                newMenu.add(new NewIpsPacketAction(getSite().getShell(), treeViewer));
+                newMenu.add(new NewFileResourceAction(getSite().getShell(), treeViewer));
 
                 // Add copy actions depending on selected ips object type
                 List<IpsAction> ipsCopyActions = new ArrayList<IpsAction>(3);
