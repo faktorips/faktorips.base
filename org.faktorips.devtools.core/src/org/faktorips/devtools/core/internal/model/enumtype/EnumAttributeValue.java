@@ -26,6 +26,7 @@ import org.faktorips.devtools.core.model.enumtype.IEnumType;
 import org.faktorips.devtools.core.model.enumtype.IEnumValue;
 import org.faktorips.devtools.core.model.enumtype.IEnumValueContainer;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
+import org.faktorips.devtools.core.util.XmlUtil;
 import org.faktorips.util.message.Message;
 import org.faktorips.util.message.MessageList;
 import org.w3c.dom.Document;
@@ -72,9 +73,14 @@ public class EnumAttributeValue extends AtomicIpsObjectPart implements IEnumAttr
      */
     @Override
     protected void propertiesToXml(Element element) {
-        super.propertiesToXml(element);
+        // TODO might be better to set something like hasDescription() in the superclass?
+        element.setAttribute(PROPERTY_ID, "" + getId()); //$NON-NLS-1$
 
-        element.setAttribute(PROPERTY_VALUE, value);
+        if (XmlUtil.getTextNode(element) == null) {
+            XmlUtil.addNewTextChild(element.getOwnerDocument(), element, value);
+        } else {
+            XmlUtil.getTextNode(element).setTextContent(value);
+        }
     }
 
     /**
@@ -82,7 +88,7 @@ public class EnumAttributeValue extends AtomicIpsObjectPart implements IEnumAttr
      */
     @Override
     protected void initFromXml(Element element, Integer id) {
-        value = element.getAttribute(PROPERTY_VALUE);
+        value = XmlUtil.getTextNode(element).getTextContent();
 
         super.initFromXml(element, id);
     }
