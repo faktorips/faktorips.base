@@ -78,7 +78,7 @@ public interface IModelObjectDelta {
     public static final int MOVED = 4;
 
     /**
-     * Delta kind constant indicating that a differnt model object is now at a given position.
+     * Delta kind constant indicating that a different model object is now at a given position.
      * This type of delta is only returned if the computation method is {@link IDeltaComputationOptions#COMPUTE_BY_POSITION}.
      */
     public static final int DIFFERENT_OBJECT_AT_POSITION = 2;
@@ -125,10 +125,10 @@ public interface IModelObjectDelta {
 	public IModelObject getOriginalObject();
 
 	/**
-	 * The model object that is taken as a reference to which the orginal model object
+	 * The model object that is taken as a reference to which the original model object
 	 * is compared to. 
      * <p>
-     * If this is a delta for a a child that was removed from the orginial model object, the method returns <code>null</code>. 
+     * If this is a delta for a a child that was removed from the original model object, the method returns <code>null</code>. 
 	 */
 	public IModelObject getReferenceObject();
 
@@ -147,14 +147,12 @@ public interface IModelObjectDelta {
 
     /**
      * If delta's kind is {@link #CHANGED}, this method returns the kind of changed defined by the constant
-     * listed below. Not that the kind of changes are not mututally excluded, so the returned kinds are
+     * listed below. Note that the kind of changes are not mutually exclusive, so the returned kinds are
      * bit masked. The method returns 0, if the delta's kind is not {@link #CHANGED}.
      * 
      * @see #PROPERTY_CHANGED
      * @see #STRUCTURE_CHANGED
      * @see #CHILD_CHANGED
-     * 
-     * @return
      */
     public int getKindOfChange();
     
