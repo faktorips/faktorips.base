@@ -3,7 +3,7 @@
  * 
  * Alle Rechte vorbehalten.
  * 
- * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen, 
+ * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen,
  * etc.) duerfen nur unter den Bedingungen der Faktor-Zehn-Community Lizenzvereinbarung - Version
  * 0.1 (vor Gruendung Community) genutzt werden, die Bestandteil der Auslieferung ist und auch unter
  * http://www.faktorzehn.org/f10-org:lizenzen:community eingesehen werden kann.
@@ -68,7 +68,8 @@ import org.faktorips.runtime.IDeltaSupport;
 import org.faktorips.runtime.internal.MethodNames;
 
 /**
- * A IpsArtefactBuilderSet implementation that assembles the standard FaktorIPS artefact builders.
+ * An <code>IpsArtefactBuilderSet</code> implementation that assembles the standard Faktor-IPS
+ * artefact builders.
  * 
  * @author Peter Erzberger
  */
@@ -120,16 +121,24 @@ public class StandardBuilderSet extends DefaultBuilderSet {
     private ProductCmptGenInterfaceBuilder productCmptGenInterfaceBuilder;
     private EnumClassesBuilder enumClassesBuilder;
     private String version;
-    private final Map ipsObjectTypeGenerators = new HashMap(1000);
+    private final Map<IType, GenType> ipsObjectTypeGenerators = new HashMap<IType, GenType>(1000);
 
     public StandardBuilderSet() {
         initVersion();
     }
 
+    /**
+     * {@inheritDoc}
+     */
+    @Override
     public void afterBuildProcess(int buildKind) throws CoreException {
         clearGenerators();
     }
 
+    /**
+     * {@inheritDoc}
+     */
+    @Override
     public void beforeBuildProcess(int buildKind) throws CoreException {
         clearGenerators();
     }
@@ -150,6 +159,7 @@ public class StandardBuilderSet extends DefaultBuilderSet {
     /**
      * {@inheritDoc}
      */
+    @Override
     public boolean isSupportTableAccess() {
         return true;
     }
@@ -157,29 +167,33 @@ public class StandardBuilderSet extends DefaultBuilderSet {
     private void clearGenerators() {
         ipsObjectTypeGenerators.clear();
     }
-    
+
     public GenType getGenerator(IType type) throws CoreException {
-        if (type==null) {
+        if (type == null) {
             return null;
         }
+
         if (type instanceof IPolicyCmptType) {
             return getGenerator((IPolicyCmptType)type);
         }
         if (type instanceof IProductCmptType) {
             return getGenerator((IProductCmptType)type);
         }
+
         throw new CoreException(new IpsStatus("Unkown subclass " + type.getClass()));
     }
-    
+
     public GenPolicyCmptType getGenerator(IPolicyCmptType policyCmptType) throws CoreException {
         if (policyCmptType == null) {
             return null;
         }
+
         GenPolicyCmptType generator = (GenPolicyCmptType)ipsObjectTypeGenerators.get(policyCmptType);
         if (generator == null) {
             generator = new GenPolicyCmptType(policyCmptType, this);
             ipsObjectTypeGenerators.put(policyCmptType, generator);
         }
+
         return generator;
     }
 
@@ -187,20 +201,24 @@ public class StandardBuilderSet extends DefaultBuilderSet {
         if (productCmptType == null) {
             return null;
         }
+
         GenProductCmptType generator = (GenProductCmptType)ipsObjectTypeGenerators.get(productCmptType);
         if (generator == null) {
             generator = new GenProductCmptType(productCmptType, this);
             ipsObjectTypeGenerators.put(productCmptType, generator);
         }
+
         return generator;
     }
 
     /**
      * {@inheritDoc}
      */
+    @Override
     public CompilationResult getTableAccessCode(ITableContents tableContents,
             ITableAccessFunction fct,
             CompilationResult[] argResults) throws CoreException {
+
         Datatype returnType = fct.getIpsProject().findDatatype(fct.getType());
         JavaCodeFragment code = new JavaCodeFragment();
         ITableStructure tableStructure = fct.getTableStructure();
@@ -211,6 +229,7 @@ public class StandardBuilderSet extends DefaultBuilderSet {
         // create get instance method by using the qualified name of the table content
         code.append(".getInstance(" + MethodNames.GET_REPOSITORY + "(), \"" + tableContents.getQualifiedName() //$NON-NLS-1$ //$NON-NLS-2$
                 + "\").findRowNullRowReturnedForEmtpyResult(");
+
         // TODO pk: findRow is not correct in general
         for (int i = 0; i < argResults.length; i++) {
             if (i > 0) {
@@ -222,17 +241,20 @@ public class StandardBuilderSet extends DefaultBuilderSet {
         code.append(").get");
         code.append(StringUtils.capitalize(fct.findAccessedColumn().getName()));
         code.append("()");
+
         return result;
     }
 
     /**
      * {@inheritDoc}
      */
+    @Override
     public IdentifierResolver createFlIdentifierResolver(IFormula formula) throws CoreException {
         return new AbstractParameterIdentifierResolver(formula) {
 
             protected String getParameterAttributGetterName(IAttribute attribute, Datatype datatype) {
                 try {
+
                     if (datatype instanceof IPolicyCmptType) {
                         return getGenerator((IPolicyCmptType)datatype).getMethodNameGetPropertyValue(
                                 attribute.getName(), datatype);
@@ -241,9 +263,11 @@ public class StandardBuilderSet extends DefaultBuilderSet {
                         return getGenerator((IProductCmptType)datatype).getMethodNameGetPropertyValue(
                                 attribute.getName(), datatype);
                     }
+
                 } catch (CoreException e) {
                     return null;
                 }
+
                 return null;
             }
         };
@@ -252,11 +276,16 @@ public class StandardBuilderSet extends DefaultBuilderSet {
     /**
      * {@inheritDoc}
      */
+    @Override
     public IdentifierResolver createFlIdentifierResolverForFormulaTest(IFormula formula) throws CoreException {
         return new AbstractParameterIdentifierResolver(formula) {
 
+            /**
+             * {@inheritDoc}
+             */
             protected String getParameterAttributGetterName(IAttribute attribute, Datatype datatype) {
                 try {
+
                     if (datatype instanceof IPolicyCmptType) {
                         return getGenerator((IPolicyCmptType)datatype).getMethodNameGetPropertyValue(
                                 attribute.getName(), datatype);
@@ -265,27 +294,29 @@ public class StandardBuilderSet extends DefaultBuilderSet {
                         return getGenerator((IProductCmptType)datatype).getMethodNameGetPropertyValue(
                                 attribute.getName(), datatype);
                     }
+
                 } catch (CoreException e) {
                     return null;
                 }
+
                 return null;
             }
 
             /**
              * {@inheritDoc}
              */
+            @Override
             protected CompilationResult compile(IParameter param, String attributeName, Locale locale) {
                 CompilationResult compile = super.compile(param, attributeName, locale);
                 try {
                     Datatype datatype = param.findDatatype(getIpsProject());
                     if (datatype instanceof IType) {
-                        // instead of using the types getter method to get the value for an
-                        // identifier,
-                        // the given datatype plus the attribute will be used as new parameter
-                        // identifier,
-                        // this parameter identifier will also be used as parameter inside the
-                        // formula method
-                        // which uses this code fragment
+                        /*
+                         * instead of using the types getter method to get the value for an
+                         * identifier, the given datatype plus the attribute will be used as new
+                         * parameter identifier, this parameter identifier will also be used as
+                         * parameter inside the formula method which uses this code fragment
+                         */
                         String code = param.getName() + "_" + attributeName;
                         return new CompilationResultImpl(code, compile.getDatatype());
                     }
@@ -294,33 +325,43 @@ public class StandardBuilderSet extends DefaultBuilderSet {
                 }
                 return compile;
             }
+
         };
     }
 
     /**
      * {@inheritDoc}
      */
+    @Override
     public String getPackage(String kind, IIpsSrcFile ipsSrcFile) throws CoreException {
         String returnValue = super.getPackage(kind, ipsSrcFile);
         if (returnValue != null) {
             return returnValue;
         }
-        if (IpsObjectType.TABLE_CONTENTS.equals(ipsSrcFile.getIpsObjectType())
+
+        IpsObjectType objectType = ipsSrcFile.getIpsObjectType();
+        if (IpsObjectType.TABLE_CONTENTS.equals(objectType)
                 && EnumClassesBuilder.PACKAGE_STRUCTURE_KIND_ID.equals(kind)) {
             return getPackageName(ipsSrcFile);
         }
-        if (IpsObjectType.TABLE_STRUCTURE.equals(ipsSrcFile.getIpsObjectType())
+        if (IpsObjectType.TABLE_STRUCTURE.equals(objectType)
                 && EnumTypeInterfaceBuilder.PACKAGE_STRUCTURE_KIND_ID.equals(kind)) {
             return getPackageName(ipsSrcFile);
         }
-        if (BusinessFunctionIpsObjectType.getInstance().equals(ipsSrcFile.getIpsObjectType())) {
+        if (BusinessFunctionIpsObjectType.getInstance().equals(objectType)) {
+            return getPackageName(ipsSrcFile);
+        }
+        if (IpsObjectType.ENUM_TYPE.equals(objectType)) {
             return getPackageName(ipsSrcFile);
         }
 
-        throw new IllegalArgumentException("Unexpected kind id " + kind + " for the IpsObjectType: "
-                + ipsSrcFile.getIpsObjectType());
+        throw new IllegalArgumentException("Unexpected kind id " + kind + " for the IpsObjectType: " + objectType);
     }
 
+    /**
+     * {@inheritDoc}
+     */
+    @Override
     public boolean isSupportFlIdentifierResolver() {
         return true;
     }
@@ -375,13 +416,18 @@ public class StandardBuilderSet extends DefaultBuilderSet {
                 EnumTypeInterfaceBuilder.PACKAGE_STRUCTURE_KIND_ID);
         enumClassesBuilder = new EnumClassesBuilder(this, EnumClassesBuilder.PACKAGE_STRUCTURE_KIND_ID,
                 enumTypeInterfaceBuilder);
-        
-        BusinessFunctionBuilder businessFunctionBuilder = new BusinessFunctionBuilder(this, BusinessFunctionBuilder.PACKAGE_STRUCTURE_KIND_ID);
+
+        BusinessFunctionBuilder businessFunctionBuilder = new BusinessFunctionBuilder(this,
+                BusinessFunctionBuilder.PACKAGE_STRUCTURE_KIND_ID);
         //
         // wire up the builders
         //
 
         // policy component type builders
+
+        // New enum type builder
+        org.faktorips.devtools.stdbuilder.enumtype.EnumTypeInterfaceBuilder newEnumTypeInterfaceBuilder = new org.faktorips.devtools.stdbuilder.enumtype.EnumTypeInterfaceBuilder(
+                this, org.faktorips.devtools.stdbuilder.enumtype.EnumTypeInterfaceBuilder.PACKAGE_STRUCTURE_KIND_ID);
 
         // product component builders.
         productCmptGenerationImplBuilder.setProductCmptImplBuilder(productCmptImplClassBuilder);
@@ -415,17 +461,23 @@ public class StandardBuilderSet extends DefaultBuilderSet {
                     policyCmptImplClassBuilder, policyCmptInterfaceBuilder, productCmptGenerationImplBuilder,
                     tableContentCopyBuilder, productCmptContentCopyBuilder, testCaseTypeClassBuilder, testCaseBuilder,
                     formulaTestBuilder, enumClassesBuilder, enumTypeInterfaceBuilder, tocFileBuilder,
-                    policyModelTypeBuilder, productModelTypeBuilder, businessFunctionBuilder };
+                    policyModelTypeBuilder, productModelTypeBuilder, businessFunctionBuilder,
+                    newEnumTypeInterfaceBuilder };
         } else {
 
             return new IIpsArtefactBuilder[] { tableImplBuilder, tableRowBuilder, productCmptGenInterfaceBuilder,
                     productCmptGenImplClassBuilder, productCmptInterfaceBuilder, productCmptImplClassBuilder,
                     policyCmptImplClassBuilder, policyCmptInterfaceBuilder, productCmptGenerationImplBuilder,
                     tableContentCopyBuilder, productCmptContentCopyBuilder, testCaseTypeClassBuilder, testCaseBuilder,
-                    formulaTestBuilder, enumClassesBuilder, enumTypeInterfaceBuilder, tocFileBuilder, businessFunctionBuilder };
+                    formulaTestBuilder, enumClassesBuilder, enumTypeInterfaceBuilder, tocFileBuilder,
+                    businessFunctionBuilder, newEnumTypeInterfaceBuilder };
         }
     }
 
+    /**
+     * {@inheritDoc}
+     */
+    @Override
     public DatatypeHelper getDatatypeHelperForTableBasedEnum(TableContentsEnumDatatypeAdapter datatype) {
         return new TableContentsEnumDatatypeHelper(datatype, enumClassesBuilder);
     }
@@ -434,36 +486,43 @@ public class StandardBuilderSet extends DefaultBuilderSet {
      * Returns the standard builder plugin version in the format [major.minor.mico]. The version
      * qualifier is not included in the version string.
      */
+    @Override
     public String getVersion() {
         return version;
     }
 
     /**
-     * Returns if Java 5 enums shall be used in the code generated by this builder.
+     * Returns whether Java5 enums shall be used in the code generated by this builder.
      */
     public boolean isUseEnums() {
         return getConfig().getPropertyValueAsBoolean(StandardBuilderSet.CONFIG_PROPERTY_USE_ENUMS).booleanValue();
     }
 
     /**
-     * Returns if Java 5 typesafe collections shall be used in the code generated by this builder.
+     * Returns whether Java5 typesafe collections shall be used in the code generated by this
+     * builder.
      */
     public boolean isUseTypesafeCollections() {
         return getConfig().getPropertyValueAsBoolean(StandardBuilderSet.CONFIG_PROPERTY_USE_TYPESAFE_COLLECTIONS)
                 .booleanValue();
     }
-    
+
     /**
+     * 
+     * 
      * @param datatype
+     * 
      * @return
      */
     public String getJavaClassName(Datatype datatype) throws CoreException {
         if (datatype instanceof IPolicyCmptType) {
             return getGenerator((IPolicyCmptType)datatype).getQualifiedName(true);
         }
+
         if (datatype instanceof IProductCmptType) {
             return getGenerator((IProductCmptType)datatype).getQualifiedName(true);
         }
+
         return datatype.getJavaClassName();
     }
 
