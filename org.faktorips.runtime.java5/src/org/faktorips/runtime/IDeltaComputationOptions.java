@@ -45,7 +45,7 @@ public interface IDeltaComputationOptions {
      * A contract version A has three coverages c0, c1, and c2. A second version B of the same contract has a new coverage cNew
      * inserted between coverage c0 and c1. The coverages c0, c1,and c2 are unchanged except for their position. 
      * <p>
-     * If this method returns {@link ComputationMethod#BY_POSITION}, the folling deltas are computed.
+     * If this method returns {@link ComputationMethod#BY_POSITION}, the following deltas are computed.
      *   position 0: version A:c0, version B:c0 => empty delta
      *   position 1: version A:c1, version B:cNew => changed 
      *   position 2: version A:c2, version B:c1 => changed 
@@ -61,7 +61,7 @@ public interface IDeltaComputationOptions {
      * 2. Example for a 1-many association:<br> 
      * Same scenario as above, but now c1 is removed and no coverage is added. 
      * <p>
-     * If this method returns {@link ComputationMethod#BY_POSITION}, the folling deltas are computed.
+     * If this method returns {@link ComputationMethod#BY_POSITION}, the following deltas are computed.
      *   position 0: version A:c0, version B:c0 => empty delta
      *   position 1: version A:c1, version B:v2 => changed
      *   position 2: version A:c2, version B:none => removed
@@ -76,10 +76,10 @@ public interface IDeltaComputationOptions {
      * A contract version A has the insured person p0. 
      * A second contract version B has the insured person p1.
      * <p>
-     * If this method returns {@link ComputationMethod#BY_POSITION}, the folling delta is computed.
+     * If this method returns {@link ComputationMethod#BY_POSITION}, the following delta is computed.
      *   position 0: changed  
      * <p>  
-     * If this method returns {@link ComputationMethod#BY_OBJECT}, the folling deltas are computed.
+     * If this method returns {@link ComputationMethod#BY_OBJECT}, the following deltas are computed.
      *   p1: removed
      *   p2: added
      */
