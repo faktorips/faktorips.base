@@ -42,7 +42,7 @@ public class DescriptionSection extends IpsSection {
             Described described, 
             Composite parent, 
             UIToolkit toolkit) {
-        super(parent, Section.DESCRIPTION | Section.TITLE_BAR, GridData.FILL_BOTH, toolkit);
+        super(parent, Section.TITLE_BAR, GridData.FILL_BOTH, toolkit);
         this.describedObj = described;
         initControls();
         setText(Messages.DescriptionSection_description);
