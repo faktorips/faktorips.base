@@ -16,6 +16,10 @@ package org.faktorips.values;
 import java.io.Serializable;
 import java.math.BigDecimal;
 
+import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
+
+import org.faktorips.values.xml.DecimalXmlAdapter;
+
 /**
  * Value class that represents a decimal number. This class is similar to Java's BigDecimal with two
  * differences:
@@ -28,6 +32,7 @@ import java.math.BigDecimal;
  * @see org.faktorips.values.DecimalNull
  * @see Decimal#NULL
  */
+@XmlJavaTypeAdapter(DecimalXmlAdapter.class)
 public class Decimal extends Number implements Comparable<Decimal>, NullObjectSupport, Serializable {
 
     private static final long serialVersionUID = -642726667937769164L;

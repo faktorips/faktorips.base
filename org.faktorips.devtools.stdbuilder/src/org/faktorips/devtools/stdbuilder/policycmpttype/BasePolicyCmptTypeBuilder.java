@@ -67,7 +67,7 @@ public abstract class BasePolicyCmptTypeBuilder extends AbstractPcTypeBuilder {
     }
 
     /**
-     * This validation is necessary because otherwise a java class file is created with a wrong java
+     * This validation is necessary because otherwise a Java class file is created with a wrong Java
      * class name this causes jmerge to throw an exception
      */
     protected boolean hasValidProductCmptTypeName() throws CoreException {
@@ -136,6 +136,10 @@ public abstract class BasePolicyCmptTypeBuilder extends AbstractPcTypeBuilder {
     
     protected boolean isUseTypesafeCollections() {
         return ((StandardBuilderSet)getBuilderSet()).isUseTypesafeCollections();
+    }
+
+    protected boolean isGenerateJaxbSuppert() {
+        return ((StandardBuilderSet)getBuilderSet()).isGenerateJaxbSupport();
     }
 
     /**

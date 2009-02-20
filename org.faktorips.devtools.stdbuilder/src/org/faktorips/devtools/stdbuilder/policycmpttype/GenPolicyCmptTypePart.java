@@ -36,7 +36,6 @@ public abstract class GenPolicyCmptTypePart extends DefaultJavaGeneratorForIpsPa
     public GenPolicyCmptType getGenPolicyCmptType() {
         return genPolicyCmptType;
     }
-
     
     /**
      * {@inheritDoc}
@@ -63,5 +62,9 @@ public abstract class GenPolicyCmptTypePart extends DefaultJavaGeneratorForIpsPa
 
     protected boolean isUseTypesafeCollections() {
         return getGenPolicyCmptType().getBuilderSet().isUseTypesafeCollections();
+    }
+    
+    protected boolean isGenerateJaxbSupport() {
+    	return getGenPolicyCmptType().getBuilderSet().isGenerateJaxbSupport();
     }
 }

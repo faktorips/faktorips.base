@@ -3,7 +3,7 @@
  * 
  * Alle Rechte vorbehalten.
  * 
- * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen, 
+ * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen,
  * etc.) duerfen nur unter den Bedingungen der Faktor-Zehn-Community Lizenzvereinbarung - Version
  * 0.1 (vor Gruendung Community) genutzt werden, die Bestandteil der Auslieferung ist und auch unter
  * http://www.faktorzehn.org/f10-org:lizenzen:community eingesehen werden kann.
@@ -15,6 +15,12 @@ package org.faktorips.runtime.internal;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.UUID;
+
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlAttribute;
+import javax.xml.bind.annotation.XmlID;
 
 import org.faktorips.runtime.IModelObject;
 import org.faktorips.runtime.IObjectReferenceStore;
@@ -31,11 +37,14 @@ import org.w3c.dom.Text;
  * 
  * @author Jan Ortmann
  */
+@XmlAccessorType(XmlAccessType.NONE)
 public abstract class AbstractModelObject implements IModelObject {
 
-    public AbstractModelObject() {
-        super();
-    }
+    /** Uniquely identifies this model object within the object graph it belongs to. */
+    @SuppressWarnings("unused")
+    @XmlAttribute(name = "policy.component.id")
+    @XmlID
+    private String id = UUID.randomUUID().toString();
 
     /**
      * Removes the given child object from this object. If the given object is not a child of this
@@ -59,8 +68,8 @@ public abstract class AbstractModelObject implements IModelObject {
      * Validates the policy component and adds any messages generated to the given list. Calls
      * validateSelf() and validateDependences().
      * 
-     * @param context provides addtional external information that might be necessary to execute the
-     *            validation. E.g. the business context, the locale to provide locale specific
+     * @param context provides additional external information that might be necessary to execute
+     *            the validation. E.g. the business context, the locale to provide locale specific
      *            message texts, user information
      * @throws NullPointerException if list is <code>null</code> and a message is generated.
      */
@@ -75,10 +84,10 @@ public abstract class AbstractModelObject implements IModelObject {
      * Validates the policy component's dependant components and adds any message generated to the
      * given list.
      * <p>
-     * The default implementation does nothing. Should be overriden in subclasses.
+     * The default implementation does nothing. Should be overridden in subclasses.
      * 
-     * @param context provides addtional external information that might be necessary to execute the
-     *            validation. E.g. the business context, the locale to provide locale specific
+     * @param context provides additional external information that might be necessary to execute
+     *            the validation. E.g. the business context, the locale to provide locale specific
      *            message texts, user information
      * @throws NullPointerException if list is <code>null</code> and a message is generated.
      */
@@ -86,13 +95,13 @@ public abstract class AbstractModelObject implements IModelObject {
     }
 
     /**
-     * Validates this policy component's state wihtout validating the dependant components. Adds any
+     * Validates this policy component's state without validating the dependant components. Adds any
      * message generated to the given list.
      * <p>
-     * The default implementation does nothing. Should be overriden in subclasses.
+     * The default implementation does nothing. Should be overridden in subclasses.
      * 
-     * @param context provides addtional external information that might be necessary to execute the
-     *            validation. E.g. the business context, the locale to provide locale specific
+     * @param context provides additional external information that might be necessary to execute
+     *            the validation. E.g. the business context, the locale to provide locale specific
      *            message texts, user information
      * @throws NullPointerException if list is <code>null</code> and a message is generated.
      */
@@ -108,7 +117,7 @@ public abstract class AbstractModelObject implements IModelObject {
      *            should be initialized with the product defaults.
      * @param productRepository The repository that contains the product components.
      * @param store The store where unresolved references are stored in (so that they can be
-     *            resolved after all objects have been intialized from xml).
+     *            resolved after all objects have been initialized from xml).
      */
     public void initFromXml(Element objectEl,
             boolean initWithProductDefaultsBeforeReadingXmlData,
@@ -125,8 +134,8 @@ public abstract class AbstractModelObject implements IModelObject {
      *            should be initialized with the product defaults.
      * @param productRepository The repository that contains the product components.
      * @param store The store where unresolved references are stored in (so that they can be
-     *            resolved after all objects have been intialized from xml).
-     * @param xmlCallback An XML callback class which could handle enhanced xml initialisation of
+     *            resolved after all objects have been initialized from xml).
+     * @param xmlCallback An XML callback class which could handle enhanced xml initialization of
      *            the current element.
      */
     public void initFromXml(Element objectEl,
@@ -145,8 +154,8 @@ public abstract class AbstractModelObject implements IModelObject {
      *            should be initialized with the product defaults.
      * @param productRepository The repository that contains the product components.
      * @param store The store where unresolved references are stored in (so that they can be
-     *            resolved after all objects have been intialized from xml).
-     * @param xmlCallback An XML callback class which could handle enhanced xml initialisation of
+     *            resolved after all objects have been initialized from xml).
+     * @param xmlCallback An XML callback class which could handle enhanced xml initialization of
      *            the current element.
      * @param currPath The path inside the XML tree structure. Starting from the root element.
      */
@@ -174,7 +183,7 @@ public abstract class AbstractModelObject implements IModelObject {
         }
         initPropertiesFromXml(propMap);
 
-        // if the a callback class is given then perform further initialisation using the property
+        // if the a callback class is given then perform further initialization using the property
         // map
         String pathFromAggregateRoot = currPath == null ? null : currPath + "/" + objectEl.getNodeName();
         if (xmlCallback != null) {

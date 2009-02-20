@@ -13,11 +13,15 @@
 
 package org.faktorips.runtime.internal;
 
+import javax.xml.bind.annotation.XmlAttribute;
+import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
+
 import org.faktorips.runtime.IConfigurableModelObject;
 import org.faktorips.runtime.IObjectReferenceStore;
 import org.faktorips.runtime.IProductComponent;
 import org.faktorips.runtime.IProductComponentGeneration;
 import org.faktorips.runtime.IRuntimeRepository;
+import org.faktorips.runtime.internal.xml.ProductComponentXmlAdapter;
 import org.w3c.dom.Element;
 
 
@@ -29,7 +33,9 @@ import org.w3c.dom.Element;
  */ 
 public abstract class AbstractConfigurableModelObject extends AbstractModelObject implements IConfigurableModelObject {
 
-    // The product component this policy component is based on.
+    /** The product component this policy component is based on. */
+	@XmlJavaTypeAdapter(value = ProductComponentXmlAdapter.class)
+	@XmlAttribute(name="product.component.id")
     private IProductComponent productCmpt;
     
     private IProductComponentGeneration productCmptGeneration;

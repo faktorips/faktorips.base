@@ -23,6 +23,7 @@ import java.util.Map;
 import org.apache.commons.lang.StringUtils;
 import org.eclipse.core.runtime.CoreException;
 import org.faktorips.codegen.JavaCodeFragmentBuilder;
+import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPart;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAssociation;
@@ -54,8 +55,8 @@ import org.faktorips.util.StringUtil;
  * A generator for <code>IPolicyCmptType</code>s.
  * 
  * <p>It provides access to generators for attributes,
- * methods and associations of the policy component type. Typically when the generator is created
- * all the generators of its parts are also created except the ones in the super type hierarchy.
+ * methods and associations of the policy component type. Typically, when the generator is created,
+ * all the generators of its parts are also created, except the ones in the super type hierarchy.
  * These are created on demand since it is expected that only a few of them will be overridden. It
  * is necessary to provide an own generator instance for those overridden parts in this generator
  * and not to delegate to the generator of the super class since otherwise it would not be possible
@@ -66,18 +67,13 @@ import org.faktorips.util.StringUtil;
  */
 public class GenPolicyCmptType extends GenType {
 
-    private final Map generatorsByPart = new HashMap();
-    private final List genAttributes = new ArrayList();
-    private final List genAssociations = new ArrayList();
-    private final List genValidationRules = new ArrayList();
-    private final List genMethods = new ArrayList();
+    private final Map<IIpsObjectPart, GenPolicyCmptTypePart> generatorsByPart = new HashMap<IIpsObjectPart, GenPolicyCmptTypePart>();
+    private final List<GenAttribute> genAttributes = new ArrayList<GenAttribute>();
+    private final List<GenAssociation> genAssociations = new ArrayList<GenAssociation>();
+    private final List<GenValidationRule> genValidationRules = new ArrayList<GenValidationRule>();
+    private final List<GenMethod> genMethods = new ArrayList<GenMethod>();
     private final IChangeListenerSupportBuilder changeListenerSupportBuilder;
 
-    /**
-     * @param policyCmptType
-     * @param builder
-     * @throws CoreException
-     */
     public GenPolicyCmptType(IPolicyCmptType policyCmptType, StandardBuilderSet builderSet) throws CoreException {
         super(policyCmptType, builderSet, new LocalizedStringsSet(GenPolicyCmptType.class));
         ArgumentCheck.notNull(policyCmptType, this);
@@ -139,8 +135,8 @@ public class GenPolicyCmptType extends GenType {
         }
     }
 
-    public Iterator getGenAttributes() {
-        return genAttributes.iterator();
+    public List<GenAttribute> getGenAttributes() {
+        return genAttributes;
     }
 
     private GenAttribute createGenerator(IPolicyCmptTypeAttribute a) throws CoreException {
@@ -153,9 +149,6 @@ public class GenPolicyCmptType extends GenType {
         return new GenConstantAttribute(this, a);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     private GenAssociation createGenerator(IPolicyCmptTypeAssociation association) throws CoreException {
         if (association.is1ToMany()) {
             return new GenAssociationToMany(this, association);
@@ -171,7 +164,6 @@ public class GenPolicyCmptType extends GenType {
             generatorsByPart.put(method, generator);
         }
         return generator;
-
     }
 
     public GenAttribute getGenerator(IPolicyCmptTypeAttribute a) throws CoreException {

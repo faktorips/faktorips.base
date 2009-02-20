@@ -29,10 +29,10 @@ public abstract class AbstractIpsTestRunner implements IpsTestListener {
     // Contains the repository packages names
     private String repositoryPackages;
     
-    // Contains addtional repository packages to obtain objects during runtime
+    // Contains additional repository packages to obtain objects during runtime
     private String additionalRepositoryPackages;
     
-    //  Contains the cretaed repository packages
+    //  Contains the created repository packages
     private List<IRuntimeRepository> repositories;
     
     protected ClassLoader classLoader = getClass().getClassLoader();
