@@ -250,8 +250,7 @@ public class EnumTypeBuilder extends DefaultJavaSourceFileBuilder {
 
                 String description = currentEnumAttribute.getDescription();
                 String name = currentEnumAttribute.getName();
-                String[] replacements = new String[] { name, description };
-                appendLocalizedJavaDoc("GETTER", replacements, currentEnumAttribute, methodBuilder);
+                appendLocalizedJavaDoc("GETTER", name, description, currentEnumAttribute, methodBuilder);
                 methodBuilder.methodBegin(Modifier.PUBLIC, currentEnumAttribute.getDatatype(),
                         getJavaNamingConvention().getGetterMethodName(attributeName,
                                 getIpsProject().findDatatype(currentEnumAttribute.getDatatype())), null, null);
