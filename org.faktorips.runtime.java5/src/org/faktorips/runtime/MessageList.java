@@ -96,10 +96,10 @@ public class MessageList implements Serializable, Iterable<Message> {
     }
 
     /**
-     * Copies the messages from the given list to this list and sets the message's invallid object
+     * Copies the messages from the given list to this list and sets the message's invalid object
      * properties.
      * 
-     * @param msgList the list to coppy the messages from.
+     * @param msgList the list to copy the messages from.
      * @param invalidObjectProperty the object and it's property that the messages refer to.
      * @param override <code>true</code> if the invalidObjectProperty should be set in all
      *            messages. <code>false</code> if the invalidObjectProperty is set only for
@@ -156,7 +156,7 @@ public class MessageList implements Serializable, Iterable<Message> {
     }
 
     /**
-     * Returns the first message in the list that has the indicacted message code. Returns null, if
+     * Returns the first message in the list that has the specified message code. Returns null, if
      * the list does not contain such a message.
      */
     public Message getMessageByCode(String code) {
@@ -169,7 +169,7 @@ public class MessageList implements Serializable, Iterable<Message> {
     }
 
     /**
-     * Returns a new message list containing all the message in this list that have the indicacted
+     * Returns a new message list containing all the message in this list that have the specified
      * message code. Returns an empty list if either code is <code>null</code> or this list does
      * contain any message with the given code.
      */
@@ -230,7 +230,7 @@ public class MessageList implements Serializable, Iterable<Message> {
     }
 
     /**
-     * Returns a new list witht the messages in this list that belong to the given object (any
+     * Returns a new list with the messages in this list that belong to the given object (any
      * property). Returns an empty list if no such message is found.
      */
     public MessageList getMessagesFor(Object object) {
@@ -267,7 +267,7 @@ public class MessageList implements Serializable, Iterable<Message> {
     }
 
     /**
-     * Returns a new list witht the messages in this list that belong to the given object and
+     * Returns a new list with the messages in this list that belong to the given object and
      * property. Returns an empty list if no such message is found.
      */
     public MessageList getMessagesFor(Object object, String property) {
