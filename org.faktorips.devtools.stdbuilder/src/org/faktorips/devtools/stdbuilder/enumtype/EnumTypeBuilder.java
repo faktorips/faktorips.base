@@ -160,6 +160,7 @@ public class EnumTypeBuilder extends DefaultJavaSourceFileBuilder {
                         constantsFragment.append(')');
                         if (i < enumValues.size() - 1) {
                             constantsFragment.append(", ");
+                            constantsFragment.appendln();
                         } else {
                             constantsFragment.append(';');
                         }
