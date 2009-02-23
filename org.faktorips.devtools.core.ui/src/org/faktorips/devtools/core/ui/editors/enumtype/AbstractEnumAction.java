@@ -27,7 +27,7 @@ import org.faktorips.devtools.core.ui.actions.IpsAction;
  */
 public abstract class AbstractEnumAction extends IpsAction {
 
-    /** The table viewer linking the ui table widget with the model data */
+    /** The table viewer linking the ui table widget with the model data. */
     protected TableViewer tableViewer;
 
     /**

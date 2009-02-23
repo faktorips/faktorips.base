@@ -35,7 +35,7 @@ import org.w3c.dom.Element;
  */
 public class EnumContent extends EnumValueContainer implements IEnumContent {
 
-    // The enum type this enum values is build upon
+    /** The enum type this enum values is build upon. */
     private String enumType;
 
     /**

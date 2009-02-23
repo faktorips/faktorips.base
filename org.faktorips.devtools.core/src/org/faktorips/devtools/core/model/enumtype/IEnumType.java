@@ -280,4 +280,12 @@ public interface IEnumType extends IEnumValueContainer, Datatype {
      */
     public void deleteEnumAttributeWithValues(IEnumAttribute enumAttribute) throws CoreException;
 
+    /**
+     * Returns whether this enum type has a super enum type.
+     * 
+     * @return A flag indicating whether this enum type has a super enum type (<code>true</code>) or
+     *         not (<code>false</code>).
+     */
+    public boolean hasSuperEnumType();
+
 }

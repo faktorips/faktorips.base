@@ -40,10 +40,10 @@ import org.faktorips.util.message.MessageList;
  */
 public class EnumContentPage extends IpsObjectPage {
 
-    // The image for the wizard page
+    /** The image for the wizard page. */
     private final String PAGE_IMAGE = "wizards/NewEnumContentWizard.png"; //$NON-NLS-1$
 
-    // The text field to choose the enum type on which the new enum content shall be based upon
+    /** The text field to choose the enum type on which the new enum content shall be based upon. */
     private TextButtonField enumTypeField;
 
     /**

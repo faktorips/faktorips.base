@@ -31,7 +31,7 @@ import org.faktorips.devtools.core.ui.IpsUIPlugin;
  */
 public class MoveEnumValueAction extends AbstractEnumAction {
 
-    // Move up or down?
+    /** Flag indicating whether to move up or down. */
     private boolean up;
 
     /**

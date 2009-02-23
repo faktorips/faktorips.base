@@ -45,17 +45,19 @@ import org.w3c.dom.Element;
  */
 public class EnumType extends EnumValueContainer implements IEnumType {
 
-    // Reference to the super enum type if any
+    /** Reference to the super enum type if any. */
     private String superEnumType;
 
-    // Collection containing all enum attributes for this enum type
+    /** Collection containing all enum attributes for this enum type. */
     private IpsObjectPartCollection enumAttributes;
 
-    // Flag indicating whether the values for this enum type are defined in the model
+    /** Flag indicating whether the values for this enum type are defined in the model. */
     private boolean valuesArePartOfModel;
 
-    // Flag indicating whether this enum type is abstract in means of the object oriented abstract
-    // concept
+    /**
+     * Flag indicating whether this enum type is abstract in means of the object oriented abstract
+     * concept.
+     */
     private boolean isAbstract;
 
     /**
@@ -230,9 +232,9 @@ public class EnumType extends EnumValueContainer implements IEnumType {
         return moveEnumAttribute(enumAttribute, true);
     }
 
-    /*
+    /**
      * Moves the given enum attribute up or down in the collection order by 1 and returns the new
-     * index
+     * index.
      */
     @SuppressWarnings("unchecked")
     private int moveEnumAttribute(IEnumAttribute enumAttribute, boolean up) throws CoreException {
@@ -276,9 +278,9 @@ public class EnumType extends EnumValueContainer implements IEnumType {
         throw new NoSuchElementException();
     }
 
-    /*
+    /**
      * Moves the enum attribute value corresponding to the given enum attribute identified by its
-     * index in each given enum value up or down in the collection order by 1
+     * index in each given enum value up or down in the collection order by 1.
      */
     private void moveEnumAttributeValues(int enumAttributeIndex, List<IEnumValue> enumValues, boolean up)
             throws CoreException {
@@ -421,9 +423,7 @@ public class EnumType extends EnumValueContainer implements IEnumType {
         enumAttribute.delete();
     }
 
-    /*
-     * Deletes all enum attribute values that refer to the given enum attribute
-     */
+    /** Deletes all enum attribute values that refer to the given enum attribute. */
     private void deleteEnumAttributeValues(IEnumAttribute enumAttribute, List<IEnumValue> enumValues)
             throws CoreException {
 
@@ -435,6 +435,13 @@ public class EnumType extends EnumValueContainer implements IEnumType {
                 }
             }
         }
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public boolean hasSuperEnumType() {
+        return (!(superEnumType.equals("")));
     }
 
 }

@@ -101,7 +101,7 @@ public abstract class EnumContentValidations {
         return validationMessageList;
     }
 
-    // Prohibit initialization
+    /** Prohibits initialization. */
     private EnumContentValidations() {
 
     }

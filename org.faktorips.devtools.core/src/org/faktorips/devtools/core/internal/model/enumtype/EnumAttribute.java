@@ -40,13 +40,13 @@ import org.w3c.dom.Element;
  */
 public class EnumAttribute extends AtomicIpsObjectPart implements IEnumAttribute {
 
-    // The icon representing an enum attribute
+    /** The icon representing an enum attribute. */
     private final String ICON = "EnumAttribute.gif";
 
-    // The datatype of this attribute
+    /** The datatype of this attribute. */
     private String datatype;
 
-    // Flag indicating whether this attribute is an identifier
+    /** Flag indicating whether this attribute is an identifier. */
     private boolean isIdentifier;
 
     /**

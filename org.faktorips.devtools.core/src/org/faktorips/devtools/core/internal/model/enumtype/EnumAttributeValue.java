@@ -31,6 +31,7 @@ import org.faktorips.util.message.Message;
 import org.faktorips.util.message.MessageList;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
+import org.w3c.dom.Text;
 
 /**
  * Implementation of IEnumAttributeValue, see the corresponding interface for more details.
@@ -43,7 +44,7 @@ import org.w3c.dom.Element;
  */
 public class EnumAttributeValue extends AtomicIpsObjectPart implements IEnumAttributeValue {
 
-    // The actual value
+    /** The actual value that is being stored by this object. */
     private String value;
 
     /**
@@ -88,7 +89,12 @@ public class EnumAttributeValue extends AtomicIpsObjectPart implements IEnumAttr
      */
     @Override
     protected void initFromXml(Element element, Integer id) {
-        value = XmlUtil.getTextNode(element).getTextContent();
+        Text textNode = XmlUtil.getTextNode(element);
+        if (textNode != null) {
+            value = textNode.getTextContent();
+        } else {
+            value = "";
+        }
 
         super.initFromXml(element, id);
     }

@@ -43,7 +43,7 @@ import org.w3c.dom.Element;
  */
 public class EnumValue extends BaseIpsObjectPart implements IEnumValue {
 
-    // Collection containing all enum attribute values that belong to this EnumValue
+    /** Collection containing all enum attribute values that belong to this enum value object. */
     private IpsObjectPartCollection enumAttributeValues;
 
     /**
@@ -114,37 +114,43 @@ public class EnumValue extends BaseIpsObjectPart implements IEnumValue {
         return (IEnumAttributeValue)newPart(IEnumAttributeValue.class);
     }
 
-    /*
+    /**
+     * <p>
      * Moves the enum attribute value that has been assigned to the given enum attribute identified
      * by the its index one position down in the collection order.
-     * 
+     * </p>
+     * <p>
      * If no corresponding enum attribute value can be found or the enum attribute value is already
      * the last one then nothing will be done.
+     * </p>
      * 
      * @param enumAttributeIndex The index of the enum attribute, that the enum attribute value that
-     * is to be moved downwards, refers to.
+     *            is to be moved downwards, refers to.
      */
     void moveEnumAttributeValueDown(int enumAttributeIndex) {
         moveEnumAttributeValue(enumAttributeIndex, false);
     }
 
-    /*
+    /**
+     * <p>
      * Moves the enum attribute value that has been assigned to the given enum attribute identified
      * by the its index one position up in the collection order.
-     * 
+     * </p>
+     * <p>
      * If no corresponding enum attribute value can be found or the enum attribute value is already
      * the first one then nothing will be done.
+     * </p>
      * 
      * @param enumAttributeIndex The index of the enum attribute, that the enum attribute value that
-     * is to be moved upwards, refers to.
+     *            is to be moved upwards, refers to.
      */
     void moveEnumAttributeValueUp(int enumAttributeIndex) {
         moveEnumAttributeValue(enumAttributeIndex, true);
     }
 
-    /*
+    /**
      * Moves the enum attribute value refering to the given enum attribute up or down in the
-     * collection order by 1
+     * collection order by 1.
      */
     private void moveEnumAttributeValue(int enumAttributeIndex, boolean up) {
         List<IEnumAttributeValue> enumAttributeValuesList = getEnumAttributeValues();
@@ -183,8 +189,8 @@ public class EnumValue extends BaseIpsObjectPart implements IEnumValue {
         }
     }
 
-    /*
-     * Returns the number of enum attribute values in this enum value
+    /**
+     * Returns the number of enum attribute values in this enum value.
      */
     private int getNumberEnumAttributeValues() {
         return enumAttributeValues.size();

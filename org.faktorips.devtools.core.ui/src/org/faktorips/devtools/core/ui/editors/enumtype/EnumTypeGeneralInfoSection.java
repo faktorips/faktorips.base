@@ -39,10 +39,10 @@ import org.faktorips.util.ArgumentCheck;
  */
 public class EnumTypeGeneralInfoSection extends IpsSection {
 
-    // The enum type the editor is currently editing
+    /** The enum type the editor is currently editing. */
     private IEnumType enumType;
 
-    // The extension property control factory that may extend the controls
+    /** The extension property control factory that may extend the controls. */
     private ExtensionPropertyControlFactory extFactory;
 
     /**

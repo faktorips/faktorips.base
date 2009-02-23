@@ -31,7 +31,7 @@ import org.faktorips.devtools.core.ui.editors.type.TypeEditorStructurePage;
  */
 public class EnumTypeValuesPage extends TypeEditorStructurePage {
 
-    // The enum type the enum type editor this page belongs to is currently editing
+    /** The enum type the enum type editor this page belongs to is currently editing. */
     private IEnumType enumType;
 
     /**

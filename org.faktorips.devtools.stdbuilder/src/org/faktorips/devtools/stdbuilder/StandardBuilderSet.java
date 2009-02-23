@@ -43,6 +43,7 @@ import org.faktorips.devtools.core.model.type.IType;
 import org.faktorips.devtools.stdbuilder.bf.BusinessFunctionBuilder;
 import org.faktorips.devtools.stdbuilder.enums.EnumClassesBuilder;
 import org.faktorips.devtools.stdbuilder.enums.EnumTypeInterfaceBuilder;
+import org.faktorips.devtools.stdbuilder.enumtype.EnumTypeBuilder;
 import org.faktorips.devtools.stdbuilder.formulatest.FormulaTestBuilder;
 import org.faktorips.devtools.stdbuilder.policycmpttype.GenPolicyCmptType;
 import org.faktorips.devtools.stdbuilder.policycmpttype.PolicyCmptImplClassBuilder;
@@ -426,8 +427,7 @@ public class StandardBuilderSet extends DefaultBuilderSet {
         // policy component type builders
 
         // New enum type builder
-        org.faktorips.devtools.stdbuilder.enumtype.EnumTypeInterfaceBuilder newEnumTypeInterfaceBuilder = new org.faktorips.devtools.stdbuilder.enumtype.EnumTypeInterfaceBuilder(
-                this);
+        EnumTypeBuilder enumTypeBuilder = new EnumTypeBuilder(this);
 
         // product component builders.
         productCmptGenerationImplBuilder.setProductCmptImplBuilder(productCmptImplClassBuilder);
@@ -461,8 +461,7 @@ public class StandardBuilderSet extends DefaultBuilderSet {
                     policyCmptImplClassBuilder, policyCmptInterfaceBuilder, productCmptGenerationImplBuilder,
                     tableContentCopyBuilder, productCmptContentCopyBuilder, testCaseTypeClassBuilder, testCaseBuilder,
                     formulaTestBuilder, enumClassesBuilder, enumTypeInterfaceBuilder, tocFileBuilder,
-                    policyModelTypeBuilder, productModelTypeBuilder, businessFunctionBuilder,
-                    newEnumTypeInterfaceBuilder };
+                    policyModelTypeBuilder, productModelTypeBuilder, businessFunctionBuilder, enumTypeBuilder };
         } else {
 
             return new IIpsArtefactBuilder[] { tableImplBuilder, tableRowBuilder, productCmptGenInterfaceBuilder,
@@ -470,7 +469,7 @@ public class StandardBuilderSet extends DefaultBuilderSet {
                     policyCmptImplClassBuilder, policyCmptInterfaceBuilder, productCmptGenerationImplBuilder,
                     tableContentCopyBuilder, productCmptContentCopyBuilder, testCaseTypeClassBuilder, testCaseBuilder,
                     formulaTestBuilder, enumClassesBuilder, enumTypeInterfaceBuilder, tocFileBuilder,
-                    businessFunctionBuilder, newEnumTypeInterfaceBuilder };
+                    businessFunctionBuilder, enumTypeBuilder };
         }
     }
 

@@ -79,7 +79,7 @@ public abstract class EnumTypeValidations {
         return null;
     }
 
-    // Prohibit initialization
+    /** Prohibits initialization. */
     private EnumTypeValidations() {
 
     }

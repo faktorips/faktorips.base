@@ -41,16 +41,16 @@ import org.faktorips.util.message.Message;
  */
 public class EnumTypePage extends IpsObjectPage {
 
-    // The image for the wizard page
+    /** The image for the wizard page. */
     private final String PAGE_IMAGE = "wizards/NewEnumTypeWizard.png"; //$NON-NLS-1$
 
-    // The text field to choose the supertype for the new enum type
+    /** The text field to choose the supertype for the new enum type. */
     private TextButtonField supertypeField;
 
-    // The checkbox field to mark the new enum type as being abstract
+    /** The checkbox field to mark the new enum type as being abstract. */
     private CheckboxField isAbstractField;
 
-    // The checkbox field to mark the new enum type that its values are defined in the model
+    /** The checkbox field to mark the new enum type that its values are defined in the model. */
     private CheckboxField valuesArePartOfModelField;
 
     /**

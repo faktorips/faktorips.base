@@ -37,10 +37,10 @@ import org.faktorips.devtools.core.ui.editors.IpsPartEditDialog2;
  */
 public class EnumAttributeEditDialog extends IpsPartEditDialog2 {
 
-    // The enum attribute being edited
+    /** The enum attribute being edited. */
     private IEnumAttribute enumAttribute;
 
-    // The extension property factory that may extend the controls
+    /** The extension property factory that may extend the controls. */
     private ExtensionPropertyControlFactory extFactory;
 
     /**
@@ -73,7 +73,7 @@ public class EnumAttributeEditDialog extends IpsPartEditDialog2 {
         return tabFolder;
     }
 
-    // Creates the general tab
+    /** Creates the general tab. */
     private Control createGeneralPage(TabFolder tabFolder) {
         Composite control = createTabItemComposite(tabFolder, 1, false);
         Composite workArea = uiToolkit.createLabelEditColumnComposite(control);

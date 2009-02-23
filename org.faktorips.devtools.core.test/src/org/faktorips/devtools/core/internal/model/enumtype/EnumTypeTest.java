@@ -370,4 +370,12 @@ public class EnumTypeTest extends AbstractIpsEnumPluginTest {
         assertEquals(0, genderEnumType.getIndexOfEnumAttribute(genderEnumAttributeName));
     }
 
+    public void testHasSuperEnumType() throws CoreException {
+        assertFalse(genderEnumType.hasSuperEnumType());
+
+        IEnumType superEnumType = newEnumType(ipsProject, "SuperEnumType");
+        genderEnumType.setSuperEnumType(superEnumType.getQualifiedName());
+        assertTrue(genderEnumType.hasSuperEnumType());
+    }
+
 }

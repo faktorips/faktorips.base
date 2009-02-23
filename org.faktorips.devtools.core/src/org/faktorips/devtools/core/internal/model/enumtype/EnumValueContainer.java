@@ -37,7 +37,7 @@ import org.faktorips.util.ArgumentCheck;
  */
 public abstract class EnumValueContainer extends BaseIpsObject implements IEnumValueContainer {
 
-    // Collection containing the enum values
+    /** Collection containing the enum values. */
     private IpsObjectPartCollection enumValues;
 
     /**
