@@ -110,7 +110,7 @@ public class EnumTypeBuilder extends DefaultJavaSourceFileBuilder {
             }
         }
 
-        generateConstants(mainSection.getConstantBuilder());
+        generateEnumDefinitions(mainSection.getEnumDefinitionBuilder());
         generateAttributes(mainSection.getMemberVarBuilder());
 
         if (isEnum() || isClass()) {
@@ -121,7 +121,7 @@ public class EnumTypeBuilder extends DefaultJavaSourceFileBuilder {
     }
 
     /** Generates the java code for the constants. */
-    private void generateConstants(JavaCodeFragmentBuilder constantsBuilder) throws CoreException {
+    private void generateEnumDefinitions(JavaCodeFragmentBuilder enumDefinitionBuilder) throws CoreException {
         IEnumType enumType = getEnumType();
         List<IEnumAttribute> enumAttributes = enumType.getEnumAttributes();
 
@@ -133,12 +133,12 @@ public class EnumTypeBuilder extends DefaultJavaSourceFileBuilder {
 
                 // Search for the enum attribute value that refers to the identifier enum attribute
                 List<IEnumAttributeValue> currentEnumAttributeValues = enumValues.get(i).getEnumAttributeValues();
-                for (int j = 0; j < currentEnumAttributeValues.size(); j++) {
-                    IEnumAttributeValue currentEnumAttributeValue = currentEnumAttributeValues.get(j);
+                for (IEnumAttributeValue currentEnumAttributeValue : currentEnumAttributeValues) {
 
-                    IEnumAttribute currentReferencedEnumAttribute = enumAttributes.get(j);
+                    IEnumAttribute currentReferencedEnumAttribute = currentEnumAttributeValue.findEnumAttribute();
                     if (currentReferencedEnumAttribute.isIdentifier()) {
                         // Create enum constant source fragment
+                        appendLocalizedJavaDoc("ENUMVALUE", enumType, enumDefinitionBuilder);
                         JavaCodeFragment constantsFragment = new JavaCodeFragment();
                         constantsFragment.append(currentEnumAttributeValue.getValue().toUpperCase());
                         constantsFragment.append(" (");
@@ -163,14 +163,14 @@ public class EnumTypeBuilder extends DefaultJavaSourceFileBuilder {
                         } else {
                             constantsFragment.append(';');
                         }
-                        constantsBuilder.append(constantsFragment);
+                        enumDefinitionBuilder.append(constantsFragment);
 
                         break;
                     }
                 }
             }
 
-            constantsBuilder.appendln();
+            enumDefinitionBuilder.appendln();
         }
     }
 
