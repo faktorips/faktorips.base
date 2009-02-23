@@ -115,14 +115,11 @@ public class EnumValue extends BaseIpsObjectPart implements IEnumValue {
     }
 
     /**
-     * <p>
      * Moves the enum attribute value that has been assigned to the given enum attribute identified
      * by the its index one position down in the collection order.
-     * </p>
      * <p>
      * If no corresponding enum attribute value can be found or the enum attribute value is already
      * the last one then nothing will be done.
-     * </p>
      * 
      * @param enumAttributeIndex The index of the enum attribute, that the enum attribute value that
      *            is to be moved downwards, refers to.

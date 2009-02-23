@@ -20,21 +20,16 @@ import org.eclipse.core.runtime.CoreException;
 import org.faktorips.datatype.Datatype;
 
 /**
- * <p>
  * An enum type represents the structure of an enumeration in the Faktor-IPS model.
- * </p>
  * <p>
  * An enumeration is a table-like structure. An enum type has several enum attributes where each
  * enum attribute can be seen as a column.
- * </p>
  * <p>
  * For example there may be an enum type <em>Gender</em> with the enum attributes <em>id</em> and
  * <em>name</em>.
- * </p>
  * <p>
  * Each row in the table is represented by an enum value. In the above example there would be two
  * enum values:
- * </p>
  * <ul>
  * <li>id: m, name: male</li>
  * <li>id: w, name: female</li>
@@ -42,11 +37,9 @@ import org.faktorips.datatype.Datatype;
  * <p>
  * Enum values can be defined directly in the enum type itself or separate from the enum type by the
  * product side (as enum content).
- * </p>
  * <p>
  * At least one enum attribute needs to be marked as <em>identifier</em> which implies that each
  * enum attribute value of this enum attribute needs to be unique.
- * </p>
  * 
  * @author Alexander Weickmann
  * 
@@ -199,17 +192,13 @@ public interface IEnumType extends IEnumValueContainer, Datatype {
     public int getEnumAttributesCount();
 
     /**
-     * <p>
      * Moves the given enum attribute one position upwards in the enum attribute collection.
-     * </p>
      * <p>
      * If the given enum attribute is already the first enum attribute then absolutely nothing will
      * be done.
-     * </p>
      * <p>
      * Note that all referencing enum attribute values <strong>that are defined in this enum
      * type</strong> will also be moved one position upwards in their collection.
-     * </p>
      * 
      * @param enumAttribute The enum attribute to move further up in the order.
      * 
@@ -221,17 +210,13 @@ public interface IEnumType extends IEnumValueContainer, Datatype {
     public int moveEnumAttributeUp(IEnumAttribute enumAttribute) throws CoreException;
 
     /**
-     * <p>
      * Moves the given enum attribute one position downwards in the enum attribute collection.
-     * </p>
      * <p>
      * If the given enum attribute is already the last enum attribute then absolutely nothing will
      * be done.
-     * </p>
      * <p>
      * Note that all referencing enum attribute values <strong>that are defined in this enum
      * type</strong> will also be moved one position downwards in their collection.
-     * </p>
      * 
      * @param enumAttribute The enum attribute to move further down in the order.
      * 
@@ -243,10 +228,8 @@ public interface IEnumType extends IEnumValueContainer, Datatype {
     public int moveEnumAttributeDown(IEnumAttribute enumAttribute) throws CoreException;
 
     /**
-     * <p>
      * Searches and returns all enum contents that are built upon this enum type. If none are found
      * an empty list will be returned. This method never returns <code>null</code>.
-     * </p>
      * 
      * @return A list containing all enum contents that are built upon this enum type.
      * 
@@ -267,10 +250,8 @@ public interface IEnumType extends IEnumValueContainer, Datatype {
     public boolean enumAttributeExists(String name);
 
     /**
-     * <p>
      * Deletes the given enum attribute and all the <code>EnumAttributeValue</code> objects
      * <strong>that are defined in the enum type itself</strong> refering to it.
-     * </p>
      * 
      * @param enumAttribute The enum attribute to delete.
      * 

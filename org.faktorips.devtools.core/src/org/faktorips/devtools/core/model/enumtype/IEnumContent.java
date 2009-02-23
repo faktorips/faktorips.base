@@ -14,14 +14,11 @@
 package org.faktorips.devtools.core.model.enumtype;
 
 /**
- * <p>
  * This object type is used when the values for a Faktor-IPS enumeration shall not be defined
  * directly in the enum type itself but separate from it by the product side.
- * </p>
  * <p>
  * An enum content always refers to a specific enum type which defines the structure of the
  * enumeration.
- * </p>
  * 
  * @author Alexander Weickmann
  * 

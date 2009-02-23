@@ -113,8 +113,8 @@ public abstract class EnumValueContainer extends BaseIpsObject implements IEnumV
         return moveEnumValue(enumValue, false);
     }
 
-    /*
-     * Moves the given enum value up or down in the collection order by 1 and returns the new index
+    /**
+     * Moves the given enum value up or down in the collection order by 1 and returns the new index.
      */
     @SuppressWarnings("unchecked")
     private int moveEnumValue(IEnumValue enumValue, boolean up) throws CoreException {

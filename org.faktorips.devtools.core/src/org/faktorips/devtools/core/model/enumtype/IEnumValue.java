@@ -19,13 +19,10 @@ import org.eclipse.core.runtime.CoreException;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPart;
 
 /**
- * <p>
  * This is the published interface for enum values.
- * </p>
  * <p>
  * For more information about how enum values relate to the entire Faktor-IPS enumeration concept
  * please read the documentation of IEnumType.
- * </p>
  * 
  * @see org.faktorips.devtools.core.model.enumtype.IEnumType
  * 
@@ -77,13 +74,10 @@ public interface IEnumValue extends IIpsObjectPart {
     public IEnumAttributeValue newEnumAttributeValue() throws CoreException;
 
     /**
-     * <p>
      * Returns the enum value container this enum value is being stored in.
-     * </p>
      * <p>
      * This is a shortcut for:<br />
      * <code>IEnumValueContainer enumValueContainer = (IEnumValueContainer)enumValue.getParent();</code>
-     * </p>
      * 
      * @return The enum value container this enum value belongs to.
      */

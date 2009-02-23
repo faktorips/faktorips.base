@@ -20,14 +20,11 @@ import org.eclipse.core.runtime.CoreException;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObject;
 
 /**
+ * This is the published interface for <code>EnumValueContainer</code>.
  * <p>
- * This is the published interface for EnumValueContainer.
- * </p>
- * <p>
- * EnumValueContainer is the supertype for EnumType and EnumContent. This is, because in Faktor-IPS
- * the values of an enumeration can be defined directly in the enum type or separate from it by the
- * product side.
- * </p>
+ * <code>EnumValueContainer</code> is the supertype for <code>EnumType</code> and
+ * <code>EnumContent</code>. This is because in Faktor-IPS the values of an enumeration can be
+ * defined directly in the enum type or separate from it by the product side.
  * 
  * @author Alexander Weickmann
  * 
@@ -75,12 +72,9 @@ public interface IEnumValueContainer extends IIpsObject {
     public int getEnumValuesCount();
 
     /**
-     * <p>
      * Moves the given enum value one position upwards in the enum values collection.
-     * </p>
      * <p>
      * If the given enum value is already the first enum value then absolutely nothing will be done.
-     * </p>
      * 
      * @param enumValue The enum value to move further up in the order.
      * 
@@ -92,12 +86,9 @@ public interface IEnumValueContainer extends IIpsObject {
     public int moveEnumValueUp(IEnumValue enumValue) throws CoreException;
 
     /**
-     * <p>
      * Moves the given enum value one position downwards in the enum values collection.
-     * </p>
      * <p>
      * If the given enum value is already the last enum value then absolutely nothing will be done.
-     * </p>
      * 
      * @param enumValue The enum value to move further down in the order.
      * 

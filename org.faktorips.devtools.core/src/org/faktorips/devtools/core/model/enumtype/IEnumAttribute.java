@@ -16,13 +16,10 @@ package org.faktorips.devtools.core.model.enumtype;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPart;
 
 /**
- * <p>
  * This is the published interface for enum attributes.
- * </p>
  * <p>
  * For more information about how enum attributes relate to the entire Faktor-IPS enumeration
  * concept please read the documentation of IEnumType.
- * </p>
  * 
  * @see org.faktorips.devtools.core.model.enumtype.IEnumType
  * 

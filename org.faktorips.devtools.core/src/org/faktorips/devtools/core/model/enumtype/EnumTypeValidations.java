@@ -34,18 +34,14 @@ import org.faktorips.util.message.ObjectProperty;
 public abstract class EnumTypeValidations {
 
     /**
-     * <p>
      * Validates whether the given super enum type exists in the ips object path of the given ips
      * project.
-     * </p>
      * <p>
      * If a super enum type with the given qualified name exists in the given ips project
      * <code>null</code> will be returned.
-     * </p>
      * <p>
      * If no super enum type with the given qualified name exists in the given ips project an
      * appropriate validation message will be returned.
-     * </p>
      * 
      * @param enumType The enum type that might be invalid or <code>null</code> if that information
      *            cannot be supported.
@@ -57,7 +53,8 @@ public abstract class EnumTypeValidations {
      * 
      * @throws CoreException If an error occurs while searching for the super enum type.
      * @throws IllegalArgumentException If superEnumTypeQualifiedName is an empty string.
-     * @throws NullPointerException If superEnumTypeQualifiedName or ipsProject is <code>null</code>.
+     * @throws NullPointerException If superEnumTypeQualifiedName or ipsProject is <code>null</code>
+     *             .
      */
     public static Message validateSuperEnumType(IEnumType enumType,
             String superEnumTypeQualifiedName,

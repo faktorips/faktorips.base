@@ -17,13 +17,10 @@ import org.eclipse.core.runtime.CoreException;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPart;
 
 /**
- * <p>
  * An enum attribute value belongs to an enum value and represents the value of a specific enum
  * attribute.
- * </p>
  * <p>
  * An enum attribute value can be imagined as the value of a field in a table.
- * </p>
  * 
  * @author Alexander Weickmann
  * 

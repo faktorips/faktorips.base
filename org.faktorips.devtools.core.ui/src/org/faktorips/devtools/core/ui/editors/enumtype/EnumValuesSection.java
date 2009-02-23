@@ -168,14 +168,11 @@ public class EnumValuesSection extends IpsSection {
     }
 
     /**
-     * <p>
      * Updates the enabled states of the enum values table and its actions.
-     * </p>
      * <p>
      * The enabled states result from the fact whether this enum values section is used for an enum
      * type or for an enum content and whether the (referenced) enum type defines its values in the
      * model or not. The enum values table will also be disabled if the enum type is abstract.
-     * </p>
      */
     private void updateEnabledStates() {
         boolean valuesArePartOfModel = enumType.getValuesArePartOfModel();
@@ -875,13 +872,10 @@ public class EnumValuesSection extends IpsSection {
         }
 
         /**
-         * <p>
          * Checks every row from the last up to the currently selected row for emptyness and deletes
          * every empty row until a non-empty row is found.
-         * </p>
          * <p>
          * Only tries to delete rows if the table has more than one row.
-         * </p>
          */
         private void removeRedundantRows() {
             int selectionIndex = enumValuesTable.getSelectionIndex();
@@ -901,14 +895,11 @@ public class EnumValuesSection extends IpsSection {
         }
 
         /**
-         * <p>
          * Checks whether a row (enum value) is empty or not. Returns <code>true</code> if all the
          * given row's values (columns) contain a whitespace string.
-         * </p>
          * <p>
          * <code>null</code> is treated as content. Thus a row that contains <code>null</code>
          * values is not empty.
-         * </p>
          */
         private boolean isRowEmpty(IEnumValue enumValue) {
             List<IEnumAttributeValue> enumAttributeValues = enumValue.getEnumAttributeValues();
