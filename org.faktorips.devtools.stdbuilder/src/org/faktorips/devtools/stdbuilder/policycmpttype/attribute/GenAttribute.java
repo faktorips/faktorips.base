@@ -241,17 +241,19 @@ public abstract class GenAttribute extends GenPolicyCmptTypePart {
         String fieldName = getMemberVarName();
 
         memberVarsBuilders.javaDoc(comment, JavaSourceFileBuilder.ANNOTATION_GENERATED);
-        
+
         if (isGenerateJaxbSupport()) {
             initialValueExpression.addImport("javax.xml.bind.annotation.XmlElement");
-            if (datatypeHelper.getDatatype().isPrimitive()) {
-                memberVarsBuilders.annotation("XmlElement");
+
+            String annotation = "XmlElement(name=\"" + attributeName + "\")";
+            if (!datatypeHelper.getDatatype().isPrimitive()) {
+                annotation += ",nillable=true";
             }
-            else {
-                memberVarsBuilders.annotation("XmlElement(nillable=true)");
-            }
+            annotation += "\")";
+
+            memberVarsBuilders.annotation(annotation);
         }
-        
+
         memberVarsBuilders.varDeclaration(java.lang.reflect.Modifier.PRIVATE, getJavaClassName(), fieldName,
                 initialValueExpression);
     }
