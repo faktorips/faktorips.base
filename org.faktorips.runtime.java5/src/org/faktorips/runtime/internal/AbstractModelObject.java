@@ -21,6 +21,7 @@ import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlID;
+import javax.xml.bind.annotation.XmlRootElement;
 
 import org.faktorips.runtime.IModelObject;
 import org.faktorips.runtime.IObjectReferenceStore;
@@ -38,6 +39,7 @@ import org.w3c.dom.Text;
  * @author Jan Ortmann
  */
 @XmlAccessorType(XmlAccessType.NONE)
+@XmlRootElement
 public abstract class AbstractModelObject implements IModelObject {
 
     /** Uniquely identifies this model object within the object graph it belongs to. */
