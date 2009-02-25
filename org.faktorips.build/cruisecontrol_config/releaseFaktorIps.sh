@@ -23,6 +23,7 @@
 #                                    default publish the result
 #           -skipTaggingCvs        : don't tag the projects before the release build will be performed, 
 #                                    default is tag projects
+#           -useBranch [branch]    : use a given branch instead HEAD
 #           -buildProduct [product project dir]
 #                                  : builds the product in the given project instead of building the features and plugins
 #
@@ -116,6 +117,7 @@ SHOWHELP=false
 SKIPTAGCVS=false
 NOCVS=false
 BUILDPRODUCT=
+BRANCH=
 
 #################################################
 # parse arguments
@@ -128,6 +130,7 @@ do  case "$1" in
   -buildfile)     BUILDFILE=$2 ; shift ;;
   -workingdir)    WORKINGDIR=$2 ; shift ;;
   -projectsrootdir) PROJECTSROOTDIR=$2 ; shift ;;
+  -useBranch)     BRANCH=$2 ; shift ;;
   -overwrite)     OVERWRITE=true ;;
   -skipTest)      RUNTESTS=false ;;
   -skipPublish)   SKIPPUBLISH=true ;;
@@ -185,6 +188,15 @@ if [ ! -e $BUILDFILE ] ; then
   echo '--> Error buildfile not exists:' $BUILDFILE
   echo '    check the environment or use parameter -buildfile or -projectsrootdir'
     echo '  '
+  SHOWHELP=true
+fi
+
+# assert branch build parameter
+# check if a branch is used then tagging is not supported
+if [ ! "$SKIPTAGCVS" = "true" -a -n $BRANCH ] ; then
+  echo '--> Error: if a branch is used then tagging cvs is not supported'
+  echo '    Please tag mannualy and use -skipTaggingCvs'
+  echo '  '
   SHOWHELP=true
 fi
 
@@ -247,7 +259,14 @@ echo -e "  -skipTest        : Run tests "$(printBoolean $RUNTESTS)
 echo -e "  -skipPublish     : Publish result (to updatesite and to download directory) "$(printBoolean $(negation $SKIPPUBLISH))
 echo -e "  -skipTaggingCvs  : Tag cvs projects "$(printBoolean $(negation $SKIPTAGCVS))
 echo -e "  -noCvs           : Use cvs "$(printBoolean $(negation $NOCVS))
-echo -e "  -buildProduct    : Build product \e[35m$BUILDPRODUCT\e[0m"
+if [ -n "$BRANCH" ] ; then
+  echo -e "  -useBranch       : Build cvs brach \e[35m$BRANCH\e[0m"
+else
+  echo -e "  -useBranch       : None, use \e[35mHEAD\e[0m"
+fi
+if [ -n "$BUILDPRODUCT" ] ; then
+  echo -e "  -buildProduct    : Build product \e[35m$BUILDPRODUCT\e[0m"
+fi
 echo -e "  -projectsrootdir : Checkout/Copysource directory \e[35m$PROJECTSROOTDIR\e[0m"
 echo -e "  -workingdir      : Work directory \e[35m$WORKINGDIR\e[0m"
 if [ ! "$SKIPPUBLISH" = "true" ] ; then
@@ -269,19 +288,25 @@ fi
 
 # assert correct bundle version in core plugin
 #   the bundle version stored in the core plugin must be equal to the given version
+PLUGINBUILDER_PROJECT_DIR=$PROJECTSROOTDIR/$PLUGINBUILDER_PROJECT_NAME
 if [ ! "$NOCVS" = "true" ] ; then
     #  checkout core plugin and check bundle version
-    PLUGINBUILDER_PROJECT_DIR=$PROJECTSROOTDIR/$PLUGINBUILDER_PROJECT_NAME
     TMP_CHECKOUTDIR=$PROJECTSROOTDIR/tmp_release_build
     mkdir $TMP_CHECKOUTDIR
-    cvs -d $CVS_ROOT co -d $TMP_CHECKOUTDIR $FAKTORIPS_CORE_PLUGIN_NAME/META-INF
+    if [ -n $BRANCH ] ; then
+      # checkout using branch
+      cvs -d $CVS_ROOT co -d $TMP_CHECKOUTDIR -r $BRANCH $FAKTORIPS_CORE_PLUGIN_NAME/META-INF
+    else
+      cvs -d $CVS_ROOT co -d $TMP_CHECKOUTDIR $FAKTORIPS_CORE_PLUGIN_NAME/META-INF
+    fi
+    
     CORE_BUNDLE_VERSION=$(cat $TMP_CHECKOUTDIR/MANIFEST.MF | grep Bundle-Version | sed -r "s/.*:\ *(.*)/\1/g")
     rm -R $TMP_CHECKOUTDIR
-else 
+else
     #  read bundle version from the core project stored in the projectsrootdir
-    PLUGINBUILDER_PROJECT_DIR=$PROJECTSROOTDIR/$PLUGINBUILDER_PROJECT_NAME
     CORE_BUNDLE_VERSION=$(cat $PROJECTSROOTDIR/$FAKTORIPS_CORE_PLUGIN_NAME//META-INF/MANIFEST.MF | grep Bundle-Version | sed -r "s/.*:\ *(.*)/\1/g")
 fi
+
 # compare bundle version with given release version
 if [ ! "$CORE_BUNDLE_VERSION" = "$BUILD_VERSION" ]
   then 
@@ -306,8 +331,8 @@ cd $WORKING_DIR
 RELEASE_PROPERTY_DIR=$PLUGINBUILDER_PROJECT_DIR/releases
 RELEASE_PROPERTIES=$RELEASE_PROPERTY_DIR/$BUILD_VERSION.properties
 
+# 1. checkout previous pluginbuilder release properties
 if [ ! "$NOCVS" = "true" ] ; then
-  # 1. checkout previous pluginbuilder release properties
   rm -R $RELEASE_PROPERTY_DIR
   cvs -d $CVS_ROOT co -d $RELEASE_PROPERTY_DIR $PLUGINBUILDER_PROJECT_NAME/releases
 fi
@@ -329,6 +354,15 @@ RELEASE_PROPERTIES_EXISTS=false
 if [ -f $RELEASE_PROPERTIES ] ; then
   RELEASE_PROPERTIES_EXISTS=true
 fi
+
+# assert 
+#    b) if release property already exists then tagging Cvs is not allowed
+if [ $RELEASE_PROPERTIES_EXISTS = "true" -a ! "$SKIPTAGCVS" = "true" ] ; then
+  echo "=> Cancel build: tagging is not allowed if the release already exists!"
+  echo "   Please use -skipTaggingCvs or remove the release.properties  and try again."
+  exit 1
+fi
+
 # create release property file if not exists or overwrite is true
 if [ "$RELEASE_PROPERTIES_EXISTS" = "false" -o "$OVERWRITE" = "true" ] ; then
   echo "# written by $0" > $RELEASE_PROPERTIES
