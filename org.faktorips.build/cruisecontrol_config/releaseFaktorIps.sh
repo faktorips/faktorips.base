@@ -229,6 +229,8 @@ if [ $SHOWHELP = "true" ] ; then
   echo '                         default = publish the result'
   echo '  -skipTaggingCvs        skip tagging the projects'
   echo '                         default = tag projects before build'
+  echo '  -useBranch [branch]    use a given branch instead HEAD'
+  echo '                         note that if a branch should be used then tagging cvs is not supported' 
   echo '  -noCvs                 do not use cvs to get faktorips projects,'
   echo  '                        if given then the projects will copied from the projectsrootdir'
   echo '                         default is use cvs'
