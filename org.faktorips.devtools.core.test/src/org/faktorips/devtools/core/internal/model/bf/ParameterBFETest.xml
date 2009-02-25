@@ -1,8 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<BusinessFunction>
-    <Parameter id="9" name="" type="parameter" datatype="String">
-        <Description/>
-        <Location xlocation="26" ylocation="112"/>
-        <Size height="57" width="109"/>
-    </Parameter>
-</BusinessFunction>
