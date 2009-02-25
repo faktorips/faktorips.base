@@ -1248,4 +1248,19 @@ public class PolicyCmptImplClassBuilder extends BasePolicyCmptTypeBuilder {
         return genProductCmptType.getGenerator(tsu);
     }
 
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    protected void generateTypeAnnotations(JavaCodeFragmentBuilder builder) throws CoreException {
+        super.generateTypeAnnotations(builder);
+
+        if (!getGenPolicyCmptType().getBuilderSet().isGenerateJaxbSupport()) {
+            return;
+        }
+
+        builder.getFragment().addImport("javax.xml.bind.annotation.XmlRootElement");
+        builder.annotation("XmlRootElement");
+    }
+    
 }
