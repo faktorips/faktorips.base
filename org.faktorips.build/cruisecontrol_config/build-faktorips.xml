@@ -335,7 +335,7 @@
            -DnoCvs=true -> no cvs support (the features and plugins will be copied from the workspace
            -DnoBranch=false -> branch support, in this case the all_cvs_branch.map must exists in the map 
                                directory (see all_cvs.map with BRANCHLABEL instead of HEAD inside)
-           -DbuildProduct -> build the given product instead of features and plugins
+           -DproductProject -> build the given product instead of features and plugins
                              the given value must be the project name where the FaktorIps.product exists
                              e.g. org.faktorips.devtools.core or de.qv.faktorips
            -DprojectsRootDir -> the root dir of all plugin projects
@@ -387,7 +387,7 @@
 	    </condition>
 
 		<condition property="is.product.build" value="true">
-	    	 <isset property="productProject"/>
+             <length file="productProject" when="greater" length="0" />
 	    </condition>
 		
 		
