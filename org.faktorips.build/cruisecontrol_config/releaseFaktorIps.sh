@@ -413,9 +413,9 @@ fi
 
 # if using a branch then the map.all
 NOBRANCH=true
-if [ -n $BRANCH -a ! "$NOCVS" = "true"] ; then
+if [ -n $BRANCH -a ! "$NOCVS" = "true" ] ; then
   NOBRANCH=false
-  cat $PLUGINBUILDER_PROJECT_DIR/maps/all_cvs.map | sed -r "s|(.*)HEAD(.*)|\1$BRANCH\2|g|" > $PLUGINBUILDER_PROJECT_DIR/maps/all_cvs_branch.map
+  cat $PLUGINBUILDER_PROJECT_DIR/maps/all_cvs.map | sed -r "s/(.*)HEAD(.*)/\1$BRANCH\2/g" > $PLUGINBUILDER_PROJECT_DIR/maps/all_cvs_branch.map
 fi
 
 #################################################
