@@ -229,7 +229,8 @@ if [ $SHOWHELP = "true" ] ; then
   echo '                         default = publish the result'
   echo '  -skipTaggingCvs        skip tagging the projects'
   echo '                         default = tag projects before build'
-  echo '  -noCvs                 do not use cvs to get faktorips projects, if given then the projects will copied from the projectsrootdir'
+  echo '  -noCvs                 do not use cvs to get faktorips projects,'
+  echo  '                        if given then the projects will copied from the projectsrootdir'
   echo '                         default is use cvs'
   echo '  -buildProduct [product project dir]'
   echo '                         builds the products in the given project instead of building the features and plugins'
@@ -239,8 +240,9 @@ if [ $SHOWHELP = "true" ] ; then
   echo '                         if no cvs is used \(e.g. local copy\) then all projects must be exists here'
   echo '                         the default is: ' $PROJECTSROOTDIR
   echo '                         '
-  echo 'e.g.: '$0' -version 2.2.0.rc1 -skipTest <== builds the release with version 2.2.0.rc1, category 2.2 \ 
-       and skip running the tests during the build'
+  echo 'e.g.: '$0' -version 2.2.0.rc1 -skipTest'
+  echo '      builds the release with version 2.2.0.rc1, category 2.2 ' 
+  echo '      and skip running the tests during the build'
   exit 1
 fi
 
