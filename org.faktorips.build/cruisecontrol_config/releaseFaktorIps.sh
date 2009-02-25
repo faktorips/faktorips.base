@@ -208,6 +208,13 @@ if [ $BUILD_CATEGORY = "NONE" ]
   then BUILD_CATEGORY=$(echo $BUILD_VERSION | sed -r "s/([0-9]*)\.([0-9]*)\.([0-9]*)\.(.*)/\1\.\2/g")
 fi 
 
+# if a branch should be used the cvs must be used
+if [ $NOCVS = "true" -a -n $BRANCH ] ; then
+    echo "=> Cancel build: a branch could only be used if cvs is used!"
+    echo "   "
+  SHOWHELP=true
+fi
+
 #################################################
 # show script help if requested 
 # or wrong parameter given
@@ -404,6 +411,13 @@ if [ ! "$SKIPTAGCVS" = "true" ] ; then
   done
 fi
 
+# if using a branch then the map.all
+NOBRANCH=true
+if [ -n $BRANCH -a ! "$NOCVS" = "true"] ; then
+  NOBRANCH=false
+  cat $PLUGINBUILDER_PROJECT_DIR/maps/all_cvs.map | sed -r "s|(.*)HEAD(.*)|\1$BRANCH\2|g|" > $PLUGINBUILDER_PROJECT_DIR/maps/all_cvs_branch.map
+fi
+
 #################################################
 # call ant to perform the specified release build
 #################################################
@@ -421,6 +435,7 @@ EXEC="$ANT_HOME/bin/ant -buildfile $BUILDFILE release \
  -DdownloadDir=$PUBLISH_DOWNLOAD_DIR \
  -Dupdatesite.path=$PUBLISH_UPDATESITE_DIR \
  -DproductProject=$BUILDPRODUCT \
+ -DnoBranch=$NOBRANCH
  "
 echo $EXEC
 exec $EXEC
