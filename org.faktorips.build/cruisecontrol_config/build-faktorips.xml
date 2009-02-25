@@ -333,6 +333,8 @@
            -DskipPublish=true -> don't publish the result to the download and updatesite
         optional parameter for a local build:   
            -DnoCvs=true -> no cvs support (the features and plugins will be copied from the workspace
+           -DnoBranch=false -> branch support, in this case the all_cvs_branch.map must exists in the map 
+                               directory (see all_cvs.map with BRANCHLABEL instead of HEAD inside)
            -DbuildProduct -> build the given product instead of features and plugins
                              the given value must be the project name where the FaktorIps.product exists
                              e.g. org.faktorips.devtools.core or de.qv.faktorips
@@ -372,6 +374,10 @@
             <equals arg1="${noCvs}" arg2="false"/>
         </condition>
 
+		<condition property="isUseBranch" value="true">
+            <equals arg1="${noBranch}" arg2="false"/>
+        </condition>
+
     	<condition property="isIgnoreTests" value="true">
             <equals arg1="${runtests}" arg2="false"/>
         </condition>
@@ -389,6 +395,11 @@
 		     otherwise the cvs all.map is used to fetch the sources from cvs -->
     	<condition property="all.map" value="all_copy.map">
             <not><equals arg1="${isUseCvs}" arg2="true"/></not>
+        </condition>
+    	<!-- check if the branch all.map should be used, if a branch is given 
+    		     otherwise the cvs all.map is used to fetch the sources from cvs -->
+		<condition property="all.map" value="all_cvs_branch.map">
+            <not><equals arg1="${isUseBranch}" arg2="true"/></not>
         </condition>
 		
     	<!--checkout pluginbuilder, build project -->
@@ -433,6 +444,7 @@
     		<property name="product.project" value="${productProject}"/>
             <property name="xms.megabytes" value=""/> <!-- -Xms124m -->
             <property name="xmx.megabytes" value=""/> <!-- -Xmx256m -->    		
+            <property name="all.map" value=""/> <!-- -Xmx256m -->    		
         </ant>
     	
         <!--copy zipped features into the faktorips download directory -->
