@@ -248,7 +248,11 @@ public class PolicyCmptImplClassBuilder extends BasePolicyCmptTypeBuilder {
      * 
      */
     protected void generateMethodCopyProperties(JavaCodeFragmentBuilder methodsBuilder) throws CoreException {
-        methodsBuilder.javaDoc(getJavaDocCommentForOverriddenMethod(), ANNOTATION_GENERATED);
+        // TODO either output proper Javadoc or let copyProperties implement an interface method
+        // (and then use {@inheritDoc})
+        // methodsBuilder.javaDoc(getJavaDocCommentForOverriddenMethod(), ANNOTATION_GENERATED);
+        methodsBuilder.javaDoc("", ANNOTATION_GENERATED);
+        
         String paramName = "copy";
         methodsBuilder.signature(java.lang.reflect.Modifier.PROTECTED, "void", getMethodNameCopyProperties(),
                 new String[] { paramName }, new String[] { getUnqualifiedClassName() });
