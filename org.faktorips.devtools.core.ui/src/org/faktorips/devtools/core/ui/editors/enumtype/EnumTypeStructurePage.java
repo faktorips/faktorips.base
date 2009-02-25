@@ -50,8 +50,8 @@ public class EnumTypeStructurePage extends TypeEditorStructurePage {
         enumType = editor.getEnumType();
 
         if (!splittedStructure) {
-            // TODO find out escape sequence for &
-            setPartName(Messages.EnumTypeStructurePage_title + " + " + Messages.EnumTypeValuesPage_title);
+            setPartName(Messages.EnumTypeStructurePage_title + ' ' + Messages.EnumTypeStructurePage_andLiteral + ' '
+                    + Messages.EnumTypeValuesPage_title);
         }
     }
 
