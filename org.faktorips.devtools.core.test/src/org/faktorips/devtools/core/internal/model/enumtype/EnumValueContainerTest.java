@@ -14,7 +14,7 @@
 package org.faktorips.devtools.core.internal.model.enumtype;
 
 import org.eclipse.core.runtime.CoreException;
-import org.faktorips.devtools.core.model.enumtype.IEnumValue;
+import org.faktorips.devtools.core.model.enums.IEnumValue;
 
 public class EnumValueContainerTest extends AbstractIpsEnumPluginTest {
 

@@ -27,25 +27,34 @@ import org.faktorips.util.ArgumentCheck;
 
 public class EnumTypeRefControl extends IpsObjectRefControl {
 
+    /** The current enum type for that possible supertypes will be displayed. */
     private IEnumType currentEnumType;
+
+    /** Flag indicating whether this control will be used to select a super enum type. */
+    private boolean chooseSuperEnumType;
 
     /**
      * Creates a new enum type ref control.
      * 
-     * @param project
-     * @param parent
-     * @param toolkit
+     * @param project The ips project to search for enum types.
+     * @param parent The parent ui composite.
+     * @param toolkit The ui toolkit to create ui elements with.
+     * @param chooseSuperEnumType Flag indicating whether this control will be used to select a
+     *            super enum type.
      */
-    public EnumTypeRefControl(IIpsProject project, Composite parent, UIToolkit toolkit) {
+    public EnumTypeRefControl(IIpsProject project, Composite parent, UIToolkit toolkit, boolean chooseSuperEnumType) {
+
         super(project, parent, toolkit, Messages.EnumTypeRefControl_title, Messages.EnumTypeRefControl_description);
+
         this.currentEnumType = null;
+        this.chooseSuperEnumType = chooseSuperEnumType;
     }
 
     /**
      * Sets the current enum type. The current enum type and its subclasses will not be shown in the
      * contents of the control.
      * 
-     * @param currentEnumType The current enum type.
+     * @param currentEnumType The current enum type for that possible supertypes will be displayed.
      * 
      * @throws NullPointerException If currentEnumType is <code>null</code>.
      */
@@ -68,8 +77,14 @@ public class EnumTypeRefControl extends IpsObjectRefControl {
         for (IIpsSrcFile currentIpsSrcFile : ipsSrcFiles) {
             IEnumType currentLoopEnumType = (IEnumType)currentIpsSrcFile.getIpsObject();
             if (currentLoopEnumType != currentEnumType) {
-                if (!(isSubtypeOfCurrentEnumType(currentLoopEnumType))) {
-                    resultSrcFiles.add(currentIpsSrcFile);
+                if (chooseSuperEnumType) {
+                    if (!(isSubtypeOfCurrentEnumType(currentLoopEnumType)) && currentLoopEnumType.isAbstract()) {
+                        resultSrcFiles.add(currentIpsSrcFile);
+                    }
+                } else {
+                    if (!(currentLoopEnumType.isAbstract())) {
+                        resultSrcFiles.add(currentIpsSrcFile);
+                    }
                 }
             }
         }
@@ -77,7 +92,7 @@ public class EnumTypeRefControl extends IpsObjectRefControl {
         return resultSrcFiles.toArray(new IIpsSrcFile[resultSrcFiles.size()]);
     }
 
-    // Returns whether the given enum type is a subtype of the current enum type
+    /** Returns whether the given enum type is a subtype of the current enum type. */
     private boolean isSubtypeOfCurrentEnumType(IEnumType enumType) throws CoreException {
         if (currentEnumType == null) {
             return false;

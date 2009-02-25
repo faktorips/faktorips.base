@@ -11,7 +11,9 @@
  * Mitwirkende: Faktor Zehn AG - initial API and implementation - http://www.faktorzehn.de
  *******************************************************************************/
 
-package org.faktorips.devtools.core.model.enumtype;
+package org.faktorips.devtools.core.model.enumcontent;
+
+import org.faktorips.devtools.core.model.enums.IEnumValueContainer;
 
 /**
  * This object type is used when the values for a Faktor-IPS enumeration shall not be defined

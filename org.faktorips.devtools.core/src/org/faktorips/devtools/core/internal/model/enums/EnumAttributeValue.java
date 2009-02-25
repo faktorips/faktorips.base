@@ -11,7 +11,7 @@
  * Mitwirkende: Faktor Zehn AG - initial API and implementation - http://www.faktorzehn.de
  *******************************************************************************/
 
-package org.faktorips.devtools.core.internal.model.enumtype;
+package org.faktorips.devtools.core.internal.model.enums;
 
 import java.util.List;
 
@@ -19,12 +19,13 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.osgi.util.NLS;
 import org.eclipse.swt.graphics.Image;
 import org.faktorips.datatype.ValueDatatype;
+import org.faktorips.devtools.core.internal.model.enums.Messages;
 import org.faktorips.devtools.core.internal.model.ipsobject.AtomicIpsObjectPart;
+import org.faktorips.devtools.core.model.enums.IEnumAttributeValue;
+import org.faktorips.devtools.core.model.enums.IEnumValue;
+import org.faktorips.devtools.core.model.enums.IEnumValueContainer;
 import org.faktorips.devtools.core.model.enumtype.IEnumAttribute;
-import org.faktorips.devtools.core.model.enumtype.IEnumAttributeValue;
 import org.faktorips.devtools.core.model.enumtype.IEnumType;
-import org.faktorips.devtools.core.model.enumtype.IEnumValue;
-import org.faktorips.devtools.core.model.enumtype.IEnumValueContainer;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.util.XmlUtil;
 import org.faktorips.util.message.Message;
@@ -36,7 +37,7 @@ import org.w3c.dom.Text;
 /**
  * Implementation of IEnumAttributeValue, see the corresponding interface for more details.
  * 
- * @see org.faktorips.devtools.core.model.enumtype.IEnumAttributeValue
+ * @see org.faktorips.devtools.core.model.enums.IEnumAttributeValue
  * 
  * @author Alexander Weickmann
  * 

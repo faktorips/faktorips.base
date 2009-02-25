@@ -11,9 +11,10 @@
  * Mitwirkende: Faktor Zehn AG - initial API and implementation - http://www.faktorzehn.de
  *******************************************************************************/
 
-package org.faktorips.devtools.core.model.enumtype;
+package org.faktorips.devtools.core.model.enums;
 
 import org.eclipse.core.runtime.CoreException;
+import org.faktorips.devtools.core.model.enumtype.IEnumAttribute;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPart;
 
 /**

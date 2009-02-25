@@ -18,13 +18,15 @@ import java.util.List;
 import java.util.NoSuchElementException;
 
 import org.eclipse.core.runtime.CoreException;
+import org.faktorips.devtools.core.internal.model.enums.EnumValue;
+import org.faktorips.devtools.core.internal.model.enums.EnumValueContainer;
 import org.faktorips.devtools.core.internal.model.ipsobject.IpsObjectPartCollection;
+import org.faktorips.devtools.core.model.enumcontent.IEnumContent;
+import org.faktorips.devtools.core.model.enums.IEnumAttributeValue;
+import org.faktorips.devtools.core.model.enums.IEnumValue;
 import org.faktorips.devtools.core.model.enumtype.EnumTypeValidations;
 import org.faktorips.devtools.core.model.enumtype.IEnumAttribute;
-import org.faktorips.devtools.core.model.enumtype.IEnumAttributeValue;
-import org.faktorips.devtools.core.model.enumtype.IEnumContent;
 import org.faktorips.devtools.core.model.enumtype.IEnumType;
-import org.faktorips.devtools.core.model.enumtype.IEnumValue;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPart;
 import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
@@ -48,11 +50,11 @@ public class EnumType extends EnumValueContainer implements IEnumType {
     /** Reference to the super enum type if any. */
     private String superEnumType;
 
-    /** Collection containing all enum attributes for this enum type. */
-    private IpsObjectPartCollection enumAttributes;
-
     /** Flag indicating whether the values for this enum type are defined in the model. */
     private boolean valuesArePartOfModel;
+
+    /** Collection containing all enum attributes for this enum type. */
+    private IpsObjectPartCollection enumAttributes;
 
     /**
      * Flag indicating whether this enum type is abstract in means of the object oriented abstract
@@ -389,11 +391,30 @@ public class EnumType extends EnumValueContainer implements IEnumType {
     protected void validateThis(MessageList list, IIpsProject ipsProject) throws CoreException {
         super.validateThis(list, ipsProject);
 
+        Message validationMessage = null;
+
+        // Validate super enum type
         if (!(superEnumType.equals(""))) {
-            Message validationMessage = EnumTypeValidations.validateSuperEnumType(this, superEnumType, ipsProject);
+            validationMessage = EnumTypeValidations.validateSuperEnumType(this, superEnumType, ipsProject);
             if (validationMessage != null) {
                 list.add(validationMessage);
             }
+        }
+
+        // Validate inherited attributes
+        if (!(superEnumType.equals(""))) {
+            if (validationMessage == null) {
+                validationMessage = EnumTypeValidations.validateInheritedAttributes(this);
+                if (validationMessage != null) {
+                    list.add(validationMessage);
+                }
+            }
+        }
+
+        // Validate identifier attribute
+        validationMessage = EnumTypeValidations.validateIdentifierAttribute(this);
+        if (validationMessage != null) {
+            list.add(validationMessage);
         }
     }
 
@@ -442,6 +463,39 @@ public class EnumType extends EnumValueContainer implements IEnumType {
      */
     public boolean hasSuperEnumType() {
         return (!(superEnumType.equals("")));
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public List<IEnumType> findAllSuperEnumTypes() throws CoreException {
+        List<IEnumType> enumTypes = new ArrayList<IEnumType>();
+
+        IEnumType currentEnumType = this;
+        while (currentEnumType != null) {
+            IEnumType superEnumType = currentEnumType.findSuperEnumType();
+            currentEnumType = superEnumType;
+            if (superEnumType != null) {
+                enumTypes.add(superEnumType);
+            }
+        }
+
+        return enumTypes;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public List<IEnumAttribute> getInheritedAttributes() {
+        List<IEnumAttribute> inheritedAttributes = new ArrayList<IEnumAttribute>();
+
+        for (IEnumAttribute currentEnumAttribute : getEnumAttributes()) {
+            if (currentEnumAttribute.isInherited()) {
+                inheritedAttributes.add(currentEnumAttribute);
+            }
+        }
+
+        return inheritedAttributes;
     }
 
 }

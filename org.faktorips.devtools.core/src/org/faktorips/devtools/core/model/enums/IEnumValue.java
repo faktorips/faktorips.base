@@ -11,7 +11,7 @@
  * Mitwirkende: Faktor Zehn AG - initial API and implementation - http://www.faktorzehn.de
  *******************************************************************************/
 
-package org.faktorips.devtools.core.model.enumtype;
+package org.faktorips.devtools.core.model.enums;
 
 import java.util.List;
 
@@ -76,8 +76,7 @@ public interface IEnumValue extends IIpsObjectPart {
     /**
      * Returns the enum value container this enum value is being stored in.
      * <p>
-     * This is a shortcut for:<br />
-     * <code>IEnumValueContainer enumValueContainer = (IEnumValueContainer)enumValue.getParent();</code>
+     * This is a shortcut for: <code>(IEnumValueContainer)enumValue.getParent();</code>
      * 
      * @return The enum value container this enum value belongs to.
      */

@@ -11,7 +11,7 @@
  * Mitwirkende: Faktor Zehn AG - initial API and implementation - http://www.faktorzehn.de
  *******************************************************************************/
 
-package org.faktorips.devtools.core.internal.model.enumtype;
+package org.faktorips.devtools.core.internal.model.enums;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -20,8 +20,8 @@ import java.util.NoSuchElementException;
 import org.eclipse.core.runtime.CoreException;
 import org.faktorips.devtools.core.internal.model.ipsobject.BaseIpsObject;
 import org.faktorips.devtools.core.internal.model.ipsobject.IpsObjectPartCollection;
-import org.faktorips.devtools.core.model.enumtype.IEnumValue;
-import org.faktorips.devtools.core.model.enumtype.IEnumValueContainer;
+import org.faktorips.devtools.core.model.enums.IEnumValue;
+import org.faktorips.devtools.core.model.enums.IEnumValueContainer;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPart;
 import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
 import org.faktorips.util.ArgumentCheck;
@@ -29,7 +29,7 @@ import org.faktorips.util.ArgumentCheck;
 /**
  * Implementation of IEnumValueContainer, see the corresponding interface for more details.
  * 
- * @see org.faktorips.devtools.core.model.enumtype.IEnumValueContainer
+ * @see org.faktorips.devtools.core.model.enums.IEnumValueContainer
  * 
  * @author Alexander Weickmann
  * 

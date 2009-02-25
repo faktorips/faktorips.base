@@ -17,7 +17,7 @@ import javax.xml.parsers.ParserConfigurationException;
 
 import org.eclipse.core.runtime.CoreException;
 import org.faktorips.devtools.core.model.IIpsModel;
-import org.faktorips.devtools.core.model.enumtype.IEnumContent;
+import org.faktorips.devtools.core.model.enumcontent.IEnumContent;
 import org.w3c.dom.Element;
 
 public class EnumValueTest extends AbstractIpsEnumPluginTest {
@@ -49,6 +49,7 @@ public class EnumValueTest extends AbstractIpsEnumPluginTest {
 
         IIpsModel ipsModel = getIpsModel();
 
+        // Test not enough enum attribute values
         ipsModel.clearValidationCache();
         genderEnumValueFemale.getEnumAttributeValue(0).delete();
         assertEquals(1, genderEnumValueFemale.validate(ipsProject).getNoOfMessages());

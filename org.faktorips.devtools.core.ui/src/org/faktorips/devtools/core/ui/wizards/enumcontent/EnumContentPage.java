@@ -18,8 +18,8 @@ import java.util.List;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.swt.widgets.Composite;
-import org.faktorips.devtools.core.model.enumtype.EnumContentValidations;
-import org.faktorips.devtools.core.model.enumtype.IEnumContent;
+import org.faktorips.devtools.core.model.enumcontent.EnumContentValidations;
+import org.faktorips.devtools.core.model.enumcontent.IEnumContent;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObject;
 import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
 import org.faktorips.devtools.core.model.ipsproject.IIpsPackageFragmentRoot;
@@ -65,7 +65,7 @@ public class EnumContentPage extends IpsObjectPage {
 
         // Enum type
         toolkit.createFormLabel(nameComposite, Messages.Fields_EnumType + ':');
-        IpsObjectRefControl enumTypeControl = toolkit.createEnumTypeRefControl(null, nameComposite);
+        IpsObjectRefControl enumTypeControl = toolkit.createEnumTypeRefControl(null, nameComposite, false);
         enumTypeField = new TextButtonField(enumTypeControl);
         enumTypeField.addChangeListener(this);
     }

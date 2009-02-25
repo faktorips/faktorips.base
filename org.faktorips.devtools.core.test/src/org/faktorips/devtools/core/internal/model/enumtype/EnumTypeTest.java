@@ -18,11 +18,11 @@ import java.util.List;
 import javax.xml.parsers.ParserConfigurationException;
 
 import org.eclipse.core.runtime.CoreException;
+import org.faktorips.devtools.core.model.enumcontent.IEnumContent;
+import org.faktorips.devtools.core.model.enums.IEnumAttributeValue;
+import org.faktorips.devtools.core.model.enums.IEnumValue;
 import org.faktorips.devtools.core.model.enumtype.IEnumAttribute;
-import org.faktorips.devtools.core.model.enumtype.IEnumAttributeValue;
-import org.faktorips.devtools.core.model.enumtype.IEnumContent;
 import org.faktorips.devtools.core.model.enumtype.IEnumType;
-import org.faktorips.devtools.core.model.enumtype.IEnumValue;
 import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
 import org.w3c.dom.Element;
 
@@ -349,10 +349,64 @@ public class EnumTypeTest extends AbstractIpsEnumPluginTest {
 
     public void testValidateThis() throws CoreException {
         assertTrue(genderEnumType.isValid());
+    }
 
+    public void testValidateSuperEnumType() throws CoreException {
+        // Test super enum type does not exit
         getIpsModel().clearValidationCache();
         genderEnumType.setSuperEnumType("FooBar");
         assertEquals(1, genderEnumType.validate(ipsProject).getNoOfMessages());
+
+        // Test super enum type is not abstract
+        IEnumType superEnumType = newEnumType(ipsProject, "SuperEnumType");
+        genderEnumType.setSuperEnumType(superEnumType.getQualifiedName());
+        getIpsModel().clearValidationCache();
+        assertEquals(1, genderEnumType.validate(ipsProject).getNoOfMessages());
+        superEnumType.setAbstract(true);
+        getIpsModel().clearValidationCache();
+        assertTrue(genderEnumType.isValid());
+    }
+
+    public void testValidateInheritedAttributes() throws CoreException {
+        IEnumType superEnumType = newEnumType(ipsProject, "SuperEnumType");
+        superEnumType.setAbstract(true);
+        genderEnumType.setSuperEnumType(superEnumType.getQualifiedName());
+        IEnumType superSuperEnumType = newEnumType(ipsProject, "SuperSuperEnumType");
+        superSuperEnumType.setAbstract(true);
+        superEnumType.setSuperEnumType(superSuperEnumType.getQualifiedName());
+
+        IEnumAttribute attr1 = superEnumType.newEnumAttribute();
+        attr1.setName("attr1");
+        attr1.setDatatype(INTEGER_DATATYPE_NAME);
+        attr1.setIdentifier(true);
+        IEnumAttribute attr2 = superSuperEnumType.newEnumAttribute();
+        attr2.setName("attr2");
+        attr2.setDatatype(STRING_DATATYPE_NAME);
+        getIpsModel().clearValidationCache();
+        assertEquals(1, genderEnumType.validate(ipsProject).getNoOfMessages());
+
+        attr1 = genderEnumType.newEnumAttribute();
+        attr1.setName("attr1");
+        attr1.setDatatype(INTEGER_DATATYPE_NAME);
+        attr1.setIdentifier(true);
+        attr1.setInherited(true);
+        attr2 = genderEnumType.newEnumAttribute();
+        attr2.setName("attr2");
+        attr2.setDatatype(STRING_DATATYPE_NAME);
+        attr2.setInherited(true);
+        genderEnumAttributeId.setIdentifier(false);
+        getIpsModel().clearValidationCache();
+        assertTrue(genderEnumType.isValid());
+    }
+
+    public void testValidateIdentifierAttribute() throws CoreException {
+        genderEnumAttributeId.setIdentifier(false);
+        getIpsModel().clearValidationCache();
+        assertEquals(1, genderEnumType.validate(ipsProject).getNoOfMessages());
+
+        genderEnumType.setAbstract(true);
+        getIpsModel().clearValidationCache();
+        assertTrue(genderEnumType.isValid());
     }
 
     public void testFindSuperEnumType() throws CoreException {
@@ -376,6 +430,27 @@ public class EnumTypeTest extends AbstractIpsEnumPluginTest {
         IEnumType superEnumType = newEnumType(ipsProject, "SuperEnumType");
         genderEnumType.setSuperEnumType(superEnumType.getQualifiedName());
         assertTrue(genderEnumType.hasSuperEnumType());
+    }
+
+    public void testFindSuperEnumTypes() throws CoreException {
+        assertEquals(0, genderEnumType.findAllSuperEnumTypes().size());
+
+        IEnumType rootEnumType = newEnumType(ipsProject, "RootEnumType");
+        IEnumType level1EnumType = newEnumType(ipsProject, "Level1EnumType");
+        level1EnumType.setSuperEnumType(rootEnumType.getQualifiedName());
+        genderEnumType.setSuperEnumType(level1EnumType.getQualifiedName());
+
+        List<IEnumType> superEnumTypes = genderEnumType.findAllSuperEnumTypes();
+        assertEquals(2, superEnumTypes.size());
+        assertEquals(level1EnumType, superEnumTypes.get(0));
+        assertEquals(rootEnumType, superEnumTypes.get(1));
+    }
+
+    public void testGetInheritedAttributes() {
+        assertEquals(0, genderEnumType.getInheritedAttributes().size());
+        genderEnumAttributeId.setInherited(true);
+        assertEquals(1, genderEnumType.getInheritedAttributes().size());
+        assertEquals(genderEnumAttributeId, genderEnumType.getInheritedAttributes().get(0));
     }
 
 }

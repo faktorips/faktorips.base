@@ -32,11 +32,14 @@ public interface IEnumAttribute extends IIpsObjectPart {
     /** The xml tag for this ips object part. */
     public final static String XML_TAG = "EnumAttribute"; //$NON-NLS-1$
 
-    /** Name of the the datatype property. */
+    /** Name of the datatype property. */
     public final static String PROPERTY_DATATYPE = "datatype"; //$NON-NLS-1$
 
-    /** Name of the the isIdentifier property. */
+    /** Name of the identifier property. */
     public final static String PROPERTY_IDENTIFIER = "identifier"; //$NON-NLS-1$
+
+    /** Name of the inherited property. */
+    public final static String PROPERTY_INHERITED = "inherited"; //$NON-NLS-1$
 
     /** Prefix for all message codes of this class. */
     public final static String MSGCODE_PREFIX = "ENUMATTRIBUTE-"; //$NON-NLS-1$
@@ -54,6 +57,13 @@ public interface IEnumAttribute extends IIpsObjectPart {
     /** Validation message code to indicate that the datatype of this enum attribute does not exist. */
     public final static String MSGCODE_ENUM_ATTRIBUTE_DATATYPE_DOES_NOT_EXIST = MSGCODE_PREFIX
             + "EnumAttributeDatatypeDoesNotExist"; //$NON-NLS-1$
+
+    /**
+     * Validation message code to indicate that this enum attribute inherits from the supertype
+     * hierarchy but there is no such attribute in the supertype hierarchy.
+     */
+    public final static String MSGCODE_ENUM_ATTRIBUTE_NO_SUCH_ATTRIBUTE_IN_SUPERTYPE_HIERARCHY = MSGCODE_PREFIX
+            + "EnumAttributeNoSuchAttributeInSupertypeHierarchy"; //$NON-NLS-1$
 
     /**
      * Validation message code to indicate that there are other enum attributes marked as
@@ -98,8 +108,34 @@ public interface IEnumAttribute extends IIpsObjectPart {
     /**
      * Sets whether this enum attribute is an identifier.
      * 
-     * @param identifier Flag indicating whether this enum attribute will be an identifier.
+     * @param isIdentifier Flag indicating whether this enum attribute will be an identifier.
      */
-    public void setIdentifier(boolean identifier);
+    public void setIdentifier(boolean isIdentifier);
+
+    /**
+     * Returns <code>true</code> if this enum attribute is inherited from the supertype hierarchy,
+     * <code>false</code> if not.
+     * 
+     * @return Flag indicating whether this enum attribute is inherited from the supertype hierarchy
+     *         or not.
+     */
+    public boolean isInherited();
+
+    /**
+     * Sets whether this enum attribute is inherited from the supertype hierarchy.
+     * 
+     * @param isInherited Flag indicating whether this enum attribute is inherited from the
+     *            supertype hierarchy.
+     */
+    public void setInherited(boolean isInherited);
+
+    /**
+     * Returns the enum type this enum attribute belongs to.
+     * <p>
+     * This is a shortcut for: <code>(IEnumType)this.getParent();</code>
+     * 
+     * @return The enum type this enum attribute belongs to.
+     */
+    public IEnumType getEnumType();
 
 }

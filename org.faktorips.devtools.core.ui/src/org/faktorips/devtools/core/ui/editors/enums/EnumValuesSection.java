@@ -11,7 +11,7 @@
  * Mitwirkende: Faktor Zehn AG - initial API and implementation - http://www.faktorzehn.de
  *******************************************************************************/
 
-package org.faktorips.devtools.core.ui.editors.enumtype;
+package org.faktorips.devtools.core.ui.editors.enums;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -49,12 +49,12 @@ import org.faktorips.datatype.ValueDatatype;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.model.ContentChangeEvent;
 import org.faktorips.devtools.core.model.ContentsChangeListener;
+import org.faktorips.devtools.core.model.enumcontent.IEnumContent;
+import org.faktorips.devtools.core.model.enums.IEnumAttributeValue;
+import org.faktorips.devtools.core.model.enums.IEnumValue;
+import org.faktorips.devtools.core.model.enums.IEnumValueContainer;
 import org.faktorips.devtools.core.model.enumtype.IEnumAttribute;
-import org.faktorips.devtools.core.model.enumtype.IEnumAttributeValue;
-import org.faktorips.devtools.core.model.enumtype.IEnumContent;
 import org.faktorips.devtools.core.model.enumtype.IEnumType;
-import org.faktorips.devtools.core.model.enumtype.IEnumValue;
-import org.faktorips.devtools.core.model.enumtype.IEnumValueContainer;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObject;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPart;
 import org.faktorips.devtools.core.ui.IpsUIPlugin;
@@ -135,6 +135,21 @@ public class EnumValuesSection extends IpsSection {
         setText(Messages.EnumValuesSection_title);
 
         updateEnabledStates();
+        createFirstRow();
+    }
+
+    /**
+     * Make sure that there is at least one row in the enum values table if there are any attributes
+     * in the enum type and the enum values table is enabled.
+     */
+    private void createFirstRow() throws CoreException {
+        if (enumValuesTable.isEnabled()) {
+            if (enumType.getEnumAttributesCount() > 0 && enumValueContainer.getEnumValuesCount() == 0) {
+                enumValueContainer.newEnumValue();
+            }
+        }
+        
+        updateTableViewer();
     }
 
     /** Creates the actions. */
@@ -225,12 +240,10 @@ public class EnumValuesSection extends IpsSection {
         tableGridData.heightHint = parent.getClientArea().height;
         enumValuesTable.setLayoutData(tableGridData);
 
-        // Make sure that there is at least one row (if there are any attributes)
-        if (enumType.getEnumAttributesCount() > 0 && enumValueContainer.getEnumValuesCount() == 0) {
-            enumValueContainer.newEnumValue();
-        }
-
-        // Create columns based upon enum attribute values
+        /*
+         * Create columns based upon enum attribute values if there are any enum values yet, if not
+         * use the enum attributes to create the columns.
+         */
         if (enumValueContainer.getEnumValuesCount() > 0) {
             IEnumValue enumValue = enumValueContainer.getEnumValues().get(0);
             List<IEnumAttributeValue> enumAttributeValues = enumValue.getEnumAttributeValues();
@@ -238,6 +251,11 @@ public class EnumValuesSection extends IpsSection {
                 IEnumAttribute currentEnumAttribute = currentEnumAttributeValue.findEnumAttribute();
                 String columnName = (currentEnumAttribute != null) ? currentEnumAttribute.getName() : "";
                 addTableColumnToEnumValuesTable(columnName);
+            }
+        
+        } else {
+            for (IEnumAttribute currentEnumAttribute : enumValueContainer.findEnumType().getEnumAttributes()) {
+                addTableColumnToEnumValuesTable(currentEnumAttribute.getName());
             }
         }
 

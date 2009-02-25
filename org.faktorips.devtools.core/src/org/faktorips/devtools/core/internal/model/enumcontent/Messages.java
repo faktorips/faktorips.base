@@ -11,33 +11,26 @@
  * Mitwirkende: Faktor Zehn AG - initial API and implementation - http://www.faktorzehn.de
  *******************************************************************************/
 
-package org.faktorips.devtools.core.ui.editors.enumtype;
+package org.faktorips.devtools.core.internal.model.enumcontent;
 
-import org.eclipse.jface.viewers.TableViewer;
-import org.faktorips.devtools.core.ui.actions.IpsAction;
+import org.eclipse.osgi.util.NLS;
 
-/**
- * Abstract base class for the actions used by the <code>EnumValuesSection</code>.
- * 
- * @see EnumValuesSection
+/*
  * 
  * @author Alexander Weickmann
- * 
- * @since 2.3
  */
-public abstract class AbstractEnumAction extends IpsAction {
+public class Messages extends NLS {
 
-    /** The table viewer linking the ui table widget with the model data. */
-    protected TableViewer tableViewer;
+    private static final String BUNDLE_NAME = "org.faktorips.devtools.core.internal.model.enumcontent.messages"; //$NON-NLS-1$
 
-    /**
-     * Creates the enum action.
-     * 
-     * @param tableViewer The table viewer linking the ui table widget with the model data.
-     */
-    public AbstractEnumAction(TableViewer tableViewer) {
-        super(tableViewer);
-        this.tableViewer = tableViewer;
+    public static String EnumContent_EnumTypeMissing;
+    public static String EnumContent_EnumTypeDoesNotExist;
+    public static String EnumContent_EnumTypeIsAbstract;
+    public static String EnumContent_ValuesArePartOfModel;
+
+    static {
+        // initialize resource bundle
+        NLS.initializeMessages(BUNDLE_NAME, Messages.class);
     }
 
 }

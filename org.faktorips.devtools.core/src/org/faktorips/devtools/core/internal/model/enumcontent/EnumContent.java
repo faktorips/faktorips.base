@@ -11,11 +11,12 @@
  * Mitwirkende: Faktor Zehn AG - initial API and implementation - http://www.faktorzehn.de
  *******************************************************************************/
 
-package org.faktorips.devtools.core.internal.model.enumtype;
+package org.faktorips.devtools.core.internal.model.enumcontent;
 
 import org.eclipse.core.runtime.CoreException;
-import org.faktorips.devtools.core.model.enumtype.EnumContentValidations;
-import org.faktorips.devtools.core.model.enumtype.IEnumContent;
+import org.faktorips.devtools.core.internal.model.enums.EnumValueContainer;
+import org.faktorips.devtools.core.model.enumcontent.EnumContentValidations;
+import org.faktorips.devtools.core.model.enumcontent.IEnumContent;
 import org.faktorips.devtools.core.model.enumtype.IEnumType;
 import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
@@ -27,7 +28,7 @@ import org.w3c.dom.Element;
 /**
  * Implementation of IEnumContent, see the corresponding interface for more details.
  * 
- * @see org.faktorips.devtools.core.model.enumtype.IEnumContent
+ * @see org.faktorips.devtools.core.model.enumcontent.IEnumContent
  * 
  * @author Alexander Weickmann
  * 

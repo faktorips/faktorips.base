@@ -92,7 +92,8 @@ public class EnumTypeGeneralInfoSection extends IpsSection {
             }
         });
 
-        EnumTypeRefControl supertypeRefControl = toolkit.createEnumTypeRefControl(enumType.getIpsProject(), composite);
+        EnumTypeRefControl supertypeRefControl = toolkit.createEnumTypeRefControl(enumType.getIpsProject(), composite,
+                true);
         supertypeRefControl.setCurrentEnumType(enumType);
         bindingContext.bindContent(supertypeRefControl, enumType, IEnumType.PROPERTY_SUPERTYPE);
 

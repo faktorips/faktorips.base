@@ -18,6 +18,8 @@ import java.util.NoSuchElementException;
 
 import org.eclipse.core.runtime.CoreException;
 import org.faktorips.datatype.Datatype;
+import org.faktorips.devtools.core.model.enumcontent.IEnumContent;
+import org.faktorips.devtools.core.model.enums.IEnumValueContainer;
 
 /**
  * An enum type represents the structure of an enumeration in the Faktor-IPS model.
@@ -65,6 +67,21 @@ public interface IEnumType extends IEnumValueContainer, Datatype {
     /** Validation message code to indicate that the supertype of this enum type does not exist. */
     public final static String MSGCODE_ENUM_TYPE_SUPERTYPE_DOES_NOT_EXIST = MSGCODE_PREFIX
             + "EnumTypeSupertypeDoesNotExist"; //$NON-NLS-1$
+
+    /** Validation message code to indicate that the supertype of this enum type is not abstract. */
+    public final static String MSGCODE_ENUM_TYPE_SUPERTYPE_IS_NOT_ABSTRACT = MSGCODE_PREFIX
+            + "EnumTypeSupertypeIsNotAbstract"; //$NON-NLS-1$
+
+    /**
+     * Validation message code to indicate that not all attributes defined in the the supertype
+     * hierarchy have been inherited.
+     */
+    public final static String MSGCODE_ENUM_TYPE_NOT_INHERITED_ATTRIBUTES_IN_SUPERTYPE_HIERARCHY = MSGCODE_PREFIX
+            + "EnumTypeNotInheritedAttributesInSupertypeHierarchy"; //$NON-NLS-1$
+
+    /** Validation message code to indicate that this enum type has no identifier attribute. */
+    public final static String MSGCODE_ENUM_TYPE_NO_IDENTIFIER_ATTRIBUTE = MSGCODE_PREFIX
+            + "EnumTypeNoIdentifierAttribute"; //$NON-NLS-1$
 
     /**
      * Returns the qualified name of the super enum type of this enum type.
@@ -268,5 +285,25 @@ public interface IEnumType extends IEnumValueContainer, Datatype {
      *         not (<code>false</code>).
      */
     public boolean hasSuperEnumType();
+
+    /**
+     * Searches all enum types in the supertype hierarchy this enum type is a subtype of and returns
+     * them in a list.
+     * 
+     * @return A list containing all enum types from the supertype hierarchy this enum type is a
+     *         subtype of. Never returns <code>null</code>.
+     * 
+     * @throws CoreException If an error occurs while searching for the enum types in the supertype
+     *             hierarchy.
+     */
+    public List<IEnumType> findAllSuperEnumTypes() throws CoreException;
+
+    /**
+     * Returns all enum attributes of this enum type that are marked as inherited.
+     * 
+     * @return A list containing all enum attributes of this enum type being marked as inherited.
+     *         Never returns <code>null</code>.
+     */
+    public List<IEnumAttribute> getInheritedAttributes();
 
 }

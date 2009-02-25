@@ -17,11 +17,11 @@ import javax.xml.parsers.ParserConfigurationException;
 
 import org.eclipse.core.runtime.CoreException;
 import org.faktorips.devtools.core.AbstractIpsPluginTest;
+import org.faktorips.devtools.core.model.enumcontent.IEnumContent;
+import org.faktorips.devtools.core.model.enums.IEnumAttributeValue;
+import org.faktorips.devtools.core.model.enums.IEnumValue;
 import org.faktorips.devtools.core.model.enumtype.IEnumAttribute;
-import org.faktorips.devtools.core.model.enumtype.IEnumAttributeValue;
 import org.faktorips.devtools.core.model.enumtype.IEnumType;
-import org.faktorips.devtools.core.model.enumtype.IEnumValue;
-import org.faktorips.devtools.core.model.enumtype.IEnumContent;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.w3c.dom.Document;
 

@@ -24,21 +24,19 @@ public class Messages extends NLS {
     private static final String BUNDLE_NAME = "org.faktorips.devtools.core.internal.model.enumtype.messages"; //$NON-NLS-1$
 
     public static String EnumType_SupertypeDoesNotExist;
-
-    public static String EnumContent_EnumTypeMissing;
-    public static String EnumContent_EnumTypeDoesNotExist;
-    public static String EnumContent_EnumTypeIsAbstract;
-    public static String EnumContent_ValuesArePartOfModel;
-
-    public static String EnumValue_NumberAttributeValuesDoesNotCorrespondToNumberAttributes;
+    public static String EnumType_SupertypeIsNotAbstract;
+    public static String EnumType_NotInheritedAttributesInSupertypeHierarchySingular;
+    public static String EnumType_NotInheritedAttributesInSupertypeHierarchyPlural;
+    public static String EnumType_NoIdentifierAttribute;
 
     public static String EnumAttribute_NameMissing;
     public static String EnumAttribute_DuplicateName;
     public static String EnumAttribute_DatatypeMissing;
     public static String EnumAttribute_DatatypeDoesNotExist;
     public static String EnumAttribute_DuplicateIdentifier;
+    public static String EnumAttribute_NoSuchAttributeInSupertypeHierarchy;
     
-    public static String EnumAttributeValue_NotParsable;
+    public static String EnumAttribute_Identifier;
 
     static {
         // initialize resource bundle

@@ -11,14 +11,15 @@
  * Mitwirkende: Faktor Zehn AG - initial API and implementation - http://www.faktorzehn.de
  *******************************************************************************/
 
-package org.faktorips.devtools.core.ui.editors.enumtype;
+package org.faktorips.devtools.core.ui.editors.enums;
 
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.TableViewer;
-import org.faktorips.devtools.core.model.enumtype.IEnumValue;
-import org.faktorips.devtools.core.model.enumtype.IEnumValueContainer;
+import org.faktorips.devtools.core.model.enums.IEnumValue;
+import org.faktorips.devtools.core.model.enums.IEnumValueContainer;
 import org.faktorips.devtools.core.ui.IpsUIPlugin;
+import org.faktorips.devtools.core.ui.editors.enums.Messages;
 
 /**
  * This action is used by the <code>EnumValuesSection</code> for moving enum values.

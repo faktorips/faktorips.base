@@ -11,11 +11,12 @@
  * Mitwirkende: Faktor Zehn AG - initial API and implementation - http://www.faktorzehn.de
  *******************************************************************************/
 
-package org.faktorips.devtools.core.model.enumtype;
+package org.faktorips.devtools.core.model.enumcontent;
 
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.osgi.util.NLS;
-import org.faktorips.devtools.core.internal.model.enumtype.Messages;
+import org.faktorips.devtools.core.internal.model.enumcontent.Messages;
+import org.faktorips.devtools.core.model.enumtype.IEnumType;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.util.ArgumentCheck;
 import org.faktorips.util.message.Message;
@@ -26,7 +27,7 @@ import org.faktorips.util.message.ObjectProperty;
  * A class that contains validations of the model class <code>IEnumContent</code> which are also
  * used in the creation wizard where the model object doesn't exist at the point of validation.
  * 
- * @see org.faktorips.devtools.core.model.enumtype.IEnumContent
+ * @see org.faktorips.devtools.core.model.enumcontent.IEnumContent
  * 
  * @author Alexander Weickmann
  * 
@@ -71,28 +72,35 @@ public abstract class EnumContentValidations {
         ObjectProperty[] objectProperties = (enumContent != null) ? new ObjectProperty[] { new ObjectProperty(
                 enumContent, IEnumContent.PROPERTY_ENUM_TYPE) } : new ObjectProperty[0];
 
+        // Enum type missing?
         if (enumTypeQualifiedName.equals("")) {
             text = Messages.EnumContent_EnumTypeMissing;
             validationMessageList.add(new Message(IEnumContent.MSGCODE_ENUM_CONTENT_ENUM_TYPE_MISSING, text,
                     Message.ERROR, objectProperties));
-        } else {
-            IEnumType enumTypeRef = ipsProject.findEnumType(enumTypeQualifiedName);
-            if (enumTypeRef == null) {
-                text = NLS.bind(Messages.EnumContent_EnumTypeDoesNotExist, enumTypeQualifiedName);
-                validationMessageList.add(new Message(IEnumContent.MSGCODE_ENUM_CONTENT_ENUM_TYPE_DOES_NOT_EXIST, text,
-                        Message.ERROR, objectProperties));
-            } else {
-                if (enumTypeRef.getValuesArePartOfModel()) {
-                    text = NLS.bind(Messages.EnumContent_ValuesArePartOfModel, enumTypeQualifiedName);
-                    validationMessageList.add(new Message(IEnumContent.MSGCODE_ENUM_CONTENT_VALUES_ARE_PART_OF_MODEL,
-                            text, Message.ERROR, objectProperties));
-                }
-                if (enumTypeRef.isAbstract()) {
-                    text = NLS.bind(Messages.EnumContent_EnumTypeIsAbstract, enumTypeQualifiedName);
-                    validationMessageList.add(new Message(IEnumContent.MSGCODE_ENUM_CONTENT_ENUM_TYPE_IS_ABSTRACT,
-                            text, Message.ERROR, objectProperties));
-                }
-            }
+            return validationMessageList;
+        }
+
+        // Enum type exists?
+        IEnumType enumTypeRef = ipsProject.findEnumType(enumTypeQualifiedName);
+        if (enumTypeRef == null) {
+            text = NLS.bind(Messages.EnumContent_EnumTypeDoesNotExist, enumTypeQualifiedName);
+            validationMessageList.add(new Message(IEnumContent.MSGCODE_ENUM_CONTENT_ENUM_TYPE_DOES_NOT_EXIST, text,
+                    Message.ERROR, objectProperties));
+            return validationMessageList;
+        }
+
+        // Values are part of model?
+        if (enumTypeRef.getValuesArePartOfModel()) {
+            text = NLS.bind(Messages.EnumContent_ValuesArePartOfModel, enumTypeQualifiedName);
+            validationMessageList.add(new Message(IEnumContent.MSGCODE_ENUM_CONTENT_VALUES_ARE_PART_OF_MODEL, text,
+                    Message.ERROR, objectProperties));
+        }
+
+        // Enum type abstract?
+        if (enumTypeRef.isAbstract()) {
+            text = NLS.bind(Messages.EnumContent_EnumTypeIsAbstract, enumTypeQualifiedName);
+            validationMessageList.add(new Message(IEnumContent.MSGCODE_ENUM_CONTENT_ENUM_TYPE_IS_ABSTRACT, text,
+                    Message.ERROR, objectProperties));
         }
 
         return validationMessageList;

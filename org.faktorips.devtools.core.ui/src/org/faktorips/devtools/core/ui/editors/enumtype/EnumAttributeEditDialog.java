@@ -81,10 +81,12 @@ public class EnumAttributeEditDialog extends IpsPartEditDialog2 {
         // Create extension properties on position top
         extFactory.createControls(workArea, uiToolkit, enumAttribute, IExtensionPropertyDefinition.POSITION_TOP);
 
+        // Name
         uiToolkit.createFormLabel(workArea, Messages.EnumAttributeEditDialog_labelName);
         Text nameText = uiToolkit.createText(workArea);
         bindingContext.bindContent(nameText, enumAttribute, IEnumAttribute.PROPERTY_NAME);
 
+        // Datatype
         uiToolkit.createFormLabel(workArea, Messages.EnumAttributeEditDialog_labelDatatype);
         DatatypeRefControl datatypeControl = uiToolkit.createDatatypeRefEdit(enumAttribute.getIpsProject(), workArea);
         datatypeControl.setVoidAllowed(false);
@@ -92,9 +94,15 @@ public class EnumAttributeEditDialog extends IpsPartEditDialog2 {
         datatypeControl.setOnlyValueDatatypesAllowed(true);
         bindingContext.bindContent(datatypeControl, enumAttribute, IEnumAttribute.PROPERTY_DATATYPE);
 
+        // Identifier
         uiToolkit.createFormLabel(workArea, Messages.EnumAttributeEditDialog_labelIsIdentifier);
         Checkbox identifierCheckbox = uiToolkit.createCheckbox(workArea);
         bindingContext.bindContent(identifierCheckbox, enumAttribute, IEnumAttribute.PROPERTY_IDENTIFIER);
+
+        // Inherited
+        uiToolkit.createFormLabel(workArea, Messages.EnumAttributeEditDialog_labelIsInherited);
+        Checkbox inheritedCheckbox = uiToolkit.createCheckbox(workArea);
+        bindingContext.bindContent(inheritedCheckbox, enumAttribute, IEnumAttribute.PROPERTY_INHERITED);
 
         // Create extension properties on position bottom
         extFactory.createControls(workArea, uiToolkit, enumAttribute, IExtensionPropertyDefinition.POSITION_BOTTOM);

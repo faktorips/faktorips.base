@@ -17,10 +17,11 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.swt.widgets.Composite;
 import org.faktorips.devtools.core.model.enumtype.IEnumType;
 import org.faktorips.devtools.core.ui.UIToolkit;
+import org.faktorips.devtools.core.ui.editors.enums.EnumValuesSection;
 import org.faktorips.devtools.core.ui.editors.type.TypeEditorStructurePage;
 
 /**
- * The <code>EnumTypeValuesPage</code> provides controls to edit the values of an
+ * The <code>EnumContentValuesPage</code> provides controls to edit the values of an
  * <code>IEnumType</code> and is intended to be used with the <code>EnumTypeEditor</code>.
  * 
  * @see EnumTypeEditor
@@ -35,7 +36,7 @@ public class EnumTypeValuesPage extends TypeEditorStructurePage {
     private IEnumType enumType;
 
     /**
-     * Creates a new <code>EnumTypeValuesPage</code>.
+     * Creates a new <code>EnumContentValuesPage</code>.
      * 
      * @param editor The <code>EnumTypeEditor</code> this page belongs to.
      * @param splittedStructure If this flag is set to <code>true</code> the enum values table won't

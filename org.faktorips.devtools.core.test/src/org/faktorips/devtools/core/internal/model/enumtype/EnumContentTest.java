@@ -17,7 +17,7 @@ import javax.xml.parsers.ParserConfigurationException;
 
 import org.eclipse.core.runtime.CoreException;
 import org.faktorips.devtools.core.model.IIpsModel;
-import org.faktorips.devtools.core.model.enumtype.IEnumContent;
+import org.faktorips.devtools.core.model.enumcontent.IEnumContent;
 import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
 import org.w3c.dom.Element;
 
@@ -61,21 +61,25 @@ public class EnumContentTest extends AbstractIpsEnumPluginTest {
 
         IIpsModel ipsModel = getIpsModel();
 
+        // Test enum type missing
         ipsModel.clearValidationCache();
         genderEnumContent.setEnumType("");
         assertEquals(1, genderEnumContent.validate(ipsProject).getNoOfMessages());
         genderEnumContent.setEnumType(genderEnumType.getQualifiedName());
 
+        // Test enum type does not exist
         ipsModel.clearValidationCache();
         genderEnumContent.setEnumType("FooBar");
         assertEquals(1, genderEnumContent.validate(ipsProject).getNoOfMessages());
         genderEnumContent.setEnumType(genderEnumType.getQualifiedName());
 
+        // Test values are part of model
         ipsModel.clearValidationCache();
         genderEnumType.setValuesArePartOfModel(true);
         assertEquals(1, genderEnumContent.validate(ipsProject).getNoOfMessages());
         genderEnumType.setValuesArePartOfModel(false);
 
+        // Test enum type is abstract
         ipsModel.clearValidationCache();
         genderEnumType.setAbstract(true);
         assertEquals(1, genderEnumContent.validate(ipsProject).getNoOfMessages());

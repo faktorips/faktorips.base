@@ -11,7 +11,7 @@
  * Mitwirkende: Faktor Zehn AG - initial API and implementation - http://www.faktorzehn.de
  *******************************************************************************/
 
-package org.faktorips.devtools.core.internal.model.enumtype;
+package org.faktorips.devtools.core.internal.model.enums;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -19,12 +19,13 @@ import java.util.List;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.osgi.util.NLS;
 import org.eclipse.swt.graphics.Image;
+import org.faktorips.devtools.core.internal.model.enums.Messages;
 import org.faktorips.devtools.core.internal.model.ipsobject.BaseIpsObjectPart;
 import org.faktorips.devtools.core.internal.model.ipsobject.IpsObjectPartCollection;
-import org.faktorips.devtools.core.model.enumtype.IEnumAttributeValue;
+import org.faktorips.devtools.core.model.enums.IEnumAttributeValue;
+import org.faktorips.devtools.core.model.enums.IEnumValue;
+import org.faktorips.devtools.core.model.enums.IEnumValueContainer;
 import org.faktorips.devtools.core.model.enumtype.IEnumType;
-import org.faktorips.devtools.core.model.enumtype.IEnumValue;
-import org.faktorips.devtools.core.model.enumtype.IEnumValueContainer;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPart;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.util.message.Message;
@@ -35,7 +36,7 @@ import org.w3c.dom.Element;
 /**
  * Implementation of IEnumValue, see the corresponding interface for more details.
  * 
- * @see org.faktorips.devtools.core.model.enumtype.IEnumValue
+ * @see org.faktorips.devtools.core.model.enums.IEnumValue
  * 
  * @author Alexander Weickmann
  * 
@@ -124,7 +125,7 @@ public class EnumValue extends BaseIpsObjectPart implements IEnumValue {
      * @param enumAttributeIndex The index of the enum attribute, that the enum attribute value that
      *            is to be moved downwards, refers to.
      */
-    void moveEnumAttributeValueDown(int enumAttributeIndex) {
+    public void moveEnumAttributeValueDown(int enumAttributeIndex) {
         moveEnumAttributeValue(enumAttributeIndex, false);
     }
 
@@ -141,7 +142,7 @@ public class EnumValue extends BaseIpsObjectPart implements IEnumValue {
      * @param enumAttributeIndex The index of the enum attribute, that the enum attribute value that
      *            is to be moved upwards, refers to.
      */
-    void moveEnumAttributeValueUp(int enumAttributeIndex) {
+    public void moveEnumAttributeValueUp(int enumAttributeIndex) {
         moveEnumAttributeValue(enumAttributeIndex, true);
     }
 

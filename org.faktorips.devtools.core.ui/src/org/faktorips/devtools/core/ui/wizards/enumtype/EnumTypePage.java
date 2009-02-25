@@ -72,7 +72,7 @@ public class EnumTypePage extends IpsObjectPage {
 
         // Super type
         toolkit.createFormLabel(nameComposite, Messages.Fields_SuperEnumType + ':');
-        IpsObjectRefControl superTypeControl = toolkit.createEnumTypeRefControl(null, nameComposite);
+        IpsObjectRefControl superTypeControl = toolkit.createEnumTypeRefControl(null, nameComposite, true);
         supertypeField = new TextButtonField(superTypeControl);
         supertypeField.addChangeListener(this);
 

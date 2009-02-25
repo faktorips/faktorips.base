@@ -459,15 +459,20 @@ public class UIToolkit {
     }
 
     /**
-     * Creates and returns a new EnumTypeRefControl.
+     * Creates and returns a new <code>EnumTypeRefControl</code>.
      * 
-     * @param ipsProject
-     * @param parent
+     * @param ipsProject The ips project to search for enum types.
+     * @param parent The parent ui composite.
+     * @param chooseSuperEnumType Flag indicating whether the created control shall be used to
+     *            choose a super enum type.
      * 
      * @return A handle to the newly created EnumTypeRefControl.
      */
-    public EnumTypeRefControl createEnumTypeRefControl(IIpsProject ipsProject, Composite parent) {
-        return new EnumTypeRefControl(ipsProject, parent, this);
+    public EnumTypeRefControl createEnumTypeRefControl(IIpsProject ipsProject,
+            Composite parent,
+            boolean chooseSuperEnumType) {
+        
+        return new EnumTypeRefControl(ipsProject, parent, this, chooseSuperEnumType);
     }
 
     /**

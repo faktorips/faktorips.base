@@ -18,6 +18,7 @@ import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.widgets.Composite;
 import org.faktorips.devtools.core.model.enumtype.IEnumType;
 import org.faktorips.devtools.core.ui.UIToolkit;
+import org.faktorips.devtools.core.ui.editors.enums.EnumValuesSection;
 import org.faktorips.devtools.core.ui.editors.type.TypeEditorStructurePage;
 
 /**
@@ -47,6 +48,11 @@ public class EnumTypeStructurePage extends TypeEditorStructurePage {
         super(editor, splittedStructure, Messages.EnumTypeStructurePage_title);
 
         enumType = editor.getEnumType();
+
+        if (!splittedStructure) {
+            // TODO find out escape sequence for &
+            setPartName(Messages.EnumTypeStructurePage_title + " + " + Messages.EnumTypeValuesPage_title);
+        }
     }
 
     /**

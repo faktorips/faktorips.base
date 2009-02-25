@@ -17,10 +17,10 @@ import javax.xml.parsers.ParserConfigurationException;
 
 import org.eclipse.core.runtime.CoreException;
 import org.faktorips.devtools.core.model.IIpsModel;
+import org.faktorips.devtools.core.model.enumcontent.IEnumContent;
+import org.faktorips.devtools.core.model.enums.IEnumAttributeValue;
+import org.faktorips.devtools.core.model.enums.IEnumValue;
 import org.faktorips.devtools.core.model.enumtype.IEnumAttribute;
-import org.faktorips.devtools.core.model.enumtype.IEnumAttributeValue;
-import org.faktorips.devtools.core.model.enumtype.IEnumContent;
-import org.faktorips.devtools.core.model.enumtype.IEnumValue;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 
@@ -94,11 +94,13 @@ public class EnumAttributeValueTest extends AbstractIpsEnumPluginTest {
 
         IIpsModel ipsModel = getIpsModel();
 
+        // Test value parsable with datatype integer
         ipsModel.clearValidationCache();
         integerNewAttributeValue.setValue("fooBar");
         assertEquals(1, integerNewAttributeValue.validate(ipsProject).getNoOfMessages());
         integerNewAttributeValue.setValue("4");
 
+        // Test value parsable with datatype boolean
         ipsModel.clearValidationCache();
         booleanNewAttributeValue.setValue("fooBar");
         assertEquals(1, booleanNewAttributeValue.validate(ipsProject).getNoOfMessages());
