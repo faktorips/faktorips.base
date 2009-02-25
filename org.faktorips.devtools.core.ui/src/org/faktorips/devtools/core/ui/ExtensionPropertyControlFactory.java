@@ -46,7 +46,7 @@ public class ExtensionPropertyControlFactory {
     
     public boolean needsToCreateControlsFor(IIpsObjectPartContainer ipsObjectPart, String position) {
         for (int i = 0; i < extPropData.length; i++) {
-            if (extPropData[i].extProperty.getPosition().equals(position)
+            if (position.equals(extPropData[i].extProperty.getPosition())
                     && (extPropData[i].editField == null)) {
                 return true;
             }
@@ -63,7 +63,7 @@ public class ExtensionPropertyControlFactory {
         // find all extension property definitions for the given position
         ArrayList extPropertiesForPosition = new ArrayList();
         for (int i = 0; i < extPropData.length; i++) {
-            if (extPropData[i].extProperty.getPosition().equals(position)) {
+            if (position.equals(extPropData[i].extProperty.getPosition())) {
                 extPropertiesForPosition.add(extPropData[i]);
             }
         }
@@ -80,7 +80,7 @@ public class ExtensionPropertyControlFactory {
         // find all extension property definitions for the given position
         ArrayList extPropertiesForPosition = new ArrayList();
         for (int i = 0; i < extPropData.length; i++) {
-            if (!extPropData[i].extProperty.getPosition().equals("false")) {
+            if (!"false".equals(extPropData[i].extProperty.getPosition())) {
                 extPropertiesForPosition.add(extPropData[i]);
             }
         }
