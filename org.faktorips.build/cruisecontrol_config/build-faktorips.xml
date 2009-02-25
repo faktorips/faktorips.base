@@ -444,7 +444,6 @@
     		<property name="product.project" value="${productProject}"/>
             <property name="xms.megabytes" value=""/> <!-- -Xms124m -->
             <property name="xmx.megabytes" value=""/> <!-- -Xmx256m -->    		
-            <property name="all.map" value=""/> <!-- -Xmx256m -->    		
         </ant>
     	
         <!--copy zipped features into the faktorips download directory -->

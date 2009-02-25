@@ -81,7 +81,10 @@ CRUISE_ANT_HOME=/opt/cc/apache-ant-1.6.5
 
 # use cruise's ant if the user is cruise or
 # if no ant home is set
-if [ $(whoami) = "cruise" -o ! -n $ANT_HOME ] ; then 
+if [ $(whoami) = "cruise" ] ; then 
+  ANT_HOME=$CRUISE_ANT_HOME
+fi
+if [ ! -n $ANT_HOME ] ; then 
   ANT_HOME=$CRUISE_ANT_HOME
 fi
 
