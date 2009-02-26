@@ -1250,6 +1250,10 @@ public class PolicyCmptImplClassBuilder extends BasePolicyCmptTypeBuilder {
 
     /**
      * {@inheritDoc}
+     * 
+     * <p>
+     * Outputs a @XmlRootElement annotation if JAXB support is enabled.
+     * </p>
      */
     @Override
     protected void generateTypeAnnotations(JavaCodeFragmentBuilder builder) throws CoreException {
@@ -1260,7 +1264,7 @@ public class PolicyCmptImplClassBuilder extends BasePolicyCmptTypeBuilder {
         }
 
         builder.getFragment().addImport("javax.xml.bind.annotation.XmlRootElement");
-        builder.annotation("XmlRootElement");
+        builder.annotation("XmlRootElement(name=\"" + getUnqualifiedClassName() + "\")");
     }
     
 }
