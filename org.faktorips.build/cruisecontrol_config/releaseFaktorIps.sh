@@ -298,7 +298,6 @@ if [ $SHOWHELP = "true" ] ; then
   echo '  -projectsrootdir [dir] the root/parent dir of all projects, all projects will be checkedout here'
   echo '                         if no cvs is used \(e.g. local copy\) then all projects must be exists here'
   echo '                         the default is: ' $PROJECTSROOTDIR
-  echo '                         '
   echo 'additional functionality '
   echo '  -createBranch          to create a branch, the latest HEAD stand will be branched'
   echo '                         with -useBranch [branch] the name of the branch will be specified'
