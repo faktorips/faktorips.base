@@ -19,6 +19,7 @@ import org.eclipse.jface.viewers.ILabelProviderListener;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.swt.graphics.Image;
 import org.faktorips.devtools.core.IpsPlugin;
+import org.faktorips.devtools.core.internal.model.bf.ControlFlow;
 import org.faktorips.devtools.core.model.IIpsElement;
 import org.faktorips.devtools.core.model.bf.BFElementType;
 import org.faktorips.devtools.core.model.bf.IBFElement;
@@ -67,7 +68,7 @@ public class BusinessFunctionLabelProvider implements ILabelProvider {
             return BFElementType.DECISION_METHODCALL.getImage(); 
         }
         if(editPart instanceof ControlFlowEditPart){
-            return IpsPlugin.getDefault().getImage("/obj16/" + "ControlFlow.gif"); //$NON-NLS-1$ //$NON-NLS-2$
+            return IpsPlugin.getDefault().getImage(ControlFlow.getImageDescriptor());
         }
         IIpsElement ipsElement = (IIpsElement)editPart.getModel();
         return ipsElement.getImage();

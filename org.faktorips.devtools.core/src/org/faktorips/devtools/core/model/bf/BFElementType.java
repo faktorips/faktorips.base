@@ -112,7 +112,7 @@ public enum BFElementType {
      */
     public ImageDescriptor getImageDescriptor() {
         if (imageDescriptor == null) {
-            imageDescriptor = IpsPlugin.getDefault().getImageDescriptor("/obj16/" + imageName); //$NON-NLS-1$
+            imageDescriptor = IpsPlugin.getDefault().getImageDescriptor("obj16/" + imageName); //$NON-NLS-1$
         }
         return imageDescriptor;
     }
