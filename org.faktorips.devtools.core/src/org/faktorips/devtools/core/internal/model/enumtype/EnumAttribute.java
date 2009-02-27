@@ -30,7 +30,7 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
 /**
- * Implementation of IEnumAttribute, see the corresponding interface for more details.
+ * Implementation of <code>IEnumAttribute</code>, see the corresponding interface for more details.
  * 
  * @see org.faktorips.devtools.core.model.enumtype.IEnumAttribute
  * 
@@ -53,7 +53,7 @@ public class EnumAttribute extends AtomicIpsObjectPart implements IEnumAttribute
     private boolean isInherited;
 
     /**
-     * Creates a new enum attribute.
+     * Creates a new <code>EnumAttribute</code>.
      * 
      * @param parent The enum type this enum attribute belongs to.
      * @param id A unique id for this enum attribute.

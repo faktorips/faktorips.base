@@ -35,8 +35,6 @@ public interface IEnumValueContainer extends IIpsObject {
 
     /**
      * Returns a list containing all enum values that belong to this enum value container.
-     * 
-     * @return A list containing all enum values that belong to this enum value container.
      */
     public List<IEnumValue> getEnumValues();
 

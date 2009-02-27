@@ -66,7 +66,7 @@ public class EnumAttributesSection extends SimpleIpsPartsSection {
      * A composite that shows an enum type's attributes in a viewer and allows to edit the
      * attributes in a dialog, to create new attributes and to delete attributes.
      */
-    //TODO pk: innere klassen immer am Datei Ende positionieren
+    // TODO pk: innere klassen immer am Datei Ende positionieren
     private class EnumAttributesComposite extends IpsPartsComposite {
 
         // The enum type being edited by the editor
@@ -123,8 +123,8 @@ public class EnumAttributesSection extends SimpleIpsPartsSection {
         /**
          * {@inheritDoc}
          */
-        //TODO pk: newIpsPart könnte eigentlich eine Exception werfen. Damit wird man den unnötigen try catch
-        // und runtime exception wrapper los
+        // TODO pk: newIpsPart könnte eigentlich eine Exception werfen. Damit wird man den unnötigen
+        // try catch und runtime exception wrapper los
         @Override
         protected IIpsObjectPart newIpsPart() {
             try {
@@ -174,21 +174,16 @@ public class EnumAttributesSection extends SimpleIpsPartsSection {
             int newIndex = indexes[0];
             List<IEnumAttribute> enumAttributes = enumType.getEnumAttributes();
 
-            for (int currentIndex : indexes) {
-                IEnumAttribute enumAttributeToMove = enumAttributes.get(currentIndex);
-                try {
-                    if (up) {
-                        newIndex = enumType.moveEnumAttributeUp(enumAttributeToMove);
-                    } else {
-                        newIndex = enumType.moveEnumAttributeDown(enumAttributeToMove);
-                    }
-                } catch (CoreException e) {
-                    throw new RuntimeException(e);
-                }
+            IEnumAttribute enumAttributeToMove = enumAttributes.get(newIndex);
+            try {
+                newIndex = enumType.moveEnumAttribute(enumAttributeToMove, up);
+            } catch (CoreException e) {
+                throw new RuntimeException(e);
             }
 
             return new int[] { newIndex };
         }
+
     }
 
 }

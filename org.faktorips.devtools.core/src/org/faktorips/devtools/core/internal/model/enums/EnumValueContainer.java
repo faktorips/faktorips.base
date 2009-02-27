@@ -27,7 +27,8 @@ import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
 import org.faktorips.util.ArgumentCheck;
 
 /**
- * Implementation of IEnumValueContainer, see the corresponding interface for more details.
+ * Implementation of <code>IEnumValueContainer</code>, see the corresponding interface for more
+ * details.
  * 
  * @see org.faktorips.devtools.core.model.enums.IEnumValueContainer
  * 
@@ -41,7 +42,7 @@ public abstract class EnumValueContainer extends BaseIpsObject implements IEnumV
     private IpsObjectPartCollection enumValues;
 
     /**
-     * Creates a new enum value container.
+     * Creates a new <code>EnumValueContainer</code>.
      * 
      * @param file The ips source file in which this ips object will be stored in.
      */
@@ -114,7 +115,7 @@ public abstract class EnumValueContainer extends BaseIpsObject implements IEnumV
     }
 
     /**
-     * Moves the given enum value up or down in the collection order by 1 and returns the new index.
+     * Moves the given enum value up or down in the containing list by 1 and returns the new index.
      */
     @SuppressWarnings("unchecked")
     private int moveEnumValue(IEnumValue enumValue, boolean up) throws CoreException {

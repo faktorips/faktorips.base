@@ -21,7 +21,6 @@ import org.eclipse.core.runtime.CoreException;
 import org.faktorips.devtools.core.internal.model.enums.EnumValue;
 import org.faktorips.devtools.core.internal.model.enums.EnumValueContainer;
 import org.faktorips.devtools.core.internal.model.ipsobject.IpsObjectPartCollection;
-import org.faktorips.devtools.core.model.enumcontent.IEnumContent;
 import org.faktorips.devtools.core.model.enums.IEnumAttributeValue;
 import org.faktorips.devtools.core.model.enums.IEnumValue;
 import org.faktorips.devtools.core.model.enumtype.EnumTypeValidations;
@@ -37,7 +36,7 @@ import org.faktorips.util.message.MessageList;
 import org.w3c.dom.Element;
 
 /**
- * Implementation of IEnumType, see the corresponding interface for more details.
+ * Implementation of <code>IEnumType</code>, see the corresponding interface for more details.
  * 
  * @see org.faktorips.devtools.core.model.enumtype.IEnumType
  * 
@@ -63,7 +62,7 @@ public class EnumType extends EnumValueContainer implements IEnumType {
     private boolean isAbstract;
 
     /**
-     * Creates a new enum type.
+     * Creates a new <code>EnumType</code>.
      * 
      * @param file The ips source file in which this enum type will be stored in.
      */
@@ -202,44 +201,22 @@ public class EnumType extends EnumValueContainer implements IEnumType {
     /**
      * {@inheritDoc}
      */
-    public IEnumAttribute getEnumAttribute(int id) {
-        return (IEnumAttribute)enumAttributes.getPart(id);
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    public int moveEnumAttributeDown(IEnumAttribute enumAttribute) throws CoreException {
-        ArgumentCheck.notNull(enumAttribute);
-
-        // Can't move further down any more
-        if (enumAttribute == enumAttributes.getPart(enumAttributes.size() - 1)) {
-            return getIndexOfEnumAttribute(enumAttribute);
-        }
-
-        return moveEnumAttribute(enumAttribute, false);
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    public int moveEnumAttributeUp(IEnumAttribute enumAttribute) throws CoreException {
-        ArgumentCheck.notNull(enumAttribute);
-
-        // Can't move further up any more
-        if (enumAttribute == enumAttributes.getPart(0)) {
-            return getIndexOfEnumAttribute(enumAttribute);
-        }
-
-        return moveEnumAttribute(enumAttribute, true);
-    }
-
-    /**
-     * Moves the given enum attribute up or down in the collection order by 1 and returns the new
-     * index.
-     */
     @SuppressWarnings("unchecked")
-    private int moveEnumAttribute(IEnumAttribute enumAttribute, boolean up) throws CoreException {
+    public int moveEnumAttribute(IEnumAttribute enumAttribute, boolean up) throws CoreException {
+        ArgumentCheck.notNull(enumAttribute);
+
+        if (up) {
+            // Can't move further up any more
+            if (enumAttribute == enumAttributes.getPart(0)) {
+                return getIndexOfEnumAttribute(enumAttribute);
+            }
+        } else {
+            // Can't move further down any more
+            if (enumAttribute == enumAttributes.getPart(enumAttributes.size() - 1)) {
+                return getIndexOfEnumAttribute(enumAttribute);
+            }
+        }
+
         List<IEnumAttribute> enumAttributesList = enumAttributes.getBackingList();
         for (int i = 0; i < enumAttributesList.size(); i++) {
             IEnumAttribute currentEnumAttribute = enumAttributesList.get(i);
@@ -282,35 +259,14 @@ public class EnumType extends EnumValueContainer implements IEnumType {
 
     /**
      * Moves the enum attribute value corresponding to the given enum attribute identified by its
-     * index in each given enum value up or down in the collection order by 1.
+     * index in each given enum value up or down in the containing list by 1.
      */
     private void moveEnumAttributeValues(int enumAttributeIndex, List<IEnumValue> enumValues, boolean up)
             throws CoreException {
 
         for (IEnumValue currentEnumValue : enumValues) {
-            if (up) {
-                ((EnumValue)currentEnumValue).moveEnumAttributeValueUp(enumAttributeIndex);
-            } else {
-                ((EnumValue)currentEnumValue).moveEnumAttributeValueDown(enumAttributeIndex);
-            }
+            ((EnumValue)currentEnumValue).moveEnumAttributeValue(enumAttributeIndex, up);
         }
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    public List<IEnumContent> findReferencingEnumContents() throws CoreException {
-        List<IEnumContent> referencingEnumContents = new ArrayList<IEnumContent>();
-        IIpsSrcFile[] enumContentsSrcFiles = getIpsProject().findIpsSrcFiles(IpsObjectType.ENUM_CONTENT);
-        for (IIpsSrcFile currentIpsSrcFile : enumContentsSrcFiles) {
-            IEnumContent currentEnumContent = (IEnumContent)currentIpsSrcFile.getIpsObject();
-            if (currentEnumContent.getEnumType().equals(this.getQualifiedName())) {
-                //TODO pk den content hast du dir doch oben schon besorgt! 
-                referencingEnumContents.add((IEnumContent)currentIpsSrcFile.getIpsObject());
-            }
-        }
-
-        return referencingEnumContents;
     }
 
     /**

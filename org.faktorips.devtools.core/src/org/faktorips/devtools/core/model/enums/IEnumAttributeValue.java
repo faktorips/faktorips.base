@@ -46,19 +46,15 @@ public interface IEnumAttributeValue extends IIpsObjectPart {
             + "EnumAttributeValueNotParsable"; //$NON-NLS-1$
 
     /**
-     * Searches and returns the enum attribute this enum attribute value refers to.
-     * 
-     * @return A reference to the enum attribute this enum attribute value refers to or
-     *         <code>null</code> if none could be found.
+     * Searches and returns the enum attribute this enum attribute value refers to. Returns
+     * <code>null</code> if none could be found.
      * 
      * @throws CoreException If an error occurs while searching for the enum attribute.
      */
     public IEnumAttribute findEnumAttribute() throws CoreException;
 
     /**
-     * Returns the value as string.
-     * 
-     * @return A <code>String</code> representing the actual value.
+     * Returns the value as <code>String</code>.
      */
     public String getValue();
 

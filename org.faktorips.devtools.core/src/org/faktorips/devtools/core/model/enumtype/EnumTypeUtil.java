@@ -24,7 +24,6 @@ import org.faktorips.util.ArgumentCheck;
  * 
  * @since 2.3
  */
-// TODO to be tested
 public class EnumTypeUtil {
 
     /**

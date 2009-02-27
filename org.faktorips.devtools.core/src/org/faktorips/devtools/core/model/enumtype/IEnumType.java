@@ -18,7 +18,6 @@ import java.util.NoSuchElementException;
 
 import org.eclipse.core.runtime.CoreException;
 import org.faktorips.datatype.Datatype;
-import org.faktorips.devtools.core.model.enumcontent.IEnumContent;
 import org.faktorips.devtools.core.model.enums.IEnumValueContainer;
 
 /**
@@ -163,18 +162,6 @@ public interface IEnumType extends IEnumValueContainer, Datatype {
     public int getIndexOfEnumAttribute(IEnumAttribute enumAttribute);
 
     /**
-     * Returns the enum attribute with the given id or <code>null</code> if there is no enum
-     * attribute with the given id.
-     * 
-     * @param id The id of the enum attribute to obtain.
-     * 
-     * @return A reference to the enum attribute with the given id or <code>null</code> if no such
-     *         enum attribute could be found.
-     */
-    //TODO pk: brauchen wir dieses Methode im published interface?
-    public IEnumAttribute getEnumAttribute(int id);
-
-    /**
      * Returns the enum attribute with the given name or <code>null</code> if there is no enum
      * attribute with the given name.
      * 
@@ -210,51 +197,25 @@ public interface IEnumType extends IEnumValueContainer, Datatype {
     public int getEnumAttributesCount();
 
     /**
-     * Moves the given enum attribute one position upwards in the enum attribute collection.
+     * Moves the given enum attribute one position down or up in the containing list.
      * <p>
-     * If the given enum attribute is already the first enum attribute then absolutely nothing will
-     * be done.
+     * If the given enum attribute is already the last / first enum attribute then nothing will be
+     * done.
      * <p>
      * Note that all referencing enum attribute values <strong>that are defined in this enum
-     * type</strong> will also be moved one position upwards in their collection.
+     * type</strong> will also be moved one position down / up in their containing list.
      * 
-     * @param enumAttribute The enum attribute to move further up in the order.
+     * @param enumAttribute The enum attribute to move.
+     * @param up Flag indicating whether to move up (<code>true</code>) or down (<code>false</code>
+     *            ).
      * 
      * @return The new index of the enum attribute.
      * 
-     * @throws CoreException If an error occurs while moving the enum attributes.
+     * @throws CoreException If an error occurs while moving the enum attribute.
      * @throws NullPointerException If enumAttribute is <code>null</code>.
+     * @throws NoSuchElementException If the given enum attribute is not a part of this enum type.
      */
-    public int moveEnumAttributeUp(IEnumAttribute enumAttribute) throws CoreException;
-
-    /**
-     * Moves the given enum attribute one position downwards in the enum attribute collection.
-     * <p>
-     * If the given enum attribute is already the last enum attribute then absolutely nothing will
-     * be done.
-     * <p>
-     * Note that all referencing enum attribute values <strong>that are defined in this enum
-     * type</strong> will also be moved one position downwards in their collection.
-     * 
-     * @param enumAttribute The enum attribute to move further down in the order.
-     * 
-     * @return The new index of the enum attribute.
-     * 
-     * @throws CoreException If an error occurs while moving the enum attributes.
-     * @throws NullPointerException If enumAttribute is <code>null</code>.
-     */
-    public int moveEnumAttributeDown(IEnumAttribute enumAttribute) throws CoreException;
-
-    /**
-     * Searches and returns all enum contents that are built upon this enum type. If none are found
-     * an empty list will be returned. This method never returns <code>null</code>.
-     * 
-     * @return A list containing all enum contents that are built upon this enum type.
-     * 
-     * @throws CoreException If an error occurs while searching for the enum content objects.
-     */
-    //TODO pk: wenn ich das richtig sehe brauchen wir diese Methode nicht
-    public List<IEnumContent> findReferencingEnumContents() throws CoreException;
+    public int moveEnumAttribute(IEnumAttribute enumAttribute, boolean up) throws CoreException;
 
     /**
      * Checks whether an enum attribute with the given name exists.
@@ -306,7 +267,7 @@ public interface IEnumType extends IEnumValueContainer, Datatype {
      * @return A list containing all enum attributes of this enum type being marked as inherited.
      *         Never returns <code>null</code>.
      */
-    //TODO pk: wird wahrscheinlich nicht benötigt
+    // TODO pk: wird wahrscheinlich nicht benötigt
     public List<IEnumAttribute> getInheritedAttributes();
 
 }

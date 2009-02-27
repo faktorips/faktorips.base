@@ -49,12 +49,17 @@ public class EnumValueTest extends AbstractIpsEnumPluginTest {
     }
 
     public void testValidateNumberEnumAttributeValues() throws CoreException {
-        genderEnumValueFemale.getEnumAttributeValue(0).delete();
+        genderEnumValueFemale.getEnumAttributeValues().get(0).delete();
         assertEquals(1, genderEnumValueFemale.validate(ipsProject).getNoOfMessages());
     }
 
     public void testValidateIdentifierEnumAttributeValueEmpty() throws CoreException {
-        genderEnumValueFemale.findIdentifierEnumAttributeValue().setValue("");
+        IEnumAttributeValue identifierEnumAttributeValue = genderEnumValueFemale.findIdentifierEnumAttributeValue();
+
+        identifierEnumAttributeValue.setValue("");
+        assertEquals(1, genderEnumValueFemale.validate(ipsProject).getNoOfMessages());
+
+        identifierEnumAttributeValue.setValue(null);
         assertEquals(1, genderEnumValueFemale.validate(ipsProject).getNoOfMessages());
     }
 
@@ -69,7 +74,16 @@ public class EnumValueTest extends AbstractIpsEnumPluginTest {
     public void testFindIdentifierEnumAttributeValue() throws CoreException {
         IEnumAttributeValue identifierEnumAttributeValue = genderEnumValueMale.getEnumAttributeValues().get(0);
         assertEquals(identifierEnumAttributeValue, genderEnumValueMale.findIdentifierEnumAttributeValue());
+
         genderEnumAttributeId.setIdentifier(false);
+        assertNull(genderEnumValueMale.findIdentifierEnumAttributeValue());
+        genderEnumAttributeId.setIdentifier(true);
+
+        genderEnumContent.setEnumType("");
+        assertNull(genderEnumValueMale.findIdentifierEnumAttributeValue());
+        genderEnumContent.setEnumType(genderEnumType.getQualifiedName());
+
+        genderEnumType.deleteEnumAttributeWithValues(genderEnumAttributeName);
         assertNull(genderEnumValueMale.findIdentifierEnumAttributeValue());
     }
 

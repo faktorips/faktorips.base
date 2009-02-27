@@ -79,7 +79,7 @@ public class EnumAttributeTest extends AbstractIpsEnumPluginTest {
 
         IEnumType loadedEnumType = newEnumType(ipsProject, "LoadedEnumType");
         loadedEnumType.initFromXml(xmlElement);
-        IEnumAttribute idAttribute = loadedEnumType.getEnumAttribute(0);
+        IEnumAttribute idAttribute = loadedEnumType.getEnumAttributes().get(0);
         assertEquals(GENDER_ENUM_ATTRIBUTE_ID_NAME, idAttribute.getName());
         assertEquals(STRING_DATATYPE_NAME, idAttribute.getDatatype());
         assertTrue(idAttribute.isIdentifier());

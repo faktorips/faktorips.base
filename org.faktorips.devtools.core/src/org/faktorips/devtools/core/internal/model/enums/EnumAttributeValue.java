@@ -35,7 +35,8 @@ import org.w3c.dom.Element;
 import org.w3c.dom.Text;
 
 /**
- * Implementation of IEnumAttributeValue, see the corresponding interface for more details.
+ * Implementation of <code>IEnumAttributeValue</code>, see the corresponding interface for more
+ * details.
  * 
  * @see org.faktorips.devtools.core.model.enums.IEnumAttributeValue
  * 
@@ -49,7 +50,7 @@ public class EnumAttributeValue extends AtomicIpsObjectPart implements IEnumAttr
     private String value;
 
     /**
-     * Creates a new enum attribute value.
+     * Creates a new <code>EnumAttributeValue</code>.
      * 
      * @param parent The enum value this enum attribute value belongs to.
      * @param id A unique id for this enum attribute value.
@@ -112,10 +113,11 @@ public class EnumAttributeValue extends AtomicIpsObjectPart implements IEnumAttr
      */
     public IEnumAttribute findEnumAttribute() throws CoreException {
         IEnumValueContainer valueContainer = (IEnumValueContainer)parent.getParent();
+        IEnumValue enumValue = (IEnumValue)parent;
 
         // Calculate index
         int index;
-        List<IEnumAttributeValue> enumAttributeValuesList = ((IEnumValue)parent).getEnumAttributeValues();
+        List<IEnumAttributeValue> enumAttributeValuesList = enumValue.getEnumAttributeValues();
         for (index = 0; index < enumAttributeValuesList.size(); index++) {
             IEnumAttributeValue currentEnumAttributeValue = enumAttributeValuesList.get(index);
             if (currentEnumAttributeValue == this) {
@@ -125,6 +127,10 @@ public class EnumAttributeValue extends AtomicIpsObjectPart implements IEnumAttr
 
         IEnumType enumType = valueContainer.findEnumType();
         if (enumType == null) {
+            return null;
+        }
+
+        if (!(enumType.getEnumAttributesCount() == enumValue.getEnumAttributeValuesCount())) {
             return null;
         }
 

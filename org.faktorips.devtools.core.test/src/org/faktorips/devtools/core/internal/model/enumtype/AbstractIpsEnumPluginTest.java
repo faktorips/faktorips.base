@@ -48,7 +48,7 @@ public abstract class AbstractIpsEnumPluginTest extends AbstractIpsPluginTest {
     protected final String STRING_DATATYPE_NAME = "String";
     protected final String INTEGER_DATATYPE_NAME = "Integer";
     protected final String BOOLEAN_DATATYPE_NAME = "Boolean";
-    
+
     protected final String GENDER_ENUM_TYPE_NAME = "GenderEnumType";
     protected final String GENDER_ENUM_ATTRIBUTE_ID_NAME = "Id";
     protected final String GENDER_ENUM_ATTRIBUTE_NAME_NAME = "Name";
@@ -123,14 +123,14 @@ public abstract class AbstractIpsEnumPluginTest extends AbstractIpsPluginTest {
     private void initGenderEnumValues() {
         IEnumAttributeValue tempAttributeValueRef;
 
-        tempAttributeValueRef = genderEnumValueMale.getEnumAttributeValue(0);
+        tempAttributeValueRef = genderEnumValueMale.getEnumAttributeValues().get(0);
         tempAttributeValueRef.setValue(GENDER_ENUM_LITERAL_MALE_ID);
-        tempAttributeValueRef = genderEnumValueMale.getEnumAttributeValue(1);
+        tempAttributeValueRef = genderEnumValueMale.getEnumAttributeValues().get(1);
         tempAttributeValueRef.setValue(GENDER_ENUM_LITERAL_MALE_NAME);
 
-        tempAttributeValueRef = genderEnumValueFemale.getEnumAttributeValue(0);
+        tempAttributeValueRef = genderEnumValueFemale.getEnumAttributeValues().get(0);
         tempAttributeValueRef.setValue(GENDER_ENUM_LITERAL_FEMALE_ID);
-        tempAttributeValueRef = genderEnumValueFemale.getEnumAttributeValue(1);
+        tempAttributeValueRef = genderEnumValueFemale.getEnumAttributeValues().get(1);
         tempAttributeValueRef.setValue(GENDER_ENUM_LITERAL_FEMALE_NAME);
     }
 
@@ -156,19 +156,19 @@ public abstract class AbstractIpsEnumPluginTest extends AbstractIpsPluginTest {
     private void initDifficultyEnumValues() {
         IEnumAttributeValue tempAttributeValueRef;
 
-        tempAttributeValueRef = difficultyEnumValueEasy.getEnumAttributeValue(0);
+        tempAttributeValueRef = difficultyEnumValueEasy.getEnumAttributeValues().get(0);
         tempAttributeValueRef.setValue(DIFFICULTY_ENUM_LITERAL_EASY_ID);
-        tempAttributeValueRef = difficultyEnumValueEasy.getEnumAttributeValue(1);
+        tempAttributeValueRef = difficultyEnumValueEasy.getEnumAttributeValues().get(1);
         tempAttributeValueRef.setValue(DIFFICULTY_ENUM_LITERAL_EASY_LABEL);
 
-        tempAttributeValueRef = difficultyEnumValueMedium.getEnumAttributeValue(0);
+        tempAttributeValueRef = difficultyEnumValueMedium.getEnumAttributeValues().get(0);
         tempAttributeValueRef.setValue(DIFFICULTY_ENUM_LITERAL_MEDIUM_ID);
-        tempAttributeValueRef = difficultyEnumValueMedium.getEnumAttributeValue(1);
+        tempAttributeValueRef = difficultyEnumValueMedium.getEnumAttributeValues().get(1);
         tempAttributeValueRef.setValue(DIFFICULTY_ENUM_LITERAL_MEDIUM_LABEL);
 
-        tempAttributeValueRef = difficultyEnumValueHard.getEnumAttributeValue(0);
+        tempAttributeValueRef = difficultyEnumValueHard.getEnumAttributeValues().get(0);
         tempAttributeValueRef.setValue(DIFFICULTY_ENUM_LITERAL_HARD_ID);
-        tempAttributeValueRef = difficultyEnumValueHard.getEnumAttributeValue(1);
+        tempAttributeValueRef = difficultyEnumValueHard.getEnumAttributeValues().get(1);
         tempAttributeValueRef.setValue(DIFFICULTY_ENUM_LITERAL_HARD_LABEL);
     }
 

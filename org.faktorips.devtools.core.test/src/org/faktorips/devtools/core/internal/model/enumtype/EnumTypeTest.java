@@ -18,7 +18,6 @@ import java.util.List;
 import javax.xml.parsers.ParserConfigurationException;
 
 import org.eclipse.core.runtime.CoreException;
-import org.faktorips.devtools.core.model.enumcontent.IEnumContent;
 import org.faktorips.devtools.core.model.enums.IEnumAttributeValue;
 import org.faktorips.devtools.core.model.enums.IEnumValue;
 import org.faktorips.devtools.core.model.enumtype.IEnumAttribute;
@@ -68,11 +67,6 @@ public class EnumTypeTest extends AbstractIpsEnumPluginTest {
         assertEquals(GENDER_ENUM_ATTRIBUTE_NAME_NAME, attributes.get(1).getName());
     }
 
-    public void testGetEnumAttributeById() {
-        assertEquals(genderEnumAttributeId, genderEnumType.getEnumAttribute(0));
-        assertEquals(genderEnumAttributeName, genderEnumType.getEnumAttribute(1));
-    }
-
     public void testGetEnumAttributeByName() {
         try {
             genderEnumType.getEnumAttribute(null);
@@ -115,7 +109,7 @@ public class EnumTypeTest extends AbstractIpsEnumPluginTest {
 
     public void testMoveEnumAttributeUp() throws CoreException {
         try {
-            genderEnumType.moveEnumAttributeUp(null);
+            genderEnumType.moveEnumAttribute(null, true);
             fail();
         } catch (NullPointerException e) {
         }
@@ -124,9 +118,9 @@ public class EnumTypeTest extends AbstractIpsEnumPluginTest {
         IEnumValue newEnumValue = genderEnumType.newEnumValue();
         genderEnumType.setValuesArePartOfModel(true);
 
-        IEnumAttributeValue valueId = newEnumValue.getEnumAttributeValue(0);
-        IEnumAttributeValue valueName = newEnumValue.getEnumAttributeValue(1);
-        IEnumAttributeValue valueNew = newEnumValue.getEnumAttributeValue(2);
+        IEnumAttributeValue valueId = newEnumValue.getEnumAttributeValues().get(0);
+        IEnumAttributeValue valueName = newEnumValue.getEnumAttributeValues().get(1);
+        IEnumAttributeValue valueNew = newEnumValue.getEnumAttributeValues().get(2);
 
         assertEquals(genderEnumAttributeId, genderEnumType.getEnumAttributes().get(0));
         assertEquals(genderEnumAttributeName, genderEnumType.getEnumAttributes().get(1));
@@ -136,7 +130,7 @@ public class EnumTypeTest extends AbstractIpsEnumPluginTest {
         assertEquals(valueNew, newEnumValue.getEnumAttributeValues().get(2));
 
         int newIndex;
-        newIndex = genderEnumType.moveEnumAttributeUp(newEnumAttribute);
+        newIndex = genderEnumType.moveEnumAttribute(newEnumAttribute, true);
         assertEquals(1, newIndex);
         assertEquals(genderEnumAttributeId, genderEnumType.getEnumAttributes().get(0));
         assertEquals(newEnumAttribute, genderEnumType.getEnumAttributes().get(1));
@@ -145,7 +139,7 @@ public class EnumTypeTest extends AbstractIpsEnumPluginTest {
         assertEquals(valueNew, newEnumValue.getEnumAttributeValues().get(1));
         assertEquals(valueName, newEnumValue.getEnumAttributeValues().get(2));
 
-        newIndex = genderEnumType.moveEnumAttributeUp(newEnumAttribute);
+        newIndex = genderEnumType.moveEnumAttribute(newEnumAttribute, true);
         assertEquals(0, newIndex);
         assertEquals(newEnumAttribute, genderEnumType.getEnumAttributes().get(0));
         assertEquals(genderEnumAttributeId, genderEnumType.getEnumAttributes().get(1));
@@ -155,7 +149,7 @@ public class EnumTypeTest extends AbstractIpsEnumPluginTest {
         assertEquals(valueName, newEnumValue.getEnumAttributeValues().get(2));
 
         // Nothing must change if the enum attribute is the first one already
-        newIndex = genderEnumType.moveEnumAttributeUp(newEnumAttribute);
+        newIndex = genderEnumType.moveEnumAttribute(newEnumAttribute, true);
         assertEquals(0, newIndex);
         assertEquals(newEnumAttribute, genderEnumType.getEnumAttributes().get(0));
         assertEquals(genderEnumAttributeId, genderEnumType.getEnumAttributes().get(1));
@@ -166,11 +160,11 @@ public class EnumTypeTest extends AbstractIpsEnumPluginTest {
     }
 
     public void testMoveEnumAttributeUpValuesPartOfModel() throws CoreException {
-        IEnumAttributeValue valueId = genderEnumValueMale.getEnumAttributeValue(0);
-        IEnumAttributeValue valueName = genderEnumValueMale.getEnumAttributeValue(1);
+        IEnumAttributeValue valueId = genderEnumValueMale.getEnumAttributeValues().get(0);
+        IEnumAttributeValue valueName = genderEnumValueMale.getEnumAttributeValues().get(1);
 
         genderEnumType.setValuesArePartOfModel(true);
-        genderEnumType.moveEnumAttributeUp(genderEnumAttributeName);
+        genderEnumType.moveEnumAttribute(genderEnumAttributeName, true);
 
         assertEquals(genderEnumAttributeName, genderEnumType.getEnumAttributes().get(0));
         assertEquals(genderEnumAttributeId, genderEnumType.getEnumAttributes().get(1));
@@ -181,7 +175,7 @@ public class EnumTypeTest extends AbstractIpsEnumPluginTest {
 
     public void testMoveEnumAttributeDown() throws CoreException {
         try {
-            genderEnumType.moveEnumAttributeDown(null);
+            genderEnumType.moveEnumAttribute(null, false);
             fail();
         } catch (NullPointerException e) {
         }
@@ -190,9 +184,9 @@ public class EnumTypeTest extends AbstractIpsEnumPluginTest {
         IEnumValue newEnumValue = genderEnumType.newEnumValue();
         genderEnumType.setValuesArePartOfModel(true);
 
-        IEnumAttributeValue valueId = newEnumValue.getEnumAttributeValue(0);
-        IEnumAttributeValue valueName = newEnumValue.getEnumAttributeValue(1);
-        IEnumAttributeValue valueNew = newEnumValue.getEnumAttributeValue(2);
+        IEnumAttributeValue valueId = newEnumValue.getEnumAttributeValues().get(0);
+        IEnumAttributeValue valueName = newEnumValue.getEnumAttributeValues().get(1);
+        IEnumAttributeValue valueNew = newEnumValue.getEnumAttributeValues().get(2);
 
         assertEquals(genderEnumAttributeId, genderEnumType.getEnumAttributes().get(0));
         assertEquals(genderEnumAttributeName, genderEnumType.getEnumAttributes().get(1));
@@ -202,7 +196,7 @@ public class EnumTypeTest extends AbstractIpsEnumPluginTest {
         assertEquals(valueNew, newEnumValue.getEnumAttributeValues().get(2));
 
         int newIndex;
-        newIndex = genderEnumType.moveEnumAttributeDown(genderEnumAttributeId);
+        newIndex = genderEnumType.moveEnumAttribute(genderEnumAttributeId, false);
         assertEquals(1, newIndex);
         assertEquals(genderEnumAttributeName, genderEnumType.getEnumAttributes().get(0));
         assertEquals(genderEnumAttributeId, genderEnumType.getEnumAttributes().get(1));
@@ -211,7 +205,7 @@ public class EnumTypeTest extends AbstractIpsEnumPluginTest {
         assertEquals(valueId, newEnumValue.getEnumAttributeValues().get(1));
         assertEquals(valueNew, newEnumValue.getEnumAttributeValues().get(2));
 
-        newIndex = genderEnumType.moveEnumAttributeDown(genderEnumAttributeId);
+        newIndex = genderEnumType.moveEnumAttribute(genderEnumAttributeId, false);
         assertEquals(2, newIndex);
         assertEquals(genderEnumAttributeName, genderEnumType.getEnumAttributes().get(0));
         assertEquals(newEnumAttribute, genderEnumType.getEnumAttributes().get(1));
@@ -221,7 +215,7 @@ public class EnumTypeTest extends AbstractIpsEnumPluginTest {
         assertEquals(valueId, newEnumValue.getEnumAttributeValues().get(2));
 
         // Nothing must change if the enum attribute is the last one already
-        newIndex = genderEnumType.moveEnumAttributeDown(genderEnumAttributeId);
+        newIndex = genderEnumType.moveEnumAttribute(genderEnumAttributeId, false);
         assertEquals(2, newIndex);
         assertEquals(genderEnumAttributeName, genderEnumType.getEnumAttributes().get(0));
         assertEquals(newEnumAttribute, genderEnumType.getEnumAttributes().get(1));
@@ -232,25 +226,17 @@ public class EnumTypeTest extends AbstractIpsEnumPluginTest {
     }
 
     public void testMoveEnumAttributeDownValuesPartOfModel() throws CoreException {
-        IEnumAttributeValue valueId = genderEnumValueMale.getEnumAttributeValue(0);
-        IEnumAttributeValue valueName = genderEnumValueMale.getEnumAttributeValue(1);
+        IEnumAttributeValue valueId = genderEnumValueMale.getEnumAttributeValues().get(0);
+        IEnumAttributeValue valueName = genderEnumValueMale.getEnumAttributeValues().get(1);
 
         genderEnumType.setValuesArePartOfModel(true);
-        genderEnumType.moveEnumAttributeDown(genderEnumAttributeId);
+        genderEnumType.moveEnumAttribute(genderEnumAttributeId, false);
 
         assertEquals(genderEnumAttributeName, genderEnumType.getEnumAttributes().get(0));
         assertEquals(genderEnumAttributeId, genderEnumType.getEnumAttributes().get(1));
 
         assertEquals(valueId, genderEnumValueMale.getEnumAttributeValues().get(0));
         assertEquals(valueName, genderEnumValueMale.getEnumAttributeValues().get(1));
-    }
-
-    public void testFindReferencingEnumContents() throws CoreException {
-        newEnumContent(ipsProject, "NotReferencingEnumValues");
-
-        List<IEnumContent> referencingEnumContents = genderEnumType.findReferencingEnumContents();
-        assertEquals(1, referencingEnumContents.size());
-        assertEquals(genderEnumContent, referencingEnumContents.get(0));
     }
 
     public void testXml() throws CoreException, ParserConfigurationException {
@@ -419,7 +405,7 @@ public class EnumTypeTest extends AbstractIpsEnumPluginTest {
         assertEquals(0, genderEnumType.getIndexOfEnumAttribute(genderEnumAttributeId));
         assertEquals(1, genderEnumType.getIndexOfEnumAttribute(genderEnumAttributeName));
 
-        genderEnumType.moveEnumAttributeUp(genderEnumAttributeName);
+        genderEnumType.moveEnumAttribute(genderEnumAttributeName, true);
         assertEquals(1, genderEnumType.getIndexOfEnumAttribute(genderEnumAttributeId));
         assertEquals(0, genderEnumType.getIndexOfEnumAttribute(genderEnumAttributeName));
     }

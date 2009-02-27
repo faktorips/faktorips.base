@@ -15,6 +15,7 @@ package org.faktorips.devtools.core.internal.model.enums;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.NoSuchElementException;
 
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.osgi.util.NLS;
@@ -24,6 +25,7 @@ import org.faktorips.devtools.core.internal.model.ipsobject.IpsObjectPartCollect
 import org.faktorips.devtools.core.model.enums.IEnumAttributeValue;
 import org.faktorips.devtools.core.model.enums.IEnumValue;
 import org.faktorips.devtools.core.model.enums.IEnumValueContainer;
+import org.faktorips.devtools.core.model.enumtype.IEnumAttribute;
 import org.faktorips.devtools.core.model.enumtype.IEnumType;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPart;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
@@ -33,7 +35,7 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
 /**
- * Implementation of IEnumValue, see the corresponding interface for more details.
+ * Implementation of <code>IEnumValue</code>, see the corresponding interface for more details.
  * 
  * @see org.faktorips.devtools.core.model.enums.IEnumValue
  * 
@@ -47,8 +49,8 @@ public class EnumValue extends BaseIpsObjectPart implements IEnumValue {
     private IpsObjectPartCollection enumAttributeValues;
 
     /**
-     * Creates a new enum value that has as many enum attribute values as the corresponding enum
-     * type has attributes.
+     * Creates a new <code>EnumValue</code> that has as many enum attribute values as the
+     * corresponding enum type has attributes.
      * 
      * @param parent The enum value container this enum value belongs to.
      * @param id A unique id for this enum value.
@@ -103,64 +105,40 @@ public class EnumValue extends BaseIpsObjectPart implements IEnumValue {
     /**
      * {@inheritDoc}
      */
-    public IEnumAttributeValue getEnumAttributeValue(int id) {
-        return (IEnumAttributeValue)enumAttributeValues.getPartById(id);
-    }
-
-    /**
-     * {@inheritDoc}
-     */
     public IEnumAttributeValue newEnumAttributeValue() throws CoreException {
         return (IEnumAttributeValue)newPart(IEnumAttributeValue.class);
     }
 
     /**
-     * Moves the enum attribute value that has been assigned to the given enum attribute identified
-     * by the its index one position down in the collection order.
+     * Moves the enum attribute value identified by its index up or down by 1 in the containing
+     * list.
      * <p>
-     * If no corresponding enum attribute value can be found or the enum attribute value is already
-     * the last one then nothing will be done.
+     * If the enum attribute value is already the first / last one then nothing will be done.
      * 
-     * @param enumAttributeIndex The index of the enum attribute, that the enum attribute value that
-     *            is to be moved downwards, refers to.
-     */
-    public void moveEnumAttributeValueDown(int enumAttributeIndex) {
-        moveEnumAttributeValue(enumAttributeIndex, false);
-    }
-
-    /**
-     * Moves the enum attribute value that has been assigned to the given enum attribute identified
-     * by the its index one position up in the collection order.
-     * <p>
-     * If no corresponding enum attribute value can be found or the enum attribute value is already
-     * the first one then nothing will be done.
+     * @param index The index of the enum attribute value that is to be moved.
      * 
-     * @param enumAttributeIndex The index of the enum attribute, that the enum attribute value that
-     *            is to be moved upwards, refers to.
+     * @throws NoSuchElementException If there is no enum attribute value with the given index.
      */
-    public void moveEnumAttributeValueUp(int enumAttributeIndex) {
-        moveEnumAttributeValue(enumAttributeIndex, true);
-    }
-
-    /**
-     * Moves the enum attribute value refering to the given enum attribute up or down in the
-     * collection order by 1.
-     */
-    private void moveEnumAttributeValue(int enumAttributeIndex, boolean up) {
+    public void moveEnumAttributeValue(int index, boolean up) {
         List<IEnumAttributeValue> enumAttributeValuesList = getEnumAttributeValues();
+        try {
+            enumAttributeValuesList.get(index);
+        } catch (IndexOutOfBoundsException e) {
+            throw new NoSuchElementException();
+        }
 
         // Return if element is already the first / last one
         if (up) {
-            if (enumAttributeIndex == 0) {
+            if (index == 0) {
                 return;
             }
         } else {
-            if (enumAttributeIndex == enumAttributeValuesList.size() - 1) {
+            if (index == enumAttributeValuesList.size() - 1) {
                 return;
             }
         }
 
-        enumAttributeValues.moveParts(new int[] { enumAttributeIndex }, up);
+        enumAttributeValues.moveParts(new int[] { index }, up);
     }
 
     /**
@@ -173,7 +151,7 @@ public class EnumValue extends BaseIpsObjectPart implements IEnumValue {
         IEnumType enumType = ((IEnumValueContainer)getParent()).findEnumType();
         if (enumType != null) {
             // Number attribute values must match number attributes of the enum type
-            if (enumType.getEnumAttributesCount() != getNumberEnumAttributeValues()) {
+            if (enumType.getEnumAttributesCount() != getEnumAttributeValuesCount()) {
                 String text = NLS.bind(Messages.EnumValue_NumberAttributeValuesDoesNotCorrespondToNumberAttributes,
                         enumType.getQualifiedName());
                 Message validationMessage = new Message(
@@ -185,7 +163,9 @@ public class EnumValue extends BaseIpsObjectPart implements IEnumValue {
             // The identifier enum attribute value must not be empty
             IEnumAttributeValue identifierEnumAttributeValue = findIdentifierEnumAttributeValue();
             if (identifierEnumAttributeValue != null) {
-                if (identifierEnumAttributeValue.getValue().equals("")) {
+                String identifierValue = identifierEnumAttributeValue.getValue();
+                boolean identifierValueMissing = (identifierValue == null) ? true : identifierValue.equals("");
+                if (identifierValueMissing) {
                     String text = NLS.bind(Messages.EnumValue_IdentifierAttributeValueEmpty,
                             identifierEnumAttributeValue.findEnumAttribute().getName());
                     Message validationMessage = new Message(MSGCODE_IDENTIFIER_ATTRIBUTE_VALUE_EMPTY, text,
@@ -197,9 +177,9 @@ public class EnumValue extends BaseIpsObjectPart implements IEnumValue {
     }
 
     /**
-     * Returns the number of enum attribute values in this enum value.
+     * {@inheritDoc}
      */
-    private int getNumberEnumAttributeValues() {
+    public int getEnumAttributeValuesCount() {
         return enumAttributeValues.size();
     }
 
@@ -215,8 +195,11 @@ public class EnumValue extends BaseIpsObjectPart implements IEnumValue {
      */
     public IEnumAttributeValue findIdentifierEnumAttributeValue() throws CoreException {
         for (IEnumAttributeValue currentEnumAttributeValue : getEnumAttributeValues()) {
-            if (currentEnumAttributeValue.findEnumAttribute().isIdentifier()) {
-                return currentEnumAttributeValue;
+            IEnumAttribute currentReferencedEnumAttribute = currentEnumAttributeValue.findEnumAttribute();
+            if (currentReferencedEnumAttribute != null) {
+                if (currentReferencedEnumAttribute.isIdentifier()) {
+                    return currentEnumAttributeValue;
+                }
             }
         }
 

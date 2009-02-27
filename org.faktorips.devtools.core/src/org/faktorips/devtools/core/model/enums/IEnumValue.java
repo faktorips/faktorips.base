@@ -51,25 +51,14 @@ public interface IEnumValue extends IIpsObjectPart {
 
     /**
      * Returns a list containing all enum attribute values.
-     * 
-     * @return A list containing all enum attribute values.
      */
     public List<IEnumAttributeValue> getEnumAttributeValues();
 
     /**
-     * Returns the enum attribute value with the specified id.
-     * 
-     * @param id The id of the enum attribute value to return.
-     * 
-     * @return A reference to the enum attribute value specified by the given id.
-     */
-    public IEnumAttributeValue getEnumAttributeValue(int id);
-
-    /**
-     * Creates a new enum attribute value and returns a reference to it. This works only if there
-     * are currently less enum attribute values than the enum type has attributes.
-     * 
-     * @return A reference to the newly created enum attribute value.
+     * Creates a new enum attribute value and returns a reference to it.
+     * <p>
+     * This works only if there are currently less enum attribute values than the referenced enum
+     * type has enum attributes.
      * 
      * @throws CoreException If the enum type this enum value is based upon cannot be found.
      * @throws IllegalStateException If there are already the same number of enum attribute values
@@ -81,20 +70,22 @@ public interface IEnumValue extends IIpsObjectPart {
      * Returns the enum value container this enum value is being stored in.
      * <p>
      * This is a shortcut for: <code>(IEnumValueContainer)enumValue.getParent();</code>
-     * 
-     * @return The enum value container this enum value belongs to.
      */
     public IEnumValueContainer getEnumValueContainer();
 
     /**
      * Searches and returns the enum attribute value that refers to the identifier attribute of the
      * enum type this enum value refers to.
-     * 
-     * @return A reference to the enum attribute value that refers to the identifier attribute of
-     *         the enum type this enum value refers to or <code>null</code> if none can be found.
+     * <p>
+     * Returns <code>null</code> if none can be found.
      * 
      * @throws CoreException If an error occurs while searching for the identifier enum attribute.
      */
     public IEnumAttributeValue findIdentifierEnumAttributeValue() throws CoreException;
+
+    /**
+     * Returns how many enum attribute values this enum value is currently containing.
+     */
+    public int getEnumAttributeValuesCount();
 
 }

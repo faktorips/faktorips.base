@@ -74,10 +74,7 @@ public interface IEnumContent extends IEnumValueContainer {
     public void setEnumType(String enumType);
 
     /**
-     * Returns the enum type this enum content is based upon.
-     * 
-     * @return A string representing the qualified name of the enum type this enum content is based
-     *         upon.
+     * Returns the qualified name of the enum type this enum content is based upon.
      */
     public String getEnumType();
 

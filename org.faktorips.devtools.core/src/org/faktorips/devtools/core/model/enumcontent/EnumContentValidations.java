@@ -55,9 +55,6 @@ public abstract class EnumContentValidations {
      *            upon.
      * @param ipsProject The ips object path of this ips project will be searched.
      * 
-     * @return A proper validation message list or an empty validation message list if the
-     *         validation was successful.
-     * 
      * @throws CoreException If an error occurs while searching for the enum type.
      * @throws NullPointerException If enumTypeQualifiedName or ipsProject is <code>null</code>.
      */

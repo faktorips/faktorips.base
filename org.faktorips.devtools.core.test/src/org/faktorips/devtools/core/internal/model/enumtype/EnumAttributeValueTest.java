@@ -33,8 +33,8 @@ public class EnumAttributeValueTest extends AbstractIpsEnumPluginTest {
     public void setUp() throws Exception {
         super.setUp();
 
-        maleIdAttributeValue = genderEnumValueMale.getEnumAttributeValue(0);
-        maleNameAttributeValue = genderEnumValueMale.getEnumAttributeValue(1);
+        maleIdAttributeValue = genderEnumValueMale.getEnumAttributeValues().get(0);
+        maleNameAttributeValue = genderEnumValueMale.getEnumAttributeValues().get(1);
     }
 
     public void testFindEnumAttribute() throws CoreException {
@@ -42,6 +42,10 @@ public class EnumAttributeValueTest extends AbstractIpsEnumPluginTest {
         assertEquals(genderEnumAttributeName, maleNameAttributeValue.findEnumAttribute());
 
         genderEnumContent.setEnumType("");
+        assertNull(maleIdAttributeValue.findEnumAttribute());
+        genderEnumContent.setEnumType(genderEnumType.getQualifiedName());
+
+        genderEnumType.deleteEnumAttributeWithValues(genderEnumAttributeId);
         assertNull(maleIdAttributeValue.findEnumAttribute());
     }
 
@@ -59,8 +63,8 @@ public class EnumAttributeValueTest extends AbstractIpsEnumPluginTest {
 
         IEnumContent loadedEnumContent = newEnumContent(ipsProject, "LoadedEnumValues");
         loadedEnumContent.initFromXml(xmlElement);
-        assertEquals(GENDER_ENUM_LITERAL_MALE_ID, loadedEnumContent.getEnumValues().get(0).getEnumAttributeValue(0)
-                .getValue());
+        assertEquals(GENDER_ENUM_LITERAL_MALE_ID, loadedEnumContent.getEnumValues().get(0).getEnumAttributeValues()
+                .get(0).getValue());
         assertEquals(2, loadedEnumContent.getEnumValues().size());
     }
 

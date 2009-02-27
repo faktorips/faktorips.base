@@ -229,8 +229,8 @@ public class IpsObjectPartCollection {
     }
 
     /**
-     * Moves the parts indicated by the given indexes one position up or down in the collection
-     * order.
+     * Moves the parts indicated by the given indexes one position up or down in their containing
+     * list.
      * 
      * @param indexes The indexes that specify the elements to move.
      * @param up Flag indicating whether to move the elements one position up (<code>true</code>) or

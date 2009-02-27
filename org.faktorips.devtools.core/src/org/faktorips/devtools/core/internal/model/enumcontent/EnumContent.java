@@ -26,7 +26,7 @@ import org.faktorips.util.message.MessageList;
 import org.w3c.dom.Element;
 
 /**
- * Implementation of IEnumContent, see the corresponding interface for more details.
+ * Implementation of <code>IEnumContent</code>, see the corresponding interface for more details.
  * 
  * @see org.faktorips.devtools.core.model.enumcontent.IEnumContent
  * 
@@ -40,7 +40,7 @@ public class EnumContent extends EnumValueContainer implements IEnumContent {
     private String enumType;
 
     /**
-     * Creates a new enum content.
+     * Creates a new <code>EnumContent</code>.
      * 
      * @param file The ips source file in which this enum content will be stored in.
      */
