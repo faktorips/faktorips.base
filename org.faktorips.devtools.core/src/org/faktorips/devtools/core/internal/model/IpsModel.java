@@ -1146,9 +1146,9 @@ public class IpsModel extends IpsElement implements IIpsModel, IResourceChangeLi
         extProperty.setPropertyId(extension.getUniqueIdentifier());
         extProperty.setName(extension.getLabel());
         extProperty.setDefaultValue(element.getAttribute("defaultValue")); //$NON-NLS-1$
-        extProperty.setPosition(element.getAttribute("editedInStandardExtensionArea")); //$NON-NLS-1$
-        if (StringUtils.isNotEmpty(element.getAttribute("sortOrder"))) { //$NON-NLS-1$
-            extProperty.setSortOrder(Integer.parseInt(element.getAttribute("sortOrder"))); //$NON-NLS-1$
+        extProperty.setPosition(element.getAttribute("position")); //$NON-NLS-1$
+        if (StringUtils.isNotEmpty(element.getAttribute("order"))) { //$NON-NLS-1$
+            extProperty.setSortOrder(Integer.parseInt(element.getAttribute("order"))); //$NON-NLS-1$
         }
         String extType = element.getAttribute("extendedType"); //$NON-NLS-1$
         try {
