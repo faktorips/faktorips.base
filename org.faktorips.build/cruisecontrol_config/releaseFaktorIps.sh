@@ -30,7 +30,7 @@
 # additional functionality
 #-------------------------
 #           -createBranch          : to create a branch, the latest head stand will be branched
-#                                    with using -useBranch [branch] the name of the branch will be specified
+#                                    with using -useBranch [branch] the name of the branch must be specified
 #
 # additional environment parameters (useful when the release must be build local)
 # -------------------------------------------------------------------------------
@@ -300,7 +300,7 @@ if [ $SHOWHELP = "true" ] ; then
   echo '                         the default is: ' $PROJECTSROOTDIR
   echo 'additional functionality '
   echo '  -createBranch          to create a branch, the latest HEAD stand will be branched'
-  echo '                         with -useBranch [branch] the name of the branch will be specified'
+  echo '                         with -useBranch [branch] the name of the branch must be specified'
   echo '                         ' 
   echo 'e.g.: '$0' -version 2.2.0.rc1 -skipTest'
   echo '      builds the release with version 2.2.0.rc1, category 2.2 ' 
