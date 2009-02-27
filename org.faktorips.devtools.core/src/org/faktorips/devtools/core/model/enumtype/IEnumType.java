@@ -171,6 +171,7 @@ public interface IEnumType extends IEnumValueContainer, Datatype {
      * @return A reference to the enum attribute with the given id or <code>null</code> if no such
      *         enum attribute could be found.
      */
+    //TODO pk: brauchen wir dieses Methode im published interface?
     public IEnumAttribute getEnumAttribute(int id);
 
     /**
@@ -252,6 +253,7 @@ public interface IEnumType extends IEnumValueContainer, Datatype {
      * 
      * @throws CoreException If an error occurs while searching for the enum content objects.
      */
+    //TODO pk: wenn ich das richtig sehe brauchen wir diese Methode nicht
     public List<IEnumContent> findReferencingEnumContents() throws CoreException;
 
     /**
@@ -304,6 +306,7 @@ public interface IEnumType extends IEnumValueContainer, Datatype {
      * @return A list containing all enum attributes of this enum type being marked as inherited.
      *         Never returns <code>null</code>.
      */
+    //TODO pk: wird wahrscheinlich nicht benötigt
     public List<IEnumAttribute> getInheritedAttributes();
 
 }

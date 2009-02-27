@@ -71,6 +71,8 @@ public class MoveEnumValueAction extends AbstractEnumAction {
             IEnumValueContainer enumValueContainer = (IEnumValueContainer)enumValue.getParent();
             try {
                 if (up) {
+                    //TODO pk: hier würde sich eine Methode moveEnumValue(boolean up) anbieten. Das würde dieses
+                    //if auflösen
                     enumValueContainer.moveEnumValueUp(enumValue);
                 } else {
                     enumValueContainer.moveEnumValueDown(enumValue);

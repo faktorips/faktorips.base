@@ -25,6 +25,10 @@ import org.faktorips.devtools.core.ui.actions.IpsAction;
  * 
  * @since 2.3
  */
+//TODO pk: Dieser Abstract Action ist wahrscheinlich überflüssig. Du übergibt den table viewer um in nach der 
+//action zu refreshen. Dies kannst du auch so machen, indem du das ensprechende GUI control, also die section
+//als model changed listener registierts und dort den refresh aufrufst. Damit hat man einen klaren model view 
+//controler ablauf
 public abstract class AbstractEnumAction extends IpsAction {
 
     /** The table viewer linking the ui table widget with the model data. */

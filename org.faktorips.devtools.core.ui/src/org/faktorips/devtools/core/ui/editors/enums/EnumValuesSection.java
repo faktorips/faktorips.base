@@ -646,18 +646,22 @@ public class EnumValuesSection extends IpsSection {
         /** Things to do when an enum attribute has been removed from the referenced enum type. */
         private void enumAttributeRemoved(IEnumAttribute removedEnumAttribute) throws CoreException {
             // Delete referencing enum values if there are no more enum attributes
+            //TODO pk: ich verstehe eigentlich den ganzen code abschnitt nicht. müssen wir mal durchsprechen
             IEnumType enumType = (IEnumType)removedEnumAttribute.getParent();
             if (enumType.getEnumAttributesCount() == 0) {
                 for (IEnumValue currentEnumValue : enumType.getEnumValues()) {
                     currentEnumValue.delete();
                 }
                 try {
+                    //TODO pk: Das wollen wir doch nicht wirklich tun oder?
+                    //Die enum contents müssen als fehlerhaft markiert werden aber nicht die Werte löschen
                     for (IEnumContent currentEnumContent : enumType.findReferencingEnumContents()) {
                         for (IEnumValue currentEnumValue : currentEnumContent.getEnumValues()) {
                             currentEnumValue.delete();
                         }
                     }
                 } catch (CoreException e) {
+                    //TODO pk: wieso RuntimeException?
                     throw new RuntimeException(e);
                 }
             }

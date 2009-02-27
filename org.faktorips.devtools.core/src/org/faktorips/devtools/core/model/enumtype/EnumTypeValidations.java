@@ -165,6 +165,10 @@ public abstract class EnumTypeValidations {
      * Returns all attributes from the supertype hierarchy of the given enum type that are not
      * inherited in the given enum type.
      */
+    //TODO pk: wieso machst du das so? sollte es nicht eine Methode getAttributes und findAllAttributes am EnumType
+    //geben getAttributes gibt nur die Attribute des EnumTypes zurück findAllAttributes gibt die Attribute des EnumType 
+    //inklusive der geerbten Attribute zurück
+    //getInheritedAttributes() braucht man dann nicht mehr oder?
     private static List<IEnumAttribute> getNotInheritedAttributes(IEnumType enumType) throws CoreException {
         List<IEnumAttribute> inheritedAttributes = enumType.getInheritedAttributes();
         List<IEnumAttribute> supertypeHierarchyAttributes = findAllAttributesInSupertypeHierarchy(enumType);

@@ -305,6 +305,7 @@ public class EnumType extends EnumValueContainer implements IEnumType {
         for (IIpsSrcFile currentIpsSrcFile : enumContentsSrcFiles) {
             IEnumContent currentEnumContent = (IEnumContent)currentIpsSrcFile.getIpsObject();
             if (currentEnumContent.getEnumType().equals(this.getQualifiedName())) {
+                //TODO pk den content hast du dir doch oben schon besorgt! 
                 referencingEnumContents.add((IEnumContent)currentIpsSrcFile.getIpsObject());
             }
         }

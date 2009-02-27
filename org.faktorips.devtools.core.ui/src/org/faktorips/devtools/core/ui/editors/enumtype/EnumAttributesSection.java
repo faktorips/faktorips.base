@@ -66,6 +66,7 @@ public class EnumAttributesSection extends SimpleIpsPartsSection {
      * A composite that shows an enum type's attributes in a viewer and allows to edit the
      * attributes in a dialog, to create new attributes and to delete attributes.
      */
+    //TODO pk: innere klassen immer am Datei Ende positionieren
     private class EnumAttributesComposite extends IpsPartsComposite {
 
         // The enum type being edited by the editor
@@ -122,6 +123,8 @@ public class EnumAttributesSection extends SimpleIpsPartsSection {
         /**
          * {@inheritDoc}
          */
+        //TODO pk: newIpsPart könnte eigentlich eine Exception werfen. Damit wird man den unnötigen try catch
+        // und runtime exception wrapper los
         @Override
         protected IIpsObjectPart newIpsPart() {
             try {
