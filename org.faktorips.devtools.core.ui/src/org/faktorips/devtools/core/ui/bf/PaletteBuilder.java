@@ -30,8 +30,8 @@ import org.eclipse.gef.palette.ToolEntry;
 import org.eclipse.gef.requests.CreationFactory;
 import org.eclipse.gef.tools.MarqueeSelectionTool;
 import org.eclipse.jface.resource.ImageDescriptor;
+import org.faktorips.devtools.core.internal.model.bf.ControlFlow;
 import org.faktorips.devtools.core.model.bf.BFElementType;
-import org.faktorips.devtools.core.ui.IpsUIPlugin;
 
 /**
  * Builds the palette that is needed by the business function edtior.
@@ -102,7 +102,7 @@ public class PaletteBuilder {
 
 		//UMLElementTypes.ActivityParameterNode_3052
 
-		image = IpsUIPlugin.getDefault().getImageDescriptor("/obj16/" + "ControlFlow.gif"); //$NON-NLS-1$ //$NON-NLS-2$
+		image = ControlFlow.getImageDescriptor();
 		ToolEntry controlflowEntry = new ConnectionCreationToolEntry(
 				Messages.getString("PaletteBuilder.controlflow"), //$NON-NLS-1$
 				Messages.getString("PaletteBuilder.controlFlowDesc"), //$NON-NLS-1$
