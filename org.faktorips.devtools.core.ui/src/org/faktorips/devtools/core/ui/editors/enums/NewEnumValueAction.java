@@ -13,11 +13,11 @@
 
 package org.faktorips.devtools.core.ui.editors.enums;
 
-import org.eclipse.jface.viewers.IStructuredSelection;
+import org.eclipse.jface.action.Action;
 import org.eclipse.jface.viewers.TableViewer;
 import org.faktorips.devtools.core.model.enums.IEnumValueContainer;
 import org.faktorips.devtools.core.ui.IpsUIPlugin;
-import org.faktorips.devtools.core.ui.editors.enums.Messages;
+import org.faktorips.util.ArgumentCheck;
 
 /**
  * This action is used by the <code>EnumValuesSection</code> for adding new enum values.
@@ -28,16 +28,26 @@ import org.faktorips.devtools.core.ui.editors.enums.Messages;
  * 
  * @since 2.3
  */
-public class NewEnumValueAction extends AbstractEnumAction {
+public class NewEnumValueAction extends Action {
+
+    /** The enum values table viewer linking the enum values ui table widget with the model data. */
+    private TableViewer enumValuesTableViewer;
 
     /**
      * Creates a new <code>NewEnumValueAction</code>.
      * 
-     * @param tableViewer The table viewer linking the ui table widget with the model data.
+     * @param enumValuesTableViewer The enum values table viewer linking the enum values ui table
+     *            widget with the model data.
+     * 
+     * @throws NullPointerException If enumValuesTableViewer is <code>null</code>.
      */
-    public NewEnumValueAction(TableViewer tableViewer) {
-        super(tableViewer);
-        
+    public NewEnumValueAction(TableViewer enumValuesTableViewer) {
+        super();
+
+        ArgumentCheck.notNull(enumValuesTableViewer);
+
+        this.enumValuesTableViewer = enumValuesTableViewer;
+
         setImageDescriptor(IpsUIPlugin.getDefault().getImageDescriptor("InsertRowAfter.gif"));
         setText(Messages.EnumValuesSection_labelNewValue);
         setToolTipText(Messages.EnumValuesSection_tooltipNewValue);
@@ -47,15 +57,15 @@ public class NewEnumValueAction extends AbstractEnumAction {
      * {@inheritDoc}
      */
     @Override
-    public void run(IStructuredSelection selection) {
+    public void run() {
         // Do nothing if there are no columns yet
-        if (tableViewer.getColumnProperties().length <= 0) {
+        if (enumValuesTableViewer.getColumnProperties().length <= 0) {
             return;
         }
 
-        IEnumValueContainer enumValueContainer = (IEnumValueContainer)tableViewer.getInput();
+        IEnumValueContainer enumValueContainer = (IEnumValueContainer)enumValuesTableViewer.getInput();
         enumValueContainer.newEnumValue();
-        tableViewer.refresh(true);
+        enumValuesTableViewer.refresh(true);
     }
 
 }

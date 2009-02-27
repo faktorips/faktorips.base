@@ -34,11 +34,13 @@ public abstract class TypeEditor extends IpsObjectEditor {
         String sections = IpsPlugin.getDefault().getIpsPreferences().getSectionsInTypeEditors();
         if (IpsPreferences.FOUR_SECTIONS_IN_TYPE_EDITOR_PAGE.equals(sections)) {
             addAllInOneSinglePage();
-        }
-        if (IpsPreferences.TWO_SECTIONS_IN_TYPE_EDITOR_PAGE.equals(sections)) {
+        } else if (IpsPreferences.TWO_SECTIONS_IN_TYPE_EDITOR_PAGE.equals(sections)) {
             addSplittedInMorePages();
         }
-        addPage(new DescriptionPage(this));
+
+        if (hasDescriptionPage()) {
+            addPage(new DescriptionPage(this));
+        }
     }
 
     /**
@@ -52,5 +54,19 @@ public abstract class TypeEditor extends IpsObjectEditor {
      * on two pages.
      */
     protected abstract void addSplittedInMorePages() throws PartInitException;
-    
+
+    /**
+     * Returns whether this editor should have a description page. May be overriden by subclasses.
+     * <p>
+     * Returns <code>true</code> by default.
+     */
+    /*
+     * TODO This could be done better by giving ips objects and ips object parts the ability to have
+     * no description. The editor could then derive from that fact whether a description page is
+     * neccessary or not.
+     */
+    protected boolean hasDescriptionPage() {
+        return true;
+    }
+
 }

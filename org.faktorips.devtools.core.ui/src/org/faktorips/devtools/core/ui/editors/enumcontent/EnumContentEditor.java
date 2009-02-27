@@ -31,7 +31,7 @@ public class EnumContentEditor extends TypeEditor {
      */
     @Override
     protected void addAllInOneSinglePage() throws PartInitException {
-        addPage(new EnumContentValuesPage(this));
+        addPage(new EnumContentPage(this));
     }
 
     /**
@@ -39,7 +39,7 @@ public class EnumContentEditor extends TypeEditor {
      */
     @Override
     protected void addSplittedInMorePages() throws PartInitException {
-        addPage(new EnumContentValuesPage(this));
+        addPage(new EnumContentPage(this));
     }
 
     /**
@@ -48,6 +48,14 @@ public class EnumContentEditor extends TypeEditor {
     @Override
     protected String getUniformPageTitle() {
         return Messages.EnumContentEditor_title + getIpsObject().getName();
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    protected boolean hasDescriptionPage() {
+        return false;
     }
 
     /**

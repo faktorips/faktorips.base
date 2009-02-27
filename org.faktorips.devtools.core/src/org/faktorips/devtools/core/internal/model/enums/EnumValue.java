@@ -19,7 +19,6 @@ import java.util.List;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.osgi.util.NLS;
 import org.eclipse.swt.graphics.Image;
-import org.faktorips.devtools.core.internal.model.enums.Messages;
 import org.faktorips.devtools.core.internal.model.ipsobject.BaseIpsObjectPart;
 import org.faktorips.devtools.core.internal.model.ipsobject.IpsObjectPartCollection;
 import org.faktorips.devtools.core.model.enums.IEnumAttributeValue;
@@ -65,10 +64,10 @@ public class EnumValue extends BaseIpsObjectPart implements IEnumValue {
         // Add as many enum attribute values as there are enum attributes in the enum type
         /*
          * TODO this will lead to problems when implementing the enum content stuff when the enum
-         * type has not yet been specified so this will return null
+         * type has not been specified or is invalid so this will return null
          */
         IEnumType enumType = parent.findEnumType();
-        for (int i = 0; i < enumType.getEnumAttributes().size(); i++) {
+        for (int i = 0; i < enumType.getEnumAttributesCount(); i++) {
             newEnumAttributeValue();
         }
     }
@@ -130,14 +129,11 @@ public class EnumValue extends BaseIpsObjectPart implements IEnumValue {
     }
 
     /**
-     * <p>
      * Moves the enum attribute value that has been assigned to the given enum attribute identified
      * by the its index one position up in the collection order.
-     * </p>
      * <p>
      * If no corresponding enum attribute value can be found or the enum attribute value is already
      * the first one then nothing will be done.
-     * </p>
      * 
      * @param enumAttributeIndex The index of the enum attribute, that the enum attribute value that
      *            is to be moved upwards, refers to.
@@ -176,6 +172,7 @@ public class EnumValue extends BaseIpsObjectPart implements IEnumValue {
 
         IEnumType enumType = ((IEnumValueContainer)getParent()).findEnumType();
         if (enumType != null) {
+            // Number attribute values must match number attributes of the enum type
             if (enumType.getEnumAttributesCount() != getNumberEnumAttributeValues()) {
                 String text = NLS.bind(Messages.EnumValue_NumberAttributeValuesDoesNotCorrespondToNumberAttributes,
                         enumType.getQualifiedName());
@@ -183,6 +180,18 @@ public class EnumValue extends BaseIpsObjectPart implements IEnumValue {
                         MSGCODE_NUMBER_ATTRIBUTE_VALUES_DOES_NOT_CORRESPOND_TO_NUMBER_ATTRIBUTES, text, Message.ERROR,
                         this);
                 list.add(validationMessage);
+            }
+
+            // The identifier enum attribute value must not be empty
+            IEnumAttributeValue identifierEnumAttributeValue = findIdentifierEnumAttributeValue();
+            if (identifierEnumAttributeValue != null) {
+                if (identifierEnumAttributeValue.getValue().equals("")) {
+                    String text = NLS.bind(Messages.EnumValue_IdentifierAttributeValueEmpty,
+                            identifierEnumAttributeValue.findEnumAttribute().getName());
+                    Message validationMessage = new Message(MSGCODE_IDENTIFIER_ATTRIBUTE_VALUE_EMPTY, text,
+                            Message.ERROR, this);
+                    list.add(validationMessage);
+                }
             }
         }
     }
@@ -199,6 +208,19 @@ public class EnumValue extends BaseIpsObjectPart implements IEnumValue {
      */
     public IEnumValueContainer getEnumValueContainer() {
         return (IEnumValueContainer)getParent();
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public IEnumAttributeValue findIdentifierEnumAttributeValue() throws CoreException {
+        for (IEnumAttributeValue currentEnumAttributeValue : getEnumAttributeValues()) {
+            if (currentEnumAttributeValue.findEnumAttribute().isIdentifier()) {
+                return currentEnumAttributeValue;
+            }
+        }
+
+        return null;
     }
 
 }

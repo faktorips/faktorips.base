@@ -75,9 +75,9 @@ public abstract class IpsObjectEditorPage extends FormPage implements IDataChang
      */
     protected IIpsObject getIpsObject() {
         /*
-         * null checking is necessary since in might be the case that the ips source file cannot be
-         * determined. E.g. in the special case that one tries to open a ips source file which is
-         * not in a ips package.
+         * null checking is necessary since it might be the case that the ips source file cannot be
+         * determined. E.g. in the special case that one tries to open an ips source file which is
+         * not in an ips package.
          */
         if (getIpsObjectEditor() != null && getIpsObjectEditor().getIpsSrcFile() != null
                 && getIpsObjectEditor().getIpsSrcFile().exists()) {

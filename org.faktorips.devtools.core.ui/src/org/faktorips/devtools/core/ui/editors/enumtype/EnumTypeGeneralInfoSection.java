@@ -13,6 +13,7 @@
 
 package org.faktorips.devtools.core.ui.editors.enumtype;
 
+import org.eclipse.core.runtime.CoreException;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
@@ -20,7 +21,6 @@ import org.eclipse.ui.forms.events.HyperlinkAdapter;
 import org.eclipse.ui.forms.events.HyperlinkEvent;
 import org.eclipse.ui.forms.widgets.Hyperlink;
 import org.eclipse.ui.forms.widgets.Section;
-import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.model.enumtype.IEnumType;
 import org.faktorips.devtools.core.ui.ExtensionPropertyControlFactory;
 import org.faktorips.devtools.core.ui.IpsUIPlugin;
@@ -36,6 +36,8 @@ import org.faktorips.util.ArgumentCheck;
  * property, the abstract property and the valuesArePartOfModel property.
  * 
  * @author Alexander Weickmann
+ * 
+ * @since 2.3
  */
 public class EnumTypeGeneralInfoSection extends IpsSection {
 
@@ -86,8 +88,8 @@ public class EnumTypeGeneralInfoSection extends IpsSection {
                     if (supertype != null) {
                         IpsUIPlugin.getDefault().openEditor(supertype);
                     }
-                } catch (Exception e) {
-                    IpsPlugin.logAndShowErrorDialog(e);
+                } catch (CoreException e) {
+                    throw new RuntimeException(e);
                 }
             }
         });

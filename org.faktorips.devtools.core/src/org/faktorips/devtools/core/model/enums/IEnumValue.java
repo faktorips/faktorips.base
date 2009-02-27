@@ -45,6 +45,10 @@ public interface IEnumValue extends IIpsObjectPart {
     public final static String MSGCODE_NUMBER_ATTRIBUTE_VALUES_DOES_NOT_CORRESPOND_TO_NUMBER_ATTRIBUTES = MSGCODE_PREFIX
             + "NumberAttributeValuesDoesNotCorrespondToNumberAttributes"; //$NON-NLS-1$
 
+    /** Validation message code to indicate that the identifier enum attribute value is empty. */
+    public final static String MSGCODE_IDENTIFIER_ATTRIBUTE_VALUE_EMPTY = MSGCODE_PREFIX
+            + "IdentifierAttributeValueEmpty"; //$NON-NLS-1$
+
     /**
      * Returns a list containing all enum attribute values.
      * 
@@ -81,5 +85,16 @@ public interface IEnumValue extends IIpsObjectPart {
      * @return The enum value container this enum value belongs to.
      */
     public IEnumValueContainer getEnumValueContainer();
+
+    /**
+     * Searches and returns the enum attribute value that refers to the identifier attribute of the
+     * enum type this enum value refers to.
+     * 
+     * @return A reference to the enum attribute value that refers to the identifier attribute of
+     *         the enum type this enum value refers to or <code>null</code> if none can be found.
+     * 
+     * @throws CoreException If an error occurs while searching for the identifier enum attribute.
+     */
+    public IEnumAttributeValue findIdentifierEnumAttributeValue() throws CoreException;
 
 }

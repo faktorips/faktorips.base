@@ -58,6 +58,7 @@ public class EnumTypeBuilder extends DefaultJavaSourceFileBuilder {
      */
     public EnumTypeBuilder(IIpsArtefactBuilderSet builderSet) {
         super(builderSet, PACKAGE_STRUCTURE_KIND_ID, new LocalizedStringsSet(EnumTypeBuilder.class));
+        setMergeEnabled(true);
     }
 
     /**
@@ -163,24 +164,23 @@ public class EnumTypeBuilder extends DefaultJavaSourceFileBuilder {
             List<IEnumValue> enumValues = enumType.getEnumValues();
             for (int i = 0; i < enumValues.size(); i++) {
 
-                // Search for the enum attribute value that refers to the identifier enum attribute
-                List<IEnumAttributeValue> currentEnumAttributeValues = enumValues.get(i).getEnumAttributeValues();
-                for (IEnumAttributeValue currentEnumAttributeValue : currentEnumAttributeValues) {
-
-                    IEnumAttribute currentReferencedEnumAttribute = currentEnumAttributeValue.findEnumAttribute();
-                    if (currentReferencedEnumAttribute.isIdentifier()) {
-                        if (javaAtLeast5) {
-                            generateEnumValueAsEnumDefinition(currentEnumAttributeValues, currentEnumAttributeValue,
-                                    (i == enumValues.size() - 1), mainSection.getEnumDefinitionBuilder());
-                            appendSemicolon = false;
-                        } else {
-                            generateEnumValueAsConstant(currentEnumAttributeValues, currentEnumAttributeValue,
-                                    mainSection.getConstantBuilder());
-                        }
-
-                        break;
+                IEnumValue currentEnumValue = enumValues.get(i);
+                // Generate only for valid enum values
+                if (currentEnumValue.isValid()) {
+                    IEnumAttributeValue currentIdentifierEnumAttributeValue = enumValues.get(i)
+                            .findIdentifierEnumAttributeValue();
+                    List<IEnumAttributeValue> currentEnumAttributeValues = currentEnumValue.getEnumAttributeValues();
+                    if (javaAtLeast5) {
+                        generateEnumValueAsEnumDefinition(currentEnumAttributeValues,
+                                currentIdentifierEnumAttributeValue, (i == enumValues.size() - 1), mainSection
+                                        .getEnumDefinitionBuilder());
+                        appendSemicolon = false;
+                    } else {
+                        generateEnumValueAsConstant(currentEnumAttributeValues, currentIdentifierEnumAttributeValue,
+                                mainSection.getConstantBuilder());
                     }
                 }
+
             }
         }
 
@@ -286,9 +286,7 @@ public class EnumTypeBuilder extends DefaultJavaSourceFileBuilder {
                  */
                 if (!(isClass() && currentEnumAttribute.isInherited())) {
                     appendLocalizedJavaDoc("ATTRIBUTE", attributeName, currentEnumAttribute, attributeBuilder);
-                    int attributeVisibility = (isClass() && getEnumType().isAbstract()) ? Modifier.PROTECTED
-                            : Modifier.PRIVATE;
-                    attributeBuilder.varDeclaration(attributeVisibility | Modifier.FINAL, currentEnumAttribute
+                    attributeBuilder.varDeclaration(Modifier.PRIVATE | Modifier.FINAL, currentEnumAttribute
                             .getDatatype(), codeName);
                     attributeBuilder.appendLn(' ');
                 }

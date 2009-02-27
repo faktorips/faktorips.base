@@ -30,10 +30,8 @@ import org.eclipse.jface.viewers.SelectionChangedEvent;
 import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.swt.dnd.TextTransfer;
 import org.eclipse.swt.dnd.Transfer;
-import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.part.ResourceTransfer;
 import org.faktorips.devtools.core.IpsPlugin;
-import org.faktorips.devtools.core.model.IIpsElement;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObject;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPart;
 import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
@@ -63,7 +61,7 @@ public abstract class IpsAction extends Action {
 
     private static final String ARCHIVE_LINK = "ARCHIVE_LINK"; //$NON-NLS-1$
 
-    private final static IIpsObject[] EMPTY_IPS_OBJECT_ARRAY = new IIpsObject[0];;
+    private final static IIpsObject[] EMPTY_IPS_OBJECT_ARRAY = new IIpsObject[0];
 
     // The source of objects to modify by this action.
     protected ISelectionProvider selectionProvider;
@@ -75,23 +73,12 @@ public abstract class IpsAction extends Action {
     private ISelectionChangedListener adjustEnableStateListener;
 
     /**
-     * Creates a new IpsAction. This action uses the <code>SelectionService</code> of the given
-     * WorkbenchWindow to retrieve the current selection. Actions created with this constructor are
-     * independant of the viewpart they are ariginally created in.
-     * <p>
-     * This constructor must not be used for actions in contextmenus, as there are problems with the
-     * selectionservice when the popupmenu opens.
-     */
-    public IpsAction(IWorkbenchWindow workbenchWindow) {
-        this.selectionProvider = null;
-    }
-
-    /**
      * Creates a new action. If the action is started, the given selection-provider is asked for its
      * selection and the modifications are done to the selection.
      * 
      * @param selectionProvider
      */
+    // TODO the possibility to give null as selection provider would be good ...
     public IpsAction(ISelectionProvider selectionProvider) {
         this.selectionProvider = selectionProvider;
         if (selectionProvider != null) {
@@ -104,6 +91,10 @@ public abstract class IpsAction extends Action {
         }
     }
 
+    /**
+     * {@inheritDoc}
+     */
+    @Override
     public void run() {
         ISelection sel = selectionProvider.getSelection();
         if (sel != null) {

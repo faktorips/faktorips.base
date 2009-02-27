@@ -25,6 +25,16 @@ public class Messages extends NLS {
 
     public static String EnumContentEditor_title;
     public static String EnumContentValuesPage_title;
+    public static String EnumContentGeneralInfoSection_title;
+    public static String EnumContentGeneralInfoSection_linkEnumType;
+
+    public static String FixEnumTypeDialog_title;
+    public static String FixEnumTypeDialog_labelNewEnumType;
+    public static String FixEnumTypeDialog_msgEnumTypeMissing;
+    public static String FixEnumTypeDialog_msgEnumTypeDoesNotExist;
+
+    public static String EnumContentPage_labelOpenFixEnumTypeDialog;
+    public static String EnumContentPage_tooltipOpenFixEnumTypeDialog;
 
     static {
         // initialize resource bundle

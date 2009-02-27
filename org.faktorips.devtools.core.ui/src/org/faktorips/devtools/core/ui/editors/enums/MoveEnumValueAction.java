@@ -14,12 +14,13 @@
 package org.faktorips.devtools.core.ui.editors.enums;
 
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.jface.action.Action;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.TableViewer;
 import org.faktorips.devtools.core.model.enums.IEnumValue;
 import org.faktorips.devtools.core.model.enums.IEnumValueContainer;
 import org.faktorips.devtools.core.ui.IpsUIPlugin;
-import org.faktorips.devtools.core.ui.editors.enums.Messages;
+import org.faktorips.util.ArgumentCheck;
 
 /**
  * This action is used by the <code>EnumValuesSection</code> for moving enum values.
@@ -30,7 +31,10 @@ import org.faktorips.devtools.core.ui.editors.enums.Messages;
  * 
  * @since 2.3
  */
-public class MoveEnumValueAction extends AbstractEnumAction {
+public class MoveEnumValueAction extends Action {
+
+    /** The enum values table viewer linking the enum values ui table widget with the model data. */
+    private TableViewer enumValuesTableViewer;
 
     /** Flag indicating whether to move up or down. */
     private boolean up;
@@ -38,12 +42,19 @@ public class MoveEnumValueAction extends AbstractEnumAction {
     /**
      * Creates a new <code>MoveEnumValueAction</code>.
      * 
-     * @param tableViewer The table viewer linking the ui table widget with the model data.
+     * @param enumValuesTableViewer The enum values table viewer linking the enum values ui table
+     *            widget with the model data.
      * @param up Flag indicating whether the selected enum value shall be moved upwards or
      *            downwards.
+     * 
+     * @throws NullPointerException If enumValuesTableViewer is <code>null</code>.
      */
-    public MoveEnumValueAction(TableViewer tableViewer, boolean up) {
-        super(tableViewer);
+    public MoveEnumValueAction(TableViewer enumValuesTableViewer, boolean up) {
+        super();
+
+        ArgumentCheck.notNull(enumValuesTableViewer);
+
+        this.enumValuesTableViewer = enumValuesTableViewer;
         this.up = up;
 
         if (up) {
@@ -61,7 +72,8 @@ public class MoveEnumValueAction extends AbstractEnumAction {
      * {@inheritDoc}
      */
     @Override
-    public void run(IStructuredSelection selection) {
+    public void run() {
+        IStructuredSelection selection = (IStructuredSelection)enumValuesTableViewer.getSelection();
         if (selection == null) {
             return;
         }
@@ -81,7 +93,7 @@ public class MoveEnumValueAction extends AbstractEnumAction {
                 throw new RuntimeException(e);
             }
 
-            tableViewer.refresh(true);
+            enumValuesTableViewer.refresh(true);
         }
     }
 }

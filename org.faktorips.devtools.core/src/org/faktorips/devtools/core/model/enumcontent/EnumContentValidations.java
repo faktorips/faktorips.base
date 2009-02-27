@@ -43,7 +43,7 @@ public abstract class EnumContentValidations {
      * <li>The qualified name of the enum type equals an empty string (enum type is missing)</li>
      * <li>The enum type is specified but does not exist</li>
      * <li>The enum type does exist but its values are defined in the model</li>
-     * <li>The enum type exist but is abstract</li>
+     * <li>The enum type does exist but is abstract</li>
      * </ul
      * <p>
      * If the enum type property is valid an empty validation message list will be returned.

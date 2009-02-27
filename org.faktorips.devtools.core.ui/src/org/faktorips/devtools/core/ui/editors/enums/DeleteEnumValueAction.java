@@ -13,11 +13,12 @@
 
 package org.faktorips.devtools.core.ui.editors.enums;
 
+import org.eclipse.jface.action.Action;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.TableViewer;
 import org.faktorips.devtools.core.model.enums.IEnumValue;
 import org.faktorips.devtools.core.ui.IpsUIPlugin;
-import org.faktorips.devtools.core.ui.editors.enums.Messages;
+import org.faktorips.util.ArgumentCheck;
 
 /**
  * This action is used by the <code>EnumValuesSection</code> for deleting enum values.
@@ -28,16 +29,26 @@ import org.faktorips.devtools.core.ui.editors.enums.Messages;
  * 
  * @since 2.3
  */
-public class DeleteEnumValueAction extends AbstractEnumAction {
+public class DeleteEnumValueAction extends Action {
+
+    /** The enum values table viewer linking the enum values ui table widget with the model data. */
+    private TableViewer enumValuesTableViewer;
 
     /**
      * Creates a new <code>DeleteEnumValueAction</code>.
      * 
-     * @param tableViewer The table viewer linking the ui table widget with the model data.
+     * @param enumValuesTableViewer The enum values table viewer linking the enum values ui table
+     *            widget with the model data.
+     * 
+     * @throws NullPointerException If enumValuesTableViewer is <code>null</code>.
      */
-    public DeleteEnumValueAction(TableViewer tableViewer) {
-        super(tableViewer);
-        
+    public DeleteEnumValueAction(TableViewer enumValuesTableViewer) {
+        super();
+
+        ArgumentCheck.notNull(enumValuesTableViewer);
+
+        this.enumValuesTableViewer = enumValuesTableViewer;
+
         setImageDescriptor(IpsUIPlugin.getDefault().getImageDescriptor("Delete.gif"));
         setText(Messages.EnumValuesSection_labelDeleteValue);
         setToolTipText(Messages.EnumValuesSection_tooltipDeleteValue);
@@ -47,7 +58,8 @@ public class DeleteEnumValueAction extends AbstractEnumAction {
      * {@inheritDoc}
      */
     @Override
-    public void run(IStructuredSelection selection) {
+    public void run() {
+        IStructuredSelection selection = (IStructuredSelection)enumValuesTableViewer.getSelection();
         if (selection == null) {
             return;
         }
@@ -55,7 +67,7 @@ public class DeleteEnumValueAction extends AbstractEnumAction {
         IEnumValue enumValue = (IEnumValue)selection.getFirstElement();
         if (enumValue != null) {
             enumValue.delete();
-            tableViewer.refresh(true);
+            enumValuesTableViewer.refresh(true);
         }
     }
 

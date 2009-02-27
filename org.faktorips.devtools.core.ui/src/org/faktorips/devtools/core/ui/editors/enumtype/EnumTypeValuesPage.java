@@ -21,7 +21,7 @@ import org.faktorips.devtools.core.ui.editors.enums.EnumValuesSection;
 import org.faktorips.devtools.core.ui.editors.type.TypeEditorStructurePage;
 
 /**
- * The <code>EnumContentValuesPage</code> provides controls to edit the values of an
+ * The <code>EnumTypeValuesPage</code> provides controls to edit the values of an
  * <code>IEnumType</code> and is intended to be used with the <code>EnumTypeEditor</code>.
  * 
  * @see EnumTypeEditor

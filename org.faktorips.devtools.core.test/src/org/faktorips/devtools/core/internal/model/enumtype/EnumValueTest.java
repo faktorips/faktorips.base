@@ -16,8 +16,8 @@ package org.faktorips.devtools.core.internal.model.enumtype;
 import javax.xml.parsers.ParserConfigurationException;
 
 import org.eclipse.core.runtime.CoreException;
-import org.faktorips.devtools.core.model.IIpsModel;
 import org.faktorips.devtools.core.model.enumcontent.IEnumContent;
+import org.faktorips.devtools.core.model.enums.IEnumAttributeValue;
 import org.w3c.dom.Element;
 
 public class EnumValueTest extends AbstractIpsEnumPluginTest {
@@ -46,21 +46,31 @@ public class EnumValueTest extends AbstractIpsEnumPluginTest {
 
     public void testValidateThis() throws CoreException {
         assertTrue(genderEnumValueFemale.isValid());
+    }
 
-        IIpsModel ipsModel = getIpsModel();
-
-        // Test not enough enum attribute values
-        ipsModel.clearValidationCache();
+    public void testValidateNumberEnumAttributeValues() throws CoreException {
         genderEnumValueFemale.getEnumAttributeValue(0).delete();
+        assertEquals(1, genderEnumValueFemale.validate(ipsProject).getNoOfMessages());
+    }
+
+    public void testValidateIdentifierEnumAttributeValueEmpty() throws CoreException {
+        genderEnumValueFemale.findIdentifierEnumAttributeValue().setValue("");
         assertEquals(1, genderEnumValueFemale.validate(ipsProject).getNoOfMessages());
     }
 
     public void testGetImage() {
         assertNull(genderEnumValueMale.getImage());
     }
-    
+
     public void testGetEnumValueContainer() {
         assertEquals(genderEnumContent, genderEnumValueMale.getEnumValueContainer());
+    }
+
+    public void testFindIdentifierEnumAttributeValue() throws CoreException {
+        IEnumAttributeValue identifierEnumAttributeValue = genderEnumValueMale.getEnumAttributeValues().get(0);
+        assertEquals(identifierEnumAttributeValue, genderEnumValueMale.findIdentifierEnumAttributeValue());
+        genderEnumAttributeId.setIdentifier(false);
+        assertNull(genderEnumValueMale.findIdentifierEnumAttributeValue());
     }
 
 }
