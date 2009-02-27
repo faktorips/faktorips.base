@@ -289,7 +289,7 @@ if [ $SHOWHELP = "true" ] ; then
   echo '                         default = tag projects before build'
   echo '  -useBranch [branch]    use a given branch instead HEAD, when using branch cvs must be used'
   echo '  -noCvs                 do not use cvs to get faktorips projects,'
-  echo  '                        if given then the projects will copied from the projectsrootdir'
+  echo '                         if given then the projects will copied from the projectsrootdir'
   echo '                         default is use cvs'
   echo '  -buildProduct [product project dir]'
   echo '                         builds the products in the given project instead of building the features and plugins'
