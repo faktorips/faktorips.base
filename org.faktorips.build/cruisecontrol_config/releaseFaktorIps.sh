@@ -79,33 +79,35 @@ echo '  '
 
 CRUISE_ANT_HOME=/opt/cc/apache-ant-1.6.5
 
+DEFAULT_ANT_HOME=$CRUISE_ANT_HOME
+DEFAULT_JAVA_HOME=/opt/sun-jdk-1.5.0.08
+
 # use cruise's ant if the user is cruise or
 # if no ant home is set
 if [ $(whoami) = "cruise" ] ; then 
   ANT_HOME=$CRUISE_ANT_HOME
-fi
-if [ ! -n $ANT_HOME ] ; then 
-  ANT_HOME=$CRUISE_ANT_HOME
+else 
+  # if ant is set and not ant command exists use default
+  if [ -n "$ANT_HOME" -a ! -e $ANT_HOME/bin/ant ] ; then
+    ANT_HOME=$DEFAULT_ANT_HOME
+  fi
 fi
 
 # default build environment
-WORKINGDIR=/opt/cc/work
-PROJECTSROOTDIR=$WORKINGDIR/checkout_release
-CVS_ROOT=/usr/local/cvsroot
-PUBLISH_DOWNLOAD_DIR=/var/www/localhost/htdocs/update.faktorzehn.org/faktorips/downloads
-PUBLISH_UPDATESITE_DIR=/var/www/localhost/htdocs/update.faktorzehn.org/faktorips/
+#   substitution, if variable not use default
+WORKINGDIR=${WORKINGDIR:-'/opt/cc/work'}
+PUBLISH_DOWNLOAD_DIR=${PUBLISH_DOWNLOAD_DIR:-'/var/www/localhost/htdocs/update.faktorzehn.org/faktorips/downloads'}
+PUBLISH_UPDATESITE_DIR=${PUBLISH_UPDATESITE_DIR:-'/var/www/localhost/htdocs/update.faktorzehn.org/faktorips'}
+CVS_ROOT=${CVS_ROOT:-'/usr/local/cvsroot'}
 
-DEFAULT_ANT_HOME=/opt/cc/apache-ant-1.6.5
-DEFAULT_JAVA_HOME=/opt/sun-jdk-1.5.0.08
+PROJECTSROOTDIR=$WORKINGDIR/checkout_release
+if [ ! -e $PROJECTSROOTDIR -a ! -d $PROJECTSROOTDIR ] ; then
+  mkdir $PROJECTSROOTDIR
+fi
 
 # default java and ant environment
-if [ -z "$ANT_HOME" ] ; then
-  ANT_HOME=$DEFAULT_ANT_HOME
-fi
-if [ -z "$JAVA_HOME" ] ; then
-  JAVA_HOME=$DEFAULT_JAVA_HOME
-fi
-
+ANT_HOME=${ANT_HOME:-$DEFAULT_ANT_HOME}
+JAVA_HOME=${JAVA_HOME:-$DEFAULT_JAVA_HOME}
 
 FAKTORIPS_CORE_PLUGIN_NAME=org.faktorips.devtools.core
 PLUGINBUILDER_PROJECT_NAME=org.faktorips.pluginbuilder
@@ -124,6 +126,7 @@ SKIPTAGCVS=false
 NOCVS=false
 BUILDPRODUCT=
 BRANCH=
+CREATE_BRANCH=false
 
 #################################################
 # parse arguments
@@ -145,6 +148,7 @@ do  case "$1" in
   -resultDir)     PUBLISH_DOWNLOAD_DIR=$2 ; shift ;;
   -updatesiteDir) PUBLISH_UPDATESITE_DIR=$2 ; shift ;;
   -noCvs)         NOCVS=true ;;
+  -createBranch)  CREATE_BRANCH=true ;;
   -?)             SHOWHELP=true ;;
   --?)            SHOWHELP=true ;;
   -h)             SHOWHELP=true ;;
@@ -156,11 +160,56 @@ do  case "$1" in
   shift
 done
 
+# enhance environment with given parameter
+PLUGINBUILDER_PROJECT_DIR=$PROJECTSROOTDIR/$PLUGINBUILDER_PROJECT_NAME
+
 # assert environment
 if [ ! -e $ANT_HOME/bin/ant ] ; then
   echo 'Error ant not found '$ANT_HOME/bin/ant' - Please set ANT_HOME.' 
   echo '  '
   SHOWHELP=true
+fi
+
+#
+# special case create branch
+#   create branch and exit here
+#
+if [ "$CREATE_BRANCH" = "true" ] ; then
+  if [ -z "$BRANCH" ] ; then
+    echo "please specify the branch using -useBranch <branchname>"
+    exit 1
+  fi
+  
+  BRANCH_TAG="Root_"$BRANCH
+
+  echo Create branch parameter:
+  echo "  --------------------------------------------------------------------------------------"
+  echo -e "  -useBranch       : Create cvs branch \e[35m$BRANCH\e[0m"
+  echo "  --------------------------------------------------------------------------------------"
+  echo -e "=> Start creating branch (\e[33my\e[0m)es? <="
+  echo 
+  read ANSWER
+  if [ ! "$ANSWER" = "y" ]
+    then echo "Cancel"; exit 1
+  fi
+  
+  echo "branching "$BRANCH" ..."
+
+  # TODO fail if tag exists!
+  
+  # branch all projects specified in the pluginbuilder map file (all necessary plugin and feature projects)
+  cvs -d $CVS_ROOT co -d $PLUGINBUILDER_PROJECT_DIR/maps $PLUGINBUILDER_PROJECT_NAME/maps/all_copy.map
+  for project in $( cat $PLUGINBUILDER_PROJECT_DIR/maps/all_copy.map | sed -r "s/.*COPY,@WORKSPACE@,(.*)/\1/g" ) ; do
+    # 1. create root tag as start point for the branch 
+    echo "tagging HEAD with branch tag: '"$BRANCH_TAG"', project "$project
+    cvs -d $CVS_ROOT rtag -R $BRANCH_TAG $project
+	  # 2. branch project 
+	  #  -r : says that this branch should be rooted to this revision
+    echo "create branch: '"$BRANCH"', project "$project
+	  cvs -d $CVS_ROOT rtag -R -b -r $BRANCH_TAG $BRANCH $project
+  done
+  
+  exit
 fi
 
 # check if version is given as parameter
@@ -197,22 +246,13 @@ if [ ! -e $BUILDFILE ] ; then
   SHOWHELP=true
 fi
 
-# assert branch build parameter
-# check if a branch is used then tagging is not supported
-if [ ! "$SKIPTAGCVS" = "true" -a -n $BRANCH ] ; then
-  echo '--> Error: if a branch is used then tagging cvs is not supported'
-  echo '    Please tag mannualy and use -skipTaggingCvs'
-  echo '  '
-  SHOWHELP=true
-fi
-
 # extract build category from given version, if no category is given
 if [ $BUILD_CATEGORY = "NONE" ]
   then BUILD_CATEGORY=$(echo $BUILD_VERSION | sed -r "s/([0-9]*)\.([0-9]*)\.([0-9]*)\.(.*)/\1\.\2/g")
 fi 
 
 # if a branch should be used the cvs must be used
-if [ $NOCVS = "true" -a -n $BRANCH ] ; then
+if [ $NOCVS = "true" -a -n "$BRANCH" ] ; then
     echo "=> Cancel build: a branch could only be used if cvs is used!"
     echo "   "
   SHOWHELP=true
@@ -242,8 +282,7 @@ if [ $SHOWHELP = "true" ] ; then
   echo '                         default = publish the result'
   echo '  -skipTaggingCvs        skip tagging the projects'
   echo '                         default = tag projects before build'
-  echo '  -useBranch [branch]    use a given branch instead HEAD'
-  echo '                         note that if a branch should be used then tagging cvs is not supported' 
+  echo '  -useBranch [branch]    use a given branch instead HEAD, when using branch cvs must be used'
   echo '  -noCvs                 do not use cvs to get faktorips projects,'
   echo  '                        if given then the projects will copied from the projectsrootdir'
   echo '                         default is use cvs'
@@ -277,7 +316,7 @@ echo -e "  -skipPublish     : Publish result (to updatesite and to download dire
 echo -e "  -skipTaggingCvs  : Tag cvs projects "$(printBoolean $(negation $SKIPTAGCVS))
 echo -e "  -noCvs           : Use cvs "$(printBoolean $(negation $NOCVS))
 if [ -n "$BRANCH" ] ; then
-  echo -e "  -useBranch       : Build cvs brach \e[35m$BRANCH\e[0m"
+  echo -e "  -useBranch       : Build using cvs branch \e[32m$BRANCH\e[0m"
 else
   echo -e "  -useBranch       : None, use \e[35mHEAD\e[0m"
 fi
@@ -305,15 +344,16 @@ fi
 
 # assert correct bundle version in core plugin
 #   the bundle version stored in the core plugin must be equal to the given version
-PLUGINBUILDER_PROJECT_DIR=$PROJECTSROOTDIR/$PLUGINBUILDER_PROJECT_NAME
 if [ ! "$NOCVS" = "true" ] ; then
     #  checkout core plugin and check bundle version
     TMP_CHECKOUTDIR=$PROJECTSROOTDIR/tmp_release_build
     mkdir $TMP_CHECKOUTDIR
-    if [ -n $BRANCH ] ; then
+    if [ -n "$BRANCH" ] ; then
       # checkout using branch
+      echo "checkout using branch: "$BRANCH
       cvs -d $CVS_ROOT co -d $TMP_CHECKOUTDIR -r $BRANCH $FAKTORIPS_CORE_PLUGIN_NAME/META-INF
     else
+      echo "checkout HEAD" 
       cvs -d $CVS_ROOT co -d $TMP_CHECKOUTDIR $FAKTORIPS_CORE_PLUGIN_NAME/META-INF
     fi
     
@@ -331,6 +371,9 @@ if [ ! "$CORE_BUNDLE_VERSION" = "$BUILD_VERSION" ]
     echo "   update the core bundle version or restart the release build with version '"$CORE_BUNDLE_VERSION"'"
     exit 1
 fi 
+
+# check if migratio strategy exists
+# TODO
 
 #################################################
 # perform the pre build steps
@@ -404,19 +447,34 @@ fi
 # 5. tag all projects defined in the pluginbuilder project (move tag if already exists)
 #    if skip tag is true then don't tag project, the previous tagged versions are used for the build
 if [ ! "$SKIPTAGCVS" = "true" ] ; then
-  # a) tag pluginbuilder project -> rtag = tag current versions of projects in repository
+  # a) tag pluginbuilder project 
+  #     -> rtag : tag current versions of projects in repository
+  #     -> -F : move tag if it already exists (overwrite checked above, by searching for existing release.properties)
+  #     -> -R : process directories recursively
+  #    the pluginbuilder project doesn't support branches (not necessary)
   cvs -d $CVS_ROOT rtag -F -R $FETCH_TAG $PLUGINBUILDER_PROJECT_NAME
 
   # b) tag all projects specified in the pluginbuilder map file (all necessary plugin and feature projects)
-  cvs -d $CVS_ROOT co -r $FETCH_TAG -d $RELEASE_PROPERTY_DIR $PLUGINBUILDER_PROJECT_DIR/maps/all_copy.map
+  cvs -d $CVS_ROOT co -r $FETCH_TAG -d $PLUGINBUILDER_PROJECT_DIR/maps $PLUGINBUILDER_PROJECT_NAME/maps/all_copy.map
   for project in $( cat $PLUGINBUILDER_PROJECT_DIR/maps/all_copy.map | sed -r "s/.*COPY,@WORKSPACE@,(.*)/\1/g" ) ; do
-    cvs -d $CVS_ROOT rtag -F -R $FETCH_TAG $project
+    if [ -n "$BRANCH" ] ; then
+      # using branch
+      # -> -r rev : existing revision/tag
+      echo "tagging using branch: "$BRANCH", project: "$project
+      cvs -d $CVS_ROOT rtag -F -R -r $BRANCH $FETCH_TAG $project
+    else
+      # not using branch
+      echo "tagging HEAD, project: "$project
+      cvs -d $CVS_ROOT rtag -F -R $FETCH_TAG $project
+    fi
   done
 fi
 
-# if using a branch then the map.all
+# if using a branch then the all_cvs.map file must be patched, 
+#   -> if no cvs is used then no patching is necessary (but this is not supported, see assert below)
 NOBRANCH=true
-if [ -n $BRANCH -a ! "$NOCVS" = "true" ] ; then
+if [ -n "$BRANCH" -a ! "$NOCVS" = "true" ] ; then
+  # replace HEAD with given BRANCH
   NOBRANCH=false
   cat $PLUGINBUILDER_PROJECT_DIR/maps/all_cvs.map | sed -r "s/(.*)HEAD(.*)/\1$BRANCH\2/g" > $PLUGINBUILDER_PROJECT_DIR/maps/all_cvs_branch.map
 fi

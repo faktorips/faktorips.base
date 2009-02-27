@@ -390,7 +390,6 @@
              <length file="productProject" when="greater" length="0" />
 	    </condition>
 		
-		
 		<!-- check if the copy all.map should be used, if useCvs is false 
 		     otherwise the cvs all.map is used to fetch the sources from cvs -->
     	<condition property="all.map" value="all_copy.map">
@@ -399,7 +398,7 @@
     	<!-- check if the branch all.map should be used, if a branch is given 
     		     otherwise the cvs all.map is used to fetch the sources from cvs -->
 		<condition property="all.map" value="all_cvs_branch.map">
-            <not><equals arg1="${isUseBranch}" arg2="true"/></not>
+    		<isset property="${isUseBranch}"/>
         </condition>
 		
     	<!--checkout pluginbuilder, build project -->
@@ -561,13 +560,14 @@
     <target name="-copy.faktorips.release.to.download.dir" unless="isSkipPublish">
     	<!-- input: dest.name -->
     	<!--        source    -->
-    	<!-- unzip, add eclipse folder and zip in download dir -->
-    	<property name="zip.dir" value="${buildDirectory}/zip_tmp/eclipse"/>
+    	<!-- unzip and zip in download dir -->
+    	<!-- (if necessary you can add an eclipse folder to the zip file) -->
+    	<property name="zip.dir" value="${buildDirectory}/zip_tmp"/>
     	<delete includeemptydirs="true" dir="${zip.dir}"/>
 
     	<mkdir dir="${zip.dir}"/>
     	<unzip src="${buildDirectory}/results/${source}" dest="${zip.dir}"></unzip>
-    	<zip destfile="${dest.name}" basedir="${zip.dir}/.." />
+    	<zip destfile="${dest.name}" basedir="${zip.dir}" />
     </target>
     <target name="-copy.updatesite.to.faktorips.org" unless="isSkipPublish">
         <copy todir="${updatesite.path}/plugins" overwrite="true" verbose="true">
