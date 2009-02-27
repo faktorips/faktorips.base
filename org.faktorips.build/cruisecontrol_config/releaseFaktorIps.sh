@@ -27,6 +27,11 @@
 #           -buildProduct [product project dir]
 #                                  : builds the product in the given project instead of building the features and plugins
 #
+# additional functionality
+#-------------------------
+#           -createBranch          : to create a branch, the latest head stand will be branched
+#                                    with using -useBranch [branch] the name of the branch will be specified
+#
 # additional environment parameters (useful when the release must be build local)
 # -------------------------------------------------------------------------------
 #           -workingdir [dir]      : the absolute path to the working directory
@@ -294,6 +299,10 @@ if [ $SHOWHELP = "true" ] ; then
   echo '                         if no cvs is used \(e.g. local copy\) then all projects must be exists here'
   echo '                         the default is: ' $PROJECTSROOTDIR
   echo '                         '
+  echo 'additional functionality '
+  echo '  -createBranch          to create a branch, the latest HEAD stand will be branched'
+  echo '                         with -useBranch [branch] the name of the branch will be specified'
+  echo '                         ' 
   echo 'e.g.: '$0' -version 2.2.0.rc1 -skipTest'
   echo '      builds the release with version 2.2.0.rc1, category 2.2 ' 
   echo '      and skip running the tests during the build'
@@ -342,26 +351,57 @@ fi
 # asserts before release build
 #################################################
 
-# assert correct bundle version in core plugin
+VERSION_QUALIFIER=$(echo $BUILD_VERSION | sed -r "s/([0-9]*)\.([0-9]*)\.([0-9]*)\.(.*)/\4/g")
+VERSION=$(echo $BUILD_VERSION | sed -r "s/([0-9]*)\.([0-9]*)\.([0-9]*)\.(.*)/\1\.\2\.\3/g")
+FETCH_TAG=$(echo $BUILD_VERSION | sed -r "s/([0-9]*)\.([0-9]*)\.([0-9]*)\.(.*)/v\1_\2_\3_\4/g")
+
+MIGRATION_STRATEGY_CLASS="Migration_"$(echo $FETCH_TAG | sed 's|v||g')".java"
+MIGRATION_STRATEGY_PATH=$FAKTORIPS_CORE_PLUGIN_NAME"/src/org/faktorips/devtools/core/internal/migration/"$MIGRATION_STRATEGY_CLASS
+
+# assert correct bundle version in core plugin and existing migration strategy
 #   the bundle version stored in the core plugin must be equal to the given version
+#   the migration strategy java class must be exists see MIGRATION_STRATEGY_PATH
+MIGRATION_EXISTS=false
 if [ ! "$NOCVS" = "true" ] ; then
+    # Note: if skipTaggingCvs is used then this assert may be check the wrong versions
+    #       because only the latest file will be checked, because the tagging will be performed later
     #  checkout core plugin and check bundle version
-    TMP_CHECKOUTDIR=$PROJECTSROOTDIR/tmp_release_build
-    mkdir $TMP_CHECKOUTDIR
+    TMP_CHECKOUTDIR1=$PROJECTSROOTDIR/tmp_release_build1
+    TMP_CHECKOUTDIR2=$PROJECTSROOTDIR/tmp_release_build2
+    mkdir $TMP_CHECKOUTDIR1
+    mkdir $TMP_CHECKOUTDIR2
     if [ -n "$BRANCH" ] ; then
-      # checkout using branch
       echo "checkout using branch: "$BRANCH
-      cvs -d $CVS_ROOT co -d $TMP_CHECKOUTDIR -r $BRANCH $FAKTORIPS_CORE_PLUGIN_NAME/META-INF
+      cvs -d $CVS_ROOT co -d $TMP_CHECKOUTDIR1 -r $BRANCH $FAKTORIPS_CORE_PLUGIN_NAME/META-INF
+      cvs -d $CVS_ROOT co -d $TMP_CHECKOUTDIR2 -r $BRANCH $MIGRATION_STRATEGY_PATH
     else
       echo "checkout HEAD" 
-      cvs -d $CVS_ROOT co -d $TMP_CHECKOUTDIR $FAKTORIPS_CORE_PLUGIN_NAME/META-INF
+      cvs -d $CVS_ROOT co -d $TMP_CHECKOUTDIR1 $FAKTORIPS_CORE_PLUGIN_NAME/META-INF
+      cvs -d $CVS_ROOT co -d $TMP_CHECKOUTDIR2 $MIGRATION_STRATEGY_PATH
     fi
     
-    CORE_BUNDLE_VERSION=$(cat $TMP_CHECKOUTDIR/MANIFEST.MF | grep Bundle-Version | sed -r "s/.*:\ *(.*)/\1/g")
-    rm -R $TMP_CHECKOUTDIR
+    CORE_BUNDLE_VERSION=$(cat $TMP_CHECKOUTDIR1/MANIFEST.MF | grep Bundle-Version | sed -r "s/.*:\ *(.*)/\1/g")
+
+    if [ -e $TMP_CHECKOUTDIR2/$MIGRATION_STRATEGY_CLASS ] ; then
+    	MIGRATION_EXISTS=true
+    fi
+    
+    rm -R $TMP_CHECKOUTDIR1
+    rm -R $TMP_CHECKOUTDIR2
 else
+    if [ -e $PROJECTSROOTDIR/MIGRATION_STRATEGY ] ; then
+    	MIGRATION_EXISTS=true
+    fi
+    
     #  read bundle version from the core project stored in the projectsrootdir
     CORE_BUNDLE_VERSION=$(cat $PROJECTSROOTDIR/$FAKTORIPS_CORE_PLUGIN_NAME//META-INF/MANIFEST.MF | grep Bundle-Version | sed -r "s/.*:\ *(.*)/\1/g")
+fi
+
+if [ "$MIGRATION_EXISTS" = "false" ] ; then
+  echo "=> Cancel build: Migrationstrategy not exists (if using cvs the java source must also be tagged)! "$MIGRATION_STRATEGY
+  exit 1
+else
+  echo "Ok migration strategy class found"
 fi
 
 # compare bundle version with given release version
@@ -372,8 +412,13 @@ if [ ! "$CORE_BUNDLE_VERSION" = "$BUILD_VERSION" ]
     exit 1
 fi 
 
-# check if migratio strategy exists
-# TODO
+# check if migration strategy exists
+if [ ! "$NOCVS" = "true" ] ; then
+  TMP_CHECKOUTDIR=$PROJECTSROOTDIR/tmp_release_build
+    mkdir $TMP_CHECKOUTDIR  
+  rm -R $TMP_CHECKOUTDIR
+fi
+
 
 #################################################
 # perform the pre build steps
@@ -404,10 +449,6 @@ if [ ! "$OVERWRITE" = "true" -a -f $RELEASE_PROPERTIES  ] ; then
   echo "   delete the previous release build or use parameter -overwrite"
   exit 1
 fi
-
-VERSION_QUALIFIER=$(echo $BUILD_VERSION | sed -r "s/([0-9]*)\.([0-9]*)\.([0-9]*)\.(.*)/\4/g")
-VERSION=$(echo $BUILD_VERSION | sed -r "s/([0-9]*)\.([0-9]*)\.([0-9]*)\.(.*)/\1\.\2\.\3/g")
-FETCH_TAG=$(echo $BUILD_VERSION | sed -r "s/([0-9]*)\.([0-9]*)\.([0-9]*)\.(.*)/v\1_\2_\3_\4/g")
 
 # 3. generate release.properties
 RELEASE_PROPERTIES_EXISTS=false
@@ -451,7 +492,7 @@ if [ ! "$SKIPTAGCVS" = "true" ] ; then
   #     -> rtag : tag current versions of projects in repository
   #     -> -F : move tag if it already exists (overwrite checked above, by searching for existing release.properties)
   #     -> -R : process directories recursively
-  #    the pluginbuilder project doesn't support branches (not necessary)
+  #    the pluginbuilder project doesn't support branches (not necessary) (-r)
   cvs -d $CVS_ROOT rtag -F -R $FETCH_TAG $PLUGINBUILDER_PROJECT_NAME
 
   # b) tag all projects specified in the pluginbuilder map file (all necessary plugin and feature projects)
