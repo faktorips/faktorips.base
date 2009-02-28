@@ -76,7 +76,10 @@ public class EnumAttributeValue extends AtomicIpsObjectPart implements IEnumAttr
      */
     @Override
     protected void propertiesToXml(Element element) {
-        // TODO might be better to set something like hasDescription() in the superclass?
+        /*
+         * TODO aw: might be better to set something like hasDescription() in the superclass?
+         * FS#1380
+         */
         element.setAttribute(PROPERTY_ID, "" + getId()); //$NON-NLS-1$
 
         if (XmlUtil.getTextNode(element) == null) {

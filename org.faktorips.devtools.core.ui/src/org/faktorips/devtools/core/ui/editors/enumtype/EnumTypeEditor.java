@@ -53,8 +53,6 @@ public class EnumTypeEditor extends TypeEditor {
 
     /**
      * Returns the enum type this editor is currently editing.
-     * 
-     * @return A reference to the enum type that is currently being edited by this editor.
      */
     IEnumType getEnumType() {
         return (IEnumType)getIpsObject();

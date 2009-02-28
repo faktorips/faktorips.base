@@ -115,7 +115,7 @@ public class EnumValuesSection extends IpsSection {
      * 
      * @throws CoreException If an error occurs while searching for the enum type referenced by the
      *             ips object being edited.
-     * @throws NullPointerException If enumValueContainer is <code>null</code>.
+     * @throws NullPointerException If <code>enumValueContainer</code> is <code>null</code>.
      */
     public EnumValuesSection(IEnumValueContainer enumValueContainer, Composite parent, UIToolkit toolkit)
             throws CoreException {

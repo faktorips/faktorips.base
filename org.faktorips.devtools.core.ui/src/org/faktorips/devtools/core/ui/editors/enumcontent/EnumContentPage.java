@@ -30,8 +30,8 @@ import org.faktorips.devtools.core.ui.editors.type.TypeEditorStructurePage;
  * The <code>EnumContentPage</code> provides controls to edit the values of an
  * <code>IEnumContent</code> and is intended to be used with the <code>EnumContentEditor</code>.
  * <p>
- * This page is a listener for changes in the ips model: If the enum type property of the edited
- * enum content changes the enabled states of the toolbar buttons will be updated.
+ * This page is a listener for changes in the ips model: If the enum type the edited enum content is
+ * built upon changes the enabled states of the toolbar buttons will be updated.
  * 
  * @see EnumContentEditor
  * 
@@ -112,7 +112,7 @@ public class EnumContentPage extends TypeEditorStructurePage implements Contents
      * content to edit is built upon does not exist or is missing.
      * <p>
      * The <code>OpenFixColumnsDialogAction</code> will be enabled if there are not exactly as much
-     * columsn in the enum values table of the <code>EnumValuesSection</code> as enum attributes in
+     * columns in the enum values table of the <code>EnumValuesSection</code> as enum attributes in
      * the enum type the enum content to be edited is built upon.
      */
     private void updateToolbarActionsEnabledStates() {

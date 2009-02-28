@@ -60,8 +60,6 @@ public class EnumContentEditor extends TypeEditor {
 
     /**
      * Returns the enum content this editor is currently editing.
-     * 
-     * @return A reference to the enum content that is currently being edited by this editor.
      */
     IEnumContent getEnumContent() {
         return (IEnumContent)getIpsObject();

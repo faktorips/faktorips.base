@@ -69,7 +69,7 @@ public interface IEnumContent extends IEnumValueContainer {
      * 
      * @param enumType The qualified name of the enum type this enum content shall be based upon.
      * 
-     * @throws NullPointerException If enumType is <code>null</code>.
+     * @throws NullPointerException If <code>enumType</code> is <code>null</code>.
      */
     public void setEnumType(String enumType);
 

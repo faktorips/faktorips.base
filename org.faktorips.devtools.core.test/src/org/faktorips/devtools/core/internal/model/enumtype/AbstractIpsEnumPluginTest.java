@@ -26,22 +26,16 @@ import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.w3c.dom.Document;
 
 /**
- * <p>
  * Base test for all enum type tests providing a simple enum model with a gender enum.
- * </p>
  * <p>
  * There is a gender enum type, the values are stored separated from the enum type in a gender enum
  * content object.
- * </p>
  * <p>
  * Utility methods and helpful string constants are provided.
- * </p>
- * <p>
- * Another enum type is provided called difficulty enum type. In the difficulty enum type the enum
- * values are stored directly in the enum type itself.
- * </p>
  * 
  * @author Alexander Weickmann
+ * 
+ * @since 2.3
  */
 public abstract class AbstractIpsEnumPluginTest extends AbstractIpsPluginTest {
 
@@ -59,17 +53,6 @@ public abstract class AbstractIpsEnumPluginTest extends AbstractIpsPluginTest {
     protected final String GENDER_ENUM_LITERAL_MALE_NAME = "male";
     protected final String GENDER_ENUM_LITERAL_FEMALE_NAME = "female";
 
-    protected final String DIFFICULTY_ENUM_TYPE_NAME = "DifficultyEnumType";
-    protected final String DIFFICULTY_ENUM_ATTRIBUTE_ID_NAME = "Id";
-    protected final String DIFFICULTY_ENUM_ATTRIBUTE_LABEL_NAME = "Label";
-
-    protected final String DIFFICULTY_ENUM_LITERAL_EASY_ID = "e";
-    protected final String DIFFICULTY_ENUM_LITERAL_MEDIUM_ID = "m";
-    protected final String DIFFICULTY_ENUM_LITERAL_HARD_ID = "h";
-    protected final String DIFFICULTY_ENUM_LITERAL_EASY_LABEL = "easy";
-    protected final String DIFFICULTY_ENUM_LITERAL_MEDIUM_LABEL = "medium";
-    protected final String DIFFICULTY_ENUM_LITERAL_HARD_LABEL = "hard";
-
     protected IIpsProject ipsProject;
 
     protected IEnumType genderEnumType;
@@ -79,13 +62,6 @@ public abstract class AbstractIpsEnumPluginTest extends AbstractIpsPluginTest {
     protected IEnumValue genderEnumValueMale;
     protected IEnumValue genderEnumValueFemale;
 
-    protected IEnumType difficultyEnumType;
-    protected IEnumAttribute difficultyEnumAttributeId;
-    protected IEnumAttribute difficultyEnumAttributeLabel;
-    protected IEnumValue difficultyEnumValueEasy;
-    protected IEnumValue difficultyEnumValueMedium;
-    protected IEnumValue difficultyEnumValueHard;
-
     @Override
     public void setUp() throws Exception {
         super.setUp();
@@ -94,9 +70,6 @@ public abstract class AbstractIpsEnumPluginTest extends AbstractIpsPluginTest {
 
         createGenderEnum();
         initGenderEnumValues();
-
-        createDifficultyEnum();
-        initDifficultyEnumValues();
     }
 
     private void createGenderEnum() throws CoreException {
@@ -132,44 +105,6 @@ public abstract class AbstractIpsEnumPluginTest extends AbstractIpsPluginTest {
         tempAttributeValueRef.setValue(GENDER_ENUM_LITERAL_FEMALE_ID);
         tempAttributeValueRef = genderEnumValueFemale.getEnumAttributeValues().get(1);
         tempAttributeValueRef.setValue(GENDER_ENUM_LITERAL_FEMALE_NAME);
-    }
-
-    private void createDifficultyEnum() throws CoreException {
-        difficultyEnumType = newEnumType(ipsProject, DIFFICULTY_ENUM_TYPE_NAME);
-        difficultyEnumType.setAbstract(false);
-        difficultyEnumType.setValuesArePartOfModel(true);
-        difficultyEnumType.setSuperEnumType("");
-
-        difficultyEnumAttributeId = difficultyEnumType.newEnumAttribute();
-        difficultyEnumAttributeId.setName(DIFFICULTY_ENUM_ATTRIBUTE_ID_NAME);
-        difficultyEnumAttributeId.setDatatype(STRING_DATATYPE_NAME);
-        difficultyEnumAttributeId.setIdentifier(true);
-        difficultyEnumAttributeLabel = difficultyEnumType.newEnumAttribute();
-        difficultyEnumAttributeLabel.setName(DIFFICULTY_ENUM_ATTRIBUTE_LABEL_NAME);
-        difficultyEnumAttributeLabel.setDatatype(STRING_DATATYPE_NAME);
-
-        difficultyEnumValueEasy = difficultyEnumType.newEnumValue();
-        difficultyEnumValueMedium = difficultyEnumType.newEnumValue();
-        difficultyEnumValueHard = difficultyEnumType.newEnumValue();
-    }
-
-    private void initDifficultyEnumValues() {
-        IEnumAttributeValue tempAttributeValueRef;
-
-        tempAttributeValueRef = difficultyEnumValueEasy.getEnumAttributeValues().get(0);
-        tempAttributeValueRef.setValue(DIFFICULTY_ENUM_LITERAL_EASY_ID);
-        tempAttributeValueRef = difficultyEnumValueEasy.getEnumAttributeValues().get(1);
-        tempAttributeValueRef.setValue(DIFFICULTY_ENUM_LITERAL_EASY_LABEL);
-
-        tempAttributeValueRef = difficultyEnumValueMedium.getEnumAttributeValues().get(0);
-        tempAttributeValueRef.setValue(DIFFICULTY_ENUM_LITERAL_MEDIUM_ID);
-        tempAttributeValueRef = difficultyEnumValueMedium.getEnumAttributeValues().get(1);
-        tempAttributeValueRef.setValue(DIFFICULTY_ENUM_LITERAL_MEDIUM_LABEL);
-
-        tempAttributeValueRef = difficultyEnumValueHard.getEnumAttributeValues().get(0);
-        tempAttributeValueRef.setValue(DIFFICULTY_ENUM_LITERAL_HARD_ID);
-        tempAttributeValueRef = difficultyEnumValueHard.getEnumAttributeValues().get(1);
-        tempAttributeValueRef.setValue(DIFFICULTY_ENUM_LITERAL_HARD_LABEL);
     }
 
     protected Document createXmlDocument(String xmlTag) throws ParserConfigurationException {

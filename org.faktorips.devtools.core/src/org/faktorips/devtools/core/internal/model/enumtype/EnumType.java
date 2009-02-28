@@ -401,7 +401,10 @@ public class EnumType extends EnumValueContainer implements IEnumType {
         enumAttribute.delete();
     }
 
-    /** Deletes all enum attribute values that refer to the given enum attribute. */
+    /**
+     * Deletes all enum attribute values in the given enum values that refer to the given enum
+     * attribute.
+     */
     private void deleteEnumAttributeValues(IEnumAttribute enumAttribute, List<IEnumValue> enumValues)
             throws CoreException {
 

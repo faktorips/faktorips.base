@@ -34,6 +34,10 @@ import org.faktorips.util.ArgumentCheck;
  * 
  * The general info section for the enum type editor provides ui controls to edit the superEnumType
  * property, the abstract property and the valuesArePartOfModel property.
+ * <p>
+ * It is part of the <code>EnumTypeStructurePage</code>.
+ * 
+ * @see EnumTypeStructurePage
  * 
  * @author Alexander Weickmann
  * 
@@ -54,7 +58,7 @@ public class EnumTypeGeneralInfoSection extends IpsSection {
      * @param parent The parent ui composite to attach this info section to.
      * @param toolkit The ui toolkit to be used to create new ui elements.
      * 
-     * @throws NullPointerException If enumType is <code>null</code>.
+     * @throws NullPointerException If <code>enumType</code> is <code>null</code>.
      */
     public EnumTypeGeneralInfoSection(IEnumType enumType, Composite parent, UIToolkit toolkit) {
         super(parent, Section.TITLE_BAR, GridData.FILL_HORIZONTAL, toolkit);

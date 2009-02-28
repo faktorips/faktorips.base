@@ -30,6 +30,9 @@ import org.faktorips.util.ArgumentCheck;
  */
 public class OpenFixEnumTypeDialogAction extends Action {
 
+    /** The name of the image for the action. */
+    private final String IMAGE_NAME = "BrokenEnumType.gif";
+
     /** The enum content to fix. */
     private IEnumContent enumContent;
 
@@ -42,7 +45,8 @@ public class OpenFixEnumTypeDialogAction extends Action {
      * @param enumContent The enum content to fix.
      * @param parentShell The parent shell.
      * 
-     * @throws NullPointerException If enumContent or parentShell is <code>null</code>.
+     * @throws NullPointerException If <code>enumContent</code> or <code>parentShell</code> is
+     *             <code>null</code>.
      */
     public OpenFixEnumTypeDialogAction(IEnumContent enumContent, Shell parentShell) {
         super();
@@ -52,7 +56,7 @@ public class OpenFixEnumTypeDialogAction extends Action {
         this.enumContent = enumContent;
         this.parentShell = parentShell;
 
-        setImageDescriptor(IpsUIPlugin.getDefault().getImageDescriptor("BrokenEnumType.gif"));
+        setImageDescriptor(IpsUIPlugin.getDefault().getImageDescriptor(IMAGE_NAME));
         setText(Messages.EnumContentPage_labelOpenFixEnumTypeDialog);
         setToolTipText(Messages.EnumContentPage_tooltipOpenFixEnumTypeDialog);
     }

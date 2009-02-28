@@ -56,7 +56,8 @@ public abstract class EnumContentValidations {
      * @param ipsProject The ips object path of this ips project will be searched.
      * 
      * @throws CoreException If an error occurs while searching for the enum type.
-     * @throws NullPointerException If enumTypeQualifiedName or ipsProject is <code>null</code>.
+     * @throws NullPointerException If <code>enumTypeQualifiedName</code> or <code>ipsProject</code>
+     *             is <code>null</code>.
      */
     public static MessageList validateEnumType(IEnumContent enumContent,
             String enumTypeQualifiedName,

@@ -39,25 +39,12 @@ public interface IEnumValueContainer extends IIpsObject {
     public List<IEnumValue> getEnumValues();
 
     /**
-     * Returns the enum value with the specified id.
-     * 
-     * @param id The id of the enum value to return.
-     * 
-     * @return A reference to the enum value specified by the given id.
-     */
-    public IEnumValue getEnumValue(int id);
-
-    /**
      * Creates a new enum value and returns a reference to it.
-     * 
-     * @return A reference to the newly created enum value.
      */
     public IEnumValue newEnumValue();
 
     /**
      * Returns a reference to the enum type or <code>null</code> if no enum type can be found.
-     * 
-     * @return A reference to the enum type or <code>null</code> if the enum type can't be found.
      * 
      * @throws CoreException If an error occures while searching the ips model for the enum type.
      */
@@ -65,48 +52,33 @@ public interface IEnumValueContainer extends IIpsObject {
 
     /**
      * Returns how many enum values this enum value container currently contains.
-     * 
-     * @return The number of enum values that this enum value container is currently containing.
      */
     public int getEnumValuesCount();
 
     /**
-     * Moves the given enum value one position upwards in the enum values collection.
+     * Moves the given enum value one position up / down in the containing list and returns its new
+     * index.
      * <p>
-     * If the given enum value is already the first enum value then absolutely nothing will be done.
+     * If the given enum value is already the first / last enum value then nothing will be done.
      * 
-     * @param enumValue The enum value to move further up in the order.
+     * @param enumValue The enum value to move.
+     * @param up Flag indicating whether to move up (<code>true</code>) or down (<code>false</code>
+     *            ).
      * 
-     * @return The new index of the enum value.
-     * 
-     * @throws CoreException If an error occurs while moving the enum values.
-     * @throws NullPointerException If enumValue is <code>null</code>.
+     * @throws CoreException If an error occurs while moving the enum value.
+     * @throws NullPointerException If <code>enumValue</code> is <code>null</code>.
+     * @throws NoSuchElementException If the given enum value is not contained in this enum value
+     *             container.
      */
-    public int moveEnumValueUp(IEnumValue enumValue) throws CoreException;
+    public int moveEnumValue(IEnumValue enumValue, boolean up) throws CoreException;
 
     /**
-     * Moves the given enum value one position downwards in the enum values collection.
-     * <p>
-     * If the given enum value is already the last enum value then absolutely nothing will be done.
-     * 
-     * @param enumValue The enum value to move further down in the order.
-     * 
-     * @return The new index of the enum value.
-     * 
-     * @throws CoreException If an error occurs while moving the enum values.
-     * @throws NullPointerException If enumValue is <code>null</code>.
-     */
-    public int moveEnumValueDown(IEnumValue enumValue) throws CoreException;
-
-    /**
-     * Returns the index of the given enum value in the enum values collection.
+     * Returns the index of the given enum value in the containing list.
      * 
      * @param enumValue The enum value to obtain its index for.
      * 
-     * @return The index identifying the given enum value in the enum values collection.
-     * 
      * @throws NoSuchElementException If there is no such enum value in this enum value container.
-     * @throws NullPointerException If enumValue is <code>null</code>.
+     * @throws NullPointerException If <code>enumValue</code> is <code>null</code>.
      */
     public int getIndexOfEnumValue(IEnumValue enumValue);
 

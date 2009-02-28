@@ -77,15 +77,12 @@ public interface IEnumAttribute extends IIpsObjectPart {
      * 
      * @param name The new name for this enum attribute.
      * 
-     * @throws NullPointerException If name is <code>null</code>.
+     * @throws NullPointerException If <code>name</code> is <code>null</code>.
      */
     public void setName(String name);
 
     /**
      * Returns the unqualified name of the datatype of this enum attribute.
-     * 
-     * @return A <code>String</code> representing the unqualified name of the datatype of this enum
-     *         attribute.
      */
     public String getDatatype();
 
@@ -94,14 +91,12 @@ public interface IEnumAttribute extends IIpsObjectPart {
      * 
      * @param datatype The unqualified name of the datatype.
      * 
-     * @throws NullPointerException If datatype is <code>null</code>.
+     * @throws NullPointerException If <code>datatype</code> is <code>null</code>.
      */
     public void setDatatype(String datatype);
 
     /**
      * Returns <code>true</code> if this enum attribute is an identifier, <code>false</code> if not.
-     * 
-     * @return Flag indicating whether this enum attribute is an identifier or not.
      */
     public boolean isIdentifier();
 
@@ -115,9 +110,6 @@ public interface IEnumAttribute extends IIpsObjectPart {
     /**
      * Returns <code>true</code> if this enum attribute is inherited from the supertype hierarchy,
      * <code>false</code> if not.
-     * 
-     * @return Flag indicating whether this enum attribute is inherited from the supertype hierarchy
-     *         or not.
      */
     public boolean isInherited();
 
@@ -133,8 +125,6 @@ public interface IEnumAttribute extends IIpsObjectPart {
      * Returns the enum type this enum attribute belongs to.
      * <p>
      * This is a shortcut for: <code>(IEnumType)this.getParent();</code>
-     * 
-     * @return The enum type this enum attribute belongs to.
      */
     public IEnumType getEnumType();
 

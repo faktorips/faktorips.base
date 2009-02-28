@@ -149,7 +149,7 @@ public class EnumAttribute extends AtomicIpsObjectPart implements IEnumAttribute
      * {@inheritDoc}
      */
     public Image getImage() {
-        return IpsPlugin.getDefault().getImage(ICON); //$NON-NLS-1$
+        return IpsPlugin.getDefault().getImage(ICON);
     }
 
     /**

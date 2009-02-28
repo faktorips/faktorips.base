@@ -75,13 +75,6 @@ public abstract class EnumValueContainer extends BaseIpsObject implements IEnumV
     /**
      * {@inheritDoc}
      */
-    public IEnumValue getEnumValue(int id) {
-        return (IEnumValue)enumValues.getPartById(id);
-    }
-
-    /**
-     * {@inheritDoc}
-     */
     public int getEnumValuesCount() {
         return enumValues.size();
     }
@@ -89,36 +82,22 @@ public abstract class EnumValueContainer extends BaseIpsObject implements IEnumV
     /**
      * {@inheritDoc}
      */
-    public int moveEnumValueUp(IEnumValue enumValue) throws CoreException {
-        ArgumentCheck.notNull(enumValue);
-
-        // Can't move further up any more
-        if (enumValue == enumValues.getPart(0)) {
-            return getIndexOfEnumValue(enumValue);
-        }
-
-        return moveEnumValue(enumValue, true);
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    public int moveEnumValueDown(IEnumValue enumValue) throws CoreException {
-        ArgumentCheck.notNull(enumValue);
-
-        // Can't move further down any more
-        if (enumValue == enumValues.getPart(enumValues.size() - 1)) {
-            return getIndexOfEnumValue(enumValue);
-        }
-
-        return moveEnumValue(enumValue, false);
-    }
-
-    /**
-     * Moves the given enum value up or down in the containing list by 1 and returns the new index.
-     */
     @SuppressWarnings("unchecked")
-    private int moveEnumValue(IEnumValue enumValue, boolean up) throws CoreException {
+    public int moveEnumValue(IEnumValue enumValue, boolean up) throws CoreException {
+        ArgumentCheck.notNull(enumValue);
+
+        if (up) {
+            // Can't move further up any more
+            if (enumValue == enumValues.getPart(0)) {
+                return getIndexOfEnumValue(enumValue);
+            }
+        } else {
+            // Can't move further down any more
+            if (enumValue == enumValues.getPart(enumValues.size() - 1)) {
+                return getIndexOfEnumValue(enumValue);
+            }
+        }
+
         List<IEnumValue> enumValuesList = enumValues.getBackingList();
         for (int i = 0; i < enumValuesList.size(); i++) {
             IEnumValue currentEnumValue = enumValuesList.get(i);

@@ -42,19 +42,19 @@ public abstract class EnumTypeValidations {
      * <p>
      * If no abstract super enum type with the given qualified name exists in the object path of the
      * given ips project, an appropriate validation message will be returned.
+     * <p>
+     * Returns <code>null</code> if the validation succeeds.
      * 
      * @param enumType The enum type that might be invalid or <code>null</code> if that information
      *            cannot be supported.
      * @param superEnumTypeQualifiedName The qualified name of the super enum type.
      * @param ipsProject The ips object path of this ips project will be searched.
      * 
-     * @return An appropriate validation message or <code>null</code> if the validation was
-     *         successful.
-     * 
      * @throws CoreException If an error occurs while searching for the super enum type.
-     * @throws IllegalArgumentException If superEnumTypeQualifiedName is an empty string.
-     * @throws NullPointerException If superEnumTypeQualifiedName or ipsProject is <code>null</code>
-     *             .
+     * @throws IllegalArgumentException If <code>superEnumTypeQualifiedName</code> is an empty
+     *             string.
+     * @throws NullPointerException If <code>superEnumTypeQualifiedName</code> or
+     *             <code>ipsProject</code> is <code>null</code> .
      */
     public static Message validateSuperEnumType(IEnumType enumType,
             String superEnumTypeQualifiedName,
@@ -90,15 +90,15 @@ public abstract class EnumTypeValidations {
     /**
      * Validates whether the given enum type inherits all attributes defined in its supertype
      * hierarchy.
+     * <p>
+     * An appropriate validation message will be returned if it does not or <code>null</code> if the
+     * validation was successful.
      * 
      * @param enumType The enum type to validate.
      * 
-     * @return An appropriate validation message or <code>null</code> if the validation was
-     *         successful.
-     * 
      * @throws CoreException If an error occurs while searching for attributes in the supertype
      *             hierarchy.
-     * @throws NullPointerException If enumType is <code>null</code>.
+     * @throws NullPointerException If <code>enumType</code> is <code>null</code>.
      */
     public static Message validateInheritedAttributes(IEnumType enumType) throws CoreException {
         // All attributes from supertype hierarchy inherited?
@@ -127,13 +127,13 @@ public abstract class EnumTypeValidations {
      * <p>
      * If the given enum type is abstract the validation will succeed even if there is no identifier
      * attribute.
+     * <p>
+     * Returns an appropriate validation message if the validation fails or <code>null</code> if it
+     * succeeds.
      * 
      * @param enumType The enum type to validate.
      * 
-     * @return An appropriate validation message or <code>null</code> if the validation was
-     *         successful.
-     * 
-     * @throws NullPointerException If enumType is <code>null</code>.
+     * @throws NullPointerException If <code>enumType</code> is <code>null</code>.
      */
     public static Message validateIdentifierAttribute(IEnumType enumType) {
         ArgumentCheck.notNull(enumType);
@@ -165,10 +165,12 @@ public abstract class EnumTypeValidations {
      * Returns all attributes from the supertype hierarchy of the given enum type that are not
      * inherited in the given enum type.
      */
-    //TODO pk: wieso machst du das so? sollte es nicht eine Methode getAttributes und findAllAttributes am EnumType
-    //geben getAttributes gibt nur die Attribute des EnumTypes zurück findAllAttributes gibt die Attribute des EnumType 
-    //inklusive der geerbten Attribute zurück
-    //getInheritedAttributes() braucht man dann nicht mehr oder?
+    // TODO pk: wieso machst du das so? sollte es nicht eine Methode getAttributes und
+    // findAllAttributes am EnumType
+    // geben getAttributes gibt nur die Attribute des EnumTypes zurück findAllAttributes gibt die
+    // Attribute des EnumType
+    // inklusive der geerbten Attribute zurück
+    // getInheritedAttributes() braucht man dann nicht mehr oder?
     private static List<IEnumAttribute> getNotInheritedAttributes(IEnumType enumType) throws CoreException {
         List<IEnumAttribute> inheritedAttributes = enumType.getInheritedAttributes();
         List<IEnumAttribute> supertypeHierarchyAttributes = findAllAttributesInSupertypeHierarchy(enumType);

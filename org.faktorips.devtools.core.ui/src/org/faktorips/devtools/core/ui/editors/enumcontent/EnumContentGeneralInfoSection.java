@@ -31,9 +31,10 @@ import org.faktorips.devtools.core.ui.forms.IpsSection;
 import org.faktorips.util.ArgumentCheck;
 
 /**
- * 
  * The general info section for the enum content editor shows the enum type the edited enum content
- * is built upon and enables navigation to the enum type.
+ * is built upon and provides navigation to the enum type.
+ * 
+ * @see EnumContentEditor
  * 
  * @author Alexander Weickmann
  * 
@@ -51,7 +52,7 @@ public class EnumContentGeneralInfoSection extends IpsSection {
      * @param parent The parent ui composite to attach this info section to.
      * @param toolkit The ui toolkit to be used to create new ui elements.
      * 
-     * @throws NullPointerException If enumContent is <code>null</code>.
+     * @throws NullPointerException If <code>enumContent</code> is <code>null</code>.
      */
     public EnumContentGeneralInfoSection(IEnumContent enumContent, Composite parent, UIToolkit toolkit) {
         super(parent, Section.TITLE_BAR, GridData.FILL_HORIZONTAL, toolkit);

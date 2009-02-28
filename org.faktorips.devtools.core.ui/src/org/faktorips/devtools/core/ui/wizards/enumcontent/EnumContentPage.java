@@ -49,7 +49,8 @@ public class EnumContentPage extends IpsObjectPage {
     /**
      * Creates the enum content page.
      * 
-     * @param selection
+     * @param selection If a selection is provided default values for some fields can be derived
+     *            from that.
      */
     public EnumContentPage(IStructuredSelection selection) {
         super(IpsObjectType.ENUM_CONTENT, selection, Messages.Page_Title);

@@ -31,6 +31,9 @@ import org.faktorips.util.ArgumentCheck;
  */
 public class DeleteEnumValueAction extends Action {
 
+    /** The name of the image for the action. */
+    private final String IMAGE_NAME = "Delete.gif";
+
     /** The enum values table viewer linking the enum values ui table widget with the model data. */
     private TableViewer enumValuesTableViewer;
 
@@ -40,7 +43,7 @@ public class DeleteEnumValueAction extends Action {
      * @param enumValuesTableViewer The enum values table viewer linking the enum values ui table
      *            widget with the model data.
      * 
-     * @throws NullPointerException If enumValuesTableViewer is <code>null</code>.
+     * @throws NullPointerException If <code>enumValuesTableViewer</code> is <code>null</code>.
      */
     public DeleteEnumValueAction(TableViewer enumValuesTableViewer) {
         super();
@@ -49,7 +52,7 @@ public class DeleteEnumValueAction extends Action {
 
         this.enumValuesTableViewer = enumValuesTableViewer;
 
-        setImageDescriptor(IpsUIPlugin.getDefault().getImageDescriptor("Delete.gif"));
+        setImageDescriptor(IpsUIPlugin.getDefault().getImageDescriptor(IMAGE_NAME));
         setText(Messages.EnumValuesSection_labelDeleteValue);
         setToolTipText(Messages.EnumValuesSection_tooltipDeleteValue);
     }

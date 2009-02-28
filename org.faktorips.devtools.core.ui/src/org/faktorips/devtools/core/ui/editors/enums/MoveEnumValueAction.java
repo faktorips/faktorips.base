@@ -33,6 +33,12 @@ import org.faktorips.util.ArgumentCheck;
  */
 public class MoveEnumValueAction extends Action {
 
+    /** The name of the image for the move up action. */
+    private final String IMAGE_NAME_UP = "ArrowUp.gif";
+
+    /** The name of the image for the move down action. */
+    private final String IMAGE_NAME_DOWN = "ArrowDown.gif";
+
     /** The enum values table viewer linking the enum values ui table widget with the model data. */
     private TableViewer enumValuesTableViewer;
 
@@ -47,7 +53,7 @@ public class MoveEnumValueAction extends Action {
      * @param up Flag indicating whether the selected enum value shall be moved upwards or
      *            downwards.
      * 
-     * @throws NullPointerException If enumValuesTableViewer is <code>null</code>.
+     * @throws NullPointerException If <code>enumValuesTableViewer</code> is <code>null</code>.
      */
     public MoveEnumValueAction(TableViewer enumValuesTableViewer, boolean up) {
         super();
@@ -58,11 +64,11 @@ public class MoveEnumValueAction extends Action {
         this.up = up;
 
         if (up) {
-            setImageDescriptor(IpsUIPlugin.getDefault().getImageDescriptor("ArrowUp.gif"));
+            setImageDescriptor(IpsUIPlugin.getDefault().getImageDescriptor(IMAGE_NAME_UP));
             setText(Messages.EnumValuesSection_labelMoveEnumValueUp);
             setToolTipText(Messages.EnumValuesSection_tooltipMoveEnumValueUp);
         } else {
-            setImageDescriptor(IpsUIPlugin.getDefault().getImageDescriptor("ArrowDown.gif"));
+            setImageDescriptor(IpsUIPlugin.getDefault().getImageDescriptor(IMAGE_NAME_DOWN));
             setText(Messages.EnumValuesSection_labelMoveEnumValueDown);
             setToolTipText(Messages.EnumValuesSection_tooltipMoveEnumValueDown);
         }
@@ -82,13 +88,7 @@ public class MoveEnumValueAction extends Action {
         if (enumValue != null) {
             IEnumValueContainer enumValueContainer = (IEnumValueContainer)enumValue.getParent();
             try {
-                if (up) {
-                    //TODO pk: hier würde sich eine Methode moveEnumValue(boolean up) anbieten. Das würde dieses
-                    //if auflösen
-                    enumValueContainer.moveEnumValueUp(enumValue);
-                } else {
-                    enumValueContainer.moveEnumValueDown(enumValue);
-                }
+                enumValueContainer.moveEnumValue(enumValue, up);
             } catch (CoreException e) {
                 throw new RuntimeException(e);
             }

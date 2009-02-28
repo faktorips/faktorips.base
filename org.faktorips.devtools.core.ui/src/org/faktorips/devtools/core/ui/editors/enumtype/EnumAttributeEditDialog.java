@@ -48,7 +48,7 @@ public class EnumAttributeEditDialog extends IpsPartEditDialog2 {
      * attribute with.
      * 
      * @param part The enum attribute to edit with the dialog.
-     * @param parentShell
+     * @param parentShell The parent ui shell.
      */
     public EnumAttributeEditDialog(IEnumAttribute enumAttribute, Shell parentShell) {
         super(enumAttribute, parentShell, Messages.EnumAttributeEditDialog_title, true);

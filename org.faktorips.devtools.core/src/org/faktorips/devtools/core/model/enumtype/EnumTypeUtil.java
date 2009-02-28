@@ -38,10 +38,8 @@ public class EnumTypeUtil {
      * @param enumAttribute1 The first enum attribute to compare.
      * @param enumAttribute2 The second enum attribute to compare.
      * 
-     * @return Flag indicating whether the given enum attributes are equal (<code>true</code>) or
-     *         not (<code>false</code>).
-     * 
-     * @throws NullPointerException If enumAttribute1 or enumAttribute2 is <code>null</code>.
+     * @throws NullPointerException If <code>enumAttribute1</code> or <code>enumAttribute2</code> is
+     *             <code>null</code>.
      */
     public static boolean equalEnumAttributes(IEnumAttribute enumAttribute1, IEnumAttribute enumAttribute2) {
         ArgumentCheck.notNull(new Object[] { enumAttribute1, enumAttribute2 });
@@ -61,10 +59,8 @@ public class EnumTypeUtil {
      *            specified enum attribute.
      * @param enumAttribute The enum attribute to search the list for an equal representative.
      * 
-     * @return Flag indicating whether an equal enum attribute to the given enum attribute is
-     *         contained in the given list (<code>true</code>) or not (<code>false</code>).
-     * 
-     * @throws NullPointerException If listOfEnumAttributes or enumAttribute is <code>null</code>.
+     * @throws NullPointerException If <code>listOfEnumAttributes</code> or
+     *             <code>enumAttribute</code> is <code>null</code>.
      */
     public static boolean containsEqualEnumAttribute(List<IEnumAttribute> listOfEnumAttributes,
             IEnumAttribute enumAttribute) {

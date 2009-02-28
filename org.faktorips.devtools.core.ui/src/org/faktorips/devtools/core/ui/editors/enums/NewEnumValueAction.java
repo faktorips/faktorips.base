@@ -30,6 +30,9 @@ import org.faktorips.util.ArgumentCheck;
  */
 public class NewEnumValueAction extends Action {
 
+    /** The name of the image for the action. */
+    private final String IMAGE_NAME = "InsertRowAfter.gif";
+
     /** The enum values table viewer linking the enum values ui table widget with the model data. */
     private TableViewer enumValuesTableViewer;
 
@@ -39,7 +42,7 @@ public class NewEnumValueAction extends Action {
      * @param enumValuesTableViewer The enum values table viewer linking the enum values ui table
      *            widget with the model data.
      * 
-     * @throws NullPointerException If enumValuesTableViewer is <code>null</code>.
+     * @throws NullPointerException If <code>enumValuesTableViewer</code> is <code>null</code>.
      */
     public NewEnumValueAction(TableViewer enumValuesTableViewer) {
         super();
@@ -48,7 +51,7 @@ public class NewEnumValueAction extends Action {
 
         this.enumValuesTableViewer = enumValuesTableViewer;
 
-        setImageDescriptor(IpsUIPlugin.getDefault().getImageDescriptor("InsertRowAfter.gif"));
+        setImageDescriptor(IpsUIPlugin.getDefault().getImageDescriptor(IMAGE_NAME));
         setText(Messages.EnumValuesSection_labelNewValue);
         setToolTipText(Messages.EnumValuesSection_tooltipNewValue);
     }

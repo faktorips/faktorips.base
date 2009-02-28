@@ -68,8 +68,10 @@ import org.faktorips.util.message.MessageList;
  * image doesn't change when the page within the wizard changes.
  * </p>
  */
-// TODO this class contains many public / protected functions that have no or not enough javadoc
-// attached
+/*
+ * TODO aw: this class contains many public / protected functions that have no or not enough javadoc
+ * attached
+ */
 public abstract class IpsObjectPage extends WizardPage implements ValueChangeListener {
 
     // the resource that was selected in the workbench or null if none.
@@ -107,10 +109,10 @@ public abstract class IpsObjectPage extends WizardPage implements ValueChangeLis
      */
     public IpsObjectPage(IpsObjectType ipsObjectType, IStructuredSelection selection, String pageName) {
         super(pageName);
-        
+
         ArgumentCheck.notNull(ipsObjectType, this);
         ArgumentCheck.notNull(pageName, this);
-        
+
         this.ipsObjectType = ipsObjectType;
         selectedResource = getSelectedResourceFromSelection(selection);
     }
@@ -119,7 +121,7 @@ public abstract class IpsObjectPage extends WizardPage implements ValueChangeLis
         if (selection == null) {
             return null;
         }
-        
+
         try {
             Object element = selection.getFirstElement();
             if (element instanceof IResource) {
@@ -136,7 +138,7 @@ public abstract class IpsObjectPage extends WizardPage implements ValueChangeLis
             // but no need to bother the user with this, so we just log the exception
             IpsPlugin.log(e);
         }
-        
+
         return null;
     }
 
@@ -202,7 +204,7 @@ public abstract class IpsObjectPage extends WizardPage implements ValueChangeLis
             buf.append('.');
         }
         buf.append(getIpsObjectName());
-        
+
         return buf.toString();
     }
 
@@ -217,7 +219,7 @@ public abstract class IpsObjectPage extends WizardPage implements ValueChangeLis
             setIpsPackageFragmentRoot(null);
             return;
         }
-        
+
         IIpsElement element = IpsPlugin.getDefault().getIpsModel().getIpsElement(selectedResource);
         if (element instanceof IIpsProject) {
             IIpsPackageFragmentRoot[] roots;
@@ -227,9 +229,11 @@ public abstract class IpsObjectPage extends WizardPage implements ValueChangeLis
                     setIpsPackageFragmentRoot(roots[0]);
                 }
             } catch (CoreException e) {
-                IpsPlugin.log(e); // user can still work with the system, just so the defaults are
-                // missing
-                // so just log it.
+                /*
+                 * user can still work with the system, just so the defaults are missing so just log
+                 * it.
+                 */
+                IpsPlugin.log(e);
             }
         } else if (element instanceof IIpsPackageFragmentRoot) {
             setIpsPackageFragmentRoot((IIpsPackageFragmentRoot)element);
@@ -255,6 +259,12 @@ public abstract class IpsObjectPage extends WizardPage implements ValueChangeLis
         }
     }
 
+    /*
+     * TODO aw: is this a good name for this method? it seems to be intended to be extended by
+     * subclasses to fill in additional controls, "name composite" is rather confusing then. Maybe
+     * it would be better to add yet another composite with an abstract method
+     * fillAdditionsComposite() or something like that ...
+     */
     protected void fillNameComposite(Composite nameComposite, UIToolkit toolkit) {
         Text nameText = addNameLabelField(toolkit, nameComposite);
         nameText.setFocus();
@@ -269,7 +279,7 @@ public abstract class IpsObjectPage extends WizardPage implements ValueChangeLis
         Text nameText = toolkit.createText(parent);
         nameField = new TextField(nameText);
         nameField.addChangeListener(this);
-        
+
         return nameText;
     }
 
@@ -333,7 +343,7 @@ public abstract class IpsObjectPage extends WizardPage implements ValueChangeLis
         if (getIpsPackageFragmentRoot() == null) {
             return null;
         }
-        
+
         return getIpsPackageFragmentRoot().getIpsProject();
     }
 
@@ -347,12 +357,12 @@ public abstract class IpsObjectPage extends WizardPage implements ValueChangeLis
         if (selectedResource == null) {
             return null;
         }
-        
+
         IIpsElement el = IpsPlugin.getDefault().getIpsModel().getIpsElement(selectedResource);
         if (el instanceof IIpsSrcFile) {
             return ((IIpsSrcFile)el).getIpsObject();
         }
-        
+
         return null;
     }
 
@@ -420,16 +430,16 @@ public abstract class IpsObjectPage extends WizardPage implements ValueChangeLis
         setMessage("", IMessageProvider.NONE); //$NON-NLS-1$
         setErrorMessage((String)null);
         validateSourceRoot();
-        
+
         if (getErrorMessage() != null) {
             return;
         }
-        
+
         validatePackage();
         if (getErrorMessage() != null) {
             return;
         }
-        
+
         validateName();
         validatePageExtension();
         updatePageComplete();
@@ -443,7 +453,7 @@ public abstract class IpsObjectPage extends WizardPage implements ValueChangeLis
      *             displayed in an error dialog
      */
     protected void validatePageExtension() throws CoreException {
-        
+
     }
 
     /**
@@ -488,7 +498,7 @@ public abstract class IpsObjectPage extends WizardPage implements ValueChangeLis
         if (getIpsProject() == null) {
             return;
         }
-        
+
         // validate naming conventions
         String name = nameField.getText();
         IIpsProjectNamingConventions namingConventions = getIpsProject().getNamingConventions();

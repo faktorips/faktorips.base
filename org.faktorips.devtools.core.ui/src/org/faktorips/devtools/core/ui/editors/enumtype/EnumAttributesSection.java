@@ -34,7 +34,7 @@ import org.faktorips.util.ArgumentCheck;
  * The ui section for the enum type structure page that contains the enum attributes of the enum
  * type to be edited.
  * 
- * @see org.faktorips.devtools.core.ui.editors.enumtype.EnumTypeStructurePage
+ * @see EnumTypeStructurePage
  * 
  * @author Alexander Weickmann
  * 
@@ -80,7 +80,7 @@ public class EnumAttributesSection extends SimpleIpsPartsSection {
          * @param parent The parent ui composite.
          * @param toolkit The ui toolkit to create new ui elements with.
          * 
-         * @throws NullPointerException If enumType is <code>null</code>.
+         * @throws NullPointerException If <code>enumType</code> is <code>null</code>.
          */
         public EnumAttributesComposite(IEnumType enumType, Composite parent, UIToolkit toolkit) {
             super(enumType, parent, toolkit);
@@ -135,6 +135,7 @@ public class EnumAttributesSection extends SimpleIpsPartsSection {
                  * the enum type then make sure that there will be one enum value available for
                  * editing.
                  */
+                // TODO consider abstract?
                 if (enumType.getEnumAttributesCount() == 1) {
                     if (enumType.getValuesArePartOfModel()) {
                         if (enumType.getEnumValuesCount() == 0) {
