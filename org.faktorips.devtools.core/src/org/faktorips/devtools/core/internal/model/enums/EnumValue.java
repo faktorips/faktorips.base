@@ -49,29 +49,16 @@ public class EnumValue extends BaseIpsObjectPart implements IEnumValue {
     private IpsObjectPartCollection enumAttributeValues;
 
     /**
-     * Creates a new <code>EnumValue</code> that has as many enum attribute values as the
-     * corresponding enum type has attributes.
+     * Creates a new <code>EnumValue</code>.
      * 
      * @param parent The enum value container this enum value belongs to.
      * @param id A unique id for this enum value.
-     * 
-     * @throws CoreException If an error occurs while initializing the enum attribute values.
      */
-    public EnumValue(IEnumValueContainer parent, int id) throws CoreException {
+    public EnumValue(IEnumValueContainer parent, int id) {
         super(parent, id);
 
         this.enumAttributeValues = new IpsObjectPartCollection(this, EnumAttributeValue.class,
                 IEnumAttributeValue.class, IEnumAttributeValue.XML_TAG);
-
-        // Add as many enum attribute values as there are enum attributes in the enum type
-        /*
-         * TODO this will lead to problems when implementing the enum content stuff when the enum
-         * type has not been specified or is invalid so this will return null
-         */
-        IEnumType enumType = parent.findEnumType();
-        for (int i = 0; i < enumType.getEnumAttributesCount(); i++) {
-            newEnumAttributeValue();
-        }
     }
 
     /**

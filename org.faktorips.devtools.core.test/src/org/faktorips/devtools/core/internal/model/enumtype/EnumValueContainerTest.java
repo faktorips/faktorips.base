@@ -27,9 +27,10 @@ public class EnumValueContainerTest extends AbstractIpsEnumPluginTest {
         assertEquals(2, genderEnumContent.getEnumValues().size());
     }
 
-    public void testNewEnumValue() {
+    public void testNewEnumValue() throws CoreException {
         IEnumValue newEnumValue = genderEnumContent.newEnumValue();
         assertEquals(newEnumValue, genderEnumContent.getEnumValues().get(2));
+        assertEquals(2, newEnumValue.getEnumAttributeValuesCount());
     }
 
     public void testGetEnumValuesCount() {

@@ -22,6 +22,7 @@ import org.faktorips.devtools.core.internal.model.ipsobject.BaseIpsObject;
 import org.faktorips.devtools.core.internal.model.ipsobject.IpsObjectPartCollection;
 import org.faktorips.devtools.core.model.enums.IEnumValue;
 import org.faktorips.devtools.core.model.enums.IEnumValueContainer;
+import org.faktorips.devtools.core.model.enumtype.IEnumType;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPart;
 import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
 import org.faktorips.util.ArgumentCheck;
@@ -68,8 +69,22 @@ public abstract class EnumValueContainer extends BaseIpsObject implements IEnumV
     /**
      * {@inheritDoc}
      */
-    public IEnumValue newEnumValue() {
-        return (IEnumValue)newPart(IEnumValue.class);
+    public IEnumValue newEnumValue() throws CoreException {
+        IEnumValue newEnumValue = (IEnumValue)newPart(IEnumValue.class);
+
+        // Add as many enum attribute values as there are enum attributes in the enum type
+        /*
+         * TODO aw: this will lead to problems when implementing the enum content stuff when the
+         * enum type has not been specified or is invalid so this will return null, what to do then?
+         * Do nothing? Permit it? Look at other enum values how many enum attribute values they have
+         * (what if none exist?)?
+         */
+        IEnumType enumType = findEnumType();
+        for (int i = 0; i < enumType.getEnumAttributesCount(); i++) {
+            newEnumValue.newEnumAttributeValue();
+        }
+
+        return newEnumValue;
     }
 
     /**

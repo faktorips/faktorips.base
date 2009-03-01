@@ -39,9 +39,12 @@ public interface IEnumValueContainer extends IIpsObject {
     public List<IEnumValue> getEnumValues();
 
     /**
-     * Creates a new enum value and returns a reference to it.
+     * Creates and returns a new enum value that has as many enum attribute values as the
+     * corresponding enum type has attributes.
+     * 
+     * @throws CoreException If an error occurs while searching for the enum type.
      */
-    public IEnumValue newEnumValue();
+    public IEnumValue newEnumValue() throws CoreException;
 
     /**
      * Returns a reference to the enum type or <code>null</code> if no enum type can be found.

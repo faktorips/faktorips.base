@@ -150,12 +150,16 @@ public class EnumType extends EnumValueContainer implements IEnumType {
      * {@inheritDoc}
      */
     public IEnumAttribute newEnumAttribute() throws CoreException {
-        IEnumAttribute newEnumAttribute = (IEnumAttribute)newPart(IEnumAttribute.class);
-
-        // Create new enum attribute value objects on the enum values of this enum type
+        /*
+         * Create new enum attribute value objects on the enum values of this enum type. We do this
+         * before adding the actual new enum attribute because we want the enum attribute values
+         * already to be added when the content changed event for the added enum attribute fires.
+         */
         for (IEnumValue currentEnumValue : getEnumValues()) {
             currentEnumValue.newEnumAttributeValue();
         }
+
+        IEnumAttribute newEnumAttribute = (IEnumAttribute)newPart(IEnumAttribute.class);
 
         return newEnumAttribute;
     }
@@ -222,14 +226,15 @@ public class EnumType extends EnumValueContainer implements IEnumType {
             IEnumAttribute currentEnumAttribute = enumAttributesList.get(i);
             if (currentEnumAttribute == enumAttribute) {
 
-                int[] newIndex = enumAttributes.moveParts(new int[] { i }, up);
-
                 /*
-                 * Also move the refering enum attribute values that are defined directly in this
-                 * enum type.
+                 * Move the refering enum attribute values that are defined directly in this enum
+                 * type (we do this before moving the enum attribute because the change event fired
+                 * when moving an enum attribute should contain the moved enum attribute values
+                 * already).
                  */
-                int modifier = (up) ? 1 : -1;
-                moveEnumAttributeValues(newIndex[0] + modifier, getEnumValues(), up);
+                moveEnumAttributeValues(i, getEnumValues(), up);
+
+                int[] newIndex = enumAttributes.moveParts(new int[] { i }, up);
 
                 return newIndex[0];
 
@@ -398,7 +403,9 @@ public class EnumType extends EnumValueContainer implements IEnumType {
         ArgumentCheck.isTrue(enumAttributes.getBackingList().contains(enumAttribute));
 
         deleteEnumAttributeValues(enumAttribute, getEnumValues());
-        enumAttribute.delete();
+        if (!(enumAttribute.isDeleted())) {
+            enumAttribute.delete();
+        }
     }
 
     /**

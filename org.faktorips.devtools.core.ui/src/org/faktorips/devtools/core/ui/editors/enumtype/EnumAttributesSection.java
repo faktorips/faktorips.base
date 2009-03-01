@@ -123,8 +123,10 @@ public class EnumAttributesSection extends SimpleIpsPartsSection {
         /**
          * {@inheritDoc}
          */
-        // TODO pk: newIpsPart könnte eigentlich eine Exception werfen. Damit wird man den unnötigen
-        // try catch und runtime exception wrapper los
+        /*
+         * TODO pk: newIpsPart könnte eigentlich eine Exception werfen. Damit wird man den unnötigen
+         * try catch und runtime exception wrapper los
+         */
         @Override
         protected IIpsObjectPart newIpsPart() {
             try {
