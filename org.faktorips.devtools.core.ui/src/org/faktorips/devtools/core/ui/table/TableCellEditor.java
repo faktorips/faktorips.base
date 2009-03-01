@@ -13,6 +13,7 @@
 
 package org.faktorips.devtools.core.ui.table;
 
+import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jface.viewers.CellEditor;
 import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.swt.SWT;
@@ -286,7 +287,12 @@ public abstract class TableCellEditor extends CellEditor {
     }
 
     /**
-     * Appends a new IRow to the table and returns it if the tableviewer's input is a TableContents.
+     * Appends a new <code>IRow</code> to the table if the tableviewer's input is a
+     * <code>TableContents</code>.
+     * <p>
+     * Appends a new <code>IEnumValue</code> to the table if the tableviewer's input is an
+     * <code>EnumValueContainer</code>.
+     * <p>
      * Does nothing otherwise.
      */
     private void appendTableRow() {
@@ -297,7 +303,11 @@ public abstract class TableCellEditor extends CellEditor {
 
         } else if (tableViewer.getInput() instanceof IEnumValueContainer) {
             IEnumValueContainer enumValueContainer = (IEnumValueContainer)tableViewer.getInput();
-            tableViewer.add(enumValueContainer.newEnumValue());
+            try {
+                tableViewer.add(enumValueContainer.newEnumValue());
+            } catch (CoreException e) {
+                throw new RuntimeException(e);
+            }
         }
     }
 
