@@ -54,6 +54,8 @@
 #
 #############################################################################################################################
 
+echo '  '
+
 #################################################
 # Functions
 #################################################
@@ -76,7 +78,38 @@ else
 fi
 }
 
-echo '  '
+getFetchTagVersion ()
+{
+ INPUT_VERSION=$1
+ export VERSION_QUALIFIER=$(echo $INPUT_VERSION | sed -r "s/([0-9]*)\.([0-9]*)\.([0-9]*)\.(.*)/\4/g")
+ export VERSION=$(echo $INPUT_VERSION | sed -r "s/([0-9]*)\.([0-9]*)\.([0-9]*)\.(.*)/\1\.\2\.\3/g")
+ export FETCH_TAG=$(echo $INPUT_VERSION | sed -r "s/([0-9]*)\.([0-9]*)\.([0-9]*)\.(.*)/v\1_\2_\3_\4/g")
+ assertVersionFormat $VERSION $VERSION_QUALIFIER $FETCH_TAG \
+  "Wrong release version format '$INPUT_VERSION', must be tree numbers followed by the qualifier (major.minor.micro.qualifier), e.g. 2.2.0.rfinal"
+}
+
+getFetchTagVersionForBranch ()
+{
+ INPUT_VERSION=$1
+ export VERSION_QUALIFIER=$(echo $INPUT_VERSION | sed -r "s/([0-9]*)\.([0-9]*)\.(.*)/\3/g")
+ export VERSION=$(echo $INPUT_VERSION | sed -r "s/([0-9]*)\.([0-9]*)\.([0-9]*)/\1\.\2/g")
+ export FETCH_TAG=$(echo $INPUT_VERSION | sed -r "s/([0-9]*)\.([0-9]*)\.(.*)/v\1_\2_\3/g")
+ assertVersionFormat $VERSION $VERSION_QUALIFIER $FETCH_TAG \
+  "Wrong branch version format '$INPUT_VERSION', must be two numbers followed by the qualifier (major.minor.qualifier), e.g. 2.2.patches"
+}
+
+assertVersionFormat ()
+{
+ VERSION=$1 
+ VERSION_QUALIFIER=$2
+ FETCH_TAG=$3
+ FAIL_MESSAGE=$4
+ POINTEXISTS=$( echo $FETCH_TAG | grep "\." )
+ if [ "$VERSION" = "$VERSION_QUALIFIER" -o "$VERSION" = "$FETCH_TAG" -o -n "$POINTEXISTS" ] ; then
+   echo $FAIL_MESSAGE
+   exit 1
+ fi
+}
 
 #################################################
 # init variables and parameters
@@ -124,8 +157,8 @@ export ANT_OPTS=-Xmx1024m
 OVERWRITE=false
 RUNTESTS=true
 SKIPPUBLISH=false
-BUILD_VERSION=NONE
-BUILD_CATEGORY=NONE
+BUILD_VERSION=
+BUILD_CATEGORY=
 SHOWHELP=false
 SKIPTAGCVS=false
 NOCVS=false
@@ -180,16 +213,20 @@ fi
 #   create branch and exit here
 #
 if [ "$CREATE_BRANCH" = "true" ] ; then
-  if [ -z "$BRANCH" ] ; then
-    echo "please specify the branch using -useBranch <branchname>"
+  getFetchTagVersionForBranch $BUILD_VERSION
+  
+  if [ -z "$FETCH_TAG" ] ; then
+    echo "please specify the version the branch will be based on -version [version]"
     exit 1
   fi
   
+  BRANCH=$FETCH_TAG
   BRANCH_TAG="Root_"$BRANCH
 
-  echo Create branch parameter:
+  echo "Create branch parameter (note: the latest HEAD sources will be used as starting point):"
   echo "  --------------------------------------------------------------------------------------"
-  echo -e "  -useBranch       : Create cvs branch \e[35m$BRANCH\e[0m"
+  echo -e "  tag before branch (starting point for merging the branch back) : \e[35m$BRANCH_TAG\e[0m"
+  echo -e "  branchname                                                     : Create cvs branch \e[35m$BRANCH\e[0m"
   echo "  --------------------------------------------------------------------------------------"
   echo -e "=> Start creating branch (\e[33my\e[0m)es? <="
   echo 
@@ -200,8 +237,6 @@ if [ "$CREATE_BRANCH" = "true" ] ; then
   
   echo "branching "$BRANCH" ..."
 
-  # TODO fail if tag exists!
-  
   # branch all projects specified in the pluginbuilder map file (all necessary plugin and feature projects)
   cvs -d $CVS_ROOT co -d $PLUGINBUILDER_PROJECT_DIR/maps $PLUGINBUILDER_PROJECT_NAME/maps/all_copy.map
   for project in $( cat $PLUGINBUILDER_PROJECT_DIR/maps/all_copy.map | sed -r "s/.*COPY,@WORKSPACE@,(.*)/\1/g" ) ; do
@@ -211,14 +246,14 @@ if [ "$CREATE_BRANCH" = "true" ] ; then
 	  # 2. branch project 
 	  #  -r : says that this branch should be rooted to this revision
     echo "create branch: '"$BRANCH"', project "$project
-	  cvs -d $CVS_ROOT rtag -R -b -r $BRANCH_TAG $BRANCH $project
+	cvs -d $CVS_ROOT rtag -R -b -r $BRANCH_TAG $BRANCH $project
   done
   
   exit
 fi
 
 # check if version is given as parameter
-if [ $BUILD_VERSION = "NONE" ] ; then
+if [ -z "$BUILD_VERSION" ] ; then
   if [ $SHOWHELP = "false" ] ; then
     echo '--> Error no version given!'
     echo '  '
@@ -252,7 +287,7 @@ if [ ! -e $BUILDFILE ] ; then
 fi
 
 # extract build category from given version, if no category is given
-if [ $BUILD_CATEGORY = "NONE" ]
+if [ -z "$BUILD_CATEGORY" ]
   then BUILD_CATEGORY=$(echo $BUILD_VERSION | sed -r "s/([0-9]*)\.([0-9]*)\.([0-9]*)\.(.*)/\1\.\2/g")
 fi 
 
@@ -312,11 +347,14 @@ fi
 # print parameter and ask to build
 #################################################
 
+getFetchTagVersion $BUILD_VERSION
+
 echo 
 echo Release build parameter:
 echo "  --------------------------------------------------------------------------------------"
 echo -e "  Release Version=\e[35m$BUILD_VERSION\e[0m"
 echo -e "  Feature Category=\e[35m$BUILD_CATEGORY\e[0m"
+echo -e "  CVS Tag=\e[35m$FETCH_TAG\e[0m"
 echo "  --------------------------------------------------------------------------------------"
 echo -e "  -overwite        : Fail if version exists "$(printBoolean $( negation $OVERWRITE))
 echo -e "  -skipTest        : Run tests "$(printBoolean $RUNTESTS)
@@ -349,10 +387,6 @@ fi
 #################################################
 # asserts before release build
 #################################################
-
-VERSION_QUALIFIER=$(echo $BUILD_VERSION | sed -r "s/([0-9]*)\.([0-9]*)\.([0-9]*)\.(.*)/\4/g")
-VERSION=$(echo $BUILD_VERSION | sed -r "s/([0-9]*)\.([0-9]*)\.([0-9]*)\.(.*)/\1\.\2\.\3/g")
-FETCH_TAG=$(echo $BUILD_VERSION | sed -r "s/([0-9]*)\.([0-9]*)\.([0-9]*)\.(.*)/v\1_\2_\3_\4/g")
 
 MIGRATION_STRATEGY_CLASS="Migration_"$(echo $FETCH_TAG | sed 's|v||g')".java"
 MIGRATION_STRATEGY_PATH=$FAKTORIPS_CORE_PLUGIN_NAME"/src/org/faktorips/devtools/core/internal/migration/"$MIGRATION_STRATEGY_CLASS
