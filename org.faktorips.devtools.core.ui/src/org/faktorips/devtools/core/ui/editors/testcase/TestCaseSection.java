@@ -74,7 +74,6 @@ import org.eclipse.swt.widgets.Menu;
 import org.eclipse.swt.widgets.Tree;
 import org.eclipse.swt.widgets.TreeItem;
 import org.eclipse.swt.widgets.Widget;
-import org.eclipse.team.internal.core.BackgroundEventHandler.RunnableEvent;
 import org.eclipse.ui.IEditorSite;
 import org.eclipse.ui.dialogs.ElementListSelectionDialog;
 import org.eclipse.ui.forms.widgets.Form;
@@ -1846,6 +1845,9 @@ public class TestCaseSection extends IpsSection implements IIpsTestRunListener {
                     }
 				}
 				testPolicyCmpt.setProductCmpt(productCmptQualifiedNames[0]);
+				// reset the stored policy cmpt type, because the policy cmpt type can now
+				// be searched using the product cmpt
+				testPolicyCmpt.setPolicyCmptType(""); //$NON-NLS-1$
 				testPolicyCmpt.setName(
 						testCase.generateUniqueNameForTestPolicyCmpt(testPolicyCmpt, StringUtil.unqualifiedName(productCmptQualifiedNames[0])));
                 
