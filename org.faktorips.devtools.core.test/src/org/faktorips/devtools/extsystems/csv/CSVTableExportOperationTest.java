@@ -11,34 +11,45 @@
  * Mitwirkende: Faktor Zehn AG - initial API and implementation - http://www.faktorzehn.de
  *******************************************************************************/
 
-package org.faktorips.devtools.extsystems.excel;
+package org.faktorips.devtools.extsystems.csv;
+
+import java.io.File;
 
 import org.eclipse.core.runtime.NullProgressMonitor;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProjectProperties;
 import org.faktorips.devtools.core.model.tablecontents.ITableContents;
 import org.faktorips.devtools.core.model.tablestructure.IColumn;
+import org.faktorips.devtools.extsystems.excel.AbstractTableTest;
+import org.faktorips.devtools.extsystems.excel.BooleanValueConverter;
+import org.faktorips.devtools.extsystems.excel.DateValueConverter;
+import org.faktorips.devtools.extsystems.excel.DecimalValueConverter;
+import org.faktorips.devtools.extsystems.excel.DoubleValueConverter;
+import org.faktorips.devtools.extsystems.excel.IntegerValueConverter;
+import org.faktorips.devtools.extsystems.excel.LongValueConverter;
+import org.faktorips.devtools.extsystems.excel.MoneyValueConverter;
+import org.faktorips.devtools.extsystems.excel.StringValueConverter;
 import org.faktorips.util.message.MessageList;
 
-public class ExcelTableExportOperationTest extends AbstractTableTest {
 
-    private ExcelTableFormat format;
+public class CSVTableExportOperationTest extends AbstractTableTest {
+    
+    private CSVTableFormat format;
     private String filename;
     private IIpsProject ipsProject;
-
     
     protected void setUp() throws Exception {
         super.setUp();
-        
-        ipsProject = newIpsProject("test");
+
+        this.ipsProject = newIpsProject("test");
         IIpsProjectProperties props = ipsProject.getProperties();
         String[] datatypes = getColumnDatatypes();
         props.setPredefinedDatatypesUsed(datatypes);
         ipsProject.setProperties(props);
-        
-        format = new ExcelTableFormat();
-        format.setDefaultExtension(".xls");
-        format.setName("Excel");
+
+        format = new CSVTableFormat();
+        format.setDefaultExtension(".csv");
+        format.setName("Text (CSV)");
         format.addValueConverter(new BooleanValueConverter());
         format.addValueConverter(new DecimalValueConverter());
         format.addValueConverter(new DoubleValueConverter());
@@ -51,12 +62,17 @@ public class ExcelTableExportOperationTest extends AbstractTableTest {
         this.filename = "table" + format.getDefaultExtension();
     }
 
+    protected void tearDownExtension() throws Exception {
+        new File(filename).delete();
+    }
+
     public void testExportValid() throws Exception {
         ITableContents contents = createValidTableContents(ipsProject);
-
+        
         MessageList ml = new MessageList();
-        ExcelTableExportOperation op = new ExcelTableExportOperation(contents, filename, format, "NULL", true, ml);
+        CSVTableExportOperation op = new CSVTableExportOperation(contents, filename, format, "NULL", true, ml);
         op.run(new NullProgressMonitor());
+        System.out.println(ml);
         assertTrue(ml.isEmpty());
     }
 
@@ -67,7 +83,7 @@ public class ExcelTableExportOperationTest extends AbstractTableTest {
         IColumn col = getStructure().newColumn();
 
         MessageList ml = new MessageList();
-        ExcelTableExportOperation op = new ExcelTableExportOperation(contents, filename, format, "NULL", true, ml );
+        CSVTableExportOperation op = new CSVTableExportOperation(contents, filename, format, "NULL", true, ml );
         op.run(new NullProgressMonitor());
         assertFalse(ml.isEmpty());
 
@@ -87,10 +103,11 @@ public class ExcelTableExportOperationTest extends AbstractTableTest {
 
     public void testExportInvalid() throws Exception {
         ITableContents contents = createInvalidTableContents(ipsProject);
-
+        
         MessageList ml = new MessageList();
-        ExcelTableExportOperation op = new ExcelTableExportOperation(contents, filename, format, "NULL", true, ml);
+        CSVTableExportOperation op = new CSVTableExportOperation(contents, filename, format, "NULL", true, ml);
         op.run(new NullProgressMonitor());
-        assertEquals(7, ml.getNoOfMessages());
+        assertEquals(7, ml.getNoOfMessages()); // from 8 columns only the String column is valid
     }
+
 }

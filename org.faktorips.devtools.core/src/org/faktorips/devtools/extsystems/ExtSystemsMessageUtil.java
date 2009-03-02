@@ -42,7 +42,7 @@ public class ExtSystemsMessageUtil {
     }
 
     public static Message createConvertIntToExtErrorMessage(String ipsValue, String internalType, String externalType) {
-        String msg = NLS.bind(Messages.Messages_intToExtError, new String[]{ipsValue});
+        String msg = NLS.bind(Messages.Messages_intToExtError, new String[]{ipsValue, internalType, externalType});
         return new Message("", msg, Message.ERROR); //$NON-NLS-1$
     }
     

@@ -37,7 +37,8 @@ Require-Bundle: org.eclipse.ui,
  org.eclipse.team.core,
  org.eclipse.gef
 Eclipse-LazyStart: true
-Export-Package: org.apache.poi.ddf,
+Export-Package: au.com.bytecode.opencsv,
+ org.apache.poi.ddf,
  org.apache.poi.dev,
  org.apache.poi.hpsf,
  org.apache.poi.hpsf.wellknown,
@@ -103,8 +104,10 @@ Export-Package: org.apache.poi.ddf,
  org.faktorips.devtools.core.model.versionmanager,
  org.faktorips.devtools.core.util,
  org.faktorips.devtools.extsystems,
+ org.faktorips.devtools.extsystems.csv,
  org.faktorips.devtools.extsystems.excel
 Bundle-ClassPath: .,
  lib/log4j-1.2.14.jar,
- lib/poi-2.5.1-final-20040804.jar
+ lib/poi-2.5.1-final-20040804.jar,
+ lib/opencsv-1.8.jar
 Bundle-RequiredExecutionEnvironment: J2SE-1.5

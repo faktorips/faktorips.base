@@ -22,7 +22,6 @@ import org.apache.poi.hssf.usermodel.HSSFDateUtil;
 import org.apache.poi.hssf.usermodel.HSSFRow;
 import org.apache.poi.hssf.usermodel.HSSFSheet;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
-import org.eclipse.core.resources.IWorkspaceRunnable;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.osgi.util.NLS;
@@ -42,50 +41,7 @@ import org.faktorips.util.message.MessageList;
  * 
  * @author Thorsten Guenther
  */
-public class ExcelTableImportOperation implements IWorkspaceRunnable {
-
-    /**
-     * Qualified name of the file to import from
-     */
-    private String sourceFile;
-
-    /**
-     * The table structure the imported table content is bound to
-     */
-    private ITableStructure structure;
-
-    /**
-     * Generation of the table contents the import has to be inserted.
-     */
-    private ITableContentsGeneration targetGeneration;
-
-    /**
-     * Datatypes for the columns. The datatype at index 1 is the datatype defined in the structure
-     * for column at index 1.
-     */
-    private Datatype[] datatypes;
-
-    /**
-     * The format which handles data conversion
-     */
-    private AbstractExternalTableFormat format;
-
-    /**
-     * String representing <code>null</code> in excel (because it is not capable of
-     * <code>null</code>-values).
-     */
-    private String nullRepresentationString;
-
-    /**
-     * List of messages describing problems occurred during export.
-     */
-    private MessageList messageList;
-
-    /**
-     * <code>true</code> if the first row contains column header and should be ignored
-     * <code>false</code> if the to be imported content contains no column header row.
-     */
-    private boolean ignoreColumnHeaderRow;
+public class ExcelTableImportOperation extends AbstractTableImportOperation {
 
     public ExcelTableImportOperation(ITableStructure structure, String sourceFile,
             ITableContentsGeneration targetGeneration, AbstractExternalTableFormat format,

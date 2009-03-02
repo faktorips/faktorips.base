@@ -465,7 +465,7 @@ public class IpsPlugin extends AbstractUIPlugin {
             IConfigurationElement[] elements = extensions[i].getConfigurationElements();
             boolean found = false;
             for (int j = 0; j < elements.length && !found; j++) {
-                found = elements[j].getAttribute("id").equals(formatElement.getAttribute("id")); //$NON-NLS-1$ //$NON-NLS-2$ $NON-NLS-2$
+                found = formatElement.getAttribute("id").equals(elements[j].getAttribute("id")); //$NON-NLS-1$ //$NON-NLS-2$ $NON-NLS-2$
             }
 
             for (int j = 0; j < elements.length && found; j++) {
