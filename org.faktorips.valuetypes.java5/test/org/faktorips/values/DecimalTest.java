@@ -61,6 +61,11 @@ public class DecimalTest extends TestCase {
 
         assertTrue(Decimal.valueOf((String)null).isNull());
     }
+    
+    public void testSymmetryOfToStringAndValueOfForNull() {
+    	Decimal decNull = Decimal.NULL;
+    	assertTrue(Decimal.valueOf(decNull.toString()).isNull());
+    }
 
     /*
      * Class under test for Decimal valueOf(String)

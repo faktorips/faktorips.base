@@ -101,14 +101,14 @@ public class Money implements Comparable<Money>, NullObjectSupport, Serializable
 
     /**
      * Returns the money value represented by the given string. Returns <code>Money.NULL</code>, if the value is
-     * either <code>null</code> or the empty string.
+     * either <code>null</code> or the empty string or "MoneyNull".
      *
      * @throws IllegalArgumentException
      *             if the String does not represent a money amount, e.g. if the
      *             currency symbol is invalid.
      */
     public final static Money valueOf(String value) {
-        if (value==null || value.equals("")) {
+        if (value==null || value.equals("") || value.equals(MoneyNull.STRING_REPRESENTATION)) {
             return Money.NULL;
         }
         String initialValue = value;

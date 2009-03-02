@@ -100,8 +100,6 @@ public class MoneyTest extends TestCase {
             fail();
         } catch (IllegalArgumentException e) {
         }
-
-
     }
 
     /*
@@ -115,6 +113,11 @@ public class MoneyTest extends TestCase {
         money = Money.valueOf(-123, -74, Currency.getInstance("EUR"));
         assertEquals(Currency.getInstance("EUR"), money.getCurrency());
         assertEquals(Decimal.valueOf("-123.74"), money.getAmount());
+    }
+
+    public void testSymmetryOfToStringAndValueOfForNull() {
+    	Money moneyNull = Money.NULL;
+    	assertTrue(Money.valueOf(moneyNull.toString()).isNull());
     }
 
     public void testGetAmount() {

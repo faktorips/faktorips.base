@@ -67,12 +67,13 @@ public class Decimal extends Number implements Comparable<Decimal>, NullObjectSu
 
     /**
      * Returns the Decimal value defined in the String <code>s</code>.
-     * Returns <code>Decimal.NULL</code> if <code>s</code> is either <code>null</code> or an empty string.
+     * Returns <code>Decimal.NULL</code> if <code>s</code> is either <code>null</code> or an empty string
+     * or "DecimalNull".
      * 
      * @throws NumberFormatException if <tt>s</tt> is not a valid representation of a Decimal.
      */
     public final static Decimal valueOf(String s) {
-        if (s==null || s.equals("")) {
+        if (s==null || s.equals("") || s.equals(DecimalNull.STRING_REPRESENTATION)) {
             return NULL;
         }
         return new Decimal(new BigDecimal(s));
