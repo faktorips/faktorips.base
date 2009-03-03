@@ -33,6 +33,7 @@ import org.faktorips.devtools.core.model.tablecontents.Messages;
 import org.faktorips.devtools.core.model.tablestructure.IColumn;
 import org.faktorips.devtools.core.model.tablestructure.ITableStructure;
 import org.faktorips.devtools.extsystems.AbstractExternalTableFormat;
+import org.faktorips.devtools.extsystems.AbstractTableImportOperation;
 import org.faktorips.util.message.Message;
 import org.faktorips.util.message.MessageList;
 

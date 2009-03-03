@@ -29,7 +29,7 @@ import org.faktorips.devtools.core.model.tablecontents.ITableContentsGeneration;
 import org.faktorips.devtools.core.model.tablestructure.IColumn;
 import org.faktorips.devtools.core.model.tablestructure.ITableStructure;
 import org.faktorips.devtools.extsystems.AbstractExternalTableFormat;
-import org.faktorips.devtools.extsystems.excel.AbstractTableImportOperation;
+import org.faktorips.devtools.extsystems.AbstractTableImportOperation;
 import org.faktorips.util.message.Message;
 import org.faktorips.util.message.MessageList;
 
@@ -130,7 +130,8 @@ public class CSVTableImportOperation extends AbstractTableImportOperation {
                     if (nullRepresentationString.equals(fields[j])) {
                         ipsValue = nullRepresentationString;
                     } else {
-                        Object externalValue = format.getExternalValue(fields[j], datatypes[j], messageList);
+                        MessageList ignoredMessageList = new MessageList();
+                        Object externalValue = format.getExternalValue(fields[j], datatypes[j], ignoredMessageList);
                         ipsValue = getIpsValue(externalValue, datatypes[j]);
                     }
                     

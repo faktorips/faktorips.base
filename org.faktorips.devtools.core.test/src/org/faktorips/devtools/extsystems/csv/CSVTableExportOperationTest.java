@@ -20,7 +20,7 @@ import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProjectProperties;
 import org.faktorips.devtools.core.model.tablecontents.ITableContents;
 import org.faktorips.devtools.core.model.tablestructure.IColumn;
-import org.faktorips.devtools.extsystems.excel.AbstractTableTest;
+import org.faktorips.devtools.extsystems.AbstractTableTest;
 import org.faktorips.devtools.extsystems.excel.BooleanValueConverter;
 import org.faktorips.devtools.extsystems.excel.DateValueConverter;
 import org.faktorips.devtools.extsystems.excel.DecimalValueConverter;

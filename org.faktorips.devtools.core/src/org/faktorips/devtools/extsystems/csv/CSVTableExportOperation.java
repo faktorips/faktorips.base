@@ -31,7 +31,7 @@ import org.faktorips.devtools.core.model.tablecontents.Messages;
 import org.faktorips.devtools.core.model.tablestructure.IColumn;
 import org.faktorips.devtools.core.model.tablestructure.ITableStructure;
 import org.faktorips.devtools.extsystems.AbstractExternalTableFormat;
-import org.faktorips.devtools.extsystems.excel.AbstractTableExportOperation;
+import org.faktorips.devtools.extsystems.AbstractTableExportOperation;
 import org.faktorips.util.message.Message;
 import org.faktorips.util.message.MessageList;
 
@@ -197,6 +197,8 @@ public class CSVTableExportOperation extends AbstractTableExportOperation {
                 String ipsValue = row.getValue(j);
                 Object obj = format.getExternalValue(ipsValue, datatypes[j], messageList);
                 
+                out.write("\"".getBytes());
+                
                 String csvField;
                 try {
                     csvField = (obj == null) ? nullRepresentationString
@@ -205,9 +207,11 @@ public class CSVTableExportOperation extends AbstractTableExportOperation {
                     // Null Object for Decimal Datatype returned, see Null-Object Pattern
                     csvField = nullRepresentationString; 
                 }
-                
-             //TODO: text/field delimiters !
+
                 out.write(csvField.getBytes());
+                out.write("\"".getBytes());
+                
+                //TODO: text/field delimiters !
                 if (j  < contents.getNumOfColumns() - 1) {
                     out.write(",".getBytes());  // field separator
                 }

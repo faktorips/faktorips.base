@@ -24,7 +24,7 @@ import org.faktorips.devtools.core.model.ipsproject.IIpsProjectProperties;
 import org.faktorips.devtools.core.model.tablecontents.ITableContents;
 import org.faktorips.devtools.core.model.tablecontents.ITableContentsGeneration;
 import org.faktorips.devtools.core.model.tablestructure.IColumn;
-import org.faktorips.devtools.extsystems.excel.AbstractTableTest;
+import org.faktorips.devtools.extsystems.AbstractTableTest;
 import org.faktorips.devtools.extsystems.excel.BooleanValueConverter;
 import org.faktorips.devtools.extsystems.excel.DateValueConverter;
 import org.faktorips.devtools.extsystems.excel.DecimalValueConverter;
@@ -156,8 +156,7 @@ public class CSVTableImportOperationTest extends AbstractTableTest {
         
         op.run(new NullProgressMonitor());
         System.out.println(ml);
-//        assertFalse(ml.isEmpty());
-        assertTrue(importTarget.getNumOfRows() > 0);
+        assertEquals(6, ml.getNoOfMessages());
     }
     
     private void createInvalidCsvFile() throws Exception {
@@ -168,6 +167,7 @@ public class CSVTableImportOperationTest extends AbstractTableTest {
                 "INVALID", "INVALID", "INVALID", "invalid is impossible"
         };
 
+        writer.writeNext(new String[] {"This", "is", "the", "header."});
         writer.writeNext(invalidLine);
         writer.close();
     }

@@ -11,7 +11,7 @@
  * Mitwirkende: Faktor Zehn AG - initial API and implementation - http://www.faktorzehn.de
  *******************************************************************************/
 
-package org.faktorips.devtools.extsystems.excel;
+package org.faktorips.devtools.extsystems;
 
 import java.util.GregorianCalendar;
 
@@ -32,7 +32,7 @@ import org.faktorips.devtools.extsystems.AbstractExternalTableFormat;
 import org.faktorips.util.message.MessageList;
 
 /**
- * Base class for all table import and export test cases. Has factory methods to create valid and invalid
+ * Base class for all table import and export test cases. Contains factory methods to create valid and invalid
  * table contents.
  * 
  * @author Roman Grutza
@@ -41,10 +41,22 @@ public abstract class AbstractTableTest extends AbstractIpsPluginTest {
 
     private ITableStructure structure;
     
+    private final String[] datatypes = new String[] { Datatype.BOOLEAN.getQualifiedName(), Datatype.DECIMAL.getQualifiedName(),
+            Datatype.DOUBLE.getQualifiedName(), Datatype.GREGORIAN_CALENDAR_DATE.getQualifiedName(),
+            Datatype.INTEGER.getQualifiedName(), Datatype.LONG.getQualifiedName(),
+            Datatype.MONEY.getQualifiedName(), Datatype.STRING.getQualifiedName() };
+    
     
     protected void setUp() throws Exception {
         super.setUp();
-        
+    }
+    
+    public ITableStructure getStructure() {
+        return structure;
+    }
+
+    public String[] getColumnDatatypes() {
+        return datatypes;
     }
     
     /**
@@ -111,22 +123,14 @@ public abstract class AbstractTableTest extends AbstractIpsPluginTest {
         return contents;
     }
 
-    private ITableContentsGeneration createExportSource(IIpsProject ipsProject, ITableContents contents) throws CoreException {
-        contents.newColumn(null);
-        contents.newColumn(null);
-        contents.newColumn(null);
-        contents.newColumn(null);
-        contents.newColumn(null);
-        contents.newColumn(null);
-        contents.newColumn(null);
-        contents.newColumn(null);
-        
-        structure = createTableStructure(ipsProject);
-        contents.setTableStructure(structure.getQualifiedName());
-        
-        return (ITableContentsGeneration)contents.newGeneration(new GregorianCalendar());
-    }
-
+    /**
+     * Creates a test table structure based on the datatypes which are returned with a call to
+     * {@link #getColumnDatatypes()}.
+     * 
+     * @param ipsProject The IPS project to create the table structure for.
+     * @return The generated table structure.
+     * @throws CoreException If the ipsProject is invalid or if this method is called more than once per test fixture.
+     */
     public ITableStructure createTableStructure(IIpsProject ipsProject) throws CoreException {
         ITableStructure structure = (ITableStructure)newIpsObject(ipsProject, IpsObjectType.TABLE_STRUCTURE,
             "TestStructure");
@@ -137,7 +141,6 @@ public abstract class AbstractTableTest extends AbstractIpsPluginTest {
             col.setName("col" + i);
             col.setDatatype(datatypes[i]);
         }
-        
         structure.getIpsSrcFile().save(true, null);
         
         return structure;
@@ -147,7 +150,9 @@ public abstract class AbstractTableTest extends AbstractIpsPluginTest {
      * Creates a valid table in the given table format stored on the filesystem. 
      * The export operation is used to create this file.
      * 
+     * @param ipsProject The IPS project.
      * @param format The external table format used for export.
+     * @param exportColumnHeaderRow Flag to indicate whether to create a header line in the generated file.
      */
     public void createValidExternalTable(IIpsProject ipsProject, 
             AbstractExternalTableFormat format, boolean exportColumnHeaderRow) throws Exception {
@@ -162,7 +167,9 @@ public abstract class AbstractTableTest extends AbstractIpsPluginTest {
      * Creates an invalid table in the given table format stored on the filesystem. 
      * The export operation is used to create this file.
      * 
+     * @param ipsProject The IPS project.
      * @param format The external table format used for export.
+     * @param exportColumnHeaderRow Flag to indicate whether to create a header line in the generated file.
      */
     public void createInvalidExternalTable(IIpsProject ipsProject, 
             AbstractExternalTableFormat format, boolean exportColumnHeaderRow) throws Exception {
@@ -172,28 +179,21 @@ public abstract class AbstractTableTest extends AbstractIpsPluginTest {
                 contents, new Path("table" + format.getDefaultExtension()), "NULL", exportColumnHeaderRow, new MessageList());
         runnable.run(new NullProgressMonitor());
     }
-
-
-    public ITableStructure getStructure() {
-        return structure;
-    }
-
-    public String[] getColumnDatatypes() {
-        String[] datatypes = new String[] { Datatype.BOOLEAN.getQualifiedName(), Datatype.DECIMAL.getQualifiedName(),
-                Datatype.DOUBLE.getQualifiedName(), Datatype.GREGORIAN_CALENDAR_DATE.getQualifiedName(),
-                Datatype.INTEGER.getQualifiedName(), Datatype.LONG.getQualifiedName(),
-                Datatype.MONEY.getQualifiedName(), Datatype.STRING.getQualifiedName() };
-        return datatypes;
-    }
-
-    // TODO: remove
-    public void debugPrintTableContentsGeneration(ITableContentsGeneration importTarget) {
-        for (int i = 0; i < importTarget.getNumOfRows(); i++) {
-            IRow[] rows = importTarget.getRows();
-            for (int j = 0; j < importTarget.getRow(i).getTableContents().getNumOfColumns(); j++) {
-                System.out.print(rows[i].getValue(j) + "\t");
-            }
-        }
+    
+    private ITableContentsGeneration createExportSource(IIpsProject ipsProject, ITableContents contents) throws CoreException {
+        contents.newColumn(null);
+        contents.newColumn(null);
+        contents.newColumn(null);
+        contents.newColumn(null);
+        contents.newColumn(null);
+        contents.newColumn(null);
+        contents.newColumn(null);
+        contents.newColumn(null);
+        
+        structure = createTableStructure(ipsProject);
+        contents.setTableStructure(structure.getQualifiedName());
+        
+        return (ITableContentsGeneration)contents.newGeneration(new GregorianCalendar());
     }
 
 }

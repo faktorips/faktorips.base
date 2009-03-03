@@ -11,17 +11,18 @@
  * Mitwirkende: Faktor Zehn AG - initial API and implementation - http://www.faktorzehn.de
  *******************************************************************************/
 
-package org.faktorips.devtools.extsystems.excel;
+package org.faktorips.devtools.extsystems;
 
 import org.eclipse.core.resources.IWorkspaceRunnable;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
-import org.faktorips.devtools.core.model.tablecontents.ITableContents;
-import org.faktorips.devtools.extsystems.AbstractExternalTableFormat;
+import org.faktorips.datatype.Datatype;
+import org.faktorips.devtools.core.model.tablecontents.ITableContentsGeneration;
+import org.faktorips.devtools.core.model.tablestructure.ITableStructure;
 import org.faktorips.util.message.MessageList;
 
 /**
- * Abstract Operation to export ipstablecontents in an arbitrary format.
+ * Abstract Operation to import ipstablecontents in an arbitrary format.
  * <p>
  * Implementors of a new table format should subclass this class and use
  * the <code>org.faktorips.devtools.core.externalTableFormat</code> extension point
@@ -29,39 +30,50 @@ import org.faktorips.util.message.MessageList;
  * 
  * @author Roman Grutza
  */
-
-public abstract class AbstractTableExportOperation implements IWorkspaceRunnable {
+public abstract class AbstractTableImportOperation implements IWorkspaceRunnable {
 
     /**
-     *  The contents to export
+     * Qualified name of the file to import from
      */
-    protected ITableContents contents;
-
-    /**
-     *  The qualified name of the target-file for export.
-     */  
-    protected String filename;
+    protected String sourceFile;
     
     /**
-     *  The format to use to convert data.
+     * The table structure the imported table content is bound to
+     */
+    protected ITableStructure structure;
+    
+    /**
+     * Generation of the table contents the import has to be inserted.
+     */
+    protected ITableContentsGeneration targetGeneration;
+    
+    /**
+     * Datatypes for the columns. The datatype at index 1 is the datatype defined in the structure
+     * for column at index 1.
+     */
+    protected Datatype[] datatypes;
+    
+    /**
+     * The format which handles data conversion
      */
     protected AbstractExternalTableFormat format;
-
+    
     /**
-     *  The string to use if the value is null.
+     * String representing <code>null</code>.
      */
     protected String nullRepresentationString;
-
-    /**
-     *  Column header names are included or not.
-     */
-    protected boolean exportColumnHeaderRow;
-
+    
     /**
      * List of messages describing problems occurred during export.
      */
     protected MessageList messageList;
     
+    /**
+     * <code>true</code> if the first row contains column header and should be ignored
+     * <code>false</code> if the to be imported content contains no column header row.
+     */
+    protected boolean ignoreColumnHeaderRow;
+
 
     public abstract void run(IProgressMonitor monitor) throws CoreException;
 

@@ -30,6 +30,7 @@ import org.faktorips.devtools.core.model.tablecontents.ITableContents;
 import org.faktorips.devtools.core.model.tablecontents.ITableContentsGeneration;
 import org.faktorips.devtools.core.model.tablestructure.IColumn;
 import org.faktorips.devtools.core.model.tablestructure.ITableStructure;
+import org.faktorips.devtools.extsystems.AbstractTableTest;
 import org.faktorips.util.message.MessageList;
 
 public class ExcelTableImportOperationTest extends AbstractTableTest {
@@ -154,6 +155,7 @@ public class ExcelTableImportOperationTest extends AbstractTableTest {
         ExcelTableImportOperation op = new ExcelTableImportOperation(structure, file.getName(), importTarget, format,
                 "NULL", true, ml);
         op.run(new NullProgressMonitor());
+        System.out.println(ml);
         assertEquals(6, ml.getNoOfMessages());
     }
 

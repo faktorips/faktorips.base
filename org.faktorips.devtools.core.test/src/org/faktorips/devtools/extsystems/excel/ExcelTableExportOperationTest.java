@@ -18,6 +18,7 @@ import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProjectProperties;
 import org.faktorips.devtools.core.model.tablecontents.ITableContents;
 import org.faktorips.devtools.core.model.tablestructure.IColumn;
+import org.faktorips.devtools.extsystems.AbstractTableTest;
 import org.faktorips.util.message.MessageList;
 
 public class ExcelTableExportOperationTest extends AbstractTableTest {

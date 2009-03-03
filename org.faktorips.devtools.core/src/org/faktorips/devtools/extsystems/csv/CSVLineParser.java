@@ -41,7 +41,7 @@ public class CSVLineParser {
 
     private Pattern pattern;
 
-    public final static String DEFAULT_TEXT_DELIMITER = "";
+    public final static String DEFAULT_TEXT_DELIMITER = "\"";
 
     public final static String DEFAULT_FIELD_DELIMITER = ",";
 
