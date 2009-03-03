@@ -559,7 +559,7 @@ fi
 #if running the product build then the corresponding FaktorIps.product file must be checked out
 #   -> if no cvs is used then no checkout is necessary, because all projects must be checked out in the projectsrootdir 
 if [ -n "$BUILDPRODUCT" -a ! "$NOCVS" = "true" ] ; then
-  cvs -d $CVS_ROOT co -d $PROJECTSROOTDIR -r $FETCH_TAG $BUILDPRODUCT/FaktorIps.product
+  cvs -d $CVS_ROOT co -d $PROJECTSROOTDIR/$BUILDPRODUCT -r $FETCH_TAG $BUILDPRODUCT/FaktorIps.product
   if [ ! -e $BUILDPRODUCT/FaktorIps.product ] ; then
     echo "=> Cancel build: product not found! '"$BUILDPRODUCT/FaktorIps.product"'"
     exit 1
