@@ -47,6 +47,20 @@ public class Void extends AbstractDatatype implements ValueDatatype {
     /** 
      * {@inheritDoc}
      */
+    public boolean isImmutable() {
+		return true;
+	}
+
+    /** 
+     * {@inheritDoc}
+     */
+	public boolean isMutable() {
+		return false;
+	}
+
+	/** 
+     * {@inheritDoc}
+     */
     public boolean isValueDatatype() {
         return true;
     }

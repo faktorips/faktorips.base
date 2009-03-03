@@ -16,6 +16,7 @@ package org.faktorips.codegen.dthelpers;
 import org.faktorips.codegen.DatatypeHelper;
 import org.faktorips.codegen.JavaCodeFragment;
 import org.faktorips.datatype.Datatype;
+import org.faktorips.datatype.ValueDatatype;
 import org.faktorips.util.ArgumentCheck;
 import org.faktorips.valueset.DefaultEnumValueSet;
 
@@ -43,14 +44,14 @@ public abstract class AbstractDatatypeHelper implements DatatypeHelper {
     }
 
     /**
-     * Overridden.
+     * {@inheritDoc}
      */
     public Datatype getDatatype() {
         return datatype;
     }
 
     /**
-     * Overridden.
+     * {@inheritDoc}
      */
     public void setDatatype(Datatype datatype) {
         this.datatype = datatype;
@@ -212,4 +213,24 @@ public abstract class AbstractDatatypeHelper implements DatatypeHelper {
         frag.appendln(")");
         return frag;
     }
+
+    /**
+     * {@inheritDoc}
+     */
+	public JavaCodeFragment referenceOrSafeCopyIfNeccessary(String expression) {
+		if (datatype.isValueDatatype() && ((ValueDatatype)datatype).isMutable()) {
+			return newSafeCopy(expression);
+		}
+		return new JavaCodeFragment(expression);
+	}
+	
+	/**
+	 * Helpers for immutable datatypes must override this method to create a copy of the value given in the expression.
+	 */
+	protected JavaCodeFragment newSafeCopy(String expression) {
+		throw new RuntimeException("The DatatypeHelper for datatype " + datatype + " does not override the method newSafeCopy!");
+		
+	}
+    
+    
 }

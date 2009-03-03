@@ -35,6 +35,8 @@ public abstract class AbstractPrimitiveDatatype extends AbstractDatatype impleme
         return true;
     }
     
+    
+    
     /**
      * Overridden method.
      * @see org.faktorips.datatype.Datatype#isValueDatatype()
@@ -103,4 +105,18 @@ public abstract class AbstractPrimitiveDatatype extends AbstractDatatype impleme
         return false;
     }
 
+    /**
+     * {@inheritDoc}
+     */
+	public boolean isMutable() {
+		return false;
+	}
+
+    /**
+     * {@inheritDoc}
+     */
+	public boolean isImmutable() {
+		return true;
+	}
+    
 }

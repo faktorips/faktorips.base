@@ -388,5 +388,20 @@ public abstract class GenericValueDatatype implements ValueDatatype {
     public boolean supportsCompare() {
         return Comparable.class.isAssignableFrom(this.getAdaptedClass());
     }
+
+    /**
+     * {@inheritDoc}
+     */
+	public boolean isImmutable() {
+		return true;
+	}
+
+    /**
+     * {@inheritDoc}
+     */
+	public boolean isMutable() {
+		return false;
+	}
+
     
 }

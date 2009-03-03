@@ -106,6 +106,16 @@ public interface DatatypeHelper {
     public JavaCodeFragment newInstanceFromExpression(String expression);
 
     /**
+     * If this is a helper for a mutable data type (like GregorianCalendar for example) this method
+     * return the code fragment that creates a copy of the given expression. For immutable data types
+     * this method returns the expression unmodified.
+     * 
+     * @param expression An expression (as Java sourcecode)
+     * @return s. above
+     */
+    public JavaCodeFragment referenceOrSafeCopyIfNeccessary(String expression);
+
+    /**
      * Returns the qualified Java class name the datatype represents.
      */
     public String getJavaClassName();
