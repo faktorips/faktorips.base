@@ -401,7 +401,9 @@ public class GenChangeableAttribute extends GenAttribute {
                 getStaticConstantPropertyName());
         methodsBuilder.append("this.");
         methodsBuilder.append(getMemberVarName());
-        methodsBuilder.appendln(" = " + getParamNameForSetterMethod() + ";");
+        methodsBuilder.append(" = ");
+        methodsBuilder.append(datatypeHelper.referenceOrSafeCopyIfNeccessary(getParamNameForSetterMethod()));
+        methodsBuilder.appendln(";");
         getGenPolicyCmptType().generateChangeListenerSupportAfterChange(methodsBuilder, ChangeEventType.MUTABLE_PROPERTY_CHANGED,
                 getDatatype().getJavaClassName(), getMemberVarName(),
                 getParamNameForSetterMethod(),

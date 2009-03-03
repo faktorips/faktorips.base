@@ -263,7 +263,9 @@ public class PolicyCmptImplClassBuilder extends BasePolicyCmptTypeBuilder {
         for (GenAttribute generator : genPolicyCmptType.getGenAttributes()) {
             if (generator.isMemberVariableRequired()) {
                 String field = generator.getMemberVarName();
-                methodsBuilder.appendln(paramName + "." + field + " = " + field + ";");
+                methodsBuilder.append(paramName + "." + field + " = ");
+                methodsBuilder.append(generator.getDatatypeHelper().referenceOrSafeCopyIfNeccessary(field));
+                methodsBuilder.appendln(";");
             }
         }
 
@@ -1189,7 +1191,7 @@ public class PolicyCmptImplClassBuilder extends BasePolicyCmptTypeBuilder {
             if (policyCmptType.findAssociationByRoleNamePlural(roleCapitalized, ipsProject) != null) {
                 continue; // same for association
             }
-            if (policyCmptType.findAssociationByRoleNamePlural(roleUncapitalized, ipsProject) != null) {
+            if (policyCmptType.findAssociationByRoleNamePlural(roleUncapitalized, ipsProject)!=null) {
                 continue; // same for association
             }
             generateMethodGetTable(methodsBuilder, tsus[i]);
