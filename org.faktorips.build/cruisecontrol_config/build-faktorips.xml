@@ -387,7 +387,7 @@
 	    </condition>
 
 		<condition property="is.product.build" value="true">
-             <length file="productProject" when="greater" length="0" />
+             <length string="${productProject}" when="greater" length="0" />
 	    </condition>
 		
 		<!-- check if the copy all.map should be used, if useCvs is false 

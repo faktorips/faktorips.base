@@ -168,6 +168,16 @@ BRANCH=
 CREATE_BRANCH=false
 
 #################################################
+# assert that no other instance of pluginbuilder is running
+#################################################
+if [ ! $(ps xf | grep prg=pluginbuilder | grep -v "grep" | wc -l) -eq 0 ] ; then
+  echo "Cancel build: an instance of pluginbuilder is currently running!"
+  echo "Due to resource limit, please wait until the other pluginbuilder process has finished."
+  echo "If the plugin test are executed, this could take at least 20 minutes..."
+  exit 1;
+fi
+
+#################################################
 # parse arguments
 #################################################
 
@@ -424,7 +434,7 @@ if [ ! "$NOCVS" = "true" ] ; then
     rm -R $TMP_CHECKOUTDIR1
     rm -R $TMP_CHECKOUTDIR2
 else
-    if [ -e $PROJECTSROOTDIR/MIGRATION_STRATEGY ] ; then
+    if [ -e $PROJECTSROOTDIR/$MIGRATION_STRATEGY_PATH ] ; then
     	MIGRATION_EXISTS=true
     fi
     
@@ -433,7 +443,7 @@ else
 fi
 
 if [ "$MIGRATION_EXISTS" = "false" ] ; then
-  echo "=> Cancel build: Migrationstrategy not exists (if using cvs the java source must also be tagged)! "$MIGRATION_STRATEGY
+  echo "=> Cancel build: Migrationstrategy not exists (if using cvs the java source must also be tagged)! "$MIGRATION_STRATEGY_CLASS
   exit 1
 else
   echo "Ok migration strategy class found"
