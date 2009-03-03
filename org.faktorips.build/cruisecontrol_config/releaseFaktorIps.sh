@@ -556,6 +556,16 @@ if [ ! "$SKIPTAGCVS" = "true" ] ; then
   done
 fi
 
+#if running the product build then the corresponding FaktorIps.product file must be checked out
+#   -> if no cvs is used then no checkout is necessary, because all projects must be checked out in the projectsrootdir 
+if [ -n "$BUILDPRODUCT" -a ! "$NOCVS" = "true" ] ; then
+  cvs -d $CVS_ROOT co -d $PROJECTSROOTDIR -r $FETCH_TAG $BUILDPRODUCT/FaktorIps.product
+  if [ ! -e $BUILDPRODUCT/FaktorIps.product ] ; then
+    echo "=> Cancel build: product not found! '"$BUILDPRODUCT/FaktorIps.product"'"
+    exit 1
+  fi
+fi
+
 # if using a branch then the all_cvs.map file must be patched, 
 #   -> if no cvs is used then no patching is necessary (but this is not supported, see assert below)
 NOBRANCH=true
