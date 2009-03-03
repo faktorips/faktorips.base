@@ -116,4 +116,14 @@ public class EnumDatatypePaymentMode extends AbstractDatatype implements EnumDat
         return false;
     }
 
+
+	public boolean isImmutable() {
+		return true;
+	}
+
+
+	public boolean isMutable() {
+		return false;
+	}
+
 }
