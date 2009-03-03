@@ -21,8 +21,7 @@ import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.TabFolder;
 import org.eclipse.swt.widgets.TabItem;
 import org.eclipse.swt.widgets.Text;
-import org.faktorips.devtools.core.model.enumtype.IEnumAttribute;
-import org.faktorips.devtools.core.model.enumtype.IEnumType;
+import org.faktorips.devtools.core.model.enums.IEnumAttribute;
 import org.faktorips.devtools.core.model.ipsobject.IExtensionPropertyDefinition;
 import org.faktorips.devtools.core.ui.ExtensionPropertyControlFactory;
 import org.faktorips.devtools.core.ui.controls.Checkbox;
@@ -30,7 +29,7 @@ import org.faktorips.devtools.core.ui.controls.DatatypeRefControl;
 import org.faktorips.devtools.core.ui.editors.IpsPartEditDialog2;
 
 /**
- * Dialog to edit an enum attribute of an enum type.
+ * Dialog to edit an <code>IEnumAttribute</code> of an <code>IEnumType</code>.
  * 
  * @author Alexander Weickmann
  * 
@@ -110,21 +109,6 @@ public class EnumAttributeEditDialog extends IpsPartEditDialog2 {
         extFactory.bind(bindingContext);
 
         return control;
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    protected void cancelPressed() {
-        super.cancelPressed();
-
-        IEnumType enumType = (IEnumType)enumAttribute.getParent();
-        try {
-            enumType.deleteEnumAttributeWithValues(enumAttribute);
-        } catch (CoreException e) {
-            throw new RuntimeException(e);
-        }
     }
 
 }

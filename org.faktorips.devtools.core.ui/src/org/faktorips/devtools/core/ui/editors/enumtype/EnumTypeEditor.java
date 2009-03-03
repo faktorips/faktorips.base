@@ -14,11 +14,13 @@
 package org.faktorips.devtools.core.ui.editors.enumtype;
 
 import org.eclipse.ui.PartInitException;
-import org.faktorips.devtools.core.model.enumtype.IEnumType;
+import org.faktorips.devtools.core.model.enums.IEnumType;
 import org.faktorips.devtools.core.ui.editors.type.TypeEditor;
 
 /**
  * The Faktor-IPS editor to edit <code>IEnumType</code> objects with.
+ * 
+ * @see org.faktorips.devtools.core.model.enums.IEnumType
  * 
  * @author Alexander Weickmann
  * 

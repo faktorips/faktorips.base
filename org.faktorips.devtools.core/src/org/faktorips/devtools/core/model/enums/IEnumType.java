@@ -11,36 +11,36 @@
  * Mitwirkende: Faktor Zehn AG - initial API and implementation - http://www.faktorzehn.de
  *******************************************************************************/
 
-package org.faktorips.devtools.core.model.enumtype;
+package org.faktorips.devtools.core.model.enums;
 
 import java.util.List;
 import java.util.NoSuchElementException;
 
 import org.eclipse.core.runtime.CoreException;
 import org.faktorips.datatype.Datatype;
-import org.faktorips.devtools.core.model.enums.IEnumValueContainer;
 
 /**
- * An enum type represents the structure of an enumeration in the Faktor-IPS model.
+ * An enum type represents the structure of an enum in the Faktor-IPS model.
  * <p>
- * An enumeration is a table-like structure. An enum type has several enum attributes where each
- * enum attribute can be seen as a column.
+ * It contains several enum attributes where each enum attribute represents a property of the enum.
  * <p>
  * For example there may be an enum type <em>Gender</em> with the enum attributes <em>id</em> and
  * <em>name</em>.
  * <p>
- * Each row in the table is represented by an enum value. In the above example there would be two
- * enum values:
+ * Instances of an enum are represented by enum values. In the above example there would be two enum
+ * values:
  * <ul>
  * <li>id: m, name: male</li>
  * <li>id: w, name: female</li>
  * </ul>
  * <p>
- * Enum values can be defined directly in the enum type itself or separate from the enum type by the
- * product side (as enum content).
+ * Enum values can be defined directly in the <code>IEnumType</code> itself or separate from it as
+ * product content (<code>IEnumContent</code>).
  * <p>
  * At least one enum attribute needs to be marked as <em>identifier</em> which implies that each
  * enum attribute value of this enum attribute needs to be unique.
+ * 
+ * @see IEnumContent
  * 
  * @author Alexander Weickmann
  * 
@@ -137,8 +137,16 @@ public interface IEnumType extends IEnumValueContainer, Datatype {
 
     /**
      * Returns a list containing all enum attributes that belong to this enum type.
+     * <p>
+     * Attributes that are inherited are <strong>not</strong> included.
      */
     public List<IEnumAttribute> getEnumAttributes();
+
+    /**
+     * Returns a list containing all enum attributes that belong to this enum type
+     * <strong>plus</strong> all enum attributes that are inherited from the supertype hierarchy.
+     */
+    public List<IEnumAttribute> findAllEnumAttributes();
 
     /**
      * Returns the index of the given enum attribute in the containing list.
@@ -153,6 +161,8 @@ public interface IEnumType extends IEnumValueContainer, Datatype {
     /**
      * Returns the enum attribute with the given name or <code>null</code> if there is no enum
      * attribute with the given name in this enum type.
+     * <p>
+     * Inherited enum attributes are <strong>not</strong> included in the search.
      * 
      * @param name The name of the enum attribute to obtain.
      * 
@@ -161,12 +171,26 @@ public interface IEnumType extends IEnumValueContainer, Datatype {
     public IEnumAttribute getEnumAttribute(String name);
 
     /**
+     * Returns the enum attribute with the given name or <code>null</code> if there is no enum
+     * attribute with the given name in this enum type.
+     * <p>
+     * Inherited enum attributes <strong>are</strong> included in the search.
+     * 
+     * @param name The name of the enum attribute to obtain.
+     * 
+     * @throws NullPointerException If <code>name</code> is <code>null</code>.
+     */
+    public IEnumAttribute findEnumAttribute(String name);
+
+    /**
      * <p>
      * Creates a new enum attribute and returns a reference to it.
      * </p>
      * <p>
-     * Note that all enum values <strong>that are defined directly in this enum type</strong> will
-     * get new <code>EnumAttributeValue</code> objects for the new enum attribute.
+     * Note that for all enum values <strong>that are defined directly in this enum type</strong>
+     * new <code>EnumAttributeValue</code> objects will be created.
+     * <p>
+     * Fires a <code>WHOLE_CONTENT_CHANGED</code> event.
      * 
      * @return A reference to the newly created enum attribute.
      * 
@@ -176,8 +200,10 @@ public interface IEnumType extends IEnumValueContainer, Datatype {
 
     /**
      * Returns how many enum attributes are currently part of this enum type.
+     * 
+     * @param includeInherited Flag indicating whether to count inherited enum attributes.
      */
-    public int getEnumAttributesCount();
+    public int getEnumAttributesCount(boolean includeInherited);
 
     /**
      * Moves the given enum attribute one position up or down in the containing list and returns its
@@ -188,6 +214,8 @@ public interface IEnumType extends IEnumValueContainer, Datatype {
      * <p>
      * Note that all referencing enum attribute values <strong>that are defined in this enum
      * type</strong> will also be moved one position up / down in their containing list.
+     * <p>
+     * Fires a <code>WHOLE_CONTENT_CHANGED</code> event if moving was performed.
      * 
      * @param enumAttribute The enum attribute to move.
      * @param up Flag indicating whether to move up (<code>true</code>) or down (<code>false</code>
@@ -211,6 +239,8 @@ public interface IEnumType extends IEnumValueContainer, Datatype {
     /**
      * Deletes the given enum attribute and all the <code>EnumAttributeValue</code> objects
      * <strong>that are defined in the enum type itself</strong> refering to it.
+     * <p>
+     * Fires a <code>WHOLE_CONTENT_CHANGED</code> event.
      * 
      * @param enumAttribute The enum attribute to delete.
      * 
@@ -235,13 +265,5 @@ public interface IEnumType extends IEnumValueContainer, Datatype {
      *             hierarchy.
      */
     public List<IEnumType> findAllSuperEnumTypes() throws CoreException;
-
-    /**
-     * Returns a list containing all enum attributes of this enum type that are marked as inherited.
-     * <p>
-     * Never returns <code>null</code>.
-     */
-    // TODO pk: wird wahrscheinlich nicht benötigt
-    public List<IEnumAttribute> getInheritedAttributes();
 
 }

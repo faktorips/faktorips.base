@@ -11,20 +11,20 @@
  * Mitwirkende: Faktor Zehn AG - initial API and implementation - http://www.faktorzehn.de
  *******************************************************************************/
 
-package org.faktorips.devtools.core.model.enumtype;
+package org.faktorips.devtools.core.model.enums;
 
 import java.util.List;
 
 import org.faktorips.util.ArgumentCheck;
 
 /**
- * Utility methods for the enum type model of Faktor-IPS.
+ * Utility methods for Faktor-IPS enums.
  * 
  * @author Alexander Weickmann
  * 
  * @since 2.3
  */
-public class EnumTypeUtil {
+public class EnumsUtil {
 
     /**
      * Checks whether the given enum attributes are equal in terms of their:

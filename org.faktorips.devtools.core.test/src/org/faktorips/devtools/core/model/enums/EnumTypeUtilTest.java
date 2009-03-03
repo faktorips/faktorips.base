@@ -11,10 +11,13 @@
  * Mitwirkende: Faktor Zehn AG - initial API and implementation - http://www.faktorzehn.de
  *******************************************************************************/
 
-package org.faktorips.devtools.core.model.enumtype;
+package org.faktorips.devtools.core.model.enums;
 
 import org.eclipse.core.runtime.CoreException;
 import org.faktorips.devtools.core.AbstractIpsPluginTest;
+import org.faktorips.devtools.core.model.enums.EnumsUtil;
+import org.faktorips.devtools.core.model.enums.IEnumAttribute;
+import org.faktorips.devtools.core.model.enums.IEnumType;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 
 public class EnumTypeUtilTest extends AbstractIpsPluginTest {
@@ -49,21 +52,21 @@ public class EnumTypeUtilTest extends AbstractIpsPluginTest {
     }
 
     public void testEqualEnumAttributes() throws CoreException {
-        assertFalse(EnumTypeUtil.equalEnumAttributes(enumAttribute1, enumAttribute2));
+        assertFalse(EnumsUtil.equalEnumAttributes(enumAttribute1, enumAttribute2));
 
         enumAttribute2.setName("attr1");
-        assertFalse(EnumTypeUtil.equalEnumAttributes(enumAttribute1, enumAttribute2));
+        assertFalse(EnumsUtil.equalEnumAttributes(enumAttribute1, enumAttribute2));
 
         enumAttribute2.setDatatype(STRING_DATATYPE_NAME);
-        assertFalse(EnumTypeUtil.equalEnumAttributes(enumAttribute1, enumAttribute2));
+        assertFalse(EnumsUtil.equalEnumAttributes(enumAttribute1, enumAttribute2));
 
         enumAttribute2.setIdentifier(true);
-        assertTrue(EnumTypeUtil.equalEnumAttributes(enumAttribute1, enumAttribute2));
+        assertTrue(EnumsUtil.equalEnumAttributes(enumAttribute1, enumAttribute2));
     }
 
     public void testContainsEqualEnumAttribute() {
-        assertFalse(EnumTypeUtil.containsEqualEnumAttribute(enumType.getEnumAttributes(), enumAttribute2));
-        assertTrue(EnumTypeUtil.containsEqualEnumAttribute(enumType.getEnumAttributes(), enumAttribute1));
+        assertFalse(EnumsUtil.containsEqualEnumAttribute(enumType.getEnumAttributes(), enumAttribute2));
+        assertTrue(EnumsUtil.containsEqualEnumAttribute(enumType.getEnumAttributes(), enumAttribute1));
     }
 
 }

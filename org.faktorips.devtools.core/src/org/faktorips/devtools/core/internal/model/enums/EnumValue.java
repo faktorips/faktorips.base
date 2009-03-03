@@ -22,11 +22,11 @@ import org.eclipse.osgi.util.NLS;
 import org.eclipse.swt.graphics.Image;
 import org.faktorips.devtools.core.internal.model.ipsobject.BaseIpsObjectPart;
 import org.faktorips.devtools.core.internal.model.ipsobject.IpsObjectPartCollection;
+import org.faktorips.devtools.core.model.enums.IEnumAttribute;
 import org.faktorips.devtools.core.model.enums.IEnumAttributeValue;
+import org.faktorips.devtools.core.model.enums.IEnumType;
 import org.faktorips.devtools.core.model.enums.IEnumValue;
 import org.faktorips.devtools.core.model.enums.IEnumValueContainer;
-import org.faktorips.devtools.core.model.enumtype.IEnumAttribute;
-import org.faktorips.devtools.core.model.enumtype.IEnumType;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPart;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.util.message.Message;
@@ -137,8 +137,8 @@ public class EnumValue extends BaseIpsObjectPart implements IEnumValue {
 
         IEnumType enumType = ((IEnumValueContainer)getParent()).findEnumType();
         if (enumType != null) {
-            // Number attribute values must match number attributes of the enum type
-            if (enumType.getEnumAttributesCount() != getEnumAttributeValuesCount()) {
+            // Number enum attribute values must match number enum attributes of the enum type
+            if (enumType.getEnumAttributesCount(true) != getEnumAttributeValuesCount()) {
                 String text = NLS.bind(Messages.EnumValue_NumberAttributeValuesDoesNotCorrespondToNumberAttributes,
                         enumType.getQualifiedName());
                 Message validationMessage = new Message(

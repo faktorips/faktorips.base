@@ -11,17 +11,19 @@
  * Mitwirkende: Faktor Zehn AG - initial API and implementation - http://www.faktorzehn.de
  *******************************************************************************/
 
-package org.faktorips.devtools.core.internal.model.enumtype;
+package org.faktorips.devtools.core.internal.model.enums;
 
 import java.util.List;
 
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.osgi.util.NLS;
 import org.eclipse.swt.graphics.Image;
+import org.faktorips.datatype.Datatype;
 import org.faktorips.devtools.core.IpsPlugin;
+import org.faktorips.devtools.core.internal.model.enums.Messages;
 import org.faktorips.devtools.core.internal.model.ipsobject.AtomicIpsObjectPart;
-import org.faktorips.devtools.core.model.enumtype.IEnumAttribute;
-import org.faktorips.devtools.core.model.enumtype.IEnumType;
+import org.faktorips.devtools.core.model.enums.IEnumAttribute;
+import org.faktorips.devtools.core.model.enums.IEnumType;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.util.ArgumentCheck;
 import org.faktorips.util.message.Message;
@@ -32,7 +34,7 @@ import org.w3c.dom.Element;
 /**
  * Implementation of <code>IEnumAttribute</code>, see the corresponding interface for more details.
  * 
- * @see org.faktorips.devtools.core.model.enumtype.IEnumAttribute
+ * @see org.faktorips.devtools.core.model.enums.IEnumAttribute
  * 
  * @author Alexander Weickmann
  * 
@@ -200,17 +202,31 @@ public class EnumAttribute extends AtomicIpsObjectPart implements IEnumAttribute
         String text;
         Message validationMessage;
 
-        // Check for missing datatype or datatype not existing
+        // Check for datatype missing
         if (datatype.equals("")) {
             text = Messages.EnumAttribute_DatatypeMissing;
             validationMessage = new Message(MSGCODE_ENUM_ATTRIBUTE_DATATYPE_MISSING, text, Message.ERROR, this,
                     PROPERTY_DATATYPE);
             list.add(validationMessage);
-        } else {
-            if (getIpsProject().findDatatype(datatype) == null) {
-                text = NLS.bind(Messages.EnumAttribute_DatatypeDoesNotExist, datatype);
-                validationMessage = new Message(MSGCODE_ENUM_ATTRIBUTE_DATATYPE_DOES_NOT_EXIST, text, Message.ERROR,
-                        this, PROPERTY_DATATYPE);
+            return;
+        }
+
+        // Check for datatype not existing
+        Datatype ipsDatatype = getIpsProject().findDatatype(datatype);
+        if (ipsDatatype == null) {
+            text = NLS.bind(Messages.EnumAttribute_DatatypeDoesNotExist, datatype);
+            validationMessage = new Message(MSGCODE_ENUM_ATTRIBUTE_DATATYPE_DOES_NOT_EXIST, text, Message.ERROR, this,
+                    PROPERTY_DATATYPE);
+            list.add(validationMessage);
+            return;
+        }
+
+        // Check for identifier datatype = String
+        if (isIdentifier) {
+            if (!(ipsDatatype.getName().equals("String"))) {
+                text = Messages.EnumAttribute_IdentifierNotOfDatatypeString;
+                validationMessage = new Message(MSGCODE_ENUM_ATTRIBUTE_IDENTIFIER_NOT_OF_DATATYPE_STRING, text,
+                        Message.ERROR, this, PROPERTY_DATATYPE);
                 list.add(validationMessage);
             }
         }

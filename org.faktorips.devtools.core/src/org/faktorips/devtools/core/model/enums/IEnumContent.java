@@ -11,13 +11,12 @@
  * Mitwirkende: Faktor Zehn AG - initial API and implementation - http://www.faktorzehn.de
  *******************************************************************************/
 
-package org.faktorips.devtools.core.model.enumcontent;
+package org.faktorips.devtools.core.model.enums;
 
-import org.faktorips.devtools.core.model.enums.IEnumValueContainer;
 
 /**
- * This object type is used when the values for a Faktor-IPS enumeration shall not be defined
- * directly in the enum type itself but separate from it by the product side.
+ * This ips object type is used when the values for a Faktor-IPS enum shall not be defined
+ * directly in the enum type itself but separate from it as product content.
  * <p>
  * An enum content always refers to a specific enum type which defines the structure of the
  * enumeration.

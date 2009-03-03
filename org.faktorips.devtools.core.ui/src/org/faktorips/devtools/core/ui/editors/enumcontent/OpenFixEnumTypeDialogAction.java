@@ -15,12 +15,12 @@ package org.faktorips.devtools.core.ui.editors.enumcontent;
 
 import org.eclipse.jface.action.Action;
 import org.eclipse.swt.widgets.Shell;
-import org.faktorips.devtools.core.model.enumcontent.IEnumContent;
+import org.faktorips.devtools.core.model.enums.IEnumContent;
 import org.faktorips.devtools.core.ui.IpsUIPlugin;
 import org.faktorips.util.ArgumentCheck;
 
 /**
- * Opens the <code>FixEnumTypeDialog</code>.
+ * Opens a <code>FixEnumTypeDialog</code>.
  * 
  * @see FixEnumTypeDialog
  * 

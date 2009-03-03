@@ -23,16 +23,16 @@ import org.eclipse.ui.forms.events.HyperlinkEvent;
 import org.eclipse.ui.forms.widgets.Hyperlink;
 import org.eclipse.ui.forms.widgets.Section;
 import org.faktorips.devtools.core.IpsPlugin;
-import org.faktorips.devtools.core.model.enumcontent.IEnumContent;
-import org.faktorips.devtools.core.model.enumtype.IEnumType;
+import org.faktorips.devtools.core.model.enums.IEnumContent;
+import org.faktorips.devtools.core.model.enums.IEnumType;
 import org.faktorips.devtools.core.ui.IpsUIPlugin;
 import org.faktorips.devtools.core.ui.UIToolkit;
 import org.faktorips.devtools.core.ui.forms.IpsSection;
 import org.faktorips.util.ArgumentCheck;
 
 /**
- * The general info section for the enum content editor shows the enum type the edited enum content
- * is built upon and provides navigation to the enum type.
+ * The general info section for the enum content editor. It shows the enum type the enum content to
+ * edit is built upon and provides navigation to the enum type.
  * 
  * @see EnumContentEditor
  * 

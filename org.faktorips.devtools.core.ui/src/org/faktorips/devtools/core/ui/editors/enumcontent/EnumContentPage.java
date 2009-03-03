@@ -19,7 +19,7 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.ui.forms.widgets.ScrolledForm;
 import org.faktorips.devtools.core.model.ContentChangeEvent;
 import org.faktorips.devtools.core.model.ContentsChangeListener;
-import org.faktorips.devtools.core.model.enumcontent.IEnumContent;
+import org.faktorips.devtools.core.model.enums.IEnumContent;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObject;
 import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.core.ui.UIToolkit;
@@ -27,8 +27,9 @@ import org.faktorips.devtools.core.ui.editors.enums.EnumValuesSection;
 import org.faktorips.devtools.core.ui.editors.type.TypeEditorStructurePage;
 
 /**
- * The <code>EnumContentPage</code> provides controls to edit the values of an
- * <code>IEnumContent</code> and is intended to be used with the <code>EnumContentEditor</code>.
+ * The <code>EnumContentPage</code> shows general information about an <code>IEnumContent</code> and
+ * provides controls to edit its values. It is intended to be used with the
+ * <code>EnumContentEditor</code>.
  * <p>
  * This page is a listener for changes in the ips model: If the enum type the edited enum content is
  * built upon changes the enabled states of the toolbar buttons will be updated.
@@ -46,9 +47,6 @@ public class EnumContentPage extends TypeEditorStructurePage implements Contents
 
     /** The action to open a <code>FixEnumTypeDialog</code>. */
     private IAction openFixEnumTypeDialogAction;
-
-    /** The enum values section of this page. */
-    private EnumValuesSection enumValuesSection;
 
     /**
      * Creates a new <code>EnumContentPage</code>.
@@ -85,7 +83,7 @@ public class EnumContentPage extends TypeEditorStructurePage implements Contents
         new EnumContentGeneralInfoSection(enumContent, parentContainer, toolkit);
 
         try {
-            enumValuesSection = new EnumValuesSection(enumContent, parentContainer, toolkit);
+            new EnumValuesSection(enumContent, parentContainer, toolkit);
         } catch (CoreException e) {
             throw new RuntimeException(e);
         }

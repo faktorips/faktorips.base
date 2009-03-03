@@ -17,12 +17,14 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.NoSuchElementException;
 
+import org.eclipse.core.resources.IWorkspaceRunnable;
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.IProgressMonitor;
 import org.faktorips.devtools.core.internal.model.ipsobject.BaseIpsObject;
 import org.faktorips.devtools.core.internal.model.ipsobject.IpsObjectPartCollection;
+import org.faktorips.devtools.core.model.enums.IEnumType;
 import org.faktorips.devtools.core.model.enums.IEnumValue;
 import org.faktorips.devtools.core.model.enums.IEnumValueContainer;
-import org.faktorips.devtools.core.model.enumtype.IEnumType;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPart;
 import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
 import org.faktorips.util.ArgumentCheck;
@@ -70,21 +72,17 @@ public abstract class EnumValueContainer extends BaseIpsObject implements IEnumV
      * {@inheritDoc}
      */
     public IEnumValue newEnumValue() throws CoreException {
-        IEnumValue newEnumValue = (IEnumValue)newPart(IEnumValue.class);
-
-        // Add as many enum attribute values as there are enum attributes in the enum type
-        /*
-         * TODO aw: this will lead to problems when implementing the enum content stuff when the
-         * enum type has not been specified or is invalid so this will return null, what to do then?
-         * Do nothing? Permit it? Look at other enum values how many enum attribute values they have
-         * (what if none exist?)?
-         */
         IEnumType enumType = findEnumType();
-        for (int i = 0; i < enumType.getEnumAttributesCount(); i++) {
-            newEnumValue.newEnumAttributeValue();
+
+        // Creation not possible if enum type can't be found
+        if (enumType == null) {
+            return null;
         }
 
-        return newEnumValue;
+        NewEnumValueRunnable workspaceRunnable = new NewEnumValueRunnable(enumType);
+        getIpsModel().runAndQueueChangeEvents(workspaceRunnable, null);
+
+        return workspaceRunnable.newEnumValue;
     }
 
     /**
@@ -138,6 +136,41 @@ public abstract class EnumValueContainer extends BaseIpsObject implements IEnumV
         }
 
         throw new NoSuchElementException();
+    }
+
+    /**
+     * Creates a new enum value with as many enum attribute values as enum attributes in the enum
+     * type referenced by this enum value container.
+     * <p>
+     * These operations are atomic and therefore need to be batched into a runanble.
+     */
+    private class NewEnumValueRunnable implements IWorkspaceRunnable {
+
+        /** The enum type referenced by this enum value container. */
+        private IEnumType enumType;
+
+        /** Handle to the enum value to be created. */
+        private IEnumValue newEnumValue;
+
+        /** Creates the <code>NewEnumAttributeRunnable</code>. */
+        public NewEnumValueRunnable(IEnumType enumType) {
+            this.enumType = enumType;
+            this.newEnumValue = null;
+        }
+
+        /**
+         * {@inheritDoc}
+         */
+        public void run(IProgressMonitor monitor) throws CoreException {
+            // Create new enum value
+            newEnumValue = (IEnumValue)newPart(IEnumValue.class);
+
+            // Add as many enum attribute values as there are enum attributes in the enum type
+            for (int i = 0; i < enumType.getEnumAttributesCount(true); i++) {
+                newEnumValue.newEnumAttributeValue();
+            }
+        }
+
     }
 
 }

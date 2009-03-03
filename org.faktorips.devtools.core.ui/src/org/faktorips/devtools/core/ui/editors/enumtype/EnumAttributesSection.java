@@ -20,9 +20,9 @@ import org.eclipse.jface.viewers.IStructuredContentProvider;
 import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Shell;
+import org.faktorips.devtools.core.model.enums.IEnumAttribute;
+import org.faktorips.devtools.core.model.enums.IEnumType;
 import org.faktorips.devtools.core.model.enums.IEnumValue;
-import org.faktorips.devtools.core.model.enumtype.IEnumAttribute;
-import org.faktorips.devtools.core.model.enumtype.IEnumType;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPart;
 import org.faktorips.devtools.core.ui.UIToolkit;
 import org.faktorips.devtools.core.ui.editors.EditDialog;
@@ -63,10 +63,9 @@ public class EnumAttributesSection extends SimpleIpsPartsSection {
     }
 
     /**
-     * A composite that shows an enum type's attributes in a viewer and allows to edit the
-     * attributes in a dialog, to create new attributes and to delete attributes.
+     * A composite that shows an enum type's attributes in a viewer and allows to edit these
+     * attributes in a dialog, to create new attributes, move attributes and to delete attributes.
      */
-    // TODO pk: innere klassen immer am Datei Ende positionieren
     private class EnumAttributesComposite extends IpsPartsComposite {
 
         // The enum type being edited by the editor
@@ -98,7 +97,7 @@ public class EnumAttributesSection extends SimpleIpsPartsSection {
             return new IStructuredContentProvider() {
 
                 public Object[] getElements(Object inputElement) {
-                    return enumType.getEnumAttributes().toArray();
+                    return enumType.findAllEnumAttributes().toArray();
                 }
 
                 public void dispose() {
@@ -123,34 +122,23 @@ public class EnumAttributesSection extends SimpleIpsPartsSection {
         /**
          * {@inheritDoc}
          */
-        /*
-         * TODO pk: newIpsPart könnte eigentlich eine Exception werfen. Damit wird man den unnötigen
-         * try catch und runtime exception wrapper los
-         */
         @Override
-        protected IIpsObjectPart newIpsPart() {
-            try {
+        protected IIpsObjectPart newIpsPart() throws CoreException {
+            IEnumAttribute newEnumAttribute = enumType.newEnumAttribute();
 
-                IEnumAttribute newEnumAttribute = enumType.newEnumAttribute();
-                /*
-                 * If this is the first attribute to be created and the values are being defined in
-                 * the enum type then make sure that there will be one enum value available for
-                 * editing.
-                 */
-                // TODO consider abstract?
-                if (enumType.getEnumAttributesCount() == 1) {
-                    if (enumType.getValuesArePartOfModel()) {
-                        if (enumType.getEnumValuesCount() == 0) {
-                            enumType.newEnumValue();
-                        }
+            /*
+             * If this is the first attribute to be created and the values are being defined in the
+             * enum type then make sure that there will be one enum value available for editing.
+             */
+            if (enumType.getEnumAttributesCount(true) == 1) {
+                if (enumType.getValuesArePartOfModel() && !(enumType.isAbstract())) {
+                    if (enumType.getEnumValuesCount() == 0) {
+                        enumType.newEnumValue();
                     }
                 }
-
-                return newEnumAttribute;
-
-            } catch (CoreException e) {
-                throw new RuntimeException(e);
             }
+
+            return newEnumAttribute;
         }
 
         /**
@@ -162,7 +150,7 @@ public class EnumAttributesSection extends SimpleIpsPartsSection {
             enumType.deleteEnumAttributeWithValues(enumAttributeToDelete);
 
             // Delete all enum values if there are no more enum attributes
-            if (enumType.getEnumAttributesCount() == 0) {
+            if (enumType.getEnumAttributesCount(true) == 0) {
                 for (IEnumValue currentEnumValue : enumType.getEnumValues()) {
                     currentEnumValue.delete();
                 }
@@ -175,7 +163,7 @@ public class EnumAttributesSection extends SimpleIpsPartsSection {
         @Override
         protected int[] moveParts(int[] indexes, boolean up) {
             int newIndex = indexes[0];
-            List<IEnumAttribute> enumAttributes = enumType.getEnumAttributes();
+            List<IEnumAttribute> enumAttributes = enumType.findAllEnumAttributes();
 
             IEnumAttribute enumAttributeToMove = enumAttributes.get(newIndex);
             try {

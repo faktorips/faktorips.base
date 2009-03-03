@@ -525,8 +525,10 @@ public abstract class IpsPartsComposite extends ViewerButtonComposite implements
 
     /**
      * Creates a new part.
+     * 
+     * @throws CoreException May throw this exception at any time.
      */
-    protected abstract IIpsObjectPart newIpsPart();
+    protected abstract IIpsObjectPart newIpsPart() throws CoreException;
 
     /**
      * Subclasses may overwrite this operation to perform additional tasks to be done when deleting

@@ -11,7 +11,7 @@
  * Mitwirkende: Faktor Zehn AG - initial API and implementation - http://www.faktorzehn.de
  *******************************************************************************/
 
-package org.faktorips.devtools.core.internal.model.enumcontent;
+package org.faktorips.devtools.core.model.enums;
 
 import org.eclipse.osgi.util.NLS;
 
@@ -21,12 +21,20 @@ import org.eclipse.osgi.util.NLS;
  */
 public class Messages extends NLS {
 
-    private static final String BUNDLE_NAME = "org.faktorips.devtools.core.internal.model.enumcontent.messages"; //$NON-NLS-1$
+    private static final String BUNDLE_NAME = "org.faktorips.devtools.core.model.enums.messages"; //$NON-NLS-1$
+
+    public static String EnumType_SupertypeDoesNotExist;
+    public static String EnumType_SupertypeIsNotAbstract;
+    public static String EnumType_NotInheritedAttributesInSupertypeHierarchySingular;
+    public static String EnumType_NotInheritedAttributesInSupertypeHierarchyPlural;
+    public static String EnumType_NoIdentifierAttribute;
 
     public static String EnumContent_EnumTypeMissing;
     public static String EnumContent_EnumTypeDoesNotExist;
     public static String EnumContent_EnumTypeIsAbstract;
     public static String EnumContent_ValuesArePartOfModel;
+    
+    public static String EnumAttribute_Identifier;
 
     static {
         // initialize resource bundle

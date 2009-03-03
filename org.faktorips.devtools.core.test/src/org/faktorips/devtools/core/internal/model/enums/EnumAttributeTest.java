@@ -11,14 +11,14 @@
  * Mitwirkende: Faktor Zehn AG - initial API and implementation - http://www.faktorzehn.de
  *******************************************************************************/
 
-package org.faktorips.devtools.core.internal.model.enumtype;
+package org.faktorips.devtools.core.internal.model.enums;
 
 import javax.xml.parsers.ParserConfigurationException;
 
 import org.eclipse.core.runtime.CoreException;
 import org.faktorips.devtools.core.model.IIpsModel;
-import org.faktorips.devtools.core.model.enumtype.IEnumAttribute;
-import org.faktorips.devtools.core.model.enumtype.IEnumType;
+import org.faktorips.devtools.core.model.enums.IEnumAttribute;
+import org.faktorips.devtools.core.model.enums.IEnumType;
 import org.w3c.dom.Element;
 import org.w3c.dom.NamedNodeMap;
 
@@ -121,6 +121,12 @@ public class EnumAttributeTest extends AbstractIpsEnumPluginTest {
         genderEnumAttributeName.setIdentifier(true);
         assertEquals(1, genderEnumAttributeId.validate(ipsProject).getNoOfMessages());
         genderEnumAttributeName.setIdentifier(false);
+
+        // Test identifier but datatype not String
+        ipsModel.clearValidationCache();
+        genderEnumAttributeId.setDatatype(INTEGER_DATATYPE_NAME);
+        assertEquals(1, genderEnumAttributeId.validate(ipsProject).getNoOfMessages());
+        genderEnumAttributeId.setDatatype(STRING_DATATYPE_NAME);
 
         // Test no such attribute in supertype hierarchy for inherited attribute
         IEnumType superEnumType = newEnumType(ipsProject, "SuperEnumType");

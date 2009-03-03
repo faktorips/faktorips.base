@@ -18,8 +18,8 @@ import java.util.List;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.swt.widgets.Composite;
-import org.faktorips.devtools.core.model.enumcontent.EnumContentValidations;
-import org.faktorips.devtools.core.model.enumcontent.IEnumContent;
+import org.faktorips.devtools.core.model.enums.EnumContentValidations;
+import org.faktorips.devtools.core.model.enums.IEnumContent;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObject;
 import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
 import org.faktorips.devtools.core.model.ipsproject.IIpsPackageFragmentRoot;
@@ -32,7 +32,9 @@ import org.faktorips.devtools.core.ui.wizards.IpsObjectPage;
 import org.faktorips.util.message.MessageList;
 
 /**
- * The wizard page for the new enum content wizard.
+ * The wizard page for the <code>NewEnumContentWizard</code>.
+ * 
+ * @see NewEnumContentWizard
  * 
  * @author Alexander Weickmann
  * 
@@ -111,10 +113,10 @@ public class EnumContentPage extends IpsObjectPage {
         String enumTypeFieldText = enumTypeField.getText();
         IIpsProject ipsProject = ((IpsObjectRefControl)enumTypeField.getControl()).getIpsProject();
         if (ipsProject != null) {
-            MessageList validationMessages = EnumContentValidations.validateEnumType(null, enumTypeFieldText,
-                    ipsProject);
-            if (!(validationMessages.isEmpty())) {
-                setErrorMessage(validationMessages.getMessage(0));
+            MessageList validationMessageList = new MessageList();
+            EnumContentValidations.validateEnumType(validationMessageList, null, enumTypeFieldText, ipsProject);
+            if (!(validationMessageList.isEmpty())) {
+                setErrorMessage(validationMessageList.getMessage(0));
             }
         }
     }

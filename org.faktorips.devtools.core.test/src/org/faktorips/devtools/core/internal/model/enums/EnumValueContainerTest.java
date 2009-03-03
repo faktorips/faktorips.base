@@ -11,7 +11,7 @@
  * Mitwirkende: Faktor Zehn AG - initial API and implementation - http://www.faktorzehn.de
  *******************************************************************************/
 
-package org.faktorips.devtools.core.internal.model.enumtype;
+package org.faktorips.devtools.core.internal.model.enums;
 
 import org.eclipse.core.runtime.CoreException;
 import org.faktorips.devtools.core.model.enums.IEnumValue;
@@ -31,6 +31,9 @@ public class EnumValueContainerTest extends AbstractIpsEnumPluginTest {
         IEnumValue newEnumValue = genderEnumContent.newEnumValue();
         assertEquals(newEnumValue, genderEnumContent.getEnumValues().get(2));
         assertEquals(2, newEnumValue.getEnumAttributeValuesCount());
+
+        genderEnumContent.setEnumType("foo");
+        assertNull(genderEnumContent.newEnumValue());
     }
 
     public void testGetEnumValuesCount() {

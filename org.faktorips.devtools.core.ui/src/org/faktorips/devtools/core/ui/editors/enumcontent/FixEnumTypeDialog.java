@@ -18,7 +18,7 @@ import org.eclipse.osgi.util.NLS;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Shell;
-import org.faktorips.devtools.core.model.enumcontent.IEnumContent;
+import org.faktorips.devtools.core.model.enums.IEnumContent;
 import org.faktorips.devtools.core.ui.editors.EditDialog;
 
 /**
@@ -65,8 +65,8 @@ public class FixEnumTypeDialog extends EditDialog {
                 throw new RuntimeException(e);
             }
         }
-        
-        // TODO set title image
+
+        // TODO aw: set title image
     }
 
     /**

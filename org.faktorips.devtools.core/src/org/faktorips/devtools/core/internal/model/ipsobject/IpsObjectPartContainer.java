@@ -210,7 +210,6 @@ public abstract class IpsObjectPartContainer extends IpsElement implements IIpsO
      * 
      * @param part
      */
-    // TODO javadoc
     protected void partWasAdded(IIpsObjectPart part) {
         objectHasChanged(ContentChangeEvent.newPartAddedEvent(part));
     }
@@ -219,7 +218,6 @@ public abstract class IpsObjectPartContainer extends IpsElement implements IIpsO
      * 
      * @param parts
      */
-    // TODO javadoc
     protected void partsMoved(IIpsObjectPart[] parts) {
         ContentChangeEvent event = ContentChangeEvent.newPartsChangedPositionsChangedEvent(getIpsSrcFile(), parts);
         objectHasChanged(event);
@@ -229,7 +227,6 @@ public abstract class IpsObjectPartContainer extends IpsElement implements IIpsO
      * 
      * @param event
      */
-    // TODO javadoc
     protected void objectHasChanged(ContentChangeEvent event) {
         IpsModel model = (IpsModel)getIpsModel();
         IpsSrcFileContent content = model.getIpsSrcFileContent(getIpsSrcFile());
@@ -333,7 +330,6 @@ public abstract class IpsObjectPartContainer extends IpsElement implements IIpsO
      * @param element
      * @param id
      */
-    // TODO javadoc
     protected void initFromXml(Element element, Integer id) {
         initPropertiesFromXml(element, id);
         initPartContainersFromXml(element);

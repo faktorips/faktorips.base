@@ -17,15 +17,14 @@ import java.util.List;
 import java.util.NoSuchElementException;
 
 import org.eclipse.core.runtime.CoreException;
-import org.faktorips.devtools.core.model.enumtype.IEnumType;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObject;
 
 /**
- * This is the published interface for <code>EnumValueContainer</code>.
- * <p>
  * <code>EnumValueContainer</code> is the supertype for <code>EnumType</code> and
- * <code>EnumContent</code>. This is because in Faktor-IPS the values of an enumeration can be
- * defined directly in the enum type or separate from it by the product side.
+ * <code>EnumContent</code>.
+ * <p>
+ * In Faktor-IPS the values of an enum can be defined directly in the enum type or separate from it
+ * as product content.
  * 
  * @author Alexander Weickmann
  * 
@@ -41,6 +40,12 @@ public interface IEnumValueContainer extends IIpsObject {
     /**
      * Creates and returns a new enum value that has as many enum attribute values as the
      * corresponding enum type has attributes.
+     * <p>
+     * If the enum type referenced by this enum value container cannot be found then no enum value
+     * will be created and <code>null</code> will be returned.
+     * <p>
+     * Fires a <code>WHOLE_CONTENT_CHANGED</code> event if a new enum value has been created
+     * successfully.
      * 
      * @throws CoreException If an error occurs while searching for the enum type.
      */

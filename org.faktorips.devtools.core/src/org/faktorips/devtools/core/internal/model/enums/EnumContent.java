@@ -11,13 +11,13 @@
  * Mitwirkende: Faktor Zehn AG - initial API and implementation - http://www.faktorzehn.de
  *******************************************************************************/
 
-package org.faktorips.devtools.core.internal.model.enumcontent;
+package org.faktorips.devtools.core.internal.model.enums;
 
 import org.eclipse.core.runtime.CoreException;
-import org.faktorips.devtools.core.internal.model.enums.EnumValueContainer;
-import org.faktorips.devtools.core.model.enumcontent.EnumContentValidations;
-import org.faktorips.devtools.core.model.enumcontent.IEnumContent;
-import org.faktorips.devtools.core.model.enumtype.IEnumType;
+import org.faktorips.devtools.core.model.IDependency;
+import org.faktorips.devtools.core.model.enums.EnumContentValidations;
+import org.faktorips.devtools.core.model.enums.IEnumContent;
+import org.faktorips.devtools.core.model.enums.IEnumType;
 import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
@@ -28,7 +28,7 @@ import org.w3c.dom.Element;
 /**
  * Implementation of <code>IEnumContent</code>, see the corresponding interface for more details.
  * 
- * @see org.faktorips.devtools.core.model.enumcontent.IEnumContent
+ * @see org.faktorips.devtools.core.model.enums.IEnumContent
  * 
  * @author Alexander Weickmann
  * 
@@ -116,7 +116,15 @@ public class EnumContent extends EnumValueContainer implements IEnumContent {
     protected void validateThis(MessageList list, IIpsProject ipsProject) throws CoreException {
         super.validateThis(list, ipsProject);
 
-        list.add(EnumContentValidations.validateEnumType(this, enumType, ipsProject));
+        EnumContentValidations.validateEnumType(list, this, enumType, ipsProject);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public IDependency[] dependsOn() throws CoreException {
+        return null;
     }
 
 }

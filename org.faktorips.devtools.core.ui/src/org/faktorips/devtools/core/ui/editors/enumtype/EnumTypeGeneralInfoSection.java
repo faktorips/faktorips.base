@@ -21,7 +21,7 @@ import org.eclipse.ui.forms.events.HyperlinkAdapter;
 import org.eclipse.ui.forms.events.HyperlinkEvent;
 import org.eclipse.ui.forms.widgets.Hyperlink;
 import org.eclipse.ui.forms.widgets.Section;
-import org.faktorips.devtools.core.model.enumtype.IEnumType;
+import org.faktorips.devtools.core.model.enums.IEnumType;
 import org.faktorips.devtools.core.ui.ExtensionPropertyControlFactory;
 import org.faktorips.devtools.core.ui.IpsUIPlugin;
 import org.faktorips.devtools.core.ui.UIToolkit;
@@ -32,11 +32,13 @@ import org.faktorips.util.ArgumentCheck;
 
 /**
  * 
- * The general info section for the enum type editor provides ui controls to edit the superEnumType
- * property, the abstract property and the valuesArePartOfModel property.
+ * The general info section for the <code>EnumTypeEditor</code> provides ui controls to edit the
+ * <em>superEnumType</em> property, the <em>abstract</em> property and the
+ * <em>valuesArePartOfModel</em> property of an <code>IEnumType</code>.
  * <p>
  * It is part of the <code>EnumTypeStructurePage</code>.
  * 
+ * @see EnumTypeEditor
  * @see EnumTypeStructurePage
  * 
  * @author Alexander Weickmann
@@ -52,7 +54,7 @@ public class EnumTypeGeneralInfoSection extends IpsSection {
     private ExtensionPropertyControlFactory extFactory;
 
     /**
-     * Creates a new <code>EnumTypeGeneralInfoSection</code> using the specified parameters.
+     * Creates a new <code>EnumTypeGeneralInfoSection</code>.
      * 
      * @param enumType The enum type the enum type editor is currently editing.
      * @param parent The parent ui composite to attach this info section to.

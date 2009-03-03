@@ -18,8 +18,8 @@ import java.util.List;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.swt.widgets.Composite;
-import org.faktorips.devtools.core.model.enumtype.EnumTypeValidations;
-import org.faktorips.devtools.core.model.enumtype.IEnumType;
+import org.faktorips.devtools.core.model.enums.EnumTypeValidations;
+import org.faktorips.devtools.core.model.enums.IEnumType;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObject;
 import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
 import org.faktorips.devtools.core.model.ipsproject.IIpsPackageFragmentRoot;
@@ -30,10 +30,12 @@ import org.faktorips.devtools.core.ui.controller.fields.CheckboxField;
 import org.faktorips.devtools.core.ui.controller.fields.TextButtonField;
 import org.faktorips.devtools.core.ui.controls.IpsObjectRefControl;
 import org.faktorips.devtools.core.ui.wizards.IpsObjectPage;
-import org.faktorips.util.message.Message;
+import org.faktorips.util.message.MessageList;
 
 /**
- * The wizard page for the new enum type wizard.
+ * The wizard page for the <code>NewEnumTypeWizard</code>.
+ * 
+ * @see NewEnumTypeWizard
  * 
  * @author Alexander Weickmann
  * 
@@ -130,9 +132,10 @@ public class EnumTypePage extends IpsObjectPage {
         String superTypeFieldText = supertypeField.getText();
         IIpsProject ipsProject = ((IpsObjectRefControl)supertypeField.getControl()).getIpsProject();
         if (!(superTypeFieldText.equals("")) && ipsProject != null) {
-            Message validationMessage = EnumTypeValidations.validateSuperEnumType(null, superTypeFieldText, ipsProject);
-            if (validationMessage != null) {
-                setErrorMessage(validationMessage.getText());
+            MessageList validationMessages = new MessageList();
+            EnumTypeValidations.validateSuperEnumType(validationMessages, null, superTypeFieldText, ipsProject);
+            if (validationMessages.getNoOfMessages() > 0) {
+                setErrorMessage(validationMessages.getMessage(0).getText());
             }
         }
     }

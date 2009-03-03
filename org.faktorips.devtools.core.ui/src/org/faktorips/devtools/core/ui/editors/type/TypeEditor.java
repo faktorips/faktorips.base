@@ -61,7 +61,7 @@ public abstract class TypeEditor extends IpsObjectEditor {
      * Returns <code>true</code> by default.
      */
     /*
-     * TODO aw: This could be done better by giving ips objects and ips object parts the ability to
+     * TODO aw: this could be done better by giving ips objects and ips object parts the ability to
      * have no description. The editor could then derive from that fact whether a description page
      * is neccessary or not. FS#1380
      */

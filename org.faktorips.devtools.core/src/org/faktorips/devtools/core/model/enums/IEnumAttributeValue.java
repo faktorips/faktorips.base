@@ -14,14 +14,11 @@
 package org.faktorips.devtools.core.model.enums;
 
 import org.eclipse.core.runtime.CoreException;
-import org.faktorips.devtools.core.model.enumtype.IEnumAttribute;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPart;
 
 /**
- * An enum attribute value belongs to an enum value and represents the value of a specific enum
- * attribute.
- * <p>
- * An enum attribute value can be imagined as the value of a field in a table.
+ * An enum attribute value belongs to an enum value. It represents the value for a specific enum
+ * attribute of the enum type referenced by the enum value container the enum value is contained in.
  * 
  * @author Alexander Weickmann
  * 
@@ -64,5 +61,12 @@ public interface IEnumAttributeValue extends IIpsObjectPart {
      * @param value The new value. May also be <code>null</code>.
      */
     public void setValue(String value);
+    
+    /**
+     * Returns the enum value this enum attribute value belongs to.
+     * <p>
+     * This is a shortcut for: <code>(IEnumValue)this.getParent();</code>
+     */
+    public IEnumValue getEnumValue();
 
 }

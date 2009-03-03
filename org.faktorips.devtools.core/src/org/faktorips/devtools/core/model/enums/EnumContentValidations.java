@@ -11,12 +11,11 @@
  * Mitwirkende: Faktor Zehn AG - initial API and implementation - http://www.faktorzehn.de
  *******************************************************************************/
 
-package org.faktorips.devtools.core.model.enumcontent;
+package org.faktorips.devtools.core.model.enums;
 
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.osgi.util.NLS;
-import org.faktorips.devtools.core.internal.model.enumcontent.Messages;
-import org.faktorips.devtools.core.model.enumtype.IEnumType;
+import org.faktorips.devtools.core.model.enums.Messages;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.util.ArgumentCheck;
 import org.faktorips.util.message.Message;
@@ -27,7 +26,7 @@ import org.faktorips.util.message.ObjectProperty;
  * A class that contains validations of the model class <code>IEnumContent</code> which are also
  * used in the creation wizard where the model object doesn't exist at the point of validation.
  * 
- * @see org.faktorips.devtools.core.model.enumcontent.IEnumContent
+ * @see org.faktorips.devtools.core.model.enums.IEnumContent
  * 
  * @author Alexander Weickmann
  * 
@@ -38,17 +37,15 @@ public abstract class EnumContentValidations {
     /**
      * Validates the enum type property of the given enum content.
      * <p>
-     * An appropriate validation message list will be returned if:
+     * Appropriate validation messages will be added to the given message list if:
      * <ul>
-     * <li>The qualified name of the enum type equals an empty string (enum type is missing)</li>
-     * <li>The enum type is specified but does not exist</li>
-     * <li>The enum type does exist but its values are defined in the model</li>
-     * <li>The enum type does exist but is abstract</li>
-     * </ul
-     * <p>
-     * If the enum type property is valid an empty validation message list will be returned.
-     * </p>
+     * <li>The qualified name of the enum type equals an empty string (enum type is missing)
+     * <li>The enum type is specified but does not exist
+     * <li>The enum type does exist but its values are defined in the model
+     * <li>The enum type does exist but is abstract
+     * </ul>
      * 
+     * @param validationMessageList The message list to save validation messages into.
      * @param enumContent The enum content that might be invalid or <code>null</code> if that
      *            information cannot be supported.
      * @param enumTypeQualifiedName The qualified name of the enum type this enum content is based
@@ -56,17 +53,18 @@ public abstract class EnumContentValidations {
      * @param ipsProject The ips object path of this ips project will be searched.
      * 
      * @throws CoreException If an error occurs while searching for the enum type.
-     * @throws NullPointerException If <code>enumTypeQualifiedName</code> or <code>ipsProject</code>
-     *             is <code>null</code>.
+     * @throws NullPointerException If <code>validationMessageList</code>,
+     *             <code>enumTypeQualifiedName</code> or <code>ipsProject</code> is
+     *             <code>null</code>.
      */
-    public static MessageList validateEnumType(IEnumContent enumContent,
+    public static void validateEnumType(MessageList validationMessageList,
+            IEnumContent enumContent,
             String enumTypeQualifiedName,
             IIpsProject ipsProject) throws CoreException {
 
-        ArgumentCheck.notNull(new Object[] { enumTypeQualifiedName, ipsProject });
+        ArgumentCheck.notNull(new Object[] { validationMessageList, enumTypeQualifiedName, ipsProject });
 
         String text;
-        MessageList validationMessageList = new MessageList();
         ObjectProperty[] objectProperties = (enumContent != null) ? new ObjectProperty[] { new ObjectProperty(
                 enumContent, IEnumContent.PROPERTY_ENUM_TYPE) } : new ObjectProperty[0];
 
@@ -75,7 +73,7 @@ public abstract class EnumContentValidations {
             text = Messages.EnumContent_EnumTypeMissing;
             validationMessageList.add(new Message(IEnumContent.MSGCODE_ENUM_CONTENT_ENUM_TYPE_MISSING, text,
                     Message.ERROR, objectProperties));
-            return validationMessageList;
+            return;
         }
 
         // Enum type exists?
@@ -84,7 +82,7 @@ public abstract class EnumContentValidations {
             text = NLS.bind(Messages.EnumContent_EnumTypeDoesNotExist, enumTypeQualifiedName);
             validationMessageList.add(new Message(IEnumContent.MSGCODE_ENUM_CONTENT_ENUM_TYPE_DOES_NOT_EXIST, text,
                     Message.ERROR, objectProperties));
-            return validationMessageList;
+            return;
         }
 
         // Values are part of model?
@@ -100,8 +98,6 @@ public abstract class EnumContentValidations {
             validationMessageList.add(new Message(IEnumContent.MSGCODE_ENUM_CONTENT_ENUM_TYPE_IS_ABSTRACT, text,
                     Message.ERROR, objectProperties));
         }
-
-        return validationMessageList;
     }
 
     /** Prohibits initialization. */

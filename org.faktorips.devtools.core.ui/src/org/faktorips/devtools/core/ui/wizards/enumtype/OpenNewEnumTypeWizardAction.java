@@ -17,7 +17,9 @@ import org.eclipse.ui.INewWizard;
 import org.faktorips.devtools.core.ui.wizards.OpenNewWizardAction;
 
 /**
- * This action is responsible for opening the new enum type wizard.
+ * This action is responsible for opening a <code>NewEnumTypeWizard</code>.
+ * 
+ * @see NewEnumTypeWizard
  * 
  * @author Alexander Weickmann
  * 

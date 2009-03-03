@@ -28,6 +28,15 @@ public class Messages extends NLS {
 
     public static String EnumAttributeValue_NotParsable;
 
+    public static String EnumAttribute_NameMissing;
+    public static String EnumAttribute_DuplicateName;
+    public static String EnumAttribute_DatatypeMissing;
+    public static String EnumAttribute_DatatypeDoesNotExist;
+    public static String EnumAttribute_DuplicateIdentifier;
+    public static String EnumAttribute_NoSuchAttributeInSupertypeHierarchy;
+    public static String EnumAttribute_IdentifierNotOfDatatypeString;
+    public static String EnumAttribute_Identifier;
+
     static {
         // initialize resource bundle
         NLS.initializeMessages(BUNDLE_NAME, Messages.class);

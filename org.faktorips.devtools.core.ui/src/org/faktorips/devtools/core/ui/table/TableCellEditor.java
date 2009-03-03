@@ -304,7 +304,7 @@ public abstract class TableCellEditor extends CellEditor {
         } else if (tableViewer.getInput() instanceof IEnumValueContainer) {
             IEnumValueContainer enumValueContainer = (IEnumValueContainer)tableViewer.getInput();
             try {
-                tableViewer.add(enumValueContainer.newEnumValue());
+                enumValueContainer.newEnumValue();
             } catch (CoreException e) {
                 throw new RuntimeException(e);
             }

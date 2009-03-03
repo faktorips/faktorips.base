@@ -15,7 +15,7 @@ package org.faktorips.devtools.core.ui.editors.enumtype;
 
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.swt.widgets.Composite;
-import org.faktorips.devtools.core.model.enumtype.IEnumType;
+import org.faktorips.devtools.core.model.enums.IEnumType;
 import org.faktorips.devtools.core.ui.UIToolkit;
 import org.faktorips.devtools.core.ui.editors.enums.EnumValuesSection;
 import org.faktorips.devtools.core.ui.editors.type.TypeEditorStructurePage;

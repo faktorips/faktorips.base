@@ -17,7 +17,9 @@ import org.eclipse.ui.INewWizard;
 import org.faktorips.devtools.core.ui.wizards.OpenNewWizardAction;
 
 /**
- * This action is responsible for opening the new enum content wizard.
+ * This action is responsible for opening a <code>NewEnumContentWizard</code>.
+ * 
+ * @see NewEnumContentWizard
  * 
  * @author Alexander Weickmann
  * 

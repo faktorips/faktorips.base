@@ -11,21 +11,21 @@
  * Mitwirkende: Faktor Zehn AG - initial API and implementation - http://www.faktorzehn.de
  *******************************************************************************/
 
-package org.faktorips.devtools.core.internal.model.enumtype;
+package org.faktorips.devtools.core.internal.model.enums;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.NoSuchElementException;
 
+import org.eclipse.core.resources.IWorkspaceRunnable;
 import org.eclipse.core.runtime.CoreException;
-import org.faktorips.devtools.core.internal.model.enums.EnumValue;
-import org.faktorips.devtools.core.internal.model.enums.EnumValueContainer;
+import org.eclipse.core.runtime.IProgressMonitor;
 import org.faktorips.devtools.core.internal.model.ipsobject.IpsObjectPartCollection;
+import org.faktorips.devtools.core.model.enums.EnumTypeValidations;
+import org.faktorips.devtools.core.model.enums.IEnumAttribute;
 import org.faktorips.devtools.core.model.enums.IEnumAttributeValue;
+import org.faktorips.devtools.core.model.enums.IEnumType;
 import org.faktorips.devtools.core.model.enums.IEnumValue;
-import org.faktorips.devtools.core.model.enumtype.EnumTypeValidations;
-import org.faktorips.devtools.core.model.enumtype.IEnumAttribute;
-import org.faktorips.devtools.core.model.enumtype.IEnumType;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPart;
 import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
@@ -38,7 +38,7 @@ import org.w3c.dom.Element;
 /**
  * Implementation of <code>IEnumType</code>, see the corresponding interface for more details.
  * 
- * @see org.faktorips.devtools.core.model.enumtype.IEnumType
+ * @see org.faktorips.devtools.core.model.enums.IEnumType
  * 
  * @author Alexander Weickmann
  * 
@@ -137,10 +137,28 @@ public class EnumType extends EnumValueContainer implements IEnumType {
      * {@inheritDoc}
      */
     public List<IEnumAttribute> getEnumAttributes() {
+        return getEnumAttributes(false);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public List<IEnumAttribute> findAllEnumAttributes() {
+        return getEnumAttributes(true);
+    }
+
+    /**
+     * Returns a list containing all enum attributes that belong to this enum type. It can be
+     * specified whether to include inherited attributes or not.
+     */
+    private List<IEnumAttribute> getEnumAttributes(boolean includeInherited) {
         List<IEnumAttribute> attributesList = new ArrayList<IEnumAttribute>();
         IIpsObjectPart[] parts = enumAttributes.getParts();
-        for (IIpsObjectPart currentObjectPart : parts) {
-            attributesList.add((IEnumAttribute)currentObjectPart);
+        for (IIpsObjectPart currentIpsObjectPart : parts) {
+            IEnumAttribute currentEnumAttribute = (IEnumAttribute)currentIpsObjectPart;
+            if (!(currentEnumAttribute.isInherited()) || includeInherited) {
+                attributesList.add(currentEnumAttribute);
+            }
         }
 
         return attributesList;
@@ -151,17 +169,13 @@ public class EnumType extends EnumValueContainer implements IEnumType {
      */
     public IEnumAttribute newEnumAttribute() throws CoreException {
         /*
-         * Create new enum attribute value objects on the enum values of this enum type. We do this
-         * before adding the actual new enum attribute because we want the enum attribute values
-         * already to be added when the content changed event for the added enum attribute fires.
+         * The creation of a new enum attribute consists of multiple operations that need to be
+         * batched.
          */
-        for (IEnumValue currentEnumValue : getEnumValues()) {
-            currentEnumValue.newEnumAttributeValue();
-        }
+        NewEnumAttributeRunnable workspaceRunnable = new NewEnumAttributeRunnable();
+        getIpsModel().runAndQueueChangeEvents(workspaceRunnable, null);
 
-        IEnumAttribute newEnumAttribute = (IEnumAttribute)newPart(IEnumAttribute.class);
-
-        return newEnumAttribute;
+        return workspaceRunnable.newEnumAttribute;
     }
 
     /**
@@ -174,8 +188,12 @@ public class EnumType extends EnumValueContainer implements IEnumType {
     /**
      * {@inheritDoc}
      */
-    public int getEnumAttributesCount() {
-        return enumAttributes.size();
+    public int getEnumAttributesCount(boolean includeInherited) {
+        if (includeInherited) {
+            return findAllEnumAttributes().size();
+        } else {
+            return getEnumAttributes().size();
+        }
     }
 
     /**
@@ -205,9 +223,11 @@ public class EnumType extends EnumValueContainer implements IEnumType {
     /**
      * {@inheritDoc}
      */
-    @SuppressWarnings("unchecked")
     public int moveEnumAttribute(IEnumAttribute enumAttribute, boolean up) throws CoreException {
         ArgumentCheck.notNull(enumAttribute);
+        if (enumAttribute.getEnumType() != this) {
+            throw new NoSuchElementException();
+        }
 
         if (up) {
             // Can't move further up any more
@@ -221,27 +241,13 @@ public class EnumType extends EnumValueContainer implements IEnumType {
             }
         }
 
-        List<IEnumAttribute> enumAttributesList = enumAttributes.getBackingList();
-        for (int i = 0; i < enumAttributesList.size(); i++) {
-            IEnumAttribute currentEnumAttribute = enumAttributesList.get(i);
-            if (currentEnumAttribute == enumAttribute) {
+        int indexToMove = getIndexOfEnumAttribute(enumAttribute);
 
-                /*
-                 * Move the refering enum attribute values that are defined directly in this enum
-                 * type (we do this before moving the enum attribute because the change event fired
-                 * when moving an enum attribute should contain the moved enum attribute values
-                 * already).
-                 */
-                moveEnumAttributeValues(i, getEnumValues(), up);
+        // Moving an enum attribute consists of multiple operations that need to be batched.
+        MoveEnumAttributeRunnable workspaceRunnable = new MoveEnumAttributeRunnable(indexToMove, up);
+        getIpsModel().runAndQueueChangeEvents(workspaceRunnable, null);
 
-                int[] newIndex = enumAttributes.moveParts(new int[] { i }, up);
-
-                return newIndex[0];
-
-            }
-        }
-
-        throw new NoSuchElementException();
+        return workspaceRunnable.newIndex;
     }
 
     /**
@@ -337,12 +343,37 @@ public class EnumType extends EnumValueContainer implements IEnumType {
     public IEnumAttribute getEnumAttribute(String name) {
         ArgumentCheck.notNull(name);
 
-        for (IEnumAttribute currentEnumAttribute : getEnumAttributes()) {
+        return getEnumAttribute(name, false);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public IEnumAttribute findEnumAttribute(String name) {
+        ArgumentCheck.notNull(name);
+
+        return getEnumAttribute(name, true);
+    }
+
+    /**
+     * Searches and returns the enum attribute with the given name or <code>null</code> if none
+     * exists. It can be specified whether to include inherited enum attributes.
+     */
+    private IEnumAttribute getEnumAttribute(String name, boolean includeInherited) {
+        List<IEnumAttribute> enumAttributesToSearch;
+        if (includeInherited) {
+            enumAttributesToSearch = findAllEnumAttributes();
+        } else {
+            enumAttributesToSearch = getEnumAttributes();
+        }
+
+        for (IEnumAttribute currentEnumAttribute : enumAttributesToSearch) {
             if (currentEnumAttribute.getName().equals(name)) {
                 return currentEnumAttribute;
             }
         }
 
+        // No enum attribute with the given name found
         return null;
     }
 
@@ -357,27 +388,18 @@ public class EnumType extends EnumValueContainer implements IEnumType {
 
         // Validate super enum type
         if (!(superEnumType.equals(""))) {
-            validationMessage = EnumTypeValidations.validateSuperEnumType(this, superEnumType, ipsProject);
-            if (validationMessage != null) {
-                list.add(validationMessage);
-            }
+            EnumTypeValidations.validateSuperEnumType(list, this, superEnumType, ipsProject);
         }
 
         // Validate inherited attributes
         if (!(superEnumType.equals(""))) {
             if (validationMessage == null) {
-                validationMessage = EnumTypeValidations.validateInheritedAttributes(this);
-                if (validationMessage != null) {
-                    list.add(validationMessage);
-                }
+                EnumTypeValidations.validateInheritedAttributes(list, this);
             }
         }
 
         // Validate identifier attribute
-        validationMessage = EnumTypeValidations.validateIdentifierAttribute(this);
-        if (validationMessage != null) {
-            list.add(validationMessage);
-        }
+        EnumTypeValidations.validateIdentifierAttribute(list, this);
     }
 
     /**
@@ -398,14 +420,21 @@ public class EnumType extends EnumValueContainer implements IEnumType {
     /**
      * {@inheritDoc}
      */
-    public void deleteEnumAttributeWithValues(IEnumAttribute enumAttribute) throws CoreException {
+    public void deleteEnumAttributeWithValues(final IEnumAttribute enumAttribute) throws CoreException {
         ArgumentCheck.notNull(enumAttribute);
         ArgumentCheck.isTrue(enumAttributes.getBackingList().contains(enumAttribute));
 
-        deleteEnumAttributeValues(enumAttribute, getEnumValues());
-        if (!(enumAttribute.isDeleted())) {
-            enumAttribute.delete();
-        }
+        // Deleting an enum attribute consists of multiple operations that need to be batched.
+        IWorkspaceRunnable workspaceRunnable = new IWorkspaceRunnable() {
+            /**
+             * {@inheritDoc}
+             */
+            public void run(IProgressMonitor monitor) throws CoreException {
+                deleteEnumAttributeValues(enumAttribute, getEnumValues());
+                enumAttribute.delete();
+            }
+        };
+        getIpsModel().runAndQueueChangeEvents(workspaceRunnable, null);
     }
 
     /**
@@ -451,18 +480,73 @@ public class EnumType extends EnumValueContainer implements IEnumType {
     }
 
     /**
-     * {@inheritDoc}
+     * Creates a new enum attribute. On every enum value that is contained in this enum type new
+     * enum attribute value objects need to be created for the new enum attribute.
+     * <p>
+     * These operations are atomic and therefore need to be batched into a runanble.
      */
-    public List<IEnumAttribute> getInheritedAttributes() {
-        List<IEnumAttribute> inheritedAttributes = new ArrayList<IEnumAttribute>();
+    private class NewEnumAttributeRunnable implements IWorkspaceRunnable {
 
-        for (IEnumAttribute currentEnumAttribute : getEnumAttributes()) {
-            if (currentEnumAttribute.isInherited()) {
-                inheritedAttributes.add(currentEnumAttribute);
+        /** Handle to the enum attribute to be created. */
+        private IEnumAttribute newEnumAttribute;
+
+        /** Creates the <code>NewEnumAttributeRunnable</code>. */
+        public NewEnumAttributeRunnable() {
+            this.newEnumAttribute = null;
+        }
+
+        /**
+         * {@inheritDoc}
+         */
+        public void run(IProgressMonitor monitor) throws CoreException {
+            // Create new enum attribute
+            newEnumAttribute = (IEnumAttribute)newPart(IEnumAttribute.class);
+
+            // Create new enum attribute value objects on the enum values of this enum type
+            for (IEnumValue currentEnumValue : getEnumValues()) {
+                currentEnumValue.newEnumAttributeValue();
             }
         }
 
-        return inheritedAttributes;
+    }
+
+    /**
+     * Moves an enum attribute. On every enum value that is contained in this enum type the enum
+     * attribute values refering to this enum attribute need to be moved, too.
+     * <p>
+     * These operations are atomic and therefore need to be batched into a runanble.
+     */
+    private class MoveEnumAttributeRunnable implements IWorkspaceRunnable {
+
+        /** The index of the enum attribute to be moved. */
+        private int indexToMove;
+
+        /** The new index of the enum attriubute that has been moved. */
+        private int newIndex;
+
+        /** Flag indicating whether to move up or down. */
+        private boolean up;
+
+        /** Creates the <code>MoveEnumAttributeRunnable</code>. */
+        public MoveEnumAttributeRunnable(int indexToMove, boolean up) {
+            this.indexToMove = indexToMove;
+            this.newIndex = -1;
+            this.up = up;
+        }
+
+        /**
+         * {@inheritDoc}
+         */
+        public void run(IProgressMonitor monitor) throws CoreException {
+            // Move the enum attribute
+            int[] newIndex = enumAttributes.moveParts(new int[] { indexToMove }, up);
+
+            // Move the enum attribute values of the enum values of this enum type
+            moveEnumAttributeValues(indexToMove, getEnumValues(), up);
+
+            this.newIndex = newIndex[0];
+        }
+
     }
 
 }

@@ -11,17 +11,17 @@
  * Mitwirkende: Faktor Zehn AG - initial API and implementation - http://www.faktorzehn.de
  *******************************************************************************/
 
-package org.faktorips.devtools.core.internal.model.enumtype;
+package org.faktorips.devtools.core.internal.model.enums;
 
 import java.util.List;
 
 import javax.xml.parsers.ParserConfigurationException;
 
 import org.eclipse.core.runtime.CoreException;
+import org.faktorips.devtools.core.model.enums.IEnumAttribute;
 import org.faktorips.devtools.core.model.enums.IEnumAttributeValue;
+import org.faktorips.devtools.core.model.enums.IEnumType;
 import org.faktorips.devtools.core.model.enums.IEnumValue;
-import org.faktorips.devtools.core.model.enumtype.IEnumAttribute;
-import org.faktorips.devtools.core.model.enumtype.IEnumType;
 import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
 import org.w3c.dom.Element;
 
@@ -60,26 +60,66 @@ public class EnumTypeTest extends AbstractIpsEnumPluginTest {
         assertEquals(IpsObjectType.ENUM_TYPE, genderEnumType.getIpsObjectType());
     }
 
-    public void testGetEnumAttributes() {
+    public void testGetEnumAttributes() throws CoreException {
+        IEnumAttribute inheritedEnumAttribute = genderEnumType.newEnumAttribute();
+        inheritedEnumAttribute.setInherited(true);
+
         List<IEnumAttribute> attributes = genderEnumType.getEnumAttributes();
         assertEquals(2, attributes.size());
         assertEquals(GENDER_ENUM_ATTRIBUTE_ID_NAME, attributes.get(0).getName());
         assertEquals(GENDER_ENUM_ATTRIBUTE_NAME_NAME, attributes.get(1).getName());
     }
 
-    public void testGetEnumAttributeByName() {
+    public void testFindAllEnumAttributes() throws CoreException {
+        IEnumAttribute inheritedEnumAttribute = genderEnumType.newEnumAttribute();
+        inheritedEnumAttribute.setName("foo");
+        inheritedEnumAttribute.setInherited(true);
+
+        List<IEnumAttribute> attributes = genderEnumType.findAllEnumAttributes();
+        assertEquals(3, attributes.size());
+        assertEquals(GENDER_ENUM_ATTRIBUTE_ID_NAME, attributes.get(0).getName());
+        assertEquals(GENDER_ENUM_ATTRIBUTE_NAME_NAME, attributes.get(1).getName());
+        assertEquals("foo", attributes.get(2).getName());
+    }
+
+    public void testGetEnumAttributeByName() throws CoreException {
         try {
             genderEnumType.getEnumAttribute(null);
             fail();
         } catch (NullPointerException e) {
         }
 
+        IEnumAttribute inheritedEnumAttribute = genderEnumType.newEnumAttribute();
+        inheritedEnumAttribute.setInherited(true);
+        inheritedEnumAttribute.setName("foo");
+
         assertEquals(genderEnumAttributeId, genderEnumType.getEnumAttribute(GENDER_ENUM_ATTRIBUTE_ID_NAME));
         assertEquals(genderEnumAttributeName, genderEnumType.getEnumAttribute(GENDER_ENUM_ATTRIBUTE_NAME_NAME));
+        assertNull(genderEnumType.getEnumAttribute("foo"));
     }
 
-    public void testGetEnumAttributesCount() {
-        assertEquals(2, genderEnumType.getEnumAttributesCount());
+    public void testFindEnumAttributeByName() throws CoreException {
+        try {
+            genderEnumType.findEnumAttribute(null);
+            fail();
+        } catch (NullPointerException e) {
+        }
+
+        IEnumAttribute inheritedEnumAttribute = genderEnumType.newEnumAttribute();
+        inheritedEnumAttribute.setInherited(true);
+        inheritedEnumAttribute.setName("foo");
+
+        assertEquals(genderEnumAttributeId, genderEnumType.findEnumAttribute(GENDER_ENUM_ATTRIBUTE_ID_NAME));
+        assertEquals(genderEnumAttributeName, genderEnumType.findEnumAttribute(GENDER_ENUM_ATTRIBUTE_NAME_NAME));
+        assertEquals(inheritedEnumAttribute, genderEnumType.findEnumAttribute("foo"));
+    }
+
+    public void testGetEnumAttributesCount() throws CoreException {
+        IEnumAttribute inheritedEnumAttribute = genderEnumType.newEnumAttribute();
+        inheritedEnumAttribute.setInherited(true);
+
+        assertEquals(3, genderEnumType.getEnumAttributesCount(true));
+        assertEquals(2, genderEnumType.getEnumAttributesCount(false));
     }
 
     public void testGetChildren() throws CoreException {
@@ -363,22 +403,22 @@ public class EnumTypeTest extends AbstractIpsEnumPluginTest {
 
         IEnumAttribute attr1 = superEnumType.newEnumAttribute();
         attr1.setName("attr1");
-        attr1.setDatatype(INTEGER_DATATYPE_NAME);
+        attr1.setDatatype(STRING_DATATYPE_NAME);
         attr1.setIdentifier(true);
         IEnumAttribute attr2 = superSuperEnumType.newEnumAttribute();
         attr2.setName("attr2");
-        attr2.setDatatype(STRING_DATATYPE_NAME);
+        attr2.setDatatype(INTEGER_DATATYPE_NAME);
         getIpsModel().clearValidationCache();
         assertEquals(1, genderEnumType.validate(ipsProject).getNoOfMessages());
 
         attr1 = genderEnumType.newEnumAttribute();
         attr1.setName("attr1");
-        attr1.setDatatype(INTEGER_DATATYPE_NAME);
+        attr1.setDatatype(STRING_DATATYPE_NAME);
         attr1.setIdentifier(true);
         attr1.setInherited(true);
         attr2 = genderEnumType.newEnumAttribute();
         attr2.setName("attr2");
-        attr2.setDatatype(STRING_DATATYPE_NAME);
+        attr2.setDatatype(INTEGER_DATATYPE_NAME);
         attr2.setInherited(true);
         genderEnumAttributeId.setIdentifier(false);
         getIpsModel().clearValidationCache();
@@ -430,13 +470,6 @@ public class EnumTypeTest extends AbstractIpsEnumPluginTest {
         assertEquals(2, superEnumTypes.size());
         assertEquals(level1EnumType, superEnumTypes.get(0));
         assertEquals(rootEnumType, superEnumTypes.get(1));
-    }
-
-    public void testGetInheritedAttributes() {
-        assertEquals(0, genderEnumType.getInheritedAttributes().size());
-        genderEnumAttributeId.setInherited(true);
-        assertEquals(1, genderEnumType.getInheritedAttributes().size());
-        assertEquals(genderEnumAttributeId, genderEnumType.getInheritedAttributes().get(0));
     }
 
 }

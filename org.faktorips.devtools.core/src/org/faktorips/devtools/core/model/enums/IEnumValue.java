@@ -19,12 +19,13 @@ import org.eclipse.core.runtime.CoreException;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPart;
 
 /**
- * This is the published interface for enum values.
+ * An enum value represents a complete set of enum attribute values for an enum type. Enum values
+ * are always contained in an enum value container.
  * <p>
  * For more information about how enum values relate to the entire Faktor-IPS enumeration concept
  * please read the documentation of IEnumType.
  * 
- * @see org.faktorips.devtools.core.model.enumtype.IEnumType
+ * @see org.faktorips.devtools.core.model.enums.IEnumType
  * 
  * @author Alexander Weickmann
  * 
@@ -69,7 +70,7 @@ public interface IEnumValue extends IIpsObjectPart {
     /**
      * Returns the enum value container this enum value is being stored in.
      * <p>
-     * This is a shortcut for: <code>(IEnumValueContainer)enumValue.getParent();</code>
+     * This is a shortcut for: <code>(IEnumValueContainer)this.getParent();</code>
      */
     public IEnumValueContainer getEnumValueContainer();
 

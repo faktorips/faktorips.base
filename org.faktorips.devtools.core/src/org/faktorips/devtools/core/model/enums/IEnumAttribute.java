@@ -11,17 +11,23 @@
  * Mitwirkende: Faktor Zehn AG - initial API and implementation - http://www.faktorzehn.de
  *******************************************************************************/
 
-package org.faktorips.devtools.core.model.enumtype;
+package org.faktorips.devtools.core.model.enums;
 
 import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPart;
 
 /**
- * This is the published interface for enum attributes.
+ * An enum attribute is a part of an enum type that describes a property of the enum type.
  * <p>
- * For more information about how enum attributes relate to the entire Faktor-IPS enumeration
- * concept please read the documentation of IEnumType.
+ * Enum attributes are always of a specific <em>datatype</em> and can be <em>inherited</em> from an
+ * enum type in the supertype hierarchy.
+ * <p>
+ * An enum attribute can be marked as <em>identifier</em> which implies that each value for this
+ * enum attribute must be unique.
+ * <p>
+ * For more information about how enum attributes relate to the entire Faktor-IPS enums concept
+ * please read the documentation of IEnumType.
  * 
- * @see org.faktorips.devtools.core.model.enumtype.IEnumType
+ * @see org.faktorips.devtools.core.model.enums.IEnumType
  * 
  * @author Alexander Weickmann
  * 
@@ -57,6 +63,13 @@ public interface IEnumAttribute extends IIpsObjectPart {
     /** Validation message code to indicate that the datatype of this enum attribute does not exist. */
     public final static String MSGCODE_ENUM_ATTRIBUTE_DATATYPE_DOES_NOT_EXIST = MSGCODE_PREFIX
             + "EnumAttributeDatatypeDoesNotExist"; //$NON-NLS-1$
+
+    /**
+     * Validation message code to indicate that this enum attribute is marked as identifier but the
+     * datatype is not String.
+     */
+    public final static String MSGCODE_ENUM_ATTRIBUTE_IDENTIFIER_NOT_OF_DATATYPE_STRING = MSGCODE_PREFIX
+            + "EnumAttributeIdentifierNotOfDatatypeString"; //$NON-NLS-1$
 
     /**
      * Validation message code to indicate that this enum attribute inherits from the supertype

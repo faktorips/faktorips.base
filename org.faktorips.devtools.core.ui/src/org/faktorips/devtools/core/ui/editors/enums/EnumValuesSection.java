@@ -14,9 +14,7 @@
 package org.faktorips.devtools.core.ui.editors.enums;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.NoSuchElementException;
 
 import org.eclipse.core.runtime.CoreException;
@@ -35,6 +33,8 @@ import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.osgi.util.NLS;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.events.DisposeEvent;
+import org.eclipse.swt.events.DisposeListener;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.layout.GridData;
@@ -52,12 +52,12 @@ import org.faktorips.datatype.ValueDatatype;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.model.ContentChangeEvent;
 import org.faktorips.devtools.core.model.ContentsChangeListener;
-import org.faktorips.devtools.core.model.enumcontent.IEnumContent;
+import org.faktorips.devtools.core.model.enums.IEnumAttribute;
 import org.faktorips.devtools.core.model.enums.IEnumAttributeValue;
+import org.faktorips.devtools.core.model.enums.IEnumContent;
+import org.faktorips.devtools.core.model.enums.IEnumType;
 import org.faktorips.devtools.core.model.enums.IEnumValue;
 import org.faktorips.devtools.core.model.enums.IEnumValueContainer;
-import org.faktorips.devtools.core.model.enumtype.IEnumAttribute;
-import org.faktorips.devtools.core.model.enumtype.IEnumType;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObject;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPart;
 import org.faktorips.devtools.core.ui.IpsUIPlugin;
@@ -75,19 +75,20 @@ import org.faktorips.util.message.MessageList;
  * <p>
  * If the ips object being edited is an enum type then in-place fixing of the enum values table will
  * be done. That means, if an enum attribute is added there will be a new column in the table, if an
- * enum attribute is deleted the table column will be deleted and so on.
+ * enum attribute is deleted the corresponding table column will be deleted and so on.
  * <p>
- * For fixing the table when editing enum content objects public methods are provided. Fixing the
- * table when editing enum content objects is done manually by the user trough separate dialogs.
+ * Fixing the table when editing enum content objects is done manually by the user trough separate
+ * dialogs.
  * 
  * @see org.faktorips.devtools.core.ui.editors.enumtype.EnumTypeStructurePage
+ * @see org.faktorips.devtools.core.ui.editors.enumtype.EnumTypeValuesPage
  * @see org.faktorips.devtools.core.ui.editors.enumcontent.EnumContentPage
  * 
  * @author Alexander Weickmann
  * 
  * @since 2.3
  */
-public class EnumValuesSection extends IpsSection {
+public class EnumValuesSection extends IpsSection implements ContentsChangeListener {
 
     /** The enum value container holding the enum values to be edited. */
     private IEnumValueContainer enumValueContainer;
@@ -98,17 +99,8 @@ public class EnumValuesSection extends IpsSection {
     /** The jface table viewer linking the ui table with the model data. */
     private TableViewer enumValuesTableViewer;
 
-    /** Column order info list. */
-    private List<ColumnOrderInfo> columnOrderInfos;
-
-    /**
-     * The ordering of the enum attribute values for each enum value as it was when the enum values
-     * table has been created.
-     */
-    private Map<IEnumValue, List<IEnumAttributeValue>> originalOrderedAttributeValuesMap;
-
     /** The names of the columns for the enum values table ui widget. */
-    private List<String> enumValuesTableColumnNames;
+    private List<String> columnNames;
 
     /** Action to add new enum values. */
     private IAction newEnumValueAction;
@@ -134,20 +126,14 @@ public class EnumValuesSection extends IpsSection {
      *             ips object being edited.
      * @throws NullPointerException If <code>enumValueContainer</code> is <code>null</code>.
      */
-    public EnumValuesSection(IEnumValueContainer enumValueContainer, Composite parent, UIToolkit toolkit)
+    public EnumValuesSection(final IEnumValueContainer enumValueContainer, Composite parent, UIToolkit toolkit)
             throws CoreException {
 
         super(parent, Section.TITLE_BAR, GridData.FILL_BOTH, toolkit);
 
         ArgumentCheck.notNull(enumValueContainer);
         this.enumValueContainer = enumValueContainer;
-        this.columnOrderInfos = new ArrayList<ColumnOrderInfo>(4);
-        this.enumValuesTableColumnNames = new ArrayList<String>(4);
-
-        this.originalOrderedAttributeValuesMap = new HashMap<IEnumValue, List<IEnumAttributeValue>>();
-        for (IEnumValue currentEnumValue : enumValueContainer.getEnumValues()) {
-            originalOrderedAttributeValuesMap.put(currentEnumValue, new ArrayList<IEnumAttributeValue>(0));
-        }
+        this.columnNames = new ArrayList<String>(4);
 
         IEnumType enumType = enumValueContainer.findEnumType();
 
@@ -159,10 +145,36 @@ public class EnumValuesSection extends IpsSection {
         setText(Messages.EnumValuesSection_title);
 
         updateEnabledStates(enumType);
+        createFirstRow(enumType);
 
-        if (enumType != null) {
-            createFirstRow(enumType);
+        enumValueContainer.getIpsModel().addChangeListener(this);
+        addDisposeListener(new DisposeListener() {
+            /**
+             * {@inheritDoc}
+             */
+            public void widgetDisposed(DisposeEvent e) {
+                enumValueContainer.getIpsModel().removeChangeListener(EnumValuesSection.this);
+            }
+        });
+    }
+
+    /**
+     * Reinitializes the contents of this section:
+     * <ul>
+     * <li>The <code>columnNames</code> will be emptied and created anew.
+     * <li>Every table column of the <code>enumValuesTable</code> will be disposed and the table
+     * columns will be created anew.
+     */
+    private void reinit(IEnumType enumType) throws CoreException {
+        // Clear column names
+        columnNames.clear();
+
+        // Dispose enum values table columns
+        for (TableColumn currentColumn : enumValuesTable.getColumns()) {
+            currentColumn.dispose();
         }
+
+        createTableColumns(enumType);
     }
 
     /**
@@ -170,8 +182,12 @@ public class EnumValuesSection extends IpsSection {
      * attributes in the enum type and the enum values table is enabled.
      */
     private void createFirstRow(IEnumType enumType) throws CoreException {
-        if (enumValuesTable.isEnabled()) {
-            if (enumType.getEnumAttributesCount() > 0 && enumValueContainer.getEnumValuesCount() == 0) {
+        if (enumType == null) {
+            return;
+        }
+
+        if (enumType.getValuesArePartOfModel() && !(enumType.isAbstract())) {
+            if (enumType.getEnumAttributesCount(true) > 0 && enumValueContainer.getEnumValuesCount() == 0) {
                 enumValueContainer.newEnumValue();
             }
         }
@@ -268,14 +284,23 @@ public class EnumValuesSection extends IpsSection {
         tableGridData.heightHint = parent.getClientArea().height;
         enumValuesTable.setLayoutData(tableGridData);
 
-        /*
-         * Create columns based upon enum attribute values if there are any enum values yet, if not
-         * use the enum attributes to create the columns.
-         */
-        if (enumValueContainer.getEnumValuesCount() > 0) {
+        createTableColumns(enumType);
+        increaseHeightOfTableRows();
+    }
+
+    /**
+     * Creates the columns of the enum values table based upon enum attribute values if there are
+     * any enum values yet and the ips object to edit is an <code>IEnumContent</code>.
+     * <p>
+     * If this is not the case the enum attributes of the enum type are used to create the columns.
+     */
+    private void createTableColumns(IEnumType enumType) throws CoreException {
+        if (enumValueContainer.getEnumValuesCount() > 0 && enumValueContainer instanceof IEnumContent) {
             /*
              * TODO aw: also consider columns of the other enum values, what to if the number of
-             * enum attribute values differs?
+             * enum attribute values differs? -> the solution will be to save the number columns in
+             * the file. This is only neccessary for enum content and therefore it will be
+             * implemented later (after 2.3.0rc1).
              */
             IEnumValue enumValue = enumValueContainer.getEnumValues().get(0);
             List<IEnumAttributeValue> enumAttributeValues = enumValue.getEnumAttributeValues();
@@ -284,18 +309,16 @@ public class EnumValuesSection extends IpsSection {
                 IEnumAttribute currentEnumAttribute = currentEnumAttributeValue.findEnumAttribute();
                 String columnName = (currentEnumAttribute != null) ? currentEnumAttribute.getName() : NLS.bind(
                         Messages.EnumValuesSection_defaultColumnName, i + 1);
-                enumAttributeAdded(columnName);
+                addTableColumn(columnName);
             }
 
         } else {
             if (enumType != null) {
-                for (IEnumAttribute currentEnumAttribute : enumType.getEnumAttributes()) {
-                    enumAttributeAdded(currentEnumAttribute);
+                for (IEnumAttribute currentEnumAttribute : enumType.findAllEnumAttributes()) {
+                    addTableColumn(currentEnumAttribute.getName());
                 }
             }
         }
-
-        increaseHeightOfTableRows();
     }
 
     /** Increases the height of the table rows slightly. */
@@ -384,14 +407,14 @@ public class EnumValuesSection extends IpsSection {
             return;
         }
 
-        String[] columnNames = enumValuesTableColumnNames.toArray(new String[enumValuesTableColumnNames.size()]);
+        String[] columnNamesArray = columnNames.toArray(new String[columnNames.size()]);
 
         // Update column properties
-        enumValuesTableViewer.setColumnProperties(columnNames);
+        enumValuesTableViewer.setColumnProperties(columnNamesArray);
 
         // Create cell editors
         IEnumType enumType = enumValueContainer.findEnumType();
-        CellEditor[] cellEditors = createCellEditors(enumType, columnNames);
+        CellEditor[] cellEditors = createCellEditors(enumType, columnNamesArray);
 
         // Assign the cell editors to the table viewer
         enumValuesTableViewer.setCellEditors(cellEditors);
@@ -404,7 +427,7 @@ public class EnumValuesSection extends IpsSection {
     private CellEditor[] createCellEditors(IEnumType enumType, String[] columnNames) throws CoreException {
         CellEditor[] cellEditors = new CellEditor[columnNames.length];
         for (int i = 0; i < cellEditors.length; i++) {
-            String datatypeQualifiedName = (enumType != null) ? enumType.getEnumAttributes().get(i).getDatatype()
+            String datatypeQualifiedName = (enumType != null) ? enumType.findAllEnumAttributes().get(i).getDatatype()
                     : "String";
             ValueDatatype datatype = enumValueContainer.getIpsProject().findValueDatatype(datatypeQualifiedName);
             ValueDatatypeControlFactory valueDatatypeControlFactory = IpsUIPlugin.getDefault()
@@ -428,161 +451,24 @@ public class EnumValuesSection extends IpsSection {
         bindingContext.updateUI();
     }
 
-    /**
-     * Adds a new table column with the name to the given enum attribute to the end of the enum
-     * values table.
-     * 
-     * @param addedEnumAttribute The enum attribute that has been added to the referenced enum type.
-     * 
-     * @throws CoreException If an error occurs while searching for the enum type of the enum value
-     *             container to be edited or while updating the table viewer of the enum values
-     *             table.
-     * @throws NullPointerException If <code>addedEnumAttribute</code> is <code>null</code>.
-     * @throws IllegalStateException If this method is called while the referenced enum type is
-     *             invalid.
-     * @throws IllegalArgumentException If enum type referenced by the given enum attribute is not
-     *             the enum type referenced by the enum value container to edit.
-     */
-    public void enumAttributeAdded(IEnumAttribute addedEnumAttribute) throws CoreException {
-        ArgumentCheck.notNull(addedEnumAttribute);
-        IEnumType enumType = enumValueContainer.findEnumType();
-        if (enumType == null) {
-            throw new IllegalStateException();
-        }
-        ArgumentCheck.isTrue((IEnumType)addedEnumAttribute.getParent() == enumType);
-
-        String columnName = addedEnumAttribute.getName();
-        enumAttributeAdded(columnName);
-    }
-
     /** Adds a new column to the end of the enum values table with the given name. */
-    private void enumAttributeAdded(String columnName) throws CoreException {
+    private void addTableColumn(String columnName) throws CoreException {
         // Add column to the table
         TableColumn newColumn = new TableColumn(enumValuesTable, SWT.LEFT);
         newColumn.setText(columnName);
         newColumn.setWidth(200);
 
-        // Add column order info entry
-        columnOrderInfos.add(new ColumnOrderInfo(columnOrderInfos.size(), newColumn));
-
         // Add the name to the column names list
-        enumValuesTableColumnNames.add(columnName);
-
-        // Add the new enum attribute values to the original mappings
-        for (IEnumValue currentEnumValue : enumValueContainer.getEnumValues()) {
-            IEnumAttributeValue enumAttributeValueToAdd = currentEnumValue.getEnumAttributeValues().get(
-                    columnOrderInfos.size() - 1);
-            originalOrderedAttributeValuesMap.get(currentEnumValue).add(enumAttributeValueToAdd);
-        }
+        columnNames.add(columnName);
 
         updateTableViewer();
-        buildAndSetColumnOrder();
     }
 
     /**
-     * Removes the column with the name of the given enum attribute from the enum values table.
-     * 
-     * @param removedEnumAttribute The enum attribute that has been removed from the referenced enum
-     *            type.
-     * 
-     * @throws CoreException If an error occurs while searching for the enum type of the enum value
-     *             container to be edited or while updating the table viewer of the enum values
-     *             table.
-     * @throws NullPointerException If <code>removedEnumAttribute</code> is <code>null</code>.
-     * @throws IllegalStateException If this method is called while the referenced enum type is
-     *             invalid.
-     * @throws IllegalArgumentException If the referenced enum type of the given enum attribute is
-     *             not the enum type referenced by the enum value container to be edited.
-     * @throws NoSuchElementException If no column with the name of the given enum attribute exists.
+     * Renames the column identified by the given column name to the given new column name.
      */
-    public void enumAttributeRemoved(IEnumAttribute removedEnumAttribute) throws CoreException {
-        ArgumentCheck.notNull(removedEnumAttribute);
-        IEnumType enumType = enumValueContainer.findEnumType();
-        if (enumType == null) {
-            throw new IllegalStateException();
-        }
-        ArgumentCheck.isTrue((IEnumType)removedEnumAttribute.getParent() == enumType);
-
-        String columnName = removedEnumAttribute.getName();
-
-        // Remove column order info entry
-        ColumnOrderInfo removedColumnOrderInfo = null;
-        for (ColumnOrderInfo currentColumnOrderInfo : columnOrderInfos) {
-            if (currentColumnOrderInfo.tableColumn.getText().equals(columnName)) {
-                removedColumnOrderInfo = currentColumnOrderInfo;
-                columnOrderInfos.remove(currentColumnOrderInfo);
-                break;
-            }
-        }
-
-        if (removedColumnOrderInfo == null) {
-            throw new NoSuchElementException();
-        }
-
-        // Dispose column from table
-        int columnIndexToRemove = -1;
-        for (TableColumn currentColumn : enumValuesTable.getColumns()) {
-            columnIndexToRemove++;
-            if (currentColumn.getText().equals(columnName)) {
-                currentColumn.dispose();
-                break;
-            }
-        }
-
-        /*
-         * Now we removed the column order info entry but we still need to decrement some order
-         * numbers by 1 because we now have one column less. If we had 4 column order entries before
-         * and now have 3 our order numbers go only to 2 instead to 3. If we removed the entry with
-         * order number 1 for example we need to decrement the order numbers of all other entries
-         * with a higher order number to make the gap.
-         */
-        for (ColumnOrderInfo currentColumnOrderInfo : columnOrderInfos) {
-            if (currentColumnOrderInfo.orderNumber > removedColumnOrderInfo.orderNumber) {
-                currentColumnOrderInfo.orderNumber--;
-            }
-        }
-
-        // Remove the name from the column names list
-        enumValuesTableColumnNames.remove(columnName);
-
-        // Remove enum attribute values from the original mappings
-        int[] columnOrder = enumValuesTable.getColumnOrder();
-        for (IEnumValue currentEnumValue : enumValueContainer.getEnumValues()) {
-            originalOrderedAttributeValuesMap.get(currentEnumValue).remove(columnOrder[columnIndexToRemove]);
-        }
-
-        updateTableViewer();
-        buildAndSetColumnOrder();
-    }
-
-    /**
-     * Renames the column identified by the given column name to the name of the given enum
-     * attribute.
-     * 
-     * @param renamedEnumAttribute The enum attribute that has been renamed.
-     * @param columnName The name of the column to be renamed.
-     * 
-     * @throws CoreException If an error occurs while searching for the enum type of the enum value
-     *             container to be edited or while updating the table viewer of the enum values
-     *             table.
-     * @throws NullPointerException If <code>renamedEnumAttribute</code> or <code>columnName</code>
-     *             is <code>null</code>.
-     * @throws IllegalStateException If this method is called while the referenced enum type is
-     *             invalid.
-     * @throws IllegalArgumentException If the referenced enum type of the given enum attribute is
-     *             not the enum type referenced by the enum value container to be edited.
-     */
-    public void enumAttributeRenamed(IEnumAttribute renamedEnumAttribute, String columnName) throws CoreException {
-        ArgumentCheck.notNull(new Object[] { renamedEnumAttribute, columnName });
-        IEnumType enumType = enumValueContainer.findEnumType();
-        if (enumType == null) {
-            throw new IllegalStateException();
-        }
-        ArgumentCheck.isTrue((IEnumType)renamedEnumAttribute.getParent() == enumType);
-
-        String newColumnName = renamedEnumAttribute.getName();
-
-        if (!(enumValuesTableColumnNames.contains(columnName))) {
+    public void renameTableColumn(String columnName, String newColumnName) throws CoreException {
+        if (!(columnNames.contains(columnName))) {
             throw new NoSuchElementException();
         }
 
@@ -595,90 +481,15 @@ public class EnumValuesSection extends IpsSection {
         }
 
         // Update column names
-        for (int i = 0; i < enumValuesTableColumnNames.size(); i++) {
-            String currentColumnName = enumValuesTableColumnNames.get(i);
+        for (int i = 0; i < columnNames.size(); i++) {
+            String currentColumnName = columnNames.get(i);
             if (currentColumnName.equals(columnName)) {
-                enumValuesTableColumnNames.set(i, newColumnName);
+                columnNames.set(i, newColumnName);
                 break;
             }
         }
 
         updateTableViewer();
-    }
-
-    /**
-     * Interchanges the positions of the columns identified by their names by the given enum
-     * attributes.
-     * 
-     * @param enumAttribute1 The first enum attribute to be moved.
-     * @param enumAttribute2 The second enum attribute to be moved.
-     * 
-     * @throws CoreException If an error occurs while searching for the enum type of the enum value
-     *             container to be edited.
-     * @throws NullPointerException If <code>tableColumnName1</code> or
-     *             <code>tableColumnName2</code> is <code>null</code>.
-     * @throws IllegalStateException If this method is called while the referenced enum type is
-     *             invalid.
-     * @throws IllegalArgumentException If the referenced enum type of a given enum attribute is not
-     *             the enum type referenced by the enum value container to be edited.
-     * @throws NoSuchElementException If a table column can't be found because it does not exist.
-     */
-    public void enumAttributesMoved(IEnumAttribute enumAttribute1, IEnumAttribute enumAttribute2) throws CoreException {
-        ArgumentCheck.notNull(new Object[] { enumAttribute1, enumAttribute2 });
-        IEnumType enumType = enumValueContainer.findEnumType();
-        if (enumType == null) {
-            throw new IllegalStateException();
-        }
-        ArgumentCheck.isTrue((IEnumType)enumAttribute1.getParent() == enumType);
-        ArgumentCheck.isTrue((IEnumType)enumAttribute2.getParent() == enumType);
-
-        String tableColumnName1 = enumAttribute1.getName();
-        String tableColumnName2 = enumAttribute2.getName();
-
-        // Get the column order infos for the columns to move
-        ColumnOrderInfo columnOrderInfo1 = null;
-        ColumnOrderInfo columnOrderInfo2 = null;
-        for (ColumnOrderInfo currentColumnOrderInfo : columnOrderInfos) {
-            String currentText = currentColumnOrderInfo.tableColumn.getText();
-            if (currentText.equals(tableColumnName1)) {
-                columnOrderInfo1 = currentColumnOrderInfo;
-            } else if (currentText.equals(tableColumnName2)) {
-                columnOrderInfo2 = currentColumnOrderInfo;
-            }
-
-            if (columnOrderInfo1 != null && columnOrderInfo2 != null) {
-                break;
-            }
-        }
-
-        if (columnOrderInfo1 == null || columnOrderInfo2 == null) {
-            throw new NoSuchElementException();
-        }
-
-        // Temporary save the contents of the first column order info for swapping
-        int tempInfo1OrderNumber = columnOrderInfo1.orderNumber;
-        TableColumn tempInfo1TableColumn = columnOrderInfo1.tableColumn;
-
-        // Swap the contents of the column order infos
-        columnOrderInfo1.tableColumn = columnOrderInfo2.tableColumn;
-        columnOrderInfo1.orderNumber = columnOrderInfo2.orderNumber;
-        columnOrderInfo2.tableColumn = tempInfo1TableColumn;
-        columnOrderInfo2.orderNumber = tempInfo1OrderNumber;
-
-        buildAndSetColumnOrder();
-        enumValuesTableViewer.refresh();
-    }
-
-    /** Builds and sets the current column order from the column order info list. */
-    private void buildAndSetColumnOrder() {
-        // Build the new column order array for the enum values table
-        int[] columnOrder = new int[columnOrderInfos.size()];
-        for (int i = 0; i < columnOrderInfos.size(); i++) {
-            columnOrder[i] = columnOrderInfos.get(i).orderNumber;
-        }
-
-        // Set the column order
-        enumValuesTable.setColumnOrder(columnOrder);
     }
 
     /**
@@ -698,36 +509,86 @@ public class EnumValuesSection extends IpsSection {
         return columnIndex;
     }
 
-    /** Structure to track the table column order. */
-    private class ColumnOrderInfo {
-
-        /** The current order number of the column. */
-        private int orderNumber;
-
-        /** The table column at this order number. */
-        private TableColumn tableColumn;
-
-        /** Creates a new <code>ColumnOrderInfo</code>. */
-        private ColumnOrderInfo(int orderNumber, TableColumn tableColumn) {
-            this.orderNumber = orderNumber;
-            this.tableColumn = tableColumn;
+    /**
+     * {@inheritDoc}
+     * <p>
+     * Initiates in-place fixing of the enum values table if the enum value container to be edited
+     * is an enum type.
+     * <p>
+     * Updates the <code>originalOrderedAttributeValuesMap</code> and refreshes the
+     * <code>enumValuesTableViewer</code> when enum values have been added, moved or removed.
+     */
+    public void contentsChanged(ContentChangeEvent event) {
+        /*
+         * Return if the content changed was not the enum value container to be edited.
+         */
+        if (!(event.getIpsSrcFile().equals(enumValueContainer.getIpsSrcFile()))) {
+            return;
         }
 
+        if (enumValueContainer instanceof IEnumType) {
+            contentsChangedEnumType(event);
+        }
+
+        switch (event.getEventType()) {
+
+            case ContentChangeEvent.TYPE_WHOLE_CONTENT_CHANGED:
+                try {
+                    IIpsObject changedIpsObject = event.getIpsSrcFile().getIpsObject();
+                    if (changedIpsObject instanceof IEnumType) {
+                        IEnumType changedEnumType = (IEnumType)changedIpsObject;
+                        reinit(changedEnumType);
+                        updateEnabledStates(changedEnumType);
+
+                    }
+                } catch (CoreException e) {
+                    throw new RuntimeException(e);
+                }
+
+                break;
+        }
+    }
+
+    /** Handles content change events when editing an enum type. */
+    private void contentsChangedEnumType(ContentChangeEvent event) {
+        IIpsObjectPart part = event.getPart();
+        switch (event.getEventType()) {
+
+            case ContentChangeEvent.TYPE_PROPERTY_CHANGED:
+                if (part != null) {
+                    if (part instanceof IEnumAttribute) {
+                        IEnumAttribute modifiedEnumAttribute = (IEnumAttribute)part;
+                        IEnumType enumType = modifiedEnumAttribute.getEnumType();
+
+                        try {
+                            String oldName = null;
+                            for (String currentColumnName : columnNames) {
+                                if (enumType.findEnumAttribute(currentColumnName) == null) {
+                                    oldName = currentColumnName;
+                                    break;
+                                }
+                            }
+
+                            // Something else but the name has changed
+                            if (oldName == null) {
+                                return;
+                            }
+
+                            renameTableColumn(oldName, modifiedEnumAttribute.getName());
+                        } catch (CoreException e) {
+                            throw new RuntimeException(e);
+                        }
+                    }
+                }
+
+                break;
+        }
     }
 
     /**
-     * The content provider for the enum values table viewer. Provides in-place fixing of the enum
-     * values table for enum types being edited.
+     * The content provider for the enum values table viewer.
      */
-    private class EnumValuesContentProvider implements IStructuredContentProvider, ContentsChangeListener {
-
-        /**
-         * Creates the <code>EnumValuesContentProvider</code> and registers itself as
-         * <code>ContentsChangeListener</code> to the ips model.
-         */
-        public EnumValuesContentProvider() {
-            enumValueContainer.getIpsModel().addChangeListener(this);
-        }
+    private class EnumValuesContentProvider implements IStructuredContentProvider {
 
         /**
          * {@inheritDoc}
@@ -740,7 +601,7 @@ public class EnumValuesSection extends IpsSection {
          * {@inheritDoc}
          */
         public void dispose() {
-            enumValueContainer.getIpsModel().removeChangeListener(this);
+
         }
 
         /**
@@ -748,139 +609,6 @@ public class EnumValuesSection extends IpsSection {
          */
         public void inputChanged(Viewer viewer, Object oldInput, Object newInput) {
 
-        }
-
-        /**
-         * {@inheritDoc}
-         */
-        public void contentsChanged(ContentChangeEvent event) {
-            /*
-             * Return if the enum value container to be edited is not an enum type. In-place fixing
-             * is only possible for enum types.
-             */
-            if (!(enumValueContainer instanceof IEnumType)) {
-                return;
-            }
-
-            /*
-             * Return if the content changed was not the enum value container to be edited.
-             */
-            if (!(event.getIpsSrcFile().equals(enumValueContainer.getIpsSrcFile()))) {
-                return;
-            }
-
-            /*
-             * Switch based upon event type.
-             */
-            IIpsObjectPart part = event.getPart();
-            switch (event.getEventType()) {
-
-                case ContentChangeEvent.TYPE_PART_ADDED:
-                    if (part != null) {
-                        if (part instanceof IEnumAttribute) {
-                            try {
-                                enumAttributeAdded((IEnumAttribute)part);
-                            } catch (CoreException e) {
-                                throw new RuntimeException(e);
-                            }
-                        }
-                    }
-
-                    break;
-
-                case ContentChangeEvent.TYPE_PROPERTY_CHANGED:
-                    if (part != null) {
-                        if (part instanceof IEnumAttribute) {
-                            IEnumAttribute modifiedEnumAttribute = (IEnumAttribute)part;
-                            try {
-                                String oldName = null;
-                                for (String currentColumnName : enumValuesTableColumnNames) {
-                                    if (enumValueContainer.findEnumType().getEnumAttribute(currentColumnName) == null) {
-                                        oldName = currentColumnName;
-                                        break;
-                                    }
-                                }
-
-                                // Something else but the name has changed
-                                if (oldName == null) {
-                                    return;
-                                }
-
-                                enumAttributeRenamed(modifiedEnumAttribute, oldName);
-                            } catch (CoreException e) {
-                                throw new RuntimeException(e);
-                            }
-                        }
-                    }
-
-                    break;
-
-                case ContentChangeEvent.TYPE_PART_REMOVED:
-                    if (part != null) {
-                        if (part instanceof IEnumAttribute) {
-                            try {
-                                enumAttributeRemoved((IEnumAttribute)part);
-                            } catch (CoreException e) {
-                                throw new RuntimeException(e);
-                            }
-                        }
-                    }
-
-                    break;
-
-                case ContentChangeEvent.TYPE_PARTS_CHANGED_POSITIONS:
-                    IIpsObjectPart[] movedParts = event.getMovedParts();
-                    IEnumAttribute[] movedEnumAttributes = new IEnumAttribute[movedParts.length];
-                    for (int i = 0; i < movedParts.length; i++) {
-                        IIpsObjectPart currentIpsObjectPart = movedParts[i];
-                        if (currentIpsObjectPart instanceof IEnumAttribute) {
-                            movedEnumAttributes[i] = (IEnumAttribute)currentIpsObjectPart;
-                        } else {
-                            return;
-                        }
-                    }
-
-                    // Get the indizes of the moved attributes
-                    int index1 = -1;
-                    int index2 = -1;
-                    for (int i = 0; i < movedEnumAttributes.length; i++) {
-                        if (!(columnOrderInfos.get(i).tableColumn.getText().equals(movedEnumAttributes[i].getName()))) {
-                            if (index1 == -1) {
-                                index1 = i;
-                            } else {
-                                index2 = i;
-                            }
-                        }
-                        if (index1 != -1 && index2 != -1) {
-                            break;
-                        }
-                    }
-
-                    // Should theoretically never happen
-                    if (index1 == -1 || index2 == -1) {
-                        throw new NoSuchElementException();
-                    }
-
-                    try {
-                        enumAttributesMoved((IEnumAttribute)movedParts[index1], (IEnumAttribute)movedParts[index2]);
-                    } catch (CoreException e) {
-                        throw new RuntimeException(e);
-                    }
-
-                    break;
-
-                case ContentChangeEvent.TYPE_WHOLE_CONTENT_CHANGED:
-                    try {
-                        IIpsObject changedIpsObject = event.getIpsSrcFile().getIpsObject();
-                        if (changedIpsObject instanceof IEnumType) {
-                            updateEnabledStates((IEnumType)changedIpsObject);
-                        }
-                    } catch (CoreException e) {
-                        throw new RuntimeException(e);
-                    }
-
-                    break;
-            }
         }
 
     }
@@ -919,8 +647,8 @@ public class EnumValuesSection extends IpsSection {
 
             try {
                 MessageList messageList = enumValue.validate(enumValue.getIpsProject());
-                messageList = messageList.getMessagesFor(originalOrderedAttributeValuesMap.get(enumValue).get(
-                        columnIndex), IEnumAttributeValue.PROPERTY_VALUE);
+                messageList = messageList.getMessagesFor(enumAttributeValues.get(columnIndex),
+                        IEnumAttributeValue.PROPERTY_VALUE);
                 return !(messageList.isEmpty());
             } catch (CoreException e) {
                 throw new RuntimeException(e);
@@ -932,15 +660,14 @@ public class EnumValuesSection extends IpsSection {
          */
         public String getColumnText(Object element, int columnIndex) {
             // There need to be at least one column to be able to obtain label information
-            if (enumValuesTableColumnNames.size() > 0) {
+            if (columnNames.size() > 0) {
                 IEnumValue enumValue = (IEnumValue)element;
 
                 // For each requested column there must already be an enum attribute value
                 List<IEnumAttributeValue> enumAttributeValues = enumValue.getEnumAttributeValues();
                 if (enumAttributeValues.size() - 1 >= columnIndex) {
 
-                    IEnumAttributeValue enumAttributeValue = originalOrderedAttributeValuesMap.get(enumValue).get(
-                            columnIndex);
+                    IEnumAttributeValue enumAttributeValue = enumAttributeValues.get(columnIndex);
 
                     /*
                      * Return text formatted by the ips datatype formatter if the referenced enum

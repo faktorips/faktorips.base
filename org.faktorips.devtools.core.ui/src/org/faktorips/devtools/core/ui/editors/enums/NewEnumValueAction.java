@@ -16,6 +16,7 @@ package org.faktorips.devtools.core.ui.editors.enums;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.viewers.TableViewer;
+import org.faktorips.devtools.core.model.enums.IEnumValue;
 import org.faktorips.devtools.core.model.enums.IEnumValueContainer;
 import org.faktorips.devtools.core.ui.IpsUIPlugin;
 import org.faktorips.util.ArgumentCheck;
@@ -39,11 +40,6 @@ public class NewEnumValueAction extends Action {
 
     /**
      * Creates a new <code>NewEnumValueAction</code>.
-     * 
-     * @param enumValuesTableViewer The enum values table viewer linking the enum values ui table
-     *            widget with the model data.
-     * 
-     * @throws NullPointerException If <code>enumValuesTableViewer</code> is <code>null</code>.
      */
     public NewEnumValueAction(TableViewer enumValuesTableViewer) {
         super();
@@ -68,11 +64,20 @@ public class NewEnumValueAction extends Action {
         }
 
         IEnumValueContainer enumValueContainer = (IEnumValueContainer)enumValuesTableViewer.getInput();
+        IEnumValue newEnumValue = null;
         try {
-            enumValueContainer.newEnumValue();
+            newEnumValue = enumValueContainer.newEnumValue();
         } catch (CoreException e) {
             throw new RuntimeException(e);
         }
+
+        if (newEnumValue == null) {
+            /*
+             * TODO aw: show information dialog, can only happen for enum content and therefore will
+             * be implemented after 2.3.0rc1
+             */
+        }
+
         enumValuesTableViewer.refresh(true);
     }
 

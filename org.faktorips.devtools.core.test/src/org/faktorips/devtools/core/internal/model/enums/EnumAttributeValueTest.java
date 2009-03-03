@@ -11,16 +11,16 @@
  * Mitwirkende: Faktor Zehn AG - initial API and implementation - http://www.faktorzehn.de
  *******************************************************************************/
 
-package org.faktorips.devtools.core.internal.model.enumtype;
+package org.faktorips.devtools.core.internal.model.enums;
 
 import javax.xml.parsers.ParserConfigurationException;
 
 import org.eclipse.core.runtime.CoreException;
 import org.faktorips.devtools.core.model.IIpsModel;
-import org.faktorips.devtools.core.model.enumcontent.IEnumContent;
+import org.faktorips.devtools.core.model.enums.IEnumAttribute;
 import org.faktorips.devtools.core.model.enums.IEnumAttributeValue;
+import org.faktorips.devtools.core.model.enums.IEnumContent;
 import org.faktorips.devtools.core.model.enums.IEnumValue;
-import org.faktorips.devtools.core.model.enumtype.IEnumAttribute;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 
@@ -113,6 +113,10 @@ public class EnumAttributeValueTest extends AbstractIpsEnumPluginTest {
 
     public void testGetImage() {
         assertNull(genderEnumValueMale.getEnumAttributeValues().get(0).getImage());
+    }
+
+    public void testGetEnumValue() {
+        assertEquals(genderEnumValueMale, genderEnumValueMale.getEnumAttributeValues().get(0).getEnumValue());
     }
 
 }

@@ -21,11 +21,11 @@ import org.eclipse.swt.graphics.Image;
 import org.faktorips.datatype.ValueDatatype;
 import org.faktorips.devtools.core.internal.model.enums.Messages;
 import org.faktorips.devtools.core.internal.model.ipsobject.AtomicIpsObjectPart;
+import org.faktorips.devtools.core.model.enums.IEnumAttribute;
 import org.faktorips.devtools.core.model.enums.IEnumAttributeValue;
+import org.faktorips.devtools.core.model.enums.IEnumType;
 import org.faktorips.devtools.core.model.enums.IEnumValue;
 import org.faktorips.devtools.core.model.enums.IEnumValueContainer;
-import org.faktorips.devtools.core.model.enumtype.IEnumAttribute;
-import org.faktorips.devtools.core.model.enumtype.IEnumType;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.util.XmlUtil;
 import org.faktorips.util.message.Message;
@@ -133,11 +133,11 @@ public class EnumAttributeValue extends AtomicIpsObjectPart implements IEnumAttr
             return null;
         }
 
-        if (!(enumType.getEnumAttributesCount() == enumValue.getEnumAttributeValuesCount())) {
+        if (!(enumType.getEnumAttributesCount(true) == enumValue.getEnumAttributeValuesCount())) {
             return null;
         }
 
-        return enumType.getEnumAttributes().get(index);
+        return enumType.findAllEnumAttributes().get(index);
     }
 
     /**
@@ -178,6 +178,13 @@ public class EnumAttributeValue extends AtomicIpsObjectPart implements IEnumAttr
                 }
             }
         }
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public IEnumValue getEnumValue() {
+        return (IEnumValue)getParent();
     }
 
 }
