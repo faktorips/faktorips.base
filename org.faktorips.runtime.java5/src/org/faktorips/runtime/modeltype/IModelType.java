@@ -43,7 +43,7 @@ public interface IModelType extends IModelElement {
 
     /**
      * Returns a list containing all attributes declared in this model type. Attributes defined
-     * in the type's supertypes are not returned.
+     * in the type's super types are not returned.
      */
     public List<IModelTypeAttribute> getDeclaredAttributes();
 
@@ -61,14 +61,14 @@ public interface IModelType extends IModelElement {
 
     /**
      * Returns the attribute with the given <code>name</code> declared in this type.
-     * Attributes defined in the type's supertypes are not returned.
+     * Attributes defined in the type's super types are not returned.
      * 
      * @throws IllegalArgumentException if no attribute with the given <code>name</code> exists.
      */
     public IModelTypeAttribute getDeclaredAttribute(String name) throws IllegalArgumentException;
 
     /**
-     * Returns the attribute with the given <code>name</code> declared in this type or one of it's supertype.
+     * Returns the attribute with the given <code>name</code> declared in this type or one of it's super type.
      * 
      * @throws IllegalArgumentException if no attribute with the given <code>name</code> exists.
      */
@@ -81,13 +81,13 @@ public interface IModelType extends IModelElement {
     public List<IModelTypeAssociation> getDeclaredAssociations();
 
     /**
-     * Returns the type's associations including those defined in it's supertypes.
+     * Returns the type's associations including those defined in it's super types.
      */
     public List<IModelTypeAssociation> getAssociations();
 
     /**
      * Returns the association at the given <code>index</code>.
-     * Associations defined in the type's supertypes are not returned.
+     * Associations defined in the type's super types are not returned.
      * 
      * @throws IndexOutOfBoundsException if no association exists for the given <code>index</code>.
      */
@@ -95,7 +95,7 @@ public interface IModelType extends IModelElement {
 
     /**
      * Returns the association with the given <code>name</code> declared in this type.
-     * Associations defined in the type's supertypes are not considered.
+     * Associations defined in the type's super types are not considered.
      * 
      * @throws IllegalArgumentException if no association with the given <code>name</code> exists.
      */
