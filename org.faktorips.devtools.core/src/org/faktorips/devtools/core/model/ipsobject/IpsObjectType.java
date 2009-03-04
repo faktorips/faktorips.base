@@ -217,6 +217,14 @@ public class IpsObjectType {
 	public boolean isDatatype() {
 		return datatype;
 	}
+	
+	/**
+	 * Returns <code>true</code> if the object type is a entity type (policy component type or product component type),
+	 * otherwise <code>false</code>.
+	 */
+	public boolean isEntityType() {
+		return this==POLICY_CMPT_TYPE || this==PRODUCT_CMPT_TYPE_V2;
+	}
     
     /**
      * Returns <code>true</code> if instanced of this type are product definition objects,
