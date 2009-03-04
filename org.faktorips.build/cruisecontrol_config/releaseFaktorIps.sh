@@ -170,7 +170,7 @@ CREATE_BRANCH=false
 #################################################
 # assert that no other instance of pluginbuilder is running
 #################################################
-if [ ! $(ps xf | grep prg=pluginbuilder | grep -v "grep" | wc -l) -eq 0 ] ; then
+if [ ! $(ps xaf | grep prg=pluginbuilder | grep -v "grep" | wc -l) -eq 0 ] ; then
   echo "Cancel build: an instance of pluginbuilder is currently running!"
   echo "Due to resource limit, please wait until the other pluginbuilder process has finished."
   echo "If the plugin test are executed, this could take at least 20 minutes..."
