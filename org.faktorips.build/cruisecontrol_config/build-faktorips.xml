@@ -508,6 +508,7 @@
     	<antcall inheritall="true" target="-checkout.updatesite.on.faktorips.org"/>
     	<antcall inheritall="true" target="-copy.updatesite.to.faktorips.org"/>
     	
+		<!-- TODO Produkt-Build umbennenen faktorips-2.2.0.rfinal- mit zus. Produktnamen -->
     	<!-- report -->
     	<echo message=""/>
     	<echo message="result directory: ${buildDirectory}/results/"/>
