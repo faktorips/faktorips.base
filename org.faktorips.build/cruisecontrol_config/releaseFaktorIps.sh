@@ -503,14 +503,14 @@ fi
 
 # assert 
 #    b) if release property already exists then tagging Cvs is not allowed
-if [ $RELEASE_PROPERTIES_EXISTS = "true" -a ! "$SKIPTAGCVS" = "true" ] ; then
+if [ "$RELEASE_PROPERTIES_EXISTS" = "true" -a ! "$SKIPTAGCVS" = "true" ] ; then
   echo "=> Cancel build: tagging is not allowed if the release already exists!"
   echo "   Please use -skipTaggingCvs or remove the release.properties  and try again."
   exit 1
 fi
 
-# create release property file if not exists or overwrite is true
-if [ "$RELEASE_PROPERTIES_EXISTS" = "false" -o "$OVERWRITE" = "true" ] ; then
+# create release property file if not exists
+if [ "$RELEASE_PROPERTIES_EXISTS" = "false" ] ; then
   echo "# written by $0" > $RELEASE_PROPERTIES
   echo "# $(date)" >> $RELEASE_PROPERTIES
   echo buildType= >> $RELEASE_PROPERTIES
@@ -528,6 +528,8 @@ if [ "$RELEASE_PROPERTIES_EXISTS" = "false" -o "$OVERWRITE" = "true" ] ; then
     # update file in cvs
     cvs -d $CVS_ROOT commit -m "release build $BUILD_VERSION" $RELEASE_PROPERTIES
   fi
+else
+  echo "Skip creating release property, file already exists. "$RELEASE_PROPERTIES
 fi
 
 # 5. tag all projects defined in the pluginbuilder project (move tag if already exists)
