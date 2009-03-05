@@ -3,7 +3,7 @@
  * 
  * Alle Rechte vorbehalten.
  * 
- * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen, 
+ * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen,
  * etc.) duerfen nur unter den Bedingungen der Faktor-Zehn-Community Lizenzvereinbarung - Version
  * 0.1 (vor Gruendung Community) genutzt werden, die Bestandteil der Auslieferung ist und auch unter
  * http://www.faktorzehn.org/f10-org:lizenzen:community eingesehen werden kann.
@@ -26,29 +26,30 @@ import org.faktorips.devtools.core.util.QNameUtil;
 import org.osgi.framework.Version;
 
 /**
- * Version manager for the core-feature of FaktorIps. 
+ * Version manager for the core-feature of FaktorIps.
  * 
- * This manager is based on classes named org.faktorips.devtools.core.internal.model.versionmanager.Migration_&lt;version&gt;.
- * version is the version-number the migration-class can migrate.  
+ * This manager is based on classes named
+ * org.faktorips.devtools.core.internal.model.versionmanager.Migration_&lt;version&gt;. version is
+ * the version-number the migration-class can migrate.
  * 
  * @author Thorsten Guenther
  */
 public class CoreVersionManager implements IIpsFeatureVersionManager {
-    
+
     private String version;
     private String id;
     private String predecessorId;
 
-    // the classloader to be used if the migration-operations are loaded. This is only used 
+    // the classloader to be used if the migration-operations are loaded. This is only used
     // for tests...
     private ClassLoader loader;
-    
+
     public CoreVersionManager() {
         super();
         loader = getClass().getClassLoader();
         version = IpsPlugin.getInstalledFaktorIpsVersion();
     }
-    
+
     /**
      * {@inheritDoc}
      */
@@ -76,11 +77,11 @@ public class CoreVersionManager implements IIpsFeatureVersionManager {
         if (compareToCurrentVersion(otherVersion) > 0) {
             return false;
         }
-        
+
         if (compareToCurrentVersion(otherVersion) == 0) {
             return true;
         }
-        
+
         try {
             AbstractIpsProjectMigrationOperation[] operations = getMigrationOperations(null, otherVersion);
             for (int i = 0; i < operations.length; i++) {
@@ -89,14 +90,13 @@ public class CoreVersionManager implements IIpsFeatureVersionManager {
                 }
             }
             return true;
-        }
-        catch (CoreException e) {
+        } catch (CoreException e) {
             IpsPlugin.log(e);
             return false;
         }
-        
+
     }
-    
+
     /**
      * {@inheritDoc}
      */
@@ -109,10 +109,12 @@ public class CoreVersionManager implements IIpsFeatureVersionManager {
     /**
      * {@inheritDoc}
      */
-    public AbstractIpsProjectMigrationOperation[] getMigrationOperations(IIpsProject projectToMigrate) throws CoreException {
+    public AbstractIpsProjectMigrationOperation[] getMigrationOperations(IIpsProject projectToMigrate)
+            throws CoreException {
         String version = projectToMigrate.getReadOnlyProperties().getMinRequiredVersionNumber(getFeatureId());
-        if (version == null){
-            // no version entry was found in the properties, therefore no migration operation will be available
+        if (version == null) {
+            // no version entry was found in the properties, therefore no migration operation will
+            // be available
             // for this project
             return new AbstractIpsProjectMigrationOperation[0];
         }
@@ -122,13 +124,14 @@ public class CoreVersionManager implements IIpsFeatureVersionManager {
     /**
      * {@inheritDoc}
      */
-    private AbstractIpsProjectMigrationOperation[] getMigrationOperations(IIpsProject projectToMigrate, String versionToStart) throws CoreException {
-        
+    private AbstractIpsProjectMigrationOperation[] getMigrationOperations(IIpsProject projectToMigrate,
+            String versionToStart) throws CoreException {
+
         if (IpsPlugin.getDefault().isTestMode()) {
             loader = (ClassLoader)IpsPlugin.getDefault().getTestAnswerProvider().getAnswer();
         }
-        
-        ArrayList operations = new ArrayList();
+
+        ArrayList<AbstractIpsProjectMigrationOperation> operations = new ArrayList<AbstractIpsProjectMigrationOperation>();
         String migrationClassName = null;
         try {
             AbstractIpsProjectMigrationOperation migrationOperation = null;
@@ -138,18 +141,19 @@ public class CoreVersionManager implements IIpsFeatureVersionManager {
                 underscoreVersion = underscoreVersion.replace('-', '_');
                 String packageName = QNameUtil.getPackageName(getClass().getName());
                 migrationClassName = packageName + ".Migration_" + underscoreVersion;
-                Class clazz = Class.forName(migrationClassName, true, loader); //$NON-NLS-1$
-                Constructor constructor = clazz.getConstructor(new Class[] {IIpsProject.class, String.class});
-                migrationOperation = (AbstractIpsProjectMigrationOperation)constructor.newInstance(new Object[] {projectToMigrate, getFeatureId()});
+                Class<?> clazz = Class.forName(migrationClassName, true, loader); //$NON-NLS-1$
+                Constructor<?> constructor = clazz.getConstructor(new Class[] { IIpsProject.class, String.class });
+                migrationOperation = (AbstractIpsProjectMigrationOperation)constructor.newInstance(new Object[] {
+                        projectToMigrate, getFeatureId() });
                 operations.add(migrationOperation);
                 version = migrationOperation.getTargetVersion();
-            } 
-        }
-        catch (Exception e) {
+            }
+        } catch (Exception e) {
             throw new CoreException(new IpsStatus(e));
         }
-        
-        return (AbstractIpsProjectMigrationOperation[])operations.toArray(new AbstractIpsProjectMigrationOperation[operations.size()]);
+
+        return (AbstractIpsProjectMigrationOperation[])operations
+                .toArray(new AbstractIpsProjectMigrationOperation[operations.size()]);
     }
 
     /**
