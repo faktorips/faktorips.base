@@ -16,6 +16,7 @@ package org.faktorips.devtools.core.internal.model.enums;
 import java.util.List;
 
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.jdt.core.JavaConventions;
 import org.eclipse.osgi.util.NLS;
 import org.eclipse.swt.graphics.Image;
 import org.faktorips.datatype.ValueDatatype;
@@ -176,6 +177,56 @@ public class EnumAttributeValue extends AtomicIpsObjectPart implements IEnumAttr
                             Message.ERROR, this, PROPERTY_VALUE);
                     list.add(validationMessage);
                 }
+            }
+        }
+
+        IEnumValue enumValue = getEnumValue();
+        IEnumAttributeValue identifierEnumAttributeValue = enumValue.findIdentifierEnumAttributeValue();
+        if (identifierEnumAttributeValue == this) {
+            validateIdentifierEnumAttributeValue(list, ipsProject);
+        }
+    }
+
+    /** Validations neccessary if this enum attribute value refers to an identifier enum attribute. */
+    private void validateIdentifierEnumAttributeValue(MessageList list, IIpsProject ipsProject) throws CoreException {
+        IEnumAttribute enumAttribute = findEnumAttribute();
+        String text;
+        Message validationMessage;
+
+        // The identifier enum attribute value must not be empty
+        String identifierValue = getValue();
+        boolean identifierValueMissing = (identifierValue == null) ? true : identifierValue.equals("");
+        if (identifierValueMissing) {
+            text = NLS.bind(Messages.EnumAttributeValue_IdentifierEmpty, enumAttribute.getName());
+            validationMessage = new Message(MSGCODE_ENUM_ATTRIBUTE_VALUE_IDENTIFIER_VALUE_EMPTY, text, Message.ERROR,
+                    this);
+            list.add(validationMessage);
+        }
+
+        if (!identifierValueMissing) {
+            // The identifier enum attribute value must be unique
+            String value = getValue();
+            IEnumValueContainer enumValueContainer = getEnumValue().getEnumValueContainer();
+            for (IEnumValue currentEnumValue : enumValueContainer.getEnumValues()) {
+                if (currentEnumValue == getEnumValue()) {
+                    continue;
+                }
+
+                if (currentEnumValue.findIdentifierEnumAttributeValue().getValue().equals(value)) {
+                    text = NLS.bind(Messages.EnumAttributeValue_IdentifierNotUnique, enumAttribute.getName());
+                    validationMessage = new Message(MSGCODE_ENUM_ATTRIBUTE_VALUE_IDENTIFIER_NOT_UNIQUE, text,
+                            Message.ERROR, this);
+                    list.add(validationMessage);
+                    break;
+                }
+            }
+
+            // The identifier enum attribute value must be java conform
+            if (!(JavaConventions.validateIdentifier(value, "1.5", "1.5").isOK())) {
+                text = NLS.bind(Messages.EnumAttributeValue_IdentifierNotJavaConform, enumAttribute.getName());
+                validationMessage = new Message(MSGCODE_ENUM_ATTRIBUTE_VALUE_IDENTIFIER_NOT_JAVA_CONFORM, text,
+                        Message.ERROR, this);
+                list.add(validationMessage);
             }
         }
     }

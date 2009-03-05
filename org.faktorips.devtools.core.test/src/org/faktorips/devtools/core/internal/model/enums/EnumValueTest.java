@@ -53,16 +53,6 @@ public class EnumValueTest extends AbstractIpsEnumPluginTest {
         assertEquals(1, genderEnumValueFemale.validate(ipsProject).getNoOfMessages());
     }
 
-    public void testValidateIdentifierEnumAttributeValueEmpty() throws CoreException {
-        IEnumAttributeValue identifierEnumAttributeValue = genderEnumValueFemale.findIdentifierEnumAttributeValue();
-
-        identifierEnumAttributeValue.setValue("");
-        assertEquals(1, genderEnumValueFemale.validate(ipsProject).getNoOfMessages());
-
-        identifierEnumAttributeValue.setValue(null);
-        assertEquals(1, genderEnumValueFemale.validate(ipsProject).getNoOfMessages());
-    }
-
     public void testGetImage() {
         assertNull(genderEnumValueMale.getImage());
     }

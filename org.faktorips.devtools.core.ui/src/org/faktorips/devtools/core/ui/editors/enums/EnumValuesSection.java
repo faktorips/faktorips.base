@@ -647,8 +647,7 @@ public class EnumValuesSection extends IpsSection implements ContentsChangeListe
 
             try {
                 MessageList messageList = enumValue.validate(enumValue.getIpsProject());
-                messageList = messageList.getMessagesFor(enumAttributeValues.get(columnIndex),
-                        IEnumAttributeValue.PROPERTY_VALUE);
+                messageList = messageList.getMessagesFor(enumAttributeValues.get(columnIndex), null);
                 return !(messageList.isEmpty());
             } catch (CoreException e) {
                 throw new RuntimeException(e);

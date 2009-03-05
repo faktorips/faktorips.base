@@ -43,6 +43,27 @@ public interface IEnumAttributeValue extends IIpsObjectPart {
             + "EnumAttributeValueNotParsable"; //$NON-NLS-1$
 
     /**
+     * Validation message code to indicate that this enum attribute value is refering the identifier
+     * enum attribute but is empty.
+     */
+    public final static String MSGCODE_ENUM_ATTRIBUTE_VALUE_IDENTIFIER_VALUE_EMPTY = MSGCODE_PREFIX
+            + "EnumAttributeValueIdentifierValueEmpty"; //$NON-NLS-1$
+
+    /**
+     * Validation message code to indicate that that this enum attribute value is refering the
+     * identifier enum attribute but is not unique.
+     */
+    public final static String MSGCODE_ENUM_ATTRIBUTE_VALUE_IDENTIFIER_NOT_UNIQUE = MSGCODE_PREFIX
+            + "EnumAttributeValueIdentifierNotUnique"; //$NON-NLS-1$
+    
+    /**
+     * Validation message code to indicate that that this enum attribute value is refering the
+     * identifier enum attribute but is not java conform.
+     */
+    public final static String MSGCODE_ENUM_ATTRIBUTE_VALUE_IDENTIFIER_NOT_JAVA_CONFORM = MSGCODE_PREFIX
+            + "EnumAttributeValueIdentifierNotJavaConform"; //$NON-NLS-1$
+
+    /**
      * Searches and returns the enum attribute this enum attribute value refers to. Returns
      * <code>null</code> if none could be found.
      * 
@@ -61,7 +82,7 @@ public interface IEnumAttributeValue extends IIpsObjectPart {
      * @param value The new value. May also be <code>null</code>.
      */
     public void setValue(String value);
-    
+
     /**
      * Returns the enum value this enum attribute value belongs to.
      * <p>

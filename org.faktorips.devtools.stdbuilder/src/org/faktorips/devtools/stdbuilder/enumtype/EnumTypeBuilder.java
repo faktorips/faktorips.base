@@ -154,6 +154,7 @@ public class EnumTypeBuilder extends DefaultJavaSourceFileBuilder {
          * compiler that now the attribute section begins.
          */
         boolean appendSemicolon = javaAtLeast5;
+        boolean lastEnumValueGenerated = false;
 
         /*
          * Generate the enum values if they are part of the model and if the enum type is not
@@ -171,8 +172,9 @@ public class EnumTypeBuilder extends DefaultJavaSourceFileBuilder {
                             .findIdentifierEnumAttributeValue();
                     List<IEnumAttributeValue> currentEnumAttributeValues = currentEnumValue.getEnumAttributeValues();
                     if (javaAtLeast5) {
+                        lastEnumValueGenerated = (i == enumValues.size() - 1);
                         generateEnumValueAsEnumDefinition(currentEnumAttributeValues,
-                                currentIdentifierEnumAttributeValue, (i == enumValues.size() - 1), mainSection
+                                currentIdentifierEnumAttributeValue, lastEnumValueGenerated, mainSection
                                         .getEnumDefinitionBuilder());
                         appendSemicolon = false;
                     } else {
@@ -184,7 +186,7 @@ public class EnumTypeBuilder extends DefaultJavaSourceFileBuilder {
             }
         }
 
-        if (appendSemicolon) {
+        if (appendSemicolon || (!lastEnumValueGenerated && javaAtLeast5)) {
             mainSection.getEnumDefinitionBuilder().append(';');
         }
     }
@@ -274,7 +276,7 @@ public class EnumTypeBuilder extends DefaultJavaSourceFileBuilder {
 
     /** Generates the java code for the attributes. */
     private void generateAttributes(JavaCodeFragmentBuilder attributeBuilder) throws CoreException {
-        for (IEnumAttribute currentEnumAttribute : getEnumType().getEnumAttributes()) {
+        for (IEnumAttribute currentEnumAttribute : getEnumType().findAllEnumAttributes()) {
             String attributeName = currentEnumAttribute.getName();
             // The first character will be made lower case
             String codeName = getJavaNamingConvention().getMemberVarName(attributeName);
@@ -297,7 +299,7 @@ public class EnumTypeBuilder extends DefaultJavaSourceFileBuilder {
     /** Generates the java code for the constructor. */
     private void generateConstructor(JavaCodeFragmentBuilder constructorBuilder) throws CoreException {
         IEnumType enumType = getEnumType();
-        List<IEnumAttribute> enumAttributes = enumType.getEnumAttributes();
+        List<IEnumAttribute> enumAttributes = enumType.findAllEnumAttributes();
         List<IEnumAttribute> validEnumAttributes = new ArrayList<IEnumAttribute>();
         for (IEnumAttribute currentEnumAttribute : enumAttributes) {
             if (currentEnumAttribute.isValid()) {
@@ -338,7 +340,7 @@ public class EnumTypeBuilder extends DefaultJavaSourceFileBuilder {
         constructorMethodBody.append("super(");
 
         List<IEnumAttribute> validSupertypeAttributes = new ArrayList<IEnumAttribute>();
-        for (IEnumAttribute currentEnumAttribute : enumType.findSuperEnumType().getEnumAttributes()) {
+        for (IEnumAttribute currentEnumAttribute : enumType.findSuperEnumType().findAllEnumAttributes()) {
             if (currentEnumAttribute.isValid()) {
                 validSupertypeAttributes.add(currentEnumAttribute);
             }
@@ -365,7 +367,7 @@ public class EnumTypeBuilder extends DefaultJavaSourceFileBuilder {
          * Every attribute that shall be initialized must be valid.
          */
         List<IEnumAttribute> attributesToInit = new ArrayList<IEnumAttribute>();
-        for (IEnumAttribute currentEnumAttribute : getEnumType().getEnumAttributes()) {
+        for (IEnumAttribute currentEnumAttribute : getEnumType().findAllEnumAttributes()) {
             if (currentEnumAttribute.isValid()) {
                 if (isEnum() || !(currentEnumAttribute.isInherited())) {
                     attributesToInit.add(currentEnumAttribute);
@@ -387,7 +389,7 @@ public class EnumTypeBuilder extends DefaultJavaSourceFileBuilder {
     /** Generates the java code for the methods. */
     private void generateMethods(JavaCodeFragmentBuilder methodBuilder) throws CoreException {
         IEnumType enumType = getEnumType();
-        List<IEnumAttribute> enumAttributes = enumType.getEnumAttributes();
+        List<IEnumAttribute> enumAttributes = enumType.findAllEnumAttributes();
 
         // Create getters for each attribute
         for (IEnumAttribute currentEnumAttribute : enumAttributes) {

@@ -68,7 +68,7 @@ public class EnumAttributeValueTest extends AbstractIpsEnumPluginTest {
         assertEquals(2, loadedEnumContent.getEnumValues().size());
     }
 
-    public void testValidateThis() throws CoreException {
+    public void testValidateParsable() throws CoreException {
         IEnumAttribute stringAttribute = genderEnumType.newEnumAttribute();
         stringAttribute.setDatatype(STRING_DATATYPE_NAME);
         stringAttribute.setName("StringAttribute");
@@ -109,6 +109,34 @@ public class EnumAttributeValueTest extends AbstractIpsEnumPluginTest {
         booleanNewAttributeValue.setValue("fooBar");
         assertEquals(1, booleanNewAttributeValue.validate(ipsProject).getNoOfMessages());
         booleanNewAttributeValue.setValue("false");
+    }
+
+    public void testValidateIdentifierEmpty() throws CoreException {
+        IEnumAttributeValue identifierEnumAttributeValue = genderEnumValueFemale.findIdentifierEnumAttributeValue();
+
+        identifierEnumAttributeValue.setValue("");
+        assertEquals(1, genderEnumValueFemale.validate(ipsProject).getNoOfMessages());
+
+        identifierEnumAttributeValue.setValue(null);
+        assertEquals(1, genderEnumValueFemale.validate(ipsProject).getNoOfMessages());
+    }
+
+    public void testValidateIdentifierUnique() throws CoreException {
+        IEnumAttributeValue identifierEnumAttributeValueMale = genderEnumValueMale.findIdentifierEnumAttributeValue();
+        IEnumAttributeValue identifierEnumAttributeValueFemale = genderEnumValueFemale
+                .findIdentifierEnumAttributeValue();
+
+        identifierEnumAttributeValueMale.setValue("foo");
+        identifierEnumAttributeValueFemale.setValue("foo");
+
+        assertEquals(1, identifierEnumAttributeValueMale.validate(ipsProject).getNoOfMessages());
+        assertEquals(1, identifierEnumAttributeValueFemale.validate(ipsProject).getNoOfMessages());
+    }
+
+    public void testValidateIdentifierNotJavaConform() throws CoreException {
+        IEnumAttributeValue identifierEnumAttributeValueMale = genderEnumValueMale.findIdentifierEnumAttributeValue();
+        identifierEnumAttributeValueMale.setValue("3sdj4%332§4^2");
+        assertEquals(1, identifierEnumAttributeValueMale.validate(ipsProject).getNoOfMessages());
     }
 
     public void testGetImage() {

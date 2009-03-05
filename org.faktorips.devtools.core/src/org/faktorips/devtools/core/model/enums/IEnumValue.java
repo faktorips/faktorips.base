@@ -46,10 +46,6 @@ public interface IEnumValue extends IIpsObjectPart {
     public final static String MSGCODE_NUMBER_ATTRIBUTE_VALUES_DOES_NOT_CORRESPOND_TO_NUMBER_ATTRIBUTES = MSGCODE_PREFIX
             + "NumberAttributeValuesDoesNotCorrespondToNumberAttributes"; //$NON-NLS-1$
 
-    /** Validation message code to indicate that the identifier enum attribute value is empty. */
-    public final static String MSGCODE_IDENTIFIER_ATTRIBUTE_VALUE_EMPTY = MSGCODE_PREFIX
-            + "IdentifierAttributeValueEmpty"; //$NON-NLS-1$
-
     /**
      * Returns a list containing all enum attribute values.
      */

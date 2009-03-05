@@ -146,20 +146,6 @@ public class EnumValue extends BaseIpsObjectPart implements IEnumValue {
                         this);
                 list.add(validationMessage);
             }
-
-            // The identifier enum attribute value must not be empty
-            IEnumAttributeValue identifierEnumAttributeValue = findIdentifierEnumAttributeValue();
-            if (identifierEnumAttributeValue != null) {
-                String identifierValue = identifierEnumAttributeValue.getValue();
-                boolean identifierValueMissing = (identifierValue == null) ? true : identifierValue.equals("");
-                if (identifierValueMissing) {
-                    String text = NLS.bind(Messages.EnumValue_IdentifierAttributeValueEmpty,
-                            identifierEnumAttributeValue.findEnumAttribute().getName());
-                    Message validationMessage = new Message(MSGCODE_IDENTIFIER_ATTRIBUTE_VALUE_EMPTY, text,
-                            Message.ERROR, this);
-                    list.add(validationMessage);
-                }
-            }
         }
     }
 
