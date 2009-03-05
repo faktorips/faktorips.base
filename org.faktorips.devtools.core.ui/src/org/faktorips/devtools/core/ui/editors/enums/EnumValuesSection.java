@@ -90,6 +90,9 @@ import org.faktorips.util.message.MessageList;
  */
 public class EnumValuesSection extends IpsSection implements ContentsChangeListener {
 
+    /** The image to show for columns that contain the identifier value. */
+    private final Image IDENTIFIER_COLUMN_IMAGE = IpsUIPlugin.getDefault().getImage("TableKeyColumn.gif");
+
     /** The enum value container holding the enum values to be edited. */
     private IEnumValueContainer enumValueContainer;
 
@@ -309,13 +312,13 @@ public class EnumValuesSection extends IpsSection implements ContentsChangeListe
                 IEnumAttribute currentEnumAttribute = currentEnumAttributeValue.findEnumAttribute();
                 String columnName = (currentEnumAttribute != null) ? currentEnumAttribute.getName() : NLS.bind(
                         Messages.EnumValuesSection_defaultColumnName, i + 1);
-                addTableColumn(columnName);
+                addTableColumn(columnName, currentEnumAttribute.isIdentifier());
             }
 
         } else {
             if (enumType != null) {
                 for (IEnumAttribute currentEnumAttribute : enumType.findAllEnumAttributes()) {
-                    addTableColumn(currentEnumAttribute.getName());
+                    addTableColumn(currentEnumAttribute.getName(), currentEnumAttribute.isIdentifier());
                 }
             }
         }
@@ -452,11 +455,16 @@ public class EnumValuesSection extends IpsSection implements ContentsChangeListe
     }
 
     /** Adds a new column to the end of the enum values table with the given name. */
-    private void addTableColumn(String columnName) throws CoreException {
+    private void addTableColumn(String columnName, boolean identifierColumnn) throws CoreException {
         // Add column to the table
         TableColumn newColumn = new TableColumn(enumValuesTable, SWT.LEFT);
         newColumn.setText(columnName);
         newColumn.setWidth(200);
+
+        // Set identifier image as neccessary
+        if (identifierColumnn) {
+            newColumn.setImage(IDENTIFIER_COLUMN_IMAGE);
+        }
 
         // Add the name to the column names list
         columnNames.add(columnName);
@@ -571,6 +579,7 @@ public class EnumValuesSection extends IpsSection implements ContentsChangeListe
 
                             // Something else but the name has changed
                             if (oldName == null) {
+                                reinit(enumType);
                                 return;
                             }
 

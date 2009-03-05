@@ -16,6 +16,8 @@ package org.faktorips.devtools.core.internal.model.enums;
 import javax.xml.parsers.ParserConfigurationException;
 
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.swt.graphics.Image;
+import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.model.IIpsModel;
 import org.faktorips.devtools.core.model.enums.IEnumAttribute;
 import org.faktorips.devtools.core.model.enums.IEnumType;
@@ -23,6 +25,11 @@ import org.w3c.dom.Element;
 import org.w3c.dom.NamedNodeMap;
 
 public class EnumAttributeTest extends AbstractIpsEnumPluginTest {
+
+    private final String ICON = "EnumAttribute.gif";
+    private final String OVERRIDDEN_ICON = "EnumAttributeOverridden.gif";
+    private final String IDENTIFIER_ICON = "EnumAttributeIdentifier.gif";
+    private final String OVERRIDDEN_IDENTIFIER_ICON = "EnumAttributeOverriddenIdentifier.gif";
 
     @Override
     public void setUp() throws Exception {
@@ -145,8 +152,26 @@ public class EnumAttributeTest extends AbstractIpsEnumPluginTest {
         assertTrue(inheritedAttribute.isValid());
     }
 
-    public void testGetImage() {
-        assertNotNull(genderEnumAttributeId.getImage());
+    public void testGetImage() throws CoreException {
+        Image icon = IpsPlugin.getDefault().getImage(ICON);
+        Image overriddenIcon = IpsPlugin.getDefault().getImage(OVERRIDDEN_ICON);
+        Image identifierIcon = IpsPlugin.getDefault().getImage(IDENTIFIER_ICON);
+        Image overriddenIdentifierIcon = IpsPlugin.getDefault().getImage(OVERRIDDEN_IDENTIFIER_ICON);
+
+        assertEquals(icon, genderEnumAttributeName.getImage());
+        assertEquals(identifierIcon, genderEnumAttributeId.getImage());
+
+        genderEnumType.setAbstract(true);
+        IEnumType subEnumType = newEnumType(ipsProject, "SubEnumType");
+        subEnumType.setSuperEnumType(genderEnumType.getQualifiedName());
+        IEnumAttribute subAttributeId = subEnumType.newEnumAttribute();
+        subAttributeId.setIdentifier(true);
+        subAttributeId.setInherited(true);
+        IEnumAttribute subAttributeName = subEnumType.newEnumAttribute();
+        subAttributeName.setInherited(true);
+
+        assertEquals(overriddenIcon, subAttributeName.getImage());
+        assertEquals(overriddenIdentifierIcon, subAttributeId.getImage());
     }
 
     public void testGetEnumType() {

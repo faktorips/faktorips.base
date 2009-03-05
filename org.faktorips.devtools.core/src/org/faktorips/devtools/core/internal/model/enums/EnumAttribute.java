@@ -45,6 +45,15 @@ public class EnumAttribute extends AtomicIpsObjectPart implements IEnumAttribute
     /** The icon representing an enum attribute. */
     private final String ICON = "EnumAttribute.gif";
 
+    /** The icon representing an overridden enum attribute. */
+    private final String OVERRIDDEN_ICON = "EnumAttributeOverridden.gif";
+
+    /** The icon representing an identifier enum attribute. */
+    private final String IDENTIFIER_ICON = "EnumAttributeIdentifier.gif";
+
+    /** The icon representing an overridden identifier enum attribute. */
+    private final String OVERRIDDEN_IDENTIFIER_ICON = "EnumAttributeOverriddenIdentifier.gif";
+
     /** The datatype of this attribute. */
     private String datatype;
 
@@ -151,7 +160,15 @@ public class EnumAttribute extends AtomicIpsObjectPart implements IEnumAttribute
      * {@inheritDoc}
      */
     public Image getImage() {
-        return IpsPlugin.getDefault().getImage(ICON);
+        if (isIdentifier && isInherited) {
+            return IpsPlugin.getDefault().getImage(OVERRIDDEN_IDENTIFIER_ICON);
+        } else if (isIdentifier) {
+            return IpsPlugin.getDefault().getImage(IDENTIFIER_ICON);
+        } else if (isInherited) {
+            return IpsPlugin.getDefault().getImage(OVERRIDDEN_ICON);
+        } else {
+            return IpsPlugin.getDefault().getImage(ICON);
+        }
     }
 
     /**
