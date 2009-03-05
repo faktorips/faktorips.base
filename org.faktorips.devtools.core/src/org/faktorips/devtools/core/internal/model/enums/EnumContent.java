@@ -14,7 +14,6 @@
 package org.faktorips.devtools.core.internal.model.enums;
 
 import org.eclipse.core.runtime.CoreException;
-import org.faktorips.devtools.core.model.IDependency;
 import org.faktorips.devtools.core.model.enums.EnumContentValidations;
 import org.faktorips.devtools.core.model.enums.IEnumContent;
 import org.faktorips.devtools.core.model.enums.IEnumType;
@@ -117,14 +116,6 @@ public class EnumContent extends EnumValueContainer implements IEnumContent {
         super.validateThis(list, ipsProject);
 
         EnumContentValidations.validateEnumType(list, this, enumType, ipsProject);
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public IDependency[] dependsOn() throws CoreException {
-        return null;
     }
 
 }
