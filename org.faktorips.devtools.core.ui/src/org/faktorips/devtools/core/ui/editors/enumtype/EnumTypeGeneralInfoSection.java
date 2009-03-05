@@ -14,6 +14,8 @@
 package org.faktorips.devtools.core.ui.editors.enumtype;
 
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.swt.events.DisposeEvent;
+import org.eclipse.swt.events.DisposeListener;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
@@ -21,6 +23,8 @@ import org.eclipse.ui.forms.events.HyperlinkAdapter;
 import org.eclipse.ui.forms.events.HyperlinkEvent;
 import org.eclipse.ui.forms.widgets.Hyperlink;
 import org.eclipse.ui.forms.widgets.Section;
+import org.faktorips.devtools.core.model.ContentChangeEvent;
+import org.faktorips.devtools.core.model.ContentsChangeListener;
 import org.faktorips.devtools.core.model.enums.IEnumType;
 import org.faktorips.devtools.core.ui.ExtensionPropertyControlFactory;
 import org.faktorips.devtools.core.ui.IpsUIPlugin;
@@ -45,13 +49,16 @@ import org.faktorips.util.ArgumentCheck;
  * 
  * @since 2.3
  */
-public class EnumTypeGeneralInfoSection extends IpsSection {
+public class EnumTypeGeneralInfoSection extends IpsSection implements ContentsChangeListener {
 
     /** The enum type the editor is currently editing. */
     private IEnumType enumType;
 
     /** The extension property control factory that may extend the controls. */
     private ExtensionPropertyControlFactory extFactory;
+
+    /** The ui checkbox for the valuesArePartOfModelCheckbox property. */
+    private Checkbox valuesArePartOfModelCheckbox;
 
     /**
      * Creates a new <code>EnumTypeGeneralInfoSection</code>.
@@ -62,7 +69,7 @@ public class EnumTypeGeneralInfoSection extends IpsSection {
      * 
      * @throws NullPointerException If <code>enumType</code> is <code>null</code>.
      */
-    public EnumTypeGeneralInfoSection(IEnumType enumType, Composite parent, UIToolkit toolkit) {
+    public EnumTypeGeneralInfoSection(final IEnumType enumType, Composite parent, UIToolkit toolkit) {
         super(parent, Section.TITLE_BAR, GridData.FILL_HORIZONTAL, toolkit);
 
         ArgumentCheck.notNull(enumType);
@@ -72,6 +79,16 @@ public class EnumTypeGeneralInfoSection extends IpsSection {
 
         initControls();
         setText(Messages.EnumTypeGeneralInfoSection_title);
+
+        enumType.getIpsModel().addChangeListener(this);
+        addDisposeListener(new DisposeListener() {
+            /**
+             * {@inheritDoc}
+             */
+            public void widgetDisposed(DisposeEvent e) {
+                enumType.getIpsModel().removeChangeListener(EnumTypeGeneralInfoSection.this);
+            }
+        });
     }
 
     /**
@@ -112,7 +129,8 @@ public class EnumTypeGeneralInfoSection extends IpsSection {
         bindingContext.bindContent(abstractCheckbox, enumType, IEnumType.PROPERTY_ABSTRACT);
 
         toolkit.createFormLabel(checkBoxesComposite, Messages.EnumTypeGeneralInfoSection_labelValuesArePartOfModel);
-        Checkbox valuesArePartOfModelCheckbox = toolkit.createCheckbox(checkBoxesComposite);
+        valuesArePartOfModelCheckbox = toolkit.createCheckbox(checkBoxesComposite);
+        valuesArePartOfModelCheckbox.setEnabled(!(enumType.isAbstract()));
         bindingContext.bindContent(valuesArePartOfModelCheckbox, enumType, IEnumType.PROPERTY_VALUES_ARE_PART_OF_MODEL);
 
         // Register controls for focus handling
@@ -131,6 +149,28 @@ public class EnumTypeGeneralInfoSection extends IpsSection {
     @Override
     protected void performRefresh() {
         bindingContext.updateUI();
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public void contentsChanged(ContentChangeEvent event) {
+        /*
+         * Return if the content changed was not the enum type container to be edited.
+         */
+        if (!(event.getIpsSrcFile().equals(enumType.getIpsSrcFile()))) {
+            return;
+        }
+
+        switch (event.getEventType()) {
+            case ContentChangeEvent.TYPE_WHOLE_CONTENT_CHANGED:
+                try {
+                    IEnumType enumType = (IEnumType)event.getIpsSrcFile().getIpsObject();
+                    valuesArePartOfModelCheckbox.setEnabled(!(enumType.isAbstract()));
+                } catch (CoreException e) {
+                    throw new RuntimeException(e);
+                }
+        }
     }
 
 }
