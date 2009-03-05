@@ -246,7 +246,7 @@ public class MessageList {
     }
     
     /**
-     * Returns a new list witht the messages in this list that belong to the given object and
+     * Returns a new list with the messages in this list that belong to the given object and
      * property. Returns an empty list if no such message is found.
      */
     public MessageList getMessagesFor(Object object, String property) {
@@ -290,14 +290,14 @@ public class MessageList {
     }
 
     /**
-     * clear löscht alle Elemente der Liste
+     * clear lï¿½scht alle Elemente der Liste
      * 
      */
     public void clear() {
         messages.clear();
     }
     
-    /** Liefert einen iterator, mit dessen Hilfe man über die vorhandene 
+    /** Liefert einen iterator, mit dessen Hilfe man ï¿½ber die vorhandene 
      *  Liste iterieren kann
      * @return Iterator
      */
