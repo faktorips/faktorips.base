@@ -707,27 +707,28 @@ public abstract class JavaSourceFileBuilder extends AbstractArtefactBuilder {
             return;
         }
 
-        String formattedContent = format(content);
-
         boolean newFileCreated = createFileIfNotThere(javaFile);
 
-        if (!newFileCreated) {
-            String charset = ipsSrcFile.getIpsProject().getProject().getDefaultCharset();
-            String javaFileContentsStr = getJavaFileContents(javaFile, charset);
-            if (isMergeEnabled()) {
-                merge(javaFile, javaFileContentsStr, formattedContent, charset);
-                return;
-            }
-            formattedContent = writeFeatureVersions(formattedContent);
-            // if merging is not activated and the content of the file is
-            // equal compared to the generated and formatted
-            // content then the new content is not written to the file
-            if (formattedContent.equals(javaFileContentsStr)) {
-                return;
-            }
+        if(newFileCreated){
+            content = writeFeatureVersions(content);
+            String formattedContent = format(content);
+            javaFile.setContents(transform(ipsSrcFile, formattedContent), true, false, null);
+            return;
         }
-
-        formattedContent = writeFeatureVersions(formattedContent);
+        
+        String charset = ipsSrcFile.getIpsProject().getProject().getDefaultCharset();
+        String javaFileContentsStr = getJavaFileContents(javaFile, charset);
+        if (isMergeEnabled()) {
+            content = merge(javaFile, javaFileContentsStr, content, charset);
+        }
+        content = writeFeatureVersions(content);
+        String formattedContent = format(content);
+        // if merging is not activated and the content of the file is
+        // equal compared to the generated and formatted
+        // content then the new content is not written to the file
+        if (formattedContent.equals(javaFileContentsStr)) {
+            return;
+        }
         javaFile.setContents(transform(ipsSrcFile, formattedContent), true, false, null);
     }
 
@@ -792,7 +793,7 @@ public abstract class JavaSourceFileBuilder extends AbstractArtefactBuilder {
         CodeFormatter formatter = ToolFactory.createCodeFormatter(null);
         // with parameter null the CodeFormatter is configured with the
         // preferences that are currently set
-        TextEdit edit = formatter.format(CodeFormatter.K_COMPILATION_UNIT, content, 0, content.length(), 0, StringUtil
+        TextEdit edit = formatter.format(CodeFormatter.K_COMPILATION_UNIT | CodeFormatter.F_INCLUDE_COMMENTS, content, 0, content.length(), 0, StringUtil
                 .getSystemLineSeparator());
 
         if (edit == null) {
@@ -857,20 +858,14 @@ public abstract class JavaSourceFileBuilder extends AbstractArtefactBuilder {
         return model;
     }
 
-    private void merge(IFile javaFile, String oldContent, String newContent, String charset) throws CoreException {
+    private String merge(IFile javaFile, String oldContent, String newContent, String charset) throws CoreException {
 
         try {
             JMerger merger = new JMerger(getJControlModel());
             merger.setSourceCompilationUnit(merger.createCompilationUnitForContents(newContent));
             merger.setTargetCompilationUnit(merger.createCompilationUnitForContents(oldContent));
-            String targetContentsBeforeMerge = merger.getTargetCompilationUnitContents();
             merger.merge();
-            String targetContents = merger.getTargetCompilationUnitContents();
-            targetContents = writeFeatureVersions(targetContents);
-            if (targetContents == null || targetContents.equals(targetContentsBeforeMerge)) {
-                return;
-            }
-            javaFile.setContents(new ByteArrayInputStream(targetContents.getBytes(charset)), true, false, null);
+            return merger.getTargetCompilationUnitContents();
         } catch (Exception e) {
             throw new CoreException(new IpsStatus("An error occurred while trying to merge " + //$NON-NLS-1$
                     "the generated content with the old content of the file: " + javaFile, e)); //$NON-NLS-1$
