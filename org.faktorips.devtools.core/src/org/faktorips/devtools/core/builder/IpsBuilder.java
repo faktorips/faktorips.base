@@ -324,6 +324,9 @@ public class IpsBuilder extends IncrementalProjectBuilder {
             removeEmptyFolders();
 
             for (Iterator it = allIpsSrcFiles.iterator(); it.hasNext();) {
+                if(monitor.isCanceled()){
+                    break;
+                }
                 try {
                     IIpsSrcFile ipsSrcFile = (IIpsSrcFile)it.next();
                     monitor.subTask(Messages.IpsBuilder_building + ipsSrcFile.getName());
@@ -435,6 +438,9 @@ public class IpsBuilder extends IncrementalProjectBuilder {
                     + visitor.removedIpsSrcFiles.size() + visitor.changedAndAddedIpsSrcFiles.size();
             monitor.beginTask("build incremental", numberOfBuildCandidates); //$NON-NLS-1$
             for (Iterator it = visitor.removedIpsSrcFiles.iterator(); it.hasNext();) {
+                if(monitor.isCanceled()){
+                    break;
+                }
                 IpsSrcFile ipsSrcFile = (IpsSrcFile)it.next();
                 monitor.subTask(Messages.IpsBuilder_deleting + ipsSrcFile.getName());
                 applyBuildCommand(ipsArtefactBuilderSet, buildStatus, new DeleteArtefactBuildCommand(ipsSrcFile),
@@ -444,6 +450,9 @@ public class IpsBuilder extends IncrementalProjectBuilder {
             }
 
             for (Iterator it = visitor.changedAndAddedIpsSrcFiles.iterator(); it.hasNext();) {
+                if(monitor.isCanceled()){
+                    break;
+                }
                 IpsSrcFile ipsSrcFile = (IpsSrcFile)it.next();
                 monitor.subTask(Messages.IpsBuilder_building + ipsSrcFile.getName());
                 buildIpsSrcFile(ipsArtefactBuilderSet, getIpsProject(), ipsSrcFile, buildStatus, monitor);
@@ -452,8 +461,10 @@ public class IpsBuilder extends IncrementalProjectBuilder {
             }
 
             for (Iterator it = dependenciesForProjectsMap.keySet().iterator(); it.hasNext();) {
+                if(monitor.isCanceled()){
+                    break;
+                }
                 IIpsProject ipsProject = (IIpsProject)it.next();
-                
                 if(!ipsProject.equals(getIpsProject())){
                     if (!checkIpsProjectBeforeBuild(ipsProject.getProject(), ipsProject)) {
                         continue;
@@ -474,6 +485,9 @@ public class IpsBuilder extends IncrementalProjectBuilder {
                                 INCREMENTAL_BUILD, ipsProject), monitor);
                     }                    
                     for (Iterator it2 = dependencySet.iterator(); it2.hasNext();) {
+                        if(monitor.isCanceled()){
+                            break;
+                        }
                         IDependency dependency = (IDependency)it2.next();
                         Object buildCandidateId = dependency.getSource();
                         if (alreadyBuild.contains(buildCandidateId)) {
