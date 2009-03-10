@@ -452,12 +452,13 @@ else
     CORE_BUNDLE_VERSION=$(cat $PROJECTSROOTDIR/$FAKTORIPS_CORE_PLUGIN_NAME//META-INF/MANIFEST.MF | grep Bundle-Version | sed -r "s/.*:\ *(.*)/\1/g")
 fi
 
-if [ "$MIGRATION_EXISTS" = "false" ] ; then
-  echo "=> Cancel build: Migrationstrategy not exists (if using cvs the java source must also be tagged)! "$MIGRATION_STRATEGY_CLASS
-  exit 1
-else
-  echo "Ok migration strategy class found"
-fi
+# TODO previous release migration class? 
+##if [ "$MIGRATION_EXISTS" = "false" ] ; then
+##  echo "=> Cancel build: Migrationstrategy not exists (if using cvs the java source must also be tagged)! "$MIGRATION_STRATEGY_CLASS
+##  exit 1
+##else
+##  echo "Ok migration strategy class found"
+##fi
 
 # compare bundle version with given release version
 if [ ! "$CORE_BUNDLE_VERSION" = "$BUILD_VERSION" ]
