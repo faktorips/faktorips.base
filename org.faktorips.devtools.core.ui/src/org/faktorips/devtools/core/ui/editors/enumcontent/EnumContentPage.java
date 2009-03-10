@@ -116,8 +116,8 @@ public class EnumContentPage extends TypeEditorStructurePage implements Contents
     /**
      * Updates the enabled states of the toolbar.
      * <p>
-     * The <code>OpenFixEnumContentWizardAction</code> will be enabled if the enum type the enum content to
-     * edit is built upon
+     * The <code>OpenFixEnumContentWizardAction</code> will be enabled if the enum type the enum
+     * content to edit is built upon
      * <ul>
      * <li>does not exist or is missing
      * <li>is abstract
@@ -165,7 +165,6 @@ public class EnumContentPage extends TypeEditorStructurePage implements Contents
      * {@inheritDoc}
      */
     public void contentsChanged(ContentChangeEvent event) {
-        IIpsSrcFile changedIpsSrcFile = event.getIpsSrcFile();
         IEnumType enumType;
         try {
             enumType = enumContent.findEnumType();
@@ -177,12 +176,15 @@ public class EnumContentPage extends TypeEditorStructurePage implements Contents
          * Return if the content changed was not the enum content to be edited or the referenced
          * enum type.
          */
-        if (!(changedIpsSrcFile.equals(enumContent.getIpsSrcFile()))
-                && !(changedIpsSrcFile.equals(enumType.getIpsSrcFile()))) {
-            return;
+        IIpsSrcFile changedIpsSrcFile = event.getIpsSrcFile();
+        if (!(changedIpsSrcFile.equals(enumContent.getIpsSrcFile()))) {
+            if (enumType != null) {
+                if (!(changedIpsSrcFile.equals(enumType.getIpsSrcFile()))) {
+                    return;
+                }
+            }
         }
 
         EnumContentPage.this.updateToolbarActionsEnabledStates();
     }
-
 }

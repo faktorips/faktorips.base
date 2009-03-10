@@ -180,6 +180,9 @@ public class Migration_2_2_1_test extends AbstractIpsProjectMigrationOperation {
                 newEnumAttribute.setIdentifier((identifier.equals(currentColumnName)));
                 newEnumAttribute.setInherited(false);
             }
+            
+            // Save the new file
+            newEnumType.getIpsSrcFile().save(true, null);
 
             // Delete the old table structure
             currentTableStructure.getIpsSrcFile().getCorrespondingResource().delete(true, null);
@@ -226,6 +229,9 @@ public class Migration_2_2_1_test extends AbstractIpsProjectMigrationOperation {
                     currentEnumAttributeValue.setValue(currentRow.getValue(i));
                 }
             }
+            
+            // Save the new file
+            newEnumType.getIpsSrcFile().save(true, null);
 
             // Delte the old table contents
             currentTableContents.getIpsSrcFile().getCorrespondingResource().delete(true, null);

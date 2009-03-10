@@ -276,7 +276,8 @@ public class EnumType extends EnumValueContainer implements IEnumType {
             throws CoreException {
 
         for (IEnumValue currentEnumValue : enumValues) {
-            ((EnumValue)currentEnumValue).moveEnumAttributeValue(enumAttributeIndex, up);
+            currentEnumValue.moveEnumAttributeValue(currentEnumValue.getEnumAttributeValues().get(enumAttributeIndex),
+                    up);
         }
     }
 

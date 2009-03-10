@@ -32,9 +32,22 @@ public class Messages extends NLS {
     public static String FixEnumContentWizard_labelNewEnumType;
     public static String FixEnumContentWizard_msgChooseEnumType;
     public static String FixEnumContentWizard_chooseEnumTypePageTitle;
+    public static String FixEnumContentWizard_chosenEnumTypeAbstract;
+    public static String FixEnumContentWizard_chosenEnumTypeValuesArePartOfModel;
+    public static String FixEnumContentWizard_chosenEnumTypeDoesNotExist;
+    public static String FixEnumContentWizard_msgAssignEnumAttributes;
+    public static String FixEnumContentWizard_assignEnumAttributesPageTitle;
+    public static String FixEnumContentWizard_assignEnumAttributesCreateNewColumn;
+    public static String FixEnumContentWizard_assignEnumAttributesDuplicateColumnAssigned;
+    public static String FixEnumContentWizard_assignEnumAttributesAttributeNotAssigned;
+    public static String FixEnumContentWizard_assignEnumAttributesDeleteColumnsConfirmationTitle;
+    public static String FixEnumContentWizard_assignEnumAttributesDeleteColumnsConfirmationMessageSingular;
+    public static String FixEnumContentWizard_assignEnumAttributesDeleteColumnsConfirmationMessagePlural;
 
     public static String EnumContentPage_labelOpenFixEnumTypeDialog;
     public static String EnumContentPage_tooltipOpenFixEnumTypeDialog;
+    
+    public static String DefaultColumnName;
 
     static {
         // initialize resource bundle

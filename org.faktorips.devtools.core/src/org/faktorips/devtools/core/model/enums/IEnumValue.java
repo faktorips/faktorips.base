@@ -14,6 +14,7 @@
 package org.faktorips.devtools.core.model.enums;
 
 import java.util.List;
+import java.util.NoSuchElementException;
 
 import org.eclipse.core.runtime.CoreException;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPart;
@@ -84,5 +85,21 @@ public interface IEnumValue extends IIpsObjectPart {
      * Returns how many enum attribute values this enum value is currently containing.
      */
     public int getEnumAttributeValuesCount();
+
+    /**
+     * Moves the given enum attribute value up or down by 1 in the containing list and returns its
+     * new index.
+     * <p>
+     * If the enum attribute value is already the first / last one then nothing will be done.
+     * 
+     * @param enumAttributeValue The enum attribute value that is to be moved.
+     * @param up Flag indicating whether to move upwards (<code>true</code>) or downwards (
+     *            <code>false</code>).
+     * 
+     * @throws NullPointerException If <code>enumAttributeValue</code> is <code>null</code>.
+     * @throws NoSuchElementException If the given enum attribute value is not a part of this enum
+     *             value.
+     */
+    public int moveEnumAttributeValue(IEnumAttributeValue enumAttributeValue, boolean up);
 
 }

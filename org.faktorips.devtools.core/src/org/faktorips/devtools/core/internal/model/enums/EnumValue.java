@@ -30,6 +30,7 @@ import org.faktorips.devtools.core.model.enums.IEnumValue;
 import org.faktorips.devtools.core.model.enums.IEnumValueContainer;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPart;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
+import org.faktorips.util.ArgumentCheck;
 import org.faktorips.util.message.Message;
 import org.faktorips.util.message.MessageList;
 import org.w3c.dom.Document;
@@ -98,35 +99,37 @@ public class EnumValue extends BaseIpsObjectPart implements IEnumValue {
     }
 
     /**
-     * Moves the enum attribute value identified by its index up or down by 1 in the containing
-     * list.
-     * <p>
-     * If the enum attribute value is already the first / last one then nothing will be done.
-     * 
-     * @param index The index of the enum attribute value that is to be moved.
-     * 
-     * @throws NoSuchElementException If there is no enum attribute value with the given index.
+     * {@inheritDoc}
      */
-    public void moveEnumAttributeValue(int index, boolean up) {
-        List<IEnumAttributeValue> enumAttributeValuesList = getEnumAttributeValues();
-        try {
-            enumAttributeValuesList.get(index);
-        } catch (IndexOutOfBoundsException e) {
+    public int moveEnumAttributeValue(IEnumAttributeValue enumAttributeValue, boolean up) {
+        ArgumentCheck.notNull(enumAttributeValue);
+        if (!(getEnumAttributeValues().contains(enumAttributeValue))) {
             throw new NoSuchElementException();
+        }
+
+        int index = -1;
+        for (IEnumAttributeValue currentEnumAttributeValue : getEnumAttributeValues()) {
+            index++;
+            if (currentEnumAttributeValue == enumAttributeValue) {
+                break;
+            }
         }
 
         // Return if element is already the first / last one
         if (up) {
             if (index == 0) {
-                return;
+                return index;
             }
         } else {
-            if (index == enumAttributeValuesList.size() - 1) {
-                return;
+            if (index == getEnumAttributeValuesCount() - 1) {
+                return index;
             }
         }
 
-        enumAttributeValues.moveParts(new int[] { index }, up);
+        // Perform the moving
+        int[] newIndex = enumAttributeValues.moveParts(new int[] { index }, up);
+
+        return newIndex[0];
     }
 
     /**
