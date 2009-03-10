@@ -14,11 +14,14 @@
 package org.faktorips.devtools.core.internal.model.enums;
 
 import org.eclipse.core.runtime.CoreException;
+import org.faktorips.devtools.core.model.IDependency;
+import org.faktorips.devtools.core.model.IpsObjectDependency;
 import org.faktorips.devtools.core.model.enums.EnumContentValidations;
 import org.faktorips.devtools.core.model.enums.IEnumContent;
 import org.faktorips.devtools.core.model.enums.IEnumType;
 import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
+import org.faktorips.devtools.core.model.ipsobject.QualifiedNameType;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.util.ArgumentCheck;
 import org.faktorips.util.message.MessageList;
@@ -39,6 +42,15 @@ public class EnumContent extends EnumValueContainer implements IEnumContent {
     private String enumType;
 
     /**
+     * The number of enum attributes to be referenced by enum attribute values.
+     * <p>
+     * This number will become invalid when a new enum attribute is added to the referenced enum
+     * type or an enum attribute is deleted from the referenced enum type. The whole enum content is
+     * invalid then and needs to be fixed by the user.
+     */
+    private int enumAttributesCount;
+
+    /**
      * Creates a new <code>EnumContent</code>.
      * 
      * @param file The ips source file in which this enum content will be stored in.
@@ -47,6 +59,7 @@ public class EnumContent extends EnumValueContainer implements IEnumContent {
         super(file);
 
         this.enumType = null;
+        this.enumAttributesCount = 0;
     }
 
     /**
@@ -73,12 +86,24 @@ public class EnumContent extends EnumValueContainer implements IEnumContent {
     /**
      * {@inheritDoc}
      */
-    public void setEnumType(String enumType) {
+    public void setEnumType(String enumType) throws CoreException {
         ArgumentCheck.notNull(enumType);
 
         String oldEnumType = this.enumType;
         this.enumType = enumType;
         valueChanged(oldEnumType, enumType);
+
+        IEnumType newEnumType = findEnumType();
+        if (newEnumType != null) {
+            setEnumAttributesCount(newEnumType.getEnumAttributesCount(true));
+        }
+    }
+
+    /** Sets the enum attributes count. */
+    private void setEnumAttributesCount(int enumAttributesCount) {
+        int oldEnumAttributesCount = this.enumAttributesCount;
+        this.enumAttributesCount = enumAttributesCount;
+        valueChanged(oldEnumAttributesCount, enumAttributesCount);
     }
 
     /**
@@ -87,6 +112,7 @@ public class EnumContent extends EnumValueContainer implements IEnumContent {
     @Override
     protected void initFromXml(Element element, Integer id) {
         enumType = element.getAttribute(PROPERTY_ENUM_TYPE);
+        enumAttributesCount = Integer.parseInt(element.getAttribute(PROPERTY_REFERENCED_ENUM_ATTRIBUTES_COUNT));
 
         super.initFromXml(element, id);
     }
@@ -99,6 +125,7 @@ public class EnumContent extends EnumValueContainer implements IEnumContent {
         super.propertiesToXml(element);
 
         element.setAttribute(PROPERTY_ENUM_TYPE, enumType);
+        element.setAttribute(PROPERTY_REFERENCED_ENUM_ATTRIBUTES_COUNT, String.valueOf(enumAttributesCount));
     }
 
     /**
@@ -116,6 +143,24 @@ public class EnumContent extends EnumValueContainer implements IEnumContent {
         super.validateThis(list, ipsProject);
 
         EnumContentValidations.validateEnumType(list, this, enumType, ipsProject);
+        EnumContentValidations.validateReferencedEnumAttributesCount(list, this);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public IDependency[] dependsOn() throws CoreException {
+        IDependency enumTypeDependency = IpsObjectDependency.createReferenceDependency(getQualifiedNameType(),
+                new QualifiedNameType(getEnumType(), IpsObjectType.ENUM_TYPE));
+        return new IDependency[] { enumTypeDependency };
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public int getReferencedEnumAttributesCount() {
+        return enumAttributesCount;
     }
 
 }

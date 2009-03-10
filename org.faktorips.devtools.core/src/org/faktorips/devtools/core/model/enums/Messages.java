@@ -33,7 +33,8 @@ public class Messages extends NLS {
     public static String EnumContent_EnumTypeDoesNotExist;
     public static String EnumContent_EnumTypeIsAbstract;
     public static String EnumContent_ValuesArePartOfModel;
-    
+    public static String EnumContent_ReferencedEnumAttributesCountInvalid;
+
     public static String EnumAttribute_Identifier;
 
     static {

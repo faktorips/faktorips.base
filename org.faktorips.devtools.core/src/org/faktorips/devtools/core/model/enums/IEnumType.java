@@ -51,13 +51,13 @@ public interface IEnumType extends IEnumValueContainer, Datatype {
     /** The xml tag for this ips object. */
     public final static String XML_TAG = "EnumType"; //$NON-NLS-1$
 
-    /** Name of the supertype property. */
+    /** Name of the <code>superEnumType</code> property. */
     public final static String PROPERTY_SUPERTYPE = "superEnumType"; //$NON-NLS-1$
 
-    /** Name of the isAbstract property. */
+    /** Name of the <code>abstract</code> property. */
     public final static String PROPERTY_ABSTRACT = "abstract"; //$NON-NLS-1$
 
-    /** Name of the valuesArePartOfModel property. */
+    /** Name of the <code>valuesArePartOfModel</code> property. */
     public final static String PROPERTY_VALUES_ARE_PART_OF_MODEL = "valuesArePartOfModel"; //$NON-NLS-1$
 
     /** Prefix for all message codes of this class. */

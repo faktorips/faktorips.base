@@ -38,13 +38,13 @@ public interface IEnumAttribute extends IIpsObjectPart {
     /** The xml tag for this ips object part. */
     public final static String XML_TAG = "EnumAttribute"; //$NON-NLS-1$
 
-    /** Name of the datatype property. */
+    /** Name of the <code>datatype</code> property. */
     public final static String PROPERTY_DATATYPE = "datatype"; //$NON-NLS-1$
 
-    /** Name of the identifier property. */
+    /** Name of the <code>identifier</code> property. */
     public final static String PROPERTY_IDENTIFIER = "identifier"; //$NON-NLS-1$
 
-    /** Name of the inherited property. */
+    /** Name of the <code>inherited</code> property. */
     public final static String PROPERTY_INHERITED = "inherited"; //$NON-NLS-1$
 
     /** Prefix for all message codes of this class. */

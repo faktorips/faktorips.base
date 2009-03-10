@@ -24,6 +24,7 @@ import org.faktorips.devtools.core.internal.model.ipsobject.BaseIpsObjectPart;
 import org.faktorips.devtools.core.internal.model.ipsobject.IpsObjectPartCollection;
 import org.faktorips.devtools.core.model.enums.IEnumAttribute;
 import org.faktorips.devtools.core.model.enums.IEnumAttributeValue;
+import org.faktorips.devtools.core.model.enums.IEnumContent;
 import org.faktorips.devtools.core.model.enums.IEnumType;
 import org.faktorips.devtools.core.model.enums.IEnumValue;
 import org.faktorips.devtools.core.model.enums.IEnumValueContainer;
@@ -135,17 +136,16 @@ public class EnumValue extends BaseIpsObjectPart implements IEnumValue {
     protected void validateThis(MessageList list, IIpsProject ipsProject) throws CoreException {
         super.validateThis(list, ipsProject);
 
-        IEnumType enumType = ((IEnumValueContainer)getParent()).findEnumType();
-        if (enumType != null) {
-            // Number enum attribute values must match number enum attributes of the enum type
-            if (enumType.getEnumAttributesCount(true) != getEnumAttributeValuesCount()) {
-                String text = NLS.bind(Messages.EnumValue_NumberAttributeValuesDoesNotCorrespondToNumberAttributes,
-                        enumType.getQualifiedName());
-                Message validationMessage = new Message(
-                        MSGCODE_NUMBER_ATTRIBUTE_VALUES_DOES_NOT_CORRESPOND_TO_NUMBER_ATTRIBUTES, text, Message.ERROR,
-                        this);
-                list.add(validationMessage);
-            }
+        // Number enum attribute values must match number enum attributes of the enum type
+        IEnumValueContainer enumValueContainer = getEnumValueContainer();
+        int numberEnumAttributes = (enumValueContainer instanceof IEnumType) ? ((IEnumType)enumValueContainer)
+                .getEnumAttributesCount(true) : ((IEnumContent)enumValueContainer).getReferencedEnumAttributesCount();
+        if (numberEnumAttributes != getEnumAttributeValuesCount()) {
+            String text = NLS.bind(Messages.EnumValue_NumberAttributeValuesDoesNotCorrespondToNumberAttributes,
+                    enumValueContainer.getQualifiedName());
+            Message validationMessage = new Message(
+                    MSGCODE_NUMBER_ATTRIBUTE_VALUES_DOES_NOT_CORRESPOND_TO_NUMBER_ATTRIBUTES, text, Message.ERROR, this);
+            list.add(validationMessage);
         }
     }
 

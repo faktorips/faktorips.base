@@ -49,6 +49,10 @@ public class EnumValueTest extends AbstractIpsEnumPluginTest {
     }
 
     public void testValidateNumberEnumAttributeValues() throws CoreException {
+        genderEnumType.newEnumAttribute();
+        assertTrue(genderEnumValueFemale.isValid());
+
+        getIpsModel().clearValidationCache();
         genderEnumValueFemale.getEnumAttributeValues().get(0).delete();
         assertEquals(1, genderEnumValueFemale.validate(ipsProject).getNoOfMessages());
     }

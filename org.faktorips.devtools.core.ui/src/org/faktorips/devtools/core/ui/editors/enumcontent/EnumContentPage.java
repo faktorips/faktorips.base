@@ -20,7 +20,7 @@ import org.eclipse.ui.forms.widgets.ScrolledForm;
 import org.faktorips.devtools.core.model.ContentChangeEvent;
 import org.faktorips.devtools.core.model.ContentsChangeListener;
 import org.faktorips.devtools.core.model.enums.IEnumContent;
-import org.faktorips.devtools.core.model.ipsobject.IIpsObject;
+import org.faktorips.devtools.core.model.enums.IEnumType;
 import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.core.ui.UIToolkit;
 import org.faktorips.devtools.core.ui.editors.enums.EnumValuesSection;
@@ -45,7 +45,7 @@ public class EnumContentPage extends TypeEditorStructurePage implements Contents
     /** The enum content the enum content editor this page belongs to is currently editing. */
     private IEnumContent enumContent;
 
-    /** The action to open a <code>FixEnumTypeDialog</code>. */
+    /** The action to open a <code>FixEnumContentWizard</code>. */
     private IAction openFixEnumTypeDialogAction;
 
     /**
@@ -57,6 +57,16 @@ public class EnumContentPage extends TypeEditorStructurePage implements Contents
         super(editor, false, Messages.EnumContentValuesPage_title);
 
         enumContent = editor.getEnumContent();
+
+        enumContent.getIpsModel().addChangeListener(this);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public void dispose() {
+        enumContent.getIpsModel().removeChangeListener(this);
     }
 
     /**
@@ -91,7 +101,7 @@ public class EnumContentPage extends TypeEditorStructurePage implements Contents
 
     /** Creates the actions for the toolbar. */
     private void createToolbarActions() {
-        openFixEnumTypeDialogAction = new OpenFixEnumTypeDialogAction(enumContent, getSite().getShell());
+        openFixEnumTypeDialogAction = new OpenFixEnumContentWizardAction(enumContent, getSite().getShell());
     }
 
     /** Creates the toolbar of this page. */
@@ -106,12 +116,15 @@ public class EnumContentPage extends TypeEditorStructurePage implements Contents
     /**
      * Updates the enabled states of the toolbar.
      * <p>
-     * The <code>OpenFixEnumTypeDialogAction</code> will be enabled if the enum type the enum
-     * content to edit is built upon does not exist or is missing.
-     * <p>
-     * The <code>OpenFixColumnsDialogAction</code> will be enabled if there are not exactly as much
-     * columns in the enum values table of the <code>EnumValuesSection</code> as enum attributes in
-     * the enum type the enum content to be edited is built upon.
+     * The <code>OpenFixEnumContentWizardAction</code> will be enabled if the enum type the enum content to
+     * edit is built upon
+     * <ul>
+     * <li>does not exist or is missing
+     * <li>is abstract
+     * <li>defines its values in the model
+     * <li>defines not the exact number of enum attributes as there are columns in the enum values
+     * table of the <code>EnumValuesSection</code>
+     * </ul>
      */
     private void updateToolbarActionsEnabledStates() {
         boolean enableOpenFixEnumTypeDialogAction = false;
@@ -120,12 +133,20 @@ public class EnumContentPage extends TypeEditorStructurePage implements Contents
         if (enumTypeQualifiedName.equals("")) {
             enableOpenFixEnumTypeDialogAction = true;
         } else {
+            IEnumType enumType;
             try {
-                if (enumContent.findEnumType() == null) {
-                    enableOpenFixEnumTypeDialogAction = true;
-                }
+                enumType = enumContent.findEnumType();
             } catch (CoreException e) {
                 throw new RuntimeException(e);
+            }
+
+            if (enumType == null) {
+                enableOpenFixEnumTypeDialogAction = true;
+            } else {
+                if (enumType.isAbstract() || enumType.getValuesArePartOfModel()
+                        || enumType.getEnumAttributesCount(true) != enumContent.getReferencedEnumAttributesCount()) {
+                    enableOpenFixEnumTypeDialogAction = true;
+                }
             }
         }
 
@@ -145,29 +166,23 @@ public class EnumContentPage extends TypeEditorStructurePage implements Contents
      */
     public void contentsChanged(ContentChangeEvent event) {
         IIpsSrcFile changedIpsSrcFile = event.getIpsSrcFile();
+        IEnumType enumType;
+        try {
+            enumType = enumContent.findEnumType();
+        } catch (CoreException e) {
+            throw new RuntimeException(e);
+        }
 
-        // Return if the content changed was not the enum content to be edited
-        if (!(changedIpsSrcFile.equals(enumContent.getIpsSrcFile()))) {
+        /*
+         * Return if the content changed was not the enum content to be edited or the referenced
+         * enum type.
+         */
+        if (!(changedIpsSrcFile.equals(enumContent.getIpsSrcFile()))
+                && !(changedIpsSrcFile.equals(enumType.getIpsSrcFile()))) {
             return;
         }
 
-        // Switch based upon event type
-        switch (event.getEventType()) {
-            case ContentChangeEvent.TYPE_PROPERTY_CHANGED:
-                IIpsObject changedIpsObject;
-                try {
-                    changedIpsObject = changedIpsSrcFile.getIpsObject();
-                    if (changedIpsObject != null) {
-                        if (changedIpsObject instanceof IEnumContent) {
-                            EnumContentPage.this.updateToolbarActionsEnabledStates();
-                        }
-                    }
-                } catch (CoreException e) {
-                    throw new RuntimeException(e);
-                }
-
-                break;
-        }
+        EnumContentPage.this.updateToolbarActionsEnabledStates();
     }
 
 }

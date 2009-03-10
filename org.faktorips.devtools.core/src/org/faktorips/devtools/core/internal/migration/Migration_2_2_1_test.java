@@ -63,10 +63,9 @@ public class Migration_2_2_1_test extends AbstractIpsProjectMigrationOperation {
      */
     @Override
     public String getDescription() {
-        return "The way enumerations are modeled with Faktor-IPS has changed. New ips object types"
-                + "have been added for that purpose. All table structures"
-                + "that represent enum types will be changed to abstract EnumType objects. The referencing"
-                + "table contents will also be replaced with EnumType objects containing the enum values.";
+        return "New ips object types" + " have been added for modeling enumerations. All table structures"
+                + " that represent enum types will be changed to abstract EnumType objects. The referencing"
+                + " table contents will also be replaced with EnumType objects containing the enum values.";
     }
 
     /**
@@ -113,7 +112,8 @@ public class Migration_2_2_1_test extends AbstractIpsProjectMigrationOperation {
                     List<ITableContents> enumTableContents = new ArrayList<ITableContents>();
                     for (IIpsSrcFile currentIpsSrcFile : tableContentsSrcFiles) {
                         ITableContents currentTableContents = (ITableContents)currentIpsSrcFile.getIpsObject();
-                        if (currentTableContents.getTableStructure().equals(TableStructureType.ENUMTYPE_MODEL)) {
+                        if (currentTableContents.findTableStructure(currentTableContents.getIpsProject())
+                                .getTableStructureType().equals(TableStructureType.ENUMTYPE_MODEL)) {
                             enumTableContents.add(currentTableContents);
                         }
                     }
@@ -132,7 +132,6 @@ public class Migration_2_2_1_test extends AbstractIpsProjectMigrationOperation {
 
         getIpsProject().getProject().build(IncrementalProjectBuilder.FULL_BUILD, monitor);
         job.setPriority(Job.BUILD);
-        job.setRule(getIpsProject().getProject());
         job.schedule(5000);
 
         job = new Job("Migration230PostBuild") {
@@ -206,6 +205,17 @@ public class Migration_2_2_1_test extends AbstractIpsProjectMigrationOperation {
             newEnumType.setSuperEnumType(currentTableContents.getTableStructure());
             newEnumType.setAbstract(false);
             newEnumType.setValuesArePartOfModel(true);
+
+            // Inherit the enum attributes
+            IEnumType superEnumType = currentTableContents.getIpsProject().findEnumType(
+                    currentTableContents.getTableStructure());
+            for (IEnumAttribute currentEnumAttribute : superEnumType.getEnumAttributes()) {
+                IEnumAttribute newEnumAttribute = newEnumType.newEnumAttribute();
+                newEnumAttribute.setInherited(true);
+                newEnumAttribute.setIdentifier(currentEnumAttribute.isIdentifier());
+                newEnumAttribute.setDatatype(currentEnumAttribute.getDatatype());
+                newEnumAttribute.setName(currentEnumAttribute.getName());
+            }
 
             // Create enum values
             for (IRow currentRow : ((ITableContentsGeneration)currentTableContents.getFirstGeneration()).getRows()) {

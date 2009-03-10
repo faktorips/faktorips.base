@@ -29,7 +29,7 @@ public interface IEnumAttributeValue extends IIpsObjectPart {
     /** The xml tag for this ips object part. */
     public final static String XML_TAG = "EnumAttributeValue"; //$NON-NLS-1$
 
-    /** Name of the value property. */
+    /** Name of the <code>value</code> property. */
     public final static String PROPERTY_VALUE = "value"; //$NON-NLS-1$
 
     /** Prefix for all message codes of this class. */
@@ -55,7 +55,7 @@ public interface IEnumAttributeValue extends IIpsObjectPart {
      */
     public final static String MSGCODE_ENUM_ATTRIBUTE_VALUE_IDENTIFIER_NOT_UNIQUE = MSGCODE_PREFIX
             + "EnumAttributeValueIdentifierNotUnique"; //$NON-NLS-1$
-    
+
     /**
      * Validation message code to indicate that that this enum attribute value is refering the
      * identifier enum attribute but is not java conform.
@@ -66,6 +66,10 @@ public interface IEnumAttributeValue extends IIpsObjectPart {
     /**
      * Searches and returns the enum attribute this enum attribute value refers to. Returns
      * <code>null</code> if none could be found.
+     * <p>
+     * Also returns <code>null</code> if the number of enum attributes in the referenced enum type
+     * does not correspond to the number of enum attribute values in the enum value containing this
+     * enum attribute value.
      * 
      * @throws CoreException If an error occurs while searching for the enum attribute.
      */

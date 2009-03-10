@@ -13,12 +13,18 @@
 
 package org.faktorips.devtools.core.internal.model.enums;
 
+import java.util.Arrays;
+import java.util.List;
+
 import javax.xml.parsers.ParserConfigurationException;
 
 import org.eclipse.core.runtime.CoreException;
+import org.faktorips.devtools.core.model.IDependency;
 import org.faktorips.devtools.core.model.IIpsModel;
+import org.faktorips.devtools.core.model.IpsObjectDependency;
 import org.faktorips.devtools.core.model.enums.IEnumContent;
 import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
+import org.faktorips.devtools.core.model.ipsobject.QualifiedNameType;
 import org.w3c.dom.Element;
 
 public class EnumContentTest extends AbstractIpsEnumPluginTest {
@@ -58,7 +64,9 @@ public class EnumContentTest extends AbstractIpsEnumPluginTest {
 
     public void testValidateThis() throws CoreException {
         assertTrue(genderEnumContent.isValid());
+    }
 
+    public void testValidateEnumType() throws CoreException {
         IIpsModel ipsModel = getIpsModel();
 
         // Test enum type missing
@@ -84,6 +92,30 @@ public class EnumContentTest extends AbstractIpsEnumPluginTest {
         genderEnumType.setAbstract(true);
         assertEquals(1, genderEnumContent.validate(ipsProject).getNoOfMessages());
         genderEnumType.setAbstract(false);
+    }
+
+    public void testValidateReferencedEnumAttributesCount() throws CoreException {
+        genderEnumType.newEnumAttribute();
+        assertEquals(1, genderEnumContent.validate(ipsProject).getNoOfMessages());
+    }
+
+    public void testDependsOn() throws CoreException {
+        IDependency[] dependencies = genderEnumContent.dependsOn();
+        assertEquals(1, dependencies.length);
+
+        List<IDependency> depencendiesList = Arrays.asList(dependencies);
+        IDependency enumTypeDependency = IpsObjectDependency.createReferenceDependency(genderEnumContent
+                .getQualifiedNameType(), new QualifiedNameType(genderEnumType.getQualifiedName(),
+                IpsObjectType.ENUM_TYPE));
+        assertTrue(depencendiesList.contains(enumTypeDependency));
+    }
+
+    public void testGetReferencedEnumAttributesCount() throws CoreException {
+        assertEquals(2, genderEnumContent.getReferencedEnumAttributesCount());
+
+        genderEnumType.newEnumAttribute();
+        genderEnumContent.setEnumType(genderEnumType.getQualifiedName());
+        assertEquals(3, genderEnumContent.getReferencedEnumAttributesCount());
     }
 
 }

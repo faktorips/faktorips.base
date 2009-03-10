@@ -14,24 +14,25 @@
 package org.faktorips.devtools.core.ui.editors.enumcontent;
 
 import org.eclipse.jface.action.Action;
+import org.eclipse.jface.wizard.WizardDialog;
 import org.eclipse.swt.widgets.Shell;
 import org.faktorips.devtools.core.model.enums.IEnumContent;
 import org.faktorips.devtools.core.ui.IpsUIPlugin;
 import org.faktorips.util.ArgumentCheck;
 
 /**
- * Opens a <code>FixEnumTypeDialog</code>.
+ * Opens a <code>FixEnumContentWizard</code>.
  * 
- * @see FixEnumTypeDialog
+ * @see FixEnumContentWizard
  * 
  * @author Alexander Weickmann
  * 
  * @since 2.3
  */
-public class OpenFixEnumTypeDialogAction extends Action {
+public class OpenFixEnumContentWizardAction extends Action {
 
     /** The name of the image for the action. */
-    private final String IMAGE_NAME = "BrokenEnumType.gif";
+    private final String IMAGE_NAME = "BrokenEnum.gif";
 
     /** The enum content to fix. */
     private IEnumContent enumContent;
@@ -40,7 +41,7 @@ public class OpenFixEnumTypeDialogAction extends Action {
     private Shell parentShell;
 
     /**
-     * Creates a new <code>OpenFixEnumTypeDialogAction</code>.
+     * Creates a new <code>OpenFixEnumContentWizardAction</code>.
      * 
      * @param enumContent The enum content to fix.
      * @param parentShell The parent shell.
@@ -48,7 +49,7 @@ public class OpenFixEnumTypeDialogAction extends Action {
      * @throws NullPointerException If <code>enumContent</code> or <code>parentShell</code> is
      *             <code>null</code>.
      */
-    public OpenFixEnumTypeDialogAction(IEnumContent enumContent, Shell parentShell) {
+    public OpenFixEnumContentWizardAction(IEnumContent enumContent, Shell parentShell) {
         super();
 
         ArgumentCheck.notNull(new Object[] { enumContent, parentShell });
@@ -66,7 +67,8 @@ public class OpenFixEnumTypeDialogAction extends Action {
      */
     @Override
     public void run() {
-        FixEnumTypeDialog dialog = new FixEnumTypeDialog(enumContent, parentShell);
+        FixEnumContentWizard wizard = new FixEnumContentWizard(enumContent);
+        WizardDialog dialog = new WizardDialog(parentShell, wizard);
         dialog.open();
     }
 

@@ -100,6 +100,39 @@ public abstract class EnumContentValidations {
         }
     }
 
+    /**
+     * Validates the number of referenced enum attributes. This number is invalid if it does not
+     * correspond to the number of enum attributes in the referenced enum type.
+     * 
+     * @param validationMessageList The message list to save validation messages into.
+     * @param enumContent The enumContent that might be invalid.
+     * 
+     * @throws CoreException If an error occurs while searching for the enum type referenced by the
+     *             given enum content.
+     * @throws NullPointerException If <code>validationMessageList</code> or
+     *             <code>enumContent</code> is <code>null</code>.
+     */
+    public static void validateReferencedEnumAttributesCount(MessageList validationMessageList, IEnumContent enumContent)
+            throws CoreException {
+
+        ArgumentCheck.notNull(new Object[] { validationMessageList, enumContent });
+
+        IEnumType enumType = enumContent.findEnumType();
+        if (enumType == null) {
+            return;
+        }
+
+        if (enumType.getEnumAttributesCount(true) != enumContent.getReferencedEnumAttributesCount()) {
+            String text = NLS.bind(Messages.EnumContent_ReferencedEnumAttributesCountInvalid, enumType
+                    .getQualifiedName());
+            Message validationMessage = new Message(
+                    IEnumContent.MSGCODE_ENUM_CONTENT_REFERENCED_ENUM_ATTRIBUTES_COUNT_INVALID, text, Message.ERROR,
+                    new ObjectProperty[] { new ObjectProperty(enumContent,
+                            IEnumContent.PROPERTY_REFERENCED_ENUM_ATTRIBUTES_COUNT) });
+            validationMessageList.add(validationMessage);
+        }
+    }
+
     /** Prohibits initialization. */
     private EnumContentValidations() {
 

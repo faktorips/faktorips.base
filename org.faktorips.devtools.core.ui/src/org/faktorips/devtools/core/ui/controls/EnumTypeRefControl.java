@@ -25,6 +25,24 @@ import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.ui.UIToolkit;
 import org.faktorips.util.ArgumentCheck;
 
+/**
+ * A control for choosing enum types.
+ * <p>
+ * The control is configured by the constructor whether to be used to choose a super enum type for
+ * another enum type or to choose an enum type for an enum content.
+ * <p>
+ * If the control is instrumented to be used for choosing a super enum type then the currently set
+ * enum type will not be shown in the list as well as enum types that subclass it.
+ * <p>
+ * If the control however is instrumented to be used for choosing an enum type for an enum content
+ * then abstract enum types and those that define their values in the model are not displayed.
+ * 
+ * @see org.faktorips.devtools.core.model.enums.IEnumType
+ * 
+ * @author Alexander Weickmann
+ * 
+ * @since 2.3
+ */
 public class EnumTypeRefControl extends IpsObjectRefControl {
 
     /** The current enum type for that possible supertypes will be displayed. */
@@ -43,7 +61,6 @@ public class EnumTypeRefControl extends IpsObjectRefControl {
      *            super enum type.
      */
     public EnumTypeRefControl(IIpsProject project, Composite parent, UIToolkit toolkit, boolean chooseSuperEnumType) {
-
         super(project, parent, toolkit, Messages.EnumTypeRefControl_title, Messages.EnumTypeRefControl_description);
 
         this.currentEnumType = null;
@@ -82,7 +99,7 @@ public class EnumTypeRefControl extends IpsObjectRefControl {
                         resultSrcFiles.add(currentIpsSrcFile);
                     }
                 } else {
-                    if (!(currentLoopEnumType.isAbstract())) {
+                    if (!(currentLoopEnumType.isAbstract()) && !(currentLoopEnumType.getValuesArePartOfModel())) {
                         resultSrcFiles.add(currentIpsSrcFile);
                     }
                 }

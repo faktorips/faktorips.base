@@ -246,14 +246,6 @@ public class EnumValuesSection extends IpsSection implements ContentsChangeListe
             moveEnumValueDownAction.setEnabled(valuesArePartOfModel && !(isAbstract));
             enumValuesTable.setEnabled(valuesArePartOfModel && !(isAbstract));
             getSectionControl().setEnabled(valuesArePartOfModel && !(isAbstract));
-
-        } else if (enumValueContainer instanceof IEnumContent) {
-            newEnumValueAction.setEnabled(!(valuesArePartOfModel) && !(isAbstract));
-            deleteEnumValueAction.setEnabled(!(valuesArePartOfModel) && !(isAbstract));
-            moveEnumValueUpAction.setEnabled(!(valuesArePartOfModel) && !(isAbstract));
-            moveEnumValueDownAction.setEnabled(!(valuesArePartOfModel) && !(isAbstract));
-            enumValuesTable.setEnabled(!(valuesArePartOfModel) && !(isAbstract));
-            getSectionControl().setEnabled(!(valuesArePartOfModel) && !(isAbstract));
         }
     }
 
@@ -298,28 +290,35 @@ public class EnumValuesSection extends IpsSection implements ContentsChangeListe
      * If this is not the case the enum attributes of the enum type are used to create the columns.
      */
     private void createTableColumns(IEnumType enumType) throws CoreException {
-        if (enumValueContainer.getEnumValuesCount() > 0 && enumValueContainer instanceof IEnumContent) {
-            /*
-             * TODO aw: also consider columns of the other enum values, what to if the number of
-             * enum attribute values differs? -> the solution will be to save the number columns in
-             * the file. This is only neccessary for enum content and therefore it will be
-             * implemented later (after 2.3.0rc1).
-             */
-            IEnumValue enumValue = enumValueContainer.getEnumValues().get(0);
-            List<IEnumAttributeValue> enumAttributeValues = enumValue.getEnumAttributeValues();
-            for (int i = 0; i < enumAttributeValues.size(); i++) {
-                IEnumAttributeValue currentEnumAttributeValue = enumAttributeValues.get(i);
-                IEnumAttribute currentEnumAttribute = currentEnumAttributeValue.findEnumAttribute();
-                String columnName = (currentEnumAttribute != null) ? currentEnumAttribute.getName() : NLS.bind(
-                        Messages.EnumValuesSection_defaultColumnName, i + 1);
-                addTableColumn(columnName, currentEnumAttribute.isIdentifier());
+        if (enumValueContainer instanceof IEnumContent) {
+            IEnumContent enumContent = (IEnumContent)enumValueContainer;
+            IEnumType referencedEnumType = enumValueContainer.findEnumType();
+            for (int i = 0; i < enumContent.getReferencedEnumAttributesCount(); i++) {
+                boolean obtainNamesFromAttributes = true;
+                if (referencedEnumType == null) {
+                    obtainNamesFromAttributes = false;
+                } else {
+                    if (referencedEnumType.getEnumAttributesCount(true) != enumContent
+                            .getReferencedEnumAttributesCount()) {
+                        obtainNamesFromAttributes = false;
+                    }
+                }
+
+                String columnName;
+                boolean isIdentifier = false;
+                if (obtainNamesFromAttributes) {
+                    IEnumAttribute currentEnumAttribute = referencedEnumType.getEnumAttributes().get(i);
+                    columnName = currentEnumAttribute.getName();
+                    isIdentifier = currentEnumAttribute.isIdentifier();
+                } else {
+                    columnName = NLS.bind(Messages.EnumValuesSection_defaultColumnName, i + 1);
+                }
+                addTableColumn(columnName, isIdentifier);
             }
 
         } else {
-            if (enumType != null) {
-                for (IEnumAttribute currentEnumAttribute : enumType.findAllEnumAttributes()) {
-                    addTableColumn(currentEnumAttribute.getName(), currentEnumAttribute.isIdentifier());
-                }
+            for (IEnumAttribute currentEnumAttribute : enumType.findAllEnumAttributes()) {
+                addTableColumn(currentEnumAttribute.getName(), currentEnumAttribute.isIdentifier());
             }
         }
     }
@@ -430,8 +429,21 @@ public class EnumValuesSection extends IpsSection implements ContentsChangeListe
     private CellEditor[] createCellEditors(IEnumType enumType, String[] columnNames) throws CoreException {
         CellEditor[] cellEditors = new CellEditor[columnNames.length];
         for (int i = 0; i < cellEditors.length; i++) {
-            String datatypeQualifiedName = (enumType != null) ? enumType.findAllEnumAttributes().get(i).getDatatype()
-                    : "String";
+            // If the table is in an invalid state every cell will be represented as string
+            String datatypeQualifiedName = "String";
+            if (enumType != null) {
+                boolean obtainDatatype = true;
+                if (enumValueContainer instanceof IEnumContent) {
+                    if (enumType.getEnumAttributesCount(true) != ((IEnumContent)enumValueContainer)
+                            .getReferencedEnumAttributesCount()) {
+                        obtainDatatype = false;
+                    }
+                }
+                if (obtainDatatype) {
+                    datatypeQualifiedName = enumType.findAllEnumAttributes().get(i).getDatatype();
+                }
+            }
+            
             ValueDatatype datatype = enumValueContainer.getIpsProject().findValueDatatype(datatypeQualifiedName);
             ValueDatatypeControlFactory valueDatatypeControlFactory = IpsUIPlugin.getDefault()
                     .getValueDatatypeControlFactory(datatype);
@@ -527,51 +539,56 @@ public class EnumValuesSection extends IpsSection implements ContentsChangeListe
      * <code>enumValuesTableViewer</code> when enum values have been added, moved or removed.
      */
     public void contentsChanged(ContentChangeEvent event) {
-        /*
-         * Return if the content changed was not the enum value container to be edited.
-         */
-        if (!(event.getIpsSrcFile().equals(enumValueContainer.getIpsSrcFile()))) {
-            return;
+        IEnumType enumType;
+        try {
+            enumType = enumValueContainer.findEnumType();
+        } catch (CoreException e) {
+            throw new RuntimeException(e);
         }
 
-        if (enumValueContainer instanceof IEnumType) {
-            contentsChangedEnumType(event);
+        /*
+         * Return if the content changed was not the enum value container to be edited or the
+         * referenced enum type.
+         */
+        if (!(event.getIpsSrcFile().equals(enumValueContainer.getIpsSrcFile()))) {
+            if (enumType != null) {
+                if (!(event.getIpsSrcFile().equals(enumType.getIpsSrcFile()))) {
+                    return;
+                }
+            } else {
+                return;
+            }
         }
 
         switch (event.getEventType()) {
 
             case ContentChangeEvent.TYPE_WHOLE_CONTENT_CHANGED:
-                try {
-                    IIpsObject changedIpsObject = event.getIpsSrcFile().getIpsObject();
-                    if (changedIpsObject instanceof IEnumType) {
-                        IEnumType changedEnumType = (IEnumType)changedIpsObject;
-                        reinit(changedEnumType);
-                        updateEnabledStates(changedEnumType);
-
+                if (enumValueContainer instanceof IEnumType) {
+                    try {
+                        IIpsObject changedIpsObject = event.getIpsSrcFile().getIpsObject();
+                        if (changedIpsObject instanceof IEnumType) {
+                            IEnumType changedEnumType = (IEnumType)changedIpsObject;
+                            reinit(changedEnumType);
+                            updateEnabledStates(changedEnumType);
+                        }
+                    } catch (CoreException e) {
+                        throw new RuntimeException(e);
                     }
-                } catch (CoreException e) {
-                    throw new RuntimeException(e);
                 }
 
                 break;
-        }
-    }
-
-    /** Handles content change events when editing an enum type. */
-    private void contentsChangedEnumType(ContentChangeEvent event) {
-        IIpsObjectPart part = event.getPart();
-        switch (event.getEventType()) {
 
             case ContentChangeEvent.TYPE_PROPERTY_CHANGED:
+                IIpsObjectPart part = event.getPart();
                 if (part != null) {
                     if (part instanceof IEnumAttribute) {
                         IEnumAttribute modifiedEnumAttribute = (IEnumAttribute)part;
-                        IEnumType enumType = modifiedEnumAttribute.getEnumType();
+                        IEnumType enumTypeModifiedEnumAttribute = modifiedEnumAttribute.getEnumType();
 
                         try {
                             String oldName = null;
                             for (String currentColumnName : columnNames) {
-                                if (enumType.findEnumAttribute(currentColumnName) == null) {
+                                if (enumTypeModifiedEnumAttribute.findEnumAttribute(currentColumnName) == null) {
                                     oldName = currentColumnName;
                                     break;
                                 }
@@ -579,7 +596,11 @@ public class EnumValuesSection extends IpsSection implements ContentsChangeListe
 
                             // Something else but the name has changed
                             if (oldName == null) {
-                                reinit(enumType);
+                                if (enumValueContainer instanceof IEnumType) {
+                                    reinit(enumTypeModifiedEnumAttribute);
+                                } else {
+                                    updateTableViewer();
+                                }
                                 return;
                             }
 

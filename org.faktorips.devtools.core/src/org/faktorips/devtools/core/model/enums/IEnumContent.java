@@ -13,10 +13,11 @@
 
 package org.faktorips.devtools.core.model.enums;
 
+import org.eclipse.core.runtime.CoreException;
 
 /**
- * This ips object type is used when the values for a Faktor-IPS enum shall not be defined
- * directly in the enum type itself but separate from it as product content.
+ * This ips object type is used when the values for a Faktor-IPS enum shall not be defined directly
+ * in the enum type itself but separate from it as product content.
  * <p>
  * An enum content always refers to a specific enum type which defines the structure of the
  * enumeration.
@@ -30,8 +31,11 @@ public interface IEnumContent extends IEnumValueContainer {
     /** The xml tag for this ips object. */
     public final static String XML_TAG = "EnumContent"; //$NON-NLS-1$
 
-    /** Name of the enumType property. */
+    /** Name of the <code>enumType</code> property. */
     public final static String PROPERTY_ENUM_TYPE = "enumType"; //$NON-NLS-1$
+
+    /** Name of the <code>referencedEnumAttributesCount</code> property. */
+    public final static String PROPERTY_REFERENCED_ENUM_ATTRIBUTES_COUNT = "referencedEnumAttributesCount"; //$NON-NLS-1$
 
     /** Prefix for all message codes of this class. */
     public final static String MSGCODE_PREFIX = "ENUMCONTENT-"; //$NON-NLS-1$
@@ -64,13 +68,29 @@ public interface IEnumContent extends IEnumValueContainer {
             + "EnumContentValuesArePartOfModel"; //$NON-NLS-1$
 
     /**
+     * Validation message code to indicate that the number of referenced enum attributes does not
+     * correspond to the number of enum attributes defined in the referenced enum type.
+     */
+    public final static String MSGCODE_ENUM_CONTENT_REFERENCED_ENUM_ATTRIBUTES_COUNT_INVALID = MSGCODE_PREFIX
+            + "EnumContentReferencedEnumAttributesCountInvalid"; //$NON-NLS-1$
+
+    /**
      * Sets the enum type this enum content is based upon.
+     * <p>
+     * If the new enum type can be found then the number of referenced enum attributes will be
+     * updated to match the number of enum attributes of the new enum type.
      * 
      * @param enumType The qualified name of the enum type this enum content shall be based upon.
      * 
+     * @throws CoreException If an error occurs while searching for the new enum type.
      * @throws NullPointerException If <code>enumType</code> is <code>null</code>.
      */
-    public void setEnumType(String enumType);
+    public void setEnumType(String enumType) throws CoreException;
+
+    /**
+     * Returns the number of enum attributes to be referenced by this enum content.
+     */
+    public int getReferencedEnumAttributesCount();
 
     /**
      * Returns the qualified name of the enum type this enum content is based upon.
