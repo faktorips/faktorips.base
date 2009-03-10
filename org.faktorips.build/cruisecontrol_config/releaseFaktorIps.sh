@@ -417,12 +417,22 @@ if [ ! "$NOCVS" = "true" ] ; then
     mkdir $TMP_CHECKOUTDIR2
     if [ -n "$BRANCH" ] ; then
       echo "checkout using branch: "$BRANCH
-      cvs -d $CVS_ROOT co -d $TMP_CHECKOUTDIR1 -r $BRANCH $FAKTORIPS_CORE_PLUGIN_NAME/META-INF
-      cvs -d $CVS_ROOT co -d $TMP_CHECKOUTDIR2 -r $BRANCH $MIGRATION_STRATEGY_PATH
+      cvs -d $CVS_ROOT co -d $TMP_CHECKOUTDIR1 -r $BRANCH $FETCH_TAG $FAKTORIPS_CORE_PLUGIN_NAME/META-INF
+      cvs -d $CVS_ROOT co -d $TMP_CHECKOUTDIR2 -r $BRANCH $FETCH_TAG $MIGRATION_STRATEGY_PATH
+      if [ -e $PROJECTSROOTDIR/$FAKTORIPS_CORE_PLUGIN_NAME//META-INF/MANIFEST.MF ] ; then
+        # if manifest not exist checkout using latest, e.g. if building the first time then the sources are not tagged
+        cvs -d $CVS_ROOT co -d $TMP_CHECKOUTDIR1 -r $BRANCH $FAKTORIPS_CORE_PLUGIN_NAME/META-INF
+        cvs -d $CVS_ROOT co -d $TMP_CHECKOUTDIR2 -r $BRANCH $MIGRATION_STRATEGY_PATH
+      fi
     else
       echo "checkout HEAD" 
-      cvs -d $CVS_ROOT co -d $TMP_CHECKOUTDIR1 $FAKTORIPS_CORE_PLUGIN_NAME/META-INF
-      cvs -d $CVS_ROOT co -d $TMP_CHECKOUTDIR2 $MIGRATION_STRATEGY_PATH
+      cvs -d $CVS_ROOT co -d $TMP_CHECKOUTDIR1 -r $FETCH_TAG $FAKTORIPS_CORE_PLUGIN_NAME/META-INF
+      cvs -d $CVS_ROOT co -d $TMP_CHECKOUTDIR2 -r $FETCH_TAG $MIGRATION_STRATEGY_PATH
+      if [ -e $PROJECTSROOTDIR/$FAKTORIPS_CORE_PLUGIN_NAME//META-INF/MANIFEST.MF ] ; then
+        # if manifest not exist checkout using latest, e.g. if building the first time then the sources are not tagged
+        cvs -d $CVS_ROOT co -d $TMP_CHECKOUTDIR1 $FAKTORIPS_CORE_PLUGIN_NAME/META-INF
+        cvs -d $CVS_ROOT co -d $TMP_CHECKOUTDIR2 $MIGRATION_STRATEGY_PATH
+      fi      
     fi
     
     CORE_BUNDLE_VERSION=$(cat $TMP_CHECKOUTDIR1/MANIFEST.MF | grep Bundle-Version | sed -r "s/.*:\ *(.*)/\1/g")
