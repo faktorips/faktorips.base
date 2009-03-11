@@ -93,16 +93,17 @@ public abstract class AbstractXmlFileBuilder extends AbstractArtefactBuilder {
         return ipsSrcFile.getIpsPackageFragment().getRoot().getArtefactDestination(true).getFolder(pathToPack);
     }
 
-    private IFile getXmlContentFile(IIpsSrcFile ipsSrcFile) throws CoreException {
+    /**
+     * Returns the handle to the file where the xml content for the given ips source file is stored.
+     */
+    public IFile getXmlContentFile(IIpsSrcFile ipsSrcFile) throws CoreException {
         IFile file = (IFile)ipsSrcFile.getEnclosingResource();
         IFolder folder = getXmlContentFileFolder(ipsSrcFile);
         return folder.getFile(StringUtil.getFilenameWithoutExtension(file.getName()) + ".xml"); //$NON-NLS-1$
     }
 
     /**
-     * Overridden IMethod.
-     * 
-     * @see org.faktorips.devtools.core.model.ipsproject.IIpsArtefactBuilder#delete(org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile)
+     * {@inheritDoc}
      */
     public void delete(IIpsSrcFile ipsSrcFile) throws CoreException {
         IFile file = getXmlContentFile(ipsSrcFile);
@@ -112,8 +113,8 @@ public abstract class AbstractXmlFileBuilder extends AbstractArtefactBuilder {
     }
 
     /**
-     * Returs true if the provided IpsObject is of the same type as the IpsObjectType this builder
-     * is initialized with.
+     * Returns true if the provided IpsObject is of the same type as the IpsObjectType this builder
+     * is initialised with.
      * 
      * @see org.faktorips.devtools.core.model.ipsproject.IIpsArtefactBuilder#isBuilderFor(IIpsObject)
      */

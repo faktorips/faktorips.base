@@ -14,6 +14,7 @@
 package org.faktorips.devtools.stdbuilder;
 
 import java.util.GregorianCalendar;
+import java.util.List;
 
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IncrementalProjectBuilder;
@@ -44,7 +45,7 @@ import org.faktorips.runtime.internal.TocEntryObject;
 import org.w3c.dom.Document;
 
 /**
- * CVS-trigger
+ * 
  * @author Jan Ortmann 
  */
 public class TocFileBuilderTest extends AbstractIpsPluginTest {
@@ -78,13 +79,31 @@ public class TocFileBuilderTest extends AbstractIpsPluginTest {
         // toc should be empty as long as the project hasn't been builder
         IIpsPackageFragmentRoot root = project.getIpsPackageFragmentRoots()[0];
         MutableClRuntimeRepositoryToc toc = tocFileBuilder.getToc(root);
-        assertEquals(0, toc.getProductCmptTocEntries().length);
+        assertEquals(0, toc.getProductCmptTocEntries().size());
         
         project.getProject().build(IncrementalProjectBuilder.FULL_BUILD, null);
         toc = tocFileBuilder.getToc(root);
-        assertEquals(1, toc.getProductCmptTocEntries().length);
+        assertEquals(1, toc.getProductCmptTocEntries().size());
     }
     
+    public void testCreateTocEntryPolicyCmptType() throws CoreException {
+    	IPolicyCmptType type = newPolicyCmptType(project, "test.Policy");
+    	TocEntryObject entry = tocFileBuilder.createTocEntry(type);
+    	assertEquals("test.Policy", entry.getIpsObjectQualifiedName());
+    	assertEquals("test.Policy", entry.getIpsObjectId());
+    	assertEquals("org.faktorips.sample.model.internal.test.Policy", entry.getImplementationClassName());
+    	assertEquals("org/faktorips/sample/model/internal/test/Policy.xml", entry.getXmlResourceName());
+    }
+    
+    public void testCreateTocEntryProductCmptType() throws CoreException {
+    	IProductCmptType type = newProductCmptType(project, "test.Product");
+    	TocEntryObject entry = tocFileBuilder.createTocEntry(type);
+    	assertEquals("test.Product", entry.getIpsObjectQualifiedName());
+    	assertEquals("test.Product", entry.getIpsObjectId());
+    	assertEquals("org.faktorips.sample.model.internal.test.Product", entry.getImplementationClassName());
+    	assertEquals("org/faktorips/sample/model/internal/test/Product.xml", entry.getXmlResourceName());
+    }
+
     public void testCreateTocEntryTable() throws CoreException {
         ITableStructure structure = (ITableStructure)newIpsObject(project, IpsObjectType.TABLE_STRUCTURE, "motor.RateTableStructure");
         ITableContents table = (ITableContents)newIpsObject(project, IpsObjectType.TABLE_CONTENTS, "motor.RateTable");
@@ -107,7 +126,7 @@ public class TocFileBuilderTest extends AbstractIpsPluginTest {
         assertNull(entry);
     }
     
-    public void test() throws Exception {
+    public void testToc() throws Exception {
         
         // create a product component
         IPolicyCmptType type = newPolicyAndProductCmptType(project, "motor.MotorPolicy", "motor.MotorProduct");
@@ -158,8 +177,8 @@ public class TocFileBuilderTest extends AbstractIpsPluginTest {
         toc.initFromXml(doc.getDocumentElement());
 
         // asserts for product cmpt entry
-        TocEntryObject[] entries = toc.getProductCmptTocEntries();
-        assertEquals(2, entries.length);
+        List<TocEntryObject> entries = toc.getProductCmptTocEntries();
+        assertEquals(2, entries.size());
         
         TocEntryObject entry0 = toc.getProductCmptTocEntry(motorProduct.getRuntimeId());
         assertNotNull(entry0);
@@ -191,7 +210,7 @@ public class TocFileBuilderTest extends AbstractIpsPluginTest {
         motorProduct.getIpsSrcFile().getCorrespondingFile().delete(true, false, null);
         project.getProject().build(IncrementalProjectBuilder.INCREMENTAL_BUILD, null);
         MutableClRuntimeRepositoryToc toc2 = tocFileBuilder.getToc(root);
-        assertEquals(1, toc2.getProductCmptTocEntries().length);
+        assertEquals(1, toc2.getProductCmptTocEntries().size());
 
         // delete the table => should be removed from toc
         table.getIpsSrcFile().getCorrespondingFile().delete(true, false, null);
@@ -217,7 +236,7 @@ public class TocFileBuilderTest extends AbstractIpsPluginTest {
         pcFromula.getIpsSrcFile().getCorrespondingFile().delete(true, false, null);
         project.getProject().build(IncrementalProjectBuilder.INCREMENTAL_BUILD, null);
         toc2 = tocFileBuilder.getToc(root);
-        assertEquals(0, toc2.getProductCmptTocEntries().length);
+        assertEquals(0, toc2.getProductCmptTocEntries().size());
         
         formulaTestEntry = toc2.getTestCaseTocEntryByQName(pcFromula.getQualifiedName());
         assertNull(formulaTestEntry);
@@ -286,7 +305,7 @@ public class TocFileBuilderTest extends AbstractIpsPluginTest {
         MutableClRuntimeRepositoryToc toc = tocFileBuilder.getToc(root);
         project.getProject().build(IncrementalProjectBuilder.FULL_BUILD, null);
         
-        assertEquals(0, toc.getTestCaseTocEntries().length);
+        assertEquals(0, toc.getTestCaseTocEntries().size());
         
         IFormula ce = generation.newFormula();
         IFormulaTestCase ftc = ce.newFormulaTestCase();
@@ -294,13 +313,13 @@ public class TocFileBuilderTest extends AbstractIpsPluginTest {
         project.getProject().build(IncrementalProjectBuilder.FULL_BUILD, null);
         toc = tocFileBuilder.getToc(root);
         
-        assertEquals(1, toc.getTestCaseTocEntries().length);
+        assertEquals(1, toc.getTestCaseTocEntries().size());
         
         // delete formula test of product cmpt, this triggers the deleting of the formula toc file entry
         ftc.delete();
         project.getProject().build(IncrementalProjectBuilder.FULL_BUILD, null);
         toc = tocFileBuilder.getToc(root);
         
-        assertEquals(0, toc.getTestCaseTocEntries().length);
+        assertEquals(0, toc.getTestCaseTocEntries().size());
     }
 }

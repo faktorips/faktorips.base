@@ -16,6 +16,7 @@ package org.faktorips.runtime.internal;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
+import java.util.Set;
 import java.util.TimeZone;
 
 import org.faktorips.runtime.GenerationId;
@@ -339,4 +340,13 @@ public abstract class AbstractTocBasedRuntimeRepository extends AbstractRuntimeR
         return getProductComponentGeneration(productCmpt.getId(), entryGeneration);
     }
 
+	@Override
+	protected void getAllModelTypeImplementationClasses(Set<String> result) {
+		Set<TocEntryObject> entries = toc.getModelTypeTocEntries();
+		for (TocEntryObject tocEntryObject : entries) {
+			result.add(tocEntryObject.getImplementationClassName());
+		}
+	}
+
+    
 }

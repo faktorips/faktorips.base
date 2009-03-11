@@ -289,15 +289,25 @@ public class ClassloaderRuntimeRepository extends AbstractTocBasedRuntimeReposit
      */
     protected AbstractReadonlyTableOfContents loadTableOfContents() {
         Document doc;
+        InputStream is = null;
         try {
-            InputStream is = cl.getResourceAsStream(tocResourcePath);
+            is = cl.getResourceAsStream(tocResourcePath);
             if (is == null) {
                 throw new IllegalArgumentException("Can' find table of contents file " + tocResourcePath);
             }
             doc = docBuilder.parse(is);
         } catch (Exception e) {
             throw new RuntimeException("Error loading table of contents from " + tocResourcePath, e);
+        } finally {
+        	if (is != null) {
+        		try {
+					is.close();
+				} catch (IOException e) {
+					throw new RuntimeException(e);
+				}
+        	}
         }
+         
         try {
             Element tocElement = doc.getDocumentElement();
             AbstractReadonlyTableOfContents toc = new ReadonlyTableOfContents();
@@ -506,5 +516,5 @@ public class ClassloaderRuntimeRepository extends AbstractTocBasedRuntimeReposit
     public boolean isModifiable() {
         return false;
     }
-
+    
 }

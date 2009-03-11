@@ -14,6 +14,7 @@
 package org.faktorips.runtime.internal;
 
 import java.util.List;
+import java.util.Set;
 
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
@@ -98,6 +99,11 @@ public abstract class AbstractReadonlyTableOfContents {
      * Returns a toc entry representing a table for this table's qualified table name.
      */
     public abstract TocEntryObject getTableTocEntryByQualifiedTableName(String qualifiedTableName);
+    
+    /**
+     * Returns all toc's entries representing model types. 
+     */
+    public abstract Set<TocEntryObject> getModelTypeTocEntries();
     
     /**
      * {@inheritDoc}

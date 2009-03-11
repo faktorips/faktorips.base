@@ -29,6 +29,8 @@ public class ReadonlyTableOfContentsTest extends XmlAbstractTestCase {
         AbstractReadonlyTableOfContents toc = new ReadonlyTableOfContents();
         toc.initFromXml(getTestDocument().getDocumentElement());
         assertEquals(1, toc.getProductCmptTocEntries().size());
+        
+        assertEquals(2, toc.getModelTypeTocEntries().size());
     }
 
 }

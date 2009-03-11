@@ -401,6 +401,7 @@ public class StandardBuilderSet extends DefaultBuilderSet {
         formulaTestBuilder.setProductCmptGenImplClassBuilder(productCmptGenImplClassBuilder);
 
         // toc file builders
+        tocFileBuilder.setPolicyCmptImplClassBuilder(policyCmptImplClassBuilder);
         tocFileBuilder.setProductCmptTypeImplClassBuilder(productCmptImplClassBuilder);
         tocFileBuilder.setProductCmptBuilder(productCmptGenerationImplBuilder);
         tocFileBuilder.setProductCmptGenImplClassBuilder(productCmptGenImplClassBuilder);
@@ -408,13 +409,13 @@ public class StandardBuilderSet extends DefaultBuilderSet {
         tocFileBuilder.setTestCaseTypeClassBuilder(testCaseTypeClassBuilder);
         tocFileBuilder.setTestCaseBuilder(testCaseBuilder);
         tocFileBuilder.setFormulaTestBuilder(formulaTestBuilder);
-
+        
         if (ComplianceCheck.isComplianceLevelAtLeast5(getIpsProject())) {
-            IIpsArtefactBuilder policyModelTypeBuilder = new ModelTypeXmlBuilder(IpsObjectType.POLICY_CMPT_TYPE, this,
-                    KIND_MODEL_TYPE);
-            IIpsArtefactBuilder productModelTypeBuilder = new ModelTypeXmlBuilder(IpsObjectType.PRODUCT_CMPT_TYPE_V2,
-                    this, KIND_MODEL_TYPE);
-
+        	ModelTypeXmlBuilder policyModelTypeBuilder = new ModelTypeXmlBuilder(IpsObjectType.POLICY_CMPT_TYPE, this, KIND_MODEL_TYPE);
+        	ModelTypeXmlBuilder productModelTypeBuilder = new ModelTypeXmlBuilder(IpsObjectType.PRODUCT_CMPT_TYPE_V2, this, KIND_MODEL_TYPE);
+            tocFileBuilder.setPolicyModelTypeXmlBuilder(policyModelTypeBuilder);
+            tocFileBuilder.setProductModelTypeXmlBuilder(productModelTypeBuilder);
+            tocFileBuilder.setGenerateEntriesForModelTypes(true);
             return new IIpsArtefactBuilder[] { tableImplBuilder, tableRowBuilder, productCmptGenInterfaceBuilder,
                     productCmptGenImplClassBuilder, productCmptInterfaceBuilder, productCmptImplClassBuilder,
                     policyCmptImplClassBuilder, policyCmptInterfaceBuilder, productCmptGenerationImplBuilder,
@@ -422,7 +423,7 @@ public class StandardBuilderSet extends DefaultBuilderSet {
                     formulaTestBuilder, enumClassesBuilder, enumTypeInterfaceBuilder, tocFileBuilder,
                     policyModelTypeBuilder, productModelTypeBuilder, businessFunctionBuilder };
         } else {
-
+        	tocFileBuilder.setGenerateEntriesForModelTypes(false);
             return new IIpsArtefactBuilder[] { tableImplBuilder, tableRowBuilder, productCmptGenInterfaceBuilder,
                     productCmptGenImplClassBuilder, productCmptInterfaceBuilder, productCmptImplClassBuilder,
                     policyCmptImplClassBuilder, policyCmptInterfaceBuilder, productCmptGenerationImplBuilder,

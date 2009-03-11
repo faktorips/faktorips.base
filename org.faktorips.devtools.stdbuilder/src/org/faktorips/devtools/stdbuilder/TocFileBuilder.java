@@ -16,7 +16,9 @@ package org.faktorips.devtools.stdbuilder;
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import javax.xml.parsers.DocumentBuilder;
@@ -38,6 +40,7 @@ import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
 import org.faktorips.devtools.core.model.ipsproject.IIpsArtefactBuilderSet;
 import org.faktorips.devtools.core.model.ipsproject.IIpsPackageFragmentRoot;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
+import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmpt;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmptGeneration;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmptKind;
@@ -46,8 +49,10 @@ import org.faktorips.devtools.core.model.tablecontents.ITableContents;
 import org.faktorips.devtools.core.model.tablestructure.ITableStructure;
 import org.faktorips.devtools.core.model.testcase.ITestCase;
 import org.faktorips.devtools.core.model.testcasetype.ITestCaseType;
+import org.faktorips.devtools.core.model.type.IType;
 import org.faktorips.devtools.core.util.XmlUtil;
 import org.faktorips.devtools.stdbuilder.formulatest.FormulaTestBuilder;
+import org.faktorips.devtools.stdbuilder.policycmpttype.PolicyCmptImplClassBuilder;
 import org.faktorips.devtools.stdbuilder.productcmpt.ProductCmptBuilder;
 import org.faktorips.devtools.stdbuilder.productcmpttype.ProductCmptGenImplClassBuilder;
 import org.faktorips.devtools.stdbuilder.productcmpttype.ProductCmptImplClassBuilder;
@@ -69,10 +74,10 @@ public class TocFileBuilder extends AbstractArtefactBuilder {
 
     // a map contains the modification stamp for each ips package fragment root's runtime
     // repository table of contents.
-    private Map packFrgmtRootTocModStamps = new HashMap();
+    private Map<IIpsPackageFragmentRoot, Long> packFrgmtRootTocModStamps = new HashMap<IIpsPackageFragmentRoot, Long>();
 
-    // a map that contains the table of contents ojects (value) for each table of contents file.
-    private Map tocFileMap = new HashMap();
+    // a map that contains the table of contents objects (value) for each table of contents file.
+    private Map<IFile, MutableClRuntimeRepositoryToc> tocFileMap = new HashMap<IFile, MutableClRuntimeRepositoryToc>();
 
     // required builders
     private ProductCmptImplClassBuilder productCmptTypeImplClassBuilder;
@@ -82,12 +87,29 @@ public class TocFileBuilder extends AbstractArtefactBuilder {
     private TestCaseTypeClassBuilder testCaseTypeClassBuilder;
     private TestCaseBuilder testCaseBuilder;
     private FormulaTestBuilder formulaTestBuilder;
+    private ModelTypeXmlBuilder policyModelTypeXmlBuilder;
+    private ModelTypeXmlBuilder productModelTypeXmlBuilder;
+    private PolicyCmptImplClassBuilder policyCmptImplClassBuilder;
 
+    private boolean generateEntriesForModelTypes;
+    
     public TocFileBuilder(IIpsArtefactBuilderSet builderSet) {
         super(builderSet);
     }
+    
+    public boolean isGenerateEntriesForModelTypes() {
+		return generateEntriesForModelTypes;
+	}
 
-    public void setProductCmptTypeImplClassBuilder(ProductCmptImplClassBuilder builder) {
+
+
+	public void setGenerateEntriesForModelTypes(boolean generateEntriesForModelTypes) {
+		this.generateEntriesForModelTypes = generateEntriesForModelTypes;
+	}
+
+
+
+	public void setProductCmptTypeImplClassBuilder(ProductCmptImplClassBuilder builder) {
         this.productCmptTypeImplClassBuilder = builder;
     }
 
@@ -114,8 +136,23 @@ public class TocFileBuilder extends AbstractArtefactBuilder {
     public void setFormulaTestBuilder(FormulaTestBuilder formulaTestBuilder) {
         this.formulaTestBuilder = formulaTestBuilder;
     }
+    
+    public void setPolicyModelTypeXmlBuilder(
+			ModelTypeXmlBuilder policyModelTypeXmlBuilder) {
+		this.policyModelTypeXmlBuilder = policyModelTypeXmlBuilder;
+	}
 
-    /**
+	public void setProductModelTypeXmlBuilder(
+			ModelTypeXmlBuilder productModelTypeXmlBuilder) {
+		this.productModelTypeXmlBuilder = productModelTypeXmlBuilder;
+	}
+
+	public void setPolicyCmptImplClassBuilder(
+			PolicyCmptImplClassBuilder policyCmptImplClassBuilder) {
+		this.policyCmptImplClassBuilder = policyCmptImplClassBuilder;
+	}
+
+	/**
      * {@inheritDoc}
      */
     public String getName() {
@@ -128,7 +165,8 @@ public class TocFileBuilder extends AbstractArtefactBuilder {
     public boolean isBuilderFor(IIpsSrcFile ipsSrcFile) throws CoreException {
         IpsObjectType type = ipsSrcFile.getIpsObjectType();
         return IpsObjectType.PRODUCT_CMPT.equals(type) || IpsObjectType.TABLE_CONTENTS.equals(type)
-                || IpsObjectType.TEST_CASE.equals(type);
+                || IpsObjectType.TEST_CASE.equals(type)
+                || (generateEntriesForModelTypes && type.isEntityType());
     }
 
     /**
@@ -139,7 +177,7 @@ public class TocFileBuilder extends AbstractArtefactBuilder {
      */
     public void beforeBuildProcess(IIpsProject ipsProject, int buildKind) throws CoreException {
         if (buildKind == IncrementalProjectBuilder.FULL_BUILD) {
-            tocFileMap = new HashMap();
+            tocFileMap.clear();
         }
         IIpsPackageFragmentRoot[] srcRoots = ipsProject.getSourceIpsPackageFragmentRoots();
         for (int i = 0; i < srcRoots.length; i++) {
@@ -288,7 +326,8 @@ public class TocFileBuilder extends AbstractArtefactBuilder {
         try {
             TocEntryObject entry;
             object = ipsSrcFile.getIpsObject();
-            if (object.getIpsObjectType().equals(IpsObjectType.PRODUCT_CMPT)) {
+            IpsObjectType type = object.getIpsObjectType();
+            if (type.equals(IpsObjectType.PRODUCT_CMPT)) {
                 // add entry for formula test, the formula test depends on the product cmpt
                 // source file, thus it will be implicit created or deleted here
                 entry = createFormulaTestTocEntry((IProductCmpt)object);
@@ -305,9 +344,11 @@ public class TocFileBuilder extends AbstractArtefactBuilder {
 
                 // add entry for product cmpt
                 entry = createTocEntry((IProductCmpt)object);
-            } else if (object.getIpsObjectType().equals(IpsObjectType.TABLE_CONTENTS)) {
+            } else if (type.equals(IpsObjectType.TABLE_CONTENTS)) {
                 entry = createTocEntry((ITableContents)object);
-            } else if (object.getIpsObjectType().equals(IpsObjectType.TEST_CASE)) {
+            } else if (generateEntriesForModelTypes && type.isEntityType()) {
+                entry = createTocEntry((IType)object);
+            } else if (type.equals(IpsObjectType.TEST_CASE)) {
                 entry = createTocEntry((ITestCase)object);
             } else {
                 throw new RuntimeException("Unknown ips object type " + object.getIpsObjectType()); //$NON-NLS-1$
@@ -346,7 +387,7 @@ public class TocFileBuilder extends AbstractArtefactBuilder {
                         .findProductCmptKind().getRuntimeId(), productCmpt.getVersionId(), xmlResourceName,
                         productCmptTypeImplClassBuilder.getQualifiedClassName(pcType.getIpsSrcFile()), validTo);
         IIpsObjectGeneration[] generations = productCmpt.getGenerationsOrderedByValidDate();
-        TocEntryGeneration[] genEntries = new TocEntryGeneration[generations.length];
+        List<TocEntryGeneration> genEntries = new ArrayList<TocEntryGeneration>(generations.length);
         for (int i = 0; i < generations.length; i++) {
             DateTime validFrom = DateTime.createDateOnly(generations[i].getValidFrom());
             IProductCmptGeneration gen = (IProductCmptGeneration)generations[i];
@@ -356,7 +397,7 @@ public class TocFileBuilder extends AbstractArtefactBuilder {
             } else {
                 generationClassName = productCmptGenImplClassBuilder.getQualifiedClassName(pcType);
             }
-            genEntries[i] = new TocEntryGeneration(entry, validFrom, generationClassName, xmlResourceName);
+            genEntries.add(new TocEntryGeneration(entry, validFrom, generationClassName, xmlResourceName));
         }
         entry.setGenerationEntries(genEntries);
         return entry;
@@ -432,6 +473,26 @@ public class TocFileBuilder extends AbstractArtefactBuilder {
         String xmlResourceName = testCaseBuilder.getXmlResourcePath(testCase);
         TocEntryObject entry = TocEntryObject.createTestCaseTocEntry(objectId, testCase.getQualifiedName(),
                 xmlResourceName, testCaseTypeName);
+        return entry;
+    }
+
+    /**
+     * Creates a toc entry for the given model type.
+     */
+    public TocEntryObject createTocEntry(IType type) throws CoreException {
+    	String javaImplClass;
+    	String xmlResourceName;
+    	if (type instanceof IPolicyCmptType) {
+    		javaImplClass = policyCmptImplClassBuilder.getQualifiedClassName(type);
+    		xmlResourceName = policyModelTypeXmlBuilder.getXmlResourcePath(type);
+    	} else if (type instanceof IProductCmptType) {
+    		javaImplClass = productCmptTypeImplClassBuilder.getQualifiedClassName(type);	
+    		xmlResourceName = productModelTypeXmlBuilder.getXmlResourcePath(type);
+    	} else {
+    		throw new CoreException(new IpsStatus("Unkown subclass " + type.getClass()));
+    	}
+        String id = type.getQualifiedName(); // for model types, the qualified name is also the id.
+        TocEntryObject entry = TocEntryObject.createModelTypeTocEntry(id, type.getQualifiedName(), xmlResourceName, javaImplClass);
         return entry;
     }
 

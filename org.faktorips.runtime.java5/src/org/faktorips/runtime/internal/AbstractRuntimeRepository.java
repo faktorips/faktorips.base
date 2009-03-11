@@ -21,9 +21,11 @@ import java.util.Calendar;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import javax.xml.stream.XMLInputFactory;
 import javax.xml.stream.XMLStreamConstants;
@@ -58,6 +60,8 @@ public abstract class AbstractRuntimeRepository implements IRuntimeRepository {
     // a list of all repositories this one depends on directly or indirectly
     // see getAllRepositories() for further information
     private List<IRuntimeRepository> allRepositories = null;
+
+    private Map<Class<?>, IModelType> modelTypes = new HashMap<Class<?>, IModelType>();
 
     private String name;
 
@@ -109,14 +113,8 @@ public abstract class AbstractRuntimeRepository implements IRuntimeRepository {
         if (allRepositories != null) {
             return allRepositories;
         }
-        List<IRuntimeRepository> result = new ArrayList<IRuntimeRepository>(repositories.size()); // list
-        // is
-        // so
-        // small,
-        // linear
-        // search
-        // is
-        // ok
+        List<IRuntimeRepository> result = new ArrayList<IRuntimeRepository>(repositories.size()); 
+        // list is so small, linear search is ok.
         LinkedList<IRuntimeRepository> candidates = new LinkedList<IRuntimeRepository>();
         candidates.add(this);
         while (!candidates.isEmpty()) {
@@ -587,8 +585,6 @@ public abstract class AbstractRuntimeRepository implements IRuntimeRepository {
 
     protected abstract IProductComponentGeneration getPreviousProductComponentGenerationInternal(IProductComponentGeneration generation);
 
-    private Map<Class<?>, IModelType> modelTypes = new HashMap<Class<?>, IModelType>();
-
     /**
      * 
      * {@inheritDoc}
@@ -633,4 +629,25 @@ public abstract class AbstractRuntimeRepository implements IRuntimeRepository {
     public IModelType getModelType(IProductComponent modelObject) {
         return getModelType(modelObject.getClass());
     }
+    
+    /**
+     * {@inheritDoc}
+     */
+    final public Set<String> getAllModelTypeImplementationClasses() {
+        Set<String> result = new HashSet<String>();
+        getAllModelTypeImplementationClasses(result);
+        for (IRuntimeRepository runtimeRepository : getAllReferencedRepositories()) {
+            AbstractRuntimeRepository refRepository = (AbstractRuntimeRepository)runtimeRepository;
+            refRepository.getAllModelTypeImplementationClasses(result);
+        }
+        return result;
+    }
+
+    /**
+     * Same as getAllModelTypeImplementationClasses() but searches only in this repository and not
+     * the ones, this repository depends on. Adds the types found to the given result list.
+     */
+    protected abstract void getAllModelTypeImplementationClasses(Set<String> result);
+
+    
 }

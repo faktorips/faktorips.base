@@ -18,6 +18,7 @@ import javax.xml.transform.TransformerException;
 import org.eclipse.core.runtime.CoreException;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.IpsStatus;
+import org.faktorips.devtools.core.builder.DefaultBuilderSet;
 import org.faktorips.devtools.core.model.extproperties.StringExtensionPropertyDefinition;
 import org.faktorips.devtools.core.model.ipsobject.IExtensionPropertyAccess;
 import org.faktorips.devtools.core.model.ipsobject.IExtensionPropertyDefinition;
@@ -246,6 +247,16 @@ public class ModelTypeXmlBuilder extends AbstractXmlFileBuilder {
      */
     public boolean buildsDerivedArtefacts() {
         return true;
+    }
+
+    /**
+     * Returns the path to the (generated) xml resource as used by the Class.getResourceAsStream() Method.
+     * 
+     * @see Class#getResourceAsStream(java.lang.String)
+     */
+    public String getXmlResourcePath(IType type) throws CoreException {
+        String packageInternal = getBuilderSet().getPackage(DefaultBuilderSet.KIND_MODEL_TYPE, type.getIpsSrcFile());
+        return packageInternal.replace('.', '/') + '/' + type.getName() + ".xml";
     }
 
     
