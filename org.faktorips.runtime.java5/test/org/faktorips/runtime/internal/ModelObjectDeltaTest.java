@@ -51,6 +51,40 @@ public class ModelObjectDeltaTest extends TestCase {
         assertSame(objectB, delta.getReferenceObject());
     }
     
+    public void testNewDelta_SameClasses() {
+        ModelObjectDelta delta = ModelObjectDelta.newDelta(objectA, objectB);
+        assertTrue(delta.isEmpty());
+        assertFalse(delta.isChanged());
+        assertFalse(delta.isPropertyChanged());
+        assertFalse(delta.isStructureChanged());
+        assertFalse(delta.isChildChanged());
+        assertEquals(IModelObjectDelta.EMPTY, delta.getKind());
+        assertEquals(IModelObjectDelta.EMPTY, delta.getKindOfChange());
+        assertSame(objectA, delta.getOriginalObject());
+        assertSame(objectB, delta.getReferenceObject());
+    }
+
+    public void testNewDelta_DifferentClasses() {
+        MyModelObject2 objectC = new MyModelObject2("C");
+        ModelObjectDelta delta = ModelObjectDelta.newDelta(objectA, objectC);
+        assertTrue(delta.isClassChanged());
+        assertFalse(delta.isEmpty());
+        assertTrue(delta.isChanged());
+        assertFalse(delta.isPropertyChanged());
+        assertFalse(delta.isStructureChanged());
+        assertFalse(delta.isChildChanged());
+        assertEquals(IModelObjectDelta.CHANGED, delta.getKind());
+        assertEquals(IModelObjectDelta.CLASS_CHANGED, delta.getKindOfChange());
+        assertSame(objectA, delta.getOriginalObject());
+        assertSame(objectC, delta.getReferenceObject());
+
+        // vice versa
+        delta = ModelObjectDelta.newDelta(objectC, objectA);
+        assertTrue(delta.isClassChanged());
+        assertFalse(delta.isEmpty());
+        assertTrue(delta.isChanged());
+    }
+
     public void testNewAddDelta() {
         ModelObjectDelta delta = ModelObjectDelta.newAddDelta(objectB, "childs");
         assertFalse(delta.isEmpty());
@@ -335,7 +369,7 @@ public class ModelObjectDeltaTest extends TestCase {
         assertTrue(visitor.visitedDeltas.contains(childDelta2));
         assertTrue(visitor.visitedDeltas.contains(grandchildDelta));
     }
-
+    
     class MyModelObject implements IModelObject, IDeltaSupport {
 
         private final String id;
@@ -374,6 +408,25 @@ public class ModelObjectDeltaTest extends TestCase {
             delta.checkPropertyChange("property", property, other.property, options);
             return delta;
         }
+    }
+    
+    class MyModelObject2 extends MyModelObject {
+        
+        public MyModelObject2(String id) {
+            super(id);
+        }
+
+        private String anotherProperty;
+
+        public String getAnotherProperty() {
+            return anotherProperty;
+        }
+
+        public void setAnotherProperty(String anotherProperty) {
+            this.anotherProperty = anotherProperty;
+        }
+        
+        
     }
     
     class Visitor implements IModelObjectDeltaVisitor {

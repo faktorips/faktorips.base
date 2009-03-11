@@ -34,6 +34,15 @@ public class ModelObjectDelta implements IModelObjectDelta {
 
     private final static int STRUCTURAL_CHANGES = IModelObjectDelta.ADDED | IModelObjectDelta.REMOVED | IModelObjectDelta.MOVED | IModelObjectDelta.DIFFERENT_OBJECT_AT_POSITION;
 
+    public final static ModelObjectDelta newDelta(IModelObject object, IModelObject refObject) {
+        if (object!=null && refObject!=null) {
+            if (!object.getClass().equals(refObject.getClass())) {
+                return new ModelObjectDelta(object, refObject, CHANGED, CLASS_CHANGED);
+            }
+        }
+        return newEmptyDelta(object, refObject);
+    }
+
     public final static ModelObjectDelta newEmptyDelta(IModelObject object, IModelObject refObject) {
         return new ModelObjectDelta(object, refObject, IModelObjectDelta.EMPTY, 0);
     }
@@ -279,7 +288,7 @@ public class ModelObjectDelta implements IModelObjectDelta {
     public String getAssociation() {
         return association;
     }
-
+    
     public void checkPropertyChange(String property, Object value1, Object value2, IDeltaComputationOptions options) {
         if (options.ignore(modelClass, property)) {
             return;
@@ -344,6 +353,13 @@ public class ModelObjectDelta implements IModelObjectDelta {
         changedProperties.add(property);
         kind |= CHANGED;
         kindOfChange |= PROPERTY_CHANGED;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public boolean isClassChanged() {
+        return (kindOfChange & CLASS_CHANGED) > 0;
     }
 
     /**
