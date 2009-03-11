@@ -14,8 +14,8 @@
 package org.faktorips.devtools.core.ui.editors.enumcontent;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
-import java.util.NoSuchElementException;
 
 import org.eclipse.core.resources.IWorkspaceRunnable;
 import org.eclipse.core.runtime.CoreException;
@@ -61,7 +61,7 @@ public class FixEnumContentWizard extends Wizard {
     /** The image for this wizard. */
     private final String IMAGE = "wizards/BrokenEnumWizard.png";
 
-    /** The <code>IEnumContent</code> to set a new <code>IEnumType</code> for. */
+    /** The <code>IEnumContent</code> to fix. */
     private IEnumContent enumContent;
 
     /** The new enum type that has been chosen. */
@@ -163,7 +163,7 @@ public class FixEnumContentWizard extends Wizard {
         for (Integer currentNotAssignedColumn : notAssignedColumns) {
             for (IEnumValue currentEnumValue : enumContent.getEnumValues()) {
                 enumAttributeValuesToDelete.add(currentEnumValue.getEnumAttributeValues().get(
-                        currentNotAssignedColumn.intValue()));
+                        currentNotAssignedColumn.intValue() - 1));
             }
         }
 
@@ -191,68 +191,249 @@ public class FixEnumContentWizard extends Wizard {
     }
 
     /**
-     * Moves the enum attribute values in each enum value according to the column order of the
-     * <code>AssignEnumAttributesPage</code>.
+     * Each number in the column order array will be decremented by 1 for each number before that is
+     * contained in the currently not assigned column numbers.
+     * <p>
+     * Example column order: 1, 3, 4, 7<br />
+     * Not assigned columns: 2, 5, 6<br />
+     * Decremented column order: 1, 2, 3, 4
      */
-    private void moveAttributeValues() {
-        // The column order as requested by the user
+    private int[] computeDecrementedColumnOrder() {
         int[] columnOrder = assignEnumAttributesPage.getColumnOrder();
+        List<Integer> notAssignedColumns = assignEnumAttributesPage.getCurrentlyNotAssignedColumns();
 
-        // Tracking the enum attribute values order
-        int[] enumAttributeValuesOrder = new int[columnOrder.length];
-        for (int i = 0; i < enumAttributeValuesOrder.length; i++) {
-            enumAttributeValuesOrder[i] = i;
+        for (int i = 0; i < columnOrder.length; i++) {
+            int numberSmallerColumnsNotAssigned = 0;
+            for (Integer currentNotAssignedColumn : notAssignedColumns) {
+                int currentNotAssignedColumnNumber = currentNotAssignedColumn.intValue();
+                if (currentNotAssignedColumnNumber < columnOrder[i]) {
+                    numberSmallerColumnsNotAssigned++;
+                } else if (currentNotAssignedColumnNumber > columnOrder[i]) {
+                    break;
+                }
+            }
+            columnOrder[i] = columnOrder[i] - numberSmallerColumnsNotAssigned;
         }
 
-        for (int currentEnumAttributeIndex = 0; currentEnumAttributeIndex < columnOrder.length; currentEnumAttributeIndex++) {
-            int currentPosition = columnOrder[currentEnumAttributeIndex];
+        return columnOrder;
+    }
 
-            // We do not want to create new enum attribute values right now
-            if (currentPosition == 0) {
-                continue;
-            }
-
+    /**
+     * Returns the order of the enum attribute values as it is after deleting obsolete enum
+     * attribute values and creating new enum attribute values. A zero represents an enum attribute
+     * value that has been newly created.
+     */
+    private int[] computeEnumAttributeValuesOrder(int[] decrementedColumnOrder) {
+        int[] enumAttributeValuesOrder = new int[decrementedColumnOrder.length];
+        Arrays.sort(decrementedColumnOrder);
+        for (int i = 0; i < enumAttributeValuesOrder.length; i++) {
+            int currentColumnNumber = i + 1;
             /*
-             * Moving neccessary if the position specified in the column order does not correspond
-             * to the current enum attribute index.
+             * Set the current position to a 0 if the current column number is higher than the
+             * number of enum attributes referenced in the enum content (this means that for the
+             * current column number there must be a new enum attribute value).
+             * 
+             * Also set the current position to 0 if the current column is not contained in the
+             * decremented column order.
              */
-            if (currentPosition != currentEnumAttributeIndex + 1) {
-                /*
-                 * Move up if an enum attribute value with a higher number than the current enum
-                 * attribute index shall be moved, else move down.
-                 */
-                boolean up = (currentPosition > currentEnumAttributeIndex + 1) ? false : true;
+            if (currentColumnNumber > enumContent.getReferencedEnumAttributesCount()
+                    || Arrays.binarySearch(decrementedColumnOrder, currentColumnNumber) < 0) {
+                enumAttributeValuesOrder[i] = 0;
+            } else {
+                enumAttributeValuesOrder[i] = currentColumnNumber;
+            }
+        }
 
-                // Move the enum attribute values in all enum values of the enum content
-                for (IEnumValue currentEnumValue : enumContent.getEnumValues()) {
-                    int requestedIndex = currentPosition - 1;
-                    // Look up the correct index in the tracking of the enum attribute values order
-                    int currentIndex = -1;
+        return enumAttributeValuesOrder;
+    }
+
+    /**
+     * Moves the enum attribute values in each enum value according to the column order of the
+     * <code>AssignEnumAttributesPage</code>.
+     * <p>
+     * Because this algorithm is rather complicated here is an example how it works:
+     * <p>
+     * The user requested the following column order: 0 0 0 4 5 6<br />
+     * Every zero represents a new column (and therefore enum attribute value) that has been created
+     * earlier.
+     * <p>
+     * Because column 1 2 3 are not requested they have been deleted earlier. Due to this deletion
+     * the requested column order must be decremented accordingly, because by deleting the first 3
+     * enum attribute values the last 3 are now the first 3.
+     * <p>
+     * So the decremented column order is: 0 0 0 1 2 3<br />
+     * Remember that the columns 1 2 3 were formally the columns 4 5 6.
+     * <p>
+     * In every iteration the algorithm goes over every number of the requested decremented column
+     * order. If the current number is 0 the algorithm will continue to the next number. Else the
+     * number is compared to the current attribute number. If the current number is smaller than the
+     * attribute number it means a downwards move has to be performed. If it is higher an upwards
+     * move has to be performed and if it is equal nothing has to be performed. The attribute value
+     * corresponding to the current number is then moved until it reaches the desired position.
+     * <p>
+     * The algorithm terminates when the requested decremented column order equals the attribute
+     * values order.
+     * <p>
+     * The following table shows the iterations of the algorithm:
+     * </p>
+     * 
+     * <table>
+     * 
+     * <tr>
+     * <th>attribute number
+     * <th>requested decremented column order
+     * <th>attribute values order init
+     * <th>attribute values order it.1
+     * <th>attribute values order it.2
+     * <th>attribute values order it.3
+     * </tr>
+     * 
+     * <tr>
+     * <td>1
+     * <td>0
+     * <td>1
+     * <td>0
+     * <td>0
+     * <td>0
+     * </tr>
+     * 
+     * <tr>
+     * <td>2
+     * <td>0
+     * <td>2
+     * <td>1
+     * <td>0
+     * <td>0
+     * </tr>
+     * 
+     * <tr>
+     * <td>3
+     * <td>0
+     * <td>3
+     * <td>0
+     * <td>1
+     * <td>0
+     * </tr>
+     * 
+     * <tr>
+     * <td>4
+     * <td>1
+     * <td>0
+     * <td>2
+     * <td>0
+     * <td>1
+     * </tr>
+     * 
+     * <tr>
+     * <td>5
+     * <td>2
+     * <td>0
+     * <td>0
+     * <td>2
+     * <td>2
+     * </tr>
+     * 
+     * <tr>
+     * <td>6
+     * <td>3
+     * <td>0
+     * <td>3
+     * <td>3
+     * <td>3
+     * </tr>
+     * 
+     * </table>
+     */
+    private void moveAttributeValues() {
+        /*
+         * The column order as requested by the user and decremented where neccessary (due to
+         * deleted enum attribute values).
+         */
+        int[] decrementedColumnOrder = computeDecrementedColumnOrder();
+
+        // Tracking of the enum attribute values order
+        int[] enumAttributeValuesOrder = computeEnumAttributeValuesOrder(decrementedColumnOrder);
+
+        /*
+         * The algorithm repeats as long as the orders do not correspond. This might not be the
+         * fastest way to do it tough. Maybe with a more intelligent algorithm one could save the
+         * outer loop.
+         */
+        while (!(Arrays.equals(decrementedColumnOrder, enumAttributeValuesOrder))) {
+
+            // For each enum attribute we want to get the right enum attribute value into place
+            for (int currentEnumAttributeIndex = 0; currentEnumAttributeIndex < decrementedColumnOrder.length; currentEnumAttributeIndex++) {
+                int currentPosition = decrementedColumnOrder[currentEnumAttributeIndex];
+
+                /*
+                 * The newly created enum attribute values will get to their right positions by
+                 * themselves over time.
+                 */
+                if (currentPosition == 0) {
+                    continue;
+                }
+
+                /*
+                 * Moving neccessary if the position specified in the column order does not
+                 * correspond to the current enum attribute index + 1.
+                 */
+                if (currentPosition != currentEnumAttributeIndex + 1) {
+                    int requestedColumnIndex = currentPosition;
+                    /*
+                     * Look up the correct index of the enum attribute value in the tracking of the
+                     * enum attribute values order. This is neccessary because when moving enum
+                     * attribute values the indexes change.
+                     */
+                    int currentEnumAttributeValueIndex = -1;
                     for (int i = 0; i < enumAttributeValuesOrder.length; i++) {
-                        if (enumAttributeValuesOrder[i] == requestedIndex) {
-                            currentIndex = i;
+                        if (enumAttributeValuesOrder[i] == requestedColumnIndex) {
+                            currentEnumAttributeValueIndex = i;
                             break;
                         }
                     }
 
                     // Should theoretically never happen but just to be safe
-                    if (currentIndex == -1) {
-                        throw new NoSuchElementException();
+                    if (currentEnumAttributeValueIndex == -1) {
+                        throw new RuntimeException();
                     }
 
-                    IEnumAttributeValue enumAttributeValueToMove = currentEnumValue.getEnumAttributeValues().get(
-                            currentIndex);
                     /*
-                     * Move as long by 1 as the index of the enum attribute value does not
-                     * correspond to the index of the enum attribute.
+                     * Move up if an enum attribute value with a higher number than the current enum
+                     * attribute index + 1 shall be moved, else move down. This rule works always
+                     * with this algorithm. The proof on the example of a higher number is: The
+                     * corresponding enum attribute value starts further down in the list. So it
+                     * must be moved upwards. It can't obtain a position higher in the list then the
+                     * current enum attribute index + 1 tough because moving will stop when it
+                     * reaches this position.
                      */
-                    while (currentIndex != currentEnumAttributeIndex) {
-                        currentIndex = currentEnumValue.moveEnumAttributeValue(enumAttributeValueToMove, up);
-                        // Track enum attribute values order, swap entries
-                        int modifier = (up) ? -1 : 1;
-                        int temp = enumAttributeValuesOrder[currentIndex + modifier];
-                        enumAttributeValuesOrder[currentIndex + modifier] = enumAttributeValuesOrder[currentIndex];
-                        enumAttributeValuesOrder[currentIndex] = temp;
+                    boolean up = (currentPosition > currentEnumAttributeIndex + 1) ? true : false;
+
+                    // Move the enum attribute values in all enum values of the enum content
+                    boolean enumAttributeValuesOrderTracked = false;
+                    for (IEnumValue currentEnumValue : enumContent.getEnumValues()) {
+                        IEnumAttributeValue enumAttributeValueToMove = currentEnumValue.getEnumAttributeValues().get(
+                                currentEnumAttributeValueIndex);
+                        /*
+                         * Move as long by 1 as the index of the enum attribute value does not
+                         * correspond to the index of the enum attribute.
+                         */
+                        int moveIndex = currentEnumAttributeValueIndex;
+                        while (moveIndex != currentEnumAttributeIndex) {
+                            moveIndex = currentEnumValue.moveEnumAttributeValue(enumAttributeValueToMove, up);
+                            // Track enum attribute values order, swap entries
+                            if (!enumAttributeValuesOrderTracked) {
+                                int modifierToOldIndex = (up) ? 1 : -1;
+                                int temp = enumAttributeValuesOrder[moveIndex + modifierToOldIndex];
+                                enumAttributeValuesOrder[moveIndex + modifierToOldIndex] = enumAttributeValuesOrder[moveIndex];
+                                enumAttributeValuesOrder[moveIndex] = temp;
+                            }
+                        }
+
+                        /*
+                         * Do not track the enum attribute values order again while moving the enum
+                         * attributes of the other enum values. This would break everything.
+                         */
+                        enumAttributeValuesOrderTracked = true;
                     }
                 }
             }
@@ -494,7 +675,7 @@ public class FixEnumContentWizard extends Wizard {
                 }
             }
 
-            for (int i = 0; i < availableColumns.size(); i++) {
+            for (int i = 1; i < availableColumns.size(); i++) {
                 String currentColumnName = availableColumns.get(i);
                 if (!(assignedColumnNames.contains(currentColumnName))) {
                     currentlyNotAssignedColumns.add(new Integer(i));
@@ -506,9 +687,8 @@ public class FixEnumContentWizard extends Wizard {
 
         /**
          * Returns the current column order.
-         * <ul>
-         * <li>0 represents a new column that has to be created.
-         * </ul>
+         * <p>
+         * A zero represents a new column that has to be created.
          */
         public int[] getColumnOrder() {
             int[] columnOrder = new int[combos.length];
@@ -517,7 +697,7 @@ public class FixEnumContentWizard extends Wizard {
                 Combo currentCombo = combos[i];
                 for (int j = 0; j < availableColumns.size(); j++) {
                     String currentColumn = availableColumns.get(j);
-                    if (currentColumn.equals(currentCombo.getText())) {
+                    if (currentColumn.equals(currentCombo.getText().substring(3))) {
                         columnOrder[i] = j;
                     }
                 }
