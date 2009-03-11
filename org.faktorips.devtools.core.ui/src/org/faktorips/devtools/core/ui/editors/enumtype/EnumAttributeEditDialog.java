@@ -108,6 +108,10 @@ public class EnumAttributeEditDialog extends IpsPartEditDialog2 {
         extFactory.createControls(workArea, uiToolkit, enumAttribute, IExtensionPropertyDefinition.POSITION_BOTTOM);
         extFactory.bind(bindingContext);
 
+        // Set the focus into the name field and select all its contents for better usability
+        nameText.setFocus();
+        nameText.selectAll();
+
         return control;
     }
 
