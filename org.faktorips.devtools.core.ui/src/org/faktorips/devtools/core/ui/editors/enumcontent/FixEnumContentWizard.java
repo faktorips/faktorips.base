@@ -400,11 +400,12 @@ public class FixEnumContentWizard extends Wizard {
                     /*
                      * Move up if an enum attribute value with a higher number than the current enum
                      * attribute index + 1 shall be moved, else move down. This rule works always
-                     * with this algorithm. The proof on the example of a higher number is: The
-                     * corresponding enum attribute value starts further down in the list. So it
-                     * must be moved upwards. It can't obtain a position higher in the list then the
-                     * current enum attribute index + 1 tough because moving will stop when it
-                     * reaches this position.
+                     * with this algorithm.
+                     * 
+                     * The proof on the example of a higher number is: The corresponding enum
+                     * attribute value starts further down in the list. So it must be moved upwards.
+                     * It can't obtain a position higher in the list than the current enum attribute
+                     * index + 1 tough because moving will stop when it reaches this position.
                      */
                     boolean up = (currentPosition > currentEnumAttributeIndex + 1) ? true : false;
 
