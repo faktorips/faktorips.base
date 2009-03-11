@@ -443,7 +443,7 @@ public class EnumValuesSection extends IpsSection implements ContentsChangeListe
                     datatypeQualifiedName = enumType.findAllEnumAttributes().get(i).getDatatype();
                 }
             }
-            
+
             ValueDatatype datatype = enumValueContainer.getIpsProject().findValueDatatype(datatypeQualifiedName);
             ValueDatatypeControlFactory valueDatatypeControlFactory = IpsUIPlugin.getDefault()
                     .getValueDatatypeControlFactory(datatype);
@@ -563,17 +563,26 @@ public class EnumValuesSection extends IpsSection implements ContentsChangeListe
         switch (event.getEventType()) {
 
             case ContentChangeEvent.TYPE_WHOLE_CONTENT_CHANGED:
-                if (enumValueContainer instanceof IEnumType) {
-                    try {
-                        IIpsObject changedIpsObject = event.getIpsSrcFile().getIpsObject();
+                try {
+                    IIpsObject changedIpsObject = event.getIpsSrcFile().getIpsObject();
+                    if (enumValueContainer instanceof IEnumType) {
                         if (changedIpsObject instanceof IEnumType) {
                             IEnumType changedEnumType = (IEnumType)changedIpsObject;
                             reinit(changedEnumType);
                             updateEnabledStates(changedEnumType);
                         }
-                    } catch (CoreException e) {
-                        throw new RuntimeException(e);
                     }
+                    if (enumValueContainer instanceof IEnumContent) {
+                        if (changedIpsObject instanceof IEnumContent) {
+                            IEnumContent changedEnumContent = (IEnumContent)changedIpsObject;
+                            IEnumType referencedEnumType = changedEnumContent.findEnumType();
+                            if (referencedEnumType != null) {
+                                reinit(referencedEnumType);
+                            }
+                        }
+                    }
+                } catch (CoreException e) {
+                    throw new RuntimeException(e);
                 }
 
                 break;
