@@ -31,7 +31,6 @@ import org.faktorips.codegen.JavaCodeFragment;
 import org.faktorips.codegen.JavaCodeFragmentBuilder;
 import org.faktorips.codegen.dthelpers.Java5ClassNames;
 import org.faktorips.datatype.Datatype;
-import org.faktorips.devtools.core.builder.BuilderHelper;
 import org.faktorips.devtools.core.builder.DefaultBuilderSet;
 import org.faktorips.devtools.core.builder.DefaultJavaSourceFileBuilder;
 import org.faktorips.devtools.core.builder.TypeSection;
@@ -556,9 +555,13 @@ public class TableImplBuilder extends DefaultJavaSourceFileBuilder {
         methodBody.append(" it = rows.iterator(); it.hasNext();)");
         methodBody.appendOpenBracket();
         methodBody.appendClassName(qualifiedTableRowName);
-        methodBody.append(" row = (");
-        methodBody.appendClassName(qualifiedTableRowName);
-        methodBody.append(") it.next();");
+        if (isUseTypesafeCollections()) {
+            methodBody.append(" row = it.next();");
+        } else {
+            methodBody.append(" row = (");
+            methodBody.appendClassName(qualifiedTableRowName);
+            methodBody.append(") it.next();");
+        }
         methodBody.appendln();
 
         for (int i = 0; i < keys.length; i++) {
@@ -935,15 +938,15 @@ public class TableImplBuilder extends DefaultJavaSourceFileBuilder {
                 System.arraycopy(parameterNames, keyClassParameterNames.length, rangeParameterNames, 0,
                         rangeParameterNames.length);
                 generateReturnFindMethodReturnStmt(methodBody, returnTypeName, returnVariableName, keyClassName,
-                        methodName, createFindMethodGetValueFrag(false, mapName, keyClassName, keyClassParameterNames,
+                        methodName, createFindMethodGetValueFrag(false, mapName, keyClassName, returnTypeName, returnVariableName, keyClassParameterNames,
                                 rangeParameterNames), useNullValueRow);
             } else {
                 generateReturnFindMethodReturnStmt(methodBody, returnTypeName, returnVariableName, keyClassName,
-                        methodName, createFindMethodGetMapEntryFrag(mapName, keyClassName, keyClassParameterNames), useNullValueRow);
+                        methodName, createFindMethodGetMapEntryFrag(mapName, keyClassName, returnTypeName, returnVariableName, keyClassParameterNames), useNullValueRow);
             }
         } else {
             generateReturnFindMethodReturnStmt(methodBody, returnTypeName, returnVariableName, keyClassName,
-                    methodName, createFindMethodGetValueFrag(true, treeName, keyClassName, keyClassParameterNames,
+                    methodName, createFindMethodGetValueFrag(true, treeName, keyClassName, returnTypeName, returnVariableName, keyClassParameterNames,
                             parameterNames), useNullValueRow);
         }
         methodBody.appendln(';');
@@ -958,7 +961,6 @@ public class TableImplBuilder extends DefaultJavaSourceFileBuilder {
             String methodName,
             JavaCodeFragment getValueFrag,
             boolean useNullValueRow) throws CoreException {
-        methodBody.append(createFindMethodReturnVariable(returnVariableName, returnTypeName));
         methodBody.append(getValueFrag);
         methodBody.appendln(';');
         generateMethodExitingLoggingStmt(methodBody, keyClassName, methodName, returnVariableName);
@@ -983,23 +985,21 @@ public class TableImplBuilder extends DefaultJavaSourceFileBuilder {
         methodBody.appendln();
     }
 
-    private JavaCodeFragment createFindMethodReturnVariable(String returnVariable, String returnTypeName) {
+    private JavaCodeFragment createFindMethodGetValueFrag(boolean rangesOnly,
+            String fieldName,
+            String keyClassName,
+            String returnTypeName,
+            String returnVariable,
+            String[] keyClassParameterNames,
+            String[] parameterNames) {
         JavaCodeFragment fragment = new JavaCodeFragment();
         fragment.appendClassName(returnTypeName);
         fragment.append(' ');
         fragment.append(returnVariable);
-        fragment.append(" = (");
+        fragment.append(" = ");
+        fragment.append(" (");
         fragment.appendClassName(returnTypeName);
         fragment.append(") ");
-        return fragment;
-    }
-
-    private JavaCodeFragment createFindMethodGetValueFrag(boolean rangesOnly,
-            String fieldName,
-            String keyClassName,
-            String[] keyClassParameterNames,
-            String[] parameterNames) {
-        JavaCodeFragment fragment = new JavaCodeFragment();
         fragment.append("getValue(");
         fragment.append(fieldName);
         if (!rangesOnly) {
@@ -1021,8 +1021,20 @@ public class TableImplBuilder extends DefaultJavaSourceFileBuilder {
 
     private JavaCodeFragment createFindMethodGetMapEntryFrag(String mapName,
             String keyClassName,
+            String returnTypeName,
+            String returnVariable,
             String[] parameterNames) {
         JavaCodeFragment fragment = new JavaCodeFragment();
+        fragment.appendClassName(returnTypeName);
+        fragment.append(' ');
+        fragment.append(returnVariable);
+        fragment.append(" = ");
+        if(!isUseTypesafeCollections()){
+            fragment.append(" (");
+            fragment.appendClassName(returnTypeName);
+            fragment.append(") ");
+        }
+        
         fragment.append(mapName);
         fragment.append(".get(");
         fragment.append(createKeyInstantiation(keyClassName, parameterNames));

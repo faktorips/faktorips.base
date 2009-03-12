@@ -840,9 +840,7 @@ public class PolicyCmptImplClassBuilder extends BasePolicyCmptTypeBuilder {
         builder.appendln("return null;");
         builder.appendln("}");
 
-        builder.append("return (");
-        builder.appendClassName(getGenProductCmptType().getQualifiedClassNameForProductCmptTypeGen(true));
-        builder.append(")");
+        builder.append("return ");
         builder.append(getGenProductCmptType().getMethodNameGetProductCmpt());
         builder.append("().");
         builder.append(getGenProductCmptType().getMethodNameGetGeneration());

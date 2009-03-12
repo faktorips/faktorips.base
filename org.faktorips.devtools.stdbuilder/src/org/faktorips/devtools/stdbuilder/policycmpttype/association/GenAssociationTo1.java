@@ -287,9 +287,8 @@ public class GenAssociationTo1 extends GenAssociation {
             body.append(varToCleanUp + "." + removeMethod + "(this);");
         } else {
             String setMethod = getMethodNameSetObject(reverseAssociation);
-            body.append("((");
-            body.appendClassName(targetImplClassName);
-            body.append(")" + varToCleanUp + ")." + setMethod + "(null);");
+            body.append(varToCleanUp);
+            body.append("." + setMethod + "(null);");
         }
         if (!association.is1ToMany()) {
             body.append(" }");
