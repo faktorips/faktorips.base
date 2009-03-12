@@ -30,7 +30,7 @@ public class NewBusinessFunctionAction extends Action {
         super();
         this.window = window;
         setText(Messages.NewBusinessFunctionAction_title);
-        setImageDescriptor(IpsUIPlugin.getDefault().getImageDescriptor("wizards/NewBusinessFunction.gif")); //$NON-NLS-1$
+        setImageDescriptor(IpsUIPlugin.getDefault().getImageDescriptor("NewBusinessFunction.gif")); //$NON-NLS-1$
     }
 
     public void run() {
