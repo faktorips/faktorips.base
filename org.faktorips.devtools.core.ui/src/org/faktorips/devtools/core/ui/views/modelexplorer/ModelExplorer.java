@@ -14,7 +14,6 @@
 package org.faktorips.devtools.core.ui.views.modelexplorer;
 
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 
 import org.eclipse.core.resources.IFile;
@@ -96,7 +95,6 @@ import org.faktorips.devtools.core.ui.actions.ExpandCollapseAllAction;
 import org.faktorips.devtools.core.ui.actions.FindPolicyReferencesAction;
 import org.faktorips.devtools.core.ui.actions.FindProductReferencesAction;
 import org.faktorips.devtools.core.ui.actions.FixDifferencesAction;
-import org.faktorips.devtools.core.ui.actions.IpsAction;
 import org.faktorips.devtools.core.ui.actions.IpsCopyAction;
 import org.faktorips.devtools.core.ui.actions.IpsDeepCopyAction;
 import org.faktorips.devtools.core.ui.actions.IpsEditSortOrderAction;
@@ -748,7 +746,7 @@ public class ModelExplorer extends ViewPart implements IShowInTarget {
                 }
 
                 // add copy actions depend on selected ips object type
-                List ipsCopyActions = new ArrayList(3);
+                List<Action> ipsCopyActions = new ArrayList<Action>(3);
                 if (selected instanceof IProductCmpt) {
                     ipsCopyActions.add(new IpsDeepCopyAction(getSite().getShell(), treeViewer,
                             DeepCopyWizard.TYPE_NEW_VERSION));
@@ -759,9 +757,9 @@ public class ModelExplorer extends ViewPart implements IShowInTarget {
                 }
                 if (ipsCopyActions.size() > 0) {
                     newMenu.add(new Separator());
-                    for (Iterator iter = ipsCopyActions.iterator(); iter.hasNext();) {
-                        newMenu.add((IpsAction)iter.next());
-                    }
+                    for (Action action : ipsCopyActions) {
+						newMenu.add(action);
+					}
 
                 }
             }
