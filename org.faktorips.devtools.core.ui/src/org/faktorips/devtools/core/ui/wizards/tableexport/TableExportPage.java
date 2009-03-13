@@ -45,7 +45,7 @@ import org.faktorips.devtools.core.ui.controls.Checkbox;
 import org.faktorips.devtools.core.ui.controls.FileSelectionControl;
 import org.faktorips.devtools.core.ui.controls.IpsProjectRefControl;
 import org.faktorips.devtools.core.ui.controls.TableContentsRefControl;
-import org.faktorips.devtools.extsystems.AbstractExternalTableFormat;
+import org.faktorips.devtools.tableconversion.ITableFormat;
 import org.faktorips.util.StringUtil;
 
 /**
@@ -74,7 +74,7 @@ public class TableExportPage extends WizardDataTransferPage implements ValueChan
     private TextButtonField contentsField;
     private CheckboxField exportWithColumnHeaderRowField;
     
-    private AbstractExternalTableFormat[] formats;
+    private ITableFormat[] formats;
     
     // true if the input is validated and errors are displayed in the messes area.
     protected boolean validateInput = true;
@@ -109,7 +109,7 @@ public class TableExportPage extends WizardDataTransferPage implements ValueChan
         
         private String getDefaultFilename(){
             String contentsName = contentsField.getText();
-            AbstractExternalTableFormat format = getFormat();
+            ITableFormat format = getFormat();
             String extension = ""; //$NON-NLS-1$
             if (format != null) {
                 extension = format.getDefaultExtension();
@@ -231,7 +231,7 @@ public class TableExportPage extends WizardDataTransferPage implements ValueChan
         return filenameField.getText();
     }
     
-    public AbstractExternalTableFormat getFormat() {
+    public ITableFormat getFormat() {
     	if (fileFormatControl.getSelectionIndex() == -1) {
     		return null;
     	}

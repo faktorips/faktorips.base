@@ -50,8 +50,8 @@ import org.faktorips.devtools.core.model.testcase.IIpsTestRunner;
 import org.faktorips.devtools.core.model.versionmanager.AbstractIpsFeatureMigrationOperation;
 import org.faktorips.devtools.core.model.versionmanager.IIpsFeatureVersionManager;
 import org.faktorips.devtools.core.model.versionmanager.IpsFeatureVersionManagerSorter;
-import org.faktorips.devtools.extsystems.AbstractExternalTableFormat;
-import org.faktorips.devtools.extsystems.IValueConverter;
+import org.faktorips.devtools.tableconversion.ITableFormat;
+import org.faktorips.devtools.tableconversion.IValueConverter;
 import org.faktorips.util.ArgumentCheck;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.Version;
@@ -99,7 +99,7 @@ public class IpsPlugin extends AbstractUIPlugin {
     private IIpsTestRunner ipsTestRunner;
 
     // All available external table formats
-    private AbstractExternalTableFormat[] externalTableFormats;
+    private ITableFormat[] externalTableFormats;
 
     // All available feature version managers
     private IIpsFeatureVersionManager[] featureVersionManagers;
@@ -417,7 +417,7 @@ public class IpsPlugin extends AbstractUIPlugin {
     /**
      * @return An array of all available external table formats.
      */
-    public AbstractExternalTableFormat[] getExternalTableFormats() {
+    public ITableFormat[] getExternalTableFormats() {
         if (externalTableFormats == null) {
             initExternalTableFormats();
         }
@@ -433,7 +433,7 @@ public class IpsPlugin extends AbstractUIPlugin {
         List result = new ArrayList();
         for (int i = 0; i < elements.length; i++) {
             try {
-                AbstractExternalTableFormat format = (AbstractExternalTableFormat)elements[i]
+                ITableFormat format = (ITableFormat)elements[i]
                         .createExecutableExtension("class"); //$NON-NLS-1$
                 initExternalTableFormat(format, elements[i]);
                 result.add(format);
@@ -442,7 +442,7 @@ public class IpsPlugin extends AbstractUIPlugin {
                 log(e);
             }
         }
-        externalTableFormats = (AbstractExternalTableFormat[])result.toArray(new AbstractExternalTableFormat[result
+        externalTableFormats = (ITableFormat[])result.toArray(new ITableFormat[result
                 .size()]);
     }
 
@@ -453,29 +453,17 @@ public class IpsPlugin extends AbstractUIPlugin {
      * @param format The external table format to initialize.
      * @param formatElement The configuration element which defines the given external table format.
      */
-    private void initExternalTableFormat(AbstractExternalTableFormat format, IConfigurationElement formatElement) {
-        IExtensionPoint point = Platform.getExtensionRegistry().getExtensionPoint(IpsPlugin.PLUGIN_ID,
-                "externalValueConverter"); //$NON-NLS-1$
-        IExtension[] extensions = point.getExtensions();
-
+    private void initExternalTableFormat(ITableFormat format, IConfigurationElement formatElement) {
         format.setName(formatElement.getAttribute("name")); //$NON-NLS-1$
         format.setDefaultExtension(formatElement.getAttribute("defaultExtension")); //$NON-NLS-1$
 
-        for (int i = 0; i < extensions.length; i++) {
-            IConfigurationElement[] elements = extensions[i].getConfigurationElements();
-            boolean found = false;
-            for (int j = 0; j < elements.length && !found; j++) {
-                found = formatElement.getAttribute("id").equals(elements[j].getAttribute("id")); //$NON-NLS-1$ //$NON-NLS-2$ $NON-NLS-2$
-            }
-
-            for (int j = 0; j < elements.length && found; j++) {
-                if (elements[j].getName().equals("externalValueConverter")) { //$NON-NLS-1$
-                    try {
-                        format.addValueConverter((IValueConverter)elements[j].createExecutableExtension("class")); //$NON-NLS-1$
-                    } catch (CoreException e) {
-                        IpsPlugin.log(e);
-                    }
-                }
+        IConfigurationElement[] valueConverters = formatElement.getChildren();
+        for (int i = 0; i < valueConverters.length; i++) {
+            try {
+                IValueConverter converter = (IValueConverter)valueConverters[i].createExecutableExtension("class"); //$NON-NLS-1$
+                format.addValueConverter(converter);
+            } catch (CoreException e) {
+                IpsPlugin.log(e);
             }
         }
     }

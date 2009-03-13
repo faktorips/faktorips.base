@@ -37,7 +37,7 @@ import org.faktorips.devtools.core.IpsStatus;
 import org.faktorips.devtools.core.model.tablecontents.ITableContents;
 import org.faktorips.devtools.core.ui.IpsUIPlugin;
 import org.faktorips.devtools.core.ui.wizards.ResultDisplayer;
-import org.faktorips.devtools.extsystems.AbstractExternalTableFormat;
+import org.faktorips.devtools.tableconversion.ITableFormat;
 import org.faktorips.util.message.MessageList;
 
 /**
@@ -95,7 +95,7 @@ public class TableExportWizard extends Wizard implements IExportWizard {
 			ISchedulingRule schedulingRule = exportPage.getIpsProject().getCorrespondingResource();
 			final ITableContents exportContents = exportPage.getTableContents();
 			final String exportFilename = exportPage.getFilename();
-			final AbstractExternalTableFormat format = exportPage.getFormat();
+			final ITableFormat format = exportPage.getFormat();
 			final String nullRepresentation = exportPage.getNullRepresentation();
 			final boolean exportColumnHeaderRow = exportPage.isExportColumnHeaderRow();
 

@@ -6,7 +6,7 @@
          <meta.schema plugin="org.faktorips.devtools.core" id="externalDataFormat" name="ExternalDataFormat"/>
       </appinfo>
       <documentation>
-         Register an external table format (for example MS Excel, an JDBC-Datasource or plain text)
+         Register an external table format (for example MS Excel, an JDBC-Datasource or comma separated values text file).
       </documentation>
    </annotation>
 
@@ -17,7 +17,7 @@
          </appinfo>
       </annotation>
       <complexType>
-         <sequence minOccurs="1" maxOccurs="unbounded">
+         <sequence minOccurs="0" maxOccurs="unbounded">
             <element ref="externalTableFormat"/>
          </sequence>
          <attribute name="point" type="string" use="required">
@@ -52,17 +52,17 @@
          <attribute name="class" type="string" use="required">
             <annotation>
                <documentation>
-                  
+                  The fully qualified class name of the table format implementation.
                </documentation>
                <appinfo>
-                  <meta.attribute kind="java" basedOn="org.faktorips.devtools.extsystems.ExternalDataFormat"/>
+                  <meta.attribute kind="java" basedOn=":org.faktorips.devtools.tableconversion.ITableFormat"/>
                </appinfo>
             </annotation>
          </attribute>
          <attribute name="name" type="string">
             <annotation>
                <documentation>
-                  
+                  A user readable name for the table format, suitable for display in graphical user interfaces.
                </documentation>
                <appinfo>
                   <meta.attribute translatable="true"/>
@@ -72,15 +72,27 @@
          <attribute name="id" type="string" use="required">
             <annotation>
                <documentation>
-                  
+                  Unique id of the table format.
                </documentation>
             </annotation>
          </attribute>
          <attribute name="defaultExtension" type="string">
             <annotation>
                <documentation>
-                  
+                  The default extension (filename suffix) of files this table format can handle.
                </documentation>
+            </annotation>
+         </attribute>
+         <attribute name="guiClass" type="string">
+            <annotation>
+               <documentation>
+                  The implementation class of the GUI for this table format. Used to configure table format specific parameters with a graphical interface.
+
+The guiClass is a subclass of Composite which can then be used as part of Dialogs, WizardPages and the like.
+               </documentation>
+               <appinfo>
+                  <meta.attribute kind="java" basedOn="org.eclipse.swt.widgets.Composite:"/>
+               </appinfo>
             </annotation>
          </attribute>
       </complexType>
@@ -101,15 +113,21 @@
       </appinfo>
       <documentation>
          &lt;extension
-      point=&quot;org.faktorips.devtools.core.externalTableFormat&quot;&gt;
-   &lt;externalTableFormat
-         class=&quot;org.abc.MyTableFormat&quot;
-         id=&quot;org.abc.MyTableFormat&quot;
-         name=&quot;Excel&quot;&gt;
-   &lt;/externalTableFormat&gt;
+    id=&quot;org.faktorips.devtools.core.externalTableFormat&quot;
+    name=&quot;Contributed Table Formats&quot;
+    point=&quot;org.faktorips.devtools.core.externalTableFormat&quot;&gt;
+
+  &lt;externalTableFormat
+      class=&quot;org.abc.MyTableFormat&quot;
+      defaultExtension=&quot;.ods&quot;
+      id=&quot;org.abc.MyTableFormat&quot;
+      name=&quot;Open Office Calc&quot;&gt;
+  &lt;/externalTableFormat&gt;
 &lt;/extension&gt;
 
-This registers the class &lt;code&gt;org.abc.MyTableFormat&lt;/code&gt; as a new source for table-imports and a new target for table-exports
+
+This registers the class &lt;code&gt;org.abc.MyTableFormat&lt;/code&gt; as a new source for table-imports and a new target for table-exports.
+
       </documentation>
    </annotation>
 
@@ -136,19 +154,16 @@ This registers the class &lt;code&gt;org.abc.MyTableFormat&lt;/code&gt; as a new
          <meta.section type="copyright"/>
       </appinfo>
       <documentation>
-         Copyright (c) 2005,2006 Faktor Zehn GmbH und andere.
+         Copyright (c) 2005-2009 Faktor Zehn AG und andere.
 
 Alle Rechte vorbehalten.
 
-Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele,
-Konfigurationen, etc.) dürfen nur unter den Bedingungen der 
-Faktor-Zehn-Community Lizenzvereinbarung – Version 0.1 (vor Gründung Community) 
-genutzt werden, die Bestandteil der Auslieferung ist und auch unter
-  http://www.faktorips.org/legal/cl-v01.html
-eingesehen werden kann.
+Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen, 
+etc.) duerfen nur unter den Bedingungen der Faktor-Zehn-Community Lizenzvereinbarung - Version
+0.1 (vor Gruendung Community) genutzt werden, die Bestandteil der Auslieferung ist und auch unter
+http://www.faktorzehn.org/f10-org:lizenzen:community eingesehen werden kann.
 
-Mitwirkende:
-  Faktor Zehn GmbH - initial API and implementation
+Mitwirkende: Faktor Zehn AG - initial API and implementation - http://www.faktorzehn.de
       </documentation>
    </annotation>
 

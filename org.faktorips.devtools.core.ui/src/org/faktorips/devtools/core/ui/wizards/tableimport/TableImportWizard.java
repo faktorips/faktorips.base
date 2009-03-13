@@ -36,7 +36,7 @@ import org.faktorips.devtools.core.model.tablestructure.ITableStructure;
 import org.faktorips.devtools.core.ui.IpsUIPlugin;
 import org.faktorips.devtools.core.ui.WorkbenchRunnableAdapter;
 import org.faktorips.devtools.core.ui.wizards.ResultDisplayer;
-import org.faktorips.devtools.extsystems.AbstractExternalTableFormat;
+import org.faktorips.devtools.tableconversion.ITableFormat;
 import org.faktorips.util.message.MessageList;
 
 /**
@@ -52,6 +52,8 @@ public class TableImportWizard extends Wizard implements IImportWizard {
     private SelectFileAndImportMethodPage filePage;
     private NewContentsPage newContentsPage;
     private SelectContentsPage selectContentsPage;
+
+    private TablePreviewPage tablePreviewPage;
 
     private boolean hasNewDialogSettings;
     private boolean importIntoExisting;
@@ -86,6 +88,8 @@ public class TableImportWizard extends Wizard implements IImportWizard {
             addPage(newContentsPage);
             selectContentsPage = new SelectContentsPage(selection);
             addPage(selectContentsPage);
+            tablePreviewPage = new TablePreviewPage(selection);
+            addPage(tablePreviewPage);
             
             filePage.setImportIntoExisting(importIntoExisting);
         } catch (Exception e) {
@@ -99,7 +103,7 @@ public class TableImportWizard extends Wizard implements IImportWizard {
     public boolean performFinish() {
         try {
             final String filename = filePage.getFilename();
-            final AbstractExternalTableFormat format = filePage.getFormat();
+            final ITableFormat format = filePage.getFormat();
             final ITableStructure structure = getTableStructure();
             ITableContents contents = getTableContents();
             final ITableContentsGeneration generation = (ITableContentsGeneration)contents.getGenerationsOrderedByValidDate()[0];
@@ -216,7 +220,7 @@ public class TableImportWizard extends Wizard implements IImportWizard {
      */
     public IWizardPage getNextPage(IWizardPage page) {
         if (page == filePage) {
-            // set the comleted state on the opposite page to true so that the wizard can finish
+            // set the completed state on the opposite page to true so that the wizard can finish
             // normally
             selectContentsPage.setPageComplete(!filePage.isImportIntoExisting());
             newContentsPage.setPageComplete(filePage.isImportIntoExisting());
@@ -229,16 +233,15 @@ public class TableImportWizard extends Wizard implements IImportWizard {
             newContentsPage.validatePage();
             return newContentsPage;
         }
-        return null;
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    public IWizardPage getPreviousPage(IWizardPage page) {
         if (page == selectContentsPage || page == newContentsPage) {
-            return filePage;
+            tablePreviewPage.setFilename(filePage.getFilename());
+            tablePreviewPage.setTableFormat(filePage.getFormat());
+            tablePreviewPage.setTableStructure(getTableStructure());
+            tablePreviewPage.validatePage();
+            
+            return tablePreviewPage;
         }
         return null;
     }
+
 }

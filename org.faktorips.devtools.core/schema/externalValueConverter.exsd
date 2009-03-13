@@ -17,9 +17,8 @@
          </appinfo>
       </annotation>
       <complexType>
-         <sequence minOccurs="1" maxOccurs="unbounded">
-            <element ref="externalValueConverter" minOccurs="1" maxOccurs="unbounded"/>
-            <element ref="externalTableFormat" minOccurs="1" maxOccurs="unbounded"/>
+         <sequence minOccurs="0" maxOccurs="unbounded">
+            <element ref="externalTableFormat"/>
          </sequence>
          <attribute name="point" type="string" use="required">
             <annotation>
@@ -48,28 +47,32 @@
       </complexType>
    </element>
 
-   <element name="externalValueConverter">
+   <element name="externalTableFormat">
       <complexType>
-         <attribute name="class" type="string" use="required">
+         <sequence minOccurs="0" maxOccurs="unbounded">
+            <element ref="externalValueConverter"/>
+         </sequence>
+         <attribute name="tableFormatId" type="string">
             <annotation>
                <documentation>
-                  
+                  The id of the referenced table format this converter can be used with.
                </documentation>
-               <appinfo>
-                  <meta.attribute kind="java" basedOn="org.faktorips.devtools.extsystems.IValueConverter"/>
-               </appinfo>
             </annotation>
          </attribute>
       </complexType>
    </element>
 
-   <element name="externalTableFormat">
+   <element name="externalValueConverter">
       <complexType>
-         <attribute name="id" type="string" use="required">
+         <attribute name="class" type="string">
             <annotation>
                <documentation>
-                  
+                  The fully qualified class name of the converter. It must implement the interface IValueConverter.
+A converter explicitly belongs to a table format, although one converter may be used in conjunction with multiple table formats.
                </documentation>
+               <appinfo>
+                  <meta.attribute kind="java" basedOn=":org.faktorips.devtools.tableconversion.IValueConverter"/>
+               </appinfo>
             </annotation>
          </attribute>
       </complexType>
@@ -91,20 +94,24 @@
       <documentation>
          &lt;extension
       point=&quot;org.faktorips.devtools.core.externalValueConverter&quot;&gt;
-   &lt;externalTableFormat id=&quot;org.abc.MyTableFormat&quot;/&gt;
-   &lt;externalTableFormat id=&quot;org.otherstuff.AnotherTableFormat&quot;/&gt;
-   &lt;externalValueConverter class=&quot;org.abc.BooleanValueConverter&quot;/&gt;
-   &lt;externalValueConverter class=&quot;org.abc.DateValueConverter&quot;/&gt;
-   &lt;externalValueConverter class=&quot;org.abc.DoubleValueConverter&quot;/&gt;
+    &lt;externalTableFormat tableFormatId=&quot;org.abc.MyTableFormat&quot;&gt;
+        &lt;externalValueConverter class=&quot;org.abc.BooleanValueConverter&quot;/&gt;
+        &lt;externalValueConverter class=&quot;org.abc.DateValueConverter&quot;/&gt;
+     &lt; ..... more converters /&gt;
+    &lt;/externalTableFormat&gt;     
+    &lt;externalTableFormat tableFormatId=&quot;org.abc.OtherTableFormat&quot;&gt;
+        &lt;externalValueConverter class=&quot;org.abc.DoubleValueConverter&quot;/&gt;
+    &lt;/externalTableFormat&gt;     
 &lt;/extension&gt;
 
-This example regsiters three value converter classes (for boolean, date and double) to be used by two external table formats.
+         
+This example registers multiple value converter classes (for boolean and date and ...) to be used by the external table format &quot;org.abc.MyTableFormat&quot;. Another converter (double) is registered for the &quot;org.abc.OtherTableFormat&quot;.
       </documentation>
    </annotation>
 
    <annotation>
       <appinfo>
-         <meta.section type="apiInfo"/>
+         <meta.section type="apiinfo"/>
       </appinfo>
       <documentation>
          [Enter API information here.]
@@ -125,19 +132,16 @@ This example regsiters three value converter classes (for boolean, date and doub
          <meta.section type="copyright"/>
       </appinfo>
       <documentation>
-         Copyright (c) 2005,2006 Faktor Zehn GmbH und andere.
+         Copyright (c) 2005-2009 Faktor Zehn AG und andere.
 
 Alle Rechte vorbehalten.
 
-Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele,
-Konfigurationen, etc.) dürfen nur unter den Bedingungen der 
-Faktor-Zehn-Community Lizenzvereinbarung – Version 0.1 (vor Gründung Community) 
-genutzt werden, die Bestandteil der Auslieferung ist und auch unter
-  http://www.faktorips.org/legal/cl-v01.html
-eingesehen werden kann.
+Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen, 
+etc.) duerfen nur unter den Bedingungen der Faktor-Zehn-Community Lizenzvereinbarung - Version
+0.1 (vor Gruendung Community) genutzt werden, die Bestandteil der Auslieferung ist und auch unter
+http://www.faktorzehn.org/f10-org:lizenzen:community eingesehen werden kann.
 
-Mitwirkende:
-  Faktor Zehn GmbH - initial API and implementation
+Mitwirkende: Faktor Zehn AG - initial API and implementation - http://www.faktorzehn.de
       </documentation>
    </annotation>
 

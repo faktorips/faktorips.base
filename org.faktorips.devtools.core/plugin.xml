@@ -266,37 +266,6 @@
       </application>
    </extension>
    <extension
-         point="org.faktorips.devtools.core.externalTableFormat">
-      <externalTableFormat
-            class="org.faktorips.devtools.extsystems.excel.ExcelTableFormat"
-            defaultExtension=".xls"
-            id="org.faktorips.devtools.extsystems.excel.ExcelTableFormat"
-            name="Excel">
-      </externalTableFormat>
-      <externalTableFormat
-            class="org.faktorips.devtools.extsystems.csv.CSVTableFormat"
-            defaultExtension=".csv"
-            id="org.faktorips.devtools.extsystems.csv.CSVTableFormat"
-            name="Text (CSV)">
-      </externalTableFormat>
-   </extension>
-   <extension
-         point="org.faktorips.devtools.core.externalValueConverter">
-      <externalTableFormat id="org.faktorips.devtools.extsystems.excel.ExcelTableFormat"/>
-      <externalTableFormat
-            id="org.faktorips.devtools.extsystems.csv.CSVTableFormat">
-      </externalTableFormat>
-      <externalValueConverter class="org.faktorips.devtools.extsystems.excel.BooleanValueConverter"/>
-      <externalValueConverter class="org.faktorips.devtools.extsystems.excel.DoubleValueConverter"/>
-      <externalValueConverter class="org.faktorips.devtools.extsystems.excel.IntegerValueConverter"/>
-      <externalValueConverter class="org.faktorips.devtools.extsystems.excel.LongValueConverter"/>
-      <externalValueConverter class="org.faktorips.devtools.extsystems.excel.StringValueConverter"/>
-      <externalValueConverter class="org.faktorips.devtools.extsystems.excel.GregorianCalendarValueConverter"/>
-      <externalValueConverter class="org.faktorips.devtools.extsystems.excel.DecimalValueConverter"/>
-      <externalValueConverter class="org.faktorips.devtools.extsystems.excel.MoneyValueConverter"/>
-      <externalValueConverter class="org.faktorips.devtools.extsystems.excel.DateValueConverter"/>
-   </extension>
-   <extension
          id="org.faktorips.devtools.core.productCmptMergeViewer"
          point="org.eclipse.compare.contentMergeViewers">
       <viewer
