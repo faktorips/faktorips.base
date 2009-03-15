@@ -3,7 +3,7 @@
  * 
  * Alle Rechte vorbehalten.
  * 
- * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen, 
+ * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen,
  * etc.) duerfen nur unter den Bedingungen der Faktor-Zehn-Community Lizenzvereinbarung - Version
  * 0.1 (vor Gruendung Community) genutzt werden, die Bestandteil der Auslieferung ist und auch unter
  * http://www.faktorzehn.org/f10-org:lizenzen:community eingesehen werden kann.
@@ -17,8 +17,8 @@ import org.faktorips.codegen.JavaCodeFragmentBuilder;
 
 /**
  * A TypeSection assembles the code fragments for a type, e.g. the main class or an inner class,
- * during the generation process. Therefore it provides subsections for typical code sections
- * like for constants, attributes, methods, constructors and java doc for the type.
+ * during the generation process. Therefore it provides subsections for typical code sections like
+ * for constants, attributes, methods, constructors and java doc for the type.
  * 
  * @author Peter Erzberger
  */
@@ -83,7 +83,7 @@ public final class TypeSection {
      */
     public void setClass(boolean isClass) {
         this.isClass = isClass;
-        if(this.isClass){
+        if (this.isClass) {
             this.isEnum = false;
         }
     }
@@ -100,22 +100,22 @@ public final class TypeSection {
      */
     public void setEnum(boolean isEnum) {
         this.isEnum = isEnum;
-        if(isEnum){
+        if (isEnum) {
             this.isClass = false;
         }
     }
 
     /**
-     * Returns the qualified name of the super class that the generated class extends. <code>null</code>
-     * indicates no superclass will be extended by the generated class.
+     * Returns the qualified name of the super class that the generated class extends.
+     * <code>null</code> indicates no superclass will be extended by the generated class.
      */
     public String getSuperClass() {
         return superClass;
     }
 
     /**
-     * Sets the qualified name of the super class that the generated class extends. <code>null</code>
-     * indicates no superclass will be extended by the generated class.
+     * Sets the qualified name of the super class that the generated class extends.
+     * <code>null</code> indicates no superclass will be extended by the generated class.
      */
     public void setSuperClass(String superClass) {
         this.superClass = superClass;
@@ -136,35 +136,40 @@ public final class TypeSection {
     }
 
     /**
-     * Returns the {@link <code>JavaCodeFragmentBuilder</code>} that assembles the code for the constant definitions.
+     * Returns the {@link <code>JavaCodeFragmentBuilder</code>} that assembles the code for the
+     * constant definitions.
      */
     public JavaCodeFragmentBuilder getConstantBuilder() {
         return constantBuilder;
     }
 
     /**
-     * Returns the {@link <code>JavaCodeFragmentBuilder</code>} that assembles the code for the initialisation of the enum.
+     * Returns the {@link <code>JavaCodeFragmentBuilder</code>} that assembles the code for the
+     * initialisation of the enum.
      */
     public JavaCodeFragmentBuilder getEnumDefinitionBuilder() {
         return enumDefinitionBuilder;
     }
 
     /**
-     * Returns the {@link <code>JavaCodeFragmentBuilder</code>} that assembles the code for the constructor definitions.
+     * Returns the {@link <code>JavaCodeFragmentBuilder</code>} that assembles the code for the
+     * constructor definitions.
      */
     public JavaCodeFragmentBuilder getConstructorBuilder() {
         return constructorBuilder;
     }
 
     /**
-     * Returns the {@link <code>JavaCodeFragmentBuilder</code>} that assembles the code for the member variable definitions.
+     * Returns the {@link <code>JavaCodeFragmentBuilder</code>} that assembles the code for the
+     * member variable definitions.
      */
     public JavaCodeFragmentBuilder getMemberVarBuilder() {
         return memberVariableBuilder;
     }
 
     /**
-     * Returns the {@link <code>JavaCodeFragmentBuilder</code>} that assembles the code for the method definitions.
+     * Returns the {@link <code>JavaCodeFragmentBuilder</code>} that assembles the code for the
+     * method definitions.
      */
     public JavaCodeFragmentBuilder getMethodBuilder() {
         return methodBuilder;
@@ -179,8 +184,8 @@ public final class TypeSection {
     }
 
     /**
-     * Returns the {@link <code>JavaCodeFragmentBuilder</code>} that assembles the annotations for the
-     * type of this TypeSection.
+     * Returns the {@link <code>JavaCodeFragmentBuilder</code>} that assembles the annotations for
+     * the type of this TypeSection.
      */
     public JavaCodeFragmentBuilder getAnnotationsForTypeBuilder() {
         return annotationsForTypeBuilder;
