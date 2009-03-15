@@ -35,6 +35,7 @@ public abstract class AbstractDatatype implements Datatype {
 	public boolean isVoid() {
 		return false;
 	}
+	
 
     /**
      * {@inheritDoc}

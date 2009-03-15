@@ -453,7 +453,14 @@ public class ConfigElementTest extends AbstractIpsPluginTest {
         public boolean areValuesEqual(String valueA, String valueB) {
             return false;
         }
+
+		public boolean isMutable() {
+			return true;
+		}
     	
+		public boolean isImmutable() {
+			return false;
+		}
     }
     
     private class InvalidDatatypeHelper extends AbstractDatatypeHelper {

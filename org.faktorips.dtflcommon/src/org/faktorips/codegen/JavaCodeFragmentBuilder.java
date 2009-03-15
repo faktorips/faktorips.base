@@ -149,7 +149,7 @@ public class JavaCodeFragmentBuilder {
      * Creates the Java source code for a method including signature, body and java doc.
      * 
      * @param modifier Access modifier according to java.lang.reflect.Modifier.
-     * @param returnType the className that the methods returnds an instance of or null to indicate
+     * @param returnType the className that the methods returns an instance of or null to indicate
      *            no return type in case of a constructor
      * @param methodName the name of the method.
      * @param argName Argument names.
@@ -193,7 +193,7 @@ public class JavaCodeFragmentBuilder {
      * @param modifier Access modifier according to java.lang.reflect.Modifier.
      * @param returnType The className that the methods returns an instance of or <code>null</code>
      *            to indicate no return type in case of a constructor. The return type
-     *            <code>void</code> is indictaed by <code>java.lang.Void.class</code>:
+     *            <code>void</code> is indicated by <code>java.lang.Void.class</code>:
      * @param methodName
      * @param argName Argument names.
      * @param argClass Argument classes.
@@ -216,7 +216,7 @@ public class JavaCodeFragmentBuilder {
      * Creates the Java source code for a method including signature, body and java doc.
      * 
      * @param modifier Access modifier according to java.lang.reflect.Modifier.
-     * @param returnType the className that the methods returnds an instance of or null to indicate
+     * @param returnType the className that the methods returns an instance of or null to indicate
      *            no return type in case of a constructor.
      * @param methodName the name of the method.
      * @param argName Argument names.
@@ -242,7 +242,7 @@ public class JavaCodeFragmentBuilder {
      * Creates the Java source code for a method including signature, body and java doc.
      * 
      * @param modifier Access modifier according to java.lang.reflect.Modifier.
-     * @param returnType the className that the methods returnds an instance of or null to indicate
+     * @param returnType the className that the methods returns an instance of or null to indicate
      *            no return type in case of a constructor.
      * @param methodName the name of the method.
      * @param argName Argument names.
@@ -270,7 +270,7 @@ public class JavaCodeFragmentBuilder {
      * Creates the Java source code for a method including signature, body and java doc.
      * 
      * @param modifier Access modifier according to java.lang.reflect.Modifier.
-     * @param returnType the className that the methods returnds an instance of or null to indicate
+     * @param returnType the className that the methods returns an instance of or null to indicate
      *            no return type in case of a constructor.
      * @param methodName the name of the method.
      * @param argName Argument names.
@@ -298,7 +298,7 @@ public class JavaCodeFragmentBuilder {
      * Creates the Java source code for a method including signature, body and java doc.
      * 
      * @param modifier Access modifier according to java.lang.reflect.Modifier.
-     * @param returnType the className that the methods returnds an instance of or null to indicate
+     * @param returnType the className that the methods returns an instance of or null to indicate
      *            no return type in case of a constructor.
      * @param methodName the name of the method.
      * @param argName Argument names.
@@ -329,7 +329,7 @@ public class JavaCodeFragmentBuilder {
      * Creates the Java source code for a method including signature, body and java doc.
      * 
      * @param modifier Access modifier according to java.lang.reflect.Modifier.
-     * @param returnType the className that the methods returnds an instance of or null to indicate
+     * @param returnType the className that the methods returns an instance of or null to indicate
      *            no return type in case of a constructor
      * @param methodName the name of the method.
      * @param argName Argument names.
@@ -357,7 +357,7 @@ public class JavaCodeFragmentBuilder {
      * Creates the Java source code for a method including signature, body and java doc.
      * 
      * @param modifier Access modifier according to java.lang.reflect.Modifier.
-     * @param returnType the className that the methods returnds an instance of or null to indicate
+     * @param returnType the className that the methods returns an instance of or null to indicate
      *            no return type in case of a constructor
      * @param methodName the name of the method.
      * @param argName Argument names.

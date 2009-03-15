@@ -53,6 +53,7 @@ public abstract class AbstractTypeBuilder extends DefaultJavaSourceFileBuilder {
         generateCodeForMethodsDefinedInModel(mainSection.getMethodBuilder());
         generateConstructors(mainSection.getConstructorBuilder());
         generateTypeJavadoc(mainSection.getJavaDocForTypeBuilder());
+        generateTypeAnnotations(mainSection.getAnnotationsForTypeBuilder());
         generateConstants(mainSection.getConstantBuilder());
         generateOtherCode(mainSection.getConstantBuilder(), mainSection.getMemberVarBuilder(), mainSection
                 .getMethodBuilder());
@@ -155,10 +156,18 @@ public abstract class AbstractTypeBuilder extends DefaultJavaSourceFileBuilder {
     /**
      * Generates the Javadoc for the Java class or interface.
      * 
-     * @param builder The builder to use to generate the Javadoc via it's javadoc method.
+     * @param builder The builder to use to generate the Javadoc via its javadoc method.
      */
     protected abstract void generateTypeJavadoc(JavaCodeFragmentBuilder builder) throws CoreException;
 
+    /**
+     * Generates annotations for the Java class or interface.
+     * 
+     * @param builder The builder to use to generate the annotations via its annotation method.
+     */
+    protected void generateTypeAnnotations(JavaCodeFragmentBuilder builder) throws CoreException {
+    }
+    
     /**
      * Returns true if an interface is generated, false if a class is generated.
      */

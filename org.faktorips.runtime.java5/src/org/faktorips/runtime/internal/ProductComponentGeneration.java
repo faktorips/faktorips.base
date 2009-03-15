@@ -80,7 +80,7 @@ public abstract class ProductComponentGeneration extends RuntimeObject implement
      * Sets the new valid from date.
      * 
      * @throws org.faktorips.runtime.IllegalRepositoryModificationException if the repository
-     * this generation belongs to does not allow to modify it's contents. The method is
+     * this generation belongs to does not allow to modify its contents. The method is
      * provided to ease the development of test cases.
      */
     public void setValidFrom(DateTime newValidFrom) {
@@ -94,10 +94,10 @@ public abstract class ProductComponentGeneration extends RuntimeObject implement
     }
 
     /**
-     * Initilizes the generation with the data from the xml element.
+     * Initializes the generation with the data from the xml element.
      * 
      * @throws IllegalRepositoryModificationException if the component has already
-     * been initialized and the repository prohibit chaning it's contents.
+     * been initialized and the repository prohibit changing its contents.
      * 
      * @throws NullPointerException if genElement is <code>null</code>.
      */
@@ -118,7 +118,7 @@ public abstract class ProductComponentGeneration extends RuntimeObject implement
     protected void doInitPropertiesFromXml(Map<String, Element> map) {
         // nothing to do in the base class
         //
-        // Note that the method is deliberatly not declared as abstract to
+        // Note that the method is deliberately not declared as abstract to
         // allow in subclasses calls to super.doInitPropertiesFromXml().
     }
 
@@ -128,7 +128,7 @@ public abstract class ProductComponentGeneration extends RuntimeObject implement
     protected void doInitReferencesFromXml(Map<String, List<Element>> map) {
         // nothing to do in the base class
         //
-        // Note that the method is deliberatly not declared as abstract to
+        // Note that the method is deliberately not declared as abstract to
         // allow in subclasses calls to doInitReferencesFromXml().
     }
 

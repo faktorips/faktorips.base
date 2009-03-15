@@ -92,8 +92,8 @@ public class ProductCmptTypeAttributeTest extends AbstractIpsPluginTest {
     }
     
     /**
-     * Tests if a attributes with properties containing null can be transformed to xml wihtout exceptions
-     * as null handling can be a problem especially tranforming the xml to strings.
+     * Tests if a attributes with properties containing null can be transformed to xml without exceptions
+     * as null handling can be a problem especially transforming the xml to strings.
      * 
      * @throws TransformerException 
      */

@@ -21,9 +21,11 @@ import java.util.Calendar;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import javax.xml.stream.XMLInputFactory;
 import javax.xml.stream.XMLStreamConstants;
@@ -59,6 +61,8 @@ public abstract class AbstractRuntimeRepository implements IRuntimeRepository {
     // see getAllRepositories() for further information
     private List<IRuntimeRepository> allRepositories = null;
 
+    private Map<Class<?>, IModelType> modelTypes = new HashMap<Class<?>, IModelType>();
+
     private String name;
 
     public AbstractRuntimeRepository(String name) {
@@ -71,7 +75,7 @@ public abstract class AbstractRuntimeRepository implements IRuntimeRepository {
     /**
      * Returns the class loader that is used to load Java classes by this repository.
      * <p>
-     * The default implmentation returns the class loader with which this repository class has been loaded.  
+     * The default implementation returns the class loader with which this repository class has been loaded.  
      */
     public ClassLoader getClassLoader() {
         return getClass().getClassLoader();
@@ -109,14 +113,8 @@ public abstract class AbstractRuntimeRepository implements IRuntimeRepository {
         if (allRepositories != null) {
             return allRepositories;
         }
-        List<IRuntimeRepository> result = new ArrayList<IRuntimeRepository>(repositories.size()); // list
-        // is
-        // so
-        // small,
-        // linear
-        // search
-        // is
-        // ok
+        List<IRuntimeRepository> result = new ArrayList<IRuntimeRepository>(repositories.size()); 
+        // list is so small, linear search is ok.
         LinkedList<IRuntimeRepository> candidates = new LinkedList<IRuntimeRepository>();
         candidates.add(this);
         while (!candidates.isEmpty()) {
@@ -188,7 +186,7 @@ public abstract class AbstractRuntimeRepository implements IRuntimeRepository {
     }
 
     /**
-     * Same as getProductComponent(String kindId, String versionId) but seaches only in this
+     * Same as getProductComponent(String kindId, String versionId) but searches only in this
      * repository and not the ones, this repository depends on.
      */
     protected abstract IProductComponent getProductComponentInternal(String kindId, String versionId);
@@ -587,8 +585,6 @@ public abstract class AbstractRuntimeRepository implements IRuntimeRepository {
 
     protected abstract IProductComponentGeneration getPreviousProductComponentGenerationInternal(IProductComponentGeneration generation);
 
-    private Map<Class<?>, IModelType> modelTypes = new HashMap<Class<?>, IModelType>();
-
     /**
      * 
      * {@inheritDoc}
@@ -621,7 +617,6 @@ public abstract class AbstractRuntimeRepository implements IRuntimeRepository {
     }
 
     /**
-     * 
      * {@inheritDoc}
      */
     public IModelType getModelType(IModelObject modelObject) {
@@ -629,10 +624,30 @@ public abstract class AbstractRuntimeRepository implements IRuntimeRepository {
     }
 
     /**
-     * 
      * {@inheritDoc}
      */
     public IModelType getModelType(IProductComponent modelObject) {
         return getModelType(modelObject.getClass());
     }
+    
+    /**
+     * {@inheritDoc}
+     */
+    final public Set<String> getAllModelTypeImplementationClasses() {
+        Set<String> result = new HashSet<String>();
+        getAllModelTypeImplementationClasses(result);
+        for (IRuntimeRepository runtimeRepository : getAllReferencedRepositories()) {
+            AbstractRuntimeRepository refRepository = (AbstractRuntimeRepository)runtimeRepository;
+            refRepository.getAllModelTypeImplementationClasses(result);
+        }
+        return result;
+    }
+
+    /**
+     * Same as getAllModelTypeImplementationClasses() but searches only in this repository and not
+     * the ones, this repository depends on. Adds the types found to the given result list.
+     */
+    protected abstract void getAllModelTypeImplementationClasses(Set<String> result);
+
+    
 }

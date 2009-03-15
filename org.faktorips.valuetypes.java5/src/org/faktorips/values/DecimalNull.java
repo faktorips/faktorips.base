@@ -27,38 +27,27 @@ import java.math.BigDecimal;
 public class DecimalNull extends Decimal implements NullObject {
 
     private static final long serialVersionUID = -662857878963625638L;
-
+    static final String STRING_REPRESENTATION = "DecimalNull";
+    
     DecimalNull() {
         super(null);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public boolean isNull() {
         return true;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public boolean isNotNull() {
         return false;
     }
 
-    /**
-     * @throws NullPointerException
-     */
     @Override
     public int scale() {
         throw newNullPointerException();
     }
 
-    /**
-     * @throws NullPointerException
-     */
     @Override
     public int signum() {
         throw newNullPointerException();
@@ -89,7 +78,7 @@ public class DecimalNull extends Decimal implements NullObject {
     }
 
     /**
-     * {@inheritDoc}
+     * Returns the special case Decimal.NULL.
      */
     @Override
     public Decimal max(Decimal value){
@@ -97,7 +86,7 @@ public class DecimalNull extends Decimal implements NullObject {
     }
 
     /**
-     * {@inheritDoc}
+     * Returns the special case Decimal.NULL.
      */
     @Override
     public Decimal min(Decimal value){
@@ -129,7 +118,7 @@ public class DecimalNull extends Decimal implements NullObject {
     }
 
     /**
-     * Returns the special case Money.NULL.
+     * Returns the special case Decimal.NULL.
      */
     @Override
     public Money multiply(Money m, int roundingMode) {
@@ -178,7 +167,7 @@ public class DecimalNull extends Decimal implements NullObject {
     }
 
     /**
-     * {@inheritDoc}
+     * Returns the special case Decimal.NULL.
      */
     @Override
     public Decimal divide(long value, int scale, int roundingMode) {
@@ -186,7 +175,7 @@ public class DecimalNull extends Decimal implements NullObject {
     }
 
     /**
-     * {@inheritDoc}
+     * Returns the special case Decimal.NULL.
      */
     @Override
     public Decimal setScale(int scale, int roundingMode) {
@@ -194,7 +183,7 @@ public class DecimalNull extends Decimal implements NullObject {
     }
 
     /**
-     * {@inheritDoc}
+     * Returns the special case Decimal.NULL.
      */
     @Override
     public Decimal round(int precision, int roundingMode) {
@@ -234,7 +223,7 @@ public class DecimalNull extends Decimal implements NullObject {
     }
 
     /**
-     * {@inheritDoc}
+     * Returns <code>null</code>.
      */
     @Override
     public BigDecimal bigDecimalValue() {
@@ -266,7 +255,7 @@ public class DecimalNull extends Decimal implements NullObject {
     }
 
     /**
-     * {@inheritDoc}
+     * @throws NullPointerException
      */
     @Override
     public boolean equalsIgnoreScale(Decimal d) {
@@ -274,7 +263,7 @@ public class DecimalNull extends Decimal implements NullObject {
     }
 
     /**
-     * {@inheritDoc}
+     * @throws NullPointerException
      */
     @Override
     public boolean greaterThan(Decimal d) {
@@ -282,7 +271,7 @@ public class DecimalNull extends Decimal implements NullObject {
     }
 
     /**
-     * {@inheritDoc}
+     * @throws NullPointerException
      */
     @Override
     public boolean greaterThanOrEqual(Decimal d) {
@@ -290,7 +279,7 @@ public class DecimalNull extends Decimal implements NullObject {
     }
 
     /**
-     * {@inheritDoc}
+     * @throws NullPointerException
      */
     @Override
     public boolean lessThan(Decimal d) {
@@ -298,7 +287,7 @@ public class DecimalNull extends Decimal implements NullObject {
     }
 
     /**
-     * {@inheritDoc}
+     * @throws NullPointerException
      */
     @Override
     public boolean lessThanOrEqual(Decimal d) {
@@ -306,7 +295,7 @@ public class DecimalNull extends Decimal implements NullObject {
     }
 
     /**
-     * {@inheritDoc}
+     * @throws NullPointerException
      */
     @Override
     public boolean notEqualsIgnoreScale(Decimal d) {
@@ -314,7 +303,7 @@ public class DecimalNull extends Decimal implements NullObject {
     }
 
     /**
-     * {@inheritDoc}
+     * Returns the special case Decimal.NULL.
      */
     @Override
     public Decimal abs() {
@@ -322,27 +311,21 @@ public class DecimalNull extends Decimal implements NullObject {
     }
 
     /**
-     * {@inheritDoc}
+     * Returns the special case Decimal.NULL.
      */
     @Override
     public Decimal negate() {
         return this;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public int hashCode() {
         return 0;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public String toString() {
-        return "DecimalNull";
+        return STRING_REPRESENTATION;
     }
 
     /**

@@ -16,6 +16,10 @@ package org.faktorips.values;
 import java.io.Serializable;
 import java.math.BigDecimal;
 
+import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
+
+import org.faktorips.values.xml.DecimalXmlAdapter;
+
 /**
  * Value class that represents a decimal number. This class is similar to Java's BigDecimal with two
  * differences:
@@ -28,6 +32,7 @@ import java.math.BigDecimal;
  * @see org.faktorips.values.DecimalNull
  * @see Decimal#NULL
  */
+@XmlJavaTypeAdapter(DecimalXmlAdapter.class)
 public class Decimal extends Number implements Comparable<Decimal>, NullObjectSupport, Serializable {
 
     private static final long serialVersionUID = -642726667937769164L;
@@ -62,12 +67,13 @@ public class Decimal extends Number implements Comparable<Decimal>, NullObjectSu
 
     /**
      * Returns the Decimal value defined in the String <code>s</code>.
-     * Returns <code>Decimal.NULL</code> if <code>s<code> is either <code>null</code> or an empty string.
+     * Returns <code>Decimal.NULL</code> if <code>s</code> is either <code>null</code> or an empty string
+     * or "DecimalNull".
      * 
      * @throws NumberFormatException if <tt>s</tt> is not a valid representation of a Decimal.
      */
     public final static Decimal valueOf(String s) {
-        if (s==null || s.equals("")) {
+        if (s==null || s.equals("") || s.equals(DecimalNull.STRING_REPRESENTATION)) {
             return NULL;
         }
         return new Decimal(new BigDecimal(s));
@@ -318,15 +324,15 @@ public class Decimal extends Number implements Comparable<Decimal>, NullObjectSu
      * Returns a Decimal whose value is <tt>(this / d)</tt>, and whose
      * scale is as specified.  If rounding must be performed to generate a
      * result with the specified scale, the specified rounding mode is
-     * applied. If this decimal is the Decimal.NULL object, than Decimal.NULL
+     * applied. If this decimal is the Decimal.NULL object, then Decimal.NULL
      * is returned.
      *
-     * @param  d			value by which this Decimal is to be divided.
-     * @param  scale 		scale of the Decimal quotient to be returned.
-     * @param  roundingMode rounding mode to apply.
+     * @param  value		value by which this Decimal is to be divided
+     * @param  scale 		scale of the Decimal quotient to be returned
+     * @param  roundingMode rounding mode to apply
      * 
      * @return <tt>this / d</tt>
-     * @throws ArithmeticException <tt>val</tt> is zero, <tt>scale</tt> is
+     * @throws ArithmeticException <tt>value</tt> is zero, <tt>scale</tt> is
      *	       negative, or <tt>roundingMode==ROUND_UNNECESSARY</tt> and
      *	       the specified scale is insufficient to represent the result
      *	       of the division exactly.
@@ -341,15 +347,15 @@ public class Decimal extends Number implements Comparable<Decimal>, NullObjectSu
      * Returns a Decimal whose value is <tt>(this / d)</tt>, and whose
      * scale is as specified.  If rounding must be performed to generate a
      * result with the specified scale, the specified rounding mode is
-     * applied. If this decimal is the Decimal.NULL object, than Decimal.NULL
+     * applied. If this decimal is the Decimal.NULL object, then Decimal.NULL
      * is returned.
      *
-     * @param  d			value by which this Decimal is to be divided.
-     * @param  scale 		scale of the Decimal quotient to be returned.
-     * @param  roundingMode rounding mode to apply.
+     * @param  value		value by which this Decimal is to be divided
+     * @param  scale 		scale of the Decimal quotient to be returned
+     * @param  roundingMode rounding mode to apply
      * 
      * @return <tt>this / d</tt>
-     * @throws ArithmeticException <tt>val</tt> is zero, <tt>scale</tt> is
+     * @throws ArithmeticException <tt>value</tt> is zero, <tt>scale</tt> is
      *	       negative, or <tt>roundingMode==ROUND_UNNECESSARY</tt> and
      *	       the specified scale is insufficient to represent the result
      *	       of the division exactly.
@@ -364,7 +370,7 @@ public class Decimal extends Number implements Comparable<Decimal>, NullObjectSu
      * Returns a Decimal whose value is <tt>(this / d)</tt>, and whose
      * scale is as specified.  If rounding must be performed to generate a
      * result with the specified scale, the specified rounding mode is
-     * applied. If either this decimal or d is the Decimal.NULL, than Decimal.NULL
+     * applied. If either this decimal or d is the Decimal.NULL, then Decimal.NULL
      * is returned.
      *
      * @param  d			value by which this Decimal is to be divided.
@@ -372,7 +378,7 @@ public class Decimal extends Number implements Comparable<Decimal>, NullObjectSu
      * @param  roundingMode rounding mode to apply.
      * 
      * @return <tt>this / d</tt>
-     * @throws ArithmeticException <tt>val</tt> is zero, <tt>scale</tt> is
+     * @throws ArithmeticException <tt>value</tt> is zero, <tt>scale</tt> is
      *	       negative, or <tt>roundingMode==ROUND_UNNECESSARY</tt> and
      *	       the specified scale is insufficient to represent the result
      *	       of the division exactly.

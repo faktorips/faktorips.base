@@ -38,6 +38,7 @@ public class TocEntryObject extends TocEntry {
     public final static String TABLE_ENTRY_TYPE = "table";
     public final static String TEST_CASE_ENTRY_TYPE = "testCase";
     public final static String FORMULA_TEST_ENTRY_TYPE = "formulaTest";
+    public final static String MODEL_TYPE_ENTRY_TYPE ="modelType";
     
     public static final String PROPERTY_ENTRYTYPE = "entryType";
     public static final String PROPERTY_IPS_OBJECT_ID = "ipsObjectId";
@@ -83,10 +84,12 @@ public class TocEntryObject extends TocEntry {
 	        newEntry = createTableTocEntry(ipsObjectId, ipsObjectName, xmlResourceName, implementationClassName);
         } else if(TEST_CASE_ENTRY_TYPE.equals(entryType)){
             newEntry = createTestCaseTocEntry(ipsObjectId, ipsObjectName, xmlResourceName, implementationClassName);
-        }  else if(FORMULA_TEST_ENTRY_TYPE.equals(entryType)){
+        } else if(FORMULA_TEST_ENTRY_TYPE.equals(entryType)){
             String kindId = entryElement.getAttribute(PROPERTY_KIND_ID);
             String versionId = entryElement.getAttribute(PROPERTY_VERSION_ID);            
             newEntry = createFormulaTestTocEntry(ipsObjectId, ipsObjectName, kindId, versionId, xmlResourceName, implementationClassName);
+        } else if(MODEL_TYPE_ENTRY_TYPE.equals(entryType)){
+            newEntry = createModelTypeTocEntry(ipsObjectId, ipsObjectName, xmlResourceName, implementationClassName);
         } else {
             throw new IllegalArgumentException("Unknown entry type " + entryType);
         }
@@ -147,6 +150,15 @@ public class TocEntryObject extends TocEntry {
             String ipsObjectId, String ipsObjectQualifiedName, String xmlResourceName, String implementationClassName){
         return new TocEntryObject(TEST_CASE_ENTRY_TYPE, ipsObjectId, ipsObjectQualifiedName, "", "", xmlResourceName, implementationClassName, null);
     }
+    
+    /**
+     * Creates an entry that referes to a model type.
+     */
+    public final static TocEntryObject createModelTypeTocEntry(
+            String ipsObjectId, String ipsObjectQualifiedName, String xmlResourceName, String implementationClassName){
+        return new TocEntryObject(MODEL_TYPE_ENTRY_TYPE, ipsObjectId, ipsObjectQualifiedName, "", "", xmlResourceName, implementationClassName, null);
+    }
+    
 
     private TocEntryObject(
 	        String entryType, 
@@ -324,6 +336,13 @@ public class TocEntryObject extends TocEntry {
      */
     public boolean isFormulaTestTocEntry(){
         return FORMULA_TEST_ENTRY_TYPE.equals(entryType);
+    }    
+
+    /**
+     * @return <code>true</code> if this is an entry representing a model type.
+     */
+    public boolean isModelTypeTocEntry(){
+        return MODEL_TYPE_ENTRY_TYPE.equals(entryType);
     }    
 
     /**

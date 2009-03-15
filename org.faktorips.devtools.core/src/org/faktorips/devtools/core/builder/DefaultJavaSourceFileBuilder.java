@@ -40,22 +40,30 @@ import org.faktorips.util.StringUtil;
  * new imports at the end of the import section. This keeps source files from being modified by the
  * builder by changing the import order when the rest of the file remains the same. This is faster
  * and more important when using the team functionality, the user sees only those sourcefiles that
- * he has really modified as changed files. <p> In addition this builder provides sections for typical
- * source code fragments. The following sections are distinguished: constant section, java doc
+ * he has really modified as changed files. 
+ * 
+ * <p>
+ * In addition this builder provides sections for typical
+ * source code fragments. The following sections are distinguished: constant section, Javadoc
  * section for the main class, attribute section, constructor section for the main class, method
  * section, inner classes section. For inner classes the same subdivision of sections except for the
- * inner classes section is provided. To write code to this sections for the main class that is to
+ * inner classes section is provided. To write code to these sections for the main class that is to
  * generation by an implementation of this builder one has to access the main type section by means
  * of the getMainTypeSection() method. The TypeSection object retrieved by this method offers the
  * methods for the accordant sub sections. Inner classes are created by calling the
  * createInnerClassTypeSection() method. This method returns a TypeSection object for the inner
- * class. For each inner class that is to generate a new TypeSection object needs to be created. The
+ * class. For each inner class that is to generate, a new TypeSection object needs to be created. The
  * TypeSection objects are typically accessed within implementations of the
- * generateCodeForJavatype() method. <p>This builder also provides a set of methods that generate code
+ * generateCodeForJavatype() method.
+ * </p> 
+ * 
+ * <p>
+ * This builder also provides a set of methods that generate code
  * fragments for logging statements. These methods generate logging code for the logging framework
  * registered with the <code>org.faktorips.devtools.core.loggingFrameworkConnector</code>
  * extension point. Typical java logging frameworks are log4j or the logging framework that comes
  * with the JDK since 1.4.
+ * </p>
  * 
  * @author Jan Ortmann, Peter Erzberger
  */
@@ -72,7 +80,7 @@ public abstract class DefaultJavaSourceFileBuilder extends JavaSourceFileBuilder
     protected static final String[] EMPTY_STRING_ARRAY = new String[0];
     
     private TypeSection mainSection;
-    private List innerClassesSections;
+    private List<TypeSection> innerClassesSections;
     private boolean loggerInstanceGenerated = false;
 
     
@@ -103,7 +111,7 @@ public abstract class DefaultJavaSourceFileBuilder extends JavaSourceFileBuilder
         try{
             loggerInstanceGenerated = false;
             mainSection = new TypeSection();
-            innerClassesSections = new ArrayList();
+            innerClassesSections = new ArrayList<TypeSection>();
             
             generateCodeForJavatype();
             code = generateClassBody(mainSection, innerClassesSections);
@@ -150,9 +158,12 @@ public abstract class DefaultJavaSourceFileBuilder extends JavaSourceFileBuilder
                 DefaultJavaSourceFileBuilder.class);
     }
     
-    private JavaCodeFragment generateClassBody(TypeSection section, List innerClassSections) throws CoreException{
+    private JavaCodeFragment generateClassBody(TypeSection section, List<TypeSection> innerClassSections) throws CoreException{
         JavaCodeFragmentBuilder codeBuilder = new JavaCodeFragmentBuilder();
+        
         codeBuilder.append(section.getJavaDocForTypeBuilder().getFragment());
+        codeBuilder.append(section.getAnnotationsForTypeBuilder().getFragment());
+        
         if (section.isClass()) {
             codeBuilder.classBegin(section.getClassModifier(), section.getUnqualifiedName(), 
                     section.getSuperClass(), section.getExtendedInterfaces());
@@ -164,6 +175,7 @@ public abstract class DefaultJavaSourceFileBuilder extends JavaSourceFileBuilder
         } else {
             codeBuilder.interfaceBegin(section.getUnqualifiedName(), section.getExtendedInterfaces());
         }
+        
         codeBuilder.appendln();
         codeBuilder.append(section.getConstantBuilder().getFragment());
         codeBuilder.appendln();
@@ -173,16 +185,17 @@ public abstract class DefaultJavaSourceFileBuilder extends JavaSourceFileBuilder
         codeBuilder.appendln();
         codeBuilder.append(section.getMethodBuilder().getFragment());
 
-        if(innerClassSections != null){
+        if (innerClassSections != null) {
             codeBuilder.appendln();
             codeBuilder.appendln();
-            for (Iterator it = innerClassSections.iterator(); it.hasNext();){
-                codeBuilder.append(generateClassBody((TypeSection)it.next(), null));
+            for (Iterator<TypeSection> it = innerClassSections.iterator(); it.hasNext();){
+                codeBuilder.append(generateClassBody(it.next(), null));
             }
         }
-        codeBuilder.classEnd();
-        return codeBuilder.getFragment();
         
+        codeBuilder.classEnd();
+
+        return codeBuilder.getFragment();
     }
     
     /**

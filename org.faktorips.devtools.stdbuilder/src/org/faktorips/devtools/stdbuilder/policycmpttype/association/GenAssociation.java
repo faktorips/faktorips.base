@@ -3,7 +3,7 @@
  * 
  * Alle Rechte vorbehalten.
  * 
- * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen, 
+ * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen,
  * etc.) duerfen nur unter den Bedingungen der Faktor-Zehn-Community Lizenzvereinbarung - Version
  * 0.1 (vor Gruendung Community) genutzt werden, die Bestandteil der Auslieferung ist und auch unter
  * http://www.faktorzehn.org/f10-org:lizenzen:community eingesehen werden kann.
@@ -48,18 +48,21 @@ public abstract class GenAssociation extends GenPolicyCmptTypePart {
     protected IPolicyCmptTypeAssociation reverseAssociation;
     protected IPolicyCmptType target;
 
-    // the qualified name of the target's published interface.
+    /** The qualified name of the target's published interface. */
     protected String targetInterfaceName;
 
-    // the qualified name of the target's implementation class name. null if used in the interface
-    // builder!
+    /**
+     * The qualified name of the target's implementation class name. <code>null</code> if used in
+     * the interface builder!
+     */
     protected String targetImplClassName;
 
     protected String fieldName;
 
-    protected String staticConstantAssociationName;
+    private String staticConstantAssociationName;
 
-    public GenAssociation(GenPolicyCmptType genPolicyCmptType, IPolicyCmptTypeAssociation association) throws CoreException {
+    public GenAssociation(GenPolicyCmptType genPolicyCmptType, IPolicyCmptTypeAssociation association)
+            throws CoreException {
         super(genPolicyCmptType, association, LOCALIZED_STRINGS);
         this.association = association;
         reverseAssociation = association.findInverseAssociation(getGenPolicyCmptType().getIpsPart().getIpsProject());
@@ -140,7 +143,7 @@ public abstract class GenAssociation extends GenPolicyCmptTypePart {
      * </pre>
      */
     protected void generateInterfaceMethodNewChild(boolean inclProductCmptArg, JavaCodeFragmentBuilder builder)
-    throws CoreException {
+            throws CoreException {
 
         String targetTypeName = target.getName();
         String role = association.getTargetRoleSingular();
@@ -169,7 +172,7 @@ public abstract class GenAssociation extends GenPolicyCmptTypePart {
      * </pre>
      */
     public void generateImplMethodNewChild(boolean inclProductCmptArg, JavaCodeFragmentBuilder methodsBuilder)
-    throws CoreException {
+            throws CoreException {
 
         methodsBuilder.javaDoc(getJavaDocCommentForOverriddenMethod(), JavaSourceFileBuilder.ANNOTATION_GENERATED);
         generateSignatureNewChild(inclProductCmptArg, methodsBuilder);
@@ -211,7 +214,7 @@ public abstract class GenAssociation extends GenPolicyCmptTypePart {
      * </pre>
      */
     protected void generateSignatureNewChild(boolean inclProductCmptArg, JavaCodeFragmentBuilder builder)
-    throws CoreException {
+            throws CoreException {
 
         String methodName = getMethodNameNewChild(association);
         String[] argNames, argTypes;
@@ -235,12 +238,12 @@ public abstract class GenAssociation extends GenPolicyCmptTypePart {
     }
 
     /**
-     * Returns the name of the parameter in the new child mthod, e.g. coverageType.
+     * Returns the name of the parameter in the new child method, e.g. coverageType.
      */
     protected String getParamNameForProductCmptInNewChildMethod(IProductCmptType targetProductCmptType)
-    throws CoreException {
+            throws CoreException {
         String targetProductCmptClass = getGenPolicyCmptType().getBuilderSet().getGenerator(targetProductCmptType)
-        .getQualifiedName(true);
+                .getQualifiedName(true);
         return StringUtils.uncapitalize(StringUtil.unqualifiedName(targetProductCmptClass));
     }
 
@@ -250,8 +253,7 @@ public abstract class GenAssociation extends GenPolicyCmptTypePart {
      * </pre>
      */
     protected JavaCodeFragment generateCodeToSynchronizeReverseComposition(String varName, String newValue)
-    throws CoreException {
-
+            throws CoreException {
         JavaCodeFragment code = new JavaCodeFragment();
         code.append("((");
         code.appendClassName(DependantObject.class);
@@ -268,16 +270,14 @@ public abstract class GenAssociation extends GenPolicyCmptTypePart {
             ChangeEventType eventType,
             String paramName) throws CoreException {
         getGenPolicyCmptType().generateChangeListenerSupportBeforeChange(methodsBuilder, eventType,
-                getQualifiedClassName(target, true), fieldName,
-                paramName, getStaticConstantAssociationName());
+                getQualifiedClassName(target, true), fieldName, paramName, getStaticConstantAssociationName());
     }
 
     protected void generateChangeListenerSupportAfterChange(JavaCodeFragmentBuilder methodsBuilder,
             ChangeEventType eventType,
             String paramName) throws CoreException {
         getGenPolicyCmptType().generateChangeListenerSupportAfterChange(methodsBuilder, eventType,
-                getQualifiedClassName(target, true), fieldName, paramName,
-                getStaticConstantAssociationName());
+                getQualifiedClassName(target, true), fieldName, paramName, getStaticConstantAssociationName());
     }
 
     /**
@@ -315,7 +315,8 @@ public abstract class GenAssociation extends GenPolicyCmptTypePart {
      * Returns the name of the method returning the single referenced object. e.g. getCoverage()
      */
     public String getMethodNameGetRefObject() {
-        return getLocalizedText("METHOD_GET_REF_OBJECT_NAME", StringUtils.capitalize(association.getTargetRoleSingular()));
+        return getLocalizedText("METHOD_GET_REF_OBJECT_NAME", StringUtils.capitalize(association
+                .getTargetRoleSingular()));
     }
 
     /**
@@ -364,7 +365,7 @@ public abstract class GenAssociation extends GenPolicyCmptTypePart {
      * </pre>
      */
     protected void generateMethodGetRefObjectsByQualifierForNonDerivedUnion(JavaCodeFragmentBuilder methodsBuilder)
-    throws CoreException {
+            throws CoreException {
         methodsBuilder.javaDoc(getJavaDocCommentForOverriddenMethod(), JavaSourceFileBuilder.ANNOTATION_GENERATED);
         generateSignatureGetRefObjectByQualifier(methodsBuilder);
         IPolicyCmptType target = association.findTargetPolicyCmptType(getIpsProject());
@@ -499,7 +500,7 @@ public abstract class GenAssociation extends GenPolicyCmptTypePart {
      * @throws CoreException
      */
     protected void generateMethodGetRefObjectsByQualifierForDerivedUnion(JavaCodeFragmentBuilder methodsBuilder)
-    throws CoreException {
+            throws CoreException {
         methodsBuilder.javaDoc(getJavaDocCommentForOverriddenMethod(), JavaSourceFileBuilder.ANNOTATION_GENERATED);
         generateSignatureGetRefObjectByQualifier(methodsBuilder);
         IPolicyCmptType target = association.findTargetPolicyCmptType(getIpsProject());
@@ -626,7 +627,7 @@ public abstract class GenAssociation extends GenPolicyCmptTypePart {
         String returnType;
         if (isUseTypesafeCollections()) {
             returnType = List.class.getName() + "<"
-            + getQualifiedClassName((IPolicyCmptType)association.findTarget(getIpsProject()), true) + ">";
+                    + getQualifiedClassName((IPolicyCmptType)association.findTarget(getIpsProject()), true) + ">";
         } else {
             returnType = getQualifiedClassName((IPolicyCmptType)association.findTarget(getIpsProject()), true) + "[]";
         }
@@ -699,7 +700,7 @@ public abstract class GenAssociation extends GenPolicyCmptTypePart {
      * </pre>
      */
     protected void generateMethodContainsObjectForContainerAssociation(JavaCodeFragmentBuilder methodsBuilder)
-    throws CoreException {
+            throws CoreException {
 
         String paramName = getParamNameForContainsObject();
 
@@ -750,20 +751,20 @@ public abstract class GenAssociation extends GenPolicyCmptTypePart {
 
         String methodName = getMethodNameGetNumOfRefObjects();
         methodsBuilder
-        .signature(java.lang.reflect.Modifier.PUBLIC, "int", methodName, new String[] {}, new String[] {});
+                .signature(java.lang.reflect.Modifier.PUBLIC, "int", methodName, new String[] {}, new String[] {});
     }
 
     /**
      * Returns the name of the method returning the number of referenced objects, e.g.
-     * getNumOfCoverages()
+     * getNumOfCoverages().
      */
     public String getMethodNameGetNumOfRefObjects() {
         return getLocalizedText("METHOD_GET_NUM_OF_NAME", StringUtils.capitalize(association.getTargetRolePlural()));
     }
 
     /**
-     * Returns the name of the paramter for the method removing an object from a multi-value
-     * association, e.g. objectToRemove
+     * Returns the name of the parameter for the method removing an object from a multi-value
+     * association, e.g. objectToRemove.
      */
     public String getParamNameForRemoveObject() {
         return getLocalizedText("PARAM_OBJECT_TO_REMOVE_NAME", association.getTargetRoleSingular());
@@ -802,15 +803,16 @@ public abstract class GenAssociation extends GenPolicyCmptTypePart {
 
     /**
      * Returns the name of the method returning the number of referenced objects, e.g.
-     * getNumOfCoverages()
+     * getNumOfCoverages().
      */
     public String getMethodNameContainsObject() {
-        return getLocalizedText("METHOD_CONTAINS_OBJECT_NAME", StringUtils.capitalize(association.getTargetRoleSingular()));
+        return getLocalizedText("METHOD_CONTAINS_OBJECT_NAME", StringUtils.capitalize(association
+                .getTargetRoleSingular()));
     }
 
     /**
-     * Returns the name of the paramter for the method that tests if an object is references in a
-     * multi-value association, e.g. objectToTest
+     * Returns the name of the parameter for the method that tests if an object is references in a
+     * multi-value association, e.g. objectToTest.
      */
     public String getParamNameForContainsObject() {
         return getLocalizedText("PARAM_OBJECT_TO_TEST_NAME", association.getTargetRoleSingular());
@@ -818,9 +820,8 @@ public abstract class GenAssociation extends GenPolicyCmptTypePart {
 
     public void generateSignatureGetMaxCardinalityFor(JavaCodeFragmentBuilder methodsBuilder) {
         String methodName = getMethodNameGetMaxCardinalityFor();
-        methodsBuilder.signature(java.lang.reflect.Modifier.PUBLIC,
-                IntegerRange.class.getName(),
-                methodName, EMPTY_STRING_ARRAY, EMPTY_STRING_ARRAY);
+        methodsBuilder.signature(java.lang.reflect.Modifier.PUBLIC, IntegerRange.class.getName(), methodName,
+                EMPTY_STRING_ARRAY, EMPTY_STRING_ARRAY);
     }
 
     public String getMethodNameGetMaxCardinalityFor() {
@@ -840,9 +841,7 @@ public abstract class GenAssociation extends GenPolicyCmptTypePart {
         frag.append(association.getMaxCardinality());
         frag.append(")");
         attrBuilder.varDeclaration(java.lang.reflect.Modifier.PUBLIC | java.lang.reflect.Modifier.FINAL
-                | java.lang.reflect.Modifier.STATIC,
-                IntegerRange.class.getName(),
-                fieldName, frag);
+                | java.lang.reflect.Modifier.STATIC, IntegerRange.class.getName(), fieldName, frag);
         attrBuilder.appendln();
     }
 
@@ -925,7 +924,7 @@ public abstract class GenAssociation extends GenPolicyCmptTypePart {
      * </pre>
      */
     public void generateMethodCopyPropertiesForComposition(String paramName, JavaCodeFragmentBuilder methodsBuilder)
-    throws CoreException {
+            throws CoreException {
         String field = getFieldNameForAssociation();
         IPolicyCmptType targetType = association.findTargetPolicyCmptType(getIpsProject());
         String targetTypeQName = getQualifiedClassName(targetType, false);
@@ -948,13 +947,6 @@ public abstract class GenAssociation extends GenPolicyCmptTypePart {
     public abstract void generateMethodCopyPropertiesForAssociation(String paramName,
             JavaCodeFragmentBuilder methodsBuilder) throws CoreException;
 
-    /**
-     * @param methodsBuilder
-     * @param paramName
-     * @param associations
-     * @param i
-     * @throws CoreException
-     */
     public abstract void generateCodeForRemoveChildModelObjectInternal(JavaCodeFragmentBuilder methodsBuilder,
             String paramName) throws CoreException;
 
@@ -962,7 +954,7 @@ public abstract class GenAssociation extends GenPolicyCmptTypePart {
      * {@inheritDoc}
      */
     protected void generateMethods(JavaCodeFragmentBuilder builder, IIpsProject ipsProject, boolean generatesInterface)
-    throws CoreException {
+            throws CoreException {
         if (generatesInterface) {
             if (association.isQualified()) {
                 generateMethodGetRefObjectByQualifier(builder);
@@ -982,7 +974,7 @@ public abstract class GenAssociation extends GenPolicyCmptTypePart {
      * {@inheritDoc}
      */
     protected void generateConstants(JavaCodeFragmentBuilder builder, IIpsProject ipsProject, boolean generatesInterface)
-    throws CoreException {
+            throws CoreException {
         if (generatesInterface) {
             if (!association.isDerivedUnion() && !association.getAssociationType().isCompositionDetailToMaster()) {
                 generateFieldGetMaxCardinalityFor(builder);
@@ -997,7 +989,15 @@ public abstract class GenAssociation extends GenPolicyCmptTypePart {
     protected void generateMemberVariables(JavaCodeFragmentBuilder builder,
             IIpsProject ipsProject,
             boolean generatesInterface) throws CoreException {
-        // nothing to do
+        if (!isDerivedUnion() && !isCompositionDetailToMaster() && isGenerateJaxbSupport()) {
+            builder.getFragment().addImport("javax.xml.bind.annotation.XmlElement");
+            builder.annotation("XmlElement(name=\"" + association.getName() + "\", type=" + targetImplClassName
+                    + ".class)");
+            if (!isCompositionMasterToDetail()) {
+                builder.getFragment().addImport("javax.xml.bind.annotation.XmlIDREF");
+                builder.annotation("XmlIDREF");
+            }
+        }
     }
 
     public abstract void generateCodeForContainerAssociationImplementation(List associations,
@@ -1006,10 +1006,6 @@ public abstract class GenAssociation extends GenPolicyCmptTypePart {
 
     public abstract void generateCodeForValidateDependants(JavaCodeFragment body) throws CoreException;
 
-    /**
-     * @return
-     * @throws CoreException
-     */
     public IPolicyCmptType getTargetPolicyCmptType() throws CoreException {
         return association.getIpsProject().findPolicyCmptType(association.getTarget());
     }
@@ -1017,12 +1013,14 @@ public abstract class GenAssociation extends GenPolicyCmptTypePart {
     public abstract JavaCodeFragment generateCodeToSynchronizeReverseAssoziation(String fieldName,
             String targetImplClassName) throws CoreException;
 
-    public void generateSnippetForAcceptVisitorIfAccplicable(String paramName, JavaCodeFragmentBuilder builder) throws CoreException {
+    public void generateSnippetForAcceptVisitorIfAccplicable(String paramName, JavaCodeFragmentBuilder builder)
+            throws CoreException {
         if (isDerivedUnion() || !isCompositionMasterToDetail()) {
             return;
         }
         generateSnippetForAcceptVisitor(paramName, builder);
     }
 
-    public abstract void generateSnippetForAcceptVisitor(String paramName, JavaCodeFragmentBuilder builder) throws CoreException;
+    public abstract void generateSnippetForAcceptVisitor(String paramName, JavaCodeFragmentBuilder builder)
+            throws CoreException;
 }

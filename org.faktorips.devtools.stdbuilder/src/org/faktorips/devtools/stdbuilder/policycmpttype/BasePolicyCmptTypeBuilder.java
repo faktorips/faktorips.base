@@ -138,6 +138,10 @@ public abstract class BasePolicyCmptTypeBuilder extends AbstractPcTypeBuilder {
         return ((StandardBuilderSet)getBuilderSet()).isUseTypesafeCollections();
     }
 
+    protected boolean isGenerateJaxbSuppert() {
+        return ((StandardBuilderSet)getBuilderSet()).isGenerateJaxbSupport();
+    }
+
     /**
      * Returns the GenProductCmptType for this builder.
      */

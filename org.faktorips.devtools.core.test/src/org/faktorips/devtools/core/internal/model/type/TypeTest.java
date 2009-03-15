@@ -753,7 +753,7 @@ public class TypeTest extends AbstractIpsPluginTest {
         assertEquals(m3, candidates[0]);
         assertEquals(m5, candidates[1]);
         // notes: 
-        // m2 is not a candidate because it is already overriden by m1
+        // m2 is not a candidate because it is already overridden by m1
         // m4 is not a candidate because it is the same as m3
         
         // only abstract methods

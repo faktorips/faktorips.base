@@ -260,11 +260,12 @@ public class PolicyCmptImplClassBuilder extends BasePolicyCmptTypeBuilder {
         }
 
         GenPolicyCmptType genPolicyCmptType = getGenerator();
-        for (Iterator it = genPolicyCmptType.getGenAttributes(); it.hasNext();) {
-            GenAttribute generator = (GenAttribute)it.next();
+        for (GenAttribute generator : genPolicyCmptType.getGenAttributes()) {
             if (generator.isMemberVariableRequired()) {
                 String field = generator.getMemberVarName();
-                methodsBuilder.appendln(paramName + "." + field + " = " + field + ";");
+                methodsBuilder.append(paramName + "." + field + " = ");
+                methodsBuilder.append(generator.getDatatypeHelper().referenceOrSafeCopyIfNeccessary(field));
+                methodsBuilder.appendln(";");
             }
         }
 
@@ -405,8 +406,7 @@ public class PolicyCmptImplClassBuilder extends BasePolicyCmptTypeBuilder {
         // delta.checkPropertyChange(IRoot.PROPERTY_STRINGATTRIBUTE, stringAttribute,
         // otherRoot.stringAttribute, options);
         GenPolicyCmptType genPolicyCmptType = getGenerator();
-        for (Iterator it = genPolicyCmptType.getGenAttributes(); it.hasNext();) {
-            GenAttribute generator = (GenAttribute)it.next();
+        for (GenAttribute generator : genPolicyCmptType.getGenAttributes()) {
             if (generator.needsToBeConsideredInDeltaComputation()) {
                 if (!castForOtherGenerated) {
                     castForOtherGenerated = true;
@@ -779,7 +779,7 @@ public class PolicyCmptImplClassBuilder extends BasePolicyCmptTypeBuilder {
      */
     protected void generateMethodInitialize(JavaCodeFragmentBuilder builder) throws CoreException {
         IPolicyCmptTypeAttribute[] attributes = getPcType().getPolicyCmptTypeAttributes();
-        ArrayList selectedValues = new ArrayList();
+        ArrayList<IPolicyCmptTypeAttribute> selectedValues = new ArrayList<IPolicyCmptTypeAttribute>();
         for (int i = 0; i < attributes.length; i++) {
             IPolicyCmptTypeAttribute a = attributes[i];
             if (!a.validate(getIpsProject()).containsErrorMsg()) {
@@ -807,8 +807,7 @@ public class PolicyCmptImplClassBuilder extends BasePolicyCmptTypeBuilder {
         builder.appendln("if (" + method + "()==null) {");
         builder.appendln("return;");
         builder.appendln("}");
-        for (Iterator it = selectedValues.iterator(); it.hasNext();) {
-            IPolicyCmptTypeAttribute a = (IPolicyCmptTypeAttribute)it.next();
+        for (IPolicyCmptTypeAttribute a : selectedValues) {
             GenChangeableAttribute gen = (GenChangeableAttribute)genPolicyCmptType.getGenerator(a);
             gen.generateInitialization(builder, getIpsProject());
         }
@@ -856,9 +855,7 @@ public class PolicyCmptImplClassBuilder extends BasePolicyCmptTypeBuilder {
         builder.appendln("return null;");
         builder.appendln("}");
 
-        builder.append("return (");
-        builder.appendClassName(getGenProductCmptType().getQualifiedClassNameForProductCmptTypeGen(true));
-        builder.append(")");
+        builder.append("return ");
         builder.append(getGenProductCmptType().getMethodNameGetProductCmpt());
         builder.append("().");
         builder.append(getGenProductCmptType().getMethodNameGetGeneration());
@@ -924,8 +921,7 @@ public class PolicyCmptImplClassBuilder extends BasePolicyCmptTypeBuilder {
     private void generateMethodInitPropertiesFromXml(JavaCodeFragmentBuilder builder) throws CoreException {
         boolean first = true;
         GenPolicyCmptType genPolicyCmptType = getGenerator();
-        for (Iterator it = genPolicyCmptType.getGenAttributes(); it.hasNext();) {
-            GenAttribute generator = (GenAttribute)it.next();
+        for (GenAttribute generator : genPolicyCmptType.getGenAttributes()) {
             if (!generator.isMemberVariableRequired()) {
                 continue;
             }
@@ -934,9 +930,8 @@ public class PolicyCmptImplClassBuilder extends BasePolicyCmptTypeBuilder {
                 builder.javaDoc(getJavaDocCommentForOverriddenMethod(), ANNOTATION_GENERATED);
                 builder.methodBegin(java.lang.reflect.Modifier.PROTECTED, Void.TYPE.getName(),
                         MethodNames.INIT_PROPERTIES_FROM_XML, new String[] { "propMap" },
-                        new String[] { isUseTypesafeCollections() ? Map.class.getName()
-                                + "<" + String.class.getName() + "," + String.class.getName() + ">" : HashMap.class
-                                .getName() });
+                        new String[] { isUseTypesafeCollections() ? Map.class.getName() + "<" + String.class.getName()
+                                + "," + String.class.getName() + ">" : HashMap.class.getName() });
                 builder.appendln("super." + MethodNames.INIT_PROPERTIES_FROM_XML + "(propMap);");
             }
             generator.generateInitPropertiesFromXml(builder);
@@ -1097,6 +1092,14 @@ public class PolicyCmptImplClassBuilder extends BasePolicyCmptTypeBuilder {
     private void generateFieldForParent(JavaCodeFragmentBuilder memberVarsBuilder) {
         String javadoc = getLocalizedText(getPcType(), "FIELD_PARENT_JAVADOC");
         memberVarsBuilder.javaDoc(javadoc, ANNOTATION_GENERATED);
+        
+        if (isGenerateJaxbSuppert()) {
+            memberVarsBuilder.getFragment().addImport("javax.xml.bind.annotation.XmlIDREF");
+            memberVarsBuilder.annotation("XmlIDREF");
+            memberVarsBuilder.getFragment().addImport("javax.xml.bind.annotation.XmlAttribute");
+            memberVarsBuilder.annotation("XmlAttribute(name=\"parent.policy.component.id\")");
+        }
+        
         memberVarsBuilder.append("private ");
         memberVarsBuilder.appendClassName(AbstractModelObject.class);
         memberVarsBuilder.append(' ');
@@ -1242,7 +1245,7 @@ public class PolicyCmptImplClassBuilder extends BasePolicyCmptTypeBuilder {
         builder.append(")");
         builder.append(getGenProductCmptType().getMethodNameGetGeneration());
         builder.append("();");
-        builder.appendln("if (productCmpt==null) {");
+        builder.appendln("if (productCmpt == null) {");
         builder.appendln("return null;");
         builder.appendln("}");
         builder.appendln("return productCmpt." + genTsu.getMethodNameGetTableUsage() + "();");
@@ -1258,4 +1261,23 @@ public class PolicyCmptImplClassBuilder extends BasePolicyCmptTypeBuilder {
         return genProductCmptType.getGenerator(tsu);
     }
 
+    /**
+     * {@inheritDoc}
+     * 
+     * <p>
+     * Outputs a @XmlRootElement annotation if JAXB support is enabled.
+     * </p>
+     */
+    @Override
+    protected void generateTypeAnnotations(JavaCodeFragmentBuilder builder) throws CoreException {
+        super.generateTypeAnnotations(builder);
+
+        if (!getGenPolicyCmptType().getBuilderSet().isGenerateJaxbSupport()) {
+            return;
+        }
+
+        builder.getFragment().addImport("javax.xml.bind.annotation.XmlRootElement");
+        builder.annotation("XmlRootElement(name=\"" + getUnqualifiedClassName() + "\")");
+    }
+    
 }

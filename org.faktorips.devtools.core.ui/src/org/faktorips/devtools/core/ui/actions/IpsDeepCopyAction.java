@@ -65,9 +65,8 @@ public class IpsDeepCopyAction extends IpsAction {
             setImageDescriptor(IpsUIPlugin.getDefault().getImageDescriptor("DeepCopyWizard.gif")); //$NON-NLS-1$
 		} else {
 			setText(NLS.bind(Messages.IpsDeepCopyAction_nameNewVersion, IpsPlugin.getDefault().getIpsPreferences().getChangesOverTimeNamingConvention().getVersionConceptNameSingular()));
-            setImageDescriptor(IpsPlugin.getDefault().getImageDescriptor("NewVersionWizard.gif")); //$NON-NLS-1$
+            setImageDescriptor(IpsUIPlugin.getDefault().getImageDescriptor("NewVersionWizard.gif")); //$NON-NLS-1$
 		}
-        
 	}
 
 	/** 

@@ -30,8 +30,15 @@ public class GregorianCalendarDatatype extends ValueClassDatatype {
     public GregorianCalendarDatatype(String name, boolean timeInfoIncluded) {
         super(GregorianCalendar.class, name);
     }
-
+    
     /** 
+     * {@inheritDoc}
+     */
+    public boolean isMutable() {
+		return true;
+	}
+
+	/** 
      * {@inheritDoc}
      */
     public Object getValue(String value) {

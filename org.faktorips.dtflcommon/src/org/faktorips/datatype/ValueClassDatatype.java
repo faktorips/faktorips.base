@@ -56,8 +56,22 @@ public abstract class ValueClassDatatype extends AbstractDatatype implements Val
     public boolean isPrimitive() {
         return false;
     }
+    
+    /** 
+     * {@inheritDoc}
+     */
+    public boolean isMutable() {
+		return false;
+	}
+    
+    /** 
+     * {@inheritDoc}
+     */
+    public final boolean isImmutable() {
+		return !isMutable();
+	}
 
-    /**
+	/**
      * {@inheritDoc}
      */
     public boolean isValueDatatype() {

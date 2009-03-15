@@ -14,7 +14,7 @@
 package org.faktorips.runtime;
 
 /**
- * Inteface that defines a model object as dependant object (=part of another object).
+ * Interface that defines a model object as dependant object, i.e. the object is part of another object.
  * 
  * @author Jan Ortmann
  */

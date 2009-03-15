@@ -30,21 +30,14 @@ public final class TypeSection {
     private String[] extendedInterfaces;
     private String superClass;
     private String unqualifiedName;
-    private JavaCodeFragmentBuilder constantBuilder;
-    private JavaCodeFragmentBuilder javaDocForTypeBuilder;
-    private JavaCodeFragmentBuilder memberVariableBuilder;
-    private JavaCodeFragmentBuilder constructorBuilder;
-    private JavaCodeFragmentBuilder methodBuilder;
-    private JavaCodeFragmentBuilder enumDefinitionBuilder;
 
-    public TypeSection() {
-        enumDefinitionBuilder = new JavaCodeFragmentBuilder();
-        constantBuilder = new JavaCodeFragmentBuilder();
-        memberVariableBuilder = new JavaCodeFragmentBuilder();
-        constructorBuilder = new JavaCodeFragmentBuilder();
-        methodBuilder = new JavaCodeFragmentBuilder();
-        javaDocForTypeBuilder = new JavaCodeFragmentBuilder();
-    }
+    private JavaCodeFragmentBuilder constantBuilder = new JavaCodeFragmentBuilder();
+    private JavaCodeFragmentBuilder javadocForTypeBuilder = new JavaCodeFragmentBuilder();
+    private JavaCodeFragmentBuilder annotationsForTypeBuilder = new JavaCodeFragmentBuilder();
+    private JavaCodeFragmentBuilder memberVariableBuilder = new JavaCodeFragmentBuilder();
+    private JavaCodeFragmentBuilder constructorBuilder = new JavaCodeFragmentBuilder();
+    private JavaCodeFragmentBuilder methodBuilder = new JavaCodeFragmentBuilder();
+    private JavaCodeFragmentBuilder enumDefinitionBuilder = new JavaCodeFragmentBuilder();
 
     /**
      * Returns the class modifier for the type represented by this TypeSection.
@@ -72,8 +65,7 @@ public final class TypeSection {
     }
 
     /**
-     * Sets the qualified names of the interfaces that the generated class / interface implements /
-     * extends.
+     * Sets the qualified names of the interfaces that the generated class or interface extends.
      */
     public void setExtendedInterfaces(String[] extendedInterfaces) {
         this.extendedInterfaces = extendedInterfaces;
@@ -188,7 +180,15 @@ public final class TypeSection {
      * doc of the type of this TypeSection.
      */
     public JavaCodeFragmentBuilder getJavaDocForTypeBuilder() {
-        return javaDocForTypeBuilder;
+        return javadocForTypeBuilder;
+    }
+
+    /**
+     * Returns the {@link <code>JavaCodeFragmentBuilder</code>} that assembles the annotations for
+     * the type of this TypeSection.
+     */
+    public JavaCodeFragmentBuilder getAnnotationsForTypeBuilder() {
+        return annotationsForTypeBuilder;
     }
 
 }

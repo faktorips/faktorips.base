@@ -135,4 +135,12 @@ public class PaymentMode extends AbstractDatatype implements EnumDatatype {
     public boolean areValuesEqual(String valueA, String valueB) {
         return false;
     }
+
+	public boolean isImmutable() {
+		return true;
+	}
+
+	public boolean isMutable() {
+		return false;
+	}
 }

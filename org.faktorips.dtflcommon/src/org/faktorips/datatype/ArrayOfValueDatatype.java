@@ -102,6 +102,20 @@ public class ArrayOfValueDatatype extends AbstractDatatype implements ValueDatat
     /**
      * {@inheritDoc}
      */
+    public boolean isImmutable() {
+		return true;
+	}
+
+    /**
+     * {@inheritDoc}
+     */
+	public boolean isMutable() {
+		return false;
+	}
+
+	/**
+     * {@inheritDoc}
+     */
     public String getName() {
         StringBuffer buffer = new StringBuffer(datatype.getName());
         for (int i=0; i<dimension; i++) {
@@ -201,6 +215,9 @@ public class ArrayOfValueDatatype extends AbstractDatatype implements ValueDatat
         return value == null;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     public boolean supportsCompare() {
         if (datatype.isValueDatatype() && ((ValueDatatype)datatype).supportsCompare()) {
             return true;

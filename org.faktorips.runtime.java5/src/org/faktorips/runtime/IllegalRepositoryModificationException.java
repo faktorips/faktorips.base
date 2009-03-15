@@ -14,19 +14,13 @@
 package org.faktorips.runtime;
 
 /**
- * An exception that indicates that a method do modifiy the repository contents was
- * called, but the repository does not allow to modify it's contents.
+ * An exception that indicates that a method do modify the repository contents was
+ * called, but the repository does not allow to modify its contents.
  * 
  * @author Jan Ortmann
  */
 public class IllegalRepositoryModificationException extends RuntimeException {
 
-    /**
-     * <code>serialVersionUID</code>
-     */
     private static final long serialVersionUID = 1L;
 
-    public IllegalRepositoryModificationException() {
-        super();
-    }
 }

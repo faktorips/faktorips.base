@@ -13,15 +13,14 @@
 	<!--
 	    This dictionary pattern defines a regular expression in the "match" attribute and a location where
 	    to look for a string that matches in the "select" attribute. If a pull rule wants to use this dictionary 
-	    pattern it declars in the sourceMarkup or targetMarkup attribute the string that is in parentheses 
+	    pattern it declares in the sourceMarkup or targetMarkup attribute the string that is in parentheses 
 	    surrounded by the characters ^$. 
 	 -->
     <merge:dictionaryPattern name="generatedMember" select="Member/getComment" match="\s*@\s*(gen)erated\s*\n"/>
     <merge:dictionaryPattern name="generatedMember" select="Member/getComment" match="\s*@\s*(restrained)modifiable\s*\n"/>
-    
-		
+
     <!--
-    	This rule doesn't work. The interfaces are not added but overriden. A look in the source code
+    	This rule doesn't work. The interfaces are not added but overridden. A look in the source code
     	suggests a false implementation.
     -->
     <merge:pull sourceMarkup="^gen$" sourceGet="Type/getSuperInterfaces" targetPut="Type/setSuperInterfaces"/>
@@ -32,7 +31,7 @@
         If also available the target content gets overridden by the generated content. 
      -->
    	<merge:pull targetMarkup="^restrained$" sourceTransfer="(\s*//\s*begin-user-code.*?//\s*end-user-code\s*)\n" sourceGet="Method/getBody" targetPut="Method/setBody"/>
-		<merge:pull targetMarkup="^gen$" sourceGet="Method/getBody" targetPut="Method/setBody"/>    	
+	<merge:pull targetMarkup="^gen$" sourceGet="Method/getBody" targetPut="Method/setBody"/>    	
     <merge:pull targetMarkup="^gen$" sourceGet="Member/getFlags" targetPut="Member/setFlags"/>
     <merge:pull targetMarkup="^gen$" sourceGet="Type/getSuperclass" targetPut="Type/setSuperclass"/>
     <merge:pull targetMarkup="^gen$" sourceGet="Field/getType" targetPut="Field/setType"/>
@@ -43,8 +42,6 @@
     <merge:pull targetMarkup="^gen$" sourceGet="Enum/getSuperInterfaces" targetPut="Enum/addSuperInterface"/>
   	<merge:pull targetMarkup="^gen$" sourceGet="EnumConstant/getArguments" targetPut="EnumConstant/setArguments"/>
   	<merge:pull targetMarkup="^gen$" sourceGet="EnumConstant/getBody" targetPut="EnumConstant/setBody"/>
-	<!-- Sets the content of annotations if the parent is marked with gen --> 
-    <merge:pull sourceGet="Annotation/getContents" targetParentMarkup="^gen$" targetPut="Annotation/setContents"/>
   	
     <!--
         The sweep rule looks in the target content if there exist Members that are indicated with the "generated"
@@ -59,7 +56,27 @@
     -->
     <!-- merge:sweep markup="^restrained$" select="Member"/-->
 
-	<!-- Remove annotations of generated target nodes if the annotation is not in the source -->
-	<merge:sweep parentMarkup="^gen$" select="Annotation"/>
+	<!--
+		The following strategy is implemented for Java 5 annotations:
+		
+		- annotations of members that have @generated in their Javadoc are 
+		  always updated with the contents of the source file 
+		- any annotation of an @generated member that only exists in the target is removed 
+
+	    Source: http://dev.eclipse.org/viewcvs/index.cgi/org.eclipse.emf/org.eclipse.emf/tests/org.eclipse.emf.test.tools/data/merge.input/java5/various/annotations2/merge.xml?revision=1.1&root=Modeling_Project&view=markup
+	-->
+	
+	<!--
+		With this pull rule, the annotations of members marked as @generated
+		are replaced by the contents of the annotations in the source.
+	-->
+	<merge:pull sourceGet="Annotation/getContents"
+		targetParentMarkup="^gen$" targetPut="Annotation/setContents" />
+
+	<!--
+		With this sweep rule, any annotation in the target that is not
+		available in the source is deleted.
+	-->
+	<merge:sweep parentMarkup="^gen$" select="Annotation" />
 	
 </merge:options>

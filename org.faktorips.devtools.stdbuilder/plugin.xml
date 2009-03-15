@@ -28,7 +28,7 @@
                type="boolean"/>
          <builderSetPropertyDef
                defaultValue="false"
-               description="Enables the generation of a delta determining mechnism for model objects"
+               description="Enables the generation of a delta determining mechanism for model objects"
                disableValue="false"
                label="Generate delta support"
                name="generateDeltaSupport"
@@ -71,6 +71,14 @@
                      value="en">
                </value>
             </discreteValues>
+         </builderSetPropertyDef>
+         <builderSetPropertyDef
+               defaultValue="false"
+               description="Enables the generation of JAXB support"
+               disableValue="false"
+               label="Generate JAXB support"
+               name="generateJaxbSupport"
+               type="boolean">
          </builderSetPropertyDef>
       </builderSet>
    </extension>

@@ -86,4 +86,18 @@ public class GregorianCalendarAsDateHelper extends AbstractDatatypeHelper {
 	public JavaCodeFragment nullExpression() {
 		return new JavaCodeFragment("null");
 	}
+
+	protected JavaCodeFragment newSafeCopy(String expression) {
+		// sample code: (GregorianCalendar) (calendar == null ? null : calendar.clone());
+		JavaCodeFragment code = new JavaCodeFragment();
+		code.append(expression);
+		code.append(" == null ? null : ");
+		code.append('(');
+		code.appendClassName(GregorianCalendar.class);
+		code.append(")");
+		code.append(expression);
+		code.append(".clone()");
+		return code;
+	}
+	
 }

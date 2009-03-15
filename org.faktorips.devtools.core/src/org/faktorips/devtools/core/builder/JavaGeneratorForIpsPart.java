@@ -37,9 +37,9 @@ public abstract class JavaGeneratorForIpsPart {
     
     public JavaGeneratorForIpsPart(IIpsObjectPartContainer part, LocalizedStringsSet localizedStringsSet) {
         super();
-        this.ipsPart = part;
         ArgumentCheck.notNull(part);
         ArgumentCheck.notNull(localizedStringsSet);
+        this.ipsPart = part;
         this.localizedTextHelper = new LocalizedTextHelper(localizedStringsSet);
     }
     
@@ -79,7 +79,6 @@ public abstract class JavaGeneratorForIpsPart {
             Object replacement,
             String modelDescription,
             JavaCodeFragmentBuilder builder) {
-        
         localizedTextHelper.appendLocalizedJavaDoc(keyPrefix, replacement, modelDescription, builder, getLanguageUsedInGeneratedSourceCode());
     }
 
@@ -91,7 +90,6 @@ public abstract class JavaGeneratorForIpsPart {
     protected void appendLocalizedJavaDoc(String keyPrefix,
             Object replacement,
             JavaCodeFragmentBuilder builder) {
-        
         localizedTextHelper.appendLocalizedJavaDoc(keyPrefix, replacement, builder, getLanguageUsedInGeneratedSourceCode());
     }
 
@@ -119,7 +117,6 @@ public abstract class JavaGeneratorForIpsPart {
             Object[] replacements,
             String modelDescription,
             JavaCodeFragmentBuilder builder) {
-        
         localizedTextHelper.appendLocalizedJavaDoc(keyPrefix, replacements, builder, getLanguageUsedInGeneratedSourceCode());
     }
 
@@ -131,7 +128,6 @@ public abstract class JavaGeneratorForIpsPart {
     protected void appendLocalizedJavaDoc(String keyPrefix,
             Object[] replacements,
             JavaCodeFragmentBuilder builder) {
-        
         localizedTextHelper.appendLocalizedJavaDoc(keyPrefix, replacements, builder, getLanguageUsedInGeneratedSourceCode());
     }
     
@@ -179,7 +175,7 @@ public abstract class JavaGeneratorForIpsPart {
      * Returns a single line comment containing a TO DO, e.g.
      * <pre>// TODO Implement the rule xyz.</pre>
      * 
-     * @param element Any ips element used to access the ips project and determine the langauge for the generated code.
+     * @param element Any ips element used to access the ips project and determine the language for the generated code.
      * @param keyPrefix A key prefix for the resource bundle, this method adds a "_TODO" to the prefix
      * @param replacements Any objects to replace wildcards in the message text.
      */

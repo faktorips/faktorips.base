@@ -55,10 +55,10 @@ public class XmlUtil {
     /**
      * Returns the child element with the given tag name and index. The index
      * is the position of the element considering all child elements with the
-     * givne tag name. 
+     * given tag name. 
      *  
      * @param parent The parent node.
-     * qparam tagName the element tag name.
+     * @param tagName the element tag name.
      * @param index  The 0 based position of the child. 
      * @return The element at the specified index
      * @throws IndexOutOfBoundsException if no element exists at the specified index.
@@ -97,7 +97,7 @@ public class XmlUtil {
     }
     
     /**
-     * Returns the node's first CDATA secton or <code>null</code> if the node
+     * Returns the node's first CDATA section or <code>null</code> if the node
      * hasn't got one.  
      */
     public final static CDATASection getFirstCDataSection(Node node) {

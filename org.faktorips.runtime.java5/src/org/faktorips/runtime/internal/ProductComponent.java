@@ -23,7 +23,6 @@ import org.w3c.dom.Element;
 
 /**
  * Base class for all product components.
- * <p>
  */
 public abstract class ProductComponent extends RuntimeObject implements IProductComponent, IClRepositoryObject {
 
@@ -89,7 +88,6 @@ public abstract class ProductComponent extends RuntimeObject implements IProduct
         return versionId;
     }
 
-
     /**
      * {@inheritDoc}
      */
@@ -133,7 +131,7 @@ public abstract class ProductComponent extends RuntimeObject implements IProduct
     }
 
     /**
-     * Initilizes the generation with the data from the xml element.
+     * Initializes the generation with the data from the xml element.
      * 
      * @throws NullPointerException if cmptElement is <code>null</code>.
      */

@@ -229,4 +229,19 @@ public class TableContentsEnumDatatypeAdapter extends AbstractDatatype implement
     public boolean isValueDatatype() {
         return true;
     }
+
+    /**
+     * {@inheritDoc}
+     */
+	public boolean isMutable() {
+		return false;
+	}
+
+    /**
+     * {@inheritDoc}
+     */
+	public boolean isImmutable() {
+		return true;
+	}
+
 }

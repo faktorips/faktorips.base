@@ -40,8 +40,23 @@ public interface ValueDatatype extends Datatype {
 	 * Returns <code>false</code> otherwise.
 	 */
 	public boolean isNull(String value);
-    
-    /**
+
+	/**
+	 * Returns <code>true</code> if this is a mutable datatype, <code>false</code> if it is an immutable
+	 * datatype.
+	 * 
+	 * @return s.above
+	 */
+	public boolean isMutable();
+	
+	/**
+	 * Returns <code>true</code> if this is an immutable datatype, <code>false</code> otherwise.
+	 * 
+	 * @return s.above
+	 */
+	public boolean isImmutable();
+
+	/**
      * Returns the datatype's default value. For datatypes representing objects the method returns <code>null</code>.
      * For datatypes representing Java primitives the Java default value is returned, e.g. 0 for int.
      * 

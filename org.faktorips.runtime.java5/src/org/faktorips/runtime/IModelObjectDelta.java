@@ -78,7 +78,7 @@ public interface IModelObjectDelta {
     public static final int MOVED = 4;
 
     /**
-     * Delta kind constant indicating that a differnt model object is now at a given position.
+     * Delta kind constant indicating that a different model object is now at a given position.
      * This type of delta is only returned if the computation method is {@link IDeltaComputationOptions#COMPUTE_BY_POSITION}.
      */
     public static final int DIFFERENT_OBJECT_AT_POSITION = 2;

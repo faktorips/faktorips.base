@@ -15,12 +15,14 @@ package org.faktorips.runtime.internal;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 /**
- * Default implementation of <code>ReadonlyTableOfContents</code> using an array to store the entries.
+ * Default implementation of <code>ReadonlyTableOfContents</code>.
  *   
  * @author Jan Ortmann
  */
@@ -46,6 +48,9 @@ public class ReadonlyTableOfContents extends AbstractReadonlyTableOfContents {
 	
     // maps a qualified test case name to the toc entry that contains information about a test case object
     protected Map<String, TocEntryObject> testCaseNameTocEntryMap = new HashMap<String, TocEntryObject>(10);
+    
+    // maps a qualified model type name to the toc entry that contains information about the model type
+    protected Map<String, TocEntryObject> modelTypeNameTocEntryMap = new HashMap<String, TocEntryObject>(100);
 
     /**
      * Creats a new toc.
@@ -79,7 +84,11 @@ public class ReadonlyTableOfContents extends AbstractReadonlyTableOfContents {
         if(entry.isFormulaTestTocEntry()){
             testCaseNameTocEntryMap.put(entry.getIpsObjectQualifiedName(), entry);
             return;
-        }        
+        }
+        if (entry.isModelTypeTocEntry()) {
+            modelTypeNameTocEntryMap.put(entry.getIpsObjectQualifiedName(), entry);
+            return;
+        }
         throw new IllegalArgumentException("Unknown entry type " + entry);
     }
     
@@ -174,7 +183,12 @@ public class ReadonlyTableOfContents extends AbstractReadonlyTableOfContents {
         return testCaseNameTocEntryMap.get(qName);
     }
     
-    private class VersionIdTocEntry {
+    @Override
+	public Set<TocEntryObject> getModelTypeTocEntries() {
+    	return new HashSet<TocEntryObject>(modelTypeNameTocEntryMap.values());
+	}
+
+	private class VersionIdTocEntry {
         
         private String versionId;
         private TocEntryObject tocEntry;

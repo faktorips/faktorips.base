@@ -20,6 +20,7 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.SortedSet;
 import java.util.TimeZone;
 import java.util.TreeSet;
@@ -294,8 +295,13 @@ public class InMemoryRuntimeRepository extends AbstractRuntimeRepository {
     public void putIpsTestCase(IpsTestCaseBase test) {
         testCasesByQName.put(test.getQualifiedName(), test);
     }
+    
+    @Override
+	protected void getAllModelTypeImplementationClasses(Set<String> result) {
+    	throw new RuntimeException("Currently not supported by InMemoryRuntimeRepository.");
+	}
 
-    /**
+	/**
      * {@inheritDoc}
      */
     public IProductComponentGeneration getNextProductComponentGenerationInternal(IProductComponentGeneration generation) {

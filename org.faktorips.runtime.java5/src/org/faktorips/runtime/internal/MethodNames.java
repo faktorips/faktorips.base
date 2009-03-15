@@ -157,6 +157,11 @@ public class MethodNames {
     public final static String MODELOBJECTDELTA_NEW_EMPTY_DELTA = "newEmptyDelta";
 
     /**
+     * @see ModelObjectDelta#newDelta(org.faktorips.runtime.IModelObject, org.faktorips.runtime.IModelObject)
+     */
+    public final static String MODELOBJECTDELTA_NEW_DELTA = "newDelta";
+
+    /**
      * @see IVisitorSupport#accept
      */
     public final static String ACCEPT_VISITOR = "accept";

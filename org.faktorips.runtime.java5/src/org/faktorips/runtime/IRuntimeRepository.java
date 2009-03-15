@@ -15,6 +15,7 @@ package org.faktorips.runtime;
 
 import java.util.Calendar;
 import java.util.List;
+import java.util.Set;
 
 import org.faktorips.runtime.modeltype.IModelType;
 import org.faktorips.runtime.test.IpsTest2;
@@ -300,4 +301,14 @@ public interface IRuntimeRepository {
      */
     public IModelType getModelType(IProductComponent modelObject);
 
+    /**
+     * Returns a set containing the Java Class names of the implementation classes for  
+     * all model types available in this repository (either directly or via a referenced repository).
+     * For product component types the implementation class for the part that remains unchanged over time is returned. 
+     * Currently there is no way to get get the implementation class for the product component generation (the part that
+     * changed over time).
+     * <p>
+     * Returns an empty set if no type is available.
+     */
+    public Set<String> getAllModelTypeImplementationClasses();
 }

@@ -201,7 +201,7 @@ public abstract class DefaultRange<T extends Comparable<? super T>> implements R
      * Subclasses that support discrete values need to override the
      * sizeForDiscreteValuesExcludingNull() which is called by this method for discrete ranges. By
      * default sizeForDiscreteValuesExcludingNull() throws a RuntimeException indicating that it
-     * needs to be overriden
+     * needs to be overridden.
      * 
      * @throws RuntimeException if the <code>isDiscrete()</code> method returns <code>true</code>
      */

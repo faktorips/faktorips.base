@@ -84,6 +84,10 @@ public abstract class GenAttribute extends GenPolicyCmptTypePart {
         return (ValueDatatype)datatypeHelper.getDatatype();
     }
 
+    public DatatypeHelper getDatatypeHelper() {
+        return datatypeHelper;
+    }
+
     public String getJavaClassName() {
         return datatypeHelper.getJavaClassName();
     }
@@ -154,6 +158,7 @@ public abstract class GenAttribute extends GenPolicyCmptTypePart {
     protected void generateGetterInterface(JavaCodeFragmentBuilder builder) throws CoreException {
         String description = StringUtils.isEmpty(attribute.getDescription()) ? "" : SystemUtils.LINE_SEPARATOR + "<p>"
                 + SystemUtils.LINE_SEPARATOR + attribute.getDescription();
+        
         String[] replacements = new String[] { attributeName, description };
         appendLocalizedJavaDoc("METHOD_GETVALUE", replacements, builder);
         generateGetterSignature(builder);
@@ -174,7 +179,7 @@ public abstract class GenAttribute extends GenPolicyCmptTypePart {
         generateGetterSignature(methodsBuilder);
         methodsBuilder.openBracket();
         methodsBuilder.append("return ");
-        methodsBuilder.append(memberVarName);
+        methodsBuilder.append(datatypeHelper.referenceOrSafeCopyIfNeccessary(memberVarName));
         methodsBuilder.append(";");
         methodsBuilder.closeBracket();
     }
@@ -241,6 +246,19 @@ public abstract class GenAttribute extends GenPolicyCmptTypePart {
         String fieldName = getMemberVarName();
 
         memberVarsBuilders.javaDoc(comment, JavaSourceFileBuilder.ANNOTATION_GENERATED);
+
+        if (isGenerateJaxbSupport()) {
+            initialValueExpression.addImport("javax.xml.bind.annotation.XmlElement");
+
+            String annotation = "XmlElement(name=\"" + attributeName + "\"";
+            if (!datatypeHelper.getDatatype().isPrimitive()) {
+                annotation += ",nillable=true";
+            }
+            annotation += ")";
+
+            memberVarsBuilders.annotation(annotation);
+        }
+
         memberVarsBuilders.varDeclaration(java.lang.reflect.Modifier.PRIVATE, getJavaClassName(), fieldName,
                 initialValueExpression);
     }
