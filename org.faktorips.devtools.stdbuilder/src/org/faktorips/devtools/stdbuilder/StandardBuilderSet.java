@@ -3,7 +3,7 @@
  * 
  * Alle Rechte vorbehalten.
  * 
- * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen, 
+ * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen,
  * etc.) duerfen nur unter den Bedingungen der Faktor-Zehn-Community Lizenzvereinbarung - Version
  * 0.1 (vor Gruendung Community) genutzt werden, die Bestandteil der Auslieferung ist und auch unter
  * http://www.faktorzehn.org/f10-org:lizenzen:community eingesehen werden kann.
@@ -142,7 +142,8 @@ public class StandardBuilderSet extends DefaultBuilderSet {
     private void initVersion() {
         version = "2.2.1";
         // Version versionObj =
-        // Version.parseVersion((String)StdBuilderPlugin.getDefault().getBundle().getHeaders().get(org.osgi.framework.Constants.BUNDLE_VERSION));
+        //Version.parseVersion((String)StdBuilderPlugin.getDefault().getBundle().getHeaders().get(org
+        // .osgi.framework.Constants.BUNDLE_VERSION));
         // StringBuffer buf = new StringBuffer();
         // buf.append(versionObj.getMajor());
         // buf.append('.');
@@ -162,9 +163,9 @@ public class StandardBuilderSet extends DefaultBuilderSet {
     private void clearGenerators() {
         ipsObjectTypeGenerators.clear();
     }
-    
+
     public GenType getGenerator(IType type) throws CoreException {
-        if (type==null) {
+        if (type == null) {
             return null;
         }
         if (type instanceof IPolicyCmptType) {
@@ -175,7 +176,7 @@ public class StandardBuilderSet extends DefaultBuilderSet {
         }
         throw new CoreException(new IpsStatus("Unkown subclass " + type.getClass()));
     }
-    
+
     public GenPolicyCmptType getGenerator(IPolicyCmptType policyCmptType) throws CoreException {
         if (policyCmptType == null) {
             return null;
@@ -380,8 +381,9 @@ public class StandardBuilderSet extends DefaultBuilderSet {
                 EnumTypeInterfaceBuilder.PACKAGE_STRUCTURE_KIND_ID);
         enumClassesBuilder = new EnumClassesBuilder(this, EnumClassesBuilder.PACKAGE_STRUCTURE_KIND_ID,
                 enumTypeInterfaceBuilder);
-        
-        BusinessFunctionBuilder businessFunctionBuilder = new BusinessFunctionBuilder(this, BusinessFunctionBuilder.PACKAGE_STRUCTURE_KIND_ID);
+
+        BusinessFunctionBuilder businessFunctionBuilder = new BusinessFunctionBuilder(this,
+                BusinessFunctionBuilder.PACKAGE_STRUCTURE_KIND_ID);
         //
         // wire up the builders
         //
@@ -409,10 +411,12 @@ public class StandardBuilderSet extends DefaultBuilderSet {
         tocFileBuilder.setTestCaseTypeClassBuilder(testCaseTypeClassBuilder);
         tocFileBuilder.setTestCaseBuilder(testCaseBuilder);
         tocFileBuilder.setFormulaTestBuilder(formulaTestBuilder);
-        
+
         if (ComplianceCheck.isComplianceLevelAtLeast5(getIpsProject())) {
-        	ModelTypeXmlBuilder policyModelTypeBuilder = new ModelTypeXmlBuilder(IpsObjectType.POLICY_CMPT_TYPE, this, KIND_MODEL_TYPE);
-        	ModelTypeXmlBuilder productModelTypeBuilder = new ModelTypeXmlBuilder(IpsObjectType.PRODUCT_CMPT_TYPE_V2, this, KIND_MODEL_TYPE);
+            ModelTypeXmlBuilder policyModelTypeBuilder = new ModelTypeXmlBuilder(IpsObjectType.POLICY_CMPT_TYPE, this,
+                    KIND_MODEL_TYPE);
+            ModelTypeXmlBuilder productModelTypeBuilder = new ModelTypeXmlBuilder(IpsObjectType.PRODUCT_CMPT_TYPE_V2,
+                    this, KIND_MODEL_TYPE);
             tocFileBuilder.setPolicyModelTypeXmlBuilder(policyModelTypeBuilder);
             tocFileBuilder.setProductModelTypeXmlBuilder(productModelTypeBuilder);
             tocFileBuilder.setGenerateEntriesForModelTypes(true);
@@ -423,12 +427,13 @@ public class StandardBuilderSet extends DefaultBuilderSet {
                     formulaTestBuilder, enumClassesBuilder, enumTypeInterfaceBuilder, tocFileBuilder,
                     policyModelTypeBuilder, productModelTypeBuilder, businessFunctionBuilder };
         } else {
-        	tocFileBuilder.setGenerateEntriesForModelTypes(false);
+            tocFileBuilder.setGenerateEntriesForModelTypes(false);
             return new IIpsArtefactBuilder[] { tableImplBuilder, tableRowBuilder, productCmptGenInterfaceBuilder,
                     productCmptGenImplClassBuilder, productCmptInterfaceBuilder, productCmptImplClassBuilder,
                     policyCmptImplClassBuilder, policyCmptInterfaceBuilder, productCmptGenerationImplBuilder,
                     tableContentCopyBuilder, productCmptContentCopyBuilder, testCaseTypeClassBuilder, testCaseBuilder,
-                    formulaTestBuilder, enumClassesBuilder, enumTypeInterfaceBuilder, tocFileBuilder, businessFunctionBuilder };
+                    formulaTestBuilder, enumClassesBuilder, enumTypeInterfaceBuilder, tocFileBuilder,
+                    businessFunctionBuilder };
         }
     }
 
@@ -458,14 +463,14 @@ public class StandardBuilderSet extends DefaultBuilderSet {
         return getConfig().getPropertyValueAsBoolean(StandardBuilderSet.CONFIG_PROPERTY_USE_TYPESAFE_COLLECTIONS)
                 .booleanValue();
     }
-    
+
     /**
-     * Returns whether JAXB support is to be generated by this builder. 
+     * Returns whether JAXB support is to be generated by this builder.
      */
     public boolean isGenerateJaxbSupport() {
-    	return getConfig().getPropertyValueAsBoolean(CONFIG_PROPERTY_GENERATE_JAXB_SUPPORT);
+        return getConfig().getPropertyValueAsBoolean(CONFIG_PROPERTY_GENERATE_JAXB_SUPPORT);
     }
-    
+
     public String getJavaClassName(Datatype datatype) throws CoreException {
         if (datatype instanceof IPolicyCmptType) {
             return getGenerator((IPolicyCmptType)datatype).getQualifiedName(true);
