@@ -30,7 +30,7 @@ public class DoubleValueConverterTest extends TestCase {
     public void testExternalToInternal() {
         String[] validExternalDoubles = {
                 String.valueOf(Double.MAX_VALUE),
-                String.valueOf(Double.MIN_EXPONENT),
+                "-1022", // Double.MIN_EXPONENT, this constant only available since Java 1.6, but we compile with Java 1.5
                 "42", "42.42", "-42.003E-03"
         };
         
