@@ -271,6 +271,14 @@ public class IpsObjectType {
     }
 
     /**
+     * Returns <code>true</code> if the object type is a entity type (policy component type or
+     * product component type), otherwise <code>false</code>.
+     */
+    public boolean isEntityType() {
+        return this == POLICY_CMPT_TYPE || this == PRODUCT_CMPT_TYPE_V2;
+    }
+    
+    /**
      * Returns <code>true</code> if instanced of this type are product definition objects, otherwise
      * <code>false</code>. Currently product components, enum values, table contents and test cases
      * are product definition objects.
