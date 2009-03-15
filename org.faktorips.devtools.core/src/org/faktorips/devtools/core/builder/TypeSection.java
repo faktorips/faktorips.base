@@ -190,5 +190,5 @@ public final class TypeSection {
     public JavaCodeFragmentBuilder getJavaDocForTypeBuilder() {
         return javaDocForTypeBuilder;
     }
-    
+
 }
