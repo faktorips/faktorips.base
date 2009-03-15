@@ -150,4 +150,12 @@ public class TestEnumDatatype extends AbstractDatatype implements EnumDatatype {
         return false;
     }
 
+    public boolean isImmutable() {
+        return true;
+    }
+
+    public boolean isMutable() {
+        return false;
+    }
+
 }
