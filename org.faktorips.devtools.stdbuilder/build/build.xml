@@ -64,7 +64,7 @@
 		</fileset>
 		
 		<!-- devtools.stdbuilder depends on org.faktorips.runtime -->
-		<fileset dir="../../org.faktorips.runtime/" >
+		<fileset dir="../../org.faktorips.runtime.java5/" >
 		    <patternset>
 		    		<include name="lib/*.jar" /> 
 		    		<include name="build/results/*.jar" />
