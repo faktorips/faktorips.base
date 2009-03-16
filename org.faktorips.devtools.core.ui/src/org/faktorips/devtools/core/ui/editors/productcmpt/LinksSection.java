@@ -3,7 +3,7 @@
  * 
  * Alle Rechte vorbehalten.
  * 
- * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen, 
+ * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen,
  * etc.) duerfen nur unter den Bedingungen der Faktor-Zehn-Community Lizenzvereinbarung - Version
  * 0.1 (vor Gruendung Community) genutzt werden, die Bestandteil der Auslieferung ist und auch unter
  * http://www.faktorzehn.org/f10-org:lizenzen:community eingesehen werden kann.
@@ -90,162 +90,148 @@ import org.faktorips.util.message.MessageList;
  * 
  * @author Thorsten Guenther
  */
-public class LinksSection extends IpsSection implements ISelectionProviderActivation{
+public class LinksSection extends IpsSection implements ISelectionProviderActivation {
 
-	/**
-	 * the generation the displayed informations are based on.
-	 */
-	private IProductCmptGeneration generation;
+    /**
+     * the generation the displayed informations are based on.
+     */
+    private IProductCmptGeneration generation;
 
-	private CardinalityPanel cardinalityPanel;
+    private CardinalityPanel cardinalityPanel;
 
-	private CardinalityPaneEditField cardMinField;
+    private CardinalityPaneEditField cardMinField;
 
-	private CardinalityPaneEditField cardMaxField;
+    private CardinalityPaneEditField cardMaxField;
 
-	/**
-	 * The tree viewer displaying all the relations.
-	 */
-	private TreeViewer treeViewer;
+    /**
+     * The tree viewer displaying all the relations.
+     */
+    private TreeViewer treeViewer;
 
-	/**
-	 * The site this editor is related to (e.g. for menu and toolbar handling)
-	 */
-	private IEditorSite site;
+    /**
+     * The site this editor is related to (e.g. for menu and toolbar handling)
+     */
+    private IEditorSite site;
 
-	/**
-	 * Flag to indicate that the generation has changed (<code>true</code>)
-	 */
-	private boolean generationDirty;
+    /**
+     * Flag to indicate that the generation has changed (<code>true</code>)
+     */
+    private boolean generationDirty;
 
-	/**
-	 * Field to store the product component relation that should be moved using
-	 * drag and drop.
-	 */
-	private IProductCmptLink toMove;
+    /**
+     * Field to store the product component relation that should be moved using drag and drop.
+     */
+    private IProductCmptLink toMove;
 
-	/**
-	 * <code>true</code> if this section is enabled, <code>false</code>
-	 * otherwise. This flag is used to control the enablement-state of the
-	 * contained controlls.
-	 */
-	private boolean enabled;
+    /**
+     * <code>true</code> if this section is enabled, <code>false</code> otherwise. This flag is used
+     * to control the enablement-state of the contained controlls.
+     */
+    private boolean enabled;
 
-	/**
-	 * The popup-Menu for the treeview if enabled.
-	 */
-	private Menu treePopup;
+    /**
+     * The popup-Menu for the treeview if enabled.
+     */
+    private Menu treePopup;
 
-	/**
-	 * Empty popup-Menu.
-	 */
-	private Menu emptyMenu;
-	
-	/**
-	 * Listener to update the cardinality-pane on selection changes.
-	 */
-	private SelectionChangedListener selectionChangedListener;
+    /**
+     * Empty popup-Menu.
+     */
+    private Menu emptyMenu;
+
+    /**
+     * Listener to update the cardinality-pane on selection changes.
+     */
+    private SelectionChangedListener selectionChangedListener;
 
     private OpenReferencedProductCmptInEditorAction openAction;
 
-	/**
-	 * Creates a new RelationsSection which displays relations for the given
-	 * generation.
-	 * 
-	 * @param generation
-	 *            The base to get the relations from.
-	 * @param parent
-	 *            The composite whicht is the ui-parent for this section.
-	 * @param toolkit
-	 *            The ui-toolkit to support drawing.
-	 */
-	public LinksSection(IProductCmptGeneration generation,
-			Composite parent, UIToolkit toolkit, IEditorSite site) {
-		super(parent, Section.TITLE_BAR, GridData.FILL_HORIZONTAL
-				| GridData.FILL_VERTICAL, toolkit);
-		ArgumentCheck.notNull(generation);
-		this.generation = generation;
-		this.site = site;
+    /**
+     * Creates a new RelationsSection which displays relations for the given generation.
+     * 
+     * @param generation The base to get the relations from.
+     * @param parent The composite whicht is the ui-parent for this section.
+     * @param toolkit The ui-toolkit to support drawing.
+     */
+    public LinksSection(IProductCmptGeneration generation, Composite parent, UIToolkit toolkit, IEditorSite site) {
+        super(parent, Section.TITLE_BAR, GridData.FILL_HORIZONTAL | GridData.FILL_VERTICAL, toolkit);
+        ArgumentCheck.notNull(generation);
+        this.generation = generation;
+        this.site = site;
         generationDirty = true;
-		enabled = true;
-		initControls();
-		setText(Messages.PropertiesPage_relations);
-	}
+        enabled = true;
+        initControls();
+        setText(Messages.PropertiesPage_relations);
+    }
 
-	/**
-	 * {@inheritDoc}
-	 */
-	protected void initClientComposite(Composite client, UIToolkit toolkit) {
-		Composite relationRootPane = toolkit.createComposite(client);
-		relationRootPane.setData(FormToolkit.KEY_DRAW_BORDER, FormToolkit.TREE_BORDER);
+    /**
+     * {@inheritDoc}
+     */
+    protected void initClientComposite(Composite client, UIToolkit toolkit) {
+        Composite relationRootPane = toolkit.createComposite(client);
+        relationRootPane.setData(FormToolkit.KEY_DRAW_BORDER, FormToolkit.TREE_BORDER);
 
-		LinksContentProvider rcp = new LinksContentProvider();
-		
-		if (rcp.getElements(generation).length == 0) {
-			GridLayout layout = (GridLayout) client.getLayout();
-			layout.marginHeight = 2;
-			layout.marginWidth = 1;
+        LinksContentProvider rcp = new LinksContentProvider();
 
-			relationRootPane.setLayout(new GridLayout(1, true));
-			relationRootPane.setLayoutData(new GridData(SWT.FILL, SWT.FILL,
-					true, true));
+        if (rcp.getElements(generation).length == 0) {
+            GridLayout layout = (GridLayout)client.getLayout();
+            layout.marginHeight = 2;
+            layout.marginWidth = 1;
 
-			toolkit.createLabel(relationRootPane,
-					Messages.PropertiesPage_noRelationsDefined).setLayoutData(
-					new GridData(SWT.FILL, SWT.FILL, true, true));
-		} else {
-			relationRootPane.setLayoutData(new GridData(SWT.FILL, SWT.FILL,
-					true, true));
-			GridLayout layout = new GridLayout(2, false);
-			relationRootPane.setLayout(layout);
-	
-			Tree tree = toolkit.getFormToolkit().createTree(relationRootPane,
-					SWT.MULTI | SWT.H_SCROLL | SWT.V_SCROLL);
-			GridData layoutData = new GridData(SWT.FILL, SWT.FILL, true, true);
-			tree.setLayoutData(layoutData);
-	
-			LinksLabelProvider labelProvider = new LinksLabelProvider();
-	
-			selectionChangedListener = new SelectionChangedListener();
-			
-			treeViewer = new TreeViewer(tree);
-			treeViewer.setContentProvider(new LinksContentProvider());
-			treeViewer.setInput(generation);
-			treeViewer
-					.addSelectionChangedListener(selectionChangedListener);
-			treeViewer.addDropSupport(DND.DROP_LINK | DND.DROP_MOVE,
-					new Transfer[] { FileTransfer.getInstance(), TextTransfer.getInstance() },
-					new DropListener());
-			treeViewer.addDragSupport(DND.DROP_MOVE,
-					new Transfer[] { TextTransfer.getInstance() },
-					new DragListener(treeViewer));
-			treeViewer.setAutoExpandLevel(TreeViewer.ALL_LEVELS);
-			treeViewer.expandAll();
-	
-            final LinkSectionMessageCueLabelProvider msgCueLp = new LinkSectionMessageCueLabelProvider(labelProvider, generation.getIpsProject());
-			treeViewer.setLabelProvider(msgCueLp);
-            new TreeMessageHoverService(treeViewer){
+            relationRootPane.setLayout(new GridLayout(1, true));
+            relationRootPane.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
+
+            toolkit.createLabel(relationRootPane, Messages.PropertiesPage_noRelationsDefined).setLayoutData(
+                    new GridData(SWT.FILL, SWT.FILL, true, true));
+        } else {
+            relationRootPane.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
+            GridLayout layout = new GridLayout(2, false);
+            relationRootPane.setLayout(layout);
+
+            Tree tree = toolkit.getFormToolkit().createTree(relationRootPane, SWT.MULTI | SWT.H_SCROLL | SWT.V_SCROLL);
+            GridData layoutData = new GridData(SWT.FILL, SWT.FILL, true, true);
+            tree.setLayoutData(layoutData);
+
+            LinksLabelProvider labelProvider = new LinksLabelProvider();
+
+            selectionChangedListener = new SelectionChangedListener();
+
+            treeViewer = new TreeViewer(tree);
+            treeViewer.setContentProvider(new LinksContentProvider());
+            treeViewer.setInput(generation);
+            treeViewer.addSelectionChangedListener(selectionChangedListener);
+            treeViewer.addDropSupport(DND.DROP_LINK | DND.DROP_MOVE, new Transfer[] { FileTransfer.getInstance(),
+                    TextTransfer.getInstance() }, new DropListener());
+            treeViewer.addDragSupport(DND.DROP_MOVE, new Transfer[] { TextTransfer.getInstance() }, new DragListener(
+                    treeViewer));
+            treeViewer.setAutoExpandLevel(TreeViewer.ALL_LEVELS);
+            treeViewer.expandAll();
+
+            final LinkSectionMessageCueLabelProvider msgCueLp = new LinkSectionMessageCueLabelProvider(labelProvider,
+                    generation.getIpsProject());
+            treeViewer.setLabelProvider(msgCueLp);
+            new TreeMessageHoverService(treeViewer) {
                 protected MessageList getMessagesFor(Object element) throws CoreException {
                     return msgCueLp.getMessages(element);
                 }
             };
-	
-			buildContextMenu();
-	
-			cardinalityPanel = new CardinalityPanel(relationRootPane, toolkit);
+
+            buildContextMenu();
+
+            cardinalityPanel = new CardinalityPanel(relationRootPane, toolkit);
             cardinalityPanel.setDataChangeable(isDataChangeable());
-			cardinalityPanel.setEnabled(false);
-	
-			addFocusControl(treeViewer.getTree());
-			registerDoubleClickListener();
-			registerOpenLinkListener();
-			ModelViewerSynchronizer synchronizer = new ModelViewerSynchronizer(generation, treeViewer);
-			synchronizer.setWidget(client);
-			IpsPlugin.getDefault().getIpsModel().addChangeListener(synchronizer);
-		}
-		toolkit.getFormToolkit().paintBordersFor(relationRootPane);
-	}
-    
+            cardinalityPanel.setEnabled(false);
+
+            addFocusControl(treeViewer.getTree());
+            registerDoubleClickListener();
+            registerOpenLinkListener();
+            ModelViewerSynchronizer synchronizer = new ModelViewerSynchronizer(generation, treeViewer);
+            synchronizer.setWidget(client);
+            IpsPlugin.getDefault().getIpsModel().addChangeListener(synchronizer);
+        }
+        toolkit.getFormToolkit().paintBordersFor(relationRootPane);
+    }
+
     /*
      * If mouse down and the CTRL key is pressed then the selected object will be opened in a new
      * edior
@@ -255,20 +241,21 @@ public class LinksSection extends IpsSection implements ISelectionProviderActiva
             public void mouseDown(MouseEvent e) {
                 // the following conditions must be fit fulfilled to open
                 // the item in a new editor:
-                //   1. ctrl must be pressed
-                //   2. only one item is selected
-                //   3. the current selected item is the item under the mouse cursor
-                //     because otherwise if two items are selected and an item will be deselected using ctrl
-                //     the other (previous) selected item will be opened
-                if ((e.stateMask & SWT.CTRL) != 0){
+                // 1. ctrl must be pressed
+                // 2. only one item is selected
+                // 3. the current selected item is the item under the mouse cursor
+                // because otherwise if two items are selected and an item will be deselected using
+                // ctrl
+                // the other (previous) selected item will be opened
+                if ((e.stateMask & SWT.CTRL) != 0) {
                     ITreeSelection selection = (ITreeSelection)treeViewer.getSelection();
-                    if (selection.size() == 1){
+                    if (selection.size() == 1) {
                         Object firstElement = selection.getFirstElement();
-                        TreeItem item = treeViewer.getTree().getItem(new Point(e.x,e.y));
-                        if (item == null){
+                        TreeItem item = treeViewer.getTree().getItem(new Point(e.x, e.y));
+                        if (item == null) {
                             return;
                         }
-                        if (firstElement.equals(item.getData())){
+                        if (firstElement.equals(item.getData())) {
                             openLink();
                         }
                     }
@@ -284,9 +271,9 @@ public class LinksSection extends IpsSection implements ISelectionProviderActiva
     }
 
     /*
-	 * Register a double click listener to open the referenced product component in a new editor 
-	 */
-	private void registerDoubleClickListener() {
+     * Register a double click listener to open the referenced product component in a new editor
+     */
+    private void registerDoubleClickListener() {
         treeViewer.addDoubleClickListener(new IDoubleClickListener() {
             public void doubleClick(DoubleClickEvent event) {
                 openLink();
@@ -294,73 +281,71 @@ public class LinksSection extends IpsSection implements ISelectionProviderActiva
         });
     }
 
-	/**
-	 * Creates the context menu for the treeview.
-	 */
-	private void buildContextMenu() {
+    /**
+     * Creates the context menu for the treeview.
+     */
+    private void buildContextMenu() {
 
-		MenuManager menuManager = new MenuManager();
-		menuManager.setRemoveAllWhenShown(false);
+        MenuManager menuManager = new MenuManager();
+        menuManager.setRemoveAllWhenShown(false);
 
-		menuManager.add(new NewProductCmptRelationAction(site.getShell(),
-				treeViewer, this));
+        menuManager.add(new NewProductCmptRelationAction(site.getShell(), treeViewer, this));
 
         openAction = new OpenReferencedProductCmptInEditorAction();
         menuManager.add(openAction);
-		menuManager.add(ActionFactory.DELETE.create(site.getWorkbenchWindow()));
-		menuManager.add(new OpenProductCmptRelationDialogAction());
-        
-		menuManager.add(new Separator());
-		menuManager.add(new Separator(IWorkbenchActionConstants.MB_ADDITIONS));
-		menuManager.add(new Separator(IWorkbenchActionConstants.MB_ADDITIONS
-				+ "-end")); //$NON-NLS-1$
-		menuManager.add(new Separator());
+        menuManager.add(ActionFactory.DELETE.create(site.getWorkbenchWindow()));
+        menuManager.add(new OpenProductCmptRelationDialogAction());
 
-		treePopup = menuManager.createContextMenu(treeViewer.getControl());
+        menuManager.add(new Separator());
+        menuManager.add(new Separator(IWorkbenchActionConstants.MB_ADDITIONS));
+        menuManager.add(new Separator(IWorkbenchActionConstants.MB_ADDITIONS + "-end")); //$NON-NLS-1$
+        menuManager.add(new Separator());
 
-		treeViewer.getControl().setMenu(treePopup);
+        treePopup = menuManager.createContextMenu(treeViewer.getControl());
 
-		// Dont register context menu to avoid population with debug etc.
-		// site.registerContextMenu("productCmptEditor.relations", menumanager,
-		// treeViewer); //$NON-NLS-1$
+        treeViewer.getControl().setMenu(treePopup);
 
-		// create empty menu for later use
-		emptyMenu = new MenuManager().createContextMenu(treeViewer.getControl());
-	}
+        // Dont register context menu to avoid population with debug etc.
+        // site.registerContextMenu("productCmptEditor.relations", menumanager,
+        // treeViewer); //$NON-NLS-1$
 
-	/**
-	 * {@inheritDoc}
-	 */
-	protected void performRefresh() {
-		if (generationDirty && treeViewer != null) {
-            treeViewer.refresh();
-			treeViewer.expandAll();
-            generationDirty = false;
-		}
-		
-		if (selectionChangedListener != null && selectionChangedListener.uiController != null) {
-			selectionChangedListener.uiController.updateUI();
-		}
-	}
+        // create empty menu for later use
+        emptyMenu = new MenuManager().createContextMenu(treeViewer.getControl());
+    }
 
-	/**
-	 * Creates a new link of the given association.
-	 */
-	public IProductCmptLink newLink(String associationName) {
-		return generation.newLink(associationName);
-	}
-
-	/**
-	 * Returns the currently active generation for this page.
-	 */
-	public IProductCmptGeneration getActiveGeneration() {
-		return generation;
-	}
-    
     /**
-     * Returns the name of the product component type relation identified by the target.
-     * The target is either the name itself (the top level nodes of the relation section tree)
-     * or instances of IProductCmptRelation. (the nodes below the relation type nodes).
+     * {@inheritDoc}
+     */
+    protected void performRefresh() {
+        if (generationDirty && treeViewer != null) {
+            treeViewer.refresh();
+            treeViewer.expandAll();
+            generationDirty = false;
+        }
+
+        if (selectionChangedListener != null && selectionChangedListener.uiController != null) {
+            selectionChangedListener.uiController.updateUI();
+        }
+    }
+
+    /**
+     * Creates a new link of the given association.
+     */
+    public IProductCmptLink newLink(String associationName) {
+        return generation.newLink(associationName);
+    }
+
+    /**
+     * Returns the currently active generation for this page.
+     */
+    public IProductCmptGeneration getActiveGeneration() {
+        return generation;
+    }
+
+    /**
+     * Returns the name of the product component type relation identified by the target. The target
+     * is either the name itself (the top level nodes of the relation section tree) or instances of
+     * IProductCmptRelation. (the nodes below the relation type nodes).
      */
     String getAssociationName(Object target) {
         if (target instanceof String) {
@@ -371,51 +356,48 @@ public class LinksSection extends IpsSection implements ISelectionProviderActiva
         }
         return null;
     }
-    
-	/**
-	 * Creates a new link which connects the currently displayed generation
-	 * with the given target. The new link is placed before the the given
-	 * one.
-	 */
-	private IProductCmptLink newLink(String target, String association, IProductCmptLink insertBefore) {
+
+    /**
+     * Creates a new link which connects the currently displayed generation with the given target.
+     * The new link is placed before the the given one.
+     */
+    private IProductCmptLink newLink(String target, String association, IProductCmptLink insertBefore) {
         IProductCmptLink newLink = null;
         if (insertBefore != null) {
             newLink = generation.newLink(association, insertBefore);
-        }
-        else {
+        } else {
             newLink = generation.newLink(association);
         }
-		newLink.setTarget(target);
-		newLink.setMaxCardinality(1);
+        newLink.setTarget(target);
+        newLink.setMaxCardinality(1);
         newLink.setMinCardinality(0);
-		return newLink;
-	}
+        return newLink;
+    }
 
-	/**
-	 * Listener for updating the cardinality triggerd by the selection of
-	 * another link.
-	 */
-	private class SelectionChangedListener implements ISelectionChangedListener {
+    /**
+     * Listener for updating the cardinality triggerd by the selection of another link.
+     */
+    private class SelectionChangedListener implements ISelectionChangedListener {
         IpsObjectUIController uiController;
 
-		public void selectionChanged(SelectionChangedEvent event) {
-			Object selected = ((IStructuredSelection) event.getSelection())
-					.getFirstElement();
-			if (selected instanceof IProductCmptLink) {
-			    updateCardinalityPanel((IProductCmptLink)selected);
+        public void selectionChanged(SelectionChangedEvent event) {
+            Object selected = ((IStructuredSelection)event.getSelection()).getFirstElement();
+            if (selected instanceof IProductCmptLink) {
+                updateCardinalityPanel((IProductCmptLink)selected);
             } else {
-                deactivateCardinalityPanel();			}
-            if (! isDataChangeable()){
                 deactivateCardinalityPanel();
             }
-		}
-        
+            if (!isDataChangeable()) {
+                deactivateCardinalityPanel();
+            }
+        }
+
         void updateCardinalityPanel(IProductCmptLink link) {
             if (link.isDeleted()) {
                 deactivateCardinalityPanel();
                 return;
             }
-            
+
             try {
                 IIpsProject ipsProject = link.getIpsProject();
                 IProductCmptTypeAssociation association = link.findAssociation(ipsProject);
@@ -423,8 +405,7 @@ public class LinksSection extends IpsSection implements ISelectionProviderActiva
                     deactivateCardinalityPanel();
                     return;
                 }
-            }
-            catch (CoreException e) {
+            } catch (CoreException e) {
                 IpsPlugin.log(e);
                 deactivateCardinalityPanel();
                 return;
@@ -442,309 +423,289 @@ public class LinksSection extends IpsSection implements ISelectionProviderActiva
             // enable the fields for cardinality only, if this section is enabled.
             cardinalityPanel.setEnabled(enabled);
         }
-        
+
         void deactivateCardinalityPanel() {
             cardinalityPanel.setEnabled(false);
             removeMinMaxFields();
         }
-        
+
         void removeMinMaxFields() {
-            if (uiController!=null) {
+            if (uiController != null) {
                 uiController.remove(cardMinField);
                 uiController.remove(cardMaxField);
             }
         }
-        
-        void addMinMaxFields(IProductCmptLink link ) {
+
+        void addMinMaxFields(IProductCmptLink link) {
             cardMinField = new CardinalityPaneEditField(cardinalityPanel, true);
             cardMaxField = new CardinalityPaneEditField(cardinalityPanel, false);
             uiController.add(cardMinField, link, PolicyCmptTypeAssociation.PROPERTY_MIN_CARDINALITY);
             uiController.add(cardMaxField, link, PolicyCmptTypeAssociation.PROPERTY_MAX_CARDINALITY);
         }
-	}
+    }
 
-	/**
-	 * Listener for Drop-Actions to create new relations.
-	 * 
-	 * @author Thorsten Guenther
-	 */
-	private class DropListener implements DropTargetListener {
+    /**
+     * Listener for Drop-Actions to create new relations.
+     * 
+     * @author Thorsten Guenther
+     */
+    private class DropListener implements DropTargetListener {
 
-		private int oldDetail = DND.DROP_NONE;
-		
-		public void dragEnter(DropTargetEvent event) {
-			if (!enabled) {
-				event.detail = DND.DROP_NONE;
-				return;
-			}
+        private int oldDetail = DND.DROP_NONE;
 
-			if (event.detail == 0) {
-				event.detail = DND.DROP_LINK;
-			}
-			
-			oldDetail = event.detail;
-			
-			event.feedback = DND.FEEDBACK_EXPAND | DND.FEEDBACK_SELECT
-					| DND.FEEDBACK_INSERT_AFTER | DND.FEEDBACK_SCROLL;
-		}
+        public void dragEnter(DropTargetEvent event) {
+            if (!enabled) {
+                event.detail = DND.DROP_NONE;
+                return;
+            }
 
-		public void dragLeave(DropTargetEvent event) {
-			// nothing to do
-		}
+            if (event.detail == 0) {
+                event.detail = DND.DROP_LINK;
+            }
 
-		public void dragOperationChanged(DropTargetEvent event) {
-			// nothing to do
-		}
+            oldDetail = event.detail;
 
-		public void dragOver(DropTargetEvent event) {
-			Object insertAt = getInsertAt(event);
-			if (FileTransfer.getInstance().isSupportedType(event.currentDataType)) {
-				// we have a file transfer
-				String[] filenames = (String[]) FileTransfer.getInstance().nativeToJava(event.currentDataType);
+            event.feedback = DND.FEEDBACK_EXPAND | DND.FEEDBACK_SELECT | DND.FEEDBACK_INSERT_AFTER
+                    | DND.FEEDBACK_SCROLL;
+        }
 
-				// Under some platforms, the data is not available during dragOver.
-				if (filenames == null) {
-					return;
-				}
-				
+        public void dragLeave(DropTargetEvent event) {
+            // nothing to do
+        }
+
+        public void dragOperationChanged(DropTargetEvent event) {
+            // nothing to do
+        }
+
+        public void dragOver(DropTargetEvent event) {
+            Object insertAt = getInsertAt(event);
+            if (FileTransfer.getInstance().isSupportedType(event.currentDataType)) {
+                // we have a file transfer
+                String[] filenames = (String[])FileTransfer.getInstance().nativeToJava(event.currentDataType);
+
+                // Under some platforms, the data is not available during dragOver.
+                if (filenames == null) {
+                    return;
+                }
+
                 boolean accept = false;
-                
-				for (int i = 0; i < filenames.length; i++) {
-					IFile file = getFile(filenames[i]);
-					try {
-						IIpsElement element = IpsPlugin.getDefault().getIpsModel().getIpsElement(file);
 
-						if (element == null || !element.exists()) {
-							event.detail = DND.DROP_NONE;
-							return;
-						}
-						
-						IProductCmpt target = getProductCmpt(file); 
+                for (int i = 0; i < filenames.length; i++) {
+                    IFile file = getFile(filenames[i]);
+                    try {
+                        IIpsElement element = IpsPlugin.getDefault().getIpsModel().getIpsElement(file);
 
-						String association = null;
-						if (insertAt instanceof String) { // product component type association
-							association = (String) insertAt;
-						} else if (insertAt instanceof IProductCmptLink) {
-							association = ((IProductCmptLink)insertAt).getAssociation();
-						}
-
-						if (generation.canCreateValidLink(target, association, generation.getIpsProject())) {
-						    accept = true;
+                        if (element == null || !element.exists()) {
+                            event.detail = DND.DROP_NONE;
+                            return;
                         }
-					} catch (CoreException e) {
-						IpsPlugin.log(e);
-					}
-				}
+
+                        IProductCmpt target = getProductCmpt(file);
+
+                        String association = null;
+                        if (insertAt instanceof String) { // product component type association
+                            association = (String)insertAt;
+                        } else if (insertAt instanceof IProductCmptLink) {
+                            association = ((IProductCmptLink)insertAt).getAssociation();
+                        }
+
+                        if (generation.canCreateValidLink(target, association, generation.getIpsProject())) {
+                            accept = true;
+                        }
+                    } catch (CoreException e) {
+                        IpsPlugin.log(e);
+                    }
+                }
 
                 if (accept == true) {
                     // we can create at least on of the requested Relations - so we accept the drop
-				    event.detail = oldDetail;
-				} 
-				else {
-				    event.detail = DND.DROP_NONE;
-				}
+                    event.detail = oldDetail;
+                } else {
+                    event.detail = DND.DROP_NONE;
+                }
 
-			}
-			else if (!(toMove != null && insertAt instanceof IProductCmptLink)) {
-				event.detail = DND.DROP_NONE;
-			}
-		}
-
-		public void drop(DropTargetEvent event) {
-			Object insertAt = getInsertAt(event);
-
-			// found no relation or relationtype which gives us the information
-			// about
-			// the position of the insert, so dont drop.
-			if (insertAt == null) {
-				return;
-			}
-
-			if (event.operations == DND.DROP_MOVE) {
-				move(insertAt);
-			} else 	if (FileTransfer.getInstance().isSupportedType(
-					event.currentDataType)) {
-				// we have a file transfer
-				String[] filenames = (String[]) FileTransfer.getInstance()
-				.nativeToJava(event.currentDataType);
-				for (int i = 0; i < filenames.length; i++) {
-					IFile file = getFile(filenames[i]);
-					insert(file, insertAt);
-				}
-			}
-			treeViewer.refresh();
-			treeViewer.expandAll();
-		}
-
-		public void dropAccept(DropTargetEvent event) {
-			if (!isDataChangeable()) {
-			    event.detail = DND.DROP_NONE;
+            } else if (!(toMove != null && insertAt instanceof IProductCmptLink)) {
+                event.detail = DND.DROP_NONE;
             }
-		}
+        }
 
-		private IFile getFile(String filename) {
-			return ResourcesPlugin.getWorkspace().getRoot().getFileForLocation(new Path(filename));
-		}
-		
-		private IProductCmpt getProductCmpt(IFile file) throws CoreException {
-			if (file == null) {
-				return null;
-			}
+        public void drop(DropTargetEvent event) {
+            Object insertAt = getInsertAt(event);
 
-			IIpsElement element = IpsPlugin.getDefault().getIpsModel().getIpsElement(file);
+            // found no relation or relationtype which gives us the information
+            // about
+            // the position of the insert, so dont drop.
+            if (insertAt == null) {
+                return;
+            }
 
-			if (element == null || !element.exists()) {
-				return null;
-			}
+            if (event.operations == DND.DROP_MOVE) {
+                move(insertAt);
+            } else if (FileTransfer.getInstance().isSupportedType(event.currentDataType)) {
+                // we have a file transfer
+                String[] filenames = (String[])FileTransfer.getInstance().nativeToJava(event.currentDataType);
+                for (int i = 0; i < filenames.length; i++) {
+                    IFile file = getFile(filenames[i]);
+                    insert(file, insertAt);
+                }
+            }
+            treeViewer.refresh();
+            treeViewer.expandAll();
+        }
 
-			if (element instanceof IIpsSrcFile
-					&& ((IIpsSrcFile) element).getIpsObjectType().equals(
-							IpsObjectType.PRODUCT_CMPT)) {
-				return (IProductCmpt) ((IIpsSrcFile) element).getIpsObject();
-			}
-			
-			return null;
-		}
-		
-		private void move(Object insertBefore) {
-			if (insertBefore instanceof IProductCmptLink) {
-				generation.moveLink(toMove,
-						(IProductCmptLink) insertBefore);
-			}
-		}
+        public void dropAccept(DropTargetEvent event) {
+            if (!isDataChangeable()) {
+                event.detail = DND.DROP_NONE;
+            }
+        }
 
-		private Object getInsertAt(DropTargetEvent event) {
-			if (event.item != null && event.item.getData() != null) {
-				return event.item.getData();
-			} else {
-				// event happened on the treeview, but not targeted at an entry
-				TreeItem[] items = treeViewer.getTree().getItems();
-				if (items.length > 0) {
-					return items[items.length - 1].getData();
-				}
-			}
-			return null;
-		}
-		
-		/**
-		 * Insert a new relation to the product component contained in the given
-		 * file. If the file is <code>null</code> or does not contain a
-		 * product component, the insert is aborted.
-		 * 
-		 * @param file
-		 *            The file describing a product component (can be null, no
-		 *            insert takes place then).
-		 * @param insertAt
-		 *            The relation or relation type to insert at.
-		 */
-		private void insert(IFile file, Object insertAt) {
-			try {
-				IProductCmpt cmpt = getProductCmpt(file);
-				if (cmpt != null) {
-					insert(cmpt, insertAt);
-				}
-			} catch (CoreException e) {
-				IpsPlugin.log(e);
-			}
-		}
+        private IFile getFile(String filename) {
+            return ResourcesPlugin.getWorkspace().getRoot().getFileForLocation(new Path(filename));
+        }
 
-		/**
-		 * Inserts a new relation to the product component identified by the
-		 * given target name.
-		 * 
-		 * @param target
-		 *            The qualified name for the target product component
-		 * @param insertAt
-		 *            The product component relation or product component type
-		 *            relation the new relations has to be inserted. The type of
-		 *            the new relation is determined from this object (which
-		 *            means the new relation has the same product component
-		 *            relation type as the given one or is of the given type).
-		 */
-		private void insert(IProductCmpt cmpt, Object insertAt) {
+        private IProductCmpt getProductCmpt(IFile file) throws CoreException {
+            if (file == null) {
+                return null;
+            }
+
+            IIpsElement element = IpsPlugin.getDefault().getIpsModel().getIpsElement(file);
+
+            if (element == null || !element.exists()) {
+                return null;
+            }
+
+            if (element instanceof IIpsSrcFile
+                    && ((IIpsSrcFile)element).getIpsObjectType().equals(IpsObjectType.PRODUCT_CMPT)) {
+                return (IProductCmpt)((IIpsSrcFile)element).getIpsObject();
+            }
+
+            return null;
+        }
+
+        private void move(Object insertBefore) {
+            if (insertBefore instanceof IProductCmptLink) {
+                generation.moveLink(toMove, (IProductCmptLink)insertBefore);
+            }
+        }
+
+        private Object getInsertAt(DropTargetEvent event) {
+            if (event.item != null && event.item.getData() != null) {
+                return event.item.getData();
+            } else {
+                // event happened on the treeview, but not targeted at an entry
+                TreeItem[] items = treeViewer.getTree().getItems();
+                if (items.length > 0) {
+                    return items[items.length - 1].getData();
+                }
+            }
+            return null;
+        }
+
+        /**
+         * Insert a new relation to the product component contained in the given file. If the file
+         * is <code>null</code> or does not contain a product component, the insert is aborted.
+         * 
+         * @param file The file describing a product component (can be null, no insert takes place
+         *            then).
+         * @param insertAt The relation or relation type to insert at.
+         */
+        private void insert(IFile file, Object insertAt) {
+            try {
+                IProductCmpt cmpt = getProductCmpt(file);
+                if (cmpt != null) {
+                    insert(cmpt, insertAt);
+                }
+            } catch (CoreException e) {
+                IpsPlugin.log(e);
+            }
+        }
+
+        /**
+         * Inserts a new relation to the product component identified by the given target name.
+         * 
+         * @param target The qualified name for the target product component
+         * @param insertAt The product component relation or product component type relation the new
+         *            relations has to be inserted. The type of the new relation is determined from
+         *            this object (which means the new relation has the same product component
+         *            relation type as the given one or is of the given type).
+         */
+        private void insert(IProductCmpt cmpt, Object insertAt) {
             String target = cmpt.getQualifiedName();
             String association = null;
             IProductCmptLink insertBefore = null;
             try {
                 if (insertAt instanceof String) { // product component type relation
                     association = (String)insertAt;
-                }
-                else if (insertAt instanceof IProductCmptLink) {
+                } else if (insertAt instanceof IProductCmptLink) {
                     association = ((IProductCmptLink)insertAt).getAssociation();
                     insertBefore = (IProductCmptLink)insertAt;
                 }
                 if (generation.canCreateValidLink(cmpt, association, generation.getIpsProject())) {
                     newLink(target, association, insertBefore);
                 }
-            }
-            catch (CoreException e) {
+            } catch (CoreException e) {
                 IpsPlugin.log(e);
             }
         }
-	}
+    }
 
-	/**
-	 * Listener to handle the move of relations.
-	 * 
-	 * @author Thorsten Guenther
-	 */
-	private class DragListener implements DragSourceListener {
-		ISelectionProvider selectionProvider;
+    /**
+     * Listener to handle the move of relations.
+     * 
+     * @author Thorsten Guenther
+     */
+    private class DragListener implements DragSourceListener {
+        ISelectionProvider selectionProvider;
 
-		public DragListener(ISelectionProvider selectionProvider) {
-			this.selectionProvider = selectionProvider;
-		}
+        public DragListener(ISelectionProvider selectionProvider) {
+            this.selectionProvider = selectionProvider;
+        }
 
-		public void dragStart(DragSourceEvent event) {
-			Object selected = ((IStructuredSelection) selectionProvider
-					.getSelection()).getFirstElement();
-			event.doit = (selected instanceof IProductCmptLink) && isDataChangeable();
-			
-			// we provide the event data yet so we can decide if we will
-			// accept a drop at drag-over time.
-			if (selected instanceof IProductCmptLink) {
-				toMove = (IProductCmptLink) selected;
-				event.data = "local"; //$NON-NLS-1$
-			}
-		}
+        public void dragStart(DragSourceEvent event) {
+            Object selected = ((IStructuredSelection)selectionProvider.getSelection()).getFirstElement();
+            event.doit = (selected instanceof IProductCmptLink) && isDataChangeable();
 
-		public void dragSetData(DragSourceEvent event) {
-			Object selected = ((IStructuredSelection) selectionProvider
-					.getSelection()).getFirstElement();
-			if (selected instanceof IProductCmptLink) {
-				toMove = (IProductCmptLink) selected;
-				event.data = "local"; //$NON-NLS-1$
-			}
-		}
+            // we provide the event data yet so we can decide if we will
+            // accept a drop at drag-over time.
+            if (selected instanceof IProductCmptLink) {
+                toMove = (IProductCmptLink)selected;
+                event.data = "local"; //$NON-NLS-1$
+            }
+        }
 
-		public void dragFinished(DragSourceEvent event) {
-			toMove = null;
-		}
+        public void dragSetData(DragSourceEvent event) {
+            Object selected = ((IStructuredSelection)selectionProvider.getSelection()).getFirstElement();
+            if (selected instanceof IProductCmptLink) {
+                toMove = (IProductCmptLink)selected;
+                event.data = "local"; //$NON-NLS-1$
+            }
+        }
 
-	}
+        public void dragFinished(DragSourceEvent event) {
+            toMove = null;
+        }
 
-	/**
-	 * Returns all targets for all relations defined with the given product
-	 * component relation type.
-	 * 
-	 * @param relationType
-	 *            The type of the relations to find.
-	 */
-	public IProductCmpt[] getRelationTargetsFor(String relationType) {
-		IProductCmptLink[] relations = generation.getLinks(relationType);
-		IProductCmpt[] targets = new IProductCmpt[relations.length];
-		for (int i = 0; i < relations.length; i++) {
-			try {
-				targets[i] = (IProductCmpt) generation.getIpsProject()
-						.findIpsObject(IpsObjectType.PRODUCT_CMPT,
-								relations[i].getTarget());
-			} catch (CoreException e) {
-				IpsPlugin.log(e);
-			}
-		}
-		return targets;
-	}
-    
+    }
+
+    /**
+     * Returns all targets for all relations defined with the given product component relation type.
+     * 
+     * @param relationType The type of the relations to find.
+     */
+    public IProductCmpt[] getRelationTargetsFor(String relationType) {
+        IProductCmptLink[] relations = generation.getLinks(relationType);
+        IProductCmpt[] targets = new IProductCmpt[relations.length];
+        for (int i = 0; i < relations.length; i++) {
+            try {
+                targets[i] = (IProductCmpt)generation.getIpsProject().findIpsObject(IpsObjectType.PRODUCT_CMPT,
+                        relations[i].getTarget());
+            } catch (CoreException e) {
+                IpsPlugin.log(e);
+            }
+        }
+        return targets;
+    }
+
     private void openLinkEditDialog(IProductCmptLink link) {
         try {
             IIpsSrcFile file = link.getIpsObject().getIpsSrcFile();
@@ -753,11 +714,11 @@ public class LinksSection extends IpsSection implements ISelectionProviderActiva
             if (dialog == null) {
                 return;
             }
-            dialog.setDataChangeable(isDataChangeable());            
+            dialog.setDataChangeable(isDataChangeable());
             int rc = dialog.open();
             if (rc == Dialog.CANCEL) {
                 file.setMemento(memento);
-            } else if (rc == Dialog.OK){
+            } else if (rc == Dialog.OK) {
                 refresh();
             }
         } catch (CoreException e) {
@@ -765,59 +726,57 @@ public class LinksSection extends IpsSection implements ISelectionProviderActiva
         }
     }
 
-	/**
-	 * To get access to the informations which depend on the selections that can
-	 * be made in this section, only some parts can be disabled, other parts
-	 * need special handling.
-	 * 
-	 * {@inheritDoc}
-	 */
-	public void setEnabled(boolean enabled) {
-		this.enabled = enabled;
-		if (treeViewer == null) {
-			// no relations defined, so no tree to disable.
-			return;
-		}
+    /**
+     * To get access to the informations which depend on the selections that can be made in this
+     * section, only some parts can be disabled, other parts need special handling.
+     * 
+     * {@inheritDoc}
+     */
+    public void setEnabled(boolean enabled) {
+        this.enabled = enabled;
+        if (treeViewer == null) {
+            // no relations defined, so no tree to disable.
+            return;
+        }
 
-		if (enabled) {
-			treeViewer.getTree().setMenu(this.treePopup);
-		} else {
-			treeViewer.getTree().setMenu(emptyMenu);
-		}
-		cardinalityPanel.setEnabled(enabled);
+        if (enabled) {
+            treeViewer.getTree().setMenu(this.treePopup);
+        } else {
+            treeViewer.getTree().setMenu(emptyMenu);
+        }
+        cardinalityPanel.setEnabled(enabled);
 
-		// disabele IPSDeleteAction
-		IAction delAction= site.getActionBars().getGlobalActionHandler(ActionFactory.DELETE.getId());
-		if(delAction!=null){
-			delAction.setEnabled(enabled);
-		}
-	}
+        // disabele IPSDeleteAction
+        IAction delAction = site.getActionBars().getGlobalActionHandler(ActionFactory.DELETE.getId());
+        if (delAction != null) {
+            delAction.setEnabled(enabled);
+        }
+    }
 
-	/**
-	 * Special cue label provider to get messages for product component type
-	 * relations from the generations instead of the product component type
-	 * relation itself.
-	 * 
-	 * @author Thorsten Guenther
-	 */
-	private class LinkSectionMessageCueLabelProvider extends MessageCueLabelProvider {
+    /**
+     * Special cue label provider to get messages for product component type relations from the
+     * generations instead of the product component type relation itself.
+     * 
+     * @author Thorsten Guenther
+     */
+    private class LinkSectionMessageCueLabelProvider extends MessageCueLabelProvider {
 
-		public LinkSectionMessageCueLabelProvider(ILabelProvider baseProvider, IIpsProject ipsProject) {
-			super(baseProvider, ipsProject);
-		}
+        public LinkSectionMessageCueLabelProvider(ILabelProvider baseProvider, IIpsProject ipsProject) {
+            super(baseProvider, ipsProject);
+        }
 
-		/**
-		 * {@inheritDoc}
-		 */
-		public MessageList getMessages(Object element) throws CoreException {
-			if (element instanceof String) {
-				return generation.validate(generation.getIpsProject()).getMessagesFor((String)element);
-			}
-			return super.getMessages(element);
-		}
+        /**
+         * {@inheritDoc}
+         */
+        public MessageList getMessages(Object element) throws CoreException {
+            if (element instanceof String) {
+                return generation.validate(generation.getIpsProject()).getMessagesFor((String)element);
+            }
+            return super.getMessages(element);
+        }
 
-	}
-	
+    }
+
     class OpenProductCmptRelationDialogAction extends IpsAction {
 
         public OpenProductCmptRelationDialogAction() {
@@ -825,7 +784,7 @@ public class LinksSection extends IpsSection implements ISelectionProviderActiva
             setText(Messages.RelationsSection_ContextMenu_Properties);
         }
 
-        /** 
+        /**
          * {@inheritDoc}
          */
         public void run(IStructuredSelection selection) {
@@ -835,7 +794,7 @@ public class LinksSection extends IpsSection implements ISelectionProviderActiva
                 openLinkEditDialog(relation);
             }
         }
-        
+
         /**
          * {@inheritDoc}
          */
@@ -861,7 +820,7 @@ public class LinksSection extends IpsSection implements ISelectionProviderActiva
             return (selected instanceof IProductCmptLink);
         }
 
-        /** 
+        /**
          * {@inheritDoc}
          */
         public void run(IStructuredSelection selection) {
@@ -876,31 +835,33 @@ public class LinksSection extends IpsSection implements ISelectionProviderActiva
                 }
             }
         }
-        
+
     }
 
     /**
-     * Synchronizes the model object thus the generation object with the tree viewer. It implements an algorithm
-     * that calculates the next selection of an item after the currently selected item has been selected. 
-     *  
+     * Synchronizes the model object thus the generation object with the tree viewer. It implements
+     * an algorithm that calculates the next selection of an item after the currently selected item
+     * has been selected.
+     * 
      * @author Peter Erzberger
      */
-    private class ModelViewerSynchronizer extends ContentsChangeListenerForWidget implements SelectionListener{
+    private class ModelViewerSynchronizer extends ContentsChangeListenerForWidget implements SelectionListener {
 
-        private List lastSelectionPath = null;
-        
-        private ModelViewerSynchronizer(IProductCmptGeneration generation, TreeViewer treeViewer){
+        private List<Integer> lastSelectionPath = null;
+
+        private ModelViewerSynchronizer(IProductCmptGeneration generation, TreeViewer treeViewer) {
             treeViewer.getTree().addSelectionListener(this);
         }
-        
+
         /**
-         * Keeps track of structural changes of relations of the current product component generation.
-         * {@inheritDoc}
+         * Keeps track of structural changes of relations of the current product component
+         * generation. {@inheritDoc}
          */
         public void contentsChangedAndWidgetIsNotDisposed(ContentChangeEvent event) {
-            //the generationDirty flag is only necessary because of a buggy behaviour when the
-            //the generation of the product component editor has changed. The pages a created newly 
-            //in this case and I don't exactly what then happens... (pk). It desperately asks for refactoring
+            // the generationDirty flag is only necessary because of a buggy behaviour when the
+            // the generation of the product component editor has changed. The pages a created newly
+            // in this case and I don't exactly what then happens... (pk). It desperately asks for
+            // refactoring
             if (!event.getIpsSrcFile().equals(LinksSection.this.generation.getIpsObject().getIpsSrcFile())) {
                 return;
             }
@@ -909,37 +870,38 @@ public class LinksSection extends IpsSection implements ISelectionProviderActiva
                 if (obj == null || obj.getIpsObjectType() != IpsObjectType.PRODUCT_CMPT) {
                     return;
                 }
-                
+
                 IProductCmpt cmpt = (IProductCmpt)obj;
-                IIpsObjectGeneration gen = cmpt.getGenerationByEffectiveDate(LinksSection.this.generation.getValidFrom());
+                IIpsObjectGeneration gen = cmpt.getGenerationByEffectiveDate(LinksSection.this.generation
+                        .getValidFrom());
                 if (LinksSection.this.generation.equals(gen)) {
                     generationDirty = true;
                 }
-            }
-            catch (CoreException e) {
+            } catch (CoreException e) {
                 IpsPlugin.log(e);
                 generationDirty = true;
             }
             processRelationChanges(event);
         }
 
-        private void processRelationChanges(ContentChangeEvent event){
-            if (event.getEventType()==ContentChangeEvent.TYPE_PART_REMOVED
+        private void processRelationChanges(ContentChangeEvent event) {
+            if (event.getEventType() == ContentChangeEvent.TYPE_PART_REMOVED
                     && event.containsAffectedObjects(IProductCmptLink.class)) {
                 IProductCmptLink relation = (IProductCmptLink)event.getPart();
                 treeViewer.refresh(relation.getAssociation());
                 TreeItem possibleSelection = getNextPossibleItem(treeViewer.getTree(), lastSelectionPath);
-                if(possibleSelection == null){
+                if (possibleSelection == null) {
                     return;
                 }
-                treeViewer.getTree().setSelection(new TreeItem[]{possibleSelection});
-                //this additional sending of an event is necessary due to a bug in swt. The problem is
-                //that dispite of the new selection no event is triggered
+                treeViewer.getTree().setSelection(new TreeItem[] { possibleSelection });
+                // this additional sending of an event is necessary due to a bug in swt. The problem
+                // is
+                // that dispite of the new selection no event is triggered
                 treeViewer.getTree().notifyListeners(SWT.Selection, null);
                 return;
             }
         }
-        
+
         /**
          * Empty implementation
          */
@@ -948,45 +910,46 @@ public class LinksSection extends IpsSection implements ISelectionProviderActiva
         }
 
         /*
-         * Calculates the path within the tree that points to the provided TreeItem. The path is a list of indices.
-         * The first index in the list is meant to be the index of the TreeItem starting from the root of the tree,
-         * the second is the index of the TreeItem starting from the TreeItem calculated before and so on.
+         * Calculates the path within the tree that points to the provided TreeItem. The path is a
+         * list of indices. The first index in the list is meant to be the index of the TreeItem
+         * starting from the root of the tree, the second is the index of the TreeItem starting from
+         * the TreeItem calculated before and so on.
          */
-        private void createSelectionPath(List path, TreeItem item){
+        private void createSelectionPath(List<Integer> path, TreeItem item) {
             TreeItem parent = item.getParentItem();
-            if(parent == null){
+            if (parent == null) {
                 path.add(new Integer(item.getParent().indexOf(item)));
                 return;
             }
             createSelectionPath(path, parent);
             path.add(new Integer(parent.indexOf(item)));
         }
-        
+
         /*
-         * Calculates the next possible selection for the provided path. The assumption is that the item the path is targeting at
-         * might not exist anymore therefor an item has to be determined that is preferably near to it.
+         * Calculates the next possible selection for the provided path. The assumption is that the
+         * item the path is targeting at might not exist anymore therefor an item has to be
+         * determined that is preferably near to it.
          */
-        private TreeItem getNextPossibleItem(Tree tree, List pathList){
-            
-            if(pathList == null || tree.getItemCount() == 0 || pathList.size() == 0){
+        private TreeItem getNextPossibleItem(Tree tree, List<Integer> pathList) {
+
+            if (pathList == null || tree.getItemCount() == 0 || pathList.size() == 0) {
                 return null;
             }
             TreeItem parent = null;
-            Integer index = (Integer)pathList.get(0);
-            if(tree.getItemCount() > index.intValue()){
-                parent = tree.getItem(((Integer)pathList.get(0)).intValue());
-            }
-            else{
+            Integer index = pathList.get(0);
+            if (tree.getItemCount() > index.intValue()) {
+                parent = tree.getItem((pathList.get(0)).intValue());
+            } else {
                 parent = tree.getItem(tree.getItemCount() - 1);
             }
             for (int i = 1; i < pathList.size(); i++) {
-                if(parent.getItemCount() == 0){
+                if (parent.getItemCount() == 0) {
                     return parent;
                 }
-                index = (Integer)pathList.get(i);
-                if(parent.getItemCount() > index.intValue()){
+                index = pathList.get(i);
+                if (parent.getItemCount() > index.intValue()) {
                     TreeItem item = parent.getItem(index.intValue());
-                    if(item.getItemCount() == 0){
+                    if (item.getItemCount() == 0) {
                         return item;
                     }
                     parent = item;
@@ -996,16 +959,16 @@ public class LinksSection extends IpsSection implements ISelectionProviderActiva
             }
             return parent;
         }
-        
+
         /**
-         * Calculates the path starting from the tree root to the currently selected item. The path is kept in the
-         * lastSelectionPath member variable.
-         */ 
+         * Calculates the path starting from the tree root to the currently selected item. The path
+         * is kept in the lastSelectionPath member variable.
+         */
         public void widgetSelected(SelectionEvent e) {
-            
-            if(e.item != null){
+
+            if (e.item != null) {
                 TreeItem item = (TreeItem)e.item;
-                lastSelectionPath = new ArrayList();
+                lastSelectionPath = new ArrayList<Integer>();
                 createSelectionPath(lastSelectionPath, item);
             }
         }
@@ -1022,7 +985,7 @@ public class LinksSection extends IpsSection implements ISelectionProviderActiva
      * {@inheritDoc}
      */
     public boolean isActivated() {
-        if(treeViewer == null){
+        if (treeViewer == null) {
             return false;
         }
         return treeViewer.getTree().isFocusControl();
