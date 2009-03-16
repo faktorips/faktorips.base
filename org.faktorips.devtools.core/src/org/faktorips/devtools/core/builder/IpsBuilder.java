@@ -354,7 +354,9 @@ public class IpsBuilder extends IncrementalProjectBuilder {
     protected void clean(IProgressMonitor monitor) throws CoreException {
         IIpsPackageFragmentRoot[] roots = getIpsProject().getIpsPackageFragmentRoots();
         for (int i = 0; i < roots.length; i++) {
-
+            if (monitor.isCanceled()) {
+                return;
+            }
             if (!roots[i].isBasedOnSourceFolder()) {
                 continue;
             }
@@ -377,6 +379,9 @@ public class IpsBuilder extends IncrementalProjectBuilder {
     private void removeDerivedResources(IFolder folder, IProgressMonitor monitor) throws CoreException {
         IResource[] members = folder.members();
         for (int i = 0; i < members.length; i++) {
+            if (monitor.isCanceled()) {
+                return;
+            }
             if (members[i].exists()) {
                 if (members[i].getType() == IResource.FILE && members[i].isDerived()) {
                     members[i].delete(true, monitor);
