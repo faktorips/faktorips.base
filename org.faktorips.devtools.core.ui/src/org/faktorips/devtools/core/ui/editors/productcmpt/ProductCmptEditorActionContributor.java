@@ -19,7 +19,6 @@ import org.eclipse.ui.IWorkbenchPage;
 import org.eclipse.ui.actions.ActionFactory;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.IpsStatus;
-import org.faktorips.devtools.core.ui.actions.ProductEditorDeleteAction;
 import org.faktorips.devtools.core.ui.editors.IpsObjectEditorActionContributor;
 
 /**
