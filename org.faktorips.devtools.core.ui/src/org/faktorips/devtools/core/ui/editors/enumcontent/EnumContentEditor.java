@@ -13,9 +13,12 @@
 
 package org.faktorips.devtools.core.ui.editors.enumcontent;
 
+import org.eclipse.core.runtime.CoreException;
 import org.eclipse.ui.PartInitException;
+import org.eclipse.ui.part.IPage;
 import org.faktorips.devtools.core.model.enums.IEnumContent;
 import org.faktorips.devtools.core.ui.editors.type.TypeEditor;
+import org.faktorips.devtools.core.ui.views.modeldescription.IModelDescriptionSupport;
 
 /**
  * The Faktor-IPS editor to edit <code>IEnumContent</code> objects with.
@@ -26,7 +29,7 @@ import org.faktorips.devtools.core.ui.editors.type.TypeEditor;
  * 
  * @since 2.3
  */
-public class EnumContentEditor extends TypeEditor {
+public class EnumContentEditor extends TypeEditor implements IModelDescriptionSupport {
 
     /**
      * {@inheritDoc}
@@ -65,6 +68,13 @@ public class EnumContentEditor extends TypeEditor {
      */
     IEnumContent getEnumContent() {
         return (IEnumContent)getIpsObject();
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public IPage createModelDescriptionPage() throws CoreException {
+        return new EnumContentModelDescriptionPage(this);
     }
 
 }

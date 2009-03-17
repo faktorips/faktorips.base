@@ -75,10 +75,11 @@ public class EnumTypeBuilder extends DefaultJavaSourceFileBuilder {
 
     /** Returns whether to generate an enum. */
     private boolean isEnum() {
-        if (!(getEnumType().isAbstract())) {
+        IEnumType enumType = getEnumType();
+        if (!(enumType.isAbstract())) {
             if (ComplianceCheck.isComplianceLevelAtLeast5(getIpsProject())
                     && getIpsProject().getIpsArtefactBuilderSet().getConfig().getPropertyValueAsBoolean(
-                            USE_JAVA_ENUM_TYPES_CONFIG_PROPERTY)) {
+                            USE_JAVA_ENUM_TYPES_CONFIG_PROPERTY) && enumType.getValuesArePartOfModel()) {
                 return true;
             }
         }
@@ -88,6 +89,9 @@ public class EnumTypeBuilder extends DefaultJavaSourceFileBuilder {
 
     /** Returns whether to generate a class. */
     private boolean isClass() {
+        if (!(getEnumType().getValuesArePartOfModel())) {
+            return true;
+        }
         if (!(ComplianceCheck.isComplianceLevelAtLeast5(getIpsProject()))
                 || !(getIpsProject().getIpsArtefactBuilderSet().getConfig()
                         .getPropertyValueAsBoolean(USE_JAVA_ENUM_TYPES_CONFIG_PROPERTY))) {

@@ -43,10 +43,11 @@ public class Messages extends NLS {
     public static String FixEnumContentWizard_assignEnumAttributesDeleteColumnsConfirmationTitle;
     public static String FixEnumContentWizard_assignEnumAttributesDeleteColumnsConfirmationMessageSingular;
     public static String FixEnumContentWizard_assignEnumAttributesDeleteColumnsConfirmationMessagePlural;
+    public static String FixEnumContentWizard_assignEnumAttributesGroup;
 
     public static String EnumContentPage_labelOpenFixEnumTypeDialog;
     public static String EnumContentPage_tooltipOpenFixEnumTypeDialog;
-    
+
     public static String DefaultColumnName;
 
     static {

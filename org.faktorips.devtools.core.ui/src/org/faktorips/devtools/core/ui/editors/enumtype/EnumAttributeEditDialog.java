@@ -17,6 +17,8 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
+import org.eclipse.swt.widgets.Event;
+import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.TabFolder;
 import org.eclipse.swt.widgets.TabItem;
@@ -83,12 +85,13 @@ public class EnumAttributeEditDialog extends IpsPartEditDialog2 {
 
         // Name
         uiToolkit.createFormLabel(workArea, Messages.EnumAttributeEditDialog_labelName);
-        Text nameText = uiToolkit.createText(workArea);
+        final Text nameText = uiToolkit.createText(workArea);
         bindingContext.bindContent(nameText, enumAttribute, IEnumAttribute.PROPERTY_NAME);
 
         // Datatype
         uiToolkit.createFormLabel(workArea, Messages.EnumAttributeEditDialog_labelDatatype);
-        DatatypeRefControl datatypeControl = uiToolkit.createDatatypeRefEdit(enumAttribute.getIpsProject(), workArea);
+        final DatatypeRefControl datatypeControl = uiToolkit.createDatatypeRefEdit(enumAttribute.getIpsProject(),
+                workArea);
         datatypeControl.setVoidAllowed(false);
         datatypeControl.setPrimitivesAllowed(false);
         datatypeControl.setOnlyValueDatatypesAllowed(true);
@@ -108,9 +111,21 @@ public class EnumAttributeEditDialog extends IpsPartEditDialog2 {
         extFactory.createControls(workArea, uiToolkit, enumAttribute, IExtensionPropertyDefinition.POSITION_BOTTOM);
         extFactory.bind(bindingContext);
 
-        // Set the focus into the name field and select all its contents for better usability
+        /*
+         * Set the focus into the name field and register listeners to select all contents of the
+         * name field and the datatype field when gaining focus trough tabbing for better usability.
+         */
+        nameText.addListener(SWT.FocusIn, new Listener() {
+            public void handleEvent(Event e) {
+                nameText.selectAll();
+            }
+        });
+        datatypeControl.getTextControl().addListener(SWT.FocusIn, new Listener() {
+            public void handleEvent(Event e) {
+                datatypeControl.getTextControl().selectAll();
+            }
+        });
         nameText.setFocus();
-        nameText.selectAll();
 
         return control;
     }

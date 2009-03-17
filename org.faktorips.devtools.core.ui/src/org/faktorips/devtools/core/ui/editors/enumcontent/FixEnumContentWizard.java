@@ -25,11 +25,13 @@ import org.eclipse.jface.wizard.Wizard;
 import org.eclipse.jface.wizard.WizardPage;
 import org.eclipse.osgi.util.NLS;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.custom.ScrolledComposite;
 import org.eclipse.swt.events.ModifyEvent;
 import org.eclipse.swt.events.ModifyListener;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Group;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.ui.forms.IMessage;
 import org.faktorips.devtools.core.model.enums.IEnumAttribute;
@@ -559,8 +561,8 @@ public class FixEnumContentWizard extends Wizard {
          * {@inheritDoc}
          */
         public void createControl(Composite parent) {
-            Composite control = uiToolkit.createComposite(parent);
-            setControl(control);
+            ScrolledComposite scrolledControl = new ScrolledComposite(parent, SWT.V_SCROLL);
+            setControl(scrolledControl);
 
             refreshControl();
 
@@ -586,11 +588,14 @@ public class FixEnumContentWizard extends Wizard {
             }
 
             // Recreate control
-            Composite control = (Composite)getControl();
-            Composite parent = control.getParent();
-            control.dispose();
-            control = uiToolkit.createLabelEditColumnComposite(parent);
-            control.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
+            ScrolledComposite scrolledControl = (ScrolledComposite)getControl();
+            Composite parent = scrolledControl.getParent();
+            scrolledControl.dispose();
+            scrolledControl = new ScrolledComposite(parent, SWT.V_SCROLL);
+            Group attributesGroup = uiToolkit.createGroup(scrolledControl,
+                    Messages.FixEnumContentWizard_assignEnumAttributesGroup);
+            Composite contents = uiToolkit.createLabelEditColumnComposite(attributesGroup);
+            contents.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
 
             // Create the widgets
             int numberEnumAttributes = newEnumType.getEnumAttributesCount(true);
@@ -599,8 +604,8 @@ public class FixEnumContentWizard extends Wizard {
             List<IEnumAttribute> enumAttributes = newEnumType.findAllEnumAttributes();
             for (int i = 0; i < numberEnumAttributes; i++) {
                 IEnumAttribute currentEnumAttribute = enumAttributes.get(i);
-                labels[i] = uiToolkit.createFormLabel(control, currentEnumAttribute.getName() + ':');
-                combos[i] = uiToolkit.createCombo(control);
+                labels[i] = uiToolkit.createFormLabel(contents, currentEnumAttribute.getName() + ':');
+                combos[i] = uiToolkit.createCombo(contents);
                 for (int j = 0; j < availableColumns.size(); j++) {
                     String listItem = (j == 0) ? "" : " - ";
                     combos[i].add(listItem + availableColumns.get(j));
@@ -617,8 +622,13 @@ public class FixEnumContentWizard extends Wizard {
                 }
             }
 
+            scrolledControl.setContent(attributesGroup);
+            scrolledControl.setExpandHorizontal(true);
+            scrolledControl.setExpandVertical(true);
+            scrolledControl.setMinSize(attributesGroup.computeSize(SWT.DEFAULT, SWT.DEFAULT));
+            setControl(scrolledControl);
+
             parent.layout();
-            setControl(control);
         }
 
         /**

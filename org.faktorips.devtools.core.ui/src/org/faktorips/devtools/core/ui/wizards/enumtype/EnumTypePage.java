@@ -88,6 +88,7 @@ public class EnumTypePage extends IpsObjectPage {
         valuesArePartOfModelField = new CheckboxField(toolkit.createCheckbox(nameComposite,
                 Messages.Fields_ValuesArePartOfModel));
         valuesArePartOfModelField.addChangeListener(this);
+        valuesArePartOfModelField.setValue(true);
     }
 
     /**

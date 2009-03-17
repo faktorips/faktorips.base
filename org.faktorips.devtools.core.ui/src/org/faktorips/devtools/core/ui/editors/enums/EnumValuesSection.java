@@ -207,15 +207,11 @@ public class EnumValuesSection extends IpsSection implements ContentsChangeListe
     }
 
     /** Creates the section's toolbar. */
-    /*
-     * TODO aw: align the toolbar at the right of the section title bar
-     */
     private void createToolbar() {
         // Create the toolbar
         Section section = getSectionControl();
         ToolBarManager toolBarManager = new ToolBarManager(SWT.FLAT);
         ToolBar toolbar = toolBarManager.createControl(section);
-        toolbar.setLocation(220, toolbar.getLocation().y + 1);
 
         // Add the actions to the toolbar
         toolBarManager.add(newEnumValueAction);
@@ -223,6 +219,9 @@ public class EnumValuesSection extends IpsSection implements ContentsChangeListe
         toolBarManager.add(new Separator());
         toolBarManager.add(moveEnumValueUpAction);
         toolBarManager.add(moveEnumValueDownAction);
+
+        // TODO aw: align the toolbar at the right of the section title bar
+        toolbar.setLocation(220, toolbar.getLocation().y + 1);
 
         // Update the toolbar with the new information
         toolBarManager.update(true);
