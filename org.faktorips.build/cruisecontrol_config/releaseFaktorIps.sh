@@ -429,11 +429,12 @@ if [ ! "$NOCVS" = "true" ] ; then
       fi
     else
       echo "checkout HEAD" 
-      cvs -d $CVS_ROOT co -d $TMP_CHECKOUTDIR1 -r $FETCH_TAG $FAKTORIPS_CORE_PLUGIN_NAME/META-INF
+      cvs -d $CVS_ROOT co -d $TMP_CHECKOUTDIR1 -r $FETCH_TAG $FAKTORIPS_CORE_PLUGIN_NAME/META-INF/MANIFEST.MF
       cvs -d $CVS_ROOT co -d $TMP_CHECKOUTDIR2 -r $FETCH_TAG $MIGRATION_STRATEGY_PATH
-      if [ -e $PROJECTSROOTDIR/$FAKTORIPS_CORE_PLUGIN_NAME//META-INF/MANIFEST.MF ] ; then
+      if [ ! -f $PROJECTSROOTDIR/$FAKTORIPS_CORE_PLUGIN_NAME//META-INF/MANIFEST.MF ] ; then
         # if manifest not exist checkout using latest, e.g. if building the first time then the sources are not tagged
-        cvs -d $CVS_ROOT co -d $TMP_CHECKOUTDIR1 $FAKTORIPS_CORE_PLUGIN_NAME/META-INF
+        echo "checkout HEAD latest" 
+        cvs -d $CVS_ROOT co -d $TMP_CHECKOUTDIR1 $FAKTORIPS_CORE_PLUGIN_NAME/META-INF/MANIFEST.MF
         cvs -d $CVS_ROOT co -d $TMP_CHECKOUTDIR2 $MIGRATION_STRATEGY_PATH
       fi      
     fi
@@ -602,7 +603,7 @@ if [ ! "$DEFAULT_CVS_ROOT" = "CVS_ROOT" ] ; then
   # patch cvs root in map file
   echo "patch all_cvs.map: change cvs root"
   cat $PLUGINBUILDER_PROJECT_DIR/maps/all_cvs.map | sed -r "s|(.*)$DEFAULT_CVS_ROOT(.*)|\1$CVS_ROOT\2|g" > $PLUGINBUILDER_PROJECT_DIR/maps/all_cvs_different_cvsroot.map  
-fi
+fi 
 
 #################################################
 # call ant to perform the specified release build
