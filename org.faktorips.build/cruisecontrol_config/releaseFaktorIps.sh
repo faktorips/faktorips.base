@@ -1,6 +1,8 @@
 #!/bin/bash
 ##############################################################################################################################
 # Faktor IPS release build script
+# TODO Product Version FaktorIps unter windows siehe zip icon fehlt und fehlermeldung beim starten#
+# TODO Tag automatisch neu erstellen, sonst kommte es zu einem Fehler
 ##############################################################################################################################
 # Note that the default parameters are uses the server environment (faktorzehn.org).
 # If tis script is running local, you can change the environment parameters by using the corresponding pararemters (see below).
@@ -133,11 +135,12 @@ else
 fi
 
 # default build environment
+DEFAULT_CVS_ROOT='/usr/local/cvsroot'
 #   substitution, if variable not use default
 WORKINGDIR=${WORKINGDIR:-'/opt/cc/work'}
 PUBLISH_DOWNLOAD_DIR=${PUBLISH_DOWNLOAD_DIR:-'/var/www/localhost/htdocs/update.faktorzehn.org/faktorips/downloads'}
 PUBLISH_UPDATESITE_DIR=${PUBLISH_UPDATESITE_DIR:-'/var/www/localhost/htdocs/update.faktorzehn.org/faktorips'}
-CVS_ROOT=${CVS_ROOT:-'/usr/local/cvsroot'}
+CVS_ROOT=${CVS_ROOT:-$DEFAULT_CVS_ROOT}
 
 PROJECTSROOTDIR=$WORKINGDIR/checkout_release
 if [ ! -e $PROJECTSROOTDIR -a ! -d $PROJECTSROOTDIR ] ; then
@@ -494,8 +497,12 @@ RELEASE_PROPERTIES=$RELEASE_PROPERTY_DIR/$BUILD_VERSION.properties
 
 # 1. checkout previous pluginbuilder release properties
 if [ ! "$NOCVS" = "true" ] ; then
-  rm -R $RELEASE_PROPERTY_DIR
+  if [ -d $PLUGINBUILDER_PROJECT_DIR ] ; then
+    # delete previous checkout dir
+    rm -R $PLUGINBUILDER_PROJECT_DIR
+  fi
   cvs -d $CVS_ROOT co -d $RELEASE_PROPERTY_DIR $PLUGINBUILDER_PROJECT_NAME/releases
+  cvs -d $CVS_ROOT co -d $PLUGINBUILDER_PROJECT_DIR/maps $PLUGINBUILDER_PROJECT_NAME/maps
 fi
 
 # 2. asserts 
@@ -516,7 +523,8 @@ fi
 #    b) if release property already exists then tagging Cvs is not allowed
 if [ "$RELEASE_PROPERTIES_EXISTS" = "true" -a ! "$SKIPTAGCVS" = "true" ] ; then
   echo "=> Cancel build: tagging is not allowed if the release already exists!"
-  echo "   Please use -skipTaggingCvs or remove the release.properties  and try again."
+  echo "   Please use -skipTaggingCvs or remove the release.properties in the pluginbuilder project and try again."
+  echo "   Existing file: "$RELEASE_PROPERTIES
   exit 1
 fi
 
@@ -584,8 +592,16 @@ fi
 NOBRANCH=true
 if [ -n "$BRANCH" -a ! "$NOCVS" = "true" ] ; then
   # replace HEAD with given BRANCH
+  echo "patch all_cvs.map: add branch"
   NOBRANCH=false
-  cat $PLUGINBUILDER_PROJECT_DIR/maps/all_cvs.map | sed -r "s/(.*)HEAD(.*)/\1$BRANCH\2/g" > $PLUGINBUILDER_PROJECT_DIR/maps/all_cvs_branch.map
+  cat $PLUGINBUILDER_PROJECT_DIR/maps/all_cvs.map | sed -r "s|(.*)HEAD(.*)|\1$BRANCH\2|g" > $PLUGINBUILDER_PROJECT_DIR/maps/all_cvs_branch.map
+fi
+
+# if using a different cvs root
+if [ ! "$DEFAULT_CVS_ROOT" = "CVS_ROOT" ] ; then
+  # patch cvs root in map file
+  echo "patch all_cvs.map: change cvs root"
+  cat $PLUGINBUILDER_PROJECT_DIR/maps/all_cvs.map | sed -r "s|(.*)$DEFAULT_CVS_ROOT(.*)|\1$CVS_ROOT\2|g" > $PLUGINBUILDER_PROJECT_DIR/maps/all_cvs_different_cvsroot.map  
 fi
 
 #################################################
@@ -606,6 +622,7 @@ EXEC="$ANT_HOME/bin/ant -buildfile $BUILDFILE release \
  -Dupdatesite.path=$PUBLISH_UPDATESITE_DIR \
  -DproductProject=$BUILDPRODUCT \
  -DnoBranch=$NOBRANCH
+ -Dcvsroot=$CVS_ROOT
  "
 echo $EXEC
 exec $EXEC

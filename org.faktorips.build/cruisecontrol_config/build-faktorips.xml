@@ -371,12 +371,12 @@
     	<property name="pluginbuilder.features.uml" value="org.faktorips.uml.feature,org.faktorips.uml.feature.nls1,org.faktorips.uml.feature.source"/>
     	
     	<condition property="isUseCvs" value="true">
-            <equals arg1="${noCvs}" arg2="false"/>
-        </condition>
+        <equals arg1="${noCvs}" arg2="false"/>
+      </condition>
 
-		<condition property="isUseBranch" value="true">
-            <equals arg1="${noBranch}" arg2="false"/>
-        </condition>
+      <condition property="isUseBranch" value="true">
+        <equals arg1="${noBranch}" arg2="false"/>
+      </condition>
 
     	<condition property="isIgnoreTests" value="true">
             <equals arg1="${runtests}" arg2="false"/>
@@ -386,23 +386,27 @@
 	    	 <equals arg1="${skipPublish}" arg2="true"/>
 	    </condition>
 
-		<condition property="is.product.build" value="true">
-             <length string="${productProject}" when="greater" length="0" />
+      <condition property="is.product.build" value="true">
+         <length string="${productProject}" when="greater" length="0" />
 	    </condition>
-		
-		<!-- check if the copy all.map should be used, if useCvs is false 
+
+      <!-- check if the copy all.map should be used, if useCvs is false 
 		     otherwise the cvs all.map is used to fetch the sources from cvs -->
-    	<condition property="all.map" value="all_copy.map">
-            <not><equals arg1="${isUseCvs}" arg2="true"/></not>
-        </condition>
+      <condition property="all.map" value="all_copy.map">
+         <not><equals arg1="${isUseCvs}" arg2="true"/></not>
+      </condition>
     	<!-- check if the branch all.map should be used, if a branch is given 
     		     otherwise the cvs all.map is used to fetch the sources from cvs -->
-		<condition property="all.map" value="all_cvs_branch.map">
-    		<isset property="${isUseBranch}"/>
-        </condition>
+	    <condition property="all.map" value="all_cvs_branch.map">
+         <isset property="${isUseBranch}"/>
+      </condition>
+    	<!-- special case if an other cvs root is used, e.g. skript testing  -->
+	    <condition property="all.map" value="all_cvs_different_cvsroot.map">
+         <available file="${projectsRootDir}/org.faktorips.pluginbuilder/maps/all_cvs_different_cvsroot.map"/>
+      </condition>
 		
     	<!--checkout pluginbuilder, build project -->
-    	<antcall inheritall="true" target="-checkout.pluginbuilder.delete.previous"/>
+    	<antcall inheritall="true" target="-checkout.pluginbuilder"/>
     	<antcall inheritall="true" target="-checkout.build"/>
     	
     	<!--asserts-->
@@ -440,7 +444,7 @@
             <property name="build.version" value="${build.version}"/>
             <property name="buildDirectory" value="${buildDirectory}"/>
             <property name="pluginbuilder.is.rcpbuild" value="${is.product.build}"/>
-    		<property name="product.project" value="${productProject}"/>
+            <property name="product.project" value="${productProject}"/>
             <property name="xms.megabytes" value=""/> <!-- -Xms124m -->
             <property name="xmx.megabytes" value=""/> <!-- -Xmx256m -->    		
         </ant>
@@ -529,8 +533,7 @@
         <echo message="   3. ${faktoripsUmlReleaseDownloadZipPath}"/>
         <echo message="   4. ${faktoripsUmlNls1ReleaseDownloadZipPath}"/>    	
     </target> 
-	<target name="-checkout.pluginbuilder.delete.previous" if="isUseCvs">
-    	<delete includeemptydirs="true" dir="${projectsRootDir}/org.faktorips.pluginbuilder"/>
+    <target name="-checkout.pluginbuilder" if="isUseCvs">
         <cvs command="co org.faktorips.pluginbuilder" dest="${projectsRootDir}" cvsroot="${cvsroot}" quiet="true"/>
     </target>
     <target name="-checkout.pluginbuilder.build.version" if="isUseCvs">
@@ -541,7 +544,9 @@
             </linecontains>
           </filterchain>
     	</loadproperties>
-        <delete includeemptydirs="true" dir="${projectsRootDir}/org.faktorips.pluginbuilder"/>
+      <delete includeemptydirs="true">
+        <fileset dir="${projectsRootDir}/org.faktorips.pluginbuilder" excludes="**/all_cvs_*.map"/>
+      </delete>
     	<cvs command="co -r ${fetchTag} org.faktorips.pluginbuilder" dest="${projectsRootDir}" cvsroot="${cvsroot}" quiet="true"/>
     </target>
     <target name="-checkout.build" if="isUseCvs">
@@ -580,10 +585,10 @@
     </target>
     <target name="-copy.eclipse.workspace.log">
         <property name="logfile" value="${basedir}/pluginbuilder_tmp/org.faktorips.pluginbuilder/${workspaceName}/.metadata/.log"/>
-    	<copy file="${logfile}" 
+    <copy file="${logfile}" 
             tofile="${ccProjectDir}/${cctimestamp}/eclipse_workspace.log"
             failonerror="false" verbose="true"/>
-    	<delete file="${logfile}" failonerror="false" verbose="false"/>
+    <delete file="${logfile}" failonerror="false" verbose="false"/>
     </target>
     <target name="-copy.eclipse.test.workspace.log" if="is.plugintest" unless="is.thisbuildsuccessful">
     	<property name="logfile" value="${basedir}/pluginbuilder_tmp/org.faktorips.pluginbuilder/test-workspace/.metadata/.log"/>
