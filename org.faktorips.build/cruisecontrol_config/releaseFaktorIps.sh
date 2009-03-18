@@ -1,8 +1,6 @@
 #!/bin/bash
 ##############################################################################################################################
 # Faktor IPS release build script
-# TODO Product Version FaktorIps unter windows siehe zip icon fehlt und fehlermeldung beim starten#
-# TODO Tag automatisch neu erstellen, sonst kommte es zu einem Fehler
 ##############################################################################################################################
 # Note that the default parameters are uses the server environment (faktorzehn.org).
 # If tis script is running local, you can change the environment parameters by using the corresponding pararemters (see below).
@@ -422,7 +420,7 @@ if [ ! "$NOCVS" = "true" ] ; then
       echo "checkout using branch: "$BRANCH
       cvs -d $CVS_ROOT co -d $TMP_CHECKOUTDIR1 -r $BRANCH $FETCH_TAG $FAKTORIPS_CORE_PLUGIN_NAME/META-INF
       cvs -d $CVS_ROOT co -d $TMP_CHECKOUTDIR2 -r $BRANCH $FETCH_TAG $MIGRATION_STRATEGY_PATH
-      if [ -e $PROJECTSROOTDIR/$FAKTORIPS_CORE_PLUGIN_NAME//META-INF/MANIFEST.MF ] ; then
+      if [ ! -f $PROJECTSROOTDIR/$FAKTORIPS_CORE_PLUGIN_NAME/META-INF/MANIFEST.MF ] ; then
         # if manifest not exist checkout using latest, e.g. if building the first time then the sources are not tagged
         cvs -d $CVS_ROOT co -d $TMP_CHECKOUTDIR1 -r $BRANCH $FAKTORIPS_CORE_PLUGIN_NAME/META-INF
         cvs -d $CVS_ROOT co -d $TMP_CHECKOUTDIR2 -r $BRANCH $MIGRATION_STRATEGY_PATH
@@ -431,7 +429,7 @@ if [ ! "$NOCVS" = "true" ] ; then
       echo "checkout HEAD" 
       cvs -d $CVS_ROOT co -d $TMP_CHECKOUTDIR1 -r $FETCH_TAG $FAKTORIPS_CORE_PLUGIN_NAME/META-INF/MANIFEST.MF
       cvs -d $CVS_ROOT co -d $TMP_CHECKOUTDIR2 -r $FETCH_TAG $MIGRATION_STRATEGY_PATH
-      if [ ! -f $PROJECTSROOTDIR/$FAKTORIPS_CORE_PLUGIN_NAME//META-INF/MANIFEST.MF ] ; then
+      if [ ! -f $PROJECTSROOTDIR/$FAKTORIPS_CORE_PLUGIN_NAME/META-INF/MANIFEST.MF ] ; then
         # if manifest not exist checkout using latest, e.g. if building the first time then the sources are not tagged
         echo "checkout HEAD latest" 
         cvs -d $CVS_ROOT co -d $TMP_CHECKOUTDIR1 $FAKTORIPS_CORE_PLUGIN_NAME/META-INF/MANIFEST.MF
