@@ -990,12 +990,10 @@ public abstract class GenAssociation extends GenPolicyCmptTypePart {
             IIpsProject ipsProject,
             boolean generatesInterface) throws CoreException {
         if (!isDerivedUnion() && !isCompositionDetailToMaster() && isGenerateJaxbSupport()) {
-            builder.getFragment().addImport("javax.xml.bind.annotation.XmlElement");
-            builder.annotation("XmlElement(name=\"" + association.getName() + "\", type=" + targetImplClassName
-                    + ".class)");
+            builder.annotation("javax.xml.bind.annotation.XmlElement", 
+                    "name=\"" + association.getName() + "\", type=" + targetImplClassName + ".class");
             if (!isCompositionMasterToDetail()) {
-                builder.getFragment().addImport("javax.xml.bind.annotation.XmlIDREF");
-                builder.annotation("XmlIDREF");
+                builder.annotation("javax.xml.bind.annotation.XmlIDREF");
             }
         }
     }

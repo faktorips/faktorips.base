@@ -1095,7 +1095,7 @@ public class PolicyCmptImplClassBuilder extends BasePolicyCmptTypeBuilder {
         
         if (isGenerateJaxbSuppert()) {
             memberVarsBuilder.annotation("javax.xml.bind.annotation.XmlIDREF");
-            memberVarsBuilder.annotation("javax.xml.bind.annotation.XmlAttribute", "name=\"parent-object.id\"");
+            memberVarsBuilder.annotation("javax.xml.bind.annotation.XmlAttribute", "name", "parent-object.id");
         }
         
         memberVarsBuilder.append("private ");
@@ -1274,8 +1274,7 @@ public class PolicyCmptImplClassBuilder extends BasePolicyCmptTypeBuilder {
             return;
         }
 
-        builder.getFragment().addImport("javax.xml.bind.annotation.XmlRootElement");
-        builder.annotation("XmlRootElement(name=\"" + getUnqualifiedClassName() + "\")");
+        builder.annotation("javax.xml.bind.annotation.XmlRootElement", "name", getUnqualifiedClassName());
     }
     
 }

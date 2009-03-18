@@ -46,6 +46,22 @@ public class JavaCodeFragmentBuilder {
     }
 
     /**
+     * Adds an import entry to the code fragment under construction.
+     * 
+     * @param qualifiedClassName the java class that is added to the import declaration
+     */
+    public void addImport(String qualifiedClassName) {
+        fragment.addImport(qualifiedClassName);
+    }
+
+    /**
+     * Adds an import entry to the code fragment under construction.
+     */
+    public void addImport(Class clazz) {
+        fragment.addImport(clazz.getName());
+    }
+
+    /**
      * Appends a line separator to fragment's sourcecode.
      */
     public void appendln() {
@@ -939,12 +955,136 @@ public class JavaCodeFragmentBuilder {
      * 
      * @param annotation
      */
+    public void annotation(Class annotation) {
+        if (annotation == null) {
+            return;
+        }
+        fragment.append("@");
+        fragment.appendClassName(annotation);
+    }
+
+    /**
+     * Writes the annotation with the indicated parameters. '@' character and a line feed will be automatically added.
+     * Import statements are added automatically to the code fragment (if needed).  
+     * 
+     * @param annotation The annotation class
+     * @param params     Parameters for the annotation without paranthesis. If <code>null</code> or an empty String,
+     *                   paranthesis aren't added.
+     */
+    public void annotation(Class annotation, String params) {
+        if (annotation==null) {
+            return;
+        }
+        annotation(annotation.getName(), params);
+    }
+    
+    /**
+     * Writes the annotation with the indicated parameter of type String. '@' character and a line feed will be automatically added.
+     * Import statements are added automatically to the code fragment (if needed).  
+     * <pre>
+     * Example 
+     *   annotation : javax.xml.bind.annotation.XmlRootElement
+     *   paramName  : name
+     *   stringValue: policy
+     *   Result: @XmlElement(name="Policy")
+     * </pre>
+     * 
+     * @param annotation The annotation class
+     * @param paramName  The name of the parameter
+     * @param stringValue The unqoted string value for the parameter. This method generates the quotes.
+     * 
+     */
+    public void annotation(Class annotation, String paramName, String stringValue) {
+        if (annotation == null) {
+            return;
+        }
+        annotation(annotation.getName(), paramName, stringValue);
+    }
+
+    /**
+     * Writes the annotation with the indicated parameters. '@' character and a line feed will be automatically added.
+     * Import statements are added automatically to the code fragment (if needed).  
+     * 
+     * @param annotation The annotation class
+     * @param params     Parameters for the annotation without paranthesis. If <code>null</code> or an empty String,
+     *                   paranthesis aren't added.
+     */
+    public void annotation(String annotation, String params) {
+        if (annotation == null) {
+            return;
+        }
+        fragment.append("@");
+        fragment.appendClassName(annotation);
+        if (params!=null && params.length()>0) {
+            fragment.append('(');
+            fragment.append(params);
+            fragment.append(')');
+        }
+        fragment.appendln();
+    }
+
+    /**
+     * Writes the annotation with the indicated parameter of type String. '@' character and a line feed will be automatically added.
+     * Import statements are added automatically to the code fragment (if needed).  
+     * <pre>
+     * Example 
+     *   annotation : javax.xml.bind.annotation.XmlRootElement
+     *   paramName  : name
+     *   stringValue: policy
+     *   Result: @XmlElement(name="Policy")
+     * </pre>
+     * 
+     * @param annotation The annotation class
+     * @param paramName  The name of the parameter
+     * @param stringValue The unqoted string value for the parameter. This method generates the quotes.
+     * 
+     */
+    public void annotation(String annotation, String paramName, String stringValue) {
+        if (annotation == null) {
+            return;
+        }
+        fragment.append("@");
+        fragment.appendClassName(annotation);
+        fragment.append('(');
+        fragment.append(paramName);
+        fragment.append('=');
+        fragment.appendQuoted(stringValue);
+        fragment.append(')');
+        fragment.appendln();
+    }
+
+    /**
+     * Writes the annotation. For an annotation the (fully qualified) annotation class name needs to be specified. The
+     * '@' character will be automatically added. The annoation may contain parameters in paranthesis. 
+     * 
+     * @param annotation The fully qualified annotation name
+     */
     public void annotation(String annotation) {
         if (annotation == null) {
             return;
         }
         fragment.append("@");
-        fragment.appendln(annotation);
+        int index = annotation.indexOf('(');
+        if (index==-1) {
+            fragment.appendClassName(annotation);
+        }
+        fragment.appendClassName(annotation.substring(0, index));
+        fragment.append(annotation.substring(index));
+    }
+
+    /**
+     * Writes the annotations. For an annotation only the annotation name needs to be specified. The
+     * '@' character will be automatically added.
+     * 
+     * @param annotations
+     */
+    public void annotation(Class[] annotations) {
+        if (annotations == null) {
+            return;
+        }
+        for (int i = 0; i < annotations.length; i++) {
+            annotation(annotations[i]);
+        }
     }
 
     /**

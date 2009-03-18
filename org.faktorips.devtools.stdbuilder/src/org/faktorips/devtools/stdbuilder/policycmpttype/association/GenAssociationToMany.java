@@ -180,8 +180,7 @@ public class GenAssociationToMany extends GenAssociation {
         super.generateMemberVariables(builder, ipsProject, generatesInterface);
         if (!association.isDerivedUnion()) {
             if (isGenerateJaxbSupport()) {
-                builder.getFragment().addImport("javax.xml.bind.annotation.XmlElementWrapper");
-                builder.annotation("XmlElementWrapper(name = \"" + association.getTargetRolePlural() + "\")");
+                builder.annotation("javax.xml.bind.annotation.XmlElementWrapper", "name", association.getTargetRolePlural());
             }
 
             JavaCodeFragment initialValueExpression = new JavaCodeFragment();
