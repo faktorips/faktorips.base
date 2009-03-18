@@ -3,7 +3,7 @@
  * 
  * Alle Rechte vorbehalten.
  * 
- * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen, 
+ * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen,
  * etc.) duerfen nur unter den Bedingungen der Faktor-Zehn-Community Lizenzvereinbarung - Version
  * 0.1 (vor Gruendung Community) genutzt werden, die Bestandteil der Auslieferung ist und auch unter
  * http://www.faktorzehn.org/f10-org:lizenzen:community eingesehen werden kann.
@@ -30,11 +30,11 @@ import org.faktorips.runtime.test.IpsTestCaseBase;
 public class RuntimeRepositoryProxy extends AbstractTocBasedRuntimeRepository {
 
     private IProductDataProvider dataProvider;
-    
+
     public final static RuntimeRepositoryProxy create(IProductDataProvider dataProvider) {
         return new RuntimeRepositoryProxy(dataProvider);
     }
-    
+
     private RuntimeRepositoryProxy(IProductDataProvider dataProvider) {
         super("RuntimeRepositoryProxy", new DefaultCacheFactory());
         this.dataProvider = dataProvider;
@@ -47,7 +47,7 @@ public class RuntimeRepositoryProxy extends AbstractTocBasedRuntimeRepository {
     protected AbstractReadonlyTableOfContents loadTableOfContents() {
         return dataProvider.loadToc();
     }
-    
+
     /**
      * {@inheritDoc}
      */
@@ -55,8 +55,10 @@ public class RuntimeRepositoryProxy extends AbstractTocBasedRuntimeRepository {
         Class<?> implClass = getClass(tocEntry.getImplementationClassName(), getClass().getClassLoader());
         ProductComponent productCmpt;
         try {
-            Constructor<?> constructor = implClass.getConstructor(new Class[] {IRuntimeRepository.class, String.class, String.class, String.class});
-            productCmpt = (ProductComponent)constructor.newInstance(new Object[]{this, tocEntry.getIpsObjectId(), tocEntry.getKindId(), tocEntry.getVersionId()});
+            Constructor<?> constructor = implClass.getConstructor(new Class[] { IRuntimeRepository.class, String.class,
+                    String.class, String.class });
+            productCmpt = (ProductComponent)constructor.newInstance(new Object[] { this, tocEntry.getIpsObjectId(),
+                    tocEntry.getKindId(), tocEntry.getVersionId() });
         } catch (Exception e) {
             throw new RuntimeException("Can't create product component instance for toc entry " + tocEntry, e);
         }
@@ -67,14 +69,16 @@ public class RuntimeRepositoryProxy extends AbstractTocBasedRuntimeRepository {
      * {@inheritDoc}
      */
     protected IProductComponentGeneration createProductCmptGeneration(TocEntryGeneration tocEntryGeneration) {
-        IProductComponentGeneration productCmptGeneration = dataProvider.getProductCmptGeneration(tocEntryGeneration.getParent().getIpsObjectId(), tocEntryGeneration.getValidFrom());
+        IProductComponentGeneration productCmptGeneration = dataProvider.getProductCmptGeneration(tocEntryGeneration
+                .getParent().getIpsObjectId(), tocEntryGeneration.getValidFrom());
 
-        ProductComponent productCmpt = (ProductComponent)getProductComponent(tocEntryGeneration.getParent().getIpsObjectId());
-        if (productCmpt==null) {
+        ProductComponent productCmpt = (ProductComponent)getProductComponent(tocEntryGeneration.getParent()
+                .getIpsObjectId());
+        if (productCmpt == null) {
             throw new RuntimeException("Can't get product component for toc entry " + tocEntryGeneration);
         }
         ((ProductComponentGeneration)productCmptGeneration).setProductCmpt(productCmpt);
-        
+
         return productCmptGeneration;
     }
 

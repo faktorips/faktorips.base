@@ -3,7 +3,7 @@
  * 
  * Alle Rechte vorbehalten.
  * 
- * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen, 
+ * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen,
  * etc.) duerfen nur unter den Bedingungen der Faktor-Zehn-Community Lizenzvereinbarung - Version
  * 0.1 (vor Gruendung Community) genutzt werden, die Bestandteil der Auslieferung ist und auch unter
  * http://www.faktorzehn.org/f10-org:lizenzen:community eingesehen werden kann.
@@ -31,41 +31,40 @@ public abstract class ProductComponent extends RuntimeObject implements IProduct
 
     // The repository the component uses to resolve references to other components.
     private transient IRuntimeRepository repository;
-    
-    //the component's kindId
+
+    // the component's kindId
     private String productKindId;
-    
-    //the component's versionId
+
+    // the component's versionId
     private String versionId;
-    
-    //the date at which this product component expires. Set to null indicates no
-    //limitation
+
+    // the date at which this product component expires. Set to null indicates no
+    // limitation
     private DateTime validTo;
 
     /**
      * Creates a new product component with the indicate id, kind id and version id.
      * 
-     * @param repository
-     *            The component registry the component uses to resolve references to other
+     * @param repository The component registry the component uses to resolve references to other
      *            components.
-     * @param id
-     *            The component's runtime id.
+     * @param id The component's runtime id.
      * @param productKindId The component's kind id
      * @param versionId The component's version id
      * 
-     * @throws NullPointerException if repository, id, productKindId, or versionId is <code>null</code>.
+     * @throws NullPointerException if repository, id, productKindId, or versionId is
+     *             <code>null</code>.
      */
     public ProductComponent(IRuntimeRepository repository, String id, String productKindId, String versionId) {
-        if (repository==null) {
+        if (repository == null) {
             throw new NullPointerException("RuntimeRepositor was null!");
         }
-        if (id==null) {
+        if (id == null) {
             throw new NullPointerException("Id was null!");
         }
-        if(productKindId == null){
+        if (productKindId == null) {
             throw new NullPointerException("ProductKindId was null");
         }
-        if(versionId == null){
+        if (versionId == null) {
             throw new NullPointerException("VersionId was null");
         }
         this.repository = repository;
@@ -73,7 +72,7 @@ public abstract class ProductComponent extends RuntimeObject implements IProduct
         this.productKindId = productKindId;
         this.versionId = versionId;
     }
-    
+
     /**
      * {@inheritDoc}
      */
@@ -101,7 +100,7 @@ public abstract class ProductComponent extends RuntimeObject implements IProduct
     public DateTime getValidTo() {
         return validTo;
     }
-    
+
     /**
      * @param validTo The validTo to set.
      */
@@ -115,18 +114,18 @@ public abstract class ProductComponent extends RuntimeObject implements IProduct
     public final IRuntimeRepository getRepository() {
         return repository;
     }
-    
+
     /**
      * {@inheritDoc}
      */
     public final IProductComponentGeneration getGenerationBase(Calendar effectiveDate) {
         return repository.getProductComponentGeneration(id, effectiveDate);
     }
-    
+
     /**
      * {@inheritDoc}
      */
-    public IProductComponentGeneration getLatestProductComponentGeneration(){
+    public IProductComponentGeneration getLatestProductComponentGeneration() {
         return getRepository().getLatestProductComponentGeneration(this);
     }
 
@@ -139,11 +138,12 @@ public abstract class ProductComponent extends RuntimeObject implements IProduct
         validTo = DateTime.parseIso(cmptElement.getAttribute("validTo"));
         initExtensionPropertiesFromXml(cmptElement);
     }
-    
+
     /**
      * {@inheritDoc}
      */
-    public String toString(){
+    @Override
+    public String toString() {
         return id;
     }
 

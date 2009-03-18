@@ -29,6 +29,7 @@ public interface IModelObject {
      *            validation. E.g. the business context, the locale to provide locale specific
      *            message texts, user information. The parameter must not be <code>null</code>.
      */
+    // TODO aw: validates the policy component? this cannot be correct
     public MessageList validate(IValidationContext context);
 
 }

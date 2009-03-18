@@ -3,7 +3,7 @@
  * 
  * Alle Rechte vorbehalten.
  * 
- * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen, 
+ * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen,
  * etc.) duerfen nur unter den Bedingungen der Faktor-Zehn-Community Lizenzvereinbarung - Version
  * 0.1 (vor Gruendung Community) genutzt werden, die Bestandteil der Auslieferung ist und auch unter
  * http://www.faktorzehn.org/f10-org:lizenzen:community eingesehen werden kann.
@@ -71,11 +71,12 @@ public abstract class AbstractRuntimeRepository implements IRuntimeRepository {
         }
         this.name = name;
     }
-    
+
     /**
      * Returns the class loader that is used to load Java classes by this repository.
      * <p>
-     * The default implementation returns the class loader with which this repository class has been loaded.  
+     * The default implementation returns the class loader with which this repository class has been
+     * loaded.
      */
     public ClassLoader getClassLoader() {
         return getClass().getClassLoader();
@@ -113,7 +114,7 @@ public abstract class AbstractRuntimeRepository implements IRuntimeRepository {
         if (allRepositories != null) {
             return allRepositories;
         }
-        List<IRuntimeRepository> result = new ArrayList<IRuntimeRepository>(repositories.size()); 
+        List<IRuntimeRepository> result = new ArrayList<IRuntimeRepository>(repositories.size());
         // list is so small, linear search is ok.
         LinkedList<IRuntimeRepository> candidates = new LinkedList<IRuntimeRepository>();
         candidates.add(this);
@@ -332,12 +333,14 @@ public abstract class AbstractRuntimeRepository implements IRuntimeRepository {
         if (table != null) {
             return table;
         }
+
         for (IRuntimeRepository repository : repositories) {
             table = repository.getTable(tableClass);
             if (table != null) {
                 return table;
             }
         }
+
         return null;
     }
 
@@ -346,6 +349,14 @@ public abstract class AbstractRuntimeRepository implements IRuntimeRepository {
      * depends on.
      */
     protected abstract ITable getTableInternal(Class<?> tableClass);
+
+    /**
+     * {@inheritDoc}
+     */
+    public List<?> getEnumeration(Class<?> enumContentClass) {
+        // TODO aw: get the enumeration
+        return null;
+    }
 
     /**
      * {@inheritDoc}
@@ -629,7 +640,7 @@ public abstract class AbstractRuntimeRepository implements IRuntimeRepository {
     public IModelType getModelType(IProductComponent modelObject) {
         return getModelType(modelObject.getClass());
     }
-    
+
     /**
      * {@inheritDoc}
      */
@@ -649,5 +660,4 @@ public abstract class AbstractRuntimeRepository implements IRuntimeRepository {
      */
     protected abstract void getAllModelTypeImplementationClasses(Set<String> result);
 
-    
 }

@@ -3,7 +3,7 @@
  * 
  * Alle Rechte vorbehalten.
  * 
- * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen, 
+ * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen,
  * etc.) duerfen nur unter den Bedingungen der Faktor-Zehn-Community Lizenzvereinbarung - Version
  * 0.1 (vor Gruendung Community) genutzt werden, die Bestandteil der Auslieferung ist und auch unter
  * http://www.faktorzehn.org/f10-org:lizenzen:community eingesehen werden kann.
@@ -31,16 +31,16 @@ public class RuntimeObject implements IRuntimeObject {
 
     protected void initExtensionPropertiesFromXml(Element cmptElement) {
         NodeList nl = cmptElement.getElementsByTagName("ExtensionProperties");
-        if(nl==null || nl.getLength()==0){
+        if (nl == null || nl.getLength() == 0) {
             return;
         }
         nl = ((Element)nl.item(0)).getElementsByTagName("Value");
         for (int i = 0; i < nl.getLength(); i++) {
-            Element childElement = (Element) nl.item(i);
+            Element childElement = (Element)nl.item(i);
             String id = childElement.getAttribute("id");
-            if(Boolean.parseBoolean(childElement.getAttribute("isNull"))){
+            if (Boolean.parseBoolean(childElement.getAttribute("isNull"))) {
                 extPropertyValues.put(id, null);
-            }else{
+            } else {
                 String value = XmlUtil.getCDATAorTextContent(childElement);
                 extPropertyValues.put(id, value);
             }

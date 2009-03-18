@@ -3,7 +3,7 @@
  * 
  * Alle Rechte vorbehalten.
  * 
- * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen, 
+ * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen,
  * etc.) duerfen nur unter den Bedingungen der Faktor-Zehn-Community Lizenzvereinbarung - Version
  * 0.1 (vor Gruendung Community) genutzt werden, die Bestandteil der Auslieferung ist und auch unter
  * http://www.faktorzehn.org/f10-org:lizenzen:community eingesehen werden kann.
@@ -32,14 +32,14 @@ import org.faktorips.fl.CompilationResult;
 import org.faktorips.fl.IdentifierResolver;
 
 /**
- * A default implementation that extends the AbstractBuilderSet and implements the IJavaPackageStructure
- * interface. The getPackage() method provides package names for the kind constants defined in this
- * DefaultBuilderSet. This implementation uses the base package name for generated java classes as
- * the root of the package structure. The base package name can be configure for an ips project
- * within the ipsproject.xml file. On top of the base package name it adds the ips package fragment
- * name of the IpsSrcFile in question. Internal packages are distinguished from packages that
- * contain published interfaces and classes. It depends on the kind constant if an internal or
- * published package name is returned.
+ * A default implementation that extends the AbstractBuilderSet and implements the
+ * IJavaPackageStructure interface. The getPackage() method provides package names for the kind
+ * constants defined in this DefaultBuilderSet. This implementation uses the base package name for
+ * generated java classes as the root of the package structure. The base package name can be
+ * configure for an ips project within the ipsproject.xml file. On top of the base package name it
+ * adds the ips package fragment name of the IpsSrcFile in question. Internal packages are
+ * distinguished from packages that contain published interfaces and classes. It depends on the kind
+ * constant if an internal or published package name is returned.
  * 
  * @author Peter Erzberger
  */
@@ -63,16 +63,18 @@ public abstract class DefaultBuilderSet extends AbstractBuilderSet {
     public final static String KIND_TEST_CASE_TYPE_CLASS = "testcasetypeclass"; //$NON-NLS-1$
     public final static String KIND_TEST_CASE_XML = "testcasexml"; //$NON-NLS-1$
     public final static String KIND_FORMULA_TEST_CASE = "formulatestcase"; //$NON-NLS-1$
-    
+    public final static String KIND_ENUM_CONTENT = "enumcontent"; //$NON-NLS-1$
+
     public final static String KIND_TABLE_TOCENTRY = "tabletocentry"; //$NON-NLS-1$
     public final static String KIND_PRODUCT_CMPT_TOCENTRY = "productcmpttocentry"; //$NON-NLS-1$
-    
+    public final static String KIND_ENUM_CONTENT_TOCENTRY = "enumcontenttocentry"; //$NON-NLS-1$
+
     private final static String INTERNAL_PACKAGE = "internal"; //$NON-NLS-1$
-    
+
     /**
      * Returns the Java naming convention to be used.
      */
-    //TODO duplicate method in JavaSourceFileBuilder
+    // TODO duplicate method in JavaSourceFileBuilder
     public JavaNamingConvention getJavaNamingConvention() {
         return JavaNamingConvention.ECLIPSE_STANDARD;
     }
@@ -113,7 +115,7 @@ public abstract class DefaultBuilderSet extends AbstractBuilderSet {
 
         return buf.toString().toLowerCase();
     }
-    
+
     /**
      * {@inheritDoc}
      */
@@ -127,13 +129,13 @@ public abstract class DefaultBuilderSet extends AbstractBuilderSet {
         buf.append(INTERNAL_PACKAGE);
         return buf.toString().toLowerCase();
     }
-    
+
     /**
-	 * {@inheritDoc}
-	 */
-	public IFile getRuntimeRepositoryTocFile(IIpsPackageFragmentRoot root) throws CoreException {
-	    if (root==null) {
-	        return null;   
+     * {@inheritDoc}
+     */
+    public IFile getRuntimeRepositoryTocFile(IIpsPackageFragmentRoot root) throws CoreException {
+        if (root == null) {
+            return null;
         }
         if (!root.isBasedOnSourceFolder()) {
             return null;
@@ -143,37 +145,37 @@ public abstract class DefaultBuilderSet extends AbstractBuilderSet {
         String basePackInternal = QNameUtil.concat(basePack, INTERNAL_PACKAGE);
         IPath path = QNameUtil.toPath(basePackInternal);
         path = path.append(entry.getBasePackageRelativeTocPath());
-		IFolder tocFileLocation = getTocFileLocation(root);
-        if (tocFileLocation == null){
+        IFolder tocFileLocation = getTocFileLocation(root);
+        if (tocFileLocation == null) {
             return null;
         }
-		return tocFileLocation.getFile(path);
-	}
+        return tocFileLocation.getFile(path);
+    }
 
-    private IFolder getTocFileLocation(IIpsPackageFragmentRoot root) throws CoreException{
+    private IFolder getTocFileLocation(IIpsPackageFragmentRoot root) throws CoreException {
         IIpsSrcFolderEntry entry = (IIpsSrcFolderEntry)root.getIpsObjectPathEntry();
         return entry.getOutputFolderForDerivedJavaFiles();
     }
-    
+
     /**
      * {@inheritDoc}
      */
     public String getRuntimeRepositoryTocResourceName(IIpsPackageFragmentRoot root) throws CoreException {
         IFile tocFile = getRuntimeRepositoryTocFile(root);
-        if (tocFile==null) {
+        if (tocFile == null) {
             return null;
         }
         IFolder tocFileLocation = getTocFileLocation(root);
         return tocFile.getFullPath().removeFirstSegments(tocFileLocation.getFullPath().segmentCount()).toString();
     }
 
-	/**
+    /**
      * {@inheritDoc}
-	 */
+     */
     public String getPackage(String kind, IIpsSrcFile ipsSrcFile) throws CoreException {
         // TODO v2 - das koenner wir effizienter implementieren
         if (IpsObjectType.TABLE_STRUCTURE.equals(ipsSrcFile.getIpsObjectType())) {
-            if(KIND_TABLE_IMPL.equals(kind) || KIND_TABLE_ROW.equals(kind)){
+            if (KIND_TABLE_IMPL.equals(kind) || KIND_TABLE_ROW.equals(kind)) {
                 return getInternalPackageName(ipsSrcFile);
             }
         }
@@ -223,7 +225,16 @@ public abstract class DefaultBuilderSet extends AbstractBuilderSet {
             if (KIND_PRODUCT_CMPT_GENERATION_IMPL.equals(kind)) {
                 return getInternalPackageName(ipsSrcFile);
             }
-            if (KIND_FORMULA_TEST_CASE.equals(kind)){
+            if (KIND_FORMULA_TEST_CASE.equals(kind)) {
+                return getInternalPackageName(ipsSrcFile);
+            }
+        }
+
+        if (IpsObjectType.ENUM_CONTENT.equals(ipsSrcFile.getIpsObjectType())) {
+            if (KIND_ENUM_CONTENT.equals(kind)) {
+                return getInternalPackageName(ipsSrcFile);
+            }
+            if (KIND_ENUM_CONTENT_TOCENTRY.equals(kind)) {
                 return getInternalPackageName(ipsSrcFile);
             }
         }
@@ -242,7 +253,7 @@ public abstract class DefaultBuilderSet extends AbstractBuilderSet {
                 return getInternalPackageName(ipsSrcFile);
             }
         }
-        
+
         if (IpsObjectType.TEST_CASE.equals(ipsSrcFile.getIpsObjectType())) {
             if (KIND_TEST_CASE_XML.equals(kind)) {
                 return getInternalPackageName(ipsSrcFile);
@@ -262,7 +273,9 @@ public abstract class DefaultBuilderSet extends AbstractBuilderSet {
     /**
      * Empty implementation. Might be overridden by subclasses that support the formula language.
      */
-    public CompilationResult getTableAccessCode(ITableContents tableContents, ITableAccessFunction fct, CompilationResult[] argResults) throws CoreException {
+    public CompilationResult getTableAccessCode(ITableContents tableContents,
+            ITableAccessFunction fct,
+            CompilationResult[] argResults) throws CoreException {
         return null;
     }
 
@@ -305,5 +318,4 @@ public abstract class DefaultBuilderSet extends AbstractBuilderSet {
         return "";
     }
 
-    
 }
