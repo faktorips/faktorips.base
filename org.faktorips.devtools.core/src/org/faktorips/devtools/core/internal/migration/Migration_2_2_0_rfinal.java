@@ -43,7 +43,7 @@ public class Migration_2_2_0_rfinal extends AbstractIpsProjectMigrationOperation
      * {@inheritDoc}
      */
     public String getTargetVersion() {
-        return "2.2.1"; //$NON-NLS-1$
+        return "2.2.1.rfinal"; //$NON-NLS-1$
     }
 
     /**
