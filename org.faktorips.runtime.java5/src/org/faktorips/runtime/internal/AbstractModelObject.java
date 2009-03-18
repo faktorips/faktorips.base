@@ -44,7 +44,7 @@ public abstract class AbstractModelObject implements IModelObject {
 
     /** Uniquely identifies this model object within the object graph it belongs to. */
     @SuppressWarnings("unused")
-    @XmlAttribute(name = "policy.component.id")
+    @XmlAttribute(name = "object.id")
     @XmlID
     private String id = UUID.randomUUID().toString();
 
