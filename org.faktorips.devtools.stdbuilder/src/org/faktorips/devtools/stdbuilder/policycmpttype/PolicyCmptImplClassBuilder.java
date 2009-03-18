@@ -1082,7 +1082,7 @@ public class PolicyCmptImplClassBuilder extends BasePolicyCmptTypeBuilder {
             memberVarsBuilder.getFragment().addImport("javax.xml.bind.annotation.XmlIDREF");
             memberVarsBuilder.annotation("XmlIDREF");
             memberVarsBuilder.getFragment().addImport("javax.xml.bind.annotation.XmlAttribute");
-            memberVarsBuilder.annotation("XmlAttribute(name=\"parent.policy.component.id\")");
+            memberVarsBuilder.annotation("XmlAttribute(name=\"parent-object.id\")");
         }
         
         memberVarsBuilder.append("private ");
