@@ -33,8 +33,8 @@ import org.w3c.dom.Element;
  */ 
 public abstract class AbstractConfigurableModelObject extends AbstractModelObject implements IConfigurableModelObject {
 
-    /** The product component this policy component is based on. */
-	@XmlJavaTypeAdapter(value = ProductComponentXmlAdapter.class)
+    /** The product component this configurable model object is based on. */
+    @XmlJavaTypeAdapter(value = ProductComponentXmlAdapter.class)
 	@XmlAttribute(name="product.component.id")
     private IProductComponent productCmpt;
     
