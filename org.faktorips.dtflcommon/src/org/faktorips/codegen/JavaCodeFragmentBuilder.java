@@ -1067,6 +1067,7 @@ public class JavaCodeFragmentBuilder {
         int index = annotation.indexOf('(');
         if (index==-1) {
             fragment.appendClassName(annotation);
+            return;
         }
         fragment.appendClassName(annotation.substring(0, index));
         fragment.append(annotation.substring(index));

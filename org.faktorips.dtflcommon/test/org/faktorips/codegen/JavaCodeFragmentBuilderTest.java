@@ -17,16 +17,19 @@ import java.lang.reflect.Modifier;
 
 import junit.framework.TestCase;
 
-import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.SystemUtils;
-import org.faktorips.util.StringUtil;
 
 public class JavaCodeFragmentBuilderTest extends TestCase {
 
     public void testAnnotation_AsOneString() {
         JavaCodeFragmentBuilder builder = new JavaCodeFragmentBuilder();
-        builder.annotation("javax.xml.bind.annotation.XmlAttribute(name=\"parent-id\")");
+        builder.annotation("javax.xml.bind.annotation.XmlAttribute");
         JavaCodeFragment code = builder.getFragment();
+        assertEquals("@XmlAttribute", code.getSourcecode());
+        
+        builder = new JavaCodeFragmentBuilder();
+        builder.annotation("javax.xml.bind.annotation.XmlAttribute(name=\"parent-id\")");
+        code = builder.getFragment();
         assertEquals("@XmlAttribute(name=\"parent-id\")", code.getSourcecode());
         ImportDeclaration imports = new ImportDeclaration();
         imports.add("javax.xml.bind.annotation.XmlAttribute");
