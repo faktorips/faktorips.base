@@ -96,6 +96,9 @@ public abstract class IpsObjectPage extends WizardPage implements ValueChangeLis
     // subclasses can add their own controls.
     private Composite nameComposite;
 
+    // further composite for subclasses to fill controls into
+    private Composite additionalComposite;
+
     private IpsObjectType ipsObjectType;
 
     /**
@@ -178,6 +181,13 @@ public abstract class IpsObjectPage extends WizardPage implements ValueChangeLis
 
         nameComposite = toolkit.createLabelEditColumnComposite(pageControl);
         fillNameComposite(nameComposite, toolkit);
+        if (useAdditionalComposite()) {
+            line = new Label(pageControl, SWT.SEPARATOR | SWT.HORIZONTAL);
+            line.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
+            additionalComposite = toolkit.createComposite(pageControl);
+            fillAdditionalComposite(additionalComposite, toolkit);
+        }
+
         try {
             setDefaults(selectedResource);
         } catch (CoreException e) {
@@ -268,6 +278,27 @@ public abstract class IpsObjectPage extends WizardPage implements ValueChangeLis
     protected void fillNameComposite(Composite nameComposite, UIToolkit toolkit) {
         Text nameText = addNameLabelField(toolkit, nameComposite);
         nameText.setFocus();
+    }
+
+    /**
+     * Empty implementation, subclasses may overwrite.
+     * <p>
+     * There is no layout set for the additional composite, so subclasses must first set a layout to
+     * the <code>additionalComposite</code>.
+     * 
+     * @param additionalComposite
+     * @param toolkit
+     */
+    protected void fillAdditionalComposite(Composite additionalComposite, UIToolkit toolkit) {
+
+    }
+
+    /**
+     * Use the additional composite to show controls or not? Default is <code>false</code>,
+     * overwrite to change.
+     */
+    protected boolean useAdditionalComposite() {
+        return false;
     }
 
     protected Text addNameLabelField(UIToolkit toolkit, Composite parent) {
