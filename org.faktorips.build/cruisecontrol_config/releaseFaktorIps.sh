@@ -403,8 +403,8 @@ fi
 # asserts before release build
 #################################################
 
-MIGRATION_STRATEGY_CLASS="Migration_"$(echo $FETCH_TAG | sed 's|v||g')".java"
-MIGRATION_STRATEGY_PATH=$FAKTORIPS_CORE_PLUGIN_NAME"/src/org/faktorips/devtools/core/internal/migration/"$MIGRATION_STRATEGY_CLASS
+# MIGRATION_STRATEGY_CLASS="Migration_"$(echo $FETCH_TAG | sed 's|v||g')".java"
+MIGRATION_STRATEGY_PATH=$FAKTORIPS_CORE_PLUGIN_NAME"/src/org/faktorips/devtools/core/internal/migration/"
 
 # assert correct bundle version in core plugin and existing migration strategy
 #   the bundle version stored in the core plugin must be equal to the given version
@@ -441,9 +441,10 @@ if [ ! "$NOCVS" = "true" ] ; then
     
     CORE_BUNDLE_VERSION=$(cat $TMP_CHECKOUTDIR1/MANIFEST.MF | grep Bundle-Version | sed -r "s/.*:\ *(.*)/\1/g")
 
-    if [ -e $TMP_CHECKOUTDIR2/$MIGRATION_STRATEGY_CLASS ] ; then
-    	MIGRATION_EXISTS=true
-    fi
+    if [ $(cat $TMP_CHECKOUTDIR2/*.java | grep "\"$BUILD_VERSION\"" | wc -l ) -gt 0 ] ; then
+  	  # TODO anstatt grep version suchen, besser suchen mit methodennamen getTargetVersion und dann version (z.B. awk)
+  	  MIGRATION_EXISTS=true
+  	fi
     
     rm -R $TMP_CHECKOUTDIR1
     rm -R $TMP_CHECKOUTDIR2
@@ -456,13 +457,13 @@ else
     CORE_BUNDLE_VERSION=$(cat $PROJECTSROOTDIR/$FAKTORIPS_CORE_PLUGIN_NAME//META-INF/MANIFEST.MF | grep Bundle-Version | sed -r "s/.*:\ *(.*)/\1/g")
 fi
 
-# TODO previous release migration class? 
-##if [ "$MIGRATION_EXISTS" = "false" ] ; then
-##  echo "=> Cancel build: Migrationstrategy not exists (if using cvs the java source must also be tagged)! "$MIGRATION_STRATEGY_CLASS
-##  exit 1
-##else
-##  echo "Ok migration strategy class found"
-##fi
+if [ "$MIGRATION_EXISTS" = "false" ] ; then
+  echo "=> Cancel build: Migrationstrategy not exists (if using cvs the java source must also be tagged)! "
+  echo "   no class found in $MIGRATION_STRATEGY_PATH with target version = $BUILD_VERSION found"
+  exit 1
+else
+  echo "Ok migration strategy class found"
+fi
 
 # compare bundle version with given release version
 if [ ! "$CORE_BUNDLE_VERSION" = "$BUILD_VERSION" ]
