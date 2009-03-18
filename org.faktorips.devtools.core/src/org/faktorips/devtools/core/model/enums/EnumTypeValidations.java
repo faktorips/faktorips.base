@@ -18,6 +18,8 @@ import java.util.List;
 
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.osgi.util.NLS;
+import org.faktorips.devtools.core.model.ipsproject.IIpsPackageFragment;
+import org.faktorips.devtools.core.model.ipsproject.IIpsPackageFragmentRoot;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.util.ArgumentCheck;
 import org.faktorips.util.message.Message;
@@ -37,6 +39,131 @@ import org.faktorips.util.message.ObjectProperty;
 public abstract class EnumTypeValidations {
 
     /**
+     * Validates whether the given enum content package fragment root is not empty and exists in the
+     * ips object path of the given ips project.
+     * <p>
+     * If the enum type is abstract or the values are part of the model this validation will pass
+     * immediately.
+     * <p>
+     * Adds validation messages to the given message list.
+     * 
+     * @param validationMessageList The message list to save validation messages into.
+     * @param enumType The enum type that might be invalid or <code>null</code> if that information
+     *            cannot be supported.
+     * @param isAbstract Flag indicating whether the enum type is abstract.
+     * @param valuesArePartOfModel Flag indicating whether the values are defined in the model.
+     * @param enumContentPackageFragmentRootQualifiedName The qualified name of the enum content
+     *            package fragment root.
+     * @param ipsProject The ips object path of this ips project will be searched.
+     * 
+     * @throws NullPointerException If <code>validationMessageList</code>,
+     *             <code>enumContentPackageFragmentRootQualifiedName</code> or
+     *             <code>ipsProject</code> is <code>null</code>.
+     */
+    public static void validateEnumContentPackageFragmentRoot(MessageList validationMessageList,
+            IEnumType enumType,
+            boolean isAbstract,
+            boolean valuesArePartOfModel,
+            String enumContentPackageFragmentRootQualifiedName,
+            IIpsProject ipsProject) {
+
+        ArgumentCheck.notNull(new Object[] { validationMessageList, enumContentPackageFragmentRootQualifiedName,
+                ipsProject });
+
+        // Pass if abstract or values are part of model
+        if (isAbstract || valuesArePartOfModel) {
+            return;
+        }
+
+        // Package fragment root specified?
+        if (enumContentPackageFragmentRootQualifiedName.equals("")) {
+            String text = Messages.EnumType_EnumContentPackageFragmentRootNotSpecified;
+            Message validationMessage = new Message(
+                    IEnumType.MSGCODE_ENUM_TYPE_ENUM_CONTENT_PACKAGE_FRAGMENT_ROOT_NOT_SPECIFIED, text, Message.ERROR,
+                    enumType != null ? new ObjectProperty[] { new ObjectProperty(enumType,
+                            IEnumType.PROPERTY_ENUM_CONTENT_PACKAGE_FRAGMENT_ROOT) } : new ObjectProperty[0]);
+            validationMessageList.add(validationMessage);
+            return;
+        }
+
+        // Package fragment root exists?
+        IIpsPackageFragmentRoot root = ipsProject
+                .findIpsPackageFragmentRoot(enumContentPackageFragmentRootQualifiedName);
+        if (root == null) {
+            String text = NLS.bind(Messages.EnumType_EnumContentPackageFragmentRootDoesNotExist,
+                    enumContentPackageFragmentRootQualifiedName);
+            Message validationMessage = new Message(
+                    IEnumType.MSGCODE_ENUM_TYPE_ENUM_CONTENT_PACKAGE_FRAGMENT_ROOT_DOES_NOT_EXIST, text, Message.ERROR,
+                    enumType != null ? new ObjectProperty[] { new ObjectProperty(enumType,
+                            IEnumType.PROPERTY_ENUM_CONTENT_PACKAGE_FRAGMENT_ROOT) } : new ObjectProperty[0]);
+            validationMessageList.add(validationMessage);
+            return;
+        }
+    }
+
+    /**
+     * Validates whether the given enum content package fragment exists in the given ips package
+     * fragment root.
+     * <p>
+     * If the enum type is abstract or the values are part of the model this validation will pass
+     * immediately.
+     * <p>
+     * Adds validation messages to the given message list.
+     * 
+     * @param validationMessageList The message list to save validation messages into.
+     * @param enumType The enum type that might be invalid or <code>null</code> if that information
+     *            cannot be supported.
+     * @param isAbstract Flag indicating whether the enum type is abstract.
+     * @param valuesArePartOfModel Flag indicating whether the values are defined in the model.
+     * @param enumContentPackageFragmentRootQualifiedName The qualified name of the enum content
+     *            package fragment root.
+     * @param enumContentPackageFragmentQualifiedName The qualified name of the enum content package
+     *            fragment.
+     * @param ipsProject The ips object path of this ips project will be searched.
+     * 
+     * @throws NullPointerException If <code>validationMessageList</code>,
+     *             <code>enumContentPackageFragmentRootQualifiedName</code>,
+     *             <code>enumContentPackageFragmentQualifiedName</code> or <code>ipsProject</code>
+     *             is <code>null</code>.
+     */
+    public static void validateEnumContentPackageFragment(MessageList validationMessageList,
+            IEnumType enumType,
+            boolean isAbstract,
+            boolean valuesArePartOfModel,
+            String enumContentPackageFragmentRootQualifiedName,
+            String enumContentPackageFragmentQualifiedName,
+            IIpsProject ipsProject) {
+
+        ArgumentCheck.notNull(new Object[] { validationMessageList, enumContentPackageFragmentRootQualifiedName,
+                enumContentPackageFragmentQualifiedName, ipsProject });
+
+        // Pass if abstract or values are part of model
+        if (isAbstract || valuesArePartOfModel) {
+            return;
+        }
+
+        // Package fragment exists?
+        IIpsPackageFragmentRoot root = ipsProject
+                .findIpsPackageFragmentRoot(enumContentPackageFragmentRootQualifiedName);
+        if (root == null) {
+            // Cannot validate fragment when root can't be found
+            throw new IllegalArgumentException("Given root could not be found");
+        }
+        IIpsPackageFragment fragment = root.getIpsPackageFragment(enumContentPackageFragmentQualifiedName);
+        boolean invalid = (fragment == null) ? true : !(fragment.exists());
+        if (invalid) {
+            String text = NLS.bind(Messages.EnumType_EnumContentPackageFragmentDoesNotExist,
+                    enumContentPackageFragmentQualifiedName);
+            Message validationMessage = new Message(
+                    IEnumType.MSGCODE_ENUM_TYPE_ENUM_CONTENT_PACKAGE_FRAGMENT_DOES_NOT_EXIST, text, Message.ERROR,
+                    enumType != null ? new ObjectProperty[] { new ObjectProperty(enumType,
+                            IEnumType.PROPERTY_ENUM_CONTENT_PACKAGE_FRAGMENT) } : new ObjectProperty[0]);
+            validationMessageList.add(validationMessage);
+            return;
+        }
+    }
+
+    /**
      * Validates whether the given super enum type exists in the ips object path of the given ips
      * project and that super enum type is abstract.
      * <p>
@@ -53,7 +180,7 @@ public abstract class EnumTypeValidations {
      *             string.
      * @throws NullPointerException If <code>validationMessageList</code>,
      *             <code>superEnumTypeQualifiedName</code> or <code>ipsProject</code> is
-     *             <code>null</code> .
+     *             <code>null</code>.
      */
     public static void validateSuperEnumType(MessageList validationMessageList,
             IEnumType enumType,
