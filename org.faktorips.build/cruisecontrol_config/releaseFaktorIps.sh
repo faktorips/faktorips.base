@@ -369,6 +369,11 @@ echo -e "  Release Version=\e[35m$BUILD_VERSION\e[0m"
 echo -e "  Feature Category=\e[35m$BUILD_CATEGORY\e[0m"
 echo -e "  CVS Tag=\e[35m$FETCH_TAG\e[0m"
 echo "  --------------------------------------------------------------------------------------"
+echo -e "  Build environment:"
+echo -e "    JAVA_HOME=\e[35m$JAVA_HOME\e[0m"
+echo -e "    ANT_HOME=\e[35m$ANT_HOME\e[0m"
+echo -e "    CVS_ROOT=\e[35m$CVS_ROOT\e[0m"
+echo "  --------------------------------------------------------------------------------------"
 echo -e "  -overwite        : Fail if version exists "$(printBoolean $( negation $OVERWRITE))
 echo -e "  -skipTest        : Run tests "$(printBoolean $RUNTESTS)
 echo -e "  -skipPublish     : Publish result (to updatesite and to download directory) "$(printBoolean $(negation $SKIPPUBLISH))
