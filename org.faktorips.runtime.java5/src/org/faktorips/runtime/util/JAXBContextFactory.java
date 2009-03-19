@@ -36,6 +36,7 @@ public class JAXBContextFactory {
      *       
      * @throws ClassNotFoundException If one of the model classes was not found.
      * @throws JAXBException The exception thrown by {@link JAXBContext#newInstance(Class...)}
+     * @throws NullPointerException if <code>repository</code> is <code>null</code>.
      */
 	public static JAXBContext newContext(IRuntimeRepository repository) throws JAXBException, ClassNotFoundException {
 		ClassLoader cl = repository.getClass().getClassLoader();
@@ -58,6 +59,7 @@ public class JAXBContextFactory {
      *       
      * @throws ClassNotFoundException If one of the model classes was not found.
      * @throws JAXBException The exception thrown by {@link JAXBContext#newInstance(Class...)}
+     * @throws NullPointerException if one of the parametes is <code>null</code>.
      */
 	@SuppressWarnings("unchecked")
 	public static JAXBContext newContext(IRuntimeRepository repository, ClassLoader cl) throws JAXBException, ClassNotFoundException {
