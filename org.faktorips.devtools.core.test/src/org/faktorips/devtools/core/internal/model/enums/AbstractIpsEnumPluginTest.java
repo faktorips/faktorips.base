@@ -95,7 +95,7 @@ public abstract class AbstractIpsEnumPluginTest extends AbstractIpsPluginTest {
         genderEnumValueMale = genderEnumContent.newEnumValue();
         genderEnumValueFemale = genderEnumContent.newEnumValue();
 
-        genderEnumType.setEnumContentPackageFragmentRoot(DEFAULT_PACKAGE_FRAGMENT_ROOT);
+        genderEnumType.setEnumContentPackageFragmentRoot(ipsProject.getName() + '/' + DEFAULT_PACKAGE_FRAGMENT_ROOT);
         genderEnumType.setEnumContentPackageFragment(DEFAULT_PACKAGE_FRAGMENT);
     }
 

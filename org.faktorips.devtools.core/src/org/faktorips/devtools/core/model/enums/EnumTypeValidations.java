@@ -54,21 +54,17 @@ public abstract class EnumTypeValidations {
      * @param valuesArePartOfModel Flag indicating whether the values are defined in the model.
      * @param enumContentPackageFragmentRootQualifiedName The qualified name of the enum content
      *            package fragment root.
-     * @param ipsProject The ips object path of this ips project will be searched.
      * 
-     * @throws NullPointerException If <code>validationMessageList</code>,
-     *             <code>enumContentPackageFragmentRootQualifiedName</code> or
-     *             <code>ipsProject</code> is <code>null</code>.
+     * @throws NullPointerException If <code>validationMessageList</code> or
+     *             <code>enumContentPackageFragmentRootQualifiedName</code> is <code>null</code>.
      */
     public static void validateEnumContentPackageFragmentRoot(MessageList validationMessageList,
             IEnumType enumType,
             boolean isAbstract,
             boolean valuesArePartOfModel,
-            String enumContentPackageFragmentRootQualifiedName,
-            IIpsProject ipsProject) {
+            String enumContentPackageFragmentRootQualifiedName) {
 
-        ArgumentCheck.notNull(new Object[] { validationMessageList, enumContentPackageFragmentRootQualifiedName,
-                ipsProject });
+        ArgumentCheck.notNull(new Object[] { validationMessageList, enumContentPackageFragmentRootQualifiedName });
 
         // Pass if abstract or values are part of model
         if (isAbstract || valuesArePartOfModel) {
@@ -86,10 +82,21 @@ public abstract class EnumTypeValidations {
             return;
         }
 
+        // Split project from source folder
+        Object[] array = EnumsUtil.splitProjectAndSourceFolder(enumContentPackageFragmentRootQualifiedName);
+        String sourceFolder = (String)array[0];
+        IIpsProject ipsProject = (IIpsProject)array[1];
+
         // Package fragment root exists?
-        IIpsPackageFragmentRoot root = ipsProject
-                .findIpsPackageFragmentRoot(enumContentPackageFragmentRootQualifiedName);
-        if (root == null) {
+        boolean projectExists = (ipsProject == null) ? false : ipsProject.exists();
+        boolean rootExists = projectExists;
+        if (projectExists) {
+            IIpsPackageFragmentRoot root = ipsProject.findIpsPackageFragmentRoot(sourceFolder);
+            if (root == null) {
+                rootExists = false;
+            }
+        }
+        if (!rootExists) {
             String text = NLS.bind(Messages.EnumType_EnumContentPackageFragmentRootDoesNotExist,
                     enumContentPackageFragmentRootQualifiedName);
             Message validationMessage = new Message(
@@ -119,36 +126,43 @@ public abstract class EnumTypeValidations {
      *            package fragment root.
      * @param enumContentPackageFragmentQualifiedName The qualified name of the enum content package
      *            fragment.
-     * @param ipsProject The ips object path of this ips project will be searched.
      * 
      * @throws NullPointerException If <code>validationMessageList</code>,
-     *             <code>enumContentPackageFragmentRootQualifiedName</code>,
-     *             <code>enumContentPackageFragmentQualifiedName</code> or <code>ipsProject</code>
-     *             is <code>null</code>.
+     *             <code>enumContentPackageFragmentRootQualifiedName</code> or
+     *             <code>enumContentPackageFragmentQualifiedName</code> is <code>null</code>.
      */
     public static void validateEnumContentPackageFragment(MessageList validationMessageList,
             IEnumType enumType,
             boolean isAbstract,
             boolean valuesArePartOfModel,
             String enumContentPackageFragmentRootQualifiedName,
-            String enumContentPackageFragmentQualifiedName,
-            IIpsProject ipsProject) {
+            String enumContentPackageFragmentQualifiedName) {
 
         ArgumentCheck.notNull(new Object[] { validationMessageList, enumContentPackageFragmentRootQualifiedName,
-                enumContentPackageFragmentQualifiedName, ipsProject });
+                enumContentPackageFragmentQualifiedName });
 
         // Pass if abstract or values are part of model
         if (isAbstract || valuesArePartOfModel) {
             return;
         }
 
+        // Split project from source folder
+        Object[] array = EnumsUtil.splitProjectAndSourceFolder(enumContentPackageFragmentRootQualifiedName);
+        String sourceFolder = (String)array[0];
+        IIpsProject ipsProject = (IIpsProject)array[1];
+
         // Package fragment exists?
-        IIpsPackageFragmentRoot root = ipsProject
-                .findIpsPackageFragmentRoot(enumContentPackageFragmentRootQualifiedName);
+        boolean projectExists = (ipsProject == null) ? false : ipsProject.exists();
+        if (!projectExists) {
+            // Cannot validate fragment when project can't be found
+            throw new IllegalArgumentException("Given project could not be found");
+        }
+        IIpsPackageFragmentRoot root = ipsProject.findIpsPackageFragmentRoot(sourceFolder);
         if (root == null) {
             // Cannot validate fragment when root can't be found
             throw new IllegalArgumentException("Given root could not be found");
         }
+
         IIpsPackageFragment fragment = root.getIpsPackageFragment(enumContentPackageFragmentQualifiedName);
         boolean invalid = (fragment == null) ? true : !(fragment.exists());
         if (invalid) {

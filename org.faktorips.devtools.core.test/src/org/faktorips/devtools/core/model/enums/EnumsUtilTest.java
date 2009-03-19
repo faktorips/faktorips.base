@@ -20,7 +20,7 @@ import org.faktorips.devtools.core.model.enums.IEnumAttribute;
 import org.faktorips.devtools.core.model.enums.IEnumType;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 
-public class EnumTypeUtilTest extends AbstractIpsPluginTest {
+public class EnumsUtilTest extends AbstractIpsPluginTest {
 
     private final String STRING_DATATYPE_NAME = "String";
     private final String INTEGER_DATATYPE_NAME = "Integer";
@@ -67,6 +67,25 @@ public class EnumTypeUtilTest extends AbstractIpsPluginTest {
     public void testContainsEqualEnumAttribute() {
         assertFalse(EnumsUtil.containsEqualEnumAttribute(enumType.getEnumAttributes(), enumAttribute2));
         assertTrue(EnumsUtil.containsEqualEnumAttribute(enumType.getEnumAttributes(), enumAttribute1));
+    }
+
+    public void testSplitProjectAndSourceFolder() {
+        String test = null;
+        try {
+            EnumsUtil.splitProjectAndSourceFolder(test);
+            fail();
+        } catch (NullPointerException e) {
+        }
+
+        test = "/";
+        Object[] array = EnumsUtil.splitProjectAndSourceFolder(test);
+        assertEquals("", array[0]);
+        assertEquals(null, array[1]);
+
+        test = "TestProject/source";
+        array = EnumsUtil.splitProjectAndSourceFolder(test);
+        assertEquals("source", array[0]);
+        assertEquals(ipsProject, array[1]);
     }
 
 }

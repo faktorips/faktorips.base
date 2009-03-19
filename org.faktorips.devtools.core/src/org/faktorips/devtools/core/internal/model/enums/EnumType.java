@@ -417,11 +417,11 @@ public class EnumType extends EnumValueContainer implements IEnumType {
         // Validate enum content package framgent root and enum content package fragment.
         int sizeBefore = list.getNoOfMessages();
         EnumTypeValidations.validateEnumContentPackageFragmentRoot(list, this, isAbstract, valuesArePartOfModel,
-                enumContentPackageFragmentRoot, ipsProject);
+                enumContentPackageFragmentRoot);
         // Only validate package fragment if root was valid
         if (list.getNoOfMessages() == sizeBefore) {
             EnumTypeValidations.validateEnumContentPackageFragment(list, this, isAbstract, valuesArePartOfModel,
-                    enumContentPackageFragmentRoot, enumContentPackageFragment, ipsProject);
+                    enumContentPackageFragmentRoot, enumContentPackageFragment);
         }
     }
 

@@ -495,7 +495,8 @@ public class EnumTypeTest extends AbstractIpsEnumPluginTest {
     }
 
     public void testGetSetEnumContentPackageFragmentRoot() {
-        assertEquals(DEFAULT_PACKAGE_FRAGMENT_ROOT, genderEnumType.getEnumContentPackageFragmentRoot());
+        assertEquals(ipsProject.getName() + '/' + DEFAULT_PACKAGE_FRAGMENT_ROOT, genderEnumType
+                .getEnumContentPackageFragmentRoot());
         genderEnumType.setEnumContentPackageFragmentRoot("foo");
         assertEquals("foo", genderEnumType.getEnumContentPackageFragmentRoot());
     }

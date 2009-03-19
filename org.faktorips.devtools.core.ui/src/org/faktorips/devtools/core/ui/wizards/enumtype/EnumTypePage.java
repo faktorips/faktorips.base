@@ -23,7 +23,6 @@ import org.eclipse.swt.events.ModifyListener;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
-import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.model.enums.EnumTypeValidations;
 import org.faktorips.devtools.core.model.enums.IEnumType;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObject;
@@ -240,32 +239,16 @@ public class EnumTypePage extends IpsObjectPage {
         }
 
         // Validate enum content package fragment root
-        ipsProject = getIpsProject();
         int before = validationMessages.getNoOfMessages();
         String rootPackage = rootPackageSpecificationControl.getText();
-        if (!(rootPackage.equals(""))) {
-            // TODO aw: splitting project and root must be done in validation code
-            if (rootPackage.contains("/")) {
-                String originalRootPackageString = rootPackage;
-                rootPackage = rootPackage.substring(rootPackage.indexOf('/') + 1);
-                String projectName = originalRootPackageString.substring(0, originalRootPackageString.indexOf('/'));
-                if (!(projectName.equals(""))) {
-                    IIpsProject foundProject = IpsPlugin.getDefault().getIpsModel().getIpsProject(projectName);
-                    if (foundProject.exists()) {
-                        ipsProject = foundProject;
-                    }
-                }
-            }
-        }
         EnumTypeValidations.validateEnumContentPackageFragmentRoot(validationMessages, null, (Boolean)isAbstractField
-                .getValue(), (Boolean)valuesArePartOfModelField.getValue(), rootPackage, ipsProject);
+                .getValue(), (Boolean)valuesArePartOfModelField.getValue(), rootPackage);
 
         // Only validate enum content package fragment if the root was valid
         if (before == validationMessages.getNoOfMessages()) {
             String packageFragment = packageSpecificationControl.getText();
             EnumTypeValidations.validateEnumContentPackageFragment(validationMessages, null, (Boolean)isAbstractField
-                    .getValue(), (Boolean)valuesArePartOfModelField.getValue(), rootPackage, packageFragment,
-                    ipsProject);
+                    .getValue(), (Boolean)valuesArePartOfModelField.getValue(), rootPackage, packageFragment);
         }
 
         // Display the first error message if any
