@@ -16,6 +16,8 @@ package org.faktorips.devtools.core.ui.editors.enumtype;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.swt.events.DisposeEvent;
 import org.eclipse.swt.events.DisposeListener;
+import org.eclipse.swt.events.ModifyEvent;
+import org.eclipse.swt.events.ModifyListener;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
@@ -26,11 +28,14 @@ import org.eclipse.ui.forms.widgets.Section;
 import org.faktorips.devtools.core.model.ContentChangeEvent;
 import org.faktorips.devtools.core.model.ContentsChangeListener;
 import org.faktorips.devtools.core.model.enums.IEnumType;
+import org.faktorips.devtools.core.model.ipsproject.IIpsPackageFragmentRoot;
 import org.faktorips.devtools.core.ui.ExtensionPropertyControlFactory;
 import org.faktorips.devtools.core.ui.IpsUIPlugin;
 import org.faktorips.devtools.core.ui.UIToolkit;
 import org.faktorips.devtools.core.ui.controls.Checkbox;
 import org.faktorips.devtools.core.ui.controls.EnumTypeRefControl;
+import org.faktorips.devtools.core.ui.controls.IpsPckFragmentRefControl;
+import org.faktorips.devtools.core.ui.controls.IpsPckFragmentRootRefControl;
 import org.faktorips.devtools.core.ui.forms.IpsSection;
 import org.faktorips.util.ArgumentCheck;
 
@@ -57,8 +62,14 @@ public class EnumTypeGeneralInfoSection extends IpsSection implements ContentsCh
     /** The extension property control factory that may extend the controls. */
     private ExtensionPropertyControlFactory extFactory;
 
-    /** The ui checkbox for the valuesArePartOfModelCheckbox property. */
+    /** The ui checkbox for the <code>valuesArePartOfModelCheckbox</code> property. */
     private Checkbox valuesArePartOfModelCheckbox;
+
+    /** The ui control for the <code>enumContentPackageFragmentRoot</code> property. */
+    private IpsPckFragmentRootRefControl rootPackageSpecificationControl;
+
+    /** The ui control for the <code>enumContentPackageFragment</code> property */
+    private IpsPckFragmentRefControl packageSpecificationControl;
 
     /**
      * Creates a new <code>EnumTypeGeneralInfoSection</code>.
@@ -117,29 +128,57 @@ public class EnumTypeGeneralInfoSection extends IpsSection implements ContentsCh
             }
         });
 
+        // Super enum type
         EnumTypeRefControl supertypeRefControl = toolkit.createEnumTypeRefControl(enumType.getIpsProject(), composite,
                 true);
         supertypeRefControl.setCurrentEnumType(enumType);
         bindingContext.bindContent(supertypeRefControl, enumType, IEnumType.PROPERTY_SUPERTYPE);
 
-        Composite checkBoxesComposite = toolkit.createLabelEditColumnComposite(client);
-
-        toolkit.createFormLabel(checkBoxesComposite, Messages.EnumTypeGeneralInfoSection_labelAbstract);
-        Checkbox abstractCheckbox = toolkit.createCheckbox(checkBoxesComposite);
+        // Abstract
+        toolkit.createFormLabel(composite, Messages.EnumTypeGeneralInfoSection_labelAbstract);
+        Checkbox abstractCheckbox = toolkit.createCheckbox(composite);
         bindingContext.bindContent(abstractCheckbox, enumType, IEnumType.PROPERTY_ABSTRACT);
 
-        toolkit.createFormLabel(checkBoxesComposite, Messages.EnumTypeGeneralInfoSection_labelValuesArePartOfModel);
-        valuesArePartOfModelCheckbox = toolkit.createCheckbox(checkBoxesComposite);
+        // Values are part of model
+        toolkit.createFormLabel(composite, Messages.EnumTypeGeneralInfoSection_labelValuesArePartOfModel);
+        valuesArePartOfModelCheckbox = toolkit.createCheckbox(composite);
         valuesArePartOfModelCheckbox.setEnabled(!(enumType.isAbstract()));
         bindingContext.bindContent(valuesArePartOfModelCheckbox, enumType, IEnumType.PROPERTY_VALUES_ARE_PART_OF_MODEL);
+
+        // Enum content package fragment root
+        toolkit.createFormLabel(composite, Messages.EnumTypeGeneralInfoSection_labelEnumContentPackageFragmentRoot);
+        rootPackageSpecificationControl = toolkit.createPdPackageFragmentRootRefControl(composite, true);
+        rootPackageSpecificationControl.setEnabled(!(enumType.isAbstract()) && !(enumType.getValuesArePartOfModel()));
+        rootPackageSpecificationControl.getTextControl().addModifyListener(new ModifyListener() {
+            /**
+             * {@inheritDoc}
+             */
+            public void modifyText(ModifyEvent event) {
+                IIpsPackageFragmentRoot root = rootPackageSpecificationControl.getIpsPckFragmentRoot();
+                packageSpecificationControl.setIpsPckFragmentRoot(root);
+            }
+        });
+        bindingContext.bindContent(rootPackageSpecificationControl, enumType,
+                IEnumType.PROPERTY_ENUM_CONTENT_PACKAGE_FRAGMENT_ROOT);
+
+        // Enum content package fragment
+        toolkit.createFormLabel(composite, Messages.EnumTypeGeneralInfoSection_labelEnumContentPackageFragment);
+        packageSpecificationControl = toolkit.createPdPackageFragmentRefControl(rootPackageSpecificationControl
+                .getIpsPckFragmentRoot(), composite);
+        packageSpecificationControl.setEnabled(!(enumType.isAbstract()) && !(enumType.getValuesArePartOfModel()));
+
+        bindingContext.bindContent(packageSpecificationControl, enumType,
+                IEnumType.PROPERTY_ENUM_CONTENT_PACKAGE_FRAGMENT);
 
         // Register controls for focus handling
         addFocusControl(supertypeRefControl);
         addFocusControl(abstractCheckbox);
         addFocusControl(valuesArePartOfModelCheckbox);
+        addFocusControl(rootPackageSpecificationControl);
+        addFocusControl(packageSpecificationControl);
 
         // Create extension properties
-        extFactory.createControls(checkBoxesComposite, toolkit, enumType);
+        extFactory.createControls(composite, toolkit, enumType);
         extFactory.bind(bindingContext);
     }
 
@@ -167,6 +206,10 @@ public class EnumTypeGeneralInfoSection extends IpsSection implements ContentsCh
                 try {
                     IEnumType enumType = (IEnumType)event.getIpsSrcFile().getIpsObject();
                     valuesArePartOfModelCheckbox.setEnabled(!(enumType.isAbstract()));
+                    rootPackageSpecificationControl.setEnabled(!(enumType.isAbstract())
+                            && !(enumType.getValuesArePartOfModel()));
+                    packageSpecificationControl.setEnabled(!(enumType.isAbstract())
+                            && !(enumType.getValuesArePartOfModel()));
                 } catch (CoreException e) {
                     throw new RuntimeException(e);
                 }
