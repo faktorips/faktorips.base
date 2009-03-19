@@ -60,13 +60,11 @@ import org.faktorips.util.message.MessageList;
  * <p>
  * A page that provides basic functionality for creating ips objects. Allows the user to specify the
  * ipssourcefolder, the ips package and the object's name.
- * </p>
  * <p>
  * Subclasses can specify an image for the page by setting it with the
  * <code>setImageDescriptor()</code> method within the subclass constructor. Alternatively the image
  * can also be set in the constructor of the wizard if the wizard contains only one page or if the
  * image doesn't change when the page within the wizard changes.
- * </p>
  */
 /*
  * TODO aw: this class contains many public / protected functions that have no or not enough javadoc
@@ -638,5 +636,13 @@ public abstract class IpsObjectPage extends WizardPage implements ValueChangeLis
      */
     public void pageEntered() throws CoreException {
         setDefaultFocus();
+    }
+
+    protected IpsPckFragmentRootRefControl getSourceFolderControl() {
+        return sourceFolderControl;
+    }
+
+    protected IpsPckFragmentRefControl getPackageControl() {
+        return packageControl;
     }
 }
