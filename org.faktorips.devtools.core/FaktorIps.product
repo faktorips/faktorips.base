@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <?pde version="3.4"?>
 
-<product name="Faktor-IPS" id="org.faktorips.devtools.core.FaktorIPS" application="org.faktorips.devtools.core.productDefinitionTool" version="2.2.0" useFeatures="true">
+<product name="Faktor-IPS" id="org.faktorips.devtools.core.FaktorIPS" application="org.faktorips.devtools.core.productDefinitionTool" version="FAKTOR_IPS_DO_NOT_CHANGE_0.0.0" useFeatures="true">
 
    <aboutInfo>
       <image path="/org.faktorips.devtools.core/icons/FaktorIpsIcon128.gif"/>
@@ -14,6 +14,8 @@
    </configIni>
 
    <launcherArgs>
+      <vmArgs>-Xms40m
+-Xmx512m</vmArgs>   
    </launcherArgs>
 
    <windowImages i16="/org.faktorips.devtools.core/icons/FaktorIpsIcon16.gif" i32="/org.faktorips.devtools.core/icons/FaktorIpsIcon32.gif"/>
