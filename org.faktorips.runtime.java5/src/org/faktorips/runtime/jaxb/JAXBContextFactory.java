@@ -1,4 +1,4 @@
-package org.faktorips.runtime.util;
+package org.faktorips.runtime.jaxb;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -8,6 +8,7 @@ import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
 
 import org.faktorips.runtime.IRuntimeRepository;
+import org.faktorips.runtime.internal.AbstractConfigurableModelObject;
 import org.faktorips.runtime.internal.AbstractModelObject;
 import org.faktorips.runtime.internal.AbstractRuntimeRepository;
 
@@ -71,6 +72,10 @@ public class JAXBContextFactory {
 				classes.add(clazz);
 			}
 		}
-		return JAXBContext.newInstance(classes.toArray(new Class[classes.size()]));
+		classes.add(AbstractModelObject.class);
+		classes.add(AbstractConfigurableModelObject.class);
+		JAXBContext ctx = JAXBContext.newInstance(classes.toArray(new Class[classes.size()]));
+		return new IpsJAXBContext(ctx, repository);
 	}
+	
 }

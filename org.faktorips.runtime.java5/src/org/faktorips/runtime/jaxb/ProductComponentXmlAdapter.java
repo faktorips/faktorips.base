@@ -1,4 +1,4 @@
-package org.faktorips.runtime.internal.xml;
+package org.faktorips.runtime.jaxb;
 
 import javax.xml.bind.annotation.adapters.XmlAdapter;
 

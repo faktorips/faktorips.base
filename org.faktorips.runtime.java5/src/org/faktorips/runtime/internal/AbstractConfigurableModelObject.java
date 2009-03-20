@@ -21,7 +21,7 @@ import org.faktorips.runtime.IObjectReferenceStore;
 import org.faktorips.runtime.IProductComponent;
 import org.faktorips.runtime.IProductComponentGeneration;
 import org.faktorips.runtime.IRuntimeRepository;
-import org.faktorips.runtime.internal.xml.ProductComponentXmlAdapter;
+import org.faktorips.runtime.jaxb.ProductComponentXmlAdapter;
 import org.w3c.dom.Element;
 
 
