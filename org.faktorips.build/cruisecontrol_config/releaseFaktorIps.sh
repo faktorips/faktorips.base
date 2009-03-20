@@ -127,7 +127,7 @@ if [ $(whoami) = "cruise" ] ; then
   ANT_HOME=$CRUISE_ANT_HOME
 else 
   # if ant is set and not ant command exists use default
-  if [ -n "$ANT_HOME" -a ! -e $ANT_HOME/bin/ant ] ; then
+  if [ -n "$ANT_HOME" -a ! -f $ANT_HOME/bin/ant ] ; then
     ANT_HOME=$DEFAULT_ANT_HOME
   fi
 fi
@@ -141,13 +141,16 @@ PUBLISH_UPDATESITE_DIR=${PUBLISH_UPDATESITE_DIR:-'/var/www/localhost/htdocs/upda
 CVS_ROOT=${CVS_ROOT:-$DEFAULT_CVS_ROOT}
 
 PROJECTSROOTDIR=$WORKINGDIR/checkout_release
-if [ ! -e $PROJECTSROOTDIR -a ! -d $PROJECTSROOTDIR ] ; then
+if [ ! -d $PROJECTSROOTDIR ] ; then
   mkdir $PROJECTSROOTDIR
 fi
 
 # default java and ant environment
-ANT_HOME=${ANT_HOME:-$DEFAULT_ANT_HOME}
-JAVA_HOME=${JAVA_HOME:-$DEFAULT_JAVA_HOME}
+##ANT_HOME=${ANT_HOME:-$DEFAULT_ANT_HOME}
+##JAVA_HOME=${JAVA_HOME:-$DEFAULT_JAVA_HOME}
+## overwrite java and ant environment
+ANT_HOME=$DEFAULT_ANT_HOME
+JAVA_HOME=$DEFAULT_JAVA_HOME
 
 FAKTORIPS_CORE_PLUGIN_NAME=org.faktorips.devtools.core
 PLUGINBUILDER_PROJECT_NAME=org.faktorips.pluginbuilder
@@ -214,7 +217,7 @@ done
 PLUGINBUILDER_PROJECT_DIR=$PROJECTSROOTDIR/$PLUGINBUILDER_PROJECT_NAME
 
 # assert environment
-if [ ! -e $ANT_HOME/bin/ant ] ; then
+if [ ! -f $ANT_HOME/bin/ant ] ; then
   echo 'Error ant not found '$ANT_HOME/bin/ant' - Please set ANT_HOME.' 
   echo '  '
   SHOWHELP=true
@@ -261,7 +264,7 @@ if [ "$CREATE_BRANCH" = "true" ] ; then
 	cvs -d $CVS_ROOT rtag -R -b -r $BRANCH_TAG $BRANCH $project
   done
   
-  exit
+  exit 0
 fi
 
 # check if version is given as parameter
@@ -287,11 +290,11 @@ fi
 #      c) the default in faktorips project directory
 if [ -z "$BUILDFILE" ] ; then
   BUILDFILE=$WORKINGDIR/build-faktorips.xml
-  if [ ! -e $BUILDFILE ] ; then
+  if [ ! -f $BUILDFILE ] ; then
     BUILDFILE=$PROJECTSROOTDIR/org.faktorips.build/cruisecontrol_config/build-faktorips.xml
   fi
 fi
-if [ ! -e $BUILDFILE ] ; then
+if [ ! -f $BUILDFILE ] ; then
   echo '--> Error buildfile not exists:' $BUILDFILE
   echo '    check the environment or use parameter -buildfile or -projectsrootdir'
     echo '  '
@@ -369,7 +372,7 @@ echo -e "  Release Version=\e[35m$BUILD_VERSION\e[0m"
 echo -e "  Feature Category=\e[35m$BUILD_CATEGORY\e[0m"
 echo -e "  CVS Tag=\e[35m$FETCH_TAG\e[0m"
 echo "  --------------------------------------------------------------------------------------"
-echo -e "  Build environment:"
+echo -e "  Build Environment:"
 echo -e "    JAVA_HOME=\e[35m$JAVA_HOME\e[0m"
 echo -e "    ANT_HOME=\e[35m$ANT_HOME\e[0m"
 echo -e "    CVS_ROOT=\e[35m$CVS_ROOT\e[0m"
@@ -423,38 +426,39 @@ if [ ! "$NOCVS" = "true" ] ; then
     mkdir $TMP_CHECKOUTDIR2
     if [ -n "$BRANCH" ] ; then
       echo "checkout using branch: "$BRANCH
-      cvs -d $CVS_ROOT co -d $TMP_CHECKOUTDIR1 -r $BRANCH $FETCH_TAG $FAKTORIPS_CORE_PLUGIN_NAME/META-INF
-      cvs -d $CVS_ROOT co -d $TMP_CHECKOUTDIR2 -r $BRANCH $FETCH_TAG $MIGRATION_STRATEGY_PATH
-      if [ ! -f $PROJECTSROOTDIR/$FAKTORIPS_CORE_PLUGIN_NAME/META-INF/MANIFEST.MF ] ; then
+      cvs -d $CVS_ROOT co -d $TMP_CHECKOUTDIR1 -r $FETCH_TAG $FAKTORIPS_CORE_PLUGIN_NAME/META-INF
+      cvs -d $CVS_ROOT co -d $TMP_CHECKOUTDIR2 -r $FETCH_TAG $MIGRATION_STRATEGY_PATH/
+      if [ ! -f $TMP_CHECKOUTDIR1/MANIFEST.MF ] ; then
         # if manifest not exist checkout using latest, e.g. if building the first time then the sources are not tagged
+        echo "checkout Branch latest"
+        # TODO ist das LATEST?
         cvs -d $CVS_ROOT co -d $TMP_CHECKOUTDIR1 -r $BRANCH $FAKTORIPS_CORE_PLUGIN_NAME/META-INF
-        cvs -d $CVS_ROOT co -d $TMP_CHECKOUTDIR2 -r $BRANCH $MIGRATION_STRATEGY_PATH
+        cvs -d $CVS_ROOT co -d $TMP_CHECKOUTDIR2 -r $BRANCH $MIGRATION_STRATEGY_PATH/
       fi
     else
       echo "checkout HEAD" 
       cvs -d $CVS_ROOT co -d $TMP_CHECKOUTDIR1 -r $FETCH_TAG $FAKTORIPS_CORE_PLUGIN_NAME/META-INF/MANIFEST.MF
-      cvs -d $CVS_ROOT co -d $TMP_CHECKOUTDIR2 -r $FETCH_TAG $MIGRATION_STRATEGY_PATH
-      if [ ! -f $PROJECTSROOTDIR/$FAKTORIPS_CORE_PLUGIN_NAME/META-INF/MANIFEST.MF ] ; then
+      cvs -d $CVS_ROOT co -d $TMP_CHECKOUTDIR2 -r $FETCH_TAG $MIGRATION_STRATEGY_PATH/
+      if [ ! -f $TMP_CHECKOUTDIR1/MANIFEST.MF ] ; then
         # if manifest not exist checkout using latest, e.g. if building the first time then the sources are not tagged
         echo "checkout HEAD latest" 
         cvs -d $CVS_ROOT co -d $TMP_CHECKOUTDIR1 $FAKTORIPS_CORE_PLUGIN_NAME/META-INF/MANIFEST.MF
-        cvs -d $CVS_ROOT co -d $TMP_CHECKOUTDIR2 $MIGRATION_STRATEGY_PATH
+        cvs -d $CVS_ROOT co -d $TMP_CHECKOUTDIR2 $MIGRATION_STRATEGY_PATH/
       fi      
     fi
     
     CORE_BUNDLE_VERSION=$(cat $TMP_CHECKOUTDIR1/MANIFEST.MF | grep Bundle-Version | sed -r "s/.*:\ *(.*)/\1/g")
 
     if [ $(cat $TMP_CHECKOUTDIR2/*.java | grep "\"$BUILD_VERSION\"" | wc -l ) -gt 0 ] ; then
-  	  # TODO anstatt grep version suchen, besser suchen mit methodennamen getTargetVersion und dann version (z.B. awk)
   	  MIGRATION_EXISTS=true
   	fi
     
     rm -R $TMP_CHECKOUTDIR1
     rm -R $TMP_CHECKOUTDIR2
 else
-    if [ -e $PROJECTSROOTDIR/$MIGRATION_STRATEGY_PATH ] ; then
-    	MIGRATION_EXISTS=true
-    fi
+    if [ $(cat $PROJECTSROOTDIR/$MIGRATION_STRATEGY_PATH/*.java | grep "\"$BUILD_VERSION\"" | wc -l ) -gt 0 ] ; then
+  	  MIGRATION_EXISTS=true
+  	fi
     
     #  read bundle version from the core project stored in the projectsrootdir
     CORE_BUNDLE_VERSION=$(cat $PROJECTSROOTDIR/$FAKTORIPS_CORE_PLUGIN_NAME//META-INF/MANIFEST.MF | grep Bundle-Version | sed -r "s/.*:\ *(.*)/\1/g")
@@ -491,7 +495,7 @@ fi
 #################################################
 
 # change to working directory
-if [ ! -e $WORKINGDIR ] ; then 
+if [ ! -d $WORKINGDIR ] ; then 
   mkdir -p $WORKINGDIR
 fi
 cd $WORKING_DIR
@@ -586,7 +590,7 @@ fi
 #   -> if no cvs is used then no checkout is necessary, because all projects must be checked out in the projectsrootdir 
 if [ -n "$BUILDPRODUCT" -a ! "$NOCVS" = "true" ] ; then
   cvs -d $CVS_ROOT co -d $PROJECTSROOTDIR/$BUILDPRODUCT -r $FETCH_TAG $BUILDPRODUCT/FaktorIps.product
-  if [ ! -e $PROJECTSROOTDIR/$BUILDPRODUCT/FaktorIps.product ] ; then
+  if [ ! -f $PROJECTSROOTDIR/$BUILDPRODUCT/FaktorIps.product ] ; then
     echo "=> Cancel build: product not found! '"$BUILDPRODUCT/FaktorIps.product"'"
     exit 1
   fi
