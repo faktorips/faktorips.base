@@ -66,7 +66,7 @@ public class JAXBContextFactory {
 		Set<String> classNames = repository.getAllModelTypeImplementationClasses();
 		List<Class> classes = new ArrayList<Class>(classNames.size());
 		for (String className : classNames) {
-			Class<?> clazz = cl.loadClass(className);
+			Class clazz = cl.loadClass(className);
 			if (AbstractModelObject.class.isAssignableFrom(clazz)) {
 				classes.add(clazz);
 			}
