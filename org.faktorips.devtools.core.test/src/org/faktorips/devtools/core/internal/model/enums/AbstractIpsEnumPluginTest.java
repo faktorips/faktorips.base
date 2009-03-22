@@ -53,7 +53,6 @@ public abstract class AbstractIpsEnumPluginTest extends AbstractIpsPluginTest {
     protected final String GENDER_ENUM_LITERAL_MALE_NAME = "male";
     protected final String GENDER_ENUM_LITERAL_FEMALE_NAME = "female";
 
-    protected final String DEFAULT_PACKAGE_FRAGMENT_ROOT = "productdef";
     protected final String DEFAULT_PACKAGE_FRAGMENT = "";
 
     protected IIpsProject ipsProject;
@@ -95,7 +94,6 @@ public abstract class AbstractIpsEnumPluginTest extends AbstractIpsPluginTest {
         genderEnumValueMale = genderEnumContent.newEnumValue();
         genderEnumValueFemale = genderEnumContent.newEnumValue();
 
-        genderEnumType.setEnumContentPackageFragmentRoot(ipsProject.getName() + '/' + DEFAULT_PACKAGE_FRAGMENT_ROOT);
         genderEnumType.setEnumContentPackageFragment(DEFAULT_PACKAGE_FRAGMENT);
     }
 

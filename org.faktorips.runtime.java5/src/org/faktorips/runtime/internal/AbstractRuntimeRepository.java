@@ -353,7 +353,7 @@ public abstract class AbstractRuntimeRepository implements IRuntimeRepository {
     /**
      * {@inheritDoc}
      */
-    public List<?> getEnumeration(Class<?> enumContentClass) {
+    public List<?> getEnumeration(Class<?> enumClass) {
         // TODO aw: get the enumeration
         return null;
     }

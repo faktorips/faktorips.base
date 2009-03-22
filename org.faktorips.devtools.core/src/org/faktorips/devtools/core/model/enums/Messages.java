@@ -28,15 +28,14 @@ public class Messages extends NLS {
     public static String EnumType_NotInheritedAttributesInSupertypeHierarchySingular;
     public static String EnumType_NotInheritedAttributesInSupertypeHierarchyPlural;
     public static String EnumType_NoIdentifierAttribute;
-    public static String EnumType_EnumContentPackageFragmentRootNotSpecified;
-    public static String EnumType_EnumContentPackageFragmentRootDoesNotExist;
-    public static String EnumType_EnumContentPackageFragmentDoesNotExist;
-    
+
     public static String EnumContent_EnumTypeMissing;
     public static String EnumContent_EnumTypeDoesNotExist;
     public static String EnumContent_EnumTypeIsAbstract;
     public static String EnumContent_ValuesArePartOfModel;
     public static String EnumContent_ReferencedEnumAttributesCountInvalid;
+    public static String EnumContent_PackageFragmentRootNotCorrect;
+    public static String EnumContent_PackageFragmentNotCorrect;
 
     public static String EnumAttribute_Identifier;
 

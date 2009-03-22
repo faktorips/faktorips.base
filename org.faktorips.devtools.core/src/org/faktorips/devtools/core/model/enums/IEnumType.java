@@ -60,9 +60,6 @@ public interface IEnumType extends IEnumValueContainer, Datatype {
     /** Name of the <code>valuesArePartOfModel</code> property. */
     public final static String PROPERTY_VALUES_ARE_PART_OF_MODEL = "valuesArePartOfModel"; //$NON-NLS-1$
 
-    /** Name of the <code>enumContentPackageFragmentRoot</code> property. */
-    public final static String PROPERTY_ENUM_CONTENT_PACKAGE_FRAGMENT_ROOT = "enumContentPackageFragmentRoot"; //$NON-NLS-1$
-
     /** Name of the <code>enumContentPackageFragment</code> property. */
     public final static String PROPERTY_ENUM_CONTENT_PACKAGE_FRAGMENT = "enumContentPackageFragment"; //$NON-NLS-1$
 
@@ -89,53 +86,9 @@ public interface IEnumType extends IEnumValueContainer, Datatype {
             + "EnumTypeNoIdentifierAttribute"; //$NON-NLS-1$
 
     /**
-     * Validation message code to indicate that no enum content package fragment root has been
-     * specified while the enum type is not abstract and the values are not defined in the model.
-     */
-    public final static String MSGCODE_ENUM_TYPE_ENUM_CONTENT_PACKAGE_FRAGMENT_ROOT_NOT_SPECIFIED = MSGCODE_PREFIX
-            + "EnumTypeEnumContentPackageFragmentRootNotSpecified"; //$NON-NLS-1$
-
-    /**
-     * Validation message code to indicate that no enum content package fragment has been specified
-     * while the enum type is not abstract and the values are not defined in the model.
-     */
-    public final static String MSGCODE_ENUM_TYPE_ENUM_CONTENT_PACKAGE_FRAGMENT_NOT_SPECIFIED = MSGCODE_PREFIX
-            + "EnumTypeEnumContentPackageFragmentNotSpecified"; //$NON-NLS-1$
-
-    /**
-     * Validation message code to indicate that the specified enum content package fragment root
-     * does not exist.
-     */
-    public final static String MSGCODE_ENUM_TYPE_ENUM_CONTENT_PACKAGE_FRAGMENT_ROOT_DOES_NOT_EXIST = MSGCODE_PREFIX
-            + "EnumTypeEnumContentPackageFragmentRootDoesNotExist"; //$NON-NLS-1$
-
-    /**
-     * Validation message code to indicate that the specified enum content package fragment does not
-     * exist.
-     */
-    public final static String MSGCODE_ENUM_TYPE_ENUM_CONTENT_PACKAGE_FRAGMENT_DOES_NOT_EXIST = MSGCODE_PREFIX
-            + "EnumTypeEnumContentPackageFragmentDoesNotExist"; //$NON-NLS-1$
-
-    /**
-     * Returns the package fragment root a referencing enum content must be stored in.
-     */
-    public String getEnumContentPackageFragmentRoot();
-
-    /**
      * Returns the package fragment a referecning enum content must be stored in.
      */
     public String getEnumContentPackageFragment();
-
-    /**
-     * Sets the package fragment root a referencing enum content must be stored in.
-     * 
-     * @param packageFragmentRootQualifiedName The qualified name of the package fragment root a
-     *            referencing enum content must be stored in.
-     * 
-     * @throws NullPointerException If <code>packageFragmentRootQualifiedName</code> is
-     *             <code>null</code>.
-     */
-    public void setEnumContentPackageFragmentRoot(String packageFragmentRootQualifiedName);
 
     /**
      * Sets the package fragment a referencing enum content must be stored in.

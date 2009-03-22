@@ -29,7 +29,6 @@ public class Messages extends NLS {
     public static String EnumTypeGeneralInfoSection_linkSuperclass;
     public static String EnumTypeGeneralInfoSection_labelAbstract;
     public static String EnumTypeGeneralInfoSection_labelValuesArePartOfModel;
-    public static String EnumTypeGeneralInfoSection_labelEnumContentPackageFragmentRoot;
     public static String EnumTypeGeneralInfoSection_labelEnumContentPackageFragment;
 
     public static String EnumTypeStructurePage_title;

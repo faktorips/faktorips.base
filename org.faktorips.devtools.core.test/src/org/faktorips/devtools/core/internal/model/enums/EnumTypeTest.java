@@ -284,7 +284,6 @@ public class EnumTypeTest extends AbstractIpsEnumPluginTest {
         newEnumType.setAbstract(true);
         newEnumType.setValuesArePartOfModel(true);
         newEnumType.setSuperEnumType(genderEnumType.getQualifiedName());
-        newEnumType.setEnumContentPackageFragmentRoot("foo");
         newEnumType.setEnumContentPackageFragment("bar");
         newEnumType.newEnumAttribute();
 
@@ -292,7 +291,6 @@ public class EnumTypeTest extends AbstractIpsEnumPluginTest {
         assertTrue(Boolean.parseBoolean(xmlElement.getAttribute(IEnumType.PROPERTY_ABSTRACT)));
         assertTrue(Boolean.parseBoolean(xmlElement.getAttribute(IEnumType.PROPERTY_VALUES_ARE_PART_OF_MODEL)));
         assertEquals(genderEnumType.getQualifiedName(), xmlElement.getAttribute(IEnumType.PROPERTY_SUPERTYPE));
-        assertEquals("foo", xmlElement.getAttribute(IEnumType.PROPERTY_ENUM_CONTENT_PACKAGE_FRAGMENT_ROOT));
         assertEquals("bar", xmlElement.getAttribute(IEnumType.PROPERTY_ENUM_CONTENT_PACKAGE_FRAGMENT));
 
         IEnumType loadedEnumType = newEnumType(ipsProject, "LoadedEnumType");
@@ -300,7 +298,6 @@ public class EnumTypeTest extends AbstractIpsEnumPluginTest {
         assertTrue(loadedEnumType.isAbstract());
         assertTrue(loadedEnumType.getValuesArePartOfModel());
         assertEquals(genderEnumType.getQualifiedName(), loadedEnumType.getSuperEnumType());
-        assertEquals("foo", loadedEnumType.getEnumContentPackageFragmentRoot());
         assertEquals("bar", loadedEnumType.getEnumContentPackageFragment());
     }
 
@@ -441,22 +438,6 @@ public class EnumTypeTest extends AbstractIpsEnumPluginTest {
         assertTrue(genderEnumType.isValid());
     }
 
-    public void testValidateEnumContentPackageFragmentRoot() throws CoreException {
-        genderEnumType.setEnumContentPackageFragmentRoot("");
-        getIpsModel().clearValidationCache();
-        assertEquals(1, genderEnumType.validate(ipsProject).getNoOfMessages());
-
-        genderEnumType.setEnumContentPackageFragmentRoot("fooBar");
-        getIpsModel().clearValidationCache();
-        assertEquals(1, genderEnumType.validate(ipsProject).getNoOfMessages());
-    }
-
-    public void testValidateEnumContentPackageFragment() throws CoreException {
-        genderEnumType.setEnumContentPackageFragment("fooBar");
-        getIpsModel().clearValidationCache();
-        assertEquals(1, genderEnumType.validate(ipsProject).getNoOfMessages());
-    }
-
     public void testFindSuperEnumType() throws CoreException {
         IEnumType subEnumType = newEnumType(ipsProject, "SubEnumType");
         subEnumType.setSuperEnumType(genderEnumType.getQualifiedName());
@@ -492,13 +473,6 @@ public class EnumTypeTest extends AbstractIpsEnumPluginTest {
         assertEquals(2, superEnumTypes.size());
         assertEquals(level1EnumType, superEnumTypes.get(0));
         assertEquals(rootEnumType, superEnumTypes.get(1));
-    }
-
-    public void testGetSetEnumContentPackageFragmentRoot() {
-        assertEquals(ipsProject.getName() + '/' + DEFAULT_PACKAGE_FRAGMENT_ROOT, genderEnumType
-                .getEnumContentPackageFragmentRoot());
-        genderEnumType.setEnumContentPackageFragmentRoot("foo");
-        assertEquals("foo", genderEnumType.getEnumContentPackageFragmentRoot());
     }
 
     public void testGetSetEnumContentPackageFragment() {

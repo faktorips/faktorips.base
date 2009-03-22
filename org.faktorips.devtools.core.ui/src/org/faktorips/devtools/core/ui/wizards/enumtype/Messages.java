@@ -28,7 +28,6 @@ public class Messages extends NLS {
     public static String Fields_SuperEnumType;
     public static String Fields_Abstract;
     public static String Fields_ValuesArePartOfModel;
-    public static String Fields_RootPackageSpecification;
     public static String Fields_PackageSpecification;
 
     static {

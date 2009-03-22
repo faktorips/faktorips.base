@@ -52,9 +52,6 @@ public class EnumType extends EnumValueContainer implements IEnumType {
     /** Flag indicating whether the values for this enum type are defined in the model. */
     private boolean valuesArePartOfModel;
 
-    /** Qualified name of the package fragment root a referencing enum content must be stored in. */
-    private String enumContentPackageFragmentRoot;
-
     /** Qualified name of the package fragment a referencing enum content must be stored in. */
     private String enumContentPackageFragment;
 
@@ -78,7 +75,6 @@ public class EnumType extends EnumValueContainer implements IEnumType {
         this.superEnumType = "";
         this.valuesArePartOfModel = false;
         this.isAbstract = false;
-        this.enumContentPackageFragmentRoot = "";
         this.enumContentPackageFragment = "";
         this.enumAttributes = new IpsObjectPartCollection(this, EnumAttribute.class, IEnumAttribute.class,
                 IEnumAttribute.XML_TAG);
@@ -212,7 +208,6 @@ public class EnumType extends EnumValueContainer implements IEnumType {
         isAbstract = Boolean.parseBoolean(element.getAttribute(PROPERTY_ABSTRACT));
         valuesArePartOfModel = Boolean.parseBoolean(element.getAttribute(PROPERTY_VALUES_ARE_PART_OF_MODEL));
         superEnumType = element.getAttribute(PROPERTY_SUPERTYPE);
-        enumContentPackageFragmentRoot = element.getAttribute(PROPERTY_ENUM_CONTENT_PACKAGE_FRAGMENT_ROOT);
         enumContentPackageFragment = element.getAttribute(PROPERTY_ENUM_CONTENT_PACKAGE_FRAGMENT);
 
         super.initFromXml(element, id);
@@ -228,7 +223,6 @@ public class EnumType extends EnumValueContainer implements IEnumType {
         element.setAttribute(PROPERTY_SUPERTYPE, superEnumType);
         element.setAttribute(PROPERTY_ABSTRACT, String.valueOf(isAbstract));
         element.setAttribute(PROPERTY_VALUES_ARE_PART_OF_MODEL, String.valueOf(valuesArePartOfModel));
-        element.setAttribute(PROPERTY_ENUM_CONTENT_PACKAGE_FRAGMENT_ROOT, enumContentPackageFragmentRoot);
         element.setAttribute(PROPERTY_ENUM_CONTENT_PACKAGE_FRAGMENT, enumContentPackageFragment);
     }
 
@@ -413,16 +407,6 @@ public class EnumType extends EnumValueContainer implements IEnumType {
 
         // Validate identifier attribute
         EnumTypeValidations.validateIdentifierAttribute(list, this);
-
-        // Validate enum content package framgent root and enum content package fragment.
-        int sizeBefore = list.getNoOfMessages();
-        EnumTypeValidations.validateEnumContentPackageFragmentRoot(list, this, isAbstract, valuesArePartOfModel,
-                enumContentPackageFragmentRoot);
-        // Only validate package fragment if root was valid
-        if (list.getNoOfMessages() == sizeBefore) {
-            EnumTypeValidations.validateEnumContentPackageFragment(list, this, isAbstract, valuesArePartOfModel,
-                    enumContentPackageFragmentRoot, enumContentPackageFragment);
-        }
     }
 
     /**
@@ -512,30 +496,12 @@ public class EnumType extends EnumValueContainer implements IEnumType {
     /**
      * {@inheritDoc}
      */
-    public String getEnumContentPackageFragmentRoot() {
-        return enumContentPackageFragmentRoot;
-    }
-
-    /**
-     * {@inheritDoc}
-     */
     public void setEnumContentPackageFragment(String packageFragmentQualifiedName) {
         ArgumentCheck.notNull(packageFragmentQualifiedName);
 
         String oldEnumContentPackageFragment = enumContentPackageFragment;
         enumContentPackageFragment = packageFragmentQualifiedName;
         valueChanged(oldEnumContentPackageFragment, packageFragmentQualifiedName);
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    public void setEnumContentPackageFragmentRoot(String packageFragmentRootQualifiedName) {
-        ArgumentCheck.notNull(packageFragmentRootQualifiedName);
-
-        String oldEnumContentPackageFragmentRoot = enumContentPackageFragmentRoot;
-        enumContentPackageFragmentRoot = packageFragmentRootQualifiedName;
-        valueChanged(oldEnumContentPackageFragmentRoot, packageFragmentRootQualifiedName);
     }
 
     /**

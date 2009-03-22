@@ -18,11 +18,10 @@ import java.util.List;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.events.ModifyEvent;
-import org.eclipse.swt.events.ModifyListener;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Text;
 import org.faktorips.devtools.core.model.enums.EnumTypeValidations;
 import org.faktorips.devtools.core.model.enums.IEnumType;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObject;
@@ -34,10 +33,9 @@ import org.faktorips.devtools.core.ui.UIToolkit;
 import org.faktorips.devtools.core.ui.controller.fields.CheckboxField;
 import org.faktorips.devtools.core.ui.controller.fields.FieldValueChangedEvent;
 import org.faktorips.devtools.core.ui.controller.fields.TextButtonField;
+import org.faktorips.devtools.core.ui.controller.fields.TextField;
 import org.faktorips.devtools.core.ui.controller.fields.ValueChangeListener;
 import org.faktorips.devtools.core.ui.controls.IpsObjectRefControl;
-import org.faktorips.devtools.core.ui.controls.IpsPckFragmentRefControl;
-import org.faktorips.devtools.core.ui.controls.IpsPckFragmentRootRefControl;
 import org.faktorips.devtools.core.ui.wizards.IpsObjectPage;
 import org.faktorips.util.message.MessageList;
 
@@ -65,16 +63,10 @@ public class EnumTypePage extends IpsObjectPage {
     private CheckboxField valuesArePartOfModelField;
 
     /**
-     * The text field to specify the root package for the enum content (only enabled if the values
-     * are not part of the model and the enum type is not abstract).
-     */
-    private IpsPckFragmentRootRefControl rootPackageSpecificationControl;
-
-    /**
      * The text field to specify the package for the enum content (only enabled if the values are
      * not part of the model and the enum type is not abstract).
      */
-    private IpsPckFragmentRefControl packageSpecificationControl;
+    private TextField packageSpecificationField;
 
     /**
      * Creates the enum type page.
@@ -130,18 +122,16 @@ public class EnumTypePage extends IpsObjectPage {
 
     /**
      * Enables or disables the <code>rootPackageSpecificationControl</code> and the
-     * <code>packageSpecificationControl</code> depending on the values of the
+     * <code>packageSpecificationField</code> depending on the values of the
      * <code>isAbstractField</code> and <code>valuesArePartOfModelField</code>.
      */
     private void enableEnumContentControls() {
         boolean isAbstract = (Boolean)isAbstractField.getValue();
         boolean valuesArePartOfModel = (Boolean)valuesArePartOfModelField.getValue();
         if (isAbstract) {
-            rootPackageSpecificationControl.setEnabled(false);
-            packageSpecificationControl.setEnabled(false);
+            packageSpecificationField.getTextControl().setEnabled(false);
         } else {
-            rootPackageSpecificationControl.setEnabled(!valuesArePartOfModel);
-            packageSpecificationControl.setEnabled(!valuesArePartOfModel);
+            packageSpecificationField.getTextControl().setEnabled(!valuesArePartOfModel);
         }
     }
 
@@ -162,29 +152,12 @@ public class EnumTypePage extends IpsObjectPage {
         additionalComposite.setLayout(new GridLayout(1, true));
         additionalComposite.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
 
-        // Root package specification for product side enum content
-        toolkit.createFormLabel(additionalComposite, Messages.Fields_RootPackageSpecification + ':');
-        rootPackageSpecificationControl = toolkit.createPdPackageFragmentRootRefControl(additionalComposite, true);
-        rootPackageSpecificationControl.setEnabled(false);
-        rootPackageSpecificationControl.getTextControl().addModifyListener(new ModifyListener() {
-            /**
-             * {@inheritDoc}
-             */
-            public void modifyText(ModifyEvent event) {
-                IIpsPackageFragmentRoot root = rootPackageSpecificationControl.getIpsPckFragmentRoot();
-                packageSpecificationControl.setIpsPckFragmentRoot(root);
-            }
-        });
-        TextButtonField enumContentRootPackageField = new TextButtonField(rootPackageSpecificationControl);
-        enumContentRootPackageField.addChangeListener(this);
-
         // Package specification for product side enum content
         toolkit.createFormLabel(additionalComposite, Messages.Fields_PackageSpecification + ':');
-        packageSpecificationControl = toolkit.createPdPackageFragmentRefControl(rootPackageSpecificationControl
-                .getIpsPckFragmentRoot(), additionalComposite);
-        packageSpecificationControl.setEnabled(false);
-        TextButtonField enumContentPackageField = new TextButtonField(packageSpecificationControl);
-        enumContentPackageField.addChangeListener(this);
+        Text text = toolkit.createText(additionalComposite);
+        packageSpecificationField = new TextField(text);
+        packageSpecificationField.getTextControl().setEnabled(false);
+        packageSpecificationField.addChangeListener(this);
     }
 
     /**
@@ -214,8 +187,7 @@ public class EnumTypePage extends IpsObjectPage {
         newEnumType.setAbstract((Boolean)isAbstractField.getValue());
         newEnumType.setValuesArePartOfModel((Boolean)valuesArePartOfModelField.getValue());
         newEnumType.setSuperEnumType(supertypeField.getText());
-        newEnumType.setEnumContentPackageFragmentRoot(rootPackageSpecificationControl.getText());
-        newEnumType.setEnumContentPackageFragment(packageSpecificationControl.getText());
+        newEnumType.setEnumContentPackageFragment(packageSpecificationField.getText());
 
         modifiedIpsObjects.add(newEnumType);
         newEnumType.getIpsSrcFile().markAsDirty();
@@ -236,19 +208,6 @@ public class EnumTypePage extends IpsObjectPage {
         ipsProject = ((IpsObjectRefControl)supertypeField.getControl()).getIpsProject();
         if (!(superTypeFieldText.equals("")) && ipsProject != null) {
             EnumTypeValidations.validateSuperEnumType(validationMessages, null, superTypeFieldText, ipsProject);
-        }
-
-        // Validate enum content package fragment root
-        int before = validationMessages.getNoOfMessages();
-        String rootPackage = rootPackageSpecificationControl.getText();
-        EnumTypeValidations.validateEnumContentPackageFragmentRoot(validationMessages, null, (Boolean)isAbstractField
-                .getValue(), (Boolean)valuesArePartOfModelField.getValue(), rootPackage);
-
-        // Only validate enum content package fragment if the root was valid
-        if (before == validationMessages.getNoOfMessages()) {
-            String packageFragment = packageSpecificationControl.getText();
-            EnumTypeValidations.validateEnumContentPackageFragment(validationMessages, null, (Boolean)isAbstractField
-                    .getValue(), (Boolean)valuesArePartOfModelField.getValue(), rootPackage, packageFragment);
         }
 
         // Display the first error message if any

@@ -34,6 +34,38 @@ import org.faktorips.util.message.ObjectProperty;
  */
 public abstract class EnumContentValidations {
 
+    public static void validatePackageFragmentRoot(MessageList validationMessageList,
+            IEnumContent enumContent,
+            String enumTypeQualifiedName,
+            String packageFragmentRootQualifiedName,
+            IIpsProject ipsProject) throws CoreException {
+
+        ArgumentCheck.notNull(new Object[] { validationMessageList, enumTypeQualifiedName,
+                packageFragmentRootQualifiedName, ipsProject });
+
+        IEnumType enumType = ipsProject.findEnumType(enumTypeQualifiedName);
+        if (enumType == null) {
+            return;
+        }
+
+        // TODO aw
+        //if (!(enumType.getEnumContentPackageFragmentRoot().equals(packageFragmentRootQualifiedName))) {
+            /*String text = ;
+            Message validationMessage = ;
+            validationMessageList.add(validationMessage);*/
+        //}
+    }
+
+    public static void validatePackageFragment(MessageList validationMessageList,
+            IEnumContent enumContent,
+            String enumTypeQualifiedName,
+            String packageFragmentQualifiedName,
+            IIpsProject ipsProject) {
+
+        ArgumentCheck.notNull(new Object[] { validationMessageList, enumTypeQualifiedName,
+                packageFragmentQualifiedName, ipsProject });
+    }
+
     /**
      * Validates the enum type property of the given enum content.
      * <p>
