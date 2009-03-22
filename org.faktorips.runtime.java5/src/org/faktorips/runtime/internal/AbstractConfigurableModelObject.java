@@ -35,7 +35,7 @@ public abstract class AbstractConfigurableModelObject extends AbstractModelObjec
 
     /** The product component this configurable model object is based on. */
 	@XmlJavaTypeAdapter(value = ProductComponentXmlAdapter.class)
-	@XmlAttribute(name="product.component.id")
+	@XmlAttribute(name="product-component.id")
     private IProductComponent productCmpt;
     
     private IProductComponentGeneration productCmptGeneration;
