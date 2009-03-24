@@ -91,6 +91,10 @@ public class Migration_2_2_1_test extends AbstractIpsProjectMigrationOperation {
     public MessageList migrate(IProgressMonitor monitor) throws CoreException, InvocationTargetException,
             InterruptedException {
 
+        if (monitor != null) {
+            monitor.beginTask("Migration", 2); // TODO aw: nls
+        }
+
         Job job = new Job("Migration230") {
             @Override
             protected IStatus run(IProgressMonitor monitor) {
@@ -134,6 +138,10 @@ public class Migration_2_2_1_test extends AbstractIpsProjectMigrationOperation {
         job.setPriority(Job.BUILD);
         job.schedule(5000);
 
+        if (monitor != null) {
+            monitor.worked(1);
+        }
+
         job = new Job("Migration230PostBuild") {
             @Override
             protected IStatus run(IProgressMonitor monitor) {
@@ -149,6 +157,11 @@ public class Migration_2_2_1_test extends AbstractIpsProjectMigrationOperation {
 
         job.setPriority(Job.BUILD);
         job.schedule(6000);
+
+        if (monitor != null) {
+            monitor.worked(1);
+            monitor.done();
+        }
 
         return new MessageList();
     }
@@ -180,7 +193,7 @@ public class Migration_2_2_1_test extends AbstractIpsProjectMigrationOperation {
                 newEnumAttribute.setIdentifier((identifier.equals(currentColumnName)));
                 newEnumAttribute.setInherited(false);
             }
-            
+
             // Save the new file
             newEnumType.getIpsSrcFile().save(true, null);
 
@@ -229,7 +242,7 @@ public class Migration_2_2_1_test extends AbstractIpsProjectMigrationOperation {
                     currentEnumAttributeValue.setValue(currentRow.getValue(i));
                 }
             }
-            
+
             // Save the new file
             newEnumType.getIpsSrcFile().save(true, null);
 
