@@ -99,6 +99,12 @@ public class EnumContentTest extends AbstractIpsEnumPluginTest {
         assertEquals(1, genderEnumContent.validate(ipsProject).getNoOfMessages());
     }
 
+    public void testValidatePackage() throws CoreException {
+        IEnumContent enumContent = newEnumContent(ipsProject, "foo.Bar");
+        enumContent.setEnumType(genderEnumType.getQualifiedName());
+        assertEquals(1, enumContent.validate(ipsProject).getNoOfMessages());
+    }
+
     public void testDependsOn() throws CoreException {
         IDependency[] dependencies = genderEnumContent.dependsOn();
         assertEquals(1, dependencies.length);
