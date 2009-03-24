@@ -3,7 +3,7 @@
  * 
  * Alle Rechte vorbehalten.
  * 
- * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen, 
+ * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen,
  * etc.) duerfen nur unter den Bedingungen der Faktor-Zehn-Community Lizenzvereinbarung - Version
  * 0.1 (vor Gruendung Community) genutzt werden, die Bestandteil der Auslieferung ist und auch unter
  * http://www.faktorzehn.org/f10-org:lizenzen:community eingesehen werden kann.
@@ -19,8 +19,8 @@ import org.eclipse.swt.widgets.Combo;
 import org.faktorips.datatype.EnumDatatype;
 
 /**
- * An implementation of AbstractEnumDatatypeBasedField that displays the values
- * of an EnumDatatype. If the EnumDatatype supports value names these will be
+ * An implementation of <code>AbstractEnumDatatypeBasedField</code> that displays the values of an
+ * <code>EnumDatatype</code>. If the <code>EnumDatatype</code> supports value names these will be
  * displayed instead of the value ids.
  * 
  * @author kuntz
@@ -28,25 +28,25 @@ import org.faktorips.datatype.EnumDatatype;
  */
 public class EnumDatatypeField extends AbstractEnumDatatypeBasedField {
 
-	public EnumDatatypeField(Combo combo, EnumDatatype datatype) {
-		super(combo, datatype);
-		reInitInternal();
-	}
+    public EnumDatatypeField(Combo combo, EnumDatatype datatype) {
+        super(combo, datatype);
+        reInitInternal();
+    }
 
-	/**
-	 * {@inheritDoc}
-	 */
-	protected final void reInitInternal() {
-		String[] ids = getEnumDatatype().getAllValueIds(true);
-		ArrayList items = new ArrayList(ids.length);
-		for (int i = 0; i < ids.length; i++) { 
-			items.add(super.getDisplayTextForValue(ids[i]));
-		}
-        String[] textToShow = (String[]) items.toArray(new String[items.size()]);
-		initialize(ids, textToShow);
-	}
-	
-	private EnumDatatype getEnumDatatype() {
-		return (EnumDatatype)getDatatype();
-	}
+    /**
+     * {@inheritDoc}
+     */
+    protected final void reInitInternal() {
+        String[] ids = getEnumDatatype().getAllValueIds(true);
+        ArrayList<String> items = new ArrayList<String>(ids.length);
+        for (int i = 0; i < ids.length; i++) {
+            items.add(super.getDisplayTextForValue(ids[i]));
+        }
+        String[] textToShow = (String[])items.toArray(new String[items.size()]);
+        initialize(ids, textToShow);
+    }
+
+    private EnumDatatype getEnumDatatype() {
+        return (EnumDatatype)getDatatype();
+    }
 }
