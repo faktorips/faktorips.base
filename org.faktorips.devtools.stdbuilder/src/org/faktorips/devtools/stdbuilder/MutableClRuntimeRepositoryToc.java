@@ -3,7 +3,7 @@
  * 
  * Alle Rechte vorbehalten.
  * 
- * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen, 
+ * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen,
  * etc.) duerfen nur unter den Bedingungen der Faktor-Zehn-Community Lizenzvereinbarung - Version
  * 0.1 (vor Gruendung Community) genutzt werden, die Bestandteil der Auslieferung ist und auch unter
  * http://www.faktorzehn.org/f10-org:lizenzen:community eingesehen werden kann.
@@ -67,6 +67,7 @@ public class MutableClRuntimeRepositoryToc extends ReadonlyTableOfContents {
         tableImplClassTocEntryMap.clear();
         tableContentNameTocEntryMap.clear();
         modelTypeNameTocEntryMap.clear();
+        enumContentNameTocEntryMap.clear();
         ++modificationStamp;
     }
 
@@ -118,17 +119,17 @@ public class MutableClRuntimeRepositoryToc extends ReadonlyTableOfContents {
             ++modificationStamp;
             return true;
         }
-        
+
         if (entry.isModelTypeTocEntry()) {
             TocEntryObject currentEntry = (TocEntryObject)modelTypeNameTocEntryMap.get(entry.getIpsObjectId());
             if (entry.equals(currentEntry)) {
                 return false;
             }
-        	modelTypeNameTocEntryMap.put(entry.getIpsObjectId(), entry);
-        	++modificationStamp;
-        	return true;
+            modelTypeNameTocEntryMap.put(entry.getIpsObjectId(), entry);
+            ++modificationStamp;
+            return true;
         }
-        
+
         if (entry.isFormulaTestTocEntry()) {
             TocEntryObject currentEntry = (TocEntryObject)testCaseNameTocEntryMap.get(entry.getIpsObjectId());
             if (entry.equals(currentEntry)) {
@@ -139,6 +140,18 @@ public class MutableClRuntimeRepositoryToc extends ReadonlyTableOfContents {
             // removed if a product cmpt will be removed
             testCaseNameTocEntryMap.put(entry.getIpsObjectQualifiedName(), entry);
             ++modificationStamp;
+            return true;
+        }
+
+        if (entry.isEnumContentTypeTocEntry()) {
+            TocEntryObject currentEntry = (TocEntryObject)enumContentNameTocEntryMap.get(entry.getIpsObjectId());
+            if (entry.equals(currentEntry)) {
+                return false;
+            }
+
+            enumContentNameTocEntryMap.put(entry.getIpsObjectQualifiedName(), entry);
+            ++modificationStamp;
+
             return true;
         }
 
@@ -174,7 +187,7 @@ public class MutableClRuntimeRepositoryToc extends ReadonlyTableOfContents {
                 break;
             }
         }
-        
+
         for (Iterator<TocEntryObject> it = tableImplClassTocEntryMap.values().iterator(); it.hasNext();) {
             TocEntryObject entry = (TocEntryObject)it.next();
             if (entry.getImplementationClassName().equals(objectId)) {
@@ -191,7 +204,7 @@ public class MutableClRuntimeRepositoryToc extends ReadonlyTableOfContents {
                 return true;
             }
         }
-        
+
         for (Iterator<TocEntryObject> it = modelTypeNameTocEntryMap.values().iterator(); it.hasNext();) {
             TocEntryObject entry = (TocEntryObject)it.next();
             if (entry.getIpsObjectQualifiedName().equals(objectId)) {
@@ -200,7 +213,7 @@ public class MutableClRuntimeRepositoryToc extends ReadonlyTableOfContents {
                 return true;
             }
         }
-        
+
         return false;
     }
 
@@ -224,9 +237,10 @@ public class MutableClRuntimeRepositoryToc extends ReadonlyTableOfContents {
         sortedEntries.addAll(tableContentNameTocEntryMap.values());
         sortedEntries.addAll(testCaseNameTocEntryMap.values());
         sortedEntries.addAll(modelTypeNameTocEntryMap.values());
+        sortedEntries.addAll(enumContentNameTocEntryMap.values());
         for (TocEntryObject entry : sortedEntries) {
             element.appendChild(entry.toXml(doc));
-		}
+        }
         return element;
     }
 }

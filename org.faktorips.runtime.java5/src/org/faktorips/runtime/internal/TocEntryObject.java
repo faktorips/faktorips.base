@@ -48,22 +48,28 @@ public class TocEntryObject extends TocEntry {
     public static final String PROPERTY_VERSION_ID = "versionId";
     public static final String PROPERTY_VALID_TO = "validTo";
 
-    // the identifier of the ips object (either the qualified name for a table
-    // or the runtime id for a product component).
+    /**
+     * The identifier of the ips object (either the qualified name for a table or the runtime id for
+     * a product component).
+     */
     private String ipsObjectId;
 
-    // the qualified name of the ips object.
+    /** The qualified name of the ips object. */
     private String ipsObjectQualifiedName;
 
-    // indicates the type of ips object that is represented by this entry
+    /** Indicates the type of ips object that is represented by this entry. */
     private String entryType;
 
-    // If this entry is a product component: the (runtime) id if of the product component kind,
-    // emtpy string otherwise
+    /**
+     * If this entry is a product component: the (runtime) id if of the product component kind,
+     * empty string otherwise.
+     */
     private String kindId;
 
-    // If this entry is a product component: the version id if of the product component kind, emtpy
-    // string otherwise
+    /**
+     * If this entry is a product component: the version id if of the product component kind, emtpy
+     * string otherwise.
+     */
     private String versionId;
 
     private DateTime validTo;
@@ -379,6 +385,13 @@ public class TocEntryObject extends TocEntry {
     }
 
     /**
+     * @return <code>true</code> if this is an entry representing an enum content.
+     */
+    public boolean isEnumContentTypeTocEntry() {
+        return ENUM_CONTENT_ENTRY_TYPE.equals(entryType);
+    }
+
+    /**
      * Transforms the toc entry to xml.
      * 
      * @param doc The document used as factory for new element.
@@ -386,15 +399,18 @@ public class TocEntryObject extends TocEntry {
     public Element toXml(Document doc) {
         Element entryElement = doc.createElement(AbstractReadonlyTableOfContents.TOC_ENTRY_XML_ELEMENT);
         super.addToXml(entryElement);
+        
         entryElement.setAttribute(PROPERTY_ENTRYTYPE, entryType);
         entryElement.setAttribute(PROPERTY_IPS_OBJECT_ID, ipsObjectId);
         entryElement.setAttribute(PROPERTY_IPS_OBJECT_QNAME, ipsObjectQualifiedName);
         entryElement.setAttribute(PROPERTY_KIND_ID, kindId);
         entryElement.setAttribute(PROPERTY_VERSION_ID, versionId);
         entryElement.setAttribute(PROPERTY_VALID_TO, validTo != null ? validTo.toIsoFormat() : "");
+        
         for (TocEntryGeneration generationEntry : generationEntries) {
             entryElement.appendChild(generationEntry.toXml(doc));
         }
+        
         return entryElement;
     }
 
