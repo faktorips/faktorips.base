@@ -354,7 +354,7 @@ public class FixEnumContentWizard extends Wizard {
         int[] decrementedColumnOrder = computeDecrementedColumnOrder();
 
         // Tracking of the enum attribute values order
-        int[] enumAttributeValuesOrder = computeEnumAttributeValuesOrder(decrementedColumnOrder);
+        int[] enumAttributeValuesOrder = computeEnumAttributeValuesOrder(decrementedColumnOrder.clone());
 
         /*
          * The algorithm repeats as long as the orders do not correspond. This might not be the
