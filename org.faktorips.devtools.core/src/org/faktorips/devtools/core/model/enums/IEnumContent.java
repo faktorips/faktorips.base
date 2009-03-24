@@ -75,13 +75,6 @@ public interface IEnumContent extends IEnumValueContainer {
             + "EnumContentReferencedEnumAttributesCountInvalid"; //$NON-NLS-1$
 
     /**
-     * Validation message code to indicate that the package fragment root this enum content is
-     * stored in is not correct due to the specification in the referenced enum type.
-     */
-    public final static String MSGCODE_ENUM_CONTENT_PACKAGE_FRAGMENT_ROOT_NOT_CORRECT = MSGCODE_PREFIX
-            + "EnumContentPackageFragmentRootNotCorrect"; //$NON-NLS-1$
-
-    /**
      * Validation message code to indicate that the package fragment this enum content is stored in
      * is not correct due to the specification in the referenced enum type.
      */

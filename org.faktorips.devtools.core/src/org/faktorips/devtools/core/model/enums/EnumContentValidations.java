@@ -34,36 +34,41 @@ import org.faktorips.util.message.ObjectProperty;
  */
 public abstract class EnumContentValidations {
 
-    public static void validatePackageFragmentRoot(MessageList validationMessageList,
-            IEnumContent enumContent,
-            String enumTypeQualifiedName,
-            String packageFragmentRootQualifiedName,
-            IIpsProject ipsProject) throws CoreException {
-
-        ArgumentCheck.notNull(new Object[] { validationMessageList, enumTypeQualifiedName,
-                packageFragmentRootQualifiedName, ipsProject });
-
-        IEnumType enumType = ipsProject.findEnumType(enumTypeQualifiedName);
-        if (enumType == null) {
-            return;
-        }
-
-        // TODO aw
-        //if (!(enumType.getEnumContentPackageFragmentRoot().equals(packageFragmentRootQualifiedName))) {
-            /*String text = ;
-            Message validationMessage = ;
-            validationMessageList.add(validationMessage);*/
-        //}
-    }
-
+    /**
+     * Validates whether the given package equals the enum content package specification in the
+     * given enum type.
+     * 
+     * @param validationMessageList The message list to save validation messages into.
+     * @param enumContent The enum content that might be invalid or <code>null</code> if that
+     *            information cannot be supported.
+     * @param enumType The enum type the enum content is build upon.
+     * @param enumContentPackageFragmentQualifiedName The qualified name of the package the enum
+     *            content to be validated is stored in.
+     * 
+     * @throws NullPointerException If <code>validationMessageList</code>, <code>enumType</code> or
+     *             <code>enumContentPackageFragmentQualifiedName</code> is <code>null</code>.
+     */
     public static void validatePackageFragment(MessageList validationMessageList,
             IEnumContent enumContent,
-            String enumTypeQualifiedName,
-            String packageFragmentQualifiedName,
-            IIpsProject ipsProject) {
+            IEnumType enumType,
+            String enumContentPackageFragmentQualifiedName) {
 
-        ArgumentCheck.notNull(new Object[] { validationMessageList, enumTypeQualifiedName,
-                packageFragmentQualifiedName, ipsProject });
+        ArgumentCheck
+                .notNull(new Object[] { validationMessageList, enumType, enumContentPackageFragmentQualifiedName });
+
+        String enumContentPackageSpecification = enumType.getEnumContentPackageFragment();
+        if (!(enumContentPackageFragmentQualifiedName.equals(enumContentPackageSpecification))) {
+            String text = NLS.bind(Messages.EnumContent_PackageFragmentNotCorrect, enumType.getQualifiedName());
+            Message message;
+            if (enumContent == null) {
+                message = new Message(IEnumContent.MSGCODE_ENUM_CONTENT_PACKAGE_FRAGMENT_NOT_CORRECT, text,
+                        Message.ERROR);
+            } else {
+                message = new Message(IEnumContent.MSGCODE_ENUM_CONTENT_PACKAGE_FRAGMENT_NOT_CORRECT, text,
+                        Message.ERROR, enumContent);
+            }
+            validationMessageList.add(message);
+        }
     }
 
     /**

@@ -20,6 +20,7 @@ import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.swt.widgets.Composite;
 import org.faktorips.devtools.core.model.enums.EnumContentValidations;
 import org.faktorips.devtools.core.model.enums.IEnumContent;
+import org.faktorips.devtools.core.model.enums.IEnumType;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObject;
 import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
 import org.faktorips.devtools.core.model.ipsproject.IIpsPackageFragmentRoot;
@@ -115,6 +116,12 @@ public class EnumContentPage extends IpsObjectPage {
         if (ipsProject != null) {
             MessageList validationMessageList = new MessageList();
             EnumContentValidations.validateEnumType(validationMessageList, null, enumTypeFieldText, ipsProject);
+
+            IEnumType enumType = ipsProject.findEnumType(enumTypeFieldText);
+            if (enumType != null) {
+                EnumContentValidations.validatePackageFragment(validationMessageList, null, enumType, getPackage());
+            }
+
             if (!(validationMessageList.isEmpty())) {
                 setErrorMessage(validationMessageList.getMessage(0));
             }

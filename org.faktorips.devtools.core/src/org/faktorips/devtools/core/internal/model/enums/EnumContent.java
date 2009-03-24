@@ -143,6 +143,10 @@ public class EnumContent extends EnumValueContainer implements IEnumContent {
         super.validateThis(list, ipsProject);
 
         EnumContentValidations.validateEnumType(list, this, enumType, ipsProject);
+        if (list.getNoOfMessages() == 0) {
+            EnumContentValidations.validatePackageFragment(list, this, findEnumType(), getIpsPackageFragment()
+                    .getName());
+        }
         EnumContentValidations.validateReferencedEnumAttributesCount(list, this);
     }
 
