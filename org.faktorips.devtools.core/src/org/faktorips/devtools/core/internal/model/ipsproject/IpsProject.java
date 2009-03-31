@@ -983,23 +983,6 @@ public class IpsProject extends IpsElement implements IIpsProject {
         return objects;
     }
 
-    private IIpsObject[] filesToIpsObjects(List files) throws CoreException {
-        List objects = new ArrayList(files.size());
-        for (Iterator it = files.iterator(); it.hasNext();) {
-            IIpsSrcFile file = (IIpsSrcFile)it.next();
-            IIpsObject ipsObject = null;
-            if (file.exists()) {
-                ipsObject = file.getIpsObject();
-                if (ipsObject != null) {
-                    objects.add(ipsObject);
-                }
-            }
-
-        }
-
-        return (IIpsObject[])objects.toArray(new IIpsObject[objects.size()]);
-    }
-
     /**
      * {@inheritDoc}
      */
