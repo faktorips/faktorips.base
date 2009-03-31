@@ -43,12 +43,12 @@ public class EnumsUtilTest extends AbstractIpsPluginTest {
         enumAttribute1 = enumType.newEnumAttribute();
         enumAttribute1.setName("attr1");
         enumAttribute1.setDatatype("String");
-        enumAttribute1.setIdentifier(true);
+        enumAttribute1.setLiteralNameAttribute(true);
 
         enumAttribute2 = superEnumType.newEnumAttribute();
         enumAttribute2.setName("attr2");
         enumAttribute2.setDatatype(INTEGER_DATATYPE_NAME);
-        enumAttribute2.setIdentifier(false);
+        enumAttribute2.setLiteralNameAttribute(false);
     }
 
     public void testEqualEnumAttributes() throws CoreException {
@@ -60,7 +60,7 @@ public class EnumsUtilTest extends AbstractIpsPluginTest {
         enumAttribute2.setDatatype(STRING_DATATYPE_NAME);
         assertFalse(EnumsUtil.equalEnumAttributes(enumAttribute1, enumAttribute2));
 
-        enumAttribute2.setIdentifier(true);
+        enumAttribute2.setLiteralNameAttribute(true);
         assertTrue(EnumsUtil.equalEnumAttributes(enumAttribute1, enumAttribute2));
     }
 

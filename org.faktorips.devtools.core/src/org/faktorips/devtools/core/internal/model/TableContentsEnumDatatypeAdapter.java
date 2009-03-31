@@ -34,6 +34,7 @@ import org.faktorips.util.message.MessageList;
  * 
  * @author Peter Erzberger
  */
+//TODO pk remove when completing change to enum type
 public class TableContentsEnumDatatypeAdapter extends AbstractDatatype implements EnumDatatype {
 
     private ITableContents tableContents;

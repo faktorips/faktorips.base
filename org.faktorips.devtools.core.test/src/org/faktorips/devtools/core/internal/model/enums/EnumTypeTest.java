@@ -13,16 +13,19 @@
 
 package org.faktorips.devtools.core.internal.model.enums;
 
+import java.util.Arrays;
 import java.util.List;
 
 import javax.xml.parsers.ParserConfigurationException;
 
 import org.eclipse.core.runtime.CoreException;
+import org.faktorips.datatype.Datatype;
 import org.faktorips.devtools.core.model.enums.IEnumAttribute;
 import org.faktorips.devtools.core.model.enums.IEnumAttributeValue;
 import org.faktorips.devtools.core.model.enums.IEnumType;
 import org.faktorips.devtools.core.model.enums.IEnumValue;
 import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
+import org.faktorips.util.message.MessageList;
 import org.w3c.dom.Element;
 
 public class EnumTypeTest extends AbstractIpsEnumPluginTest {
@@ -353,7 +356,7 @@ public class EnumTypeTest extends AbstractIpsEnumPluginTest {
     }
 
     public void testIsValueDatatype() {
-        assertFalse(genderEnumType.isValueDatatype());
+        assertTrue(genderEnumType.isValueDatatype());
     }
 
     public void testIsVoid() {
@@ -361,10 +364,75 @@ public class EnumTypeTest extends AbstractIpsEnumPluginTest {
     }
 
     @SuppressWarnings("unchecked")
-    public void testCompareTo() {
-        assertEquals(0, genderEnumType.compareTo(new Object()));
+    public void testCompreTo() throws Exception {
+        try {
+            genderEnumType.compareTo(new Object());
+            fail("ClassCastException is expected.");
+        } catch (ClassCastException e) {
+        }
+        assertEquals(0, genderEnumType.compareTo(genderEnumType));
+        assertTrue(genderEnumType.compareTo(paymentMode) < 0);
+        assertTrue(paymentMode.compareTo(genderEnumType) > 0);
+
     }
 
+    public void testGetAllValueIds() throws Exception{
+        String[] ids = paymentMode.getAllValueIds(false);
+        assertEquals(2, ids.length);
+        List<String> idList = Arrays.asList(ids);
+        assertTrue(idList.contains("monthly"));
+        assertTrue(idList.contains("annually"));
+        
+        IEnumType color = newEnumType(ipsProject, "Color");
+        color.setAbstract(false);
+        color.setValuesArePartOfModel(true);
+        
+        IEnumAttribute id = color.newEnumAttribute();
+        id.setDatatype(Datatype.STRING.getQualifiedName());
+        id.setInherited(false);
+        id.setLiteralNameAttribute(false);
+        id.setName("name");
+        IEnumValue red = color.newEnumValue();
+        IEnumAttributeValue redN = red.getEnumAttributeValues().get(0);
+        redN.setValue("red");
+        IEnumValue blue = color.newEnumValue();
+        IEnumAttributeValue blueN = blue.getEnumAttributeValues().get(0);
+        blueN.setValue("blue");
+
+        String[] colorIds = color.getAllValueIds(false);
+        //is expected to be null because the literal name attribute is not specified for the enum type
+        assertNull(colorIds);
+    }
+    
+    public void testgGetValueName(){
+        assertNotNull(paymentMode.getValueName("monthly"));
+        assertNotNull(paymentMode.getValueName("annually"));
+        assertNull(paymentMode.getValueName("quarterly"));
+    }
+    
+    public void testAreValuesEqual(){
+        assertTrue(paymentMode.areValuesEqual("monthly", "monthly"));
+        assertFalse(paymentMode.areValuesEqual("monthly", "annually"));
+        try {
+            paymentMode.areValuesEqual("monthly", "quarterly");
+            fail("");
+        } catch (Exception e) {
+        }
+    }
+    
+    public void testCheckReadyToUse(){
+        MessageList msgList = paymentMode.checkReadyToUse();
+        assertFalse(msgList.containsErrorMsg());
+        paymentMode.getEnumAttributes().get(0).delete();
+        msgList = paymentMode.checkReadyToUse();
+        assertTrue(msgList.containsErrorMsg());
+    }
+    
+    public void testIsParsable(){
+        assertTrue(paymentMode.isParsable("monthly"));
+        assertFalse(paymentMode.isParsable("quarterly"));
+    }
+    
     public void testEnumAttributeExists() {
         try {
             genderEnumType.enumAttributeExists(null);
@@ -407,7 +475,7 @@ public class EnumTypeTest extends AbstractIpsEnumPluginTest {
         IEnumAttribute attr1 = superEnumType.newEnumAttribute();
         attr1.setName("attr1");
         attr1.setDatatype(STRING_DATATYPE_NAME);
-        attr1.setIdentifier(true);
+        attr1.setLiteralNameAttribute(true);
         IEnumAttribute attr2 = superSuperEnumType.newEnumAttribute();
         attr2.setName("attr2");
         attr2.setDatatype(INTEGER_DATATYPE_NAME);
@@ -417,19 +485,19 @@ public class EnumTypeTest extends AbstractIpsEnumPluginTest {
         attr1 = genderEnumType.newEnumAttribute();
         attr1.setName("attr1");
         attr1.setDatatype(STRING_DATATYPE_NAME);
-        attr1.setIdentifier(true);
+        attr1.setLiteralNameAttribute(true);
         attr1.setInherited(true);
         attr2 = genderEnumType.newEnumAttribute();
         attr2.setName("attr2");
         attr2.setDatatype(INTEGER_DATATYPE_NAME);
         attr2.setInherited(true);
-        genderEnumAttributeId.setIdentifier(false);
+        genderEnumAttributeId.setLiteralNameAttribute(false);
         getIpsModel().clearValidationCache();
         assertTrue(genderEnumType.isValid());
     }
 
     public void testValidateIdentifierAttribute() throws CoreException {
-        genderEnumAttributeId.setIdentifier(false);
+        genderEnumAttributeId.setLiteralNameAttribute(false);
         getIpsModel().clearValidationCache();
         assertEquals(1, genderEnumType.validate(ipsProject).getNoOfMessages());
 

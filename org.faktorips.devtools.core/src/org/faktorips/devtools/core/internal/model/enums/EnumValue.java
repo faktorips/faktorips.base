@@ -173,7 +173,7 @@ public class EnumValue extends BaseIpsObjectPart implements IEnumValue {
         for (IEnumAttributeValue currentEnumAttributeValue : getEnumAttributeValues()) {
             IEnumAttribute currentReferencedEnumAttribute = currentEnumAttributeValue.findEnumAttribute();
             if (currentReferencedEnumAttribute != null) {
-                if (currentReferencedEnumAttribute.isIdentifier()) {
+                if (currentReferencedEnumAttribute.isLiteralNameAttribute()) {
                     return currentEnumAttributeValue;
                 }
             }

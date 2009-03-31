@@ -109,16 +109,16 @@ public interface IEnumAttribute extends IIpsObjectPart {
     public void setDatatype(String datatype);
 
     /**
-     * Returns <code>true</code> if this enum attribute is an identifier, <code>false</code> if not.
+     * Returns <code>true</code> if this enum attribute is the literal name attribute of this enum type, <code>false</code> if not.
      */
-    public boolean isIdentifier();
+    public boolean isLiteralNameAttribute();
 
     /**
-     * Sets whether this enum attribute is an identifier.
+     * Sets whether this enum attribute is the literal name attribute of this enum type.
      * 
      * @param isIdentifier Flag indicating whether this enum attribute will be an identifier.
      */
-    public void setIdentifier(boolean isIdentifier);
+    public void setLiteralNameAttribute(boolean isIdentifier);
 
     /**
      * Returns <code>true</code> if this enum attribute is inherited from the supertype hierarchy,

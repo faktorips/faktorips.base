@@ -109,14 +109,14 @@ public class EnumAttribute extends AtomicIpsObjectPart implements IEnumAttribute
     /**
      * {@inheritDoc}
      */
-    public boolean isIdentifier() {
+    public boolean isLiteralNameAttribute() {
         return isIdentifier;
     }
 
     /**
      * {@inheritDoc}
      */
-    public void setIdentifier(boolean isIdentifier) {
+    public void setLiteralNameAttribute(boolean isIdentifier) {
         boolean oldIsIdentifier = this.isIdentifier;
         this.isIdentifier = isIdentifier;
         valueChanged(oldIsIdentifier, isIdentifier);
@@ -259,7 +259,7 @@ public class EnumAttribute extends AtomicIpsObjectPart implements IEnumAttribute
         if (isIdentifier) {
             int numberEnumAttributesIdentifier = 0;
             for (IEnumAttribute currentEnumAttribute : enumAttributesThisType) {
-                if (currentEnumAttribute.isIdentifier()) {
+                if (currentEnumAttribute.isLiteralNameAttribute()) {
                     numberEnumAttributesIdentifier++;
                 }
                 if (numberEnumAttributesIdentifier > 1) {
@@ -288,7 +288,7 @@ public class EnumAttribute extends AtomicIpsObjectPart implements IEnumAttribute
                 IEnumAttribute possibleAttribute = currentSuperEnumType.getEnumAttribute(name);
                 if (possibleAttribute != null) {
                     if (possibleAttribute.getDatatype().equals(datatype)
-                            && possibleAttribute.isIdentifier() == isIdentifier) {
+                            && possibleAttribute.isLiteralNameAttribute() == isIdentifier) {
                         attributeFound = true;
                         break;
                     }

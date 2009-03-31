@@ -61,11 +61,11 @@ public class EnumAttributeTest extends AbstractIpsEnumPluginTest {
     }
 
     public void testGetSetIsIdentifier() {
-        assertTrue(genderEnumAttributeId.isIdentifier());
-        assertFalse(genderEnumAttributeName.isIdentifier());
+        assertTrue(genderEnumAttributeId.isLiteralNameAttribute());
+        assertFalse(genderEnumAttributeName.isLiteralNameAttribute());
 
-        genderEnumAttributeName.setIdentifier(true);
-        assertTrue(genderEnumAttributeName.isIdentifier());
+        genderEnumAttributeName.setLiteralNameAttribute(true);
+        assertTrue(genderEnumAttributeName.isLiteralNameAttribute());
     }
 
     public void testGetSetIsInherited() {
@@ -89,7 +89,7 @@ public class EnumAttributeTest extends AbstractIpsEnumPluginTest {
         IEnumAttribute idAttribute = loadedEnumType.getEnumAttributes().get(0);
         assertEquals(GENDER_ENUM_ATTRIBUTE_ID_NAME, idAttribute.getName());
         assertEquals(STRING_DATATYPE_NAME, idAttribute.getDatatype());
-        assertTrue(idAttribute.isIdentifier());
+        assertTrue(idAttribute.isLiteralNameAttribute());
         assertFalse(idAttribute.isInherited());
         assertEquals(2, loadedEnumType.getEnumAttributes().size());
     }
@@ -125,9 +125,9 @@ public class EnumAttributeTest extends AbstractIpsEnumPluginTest {
 
         // Test duplicate identifiers
         ipsModel.clearValidationCache();
-        genderEnumAttributeName.setIdentifier(true);
+        genderEnumAttributeName.setLiteralNameAttribute(true);
         assertEquals(1, genderEnumAttributeId.validate(ipsProject).getNoOfMessages());
-        genderEnumAttributeName.setIdentifier(false);
+        genderEnumAttributeName.setLiteralNameAttribute(false);
 
         // Test identifier but datatype not String
         ipsModel.clearValidationCache();
@@ -165,7 +165,7 @@ public class EnumAttributeTest extends AbstractIpsEnumPluginTest {
         IEnumType subEnumType = newEnumType(ipsProject, "SubEnumType");
         subEnumType.setSuperEnumType(genderEnumType.getQualifiedName());
         IEnumAttribute subAttributeId = subEnumType.newEnumAttribute();
-        subAttributeId.setIdentifier(true);
+        subAttributeId.setLiteralNameAttribute(true);
         subAttributeId.setInherited(true);
         IEnumAttribute subAttributeName = subEnumType.newEnumAttribute();
         subAttributeName.setInherited(true);

@@ -110,7 +110,7 @@ public abstract class EnumTypeValidations {
         int notInheritedAttributesCount = notInheritedAttributes.size();
         if (notInheritedAttributesCount > 0) {
             IEnumAttribute firstNotInheritedAttribute = notInheritedAttributes.get(0);
-            String identifier = (firstNotInheritedAttribute.isIdentifier()) ? ", " + Messages.EnumAttribute_Identifier
+            String identifier = (firstNotInheritedAttribute.isLiteralNameAttribute()) ? ", " + Messages.EnumAttribute_Identifier
                     : "";
             String showFirst = firstNotInheritedAttribute.getName() + " (" + firstNotInheritedAttribute.getDatatype()
                     + identifier + ')';
@@ -149,7 +149,7 @@ public abstract class EnumTypeValidations {
 
         boolean identifierFound = false;
         for (IEnumAttribute currentEnumAttribute : enumType.findAllEnumAttributes()) {
-            if (currentEnumAttribute.isIdentifier()) {
+            if (currentEnumAttribute.isLiteralNameAttribute()) {
                 identifierFound = true;
                 break;
             }
@@ -201,13 +201,13 @@ public abstract class EnumTypeValidations {
                  */
                 String currentName = currentEnumAttribute.getName();
                 String currentDatatype = currentEnumAttribute.getDatatype();
-                boolean currentIsIdentifier = currentEnumAttribute.isIdentifier();
+                boolean currentIsIdentifier = currentEnumAttribute.isLiteralNameAttribute();
 
                 boolean attributeInList = false;
                 for (IEnumAttribute currentAttributeInReturnList : returnAttributesList) {
                     if (currentAttributeInReturnList.getName().equals(currentName)
                             && currentAttributeInReturnList.getDatatype().equals(currentDatatype)
-                            && currentAttributeInReturnList.isIdentifier() == currentIsIdentifier) {
+                            && currentAttributeInReturnList.isLiteralNameAttribute() == currentIsIdentifier) {
                         attributeInList = true;
                         break;
                     }

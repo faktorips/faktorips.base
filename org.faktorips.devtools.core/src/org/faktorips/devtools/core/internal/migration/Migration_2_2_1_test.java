@@ -190,7 +190,7 @@ public class Migration_2_2_1_test extends AbstractIpsProjectMigrationOperation {
                 String currentColumnName = currentColumn.getName();
                 newEnumAttribute.setName(currentColumnName);
                 newEnumAttribute.setDatatype(currentColumn.getDatatype());
-                newEnumAttribute.setIdentifier((identifier.equals(currentColumnName)));
+                newEnumAttribute.setLiteralNameAttribute((identifier.equals(currentColumnName)));
                 newEnumAttribute.setInherited(false);
             }
 
@@ -228,7 +228,7 @@ public class Migration_2_2_1_test extends AbstractIpsProjectMigrationOperation {
             for (IEnumAttribute currentEnumAttribute : superEnumType.getEnumAttributes()) {
                 IEnumAttribute newEnumAttribute = newEnumType.newEnumAttribute();
                 newEnumAttribute.setInherited(true);
-                newEnumAttribute.setIdentifier(currentEnumAttribute.isIdentifier());
+                newEnumAttribute.setLiteralNameAttribute(currentEnumAttribute.isLiteralNameAttribute());
                 newEnumAttribute.setDatatype(currentEnumAttribute.getDatatype());
                 newEnumAttribute.setName(currentEnumAttribute.getName());
             }

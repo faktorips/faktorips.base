@@ -69,9 +69,9 @@ public class EnumValueTest extends AbstractIpsEnumPluginTest {
         IEnumAttributeValue identifierEnumAttributeValue = genderEnumValueMale.getEnumAttributeValues().get(0);
         assertEquals(identifierEnumAttributeValue, genderEnumValueMale.findIdentifierEnumAttributeValue());
 
-        genderEnumAttributeId.setIdentifier(false);
+        genderEnumAttributeId.setLiteralNameAttribute(false);
         assertNull(genderEnumValueMale.findIdentifierEnumAttributeValue());
-        genderEnumAttributeId.setIdentifier(true);
+        genderEnumAttributeId.setLiteralNameAttribute(true);
 
         genderEnumContent.setEnumType("");
         assertNull(genderEnumValueMale.findIdentifierEnumAttributeValue());

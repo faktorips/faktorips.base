@@ -17,7 +17,7 @@ package org.faktorips.datatype;
  * A value datatype representing an enumeration of values.
  * 
  * @author Jan Ortmann
- * @authot Peter Erzberger
+ * @author Peter Erzberger
  */
 public interface EnumDatatype extends ValueDatatype {
 

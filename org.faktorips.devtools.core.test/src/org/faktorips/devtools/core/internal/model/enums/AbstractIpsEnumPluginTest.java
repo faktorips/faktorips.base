@@ -16,6 +16,7 @@ package org.faktorips.devtools.core.internal.model.enums;
 import javax.xml.parsers.ParserConfigurationException;
 
 import org.eclipse.core.runtime.CoreException;
+import org.faktorips.datatype.Datatype;
 import org.faktorips.devtools.core.AbstractIpsPluginTest;
 import org.faktorips.devtools.core.model.enums.IEnumAttribute;
 import org.faktorips.devtools.core.model.enums.IEnumAttributeValue;
@@ -64,6 +65,8 @@ public abstract class AbstractIpsEnumPluginTest extends AbstractIpsPluginTest {
     protected IEnumValue genderEnumValueMale;
     protected IEnumValue genderEnumValueFemale;
 
+    protected IEnumType paymentMode;
+    
     @Override
     public void setUp() throws Exception {
         super.setUp();
@@ -72,8 +75,28 @@ public abstract class AbstractIpsEnumPluginTest extends AbstractIpsPluginTest {
 
         createGenderEnum();
         initGenderEnumValues();
+        
+        createPaymentModeEnum();
     }
 
+    private void createPaymentModeEnum() throws Exception{
+        paymentMode = newEnumType(ipsProject, "PaymentMode");
+        paymentMode.setAbstract(false);
+        paymentMode.setValuesArePartOfModel(true);
+        
+        IEnumAttribute id = paymentMode.newEnumAttribute();
+        id.setDatatype(Datatype.STRING.getQualifiedName());
+        id.setInherited(false);
+        id.setLiteralNameAttribute(true);
+        id.setName("id");
+        IEnumValue value1 = paymentMode.newEnumValue();
+        IEnumAttributeValue value1id = value1.getEnumAttributeValues().get(0);
+        value1id.setValue("monthly");
+        IEnumValue value2 = paymentMode.newEnumValue();
+        IEnumAttributeValue value2id = value2.getEnumAttributeValues().get(0);
+        value2id.setValue("annually");
+    }
+    
     private void createGenderEnum() throws CoreException {
         genderEnumType = newEnumType(ipsProject, GENDER_ENUM_TYPE_NAME);
         genderEnumType.setAbstract(false);
@@ -83,7 +106,7 @@ public abstract class AbstractIpsEnumPluginTest extends AbstractIpsPluginTest {
         genderEnumAttributeId = genderEnumType.newEnumAttribute();
         genderEnumAttributeId.setName(GENDER_ENUM_ATTRIBUTE_ID_NAME);
         genderEnumAttributeId.setDatatype(STRING_DATATYPE_NAME);
-        genderEnumAttributeId.setIdentifier(true);
+        genderEnumAttributeId.setLiteralNameAttribute(true);
         genderEnumAttributeName = genderEnumType.newEnumAttribute();
         genderEnumAttributeName.setName(GENDER_ENUM_ATTRIBUTE_NAME_NAME);
         genderEnumAttributeName.setDatatype(STRING_DATATYPE_NAME);

@@ -19,6 +19,7 @@ import org.faktorips.codegen.dthelpers.AbstractDatatypeHelper;
 import org.faktorips.devtools.core.internal.model.TableContentsEnumDatatypeAdapter;
 import org.faktorips.devtools.stdbuilder.enums.EnumClassesBuilder;
 
+//TODO pk remove when completing change to enum type
 public class TableContentsEnumDatatypeHelper extends AbstractDatatypeHelper {
 
     private EnumClassesBuilder enumClassesBuilder;

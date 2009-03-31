@@ -48,7 +48,7 @@ public class EnumsUtil {
 
         return enumAttribute1.getName().equals(enumAttribute2.getName())
                 && enumAttribute1.getDatatype().equals(enumAttribute2.getDatatype())
-                && enumAttribute1.isIdentifier() == enumAttribute2.isIdentifier();
+                && enumAttribute1.isLiteralNameAttribute() == enumAttribute2.isLiteralNameAttribute();
     }
 
     /**

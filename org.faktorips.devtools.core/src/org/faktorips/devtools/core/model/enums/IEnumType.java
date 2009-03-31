@@ -17,7 +17,7 @@ import java.util.List;
 import java.util.NoSuchElementException;
 
 import org.eclipse.core.runtime.CoreException;
-import org.faktorips.datatype.Datatype;
+import org.faktorips.datatype.EnumDatatype;
 
 /**
  * An enum type represents the structure of an enum in the Faktor-IPS model.
@@ -46,7 +46,7 @@ import org.faktorips.datatype.Datatype;
  * 
  * @since 2.3
  */
-public interface IEnumType extends IEnumValueContainer, Datatype {
+public interface IEnumType extends IEnumValueContainer, EnumDatatype {
 
     /** The xml tag for this ips object. */
     public final static String XML_TAG = "EnumType"; //$NON-NLS-1$

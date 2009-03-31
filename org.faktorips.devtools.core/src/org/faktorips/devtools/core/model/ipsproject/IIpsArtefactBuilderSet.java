@@ -131,6 +131,7 @@ public interface IIpsArtefactBuilderSet extends IJavaPackageStructure {
      * @throws NullPointerException if structure is <code>null</code>.
      * @throws IllegalArgumentException if the structure does not define an enum type.
      */
+    //TODO pk set deprecated when completing change to enum type
     public DatatypeHelper getDatatypeHelperForTableBasedEnum(TableContentsEnumDatatypeAdapter datatype);
 
     /**

@@ -824,6 +824,15 @@ public class IpsProject extends IpsElement implements IIpsProject {
     /**
      * {@inheritDoc}
      */
+    public List<IEnumType> findEnumTypes() throws CoreException {
+        List<IIpsSrcFile> ipsSrcFiles = new ArrayList<IIpsSrcFile>();
+        findAllIpsSrcFiles(ipsSrcFiles, IpsObjectType.ENUM_TYPE);
+        return (List<IEnumType>)filesToIpsObjects(ipsSrcFiles);
+    }
+    
+    /**
+     * {@inheritDoc}
+     */
     public IProductCmpt findProductCmptByRuntimeId(String runtimeId) throws CoreException {
         if (runtimeId == null) {
             return null;
@@ -881,7 +890,7 @@ public class IpsProject extends IpsElement implements IIpsProject {
 
         ArrayList files = new ArrayList();
         findIpsSrcFilesStartingWith(type, prefix, ignoreCase, files);
-        return filesToIpsObjects(files);
+        return filesToIpsObjects(files).toArray(new IIpsObject[files.size()]);
     }
 
     /**
@@ -957,6 +966,21 @@ public class IpsProject extends IpsElement implements IIpsProject {
         }
 
         return (IIpsObject[])objects.toArray(new IIpsObject[objects.size()]);
+    }
+
+    private List<? extends IIpsObject> filesToIpsObjects(List<IIpsSrcFile> files) throws CoreException {
+        List<IIpsObject> objects = new ArrayList<IIpsObject>(files.size());
+        for (Iterator<IIpsSrcFile> it = files.iterator(); it.hasNext();) {
+            IIpsSrcFile file = it.next();
+            IIpsObject ipsObject = null;
+            if (file.exists()) {
+                ipsObject = file.getIpsObject();
+                if (ipsObject != null) {
+                    objects.add(ipsObject);
+                }
+            }
+        }
+        return objects;
     }
 
     private IIpsObject[] filesToIpsObjects(List files) throws CoreException {
@@ -1048,7 +1072,11 @@ public class IpsProject extends IpsElement implements IIpsProject {
             throws CoreException {
         Set<Datatype> result = new LinkedHashSet<Datatype>();
         getDatatypesDefinedInProjectPropertiesInclSubprojects(valuetypesOnly, includeVoid, includePrimitives, result);
+        //TODO pk remove when completing change to enum types
         findEnumDatatypesBasedOnTables(result);
+        if(valuetypesOnly){
+            result.addAll(findEnumTypes());
+        }
         if (!valuetypesOnly) {
             findDatatypesDefinedByIpsObjects(result);
         }
@@ -1083,6 +1111,7 @@ public class IpsProject extends IpsElement implements IIpsProject {
         }
     }
 
+    //TODO pk remove when completing change to enum types
     private void findEnumDatatypesBasedOnTables(Set<Datatype> result) throws CoreException {
         IIpsSrcFile[] structureSrcFiles = findIpsSrcFiles(IpsObjectType.TABLE_STRUCTURE);
         for (int i = 0; i < structureSrcFiles.length; i++) {
@@ -1122,7 +1151,7 @@ public class IpsProject extends IpsElement implements IIpsProject {
         // TODO this implementation can be improved and instanceof can be avoided. Therefore the
         // storage of EnumDatatypes an Datatypes
         // has to be separated within the IpsModel class
-
+        
         Datatype[] datatypes = findDatatypes(true, false);
         ArrayList<Datatype> enumDatatypeList = new ArrayList<Datatype>();
         for (int i = 0; i < datatypes.length; i++) {
@@ -1192,20 +1221,24 @@ public class IpsProject extends IpsElement implements IIpsProject {
                 "\" specifies an array of a non value datatype. This is currently not supported."); //$NON-NLS-1$
     }
 
-    private ValueDatatype findValueDatatype(IpsProject ipsProject, String qualifiedName, HashSet visitedProjects)
+    private ValueDatatype findValueDatatype(IpsProject ipsProject, String qualifiedName, Set<IIpsProject> visitedProjects)
             throws CoreException {
 
         ValueDatatype datatype = ((IpsModel)getIpsModel()).getValueDatatype(ipsProject, qualifiedName);
         if (datatype != null) {
             return datatype;
         }
-
+        //TODO pk remove when completing change to enum types
         ITableContents contents = (ITableContents)ipsProject.findIpsObject(IpsObjectType.TABLE_CONTENTS, qualifiedName);
         if (contents != null) {
             ITableStructure structure = contents.findTableStructure(ipsProject);
             if (structure != null && structure.isModelEnumType()) {
                 return new TableContentsEnumDatatypeAdapter(contents, ipsProject);
             }
+        }
+        IEnumType enumType = findEnumType(qualifiedName);
+        if(enumType != null){
+            return enumType;
         }
         IIpsProject[] projects = ((IpsProject)ipsProject).getIpsObjectPathInternal().getReferencedIpsProjects();
         for (int i = 0; i < projects.length; i++) {
@@ -1221,7 +1254,7 @@ public class IpsProject extends IpsElement implements IIpsProject {
         return null;
     }
 
-    public Datatype findDatatypeDefinedInProjectPropertiesInclSubprojects(String qualifiedName) throws CoreException {
+    private Datatype findDatatypeDefinedInProjectPropertiesInclSubprojects(String qualifiedName) throws CoreException {
         if (qualifiedName == null) {
             return null;
         }
@@ -1252,7 +1285,7 @@ public class IpsProject extends IpsElement implements IIpsProject {
         if (datatype != null) {
             return datatype;
         }
-
+        //TODO pk remove when completing change to enum types
         ITableContents contents = (ITableContents)ipsProject.findIpsObject(IpsObjectType.TABLE_CONTENTS, qualifiedName);
         if (contents != null) {
             ITableStructure structure = contents.findTableStructure(ipsProject);
@@ -1286,6 +1319,7 @@ public class IpsProject extends IpsElement implements IIpsProject {
         if (datatype instanceof ArrayOfValueDatatype) {
             return new ArrayOfValueDatatypeHelper(datatype);
         }
+      //TODO pk remove when completing change to enum types
         if (datatype instanceof TableContentsEnumDatatypeAdapter) {
             return getIpsArtefactBuilderSet().getDatatypeHelperForTableBasedEnum(
                     (TableContentsEnumDatatypeAdapter)datatype);

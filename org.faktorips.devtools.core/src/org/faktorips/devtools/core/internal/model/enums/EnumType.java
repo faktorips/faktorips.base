@@ -17,9 +17,12 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.NoSuchElementException;
 
+import org.apache.commons.lang.ObjectUtils;
 import org.eclipse.core.resources.IWorkspaceRunnable;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
+import org.faktorips.datatype.EnumDatatype;
+import org.faktorips.datatype.ValueDatatype;
 import org.faktorips.devtools.core.internal.model.ipsobject.IpsObjectPartCollection;
 import org.faktorips.devtools.core.model.enums.EnumTypeValidations;
 import org.faktorips.devtools.core.model.enums.IEnumAttribute;
@@ -290,48 +293,6 @@ public class EnumType extends EnumValueContainer implements IEnumType {
     /**
      * {@inheritDoc}
      */
-    public String getJavaClassName() {
-        throw new UnsupportedOperationException();
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    public boolean hasNullObject() {
-        return false;
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    public boolean isPrimitive() {
-        return false;
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    public boolean isValueDatatype() {
-        return false;
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    public boolean isVoid() {
-        return false;
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    public int compareTo(Object o) {
-        return 0;
-    }
-
-    /**
-     * {@inheritDoc}
-     */
     public boolean enumAttributeExists(String name) {
         ArgumentCheck.notNull(name);
 
@@ -505,6 +466,186 @@ public class EnumType extends EnumValueContainer implements IEnumType {
     }
 
     /**
+     * {@inheritDoc}
+     */
+    public String getJavaClassName() {
+        throw new UnsupportedOperationException();
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public boolean hasNullObject() {
+        return false;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public boolean isPrimitive() {
+        return false;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public boolean isValueDatatype() {
+        return true;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public boolean isVoid() {
+        return false;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public int compareTo(Object o) {
+        EnumDatatype other = (EnumDatatype)o;
+        return getQualifiedName().compareTo(other.getQualifiedName());
+    }
+
+    /**
+     * Returns the ids of the values of this enum type. The literal name attribute value is
+     * considered to be the id in this context. Returns <code>null</code> if the value of the
+     * literal name attribute of a value of this enum type could not be determined.
+     * 
+     * @throws a <code>RuntimeException</code> if the process of determining the enum attribute
+     *             values throws a <code>CoreException</code>.
+     */
+    public String[] getAllValueIds(boolean includeNull) {
+        try{
+            List<String> valueIds = new ArrayList<String>(getEnumValuesCount());
+            for (IEnumValue enumValue : getEnumValues()) {
+                IEnumAttributeValue value = enumValue.findIdentifierEnumAttributeValue();
+                if(value == null){
+                    return null;
+                }
+                valueIds.add(value.getValue());
+            }
+            return valueIds.toArray(new String[valueIds.size()]);
+        } catch(CoreException e){
+            throw new RuntimeException("Unable to determine the value ids of this enum type.", e);
+        }
+    }
+
+    /**
+     * In the context of an enum type the id is the value of the literal name attribute. This
+     * method checks if the provided id is one of the enum attribute values. If so the id is returned
+     * otherwise <code>null</code> is returned.
+     */
+    public String getValueName(String id) {
+        if(id == null) {
+            return null;
+        }
+        try{
+            for (IEnumValue enumValue : getEnumValues()) {
+                IEnumAttributeValue value = enumValue.findIdentifierEnumAttributeValue();
+                if(value == null){
+                    continue;
+                }
+                if(id.equals(value.getValue())){
+                    return value.getValue();
+                }
+            }
+            return null;
+        } catch(CoreException e){
+            throw new RuntimeException("Unable to determine the value ids of this enum type.", e);
+        }
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public boolean isSupportingNames() {
+        return true;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public boolean areValuesEqual(String valueA, String valueB) {
+        String valueAName = getValueName(valueA);
+        String valueBName = getValueName(valueB);
+        if(valueAName != null && valueBName != null){
+            return ObjectUtils.equals(valueA, valueB);
+        }
+        throw new IllegalArgumentException("Either the value of parameter valueA=" + valueA
+                + " or the one of parameter valueB="
+                + " is not part of this enumeration type. Therefor the equality cannot be determined.");
+    }
+
+    //TODO pk this method needs IIpsProject as parameter but this collides with its original intention which
+    //also manifests in being located in the commons project
+    public MessageList checkReadyToUse() {
+        try {
+            return validate(getIpsProject());
+        } catch (CoreException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    /**
+     * Returns true.
+     */
+    public boolean supportsCompare() {
+        return false;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public int compare(String valueA, String valueB) throws UnsupportedOperationException {
+        throw new UnsupportedOperationException();
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public String getDefaultValue() {
+        return null;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public ValueDatatype getWrapperType() {
+        return null;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public boolean isImmutable() {
+        return !isMutable();
+    }
+
+    /**
+     * Returns true.
+     */
+    public boolean isMutable() {
+        return true;
+    }
+
+    /**
+     * Returns false.
+     */
+    public boolean isNull(String value) {
+        return false;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public boolean isParsable(String value) {
+        return getValueName(value) != null;
+    }
+
+    
+    /**
      * Creates a new enum attribute. On every enum value that is contained in this enum type new
      * enum attribute value objects need to be created for the new enum attribute.
      * <p>
@@ -573,5 +714,4 @@ public class EnumType extends EnumValueContainer implements IEnumType {
         }
 
     }
-
 }
