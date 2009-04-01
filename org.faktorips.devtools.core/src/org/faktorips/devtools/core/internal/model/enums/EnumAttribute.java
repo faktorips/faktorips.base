@@ -240,7 +240,7 @@ public class EnumAttribute extends AtomicIpsObjectPart implements IEnumAttribute
         // Check for identifier datatype = String
         if (identifier) {
             if (!(ipsDatatype.getName().equals("String"))) {
-                text = Messages.EnumAttribute_IdentifierNotOfDatatypeString;
+                text = Messages.EnumAttribute_LiteralNameNotOfDatatypeString;
                 validationMessage = new Message(MSGCODE_ENUM_ATTRIBUTE_IDENTIFIER_NOT_OF_DATATYPE_STRING, text,
                         Message.ERROR, this, PROPERTY_DATATYPE);
                 list.add(validationMessage);
@@ -262,7 +262,7 @@ public class EnumAttribute extends AtomicIpsObjectPart implements IEnumAttribute
                     numberEnumAttributesIdentifier++;
                 }
                 if (numberEnumAttributesIdentifier > 1) {
-                    text = Messages.EnumAttribute_DuplicateIdentifier;
+                    text = Messages.EnumAttribute_DuplicateLiteralName;
                     validationMessage = new Message(MSGCODE_ENUM_ATTRIBUTE_DUPLICATE_IDENTIFIER, text, Message.ERROR,
                             this, PROPERTY_LITERAL_NAME_ATTRIBUTE);
                     list.add(validationMessage);
@@ -303,7 +303,7 @@ public class EnumAttribute extends AtomicIpsObjectPart implements IEnumAttribute
             }
 
             if (!(attributeFound)) {
-                String identifierLabel = (identifier) ? ", " + Messages.EnumAttribute_Identifier : "";
+                String identifierLabel = (identifier) ? ", " + Messages.EnumAttribute_UniqueIdentifier : "";
                 String attribute = name + " (" + datatype + identifierLabel + ')';
                 text = NLS.bind(Messages.EnumAttribute_NoSuchAttributeInSupertypeHierarchy, attribute);
                 validationMessage = new Message(MSGCODE_ENUM_ATTRIBUTE_NO_SUCH_ATTRIBUTE_IN_SUPERTYPE_HIERARCHY, text,

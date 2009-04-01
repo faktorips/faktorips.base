@@ -28,17 +28,17 @@ public class Messages extends NLS {
     public static String EnumAttributeValue_ValueNotParsable;
     public static String EnumAttributeValue_UniqueIdentifierValueEmpty;
     public static String EnumAttributeValue_UniqueIdentifierValueNotUnique;
-    public static String EnumAttributeValue_UniqueIdentifierValueNotJavaConform;
+    public static String EnumAttributeValue_LiteralNameValueNotJavaConform;
 
     public static String EnumAttribute_NameMissing;
     public static String EnumAttribute_DuplicateName;
     public static String EnumAttribute_DatatypeMissing;
     public static String EnumAttribute_DatatypeDoesNotExist;
-    public static String EnumAttribute_DuplicateIdentifier;
+    public static String EnumAttribute_DuplicateLiteralName;
     public static String EnumAttribute_NoSuchAttributeInSupertypeHierarchy;
-    public static String EnumAttribute_IdentifierNotOfDatatypeString;
+    public static String EnumAttribute_LiteralNameNotOfDatatypeString;
     public static String EnumAttribute_LiteralNameButNotUniqueIdentifier;
-    public static String EnumAttribute_Identifier;
+    public static String EnumAttribute_UniqueIdentifier;
 
     static {
         // initialize resource bundle

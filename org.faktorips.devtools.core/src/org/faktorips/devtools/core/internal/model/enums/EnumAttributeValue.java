@@ -202,7 +202,7 @@ public class EnumAttributeValue extends AtomicIpsObjectPart implements IEnumAttr
 
         // The identifier enum attribute value must be java conform
         if (!(JavaConventions.validateIdentifier(value, "1.5", "1.5").isOK())) {
-            text = NLS.bind(Messages.EnumAttributeValue_UniqueIdentifierValueNotJavaConform, enumAttribute.getName());
+            text = NLS.bind(Messages.EnumAttributeValue_LiteralNameValueNotJavaConform, enumAttribute.getName());
             validationMessage = new Message(MSGCODE_ENUM_ATTRIBUTE_VALUE_IDENTIFIER_NOT_JAVA_CONFORM, text,
                     Message.ERROR, this);
             list.add(validationMessage);
