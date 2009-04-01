@@ -75,13 +75,20 @@ public class EnumAttributeTest extends AbstractIpsEnumPluginTest {
         assertTrue(genderEnumAttributeId.isInherited());
     }
 
+    public void testGetSetIsUniqueIdentifier() {
+        assertTrue(genderEnumAttributeId.isUniqueIdentifier());
+        genderEnumAttributeId.setUniqueIdentifier(false);
+        assertFalse(genderEnumAttributeId.isUniqueIdentifier());
+    }
+
     public void testXml() throws ParserConfigurationException, CoreException {
         Element xmlElement = genderEnumType.toXml(createXmlDocument(IEnumAttribute.XML_TAG));
         NamedNodeMap attributes = xmlElement.getChildNodes().item(1).getAttributes();
         assertEquals(GENDER_ENUM_ATTRIBUTE_ID_NAME, attributes.getNamedItem(IEnumAttribute.PROPERTY_NAME)
                 .getTextContent());
         assertEquals(STRING_DATATYPE_NAME, attributes.getNamedItem(IEnumAttribute.PROPERTY_DATATYPE).getTextContent());
-        assertTrue(Boolean.parseBoolean(attributes.getNamedItem(IEnumAttribute.PROPERTY_LITERAL_NAME_ATTRIBUTE).getTextContent()));
+        assertTrue(Boolean.parseBoolean(attributes.getNamedItem(IEnumAttribute.PROPERTY_LITERAL_NAME_ATTRIBUTE)
+                .getTextContent()));
         assertFalse(Boolean.parseBoolean(attributes.getNamedItem(IEnumAttribute.PROPERTY_INHERITED).getTextContent()));
         assertEquals(1 + 2, xmlElement.getChildNodes().getLength());
 
@@ -97,11 +104,12 @@ public class EnumAttributeTest extends AbstractIpsEnumPluginTest {
 
     public void testValidateThis() throws CoreException {
         assertTrue(genderEnumAttributeId.isValid());
+    }
 
+    public void testValidateName() throws CoreException {
         IIpsModel ipsModel = getIpsModel();
 
         // Test name missing
-        ipsModel.clearValidationCache();
         genderEnumAttributeId.setName("");
         assertEquals(1, genderEnumAttributeId.validate(ipsProject).getNoOfMessages());
         genderEnumAttributeId.setName(GENDER_ENUM_ATTRIBUTE_ID_NAME);
@@ -111,9 +119,12 @@ public class EnumAttributeTest extends AbstractIpsEnumPluginTest {
         genderEnumAttributeId.setName(GENDER_ENUM_ATTRIBUTE_NAME_NAME);
         assertEquals(1, genderEnumAttributeId.validate(ipsProject).getNoOfMessages());
         genderEnumAttributeId.setName(GENDER_ENUM_ATTRIBUTE_ID_NAME);
+    }
+
+    public void testValidateDatatype() throws CoreException {
+        IIpsModel ipsModel = getIpsModel();
 
         // Test datatype missing
-        ipsModel.clearValidationCache();
         genderEnumAttributeId.setDatatype("");
         assertEquals(1, genderEnumAttributeId.validate(ipsProject).getNoOfMessages());
         genderEnumAttributeId.setDatatype(STRING_DATATYPE_NAME);
@@ -123,9 +134,12 @@ public class EnumAttributeTest extends AbstractIpsEnumPluginTest {
         genderEnumAttributeId.setDatatype("FooBar");
         assertEquals(1, genderEnumAttributeId.validate(ipsProject).getNoOfMessages());
         genderEnumAttributeId.setDatatype(STRING_DATATYPE_NAME);
+    }
+
+    public void testValidateIdentifier() throws CoreException {
+        IIpsModel ipsModel = getIpsModel();
 
         // Test duplicate identifiers
-        ipsModel.clearValidationCache();
         genderEnumAttributeName.setLiteralNameAttribute(true);
         assertEquals(1, genderEnumAttributeId.validate(ipsProject).getNoOfMessages());
         genderEnumAttributeName.setLiteralNameAttribute(false);
@@ -136,6 +150,16 @@ public class EnumAttributeTest extends AbstractIpsEnumPluginTest {
         assertEquals(1, genderEnumAttributeId.validate(ipsProject).getNoOfMessages());
         genderEnumAttributeId.setDatatype(STRING_DATATYPE_NAME);
 
+        // Test identifier but not unique identifier
+        ipsModel.clearValidationCache();
+        genderEnumAttributeId.setUniqueIdentifier(false);
+        assertEquals(1, genderEnumAttributeId.validate(ipsProject).getNoOfMessages());
+        genderEnumAttributeId.setUniqueIdentifier(true);
+    }
+
+    public void testValidateInherited() throws CoreException {
+        IIpsModel ipsModel = getIpsModel();
+
         // Test no such attribute in supertype hierarchy for inherited attribute
         IEnumType superEnumType = newEnumType(ipsProject, "SuperEnumType");
         superEnumType.setAbstract(true);
@@ -144,11 +168,12 @@ public class EnumAttributeTest extends AbstractIpsEnumPluginTest {
         inheritedAttribute.setName("foo");
         inheritedAttribute.setDatatype(STRING_DATATYPE_NAME);
         inheritedAttribute.setInherited(true);
-        ipsModel.clearValidationCache();
+
         assertEquals(1, inheritedAttribute.validate(ipsProject).getNoOfMessages());
         IEnumAttribute toInheritAttribute = superEnumType.newEnumAttribute();
         toInheritAttribute.setName("foo");
         toInheritAttribute.setDatatype(STRING_DATATYPE_NAME);
+
         ipsModel.clearValidationCache();
         assertTrue(inheritedAttribute.isValid());
     }

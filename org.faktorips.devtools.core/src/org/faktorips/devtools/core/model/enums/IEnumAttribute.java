@@ -52,6 +52,9 @@ public interface IEnumAttribute extends IIpsObjectPart {
     /** Name of the <code>inherited</code> property. */
     public final static String PROPERTY_INHERITED = "inherited"; //$NON-NLS-1$
 
+    /** Name of the <code>uniqueIdentifier</code> property. */
+    public final static String PROPERTY_UNIQUE_IDENTIFIER = "uniqueIdentifier"; //$NON-NLS-1$
+
     /** Prefix for all message codes of this class. */
     public final static String MSGCODE_PREFIX = "ENUMATTRIBUTE-"; //$NON-NLS-1$
 
@@ -89,6 +92,13 @@ public interface IEnumAttribute extends IIpsObjectPart {
      */
     public final static String MSGCODE_ENUM_ATTRIBUTE_DUPLICATE_IDENTIFIER = MSGCODE_PREFIX
             + "EnumAttributeDuplicateIdentifier"; //$NON-NLS-1$
+
+    /**
+     * Validation message code to indicate that this enum attribute is marked to be used as literal
+     * name but is not a unique identifier.
+     */
+    public final static String MSGCODE_ENUM_ATTRIBUTE_LITERAL_NAME_BUT_NOT_UNIQUE_IDENTIFIER = MSGCODE_PREFIX
+            + "EnumAttributeLiteralNameButNotUniqueIdentifier"; //$NON-NLS-1$;
 
     /**
      * Sets the name of this enum attribute.
@@ -165,5 +175,19 @@ public interface IEnumAttribute extends IIpsObjectPart {
      * This is a shortcut for: <code>(IEnumType)this.getParent();</code>
      */
     public IEnumType getEnumType();
+
+    /**
+     * Returns <code>true</code> if this enum attribute is a unique identifier, <code>false</code>
+     * if not.
+     */
+    public boolean isUniqueIdentifier();
+
+    /**
+     * Sets whether this enum attribute is a unique identifier.
+     * 
+     * @param isUniqueIdentifier Flag indicating whether this enum attribute will be a unique
+     *            identifier.
+     */
+    public void setUniqueIdentifier(boolean isUniqueIdentifier);
 
 }

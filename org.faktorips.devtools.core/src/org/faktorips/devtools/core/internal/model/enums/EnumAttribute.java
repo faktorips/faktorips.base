@@ -54,14 +54,17 @@ public class EnumAttribute extends AtomicIpsObjectPart implements IEnumAttribute
     /** The icon representing an overridden identifier enum attribute. */
     private final String OVERRIDDEN_IDENTIFIER_ICON = "EnumAttributeOverriddenIdentifier.gif";
 
-    /** The datatype of this attribute. */
+    /** The datatype of this enum attribute. */
     private String datatype;
 
-    /** Flag indicating whether this attribute is an identifier. */
-    private boolean isIdentifier;
+    /** Flag indicating whether this enum attribute is an identifier. */
+    private boolean identifier;
 
-    /** Flag indicating whether this attribute is inherited from the supertype hierarchy. */
-    private boolean isInherited;
+    /** Flag indicating whether this enum attribute is inherited from the supertype hierarchy. */
+    private boolean inherited;
+
+    /** Flag indicating whether this enum attribute is a unique identifier. */
+    private boolean uniqueIdentifier;
 
     /**
      * Creates a new <code>EnumAttribute</code>.
@@ -73,8 +76,9 @@ public class EnumAttribute extends AtomicIpsObjectPart implements IEnumAttribute
         super(parent, id);
 
         this.datatype = "";
-        this.isIdentifier = false;
-        this.isInherited = false;
+        this.identifier = false;
+        this.inherited = false;
+        this.uniqueIdentifier = false;
     }
 
     /**
@@ -103,15 +107,15 @@ public class EnumAttribute extends AtomicIpsObjectPart implements IEnumAttribute
      * {@inheritDoc}
      */
     public boolean isLiteralNameAttribute() {
-        return isIdentifier;
+        return identifier;
     }
 
     /**
      * {@inheritDoc}
      */
     public void setLiteralNameAttribute(boolean isIdentifier) {
-        boolean oldIsIdentifier = this.isIdentifier;
-        this.isIdentifier = isIdentifier;
+        boolean oldIsIdentifier = this.identifier;
+        this.identifier = isIdentifier;
         valueChanged(oldIsIdentifier, isIdentifier);
     }
 
@@ -130,8 +134,8 @@ public class EnumAttribute extends AtomicIpsObjectPart implements IEnumAttribute
     protected void initFromXml(Element element, Integer id) {
         name = element.getAttribute(PROPERTY_NAME);
         datatype = element.getAttribute(PROPERTY_DATATYPE);
-        isIdentifier = Boolean.parseBoolean(element.getAttribute(PROPERTY_LITERAL_NAME_ATTRIBUTE));
-        isInherited = Boolean.parseBoolean(element.getAttribute(PROPERTY_INHERITED));
+        identifier = Boolean.parseBoolean(element.getAttribute(PROPERTY_LITERAL_NAME_ATTRIBUTE));
+        inherited = Boolean.parseBoolean(element.getAttribute(PROPERTY_INHERITED));
 
         super.initFromXml(element, id);
     }
@@ -145,19 +149,19 @@ public class EnumAttribute extends AtomicIpsObjectPart implements IEnumAttribute
 
         element.setAttribute(PROPERTY_NAME, name);
         element.setAttribute(PROPERTY_DATATYPE, datatype);
-        element.setAttribute(PROPERTY_LITERAL_NAME_ATTRIBUTE, String.valueOf(isIdentifier));
-        element.setAttribute(PROPERTY_INHERITED, String.valueOf(isInherited));
+        element.setAttribute(PROPERTY_LITERAL_NAME_ATTRIBUTE, String.valueOf(identifier));
+        element.setAttribute(PROPERTY_INHERITED, String.valueOf(inherited));
     }
 
     /**
      * {@inheritDoc}
      */
     public Image getImage() {
-        if (isIdentifier && isInherited) {
+        if (identifier && inherited) {
             return IpsPlugin.getDefault().getImage(OVERRIDDEN_IDENTIFIER_ICON);
-        } else if (isIdentifier) {
+        } else if (identifier) {
             return IpsPlugin.getDefault().getImage(IDENTIFIER_ICON);
-        } else if (isInherited) {
+        } else if (inherited) {
             return IpsPlugin.getDefault().getImage(OVERRIDDEN_ICON);
         } else {
             return IpsPlugin.getDefault().getImage(ICON);
@@ -177,7 +181,7 @@ public class EnumAttribute extends AtomicIpsObjectPart implements IEnumAttribute
         validateInherited(list, ipsProject);
     }
 
-    /** Validates the name property. */
+    /** Validates the <code>name</code> property. */
     private void validateName(MessageList list, IIpsProject ipsProject) {
         String text;
         Message validationMessage;
@@ -207,7 +211,7 @@ public class EnumAttribute extends AtomicIpsObjectPart implements IEnumAttribute
         }
     }
 
-    /** Validates the datatype property. */
+    /** Validates the <code>datatype</code> property. */
     private void validateDatatype(MessageList list, IIpsProject ipsProject) throws CoreException {
         String text;
         Message validationMessage;
@@ -232,7 +236,7 @@ public class EnumAttribute extends AtomicIpsObjectPart implements IEnumAttribute
         }
 
         // Check for identifier datatype = String
-        if (isIdentifier) {
+        if (identifier) {
             if (!(ipsDatatype.getName().equals("String"))) {
                 text = Messages.EnumAttribute_IdentifierNotOfDatatypeString;
                 validationMessage = new Message(MSGCODE_ENUM_ATTRIBUTE_IDENTIFIER_NOT_OF_DATATYPE_STRING, text,
@@ -242,14 +246,14 @@ public class EnumAttribute extends AtomicIpsObjectPart implements IEnumAttribute
         }
     }
 
-    /** Validates the identifier property. */
+    /** Validates the <code>identifier</code> property. */
     private void validateIdentifier(MessageList list, IIpsProject ipsProject) {
         String text;
         Message validationMessage;
         List<IEnumAttribute> enumAttributesThisType = getEnumType().getEnumAttributes();
 
-        // Check for other attributes being marked as identifier
-        if (isIdentifier) {
+        if (identifier) {
+            // Check for other attributes being marked as identifier
             int numberEnumAttributesIdentifier = 0;
             for (IEnumAttribute currentEnumAttribute : enumAttributesThisType) {
                 if (currentEnumAttribute.isLiteralNameAttribute()) {
@@ -263,16 +267,24 @@ public class EnumAttribute extends AtomicIpsObjectPart implements IEnumAttribute
                     break;
                 }
             }
+
+            // A literal name must also be a unique identifier
+            if (!uniqueIdentifier) {
+                text = Messages.EnumAttribute_LiteralNameButNotUniqueIdentifier;
+                validationMessage = new Message(MSGCODE_ENUM_ATTRIBUTE_LITERAL_NAME_BUT_NOT_UNIQUE_IDENTIFIER, text,
+                        Message.ERROR, this, PROPERTY_LITERAL_NAME_ATTRIBUTE);
+                list.add(validationMessage);
+            }
         }
     }
 
-    /** Validates the inherited property. */
+    /** Validates the <code>inherited</code> property. */
     private void validateInherited(MessageList list, IIpsProject ipsProject) throws CoreException {
         String text;
         Message validationMessage;
 
         // Check existence in supertype hierarchy if this enum attribute is inherited
-        if (isInherited) {
+        if (inherited) {
             boolean attributeFound = false;
             List<IEnumType> superEnumTypes = getEnumType().findAllSuperEnumTypes();
             for (IEnumType currentSuperEnumType : superEnumTypes) {
@@ -281,7 +293,7 @@ public class EnumAttribute extends AtomicIpsObjectPart implements IEnumAttribute
                 IEnumAttribute possibleAttribute = currentSuperEnumType.getEnumAttribute(name);
                 if (possibleAttribute != null) {
                     if (possibleAttribute.getDatatype().equals(datatype)
-                            && possibleAttribute.isLiteralNameAttribute() == isIdentifier) {
+                            && possibleAttribute.isLiteralNameAttribute() == identifier) {
                         attributeFound = true;
                         break;
                     }
@@ -289,8 +301,8 @@ public class EnumAttribute extends AtomicIpsObjectPart implements IEnumAttribute
             }
 
             if (!(attributeFound)) {
-                String identifier = (isIdentifier) ? ", " + Messages.EnumAttribute_Identifier : "";
-                String attribute = name + " (" + datatype + identifier + ')';
+                String identifierLabel = (identifier) ? ", " + Messages.EnumAttribute_Identifier : "";
+                String attribute = name + " (" + datatype + identifierLabel + ')';
                 text = NLS.bind(Messages.EnumAttribute_NoSuchAttributeInSupertypeHierarchy, attribute);
                 validationMessage = new Message(MSGCODE_ENUM_ATTRIBUTE_NO_SUCH_ATTRIBUTE_IN_SUPERTYPE_HIERARCHY, text,
                         Message.ERROR, this, PROPERTY_INHERITED);
@@ -303,15 +315,15 @@ public class EnumAttribute extends AtomicIpsObjectPart implements IEnumAttribute
      * {@inheritDoc}
      */
     public boolean isInherited() {
-        return isInherited;
+        return inherited;
     }
 
     /**
      * {@inheritDoc}
      */
     public void setInherited(boolean isInherited) {
-        boolean oldIsInherited = this.isInherited;
-        this.isInherited = isInherited;
+        boolean oldIsInherited = this.inherited;
+        this.inherited = isInherited;
         valueChanged(oldIsInherited, isInherited);
     }
 
@@ -335,11 +347,27 @@ public class EnumAttribute extends AtomicIpsObjectPart implements IEnumAttribute
     public ValueDatatype findDatatype(IIpsProject ipsProject) throws CoreException {
         ArgumentCheck.notNull(ipsProject);
 
-        if (isInherited) {
+        if (inherited) {
             return getEnumType().findEnumAttribute(name).findDatatype(ipsProject);
         }
 
         return ipsProject.findValueDatatype(datatype);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public boolean isUniqueIdentifier() {
+        return uniqueIdentifier;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public void setUniqueIdentifier(boolean isUniqueIdentifier) {
+        boolean oldIsUniqueIdentifier = this.uniqueIdentifier;
+        this.uniqueIdentifier = isUniqueIdentifier;
+        valueChanged(oldIsUniqueIdentifier, isUniqueIdentifier);
     }
 
 }

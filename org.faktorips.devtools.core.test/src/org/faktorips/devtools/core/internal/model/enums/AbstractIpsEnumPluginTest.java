@@ -66,7 +66,7 @@ public abstract class AbstractIpsEnumPluginTest extends AbstractIpsPluginTest {
     protected IEnumValue genderEnumValueFemale;
 
     protected IEnumType paymentMode;
-    
+
     @Override
     public void setUp() throws Exception {
         super.setUp();
@@ -75,19 +75,20 @@ public abstract class AbstractIpsEnumPluginTest extends AbstractIpsPluginTest {
 
         createGenderEnum();
         initGenderEnumValues();
-        
+
         createPaymentModeEnum();
     }
 
-    private void createPaymentModeEnum() throws Exception{
+    private void createPaymentModeEnum() throws Exception {
         paymentMode = newEnumType(ipsProject, "PaymentMode");
         paymentMode.setAbstract(false);
         paymentMode.setValuesArePartOfModel(true);
-        
+
         IEnumAttribute id = paymentMode.newEnumAttribute();
         id.setDatatype(Datatype.STRING.getQualifiedName());
         id.setInherited(false);
         id.setLiteralNameAttribute(true);
+        id.setUniqueIdentifier(true);
         id.setName("id");
         IEnumValue value1 = paymentMode.newEnumValue();
         IEnumAttributeValue value1id = value1.getEnumAttributeValues().get(0);
@@ -96,7 +97,7 @@ public abstract class AbstractIpsEnumPluginTest extends AbstractIpsPluginTest {
         IEnumAttributeValue value2id = value2.getEnumAttributeValues().get(0);
         value2id.setValue("annually");
     }
-    
+
     private void createGenderEnum() throws CoreException {
         genderEnumType = newEnumType(ipsProject, GENDER_ENUM_TYPE_NAME);
         genderEnumType.setAbstract(false);
@@ -107,6 +108,7 @@ public abstract class AbstractIpsEnumPluginTest extends AbstractIpsPluginTest {
         genderEnumAttributeId.setName(GENDER_ENUM_ATTRIBUTE_ID_NAME);
         genderEnumAttributeId.setDatatype(STRING_DATATYPE_NAME);
         genderEnumAttributeId.setLiteralNameAttribute(true);
+        genderEnumAttributeId.setUniqueIdentifier(true);
         genderEnumAttributeName = genderEnumType.newEnumAttribute();
         genderEnumAttributeName.setName(GENDER_ENUM_ATTRIBUTE_NAME_NAME);
         genderEnumAttributeName.setDatatype(STRING_DATATYPE_NAME);
