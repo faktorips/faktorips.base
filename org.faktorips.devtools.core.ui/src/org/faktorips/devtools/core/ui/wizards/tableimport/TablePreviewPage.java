@@ -22,26 +22,29 @@ import org.eclipse.jdt.core.IJavaElement;
 import org.eclipse.jdt.core.JavaModelException;
 import org.eclipse.jface.dialogs.IMessageProvider;
 import org.eclipse.jface.viewers.IStructuredSelection;
+import org.eclipse.jface.viewers.CellEditor.LayoutData;
 import org.eclipse.jface.wizard.WizardPage;
-import org.eclipse.ui.forms.widgets.FormToolkit;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.ControlAdapter;
 import org.eclipse.swt.events.ControlEvent;
 import org.eclipse.swt.layout.GridData;
-import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
-import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Group;
+import org.eclipse.swt.widgets.Label;
+import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.TableColumn;
 import org.eclipse.swt.widgets.TableItem;
 import org.faktorips.devtools.core.model.IIpsElement;
 import org.faktorips.devtools.core.model.tablestructure.ITableStructure;
+import org.faktorips.devtools.core.ui.CompositeFactory;
+import org.faktorips.devtools.core.ui.IpsUIPlugin;
 import org.faktorips.devtools.core.ui.UIToolkit;
 import org.faktorips.devtools.core.ui.controller.fields.FieldValueChangedEvent;
 import org.faktorips.devtools.core.ui.controller.fields.ValueChangeListener;
-import org.faktorips.devtools.tableconversion.AbstractExternalTableFormat;
 import org.faktorips.devtools.tableconversion.ITableFormat;
+import org.faktorips.util.message.Message;
+import org.faktorips.util.message.MessageList;
 
 /**
  * Wizard Page to show a preview of the table contents to be imported.
@@ -52,45 +55,53 @@ public class TablePreviewPage extends WizardPage implements ValueChangeListener 
 
     // max number of rows to consider for preview
     public static final int MAX_NUMBER_PREVIEW_ROWS = 8;
-    
+
     // a leading and trailing column with no data, prevents artifacts when resizing the dialog
     private final static int TABLE_PADDING_LEFT_RIGHT = 20;
 
+    // TODO: cleanup, not needed
     // the resource that was selected in the workbench or null if none.
     private IResource selectedResource;
 
     // true if the input is validated and errors are displayed in the messes area.
     protected boolean validateInput = true;
 
-    // page control as defined by the wizard page class
-    private Composite pageControl;
-
-    // display preview for this filename using the tableFormat
+    // display preview for this filename using the table format and structure
     private String filename;
     private ITableFormat tableFormat;
-
-    private TableColumn[] columns;
-
-    private Table previewTable;
-
     private ITableStructure tableStructure;
 
-    private Group configurationGroup;
+    private UIToolkit toolkit = new UIToolkit(null);
+    private TableColumn[] columns;
 
+    // page control as defined by the wizard page class
+    private Composite pageControl;
+    private Composite dynamicPropertiesAnchorComposite;
+    private Composite dynamicPropertiesComposite;
+    private Group previewGroup;
+    private Table previewTable;
+
+    // creates configuration controls specific to a table format
+    private CompositeFactory configCompositeFactory;
+
+    
     /**
      * Initializes the preview dialog using the given selection.
      * <p>
-     * Note that in order to correctly display a preview one must also set a filename and a table
-     * format using {@link #setFilename(String)} and
-     * {@link #setTableFormat(AbstractExternalTableFormat)}.
+     * Note that in order to correctly display a preview one must also set a filename, a table
+     * format and a table structure.
      * 
      * @param selection A selection
      * @throws JavaModelException if the resource corresponding to the selection does not exist or
      *             an Exception happens during the access of the resource
+     * @see #setFilename(String)
+     * @see #setTableFormat(ITableFormat)
+     * @see #setTableStructure(ITableStructure)
      */
     public TablePreviewPage(IStructuredSelection selection) throws JavaModelException {
         super("Table preview");
 
+        // TODO: cleanup, not needed
         if (selection.getFirstElement() instanceof IResource) {
             selectedResource = (IResource)selection.getFirstElement();
         } else if (selection.getFirstElement() instanceof IJavaElement) {
@@ -100,140 +111,132 @@ public class TablePreviewPage extends WizardPage implements ValueChangeListener 
         } else {
             selectedResource = null;
         }
-        // TODO: make "finish" appear on all pages
-        //        setPageComplete(false);
-        setPageComplete(true);
+        setPageComplete(false);
     }
 
     /**
      * Set the filename to display the preview for. Aside from setting the filename one must also
-     * set the corresponding table format.
+     * set the corresponding table format/structure.
      * 
-     * @see #setTableFormat(AbstractExternalTableFormat)
+     * @see #setTableFormat(ITableFormat)
+     * @see #setTableStructure(ITableStructure)
      */
     public void setFilename(String filename) {
-        // This can not happen during construction time because the wizard pages for table import
-        // are created in advance.
         this.filename = filename;
+        refreshPage();
     }
 
     /**
      * Set the table format corresponding with the filename for which to display the preview.
      * 
      * @see #setFilename(String)
+     * @see #setTableStructure(ITableStructure)
      */
     public void setTableFormat(ITableFormat tableFormat) {
         this.tableFormat = tableFormat;
+        resetDynamicPropertiesControl(dynamicPropertiesAnchorComposite, toolkit, tableFormat);
+        refreshPage();
     }
 
     /**
-     * TODO
-     * @param tableStructure
+     * Set the table structure to use when showing the preview.
+     * 
+     * @see #setFilename(String)
+     * @see #setTableFormat(ITableFormat)
      */
     public void setTableStructure(ITableStructure tableStructure) {
         this.tableStructure = tableStructure;
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    public void valueChanged(FieldValueChangedEvent e) {
-        if (validateInput) { // don't validate during control creating!
-            validatePage();    
-        }
-        updatePageComplete();
-    }
-
-    protected void updatePageComplete() {
-        if (getErrorMessage()!=null) {
-            setPageComplete(false);
-            return;
-        }
-        setPageComplete(true);
+        refreshPage();
     }
 
     /**
      * {@inheritDoc}
      */
     public void createControl(Composite parent) {
-        try {
-            
-        UIToolkit toolkit = new UIToolkit(null);
         validateInput = false;
         setTitle("Table preview");
 
-        pageControl = new Composite(parent, SWT.NONE);
-        pageControl.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
-        GridLayout pageLayout = new GridLayout(1, true);
-        pageLayout.verticalSpacing = 20;
-        pageControl.setLayout(pageLayout);
+        pageControl = toolkit.createGridComposite(parent, 1, false, false);
 
-        configurationGroup = toolkit.createGroup(pageControl, "Configuration");
-        configurationGroup.setLayoutData(new GridData(SWT.FILL, SWT.FILL, false, false));
-        GridLayout pageLayout2 = new GridLayout(1, true);
-        pageControl.setLayout(pageLayout2);
-        // fill the created Group
-        createTableFormatConfigurationControl(configurationGroup);
+        // create anchor for properties composite, filled later when TableFormat is known
+        dynamicPropertiesAnchorComposite = toolkit.createComposite(pageControl);
+
+        previewGroup = toolkit.createGroup(pageControl, "Preview of data being imported");
+        createTablePreviewControls(previewGroup, toolkit);
+
+        setControl(pageControl);
+        validateInput = true;
+    }
+
+    private void createTablePreviewControls(Composite parent, UIToolkit toolkit) {
+        if (previewTable != null && (!previewTable.isDisposed())) {
+            Listener[] resizeListeners = previewTable.getListeners(SWT.Resize);
+            for (Listener listener : resizeListeners) {
+                previewTable.removeListener(SWT.Resize, listener);
+            }
+            previewTable.dispose();
+        }
+
+        // TODO:
+        // if preview is not available this label should be shown
+//        Label previewNotAvailableLabel = toolkit.createLabel(parent, "A preview is not available.");
+//        previewNotAvailableLabel.getLayoutData();
         
-        // create Group for Table Preview
-        Group previewGroup = toolkit.createGroup(pageControl, "Preview of data being imported");
-        previewTable = toolkit.createTable(previewGroup, SWT.BORDER | SWT.NO_SCROLL);
+        previewTable = toolkit.createTable(parent, SWT.BORDER | SWT.NO_SCROLL);
         GridData data = new GridData(SWT.FILL, SWT.FILL, true, true);
         previewTable.setLayoutData(data);
         previewTable.setHeaderVisible(true);
         previewTable.setLinesVisible(true);
         previewTable.addControlListener(new ControlAdapter() {
             public void controlResized(ControlEvent e) {
-                updateColumnWidths();
+                refreshColumnWidths();
             }
         });
-
-        fillPreviewTableContents();
-//      setDefaults(selectedResource);
-        setControl(pageControl);
-        
-        validateInput = true;
-        
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
     }
 
-    /**
-     * Hook to override control creation in subclasses. Intended to be overridden.
-     * @param parent
-     */
-    protected void createTableFormatConfigurationControl(Composite parent) {
-        if (tableFormat == null) {
-            // don't know which configuration pane to create, since table format was not set
+    private void resetDynamicPropertiesControl(Composite parent, UIToolkit toolkit, ITableFormat tableFormat) {
+        if (!IpsUIPlugin.getDefault().hasTableFormatCustomProperties(tableFormat)) {
             return;
         }
-        tableFormat.createTableFormatConfigurationControl(parent);
+
+        if (dynamicPropertiesComposite != null && (!dynamicPropertiesComposite.isDisposed())) {
+            dynamicPropertiesComposite.dispose();
+        }
+
+        dynamicPropertiesComposite = toolkit.createGroup(pageControl, "Configuration");
+        Object layoutData = dynamicPropertiesComposite.getLayoutData();
+        if (layoutData instanceof GridData) {
+            ((GridData)layoutData).grabExcessVerticalSpace = false;
+        }
+
+        configCompositeFactory = getCompositeFactory();
+        if (configCompositeFactory != null) {
+            configCompositeFactory.createPropertyComposite(dynamicPropertiesComposite, toolkit);
+            configCompositeFactory.addValueChangedListener(this);
+        }
+
+        // make sure the configuration composite is displayed above the preview
+        dynamicPropertiesComposite.moveAbove(null);
     }
 
-    
+    private CompositeFactory getCompositeFactory() {
+        if (configCompositeFactory == null) {
+            configCompositeFactory = IpsUIPlugin.getDefault()
+                .getTableFormatPropertiesControlFactory(tableFormat);
+        }
+        return configCompositeFactory;
+    }
+
     private void fillPreviewTableContents() {
         if (this.filename == null || this.tableFormat == null) {
             return;
         }
 
-        List preview = tableFormat.getImportTablePreview(
-                tableStructure, new Path(filename), MAX_NUMBER_PREVIEW_ROWS);
-        
-        previewTable.removeAll();
-        
-        if (columns != null) {
-            for (int colCount = 0; colCount < columns.length; colCount++) {
-                if (columns[colCount] != null) {
-                    columns[colCount].dispose();
-                }
-            }
-        }
-        
-        int numberOfColumns = preview.isEmpty() ? 0 : 
-            ((String[])preview.get(0)).length;
-        
-        
+        createTablePreviewControls(previewGroup, toolkit);
+        List preview = tableFormat.getImportTablePreview(tableStructure, new Path(filename), MAX_NUMBER_PREVIEW_ROWS);
+
+        int numberOfColumns = preview.isEmpty() ? 0 : ((String[])preview.get(0)).length;
+
         // take empty leading and trailing column into account
         columns = new TableColumn[numberOfColumns + 2];
         for (int i = 0; i < columns.length; i++) {
@@ -243,55 +246,78 @@ public class TablePreviewPage extends WizardPage implements ValueChangeListener 
         for (int i = 1; i < columns.length - 1; i++) {
             columns[i].setText(tableStructure.getColumn(i - 1).getName());
         }
-        
-        
+
         for (Iterator iterator = preview.iterator(); iterator.hasNext();) {
             String[] row = (String[])iterator.next();
             TableItem item = new TableItem(previewTable, SWT.LEAD);
-            for (int col = 1; col  < previewTable.getColumnCount() - 1; col++) {
+            for (int col = 1; col < previewTable.getColumnCount() - 1; col++) {
                 item.setText(col, row[col - 1]);
             }
         }
+
+        previewTable.getParent().layout(true);
     }
 
-    public void setVisible(boolean visible)  {
-        super.setVisible(visible);
+    /**
+     * {@inheritDoc}
+     */
+    public void valueChanged(FieldValueChangedEvent e) {
+        fillPreviewTableContents();
 
-        if (visible) {
-            createTableFormatConfigurationControl(configurationGroup); // TODO: does not belong here
-            fillPreviewTableContents();
-            updateColumnWidths();
+        if (validateInput) { // don't validate during control creating!
+            validatePage();
         }
+        updatePageComplete();
     }
 
-    private void updateColumnWidths() {
+    protected void updatePageComplete() {
+        if (getErrorMessage() != null) {
+            setPageComplete(false);
+            return;
+        }
+        setPageComplete(true);
+    }
+
+    private void refreshPage() {
+        refreshColumnWidths();
+    }
+
+    private void refreshColumnWidths() {
         if (previewTable.getColumnCount() > 2) {
 
             int tableWidth = previewTable.getSize().x;
-            int newColumnWidth = (tableWidth - 2 * TABLE_PADDING_LEFT_RIGHT) 
-                / (previewTable.getColumnCount() - 2);
+
+            // columns equal in size
+            int newColumnWidth = (tableWidth - 2 * TABLE_PADDING_LEFT_RIGHT) / (previewTable.getColumnCount() - 2);
 
             columns[0].setWidth(TABLE_PADDING_LEFT_RIGHT);
             for (int i = 1; i < previewTable.getColumnCount() - 2; i++) {
                 columns[i].setWidth(newColumnWidth);
             }
-            
+
             // the last column containing data will grab the whole remaining space
-            columns[previewTable.getColumnCount() - 2].setWidth(
-                    (previewTable.getSize().x - 2 * TABLE_PADDING_LEFT_RIGHT) 
-                    - (previewTable.getColumnCount() - 3) * newColumnWidth);
+            columns[previewTable.getColumnCount() - 2]
+                    .setWidth((previewTable.getSize().x - 2 * TABLE_PADDING_LEFT_RIGHT)
+                            - (previewTable.getColumnCount() - 3) * newColumnWidth);
             columns[previewTable.getColumnCount() - 1].setWidth(TABLE_PADDING_LEFT_RIGHT);
         }
-        pageControl.layout();
+        pageControl.layout(true);
     }
 
     protected void validatePage() {
         setMessage("", IMessageProvider.NONE); //$NON-NLS-1$
+        if (! tableFormat.isValidImportSource(filename)) {
+            setMessage("The file to be imported seems not to be valid.", IMessageProvider.WARNING);
+        }
         setErrorMessage(null);
-        
-        // TODO: do validation of members set through setter moethods
-        
+
+        if (configCompositeFactory != null) {
+            MessageList ml = configCompositeFactory.validate();
+            if (ml.containsErrorMsg()) {
+                setErrorMessage(ml.getFirstMessage(Message.ERROR).getText());
+            }
+        }
+
         updatePageComplete();
     }
-
 }

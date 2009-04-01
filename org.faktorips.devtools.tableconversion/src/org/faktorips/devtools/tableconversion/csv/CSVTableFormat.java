@@ -10,14 +10,12 @@ import java.util.List;
 import org.eclipse.core.resources.IWorkspaceRunnable;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
-import org.eclipse.swt.widgets.Composite;
 import org.faktorips.datatype.Datatype;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.model.tablecontents.ITableContents;
 import org.faktorips.devtools.core.model.tablecontents.ITableContentsGeneration;
 import org.faktorips.devtools.core.model.tablestructure.IColumn;
 import org.faktorips.devtools.core.model.tablestructure.ITableStructure;
-import org.faktorips.devtools.core.ui.wizards.tableimport.CSVPropertyComposite;
 import org.faktorips.devtools.tableconversion.AbstractExternalTableFormat;
 import org.faktorips.util.message.MessageList;
 
@@ -30,9 +28,20 @@ import au.com.bytecode.opencsv.CSVReader;
  */
 public class CSVTableFormat extends AbstractExternalTableFormat {
 
-    // TODO: init in ctor!
     private boolean ignoreColumnHeaderRow;
-
+    
+    // property constants following the JavaBeans standard
+    public final static String PROPERTY_FIELD_DELIMITER = "fieldDelimiter";
+    public final static String PROPERTY_DOT_REPRESENTATION = "dotRepresentation";
+    public final static String PROPERTY_DATE_FORMAT = "dateFormat";
+    
+    
+    public CSVTableFormat() {
+        // initialize table format specific properties
+        properties.put(PROPERTY_FIELD_DELIMITER, ",");
+        properties.put(PROPERTY_DOT_REPRESENTATION, ".");
+    }
+    
     /**
      * {@inheritDoc}
      */
@@ -109,8 +118,7 @@ public class CSVTableFormat extends AbstractExternalTableFormat {
                 }
                 String[] convertedLine = new String[line.length];
                 for (int i = 0; i < line.length; i++) {
-                    Object obj = getExternalValue(line[i], datatypes[i], ml);
-                    convertedLine[i] = getIpsValue(obj, datatypes[i], ml);
+                    convertedLine[i] = getIpsValue(line[i], datatypes[i], ml);
                 }
                 
                 result.add(convertedLine);
@@ -139,15 +147,6 @@ public class CSVTableFormat extends AbstractExternalTableFormat {
         }
         return true;
     }    
-
-    /**
-     * {@inheritDoc}
-     */
-    // TODO: move to TableFormatPlugin, see comment in superclass
-    public Composite createTableFormatConfigurationControl(Composite parent) {
-        return new CSVPropertyComposite(parent);
-    }
-
     
     // TODO: Duplicated code in CSVTableImportOperation
     private Datatype[] getDatatypes(ITableStructure structure) throws CoreException {

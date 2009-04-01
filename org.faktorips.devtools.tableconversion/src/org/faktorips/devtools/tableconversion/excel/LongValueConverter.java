@@ -16,7 +16,7 @@ package org.faktorips.devtools.tableconversion.excel;
 import org.apache.commons.lang.StringUtils;
 import org.faktorips.datatype.Datatype;
 import org.faktorips.devtools.tableconversion.ExtSystemsMessageUtil;
-import org.faktorips.devtools.tableconversion.IValueConverter;
+import org.faktorips.devtools.tableconversion.AbstractValueConverter;
 import org.faktorips.util.message.MessageList;
 
 
@@ -25,7 +25,7 @@ import org.faktorips.util.message.MessageList;
  * 
  * @author Thorsten Guenther
  */
-public class LongValueConverter implements IValueConverter {
+public class LongValueConverter extends AbstractValueConverter {
 
 	/**
 	 * Supported types for externalDataValue are Double and Long

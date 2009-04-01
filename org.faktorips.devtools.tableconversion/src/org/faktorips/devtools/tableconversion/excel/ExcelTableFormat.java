@@ -22,7 +22,6 @@ import java.util.List;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.eclipse.core.resources.IWorkspaceRunnable;
 import org.eclipse.core.runtime.IPath;
-import org.eclipse.swt.widgets.Composite;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.model.tablecontents.ITableContents;
 import org.faktorips.devtools.core.model.tablecontents.ITableContentsGeneration;
@@ -89,16 +88,8 @@ public class ExcelTableFormat extends AbstractExternalTableFormat {
 		return false;
 	}
 
-
     public List getImportTablePreview(ITableStructure structure, IPath filename, int maxNumberOfRows) {
-        // TODO: implement
-//        throw new NotImplementedException("Preview for Excel not implemented yet.");
+        // TODO Roman: implement
         return Collections.EMPTY_LIST;
     }
-
-    public Composite createTableFormatConfigurationControl(Composite parent) {
-        // TODO Auto-generated method stub
-        return null;
-    }
-
 }

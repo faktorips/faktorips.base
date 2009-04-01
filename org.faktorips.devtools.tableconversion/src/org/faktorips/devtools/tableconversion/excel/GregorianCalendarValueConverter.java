@@ -19,7 +19,7 @@ import java.util.GregorianCalendar;
 import org.faktorips.datatype.Datatype;
 import org.faktorips.datatype.classtypes.GregorianCalendarDatatype;
 import org.faktorips.devtools.tableconversion.ExtSystemsMessageUtil;
-import org.faktorips.devtools.tableconversion.IValueConverter;
+import org.faktorips.devtools.tableconversion.AbstractValueConverter;
 import org.faktorips.util.message.Message;
 import org.faktorips.util.message.MessageList;
 import org.faktorips.values.DateUtil;
@@ -29,7 +29,7 @@ import org.faktorips.values.DateUtil;
  * 
  * @author Thorsten Guenther
  */
-public class GregorianCalendarValueConverter implements IValueConverter {
+public class GregorianCalendarValueConverter extends AbstractValueConverter {
 
     /**
      * Supported type for the externalDataValue is String, Number, or Date.

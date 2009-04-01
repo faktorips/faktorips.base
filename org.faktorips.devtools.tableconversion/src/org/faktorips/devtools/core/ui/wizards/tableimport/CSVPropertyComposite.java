@@ -13,68 +13,102 @@
 
 package org.faktorips.devtools.core.ui.wizards.tableimport;
 
-import org.eclipse.swt.SWT;
-import org.eclipse.swt.layout.GridData;
-import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Text;
+import org.faktorips.devtools.core.ui.CompositeFactory;
 import org.faktorips.devtools.core.ui.UIToolkit;
+import org.faktorips.devtools.core.ui.controller.fields.FieldValueChangedEvent;
+import org.faktorips.devtools.core.ui.controller.fields.TextField;
+import org.faktorips.devtools.tableconversion.ITableFormat;
 import org.faktorips.devtools.tableconversion.csv.CSVTableFormat;
+import org.faktorips.util.message.Message;
+import org.faktorips.util.message.MessageList;
 
 /**
  * Composite for configuring CSV table format options like field delimiters, date formats and the like.
  * 
  * @author Roman Grutza
  */
-public class CSVPropertyComposite extends Composite {
+public class CSVPropertyComposite extends CompositeFactory {
 
-    private CSVTableFormat tableFormat;
-
+    private ITableFormat tableFormat;
     
-    public CSVPropertyComposite(Composite parent) {
-        super(parent, SWT.NONE);
-        UIToolkit toolkit = new UIToolkit(null);
-        
-        // first create a composite to fill the complete space
-        Composite root = toolkit.createComposite(parent);
-        GridLayout layout = new GridLayout(1, false);
-        layout.marginHeight = 1;
-        root.setLayout(layout);
-        GridData layoutData = new GridData(SWT.FILL, SWT.FILL, false, false);
-        root.setLayoutData(layoutData);
-        
-        // TODO: fix layout, widgets now aligned vertically centered
+    private Text fieldDelimiterText;
+    private Text dateFormatText;
 
-        // first row: field delimiter controls
-        Composite fieldDelimiter = toolkit.createLabelEditColumnComposite(parent);
-        layoutData = new GridData(SWT.FILL, SWT.FILL, false, false);
-        layoutData.verticalAlignment = SWT.TOP;
-        fieldDelimiter.setLayoutData(layoutData);
-        
-        toolkit.createLabel(fieldDelimiter, "Field delimiter");
-        
-        Text fieldDelimiterText = toolkit.createText(fieldDelimiter);
-        fieldDelimiterText.setText("\"");
-        fieldDelimiterText.setLayoutData(layoutData);
-        
-        // second row: date format controls
-        Composite dateFormat = toolkit.createLabelEditColumnComposite(parent);
-        layoutData = new GridData(SWT.FILL, SWT.FILL, false, false);
-        layoutData.verticalAlignment = SWT.TOP;
-        fieldDelimiter.setLayoutData(layoutData);
-        
-        toolkit.createLabel(dateFormat, "Date format");
-        
-        Text dateFormatText = toolkit.createText(dateFormat);
-        dateFormatText.setText("dd.mm.yyyy");
-        dateFormatText.setLayoutData(layoutData);
-    }
 
-    
-    public void setTableFormat(CSVTableFormat tableFormat) {
+    public void setTableFormat(ITableFormat tableFormat) {
         this.tableFormat = tableFormat;
     }
 
+    public Composite createPropertyComposite(Composite parent, UIToolkit toolkit) {
+        Composite root = toolkit.createLabelEditColumnComposite(parent);
+
+        // first row: field delimiter controls
+        toolkit.createLabel(root, "Field delimiter");
+        fieldDelimiterText = toolkit.createText(root);
+        TextField fieldDelimiterTextField = new TextField(fieldDelimiterText);
+        fieldDelimiterTextField.addChangeListener(this);
+        
+        // second row: date format controls
+        toolkit.createLabel(root, "Date format");
+        dateFormatText = toolkit.createText(root);
+        TextField dateFormatTextField = new TextField(dateFormatText);
+        dateFormatTextField.addChangeListener(this);
+        
+        initializeProperties();
+        
+        return root;
+    }
+
+    private void initializeProperties() {
+        String fieldDelimiter = tableFormat.getProperty(CSVTableFormat.PROPERTY_FIELD_DELIMITER);
+        if (fieldDelimiter == null) {
+            fieldDelimiter = ",";
+        }
+        fieldDelimiterText.setText(fieldDelimiter);
+        
+        String dateFormat = tableFormat.getProperty(CSVTableFormat.PROPERTY_DATE_FORMAT);
+        if (dateFormat == null) {
+            dateFormat = "DD.MM.YYYY";
+        }
+        dateFormatText.setText(dateFormat);
+    }
     
-    // TODO: data binding code for: this <-> table format config model
+    public MessageList validate() {
+        MessageList ml = new MessageList();
+
+        validateFieldDelimiter(ml);
+        validateDateFormat(ml);
+        
+        return ml;
+    }
+
+    private void validateDateFormat(MessageList ml) {
+        String text = dateFormatText.getText();
+        if (text.length() < 1) {
+            ml.add(new Message("", "Date format must not be empty.", Message.ERROR));
+        }
+    }
+
+    private void validateFieldDelimiter(MessageList ml) {
+        String text = fieldDelimiterText.getText();
+        if (text.length() != 1) {
+            ml.add(new Message("", "Field delimiter must be a single character.", Message.ERROR));
+        }
+    }
+    
+    public void valueChanged(FieldValueChangedEvent e) {
+        super.valueChanged(e);
+
+        if (tableFormat == null || validate().containsErrorMsg()) {
+            return;
+        }
+
+        if (e.field.getControl() == dateFormatText) {
+            tableFormat.setProperty(CSVTableFormat.PROPERTY_DATE_FORMAT, dateFormatText.getText());
+        } else if (e.field.getControl() == fieldDelimiterText) {
+            tableFormat.setProperty(CSVTableFormat.PROPERTY_FIELD_DELIMITER, fieldDelimiterText.getText());
+        }
+    }
 }

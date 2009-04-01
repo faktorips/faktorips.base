@@ -13,29 +13,19 @@
 
 package org.faktorips.devtools.tableconversion.csv;
 
-import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.util.Collections;
-import java.util.List;
 
-import javax.swing.ProgressMonitor;
-
-import org.apache.commons.lang.NotImplementedException;
 import org.eclipse.core.runtime.CoreException;
-import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
-import org.eclipse.jface.dialogs.ProgressMonitorDialog;
 import org.eclipse.osgi.util.NLS;
 import org.faktorips.datatype.Datatype;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.IpsStatus;
 import org.faktorips.devtools.core.model.tablecontents.IRow;
-import org.faktorips.devtools.core.model.tablecontents.ITableContents;
 import org.faktorips.devtools.core.model.tablecontents.ITableContentsGeneration;
-import org.faktorips.devtools.core.model.tablestructure.IColumn;
 import org.faktorips.devtools.core.model.tablestructure.ITableStructure;
 import org.faktorips.devtools.tableconversion.AbstractTableImportOperation;
 import org.faktorips.devtools.tableconversion.ITableFormat;
@@ -57,8 +47,6 @@ public class CSVTableImportOperation extends AbstractTableImportOperation {
         
         super(structure, sourceFile, targetGeneration, format,
                 nullRepresentationString, ignoreColumnHeaderRow, list);
-
-        
     }
     
     public void run(IProgressMonitor monitor) throws CoreException {
@@ -106,7 +94,9 @@ public class CSVTableImportOperation extends AbstractTableImportOperation {
     }
 
     private void fillGeneration(ITableContentsGeneration targetGeneration, FileInputStream fis) throws IOException {
-        CSVReader reader = new CSVReader(new BufferedReader(new InputStreamReader(fis)));
+        char fieldSeparator = getFieldSeparator();
+        CSVReader reader = new CSVReader(new InputStreamReader(fis), fieldSeparator);
+        
         try {
             // row 0 is the header if ignoreColumnHeaderRow is true, otherwise row 0 
             // contains data. thus read over header if necessary
@@ -162,8 +152,17 @@ public class CSVTableImportOperation extends AbstractTableImportOperation {
         }
     }
 
+
     private String getIpsValue(Object rawValue, Datatype datatype) {
         return format.getIpsValue(rawValue, datatype, messageList);
     }
 
+    private char getFieldSeparator() {
+        String fieldSeparator = format.getProperty(CSVTableFormat.PROPERTY_FIELD_DELIMITER);
+        if (fieldSeparator == null || fieldSeparator.length() != 1) {
+            return ',';
+        }
+        
+        return fieldSeparator.charAt(0);
+    }
 }

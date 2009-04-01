@@ -457,10 +457,29 @@ public class IpsPlugin extends AbstractUIPlugin {
         format.setName(formatElement.getAttribute("name")); //$NON-NLS-1$
         format.setDefaultExtension(formatElement.getAttribute("defaultExtension")); //$NON-NLS-1$
 
-        IConfigurationElement[] valueConverters = formatElement.getChildren();
+        IConfigurationElement[] elements = Platform.getExtensionRegistry().getConfigurationElementsFor(
+            "org.faktorips.devtools.core.externalValueConverter"); //$NON-NLS-1$
+
+        IConfigurationElement tableFormatElement = null;
+        for (int i = 0; i < elements.length; i++) {
+            String tableFormatId = formatElement.getAttribute("id");
+            if (elements[i].getAttribute("tableFormatId").equals(tableFormatId)) { //$NON-NLS-1$") 
+                // converter found for current table format id
+                tableFormatElement = elements[i];
+                break;
+            }
+        }
+        
+        IConfigurationElement[] valueConverters = tableFormatElement.getChildren();
         for (int i = 0; i < valueConverters.length; i++) {
             try {
-                IValueConverter converter = (IValueConverter)valueConverters[i].createExecutableExtension("class"); //$NON-NLS-1$
+                IValueConverter converter = (IValueConverter)valueConverters[i]
+                    .createExecutableExtension("class"); //$NON-NLS-1$
+                // TODO Roman: use alternative way where the IValueConverter's are subclasses
+                //       of IExecutableExtensions. In this case parameter passing is possible
+                //       and the setter method setTableFormat() on IValueConverter is not needed.
+                converter.setTableFormat(format);
+                
                 format.addValueConverter(converter);
             } catch (CoreException e) {
                 IpsPlugin.log(e);

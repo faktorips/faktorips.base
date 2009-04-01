@@ -17,7 +17,7 @@ import java.math.BigDecimal;
 
 import org.faktorips.datatype.Datatype;
 import org.faktorips.devtools.tableconversion.ExtSystemsMessageUtil;
-import org.faktorips.devtools.tableconversion.IValueConverter;
+import org.faktorips.devtools.tableconversion.AbstractValueConverter;
 import org.faktorips.util.message.MessageList;
 import org.faktorips.values.Decimal;
 
@@ -26,7 +26,7 @@ import org.faktorips.values.Decimal;
  * 
  * @author Thorsten Guenther
  */
-public class DecimalValueConverter implements IValueConverter {
+public class DecimalValueConverter extends AbstractValueConverter {
 
 	/**
 	 * Supported types for the externalDataValue are String and Number.

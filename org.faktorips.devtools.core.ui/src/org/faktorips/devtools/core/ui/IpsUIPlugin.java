@@ -62,6 +62,7 @@ import org.faktorips.devtools.core.ui.controller.EditFieldChangesBroadcaster;
 import org.faktorips.devtools.core.ui.editors.IIpsObjectEditorSettings;
 import org.faktorips.devtools.core.ui.editors.IpsArchiveEditorInput;
 import org.faktorips.devtools.core.ui.editors.IpsObjectEditorSettings;
+import org.faktorips.devtools.tableconversion.ITableFormat;
 import org.osgi.framework.BundleContext;
 
 /**
@@ -182,6 +183,48 @@ public class IpsUIPlugin extends AbstractUIPlugin {
         return controlFactories;
     }
 
+    /**
+     * Returns a factory for creating table format controls/widgets.
+     * 
+     * @param tableFormat ITableFormat to test whether it has custom properties.
+     * @return A Factory class which can be used to create the controls for configuring 
+     * the custom properties, or <code>null</code> if the table format has no custom properties or
+     * the class could not be created.
+     */
+    public CompositeFactory getTableFormatPropertiesControlFactory(ITableFormat tableFormat) {
+        IConfigurationElement[] elements = Platform.getExtensionRegistry().getConfigurationElementsFor(
+                "org.faktorips.devtools.core.externalTableFormat"); //$NON-NLS-1$
+        
+        CompositeFactory compositeFactory = null;
+        for (int i = 0; i < elements.length; i++) {
+            try {
+                ITableFormat format = (ITableFormat)elements[i].createExecutableExtension("class"); //$NON-NLS-1$
+                if (format.getClass().equals(tableFormat.getClass())) {
+                    // Found the given tableFormat in declared extensions
+                    compositeFactory = (CompositeFactory)elements[i].createExecutableExtension("guiClass"); //$NON-NLS-1$
+                    compositeFactory.setTableFormat(tableFormat);
+                    break;
+                }
+            } catch (Exception e) {
+                IpsPlugin.log(e);
+            }
+        }
+    
+        return compositeFactory;
+    }
+    
+    /**
+     * Test if the given table format class has custom properties. 
+     * This method returns true if the optional <code>guiClass</code> property is defined for the externalTableFormat
+     * extension belonging to the given table format and if the guiClass can be instantiated.
+     * 
+     * @param tableFormat ITableFormat to test whether it has custom properties.
+     * @return true if the given table format has custom properties, false otherwise.
+     */
+    public boolean hasTableFormatCustomProperties(ITableFormat tableFormat) {
+        return (getTableFormatPropertiesControlFactory(tableFormat) != null);
+    }
+    
     /**
      * Opens the given IpsObject in its editor.<br>
      * Returns the editor part of the opened editor. Returns <code>null</code> if no editor was

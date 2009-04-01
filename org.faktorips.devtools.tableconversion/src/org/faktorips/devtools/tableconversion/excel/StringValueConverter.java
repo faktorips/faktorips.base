@@ -15,7 +15,7 @@ package org.faktorips.devtools.tableconversion.excel;
 
 import org.faktorips.datatype.Datatype;
 import org.faktorips.devtools.tableconversion.AbstractExternalTableFormat;
-import org.faktorips.devtools.tableconversion.IValueConverter;
+import org.faktorips.devtools.tableconversion.AbstractValueConverter;
 import org.faktorips.util.message.MessageList;
 
 
@@ -24,7 +24,7 @@ import org.faktorips.util.message.MessageList;
  * 
  * @author Thorsten Guenther
  */
-public class StringValueConverter implements IValueConverter {
+public class StringValueConverter extends AbstractValueConverter {
 
 	/**
 	 * Every type is allowed for externalDataValue.

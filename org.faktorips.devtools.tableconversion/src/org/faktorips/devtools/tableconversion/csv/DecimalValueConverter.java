@@ -14,20 +14,49 @@
 package org.faktorips.devtools.tableconversion.csv;
 
 import org.faktorips.datatype.Datatype;
-import org.faktorips.devtools.tableconversion.IValueConverter;
+import org.faktorips.devtools.tableconversion.AbstractValueConverter;
+import org.faktorips.devtools.tableconversion.ExtSystemsMessageUtil;
 import org.faktorips.util.message.MessageList;
+import org.faktorips.values.Decimal;
 
-public class DecimalValueConverter implements IValueConverter {
+public class DecimalValueConverter extends AbstractValueConverter {
 
-
+    /**
+     * {@inheritDoc}
+     */
     public Object getExternalDataValue(String ipsValue, MessageList messageList) {
-        return "EDECIMAL";
+        try {
+            return Decimal.valueOf(ipsValue).toString();
+        } catch (RuntimeException e) {
+            messageList.add(ExtSystemsMessageUtil.createConvertIntToExtErrorMessage(ipsValue, Decimal.class.getName(),
+                    getSupportedDatatype().getQualifiedName()));
+        }
+        return ipsValue;
     }
 
+    /**
+     * The only supported type for externalDataValue is String. 
+     * 
+     * {@inheritDoc}
+     */
     public String getIpsValue(Object externalDataValue, MessageList messageList) {
-        return "DECIMAL";
+        if (externalDataValue instanceof String) {
+            try {
+                return Decimal.valueOf((String)externalDataValue).toString();
+            } catch (NumberFormatException e) {
+                messageList.add(ExtSystemsMessageUtil.createConvertExtToIntErrorMessage("" + externalDataValue, externalDataValue //$NON-NLS-1$
+                        .getClass().getName(), getSupportedDatatype().getQualifiedName()));
+                return externalDataValue.toString();
+            }
+        }
+        messageList.add(ExtSystemsMessageUtil.createConvertExtToIntErrorMessage(
+                "" + externalDataValue, externalDataValue.getClass().getName(), getSupportedDatatype().getQualifiedName())); //$NON-NLS-1$
+        return externalDataValue.toString();        
     }
 
+    /**
+     * {@inheritDoc}
+     */
     public Datatype getSupportedDatatype() {
         return Datatype.DECIMAL;
     }

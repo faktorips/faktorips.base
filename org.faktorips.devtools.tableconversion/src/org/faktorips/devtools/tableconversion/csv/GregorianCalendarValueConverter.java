@@ -13,21 +13,68 @@
 
 package org.faktorips.devtools.tableconversion.csv;
 
-import org.faktorips.datatype.Datatype;
-import org.faktorips.devtools.tableconversion.IValueConverter;
-import org.faktorips.util.message.MessageList;
+import java.text.ParseException;
+import java.util.Date;
+import java.util.GregorianCalendar;
 
-public class GregorianCalendarValueConverter implements IValueConverter {
+import org.apache.commons.lang.time.DateUtils;
+import org.faktorips.datatype.Datatype;
+import org.faktorips.datatype.classtypes.GregorianCalendarDatatype;
+import org.faktorips.devtools.tableconversion.AbstractValueConverter;
+import org.faktorips.devtools.tableconversion.ExtSystemsMessageUtil;
+import org.faktorips.util.message.Message;
+import org.faktorips.util.message.MessageList;
+import org.faktorips.values.DateUtil;
+
+public class GregorianCalendarValueConverter extends AbstractValueConverter {
 
 
     public Object getExternalDataValue(String ipsValue, MessageList messageList) {
-        return "EGREG";
+        if (ipsValue == null) {
+            return null;
+        }
+        GregorianCalendarDatatype datatype = (GregorianCalendarDatatype)getSupportedDatatype();
+        try {
+            GregorianCalendar cal = (GregorianCalendar)datatype.getValue(ipsValue);
+            Date date = cal.getTime();
+            String isoDateString = DateUtil.dateToIsoDateString(date);
+            return isoDateString;
+        } catch (RuntimeException e) {
+            messageList.add(new Message(ExtSystemsMessageUtil.createConvertIntToExtErrorMessage(
+                    ipsValue, getSupportedDatatype().getQualifiedName(), GregorianCalendar.class.getName()))); //$NON-NLS-1$
+            return ipsValue;
+        }
     }
 
+    /**
+     * The only supported type for externalDataValue is String.
+     * 
+     * {@inheritDoc}
+     */
     public String getIpsValue(Object externalDataValue, MessageList messageList) {
-        return "GREG";
+        GregorianCalendar cal = new GregorianCalendar();
+        if (externalDataValue instanceof String) {
+            try {
+                cal = DateUtil.parseIsoDateStringToGregorianCalendar((String)externalDataValue);
+                return cal.getTime().toString();
+            } catch (IllegalArgumentException ignored) {
+            }
+            try {
+                String dateFormat = tableFormat.getProperty(CSVTableFormat.PROPERTY_DATE_FORMAT);
+                Date parseDate = DateUtils.parseDate((String)externalDataValue, new String[] {dateFormat});
+                return DateUtil.dateToIsoDateString(parseDate);
+            } catch (ParseException ignored) {
+            }
+        }
+        
+        messageList.add(ExtSystemsMessageUtil.createConvertExtToIntErrorMessage(
+                "" + externalDataValue, externalDataValue.getClass().getName(), getSupportedDatatype().getQualifiedName())); //$NON-NLS-1$
+        return externalDataValue.toString();
     }
 
+    /**
+     * {@inheritDoc}
+     */
     public Datatype getSupportedDatatype() {
         return Datatype.GREGORIAN_CALENDAR_DATE;
     }

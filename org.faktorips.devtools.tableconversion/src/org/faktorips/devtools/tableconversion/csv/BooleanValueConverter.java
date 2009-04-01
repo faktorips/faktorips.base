@@ -13,33 +13,40 @@
 
 package org.faktorips.devtools.tableconversion.csv;
 
-import org.apache.commons.lang.NotImplementedException;
 import org.faktorips.datatype.Datatype;
-import org.faktorips.devtools.tableconversion.IValueConverter;
+import org.faktorips.devtools.tableconversion.AbstractValueConverter;
+import org.faktorips.devtools.tableconversion.ExtSystemsMessageUtil;
 import org.faktorips.util.message.MessageList;
 
-public class BooleanValueConverter implements IValueConverter {
+public class BooleanValueConverter extends AbstractValueConverter {
 
-    
     /**
-     * Supported type for the externalDataValue is String.
-     * 
      * {@inheritDoc}
      */
     public Object getExternalDataValue(String ipsValue, MessageList messageList) {
         if (ipsValue == null) {
             return null;
         }
-        return "EBOOL";
+        return new Boolean(ipsValue).toString();
+    }
+
+    /**
+     * The only supported type for externalDataValue is String.
+     *  
+     * {@inheritDoc}
+     */
+    public String getIpsValue(Object externalDataValue, MessageList messageList) {
+        if (externalDataValue instanceof String) {
+            return Boolean.valueOf((String)externalDataValue).toString();
+        }
+        messageList.add(ExtSystemsMessageUtil.createConvertExtToIntErrorMessage("" + externalDataValue, externalDataValue.getClass() //$NON-NLS-1$
+                .getName(), getSupportedDatatype().getQualifiedName()));
+        return externalDataValue.toString();
     }
 
     /**
      * {@inheritDoc}
      */
-    public String getIpsValue(Object externalDataValue, MessageList messageList) {
-        return "BOOL";
-    }
-
     public Datatype getSupportedDatatype() {
         return Datatype.BOOLEAN;
     }

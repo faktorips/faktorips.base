@@ -52,7 +52,7 @@
          <sequence minOccurs="0" maxOccurs="unbounded">
             <element ref="externalValueConverter"/>
          </sequence>
-         <attribute name="tableFormatId" type="string">
+         <attribute name="tableFormatId" type="string" use="required">
             <annotation>
                <documentation>
                   The id of the referenced table format this converter can be used with.
@@ -64,7 +64,7 @@
 
    <element name="externalValueConverter">
       <complexType>
-         <attribute name="class" type="string">
+         <attribute name="class" type="string" use="required">
             <annotation>
                <documentation>
                   The fully qualified class name of the converter. It must implement the interface IValueConverter.

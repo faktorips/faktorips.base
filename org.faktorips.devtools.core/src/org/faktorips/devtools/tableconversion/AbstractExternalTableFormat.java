@@ -187,9 +187,6 @@ public abstract class AbstractExternalTableFormat implements ITableFormat {
      * {@inheritDoc}
      */
     public String getProperty(String propertyName) {
-        if (propertyName == null) {
-            throw new NullPointerException("propertyName was null when tried to retrieve a table format property.");
-        }
         return properties.get(propertyName);
     }
 
@@ -210,7 +207,9 @@ public abstract class AbstractExternalTableFormat implements ITableFormat {
 	 */
 	private class DefaultValueConverter implements IValueConverter {
 
-		/**
+		private ITableFormat tableFormat;
+
+        /**
 		 * {@inheritDoc}
 		 */
 		public Class getSupportedClass() {
@@ -240,6 +239,10 @@ public abstract class AbstractExternalTableFormat implements ITableFormat {
 		public Object getExternalDataValue(String ipsValue, MessageList messageList) {
 			return ipsValue;
 		}
+
+        public void setTableFormat(ITableFormat tableFormat) {
+            this.tableFormat = tableFormat;
+        }
 	}
 
 }

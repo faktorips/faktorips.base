@@ -14,20 +14,46 @@
 package org.faktorips.devtools.tableconversion.csv;
 
 import org.faktorips.datatype.Datatype;
-import org.faktorips.devtools.tableconversion.IValueConverter;
+import org.faktorips.devtools.tableconversion.AbstractValueConverter;
+import org.faktorips.devtools.tableconversion.ExtSystemsMessageUtil;
 import org.faktorips.util.message.MessageList;
+import org.faktorips.values.Money;
 
-public class MoneyValueConverter implements IValueConverter {
+public class MoneyValueConverter extends AbstractValueConverter {
 
-
+    /**
+     * {@inheritDoc}
+     */
     public Object getExternalDataValue(String ipsValue, MessageList messageList) {
-        return "EMONEY";
+        if (!Datatype.MONEY.isParsable(ipsValue)) {
+            messageList.add(ExtSystemsMessageUtil.createConvertIntToExtErrorMessage(ipsValue, getSupportedDatatype().getQualifiedName(), Money.class.getName())); //$NON-NLS-1$
+        }
+        return ipsValue;
     }
 
+    /**
+     * Supported type for the externalDataValue is String.
+     * 
+     * {@inheritDoc}
+     */
     public String getIpsValue(Object externalDataValue, MessageList messageList) {
-        return "MONEY";
+        if (externalDataValue instanceof String) {
+            try {
+                return Money.valueOf((String) externalDataValue).toString();
+            } catch (IllegalArgumentException e) {
+                messageList.add(ExtSystemsMessageUtil.createConvertExtToIntErrorMessage(
+                        "" + externalDataValue, externalDataValue.getClass().getName(), getSupportedDatatype().getQualifiedName())); //$NON-NLS-1$
+                return externalDataValue.toString();
+            }
+        } 
+        messageList.add(ExtSystemsMessageUtil.createConvertExtToIntErrorMessage(
+                "" + externalDataValue, externalDataValue.getClass().getName(), getSupportedDatatype().getQualifiedName())); //$NON-NLS-1$
+        return externalDataValue.toString();
     }
 
+    /**
+     * {@inheritDoc}
+     */
     public Datatype getSupportedDatatype() {
         return Datatype.MONEY;
     }

@@ -15,7 +15,7 @@ package org.faktorips.devtools.tableconversion.excel;
 
 import org.faktorips.datatype.Datatype;
 import org.faktorips.devtools.tableconversion.ExtSystemsMessageUtil;
-import org.faktorips.devtools.tableconversion.IValueConverter;
+import org.faktorips.devtools.tableconversion.AbstractValueConverter;
 import org.faktorips.util.message.MessageList;
 import org.faktorips.values.Money;
 
@@ -24,7 +24,7 @@ import org.faktorips.values.Money;
  * 
  * @author Thorsten Guenther
  */
-public class MoneyValueConverter implements IValueConverter {
+public class MoneyValueConverter extends AbstractValueConverter {
 
 	/**
 	 * Supported type for the externalDataValue is String.

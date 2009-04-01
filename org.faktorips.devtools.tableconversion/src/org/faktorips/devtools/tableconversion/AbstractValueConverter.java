@@ -11,33 +11,19 @@
  * Mitwirkende: Faktor Zehn AG - initial API and implementation - http://www.faktorzehn.de
  *******************************************************************************/
 
-package org.faktorips.devtools.tableconversion.csv;
+package org.faktorips.devtools.tableconversion;
 
-import org.faktorips.datatype.Datatype;
-import org.faktorips.devtools.tableconversion.AbstractValueConverter;
-import org.faktorips.util.message.MessageList;
+/**
+ * Base converter class used in the Faktor-IPS import/export framework.
+ * 
+ * @author Roman Grutza
+ */
+public abstract class AbstractValueConverter implements IValueConverter {
 
-public class StringValueConverter extends AbstractValueConverter {
-
-    /**
-     * {@inheritDoc}
-     */
-    public Object getExternalDataValue(String ipsValue, MessageList messageList) {
-        return ipsValue;
+    protected ITableFormat tableFormat;
+    
+    
+    public void setTableFormat(ITableFormat tableFormat) {
+        this.tableFormat = tableFormat;
     }
-
-    /**
-     * {@inheritDoc}
-     */
-    public String getIpsValue(Object externalDataValue, MessageList messageList) {
-        return externalDataValue.toString();
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    public Datatype getSupportedDatatype() {
-        return Datatype.STRING;
-    }
-
 }

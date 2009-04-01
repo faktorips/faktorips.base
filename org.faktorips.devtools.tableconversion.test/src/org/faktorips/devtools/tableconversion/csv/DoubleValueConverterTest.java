@@ -14,6 +14,7 @@
 package org.faktorips.devtools.tableconversion.csv;
 
 import org.faktorips.datatype.Datatype;
+import org.faktorips.devtools.tableconversion.AbstractValueConverter;
 import org.faktorips.devtools.tableconversion.IValueConverter;
 import org.faktorips.devtools.tableconversion.csv.DoubleValueConverter;
 import org.faktorips.util.message.MessageList;
@@ -30,7 +31,7 @@ public class DoubleValueConverterTest extends TestCase {
     public void testExternalToInternal() {
         String[] validExternalDoubles = {
                 String.valueOf(Double.MAX_VALUE),
-                "-1022", // Double.MIN_EXPONENT, this constant only available since Java 1.6, but we compile with Java 1.5
+                String.valueOf(Double.MIN_VALUE),
                 "42", "42.42", "-42.003E-03"
         };
         
@@ -38,8 +39,8 @@ public class DoubleValueConverterTest extends TestCase {
         IValueConverter converter = new DoubleValueConverter();
         for (int i = 0; i < validExternalDoubles.length; i++) {
             String ipsValue = converter.getIpsValue(validExternalDoubles[i], ml);
-//            assertTrue(ml.isEmpty());
-//            assertTrue(Datatype.DOUBLE.isParsable(ipsValue));
+            assertTrue(ml.isEmpty());
+            assertTrue(Datatype.DOUBLE.isParsable(ipsValue));
         }
     }
     

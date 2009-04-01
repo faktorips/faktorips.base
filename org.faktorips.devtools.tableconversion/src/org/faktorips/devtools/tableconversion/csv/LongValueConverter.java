@@ -14,20 +14,45 @@
 package org.faktorips.devtools.tableconversion.csv;
 
 import org.faktorips.datatype.Datatype;
-import org.faktorips.devtools.tableconversion.IValueConverter;
+import org.faktorips.devtools.tableconversion.AbstractValueConverter;
+import org.faktorips.devtools.tableconversion.ExtSystemsMessageUtil;
 import org.faktorips.util.message.MessageList;
 
-public class LongValueConverter implements IValueConverter {
+public class LongValueConverter extends AbstractValueConverter {
 
-
+    /**
+     * {@inheritDoc}
+     */
     public Object getExternalDataValue(String ipsValue, MessageList messageList) {
-        return "ELONG";
+        if (ipsValue == null) {
+            return null;
+        }
+        return ipsValue;
     }
 
+    /**
+     * The only supported type for externalDataValue is String.
+     * 
+     * {@inheritDoc}
+     */
     public String getIpsValue(Object externalDataValue, MessageList messageList) {
-        return "LONG";
+        if (externalDataValue instanceof String) {
+            String external = (String)externalDataValue;
+            try {
+                return Long.valueOf(external).toString();
+            } catch (NumberFormatException e) {
+                // TODO: scientific notation (exponent + mantissa)
+                //       for now fall through to report the error
+            }
+        }
+        messageList.add(ExtSystemsMessageUtil.createConvertExtToIntErrorMessage(
+                "" + externalDataValue, externalDataValue.getClass().getName(), getSupportedDatatype().getQualifiedName())); //$NON-NLS-1$
+        return externalDataValue.toString();
     }
-
+    
+    /**
+     * {@inheritDoc}
+     */
     public Datatype getSupportedDatatype() {
         return Datatype.LONG;
     }

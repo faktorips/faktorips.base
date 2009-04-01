@@ -107,14 +107,13 @@ public class ExcelTableImportOperationTest extends AbstractTableTest {
     }
 
     public void testImportValidRowMismatch() throws Exception {
-        MessageList ml = new MessageList();
-        structure = createTableStructure(ipsProject);
-        createValid();
-
+        createValidExternalTable(ipsProject, format, true);
+        
         // too many columns
-        IColumn col = structure.newColumn();
-
-        ExcelTableImportOperation op = new ExcelTableImportOperation(structure, file.getName(), importTarget, format,
+        IColumn col = getStructure().newColumn();
+        
+        MessageList ml = new MessageList();
+        ExcelTableImportOperation op = new ExcelTableImportOperation(getStructure(), file.getName(), importTarget, format,
                 "NULL", true, ml);
         op.run(new NullProgressMonitor());
         assertFalse(ml.isEmpty());
@@ -122,18 +121,17 @@ public class ExcelTableImportOperationTest extends AbstractTableTest {
         // invalid structure
         ml.clear();
         col.delete();
-        structure.getColumn(0).setDatatype("");
+        getStructure().getColumn(0).setDatatype("");
         op.run(new NullProgressMonitor());
         assertFalse(ml.isEmpty());
 
         // too less columns
         ml.clear();
-        assertNotNull(structure);
-        structure.getColumn(0).delete();
+        getStructure().getColumn(0).delete();
+        op = new ExcelTableImportOperation(getStructure(), file.getName(), importTarget, format,
+                "NULL", true, ml);
         op.run(new NullProgressMonitor());
-        // FIXME: test currently broken, Datatypes cached in ExcelTableImportOperation 
-        // and not updated after modifying column structure above 
-        assertFalse(ml.isEmpty()); 
+        assertFalse(ml.isEmpty());
     }
 
     public void testImportFirstRowContainsNoColumnHeader() throws Exception{

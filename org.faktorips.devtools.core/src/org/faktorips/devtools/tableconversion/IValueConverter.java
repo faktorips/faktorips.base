@@ -71,4 +71,5 @@ public interface IValueConverter {
 	 */
 	public Object getExternalDataValue(String ipsValue, MessageList messageList);
 
+    public void setTableFormat(ITableFormat format);
 }

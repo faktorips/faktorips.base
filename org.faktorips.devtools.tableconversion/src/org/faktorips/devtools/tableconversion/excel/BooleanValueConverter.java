@@ -14,8 +14,8 @@
 package org.faktorips.devtools.tableconversion.excel;
 
 import org.faktorips.datatype.Datatype;
+import org.faktorips.devtools.tableconversion.AbstractValueConverter;
 import org.faktorips.devtools.tableconversion.ExtSystemsMessageUtil;
-import org.faktorips.devtools.tableconversion.IValueConverter;
 import org.faktorips.util.message.MessageList;
 
 /**
@@ -23,7 +23,7 @@ import org.faktorips.util.message.MessageList;
  * 
  * @author Thorsten Guenther
  */
-public class BooleanValueConverter implements IValueConverter {
+public class BooleanValueConverter extends AbstractValueConverter {
 
 	/**
 	 * Supported types for the externalDataValue are String and Boolean.

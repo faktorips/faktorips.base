@@ -234,6 +234,7 @@ public class TableImportWizard extends Wizard implements IImportWizard {
             return newContentsPage;
         }
         if (page == selectContentsPage || page == newContentsPage) {
+            
             tablePreviewPage.setFilename(filePage.getFilename());
             tablePreviewPage.setTableFormat(filePage.getFormat());
             tablePreviewPage.setTableStructure(getTableStructure());

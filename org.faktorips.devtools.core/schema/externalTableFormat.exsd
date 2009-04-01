@@ -86,12 +86,12 @@
          <attribute name="guiClass" type="string">
             <annotation>
                <documentation>
-                  The implementation class of the GUI for this table format. Used to configure table format specific parameters with a graphical interface.
+                  A class which is able to create a Composite which has widgets to configure a  table format.
 
-The guiClass is a subclass of Composite which can then be used as part of Dialogs, WizardPages and the like.
+The guiClass is a subclass of CompositeFactory.
                </documentation>
                <appinfo>
-                  <meta.attribute kind="java" basedOn="org.eclipse.swt.widgets.Composite:"/>
+                  <meta.attribute kind="java"/>
                </appinfo>
             </annotation>
          </attribute>

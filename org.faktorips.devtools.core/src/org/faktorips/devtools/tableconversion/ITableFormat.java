@@ -17,7 +17,6 @@ import java.util.List;
 
 import org.eclipse.core.resources.IWorkspaceRunnable;
 import org.eclipse.core.runtime.IPath;
-import org.eclipse.swt.widgets.Composite;
 import org.faktorips.datatype.Datatype;
 import org.faktorips.devtools.core.model.tablecontents.ITableContents;
 import org.faktorips.devtools.core.model.tablecontents.ITableContentsGeneration;
@@ -174,18 +173,7 @@ public interface ITableFormat {
      * @param propertyValue The value to set for the given <code>propertyName</code>. 
      */
     public void setProperty(String propertyName, String propertyValue);
-    
-    /**
-     * Creates the Composite registered for this table format to configure table format specific parameters.
-     * The Composite will most likely be embedded as part of Dialogs, WizardPages and the like.
-     * 
-     * @param parent the parent of the Composite to create.
-     * @return Composite with widgets to configure the table formats parameters.
-     */
-    // TODO: this introduces a dependency of core, which has nothing to do with UI, to SWT.
-    //  Maybe it would be a better idea to move this method to the TableFormatPlugin class.
-    public Composite createTableFormatConfigurationControl(Composite parent);
-    
+        
     /**
      * Computes a preview for the table to be imported.
      * 

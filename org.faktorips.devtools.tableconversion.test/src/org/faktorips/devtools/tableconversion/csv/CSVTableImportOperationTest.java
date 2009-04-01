@@ -124,6 +124,8 @@ public class CSVTableImportOperationTest extends AbstractTableTest {
         // too less columns
         ml.clear();
         getStructure().getColumn(0).delete();
+        op = new CSVTableImportOperation(getStructure(), file.getName(), importTarget, format,
+                "NULL", true, ml);
         op.run(new NullProgressMonitor());
         assertFalse(ml.isEmpty());
     }
