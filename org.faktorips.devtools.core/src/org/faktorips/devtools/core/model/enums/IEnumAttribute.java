@@ -13,7 +13,10 @@
 
 package org.faktorips.devtools.core.model.enums;
 
+import org.eclipse.core.runtime.CoreException;
+import org.faktorips.datatype.ValueDatatype;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPart;
+import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 
 /**
  * An enum attribute is a part of an enum type that describes a property of the enum type.
@@ -98,6 +101,25 @@ public interface IEnumAttribute extends IIpsObjectPart {
      * Returns the unqualified name of the datatype of this enum attribute.
      */
     public String getDatatype();
+
+    /**
+     * Returns the enum attribute's value datatype.
+     * <p>
+     * If this enum attribute is inherited the value datatype of the super enum attribute is
+     * returned.
+     * <p>
+     * Returns <code>null</code> if no value datatype can be found.
+     * 
+     * @param project The project which ips object path is used for the search. This is not
+     *            necessarily the project this enum attribute is part of.
+     * 
+     * @see #getDatatype()
+     * 
+     * @throws NullPointerException If <code>ipsProject</code> is <code>null</code>.
+     * @throws CoreException If an error occurs while searching the given ips project for the value
+     *             datatype.
+     */
+    public ValueDatatype findDatatype(IIpsProject ipsProject) throws CoreException;
 
     /**
      * Sets the datatype of this enum attribute.

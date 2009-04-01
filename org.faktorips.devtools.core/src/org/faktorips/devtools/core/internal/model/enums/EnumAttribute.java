@@ -19,8 +19,8 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.osgi.util.NLS;
 import org.eclipse.swt.graphics.Image;
 import org.faktorips.datatype.Datatype;
+import org.faktorips.datatype.ValueDatatype;
 import org.faktorips.devtools.core.IpsPlugin;
-import org.faktorips.devtools.core.internal.model.enums.Messages;
 import org.faktorips.devtools.core.internal.model.ipsobject.AtomicIpsObjectPart;
 import org.faktorips.devtools.core.model.enums.IEnumAttribute;
 import org.faktorips.devtools.core.model.enums.IEnumType;
@@ -86,13 +86,6 @@ public class EnumAttribute extends AtomicIpsObjectPart implements IEnumAttribute
         String oldName = this.name;
         this.name = name;
         valueChanged(oldName, name);
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    public String getDatatype() {
-        return datatype;
     }
 
     /**
@@ -327,6 +320,26 @@ public class EnumAttribute extends AtomicIpsObjectPart implements IEnumAttribute
      */
     public IEnumType getEnumType() {
         return (IEnumType)getParent();
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public String getDatatype() {
+        return datatype;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public ValueDatatype findDatatype(IIpsProject ipsProject) throws CoreException {
+        ArgumentCheck.notNull(ipsProject);
+
+        if (isInherited) {
+            return getEnumType().findEnumAttribute(name).findDatatype(ipsProject);
+        }
+
+        return ipsProject.findValueDatatype(datatype);
     }
 
 }

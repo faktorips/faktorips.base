@@ -199,4 +199,5 @@ public class ModelLabelProvider implements ILabelProvider {
     public void setProductDefinitionLabelProvider(boolean productDefinitionLabelProvider) {
         this.productDefinitionLabelProvider = productDefinitionLabelProvider;
     }
+    
 }

@@ -17,6 +17,7 @@ import javax.xml.parsers.ParserConfigurationException;
 
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.swt.graphics.Image;
+import org.faktorips.datatype.ValueDatatype;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.model.IIpsModel;
 import org.faktorips.devtools.core.model.enums.IEnumAttribute;
@@ -176,6 +177,20 @@ public class EnumAttributeTest extends AbstractIpsEnumPluginTest {
 
     public void testGetEnumType() {
         assertEquals(genderEnumType, genderEnumAttributeId.getEnumType());
+    }
+
+    public void testFindDatatype() throws CoreException {
+        ValueDatatype datatype = genderEnumAttributeId.findDatatype(ipsProject);
+        assertEquals(STRING_DATATYPE_NAME, datatype.getName());
+
+        genderEnumAttributeId.setDatatype("foo");
+        assertNull(genderEnumAttributeId.findDatatype(ipsProject));
+
+        try {
+            genderEnumAttributeId.findDatatype(null);
+            fail();
+        } catch (NullPointerException e) {
+        }
     }
 
 }

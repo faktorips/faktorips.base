@@ -306,7 +306,7 @@ public class EnumValuesSection extends IpsSection implements ContentsChangeListe
                 String columnName;
                 boolean isIdentifier = false;
                 if (obtainNamesFromAttributes) {
-                    IEnumAttribute currentEnumAttribute = referencedEnumType.getEnumAttributes().get(i);
+                    IEnumAttribute currentEnumAttribute = referencedEnumType.findAllEnumAttributes().get(i);
                     columnName = currentEnumAttribute.getName();
                     isIdentifier = currentEnumAttribute.isLiteralNameAttribute();
                 } else {

@@ -73,15 +73,23 @@ public class EnumTypeBuilder extends DefaultJavaSourceFileBuilder {
         return false;
     }
 
+    /** Returns <code>true</code> if Java5 Enums are available. */
+    private boolean java5EnumsAvailable() {
+        return ComplianceCheck.isComplianceLevelAtLeast5(getIpsProject())
+                && getIpsProject().getIpsArtefactBuilderSet().getConfig().getPropertyValueAsBoolean(
+                        USE_JAVA_ENUM_TYPES_CONFIG_PROPERTY);
+    }
+
     /** Returns whether to generate an enum. */
     private boolean isEnum() {
         IEnumType enumType = getEnumType();
-        if (!(enumType.isAbstract())) {
-            if (ComplianceCheck.isComplianceLevelAtLeast5(getIpsProject())
-                    && getIpsProject().getIpsArtefactBuilderSet().getConfig().getPropertyValueAsBoolean(
-                            USE_JAVA_ENUM_TYPES_CONFIG_PROPERTY) && enumType.getValuesArePartOfModel()) {
-                return true;
-            }
+
+        if (enumType.isAbstract()) {
+            return false;
+        }
+
+        if (java5EnumsAvailable() && enumType.getValuesArePartOfModel()) {
+            return true;
         }
 
         return false;
@@ -89,12 +97,13 @@ public class EnumTypeBuilder extends DefaultJavaSourceFileBuilder {
 
     /** Returns whether to generate a class. */
     private boolean isClass() {
-        if (!(getEnumType().getValuesArePartOfModel())) {
-            return true;
+        IEnumType enumType = getEnumType();
+
+        if (enumType.isAbstract()) {
+            return false;
         }
-        if (!(ComplianceCheck.isComplianceLevelAtLeast5(getIpsProject()))
-                || !(getIpsProject().getIpsArtefactBuilderSet().getConfig()
-                        .getPropertyValueAsBoolean(USE_JAVA_ENUM_TYPES_CONFIG_PROPERTY))) {
+
+        if (!(enumType.getValuesArePartOfModel()) || !(java5EnumsAvailable())) {
             return true;
         }
 
@@ -130,7 +139,7 @@ public class EnumTypeBuilder extends DefaultJavaSourceFileBuilder {
         if (enumType.hasSuperEnumType()) {
             IEnumType superEnumType = enumType.findSuperEnumType();
             if (superEnumType != null) {
-                if (isEnum() || isInterface()) {
+                if (isEnum() || isInterface() || (isClass() && java5EnumsAvailable())) {
                     mainSection.setExtendedInterfaces(new String[] { getQualifiedClassName(superEnumType) });
                 } else {
                     mainSection.setSuperClass(getQualifiedClassName(superEnumType));
