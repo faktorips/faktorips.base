@@ -298,10 +298,6 @@ public class SelectFileAndImportMethodPage extends WizardDataTransferPage implem
      * @throws CoreException 
      */
     protected void setDefaults(IResource selectedResource) {
- ////// TODO: FOR FAST GUI TESTING, REMOVE AFTER IMPLEMENTED!
-        setFilename("/home/grutza/Testdaten/table.csv");
-        fileFormatField.getCombo().select(1);
-//////        
         if (selectedResource==null) {
             return;
         }
