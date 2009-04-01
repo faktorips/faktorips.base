@@ -43,16 +43,16 @@ import org.w3c.dom.Element;
 public class EnumAttribute extends AtomicIpsObjectPart implements IEnumAttribute {
 
     /** The icon representing an enum attribute. */
-    private final String ICON = "EnumAttribute.gif";
+    private final static String ICON = "EnumAttribute.gif";
 
     /** The icon representing an overridden enum attribute. */
-    private final String OVERRIDDEN_ICON = "EnumAttributeOverridden.gif";
+    private final static String OVERRIDDEN_ICON = "EnumAttributeOverridden.gif";
 
-    /** The icon representing an identifier enum attribute. */
-    private final String IDENTIFIER_ICON = "EnumAttributeIdentifier.gif";
+    /** The icon representing an enum attribute that is marked as unique identifier. */
+    private final static String UNIQUE_IDENTIFIER_ICON = "EnumAttributeUniqueIdentifier.gif";
 
-    /** The icon representing an overridden identifier enum attribute. */
-    private final String OVERRIDDEN_IDENTIFIER_ICON = "EnumAttributeOverriddenIdentifier.gif";
+    /** The icon representing an overridden unique identifier enum attribute. */
+    private final static String OVERRIDDEN_UNIQUE_IDENTIFIER_ICON = "EnumAttributeOverriddenUniqueIdentifier.gif";
 
     /** The datatype of this enum attribute. */
     private String datatype;
@@ -135,6 +135,7 @@ public class EnumAttribute extends AtomicIpsObjectPart implements IEnumAttribute
         name = element.getAttribute(PROPERTY_NAME);
         datatype = element.getAttribute(PROPERTY_DATATYPE);
         identifier = Boolean.parseBoolean(element.getAttribute(PROPERTY_LITERAL_NAME_ATTRIBUTE));
+        uniqueIdentifier = Boolean.parseBoolean(element.getAttribute(PROPERTY_UNIQUE_IDENTIFIER));
         inherited = Boolean.parseBoolean(element.getAttribute(PROPERTY_INHERITED));
 
         super.initFromXml(element, id);
@@ -150,6 +151,7 @@ public class EnumAttribute extends AtomicIpsObjectPart implements IEnumAttribute
         element.setAttribute(PROPERTY_NAME, name);
         element.setAttribute(PROPERTY_DATATYPE, datatype);
         element.setAttribute(PROPERTY_LITERAL_NAME_ATTRIBUTE, String.valueOf(identifier));
+        element.setAttribute(PROPERTY_UNIQUE_IDENTIFIER, String.valueOf(uniqueIdentifier));
         element.setAttribute(PROPERTY_INHERITED, String.valueOf(inherited));
     }
 
@@ -157,10 +159,10 @@ public class EnumAttribute extends AtomicIpsObjectPart implements IEnumAttribute
      * {@inheritDoc}
      */
     public Image getImage() {
-        if (identifier && inherited) {
-            return IpsPlugin.getDefault().getImage(OVERRIDDEN_IDENTIFIER_ICON);
-        } else if (identifier) {
-            return IpsPlugin.getDefault().getImage(IDENTIFIER_ICON);
+        if (uniqueIdentifier && inherited) {
+            return IpsPlugin.getDefault().getImage(OVERRIDDEN_UNIQUE_IDENTIFIER_ICON);
+        } else if (uniqueIdentifier) {
+            return IpsPlugin.getDefault().getImage(UNIQUE_IDENTIFIER_ICON);
         } else if (inherited) {
             return IpsPlugin.getDefault().getImage(OVERRIDDEN_ICON);
         } else {

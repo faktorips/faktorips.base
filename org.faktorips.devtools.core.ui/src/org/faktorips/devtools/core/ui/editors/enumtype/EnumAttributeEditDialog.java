@@ -17,8 +17,6 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
-import org.eclipse.swt.widgets.Event;
-import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.TabFolder;
 import org.eclipse.swt.widgets.TabItem;
@@ -102,6 +100,11 @@ public class EnumAttributeEditDialog extends IpsPartEditDialog2 {
         Checkbox identifierCheckbox = uiToolkit.createCheckbox(workArea);
         bindingContext.bindContent(identifierCheckbox, enumAttribute, IEnumAttribute.PROPERTY_LITERAL_NAME_ATTRIBUTE);
 
+        // Unique Identifier
+        uiToolkit.createFormLabel(workArea, Messages.EnumAttributeEditDialog_labelUniqueIdentifier);
+        Checkbox uniqueIdentifierCheckbox = uiToolkit.createCheckbox(workArea);
+        bindingContext.bindContent(uniqueIdentifierCheckbox, enumAttribute, IEnumAttribute.PROPERTY_UNIQUE_IDENTIFIER);
+
         // Inherited
         uiToolkit.createFormLabel(workArea, Messages.EnumAttributeEditDialog_labelIsInherited);
         Checkbox inheritedCheckbox = uiToolkit.createCheckbox(workArea);
@@ -112,22 +115,10 @@ public class EnumAttributeEditDialog extends IpsPartEditDialog2 {
         extFactory.bind(bindingContext);
 
         /*
-         * Set the focus into the name field and register listeners to select all contents of the
-         * name field and the datatype field when gaining focus trough tabbing for better usability.
+         * Set the focus into the name field for better usability.
          */
-        nameText.addListener(SWT.FocusIn, new Listener() {
-            public void handleEvent(Event e) {
-                nameText.selectAll();
-            }
-        });
-        datatypeControl.getTextControl().addListener(SWT.FocusIn, new Listener() {
-            public void handleEvent(Event e) {
-                datatypeControl.getTextControl().selectAll();
-            }
-        });
         nameText.setFocus();
 
         return control;
     }
-
 }

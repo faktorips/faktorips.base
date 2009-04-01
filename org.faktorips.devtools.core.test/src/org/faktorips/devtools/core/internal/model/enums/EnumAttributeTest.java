@@ -27,10 +27,10 @@ import org.w3c.dom.NamedNodeMap;
 
 public class EnumAttributeTest extends AbstractIpsEnumPluginTest {
 
-    private final String ICON = "EnumAttribute.gif";
-    private final String OVERRIDDEN_ICON = "EnumAttributeOverridden.gif";
-    private final String IDENTIFIER_ICON = "EnumAttributeIdentifier.gif";
-    private final String OVERRIDDEN_IDENTIFIER_ICON = "EnumAttributeOverriddenIdentifier.gif";
+    private final static String ICON = "EnumAttribute.gif";
+    private final static String OVERRIDDEN_ICON = "EnumAttributeOverridden.gif";
+    private final static String UNIQUE_IDENTIFIER_ICON = "EnumAttributeUniqueIdentifier.gif";
+    private final static String OVERRIDDEN_UNIQUE_IDENTIFIER_ICON = "EnumAttributeOverriddenUniqueIdentifier.gif";
 
     @Override
     public void setUp() throws Exception {
@@ -89,6 +89,8 @@ public class EnumAttributeTest extends AbstractIpsEnumPluginTest {
         assertEquals(STRING_DATATYPE_NAME, attributes.getNamedItem(IEnumAttribute.PROPERTY_DATATYPE).getTextContent());
         assertTrue(Boolean.parseBoolean(attributes.getNamedItem(IEnumAttribute.PROPERTY_LITERAL_NAME_ATTRIBUTE)
                 .getTextContent()));
+        assertTrue(Boolean.parseBoolean(attributes.getNamedItem(IEnumAttribute.PROPERTY_UNIQUE_IDENTIFIER)
+                .getTextContent()));
         assertFalse(Boolean.parseBoolean(attributes.getNamedItem(IEnumAttribute.PROPERTY_INHERITED).getTextContent()));
         assertEquals(1 + 2, xmlElement.getChildNodes().getLength());
 
@@ -98,6 +100,7 @@ public class EnumAttributeTest extends AbstractIpsEnumPluginTest {
         assertEquals(GENDER_ENUM_ATTRIBUTE_ID_NAME, idAttribute.getName());
         assertEquals(STRING_DATATYPE_NAME, idAttribute.getDatatype());
         assertTrue(idAttribute.isLiteralNameAttribute());
+        assertTrue(idAttribute.isUniqueIdentifier());
         assertFalse(idAttribute.isInherited());
         assertEquals(2, loadedEnumType.getEnumAttributes().size());
     }
@@ -181,23 +184,23 @@ public class EnumAttributeTest extends AbstractIpsEnumPluginTest {
     public void testGetImage() throws CoreException {
         Image icon = IpsPlugin.getDefault().getImage(ICON);
         Image overriddenIcon = IpsPlugin.getDefault().getImage(OVERRIDDEN_ICON);
-        Image identifierIcon = IpsPlugin.getDefault().getImage(IDENTIFIER_ICON);
-        Image overriddenIdentifierIcon = IpsPlugin.getDefault().getImage(OVERRIDDEN_IDENTIFIER_ICON);
+        Image uniqueIdentifierIcon = IpsPlugin.getDefault().getImage(UNIQUE_IDENTIFIER_ICON);
+        Image overriddenUniqueIdentifierIcon = IpsPlugin.getDefault().getImage(OVERRIDDEN_UNIQUE_IDENTIFIER_ICON);
 
         assertEquals(icon, genderEnumAttributeName.getImage());
-        assertEquals(identifierIcon, genderEnumAttributeId.getImage());
+        assertEquals(uniqueIdentifierIcon, genderEnumAttributeId.getImage());
 
         genderEnumType.setAbstract(true);
         IEnumType subEnumType = newEnumType(ipsProject, "SubEnumType");
         subEnumType.setSuperEnumType(genderEnumType.getQualifiedName());
         IEnumAttribute subAttributeId = subEnumType.newEnumAttribute();
-        subAttributeId.setLiteralNameAttribute(true);
+        subAttributeId.setUniqueIdentifier(true);
         subAttributeId.setInherited(true);
         IEnumAttribute subAttributeName = subEnumType.newEnumAttribute();
         subAttributeName.setInherited(true);
 
         assertEquals(overriddenIcon, subAttributeName.getImage());
-        assertEquals(overriddenIdentifierIcon, subAttributeId.getImage());
+        assertEquals(overriddenUniqueIdentifierIcon, subAttributeId.getImage());
     }
 
     public void testGetEnumType() {

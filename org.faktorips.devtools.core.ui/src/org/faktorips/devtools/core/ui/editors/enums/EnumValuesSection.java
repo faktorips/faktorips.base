@@ -77,8 +77,8 @@ import org.faktorips.util.message.MessageList;
  * be done. That means, if an enum attribute is added there will be a new column in the table, if an
  * enum attribute is deleted the corresponding table column will be deleted and so on.
  * <p>
- * Fixing the table when editing enum content objects is done manually by the user trough separate
- * dialogs.
+ * Fixing the table when editing enum content objects is done manually by the user trough a separate
+ * dialog.
  * 
  * @see org.faktorips.devtools.core.ui.editors.enumtype.EnumTypeStructurePage
  * @see org.faktorips.devtools.core.ui.editors.enumtype.EnumTypeValuesPage
@@ -91,7 +91,7 @@ import org.faktorips.util.message.MessageList;
 public class EnumValuesSection extends IpsSection implements ContentsChangeListener {
 
     /** The image to show for columns that contain the identifier value. */
-    private final Image IDENTIFIER_COLUMN_IMAGE = IpsUIPlugin.getDefault().getImage("TableKeyColumn.gif");
+    private final static Image UNIQUE_IDENTIFIER_COLUMN_IMAGE = IpsUIPlugin.getDefault().getImage("TableKeyColumn.gif");
 
     /** The enum value container holding the enum values to be edited. */
     private IEnumValueContainer enumValueContainer;
@@ -308,7 +308,7 @@ public class EnumValuesSection extends IpsSection implements ContentsChangeListe
                 if (obtainNamesFromAttributes) {
                     IEnumAttribute currentEnumAttribute = referencedEnumType.findAllEnumAttributes().get(i);
                     columnName = currentEnumAttribute.getName();
-                    isIdentifier = currentEnumAttribute.isLiteralNameAttribute();
+                    isIdentifier = currentEnumAttribute.isUniqueIdentifier();
                 } else {
                     columnName = NLS.bind(Messages.EnumValuesSection_defaultColumnName, i + 1);
                 }
@@ -317,7 +317,7 @@ public class EnumValuesSection extends IpsSection implements ContentsChangeListe
 
         } else {
             for (IEnumAttribute currentEnumAttribute : enumType.findAllEnumAttributes()) {
-                addTableColumn(currentEnumAttribute.getName(), currentEnumAttribute.isLiteralNameAttribute());
+                addTableColumn(currentEnumAttribute.getName(), currentEnumAttribute.isUniqueIdentifier());
             }
         }
     }
@@ -474,7 +474,7 @@ public class EnumValuesSection extends IpsSection implements ContentsChangeListe
 
         // Set identifier image as neccessary
         if (identifierColumnn) {
-            newColumn.setImage(IDENTIFIER_COLUMN_IMAGE);
+            newColumn.setImage(UNIQUE_IDENTIFIER_COLUMN_IMAGE);
         }
 
         // Add the name to the column names list
