@@ -137,7 +137,7 @@ public class EnumAttribute extends AtomicIpsObjectPart implements IEnumAttribute
     protected void initFromXml(Element element, Integer id) {
         name = element.getAttribute(PROPERTY_NAME);
         datatype = element.getAttribute(PROPERTY_DATATYPE);
-        isIdentifier = Boolean.parseBoolean(element.getAttribute(PROPERTY_IDENTIFIER));
+        isIdentifier = Boolean.parseBoolean(element.getAttribute(PROPERTY_LITERAL_NAME_ATTRIBUTE));
         isInherited = Boolean.parseBoolean(element.getAttribute(PROPERTY_INHERITED));
 
         super.initFromXml(element, id);
@@ -152,7 +152,7 @@ public class EnumAttribute extends AtomicIpsObjectPart implements IEnumAttribute
 
         element.setAttribute(PROPERTY_NAME, name);
         element.setAttribute(PROPERTY_DATATYPE, datatype);
-        element.setAttribute(PROPERTY_IDENTIFIER, String.valueOf(isIdentifier));
+        element.setAttribute(PROPERTY_LITERAL_NAME_ATTRIBUTE, String.valueOf(isIdentifier));
         element.setAttribute(PROPERTY_INHERITED, String.valueOf(isInherited));
     }
 
@@ -265,7 +265,7 @@ public class EnumAttribute extends AtomicIpsObjectPart implements IEnumAttribute
                 if (numberEnumAttributesIdentifier > 1) {
                     text = Messages.EnumAttribute_DuplicateIdentifier;
                     validationMessage = new Message(MSGCODE_ENUM_ATTRIBUTE_DUPLICATE_IDENTIFIER, text, Message.ERROR,
-                            this, PROPERTY_IDENTIFIER);
+                            this, PROPERTY_LITERAL_NAME_ATTRIBUTE);
                     list.add(validationMessage);
                     break;
                 }
