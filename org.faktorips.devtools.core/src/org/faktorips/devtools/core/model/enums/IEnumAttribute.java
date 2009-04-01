@@ -24,8 +24,9 @@ import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
  * Enum attributes are always of a specific <em>datatype</em> and can be <em>inherited</em> from an
  * enum type in the supertype hierarchy.
  * <p>
- * An enum attribute can be marked as <em>identifier</em> which implies that each value for this
- * enum attribute must be unique.
+ * An enum attribute can be marked as <em>use as literal name</em> which implies that the values for
+ * this enum attribute will be used to identify the respective enum values in the generated source
+ * code and that each value for this enum attribute must be unique.
  * <p>
  * For more information about how enum attributes relate to the entire Faktor-IPS enums concept
  * please read the documentation of IEnumType.
@@ -45,6 +46,7 @@ public interface IEnumAttribute extends IIpsObjectPart {
     public final static String PROPERTY_DATATYPE = "datatype"; //$NON-NLS-1$
 
     /** Name of the <code>identifier</code> property. */
+    // TODO aw: negotiate with peter about the name of this property
     public final static String PROPERTY_LITERAL_NAME_ATTRIBUTE = "literalNameAttribute"; //$NON-NLS-1$
 
     /** Name of the <code>inherited</code> property. */
@@ -131,7 +133,8 @@ public interface IEnumAttribute extends IIpsObjectPart {
     public void setDatatype(String datatype);
 
     /**
-     * Returns <code>true</code> if this enum attribute is the literal name attribute of this enum type, <code>false</code> if not.
+     * Returns <code>true</code> if this enum attribute is the literal name attribute of this enum
+     * type, <code>false</code> if not.
      */
     public boolean isLiteralNameAttribute();
 

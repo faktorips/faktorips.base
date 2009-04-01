@@ -37,8 +37,9 @@ import org.faktorips.datatype.EnumDatatype;
  * Enum values can be defined directly in the <code>IEnumType</code> itself or separate from it as
  * product content (<code>IEnumContent</code>).
  * <p>
- * At least one enum attribute needs to be marked as <em>identifier</em> which implies that each
- * enum attribute value of this enum attribute needs to be unique.
+ * At least one enum attribute needs to be marked as <em>use as literal name</em> which implies that
+ * the values for this enum attribute will be used to identify the respective enum values in the
+ * generated source code and that each value for this enum attribute must be unique.
  * 
  * @see IEnumContent
  * 
