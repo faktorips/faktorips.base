@@ -16,7 +16,6 @@ package org.faktorips.devtools.core.internal.model.enums;
 import javax.xml.parsers.ParserConfigurationException;
 
 import org.eclipse.core.runtime.CoreException;
-import org.faktorips.devtools.core.model.enums.IEnumAttributeValue;
 import org.faktorips.devtools.core.model.enums.IEnumContent;
 import org.w3c.dom.Element;
 
@@ -65,20 +64,27 @@ public class EnumValueTest extends AbstractIpsEnumPluginTest {
         assertEquals(genderEnumContent, genderEnumValueMale.getEnumValueContainer());
     }
 
-    public void testFindIdentifierEnumAttributeValue() throws CoreException {
-        IEnumAttributeValue identifierEnumAttributeValue = genderEnumValueMale.getEnumAttributeValues().get(0);
-        assertEquals(identifierEnumAttributeValue, genderEnumValueMale.findIdentifierEnumAttributeValue());
+    public void testFindEnumAttributeValue() throws CoreException {
+        try {
+            genderEnumValueMale.findEnumAttributeValue(null);
+            fail();
+        } catch (NullPointerException e) {
+        }
 
-        genderEnumAttributeId.setLiteralNameAttribute(false);
-        assertNull(genderEnumValueMale.findIdentifierEnumAttributeValue());
-        genderEnumAttributeId.setLiteralNameAttribute(true);
+        try {
+            genderEnumValueMale.findEnumAttributeValue(paymentMode.getEnumAttributes().get(0));
+            fail();
+        } catch (IllegalArgumentException e) {
+        }
 
-        genderEnumContent.setEnumType("");
-        assertNull(genderEnumValueMale.findIdentifierEnumAttributeValue());
-        genderEnumContent.setEnumType(genderEnumType.getQualifiedName());
-
-        genderEnumType.deleteEnumAttributeWithValues(genderEnumAttributeName);
-        assertNull(genderEnumValueMale.findIdentifierEnumAttributeValue());
+        assertEquals(genderEnumValueMale.getEnumAttributeValues().get(0), genderEnumValueMale
+                .findEnumAttributeValue(genderEnumAttributeId));
+        assertEquals(genderEnumValueFemale.getEnumAttributeValues().get(0), genderEnumValueFemale
+                .findEnumAttributeValue(genderEnumAttributeId));
+        assertEquals(genderEnumValueMale.getEnumAttributeValues().get(1), genderEnumValueMale
+                .findEnumAttributeValue(genderEnumAttributeName));
+        assertEquals(genderEnumValueFemale.getEnumAttributeValues().get(1), genderEnumValueFemale
+                .findEnumAttributeValue(genderEnumAttributeName));
     }
 
 }

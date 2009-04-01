@@ -158,7 +158,8 @@ public interface IEnumType extends IEnumValueContainer, EnumDatatype {
     /**
      * Returns a list containing all enum attributes that belong to this enum type.
      * <p>
-     * Attributes that are inherited are <strong>not</strong> included.
+     * Enum attributes that are inherited from the supertype hierarchy are <strong>not</strong>
+     * included.
      */
     public List<IEnumAttribute> getEnumAttributes();
 
@@ -167,6 +168,15 @@ public interface IEnumType extends IEnumValueContainer, EnumDatatype {
      * <strong>plus</strong> all enum attributes that are inherited from the supertype hierarchy.
      */
     public List<IEnumAttribute> findAllEnumAttributes();
+
+    /**
+     * Returns the enum attribute that has been marked to be used as literal name or
+     * <code>null</code> if no such enum attribute exists in this enum type.
+     * <p>
+     * Enum attributes that are inherited from the supertype hierarchy <strong>are</strong> included
+     * in the search.
+     */
+    public IEnumAttribute findLiteralNameAttribute();
 
     /**
      * Returns the index of the given enum attribute in the containing list.

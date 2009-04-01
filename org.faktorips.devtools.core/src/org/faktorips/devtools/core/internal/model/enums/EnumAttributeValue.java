@@ -164,47 +164,75 @@ public class EnumAttributeValue extends AtomicIpsObjectPart implements IEnumAttr
     protected void validateThis(MessageList list, IIpsProject ipsProject) throws CoreException {
         super.validateThis(list, ipsProject);
 
-        // Value parsable?
         IEnumAttribute enumAttribute = findEnumAttribute();
         if (enumAttribute != null) {
+            // Value parsable?
             String datatypeQualifiedName = enumAttribute.getDatatype();
             ValueDatatype valueDatatype = ipsProject.findValueDatatype(datatypeQualifiedName);
             if (valueDatatype != null) {
                 if (!(valueDatatype.isParsable(value))) {
-                    String text = NLS.bind(Messages.EnumAttributeValue_NotParsable, enumAttribute.getName(),
+                    String text = NLS.bind(Messages.EnumAttributeValue_ValueNotParsable, enumAttribute.getName(),
                             valueDatatype.getName());
                     Message validationMessage = new Message(MSGCODE_ENUM_ATTRIBUTE_VALUE_NOT_PARSABLE, text,
                             Message.ERROR, this, PROPERTY_VALUE);
                     list.add(validationMessage);
                 }
             }
-        }
 
-        IEnumValue enumValue = getEnumValue();
-        IEnumAttributeValue identifierEnumAttributeValue = enumValue.findIdentifierEnumAttributeValue();
-        if (identifierEnumAttributeValue == this) {
-            validateIdentifierEnumAttributeValue(list, ipsProject);
+            // Unique identifier and literal name validations
+            if (isUniqueIdentifierEnumAttributeValue()) {
+                validateUniqueIdentifierEnumAttributeValue(list, ipsProject);
+                if (list.getNoOfMessages() == 0) {
+                    if (isLiteralNameEnumAttributeValue()) {
+                        validateLiteralNameEnumAttributeValue(list, ipsProject);
+                    }
+                }
+            }
         }
     }
 
-    /** Validations neccessary if this enum attribute value refers to an identifier enum attribute. */
-    private void validateIdentifierEnumAttributeValue(MessageList list, IIpsProject ipsProject) throws CoreException {
+    /**
+     * Validations neccessary if this enum attribute value refers to an enum attribute that is used
+     * as literal name.
+     */
+    private void validateLiteralNameEnumAttributeValue(MessageList list, IIpsProject ipsProject) throws CoreException {
         IEnumAttribute enumAttribute = findEnumAttribute();
         String text;
         Message validationMessage;
 
-        // The identifier enum attribute value must not be empty
-        String identifierValue = getValue();
-        boolean identifierValueMissing = (identifierValue == null) ? true : identifierValue.equals("");
-        if (identifierValueMissing) {
-            text = NLS.bind(Messages.EnumAttributeValue_IdentifierEmpty, enumAttribute.getName());
-            validationMessage = new Message(MSGCODE_ENUM_ATTRIBUTE_VALUE_IDENTIFIER_VALUE_EMPTY, text, Message.ERROR,
-                    this);
+        // The identifier enum attribute value must be java conform
+        if (!(JavaConventions.validateIdentifier(value, "1.5", "1.5").isOK())) {
+            text = NLS.bind(Messages.EnumAttributeValue_UniqueIdentifierValueNotJavaConform, enumAttribute.getName());
+            validationMessage = new Message(MSGCODE_ENUM_ATTRIBUTE_VALUE_IDENTIFIER_NOT_JAVA_CONFORM, text,
+                    Message.ERROR, this);
+            list.add(validationMessage);
+        }
+    }
+
+    /**
+     * Validations neccessary if this enum attribute value refers to a unique identifier enum
+     * attribute.
+     */
+    private void validateUniqueIdentifierEnumAttributeValue(MessageList list, IIpsProject ipsProject)
+            throws CoreException {
+
+        IEnumAttribute enumAttribute = findEnumAttribute();
+        String text;
+        Message validationMessage;
+
+        // The unique identifier enum attribute value must not be empty
+        String uniqueIdentifierValue = getValue();
+        boolean uniqueIdentifierValueMissing = (uniqueIdentifierValue == null) ? true : uniqueIdentifierValue
+                .equals("");
+        if (uniqueIdentifierValueMissing) {
+            text = NLS.bind(Messages.EnumAttributeValue_UniqueIdentifierValueEmpty, enumAttribute.getName());
+            validationMessage = new Message(MSGCODE_ENUM_ATTRIBUTE_VALUE_UNIQUE_IDENTIFIER_VALUE_EMPTY, text,
+                    Message.ERROR, this);
             list.add(validationMessage);
         }
 
-        if (!identifierValueMissing) {
-            // The identifier enum attribute value must be unique
+        if (!uniqueIdentifierValueMissing) {
+            // The unique identifier enum attribute value must be unique
             String value = getValue();
             IEnumValueContainer enumValueContainer = getEnumValue().getEnumValueContainer();
             for (IEnumValue currentEnumValue : enumValueContainer.getEnumValues()) {
@@ -212,23 +240,39 @@ public class EnumAttributeValue extends AtomicIpsObjectPart implements IEnumAttr
                     continue;
                 }
 
-                if (currentEnumValue.findIdentifierEnumAttributeValue().getValue().equals(value)) {
-                    text = NLS.bind(Messages.EnumAttributeValue_IdentifierNotUnique, enumAttribute.getName());
+                if (currentEnumValue.findEnumAttributeValue(enumAttribute).getValue().equals(value)) {
+                    text = NLS
+                            .bind(Messages.EnumAttributeValue_UniqueIdentifierValueNotUnique, enumAttribute.getName());
                     validationMessage = new Message(MSGCODE_ENUM_ATTRIBUTE_VALUE_IDENTIFIER_NOT_UNIQUE, text,
                             Message.ERROR, this);
                     list.add(validationMessage);
                     break;
                 }
             }
-
-            // The identifier enum attribute value must be java conform
-            if (!(JavaConventions.validateIdentifier(value, "1.5", "1.5").isOK())) {
-                text = NLS.bind(Messages.EnumAttributeValue_IdentifierNotJavaConform, enumAttribute.getName());
-                validationMessage = new Message(MSGCODE_ENUM_ATTRIBUTE_VALUE_IDENTIFIER_NOT_JAVA_CONFORM, text,
-                        Message.ERROR, this);
-                list.add(validationMessage);
-            }
         }
+    }
+
+    /**
+     * Returns whether this enum attribute value refers to an enum attribute that is used as literal
+     * name.
+     */
+    private boolean isLiteralNameEnumAttributeValue() throws CoreException {
+        IEnumAttribute referencedEnumAttribute = findEnumAttribute();
+        if (referencedEnumAttribute == null) {
+            throw new NullPointerException();
+        }
+
+        return referencedEnumAttribute.isLiteralNameAttribute();
+    }
+
+    /** Returns whether this enum attribute value refers to a unique identifier enum attribute. */
+    private boolean isUniqueIdentifierEnumAttributeValue() throws CoreException {
+        IEnumAttribute referencedEnumAttribute = findEnumAttribute();
+        if (referencedEnumAttribute == null) {
+            throw new NullPointerException();
+        }
+
+        return referencedEnumAttribute.isUniqueIdentifier();
     }
 
     /**

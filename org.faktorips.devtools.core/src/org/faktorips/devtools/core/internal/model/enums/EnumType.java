@@ -388,6 +388,19 @@ public class EnumType extends EnumValueContainer implements IEnumType {
     /**
      * {@inheritDoc}
      */
+    public IEnumAttribute findLiteralNameAttribute() {
+        for (IEnumAttribute currentEnumAttribute : findAllEnumAttributes()) {
+            if (currentEnumAttribute.isLiteralNameAttribute()) {
+                return currentEnumAttribute;
+            }
+        }
+
+        return null;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
     public void deleteEnumAttributeWithValues(final IEnumAttribute enumAttribute) throws CoreException {
         ArgumentCheck.notNull(enumAttribute);
         ArgumentCheck.isTrue(enumAttributes.getBackingList().contains(enumAttribute));
@@ -517,42 +530,53 @@ public class EnumType extends EnumValueContainer implements IEnumType {
      *             values throws a <code>CoreException</code>.
      */
     public String[] getAllValueIds(boolean includeNull) {
-        try{
+        try {
+
             List<String> valueIds = new ArrayList<String>(getEnumValuesCount());
             for (IEnumValue enumValue : getEnumValues()) {
-                IEnumAttributeValue value = enumValue.findIdentifierEnumAttributeValue();
-                if(value == null){
+                IEnumAttribute literalNameEnumAttribute = findLiteralNameAttribute();
+                if (literalNameEnumAttribute == null) {
+                    return null;
+                }
+                IEnumAttributeValue value = enumValue.findEnumAttributeValue(literalNameEnumAttribute);
+                if (value == null) {
                     return null;
                 }
                 valueIds.add(value.getValue());
             }
+
             return valueIds.toArray(new String[valueIds.size()]);
-        } catch(CoreException e){
+
+        } catch (CoreException e) {
             throw new RuntimeException("Unable to determine the value ids of this enum type.", e);
         }
     }
 
     /**
-     * In the context of an enum type the id is the value of the literal name attribute. This
-     * method checks if the provided id is one of the enum attribute values. If so the id is returned
+     * In the context of an enum type the id is the value of the literal name attribute. This method
+     * checks if the provided id is one of the enum attribute values. If so the id is returned
      * otherwise <code>null</code> is returned.
      */
     public String getValueName(String id) {
-        if(id == null) {
+        if (id == null) {
             return null;
         }
-        try{
+
+        try {
+
             for (IEnumValue enumValue : getEnumValues()) {
-                IEnumAttributeValue value = enumValue.findIdentifierEnumAttributeValue();
-                if(value == null){
+                IEnumAttributeValue value = enumValue.findEnumAttributeValue(findLiteralNameAttribute());
+                if (value == null) {
                     continue;
                 }
-                if(id.equals(value.getValue())){
+                if (id.equals(value.getValue())) {
                     return value.getValue();
                 }
             }
+
             return null;
-        } catch(CoreException e){
+
+        } catch (CoreException e) {
             throw new RuntimeException("Unable to determine the value ids of this enum type.", e);
         }
     }
@@ -570,16 +594,19 @@ public class EnumType extends EnumValueContainer implements IEnumType {
     public boolean areValuesEqual(String valueA, String valueB) {
         String valueAName = getValueName(valueA);
         String valueBName = getValueName(valueB);
-        if(valueAName != null && valueBName != null){
+        if (valueAName != null && valueBName != null) {
             return ObjectUtils.equals(valueA, valueB);
         }
+
         throw new IllegalArgumentException("Either the value of parameter valueA=" + valueA
                 + " or the one of parameter valueB="
                 + " is not part of this enumeration type. Therefor the equality cannot be determined.");
     }
 
-    //TODO pk this method needs IIpsProject as parameter but this collides with its original intention which
-    //also manifests in being located in the commons project
+    /*
+     * TODO pk: this method needs IIpsProject as parameter but this collides with its original
+     * intention which also manifests in being located in the commons project.
+     */
     public MessageList checkReadyToUse() {
         try {
             return validate(getIpsProject());
@@ -644,7 +671,6 @@ public class EnumType extends EnumValueContainer implements IEnumType {
         return getValueName(value) != null;
     }
 
-    
     /**
      * Creates a new enum attribute. On every enum value that is contained in this enum type new
      * enum attribute value objects need to be created for the new enum attribute.
@@ -714,4 +740,5 @@ public class EnumType extends EnumValueContainer implements IEnumType {
         }
 
     }
+
 }

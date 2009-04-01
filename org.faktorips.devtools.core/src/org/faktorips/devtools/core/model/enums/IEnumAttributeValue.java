@@ -43,11 +43,11 @@ public interface IEnumAttributeValue extends IIpsObjectPart {
             + "EnumAttributeValueNotParsable"; //$NON-NLS-1$
 
     /**
-     * Validation message code to indicate that this enum attribute value is refering the identifier
-     * enum attribute but is empty.
+     * Validation message code to indicate that this enum attribute value is refering a unique
+     * identifier enum attribute but is empty.
      */
-    public final static String MSGCODE_ENUM_ATTRIBUTE_VALUE_IDENTIFIER_VALUE_EMPTY = MSGCODE_PREFIX
-            + "EnumAttributeValueIdentifierValueEmpty"; //$NON-NLS-1$
+    public final static String MSGCODE_ENUM_ATTRIBUTE_VALUE_UNIQUE_IDENTIFIER_VALUE_EMPTY = MSGCODE_PREFIX
+            + "EnumAttributeValueUniqueIdentifierValueEmpty"; //$NON-NLS-1$
 
     /**
      * Validation message code to indicate that that this enum attribute value is refering the

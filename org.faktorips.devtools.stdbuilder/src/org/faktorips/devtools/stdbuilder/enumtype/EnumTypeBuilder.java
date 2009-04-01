@@ -181,17 +181,17 @@ public class EnumTypeBuilder extends DefaultJavaSourceFileBuilder {
                 IEnumValue currentEnumValue = enumValues.get(i);
                 // Generate only for valid enum values
                 if (currentEnumValue.isValid()) {
-                    IEnumAttributeValue currentIdentifierEnumAttributeValue = enumValues.get(i)
-                            .findIdentifierEnumAttributeValue();
+                    IEnumAttributeValue currentLiteralNameEnumAttributeValue = enumValues.get(i)
+                            .findEnumAttributeValue(enumType.findLiteralNameAttribute());
                     List<IEnumAttributeValue> currentEnumAttributeValues = currentEnumValue.getEnumAttributeValues();
                     if (javaAtLeast5) {
                         lastEnumValueGenerated = (i == enumValues.size() - 1);
                         generateEnumValueAsEnumDefinition(currentEnumAttributeValues,
-                                currentIdentifierEnumAttributeValue, lastEnumValueGenerated, mainSection
+                                currentLiteralNameEnumAttributeValue, lastEnumValueGenerated, mainSection
                                         .getEnumDefinitionBuilder());
                         appendSemicolon = false;
                     } else {
-                        generateEnumValueAsConstant(currentEnumAttributeValues, currentIdentifierEnumAttributeValue,
+                        generateEnumValueAsConstant(currentEnumAttributeValues, currentLiteralNameEnumAttributeValue,
                                 mainSection.getConstantBuilder());
                     }
                 }

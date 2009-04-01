@@ -552,4 +552,17 @@ public class EnumTypeTest extends AbstractIpsEnumPluginTest {
         assertEquals("bar", genderEnumType.getEnumContentPackageFragment());
     }
 
+    public void testFindLiteralNameAttribute() throws CoreException {
+        IEnumType subEnumType = newEnumType(ipsProject, "SubEnumType");
+        subEnumType.setSuperEnumType(genderEnumType.getQualifiedName());
+        IEnumAttribute inheritedLiteralNameAttribute = subEnumType.newEnumAttribute();
+        inheritedLiteralNameAttribute.setName(GENDER_ENUM_ATTRIBUTE_ID_NAME);
+        inheritedLiteralNameAttribute.setInherited(true);
+        inheritedLiteralNameAttribute.setDatatype(STRING_DATATYPE_NAME);
+        inheritedLiteralNameAttribute.setLiteralNameAttribute(true);
+        inheritedLiteralNameAttribute.setUniqueIdentifier(true);
+
+        assertEquals(inheritedLiteralNameAttribute, subEnumType.findLiteralNameAttribute());
+    }
+
 }

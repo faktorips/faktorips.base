@@ -25,10 +25,10 @@ public class Messages extends NLS {
 
     public static String EnumValue_NumberAttributeValuesDoesNotCorrespondToNumberAttributes;
 
-    public static String EnumAttributeValue_NotParsable;
-    public static String EnumAttributeValue_IdentifierEmpty;
-    public static String EnumAttributeValue_IdentifierNotUnique;
-    public static String EnumAttributeValue_IdentifierNotJavaConform;
+    public static String EnumAttributeValue_ValueNotParsable;
+    public static String EnumAttributeValue_UniqueIdentifierValueEmpty;
+    public static String EnumAttributeValue_UniqueIdentifierValueNotUnique;
+    public static String EnumAttributeValue_UniqueIdentifierValueNotJavaConform;
 
     public static String EnumAttribute_NameMissing;
     public static String EnumAttribute_DuplicateName;

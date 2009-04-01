@@ -72,14 +72,17 @@ public interface IEnumValue extends IIpsObjectPart {
     public IEnumValueContainer getEnumValueContainer();
 
     /**
-     * Searches and returns the enum attribute value that refers to the identifier attribute of the
+     * Searches and returns the enum attribute value that refers to the given enum attribute of the
      * enum type this enum value refers to.
      * <p>
-     * Returns <code>null</code> if none can be found.
+     * Returns <code>null</code> if none can be found or if the referenced enum type can't be found.
      * 
-     * @throws CoreException If an error occurs while searching for the identifier enum attribute.
+     * @throws CoreException If an error occurs while searching for the referenced enum type.
+     * @throws NullPointerException If <code>enumAttribute</code> is <code>null</code>.
+     * @throws IllegalArgumentException If the given enum attribute is not part of the enum type
+     *             referenced by this enum value.
      */
-    public IEnumAttributeValue findIdentifierEnumAttributeValue() throws CoreException;
+    public IEnumAttributeValue findEnumAttributeValue(IEnumAttribute enumAttribute) throws CoreException;
 
     /**
      * Returns how many enum attribute values this enum value is currently containing.

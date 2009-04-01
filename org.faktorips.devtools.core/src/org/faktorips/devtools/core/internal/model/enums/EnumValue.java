@@ -169,11 +169,15 @@ public class EnumValue extends BaseIpsObjectPart implements IEnumValue {
     /**
      * {@inheritDoc}
      */
-    public IEnumAttributeValue findIdentifierEnumAttributeValue() throws CoreException {
+    public IEnumAttributeValue findEnumAttributeValue(IEnumAttribute enumAttribute) throws CoreException {
+        ArgumentCheck.notNull(enumAttribute);
+        IEnumType enumType = getEnumValueContainer().findEnumType();
+        ArgumentCheck.isTrue(enumAttribute.getEnumType() == enumType);
+
         for (IEnumAttributeValue currentEnumAttributeValue : getEnumAttributeValues()) {
             IEnumAttribute currentReferencedEnumAttribute = currentEnumAttributeValue.findEnumAttribute();
             if (currentReferencedEnumAttribute != null) {
-                if (currentReferencedEnumAttribute.isLiteralNameAttribute()) {
+                if (currentReferencedEnumAttribute == enumAttribute) {
                     return currentEnumAttributeValue;
                 }
             }
