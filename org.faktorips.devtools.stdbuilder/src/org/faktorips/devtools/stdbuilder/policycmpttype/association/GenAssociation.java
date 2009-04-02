@@ -989,15 +989,7 @@ public abstract class GenAssociation extends GenPolicyCmptTypePart {
     protected void generateMemberVariables(JavaCodeFragmentBuilder builder,
             IIpsProject ipsProject,
             boolean generatesInterface) throws CoreException {
-        if (!isDerivedUnion() && !isCompositionDetailToMaster() && isGenerateJaxbSupport()) {
-            builder.getFragment().addImport("javax.xml.bind.annotation.XmlElement");
-            builder.annotation("XmlElement(name=\"" + association.getName() + "\", type=" + targetImplClassName
-                    + ".class)");
-            if (!isCompositionMasterToDetail()) {
-                builder.getFragment().addImport("javax.xml.bind.annotation.XmlIDREF");
-                builder.annotation("XmlIDREF");
-            }
-        }
+        // nothing to do
     }
 
     public abstract void generateCodeForContainerAssociationImplementation(List associations,

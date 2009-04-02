@@ -178,7 +178,7 @@ public class GenAssociationToMany extends GenAssociation {
             IIpsProject ipsProject,
             boolean generatesInterface) throws CoreException {
         super.generateMemberVariables(builder, ipsProject, generatesInterface);
-        if (!association.isDerivedUnion()) {
+        if (!isDerivedUnion()) {
             JavaCodeFragment initialValueExpression = new JavaCodeFragment();
             initialValueExpression.append("new ");
             initialValueExpression.appendClassName(ArrayList.class);
@@ -192,6 +192,16 @@ public class GenAssociationToMany extends GenAssociation {
             builder.javaDoc(comment, JavaSourceFileBuilder.ANNOTATION_GENERATED);
 
             if (isGenerateJaxbSupport()) {
+                if (!isCompositionDetailToMaster()) {
+                    builder.getFragment().addImport("javax.xml.bind.annotation.XmlElement");
+                    builder.annotation("XmlElement(name=\"" + association.getName() + "\", type=" + targetImplClassName
+                            + ".class)");
+                    if (!isCompositionMasterToDetail()) {
+                        builder.getFragment().addImport("javax.xml.bind.annotation.XmlIDREF");
+                        builder.annotation("XmlIDREF");
+                    }
+                }
+                
                 builder.getFragment().addImport("javax.xml.bind.annotation.XmlElementWrapper");
                 builder.annotation("XmlElementWrapper(name = \"" + association.getTargetRolePlural() + "\")");
             }
