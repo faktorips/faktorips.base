@@ -179,11 +179,6 @@ public class GenAssociationToMany extends GenAssociation {
             boolean generatesInterface) throws CoreException {
         super.generateMemberVariables(builder, ipsProject, generatesInterface);
         if (!association.isDerivedUnion()) {
-            if (isGenerateJaxbSupport()) {
-                builder.getFragment().addImport("javax.xml.bind.annotation.XmlElementWrapper");
-                builder.annotation("XmlElementWrapper(name = \"" + association.getTargetRolePlural() + "\")");
-            }
-
             JavaCodeFragment initialValueExpression = new JavaCodeFragment();
             initialValueExpression.append("new ");
             initialValueExpression.appendClassName(ArrayList.class);
@@ -195,6 +190,12 @@ public class GenAssociationToMany extends GenAssociation {
             initialValueExpression.append("()");
             String comment = getLocalizedText("FIELD_ASSOCIATION_JAVADOC", association.getName());
             builder.javaDoc(comment, JavaSourceFileBuilder.ANNOTATION_GENERATED);
+
+            if (isGenerateJaxbSupport()) {
+                builder.getFragment().addImport("javax.xml.bind.annotation.XmlElementWrapper");
+                builder.annotation("XmlElementWrapper(name = \"" + association.getTargetRolePlural() + "\")");
+            }
+
             builder.varDeclaration(java.lang.reflect.Modifier.PRIVATE, List.class.getName()
                     + (isUseTypesafeCollections() ? "<" + targetInterfaceName + ">" : ""), fieldName,
                     initialValueExpression);
