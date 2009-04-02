@@ -75,10 +75,10 @@ public interface IEnumValue extends IIpsObjectPart {
      * Searches and returns the enum attribute value that refers to the given enum attribute of the
      * enum type this enum value refers to.
      * <p>
-     * Returns <code>null</code> if none can be found or if the referenced enum type can't be found.
+     * Returns <code>null</code> if none can be found, if the referenced enum type can't be found or if the
+     * provided parameter is <code>null</code>.
      * 
      * @throws CoreException If an error occurs while searching for the referenced enum type.
-     * @throws NullPointerException If <code>enumAttribute</code> is <code>null</code>.
      * @throws IllegalArgumentException If the given enum attribute is not part of the enum type
      *             referenced by this enum value.
      */

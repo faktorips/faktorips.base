@@ -28,6 +28,7 @@ import org.faktorips.devtools.core.builder.ComplianceCheck;
 import org.faktorips.devtools.core.builder.DefaultBuilderSet;
 import org.faktorips.devtools.core.internal.model.TableContentsEnumDatatypeAdapter;
 import org.faktorips.devtools.core.model.bf.BusinessFunctionIpsObjectType;
+import org.faktorips.devtools.core.model.enums.IEnumType;
 import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
 import org.faktorips.devtools.core.model.ipsproject.IIpsArtefactBuilder;
@@ -126,6 +127,7 @@ public class StandardBuilderSet extends DefaultBuilderSet {
     private PolicyCmptInterfaceBuilder policyCmptInterfaceBuilder;
     private ProductCmptGenInterfaceBuilder productCmptGenInterfaceBuilder;
     private EnumClassesBuilder enumClassesBuilder;
+    private EnumTypeBuilder enumTypeBuilder;
     private String version;
     private final Map<IType, GenType> ipsObjectTypeGenerators = new HashMap<IType, GenType>(1000);
 
@@ -433,7 +435,7 @@ public class StandardBuilderSet extends DefaultBuilderSet {
         // policy component type builders
 
         // New enum type builder
-        EnumTypeBuilder enumTypeBuilder = new EnumTypeBuilder(this);
+        enumTypeBuilder = new EnumTypeBuilder(this);
 
         // product component builders.
         productCmptGenerationImplBuilder.setProductCmptImplBuilder(productCmptImplClassBuilder);
@@ -491,6 +493,13 @@ public class StandardBuilderSet extends DefaultBuilderSet {
         return new TableContentsEnumDatatypeHelper(datatype, enumClassesBuilder);
     }
 
+    /**
+     * {@inheritDoc}
+     */
+    public DatatypeHelper getDatatypeHelperForEnumType(IEnumType enumType) {
+        return new EnumTypeDatatypeHelper(enumTypeBuilder, enumType);
+    }
+    
     /**
      * Returns the standard builder plugin version in the format [major.minor.micro]. The version
      * qualifier is not included in the version string.

@@ -19,6 +19,7 @@ import org.faktorips.codegen.DatatypeHelper;
 import org.faktorips.codegen.JavaCodeFragment;
 import org.faktorips.datatype.Datatype;
 import org.faktorips.devtools.core.internal.model.TableContentsEnumDatatypeAdapter;
+import org.faktorips.devtools.core.model.enums.IEnumType;
 import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.core.model.ipsproject.IIpsArtefactBuilder;
 import org.faktorips.devtools.core.model.ipsproject.IIpsArtefactBuilderSetConfig;
@@ -177,5 +178,9 @@ public class EmptyBuilderSet extends AbstractBuilderSet {
      */
     protected IIpsArtefactBuilder[] createBuilders() throws CoreException {
         return new IIpsArtefactBuilder[0];
+    }
+
+    public DatatypeHelper getDatatypeHelperForEnumType(IEnumType enumType) {
+        return null;
     }
 }

@@ -23,6 +23,7 @@ import org.eclipse.core.runtime.ILog;
 import org.faktorips.codegen.DatatypeHelper;
 import org.faktorips.devtools.core.internal.model.TableContentsEnumDatatypeAdapter;
 import org.faktorips.devtools.core.internal.model.ipsproject.IpsArtefactBuilderSetConfig;
+import org.faktorips.devtools.core.model.enums.IEnumType;
 import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.core.model.ipsproject.IIpsArtefactBuilder;
 import org.faktorips.devtools.core.model.ipsproject.IIpsPackageFragmentRoot;
@@ -171,6 +172,10 @@ public class TestIpsArtefactBuilderSet extends AbstractBuilderSet {
      * {@inheritDoc}
      */
     public String getVersion() {
+        return null;
+    }
+
+    public DatatypeHelper getDatatypeHelperForEnumType(IEnumType enumType) {
         return null;
     }
 }

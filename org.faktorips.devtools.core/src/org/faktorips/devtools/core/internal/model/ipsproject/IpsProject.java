@@ -1307,7 +1307,9 @@ public class IpsProject extends IpsElement implements IIpsProject {
             return getIpsArtefactBuilderSet().getDatatypeHelperForTableBasedEnum(
                     (TableContentsEnumDatatypeAdapter)datatype);
         }
-
+        if(datatype instanceof IEnumType){
+            return getIpsArtefactBuilderSet().getDatatypeHelperForEnumType((IEnumType)datatype);
+        }
         DatatypeHelper helper = ((IpsModel)getIpsModel()).getDatatypeHelper(this, (ValueDatatype)datatype);
         if (helper != null) {
             return helper;

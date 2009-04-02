@@ -565,4 +565,13 @@ public class EnumTypeTest extends AbstractIpsEnumPluginTest {
         assertEquals(inheritedLiteralNameAttribute, subEnumType.findLiteralNameAttribute());
     }
 
+    public void testGetEnumValue() throws Exception{
+        IEnumValue annually = paymentMode.getEnumValue("annually");
+        assertNotNull(annually);
+        IEnumValue monthly = paymentMode.getEnumValue("monthly");
+        assertNotNull(monthly);
+        IEnumValue quarterly = paymentMode.getEnumValue("quarterly");
+        assertNull(quarterly);
+        assertNull(paymentMode.getEnumValue(null));
+    }
 }

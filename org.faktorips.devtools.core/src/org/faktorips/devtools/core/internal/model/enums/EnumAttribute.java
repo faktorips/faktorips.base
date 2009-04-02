@@ -371,5 +371,4 @@ public class EnumAttribute extends AtomicIpsObjectPart implements IEnumAttribute
         this.uniqueIdentifier = isUniqueIdentifier;
         valueChanged(oldIsUniqueIdentifier, isUniqueIdentifier);
     }
-
 }

@@ -46,7 +46,6 @@ public interface IEnumAttribute extends IIpsObjectPart {
     public final static String PROPERTY_DATATYPE = "datatype"; //$NON-NLS-1$
 
     /** Name of the <code>identifier</code> property. */
-    // TODO aw: negotiate with peter about the name of this property
     public final static String PROPERTY_LITERAL_NAME_ATTRIBUTE = "literalNameAttribute"; //$NON-NLS-1$
 
     /** Name of the <code>inherited</code> property. */

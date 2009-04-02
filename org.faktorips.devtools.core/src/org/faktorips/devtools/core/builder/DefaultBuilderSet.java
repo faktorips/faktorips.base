@@ -20,6 +20,7 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.faktorips.codegen.DatatypeHelper;
 import org.faktorips.devtools.core.internal.model.TableContentsEnumDatatypeAdapter;
+import org.faktorips.devtools.core.model.enums.IEnumType;
 import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
 import org.faktorips.devtools.core.model.ipsproject.IIpsPackageFragmentRoot;
@@ -306,6 +307,15 @@ public abstract class DefaultBuilderSet extends AbstractBuilderSet {
      * Returns <code>null</code>. This method is supposed to be overridden by subclasses.
      */
     public DatatypeHelper getDatatypeHelperForTableBasedEnum(TableContentsEnumDatatypeAdapter datatype) {
+        return null;
+    }
+
+    /**
+     * {@inheritDoc}
+     * <p/>
+     * Returns <code>null</code>. This method is supposed to be overridden by subclasses.
+     */
+    public DatatypeHelper getDatatypeHelperForEnumType(IEnumType enumType) {
         return null;
     }
 

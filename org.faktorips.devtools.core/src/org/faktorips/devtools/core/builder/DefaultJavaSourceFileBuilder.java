@@ -124,7 +124,10 @@ public abstract class DefaultJavaSourceFileBuilder extends JavaSourceFileBuilder
         if (importContainer!=null && importContainer.exists()) {
             content.append(importContainer.getSource());
             ImportDeclaration newImports = getNewImports(importContainer, code.getImportDeclaration(pack));
-            content.append(newImports);
+            if(newImports.getNoOfImports() > 0){
+                content.append(StringUtil.getSystemLineSeparator());
+                content.append(newImports);
+            }
         } else {
         	content.append(code.getImportDeclaration(pack));
         }

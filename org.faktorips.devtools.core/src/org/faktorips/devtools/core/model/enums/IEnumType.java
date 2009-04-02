@@ -18,6 +18,7 @@ import java.util.NoSuchElementException;
 
 import org.eclipse.core.runtime.CoreException;
 import org.faktorips.datatype.EnumDatatype;
+import org.faktorips.devtools.core.internal.model.enums.EnumType;
 
 /**
  * An enum type represents the structure of an enum in the Faktor-IPS model.
@@ -130,6 +131,11 @@ public interface IEnumType extends IEnumValueContainer, EnumDatatype {
     public IEnumType findSuperEnumType() throws CoreException;
 
     /**
+     * Returns the {@link IEnumAttribute} that is marked as the literal name attribute.
+     */
+    public IEnumAttribute getLiteralNameAttribute();
+    
+    /**
      * Returns <code>true</code> if this enum type is abstract in terms of the object oriented
      * abstract concept, <code>false</code> if not.
      */
@@ -144,6 +150,7 @@ public interface IEnumType extends IEnumValueContainer, EnumDatatype {
      * Returns <code>true</code> if the values for this enum type are defined in the enum type
      * itself.
      */
+    //TODO pk den property namen sollten wir nochmal überdenken
     public boolean getValuesArePartOfModel();
 
     /**
@@ -211,6 +218,17 @@ public interface IEnumType extends IEnumValueContainer, EnumDatatype {
      * @throws NullPointerException If <code>name</code> is <code>null</code>.
      */
     public IEnumAttribute findEnumAttribute(String name);
+
+    /**
+     * Note: This method only applies to {@link IEnumType} instances that contain their own
+     * {@link IEnumValue} instances. It will always return <code>null</code> for {@link EnumType}s
+     * that delegate their contents to {@link IEnumContent}s. </p>Returns the {@link IEnumValue} for
+     * the provided literal Name attribute value. If none is found null<code>null</code> will be
+     * returned.
+     * 
+     * @throws CoreException if an exception occurs will processing
+     */
+    public IEnumValue getEnumValue(String literalNameAttributeValue) throws CoreException;
 
     /**
      * <p>

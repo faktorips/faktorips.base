@@ -65,11 +65,7 @@ public class EnumValueTest extends AbstractIpsEnumPluginTest {
     }
 
     public void testFindEnumAttributeValue() throws CoreException {
-        try {
-            genderEnumValueMale.findEnumAttributeValue(null);
-            fail();
-        } catch (NullPointerException e) {
-        }
+        assertNull(genderEnumValueMale.findEnumAttributeValue(null));
 
         try {
             genderEnumValueMale.findEnumAttributeValue(paymentMode.getEnumAttributes().get(0));

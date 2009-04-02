@@ -18,8 +18,10 @@ import java.util.Locale;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.runtime.CoreException;
 import org.faktorips.codegen.DatatypeHelper;
+import org.faktorips.datatype.Datatype;
 import org.faktorips.devtools.core.builder.IJavaPackageStructure;
 import org.faktorips.devtools.core.internal.model.TableContentsEnumDatatypeAdapter;
+import org.faktorips.devtools.core.model.enums.IEnumType;
 import org.faktorips.devtools.core.model.productcmpt.IFormula;
 import org.faktorips.devtools.core.model.tablecontents.ITableContents;
 import org.faktorips.devtools.core.model.tablestructure.ITableAccessFunction;
@@ -134,6 +136,15 @@ public interface IIpsArtefactBuilderSet extends IJavaPackageStructure {
     //TODO pk set deprecated when completing change to enum type
     public DatatypeHelper getDatatypeHelperForTableBasedEnum(TableContentsEnumDatatypeAdapter datatype);
 
+    /**
+     * Returns the datatype helper for the provided {@link IEnumType}. <code>IEnumType</code>
+     * implements the {@link Datatype} interface and this method provides the datatype helper for
+     * it. The datatype helper of an <code>IEnumType</code> depends on the
+     * {@link IIpsArtefactBuilderSet} since it determines the full qualified class name of the
+     * generated datatype class.
+     */
+    public DatatypeHelper getDatatypeHelperForEnumType(IEnumType enumType);
+    
     /**
      * Returns the file that contain the runtime repository toc file. Note that the file might not
      * exists.

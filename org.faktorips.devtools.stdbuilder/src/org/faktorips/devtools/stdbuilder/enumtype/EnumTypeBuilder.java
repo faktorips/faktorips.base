@@ -157,6 +157,7 @@ public class EnumTypeBuilder extends DefaultJavaSourceFileBuilder {
 
         // Generate the methods
         generateMethods(mainSection.getMethodBuilder());
+        generateGetValueOfMethod(mainSection.getMethodBuilder());
     }
 
     /** Generates the java code for the enum values. */
@@ -204,6 +205,124 @@ public class EnumTypeBuilder extends DefaultJavaSourceFileBuilder {
         }
     }
 
+    /**
+     * Returns a java code fragment that contains the code for the instantiation of provided enum value of the provided
+     * enum type.
+     * Code snippet:
+     * <pre>
+     *  [javadoc]
+     *      Gender.MALE
+     * </pre>
+     * 
+     * @throws CoreException if an exception occurs while processing 
+     */
+    public JavaCodeFragment getNewInstanceCodeFragement(IEnumType enumType, IEnumValue enumValue) throws CoreException {
+        IEnumAttributeValue attrValue = enumValue.findEnumAttributeValue(enumType.findLiteralNameAttribute());
+        JavaCodeFragment fragment = new JavaCodeFragment();
+        fragment.appendClassName(getQualifiedClassName(enumType));
+        fragment.append('.');
+        fragment.append(getConstantNameForEnumAttributeValue(attrValue));
+        return fragment;
+    }
+    
+    /**
+     * Returns the code fragment for a getValueOf method call expression.
+     * Code snippet:
+     * <pre>
+     *  [javadoc]
+     *      Gender.getValueFor("male")
+     * </pre>
+     * 
+     * @throws CoreException if an exception occurs while processing 
+     */
+    public JavaCodeFragment getValueOfCodeFragment(IEnumType enumType, String expressionValue) throws CoreException{
+        JavaCodeFragment fragment = new JavaCodeFragment();
+        fragment.appendClassName(getQualifiedClassName(enumType));
+        fragment.append('.');
+        fragment.append(getMethodNameGetValueOf());
+        fragment.append("(");
+        fragment.append(expressionValue);
+        fragment.append(")");
+        return fragment;
+    }
+
+    public String getMethodNameGetValueOf(){
+        return "getValueOf";
+    }
+    
+    /**
+     * Code snippet:
+     * <pre>
+     *  [javadoc]
+     *  public final static Gender getValueOf(String id) {
+     *      if (id.equals("male")) {
+     *          return MALE;
+     *      }
+     *      if (id.equals("female")) {
+     *          return FEMALE;
+     *      }
+     *      return null;
+     *  }
+     * </pre>
+     * @param methodBuilder
+     * @throws CoreException 
+     */
+    private void generateGetValueOfMethod(JavaCodeFragmentBuilder methodBuilder) throws CoreException {
+
+        IEnumAttribute literalNameAttribute = getEnumType().getLiteralNameAttribute();
+        if(literalNameAttribute == null){
+            return;
+        }
+        Datatype datatype = literalNameAttribute.findDatatype(getIpsProject());
+        DatatypeHelper helper = getIpsProject().getDatatypeHelper(datatype);
+
+        JavaCodeFragment body = new JavaCodeFragment();
+        String parameterName = "value";
+        body.append("if(");
+        body.append(parameterName);
+        body.append(" == null)");
+        body.appendOpenBracket();
+        body.appendln("return null;");
+        body.appendCloseBracket();
+        
+        for (IEnumValue enumValue : getEnumType().getEnumValues()) {
+            if(!enumValue.isValid()){
+                continue;
+            }
+            IEnumAttributeValue attributeValue = enumValue.findEnumAttributeValue(getEnumType()
+                    .findLiteralNameAttribute());
+            body.append("if (");
+            body.append(parameterName);
+            body.append(".equals(\"");
+            body.append(attributeValue.getValue());
+            body.append("\"))");
+            body.appendOpenBracket();
+            body.append("return ");
+            body.append(getConstantNameForEnumAttributeValue(attributeValue));
+            body.append(";");
+            body.appendln();
+            body.appendCloseBracket();
+        }
+        body.append("return null;");
+
+        appendLocalizedJavaDoc("VALUEOF_METHOD", parameterName, getEnumType(), methodBuilder);
+        methodBuilder.methodBegin(Modifier.PUBLIC | Modifier.STATIC | Modifier.FINAL, getQualifiedClassName(getEnumType()),
+                getMethodNameGetValueOf(), new String[] { parameterName }, new String[] { helper.getJavaClassName() });
+        methodBuilder.append(body);
+        methodBuilder.methodEnd();
+    }
+    
+    /**
+     * This method expects the literal name attribute value of an enum value as parameter to provide
+     * the accurate constant name for it.
+     */
+    private String getConstantNameForEnumAttributeValue(IEnumAttributeValue attributeValue){
+        if(attributeValue.getValue() == null){
+            return "";
+        }
+        return attributeValue.getValue().toUpperCase();
+    }
+    
     /**
      * Generates the java source code for an enum value as enum definition (java at least 5).
      * 
@@ -259,6 +378,7 @@ public class EnumTypeBuilder extends DefaultJavaSourceFileBuilder {
         appendLocalizedJavaDoc("ENUMVALUE", enumType, constantBuilder);
         JavaCodeFragment initExpression = new JavaCodeFragment();
         initExpression.append("new ");
+        //TODO pk muss das nicht upper case sein?
         initExpression.append(enumType.getName());
         initExpression.append('(');
         appendEnumValueParameters(enumAttributeValues, initExpression);

@@ -481,8 +481,22 @@ public class EnumType extends EnumValueContainer implements IEnumType {
     /**
      * {@inheritDoc}
      */
+    public IEnumAttribute getLiteralNameAttribute() {
+        for (IEnumAttribute attribute : getEnumAttributes()) {
+            if(attribute.isLiteralNameAttribute()){
+                return attribute;
+            }
+        }
+        return null;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    //TODO check if it is correct that this method uses the ips project that it belongs to or does the
+    //ips project need to be provided
     public String getJavaClassName() {
-        throw new UnsupportedOperationException();
+        return getIpsProject().getDatatypeHelper(this).getJavaClassName();
     }
 
     /**
@@ -550,6 +564,25 @@ public class EnumType extends EnumValueContainer implements IEnumType {
         } catch (CoreException e) {
             throw new RuntimeException("Unable to determine the value ids of this enum type.", e);
         }
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public IEnumValue getEnumValue(String literalNameAttributeValue) throws CoreException{
+        if(literalNameAttributeValue == null) {
+            return null;
+        }
+        for (IEnumValue enumValue : getEnumValues()) {
+            IEnumAttributeValue value = enumValue.findEnumAttributeValue(findLiteralNameAttribute());
+            if(value == null){
+                continue;
+            }
+            if(literalNameAttributeValue.equals(value.getValue())){
+                return enumValue;
+            }
+        }
+        return null;
     }
 
     /**
@@ -654,7 +687,7 @@ public class EnumType extends EnumValueContainer implements IEnumType {
      * Returns true.
      */
     public boolean isMutable() {
-        return true;
+        return false;
     }
 
     /**
