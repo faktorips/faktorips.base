@@ -167,12 +167,14 @@
                 <cvs module="org.faktorips.devtools.core"/>
                 <cvs module="org.faktorips.devtools.stdbuilder"/>
                 <cvs module="org.faktorips.devtools.core.ui"/>
+                <cvs module="org.faktorips.devtools.tableconversion"/>
                 <cvs module="org.faktorips.devtools.ant"/>
                 
                 <!-- plugin test dependencies-->
                 <cvs module="org.faktorips.devtools.core.test"/>
                 <cvs module="org.faktorips.devtools.stdbuilder.test"/>
                 <cvs module="org.faktorips.devtools.core.ui.test"/>            
+                <cvs module="org.faktorips.devtools.tableconversion.test"/>            
                 <cvs module="org.faktorips.devtools.ant.test"/>            
                 <cvs module="org.faktorips.uml.test"/>                
             </depends>      

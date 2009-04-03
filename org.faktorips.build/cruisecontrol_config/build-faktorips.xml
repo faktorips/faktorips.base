@@ -121,6 +121,16 @@
         <ant dir="${projectCoreUiDir}/${cvsCoreUimodule}/build/" antfile="build.xml" target="buildjar"/>
     </target>
 	
+    <target name="devtools.tableconversion" depends="updateBuildTemplate" description="builds the 'org.faktorips.devtools.tableconversion' project">
+        <property name="cvsModule" value="org.faktorips.devtools.tableconversion"/>
+        <property name="projectDir" value="checkout/"/>
+        <!--checkout/update project-->
+        <cvs command="co ${cvsModule}" dest="${projectDir}" cvsroot="${cvsroot}" quiet="true"/>
+        <!--Call the target that does everything-->
+        <ant dir="${projectDir}/${cvsModule}/build/" antfile="build.xml" target="clean"/>
+        <ant dir="${projectDir}/${cvsModule}/build/" antfile="build.xml" target="buildjar"/>
+    </target>
+	
     <target name="devtools.stdbuilder" depends="updateBuildTemplate" description="builds the 'org.faktorips.devtools.stdbuilder' project">
         <property name="cvsFlmodule" value="org.faktorips.devtools.stdbuilder"/>
         <property name="projectFlDir" value="checkout/"/>

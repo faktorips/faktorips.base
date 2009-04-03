@@ -658,10 +658,12 @@
             <cvs module="org.faktorips.devtools.core" cvsroot="${cvsroot}"/>
             <cvs module="org.faktorips.devtools.stdbuilder" cvsroot="${cvsroot}"/>
             <cvs module="org.faktorips.devtools.core.ui" cvsroot="${cvsroot}"/>
+            <cvs module="org.faktorips.devtools.tableconversion" cvsroot="${cvsroot}"/>
             <cvs module="org.faktorips.devtools.ant" cvsroot="${cvsroot}"/>
             <cvs module="org.faktorips.devtools.core.test" cvsroot="${cvsroot}"/>
             <cvs module="org.faktorips.devtools.stdbuilder.test" cvsroot="${cvsroot}"/>
             <cvs module="org.faktorips.devtools.core.ui.test" cvsroot="${cvsroot}"/>
+            <cvs module="org.faktorips.devtools.tableconversion.test" cvsroot="${cvsroot}"/>
             <cvs module="org.faktorips.devtools.ant.test" cvsroot="${cvsroot}"/>
             <cvs module="org.faktorips.uml.test" cvsroot="${cvsroot}"/>
         </modificationset>
