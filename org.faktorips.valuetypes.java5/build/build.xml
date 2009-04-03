@@ -10,9 +10,9 @@
 	
 	<!-- classpath: insert dependend project libs here! -->
 	<path id="classpath">
-		<filelist dir="/var/lib/">
-				<file name="junit.jar"/>
-		</filelist>
+	    <filelist dir="./../../org.faktorips.build/lib">
+	            <file name="junit.jar"/>
+	    </filelist>
 
 		<!-- valuetypes depends on org.faktorips.util -->
 		<fileset dir="../../org.faktorips.util/" >

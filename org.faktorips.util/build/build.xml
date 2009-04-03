@@ -7,9 +7,9 @@
 				<include name="**/*.jar"/>
 			</patternset>
 		</fileset>
-		<filelist dir="/var/lib/">
-				<file name="junit.jar"/>
-		</filelist>
+        <filelist dir="./../../org.faktorips.build/lib">
+                <file name="junit.jar"/>
+        </filelist>
 	</path>
 	
 	<!-- calls default-target of template-buildfile -->

@@ -3,10 +3,9 @@
 	
 	<!-- classpath: insert dependend project libs here! -->
 	<path id="classpath">
-		
-		<filelist dir="/var/lib/">
-				<file name="junit.jar"/>
-		</filelist>
+	    <filelist dir="./../../org.faktorips.build/lib">
+	            <file name="junit.jar"/>
+	    </filelist>
 		<!-- eclipse libraries -->
 		<fileset dir="/usr/lib/eclipse-3.4-test/">
 			<patternset>

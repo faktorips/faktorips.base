@@ -240,4 +240,11 @@ Es gilt das Recht der Bundesrepublik Deutschland.
          version="0.0.0"
          unpack="false"/>
 
+   <plugin
+         id="org.faktorips.devtools.tableconversion"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
 </feature>

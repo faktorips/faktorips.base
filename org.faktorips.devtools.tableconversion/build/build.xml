@@ -6,9 +6,8 @@
         <filelist dir="./../../org.faktorips.build/lib">
                 <file name="junit.jar"/>
         </filelist>
-                	
-		<!-- eclipse libraries -->
-		<fileset dir="/usr/lib/eclipse-3.4-test/">
+        <!--eclipse libraries-->
+        <fileset dir="/usr/lib/eclipse-3.4-test/">
             <patternset>
                 <include name="plugins/org.eclipse.jface*.jar"/>
                 <include name="plugins/org.eclipse.text*.jar"/>
@@ -29,45 +28,52 @@
                 <include name="plugins/org.eclipse.gef*.jar"/>
             </patternset>
         </fileset>
-        <!--devtools.core depends on org.faktorips.valuetypes-->
+        <!--depends other projects -->
         <fileset dir="../../org.faktorips.valuetypes/">
             <patternset>
                 <include name="build/results/*.jar"/>
             </patternset>
         </fileset>
-        <!--devtools.core depends on org.faktorips.fl-->
         <fileset dir="../../org.faktorips.fl/">
             <patternset>
                 <include name="lib/*.jar"/>
                 <include name="build/results/*.jar"/>
             </patternset>
         </fileset>
-        <!--devtools.core depends on org.faktorips.util-->
         <fileset dir="../../org.faktorips.util/">
             <patternset>
                 <include name="lib/*.jar"/>
                 <include name="build/results/*.jar"/>
             </patternset>
         </fileset>
-        <!--devtools.core depends on org.faktorips.dtflcommon-->
         <fileset dir="../../org.faktorips.dtflcommon/">
             <patternset>
                 <include name="lib/*.jar"/>
                 <include name="build/results/*.jar"/>
             </patternset>
         </fileset>
-        <!--devtools.core depends on org.faktorips.dtflcommon-->
         <fileset dir="../../org.faktorips.runtime/">
             <patternset>
                 <include name="lib/*.jar"/>
                 <include name="build/results/*.jar"/>
             </patternset>
         </fileset>
-        <!--devtools.core depends on org.faktorips.devtools.core-->
         <fileset dir="../../org.faktorips.devtools.core/">
             <patternset>
                 <include name="lib/*.jar"/>
                 <include name="build/results/*.jar"/>
+            </patternset>
+        </fileset>
+        <fileset dir="../../org.faktorips.devtools.core.ui/">
+            <patternset>
+                <include name="lib/*.jar"/>
+                <include name="build/results/*.jar"/>
+            </patternset>
+        </fileset>    	
+    	<!-- jars in own project lib directory -->
+        <fileset dir="../lib/">
+            <patternset>
+                <include name="*.jar"/>
             </patternset>
         </fileset>
     </path>
