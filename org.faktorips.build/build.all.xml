@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project name="org.faktorips.build.all" default="build.all">
+    <target name="build.all">
+        <ant dir="../org.faktorips.util/build" antfile="build.xml" target="buildjar"/>
+        <ant dir="../org.faktorips.valuetypes/build" antfile="build.xml" target="buildjar"/>
+        <ant dir="../org.faktorips.valuetypes.java5/build" antfile="build.xml" target="buildjar"/>
+        <ant dir="../org.faktorips.dtflcommon/build" antfile="build.xml" target="buildjar"/>
+        <ant dir="../org.faktorips.runtime/build" antfile="build.xml" target="buildjar"/>
+        <ant dir="../org.faktorips.runtime.java5/build" antfile="build.xml" target="buildjar"/>
+        <ant dir="../org.faktorips.fl/build" antfile="build.xml" target="buildjar"/>
+        <ant dir="../org.faktorips.devtools.core/build" antfile="build.xml" target="buildjar"/>
+        <ant dir="../org.faktorips.devtools.stdbuilder/build" antfile="build.xml" target="buildjar"/>
+        <ant dir="../org.faktorips.devtools.core.ui/build" antfile="build.xml" target="buildjar"/>
+        <ant dir="../org.faktorips.devtools.tableconversion/build" antfile="build.xml" target="buildjar"/>
+        <ant dir="../org.faktorips.devtools.ant/build" antfile="build.xml" target="buildjar"/>
+        <ant dir="../org.faktorips.uml/build" antfile="build.xml" target="buildjar"/>
+        <ant dir="../de.qv.faktorips/build" antfile="build.xml" target="buildjar"/>
+<!-- none plugin projects 
+    	<ant dir="../org.faktorips.pluginbuilder/build" antfile="build.xml" target="buildjar"/>
+        <ant dir="../org.faktorips.integrationtest/build" antfile="build.xml" target="buildjar"/>
+        <ant dir="../org.faktorips.integrationtest.java5/build" antfile="build.xml" target="buildjar"/>
+-->
+    </target>
+</project>

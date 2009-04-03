@@ -115,7 +115,7 @@
         </project>
         
         <!--=====================================================-->
-        <!--Project definition: org.faktorips.devtools.cor.ui-->
+        <!--Project definition: org.faktorips.devtools.core.ui-->
         <!--=====================================================-->          
         <project name="org.faktorips.devtools.core.ui" mainbuildtarget="devtools.core.ui">
             <depends>
@@ -123,6 +123,15 @@
             </depends>
         </project>
         
+        <!--=====================================================-->
+        <!--Project definition: org.faktorips.devtools.tableconversion-->
+        <!--=====================================================-->          
+        <project name="org.faktorips.devtools.tableconversion" mainbuildtarget="devtools.tableconversion">
+            <depends>
+                <project name="org.faktorips.devtools.core.ui"/>
+            </depends>
+        </project>
+
         <!--=====================================================-->
         <!--Project definition: org.faktorips.devtools.ant-->
         <!--=====================================================-->           
