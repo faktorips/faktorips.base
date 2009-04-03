@@ -226,6 +226,7 @@
     	<!-- checkout test plugins -->
         <cvs command="co org.faktorips.devtools.core.test" dest="${projectsRootDir}" cvsroot="${cvsroot}" quiet="true"/>
         <cvs command="co org.faktorips.devtools.core.ui.test" dest="${projectsRootDir}" cvsroot="${cvsroot}" quiet="true"/>
+        <cvs command="co org.faktorips.devtools.tableconversion.test" dest="${projectsRootDir}" cvsroot="${cvsroot}" quiet="true"/>
         <cvs command="co org.faktorips.devtools.stdbuilder.test" dest="${projectsRootDir}" cvsroot="${cvsroot}" quiet="true"/>
     	<cvs command="co org.faktorips.devtools.ant.test" dest="${projectsRootDir}" cvsroot="${cvsroot}" quiet="true"/>
     	
