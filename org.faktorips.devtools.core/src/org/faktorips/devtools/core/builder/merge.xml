@@ -16,30 +16,27 @@
 	    pattern it declares in the sourceMarkup or targetMarkup attribute the string that is in parentheses 
 	    surrounded by the characters ^$. 
 	 -->
-    <merge:dictionaryPattern name="generatedMember" select="Member/getComment" match="\s*@\s*(gen)erated\s*\n"/>
+	<merge:dictionaryPattern name="generatedMembers" select="Member/getComment" match="@\s*(gen)erated\s*(This field/method[^(?:\n\r?|\r\n?)]*)*(?:\n\r?|\r\n?)"/>
     <merge:dictionaryPattern name="generatedMember" select="Member/getComment" match="\s*@\s*(restrained)modifiable\s*\n"/>
     
-		
-    <!--
-    	This rule doesn't work. The interfaces are not added but overridden. A look in the source code
-    	suggests a false implementation.
-    -->
-    <merge:pull sourceMarkup="^gen$" sourceGet="Type/getSuperInterfaces" targetPut="Type/setSuperInterfaces"/>
 
     <!-- 
         Pull rules for JMerge. The following configuration forces JMerge to look for the "generated" meta-attribute
         in the generated content. If available JMerge looks for a Member with the same name in the target content.
         If also available the target content gets overridden by the generated content. 
      -->
+	<merge:pull sourceGet="Type/getSuperInterfaces" sourceTransfer="(\s*@\s*extends|\s*@\s*implements)(.*?)(?:&lt;!--|(?:\n\r?|\r\n?))" targetMarkup="^gen$" targetPut="Type/addSuperInterface"/>
    	<merge:pull targetMarkup="^restrained$" sourceTransfer="(\s*//\s*begin-user-code.*?//\s*end-user-code\s*)\n" sourceGet="Method/getBody" targetPut="Method/setBody"/>
-		<merge:pull targetMarkup="^gen$" sourceGet="Method/getBody" targetPut="Method/setBody"/>    	
     <merge:pull targetMarkup="^gen$" sourceGet="Member/getFlags" targetPut="Member/setFlags"/>
     <merge:pull targetMarkup="^gen$" sourceGet="Type/getSuperclass" targetPut="Type/setSuperclass"/>
-    <merge:pull targetMarkup="^gen$" sourceGet="Field/getType" targetPut="Field/setType"/>
+	<merge:pull targetMarkup="^gen$" sourceGet="Method/getBody" targetPut="Method/setBody"/>    	
     <merge:pull targetMarkup="^gen$" sourceGet="Method/getReturnType" targetPut="Method/setReturnType"/>
     <merge:pull targetMarkup="^gen$" sourceGet="Method/getExceptions" targetPut="Method/addException"/>
+    <merge:pull targetMarkup="^gen$" sourceGet="Method/getComment" targetPut="Method/setComment"/>
+    <merge:pull targetMarkup="^gen$" sourceGet="Field/getType" targetPut="Field/setType"/>
     <merge:pull targetMarkup="^gen$" sourceGet="Field/getInitializer" targetPut="Field/setInitializer"/>
-    <merge:pull targetMarkup="^gen$" sourceGet="Member/getComment" targetPut="Member/setComment"/>
+    <merge:pull targetMarkup="^gen$" sourceGet="Field/getComment" targetPut="Field/setComment"/>
+    
     <!--
         The sweep rule looks in the target content if there exist Members that are indicated with the "generated"
         meta-attribute that are not available in the source content. If so it deletes the member in the target
@@ -52,5 +49,20 @@
     	swept away because of a model validation error. 
     -->
     <!-- merge:sweep markup="^restrained$" select="Member"/-->
+    
+    <!-- There is currently a problem when merging javadoc of members. The merging of javadoc of methods and field still works in
+     the way that the javadoc of the target is overridden by the javadoc of the source as long as the target is marked 
+     @generated. The merging of the javadoc of the type has been disabled for the moment because it conflicted with the
+     functionality of adding additional interfaces to the type. Adding addtion interfaces to a type is accomplished by
+     an @implements marker in the type javadoc section of the target. By means of the Type/getSuperInterfaces pull rule,
+     see above, the part specified after @implements will be added to implements part of the class definition. 
+     If there would be a rule in place that overrides the type javadoc also the @implements part would be overridden and
+     therefore the mechanism of adding additional interfaces to the class definition wouldn't work.
+     See faktorips.org flyspray entry No. where the fixing of this problem is addressed. 
+	 The pull rules below are there to keep remembering the alternatives.	 
+		<merge:pull sourceMarkup="^gen$" sourceGet="Type/getComment" sourceTransfer="(\s*begin-user-doc.*?end-user-doc\s*)(?:\n\r?|\r\n?)" targetMarkup="^gen$" targetPut="Type/setComment"/>
+		<merge:pull targetMarkup="^gen$" sourceGet="Member/getComment" targetPut="Member/setComment"/>
+-->
+    
     
 </merge:options>
