@@ -1,0 +1,662 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--============================================================================================-->
+<!--Delegating build script, used by cruisecontrol to build MY_PROJECT_1.-->
+<!--Note that the basedir is set to the checked out project-->
+<!--============================================================================================-->
+<project name="build-faktorips" basedir="checkout/../">
+    <!-- global properties -->
+	<property name="cvsroot" value=":local:/usr/local/cvsroot"/>
+    
+	<!--needs to be updated on every buildcall IMPORTANT - DONT TOUCH THIS!!!!-->
+    <target name="updateBuildTemplate">
+        <property name="cvsBuildmodule" value="org.faktorips.build"/>
+        <property name="projectBuildDir" value="checkout/"/>
+        <!--checkout/update project-->
+        <cvs command="co ${cvsBuildmodule}" dest="${projectBuildDir}" cvsroot="${cvsroot}" quiet="true"/>
+    </target>
+    
+	<!--============================================================================================-->
+    <!--project targets. please note: each new target has to be a dependant of "updateBuildTemplate"-->
+    <!--============================================================================================-->
+	
+    <target name="util" depends="updateBuildTemplate" description="builds the 'org.faktorips.util' project">
+        <property name="cvsUtilmodule" value="org.faktorips.util"/>
+        <property name="projectUtilDir" value="checkout/"/>
+        <!--checkout/update project-->
+        <cvs command="co ${cvsUtilmodule}" dest="${projectUtilDir}" cvsroot="${cvsroot}" quiet="true"/>
+        <!--Call the target that does everything-->
+        <ant dir="${projectUtilDir}/${cvsUtilmodule}/build/" antfile="build.xml" target="clean"/>
+        <ant dir="${projectUtilDir}/${cvsUtilmodule}/build/" antfile="build.xml" target="buildjar"/>
+    </target>
+	
+    <target name="valuetypes" depends="updateBuildTemplate" description="builds the 'org.faktorips.valuetypes' project">
+        <property name="cvsValuetypesmodule" value="org.faktorips.valuetypes"/>
+        <property name="projectValuetypesDir" value="checkout/"/>
+        <!--checkout/update project-->
+        <cvs command="co ${cvsValuetypesmodule}" dest="${projectValuetypesDir}" cvsroot="${cvsroot}" quiet="true"/>
+        <!--Call the target that does everything-->
+        <ant dir="${projectValuetypesDir}/${cvsValuetypesmodule}/build/" antfile="build.xml" target="clean"/>
+        <ant dir="${projectValuetypesDir}/${cvsValuetypesmodule}/build/" antfile="build.xml" target="buildjar"/>
+    </target>
+	
+    <target name="valuetypes.java5" depends="updateBuildTemplate" description="builds the 'org.faktorips.valuetypes.java5' project">
+        <property name="cvsValuetypesmodule" value="org.faktorips.valuetypes.java5"/>
+        <property name="projectValuetypesDir" value="checkout/"/>
+        <!--checkout/update project-->
+        <cvs command="co ${cvsValuetypesmodule}" dest="${projectValuetypesDir}" cvsroot="${cvsroot}" quiet="true"/>
+        <!--Call the target that does everything-->
+        <ant dir="${projectValuetypesDir}/${cvsValuetypesmodule}/build/" antfile="build.xml" target="clean"/>
+        <ant dir="${projectValuetypesDir}/${cvsValuetypesmodule}/build/" antfile="build.xml" target="buildjar"/>
+    </target>
+	
+    <target name="dtflcommon" depends="updateBuildTemplate" description="builds the 'org.faktorips.dtflcommon' project">
+        <property name="cvsDtflcommonmodule" value="org.faktorips.dtflcommon"/>
+        <property name="projectDtflcommonDir" value="checkout/"/>
+        <!--checkout/update project-->
+        <cvs command="co ${cvsDtflcommonmodule}" dest="${projectDtflcommonDir}" cvsroot="${cvsroot}" quiet="true"/>
+        <!--Call the target that does everything-->
+        <ant dir="${projectDtflcommonDir}/${cvsDtflcommonmodule}/build/" antfile="build.xml" target="clean"/>
+        <ant dir="${projectDtflcommonDir}/${cvsDtflcommonmodule}/build/" antfile="build.xml" target="buildjar"/>
+    </target>
+	
+    <target name="runtime" depends="updateBuildTemplate" description="builds the 'org.faktorips.runtime' project">
+        <property name="cvsRuntimemodule" value="org.faktorips.runtime"/>
+        <property name="projectRuntimeDir" value="checkout/"/>
+        <!--checkout/update project-->
+        <cvs command="co ${cvsRuntimemodule}" dest="${projectRuntimeDir}" cvsroot="${cvsroot}" quiet="true"/>
+        <!--Call the clean-target-->
+        <ant dir="${projectRuntimeDir}/${cvsRuntimemodule}/build/" antfile="build.xml" target="clean"/>
+        <!--Call the target that does everything-->
+        <ant dir="${projectRuntimeDir}/${cvsRuntimemodule}/build/" antfile="build.xml" target="buildjar"/>
+    </target>
+	
+    <target name="runtime.java5" depends="updateBuildTemplate" description="builds the 'org.faktorips.runtime.java5' project">
+        <property name="cvsRuntimemodule" value="org.faktorips.runtime.java5"/>
+        <property name="projectRuntimeDir" value="checkout/"/>
+        <!--checkout/update project-->
+        <cvs command="co ${cvsRuntimemodule}" dest="${projectRuntimeDir}" cvsroot="${cvsroot}" quiet="true"/>
+        <!--Call the clean-target-->
+        <ant dir="${projectRuntimeDir}/${cvsRuntimemodule}/build/" antfile="build.xml" target="clean"/>
+        <!--Call the target that does everything-->
+        <ant dir="${projectRuntimeDir}/${cvsRuntimemodule}/build/" antfile="build.xml" target="buildjar"/>
+    </target>
+	
+    <target name="fl" depends="updateBuildTemplate" description="builds the 'org.faktorips.fl' project">
+        <property name="cvsFlmodule" value="org.faktorips.fl"/>
+        <property name="projectFlDir" value="checkout/"/>
+        <!--checkout/update project-->
+        <cvs command="co ${cvsFlmodule}" dest="${projectFlDir}" cvsroot="${cvsroot}" quiet="true"/>
+        <!--Call the target that does everything-->
+        <ant dir="${projectFlDir}/${cvsFlmodule}/build/" antfile="build.xml" target="cleanParserSource"/>
+        <ant dir="${projectFlDir}/${cvsFlmodule}/build/" antfile="build.xml" target="clean"/>
+        <ant dir="${projectFlDir}/${cvsFlmodule}/build/" antfile="build.xml" target="buildjar"/>
+    </target>
+    <target name="devtools.ant" depends="updateBuildTemplate" description="builds the 'org.faktorips.devtools.ant' project">
+        <property name="cvsAntModule" value="org.faktorips.devtools.ant"/>
+        <property name="projectAntDir" value="checkout/"/>
+        <!--checkout/update project-->
+        <cvs command="co ${cvsAntModule}" dest="${projectAntDir}" cvsroot="${cvsroot}" quiet="true"/>
+        <!--Call the target that does everything-->
+        <ant dir="${projectAntDir}/${cvsAntModule}/" antfile="scripts/buildExtraJAR.xml" target="clean"/>
+        <ant dir="${projectAntDir}/${cvsAntModule}/" antfile="scripts/buildExtraJAR.xml" target="main"/>
+    </target>
+	
+    <target name="devtools.core" depends="updateBuildTemplate" description="builds the 'org.faktorips.devtools.core' project">
+        <property name="cvsFlmodule" value="org.faktorips.devtools.core"/>
+        <property name="projectFlDir" value="checkout/"/>
+        <!--checkout/update project-->
+        <cvs command="co ${cvsFlmodule}" dest="${projectFlDir}" cvsroot="${cvsroot}" quiet="true"/>
+        <!--Call the target that does everything-->
+        <ant dir="${projectFlDir}/${cvsFlmodule}/build/" antfile="build.xml" target="clean"/>
+        <ant dir="${projectFlDir}/${cvsFlmodule}/build/" antfile="build.xml" target="buildjar"/>
+    </target>
+	
+    <target name="devtools.core.ui" depends="updateBuildTemplate" description="builds the 'org.faktorips.devtools.core.ui' project">
+        <property name="cvsCoreUimodule" value="org.faktorips.devtools.core.ui"/>
+        <property name="projectCoreUiDir" value="checkout/"/>
+        <!--checkout/update project-->
+        <cvs command="co ${cvsCoreUimodule}" dest="${projectCoreUiDir}" cvsroot="${cvsroot}" quiet="true"/>
+        <!--Call the target that does everything-->
+        <ant dir="${projectCoreUiDir}/${cvsCoreUimodule}/build/" antfile="build.xml" target="clean"/>
+        <ant dir="${projectCoreUiDir}/${cvsCoreUimodule}/build/" antfile="build.xml" target="buildjar"/>
+    </target>
+	
+    <target name="devtools.tableconversion" depends="updateBuildTemplate" description="builds the 'org.faktorips.devtools.tableconversion' project">
+        <property name="cvsModule" value="org.faktorips.devtools.tableconversion"/>
+        <property name="projectDir" value="checkout/"/>
+        <!--checkout/update project-->
+        <cvs command="co ${cvsModule}" dest="${projectDir}" cvsroot="${cvsroot}" quiet="true"/>
+        <!--Call the target that does everything-->
+        <ant dir="${projectDir}/${cvsModule}/build/" antfile="build.xml" target="clean"/>
+        <ant dir="${projectDir}/${cvsModule}/build/" antfile="build.xml" target="buildjar"/>
+    </target>
+	
+    <target name="devtools.stdbuilder" depends="updateBuildTemplate" description="builds the 'org.faktorips.devtools.stdbuilder' project">
+        <property name="cvsFlmodule" value="org.faktorips.devtools.stdbuilder"/>
+        <property name="projectFlDir" value="checkout/"/>
+        <!--checkout/update project-->
+        <cvs command="co ${cvsFlmodule}" dest="${projectFlDir}" cvsroot="${cvsroot}" quiet="true"/>
+        <!--Call the target that does everything-->
+        <ant dir="${projectFlDir}/${cvsFlmodule}/build/" antfile="build.xml" target="clean"/>
+        <ant dir="${projectFlDir}/${cvsFlmodule}/build/" antfile="build.xml" target="buildjar"/>
+    </target>
+
+	<target name="uml" depends="updateBuildTemplate" description="builds the 'org.faktorips.uml' project">
+        <property name="cvsUmlmodule" value="org.faktorips.uml"/>
+        <property name="projectUmlDir" value="checkout/"/>
+        <!--checkout/update project-->
+        <cvs command="co ${cvsUmlmodule}" dest="${projectUmlDir}" cvsroot="${cvsroot}" quiet="true"/>
+        <!--Call the target that does everything-->
+        <ant dir="${projectUmlDir}/${cvsUmlmodule}/build/" antfile="build.xml" target="clean"/>
+        <ant dir="${projectUmlDir}/${cvsUmlmodule}/build/" antfile="build.xml" target="buildjar"/>
+    </target>
+	
+    <!--============================================================================================-->
+    <!--project targets for additional customers plugins, e.g. BBV, KQV-->
+    <!--============================================================================================-->
+    
+    <target name="de.qv.faktorips" depends="updateBuildTemplate" description="builds the 'de.qv.faktorips' project">
+        <property name="cvsModule" value="de.qv.faktorips"/>
+        <property name="projectDir" value="checkout/"/>
+        <!--checkout/update project-->
+        <cvs command="co ${cvsModule}" dest="${projectDir}" cvsroot="${cvsroot}" quiet="true"/>
+        <!--Call the target that does everything-->
+        <ant dir="${projectDir}/${cvsModule}/build/" antfile="build.xml" target="clean"/>
+        <ant dir="${projectDir}/${cvsModule}/build/" antfile="build.xml" target="buildjar"/>
+    </target>
+
+	<target name="de.bbv.faktorips.runtime" depends="updateBuildTemplate" description="builds the 'de.bbv.faktorips.runtime' project">
+        <property name="cvsFlmodule" value="de.bbv.faktorips.runtime"/>
+        <property name="projectFlDir" value="checkout/"/>
+        <!--checkout/update project-->
+        <cvs command="co de.bbv.cm.CMPlugin" dest="${projectFlDir}" cvsroot="${cvsroot}" quiet="true"/>
+        <cvs command="co ${cvsFlmodule}" dest="${projectFlDir}" cvsroot="${cvsroot}" quiet="true"/>
+        <!--Call the target that does everything-->
+        <ant dir="${projectFlDir}/${cvsFlmodule}/build/" antfile="build.xml" target="clean"/>
+        <ant dir="${projectFlDir}/${cvsFlmodule}/build/" antfile="build.xml" target="buildjar"/>
+    </target>
+		
+    <target name="de.bbv.faktorips.devtools" depends="updateBuildTemplate" description="builds the 'de.bbv.faktorips.devtools' project">
+        <property name="cvsFlmodule" value="de.bbv.faktorips.devtools"/>
+        <property name="projectFlDir" value="checkout/"/>
+        <!--checkout/update project-->
+        <cvs command="co de.bbv.cm.CMPlugin" dest="${projectFlDir}" cvsroot="${cvsroot}" quiet="true"/>
+        <cvs command="co ${cvsFlmodule}" dest="${projectFlDir}" cvsroot="${cvsroot}" quiet="true"/>
+        <!--Call the target that does everything-->
+        <ant dir="${projectFlDir}/${cvsFlmodule}/build/" antfile="build.xml" target="clean"/>
+        <ant dir="${projectFlDir}/${cvsFlmodule}/build/" antfile="build.xml" target="buildjar"/>
+    </target>
+	
+	
+    <target name="devtools.msgpm" depends="updateBuildTemplate" description="builds the  project">
+        <property name="cvsFlmodule" value="org.faktorips.devtools.msgpm"/>
+        <property name="projectFlDir" value="checkout/"/>
+        <!--checkout/update project-->
+        <delete includeemptydirs="true" dir="${cvsFlmodule}"/>
+        <cvs command="co ${cvsFlmodule}" dest="${projectFlDir}" cvsroot="${cvsroot}" quiet="true"/>
+        <!--Call the target that does everything-->
+        <ant dir="${projectFlDir}/${cvsFlmodule}/build/" antfile="build.xml" target="clean"/>
+        <ant dir="${projectFlDir}/${cvsFlmodule}/build/" antfile="build.xml" target="buildjar"/>
+    </target>
+	
+	
+    <!--============================================================================================-->
+    <!--targets using the pluginbuilder,-->
+    <!--build and test the faktorips feature and runs the integration test-->
+    <!--============================================================================================-->
+    
+	<!--this target build the faktorips features and runs the plugin tests-->
+    <target name="pluginbuilder.faktorips" description="builds the complete faktorips feature and executes all junit plugin test">
+        <property name="cvsPluginbuildermodule" value="org.faktorips.pluginbuilder"/>
+        <property name="projectsRootDir" value="${basedir}/checkout/"/>
+
+    	<!-- checkout features -->
+    	<cvs command="co ${cvsPluginbuildermodule}" dest="${projectsRootDir}" cvsroot="${cvsroot}" quiet="true"/>
+        <cvs command="co org.faktorips.feature" dest="${projectsRootDir}" cvsroot="${cvsroot}" quiet="true"/>
+        <cvs command="co org.faktorips.feature.nls1" dest="${projectsRootDir}" cvsroot="${cvsroot}" quiet="true"/>
+    	<cvs command="co org.faktorips.feature.test" dest="${projectsRootDir}" cvsroot="${cvsroot}" quiet="true"/>
+
+    	<!-- checkout plugins -->
+    	<!-- note: the plugin projects are already updated (checkout) by the corresponding cruise control target -->
+    	
+    	<!-- checkout nl1 plugins -->
+    	<cvs command="co org.faktorips.nls.devtools.core.nl1" dest="${projectsRootDir}" cvsroot="${cvsroot}" quiet="true"/>
+    	<cvs command="co org.faktorips.nls.devtools.core.ui.nl1" dest="${projectsRootDir}" cvsroot="${cvsroot}" quiet="true"/>
+        
+    	<!-- checkout test plugins -->
+        <cvs command="co org.faktorips.devtools.core.test" dest="${projectsRootDir}" cvsroot="${cvsroot}" quiet="true"/>
+        <cvs command="co org.faktorips.devtools.core.ui.test" dest="${projectsRootDir}" cvsroot="${cvsroot}" quiet="true"/>
+        <cvs command="co org.faktorips.devtools.tableconversion.test" dest="${projectsRootDir}" cvsroot="${cvsroot}" quiet="true"/>
+        <cvs command="co org.faktorips.devtools.stdbuilder.test" dest="${projectsRootDir}" cvsroot="${cvsroot}" quiet="true"/>
+    	<cvs command="co org.faktorips.devtools.ant.test" dest="${projectsRootDir}" cvsroot="${cvsroot}" quiet="true"/>
+    	
+    	<!-- checkout faktorips uml plugins and feature -->
+        <cvs command="co org.faktorips.uml.feature" dest="${projectsRootDir}" cvsroot="${cvsroot}" quiet="true"/>
+        <cvs command="co org.faktorips.uml.feature.nls1" dest="${projectsRootDir}" cvsroot="${cvsroot}" quiet="true"/>
+        <cvs command="co org.faktorips.uml.feature.test" dest="${projectsRootDir}" cvsroot="${cvsroot}" quiet="true"/>
+        <cvs command="co org.faktorips.uml" dest="${projectsRootDir}" cvsroot="${cvsroot}" quiet="true"/>
+        <cvs command="co org.faktorips.uml.nl1" dest="${projectsRootDir}" cvsroot="${cvsroot}" quiet="true"/>
+        <cvs command="co org.faktorips.uml.test" dest="${projectsRootDir}" cvsroot="${cvsroot}" quiet="true"/>
+
+    	<!-- checkout de.qv.faktorips.feature -->
+    	<cvs command="co de.qv.faktorips.feature" dest="${projectsRootDir}" cvsroot="${cvsroot}" quiet="true"/>
+    	
+    	<antcall inheritall="true" target="-delete.eclipse.configuration.log"/>
+    	
+        <!-- delegate to the pluginbuilder target -->
+    	<ant dir="${projectsRootDir}/org.faktorips.pluginbuilder/" antfile="build.xml" target="main-cc">
+            <property name="label" value="HEAD"/>
+            <property name="xms.megabytes" value=""/> <!-- -Xms124m -->
+            <property name="xmx.megabytes" value=""/> <!-- -Xmx256m -->
+        </ant>
+    </target>
+    
+	<!-- target to copy cc build artefacts -->
+	<target name="copy.artifacts.pluginbuilder.faktorips" description="target to copy cc build artefacts">
+		<!-- properties from cc: ccProjectDir (defined in config.xml), 
+		                         cctimestamp (see cc reference), 
+		                         thisbuildsuccessful (see cc reference),
+		                         workspaceName (constant in config.xml) -->
+
+		<defaultexcludes remove="**/._*"/>
+			
+	    <condition property="is.thisbuildsuccessful" value="true">
+	        <equals arg1="${thisbuildsuccessful}" arg2="true"/>
+	    </condition>
+	    <condition property="is.plugintest" value="true">
+	        <equals arg1="${workspaceName}" arg2="workspace"/>
+	    </condition>
+		
+		<!-- create the cc artifact directory for the current build -->
+		<mkdir dir="${ccProjectDir}/${cctimestamp}"/>
+
+		<!-- copy eclipse workspace logfile -->
+		<!-- problems if the workspace has been created, but there is an error or exception in the workspace -->
+        <antcall inheritall="true" target="-copy.eclipse.workspace.log"/> <!-- if build fails, and this is the plugin or integrationtest workspace -->
+        <antcall inheritall="true" target="-copy.eclipse.test.workspace.log"/> <!-- if build fails and this is the plugin workspace -->
+		
+		<!-- copy eclipse configuration log -->
+		<!-- problems if the workspace hasn't been created in case of errors, e.g. feature not found -->
+        <antcall inheritall="true" target="-copy.eclipse.configuration.log"/>
+
+		<!-- copy autoamted test html report -->
+		<copy file="${basedir}/pluginbuilder_tmp/org.faktorips.pluginbuilder/results/testresults/html/testReport_N-${label}.html" 
+			todir="${ccProjectDir}/${cctimestamp}"
+			failonerror="false" verbose="true"/>
+
+		<!-- copy emma coverage report if available -->
+        <copy todir="${ccProjectDir}/${cctimestamp}" failonerror="false" verbose="true">
+            <fileset dir="${basedir}/pluginbuilder_tmp/org.faktorips.pluginbuilder/results/testresults/coverage" includes="**/*"/>
+        </copy>
+		
+		<!-- copy plugin compile errors -->
+		<antcall inheritall="true" target="-copy.pluginbuilder.compile.error"/>
+		
+		<!-- copy java output, eclipse output from org.eclipse.equinox.launcher.Main --> 
+		<antcall inheritall="true" target="-copy.javaoutput"/>
+		
+	</target>
+	
+    <!--this target runs the integrationtest, 
+       the target org.faktorips.pluginbuilder must be executed before, this will be handled by cruisecontrol-->
+    <target name="pluginbuilder.integrationtest" description="target to run the faktorips integrationtest, using the previous build faktorips feature">
+        <property name="projectsRootDir" value="${basedir}/checkout/"/>
+        <property name="cvsIntegrationtestmodule" value="org.faktorips.integrationtest"/>
+        <property name="projectIntegrationtestDir" value="checkout/"/>
+        
+    	<!--checkout org.faktorips.integrationtest project-->
+        <cvs command="co ${cvsIntegrationtestmodule}" dest="${projectIntegrationtestDir}" cvsroot="${cvsroot}" quiet="true"/>
+        
+    	<antcall inheritall="true" target="-delete.eclipse.configuration.log"/>
+        
+    	<!--delegate to the pluginbuilder integrationtest target-->
+        <ant dir="${projectsRootDir}/org.faktorips.pluginbuilder/" antfile="build.xml" target="integrationtest">
+            <property name="xms.megabytes" value=""/> <!-- -Xms124m -->
+            <property name="xmx.megabytes" value=""/> <!-- -Xmx256m -->
+        </ant>	
+    </target>
+
+	<!--this target runs the integrationtest for java5, 
+       the target org.faktorips.pluginbuilder must be executed before, this will be handled by cruisecontrol-->
+    <target name="pluginbuilder.integrationtest.java5" description="target to run the faktorips integrationtest for java5, using the previous build faktorips feature">
+        <property name="projectsRootDir" value="${basedir}/checkout/"/>
+        <property name="cvsIntegrationtestmodule" value="org.faktorips.integrationtest.java5"/>
+        <property name="projectIntegrationtestDir" value="checkout/"/>
+        
+    	<!--checkout org.faktorips.integrationtest project-->
+        <cvs command="co ${cvsIntegrationtestmodule}" dest="${projectIntegrationtestDir}" cvsroot="${cvsroot}" quiet="true"/>
+        
+    	<antcall inheritall="true" target="-delete.eclipse.configuration.log"/>
+        
+    	<!--delegate to the pluginbuilder integrationtest target-->
+        <ant dir="${projectsRootDir}/org.faktorips.pluginbuilder/" antfile="build.xml" target="integrationtest.java5">
+            <property name="xms.megabytes" value=""/> <!-- -Xms124m -->
+            <property name="xmx.megabytes" value=""/> <!-- -Xmx256m -->
+        </ant>
+    </target>
+	
+    <!--this target builds the faktorips release madatory parameter: 
+           -Dbuild.version -> the version which will be released
+           -Dbuild.category -> the version of the category in the updatesite site.xml file -->
+    <!--optional parameters:
+           -Doverwrite=true -> to overwrite previous build version or throw a build fail if version exists
+           -Druntests=false -> run or ignore junit plugin tests 
+           -DskipPublish=true -> don't publish the result to the download and updatesite
+        optional parameter for a local build:   
+           -DnoCvs=true -> no cvs support (the features and plugins will be copied from the workspace
+           -DnoBranch=false -> branch support, in this case the all_cvs_branch.map must exists in the map 
+                               directory (see all_cvs.map with BRANCHLABEL instead of HEAD inside)
+           -DproductProject -> build the given product instead of features and plugins
+                             the given value must be the project name where the FaktorIps.product exists
+                             e.g. org.faktorips.devtools.core or de.qv.faktorips
+           -DprojectsRootDir -> the root dir of all plugin projects
+           -Dbasedir -> e.g. the parent dir of the dir specified in projectsRootDir, this will be the working dir
+         additionaly make sure that the build_host_<hostname>.properies exists in the pluginbuilder project-->
+    <!-- Note: to tag and to creating the release.properties, please use the releaseFaktorIps.sh script 
+               the releaseFaktorIps.sh script uses implicit this ant target -->
+	<!-- Example local release build:
+	   ant -buildfile [workspace]\org.faktorips.build\cruisecontrol_config\build-faktorips.xml 
+	       -Dbuild.version=2.2.0.rc1 -Dbuild.category=2.2 -Doverwrite=true -Druntests=false -DskipPublish=true 
+	       -DnoCvs=true -DprojectsRootDir=[workspace] -Dbasedir=[workspace]\.. release
+	-->
+	<target name="release" 
+    	description="release build for an specified faktorips release version, builds the complete feature, executes the junit plugin tests and distributes the result to the update site and download directory">
+        <!-- defauls properties -->
+    	<property name="noCvs" value="false"/>
+    	<property name="publishResult" value="false"/>
+    	<!-- directories on server -->
+        <property name="projectsRootDir" value="${basedir}/checkout_release/"/>
+    	<property name="updatesite.path" value="/var/www/localhost/htdocs/update.faktorzehn.org/faktorips/"/>
+    	<property name="downloadDir" value="/var/www/localhost/htdocs/update.faktorzehn.org/faktorips/downloads"/>
+    	<property name="buildDirectory" value="${basedir}/pluginbuilder_release_tmp/org.faktorips.pluginbuilder_release"/>
+        <!-- download zip file names -->
+    	<property name="faktoripsReleaseDownloadZipPath" value="${downloadDir}/faktorips-${build.version}.zip"/>
+        <property name="faktoripsNls1ReleaseDownloadZipPath" value="${downloadDir}/faktorips-nls1-${build.version}.zip"/>
+        <property name="faktoripsUmlReleaseDownloadZipPath" value="${downloadDir}/faktorips-uml-${build.version}.zip"/>
+        <property name="faktoripsUmlNls1ReleaseDownloadZipPath" value="${downloadDir}/faktorips-uml-nls1-${build.version}.zip"/>
+    	<!-- pluginbuilder configuration files -->
+    	<property name="release.properties" value="${projectsRootDir}/org.faktorips.pluginbuilder/releases/${build.version}.properties"/>
+        <property name="pluginbuilder.config" value="${projectsRootDir}/org.faktorips.pluginbuilder/pluginbuilder.config"/>
+    	<!-- features to integrate in site.xml -->
+    	<property name="pluginbuilder.features" value="org.faktorips.feature,org.faktorips.feature.nls1,org.faktorips.feature.source"/>
+    	<property name="pluginbuilder.features.uml" value="org.faktorips.uml.feature,org.faktorips.uml.feature.nls1,org.faktorips.uml.feature.source"/>
+    	
+    	<condition property="isUseCvs" value="true">
+        <equals arg1="${noCvs}" arg2="false"/>
+      </condition>
+
+      <condition property="isUseBranch" value="true">
+        <equals arg1="${noBranch}" arg2="false"/>
+      </condition>
+
+    	<condition property="isIgnoreTests" value="true">
+            <equals arg1="${runtests}" arg2="false"/>
+        </condition>
+		
+	    <condition property="isSkipPublish" value="true">
+	    	 <equals arg1="${skipPublish}" arg2="true"/>
+	    </condition>
+
+      <condition property="is.product.build" value="true">
+         <length string="${productProject}" when="greater" length="0" />
+	    </condition>
+
+      <!-- check if the copy all.map should be used, if useCvs is false 
+		     otherwise the cvs all.map is used to fetch the sources from cvs -->
+      <condition property="all.map" value="all_copy.map">
+         <not><equals arg1="${isUseCvs}" arg2="true"/></not>
+      </condition>
+    	<!-- check if the branch all.map should be used, if a branch is given 
+    		     otherwise the cvs all.map is used to fetch the sources from cvs -->
+	    <condition property="all.map" value="all_cvs_branch.map">
+         <isset property="${isUseBranch}"/>
+      </condition>
+    	<!-- special case if an other cvs root is used, e.g. skript testing  -->
+	    <condition property="all.map" value="all_cvs_different_cvsroot.map">
+         <available file="${projectsRootDir}/org.faktorips.pluginbuilder/maps/all_cvs_different_cvsroot.map"/>
+      </condition>
+		
+    	<!--checkout pluginbuilder, build project -->
+    	<antcall inheritall="true" target="-checkout.pluginbuilder"/>
+    	<antcall inheritall="true" target="-checkout.build"/>
+    	
+    	<!--asserts-->
+        <!--1. check if the build.version property is given-->
+        <fail unless="build.version" message="Please specify the build.version, e.g. ant ... -Dbuild.version=2.2.0.rfinal"/>
+        <fail unless="build.category" message="Please specify the build.category, e.g. ant ... -Dbuild.category=2.2"/>
+    	<!--2. check if the build.verion property file exists-->
+        <available type="file" file="${release.properties}" property="releasePropertiesExists"/>
+        <fail message="Could not find ${build.version}.properties in ${projectsRootDir}/org.faktorips.pluginbuilder/releases/" unless="releasePropertiesExists"/>
+    	<!--3. check previous release build with same target, check file exists in download dir -->
+    	<antcall inheritall="true" target="-fail.if.file.exists">
+    	    <param name="file" value="${faktoripsReleaseDownloadZipPath}"/>
+    	</antcall>
+    	<antcall inheritall="true" target="-fail.if.file.exists">
+    	    <param name="file" value="${faktoripsNls1ReleaseDownloadZipPath}"/>
+    	</antcall>
+    	<antcall inheritall="true" target="-fail.if.file.exists">
+    	    <param name="file" value="${faktoripsUmlReleaseDownloadZipPath}"/>
+    	</antcall>
+    	<antcall inheritall="true" target="-fail.if.file.exists">
+    	    <param name="file" value="${faktoripsUmlNls1ReleaseDownloadZipPath}"/>
+    	</antcall>
+
+    	<!-- checkout pluginbuilder with correct build.version -->
+    	<antcall inheritall="true" target="-checkout.pluginbuilder.build.version"/>
+    	<!-- patch run test property -->
+    	<antcall inheritall="true" target="-disable.automated.test" />
+    	<antcall inheritall="true" target="-enable.automated.test" />
+    	
+        <!--checkout updatesite-->
+    	<antcall inheritall="true" target="-checkout.updatesite"/>
+        
+        <!--build release unsing pluginbuilder main target-->
+    	<ant dir="${projectsRootDir}/org.faktorips.pluginbuilder/" antfile="build.xml" target="main">
+            <property name="build.version" value="${build.version}"/>
+            <property name="buildDirectory" value="${buildDirectory}"/>
+            <property name="pluginbuilder.is.rcpbuild" value="${is.product.build}"/>
+            <property name="product.project" value="${productProject}"/>
+            <property name="xms.megabytes" value=""/> <!-- -Xms124m -->
+            <property name="xmx.megabytes" value=""/> <!-- -Xmx256m -->    		
+        </ant>
+    	
+        <!--copy zipped features into the faktorips download directory -->
+    	<!-- faktorips -->
+    	<antcall inheritall="true" target="-copy.faktorips.release.to.download.dir">
+         	<param name="source" value="org.faktorips.feature-${build.version}.zip" />
+    	    <param name="dest.name" value="${faktoripsReleaseDownloadZipPath}" />
+    	</antcall>
+    	<antcall inheritall="true" target="-copy.faktorips.release.to.download.dir">
+    		<param name="source" value="org.faktorips.feature.nls1-${build.version}.zip" />
+    	    <param name="dest.name" value="${faktoripsNls1ReleaseDownloadZipPath}" />
+    	</antcall>
+    	<!-- uml -->
+    	<antcall inheritall="true" target="-copy.faktorips.release.to.download.dir">
+         	<param name="source" value="org.faktorips.uml.feature-${build.version}.zip" />
+    	    <param name="dest.name" value="${faktoripsUmlReleaseDownloadZipPath}" />
+    	</antcall>
+    	<antcall inheritall="true" target="-copy.faktorips.release.to.download.dir">
+    		<param name="source" value="org.faktorips.uml.feature.nls1-${build.version}.zip" />
+    	    <param name="dest.name" value="${faktoripsUmlNls1ReleaseDownloadZipPath}" />
+    	</antcall>
+    		
+    	<!--install the features on updatesite-->
+        <!--  generate a new site.xml on the updatesite, including all previous and new feature versions-->
+		<!--  faktorips features -->
+        <ant dir="${projectsRootDir}/org.faktorips.pluginbuilder/build-files" antfile="postBuild.xml" target="-createNightlyBuildSiteXml">
+            <property name="siteXmlFile" value="${projectsRootDir}/org.faktorips.updatesite/site_tmp.xml"/>
+            <property name="pluginbuilder.features" value="${pluginbuilder.features}"/>
+            <property name="buildDirectory" value="${buildDirectory}"/>
+            <property name="buildHome" value="${projectsRootDir}/org.faktorips.pluginbuilder"/>
+            <property name="updateSiteCategoryName" value="Faktor-IPS ${build.category}"/>
+            <property name="updateSiteCategoryLabel" value="Faktor-IPS ${build.category}"/>
+            <property name="updateSiteDescription" value="FaktorIPS update site"/>
+            <property name="updateSiteUrl" value="http://update.faktorzehn.org/faktorips"/>
+        </ant>
+        <!--  merge the generated site.xml with the previous site.xml as new site.xml-->
+        <antcall inheritall="true" target="-merge.updatesite.xml">
+            <param name="site.xml" value="site_tmp.xml"/> 
+        </antcall> 
+    
+        <!--  generate a new site.xml on the updatesite, including all previous and new feature versions-->
+		<!--  uml features -->
+        <ant dir="${projectsRootDir}/org.faktorips.pluginbuilder/build-files" antfile="postBuild.xml" target="-createNightlyBuildSiteXml">
+            <property name="siteXmlFile" value="${projectsRootDir}/org.faktorips.updatesite/site_uml_tmp.xml"/>
+            <property name="pluginbuilder.features" value="${pluginbuilder.features.uml}"/>
+            <property name="buildDirectory" value="${buildDirectory}"/>
+            <property name="buildHome" value="${projectsRootDir}/org.faktorips.pluginbuilder"/>
+            <property name="updateSiteCategoryName" value="Faktor-IPS ${build.category}"/>
+            <property name="updateSiteCategoryLabel" value="Faktor-IPS ${build.category}"/>
+            <property name="updateSiteDescription" value="FaktorIPS update site"/>
+            <property name="updateSiteUrl" value="http://update.faktorzehn.org/faktorips"/>
+        </ant>
+        <!--  merge the generated site.xml with the previous site.xml as new site.xml-->
+        <antcall inheritall="true" target="-merge.updatesite.xml">
+            <param name="site.xml" value="site_uml_tmp.xml"/> 
+        </antcall> 
+    
+    	<!--  checkin updatesite, only site.xml will be commited, features and plugin jars are not added to cvs-->
+        <antcall inheritall="true" target="-checkin.updatesite"/>
+    	
+    	<!--  checkout site.xml -->
+    	<!--   copy to faktorips updatesite website directory -->
+    	<antcall inheritall="true" target="-checkout.updatesite.on.faktorips.org"/>
+    	<antcall inheritall="true" target="-copy.updatesite.to.faktorips.org"/>
+    	
+		<!-- TODO Produkt-Build umbennenen faktorips-2.2.0.rfinal- mit zus. Produktnamen -->
+    	<!-- report -->
+    	<echo message=""/>
+    	<echo message="result directory: ${buildDirectory}/results/"/>
+    	<echo message=""/>
+    	<echo message="finished. Release: ${build.version}"/>
+    	<echo message="-> new faktorips ips features: ${pluginbuilder.features}"/>
+    	<echo message="-> new faktorips uml features: ${pluginbuilder.features.uml}"/>
+		<antcall inheritall="true" target="-print.publish.info"/>
+		<!-- TODO Info ueber gebautes Produkt und nach Download kopieren -->
+    </target>
+
+    <!--helper targets-->
+    <target name="-print.publish.info" unless="isSkipPublish">
+        <echo message="-> updatesite: ${updatesite.path}"/>
+        <echo message="-> download zip files: "/>
+        <echo message="   1. ${faktoripsReleaseDownloadZipPath}"/>
+        <echo message="   2. ${faktoripsNls1ReleaseDownloadZipPath}"/>
+        <echo message="   3. ${faktoripsUmlReleaseDownloadZipPath}"/>
+        <echo message="   4. ${faktoripsUmlNls1ReleaseDownloadZipPath}"/>    	
+    </target> 
+    <target name="-checkout.pluginbuilder" if="isUseCvs">
+        <cvs command="co org.faktorips.pluginbuilder" dest="${projectsRootDir}" cvsroot="${cvsroot}" quiet="true"/>
+    </target>
+    <target name="-checkout.pluginbuilder.build.version" if="isUseCvs">
+    	<loadproperties srcfile="${release.properties}">
+          <filterchain>
+            <linecontains>
+              <contains value="fetchTag"/>
+            </linecontains>
+          </filterchain>
+    	</loadproperties>
+      <delete includeemptydirs="true">
+        <fileset dir="${projectsRootDir}/org.faktorips.pluginbuilder" excludes="**/all_cvs_*.map"/>
+      </delete>
+    	<cvs command="co -r ${fetchTag} org.faktorips.pluginbuilder" dest="${projectsRootDir}" cvsroot="${cvsroot}" quiet="true"/>
+    </target>
+    <target name="-checkout.build" if="isUseCvs">
+        <cvs command="co org.faktorips.build" dest="${projectsRootDir}" cvsroot="${cvsroot}" quiet="true"/>
+    </target>
+    <target name="-checkout.updatesite" if="isUseCvs">
+        <cvs command="co org.faktorips.updatesite" dest="${projectsRootDir}" cvsroot="${cvsroot}" quiet="true"/>
+    </target>
+    <target name="-checkin.updatesite" if="isUseCvs" unless="isSkipPublish">
+    	<cvs command="commit -m 'release build: ${build.version}'" 
+        	package="org.faktorips.updatesite" dest="${projectsRootDir}" cvsroot="${cvsroot}" quiet="true"/>
+    </target>
+    <target name="-checkout.updatesite.on.faktorips.org" if="isUseCvs" unless="isSkipPublish">
+        <echo message="update faktorips.org updatesite: ${updatesite.path}"/>
+        <cvs command="co org.faktorips.updatesite" dest="${updatesite.path}" cvsroot="${cvsroot}" quiet="true"/>
+    </target>	
+    <target name="-copy.faktorips.release.to.download.dir" unless="isSkipPublish">
+    	<!-- input: dest.name -->
+    	<!--        source    -->
+    	<!-- unzip and zip in download dir -->
+    	<!-- (if necessary you can add an eclipse folder to the zip file) -->
+    	<property name="zip.dir" value="${buildDirectory}/zip_tmp"/>
+    	<delete includeemptydirs="true" dir="${zip.dir}"/>
+
+    	<mkdir dir="${zip.dir}"/>
+    	<unzip src="${buildDirectory}/results/${source}" dest="${zip.dir}"></unzip>
+    	<zip destfile="${dest.name}" basedir="${zip.dir}" />
+    </target>
+    <target name="-copy.updatesite.to.faktorips.org" unless="isSkipPublish">
+        <copy todir="${updatesite.path}/plugins" overwrite="true" verbose="true">
+            <fileset dir="${buildDirectory}/updateSite/plugins" includes="*.jar"/>
+        </copy>
+        <copy todir="${updatesite.path}/features" overwrite="true" verbose="true">
+            <fileset dir="${buildDirectory}/updateSite/features" includes="*.jar"/>
+        </copy>
+    </target>
+    <target name="-copy.eclipse.workspace.log">
+        <property name="logfile" value="${basedir}/pluginbuilder_tmp/org.faktorips.pluginbuilder/${workspaceName}/.metadata/.log"/>
+    <copy file="${logfile}" 
+            tofile="${ccProjectDir}/${cctimestamp}/eclipse_workspace.log"
+            failonerror="false" verbose="true"/>
+    <delete file="${logfile}" failonerror="false" verbose="false"/>
+    </target>
+    <target name="-copy.eclipse.test.workspace.log" if="is.plugintest" unless="is.thisbuildsuccessful">
+    	<property name="logfile" value="${basedir}/pluginbuilder_tmp/org.faktorips.pluginbuilder/test-workspace/.metadata/.log"/>
+    	<copy file="${logfile}" 
+            tofile="${ccProjectDir}/${cctimestamp}/eclipse_test-workspace.log"
+            failonerror="false" verbose="true"/>
+    	<delete file="${logfile}" failonerror="false" verbose="false"/>
+    </target>
+    <target name="-copy.eclipse.configuration.log">
+        <copy todir="${ccProjectDir}/${cctimestamp}" failonerror="false" verbose="false">
+            <fileset dir="${basedir}/pluginbuilder_tmp/pluginbuilder_eclipse/eclipse/configuration" includes="*.log"/>
+        </copy>
+    </target>
+    <target name="-delete.eclipse.configuration.log">
+    	<delete failonerror="false" verbose="false" quiet="true">
+    		<fileset dir="${basedir}/pluginbuilder_tmp/pluginbuilder_eclipse/eclipse/configuration" includes="*.log"/>
+    	</delete>
+    </target>
+    <target name="-copy.pluginbuilder.compile.error" unless="is.thisbuildsuccessful">
+        <copy todir="${ccProjectDir}/${cctimestamp}" failonerror="false" verbose="false">
+            <fileset dir="${basedir}/pluginbuilder_tmp/org.faktorips.pluginbuilder/plugins" includes="**/*dot.bin.log"/>
+        </copy>
+    </target>
+    <target name="-copy.javaoutput" unless="is.thisbuildsuccessful">
+        <copy file="${basedir}/pluginbuilder_tmp/org.faktorips.pluginbuilder/javaoutput.txt" 
+                     todir="${ccProjectDir}/${cctimestamp}"
+                     failonerror="false" verbose="true"/>
+    </target>
+    <target name="-disable.automated.test" if="isIgnoreTests">
+    	<replace file="${pluginbuilder.config}" token="pluginbuilder.is.runtests=true" value="pluginbuilder.is.runtests=false"/>
+    </target>
+    <target name="-enable.automated.test" unless="isIgnoreTests">
+    	<replace file="${pluginbuilder.config}" token="pluginbuilder.is.runtests=false" value="pluginbuilder.is.runtests=true"/>
+    </target>
+    
+    <target name="-fail.if.file.exists" unless="isSkipPublish">
+        <fail message="Release zip already exists: ${file} (delete or use -Doverwrite=true)">
+              <condition>
+                 <and>
+                     <available file="${file}"/>
+                     <not><equals arg1="${overwrite}" arg2="true"/></not>
+                 </and>
+              </condition>
+          </fail>
+    </target>
+              	
+    <target name="-merge.updatesite.xml" unless="isSkipPublish">
+        <xslt in="${projectsRootDir}/org.faktorips.updatesite/site.xml" out="${projectsRootDir}/org.faktorips.updatesite/site_merge.xml" 
+        	style="${projectsRootDir}/org.faktorips.build/cruisecontrol_config/xsl/mergeupdatesite.xsl" force="true">
+            <outputproperty name="method" value="xml"/>
+            <outputproperty name="encoding" value="UTF-8"/>
+            <outputproperty name="indent" value="yes"/>
+            <param name="doc2" expression="${projectsRootDir}/org.faktorips.updatesite/${site.xml}"/>
+        </xslt>
+        <delete file="${projectsRootDir}/org.faktorips.updatesite/${site.xml}" verbose="false"/>
+        <copy file="${projectsRootDir}/org.faktorips.updatesite/site_merge.xml" tofile="${projectsRootDir}/org.faktorips.updatesite/site.xml" verbose="false" overwrite="true"/>
+        <delete file="${projectsRootDir}/org.faktorips.updatesite/site_merge.xml" verbose="false"/>
+    </target>
+
+</project>
