@@ -40,9 +40,6 @@ public class MessageList implements Serializable, Iterable<Message> {
      * @param newObject the object reference to set
      */
     public final static MessageList createCopy(MessageList list, Object oldObject, Object newObject) {
-        if (list.isEmpty()) {
-            return list;
-        }
         MessageList newList = new MessageList();
         int numOfMsg = list.getNoOfMessages();
         for (int i = 0; i < numOfMsg; i++) {
