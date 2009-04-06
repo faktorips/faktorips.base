@@ -451,6 +451,7 @@
     	<antcall inheritall="true" target="-checkout.updatesite"/>
         
         <!--build release unsing pluginbuilder main target-->
+		<!-- TODO fix updatesite zip mit category 'NightlyBuildSite' s.u. -->
     	<ant dir="${projectsRootDir}/org.faktorips.pluginbuilder/" antfile="build.xml" target="main">
             <property name="build.version" value="${build.version}"/>
             <property name="buildDirectory" value="${buildDirectory}"/>
