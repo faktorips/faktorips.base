@@ -26,9 +26,9 @@ import org.faktorips.util.message.MessageList;
  * Empty Migration 
  * 
  */
-public class Migration_2_2_0_rfinal extends AbstractIpsProjectMigrationOperation {
+public class Migration_2_2_1_rfinal extends AbstractIpsProjectMigrationOperation {
 
-    public Migration_2_2_0_rfinal(IIpsProject projectToMigrate, String featureId) {
+    public Migration_2_2_1_rfinal(IIpsProject projectToMigrate, String featureId) {
         super(projectToMigrate, featureId);
     }
 
@@ -43,7 +43,7 @@ public class Migration_2_2_0_rfinal extends AbstractIpsProjectMigrationOperation
      * {@inheritDoc}
      */
     public String getTargetVersion() {
-        return "2.2.1.rfinal"; //$NON-NLS-1$
+        return "2.2.2.rfinal"; //$NON-NLS-1$
     }
 
     /**

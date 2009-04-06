@@ -178,11 +178,7 @@ public class GenAssociationToMany extends GenAssociation {
             IIpsProject ipsProject,
             boolean generatesInterface) throws CoreException {
         super.generateMemberVariables(builder, ipsProject, generatesInterface);
-        if (!association.isDerivedUnion()) {
-            if (isGenerateJaxbSupport()) {
-                builder.annotation("javax.xml.bind.annotation.XmlElementWrapper", "name", association.getTargetRolePlural());
-            }
-
+        if (!isDerivedUnion()) {
             JavaCodeFragment initialValueExpression = new JavaCodeFragment();
             initialValueExpression.append("new ");
             initialValueExpression.appendClassName(ArrayList.class);
@@ -194,6 +190,22 @@ public class GenAssociationToMany extends GenAssociation {
             initialValueExpression.append("()");
             String comment = getLocalizedText("FIELD_ASSOCIATION_JAVADOC", association.getName());
             builder.javaDoc(comment, JavaSourceFileBuilder.ANNOTATION_GENERATED);
+
+            if (isGenerateJaxbSupport()) {
+                if (!isCompositionDetailToMaster()) {
+                    builder.getFragment().addImport("javax.xml.bind.annotation.XmlElement");
+                    builder.annotation("XmlElement(name=\"" + association.getName() + "\", type=" + targetImplClassName
+                            + ".class)");
+                    if (!isCompositionMasterToDetail()) {
+                        builder.getFragment().addImport("javax.xml.bind.annotation.XmlIDREF");
+                        builder.annotation("XmlIDREF");
+                    }
+                }
+                
+                builder.getFragment().addImport("javax.xml.bind.annotation.XmlElementWrapper");
+                builder.annotation("XmlElementWrapper(name = \"" + association.getTargetRolePlural() + "\")");
+            }
+
             builder.varDeclaration(java.lang.reflect.Modifier.PRIVATE, List.class.getName()
                     + (isUseTypesafeCollections() ? "<" + targetInterfaceName + ">" : ""), fieldName,
                     initialValueExpression);

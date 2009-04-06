@@ -142,6 +142,17 @@ public class GenAssociationTo1 extends GenAssociation {
         if (!isDerivedUnion() && !isCompositionDetailToMaster()) {
             String comment = getLocalizedText("FIELD_ASSOCIATION_JAVADOC", association.getName());
             builder.javaDoc(comment, JavaSourceFileBuilder.ANNOTATION_GENERATED);
+
+            if (isGenerateJaxbSupport()) {
+                builder.getFragment().addImport("javax.xml.bind.annotation.XmlElement");
+                builder.annotation("XmlElement(name=\"" + association.getName() + "\", type=" + targetImplClassName
+                        + ".class)");
+                if (!isCompositionMasterToDetail()) {
+                    builder.getFragment().addImport("javax.xml.bind.annotation.XmlIDREF");
+                    builder.annotation("XmlIDREF");
+                }
+            }
+
             builder.varDeclaration(java.lang.reflect.Modifier.PRIVATE, targetImplClassName, fieldName,
                     new JavaCodeFragment("null"));
         }
