@@ -607,7 +607,7 @@ if [ -n "$BRANCH" -a ! "$NOCVS" = "true" ] ; then
 fi
 
 # if using a different cvs root
-if [ ! "$DEFAULT_CVS_ROOT" = "CVS_ROOT" ] ; then
+if [ ! "$DEFAULT_CVS_ROOT" = "$CVS_ROOT" ] ; then
   # patch cvs root in map file
   echo "patch all_cvs.map: change cvs root"
   cat $PLUGINBUILDER_PROJECT_DIR/maps/all_cvs.map | sed -r "s|(.*)$DEFAULT_CVS_ROOT(.*)|\1$CVS_ROOT\2|g" > $PLUGINBUILDER_PROJECT_DIR/maps/all_cvs_different_cvsroot.map  
