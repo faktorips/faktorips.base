@@ -252,7 +252,7 @@ public abstract class GenAttribute extends GenPolicyCmptTypePart {
             if (!datatypeHelper.getDatatype().isPrimitive()) {
                 annotationParam += ",nillable=true";
             }
-            memberVarsBuilders.annotation("javax.xml.bind.annotation.XmlElement", annotationParam);
+            memberVarsBuilders.annotationLn("javax.xml.bind.annotation.XmlElement", annotationParam);
         }
 
         memberVarsBuilders.varDeclaration(java.lang.reflect.Modifier.PRIVATE, getJavaClassName(), fieldName,

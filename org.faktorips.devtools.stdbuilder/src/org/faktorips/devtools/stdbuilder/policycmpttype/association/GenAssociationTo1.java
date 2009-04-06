@@ -144,12 +144,9 @@ public class GenAssociationTo1 extends GenAssociation {
             builder.javaDoc(comment, JavaSourceFileBuilder.ANNOTATION_GENERATED);
 
             if (isGenerateJaxbSupport()) {
-                builder.getFragment().addImport("javax.xml.bind.annotation.XmlElement");
-                builder.annotation("XmlElement(name=\"" + association.getName() + "\", type=" + targetImplClassName
-                        + ".class)");
+                builder.annotationLn("javax.xml.bind.annotation.XmlElement", "name=\"" + association.getName() + "\", type=" + targetImplClassName + ".class");
                 if (!isCompositionMasterToDetail()) {
-                    builder.getFragment().addImport("javax.xml.bind.annotation.XmlIDREF");
-                    builder.annotation("XmlIDREF");
+                    builder.annotationLn("javax.xml.bind.annotation.XmlIDREF");
                 }
             }
 

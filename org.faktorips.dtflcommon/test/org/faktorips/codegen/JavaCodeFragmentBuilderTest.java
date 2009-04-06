@@ -23,14 +23,14 @@ public class JavaCodeFragmentBuilderTest extends TestCase {
 
     public void testAnnotation_AsOneString() {
         JavaCodeFragmentBuilder builder = new JavaCodeFragmentBuilder();
-        builder.annotation("javax.xml.bind.annotation.XmlAttribute");
+        builder.annotationLn("javax.xml.bind.annotation.XmlAttribute");
         JavaCodeFragment code = builder.getFragment();
         assertEquals("@XmlAttribute", code.getSourcecode());
         
         builder = new JavaCodeFragmentBuilder();
-        builder.annotation("javax.xml.bind.annotation.XmlAttribute(name=\"parent-id\")");
+        builder.annotationLn("javax.xml.bind.annotation.XmlAttribute(name=\"parent-id\")");
         code = builder.getFragment();
-        assertEquals("@XmlAttribute(name=\"parent-id\")", code.getSourcecode());
+        assertEquals("@XmlAttribute(name=\"parent-id\")" + SystemUtils.LINE_SEPARATOR, code.getSourcecode());
         ImportDeclaration imports = new ImportDeclaration();
         imports.add("javax.xml.bind.annotation.XmlAttribute");
         assertEquals(imports, code.getImportDeclaration());
@@ -38,7 +38,7 @@ public class JavaCodeFragmentBuilderTest extends TestCase {
 
     public void testAnnotation_ClassName_Params() {
         JavaCodeFragmentBuilder builder = new JavaCodeFragmentBuilder();
-        builder.annotation("javax.xml.bind.annotation.XmlAttribute", "name=\"parent-id\"");
+        builder.annotationLn("javax.xml.bind.annotation.XmlAttribute", "name=\"parent-id\"");
         JavaCodeFragment code = builder.getFragment();
         assertEquals("@XmlAttribute(name=\"parent-id\")" + SystemUtils.LINE_SEPARATOR, code.getSourcecode());
         ImportDeclaration imports = new ImportDeclaration();
@@ -48,7 +48,7 @@ public class JavaCodeFragmentBuilderTest extends TestCase {
     
     public void testAnnotation_AnnotationString_ParamName_ParamValue() {
         JavaCodeFragmentBuilder builder = new JavaCodeFragmentBuilder();
-        builder.annotation("javax.xml.bind.annotation.XmlAttribute", "name", "parent-id");
+        builder.annotationLn("javax.xml.bind.annotation.XmlAttribute", "name", "parent-id");
         JavaCodeFragment code = builder.getFragment();
         assertEquals("@XmlAttribute(name=\"parent-id\")" + SystemUtils.LINE_SEPARATOR, code.getSourcecode());
         ImportDeclaration imports = new ImportDeclaration();
@@ -58,7 +58,7 @@ public class JavaCodeFragmentBuilderTest extends TestCase {
 
     public void testAnnotation_Class_Params() {
         JavaCodeFragmentBuilder builder = new JavaCodeFragmentBuilder();
-        builder.annotation(Override.class, "someParameters");
+        builder.annotationLn(Override.class, "someParameters");
         JavaCodeFragment code = builder.getFragment();
         assertEquals("@Override(someParameters)" + SystemUtils.LINE_SEPARATOR, code.getSourcecode());
         ImportDeclaration imports = new ImportDeclaration();

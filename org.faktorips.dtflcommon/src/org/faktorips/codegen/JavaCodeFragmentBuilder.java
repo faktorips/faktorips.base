@@ -950,32 +950,33 @@ public class JavaCodeFragmentBuilder {
     }
 
     /**
-     * Writes the annotation. For an annotation only the annotation name needs to be specified. The
+     * Writes the annotation and a line separator. For an annotation only the annotation name needs to be specified. The
      * '@' character will be automatically added.
      * 
      * @param annotation
      */
-    public void annotation(Class annotation) {
+    public void annotationLn(Class annotation) {
         if (annotation == null) {
             return;
         }
         fragment.append("@");
         fragment.appendClassName(annotation);
+        fragment.appendln();
     }
 
     /**
-     * Writes the annotation with the indicated parameters. '@' character and a line feed will be automatically added.
+     * Writes the annotation with the indicated parameters and a line separator. '@' character and a line feed will be automatically added.
      * Import statements are added automatically to the code fragment (if needed).  
      * 
      * @param annotation The annotation class
      * @param params     Parameters for the annotation without paranthesis. If <code>null</code> or an empty String,
      *                   paranthesis aren't added.
      */
-    public void annotation(Class annotation, String params) {
+    public void annotationLn(Class annotation, String params) {
         if (annotation==null) {
             return;
         }
-        annotation(annotation.getName(), params);
+        annotationLn(annotation.getName(), params);
     }
     
     /**
@@ -994,11 +995,11 @@ public class JavaCodeFragmentBuilder {
      * @param stringValue The unqoted string value for the parameter. This method generates the quotes.
      * 
      */
-    public void annotation(Class annotation, String paramName, String stringValue) {
+    public void annotationLn(Class annotation, String paramName, String stringValue) {
         if (annotation == null) {
             return;
         }
-        annotation(annotation.getName(), paramName, stringValue);
+        annotationLn(annotation.getName(), paramName, stringValue);
     }
 
     /**
@@ -1009,7 +1010,7 @@ public class JavaCodeFragmentBuilder {
      * @param params     Parameters for the annotation without paranthesis. If <code>null</code> or an empty String,
      *                   paranthesis aren't added.
      */
-    public void annotation(String annotation, String params) {
+    public void annotationLn(String annotation, String params) {
         if (annotation == null) {
             return;
         }
@@ -1039,7 +1040,7 @@ public class JavaCodeFragmentBuilder {
      * @param stringValue The unqoted string value for the parameter. This method generates the quotes.
      * 
      */
-    public void annotation(String annotation, String paramName, String stringValue) {
+    public void annotationLn(String annotation, String paramName, String stringValue) {
         if (annotation == null) {
             return;
         }
@@ -1055,11 +1056,11 @@ public class JavaCodeFragmentBuilder {
 
     /**
      * Writes the annotation. For an annotation the (fully qualified) annotation class name needs to be specified. The
-     * '@' character will be automatically added. The annoation may contain parameters in paranthesis. 
+     * '@' character and a line feed will be automatically added. The annoation may contain parameters in paranthesis. 
      * 
      * @param annotation The fully qualified annotation name
      */
-    public void annotation(String annotation) {
+    public void annotationLn(String annotation) {
         if (annotation == null) {
             return;
         }
@@ -1067,30 +1068,31 @@ public class JavaCodeFragmentBuilder {
         int index = annotation.indexOf('(');
         if (index==-1) {
             fragment.appendClassName(annotation);
+            fragment.appendln();
             return;
         }
         fragment.appendClassName(annotation.substring(0, index));
-        fragment.append(annotation.substring(index));
+        fragment.appendln(annotation.substring(index));
     }
 
     /**
      * Writes the annotations. For an annotation only the annotation name needs to be specified. The
-     * '@' character will be automatically added.
+     * '@' character and a line feed will be automatically added. 
      * 
      * @param annotations
      */
-    public void annotation(Class[] annotations) {
+    public void annotationLn(Class[] annotations) {
         if (annotations == null) {
             return;
         }
         for (int i = 0; i < annotations.length; i++) {
-            annotation(annotations[i]);
+            annotationLn(annotations[i]);
         }
     }
 
     /**
      * Writes the annotations. For an annotation only the annotation name needs to be specified. The
-     * '@' character will be automatically added.
+     * '@' character and a line feed will be automatically added. 
      * 
      * @param annotations
      */
@@ -1099,7 +1101,7 @@ public class JavaCodeFragmentBuilder {
             return;
         }
         for (int i = 0; i < annotations.length; i++) {
-            annotation(annotations[i]);
+            annotationLn(annotations[i]);
         }
     }
 

@@ -193,17 +193,12 @@ public class GenAssociationToMany extends GenAssociation {
 
             if (isGenerateJaxbSupport()) {
                 if (!isCompositionDetailToMaster()) {
-                    builder.getFragment().addImport("javax.xml.bind.annotation.XmlElement");
-                    builder.annotation("XmlElement(name=\"" + association.getName() + "\", type=" + targetImplClassName
-                            + ".class)");
+                    builder.annotationLn("javax.xml.bind.annotation.XmlElement", "name=\"" + association.getName() + "\", type=" + targetImplClassName + ".class");
                     if (!isCompositionMasterToDetail()) {
-                        builder.getFragment().addImport("javax.xml.bind.annotation.XmlIDREF");
-                        builder.annotation("XmlIDREF");
+                        builder.annotationLn("javax.xml.bind.annotation.XmlIDREF");
                     }
                 }
-                
-                builder.getFragment().addImport("javax.xml.bind.annotation.XmlElementWrapper");
-                builder.annotation("XmlElementWrapper(name = \"" + association.getTargetRolePlural() + "\")");
+                builder.annotationLn("javax.xml.bind.annotation.XmlElementWrapper", "name", association.getTargetRolePlural());
             }
 
             builder.varDeclaration(java.lang.reflect.Modifier.PRIVATE, List.class.getName()
