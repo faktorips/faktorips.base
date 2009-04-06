@@ -182,7 +182,7 @@ public class EnumTypeBuilder extends DefaultJavaSourceFileBuilder {
                 IEnumValue currentEnumValue = enumValues.get(i);
                 // Generate only for valid enum values
                 if (currentEnumValue.isValid()) {
-                    IEnumAttributeValue currentLiteralNameEnumAttributeValue = enumValues.get(i)
+                    IEnumAttributeValue currentLiteralNameEnumAttributeValue = currentEnumValue
                             .findEnumAttributeValue(enumType.findLiteralNameAttribute());
                     List<IEnumAttributeValue> currentEnumAttributeValues = currentEnumValue.getEnumAttributeValues();
                     if (javaAtLeast5) {

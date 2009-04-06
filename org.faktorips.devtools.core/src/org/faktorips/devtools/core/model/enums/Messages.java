@@ -29,6 +29,10 @@ public class Messages extends NLS {
     public static String EnumType_NotInheritedAttributesInSupertypeHierarchyPlural;
     public static String EnumType_NoIdentifierAttribute;
 
+    public static String EnumType_cycleDetected;
+
+    public static String EnumType_inconsistentHierarchy;
+
     public static String EnumContent_EnumTypeMissing;
     public static String EnumContent_EnumTypeDoesNotExist;
     public static String EnumContent_EnumTypeIsAbstract;

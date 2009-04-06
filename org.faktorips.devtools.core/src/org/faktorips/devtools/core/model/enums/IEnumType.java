@@ -87,6 +87,16 @@ public interface IEnumType extends IEnumValueContainer, EnumDatatype {
     public final static String MSGCODE_ENUM_TYPE_NO_IDENTIFIER_ATTRIBUTE = MSGCODE_PREFIX
             + "EnumTypeNoIdentifierAttribute"; //$NON-NLS-1$
 
+    /** Validation message code to indicate that there exists a cycle in the hierarchy of this enumeration type. */
+    public final static String MSGCODE_CYCLE_IN_TYPE_HIERARCHY = MSGCODE_PREFIX + "CycleInTypeHierarchy";
+    
+    /** 
+     * Validation message code to indicate that there exists an inconsistency in the hierarchy of this enumeration type. 
+     * The inconsistency can result from a type in the super type hierachy that is missing its super type or that the
+     * super type is not abstract which is an additional constraint for enumeration types.
+     */
+    public final static String MSGCODE_INCONSISTENT_TYPE_HIERARCHY = MSGCODE_PREFIX + "InconsistentTypeHierachy";
+    
     /**
      * Returns the package fragment a referecning enum content must be stored in.
      */

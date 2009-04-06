@@ -355,12 +355,14 @@ public class EnumType extends EnumValueContainer implements IEnumType {
         Message validationMessage = null;
 
         // Validate super enum type
-        if (!(superEnumType.equals(""))) {
+        if (!(superEnumType.isEmpty())) {
             EnumTypeValidations.validateSuperEnumType(list, this, superEnumType, ipsProject);
         }
-
+        
+        EnumTypeValidations.validateSuperTypeHierarchy(list, this, ipsProject);
+        
         // Validate inherited attributes
-        if (!(superEnumType.equals(""))) {
+        if (!(superEnumType.isEmpty())) {
             if (validationMessage == null) {
                 EnumTypeValidations.validateInheritedAttributes(list, this);
             }
