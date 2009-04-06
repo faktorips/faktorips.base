@@ -116,21 +116,9 @@ assertVersionFormat ()
 # init variables and parameters
 #################################################
 
-CRUISE_ANT_HOME=/opt/cc/apache-ant-1.6.5
-
-DEFAULT_ANT_HOME=$CRUISE_ANT_HOME
-DEFAULT_JAVA_HOME=/opt/sun-jdk-1.5.0.08
-
-# use cruise's ant if the user is cruise or
-# if no ant home is set
-if [ $(whoami) = "cruise" ] ; then 
-  ANT_HOME=$CRUISE_ANT_HOME
-else 
-  # if ant is set and not ant command exists use default
-  if [ -n "$ANT_HOME" -a ! -f $ANT_HOME/bin/ant ] ; then
-    ANT_HOME=$DEFAULT_ANT_HOME
-  fi
-fi
+# substitution: if default variable not use default specified here
+DEFAULT_ANT_HOME=${DEFAULT_ANT_HOME:-'/opt/cc/apache-ant-1.6.5'}
+DEFAULT_JAVA_HOME=${DEFAULT_JAVA_HOME:-'/opt/sun-jdk-1.5.0.08'}
 
 # default build environment
 DEFAULT_CVS_ROOT='/usr/local/cvsroot'
@@ -146,9 +134,6 @@ if [ ! -d $PROJECTSROOTDIR ] ; then
 fi
 
 # default java and ant environment
-##ANT_HOME=${ANT_HOME:-$DEFAULT_ANT_HOME}
-##JAVA_HOME=${JAVA_HOME:-$DEFAULT_JAVA_HOME}
-## overwrite java and ant environment
 ANT_HOME=$DEFAULT_ANT_HOME
 JAVA_HOME=$DEFAULT_JAVA_HOME
 
@@ -218,9 +203,9 @@ PLUGINBUILDER_PROJECT_DIR=$PROJECTSROOTDIR/$PLUGINBUILDER_PROJECT_NAME
 
 # assert environment
 if [ ! -f $ANT_HOME/bin/ant ] ; then
-  echo 'Error ant not found '$ANT_HOME/bin/ant' - Please set ANT_HOME.' 
+  echo 'Error ant not found '$ANT_HOME/bin/ant' - To overwrite this default, please set DEFAULT_ANT_HOME.'
   echo '  '
-  SHOWHELP=true
+  exit 1
 fi
 
 #
@@ -252,6 +237,7 @@ if [ "$CREATE_BRANCH" = "true" ] ; then
   
   echo "branching "$BRANCH" ..."
 
+  # TODO branch pluginbuilder projekt
   # branch all projects specified in the pluginbuilder map file (all necessary plugin and feature projects)
   cvs -d $CVS_ROOT co -d $PLUGINBUILDER_PROJECT_DIR/maps $PLUGINBUILDER_PROJECT_NAME/maps/all_copy.map
   for project in $( cat $PLUGINBUILDER_PROJECT_DIR/maps/all_copy.map | sed -r "s/.*COPY,@WORKSPACE@,(.*)/\1/g" ) ; do
@@ -555,6 +541,8 @@ if [ "$RELEASE_PROPERTIES_EXISTS" = "false" ] ; then
     fi
     # update file in cvs
     cvs -d $CVS_ROOT commit -m "release build $BUILD_VERSION" $RELEASE_PROPERTIES
+    # always tag new release properties files (otherwise build will fail, because of missing release property)
+    cvs -d $CVS_ROOT tag -F $FETCH_TAG $RELEASE_PROPERTIES
   fi
 else
   echo "Skip creating release property, file already exists. "$RELEASE_PROPERTIES
@@ -568,6 +556,8 @@ if [ ! "$SKIPTAGCVS" = "true" ] ; then
   #     -> -F : move tag if it already exists (overwrite checked above, by searching for existing release.properties)
   #     -> -R : process directories recursively
   #    the pluginbuilder project doesn't support branches (not necessary) (-r)
+
+  # TODO branch pluginbuilder projekt
   cvs -d $CVS_ROOT rtag -F -R $FETCH_TAG $PLUGINBUILDER_PROJECT_NAME
 
   # b) tag all projects specified in the pluginbuilder map file (all necessary plugin and feature projects)
