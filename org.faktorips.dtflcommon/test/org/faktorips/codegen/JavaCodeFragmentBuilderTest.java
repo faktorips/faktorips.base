@@ -25,7 +25,7 @@ public class JavaCodeFragmentBuilderTest extends TestCase {
         JavaCodeFragmentBuilder builder = new JavaCodeFragmentBuilder();
         builder.annotationLn("javax.xml.bind.annotation.XmlAttribute");
         JavaCodeFragment code = builder.getFragment();
-        assertEquals("@XmlAttribute", code.getSourcecode());
+        assertEquals("@XmlAttribute" + SystemUtils.LINE_SEPARATOR, code.getSourcecode());
         
         builder = new JavaCodeFragmentBuilder();
         builder.annotationLn("javax.xml.bind.annotation.XmlAttribute(name=\"parent-id\")");
