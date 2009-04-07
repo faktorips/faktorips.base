@@ -32,6 +32,7 @@ public abstract class IpsObjectPart extends IpsObjectPartContainer implements II
     private String description = ""; //$NON-NLS-1$
     private int id;
     private boolean deleted = false;
+    protected boolean descriptionChangable = true;
 
     protected IpsObjectPart(IIpsObject parent, int id) {
         super(parent, ""); //$NON-NLS-1$
@@ -107,8 +108,17 @@ public abstract class IpsObjectPart extends IpsObjectPartContainer implements II
     /**
      * {@inheritDoc}
      */
+    public boolean isDescriptionChangable() {
+        return descriptionChangable;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
     public void setDescription(String newDescription) {
         ArgumentCheck.notNull(description, this);
+        ArgumentCheck.isTrue(isDescriptionChangable(),"The description attribute of this object is marked " +
+        		"as not changeable. See the method isDescriptionChangable() for explanation");
         
         String oldDescription = description;
         this.description = newDescription;
@@ -159,7 +169,9 @@ public abstract class IpsObjectPart extends IpsObjectPartContainer implements II
             } // else keep the id set in the constructor. migration for old files without id!
         }
         
-        description = DescriptionHelper.getDescription(element);
+        if(isDescriptionChangable()){
+            description = DescriptionHelper.getDescription(element);
+        }
     }
 
     /**
@@ -167,7 +179,9 @@ public abstract class IpsObjectPart extends IpsObjectPartContainer implements II
      */
     protected void propertiesToXml(Element element) {
         element.setAttribute(PROPERTY_ID, "" + id); //$NON-NLS-1$
-        DescriptionHelper.setDescription(element, description);
+        if(isDescriptionChangable()){
+            DescriptionHelper.setDescription(element, description);
+        }
     }
 
     /**

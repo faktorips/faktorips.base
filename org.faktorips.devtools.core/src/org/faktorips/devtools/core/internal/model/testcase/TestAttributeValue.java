@@ -63,10 +63,12 @@ public class TestAttributeValue  extends AtomicIpsObjectPart implements ITestAtt
 	
 	public TestAttributeValue(IIpsObject parent, int id) {
 		super(parent, id);
+		this.descriptionChangable = false;
 	}
 
 	public TestAttributeValue(IIpsObjectPart parent, int id) {
 		super(parent, id);
+		this.descriptionChangable = false;
 	}
 	
     /**

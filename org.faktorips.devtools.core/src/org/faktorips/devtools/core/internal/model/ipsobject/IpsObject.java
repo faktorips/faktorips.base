@@ -154,6 +154,13 @@ public abstract class IpsObject extends IpsObjectPartContainer implements IIpsOb
     /**
      * {@inheritDoc}
      */
+    public final boolean isDescriptionChangable() {
+        return true;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
     public void setDescription(String newDescription) {
         description = newDescription;
         objectHasChanged();

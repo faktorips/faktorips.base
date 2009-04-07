@@ -53,6 +53,7 @@ public class Row extends AtomicIpsObjectPart implements IRow {
 
     Row(TableContentsGeneration parent, int rowNum) {
         super(parent, rowNum);
+        this.descriptionChangable = false;
         initValues();
     }
     

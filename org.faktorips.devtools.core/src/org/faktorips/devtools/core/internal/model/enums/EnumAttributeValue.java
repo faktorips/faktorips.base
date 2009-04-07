@@ -60,7 +60,7 @@ public class EnumAttributeValue extends AtomicIpsObjectPart implements IEnumAttr
      */
     public EnumAttributeValue(IEnumValue parent, int id) throws CoreException {
         super(parent, id);
-
+        this.descriptionChangable = false;
         this.value = "";
     }
 
@@ -71,18 +71,13 @@ public class EnumAttributeValue extends AtomicIpsObjectPart implements IEnumAttr
     protected Element createElement(Document doc) {
         return doc.createElement(XML_TAG);
     }
-
+    
     /**
      * {@inheritDoc}
      */
     @Override
     protected void propertiesToXml(Element element) {
-        /*
-         * TODO aw: might be better to set something like hasDescription() in the superclass?
-         * FS#1380
-         */
-        element.setAttribute(PROPERTY_ID, "" + getId()); //$NON-NLS-1$
-
+        super.propertiesToXml(element);
         if (XmlUtil.getTextNode(element) == null) {
             XmlUtil.addNewTextChild(element.getOwnerDocument(), element, value);
         } else {
@@ -94,15 +89,14 @@ public class EnumAttributeValue extends AtomicIpsObjectPart implements IEnumAttr
      * {@inheritDoc}
      */
     @Override
-    protected void initFromXml(Element element, Integer id) {
+    protected void initPropertiesFromXml(Element element, Integer id) {
+        super.initPropertiesFromXml(element, id);
         Text textNode = XmlUtil.getTextNode(element);
         if (textNode != null) {
             value = textNode.getTextContent();
         } else {
             value = "";
         }
-
-        super.initFromXml(element, id);
     }
 
     /**

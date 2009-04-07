@@ -61,13 +61,14 @@ public abstract class ValueSet extends AtomicIpsObjectPart implements IValueSet 
 	 * <code>IValueDatatypeProvider</code>.
 	 */
 	protected ValueSet(ValueSetType type, IIpsObjectPart parent, int partId) {
-		super(parent , partId);
-		if (!(parent instanceof IValueDatatypeProvider)) {
-			super.parent = null;
-			throw new IllegalArgumentException("Parent has to implement IValueDatatypeProvider."); //$NON-NLS-1$
-		}
-		this.type = type;
-	}
+        super(parent, partId);
+        if (!(parent instanceof IValueDatatypeProvider)) {
+            super.parent = null;
+            throw new IllegalArgumentException("Parent has to implement IValueDatatypeProvider."); //$NON-NLS-1$
+        }
+        this.descriptionChangable = false;
+        this.type = type;
+    }
 
     /**
      * Creates a new message with severity ERROR and adds the new message to the given message list.

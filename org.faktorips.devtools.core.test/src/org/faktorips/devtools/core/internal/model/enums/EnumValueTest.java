@@ -16,7 +16,10 @@ package org.faktorips.devtools.core.internal.model.enums;
 import javax.xml.parsers.ParserConfigurationException;
 
 import org.eclipse.core.runtime.CoreException;
+import org.faktorips.devtools.core.internal.model.ipsobject.DescriptionHelper;
 import org.faktorips.devtools.core.model.enums.IEnumContent;
+import org.faktorips.devtools.core.model.enums.IEnumValue;
+import org.faktorips.devtools.core.util.XmlUtil;
 import org.w3c.dom.Element;
 
 public class EnumValueTest extends AbstractIpsEnumPluginTest {
@@ -37,7 +40,9 @@ public class EnumValueTest extends AbstractIpsEnumPluginTest {
     public void testXml() throws ParserConfigurationException, CoreException {
         Element xmlElement = genderEnumContent.toXml(createXmlDocument(IEnumContent.XML_TAG));
         assertEquals(1 + 2, xmlElement.getChildNodes().getLength());
-
+        Element enumValue = XmlUtil.getFirstElement(xmlElement, IEnumValue.XML_TAG);
+        Element descriptionElement = XmlUtil.getFirstElement(enumValue, DescriptionHelper.XML_ELEMENT_NAME);
+        assertNull(descriptionElement);
         IEnumContent loadedEnumContent = newEnumContent(ipsProject, "LoadedEnumValues");
         loadedEnumContent.initFromXml(xmlElement);
         assertEquals(2, loadedEnumContent.getEnumValues().size());
