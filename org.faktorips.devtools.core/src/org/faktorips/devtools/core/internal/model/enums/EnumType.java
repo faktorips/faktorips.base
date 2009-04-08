@@ -369,7 +369,7 @@ public class EnumType extends EnumValueContainer implements IEnumType {
         }
 
         // Validate identifier attribute
-        EnumTypeValidations.validateIdentifierAttribute(list, this);
+        EnumTypeValidations.validateLiteralNameAttribute(list, this);
     }
 
     /**

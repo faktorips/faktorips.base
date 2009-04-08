@@ -27,7 +27,7 @@ public class Messages extends NLS {
     public static String EnumType_SupertypeIsNotAbstract;
     public static String EnumType_NotInheritedAttributesInSupertypeHierarchySingular;
     public static String EnumType_NotInheritedAttributesInSupertypeHierarchyPlural;
-    public static String EnumType_NoIdentifierAttribute;
+    public static String EnumType_NoLiteralNameAttribute;
 
     public static String EnumType_cycleDetected;
 
@@ -39,8 +39,6 @@ public class Messages extends NLS {
     public static String EnumContent_ValuesArePartOfModel;
     public static String EnumContent_ReferencedEnumAttributesCountInvalid;
     public static String EnumContent_PackageFragmentNotCorrect;
-
-    public static String EnumAttribute_Identifier;
 
     static {
         // initialize resource bundle

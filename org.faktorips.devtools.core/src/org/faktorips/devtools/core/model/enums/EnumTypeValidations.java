@@ -89,41 +89,44 @@ public class EnumTypeValidations {
     }
 
     /**
-     * Checks is the super type hierarchy of this enumeration type is valid. Therefore this method checks if there exists
-     * a cycle in the type hierarchy, if there is an enumeration type in the hierarchy for which the super type cannot be
-     * found and if there exists a super type that is not abstract. Last is a constraint specific to faktor ips enumerations.
-     *  
+     * Checks is the super type hierarchy of this enumeration type is valid. Therefore this method
+     * checks if there exists a cycle in the type hierarchy, if there is an enumeration type in the
+     * hierarchy for which the super type cannot be found and if there exists a super type that is
+     * not abstract. Last is a constraint specific to faktor ips enumerations.
+     * 
      * @param msgList the message list where messages are added to in cases of failing validations
      * @param enumType the enumeration type that is validated
-     * @param ipsProject the IpsProject used as starting point for searches. Note: Not the IpsProject of the provided
-     *          enumeration type is used within this method
+     * @param ipsProject the IpsProject used as starting point for searches. Note: Not the
+     *            IpsProject of the provided enumeration type is used within this method
      * @throws CoreException is thrown if an exception occurs during processing
      */
-    public static void validateSuperTypeHierarchy(MessageList msgList, IEnumType enumType, IIpsProject ipsProject) throws CoreException{
+    public static void validateSuperTypeHierarchy(MessageList msgList, IEnumType enumType, IIpsProject ipsProject)
+            throws CoreException {
         IEnumType superEnumType = enumType.findSuperEnumType();
-        if(superEnumType == null){
+        if (superEnumType == null) {
             return;
         }
         SupertypeCollector collector = new SupertypeCollector(ipsProject);
         collector.start(superEnumType);
         if (collector.cycleDetected()) {
             String msg = Messages.EnumType_cycleDetected;
-            msgList.add(new Message(IEnumType.MSGCODE_CYCLE_IN_TYPE_HIERARCHY, msg, Message.ERROR, enumType, IEnumType.PROPERTY_SUPERTYPE));
+            msgList.add(new Message(IEnumType.MSGCODE_CYCLE_IN_TYPE_HIERARCHY, msg, Message.ERROR, enumType,
+                    IEnumType.PROPERTY_SUPERTYPE));
         } else {
             for (Iterator<IEnumType> it = collector.superTypes.iterator(); it.hasNext();) {
                 MessageList superResult = it.next().validate(ipsProject);
                 if (!superResult.isEmpty()) {
-                    if (superResult.getMessageByCode(IEnumType.MSGCODE_ENUM_TYPE_SUPERTYPE_DOES_NOT_EXIST) != null ||
-                            superResult.getMessageByCode(IEnumType.MSGCODE_ENUM_TYPE_SUPERTYPE_IS_NOT_ABSTRACT) != null) {
+                    if (superResult.getMessageByCode(IEnumType.MSGCODE_ENUM_TYPE_SUPERTYPE_DOES_NOT_EXIST) != null
+                            || superResult.getMessageByCode(IEnumType.MSGCODE_ENUM_TYPE_SUPERTYPE_IS_NOT_ABSTRACT) != null) {
                         String text = Messages.EnumType_inconsistentHierarchy;
-                        msgList.add(new Message(IEnumType.MSGCODE_INCONSISTENT_TYPE_HIERARCHY, text, Message.ERROR, enumType,
-                                IEnumType.PROPERTY_SUPERTYPE));
+                        msgList.add(new Message(IEnumType.MSGCODE_INCONSISTENT_TYPE_HIERARCHY, text, Message.ERROR,
+                                enumType, IEnumType.PROPERTY_SUPERTYPE));
                     }
                 }
             }
         }
     }
-    
+
     /**
      * Validates whether the given enum type inherits all enum attributes defined in its supertype
      * hierarchy.
@@ -138,7 +141,8 @@ public class EnumTypeValidations {
      * @throws NullPointerException If <code>validationMessageList</code> or <code>enumType</code>
      *             is <code>null</code>.
      */
-    //TODO pk benötigt man diese methode wirklich als static an dieser Klasse. Wieso ist sie nicht am IEnumType
+    // TODO pk benötigt man diese methode wirklich als static an dieser Klasse. Wieso ist sie nicht
+    // am IEnumType
     public static void validateInheritedAttributes(MessageList validationMessageList, IEnumType enumType)
             throws CoreException {
 
@@ -149,10 +153,8 @@ public class EnumTypeValidations {
         int notInheritedAttributesCount = notInheritedAttributes.size();
         if (notInheritedAttributesCount > 0) {
             IEnumAttribute firstNotInheritedAttribute = notInheritedAttributes.get(0);
-            String identifier = (firstNotInheritedAttribute.isLiteralName()) ? ", " + Messages.EnumAttribute_Identifier //$NON-NLS-1$
-                    : ""; //$NON-NLS-1$
             String showFirst = firstNotInheritedAttribute.getName() + " (" + firstNotInheritedAttribute.getDatatype() //$NON-NLS-1$
-                    + identifier + ')';
+                    + ')';
             String text = (notInheritedAttributesCount > 1) ? NLS.bind(
                     Messages.EnumType_NotInheritedAttributesInSupertypeHierarchyPlural, notInheritedAttributesCount,
                     showFirst) : NLS.bind(Messages.EnumType_NotInheritedAttributesInSupertypeHierarchySingular,
@@ -165,10 +167,11 @@ public class EnumTypeValidations {
     }
 
     /**
-     * Validates whether the given enum type has at least one attribute being marked as identifier.
+     * Validates whether the given enum type has at least one attribute being marked as literal
+     * name.
      * <p>
-     * If the given enum type is abstract the validation will succeed even if there is no identifier
-     * attribute.
+     * If the given enum type is abstract the validation will succeed even if there is no literal
+     * name attribute.
      * <p>
      * Adds validation messages to the given message list.
      * 
@@ -178,8 +181,9 @@ public class EnumTypeValidations {
      * @throws NullPointerException If <code>validationMessageList</code> or <code>enumType</code>
      *             is <code>null</code>.
      */
-    //TODO pk benötigt man diese methode wirklich als static an dieser Klasse. Wieso ist sie nicht am IEnumType
-    public static void validateIdentifierAttribute(MessageList validationMessageList, IEnumType enumType) {
+    // TODO pk benötigt man diese methode wirklich als static an dieser Klasse. Wieso ist sie nicht
+    // am IEnumType
+    public static void validateLiteralNameAttribute(MessageList validationMessageList, IEnumType enumType) {
         ArgumentCheck.notNull(new Object[] { validationMessageList, enumType });
 
         // Pass validation if given enum type is abstract
@@ -187,16 +191,16 @@ public class EnumTypeValidations {
             return;
         }
 
-        boolean identifierFound = false;
+        boolean literalNameAttributeFound = false;
         for (IEnumAttribute currentEnumAttribute : enumType.findAllEnumAttributes()) {
             if (currentEnumAttribute.isLiteralName()) {
-                identifierFound = true;
+                literalNameAttributeFound = true;
                 break;
             }
         }
 
-        if (!(identifierFound)) {
-            String text = Messages.EnumType_NoIdentifierAttribute;
+        if (!(literalNameAttributeFound)) {
+            String text = Messages.EnumType_NoLiteralNameAttribute;
             Message message = new Message(IEnumType.MSGCODE_ENUM_TYPE_NO_LITERAL_NAME_ATTRIBUTE, text, Message.ERROR,
                     new ObjectProperty[] { new ObjectProperty(enumType, null) });
             validationMessageList.add(message);
@@ -267,11 +271,10 @@ public class EnumTypeValidations {
 
     }
 
-    
     private static class SupertypeCollector extends EnumTypeHierachyVisitor {
 
         private List<IEnumType> superTypes = new ArrayList<IEnumType>();
-        
+
         public SupertypeCollector(IIpsProject ipsProject) {
             super(ipsProject);
         }
