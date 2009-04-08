@@ -36,7 +36,7 @@ public class EnumTypeDatatypeHelperTest extends AbstractIpsPluginTest {
         IEnumAttribute id = paymentMode.newEnumAttribute();
         id.setDatatype(Datatype.STRING.getQualifiedName());
         id.setInherited(false);
-        id.setLiteralNameAttribute(true);
+        id.setLiteralName(true);
         id.setUniqueIdentifier(true);
         id.setName("id");
         IEnumValue value1 = paymentMode.newEnumValue();

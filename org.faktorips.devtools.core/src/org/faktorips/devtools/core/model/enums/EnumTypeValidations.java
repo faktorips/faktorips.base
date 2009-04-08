@@ -149,7 +149,7 @@ public class EnumTypeValidations {
         int notInheritedAttributesCount = notInheritedAttributes.size();
         if (notInheritedAttributesCount > 0) {
             IEnumAttribute firstNotInheritedAttribute = notInheritedAttributes.get(0);
-            String identifier = (firstNotInheritedAttribute.isLiteralNameAttribute()) ? ", " + Messages.EnumAttribute_Identifier //$NON-NLS-1$
+            String identifier = (firstNotInheritedAttribute.isLiteralName()) ? ", " + Messages.EnumAttribute_Identifier //$NON-NLS-1$
                     : ""; //$NON-NLS-1$
             String showFirst = firstNotInheritedAttribute.getName() + " (" + firstNotInheritedAttribute.getDatatype() //$NON-NLS-1$
                     + identifier + ')';
@@ -189,7 +189,7 @@ public class EnumTypeValidations {
 
         boolean identifierFound = false;
         for (IEnumAttribute currentEnumAttribute : enumType.findAllEnumAttributes()) {
-            if (currentEnumAttribute.isLiteralNameAttribute()) {
+            if (currentEnumAttribute.isLiteralName()) {
                 identifierFound = true;
                 break;
             }
@@ -241,13 +241,13 @@ public class EnumTypeValidations {
                  */
                 String currentName = currentEnumAttribute.getName();
                 String currentDatatype = currentEnumAttribute.getDatatype();
-                boolean currentIsIdentifier = currentEnumAttribute.isLiteralNameAttribute();
+                boolean currentIsIdentifier = currentEnumAttribute.isLiteralName();
 
                 boolean attributeInList = false;
                 for (IEnumAttribute currentAttributeInReturnList : returnAttributesList) {
                     if (currentAttributeInReturnList.getName().equals(currentName)
                             && currentAttributeInReturnList.getDatatype().equals(currentDatatype)
-                            && currentAttributeInReturnList.isLiteralNameAttribute() == currentIsIdentifier) {
+                            && currentAttributeInReturnList.isLiteralName() == currentIsIdentifier) {
                         attributeInList = true;
                         break;
                     }

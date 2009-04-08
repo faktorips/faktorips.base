@@ -256,7 +256,7 @@ public class EnumAttributeValue extends AtomicIpsObjectPart implements IEnumAttr
             throw new NullPointerException();
         }
 
-        return referencedEnumAttribute.isLiteralNameAttribute();
+        return referencedEnumAttribute.isLiteralName();
     }
 
     /** Returns whether this enum attribute value refers to a unique identifier enum attribute. */

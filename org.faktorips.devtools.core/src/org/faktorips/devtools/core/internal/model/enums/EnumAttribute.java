@@ -179,7 +179,7 @@ public class EnumAttribute extends AtomicIpsObjectPart implements IEnumAttribute
 
         validateName(list, ipsProject);
         validateDatatype(list, ipsProject);
-        validateIdentifier(list, ipsProject);
+        validateLiteralName(list, ipsProject);
         validateInherited(list, ipsProject);
     }
 
@@ -249,7 +249,7 @@ public class EnumAttribute extends AtomicIpsObjectPart implements IEnumAttribute
     }
 
     /** Validates the <code>literalName</code> property. */
-    private void validateIdentifier(MessageList list, IIpsProject ipsProject) {
+    private void validateLiteralName(MessageList list, IIpsProject ipsProject) {
         String text;
         Message validationMessage;
         List<IEnumAttribute> enumAttributesThisType = getEnumType().getEnumAttributes();

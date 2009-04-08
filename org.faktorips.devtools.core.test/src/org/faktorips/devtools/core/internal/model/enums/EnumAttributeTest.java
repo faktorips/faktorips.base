@@ -62,11 +62,11 @@ public class EnumAttributeTest extends AbstractIpsEnumPluginTest {
     }
 
     public void testGetSetIsIdentifier() {
-        assertTrue(genderEnumAttributeId.isLiteralNameAttribute());
-        assertFalse(genderEnumAttributeName.isLiteralNameAttribute());
+        assertTrue(genderEnumAttributeId.isLiteralName());
+        assertFalse(genderEnumAttributeName.isLiteralName());
 
-        genderEnumAttributeName.setLiteralNameAttribute(true);
-        assertTrue(genderEnumAttributeName.isLiteralNameAttribute());
+        genderEnumAttributeName.setLiteralName(true);
+        assertTrue(genderEnumAttributeName.isLiteralName());
     }
 
     public void testGetSetIsInherited() {
@@ -99,7 +99,7 @@ public class EnumAttributeTest extends AbstractIpsEnumPluginTest {
         IEnumAttribute idAttribute = loadedEnumType.getEnumAttributes().get(0);
         assertEquals(GENDER_ENUM_ATTRIBUTE_ID_NAME, idAttribute.getName());
         assertEquals(STRING_DATATYPE_NAME, idAttribute.getDatatype());
-        assertTrue(idAttribute.isLiteralNameAttribute());
+        assertTrue(idAttribute.isLiteralName());
         assertTrue(idAttribute.isUniqueIdentifier());
         assertFalse(idAttribute.isInherited());
         assertEquals(2, loadedEnumType.getEnumAttributes().size());
@@ -143,9 +143,9 @@ public class EnumAttributeTest extends AbstractIpsEnumPluginTest {
         IIpsModel ipsModel = getIpsModel();
 
         // Test duplicate identifiers
-        genderEnumAttributeName.setLiteralNameAttribute(true);
+        genderEnumAttributeName.setLiteralName(true);
         assertEquals(1, genderEnumAttributeId.validate(ipsProject).getNoOfMessages());
-        genderEnumAttributeName.setLiteralNameAttribute(false);
+        genderEnumAttributeName.setLiteralName(false);
 
         // Test identifier but datatype not String
         ipsModel.clearValidationCache();

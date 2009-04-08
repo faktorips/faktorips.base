@@ -541,7 +541,7 @@ public class IpsProjectTest extends AbstractIpsPluginTest {
         IEnumAttribute id = paymentMode.newEnumAttribute();
         id.setDatatype(Datatype.STRING.getQualifiedName());
         id.setInherited(false);
-        id.setLiteralNameAttribute(true);
+        id.setLiteralName(true);
         id.setName("id");
 
         IEnumType gender = newEnumType(ipsProject, "Gender");
@@ -550,7 +550,7 @@ public class IpsProjectTest extends AbstractIpsPluginTest {
         id = paymentMode.newEnumAttribute();
         id.setDatatype(Datatype.STRING.getQualifiedName());
         id.setInherited(false);
-        id.setLiteralNameAttribute(true);
+        id.setLiteralName(true);
         id.setName("id");
 
         ValueDatatype datatype = ipsProject.findValueDatatype("PaymentMode");
@@ -566,7 +566,7 @@ public class IpsProjectTest extends AbstractIpsPluginTest {
         IEnumAttribute id = paymentMode.newEnumAttribute();
         id.setDatatype(Datatype.STRING.getQualifiedName());
         id.setInherited(false);
-        id.setLiteralNameAttribute(true);
+        id.setLiteralName(true);
         id.setName("id");
 
         IEnumType gender = newEnumType(ipsProject, "Gender");
@@ -575,7 +575,7 @@ public class IpsProjectTest extends AbstractIpsPluginTest {
         id = paymentMode.newEnumAttribute();
         id.setDatatype(Datatype.STRING.getQualifiedName());
         id.setInherited(false);
-        id.setLiteralNameAttribute(true);
+        id.setLiteralName(true);
         id.setName("id");
         
         List<IEnumType> enumTypes = ipsProject.findEnumTypes();
@@ -729,7 +729,7 @@ public class IpsProjectTest extends AbstractIpsPluginTest {
         IEnumAttribute id = paymentMode.newEnumAttribute();
         id.setDatatype(Datatype.STRING.getQualifiedName());
         id.setInherited(false);
-        id.setLiteralNameAttribute(true);
+        id.setLiteralName(true);
         id.setName("id");
 
         IEnumType gender = newEnumType(ipsProject, "Gender");
@@ -738,7 +738,7 @@ public class IpsProjectTest extends AbstractIpsPluginTest {
         id = paymentMode.newEnumAttribute();
         id.setDatatype(Datatype.STRING.getQualifiedName());
         id.setInherited(false);
-        id.setLiteralNameAttribute(true);
+        id.setLiteralName(true);
         id.setName("id");
 
         Datatype[] datatypes = ipsProject.findDatatypes(true, false, false);
@@ -1248,7 +1248,7 @@ public class IpsProjectTest extends AbstractIpsPluginTest {
         IEnumAttribute id = paymentMode.newEnumAttribute();
         id.setDatatype(Datatype.STRING.getQualifiedName());
         id.setInherited(false);
-        id.setLiteralNameAttribute(true);
+        id.setLiteralName(true);
         id.setName("id");
 
         IEnumType gender = newEnumType(ipsProject, "Gender");
@@ -1257,7 +1257,7 @@ public class IpsProjectTest extends AbstractIpsPluginTest {
         id = paymentMode.newEnumAttribute();
         id.setDatatype(Datatype.STRING.getQualifiedName());
         id.setInherited(false);
-        id.setLiteralNameAttribute(true);
+        id.setLiteralName(true);
         id.setName("id");
 
         dataTypes = ipsProject.findEnumDatatypes();

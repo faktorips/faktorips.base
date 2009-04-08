@@ -392,7 +392,7 @@ public class EnumType extends EnumValueContainer implements IEnumType {
      */
     public IEnumAttribute findLiteralNameAttribute() {
         for (IEnumAttribute currentEnumAttribute : findAllEnumAttributes()) {
-            if (currentEnumAttribute.isLiteralNameAttribute()) {
+            if (currentEnumAttribute.isLiteralName()) {
                 return currentEnumAttribute;
             }
         }
@@ -485,7 +485,7 @@ public class EnumType extends EnumValueContainer implements IEnumType {
      */
     public IEnumAttribute getLiteralNameAttribute() {
         for (IEnumAttribute attribute : getEnumAttributes()) {
-            if(attribute.isLiteralNameAttribute()){
+            if(attribute.isLiteralName()){
                 return attribute;
             }
         }

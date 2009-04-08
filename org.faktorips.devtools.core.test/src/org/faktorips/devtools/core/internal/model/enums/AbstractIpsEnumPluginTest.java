@@ -87,7 +87,7 @@ public abstract class AbstractIpsEnumPluginTest extends AbstractIpsPluginTest {
         IEnumAttribute id = paymentMode.newEnumAttribute();
         id.setDatatype(Datatype.STRING.getQualifiedName());
         id.setInherited(false);
-        id.setLiteralNameAttribute(true);
+        id.setLiteralName(true);
         id.setUniqueIdentifier(true);
         id.setName("id");
         IEnumValue value1 = paymentMode.newEnumValue();
@@ -107,7 +107,7 @@ public abstract class AbstractIpsEnumPluginTest extends AbstractIpsPluginTest {
         genderEnumAttributeId = genderEnumType.newEnumAttribute();
         genderEnumAttributeId.setName(GENDER_ENUM_ATTRIBUTE_ID_NAME);
         genderEnumAttributeId.setDatatype(STRING_DATATYPE_NAME);
-        genderEnumAttributeId.setLiteralNameAttribute(true);
+        genderEnumAttributeId.setLiteralName(true);
         genderEnumAttributeId.setUniqueIdentifier(true);
         genderEnumAttributeName = genderEnumType.newEnumAttribute();
         genderEnumAttributeName.setName(GENDER_ENUM_ATTRIBUTE_NAME_NAME);
