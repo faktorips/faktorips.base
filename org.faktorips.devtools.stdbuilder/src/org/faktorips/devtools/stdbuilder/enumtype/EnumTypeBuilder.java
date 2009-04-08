@@ -99,7 +99,7 @@ public class EnumTypeBuilder extends DefaultJavaSourceFileBuilder {
     private boolean generateClass() {
         IEnumType enumType = getEnumType();
 
-        if (enumType.isAbstract()) {
+        if (enumType.isAbstract() && java5EnumsAvailable()) {
             return false;
         }
 
@@ -425,9 +425,11 @@ public class EnumTypeBuilder extends DefaultJavaSourceFileBuilder {
             if (currentEnumAttribute.isValid()) {
                 /*
                  * If the generation artefact is a class and the attribute is inherited do not
-                 * generate it for this class because it is also inherited in the source code.
+                 * generate source code for this attribute because it is also inherited in the
+                 * source code. An exception to this is if the values are not defined in the model.
                  */
-                if (!(generateClass() && currentEnumAttribute.isInherited())) {
+                if (!(generateClass() && currentEnumAttribute.isInherited())
+                        || (generateClass() && !(getEnumType().getValuesArePartOfModel()))) {
                     appendLocalizedJavaDoc("ATTRIBUTE", attributeName, currentEnumAttribute, attributeBuilder);
                     attributeBuilder.varDeclaration(Modifier.PRIVATE | Modifier.FINAL, currentEnumAttribute
                             .getDatatype(), codeName);
@@ -461,7 +463,8 @@ public class EnumTypeBuilder extends DefaultJavaSourceFileBuilder {
 
         // Build method body
         JavaCodeFragment methodBody = new JavaCodeFragment();
-        if (generateClass() && enumType.hasSuperEnumType()) {
+        if (generateClass() && enumType.hasSuperEnumType()
+                && !(java5EnumsAvailable() && !(enumType.getValuesArePartOfModel()))) {
             createSuperConstructorCall(methodBody);
         }
         createAttributeInitialization(methodBody);
@@ -504,13 +507,16 @@ public class EnumTypeBuilder extends DefaultJavaSourceFileBuilder {
     private void createAttributeInitialization(JavaCodeFragment constructorMethodBody) throws CoreException {
         /*
          * If an enum is being generated we need to initialize all attributes, on the other hand, if
-         * a class is being generated we only initialize the attributes that are not inherited.
-         * Every attribute that shall be initialized must be valid.
+         * a class is being generated we only initialize the attributes that are not inherited. A
+         * class might also be generated when java 5 enums are available but the values are not
+         * defined in the model. In that case all attributes need to be initialized, too. Every
+         * attribute that shall be initialized must be valid.
          */
         List<IEnumAttribute> attributesToInit = new ArrayList<IEnumAttribute>();
         for (IEnumAttribute currentEnumAttribute : getEnumType().findAllEnumAttributes()) {
             if (currentEnumAttribute.isValid()) {
-                if (generateEnum() || !(currentEnumAttribute.isInherited())) {
+                if (generateEnum() || (generateClass() && java5EnumsAvailable())
+                        || !(currentEnumAttribute.isInherited())) {
                     attributesToInit.add(currentEnumAttribute);
                 }
             }
@@ -553,7 +559,8 @@ public class EnumTypeBuilder extends DefaultJavaSourceFileBuilder {
                     }
 
                 } else {
-                    if (generateEnum() || !(generateClass() && currentEnumAttribute.isInherited())) {
+                    if (generateEnum() || !(generateClass() && currentEnumAttribute.isInherited()) || generateClass()
+                            && !(enumType.getValuesArePartOfModel())) {
                         appendLocalizedJavaDoc("GETTER", attributeName, description, currentEnumAttribute,
                                 methodBuilder);
 
