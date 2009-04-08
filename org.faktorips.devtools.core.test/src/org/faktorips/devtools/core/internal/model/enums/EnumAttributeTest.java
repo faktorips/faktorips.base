@@ -87,7 +87,7 @@ public class EnumAttributeTest extends AbstractIpsEnumPluginTest {
         assertEquals(GENDER_ENUM_ATTRIBUTE_ID_NAME, attributes.getNamedItem(IEnumAttribute.PROPERTY_NAME)
                 .getTextContent());
         assertEquals(STRING_DATATYPE_NAME, attributes.getNamedItem(IEnumAttribute.PROPERTY_DATATYPE).getTextContent());
-        assertTrue(Boolean.parseBoolean(attributes.getNamedItem(IEnumAttribute.PROPERTY_LITERAL_NAME_ATTRIBUTE)
+        assertTrue(Boolean.parseBoolean(attributes.getNamedItem(IEnumAttribute.PROPERTY_LITERAL_NAME)
                 .getTextContent()));
         assertTrue(Boolean.parseBoolean(attributes.getNamedItem(IEnumAttribute.PROPERTY_UNIQUE_IDENTIFIER)
                 .getTextContent()));

@@ -45,8 +45,8 @@ public interface IEnumAttribute extends IIpsObjectPart {
     /** Name of the <code>datatype</code> property. */
     public final static String PROPERTY_DATATYPE = "datatype"; //$NON-NLS-1$
 
-    /** Name of the <code>identifier</code> property. */
-    public final static String PROPERTY_LITERAL_NAME_ATTRIBUTE = "literalNameAttribute"; //$NON-NLS-1$
+    /** Name of the <code>literalName</code> property. */
+    public final static String PROPERTY_LITERAL_NAME = "literalName"; //$NON-NLS-1$
 
     /** Name of the <code>inherited</code> property. */
     public final static String PROPERTY_INHERITED = "inherited"; //$NON-NLS-1$
@@ -72,25 +72,25 @@ public interface IEnumAttribute extends IIpsObjectPart {
             + "EnumAttributeDatatypeDoesNotExist"; //$NON-NLS-1$
 
     /**
-     * Validation message code to indicate that this enum attribute is marked as identifier but the
-     * datatype is not String.
+     * Validation message code to indicate that this enum attribute is marked as literal name but is
+     * not of datatype String.
      */
-    public final static String MSGCODE_ENUM_ATTRIBUTE_IDENTIFIER_NOT_OF_DATATYPE_STRING = MSGCODE_PREFIX
-            + "EnumAttributeIdentifierNotOfDatatypeString"; //$NON-NLS-1$
+    public final static String MSGCODE_ENUM_ATTRIBUTE_LITERAL_NAME_NOT_OF_DATATYPE_STRING = MSGCODE_PREFIX
+            + "EnumAttributeLiteralNameNotOfDatatypeString"; //$NON-NLS-1$
 
     /**
-     * Validation message code to indicate that this enum attribute inherits from the supertype
-     * hierarchy but there is no such attribute in the supertype hierarchy.
+     * Validation message code to indicate that this enum attribute is inherited from the supertype
+     * hierarchy but there is no such enum attribute in the supertype hierarchy.
      */
     public final static String MSGCODE_ENUM_ATTRIBUTE_NO_SUCH_ATTRIBUTE_IN_SUPERTYPE_HIERARCHY = MSGCODE_PREFIX
             + "EnumAttributeNoSuchAttributeInSupertypeHierarchy"; //$NON-NLS-1$
 
     /**
-     * Validation message code to indicate that there are other enum attributes marked as
-     * identifier.
+     * Validation message code to indicate that there is at least one other enum attribute marked as
+     * literal name in the parent enum type.
      */
-    public final static String MSGCODE_ENUM_ATTRIBUTE_DUPLICATE_IDENTIFIER = MSGCODE_PREFIX
-            + "EnumAttributeDuplicateIdentifier"; //$NON-NLS-1$
+    public final static String MSGCODE_ENUM_ATTRIBUTE_DUPLICATE_LITERAL_NAME = MSGCODE_PREFIX
+            + "EnumAttributeDuplicateLiteralName"; //$NON-NLS-1$
 
     /**
      * Validation message code to indicate that this enum attribute is marked to be used as literal

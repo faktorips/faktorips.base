@@ -60,6 +60,7 @@ public interface IEnumType extends IEnumValueContainer, EnumDatatype {
     public final static String PROPERTY_ABSTRACT = "abstract"; //$NON-NLS-1$
 
     /** Name of the <code>valuesArePartOfModel</code> property. */
+    // TODO aw: rename this to containingValues ... ui: values are defined in an enum content
     public final static String PROPERTY_VALUES_ARE_PART_OF_MODEL = "valuesArePartOfModel"; //$NON-NLS-1$
 
     /** Name of the <code>enumContentPackageFragment</code> property. */
@@ -83,9 +84,9 @@ public interface IEnumType extends IEnumValueContainer, EnumDatatype {
     public final static String MSGCODE_ENUM_TYPE_NOT_INHERITED_ATTRIBUTES_IN_SUPERTYPE_HIERARCHY = MSGCODE_PREFIX
             + "EnumTypeNotInheritedAttributesInSupertypeHierarchy"; //$NON-NLS-1$
 
-    /** Validation message code to indicate that this enum type has no identifier attribute. */
-    public final static String MSGCODE_ENUM_TYPE_NO_IDENTIFIER_ATTRIBUTE = MSGCODE_PREFIX
-            + "EnumTypeNoIdentifierAttribute"; //$NON-NLS-1$
+    /** Validation message code to indicate that this enum type has no literal name attribute. */
+    public final static String MSGCODE_ENUM_TYPE_NO_LITERAL_NAME_ATTRIBUTE = MSGCODE_PREFIX
+            + "EnumTypeNoLiteralNameAttribute"; //$NON-NLS-1$
 
     /** Validation message code to indicate that there exists a cycle in the hierarchy of this enumeration type. */
     public final static String MSGCODE_CYCLE_IN_TYPE_HIERARCHY = MSGCODE_PREFIX + "CycleInTypeHierarchy";

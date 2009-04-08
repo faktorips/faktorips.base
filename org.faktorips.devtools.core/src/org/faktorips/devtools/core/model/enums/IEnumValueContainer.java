@@ -23,8 +23,8 @@ import org.faktorips.devtools.core.model.ipsobject.IIpsObject;
  * <code>EnumValueContainer</code> is the supertype for <code>EnumType</code> and
  * <code>EnumContent</code>.
  * <p>
- * In Faktor-IPS the values of an enum can be defined directly in the enum type or separate from it
- * as product content.
+ * In Faktor-IPS the values of an enum can be defined directly in the enum type itself or separate
+ * from it in an enum content.
  * 
  * @author Alexander Weickmann
  * 

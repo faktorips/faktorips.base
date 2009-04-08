@@ -50,18 +50,18 @@ public interface IEnumAttributeValue extends IIpsObjectPart {
             + "EnumAttributeValueUniqueIdentifierValueEmpty"; //$NON-NLS-1$
 
     /**
-     * Validation message code to indicate that that this enum attribute value is refering the
-     * identifier enum attribute but is not unique.
+     * Validation message code to indicate that that this enum attribute value is refering a unique
+     * identifier enum attribute but its value is not unique.
      */
-    public final static String MSGCODE_ENUM_ATTRIBUTE_VALUE_IDENTIFIER_NOT_UNIQUE = MSGCODE_PREFIX
+    public final static String MSGCODE_ENUM_ATTRIBUTE_VALUE_UNIQUE_IDENTIFIER_NOT_UNIQUE = MSGCODE_PREFIX
             + "EnumAttributeValueIdentifierNotUnique"; //$NON-NLS-1$
 
     /**
      * Validation message code to indicate that that this enum attribute value is refering the
-     * identifier enum attribute but is not java conform.
+     * literal name enum attribute but is not java conform.
      */
-    public final static String MSGCODE_ENUM_ATTRIBUTE_VALUE_IDENTIFIER_NOT_JAVA_CONFORM = MSGCODE_PREFIX
-            + "EnumAttributeValueIdentifierNotJavaConform"; //$NON-NLS-1$
+    public final static String MSGCODE_ENUM_ATTRIBUTE_VALUE_LITERAL_NAME_NOT_JAVA_CONFORM = MSGCODE_PREFIX
+            + "EnumAttributeValueLiteralNameNotJavaConform"; //$NON-NLS-1$
 
     /**
      * Searches and returns the enum attribute this enum attribute value refers to. Returns

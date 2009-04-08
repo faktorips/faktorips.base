@@ -197,7 +197,7 @@ public class EnumTypeValidations {
 
         if (!(identifierFound)) {
             String text = Messages.EnumType_NoIdentifierAttribute;
-            Message message = new Message(IEnumType.MSGCODE_ENUM_TYPE_NO_IDENTIFIER_ATTRIBUTE, text, Message.ERROR,
+            Message message = new Message(IEnumType.MSGCODE_ENUM_TYPE_NO_LITERAL_NAME_ATTRIBUTE, text, Message.ERROR,
                     new ObjectProperty[] { new ObjectProperty(enumType, null) });
             validationMessageList.add(message);
         }

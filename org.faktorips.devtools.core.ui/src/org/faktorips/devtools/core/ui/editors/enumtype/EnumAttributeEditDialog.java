@@ -98,7 +98,7 @@ public class EnumAttributeEditDialog extends IpsPartEditDialog2 {
         // Identifier
         uiToolkit.createFormLabel(workArea, Messages.EnumAttributeEditDialog_labelUseAsLiteralName);
         Checkbox identifierCheckbox = uiToolkit.createCheckbox(workArea);
-        bindingContext.bindContent(identifierCheckbox, enumAttribute, IEnumAttribute.PROPERTY_LITERAL_NAME_ATTRIBUTE);
+        bindingContext.bindContent(identifierCheckbox, enumAttribute, IEnumAttribute.PROPERTY_LITERAL_NAME);
 
         // Unique Identifier
         uiToolkit.createFormLabel(workArea, Messages.EnumAttributeEditDialog_labelUniqueIdentifier);

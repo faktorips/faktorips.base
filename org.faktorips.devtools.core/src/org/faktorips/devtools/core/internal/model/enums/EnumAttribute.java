@@ -134,7 +134,7 @@ public class EnumAttribute extends AtomicIpsObjectPart implements IEnumAttribute
     protected void initFromXml(Element element, Integer id) {
         name = element.getAttribute(PROPERTY_NAME);
         datatype = element.getAttribute(PROPERTY_DATATYPE);
-        identifier = Boolean.parseBoolean(element.getAttribute(PROPERTY_LITERAL_NAME_ATTRIBUTE));
+        identifier = Boolean.parseBoolean(element.getAttribute(PROPERTY_LITERAL_NAME));
         uniqueIdentifier = Boolean.parseBoolean(element.getAttribute(PROPERTY_UNIQUE_IDENTIFIER));
         inherited = Boolean.parseBoolean(element.getAttribute(PROPERTY_INHERITED));
 
@@ -150,7 +150,7 @@ public class EnumAttribute extends AtomicIpsObjectPart implements IEnumAttribute
 
         element.setAttribute(PROPERTY_NAME, name);
         element.setAttribute(PROPERTY_DATATYPE, datatype);
-        element.setAttribute(PROPERTY_LITERAL_NAME_ATTRIBUTE, String.valueOf(identifier));
+        element.setAttribute(PROPERTY_LITERAL_NAME, String.valueOf(identifier));
         element.setAttribute(PROPERTY_UNIQUE_IDENTIFIER, String.valueOf(uniqueIdentifier));
         element.setAttribute(PROPERTY_INHERITED, String.valueOf(inherited));
     }
@@ -241,7 +241,7 @@ public class EnumAttribute extends AtomicIpsObjectPart implements IEnumAttribute
         if (identifier) {
             if (!(ipsDatatype.getName().equals("String"))) {
                 text = Messages.EnumAttribute_LiteralNameNotOfDatatypeString;
-                validationMessage = new Message(MSGCODE_ENUM_ATTRIBUTE_IDENTIFIER_NOT_OF_DATATYPE_STRING, text,
+                validationMessage = new Message(MSGCODE_ENUM_ATTRIBUTE_LITERAL_NAME_NOT_OF_DATATYPE_STRING, text,
                         Message.ERROR, this, PROPERTY_DATATYPE);
                 list.add(validationMessage);
             }
@@ -263,8 +263,8 @@ public class EnumAttribute extends AtomicIpsObjectPart implements IEnumAttribute
                 }
                 if (numberEnumAttributesIdentifier > 1) {
                     text = Messages.EnumAttribute_DuplicateLiteralName;
-                    validationMessage = new Message(MSGCODE_ENUM_ATTRIBUTE_DUPLICATE_IDENTIFIER, text, Message.ERROR,
-                            this, PROPERTY_LITERAL_NAME_ATTRIBUTE);
+                    validationMessage = new Message(MSGCODE_ENUM_ATTRIBUTE_DUPLICATE_LITERAL_NAME, text, Message.ERROR,
+                            this, PROPERTY_LITERAL_NAME);
                     list.add(validationMessage);
                     break;
                 }
@@ -274,7 +274,7 @@ public class EnumAttribute extends AtomicIpsObjectPart implements IEnumAttribute
             if (!uniqueIdentifier) {
                 text = Messages.EnumAttribute_LiteralNameButNotUniqueIdentifier;
                 validationMessage = new Message(MSGCODE_ENUM_ATTRIBUTE_LITERAL_NAME_BUT_NOT_UNIQUE_IDENTIFIER, text,
-                        Message.ERROR, this, PROPERTY_LITERAL_NAME_ATTRIBUTE);
+                        Message.ERROR, this, PROPERTY_LITERAL_NAME);
                 list.add(validationMessage);
             }
         }
