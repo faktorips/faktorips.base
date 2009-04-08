@@ -48,22 +48,22 @@ public class EnumAttribute extends AtomicIpsObjectPart implements IEnumAttribute
     /** The icon representing an overridden enum attribute. */
     private final static String OVERRIDDEN_ICON = "EnumAttributeOverridden.gif";
 
-    /** The icon representing an enum attribute that is marked as unique identifier. */
+    /** The icon representing an enum attribute that is marked as unique literalName. */
     private final static String UNIQUE_IDENTIFIER_ICON = "EnumAttributeUniqueIdentifier.gif";
 
-    /** The icon representing an overridden unique identifier enum attribute. */
+    /** The icon representing an overridden unique literalName enum attribute. */
     private final static String OVERRIDDEN_UNIQUE_IDENTIFIER_ICON = "EnumAttributeOverriddenUniqueIdentifier.gif";
 
     /** The datatype of this enum attribute. */
     private String datatype;
 
-    /** Flag indicating whether this enum attribute is an identifier. */
-    private boolean identifier;
+    /** Flag indicating whether this enum attribute is used as literal name. */
+    private boolean literalName;
 
     /** Flag indicating whether this enum attribute is inherited from the supertype hierarchy. */
     private boolean inherited;
 
-    /** Flag indicating whether this enum attribute is a unique identifier. */
+    /** Flag indicating whether this enum attribute is a unique literalName. */
     private boolean uniqueIdentifier;
 
     /**
@@ -76,7 +76,7 @@ public class EnumAttribute extends AtomicIpsObjectPart implements IEnumAttribute
         super(parent, id);
 
         this.datatype = "";
-        this.identifier = false;
+        this.literalName = false;
         this.inherited = false;
         this.uniqueIdentifier = false;
     }
@@ -106,16 +106,16 @@ public class EnumAttribute extends AtomicIpsObjectPart implements IEnumAttribute
     /**
      * {@inheritDoc}
      */
-    public boolean isLiteralNameAttribute() {
-        return identifier;
+    public boolean isLiteralName() {
+        return literalName;
     }
 
     /**
      * {@inheritDoc}
      */
-    public void setLiteralNameAttribute(boolean isIdentifier) {
-        boolean oldIsIdentifier = this.identifier;
-        this.identifier = isIdentifier;
+    public void setLiteralName(boolean isIdentifier) {
+        boolean oldIsIdentifier = this.literalName;
+        this.literalName = isIdentifier;
         valueChanged(oldIsIdentifier, isIdentifier);
     }
 
@@ -134,7 +134,7 @@ public class EnumAttribute extends AtomicIpsObjectPart implements IEnumAttribute
     protected void initFromXml(Element element, Integer id) {
         name = element.getAttribute(PROPERTY_NAME);
         datatype = element.getAttribute(PROPERTY_DATATYPE);
-        identifier = Boolean.parseBoolean(element.getAttribute(PROPERTY_LITERAL_NAME));
+        literalName = Boolean.parseBoolean(element.getAttribute(PROPERTY_LITERAL_NAME));
         uniqueIdentifier = Boolean.parseBoolean(element.getAttribute(PROPERTY_UNIQUE_IDENTIFIER));
         inherited = Boolean.parseBoolean(element.getAttribute(PROPERTY_INHERITED));
 
@@ -150,7 +150,7 @@ public class EnumAttribute extends AtomicIpsObjectPart implements IEnumAttribute
 
         element.setAttribute(PROPERTY_NAME, name);
         element.setAttribute(PROPERTY_DATATYPE, datatype);
-        element.setAttribute(PROPERTY_LITERAL_NAME, String.valueOf(identifier));
+        element.setAttribute(PROPERTY_LITERAL_NAME, String.valueOf(literalName));
         element.setAttribute(PROPERTY_UNIQUE_IDENTIFIER, String.valueOf(uniqueIdentifier));
         element.setAttribute(PROPERTY_INHERITED, String.valueOf(inherited));
     }
@@ -237,8 +237,8 @@ public class EnumAttribute extends AtomicIpsObjectPart implements IEnumAttribute
             return;
         }
 
-        // Check for identifier datatype = String
-        if (identifier) {
+        // Check for literalName datatype = String
+        if (literalName) {
             if (!(ipsDatatype.getName().equals("String"))) {
                 text = Messages.EnumAttribute_LiteralNameNotOfDatatypeString;
                 validationMessage = new Message(MSGCODE_ENUM_ATTRIBUTE_LITERAL_NAME_NOT_OF_DATATYPE_STRING, text,
@@ -248,17 +248,17 @@ public class EnumAttribute extends AtomicIpsObjectPart implements IEnumAttribute
         }
     }
 
-    /** Validates the <code>identifier</code> property. */
+    /** Validates the <code>literalName</code> property. */
     private void validateIdentifier(MessageList list, IIpsProject ipsProject) {
         String text;
         Message validationMessage;
         List<IEnumAttribute> enumAttributesThisType = getEnumType().getEnumAttributes();
 
-        if (identifier) {
-            // Check for other attributes being marked as identifier
+        if (literalName) {
+            // Check for other attributes being marked as literalName
             int numberEnumAttributesIdentifier = 0;
             for (IEnumAttribute currentEnumAttribute : enumAttributesThisType) {
-                if (currentEnumAttribute.isLiteralNameAttribute()) {
+                if (currentEnumAttribute.isLiteralName()) {
                     numberEnumAttributesIdentifier++;
                 }
                 if (numberEnumAttributesIdentifier > 1) {
@@ -270,7 +270,7 @@ public class EnumAttribute extends AtomicIpsObjectPart implements IEnumAttribute
                 }
             }
 
-            // A literal name must also be a unique identifier
+            // A literal name must also be a unique literalName
             if (!uniqueIdentifier) {
                 text = Messages.EnumAttribute_LiteralNameButNotUniqueIdentifier;
                 validationMessage = new Message(MSGCODE_ENUM_ATTRIBUTE_LITERAL_NAME_BUT_NOT_UNIQUE_IDENTIFIER, text,
@@ -291,11 +291,11 @@ public class EnumAttribute extends AtomicIpsObjectPart implements IEnumAttribute
             List<IEnumType> superEnumTypes = getEnumType().findAllSuperEnumTypes();
             for (IEnumType currentSuperEnumType : superEnumTypes) {
 
-                // Name, datatype and identifier must correspond
+                // Name, datatype and literalName must correspond
                 IEnumAttribute possibleAttribute = currentSuperEnumType.getEnumAttribute(name);
                 if (possibleAttribute != null) {
                     if (possibleAttribute.getDatatype().equals(datatype)
-                            && possibleAttribute.isLiteralNameAttribute() == identifier) {
+                            && possibleAttribute.isLiteralName() == literalName) {
                         attributeFound = true;
                         break;
                     }
@@ -303,7 +303,7 @@ public class EnumAttribute extends AtomicIpsObjectPart implements IEnumAttribute
             }
 
             if (!(attributeFound)) {
-                String identifierLabel = (identifier) ? ", " + Messages.EnumAttribute_UniqueIdentifier : "";
+                String identifierLabel = (literalName) ? ", " + Messages.EnumAttribute_UniqueIdentifier : "";
                 String attribute = name + " (" + datatype + identifierLabel + ')';
                 text = NLS.bind(Messages.EnumAttribute_NoSuchAttributeInSupertypeHierarchy, attribute);
                 validationMessage = new Message(MSGCODE_ENUM_ATTRIBUTE_NO_SUCH_ATTRIBUTE_IN_SUPERTYPE_HIERARCHY, text,
