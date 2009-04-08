@@ -386,7 +386,6 @@ public class EnumTypeBuilder extends DefaultJavaSourceFileBuilder {
         appendLocalizedJavaDoc("ENUMVALUE", enumType, constantBuilder);
         JavaCodeFragment initExpression = new JavaCodeFragment();
         initExpression.append("new ");
-        // TODO pk muss das nicht upper case sein?
         initExpression.append(enumType.getName());
         initExpression.append('(');
         appendEnumValueParameters(enumAttributeValues, initExpression);
