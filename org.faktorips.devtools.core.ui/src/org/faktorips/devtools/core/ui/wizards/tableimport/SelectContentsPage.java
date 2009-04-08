@@ -37,6 +37,8 @@ import org.faktorips.devtools.core.ui.UIToolkit;
 import org.faktorips.devtools.core.ui.controller.fields.FieldValueChangedEvent;
 import org.faktorips.devtools.core.ui.controller.fields.TextButtonField;
 import org.faktorips.devtools.core.ui.controller.fields.ValueChangeListener;
+import org.faktorips.devtools.core.ui.controls.EnumRefControl;
+import org.faktorips.devtools.core.ui.controls.IpsObjectRefControl;
 import org.faktorips.devtools.core.ui.controls.IpsProjectRefControl;
 import org.faktorips.devtools.core.ui.controls.TableContentsRefControl;
 
@@ -54,7 +56,7 @@ public class SelectContentsPage extends WizardPage implements ValueChangeListene
 
     // edit controls
     private IpsProjectRefControl projectControl;
-	private TableContentsRefControl contentsControl;
+	private IpsObjectRefControl contentsControl;
     
     // edit fields
     private TextButtonField projectField;
@@ -65,7 +67,7 @@ public class SelectContentsPage extends WizardPage implements ValueChangeListene
     
     // page control as defined by the wizard page class
     private Composite pageControl;
-    
+
 	/**
 	 * @param pageName
      * @param selection
@@ -109,17 +111,32 @@ public class SelectContentsPage extends WizardPage implements ValueChangeListene
         
         Label line = new Label(pageControl, SWT.SEPARATOR | SWT.HORIZONTAL);
         line.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
+        if (getWizard() instanceof EnumImportWizard) {
+            createEnumImportControls(toolkit);
+        } else {
+            createTableImportControls(toolkit);
+        }
         
+        setDefaults(selectedResource);
+
+        validateInput = true;
+	}
+
+    private void createEnumImportControls(UIToolkit toolkit) {
+        Composite lowerComposite = toolkit.createLabelEditColumnComposite(pageControl); 
+        toolkit.createFormLabel(lowerComposite, Messages.SelectContentsPage_labelContents);
+        contentsControl = toolkit.createEnumRefControl(null, lowerComposite, true);
+        contentsField = new TextButtonField(contentsControl);
+        contentsField.addChangeListener(this);
+    }
+
+    private void createTableImportControls(UIToolkit toolkit) {
         Composite lowerComposite = toolkit.createLabelEditColumnComposite(pageControl); 
         toolkit.createFormLabel(lowerComposite, Messages.SelectContentsPage_labelContents);
         contentsControl = toolkit.createTableContentsRefControl(null, lowerComposite);
         contentsField = new TextButtonField(contentsControl);
         contentsField.addChangeListener(this);
-
-        setDefaults(selectedResource);
-
-        validateInput = true;
-	}
+    }
 
     /**
      * Derives the default values for source folder and package from
@@ -152,7 +169,13 @@ public class SelectContentsPage extends WizardPage implements ValueChangeListene
     }
     
     public ITableContents getTableContents() throws CoreException {
-        return contentsControl.findTableContents();
+        if (contentsControl instanceof TableContentsRefControl) {
+            return ((TableContentsRefControl)contentsControl).findTableContents();
+        } else if (contentsControl instanceof EnumRefControl) {
+            return null;
+//          return ((EnumRefControl) contentsControl).getEnum();
+        }
+        return null;
     }
     
     protected void contentsChanged() {

@@ -17,44 +17,75 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.util.Iterator;
+import java.util.List;
 
+import org.eclipse.core.resources.IWorkspaceRunnable;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.osgi.util.NLS;
 import org.faktorips.datatype.Datatype;
+import org.faktorips.datatype.ValueDatatype;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.IpsStatus;
+import org.faktorips.devtools.core.model.enums.IEnumAttribute;
+import org.faktorips.devtools.core.model.enums.IEnumAttributeValue;
+import org.faktorips.devtools.core.model.enums.IEnumContent;
+import org.faktorips.devtools.core.model.enums.IEnumValue;
+import org.faktorips.devtools.core.model.enums.IEnumValueContainer;
 import org.faktorips.devtools.core.model.tablecontents.IRow;
-import org.faktorips.devtools.core.model.tablecontents.ITableContentsGeneration;
-import org.faktorips.devtools.core.model.tablestructure.ITableStructure;
-import org.faktorips.devtools.tableconversion.AbstractTableImportOperation;
-import org.faktorips.devtools.tableconversion.ITableFormat;
 import org.faktorips.util.message.Message;
 import org.faktorips.util.message.MessageList;
 
 import au.com.bytecode.opencsv.CSVReader;
 
-/**
- * Operation to import ipstablecontents from a comma separated values (CSV) file.
- * 
- * @author Roman Grutza
- */
-public class CSVTableImportOperation extends AbstractTableImportOperation {
+public class CSVEnumImportOperation implements IWorkspaceRunnable {
 
-    public CSVTableImportOperation(ITableStructure structure, String sourceFile,
-            ITableContentsGeneration targetGeneration, ITableFormat format,
-            String nullRepresentationString, boolean ignoreColumnHeaderRow, MessageList list) {
-        
-        super(structure, sourceFile, targetGeneration, format,
-                nullRepresentationString, ignoreColumnHeaderRow, list);
-    }
+    private final IEnumValueContainer valueContainer;
+    private final String sourceFile;
+    private final CSVTableFormat format;
+    private final String nullRepresentationString;
+    private final boolean treatAsEnumAttributes;
+    private final boolean ignoreColumnHeaderRow;
+    private final MessageList messageList;
+    private Datatype[] datatypes;
+
     
-    public void run(IProgressMonitor monitor) throws CoreException {
-        try {
-            monitor.beginTask("Import file " + sourceFile, /* targetGeneration.getNumOfRows() + 3 */ 
-                    IProgressMonitor.UNKNOWN);
+    public CSVEnumImportOperation(IEnumValueContainer valueContainer, String filename, CSVTableFormat format,
+            String nullRepresentationString, boolean treatAsEnumAttributes, boolean ignoreColumnHeaderRow,
+            MessageList messageList) {
+        this.valueContainer = valueContainer;
+        this.sourceFile = filename;
+        this.format = format;
+        this.nullRepresentationString = nullRepresentationString;
+        this.treatAsEnumAttributes = treatAsEnumAttributes;
+        this.ignoreColumnHeaderRow = ignoreColumnHeaderRow;
+        this.messageList = messageList;
+        
+        initDatatypes(valueContainer);
+    }
 
-            MessageList ml = structure.validate(structure.getIpsProject()); 
+    private void initDatatypes(IEnumValueContainer valueContainer) {
+        try {
+            List<IEnumAttribute> enumAttributes = valueContainer.findEnumType().getEnumAttributes();
+            datatypes = new Datatype[enumAttributes.size()];
+            
+            for (int i = 0; i < datatypes.length; i++) {
+                IEnumAttribute enumAttribute = (IEnumAttribute)enumAttributes.get(i);
+                ValueDatatype datatype = enumAttribute.findDatatype(enumAttribute.getIpsProject());
+                datatypes[i]  = datatype;
+            }
+        } catch (CoreException e) {
+            IpsPlugin.logAndShowErrorDialog(e);
+            throw new RuntimeException(e);
+        }
+    }
+
+    public void run(IProgressMonitor monitor) throws CoreException {
+        try{
+            monitor.beginTask("Import file " + sourceFile, IProgressMonitor.UNKNOWN);
+
+            MessageList ml =  valueContainer.validate(valueContainer.getIpsProject()); 
             if (ml.containsErrorMsg()) {
                 messageList.add(ml);
                 return;
@@ -64,12 +95,12 @@ public class CSVTableImportOperation extends AbstractTableImportOperation {
             if (monitor.isCanceled()) {
                 return;
             }
-            
+
             File importFile = new File(sourceFile);
             FileInputStream fis = null;
             try {
                 fis = new FileInputStream(importFile);
-                fillGeneration(targetGeneration, fis);
+                fillEnum(valueContainer, fis);
             }
             finally {
                 if (fis != null) {
@@ -80,20 +111,19 @@ public class CSVTableImportOperation extends AbstractTableImportOperation {
             monitor.worked(1);
 
             if (!monitor.isCanceled()) {
-                targetGeneration.getIpsObject().getIpsSrcFile().save(true, monitor);
+                valueContainer.getIpsObject().getIpsSrcFile().save(true, monitor);
                 monitor.worked(1);
             } else {
-                targetGeneration.getIpsObject().getIpsSrcFile().discardChanges();
+                valueContainer.getIpsObject().getIpsSrcFile().discardChanges();
             }
             monitor.done();
-        }
-        catch (IOException e) {
+        } catch (IOException e) {
             throw new CoreException(new IpsStatus(NLS
                     .bind("Exception reading import file {0}", sourceFile), e));
         }
     }
 
-    private void fillGeneration(ITableContentsGeneration targetGeneration, FileInputStream fis) throws IOException {
+    private void fillEnum(IEnumValueContainer valueContainer, FileInputStream fis) throws IOException, CoreException {
         char fieldSeparator = getFieldSeparator();
         CSVReader reader = new CSVReader(new InputStreamReader(fis), fieldSeparator);
         
@@ -104,7 +134,9 @@ public class CSVTableImportOperation extends AbstractTableImportOperation {
                 reader.readNext();
             }
 
-            int expectedFields = structure.getNumOfColumns();
+            // TODO rg: refactor extract method getNumberOfFields() then extract superclass
+            int expectedFields = valueContainer.findEnumType().getEnumAttributesCount(false);
+            
             String[] record;
             int rowNumber = ignoreColumnHeaderRow ? 2 : 1;
             
@@ -113,16 +145,22 @@ public class CSVTableImportOperation extends AbstractTableImportOperation {
                     String msg = NLS.bind("Row {0} did not match the expected format.", rowNumber);
                     messageList.add(new Message("", msg, Message.ERROR));
                 }
+
+                IEnumValue genRow = valueContainer.newEnumValue();
                 
-                IRow genRow = targetGeneration.newRow();
-                for (short j = 0; j < structure.getNumOfColumns(); j++) {
+                
+//                IRow genRow = targetGeneration.newRow();
+                for (short j = 0; j < expectedFields; j++) {
                     String ipsValue;
+                    
+                    IEnumAttributeValue column = genRow.getEnumAttributeValues().get(j);
+                    
                     if (nullRepresentationString.equals(record[j])) {
                         ipsValue = nullRepresentationString;
                     } else {
                         MessageList ignoredMessageList = new MessageList();
                         
-                        // TODO rg: double conversion, going through externalValue is unnecessary! 
+                        // TODO rg: double conversion, going through externalValue is unnecessary!                         
                         Object externalValue = format.getExternalValue(record[j], datatypes[j], ignoredMessageList);
                         ipsValue = getIpsValue(externalValue, datatypes[j]);
                     }
@@ -134,10 +172,11 @@ public class CSVTableImportOperation extends AbstractTableImportOperation {
                         objects[2] = nullRepresentationString;
                         String msg = NLS.bind("In row {0}, column {1} no value is set - imported {2} instead.", objects);
                         messageList.add(new Message("", msg, Message.WARNING)); //$NON-NLS-1$
-                        genRow.setValue(j, nullRepresentationString);
+                        
+                        column.setValue(nullRepresentationString);
                     }
                     else {
-                        genRow.setValue(j, ipsValue);
+                        column.setValue(ipsValue);
                     }
                 }
                 ++rowNumber;
@@ -154,11 +193,10 @@ public class CSVTableImportOperation extends AbstractTableImportOperation {
         }
     }
 
-
     private String getIpsValue(Object rawValue, Datatype datatype) {
         return format.getIpsValue(rawValue, datatype, messageList);
     }
-
+    
     private char getFieldSeparator() {
         String fieldSeparator = format.getProperty(CSVTableFormat.PROPERTY_FIELD_DELIMITER);
         if (fieldSeparator == null || fieldSeparator.length() != 1) {
@@ -167,4 +205,5 @@ public class CSVTableImportOperation extends AbstractTableImportOperation {
         
         return fieldSeparator.charAt(0);
     }
+
 }

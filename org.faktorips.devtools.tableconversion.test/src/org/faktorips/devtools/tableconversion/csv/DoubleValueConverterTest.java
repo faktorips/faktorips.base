@@ -13,13 +13,11 @@
 
 package org.faktorips.devtools.tableconversion.csv;
 
-import org.faktorips.datatype.Datatype;
-import org.faktorips.devtools.tableconversion.AbstractValueConverter;
-import org.faktorips.devtools.tableconversion.IValueConverter;
-import org.faktorips.devtools.tableconversion.csv.DoubleValueConverter;
-import org.faktorips.util.message.MessageList;
-
 import junit.framework.TestCase;
+
+import org.faktorips.datatype.Datatype;
+import org.faktorips.devtools.tableconversion.IValueConverter;
+import org.faktorips.util.message.MessageList;
 
 /**
  * Tests for Conversion of an arbitrary CSV-double representation to IPS Double Datatype 

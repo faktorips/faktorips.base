@@ -12,6 +12,7 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.faktorips.datatype.Datatype;
 import org.faktorips.devtools.core.IpsPlugin;
+import org.faktorips.devtools.core.model.enums.IEnumValueContainer;
 import org.faktorips.devtools.core.model.tablecontents.ITableContents;
 import org.faktorips.devtools.core.model.tablecontents.ITableContentsGeneration;
 import org.faktorips.devtools.core.model.tablestructure.IColumn;
@@ -98,8 +99,13 @@ public class CSVTableFormat extends AbstractExternalTableFormat {
         }
     }
 
+    /**
+     * {@inheritDoc}
+     */
     public List getImportTablePreview(ITableStructure structure, IPath filename, int maxNumberOfRows) {
-        if (filename == null ||  ! isValidImportSource(filename.toOSString())) {
+        if (structure == null 
+                || filename == null 
+                || ! isValidImportSource(filename.toOSString())) {
             return Collections.EMPTY_LIST;
         }
 
@@ -137,6 +143,20 @@ public class CSVTableFormat extends AbstractExternalTableFormat {
         return result;
     }
 
+    /**
+     * {@inheritDoc}
+     */
+    public IWorkspaceRunnable getImportEnumOperation(IEnumValueContainer valueContainer,
+            IPath filename,
+            String nullRepresentationString,
+            boolean treatAsEnumAttributes,
+            boolean ignoreColumnHeaderRow,
+            MessageList list) {
+
+        return new CSVEnumImportOperation(valueContainer, filename.toOSString(), this,
+                nullRepresentationString, treatAsEnumAttributes, ignoreColumnHeaderRow, list);        
+    }
+    
     private boolean hasConstantNumberOfFieldsPerLine(CSVReader reader) throws IOException {
         String[] row = reader.readNext();
         int expectedNumberOfFields = row.length;

@@ -15,20 +15,25 @@ package org.faktorips.devtools.core.ui.editors.enumcontent;
 
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jface.action.IAction;
+import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.forms.widgets.ScrolledForm;
+import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.model.ContentChangeEvent;
 import org.faktorips.devtools.core.model.ContentsChangeListener;
 import org.faktorips.devtools.core.model.enums.IEnumContent;
 import org.faktorips.devtools.core.model.enums.IEnumType;
+import org.faktorips.devtools.core.model.enums.IEnumValueContainer;
 import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.core.ui.UIToolkit;
+import org.faktorips.devtools.core.ui.editors.enums.EnumImportExportAction;
 import org.faktorips.devtools.core.ui.editors.enums.EnumValuesSection;
 import org.faktorips.devtools.core.ui.editors.type.TypeEditorStructurePage;
 
 /**
  * The <code>EnumContentPage</code> shows general information about an <code>IEnumContent</code> and
- * provides controls to edit its values. It is intended to be used with the
+ * provides controls to edit, import and export its values. It is intended to be used with the
  * <code>EnumContentEditor</code>.
  * <p>
  * This page is a listener for changes in the ips model: If the enum type the edited enum content is
@@ -47,6 +52,10 @@ public class EnumContentPage extends TypeEditorStructurePage implements Contents
 
     /** The action to open a <code>FixEnumContentWizard</code>. */
     private IAction openFixEnumTypeDialogAction;
+
+    private EnumImportExportActionInEditor importAction;
+
+    private EnumValuesSection enumValuesSection;
 
     /**
      * Creates a new <code>EnumContentPage</code>.
@@ -93,7 +102,7 @@ public class EnumContentPage extends TypeEditorStructurePage implements Contents
         new EnumContentGeneralInfoSection(enumContent, parentContainer, toolkit);
 
         try {
-            new EnumValuesSection(enumContent, parentContainer, toolkit);
+            enumValuesSection = new EnumValuesSection(enumContent, parentContainer, toolkit);
         } catch (CoreException e) {
             throw new RuntimeException(e);
         }
@@ -102,13 +111,18 @@ public class EnumContentPage extends TypeEditorStructurePage implements Contents
     /** Creates the actions for the toolbar. */
     private void createToolbarActions() {
         openFixEnumTypeDialogAction = new OpenFixEnumContentWizardAction(enumContent, getSite().getShell());
+        importAction = new EnumImportExportActionInEditor(getSite().getShell(),
+                enumContent, true);
+        
+        
     }
 
     /** Creates the toolbar of this page. */
     private void createToolbar() {
         ScrolledForm form = getManagedForm().getForm();
         form.getToolBarManager().add(openFixEnumTypeDialogAction);
-
+        form.getToolBarManager().add(importAction);
+        
         form.updateToolBar();
         updateToolbarActionsEnabledStates();
     }
@@ -187,4 +201,31 @@ public class EnumContentPage extends TypeEditorStructurePage implements Contents
 
         EnumContentPage.this.updateToolbarActionsEnabledStates();
     }
+    
+    public class EnumImportExportActionInEditor extends EnumImportExportAction {
+
+        public EnumImportExportActionInEditor(Shell shell, IEnumValueContainer enumValueContainer, boolean isImport) {
+            super(shell, enumValueContainer);
+            if (isImport) {
+                initImportAction();
+            } else {
+                initExportAction();
+            }            
+        }
+
+        /**
+         * {@inheritDoc}
+         */
+        public void run(IStructuredSelection selection) {
+            if (super.runInternal(selection)) {
+                // TODO rg: implement
+                
+//                enumValuesSection.reinit(enumContent);
+//                tableViewer.setInput(enumContent);
+//                tableViewer.refresh(true);
+//                redrawTable();
+            }
+        }        
+    }
+    
 }

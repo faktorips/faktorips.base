@@ -18,6 +18,8 @@ import java.util.List;
 import org.eclipse.core.resources.IWorkspaceRunnable;
 import org.eclipse.core.runtime.IPath;
 import org.faktorips.datatype.Datatype;
+import org.faktorips.devtools.core.model.enums.IEnumType;
+import org.faktorips.devtools.core.model.enums.IEnumValueContainer;
 import org.faktorips.devtools.core.model.tablecontents.ITableContents;
 import org.faktorips.devtools.core.model.tablecontents.ITableContentsGeneration;
 import org.faktorips.devtools.core.model.tablestructure.ITableStructure;
@@ -28,7 +30,7 @@ public interface ITableFormat {
     /**
      * @return The human readable name of this external table format.
      */
-    public abstract String getName();
+    public String getName();
 
     /**
      * Set the (human readable) name of this external table format. This name
@@ -37,7 +39,7 @@ public interface ITableFormat {
      * @param name
      *            The name to use.
      */
-    public abstract void setName(String name);
+    public void setName(String name);
 
     /**
      * Set the default extension to use if a proposal for the name of the file
@@ -47,13 +49,13 @@ public interface ITableFormat {
      * @param extension
      *            The new default-extension.
      */
-    public abstract void setDefaultExtension(String extension);
+    public void setDefaultExtension(String extension);
 
     /**
      * @return Returns the default extension used for the proposal of a filename
      *         as export-target.
      */
-    public abstract String getDefaultExtension();
+    public String getDefaultExtension();
 
     /**
      * Add a converter to tranform external values to internal values (and vice
@@ -62,7 +64,7 @@ public interface ITableFormat {
      * @param converter
      *            The additional converter.
      */
-    public abstract void addValueConverter(IValueConverter converter);
+    public void addValueConverter(IValueConverter converter);
 
     /**
      * @param externalValue
@@ -78,7 +80,7 @@ public interface ITableFormat {
      * @return A string representing the given external value which can be
      *         parsed by the given datatype.
      */
-    public abstract String getIpsValue(Object externalValue, Datatype datatype, MessageList messageList);
+    public String getIpsValue(Object externalValue, Datatype datatype, MessageList messageList);
 
     /**
      * @param ipsValue
@@ -94,7 +96,7 @@ public interface ITableFormat {
      * @return Returns the external representation for the given string
      *         respecting the given datatype.
      */
-    public abstract Object getExternalValue(String ipsValue, Datatype datatype, MessageList messageList);
+    public Object getExternalValue(String ipsValue, Datatype datatype, MessageList messageList);
 
     /**
      * @param contents
@@ -117,7 +119,7 @@ public interface ITableFormat {
      *            
      * @return Returns the runnable to use to export a table.
      */
-    public abstract IWorkspaceRunnable getExportTableOperation(ITableContents contents,
+    public IWorkspaceRunnable getExportTableOperation(ITableContents contents,
             IPath filename,
             String nullRepresentationString,
             boolean exportColumnHeaderRow,
@@ -144,18 +146,80 @@ public interface ITableFormat {
      *            
      * @return The runnable to use to import a table.
      */
-    public abstract IWorkspaceRunnable getImportTableOperation(ITableStructure structure,
+    public IWorkspaceRunnable getImportTableOperation(ITableStructure structure,
             IPath filename,
             ITableContentsGeneration targetGeneration,
             String nullRepresentationString,
             boolean ignoreColumnHeaderRow,
             MessageList list);
 
+
+    /**
+     * @param structure
+     *            The structure for the imported table
+     * @param filename
+     *            The name of the file to import from. 
+     * @param targetGeneration
+     *            The generation to insert the data into.
+     * @param nullRepresentationString
+     *            The string to use to replace <code>null</code>. This value
+     *            can be used for systems with no own <code>null</code>-representation
+     *            (MS-Excel, for example).
+     * @param ignoreColumnHeaderRow
+     *            <code>true</code> if the first row contains column header and should be ignored
+     *            <code>false</code> if the to be imported content contains no column header row.
+     * @param list
+     *            A list for messages describing any problems occurred during the
+     *            import. If no messages of severity ERROR are contained in this
+     *            list, the import is considered successful.
+     *            
+     * @return The runnable to use to import a table.
+     */
+
+    /**
+     * Returns a runnable which is used to import enumerated types.
+     * <p/>
+     * The file to import can either contain attributes of an enum (therefore defining a structure) 
+     * or enum values. In case of enum values the decision where to store them is based on
+     * {@link IEnumType#getValuesArePartOfModel()}.
+     * 
+     * @param valueContainer
+     *            The destination of the import.
+     * @param filename
+     *            The name of the file to import from. 
+     * @param nullRepresentationString
+     *            The string to use to replace <code>null</code>. This value
+     *            can be used for systems with no own <code>null</code>-representation
+     *            (MS-Excel, for example).
+     * @param treatAsEnumAttributes
+     *            <code>true</code> if the data to be imported should be treated as a structure for the enums (attributes).
+     *            <code>true</code> if the data to be imported denotes enum values.
+     * @param ignoreColumnHeaderRow
+     *            <code>true</code> if the first row contains column header and should be ignored
+     *            <code>false</code> if the to be imported content contains no column header row.
+     * @param list
+     *            A list for messages describing any problems occurred during the
+     *            import. If no messages of severity ERROR are contained in this
+     *            list, the import is considered successful.
+     *            
+     * @return The runnable to use to import an enum.
+     * @see {@link IEnumValueContainer}
+     * @see {@link IEnumType}
+     * @see {@link IEnumContent}
+     * @since 2.3
+     */
+    public IWorkspaceRunnable getImportEnumOperation(IEnumValueContainer valueContainer,
+            IPath filename,
+            String nullRepresentationString,
+            boolean treatAsEnumAttributes,
+            boolean ignoreColumnHeaderRow,
+            MessageList list);
+    
     /**
      * @param source The identification of the resource to check (for example, a qualified filename).
      * @return <code>true</code> if the given resource is a valid source for import, <code>false</code> otherwise.
      */
-    public abstract boolean isValidImportSource(String source);
+    public boolean isValidImportSource(String source);
 
     /**
      * Retrieve a table format specific property using the given property name.
@@ -183,6 +247,6 @@ public interface ITableFormat {
      * @return A <code>List</code> containing a <code>String[]</code> for each row, 
      *   or Collections.EMPTY_LIST if the preview could not be computed or the file contains no entries.
      */
-    public abstract List getImportTablePreview(ITableStructure structure, IPath filename, int maxNumberOfRows);
+    public List getImportTablePreview(ITableStructure structure, IPath filename, int maxNumberOfRows);
 
 }

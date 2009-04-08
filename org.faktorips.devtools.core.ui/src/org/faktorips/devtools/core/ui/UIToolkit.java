@@ -39,6 +39,7 @@ import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.valueset.IEnumValueSet;
 import org.faktorips.devtools.core.ui.controls.Checkbox;
 import org.faktorips.devtools.core.ui.controls.DatatypeRefControl;
+import org.faktorips.devtools.core.ui.controls.EnumRefControl;
 import org.faktorips.devtools.core.ui.controls.EnumTypeRefControl;
 import org.faktorips.devtools.core.ui.controls.IpsPckFragmentRefControl;
 import org.faktorips.devtools.core.ui.controls.IpsPckFragmentRootRefControl;
@@ -475,6 +476,23 @@ public class UIToolkit {
         return new EnumTypeRefControl(ipsProject, parent, this, chooseSuperEnumType);
     }
 
+    /**
+     * Creates and returns a new <code>EnumRefControl</code> which allows to 
+     * select either an <code>IEnumType</code> or an <code>IEnumContent</code>.
+     * 
+     * @param ipsProject The ips project to search for enum types and contents.
+     * @param parent The parent ui composite.
+     * @param chooseSuperEnumType Flag indicating whether the created control shall be used to
+     *            choose a super enum type.
+     * 
+     * @return A handle to the newly created EnumRefControl.
+     */
+    public EnumRefControl createEnumRefControl(IIpsProject ipsProject,
+            Composite parent,
+            boolean chooseSuperEnumType) {
+        return new EnumRefControl(ipsProject, parent, this, chooseSuperEnumType);
+    }
+    
     /**
      * Creates a new PcTypeRefControl.
      */

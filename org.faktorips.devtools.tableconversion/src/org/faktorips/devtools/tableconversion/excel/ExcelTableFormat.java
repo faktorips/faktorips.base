@@ -23,6 +23,7 @@ import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.eclipse.core.resources.IWorkspaceRunnable;
 import org.eclipse.core.runtime.IPath;
 import org.faktorips.devtools.core.IpsPlugin;
+import org.faktorips.devtools.core.model.enums.IEnumValueContainer;
 import org.faktorips.devtools.core.model.tablecontents.ITableContents;
 import org.faktorips.devtools.core.model.tablecontents.ITableContentsGeneration;
 import org.faktorips.devtools.core.model.tablestructure.ITableStructure;
@@ -89,7 +90,18 @@ public class ExcelTableFormat extends AbstractExternalTableFormat {
 	}
 
     public List getImportTablePreview(ITableStructure structure, IPath filename, int maxNumberOfRows) {
-        // TODO Roman: implement
+        // TODO rg: implement
         return Collections.EMPTY_LIST;
+    }
+
+    public IWorkspaceRunnable getImportEnumOperation(IEnumValueContainer valueContainer,
+            IPath filename,
+            String nullRepresentationString,
+            boolean treatAsEnumAttributes,
+            boolean ignoreColumnHeaderRow,
+            MessageList list) {
+
+        // TODO Auto-generated method stub
+        return null;
     }
 }

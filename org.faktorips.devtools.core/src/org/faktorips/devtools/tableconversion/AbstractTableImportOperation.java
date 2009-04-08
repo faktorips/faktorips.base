@@ -27,7 +27,7 @@ import org.faktorips.util.message.MessageList;
  * Abstract Operation to import ipstablecontents in an arbitrary format.
  * <p>
  * Implementors of a new table format should subclass this class and use
- * the <code>org.faktorips.devtools.core.externalTableFormat</code> extension point
+ * the <code>externalTableFormat</code> extension point
  * to register the new table format.
  * 
  * @author Roman Grutza

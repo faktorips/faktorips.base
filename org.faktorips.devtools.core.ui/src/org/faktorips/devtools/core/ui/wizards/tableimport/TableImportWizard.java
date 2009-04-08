@@ -3,7 +3,7 @@
  * 
  * Alle Rechte vorbehalten.
  * 
- * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen, 
+ * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen,
  * etc.) duerfen nur unter den Bedingungen der Faktor-Zehn-Community Lizenzvereinbarung - Version
  * 0.1 (vor Gruendung Community) genutzt werden, die Bestandteil der Auslieferung ist und auch unter
  * http://www.faktorzehn.org/f10-org:lizenzen:community eingesehen werden kann.
@@ -22,11 +22,7 @@ import org.eclipse.core.runtime.Path;
 import org.eclipse.jface.dialogs.IDialogSettings;
 import org.eclipse.jface.dialogs.ProgressMonitorDialog;
 import org.eclipse.jface.operation.ModalContext;
-import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.wizard.IWizardPage;
-import org.eclipse.jface.wizard.Wizard;
-import org.eclipse.ui.IImportWizard;
-import org.eclipse.ui.IWorkbench;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.IpsStatus;
 import org.faktorips.devtools.core.model.IIpsModel;
@@ -44,36 +40,20 @@ import org.faktorips.util.message.MessageList;
  * 
  * @author Thorsten Waertel, Thorsten Guenther
  */
-public class TableImportWizard extends Wizard implements IImportWizard {
-    public static String ID = "org.faktorips.devtools.core.ui.wizards.tableimport.TableImportWizard"; //$NON-NLS-1$
-    private static String DIALOG_SETTINGS_KEY = "TableImportWizard"; //$NON-NLS-1$
+public class TableImportWizard extends AbstractTableImportWizard {
 
-    private IStructuredSelection selection;
+    protected static String ID = "org.faktorips.devtools.core.ui.wizards.tableimport.TableImportWizard"; //$NON-NLS-1$
+    protected final static String DIALOG_SETTINGS_KEY = "TableImportWizard"; //$NON-NLS-1$
+
     private SelectFileAndImportMethodPage filePage;
     private NewContentsPage newContentsPage;
     private SelectContentsPage selectContentsPage;
-
     private TablePreviewPage tablePreviewPage;
 
-    private boolean hasNewDialogSettings;
-    private boolean importIntoExisting;
-    
-    /**
-     * Create a new import-wizard.
-     */
     public TableImportWizard() {
-        super();
         setWindowTitle(Messages.TableImport_title);
-        this.setDefaultPageImageDescriptor(IpsUIPlugin.getDefault().getImageDescriptor("wizards/TableImportWizard.png")); //$NON-NLS-1$
-
-        IDialogSettings workbenchSettings= IpsUIPlugin.getDefault().getDialogSettings();
-        IDialogSettings section= workbenchSettings.getSection(DIALOG_SETTINGS_KEY); //$NON-NLS-1$
-        if (section == null)
-            hasNewDialogSettings = true;
-        else {
-            hasNewDialogSettings = false;
-            setDialogSettings(section);
-        }
+        this.setDefaultPageImageDescriptor(IpsUIPlugin.getDefault().getImageDescriptor(
+                        "wizards/TableImportWizard.png")); //$NON-NLS-1$
     }
 
     /**
@@ -90,7 +70,7 @@ public class TableImportWizard extends Wizard implements IImportWizard {
             addPage(selectContentsPage);
             tablePreviewPage = new TablePreviewPage(selection);
             addPage(tablePreviewPage);
-            
+
             filePage.setImportIntoExisting(importIntoExisting);
         } catch (Exception e) {
             IpsPlugin.logAndShowErrorDialog(e);
@@ -106,7 +86,8 @@ public class TableImportWizard extends Wizard implements IImportWizard {
             final ITableFormat format = filePage.getFormat();
             final ITableStructure structure = getTableStructure();
             ITableContents contents = getTableContents();
-            final ITableContentsGeneration generation = (ITableContentsGeneration)contents.getGenerationsOrderedByValidDate()[0];
+            final ITableContentsGeneration generation = (ITableContentsGeneration)contents
+                    .getGenerationsOrderedByValidDate()[0];
             final String nullRepresentation = filePage.getNullRepresentation();
 
             // no append, so remove any existing content
@@ -116,11 +97,11 @@ public class TableImportWizard extends Wizard implements IImportWizard {
 
             final MessageList messageList = new MessageList();
             final boolean ignoreColumnHeader = filePage.isImportIgnoreColumnHeaderRow();
-            
+
             IWorkspaceRunnable runnable = new IWorkspaceRunnable() {
                 public void run(IProgressMonitor monitor) throws CoreException {
                     IWorkspaceRunnable runnableOperation = format.getImportTableOperation(structure,
-                            new Path(filename), generation, nullRepresentation, ignoreColumnHeader , messageList);
+                            new Path(filename), generation, nullRepresentation, ignoreColumnHeader, messageList);
                     IIpsModel model = IpsPlugin.getDefault().getIpsModel();
                     model.runAndQueueChangeEvents(runnableOperation, monitor);
                 }
@@ -203,21 +184,6 @@ public class TableImportWizard extends Wizard implements IImportWizard {
     /**
      * {@inheritDoc}
      */
-    public void init(IWorkbench workbench, IStructuredSelection selection) {
-        this.selection = selection;
-    }
-
-    /**
-     * Sets if the table content will be imported into the existing table content (<code>true</code>),
-     * or not (<code>false</code>)
-     */
-    public void setImportIntoExisting(boolean importIntoExisting){
-        this.importIntoExisting = importIntoExisting;
-    }
-    
-    /**
-     * {@inheritDoc}
-     */
     public IWizardPage getNextPage(IWizardPage page) {
         if (page == filePage) {
             // set the completed state on the opposite page to true so that the wizard can finish
@@ -234,12 +200,12 @@ public class TableImportWizard extends Wizard implements IImportWizard {
             return newContentsPage;
         }
         if (page == selectContentsPage || page == newContentsPage) {
-            
+
             tablePreviewPage.setFilename(filePage.getFilename());
             tablePreviewPage.setTableFormat(filePage.getFormat());
             tablePreviewPage.setTableStructure(getTableStructure());
             tablePreviewPage.validatePage();
-            
+
             return tablePreviewPage;
         }
         return null;
