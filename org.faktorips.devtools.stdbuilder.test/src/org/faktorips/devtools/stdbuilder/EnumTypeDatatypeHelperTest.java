@@ -56,7 +56,7 @@ public class EnumTypeDatatypeHelperTest extends AbstractIpsPluginTest {
         
         fragment = enumHelper.newInstanceFromExpression("getValue()");
         System.out.println(fragment.getSourcecode());
-        assertTrue(fragment.getSourcecode().indexOf("PaymentMode.getValueOf(getValue())") >= 0);
+        assertTrue(fragment.getSourcecode().indexOf("PaymentMode.getValueById(getValue())") >= 0);
         
         fragment = enumHelper.nullExpression();
         assertEquals("null", fragment.getSourcecode());

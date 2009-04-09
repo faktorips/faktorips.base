@@ -350,7 +350,7 @@ public class EnumAttribute extends AtomicIpsObjectPart implements IEnumAttribute
         ArgumentCheck.notNull(ipsProject);
 
         if (inherited) {
-            return getEnumType().findEnumAttribute(name).findDatatype(ipsProject);
+            return getEnumType().findSuperEnumType().getEnumAttribute(name).findDatatype(ipsProject);
         }
 
         return ipsProject.findValueDatatype(datatype);

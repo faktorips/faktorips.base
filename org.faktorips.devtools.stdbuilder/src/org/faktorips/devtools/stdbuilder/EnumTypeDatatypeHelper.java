@@ -36,8 +36,10 @@ public class EnumTypeDatatypeHelper extends AbstractDatatypeHelper {
 
     public EnumTypeDatatypeHelper(EnumTypeBuilder enumTypeBuilder, IEnumType enumType) {
         super(enumType);
+
         ArgumentCheck.notNull(enumTypeBuilder, this);
         ArgumentCheck.notNull(enumType, this);
+
         this.enumTypeBuilder = enumTypeBuilder;
         this.enumType = enumType;
     }
@@ -47,13 +49,16 @@ public class EnumTypeDatatypeHelper extends AbstractDatatypeHelper {
      */
     public JavaCodeFragment newInstance(String value) {
         try {
-            if (!enumType.getValuesArePartOfModel()) {
+
+            if (!(enumType.getValuesArePartOfModel())) {
                 throw new IllegalStateException(
                         "This method cannot be called if the values of the enum type of this helper are not "
                                 + "part of the composite but instead are contained in an enum content object.");
             }
+
             IEnumValue enumValue = enumType.getEnumValue(value);
             return enumTypeBuilder.getNewInstanceCodeFragement(enumType, enumValue);
+
         } catch (CoreException e) {
             throw new RuntimeException(e);
         }
@@ -69,6 +74,7 @@ public class EnumTypeDatatypeHelper extends AbstractDatatypeHelper {
     /**
      * {@inheritDoc}
      */
+    @Override
     public String getJavaClassName() {
         try {
             return enumTypeBuilder.getQualifiedClassName(enumType.getIpsSrcFile());
@@ -81,9 +87,10 @@ public class EnumTypeDatatypeHelper extends AbstractDatatypeHelper {
     /**
      * {@inheritDoc}
      */
+    @Override
     protected JavaCodeFragment valueOfExpression(String expression) {
         try {
-            return enumTypeBuilder.getValueOfCodeFragment(enumType, expression);
+            return enumTypeBuilder.getValueByXXXCodeFragment(enumType.findLiteralNameAttribute(), expression);
         } catch (CoreException e) {
             throw new RuntimeException(e);
         }

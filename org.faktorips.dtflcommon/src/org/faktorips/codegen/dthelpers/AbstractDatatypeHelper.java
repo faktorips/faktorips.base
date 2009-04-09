@@ -3,7 +3,7 @@
  * 
  * Alle Rechte vorbehalten.
  * 
- * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen, 
+ * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen,
  * etc.) duerfen nur unter den Bedingungen der Faktor-Zehn-Community Lizenzvereinbarung - Version
  * 0.1 (vor Gruendung Community) genutzt werden, die Bestandteil der Auslieferung ist und auch unter
  * http://www.faktorzehn.org/f10-org:lizenzen:community eingesehen werden kann.
@@ -58,12 +58,15 @@ public abstract class AbstractDatatypeHelper implements DatatypeHelper {
     }
 
     /**
-     * This method is supposed to be overridden by subclasses. It is used within the
-     * newInstanceFromExpression(String) method. It returns a JavaCodeFragment with sourcecode that
-     * creates an instance of the datatype's Java class with the given expression. If the expression
-     * is null the fragment's sourcecode is either the String "null" or the sourcecode to get an
-     * instance of the appropriate null object. Preconditions: Expression may not be null or empty.
-     * When evaluated the expression must return a string
+     * This method is supposed to be overridden by subclasses.
+     * <p>
+     * It is used within the <code>newInstanceFromExpression(String)</code> method. It returns a
+     * <code>JavaCodeFragment</code> with sourcecode that creates an instance of the datatype's Java
+     * class with the given expression.
+     * <p>
+     * If the expression is <code>null</code> the fragment's sourcecode is either the String "null"
+     * or the sourcecode to get an instance of the appropriate null object. Preconditions:
+     * Expression may not be null or empty. When evaluated the expression must return a String.
      */
     protected JavaCodeFragment valueOfExpression(String expression) {
         return nullExpression();
@@ -78,7 +81,7 @@ public abstract class AbstractDatatypeHelper implements DatatypeHelper {
         }
         // ((expression==null) || (expression.equals(""))) ? nullExpression() :
         // valueOfExpression(expression)
-        if(expression.startsWith("(")){
+        if (expression.startsWith("(")) {
             expression = '(' + expression + ')';
         }
         JavaCodeFragment fragment = new JavaCodeFragment();
@@ -217,20 +220,21 @@ public abstract class AbstractDatatypeHelper implements DatatypeHelper {
     /**
      * {@inheritDoc}
      */
-	public JavaCodeFragment referenceOrSafeCopyIfNeccessary(String expression) {
-		if (datatype.isValueDatatype() && ((ValueDatatype)datatype).isMutable()) {
-			return newSafeCopy(expression);
-		}
-		return new JavaCodeFragment(expression);
-	}
-	
-	/**
-	 * Helpers for immutable datatypes must override this method to create a copy of the value given in the expression.
-	 */
-	protected JavaCodeFragment newSafeCopy(String expression) {
-		throw new RuntimeException("The DatatypeHelper for datatype " + datatype + " does not override the method newSafeCopy!");
-		
-	}
-    
-    
+    public JavaCodeFragment referenceOrSafeCopyIfNeccessary(String expression) {
+        if (datatype.isValueDatatype() && ((ValueDatatype)datatype).isMutable()) {
+            return newSafeCopy(expression);
+        }
+        return new JavaCodeFragment(expression);
+    }
+
+    /**
+     * Helpers for immutable datatypes must override this method to create a copy of the value given
+     * in the expression.
+     */
+    protected JavaCodeFragment newSafeCopy(String expression) {
+        throw new RuntimeException("The DatatypeHelper for datatype " + datatype
+                + " does not override the method newSafeCopy!");
+
+    }
+
 }

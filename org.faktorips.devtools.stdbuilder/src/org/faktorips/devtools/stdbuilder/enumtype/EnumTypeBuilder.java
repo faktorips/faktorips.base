@@ -33,6 +33,7 @@ import org.faktorips.devtools.core.model.enums.IEnumValue;
 import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
 import org.faktorips.devtools.core.model.ipsproject.IIpsArtefactBuilderSet;
+import org.faktorips.util.ArgumentCheck;
 import org.faktorips.util.LocalizedStringsSet;
 
 /**
@@ -81,7 +82,7 @@ public class EnumTypeBuilder extends DefaultJavaSourceFileBuilder {
     }
 
     /** Returns whether to generate an enum. */
-    private boolean generateEnum() {
+    private boolean useEnumGeneration() {
         IEnumType enumType = getEnumType();
 
         if (enumType.isAbstract()) {
@@ -96,7 +97,7 @@ public class EnumTypeBuilder extends DefaultJavaSourceFileBuilder {
     }
 
     /** Returns whether to generate a class. */
-    private boolean generateClass() {
+    private boolean useClassGeneration() {
         IEnumType enumType = getEnumType();
 
         if (enumType.isAbstract() && java5EnumsAvailable()) {
@@ -111,8 +112,8 @@ public class EnumTypeBuilder extends DefaultJavaSourceFileBuilder {
     }
 
     /** Returns whether to generate an interface. */
-    private boolean generateInterface() {
-        if (!(generateEnum()) && !(generateClass())) {
+    private boolean useInterfaceGeneration() {
+        if (!(useEnumGeneration()) && !(useClassGeneration())) {
             return true;
         }
 
@@ -128,9 +129,9 @@ public class EnumTypeBuilder extends DefaultJavaSourceFileBuilder {
 
         // Set general properties
         TypeSection mainSection = getMainTypeSection();
-        mainSection.setClass(generateClass());
-        mainSection.setEnum(generateEnum());
-        int classModifier = (generateClass() && enumType.isAbstract() ? Modifier.PUBLIC | Modifier.ABSTRACT
+        mainSection.setClass(useClassGeneration());
+        mainSection.setEnum(useEnumGeneration());
+        int classModifier = (useClassGeneration() && enumType.isAbstract() ? Modifier.PUBLIC | Modifier.ABSTRACT
                 : Modifier.PUBLIC);
         mainSection.setClassModifier(classModifier);
         mainSection.setUnqualifiedName(getJavaNamingConvention().getTypeName(enumType.getName()));
@@ -140,7 +141,7 @@ public class EnumTypeBuilder extends DefaultJavaSourceFileBuilder {
         if (enumType.hasSuperEnumType()) {
             IEnumType superEnumType = enumType.findSuperEnumType();
             if (superEnumType != null) {
-                if (generateEnum() || generateInterface() || (generateClass() && java5EnumsAvailable())) {
+                if (useEnumGeneration() || useInterfaceGeneration() || (useClassGeneration() && java5EnumsAvailable())) {
                     mainSection.setExtendedInterfaces(new String[] { getQualifiedClassName(superEnumType) });
                 } else {
                     mainSection.setSuperClass(getQualifiedClassName(superEnumType));
@@ -148,17 +149,16 @@ public class EnumTypeBuilder extends DefaultJavaSourceFileBuilder {
             }
         }
 
-        generateCodeForEnumValues(mainSection, generateEnum());
+        generateCodeForEnumValues(mainSection, useEnumGeneration());
 
         // Generate the attributes and the constructor
-        if (generateEnum() || generateClass()) {
+        if (useEnumGeneration() || useClassGeneration()) {
             generateCodeForEnumAttributes(mainSection.getMemberVarBuilder());
             generateCodeForConstructor(mainSection.getConstructorBuilder());
         }
 
         // Generate the methods
         generateCodeForMethods(mainSection.getMethodBuilder());
-        generateGetValueOfMethod(mainSection.getMethodBuilder());
     }
 
     /** Generates the java code for the enum values. */
@@ -175,16 +175,16 @@ public class EnumTypeBuilder extends DefaultJavaSourceFileBuilder {
          * Generate the enum values if they are part of the model and if the enum type is not
          * abstract.
          */
-        if (enumType.getValuesArePartOfModel() && !(enumType.isAbstract())) {
+        IEnumAttribute literalNameAttribute = enumType.findLiteralNameAttribute();
+        if (enumType.getValuesArePartOfModel() && !(enumType.isAbstract()) && literalNameAttribute != null) {
             // Go over all model side defined enum values
             List<IEnumValue> enumValues = enumType.getEnumValues();
             for (int i = 0; i < enumValues.size(); i++) {
-
                 IEnumValue currentEnumValue = enumValues.get(i);
                 // Generate only for valid enum values
                 if (currentEnumValue.isValid()) {
                     IEnumAttributeValue currentLiteralNameEnumAttributeValue = currentEnumValue
-                            .findEnumAttributeValue(enumType.findLiteralNameAttribute());
+                            .findEnumAttributeValue(literalNameAttribute);
                     List<IEnumAttributeValue> currentEnumAttributeValues = currentEnumValue.getEnumAttributeValues();
                     if (javaAtLeast5) {
                         lastEnumValueGenerated = (i == enumValues.size() - 1);
@@ -212,12 +212,16 @@ public class EnumTypeBuilder extends DefaultJavaSourceFileBuilder {
      * 
      * <pre>
      *  [javadoc]
-     *      Gender.MALE
+     *  Gender.MALE
      * </pre>
      * 
      * @throws CoreException If an exception occurs while processing.
+     * @throws NullPointerException If <code>enumType</code> or <code>enumValue</code> is
+     *             <code>null</code>.
      */
     public JavaCodeFragment getNewInstanceCodeFragement(IEnumType enumType, IEnumValue enumValue) throws CoreException {
+        ArgumentCheck.notNull(new Object[] { enumType, enumValue });
+
         IEnumAttributeValue attrValue = enumValue.findEnumAttributeValue(enumType.findLiteralNameAttribute());
         JavaCodeFragment fragment = new JavaCodeFragment();
         fragment.appendClassName(getQualifiedClassName(enumType));
@@ -228,20 +232,29 @@ public class EnumTypeBuilder extends DefaultJavaSourceFileBuilder {
     }
 
     /**
-     * Returns the code fragment for a getValueOf method call expression. Code snippet:
+     * Returns the code fragment for a <code>getValueByXXX()</code> method call expression.<br />
+     * Code snippet:
      * 
      * <pre>
      *  [javadoc]
-     *      Gender.getValueFor(&quot;male&quot;)
+     *  Gender.getValueById(&quot;male&quot;)
      * </pre>
      * 
+     * @param enumAttribute The enum attribute by that the enum value is searched.
+     * @param expressionValue The value of the enum attribute to search the enum value for.
+     * 
      * @throws CoreException If an exception occurs while processing.
+     * @throws NullPointerException If <code>enumAttribute</code> is <code>null</code>.
      */
-    public JavaCodeFragment getValueOfCodeFragment(IEnumType enumType, String expressionValue) throws CoreException {
+    public JavaCodeFragment getValueByXXXCodeFragment(IEnumAttribute enumAttribute, String expressionValue)
+            throws CoreException {
+
+        ArgumentCheck.notNull(enumAttribute);
+
         JavaCodeFragment fragment = new JavaCodeFragment();
-        fragment.appendClassName(getQualifiedClassName(enumType));
+        fragment.appendClassName(getQualifiedClassName(enumAttribute.getEnumType()));
         fragment.append('.');
-        fragment.append(getMethodNameGetValueOf());
+        fragment.append(getMethodNameGetValueByXXX(enumAttribute));
         fragment.append("(");
         fragment.append(expressionValue);
         fragment.append(")");
@@ -249,84 +262,35 @@ public class EnumTypeBuilder extends DefaultJavaSourceFileBuilder {
         return fragment;
     }
 
-    public String getMethodNameGetValueOf() {
-        return "getValueOf";
-    }
-
     /**
-     * Code snippet:
+     * Returns the method name for the <code>getValueByXXX()</code> method where <code>xxx</code> is
+     * a placeholder for the name of a unique identifier enum attribute.
      * 
-     * <pre>
-     *  [javadoc]
-     *  public final static Gender getValueOf(String id) {
-     *      if (id.equals(&quot;male&quot;)) {
-     *          return MALE;
-     *      }
-     *      if (id.equals(&quot;female&quot;)) {
-     *          return FEMALE;
-     *      }
-     *      return null;
-     *  }
-     * </pre>
+     * @param uniqueIdentifierEnumAttribute The unique identifier enum attribute.
      * 
-     * @param methodBuilder
-     * @throws CoreException
+     * @throws NullPointerException If <code>uniqueIdentifierAttributeName</code> is
+     *             <code>null</code>.
      */
-    private void generateGetValueOfMethod(JavaCodeFragmentBuilder methodBuilder) throws CoreException {
-        IEnumAttribute literalNameAttribute = getEnumType().getLiteralNameAttribute();
-        if (literalNameAttribute == null) {
-            return;
-        }
+    // TODO aw: why needs this to be public?
+    public String getMethodNameGetValueByXXX(IEnumAttribute uniqueIdentifierEnumAttribute) {
+        ArgumentCheck.notNull(uniqueIdentifierEnumAttribute);
 
-        Datatype datatype = literalNameAttribute.findDatatype(getIpsProject());
-        DatatypeHelper helper = getIpsProject().getDatatypeHelper(datatype);
-
-        JavaCodeFragment body = new JavaCodeFragment();
-        String parameterName = "value";
-        body.append("if(");
-        body.append(parameterName);
-        body.append(" == null)");
-        body.appendOpenBracket();
-        body.appendln("return null;");
-        body.appendCloseBracket();
-
-        for (IEnumValue enumValue : getEnumType().getEnumValues()) {
-            if (!enumValue.isValid()) {
-                continue;
-            }
-            IEnumAttributeValue attributeValue = enumValue.findEnumAttributeValue(getEnumType()
-                    .findLiteralNameAttribute());
-            body.append("if (");
-            body.append(parameterName);
-            body.append(".equals(\"");
-            body.append(attributeValue.getValue());
-            body.append("\"))");
-            body.appendOpenBracket();
-            body.append("return ");
-            body.append(getConstantNameForEnumAttributeValue(attributeValue));
-            body.append(";");
-            body.appendln();
-            body.appendCloseBracket();
-        }
-        body.append("return null;");
-
-        appendLocalizedJavaDoc("VALUEOF_METHOD", parameterName, getEnumType(), methodBuilder);
-        methodBuilder.methodBegin(Modifier.PUBLIC | Modifier.STATIC | Modifier.FINAL,
-                getQualifiedClassName(getEnumType()), getMethodNameGetValueOf(), new String[] { parameterName },
-                new String[] { helper.getJavaClassName() });
-        methodBuilder.append(body);
-        methodBuilder.methodEnd();
+        String attributeName = uniqueIdentifierEnumAttribute.getName();
+        char[] charArray = attributeName.toCharArray();
+        charArray[0] = Character.toUpperCase(attributeName.charAt(0));
+        return "getValueBy" + String.copyValueOf(charArray);
     }
 
     /**
      * This method expects the literal name attribute value of an enum value as parameter to provide
      * the accurate constant name for it.
      */
-    private String getConstantNameForEnumAttributeValue(IEnumAttributeValue attributeValue) {
-        if (attributeValue.getValue() == null) {
+    private String getConstantNameForEnumAttributeValue(IEnumAttributeValue literalNameAttributeValue) {
+        if (literalNameAttributeValue.getValue() == null) {
             return "";
         }
-        return attributeValue.getValue().toUpperCase();
+
+        return literalNameAttributeValue.getValue().toUpperCase();
     }
 
     /**
@@ -427,8 +391,8 @@ public class EnumTypeBuilder extends DefaultJavaSourceFileBuilder {
                  * generate source code for this attribute because it is also inherited in the
                  * source code. An exception to this is if the values are not defined in the model.
                  */
-                if (!(generateClass() && currentEnumAttribute.isInherited())
-                        || (generateClass() && !(getEnumType().getValuesArePartOfModel()))) {
+                if (!(useClassGeneration() && currentEnumAttribute.isInherited())
+                        || (useClassGeneration() && !(getEnumType().getValuesArePartOfModel()))) {
                     appendLocalizedJavaDoc("ATTRIBUTE", attributeName, currentEnumAttribute, attributeBuilder);
                     attributeBuilder.varDeclaration(Modifier.PRIVATE | Modifier.FINAL, currentEnumAttribute
                             .getDatatype(), codeName);
@@ -462,14 +426,15 @@ public class EnumTypeBuilder extends DefaultJavaSourceFileBuilder {
 
         // Build method body
         JavaCodeFragment methodBody = new JavaCodeFragment();
-        if (generateClass() && enumType.hasSuperEnumType()
+        if (useClassGeneration() && enumType.hasSuperEnumType()
                 && !(java5EnumsAvailable() && !(enumType.getValuesArePartOfModel()))) {
             createSuperConstructorCall(methodBody);
         }
         createAttributeInitialization(methodBody);
 
         appendLocalizedJavaDoc("CONSTRUCTOR", enumType.getName(), enumType, constructorBuilder);
-        int constructorVisibility = (generateClass() && enumType.isAbstract()) ? Modifier.PROTECTED : Modifier.PRIVATE;
+        int constructorVisibility = (useClassGeneration() && enumType.isAbstract()) ? Modifier.PROTECTED
+                : Modifier.PRIVATE;
         constructorBuilder.methodBegin(constructorVisibility, null, getJavaNamingConvention().getTypeName(
                 enumType.getName()), argumentNames, argumentClasses);
         constructorBuilder.append(methodBody);
@@ -514,7 +479,7 @@ public class EnumTypeBuilder extends DefaultJavaSourceFileBuilder {
         List<IEnumAttribute> attributesToInit = new ArrayList<IEnumAttribute>();
         for (IEnumAttribute currentEnumAttribute : getEnumType().findAllEnumAttributes()) {
             if (currentEnumAttribute.isValid()) {
-                if (generateEnum() || (generateClass() && java5EnumsAvailable())
+                if (useEnumGeneration() || (useClassGeneration() && java5EnumsAvailable())
                         || !(currentEnumAttribute.isInherited())) {
                     attributesToInit.add(currentEnumAttribute);
                 }
@@ -534,6 +499,12 @@ public class EnumTypeBuilder extends DefaultJavaSourceFileBuilder {
 
     /** Generates the java code for the methods. */
     private void generateCodeForMethods(JavaCodeFragmentBuilder methodBuilder) throws CoreException {
+        generateCodeForGetterMethods(methodBuilder);
+        generateCodeForGetValueByMethods(methodBuilder);
+    }
+
+    /** Generates the java code for the getter methods. */
+    private void generateCodeForGetterMethods(JavaCodeFragmentBuilder methodBuilder) throws CoreException {
         IEnumType enumType = getEnumType();
         List<IEnumAttribute> enumAttributes = enumType.findAllEnumAttributes();
 
@@ -548,7 +519,7 @@ public class EnumTypeBuilder extends DefaultJavaSourceFileBuilder {
                 String methodName = getJavaNamingConvention().getGetterMethodName(attributeName, datatype);
 
                 // If an interface is to be generated then only generate the method signatures.
-                if (generateInterface()) {
+                if (useInterfaceGeneration()) {
                     if (!(currentEnumAttribute.isInherited())) {
                         appendLocalizedJavaDoc("GETTER", attributeName, description, currentEnumAttribute,
                                 methodBuilder);
@@ -558,8 +529,8 @@ public class EnumTypeBuilder extends DefaultJavaSourceFileBuilder {
                     }
 
                 } else {
-                    if (generateEnum() || !(generateClass() && currentEnumAttribute.isInherited()) || generateClass()
-                            && !(enumType.getValuesArePartOfModel())) {
+                    if (useEnumGeneration() || !(useClassGeneration() && currentEnumAttribute.isInherited())
+                            || useClassGeneration() && !(enumType.getValuesArePartOfModel())) {
                         appendLocalizedJavaDoc("GETTER", attributeName, description, currentEnumAttribute,
                                 methodBuilder);
 
@@ -576,6 +547,95 @@ public class EnumTypeBuilder extends DefaultJavaSourceFileBuilder {
                     }
                 }
 
+            }
+        }
+    }
+
+    /**
+     * Generates the java code for <code>getValueByXXX()</code> methods for each enum value.
+     * 
+     * Code snippet:
+     * 
+     * <pre>
+     *  [javadoc]
+     *  public final static Gender getValueById(String id) {
+     *      if (id == null) {
+     *          return null;
+     *      }
+     *      
+     *      if (id.equals(&quot;male&quot;)) {
+     *          return MALE;
+     *      }
+     *      if (id.equals(&quot;female&quot;)) {
+     *          return FEMALE;
+     *      }
+     *      
+     *      return null;
+     *  }
+     * </pre>
+     */
+    private void generateCodeForGetValueByMethods(JavaCodeFragmentBuilder methodBuilder) throws CoreException {
+        IEnumType enumType = getEnumType();
+        if (!(enumType.getValuesArePartOfModel())) {
+            return;
+        }
+
+        List<IEnumAttribute> uniqueIdentifierAttributes = enumType.findAllEnumAttributes();
+        List<IEnumValue> enumValues = enumType.getEnumValues();
+        IEnumAttribute literalNameAttribute = enumType.findLiteralNameAttribute();
+        if (literalNameAttribute == null) {
+            return;
+        }
+
+        for (IEnumAttribute currentEnumAttribute : uniqueIdentifierAttributes) {
+            if (currentEnumAttribute.isValid()) {
+                if (currentEnumAttribute.isUniqueIdentifier()) {
+
+                    Datatype datatype = currentEnumAttribute.findDatatype(getIpsProject());
+                    DatatypeHelper helper = getIpsProject().getDatatypeHelper(datatype);
+
+                    JavaCodeFragment body = new JavaCodeFragment();
+                    String parameterName = currentEnumAttribute.getName();
+                    body.append("if(");
+                    body.append(parameterName);
+                    body.append(" == null)");
+                    body.appendOpenBracket();
+                    body.appendln("return null;");
+                    body.appendCloseBracket();
+                    body.appendln();
+
+                    for (IEnumValue currentEnumValue : enumValues) {
+                        if (!(currentEnumValue.isValid())) {
+                            continue;
+                        }
+
+                        IEnumAttributeValue attributeValue = currentEnumValue
+                                .findEnumAttributeValue(currentEnumAttribute);
+                        body.append("if (");
+                        body.append(parameterName);
+                        body.append(".equals(\"");
+                        body.append(attributeValue.getValue());
+                        body.append("\"))");
+                        body.appendOpenBracket();
+                        body.append("return ");
+                        body.append(getConstantNameForEnumAttributeValue(currentEnumValue
+                                .findEnumAttributeValue(literalNameAttribute)));
+                        body.append(";");
+                        body.appendln();
+                        body.appendCloseBracket();
+                    }
+
+                    body.appendln();
+                    body.append("return null;");
+
+                    appendLocalizedJavaDoc("GETVALUEBY", parameterName, enumType, methodBuilder);
+                    methodBuilder.methodBegin(Modifier.PUBLIC | Modifier.STATIC | Modifier.FINAL,
+                            getQualifiedClassName(enumType), getMethodNameGetValueByXXX(currentEnumAttribute),
+                            new String[] { parameterName }, new String[] { helper.getJavaClassName() });
+                    methodBuilder.append(body);
+                    methodBuilder.methodEnd();
+
+                }
             }
         }
     }
