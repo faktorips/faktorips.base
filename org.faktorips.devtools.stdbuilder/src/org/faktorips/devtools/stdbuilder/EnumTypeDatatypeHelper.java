@@ -50,7 +50,7 @@ public class EnumTypeDatatypeHelper extends AbstractDatatypeHelper {
     public JavaCodeFragment newInstance(String value) {
         try {
 
-            if (!(enumType.getValuesArePartOfModel())) {
+            if (!(enumType.isContainingValues())) {
                 throw new IllegalStateException(
                         "This method cannot be called if the values of the enum type of this helper are not "
                                 + "part of the composite but instead are contained in an enum content object.");

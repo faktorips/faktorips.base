@@ -131,7 +131,7 @@ public class EnumAttributesSection extends SimpleIpsPartsSection {
              * enum type then make sure that there will be one enum value available for editing.
              */
             if (enumType.getEnumAttributesCount(true) == 1) {
-                if (enumType.getValuesArePartOfModel() && !(enumType.isAbstract())) {
+                if (enumType.isContainingValues() && !(enumType.isAbstract())) {
                     if (enumType.getEnumValuesCount() == 0) {
                         enumType.newEnumValue();
                     }

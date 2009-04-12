@@ -181,7 +181,7 @@ public interface ITableFormat {
      * <p/>
      * The file to import can either contain attributes of an enum (therefore defining a structure) 
      * or enum values. In case of enum values the decision where to store them is based on
-     * {@link IEnumType#getValuesArePartOfModel()}.
+     * {@link IEnumType#isContainingValues()}.
      * 
      * @param valueContainer
      *            The destination of the import.

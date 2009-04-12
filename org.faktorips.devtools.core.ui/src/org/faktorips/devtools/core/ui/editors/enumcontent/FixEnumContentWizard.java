@@ -484,7 +484,7 @@ public class FixEnumContentWizard extends Wizard {
             try {
                 IEnumType enumType = enumContent.findEnumType();
                 if (enumType != null) {
-                    if (!(enumType.isAbstract()) && !(enumType.getValuesArePartOfModel())) {
+                    if (!(enumType.isAbstract()) && !(enumType.isContainingValues())) {
                         enumTypeRefControl.setText(enumType.getQualifiedName());
                     }
                 }
@@ -508,14 +508,14 @@ public class FixEnumContentWizard extends Wizard {
 
             boolean pageComplete = false;
             if (newEnumType != null) {
-                if (!(newEnumType.isAbstract()) && !(newEnumType.getValuesArePartOfModel())) {
+                if (!(newEnumType.isAbstract()) && !(newEnumType.isContainingValues())) {
                     pageComplete = true;
                     assignEnumAttributesPage.refreshControl();
                 }
                 if (newEnumType.isAbstract()) {
                     setMessage(Messages.FixEnumContentWizard_chosenEnumTypeAbstract, IMessage.ERROR);
                 }
-                if (newEnumType.getValuesArePartOfModel()) {
+                if (newEnumType.isContainingValues()) {
                     setMessage(Messages.FixEnumContentWizard_chosenEnumTypeValuesArePartOfModel, IMessage.ERROR);
                 }
             } else {

@@ -189,7 +189,7 @@ public class EnumValuesSection extends IpsSection implements ContentsChangeListe
             return;
         }
 
-        if (enumType.getValuesArePartOfModel() && !(enumType.isAbstract())) {
+        if (enumType.isContainingValues() && !(enumType.isAbstract())) {
             if (enumType.getEnumAttributesCount(true) > 0 && enumValueContainer.getEnumValuesCount() == 0) {
                 enumValueContainer.newEnumValue();
             }
@@ -235,7 +235,7 @@ public class EnumValuesSection extends IpsSection implements ContentsChangeListe
      * model or not. The enum values table will also be disabled if the enum type is abstract.
      */
     private void updateEnabledStates(IEnumType enumType) {
-        boolean valuesArePartOfModel = (enumType != null) ? enumType.getValuesArePartOfModel() : false;
+        boolean valuesArePartOfModel = (enumType != null) ? enumType.isContainingValues() : false;
         boolean isAbstract = (enumType != null) ? enumType.isAbstract() : false;
 
         if (enumValueContainer instanceof IEnumType) {

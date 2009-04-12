@@ -62,10 +62,10 @@ public interface IEnumContent extends IEnumValueContainer {
 
     /**
      * Validation message code to indicate that the values of the enum type this enum content refers
-     * to are defined in the model instead inside of a separate enum content object.
+     * to are defined in the type itself instead inside of a separate enum content object.
      */
-    public final static String MSGCODE_ENUM_CONTENT_VALUES_ARE_PART_OF_MODEL = MSGCODE_PREFIX
-            + "EnumContentValuesArePartOfModel"; //$NON-NLS-1$
+    public final static String MSGCODE_ENUM_CONTENT_VALUES_ARE_PART_OF_TYPE = MSGCODE_PREFIX
+            + "EnumContentValuesArePartOfType"; //$NON-NLS-1$
 
     /**
      * Validation message code to indicate that the number of referenced enum attributes does not

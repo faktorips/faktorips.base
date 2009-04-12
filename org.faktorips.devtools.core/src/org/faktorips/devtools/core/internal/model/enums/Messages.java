@@ -39,6 +39,12 @@ public class Messages extends NLS {
     public static String EnumAttribute_LiteralNameNotOfDatatypeString;
     public static String EnumAttribute_LiteralNameButNotUniqueIdentifier;
     public static String EnumAttribute_UniqueIdentifier;
+    
+    public static String EnumType_NotInheritedAttributesInSupertypeHierarchySingular;
+    public static String EnumType_NotInheritedAttributesInSupertypeHierarchyPlural;
+    public static String EnumType_NoLiteralNameAttribute;
+    
+    public static String EnumContent_ReferencedEnumAttributesCountInvalid;
 
     static {
         // initialize resource bundle

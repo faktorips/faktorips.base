@@ -83,9 +83,9 @@ public class EnumContentTest extends AbstractIpsEnumPluginTest {
 
         // Test values are part of model
         ipsModel.clearValidationCache();
-        genderEnumType.setValuesArePartOfModel(true);
+        genderEnumType.setContainingValues(true);
         assertEquals(1, genderEnumContent.validate(ipsProject).getNoOfMessages());
-        genderEnumType.setValuesArePartOfModel(false);
+        genderEnumType.setContainingValues(false);
 
         // Test enum type is abstract
         ipsModel.clearValidationCache();

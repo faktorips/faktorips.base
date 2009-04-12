@@ -134,17 +134,17 @@ public class EnumTypeGeneralInfoSection extends IpsSection implements ContentsCh
         bindingContext.bindContent(abstractCheckbox, enumType, IEnumType.PROPERTY_ABSTRACT);
 
         // Values are part of model
-        toolkit.createFormLabel(composite, Messages.EnumTypeGeneralInfoSection_labelValuesArePartOfModel);
+        toolkit.createFormLabel(composite, Messages.EnumTypeGeneralInfoSection_labelContainingValues);
         valuesArePartOfModelCheckbox = toolkit.createCheckbox(composite);
         valuesArePartOfModelCheckbox.setEnabled(!(enumType.isAbstract()));
-        bindingContext.bindContent(valuesArePartOfModelCheckbox, enumType, IEnumType.PROPERTY_VALUES_ARE_PART_OF_MODEL);
+        bindingContext.bindContent(valuesArePartOfModelCheckbox, enumType, IEnumType.PROPERTY_CONTAINING_VALUES);
 
         // Enum content package fragment
         toolkit.createFormLabel(composite, Messages.EnumTypeGeneralInfoSection_labelEnumContentPackageFragment);
         Text text = toolkit.createText(composite);
         packageSpecificationControl = new TextField(text);
         packageSpecificationControl.getTextControl().setEnabled(
-                !(enumType.isAbstract()) && !(enumType.getValuesArePartOfModel()));
+                !(enumType.isAbstract()) && !(enumType.isContainingValues()));
 
         bindingContext.bindContent(packageSpecificationControl, enumType,
                 IEnumType.PROPERTY_ENUM_CONTENT_PACKAGE_FRAGMENT);
@@ -185,7 +185,7 @@ public class EnumTypeGeneralInfoSection extends IpsSection implements ContentsCh
                     IEnumType enumType = (IEnumType)event.getIpsSrcFile().getIpsObject();
                     valuesArePartOfModelCheckbox.setEnabled(!(enumType.isAbstract()));
                     packageSpecificationControl.getTextControl().setEnabled(
-                            !(enumType.isAbstract()) && !(enumType.getValuesArePartOfModel()));
+                            !(enumType.isAbstract()) && !(enumType.isContainingValues()));
                 } catch (CoreException e) {
                     throw new RuntimeException(e);
                 }

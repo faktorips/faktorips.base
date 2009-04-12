@@ -59,9 +59,9 @@ public interface IEnumType extends IEnumValueContainer, EnumDatatype {
     /** Name of the <code>abstract</code> property. */
     public final static String PROPERTY_ABSTRACT = "abstract"; //$NON-NLS-1$
 
-    /** Name of the <code>valuesArePartOfModel</code> property. */
+    /** Name of the <code>containingValues</code> property. */
     // TODO aw: rename this to containingValues ... ui: values are defined in an enum content
-    public final static String PROPERTY_VALUES_ARE_PART_OF_MODEL = "valuesArePartOfModel"; //$NON-NLS-1$
+    public final static String PROPERTY_CONTAINING_VALUES = "containingValues"; //$NON-NLS-1$
 
     /** Name of the <code>enumContentPackageFragment</code> property. */
     public final static String PROPERTY_ENUM_CONTENT_PACKAGE_FRAGMENT = "enumContentPackageFragment"; //$NON-NLS-1$
@@ -165,17 +165,16 @@ public interface IEnumType extends IEnumValueContainer, EnumDatatype {
      * Returns <code>true</code> if the values for this enum type are defined in the enum type
      * itself.
      */
-    // TODO pk den property namen sollten wir nochmal überdenken
-    public boolean getValuesArePartOfModel();
+    public boolean isContainingValues();
 
     /**
      * Allows to set the property whether the values for this enum type will be defined in the enum
      * type itself.
      * 
-     * @param valuesArePartOfModel Flag indicating whether the values for this enum type will be
-     *            defined in the enum type itself.
+     * @param containingValues Flag indicating whether the values for this enum type will be defined
+     *            in the enum type itself.
      */
-    public void setValuesArePartOfModel(boolean valuesArePartOfModel);
+    public void setContainingValues(boolean containingValues);
 
     /**
      * Returns a list containing all enum attributes that belong to this enum type.

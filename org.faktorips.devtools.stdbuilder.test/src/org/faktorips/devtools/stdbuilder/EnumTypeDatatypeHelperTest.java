@@ -31,7 +31,7 @@ public class EnumTypeDatatypeHelperTest extends AbstractIpsPluginTest {
         ipsProject = newIpsProject("TestProject");
         IEnumType paymentMode = newEnumType(ipsProject, "PaymentMode");
         paymentMode.setAbstract(false);
-        paymentMode.setValuesArePartOfModel(true);
+        paymentMode.setContainingValues(true);
 
         IEnumAttribute id = paymentMode.newEnumAttribute();
         id.setDatatype(Datatype.STRING.getQualifiedName());

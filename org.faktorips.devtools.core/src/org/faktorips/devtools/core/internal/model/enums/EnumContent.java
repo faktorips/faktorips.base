@@ -14,6 +14,7 @@
 package org.faktorips.devtools.core.internal.model.enums;
 
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.osgi.util.NLS;
 import org.faktorips.devtools.core.model.IDependency;
 import org.faktorips.devtools.core.model.IpsObjectDependency;
 import org.faktorips.devtools.core.model.enums.EnumContentValidations;
@@ -24,7 +25,9 @@ import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
 import org.faktorips.devtools.core.model.ipsobject.QualifiedNameType;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.util.ArgumentCheck;
+import org.faktorips.util.message.Message;
 import org.faktorips.util.message.MessageList;
+import org.faktorips.util.message.ObjectProperty;
 import org.w3c.dom.Element;
 
 /**
@@ -147,7 +150,31 @@ public class EnumContent extends EnumValueContainer implements IEnumContent {
             EnumContentValidations.validatePackageFragment(list, this, findEnumType(), getIpsPackageFragment()
                     .getName());
         }
-        EnumContentValidations.validateReferencedEnumAttributesCount(list, this);
+  
+        validateReferencedEnumAttributesCount(list, this);
+    }
+
+    /**
+     * Validates the number of referenced enum attributes. This number is invalid if it does not
+     * correspond to the number of enum attributes in the referenced enum type.
+     */
+    private void validateReferencedEnumAttributesCount(MessageList validationMessageList, IEnumContent enumContent)
+            throws CoreException {
+
+        IEnumType enumType = enumContent.findEnumType();
+        if (enumType == null) {
+            return;
+        }
+
+        if (enumType.getEnumAttributesCount(true) != enumContent.getReferencedEnumAttributesCount()) {
+            String text = NLS.bind(Messages.EnumContent_ReferencedEnumAttributesCountInvalid, enumType
+                    .getQualifiedName());
+            Message validationMessage = new Message(
+                    IEnumContent.MSGCODE_ENUM_CONTENT_REFERENCED_ENUM_ATTRIBUTES_COUNT_INVALID, text, Message.ERROR,
+                    new ObjectProperty[] { new ObjectProperty(enumContent,
+                            IEnumContent.PROPERTY_REFERENCED_ENUM_ATTRIBUTES_COUNT) });
+            validationMessageList.add(validationMessage);
+        }
     }
 
     /**

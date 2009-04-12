@@ -89,7 +89,7 @@ public class EnumTypeBuilder extends DefaultJavaSourceFileBuilder {
             return false;
         }
 
-        if (java5EnumsAvailable() && enumType.getValuesArePartOfModel()) {
+        if (java5EnumsAvailable() && enumType.isContainingValues()) {
             return true;
         }
 
@@ -104,7 +104,7 @@ public class EnumTypeBuilder extends DefaultJavaSourceFileBuilder {
             return false;
         }
 
-        if (!(enumType.getValuesArePartOfModel()) || !(java5EnumsAvailable())) {
+        if (!(enumType.isContainingValues()) || !(java5EnumsAvailable())) {
             return true;
         }
 
@@ -176,7 +176,7 @@ public class EnumTypeBuilder extends DefaultJavaSourceFileBuilder {
          * abstract.
          */
         IEnumAttribute literalNameAttribute = enumType.findLiteralNameAttribute();
-        if (enumType.getValuesArePartOfModel() && !(enumType.isAbstract()) && literalNameAttribute != null) {
+        if (enumType.isContainingValues() && !(enumType.isAbstract()) && literalNameAttribute != null) {
             // Go over all model side defined enum values
             List<IEnumValue> enumValues = enumType.getEnumValues();
             for (int i = 0; i < enumValues.size(); i++) {
@@ -392,7 +392,7 @@ public class EnumTypeBuilder extends DefaultJavaSourceFileBuilder {
                  * source code. An exception to this is if the values are not defined in the model.
                  */
                 if (!(useClassGeneration() && currentEnumAttribute.isInherited())
-                        || (useClassGeneration() && !(getEnumType().getValuesArePartOfModel()))) {
+                        || (useClassGeneration() && !(getEnumType().isContainingValues()))) {
                     appendLocalizedJavaDoc("ATTRIBUTE", attributeName, currentEnumAttribute, attributeBuilder);
                     attributeBuilder.varDeclaration(Modifier.PRIVATE | Modifier.FINAL, currentEnumAttribute
                             .getDatatype(), codeName);
@@ -427,7 +427,7 @@ public class EnumTypeBuilder extends DefaultJavaSourceFileBuilder {
         // Build method body
         JavaCodeFragment methodBody = new JavaCodeFragment();
         if (useClassGeneration() && enumType.hasSuperEnumType()
-                && !(java5EnumsAvailable() && !(enumType.getValuesArePartOfModel()))) {
+                && !(java5EnumsAvailable() && !(enumType.isContainingValues()))) {
             createSuperConstructorCall(methodBody);
         }
         createAttributeInitialization(methodBody);
@@ -530,7 +530,7 @@ public class EnumTypeBuilder extends DefaultJavaSourceFileBuilder {
 
                 } else {
                     if (useEnumGeneration() || !(useClassGeneration() && currentEnumAttribute.isInherited())
-                            || useClassGeneration() && !(enumType.getValuesArePartOfModel())) {
+                            || useClassGeneration() && !(enumType.isContainingValues())) {
                         appendLocalizedJavaDoc("GETTER", attributeName, description, currentEnumAttribute,
                                 methodBuilder);
 
@@ -576,7 +576,7 @@ public class EnumTypeBuilder extends DefaultJavaSourceFileBuilder {
      */
     private void generateCodeForGetValueByMethods(JavaCodeFragmentBuilder methodBuilder) throws CoreException {
         IEnumType enumType = getEnumType();
-        if (!(enumType.getValuesArePartOfModel())) {
+        if (!(enumType.isContainingValues())) {
             return;
         }
 

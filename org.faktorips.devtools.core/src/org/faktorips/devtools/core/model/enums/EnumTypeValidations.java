@@ -27,8 +27,8 @@ import org.faktorips.util.message.MessageList;
 import org.faktorips.util.message.ObjectProperty;
 
 /**
- * A class that contains validations of the model class <code>IEnumType</code>, where some are also
- * used in the creation wizard where the model object doesn't exist at the point of validation.
+ * A class that contains validations of the model class <code>IEnumType</code> that are also used in
+ * the creation wizard where the model object doesn't exist at the point of validation.
  * 
  * @see org.faktorips.devtools.core.model.enums.IEnumType
  * 
@@ -103,7 +103,7 @@ public class EnumTypeValidations {
      */
     public static void validateSuperTypeHierarchy(MessageList msgList, IEnumType enumType, IIpsProject ipsProject)
             throws CoreException {
-        
+
         IEnumType superEnumType = enumType.findSuperEnumType();
         if (superEnumType == null) {
             return;
@@ -127,145 +127,6 @@ public class EnumTypeValidations {
                 }
             }
         }
-    }
-
-    /**
-     * Validates whether the given enum type inherits all enum attributes defined in its supertype
-     * hierarchy.
-     * <p>
-     * Adds validation messages to the given message list.
-     * 
-     * @param validationMessageList The message list to save validation messages into.
-     * @param enumType The enum type to validate.
-     * 
-     * @throws CoreException If an error occurs while searching for attributes in the supertype
-     *             hierarchy.
-     * @throws NullPointerException If <code>validationMessageList</code> or <code>enumType</code>
-     *             is <code>null</code>.
-     */
-    // TODO pk benötigt man diese methode wirklich als static an dieser Klasse. Wieso ist sie nicht
-    // am IEnumType
-    public static void validateInheritedAttributes(MessageList validationMessageList, IEnumType enumType)
-            throws CoreException {
-
-        ArgumentCheck.notNull(new Object[] { validationMessageList, enumType });
-
-        // All attributes from supertype hierarchy inherited?
-        List<IEnumAttribute> notInheritedAttributes = getNotInheritedAttributes(enumType);
-        int notInheritedAttributesCount = notInheritedAttributes.size();
-        if (notInheritedAttributesCount > 0) {
-            IEnumAttribute firstNotInheritedAttribute = notInheritedAttributes.get(0);
-            String showFirst = firstNotInheritedAttribute.getName() + " (" + firstNotInheritedAttribute.getDatatype() //$NON-NLS-1$
-                    + ')';
-            String text = (notInheritedAttributesCount > 1) ? NLS.bind(
-                    Messages.EnumType_NotInheritedAttributesInSupertypeHierarchyPlural, notInheritedAttributesCount,
-                    showFirst) : NLS.bind(Messages.EnumType_NotInheritedAttributesInSupertypeHierarchySingular,
-                    showFirst);
-            Message message = new Message(IEnumType.MSGCODE_ENUM_TYPE_NOT_INHERITED_ATTRIBUTES_IN_SUPERTYPE_HIERARCHY,
-                    text, Message.ERROR, new ObjectProperty[] { new ObjectProperty(enumType,
-                            IEnumType.PROPERTY_SUPERTYPE) });
-            validationMessageList.add(message);
-        }
-    }
-
-    /**
-     * Validates whether the given enum type has at least one attribute being marked as literal
-     * name.
-     * <p>
-     * If the given enum type is abstract the validation will succeed even if there is no literal
-     * name attribute.
-     * <p>
-     * Adds validation messages to the given message list.
-     * 
-     * @param validationMessageList The message list to save validation messages into.
-     * @param enumType The enum type to validate.
-     * 
-     * @throws NullPointerException If <code>validationMessageList</code> or <code>enumType</code>
-     *             is <code>null</code>.
-     */
-    // TODO pk benötigt man diese methode wirklich als static an dieser Klasse. Wieso ist sie nicht
-    // am IEnumType
-    public static void validateLiteralNameAttribute(MessageList validationMessageList, IEnumType enumType) {
-        ArgumentCheck.notNull(new Object[] { validationMessageList, enumType });
-
-        // Pass validation if given enum type is abstract
-        if (enumType.isAbstract()) {
-            return;
-        }
-
-        boolean literalNameAttributeFound = false;
-        for (IEnumAttribute currentEnumAttribute : enumType.getEnumAttributesIncludeSupertypeCopies()) {
-            if (currentEnumAttribute.isLiteralName()) {
-                literalNameAttributeFound = true;
-                break;
-            }
-        }
-
-        if (!(literalNameAttributeFound)) {
-            String text = Messages.EnumType_NoLiteralNameAttribute;
-            Message message = new Message(IEnumType.MSGCODE_ENUM_TYPE_NO_LITERAL_NAME_ATTRIBUTE, text, Message.ERROR,
-                    new ObjectProperty[] { new ObjectProperty(enumType, null) });
-            validationMessageList.add(message);
-        }
-    }
-
-    /**
-     * Returns all attributes from the supertype hierarchy of the given enum type that are not
-     * inherited in the given enum type.
-     */
-    private static List<IEnumAttribute> getNotInheritedAttributes(IEnumType enumType) throws CoreException {
-        List<IEnumAttribute> inheritedAttributes = new ArrayList<IEnumAttribute>();
-        for (IEnumAttribute currentEnumAttribute : enumType.getEnumAttributesIncludeSupertypeCopies()) {
-            if (currentEnumAttribute.isInherited()) {
-                inheritedAttributes.add(currentEnumAttribute);
-            }
-        }
-        List<IEnumAttribute> supertypeHierarchyAttributes = findAllAttributesInSupertypeHierarchy(enumType);
-        List<IEnumAttribute> notInheritedAttributes = new ArrayList<IEnumAttribute>();
-
-        for (IEnumAttribute currentSupertypeHierarchyAttribute : supertypeHierarchyAttributes) {
-            if (!(EnumsUtil.containsEqualEnumAttribute(inheritedAttributes, currentSupertypeHierarchyAttribute))) {
-                notInheritedAttributes.add(currentSupertypeHierarchyAttribute);
-            }
-        }
-
-        return notInheritedAttributes;
-    }
-
-    /** Returns all attributes that are defined in the supertype hierarchy of the given enum type. */
-    private static List<IEnumAttribute> findAllAttributesInSupertypeHierarchy(IEnumType enumType) throws CoreException {
-        List<IEnumAttribute> returnAttributesList = new ArrayList<IEnumAttribute>();
-
-        /* Go over all enum attributes of every enum type of the supertype hierarchy */
-        for (IEnumType currentSuperEnumType : enumType.findAllSuperEnumTypes()) {
-            for (IEnumAttribute currentEnumAttribute : currentSuperEnumType.getEnumAttributes()) {
-
-                /*
-                 * Add to the return list if the list does not yet contain an attribute with the
-                 * name, datatype and identifier of the current inspected enum attribute from the
-                 * supertype hierarchy.
-                 */
-                String currentName = currentEnumAttribute.getName();
-                String currentDatatype = currentEnumAttribute.getDatatype();
-                boolean currentIsIdentifier = currentEnumAttribute.isLiteralName();
-
-                boolean attributeInList = false;
-                for (IEnumAttribute currentAttributeInReturnList : returnAttributesList) {
-                    if (currentAttributeInReturnList.getName().equals(currentName)
-                            && currentAttributeInReturnList.getDatatype().equals(currentDatatype)
-                            && currentAttributeInReturnList.isLiteralName() == currentIsIdentifier) {
-                        attributeInList = true;
-                        break;
-                    }
-                }
-
-                if (!(attributeInList)) {
-                    returnAttributesList.add(currentEnumAttribute);
-                }
-            }
-        }
-
-        return returnAttributesList;
     }
 
     /** Prohibits initialization. */

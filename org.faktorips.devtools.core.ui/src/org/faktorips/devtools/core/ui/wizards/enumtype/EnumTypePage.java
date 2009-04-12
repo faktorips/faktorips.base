@@ -60,7 +60,7 @@ public class EnumTypePage extends IpsObjectPage {
     private CheckboxField isAbstractField;
 
     /** The checkbox field to mark the new enum type that its values are defined in the model. */
-    private CheckboxField valuesArePartOfModelField;
+    private CheckboxField containingValuesField;
 
     /**
      * The text field to specify the package for the enum content (only enabled if the values are
@@ -106,11 +106,11 @@ public class EnumTypePage extends IpsObjectPage {
 
         // Values are part of model
         toolkit.createLabel(nameComposite, ""); //$NON-NLS-1$
-        valuesArePartOfModelField = new CheckboxField(toolkit.createCheckbox(nameComposite,
-                Messages.Fields_ValuesArePartOfModel));
-        valuesArePartOfModelField.setValue(true);
-        valuesArePartOfModelField.addChangeListener(this);
-        valuesArePartOfModelField.addChangeListener(new ValueChangeListener() {
+        containingValuesField = new CheckboxField(toolkit.createCheckbox(nameComposite,
+                Messages.Fields_ContainingValues));
+        containingValuesField.setValue(true);
+        containingValuesField.addChangeListener(this);
+        containingValuesField.addChangeListener(new ValueChangeListener() {
             /**
              * {@inheritDoc}
              */
@@ -123,11 +123,11 @@ public class EnumTypePage extends IpsObjectPage {
     /**
      * Enables or disables the <code>rootPackageSpecificationControl</code> and the
      * <code>packageSpecificationField</code> depending on the values of the
-     * <code>isAbstractField</code> and <code>valuesArePartOfModelField</code>.
+     * <code>isAbstractField</code> and <code>containingValuesField</code>.
      */
     private void enableEnumContentControls() {
         boolean isAbstract = (Boolean)isAbstractField.getValue();
-        boolean valuesArePartOfModel = (Boolean)valuesArePartOfModelField.getValue();
+        boolean valuesArePartOfModel = (Boolean)containingValuesField.getValue();
         if (isAbstract) {
             packageSpecificationField.getTextControl().setEnabled(false);
         } else {
@@ -185,7 +185,7 @@ public class EnumTypePage extends IpsObjectPage {
 
         IEnumType newEnumType = (IEnumType)newIpsObject;
         newEnumType.setAbstract((Boolean)isAbstractField.getValue());
-        newEnumType.setValuesArePartOfModel((Boolean)valuesArePartOfModelField.getValue());
+        newEnumType.setContainingValues((Boolean)containingValuesField.getValue());
         newEnumType.setSuperEnumType(supertypeField.getText());
         newEnumType.setEnumContentPackageFragment(packageSpecificationField.getText());
 

@@ -157,7 +157,7 @@ public class EnumContentPage extends TypeEditorStructurePage implements Contents
             if (enumType == null) {
                 enableOpenFixEnumTypeDialogAction = true;
             } else {
-                if (enumType.isAbstract() || enumType.getValuesArePartOfModel()
+                if (enumType.isAbstract() || enumType.isContainingValues()
                         || enumType.getEnumAttributesCount(true) != enumContent.getReferencedEnumAttributesCount()) {
                     enableOpenFixEnumTypeDialogAction = true;
                 }

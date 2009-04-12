@@ -537,7 +537,7 @@ public class IpsProjectTest extends AbstractIpsPluginTest {
     public void testFindValueDatatypeWithEnumTypes() throws Exception{
         IEnumType paymentMode = newEnumType(ipsProject, "PaymentMode");
         paymentMode.setAbstract(false);
-        paymentMode.setValuesArePartOfModel(true);
+        paymentMode.setContainingValues(true);
         IEnumAttribute id = paymentMode.newEnumAttribute();
         id.setDatatype(Datatype.STRING.getQualifiedName());
         id.setInherited(false);
@@ -546,7 +546,7 @@ public class IpsProjectTest extends AbstractIpsPluginTest {
 
         IEnumType gender = newEnumType(ipsProject, "Gender");
         paymentMode.setAbstract(false);
-        paymentMode.setValuesArePartOfModel(true);
+        paymentMode.setContainingValues(true);
         id = paymentMode.newEnumAttribute();
         id.setDatatype(Datatype.STRING.getQualifiedName());
         id.setInherited(false);
@@ -562,7 +562,7 @@ public class IpsProjectTest extends AbstractIpsPluginTest {
     public void testfindEnumTypes() throws Exception{
         IEnumType paymentMode = newEnumType(ipsProject, "PaymentMode");
         paymentMode.setAbstract(false);
-        paymentMode.setValuesArePartOfModel(true);
+        paymentMode.setContainingValues(true);
         IEnumAttribute id = paymentMode.newEnumAttribute();
         id.setDatatype(Datatype.STRING.getQualifiedName());
         id.setInherited(false);
@@ -571,7 +571,7 @@ public class IpsProjectTest extends AbstractIpsPluginTest {
 
         IEnumType gender = newEnumType(ipsProject, "Gender");
         paymentMode.setAbstract(false);
-        paymentMode.setValuesArePartOfModel(true);
+        paymentMode.setContainingValues(true);
         id = paymentMode.newEnumAttribute();
         id.setDatatype(Datatype.STRING.getQualifiedName());
         id.setInherited(false);
@@ -725,7 +725,7 @@ public class IpsProjectTest extends AbstractIpsPluginTest {
     public void testFindDatatypesOfEnumType() throws Exception {
         IEnumType paymentMode = newEnumType(ipsProject, "PaymentMode");
         paymentMode.setAbstract(false);
-        paymentMode.setValuesArePartOfModel(true);
+        paymentMode.setContainingValues(true);
         IEnumAttribute id = paymentMode.newEnumAttribute();
         id.setDatatype(Datatype.STRING.getQualifiedName());
         id.setInherited(false);
@@ -734,7 +734,7 @@ public class IpsProjectTest extends AbstractIpsPluginTest {
 
         IEnumType gender = newEnumType(ipsProject, "Gender");
         paymentMode.setAbstract(false);
-        paymentMode.setValuesArePartOfModel(true);
+        paymentMode.setContainingValues(true);
         id = paymentMode.newEnumAttribute();
         id.setDatatype(Datatype.STRING.getQualifiedName());
         id.setInherited(false);
@@ -1244,7 +1244,7 @@ public class IpsProjectTest extends AbstractIpsPluginTest {
         
         IEnumType paymentMode = newEnumType(ipsProject, "PaymentMode");
         paymentMode.setAbstract(false);
-        paymentMode.setValuesArePartOfModel(true);
+        paymentMode.setContainingValues(true);
         IEnumAttribute id = paymentMode.newEnumAttribute();
         id.setDatatype(Datatype.STRING.getQualifiedName());
         id.setInherited(false);
@@ -1253,7 +1253,7 @@ public class IpsProjectTest extends AbstractIpsPluginTest {
 
         IEnumType gender = newEnumType(ipsProject, "Gender");
         paymentMode.setAbstract(false);
-        paymentMode.setValuesArePartOfModel(true);
+        paymentMode.setContainingValues(true);
         id = paymentMode.newEnumAttribute();
         id.setDatatype(Datatype.STRING.getQualifiedName());
         id.setInherited(false);

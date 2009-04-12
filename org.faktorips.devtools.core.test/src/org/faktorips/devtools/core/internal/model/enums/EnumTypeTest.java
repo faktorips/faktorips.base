@@ -55,10 +55,10 @@ public class EnumTypeTest extends AbstractIpsEnumPluginTest {
         assertTrue(genderEnumType.isAbstract());
     }
 
-    public void testGetSetValuesPartOfModel() {
-        assertFalse(genderEnumType.getValuesArePartOfModel());
-        genderEnumType.setValuesArePartOfModel(true);
-        assertTrue(genderEnumType.getValuesArePartOfModel());
+    public void testGetSetContainingValues() {
+        assertFalse(genderEnumType.isContainingValues());
+        genderEnumType.setContainingValues(true);
+        assertTrue(genderEnumType.isContainingValues());
     }
 
     public void testGetIpsObjectType() {
@@ -197,7 +197,7 @@ public class EnumTypeTest extends AbstractIpsEnumPluginTest {
 
         IEnumAttribute newEnumAttribute = genderEnumType.newEnumAttribute();
         IEnumValue newEnumValue = genderEnumType.newEnumValue();
-        genderEnumType.setValuesArePartOfModel(true);
+        genderEnumType.setContainingValues(true);
 
         IEnumAttributeValue valueId = newEnumValue.getEnumAttributeValues().get(0);
         IEnumAttributeValue valueName = newEnumValue.getEnumAttributeValues().get(1);
@@ -244,7 +244,7 @@ public class EnumTypeTest extends AbstractIpsEnumPluginTest {
         IEnumAttributeValue valueId = genderEnumValueMale.getEnumAttributeValues().get(0);
         IEnumAttributeValue valueName = genderEnumValueMale.getEnumAttributeValues().get(1);
 
-        genderEnumType.setValuesArePartOfModel(true);
+        genderEnumType.setContainingValues(true);
         genderEnumType.moveEnumAttribute(genderEnumAttributeName, true);
 
         assertEquals(genderEnumAttributeName, genderEnumType.getEnumAttributes().get(0));
@@ -263,7 +263,7 @@ public class EnumTypeTest extends AbstractIpsEnumPluginTest {
 
         IEnumAttribute newEnumAttribute = genderEnumType.newEnumAttribute();
         IEnumValue newEnumValue = genderEnumType.newEnumValue();
-        genderEnumType.setValuesArePartOfModel(true);
+        genderEnumType.setContainingValues(true);
 
         IEnumAttributeValue valueId = newEnumValue.getEnumAttributeValues().get(0);
         IEnumAttributeValue valueName = newEnumValue.getEnumAttributeValues().get(1);
@@ -310,7 +310,7 @@ public class EnumTypeTest extends AbstractIpsEnumPluginTest {
         IEnumAttributeValue valueId = genderEnumValueMale.getEnumAttributeValues().get(0);
         IEnumAttributeValue valueName = genderEnumValueMale.getEnumAttributeValues().get(1);
 
-        genderEnumType.setValuesArePartOfModel(true);
+        genderEnumType.setContainingValues(true);
         genderEnumType.moveEnumAttribute(genderEnumAttributeId, false);
 
         assertEquals(genderEnumAttributeName, genderEnumType.getEnumAttributes().get(0));
@@ -323,7 +323,7 @@ public class EnumTypeTest extends AbstractIpsEnumPluginTest {
     public void testXml() throws CoreException, ParserConfigurationException {
         IEnumType newEnumType = newEnumType(ipsProject, "NewEnumType");
         newEnumType.setAbstract(true);
-        newEnumType.setValuesArePartOfModel(true);
+        newEnumType.setContainingValues(true);
         newEnumType.setSuperEnumType(genderEnumType.getQualifiedName());
         newEnumType.setEnumContentPackageFragment("bar");
         newEnumType.newEnumAttribute();
@@ -332,14 +332,14 @@ public class EnumTypeTest extends AbstractIpsEnumPluginTest {
         assertNotNull(XmlUtil.getFirstElement(xmlElement, DescriptionHelper.XML_ELEMENT_NAME));
 
         assertTrue(Boolean.parseBoolean(xmlElement.getAttribute(IEnumType.PROPERTY_ABSTRACT)));
-        assertTrue(Boolean.parseBoolean(xmlElement.getAttribute(IEnumType.PROPERTY_VALUES_ARE_PART_OF_MODEL)));
+        assertTrue(Boolean.parseBoolean(xmlElement.getAttribute(IEnumType.PROPERTY_CONTAINING_VALUES)));
         assertEquals(genderEnumType.getQualifiedName(), xmlElement.getAttribute(IEnumType.PROPERTY_SUPERTYPE));
         assertEquals("bar", xmlElement.getAttribute(IEnumType.PROPERTY_ENUM_CONTENT_PACKAGE_FRAGMENT));
 
         IEnumType loadedEnumType = newEnumType(ipsProject, "LoadedEnumType");
         loadedEnumType.initFromXml(xmlElement);
         assertTrue(loadedEnumType.isAbstract());
-        assertTrue(loadedEnumType.getValuesArePartOfModel());
+        assertTrue(loadedEnumType.isContainingValues());
         assertEquals(genderEnumType.getQualifiedName(), loadedEnumType.getSuperEnumType());
         assertEquals("bar", loadedEnumType.getEnumContentPackageFragment());
     }
@@ -425,7 +425,7 @@ public class EnumTypeTest extends AbstractIpsEnumPluginTest {
 
         IEnumType color = newEnumType(ipsProject, "Color");
         color.setAbstract(false);
-        color.setValuesArePartOfModel(true);
+        color.setContainingValues(true);
 
         IEnumAttribute id = color.newEnumAttribute();
         id.setDatatype(Datatype.STRING.getQualifiedName());

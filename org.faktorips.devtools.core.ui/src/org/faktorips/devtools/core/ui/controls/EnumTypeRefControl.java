@@ -99,7 +99,7 @@ public class EnumTypeRefControl extends IpsObjectRefControl {
                         resultSrcFiles.add(currentIpsSrcFile);
                     }
                 } else {
-                    if (!(currentLoopEnumType.isAbstract()) && !(currentLoopEnumType.getValuesArePartOfModel())) {
+                    if (!(currentLoopEnumType.isAbstract()) && !(currentLoopEnumType.isContainingValues())) {
                         resultSrcFiles.add(currentIpsSrcFile);
                     }
                 }

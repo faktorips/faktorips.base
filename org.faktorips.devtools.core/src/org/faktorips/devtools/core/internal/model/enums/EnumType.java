@@ -21,10 +21,12 @@ import org.apache.commons.lang.ObjectUtils;
 import org.eclipse.core.resources.IWorkspaceRunnable;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.osgi.util.NLS;
 import org.faktorips.datatype.EnumDatatype;
 import org.faktorips.datatype.ValueDatatype;
 import org.faktorips.devtools.core.internal.model.ipsobject.IpsObjectPartCollection;
 import org.faktorips.devtools.core.model.enums.EnumTypeValidations;
+import org.faktorips.devtools.core.model.enums.EnumsUtil;
 import org.faktorips.devtools.core.model.enums.IEnumAttribute;
 import org.faktorips.devtools.core.model.enums.IEnumAttributeValue;
 import org.faktorips.devtools.core.model.enums.IEnumType;
@@ -36,6 +38,7 @@ import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.util.ArgumentCheck;
 import org.faktorips.util.message.Message;
 import org.faktorips.util.message.MessageList;
+import org.faktorips.util.message.ObjectProperty;
 import org.w3c.dom.Element;
 
 /**
@@ -53,7 +56,7 @@ public class EnumType extends EnumValueContainer implements IEnumType {
     private String superEnumType;
 
     /** Flag indicating whether the values for this enum type are defined in the model. */
-    private boolean valuesArePartOfModel;
+    private boolean containingValues;
 
     /** Qualified name of the package fragment a referencing enum content must be stored in. */
     private String enumContentPackageFragment;
@@ -76,7 +79,7 @@ public class EnumType extends EnumValueContainer implements IEnumType {
         super(file);
 
         this.superEnumType = "";
-        this.valuesArePartOfModel = false;
+        this.containingValues = false;
         this.isAbstract = false;
         this.enumContentPackageFragment = "";
         this.enumAttributes = new IpsObjectPartCollection(this, EnumAttribute.class, IEnumAttribute.class,
@@ -109,17 +112,17 @@ public class EnumType extends EnumValueContainer implements IEnumType {
     /**
      * {@inheritDoc}
      */
-    public boolean getValuesArePartOfModel() {
-        return valuesArePartOfModel;
+    public boolean isContainingValues() {
+        return containingValues;
     }
 
     /**
      * {@inheritDoc}
      */
-    public void setValuesArePartOfModel(boolean valuesArePartOfModel) {
-        boolean oldValuesArePartOfModel = this.valuesArePartOfModel;
-        this.valuesArePartOfModel = valuesArePartOfModel;
-        valueChanged(oldValuesArePartOfModel, valuesArePartOfModel);
+    public void setContainingValues(boolean containingValues) {
+        boolean oldContainingValues = this.containingValues;
+        this.containingValues = containingValues;
+        valueChanged(oldContainingValues, containingValues);
     }
 
     /**
@@ -230,7 +233,7 @@ public class EnumType extends EnumValueContainer implements IEnumType {
     @Override
     protected void initFromXml(Element element, Integer id) {
         isAbstract = Boolean.parseBoolean(element.getAttribute(PROPERTY_ABSTRACT));
-        valuesArePartOfModel = Boolean.parseBoolean(element.getAttribute(PROPERTY_VALUES_ARE_PART_OF_MODEL));
+        containingValues = Boolean.parseBoolean(element.getAttribute(PROPERTY_CONTAINING_VALUES));
         superEnumType = element.getAttribute(PROPERTY_SUPERTYPE);
         enumContentPackageFragment = element.getAttribute(PROPERTY_ENUM_CONTENT_PACKAGE_FRAGMENT);
 
@@ -246,7 +249,7 @@ public class EnumType extends EnumValueContainer implements IEnumType {
 
         element.setAttribute(PROPERTY_SUPERTYPE, superEnumType);
         element.setAttribute(PROPERTY_ABSTRACT, String.valueOf(isAbstract));
-        element.setAttribute(PROPERTY_VALUES_ARE_PART_OF_MODEL, String.valueOf(valuesArePartOfModel));
+        element.setAttribute(PROPERTY_CONTAINING_VALUES, String.valueOf(containingValues));
         element.setAttribute(PROPERTY_ENUM_CONTENT_PACKAGE_FRAGMENT, enumContentPackageFragment);
     }
 
@@ -412,12 +415,131 @@ public class EnumType extends EnumValueContainer implements IEnumType {
         // Validate inherited attributes
         if (hasSuperEnumType()) {
             if (validationMessage == null) {
-                EnumTypeValidations.validateInheritedAttributes(list, this);
+                validateInheritedAttributes(list, this);
             }
         }
 
         // Validate identifier attribute
-        EnumTypeValidations.validateLiteralNameAttribute(list, this);
+        validateLiteralNameAttribute(list, this);
+    }
+
+    /**
+     * Validates whether the given enum type inherits all enum attributes defined in its supertype
+     * hierarchy.
+     * <p>
+     * Adds validation messages to the given message list.
+     */
+    private void validateInheritedAttributes(MessageList validationMessageList, IEnumType enumType)
+            throws CoreException {
+
+        ArgumentCheck.notNull(new Object[] { validationMessageList, enumType });
+
+        // All attributes from supertype hierarchy inherited?
+        List<IEnumAttribute> notInheritedAttributes = getNotInheritedAttributes(enumType);
+        int notInheritedAttributesCount = notInheritedAttributes.size();
+        if (notInheritedAttributesCount > 0) {
+            IEnumAttribute firstNotInheritedAttribute = notInheritedAttributes.get(0);
+            String showFirst = firstNotInheritedAttribute.getName() + " (" + firstNotInheritedAttribute.getDatatype() //$NON-NLS-1$
+                    + ')';
+            String text = (notInheritedAttributesCount > 1) ? NLS.bind(
+                    Messages.EnumType_NotInheritedAttributesInSupertypeHierarchyPlural, notInheritedAttributesCount,
+                    showFirst) : NLS.bind(Messages.EnumType_NotInheritedAttributesInSupertypeHierarchySingular,
+                    showFirst);
+            Message message = new Message(IEnumType.MSGCODE_ENUM_TYPE_NOT_INHERITED_ATTRIBUTES_IN_SUPERTYPE_HIERARCHY,
+                    text, Message.ERROR, new ObjectProperty[] { new ObjectProperty(enumType,
+                            IEnumType.PROPERTY_SUPERTYPE) });
+            validationMessageList.add(message);
+        }
+    }
+
+    /**
+     * Validates whether the given enum type has at least one attribute being marked as literal
+     * name.
+     * <p>
+     * If the given enum type is abstract the validation will succeed even if there is no literal
+     * name attribute.
+     */
+    private void validateLiteralNameAttribute(MessageList validationMessageList, IEnumType enumType) {
+        ArgumentCheck.notNull(new Object[] { validationMessageList, enumType });
+
+        // Pass validation if given enum type is abstract
+        if (enumType.isAbstract()) {
+            return;
+        }
+
+        boolean literalNameAttributeFound = false;
+        for (IEnumAttribute currentEnumAttribute : enumType.getEnumAttributesIncludeSupertypeCopies()) {
+            if (currentEnumAttribute.isLiteralName()) {
+                literalNameAttributeFound = true;
+                break;
+            }
+        }
+
+        if (!(literalNameAttributeFound)) {
+            String text = Messages.EnumType_NoLiteralNameAttribute;
+            Message message = new Message(IEnumType.MSGCODE_ENUM_TYPE_NO_LITERAL_NAME_ATTRIBUTE, text, Message.ERROR,
+                    new ObjectProperty[] { new ObjectProperty(enumType, null) });
+            validationMessageList.add(message);
+        }
+    }
+
+    /**
+     * Returns all attributes from the supertype hierarchy of the given enum type that are not
+     * inherited in the given enum type.
+     */
+    private List<IEnumAttribute> getNotInheritedAttributes(IEnumType enumType) throws CoreException {
+        List<IEnumAttribute> inheritedAttributes = new ArrayList<IEnumAttribute>();
+        for (IEnumAttribute currentEnumAttribute : enumType.getEnumAttributesIncludeSupertypeCopies()) {
+            if (currentEnumAttribute.isInherited()) {
+                inheritedAttributes.add(currentEnumAttribute);
+            }
+        }
+        List<IEnumAttribute> supertypeHierarchyAttributes = findAllAttributesInSupertypeHierarchy(enumType);
+        List<IEnumAttribute> notInheritedAttributes = new ArrayList<IEnumAttribute>();
+
+        for (IEnumAttribute currentSupertypeHierarchyAttribute : supertypeHierarchyAttributes) {
+            if (!(EnumsUtil.containsEqualEnumAttribute(inheritedAttributes, currentSupertypeHierarchyAttribute))) {
+                notInheritedAttributes.add(currentSupertypeHierarchyAttribute);
+            }
+        }
+
+        return notInheritedAttributes;
+    }
+
+    /** Returns all attributes that are defined in the supertype hierarchy of the given enum type. */
+    private List<IEnumAttribute> findAllAttributesInSupertypeHierarchy(IEnumType enumType) throws CoreException {
+        List<IEnumAttribute> returnAttributesList = new ArrayList<IEnumAttribute>();
+
+        /* Go over all enum attributes of every enum type of the supertype hierarchy */
+        for (IEnumType currentSuperEnumType : enumType.findAllSuperEnumTypes()) {
+            for (IEnumAttribute currentEnumAttribute : currentSuperEnumType.getEnumAttributes()) {
+
+                /*
+                 * Add to the return list if the list does not yet contain an attribute with the
+                 * name, datatype and identifier of the current inspected enum attribute from the
+                 * supertype hierarchy.
+                 */
+                String currentName = currentEnumAttribute.getName();
+                String currentDatatype = currentEnumAttribute.getDatatype();
+                boolean currentIsIdentifier = currentEnumAttribute.isLiteralName();
+
+                boolean attributeInList = false;
+                for (IEnumAttribute currentAttributeInReturnList : returnAttributesList) {
+                    if (currentAttributeInReturnList.getName().equals(currentName)
+                            && currentAttributeInReturnList.getDatatype().equals(currentDatatype)
+                            && currentAttributeInReturnList.isLiteralName() == currentIsIdentifier) {
+                        attributeInList = true;
+                        break;
+                    }
+                }
+
+                if (!(attributeInList)) {
+                    returnAttributesList.add(currentEnumAttribute);
+                }
+            }
+        }
+
+        return returnAttributesList;
     }
 
     /**

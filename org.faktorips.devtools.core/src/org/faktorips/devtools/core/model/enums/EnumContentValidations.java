@@ -23,8 +23,8 @@ import org.faktorips.util.message.MessageList;
 import org.faktorips.util.message.ObjectProperty;
 
 /**
- * A class that contains validations of the model class <code>IEnumContent</code> which are also
- * used in the creation wizard where the model object doesn't exist at the point of validation.
+ * A class that contains validations of the model class <code>IEnumContent</code> that are also used
+ * in the creation wizard where the model object doesn't exist at the point of validation.
  * 
  * @see org.faktorips.devtools.core.model.enums.IEnumContent
  * 
@@ -123,9 +123,9 @@ public abstract class EnumContentValidations {
         }
 
         // Values are part of model?
-        if (enumTypeRef.getValuesArePartOfModel()) {
-            text = NLS.bind(Messages.EnumContent_ValuesArePartOfModel, enumTypeQualifiedName);
-            validationMessageList.add(new Message(IEnumContent.MSGCODE_ENUM_CONTENT_VALUES_ARE_PART_OF_MODEL, text,
+        if (enumTypeRef.isContainingValues()) {
+            text = NLS.bind(Messages.EnumContent_ValuesArePartOfType, enumTypeQualifiedName);
+            validationMessageList.add(new Message(IEnumContent.MSGCODE_ENUM_CONTENT_VALUES_ARE_PART_OF_TYPE, text,
                     Message.ERROR, objectProperties));
         }
 
@@ -134,39 +134,6 @@ public abstract class EnumContentValidations {
             text = NLS.bind(Messages.EnumContent_EnumTypeIsAbstract, enumTypeQualifiedName);
             validationMessageList.add(new Message(IEnumContent.MSGCODE_ENUM_CONTENT_ENUM_TYPE_IS_ABSTRACT, text,
                     Message.ERROR, objectProperties));
-        }
-    }
-
-    /**
-     * Validates the number of referenced enum attributes. This number is invalid if it does not
-     * correspond to the number of enum attributes in the referenced enum type.
-     * 
-     * @param validationMessageList The message list to save validation messages into.
-     * @param enumContent The enumContent that might be invalid.
-     * 
-     * @throws CoreException If an error occurs while searching for the enum type referenced by the
-     *             given enum content.
-     * @throws NullPointerException If <code>validationMessageList</code> or
-     *             <code>enumContent</code> is <code>null</code>.
-     */
-    public static void validateReferencedEnumAttributesCount(MessageList validationMessageList, IEnumContent enumContent)
-            throws CoreException {
-
-        ArgumentCheck.notNull(new Object[] { validationMessageList, enumContent });
-
-        IEnumType enumType = enumContent.findEnumType();
-        if (enumType == null) {
-            return;
-        }
-
-        if (enumType.getEnumAttributesCount(true) != enumContent.getReferencedEnumAttributesCount()) {
-            String text = NLS.bind(Messages.EnumContent_ReferencedEnumAttributesCountInvalid, enumType
-                    .getQualifiedName());
-            Message validationMessage = new Message(
-                    IEnumContent.MSGCODE_ENUM_CONTENT_REFERENCED_ENUM_ATTRIBUTES_COUNT_INVALID, text, Message.ERROR,
-                    new ObjectProperty[] { new ObjectProperty(enumContent,
-                            IEnumContent.PROPERTY_REFERENCED_ENUM_ATTRIBUTES_COUNT) });
-            validationMessageList.add(validationMessage);
         }
     }
 

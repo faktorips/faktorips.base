@@ -180,7 +180,7 @@ public class Migration_2_2_1_test extends AbstractIpsProjectMigrationOperation {
                     currentTableStructure.getName(), true, null);
             IEnumType newEnumType = (IEnumType)newFile.getIpsObject();
             newEnumType.setAbstract(true);
-            newEnumType.setValuesArePartOfModel(false);
+            newEnumType.setContainingValues(false);
 
             // Create enum attributes
             // 2. key is java identifier
@@ -220,7 +220,7 @@ public class Migration_2_2_1_test extends AbstractIpsProjectMigrationOperation {
             IEnumType newEnumType = (IEnumType)newFile.getIpsObject();
             newEnumType.setSuperEnumType(currentTableContents.getTableStructure());
             newEnumType.setAbstract(false);
-            newEnumType.setValuesArePartOfModel(true);
+            newEnumType.setContainingValues(true);
 
             // Inherit the enum attributes
             IEnumType superEnumType = currentTableContents.getIpsProject().findEnumType(
