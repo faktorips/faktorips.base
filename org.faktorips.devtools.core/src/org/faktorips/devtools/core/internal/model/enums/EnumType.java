@@ -150,22 +150,43 @@ public class EnumType extends EnumValueContainer implements IEnumType {
     /**
      * {@inheritDoc}
      */
-    public List<IEnumAttribute> findAllEnumAttributes() {
+    public List<IEnumAttribute> getEnumAttributesIncludeSupertypeCopies() {
         return getEnumAttributes(true);
     }
 
     /**
      * Returns a list containing all enum attributes that belong to this enum type. It can be
-     * specified whether to include inherited attributes or not.
+     * specified whether to include copied inherited attributes or not.
      */
-    private List<IEnumAttribute> getEnumAttributes(boolean includeInherited) {
+    private List<IEnumAttribute> getEnumAttributes(boolean includeInheritedCopies) {
         List<IEnumAttribute> attributesList = new ArrayList<IEnumAttribute>();
         IIpsObjectPart[] parts = enumAttributes.getParts();
         for (IIpsObjectPart currentIpsObjectPart : parts) {
             IEnumAttribute currentEnumAttribute = (IEnumAttribute)currentIpsObjectPart;
-            if (!(currentEnumAttribute.isInherited()) || includeInherited) {
+            if (!(currentEnumAttribute.isInherited()) || includeInheritedCopies) {
                 attributesList.add(currentEnumAttribute);
             }
+        }
+
+        return attributesList;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public List<IEnumAttribute> findAllEnumAttributesIncludeSupertypeOriginals() throws CoreException {
+        // TODO aw: do we need this again and again if we want to search super enum types?
+        EnumTypeHierachyVisitor collector = new EnumTypeHierachyVisitor(getIpsProject()) {
+            protected boolean visit(IEnumType currentType) throws CoreException {
+                return true;
+            }
+        };
+
+        List<IEnumAttribute> attributesList = new ArrayList<IEnumAttribute>();
+        IEnumType currentEnumType = this;
+        while (currentEnumType != null) {
+            attributesList.addAll(currentEnumType.getEnumAttributes());
+            currentEnumType = collector.findSupertype(currentEnumType, getIpsProject());
         }
 
         return attributesList;
@@ -197,7 +218,7 @@ public class EnumType extends EnumValueContainer implements IEnumType {
      */
     public int getEnumAttributesCount(boolean includeInherited) {
         if (includeInherited) {
-            return findAllEnumAttributes().size();
+            return getEnumAttributesIncludeSupertypeCopies().size();
         } else {
             return getEnumAttributes().size();
         }
@@ -317,7 +338,7 @@ public class EnumType extends EnumValueContainer implements IEnumType {
     /**
      * {@inheritDoc}
      */
-    public IEnumAttribute findEnumAttribute(String name) {
+    public IEnumAttribute getEnumAttributeIncludeSupertypeCopies(String name) {
         ArgumentCheck.notNull(name);
 
         return getEnumAttribute(name, true);
@@ -330,7 +351,7 @@ public class EnumType extends EnumValueContainer implements IEnumType {
     private IEnumAttribute getEnumAttribute(String name, boolean includeInherited) {
         List<IEnumAttribute> enumAttributesToSearch;
         if (includeInherited) {
-            enumAttributesToSearch = findAllEnumAttributes();
+            enumAttributesToSearch = getEnumAttributesIncludeSupertypeCopies();
         } else {
             enumAttributesToSearch = getEnumAttributes();
         }
@@ -339,6 +360,33 @@ public class EnumType extends EnumValueContainer implements IEnumType {
             if (currentEnumAttribute.getName().equals(name)) {
                 return currentEnumAttribute;
             }
+        }
+
+        // No enum attribute with the given name found
+        return null;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public IEnumAttribute findEnumAttributeIncludeSupertypeOriginals(String name) throws CoreException {
+        ArgumentCheck.notNull(name);
+
+        // TODO aw: do we need this again and again if we want to search super enum types?
+        EnumTypeHierachyVisitor collector = new EnumTypeHierachyVisitor(getIpsProject()) {
+            protected boolean visit(IEnumType currentType) throws CoreException {
+                return true;
+            }
+        };
+
+        IEnumType currentEnumType = this;
+        while (currentEnumType != null) {
+            IEnumAttribute enumAttribute = currentEnumType.getEnumAttribute(name);
+            if (enumAttribute != null) {
+                return enumAttribute;
+            }
+
+            currentEnumType = collector.findSupertype(currentEnumType, getIpsProject());
         }
 
         // No enum attribute with the given name found
@@ -358,9 +406,9 @@ public class EnumType extends EnumValueContainer implements IEnumType {
         if (hasSuperEnumType()) {
             EnumTypeValidations.validateSuperEnumType(list, this, superEnumType, ipsProject);
         }
-        
+
         EnumTypeValidations.validateSuperTypeHierarchy(list, this, ipsProject);
-        
+
         // Validate inherited attributes
         if (hasSuperEnumType()) {
             if (validationMessage == null) {
@@ -391,7 +439,7 @@ public class EnumType extends EnumValueContainer implements IEnumType {
      * {@inheritDoc}
      */
     public IEnumAttribute findLiteralNameAttribute() {
-        for (IEnumAttribute currentEnumAttribute : findAllEnumAttributes()) {
+        for (IEnumAttribute currentEnumAttribute : getEnumAttributesIncludeSupertypeCopies()) {
             if (currentEnumAttribute.isLiteralName()) {
                 return currentEnumAttribute;
             }
@@ -485,7 +533,7 @@ public class EnumType extends EnumValueContainer implements IEnumType {
      */
     public IEnumAttribute getLiteralNameAttribute() {
         for (IEnumAttribute attribute : getEnumAttributes()) {
-            if(attribute.isLiteralName()){
+            if (attribute.isLiteralName()) {
                 return attribute;
             }
         }
@@ -495,8 +543,10 @@ public class EnumType extends EnumValueContainer implements IEnumType {
     /**
      * {@inheritDoc}
      */
-    //TODO check if it is correct that this method uses the ips project that it belongs to or does the
-    //ips project need to be provided
+    /*
+     * TODO aw: check if it is correct that this method uses the ips project that it belongs to or
+     * does the ips project need to be provided.
+     */
     public String getJavaClassName() {
         return getIpsProject().getDatatypeHelper(this).getJavaClassName();
     }
@@ -571,16 +621,16 @@ public class EnumType extends EnumValueContainer implements IEnumType {
     /**
      * {@inheritDoc}
      */
-    public IEnumValue getEnumValue(String literalNameAttributeValue) throws CoreException{
-        if(literalNameAttributeValue == null) {
+    public IEnumValue getEnumValue(String literalNameAttributeValue) throws CoreException {
+        if (literalNameAttributeValue == null) {
             return null;
         }
         for (IEnumValue enumValue : getEnumValues()) {
             IEnumAttributeValue value = enumValue.findEnumAttributeValue(findLiteralNameAttribute());
-            if(value == null){
+            if (value == null) {
                 continue;
             }
-            if(literalNameAttributeValue.equals(value.getValue())){
+            if (literalNameAttributeValue.equals(value.getValue())) {
                 return enumValue;
             }
         }
@@ -638,6 +688,9 @@ public class EnumType extends EnumValueContainer implements IEnumType {
                 + " is not part of this enumeration type. Therefor the equality cannot be determined.");
     }
 
+    /**
+     * {@inheritDoc}
+     */
     /*
      * TODO pk: this method needs IIpsProject as parameter but this collides with its original
      * intention which also manifests in being located in the commons project.

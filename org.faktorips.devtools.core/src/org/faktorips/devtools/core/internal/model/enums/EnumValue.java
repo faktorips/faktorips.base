@@ -170,7 +170,7 @@ public class EnumValue extends BaseIpsObjectPart implements IEnumValue {
      * {@inheritDoc}
      */
     public IEnumAttributeValue findEnumAttributeValue(IEnumAttribute enumAttribute) throws CoreException {
-        if(enumAttribute == null){
+        if (enumAttribute == null) {
             return null;
         }
         IEnumType enumType = getEnumValueContainer().findEnumType();
@@ -179,8 +179,7 @@ public class EnumValue extends BaseIpsObjectPart implements IEnumValue {
         for (IEnumAttributeValue currentEnumAttributeValue : getEnumAttributeValues()) {
             IEnumAttribute currentReferencedEnumAttribute = currentEnumAttributeValue.findEnumAttribute();
             if (currentReferencedEnumAttribute != null) {
-                //TODO pk has to be changed to an equal comparison
-                if (currentReferencedEnumAttribute == enumAttribute) {
+                if (currentReferencedEnumAttribute.getName().equals(enumAttribute.getName())) {
                     return currentEnumAttributeValue;
                 }
             }

@@ -97,7 +97,7 @@ public class EnumAttributesSection extends SimpleIpsPartsSection {
             return new IStructuredContentProvider() {
 
                 public Object[] getElements(Object inputElement) {
-                    return enumType.findAllEnumAttributes().toArray();
+                    return enumType.getEnumAttributesIncludeSupertypeCopies().toArray();
                 }
 
                 public void dispose() {
@@ -163,7 +163,7 @@ public class EnumAttributesSection extends SimpleIpsPartsSection {
         @Override
         protected int[] moveParts(int[] indexes, boolean up) {
             int newIndex = indexes[0];
-            List<IEnumAttribute> enumAttributes = enumType.findAllEnumAttributes();
+            List<IEnumAttribute> enumAttributes = enumType.getEnumAttributesIncludeSupertypeCopies();
 
             IEnumAttribute enumAttributeToMove = enumAttributes.get(newIndex);
             try {

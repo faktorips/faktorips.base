@@ -88,16 +88,20 @@ public interface IEnumType extends IEnumValueContainer, EnumDatatype {
     public final static String MSGCODE_ENUM_TYPE_NO_LITERAL_NAME_ATTRIBUTE = MSGCODE_PREFIX
             + "EnumTypeNoLiteralNameAttribute"; //$NON-NLS-1$
 
-    /** Validation message code to indicate that there exists a cycle in the hierarchy of this enumeration type. */
+    /**
+     * Validation message code to indicate that there exists a cycle in the hierarchy of this
+     * enumeration type.
+     */
     public final static String MSGCODE_CYCLE_IN_TYPE_HIERARCHY = MSGCODE_PREFIX + "CycleInTypeHierarchy";
-    
-    /** 
-     * Validation message code to indicate that there exists an inconsistency in the hierarchy of this enumeration type. 
-     * The inconsistency can result from a type in the super type hierachy that is missing its super type or that the
-     * super type is not abstract which is an additional constraint for enumeration types.
+
+    /**
+     * Validation message code to indicate that there exists an inconsistency in the hierarchy of
+     * this enumeration type. The inconsistency can result from a type in the super type hierachy
+     * that is missing its super type or that the super type is not abstract which is an additional
+     * constraint for enumeration types.
      */
     public final static String MSGCODE_INCONSISTENT_TYPE_HIERARCHY = MSGCODE_PREFIX + "InconsistentTypeHierachy";
-    
+
     /**
      * Returns the package fragment a referecning enum content must be stored in.
      */
@@ -145,7 +149,7 @@ public interface IEnumType extends IEnumValueContainer, EnumDatatype {
      * Returns the {@link IEnumAttribute} that is marked as the literal name attribute.
      */
     public IEnumAttribute getLiteralNameAttribute();
-    
+
     /**
      * Returns <code>true</code> if this enum type is abstract in terms of the object oriented
      * abstract concept, <code>false</code> if not.
@@ -161,7 +165,7 @@ public interface IEnumType extends IEnumValueContainer, EnumDatatype {
      * Returns <code>true</code> if the values for this enum type are defined in the enum type
      * itself.
      */
-    //TODO pk den property namen sollten wir nochmal überdenken
+    // TODO pk den property namen sollten wir nochmal überdenken
     public boolean getValuesArePartOfModel();
 
     /**
@@ -178,14 +182,38 @@ public interface IEnumType extends IEnumValueContainer, EnumDatatype {
      * <p>
      * Enum attributes that are inherited from the supertype hierarchy are <strong>not</strong>
      * included.
+     * 
+     * @see #getEnumAttributesIncludeSupertypeCopies()
+     * @see #findAllEnumAttributesIncludeSupertypeOriginals()
      */
     public List<IEnumAttribute> getEnumAttributes();
 
     /**
      * Returns a list containing all enum attributes that belong to this enum type
-     * <strong>plus</strong> all enum attributes that are inherited from the supertype hierarchy.
+     * <strong>plus</strong> all enum attributes that have been inherited from the supertype
+     * hierarchy (these are not the original enum attributes defined in the respective supertypes
+     * but copies created based upon the originals).
+     * <p>
+     * If the original enum attributes defined in the respective supertypes are needed use
+     * <code>findAllEnumAttributesIncludeSupertypeOriginals()</code>.
+     * 
+     * @see #getEnumAttributes()
+     * @see #findAllEnumAttributesIncludeSupertypeOriginals()
      */
-    public List<IEnumAttribute> findAllEnumAttributes();
+    public List<IEnumAttribute> getEnumAttributesIncludeSupertypeCopies();
+
+    /**
+     * Returns a list containing all enum attributes that belong to this enum type
+     * <strong>plus</strong> all enum attributes that belong to supertypes of this enum type.
+     * <p>
+     * Copies created due to inheritation are not included.
+     * 
+     * @see #getEnumAttributes()
+     * @see #getEnumAttributesIncludeSupertypeCopies()
+     * 
+     * @throws CoreException If an error occurs while searching super enum types.
+     */
+    public List<IEnumAttribute> findAllEnumAttributesIncludeSupertypeOriginals() throws CoreException;
 
     /**
      * Returns the enum attribute that has been marked to be used as literal name or
@@ -212,6 +240,9 @@ public interface IEnumType extends IEnumValueContainer, EnumDatatype {
      * <p>
      * Inherited enum attributes are <strong>not</strong> included in the search.
      * 
+     * @see #getEnumAttributeIncludeSupertypeCopies(String)
+     * @see #findEnumAttributeIncludeSupertypeOriginals(String)
+     * 
      * @param name The name of the enum attribute to obtain.
      * 
      * @throws NullPointerException If <code>name</code> is <code>null</code>.
@@ -222,13 +253,32 @@ public interface IEnumType extends IEnumValueContainer, EnumDatatype {
      * Returns the enum attribute with the given name or <code>null</code> if there is no enum
      * attribute with the given name in this enum type.
      * <p>
-     * Inherited enum attributes <strong>are</strong> included in the search.
+     * Inherited enum attributes <strong>are</strong> included in the search. Note that in this
+     * context an inherited enum attribute is just a copy refering to the original enum attribute
+     * defined in the respective super enum type.
+     * 
+     * @see #getEnumAttributes()
+     * @see #findAllEnumAttributesIncludeSupertypeOriginals()
      * 
      * @param name The name of the enum attribute to obtain.
      * 
      * @throws NullPointerException If <code>name</code> is <code>null</code>.
      */
-    public IEnumAttribute findEnumAttribute(String name);
+    public IEnumAttribute getEnumAttributeIncludeSupertypeCopies(String name);
+
+    /**
+     * Returns the enum attribute with the given name or <code>null</code> if there is no enum
+     * attribute with the given name in this enum type or in the supertype hierarchy.
+     * <p>
+     * Note that enum attributes <strong>defined in super enum types are included</strong> in the
+     * search and <strong>copies</strong> created due to inheritation <strong>are ignored</strong>.
+     * 
+     * @param name The name of the enum attribute to obtain.
+     * 
+     * @throws CoreException If an error occurs while searching super enum types.
+     * @throws NullPointerException If <code>name</code> is <code>null</code>.
+     */
+    public IEnumAttribute findEnumAttributeIncludeSupertypeOriginals(String name) throws CoreException;
 
     /**
      * Note: This method only applies to {@link IEnumType} instances that contain their own

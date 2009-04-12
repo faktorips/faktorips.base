@@ -306,7 +306,7 @@ public class EnumValuesSection extends IpsSection implements ContentsChangeListe
                 String columnName;
                 boolean isIdentifier = false;
                 if (obtainNamesFromAttributes) {
-                    IEnumAttribute currentEnumAttribute = referencedEnumType.findAllEnumAttributes().get(i);
+                    IEnumAttribute currentEnumAttribute = referencedEnumType.getEnumAttributesIncludeSupertypeCopies().get(i);
                     columnName = currentEnumAttribute.getName();
                     isIdentifier = currentEnumAttribute.isUniqueIdentifier();
                 } else {
@@ -316,7 +316,7 @@ public class EnumValuesSection extends IpsSection implements ContentsChangeListe
             }
 
         } else {
-            for (IEnumAttribute currentEnumAttribute : enumType.findAllEnumAttributes()) {
+            for (IEnumAttribute currentEnumAttribute : enumType.getEnumAttributesIncludeSupertypeCopies()) {
                 addTableColumn(currentEnumAttribute.getName(), currentEnumAttribute.isUniqueIdentifier());
             }
         }
@@ -439,7 +439,7 @@ public class EnumValuesSection extends IpsSection implements ContentsChangeListe
                     }
                 }
                 if (obtainDatatype) {
-                    datatypeQualifiedName = enumType.findAllEnumAttributes().get(i).getDatatype();
+                    datatypeQualifiedName = enumType.getEnumAttributesIncludeSupertypeCopies().get(i).getDatatype();
                 }
             }
 
@@ -596,7 +596,7 @@ public class EnumValuesSection extends IpsSection implements ContentsChangeListe
                         try {
                             String oldName = null;
                             for (String currentColumnName : columnNames) {
-                                if (enumTypeModifiedEnumAttribute.findEnumAttribute(currentColumnName) == null) {
+                                if (enumTypeModifiedEnumAttribute.getEnumAttributeIncludeSupertypeCopies(currentColumnName) == null) {
                                     oldName = currentColumnName;
                                     break;
                                 }

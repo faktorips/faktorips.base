@@ -132,7 +132,7 @@ public class EnumAttributeValue extends AtomicIpsObjectPart implements IEnumAttr
             return null;
         }
 
-        return enumType.findAllEnumAttributes().get(index);
+        return enumType.getEnumAttributesIncludeSupertypeCopies().get(index);
     }
 
     /**

@@ -601,7 +601,7 @@ public class FixEnumContentWizard extends Wizard {
             int numberEnumAttributes = newEnumType.getEnumAttributesCount(true);
             combos = new Combo[numberEnumAttributes];
             labels = new Label[numberEnumAttributes];
-            List<IEnumAttribute> enumAttributes = newEnumType.findAllEnumAttributes();
+            List<IEnumAttribute> enumAttributes = newEnumType.getEnumAttributesIncludeSupertypeCopies();
             for (int i = 0; i < numberEnumAttributes; i++) {
                 IEnumAttribute currentEnumAttribute = enumAttributes.get(i);
                 labels[i] = uiToolkit.createFormLabel(contents, currentEnumAttribute.getName() + ':');

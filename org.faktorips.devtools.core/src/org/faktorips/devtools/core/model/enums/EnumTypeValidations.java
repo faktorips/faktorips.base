@@ -192,7 +192,7 @@ public class EnumTypeValidations {
         }
 
         boolean literalNameAttributeFound = false;
-        for (IEnumAttribute currentEnumAttribute : enumType.findAllEnumAttributes()) {
+        for (IEnumAttribute currentEnumAttribute : enumType.getEnumAttributesIncludeSupertypeCopies()) {
             if (currentEnumAttribute.isLiteralName()) {
                 literalNameAttributeFound = true;
                 break;
@@ -213,7 +213,7 @@ public class EnumTypeValidations {
      */
     private static List<IEnumAttribute> getNotInheritedAttributes(IEnumType enumType) throws CoreException {
         List<IEnumAttribute> inheritedAttributes = new ArrayList<IEnumAttribute>();
-        for (IEnumAttribute currentEnumAttribute : enumType.findAllEnumAttributes()) {
+        for (IEnumAttribute currentEnumAttribute : enumType.getEnumAttributesIncludeSupertypeCopies()) {
             if (currentEnumAttribute.isInherited()) {
                 inheritedAttributes.add(currentEnumAttribute);
             }
@@ -284,6 +284,7 @@ public class EnumTypeValidations {
             superTypes.add(currentType);
             return true;
         }
+        
     }
 
 }

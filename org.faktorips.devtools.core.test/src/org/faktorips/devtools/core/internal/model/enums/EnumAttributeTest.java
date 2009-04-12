@@ -87,8 +87,7 @@ public class EnumAttributeTest extends AbstractIpsEnumPluginTest {
         assertEquals(GENDER_ENUM_ATTRIBUTE_ID_NAME, attributes.getNamedItem(IEnumAttribute.PROPERTY_NAME)
                 .getTextContent());
         assertEquals(STRING_DATATYPE_NAME, attributes.getNamedItem(IEnumAttribute.PROPERTY_DATATYPE).getTextContent());
-        assertTrue(Boolean.parseBoolean(attributes.getNamedItem(IEnumAttribute.PROPERTY_LITERAL_NAME)
-                .getTextContent()));
+        assertTrue(Boolean.parseBoolean(attributes.getNamedItem(IEnumAttribute.PROPERTY_LITERAL_NAME).getTextContent()));
         assertTrue(Boolean.parseBoolean(attributes.getNamedItem(IEnumAttribute.PROPERTY_UNIQUE_IDENTIFIER)
                 .getTextContent()));
         assertFalse(Boolean.parseBoolean(attributes.getNamedItem(IEnumAttribute.PROPERTY_INHERITED).getTextContent()));
@@ -219,6 +218,22 @@ public class EnumAttributeTest extends AbstractIpsEnumPluginTest {
             fail();
         } catch (NullPointerException e) {
         }
+
+        // Test inherited
+        genderEnumAttributeId.setDatatype(STRING_DATATYPE_NAME);
+        genderEnumType.setAbstract(true);
+        IEnumType subEnumType = newEnumType(ipsProject, "SubEnumType");
+        subEnumType.setSuperEnumType(genderEnumType.getQualifiedName());
+        IEnumAttribute idInherited = subEnumType.newEnumAttribute();
+        idInherited.setName(genderEnumAttributeId.getName());
+        idInherited.setInherited(true);
+
+        // This is of course wrong, but should have no effect
+        idInherited.setDatatype(BOOLEAN_DATATYPE_NAME);
+        idInherited.setLiteralName(false);
+        idInherited.setUniqueIdentifier(false);
+
+        assertEquals(STRING_DATATYPE_NAME, idInherited.findDatatype(ipsProject).getName());
     }
 
 }

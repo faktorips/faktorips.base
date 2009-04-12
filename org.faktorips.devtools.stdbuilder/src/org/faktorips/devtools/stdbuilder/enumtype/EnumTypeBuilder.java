@@ -380,7 +380,7 @@ public class EnumTypeBuilder extends DefaultJavaSourceFileBuilder {
 
     /** Generates the java code for the attributes. */
     private void generateCodeForEnumAttributes(JavaCodeFragmentBuilder attributeBuilder) throws CoreException {
-        for (IEnumAttribute currentEnumAttribute : getEnumType().findAllEnumAttributes()) {
+        for (IEnumAttribute currentEnumAttribute : getEnumType().getEnumAttributesIncludeSupertypeCopies()) {
             String attributeName = currentEnumAttribute.getName();
             // The first character will be made lower case
             String codeName = getJavaNamingConvention().getMemberVarName(attributeName);
@@ -405,7 +405,7 @@ public class EnumTypeBuilder extends DefaultJavaSourceFileBuilder {
     /** Generates the java code for the constructor. */
     private void generateCodeForConstructor(JavaCodeFragmentBuilder constructorBuilder) throws CoreException {
         IEnumType enumType = getEnumType();
-        List<IEnumAttribute> enumAttributes = enumType.findAllEnumAttributes();
+        List<IEnumAttribute> enumAttributes = enumType.getEnumAttributesIncludeSupertypeCopies();
         List<IEnumAttribute> validEnumAttributes = new ArrayList<IEnumAttribute>();
         for (IEnumAttribute currentEnumAttribute : enumAttributes) {
             if (currentEnumAttribute.isValid()) {
@@ -448,7 +448,7 @@ public class EnumTypeBuilder extends DefaultJavaSourceFileBuilder {
         constructorMethodBody.append("super(");
 
         List<IEnumAttribute> validSupertypeAttributes = new ArrayList<IEnumAttribute>();
-        for (IEnumAttribute currentEnumAttribute : enumType.findSuperEnumType().findAllEnumAttributes()) {
+        for (IEnumAttribute currentEnumAttribute : enumType.findSuperEnumType().getEnumAttributesIncludeSupertypeCopies()) {
             if (currentEnumAttribute.isValid()) {
                 validSupertypeAttributes.add(currentEnumAttribute);
             }
@@ -477,7 +477,7 @@ public class EnumTypeBuilder extends DefaultJavaSourceFileBuilder {
          * attribute that shall be initialized must be valid.
          */
         List<IEnumAttribute> attributesToInit = new ArrayList<IEnumAttribute>();
-        for (IEnumAttribute currentEnumAttribute : getEnumType().findAllEnumAttributes()) {
+        for (IEnumAttribute currentEnumAttribute : getEnumType().getEnumAttributesIncludeSupertypeCopies()) {
             if (currentEnumAttribute.isValid()) {
                 if (useEnumGeneration() || (useClassGeneration() && java5EnumsAvailable())
                         || !(currentEnumAttribute.isInherited())) {
@@ -506,7 +506,7 @@ public class EnumTypeBuilder extends DefaultJavaSourceFileBuilder {
     /** Generates the java code for the getter methods. */
     private void generateCodeForGetterMethods(JavaCodeFragmentBuilder methodBuilder) throws CoreException {
         IEnumType enumType = getEnumType();
-        List<IEnumAttribute> enumAttributes = enumType.findAllEnumAttributes();
+        List<IEnumAttribute> enumAttributes = enumType.getEnumAttributesIncludeSupertypeCopies();
 
         // Create getters for each attribute
         for (IEnumAttribute currentEnumAttribute : enumAttributes) {
@@ -580,7 +580,7 @@ public class EnumTypeBuilder extends DefaultJavaSourceFileBuilder {
             return;
         }
 
-        List<IEnumAttribute> uniqueIdentifierAttributes = enumType.findAllEnumAttributes();
+        List<IEnumAttribute> uniqueIdentifierAttributes = enumType.getEnumAttributesIncludeSupertypeCopies();
         List<IEnumValue> enumValues = enumType.getEnumValues();
         IEnumAttribute literalNameAttribute = enumType.findLiteralNameAttribute();
         if (literalNameAttribute == null) {

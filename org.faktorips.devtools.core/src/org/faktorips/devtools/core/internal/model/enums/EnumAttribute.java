@@ -350,7 +350,15 @@ public class EnumAttribute extends AtomicIpsObjectPart implements IEnumAttribute
         ArgumentCheck.notNull(ipsProject);
 
         if (inherited) {
-            return getEnumType().findSuperEnumType().getEnumAttribute(name).findDatatype(ipsProject);
+            // TODO aw: do we need this again and again if we want to search super enum types?
+            EnumTypeHierachyVisitor collector = new EnumTypeHierachyVisitor(getIpsProject()) {
+                protected boolean visit(IEnumType currentType) throws CoreException {
+                    return true;
+                }
+            };
+            IEnumType superEnumType = collector.findSupertype(getEnumType(), ipsProject);
+
+            return superEnumType.getEnumAttribute(name).findDatatype(ipsProject);
         }
 
         return ipsProject.findValueDatatype(datatype);
