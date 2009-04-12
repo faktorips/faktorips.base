@@ -90,18 +90,20 @@ public class EnumTypeValidations {
 
     /**
      * Checks is the super type hierarchy of this enumeration type is valid. Therefore this method
-     * checks if there exists a cycle in the type hierarchy, if there is an enumeration type in the
+     * checks if a cycle exists in the type hierarchy, if there is an enumeration type in the
      * hierarchy for which the super type cannot be found and if there exists a super type that is
      * not abstract. Last is a constraint specific to faktor ips enumerations.
      * 
-     * @param msgList the message list where messages are added to in cases of failing validations
-     * @param enumType the enumeration type that is validated
-     * @param ipsProject the IpsProject used as starting point for searches. Note: Not the
-     *            IpsProject of the provided enumeration type is used within this method
-     * @throws CoreException is thrown if an exception occurs during processing
+     * @param msgList The message list where messages are added to in cases of failing validations.
+     * @param enumType The enumeration type that is validated.
+     * @param ipsProject The IpsProject used as starting point for searches. Note: Not the
+     *            IpsProject of the provided enumeration type is used within this method.
+     * 
+     * @throws CoreException If an exception occurs during processing.
      */
     public static void validateSuperTypeHierarchy(MessageList msgList, IEnumType enumType, IIpsProject ipsProject)
             throws CoreException {
+        
         IEnumType superEnumType = enumType.findSuperEnumType();
         if (superEnumType == null) {
             return;
@@ -284,7 +286,7 @@ public class EnumTypeValidations {
             superTypes.add(currentType);
             return true;
         }
-        
+
     }
 
 }

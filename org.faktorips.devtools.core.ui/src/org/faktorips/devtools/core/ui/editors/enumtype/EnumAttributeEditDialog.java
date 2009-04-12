@@ -21,6 +21,7 @@ import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.TabFolder;
 import org.eclipse.swt.widgets.TabItem;
 import org.eclipse.swt.widgets.Text;
+import org.faktorips.devtools.core.model.ContentChangeEvent;
 import org.faktorips.devtools.core.model.enums.IEnumAttribute;
 import org.faktorips.devtools.core.model.ipsobject.IExtensionPropertyDefinition;
 import org.faktorips.devtools.core.ui.ExtensionPropertyControlFactory;
@@ -42,6 +43,15 @@ public class EnumAttributeEditDialog extends IpsPartEditDialog2 {
 
     /** The extension property factory that may extend the controls. */
     private ExtensionPropertyControlFactory extFactory;
+
+    /** The ui control to set the <code>datatype</code> property. */
+    private DatatypeRefControl datatypeControl;
+
+    /** The ui control to set the <code>useAsLiteralName</code> property. */
+    private Checkbox useAsLiteralNameCheckbox;
+
+    /** The ui control to set the <code>uniqueIdentifier</code> property. */
+    private Checkbox uniqueIdentifierCheckbox;
 
     /**
      * Creates a new <code>EnumAttributeEditDialog</code> for the user to edit the given enum
@@ -69,8 +79,23 @@ public class EnumAttributeEditDialog extends IpsPartEditDialog2 {
         page.setControl(createGeneralPage(tabFolder));
 
         createDescriptionTabItem(tabFolder);
+        
+        // TODO aw: this does not work properly
+        updateEnabledStates();
 
         return tabFolder;
+    }
+
+    /**
+     * Updates the enabled states of the <code>datatypeControl</code>,
+     * <code>useAsLiteralNameCheckbox</code> and <code>uniqueIdentifierCheckbox</code> ui controls
+     * based on the <code>inherited</code> property of the enum attribute.
+     */
+    private void updateEnabledStates() {
+        boolean enabled = !(enumAttribute.isInherited());
+        datatypeControl.setEnabled(enabled);
+        useAsLiteralNameCheckbox.setEnabled(enabled);
+        uniqueIdentifierCheckbox.setEnabled(enabled);
     }
 
     /** Creates the general tab. */
@@ -83,13 +108,12 @@ public class EnumAttributeEditDialog extends IpsPartEditDialog2 {
 
         // Name
         uiToolkit.createFormLabel(workArea, Messages.EnumAttributeEditDialog_labelName);
-        final Text nameText = uiToolkit.createText(workArea);
+        Text nameText = uiToolkit.createText(workArea);
         bindingContext.bindContent(nameText, enumAttribute, IEnumAttribute.PROPERTY_NAME);
 
         // Datatype
         uiToolkit.createFormLabel(workArea, Messages.EnumAttributeEditDialog_labelDatatype);
-        final DatatypeRefControl datatypeControl = uiToolkit.createDatatypeRefEdit(enumAttribute.getIpsProject(),
-                workArea);
+        datatypeControl = uiToolkit.createDatatypeRefEdit(enumAttribute.getIpsProject(), workArea);
         datatypeControl.setVoidAllowed(false);
         datatypeControl.setPrimitivesAllowed(false);
         datatypeControl.setOnlyValueDatatypesAllowed(true);
@@ -97,12 +121,12 @@ public class EnumAttributeEditDialog extends IpsPartEditDialog2 {
 
         // Identifier
         uiToolkit.createFormLabel(workArea, Messages.EnumAttributeEditDialog_labelUseAsLiteralName);
-        Checkbox identifierCheckbox = uiToolkit.createCheckbox(workArea);
-        bindingContext.bindContent(identifierCheckbox, enumAttribute, IEnumAttribute.PROPERTY_LITERAL_NAME);
+        useAsLiteralNameCheckbox = uiToolkit.createCheckbox(workArea);
+        bindingContext.bindContent(useAsLiteralNameCheckbox, enumAttribute, IEnumAttribute.PROPERTY_LITERAL_NAME);
 
         // Unique Identifier
         uiToolkit.createFormLabel(workArea, Messages.EnumAttributeEditDialog_labelUniqueIdentifier);
-        Checkbox uniqueIdentifierCheckbox = uiToolkit.createCheckbox(workArea);
+        uniqueIdentifierCheckbox = uiToolkit.createCheckbox(workArea);
         bindingContext.bindContent(uniqueIdentifierCheckbox, enumAttribute, IEnumAttribute.PROPERTY_UNIQUE_IDENTIFIER);
 
         // Inherited
@@ -114,11 +138,22 @@ public class EnumAttributeEditDialog extends IpsPartEditDialog2 {
         extFactory.createControls(workArea, uiToolkit, enumAttribute, IExtensionPropertyDefinition.POSITION_BOTTOM);
         extFactory.bind(bindingContext);
 
-        /*
-         * Set the focus into the name field for better usability.
-         */
+        // Set the focus into the name field for better usability.
         nameText.setFocus();
 
         return control;
     }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public void contentsChanged(ContentChangeEvent event) {
+        super.contentsChanged(event);
+
+        if (event.getPart().equals(getIpsPart())) {
+            updateEnabledStates();
+        }
+    }
+
 }

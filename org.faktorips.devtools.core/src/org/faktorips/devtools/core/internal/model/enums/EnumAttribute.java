@@ -356,8 +356,8 @@ public class EnumAttribute extends AtomicIpsObjectPart implements IEnumAttribute
                     return true;
                 }
             };
+            
             IEnumType superEnumType = collector.findSupertype(getEnumType(), ipsProject);
-
             return superEnumType.getEnumAttribute(name).findDatatype(ipsProject);
         }
 
