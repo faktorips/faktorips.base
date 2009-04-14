@@ -498,12 +498,15 @@ public class EnumTypeBuilder extends DefaultJavaSourceFileBuilder {
     /** Creates the method call of the super constructor. */
     private void createSuperConstructorCall(JavaCodeFragment constructorMethodBody) throws CoreException {
         IEnumType enumType = getEnumType();
+        IEnumType superEnumType = enumType.findSuperEnumType();
+        if (superEnumType == null) {
+            return;
+        }
 
         constructorMethodBody.append("super(");
 
         List<IEnumAttribute> validSupertypeAttributes = new ArrayList<IEnumAttribute>();
-        for (IEnumAttribute currentEnumAttribute : enumType.findSuperEnumType()
-                .getEnumAttributesIncludeSupertypeCopies()) {
+        for (IEnumAttribute currentEnumAttribute : superEnumType.getEnumAttributesIncludeSupertypeCopies()) {
             if (currentEnumAttribute.isValid()) {
                 validSupertypeAttributes.add(currentEnumAttribute);
             }
