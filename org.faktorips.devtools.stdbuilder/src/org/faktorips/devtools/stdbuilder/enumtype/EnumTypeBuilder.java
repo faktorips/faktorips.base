@@ -157,28 +157,29 @@ public class EnumTypeBuilder extends DefaultJavaSourceFileBuilder {
         mainSection.setUnqualifiedName(getJavaNamingConvention().getTypeName(enumType.getName()));
         mainSection.getJavaDocForTypeBuilder().javaDoc(enumType.getDescription(), ANNOTATION_GENERATED);
 
-        // Set supertype / implemented interface
+        // Set supertype / implemented interface and ensure serialization
+        List<String> implementedInterfaces = new ArrayList<String>(5);
         if (enumType.hasSuperEnumType()) {
             IEnumType superEnumType = enumType.findSuperEnumType();
             if (superEnumType != null) {
                 if (useEnumGeneration() || useInterfaceGeneration()
                         || useClassGenerationDespiteJava5EnumsAvailability()) {
-                    mainSection.setExtendedInterfaces(new String[] { getQualifiedClassName(superEnumType) });
+                    implementedInterfaces.add(getQualifiedClassName(superEnumType));
                 } else {
                     mainSection.setSuperClass(getQualifiedClassName(superEnumType));
                 }
             }
         }
-
-        // Serializable
         if (useClassGeneration()) {
             if ((enumType.isAbstract() && !(enumType.hasSuperEnumType()))
                     || useClassGenerationDespiteJava5EnumsAvailability()) {
-                mainSection.setExtendedInterfaces(new String[] { "java.io.Serializable" });
+                implementedInterfaces.add("java.io.Serializable");
             }
             generateConstantForSerialVersionNumber(mainSection.getConstantBuilder());
         }
+        mainSection.setExtendedInterfaces(implementedInterfaces.toArray(new String[implementedInterfaces.size()]));
 
+        // Generate enumeration values
         generateCodeForEnumValues(mainSection, useEnumGeneration());
 
         // Generate the attributes and the constructor
@@ -669,9 +670,9 @@ public class EnumTypeBuilder extends DefaultJavaSourceFileBuilder {
                                 .findEnumAttributeValue(currentEnumAttribute);
                         body.append("if (");
                         body.append(parameterName);
-                        body.append(".equals(\"");
-                        body.append(attributeValue.getValue());
-                        body.append("\"))");
+                        body.append(".equals(");
+                        body.append(helper.newInstance(attributeValue.getValue()));
+                        body.append("))");
                         body.appendOpenBracket();
                         body.append("return ");
                         body.append(getConstantNameForEnumAttributeValue(currentEnumValue
