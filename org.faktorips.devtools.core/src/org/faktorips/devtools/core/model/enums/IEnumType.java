@@ -146,11 +146,6 @@ public interface IEnumType extends IEnumValueContainer, EnumDatatype {
     public IEnumType findSuperEnumType() throws CoreException;
 
     /**
-     * Returns the {@link IEnumAttribute} that is marked as the literal name attribute.
-     */
-    public IEnumAttribute getLiteralNameAttribute();
-
-    /**
      * Returns <code>true</code> if this enum type is abstract in terms of the object oriented
      * abstract concept, <code>false</code> if not.
      */
@@ -219,9 +214,9 @@ public interface IEnumType extends IEnumValueContainer, EnumDatatype {
      * <code>null</code> if no such enum attribute exists in this enum type.
      * <p>
      * Enum attributes that are inherited from the supertype hierarchy <strong>are</strong> included
-     * in the search.
+     * in the search (as copies of their respective originals).
      */
-    public IEnumAttribute findLiteralNameAttribute();
+    public IEnumAttribute getLiteralNameAttribute();
 
     /**
      * Returns the index of the given enum attribute in the containing list.

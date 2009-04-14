@@ -252,12 +252,12 @@ public class EnumAttribute extends AtomicIpsObjectPart implements IEnumAttribute
     private void validateLiteralName(MessageList list, IIpsProject ipsProject) {
         String text;
         Message validationMessage;
-        List<IEnumAttribute> enumAttributesThisType = getEnumType().getEnumAttributes();
+        List<IEnumAttribute> enumAttributes = getEnumType().getEnumAttributesIncludeSupertypeCopies();
 
         if (literalName) {
             // Check for other attributes being marked as literalName
             int numberEnumAttributesIdentifier = 0;
-            for (IEnumAttribute currentEnumAttribute : enumAttributesThisType) {
+            for (IEnumAttribute currentEnumAttribute : enumAttributes) {
                 if (currentEnumAttribute.isLiteralName()) {
                     numberEnumAttributesIdentifier++;
                 }
@@ -356,7 +356,7 @@ public class EnumAttribute extends AtomicIpsObjectPart implements IEnumAttribute
                     return true;
                 }
             };
-            
+
             IEnumType superEnumType = collector.findSupertype(getEnumType(), ipsProject);
             return superEnumType.getEnumAttribute(name).findDatatype(ipsProject);
         }

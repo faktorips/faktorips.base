@@ -560,7 +560,7 @@ public class EnumType extends EnumValueContainer implements IEnumType {
     /**
      * {@inheritDoc}
      */
-    public IEnumAttribute findLiteralNameAttribute() {
+    public IEnumAttribute getLiteralNameAttribute() {
         for (IEnumAttribute currentEnumAttribute : getEnumAttributesIncludeSupertypeCopies()) {
             if (currentEnumAttribute.isLiteralName()) {
                 return currentEnumAttribute;
@@ -653,18 +653,6 @@ public class EnumType extends EnumValueContainer implements IEnumType {
     /**
      * {@inheritDoc}
      */
-    public IEnumAttribute getLiteralNameAttribute() {
-        for (IEnumAttribute attribute : getEnumAttributes()) {
-            if (attribute.isLiteralName()) {
-                return attribute;
-            }
-        }
-        return null;
-    }
-
-    /**
-     * {@inheritDoc}
-     */
     /*
      * TODO aw: check if it is correct that this method uses the ips project that it belongs to or
      * does the ips project need to be provided.
@@ -722,7 +710,7 @@ public class EnumType extends EnumValueContainer implements IEnumType {
 
             List<String> valueIds = new ArrayList<String>(getEnumValuesCount());
             for (IEnumValue enumValue : getEnumValues()) {
-                IEnumAttribute literalNameEnumAttribute = findLiteralNameAttribute();
+                IEnumAttribute literalNameEnumAttribute = getLiteralNameAttribute();
                 if (literalNameEnumAttribute == null) {
                     return null;
                 }
@@ -748,7 +736,7 @@ public class EnumType extends EnumValueContainer implements IEnumType {
             return null;
         }
         for (IEnumValue enumValue : getEnumValues()) {
-            IEnumAttributeValue value = enumValue.findEnumAttributeValue(findLiteralNameAttribute());
+            IEnumAttributeValue value = enumValue.findEnumAttributeValue(getLiteralNameAttribute());
             if (value == null) {
                 continue;
             }
@@ -772,7 +760,7 @@ public class EnumType extends EnumValueContainer implements IEnumType {
         try {
 
             for (IEnumValue enumValue : getEnumValues()) {
-                IEnumAttributeValue value = enumValue.findEnumAttributeValue(findLiteralNameAttribute());
+                IEnumAttributeValue value = enumValue.findEnumAttributeValue(getLiteralNameAttribute());
                 if (value == null) {
                     continue;
                 }
