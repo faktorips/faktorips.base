@@ -15,8 +15,6 @@ package org.faktorips.devtools.core.model.enums;
 
 import java.util.List;
 
-import org.faktorips.devtools.core.IpsPlugin;
-import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.util.ArgumentCheck;
 
 /**
@@ -33,8 +31,6 @@ public class EnumsUtil {
      * 
      * <ul>
      * <li>Name</li>
-     * <li>Datatype</li>
-     * <li>Identifier-Flag</li>
      * </ul>
      * 
      * @param enumAttribute1 The first enum attribute to compare.
@@ -46,9 +42,7 @@ public class EnumsUtil {
     public static boolean equalEnumAttributes(IEnumAttribute enumAttribute1, IEnumAttribute enumAttribute2) {
         ArgumentCheck.notNull(new Object[] { enumAttribute1, enumAttribute2 });
 
-        return enumAttribute1.getName().equals(enumAttribute2.getName())
-                && enumAttribute1.getDatatype().equals(enumAttribute2.getDatatype())
-                && enumAttribute1.isLiteralName() == enumAttribute2.isLiteralName();
+        return enumAttribute1.getName().equals(enumAttribute2.getName());
     }
 
     /**
@@ -76,39 +70,6 @@ public class EnumsUtil {
         }
 
         return false;
-    }
-
-    /**
-     * Takes a qualified fragment root name e.g. Project/model and extracts the source folder and
-     * the ips project from it.
-     * <p>
-     * Returns an object array.
-     * <ul>
-     * <li>0 is the source folder name (might be an empty string).
-     * <li>1 is the ips project (might be <code>null</code>).
-     * </ul>
-     * 
-     * @throws NullPointerException If <code>qualifiedFragmentRoot</code> is <code>null</code>.
-     */
-    public static Object[] splitProjectAndSourceFolder(String fragmentRootQualifiedName) {
-        ArgumentCheck.notNull(fragmentRootQualifiedName);
-
-        Object[] array = new Object[2];
-
-        if (fragmentRootQualifiedName.contains("/")) {
-            array[0] = fragmentRootQualifiedName.substring(fragmentRootQualifiedName.indexOf('/') + 1);
-            String projectName = fragmentRootQualifiedName.substring(0, fragmentRootQualifiedName.indexOf('/'));
-            if (!(projectName.equals(""))) {
-                IIpsProject foundProject = IpsPlugin.getDefault().getIpsModel().getIpsProject(projectName);
-                if (foundProject.exists()) {
-                    array[1] = foundProject;
-                }
-            }
-        } else {
-            array[0] = "";
-        }
-
-        return array;
     }
 
 }

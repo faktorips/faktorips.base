@@ -71,7 +71,7 @@ public class EnumAttributeValue extends AtomicIpsObjectPart implements IEnumAttr
     protected Element createElement(Document doc) {
         return doc.createElement(XML_TAG);
     }
-    
+
     /**
      * {@inheritDoc}
      */
@@ -161,8 +161,7 @@ public class EnumAttributeValue extends AtomicIpsObjectPart implements IEnumAttr
         IEnumAttribute enumAttribute = findEnumAttribute();
         if (enumAttribute != null) {
             // Value parsable?
-            String datatypeQualifiedName = enumAttribute.getDatatype();
-            ValueDatatype valueDatatype = ipsProject.findValueDatatype(datatypeQualifiedName);
+            ValueDatatype valueDatatype = enumAttribute.findDatatype(ipsProject);
             if (valueDatatype != null) {
                 if (!(valueDatatype.isParsable(value))) {
                     String text = NLS.bind(Messages.EnumAttributeValue_ValueNotParsable, enumAttribute.getName(),
@@ -256,7 +255,12 @@ public class EnumAttributeValue extends AtomicIpsObjectPart implements IEnumAttr
             throw new NullPointerException();
         }
 
-        return referencedEnumAttribute.isLiteralName();
+        Boolean literalName = referencedEnumAttribute.findIsLiteralName();
+        if (literalName == null) {
+            return false;
+        }
+
+        return literalName;
     }
 
     /** Returns whether this enum attribute value refers to a unique identifier enum attribute. */
@@ -266,7 +270,12 @@ public class EnumAttributeValue extends AtomicIpsObjectPart implements IEnumAttr
             throw new NullPointerException();
         }
 
-        return referencedEnumAttribute.isUniqueIdentifier();
+        Boolean uniqueIdentifier = referencedEnumAttribute.findIsUniqueIdentifier();
+        if (uniqueIdentifier == null) {
+            return false;
+        }
+
+        return uniqueIdentifier;
     }
 
     /**

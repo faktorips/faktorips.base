@@ -157,7 +157,11 @@ public class DefaultLabelProvider extends LabelProvider {
         StringBuffer sb = new StringBuffer();
         sb.append(enumAttribute.getName());
         sb.append(" : "); //$NON-NLS-1$
-        sb.append(enumAttribute.getDatatype());
+        try {
+            sb.append(enumAttribute.findDatatype(enumAttribute.getIpsProject()).getName());
+        } catch (CoreException e) {
+            throw new RuntimeException(e);
+        }
 
         return sb.toString();
     }

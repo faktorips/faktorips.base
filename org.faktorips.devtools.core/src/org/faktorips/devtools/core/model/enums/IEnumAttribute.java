@@ -21,12 +21,15 @@ import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 /**
  * An enum attribute is a part of an enum type that describes a property of the enum type.
  * <p>
- * Enum attributes are always of a specific <em>datatype</em> and can be <em>inherited</em> from an
- * enum type in the supertype hierarchy.
+ * Enum attributes are always of a specific <code>datatype</code> and can be <code>inherited</code>
+ * from an enum type in the supertype hierarchy. If an enum attribute is inherited from the
+ * supertype hierarchy it is treated as a copy of the original enum attribute refering to its
+ * properties.
  * <p>
- * An enum attribute can be marked as <em>use as literal name</em> which implies that the values for
- * this enum attribute will be used to identify the respective enum values in the generated source
- * code and that each value for this enum attribute must be unique.
+ * An enum attribute can be marked as <code>useAsLiteralName</code> which implies that the values
+ * for this enum attribute will be used to identify the respective enum values in the generated
+ * source code. An enum attribute can also be marked as <code>uniqueIdentifier</code> which implies
+ * that each value for this enum attribute must be unique.
  * <p>
  * For more information about how enum attributes relate to the entire Faktor-IPS enums concept
  * please read the documentation of IEnumType.
@@ -110,18 +113,25 @@ public interface IEnumAttribute extends IIpsObjectPart {
 
     /**
      * Returns the unqualified name of the datatype of this enum attribute.
+     * <p>
+     * <strong>Important:</strong> This operation does not search the supertype hierarchy for the
+     * datatype if this enum attribute is inherited. Use <code>findDatatype(IIpsProject)</code> in
+     * this case.
+     * 
+     * @see #findDatatype(IIpsProject)
      */
     public String getDatatype();
 
     /**
-     * Returns the enum attribute's value datatype.
+     * Returns this enum attribute's value datatype.
      * <p>
-     * If this enum attribute is inherited the value datatype of the super enum attribute is
+     * If this enum attribute is inherited the value datatype of the super enum attribute will be
      * returned.
      * <p>
-     * Returns <code>null</code> if no value datatype can be found.
+     * Returns <code>null</code> if no value datatype can be found or if the super enum attribute
+     * could not be found.
      * 
-     * @param project The project which ips object path is used for the search. This is not
+     * @param ipsProject The ips project which ips object path is used for the search. This is not
      *            necessarily the project this enum attribute is part of.
      * 
      * @see #getDatatype()
@@ -144,8 +154,28 @@ public interface IEnumAttribute extends IIpsObjectPart {
     /**
      * Returns <code>true</code> if this enum attribute is used as literal name, <code>false</code>
      * if not.
+     * <p>
+     * <strong>Important:</strong> This operation does not search the supertype hierarchy for the
+     * literal name property if this enum attribute is inherited. Use
+     * <code>findIsLiteralName()</code> in this case.
+     * 
+     * @see #findIsLiteralName()
      */
     public boolean isLiteralName();
+
+    /**
+     * Returns <code>true</code> if this enum attribute is used as literal name, <code>false</code>
+     * if not.
+     * <p>
+     * If this enum attribute is inherited the property of the super enum attribute will be
+     * returned. Returns <code>null</code> if the super enum attribute cannot be found.
+     * 
+     * @see #isLiteralName()
+     * 
+     * @throws CoreException If an error occurs while searching for the super enum attribute.
+     */
+    // TODO aw: ips project as parameter neccessary?
+    public Boolean findIsLiteralName() throws CoreException;
 
     /**
      * Sets whether this enum attribute is used as literal name.
@@ -163,6 +193,13 @@ public interface IEnumAttribute extends IIpsObjectPart {
 
     /**
      * Sets whether this enum attribute is inherited from the supertype hierarchy.
+     * <p>
+     * If this property is set to <code>true</code> this enum attribute is treated like a copy of
+     * the original enum attribute in the respective super enum type. This means the
+     * <code>datatype</code>, <code>useAsLiteralName</code> and <code>uniqueIdentifier</code>
+     * properties are then defined by the original enum attribute. The properties will be set to an
+     * empty string or <code>false</code> and the respective setters and getters will throw
+     * <code>IllegalStateException</code>s when called from now on.
      * 
      * @param isInherited Flag indicating whether this enum attribute is inherited from the
      *            supertype hierarchy.
@@ -179,8 +216,28 @@ public interface IEnumAttribute extends IIpsObjectPart {
     /**
      * Returns <code>true</code> if this enum attribute is a unique identifier, <code>false</code>
      * if not.
+     * <p>
+     * <strong>Important:</strong> This operation does not search the supertype hierarchy for the
+     * unique identifier property if this enum attribute is inherited. Use
+     * <code>findIsUniqueIdentifier()</code> in this case.
+     * 
+     * @see #findIsUniqueIdentifier()
      */
     public boolean isUniqueIdentifier();
+
+    /**
+     * Returns <code>true</code> if this enum attribute is marked as unique identifier,
+     * <code>false</code> if not.
+     * <p>
+     * If this enum attribute is inherited the property of the super enum attribute will be
+     * returned. Returns <code>null</code> if the super enum attribute cannot be found.
+     * 
+     * @see #isUniqueIdentifier()
+     * 
+     * @throws CoreException If an error occurs while searching for the super enum attribute.
+     */
+    // TODO aw: ips project as parameter neccessary?
+    public Boolean findIsUniqueIdentifier() throws CoreException;
 
     /**
      * Sets whether this enum attribute is a unique identifier.

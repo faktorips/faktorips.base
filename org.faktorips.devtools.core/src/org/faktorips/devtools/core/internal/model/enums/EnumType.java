@@ -435,7 +435,7 @@ public class EnumType extends EnumValueContainer implements IEnumType {
         ArgumentCheck.notNull(new Object[] { validationMessageList, enumType });
 
         // All attributes from supertype hierarchy inherited?
-        List<IEnumAttribute> notInheritedAttributes = getNotInheritedAttributes(enumType);
+        List<IEnumAttribute> notInheritedAttributes = getNotInheritedEnumAttributes(enumType);
         int notInheritedAttributesCount = notInheritedAttributes.size();
         if (notInheritedAttributesCount > 0) {
             IEnumAttribute firstNotInheritedAttribute = notInheritedAttributes.get(0);
@@ -459,7 +459,9 @@ public class EnumType extends EnumValueContainer implements IEnumType {
      * If the given enum type is abstract the validation will succeed even if there is no literal
      * name attribute.
      */
-    private void validateLiteralNameAttribute(MessageList validationMessageList, IEnumType enumType) {
+    private void validateLiteralNameAttribute(MessageList validationMessageList, IEnumType enumType)
+            throws CoreException {
+
         ArgumentCheck.notNull(new Object[] { validationMessageList, enumType });
 
         // Pass validation if given enum type is abstract
@@ -469,7 +471,11 @@ public class EnumType extends EnumValueContainer implements IEnumType {
 
         boolean literalNameAttributeFound = false;
         for (IEnumAttribute currentEnumAttribute : enumType.getEnumAttributesIncludeSupertypeCopies()) {
-            if (currentEnumAttribute.isLiteralName()) {
+            Boolean literalName = currentEnumAttribute.findIsLiteralName();
+            if (literalName == null) {
+                continue;
+            }
+            if (literalName) {
                 literalNameAttributeFound = true;
                 break;
             }
@@ -484,10 +490,10 @@ public class EnumType extends EnumValueContainer implements IEnumType {
     }
 
     /**
-     * Returns all attributes from the supertype hierarchy of the given enum type that are not
+     * Returns all enum attributes from the supertype hierarchy of the given enum type that are not
      * inherited in the given enum type.
      */
-    private List<IEnumAttribute> getNotInheritedAttributes(IEnumType enumType) throws CoreException {
+    private List<IEnumAttribute> getNotInheritedEnumAttributes(IEnumType enumType) throws CoreException {
         List<IEnumAttribute> inheritedAttributes = new ArrayList<IEnumAttribute>();
         for (IEnumAttribute currentEnumAttribute : enumType.getEnumAttributesIncludeSupertypeCopies()) {
             if (currentEnumAttribute.isInherited()) {
@@ -560,9 +566,13 @@ public class EnumType extends EnumValueContainer implements IEnumType {
     /**
      * {@inheritDoc}
      */
-    public IEnumAttribute getLiteralNameAttribute() {
+    public IEnumAttribute getLiteralNameAttribute() throws CoreException {
         for (IEnumAttribute currentEnumAttribute : getEnumAttributesIncludeSupertypeCopies()) {
-            if (currentEnumAttribute.isLiteralName()) {
+            Boolean literalName = currentEnumAttribute.findIsLiteralName();
+            if (literalName == null) {
+                continue;
+            }
+            if (literalName) {
                 return currentEnumAttribute;
             }
         }
@@ -655,7 +665,7 @@ public class EnumType extends EnumValueContainer implements IEnumType {
      */
     /*
      * TODO aw: check if it is correct that this method uses the ips project that it belongs to or
-     * does the ips project need to be provided.
+     * does the ips project need to be provided?
      */
     public String getJavaClassName() {
         return getIpsProject().getDatatypeHelper(this).getJavaClassName();

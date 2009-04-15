@@ -113,10 +113,10 @@ public class EnumAttribute extends AtomicIpsObjectPart implements IEnumAttribute
     /**
      * {@inheritDoc}
      */
-    public void setLiteralName(boolean isIdentifier) {
+    public void setLiteralName(boolean isLiteralName) {
         boolean oldIsIdentifier = this.literalName;
-        this.literalName = isIdentifier;
-        valueChanged(oldIsIdentifier, isIdentifier);
+        this.literalName = isLiteralName;
+        valueChanged(oldIsIdentifier, isLiteralName);
     }
 
     /**
@@ -159,14 +159,23 @@ public class EnumAttribute extends AtomicIpsObjectPart implements IEnumAttribute
      * {@inheritDoc}
      */
     public Image getImage() {
-        if (uniqueIdentifier && inherited) {
-            return IpsPlugin.getDefault().getImage(OVERRIDDEN_UNIQUE_IDENTIFIER_ICON);
-        } else if (uniqueIdentifier) {
-            return IpsPlugin.getDefault().getImage(UNIQUE_IDENTIFIER_ICON);
-        } else if (inherited) {
-            return IpsPlugin.getDefault().getImage(OVERRIDDEN_ICON);
-        } else {
-            return IpsPlugin.getDefault().getImage(ICON);
+        try {
+            if (inherited && findSuperEnumAttribute() == null) {
+                return IpsPlugin.getDefault().getImage(OVERRIDDEN_ICON);
+            }
+
+            boolean isUniqueIdentifier = findIsUniqueIdentifier();
+            if (isUniqueIdentifier && inherited) {
+                return IpsPlugin.getDefault().getImage(OVERRIDDEN_UNIQUE_IDENTIFIER_ICON);
+            } else if (isUniqueIdentifier) {
+                return IpsPlugin.getDefault().getImage(UNIQUE_IDENTIFIER_ICON);
+            } else if (inherited) {
+                return IpsPlugin.getDefault().getImage(OVERRIDDEN_ICON);
+            } else {
+                return IpsPlugin.getDefault().getImage(ICON);
+            }
+        } catch (CoreException e) {
+            throw new RuntimeException(e);
         }
     }
 
@@ -178,8 +187,10 @@ public class EnumAttribute extends AtomicIpsObjectPart implements IEnumAttribute
         super.validateThis(list, ipsProject);
 
         validateName(list, ipsProject);
-        validateDatatype(list, ipsProject);
-        validateLiteralName(list, ipsProject);
+        if (!inherited) {
+            validateDatatype(list, ipsProject);
+            validateLiteralName(list, ipsProject);
+        }
         validateInherited(list, ipsProject);
     }
 
@@ -287,25 +298,8 @@ public class EnumAttribute extends AtomicIpsObjectPart implements IEnumAttribute
 
         // Check existence in supertype hierarchy if this enum attribute is inherited
         if (inherited) {
-            boolean attributeFound = false;
-            List<IEnumType> superEnumTypes = getEnumType().findAllSuperEnumTypes();
-            for (IEnumType currentSuperEnumType : superEnumTypes) {
-
-                // Name, datatype and literalName must correspond
-                IEnumAttribute possibleAttribute = currentSuperEnumType.getEnumAttribute(name);
-                if (possibleAttribute != null) {
-                    if (possibleAttribute.getDatatype().equals(datatype)
-                            && possibleAttribute.isLiteralName() == literalName) {
-                        attributeFound = true;
-                        break;
-                    }
-                }
-            }
-
-            if (!(attributeFound)) {
-                String identifierLabel = (literalName) ? ", " + Messages.EnumAttribute_UniqueIdentifier : "";
-                String attribute = name + " (" + datatype + identifierLabel + ')';
-                text = NLS.bind(Messages.EnumAttribute_NoSuchAttributeInSupertypeHierarchy, attribute);
+            if (findSuperEnumAttribute() == null) {
+                text = NLS.bind(Messages.EnumAttribute_NoSuchAttributeInSupertypeHierarchy, name);
                 validationMessage = new Message(MSGCODE_ENUM_ATTRIBUTE_NO_SUCH_ATTRIBUTE_IN_SUPERTYPE_HIERARCHY, text,
                         Message.ERROR, this, PROPERTY_INHERITED);
                 list.add(validationMessage);
@@ -324,6 +318,12 @@ public class EnumAttribute extends AtomicIpsObjectPart implements IEnumAttribute
      * {@inheritDoc}
      */
     public void setInherited(boolean isInherited) {
+        if (isInherited) {
+            setDatatype("");
+            setLiteralName(false);
+            setUniqueIdentifier(false);
+        }
+
         boolean oldIsInherited = this.inherited;
         this.inherited = isInherited;
         valueChanged(oldIsInherited, isInherited);
@@ -350,18 +350,46 @@ public class EnumAttribute extends AtomicIpsObjectPart implements IEnumAttribute
         ArgumentCheck.notNull(ipsProject);
 
         if (inherited) {
-            // TODO aw: do we need this again and again if we want to search super enum types?
-            EnumTypeHierachyVisitor collector = new EnumTypeHierachyVisitor(getIpsProject()) {
-                protected boolean visit(IEnumType currentType) throws CoreException {
-                    return true;
-                }
-            };
-
-            IEnumType superEnumType = collector.findSupertype(getEnumType(), ipsProject);
-            return superEnumType.getEnumAttribute(name).findDatatype(ipsProject);
+            IEnumAttribute superEnumAttribute = findSuperEnumAttribute();
+            if (superEnumAttribute == null) {
+                return null;
+            }
+            return superEnumAttribute.findDatatype(ipsProject);
         }
 
         return ipsProject.findValueDatatype(datatype);
+    }
+
+    /**
+     * Returns the original enum attribute this enum attribute is a copy of (if this enum attribute
+     * is inherited).
+     * <p>
+     * Returns <code>null</code> if this enum attribute is not inherited or the super enum attribute
+     * cannot be found.
+     */
+    private IEnumAttribute findSuperEnumAttribute() throws CoreException {
+        if (!inherited) {
+            return null;
+        }
+
+        // TODO aw: do we need this again and again if we want to search super enum types?
+        EnumTypeHierachyVisitor collector = new EnumTypeHierachyVisitor(getIpsProject()) {
+            protected boolean visit(IEnumType currentType) throws CoreException {
+                return true;
+            }
+        };
+
+        IIpsProject ipsProject = getIpsProject();
+        IEnumType currentSuperEnumType = collector.findSupertype(getEnumType(), ipsProject);
+        while (currentSuperEnumType != null) {
+            IEnumAttribute possibleFoundEnumAttribute = currentSuperEnumType.getEnumAttribute(name);
+            if (possibleFoundEnumAttribute != null) {
+                return possibleFoundEnumAttribute;
+            }
+            currentSuperEnumType = collector.findSupertype(currentSuperEnumType, ipsProject);
+        }
+
+        return null;
     }
 
     /**
@@ -378,5 +406,35 @@ public class EnumAttribute extends AtomicIpsObjectPart implements IEnumAttribute
         boolean oldIsUniqueIdentifier = this.uniqueIdentifier;
         this.uniqueIdentifier = isUniqueIdentifier;
         valueChanged(oldIsUniqueIdentifier, isUniqueIdentifier);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public Boolean findIsLiteralName() throws CoreException {
+        if (inherited) {
+            IEnumAttribute superEnumAttribute = findSuperEnumAttribute();
+            if (superEnumAttribute == null) {
+                return null;
+            }
+            return superEnumAttribute.isLiteralName();
+        } else {
+            return isLiteralName();
+        }
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public Boolean findIsUniqueIdentifier() throws CoreException {
+        if (inherited) {
+            IEnumAttribute superEnumAttribute = findSuperEnumAttribute();
+            if (superEnumAttribute == null) {
+                return null;
+            }
+            return superEnumAttribute.isUniqueIdentifier();
+        } else {
+            return isUniqueIdentifier();
+        }
     }
 }

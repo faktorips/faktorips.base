@@ -21,9 +21,11 @@ import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.TabFolder;
 import org.eclipse.swt.widgets.TabItem;
 import org.eclipse.swt.widgets.Text;
+import org.faktorips.datatype.Datatype;
 import org.faktorips.devtools.core.model.ContentChangeEvent;
 import org.faktorips.devtools.core.model.enums.IEnumAttribute;
 import org.faktorips.devtools.core.model.ipsobject.IExtensionPropertyDefinition;
+import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.ui.ExtensionPropertyControlFactory;
 import org.faktorips.devtools.core.ui.controls.Checkbox;
 import org.faktorips.devtools.core.ui.controls.DatatypeRefControl;
@@ -79,23 +81,8 @@ public class EnumAttributeEditDialog extends IpsPartEditDialog2 {
         page.setControl(createGeneralPage(tabFolder));
 
         createDescriptionTabItem(tabFolder);
-        
-        // TODO aw: this does not work properly
-        updateEnabledStates();
 
         return tabFolder;
-    }
-
-    /**
-     * Updates the enabled states of the <code>datatypeControl</code>,
-     * <code>useAsLiteralNameCheckbox</code> and <code>uniqueIdentifierCheckbox</code> ui controls
-     * based on the <code>inherited</code> property of the enum attribute.
-     */
-    private void updateEnabledStates() {
-        boolean enabled = !(enumAttribute.isInherited());
-        datatypeControl.setEnabled(enabled);
-        useAsLiteralNameCheckbox.setEnabled(enabled);
-        uniqueIdentifierCheckbox.setEnabled(enabled);
     }
 
     /** Creates the general tab. */
@@ -117,22 +104,22 @@ public class EnumAttributeEditDialog extends IpsPartEditDialog2 {
         datatypeControl.setVoidAllowed(false);
         datatypeControl.setPrimitivesAllowed(false);
         datatypeControl.setOnlyValueDatatypesAllowed(true);
-        bindingContext.bindContent(datatypeControl, enumAttribute, IEnumAttribute.PROPERTY_DATATYPE);
 
-        // Identifier
+        // Literal name
         uiToolkit.createFormLabel(workArea, Messages.EnumAttributeEditDialog_labelUseAsLiteralName);
         useAsLiteralNameCheckbox = uiToolkit.createCheckbox(workArea);
-        bindingContext.bindContent(useAsLiteralNameCheckbox, enumAttribute, IEnumAttribute.PROPERTY_LITERAL_NAME);
 
         // Unique Identifier
         uiToolkit.createFormLabel(workArea, Messages.EnumAttributeEditDialog_labelUniqueIdentifier);
         uniqueIdentifierCheckbox = uiToolkit.createCheckbox(workArea);
-        bindingContext.bindContent(uniqueIdentifierCheckbox, enumAttribute, IEnumAttribute.PROPERTY_UNIQUE_IDENTIFIER);
 
         // Inherited
         uiToolkit.createFormLabel(workArea, Messages.EnumAttributeEditDialog_labelIsInherited);
         Checkbox inheritedCheckbox = uiToolkit.createCheckbox(workArea);
         bindingContext.bindContent(inheritedCheckbox, enumAttribute, IEnumAttribute.PROPERTY_INHERITED);
+
+        // Content bindings dependend on inherited property
+        bindAndSetContentDependendOnInheritedProperty(enumAttribute);
 
         // Create extension properties on position bottom
         extFactory.createControls(workArea, uiToolkit, enumAttribute, IExtensionPropertyDefinition.POSITION_BOTTOM);
@@ -145,14 +132,69 @@ public class EnumAttributeEditDialog extends IpsPartEditDialog2 {
     }
 
     /**
+     * If the enum attribute to be edited is inherited from the supertype hierarchy the datatype,
+     * useAsLiteralName and uniqueIdentifier fields will not be bound to the respective properties
+     * and their content will be set to the values of the respective super enum attribute if such
+     * can be found.
+     * <p>
+     * If the enum attribute to be edited is not inherited from the supertype hierarchy the fields
+     * will be bound to the respective properties.
+     */
+    private void bindAndSetContentDependendOnInheritedProperty(IEnumAttribute enumAttribute) {
+        if (!(enumAttribute.isInherited())) {
+            bindingContext.bindContent(datatypeControl, enumAttribute, IEnumAttribute.PROPERTY_DATATYPE);
+            bindingContext.bindContent(useAsLiteralNameCheckbox, enumAttribute, IEnumAttribute.PROPERTY_LITERAL_NAME);
+            bindingContext.bindContent(uniqueIdentifierCheckbox, enumAttribute,
+                    IEnumAttribute.PROPERTY_UNIQUE_IDENTIFIER);
+        } else {
+            bindingContext.removeBindings(datatypeControl);
+            bindingContext.removeBindings(useAsLiteralNameCheckbox);
+            bindingContext.removeBindings(uniqueIdentifierCheckbox);
+            bindingContext.bindEnabled(datatypeControl, enumAttribute, IEnumAttribute.PROPERTY_INHERITED, false);
+            bindingContext.bindEnabled(uniqueIdentifierCheckbox, enumAttribute, IEnumAttribute.PROPERTY_INHERITED,
+                    false);
+            bindingContext.bindEnabled(useAsLiteralNameCheckbox, enumAttribute, IEnumAttribute.PROPERTY_INHERITED,
+                    false);
+
+            try {
+                IIpsProject ipsProject = enumAttribute.getIpsProject();
+                Datatype datatype = enumAttribute.findDatatype(ipsProject);
+                Boolean literalName = enumAttribute.findIsLiteralName();
+                Boolean uniqueIdentifier = enumAttribute.findIsUniqueIdentifier();
+                String datatypeString = (datatype == null) ? "" : datatype.getName();
+                boolean literalNameBoolean = (literalName == null) ? false : literalName.booleanValue();
+                boolean uniqueIdentifierBoolean = (uniqueIdentifier == null) ? false : uniqueIdentifier.booleanValue();
+                datatypeControl.setText(datatypeString);
+                useAsLiteralNameCheckbox.setChecked(literalNameBoolean);
+                uniqueIdentifierCheckbox.setChecked(uniqueIdentifierBoolean);
+            } catch (CoreException e) {
+                throw new RuntimeException(e);
+            }
+        }
+
+        // Update the ui
+        // TODO aw: sometimes this works, sometimes not, somewhat crazy stuff here ;(
+        bindingContext.updateUI();
+        if (dialogArea != null) {
+            dialogArea.redraw();
+            dialogArea.update();
+        }
+    }
+
+    /**
      * {@inheritDoc}
      */
     @Override
     public void contentsChanged(ContentChangeEvent event) {
         super.contentsChanged(event);
 
-        if (event.getPart().equals(getIpsPart())) {
-            updateEnabledStates();
+        IEnumAttribute changedPart = (IEnumAttribute)event.getPart();
+        if (changedPart == null) {
+            return;
+        }
+
+        if (changedPart.equals(enumAttribute)) {
+            bindAndSetContentDependendOnInheritedProperty(changedPart);
         }
     }
 

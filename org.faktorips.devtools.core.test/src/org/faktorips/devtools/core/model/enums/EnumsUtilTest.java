@@ -42,7 +42,7 @@ public class EnumsUtilTest extends AbstractIpsPluginTest {
 
         enumAttribute1 = enumType.newEnumAttribute();
         enumAttribute1.setName("attr1");
-        enumAttribute1.setDatatype("String");
+        enumAttribute1.setDatatype(STRING_DATATYPE_NAME);
         enumAttribute1.setLiteralName(true);
 
         enumAttribute2 = superEnumType.newEnumAttribute();
@@ -55,37 +55,12 @@ public class EnumsUtilTest extends AbstractIpsPluginTest {
         assertFalse(EnumsUtil.equalEnumAttributes(enumAttribute1, enumAttribute2));
 
         enumAttribute2.setName("attr1");
-        assertFalse(EnumsUtil.equalEnumAttributes(enumAttribute1, enumAttribute2));
-
-        enumAttribute2.setDatatype(STRING_DATATYPE_NAME);
-        assertFalse(EnumsUtil.equalEnumAttributes(enumAttribute1, enumAttribute2));
-
-        enumAttribute2.setLiteralName(true);
         assertTrue(EnumsUtil.equalEnumAttributes(enumAttribute1, enumAttribute2));
     }
 
     public void testContainsEqualEnumAttribute() {
         assertFalse(EnumsUtil.containsEqualEnumAttribute(enumType.getEnumAttributes(), enumAttribute2));
         assertTrue(EnumsUtil.containsEqualEnumAttribute(enumType.getEnumAttributes(), enumAttribute1));
-    }
-
-    public void testSplitProjectAndSourceFolder() {
-        String test = null;
-        try {
-            EnumsUtil.splitProjectAndSourceFolder(test);
-            fail();
-        } catch (NullPointerException e) {
-        }
-
-        test = "/";
-        Object[] array = EnumsUtil.splitProjectAndSourceFolder(test);
-        assertEquals("", array[0]);
-        assertEquals(null, array[1]);
-
-        test = "TestProject/source";
-        array = EnumsUtil.splitProjectAndSourceFolder(test);
-        assertEquals("source", array[0]);
-        assertEquals(ipsProject, array[1]);
     }
 
 }

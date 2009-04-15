@@ -17,7 +17,6 @@ import javax.xml.parsers.ParserConfigurationException;
 
 import org.eclipse.core.runtime.CoreException;
 import org.faktorips.devtools.core.internal.model.ipsobject.DescriptionHelper;
-import org.faktorips.devtools.core.model.Described;
 import org.faktorips.devtools.core.model.IIpsModel;
 import org.faktorips.devtools.core.model.enums.IEnumAttribute;
 import org.faktorips.devtools.core.model.enums.IEnumAttributeValue;
@@ -25,7 +24,6 @@ import org.faktorips.devtools.core.model.enums.IEnumContent;
 import org.faktorips.devtools.core.model.enums.IEnumValue;
 import org.faktorips.devtools.core.util.XmlUtil;
 import org.w3c.dom.Element;
-import org.w3c.dom.Node;
 
 public class EnumAttributeValueTest extends AbstractIpsEnumPluginTest {
 
@@ -63,9 +61,8 @@ public class EnumAttributeValueTest extends AbstractIpsEnumPluginTest {
         Element firstEnumValue = XmlUtil.getFirstElement(xmlElement, IEnumValue.XML_TAG);
         Element descriptionElement = XmlUtil.getFirstElement(firstEnumValue, DescriptionHelper.XML_ELEMENT_NAME);
         assertNull(descriptionElement);
-        
+
         Element firstValue = XmlUtil.getFirstElement(firstEnumValue, IEnumAttributeValue.XML_TAG);
-        Node firstEnumAttributeValue = xmlElement.getChildNodes().item(1).getChildNodes().item(1);
         assertEquals(GENDER_ENUM_LITERAL_MALE_ID, firstValue.getTextContent());
         assertEquals(1 + 2, xmlElement.getChildNodes().getLength());
 

@@ -329,6 +329,10 @@ public class BindingContext {
     /**
      * Removes all bindings for the given control.
      */
+    /*
+     * TODO aw: it would be nice to have this more fine granular - remove enabledState binding,
+     * content binding
+     */
     public void removeBindings(Control control) {
         for (Iterator<ControlPropertyBinding> it = controlBindings.iterator(); it.hasNext();) {
             ControlPropertyBinding binding = it.next();
@@ -354,7 +358,7 @@ public class BindingContext {
         List<FieldPropertyMapping> mappingsCopy = new ArrayList<FieldPropertyMapping>(mappings);
 
         // exceptions
-        Set disposedPmos = new HashSet();
+        Set<Object> disposedPmos = new HashSet<Object>();
         for (Iterator<FieldPropertyMapping> it = mappingsCopy.iterator(); it.hasNext();) {
             FieldPropertyMapping mapping = it.next();
             if (mapping.getField().removeChangeListener(listener))
@@ -375,7 +379,7 @@ public class BindingContext {
         }
     }
 
-    private void disposeObjectIfNeccessary(Set disposedPmos, Object object) {
+    private void disposeObjectIfNeccessary(Set<Object> disposedPmos, Object object) {
         if (object instanceof IpsObjectPartPmo) {
             if (!disposedPmos.contains(object)) {
                 ((IpsObjectPartPmo)object).dispose();

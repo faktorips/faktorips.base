@@ -25,8 +25,8 @@ import org.faktorips.devtools.core.internal.model.enums.EnumType;
  * <p>
  * It contains several enum attributes where each enum attribute represents a property of the enum.
  * <p>
- * For example there may be an enum type <em>Gender</em> with the enum attributes <em>id</em> and
- * <em>name</em>.
+ * For example there may be an enum type <code>Gender</code> with the enum attributes
+ * <code>id</code> and <code>name</code>.
  * <p>
  * Instances of an enum are represented by enum values. In the above example there would be two enum
  * values:
@@ -38,9 +38,9 @@ import org.faktorips.devtools.core.internal.model.enums.EnumType;
  * Enum values can be defined directly in the <code>IEnumType</code> itself or separate from it as
  * product content (<code>IEnumContent</code>).
  * <p>
- * At least one enum attribute needs to be marked as <em>use as literal name</em> which implies that
- * the values for this enum attribute will be used to identify the respective enum values in the
- * generated source code and that each value for this enum attribute must be unique.
+ * At least one enum attribute needs to be marked as <code>useAsLiteralName</code> which implies
+ * that the values for this enum attribute will be used to identify the respective enum values in
+ * the generated source code.
  * 
  * @see IEnumContent
  * 
@@ -213,10 +213,12 @@ public interface IEnumType extends IEnumValueContainer, EnumDatatype {
      * Returns the enum attribute that has been marked to be used as literal name or
      * <code>null</code> if no such enum attribute exists in this enum type.
      * <p>
-     * Enum attributes that are inherited from the supertype hierarchy <strong>are</strong> included
-     * in the search (as copies of their respective originals).
+     * Enum attributes inherited from the supertype hierarchy <strong>are</strong> included in the
+     * search (as copies of their respective originals).
+     * 
+     * @throws CoreException If an error occurs while searching the supertype hierarchy.
      */
-    public IEnumAttribute getLiteralNameAttribute();
+    public IEnumAttribute getLiteralNameAttribute() throws CoreException;
 
     /**
      * Returns the index of the given enum attribute in the containing list.

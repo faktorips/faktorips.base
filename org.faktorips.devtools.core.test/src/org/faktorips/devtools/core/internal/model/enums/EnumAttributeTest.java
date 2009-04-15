@@ -32,9 +32,22 @@ public class EnumAttributeTest extends AbstractIpsEnumPluginTest {
     private final static String UNIQUE_IDENTIFIER_ICON = "EnumAttributeUniqueIdentifier.gif";
     private final static String OVERRIDDEN_UNIQUE_IDENTIFIER_ICON = "EnumAttributeOverriddenUniqueIdentifier.gif";
 
+    private IEnumType subEnumType;
+    private IEnumAttribute inheritedEnumAttributeId;
+    private IEnumAttribute inheritedEnumAttributeName;
+
     @Override
     public void setUp() throws Exception {
         super.setUp();
+
+        subEnumType = newEnumType(ipsProject, "SubEnumType");
+        subEnumType.setSuperEnumType(genderEnumType.getQualifiedName());
+        inheritedEnumAttributeId = subEnumType.newEnumAttribute();
+        inheritedEnumAttributeId.setName(GENDER_ENUM_ATTRIBUTE_ID_NAME);
+        inheritedEnumAttributeId.setInherited(true);
+        inheritedEnumAttributeName = subEnumType.newEnumAttribute();
+        inheritedEnumAttributeName.setName(GENDER_ENUM_ATTRIBUTE_NAME_NAME);
+        inheritedEnumAttributeName.setInherited(true);
     }
 
     public void testGetSetName() {
@@ -61,7 +74,7 @@ public class EnumAttributeTest extends AbstractIpsEnumPluginTest {
         }
     }
 
-    public void testGetSetIsIdentifier() {
+    public void testGetSetIsLiteralName() {
         assertTrue(genderEnumAttributeId.isLiteralName());
         assertFalse(genderEnumAttributeName.isLiteralName());
 
@@ -72,7 +85,11 @@ public class EnumAttributeTest extends AbstractIpsEnumPluginTest {
     public void testGetSetIsInherited() {
         assertFalse(genderEnumAttributeId.isInherited());
         genderEnumAttributeId.setInherited(true);
+
         assertTrue(genderEnumAttributeId.isInherited());
+        assertEquals("", genderEnumAttributeId.getDatatype());
+        assertFalse(genderEnumAttributeId.isLiteralName());
+        assertFalse(genderEnumAttributeId.isUniqueIdentifier());
     }
 
     public void testGetSetIsUniqueIdentifier() {
@@ -188,18 +205,8 @@ public class EnumAttributeTest extends AbstractIpsEnumPluginTest {
 
         assertEquals(icon, genderEnumAttributeName.getImage());
         assertEquals(uniqueIdentifierIcon, genderEnumAttributeId.getImage());
-
-        genderEnumType.setAbstract(true);
-        IEnumType subEnumType = newEnumType(ipsProject, "SubEnumType");
-        subEnumType.setSuperEnumType(genderEnumType.getQualifiedName());
-        IEnumAttribute subAttributeId = subEnumType.newEnumAttribute();
-        subAttributeId.setUniqueIdentifier(true);
-        subAttributeId.setInherited(true);
-        IEnumAttribute subAttributeName = subEnumType.newEnumAttribute();
-        subAttributeName.setInherited(true);
-
-        assertEquals(overriddenIcon, subAttributeName.getImage());
-        assertEquals(overriddenUniqueIdentifierIcon, subAttributeId.getImage());
+        assertEquals(overriddenIcon, inheritedEnumAttributeName.getImage());
+        assertEquals(overriddenUniqueIdentifierIcon, inheritedEnumAttributeId.getImage());
     }
 
     public void testGetEnumType() {
@@ -221,19 +228,28 @@ public class EnumAttributeTest extends AbstractIpsEnumPluginTest {
 
         // Test inherited
         genderEnumAttributeId.setDatatype(STRING_DATATYPE_NAME);
-        genderEnumType.setAbstract(true);
-        IEnumType subEnumType = newEnumType(ipsProject, "SubEnumType");
-        subEnumType.setSuperEnumType(genderEnumType.getQualifiedName());
-        IEnumAttribute idInherited = subEnumType.newEnumAttribute();
-        idInherited.setName(genderEnumAttributeId.getName());
-        idInherited.setInherited(true);
+        assertEquals(STRING_DATATYPE_NAME, inheritedEnumAttributeId.findDatatype(ipsProject).getName());
 
-        // This is of course wrong, but should have no effect
-        idInherited.setDatatype(BOOLEAN_DATATYPE_NAME);
-        idInherited.setLiteralName(false);
-        idInherited.setUniqueIdentifier(false);
+        genderEnumAttributeId.setInherited(true);
+        assertNull(genderEnumAttributeId.findDatatype(ipsProject));
+    }
 
-        assertEquals(STRING_DATATYPE_NAME, idInherited.findDatatype(ipsProject).getName());
+    public void testFindIsLiteralName() throws CoreException {
+        assertTrue(inheritedEnumAttributeId.findIsLiteralName());
+        inheritedEnumAttributeId.setInherited(false);
+        assertFalse(inheritedEnumAttributeId.findIsLiteralName());
+
+        genderEnumAttributeId.setInherited(true);
+        assertNull(genderEnumAttributeId.findIsLiteralName());
+    }
+
+    public void testFindIsUniqueIdentifier() throws CoreException {
+        assertTrue(inheritedEnumAttributeId.findIsUniqueIdentifier());
+        inheritedEnumAttributeId.setInherited(false);
+        assertFalse(inheritedEnumAttributeId.findIsUniqueIdentifier());
+
+        genderEnumAttributeId.setInherited(true);
+        assertNull(genderEnumAttributeId.findIsUniqueIdentifier());
     }
 
 }

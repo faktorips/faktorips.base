@@ -526,13 +526,9 @@ public class EnumTypeTest extends AbstractIpsEnumPluginTest {
 
         attr1 = genderEnumType.newEnumAttribute();
         attr1.setName("attr1");
-        attr1.setDatatype(STRING_DATATYPE_NAME);
-        attr1.setLiteralName(true);
-        attr1.setUniqueIdentifier(true);
         attr1.setInherited(true);
         attr2 = genderEnumType.newEnumAttribute();
         attr2.setName("attr2");
-        attr2.setDatatype(INTEGER_DATATYPE_NAME);
         attr2.setInherited(true);
         genderEnumAttributeId.setLiteralName(false);
         getIpsModel().clearValidationCache();
@@ -598,9 +594,6 @@ public class EnumTypeTest extends AbstractIpsEnumPluginTest {
         IEnumAttribute inheritedLiteralNameAttribute = subEnumType.newEnumAttribute();
         inheritedLiteralNameAttribute.setName(GENDER_ENUM_ATTRIBUTE_ID_NAME);
         inheritedLiteralNameAttribute.setInherited(true);
-        inheritedLiteralNameAttribute.setDatatype(STRING_DATATYPE_NAME);
-        inheritedLiteralNameAttribute.setLiteralName(true);
-        inheritedLiteralNameAttribute.setUniqueIdentifier(true);
 
         assertEquals(inheritedLiteralNameAttribute, subEnumType.getLiteralNameAttribute());
     }
