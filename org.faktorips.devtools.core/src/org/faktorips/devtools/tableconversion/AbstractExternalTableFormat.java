@@ -19,12 +19,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
-import org.eclipse.core.resources.IWorkspaceRunnable;
-import org.eclipse.core.runtime.IPath;
 import org.faktorips.datatype.Datatype;
-import org.faktorips.devtools.core.model.tablecontents.ITableContents;
-import org.faktorips.devtools.core.model.tablecontents.ITableContentsGeneration;
-import org.faktorips.devtools.core.model.tablestructure.ITableStructure;
 import org.faktorips.util.message.Message;
 import org.faktorips.util.message.MessageList;
 
@@ -152,37 +147,6 @@ public abstract class AbstractExternalTableFormat implements ITableFormat {
 		return defaultValueConverter;
 	}
 
-	/**
-     * {@inheritDoc}
-     */
-	public abstract IWorkspaceRunnable getExportTableOperation(
-			ITableContents contents, IPath filename,
-			String nullRepresentationString, boolean exportColumnHeaderRow, MessageList list);
-
-	/**
-     * {@inheritDoc}
-     */
-	public abstract IWorkspaceRunnable getImportTableOperation(
-			ITableStructure structure, IPath filename,
-			ITableContentsGeneration targetGeneration,
-			String nullRepresentationString, 
-            boolean ignoreColumnHeaderRow,
-            MessageList list);
-
-	/**
-     * {@inheritDoc}
-     */
-	public abstract boolean isValidImportSource(String source);
-
-
-    /**
-     * {@inheritDoc}
-     */
-    public abstract List getImportTablePreview(ITableStructure structure,
-            IPath filename,
-            int maxNumberOfRows);
-    
-	
 	/**
      * {@inheritDoc}
      */

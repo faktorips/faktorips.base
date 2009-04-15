@@ -15,7 +15,6 @@ package org.faktorips.devtools.tableconversion;
 
 import java.util.List;
 
-import org.eclipse.core.resources.IWorkspaceRunnable;
 import org.eclipse.core.runtime.IPath;
 import org.faktorips.datatype.Datatype;
 import org.faktorips.devtools.core.model.enums.IEnumType;
@@ -117,9 +116,9 @@ public interface ITableFormat {
      *            export. If no messages of severity ERROR are contained in this
      *            list, the export is considered successful.
      *            
-     * @return Returns the runnable to use to export a table.
+     * @return <code>true</code> if the export operation was successful, <code>false</code> otherwise.
      */
-    public IWorkspaceRunnable getExportTableOperation(ITableContents contents,
+    public boolean executeTableExport(ITableContents contents,
             IPath filename,
             String nullRepresentationString,
             boolean exportColumnHeaderRow,
@@ -144,9 +143,9 @@ public interface ITableFormat {
      *            import. If no messages of severity ERROR are contained in this
      *            list, the import is considered successful.
      *            
-     * @return The runnable to use to import a table.
+     * @return <code>true</code> if the import operation was successful, <code>false</code> otherwise.
      */
-    public IWorkspaceRunnable getImportTableOperation(ITableStructure structure,
+    public boolean executeTableImport(ITableStructure structure,
             IPath filename,
             ITableContentsGeneration targetGeneration,
             String nullRepresentationString,
@@ -155,12 +154,16 @@ public interface ITableFormat {
 
 
     /**
-     * @param structure
-     *            The structure for the imported table
+     * Returns a runnable which is used to import enumerated types.
+     * <p/>
+     * The file to import can either contain attributes of an enum (therefore defining a structure) 
+     * or enum values. In case of enum values the decision where to store them is based on
+     * {@link IEnumType#getValuesArePartOfModel()}.
+     * 
+     * @param valueContainer
+     *            The destination of the import.
      * @param filename
      *            The name of the file to import from. 
-     * @param targetGeneration
-     *            The generation to insert the data into.
      * @param nullRepresentationString
      *            The string to use to replace <code>null</code>. This value
      *            can be used for systems with no own <code>null</code>-representation
@@ -173,9 +176,19 @@ public interface ITableFormat {
      *            import. If no messages of severity ERROR are contained in this
      *            list, the import is considered successful.
      *            
-     * @return The runnable to use to import a table.
+     * @return The runnable to use to import an enum.
+     * @see {@link IEnumValueContainer}
+     * @see {@link IEnumType}
+     * @see {@link IEnumContent}
+     * @since 2.3
      */
+    public boolean executeEnumImport(IEnumValueContainer valueContainer,
+            IPath filename,
+            String nullRepresentationString,
+            boolean ignoreColumnHeaderRow,
+            MessageList list);
 
+    
     /**
      * Returns a runnable which is used to import enumerated types.
      * <p/>
@@ -191,9 +204,6 @@ public interface ITableFormat {
      *            The string to use to replace <code>null</code>. This value
      *            can be used for systems with no own <code>null</code>-representation
      *            (MS-Excel, for example).
-     * @param treatAsEnumAttributes
-     *            <code>true</code> if the data to be imported should be treated as a structure for the enums (attributes).
-     *            <code>true</code> if the data to be imported denotes enum values.
      * @param ignoreColumnHeaderRow
      *            <code>true</code> if the first row contains column header and should be ignored
      *            <code>false</code> if the to be imported content contains no column header row.
@@ -208,12 +218,12 @@ public interface ITableFormat {
      * @see {@link IEnumContent}
      * @since 2.3
      */
-    public IWorkspaceRunnable getImportEnumOperation(IEnumValueContainer valueContainer,
+    public boolean executeEnumExport(IEnumValueContainer valueContainer,
             IPath filename,
             String nullRepresentationString,
-            boolean treatAsEnumAttributes,
-            boolean ignoreColumnHeaderRow,
+            boolean exportColumnHeaderRow,
             MessageList list);
+    
     
     /**
      * @param source The identification of the resource to check (for example, a qualified filename).

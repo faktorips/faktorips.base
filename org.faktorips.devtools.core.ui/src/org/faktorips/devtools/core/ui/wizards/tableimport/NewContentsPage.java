@@ -273,7 +273,7 @@ public class NewContentsPage extends WizardPage implements ValueChangeListener {
      * Validates the page and generates error messages if needed. 
      * Can be overridden in subclasses to add specific validation logic.s 
      */
-    protected void validatePage() {
+    public void validatePage() {
         setMessage("", IMessageProvider.NONE); //$NON-NLS-1$
 		setErrorMessage(null);
         validateSourceRoot();

@@ -16,7 +16,6 @@ package org.faktorips.devtools.core.ui.wizards.tableexport;
 import java.io.File;
 import java.lang.reflect.InvocationTargetException;
 
-import org.eclipse.core.resources.IWorkspaceRunnable;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.Path;
@@ -109,7 +108,7 @@ public class TableExportWizard extends Wizard implements IExportWizard {
 								IDialogConstants.NO_LABEL }, 0);
 
 				if (dialog.open() != MessageDialog.OK) {
-					// user did nont say "yes" to overwrite the file, so return to the wizard
+					// user did not say "yes" to overwrite the file, so return to the wizard
 					return false;
 				}
 			}
@@ -117,8 +116,7 @@ public class TableExportWizard extends Wizard implements IExportWizard {
 			WorkspaceModifyOperation operation = new WorkspaceModifyOperation(schedulingRule) {
 				protected void execute(IProgressMonitor monitor) throws CoreException, InvocationTargetException, InterruptedException {
 					MessageList messageList = new MessageList();
-					IWorkspaceRunnable runnable = format.getExportTableOperation(exportContents, new Path(exportFilename), nullRepresentation, exportColumnHeaderRow, messageList);
-					runnable.run(monitor);
+					format.executeTableExport(exportContents, new Path(exportFilename), nullRepresentation, exportColumnHeaderRow, messageList);
 
 					if (!messageList.isEmpty()) {
 						getShell().getDisplay().syncExec(new ResultDisplayer(getShell(), Messages.TableExportWizard_operationName, messageList));

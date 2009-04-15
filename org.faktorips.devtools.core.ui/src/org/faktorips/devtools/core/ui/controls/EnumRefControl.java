@@ -22,11 +22,19 @@ import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.ui.UIToolkit;
 
+/**
+ * A control for choosing enum types or contents.
+ * <p>
+ * The control is configured by the constructor for a specific IPS project. 
+ * 
+ * @author Roman Grutza
+ * @since 2.3
+ */
 public class EnumRefControl extends IpsObjectRefControl {
 
-    // TODO rg: superType
+    // TODO rg: chooseSuperEnumType not applicable if not in given project?
     public EnumRefControl(IIpsProject project, Composite parent, UIToolkit toolkit, boolean chooseSuperEnumType) {
-        super(project, parent, toolkit, "Title", "Message");
+        super(project, parent, toolkit, Messages.EnumRefControl_title, Messages.EnumRefControl_text);
     }
 
     @Override
@@ -45,7 +53,7 @@ public class EnumRefControl extends IpsObjectRefControl {
         for (int i = 0; i < contents.length; i++) {
             result[i] = contents[i];
         }
-        for (int i = 0; i < contents.length; i++) {
+        for (int i = 0; i < types.length; i++) {
             result[i + contents.length] = types[i];
         }
 

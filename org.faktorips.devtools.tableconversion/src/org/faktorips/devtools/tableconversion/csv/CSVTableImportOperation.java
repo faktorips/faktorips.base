@@ -105,11 +105,11 @@ public class CSVTableImportOperation extends AbstractTableImportOperation {
             }
 
             int expectedFields = structure.getNumOfColumns();
-            String[] record;
+            String[] readLine;
             int rowNumber = ignoreColumnHeaderRow ? 2 : 1;
             
-            while ((record = reader.readNext()) != null) {
-                if (record.length != expectedFields) {
+            while ((readLine = reader.readNext()) != null) {
+                if (readLine.length != expectedFields) {
                     String msg = NLS.bind("Row {0} did not match the expected format.", rowNumber);
                     messageList.add(new Message("", msg, Message.ERROR));
                 }
@@ -117,14 +117,10 @@ public class CSVTableImportOperation extends AbstractTableImportOperation {
                 IRow genRow = targetGeneration.newRow();
                 for (short j = 0; j < structure.getNumOfColumns(); j++) {
                     String ipsValue;
-                    if (nullRepresentationString.equals(record[j])) {
+                    if (nullRepresentationString.equals(readLine[j])) {
                         ipsValue = nullRepresentationString;
                     } else {
-                        MessageList ignoredMessageList = new MessageList();
-                        
-                        // TODO rg: double conversion, going through externalValue is unnecessary! 
-                        Object externalValue = format.getExternalValue(record[j], datatypes[j], ignoredMessageList);
-                        ipsValue = getIpsValue(externalValue, datatypes[j]);
+                        ipsValue = getIpsValue(readLine[j], datatypes[j]);
                     }
                     
                     if (ipsValue == null) {

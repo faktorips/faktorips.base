@@ -45,6 +45,10 @@ public class Messages extends NLS {
 
     public static String IpsPckFragmentRefControl_titleBrowse;
 
+    public static String EnumRefControl_text;
+
+    public static String EnumRefControl_title;
+
     public static String EnumValueSetEditControl_titleValues;
 
     public static String EnumValueSetEditControl_colName_1;

@@ -407,7 +407,7 @@ public class SelectFileAndImportMethodPage extends WizardDataTransferPage implem
     /**
      * Sets the checkbox import into existing table.
      */
-    void setImportIntoExisting(boolean importIntoExisting){
+    public void setImportIntoExisting(boolean importIntoExisting){
         this.importIntoExisting = importIntoExisting;
     }
 }

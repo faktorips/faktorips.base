@@ -17,7 +17,6 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.util.Iterator;
 import java.util.List;
 
 import org.eclipse.core.resources.IWorkspaceRunnable;
@@ -30,10 +29,8 @@ import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.IpsStatus;
 import org.faktorips.devtools.core.model.enums.IEnumAttribute;
 import org.faktorips.devtools.core.model.enums.IEnumAttributeValue;
-import org.faktorips.devtools.core.model.enums.IEnumContent;
 import org.faktorips.devtools.core.model.enums.IEnumValue;
 import org.faktorips.devtools.core.model.enums.IEnumValueContainer;
-import org.faktorips.devtools.core.model.tablecontents.IRow;
 import org.faktorips.util.message.Message;
 import org.faktorips.util.message.MessageList;
 
@@ -45,20 +42,18 @@ public class CSVEnumImportOperation implements IWorkspaceRunnable {
     private final String sourceFile;
     private final CSVTableFormat format;
     private final String nullRepresentationString;
-    private final boolean treatAsEnumAttributes;
     private final boolean ignoreColumnHeaderRow;
     private final MessageList messageList;
     private Datatype[] datatypes;
 
     
     public CSVEnumImportOperation(IEnumValueContainer valueContainer, String filename, CSVTableFormat format,
-            String nullRepresentationString, boolean treatAsEnumAttributes, boolean ignoreColumnHeaderRow,
+            String nullRepresentationString, boolean ignoreColumnHeaderRow,
             MessageList messageList) {
         this.valueContainer = valueContainer;
         this.sourceFile = filename;
         this.format = format;
         this.nullRepresentationString = nullRepresentationString;
-        this.treatAsEnumAttributes = treatAsEnumAttributes;
         this.ignoreColumnHeaderRow = ignoreColumnHeaderRow;
         this.messageList = messageList;
         
@@ -137,32 +132,25 @@ public class CSVEnumImportOperation implements IWorkspaceRunnable {
             // TODO rg: refactor extract method getNumberOfFields() then extract superclass
             int expectedFields = valueContainer.findEnumType().getEnumAttributesCount(false);
             
-            String[] record;
+            String[] readLine;
             int rowNumber = ignoreColumnHeaderRow ? 2 : 1;
             
-            while ((record = reader.readNext()) != null) {
-                if (record.length != expectedFields) {
+            while ((readLine = reader.readNext()) != null) {
+                if (readLine.length != expectedFields) {
                     String msg = NLS.bind("Row {0} did not match the expected format.", rowNumber);
                     messageList.add(new Message("", msg, Message.ERROR));
                 }
 
                 IEnumValue genRow = valueContainer.newEnumValue();
-                
-                
-//                IRow genRow = targetGeneration.newRow();
                 for (short j = 0; j < expectedFields; j++) {
                     String ipsValue;
                     
                     IEnumAttributeValue column = genRow.getEnumAttributeValues().get(j);
                     
-                    if (nullRepresentationString.equals(record[j])) {
+                    if (nullRepresentationString.equals(readLine[j])) {
                         ipsValue = nullRepresentationString;
                     } else {
-                        MessageList ignoredMessageList = new MessageList();
-                        
-                        // TODO rg: double conversion, going through externalValue is unnecessary!                         
-                        Object externalValue = format.getExternalValue(record[j], datatypes[j], ignoredMessageList);
-                        ipsValue = getIpsValue(externalValue, datatypes[j]);
+                        ipsValue = getIpsValue(readLine[j], datatypes[j]);
                     }
                     
                     if (ipsValue == null) {

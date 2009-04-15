@@ -11,23 +11,25 @@
  * Mitwirkende: Faktor Zehn AG - initial API and implementation - http://www.faktorzehn.de
  *******************************************************************************/
 
-package org.faktorips.devtools.core.ui.editors.enums;
+package org.faktorips.devtools.core.ui.actions;
 
+import org.eclipse.core.runtime.CoreException;
+import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.ISelectionChangedListener;
 import org.eclipse.jface.viewers.ISelectionProvider;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.jface.wizard.WizardDialog;
+import org.eclipse.swt.custom.BusyIndicator;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.IWorkbenchWizard;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.IpsStatus;
 import org.faktorips.devtools.core.model.enums.IEnumValueContainer;
-import org.faktorips.devtools.core.ui.actions.IpsAction;
-import org.faktorips.devtools.core.ui.actions.Messages;
-import org.faktorips.devtools.core.ui.wizards.tableexport.TableExportWizard;
-import org.faktorips.devtools.core.ui.wizards.tableimport.EnumImportWizard;
+import org.faktorips.devtools.core.model.ipsobject.IIpsObject;
+import org.faktorips.devtools.core.ui.wizards.enumexport.EnumExportWizard;
+import org.faktorips.devtools.core.ui.wizards.enumimport.EnumImportWizard;
 
 /**
  * Action that opens a wizard for importing or exporting enum types and contents.
@@ -68,20 +70,19 @@ public class EnumImportExportAction extends IpsAction {
             wizard = new EnumImportWizard();
             ((EnumImportWizard)wizard).setImportIntoExisting(true);
         } else {
-            wizard = new TableExportWizard(); 
+            wizard = new EnumExportWizard(); 
         }
         
         if (! (selection.getFirstElement() instanceof IEnumValueContainer)){
-            IpsPlugin.logAndShowErrorDialog(new IpsStatus("The selected element is no enum value container!")); //$NON-NLS-1$
+            IpsPlugin.logAndShowErrorDialog(new IpsStatus("The selected element is no enum value container!"));
         }
         
-        // TODO rg: implement checkAndSaveDirtyStateBeforeImport()
-//        if (isImport){
-//            if (! checkAndSaveDirtyStateBeforeImport((ITableContents)selection.getFirstElement())){
-//                // abort import
-//                return false;
-//            }
-//        }
+        if (isImport){
+            if (! checkAndSaveDirtyStateBeforeImport((IEnumValueContainer)selection.getFirstElement())){
+                // abort import
+                return false;
+            }
+        }
         
         wizard.init(IpsPlugin.getDefault().getWorkbench(), selection);
         WizardDialog dialog = new WizardDialog(shell, wizard);
@@ -89,19 +90,42 @@ public class EnumImportExportAction extends IpsAction {
     }
     
     protected void initImportAction(){
-        setText(Messages.TableImportExportAction_importActionTitle);
-        setToolTipText(Messages.TableImportExportAction_importActionTooltip);
-        // TODO rg: create ENUM images
-        setImageDescriptor(IpsPlugin.getDefault().getImageDescriptor("ImportTableContents.gif")); //$NON-NLS-1$
+        setText(Messages.EnumImportExportAction_importActionTitle);
+        setToolTipText(Messages.EnumImportExportAction_importActionTooltip);
+        setImageDescriptor(IpsPlugin.getDefault().getImageDescriptor("ImportEnum.gif")); //$NON-NLS-1$
         this.isImport = true;
     }
 
     protected void initExportAction() {
-        setText(Messages.TableImportExportAction_exportActionTitle);
-        setToolTipText(Messages.TableImportExportAction_exportActionTooltip);
-     // TODO rg: create ENUM images
-        setImageDescriptor(IpsPlugin.getDefault().getImageDescriptor("ExportTableContents.gif")); //$NON-NLS-1$
+        setText(Messages.EnumImportExportAction_exportActionTitle);
+        setToolTipText(Messages.EnumImportExportAction_exportActionTooltip);
+        setImageDescriptor(IpsPlugin.getDefault().getImageDescriptor("ExportEnum.gif")); //$NON-NLS-1$
     }
+
+    private boolean checkAndSaveDirtyStateBeforeImport(final IIpsObject enumIpsObject) {
+        if (! enumIpsObject.getIpsSrcFile().isDirty()) {
+            return true;
+        }
+        boolean confirmation = MessageDialog.openConfirm(shell,
+                Messages.EnumImportExportAction_confirmDialogDirtyTableContentsTitle,
+                Messages.EnumImportExportAction_confirmDialogDirtyTableContentsText);
+        if (!confirmation) {
+            return false;
+        }
+        Runnable run = new Runnable() {
+            public void run() {
+                try {
+                    enumIpsObject.getIpsSrcFile().save(true, null);
+                } catch (CoreException e) {
+                    IpsPlugin.logAndShowErrorDialog(e);
+                }
+            }
+        };
+        BusyIndicator.showWhile(shell.getDisplay(), run);
+
+        return true;
+    }
+    
     
     // TODO rg: code duplication in TableImportExportAction
     //      consider changing the selection type to IIpsObject and refactor this+TableImportExportAction

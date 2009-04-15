@@ -15,7 +15,7 @@ package org.faktorips.devtools.core.ui.wizards.tableimport;
 
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Text;
-import org.faktorips.devtools.core.ui.CompositeFactory;
+import org.faktorips.devtools.core.ui.TableFormatConfigurationCompositeFactory;
 import org.faktorips.devtools.core.ui.UIToolkit;
 import org.faktorips.devtools.core.ui.controller.fields.FieldValueChangedEvent;
 import org.faktorips.devtools.core.ui.controller.fields.TextField;
@@ -29,7 +29,7 @@ import org.faktorips.util.message.MessageList;
  * 
  * @author Roman Grutza
  */
-public class CSVPropertyComposite extends CompositeFactory {
+public class CSVPropertyFactory extends TableFormatConfigurationCompositeFactory {
 
     private ITableFormat tableFormat;
     

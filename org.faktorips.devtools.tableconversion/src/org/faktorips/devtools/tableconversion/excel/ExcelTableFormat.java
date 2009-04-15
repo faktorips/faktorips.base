@@ -19,9 +19,10 @@ import java.io.IOException;
 import java.util.Collections;
 import java.util.List;
 
+import org.apache.commons.lang.NotImplementedException;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
-import org.eclipse.core.resources.IWorkspaceRunnable;
 import org.eclipse.core.runtime.IPath;
+import org.eclipse.core.runtime.NullProgressMonitor;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.model.enums.IEnumValueContainer;
 import org.faktorips.devtools.core.model.tablecontents.ITableContents;
@@ -40,24 +41,55 @@ public class ExcelTableFormat extends AbstractExternalTableFormat {
 	/**
 	 * {@inheritDoc}
 	 */
-	public IWorkspaceRunnable getExportTableOperation(ITableContents contents, IPath filename, String nullRepresentationString, boolean exportColumnHeaderRow, MessageList list) {
-		return new ExcelTableExportOperation(contents, filename.toOSString(), this, nullRepresentationString, exportColumnHeaderRow, list);
+	public boolean executeTableExport(ITableContents contents, IPath filename, 
+	        String nullRepresentationString, boolean exportColumnHeaderRow, MessageList list) {
+	    try {
+	        ExcelTableExportOperation excelTableExportOperation = new ExcelTableExportOperation(contents, filename.toOSString(), this, 
+	                nullRepresentationString, exportColumnHeaderRow, list);
+	        excelTableExportOperation.run(new NullProgressMonitor());
+	        return true;
+        } catch (Exception e) {
+            IpsPlugin.log(e);
+            return false;
+        }
 	}
 
 	/**
      * {@inheritDoc}
      */
-    public IWorkspaceRunnable getImportTableOperation(ITableStructure structure,
-            IPath filename,
-            ITableContentsGeneration targetGeneration,
-            String nullRepresentationString,
-            boolean ignoreColumnHeaderRow,
-            MessageList list) {
-        
-        return new ExcelTableImportOperation(structure, filename.toOSString(), targetGeneration, this,
-                nullRepresentationString, ignoreColumnHeaderRow, list);
+    public boolean executeTableImport(ITableStructure structure, IPath filename,
+            ITableContentsGeneration targetGeneration, String nullRepresentationString,
+            boolean ignoreColumnHeaderRow, MessageList list) {
+        try {
+            ExcelTableImportOperation excelTableImportOperation = new ExcelTableImportOperation(structure, filename.toOSString(), targetGeneration, this,
+                    nullRepresentationString, ignoreColumnHeaderRow, list);
+            excelTableImportOperation.run(new NullProgressMonitor());
+            return true;
+        } catch (Exception e) {
+            IpsPlugin.log(e);
+            return false;
+        }
     }
 
+    /**
+     * {@inheritDoc}
+     */
+    public boolean executeEnumExport(IEnumValueContainer valueContainer, IPath filename,
+            String nullRepresentationString, boolean exportColumnHeaderRow, MessageList list) {
+
+        // TODO rg: Auto-generated method stub
+        throw new NotImplementedException();
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public boolean executeEnumImport(IEnumValueContainer valueContainer, IPath filename,
+            String nullRepresentationString, boolean ignoreColumnHeaderRow, MessageList list) {
+        // TODO rg: Auto-generated method stub
+        throw new NotImplementedException();
+    }
+    
 	/**
 	 * {@inheritDoc}
 	 */
@@ -92,16 +124,5 @@ public class ExcelTableFormat extends AbstractExternalTableFormat {
     public List getImportTablePreview(ITableStructure structure, IPath filename, int maxNumberOfRows) {
         // TODO rg: implement
         return Collections.EMPTY_LIST;
-    }
-
-    public IWorkspaceRunnable getImportEnumOperation(IEnumValueContainer valueContainer,
-            IPath filename,
-            String nullRepresentationString,
-            boolean treatAsEnumAttributes,
-            boolean ignoreColumnHeaderRow,
-            MessageList list) {
-
-        // TODO Auto-generated method stub
-        return null;
     }
 }

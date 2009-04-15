@@ -47,7 +47,7 @@ public class TableImportWizard extends AbstractTableImportWizard {
 
     private SelectFileAndImportMethodPage filePage;
     private NewContentsPage newContentsPage;
-    private SelectContentsPage selectContentsPage;
+    private SelectTableContentsPage selectContentsPage;
     private TablePreviewPage tablePreviewPage;
 
     public TableImportWizard() {
@@ -66,7 +66,7 @@ public class TableImportWizard extends AbstractTableImportWizard {
             addPage(filePage);
             newContentsPage = new NewContentsPage(selection);
             addPage(newContentsPage);
-            selectContentsPage = new SelectContentsPage(selection);
+            selectContentsPage = new SelectTableContentsPage(selection);
             addPage(selectContentsPage);
             tablePreviewPage = new TablePreviewPage(selection);
             addPage(tablePreviewPage);
@@ -100,12 +100,12 @@ public class TableImportWizard extends AbstractTableImportWizard {
 
             IWorkspaceRunnable runnable = new IWorkspaceRunnable() {
                 public void run(IProgressMonitor monitor) throws CoreException {
-                    IWorkspaceRunnable runnableOperation = format.getImportTableOperation(structure,
+                    format.executeTableImport(structure,
                             new Path(filename), generation, nullRepresentation, ignoreColumnHeader, messageList);
-                    IIpsModel model = IpsPlugin.getDefault().getIpsModel();
-                    model.runAndQueueChangeEvents(runnableOperation, monitor);
                 }
             };
+            IIpsModel model = IpsPlugin.getDefault().getIpsModel();
+            model.runAndQueueChangeEvents(runnable, null);
             WorkbenchRunnableAdapter runnableAdapter = new WorkbenchRunnableAdapter(runnable);
 
             /*
@@ -179,6 +179,13 @@ public class TableImportWizard extends AbstractTableImportWizard {
             IpsPlugin.log(e);
         }
         return null;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public IWizardPage getStartingPage() {
+        return filePage;
     }
 
     /**

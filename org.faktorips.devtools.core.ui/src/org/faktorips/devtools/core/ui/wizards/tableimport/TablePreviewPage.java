@@ -16,13 +16,10 @@ package org.faktorips.devtools.core.ui.wizards.tableimport;
 import java.util.Iterator;
 import java.util.List;
 
-import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.Path;
-import org.eclipse.jdt.core.IJavaElement;
 import org.eclipse.jdt.core.JavaModelException;
 import org.eclipse.jface.dialogs.IMessageProvider;
 import org.eclipse.jface.viewers.IStructuredSelection;
-import org.eclipse.jface.viewers.CellEditor.LayoutData;
 import org.eclipse.jface.wizard.WizardPage;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.ControlAdapter;
@@ -30,14 +27,12 @@ import org.eclipse.swt.events.ControlEvent;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Group;
-import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.TableColumn;
 import org.eclipse.swt.widgets.TableItem;
-import org.faktorips.devtools.core.model.IIpsElement;
 import org.faktorips.devtools.core.model.tablestructure.ITableStructure;
-import org.faktorips.devtools.core.ui.CompositeFactory;
+import org.faktorips.devtools.core.ui.TableFormatConfigurationCompositeFactory;
 import org.faktorips.devtools.core.ui.IpsUIPlugin;
 import org.faktorips.devtools.core.ui.UIToolkit;
 import org.faktorips.devtools.core.ui.controller.fields.FieldValueChangedEvent;
@@ -59,10 +54,6 @@ public class TablePreviewPage extends WizardPage implements ValueChangeListener 
     // a leading and trailing column with no data, prevents artifacts when resizing the dialog
     private final static int TABLE_PADDING_LEFT_RIGHT = 20;
 
-    // TODO: cleanup, not needed
-    // the resource that was selected in the workbench or null if none.
-    private IResource selectedResource;
-
     // true if the input is validated and errors are displayed in the messes area.
     protected boolean validateInput = true;
 
@@ -82,7 +73,7 @@ public class TablePreviewPage extends WizardPage implements ValueChangeListener 
     private Table previewTable;
 
     // creates configuration controls specific to a table format
-    private CompositeFactory configCompositeFactory;
+    private TableFormatConfigurationCompositeFactory configCompositeFactory;
 
     
     /**
@@ -99,18 +90,8 @@ public class TablePreviewPage extends WizardPage implements ValueChangeListener 
      * @see #setTableStructure(ITableStructure)
      */
     public TablePreviewPage(IStructuredSelection selection) throws JavaModelException {
-        super("Table preview");
+        super("Import preview");
 
-        // TODO: cleanup, not needed
-        if (selection.getFirstElement() instanceof IResource) {
-            selectedResource = (IResource)selection.getFirstElement();
-        } else if (selection.getFirstElement() instanceof IJavaElement) {
-            selectedResource = ((IJavaElement)selection.getFirstElement()).getCorrespondingResource();
-        } else if (selection.getFirstElement() instanceof IIpsElement) {
-            selectedResource = ((IIpsElement)selection.getFirstElement()).getEnclosingResource();
-        } else {
-            selectedResource = null;
-        }
         setPageComplete(false);
     }
 
@@ -154,7 +135,7 @@ public class TablePreviewPage extends WizardPage implements ValueChangeListener 
      */
     public void createControl(Composite parent) {
         validateInput = false;
-        setTitle("Table preview");
+        setTitle("Import preview");
 
         pageControl = toolkit.createGridComposite(parent, 1, false, false);
 
@@ -177,8 +158,8 @@ public class TablePreviewPage extends WizardPage implements ValueChangeListener 
             previewTable.dispose();
         }
 
-        // TODO:
-        // if preview is not available this label should be shown
+// TODO:
+//        if preview is not available this label should be shown
 //        Label previewNotAvailableLabel = toolkit.createLabel(parent, "A preview is not available.");
 //        previewNotAvailableLabel.getLayoutData();
         
@@ -219,7 +200,7 @@ public class TablePreviewPage extends WizardPage implements ValueChangeListener 
         dynamicPropertiesComposite.moveAbove(null);
     }
 
-    private CompositeFactory getCompositeFactory() {
+    private TableFormatConfigurationCompositeFactory getCompositeFactory() {
         if (configCompositeFactory == null) {
             configCompositeFactory = IpsUIPlugin.getDefault()
                 .getTableFormatPropertiesControlFactory(tableFormat);
@@ -304,7 +285,7 @@ public class TablePreviewPage extends WizardPage implements ValueChangeListener 
         pageControl.layout(true);
     }
 
-    protected void validatePage() {
+    public void validatePage() {
         setMessage("", IMessageProvider.NONE); //$NON-NLS-1$
         if (! tableFormat.isValidImportSource(filename)) {
             setMessage("The file to be imported seems not to be valid.", IMessageProvider.WARNING);

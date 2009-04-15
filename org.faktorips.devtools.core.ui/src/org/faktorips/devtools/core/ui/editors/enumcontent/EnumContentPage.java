@@ -19,7 +19,6 @@ import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.forms.widgets.ScrolledForm;
-import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.model.ContentChangeEvent;
 import org.faktorips.devtools.core.model.ContentsChangeListener;
 import org.faktorips.devtools.core.model.enums.IEnumContent;
@@ -27,7 +26,7 @@ import org.faktorips.devtools.core.model.enums.IEnumType;
 import org.faktorips.devtools.core.model.enums.IEnumValueContainer;
 import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.core.ui.UIToolkit;
-import org.faktorips.devtools.core.ui.editors.enums.EnumImportExportAction;
+import org.faktorips.devtools.core.ui.actions.EnumImportExportAction;
 import org.faktorips.devtools.core.ui.editors.enums.EnumValuesSection;
 import org.faktorips.devtools.core.ui.editors.type.TypeEditorStructurePage;
 
@@ -54,6 +53,7 @@ public class EnumContentPage extends TypeEditorStructurePage implements Contents
     private IAction openFixEnumTypeDialogAction;
 
     private EnumImportExportActionInEditor importAction;
+    private EnumImportExportActionInEditor exportAction;
 
     private EnumValuesSection enumValuesSection;
 
@@ -113,7 +113,8 @@ public class EnumContentPage extends TypeEditorStructurePage implements Contents
         openFixEnumTypeDialogAction = new OpenFixEnumContentWizardAction(enumContent, getSite().getShell());
         importAction = new EnumImportExportActionInEditor(getSite().getShell(),
                 enumContent, true);
-        
+        exportAction = new EnumImportExportActionInEditor(getSite().getShell(),
+                enumContent, false);
         
     }
 
@@ -122,6 +123,7 @@ public class EnumContentPage extends TypeEditorStructurePage implements Contents
         ScrolledForm form = getManagedForm().getForm();
         form.getToolBarManager().add(openFixEnumTypeDialogAction);
         form.getToolBarManager().add(importAction);
+        form.getToolBarManager().add(exportAction);
         
         form.updateToolBar();
         updateToolbarActionsEnabledStates();
@@ -201,8 +203,11 @@ public class EnumContentPage extends TypeEditorStructurePage implements Contents
 
         EnumContentPage.this.updateToolbarActionsEnabledStates();
     }
-    
-    public class EnumImportExportActionInEditor extends EnumImportExportAction {
+
+    /**
+     * Executes the enum import operation and refreshes the view.
+     */
+    private class EnumImportExportActionInEditor extends EnumImportExportAction {
 
         public EnumImportExportActionInEditor(Shell shell, IEnumValueContainer enumValueContainer, boolean isImport) {
             super(shell, enumValueContainer);
@@ -218,12 +223,7 @@ public class EnumContentPage extends TypeEditorStructurePage implements Contents
          */
         public void run(IStructuredSelection selection) {
             if (super.runInternal(selection)) {
-                // TODO rg: implement
-                
-//                enumValuesSection.reinit(enumContent);
-//                tableViewer.setInput(enumContent);
-//                tableViewer.refresh(true);
-//                redrawTable();
+                enumValuesSection.refresh();
             }
         }        
     }

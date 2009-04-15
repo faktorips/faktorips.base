@@ -158,9 +158,8 @@ public abstract class AbstractTableTest extends AbstractIpsPluginTest {
             ITableFormat format, boolean exportColumnHeaderRow) throws Exception {
         ITableContents contents = createValidTableContents(ipsProject);
         
-        IWorkspaceRunnable runnable = format.getExportTableOperation(
-                contents, new Path("table" + format.getDefaultExtension()), "NULL", exportColumnHeaderRow, new MessageList());
-        runnable.run(new NullProgressMonitor());
+        format.executeTableExport(contents, new Path("table" + format.getDefaultExtension()), 
+                "NULL", exportColumnHeaderRow, new MessageList());
     }
 
     /**
@@ -175,9 +174,8 @@ public abstract class AbstractTableTest extends AbstractIpsPluginTest {
             ITableFormat format, boolean exportColumnHeaderRow) throws Exception {
         ITableContents contents = createInvalidTableContents(ipsProject);
         
-        IWorkspaceRunnable runnable = format.getExportTableOperation(
-                contents, new Path("table" + format.getDefaultExtension()), "NULL", exportColumnHeaderRow, new MessageList());
-        runnable.run(new NullProgressMonitor());
+        format.executeTableExport(contents, new Path("table" + format.getDefaultExtension()),
+                "NULL", exportColumnHeaderRow, new MessageList());
     }
     
     private ITableContentsGeneration createExportSource(IIpsProject ipsProject, ITableContents contents) throws CoreException {

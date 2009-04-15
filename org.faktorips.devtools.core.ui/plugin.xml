@@ -648,6 +648,19 @@
     	   <description>%IpsArchiveExportWizard.description</description>
     	   <selection class="org.eclipse.core.resources.IResource"/>
 	    </wizard>
+      <wizard
+            category="org.faktorips.devtools"
+            class="org.faktorips.devtools.core.ui.wizards.enumexport.EnumExportWizard"
+            icon="icons/ExportEnum.gif"
+            id="enumExportWizard"
+            name="%EnumExportWizard.name">
+         <description>
+            %TableExportWizard.description
+         </description>
+         <selection
+               class="org.eclipse.core.resources.IResource">
+         </selection>
+      </wizard>
     </extension>
 
     <extension
@@ -673,6 +686,19 @@
         name="%org.faktorips.devtools.core.ui.wizards.testcase.transform.TransformRuntimeTestCaseWizard">
 	 	   <description>Transform and import runtime test cases</description>
  	    </wizard>
+  <wizard
+        category="org.faktorips.devtools"
+        class="org.faktorips.devtools.core.ui.wizards.enumimport.EnumImportWizard"
+        icon="icons/ImportEnum.gif"
+        id="enumImportWizard"
+        name="%EnumImportWizard.name">
+     <description>
+        %TableImportWizard.description
+     </description>
+     <selection
+           class="org.eclipse.core.resources.IResource">
+     </selection>
+  </wizard>
     </extension>
 
 <!-- 

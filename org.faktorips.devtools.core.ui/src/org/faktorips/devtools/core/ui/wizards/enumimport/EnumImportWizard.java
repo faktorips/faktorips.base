@@ -11,17 +11,24 @@
  * Mitwirkende: Faktor Zehn AG - initial API and implementation - http://www.faktorzehn.de
  *******************************************************************************/
 
-package org.faktorips.devtools.core.ui.wizards.tableimport;
+package org.faktorips.devtools.core.ui.wizards.enumimport;
 
 import org.eclipse.core.resources.IWorkspaceRunnable;
 import org.eclipse.core.runtime.CoreException;
-import org.eclipse.core.runtime.NullProgressMonitor;
+import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.jface.wizard.IWizardPage;
-import org.eclipse.ui.IWorkbench;
 import org.faktorips.devtools.core.IpsPlugin;
+import org.faktorips.devtools.core.model.IIpsModel;
 import org.faktorips.devtools.core.model.enums.IEnumValueContainer;
+import org.faktorips.devtools.core.ui.IpsUIPlugin;
+import org.faktorips.devtools.core.ui.WorkbenchRunnableAdapter;
 import org.faktorips.devtools.core.ui.controls.EnumRefControl;
+import org.faktorips.devtools.core.ui.wizards.tableimport.AbstractTableImportWizard;
+import org.faktorips.devtools.core.ui.wizards.enumimport.Messages;
+import org.faktorips.devtools.core.ui.wizards.tableimport.NewContentsPage;
+import org.faktorips.devtools.core.ui.wizards.tableimport.SelectFileAndImportMethodPage;
+import org.faktorips.devtools.core.ui.wizards.tableimport.TablePreviewPage;
 import org.faktorips.devtools.tableconversion.ITableFormat;
 import org.faktorips.util.message.MessageList;
 
@@ -32,16 +39,24 @@ import org.faktorips.util.message.MessageList;
  */
 public class EnumImportWizard extends AbstractTableImportWizard {
 
-    public final static String ID = "org.faktorips.devtools.core.ui.wizards.tableimport.EnumImportWizard"; //$NON-NLS-1$
+    public final static String ID = "org.faktorips.devtools.core.ui.wizards.enumimport.EnumImportWizard"; //$NON-NLS-1$
     protected final static String DIALOG_SETTINGS_KEY = "EnumImportWizard"; //$NON-NLS-1$
     
     private SelectFileAndImportMethodPage filePage;
     private NewContentsPage newContentsPage;
-    private SelectContentsPage selectContentsPage;
+    private SelectEnumPage selectContentsPage;
     private TablePreviewPage tablePreviewPage;
 
     public EnumRefControl enumControl;
 
+    
+    public EnumImportWizard() {
+        setWindowTitle(Messages.getString("EnumImportWizard.title")); //$NON-NLS-1$
+        this.setDefaultPageImageDescriptor(IpsUIPlugin.getDefault().getImageDescriptor(
+                        "wizards/EnumImportWizard.png")); //$NON-NLS-1$
+    }
+    
+    
     /**
      * {@inheritDoc}
      */
@@ -51,7 +66,7 @@ public class EnumImportWizard extends AbstractTableImportWizard {
             addPage(filePage);
             newContentsPage = new NewContentsPage(selection);
             addPage(newContentsPage);
-            selectContentsPage = new SelectContentsPage(selection);
+            selectContentsPage = new SelectEnumPage(selection);
             addPage(selectContentsPage);
             tablePreviewPage = new TablePreviewPage(selection);
             addPage(tablePreviewPage);
@@ -62,7 +77,9 @@ public class EnumImportWizard extends AbstractTableImportWizard {
         }
     }
 
-    @Override
+    /**
+     * {@inheritDoc}
+     */
     public IWizardPage getNextPage(IWizardPage page) {
         if (page == filePage) {
             // set the completed state on the opposite page to true so that the wizard can finish
@@ -91,23 +108,33 @@ public class EnumImportWizard extends AbstractTableImportWizard {
         return null;
     }
 
-    @Override
+    /**
+     * {@inheritDoc}
+     */
     public boolean performFinish() {
-        // TODO rg: implement logic
-        
-//        ITableFormat format = filePage.getFormat();
-//        IEnumValueContainer enumTypeOrContent = getEnumLogic();
-//        try {
-//            IWorkspaceRunnable importEnumOperation = format.getImportEnumOperation(
-//                    enumTypeOrContent, 
-//                    new Path(""), 
-//                    "null", false, false, new MessageList());
-//            
-//            importEnumOperation.run(new NullProgressMonitor());
-//            
-//        } catch (CoreException e) {
-//            IpsPlugin.log(e);
-//        } 
+        final ITableFormat format = filePage.getFormat();
+        try {
+            final IEnumValueContainer enumTypeOrContent = selectContentsPage.getEnum();
+            if (filePage.isImportExistingReplace()) {
+                // TODO rg:, introduce clear() as in ITableContentsGeneration  
+//                enumTypeOrContent.clear();
+            }
+            
+
+            IWorkspaceRunnable runnable = new IWorkspaceRunnable() {
+                public void run(IProgressMonitor monitor) throws CoreException {
+                    format.executeEnumImport(enumTypeOrContent, new Path(filePage.getFilename()),
+                            filePage.getNullRepresentation(), filePage.isImportIgnoreColumnHeaderRow(),
+                            new MessageList());
+                }
+            };
+            IIpsModel model = IpsPlugin.getDefault().getIpsModel();
+            model.runAndQueueChangeEvents(runnable, null);
+            WorkbenchRunnableAdapter runnableAdapter = new WorkbenchRunnableAdapter(runnable);
+            
+        } catch (CoreException e) {
+            IpsPlugin.log(e);
+        } 
         
         // don't keep wizard open
         return true;

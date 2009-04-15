@@ -191,17 +191,17 @@ public class IpsUIPlugin extends AbstractUIPlugin {
      * the custom properties, or <code>null</code> if the table format has no custom properties or
      * the class could not be created.
      */
-    public CompositeFactory getTableFormatPropertiesControlFactory(ITableFormat tableFormat) {
+    public TableFormatConfigurationCompositeFactory getTableFormatPropertiesControlFactory(ITableFormat tableFormat) {
         IConfigurationElement[] elements = Platform.getExtensionRegistry().getConfigurationElementsFor(
                 "org.faktorips.devtools.core.externalTableFormat"); //$NON-NLS-1$
         
-        CompositeFactory compositeFactory = null;
+        TableFormatConfigurationCompositeFactory compositeFactory = null;
         for (int i = 0; i < elements.length; i++) {
             try {
                 ITableFormat format = (ITableFormat)elements[i].createExecutableExtension("class"); //$NON-NLS-1$
                 if (format.getClass().equals(tableFormat.getClass())) {
                     // Found the given tableFormat in declared extensions
-                    compositeFactory = (CompositeFactory)elements[i].createExecutableExtension("guiClass"); //$NON-NLS-1$
+                    compositeFactory = (TableFormatConfigurationCompositeFactory)elements[i].createExecutableExtension("guiClass"); //$NON-NLS-1$
                     compositeFactory.setTableFormat(tableFormat);
                     break;
                 }

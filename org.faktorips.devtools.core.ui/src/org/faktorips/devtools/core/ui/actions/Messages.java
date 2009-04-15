@@ -148,6 +148,13 @@ public class Messages extends NLS {
     public static String TableImportExportAction_importActionTitle;
     public static String TableImportExportAction_importActionTooltip;
 
+    public static String EnumImportExportAction_confirmDialogDirtyTableContentsText;
+    public static String EnumImportExportAction_confirmDialogDirtyTableContentsTitle;
+    public static String EnumImportExportAction_exportActionTitle;
+    public static String EnumImportExportAction_exportActionTooltip;
+    public static String EnumImportExportAction_importActionTitle;
+    public static String EnumImportExportAction_importActionTooltip;
+
     public static String ToggleLinkingAction_Description;
     public static String ToggleLinkingAction_Text;
     public static String ToggleLinkingAction_ToolTipText;
