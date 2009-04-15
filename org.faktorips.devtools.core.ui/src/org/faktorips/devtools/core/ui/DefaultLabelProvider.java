@@ -158,7 +158,8 @@ public class DefaultLabelProvider extends LabelProvider {
         sb.append(enumAttribute.getName());
         sb.append(" : "); //$NON-NLS-1$
         try {
-            sb.append(enumAttribute.findDatatype(enumAttribute.getIpsProject()).getName());
+            Datatype datatype = enumAttribute.findDatatype(enumAttribute.getIpsProject());
+            sb.append((datatype == null) ? "" : datatype.getName());
         } catch (CoreException e) {
             throw new RuntimeException(e);
         }
