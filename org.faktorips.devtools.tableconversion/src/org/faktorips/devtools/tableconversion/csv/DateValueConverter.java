@@ -13,7 +13,6 @@
 
 package org.faktorips.devtools.tableconversion.csv;
 
-import java.text.ParseException;
 import java.util.Date;
 import java.util.GregorianCalendar;
 
@@ -57,12 +56,14 @@ public class DateValueConverter extends AbstractValueConverter {
             try {
                 return  DateUtil.parseIsoDateStringToDate((String)externalDataValue).toString();
             } catch (IllegalArgumentException ignored) {
+                // could not convert, try again using a date format 
             }
             try {
-                String dateFormat = tableFormat.getProperty(CSVTableFormat.PROPERTY_DATE_FORMAT);
+                String dateFormat = tableFormat.getProperty(CSVTableFormat.PROPERTY_DATE_FORMAT).toLowerCase();
                 Date parseDate = DateUtils.parseDate((String)externalDataValue, new String[] {dateFormat});
                 return DateUtil.dateToIsoDateString(parseDate);
-            } catch (ParseException ignored) {
+            } catch (Exception ignored) {
+                // could not convert, so add error messages to MessageList and return unconverted value
             }
         }
         

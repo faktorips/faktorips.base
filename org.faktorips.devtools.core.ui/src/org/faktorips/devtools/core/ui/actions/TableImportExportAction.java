@@ -27,8 +27,8 @@ import org.eclipse.ui.IWorkbenchWizard;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.IpsStatus;
 import org.faktorips.devtools.core.model.tablecontents.ITableContents;
+import org.faktorips.devtools.core.ui.wizards.ipsimport.IpsObjectImportWizard;
 import org.faktorips.devtools.core.ui.wizards.tableexport.TableExportWizard;
-import org.faktorips.devtools.core.ui.wizards.tableimport.AbstractTableImportWizard;
 import org.faktorips.devtools.core.ui.wizards.tableimport.TableImportWizard;
 
 /**
@@ -117,7 +117,7 @@ public class TableImportExportAction extends IpsAction {
         IWorkbenchWizard wizard;
         if (isImport){
             wizard = new TableImportWizard();
-            ((AbstractTableImportWizard)wizard).setImportIntoExisting(true);
+            ((IpsObjectImportWizard)wizard).setImportIntoExisting(true);
         } else {
             wizard = new TableExportWizard(); 
         }

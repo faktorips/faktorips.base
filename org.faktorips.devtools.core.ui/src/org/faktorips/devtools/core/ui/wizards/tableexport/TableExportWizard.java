@@ -25,41 +25,35 @@ import org.eclipse.jface.dialogs.IDialogSettings;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.dialogs.ProgressMonitorDialog;
 import org.eclipse.jface.operation.ModalContext;
-import org.eclipse.jface.viewers.IStructuredSelection;
-import org.eclipse.jface.wizard.Wizard;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.ui.IExportWizard;
-import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.actions.WorkspaceModifyOperation;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.IpsStatus;
 import org.faktorips.devtools.core.model.tablecontents.ITableContents;
 import org.faktorips.devtools.core.ui.IpsUIPlugin;
 import org.faktorips.devtools.core.ui.wizards.ResultDisplayer;
+import org.faktorips.devtools.core.ui.wizards.ipsexport.IpsObjectExportWizard;
 import org.faktorips.devtools.tableconversion.ITableFormat;
 import org.faktorips.util.message.MessageList;
 
 /**
- * Wizard for exporting ipstablecontents to MS-Excel-files.
+ * Wizard for exporting ipstablecontents to external files.
  * 
  * @author Thorsten Waertel, Thorsten Guenther
  */
-public class TableExportWizard extends Wizard implements IExportWizard {
+public class TableExportWizard extends IpsObjectExportWizard /*implements IExportWizard*/ {
+    
     private static String DIALOG_SETTINGS_KEY = "TableExportWizard"; //$NON-NLS-1$
     
-	/* The selection this wizard is called on. */
-	private IStructuredSelection selection;
-
 	/* The details-page of this wizard */
 	private TableExportPage exportPage;
 
-    private boolean hasNewDialogSettings;
 
 	/**
 	 * Create a new TableExportWizard
 	 */
 	public TableExportWizard() {
-		super();
 		setWindowTitle(Messages.TableExport_title);
         this.setDefaultPageImageDescriptor(IpsUIPlugin.getDefault().getImageDescriptor("wizards/TableExportWizard.png")); //$NON-NLS-1$
 
@@ -71,7 +65,6 @@ public class TableExportWizard extends Wizard implements IExportWizard {
             hasNewDialogSettings = false;
             setDialogSettings(section);
         }
-
 	}
 
 	/**
@@ -146,7 +139,7 @@ public class TableExportWizard extends Wizard implements IExportWizard {
 			IpsPlugin.logAndShowErrorDialog(new IpsStatus(
 					"An error occurred during the export process.", throwable)); //$NON-NLS-1$
 		} finally {
-            exportPage.saveWidgetValues();
+		    saveWidgetSettings();
         }
 
 		// this implementation of this method should always return true since
@@ -156,20 +149,10 @@ public class TableExportWizard extends Wizard implements IExportWizard {
 		return true;
 	}
 
-	private void saveDialogSettings() {
-        // save the dialog settings
-        if (hasNewDialogSettings) {
-            IDialogSettings workbenchSettings = IpsPlugin.getDefault().getDialogSettings();
-            IDialogSettings section = workbenchSettings.getSection(DIALOG_SETTINGS_KEY);
-            section = workbenchSettings.addNewSection(DIALOG_SETTINGS_KEY);
-            setDialogSettings(section);
-        }
-    }
-
-    /**
+	/**
 	 * {@inheritDoc}
 	 */
-	public void init(IWorkbench workbench, IStructuredSelection selection) {
-		this.selection = selection;
-	}
+	public void saveWidgetSettings() {
+	    exportPage.saveWidgetValues();
+    }
 }

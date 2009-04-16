@@ -24,8 +24,8 @@ import org.faktorips.devtools.core.model.enums.IEnumValueContainer;
 import org.faktorips.devtools.core.ui.IpsUIPlugin;
 import org.faktorips.devtools.core.ui.WorkbenchRunnableAdapter;
 import org.faktorips.devtools.core.ui.controls.EnumRefControl;
-import org.faktorips.devtools.core.ui.wizards.tableimport.AbstractTableImportWizard;
 import org.faktorips.devtools.core.ui.wizards.enumimport.Messages;
+import org.faktorips.devtools.core.ui.wizards.ipsimport.IpsObjectImportWizard;
 import org.faktorips.devtools.core.ui.wizards.tableimport.NewContentsPage;
 import org.faktorips.devtools.core.ui.wizards.tableimport.SelectFileAndImportMethodPage;
 import org.faktorips.devtools.core.ui.wizards.tableimport.TablePreviewPage;
@@ -37,7 +37,7 @@ import org.faktorips.util.message.MessageList;
  * 
  * @author Roman Grutza
  */
-public class EnumImportWizard extends AbstractTableImportWizard {
+public class EnumImportWizard extends IpsObjectImportWizard {
 
     public final static String ID = "org.faktorips.devtools.core.ui.wizards.enumimport.EnumImportWizard"; //$NON-NLS-1$
     protected final static String DIALOG_SETTINGS_KEY = "EnumImportWizard"; //$NON-NLS-1$

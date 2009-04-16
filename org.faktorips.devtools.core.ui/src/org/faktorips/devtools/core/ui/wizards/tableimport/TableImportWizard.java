@@ -32,6 +32,7 @@ import org.faktorips.devtools.core.model.tablestructure.ITableStructure;
 import org.faktorips.devtools.core.ui.IpsUIPlugin;
 import org.faktorips.devtools.core.ui.WorkbenchRunnableAdapter;
 import org.faktorips.devtools.core.ui.wizards.ResultDisplayer;
+import org.faktorips.devtools.core.ui.wizards.ipsimport.IpsObjectImportWizard;
 import org.faktorips.devtools.tableconversion.ITableFormat;
 import org.faktorips.util.message.MessageList;
 
@@ -40,7 +41,7 @@ import org.faktorips.util.message.MessageList;
  * 
  * @author Thorsten Waertel, Thorsten Guenther
  */
-public class TableImportWizard extends AbstractTableImportWizard {
+public class TableImportWizard extends IpsObjectImportWizard {
 
     protected static String ID = "org.faktorips.devtools.core.ui.wizards.tableimport.TableImportWizard"; //$NON-NLS-1$
     protected final static String DIALOG_SETTINGS_KEY = "TableImportWizard"; //$NON-NLS-1$

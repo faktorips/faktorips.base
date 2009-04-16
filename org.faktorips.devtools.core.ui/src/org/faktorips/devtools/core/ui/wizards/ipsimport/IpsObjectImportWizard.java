@@ -11,7 +11,7 @@
  * Mitwirkende: Faktor Zehn AG - initial API and implementation - http://www.faktorzehn.de
  *******************************************************************************/
 
-package org.faktorips.devtools.core.ui.wizards.tableimport;
+package org.faktorips.devtools.core.ui.wizards.ipsimport;
 
 import org.eclipse.jface.dialogs.IDialogSettings;
 import org.eclipse.jface.viewers.IStructuredSelection;
@@ -25,15 +25,15 @@ import org.faktorips.devtools.core.ui.IpsUIPlugin;
  * 
  * @author Roman Grutza
  */
-public abstract class AbstractTableImportWizard extends Wizard implements IImportWizard {
+public abstract class IpsObjectImportWizard extends Wizard implements IImportWizard {
 
-    protected final static String DIALOG_SETTINGS_KEY = "AbstractTableImportWizard"; //$NON-NLS-1$
+    protected final static String DIALOG_SETTINGS_KEY = "IpsObjectImportWizard"; //$NON-NLS-1$
     
     protected IStructuredSelection selection;
     protected boolean hasNewDialogSettings;
     protected boolean importIntoExisting;
 
-    public AbstractTableImportWizard() {
+    public IpsObjectImportWizard() {
         IDialogSettings workbenchSettings= IpsUIPlugin.getDefault().getDialogSettings();
         IDialogSettings section= workbenchSettings.getSection(DIALOG_SETTINGS_KEY); //$NON-NLS-1$
         if (section == null)

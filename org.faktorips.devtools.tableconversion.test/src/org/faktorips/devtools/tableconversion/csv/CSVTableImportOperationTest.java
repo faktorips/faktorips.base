@@ -15,7 +15,9 @@ package org.faktorips.devtools.tableconversion.csv;
 
 import java.io.File;
 import java.io.FileWriter;
+import java.util.ArrayList;
 import java.util.GregorianCalendar;
+import java.util.List;
 
 import org.eclipse.core.runtime.NullProgressMonitor;
 import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
@@ -26,16 +28,17 @@ import org.faktorips.devtools.core.model.tablecontents.ITableContentsGeneration;
 import org.faktorips.devtools.core.model.tablestructure.IColumn;
 import org.faktorips.devtools.tableconversion.AbstractExternalTableFormat;
 import org.faktorips.devtools.tableconversion.AbstractTableTest;
+import org.faktorips.devtools.tableconversion.IValueConverter;
 import org.faktorips.devtools.tableconversion.csv.CSVTableFormat;
 import org.faktorips.devtools.tableconversion.csv.CSVTableImportOperation;
-import org.faktorips.devtools.tableconversion.excel.BooleanValueConverter;
-import org.faktorips.devtools.tableconversion.excel.DateValueConverter;
-import org.faktorips.devtools.tableconversion.excel.DecimalValueConverter;
-import org.faktorips.devtools.tableconversion.excel.DoubleValueConverter;
-import org.faktorips.devtools.tableconversion.excel.IntegerValueConverter;
-import org.faktorips.devtools.tableconversion.excel.LongValueConverter;
-import org.faktorips.devtools.tableconversion.excel.MoneyValueConverter;
-import org.faktorips.devtools.tableconversion.excel.StringValueConverter;
+import org.faktorips.devtools.tableconversion.csv.BooleanValueConverter;
+import org.faktorips.devtools.tableconversion.csv.DateValueConverter;
+import org.faktorips.devtools.tableconversion.csv.DecimalValueConverter;
+import org.faktorips.devtools.tableconversion.csv.DoubleValueConverter;
+import org.faktorips.devtools.tableconversion.csv.IntegerValueConverter;
+import org.faktorips.devtools.tableconversion.csv.LongValueConverter;
+import org.faktorips.devtools.tableconversion.csv.MoneyValueConverter;
+import org.faktorips.devtools.tableconversion.csv.StringValueConverter;
 import org.faktorips.util.message.MessageList;
 
 import au.com.bytecode.opencsv.CSVWriter;
@@ -63,15 +66,21 @@ public class CSVTableImportOperationTest extends AbstractTableTest {
         format = new CSVTableFormat();
         format.setName("CSV");
         format.setDefaultExtension(".csv");
-        format.addValueConverter(new BooleanValueConverter());
-        format.addValueConverter(new DecimalValueConverter());
-        format.addValueConverter(new DoubleValueConverter());
-        format.addValueConverter(new DateValueConverter());
-        format.addValueConverter(new IntegerValueConverter());
-        format.addValueConverter(new LongValueConverter());
-        format.addValueConverter(new MoneyValueConverter());
-        format.addValueConverter(new StringValueConverter());
+        List<IValueConverter> converters = new ArrayList<IValueConverter>();
+        converters.add(new BooleanValueConverter());
+        converters.add(new DecimalValueConverter());
+        converters.add(new DoubleValueConverter());
+        converters.add(new DateValueConverter());
+        converters.add(new IntegerValueConverter());
+        converters.add(new LongValueConverter());
+        converters.add(new MoneyValueConverter());
+        converters.add(new StringValueConverter());
 
+        for (IValueConverter converter : converters) {
+            format.addValueConverter(converter);
+            converter.setTableFormat(format);
+        }
+        
         contents = (ITableContents)newIpsObject(ipsProject, IpsObjectType.TABLE_CONTENTS, "importTarget");
         contents.newColumn(null);
         contents.newColumn(null);
@@ -89,7 +98,8 @@ public class CSVTableImportOperationTest extends AbstractTableTest {
     }
 
     protected void tearDownExtension() throws Exception {
-//         file.delete();
+        // TODO rg: remove comment after implemented
+        //         file.delete();
     }
 
     public void testImportValid() throws Exception {

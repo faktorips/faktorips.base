@@ -60,7 +60,7 @@ public class EnumRefControl extends IpsObjectRefControl {
         return result;
     }
 
-    public IEnumValueContainer getEnum() {
+    public IEnumValueContainer findEnum() {
             IEnumValueContainer enumType = null;
             try {
                 enumType = (IEnumValueContainer)getIpsProject().findIpsObject(IpsObjectType.ENUM_TYPE, getText());

@@ -130,11 +130,17 @@ public class SelectEnumPage extends SelectImportTargetPage {
     }
     
     private void setEnum(IEnumValueContainer enumValueContainer) {
-        
+        if (enumValueContainer == null) {
+            enumControl.setText(""); //$NON-NLS-1$
+            setIpsProject(null);
+            return;
+        }
+        enumControl.setText(enumValueContainer.getQualifiedName());
+        setIpsProject(enumValueContainer.getIpsProject());
     }
 
     public IEnumValueContainer getEnum() throws CoreException {
-        return ((EnumRefControl) enumControl).getEnum();
+        return ((EnumRefControl) enumControl).findEnum();
     }
     
     protected void contentsChanged() {

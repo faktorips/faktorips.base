@@ -41,6 +41,7 @@ public class CSVTableFormat extends AbstractExternalTableFormat {
         // initialize table format specific properties
         properties.put(PROPERTY_FIELD_DELIMITER, ",");
         properties.put(PROPERTY_DOT_REPRESENTATION, ".");
+        properties.put(PROPERTY_DATE_FORMAT, "YYYY-MM-DD");
     }
     
     /**
