@@ -435,7 +435,7 @@ public class EnumType extends EnumValueContainer implements IEnumType {
         ArgumentCheck.notNull(new Object[] { validationMessageList, enumType });
 
         // All attributes from supertype hierarchy inherited?
-        List<IEnumAttribute> notInheritedAttributes = getNotInheritedEnumAttributes(enumType);
+        List<IEnumAttribute> notInheritedAttributes = findInheritEnumAttributeCandidates();
         int notInheritedAttributesCount = notInheritedAttributes.size();
         if (notInheritedAttributesCount > 0) {
             IEnumAttribute firstNotInheritedAttribute = notInheritedAttributes.get(0);
@@ -489,35 +489,12 @@ public class EnumType extends EnumValueContainer implements IEnumType {
         }
     }
 
-    /**
-     * Returns all enum attributes from the supertype hierarchy of the given enum type that are not
-     * inherited in the given enum type.
-     */
-    private List<IEnumAttribute> getNotInheritedEnumAttributes(IEnumType enumType) throws CoreException {
-        List<IEnumAttribute> inheritedAttributes = new ArrayList<IEnumAttribute>();
-        for (IEnumAttribute currentEnumAttribute : enumType.getEnumAttributesIncludeSupertypeCopies()) {
-            if (currentEnumAttribute.isInherited()) {
-                inheritedAttributes.add(currentEnumAttribute);
-            }
-        }
-        List<IEnumAttribute> supertypeHierarchyAttributes = findAllAttributesInSupertypeHierarchy(enumType);
-        List<IEnumAttribute> notInheritedAttributes = new ArrayList<IEnumAttribute>();
-
-        for (IEnumAttribute currentSupertypeHierarchyAttribute : supertypeHierarchyAttributes) {
-            if (!(EnumsUtil.containsEqualEnumAttribute(inheritedAttributes, currentSupertypeHierarchyAttribute))) {
-                notInheritedAttributes.add(currentSupertypeHierarchyAttribute);
-            }
-        }
-
-        return notInheritedAttributes;
-    }
-
-    /** Returns all attributes that are defined in the supertype hierarchy of the given enum type. */
-    private List<IEnumAttribute> findAllAttributesInSupertypeHierarchy(IEnumType enumType) throws CoreException {
+    /** Returns all attributes that are defined in the supertype hierarchy of this enum type. */
+    private List<IEnumAttribute> findAllAttributesInSupertypeHierarchy() throws CoreException {
         List<IEnumAttribute> returnAttributesList = new ArrayList<IEnumAttribute>();
 
         /* Go over all enum attributes of every enum type of the supertype hierarchy */
-        for (IEnumType currentSuperEnumType : enumType.findAllSuperEnumTypes()) {
+        for (IEnumType currentSuperEnumType : findAllSuperEnumTypes()) {
             for (IEnumAttribute currentEnumAttribute : currentSuperEnumType.getEnumAttributes()) {
 
                 /*
@@ -645,6 +622,67 @@ public class EnumType extends EnumValueContainer implements IEnumType {
     /**
      * {@inheritDoc}
      */
+    public List<IEnumAttribute> findInheritEnumAttributeCandidates() throws CoreException {
+        List<IEnumAttribute> inheritedEnumAttributes = new ArrayList<IEnumAttribute>();
+        for (IEnumAttribute currentEnumAttribute : getEnumAttributesIncludeSupertypeCopies()) {
+            if (currentEnumAttribute.isInherited()) {
+                inheritedEnumAttributes.add(currentEnumAttribute);
+            }
+        }
+        List<IEnumAttribute> supertypeHierarchyAttributes = findAllAttributesInSupertypeHierarchy();
+        List<IEnumAttribute> notInheritedEnumAttributes = new ArrayList<IEnumAttribute>();
+
+        for (IEnumAttribute currentSupertypeHierarchyAttribute : supertypeHierarchyAttributes) {
+            if (!(EnumsUtil.containsEqualEnumAttribute(inheritedEnumAttributes, currentSupertypeHierarchyAttribute))) {
+                notInheritedEnumAttributes.add(currentSupertypeHierarchyAttribute);
+            }
+        }
+
+        return notInheritedEnumAttributes;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public List<IEnumAttribute> inheritEnumAttributes(List<IEnumAttribute> superEnumAttributes) throws CoreException {
+        List<IEnumAttribute> newEnumAttributes = new ArrayList<IEnumAttribute>();
+        for (IEnumAttribute currentSuperEnumAttribute : superEnumAttributes) {
+            String currentSuperEnumAttributeName = currentSuperEnumAttribute.getName();
+
+            // Continue if already inherited
+            IEnumAttribute searchedEnumAttribute = getEnumAttributeIncludeSupertypeCopies(currentSuperEnumAttributeName);
+            if (searchedEnumAttribute != null) {
+                if (searchedEnumAttribute.isInherited()) {
+                    continue;
+                }
+            }
+
+            // Throw exception if not part of supertype hierarchy
+            searchedEnumAttribute = findEnumAttributeIncludeSupertypeOriginals(currentSuperEnumAttributeName);
+            boolean partOfSupertypeHierarchy = false;
+            if (searchedEnumAttribute != null) {
+                if (searchedEnumAttribute.getEnumType() != this) {
+                    partOfSupertypeHierarchy = true;
+                }
+            }
+            if (!partOfSupertypeHierarchy) {
+                throw new IllegalArgumentException("The given enum attribute " + currentSuperEnumAttributeName
+                        + " is not part of the supertype hierarchy.");
+            }
+
+            // Every check passed, inherit enum attribute
+            IEnumAttribute newEnumAttribute = newEnumAttribute();
+            newEnumAttribute.setName(currentSuperEnumAttributeName);
+            newEnumAttribute.setInherited(true);
+            newEnumAttributes.add(newEnumAttribute);
+        }
+
+        return newEnumAttributes;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
     public String getEnumContentPackageFragment() {
         return enumContentPackageFragment;
     }
@@ -712,8 +750,8 @@ public class EnumType extends EnumValueContainer implements IEnumType {
      * considered to be the id in this context. Returns <code>null</code> if the value of the
      * literal name attribute of a value of this enum type could not be determined.
      * 
-     * @throws a <code>RuntimeException</code> if the process of determining the enum attribute
-     *             values throws a <code>CoreException</code>.
+     * @throws RuntimeException If the process of determining the enum attribute values throws a
+     *             <code>CoreException</code>.
      */
     public String[] getAllValueIds(boolean includeNull) {
         try {

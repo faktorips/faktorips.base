@@ -200,7 +200,7 @@ public interface IEnumType extends IEnumValueContainer, EnumDatatype {
      * Returns a list containing all enum attributes that belong to this enum type
      * <strong>plus</strong> all enum attributes that belong to supertypes of this enum type.
      * <p>
-     * Copies created due to inheritation are not included.
+     * Copies created due to inheritation are <strong>not</strong> included.
      * 
      * @see #getEnumAttributes()
      * @see #getEnumAttributesIncludeSupertypeCopies()
@@ -370,5 +370,30 @@ public interface IEnumType extends IEnumValueContainer, EnumDatatype {
      *             hierarchy.
      */
     public List<IEnumType> findAllSuperEnumTypes() throws CoreException;
+
+    /**
+     * Returns a list containing all enum attributes from the supertype hierarchy that have not yet
+     * been inherited by this enum type.
+     * 
+     * @throws CoreException If an error occurs while searching the supertype hierarchy for the enum
+     *             attributes.
+     */
+    public List<IEnumAttribute> findInheritEnumAttributeCandidates() throws CoreException;
+
+    /**
+     * Creates and returns new enum attributes in this enum type inheriting the given enum
+     * attributes.
+     * <p>
+     * If any of the given super enum attributes is already inherited by this enum type it will be
+     * skipped.
+     * 
+     * @param superEnumAttributes The enum attributes from the supertype hierarchy to inherit by
+     *            this enum type.
+     * 
+     * @throws CoreException If an error occurs while searching the supertype hierarchy.
+     * @throws IllegalArgumentException If any of the given enum attributes is not part of the
+     *             supertype hierarchy of this enum type.
+     */
+    public List<IEnumAttribute> inheritEnumAttributes(List<IEnumAttribute> superEnumAttributes) throws CoreException;
 
 }

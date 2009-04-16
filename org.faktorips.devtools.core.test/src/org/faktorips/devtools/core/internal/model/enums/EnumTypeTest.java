@@ -607,4 +607,43 @@ public class EnumTypeTest extends AbstractIpsEnumPluginTest {
         assertNull(quarterly);
         assertNull(paymentMode.getEnumValue(null));
     }
+
+    public void testFindInheritEnumAttributeCandidates() throws CoreException {
+        IEnumType subEnumType = newEnumType(ipsProject, "SubEnumType");
+        subEnumType.setSuperEnumType(genderEnumType.getQualifiedName());
+
+        List<IEnumAttribute> inheritEnumAttributeCandidates = subEnumType.findInheritEnumAttributeCandidates();
+        assertEquals(2, inheritEnumAttributeCandidates.size());
+        assertEquals(genderEnumAttributeId, inheritEnumAttributeCandidates.get(0));
+        assertEquals(genderEnumAttributeName, inheritEnumAttributeCandidates.get(1));
+
+        assertEquals(0, genderEnumType.findInheritEnumAttributeCandidates().size());
+    }
+
+    public void testInheritEnumAttributes() throws CoreException {
+        IEnumType subEnumType = newEnumType(ipsProject, "SubEnumType");
+        subEnumType.setSuperEnumType(genderEnumType.getQualifiedName());
+
+        List<IEnumAttribute> inheritEnumAttributeCandidates = subEnumType.findInheritEnumAttributeCandidates();
+        // Inherit one manually, this one needs to be skipped by the method later
+        IEnumAttribute inheritedId = subEnumType.newEnumAttribute();
+        inheritedId.setName(GENDER_ENUM_ATTRIBUTE_ID_NAME);
+        inheritedId.setInherited(true);
+
+        subEnumType.inheritEnumAttributes(inheritEnumAttributeCandidates);
+        assertEquals(2, subEnumType.getEnumAttributesCount(true));
+        IEnumAttribute inheritedName = subEnumType
+                .getEnumAttributeIncludeSupertypeCopies((GENDER_ENUM_ATTRIBUTE_NAME_NAME));
+        assertNotNull(inheritedName);
+        assertTrue(inheritedName.isInherited());
+
+        try {
+            IEnumAttribute notInSupertypeHierarchyAttribute = paymentMode.newEnumAttribute();
+            notInSupertypeHierarchyAttribute.setName("foo");
+            notInSupertypeHierarchyAttribute.setDatatype(STRING_DATATYPE_NAME);
+            subEnumType.inheritEnumAttributes(Arrays.asList(new IEnumAttribute[] { notInSupertypeHierarchyAttribute }));
+            fail();
+        } catch (IllegalArgumentException e) {
+        }
+    }
 }
