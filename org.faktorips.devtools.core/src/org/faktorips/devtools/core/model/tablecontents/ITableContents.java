@@ -50,6 +50,22 @@ public interface ITableContents extends ITimedIpsObject, XmlSaxSupport {
     public final static String MSGCODE_NAME_OF_STRUCTURE_AND_CONTENTS_NOT_THE_SAME_WHEN_ENUM = MSGCODE_PREFIX + "NameOfStructureAndContentsNotTheSameWhenEnum"; //$NON-NLS-1$
 
     /**
+     * Validation message code to indicate that there is an unique violation.
+     */
+    public final static String MSGCODE_UNIQUE_KEY_VIOLATION = MSGCODE_PREFIX + "UniqueKeyViolation"; //$NON-NLS-1$
+
+    /**
+     * Validation message code to indicate that the from value is greater the to value.
+     * TODO joerg validate 'from' <= 'to', and 'from'+'to' same datatype
+     */
+    public final static String MSGCODE_TWO_COLUMN_RANGE_FROM_GREATER_TO_VALUE = MSGCODE_PREFIX + "TwoColumnRangeFromGreaterToValue"; //$NON-NLS-1$
+
+    /**
+     * Validation message code to indicate that there are to many unique key violations.
+     */
+    public final static String MSGCODE_TO_MANY_UNIQUE_KEY_VIOLATIONS = MSGCODE_PREFIX + "ToManyUniqueKeyViolations"; //$NON-NLS-1$
+
+    /**
      * Returns the qualified name of the table structure this table contents
      * is based on.
      */

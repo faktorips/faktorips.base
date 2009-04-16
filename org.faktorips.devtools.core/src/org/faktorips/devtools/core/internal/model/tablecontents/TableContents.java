@@ -56,7 +56,7 @@ public class TableContents extends TimedIpsObject implements ITableContents {
 
     private String structure = ""; //$NON-NLS-1$
     private int numOfColumns = 0;
-    
+
     /**
      * @param file
      */
@@ -74,7 +74,17 @@ public class TableContents extends TimedIpsObject implements ITableContents {
      * {@inheritDoc}
      */
     protected IpsObjectGeneration createNewGeneration(int id) {
-        return new TableContentsGeneration(this, id);
+        TableContentsGeneration tableContentsGeneration = new TableContentsGeneration(this, id);
+//      TODO Joerg temp. disabled, 
+// initUniqueKeyValidator(tableContentsGeneration);
+        return tableContentsGeneration;
+    }
+
+    /*
+     * Creates an unique key validator for the given table contents generation
+     */
+    private void initUniqueKeyValidator(TableContentsGeneration tableContentsGeneration) {
+         tableContentsGeneration.initUniqueKeyValidator(new UniqueKeyValidator());
     }
 
     /**

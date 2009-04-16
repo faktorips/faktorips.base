@@ -58,12 +58,18 @@ public interface IUniqueKey extends IKey {
     public boolean containsRanges();
 
     /**
-     * Returns true if the key contains any columns.
+     * Returns <code>true</code> if the key contains ranges with two columns.
+     * @see ColumnRangeType#TWO_COLUMN_RANGE
+     */
+    public boolean containsTwoColumnRanges();
+
+    /**
+     * Returns <code>true</code> if the key contains any columns.
      */
     public boolean containsColumns();
     
     /**
-     * Returns ture if the key contains only ranges.
+     * Returns <code>true</code> if the key contains only ranges.
      */
     public boolean containsRangesOnly();
     

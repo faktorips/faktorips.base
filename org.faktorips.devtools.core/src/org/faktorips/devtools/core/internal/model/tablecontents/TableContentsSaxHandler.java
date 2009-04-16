@@ -51,7 +51,7 @@ public class TableContentsSaxHandler extends DefaultHandler {
     private ITableContents tableContents;
     
     // contains all column values, 
-    private List columns = new ArrayList(20);
+    private List<String> columns = new ArrayList<String>(20);
     
     // buffer to store the characters inside the value node
     private StringBuffer textBuffer = null;
@@ -102,7 +102,7 @@ public class TableContentsSaxHandler extends DefaultHandler {
             textBuffer = null;
         }
     }
-
+    
     /**
      * {@inheritDoc}
      */

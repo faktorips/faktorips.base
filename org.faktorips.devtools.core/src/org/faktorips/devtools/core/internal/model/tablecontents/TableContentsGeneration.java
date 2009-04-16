@@ -20,6 +20,7 @@ import java.util.List;
 
 import org.eclipse.core.runtime.CoreException;
 import org.faktorips.datatype.ValueDatatype;
+import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.internal.model.ipsobject.IpsObjectGeneration;
 import org.faktorips.devtools.core.model.IIpsElement;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPart;
@@ -40,8 +41,10 @@ import org.w3c.dom.Element;
  */
 public class TableContentsGeneration extends IpsObjectGeneration implements ITableContentsGeneration {
 
-    private List rows = new ArrayList(100);
-
+    private List<Row> rows = new ArrayList<Row>(100);
+    
+    private UniqueKeyValidator uniqueKeyValidator;
+    
     public TableContentsGeneration(TableContents parent, int id) {
         super(parent, id);
     }
@@ -52,7 +55,6 @@ public class TableContentsGeneration extends IpsObjectGeneration implements ITab
     public IIpsElement[] getChildren() {
         return getRows();
     }
-
     
     /**
      * {@inheritDoc}
@@ -88,7 +90,7 @@ public class TableContentsGeneration extends IpsObjectGeneration implements ITab
     }
     
     /**
-     * {@inheritDoc}
+     * {@inheritDoc} 
      */
     public IRow newRow() {
         IRow newRow = newRowInternal(getNextPartId());
@@ -96,13 +98,19 @@ public class TableContentsGeneration extends IpsObjectGeneration implements ITab
         return newRow;
     }
     
-    Row newRow(List columns) {
+    /*
+     * This method is used by the table contents sax handler, after finishing a row node
+     */
+    Row newRow(List<String> columns) {
         Row newRow = newRowInternal(getNextPartId());
         int column = 0;
-        for (Iterator iter = columns.iterator(); iter.hasNext();) {
-            String value = (String)iter.next();
+        for (Iterator<String> iter = columns.iterator(); iter.hasNext();) {
+            String value = iter.next();
             newRow.setValueInternal(column++, value);
         }
+        
+        updateUniqueKeyCacheFor(newRow);
+        
         return newRow;
     }
     
@@ -122,17 +130,19 @@ public class TableContentsGeneration extends IpsObjectGeneration implements ITab
 
     
     public void newColumn(int insertAt, String defaultValue) {
-        for (Iterator it=rows.iterator(); it.hasNext(); ) {
-            Row row = (Row)it.next();
+        for (Iterator<Row> it=rows.iterator(); it.hasNext(); ) {
+            Row row = it.next();
             row.newColumn(insertAt, defaultValue);
         }
+        clearUniqueKeyValidator();
     }
     
     public void removeColumn(int column) {
-        for (Iterator it=rows.iterator(); it.hasNext(); ) {
-            Row row = (Row)it.next();
+        for (Iterator<Row> it=rows.iterator(); it.hasNext(); ) {
+            Row row = it.next();
             row.removeColumn(column);
         }
+        clearUniqueKeyValidator();
     }
     
     /**
@@ -167,7 +177,7 @@ public class TableContentsGeneration extends IpsObjectGeneration implements ITab
      */
     protected void reAddPart(IIpsObjectPart part) {
         if (part instanceof IRow) {
-            rows.add(part);
+            rows.add((Row)part);
             return;
         }
         throw new RuntimeException("Unknown part type" + part.getClass()); //$NON-NLS-1$
@@ -188,11 +198,11 @@ public class TableContentsGeneration extends IpsObjectGeneration implements ITab
                     Row updateRow= (Row) rows.get(i);
                     updateRow.setRowNumber(i);
                 }
+                removeUniqueKeyCacheFor(row);
             }
             return;
         }
         throw new RuntimeException("Unknown part type" + part.getClass()); //$NON-NLS-1$
-        
     }
     
     /**
@@ -218,6 +228,7 @@ public class TableContentsGeneration extends IpsObjectGeneration implements ITab
      */
     public void clear() {
         rows.clear();
+        clearUniqueKeyValidator();
         objectHasChanged();
     }
 
@@ -277,8 +288,8 @@ public class TableContentsGeneration extends IpsObjectGeneration implements ITab
      */
     private void refreshRowNumbers(){
         int index=0;
-        for (Iterator iter = rows.iterator(); iter.hasNext();) {
-            Row row = (Row)iter.next();
+        for (Iterator<Row> iter = rows.iterator(); iter.hasNext();) {
+            Row row = iter.next();
             row.setRowNumber(index++);
         }
     }
@@ -299,6 +310,8 @@ public class TableContentsGeneration extends IpsObjectGeneration implements ITab
             MessageList list = row.validateThis(tableStructure, datatypes, ipsProject);
             result.add(list);
         }
+        
+        validateUniqueKeys(result, tableStructure, datatypes);
     }
     
     //
@@ -320,5 +333,85 @@ public class TableContentsGeneration extends IpsObjectGeneration implements ITab
     
     static String getXmlAttributeIsnull(){
         return XML_ATTRIBUTE_ISNULL;
+    }
+    
+    /*
+     * Updates the whole unique key cache. The unique key(s) of all rows will be updated.
+     */
+    private void updateUniqueKeyCache(ITableStructure tableStructure) {
+        uniqueKeyValidator.clearUniqueKeyCache();
+        IRow[] rows = getRows();
+        for (int j = 0; j < rows.length; j++) {
+            updateUniqueKeyCacheFor((Row)rows[j]);
+        }
+        // store the last table structure modification time to detect changes of the table structure
+        uniqueKeyValidator.setTableStructureModificationTimeStamp(tableStructure);
+    }
+    
+    /**
+     * Validates the unique keys of all rows.
+     */
+    public void validateUniqueKeys(MessageList list, ITableStructure tableStructure, ValueDatatype[] datatypes) throws CoreException {
+        if (isUniqueKeyValidationEnabled()){
+            // check if the unique key cache needs to be updated
+            if (uniqueKeyValidator.isEmtpy() || uniqueKeyValidator.isInvalidUniqueKeyCache(tableStructure)) {
+                // could be happen if a new column was added to the table generation
+                // or the structure has changed, e.g. a new unique key was added
+                updateUniqueKeyCache(tableStructure);
+            }
+            
+            uniqueKeyValidator.validateAllUniqueKeys(list, tableStructure, datatypes);
+        }
+    }
+    
+    /**
+     * returns <code>true</code> if the unique key validation is enabled
+     */
+    public boolean isUniqueKeyValidationEnabled(){
+        return uniqueKeyValidator != null;
+    }
+
+    /**
+     * Clears the unique key cache, e.g. if a column was added or removed or the table contents generation will cleared
+     */
+    public void clearUniqueKeyValidator() {
+        if (isUniqueKeyValidationEnabled()){
+            uniqueKeyValidator.clearUniqueKeyCache();
+        }
+    }
+    
+    /**
+     * Updates the unique key cache for the given row
+     */
+    void updateUniqueKeyCacheFor(Row row) {
+        if (isUniqueKeyValidationEnabled()){
+            uniqueKeyValidator.handleRowChanged(this, row);
+        }
+    }
+    
+    /*
+     * Removes the row in the cached unique keys
+     */
+    private void removeUniqueKeyCacheFor(Row row) {
+        if (isUniqueKeyValidationEnabled()){
+            uniqueKeyValidator.handleRowRemoved(this, row);
+        }
+    }    
+    
+    /**
+     * Initializes the unique key cache.
+     */
+    public void initUniqueKeyValidator(UniqueKeyValidator uniqueKeyValidator){
+        this.uniqueKeyValidator = uniqueKeyValidator;
+        ITableStructure tableStructure;
+        try {
+            tableStructure = getTableContents().findTableStructure(getIpsProject());
+        } catch (CoreException e){
+            // exception must be handled as validation error on table contents object
+            IpsPlugin.log(e);
+            return;
+        }
+        updateUniqueKeyCache(tableStructure);
+        this.uniqueKeyValidator = uniqueKeyValidator;
     }
 }

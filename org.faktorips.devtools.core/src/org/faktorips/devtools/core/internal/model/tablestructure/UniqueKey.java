@@ -17,6 +17,7 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.osgi.util.NLS;
 import org.faktorips.datatype.Datatype;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
+import org.faktorips.devtools.core.model.tablestructure.ColumnRangeType;
 import org.faktorips.devtools.core.model.tablestructure.IColumn;
 import org.faktorips.devtools.core.model.tablestructure.IColumnRange;
 import org.faktorips.devtools.core.model.tablestructure.IKey;
@@ -160,7 +161,20 @@ public class UniqueKey extends Key implements IUniqueKey {
         String[] items = getKeyItemNames();
         for (int i = 0; i < items.length; i++) {
             if(getTableStructure().hasRange(items[i])){
-               return true; 
+                return true; 
+            }
+        }
+        return false;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public boolean containsTwoColumnRanges() {
+        IColumnRange[] ranges = getTableStructure().getRanges();
+        for (int i = 0; i < ranges.length; i++) {
+            if (ColumnRangeType.TWO_COLUMN_RANGE.equals(ranges[i].getColumnRangeType())){
+                return true;
             }
         }
         return false;

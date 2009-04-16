@@ -230,6 +230,20 @@ public class UniqueKeyTest extends AbstractIpsPluginTest {
 		}
     }
     
+    public void testContainsTwoColumnRanges(){
+        assertFalse(key.containsTwoColumnRanges());
+        
+        IColumnRange range = key.getTableStructure().newRange();
+        range.setColumnRangeType(ColumnRangeType.ONE_COLUMN_RANGE_FROM);
+        range.setFromColumn("a");
+        key.addKeyItem(range.getName());
+        assertFalse(key.containsTwoColumnRanges());
+
+        range.setColumnRangeType(ColumnRangeType.TWO_COLUMN_RANGE);
+        range.setToColumn("b");
+        assertTrue(key.containsTwoColumnRanges());
+    }
+    
     public void testValidateThis() throws Exception{
         assertEquals(0, key.getKeyItems().length);
         IColumn c0 = table.newColumn();

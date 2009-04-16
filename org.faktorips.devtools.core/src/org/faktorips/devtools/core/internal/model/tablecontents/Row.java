@@ -47,7 +47,7 @@ public class Row extends AtomicIpsObjectPart implements IRow {
     final static String TAG_NAME = "Row"; //$NON-NLS-1$
     final static String VALUE_TAG_NAME = "Value"; //$NON-NLS-1$
     
-    private ArrayList values;
+    private ArrayList<String> values;
     
     private int rowNumber= 0;
 
@@ -64,6 +64,12 @@ public class Row extends AtomicIpsObjectPart implements IRow {
         return (ITableContents)getParent().getParent();
     }
 
+    /**
+     * Returns the table contents generation this row belongs to
+     */
+    public TableContentsGeneration getTableContentsGeneration() {
+        return (TableContentsGeneration)getParent();
+    }
 
     private int getNumOfColumnsViaTableContents() {
         return ((ITableContents)getParent().getParent()).getNumOfColumns();
@@ -77,7 +83,7 @@ public class Row extends AtomicIpsObjectPart implements IRow {
      * Initializes the row's values with blanks
      */
     private void initValues(int numOfColumns) {
-        values = new ArrayList(numOfColumns+5);
+        values = new ArrayList<String>(numOfColumns+5);
         for (int i=0; i<numOfColumns; i++) {
             values.add(""); //$NON-NLS-1$
         }
@@ -118,6 +124,7 @@ public class Row extends AtomicIpsObjectPart implements IRow {
 	 */
     public void setValue(int column, String newValue) {
         setValueInternal(column, newValue);
+        getTableContentsGeneration().updateUniqueKeyCacheFor(this);
         objectHasChanged();
     }
 
@@ -181,7 +188,7 @@ public class Row extends AtomicIpsObjectPart implements IRow {
             return;
         }
         ValueDatatype[] datatypes= ((TableContents)getTableContents()).findColumnDatatypes(tableStructure, ipsProject);
-        validateThis(list, tableStructure, datatypes);
+        validateThis(list, tableStructure, datatypes, true);
     }
     
     MessageList validateThis(ITableStructure tableStructure, ValueDatatype[] datatypes, IIpsProject ipsProject) throws CoreException {
@@ -191,22 +198,31 @@ public class Row extends AtomicIpsObjectPart implements IRow {
         }
         
         result = new MessageList();
-        validateThis(result, tableStructure, datatypes);
+        // method was invoked by the table contents generation
+        // the table contents generation validates the unique key separately
+        validateThis(result, tableStructure, datatypes, false);
         
         afterValidateThis(result, ipsProject);
         
         return result;
     }
 
-    private void validateThis(MessageList result, ITableStructure tableStructure, ValueDatatype[] datatypes) throws CoreException {
+    private void validateThis(MessageList result, ITableStructure tableStructure, ValueDatatype[] datatypes, boolean uniqueKeyCheck) throws CoreException {
         IUniqueKey[] uniqueKeys = tableStructure.getUniqueKeys();
         validateMissingUniqueKeyValue(result, datatypes, tableStructure, uniqueKeys);
         validateRowValue(result, tableStructure, datatypes);
+        if (uniqueKeyCheck){
+            validateUniqueKey(result, tableStructure, datatypes);
+        }
         if(result.isEmpty()){
             validateNameColumnIfTableBasedEnum(result, tableStructure, uniqueKeys);
         }
     }
     
+    private void validateUniqueKey(MessageList list, ITableStructure tableStructure, ValueDatatype[] datatypes) throws CoreException {
+        getTableContentsGeneration().validateUniqueKeys(list, tableStructure, datatypes);
+    }
+
     private void validateNameColumnIfTableBasedEnum(MessageList msgList, ITableStructure structure, IUniqueKey[] uniqueKeys){
         if(!structure.isModelEnumType()){
             return;
@@ -325,5 +341,11 @@ public class Row extends AtomicIpsObjectPart implements IRow {
             element.appendChild(valueElement);
         }
     }
-
+    
+    /**
+     * Returns the number of columns in this row.
+     */
+    public int getNoOfColumns(){
+        return values.size();
+    }
 }
