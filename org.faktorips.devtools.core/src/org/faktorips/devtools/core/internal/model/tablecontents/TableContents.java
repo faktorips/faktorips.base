@@ -23,6 +23,7 @@ import org.apache.commons.lang.StringUtils;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.osgi.util.NLS;
 import org.faktorips.datatype.ValueDatatype;
+import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.IpsStatus;
 import org.faktorips.devtools.core.internal.model.ipsobject.IpsObjectGeneration;
 import org.faktorips.devtools.core.internal.model.ipsobject.TimedIpsObject;
@@ -83,7 +84,15 @@ public class TableContents extends TimedIpsObject implements ITableContents {
      * Creates an unique key validator for the given table contents generation
      */
     private void initUniqueKeyValidator(TableContentsGeneration tableContentsGeneration) {
-         tableContentsGeneration.initUniqueKeyValidator(new UniqueKeyValidator());
+        ITableStructure tableStructure;
+        try {
+            tableStructure = findTableStructure(getIpsProject());
+        } catch (CoreException e){
+            // will be handled as validation error
+            IpsPlugin.log(e);
+            return;
+        } 
+        tableContentsGeneration.initUniqueKeyValidator(tableStructure, new UniqueKeyValidator());
     }
 
     /**

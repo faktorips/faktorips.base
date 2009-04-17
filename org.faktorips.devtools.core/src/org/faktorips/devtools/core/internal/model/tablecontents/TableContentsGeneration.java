@@ -20,7 +20,6 @@ import java.util.List;
 
 import org.eclipse.core.runtime.CoreException;
 import org.faktorips.datatype.ValueDatatype;
-import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.internal.model.ipsobject.IpsObjectGeneration;
 import org.faktorips.devtools.core.model.IIpsElement;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPart;
@@ -401,17 +400,9 @@ public class TableContentsGeneration extends IpsObjectGeneration implements ITab
     /**
      * Initializes the unique key cache.
      */
-    public void initUniqueKeyValidator(UniqueKeyValidator uniqueKeyValidator){
+    public void initUniqueKeyValidator(ITableStructure tableStructure, UniqueKeyValidator uniqueKeyValidator){
         this.uniqueKeyValidator = uniqueKeyValidator;
-        ITableStructure tableStructure;
-        try {
-            tableStructure = getTableContents().findTableStructure(getIpsProject());
-        } catch (CoreException e){
-            // exception must be handled as validation error on table contents object
-            IpsPlugin.log(e);
-            return;
-        }
-        if (uniqueKeyValidator != null){
+        if (tableStructure != null && uniqueKeyValidator != null){
             updateUniqueKeyCache(tableStructure);
         }
     }
