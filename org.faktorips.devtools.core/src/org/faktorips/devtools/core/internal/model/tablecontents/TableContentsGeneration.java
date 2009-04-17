@@ -343,6 +343,7 @@ public class TableContentsGeneration extends IpsObjectGeneration implements ITab
         for (int j = 0; j < rows.length; j++) {
             updateUniqueKeyCacheFor((Row)rows[j]);
         }
+        uniqueKeyValidator.cacheTableStructureAndValueDatatypes(this);
         // store the last table structure modification time to detect changes of the table structure
         uniqueKeyValidator.setTableStructureModificationTimeStamp(tableStructure);
     }

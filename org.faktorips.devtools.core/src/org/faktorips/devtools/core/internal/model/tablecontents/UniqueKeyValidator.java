@@ -354,7 +354,7 @@ public class UniqueKeyValidator {
     /*
      * Store (cache) the table structure and value datatype's of all columns
      */
-    private void cacheTableStructureAndValueDatatypes(ITableContentsGeneration tableContentsGeneration) {
+    void cacheTableStructureAndValueDatatypes(ITableContentsGeneration tableContentsGeneration) {
         if (cachedTableStructure == null){
             updateCachedTableStructure((TableContentsGeneration)tableContentsGeneration);
         } 
