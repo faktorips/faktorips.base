@@ -44,9 +44,6 @@ public class UniqueKeyValidatorTest extends AbstractIpsPluginTest {
         table = (ITableContents)newIpsObject(project, IpsObjectType.TABLE_CONTENTS, "Tc");
     }
 
-	public void testDummy(){
-	}
-
     public void testUniqueKeysMultipleKeys() throws CoreException{
         ITableStructure structure = (ITableStructure)newIpsObject(project,  IpsObjectType.TABLE_STRUCTURE, "Ts");
         table.setTableStructure(structure.getQualifiedName());
