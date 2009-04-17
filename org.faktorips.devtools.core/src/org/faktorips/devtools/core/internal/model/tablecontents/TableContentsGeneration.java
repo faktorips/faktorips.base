@@ -411,7 +411,8 @@ public class TableContentsGeneration extends IpsObjectGeneration implements ITab
             IpsPlugin.log(e);
             return;
         }
-        updateUniqueKeyCache(tableStructure);
-        this.uniqueKeyValidator = uniqueKeyValidator;
+        if (uniqueKeyValidator != null){
+            updateUniqueKeyCache(tableStructure);
+        }
     }
 }

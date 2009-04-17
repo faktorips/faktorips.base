@@ -342,7 +342,7 @@ public class UniqueKeyValidator {
             if (rowsChecked.size() > 1) {
                 // more then one unique key exists, create validation error for each row
                 for (Iterator<Row> iterator = rowsChecked.iterator(); iterator.hasNext();) {
-                    createValidationErrorUniqueKeyViolation(list, keyValue, iterator.next());
+                    createValidationErrorUniqueKeyViolation(list, keyValue.getUniqueKey(), iterator.next());
                 }
             }
         }
@@ -402,19 +402,15 @@ public class UniqueKeyValidator {
     /*
      * Creates a unique key validation error and adds it to the give message list.
      */
-    void createValidationErrorUniqueKeyViolation(MessageList list, AbstractKeyValue keyValue1, Row row) {
-        String text = NLS.bind("Unique key violation, row: {0}, key value: {1}", row.getRowNumber(), keyValue1.toString());
+    void createValidationErrorUniqueKeyViolation(MessageList list, IUniqueKey uniqueKey, Row row) {
+        String text = NLS.bind("Unique key violation, row: {0}, unique key: {1}", row.getRowNumber(), uniqueKey.getName());
         List<ObjectProperty> objectProperties = new ArrayList<ObjectProperty>();
-        createObjectProperties(keyValue1, row, objectProperties);
+        createObjectProperties(uniqueKey, row, objectProperties);
         list.add(new Message(ITableContents.MSGCODE_UNIQUE_KEY_VIOLATION, text, Message.ERROR, (ObjectProperty[]) objectProperties.toArray(new ObjectProperty[objectProperties.size()]))); 
     }
     
-    private void createObjectProperties(AbstractKeyValue keyValue, Row row, List<ObjectProperty> objectProperties) {
-        if (keyValue == null){
-            return;
-        }
-        
-        IKeyItem[] items = keyValue.getUniqueKey().getKeyItems();
+    private void createObjectProperties(IUniqueKey uniqueKey, Row row, List<ObjectProperty> objectProperties) {
+        IKeyItem[] items = uniqueKey.getKeyItems();
         for (int i = 0; i < items.length; i++) {
             IColumn[] columns = items[i].getColumns();
             for (int j = 0; j < columns.length; j++) {

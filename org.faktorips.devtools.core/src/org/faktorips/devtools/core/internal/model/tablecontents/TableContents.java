@@ -75,8 +75,7 @@ public class TableContents extends TimedIpsObject implements ITableContents {
      */
     protected IpsObjectGeneration createNewGeneration(int id) {
         TableContentsGeneration tableContentsGeneration = new TableContentsGeneration(this, id);
-//      TODO Joerg temp. disabled, 
-// initUniqueKeyValidator(tableContentsGeneration);
+        initUniqueKeyValidator(tableContentsGeneration);
         return tableContentsGeneration;
     }
 
