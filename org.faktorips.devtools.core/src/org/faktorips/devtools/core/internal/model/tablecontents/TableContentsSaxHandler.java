@@ -97,7 +97,7 @@ public class TableContentsSaxHandler extends DefaultHandler {
             if (currentGeneration == null) {
                 tableContents.addExtensionProperty(idValue, nullValue?null:textBuffer.substring(0));
             } else {
-                throw new SAXNotSupportedException("Extension properties inside a generation node are not supported!");
+                throw new SAXNotSupportedException("Extension properties inside a generation node are not supported!"); //$NON-NLS-1$
             }
             textBuffer = null;
         }

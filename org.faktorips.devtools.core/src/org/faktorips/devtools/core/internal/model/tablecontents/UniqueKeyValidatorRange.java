@@ -387,7 +387,7 @@ public class UniqueKeyValidatorRange {
             }
             return rowsChecked;
          } else {
-             throw new RuntimeException("Wrong key value object :" + keyValueObject.getClass().getName() );
+             throw new RuntimeException("Wrong key value object :" + keyValueObject.getClass().getName() ); //$NON-NLS-1$
          }
         
         return null;
@@ -432,7 +432,7 @@ public class UniqueKeyValidatorRange {
     }
     
     private void createValidationErrorToManyUniqueKeyViolations(MessageList list, IUniqueKey uniqueKey, int numberOfValidationErrors) {
-        String text = NLS.bind("Table contents cannot be validated completly, there are more then {0} unique key violations for unique key {1}.", numberOfValidationErrors, uniqueKey);
+        String text = NLS.bind(Messages.UniqueKeyValidatorRange_msgToManyUniqueKeyViolations, numberOfValidationErrors, uniqueKey);
         list.add(new Message(ITableContents.MSGCODE_TO_MANY_UNIQUE_KEY_VIOLATIONS, text, Message.ERROR)); 
     }    
 }

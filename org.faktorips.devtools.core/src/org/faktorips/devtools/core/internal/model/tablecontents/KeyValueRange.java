@@ -151,10 +151,10 @@ public class KeyValueRange extends AbstractKeyValue implements Comparable<KeyVal
 
     private static int compareTo(ValueDatatype valueDatatype, String value1, String value2) {
         if (!valueDatatype.isParsable(value1)){
-            throw new RuntimeException("Value " + value1 + " not parsable, datatype = " + valueDatatype);
+            throw new RuntimeException("Value " + value1 + " not parsable, datatype = " + valueDatatype); //$NON-NLS-1$ //$NON-NLS-2$
         } 
         if (!valueDatatype.isParsable(value2)){
-            throw new RuntimeException("Value " + value2 + " not parsable, datatype = " + valueDatatype);
+            throw new RuntimeException("Value " + value2 + " not parsable, datatype = " + valueDatatype); //$NON-NLS-1$ //$NON-NLS-2$
         }       
         
         return valueDatatype.compare(value1, value2);
@@ -166,7 +166,7 @@ public class KeyValueRange extends AbstractKeyValue implements Comparable<KeyVal
     private static ValueDatatype getValueDatatypeOfColumnRange(ITableStructure structure, ValueDatatype[] datatypes, ColumnRange columnRange) {
         IColumn column = structure.getColumn(columnRange.getFromColumn());
         if (column == null){
-            IpsPlugin.log(new IpsStatus("Column " + columnRange.getFromColumn() + " not found!"));
+            IpsPlugin.log(new IpsStatus("Column " + columnRange.getFromColumn() + " not found!")); //$NON-NLS-1$ //$NON-NLS-2$
             return null;
         }
         if (datatypes != null){
@@ -174,7 +174,7 @@ public class KeyValueRange extends AbstractKeyValue implements Comparable<KeyVal
             if (columnIndex<=datatypes.length){
                 return datatypes[columnIndex];
             } else {
-                IpsPlugin.log(new IpsStatus("Datatype " + column.getDatatype() + " not found!"));
+                IpsPlugin.log(new IpsStatus("Datatype " + column.getDatatype() + " not found!")); //$NON-NLS-1$ //$NON-NLS-2$
             }
         }
         return null;
@@ -233,6 +233,6 @@ public class KeyValueRange extends AbstractKeyValue implements Comparable<KeyVal
      */
     @Override
     public String toString() {
-        return uniqueKey.getName() + ": " + valueFrom + "- /" + evalValueTo(row, columnRange) + "";
+        return uniqueKey.getName() + ": " + valueFrom + "- /" + evalValueTo(row, columnRange); //$NON-NLS-1$ //$NON-NLS-2$
     }
 }

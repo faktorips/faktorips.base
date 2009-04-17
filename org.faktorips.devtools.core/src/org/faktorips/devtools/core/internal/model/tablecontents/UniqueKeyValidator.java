@@ -194,7 +194,7 @@ public class UniqueKeyValidator {
             updateKeyValueListInMap(keyValueMap, keyValue, row, operation, (List<Row>)rowOrRowsForKeyValue);
             return;
         }
-        throw new RuntimeException("Unsupported key value found !" + rowOrRowsForKeyValue.getClass().getName());
+        throw new RuntimeException("Unsupported key value found !" + rowOrRowsForKeyValue.getClass().getName()); //$NON-NLS-1$
     }
 
     /*
@@ -222,11 +222,11 @@ public class UniqueKeyValidator {
             if (!(rowOrRowsForKeyValue == row)){
                 // normally this can never be happen, because if this is not the current row
                 // then there must be a list of rows or the update has not worked correctly before (inconsistent cache)
-                throw new RuntimeException("Warning: inconsistent unique key map!");
+                throw new RuntimeException("Warning: inconsistent unique key map!"); //$NON-NLS-1$
             }
             keyValueMap.remove(keyValue);
         } else {
-            throw new RuntimeException("Unsupported operation: " + operation);
+            throw new RuntimeException("Unsupported operation: " + operation); //$NON-NLS-1$
         }
     }
     
@@ -370,7 +370,7 @@ public class UniqueKeyValidator {
         try {
             cachedValueDatatypes = ((TableContents)tableContentsGeneration.getTableContents()).findColumnDatatypes(cachedTableStructure, tableContentsGeneration.getIpsProject());
         } catch (CoreException e) {
-            IpsPlugin.log(new IpsStatus("Error searching value datatypes: " + tableContentsGeneration.getTableContents().getTableStructure()));
+            IpsPlugin.log(new IpsStatus("Error searching value datatypes: " + tableContentsGeneration.getTableContents().getTableStructure())); //$NON-NLS-1$
             return;
         }
     }
@@ -379,7 +379,7 @@ public class UniqueKeyValidator {
         try {
             cachedTableStructure = tableContentsGeneration.getTableContents().findTableStructure(tableContentsGeneration.getIpsProject());
         } catch (CoreException e) {
-            IpsPlugin.log(new IpsStatus("Error searching TableStructure: " + tableContentsGeneration.getTableContents().getTableStructure()));
+            IpsPlugin.log(new IpsStatus("Error searching TableStructure: " + tableContentsGeneration.getTableContents().getTableStructure())); //$NON-NLS-1$
             return;
         }
     }
@@ -409,7 +409,7 @@ public class UniqueKeyValidator {
      * Creates a unique key validation error and adds it to the give message list.
      */
     void createValidationErrorUniqueKeyViolation(MessageList list, IUniqueKey uniqueKey, Row row) {
-        String text = NLS.bind("Unique key violation, row: {0}, unique key: {1}", row.getRowNumber(), uniqueKey.getName());
+        String text = NLS.bind(Messages.UniqueKeyValidator_msgUniqueKeyViolation, row.getRowNumber(), uniqueKey.getName());
         List<ObjectProperty> objectProperties = new ArrayList<ObjectProperty>();
         createObjectProperties(uniqueKey, row, objectProperties);
         list.add(new Message(ITableContents.MSGCODE_UNIQUE_KEY_VIOLATION, text, Message.ERROR, (ObjectProperty[]) objectProperties.toArray(new ObjectProperty[objectProperties.size()]))); 

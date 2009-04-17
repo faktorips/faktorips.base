@@ -83,14 +83,14 @@ public class KeyValue extends AbstractKeyValue {
     
     private static String getValueForKeyItem(ITableStructure structure, Row row, IKeyItem keyItem) {
         IColumn[] columns = keyItem.getColumns();
-        String value = "";
+        String value = ""; //$NON-NLS-1$
         for (int i = 0; i < columns.length; i++) {
             int columnIndex = structure.getColumnIndex(columns[i]);
             if (columnIndex >= row.getNoOfColumns()){
                 // invalid table contents
                 continue;
             }
-            value += i>0?"#":"";
+            value += i>0?"#":""; //$NON-NLS-1$ //$NON-NLS-2$
             value += row.getValue(columnIndex);
         }
         return value;
@@ -98,6 +98,6 @@ public class KeyValue extends AbstractKeyValue {
     
     @Override
     public String toString() {
-        return uniqueKey.getName() + ": " + value;
+        return uniqueKey.getName() + ": " + value; //$NON-NLS-1$
     }
 }

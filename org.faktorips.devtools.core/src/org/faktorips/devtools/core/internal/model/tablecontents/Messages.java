@@ -37,4 +37,6 @@ public class Messages extends NLS {
     public static String TableContents_msgColumncountMismatch;
     public static String TableContents_msgNameStructureAndContentsNotSameWhenEnum;
     public static String TableContentsGeneration_dublicateEnumId;
+    public static String UniqueKeyValidator_msgUniqueKeyViolation;
+    public static String UniqueKeyValidatorRange_msgToManyUniqueKeyViolations;
 }
