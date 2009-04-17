@@ -768,7 +768,7 @@ public class UniqueKeyValidatorTest extends AbstractIpsPluginTest {
         
         ITableContentsGeneration gen1 = (ITableContentsGeneration)table.newGeneration();
         if (!withUniqueKeyValidation){
-            ((TableContentsGeneration)gen1).initUniqueKeyValidator(null);
+            ((TableContentsGeneration)gen1).initUniqueKeyValidator(null, null);
         }
         table.newColumn("a");
         table.newColumn("b");
