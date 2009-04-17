@@ -122,6 +122,9 @@ public class UniqueKeyValidator {
      * Updates the given row depending on the given operation in all unique key caches with the new calculated key value of the given row.
      */ 
     private void updateAllUniqueKeysCache(ITableContentsGeneration tableContentsGeneration, Row row, int operation) {
+        if (cachedTableStructure == null){
+            return;
+        }
         cacheTableStructureAndValueDatatypes(tableContentsGeneration);
         
         IUniqueKey[] uniqueKeys = cachedTableStructure.getUniqueKeys();
@@ -392,6 +395,9 @@ public class UniqueKeyValidator {
      * Stores the new modification time stamp of the table structure
      */
     public void setTableStructureModificationTimeStamp(ITableStructure tableStructure) {
+        if (tableStructure == null){
+            return;
+        }
         tableStrunctureModificationStamp = getTableStructureModTimeStamp(tableStructure);
     }
     
