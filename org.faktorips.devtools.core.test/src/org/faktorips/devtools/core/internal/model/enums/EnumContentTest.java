@@ -25,6 +25,7 @@ import org.faktorips.devtools.core.model.IpsObjectDependency;
 import org.faktorips.devtools.core.model.enums.IEnumContent;
 import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
 import org.faktorips.devtools.core.model.ipsobject.QualifiedNameType;
+import org.faktorips.util.message.MessageList;
 import org.w3c.dom.Element;
 
 public class EnumContentTest extends AbstractIpsEnumPluginTest {
@@ -72,37 +73,52 @@ public class EnumContentTest extends AbstractIpsEnumPluginTest {
         // Test enum type missing
         ipsModel.clearValidationCache();
         genderEnumContent.setEnumType("");
-        assertEquals(1, genderEnumContent.validate(ipsProject).getNoOfMessages());
+        MessageList validationMessageList = genderEnumContent.validate(ipsProject);
+        assertOneValidationMessage(validationMessageList);
+        assertNotNull(validationMessageList.getMessageByCode(IEnumContent.MSGCODE_ENUM_CONTENT_ENUM_TYPE_MISSING));
         genderEnumContent.setEnumType(genderEnumType.getQualifiedName());
 
         // Test enum type does not exist
         ipsModel.clearValidationCache();
         genderEnumContent.setEnumType("FooBar");
-        assertEquals(1, genderEnumContent.validate(ipsProject).getNoOfMessages());
+        validationMessageList = genderEnumContent.validate(ipsProject);
+        assertOneValidationMessage(validationMessageList);
+        assertNotNull(validationMessageList
+                .getMessageByCode(IEnumContent.MSGCODE_ENUM_CONTENT_ENUM_TYPE_DOES_NOT_EXIST));
         genderEnumContent.setEnumType(genderEnumType.getQualifiedName());
 
-        // Test values are part of model
+        // Test values are part of type
         ipsModel.clearValidationCache();
         genderEnumType.setContainingValues(true);
-        assertEquals(1, genderEnumContent.validate(ipsProject).getNoOfMessages());
+        validationMessageList = genderEnumContent.validate(ipsProject);
+        assertOneValidationMessage(validationMessageList);
+        assertNotNull(validationMessageList.getMessageByCode(IEnumContent.MSGCODE_ENUM_CONTENT_VALUES_ARE_PART_OF_TYPE));
         genderEnumType.setContainingValues(false);
 
         // Test enum type is abstract
         ipsModel.clearValidationCache();
         genderEnumType.setAbstract(true);
-        assertEquals(1, genderEnumContent.validate(ipsProject).getNoOfMessages());
+        validationMessageList = genderEnumContent.validate(ipsProject);
+        assertOneValidationMessage(validationMessageList);
+        assertNotNull(validationMessageList.getMessageByCode(IEnumContent.MSGCODE_ENUM_CONTENT_ENUM_TYPE_IS_ABSTRACT));
         genderEnumType.setAbstract(false);
     }
 
     public void testValidateReferencedEnumAttributesCount() throws CoreException {
         genderEnumType.newEnumAttribute();
-        assertEquals(1, genderEnumContent.validate(ipsProject).getNoOfMessages());
+        MessageList validationMessageList = genderEnumContent.validate(ipsProject);
+        assertOneValidationMessage(validationMessageList);
+        assertNotNull(validationMessageList
+                .getMessageByCode(IEnumContent.MSGCODE_ENUM_CONTENT_REFERENCED_ENUM_ATTRIBUTES_COUNT_INVALID));
     }
 
     public void testValidatePackage() throws CoreException {
         IEnumContent enumContent = newEnumContent(ipsProject, "foo.Bar");
         enumContent.setEnumType(genderEnumType.getQualifiedName());
-        assertEquals(1, enumContent.validate(ipsProject).getNoOfMessages());
+        MessageList validationMessageList = enumContent.validate(ipsProject);
+        assertOneValidationMessage(validationMessageList);
+        assertNotNull(validationMessageList
+                .getMessageByCode(IEnumContent.MSGCODE_ENUM_CONTENT_PACKAGE_FRAGMENT_NOT_CORRECT));
     }
 
     public void testDependsOn() throws CoreException {

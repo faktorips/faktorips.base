@@ -20,6 +20,7 @@ import org.faktorips.devtools.core.internal.model.ipsobject.DescriptionHelper;
 import org.faktorips.devtools.core.model.enums.IEnumContent;
 import org.faktorips.devtools.core.model.enums.IEnumValue;
 import org.faktorips.devtools.core.util.XmlUtil;
+import org.faktorips.util.message.MessageList;
 import org.w3c.dom.Element;
 
 public class EnumValueTest extends AbstractIpsEnumPluginTest {
@@ -57,7 +58,9 @@ public class EnumValueTest extends AbstractIpsEnumPluginTest {
         IEnumValue enumTypeValue = genderEnumType.newEnumValue();
         enumTypeValue.getEnumAttributeValues().get(0).setValue("foo");
         enumTypeValue.getEnumAttributeValues().get(1).setValue("bar");
-        assertEquals(1, enumTypeValue.validate(ipsProject).getNoOfMessages());
+        MessageList validationMessageList = enumTypeValue.validate(ipsProject);
+        assertOneValidationMessage(validationMessageList);
+        assertNotNull(validationMessageList.getMessageByCode(IEnumValue.MSGCODE_ENUM_VALUE_ENUM_TYPE_ABSTRACT));
     }
 
     public void testValidateEnumTypeDoesNotContainValues() throws CoreException {
@@ -65,7 +68,10 @@ public class EnumValueTest extends AbstractIpsEnumPluginTest {
         IEnumValue enumTypeValue = genderEnumType.newEnumValue();
         enumTypeValue.getEnumAttributeValues().get(0).setValue("foo");
         enumTypeValue.getEnumAttributeValues().get(1).setValue("bar");
-        assertEquals(1, enumTypeValue.validate(ipsProject).getNoOfMessages());
+        MessageList validationMessageList = enumTypeValue.validate(ipsProject);
+        assertOneValidationMessage(validationMessageList);
+        assertNotNull(validationMessageList
+                .getMessageByCode(IEnumValue.MSGCODE_ENUM_VALUE_ENUM_TYPE_DOES_NOT_CONTAIN_VALUES));
     }
 
     public void testValidateNumberEnumAttributeValues() throws CoreException {
@@ -74,7 +80,10 @@ public class EnumValueTest extends AbstractIpsEnumPluginTest {
 
         getIpsModel().clearValidationCache();
         genderEnumValueFemale.getEnumAttributeValues().get(0).delete();
-        assertEquals(1, genderEnumValueFemale.validate(ipsProject).getNoOfMessages());
+        MessageList validationMessageList = genderEnumValueFemale.validate(ipsProject);
+        assertOneValidationMessage(validationMessageList);
+        assertNotNull(validationMessageList
+                .getMessageByCode(IEnumValue.MSGCODE_ENUM_VALUE_NUMBER_ATTRIBUTE_VALUES_DOES_NOT_CORRESPOND_TO_NUMBER_ATTRIBUTES));
     }
 
     public void testGetImage() {

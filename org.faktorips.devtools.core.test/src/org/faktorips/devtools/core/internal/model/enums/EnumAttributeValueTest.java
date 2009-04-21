@@ -23,6 +23,7 @@ import org.faktorips.devtools.core.model.enums.IEnumAttributeValue;
 import org.faktorips.devtools.core.model.enums.IEnumContent;
 import org.faktorips.devtools.core.model.enums.IEnumValue;
 import org.faktorips.devtools.core.util.XmlUtil;
+import org.faktorips.util.message.MessageList;
 import org.w3c.dom.Element;
 
 public class EnumAttributeValueTest extends AbstractIpsEnumPluginTest {
@@ -106,24 +107,38 @@ public class EnumAttributeValueTest extends AbstractIpsEnumPluginTest {
         // Test value parsable with datatype integer
         ipsModel.clearValidationCache();
         integerNewAttributeValue.setValue("fooBar");
-        assertEquals(1, integerNewAttributeValue.validate(ipsProject).getNoOfMessages());
+        MessageList validationMessageList = integerNewAttributeValue.validate(ipsProject);
+        assertOneValidationMessage(validationMessageList);
+        assertNotNull(validationMessageList
+                .getMessageByCode(IEnumAttributeValue.MSGCODE_ENUM_ATTRIBUTE_VALUE_NOT_PARSABLE));
         integerNewAttributeValue.setValue("4");
 
         // Test value parsable with datatype boolean
         ipsModel.clearValidationCache();
         booleanNewAttributeValue.setValue("fooBar");
-        assertEquals(1, booleanNewAttributeValue.validate(ipsProject).getNoOfMessages());
+        validationMessageList = booleanNewAttributeValue.validate(ipsProject);
+        assertOneValidationMessage(validationMessageList);
+        assertNotNull(validationMessageList
+                .getMessageByCode(IEnumAttributeValue.MSGCODE_ENUM_ATTRIBUTE_VALUE_NOT_PARSABLE));
         booleanNewAttributeValue.setValue("false");
     }
 
     public void testValidateUniqueIdentifierValueEmpty() throws CoreException {
+        IIpsModel ipsModel = getIpsModel();
         IEnumAttributeValue uniqueIdentifierEnumAttributeValue = genderEnumValueFemale.getEnumAttributeValues().get(0);
 
         uniqueIdentifierEnumAttributeValue.setValue("");
-        assertEquals(1, genderEnumValueFemale.validate(ipsProject).getNoOfMessages());
+        MessageList validationMessageList = genderEnumValueFemale.validate(ipsProject);
+        assertOneValidationMessage(validationMessageList);
+        assertNotNull(validationMessageList
+                .getMessageByCode(IEnumAttributeValue.MSGCODE_ENUM_ATTRIBUTE_VALUE_UNIQUE_IDENTIFIER_VALUE_EMPTY));
 
+        ipsModel.clearValidationCache();
         uniqueIdentifierEnumAttributeValue.setValue(null);
-        assertEquals(1, genderEnumValueFemale.validate(ipsProject).getNoOfMessages());
+        validationMessageList = genderEnumValueFemale.validate(ipsProject);
+        assertOneValidationMessage(validationMessageList);
+        assertNotNull(validationMessageList
+                .getMessageByCode(IEnumAttributeValue.MSGCODE_ENUM_ATTRIBUTE_VALUE_UNIQUE_IDENTIFIER_VALUE_EMPTY));
     }
 
     public void testValidateUniqueIdentifierValueNotUnique() throws CoreException {
@@ -135,14 +150,24 @@ public class EnumAttributeValueTest extends AbstractIpsEnumPluginTest {
         uniqueIdentifierEnumAttributeValueMale.setValue("foo");
         uniqueIdentifierEnumAttributeValueFemale.setValue("foo");
 
-        assertEquals(1, uniqueIdentifierEnumAttributeValueMale.validate(ipsProject).getNoOfMessages());
-        assertEquals(1, uniqueIdentifierEnumAttributeValueFemale.validate(ipsProject).getNoOfMessages());
+        MessageList validationMessageList = uniqueIdentifierEnumAttributeValueMale.validate(ipsProject);
+        assertOneValidationMessage(validationMessageList);
+        assertNotNull(validationMessageList
+                .getMessageByCode(IEnumAttributeValue.MSGCODE_ENUM_ATTRIBUTE_VALUE_UNIQUE_IDENTIFIER_NOT_UNIQUE));
+
+        validationMessageList = uniqueIdentifierEnumAttributeValueFemale.validate(ipsProject);
+        assertOneValidationMessage(validationMessageList);
+        assertNotNull(validationMessageList
+                .getMessageByCode(IEnumAttributeValue.MSGCODE_ENUM_ATTRIBUTE_VALUE_UNIQUE_IDENTIFIER_NOT_UNIQUE));
     }
 
     public void testValidateLiteralNameValueNotJavaConform() throws CoreException {
         IEnumAttributeValue literalNameEnumAttributeValueMale = genderEnumValueMale.getEnumAttributeValues().get(0);
         literalNameEnumAttributeValueMale.setValue("3sdj4%332§4^2");
-        assertEquals(1, literalNameEnumAttributeValueMale.validate(ipsProject).getNoOfMessages());
+        MessageList validationMessageList = literalNameEnumAttributeValueMale.validate(ipsProject);
+        assertOneValidationMessage(validationMessageList);
+        assertNotNull(validationMessageList
+                .getMessageByCode(IEnumAttributeValue.MSGCODE_ENUM_ATTRIBUTE_VALUE_LITERAL_NAME_NOT_JAVA_CONFORM));
     }
 
     public void testGetImage() {

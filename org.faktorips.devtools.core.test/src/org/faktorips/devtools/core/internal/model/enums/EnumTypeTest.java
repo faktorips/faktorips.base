@@ -21,6 +21,7 @@ import javax.xml.parsers.ParserConfigurationException;
 import org.eclipse.core.runtime.CoreException;
 import org.faktorips.datatype.Datatype;
 import org.faktorips.devtools.core.internal.model.ipsobject.DescriptionHelper;
+import org.faktorips.devtools.core.model.IIpsModel;
 import org.faktorips.devtools.core.model.enums.IEnumAttribute;
 import org.faktorips.devtools.core.model.enums.IEnumAttributeValue;
 import org.faktorips.devtools.core.model.enums.IEnumType;
@@ -490,18 +491,23 @@ public class EnumTypeTest extends AbstractIpsEnumPluginTest {
     }
 
     public void testValidateSuperEnumType() throws CoreException {
+        IIpsModel ipsModel = getIpsModel();
+
         // Test super enum type does not exit
-        getIpsModel().clearValidationCache();
         genderEnumType.setSuperEnumType("FooBar");
-        assertEquals(1, genderEnumType.validate(ipsProject).getNoOfMessages());
+        MessageList validationMessageList = genderEnumType.validate(ipsProject);
+        assertOneValidationMessage(validationMessageList);
+        assertNotNull(validationMessageList.getMessageByCode(IEnumType.MSGCODE_ENUM_TYPE_SUPERTYPE_DOES_NOT_EXIST));
 
         // Test super enum type is not abstract
         IEnumType superEnumType = newEnumType(ipsProject, "SuperEnumType");
         genderEnumType.setSuperEnumType(superEnumType.getQualifiedName());
-        getIpsModel().clearValidationCache();
-        assertEquals(1, genderEnumType.validate(ipsProject).getNoOfMessages());
+        ipsModel.clearValidationCache();
+        validationMessageList = genderEnumType.validate(ipsProject);
+        assertOneValidationMessage(validationMessageList);
+        assertNotNull(validationMessageList.getMessageByCode(IEnumType.MSGCODE_ENUM_TYPE_SUPERTYPE_IS_NOT_ABSTRACT));
         superEnumType.setAbstract(true);
-        getIpsModel().clearValidationCache();
+        ipsModel.clearValidationCache();
         assertTrue(genderEnumType.isValid());
     }
 
@@ -521,8 +527,10 @@ public class EnumTypeTest extends AbstractIpsEnumPluginTest {
         IEnumAttribute attr2 = superSuperEnumType.newEnumAttribute();
         attr2.setName("attr2");
         attr2.setDatatype(INTEGER_DATATYPE_NAME);
-        getIpsModel().clearValidationCache();
-        assertEquals(1, genderEnumType.validate(ipsProject).getNoOfMessages());
+        MessageList validationMessageList = genderEnumType.validate(ipsProject);
+        assertOneValidationMessage(validationMessageList);
+        assertNotNull(validationMessageList
+                .getMessageByCode(IEnumType.MSGCODE_ENUM_TYPE_NOT_INHERITED_ATTRIBUTES_IN_SUPERTYPE_HIERARCHY));
 
         attr1 = genderEnumType.newEnumAttribute();
         attr1.setName("attr1");
@@ -535,10 +543,11 @@ public class EnumTypeTest extends AbstractIpsEnumPluginTest {
         assertTrue(genderEnumType.isValid());
     }
 
-    public void testValidateIdentifierAttribute() throws CoreException {
+    public void testValidateLiteralNameAttribute() throws CoreException {
         genderEnumAttributeId.setLiteralName(false);
-        getIpsModel().clearValidationCache();
-        assertEquals(1, genderEnumType.validate(ipsProject).getNoOfMessages());
+        MessageList validationMessageList = genderEnumType.validate(ipsProject);
+        assertOneValidationMessage(validationMessageList);
+        assertNotNull(validationMessageList.getMessageByCode(IEnumType.MSGCODE_ENUM_TYPE_NO_LITERAL_NAME_ATTRIBUTE));
 
         genderEnumType.setAbstract(true);
         getIpsModel().clearValidationCache();
@@ -646,4 +655,5 @@ public class EnumTypeTest extends AbstractIpsEnumPluginTest {
         } catch (IllegalArgumentException e) {
         }
     }
+    
 }
