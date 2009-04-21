@@ -139,17 +139,39 @@ public class EnumValue extends BaseIpsObjectPart implements IEnumValue {
     protected void validateThis(MessageList list, IIpsProject ipsProject) throws CoreException {
         super.validateThis(list, ipsProject);
 
-        // Number enum attribute values must match number enum attributes of the enum type
         IEnumValueContainer enumValueContainer = getEnumValueContainer();
+        IEnumType enumType = enumValueContainer.findEnumType();
+        if (enumType == null) {
+            return;
+        }
+
+        if (enumType.isAbstract() && enumValueContainer instanceof IEnumType) {
+            String text = NLS.bind(Messages.EnumValue_EnumTypeAbstract, enumType.getQualifiedName());
+            Message validationMessage = new Message(MSGCODE_ENUM_VALUE_ENUM_TYPE_ABSTRACT, text, Message.WARNING, this);
+            list.add(validationMessage);
+            return;
+        }
+
+        if (!(enumType.isContainingValues()) && enumValueContainer instanceof IEnumType) {
+            String text = NLS.bind(Messages.EnumValue_EnumTypeDoesNotContainValues, enumType.getQualifiedName());
+            Message validationMessage = new Message(MSGCODE_ENUM_VALUE_ENUM_TYPE_DOES_NOT_CONTAIN_VALUES, text,
+                    Message.WARNING, this);
+            list.add(validationMessage);
+            return;
+        }
+
+        // Number enum attribute values must match number enum attributes of the enum type
         int numberEnumAttributes = (enumValueContainer instanceof IEnumType) ? ((IEnumType)enumValueContainer)
                 .getEnumAttributesCount(true) : ((IEnumContent)enumValueContainer).getReferencedEnumAttributesCount();
         if (numberEnumAttributes != getEnumAttributeValuesCount()) {
             String text = NLS.bind(Messages.EnumValue_NumberAttributeValuesDoesNotCorrespondToNumberAttributes,
                     enumValueContainer.getQualifiedName());
             Message validationMessage = new Message(
-                    MSGCODE_NUMBER_ATTRIBUTE_VALUES_DOES_NOT_CORRESPOND_TO_NUMBER_ATTRIBUTES, text, Message.ERROR, this);
+                    MSGCODE_ENUM_VALUE_NUMBER_ATTRIBUTE_VALUES_DOES_NOT_CORRESPOND_TO_NUMBER_ATTRIBUTES, text,
+                    Message.ERROR, this);
             list.add(validationMessage);
         }
+
     }
 
     /**

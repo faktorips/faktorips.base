@@ -20,7 +20,6 @@ import org.eclipse.jdt.core.JavaConventions;
 import org.eclipse.osgi.util.NLS;
 import org.eclipse.swt.graphics.Image;
 import org.faktorips.datatype.ValueDatatype;
-import org.faktorips.devtools.core.internal.model.enums.Messages;
 import org.faktorips.devtools.core.internal.model.ipsobject.AtomicIpsObjectPart;
 import org.faktorips.devtools.core.model.enums.IEnumAttribute;
 import org.faktorips.devtools.core.model.enums.IEnumAttributeValue;
@@ -159,29 +158,38 @@ public class EnumAttributeValue extends AtomicIpsObjectPart implements IEnumAttr
         super.validateThis(list, ipsProject);
 
         IEnumAttribute enumAttribute = findEnumAttribute();
-        if (enumAttribute != null) {
-            // Value parsable?
-            ValueDatatype valueDatatype = enumAttribute.findDatatype(ipsProject);
-            if (valueDatatype != null) {
-                if (!(valueDatatype.isParsable(value))) {
-                    String text = NLS.bind(Messages.EnumAttributeValue_ValueNotParsable, enumAttribute.getName(),
-                            valueDatatype.getName());
-                    Message validationMessage = new Message(MSGCODE_ENUM_ATTRIBUTE_VALUE_NOT_PARSABLE, text,
-                            Message.ERROR, this, PROPERTY_VALUE);
-                    list.add(validationMessage);
-                }
-            }
+        if (enumAttribute == null) {
+            return;
+        }
 
-            // Unique identifier and literal name validations
-            if (isUniqueIdentifierEnumAttributeValue()) {
-                validateUniqueIdentifierEnumAttributeValue(list, ipsProject);
-                if (list.getNoOfMessages() == 0) {
-                    if (isLiteralNameEnumAttributeValue()) {
-                        validateLiteralNameEnumAttributeValue(list, ipsProject);
-                    }
+        IEnumValueContainer enumValueContainer = getEnumValue().getEnumValueContainer();
+        IEnumType enumType = enumAttribute.getEnumType();
+        if (enumType.isAbstract() || (!(enumType.isContainingValues()) && enumValueContainer instanceof IEnumType)) {
+            return;
+        }
+
+        // Value parsable?
+        ValueDatatype valueDatatype = enumAttribute.findDatatype(ipsProject);
+        if (valueDatatype != null) {
+            if (!(valueDatatype.isParsable(value))) {
+                String text = NLS.bind(Messages.EnumAttributeValue_ValueNotParsable, enumAttribute.getName(),
+                        valueDatatype.getName());
+                Message validationMessage = new Message(MSGCODE_ENUM_ATTRIBUTE_VALUE_NOT_PARSABLE, text, Message.ERROR,
+                        this, PROPERTY_VALUE);
+                list.add(validationMessage);
+            }
+        }
+
+        // Unique identifier and literal name validations
+        if (isUniqueIdentifierEnumAttributeValue()) {
+            validateUniqueIdentifierEnumAttributeValue(list, ipsProject);
+            if (list.getNoOfMessages() == 0) {
+                if (isLiteralNameEnumAttributeValue()) {
+                    validateLiteralNameEnumAttributeValue(list, ipsProject);
                 }
             }
         }
+
     }
 
     /**
