@@ -855,7 +855,7 @@ public class EnumTypeBuilder extends DefaultJavaSourceFileBuilder {
      * <pre>
      * [Javadoc]
      * public String toString() {
-     *     return &quot;Gender: &quot; + name;
+     *     return &quot;Gender: &quot; + getName();
      * }
      * </pre>
      */
@@ -866,7 +866,11 @@ public class EnumTypeBuilder extends DefaultJavaSourceFileBuilder {
 
         IEnumType enumType = getEnumType();
         IEnumAttribute literalNameEnumAttribute = enumType.getLiteralNameAttribute();
-        if (literalNameEnumAttribute == null || !(enumType.isContainingValues())) {
+        if (literalNameEnumAttribute == null) {
+            return;
+        }
+
+        if (!(literalNameEnumAttribute.isValid())) {
             return;
         }
 
@@ -875,8 +879,9 @@ public class EnumTypeBuilder extends DefaultJavaSourceFileBuilder {
         methodBody.append("\"");
         methodBody.append(enumType.getName());
         methodBody.append(": \" + ");
-        methodBody.append(literalNameEnumAttribute.getName());
-        methodBody.append(';');
+        methodBody.append(getJavaNamingConvention().getGetterMethodName(literalNameEnumAttribute.getName(),
+                literalNameEnumAttribute.findDatatype(literalNameEnumAttribute.getIpsProject())));
+        methodBody.append("();");
 
         methodBuilder.javaDoc("{@inheritDoc}", ANNOTATION_GENERATED);
         methodBuilder.method(Modifier.PUBLIC, String.class, "toString", new String[0], new Class[0], methodBody, null);
