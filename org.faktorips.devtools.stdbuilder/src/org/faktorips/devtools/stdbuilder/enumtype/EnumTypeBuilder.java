@@ -568,6 +568,7 @@ public class EnumTypeBuilder extends DefaultJavaSourceFileBuilder {
         generateCodeForGetterMethods(methodBuilder);
         generateCodeForMethodValues(methodBuilder);
         generateCodeForMethodReadResolve(methodBuilder);
+        generateCodeForMethodToString(methodBuilder);
     }
 
     /** Generates the java code for the getter methods. */
@@ -846,6 +847,39 @@ public class EnumTypeBuilder extends DefaultJavaSourceFileBuilder {
         methodBuilder.javaDoc(null, ANNOTATION_GENERATED);
         methodBuilder.method(Modifier.PRIVATE, Object.class, "readResolve", new String[0], new Class[0],
                 new Class[] { ObjectStreamException.class }, methodBody, null);
+    }
+
+    /**
+     * Code sample:
+     * 
+     * <pre>
+     * [Javadoc]
+     * public String toString() {
+     *     return &quot;Gender: &quot; + name;
+     * }
+     * </pre>
+     */
+    private void generateCodeForMethodToString(JavaCodeFragmentBuilder methodBuilder) throws CoreException {
+        if (useInterfaceGeneration()) {
+            return;
+        }
+
+        IEnumType enumType = getEnumType();
+        IEnumAttribute literalNameEnumAttribute = enumType.getLiteralNameAttribute();
+        if (literalNameEnumAttribute == null) {
+            return;
+        }
+
+        JavaCodeFragment methodBody = new JavaCodeFragment();
+        methodBody.append("return ");
+        methodBody.append("\"");
+        methodBody.append(enumType.getName());
+        methodBody.append(": \" + ");
+        methodBody.append(literalNameEnumAttribute.getName());
+        methodBody.append(';');
+
+        methodBuilder.javaDoc("{@inheritDoc}", ANNOTATION_GENERATED);
+        methodBuilder.method(Modifier.PUBLIC, String.class, "toString", new String[0], new Class[0], methodBody, null);
     }
 
     /** Returns the enum type for that code is being generated. */
