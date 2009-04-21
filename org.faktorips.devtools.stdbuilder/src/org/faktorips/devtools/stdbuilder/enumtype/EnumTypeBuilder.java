@@ -866,7 +866,7 @@ public class EnumTypeBuilder extends DefaultJavaSourceFileBuilder {
 
         IEnumType enumType = getEnumType();
         IEnumAttribute literalNameEnumAttribute = enumType.getLiteralNameAttribute();
-        if (literalNameEnumAttribute == null) {
+        if (literalNameEnumAttribute == null || !(enumType.isContainingValues())) {
             return;
         }
 
