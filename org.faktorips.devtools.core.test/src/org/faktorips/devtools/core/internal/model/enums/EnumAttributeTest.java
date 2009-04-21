@@ -22,6 +22,7 @@ import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.model.IIpsModel;
 import org.faktorips.devtools.core.model.enums.IEnumAttribute;
 import org.faktorips.devtools.core.model.enums.IEnumType;
+import org.faktorips.util.message.MessageList;
 import org.w3c.dom.Element;
 import org.w3c.dom.NamedNodeMap;
 
@@ -130,13 +131,17 @@ public class EnumAttributeTest extends AbstractIpsEnumPluginTest {
 
         // Test name missing
         genderEnumAttributeId.setName("");
-        assertEquals(1, genderEnumAttributeId.validate(ipsProject).getNoOfMessages());
+        MessageList validationMessageList = genderEnumAttributeId.validate(ipsProject);
+        assertOneValidationMessage(validationMessageList);
+        assertNotNull(validationMessageList.getMessageByCode(IEnumAttribute.MSGCODE_ENUM_ATTRIBUTE_NAME_MISSING));
         genderEnumAttributeId.setName(GENDER_ENUM_ATTRIBUTE_ID_NAME);
 
         // Test duplicate attribute name
         ipsModel.clearValidationCache();
         genderEnumAttributeId.setName(GENDER_ENUM_ATTRIBUTE_NAME_NAME);
-        assertEquals(1, genderEnumAttributeId.validate(ipsProject).getNoOfMessages());
+        validationMessageList = genderEnumAttributeId.validate(ipsProject);
+        assertOneValidationMessage(validationMessageList);
+        assertNotNull(validationMessageList.getMessageByCode(IEnumAttribute.MSGCODE_ENUM_ATTRIBUTE_DUPLICATE_NAME));
         genderEnumAttributeId.setName(GENDER_ENUM_ATTRIBUTE_ID_NAME);
     }
 
@@ -145,34 +150,48 @@ public class EnumAttributeTest extends AbstractIpsEnumPluginTest {
 
         // Test datatype missing
         genderEnumAttributeId.setDatatype("");
-        assertEquals(1, genderEnumAttributeId.validate(ipsProject).getNoOfMessages());
+        MessageList validationMessageList = genderEnumAttributeId.validate(ipsProject);
+        assertOneValidationMessage(validationMessageList);
+        assertNotNull(validationMessageList.getMessageByCode(IEnumAttribute.MSGCODE_ENUM_ATTRIBUTE_DATATYPE_MISSING));
         genderEnumAttributeId.setDatatype(STRING_DATATYPE_NAME);
 
         // Test datatype does not exist
         ipsModel.clearValidationCache();
         genderEnumAttributeId.setDatatype("FooBar");
-        assertEquals(1, genderEnumAttributeId.validate(ipsProject).getNoOfMessages());
+        validationMessageList = genderEnumAttributeId.validate(ipsProject);
+        assertOneValidationMessage(validationMessageList);
+        assertNotNull(validationMessageList
+                .getMessageByCode(IEnumAttribute.MSGCODE_ENUM_ATTRIBUTE_DATATYPE_DOES_NOT_EXIST));
         genderEnumAttributeId.setDatatype(STRING_DATATYPE_NAME);
     }
 
-    public void testValidateIdentifier() throws CoreException {
+    public void testValidateLiteralName() throws CoreException {
         IIpsModel ipsModel = getIpsModel();
 
-        // Test duplicate identifiers
+        // Test duplicate literal names
         genderEnumAttributeName.setLiteralName(true);
-        assertEquals(1, genderEnumAttributeId.validate(ipsProject).getNoOfMessages());
+        MessageList validationMessageList = genderEnumAttributeId.validate(ipsProject);
+        assertOneValidationMessage(validationMessageList);
+        assertNotNull(validationMessageList
+                .getMessageByCode(IEnumAttribute.MSGCODE_ENUM_ATTRIBUTE_DUPLICATE_LITERAL_NAME));
         genderEnumAttributeName.setLiteralName(false);
 
-        // Test identifier but datatype not String
+        // Test literal name but datatype not String
         ipsModel.clearValidationCache();
         genderEnumAttributeId.setDatatype(INTEGER_DATATYPE_NAME);
-        assertEquals(1, genderEnumAttributeId.validate(ipsProject).getNoOfMessages());
+        validationMessageList = genderEnumAttributeId.validate(ipsProject);
+        assertOneValidationMessage(validationMessageList);
+        assertNotNull(validationMessageList
+                .getMessageByCode(IEnumAttribute.MSGCODE_ENUM_ATTRIBUTE_LITERAL_NAME_NOT_OF_DATATYPE_STRING));
         genderEnumAttributeId.setDatatype(STRING_DATATYPE_NAME);
 
-        // Test identifier but not unique identifier
+        // Test literal name but not unique identifier
         ipsModel.clearValidationCache();
         genderEnumAttributeId.setUniqueIdentifier(false);
-        assertEquals(1, genderEnumAttributeId.validate(ipsProject).getNoOfMessages());
+        validationMessageList = genderEnumAttributeId.validate(ipsProject);
+        assertOneValidationMessage(validationMessageList);
+        assertNotNull(validationMessageList
+                .getMessageByCode(IEnumAttribute.MSGCODE_ENUM_ATTRIBUTE_LITERAL_NAME_BUT_NOT_UNIQUE_IDENTIFIER));
         genderEnumAttributeId.setUniqueIdentifier(true);
     }
 
@@ -185,10 +204,12 @@ public class EnumAttributeTest extends AbstractIpsEnumPluginTest {
         genderEnumType.setSuperEnumType(superEnumType.getQualifiedName());
         IEnumAttribute inheritedAttribute = genderEnumType.newEnumAttribute();
         inheritedAttribute.setName("foo");
-        inheritedAttribute.setDatatype(STRING_DATATYPE_NAME);
         inheritedAttribute.setInherited(true);
 
-        assertEquals(1, inheritedAttribute.validate(ipsProject).getNoOfMessages());
+        MessageList validationMessageList = inheritedAttribute.validate(ipsProject);
+        assertOneValidationMessage(validationMessageList);
+        assertNotNull(validationMessageList
+                .getMessageByCode(IEnumAttribute.MSGCODE_ENUM_ATTRIBUTE_NO_SUCH_ATTRIBUTE_IN_SUPERTYPE_HIERARCHY));
         IEnumAttribute toInheritAttribute = superEnumType.newEnumAttribute();
         toInheritAttribute.setName("foo");
         toInheritAttribute.setDatatype(STRING_DATATYPE_NAME);

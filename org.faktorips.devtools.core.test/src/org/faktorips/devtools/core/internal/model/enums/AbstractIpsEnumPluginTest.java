@@ -24,6 +24,7 @@ import org.faktorips.devtools.core.model.enums.IEnumContent;
 import org.faktorips.devtools.core.model.enums.IEnumType;
 import org.faktorips.devtools.core.model.enums.IEnumValue;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
+import org.faktorips.util.message.MessageList;
 import org.w3c.dom.Document;
 
 /**
@@ -141,4 +142,9 @@ public abstract class AbstractIpsEnumPluginTest extends AbstractIpsPluginTest {
         xmlDocument.appendChild(xmlDocument.createElement(xmlTag));
         return xmlDocument;
     }
+
+    protected void assertOneValidationMessage(MessageList validationMessageList) {
+        assertEquals(1, validationMessageList.getNoOfMessages());
+    }
+
 }
