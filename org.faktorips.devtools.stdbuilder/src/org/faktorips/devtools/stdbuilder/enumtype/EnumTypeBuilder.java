@@ -866,12 +866,12 @@ public class EnumTypeBuilder extends DefaultJavaSourceFileBuilder {
 
         IEnumType enumType = getEnumType();
         IEnumAttribute literalNameEnumAttribute = enumType.getLiteralNameAttribute();
-        if (literalNameEnumAttribute == null) {
+        if (literalNameEnumAttribute == null || enumType.isAbstract()) {
             return;
-        }
-
-        if (!(literalNameEnumAttribute.isValid())) {
-            return;
+        } else {
+            if (!(literalNameEnumAttribute.isValid())) {
+                return;
+            }
         }
 
         JavaCodeFragment methodBody = new JavaCodeFragment();
