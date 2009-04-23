@@ -350,6 +350,9 @@ public class PolicyCmptImplClassBuilder extends BasePolicyCmptTypeBuilder {
      * <pre>
      * public IModelObjectDelta computeDelta(IModelObject otherObject, IDeltaComputationOptions options) {
      *     ModelObjectDelta delta = (ModelObjectDelta)super.computeDelta(otherObject, options);
+     *     if (!Root.class.isAssignableFrom(otherObject.getClass())) {
+     *         return delta;
+     *     }
      *     Root otherRoot = (Root)otherObject;
      *     delta.checkPropertyChange(IRoot.PROPERTY_STRINGATTRIBUTE, stringAttribute, otherRoot.stringAttribute, options);
      *     delta.checkPropertyChange(IRoot.PROPERTY_INTATTRIBUTE, intAttribute, otherRoot.intAttribute, options);
@@ -375,20 +378,29 @@ public class PolicyCmptImplClassBuilder extends BasePolicyCmptTypeBuilder {
             methodsBuilder.append(MethodNames.COMPUTE_DELTA);
             methodsBuilder.appendln("(otherObject, options);");
         } else {
-            // code sample: ModelObjectDelta delta = ModelObjectDelta.newEmptyDelta(this,
-            // otherObject);
+            // code sample: ModelObjectDelta delta = ModelObjectDelta.newDelta(this, otherObject, options);
             methodsBuilder.appendClassName(ModelObjectDelta.class);
             methodsBuilder.append(" delta = ");
             methodsBuilder.appendClassName(ModelObjectDelta.class);
             methodsBuilder.append('.');
-            methodsBuilder.append(MethodNames.MODELOBJECTDELTA_NEW_EMPTY_DELTA);
-            methodsBuilder.appendln("(this, otherObject);");
+            methodsBuilder.append(MethodNames.MODELOBJECTDELTA_NEW_DELTA);
+            methodsBuilder.appendln("(this, otherObject, options);");
         }
 
+        // code sample
+        // if (Contract.class.isAssigneableFrom(otherObject.getClass()) {
+        //     return delta;
+        // }
+        methodsBuilder.append("if (!");
+        methodsBuilder.append(getUnqualifiedClassName());
+        methodsBuilder.appendln(".class.isAssignableFrom(otherObject.getClass())) {");
+        methodsBuilder.appendln("return delta;");
+        methodsBuilder.appendln("}");
+        
         // code sample: Contract otherContract = (Contract)otherObject;
         String varOther = " other" + StringUtils.capitalize(getPcType().getName());
         boolean castForOtherGenerated = false;
-
+        
         // code sample for an attribute:
         // delta.checkPropertyChange(IRoot.PROPERTY_STRINGATTRIBUTE, stringAttribute,
         // otherRoot.stringAttribute, options);
