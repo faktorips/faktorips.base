@@ -21,7 +21,7 @@ package org.faktorips.runtime;
 public interface IModelObject {
 
     /**
-     * Validates the policy component and returns a list of messages. If no message is generated the
+     * Validates the model object and returns a list of messages. If no message is generated the
      * method returns an empty list. Note that also messages like warnings or informations can be
      * returned for valid objects.
      * 
@@ -29,7 +29,6 @@ public interface IModelObject {
      *            validation. E.g. the business context, the locale to provide locale specific
      *            message texts, user information. The parameter must not be <code>null</code>.
      */
-    // TODO aw: validates the policy component? this cannot be correct
     public MessageList validate(IValidationContext context);
 
 }
