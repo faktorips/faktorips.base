@@ -74,6 +74,18 @@ public abstract class AbstractConfigurableModelObject extends AbstractModelObjec
     }
    
     /**
+     * Sets the new product component generation.
+     */
+    protected void setProductCmptGeneration(IProductComponentGeneration newGeneration) {
+        if (newGeneration!=null) {
+            setProductCmpt(newGeneration.getProductComponent());
+        } else {
+            setProductCmpt(null);
+        }
+        productCmptGeneration = newGeneration;
+    }
+   
+    /**
      * This method should be called when effective from date has changed, so that the reference to
      * the product component generation is cleared. If this policy component contains child
      * components, this method should also clear the reference to their product component generations.
