@@ -21,6 +21,7 @@ import java.util.Set;
 
 import junit.framework.TestCase;
 
+import org.faktorips.runtime.DeltaComputationOptionsByPosition;
 import org.faktorips.runtime.IDeltaComputationOptions;
 import org.faktorips.runtime.IDeltaSupport;
 import org.faktorips.runtime.IModelObject;
@@ -52,7 +53,7 @@ public class ModelObjectDeltaTest extends TestCase {
     }
     
     public void testNewDelta_SameClasses() {
-        ModelObjectDelta delta = ModelObjectDelta.newDelta(objectA, objectB);
+        ModelObjectDelta delta = ModelObjectDelta.newDelta(objectA, objectB, new DeltaComputationOptionsByPosition());
         assertTrue(delta.isEmpty());
         assertFalse(delta.isChanged());
         assertFalse(delta.isPropertyChanged());
@@ -66,7 +67,7 @@ public class ModelObjectDeltaTest extends TestCase {
 
     public void testNewDelta_DifferentClasses() {
         MyModelObject2 objectC = new MyModelObject2("C");
-        ModelObjectDelta delta = ModelObjectDelta.newDelta(objectA, objectC);
+        ModelObjectDelta delta = ModelObjectDelta.newDelta(objectA, objectC, new DeltaComputationOptionsByPosition());
         assertTrue(delta.isClassChanged());
         assertFalse(delta.isEmpty());
         assertTrue(delta.isChanged());
@@ -79,7 +80,7 @@ public class ModelObjectDeltaTest extends TestCase {
         assertSame(objectC, delta.getReferenceObject());
 
         // vice versa
-        delta = ModelObjectDelta.newDelta(objectC, objectA);
+        delta = ModelObjectDelta.newDelta(objectC, objectA, new DeltaComputationOptionsByPosition());
         assertTrue(delta.isClassChanged());
         assertFalse(delta.isEmpty());
         assertTrue(delta.isChanged());

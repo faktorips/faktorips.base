@@ -385,11 +385,11 @@ public class PolicyCmptImplClassBuilder extends BasePolicyCmptTypeBuilder {
             methodsBuilder.appendClassName(ModelObjectDelta.class);
             methodsBuilder.append('.');
             methodsBuilder.append(MethodNames.MODELOBJECTDELTA_NEW_DELTA);
-            methodsBuilder.appendln("(this, otherObject);");
+            methodsBuilder.appendln("(this, otherObject, options);");
         }
 
         // code sample
-        // if (Contrat.class.isAssigneableFrom(otherObject.getClass()) {
+        // if (Contract.class.isAssigneableFrom(otherObject.getClass()) {
         //     return delta;
         // }
         methodsBuilder.append("if (!");
@@ -851,17 +851,12 @@ public class PolicyCmptImplClassBuilder extends BasePolicyCmptTypeBuilder {
         builder.javaDoc(getJavaDocCommentForOverriddenMethod(), ANNOTATION_GENERATED);
         getGenProductCmptType().generateSignatureGetProductCmptGeneration(builder);
         builder.openBracket();
-        builder.appendln("if (getProductComponent()==null) {");
-        builder.appendln("return null;");
-        builder.appendln("}");
-
-        builder.append("return ");
-        builder.append(getGenProductCmptType().getMethodNameGetProductCmpt());
-        builder.append("().");
-        builder.append(getGenProductCmptType().getMethodNameGetGeneration());
-        builder.append('(');
-        builder.append(MethodNames.GET_EFFECTIVE_FROM_AS_CALENDAR);
-        builder.appendln("());");
+        builder.append("return (");
+        String productCmptGenInterface = getGenProductCmptType().getQualifiedClassNameForProductCmptTypeGen(true);
+        builder.appendClassName(productCmptGenInterface);
+        builder.append(')');
+        builder.append(MethodNames.GET_PRODUCT_CMPT_GENERATION);
+        builder.appendln("();");
         builder.closeBracket();
     }
 

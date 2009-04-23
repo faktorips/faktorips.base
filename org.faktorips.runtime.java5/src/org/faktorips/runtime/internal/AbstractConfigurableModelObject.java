@@ -53,6 +53,7 @@ public abstract class AbstractConfigurableModelObject extends AbstractModelObjec
      */
     public void setProductCmpt(IProductComponent productCmpt) {
         this.productCmpt = productCmpt;
+        this.productCmptGeneration = null;
     }
 
     /**
@@ -70,6 +71,18 @@ public abstract class AbstractConfigurableModelObject extends AbstractModelObjec
             productCmptGeneration = productCmpt.getGenerationBase(getEffectiveFromAsCalendar());
         }
         return productCmptGeneration;
+    }
+   
+    /**
+     * Sets the new product component generation.
+     */
+    protected void setProductCmptGeneration(IProductComponentGeneration newGeneration) {
+        if (newGeneration!=null) {
+            setProductCmpt(newGeneration.getProductComponent());
+        } else {
+            setProductCmpt(null);
+        }
+        productCmptGeneration = newGeneration;
     }
    
     /**

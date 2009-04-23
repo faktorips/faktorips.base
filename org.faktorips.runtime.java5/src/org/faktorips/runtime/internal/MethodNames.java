@@ -28,7 +28,7 @@ import org.w3c.dom.Element;
 /**
  * Gives access to the method names defined in the runtime that the generated code refers to,
  * e.g. by implementing a method with the given name. The reference to the acutal
- * method is documented in the javadoc "see" tags.
+ * method is documented in the Javadoc "see" tags.
  * <p>
  * The constants are used by the code generator.
  * 
@@ -94,7 +94,7 @@ public class MethodNames {
     public final static String REMOVE_CHILD_MODEL_OBJECT_INTERNAL = "removeChildModelObjectInternal";
 
 
-    public final static String GET_PRODUCT_COMPONENT_GENERATION = "getProductComponentGeneration";
+    public final static String GET_PRODUCT_CMPT_GENERATION = "getProductCmptGeneration";
 
     /**
      * @see org.faktorips.runtime.IRuntimeRepository#getExistingProductComponentGeneration(String, Calendar)

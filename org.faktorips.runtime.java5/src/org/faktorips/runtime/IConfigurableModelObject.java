@@ -24,9 +24,24 @@ import java.util.Calendar;
 public interface IConfigurableModelObject extends IModelObject {
 
     /**
+     * The name of the property 'productComponent'.
+     */
+    public final static String PROPERTY_PRODUCT_COMPONENT = "productComponent";
+
+    /**
+     * The name of the property 'productCmptGeneration'.
+     */
+    public final static String PROPERTY_PRODUCT_CMPT_GENERATION = "productCmptGeneration";
+    
+    /**
      * Returns the product component this policy component is based on.
      */
     public IProductComponent getProductComponent();
+    
+    /**
+     * Returns the product component generation this policy component is based on.
+     */
+    public IProductComponentGeneration getProductCmptGeneration();
     
     /**
      * Returns the date since when this model object is effective.

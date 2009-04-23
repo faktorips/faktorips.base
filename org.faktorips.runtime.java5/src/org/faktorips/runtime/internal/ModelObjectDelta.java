@@ -19,6 +19,7 @@ import java.util.List;
 import java.util.SortedSet;
 import java.util.TreeSet;
 
+import org.faktorips.runtime.IConfigurableModelObject;
 import org.faktorips.runtime.IDeltaComputationOptions;
 import org.faktorips.runtime.IDeltaSupport;
 import org.faktorips.runtime.IModelObject;
@@ -34,19 +35,26 @@ public class ModelObjectDelta implements IModelObjectDelta {
 
     private final static int STRUCTURAL_CHANGES = IModelObjectDelta.ADDED | IModelObjectDelta.REMOVED | IModelObjectDelta.MOVED | IModelObjectDelta.DIFFERENT_OBJECT_AT_POSITION;
 
-    public final static ModelObjectDelta newDelta(IModelObject object, IModelObject refObject) {
+    public final static ModelObjectDelta newDelta(IModelObject object, IModelObject refObject, IDeltaComputationOptions options) {
         if (object!=null && refObject!=null) {
             if (!object.getClass().equals(refObject.getClass())) {
                 return new ModelObjectDelta(object, refObject, CHANGED, CLASS_CHANGED);
             }
         }
-        return newEmptyDelta(object, refObject);
+        ModelObjectDelta delta = newEmptyDelta(object, refObject);
+        if (object instanceof IConfigurableModelObject && refObject!=null) {
+            IConfigurableModelObject confObject = (IConfigurableModelObject)object;
+            IConfigurableModelObject confRefObject = (IConfigurableModelObject)refObject;
+            delta.checkPropertyChange(IConfigurableModelObject.PROPERTY_PRODUCT_COMPONENT, confObject.getProductComponent(), confRefObject.getProductComponent(), options);
+            delta.checkPropertyChange(IConfigurableModelObject.PROPERTY_PRODUCT_CMPT_GENERATION, confObject.getProductCmptGeneration(), confRefObject.getProductCmptGeneration(), options);
+        }
+        return delta;
     }
 
     public final static ModelObjectDelta newEmptyDelta(IModelObject object, IModelObject refObject) {
         return new ModelObjectDelta(object, refObject, IModelObjectDelta.EMPTY, 0);
     }
-
+    
     public final static void createChildDeltas(
             ModelObjectDelta delta,
             IModelObject original,

@@ -43,37 +43,68 @@ import org.w3c.dom.Element;
 public class TestAbstractConfigurablePolicyComponentTest extends XmlAbstractTestCase {
 
     private InMemoryRuntimeRepository repository;
-    private ProductComponent product;
-    private ProductComponentGeneration productGen;
+    private ProductComponent productA;
+    private ProductComponentGeneration productGenA;
+    private ProductComponent productB;
+    private ProductComponentGeneration productGenB;
     private ProductComponent coverage;
     private ProductComponentGeneration coverageGen;
 
-    /*
-     * @see TestCase#setUp()
-     */
     @Override
     protected void setUp() throws Exception {
         super.setUp();
         repository = new InMemoryRuntimeRepository();
-        product = new TestProductComponent(repository, "TestProduct", "aKind", "aVersion");
-        productGen = new TestProductCmptGeneration(product);
-        productGen.setValidFrom(new DateTime(2000, 1, 1));
+        productA = new TestProductComponent(repository, "TestProduct", "aKind", "aVersion");
+        productGenA = new TestProductCmptGeneration(productA);
+        productGenA.setValidFrom(new DateTime(2000, 1, 1));
+        productB = new TestProductComponent(repository, "TestProductB", "bKind", "bVersion");
+        productGenB = new TestProductCmptGeneration(productB);
+        productGenB.setValidFrom(new DateTime(2000, 1, 1));
         coverage = new TestProductComponent(repository, "TestCoverage", "aKind", "aVersion");
         coverageGen = new TestProductCmptGeneration(coverage);
         coverageGen.setValidFrom(new DateTime(2000, 1, 1));
-        repository.putProductCmptGeneration(productGen);
+        repository.putProductCmptGeneration(productGenA);
+        repository.putProductCmptGeneration(productGenB);
         repository.putProductCmptGeneration(coverageGen);
     }
 
     public void testGetProductComponent() {
-        PcA a = new PcA(product, null);
-        assertEquals(product, a.getProductComponent());
+        PcA a = new PcA(productA, null);
+        assertEquals(productA, a.getProductComponent());
+    }
+    
+    public void testSetProductComponent() {
+        PcA policy = new PcA(productA, null);
+        assertEquals(productA, policy.getProductComponent());
+        assertEquals(productGenA, policy.getProductCmptGeneration());
+        
+        policy.setProductCmpt(productB);
+        assertEquals(productB, policy.getProductComponent());
+        assertEquals(productGenB, policy.getProductCmptGeneration());
+        
+        policy.setProductCmpt(null);
+        assertNull(policy.getProductComponent());
+        assertNull(policy.getProductCmptGeneration());
     }
 
+    public void testSetProductCmptGeneration() {
+        PcA policy = new PcA(productA, null);
+        assertEquals(productGenA, policy.getProductCmptGeneration());
+        
+        policy.setProductCmptGeneration(productGenB);
+        assertEquals(productB, policy.getProductComponent());
+        assertEquals(productGenB, policy.getProductCmptGeneration());
+        
+        policy.setProductCmptGeneration(null);
+        assertNull(policy.getProductComponent());
+        assertNull(policy.getProductCmptGeneration());
+    }
+
+
     public void testValidate() {
-        PcB b = new PcB(product);
-        PcA a = new PcA(product, b);
-        assertEquals(product, a.getProductComponent());
+        PcB b = new PcB(productA);
+        PcA a = new PcA(productA, b);
+        assertEquals(productA, a.getProductComponent());
 
         a.valid = true;
         b.valid = true;
@@ -104,7 +135,7 @@ public class TestAbstractConfigurablePolicyComponentTest extends XmlAbstractTest
         pc.prop1 = "";
         Element docEl = getTestDocument().getDocumentElement();
         pc.initFromXml(XmlUtil.getFirstElement(docEl), true, repository, store);
-        assertEquals(product, pc.getProductComponent());
+        assertEquals(productA, pc.getProductComponent());
         assertEquals("blabla", pc.prop0);
         assertNull(pc.prop1);
         assertNotNull(pc.child);
