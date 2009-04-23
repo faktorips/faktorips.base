@@ -94,7 +94,7 @@ public class MethodNames {
     public final static String REMOVE_CHILD_MODEL_OBJECT_INTERNAL = "removeChildModelObjectInternal";
 
 
-    public final static String GET_PRODUCT_COMPONENT_GENERATION = "getProductComponentGeneration";
+    public final static String GET_PRODUCT_CMPT_GENERATION = "getProductCmptGeneration";
 
     /**
      * @see org.faktorips.runtime.IRuntimeRepository#getExistingProductComponentGeneration(String, Calendar)

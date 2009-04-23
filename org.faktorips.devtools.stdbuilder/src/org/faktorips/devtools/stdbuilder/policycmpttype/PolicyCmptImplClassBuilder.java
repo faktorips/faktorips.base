@@ -840,7 +840,7 @@ public class PolicyCmptImplClassBuilder extends BasePolicyCmptTypeBuilder {
      * <pre>
      * [Javadoc]
      * public IProductGen getProductGen() {
-     *     return (IProductGen) getProduct().getProductGen(getEffectiveFromAsCalendar());
+     *     return (IProductGen) getProductCmptGeneration();
      * }
      * </pre>
      */
@@ -848,17 +848,12 @@ public class PolicyCmptImplClassBuilder extends BasePolicyCmptTypeBuilder {
         builder.javaDoc(getJavaDocCommentForOverriddenMethod(), ANNOTATION_GENERATED);
         getGenProductCmptType().generateSignatureGetProductCmptGeneration(builder);
         builder.openBracket();
-        builder.appendln("if (getProductComponent()==null) {");
-        builder.appendln("return null;");
-        builder.appendln("}");
-
-        builder.append("return ");
-        builder.append(getGenProductCmptType().getMethodNameGetProductCmpt());
-        builder.append("().");
-        builder.append(getGenProductCmptType().getMethodNameGetGeneration());
-        builder.append('(');
-        builder.append(MethodNames.GET_EFFECTIVE_FROM_AS_CALENDAR);
-        builder.appendln("());");
+        builder.append("return (");
+        String productCmptGenInterface = getGenProductCmptType().getQualifiedClassNameForProductCmptTypeGen(true);
+        builder.appendClassName(productCmptGenInterface);
+        builder.append(')');
+        builder.append(MethodNames.GET_PRODUCT_CMPT_GENERATION);
+        builder.appendln("();");
         builder.closeBracket();
     }
 

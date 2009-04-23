@@ -53,6 +53,7 @@ public abstract class AbstractConfigurableModelObject extends AbstractModelObjec
      */
     public void setProductCmpt(IProductComponent productCmpt) {
         this.productCmpt = productCmpt;
+        this.productCmptGeneration = null;
     }
 
     /**
