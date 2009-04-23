@@ -36,6 +36,11 @@ import org.faktorips.util.message.MessageList;
 
 import au.com.bytecode.opencsv.CSVReader;
 
+/**
+ * Operation to import IPS enum types or contents from a CSV file.
+ * 
+ * @author Roman Grutza
+ */
 public class CSVEnumImportOperation implements IWorkspaceRunnable {
 
     private final IEnumValueContainer valueContainer;
@@ -129,7 +134,6 @@ public class CSVEnumImportOperation implements IWorkspaceRunnable {
                 reader.readNext();
             }
 
-            // TODO rg: refactor extract method getNumberOfFields() then extract superclass
             int expectedFields = valueContainer.findEnumType().getEnumAttributesCount(false);
             
             String[] readLine;

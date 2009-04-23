@@ -148,7 +148,9 @@ public class EnumTypeStructurePage extends TypeEditorStructurePage {
          */
         public void run(IStructuredSelection selection) {
             if (super.runInternal(selection)) {
-                enumValuesSection.refresh();
+                if (enumValuesSection != null) {
+                    enumValuesSection.refresh();
+                }
             }
         }        
     }

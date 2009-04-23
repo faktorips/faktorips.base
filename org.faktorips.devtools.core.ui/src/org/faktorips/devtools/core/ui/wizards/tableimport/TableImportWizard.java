@@ -47,7 +47,7 @@ public class TableImportWizard extends IpsObjectImportWizard {
     protected final static String DIALOG_SETTINGS_KEY = "TableImportWizard"; //$NON-NLS-1$
 
     private SelectFileAndImportMethodPage filePage;
-    private NewContentsPage newContentsPage;
+    private NewTableContentsPage newContentsPage;
     private SelectTableContentsPage selectContentsPage;
     private TablePreviewPage tablePreviewPage;
 
@@ -65,7 +65,7 @@ public class TableImportWizard extends IpsObjectImportWizard {
             // create pages
             filePage = new SelectFileAndImportMethodPage(null);
             addPage(filePage);
-            newContentsPage = new NewContentsPage(selection);
+            newContentsPage = new NewTableContentsPage(selection);
             addPage(newContentsPage);
             selectContentsPage = new SelectTableContentsPage(selection);
             addPage(selectContentsPage);

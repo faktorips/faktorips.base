@@ -5,6 +5,7 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Iterator;
 import java.util.List;
 
 import org.eclipse.core.runtime.CoreException;
@@ -12,6 +13,8 @@ import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.NullProgressMonitor;
 import org.faktorips.datatype.Datatype;
 import org.faktorips.devtools.core.IpsPlugin;
+import org.faktorips.devtools.core.model.enums.IEnumAttribute;
+import org.faktorips.devtools.core.model.enums.IEnumType;
 import org.faktorips.devtools.core.model.enums.IEnumValueContainer;
 import org.faktorips.devtools.core.model.tablecontents.ITableContents;
 import org.faktorips.devtools.core.model.tablecontents.ITableContentsGeneration;
@@ -201,12 +204,72 @@ public class CSVTableFormat extends AbstractExternalTableFormat {
         return result;
     }
     
+    public List getImportEnumPreview(IEnumType structure, IPath filename, int maxNumberOfRows) {
+        Datatype[] datatypes;
+        try {
+            datatypes = getDatatypes(structure);
+            return getPreviewInternal(datatypes, filename, maxNumberOfRows);
+        } catch (CoreException e) {
+            IpsPlugin.log(e);
+            return Collections.EMPTY_LIST;
+        }
+    }
+    
+
+    private List getPreviewInternal(Datatype[] datatypes, IPath filename, int maxNumberOfRows) {
+        if (datatypes == null 
+                || filename == null 
+                || ! isValidImportSource(filename.toOSString())) {
+            return Collections.EMPTY_LIST;
+        }
+        
+        List result = new ArrayList();
+        MessageList ml = new MessageList();
+        CSVReader reader = null;
+        try {
+            reader = new CSVReader(new FileReader(filename.toOSString()));
+            String[] line = (ignoreColumnHeaderRow == true) ? reader.readNext() : null;
+            int linesLeft = maxNumberOfRows;
+            while ((line = reader.readNext()) != null) {
+                if (linesLeft-- <= 0) {
+                    break;
+                }
+                String[] convertedLine = new String[line.length];
+                for (int i = 0; i < line.length; i++) {
+                    convertedLine[i] = getIpsValue(line[i], datatypes[i], ml);
+                }
+                
+                result.add(convertedLine);
+            }
+        } catch (Exception e) {
+            if (reader != null) {
+                try {
+                    reader.close();
+                } catch (Exception ee) {
+                    // serious problem, report
+                    IpsPlugin.log(ee);
+                }
+            }
+        }
+        return result;        
+    }
+    
     // TODO rg: Duplicated code in CSVTableImportOperation
     private Datatype[] getDatatypes(ITableStructure structure) throws CoreException {
         IColumn[] columns = structure.getColumns();
         Datatype[] datatypes = new Datatype[columns.length];
         for (int i = 0; i < columns.length; i++) {
             datatypes[i] = structure.getIpsProject().findDatatype(columns[i].getDatatype());
+        }
+        return datatypes;
+    }
+
+    private Datatype[] getDatatypes(IEnumType structure) throws CoreException {
+        List<IEnumAttribute> enumAttributes = structure.getEnumAttributes();
+        Datatype[] datatypes = new Datatype[enumAttributes.size()];
+        for (int i = 0; i < datatypes.length; i++) {
+            IEnumAttribute enumAttribute = enumAttributes.get(i);
+            datatypes[i] = enumAttribute.findDatatype(enumAttribute.getIpsProject());
         }
         return datatypes;
     }

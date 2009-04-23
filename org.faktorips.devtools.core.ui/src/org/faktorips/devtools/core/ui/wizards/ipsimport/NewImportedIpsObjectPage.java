@@ -11,22 +11,28 @@
  * Mitwirkende: Faktor Zehn AG - initial API and implementation - http://www.faktorzehn.de
  *******************************************************************************/
 
-package org.faktorips.devtools.core.ui.wizards.enumimport;
+package org.faktorips.devtools.core.ui.wizards.ipsimport;
 
-import org.eclipse.osgi.util.NLS;
+import org.eclipse.jface.resource.ImageDescriptor;
+import org.eclipse.jface.wizard.WizardPage;
+import org.faktorips.devtools.core.ui.controller.fields.ValueChangeListener;
 
-public class Messages extends NLS {
-    private static final String BUNDLE_NAME = "org.faktorips.devtools.core.ui.wizards.enumimport.messages"; //$NON-NLS-1$
-    public static String EnumImportWizard_title;
-    public static String SelectEnumPage_locationLabel;
-    public static String SelectEnumPage_msgMissingContent;
-    public static String SelectEnumPage_targetTypeLabel;
-    public static String SelectEnumPage_title;
-    static {
-        // initialize resource bundle
-        NLS.initializeMessages(BUNDLE_NAME, Messages.class);
+/**
+ * Base wizard page to specify project, package and custom additional information like 
+ * a name (or a table structure/enum type) for an imported IPS Object type.
+ * 
+ * @author Roman Grutza
+ */
+public abstract class NewImportedIpsObjectPage extends WizardPage {
+
+    public NewImportedIpsObjectPage(String pageName) {
+        super(pageName);
     }
 
-    private Messages() {
+    public NewImportedIpsObjectPage(String pageName, String title, ImageDescriptor titleImage) {
+        super(pageName, title, titleImage);
     }
+    
+    
+
 }

@@ -16,7 +16,7 @@ package org.faktorips.devtools.tableconversion;
 import org.eclipse.core.resources.IWorkspaceRunnable;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
-import org.faktorips.devtools.core.model.tablecontents.ITableContents;
+import org.faktorips.devtools.core.model.ipsobject.IIpsObject;
 import org.faktorips.util.message.MessageList;
 
 /**
@@ -28,13 +28,12 @@ import org.faktorips.util.message.MessageList;
  * 
  * @author Roman Grutza
  */
-
 public abstract class AbstractTableExportOperation implements IWorkspaceRunnable {
 
     /**
-     *  The contents to export
+     *  The IPS object to export
      */
-    protected ITableContents contents;
+    protected IIpsObject typeToExport;
 
     /**
      *  The qualified name of the target-file for export.

@@ -24,11 +24,13 @@ import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.NullProgressMonitor;
 import org.faktorips.devtools.core.IpsPlugin;
+import org.faktorips.devtools.core.model.enums.IEnumType;
 import org.faktorips.devtools.core.model.enums.IEnumValueContainer;
 import org.faktorips.devtools.core.model.tablecontents.ITableContents;
 import org.faktorips.devtools.core.model.tablecontents.ITableContentsGeneration;
 import org.faktorips.devtools.core.model.tablestructure.ITableStructure;
 import org.faktorips.devtools.tableconversion.AbstractExternalTableFormat;
+import org.faktorips.devtools.tableconversion.csv.CSVEnumExportOperation;
 import org.faktorips.util.message.MessageList;
 
 /**
@@ -77,8 +79,15 @@ public class ExcelTableFormat extends AbstractExternalTableFormat {
     public boolean executeEnumExport(IEnumValueContainer valueContainer, IPath filename,
             String nullRepresentationString, boolean exportColumnHeaderRow, MessageList list) {
 
-        // TODO rg: Auto-generated method stub
-        throw new NotImplementedException();
+        try {
+            ExcelEnumExportOperation enumExportOperation = new ExcelEnumExportOperation(valueContainer, 
+                    filename.toOSString(), this, nullRepresentationString, exportColumnHeaderRow, list);
+            enumExportOperation.run(new NullProgressMonitor());
+            return true;
+        } catch (Exception e) {
+            IpsPlugin.log(e);
+            return false;
+        }
     }
 
     /**
@@ -86,8 +95,16 @@ public class ExcelTableFormat extends AbstractExternalTableFormat {
      */
     public boolean executeEnumImport(IEnumValueContainer valueContainer, IPath filename,
             String nullRepresentationString, boolean ignoreColumnHeaderRow, MessageList list) {
-        // TODO rg: Auto-generated method stub
-        throw new NotImplementedException();
+        
+        try {
+            ExcelEnumImportOperation enumImportOperation = new ExcelEnumImportOperation(valueContainer, 
+                    filename.toOSString(), this, nullRepresentationString, ignoreColumnHeaderRow, list);
+            enumImportOperation.run(new NullProgressMonitor());
+            return true;
+        } catch (Exception e) {
+            IpsPlugin.log(e);
+            return false;
+        }
     }
     
 	/**
@@ -122,6 +139,11 @@ public class ExcelTableFormat extends AbstractExternalTableFormat {
 	}
 
     public List getImportTablePreview(ITableStructure structure, IPath filename, int maxNumberOfRows) {
+        // TODO rg: implement
+        return Collections.EMPTY_LIST;
+    }
+
+    public List getImportEnumPreview(IEnumType structure, IPath filename, int maxNumberOfRows) {
         // TODO rg: implement
         return Collections.EMPTY_LIST;
     }

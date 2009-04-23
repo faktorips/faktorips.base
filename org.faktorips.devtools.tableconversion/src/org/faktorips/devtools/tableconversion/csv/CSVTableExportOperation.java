@@ -25,6 +25,7 @@ import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.osgi.util.NLS;
 import org.faktorips.datatype.Datatype;
 import org.faktorips.devtools.core.IpsPlugin;
+import org.faktorips.devtools.core.model.ipsobject.IIpsObject;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObjectGeneration;
 import org.faktorips.devtools.core.model.tablecontents.IRow;
 import org.faktorips.devtools.core.model.tablecontents.ITableContents;
@@ -47,7 +48,7 @@ import au.com.bytecode.opencsv.CSVWriter;
 public class CSVTableExportOperation extends AbstractTableExportOperation {
 
     /**
-     * @param contents The contents to export.
+     * @param typeToExport An <code>ITableContents</code> instance.
      * @param filename The name of the file to export to.
      * @param format The format to use for transforming the data.
      * @param nullRepresentationString The string to use as replacement for <code>null</code>.
@@ -55,9 +56,13 @@ public class CSVTableExportOperation extends AbstractTableExportOperation {
      *            exported format
      * @param list A MessageList to store errors and warnings which happened during the export
      */
-    public CSVTableExportOperation(ITableContents contents, String filename, ITableFormat format,
+    public CSVTableExportOperation(IIpsObject typeToExport, String filename, ITableFormat format,
             String nullRepresentationString, boolean exportColumnHeaderRow, MessageList list) {
-        this.contents = contents;
+        if (! (typeToExport instanceof ITableContents)) {
+            throw new IllegalArgumentException("The given IPS object is not supported. Expected ITableContents, but got '"
+                    + typeToExport == null ?  "null" : typeToExport.getClass().toString() + "'");
+        }
+        this.typeToExport = typeToExport;
         this.filename = filename;
         this.format = format;
         this.nullRepresentationString = nullRepresentationString;
@@ -75,6 +80,7 @@ public class CSVTableExportOperation extends AbstractTableExportOperation {
             monitor = new NullProgressMonitor();
         }
 
+        ITableContents contents = getTableContents(typeToExport);
         IIpsObjectGeneration[] gens = contents.getGenerationsOrderedByValidDate();
         if (gens.length == 0) {
             String text = NLS.bind(Messages.TableExportOperation_errNoGenerations, contents.getName());
@@ -138,6 +144,13 @@ public class CSVTableExportOperation extends AbstractTableExportOperation {
                 }
             }
         }
+    }
+
+    private ITableContents getTableContents(IIpsObject typeToExport) {
+        if (typeToExport instanceof ITableContents) {
+            return (ITableContents) typeToExport;
+        }
+        return null;
     }
 
     /**

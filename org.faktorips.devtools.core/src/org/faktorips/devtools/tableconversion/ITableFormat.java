@@ -259,4 +259,15 @@ public interface ITableFormat {
      */
     public List getImportTablePreview(ITableStructure structure, IPath filename, int maxNumberOfRows);
 
+    /**
+     * Computes a preview for the enum to be imported.
+     * 
+     * @param IEnumType The enum type to use (derive datatypes) for the preview.
+     * @param filename The filename of the file to be previewed.
+     * @param maxNumberOfRows Limit the number of returned rows to maxNumberOfRows.
+     * @return A <code>List</code> containing a <code>String[]</code> for each row, 
+     *   or Collections.EMPTY_LIST if the preview could not be computed or the file contains no entries.
+     */
+    public List getImportEnumPreview(IEnumType structure, IPath filename, int maxNumberOfRows);
+    
 }

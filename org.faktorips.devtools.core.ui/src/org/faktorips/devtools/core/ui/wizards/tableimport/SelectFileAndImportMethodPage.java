@@ -410,4 +410,5 @@ public class SelectFileAndImportMethodPage extends WizardDataTransferPage implem
     public void setImportIntoExisting(boolean importIntoExisting){
         this.importIntoExisting = importIntoExisting;
     }
+    
 }

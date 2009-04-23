@@ -112,7 +112,7 @@ public abstract class SelectImportTargetPage extends WizardPage implements Value
     }
 
     /**
-     * Saves the dialog settings to be able to restore them on fututre instances of
+     * Saves the dialog settings to be able to restore them on future instances of
      * this wizard page.
      */
     public void saveWidgetValues() {

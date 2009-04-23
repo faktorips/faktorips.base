@@ -36,7 +36,6 @@ import org.faktorips.devtools.core.ui.controller.fields.TextButtonField;
 import org.faktorips.devtools.core.ui.controls.EnumRefControl;
 import org.faktorips.devtools.core.ui.controls.IpsObjectRefControl;
 import org.faktorips.devtools.core.ui.wizards.ipsimport.SelectImportTargetPage;
-import org.faktorips.devtools.core.ui.wizards.tableimport.Messages;
 
 /**
  * A wizard page to select enum types or contents.
@@ -58,7 +57,7 @@ public class SelectEnumPage extends SelectImportTargetPage {
      * @throws JavaModelException
 	 */
 	public SelectEnumPage(IStructuredSelection selection) throws JavaModelException {
-	    super(selection, "Select enum");
+	    super(selection, Messages.SelectEnumPage_title);
 	}
 
 	/**
@@ -67,7 +66,7 @@ public class SelectEnumPage extends SelectImportTargetPage {
 	public void createControl(Composite parent) {
         UIToolkit toolkit = new UIToolkit(null);
         validateInput = false;
-        setTitle(Messages.SelectContentsPage_title);
+        setTitle(Messages.SelectEnumPage_title);
         
         pageControl = new Composite(parent, SWT.NONE);
         pageControl.setLayoutData(new GridData(GridData.FILL_BOTH));
@@ -77,7 +76,7 @@ public class SelectEnumPage extends SelectImportTargetPage {
         setControl(pageControl);
         
         Composite locationComposite  = toolkit.createLabelEditColumnComposite(pageControl);
-        toolkit.createFormLabel(locationComposite, Messages.SelectContentsPage_labelProject);
+        toolkit.createFormLabel(locationComposite, Messages.SelectEnumPage_locationLabel);
         projectControl = toolkit.createIpsProjectRefControl(locationComposite);
         projectField = new TextButtonField(projectControl);
         projectField.addChangeListener(this);
@@ -93,7 +92,7 @@ public class SelectEnumPage extends SelectImportTargetPage {
 
     private void createEnumImportControls(UIToolkit toolkit) {
         Composite lowerComposite = toolkit.createLabelEditColumnComposite(pageControl); 
-        toolkit.createFormLabel(lowerComposite, Messages.SelectContentsPage_labelContents);
+        toolkit.createFormLabel(lowerComposite, Messages.SelectEnumPage_targetTypeLabel);
         enumControl = toolkit.createEnumRefControl(null, lowerComposite, true);
         enumField = new TextButtonField(enumControl);
         enumField.addChangeListener(this);
@@ -194,16 +193,16 @@ public class SelectEnumPage extends SelectImportTargetPage {
         try {
             IEnumValueContainer valueContainer = getEnum();
             if (valueContainer == null) {
-                setErrorMessage(NLS.bind(Messages.SelectContentsPage_msgMissingContent, enumControl.getText()));
+                setErrorMessage(NLS.bind(Messages.SelectEnumPage_msgMissingContent, enumControl.getText()));
                 return;
             }
             if (!valueContainer.exists()) {
-                setErrorMessage(NLS.bind(Messages.SelectContentsPage_msgMissingContent, enumControl.getText()));
+                setErrorMessage(NLS.bind(Messages.SelectEnumPage_msgMissingContent, enumControl.getText()));
                 return;
             }
         } catch (CoreException e) {
             IpsPlugin.logAndShowErrorDialog(e);
-            setErrorMessage(Messages.SelectContentsPage_msgMissingContent + e);
+            setErrorMessage(Messages.SelectEnumPage_msgMissingContent + e);
             return;
         }
     }
