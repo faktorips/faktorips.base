@@ -27,7 +27,7 @@ import org.w3c.dom.Element;
 
 /**
  * Gives access to the method names defined in the runtime that the generated code refers to,
- * e.g. by implementing a method with the given name. The reference to the actual
+ * e.g. by implementing a method with the given name. The reference to the acutal
  * method is documented in the Javadoc "see" tags.
  * <p>
  * The constants are used by the code generator.
@@ -155,6 +155,11 @@ public class MethodNames {
      * @see ModelObjectDelta#newEmptyDelta(org.faktorips.runtime.IModelObject, org.faktorips.runtime.IModelObject)
      */
     public final static String MODELOBJECTDELTA_NEW_EMPTY_DELTA = "newEmptyDelta";
+
+    /**
+     * @see ModelObjectDelta#newDelta(org.faktorips.runtime.IModelObject, org.faktorips.runtime.IModelObject)
+     */
+    public final static String MODELOBJECTDELTA_NEW_DELTA = "newDelta";
 
     /**
      * @see IVisitorSupport#accept

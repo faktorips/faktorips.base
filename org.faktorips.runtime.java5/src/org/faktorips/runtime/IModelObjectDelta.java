@@ -118,17 +118,22 @@ public interface IModelObjectDelta {
      */
 	public static final int CHILD_CHANGED = 4;
 	
-	/**
+    /**
+     * Delta change type constant indicating that the class of the object has changed.
+     */
+    public static final int CLASS_CHANGED = 8;
+
+    /**
 	 * The model object this delta is computed for. If this is a delta for a a child that was added to the
      * new object, the method returns <code>null</code>. 
 	 */
 	public IModelObject getOriginalObject();
 
 	/**
-	 * The model object that is taken as a reference to which the original model object
+	 * The model object that is taken as a reference to which the orginal model object
 	 * is compared to. 
      * <p>
-     * If this is a delta for a a child that was removed from the original model object, the method returns <code>null</code>. 
+     * If this is a delta for a a child that was removed from the orginial model object, the method returns <code>null</code>. 
 	 */
 	public IModelObject getReferenceObject();
 
@@ -147,12 +152,14 @@ public interface IModelObjectDelta {
 
     /**
      * If delta's kind is {@link #CHANGED}, this method returns the kind of changed defined by the constant
-     * listed below. Note that the kind of changes are not mutually exclusive, so the returned kinds are
+     * listed below. Not that the kind of changes are not mututally excluded, so the returned kinds are
      * bit masked. The method returns 0, if the delta's kind is not {@link #CHANGED}.
      * 
      * @see #PROPERTY_CHANGED
      * @see #STRUCTURE_CHANGED
      * @see #CHILD_CHANGED
+     * 
+     * @return
      */
     public int getKindOfChange();
     
@@ -194,6 +201,12 @@ public interface IModelObjectDelta {
      */
     public boolean isStructureChanged();
     
+    /**
+     * Returns <code>true</code> if the model object's Java class has "changed". (Technically its of course just 
+     * an instance of another class). Returns <code>false</code> otherwise. 
+     */
+    public boolean isClassChanged();
+
     /**
      * Returns <code>true</code> if at least one the model object's properties has changed, otherwise <code>false</code>.
      */
