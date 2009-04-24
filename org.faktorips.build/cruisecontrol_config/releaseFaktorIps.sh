@@ -106,7 +106,7 @@ assertVersionFormat ()
  FETCH_TAG=$3
  FAIL_MESSAGE=$4
  POINTEXISTS=$( echo $FETCH_TAG | grep "\." )
- if [ "$VERSION" = "$VERSION_QUALIFIER" -o "$VERSION" = "$FETCH_TAG" -o -n "$POINTEXISTS" ] ; then
+ if [ -z $VERSION -o -z $FETCH_TAG -o "$VERSION" = "$FETCH_TAG" -o -n "$POINTEXISTS" ] ; then
    echo $FAIL_MESSAGE
    exit 1
  fi
