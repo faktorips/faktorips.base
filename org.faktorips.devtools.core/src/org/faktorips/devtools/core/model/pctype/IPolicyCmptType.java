@@ -158,20 +158,6 @@ public interface IPolicyCmptType extends IType, Datatype {
     public void setSupertype(String newSupertype);
     
     /**
-     * Returns <code>true</code> if this type is a subtype of the given supertype candidate,
-     * returns <code>false</code> otherwise. Returns <code>false</code> if supertype candidate
-     * is <code>null</code>.
-     */
-    public boolean isSubtypeOf(IPolicyCmptType supertypeCandidate) throws CoreException;
-    
-    /**
-     * Returns <code>true</code> if this type is a subtype of the given candidate, or if the
-     * candidate is this same. Returns <code>false</code> otherwise. 
-     * Returns <code>false</code> if candidate is <code>null</code>.
-     */
-    public boolean isSubtypeOrSameType(IPolicyCmptType candidate) throws CoreException;
-
-    /**
      * Returns true if the type is abstract, otherwise false.
      */
     public boolean isAbstract();

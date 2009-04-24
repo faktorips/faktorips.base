@@ -217,40 +217,6 @@ public class PolicyCmptTypeTest extends AbstractIpsPluginTest implements Content
         assertEquals(a1, policyCmptType.findPolicyCmptTypeAttribute("a1", ipsProject));
         assertEquals(a2, policyCmptType.findPolicyCmptTypeAttribute("a2", ipsProject));
     }
-    
-    public void testIsSubtype() throws CoreException {
-        assertFalse(policyCmptType.isSubtypeOf(null));
-        
-        IPolicyCmptType supertype = newPolicyCmptType(ipsProject, "Supertype");
-        assertFalse(policyCmptType.isSubtypeOf(supertype));
-        policyCmptType.setSupertype(supertype.getQualifiedName());
-        assertTrue(policyCmptType.isSubtypeOf(supertype));
-        
-        IPolicyCmptType supersupertype = newPolicyCmptType(ipsProject, "SuperSupertype");
-        assertFalse(policyCmptType.isSubtypeOf(supersupertype));
-        supertype.setSupertype(supersupertype.getQualifiedName());
-        assertTrue(policyCmptType.isSubtypeOf(supersupertype));
-        
-        assertFalse(supertype.isSubtypeOf(policyCmptType));
-    }
-    
-    public void testIsSubtypeOrSameType() throws CoreException {
-        assertFalse(policyCmptType.isSubtypeOrSameType(null));
-        
-        assertTrue(policyCmptType.isSubtypeOrSameType(policyCmptType));
-
-        IPolicyCmptType supertype = newPolicyCmptType(ipsProject, "Supertype");
-        assertFalse(policyCmptType.isSubtypeOrSameType(supertype));
-        policyCmptType.setSupertype(supertype.getQualifiedName());
-        assertTrue(policyCmptType.isSubtypeOrSameType(supertype));
-        
-        IPolicyCmptType supersupertype = newPolicyCmptType(ipsProject, "SuperSupertype");
-        assertFalse(policyCmptType.isSubtypeOrSameType(supersupertype));
-        supertype.setSupertype(supersupertype.getQualifiedName());
-        assertTrue(policyCmptType.isSubtypeOrSameType(supersupertype));
-        
-        assertFalse(supertype.isSubtypeOf(policyCmptType));
-    }
 
     public void testIsExtensionCompilationUnitGenerated() throws CoreException {
         assertFalse(policyCmptType.isExtensionCompilationUnitGenerated());

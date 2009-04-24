@@ -21,6 +21,7 @@ import java.util.List;
 import org.eclipse.core.runtime.CoreException;
 import org.faktorips.devtools.core.AbstractIpsPluginTest;
 import org.faktorips.devtools.core.model.ipsobject.Modifier;
+import org.faktorips.devtools.core.model.ipsproject.IIpsObjectPath;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProjectProperties;
 import org.faktorips.devtools.core.model.pctype.AssociationType;
@@ -48,7 +49,7 @@ public class TypeTest extends AbstractIpsPluginTest {
         ipsProject = newIpsProject();
         type = newProductCmptType(ipsProject, "MotorProduct");
     }
-    
+
     public void testIsSubtype() throws CoreException {
         IType subtype = newProductCmptType((IProductCmptType)type, "Subtype");
         IType subsubtype = newProductCmptType((IProductCmptType)type, "SubSubtype");
@@ -62,6 +63,39 @@ public class TypeTest extends AbstractIpsPluginTest {
         
         IType anotherType = newProductCmptType(ipsProject, "AnotherType");
         assertFalse(subtype.isSubtypeOf(anotherType, ipsProject));
+    }
+    
+    public void testIsSubtypeDifferentProject() throws CoreException {
+        IPolicyCmptType policyCmptType = newPolicyCmptTypeWithoutProductCmptType(ipsProject, "TestPolicy");
+        
+        assertFalse(policyCmptType.isSubtypeOf(null, ipsProject));
+        
+        IPolicyCmptType supertype = newPolicyCmptType(ipsProject, "Supertype");
+        assertFalse(policyCmptType.isSubtypeOf(supertype, ipsProject));
+        policyCmptType.setSupertype(supertype.getQualifiedName());
+        assertTrue(policyCmptType.isSubtypeOf(supertype, ipsProject));
+        
+        IPolicyCmptType supersupertype = newPolicyCmptType(ipsProject, "SuperSupertype");
+        assertFalse(policyCmptType.isSubtypeOf(supersupertype, ipsProject));
+        supertype.setSupertype(supersupertype.getQualifiedName());
+        assertTrue(policyCmptType.isSubtypeOf(supersupertype, ipsProject));
+        
+        assertFalse(supertype.isSubtypeOf(policyCmptType, ipsProject));
+        
+        IIpsProject project2 = newIpsProject("testProjekt2");
+        IIpsObjectPath ipsObjectPath = ipsProject.getIpsObjectPath();
+        ipsObjectPath.newIpsProjectRefEntry(project2);
+        ipsProject.setIpsObjectPath(ipsObjectPath);
+        
+        IPolicyCmptType supersupersupertype = newPolicyCmptType(project2, "SuperSuperSupertype");
+
+        policyCmptType.setSupertype("Supertype");
+        supertype.setSupertype("SuperSupertype");
+        supersupertype.setSupertype("SuperSuperSupertype");
+        
+        assertTrue(policyCmptType.isSubtypeOf(supersupersupertype, ipsProject));
+        // project2 doesn't see types in ipsProject
+        assertFalse(policyCmptType.isSubtypeOf(supersupersupertype, project2));
     }
     
     public void testValidate_DuplicatePropertyName() throws CoreException {

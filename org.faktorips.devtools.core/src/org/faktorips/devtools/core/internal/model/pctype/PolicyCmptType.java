@@ -138,33 +138,6 @@ public class PolicyCmptType extends Type implements IPolicyCmptType {
     /**
      * {@inheritDoc}
      */
-    public boolean isSubtypeOf(IPolicyCmptType supertypeCandidate) throws CoreException {
-        if (supertypeCandidate == null) {
-            return false;
-        }
-        IPolicyCmptType supertype = (IPolicyCmptType)findSupertype(supertypeCandidate.getIpsProject());
-        if (supertype == null) {
-            return false;
-        }
-        if (supertypeCandidate.equals(supertype)) {
-            return true;
-        }
-        return supertype.isSubtypeOf(supertypeCandidate);
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    public boolean isSubtypeOrSameType(IPolicyCmptType candidate) throws CoreException {
-        if (this.equals(candidate)) {
-            return true;
-        }
-        return isSubtypeOf(candidate);
-    }
-
-    /**
-     * {@inheritDoc}
-     */
     public boolean isForceExtensionCompilationUnitGeneration() {
         return forceExtensionCompilationUnitGeneration;
     }
