@@ -580,7 +580,7 @@ public class TestPolicyCmptTypeParameter extends TestParameter implements
                     if (pcType != null && pcTypeOfProduct != null){
                         // check if the specified policy cmpt type is the same or a supertype 
                         // of the found product cmpt policy cmpt type
-                        if (! pcTypeOfProduct.isSubtypeOrSameType(pcType)) {
+                        if (! pcTypeOfProduct.isSubtypeOrSameType(pcType, getIpsProject())) {
                             continue;
                         }                        
                     } 
@@ -656,7 +656,7 @@ public class TestPolicyCmptTypeParameter extends TestParameter implements
                             PROPERTY_ASSOCIATION); //$NON-NLS-1$
                     list.add(msg);
                 }else{
-                    if (!policyCmptTypeFound.isSubtypeOrSameType(targetOfAssociation)){
+                    if (!policyCmptTypeFound.isSubtypeOrSameType(targetOfAssociation, ipsProject)){
                         String text = NLS.bind(Messages.TestPolicyCmptTypeParameter_ValidationError_PolicyCmptNotAllowedForAssociation, policyCmptType, association);
                         Message msg = new Message(MSGCODE_WRONG_POLICY_CMPT_TYPE_OF_ASSOCIATION, text, Message.ERROR, this,
                                 PROPERTY_POLICYCMPTTYPE); //$NON-NLS-1$

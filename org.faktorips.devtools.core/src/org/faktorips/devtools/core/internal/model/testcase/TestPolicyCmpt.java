@@ -698,7 +698,7 @@ public class TestPolicyCmpt extends TestObject implements ITestPolicyCmpt {
     		    } else {
     		        // check if the policy cmpt type is assignable to the type defined in the test parameter
     		        if (policyCmptTypeDefinedInTestType != null){
-    		            if (!policyCmptTypeUsed.isSubtypeOrSameType(policyCmptTypeDefinedInTestType)){
+    		            if (!policyCmptTypeUsed.isSubtypeOrSameType(policyCmptTypeDefinedInTestType, ipsProject)){
     		                String text = NLS.bind(Messages.TestPolicyCmpt_TestPolicyCmpt_ValidationErrorPolicyCmptTypeNoSubtypeOrSameTypeParam, policyCmptTypeUsed.getQualifiedName(), policyCmptTypeDefinedInTestType.getQualifiedName());
     		                Message msg = new Message(ITestPolicyCmpt.MSGCODE_POLICY_CMPT_TYPE_NOT_ASSIGNABLE, text, Message.ERROR, this, PROPERTY_POLICYCMPTTYPE);
     		                list.add(msg);
