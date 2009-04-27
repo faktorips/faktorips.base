@@ -51,9 +51,13 @@ public class EnumTypeTest extends AbstractIpsEnumPluginTest {
     }
 
     public void testGetSetAbstract() {
+        genderEnumType.setContainingValues(true);
+        assertTrue(genderEnumType.isContainingValues());
+
         assertFalse(genderEnumType.isAbstract());
         genderEnumType.setAbstract(true);
         assertTrue(genderEnumType.isAbstract());
+        assertFalse(genderEnumType.isContainingValues());
     }
 
     public void testGetSetContainingValues() {
@@ -577,7 +581,7 @@ public class EnumTypeTest extends AbstractIpsEnumPluginTest {
         assertTrue(genderEnumType.hasSuperEnumType());
     }
 
-    public void testFindSuperEnumTypes() throws CoreException {
+    public void testFindAllSuperEnumTypes() throws CoreException {
         assertEquals(0, genderEnumType.findAllSuperEnumTypes().size());
 
         IEnumType rootEnumType = newEnumType(ipsProject, "RootEnumType");
@@ -589,6 +593,22 @@ public class EnumTypeTest extends AbstractIpsEnumPluginTest {
         assertEquals(2, superEnumTypes.size());
         assertEquals(level1EnumType, superEnumTypes.get(0));
         assertEquals(rootEnumType, superEnumTypes.get(1));
+    }
+
+    public void testFindAllSuperEnumTypesWithCycle() throws CoreException {
+        IEnumType rootEnumType = newEnumType(ipsProject, "RootEnumType");
+        IEnumType level1EnumType = newEnumType(ipsProject, "Level1EnumType");
+        IEnumType level2EnumType = newEnumType(ipsProject, "Level2EnumType");
+        IEnumType level3EnumType = newEnumType(ipsProject, "Level3EnumType");
+
+        level1EnumType.setSuperEnumType(rootEnumType.getQualifiedName());
+        level2EnumType.setSuperEnumType(level3EnumType.getQualifiedName());
+        level3EnumType.setSuperEnumType(level2EnumType.getQualifiedName());
+
+        List<IEnumType> superEnumTypes = level3EnumType.findAllSuperEnumTypes();
+        assertEquals(2, superEnumTypes.size());
+        assertEquals(level2EnumType, superEnumTypes.get(0));
+        assertEquals(level3EnumType, superEnumTypes.get(1));
     }
 
     public void testGetSetEnumContentPackageFragment() {
@@ -655,5 +675,5 @@ public class EnumTypeTest extends AbstractIpsEnumPluginTest {
         } catch (IllegalArgumentException e) {
         }
     }
-    
+
 }

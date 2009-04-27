@@ -31,6 +31,8 @@ import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
  * source code. An enum attribute can also be marked as <code>uniqueIdentifier</code> which implies
  * that each value for this enum attribute must be unique.
  * <p>
+ * Furthermore an enum attribute can be marked to be used as name or as ID in the Faktor-IPS UI.
+ * <p>
  * For more information about how enum attributes relate to the entire Faktor-IPS enums concept
  * please read the documentation of IEnumType.
  * 
@@ -56,6 +58,12 @@ public interface IEnumAttribute extends IIpsObjectPart {
 
     /** Name of the <code>uniqueIdentifier</code> property. */
     public final static String PROPERTY_UNIQUE_IDENTIFIER = "uniqueIdentifier"; //$NON-NLS-1$
+
+    /** Name of the <code>usedAsNameInFipsUi</code> property. */
+    public final static String PROPERTY_USED_AS_NAME_IN_FIPS_UI = "usedAsNameInFipsUi"; //$NON-NLS-1$
+
+    /** Name of the <code>usedAsIdInFipsUi</code> property. */
+    public final static String PROPERTY_USED_AS_ID_IN_FIPS_UI = "usedAsIdInFipsUi"; //$NON-NLS-1$
 
     /** Prefix for all message codes of this class. */
     public final static String MSGCODE_PREFIX = "ENUMATTRIBUTE-"; //$NON-NLS-1$
@@ -180,10 +188,9 @@ public interface IEnumAttribute extends IIpsObjectPart {
     /**
      * Sets whether this enum attribute is used as literal name.
      * 
-     * @param isLiteralName Flag indicating whether this enum attribute will be used as literal
-     *            name.
+     * @param literalName Flag indicating whether this enum attribute will be used as literal name.
      */
-    public void setLiteralName(boolean isLiteralName);
+    public void setLiteralName(boolean literalName);
 
     /**
      * Returns <code>true</code> if this enum attribute is inherited from the supertype hierarchy,
@@ -242,9 +249,33 @@ public interface IEnumAttribute extends IIpsObjectPart {
     /**
      * Sets whether this enum attribute is a unique identifier.
      * 
-     * @param isUniqueIdentifier Flag indicating whether this enum attribute will be a unique
+     * @param uniqueIdentifier Flag indicating whether this enum attribute will be a unique
      *            identifier.
      */
-    public void setUniqueIdentifier(boolean isUniqueIdentifier);
+    public void setUniqueIdentifier(boolean uniqueIdentifier);
+
+    /**
+     * Sets whether the values of this enum attribute shall be used as name of enum values in the
+     * Faktor-IPS UI.
+     * 
+     * @param useAsNameInFaktorIpsUi Flag indicating whether this enum attribute shall be used as
+     *            name of enum values in the Faktor-IPS UI (<code>true</code>) or not (
+     *            <code>false</code>).
+     */
+    public void setUsedAsNameInFaktorIpsUi(boolean useAsNameInFaktorIpsUi);
+
+    public boolean isUsedAsNameInFaktorIpsUi();
+
+    /**
+     * Sets whether the values of this enum attribute shall be used as ID of enum values in the
+     * Faktor-IPS UI.
+     * 
+     * @param useAsNameInFaktorIpsUi Flag indicating whether this enum attribute shall be used as
+     *            name of enum values in the Faktor-IPS UI (<code>true</code>) or not (
+     *            <code>false</code>).
+     */
+    public void setUsedAsIdInFaktorIpsUi(boolean useAsIdInFaktorIpsUi);
+
+    public boolean isUsedAsIdInFaktorIpsUi();
 
 }

@@ -113,10 +113,10 @@ public class EnumAttribute extends AtomicIpsObjectPart implements IEnumAttribute
     /**
      * {@inheritDoc}
      */
-    public void setLiteralName(boolean isLiteralName) {
+    public void setLiteralName(boolean literalName) {
         boolean oldIsIdentifier = this.literalName;
-        this.literalName = isLiteralName;
-        valueChanged(oldIsIdentifier, isLiteralName);
+        this.literalName = literalName;
+        valueChanged(oldIsIdentifier, literalName);
     }
 
     /**
@@ -402,10 +402,10 @@ public class EnumAttribute extends AtomicIpsObjectPart implements IEnumAttribute
     /**
      * {@inheritDoc}
      */
-    public void setUniqueIdentifier(boolean isUniqueIdentifier) {
+    public void setUniqueIdentifier(boolean uniqueIdentifier) {
         boolean oldIsUniqueIdentifier = this.uniqueIdentifier;
-        this.uniqueIdentifier = isUniqueIdentifier;
-        valueChanged(oldIsUniqueIdentifier, isUniqueIdentifier);
+        this.uniqueIdentifier = uniqueIdentifier;
+        valueChanged(oldIsUniqueIdentifier, uniqueIdentifier);
     }
 
     /**
@@ -437,4 +437,25 @@ public class EnumAttribute extends AtomicIpsObjectPart implements IEnumAttribute
             return isUniqueIdentifier();
         }
     }
+
+    public boolean isUsedAsIdInFaktorIpsUi() {
+        // TODO aw: Auto-generated method stub
+        return false;
+    }
+
+    public boolean isUsedAsNameInFaktorIpsUi() {
+        // TODO aw: Auto-generated method stub
+        return false;
+    }
+
+    public void setUsedAsIdInFaktorIpsUi(boolean useAsIdInFaktorIpsUi) {
+        // TODO aw: Auto-generated method stub
+        
+    }
+
+    public void setUsedAsNameInFaktorIpsUi(boolean useAsNameInFaktorIpsUi) {
+        // TODO aw: Auto-generated method stub
+        
+    }
+    
 }

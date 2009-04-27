@@ -104,6 +104,10 @@ public class EnumType extends EnumValueContainer implements IEnumType {
      * {@inheritDoc}
      */
     public void setAbstract(boolean isAbstract) {
+        if (isAbstract) {
+            setContainingValues(false);
+        }
+
         boolean oldIsAbstract = this.isAbstract;
         this.isAbstract = isAbstract;
         valueChanged(oldIsAbstract, isAbstract);
@@ -178,18 +182,15 @@ public class EnumType extends EnumValueContainer implements IEnumType {
      * {@inheritDoc}
      */
     public List<IEnumAttribute> findAllEnumAttributesIncludeSupertypeOriginals() throws CoreException {
-        // TODO aw: do we need this again and again if we want to search super enum types?
-        EnumTypeHierachyVisitor collector = new EnumTypeHierachyVisitor(getIpsProject()) {
-            protected boolean visit(IEnumType currentType) throws CoreException {
-                return true;
-            }
-        };
-
         List<IEnumAttribute> attributesList = new ArrayList<IEnumAttribute>();
-        IEnumType currentEnumType = this;
-        while (currentEnumType != null) {
+
+        List<IEnumType> superEnumTypes = findAllSuperEnumTypes();
+        List<IEnumType> completeHierarchy = new ArrayList<IEnumType>(superEnumTypes.size() + 1);
+        completeHierarchy.add(this);
+        completeHierarchy.addAll(superEnumTypes);
+
+        for (IEnumType currentEnumType : completeHierarchy) {
             attributesList.addAll(currentEnumType.getEnumAttributes());
-            currentEnumType = collector.findSupertype(currentEnumType, getIpsProject());
         }
 
         return attributesList;
@@ -375,21 +376,16 @@ public class EnumType extends EnumValueContainer implements IEnumType {
     public IEnumAttribute findEnumAttributeIncludeSupertypeOriginals(String name) throws CoreException {
         ArgumentCheck.notNull(name);
 
-        // TODO aw: do we need this again and again if we want to search super enum types?
-        EnumTypeHierachyVisitor collector = new EnumTypeHierachyVisitor(getIpsProject()) {
-            protected boolean visit(IEnumType currentType) throws CoreException {
-                return true;
-            }
-        };
+        List<IEnumType> superEnumTypes = findAllSuperEnumTypes();
+        List<IEnumType> completeHierarchy = new ArrayList<IEnumType>(superEnumTypes.size() + 1);
+        completeHierarchy.add(this);
+        completeHierarchy.addAll(superEnumTypes);
 
-        IEnumType currentEnumType = this;
-        while (currentEnumType != null) {
+        for (IEnumType currentEnumType : completeHierarchy) {
             IEnumAttribute enumAttribute = currentEnumType.getEnumAttribute(name);
             if (enumAttribute != null) {
                 return enumAttribute;
             }
-
-            currentEnumType = collector.findSupertype(currentEnumType, getIpsProject());
         }
 
         // No enum attribute with the given name found
@@ -403,8 +399,6 @@ public class EnumType extends EnumValueContainer implements IEnumType {
     protected void validateThis(MessageList list, IIpsProject ipsProject) throws CoreException {
         super.validateThis(list, ipsProject);
 
-        Message validationMessage = null;
-
         // Validate super enum type
         if (hasSuperEnumType()) {
             EnumTypeValidations.validateSuperEnumType(list, this, superEnumType, ipsProject);
@@ -414,7 +408,7 @@ public class EnumType extends EnumValueContainer implements IEnumType {
 
         // Validate inherited attributes
         if (hasSuperEnumType()) {
-            if (validationMessage == null) {
+            if (list.getNoOfMessages() == 0) {
                 validateInheritedAttributes(list, this);
             }
         }
@@ -605,18 +599,19 @@ public class EnumType extends EnumValueContainer implements IEnumType {
      * {@inheritDoc}
      */
     public List<IEnumType> findAllSuperEnumTypes() throws CoreException {
-        List<IEnumType> enumTypes = new ArrayList<IEnumType>();
-
-        IEnumType currentEnumType = this;
-        while (currentEnumType != null) {
-            IEnumType superEnumType = currentEnumType.findSuperEnumType();
-            currentEnumType = superEnumType;
-            if (superEnumType != null) {
-                enumTypes.add(superEnumType);
-            }
+        final List<IEnumType> superEnumTypes = new ArrayList<IEnumType>();
+        IEnumType directSuperEnumType = findSuperEnumType();
+        if (directSuperEnumType != null) {
+            EnumTypeHierachyVisitor collector = new EnumTypeHierachyVisitor(getIpsProject()) {
+                protected boolean visit(IEnumType currentType) throws CoreException {
+                    superEnumTypes.add(currentType);
+                    return true;
+                }
+            };
+            collector.start(directSuperEnumType);
         }
 
-        return enumTypes;
+        return superEnumTypes;
     }
 
     /**
@@ -700,10 +695,6 @@ public class EnumType extends EnumValueContainer implements IEnumType {
 
     /**
      * {@inheritDoc}
-     */
-    /*
-     * TODO aw: check if it is correct that this method uses the ips project that it belongs to or
-     * does the ips project need to be provided?
      */
     public String getJavaClassName() {
         return getIpsProject().getDatatypeHelper(this).getJavaClassName();
@@ -851,7 +842,8 @@ public class EnumType extends EnumValueContainer implements IEnumType {
      */
     /*
      * TODO pk: this method needs IIpsProject as parameter but this collides with its original
-     * intention which also manifests in being located in the commons project.
+     * intention which also manifests in being located in the commons project. Talk to Jan about
+     * this.
      */
     public MessageList checkReadyToUse() {
         try {

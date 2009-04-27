@@ -153,6 +153,9 @@ public interface IEnumType extends IEnumValueContainer, EnumDatatype {
 
     /**
      * Sets the abstract property for this enum type.
+     * 
+     * @param isAbstract Flag indicating whether this enum type shall be abstract (<code>true</code>
+     *            ) or not (<code>false</code>).
      */
     public void setAbstract(boolean isAbstract);
 
@@ -362,7 +365,10 @@ public interface IEnumType extends IEnumValueContainer, EnumDatatype {
 
     /**
      * Searches all enum types in the supertype hierarchy this enum type is a subtype of and returns
-     * them in a list.
+     * them in a list (the enum type the operation is called upon is not included in the list).
+     * <p>
+     * It is possible that a cycle is detected in the supertype hierarchy. In this case the returned
+     * list will contain all super enum types up to the point where the cycle was found.
      * <p>
      * Never returns <code>null</code>.
      * 

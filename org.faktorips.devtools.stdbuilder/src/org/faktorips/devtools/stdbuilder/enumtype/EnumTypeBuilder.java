@@ -410,7 +410,7 @@ public class EnumTypeBuilder extends DefaultJavaSourceFileBuilder {
         appendEnumValueParameters(enumAttributeValues, initExpression);
         initExpression.append(')');
 
-        constantBuilder.varDeclaration(Modifier.PUBLIC | Modifier.STATIC | Modifier.FINAL, enumType.getName(),
+        constantBuilder.varDeclaration(Modifier.PUBLIC | Modifier.STATIC | Modifier.FINAL, enumType.getJavaClassName(),
                 literalEnumAttributeValue.getValue().toUpperCase(), initExpression);
         constantBuilder.appendLn(' ');
     }
@@ -455,7 +455,7 @@ public class EnumTypeBuilder extends DefaultJavaSourceFileBuilder {
                         || (useClassGenerationDespiteJava5EnumsAvailability())) {
                     appendLocalizedJavaDoc("ATTRIBUTE", attributeName, currentEnumAttribute, attributeBuilder);
                     attributeBuilder.varDeclaration(Modifier.PRIVATE | Modifier.FINAL, currentEnumAttribute
-                            .findDatatype(getIpsProject()).getName(), codeName);
+                            .findDatatype(getIpsProject()).getJavaClassName(), codeName);
                     attributeBuilder.appendLn(' ');
                 }
             }
@@ -481,7 +481,7 @@ public class EnumTypeBuilder extends DefaultJavaSourceFileBuilder {
             IEnumAttribute currentEnumAttribute = validEnumAttributes.get(i);
             String attributeName = currentEnumAttribute.getName();
             argumentNames[i] = javaNamingConvention.getMemberVarName(attributeName);
-            argumentClasses[i] = currentEnumAttribute.findDatatype(getIpsProject()).getName();
+            argumentClasses[i] = currentEnumAttribute.findDatatype(getIpsProject()).getJavaClassName();
         }
 
         // Build method body
@@ -593,7 +593,7 @@ public class EnumTypeBuilder extends DefaultJavaSourceFileBuilder {
                         appendLocalizedJavaDoc("GETTER", attributeName, description, currentEnumAttribute,
                                 methodBuilder);
                         methodBuilder.signature(Modifier.PUBLIC, currentEnumAttribute.findDatatype(getIpsProject())
-                                .getName(), methodName, null, null);
+                                .getJavaClassName(), methodName, null, null);
                         methodBuilder.appendLn(';');
                     }
 
@@ -610,7 +610,7 @@ public class EnumTypeBuilder extends DefaultJavaSourceFileBuilder {
                         methodBody.append(';');
 
                         methodBuilder.methodBegin(Modifier.PUBLIC, currentEnumAttribute.findDatatype(ipsProject)
-                                .getName(), methodName, null, null);
+                                .getJavaClassName(), methodName, null, null);
                         methodBuilder.append(methodBody);
                         methodBuilder.methodEnd();
                     }
@@ -798,8 +798,8 @@ public class EnumTypeBuilder extends DefaultJavaSourceFileBuilder {
         methodBody.append("};");
 
         appendLocalizedJavaDoc("METHOD_VALUES", enumType, methodBuilder);
-        methodBuilder.method(Modifier.PUBLIC | Modifier.FINAL | Modifier.STATIC, enumType.getName() + "[]", methodName,
-                new String[0], new String[0], methodBody, null);
+        methodBuilder.method(Modifier.PUBLIC | Modifier.FINAL | Modifier.STATIC, enumType.getJavaClassName() + "[]",
+                methodName, new String[0], new String[0], methodBody, null);
     }
 
     /**
