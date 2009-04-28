@@ -374,6 +374,7 @@
         <property name="faktoripsNls1ReleaseDownloadZipPath" value="${downloadDir}/faktorips-nls1-${build.version}.zip"/>
         <property name="faktoripsUmlReleaseDownloadZipPath" value="${downloadDir}/faktorips-uml-${build.version}.zip"/>
         <property name="faktoripsUmlNls1ReleaseDownloadZipPath" value="${downloadDir}/faktorips-uml-nls1-${build.version}.zip"/>
+        <property name="faktoripsUpdateSiteZipPath" value="${downloadDir}/faktorips-updateSite-${build.version}.zip"/>
     	<!-- pluginbuilder configuration files -->
     	<property name="release.properties" value="${projectsRootDir}/org.faktorips.pluginbuilder/releases/${build.version}.properties"/>
         <property name="pluginbuilder.config" value="${projectsRootDir}/org.faktorips.pluginbuilder/pluginbuilder.config"/>
@@ -483,7 +484,11 @@
     		<param name="source" value="org.faktorips.uml.feature.nls1-${build.version}.zip" />
     	    <param name="dest.name" value="${faktoripsUmlNls1ReleaseDownloadZipPath}" />
     	</antcall>
-    		
+    	<antcall inheritall="true" target="-copy.faktorips.release.to.download.dir">
+    		<param name="source" value="updateSite-${build.version}.zip" />
+    	    <param name="dest.name" value="${faktoripsUpdateSiteZipPath}" />
+    	</antcall>
+	    
     	<!--install the features on updatesite-->
         <!--  generate a new site.xml on the updatesite, including all previous and new feature versions-->
 		<!--  faktorips features -->
@@ -547,6 +552,7 @@
         <echo message="   2. ${faktoripsNls1ReleaseDownloadZipPath}"/>
         <echo message="   3. ${faktoripsUmlReleaseDownloadZipPath}"/>
         <echo message="   4. ${faktoripsUmlNls1ReleaseDownloadZipPath}"/>    	
+        <echo message="   5. ${faktoripsUpdateSiteZipPath}"/>    	
     </target> 
     <target name="-checkout.pluginbuilder" if="isUseCvs">
         <cvs command="co org.faktorips.pluginbuilder" dest="${projectsRootDir}" cvsroot="${cvsroot}" quiet="true"/>
