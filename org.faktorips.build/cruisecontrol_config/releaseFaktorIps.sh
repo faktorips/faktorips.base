@@ -442,8 +442,8 @@ if [ ! "$NOCVS" = "true" ] ; then
   	  MIGRATION_EXISTS=true
   	fi
     
-    rm -R $TMP_CHECKOUTDIR1
-    rm -R $TMP_CHECKOUTDIR2
+    rm -r $TMP_CHECKOUTDIR1
+    rm -r $TMP_CHECKOUTDIR2
 else
     if [ $(cat $PROJECTSROOTDIR/$MIGRATION_STRATEGY_PATH/*.java | grep "\"$BUILD_VERSION\"" | wc -l ) -gt 0 ] ; then
   	  MIGRATION_EXISTS=true
@@ -472,8 +472,8 @@ fi
 # check if migration strategy exists
 if [ ! "$NOCVS" = "true" ] ; then
   TMP_CHECKOUTDIR=$PROJECTSROOTDIR/tmp_release_build
-    mkdir $TMP_CHECKOUTDIR  
-  rm -R $TMP_CHECKOUTDIR
+  mkdir $TMP_CHECKOUTDIR  
+  rm -r $TMP_CHECKOUTDIR
 fi
 
 
@@ -497,7 +497,7 @@ RELEASE_PROPERTIES=$RELEASE_PROPERTY_DIR/$BUILD_VERSION.properties
 if [ ! "$NOCVS" = "true" ] ; then
   if [ -d $PLUGINBUILDER_PROJECT_DIR ] ; then
     # delete previous checkout dir
-    rm -R $PLUGINBUILDER_PROJECT_DIR
+    rm -r $PLUGINBUILDER_PROJECT_DIR
   fi
   
   # checkout release.properties in branch and head	
