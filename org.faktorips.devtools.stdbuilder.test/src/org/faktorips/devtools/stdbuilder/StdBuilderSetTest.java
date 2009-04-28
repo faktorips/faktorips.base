@@ -30,7 +30,7 @@ public class StdBuilderSetTest extends AbstractIpsPluginTest {
         IIpsArtefactBuilderSetInfo builderSetInfo = IpsPlugin.getDefault().getIpsModel().getIpsArtefactBuilderSetInfo("org.faktorips.devtools.stdbuilder.ipsstdbuilderset");
         assertNotNull(builderSetInfo);
         IIpsBuilderSetPropertyDef[] propertyDefs = builderSetInfo.getPropertyDefinitions();
-        assertEquals(8, propertyDefs.length);
+        assertEquals(9, propertyDefs.length);
         
         ArrayList propertyDefNames = new ArrayList();
         for (int i = 0; i < propertyDefs.length; i++) {
@@ -45,6 +45,7 @@ public class StdBuilderSetTest extends AbstractIpsPluginTest {
         assertTrue(propertyDefNames.contains("generateCopySupport"));
         assertTrue(propertyDefNames.contains("generateVisitorSupport"));
         assertTrue(propertyDefNames.contains("loggingFrameworkConnector"));
+        assertTrue(propertyDefNames.contains("generateJaxbSupport"));
         
         IIpsBuilderSetPropertyDef loggingConnectorPropertyDef = builderSetInfo.getPropertyDefinition("loggingFrameworkConnector");
         IIpsLoggingFrameworkConnector connector = (IIpsLoggingFrameworkConnector)loggingConnectorPropertyDef.parseValue(
