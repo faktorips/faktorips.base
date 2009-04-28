@@ -499,12 +499,14 @@ if [ ! "$NOCVS" = "true" ] ; then
     # delete previous checkout dir
     rm -R $PLUGINBUILDER_PROJECT_DIR
   fi
-	
+  
+  # checkout release.properties in branch and head	
+  cvs -d $CVS_ROOT co -d $RELEASE_PROPERTY_DIR $PLUGINBUILDER_PROJECT_NAME/releases
+  
   if [ -n "$BRANCH" ] ; then
     cvs -d $CVS_ROOT co -d $RELEASE_PROPERTY_DIR -r $BRANCH $PLUGINBUILDER_PROJECT_NAME/releases
     cvs -d $CVS_ROOT co -d $PLUGINBUILDER_PROJECT_DIR/maps -r $BRANCH $PLUGINBUILDER_PROJECT_NAME/maps
-  else    
-    cvs -d $CVS_ROOT co -d $RELEASE_PROPERTY_DIR $PLUGINBUILDER_PROJECT_NAME/releases
+  else
     cvs -d $CVS_ROOT co -d $PLUGINBUILDER_PROJECT_DIR/maps $PLUGINBUILDER_PROJECT_NAME/maps
   fi
 fi
