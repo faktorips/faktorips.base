@@ -211,7 +211,7 @@ fi
 #
 # special case create branch
 #   create branch and exit here
-#
+# TODO remove branch example: cvs -d /usr/local/cvsroot rtag -d v2_2_3_rfinal
 if [ "$CREATE_BRANCH" = "true" ] ; then
   getFetchTagVersionForBranch $BUILD_VERSION
   
@@ -499,8 +499,14 @@ if [ ! "$NOCVS" = "true" ] ; then
     # delete previous checkout dir
     rm -R $PLUGINBUILDER_PROJECT_DIR
   fi
-  cvs -d $CVS_ROOT co -d $RELEASE_PROPERTY_DIR $PLUGINBUILDER_PROJECT_NAME/releases
-  cvs -d $CVS_ROOT co -d $PLUGINBUILDER_PROJECT_DIR/maps $PLUGINBUILDER_PROJECT_NAME/maps
+	
+  if [ -n "$BRANCH" ] ; then
+    cvs -d $CVS_ROOT co -d $RELEASE_PROPERTY_DIR -r $BRANCH $PLUGINBUILDER_PROJECT_NAME/releases
+    cvs -d $CVS_ROOT co -d $PLUGINBUILDER_PROJECT_DIR/maps -r $BRANCH $PLUGINBUILDER_PROJECT_NAME/maps
+  else    
+    cvs -d $CVS_ROOT co -d $RELEASE_PROPERTY_DIR $PLUGINBUILDER_PROJECT_NAME/releases
+    cvs -d $CVS_ROOT co -d $PLUGINBUILDER_PROJECT_DIR/maps $PLUGINBUILDER_PROJECT_NAME/maps
+  fi
 fi
 
 # 2. asserts 
