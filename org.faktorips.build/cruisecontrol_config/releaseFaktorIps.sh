@@ -237,15 +237,18 @@ if [ "$CREATE_BRANCH" = "true" ] ; then
   
   echo "branching "$BRANCH" ..."
 
-  # TODO branch pluginbuilder projekt
+  # branch pluginbuilder projekt
+  cvs -d $CVS_ROOT rtag -R $BRANCH_TAG $PLUGINBUILDER_PROJECT_NAME
+  cvs -d $CVS_ROOT rtag -R -b -r $BRANCH_TAG $BRANCH $PLUGINBUILDER_PROJECT_NAME
+  
   # branch all projects specified in the pluginbuilder map file (all necessary plugin and feature projects)
   cvs -d $CVS_ROOT co -d $PLUGINBUILDER_PROJECT_DIR/maps $PLUGINBUILDER_PROJECT_NAME/maps/all_copy.map
   for project in $( cat $PLUGINBUILDER_PROJECT_DIR/maps/all_copy.map | sed -r "s/.*COPY,@WORKSPACE@,(.*)/\1/g" ) ; do
     # 1. create root tag as start point for the branch 
     echo "tagging HEAD with branch tag: '"$BRANCH_TAG"', project "$project
     cvs -d $CVS_ROOT rtag -R $BRANCH_TAG $project
-	  # 2. branch project 
-	  #  -r : says that this branch should be rooted to this revision
+	# 2. branch project 
+	#  -r : says that this branch should be rooted to this revision
     echo "create branch: '"$BRANCH"', project "$project
 	cvs -d $CVS_ROOT rtag -R -b -r $BRANCH_TAG $BRANCH $project
   done
@@ -555,10 +558,11 @@ if [ ! "$SKIPTAGCVS" = "true" ] ; then
   #     -> rtag : tag current versions of projects in repository
   #     -> -F : move tag if it already exists (overwrite checked above, by searching for existing release.properties)
   #     -> -R : process directories recursively
-  #    the pluginbuilder project doesn't support branches (not necessary) (-r)
-
-  # TODO branch pluginbuilder projekt
-  cvs -d $CVS_ROOT rtag -F -R $FETCH_TAG $PLUGINBUILDER_PROJECT_NAME
+  if [ -n "$BRANCH" ] ; then
+    cvs -d $CVS_ROOT rtag -F -R -r $BRANCH $FETCH_TAG $PLUGINBUILDER_PROJECT_NAME
+  else
+    cvs -d $CVS_ROOT rtag -F -R $FETCH_TAG $PLUGINBUILDER_PROJECT_NAME  
+  fi
 
   # b) tag all projects specified in the pluginbuilder map file (all necessary plugin and feature projects)
   cvs -d $CVS_ROOT co -r $FETCH_TAG -d $PLUGINBUILDER_PROJECT_DIR/maps $PLUGINBUILDER_PROJECT_NAME/maps/all_copy.map
