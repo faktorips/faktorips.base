@@ -112,6 +112,38 @@ assertVersionFormat ()
  fi
 }
 
+generateIndexHtml ()
+{
+  local LINK_PREFIX=$1
+  local DIR=$2
+  if [ $# -gt 2 ] ; then
+    local CATEGORY=$3
+    local DIR=$DIR"/"$CATEGORY
+  fi
+
+  local OUTFILE="index.html"
+  local OUT=$DIR"/"$OUTFILE
+  
+  cat <<EOF > $OUT
+  <html>
+  EOF
+  
+  for i in $(ls $DIR) ; do
+    if [ "$i" = "$OUTFILE" ] ; then
+      continue
+    fi
+    if [ -d $DIR"/"$i ] ; then
+      FILE=$LINK_PREFIX"/"$i"/index.html"
+      echo "  <a href=\"$FILE\">"$i"</a>" >> $OUT
+    else 
+      FILE=$LINK_PREFIX"/"$CATEGORY"/"$(basename $i)
+      echo "  <a href=\"$FILE\">"$i"</a>" >> $OUT
+    fi
+  done
+  
+  echo "</html>" >> $OUT	
+}
+
 #################################################
 # init variables and parameters
 #################################################
@@ -619,6 +651,8 @@ fi
 # call ant to perform the specified release build
 #################################################
 
+BUILD_CATEGORY_PATH=$(echo $BUILD_CATEGORY | sed 's| |_|g')
+
 echo $BUILDFILE
 EXEC="$ANT_HOME/bin/ant -buildfile $BUILDFILE release \
  -Dbuild.version=$BUILD_VERSION \
@@ -629,7 +663,7 @@ EXEC="$ANT_HOME/bin/ant -buildfile $BUILDFILE release \
  -DprojectsRootDir=$PROJECTSROOTDIR \
  -Dbasedir=$WORKINGDIR \
  -DnoCvs=$NOCVS \
- -DdownloadDir=$PUBLISH_DOWNLOAD_DIR \
+ -DdownloadDir=$PUBLISH_DOWNLOAD_DIR"/"$BUILD_CATEGORY_PATH \
  -Dupdatesite.path=$PUBLISH_UPDATESITE_DIR \
  -DproductProject=$BUILDPRODUCT \
  -DnoBranch=$NOBRANCH
@@ -637,3 +671,9 @@ EXEC="$ANT_HOME/bin/ant -buildfile $BUILDFILE release \
  "
 echo $EXEC
 exec $EXEC
+
+if [ ! "$SKIPPUBLISH" = "true" ] ; then
+  LINK_PREFIX="http://update.faktorzehn.org/faktorips/downloads"
+  generateIndexHtml $LINK_PREFIX $PUBLISH_DOWNLOAD_DIR $BUILD_CATEGORY_PATH
+  generateIndexHtml $LINK_PREFIX $PUBLISH_DOWNLOAD_DIR
+fi
