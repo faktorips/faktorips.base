@@ -181,6 +181,44 @@
         </project>
 
         <!--=====================================================-->
+        <!--Project definition: org.faktorips.pluginbuilder branch: v2_2_patches-->
+        <!--=====================================================-->
+        <!-- scheduleintervall: 300 = 5 minutes -->
+        <project name="org.faktorips.pluginbuilder.v2_2_patches" mainbuildtarget="pluginbuilder.faktorips"
+            testresult="${workdir}/../pluginbuilder_tmp/org.faktorips.pluginbuilder/results/testresults/xml" 
+            testmerge="*test.xml"
+            cvstag="v2_2_patches"
+            scheduleintervall="300"> 
+            <jvmarg arg="-Dprg=cruise.pluginbuilder"/>
+            <jvmarg arg="-Xms124m"/>
+            <jvmarg arg="-Xmx512m"/>
+            <!-- property for the ant build script -->
+            <property name="checkoutdir" value="checkout_branch"/>
+            <property name="cvstag" value="v2_2_patches"/>
+            <depends>
+                <!-- 'cvs' instead of 'project' dependency, to receive email on successful build--> 
+                <cvs module="org.faktorips.util"/>
+                <cvs module="org.faktorips.valuetypes"/>
+                <cvs module="org.faktorips.dtflcommon"/>
+                <cvs module="org.faktorips.runtime"/>
+                <cvs module="org.faktorips.fl"/>
+                <cvs module="org.faktorips.devtools.core"/>
+                <cvs module="org.faktorips.devtools.stdbuilder"/>
+                <cvs module="org.faktorips.devtools.core.ui"/>
+                <cvs module="org.faktorips.devtools.tableconversion"/>
+                <cvs module="org.faktorips.devtools.ant"/>
+                
+                <!-- plugin test dependencies-->
+                <cvs module="org.faktorips.devtools.core.test"/>
+                <cvs module="org.faktorips.devtools.stdbuilder.test"/>
+                <cvs module="org.faktorips.devtools.core.ui.test"/>            
+                <cvs module="org.faktorips.devtools.tableconversion.test"/>            
+                <cvs module="org.faktorips.devtools.ant.test"/>            
+                <cvs module="org.faktorips.uml.test"/>                
+            </depends>      
+        </project>
+        
+        <!--=====================================================-->
         <!--Project definition: org.faktorips.integrationtest-->
         <!--=====================================================-->    
         <project name="org.faktorips.integrationtest" mainbuildtarget="pluginbuilder.integrationtest" javaprojectname="org.faktorips.integrationtest"
