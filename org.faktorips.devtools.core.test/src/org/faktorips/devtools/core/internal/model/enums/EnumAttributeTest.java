@@ -273,4 +273,18 @@ public class EnumAttributeTest extends AbstractIpsEnumPluginTest {
         assertNull(genderEnumAttributeId.findIsUniqueIdentifier());
     }
 
+    public void testGetSetUsedAsNameInFaktorIpsUi() {
+        assertTrue(genderEnumAttributeName.isUsedAsNameInFaktorIpsUi());
+        assertFalse(genderEnumAttributeId.isUsedAsNameInFaktorIpsUi());
+        genderEnumAttributeName.setUsedAsNameInFaktorIpsUi(false);
+        assertFalse(genderEnumAttributeName.isUsedAsNameInFaktorIpsUi());
+    }
+
+    public void testGetSetUsedAsIdInFaktorIpsUi() {
+        assertTrue(genderEnumAttributeId.isUsedAsIdInFaktorIpsUi());
+        assertFalse(genderEnumAttributeName.isUsedAsIdInFaktorIpsUi());
+        genderEnumAttributeId.setUsedAsIdInFaktorIpsUi(false);
+        assertFalse(genderEnumAttributeId.isUsedAsIdInFaktorIpsUi());
+    }
+
 }

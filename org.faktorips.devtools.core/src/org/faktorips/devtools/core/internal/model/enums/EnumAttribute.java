@@ -67,6 +67,18 @@ public class EnumAttribute extends AtomicIpsObjectPart implements IEnumAttribute
     private boolean uniqueIdentifier;
 
     /**
+     * Flag indicating whether this enum attribute is marked to be used as name of enum values in
+     * the Faktor-IPS UI.
+     */
+    private boolean usedAsIdInFaktorIpsUi;
+
+    /**
+     * Flag indicating whether this enum attribute is marked to be used as ID of enum values in the
+     * Faktor-IPS UI.
+     */
+    private boolean usedAsNameInFaktorIpsUi;
+
+    /**
      * Creates a new <code>EnumAttribute</code>.
      * 
      * @param parent The enum type this enum attribute belongs to.
@@ -79,6 +91,8 @@ public class EnumAttribute extends AtomicIpsObjectPart implements IEnumAttribute
         this.literalName = false;
         this.inherited = false;
         this.uniqueIdentifier = false;
+        this.usedAsIdInFaktorIpsUi = false;
+        this.usedAsNameInFaktorIpsUi = false;
     }
 
     /**
@@ -422,24 +436,36 @@ public class EnumAttribute extends AtomicIpsObjectPart implements IEnumAttribute
         }
     }
 
+    /**
+     * {@inheritDoc}
+     */
     public boolean isUsedAsIdInFaktorIpsUi() {
-        // TODO aw: Auto-generated method stub
-        return false;
+        return usedAsIdInFaktorIpsUi;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     public boolean isUsedAsNameInFaktorIpsUi() {
-        // TODO aw: Auto-generated method stub
-        return false;
+        return usedAsNameInFaktorIpsUi;
     }
 
-    public void setUsedAsIdInFaktorIpsUi(boolean useAsIdInFaktorIpsUi) {
-        // TODO aw: Auto-generated method stub
-
+    /**
+     * {@inheritDoc}
+     */
+    public void setUsedAsIdInFaktorIpsUi(boolean usedAsIdInFaktorIpsUi) {
+        boolean oldUsedAsIdInFaktorIpsUi = this.usedAsIdInFaktorIpsUi;
+        valueChanged(oldUsedAsIdInFaktorIpsUi, usedAsIdInFaktorIpsUi);
+        this.usedAsIdInFaktorIpsUi = usedAsIdInFaktorIpsUi;
     }
 
-    public void setUsedAsNameInFaktorIpsUi(boolean useAsNameInFaktorIpsUi) {
-        // TODO aw: Auto-generated method stub
-
+    /**
+     * {@inheritDoc}
+     */
+    public void setUsedAsNameInFaktorIpsUi(boolean usedAsNameInFaktorIpsUi) {
+        boolean oldUsedAsNameInFaktorIpsUi = this.usedAsNameInFaktorIpsUi;
+        valueChanged(oldUsedAsNameInFaktorIpsUi, usedAsNameInFaktorIpsUi);
+        this.usedAsNameInFaktorIpsUi = usedAsNameInFaktorIpsUi;
     }
 
 }

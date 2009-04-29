@@ -110,9 +110,11 @@ public abstract class AbstractIpsEnumPluginTest extends AbstractIpsPluginTest {
         genderEnumAttributeId.setDatatype(STRING_DATATYPE_NAME);
         genderEnumAttributeId.setLiteralName(true);
         genderEnumAttributeId.setUniqueIdentifier(true);
+        genderEnumAttributeId.setUsedAsIdInFaktorIpsUi(true);
         genderEnumAttributeName = genderEnumType.newEnumAttribute();
         genderEnumAttributeName.setName(GENDER_ENUM_ATTRIBUTE_NAME_NAME);
         genderEnumAttributeName.setDatatype(STRING_DATATYPE_NAME);
+        genderEnumAttributeName.setUsedAsNameInFaktorIpsUi(true);
 
         genderEnumContent = newEnumContent(ipsProject, GENDER_ENUM_CONTENT_NAME);
         genderEnumContent.setEnumType(genderEnumType.getQualifiedName());

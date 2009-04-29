@@ -258,11 +258,11 @@ public interface IEnumAttribute extends IIpsObjectPart {
      * Sets whether the values of this enum attribute shall be used as name of enum values in the
      * Faktor-IPS UI.
      * 
-     * @param useAsNameInFaktorIpsUi Flag indicating whether this enum attribute shall be used as
+     * @param usedAsNameInFaktorIpsUi Flag indicating whether this enum attribute shall be used as
      *            name of enum values in the Faktor-IPS UI (<code>true</code>) or not (
      *            <code>false</code>).
      */
-    public void setUsedAsNameInFaktorIpsUi(boolean useAsNameInFaktorIpsUi);
+    public void setUsedAsNameInFaktorIpsUi(boolean usedAsNameInFaktorIpsUi);
 
     /**
      * Returns a flag indicating whether this enum attribute is marked to be used as name of enum
@@ -274,11 +274,11 @@ public interface IEnumAttribute extends IIpsObjectPart {
      * Sets whether the values of this enum attribute shall be used as ID of enum values in the
      * Faktor-IPS UI.
      * 
-     * @param useAsNameInFaktorIpsUi Flag indicating whether this enum attribute shall be used as ID
-     *            of enum values in the Faktor-IPS UI (<code>true</code>) or not (
+     * @param usedAsNameInFaktorIpsUi Flag indicating whether this enum attribute shall be used as
+     *            ID of enum values in the Faktor-IPS UI (<code>true</code>) or not (
      *            <code>false</code>).
      */
-    public void setUsedAsIdInFaktorIpsUi(boolean useAsIdInFaktorIpsUi);
+    public void setUsedAsIdInFaktorIpsUi(boolean usedAsIdInFaktorIpsUi);
 
     /**
      * Returns a flag indicating whether this enum attribute is marked to be used as ID of enum
