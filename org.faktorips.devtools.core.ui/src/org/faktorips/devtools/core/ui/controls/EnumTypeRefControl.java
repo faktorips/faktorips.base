@@ -35,7 +35,7 @@ import org.faktorips.util.ArgumentCheck;
  * enum type will not be shown in the list as well as enum types that subclass it.
  * <p>
  * If the control however is instrumented to be used for choosing an enum type for an enum content
- * then abstract enum types and those that define their values in the model are not displayed.
+ * then abstract enum types and those that contain values are not displayed.
  * 
  * @see org.faktorips.devtools.core.model.enums.IEnumType
  * 
