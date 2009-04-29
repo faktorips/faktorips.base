@@ -25,6 +25,8 @@ import org.eclipse.osgi.util.NLS;
 import org.faktorips.datatype.EnumDatatype;
 import org.faktorips.datatype.ValueDatatype;
 import org.faktorips.devtools.core.internal.model.ipsobject.IpsObjectPartCollection;
+import org.faktorips.devtools.core.model.IDependency;
+import org.faktorips.devtools.core.model.IpsObjectDependency;
 import org.faktorips.devtools.core.model.enums.EnumTypeValidations;
 import org.faktorips.devtools.core.model.enums.EnumsUtil;
 import org.faktorips.devtools.core.model.enums.IEnumAttribute;
@@ -34,6 +36,7 @@ import org.faktorips.devtools.core.model.enums.IEnumValue;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPart;
 import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
+import org.faktorips.devtools.core.model.ipsobject.QualifiedNameType;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.util.ArgumentCheck;
 import org.faktorips.util.message.Message;
@@ -907,6 +910,20 @@ public class EnumType extends EnumValueContainer implements IEnumType {
      */
     public boolean isParsable(String value) {
         return getValueName(value) != null;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public IDependency[] dependsOn() throws CoreException {
+        if (hasSuperEnumType()) {
+            IDependency superEnumTypeDependency = IpsObjectDependency.createReferenceDependency(getQualifiedNameType(),
+                    new QualifiedNameType(superEnumType, IpsObjectType.ENUM_TYPE));
+            return new IDependency[] { superEnumTypeDependency };
+        } else {
+            return new IDependency[0];
+        }
     }
 
     /**
