@@ -412,24 +412,28 @@ public class EnumType extends EnumValueContainer implements IEnumType {
         // Validate inherited attributes
         if (hasSuperEnumType()) {
             if (list.getNoOfMessages() == 0) {
-                validateInheritedAttributes(list, this);
+                validateInheritedAttributes(list);
             }
         }
 
         // Validate identifier attribute
-        validateLiteralNameAttribute(list, this);
+        validateLiteralNameAttribute(list);
     }
 
     /**
      * Validates whether the given enum type inherits all enum attributes defined in its supertype
      * hierarchy.
      * <p>
-     * Adds validation messages to the given message list.
+     * Adds validation messages to the given message list. The validation will pass immediately if
+     * the enum type is abstract.
      */
-    private void validateInheritedAttributes(MessageList validationMessageList, IEnumType enumType)
-            throws CoreException {
+    private void validateInheritedAttributes(MessageList validationMessageList) throws CoreException {
+        ArgumentCheck.notNull(validationMessageList);
 
-        ArgumentCheck.notNull(new Object[] { validationMessageList, enumType });
+        // Pass validation on abstract enum type
+        if (isAbstract) {
+            return;
+        }
 
         // All attributes from supertype hierarchy inherited?
         List<IEnumAttribute> notInheritedAttributes = findInheritEnumAttributeCandidates();
@@ -443,8 +447,8 @@ public class EnumType extends EnumValueContainer implements IEnumType {
                     showFirst) : NLS.bind(Messages.EnumType_NotInheritedAttributesInSupertypeHierarchySingular,
                     showFirst);
             Message message = new Message(IEnumType.MSGCODE_ENUM_TYPE_NOT_INHERITED_ATTRIBUTES_IN_SUPERTYPE_HIERARCHY,
-                    text, Message.ERROR, new ObjectProperty[] { new ObjectProperty(enumType,
-                            IEnumType.PROPERTY_SUPERTYPE) });
+                    text, Message.ERROR,
+                    new ObjectProperty[] { new ObjectProperty(this, IEnumType.PROPERTY_SUPERTYPE) });
             validationMessageList.add(message);
         }
     }
@@ -456,18 +460,16 @@ public class EnumType extends EnumValueContainer implements IEnumType {
      * If the given enum type is abstract the validation will succeed even if there is no literal
      * name attribute.
      */
-    private void validateLiteralNameAttribute(MessageList validationMessageList, IEnumType enumType)
-            throws CoreException {
-
-        ArgumentCheck.notNull(new Object[] { validationMessageList, enumType });
+    private void validateLiteralNameAttribute(MessageList validationMessageList) throws CoreException {
+        ArgumentCheck.notNull(validationMessageList);
 
         // Pass validation if given enum type is abstract
-        if (enumType.isAbstract()) {
+        if (isAbstract) {
             return;
         }
 
         boolean literalNameAttributeFound = false;
-        for (IEnumAttribute currentEnumAttribute : enumType.getEnumAttributesIncludeSupertypeCopies()) {
+        for (IEnumAttribute currentEnumAttribute : getEnumAttributesIncludeSupertypeCopies()) {
             Boolean literalName = currentEnumAttribute.findIsLiteralName();
             if (literalName == null) {
                 continue;
@@ -481,7 +483,7 @@ public class EnumType extends EnumValueContainer implements IEnumType {
         if (!(literalNameAttributeFound)) {
             String text = Messages.EnumType_NoLiteralNameAttribute;
             Message message = new Message(IEnumType.MSGCODE_ENUM_TYPE_NO_LITERAL_NAME_ATTRIBUTE, text, Message.ERROR,
-                    new ObjectProperty[] { new ObjectProperty(enumType, null) });
+                    new ObjectProperty[] { new ObjectProperty(this, null) });
             validationMessageList.add(message);
         }
     }

@@ -519,6 +519,8 @@ public class EnumTypeTest extends AbstractIpsEnumPluginTest {
     }
 
     public void testValidateInheritedAttributes() throws CoreException {
+        IIpsModel ipsModel = getIpsModel();
+
         IEnumType superEnumType = newEnumType(ipsProject, "SuperEnumType");
         superEnumType.setAbstract(true);
         genderEnumType.setSuperEnumType(superEnumType.getQualifiedName());
@@ -539,6 +541,10 @@ public class EnumTypeTest extends AbstractIpsEnumPluginTest {
         assertNotNull(validationMessageList
                 .getMessageByCode(IEnumType.MSGCODE_ENUM_TYPE_NOT_INHERITED_ATTRIBUTES_IN_SUPERTYPE_HIERARCHY));
 
+        // Test abstract super enum type to be valid despite missing inherited attribute
+        ipsModel.clearValidationCache();
+        assertTrue(superEnumType.isValid());
+
         attr1 = genderEnumType.newEnumAttribute();
         attr1.setName("attr1");
         attr1.setInherited(true);
@@ -546,7 +552,7 @@ public class EnumTypeTest extends AbstractIpsEnumPluginTest {
         attr2.setName("attr2");
         attr2.setInherited(true);
         genderEnumAttributeId.setLiteralName(false);
-        getIpsModel().clearValidationCache();
+        ipsModel.clearValidationCache();
         assertTrue(genderEnumType.isValid());
     }
 
