@@ -126,14 +126,27 @@ generateIndexHtml ()
   
   echo "<html>" > $OUT
   
-  for i in $(ls $DIR) ; do
+  local PREV_FILE_VERSION=0
+  # for each file order by version nr
+  for i in $(ls $DIR | sort -t$(echo $CATEGORY | cut -b1) -k2) ; do
     if [ "$i" = "$OUTFILE" ] ; then
+      # ignore index.html file
       continue
     fi
+    
+    # space between categories
+    local FILE_VERSION=$(echo $i | sed -r 's|.*-([0-9]*\.[0-9]*\.[0-9]*)\..*|\1|g')
+    if [ ! "$PREV_FILE_VERSION" = "$FILE_VERSION" ] ; then
+      echo "<br><br>" >> $OUT
+    fi
+    PREV_FILE_VERSION=$FILE_VERSION
+
     if [ -d $DIR"/"$i ] ; then
+      # directory link
       FILE=$LINK_PREFIX"/"$i"/index.html"
       echo "  <a href=\"$FILE\">"$i"</a><br>" >> $OUT
     else 
+      # file link
       FILE=$LINK_PREFIX"/"$CATEGORY"/"$(basename $i)
       echo "  <a href=\"$FILE\">"$i"</a><br>" >> $OUT
     fi
