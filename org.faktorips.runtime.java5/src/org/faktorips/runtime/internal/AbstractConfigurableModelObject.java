@@ -48,17 +48,19 @@ public abstract class AbstractConfigurableModelObject extends AbstractModelObjec
         this.productCmpt = productCmpt;
     }
 
-    public AbstractConfigurableModelObject(IProductComponentGeneration generation) {
-        this.productCmptGeneration = generation;
-        if (generation!=null) {
-            productCmpt = productCmptGeneration.getProductComponent();
-        }
+    /**
+     * Sets the new product component.
+     * 
+     * @deprecated use {@link #setProductComponent(IProductComponent)}
+     */
+    public void setProductCmpt(IProductComponent productCmpt) {
+        setProductComponent(productCmpt);
     }
 
     /**
      * Sets the new product component.
      */
-    public void setProductCmpt(IProductComponent productCmpt) {
+    public void setProductComponent(IProductComponent productCmpt) {
         this.productCmpt = productCmpt;
         this.productCmptGeneration = null;
     }
@@ -90,17 +92,26 @@ public abstract class AbstractConfigurableModelObject extends AbstractModelObjec
     }
    
     /**
-     * Sets the new product component generation.
+     * Sets the new product component generation. This method can be overridden in subclasses,
+     * e.g. to implement a notification mechanism.
      */
     protected void setProductCmptGeneration(IProductComponentGeneration newGeneration) {
         if (newGeneration!=null) {
-            setProductCmpt(newGeneration.getProductComponent());
+            setProductComponent(newGeneration.getProductComponent());
         } else {
-            setProductCmpt(null);
+            setProductComponent(null);
         }
         productCmptGeneration = newGeneration;
     }
    
+    /**
+     * Copies the product component and product component generation from the other object.
+     */
+    protected final void copyProductCmptAndGenerationInternal(AbstractConfigurableModelObject otherObject) {
+        this.productCmpt = otherObject.productCmpt;
+        this.productCmptGeneration = otherObject.productCmptGeneration;
+    }
+
     /**
      * This method should be called when effective from date has changed, so that the reference to
      * the product component generation is cleared. If this policy component contains child
@@ -164,7 +175,7 @@ public abstract class AbstractConfigurableModelObject extends AbstractModelObjec
         String productCmptId = objectEl.getAttribute("productCmpt");
         if (!"".equals(productCmptId)) {
             IProductComponent productCmpt = productRepository.getExistingProductComponent(productCmptId); 
-            setProductCmpt(productCmpt);
+            setProductComponent(productCmpt);
         }
         if (initWithProductDefaultsBeforeReadingXmlData) {
             this.initialize();

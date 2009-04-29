@@ -197,6 +197,7 @@ public class PolicyCmptImplClassBuilder extends BasePolicyCmptTypeBuilder {
      * <pre>
      * public IModelObject newCopy() {
      *     CpParent newCopy = new CpParent(getCpParentType());
+     *     newCopy.setProductCmptGenerationInternal(getProductCmptGeneration());
      *     copyProperties(newCopy);
      *     return newCopy;
      * }
@@ -213,11 +214,12 @@ public class PolicyCmptImplClassBuilder extends BasePolicyCmptTypeBuilder {
         methodsBuilder.append(varName);
         methodsBuilder.append(" = new ");
         methodsBuilder.append(getUnqualifiedClassName());
-        methodsBuilder.append("(");
+        methodsBuilder.appendln("();");
         if (getPcType().isConfigurableByProductCmptType() && getProductCmptType() != null) {
-            methodsBuilder.append(getGenProductCmptType().getMethodNameGetProductCmpt() + "()");
+            methodsBuilder.append("newCopy.");
+            methodsBuilder.append(MethodNames.COPY_PRODUCT_CMPT_AND_GENERATION_INTERNAL);
+            methodsBuilder.appendln("(this);");
         }
-        methodsBuilder.appendln(");");
         methodsBuilder.appendln(getMethodNameCopyProperties() + "(" + varName + ");");
         methodsBuilder.appendln("return " + varName + ";");
         methodsBuilder.closeBracket();
