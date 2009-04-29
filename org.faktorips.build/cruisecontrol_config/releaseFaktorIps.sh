@@ -116,9 +116,12 @@ generateIndexHtml ()
 {
   local LINK_PREFIX=$1
   local DIR=$2
+  local FIELD_SEPARATOR=2
   if [ $# -gt 2 ] ; then
     local CATEGORY=$3
     local DIR=$DIR"/"$CATEGORY
+    # -b11 = pos after 'faktorips_'
+    FIELD_SEPARATOR=$(echo $CATEGORY | cut -b11)
   fi
 
   local OUTFILE="index.html"
@@ -128,7 +131,7 @@ generateIndexHtml ()
   
   local PREV_FILE_VERSION=0
   # for each file order by version nr
-  for i in $(ls $DIR | sort -t$(echo $CATEGORY | cut -b1) -k2) ; do
+  for i in $(ls $DIR | sort -t$FIELD_SEPARATOR -k2) ; do
     if [ "$i" = "$OUTFILE" ] ; then
       # ignore index.html file
       continue
@@ -137,7 +140,7 @@ generateIndexHtml ()
     # space between categories
     local FILE_VERSION=$(echo $i | sed -r 's|.*-([0-9]*\.[0-9]*\.[0-9]*)\..*|\1|g')
     if [ ! "$PREV_FILE_VERSION" = "$FILE_VERSION" ] ; then
-      echo "<br><br>" >> $OUT
+      echo "<br>" >> $OUT
     fi
     PREV_FILE_VERSION=$FILE_VERSION
 
