@@ -73,6 +73,7 @@ public interface IEnumAttributeValue extends IIpsObjectPart {
      * 
      * @throws CoreException If an error occurs while searching for the enum attribute.
      */
+    // TODO aw: ips project as parameter neccessary
     public IEnumAttribute findEnumAttribute() throws CoreException;
 
     /**

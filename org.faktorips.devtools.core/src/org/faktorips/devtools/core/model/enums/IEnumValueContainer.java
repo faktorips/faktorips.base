@@ -56,7 +56,7 @@ public interface IEnumValueContainer extends IIpsObject {
      * 
      * @throws CoreException If an error occures while searching the ips model for the enum type.
      */
-    // TODO aw: ips project as parameter neccessary?
+    // TODO aw: ips project as parameter neccessary
     public IEnumType findEnumType() throws CoreException;
 
     /**

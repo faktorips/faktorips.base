@@ -60,7 +60,6 @@ public interface IEnumType extends IEnumValueContainer, EnumDatatype {
     public final static String PROPERTY_ABSTRACT = "abstract"; //$NON-NLS-1$
 
     /** Name of the <code>containingValues</code> property. */
-    // TODO aw: rename this to containingValues ... ui: values are defined in an enum content
     public final static String PROPERTY_CONTAINING_VALUES = "containingValues"; //$NON-NLS-1$
 
     /** Name of the <code>enumContentPackageFragment</code> property. */
@@ -143,6 +142,7 @@ public interface IEnumType extends IEnumValueContainer, EnumDatatype {
      * @throws CoreException If an error occurs while searching the ips project for the super enum
      *             type.
      */
+    // TODO aw: ips project as parameter neccessary
     public IEnumType findSuperEnumType() throws CoreException;
 
     /**
@@ -210,6 +210,7 @@ public interface IEnumType extends IEnumValueContainer, EnumDatatype {
      * 
      * @throws CoreException If an error occurs while searching super enum types.
      */
+    // TODO aw: ips project as parameter neccessary
     public List<IEnumAttribute> findAllEnumAttributesIncludeSupertypeOriginals() throws CoreException;
 
     /**
@@ -277,6 +278,7 @@ public interface IEnumType extends IEnumValueContainer, EnumDatatype {
      * @throws CoreException If an error occurs while searching super enum types.
      * @throws NullPointerException If <code>name</code> is <code>null</code>.
      */
+    // TODO aw: ips project as parameter neccessary
     public IEnumAttribute findEnumAttributeIncludeSupertypeOriginals(String name) throws CoreException;
 
     /**
@@ -375,6 +377,7 @@ public interface IEnumType extends IEnumValueContainer, EnumDatatype {
      * @throws CoreException If an error occurs while searching for the enum types in the supertype
      *             hierarchy.
      */
+    // TODO aw: ips project as parameter neccessary
     public List<IEnumType> findAllSuperEnumTypes() throws CoreException;
 
     /**
@@ -384,6 +387,7 @@ public interface IEnumType extends IEnumValueContainer, EnumDatatype {
      * @throws CoreException If an error occurs while searching the supertype hierarchy for the enum
      *             attributes.
      */
+    // TODO aw: ips project as parameter neccessary
     public List<IEnumAttribute> findInheritEnumAttributeCandidates() throws CoreException;
 
     /**

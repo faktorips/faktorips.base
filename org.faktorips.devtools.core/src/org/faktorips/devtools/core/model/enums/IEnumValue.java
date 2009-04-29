@@ -95,6 +95,7 @@ public interface IEnumValue extends IIpsObjectPart {
      * @throws IllegalArgumentException If the given enum attribute is not part of the enum type
      *             referenced by this enum value.
      */
+    // TODO aw: ips project as parameter neccessary
     public IEnumAttributeValue findEnumAttributeValue(IEnumAttribute enumAttribute) throws CoreException;
 
     /**

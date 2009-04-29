@@ -372,24 +372,8 @@ public class EnumAttribute extends AtomicIpsObjectPart implements IEnumAttribute
             return null;
         }
 
-        // TODO aw: do we need this again and again if we want to search super enum types?
-        EnumTypeHierachyVisitor collector = new EnumTypeHierachyVisitor(getIpsProject()) {
-            protected boolean visit(IEnumType currentType) throws CoreException {
-                return true;
-            }
-        };
-
-        IIpsProject ipsProject = getIpsProject();
-        IEnumType currentSuperEnumType = collector.findSupertype(getEnumType(), ipsProject);
-        while (currentSuperEnumType != null) {
-            IEnumAttribute possibleFoundEnumAttribute = currentSuperEnumType.getEnumAttribute(name);
-            if (possibleFoundEnumAttribute != null) {
-                return possibleFoundEnumAttribute;
-            }
-            currentSuperEnumType = collector.findSupertype(currentSuperEnumType, ipsProject);
-        }
-
-        return null;
+        IEnumType enumType = getEnumType();
+        return enumType.findEnumAttributeIncludeSupertypeOriginals(name);
     }
 
     /**
@@ -450,12 +434,12 @@ public class EnumAttribute extends AtomicIpsObjectPart implements IEnumAttribute
 
     public void setUsedAsIdInFaktorIpsUi(boolean useAsIdInFaktorIpsUi) {
         // TODO aw: Auto-generated method stub
-        
+
     }
 
     public void setUsedAsNameInFaktorIpsUi(boolean useAsNameInFaktorIpsUi) {
         // TODO aw: Auto-generated method stub
-        
+
     }
-    
+
 }

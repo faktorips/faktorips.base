@@ -182,7 +182,7 @@ public interface IEnumAttribute extends IIpsObjectPart {
      * 
      * @throws CoreException If an error occurs while searching for the super enum attribute.
      */
-    // TODO aw: ips project as parameter neccessary?
+    // TODO aw: ips project as parameter neccessary
     public Boolean findIsLiteralName() throws CoreException;
 
     /**
@@ -243,7 +243,7 @@ public interface IEnumAttribute extends IIpsObjectPart {
      * 
      * @throws CoreException If an error occurs while searching for the super enum attribute.
      */
-    // TODO aw: ips project as parameter neccessary?
+    // TODO aw: ips project as parameter neccessary
     public Boolean findIsUniqueIdentifier() throws CoreException;
 
     /**
@@ -264,18 +264,26 @@ public interface IEnumAttribute extends IIpsObjectPart {
      */
     public void setUsedAsNameInFaktorIpsUi(boolean useAsNameInFaktorIpsUi);
 
+    /**
+     * Returns a flag indicating whether this enum attribute is marked to be used as name of enum
+     * values in the Faktor-IPS UI.
+     */
     public boolean isUsedAsNameInFaktorIpsUi();
 
     /**
      * Sets whether the values of this enum attribute shall be used as ID of enum values in the
      * Faktor-IPS UI.
      * 
-     * @param useAsNameInFaktorIpsUi Flag indicating whether this enum attribute shall be used as
-     *            name of enum values in the Faktor-IPS UI (<code>true</code>) or not (
+     * @param useAsNameInFaktorIpsUi Flag indicating whether this enum attribute shall be used as ID
+     *            of enum values in the Faktor-IPS UI (<code>true</code>) or not (
      *            <code>false</code>).
      */
     public void setUsedAsIdInFaktorIpsUi(boolean useAsIdInFaktorIpsUi);
 
+    /**
+     * Returns a flag indicating whether this enum attribute is marked to be used as ID of enum
+     * values in the Faktor-IPS UI.
+     */
     public boolean isUsedAsIdInFaktorIpsUi();
 
 }
