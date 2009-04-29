@@ -124,9 +124,7 @@ generateIndexHtml ()
   local OUTFILE="index.html"
   local OUT=$DIR"/"$OUTFILE
   
-  cat <<EOF > $OUT
-  <html>
-  EOF
+  echo "<html>" > $OUT
   
   for i in $(ls $DIR) ; do
     if [ "$i" = "$OUTFILE" ] ; then
