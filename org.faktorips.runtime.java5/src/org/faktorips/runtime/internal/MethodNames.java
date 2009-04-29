@@ -57,6 +57,11 @@ public class MethodNames {
     public final static String GET_PRODUCT_COMPONENT = "getProductComponent";
 
     /**
+     * @see org.faktorips.runtime.IConfigurableModelObject#setProductComponent()
+     */
+    public final static String SET_PRODUCT_COMPONENT = "setProductComponent";
+
+    /**
      * @see org.faktorips.runtime.IRuntimeRepository#getExistingProductComponent(String)
      */
     public final static String GET_EXISTING_PRODUCT_COMPONENT = "getExistingProductComponent";
@@ -95,6 +100,8 @@ public class MethodNames {
 
 
     public final static String GET_PRODUCT_CMPT_GENERATION = "getProductCmptGeneration";
+
+    public final static String COPY_PRODUCT_CMPT_AND_GENERATION_INTERNAL = "copyProductCmptAndGenerationInternal";
 
     /**
      * @see org.faktorips.runtime.IRuntimeRepository#getExistingProductComponentGeneration(String, Calendar)

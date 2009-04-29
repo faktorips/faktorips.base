@@ -50,8 +50,17 @@ public abstract class AbstractConfigurableModelObject extends AbstractModelObjec
 
     /**
      * Sets the new product component.
+     * 
+     * @deprecated use {@link #setProductComponent(IProductComponent)}
      */
     public void setProductCmpt(IProductComponent productCmpt) {
+        setProductComponent(productCmpt);
+    }
+
+    /**
+     * Sets the new product component.
+     */
+    public void setProductComponent(IProductComponent productCmpt) {
         this.productCmpt = productCmpt;
         this.productCmptGeneration = null;
     }
@@ -68,29 +77,57 @@ public abstract class AbstractConfigurableModelObject extends AbstractModelObjec
             if (productCmpt==null) {
                 return null;
             }
-            productCmptGeneration = productCmpt.getGenerationBase(getEffectiveFromAsCalendar());
+            productCmptGeneration = getProductComponentGenerationFromRepository();
         }
         return productCmptGeneration;
     }
+    
+    /**
+     * Gets the product component generation from the repository. The default implementation
+     * uses the generation's valid from date and the {@link #getEffectiveFromAsCalendar()} method to
+     * identify the generation. You can change this 
+     */
+    protected IProductComponentGeneration getProductComponentGenerationFromRepository() {
+        return productCmpt.getGenerationBase(getEffectiveFromAsCalendar());    
+    }
    
     /**
-     * Sets the new product component generation.
+     * Sets the new product component generation. This method can be overridden in subclasses,
+     * e.g. to implement a notification mechanism.
      */
     protected void setProductCmptGeneration(IProductComponentGeneration newGeneration) {
         if (newGeneration!=null) {
-            setProductCmpt(newGeneration.getProductComponent());
+            setProductComponent(newGeneration.getProductComponent());
         } else {
-            setProductCmpt(null);
+            setProductComponent(null);
         }
         productCmptGeneration = newGeneration;
     }
    
+    /**
+     * Copies the product component and product component generation from the other object.
+     */
+    protected final void copyProductCmptAndGenerationInternal(AbstractConfigurableModelObject otherObject) {
+        this.productCmpt = otherObject.productCmpt;
+        this.productCmptGeneration = otherObject.productCmptGeneration;
+    }
+
     /**
      * This method should be called when effective from date has changed, so that the reference to
      * the product component generation is cleared. If this policy component contains child
      * components, this method should also clear the reference to their product component generations.
      */
     public void effectiveFromHasChanged() {
+        resetProductCmptGenerationAfterEffectiveFromHasChanged();
+    }
+    
+    /**
+     * This method is called by {@link #effectiveFromHasChanged()} to set the reference to the
+     * product component generation to <code>null</code> after the effective date has changed.
+     * The method can be overridden if the generation is not identified by the effective date, but
+     * by some other method. 
+     */
+    protected void resetProductCmptGenerationAfterEffectiveFromHasChanged() {
         productCmptGeneration = null;
     }
     
@@ -138,7 +175,7 @@ public abstract class AbstractConfigurableModelObject extends AbstractModelObjec
         String productCmptId = objectEl.getAttribute("productCmpt");
         if (!"".equals(productCmptId)) {
             IProductComponent productCmpt = productRepository.getExistingProductComponent(productCmptId); 
-            setProductCmpt(productCmpt);
+            setProductComponent(productCmpt);
         }
         if (initWithProductDefaultsBeforeReadingXmlData) {
             this.initialize();
