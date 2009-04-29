@@ -48,6 +48,13 @@ public abstract class AbstractConfigurableModelObject extends AbstractModelObjec
         this.productCmpt = productCmpt;
     }
 
+    public AbstractConfigurableModelObject(IProductComponentGeneration generation) {
+        this.productCmptGeneration = generation;
+        if (generation!=null) {
+            productCmpt = productCmptGeneration.getProductComponent();
+        }
+    }
+
     /**
      * Sets the new product component.
      */
@@ -68,9 +75,18 @@ public abstract class AbstractConfigurableModelObject extends AbstractModelObjec
             if (productCmpt==null) {
                 return null;
             }
-            productCmptGeneration = productCmpt.getGenerationBase(getEffectiveFromAsCalendar());
+            productCmptGeneration = getProductComponentGenerationFromRepository();
         }
         return productCmptGeneration;
+    }
+    
+    /**
+     * Gets the product component generation from the repository. The default implementation
+     * uses the generation's valid from date and the {@link #getEffectiveFromAsCalendar()} method to
+     * identify the generation. You can change this 
+     */
+    protected IProductComponentGeneration getProductComponentGenerationFromRepository() {
+        return productCmpt.getGenerationBase(getEffectiveFromAsCalendar());    
     }
    
     /**
@@ -91,6 +107,16 @@ public abstract class AbstractConfigurableModelObject extends AbstractModelObjec
      * components, this method should also clear the reference to their product component generations.
      */
     public void effectiveFromHasChanged() {
+        resetProductCmptGenerationAfterEffectiveFromHasChanged();
+    }
+    
+    /**
+     * This method is called by {@link #effectiveFromHasChanged()} to set the reference to the
+     * product component generation to <code>null</code> after the effective date has changed.
+     * The method can be overridden if the generation is not identified by the effective date, but
+     * by some other method. 
+     */
+    protected void resetProductCmptGenerationAfterEffectiveFromHasChanged() {
         productCmptGeneration = null;
     }
     
