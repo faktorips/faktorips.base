@@ -467,6 +467,7 @@
     	
         <!--copy zipped features into the faktorips download directory -->
     	<!-- faktorips -->
+		<mkdir dir="${downloadDir}" />
     	<antcall inheritall="true" target="-copy.faktorips.release.to.download.dir">
          	<param name="source" value="org.faktorips.feature-${build.version}.zip" />
     	    <param name="dest.name" value="${faktoripsReleaseDownloadZipPath}" />

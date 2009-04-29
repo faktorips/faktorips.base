@@ -649,7 +649,7 @@ fi
 # call ant to perform the specified release build
 #################################################
 
-BUILD_CATEGORY_PATH=$(echo $BUILD_CATEGORY | sed 's| |_|g')
+BUILD_CATEGORY_PATH="Faktor-IPS_"$BUILD_CATEGORY
 
 echo $BUILDFILE
 EXEC="$ANT_HOME/bin/ant -buildfile $BUILDFILE release \
