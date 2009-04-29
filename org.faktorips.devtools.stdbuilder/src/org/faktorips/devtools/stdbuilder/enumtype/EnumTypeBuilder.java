@@ -658,7 +658,7 @@ public class EnumTypeBuilder extends DefaultJavaSourceFileBuilder {
 
         for (IEnumAttribute currentEnumAttribute : uniqueIdentifierAttributes) {
             if (currentEnumAttribute.isValid()) {
-                if (currentEnumAttribute.isUniqueIdentifier()) {
+                if (currentEnumAttribute.findIsUniqueIdentifier()) {
 
                     Datatype datatype = currentEnumAttribute.findDatatype(getIpsProject());
                     DatatypeHelper helper = getIpsProject().getDatatypeHelper(datatype);
