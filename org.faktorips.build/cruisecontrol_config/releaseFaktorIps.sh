@@ -649,7 +649,7 @@ fi
 # call ant to perform the specified release build
 #################################################
 
-BUILD_CATEGORY_PATH="Faktor-IPS_"$BUILD_CATEGORY
+BUILD_CATEGORY_PATH="faktorips_"$BUILD_CATEGORY
 
 echo $BUILDFILE
 EXEC="$ANT_HOME/bin/ant -buildfile $BUILDFILE release \
@@ -668,9 +668,10 @@ EXEC="$ANT_HOME/bin/ant -buildfile $BUILDFILE release \
  -Dcvsroot=$CVS_ROOT
  "
 echo $EXEC
-exec $EXEC
+eval $EXEC
 
 if [ ! "$SKIPPUBLISH" = "true" ] ; then
+  echo "publish: generateIndexHtml"
   LINK_PREFIX="http://update.faktorzehn.org/faktorips/downloads"
   generateIndexHtml $LINK_PREFIX $PUBLISH_DOWNLOAD_DIR $BUILD_CATEGORY_PATH
   generateIndexHtml $LINK_PREFIX $PUBLISH_DOWNLOAD_DIR
