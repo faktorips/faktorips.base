@@ -59,11 +59,11 @@ public interface IEnumAttribute extends IIpsObjectPart {
     /** Name of the <code>uniqueIdentifier</code> property. */
     public final static String PROPERTY_UNIQUE_IDENTIFIER = "uniqueIdentifier"; //$NON-NLS-1$
 
-    /** Name of the <code>usedAsNameInFipsUi</code> property. */
-    public final static String PROPERTY_USED_AS_NAME_IN_FIPS_UI = "usedAsNameInFipsUi"; //$NON-NLS-1$
+    /** Name of the <code>usedAsNameInFaktorIpsUi</code> property. */
+    public final static String PROPERTY_USED_AS_NAME_IN_FAKTOR_IPS_UI = "usedAsNameInFaktorIpsUi"; //$NON-NLS-1$
 
-    /** Name of the <code>usedAsIdInFipsUi</code> property. */
-    public final static String PROPERTY_USED_AS_ID_IN_FIPS_UI = "usedAsIdInFipsUi"; //$NON-NLS-1$
+    /** Name of the <code>usedAsIdInFaktorIpsUi</code> property. */
+    public final static String PROPERTY_USED_AS_ID_IN_FAKTOR_IPS_UI = "usedAsIdInFaktorIpsUi"; //$NON-NLS-1$
 
     /** Prefix for all message codes of this class. */
     public final static String MSGCODE_PREFIX = "ENUMATTRIBUTE-"; //$NON-NLS-1$

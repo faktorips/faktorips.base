@@ -201,11 +201,15 @@ public class EnumAttribute extends AtomicIpsObjectPart implements IEnumAttribute
         super.validateThis(list, ipsProject);
 
         validateName(list, ipsProject);
+
         if (!inherited) {
             validateDatatype(list, ipsProject);
             validateLiteralName(list, ipsProject);
         }
+
         validateInherited(list, ipsProject);
+        validateUsedAsNameInFaktorIpsUi(list, ipsProject);
+        validateUsedAsIdInFaktorIpsUi(list, ipsProject);
     }
 
     /** Validates the <code>name</code> property. */
@@ -319,6 +323,21 @@ public class EnumAttribute extends AtomicIpsObjectPart implements IEnumAttribute
                 list.add(validationMessage);
             }
         }
+    }
+
+    /** Validates the <code>usedAsNameInFaktorIpsUi</code> property. */
+    private void validateUsedAsNameInFaktorIpsUi(MessageList list, IIpsProject ipsProject) {
+        String text;
+        Message validationMessage;
+        // TODO aw
+    }
+
+    /** Validates the <code>usedAsIdInFaktorIpsUi</code> property. */
+    private void validateUsedAsIdInFaktorIpsUi(MessageList list, IIpsProject ipsProject) {
+        String text;
+        Message validationMessage;
+        // TODO aw
+
     }
 
     /**
