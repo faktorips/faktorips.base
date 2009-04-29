@@ -21,12 +21,15 @@ import javax.xml.parsers.ParserConfigurationException;
 import org.eclipse.core.runtime.CoreException;
 import org.faktorips.datatype.Datatype;
 import org.faktorips.devtools.core.internal.model.ipsobject.DescriptionHelper;
+import org.faktorips.devtools.core.model.IDependency;
 import org.faktorips.devtools.core.model.IIpsModel;
+import org.faktorips.devtools.core.model.IpsObjectDependency;
 import org.faktorips.devtools.core.model.enums.IEnumAttribute;
 import org.faktorips.devtools.core.model.enums.IEnumAttributeValue;
 import org.faktorips.devtools.core.model.enums.IEnumType;
 import org.faktorips.devtools.core.model.enums.IEnumValue;
 import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
+import org.faktorips.devtools.core.model.ipsobject.QualifiedNameType;
 import org.faktorips.devtools.core.util.XmlUtil;
 import org.faktorips.util.message.MessageList;
 import org.w3c.dom.Element;
@@ -674,6 +677,30 @@ public class EnumTypeTest extends AbstractIpsEnumPluginTest {
             fail();
         } catch (IllegalArgumentException e) {
         }
+    }
+
+    public void testDependsOn() throws CoreException {
+        IEnumType subEnumType = newEnumType(ipsProject, "SubEnum");
+        subEnumType.setSuperEnumType(genderEnumType.getQualifiedName());
+        subEnumType.setAbstract(true);
+        IEnumType subSubEnumType = newEnumType(ipsProject, "SubSubEnum");
+        subSubEnumType.setSuperEnumType(subEnumType.getQualifiedName());
+
+        IDependency[] dependenciesSubEnumType = subEnumType.dependsOn();
+        assertEquals(1, dependenciesSubEnumType.length);
+        IDependency[] dependenciesSubSubEnumType = subSubEnumType.dependsOn();
+        assertEquals(1, dependenciesSubSubEnumType.length);
+
+        List<IDependency> depencendiesListSubEnumType = Arrays.asList(dependenciesSubEnumType);
+        IDependency superEnumTypeDependency = IpsObjectDependency.createReferenceDependency(subEnumType
+                .getQualifiedNameType(), new QualifiedNameType(genderEnumType.getQualifiedName(),
+                IpsObjectType.ENUM_TYPE));
+        assertTrue(depencendiesListSubEnumType.contains(superEnumTypeDependency));
+
+        List<IDependency> depencendiesListSubSubEnumType = Arrays.asList(dependenciesSubSubEnumType);
+        superEnumTypeDependency = IpsObjectDependency.createReferenceDependency(subSubEnumType.getQualifiedNameType(),
+                new QualifiedNameType(subEnumType.getQualifiedName(), IpsObjectType.ENUM_TYPE));
+        assertTrue(depencendiesListSubSubEnumType.contains(superEnumTypeDependency));
     }
 
 }
