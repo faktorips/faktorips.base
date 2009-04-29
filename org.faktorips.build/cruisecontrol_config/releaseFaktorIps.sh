@@ -132,10 +132,10 @@ generateIndexHtml ()
     fi
     if [ -d $DIR"/"$i ] ; then
       FILE=$LINK_PREFIX"/"$i"/index.html"
-      echo "  <a href=\"$FILE\">"$i"</a>" >> $OUT
+      echo "  <a href=\"$FILE\">"$i"</a><br>" >> $OUT
     else 
       FILE=$LINK_PREFIX"/"$CATEGORY"/"$(basename $i)
-      echo "  <a href=\"$FILE\">"$i"</a>" >> $OUT
+      echo "  <a href=\"$FILE\">"$i"</a><br>" >> $OUT
     fi
   done
   
