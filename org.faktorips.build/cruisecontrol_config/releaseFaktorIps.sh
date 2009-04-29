@@ -675,4 +675,5 @@ if [ ! "$SKIPPUBLISH" = "true" ] ; then
   LINK_PREFIX="http://update.faktorzehn.org/faktorips/downloads"
   generateIndexHtml $LINK_PREFIX $PUBLISH_DOWNLOAD_DIR $BUILD_CATEGORY_PATH
   generateIndexHtml $LINK_PREFIX $PUBLISH_DOWNLOAD_DIR
+  echo "  finished, result: "$LINK_PREFIX"/"$BUILD_CATEGORY_PATH"/index.html"
 fi
