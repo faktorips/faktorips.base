@@ -765,7 +765,7 @@
         </listeners>
         <bootstrappers/>
         <modificationset>
-            <cvs module="org.faktorips.pluginbuilder.v2_2_patches" cvsroot="${cvsroot}" tag="v2_2_patches"/>
+            <cvs module="org.faktorips.pluginbuilder" cvsroot="${cvsroot}" tag="v2_2_patches"/>
             <cvs module="org.faktorips.util" cvsroot="${cvsroot}" tag="v2_2_patches"/>
             <cvs module="org.faktorips.valuetypes" cvsroot="${cvsroot}" tag="v2_2_patches"/>
             <cvs module="org.faktorips.dtflcommon" cvsroot="${cvsroot}" tag="v2_2_patches"/>
