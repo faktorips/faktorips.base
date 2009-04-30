@@ -32,6 +32,7 @@
     <xsl:template match="project">
         <!-- init variables -->
         <xsl:variable name="projectname"><xsl:value-of select="@name"/></xsl:variable>
+        <xsl:variable name="cvstag"><xsl:value-of select="@cvstag"/></xsl:variable>
         <xsl:variable name="javaprojectname">
             <xsl:choose>
                 <xsl:when test="string-length(@javaprojectname)>0">
@@ -97,12 +98,14 @@
                    <cvs module="$javaprojectname">
                       <xsl:attribute name="cvsroot"><![CDATA[${cvsroot}]]></xsl:attribute>
                       <xsl:attribute name="module"><xsl:value-of select="$javaprojectname"/></xsl:attribute>
+                      <xsl:attribute name="cvstag"><xsl:value-of select="$cvstag"/></xsl:attribute>
                   </cvs>
                   <xsl:for-each select="depends/cvs">
                    <!-- cvs additional modificationset -->
                        <cvs module="$javaprojectname">
                           <xsl:attribute name="cvsroot"><![CDATA[${cvsroot}]]></xsl:attribute>
                           <xsl:attribute name="module"><xsl:value-of select="@module"/></xsl:attribute>
+                          <xsl:attribute name="cvstag"><xsl:value-of select="$cvstag"/></xsl:attribute>
                       </cvs>
                   </xsl:for-each>                  
     			  </xsl:when>
@@ -131,6 +134,9 @@
                     <xsl:attribute name="target"><xsl:value-of select="@mainbuildtarget"/></xsl:attribute>	  
                     <xsl:if test="count(jvmarg)>0">
                         <xsl:copy-of select="jvmarg"/>
+                    </xsl:if>        
+                    <xsl:if test="count(property)>0">
+                        <xsl:copy-of select="property"/>
                     </xsl:if>        
     		   </ant>
     	    </schedule>

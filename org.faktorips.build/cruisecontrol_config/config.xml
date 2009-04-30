@@ -23,7 +23,7 @@
         </listeners>
         <bootstrappers/>
         <modificationset>
-            <cvs module="org.faktorips.util" cvsroot="${cvsroot}"/>
+            <cvs module="org.faktorips.util" cvsroot="${cvsroot}" cvstag=""/>
         </modificationset>
         <schedule interval="60">
             <ant uselogger="true" usedebug="false" buildfile="${mainbuildfile}" target="util"/>
@@ -54,6 +54,7 @@
                 <map alias="cc-org.faktorips.devtools.ant" address=""/>
                 <map alias="cc-org.faktorips.uml" address=""/>
                 <map alias="cc-org.faktorips.pluginbuilder" address=""/>
+                <map alias="cc-org.faktorips.pluginbuilder.v2_2_patches" address=""/>
                 <map alias="cc-org.faktorips.integrationtest" address=""/>
                 <map alias="cc-org.faktorips.integrationtest.java5" address=""/>
                 <map alias="cc-de.qv.faktorips" address=""/>
@@ -71,7 +72,7 @@
         <bootstrappers/>
         <modificationset>
             <buildstatus logdir="${logdir}/org.faktorips.util"/>
-            <cvs module="org.faktorips.valuetypes" cvsroot="${cvsroot}"/>
+            <cvs module="org.faktorips.valuetypes" cvsroot="${cvsroot}" cvstag=""/>
         </modificationset>
         <schedule interval="60">
             <ant uselogger="true" usedebug="false" buildfile="${mainbuildfile}" target="valuetypes"/>
@@ -102,6 +103,7 @@
                 <map alias="cc-org.faktorips.devtools.ant" address=""/>
                 <map alias="cc-org.faktorips.uml" address=""/>
                 <map alias="cc-org.faktorips.pluginbuilder" address=""/>
+                <map alias="cc-org.faktorips.pluginbuilder.v2_2_patches" address=""/>
                 <map alias="cc-org.faktorips.integrationtest" address=""/>
                 <map alias="cc-org.faktorips.integrationtest.java5" address=""/>
                 <map alias="cc-de.qv.faktorips" address=""/>
@@ -119,7 +121,7 @@
         <bootstrappers/>
         <modificationset>
             <buildstatus logdir="${logdir}/org.faktorips.util"/>
-            <cvs module="org.faktorips.valuetypes.java5" cvsroot="${cvsroot}"/>
+            <cvs module="org.faktorips.valuetypes.java5" cvsroot="${cvsroot}" cvstag=""/>
         </modificationset>
         <schedule interval="60">
             <ant uselogger="true" usedebug="false" buildfile="${mainbuildfile}" target="valuetypes.java5"/>
@@ -150,6 +152,7 @@
                 <map alias="cc-org.faktorips.devtools.ant" address=""/>
                 <map alias="cc-org.faktorips.uml" address=""/>
                 <map alias="cc-org.faktorips.pluginbuilder" address=""/>
+                <map alias="cc-org.faktorips.pluginbuilder.v2_2_patches" address=""/>
                 <map alias="cc-org.faktorips.integrationtest" address=""/>
                 <map alias="cc-org.faktorips.integrationtest.java5" address=""/>
                 <map alias="cc-de.qv.faktorips" address=""/>
@@ -168,7 +171,7 @@
         <modificationset>
             <buildstatus logdir="${logdir}/org.faktorips.valuetypes"/>
             <buildstatus logdir="${logdir}/org.faktorips.util"/>
-            <cvs module="org.faktorips.dtflcommon" cvsroot="${cvsroot}"/>
+            <cvs module="org.faktorips.dtflcommon" cvsroot="${cvsroot}" cvstag=""/>
         </modificationset>
         <schedule interval="60">
             <ant uselogger="true" usedebug="false" buildfile="${mainbuildfile}" target="dtflcommon"/>
@@ -199,6 +202,7 @@
                 <map alias="cc-org.faktorips.devtools.ant" address=""/>
                 <map alias="cc-org.faktorips.uml" address=""/>
                 <map alias="cc-org.faktorips.pluginbuilder" address=""/>
+                <map alias="cc-org.faktorips.pluginbuilder.v2_2_patches" address=""/>
                 <map alias="cc-org.faktorips.integrationtest" address=""/>
                 <map alias="cc-org.faktorips.integrationtest.java5" address=""/>
                 <map alias="cc-de.qv.faktorips" address=""/>
@@ -217,7 +221,7 @@
         <modificationset>
             <buildstatus logdir="${logdir}/org.faktorips.valuetypes"/>
             <buildstatus logdir="${logdir}/org.faktorips.util"/>
-            <cvs module="org.faktorips.runtime" cvsroot="${cvsroot}"/>
+            <cvs module="org.faktorips.runtime" cvsroot="${cvsroot}" cvstag=""/>
         </modificationset>
         <schedule interval="60">
             <ant uselogger="true" usedebug="false" buildfile="${mainbuildfile}" target="runtime"/>
@@ -248,6 +252,7 @@
                 <map alias="cc-org.faktorips.devtools.ant" address=""/>
                 <map alias="cc-org.faktorips.uml" address=""/>
                 <map alias="cc-org.faktorips.pluginbuilder" address=""/>
+                <map alias="cc-org.faktorips.pluginbuilder.v2_2_patches" address=""/>
                 <map alias="cc-org.faktorips.integrationtest" address=""/>
                 <map alias="cc-org.faktorips.integrationtest.java5" address=""/>
                 <map alias="cc-de.qv.faktorips" address=""/>
@@ -266,7 +271,7 @@
         <modificationset>
             <buildstatus logdir="${logdir}/org.faktorips.valuetypes.java5"/>
             <buildstatus logdir="${logdir}/org.faktorips.util"/>
-            <cvs module="org.faktorips.runtime.java5" cvsroot="${cvsroot}"/>
+            <cvs module="org.faktorips.runtime.java5" cvsroot="${cvsroot}" cvstag=""/>
         </modificationset>
         <schedule interval="60">
             <ant uselogger="true" usedebug="false" buildfile="${mainbuildfile}" target="runtime.java5"/>
@@ -297,6 +302,7 @@
                 <map alias="cc-org.faktorips.devtools.ant" address=""/>
                 <map alias="cc-org.faktorips.uml" address=""/>
                 <map alias="cc-org.faktorips.pluginbuilder" address=""/>
+                <map alias="cc-org.faktorips.pluginbuilder.v2_2_patches" address=""/>
                 <map alias="cc-org.faktorips.integrationtest" address=""/>
                 <map alias="cc-org.faktorips.integrationtest.java5" address=""/>
                 <map alias="cc-de.qv.faktorips" address=""/>
@@ -314,7 +320,7 @@
         <bootstrappers/>
         <modificationset>
             <buildstatus logdir="${logdir}/org.faktorips.dtflcommon"/>
-            <cvs module="org.faktorips.fl" cvsroot="${cvsroot}"/>
+            <cvs module="org.faktorips.fl" cvsroot="${cvsroot}" cvstag=""/>
         </modificationset>
         <schedule interval="60">
             <ant uselogger="true" usedebug="false" buildfile="${mainbuildfile}" target="fl"/>
@@ -345,6 +351,7 @@
                 <map alias="cc-org.faktorips.devtools.ant" address=""/>
                 <map alias="cc-org.faktorips.uml" address=""/>
                 <map alias="cc-org.faktorips.pluginbuilder" address=""/>
+                <map alias="cc-org.faktorips.pluginbuilder.v2_2_patches" address=""/>
                 <map alias="cc-org.faktorips.integrationtest" address=""/>
                 <map alias="cc-org.faktorips.integrationtest.java5" address=""/>
                 <map alias="cc-de.qv.faktorips" address=""/>
@@ -362,7 +369,7 @@
         <bootstrappers/>
         <modificationset>
             <buildstatus logdir="${logdir}/org.faktorips.fl"/>
-            <cvs module="org.faktorips.devtools.core" cvsroot="${cvsroot}"/>
+            <cvs module="org.faktorips.devtools.core" cvsroot="${cvsroot}" cvstag=""/>
         </modificationset>
         <schedule interval="60">
             <ant uselogger="true" usedebug="false" buildfile="${mainbuildfile}" target="devtools.core"/>
@@ -393,6 +400,7 @@
                 <map alias="cc-org.faktorips.devtools.ant" address=""/>
                 <map alias="cc-org.faktorips.uml" address=""/>
                 <map alias="cc-org.faktorips.pluginbuilder" address=""/>
+                <map alias="cc-org.faktorips.pluginbuilder.v2_2_patches" address=""/>
                 <map alias="cc-org.faktorips.integrationtest" address=""/>
                 <map alias="cc-org.faktorips.integrationtest.java5" address=""/>
                 <map alias="cc-de.qv.faktorips" address=""/>
@@ -412,7 +420,7 @@
             <buildstatus logdir="${logdir}/org.faktorips.fl"/>
             <buildstatus logdir="${logdir}/org.faktorips.runtime"/>
             <buildstatus logdir="${logdir}/org.faktorips.devtools.core"/>
-            <cvs module="org.faktorips.devtools.stdbuilder" cvsroot="${cvsroot}"/>
+            <cvs module="org.faktorips.devtools.stdbuilder" cvsroot="${cvsroot}" cvstag=""/>
         </modificationset>
         <schedule interval="60">
             <ant uselogger="true" usedebug="false" buildfile="${mainbuildfile}" target="devtools.stdbuilder"/>
@@ -443,6 +451,7 @@
                 <map alias="cc-org.faktorips.devtools.ant" address=""/>
                 <map alias="cc-org.faktorips.uml" address=""/>
                 <map alias="cc-org.faktorips.pluginbuilder" address=""/>
+                <map alias="cc-org.faktorips.pluginbuilder.v2_2_patches" address=""/>
                 <map alias="cc-org.faktorips.integrationtest" address=""/>
                 <map alias="cc-org.faktorips.integrationtest.java5" address=""/>
                 <map alias="cc-de.qv.faktorips" address=""/>
@@ -460,7 +469,7 @@
         <bootstrappers/>
         <modificationset>
             <buildstatus logdir="${logdir}/org.faktorips.devtools.core"/>
-            <cvs module="org.faktorips.devtools.core.ui" cvsroot="${cvsroot}"/>
+            <cvs module="org.faktorips.devtools.core.ui" cvsroot="${cvsroot}" cvstag=""/>
         </modificationset>
         <schedule interval="60">
             <ant uselogger="true" usedebug="false" buildfile="${mainbuildfile}" target="devtools.core.ui"/>
@@ -491,6 +500,7 @@
                 <map alias="cc-org.faktorips.devtools.ant" address=""/>
                 <map alias="cc-org.faktorips.uml" address=""/>
                 <map alias="cc-org.faktorips.pluginbuilder" address=""/>
+                <map alias="cc-org.faktorips.pluginbuilder.v2_2_patches" address=""/>
                 <map alias="cc-org.faktorips.integrationtest" address=""/>
                 <map alias="cc-org.faktorips.integrationtest.java5" address=""/>
                 <map alias="cc-de.qv.faktorips" address=""/>
@@ -508,7 +518,7 @@
         <bootstrappers/>
         <modificationset>
             <buildstatus logdir="${logdir}/org.faktorips.devtools.core.ui"/>
-            <cvs module="org.faktorips.devtools.tableconversion" cvsroot="${cvsroot}"/>
+            <cvs module="org.faktorips.devtools.tableconversion" cvsroot="${cvsroot}" cvstag=""/>
         </modificationset>
         <schedule interval="60">
             <ant uselogger="true" usedebug="false" buildfile="${mainbuildfile}" target="devtools.tableconversion"/>
@@ -539,6 +549,7 @@
                 <map alias="cc-org.faktorips.devtools.ant" address=""/>
                 <map alias="cc-org.faktorips.uml" address=""/>
                 <map alias="cc-org.faktorips.pluginbuilder" address=""/>
+                <map alias="cc-org.faktorips.pluginbuilder.v2_2_patches" address=""/>
                 <map alias="cc-org.faktorips.integrationtest" address=""/>
                 <map alias="cc-org.faktorips.integrationtest.java5" address=""/>
                 <map alias="cc-de.qv.faktorips" address=""/>
@@ -555,7 +566,7 @@
         </listeners>
         <bootstrappers/>
         <modificationset>
-            <cvs module="org.faktorips.devtools.ant" cvsroot="${cvsroot}"/>
+            <cvs module="org.faktorips.devtools.ant" cvsroot="${cvsroot}" cvstag=""/>
         </modificationset>
         <schedule interval="60">
             <ant uselogger="true" usedebug="false" buildfile="${mainbuildfile}" target="devtools.ant"/>
@@ -586,6 +597,7 @@
                 <map alias="cc-org.faktorips.devtools.ant" address=""/>
                 <map alias="cc-org.faktorips.uml" address=""/>
                 <map alias="cc-org.faktorips.pluginbuilder" address=""/>
+                <map alias="cc-org.faktorips.pluginbuilder.v2_2_patches" address=""/>
                 <map alias="cc-org.faktorips.integrationtest" address=""/>
                 <map alias="cc-org.faktorips.integrationtest.java5" address=""/>
                 <map alias="cc-de.qv.faktorips" address=""/>
@@ -602,7 +614,7 @@
         </listeners>
         <bootstrappers/>
         <modificationset>
-            <cvs module="org.faktorips.uml" cvsroot="${cvsroot}"/>
+            <cvs module="org.faktorips.uml" cvsroot="${cvsroot}" cvstag=""/>
         </modificationset>
         <schedule interval="60">
             <ant uselogger="true" usedebug="false" buildfile="${mainbuildfile}" target="uml"/>
@@ -633,6 +645,7 @@
                 <map alias="cc-org.faktorips.devtools.ant" address=""/>
                 <map alias="cc-org.faktorips.uml" address=""/>
                 <map alias="cc-org.faktorips.pluginbuilder" address=""/>
+                <map alias="cc-org.faktorips.pluginbuilder.v2_2_patches" address=""/>
                 <map alias="cc-org.faktorips.integrationtest" address=""/>
                 <map alias="cc-org.faktorips.integrationtest.java5" address=""/>
                 <map alias="cc-de.qv.faktorips" address=""/>
@@ -649,23 +662,23 @@
         </listeners>
         <bootstrappers/>
         <modificationset>
-            <cvs module="org.faktorips.pluginbuilder" cvsroot="${cvsroot}"/>
-            <cvs module="org.faktorips.util" cvsroot="${cvsroot}"/>
-            <cvs module="org.faktorips.valuetypes" cvsroot="${cvsroot}"/>
-            <cvs module="org.faktorips.dtflcommon" cvsroot="${cvsroot}"/>
-            <cvs module="org.faktorips.runtime" cvsroot="${cvsroot}"/>
-            <cvs module="org.faktorips.fl" cvsroot="${cvsroot}"/>
-            <cvs module="org.faktorips.devtools.core" cvsroot="${cvsroot}"/>
-            <cvs module="org.faktorips.devtools.stdbuilder" cvsroot="${cvsroot}"/>
-            <cvs module="org.faktorips.devtools.core.ui" cvsroot="${cvsroot}"/>
-            <cvs module="org.faktorips.devtools.tableconversion" cvsroot="${cvsroot}"/>
-            <cvs module="org.faktorips.devtools.ant" cvsroot="${cvsroot}"/>
-            <cvs module="org.faktorips.devtools.core.test" cvsroot="${cvsroot}"/>
-            <cvs module="org.faktorips.devtools.stdbuilder.test" cvsroot="${cvsroot}"/>
-            <cvs module="org.faktorips.devtools.core.ui.test" cvsroot="${cvsroot}"/>
-            <cvs module="org.faktorips.devtools.tableconversion.test" cvsroot="${cvsroot}"/>
-            <cvs module="org.faktorips.devtools.ant.test" cvsroot="${cvsroot}"/>
-            <cvs module="org.faktorips.uml.test" cvsroot="${cvsroot}"/>
+            <cvs module="org.faktorips.pluginbuilder" cvsroot="${cvsroot}" cvstag=""/>
+            <cvs module="org.faktorips.util" cvsroot="${cvsroot}" cvstag=""/>
+            <cvs module="org.faktorips.valuetypes" cvsroot="${cvsroot}" cvstag=""/>
+            <cvs module="org.faktorips.dtflcommon" cvsroot="${cvsroot}" cvstag=""/>
+            <cvs module="org.faktorips.runtime" cvsroot="${cvsroot}" cvstag=""/>
+            <cvs module="org.faktorips.fl" cvsroot="${cvsroot}" cvstag=""/>
+            <cvs module="org.faktorips.devtools.core" cvsroot="${cvsroot}" cvstag=""/>
+            <cvs module="org.faktorips.devtools.stdbuilder" cvsroot="${cvsroot}" cvstag=""/>
+            <cvs module="org.faktorips.devtools.core.ui" cvsroot="${cvsroot}" cvstag=""/>
+            <cvs module="org.faktorips.devtools.tableconversion" cvsroot="${cvsroot}" cvstag=""/>
+            <cvs module="org.faktorips.devtools.ant" cvsroot="${cvsroot}" cvstag=""/>
+            <cvs module="org.faktorips.devtools.core.test" cvsroot="${cvsroot}" cvstag=""/>
+            <cvs module="org.faktorips.devtools.stdbuilder.test" cvsroot="${cvsroot}" cvstag=""/>
+            <cvs module="org.faktorips.devtools.core.ui.test" cvsroot="${cvsroot}" cvstag=""/>
+            <cvs module="org.faktorips.devtools.tableconversion.test" cvsroot="${cvsroot}" cvstag=""/>
+            <cvs module="org.faktorips.devtools.ant.test" cvsroot="${cvsroot}" cvstag=""/>
+            <cvs module="org.faktorips.uml.test" cvsroot="${cvsroot}" cvstag=""/>
         </modificationset>
         <schedule interval="300">
             <ant uselogger="true" usedebug="false" buildfile="${mainbuildfile}" target="pluginbuilder.faktorips">
@@ -700,6 +713,7 @@
                 <map alias="cc-org.faktorips.devtools.ant" address=""/>
                 <map alias="cc-org.faktorips.uml" address=""/>
                 <map alias="cc-org.faktorips.pluginbuilder" address=""/>
+                <map alias="cc-org.faktorips.pluginbuilder.v2_2_patches" address=""/>
                 <map alias="cc-org.faktorips.integrationtest" address=""/>
                 <map alias="cc-org.faktorips.integrationtest.java5" address=""/>
                 <map alias="cc-de.qv.faktorips" address=""/>
@@ -712,6 +726,77 @@
         </publishers>
     </project>
     <!--=====================================================-->
+    <!--Project definition: org.faktorips.pluginbuilder.v2_2_patches-->
+    <!--=====================================================-->
+    <project buildafterfailed="false" name="org.faktorips.pluginbuilder.v2_2_patches">
+        <listeners>
+            <currentbuildstatuslistener file="${logdir}/${project.name}/buildStatus.txt"/>
+        </listeners>
+        <bootstrappers/>
+        <modificationset>
+            <cvs module="org.faktorips.pluginbuilder.v2_2_patches" cvsroot="${cvsroot}" cvstag="v2_2_patches"/>
+            <cvs module="org.faktorips.util" cvsroot="${cvsroot}" cvstag="v2_2_patches"/>
+            <cvs module="org.faktorips.valuetypes" cvsroot="${cvsroot}" cvstag="v2_2_patches"/>
+            <cvs module="org.faktorips.dtflcommon" cvsroot="${cvsroot}" cvstag="v2_2_patches"/>
+            <cvs module="org.faktorips.runtime" cvsroot="${cvsroot}" cvstag="v2_2_patches"/>
+            <cvs module="org.faktorips.fl" cvsroot="${cvsroot}" cvstag="v2_2_patches"/>
+            <cvs module="org.faktorips.devtools.core" cvsroot="${cvsroot}" cvstag="v2_2_patches"/>
+            <cvs module="org.faktorips.devtools.stdbuilder" cvsroot="${cvsroot}" cvstag="v2_2_patches"/>
+            <cvs module="org.faktorips.devtools.core.ui" cvsroot="${cvsroot}" cvstag="v2_2_patches"/>
+            <cvs module="org.faktorips.devtools.tableconversion" cvsroot="${cvsroot}" cvstag="v2_2_patches"/>
+            <cvs module="org.faktorips.devtools.ant" cvsroot="${cvsroot}" cvstag="v2_2_patches"/>
+            <cvs module="org.faktorips.devtools.core.test" cvsroot="${cvsroot}" cvstag="v2_2_patches"/>
+            <cvs module="org.faktorips.devtools.stdbuilder.test" cvsroot="${cvsroot}" cvstag="v2_2_patches"/>
+            <cvs module="org.faktorips.devtools.core.ui.test" cvsroot="${cvsroot}" cvstag="v2_2_patches"/>
+            <cvs module="org.faktorips.devtools.tableconversion.test" cvsroot="${cvsroot}" cvstag="v2_2_patches"/>
+            <cvs module="org.faktorips.devtools.ant.test" cvsroot="${cvsroot}" cvstag="v2_2_patches"/>
+            <cvs module="org.faktorips.uml.test" cvsroot="${cvsroot}" cvstag="v2_2_patches"/>
+        </modificationset>
+        <schedule interval="300">
+            <ant uselogger="true" usedebug="false" buildfile="${mainbuildfile}" target="pluginbuilder.faktorips">
+                <jvmarg arg="-Dprg=cruise.pluginbuilder"/>
+                <jvmarg arg="-Xms124m"/>
+                <jvmarg arg="-Xmx512m"/>
+                <property name="checkoutdir" value="checkout_branch"/>
+                <property name="cvstag" value="v2_2_patches"/>
+                <property name="buildDirectory" value="${workdir}/../pluginbuilder_tmp_branch/org.faktorips.pluginbuilder"/>
+            </ant>
+        </schedule>
+        <log logdir="${logdir}/${project.name}/">
+            <merge dir="${workdir}/../pluginbuilder_tmp_branch/org.faktorips.pluginbuilder/results/testresults/xml" pattern="*test.xml"/>
+        </log>
+        <publishers>
+            <htmlemail buildresultsurl="${buildresultsurl}/${project.name}" mailhost="${htmlemail.mailhost}" username="" password="" returnaddress="${htmlemail.returnaddress}" skipusers="false" spamwhilebroken="true" returnname="faktorips-buildqueue" subjectprefix="[CC ${project.name}]" reportsuccess="always" xsldir="${htmlemail.xsldir}" css="${htmlemail.css}">
+                <map alias="ortmann" address="jan.ortmann@faktorzehn.de"/>
+                <map alias="erzberger" address="peter.erzberger@faktorzehn.de"/>
+                <map alias="hohenberger" address="daniel.hohenberger@faktorzehn.de"/>
+                <map alias="weickmann" address="alexander.weickmann@faktorzehn.de"/>
+                <map alias="ortmann2" address="joerg.ortmann@faktorzehn.de"/>
+                <map alias="grutza" address="roman.grutza@faktorzehn.de"/>
+                <!--dummy aliases for buildstatus projects (cc-projectname)-->
+                <map alias="cc-org.faktorips.util" address=""/>
+                <map alias="cc-org.faktorips.valuetypes" address=""/>
+                <map alias="cc-org.faktorips.valuetypes.java5" address=""/>
+                <map alias="cc-org.faktorips.dtflcommon" address=""/>
+                <map alias="cc-org.faktorips.runtime" address=""/>
+                <map alias="cc-org.faktorips.runtime.java5" address=""/>
+                <map alias="cc-org.faktorips.fl" address=""/>
+                <map alias="cc-org.faktorips.devtools.core" address=""/>
+                <map alias="cc-org.faktorips.devtools.stdbuilder" address=""/>
+                <map alias="cc-org.faktorips.devtools.core.ui" address=""/>
+                <map alias="cc-org.faktorips.devtools.tableconversion" address=""/>
+                <map alias="cc-org.faktorips.devtools.ant" address=""/>
+                <map alias="cc-org.faktorips.uml" address=""/>
+                <map alias="cc-org.faktorips.pluginbuilder" address=""/>
+                <map alias="cc-org.faktorips.pluginbuilder.v2_2_patches" address=""/>
+                <map alias="cc-org.faktorips.integrationtest" address=""/>
+                <map alias="cc-org.faktorips.integrationtest.java5" address=""/>
+                <map alias="cc-de.qv.faktorips" address=""/>
+                <failure reportWhenFixed="true" address="jan.ortmann@faktorzehn.de,peter.erzberger@faktorzehn.de,daniel.hohenberger@faktorzehn.de,alexander.weickmann@faktorzehn.de,joerg.ortmann@faktorzehn.de,roman.grutza@faktorzehn.de"/>
+            </htmlemail>
+        </publishers>
+    </project>
+    <!--=====================================================-->
     <!--Project definition: org.faktorips.integrationtest-->
     <!--=====================================================-->
     <project buildafterfailed="false" name="org.faktorips.integrationtest">
@@ -721,7 +806,7 @@
         <bootstrappers/>
         <modificationset>
             <buildstatus logdir="${logdir}/org.faktorips.pluginbuilder"/>
-            <cvs module="org.faktorips.integrationtest" cvsroot="${cvsroot}"/>
+            <cvs module="org.faktorips.integrationtest" cvsroot="${cvsroot}" cvstag=""/>
         </modificationset>
         <schedule interval="300">
             <ant uselogger="true" usedebug="false" buildfile="${mainbuildfile}" target="pluginbuilder.integrationtest">
@@ -754,6 +839,7 @@
                 <map alias="cc-org.faktorips.devtools.ant" address=""/>
                 <map alias="cc-org.faktorips.uml" address=""/>
                 <map alias="cc-org.faktorips.pluginbuilder" address=""/>
+                <map alias="cc-org.faktorips.pluginbuilder.v2_2_patches" address=""/>
                 <map alias="cc-org.faktorips.integrationtest" address=""/>
                 <map alias="cc-org.faktorips.integrationtest.java5" address=""/>
                 <map alias="cc-de.qv.faktorips" address=""/>
@@ -775,7 +861,7 @@
         <bootstrappers/>
         <modificationset>
             <buildstatus logdir="${logdir}/org.faktorips.pluginbuilder"/>
-            <cvs module="org.faktorips.integrationtest.java5" cvsroot="${cvsroot}"/>
+            <cvs module="org.faktorips.integrationtest.java5" cvsroot="${cvsroot}" cvstag=""/>
         </modificationset>
         <schedule interval="300">
             <ant uselogger="true" usedebug="false" buildfile="${mainbuildfile}" target="pluginbuilder.integrationtest.java5">
@@ -808,6 +894,7 @@
                 <map alias="cc-org.faktorips.devtools.ant" address=""/>
                 <map alias="cc-org.faktorips.uml" address=""/>
                 <map alias="cc-org.faktorips.pluginbuilder" address=""/>
+                <map alias="cc-org.faktorips.pluginbuilder.v2_2_patches" address=""/>
                 <map alias="cc-org.faktorips.integrationtest" address=""/>
                 <map alias="cc-org.faktorips.integrationtest.java5" address=""/>
                 <map alias="cc-de.qv.faktorips" address=""/>
@@ -829,7 +916,7 @@
         <bootstrappers/>
         <modificationset>
             <buildstatus logdir="${logdir}/org.faktorips.devtools.core"/>
-            <cvs module="de.qv.faktorips" cvsroot="${cvsroot}"/>
+            <cvs module="de.qv.faktorips" cvsroot="${cvsroot}" cvstag=""/>
         </modificationset>
         <schedule interval="60">
             <ant uselogger="true" usedebug="false" buildfile="${mainbuildfile}" target="de.qv.faktorips"/>
@@ -860,6 +947,7 @@
                 <map alias="cc-org.faktorips.devtools.ant" address=""/>
                 <map alias="cc-org.faktorips.uml" address=""/>
                 <map alias="cc-org.faktorips.pluginbuilder" address=""/>
+                <map alias="cc-org.faktorips.pluginbuilder.v2_2_patches" address=""/>
                 <map alias="cc-org.faktorips.integrationtest" address=""/>
                 <map alias="cc-org.faktorips.integrationtest.java5" address=""/>
                 <map alias="cc-de.qv.faktorips" address=""/>

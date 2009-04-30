@@ -185,7 +185,7 @@
         <!--=====================================================-->
         <!-- scheduleintervall: 300 = 5 minutes -->
         <project name="org.faktorips.pluginbuilder.v2_2_patches" mainbuildtarget="pluginbuilder.faktorips"
-            testresult="${workdir}/../pluginbuilder_tmp/org.faktorips.pluginbuilder/results/testresults/xml" 
+            testresult="${workdir}/../pluginbuilder_tmp_branch/org.faktorips.pluginbuilder/results/testresults/xml" 
             testmerge="*test.xml"
             cvstag="v2_2_patches"
             scheduleintervall="300"> 
@@ -195,6 +195,7 @@
             <!-- property for the ant build script -->
             <property name="checkoutdir" value="checkout_branch"/>
             <property name="cvstag" value="v2_2_patches"/>
+            <property name="buildDirectory" value="${workdir}/../pluginbuilder_tmp_branch/org.faktorips.pluginbuilder"/>
             <depends>
                 <!-- 'cvs' instead of 'project' dependency, to receive email on successful build--> 
                 <cvs module="org.faktorips.util"/>
@@ -205,14 +206,12 @@
                 <cvs module="org.faktorips.devtools.core"/>
                 <cvs module="org.faktorips.devtools.stdbuilder"/>
                 <cvs module="org.faktorips.devtools.core.ui"/>
-                <cvs module="org.faktorips.devtools.tableconversion"/>
                 <cvs module="org.faktorips.devtools.ant"/>
                 
                 <!-- plugin test dependencies-->
                 <cvs module="org.faktorips.devtools.core.test"/>
                 <cvs module="org.faktorips.devtools.stdbuilder.test"/>
                 <cvs module="org.faktorips.devtools.core.ui.test"/>            
-                <cvs module="org.faktorips.devtools.tableconversion.test"/>            
                 <cvs module="org.faktorips.devtools.ant.test"/>            
                 <cvs module="org.faktorips.uml.test"/>                
             </depends>      
