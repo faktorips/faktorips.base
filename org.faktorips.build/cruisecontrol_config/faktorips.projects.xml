@@ -188,6 +188,7 @@
             testresult="${workdir}/../pluginbuilder_tmp_branch/org.faktorips.pluginbuilder/results/testresults/xml" 
             testmerge="*test.xml"
             cvstag="v2_2_patches"
+            cvsmodul="org.faktorips.pluginbuilder"
             scheduleintervall="300"> 
             <jvmarg arg="-Dprg=cruise.pluginbuilder"/>
             <jvmarg arg="-Xms124m"/>

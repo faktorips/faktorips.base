@@ -44,6 +44,14 @@
     		    <xsl:otherwise><xsl:value-of select="@name"/></xsl:otherwise>
             </xsl:choose>
         </xsl:variable>        
+        <xsl:variable name="cvsmodul">
+            <xsl:choose>
+                <xsl:when test="string-length(@cvsmodul)>0">
+                    <xsl:value-of select="@cvsmodul"/>
+                </xsl:when>
+                <xsl:otherwise><xsl:value-of select="$javaprojectname"/></xsl:otherwise>
+            </xsl:choose>
+        </xsl:variable>
         <xsl:variable name="projectlocation">${workdir}/<xsl:value-of select="$javaprojectname"/></xsl:variable>
         <xsl:variable name="buildfile">
             <xsl:choose>
@@ -98,16 +106,16 @@
     		<xsl:choose>
     			<xsl:when test="$usecvs='true'">
                    <!-- cvs default modificationset -->
-                   <cvs module="$javaprojectname">
+                   <cvs>
                       <xsl:attribute name="cvsroot"><![CDATA[${cvsroot}]]></xsl:attribute>
-                      <xsl:attribute name="module"><xsl:value-of select="$javaprojectname"/></xsl:attribute>
+                      <xsl:attribute name="module"><xsl:value-of select="$cvsmodul"/></xsl:attribute>
                       <xsl:if test='string-length($cvstag)>0'>
                         <xsl:attribute name="tag"><xsl:value-of select="$cvstag"/></xsl:attribute>
                       </xsl:if>
                   </cvs>
                   <xsl:for-each select="depends/cvs">
                    <!-- cvs additional modificationset -->
-                       <cvs module="$javaprojectname">
+                       <cvs>
                           <xsl:attribute name="cvsroot"><![CDATA[${cvsroot}]]></xsl:attribute>
                           <xsl:attribute name="module"><xsl:value-of select="@module"/></xsl:attribute>
                           <xsl:if test='string-length($cvstag)>0'>
