@@ -1,5 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!--======================================================================================================-->
+<!--W A R N I N G: do not change this file! This file is completely generated-->
+<!--changes must be made in the faktorips.propject.xml configuration file-->
+<!--======================================================================================================-->
 <!--Cruise Control configuration for all faktorips projects and eclipse features-->
 <!--note that this file could be re-generated based on the project definition in-->
 <!--'faktorips.projects.xml', using the ant script './generate.cc.config.xml'-->
@@ -57,6 +60,8 @@
                 <map alias="cc-org.faktorips.pluginbuilder.v2_2_patches" address=""/>
                 <map alias="cc-org.faktorips.integrationtest" address=""/>
                 <map alias="cc-org.faktorips.integrationtest.java5" address=""/>
+                <map alias="cc-org.faktorips.integrationtest.v2_2_patches" address=""/>
+                <map alias="cc-org.faktorips.integrationtest.java5.v2_2_patches" address=""/>
                 <map alias="cc-de.qv.faktorips" address=""/>
                 <failure reportWhenFixed="true" address="jan.ortmann@faktorzehn.de,peter.erzberger@faktorzehn.de,daniel.hohenberger@faktorzehn.de,alexander.weickmann@faktorzehn.de,joerg.ortmann@faktorzehn.de,roman.grutza@faktorzehn.de"/>
             </htmlemail>
@@ -106,6 +111,8 @@
                 <map alias="cc-org.faktorips.pluginbuilder.v2_2_patches" address=""/>
                 <map alias="cc-org.faktorips.integrationtest" address=""/>
                 <map alias="cc-org.faktorips.integrationtest.java5" address=""/>
+                <map alias="cc-org.faktorips.integrationtest.v2_2_patches" address=""/>
+                <map alias="cc-org.faktorips.integrationtest.java5.v2_2_patches" address=""/>
                 <map alias="cc-de.qv.faktorips" address=""/>
                 <failure reportWhenFixed="true" address="jan.ortmann@faktorzehn.de,peter.erzberger@faktorzehn.de,daniel.hohenberger@faktorzehn.de,alexander.weickmann@faktorzehn.de,joerg.ortmann@faktorzehn.de,roman.grutza@faktorzehn.de"/>
             </htmlemail>
@@ -155,6 +162,8 @@
                 <map alias="cc-org.faktorips.pluginbuilder.v2_2_patches" address=""/>
                 <map alias="cc-org.faktorips.integrationtest" address=""/>
                 <map alias="cc-org.faktorips.integrationtest.java5" address=""/>
+                <map alias="cc-org.faktorips.integrationtest.v2_2_patches" address=""/>
+                <map alias="cc-org.faktorips.integrationtest.java5.v2_2_patches" address=""/>
                 <map alias="cc-de.qv.faktorips" address=""/>
                 <failure reportWhenFixed="true" address="jan.ortmann@faktorzehn.de,peter.erzberger@faktorzehn.de,daniel.hohenberger@faktorzehn.de,alexander.weickmann@faktorzehn.de,joerg.ortmann@faktorzehn.de,roman.grutza@faktorzehn.de"/>
             </htmlemail>
@@ -205,6 +214,8 @@
                 <map alias="cc-org.faktorips.pluginbuilder.v2_2_patches" address=""/>
                 <map alias="cc-org.faktorips.integrationtest" address=""/>
                 <map alias="cc-org.faktorips.integrationtest.java5" address=""/>
+                <map alias="cc-org.faktorips.integrationtest.v2_2_patches" address=""/>
+                <map alias="cc-org.faktorips.integrationtest.java5.v2_2_patches" address=""/>
                 <map alias="cc-de.qv.faktorips" address=""/>
                 <failure reportWhenFixed="true" address="jan.ortmann@faktorzehn.de,peter.erzberger@faktorzehn.de,daniel.hohenberger@faktorzehn.de,alexander.weickmann@faktorzehn.de,joerg.ortmann@faktorzehn.de,roman.grutza@faktorzehn.de"/>
             </htmlemail>
@@ -255,6 +266,8 @@
                 <map alias="cc-org.faktorips.pluginbuilder.v2_2_patches" address=""/>
                 <map alias="cc-org.faktorips.integrationtest" address=""/>
                 <map alias="cc-org.faktorips.integrationtest.java5" address=""/>
+                <map alias="cc-org.faktorips.integrationtest.v2_2_patches" address=""/>
+                <map alias="cc-org.faktorips.integrationtest.java5.v2_2_patches" address=""/>
                 <map alias="cc-de.qv.faktorips" address=""/>
                 <failure reportWhenFixed="true" address="jan.ortmann@faktorzehn.de,peter.erzberger@faktorzehn.de,daniel.hohenberger@faktorzehn.de,alexander.weickmann@faktorzehn.de,joerg.ortmann@faktorzehn.de,roman.grutza@faktorzehn.de"/>
             </htmlemail>
@@ -305,6 +318,8 @@
                 <map alias="cc-org.faktorips.pluginbuilder.v2_2_patches" address=""/>
                 <map alias="cc-org.faktorips.integrationtest" address=""/>
                 <map alias="cc-org.faktorips.integrationtest.java5" address=""/>
+                <map alias="cc-org.faktorips.integrationtest.v2_2_patches" address=""/>
+                <map alias="cc-org.faktorips.integrationtest.java5.v2_2_patches" address=""/>
                 <map alias="cc-de.qv.faktorips" address=""/>
                 <failure reportWhenFixed="true" address="jan.ortmann@faktorzehn.de,peter.erzberger@faktorzehn.de,daniel.hohenberger@faktorzehn.de,alexander.weickmann@faktorzehn.de,joerg.ortmann@faktorzehn.de,roman.grutza@faktorzehn.de"/>
             </htmlemail>
@@ -354,6 +369,8 @@
                 <map alias="cc-org.faktorips.pluginbuilder.v2_2_patches" address=""/>
                 <map alias="cc-org.faktorips.integrationtest" address=""/>
                 <map alias="cc-org.faktorips.integrationtest.java5" address=""/>
+                <map alias="cc-org.faktorips.integrationtest.v2_2_patches" address=""/>
+                <map alias="cc-org.faktorips.integrationtest.java5.v2_2_patches" address=""/>
                 <map alias="cc-de.qv.faktorips" address=""/>
                 <failure reportWhenFixed="true" address="jan.ortmann@faktorzehn.de,peter.erzberger@faktorzehn.de,daniel.hohenberger@faktorzehn.de,alexander.weickmann@faktorzehn.de,joerg.ortmann@faktorzehn.de,roman.grutza@faktorzehn.de"/>
             </htmlemail>
@@ -403,6 +420,8 @@
                 <map alias="cc-org.faktorips.pluginbuilder.v2_2_patches" address=""/>
                 <map alias="cc-org.faktorips.integrationtest" address=""/>
                 <map alias="cc-org.faktorips.integrationtest.java5" address=""/>
+                <map alias="cc-org.faktorips.integrationtest.v2_2_patches" address=""/>
+                <map alias="cc-org.faktorips.integrationtest.java5.v2_2_patches" address=""/>
                 <map alias="cc-de.qv.faktorips" address=""/>
                 <failure reportWhenFixed="true" address="jan.ortmann@faktorzehn.de,peter.erzberger@faktorzehn.de,daniel.hohenberger@faktorzehn.de,alexander.weickmann@faktorzehn.de,joerg.ortmann@faktorzehn.de,roman.grutza@faktorzehn.de"/>
             </htmlemail>
@@ -454,6 +473,8 @@
                 <map alias="cc-org.faktorips.pluginbuilder.v2_2_patches" address=""/>
                 <map alias="cc-org.faktorips.integrationtest" address=""/>
                 <map alias="cc-org.faktorips.integrationtest.java5" address=""/>
+                <map alias="cc-org.faktorips.integrationtest.v2_2_patches" address=""/>
+                <map alias="cc-org.faktorips.integrationtest.java5.v2_2_patches" address=""/>
                 <map alias="cc-de.qv.faktorips" address=""/>
                 <failure reportWhenFixed="true" address="jan.ortmann@faktorzehn.de,peter.erzberger@faktorzehn.de,daniel.hohenberger@faktorzehn.de,alexander.weickmann@faktorzehn.de,joerg.ortmann@faktorzehn.de,roman.grutza@faktorzehn.de"/>
             </htmlemail>
@@ -503,6 +524,8 @@
                 <map alias="cc-org.faktorips.pluginbuilder.v2_2_patches" address=""/>
                 <map alias="cc-org.faktorips.integrationtest" address=""/>
                 <map alias="cc-org.faktorips.integrationtest.java5" address=""/>
+                <map alias="cc-org.faktorips.integrationtest.v2_2_patches" address=""/>
+                <map alias="cc-org.faktorips.integrationtest.java5.v2_2_patches" address=""/>
                 <map alias="cc-de.qv.faktorips" address=""/>
                 <failure reportWhenFixed="true" address="jan.ortmann@faktorzehn.de,peter.erzberger@faktorzehn.de,daniel.hohenberger@faktorzehn.de,alexander.weickmann@faktorzehn.de,joerg.ortmann@faktorzehn.de,roman.grutza@faktorzehn.de"/>
             </htmlemail>
@@ -552,6 +575,8 @@
                 <map alias="cc-org.faktorips.pluginbuilder.v2_2_patches" address=""/>
                 <map alias="cc-org.faktorips.integrationtest" address=""/>
                 <map alias="cc-org.faktorips.integrationtest.java5" address=""/>
+                <map alias="cc-org.faktorips.integrationtest.v2_2_patches" address=""/>
+                <map alias="cc-org.faktorips.integrationtest.java5.v2_2_patches" address=""/>
                 <map alias="cc-de.qv.faktorips" address=""/>
                 <failure reportWhenFixed="true" address="jan.ortmann@faktorzehn.de,peter.erzberger@faktorzehn.de,daniel.hohenberger@faktorzehn.de,alexander.weickmann@faktorzehn.de,joerg.ortmann@faktorzehn.de,roman.grutza@faktorzehn.de"/>
             </htmlemail>
@@ -600,6 +625,8 @@
                 <map alias="cc-org.faktorips.pluginbuilder.v2_2_patches" address=""/>
                 <map alias="cc-org.faktorips.integrationtest" address=""/>
                 <map alias="cc-org.faktorips.integrationtest.java5" address=""/>
+                <map alias="cc-org.faktorips.integrationtest.v2_2_patches" address=""/>
+                <map alias="cc-org.faktorips.integrationtest.java5.v2_2_patches" address=""/>
                 <map alias="cc-de.qv.faktorips" address=""/>
                 <failure reportWhenFixed="true" address="jan.ortmann@faktorzehn.de,peter.erzberger@faktorzehn.de,daniel.hohenberger@faktorzehn.de,alexander.weickmann@faktorzehn.de,joerg.ortmann@faktorzehn.de,roman.grutza@faktorzehn.de"/>
             </htmlemail>
@@ -648,6 +675,8 @@
                 <map alias="cc-org.faktorips.pluginbuilder.v2_2_patches" address=""/>
                 <map alias="cc-org.faktorips.integrationtest" address=""/>
                 <map alias="cc-org.faktorips.integrationtest.java5" address=""/>
+                <map alias="cc-org.faktorips.integrationtest.v2_2_patches" address=""/>
+                <map alias="cc-org.faktorips.integrationtest.java5.v2_2_patches" address=""/>
                 <map alias="cc-de.qv.faktorips" address=""/>
                 <failure reportWhenFixed="true" address="jan.ortmann@faktorzehn.de,peter.erzberger@faktorzehn.de,daniel.hohenberger@faktorzehn.de,alexander.weickmann@faktorzehn.de,joerg.ortmann@faktorzehn.de,roman.grutza@faktorzehn.de"/>
             </htmlemail>
@@ -716,6 +745,8 @@
                 <map alias="cc-org.faktorips.pluginbuilder.v2_2_patches" address=""/>
                 <map alias="cc-org.faktorips.integrationtest" address=""/>
                 <map alias="cc-org.faktorips.integrationtest.java5" address=""/>
+                <map alias="cc-org.faktorips.integrationtest.v2_2_patches" address=""/>
+                <map alias="cc-org.faktorips.integrationtest.java5.v2_2_patches" address=""/>
                 <map alias="cc-de.qv.faktorips" address=""/>
                 <failure reportWhenFixed="true" address="jan.ortmann@faktorzehn.de,peter.erzberger@faktorzehn.de,daniel.hohenberger@faktorzehn.de,alexander.weickmann@faktorzehn.de,joerg.ortmann@faktorzehn.de,roman.grutza@faktorzehn.de"/>
             </htmlemail>
@@ -743,12 +774,10 @@
             <cvs module="org.faktorips.devtools.core" cvsroot="${cvsroot}" cvstag="v2_2_patches"/>
             <cvs module="org.faktorips.devtools.stdbuilder" cvsroot="${cvsroot}" cvstag="v2_2_patches"/>
             <cvs module="org.faktorips.devtools.core.ui" cvsroot="${cvsroot}" cvstag="v2_2_patches"/>
-            <cvs module="org.faktorips.devtools.tableconversion" cvsroot="${cvsroot}" cvstag="v2_2_patches"/>
             <cvs module="org.faktorips.devtools.ant" cvsroot="${cvsroot}" cvstag="v2_2_patches"/>
             <cvs module="org.faktorips.devtools.core.test" cvsroot="${cvsroot}" cvstag="v2_2_patches"/>
             <cvs module="org.faktorips.devtools.stdbuilder.test" cvsroot="${cvsroot}" cvstag="v2_2_patches"/>
             <cvs module="org.faktorips.devtools.core.ui.test" cvsroot="${cvsroot}" cvstag="v2_2_patches"/>
-            <cvs module="org.faktorips.devtools.tableconversion.test" cvsroot="${cvsroot}" cvstag="v2_2_patches"/>
             <cvs module="org.faktorips.devtools.ant.test" cvsroot="${cvsroot}" cvstag="v2_2_patches"/>
             <cvs module="org.faktorips.uml.test" cvsroot="${cvsroot}" cvstag="v2_2_patches"/>
         </modificationset>
@@ -791,6 +820,8 @@
                 <map alias="cc-org.faktorips.pluginbuilder.v2_2_patches" address=""/>
                 <map alias="cc-org.faktorips.integrationtest" address=""/>
                 <map alias="cc-org.faktorips.integrationtest.java5" address=""/>
+                <map alias="cc-org.faktorips.integrationtest.v2_2_patches" address=""/>
+                <map alias="cc-org.faktorips.integrationtest.java5.v2_2_patches" address=""/>
                 <map alias="cc-de.qv.faktorips" address=""/>
                 <failure reportWhenFixed="true" address="jan.ortmann@faktorzehn.de,peter.erzberger@faktorzehn.de,daniel.hohenberger@faktorzehn.de,alexander.weickmann@faktorzehn.de,joerg.ortmann@faktorzehn.de,roman.grutza@faktorzehn.de"/>
             </htmlemail>
@@ -842,6 +873,8 @@
                 <map alias="cc-org.faktorips.pluginbuilder.v2_2_patches" address=""/>
                 <map alias="cc-org.faktorips.integrationtest" address=""/>
                 <map alias="cc-org.faktorips.integrationtest.java5" address=""/>
+                <map alias="cc-org.faktorips.integrationtest.v2_2_patches" address=""/>
+                <map alias="cc-org.faktorips.integrationtest.java5.v2_2_patches" address=""/>
                 <map alias="cc-de.qv.faktorips" address=""/>
                 <failure reportWhenFixed="true" address="jan.ortmann@faktorzehn.de,peter.erzberger@faktorzehn.de,daniel.hohenberger@faktorzehn.de,alexander.weickmann@faktorzehn.de,joerg.ortmann@faktorzehn.de,roman.grutza@faktorzehn.de"/>
             </htmlemail>
@@ -897,6 +930,8 @@
                 <map alias="cc-org.faktorips.pluginbuilder.v2_2_patches" address=""/>
                 <map alias="cc-org.faktorips.integrationtest" address=""/>
                 <map alias="cc-org.faktorips.integrationtest.java5" address=""/>
+                <map alias="cc-org.faktorips.integrationtest.v2_2_patches" address=""/>
+                <map alias="cc-org.faktorips.integrationtest.java5.v2_2_patches" address=""/>
                 <map alias="cc-de.qv.faktorips" address=""/>
                 <failure reportWhenFixed="true" address="jan.ortmann@faktorzehn.de,peter.erzberger@faktorzehn.de,daniel.hohenberger@faktorzehn.de,alexander.weickmann@faktorzehn.de,joerg.ortmann@faktorzehn.de,roman.grutza@faktorzehn.de"/>
             </htmlemail>
@@ -904,6 +939,118 @@
                 <property name="ccProjectDir" value="${logdir}/${project.name}"/>
                 <property name="workspaceName" value="workspace_integrationtest_java5"/>
             </antpublisher>
+        </publishers>
+    </project>
+    <!--=====================================================-->
+    <!--Project definition: org.faktorips.integrationtest.v2_2_patches-->
+    <!--=====================================================-->
+    <project buildafterfailed="false" name="org.faktorips.integrationtest.v2_2_patches">
+        <listeners>
+            <currentbuildstatuslistener file="${logdir}/${project.name}/buildStatus.txt"/>
+        </listeners>
+        <bootstrappers/>
+        <modificationset>
+            <buildstatus logdir="${logdir}/org.faktorips.pluginbuilder.v2_2_patches"/>
+            <cvs module="org.faktorips.integrationtest" cvsroot="${cvsroot}" cvstag="v2_2_patches"/>
+        </modificationset>
+        <schedule interval="300">
+            <ant uselogger="true" usedebug="false" buildfile="${mainbuildfile}" target="pluginbuilder.integrationtest">
+                <jvmarg arg="-Dprg=cruise.integrationtest"/>
+                <property name="checkoutdir" value="checkout_branch"/>
+                <property name="cvstag" value="v2_2_patches"/>
+                <property name="buildDirectory" value="${workdir}/../pluginbuilder_tmp_branch/org.faktorips.pluginbuilder"/>
+            </ant>
+        </schedule>
+        <log logdir="${logdir}/${project.name}/">
+            <merge dir="${workdir}/../pluginbuilder_tmp_branch/org.faktorips.pluginbuilder/workspace_integrationtest/org.faktorips.integrationtest/results/xml" pattern="*Test.xml"/>
+        </log>
+        <publishers>
+            <htmlemail buildresultsurl="${buildresultsurl}/${project.name}" mailhost="${htmlemail.mailhost}" username="" password="" returnaddress="${htmlemail.returnaddress}" skipusers="false" spamwhilebroken="true" returnname="faktorips-buildqueue" subjectprefix="[CC ${project.name}]" reportsuccess="always" xsldir="${htmlemail.xsldir}" css="${htmlemail.css}">
+                <map alias="ortmann" address="jan.ortmann@faktorzehn.de"/>
+                <map alias="erzberger" address="peter.erzberger@faktorzehn.de"/>
+                <map alias="hohenberger" address="daniel.hohenberger@faktorzehn.de"/>
+                <map alias="weickmann" address="alexander.weickmann@faktorzehn.de"/>
+                <map alias="ortmann2" address="joerg.ortmann@faktorzehn.de"/>
+                <map alias="grutza" address="roman.grutza@faktorzehn.de"/>
+                <!--dummy aliases for buildstatus projects (cc-projectname)-->
+                <map alias="cc-org.faktorips.util" address=""/>
+                <map alias="cc-org.faktorips.valuetypes" address=""/>
+                <map alias="cc-org.faktorips.valuetypes.java5" address=""/>
+                <map alias="cc-org.faktorips.dtflcommon" address=""/>
+                <map alias="cc-org.faktorips.runtime" address=""/>
+                <map alias="cc-org.faktorips.runtime.java5" address=""/>
+                <map alias="cc-org.faktorips.fl" address=""/>
+                <map alias="cc-org.faktorips.devtools.core" address=""/>
+                <map alias="cc-org.faktorips.devtools.stdbuilder" address=""/>
+                <map alias="cc-org.faktorips.devtools.core.ui" address=""/>
+                <map alias="cc-org.faktorips.devtools.tableconversion" address=""/>
+                <map alias="cc-org.faktorips.devtools.ant" address=""/>
+                <map alias="cc-org.faktorips.uml" address=""/>
+                <map alias="cc-org.faktorips.pluginbuilder" address=""/>
+                <map alias="cc-org.faktorips.pluginbuilder.v2_2_patches" address=""/>
+                <map alias="cc-org.faktorips.integrationtest" address=""/>
+                <map alias="cc-org.faktorips.integrationtest.java5" address=""/>
+                <map alias="cc-org.faktorips.integrationtest.v2_2_patches" address=""/>
+                <map alias="cc-org.faktorips.integrationtest.java5.v2_2_patches" address=""/>
+                <map alias="cc-de.qv.faktorips" address=""/>
+                <failure reportWhenFixed="true" address="jan.ortmann@faktorzehn.de,peter.erzberger@faktorzehn.de,daniel.hohenberger@faktorzehn.de,alexander.weickmann@faktorzehn.de,joerg.ortmann@faktorzehn.de,roman.grutza@faktorzehn.de"/>
+            </htmlemail>
+        </publishers>
+    </project>
+    <!--=====================================================-->
+    <!--Project definition: org.faktorips.integrationtest.java5.v2_2_patches-->
+    <!--=====================================================-->
+    <project buildafterfailed="false" name="org.faktorips.integrationtest.java5.v2_2_patches">
+        <listeners>
+            <currentbuildstatuslistener file="${logdir}/${project.name}/buildStatus.txt"/>
+        </listeners>
+        <bootstrappers/>
+        <modificationset>
+            <buildstatus logdir="${logdir}/org.faktorips.pluginbuilder.v2_2_patches"/>
+            <cvs module="org.faktorips.integrationtest.java5" cvsroot="${cvsroot}" cvstag="v2_2_patches"/>
+        </modificationset>
+        <schedule interval="300">
+            <ant uselogger="true" usedebug="false" buildfile="${mainbuildfile}" target="pluginbuilder.integrationtest.java5">
+                <jvmarg arg="-Dprg=cruise.integrationtest.java5"/>
+                <property name="checkoutdir" value="checkout_branch"/>
+                <property name="cvstag" value="v2_2_patches"/>
+                <property name="buildDirectory" value="${workdir}/../pluginbuilder_tmp_branch/org.faktorips.pluginbuilder"/>
+            </ant>
+        </schedule>
+        <log logdir="${logdir}/${project.name}/">
+            <merge dir="${workdir}/../pluginbuilder_tmp_branch/org.faktorips.pluginbuilder/workspace_integrationtest_java5/org.faktorips.integrationtest.java5/results/xml" pattern="*Test.xml"/>
+        </log>
+        <publishers>
+            <htmlemail buildresultsurl="${buildresultsurl}/${project.name}" mailhost="${htmlemail.mailhost}" username="" password="" returnaddress="${htmlemail.returnaddress}" skipusers="false" spamwhilebroken="true" returnname="faktorips-buildqueue" subjectprefix="[CC ${project.name}]" reportsuccess="always" xsldir="${htmlemail.xsldir}" css="${htmlemail.css}">
+                <map alias="ortmann" address="jan.ortmann@faktorzehn.de"/>
+                <map alias="erzberger" address="peter.erzberger@faktorzehn.de"/>
+                <map alias="hohenberger" address="daniel.hohenberger@faktorzehn.de"/>
+                <map alias="weickmann" address="alexander.weickmann@faktorzehn.de"/>
+                <map alias="ortmann2" address="joerg.ortmann@faktorzehn.de"/>
+                <map alias="grutza" address="roman.grutza@faktorzehn.de"/>
+                <!--dummy aliases for buildstatus projects (cc-projectname)-->
+                <map alias="cc-org.faktorips.util" address=""/>
+                <map alias="cc-org.faktorips.valuetypes" address=""/>
+                <map alias="cc-org.faktorips.valuetypes.java5" address=""/>
+                <map alias="cc-org.faktorips.dtflcommon" address=""/>
+                <map alias="cc-org.faktorips.runtime" address=""/>
+                <map alias="cc-org.faktorips.runtime.java5" address=""/>
+                <map alias="cc-org.faktorips.fl" address=""/>
+                <map alias="cc-org.faktorips.devtools.core" address=""/>
+                <map alias="cc-org.faktorips.devtools.stdbuilder" address=""/>
+                <map alias="cc-org.faktorips.devtools.core.ui" address=""/>
+                <map alias="cc-org.faktorips.devtools.tableconversion" address=""/>
+                <map alias="cc-org.faktorips.devtools.ant" address=""/>
+                <map alias="cc-org.faktorips.uml" address=""/>
+                <map alias="cc-org.faktorips.pluginbuilder" address=""/>
+                <map alias="cc-org.faktorips.pluginbuilder.v2_2_patches" address=""/>
+                <map alias="cc-org.faktorips.integrationtest" address=""/>
+                <map alias="cc-org.faktorips.integrationtest.java5" address=""/>
+                <map alias="cc-org.faktorips.integrationtest.v2_2_patches" address=""/>
+                <map alias="cc-org.faktorips.integrationtest.java5.v2_2_patches" address=""/>
+                <map alias="cc-de.qv.faktorips" address=""/>
+                <failure reportWhenFixed="true" address="jan.ortmann@faktorzehn.de,peter.erzberger@faktorzehn.de,daniel.hohenberger@faktorzehn.de,alexander.weickmann@faktorzehn.de,joerg.ortmann@faktorzehn.de,roman.grutza@faktorzehn.de"/>
+            </htmlemail>
         </publishers>
     </project>
     <!--=====================================================-->
@@ -950,6 +1097,8 @@
                 <map alias="cc-org.faktorips.pluginbuilder.v2_2_patches" address=""/>
                 <map alias="cc-org.faktorips.integrationtest" address=""/>
                 <map alias="cc-org.faktorips.integrationtest.java5" address=""/>
+                <map alias="cc-org.faktorips.integrationtest.v2_2_patches" address=""/>
+                <map alias="cc-org.faktorips.integrationtest.java5.v2_2_patches" address=""/>
                 <map alias="cc-de.qv.faktorips" address=""/>
                 <failure reportWhenFixed="true" address="jan.ortmann@faktorzehn.de,peter.erzberger@faktorzehn.de,daniel.hohenberger@faktorzehn.de,alexander.weickmann@faktorzehn.de,joerg.ortmann@faktorzehn.de,roman.grutza@faktorzehn.de"/>
             </htmlemail>

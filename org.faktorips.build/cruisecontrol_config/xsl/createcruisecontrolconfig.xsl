@@ -17,6 +17,9 @@
 
     <xsl:template name="print.header">
         <xsl:comment>======================================================================================================</xsl:comment>
+        <xsl:comment> W A R N I N G: do not change this file! This file is completely generated </xsl:comment>
+        <xsl:comment>          changes must be made in the faktorips.propject.xml configuration file </xsl:comment>
+        <xsl:comment>======================================================================================================</xsl:comment>
         <xsl:comment> Cruise Control configuration for all faktorips projects and eclipse features</xsl:comment>
         <xsl:comment> note that this file could be re-generated based on the project definition in </xsl:comment>
         <xsl:comment> 'faktorips.projects.xml', using the ant script './generate.cc.config.xml'</xsl:comment>

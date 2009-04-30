@@ -241,6 +241,38 @@
             </depends>         
         </project>
 
+        <!--=====================================================-->
+        <!--Project definition: org.faktorips.integrationtest.v2_2_patches-->
+        <!--=====================================================-->    
+        <project name="org.faktorips.integrationtest.v2_2_patches" mainbuildtarget="pluginbuilder.integrationtest" javaprojectname="org.faktorips.integrationtest"
+            testresult="${workdir}/../pluginbuilder_tmp_branch/org.faktorips.pluginbuilder/workspace_integrationtest/org.faktorips.integrationtest/results/xml" 
+            testmerge="*Test.xml" scheduleintervall="300"
+            cvstag="v2_2_patches">
+            <jvmarg arg="-Dprg=cruise.integrationtest"/>
+            <property name="checkoutdir" value="checkout_branch"/>
+            <property name="cvstag" value="v2_2_patches"/>
+            <property name="buildDirectory" value="${workdir}/../pluginbuilder_tmp_branch/org.faktorips.pluginbuilder"/>            
+            <depends>
+                <project name="org.faktorips.pluginbuilder.v2_2_patches"/>
+            </depends>         
+        </project>
+
+        <!--============================================================-->
+        <!--Project definition: org.faktorips.integrationtest.java5.v2_2_patches-->
+        <!--============================================================-->    
+        <project name="org.faktorips.integrationtest.java5.v2_2_patches" mainbuildtarget="pluginbuilder.integrationtest.java5" javaprojectname="org.faktorips.integrationtest.java5"
+            testresult="${workdir}/../pluginbuilder_tmp_branch/org.faktorips.pluginbuilder/workspace_integrationtest_java5/org.faktorips.integrationtest.java5/results/xml" 
+            testmerge="*Test.xml" scheduleintervall="300"
+            cvstag="v2_2_patches">
+            <jvmarg arg="-Dprg=cruise.integrationtest.java5"/>
+            <property name="checkoutdir" value="checkout_branch"/>
+            <property name="cvstag" value="v2_2_patches"/>
+            <property name="buildDirectory" value="${workdir}/../pluginbuilder_tmp_branch/org.faktorips.pluginbuilder"/>             
+            <depends>
+                <project name="org.faktorips.pluginbuilder.v2_2_patches"/>
+            </depends>         
+        </project>
+        
         <!--*****************************************************-->
         <!-- Customer projects -->
         <!--*****************************************************-->

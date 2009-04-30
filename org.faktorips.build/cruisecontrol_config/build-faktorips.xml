@@ -211,7 +211,7 @@
     	<property name="cvsTag" value="HEAD"/>
     	<property name="cvsPluginbuildermodule" value="org.faktorips.pluginbuilder"/>
         <property name="projectsRootDir" value="${basedir}/${checkoutdir}"/>
-    	<property name="buildDirectory" value="${basedir}/pluginbuilder_tmp/org.faktorips.pluginbuilder_release"/>
+    	<property name="buildDirectory" value="${basedir}/pluginbuilder_tmp/org.faktorips.pluginbuilder"/>
     	
     	<!-- checkout features -->
     	<cvs command="co ${cvsPluginbuildermodule}" dest="${projectsRootDir}" cvsroot="${cvsroot}" quiet="true" tag="$cvsTag"/>
@@ -314,17 +314,21 @@
     <!--this target runs the integrationtest, 
        the target org.faktorips.pluginbuilder must be executed before, this will be handled by cruisecontrol-->
     <target name="pluginbuilder.integrationtest" description="target to run the faktorips integrationtest, using the previous build faktorips feature">
-        <property name="projectsRootDir" value="${basedir}/checkout/"/>
-        <property name="cvsIntegrationtestmodule" value="org.faktorips.integrationtest"/>
-        <property name="projectIntegrationtestDir" value="checkout/"/>
+    	<property name="buildDirectory" value="${basedir}/pluginbuilder_tmp/org.faktorips.pluginbuilder"/>
+    	<property name="checkoutdir" value="checkout"/>
+    	<property name="cvsTag" value="HEAD"/>
+        <property name="projectsRootDir" value="${basedir}/${checkoutdir}"/>
+    	<property name="cvsIntegrationtestmodule" value="org.faktorips.integrationtest"/>
+        <property name="projectIntegrationtestDir" value="${checkoutdir}"/>
         
     	<!--checkout org.faktorips.integrationtest project-->
-        <cvs command="co ${cvsIntegrationtestmodule}" dest="${projectIntegrationtestDir}" cvsroot="${cvsroot}" quiet="true"/>
+        <cvs command="co ${cvsIntegrationtestmodule}" dest="${projectIntegrationtestDir}" cvsroot="${cvsroot}" quiet="true" tag="$cvsTag"/>
         
     	<antcall inheritall="true" target="-delete.eclipse.configuration.log"/>
         
     	<!--delegate to the pluginbuilder integrationtest target-->
         <ant dir="${projectsRootDir}/org.faktorips.pluginbuilder/" antfile="build.xml" target="integrationtest">
+        	<property name="buildDirectory" value="${buildDirectory}"/>        	
             <property name="xms.megabytes" value=""/> <!-- -Xms124m -->
             <property name="xmx.megabytes" value=""/> <!-- -Xmx256m -->
         </ant>	
@@ -333,9 +337,12 @@
 	<!--this target runs the integrationtest for java5, 
        the target org.faktorips.pluginbuilder must be executed before, this will be handled by cruisecontrol-->
     <target name="pluginbuilder.integrationtest.java5" description="target to run the faktorips integrationtest for java5, using the previous build faktorips feature">
-        <property name="projectsRootDir" value="${basedir}/checkout/"/>
+    	<property name="buildDirectory" value="${basedir}/pluginbuilder_tmp/org.faktorips.pluginbuilder"/>
+        <property name="checkoutdir" value="checkout"/>
+        <property name="cvsTag" value="HEAD"/>
+    	<property name="projectsRootDir" value="${basedir}/${checkoutdir}"/>
         <property name="cvsIntegrationtestmodule" value="org.faktorips.integrationtest.java5"/>
-        <property name="projectIntegrationtestDir" value="checkout/"/>
+        <property name="projectIntegrationtestDir" value="${checkoutdir}"/>
         
     	<!--checkout org.faktorips.integrationtest project-->
         <cvs command="co ${cvsIntegrationtestmodule}" dest="${projectIntegrationtestDir}" cvsroot="${cvsroot}" quiet="true"/>
@@ -344,6 +351,7 @@
         
     	<!--delegate to the pluginbuilder integrationtest target-->
         <ant dir="${projectsRootDir}/org.faktorips.pluginbuilder/" antfile="build.xml" target="integrationtest.java5">
+        	<property name="buildDirectory" value="${buildDirectory}"/>        	
             <property name="xms.megabytes" value=""/> <!-- -Xms124m -->
             <property name="xmx.megabytes" value=""/> <!-- -Xmx256m -->
         </ant>
