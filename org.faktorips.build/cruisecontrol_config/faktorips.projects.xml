@@ -195,7 +195,7 @@
             <jvmarg arg="-Xmx512m"/>
             <!-- property for the ant build script -->
             <property name="checkoutdir" value="checkout_branch"/>
-            <property name="cvstag" value="v2_2_patches"/>
+            <property name="cvsTag" value="v2_2_patches"/>
             <property name="buildDirectory" value="${workdir}/../pluginbuilder_tmp_branch/org.faktorips.pluginbuilder"/>
             <depends>
                 <!-- 'cvs' instead of 'project' dependency, to receive email on successful build--> 

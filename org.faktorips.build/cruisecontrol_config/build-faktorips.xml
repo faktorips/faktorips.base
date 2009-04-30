@@ -199,7 +199,6 @@
         <ant dir="${projectFlDir}/${cvsFlmodule}/build/" antfile="build.xml" target="buildjar"/>
     </target>
 	
-	
     <!--============================================================================================-->
     <!--targets using the pluginbuilder,-->
     <!--build and test the faktorips feature and runs the integration test-->
@@ -207,58 +206,71 @@
     
 	<!--this target build the faktorips features and runs the plugin tests-->
     <target name="pluginbuilder.faktorips" description="builds the complete faktorips feature and executes all junit plugin test">
+    	<property name="label" value="0"/> <!-- e.g. build nr given from cruise control -->
     	<property name="checkoutdir" value="checkout"/>
     	<property name="cvsTag" value="HEAD"/>
     	<property name="cvsPluginbuildermodule" value="org.faktorips.pluginbuilder"/>
         <property name="projectsRootDir" value="${basedir}/${checkoutdir}"/>
     	<property name="buildDirectory" value="${basedir}/pluginbuilder_tmp/org.faktorips.pluginbuilder"/>
+    	<property name="pluginbuilder.config" value="${projectsRootDir}/org.faktorips.pluginbuilder/pluginbuilder.config"/>
+
+    	<delete dir="${projectsRootDir}"/>
+    	<mkdir dir="${projectsRootDir}"/>
     	
     	<!-- checkout features -->
-    	<cvs command="co ${cvsPluginbuildermodule}" dest="${projectsRootDir}" cvsroot="${cvsroot}" quiet="true" tag="${cvsTag}"/>
-        <cvs command="co org.faktorips.feature" dest="${projectsRootDir}" cvsroot="${cvsroot}" quiet="true" tag="${cvsTag}"/>
-        <cvs command="co org.faktorips.feature.nls1" dest="${projectsRootDir}" cvsroot="${cvsroot}" quiet="true" tag="${cvsTag}"/>
-    	<cvs command="co org.faktorips.feature.test" dest="${projectsRootDir}" cvsroot="${cvsroot}" quiet="true" tag="${cvsTag}"/>
+    	<cvs command="co" package="${cvsPluginbuildermodule}" dest="${projectsRootDir}" cvsroot="${cvsroot}" quiet="true" tag="${cvsTag}"/>
+    	<cvs command="co" package="org.faktorips.feature" dest="${projectsRootDir}" cvsroot="${cvsroot}" quiet="true" tag="${cvsTag}"/>
+        <cvs command="co" package="org.faktorips.feature.nls1" dest="${projectsRootDir}" cvsroot="${cvsroot}" quiet="true" tag="${cvsTag}"/>
+    	<cvs command="co" package="org.faktorips.feature.test" dest="${projectsRootDir}" cvsroot="${cvsroot}" quiet="true" tag="${cvsTag}"/>
 
     	<!-- checkout plugins -->
-    	<cvs command="co org.faktorips.dtflcommon" dest="${projectsRootDir}" cvsroot="${cvsroot}" quiet="true" tag="${cvsTag}"/>
-    	<cvs command="co org.faktorips.fl" dest="${projectsRootDir}" cvsroot="${cvsroot}" quiet="true" tag="${cvsTag}"/>
-    	<cvs command="co org.faktorips.runtime" dest="${projectsRootDir}" cvsroot="${cvsroot}" quiet="true" tag="${cvsTag}"/>
-    	<cvs command="co org.faktorips.util" dest="${projectsRootDir}" cvsroot="${cvsroot}" quiet="true" tag="${cvsTag}"/>
-    	<cvs command="co org.faktorips.valuetypes" dest="${projectsRootDir}" cvsroot="${cvsroot}" quiet="true" tag="${cvsTag}"/>
-    	<cvs command="co org.faktorips.devtools.ant" dest="${projectsRootDir}" cvsroot="${cvsroot}" quiet="true" tag="${cvsTag}"/>
-    	<cvs command="co org.faktorips.devtools.core" dest="${projectsRootDir}" cvsroot="${cvsroot}" quiet="true" tag="${cvsTag}"/>
-    	<cvs command="co org.faktorips.devtools.stdbuilder" dest="${projectsRootDir}" cvsroot="${cvsroot}" quiet="true" tag="${cvsTag}"/>
-    	<cvs command="co org.faktorips.runtime.java5" dest="${projectsRootDir}" cvsroot="${cvsroot}" quiet="true" tag="${cvsTag}"/>
-    	<cvs command="co org.faktorips.valuetypes.java5" dest="${projectsRootDir}" cvsroot="${cvsroot}" quiet="true" tag="${cvsTag}"/>
-    	<cvs command="co org.faktorips.devtools.core.ui" dest="${projectsRootDir}" cvsroot="${cvsroot}" quiet="true" tag="${cvsTag}"/>
+    	<cvs command="co" package="org.faktorips.dtflcommon" dest="${projectsRootDir}" cvsroot="${cvsroot}" quiet="true" tag="${cvsTag}"/>
+    	<cvs command="co" package="org.faktorips.fl" dest="${projectsRootDir}" cvsroot="${cvsroot}" quiet="true" tag="${cvsTag}"/>
+    	<cvs command="co" package="org.faktorips.runtime" dest="${projectsRootDir}" cvsroot="${cvsroot}" quiet="true" tag="${cvsTag}"/>
+    	<cvs command="co" package="org.faktorips.util" dest="${projectsRootDir}" cvsroot="${cvsroot}" quiet="true" tag="${cvsTag}"/>
+    	<cvs command="co" package="org.faktorips.valuetypes" dest="${projectsRootDir}" cvsroot="${cvsroot}" quiet="true" tag="${cvsTag}"/>
+    	<cvs command="co" package="org.faktorips.devtools.ant" dest="${projectsRootDir}" cvsroot="${cvsroot}" quiet="true" tag="${cvsTag}"/>
+    	<cvs command="co" package="org.faktorips.devtools.core" dest="${projectsRootDir}" cvsroot="${cvsroot}" quiet="true" tag="${cvsTag}"/>
+    	<cvs command="co" package="org.faktorips.devtools.stdbuilder" dest="${projectsRootDir}" cvsroot="${cvsroot}" quiet="true" tag="${cvsTag}"/>
+    	<cvs command="co" package="org.faktorips.runtime.java5" dest="${projectsRootDir}" cvsroot="${cvsroot}" quiet="true" tag="${cvsTag}"/>
+    	<cvs command="co" package="org.faktorips.valuetypes.java5" dest="${projectsRootDir}" cvsroot="${cvsroot}" quiet="true" tag="${cvsTag}"/>
+    	<cvs command="co" package="org.faktorips.devtools.core.ui" dest="${projectsRootDir}" cvsroot="${cvsroot}" quiet="true" tag="${cvsTag}"/>
     	
     	<!-- checkout nl1 plugins -->
-    	<cvs command="co org.faktorips.nls.devtools.core.nl1" dest="${projectsRootDir}" cvsroot="${cvsroot}" quiet="true" tag="${cvsTag}"/>
-    	<cvs command="co org.faktorips.nls.devtools.core.ui.nl1" dest="${projectsRootDir}" cvsroot="${cvsroot}" quiet="true" tag="${cvsTag}"/>
+    	<cvs command="co" package="org.faktorips.nls.devtools.core.nl1" dest="${projectsRootDir}" cvsroot="${cvsroot}" quiet="true" tag="${cvsTag}"/>
+    	<cvs command="co" package="org.faktorips.nls.devtools.core.ui.nl1" dest="${projectsRootDir}" cvsroot="${cvsroot}" quiet="true" tag="${cvsTag}"/>
         
     	<!-- checkout test plugins -->
-        <cvs command="co org.faktorips.devtools.core.test" dest="${projectsRootDir}" cvsroot="${cvsroot}" quiet="true" tag="${cvsTag}"/>
-        <cvs command="co org.faktorips.devtools.core.ui.test" dest="${projectsRootDir}" cvsroot="${cvsroot}" quiet="true" tag="${cvsTag}"/>
-        <cvs command="co org.faktorips.devtools.tableconversion.test" dest="${projectsRootDir}" cvsroot="${cvsroot}" quiet="true" tag="${cvsTag}"/>
-        <cvs command="co org.faktorips.devtools.stdbuilder.test" dest="${projectsRootDir}" cvsroot="${cvsroot}" quiet="true" tag="${cvsTag}"/>
-    	<cvs command="co org.faktorips.devtools.ant.test" dest="${projectsRootDir}" cvsroot="${cvsroot}" quiet="true" tag="${cvsTag}"/>
+        <cvs command="co" package="org.faktorips.devtools.core.test" dest="${projectsRootDir}" cvsroot="${cvsroot}" quiet="true" tag="${cvsTag}"/>
+        <cvs command="co" package="org.faktorips.devtools.core.ui.test" dest="${projectsRootDir}" cvsroot="${cvsroot}" quiet="true" tag="${cvsTag}"/>
+        <cvs command="co" package="org.faktorips.devtools.tableconversion.test" dest="${projectsRootDir}" cvsroot="${cvsroot}" quiet="true" tag="${cvsTag}"/>
+        <cvs command="co" package="org.faktorips.devtools.stdbuilder.test" dest="${projectsRootDir}" cvsroot="${cvsroot}" quiet="true" tag="${cvsTag}"/>
+    	<cvs command="co" package="org.faktorips.devtools.ant.test" dest="${projectsRootDir}" cvsroot="${cvsroot}" quiet="true" tag="${cvsTag}"/>
     	
     	<!-- checkout faktorips uml plugins and feature -->
-        <cvs command="co org.faktorips.uml.feature" dest="${projectsRootDir}" cvsroot="${cvsroot}" quiet="true" tag="${cvsTag}"/>
-        <cvs command="co org.faktorips.uml.feature.nls1" dest="${projectsRootDir}" cvsroot="${cvsroot}" quiet="true" tag="${cvsTag}"/>
-        <cvs command="co org.faktorips.uml.feature.test" dest="${projectsRootDir}" cvsroot="${cvsroot}" quiet="true" tag="${cvsTag}"/>
-        <cvs command="co org.faktorips.uml" dest="${projectsRootDir}" cvsroot="${cvsroot}" quiet="true" tag="${cvsTag}"/>
-        <cvs command="co org.faktorips.uml.nl1" dest="${projectsRootDir}" cvsroot="${cvsroot}" quiet="true" tag="${cvsTag}"/>
-        <cvs command="co org.faktorips.uml.test" dest="${projectsRootDir}" cvsroot="${cvsroot}" quiet="true" tag="${cvsTag}"/>
+        <cvs command="co" package="org.faktorips.uml.feature" dest="${projectsRootDir}" cvsroot="${cvsroot}" quiet="true" tag="${cvsTag}"/>
+        <cvs command="co" package="org.faktorips.uml.feature.nls1" dest="${projectsRootDir}" cvsroot="${cvsroot}" quiet="true" tag="${cvsTag}"/>
+        <cvs command="co" package="org.faktorips.uml.feature.test" dest="${projectsRootDir}" cvsroot="${cvsroot}" quiet="true" tag="${cvsTag}"/>
+        <cvs command="co" package="org.faktorips.uml" dest="${projectsRootDir}" cvsroot="${cvsroot}" quiet="true" tag="${cvsTag}"/>
+        <cvs command="co" package="org.faktorips.uml.nl1" dest="${projectsRootDir}" cvsroot="${cvsroot}" quiet="true" tag="${cvsTag}"/>
+        <cvs command="co" package="org.faktorips.uml.test" dest="${projectsRootDir}" cvsroot="${cvsroot}" quiet="true" tag="${cvsTag}"/>
 
-    	<!-- checkout de.qv.faktorips.feature -->
-    	<cvs command="co de.qv.faktorips.feature" dest="${projectsRootDir}" cvsroot="${cvsroot}" quiet="true" tag="${cvsTag}"/>
+    	<!-- checkout de.qv.faktorips.feature and plugin -->
+    	<cvs command="co" package="de.qv.faktorips.feature" dest="${projectsRootDir}" cvsroot="${cvsroot}" quiet="true" tag="${cvsTag}"/>
+    	<cvs command="co" package="de.qv.faktorips" dest="${projectsRootDir}" cvsroot="${cvsroot}" quiet="true" tag="${cvsTag}"/>
     	
     	<antcall inheritall="true" target="-delete.eclipse.configuration.log"/>
     	
+    	<!-- if only the creating of the plugin and features should be tested, runtests=false -->
+        <condition property="isIgnoreTests" value="true">
+             <equals arg1="${runtests}" arg2="false"/>
+         </condition>
+        <antcall inheritall="true" target="-disable.automated.test" />
+        <antcall inheritall="true" target="-enable.automated.test" />
+		
         <!-- delegate to the pluginbuilder target -->
     	<ant dir="${projectsRootDir}/org.faktorips.pluginbuilder/" antfile="build.xml" target="main-cc">
-            <property name="label" value="${cvsTag}"/>
+            <property name="label" value="${label}"/>
             <property name="buildDirectory" value="${buildDirectory}"/>
             <property name="xms.megabytes" value=""/> <!-- -Xms124m -->
             <property name="xmx.megabytes" value=""/> <!-- -Xmx256m -->
