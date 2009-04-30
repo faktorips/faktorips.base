@@ -788,7 +788,7 @@
                 <jvmarg arg="-Xmx512m"/>
                 <property name="checkoutdir" value="checkout_branch"/>
                 <property name="cvsTag" value="v2_2_patches"/>
-                <property name="buildDirectory" value="${workdir}/../pluginbuilder_tmp_branch/org.faktorips.pluginbuilder"/>
+                <property name="pluginbuilderTmpDir" value="pluginbuilder_tmp_branch"/>
             </ant>
         </schedule>
         <log logdir="${logdir}/${project.name}/">

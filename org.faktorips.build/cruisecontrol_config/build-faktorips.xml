@@ -211,7 +211,8 @@
     	<property name="cvsTag" value="HEAD"/>
     	<property name="cvsPluginbuildermodule" value="org.faktorips.pluginbuilder"/>
         <property name="projectsRootDir" value="${basedir}/${checkoutdir}"/>
-    	<property name="buildDirectory" value="${basedir}/pluginbuilder_tmp/org.faktorips.pluginbuilder"/>
+        <property name="pluginbuilderTmpDir" value="pluginbuilder_tmp"/>
+    	<property name="buildDirectory" value="${basedir}/${pluginbuilderTmpDir}/org.faktorips.pluginbuilder"/>
     	<property name="pluginbuilder.config" value="${projectsRootDir}/org.faktorips.pluginbuilder/pluginbuilder.config"/>
 
     	<delete dir="${projectsRootDir}"/>
