@@ -26,7 +26,7 @@
         </listeners>
         <bootstrappers/>
         <modificationset>
-            <cvs module="org.faktorips.util" cvsroot="${cvsroot}" cvstag=""/>
+            <cvs module="org.faktorips.util" cvsroot="${cvsroot}"/>
         </modificationset>
         <schedule interval="60">
             <ant uselogger="true" usedebug="false" buildfile="${mainbuildfile}" target="util"/>
@@ -77,7 +77,7 @@
         <bootstrappers/>
         <modificationset>
             <buildstatus logdir="${logdir}/org.faktorips.util"/>
-            <cvs module="org.faktorips.valuetypes" cvsroot="${cvsroot}" cvstag=""/>
+            <cvs module="org.faktorips.valuetypes" cvsroot="${cvsroot}"/>
         </modificationset>
         <schedule interval="60">
             <ant uselogger="true" usedebug="false" buildfile="${mainbuildfile}" target="valuetypes"/>
@@ -128,7 +128,7 @@
         <bootstrappers/>
         <modificationset>
             <buildstatus logdir="${logdir}/org.faktorips.util"/>
-            <cvs module="org.faktorips.valuetypes.java5" cvsroot="${cvsroot}" cvstag=""/>
+            <cvs module="org.faktorips.valuetypes.java5" cvsroot="${cvsroot}"/>
         </modificationset>
         <schedule interval="60">
             <ant uselogger="true" usedebug="false" buildfile="${mainbuildfile}" target="valuetypes.java5"/>
@@ -180,7 +180,7 @@
         <modificationset>
             <buildstatus logdir="${logdir}/org.faktorips.valuetypes"/>
             <buildstatus logdir="${logdir}/org.faktorips.util"/>
-            <cvs module="org.faktorips.dtflcommon" cvsroot="${cvsroot}" cvstag=""/>
+            <cvs module="org.faktorips.dtflcommon" cvsroot="${cvsroot}"/>
         </modificationset>
         <schedule interval="60">
             <ant uselogger="true" usedebug="false" buildfile="${mainbuildfile}" target="dtflcommon"/>
@@ -232,7 +232,7 @@
         <modificationset>
             <buildstatus logdir="${logdir}/org.faktorips.valuetypes"/>
             <buildstatus logdir="${logdir}/org.faktorips.util"/>
-            <cvs module="org.faktorips.runtime" cvsroot="${cvsroot}" cvstag=""/>
+            <cvs module="org.faktorips.runtime" cvsroot="${cvsroot}"/>
         </modificationset>
         <schedule interval="60">
             <ant uselogger="true" usedebug="false" buildfile="${mainbuildfile}" target="runtime"/>
@@ -284,7 +284,7 @@
         <modificationset>
             <buildstatus logdir="${logdir}/org.faktorips.valuetypes.java5"/>
             <buildstatus logdir="${logdir}/org.faktorips.util"/>
-            <cvs module="org.faktorips.runtime.java5" cvsroot="${cvsroot}" cvstag=""/>
+            <cvs module="org.faktorips.runtime.java5" cvsroot="${cvsroot}"/>
         </modificationset>
         <schedule interval="60">
             <ant uselogger="true" usedebug="false" buildfile="${mainbuildfile}" target="runtime.java5"/>
@@ -335,7 +335,7 @@
         <bootstrappers/>
         <modificationset>
             <buildstatus logdir="${logdir}/org.faktorips.dtflcommon"/>
-            <cvs module="org.faktorips.fl" cvsroot="${cvsroot}" cvstag=""/>
+            <cvs module="org.faktorips.fl" cvsroot="${cvsroot}"/>
         </modificationset>
         <schedule interval="60">
             <ant uselogger="true" usedebug="false" buildfile="${mainbuildfile}" target="fl"/>
@@ -386,7 +386,7 @@
         <bootstrappers/>
         <modificationset>
             <buildstatus logdir="${logdir}/org.faktorips.fl"/>
-            <cvs module="org.faktorips.devtools.core" cvsroot="${cvsroot}" cvstag=""/>
+            <cvs module="org.faktorips.devtools.core" cvsroot="${cvsroot}"/>
         </modificationset>
         <schedule interval="60">
             <ant uselogger="true" usedebug="false" buildfile="${mainbuildfile}" target="devtools.core"/>
@@ -439,7 +439,7 @@
             <buildstatus logdir="${logdir}/org.faktorips.fl"/>
             <buildstatus logdir="${logdir}/org.faktorips.runtime"/>
             <buildstatus logdir="${logdir}/org.faktorips.devtools.core"/>
-            <cvs module="org.faktorips.devtools.stdbuilder" cvsroot="${cvsroot}" cvstag=""/>
+            <cvs module="org.faktorips.devtools.stdbuilder" cvsroot="${cvsroot}"/>
         </modificationset>
         <schedule interval="60">
             <ant uselogger="true" usedebug="false" buildfile="${mainbuildfile}" target="devtools.stdbuilder"/>
@@ -490,7 +490,7 @@
         <bootstrappers/>
         <modificationset>
             <buildstatus logdir="${logdir}/org.faktorips.devtools.core"/>
-            <cvs module="org.faktorips.devtools.core.ui" cvsroot="${cvsroot}" cvstag=""/>
+            <cvs module="org.faktorips.devtools.core.ui" cvsroot="${cvsroot}"/>
         </modificationset>
         <schedule interval="60">
             <ant uselogger="true" usedebug="false" buildfile="${mainbuildfile}" target="devtools.core.ui"/>
@@ -541,7 +541,7 @@
         <bootstrappers/>
         <modificationset>
             <buildstatus logdir="${logdir}/org.faktorips.devtools.core.ui"/>
-            <cvs module="org.faktorips.devtools.tableconversion" cvsroot="${cvsroot}" cvstag=""/>
+            <cvs module="org.faktorips.devtools.tableconversion" cvsroot="${cvsroot}"/>
         </modificationset>
         <schedule interval="60">
             <ant uselogger="true" usedebug="false" buildfile="${mainbuildfile}" target="devtools.tableconversion"/>
@@ -591,7 +591,7 @@
         </listeners>
         <bootstrappers/>
         <modificationset>
-            <cvs module="org.faktorips.devtools.ant" cvsroot="${cvsroot}" cvstag=""/>
+            <cvs module="org.faktorips.devtools.ant" cvsroot="${cvsroot}"/>
         </modificationset>
         <schedule interval="60">
             <ant uselogger="true" usedebug="false" buildfile="${mainbuildfile}" target="devtools.ant"/>
@@ -641,7 +641,7 @@
         </listeners>
         <bootstrappers/>
         <modificationset>
-            <cvs module="org.faktorips.uml" cvsroot="${cvsroot}" cvstag=""/>
+            <cvs module="org.faktorips.uml" cvsroot="${cvsroot}"/>
         </modificationset>
         <schedule interval="60">
             <ant uselogger="true" usedebug="false" buildfile="${mainbuildfile}" target="uml"/>
@@ -691,23 +691,23 @@
         </listeners>
         <bootstrappers/>
         <modificationset>
-            <cvs module="org.faktorips.pluginbuilder" cvsroot="${cvsroot}" cvstag=""/>
-            <cvs module="org.faktorips.util" cvsroot="${cvsroot}" cvstag=""/>
-            <cvs module="org.faktorips.valuetypes" cvsroot="${cvsroot}" cvstag=""/>
-            <cvs module="org.faktorips.dtflcommon" cvsroot="${cvsroot}" cvstag=""/>
-            <cvs module="org.faktorips.runtime" cvsroot="${cvsroot}" cvstag=""/>
-            <cvs module="org.faktorips.fl" cvsroot="${cvsroot}" cvstag=""/>
-            <cvs module="org.faktorips.devtools.core" cvsroot="${cvsroot}" cvstag=""/>
-            <cvs module="org.faktorips.devtools.stdbuilder" cvsroot="${cvsroot}" cvstag=""/>
-            <cvs module="org.faktorips.devtools.core.ui" cvsroot="${cvsroot}" cvstag=""/>
-            <cvs module="org.faktorips.devtools.tableconversion" cvsroot="${cvsroot}" cvstag=""/>
-            <cvs module="org.faktorips.devtools.ant" cvsroot="${cvsroot}" cvstag=""/>
-            <cvs module="org.faktorips.devtools.core.test" cvsroot="${cvsroot}" cvstag=""/>
-            <cvs module="org.faktorips.devtools.stdbuilder.test" cvsroot="${cvsroot}" cvstag=""/>
-            <cvs module="org.faktorips.devtools.core.ui.test" cvsroot="${cvsroot}" cvstag=""/>
-            <cvs module="org.faktorips.devtools.tableconversion.test" cvsroot="${cvsroot}" cvstag=""/>
-            <cvs module="org.faktorips.devtools.ant.test" cvsroot="${cvsroot}" cvstag=""/>
-            <cvs module="org.faktorips.uml.test" cvsroot="${cvsroot}" cvstag=""/>
+            <cvs module="org.faktorips.pluginbuilder" cvsroot="${cvsroot}"/>
+            <cvs module="org.faktorips.util" cvsroot="${cvsroot}"/>
+            <cvs module="org.faktorips.valuetypes" cvsroot="${cvsroot}"/>
+            <cvs module="org.faktorips.dtflcommon" cvsroot="${cvsroot}"/>
+            <cvs module="org.faktorips.runtime" cvsroot="${cvsroot}"/>
+            <cvs module="org.faktorips.fl" cvsroot="${cvsroot}"/>
+            <cvs module="org.faktorips.devtools.core" cvsroot="${cvsroot}"/>
+            <cvs module="org.faktorips.devtools.stdbuilder" cvsroot="${cvsroot}"/>
+            <cvs module="org.faktorips.devtools.core.ui" cvsroot="${cvsroot}"/>
+            <cvs module="org.faktorips.devtools.tableconversion" cvsroot="${cvsroot}"/>
+            <cvs module="org.faktorips.devtools.ant" cvsroot="${cvsroot}"/>
+            <cvs module="org.faktorips.devtools.core.test" cvsroot="${cvsroot}"/>
+            <cvs module="org.faktorips.devtools.stdbuilder.test" cvsroot="${cvsroot}"/>
+            <cvs module="org.faktorips.devtools.core.ui.test" cvsroot="${cvsroot}"/>
+            <cvs module="org.faktorips.devtools.tableconversion.test" cvsroot="${cvsroot}"/>
+            <cvs module="org.faktorips.devtools.ant.test" cvsroot="${cvsroot}"/>
+            <cvs module="org.faktorips.uml.test" cvsroot="${cvsroot}"/>
         </modificationset>
         <schedule interval="300">
             <ant uselogger="true" usedebug="false" buildfile="${mainbuildfile}" target="pluginbuilder.faktorips">
@@ -765,21 +765,21 @@
         </listeners>
         <bootstrappers/>
         <modificationset>
-            <cvs module="org.faktorips.pluginbuilder.v2_2_patches" cvsroot="${cvsroot}" cvstag="v2_2_patches"/>
-            <cvs module="org.faktorips.util" cvsroot="${cvsroot}" cvstag="v2_2_patches"/>
-            <cvs module="org.faktorips.valuetypes" cvsroot="${cvsroot}" cvstag="v2_2_patches"/>
-            <cvs module="org.faktorips.dtflcommon" cvsroot="${cvsroot}" cvstag="v2_2_patches"/>
-            <cvs module="org.faktorips.runtime" cvsroot="${cvsroot}" cvstag="v2_2_patches"/>
-            <cvs module="org.faktorips.fl" cvsroot="${cvsroot}" cvstag="v2_2_patches"/>
-            <cvs module="org.faktorips.devtools.core" cvsroot="${cvsroot}" cvstag="v2_2_patches"/>
-            <cvs module="org.faktorips.devtools.stdbuilder" cvsroot="${cvsroot}" cvstag="v2_2_patches"/>
-            <cvs module="org.faktorips.devtools.core.ui" cvsroot="${cvsroot}" cvstag="v2_2_patches"/>
-            <cvs module="org.faktorips.devtools.ant" cvsroot="${cvsroot}" cvstag="v2_2_patches"/>
-            <cvs module="org.faktorips.devtools.core.test" cvsroot="${cvsroot}" cvstag="v2_2_patches"/>
-            <cvs module="org.faktorips.devtools.stdbuilder.test" cvsroot="${cvsroot}" cvstag="v2_2_patches"/>
-            <cvs module="org.faktorips.devtools.core.ui.test" cvsroot="${cvsroot}" cvstag="v2_2_patches"/>
-            <cvs module="org.faktorips.devtools.ant.test" cvsroot="${cvsroot}" cvstag="v2_2_patches"/>
-            <cvs module="org.faktorips.uml.test" cvsroot="${cvsroot}" cvstag="v2_2_patches"/>
+            <cvs module="org.faktorips.pluginbuilder.v2_2_patches" cvsroot="${cvsroot}" tag="v2_2_patches"/>
+            <cvs module="org.faktorips.util" cvsroot="${cvsroot}" tag="v2_2_patches"/>
+            <cvs module="org.faktorips.valuetypes" cvsroot="${cvsroot}" tag="v2_2_patches"/>
+            <cvs module="org.faktorips.dtflcommon" cvsroot="${cvsroot}" tag="v2_2_patches"/>
+            <cvs module="org.faktorips.runtime" cvsroot="${cvsroot}" tag="v2_2_patches"/>
+            <cvs module="org.faktorips.fl" cvsroot="${cvsroot}" tag="v2_2_patches"/>
+            <cvs module="org.faktorips.devtools.core" cvsroot="${cvsroot}" tag="v2_2_patches"/>
+            <cvs module="org.faktorips.devtools.stdbuilder" cvsroot="${cvsroot}" tag="v2_2_patches"/>
+            <cvs module="org.faktorips.devtools.core.ui" cvsroot="${cvsroot}" tag="v2_2_patches"/>
+            <cvs module="org.faktorips.devtools.ant" cvsroot="${cvsroot}" tag="v2_2_patches"/>
+            <cvs module="org.faktorips.devtools.core.test" cvsroot="${cvsroot}" tag="v2_2_patches"/>
+            <cvs module="org.faktorips.devtools.stdbuilder.test" cvsroot="${cvsroot}" tag="v2_2_patches"/>
+            <cvs module="org.faktorips.devtools.core.ui.test" cvsroot="${cvsroot}" tag="v2_2_patches"/>
+            <cvs module="org.faktorips.devtools.ant.test" cvsroot="${cvsroot}" tag="v2_2_patches"/>
+            <cvs module="org.faktorips.uml.test" cvsroot="${cvsroot}" tag="v2_2_patches"/>
         </modificationset>
         <schedule interval="300">
             <ant uselogger="true" usedebug="false" buildfile="${mainbuildfile}" target="pluginbuilder.faktorips">
@@ -837,7 +837,7 @@
         <bootstrappers/>
         <modificationset>
             <buildstatus logdir="${logdir}/org.faktorips.pluginbuilder"/>
-            <cvs module="org.faktorips.integrationtest" cvsroot="${cvsroot}" cvstag=""/>
+            <cvs module="org.faktorips.integrationtest" cvsroot="${cvsroot}"/>
         </modificationset>
         <schedule interval="300">
             <ant uselogger="true" usedebug="false" buildfile="${mainbuildfile}" target="pluginbuilder.integrationtest">
@@ -894,7 +894,7 @@
         <bootstrappers/>
         <modificationset>
             <buildstatus logdir="${logdir}/org.faktorips.pluginbuilder"/>
-            <cvs module="org.faktorips.integrationtest.java5" cvsroot="${cvsroot}" cvstag=""/>
+            <cvs module="org.faktorips.integrationtest.java5" cvsroot="${cvsroot}"/>
         </modificationset>
         <schedule interval="300">
             <ant uselogger="true" usedebug="false" buildfile="${mainbuildfile}" target="pluginbuilder.integrationtest.java5">
@@ -951,7 +951,7 @@
         <bootstrappers/>
         <modificationset>
             <buildstatus logdir="${logdir}/org.faktorips.pluginbuilder.v2_2_patches"/>
-            <cvs module="org.faktorips.integrationtest" cvsroot="${cvsroot}" cvstag="v2_2_patches"/>
+            <cvs module="org.faktorips.integrationtest" cvsroot="${cvsroot}" tag="v2_2_patches"/>
         </modificationset>
         <schedule interval="300">
             <ant uselogger="true" usedebug="false" buildfile="${mainbuildfile}" target="pluginbuilder.integrationtest">
@@ -1007,7 +1007,7 @@
         <bootstrappers/>
         <modificationset>
             <buildstatus logdir="${logdir}/org.faktorips.pluginbuilder.v2_2_patches"/>
-            <cvs module="org.faktorips.integrationtest.java5" cvsroot="${cvsroot}" cvstag="v2_2_patches"/>
+            <cvs module="org.faktorips.integrationtest.java5" cvsroot="${cvsroot}" tag="v2_2_patches"/>
         </modificationset>
         <schedule interval="300">
             <ant uselogger="true" usedebug="false" buildfile="${mainbuildfile}" target="pluginbuilder.integrationtest.java5">
@@ -1063,7 +1063,7 @@
         <bootstrappers/>
         <modificationset>
             <buildstatus logdir="${logdir}/org.faktorips.devtools.core"/>
-            <cvs module="de.qv.faktorips" cvsroot="${cvsroot}" cvstag=""/>
+            <cvs module="de.qv.faktorips" cvsroot="${cvsroot}"/>
         </modificationset>
         <schedule interval="60">
             <ant uselogger="true" usedebug="false" buildfile="${mainbuildfile}" target="de.qv.faktorips"/>

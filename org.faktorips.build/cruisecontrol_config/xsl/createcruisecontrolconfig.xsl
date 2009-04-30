@@ -101,14 +101,18 @@
                    <cvs module="$javaprojectname">
                       <xsl:attribute name="cvsroot"><![CDATA[${cvsroot}]]></xsl:attribute>
                       <xsl:attribute name="module"><xsl:value-of select="$javaprojectname"/></xsl:attribute>
-                      <xsl:attribute name="cvstag"><xsl:value-of select="$cvstag"/></xsl:attribute>
+                      <xsl:if test='string-length($cvstag)>0'>
+                        <xsl:attribute name="tag"><xsl:value-of select="$cvstag"/></xsl:attribute>
+                      </xsl:if>
                   </cvs>
                   <xsl:for-each select="depends/cvs">
                    <!-- cvs additional modificationset -->
                        <cvs module="$javaprojectname">
                           <xsl:attribute name="cvsroot"><![CDATA[${cvsroot}]]></xsl:attribute>
                           <xsl:attribute name="module"><xsl:value-of select="@module"/></xsl:attribute>
-                          <xsl:attribute name="cvstag"><xsl:value-of select="$cvstag"/></xsl:attribute>
+                          <xsl:if test='string-length($cvstag)>0'>
+                            <xsl:attribute name="tag"><xsl:value-of select="$cvstag"/></xsl:attribute>
+                          </xsl:if>
                       </cvs>
                   </xsl:for-each>                  
     			  </xsl:when>
