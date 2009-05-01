@@ -12,7 +12,7 @@
         <property name="cvsBuildmodule" value="org.faktorips.build"/>
         <property name="projectBuildDir" value="checkout/"/>
         <!--checkout/update project-->
-        <cvs command="co ${cvsBuildmodule}" dest="${projectBuildDir}" cvsroot="${cvsroot}" quiet="true"/>
+        <cvs command="co" package="${cvsBuildmodule}" dest="${projectBuildDir}" cvsroot="${cvsroot}" quiet="true"/>
     </target>
     
 	<!--============================================================================================-->
@@ -23,7 +23,7 @@
         <property name="cvsUtilmodule" value="org.faktorips.util"/>
         <property name="projectUtilDir" value="checkout/"/>
         <!--checkout/update project-->
-        <cvs command="co ${cvsUtilmodule}" dest="${projectUtilDir}" cvsroot="${cvsroot}" quiet="true"/>
+        <cvs command="co" package="${cvsUtilmodule}" dest="${projectUtilDir}" cvsroot="${cvsroot}" quiet="true"/>
         <!--Call the target that does everything-->
         <ant dir="${projectUtilDir}/${cvsUtilmodule}/build/" antfile="build.xml" target="clean"/>
         <ant dir="${projectUtilDir}/${cvsUtilmodule}/build/" antfile="build.xml" target="buildjar"/>
@@ -33,7 +33,7 @@
         <property name="cvsValuetypesmodule" value="org.faktorips.valuetypes"/>
         <property name="projectValuetypesDir" value="checkout/"/>
         <!--checkout/update project-->
-        <cvs command="co ${cvsValuetypesmodule}" dest="${projectValuetypesDir}" cvsroot="${cvsroot}" quiet="true"/>
+        <cvs command="co" package="${cvsValuetypesmodule}" dest="${projectValuetypesDir}" cvsroot="${cvsroot}" quiet="true"/>
         <!--Call the target that does everything-->
         <ant dir="${projectValuetypesDir}/${cvsValuetypesmodule}/build/" antfile="build.xml" target="clean"/>
         <ant dir="${projectValuetypesDir}/${cvsValuetypesmodule}/build/" antfile="build.xml" target="buildjar"/>
@@ -43,7 +43,7 @@
         <property name="cvsValuetypesmodule" value="org.faktorips.valuetypes.java5"/>
         <property name="projectValuetypesDir" value="checkout/"/>
         <!--checkout/update project-->
-        <cvs command="co ${cvsValuetypesmodule}" dest="${projectValuetypesDir}" cvsroot="${cvsroot}" quiet="true"/>
+        <cvs command="co" package="${cvsValuetypesmodule}" dest="${projectValuetypesDir}" cvsroot="${cvsroot}" quiet="true"/>
         <!--Call the target that does everything-->
         <ant dir="${projectValuetypesDir}/${cvsValuetypesmodule}/build/" antfile="build.xml" target="clean"/>
         <ant dir="${projectValuetypesDir}/${cvsValuetypesmodule}/build/" antfile="build.xml" target="buildjar"/>
@@ -53,7 +53,7 @@
         <property name="cvsDtflcommonmodule" value="org.faktorips.dtflcommon"/>
         <property name="projectDtflcommonDir" value="checkout/"/>
         <!--checkout/update project-->
-        <cvs command="co ${cvsDtflcommonmodule}" dest="${projectDtflcommonDir}" cvsroot="${cvsroot}" quiet="true"/>
+        <cvs command="co" package="${cvsDtflcommonmodule}" dest="${projectDtflcommonDir}" cvsroot="${cvsroot}" quiet="true"/>
         <!--Call the target that does everything-->
         <ant dir="${projectDtflcommonDir}/${cvsDtflcommonmodule}/build/" antfile="build.xml" target="clean"/>
         <ant dir="${projectDtflcommonDir}/${cvsDtflcommonmodule}/build/" antfile="build.xml" target="buildjar"/>
@@ -63,7 +63,7 @@
         <property name="cvsRuntimemodule" value="org.faktorips.runtime"/>
         <property name="projectRuntimeDir" value="checkout/"/>
         <!--checkout/update project-->
-        <cvs command="co ${cvsRuntimemodule}" dest="${projectRuntimeDir}" cvsroot="${cvsroot}" quiet="true"/>
+        <cvs command="co" package="${cvsRuntimemodule}" dest="${projectRuntimeDir}" cvsroot="${cvsroot}" quiet="true"/>
         <!--Call the clean-target-->
         <ant dir="${projectRuntimeDir}/${cvsRuntimemodule}/build/" antfile="build.xml" target="clean"/>
         <!--Call the target that does everything-->
@@ -74,7 +74,7 @@
         <property name="cvsRuntimemodule" value="org.faktorips.runtime.java5"/>
         <property name="projectRuntimeDir" value="checkout/"/>
         <!--checkout/update project-->
-        <cvs command="co ${cvsRuntimemodule}" dest="${projectRuntimeDir}" cvsroot="${cvsroot}" quiet="true"/>
+        <cvs command="co" package="${cvsRuntimemodule}" dest="${projectRuntimeDir}" cvsroot="${cvsroot}" quiet="true"/>
         <!--Call the clean-target-->
         <ant dir="${projectRuntimeDir}/${cvsRuntimemodule}/build/" antfile="build.xml" target="clean"/>
         <!--Call the target that does everything-->
@@ -85,7 +85,7 @@
         <property name="cvsFlmodule" value="org.faktorips.fl"/>
         <property name="projectFlDir" value="checkout/"/>
         <!--checkout/update project-->
-        <cvs command="co ${cvsFlmodule}" dest="${projectFlDir}" cvsroot="${cvsroot}" quiet="true"/>
+        <cvs command="co" package="${cvsFlmodule}" dest="${projectFlDir}" cvsroot="${cvsroot}" quiet="true"/>
         <!--Call the target that does everything-->
         <ant dir="${projectFlDir}/${cvsFlmodule}/build/" antfile="build.xml" target="cleanParserSource"/>
         <ant dir="${projectFlDir}/${cvsFlmodule}/build/" antfile="build.xml" target="clean"/>
@@ -95,7 +95,7 @@
         <property name="cvsAntModule" value="org.faktorips.devtools.ant"/>
         <property name="projectAntDir" value="checkout/"/>
         <!--checkout/update project-->
-        <cvs command="co ${cvsAntModule}" dest="${projectAntDir}" cvsroot="${cvsroot}" quiet="true"/>
+        <cvs command="co" package="${cvsAntModule}" dest="${projectAntDir}" cvsroot="${cvsroot}" quiet="true"/>
         <!--Call the target that does everything-->
         <ant dir="${projectAntDir}/${cvsAntModule}/" antfile="scripts/buildExtraJAR.xml" target="clean"/>
         <ant dir="${projectAntDir}/${cvsAntModule}/" antfile="scripts/buildExtraJAR.xml" target="main"/>
@@ -105,7 +105,7 @@
         <property name="cvsFlmodule" value="org.faktorips.devtools.core"/>
         <property name="projectFlDir" value="checkout/"/>
         <!--checkout/update project-->
-        <cvs command="co ${cvsFlmodule}" dest="${projectFlDir}" cvsroot="${cvsroot}" quiet="true"/>
+        <cvs command="co" package="${cvsFlmodule}" dest="${projectFlDir}" cvsroot="${cvsroot}" quiet="true"/>
         <!--Call the target that does everything-->
         <ant dir="${projectFlDir}/${cvsFlmodule}/build/" antfile="build.xml" target="clean"/>
         <ant dir="${projectFlDir}/${cvsFlmodule}/build/" antfile="build.xml" target="buildjar"/>
@@ -115,7 +115,7 @@
         <property name="cvsCoreUimodule" value="org.faktorips.devtools.core.ui"/>
         <property name="projectCoreUiDir" value="checkout/"/>
         <!--checkout/update project-->
-        <cvs command="co ${cvsCoreUimodule}" dest="${projectCoreUiDir}" cvsroot="${cvsroot}" quiet="true"/>
+        <cvs command="co" package="${cvsCoreUimodule}" dest="${projectCoreUiDir}" cvsroot="${cvsroot}" quiet="true"/>
         <!--Call the target that does everything-->
         <ant dir="${projectCoreUiDir}/${cvsCoreUimodule}/build/" antfile="build.xml" target="clean"/>
         <ant dir="${projectCoreUiDir}/${cvsCoreUimodule}/build/" antfile="build.xml" target="buildjar"/>
@@ -125,7 +125,7 @@
         <property name="cvsModule" value="org.faktorips.devtools.tableconversion"/>
         <property name="projectDir" value="checkout/"/>
         <!--checkout/update project-->
-        <cvs command="co ${cvsModule}" dest="${projectDir}" cvsroot="${cvsroot}" quiet="true"/>
+        <cvs command="co" package="${cvsModule}" dest="${projectDir}" cvsroot="${cvsroot}" quiet="true"/>
         <!--Call the target that does everything-->
         <ant dir="${projectDir}/${cvsModule}/build/" antfile="build.xml" target="clean"/>
         <ant dir="${projectDir}/${cvsModule}/build/" antfile="build.xml" target="buildjar"/>
@@ -135,7 +135,7 @@
         <property name="cvsFlmodule" value="org.faktorips.devtools.stdbuilder"/>
         <property name="projectFlDir" value="checkout/"/>
         <!--checkout/update project-->
-        <cvs command="co ${cvsFlmodule}" dest="${projectFlDir}" cvsroot="${cvsroot}" quiet="true"/>
+        <cvs command="co" package="${cvsFlmodule}" dest="${projectFlDir}" cvsroot="${cvsroot}" quiet="true"/>
         <!--Call the target that does everything-->
         <ant dir="${projectFlDir}/${cvsFlmodule}/build/" antfile="build.xml" target="clean"/>
         <ant dir="${projectFlDir}/${cvsFlmodule}/build/" antfile="build.xml" target="buildjar"/>
@@ -145,7 +145,7 @@
         <property name="cvsUmlmodule" value="org.faktorips.uml"/>
         <property name="projectUmlDir" value="checkout/"/>
         <!--checkout/update project-->
-        <cvs command="co ${cvsUmlmodule}" dest="${projectUmlDir}" cvsroot="${cvsroot}" quiet="true"/>
+        <cvs command="co" package="${cvsUmlmodule}" dest="${projectUmlDir}" cvsroot="${cvsroot}" quiet="true"/>
         <!--Call the target that does everything-->
         <ant dir="${projectUmlDir}/${cvsUmlmodule}/build/" antfile="build.xml" target="clean"/>
         <ant dir="${projectUmlDir}/${cvsUmlmodule}/build/" antfile="build.xml" target="buildjar"/>
@@ -159,7 +159,7 @@
         <property name="cvsModule" value="de.qv.faktorips"/>
         <property name="projectDir" value="checkout/"/>
         <!--checkout/update project-->
-        <cvs command="co ${cvsModule}" dest="${projectDir}" cvsroot="${cvsroot}" quiet="true"/>
+        <cvs command="co" package="${cvsModule}" dest="${projectDir}" cvsroot="${cvsroot}" quiet="true"/>
         <!--Call the target that does everything-->
         <ant dir="${projectDir}/${cvsModule}/build/" antfile="build.xml" target="clean"/>
         <ant dir="${projectDir}/${cvsModule}/build/" antfile="build.xml" target="buildjar"/>
@@ -169,8 +169,8 @@
         <property name="cvsFlmodule" value="de.bbv.faktorips.runtime"/>
         <property name="projectFlDir" value="checkout/"/>
         <!--checkout/update project-->
-        <cvs command="co de.bbv.cm.CMPlugin" dest="${projectFlDir}" cvsroot="${cvsroot}" quiet="true"/>
-        <cvs command="co ${cvsFlmodule}" dest="${projectFlDir}" cvsroot="${cvsroot}" quiet="true"/>
+        <cvs command="co" package="de.bbv.cm.CMPlugin" dest="${projectFlDir}" cvsroot="${cvsroot}" quiet="true"/>
+        <cvs command="co" package="${cvsFlmodule}" dest="${projectFlDir}" cvsroot="${cvsroot}" quiet="true"/>
         <!--Call the target that does everything-->
         <ant dir="${projectFlDir}/${cvsFlmodule}/build/" antfile="build.xml" target="clean"/>
         <ant dir="${projectFlDir}/${cvsFlmodule}/build/" antfile="build.xml" target="buildjar"/>
@@ -180,8 +180,8 @@
         <property name="cvsFlmodule" value="de.bbv.faktorips.devtools"/>
         <property name="projectFlDir" value="checkout/"/>
         <!--checkout/update project-->
-        <cvs command="co de.bbv.cm.CMPlugin" dest="${projectFlDir}" cvsroot="${cvsroot}" quiet="true"/>
-        <cvs command="co ${cvsFlmodule}" dest="${projectFlDir}" cvsroot="${cvsroot}" quiet="true"/>
+        <cvs command="co" package="de.bbv.cm.CMPlugin" dest="${projectFlDir}" cvsroot="${cvsroot}" quiet="true"/>
+        <cvs command="co" package="${cvsFlmodule}" dest="${projectFlDir}" cvsroot="${cvsroot}" quiet="true"/>
         <!--Call the target that does everything-->
         <ant dir="${projectFlDir}/${cvsFlmodule}/build/" antfile="build.xml" target="clean"/>
         <ant dir="${projectFlDir}/${cvsFlmodule}/build/" antfile="build.xml" target="buildjar"/>
@@ -193,7 +193,7 @@
         <property name="projectFlDir" value="checkout/"/>
         <!--checkout/update project-->
         <delete includeemptydirs="true" dir="${cvsFlmodule}"/>
-        <cvs command="co ${cvsFlmodule}" dest="${projectFlDir}" cvsroot="${cvsroot}" quiet="true"/>
+        <cvs command="co" package="${cvsFlmodule}" dest="${projectFlDir}" cvsroot="${cvsroot}" quiet="true"/>
         <!--Call the target that does everything-->
         <ant dir="${projectFlDir}/${cvsFlmodule}/build/" antfile="build.xml" target="clean"/>
         <ant dir="${projectFlDir}/${cvsFlmodule}/build/" antfile="build.xml" target="buildjar"/>
@@ -336,7 +336,7 @@
         <property name="projectIntegrationtestDir" value="${checkoutdir}"/>
         
     	<!--checkout org.faktorips.integrationtest project-->
-        <cvs command="co ${cvsIntegrationtestmodule}" dest="${projectIntegrationtestDir}" cvsroot="${cvsroot}" quiet="true" tag="${cvsTag}"/>
+        <cvs command="co" package="${cvsIntegrationtestmodule}" dest="${projectIntegrationtestDir}" cvsroot="${cvsroot}" quiet="true" tag="${cvsTag}"/>
         
     	<antcall inheritall="true" target="-delete.eclipse.configuration.log"/>
         
@@ -360,7 +360,7 @@
         <property name="projectIntegrationtestDir" value="${checkoutdir}"/>
         
     	<!--checkout org.faktorips.integrationtest project-->
-        <cvs command="co ${cvsIntegrationtestmodule}" dest="${projectIntegrationtestDir}" cvsroot="${cvsroot}" quiet="true"/>
+        <cvs command="co" package="${cvsIntegrationtestmodule}" dest="${projectIntegrationtestDir}" cvsroot="${cvsroot}" quiet="true"/>
         
     	<antcall inheritall="true" target="-delete.eclipse.configuration.log"/>
         
@@ -593,7 +593,7 @@
         <echo message="   5. ${faktoripsUpdateSiteZipPath}"/>    	
     </target> 
     <target name="-checkout.pluginbuilder" if="isUseCvs">
-        <cvs command="co org.faktorips.pluginbuilder" dest="${projectsRootDir}" cvsroot="${cvsroot}" quiet="true"/>
+        <cvs command="co" package="org.faktorips.pluginbuilder" dest="${projectsRootDir}" cvsroot="${cvsroot}" quiet="true"/>
     </target>
     <target name="-checkout.pluginbuilder.build.version" if="isUseCvs">
     	<loadproperties srcfile="${release.properties}">
@@ -606,13 +606,13 @@
       <delete includeemptydirs="true">
         <fileset dir="${projectsRootDir}/org.faktorips.pluginbuilder" excludes="**/all_cvs_*.map"/>
       </delete>
-    	<cvs command="co -r ${fetchTag} org.faktorips.pluginbuilder" dest="${projectsRootDir}" cvsroot="${cvsroot}" quiet="true"/>
+    	<cvs command="co" package="org.faktorips.pluginbuilder" dest="${projectsRootDir}" cvsroot="${cvsroot}" quiet="true" tag="${fetchTag}"/>
     </target>
     <target name="-checkout.build" if="isUseCvs">
-        <cvs command="co org.faktorips.build" dest="${projectsRootDir}" cvsroot="${cvsroot}" quiet="true"/>
+        <cvs command="co" package="org.faktorips.build" dest="${projectsRootDir}" cvsroot="${cvsroot}" quiet="true"/>
     </target>
     <target name="-checkout.updatesite" if="isUseCvs">
-        <cvs command="co org.faktorips.updatesite" dest="${projectsRootDir}" cvsroot="${cvsroot}" quiet="true"/>
+        <cvs command="co" package="org.faktorips.updatesite" dest="${projectsRootDir}" cvsroot="${cvsroot}" quiet="true"/>
     </target>
     <target name="-checkin.updatesite" if="isUseCvs" unless="isSkipPublish">
     	<cvs command="commit -m 'release build: ${build.version}'" 
@@ -620,7 +620,7 @@
     </target>
     <target name="-checkout.updatesite.on.faktorips.org" if="isUseCvs" unless="isSkipPublish">
         <echo message="update faktorips.org updatesite: ${updatesite.path}"/>
-        <cvs command="co org.faktorips.updatesite" dest="${updatesite.path}" cvsroot="${cvsroot}" quiet="true"/>
+        <cvs command="co" package="org.faktorips.updatesite" dest="${updatesite.path}" cvsroot="${cvsroot}" quiet="true"/>
     </target>	
     <target name="-copy.faktorips.release.to.download.dir" unless="isSkipPublish">
     	<!-- input: dest.name -->
