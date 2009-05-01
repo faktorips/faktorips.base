@@ -2,7 +2,7 @@
 
 	<property name="clientpackage" value="**" />
 	
-	<property name="projectname" value="runtime" />
+	<property name="projectname" value="runtime.java5" />
 	
 	<!-- reads the ipsversion (bundle version) from the manifest file -->
 	<loadproperties srcFile="../META-INF/MANIFEST.MF"/>
@@ -27,9 +27,9 @@
 	
 	<!-- classpath: insert dependend project libs here! -->
 	<path id="classpath">
-		<filelist dir="/var/lib/">
-				<file name="junit.jar"/>
-		</filelist>
+        <filelist dir="./../../org.faktorips.build/lib">
+                <file name="junit.jar"/>
+        </filelist>
 
 		<!-- runtime depends on org.faktorips.util -->
 		<fileset dir="../../org.faktorips.util/" >
@@ -77,7 +77,7 @@
 	<target name="buildclientjar" >
 		<ant antfile="../../org.faktorips.build/build.xml" target="buildSpecificJar">
 			<property name="projectname" value="client" />
-			<property name="jarfile" location="results/faktorips-runtime-client.jar" />		
+			<property name="jarfile" location="results/faktorips-${projectname}-client.jar" />		
 			<property name="selectedDir" value="${clientJarClassDir}" />			
 			<property name="selectedFiles" value="${clientJarClasses}" />			
 			<reference refid="classpath" torefid="classpath"/>
@@ -89,7 +89,7 @@
 		<ant antfile="../../org.faktorips.build/build.xml" target="buildSpecificJar">
 			<property name="projectname" value="client" />
 			<property name="manifest-title" value="FaktorIPS-Runtime client-jar" />
-			<property name="jarfile" location="results/faktorips-runtime-client-src.zip" />	
+			<property name="jarfile" location="results/faktorips-${projectname}-client-src.zip" />	
 			<property name="selectedDir" value="${clientJarSrcDir}" />	
 			<property name="selectedFiles" value="${clientJarSrc}" />			
 			<reference refid="classpath" torefid="classpath"/>
