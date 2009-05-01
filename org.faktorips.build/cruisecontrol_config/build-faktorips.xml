@@ -338,6 +338,8 @@
     	<!--checkout org.faktorips.integrationtest project-->
         <cvs command="co" package="${cvsIntegrationtestmodule}" dest="${projectIntegrationtestDir}" cvsroot="${cvsroot}" quiet="true" tag="${cvsTag}"/>
         
+    	<antcall inheritall="true" target="-checkout.build"/>
+    	
     	<antcall inheritall="true" target="-delete.eclipse.configuration.log"/>
         
     	<!--delegate to the pluginbuilder integrationtest target-->
@@ -362,6 +364,8 @@
     	<!--checkout org.faktorips.integrationtest project-->
         <cvs command="co" package="${cvsIntegrationtestmodule}" dest="${projectIntegrationtestDir}" cvsroot="${cvsroot}" quiet="true"/>
         
+        <antcall inheritall="true" target="-checkout.build"/>
+    	
     	<antcall inheritall="true" target="-delete.eclipse.configuration.log"/>
         
     	<!--delegate to the pluginbuilder integrationtest target-->
