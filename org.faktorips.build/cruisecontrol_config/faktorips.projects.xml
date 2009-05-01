@@ -252,7 +252,7 @@
             <jvmarg arg="-Dprg=cruise.integrationtest"/>
             <property name="checkoutdir" value="checkout_branch"/>
             <property name="cvstag" value="v2_2_patches"/>
-            <property name="buildDirectory" value="${workdir}/../pluginbuilder_tmp_branch/org.faktorips.pluginbuilder"/>            
+            <property name="pluginbuilderTmpDir" value="pluginbuilder_tmp_branch"/>            
             <depends>
                 <project name="org.faktorips.pluginbuilder.v2_2_patches"/>
             </depends>         
@@ -268,7 +268,7 @@
             <jvmarg arg="-Dprg=cruise.integrationtest.java5"/>
             <property name="checkoutdir" value="checkout_branch"/>
             <property name="cvstag" value="v2_2_patches"/>
-            <property name="buildDirectory" value="${workdir}/../pluginbuilder_tmp_branch/org.faktorips.pluginbuilder"/>             
+            <property name="pluginbuilderTmpDir" value="pluginbuilder_tmp_branch"/>             
             <depends>
                 <project name="org.faktorips.pluginbuilder.v2_2_patches"/>
             </depends>         
