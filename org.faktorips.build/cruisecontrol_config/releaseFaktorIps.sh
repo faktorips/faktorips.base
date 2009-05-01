@@ -257,7 +257,7 @@ fi
 #
 # special case create branch
 #   create branch and exit here
-# TODO remove branch example: cvs -d /usr/local/cvsroot rtag -d v2_2_3_rfinal
+# TODO remove branch, example: cvs -d /usr/local/cvsroot rtag -d v2_2_3_rfinal
 if [ "$CREATE_BRANCH" = "true" ] ; then
   getFetchTagVersionForBranch $BUILD_VERSION
   
@@ -286,6 +286,8 @@ if [ "$CREATE_BRANCH" = "true" ] ; then
   # branch pluginbuilder projekt
   cvs -d $CVS_ROOT rtag -R $BRANCH_TAG $PLUGINBUILDER_PROJECT_NAME
   cvs -d $CVS_ROOT rtag -R -b -r $BRANCH_TAG $BRANCH $PLUGINBUILDER_PROJECT_NAME
+  
+  # TODO branch Integrationtets projects
   
   # branch all projects specified in the pluginbuilder map file (all necessary plugin and feature projects)
   cvs -d $CVS_ROOT co -d $PLUGINBUILDER_PROJECT_DIR/maps $PLUGINBUILDER_PROJECT_NAME/maps/all_copy.map
@@ -618,6 +620,8 @@ if [ ! "$SKIPTAGCVS" = "true" ] ; then
     cvs -d $CVS_ROOT rtag -F -R $FETCH_TAG $PLUGINBUILDER_PROJECT_NAME  
   fi
 
+  # TODO tag Integrationtest projects
+  
   # b) tag all projects specified in the pluginbuilder map file (all necessary plugin and feature projects)
   cvs -d $CVS_ROOT co -r $FETCH_TAG -d $PLUGINBUILDER_PROJECT_DIR/maps $PLUGINBUILDER_PROJECT_NAME/maps/all_copy.map
   for project in $( cat $PLUGINBUILDER_PROJECT_DIR/maps/all_copy.map | sed -r "s/.*COPY,@WORKSPACE@,(.*)/\1/g" ) ; do
