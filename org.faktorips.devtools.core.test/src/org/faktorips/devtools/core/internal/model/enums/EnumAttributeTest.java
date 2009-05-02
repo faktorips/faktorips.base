@@ -110,6 +110,10 @@ public class EnumAttributeTest extends AbstractIpsEnumPluginTest {
         assertTrue(Boolean.parseBoolean(attributes.getNamedItem(IEnumAttribute.PROPERTY_LITERAL_NAME).getTextContent()));
         assertTrue(Boolean.parseBoolean(attributes.getNamedItem(IEnumAttribute.PROPERTY_UNIQUE_IDENTIFIER)
                 .getTextContent()));
+        assertTrue(Boolean.parseBoolean(attributes.getNamedItem(IEnumAttribute.PROPERTY_USED_AS_ID_IN_FAKTOR_IPS_UI)
+                .getTextContent()));
+        assertFalse(Boolean.parseBoolean(attributes.getNamedItem(IEnumAttribute.PROPERTY_USED_AS_NAME_IN_FAKTOR_IPS_UI)
+                .getTextContent()));
         assertFalse(Boolean.parseBoolean(attributes.getNamedItem(IEnumAttribute.PROPERTY_INHERITED).getTextContent()));
         assertEquals(1 + 2, xmlElement.getChildNodes().getLength());
 
@@ -120,6 +124,8 @@ public class EnumAttributeTest extends AbstractIpsEnumPluginTest {
         assertEquals(STRING_DATATYPE_NAME, idAttribute.getDatatype());
         assertTrue(idAttribute.isLiteralName());
         assertTrue(idAttribute.isUniqueIdentifier());
+        assertTrue(idAttribute.isUsedAsIdInFaktorIpsUi());
+        assertFalse(idAttribute.isUsedAsNameInFaktorIpsUi());
         assertFalse(idAttribute.isInherited());
         assertEquals(2, loadedEnumType.getEnumAttributes().size());
     }

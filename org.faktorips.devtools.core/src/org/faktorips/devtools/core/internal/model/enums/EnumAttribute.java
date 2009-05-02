@@ -150,6 +150,8 @@ public class EnumAttribute extends AtomicIpsObjectPart implements IEnumAttribute
         datatype = element.getAttribute(PROPERTY_DATATYPE);
         literalName = Boolean.parseBoolean(element.getAttribute(PROPERTY_LITERAL_NAME));
         uniqueIdentifier = Boolean.parseBoolean(element.getAttribute(PROPERTY_UNIQUE_IDENTIFIER));
+        usedAsIdInFaktorIpsUi = Boolean.parseBoolean(element.getAttribute(PROPERTY_USED_AS_ID_IN_FAKTOR_IPS_UI));
+        usedAsNameInFaktorIpsUi = Boolean.parseBoolean(element.getAttribute(PROPERTY_USED_AS_NAME_IN_FAKTOR_IPS_UI));
         inherited = Boolean.parseBoolean(element.getAttribute(PROPERTY_INHERITED));
 
         super.initFromXml(element, id);
@@ -166,6 +168,8 @@ public class EnumAttribute extends AtomicIpsObjectPart implements IEnumAttribute
         element.setAttribute(PROPERTY_DATATYPE, datatype);
         element.setAttribute(PROPERTY_LITERAL_NAME, String.valueOf(literalName));
         element.setAttribute(PROPERTY_UNIQUE_IDENTIFIER, String.valueOf(uniqueIdentifier));
+        element.setAttribute(PROPERTY_USED_AS_ID_IN_FAKTOR_IPS_UI, String.valueOf(usedAsIdInFaktorIpsUi));
+        element.setAttribute(PROPERTY_USED_AS_NAME_IN_FAKTOR_IPS_UI, String.valueOf(usedAsNameInFaktorIpsUi));
         element.setAttribute(PROPERTY_INHERITED, String.valueOf(inherited));
     }
 

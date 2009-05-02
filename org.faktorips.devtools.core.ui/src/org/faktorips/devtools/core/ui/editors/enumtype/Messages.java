@@ -33,7 +33,7 @@ public class Messages extends NLS {
 
     public static String EnumTypeStructurePage_title;
     public static String EnumTypeStructurePage_andLiteral;
-    
+
     public static String EnumTypeValuesPage_title;
 
     public static String EnumAttributesSection_title;
@@ -44,6 +44,8 @@ public class Messages extends NLS {
     public static String EnumAttributeEditDialog_labelDatatype;
     public static String EnumAttributeEditDialog_labelUseAsLiteralName;
     public static String EnumAttributeEditDialog_labelUniqueIdentifier;
+    public static String EnumAttributeEditDialog_labelUsedAsIdInFaktorIpsUi;
+    public static String EnumAttributeEditDialog_labelUsedAsNameInFaktorIpsUi;
     public static String EnumAttributeEditDialog_labelIsInherited;
 
     static {

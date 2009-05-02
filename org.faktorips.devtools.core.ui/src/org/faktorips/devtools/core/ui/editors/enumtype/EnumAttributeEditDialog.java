@@ -49,11 +49,17 @@ public class EnumAttributeEditDialog extends IpsPartEditDialog2 {
     /** The ui control to set the <code>datatype</code> property. */
     private DatatypeRefControl datatypeControl;
 
-    /** The ui control to set the <code>useAsLiteralName</code> property. */
-    private Checkbox useAsLiteralNameCheckbox;
+    /** The ui control to set the <code>literalName</code> property. */
+    private Checkbox literalNameCheckbox;
 
     /** The ui control to set the <code>uniqueIdentifier</code> property. */
     private Checkbox uniqueIdentifierCheckbox;
+
+    /** The ui control to set the <code>usedAsIdInFaktorIpsUi</code> property. */
+    private Checkbox usedAsIdInFaktorIpsUiCheckbox;
+
+    /** The ui control to set the <code>usedAsNameInFaktorIpsUi</code> property. */
+    private Checkbox usedAsNameInFaktorIpsUiCheckbox;
 
     /**
      * Creates a new <code>EnumAttributeEditDialog</code> for the user to edit the given enum
@@ -107,11 +113,19 @@ public class EnumAttributeEditDialog extends IpsPartEditDialog2 {
 
         // Literal name
         uiToolkit.createFormLabel(workArea, Messages.EnumAttributeEditDialog_labelUseAsLiteralName);
-        useAsLiteralNameCheckbox = uiToolkit.createCheckbox(workArea);
+        literalNameCheckbox = uiToolkit.createCheckbox(workArea);
 
-        // Unique Identifier
+        // Unique identifier
         uiToolkit.createFormLabel(workArea, Messages.EnumAttributeEditDialog_labelUniqueIdentifier);
         uniqueIdentifierCheckbox = uiToolkit.createCheckbox(workArea);
+
+        // Used as ID in Faktor-IPS UI
+        uiToolkit.createFormLabel(workArea, Messages.EnumAttributeEditDialog_labelUsedAsIdInFaktorIpsUi);
+        usedAsIdInFaktorIpsUiCheckbox = uiToolkit.createCheckbox(workArea);
+
+        // Used as name in Faktor-IPS UI
+        uiToolkit.createFormLabel(workArea, Messages.EnumAttributeEditDialog_labelUsedAsNameInFaktorIpsUi);
+        usedAsNameInFaktorIpsUiCheckbox = uiToolkit.createCheckbox(workArea);
 
         // Inherited
         uiToolkit.createFormLabel(workArea, Messages.EnumAttributeEditDialog_labelIsInherited);
@@ -132,10 +146,11 @@ public class EnumAttributeEditDialog extends IpsPartEditDialog2 {
     }
 
     /**
-     * If the enum attribute to be edited is inherited from the supertype hierarchy the datatype,
-     * useAsLiteralName and uniqueIdentifier fields will not be bound to the respective properties
-     * and their content will be set to the values of the respective super enum attribute if such
-     * can be found.
+     * If the enum attribute to be edited is inherited from the supertype hierarchy the
+     * <code>datatype</code>, <code>useAsLiteralName</code>, <code>uniqueIdentifier</code>,
+     * <code>useAsIdInFaktorIpsUi</code> and <code>useAsNameInFaktorIpsUi</code> fields will not be
+     * bound to the respective properties and their content will be set to the values of the
+     * respective super enum attribute if such can be found.
      * <p>
      * If the enum attribute to be edited is not inherited from the supertype hierarchy the fields
      * will be bound to the respective properties.
@@ -143,30 +158,47 @@ public class EnumAttributeEditDialog extends IpsPartEditDialog2 {
     private void bindAndSetContentDependendOnInheritedProperty(IEnumAttribute enumAttribute) {
         if (!(enumAttribute.isInherited())) {
             bindingContext.bindContent(datatypeControl, enumAttribute, IEnumAttribute.PROPERTY_DATATYPE);
-            bindingContext.bindContent(useAsLiteralNameCheckbox, enumAttribute, IEnumAttribute.PROPERTY_LITERAL_NAME);
+            bindingContext.bindContent(literalNameCheckbox, enumAttribute, IEnumAttribute.PROPERTY_LITERAL_NAME);
             bindingContext.bindContent(uniqueIdentifierCheckbox, enumAttribute,
                     IEnumAttribute.PROPERTY_UNIQUE_IDENTIFIER);
+            bindingContext.bindContent(usedAsIdInFaktorIpsUiCheckbox, enumAttribute,
+                    IEnumAttribute.PROPERTY_USED_AS_ID_IN_FAKTOR_IPS_UI);
+            bindingContext.bindContent(usedAsNameInFaktorIpsUiCheckbox, enumAttribute,
+                    IEnumAttribute.PROPERTY_USED_AS_NAME_IN_FAKTOR_IPS_UI);
         } else {
             bindingContext.removeBindings(datatypeControl);
-            bindingContext.removeBindings(useAsLiteralNameCheckbox);
+            bindingContext.removeBindings(literalNameCheckbox);
             bindingContext.removeBindings(uniqueIdentifierCheckbox);
+            bindingContext.removeBindings(usedAsIdInFaktorIpsUiCheckbox);
+            bindingContext.removeBindings(usedAsNameInFaktorIpsUiCheckbox);
             bindingContext.bindEnabled(datatypeControl, enumAttribute, IEnumAttribute.PROPERTY_INHERITED, false);
             bindingContext.bindEnabled(uniqueIdentifierCheckbox, enumAttribute, IEnumAttribute.PROPERTY_INHERITED,
                     false);
-            bindingContext.bindEnabled(useAsLiteralNameCheckbox, enumAttribute, IEnumAttribute.PROPERTY_INHERITED,
+            bindingContext.bindEnabled(literalNameCheckbox, enumAttribute, IEnumAttribute.PROPERTY_INHERITED, false);
+            bindingContext.bindEnabled(usedAsIdInFaktorIpsUiCheckbox, enumAttribute, IEnumAttribute.PROPERTY_INHERITED,
                     false);
+            bindingContext.bindEnabled(usedAsNameInFaktorIpsUiCheckbox, enumAttribute,
+                    IEnumAttribute.PROPERTY_INHERITED, false);
 
             try {
                 IIpsProject ipsProject = enumAttribute.getIpsProject();
                 Datatype datatype = enumAttribute.findDatatype(ipsProject);
                 Boolean literalName = enumAttribute.findIsLiteralName();
                 Boolean uniqueIdentifier = enumAttribute.findIsUniqueIdentifier();
+                Boolean usedAsIdInFaktorIpsUi = enumAttribute.findIsUsedAsIdInFaktorIpsUi();
+                Boolean usedAsNameInFaktorIpsUi = enumAttribute.findIsUsedAsNameInFaktorIpsUi();
                 String datatypeString = (datatype == null) ? "" : datatype.getName();
                 boolean literalNameBoolean = (literalName == null) ? false : literalName.booleanValue();
                 boolean uniqueIdentifierBoolean = (uniqueIdentifier == null) ? false : uniqueIdentifier.booleanValue();
+                boolean usedAsIdInFaktorIpsUiBoolean = (usedAsIdInFaktorIpsUi == null) ? false : usedAsIdInFaktorIpsUi
+                        .booleanValue();
+                boolean usedAsNameInFaktorIpsUiBoolean = (usedAsNameInFaktorIpsUi == null) ? false
+                        : usedAsNameInFaktorIpsUi.booleanValue();
                 datatypeControl.setText(datatypeString);
-                useAsLiteralNameCheckbox.setChecked(literalNameBoolean);
+                literalNameCheckbox.setChecked(literalNameBoolean);
                 uniqueIdentifierCheckbox.setChecked(uniqueIdentifierBoolean);
+                usedAsIdInFaktorIpsUiCheckbox.setChecked(usedAsIdInFaktorIpsUiBoolean);
+                usedAsNameInFaktorIpsUiCheckbox.setChecked(usedAsNameInFaktorIpsUiBoolean);
             } catch (CoreException e) {
                 throw new RuntimeException(e);
             }
