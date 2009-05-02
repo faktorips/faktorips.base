@@ -278,19 +278,19 @@ public class EnumAttribute extends AtomicIpsObjectPart implements IEnumAttribute
     }
 
     /** Validates the <code>literalName</code> property. */
-    private void validateLiteralName(MessageList list, IIpsProject ipsProject) {
+    private void validateLiteralName(MessageList list, IIpsProject ipsProject) throws CoreException {
         String text;
         Message validationMessage;
         List<IEnumAttribute> enumAttributes = getEnumType().getEnumAttributesIncludeSupertypeCopies();
 
         if (literalName) {
-            // Check for other attributes being marked as literalName
-            int numberEnumAttributesIdentifier = 0;
+            // Check for other enum attributes being marked as literalName
+            int numberEnumAttributesLiteralName = 0;
             for (IEnumAttribute currentEnumAttribute : enumAttributes) {
-                if (currentEnumAttribute.isLiteralName()) {
-                    numberEnumAttributesIdentifier++;
+                if (currentEnumAttribute.findIsLiteralName()) {
+                    numberEnumAttributesLiteralName++;
                 }
-                if (numberEnumAttributesIdentifier > 1) {
+                if (numberEnumAttributesLiteralName > 1) {
                     text = Messages.EnumAttribute_DuplicateLiteralName;
                     validationMessage = new Message(MSGCODE_ENUM_ATTRIBUTE_DUPLICATE_LITERAL_NAME, text, Message.ERROR,
                             this, PROPERTY_LITERAL_NAME);
@@ -326,18 +326,47 @@ public class EnumAttribute extends AtomicIpsObjectPart implements IEnumAttribute
     }
 
     /** Validates the <code>usedAsNameInFaktorIpsUi</code> property. */
-    private void validateUsedAsNameInFaktorIpsUi(MessageList list, IIpsProject ipsProject) {
+    private void validateUsedAsNameInFaktorIpsUi(MessageList list, IIpsProject ipsProject) throws CoreException {
         String text;
         Message validationMessage;
-        // TODO aw
+
+        if (usedAsNameInFaktorIpsUi) {
+            // Check for other enum attributes being marked to be used as name
+            int numberEnumAttributesUsedAsName = 0;
+            for (IEnumAttribute currentEnumAttribute : getEnumType().getEnumAttributesIncludeSupertypeCopies()) {
+                if (currentEnumAttribute.findIsUsedAsNameInFaktorIpsUi()) {
+                    numberEnumAttributesUsedAsName++;
+                }
+                if (numberEnumAttributesUsedAsName > 1) {
+                    text = Messages.EnumAttribute_DuplicateUsedAsNameInFaktorIpsUi;
+                    validationMessage = new Message(MSGCODE_ENUM_ATTRIBUTE_DUPLICATE_USED_AS_NAME_IN_FAKTOR_IPS_UI,
+                            text, Message.ERROR, this, PROPERTY_USED_AS_NAME_IN_FAKTOR_IPS_UI);;
+                    list.add(validationMessage);
+                }
+            }
+        }
     }
 
     /** Validates the <code>usedAsIdInFaktorIpsUi</code> property. */
-    private void validateUsedAsIdInFaktorIpsUi(MessageList list, IIpsProject ipsProject) {
+    private void validateUsedAsIdInFaktorIpsUi(MessageList list, IIpsProject ipsProject) throws CoreException {
         String text;
         Message validationMessage;
-        // TODO aw
 
+        if (usedAsIdInFaktorIpsUi) {
+            // Check for other enum attributes being marked to be used as ID
+            int numberEnumAttributesUsedAsId = 0;
+            for (IEnumAttribute currentEnumAttribute : getEnumType().getEnumAttributesIncludeSupertypeCopies()) {
+                if (currentEnumAttribute.findIsUsedAsIdInFaktorIpsUi()) {
+                    numberEnumAttributesUsedAsId++;
+                }
+                if (numberEnumAttributesUsedAsId > 1) {
+                    text = Messages.EnumAttribute_DuplicateUsedAsIdInFaktorIpsUi;
+                    validationMessage = new Message(MSGCODE_ENUM_ATTRIBUTE_DUPLICATE_USED_AS_ID_IN_FAKTOR_IPS_UI, text,
+                            Message.ERROR, this, PROPERTY_USED_AS_ID_IN_FAKTOR_IPS_UI);;
+                    list.add(validationMessage);
+                }
+            }
+        }
     }
 
     /**
@@ -355,6 +384,8 @@ public class EnumAttribute extends AtomicIpsObjectPart implements IEnumAttribute
             setDatatype("");
             setLiteralName(false);
             setUniqueIdentifier(false);
+            setUsedAsIdInFaktorIpsUi(false);
+            setUsedAsNameInFaktorIpsUi(false);
         }
 
         boolean oldIsInherited = this.inherited;
@@ -485,6 +516,36 @@ public class EnumAttribute extends AtomicIpsObjectPart implements IEnumAttribute
         boolean oldUsedAsNameInFaktorIpsUi = this.usedAsNameInFaktorIpsUi;
         valueChanged(oldUsedAsNameInFaktorIpsUi, usedAsNameInFaktorIpsUi);
         this.usedAsNameInFaktorIpsUi = usedAsNameInFaktorIpsUi;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public Boolean findIsUsedAsIdInFaktorIpsUi() throws CoreException {
+        if (inherited) {
+            IEnumAttribute superEnumAttribute = findSuperEnumAttribute();
+            if (superEnumAttribute == null) {
+                return null;
+            }
+            return superEnumAttribute.isUsedAsIdInFaktorIpsUi();
+        } else {
+            return isUsedAsIdInFaktorIpsUi();
+        }
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public Boolean findIsUsedAsNameInFaktorIpsUi() throws CoreException {
+        if (inherited) {
+            IEnumAttribute superEnumAttribute = findSuperEnumAttribute();
+            if (superEnumAttribute == null) {
+                return null;
+            }
+            return superEnumAttribute.isUsedAsNameInFaktorIpsUi();
+        } else {
+            return isUsedAsNameInFaktorIpsUi();
+        }
     }
 
 }

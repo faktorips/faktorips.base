@@ -111,6 +111,20 @@ public interface IEnumAttribute extends IIpsObjectPart {
             + "EnumAttributeLiteralNameButNotUniqueIdentifier"; //$NON-NLS-1$;
 
     /**
+     * Validation message code to indicate that there is at least one other enum attribute marked to
+     * be used as name in the Faktor-IPS UI in the parent enum type.
+     */
+    public final static String MSGCODE_ENUM_ATTRIBUTE_DUPLICATE_USED_AS_NAME_IN_FAKTOR_IPS_UI = MSGCODE_PREFIX
+            + "EnumAttributeDuplicateUsedAsNameInFaktorIpsUi"; //$NON-NLS-1$
+
+    /**
+     * Validation message code to indicate that there is at least one other enum attribute marked to
+     * be used as ID in the Faktor-IPS UI in the parent enum type.
+     */
+    public final static String MSGCODE_ENUM_ATTRIBUTE_DUPLICATE_USED_AS_ID_IN_FAKTOR_IPS_UI = MSGCODE_PREFIX
+            + "EnumAttributeDuplicateUsedAsIdInFaktorIpsUi"; //$NON-NLS-1$
+
+    /**
      * Sets the name of this enum attribute.
      * 
      * @param name The new name for this enum attribute.
@@ -164,7 +178,7 @@ public interface IEnumAttribute extends IIpsObjectPart {
      * if not.
      * <p>
      * <strong>Important:</strong> This operation does not search the supertype hierarchy for the
-     * literal name property if this enum attribute is inherited. Use
+     * <code>literalName</code> property if this enum attribute is inherited. Use
      * <code>findIsLiteralName()</code> in this case.
      * 
      * @see #findIsLiteralName()
@@ -225,7 +239,7 @@ public interface IEnumAttribute extends IIpsObjectPart {
      * if not.
      * <p>
      * <strong>Important:</strong> This operation does not search the supertype hierarchy for the
-     * unique identifier property if this enum attribute is inherited. Use
+     * <code>uniqueIdentifier</code> property if this enum attribute is inherited. Use
      * <code>findIsUniqueIdentifier()</code> in this case.
      * 
      * @see #findIsUniqueIdentifier()
@@ -267,6 +281,12 @@ public interface IEnumAttribute extends IIpsObjectPart {
     /**
      * Returns a flag indicating whether this enum attribute is marked to be used as name of enum
      * values in the Faktor-IPS UI.
+     * <p>
+     * <strong>Important:</strong> This operation does not search the supertype hierarchy for the
+     * <code>usedAsNameInFaktorIpsUi</code> property if this enum attribute is inherited. Use
+     * <code>findIsUsedAsNameInFaktorIpsUi()</code> in this case.
+     * 
+     * @see #findIsUsedAsNameInFaktorIpsUi()
      */
     public boolean isUsedAsNameInFaktorIpsUi();
 
@@ -283,7 +303,41 @@ public interface IEnumAttribute extends IIpsObjectPart {
     /**
      * Returns a flag indicating whether this enum attribute is marked to be used as ID of enum
      * values in the Faktor-IPS UI.
+     * <p>
+     * <strong>Important:</strong> This operation does not search the supertype hierarchy for the
+     * <code>usedAsIdInFaktorIpsUi</code> property if this enum attribute is inherited. Use
+     * <code>findIsUsedAsIdInFaktorIpsUi()</code> in this case.
+     * 
+     * @see #findIsUsedAsIdInFaktorIpsUi()
      */
     public boolean isUsedAsIdInFaktorIpsUi();
+
+    /**
+     * Returns <code>true</code> if this enum attribute is marked to be used as name in the
+     * Faktor-IPS UI, <code>false</code> if not.
+     * <p>
+     * If this enum attribute is inherited the property of the super enum attribute will be
+     * returned. Returns <code>null</code> if the super enum attribute cannot be found.
+     * 
+     * @see #isUsedAsNameInFaktorIpsUi()
+     * 
+     * @throws CoreException If an error occurs while searching for the super enum attribute.
+     */
+    // TODO aw: ips project as parameter neccessary
+    public Boolean findIsUsedAsNameInFaktorIpsUi() throws CoreException;
+
+    /**
+     * Returns <code>true</code> if this enum attribute is marked to be used as ID in the Faktor-IPS
+     * UI, <code>false</code> if not.
+     * <p>
+     * If this enum attribute is inherited the property of the super enum attribute will be
+     * returned. Returns <code>null</code> if the super enum attribute cannot be found.
+     * 
+     * @see #isUsedAsIdInFaktorIpsUi()
+     * 
+     * @throws CoreException If an error occurs while searching for the super enum attribute.
+     */
+    // TODO aw: ips project as parameter neccessary
+    public Boolean findIsUsedAsIdInFaktorIpsUi() throws CoreException;
 
 }

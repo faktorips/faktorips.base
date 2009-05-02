@@ -91,6 +91,8 @@ public class EnumAttributeTest extends AbstractIpsEnumPluginTest {
         assertEquals("", genderEnumAttributeId.getDatatype());
         assertFalse(genderEnumAttributeId.isLiteralName());
         assertFalse(genderEnumAttributeId.isUniqueIdentifier());
+        assertFalse(genderEnumAttributeId.isUsedAsNameInFaktorIpsUi());
+        assertFalse(genderEnumAttributeId.isUsedAsIdInFaktorIpsUi());
     }
 
     public void testGetSetIsUniqueIdentifier() {
@@ -218,6 +220,22 @@ public class EnumAttributeTest extends AbstractIpsEnumPluginTest {
         assertTrue(inheritedAttribute.isValid());
     }
 
+    public void testValidateUsedAsNameInFaktorIpsUi() throws CoreException {
+        genderEnumAttributeId.setUsedAsNameInFaktorIpsUi(true);
+        MessageList validationMessageList = genderEnumAttributeId.validate(ipsProject);
+        assertOneValidationMessage(validationMessageList);
+        assertNotNull(validationMessageList
+                .getMessageByCode(IEnumAttribute.MSGCODE_ENUM_ATTRIBUTE_DUPLICATE_USED_AS_NAME_IN_FAKTOR_IPS_UI));
+    }
+
+    public void testValidateUsedAsIdInFaktorIpsUi() throws CoreException {
+        genderEnumAttributeName.setUsedAsIdInFaktorIpsUi(true);
+        MessageList validationMessageList = genderEnumAttributeId.validate(ipsProject);
+        assertOneValidationMessage(validationMessageList);
+        assertNotNull(validationMessageList
+                .getMessageByCode(IEnumAttribute.MSGCODE_ENUM_ATTRIBUTE_DUPLICATE_USED_AS_ID_IN_FAKTOR_IPS_UI));
+    }
+
     public void testGetImage() throws CoreException {
         Image icon = IpsPlugin.getDefault().getImage(ICON);
         Image overriddenIcon = IpsPlugin.getDefault().getImage(OVERRIDDEN_ICON);
@@ -271,6 +289,24 @@ public class EnumAttributeTest extends AbstractIpsEnumPluginTest {
 
         genderEnumAttributeId.setInherited(true);
         assertNull(genderEnumAttributeId.findIsUniqueIdentifier());
+    }
+
+    public void testFindIsUsedAsIdInFaktorIpsUi() throws CoreException {
+        assertTrue(inheritedEnumAttributeId.findIsUsedAsIdInFaktorIpsUi());
+        inheritedEnumAttributeId.setInherited(false);
+        assertFalse(inheritedEnumAttributeId.findIsUsedAsIdInFaktorIpsUi());
+
+        genderEnumAttributeId.setInherited(true);
+        assertNull(genderEnumAttributeId.findIsUsedAsIdInFaktorIpsUi());
+    }
+
+    public void testFindIsUsedAsNameInFaktorIpsUi() throws CoreException {
+        assertTrue(inheritedEnumAttributeName.findIsUsedAsNameInFaktorIpsUi());
+        inheritedEnumAttributeName.setInherited(false);
+        assertFalse(inheritedEnumAttributeName.findIsUsedAsNameInFaktorIpsUi());
+
+        genderEnumAttributeName.setInherited(true);
+        assertNull(genderEnumAttributeName.findIsUsedAsNameInFaktorIpsUi());
     }
 
     public void testGetSetUsedAsNameInFaktorIpsUi() {
