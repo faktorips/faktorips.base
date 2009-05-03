@@ -215,9 +215,6 @@
     	<property name="buildDirectory" value="${basedir}/${pluginbuilderTmpDir}/org.faktorips.pluginbuilder"/>
     	<property name="pluginbuilder.config" value="${projectsRootDir}/org.faktorips.pluginbuilder/pluginbuilder.config"/>
 
-    	<delete dir="${projectsRootDir}"/>
-    	<mkdir dir="${projectsRootDir}"/>
-    	
     	<!-- checkout features -->
     	<cvs command="co" package="${cvsPluginbuildermodule}" dest="${projectsRootDir}" cvsroot="${cvsroot}" quiet="true" tag="${cvsTag}"/>
     	<cvs command="co" package="org.faktorips.feature" dest="${projectsRootDir}" cvsroot="${cvsroot}" quiet="true" tag="${cvsTag}"/>
