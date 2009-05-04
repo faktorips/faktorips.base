@@ -205,16 +205,7 @@ NOCVS=false
 BUILDPRODUCT=
 BRANCH=
 CREATE_BRANCH=false
-
-#################################################
-# assert that no other instance of pluginbuilder is running
-#################################################
-if [ ! $(ps xaf | grep prg=pluginbuilder | grep -v "grep" | wc -l) -eq 0 ] ; then
-  echo "Cancel build: an instance of pluginbuilder is currently running!"
-  echo "Due to resource limit, please wait until the other pluginbuilder process has finished."
-  echo "If the plugin test are executed, this could take at least 20 minutes..."
-  exit 1;
-fi
+FORCE_BUILD=false
 
 #################################################
 # parse arguments
@@ -237,6 +228,7 @@ do  case "$1" in
   -updatesiteDir) PUBLISH_UPDATESITE_DIR=$2 ; shift ;;
   -noCvs)         NOCVS=true ;;
   -createBranch)  CREATE_BRANCH=true ;;
+  -forceBuild)    FORCE_BUILD=true ;;
   -?)             SHOWHELP=true ;;
   --?)            SHOWHELP=true ;;
   -h)             SHOWHELP=true ;;
@@ -247,6 +239,16 @@ do  case "$1" in
   esac
   shift
 done
+
+#################################################
+# assert that no other instance of pluginbuilder is running
+#################################################
+if [ ! $(ps xaf | grep prg=pluginbuilder | grep -v "grep" | wc -l) -eq 0 -a ! "$FORCE_BUILD" = "true" ] ; then
+  echo "Cancel build: an instance of pluginbuilder is currently running!"
+  echo "Due to resource limit, please wait until the other pluginbuilder process has finished."
+  echo "If the plugin test are executed, this could take at least 20 minutes..."
+  exit 1;
+fi
 
 # enhance environment with given parameter
 PLUGINBUILDER_PROJECT_DIR=$PROJECTSROOTDIR/$PLUGINBUILDER_PROJECT_NAME
