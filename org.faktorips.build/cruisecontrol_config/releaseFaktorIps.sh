@@ -693,8 +693,9 @@ EXEC="$ANT_HOME/bin/ant -buildfile $BUILDFILE release \
  "
 echo $EXEC
 eval $EXEC
+RC=$(echo $?)
 
-if [ ! "$SKIPPUBLISH" = "true" ] ; then
+if [ $RC -eq 0 -a ! "$SKIPPUBLISH" = "true" ] ; then
   echo "publish: generateIndexHtml"
   LINK_PREFIX="http://update.faktorzehn.org/faktorips/downloads"
   generateIndexHtml $LINK_PREFIX $PUBLISH_DOWNLOAD_DIR $BUILD_CATEGORY_PATH
