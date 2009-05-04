@@ -675,7 +675,7 @@ fi
 # call ant to perform the specified release build
 #################################################
 
-BUILD_CATEGORY_PATH="faktorips_"$BUILD_CATEGORY
+BUILD_CATEGORY_PATH="faktorips-"$BUILD_CATEGORY
 
 echo $BUILDFILE
 EXEC="$ANT_HOME/bin/ant -buildfile $BUILDFILE release \

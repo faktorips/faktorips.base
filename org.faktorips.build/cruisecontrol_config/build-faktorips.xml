@@ -418,10 +418,11 @@
         <property name="faktoripsUmlReleaseDownloadZipPath" value="${downloadDir}/faktorips-uml-${build.version}.zip"/>
         <property name="faktoripsUmlNls1ReleaseDownloadZipPath" value="${downloadDir}/faktorips-uml-nls1-${build.version}.zip"/>
         <property name="faktoripsUpdateSiteZipPath" value="${downloadDir}/faktorips-updateSite-${build.version}.zip"/>
-        <!--    product -->
-		<property name="faktoripsProductWinZipPath" value="${downloadDir}/faktorips-${build.version}-win32.x86-${productProject}.zip"/>
-        <property name="faktoripsProductLinuxZipPath" value="${downloadDir}/faktorips-${build.version}-linux.gtk.x86-${productProject}.zip"/>
-        <property name="faktoripsRuntimeAndValuetypesZipPath" value="${downloadDir}/faktorips-runtime-valuetypes-${build.version}.zip"/>
+        <!--    product zip -->
+		<property name="faktoripsProductWinZipPath" value="${downloadDir}/faktorips-win32.x86-${productProject}-${build.version}.zip"/>
+        <property name="faktoripsProductLinuxZipPath" value="${downloadDir}/faktorips-linux.gtk.x86-${productProject}-${build.version}.zip"/>
+        <!--    runtime and valuetypes zip -->
+		<property name="faktoripsRuntimeAndValuetypesZipPath" value="${downloadDir}/faktorips-runtime-valuetypes-${build.version}.zip"/>
     	<!-- pluginbuilder configuration files -->
     	<property name="release.properties" value="${projectsRootDir}/org.faktorips.pluginbuilder/releases/${build.version}.properties"/>
         <property name="pluginbuilder.config" value="${projectsRootDir}/org.faktorips.pluginbuilder/pluginbuilder.config"/>
