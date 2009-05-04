@@ -503,17 +503,17 @@
             <property name="updateSiteUrl" value="http://update.faktorzehn.org/faktorips"/>    		
         </ant>
 		
-	    <!-- build runtime and valuetypes separately -->
-		<!-- because the pluginbuilder doesn't set the version no in the manifest file -->
+	    <!-- build runtime and valuetypes separately,
+		       the eclipse build doesn't set the version number in the manifest file -->
 		<antcall inheritall="true" target="-buildAndPublish.release.runtimeAndValutypesJars"/>
-<!--
+
 		<antcall inheritall="true" target="-publish.release.all"/>
 		<antcall inheritall="true" target="-publish.product"/>
--->
-    </target>
+	</target>
 	
     <!--helper targets-->
     <target name="-buildAndPublish.release.runtimeAndValutypesJars" unless="is.product.build">
+    	<!-- build runtime and valutypes using own build files -->
     	<ant dir="${buildDirectory}/plugins/org.faktorips.valuetypes/build" antfile="build.xml" target="buildAllsJars">
     	    <property name="buildproject.path" value="${projectsRootDir}/org.faktorips.build"/>
     	</ant>
@@ -578,7 +578,6 @@
         <echo message="   1. ${faktoripsProductLinuxZipPath}"/>		
         <echo message="   2. ${faktoripsProductWinZipPath}"/>		
 	</target>	
-	
 	<target name="-publish.release.all" unless="is.product.build">
         <!--copy zipped features into the faktorips download directory -->
         <!-- faktorips -->
