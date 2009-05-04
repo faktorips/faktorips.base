@@ -136,6 +136,10 @@ generateIndexHtml ()
       # ignore index.html file
       continue
     fi
+    # only files containing "faktorips" or "updatesite"
+    if [ ! $( echo $i | grep "faktorips" | wc -l ) -eq 1 -a ! $( echo $i | grep updatesite | wc -l) -eq 1 ] ; then
+        continue
+    fi
     
     # space between categories
     local FILE_VERSION=$(echo $i | sed -r 's|.*-([0-9]*\.[0-9]*\.[0-9]*)\..*|\1|g')
@@ -147,7 +151,7 @@ generateIndexHtml ()
     if [ -d $DIR"/"$i ] ; then
       # directory link
       FILE=$LINK_PREFIX"/"$i"/index.html"
-      echo "  <a href=\"$FILE\">"$i"</a><br>" >> $OUT
+      echo "Category: <a href=\"$FILE\">"$i"</a><br>" >> $OUT
     else 
       # file link
       FILE=$LINK_PREFIX"/"$CATEGORY"/"$(basename $i)
