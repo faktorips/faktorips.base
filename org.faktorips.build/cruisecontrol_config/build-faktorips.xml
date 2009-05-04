@@ -418,6 +418,7 @@
         <property name="faktoripsUmlReleaseDownloadZipPath" value="${downloadDir}/faktorips-uml-${build.version}.zip"/>
         <property name="faktoripsUmlNls1ReleaseDownloadZipPath" value="${downloadDir}/faktorips-uml-nls1-${build.version}.zip"/>
         <property name="faktoripsUpdateSiteZipPath" value="${downloadDir}/faktorips-updateSite-${build.version}.zip"/>
+        <property name="faktoripsProductZipPath" value="${downloadDir}/product-${productProject}-${build.version}.zip"/>
     	<!-- pluginbuilder configuration files -->
     	<property name="release.properties" value="${projectsRootDir}/org.faktorips.pluginbuilder/releases/${build.version}.properties"/>
         <property name="pluginbuilder.config" value="${projectsRootDir}/org.faktorips.pluginbuilder/pluginbuilder.config"/>
@@ -425,7 +426,7 @@
     	<property name="pluginbuilder.features" value="org.faktorips.feature,org.faktorips.feature.nls1,org.faktorips.feature.source"/>
     	<property name="pluginbuilder.features.uml" value="org.faktorips.uml.feature,org.faktorips.uml.feature.nls1,org.faktorips.uml.feature.source"/>
     	
-    	<condition property="isUseCvs" value="true">
+      <condition property="isUseCvs" value="true">
         <equals arg1="${noCvs}" arg2="false"/>
       </condition>
 
@@ -472,18 +473,10 @@
         <available type="file" file="${release.properties}" property="releasePropertiesExists"/>
         <fail message="Could not find ${build.version}.properties in ${projectsRootDir}/org.faktorips.pluginbuilder/releases/" unless="releasePropertiesExists"/>
     	<!--3. check previous release build with same target, check file exists in download dir -->
-    	<antcall inheritall="true" target="-fail.if.file.exists">
-    	    <param name="file" value="${faktoripsReleaseDownloadZipPath}"/>
-    	</antcall>
-    	<antcall inheritall="true" target="-fail.if.file.exists">
-    	    <param name="file" value="${faktoripsNls1ReleaseDownloadZipPath}"/>
-    	</antcall>
-    	<antcall inheritall="true" target="-fail.if.file.exists">
-    	    <param name="file" value="${faktoripsUmlReleaseDownloadZipPath}"/>
-    	</antcall>
-    	<antcall inheritall="true" target="-fail.if.file.exists">
-    	    <param name="file" value="${faktoripsUmlNls1ReleaseDownloadZipPath}"/>
-    	</antcall>
+    	<antcall inheritall="true" target="-assert.release.exists">
+		</antcall>
+    	<antcall inheritall="true" target="-assert.product.exists">
+		</antcall>
 
     	<!-- checkout pluginbuilder with correct build.version -->
     	<antcall inheritall="true" target="-checkout.pluginbuilder.build.version"/>
@@ -507,35 +500,76 @@
             <property name="updateSiteDescription" value="FaktorIPS update site"/>
             <property name="updateSiteUrl" value="http://update.faktorzehn.org/faktorips"/>    		
         </ant>
-    	
+
+		<antcall inheritall="true" target="-publish.release.all">
+		</antcall>
+		<antcall inheritall="true" target="-publish.product">
+		</antcall>
+    </target>
+
+    <!--helper targets-->
+	<target name="-assert.product.exists" if="is.product.build">
+        <antcall inheritall="true" target="-fail.if.file.exists">
+             <param name="file" value="${faktoripsProductZipPath}"/>
+        </antcall>
+	</target>
+	<target name="-assert.release.exists" unless="is.product.build">
+        <antcall inheritall="true" target="-fail.if.file.exists">
+             <param name="file" value="${faktoripsReleaseDownloadZipPath}"/>
+         </antcall>
+         <antcall inheritall="true" target="-fail.if.file.exists">
+             <param name="file" value="${faktoripsNls1ReleaseDownloadZipPath}"/>
+         </antcall>
+         <antcall inheritall="true" target="-fail.if.file.exists">
+             <param name="file" value="${faktoripsUmlReleaseDownloadZipPath}"/>
+         </antcall>
+         <antcall inheritall="true" target="-fail.if.file.exists">
+             <param name="file" value="${faktoripsUmlNls1ReleaseDownloadZipPath}"/>
+         </antcall>
+         <antcall inheritall="true" target="-fail.if.file.exists">
+             <param name="file" value="${faktoripsUpdateSiteZipPath}"/>
+         </antcall>
+	</target>
+	<target name="-publish.product" if="is.product.build">
+        <!--
+		<antcall inheritall="true" target="-copy.faktorips.release.to.download.dir">
+             <param name="source" value="updateSite-${build.version}.zip" />
+             <param name="dest.name" value="${faktoripsProductZipPath}" />
+        </antcall>
+        -->
+        <echo message="finished. Product build: ${productProject}"/>
+        <echo message="   1. ${faktoripsProductZipPath}"/>		
+	</target>	
+	
+	<target name="-publish.release.all" unless="is.product.build">
         <!--copy zipped features into the faktorips download directory -->
-    	<!-- faktorips -->
-		<mkdir dir="${downloadDir}" />
-    	<antcall inheritall="true" target="-copy.faktorips.release.to.download.dir">
-         	<param name="source" value="org.faktorips.feature-${build.version}.zip" />
-    	    <param name="dest.name" value="${faktoripsReleaseDownloadZipPath}" />
-    	</antcall>
-    	<antcall inheritall="true" target="-copy.faktorips.release.to.download.dir">
-    		<param name="source" value="org.faktorips.feature.nls1-${build.version}.zip" />
-    	    <param name="dest.name" value="${faktoripsNls1ReleaseDownloadZipPath}" />
-    	</antcall>
-    	<!-- uml -->
-    	<antcall inheritall="true" target="-copy.faktorips.release.to.download.dir">
-         	<param name="source" value="org.faktorips.uml.feature-${build.version}.zip" />
-    	    <param name="dest.name" value="${faktoripsUmlReleaseDownloadZipPath}" />
-    	</antcall>
-    	<antcall inheritall="true" target="-copy.faktorips.release.to.download.dir">
-    		<param name="source" value="org.faktorips.uml.feature.nls1-${build.version}.zip" />
-    	    <param name="dest.name" value="${faktoripsUmlNls1ReleaseDownloadZipPath}" />
-    	</antcall>
-    	<antcall inheritall="true" target="-copy.faktorips.release.to.download.dir">
-    		<param name="source" value="updateSite-${build.version}.zip" />
-    	    <param name="dest.name" value="${faktoripsUpdateSiteZipPath}" />
-    	</antcall>
-	    
-    	<!--install the features on updatesite-->
+        <!-- faktorips -->
+        <mkdir dir="${downloadDir}" />
+        <antcall inheritall="true" target="-copy.faktorips.release.to.download.dir">
+            <param name="source" value="org.faktorips.feature-${build.version}.zip" />
+            <param name="dest.name" value="${faktoripsReleaseDownloadZipPath}" />
+        </antcall>
+        <antcall inheritall="true" target="-copy.faktorips.release.to.download.dir">
+            <param name="source" value="org.faktorips.feature.nls1-${build.version}.zip" />
+            <param name="dest.name" value="${faktoripsNls1ReleaseDownloadZipPath}" />
+        </antcall>
+        <!-- uml -->
+        <antcall inheritall="true" target="-copy.faktorips.release.to.download.dir">
+            <param name="source" value="org.faktorips.uml.feature-${build.version}.zip" />
+            <param name="dest.name" value="${faktoripsUmlReleaseDownloadZipPath}" />
+        </antcall>
+        <antcall inheritall="true" target="-copy.faktorips.release.to.download.dir">
+            <param name="source" value="org.faktorips.uml.feature.nls1-${build.version}.zip" />
+            <param name="dest.name" value="${faktoripsUmlNls1ReleaseDownloadZipPath}" />
+        </antcall>
+        <antcall inheritall="true" target="-copy.faktorips.release.to.download.dir">
+            <param name="source" value="updateSite-${build.version}.zip" />
+            <param name="dest.name" value="${faktoripsUpdateSiteZipPath}" />
+        </antcall>
+        
+        <!--install the features on updatesite-->
         <!--  generate a new site.xml on the updatesite, including all previous and new feature versions-->
-		<!--  faktorips features -->
+        <!--  faktorips features -->
         <ant dir="${projectsRootDir}/org.faktorips.pluginbuilder/build-files" antfile="postBuild.xml" target="-createNightlyBuildSiteXml">
             <property name="siteXmlFile" value="${projectsRootDir}/org.faktorips.updatesite/site_tmp.xml"/>
             <property name="pluginbuilder.features" value="${pluginbuilder.features}"/>
@@ -552,7 +586,7 @@
         </antcall> 
     
         <!--  generate a new site.xml on the updatesite, including all previous and new feature versions-->
-		<!--  uml features -->
+        <!--  uml features -->
         <ant dir="${projectsRootDir}/org.faktorips.pluginbuilder/build-files" antfile="postBuild.xml" target="-createNightlyBuildSiteXml">
             <property name="siteXmlFile" value="${projectsRootDir}/org.faktorips.updatesite/site_uml_tmp.xml"/>
             <property name="pluginbuilder.features" value="${pluginbuilder.features.uml}"/>
@@ -568,28 +602,25 @@
             <param name="site.xml" value="site_uml_tmp.xml"/> 
         </antcall> 
     
-    	<!--  checkin updatesite, only site.xml will be commited, features and plugin jars are not added to cvs-->
+        <!--  checkin updatesite, only site.xml will be commited, features and plugin jars are not added to cvs-->
         <antcall inheritall="true" target="-checkin.updatesite"/>
-    	
-    	<!--  checkout site.xml -->
-    	<!--   copy to faktorips updatesite website directory -->
-    	<antcall inheritall="true" target="-checkout.updatesite.on.faktorips.org"/>
-    	<antcall inheritall="true" target="-copy.updatesite.to.faktorips.org"/>
-    	
-		<!-- TODO Produkt-Build umbennenen faktorips-2.2.0.rfinal- mit zus. Produktnamen -->
-    	<!-- report -->
-    	<echo message=""/>
-    	<echo message="result directory: ${buildDirectory}/results/"/>
-    	<echo message=""/>
-    	<echo message="finished. Release: ${build.version}"/>
-    	<echo message="-> new faktorips ips features: ${pluginbuilder.features}"/>
-    	<echo message="-> new faktorips uml features: ${pluginbuilder.features.uml}"/>
-		<antcall inheritall="true" target="-print.publish.info"/>
-		<!-- TODO Info ueber gebautes Produkt und nach Download kopieren -->
+        
+        <!--  checkout site.xml -->
+        <!--   copy to faktorips updatesite website directory -->
+        <antcall inheritall="true" target="-checkout.updatesite.on.faktorips.org"/>
+        <antcall inheritall="true" target="-copy.updatesite.to.faktorips.org"/>
+        
+        <!-- TODO Produkt-Build umbennenen faktorips-2.2.0.rfinal- mit zus. Produktnamen -->
+        <!-- report -->
+        <echo message=""/>
+        <echo message="result directory: ${buildDirectory}/results/"/>
+        <echo message=""/>
+        <echo message="finished. Release: ${build.version}"/>
+        <echo message="-> new faktorips ips features: ${pluginbuilder.features}"/>
+        <echo message="-> new faktorips uml features: ${pluginbuilder.features.uml}"/>
+        <antcall inheritall="true" target="-print.publish.info"/>    	
     </target>
-
-    <!--helper targets-->
-    <target name="-print.publish.info" unless="isSkipPublish">
+	<target name="-print.publish.info" unless="isSkipPublish">
         <echo message="-> updatesite: ${updatesite.path}"/>
         <echo message="-> download zip files: "/>
         <echo message="   1. ${faktoripsReleaseDownloadZipPath}"/>
