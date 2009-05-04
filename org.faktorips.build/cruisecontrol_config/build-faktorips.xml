@@ -514,22 +514,17 @@
 	
     <!--helper targets-->
     <target name="-buildAndPublish.release.runtimeAndValutypesJars" unless="is.product.build">
-        <antcall inheritall="true" target="-checkout.runtimeAndValutypesJars"></antcall>
-    	<ant dir="${projectsRootDir}/org.faktorips.valuetypes/build" antfile="build.xml" target="buildAllsJars"/>
-        <ant dir="${projectsRootDir}/org.faktorips.runtime/build" antfile="build.xml" target="buildAllsJars"/>
+    	<ant dir="${buildDirectory}/plugins/org.faktorips.valuetypes/build" antfile="build.xml" target="buildAllsJars"/>
+        <ant dir="${buildDirectory}/plugins/org.faktorips.runtime/build" antfile="build.xml" target="buildAllsJars"/>
         <antcall inheritall="true" target="-publish.release.runtimeAndValutypesJars"></antcall>
-    </target>
-    <target name="-checkout.runtimeAndValutypesJars" if="isUseCvs">
-        <cvs command="co" package="org.faktorips.valuetypes" dest="${projectsRootDir}" cvsroot="${cvsroot}" quiet="true" tag="${cvsTag}"/>
-        <cvs command="co" package="org.faktorips.runtime" dest="${projectsRootDir}" cvsroot="${cvsroot}" quiet="true" tag="${cvsTag}"/>
     </target>
 	<target name="-publish.release.runtimeAndValutypesJars" unless="isSkipPublish">
        <property name="zip.dir" value="${buildDirectory}/zip_tmp"/>
        <delete includeemptydirs="true" dir="${zip.dir}"/>
        <mkdir dir="${zip.dir}"/>
 	   <copy todir="${zip.dir}">
-	   	<fileset dir="${projectsRootDir}/org.faktorips.valuetypes/build/results" inlcudes="*.jar"/>
-	   	<fileset dir="${projectsRootDir}/org.faktorips.runtime/build/results" inlcudes="*.jar"/>
+	   	<fileset dir="${buildDirectory}/plugins/org.faktorips.valuetypes/build/results" inlcudes="*.jar"/>
+	   	<fileset dir="${buildDirectory}/plugins/org.faktorips.runtime/build/results" inlcudes="*.jar"/>
 	   </copy>
        <zip destfile="${downloadDir}/faktorips-${build.version}-runtime-valuetypes.zip" basedir="${zip.dir}" />
     </target>
