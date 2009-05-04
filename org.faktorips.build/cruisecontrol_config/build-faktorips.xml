@@ -490,7 +490,6 @@
     	<antcall inheritall="true" target="-checkout.updatesite"/>
         
         <!--build release unsing pluginbuilder main target-->
-<!--
 		<ant dir="${projectsRootDir}/org.faktorips.pluginbuilder/" antfile="build.xml" target="main">
             <property name="build.version" value="${build.version}"/>
             <property name="buildDirectory" value="${buildDirectory}"/>
@@ -503,7 +502,7 @@
             <property name="updateSiteDescription" value="FaktorIPS update site"/>
             <property name="updateSiteUrl" value="http://update.faktorzehn.org/faktorips"/>    		
         </ant>
--->
+
 		<antcall inheritall="true" target="-buildAndPublish.release.runtimeAndValutypesJars"/>
 <!--
 		<antcall inheritall="true" target="-publish.release.all"/>
@@ -514,8 +513,12 @@
 	
     <!--helper targets-->
     <target name="-buildAndPublish.release.runtimeAndValutypesJars" unless="is.product.build">
-    	<ant dir="${buildDirectory}/plugins/org.faktorips.valuetypes/build" antfile="build.xml" target="buildAllsJars"/>
-        <ant dir="${buildDirectory}/plugins/org.faktorips.runtime/build" antfile="build.xml" target="buildAllsJars"/>
+    	<ant dir="${buildDirectory}/plugins/org.faktorips.valuetypes/build" antfile="build.xml" target="buildAllsJars">
+    	    <property name="buildproject.path" value="${projectsRootDir}/org.faktorips.build"/>
+    	</ant>
+        <ant dir="${buildDirectory}/plugins/org.faktorips.runtime/build" antfile="build.xml" target="buildAllsJars">
+    	    <property name="buildproject.path" value="${projectsRootDir}/org.faktorips.build"/>
+    	</ant>
         <antcall inheritall="true" target="-publish.release.runtimeAndValutypesJars"></antcall>
     </target>
 	<target name="-publish.release.runtimeAndValutypesJars" unless="isSkipPublish">
