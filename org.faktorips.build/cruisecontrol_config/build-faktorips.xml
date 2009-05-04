@@ -418,7 +418,9 @@
         <property name="faktoripsUmlReleaseDownloadZipPath" value="${downloadDir}/faktorips-uml-${build.version}.zip"/>
         <property name="faktoripsUmlNls1ReleaseDownloadZipPath" value="${downloadDir}/faktorips-uml-nls1-${build.version}.zip"/>
         <property name="faktoripsUpdateSiteZipPath" value="${downloadDir}/faktorips-updateSite-${build.version}.zip"/>
-        <property name="faktoripsProductZipPath" value="${downloadDir}/product-${productProject}-${build.version}.zip"/>
+        <!--    product -->
+		<property name="faktoripsProductWinZipPath" value="${downloadDir}/faktorips-${build.version}-${productProject}-win32.x86.zip"/>
+        <property name="faktoripsProductLinuxZipPath" value="${downloadDir}/faktorips-${build.version}-${productProject}-linux.gtk.x86.zip"/>
     	<!-- pluginbuilder configuration files -->
     	<property name="release.properties" value="${projectsRootDir}/org.faktorips.pluginbuilder/releases/${build.version}.properties"/>
         <property name="pluginbuilder.config" value="${projectsRootDir}/org.faktorips.pluginbuilder/pluginbuilder.config"/>
@@ -505,12 +507,18 @@
 		</antcall>
 		<antcall inheritall="true" target="-publish.product">
 		</antcall>
+		
+		<!-- TODO bauen von runtime und valuetypes jar mit src -->
+		<!-- runtime jar und src mit ins plugin verzeichnis? -->
     </target>
 
     <!--helper targets-->
 	<target name="-assert.product.exists" if="is.product.build">
         <antcall inheritall="true" target="-fail.if.file.exists">
-             <param name="file" value="${faktoripsProductZipPath}"/>
+             <param name="file" value="${faktoripsProductLinuxZipPath}"/>
+        </antcall>
+        <antcall inheritall="true" target="-fail.if.file.exists">
+             <param name="file" value="${faktoripsProductWinZipPath}"/>
         </antcall>
 	</target>
 	<target name="-assert.release.exists" unless="is.product.build">
@@ -531,14 +539,17 @@
          </antcall>
 	</target>
 	<target name="-publish.product" if="is.product.build">
-        <!--
 		<antcall inheritall="true" target="-copy.faktorips.release.to.download.dir">
-             <param name="source" value="updateSite-${build.version}.zip" />
-             <param name="dest.name" value="${faktoripsProductZipPath}" />
+             <param name="source" value="faktorips-${build.version}-linux.gtk.x86.zip" />
+             <param name="dest.name" value="${faktoripsProductLinuxZipPath}" />
         </antcall>
-        -->
+		<antcall inheritall="true" target="-copy.faktorips.release.to.download.dir">
+             <param name="source" value="faktorips-${build.version}-win32.win32.x86.zip" />
+             <param name="dest.name" value="${faktoripsProductWinZipPath}" />
+        </antcall>
         <echo message="finished. Product build: ${productProject}"/>
-        <echo message="   1. ${faktoripsProductZipPath}"/>		
+        <echo message="   1. ${faktoripsProductLinuxZipPath}"/>		
+        <echo message="   2. ${faktoripsProductWinZipPath}"/>		
 	</target>	
 	
 	<target name="-publish.release.all" unless="is.product.build">
@@ -610,7 +621,6 @@
         <antcall inheritall="true" target="-checkout.updatesite.on.faktorips.org"/>
         <antcall inheritall="true" target="-copy.updatesite.to.faktorips.org"/>
         
-        <!-- TODO Produkt-Build umbennenen faktorips-2.2.0.rfinal- mit zus. Produktnamen -->
         <!-- report -->
         <echo message=""/>
         <echo message="result directory: ${buildDirectory}/results/"/>
@@ -628,7 +638,7 @@
         <echo message="   3. ${faktoripsUmlReleaseDownloadZipPath}"/>
         <echo message="   4. ${faktoripsUmlNls1ReleaseDownloadZipPath}"/>    	
         <echo message="   5. ${faktoripsUpdateSiteZipPath}"/>    	
-    </target> 
+    </target>
     <target name="-checkout.pluginbuilder" if="isUseCvs">
         <cvs command="co" package="org.faktorips.pluginbuilder" dest="${projectsRootDir}" cvsroot="${cvsroot}" quiet="true"/>
     </target>
