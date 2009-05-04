@@ -516,7 +516,13 @@
     	<ant dir="${buildDirectory}/plugins/org.faktorips.valuetypes/build" antfile="build.xml" target="buildAllsJars">
     	    <property name="buildproject.path" value="${projectsRootDir}/org.faktorips.build"/>
     	</ant>
+    	<ant dir="${buildDirectory}/plugins/org.faktorips.valuetypes.java5/build" antfile="build.xml" target="buildAllsJars">
+    	    <property name="buildproject.path" value="${projectsRootDir}/org.faktorips.build"/>
+    	</ant>
         <ant dir="${buildDirectory}/plugins/org.faktorips.runtime/build" antfile="build.xml" target="buildAllsJars">
+    	    <property name="buildproject.path" value="${projectsRootDir}/org.faktorips.build"/>
+    	</ant>
+        <ant dir="${buildDirectory}/plugins/org.faktorips.runtime.java5/build" antfile="build.xml" target="buildAllsJars">
     	    <property name="buildproject.path" value="${projectsRootDir}/org.faktorips.build"/>
     	</ant>
         <antcall inheritall="true" target="-publish.release.runtimeAndValutypesJars"></antcall>
@@ -526,8 +532,10 @@
        <delete includeemptydirs="true" dir="${zip.dir}"/>
        <mkdir dir="${zip.dir}"/>
 	   <copy todir="${zip.dir}">
-	   	<fileset dir="${buildDirectory}/plugins/org.faktorips.valuetypes/build/results" includes="*.jar"/>
-	   	<fileset dir="${buildDirectory}/plugins/org.faktorips.runtime/build/results" includes="*.jar"/>
+	   	<fileset dir="${buildDirectory}/plugins/org.faktorips.valuetypes/build/results" includes="*.jar *.zip"/>
+	   	<fileset dir="${buildDirectory}/plugins/org.faktorips.valuetypes.java5/build/results" includes="*.jar *.zip"/>
+	   	<fileset dir="${buildDirectory}/plugins/org.faktorips.runtime/build/results" includes="*.jar *.zip"/>
+	   	<fileset dir="${buildDirectory}/plugins/org.faktorips.runtime.java5/build/results" includes="*.jar *.zip"/>
 	   </copy>
        <zip destfile="${downloadDir}/faktorips-${build.version}-runtime-valuetypes.zip" basedir="${zip.dir}" />
     </target>
