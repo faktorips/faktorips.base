@@ -419,8 +419,9 @@
         <property name="faktoripsUmlNls1ReleaseDownloadZipPath" value="${downloadDir}/faktorips-uml-nls1-${build.version}.zip"/>
         <property name="faktoripsUpdateSiteZipPath" value="${downloadDir}/faktorips-updateSite-${build.version}.zip"/>
         <!--    product -->
-		<property name="faktoripsProductWinZipPath" value="${downloadDir}/faktorips-${build.version}-${productProject}-win32.x86.zip"/>
-        <property name="faktoripsProductLinuxZipPath" value="${downloadDir}/faktorips-${build.version}-${productProject}-linux.gtk.x86.zip"/>
+		<property name="faktoripsProductWinZipPath" value="${downloadDir}/faktorips-${build.version}-win32.x86-${productProject}.zip"/>
+        <property name="faktoripsProductLinuxZipPath" value="${downloadDir}/faktorips-${build.version}-linux.gtk.x86-${productProject}.zip"/>
+        <property name="faktoripsRuntimeAndValuetypesZipPath" value="${downloadDir}/faktorips-runtime-valuetypes-${build.version}.zip"/>
     	<!-- pluginbuilder configuration files -->
     	<property name="release.properties" value="${projectsRootDir}/org.faktorips.pluginbuilder/releases/${build.version}.properties"/>
         <property name="pluginbuilder.config" value="${projectsRootDir}/org.faktorips.pluginbuilder/pluginbuilder.config"/>
@@ -505,14 +506,15 @@
 		
 	    <!-- build runtime and valuetypes separately,
 		       the eclipse build doesn't set the version number in the manifest file -->
-		<antcall inheritall="true" target="-buildAndPublish.release.runtimeAndValutypesJars"/>
-
+		<antcall inheritall="true" target="-buildAndPublish.release.runtimeAndValuetypesJars"/>
+<!--
 		<antcall inheritall="true" target="-publish.release.all"/>
 		<antcall inheritall="true" target="-publish.product"/>
+-->
 	</target>
 	
     <!--helper targets-->
-    <target name="-buildAndPublish.release.runtimeAndValutypesJars" unless="is.product.build">
+    <target name="-buildAndPublish.release.runtimeAndValuetypesJars" unless="is.product.build">
     	<!-- build runtime and valutypes using own build files -->
     	<ant dir="${buildDirectory}/plugins/org.faktorips.valuetypes/build" antfile="build.xml" target="buildAllsJars">
     	    <property name="buildproject.path" value="${projectsRootDir}/org.faktorips.build"/>
@@ -538,7 +540,7 @@
 	   	<fileset dir="${buildDirectory}/plugins/org.faktorips.runtime/build/results" includes="*.jar *.zip"/>
 	   	<fileset dir="${buildDirectory}/plugins/org.faktorips.runtime.java5/build/results" includes="*.jar *.zip"/>
 	   </copy>
-       <zip destfile="${downloadDir}/faktorips-${build.version}-runtime-valuetypes.zip" basedir="${zip.dir}" />
+       <zip destfile="${faktoripsRuntimeAndValuetypesZipPath}" basedir="${zip.dir}" />
     </target>
 	<target name="-assert.product.exists" if="is.product.build">
         <antcall inheritall="true" target="-fail.if.file.exists">
@@ -664,6 +666,7 @@
         <echo message="   3. ${faktoripsUmlReleaseDownloadZipPath}"/>
         <echo message="   4. ${faktoripsUmlNls1ReleaseDownloadZipPath}"/>    	
         <echo message="   5. ${faktoripsUpdateSiteZipPath}"/>    	
+        <echo message="   6. ${faktoripsRuntimeAndValuetypesZipPath}"/>    	
     </target>
     <target name="-checkout.pluginbuilder" if="isUseCvs">
         <cvs command="co" package="org.faktorips.pluginbuilder" dest="${projectsRootDir}" cvsroot="${cvsroot}" quiet="true"/>
