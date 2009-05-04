@@ -490,7 +490,6 @@
     	<antcall inheritall="true" target="-checkout.updatesite"/>
         
         <!--build release unsing pluginbuilder main target-->
-<!--
 		<ant dir="${projectsRootDir}/org.faktorips.pluginbuilder/" antfile="build.xml" target="main">
             <property name="build.version" value="${build.version}"/>
             <property name="buildDirectory" value="${buildDirectory}"/>
@@ -503,12 +502,14 @@
             <property name="updateSiteDescription" value="FaktorIPS update site"/>
             <property name="updateSiteUrl" value="http://update.faktorzehn.org/faktorips"/>    		
         </ant>
--->
+		
+	    <!-- build runtime and valuetypes separately -->
+		<!-- because the pluginbuilder doesn't set the version no in the manifest file -->
 		<antcall inheritall="true" target="-buildAndPublish.release.runtimeAndValutypesJars"/>
 <!--
 		<antcall inheritall="true" target="-publish.release.all"/>
 		<antcall inheritall="true" target="-publish.product"/>
--->		
+-->
     </target>
 	
     <!--helper targets-->
