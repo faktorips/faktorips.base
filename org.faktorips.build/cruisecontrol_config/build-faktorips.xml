@@ -508,10 +508,9 @@
 	    <!-- build runtime and valuetypes separately,
 		       the eclipse build doesn't set the version number in the manifest file -->
 		<antcall inheritall="true" target="-buildAndPublish.release.runtimeAndValuetypesJars"/>
-<!--
+
 		<antcall inheritall="true" target="-publish.release.all"/>
 		<antcall inheritall="true" target="-publish.product"/>
--->
 	</target>
 	
     <!--helper targets-->
