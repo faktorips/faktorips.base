@@ -11,7 +11,7 @@
 	
 	<!-- classpath: insert dependend project libs here! -->
 	<path id="classpath">
-		<filelist dir="/var/lib/">
+		<filelist dir="${buildproject.path}/lib">
 				<file name="junit.jar"/>
 		</filelist>
 
@@ -23,6 +23,12 @@
 		    </patternset>
 		</fileset>
 
+	    <!-- jars in own project lib directory -->
+        <fileset dir="../lib/">
+            <patternset>
+                <include name="*.jar"/>
+            </patternset>
+        </fileset>
 	</path>
 	
 	<!-- calls default-target of template-buildfile -->
