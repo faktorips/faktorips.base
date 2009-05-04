@@ -490,29 +490,49 @@
     	<antcall inheritall="true" target="-checkout.updatesite"/>
         
         <!--build release unsing pluginbuilder main target-->
-    	<ant dir="${projectsRootDir}/org.faktorips.pluginbuilder/" antfile="build.xml" target="main">
+<!--
+		<ant dir="${projectsRootDir}/org.faktorips.pluginbuilder/" antfile="build.xml" target="main">
             <property name="build.version" value="${build.version}"/>
             <property name="buildDirectory" value="${buildDirectory}"/>
             <property name="pluginbuilder.is.rcpbuild" value="${is.product.build}"/>
             <property name="product.project" value="${productProject}"/>
-            <property name="xms.megabytes" value=""/> <!-- -Xms124m -->
-            <property name="xmx.megabytes" value=""/> <!-- -Xmx256m -->   
+            <property name="xms.megabytes" value=""/>
+            <property name="xmx.megabytes" value=""/>   
             <property name="updateSiteCategoryName" value="Faktor-IPS ${build.category}"/>
             <property name="updateSiteCategoryLabel" value="Faktor-IPS ${build.category}"/>
             <property name="updateSiteDescription" value="FaktorIPS update site"/>
             <property name="updateSiteUrl" value="http://update.faktorzehn.org/faktorips"/>    		
         </ant>
-
-		<antcall inheritall="true" target="-publish.release.all">
-		</antcall>
-		<antcall inheritall="true" target="-publish.product">
-		</antcall>
-		
-		<!-- TODO bauen von runtime und valuetypes jar mit src -->
-		<!-- runtime jar und src mit ins plugin verzeichnis? -->
+-->
+		<antcall inheritall="true" target="-buildAndPublish.release.runtimeAndValutypesJars"/>
+<!--
+		<antcall inheritall="true" target="-publish.release.all"/>
+		<antcall inheritall="true" target="-publish.product"/>
+		<antcall inheritall="true" target="-publish.release.runtimeAndValutypesJars"/>
+-->		
     </target>
-
+	
     <!--helper targets-->
+    <target name="-buildAndPublish.release.runtimeAndValutypesJars" unless="is.product.build">
+        <antcall inheritall="true" target="-checkout.runtimeAndValutypesJars"></antcall>
+    	<ant dir="${projectsRootDir}/org.faktorips.valuetypes/build" antfile="build.xml" target="buildAllsJars"/>
+        <ant dir="${projectsRootDir}/org.faktorips.runtime/build" antfile="build.xml" target="buildAllsJars"/>
+        <antcall inheritall="true" target="-publish.release.runtimeAndValutypesJars"></antcall>
+    </target>
+    <target name="-checkout.runtimeAndValutypesJars" if="isUseCvs">
+        <cvs command="co" package="org.faktorips.valuetypes" dest="${projectsRootDir}" cvsroot="${cvsroot}" quiet="true" tag="${cvsTag}"/>
+        <cvs command="co" package="org.faktorips.runtime" dest="${projectsRootDir}" cvsroot="${cvsroot}" quiet="true" tag="${cvsTag}"/>
+    </target>
+	<target name="-publish.release.runtimeAndValutypesJars" unless="isSkipPublish">
+       <property name="zip.dir" value="${buildDirectory}/zip_tmp"/>
+       <delete includeemptydirs="true" dir="${zip.dir}"/>
+       <mkdir dir="${zip.dir}"/>
+	   <copy todir="${zip.dir}">
+	   	<fileset dir="${projectsRootDir}/org.faktorips.valuetypes/build/results" inlcudes="*.jar"/>
+	   	<fileset dir="${projectsRootDir}/org.faktorips.runtime/build/results" inlcudes="*.jar"/>
+	   </copy>
+       <zip destfile="${downloadDir}/faktorips-${build.version}-runtime-valuetypes.zip" basedir="${zip.dir}" />
+    </target>
 	<target name="-assert.product.exists" if="is.product.build">
         <antcall inheritall="true" target="-fail.if.file.exists">
              <param name="file" value="${faktoripsProductLinuxZipPath}"/>
