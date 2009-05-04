@@ -526,8 +526,8 @@
        <delete includeemptydirs="true" dir="${zip.dir}"/>
        <mkdir dir="${zip.dir}"/>
 	   <copy todir="${zip.dir}">
-	   	<fileset dir="${buildDirectory}/plugins/org.faktorips.valuetypes/build/results" inlcudes="*.jar"/>
-	   	<fileset dir="${buildDirectory}/plugins/org.faktorips.runtime/build/results" inlcudes="*.jar"/>
+	   	<fileset dir="${buildDirectory}/plugins/org.faktorips.valuetypes/build/results" includes="*.jar"/>
+	   	<fileset dir="${buildDirectory}/plugins/org.faktorips.runtime/build/results" includes="*.jar"/>
 	   </copy>
        <zip destfile="${downloadDir}/faktorips-${build.version}-runtime-valuetypes.zip" basedir="${zip.dir}" />
     </target>
