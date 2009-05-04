@@ -563,9 +563,9 @@ if [ ! "$NOCVS" = "true" ] ; then
   fi
 fi
 
-# 2. asserts 
+# 2. asserts for release (not active if product build, product exists will be checked in the ant build file)
 #    a) check if release properties exist (only if overwrite is false)
-if [ ! "$OVERWRITE" = "true" -a -f $RELEASE_PROPERTIES  ] ; then 
+if [ ! $SKIPTAGCVS -a  ! "$OVERWRITE" = "true" -a -f $RELEASE_PROPERTIES -a -z "$BUILDPRODUCT" ] ; then 
   echo "=> Cancel build: release already exists ("$RELEASE_PROPERTIES")"
   echo "   delete the previous release build or use parameter -overwrite"
   exit 1
@@ -578,7 +578,7 @@ if [ -f $RELEASE_PROPERTIES ] ; then
 fi
 
 # assert 
-#    b) if release property already exists then tagging Cvs is not allowed
+#    b) if release property already exists then tagging Cvs is not allowed, must be deleted manually
 if [ "$RELEASE_PROPERTIES_EXISTS" = "true" -a ! "$SKIPTAGCVS" = "true" ] ; then
   echo "=> Cancel build: tagging is not allowed if the release already exists!"
   echo "   Please use -skipTaggingCvs or remove the release.properties in the pluginbuilder project and try again."
