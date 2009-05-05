@@ -46,6 +46,8 @@ public class Messages extends NLS {
     public static String EnumType_NotInheritedAttributesInSupertypeHierarchySingular;
     public static String EnumType_NotInheritedAttributesInSupertypeHierarchyPlural;
     public static String EnumType_NoLiteralNameAttribute;
+    public static String EnumType_NoUsedAsIdInFaktorIpsUiAttribute;
+    public static String EnumType_NoUsedAsNameInFaktorIpsUiAttribute;
 
     public static String EnumContent_ReferencedEnumAttributesCountInvalid;
 

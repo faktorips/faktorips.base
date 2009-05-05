@@ -41,10 +41,6 @@ import org.w3c.dom.Document;
  */
 public abstract class AbstractIpsEnumPluginTest extends AbstractIpsPluginTest {
 
-    protected final String STRING_DATATYPE_NAME = "String";
-    protected final String INTEGER_DATATYPE_NAME = "Integer";
-    protected final String BOOLEAN_DATATYPE_NAME = "Boolean";
-
     protected final String GENDER_ENUM_TYPE_NAME = "GenderEnumType";
     protected final String GENDER_ENUM_ATTRIBUTE_ID_NAME = "Id";
     protected final String GENDER_ENUM_ATTRIBUTE_NAME_NAME = "Name";
@@ -91,6 +87,11 @@ public abstract class AbstractIpsEnumPluginTest extends AbstractIpsPluginTest {
         id.setLiteralName(true);
         id.setUniqueIdentifier(true);
         id.setName("id");
+        id.setUsedAsIdInFaktorIpsUi(true);
+        IEnumAttribute name = paymentMode.newEnumAttribute();
+        name.setName("name");
+        name.setUsedAsNameInFaktorIpsUi(true);
+        name.setDatatype(Datatype.STRING.getQualifiedName());
         IEnumValue value1 = paymentMode.newEnumValue();
         IEnumAttributeValue value1id = value1.getEnumAttributeValues().get(0);
         value1id.setValue("monthly");
@@ -107,13 +108,13 @@ public abstract class AbstractIpsEnumPluginTest extends AbstractIpsPluginTest {
 
         genderEnumAttributeId = genderEnumType.newEnumAttribute();
         genderEnumAttributeId.setName(GENDER_ENUM_ATTRIBUTE_ID_NAME);
-        genderEnumAttributeId.setDatatype(STRING_DATATYPE_NAME);
+        genderEnumAttributeId.setDatatype(Datatype.STRING.getQualifiedName());
         genderEnumAttributeId.setLiteralName(true);
         genderEnumAttributeId.setUniqueIdentifier(true);
         genderEnumAttributeId.setUsedAsIdInFaktorIpsUi(true);
         genderEnumAttributeName = genderEnumType.newEnumAttribute();
         genderEnumAttributeName.setName(GENDER_ENUM_ATTRIBUTE_NAME_NAME);
-        genderEnumAttributeName.setDatatype(STRING_DATATYPE_NAME);
+        genderEnumAttributeName.setDatatype(Datatype.STRING.getQualifiedName());
         genderEnumAttributeName.setUsedAsNameInFaktorIpsUi(true);
 
         genderEnumContent = newEnumContent(ipsProject, GENDER_ENUM_CONTENT_NAME);

@@ -16,6 +16,7 @@ package org.faktorips.devtools.core.internal.model.enums;
 import javax.xml.parsers.ParserConfigurationException;
 
 import org.eclipse.core.runtime.CoreException;
+import org.faktorips.datatype.Datatype;
 import org.faktorips.devtools.core.internal.model.ipsobject.DescriptionHelper;
 import org.faktorips.devtools.core.model.IIpsModel;
 import org.faktorips.devtools.core.model.enums.IEnumAttribute;
@@ -76,15 +77,15 @@ public class EnumAttributeValueTest extends AbstractIpsEnumPluginTest {
 
     public void testValidateParsable() throws CoreException {
         IEnumAttribute stringAttribute = genderEnumType.newEnumAttribute();
-        stringAttribute.setDatatype(STRING_DATATYPE_NAME);
+        stringAttribute.setDatatype(Datatype.STRING.getQualifiedName());
         stringAttribute.setName("StringAttribute");
 
         IEnumAttribute integerAttribute = genderEnumType.newEnumAttribute();
-        integerAttribute.setDatatype(INTEGER_DATATYPE_NAME);
+        integerAttribute.setDatatype(Datatype.INTEGER.getQualifiedName());
         integerAttribute.setName("IntegerAttribute");
 
         IEnumAttribute booleanAttribute = genderEnumType.newEnumAttribute();
-        booleanAttribute.setDatatype(BOOLEAN_DATATYPE_NAME);
+        booleanAttribute.setDatatype(Datatype.BOOLEAN.getQualifiedName());
         booleanAttribute.setName("BooleanAttribute");
 
         genderEnumType.setContainingValues(true);

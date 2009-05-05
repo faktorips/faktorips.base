@@ -17,6 +17,7 @@ import javax.xml.parsers.ParserConfigurationException;
 
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.swt.graphics.Image;
+import org.faktorips.datatype.Datatype;
 import org.faktorips.datatype.ValueDatatype;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.model.IIpsModel;
@@ -64,9 +65,9 @@ public class EnumAttributeTest extends AbstractIpsEnumPluginTest {
     }
 
     public void testGetSetDatatype() {
-        assertEquals(STRING_DATATYPE_NAME, genderEnumAttributeId.getDatatype());
-        genderEnumAttributeId.setDatatype(INTEGER_DATATYPE_NAME);
-        assertEquals(INTEGER_DATATYPE_NAME, genderEnumAttributeId.getDatatype());
+        assertEquals(Datatype.STRING.getQualifiedName(), genderEnumAttributeId.getDatatype());
+        genderEnumAttributeId.setDatatype(Datatype.INTEGER.getQualifiedName());
+        assertEquals(Datatype.INTEGER.getQualifiedName(), genderEnumAttributeId.getDatatype());
 
         try {
             genderEnumAttributeId.setDatatype(null);
@@ -106,7 +107,8 @@ public class EnumAttributeTest extends AbstractIpsEnumPluginTest {
         NamedNodeMap attributes = xmlElement.getChildNodes().item(1).getAttributes();
         assertEquals(GENDER_ENUM_ATTRIBUTE_ID_NAME, attributes.getNamedItem(IEnumAttribute.PROPERTY_NAME)
                 .getTextContent());
-        assertEquals(STRING_DATATYPE_NAME, attributes.getNamedItem(IEnumAttribute.PROPERTY_DATATYPE).getTextContent());
+        assertEquals(Datatype.STRING.getQualifiedName(), attributes.getNamedItem(IEnumAttribute.PROPERTY_DATATYPE)
+                .getTextContent());
         assertTrue(Boolean.parseBoolean(attributes.getNamedItem(IEnumAttribute.PROPERTY_LITERAL_NAME).getTextContent()));
         assertTrue(Boolean.parseBoolean(attributes.getNamedItem(IEnumAttribute.PROPERTY_UNIQUE_IDENTIFIER)
                 .getTextContent()));
@@ -121,7 +123,7 @@ public class EnumAttributeTest extends AbstractIpsEnumPluginTest {
         loadedEnumType.initFromXml(xmlElement);
         IEnumAttribute idAttribute = loadedEnumType.getEnumAttributes().get(0);
         assertEquals(GENDER_ENUM_ATTRIBUTE_ID_NAME, idAttribute.getName());
-        assertEquals(STRING_DATATYPE_NAME, idAttribute.getDatatype());
+        assertEquals(Datatype.STRING.getQualifiedName(), idAttribute.getDatatype());
         assertTrue(idAttribute.isLiteralName());
         assertTrue(idAttribute.isUniqueIdentifier());
         assertTrue(idAttribute.isUsedAsIdInFaktorIpsUi());
@@ -161,7 +163,7 @@ public class EnumAttributeTest extends AbstractIpsEnumPluginTest {
         MessageList validationMessageList = genderEnumAttributeId.validate(ipsProject);
         assertOneValidationMessage(validationMessageList);
         assertNotNull(validationMessageList.getMessageByCode(IEnumAttribute.MSGCODE_ENUM_ATTRIBUTE_DATATYPE_MISSING));
-        genderEnumAttributeId.setDatatype(STRING_DATATYPE_NAME);
+        genderEnumAttributeId.setDatatype(Datatype.STRING.getQualifiedName());
 
         // Test datatype does not exist
         ipsModel.clearValidationCache();
@@ -170,7 +172,7 @@ public class EnumAttributeTest extends AbstractIpsEnumPluginTest {
         assertOneValidationMessage(validationMessageList);
         assertNotNull(validationMessageList
                 .getMessageByCode(IEnumAttribute.MSGCODE_ENUM_ATTRIBUTE_DATATYPE_DOES_NOT_EXIST));
-        genderEnumAttributeId.setDatatype(STRING_DATATYPE_NAME);
+        genderEnumAttributeId.setDatatype(Datatype.STRING.getQualifiedName());
     }
 
     public void testValidateLiteralName() throws CoreException {
@@ -186,12 +188,12 @@ public class EnumAttributeTest extends AbstractIpsEnumPluginTest {
 
         // Test literal name but datatype not String
         ipsModel.clearValidationCache();
-        genderEnumAttributeId.setDatatype(INTEGER_DATATYPE_NAME);
+        genderEnumAttributeId.setDatatype(Datatype.INTEGER.getQualifiedName());
         validationMessageList = genderEnumAttributeId.validate(ipsProject);
         assertOneValidationMessage(validationMessageList);
         assertNotNull(validationMessageList
                 .getMessageByCode(IEnumAttribute.MSGCODE_ENUM_ATTRIBUTE_LITERAL_NAME_NOT_OF_DATATYPE_STRING));
-        genderEnumAttributeId.setDatatype(STRING_DATATYPE_NAME);
+        genderEnumAttributeId.setDatatype(Datatype.STRING.getQualifiedName());
 
         // Test literal name but not unique identifier
         ipsModel.clearValidationCache();
@@ -220,7 +222,7 @@ public class EnumAttributeTest extends AbstractIpsEnumPluginTest {
                 .getMessageByCode(IEnumAttribute.MSGCODE_ENUM_ATTRIBUTE_NO_SUCH_ATTRIBUTE_IN_SUPERTYPE_HIERARCHY));
         IEnumAttribute toInheritAttribute = superEnumType.newEnumAttribute();
         toInheritAttribute.setName("foo");
-        toInheritAttribute.setDatatype(STRING_DATATYPE_NAME);
+        toInheritAttribute.setDatatype(Datatype.STRING.getQualifiedName());
 
         ipsModel.clearValidationCache();
         assertTrue(inheritedAttribute.isValid());
@@ -260,7 +262,7 @@ public class EnumAttributeTest extends AbstractIpsEnumPluginTest {
 
     public void testFindDatatype() throws CoreException {
         ValueDatatype datatype = genderEnumAttributeId.findDatatype(ipsProject);
-        assertEquals(STRING_DATATYPE_NAME, datatype.getName());
+        assertEquals(Datatype.STRING.getQualifiedName(), datatype.getName());
 
         genderEnumAttributeId.setDatatype("foo");
         assertNull(genderEnumAttributeId.findDatatype(ipsProject));
@@ -272,8 +274,8 @@ public class EnumAttributeTest extends AbstractIpsEnumPluginTest {
         }
 
         // Test inherited
-        genderEnumAttributeId.setDatatype(STRING_DATATYPE_NAME);
-        assertEquals(STRING_DATATYPE_NAME, inheritedEnumAttributeId.findDatatype(ipsProject).getName());
+        genderEnumAttributeId.setDatatype(Datatype.STRING.getQualifiedName());
+        assertEquals(Datatype.STRING.getQualifiedName(), inheritedEnumAttributeId.findDatatype(ipsProject).getName());
 
         genderEnumAttributeId.setInherited(true);
         assertNull(genderEnumAttributeId.findDatatype(ipsProject));

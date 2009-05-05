@@ -416,8 +416,14 @@ public class EnumType extends EnumValueContainer implements IEnumType {
             }
         }
 
-        // Validate identifier attribute
+        // Validate literal name attribute
         validateLiteralNameAttribute(list);
+
+        // Validate id attribute
+        validateUsedAsIdInFaktorIpsUiAttribute(list);
+
+        // Validate name attribute
+        validateUsedAsNameInFaktorIpsUiAttribute(list);
     }
 
     /**
@@ -454,7 +460,7 @@ public class EnumType extends EnumValueContainer implements IEnumType {
     }
 
     /**
-     * Validates whether the given enum type has at least one attribute being marked as literal
+     * Validates whether the given enum type has at least one enum attribute being marked as literal
      * name.
      * <p>
      * If the given enum type is abstract the validation will succeed even if there is no literal
@@ -463,7 +469,7 @@ public class EnumType extends EnumValueContainer implements IEnumType {
     private void validateLiteralNameAttribute(MessageList validationMessageList) throws CoreException {
         ArgumentCheck.notNull(validationMessageList);
 
-        // Pass validation if given enum type is abstract
+        // Pass validation if the enum type is abstract
         if (isAbstract) {
             return;
         }
@@ -484,6 +490,76 @@ public class EnumType extends EnumValueContainer implements IEnumType {
             String text = Messages.EnumType_NoLiteralNameAttribute;
             Message message = new Message(IEnumType.MSGCODE_ENUM_TYPE_NO_LITERAL_NAME_ATTRIBUTE, text, Message.ERROR,
                     new ObjectProperty[] { new ObjectProperty(this, null) });
+            validationMessageList.add(message);
+        }
+    }
+
+    /**
+     * Validates whether the given enum type has at least one enum attribute being marked to be used
+     * as ID in the Faktor-IPS UI.
+     * <p>
+     * If the given enum type is abstract the validation will succeed even if there is no such enum
+     * attribute.
+     */
+    private void validateUsedAsIdInFaktorIpsUiAttribute(MessageList validationMessageList) throws CoreException {
+        ArgumentCheck.notNull(validationMessageList);
+
+        // Pass validation if the enum type is abstract
+        if (isAbstract) {
+            return;
+        }
+
+        boolean idAttributeFound = false;
+        for (IEnumAttribute currentEnumAttribute : getEnumAttributesIncludeSupertypeCopies()) {
+            Boolean usedAsIdInFaktorIpsUi = currentEnumAttribute.findIsUsedAsIdInFaktorIpsUi();
+            if (usedAsIdInFaktorIpsUi == null) {
+                continue;
+            }
+            if (usedAsIdInFaktorIpsUi) {
+                idAttributeFound = true;
+                break;
+            }
+        }
+
+        if (!(idAttributeFound)) {
+            String text = Messages.EnumType_NoUsedAsIdInFaktorIpsUiAttribute;
+            Message message = new Message(IEnumType.MSGCODE_ENUM_TYPE_NO_USED_AS_ID_IN_FAKTOR_IPS_UI_ATTRIBUTE, text,
+                    Message.ERROR, new ObjectProperty[] { new ObjectProperty(this, null) });
+            validationMessageList.add(message);
+        }
+    }
+
+    /**
+     * Validates whether the given enum type has at least one enum attribute being marked to be used
+     * as name in the Faktor-IPS UI.
+     * <p>
+     * If the given enum type is abstract the validation will succeed even if there is no such enum
+     * attribute.
+     */
+    private void validateUsedAsNameInFaktorIpsUiAttribute(MessageList validationMessageList) throws CoreException {
+        ArgumentCheck.notNull(validationMessageList);
+
+        // Pass validation if the enum type is abstract
+        if (isAbstract) {
+            return;
+        }
+
+        boolean nameAttributeFound = false;
+        for (IEnumAttribute currentEnumAttribute : getEnumAttributesIncludeSupertypeCopies()) {
+            Boolean usedAsNameInFaktorIpsUi = currentEnumAttribute.findIsUsedAsNameInFaktorIpsUi();
+            if (usedAsNameInFaktorIpsUi == null) {
+                continue;
+            }
+            if (usedAsNameInFaktorIpsUi) {
+                nameAttributeFound = true;
+                break;
+            }
+        }
+
+        if (!(nameAttributeFound)) {
+            String text = Messages.EnumType_NoUsedAsNameInFaktorIpsUiAttribute;
+            Message message = new Message(IEnumType.MSGCODE_ENUM_TYPE_NO_USED_AS_NAME_IN_FAKTOR_IPS_UI_ATTRIBUTE, text,
+                    Message.ERROR, new ObjectProperty[] { new ObjectProperty(this, null) });
             validationMessageList.add(message);
         }
     }

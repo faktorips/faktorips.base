@@ -101,7 +101,7 @@ public class EnumTypeTest extends AbstractIpsEnumPluginTest {
         subEnumType.setSuperEnumType(genderEnumType.getQualifiedName());
         IEnumAttribute ownedEnumAttribute = subEnumType.newEnumAttribute();
         ownedEnumAttribute.setName("ownedEnumAttribute");
-        ownedEnumAttribute.setDatatype(STRING_DATATYPE_NAME);
+        ownedEnumAttribute.setDatatype(Datatype.STRING.getQualifiedName());
 
         List<IEnumAttribute> enumAttributesIncludeSupertypeOriginals = subEnumType
                 .findAllEnumAttributesIncludeSupertypeOriginals();
@@ -179,7 +179,7 @@ public class EnumTypeTest extends AbstractIpsEnumPluginTest {
         IEnumValue modelSideEnumValue = genderEnumType.newEnumValue();
         IEnumAttribute description = genderEnumType.newEnumAttribute();
         description.setName("Description");
-        description.setDatatype(STRING_DATATYPE_NAME);
+        description.setDatatype(Datatype.STRING.getQualifiedName());
 
         List<IEnumAttribute> attributes = genderEnumType.getEnumAttributes();
         assertEquals(3, attributes.size());
@@ -530,12 +530,12 @@ public class EnumTypeTest extends AbstractIpsEnumPluginTest {
 
         IEnumAttribute attr1 = superEnumType.newEnumAttribute();
         attr1.setName("attr1");
-        attr1.setDatatype(STRING_DATATYPE_NAME);
+        attr1.setDatatype(Datatype.STRING.getQualifiedName());
         attr1.setLiteralName(true);
         attr1.setUniqueIdentifier(true);
         IEnumAttribute attr2 = superSuperEnumType.newEnumAttribute();
         attr2.setName("attr2");
-        attr2.setDatatype(INTEGER_DATATYPE_NAME);
+        attr2.setDatatype(Datatype.INTEGER.getQualifiedName());
         MessageList validationMessageList = genderEnumType.validate(ipsProject);
         assertOneValidationMessage(validationMessageList);
         assertNotNull(validationMessageList
@@ -565,6 +565,22 @@ public class EnumTypeTest extends AbstractIpsEnumPluginTest {
         genderEnumType.setAbstract(true);
         getIpsModel().clearValidationCache();
         assertTrue(genderEnumType.isValid());
+    }
+
+    public void testValidateUsedAsIdInFaktorIpsUiAttribute() throws CoreException {
+        genderEnumAttributeId.setUsedAsIdInFaktorIpsUi(false);
+        MessageList validationMessageList = genderEnumType.validate(ipsProject);
+        assertOneValidationMessage(validationMessageList);
+        assertNotNull(validationMessageList
+                .getMessageByCode(IEnumType.MSGCODE_ENUM_TYPE_NO_USED_AS_ID_IN_FAKTOR_IPS_UI_ATTRIBUTE));
+    }
+
+    public void testValidateUsedAsNameInFaktorIpsUiAttribute() throws CoreException {
+        genderEnumAttributeName.setUsedAsNameInFaktorIpsUi(false);
+        MessageList validationMessageList = genderEnumType.validate(ipsProject);
+        assertOneValidationMessage(validationMessageList);
+        assertNotNull(validationMessageList
+                .getMessageByCode(IEnumType.MSGCODE_ENUM_TYPE_NO_USED_AS_NAME_IN_FAKTOR_IPS_UI_ATTRIBUTE));
     }
 
     public void testFindSuperEnumType() throws CoreException {
@@ -678,7 +694,7 @@ public class EnumTypeTest extends AbstractIpsEnumPluginTest {
         try {
             IEnumAttribute notInSupertypeHierarchyAttribute = paymentMode.newEnumAttribute();
             notInSupertypeHierarchyAttribute.setName("foo");
-            notInSupertypeHierarchyAttribute.setDatatype(STRING_DATATYPE_NAME);
+            notInSupertypeHierarchyAttribute.setDatatype(Datatype.STRING.getQualifiedName());
             subEnumType.inheritEnumAttributes(Arrays.asList(new IEnumAttribute[] { notInSupertypeHierarchyAttribute }));
             fail();
         } catch (IllegalArgumentException e) {

@@ -102,6 +102,20 @@ public interface IEnumType extends IEnumValueContainer, EnumDatatype {
     public final static String MSGCODE_INCONSISTENT_TYPE_HIERARCHY = MSGCODE_PREFIX + "InconsistentTypeHierachy";
 
     /**
+     * Validation message code to indicate that this enum type does not contain any enum attribute
+     * being marked to be used as ID in the Faktor-IPS UI while not being abstract.
+     */
+    public final static String MSGCODE_ENUM_TYPE_NO_USED_AS_ID_IN_FAKTOR_IPS_UI_ATTRIBUTE = MSGCODE_PREFIX
+            + "EnumTypeNoUsedAsIdInFaktorIpsUiAttribute";
+
+    /**
+     * Validation message code to indicate that this enum type does not contain any enum attribute
+     * being marked to be used as name in the Faktor-IPS UI while not being abstract.
+     */
+    public final static String MSGCODE_ENUM_TYPE_NO_USED_AS_NAME_IN_FAKTOR_IPS_UI_ATTRIBUTE = MSGCODE_PREFIX
+            + "EnumTypeNoUsedAsNameInFaktorIpsUiAttribute";
+
+    /**
      * Returns the package fragment a referecning enum content must be stored in.
      */
     public String getEnumContentPackageFragment();
@@ -295,7 +309,6 @@ public interface IEnumType extends IEnumValueContainer, EnumDatatype {
     /**
      * <p>
      * Creates a new enum attribute and returns a reference to it.
-     * </p>
      * <p>
      * Note that for all enum values <strong>that are defined directly in this enum type</strong>
      * new <code>EnumAttributeValue</code> objects will be created.
