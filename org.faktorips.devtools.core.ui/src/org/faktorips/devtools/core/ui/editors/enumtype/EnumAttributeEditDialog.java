@@ -61,6 +61,9 @@ public class EnumAttributeEditDialog extends IpsPartEditDialog2 {
     /** The ui control to set the <code>usedAsNameInFaktorIpsUi</code> property. */
     private Checkbox usedAsNameInFaktorIpsUiCheckbox;
 
+    /** This is used to track changes of the inherited property of the enum attribute to be edited. */
+    private boolean inheritedProperty;
+
     /**
      * Creates a new <code>EnumAttributeEditDialog</code> for the user to edit the given enum
      * attribute with.
@@ -73,6 +76,8 @@ public class EnumAttributeEditDialog extends IpsPartEditDialog2 {
 
         this.enumAttribute = enumAttribute;
         this.extFactory = new ExtensionPropertyControlFactory(enumAttribute.getClass());
+
+        this.inheritedProperty = enumAttribute.isInherited();
     }
 
     /**
@@ -155,6 +160,10 @@ public class EnumAttributeEditDialog extends IpsPartEditDialog2 {
      * If the enum attribute to be edited is not inherited from the supertype hierarchy the fields
      * will be bound to the respective properties.
      */
+    /*
+     * TODO aw: here is a problem with the enabled states of the usedAsId and usedAsName fields
+     * (test the program to see it)
+     */
     private void bindAndSetContentDependendOnInheritedProperty(IEnumAttribute enumAttribute) {
         if (!(enumAttribute.isInherited())) {
             bindingContext.bindContent(datatypeControl, enumAttribute, IEnumAttribute.PROPERTY_DATATYPE);
@@ -180,6 +189,7 @@ public class EnumAttributeEditDialog extends IpsPartEditDialog2 {
             bindingContext.bindEnabled(usedAsNameInFaktorIpsUiCheckbox, enumAttribute,
                     IEnumAttribute.PROPERTY_INHERITED, false);
 
+            // Obtain the properties from the super enum attribute
             try {
                 IIpsProject ipsProject = enumAttribute.getIpsProject();
                 Datatype datatype = enumAttribute.findDatatype(ipsProject);
@@ -226,7 +236,11 @@ public class EnumAttributeEditDialog extends IpsPartEditDialog2 {
         }
 
         if (changedPart.equals(enumAttribute)) {
-            bindAndSetContentDependendOnInheritedProperty(changedPart);
+            IEnumAttribute changedEnumAttribute = (IEnumAttribute)changedPart;
+            if (changedEnumAttribute.isInherited() != inheritedProperty) {
+                bindAndSetContentDependendOnInheritedProperty(changedEnumAttribute);
+                inheritedProperty = !inheritedProperty;
+            }
         }
     }
 
