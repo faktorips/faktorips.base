@@ -415,12 +415,13 @@ public interface IIpsProject extends IIpsElement, IProjectNature {
     public IEnumType findEnumType(String qualifiedName) throws CoreException;
 
     /**
-     * Returns all {@link IEnumType} objects found in this ips project. An empty list will be returned if
-     * none is found.
+     * Returns all {@link IEnumType} objects found in this ips project. An empty list will be
+     * returned if none is found.
+     * 
      * @throws CoreException if an exception occurs while processing the search
      */
     public List<IEnumType> findEnumTypes() throws CoreException;
-    
+
     /**
      * Returns the product component with the given runtime id or <code>null</code> if no such
      * product component exists. If more than one product component with the given id exists, the
@@ -603,6 +604,22 @@ public interface IIpsProject extends IIpsElement, IProjectNature {
      */
     public Datatype[] findDatatypes(boolean valuetypesOnly, boolean includeVoid, boolean includePrimitives)
             throws CoreException;
+
+    /**
+     * Returns all datatypes accessible on the project's path.
+     * 
+     * @param valuetypesOnly true if only value datatypes should be returned.
+     * @param includeVoid true if <code>Datatype.VOID</code> should be included.
+     * @param includePrimitives true if primitive Datatypes are included.
+     * @param excludedDatatypes A list of datatypes that should NOT be included, may be
+     *            <code>null</code> if none shall be excluded.
+     * 
+     * @throws CoreException if an exception occurs while searching for the datatypes.
+     */
+    public Datatype[] findDatatypes(boolean valuetypesOnly,
+            boolean includeVoid,
+            boolean includePrimitives,
+            List<Datatype> excludedDatatypes) throws CoreException;
 
     /**
      * Returns all enumeration datatypes accessible on the project's ips object path.

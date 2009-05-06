@@ -31,6 +31,7 @@ public class DatatypeCompletionProcessor extends AbstractCompletionProcessor {
     private boolean includeVoid = false;
     private boolean valuetypesOnly = false;
     private boolean includePrimitives = true;
+    private List<Datatype> excludedDatatypes = null;
 
     public DatatypeCompletionProcessor() {
         setComputeProposalForEmptyPrefix(true);
@@ -66,6 +67,17 @@ public class DatatypeCompletionProcessor extends AbstractCompletionProcessor {
         this.includePrimitives = includePrimitives;
     }
 
+    public void setExcludedDatatypes(List<Datatype> excludedDatatypes) {
+        this.excludedDatatypes = excludedDatatypes;
+    }
+
+    public List<Datatype> getExcludedDatatypes() {
+        if (excludedDatatypes != null) {
+            return Collections.unmodifiableList(excludedDatatypes);
+        }
+        return null;
+    }
+
     /**
      * {@inheritDoc}
      */
@@ -73,7 +85,7 @@ public class DatatypeCompletionProcessor extends AbstractCompletionProcessor {
         prefix = prefix.toLowerCase();
         DefaultLabelProvider labelProvider = new DefaultLabelProvider();
         List<Datatype> foundTypes = new ArrayList<Datatype>();
-        Datatype[] types = ipsProject.findDatatypes(valuetypesOnly, includeVoid, includePrimitives);
+        Datatype[] types = ipsProject.findDatatypes(valuetypesOnly, includeVoid, includePrimitives, excludedDatatypes);
         for (int i = 0; i < types.length; i++) {
             if (types[i].getName().toLowerCase().startsWith(prefix)) {
                 foundTypes.add(types[i]);

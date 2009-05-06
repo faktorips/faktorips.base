@@ -13,6 +13,9 @@
 
 package org.faktorips.devtools.core.ui.editors.enumtype;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Composite;
@@ -115,6 +118,9 @@ public class EnumAttributeEditDialog extends IpsPartEditDialog2 {
         datatypeControl.setVoidAllowed(false);
         datatypeControl.setPrimitivesAllowed(false);
         datatypeControl.setOnlyValueDatatypesAllowed(true);
+        List<Datatype> disallowedDatatypes = new ArrayList<Datatype>(1);
+        disallowedDatatypes.add(enumAttribute.getEnumType());
+        datatypeControl.setDisallowedDatatypes(disallowedDatatypes);
 
         // Literal name
         uiToolkit.createFormLabel(workArea, Messages.EnumAttributeEditDialog_labelUseAsLiteralName);

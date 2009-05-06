@@ -17,6 +17,7 @@ import java.io.ByteArrayInputStream;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.GregorianCalendar;
 import java.util.HashSet;
 import java.util.List;
@@ -534,7 +535,7 @@ public class IpsProjectTest extends AbstractIpsPluginTest {
         assertNull(ipsProject.findValueDatatype("Policy"));
     }
 
-    public void testFindValueDatatypeWithEnumTypes() throws Exception{
+    public void testFindValueDatatypeWithEnumTypes() throws Exception {
         IEnumType paymentMode = newEnumType(ipsProject, "PaymentMode");
         paymentMode.setAbstract(false);
         paymentMode.setContainingValues(true);
@@ -558,8 +559,8 @@ public class IpsProjectTest extends AbstractIpsPluginTest {
         datatype = ipsProject.findValueDatatype("Gender");
         assertSame(gender, datatype);
     }
-    
-    public void testfindEnumTypes() throws Exception{
+
+    public void testfindEnumTypes() throws Exception {
         IEnumType paymentMode = newEnumType(ipsProject, "PaymentMode");
         paymentMode.setAbstract(false);
         paymentMode.setContainingValues(true);
@@ -577,13 +578,13 @@ public class IpsProjectTest extends AbstractIpsPluginTest {
         id.setInherited(false);
         id.setLiteralName(true);
         id.setName("id");
-        
+
         List<IEnumType> enumTypes = ipsProject.findEnumTypes();
         assertEquals(2, enumTypes.size());
         assertTrue(enumTypes.contains(paymentMode));
         assertTrue(enumTypes.contains(gender));
     }
-    
+
     public void testFindValueDatatypeTableBasedEunm() throws CoreException {
         ITableStructure structure = (ITableStructure)newIpsObject(ipsProject, IpsObjectType.TABLE_STRUCTURE,
                 "table.Structure");
@@ -714,12 +715,17 @@ public class IpsProjectTest extends AbstractIpsPluginTest {
         assertEquals(pcType2, types[6]);
     }
 
-    public void testFindDatatypes3Parameters() throws Exception {
+    public void testFindDatatypes4Parameters() throws Exception {
         IPolicyCmptType a = newPolicyAndProductCmptType(ipsProject, "a", "aConfig");
-        List datatypes = Arrays.asList(ipsProject.findDatatypes(false, false, false));
+        List<Datatype> datatypes = Arrays.asList(ipsProject.findDatatypes(false, false, false, null));
         assertTrue(datatypes.contains(a));
         IProductCmptType aConfig = a.findProductCmptType(ipsProject);
         assertTrue(datatypes.contains(aConfig));
+
+        List<Datatype> disallowedTypesTest = new ArrayList<Datatype>(1);
+        disallowedTypesTest.add(Datatype.STRING);
+        Datatype[] types = ipsProject.findDatatypes(false, false, false, disallowedTypesTest);
+        assertFalse(Arrays.asList(types).contains(Datatype.STRING));
     }
 
     public void testFindDatatypesOfEnumType() throws Exception {
@@ -741,12 +747,12 @@ public class IpsProjectTest extends AbstractIpsPluginTest {
         id.setLiteralName(true);
         id.setName("id");
 
-        Datatype[] datatypes = ipsProject.findDatatypes(true, false, false);
+        Datatype[] datatypes = ipsProject.findDatatypes(true, false, false, null);
         List<Datatype> datatypeList = Arrays.asList(datatypes);
         assertTrue(datatypeList.contains(paymentMode));
         assertTrue(datatypeList.contains(gender));
 
-        datatypes = ipsProject.findDatatypes(false, false, false);
+        datatypes = ipsProject.findDatatypes(false, false, false, null);
         datatypeList = Arrays.asList(datatypes);
         assertTrue(datatypeList.contains(paymentMode));
         assertTrue(datatypeList.contains(gender));
@@ -784,7 +790,7 @@ public class IpsProjectTest extends AbstractIpsPluginTest {
         // if we change the ips project properties, the cache must be cleared and a new file
         // instance returned.
         Thread.sleep(500); // sleep some time to make sure the .ipsproject file has definitly a new
-                           // modification stamp
+        // modification stamp
         IIpsObjectPath path = ipsProject.getIpsObjectPath();
         IFolder newFolder = ipsProject.getProject().getFolder("newFolder");
         newFolder.create(true, false, null);
@@ -815,7 +821,7 @@ public class IpsProjectTest extends AbstractIpsPluginTest {
         // if we change the ips project properties, the cache must be cleared and a new file
         // instance returned.
         Thread.sleep(500); // sleep some time to make sure the .ipsproject file has definitly a new
-                           // modification stamp
+        // modification stamp
         IIpsObjectPath path = ipsProject.getIpsObjectPath();
         IFolder newFolder = ipsProject.getProject().getFolder("newFolder");
         newFolder.create(true, false, null);
@@ -1241,7 +1247,7 @@ public class IpsProjectTest extends AbstractIpsPluginTest {
         EnumDatatype[] dataTypes = ipsProject.findEnumDatatypes();
         assertEquals(1, dataTypes.length);
         assertEquals("TestEnumType", dataTypes[0].getQualifiedName());
-        
+
         IEnumType paymentMode = newEnumType(ipsProject, "PaymentMode");
         paymentMode.setAbstract(false);
         paymentMode.setContainingValues(true);

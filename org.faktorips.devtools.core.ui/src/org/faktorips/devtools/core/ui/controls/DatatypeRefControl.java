@@ -3,7 +3,7 @@
  * 
  * Alle Rechte vorbehalten.
  * 
- * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen, 
+ * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen,
  * etc.) duerfen nur unter den Bedingungen der Faktor-Zehn-Community Lizenzvereinbarung - Version
  * 0.1 (vor Gruendung Community) genutzt werden, die Bestandteil der Auslieferung ist und auch unter
  * http://www.faktorzehn.org/f10-org:lizenzen:community eingesehen werden kann.
@@ -12,6 +12,8 @@
  *******************************************************************************/
 
 package org.faktorips.devtools.core.ui.controls;
+
+import java.util.List;
 
 import org.eclipse.jface.window.Window;
 import org.eclipse.swt.widgets.Composite;
@@ -24,48 +26,46 @@ import org.faktorips.devtools.core.ui.DatatypeCompletionProcessor;
 import org.faktorips.devtools.core.ui.DatatypeSelectionDialog;
 import org.faktorips.devtools.core.ui.UIToolkit;
 
-
 /**
  * A control that allows to edit a reference to a datatype.
  */
 public class DatatypeRefControl extends TextButtonControl {
-    
+
     private IIpsProject ipsProject;
 
     private DatatypeCompletionProcessor completionProcessor;
-    
-    public DatatypeRefControl(
-            IIpsProject project,
-            Composite parent, 
-            UIToolkit toolkit) {
+
+    public DatatypeRefControl(IIpsProject project, Composite parent, UIToolkit toolkit) {
+
         super(parent, toolkit, Messages.DatatypeRefControl_title);
+
         ipsProject = project;
         completionProcessor = new DatatypeCompletionProcessor();
         completionProcessor.setIpsProject(project);
         CompletionUtil.createContentAssistant(completionProcessor);
         ContentAssistHandler.createHandlerForText(text, CompletionUtil.createContentAssistant(completionProcessor));
     }
-    
+
     public void setVoidAllowed(boolean includeVoid) {
-        completionProcessor.setIncludeVoid(includeVoid);        
+        completionProcessor.setIncludeVoid(includeVoid);
     }
-    
+
     public void setPrimitivesAllowed(boolean includePrimitives) {
-    	completionProcessor.setIncludePrimitives(includePrimitives);
+        completionProcessor.setIncludePrimitives(includePrimitives);
     }
-    
+
     public boolean getPrimitivesAllowed() {
-    	return completionProcessor.isIncludePrimitives();
+        return completionProcessor.isIncludePrimitives();
     }
-    
+
     public boolean isVoidAllowed() {
         return completionProcessor.isIncludeVoid();
     }
-    
+
     public void setOnlyValueDatatypesAllowed(boolean valuetypesOnly) {
         completionProcessor.setValueDatatypesOnly(valuetypesOnly);
     }
-    
+
     public boolean isOnlyValueDatatypesAllowed() {
         return completionProcessor.getValueDatatypesOnly();
     }
@@ -74,21 +74,30 @@ public class DatatypeRefControl extends TextButtonControl {
         this.ipsProject = project;
         completionProcessor.setIpsProject(project);
     }
-    
-    /** 
+
+    public void setDisallowedDatatypes(List<Datatype> disallowedDatatypes) {
+        completionProcessor.setExcludedDatatypes(disallowedDatatypes);
+    }
+
+    public List<Datatype> getDisallowedDatatypes() {
+        return completionProcessor.getExcludedDatatypes();
+    }
+
+    /**
      * {@inheritDoc}
      */
     protected void buttonClicked() {
         try {
             DatatypeSelectionDialog dialog = new DatatypeSelectionDialog(getShell());
-            dialog.setElements(ipsProject.findDatatypes(isOnlyValueDatatypesAllowed(), isVoidAllowed(), getPrimitivesAllowed()));
-            if (dialog.open()==Window.OK) {
+            dialog.setElements(ipsProject.findDatatypes(isOnlyValueDatatypesAllowed(), isVoidAllowed(),
+                    getPrimitivesAllowed(), getDisallowedDatatypes()));
+            if (dialog.open() == Window.OK) {
                 String textToSet = ""; //$NON-NLS-1$
-                if (dialog.getResult().length>0) {
+                if (dialog.getResult().length > 0) {
                     Datatype datatype = (Datatype)dialog.getResult()[0];
                     textToSet = datatype.getQualifiedName();
                 }
-                try{
+                try {
                     immediatelyNotifyListener = true;
                     text.setText(textToSet);
                 } finally {
