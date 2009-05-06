@@ -60,6 +60,7 @@ import org.faktorips.devtools.core.model.enums.IEnumValue;
 import org.faktorips.devtools.core.model.enums.IEnumValueContainer;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObject;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPart;
+import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.ui.IpsUIPlugin;
 import org.faktorips.devtools.core.ui.UIToolkit;
 import org.faktorips.devtools.core.ui.ValueDatatypeControlFactory;
@@ -95,6 +96,9 @@ public class EnumValuesSection extends IpsSection implements ContentsChangeListe
 
     /** The enum value container holding the enum values to be edited. */
     private IEnumValueContainer enumValueContainer;
+
+    /** The ips project the enum value container to edit is stored in. */
+    private IIpsProject ipsProject;
 
     /** The ui table widget. */
     private Table enumValuesTable;
@@ -136,9 +140,10 @@ public class EnumValuesSection extends IpsSection implements ContentsChangeListe
 
         ArgumentCheck.notNull(enumValueContainer);
         this.enumValueContainer = enumValueContainer;
+        this.ipsProject = enumValueContainer.getIpsProject();
         this.columnNames = new ArrayList<String>(4);
 
-        IEnumType enumType = enumValueContainer.findEnumType();
+        IEnumType enumType = enumValueContainer.findEnumType(ipsProject);
 
         initControls();
         createActions();
@@ -254,7 +259,7 @@ public class EnumValuesSection extends IpsSection implements ContentsChangeListe
     @Override
     protected void initClientComposite(Composite client, UIToolkit toolkit) {
         try {
-            IEnumType enumType = enumValueContainer.findEnumType();
+            IEnumType enumType = enumValueContainer.findEnumType(ipsProject);
             createTable(enumType, client, toolkit);
             createTableViewer();
         } catch (CoreException e) {
@@ -291,7 +296,7 @@ public class EnumValuesSection extends IpsSection implements ContentsChangeListe
     private void createTableColumns(IEnumType enumType) throws CoreException {
         if (enumValueContainer instanceof IEnumContent) {
             IEnumContent enumContent = (IEnumContent)enumValueContainer;
-            IEnumType referencedEnumType = enumValueContainer.findEnumType();
+            IEnumType referencedEnumType = enumValueContainer.findEnumType(ipsProject);
             for (int i = 0; i < enumContent.getReferencedEnumAttributesCount(); i++) {
                 boolean obtainNamesFromAttributes = true;
                 if (referencedEnumType == null) {
@@ -306,7 +311,8 @@ public class EnumValuesSection extends IpsSection implements ContentsChangeListe
                 String columnName;
                 boolean isIdentifier = false;
                 if (obtainNamesFromAttributes) {
-                    IEnumAttribute currentEnumAttribute = referencedEnumType.getEnumAttributesIncludeSupertypeCopies().get(i);
+                    IEnumAttribute currentEnumAttribute = referencedEnumType.getEnumAttributesIncludeSupertypeCopies()
+                            .get(i);
                     columnName = currentEnumAttribute.getName();
                     isIdentifier = currentEnumAttribute.isUniqueIdentifier();
                 } else {
@@ -414,7 +420,7 @@ public class EnumValuesSection extends IpsSection implements ContentsChangeListe
         enumValuesTableViewer.setColumnProperties(columnNamesArray);
 
         // Create cell editors
-        IEnumType enumType = enumValueContainer.findEnumType();
+        IEnumType enumType = enumValueContainer.findEnumType(ipsProject);
         CellEditor[] cellEditors = createCellEditors(enumType, columnNamesArray);
 
         // Assign the cell editors to the table viewer
@@ -540,7 +546,7 @@ public class EnumValuesSection extends IpsSection implements ContentsChangeListe
     public void contentsChanged(ContentChangeEvent event) {
         IEnumType enumType;
         try {
-            enumType = enumValueContainer.findEnumType();
+            enumType = enumValueContainer.findEnumType(ipsProject);
         } catch (CoreException e) {
             throw new RuntimeException(e);
         }
@@ -574,7 +580,7 @@ public class EnumValuesSection extends IpsSection implements ContentsChangeListe
                     if (enumValueContainer instanceof IEnumContent) {
                         if (changedIpsObject instanceof IEnumContent) {
                             IEnumContent changedEnumContent = (IEnumContent)changedIpsObject;
-                            IEnumType referencedEnumType = changedEnumContent.findEnumType();
+                            IEnumType referencedEnumType = changedEnumContent.findEnumType(ipsProject);
                             if (referencedEnumType != null) {
                                 reinit(referencedEnumType);
                             }
@@ -596,7 +602,8 @@ public class EnumValuesSection extends IpsSection implements ContentsChangeListe
                         try {
                             String oldName = null;
                             for (String currentColumnName : columnNames) {
-                                if (enumTypeModifiedEnumAttribute.getEnumAttributeIncludeSupertypeCopies(currentColumnName) == null) {
+                                if (enumTypeModifiedEnumAttribute
+                                        .getEnumAttributeIncludeSupertypeCopies(currentColumnName) == null) {
                                     oldName = currentColumnName;
                                     break;
                                 }
@@ -714,7 +721,7 @@ public class EnumValuesSection extends IpsSection implements ContentsChangeListe
                     String columnValue = enumAttributeValue.getValue();
                     IEnumAttribute enumAttribute = null;
                     try {
-                        enumAttribute = enumAttributeValue.findEnumAttribute();
+                        enumAttribute = enumAttributeValue.findEnumAttribute(ipsProject);
                     } catch (CoreException e) {
                         throw new RuntimeException(e);
                     }
@@ -724,7 +731,7 @@ public class EnumValuesSection extends IpsSection implements ContentsChangeListe
 
                     try {
                         // Format value properly
-                        String datatype = enumAttributeValue.findEnumAttribute().getDatatype();
+                        String datatype = enumAttributeValue.findEnumAttribute(ipsProject).getDatatype();
                         ValueDatatype valueDatatype = enumAttributeValue.getIpsProject().findValueDatatype(datatype);
                         return IpsPlugin.getDefault().getIpsPreferences().getDatatypeFormatter().formatValue(
                                 valueDatatype, columnValue);

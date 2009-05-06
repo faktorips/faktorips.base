@@ -41,15 +41,21 @@ public class EnumAttributeValueTest extends AbstractIpsEnumPluginTest {
     }
 
     public void testFindEnumAttribute() throws CoreException {
-        assertEquals(genderEnumAttributeId, maleIdAttributeValue.findEnumAttribute());
-        assertEquals(genderEnumAttributeName, maleNameAttributeValue.findEnumAttribute());
+        try {
+            maleIdAttributeValue.findEnumAttribute(null);
+            fail();
+        } catch (NullPointerException e) {
+        }
+
+        assertEquals(genderEnumAttributeId, maleIdAttributeValue.findEnumAttribute(ipsProject));
+        assertEquals(genderEnumAttributeName, maleNameAttributeValue.findEnumAttribute(ipsProject));
 
         genderEnumContent.setEnumType("");
-        assertNull(maleIdAttributeValue.findEnumAttribute());
+        assertNull(maleIdAttributeValue.findEnumAttribute(ipsProject));
         genderEnumContent.setEnumType(genderEnumType.getQualifiedName());
 
         genderEnumType.deleteEnumAttributeWithValues(genderEnumAttributeId);
-        assertNull(maleIdAttributeValue.findEnumAttribute());
+        assertNull(maleIdAttributeValue.findEnumAttribute(ipsProject));
     }
 
     public void testGetSetValue() {

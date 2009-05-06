@@ -3,7 +3,7 @@
  * 
  * Alle Rechte vorbehalten.
  * 
- * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen, 
+ * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen,
  * etc.) duerfen nur unter den Bedingungen der Faktor-Zehn-Community Lizenzvereinbarung - Version
  * 0.1 (vor Gruendung Community) genutzt werden, die Bestandteil der Auslieferung ist und auch unter
  * http://www.faktorzehn.org/f10-org:lizenzen:community eingesehen werden kann.
@@ -48,7 +48,7 @@ public class EnumImportWizard extends IpsObjectImportWizard {
 
     public final static String ID = "org.faktorips.devtools.core.ui.wizards.enumimport.EnumImportWizard"; //$NON-NLS-1$
     protected final static String DIALOG_SETTINGS_KEY = "EnumImportWizard"; //$NON-NLS-1$
-    
+
     private SelectFileAndImportMethodPage filePage;
     private ImportedEnumContentPage newEnumContentPage;
     private SelectEnumPage selectContentsPage;
@@ -56,16 +56,15 @@ public class EnumImportWizard extends IpsObjectImportWizard {
 
     public EnumRefControl enumControl;
 
-    
     public EnumImportWizard() {
         setWindowTitle(Messages.EnumImportWizard_title);
-        this.setDefaultPageImageDescriptor(IpsUIPlugin.getDefault().getImageDescriptor(
-                        "wizards/EnumImportWizard.png")); //$NON-NLS-1$
+        this.setDefaultPageImageDescriptor(IpsUIPlugin.getDefault().getImageDescriptor("wizards/EnumImportWizard.png")); //$NON-NLS-1$
     }
-    
+
     /**
      * {@inheritDoc}
      */
+    @Override
     public void addPages() {
         try {
             filePage = new SelectFileAndImportMethodPage(null);
@@ -76,7 +75,7 @@ public class EnumImportWizard extends IpsObjectImportWizard {
             addPage(selectContentsPage);
             tablePreviewPage = new TablePreviewPage(selection);
             addPage(tablePreviewPage);
-            
+
             filePage.setImportIntoExisting(importIntoExisting);
         } catch (Exception e) {
             IpsPlugin.logAndShowErrorDialog(e);
@@ -86,6 +85,7 @@ public class EnumImportWizard extends IpsObjectImportWizard {
     /**
      * {@inheritDoc}
      */
+    @Override
     public IWizardPage getNextPage(IWizardPage page) {
         if (page == filePage) {
             // set the completed state on the opposite page to true so that the wizard can finish
@@ -106,12 +106,14 @@ public class EnumImportWizard extends IpsObjectImportWizard {
             }
             return newEnumContentPage;
         }
+
         if (page == selectContentsPage || page == newEnumContentPage) {
 
             tablePreviewPage.setFilename(filePage.getFilename());
             tablePreviewPage.setTableFormat(filePage.getFormat());
             try {
-                tablePreviewPage.setTableStructure(getEnumValueContainer().findEnumType());
+                tablePreviewPage.setTableStructure(getEnumValueContainer().findEnumType(
+                        getEnumValueContainer().getIpsProject()));
             } catch (CoreException e) {
                 // not fatal, only the preview is not available if could not determine IEnumType
                 IpsPlugin.logAndShowErrorDialog(e);
@@ -120,6 +122,7 @@ public class EnumImportWizard extends IpsObjectImportWizard {
 
             return tablePreviewPage;
         }
+
         return null;
     }
 
@@ -130,27 +133,25 @@ public class EnumImportWizard extends IpsObjectImportWizard {
         final ITableFormat format = filePage.getFormat();
         try {
             final IEnumValueContainer enumTypeOrContent = getEnumValueContainer();
-            
+
             if (filePage.isImportExistingReplace()) {
-                // TODO rg:, introduce clear() as in ITableContentsGeneration  
-//                enumTypeOrContent.clear();
+                enumTypeOrContent.clear();
             }
-            
+
             IWorkspaceRunnable runnable = new IWorkspaceRunnable() {
                 public void run(IProgressMonitor monitor) throws CoreException {
-                    format.executeEnumImport(enumTypeOrContent, new Path(filePage.getFilename()),
-                            filePage.getNullRepresentation(), filePage.isImportIgnoreColumnHeaderRow(),
-                            new MessageList());
+                    format.executeEnumImport(enumTypeOrContent, new Path(filePage.getFilename()), filePage
+                            .getNullRepresentation(), filePage.isImportIgnoreColumnHeaderRow(), new MessageList());
                 }
             };
             IIpsModel model = IpsPlugin.getDefault().getIpsModel();
             model.runAndQueueChangeEvents(runnable, null);
             WorkbenchRunnableAdapter runnableAdapter = new WorkbenchRunnableAdapter(runnable);
-            
+
         } catch (CoreException e) {
             IpsPlugin.log(e);
-        } 
-        
+        }
+
         // don't keep wizard open
         return true;
     }
@@ -168,11 +169,11 @@ public class EnumImportWizard extends IpsObjectImportWizard {
             return newEnumContentPage.getEnumContent();
         }
     }
-    
+
     private class ImportedEnumContentPage extends EnumContentPage {
 
         private IIpsSrcFile ipsSrcFile;
-        
+
         public ImportedEnumContentPage(IStructuredSelection selection) {
             super(selection);
         }
@@ -198,6 +199,6 @@ public class EnumImportWizard extends IpsObjectImportWizard {
             ipsSrcFile = super.createIpsSrcFile(monitor);
             return ipsSrcFile;
         }
-        
+
     }
 }

@@ -74,7 +74,7 @@ public class EnumContentModelDescriptionPage extends DefaultModelDescriptionPage
     private void setDescriptionData() throws CoreException {
         setTitle(enumContent.getName());
 
-        IEnumType enumType = enumContent.findEnumType();
+        IEnumType enumType = enumContent.findEnumType(enumContent.getIpsProject());
         if (enumType == null) {
             return;
         }
@@ -102,7 +102,7 @@ public class EnumContentModelDescriptionPage extends DefaultModelDescriptionPage
 
         IEnumType enumType = null;
         try {
-            enumType = enumContent.findEnumType();
+            enumType = enumContent.findEnumType(enumContent.getIpsProject());
         } catch (CoreException e) {
             throw new RuntimeException(e);
         }

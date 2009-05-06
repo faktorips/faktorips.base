@@ -111,11 +111,9 @@ public class EnumContentPage extends TypeEditorStructurePage implements Contents
     /** Creates the actions for the toolbar. */
     private void createToolbarActions() {
         openFixEnumTypeDialogAction = new OpenFixEnumContentWizardAction(enumContent, getSite().getShell());
-        importAction = new EnumImportExportActionInEditor(getSite().getShell(),
-                enumContent, true);
-        exportAction = new EnumImportExportActionInEditor(getSite().getShell(),
-                enumContent, false);
-        
+        importAction = new EnumImportExportActionInEditor(getSite().getShell(), enumContent, true);
+        exportAction = new EnumImportExportActionInEditor(getSite().getShell(), enumContent, false);
+
     }
 
     /** Creates the toolbar of this page. */
@@ -124,7 +122,7 @@ public class EnumContentPage extends TypeEditorStructurePage implements Contents
         form.getToolBarManager().add(openFixEnumTypeDialogAction);
         form.getToolBarManager().add(importAction);
         form.getToolBarManager().add(exportAction);
-        
+
         form.updateToolBar();
         updateToolbarActionsEnabledStates();
     }
@@ -151,7 +149,7 @@ public class EnumContentPage extends TypeEditorStructurePage implements Contents
         } else {
             IEnumType enumType;
             try {
-                enumType = enumContent.findEnumType();
+                enumType = enumContent.findEnumType(enumContent.getIpsProject());
             } catch (CoreException e) {
                 throw new RuntimeException(e);
             }
@@ -183,7 +181,7 @@ public class EnumContentPage extends TypeEditorStructurePage implements Contents
     public void contentsChanged(ContentChangeEvent event) {
         IEnumType enumType;
         try {
-            enumType = enumContent.findEnumType();
+            enumType = enumContent.findEnumType(enumContent.getIpsProject());
         } catch (CoreException e) {
             throw new RuntimeException(e);
         }
@@ -215,7 +213,7 @@ public class EnumContentPage extends TypeEditorStructurePage implements Contents
                 initImportAction();
             } else {
                 initExportAction();
-            }            
+            }
         }
 
         /**
@@ -225,7 +223,7 @@ public class EnumContentPage extends TypeEditorStructurePage implements Contents
             if (super.runInternal(selection)) {
                 enumValuesSection.refresh();
             }
-        }        
+        }
     }
-    
+
 }

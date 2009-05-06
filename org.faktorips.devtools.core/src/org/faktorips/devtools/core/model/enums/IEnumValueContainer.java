@@ -18,6 +18,7 @@ import java.util.NoSuchElementException;
 
 import org.eclipse.core.runtime.CoreException;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObject;
+import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 
 /**
  * <code>EnumValueContainer</code> is the supertype for <code>EnumType</code> and
@@ -54,10 +55,14 @@ public interface IEnumValueContainer extends IIpsObject {
     /**
      * Returns a reference to the enum type or <code>null</code> if no enum type can be found.
      * 
-     * @throws CoreException If an error occures while searching the ips model for the enum type.
+     * @param ipsProject The ips project which ips object path is used for the search. This is not
+     *            necessarily the project this enum attribute is part of.
+     * 
+     * @throws CoreException If an error occures while searching the given ips project for the enum
+     *             type.
+     * @throws NullPointerException If <code>ipsProject</code> is <code>null</code>.
      */
-    // TODO aw: ips project as parameter neccessary
-    public IEnumType findEnumType() throws CoreException;
+    public IEnumType findEnumType(IIpsProject ipsProject) throws CoreException;
 
     /**
      * Returns how many enum values this enum value container currently contains.
@@ -90,5 +95,10 @@ public interface IEnumValueContainer extends IIpsObject {
      * @throws NullPointerException If <code>enumValue</code> is <code>null</code>.
      */
     public int getIndexOfEnumValue(IEnumValue enumValue);
+
+    /**
+     * Deletes all enum values from this enum value container.
+     */
+    public void clear();
 
 }

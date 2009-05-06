@@ -140,7 +140,7 @@ public class EnumValue extends BaseIpsObjectPart implements IEnumValue {
         super.validateThis(list, ipsProject);
 
         IEnumValueContainer enumValueContainer = getEnumValueContainer();
-        IEnumType enumType = enumValueContainer.findEnumType();
+        IEnumType enumType = enumValueContainer.findEnumType(ipsProject);
         if (enumType == null) {
             return;
         }
@@ -191,15 +191,19 @@ public class EnumValue extends BaseIpsObjectPart implements IEnumValue {
     /**
      * {@inheritDoc}
      */
-    public IEnumAttributeValue findEnumAttributeValue(IEnumAttribute enumAttribute) throws CoreException {
+    public IEnumAttributeValue findEnumAttributeValue(IIpsProject ipsProject, IEnumAttribute enumAttribute)
+            throws CoreException {
+
+        ArgumentCheck.notNull(ipsProject);
+
         if (enumAttribute == null) {
             return null;
         }
-        IEnumType enumType = getEnumValueContainer().findEnumType();
+        IEnumType enumType = getEnumValueContainer().findEnumType(ipsProject);
         ArgumentCheck.isTrue(enumAttribute.getEnumType() == enumType);
 
         for (IEnumAttributeValue currentEnumAttributeValue : getEnumAttributeValues()) {
-            IEnumAttribute currentReferencedEnumAttribute = currentEnumAttributeValue.findEnumAttribute();
+            IEnumAttribute currentReferencedEnumAttribute = currentEnumAttributeValue.findEnumAttribute(ipsProject);
             if (currentReferencedEnumAttribute != null) {
                 if (currentReferencedEnumAttribute.getName().equals(enumAttribute.getName())) {
                     return currentEnumAttributeValue;

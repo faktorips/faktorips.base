@@ -482,7 +482,7 @@ public class FixEnumContentWizard extends Wizard {
             });
 
             try {
-                IEnumType enumType = enumContent.findEnumType();
+                IEnumType enumType = enumContent.findEnumType(enumContent.getIpsProject());
                 if (enumType != null) {
                     if (!(enumType.isAbstract()) && !(enumType.isContainingValues())) {
                         enumTypeRefControl.setText(enumType.getQualifiedName());

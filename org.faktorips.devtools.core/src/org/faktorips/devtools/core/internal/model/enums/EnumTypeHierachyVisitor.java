@@ -31,7 +31,7 @@ public abstract class EnumTypeHierachyVisitor extends HierarchyVisitor<IEnumType
 
     @Override
     protected IEnumType findSupertype(IEnumType currentType, IIpsProject ipsProject) throws CoreException {
-        return currentType.findSuperEnumType();
+        return currentType.findSuperEnumType(ipsProject);
     }
 
 }

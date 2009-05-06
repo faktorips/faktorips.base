@@ -104,7 +104,7 @@ public class EnumTypeValidations {
     public static void validateSuperTypeHierarchy(MessageList msgList, IEnumType enumType, IIpsProject ipsProject)
             throws CoreException {
 
-        IEnumType superEnumType = enumType.findSuperEnumType();
+        IEnumType superEnumType = enumType.findSuperEnumType(ipsProject);
         if (superEnumType == null) {
             return;
         }

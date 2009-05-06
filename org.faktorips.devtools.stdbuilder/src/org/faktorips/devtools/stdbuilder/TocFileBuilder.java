@@ -484,7 +484,7 @@ public class TocFileBuilder extends AbstractArtefactBuilder {
 
     /** Creates a toc entry for the given enum content. */
     public TocEntryObject createTocEntry(IEnumContent enumContent) throws CoreException {
-        IEnumType enumType = enumContent.findEnumType();
+        IEnumType enumType = enumContent.findEnumType(enumContent.getIpsProject());
         if (enumType == null) {
             return null;
         }

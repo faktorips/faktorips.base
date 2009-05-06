@@ -112,7 +112,7 @@ public class EnumTypeGeneralInfoSection extends IpsSection implements ContentsCh
             @Override
             public void linkActivated(HyperlinkEvent event) {
                 try {
-                    IEnumType supertype = enumType.findSuperEnumType();
+                    IEnumType supertype = enumType.findSuperEnumType(enumType.getIpsProject());
                     if (supertype != null) {
                         IpsUIPlugin.getDefault().openEditor(supertype);
                     }

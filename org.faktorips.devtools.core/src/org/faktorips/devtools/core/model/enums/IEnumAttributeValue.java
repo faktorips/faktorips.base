@@ -15,6 +15,7 @@ package org.faktorips.devtools.core.model.enums;
 
 import org.eclipse.core.runtime.CoreException;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPart;
+import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 
 /**
  * An enum attribute value belongs to an enum value. It represents the value for a specific enum
@@ -71,10 +72,15 @@ public interface IEnumAttributeValue extends IIpsObjectPart {
      * does not correspond to the number of enum attribute values in the enum value containing this
      * enum attribute value.
      * 
-     * @throws CoreException If an error occurs while searching for the enum attribute.
+     * @param ipsProject The ips project which ips object path is used for the search of the
+     *            referenced enum attribute. This is not necessarily the project this enum attribute
+     *            is part of.
+     * 
+     * @throws CoreException If an error occurs while searching the given ips project for the
+     *             referenced enum attribute.
+     * @throws NullPointerException If <code>ipsProject</code> is <code>null</code>.
      */
-    // TODO aw: ips project as parameter neccessary
-    public IEnumAttribute findEnumAttribute() throws CoreException;
+    public IEnumAttribute findEnumAttribute(IIpsProject ipsProject) throws CoreException;
 
     /**
      * Returns the value as <code>String</code>.

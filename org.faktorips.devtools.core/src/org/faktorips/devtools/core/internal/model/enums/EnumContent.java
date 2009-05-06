@@ -75,8 +75,10 @@ public class EnumContent extends EnumValueContainer implements IEnumContent {
     /**
      * {@inheritDoc}
      */
-    public IEnumType findEnumType() throws CoreException {
-        IIpsSrcFile[] enumTypeSrcFiles = getIpsProject().findIpsSrcFiles(IpsObjectType.ENUM_TYPE);
+    public IEnumType findEnumType(IIpsProject ipsProject) throws CoreException {
+        ArgumentCheck.notNull(ipsProject);
+
+        IIpsSrcFile[] enumTypeSrcFiles = ipsProject.findIpsSrcFiles(IpsObjectType.ENUM_TYPE);
         for (IIpsSrcFile currentIpsSrcFile : enumTypeSrcFiles) {
             if (currentIpsSrcFile.getIpsObject().getQualifiedName().equals(enumType)) {
                 return (IEnumType)currentIpsSrcFile.getIpsObject();
@@ -96,7 +98,7 @@ public class EnumContent extends EnumValueContainer implements IEnumContent {
         this.enumType = enumType;
         valueChanged(oldEnumType, enumType);
 
-        IEnumType newEnumType = findEnumType();
+        IEnumType newEnumType = findEnumType(getIpsProject());
         if (newEnumType != null) {
             setEnumAttributesCount(newEnumType.getEnumAttributesCount(true));
         }
@@ -147,21 +149,22 @@ public class EnumContent extends EnumValueContainer implements IEnumContent {
 
         EnumContentValidations.validateEnumType(list, this, enumType, ipsProject);
         if (list.getNoOfMessages() == 0) {
-            EnumContentValidations.validatePackageFragment(list, this, findEnumType(), getIpsPackageFragment()
-                    .getName());
+            EnumContentValidations.validatePackageFragment(list, this, findEnumType(ipsProject),
+                    getIpsPackageFragment().getName());
         }
-  
-        validateReferencedEnumAttributesCount(list, this);
+
+        validateReferencedEnumAttributesCount(list, this, ipsProject);
     }
 
     /**
      * Validates the number of referenced enum attributes. This number is invalid if it does not
      * correspond to the number of enum attributes in the referenced enum type.
      */
-    private void validateReferencedEnumAttributesCount(MessageList validationMessageList, IEnumContent enumContent)
-            throws CoreException {
+    private void validateReferencedEnumAttributesCount(MessageList validationMessageList,
+            IEnumContent enumContent,
+            IIpsProject ipsProject) throws CoreException {
 
-        IEnumType enumType = enumContent.findEnumType();
+        IEnumType enumType = enumContent.findEnumType(ipsProject);
         if (enumType == null) {
             return;
         }

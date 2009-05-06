@@ -96,6 +96,12 @@ public class EnumTypeTest extends AbstractIpsEnumPluginTest {
     }
 
     public void testFindAllEnumAttributesIncludeSupertypeOriginals() throws CoreException {
+        try {
+            genderEnumType.findAllEnumAttributesIncludeSupertypeOriginals(null);
+            fail();
+        } catch (NullPointerException e) {
+        }
+
         genderEnumType.setAbstract(true);
         IEnumType subEnumType = newEnumType(ipsProject, "SubEnumType");
         subEnumType.setSuperEnumType(genderEnumType.getQualifiedName());
@@ -104,7 +110,7 @@ public class EnumTypeTest extends AbstractIpsEnumPluginTest {
         ownedEnumAttribute.setDatatype(Datatype.STRING.getQualifiedName());
 
         List<IEnumAttribute> enumAttributesIncludeSupertypeOriginals = subEnumType
-                .findAllEnumAttributesIncludeSupertypeOriginals();
+                .findAllEnumAttributesIncludeSupertypeOriginals(ipsProject);
         assertEquals(3, enumAttributesIncludeSupertypeOriginals.size());
         assertEquals(ownedEnumAttribute, enumAttributesIncludeSupertypeOriginals.get(0));
         assertEquals(genderEnumAttributeId, enumAttributesIncludeSupertypeOriginals.get(1));
@@ -147,7 +153,13 @@ public class EnumTypeTest extends AbstractIpsEnumPluginTest {
 
     public void testFindEnumAttributeIncludeSupertypeOriginals() throws CoreException {
         try {
-            genderEnumType.findEnumAttributeIncludeSupertypeOriginals(null);
+            genderEnumType.findEnumAttributeIncludeSupertypeOriginals(ipsProject, null);
+            fail();
+        } catch (NullPointerException e) {
+        }
+
+        try {
+            genderEnumType.findEnumAttributeIncludeSupertypeOriginals(null, GENDER_ENUM_ATTRIBUTE_ID_NAME);
             fail();
         } catch (NullPointerException e) {
         }
@@ -159,8 +171,8 @@ public class EnumTypeTest extends AbstractIpsEnumPluginTest {
         inheritedId.setInherited(true);
         inheritedId.setName(GENDER_ENUM_ATTRIBUTE_ID_NAME);
 
-        assertEquals(genderEnumAttributeId, subEnumType
-                .findEnumAttributeIncludeSupertypeOriginals(GENDER_ENUM_ATTRIBUTE_ID_NAME));
+        assertEquals(genderEnumAttributeId, subEnumType.findEnumAttributeIncludeSupertypeOriginals(ipsProject,
+                GENDER_ENUM_ATTRIBUTE_ID_NAME));
     }
 
     public void testGetEnumAttributesCount() throws CoreException {
@@ -187,13 +199,25 @@ public class EnumTypeTest extends AbstractIpsEnumPluginTest {
 
         List<IEnumAttributeValue> attributeValues = modelSideEnumValue.getEnumAttributeValues();
         assertEquals(3, attributeValues.size());
-        assertEquals(attributes.get(0), attributeValues.get(0).findEnumAttribute());
-        assertEquals(attributes.get(1), attributeValues.get(1).findEnumAttribute());
-        assertEquals(attributes.get(2), attributeValues.get(2).findEnumAttribute());
+        assertEquals(attributes.get(0), attributeValues.get(0).findEnumAttribute(ipsProject));
+        assertEquals(attributes.get(1), attributeValues.get(1).findEnumAttribute(ipsProject));
+        assertEquals(attributes.get(2), attributeValues.get(2).findEnumAttribute(ipsProject));
+
+        try {
+            attributeValues.get(0).findEnumAttribute(null);
+            fail();
+        } catch (NullPointerException e) {
+        }
     }
 
     public void testFindEnumType() throws CoreException {
-        assertEquals(genderEnumType, genderEnumType.findEnumType());
+        try {
+            genderEnumType.findEnumType(null);
+            fail();
+        } catch (NullPointerException e) {
+        }
+
+        assertEquals(genderEnumType, genderEnumType.findEnumType(ipsProject));
     }
 
     public void testMoveEnumAttributeUp() throws CoreException {
@@ -586,7 +610,13 @@ public class EnumTypeTest extends AbstractIpsEnumPluginTest {
     public void testFindSuperEnumType() throws CoreException {
         IEnumType subEnumType = newEnumType(ipsProject, "SubEnumType");
         subEnumType.setSuperEnumType(genderEnumType.getQualifiedName());
-        assertEquals(genderEnumType, subEnumType.findSuperEnumType());
+        assertEquals(genderEnumType, subEnumType.findSuperEnumType(ipsProject));
+
+        try {
+            subEnumType.findSuperEnumType(null);
+            fail();
+        } catch (NullPointerException e) {
+        }
     }
 
     public void testGetIndexOfEnumAttribute() throws CoreException {
@@ -607,14 +637,20 @@ public class EnumTypeTest extends AbstractIpsEnumPluginTest {
     }
 
     public void testFindAllSuperEnumTypes() throws CoreException {
-        assertEquals(0, genderEnumType.findAllSuperEnumTypes().size());
+        try {
+            genderEnumType.findAllSuperEnumTypes(null);
+            fail();
+        } catch (NullPointerException e) {
+        }
+
+        assertEquals(0, genderEnumType.findAllSuperEnumTypes(ipsProject).size());
 
         IEnumType rootEnumType = newEnumType(ipsProject, "RootEnumType");
         IEnumType level1EnumType = newEnumType(ipsProject, "Level1EnumType");
         level1EnumType.setSuperEnumType(rootEnumType.getQualifiedName());
         genderEnumType.setSuperEnumType(level1EnumType.getQualifiedName());
 
-        List<IEnumType> superEnumTypes = genderEnumType.findAllSuperEnumTypes();
+        List<IEnumType> superEnumTypes = genderEnumType.findAllSuperEnumTypes(ipsProject);
         assertEquals(2, superEnumTypes.size());
         assertEquals(level1EnumType, superEnumTypes.get(0));
         assertEquals(rootEnumType, superEnumTypes.get(1));
@@ -630,7 +666,7 @@ public class EnumTypeTest extends AbstractIpsEnumPluginTest {
         level2EnumType.setSuperEnumType(level3EnumType.getQualifiedName());
         level3EnumType.setSuperEnumType(level2EnumType.getQualifiedName());
 
-        List<IEnumType> superEnumTypes = level3EnumType.findAllSuperEnumTypes();
+        List<IEnumType> superEnumTypes = level3EnumType.findAllSuperEnumTypes(ipsProject);
         assertEquals(2, superEnumTypes.size());
         assertEquals(level2EnumType, superEnumTypes.get(0));
         assertEquals(level3EnumType, superEnumTypes.get(1));
@@ -663,22 +699,30 @@ public class EnumTypeTest extends AbstractIpsEnumPluginTest {
     }
 
     public void testFindInheritEnumAttributeCandidates() throws CoreException {
+        try {
+            genderEnumType.findInheritEnumAttributeCandidates(null);
+            fail();
+        } catch (NullPointerException e) {
+        }
+
         IEnumType subEnumType = newEnumType(ipsProject, "SubEnumType");
         subEnumType.setSuperEnumType(genderEnumType.getQualifiedName());
 
-        List<IEnumAttribute> inheritEnumAttributeCandidates = subEnumType.findInheritEnumAttributeCandidates();
+        List<IEnumAttribute> inheritEnumAttributeCandidates = subEnumType
+                .findInheritEnumAttributeCandidates(ipsProject);
         assertEquals(2, inheritEnumAttributeCandidates.size());
         assertEquals(genderEnumAttributeId, inheritEnumAttributeCandidates.get(0));
         assertEquals(genderEnumAttributeName, inheritEnumAttributeCandidates.get(1));
 
-        assertEquals(0, genderEnumType.findInheritEnumAttributeCandidates().size());
+        assertEquals(0, genderEnumType.findInheritEnumAttributeCandidates(ipsProject).size());
     }
 
     public void testInheritEnumAttributes() throws CoreException {
         IEnumType subEnumType = newEnumType(ipsProject, "SubEnumType");
         subEnumType.setSuperEnumType(genderEnumType.getQualifiedName());
 
-        List<IEnumAttribute> inheritEnumAttributeCandidates = subEnumType.findInheritEnumAttributeCandidates();
+        List<IEnumAttribute> inheritEnumAttributeCandidates = subEnumType
+                .findInheritEnumAttributeCandidates(ipsProject);
         // Inherit one manually, this one needs to be skipped by the method later
         IEnumAttribute inheritedId = subEnumType.newEnumAttribute();
         inheritedId.setName(GENDER_ENUM_ATTRIBUTE_ID_NAME);

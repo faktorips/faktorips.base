@@ -49,9 +49,15 @@ public class EnumContentTest extends AbstractIpsEnumPluginTest {
     }
 
     public void testFindEnumType() throws CoreException {
-        assertEquals(genderEnumType, genderEnumContent.findEnumType());
+        try {
+            genderEnumContent.findEnumType(null);
+            fail();
+        } catch (NullPointerException e) {
+        }
+
+        assertEquals(genderEnumType, genderEnumContent.findEnumType(ipsProject));
         genderEnumContent.setEnumType("");
-        assertNull(genderEnumContent.findEnumType());
+        assertNull(genderEnumContent.findEnumType(ipsProject));
     }
 
     public void testXml() throws ParserConfigurationException, CoreException {

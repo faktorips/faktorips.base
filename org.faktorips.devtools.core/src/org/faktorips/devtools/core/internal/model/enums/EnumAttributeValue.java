@@ -28,6 +28,7 @@ import org.faktorips.devtools.core.model.enums.IEnumValue;
 import org.faktorips.devtools.core.model.enums.IEnumValueContainer;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.util.XmlUtil;
+import org.faktorips.util.ArgumentCheck;
 import org.faktorips.util.message.Message;
 import org.faktorips.util.message.MessageList;
 import org.w3c.dom.Document;
@@ -108,7 +109,9 @@ public class EnumAttributeValue extends AtomicIpsObjectPart implements IEnumAttr
     /**
      * {@inheritDoc}
      */
-    public IEnumAttribute findEnumAttribute() throws CoreException {
+    public IEnumAttribute findEnumAttribute(IIpsProject ipsProject) throws CoreException {
+        ArgumentCheck.notNull(ipsProject);
+
         IEnumValueContainer valueContainer = (IEnumValueContainer)parent.getParent();
         IEnumValue enumValue = (IEnumValue)parent;
 
@@ -122,7 +125,7 @@ public class EnumAttributeValue extends AtomicIpsObjectPart implements IEnumAttr
             }
         }
 
-        IEnumType enumType = valueContainer.findEnumType();
+        IEnumType enumType = valueContainer.findEnumType(ipsProject);
         if (enumType == null) {
             return null;
         }
@@ -157,7 +160,7 @@ public class EnumAttributeValue extends AtomicIpsObjectPart implements IEnumAttr
     protected void validateThis(MessageList list, IIpsProject ipsProject) throws CoreException {
         super.validateThis(list, ipsProject);
 
-        IEnumAttribute enumAttribute = findEnumAttribute();
+        IEnumAttribute enumAttribute = findEnumAttribute(ipsProject);
         if (enumAttribute == null) {
             return;
         }
@@ -197,7 +200,7 @@ public class EnumAttributeValue extends AtomicIpsObjectPart implements IEnumAttr
      * as literal name.
      */
     private void validateLiteralNameEnumAttributeValue(MessageList list, IIpsProject ipsProject) throws CoreException {
-        IEnumAttribute enumAttribute = findEnumAttribute();
+        IEnumAttribute enumAttribute = findEnumAttribute(ipsProject);
         String text;
         Message validationMessage;
 
@@ -217,7 +220,7 @@ public class EnumAttributeValue extends AtomicIpsObjectPart implements IEnumAttr
     private void validateUniqueIdentifierEnumAttributeValue(MessageList list, IIpsProject ipsProject)
             throws CoreException {
 
-        IEnumAttribute enumAttribute = findEnumAttribute();
+        IEnumAttribute enumAttribute = findEnumAttribute(ipsProject);
         String text;
         Message validationMessage;
 
@@ -241,7 +244,7 @@ public class EnumAttributeValue extends AtomicIpsObjectPart implements IEnumAttr
                     continue;
                 }
 
-                if (currentEnumValue.findEnumAttributeValue(enumAttribute).getValue().equals(value)) {
+                if (currentEnumValue.findEnumAttributeValue(ipsProject, enumAttribute).getValue().equals(value)) {
                     text = NLS
                             .bind(Messages.EnumAttributeValue_UniqueIdentifierValueNotUnique, enumAttribute.getName());
                     validationMessage = new Message(MSGCODE_ENUM_ATTRIBUTE_VALUE_UNIQUE_IDENTIFIER_NOT_UNIQUE, text,
@@ -258,12 +261,13 @@ public class EnumAttributeValue extends AtomicIpsObjectPart implements IEnumAttr
      * name.
      */
     private boolean isLiteralNameEnumAttributeValue() throws CoreException {
-        IEnumAttribute referencedEnumAttribute = findEnumAttribute();
+        IIpsProject ipsProject = getIpsProject();
+        IEnumAttribute referencedEnumAttribute = findEnumAttribute(ipsProject);
         if (referencedEnumAttribute == null) {
             throw new NullPointerException();
         }
 
-        Boolean literalName = referencedEnumAttribute.findIsLiteralName();
+        Boolean literalName = referencedEnumAttribute.findIsLiteralName(ipsProject);
         if (literalName == null) {
             return false;
         }
@@ -273,12 +277,13 @@ public class EnumAttributeValue extends AtomicIpsObjectPart implements IEnumAttr
 
     /** Returns whether this enum attribute value refers to a unique identifier enum attribute. */
     private boolean isUniqueIdentifierEnumAttributeValue() throws CoreException {
-        IEnumAttribute referencedEnumAttribute = findEnumAttribute();
+        IIpsProject ipsProject = getIpsProject();
+        IEnumAttribute referencedEnumAttribute = findEnumAttribute(ipsProject);
         if (referencedEnumAttribute == null) {
             throw new NullPointerException();
         }
 
-        Boolean uniqueIdentifier = referencedEnumAttribute.findIsUniqueIdentifier();
+        Boolean uniqueIdentifier = referencedEnumAttribute.findIsUniqueIdentifier(ipsProject);
         if (uniqueIdentifier == null) {
             return false;
         }

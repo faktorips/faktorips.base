@@ -178,11 +178,12 @@ public class EnumAttribute extends AtomicIpsObjectPart implements IEnumAttribute
      */
     public Image getImage() {
         try {
-            if (inherited && findSuperEnumAttribute() == null) {
+            IIpsProject ipsProject = getIpsProject();
+            if (inherited && findSuperEnumAttribute(ipsProject) == null) {
                 return IpsPlugin.getDefault().getImage(OVERRIDDEN_ICON);
             }
 
-            boolean isUniqueIdentifier = findIsUniqueIdentifier();
+            boolean isUniqueIdentifier = findIsUniqueIdentifier(ipsProject);
             if (isUniqueIdentifier && inherited) {
                 return IpsPlugin.getDefault().getImage(OVERRIDDEN_UNIQUE_IDENTIFIER_ICON);
             } else if (isUniqueIdentifier) {
@@ -291,7 +292,7 @@ public class EnumAttribute extends AtomicIpsObjectPart implements IEnumAttribute
             // Check for other enum attributes being marked as literalName
             int numberEnumAttributesLiteralName = 0;
             for (IEnumAttribute currentEnumAttribute : enumAttributes) {
-                if (currentEnumAttribute.findIsLiteralName()) {
+                if (currentEnumAttribute.findIsLiteralName(ipsProject)) {
                     numberEnumAttributesLiteralName++;
                 }
                 if (numberEnumAttributesLiteralName > 1) {
@@ -320,7 +321,7 @@ public class EnumAttribute extends AtomicIpsObjectPart implements IEnumAttribute
 
         // Check existence in supertype hierarchy if this enum attribute is inherited
         if (inherited) {
-            if (findSuperEnumAttribute() == null) {
+            if (findSuperEnumAttribute(ipsProject) == null) {
                 text = NLS.bind(Messages.EnumAttribute_NoSuchAttributeInSupertypeHierarchy, name);
                 validationMessage = new Message(MSGCODE_ENUM_ATTRIBUTE_NO_SUCH_ATTRIBUTE_IN_SUPERTYPE_HIERARCHY, text,
                         Message.ERROR, this, PROPERTY_INHERITED);
@@ -338,7 +339,7 @@ public class EnumAttribute extends AtomicIpsObjectPart implements IEnumAttribute
             // Check for other enum attributes being marked to be used as name
             int numberEnumAttributesUsedAsName = 0;
             for (IEnumAttribute currentEnumAttribute : getEnumType().getEnumAttributesIncludeSupertypeCopies()) {
-                if (currentEnumAttribute.findIsUsedAsNameInFaktorIpsUi()) {
+                if (currentEnumAttribute.findIsUsedAsNameInFaktorIpsUi(ipsProject)) {
                     numberEnumAttributesUsedAsName++;
                 }
                 if (numberEnumAttributesUsedAsName > 1) {
@@ -360,7 +361,7 @@ public class EnumAttribute extends AtomicIpsObjectPart implements IEnumAttribute
             // Check for other enum attributes being marked to be used as ID
             int numberEnumAttributesUsedAsId = 0;
             for (IEnumAttribute currentEnumAttribute : getEnumType().getEnumAttributesIncludeSupertypeCopies()) {
-                if (currentEnumAttribute.findIsUsedAsIdInFaktorIpsUi()) {
+                if (currentEnumAttribute.findIsUsedAsIdInFaktorIpsUi(ipsProject)) {
                     numberEnumAttributesUsedAsId++;
                 }
                 if (numberEnumAttributesUsedAsId > 1) {
@@ -418,7 +419,7 @@ public class EnumAttribute extends AtomicIpsObjectPart implements IEnumAttribute
         ArgumentCheck.notNull(ipsProject);
 
         if (inherited) {
-            IEnumAttribute superEnumAttribute = findSuperEnumAttribute();
+            IEnumAttribute superEnumAttribute = findSuperEnumAttribute(ipsProject);
             if (superEnumAttribute == null) {
                 return null;
             }
@@ -435,13 +436,15 @@ public class EnumAttribute extends AtomicIpsObjectPart implements IEnumAttribute
      * Returns <code>null</code> if this enum attribute is not inherited or the super enum attribute
      * cannot be found.
      */
-    private IEnumAttribute findSuperEnumAttribute() throws CoreException {
+    private IEnumAttribute findSuperEnumAttribute(IIpsProject ipsProject) throws CoreException {
+        ArgumentCheck.notNull(ipsProject);
+
         if (!inherited) {
             return null;
         }
 
         IEnumType enumType = getEnumType();
-        return enumType.findEnumAttributeIncludeSupertypeOriginals(name);
+        return enumType.findEnumAttributeIncludeSupertypeOriginals(ipsProject, name);
     }
 
     /**
@@ -463,9 +466,11 @@ public class EnumAttribute extends AtomicIpsObjectPart implements IEnumAttribute
     /**
      * {@inheritDoc}
      */
-    public Boolean findIsLiteralName() throws CoreException {
+    public Boolean findIsLiteralName(IIpsProject ipsProject) throws CoreException {
+        ArgumentCheck.notNull(ipsProject);
+
         if (inherited) {
-            IEnumAttribute superEnumAttribute = findSuperEnumAttribute();
+            IEnumAttribute superEnumAttribute = findSuperEnumAttribute(ipsProject);
             if (superEnumAttribute == null) {
                 return null;
             }
@@ -478,9 +483,11 @@ public class EnumAttribute extends AtomicIpsObjectPart implements IEnumAttribute
     /**
      * {@inheritDoc}
      */
-    public Boolean findIsUniqueIdentifier() throws CoreException {
+    public Boolean findIsUniqueIdentifier(IIpsProject ipsProject) throws CoreException {
+        ArgumentCheck.notNull(ipsProject);
+
         if (inherited) {
-            IEnumAttribute superEnumAttribute = findSuperEnumAttribute();
+            IEnumAttribute superEnumAttribute = findSuperEnumAttribute(ipsProject);
             if (superEnumAttribute == null) {
                 return null;
             }
@@ -525,9 +532,11 @@ public class EnumAttribute extends AtomicIpsObjectPart implements IEnumAttribute
     /**
      * {@inheritDoc}
      */
-    public Boolean findIsUsedAsIdInFaktorIpsUi() throws CoreException {
+    public Boolean findIsUsedAsIdInFaktorIpsUi(IIpsProject ipsProject) throws CoreException {
+        ArgumentCheck.notNull(ipsProject);
+
         if (inherited) {
-            IEnumAttribute superEnumAttribute = findSuperEnumAttribute();
+            IEnumAttribute superEnumAttribute = findSuperEnumAttribute(ipsProject);
             if (superEnumAttribute == null) {
                 return null;
             }
@@ -540,9 +549,11 @@ public class EnumAttribute extends AtomicIpsObjectPart implements IEnumAttribute
     /**
      * {@inheritDoc}
      */
-    public Boolean findIsUsedAsNameInFaktorIpsUi() throws CoreException {
+    public Boolean findIsUsedAsNameInFaktorIpsUi(IIpsProject ipsProject) throws CoreException {
+        ArgumentCheck.notNull(ipsProject);
+
         if (inherited) {
-            IEnumAttribute superEnumAttribute = findSuperEnumAttribute();
+            IEnumAttribute superEnumAttribute = findSuperEnumAttribute(ipsProject);
             if (superEnumAttribute == null) {
                 return null;
             }

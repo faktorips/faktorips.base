@@ -115,12 +115,13 @@ public class EnumTypeRefControl extends IpsObjectRefControl {
             return false;
         }
 
-        IEnumType currentSuperEnumType = enumType.findSuperEnumType();
+        IIpsProject ipsProject = enumType.getIpsProject();
+        IEnumType currentSuperEnumType = enumType.findSuperEnumType(ipsProject);
         while (currentSuperEnumType != null) {
             if (currentSuperEnumType == currentEnumType) {
                 return true;
             }
-            currentSuperEnumType = currentSuperEnumType.findSuperEnumType();
+            currentSuperEnumType = currentSuperEnumType.findSuperEnumType(ipsProject);
         }
 
         return false;

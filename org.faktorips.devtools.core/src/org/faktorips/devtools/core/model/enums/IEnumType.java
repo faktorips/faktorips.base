@@ -19,6 +19,7 @@ import java.util.NoSuchElementException;
 import org.eclipse.core.runtime.CoreException;
 import org.faktorips.datatype.EnumDatatype;
 import org.faktorips.devtools.core.internal.model.enums.EnumType;
+import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 
 /**
  * An enum type represents the structure of an enum in the Faktor-IPS model.
@@ -153,11 +154,14 @@ public interface IEnumType extends IEnumValueContainer, EnumDatatype {
      * <p>
      * Returns <code>null</code> if no super enum type is specified.
      * 
-     * @throws CoreException If an error occurs while searching the ips project for the super enum
-     *             type.
+     * @param ipsProject The ips project which ips object path is used for the search of the super
+     *            enum type. This is not necessarily the project this enum attribute is part of.
+     * 
+     * @throws CoreException If an error occurs while searching the given ips project for the super
+     *             enum type.
+     * @throws NullPointerException If <code>ipsProject</code> is <code>null</code>.
      */
-    // TODO aw: ips project as parameter neccessary
-    public IEnumType findSuperEnumType() throws CoreException;
+    public IEnumType findSuperEnumType(IIpsProject ipsProject) throws CoreException;
 
     /**
      * Returns <code>true</code> if this enum type is abstract in terms of the object oriented
@@ -222,10 +226,15 @@ public interface IEnumType extends IEnumValueContainer, EnumDatatype {
      * @see #getEnumAttributes()
      * @see #getEnumAttributesIncludeSupertypeCopies()
      * 
-     * @throws CoreException If an error occurs while searching super enum types.
+     * @param ipsProject The ips project which ips object path is used for the search of the super
+     *            enum types. This is not necessarily the project this enum attribute is part of.
+     * 
+     * @throws CoreException If an error occurs while searching the given ips project for the super
+     *             enum types.
+     * @throws NullPointerException If <code>ipsProject</code> is <code>null</code>.
      */
-    // TODO aw: ips project as parameter neccessary
-    public List<IEnumAttribute> findAllEnumAttributesIncludeSupertypeOriginals() throws CoreException;
+    public List<IEnumAttribute> findAllEnumAttributesIncludeSupertypeOriginals(IIpsProject ipsProject)
+            throws CoreException;
 
     /**
      * Returns the enum attribute that has been marked to be used as literal name or
@@ -287,13 +296,17 @@ public interface IEnumType extends IEnumValueContainer, EnumDatatype {
      * Note that enum attributes <strong>defined in super enum types are included</strong> in the
      * search and <strong>copies</strong> created due to inheritation <strong>are ignored</strong>.
      * 
+     * @param ipsProject The ips project which ips object path is used for the search of the super
+     *            enum types. This is not necessarily the project this enum attribute is part of.
      * @param name The name of the enum attribute to obtain.
      * 
-     * @throws CoreException If an error occurs while searching super enum types.
-     * @throws NullPointerException If <code>name</code> is <code>null</code>.
+     * @throws CoreException If an error occurs while searching the given ips project for the super
+     *             enum types.
+     * @throws NullPointerException If <code>ipsProject</code> or <code>name</code> is
+     *             <code>null</code>.
      */
-    // TODO aw: ips project as parameter neccessary
-    public IEnumAttribute findEnumAttributeIncludeSupertypeOriginals(String name) throws CoreException;
+    public IEnumAttribute findEnumAttributeIncludeSupertypeOriginals(IIpsProject ipsProject, String name)
+            throws CoreException;
 
     /**
      * Note: This method only applies to {@link IEnumType} instances that contain their own
@@ -387,21 +400,27 @@ public interface IEnumType extends IEnumValueContainer, EnumDatatype {
      * <p>
      * Never returns <code>null</code>.
      * 
-     * @throws CoreException If an error occurs while searching for the enum types in the supertype
-     *             hierarchy.
+     * @param ipsProject The ips project which ips object path is used for the search of the super
+     *            enum types. This is not necessarily the project this enum attribute is part of.
+     * 
+     * @throws CoreException If an error occurs while searching the given ips project for the super
+     *             enum types.
+     * @throws NullPointerException If <code>ipsProject</code> is <code>null</code>.
      */
-    // TODO aw: ips project as parameter neccessary
-    public List<IEnumType> findAllSuperEnumTypes() throws CoreException;
+    public List<IEnumType> findAllSuperEnumTypes(IIpsProject ipsProject) throws CoreException;
 
     /**
      * Returns a list containing all enum attributes from the supertype hierarchy that have not yet
      * been inherited by this enum type.
      * 
-     * @throws CoreException If an error occurs while searching the supertype hierarchy for the enum
-     *             attributes.
+     * @param ipsProject The ips project which ips object path is used for the search of the super
+     *            enum types. This is not necessarily the project this enum attribute is part of.
+     * 
+     * @throws CoreException If an error occurs while searching the supertype hierarchy for the not
+     *             inherited enum attributes.
+     * @throws NullPointerException If <code>ipsProject</code> is <code>null</code>.
      */
-    // TODO aw: ips project as parameter neccessary
-    public List<IEnumAttribute> findInheritEnumAttributeCandidates() throws CoreException;
+    public List<IEnumAttribute> findInheritEnumAttributeCandidates(IIpsProject ipsProject) throws CoreException;
 
     /**
      * Creates and returns new enum attributes in this enum type inheriting the given enum

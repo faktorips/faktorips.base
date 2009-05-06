@@ -18,6 +18,7 @@ import java.util.NoSuchElementException;
 
 import org.eclipse.core.runtime.CoreException;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPart;
+import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 
 /**
  * An enum value represents a complete set of enum attribute values for an enum type. Enum values
@@ -89,14 +90,21 @@ public interface IEnumValue extends IIpsObjectPart {
      * enum type this enum value refers to.
      * <p>
      * Returns <code>null</code> if none can be found, if the referenced enum type can't be found or
-     * if the provided parameter is <code>null</code>.
+     * if the provided enum attribute is <code>null</code>.
      * 
-     * @throws CoreException If an error occurs while searching for the referenced enum type.
+     * @param ipsProject The ips project which ips object path is used for the search of the
+     *            referenced enum type. This is not necessarily the project this enum attribute is
+     *            part of.
+     * @param enumAttribute The enum attribute to obtain the enum attribute value for.
+     * 
+     * @throws CoreException If an error occurs while searching the given ips project for the
+     *             referenced enum type.
      * @throws IllegalArgumentException If the given enum attribute is not part of the enum type
      *             referenced by this enum value.
+     * @throws NullPointerException If <code>ipsProject</code> is <code>null</code>.
      */
-    // TODO aw: ips project as parameter neccessary
-    public IEnumAttributeValue findEnumAttributeValue(IEnumAttribute enumAttribute) throws CoreException;
+    public IEnumAttributeValue findEnumAttributeValue(IIpsProject ipsProject, IEnumAttribute enumAttribute)
+            throws CoreException;
 
     /**
      * Returns how many enum attribute values this enum value is currently containing.

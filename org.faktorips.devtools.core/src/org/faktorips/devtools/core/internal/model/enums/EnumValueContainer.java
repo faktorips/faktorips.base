@@ -72,7 +72,7 @@ public abstract class EnumValueContainer extends BaseIpsObject implements IEnumV
      * {@inheritDoc}
      */
     public IEnumValue newEnumValue() throws CoreException {
-        IEnumType enumType = findEnumType();
+        IEnumType enumType = findEnumType(getIpsProject());
 
         // Creation not possible if enum type can't be found
         if (enumType == null) {
@@ -136,6 +136,14 @@ public abstract class EnumValueContainer extends BaseIpsObject implements IEnumV
         }
 
         throw new NoSuchElementException();
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public void clear() {
+        enumValues.clear();
+        objectHasChanged();
     }
 
     /**

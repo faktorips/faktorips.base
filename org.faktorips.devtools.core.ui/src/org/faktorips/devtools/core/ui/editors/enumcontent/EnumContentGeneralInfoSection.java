@@ -88,7 +88,7 @@ public class EnumContentGeneralInfoSection extends IpsSection {
 
                     IEnumType enumType;
                     try {
-                        enumType = enumContent.findEnumType();
+                        enumType = enumContent.findEnumType(enumContent.getIpsProject());
                         if (enumType != null) {
                             IpsUIPlugin.getDefault().openEditor(enumType);
                         }

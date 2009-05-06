@@ -153,14 +153,15 @@ public interface IEnumAttribute extends IIpsObjectPart {
      * Returns <code>null</code> if no value datatype can be found or if the super enum attribute
      * could not be found.
      * 
-     * @param ipsProject The ips project which ips object path is used for the search. This is not
-     *            necessarily the project this enum attribute is part of.
+     * @param ipsProject The ips project which ips object path is used for the search of the super
+     *            enum attribute. This is not necessarily the project this enum attribute is part
+     *            of.
      * 
      * @see #getDatatype()
      * 
-     * @throws NullPointerException If <code>ipsProject</code> is <code>null</code>.
      * @throws CoreException If an error occurs while searching the given ips project for the value
      *             datatype.
+     * @throws NullPointerException If <code>ipsProject</code> is <code>null</code>.
      */
     public ValueDatatype findDatatype(IIpsProject ipsProject) throws CoreException;
 
@@ -194,10 +195,15 @@ public interface IEnumAttribute extends IIpsObjectPart {
      * 
      * @see #isLiteralName()
      * 
-     * @throws CoreException If an error occurs while searching for the super enum attribute.
+     * @param ipsProject The ips project which ips object path is used for the search of the super
+     *            enum attribute. This is not necessarily the project this enum attribute is part
+     *            of.
+     * 
+     * @throws CoreException If an error occurs while searching the given ips project for the super
+     *             enum attribute.
+     * @throws NullPointerException If <code>ipsProject</code> is <code>null</code>.
      */
-    // TODO aw: ips project as parameter neccessary
-    public Boolean findIsLiteralName() throws CoreException;
+    public Boolean findIsLiteralName(IIpsProject ipsProject) throws CoreException;
 
     /**
      * Sets whether this enum attribute is used as literal name.
@@ -255,10 +261,15 @@ public interface IEnumAttribute extends IIpsObjectPart {
      * 
      * @see #isUniqueIdentifier()
      * 
-     * @throws CoreException If an error occurs while searching for the super enum attribute.
+     * @param ipsProject The ips project which ips object path is used for the search of the super
+     *            enum attribute. This is not necessarily the project this enum attribute is part
+     *            of.
+     * 
+     * @throws CoreException If an error occurs while searching the given ips project for the super
+     *             enum attribute.
+     * @throws NullPointerException If <code>ipsProject</code> is <code>null</code>.
      */
-    // TODO aw: ips project as parameter neccessary
-    public Boolean findIsUniqueIdentifier() throws CoreException;
+    public Boolean findIsUniqueIdentifier(IIpsProject ipsProject) throws CoreException;
 
     /**
      * Sets whether this enum attribute is a unique identifier.
@@ -321,10 +332,15 @@ public interface IEnumAttribute extends IIpsObjectPart {
      * 
      * @see #isUsedAsNameInFaktorIpsUi()
      * 
-     * @throws CoreException If an error occurs while searching for the super enum attribute.
+     * @param ipsProject The ips project which ips object path is used for the search of the super
+     *            enum attribute. This is not necessarily the project this enum attribute is part
+     *            of.
+     * 
+     * @throws CoreException If an error occurs while searching the given ips project for the super
+     *             enum attribute.
+     * @throws NullPointerException If <code>ipsProject</code> is <code>null</code>.
      */
-    // TODO aw: ips project as parameter neccessary
-    public Boolean findIsUsedAsNameInFaktorIpsUi() throws CoreException;
+    public Boolean findIsUsedAsNameInFaktorIpsUi(IIpsProject ipsProject) throws CoreException;
 
     /**
      * Returns <code>true</code> if this enum attribute is marked to be used as ID in the Faktor-IPS
@@ -335,9 +351,14 @@ public interface IEnumAttribute extends IIpsObjectPart {
      * 
      * @see #isUsedAsIdInFaktorIpsUi()
      * 
-     * @throws CoreException If an error occurs while searching for the super enum attribute.
+     * @param ipsProject The ips project which ips object path is used for the search of the super
+     *            enum attribute. This is not necessarily the project this enum attribute is part
+     *            of.
+     * 
+     * @throws CoreException If an error occurs while searching the given ips project for the super
+     *             enum attribute.
+     * @throws NullPointerException If <code>ipsProject</code> is <code>null</code>.
      */
-    // TODO aw: ips project as parameter neccessary
-    public Boolean findIsUsedAsIdInFaktorIpsUi() throws CoreException;
+    public Boolean findIsUsedAsIdInFaktorIpsUi(IIpsProject ipsProject) throws CoreException;
 
 }

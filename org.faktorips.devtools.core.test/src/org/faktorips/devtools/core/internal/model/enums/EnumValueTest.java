@@ -95,22 +95,28 @@ public class EnumValueTest extends AbstractIpsEnumPluginTest {
     }
 
     public void testFindEnumAttributeValue() throws CoreException {
-        assertNull(genderEnumValueMale.findEnumAttributeValue(null));
+        try {
+            genderEnumValueMale.findEnumAttributeValue(null, null);
+            fail();
+        } catch (NullPointerException e) {
+        }
+
+        assertNull(genderEnumValueMale.findEnumAttributeValue(ipsProject, null));
 
         try {
-            genderEnumValueMale.findEnumAttributeValue(paymentMode.getEnumAttributes().get(0));
+            genderEnumValueMale.findEnumAttributeValue(ipsProject, paymentMode.getEnumAttributes().get(0));
             fail();
         } catch (IllegalArgumentException e) {
         }
 
-        assertEquals(genderEnumValueMale.getEnumAttributeValues().get(0), genderEnumValueMale
-                .findEnumAttributeValue(genderEnumAttributeId));
+        assertEquals(genderEnumValueMale.getEnumAttributeValues().get(0), genderEnumValueMale.findEnumAttributeValue(
+                ipsProject, genderEnumAttributeId));
         assertEquals(genderEnumValueFemale.getEnumAttributeValues().get(0), genderEnumValueFemale
-                .findEnumAttributeValue(genderEnumAttributeId));
-        assertEquals(genderEnumValueMale.getEnumAttributeValues().get(1), genderEnumValueMale
-                .findEnumAttributeValue(genderEnumAttributeName));
+                .findEnumAttributeValue(ipsProject, genderEnumAttributeId));
+        assertEquals(genderEnumValueMale.getEnumAttributeValues().get(1), genderEnumValueMale.findEnumAttributeValue(
+                ipsProject, genderEnumAttributeName));
         assertEquals(genderEnumValueFemale.getEnumAttributeValues().get(1), genderEnumValueFemale
-                .findEnumAttributeValue(genderEnumAttributeName));
+                .findEnumAttributeValue(ipsProject, genderEnumAttributeName));
     }
 
 }
