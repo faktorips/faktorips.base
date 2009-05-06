@@ -161,7 +161,7 @@ public class EnumAttributeEditDialog extends IpsPartEditDialog2 {
      * will be bound to the respective properties.
      */
     /*
-     * TODO aw: here is a problem with the enabled states of the usedAsId and usedAsName fields
+     * TODO aw: here is a problem with the checked states of the usedAsId and usedAsName fields
      * (test the program to see it)
      */
     private void bindAndSetContentDependendOnInheritedProperty(IEnumAttribute enumAttribute) {
