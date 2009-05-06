@@ -326,8 +326,7 @@ public class EnumTypeBuilder extends DefaultJavaSourceFileBuilder {
      * @throws NullPointerException If <code>uniqueIdentifierAttributeName</code> is
      *             <code>null</code>.
      */
-    // TODO aw: why needs this to be public?
-    public String getMethodNameGetValueByXXX(IEnumAttribute uniqueIdentifierEnumAttribute) {
+    private String getMethodNameGetValueByXXX(IEnumAttribute uniqueIdentifierEnumAttribute) {
         ArgumentCheck.notNull(uniqueIdentifierEnumAttribute);
 
         String attributeName = uniqueIdentifierEnumAttribute.getName();
