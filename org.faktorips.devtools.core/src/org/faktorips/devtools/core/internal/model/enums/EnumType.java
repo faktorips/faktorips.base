@@ -28,7 +28,6 @@ import org.faktorips.devtools.core.internal.model.ipsobject.IpsObjectPartCollect
 import org.faktorips.devtools.core.model.IDependency;
 import org.faktorips.devtools.core.model.IpsObjectDependency;
 import org.faktorips.devtools.core.model.enums.EnumTypeValidations;
-import org.faktorips.devtools.core.model.enums.EnumsUtil;
 import org.faktorips.devtools.core.model.enums.IEnumAttribute;
 import org.faktorips.devtools.core.model.enums.IEnumAttributeValue;
 import org.faktorips.devtools.core.model.enums.IEnumType;
@@ -731,12 +730,26 @@ public class EnumType extends EnumValueContainer implements IEnumType {
         List<IEnumAttribute> notInheritedEnumAttributes = new ArrayList<IEnumAttribute>();
 
         for (IEnumAttribute currentSupertypeHierarchyAttribute : supertypeHierarchyAttributes) {
-            if (!(EnumsUtil.containsEqualEnumAttribute(inheritedEnumAttributes, currentSupertypeHierarchyAttribute))) {
+            if (!(containsEqualEnumAttribute(inheritedEnumAttributes, currentSupertypeHierarchyAttribute))) {
                 notInheritedEnumAttributes.add(currentSupertypeHierarchyAttribute);
             }
         }
 
         return notInheritedEnumAttributes;
+    }
+
+    /**
+     * Checks whether the given enum attribute is contained in the given list of enum attributes in
+     * means of an equal enum attribute.
+     */
+    private boolean containsEqualEnumAttribute(List<IEnumAttribute> listOfEnumAttributes, IEnumAttribute enumAttribute) {
+        for (IEnumAttribute currentEnumAttribute : listOfEnumAttributes) {
+            if (currentEnumAttribute.getName().equals(enumAttribute.getName())) {
+                return true;
+            }
+        }
+
+        return false;
     }
 
     /**
