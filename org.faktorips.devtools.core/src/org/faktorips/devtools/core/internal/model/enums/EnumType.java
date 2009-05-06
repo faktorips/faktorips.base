@@ -974,6 +974,7 @@ public class EnumType extends EnumValueContainer implements IEnumType {
     /**
      * Returns true.
      */
+    // FIXME aw: to whomever this added: this method does not return true ... is this correct?
     public boolean supportsCompare() {
         return false;
     }
