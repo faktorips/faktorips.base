@@ -44,6 +44,5 @@
       <feature id="org.eclipse.rcp" version="0.0.0"/>
       <feature id="org.eclipse.cvs" version="0.0.0"/>
       <feature id="org.eclipse.gef" version="0.0.0"/>
-      <feature id="org.faktorips.eclipse.babel.nl_de" version="0.0.0"/>
    </features>
 </product>
