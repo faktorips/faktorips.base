@@ -708,6 +708,7 @@
             <cvs cvsroot="${cvsroot}" module="org.faktorips.devtools.tableconversion.test"/>
             <cvs cvsroot="${cvsroot}" module="org.faktorips.devtools.ant.test"/>
             <cvs cvsroot="${cvsroot}" module="org.faktorips.uml.test"/>
+            <cvs cvsroot="${cvsroot}" module="de.qv.faktorips"/>
         </modificationset>
         <schedule interval="300">
             <ant uselogger="true" usedebug="false" buildfile="${mainbuildfile}" target="pluginbuilder.faktorips">
@@ -780,6 +781,7 @@
             <cvs cvsroot="${cvsroot}" module="org.faktorips.devtools.core.ui.test" tag="v2_2_patches"/>
             <cvs cvsroot="${cvsroot}" module="org.faktorips.devtools.ant.test" tag="v2_2_patches"/>
             <cvs cvsroot="${cvsroot}" module="org.faktorips.uml.test" tag="v2_2_patches"/>
+            <cvs cvsroot="${cvsroot}" module="de.qv.faktorips" tag="v2_2_patches"/>
         </modificationset>
         <schedule interval="300">
             <ant uselogger="true" usedebug="false" buildfile="${mainbuildfile}" target="pluginbuilder.faktorips">

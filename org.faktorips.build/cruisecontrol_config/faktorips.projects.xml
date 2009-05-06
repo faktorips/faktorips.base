@@ -176,7 +176,10 @@
                 <cvs module="org.faktorips.devtools.core.ui.test"/>            
                 <cvs module="org.faktorips.devtools.tableconversion.test"/>            
                 <cvs module="org.faktorips.devtools.ant.test"/>            
-                <cvs module="org.faktorips.uml.test"/>                
+                <cvs module="org.faktorips.uml.test"/> 
+
+                <!-- customer plugins -->              
+                <cvs module="de.qv.faktorips"/>                               
             </depends>      
         </project>
 
@@ -214,7 +217,10 @@
                 <cvs module="org.faktorips.devtools.stdbuilder.test"/>
                 <cvs module="org.faktorips.devtools.core.ui.test"/>            
                 <cvs module="org.faktorips.devtools.ant.test"/>            
-                <cvs module="org.faktorips.uml.test"/>                
+                <cvs module="org.faktorips.uml.test"/>  
+                
+                <!-- customer plugins -->              
+                <cvs module="de.qv.faktorips"/>  
             </depends>      
         </project>
         
