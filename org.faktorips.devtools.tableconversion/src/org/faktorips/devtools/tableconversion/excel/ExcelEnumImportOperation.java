@@ -3,7 +3,7 @@
  * 
  * Alle Rechte vorbehalten.
  * 
- * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen, 
+ * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen,
  * etc.) duerfen nur unter den Bedingungen der Faktor-Zehn-Community Lizenzvereinbarung - Version
  * 0.1 (vor Gruendung Community) genutzt werden, die Bestandteil der Auslieferung ist und auch unter
  * http://www.faktorzehn.org/f10-org:lizenzen:community eingesehen werden kann.
@@ -52,29 +52,29 @@ public class ExcelEnumImportOperation implements IWorkspaceRunnable {
     private final boolean ignoreColumnHeaderRow;
     private final MessageList messageList;
     private Datatype[] datatypes;
-    
+
     public ExcelEnumImportOperation(IEnumValueContainer valueContainer, String filename, ExcelTableFormat format,
-            String nullRepresentationString, boolean ignoreColumnHeaderRow,
-            MessageList messageList) {
+            String nullRepresentationString, boolean ignoreColumnHeaderRow, MessageList messageList) {
         this.valueContainer = valueContainer;
         this.sourceFile = filename;
         this.format = format;
         this.nullRepresentationString = nullRepresentationString;
         this.ignoreColumnHeaderRow = ignoreColumnHeaderRow;
         this.messageList = messageList;
-        
+
         initDatatypes(valueContainer);
-    }    
-    
+    }
+
     private void initDatatypes(IEnumValueContainer valueContainer) {
         try {
-            List<IEnumAttribute> enumAttributes = valueContainer.findEnumType().getEnumAttributes();
+            List<IEnumAttribute> enumAttributes = valueContainer.findEnumType(valueContainer.getIpsProject())
+                    .getEnumAttributes();
             datatypes = new Datatype[enumAttributes.size()];
-            
+
             for (int i = 0; i < datatypes.length; i++) {
                 IEnumAttribute enumAttribute = (IEnumAttribute)enumAttributes.get(i);
                 ValueDatatype datatype = enumAttribute.findDatatype(enumAttribute.getIpsProject());
-                datatypes[i]  = datatype;
+                datatypes[i] = datatype;
             }
         } catch (CoreException e) {
             IpsPlugin.logAndShowErrorDialog(e);
@@ -99,11 +99,11 @@ public class ExcelEnumImportOperation implements IWorkspaceRunnable {
         }
         return workbook;
     }
-    
+
     public void run(IProgressMonitor monitor) throws CoreException {
         monitor.beginTask("Import file " + sourceFile, IProgressMonitor.UNKNOWN);
 
-        MessageList ml =  valueContainer.validate(valueContainer.getIpsProject()); 
+        MessageList ml = valueContainer.validate(valueContainer.getIpsProject());
         if (ml.containsErrorMsg()) {
             messageList.add(ml);
             return;
@@ -134,13 +134,13 @@ public class ExcelEnumImportOperation implements IWorkspaceRunnable {
         monitor.done();
     }
 
-    private void fillEnum(IEnumValueContainer valueContainer, HSSFSheet sheet, IProgressMonitor monitor) 
+    private void fillEnum(IEnumValueContainer valueContainer, HSSFSheet sheet, IProgressMonitor monitor)
             throws CoreException {
 
         // row 0 is the header if ignoreColumnHeaderRow is true,
         // otherwise row 0 contains data
-        int startRow = ignoreColumnHeaderRow?1:0;
-        int expectedFields = valueContainer.findEnumType().getEnumAttributesCount(false);
+        int startRow = ignoreColumnHeaderRow ? 1 : 0;
+        int expectedFields = valueContainer.findEnumType(valueContainer.getIpsProject()).getEnumAttributesCount(false);
 
         for (int i = startRow;; i++) {
             HSSFRow sheetRow = sheet.getRow(i);
@@ -162,31 +162,28 @@ public class ExcelEnumImportOperation implements IWorkspaceRunnable {
                     messageList.add(new Message("", msg, Message.WARNING)); //$NON-NLS-1$
 
                     enumAttributeValue.setValue(nullRepresentationString);
-                }
-                else {
+                } else {
                     enumAttributeValue.setValue(readCell(cell, datatypes[j]));
-                } 
+                }
 
                 if (monitor.isCanceled()) {
                     return;
                 }
 
-                monitor.worked(1);                
+                monitor.worked(1);
             }
         }
     }
-    
+
     private String readCell(HSSFCell cell, Datatype datatype) {
         if (cell.getCellType() == HSSFCell.CELL_TYPE_NUMERIC) {
             if (HSSFDateUtil.isCellDateFormatted(cell)) {
                 return format.getIpsValue(cell.getDateCellValue(), datatype, messageList);
             }
             return format.getIpsValue(new Double(cell.getNumericCellValue()), datatype, messageList);
-        }
-        else if (cell.getCellType() == HSSFCell.CELL_TYPE_BOOLEAN) {
+        } else if (cell.getCellType() == HSSFCell.CELL_TYPE_BOOLEAN) {
             return format.getIpsValue(Boolean.valueOf(cell.getBooleanCellValue()), datatype, messageList);
-        }
-        else {
+        } else {
             String value = cell.getStringCellValue();
             if (nullRepresentationString.equals(value)) {
                 return null;
@@ -194,6 +191,5 @@ public class ExcelEnumImportOperation implements IWorkspaceRunnable {
             return format.getIpsValue(value, datatype, messageList);
         }
     }
-    
-    
+
 }

@@ -5,7 +5,6 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Iterator;
 import java.util.List;
 
 import org.eclipse.core.runtime.CoreException;
@@ -33,29 +32,30 @@ import au.com.bytecode.opencsv.CSVReader;
 public class CSVTableFormat extends AbstractExternalTableFormat {
 
     private boolean ignoreColumnHeaderRow;
-    
+
     // property constants following the JavaBeans standard
     public final static String PROPERTY_FIELD_DELIMITER = "fieldDelimiter";
     public final static String PROPERTY_DOT_REPRESENTATION = "dotRepresentation";
     public final static String PROPERTY_DATE_FORMAT = "dateFormat";
-    
-    
+
     public CSVTableFormat() {
         // initialize table format specific properties
         properties.put(PROPERTY_FIELD_DELIMITER, ",");
         properties.put(PROPERTY_DOT_REPRESENTATION, ".");
         properties.put(PROPERTY_DATE_FORMAT, "YYYY-MM-DD");
     }
-    
+
     /**
      * {@inheritDoc}
      */
-    public boolean executeTableExport(ITableContents contents, IPath filename,
-            String nullRepresentationString, boolean exportColumnHeaderRow,
+    public boolean executeTableExport(ITableContents contents,
+            IPath filename,
+            String nullRepresentationString,
+            boolean exportColumnHeaderRow,
             MessageList list) {
         try {
-            CSVTableExportOperation tableExportOperation = new CSVTableExportOperation(contents, filename.toOSString(), this, nullRepresentationString,
-                    exportColumnHeaderRow, list);
+            CSVTableExportOperation tableExportOperation = new CSVTableExportOperation(contents, filename.toOSString(),
+                    this, nullRepresentationString, exportColumnHeaderRow, list);
             tableExportOperation.run(new NullProgressMonitor());
             return true;
         } catch (Exception e) {
@@ -67,13 +67,17 @@ public class CSVTableFormat extends AbstractExternalTableFormat {
     /**
      * {@inheritDoc}
      */
-    public boolean executeTableImport(ITableStructure structure, IPath filename,
-            ITableContentsGeneration targetGeneration, String nullRepresentationString,
-            boolean ignoreColumnHeaderRow, MessageList list) {
+    public boolean executeTableImport(ITableStructure structure,
+            IPath filename,
+            ITableContentsGeneration targetGeneration,
+            String nullRepresentationString,
+            boolean ignoreColumnHeaderRow,
+            MessageList list) {
 
         try {
-            CSVTableImportOperation tableImportOperation = new CSVTableImportOperation(structure, filename.toOSString(), targetGeneration, this,
-                    nullRepresentationString, ignoreColumnHeaderRow, list);
+            CSVTableImportOperation tableImportOperation = new CSVTableImportOperation(structure,
+                    filename.toOSString(), targetGeneration, this, nullRepresentationString, ignoreColumnHeaderRow,
+                    list);
             tableImportOperation.run(new NullProgressMonitor());
             return true;
         } catch (Exception e) {
@@ -82,18 +86,18 @@ public class CSVTableFormat extends AbstractExternalTableFormat {
         }
     }
 
-
-
     /**
      * {@inheritDoc}
      */
     public boolean executeEnumImport(IEnumValueContainer valueContainer,
-            IPath filename, String nullRepresentationString,
-            boolean ignoreColumnHeaderRow, MessageList list) {
+            IPath filename,
+            String nullRepresentationString,
+            boolean ignoreColumnHeaderRow,
+            MessageList list) {
 
         try {
-            CSVEnumImportOperation enumImportOperation = new CSVEnumImportOperation(valueContainer, 
-                    filename.toOSString(), this, nullRepresentationString, ignoreColumnHeaderRow, list);
+            CSVEnumImportOperation enumImportOperation = new CSVEnumImportOperation(valueContainer, filename
+                    .toOSString(), this, nullRepresentationString, ignoreColumnHeaderRow, list);
             enumImportOperation.run(new NullProgressMonitor());
             return true;
         } catch (Exception e) {
@@ -106,12 +110,14 @@ public class CSVTableFormat extends AbstractExternalTableFormat {
      * {@inheritDoc}
      */
     public boolean executeEnumExport(IEnumValueContainer valueContainer,
-            IPath filename, String nullRepresentationString,
-            boolean exportColumnHeaderRow, MessageList list) {
+            IPath filename,
+            String nullRepresentationString,
+            boolean exportColumnHeaderRow,
+            MessageList list) {
 
         try {
-            CSVEnumExportOperation enumExportOperation = new CSVEnumExportOperation(valueContainer, 
-                    filename.toOSString(), this, nullRepresentationString, exportColumnHeaderRow, list);
+            CSVEnumExportOperation enumExportOperation = new CSVEnumExportOperation(valueContainer, filename
+                    .toOSString(), this, nullRepresentationString, exportColumnHeaderRow, list);
             enumExportOperation.run(new NullProgressMonitor());
             return true;
         } catch (Exception e) {
@@ -119,17 +125,17 @@ public class CSVTableFormat extends AbstractExternalTableFormat {
             return false;
         }
     }
-    
+
     /**
      * {@inheritDoc}
      */
     public boolean isValidImportSource(String source) {
         File file = new File(source);
-        
-        if (! file.canRead()) {
+
+        if (!file.canRead()) {
             return false;
         }
-        
+
         CSVReader reader = null;
         try {
             reader = new CSVReader(new FileReader(file));
@@ -148,7 +154,7 @@ public class CSVTableFormat extends AbstractExternalTableFormat {
             }
         }
     }
-    
+
     private boolean hasConstantNumberOfFieldsPerLine(CSVReader reader) throws IOException {
         String[] row = reader.readNext();
         int expectedNumberOfFields = row.length;
@@ -158,24 +164,22 @@ public class CSVTableFormat extends AbstractExternalTableFormat {
             }
         }
         return true;
-    }    
-    
+    }
+
     /**
      * {@inheritDoc}
      */
     public List getImportTablePreview(ITableStructure structure, IPath filename, int maxNumberOfRows) {
-        if (structure == null 
-                || filename == null 
-                || ! isValidImportSource(filename.toOSString())) {
+        if (structure == null || filename == null || !isValidImportSource(filename.toOSString())) {
             return Collections.EMPTY_LIST;
         }
-        
+
         List result = new ArrayList();
         MessageList ml = new MessageList();
         CSVReader reader = null;
         try {
             Datatype[] datatypes = getDatatypes(structure);
-            
+
             reader = new CSVReader(new FileReader(filename.toOSString()));
             String[] line = (ignoreColumnHeaderRow == true) ? reader.readNext() : null;
             int linesLeft = maxNumberOfRows;
@@ -187,7 +191,7 @@ public class CSVTableFormat extends AbstractExternalTableFormat {
                 for (int i = 0; i < line.length; i++) {
                     convertedLine[i] = getIpsValue(line[i], datatypes[i], ml);
                 }
-                
+
                 result.add(convertedLine);
             }
         } catch (Exception e) {
@@ -200,10 +204,10 @@ public class CSVTableFormat extends AbstractExternalTableFormat {
                 }
             }
         }
-        
+
         return result;
     }
-    
+
     public List getImportEnumPreview(IEnumType structure, IPath filename, int maxNumberOfRows) {
         Datatype[] datatypes;
         try {
@@ -214,15 +218,12 @@ public class CSVTableFormat extends AbstractExternalTableFormat {
             return Collections.EMPTY_LIST;
         }
     }
-    
 
     private List getPreviewInternal(Datatype[] datatypes, IPath filename, int maxNumberOfRows) {
-        if (datatypes == null 
-                || filename == null 
-                || ! isValidImportSource(filename.toOSString())) {
+        if (datatypes == null || filename == null || !isValidImportSource(filename.toOSString())) {
             return Collections.EMPTY_LIST;
         }
-        
+
         List result = new ArrayList();
         MessageList ml = new MessageList();
         CSVReader reader = null;
@@ -238,7 +239,7 @@ public class CSVTableFormat extends AbstractExternalTableFormat {
                 for (int i = 0; i < line.length; i++) {
                     convertedLine[i] = getIpsValue(line[i], datatypes[i], ml);
                 }
-                
+
                 result.add(convertedLine);
             }
         } catch (Exception e) {
@@ -251,9 +252,9 @@ public class CSVTableFormat extends AbstractExternalTableFormat {
                 }
             }
         }
-        return result;        
+        return result;
     }
-    
+
     // TODO rg: Duplicated code in CSVTableImportOperation
     private Datatype[] getDatatypes(ITableStructure structure) throws CoreException {
         IColumn[] columns = structure.getColumns();

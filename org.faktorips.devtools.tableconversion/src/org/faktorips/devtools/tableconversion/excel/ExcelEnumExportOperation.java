@@ -3,7 +3,7 @@
  * 
  * Alle Rechte vorbehalten.
  * 
- * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen, 
+ * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen,
  * etc.) duerfen nur unter den Bedingungen der Faktor-Zehn-Community Lizenzvereinbarung - Version
  * 0.1 (vor Gruendung Community) genutzt werden, die Bestandteil der Auslieferung ist und auch unter
  * http://www.faktorzehn.org/f10-org:lizenzen:community eingesehen werden kann.
@@ -52,25 +52,28 @@ public class ExcelEnumExportOperation extends AbstractTableExportOperation {
     /* The maximum number of rows allowed in an Excel sheet */
     private static final short MAX_ROWS = Short.MAX_VALUE;
 
-    /* Type to be used for cells with a date. Dates a treated as numbers by excel, so the only way
-     * to display a date as a date and not as a stupid number is to format the cell :-( */
+    /*
+     * Type to be used for cells with a date. Dates a treated as numbers by excel, so the only way
+     * to display a date as a date and not as a stupid number is to format the cell :-(
+     */
     private HSSFCellStyle dateStyle = null;
-    
-    
+
     /**
      * @param typeToExport An <code>IEnumValueContainer</code> instance.
      * @param filename The name of the file to export to.
      * @param format The format to use for transforming the data.
      * @param nullRepresentationString The string to use as replacement for <code>null</code>.
-     * @param exportColumnHeaderRow <code>true</code> if the header names will be included in the exported format
-     * @param list A MessageList to store errors and warnings which happened during the export 
+     * @param exportColumnHeaderRow <code>true</code> if the header names will be included in the
+     *            exported format
+     * @param list A MessageList to store errors and warnings which happened during the export
      */
     public ExcelEnumExportOperation(IIpsObject typeToExport, String filename, ITableFormat format,
             String nullRepresentationString, boolean exportColumnHeaderRow, MessageList list) {
 
-        if (! (typeToExport instanceof IEnumValueContainer)) {
-            throw new IllegalArgumentException("The given IPS object is not supported. Expected IEnumValueContainer, but got '"
-                    + typeToExport == null ?  "null" : typeToExport.getClass().toString() + "'");
+        if (!(typeToExport instanceof IEnumValueContainer)) {
+            throw new IllegalArgumentException(
+                    "The given IPS object is not supported. Expected IEnumValueContainer, but got '" + typeToExport == null ? "null"
+                            : typeToExport.getClass().toString() + "'");
         }
         this.typeToExport = typeToExport;
         this.filename = filename;
@@ -79,7 +82,7 @@ public class ExcelEnumExportOperation extends AbstractTableExportOperation {
         this.exportColumnHeaderRow = exportColumnHeaderRow;
         this.messageList = list;
     }
-    
+
     /**
      * {@inheritDoc}
      */
@@ -90,18 +93,18 @@ public class ExcelEnumExportOperation extends AbstractTableExportOperation {
         }
 
         IEnumValueContainer enumContainer = getEnum(typeToExport);
-        
+
         monitor.beginTask(Messages.TableExportOperation_labelMonitorTitle, 5 + enumContainer.getEnumValuesCount());
 
         // first of all, check if the environment allows an export...
-        IEnumType structure = enumContainer.findEnumType();
+        IEnumType structure = enumContainer.findEnumType(enumContainer.getIpsProject());
         if (structure == null) {
             String text = Messages.TableExportOperation_errStructureNotFound;
             messageList.add(new Message("", text, Message.ERROR)); //$NON-NLS-1$
             return;
         }
         monitor.worked(1);
-        
+
         messageList.add(enumContainer.validate(enumContainer.getIpsProject()));
         if (messageList.containsErrorMsg()) {
             return;
@@ -150,54 +153,52 @@ public class ExcelEnumExportOperation extends AbstractTableExportOperation {
                 workbook.write(out);
                 out.close();
             }
-        }
-        catch (IOException e) {
+        } catch (IOException e) {
             IpsPlugin.log(e);
             messageList.add(new Message("", Messages.TableExportOperation_errWrite, Message.ERROR)); //$NON-NLS-1$
         }
     }
 
-
-
     private IEnumValueContainer getEnum(IIpsObject typeToExport) {
         if (typeToExport instanceof IEnumValueContainer) {
-            return (IEnumValueContainer) typeToExport;
+            return (IEnumValueContainer)typeToExport;
         }
         return null;
     }
-    
+
     /**
      * Create the header as first row.
      * 
      * @param sheet The sheet where to create the header
      * @param enumAttributes The column names defined by the structure.
-     * @param exportColumnHeaderRow <code>true</code> if a header line containing the column names should be exported
+     * @param exportColumnHeaderRow <code>true</code> if a header line containing the column names
+     *            should be exported
      */
     private void exportHeader(HSSFSheet sheet, List<IEnumAttribute> enumAttributes, boolean exportColumnHeaderRow) {
-        if (!exportColumnHeaderRow){
+        if (!exportColumnHeaderRow) {
             return;
         }
         HSSFRow headerRow = sheet.createRow(0);
         for (int i = 0; i < enumAttributes.size(); i++) {
             headerRow.createCell((short)i).setCellValue(enumAttributes.get(i).getName());
         }
-        
+
     }
-    
+
     private void exportDataCells(HSSFSheet sheet,
             List<IEnumValue> values,
             IEnumType structure,
             IProgressMonitor monitor,
             boolean exportColumnHeaderRow) throws CoreException {
-        
+
         List<IEnumAttribute> enumAttributes = structure.getEnumAttributes();
-        
+
         Datatype[] datatypes = new Datatype[structure.getEnumAttributesCount(false)];
         for (int i = 0; i < datatypes.length; i++) {
             String datatype = enumAttributes.get(i).getDatatype();
             datatypes[i] = structure.getIpsProject().findDatatype(datatype);
         }
-        
+
         int offest = exportColumnHeaderRow ? 1 : 0;
         for (int i = 0; i < values.size(); i++) {
             HSSFRow sheetRow = sheet.createRow(i + offest);
@@ -206,11 +207,11 @@ public class ExcelEnumExportOperation extends AbstractTableExportOperation {
             for (int j = 0; j < value.getEnumAttributeValuesCount(); j++) {
                 int numberOfAttributes = value.getEnumAttributeValuesCount();
                 String[] fieldsToExport = getFieldsForEnumValue(datatypes, value, numberOfAttributes);
-                
+
                 HSSFCell cell = sheetRow.createCell((short)j);
                 fillCell(cell, fieldsToExport[j], datatypes[j]);
             }
-            
+
             if (monitor.isCanceled()) {
                 return;
             }
@@ -224,21 +225,21 @@ public class ExcelEnumExportOperation extends AbstractTableExportOperation {
         for (int j = 0; j < numberOfAttributes; j++) {
             IEnumAttributeValue attributeValue = value.getEnumAttributeValues().get(j);
             Object obj = format.getExternalValue(attributeValue.getValue(), datatypes[j], messageList);
-            
+
             String csvField;
             try {
-                csvField = (obj == null) ? nullRepresentationString
-                        : format.getIpsValue(obj, datatypes[j], messageList);
+                csvField = (obj == null) ? nullRepresentationString : format
+                        .getIpsValue(obj, datatypes[j], messageList);
             } catch (NumberFormatException e) {
                 // Null Object for Decimal Datatype returned, see Null-Object Pattern
-                csvField = nullRepresentationString; 
+                csvField = nullRepresentationString;
             }
 
             fieldsToExport[j] = csvField;
         }
         return fieldsToExport;
     }
-    
+
     /**
      * Fill the content of the cell.
      * 
@@ -256,9 +257,8 @@ public class ExcelEnumExportOperation extends AbstractTableExportOperation {
         }
         if (obj instanceof Number) {
             try {
-            cell.setCellValue(((Number)obj).doubleValue());
-            }
-            catch (NullPointerException npe) {
+                cell.setCellValue(((Number)obj).doubleValue());
+            } catch (NullPointerException npe) {
                 cell.setCellValue(nullRepresentationString);
             }
             return;
@@ -270,11 +270,10 @@ public class ExcelEnumExportOperation extends AbstractTableExportOperation {
 
         if (obj != null) {
             cell.setCellValue(obj.toString());
-        }
-        else {
+        } else {
             cell.setCellValue(nullRepresentationString);
         }
 
     }
-    
+
 }

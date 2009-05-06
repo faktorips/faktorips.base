@@ -3,7 +3,7 @@
  * 
  * Alle Rechte vorbehalten.
  * 
- * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen, 
+ * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen,
  * etc.) duerfen nur unter den Bedingungen der Faktor-Zehn-Community Lizenzvereinbarung - Version
  * 0.1 (vor Gruendung Community) genutzt werden, die Bestandteil der Auslieferung ist und auch unter
  * http://www.faktorzehn.org/f10-org:lizenzen:community eingesehen werden kann.
@@ -41,7 +41,7 @@ import au.com.bytecode.opencsv.CSVWriter;
 
 /**
  * Operation to export an Enum types or contents to an text-file (comma separated values).
- *  
+ * 
  * @author Roman Grutza
  */
 public class CSVEnumExportOperation extends AbstractTableExportOperation {
@@ -51,15 +51,17 @@ public class CSVEnumExportOperation extends AbstractTableExportOperation {
      * @param filename The name of the file to export to.
      * @param format The format to use for transforming the data.
      * @param nullRepresentationString The string to use as replacement for <code>null</code>.
-     * @param exportColumnHeaderRow <code>true</code> if the header names will be included in the exported format
-     * @param list A MessageList to store errors and warnings which happened during the export 
+     * @param exportColumnHeaderRow <code>true</code> if the header names will be included in the
+     *            exported format
+     * @param list A MessageList to store errors and warnings which happened during the export
      */
     public CSVEnumExportOperation(IIpsObject typeToExport, String filename, ITableFormat format,
             String nullRepresentationString, boolean exportColumnHeaderRow, MessageList list) {
 
-        if (! (typeToExport instanceof IEnumValueContainer)) {
-            throw new IllegalArgumentException("The given IPS object is not supported. Expected IEnumValueContainer, but got '"
-                    + typeToExport == null ?  "null" : typeToExport.getClass().toString() + "'");
+        if (!(typeToExport instanceof IEnumValueContainer)) {
+            throw new IllegalArgumentException(
+                    "The given IPS object is not supported. Expected IEnumValueContainer, but got '" + typeToExport == null ? "null"
+                            : typeToExport.getClass().toString() + "'");
         }
         this.typeToExport = typeToExport;
         this.filename = filename;
@@ -69,7 +71,6 @@ public class CSVEnumExportOperation extends AbstractTableExportOperation {
         this.messageList = list;
     }
 
-    
     /**
      * {@inheritDoc}
      */
@@ -83,7 +84,7 @@ public class CSVEnumExportOperation extends AbstractTableExportOperation {
         monitor.beginTask(Messages.TableExportOperation_labelMonitorTitle, 4 + enumContainer.getEnumValuesCount());
 
         // first of all, check if the environment allows an export...
-        IEnumType structure = enumContainer.findEnumType();
+        IEnumType structure = enumContainer.findEnumType(enumContainer.getIpsProject());
         if (structure == null) {
             String text = Messages.TableExportOperation_errStructureNotFound;
             messageList.add(new Message("", text, Message.ERROR)); //$NON-NLS-1$
@@ -109,7 +110,8 @@ public class CSVEnumExportOperation extends AbstractTableExportOperation {
         CSVWriter writer = null;
         try {
             if (!monitor.isCanceled()) {
-                // FS#1188 Tabelleninhalte exportieren: Checkbox "mit Spaltenueberschrift" und Zielordner
+                // FS#1188 Tabelleninhalte exportieren: Checkbox "mit Spaltenueberschrift" und
+                // Zielordner
                 out = new FileOutputStream(new File(filename));
                 writer = new CSVWriter(new BufferedWriter(new OutputStreamWriter(out)));
 
@@ -126,7 +128,7 @@ public class CSVEnumExportOperation extends AbstractTableExportOperation {
         } finally {
             if (out != null) {
                 try {
-                    
+
                     out.close();
                 } catch (Exception ee) {
                     // ignore
@@ -137,21 +139,20 @@ public class CSVEnumExportOperation extends AbstractTableExportOperation {
 
     private IEnumValueContainer getEnum(IIpsObject typeToExport) {
         if (typeToExport instanceof IEnumValueContainer) {
-            return (IEnumValueContainer) typeToExport;
+            return (IEnumValueContainer)typeToExport;
         }
         return null;
     }
 
-    
     /**
      * Writes the CSV header containing the names of the columns using the given CSV writer.
      * 
-     * @param writer A CSV writer instance  
+     * @param writer A CSV writer instance
      * @param list The enum type's attributes as a list
      * @param exportColumnHeaderRow Flag to indicate whether to export the header
      */
     private void exportHeader(CSVWriter writer, List<IEnumAttribute> list, boolean exportColumnHeaderRow)
-    throws IOException {
+            throws IOException {
         if (exportColumnHeaderRow) {
             String[] header = new String[list.size()];
             for (int i = 0; i < header.length; i++) {
@@ -160,12 +161,12 @@ public class CSVEnumExportOperation extends AbstractTableExportOperation {
             writer.writeNext(header);
         }
     }
-    
+
     /**
      * Create the cells for the export
      * 
      * @param writer A CSV writer instance.
-     * @param values The enum's valeus as a list. 
+     * @param values The enum's valeus as a list.
      * @param structure The structure the content is bound to.
      * @param monitor The monitor to display the progress.
      * @param exportColumnHeaderRow column header names included or not.
@@ -180,7 +181,7 @@ public class CSVEnumExportOperation extends AbstractTableExportOperation {
             boolean exportColumnHeaderRow) throws CoreException, IOException {
 
         List<IEnumAttribute> enumAttributes = structure.getEnumAttributes();
-        
+
         Datatype[] datatypes = new Datatype[structure.getEnumAttributesCount(false)];
         for (int i = 0; i < datatypes.length; i++) {
             String datatype = enumAttributes.get(i).getDatatype();
@@ -194,21 +195,21 @@ public class CSVEnumExportOperation extends AbstractTableExportOperation {
             for (int j = 0; j < numberOfAttributes; j++) {
                 IEnumAttributeValue attributeValue = value.getEnumAttributeValues().get(j);
                 Object obj = format.getExternalValue(attributeValue.getValue(), datatypes[j], messageList);
-                
+
                 String csvField;
                 try {
-                    csvField = (obj == null) ? nullRepresentationString
-                            : format.getIpsValue(obj, datatypes[j], messageList);
+                    csvField = (obj == null) ? nullRepresentationString : format.getIpsValue(obj, datatypes[j],
+                            messageList);
                 } catch (NumberFormatException e) {
                     // Null Object for Decimal Datatype returned, see Null-Object Pattern
-                    csvField = nullRepresentationString; 
+                    csvField = nullRepresentationString;
                 }
 
                 fieldsToExport[j] = csvField;
             }
 
             writer.writeNext(fieldsToExport);
-            
+
             if (monitor.isCanceled()) {
                 return;
             }
@@ -216,5 +217,5 @@ public class CSVEnumExportOperation extends AbstractTableExportOperation {
             monitor.worked(1);
         }
     }
-    
+
 }

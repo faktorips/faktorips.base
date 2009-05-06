@@ -3,7 +3,7 @@
  * 
  * Alle Rechte vorbehalten.
  * 
- * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen, 
+ * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen,
  * etc.) duerfen nur unter den Bedingungen der Faktor-Zehn-Community Lizenzvereinbarung - Version
  * 0.1 (vor Gruendung Community) genutzt werden, die Bestandteil der Auslieferung ist und auch unter
  * http://www.faktorzehn.org/f10-org:lizenzen:community eingesehen werden kann.
@@ -19,7 +19,6 @@ import java.io.IOException;
 import java.util.Collections;
 import java.util.List;
 
-import org.apache.commons.lang.NotImplementedException;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.NullProgressMonitor;
@@ -30,7 +29,6 @@ import org.faktorips.devtools.core.model.tablecontents.ITableContents;
 import org.faktorips.devtools.core.model.tablecontents.ITableContentsGeneration;
 import org.faktorips.devtools.core.model.tablestructure.ITableStructure;
 import org.faktorips.devtools.tableconversion.AbstractExternalTableFormat;
-import org.faktorips.devtools.tableconversion.csv.CSVEnumExportOperation;
 import org.faktorips.util.message.MessageList;
 
 /**
@@ -40,31 +38,37 @@ import org.faktorips.util.message.MessageList;
  */
 public class ExcelTableFormat extends AbstractExternalTableFormat {
 
-	/**
-	 * {@inheritDoc}
-	 */
-	public boolean executeTableExport(ITableContents contents, IPath filename, 
-	        String nullRepresentationString, boolean exportColumnHeaderRow, MessageList list) {
-	    try {
-	        ExcelTableExportOperation excelTableExportOperation = new ExcelTableExportOperation(contents, filename.toOSString(), this, 
-	                nullRepresentationString, exportColumnHeaderRow, list);
-	        excelTableExportOperation.run(new NullProgressMonitor());
-	        return true;
+    /**
+     * {@inheritDoc}
+     */
+    public boolean executeTableExport(ITableContents contents,
+            IPath filename,
+            String nullRepresentationString,
+            boolean exportColumnHeaderRow,
+            MessageList list) {
+        try {
+            ExcelTableExportOperation excelTableExportOperation = new ExcelTableExportOperation(contents, filename
+                    .toOSString(), this, nullRepresentationString, exportColumnHeaderRow, list);
+            excelTableExportOperation.run(new NullProgressMonitor());
+            return true;
         } catch (Exception e) {
             IpsPlugin.log(e);
             return false;
         }
-	}
+    }
 
-	/**
+    /**
      * {@inheritDoc}
      */
-    public boolean executeTableImport(ITableStructure structure, IPath filename,
-            ITableContentsGeneration targetGeneration, String nullRepresentationString,
-            boolean ignoreColumnHeaderRow, MessageList list) {
+    public boolean executeTableImport(ITableStructure structure,
+            IPath filename,
+            ITableContentsGeneration targetGeneration,
+            String nullRepresentationString,
+            boolean ignoreColumnHeaderRow,
+            MessageList list) {
         try {
-            ExcelTableImportOperation excelTableImportOperation = new ExcelTableImportOperation(structure, filename.toOSString(), targetGeneration, this,
-                    nullRepresentationString, ignoreColumnHeaderRow, list);
+            ExcelTableImportOperation excelTableImportOperation = new ExcelTableImportOperation(structure, filename
+                    .toOSString(), targetGeneration, this, nullRepresentationString, ignoreColumnHeaderRow, list);
             excelTableImportOperation.run(new NullProgressMonitor());
             return true;
         } catch (Exception e) {
@@ -76,12 +80,15 @@ public class ExcelTableFormat extends AbstractExternalTableFormat {
     /**
      * {@inheritDoc}
      */
-    public boolean executeEnumExport(IEnumValueContainer valueContainer, IPath filename,
-            String nullRepresentationString, boolean exportColumnHeaderRow, MessageList list) {
+    public boolean executeEnumExport(IEnumValueContainer valueContainer,
+            IPath filename,
+            String nullRepresentationString,
+            boolean exportColumnHeaderRow,
+            MessageList list) {
 
         try {
-            ExcelEnumExportOperation enumExportOperation = new ExcelEnumExportOperation(valueContainer, 
-                    filename.toOSString(), this, nullRepresentationString, exportColumnHeaderRow, list);
+            ExcelEnumExportOperation enumExportOperation = new ExcelEnumExportOperation(valueContainer, filename
+                    .toOSString(), this, nullRepresentationString, exportColumnHeaderRow, list);
             enumExportOperation.run(new NullProgressMonitor());
             return true;
         } catch (Exception e) {
@@ -93,12 +100,15 @@ public class ExcelTableFormat extends AbstractExternalTableFormat {
     /**
      * {@inheritDoc}
      */
-    public boolean executeEnumImport(IEnumValueContainer valueContainer, IPath filename,
-            String nullRepresentationString, boolean ignoreColumnHeaderRow, MessageList list) {
-        
+    public boolean executeEnumImport(IEnumValueContainer valueContainer,
+            IPath filename,
+            String nullRepresentationString,
+            boolean ignoreColumnHeaderRow,
+            MessageList list) {
+
         try {
-            ExcelEnumImportOperation enumImportOperation = new ExcelEnumImportOperation(valueContainer, 
-                    filename.toOSString(), this, nullRepresentationString, ignoreColumnHeaderRow, list);
+            ExcelEnumImportOperation enumImportOperation = new ExcelEnumImportOperation(valueContainer, filename
+                    .toOSString(), this, nullRepresentationString, ignoreColumnHeaderRow, list);
             enumImportOperation.run(new NullProgressMonitor());
             return true;
         } catch (Exception e) {
@@ -106,26 +116,25 @@ public class ExcelTableFormat extends AbstractExternalTableFormat {
             return false;
         }
     }
-    
-	/**
-	 * {@inheritDoc}
-	 */
-	public boolean isValidImportSource(String source) {
+
+    /**
+     * {@inheritDoc}
+     */
+    public boolean isValidImportSource(String source) {
         File file = new File(source);
-        
+
         if (!file.canRead()) {
             return false;
         }
-        
+
         FileInputStream fis = null;
-		try {
+        try {
             fis = new FileInputStream(file);
-			new HSSFWorkbook(fis);
+            new HSSFWorkbook(fis);
             return true;
-		} catch (Exception e) {
-			// if an exception occurred, it is not a valid source, this exception can be ignored
-		}
-        finally {
+        } catch (Exception e) {
+            // if an exception occurred, it is not a valid source, this exception can be ignored
+        } finally {
             if (fis != null) {
                 try {
                     fis.close();
@@ -135,8 +144,8 @@ public class ExcelTableFormat extends AbstractExternalTableFormat {
                 }
             }
         }
-		return false;
-	}
+        return false;
+    }
 
     public List getImportTablePreview(ITableStructure structure, IPath filename, int maxNumberOfRows) {
         // TODO rg: implement
