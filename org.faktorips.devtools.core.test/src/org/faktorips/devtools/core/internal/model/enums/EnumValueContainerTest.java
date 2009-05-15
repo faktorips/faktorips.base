@@ -14,6 +14,9 @@
 package org.faktorips.devtools.core.internal.model.enums;
 
 import org.eclipse.core.runtime.CoreException;
+import org.faktorips.datatype.Datatype;
+import org.faktorips.devtools.core.model.enums.IEnumAttribute;
+import org.faktorips.devtools.core.model.enums.IEnumAttributeValue;
 import org.faktorips.devtools.core.model.enums.IEnumValue;
 
 public class EnumValueContainerTest extends AbstractIpsEnumPluginTest {
@@ -28,9 +31,19 @@ public class EnumValueContainerTest extends AbstractIpsEnumPluginTest {
     }
 
     public void testNewEnumValue() throws CoreException {
+        IEnumAttribute integerAttribute = genderEnumType.newEnumAttribute();
+        integerAttribute.setDatatype(Datatype.INTEGER.getQualifiedName());
+        integerAttribute.setName("integerAttribute");
+
+        for (IEnumValue currentEnumValue : genderEnumContent.getEnumValues()) {
+            IEnumAttributeValue value = currentEnumValue.newEnumAttributeValue();
+            value.setValue(null);
+        }
+
         IEnumValue newEnumValue = genderEnumContent.newEnumValue();
         assertEquals(newEnumValue, genderEnumContent.getEnumValues().get(2));
-        assertEquals(2, newEnumValue.getEnumAttributeValuesCount());
+        assertEquals(3, newEnumValue.getEnumAttributeValuesCount());
+        assertNull(newEnumValue.getEnumAttributeValues().get(2).getValue());
 
         genderEnumContent.setEnumType("foo");
         assertNull(genderEnumContent.newEnumValue());

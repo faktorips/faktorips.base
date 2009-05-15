@@ -122,13 +122,13 @@ public class EnumAttributeEditDialog extends IpsPartEditDialog2 {
         disallowedDatatypes.add(enumAttribute.getEnumType());
         datatypeControl.setDisallowedDatatypes(disallowedDatatypes);
 
-        // Literal name
-        uiToolkit.createFormLabel(workArea, Messages.EnumAttributeEditDialog_labelUseAsLiteralName);
-        literalNameCheckbox = uiToolkit.createCheckbox(workArea);
-
         // Unique identifier
         uiToolkit.createFormLabel(workArea, Messages.EnumAttributeEditDialog_labelUniqueIdentifier);
         uniqueIdentifierCheckbox = uiToolkit.createCheckbox(workArea);
+
+        // Literal name
+        uiToolkit.createFormLabel(workArea, Messages.EnumAttributeEditDialog_labelUseAsLiteralName);
+        literalNameCheckbox = uiToolkit.createCheckbox(workArea);
 
         // Used as ID in Faktor-IPS UI
         uiToolkit.createFormLabel(workArea, Messages.EnumAttributeEditDialog_labelUsedAsIdInFaktorIpsUi);

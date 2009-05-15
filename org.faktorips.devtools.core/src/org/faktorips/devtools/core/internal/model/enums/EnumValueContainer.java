@@ -20,13 +20,16 @@ import java.util.NoSuchElementException;
 import org.eclipse.core.resources.IWorkspaceRunnable;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
+import org.faktorips.datatype.Datatype;
 import org.faktorips.devtools.core.internal.model.ipsobject.BaseIpsObject;
 import org.faktorips.devtools.core.internal.model.ipsobject.IpsObjectPartCollection;
+import org.faktorips.devtools.core.model.enums.IEnumAttributeValue;
 import org.faktorips.devtools.core.model.enums.IEnumType;
 import org.faktorips.devtools.core.model.enums.IEnumValue;
 import org.faktorips.devtools.core.model.enums.IEnumValueContainer;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPart;
 import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
+import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.util.ArgumentCheck;
 
 /**
@@ -176,6 +179,18 @@ public abstract class EnumValueContainer extends BaseIpsObject implements IEnumV
             // Add as many enum attribute values as there are enum attributes in the enum type
             for (int i = 0; i < enumType.getEnumAttributesCount(true); i++) {
                 newEnumValue.newEnumAttributeValue();
+            }
+
+            /*
+             * Set the value of each enum attribute value to null if the datatype of the referenced
+             * enum attribute is not String
+             */
+            for (IEnumAttributeValue currentEnumAttributeValue : newEnumValue.getEnumAttributeValues()) {
+                IIpsProject ipsProject = currentEnumAttributeValue.getIpsProject();
+                if (!(currentEnumAttributeValue.findEnumAttribute(ipsProject).getDatatype().equals(Datatype.STRING
+                        .getQualifiedName()))) {
+                    currentEnumAttributeValue.setValue(null);
+                }
             }
         }
 

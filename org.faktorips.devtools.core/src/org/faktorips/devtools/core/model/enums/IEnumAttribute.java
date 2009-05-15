@@ -134,7 +134,7 @@ public interface IEnumAttribute extends IIpsObjectPart {
     public void setName(String name);
 
     /**
-     * Returns the unqualified name of the datatype of this enum attribute.
+     * Returns the qualified name of the datatype of this enum attribute.
      * <p>
      * <strong>Important:</strong> This operation does not search the supertype hierarchy for the
      * datatype if this enum attribute is inherited. Use <code>findDatatype(IIpsProject)</code> in
