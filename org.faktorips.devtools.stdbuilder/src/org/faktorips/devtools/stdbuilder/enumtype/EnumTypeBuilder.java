@@ -454,8 +454,11 @@ public class EnumTypeBuilder extends DefaultJavaSourceFileBuilder {
                 if (!(useClassGeneration() && currentEnumAttribute.isInherited())
                         || (useClassGenerationDespiteJava5EnumsAvailability())) {
                     appendLocalizedJavaDoc("ATTRIBUTE", attributeName, currentEnumAttribute, attributeBuilder);
-                    attributeBuilder.varDeclaration(Modifier.PRIVATE | Modifier.FINAL, currentEnumAttribute
-                            .findDatatype(getIpsProject()).getJavaClassName(), codeName);
+                    IIpsProject ipsProject = getIpsProject();
+                    DatatypeHelper datatypeHelper = ipsProject.getDatatypeHelper(currentEnumAttribute
+                            .findDatatype(ipsProject));
+                    attributeBuilder.varDeclaration(Modifier.PRIVATE | Modifier.FINAL, datatypeHelper
+                            .getJavaClassName(), codeName);
                     attributeBuilder.appendLn(' ');
                 }
             }
@@ -592,8 +595,10 @@ public class EnumTypeBuilder extends DefaultJavaSourceFileBuilder {
                     if (!(currentEnumAttribute.isInherited())) {
                         appendLocalizedJavaDoc("GETTER", attributeName, description, currentEnumAttribute,
                                 methodBuilder);
-                        methodBuilder.signature(Modifier.PUBLIC, currentEnumAttribute.findDatatype(getIpsProject())
-                                .getJavaClassName(), methodName, null, null);
+                        DatatypeHelper datatypeHelper = ipsProject.getDatatypeHelper(currentEnumAttribute
+                                .findDatatype(ipsProject));
+                        methodBuilder.signature(Modifier.PUBLIC, datatypeHelper.getJavaClassName(), methodName, null,
+                                null);
                         methodBuilder.appendLn(';');
                     }
 
@@ -609,8 +614,10 @@ public class EnumTypeBuilder extends DefaultJavaSourceFileBuilder {
                         methodBody.append(getJavaNamingConvention().getMemberVarName(attributeName));
                         methodBody.append(';');
 
-                        methodBuilder.methodBegin(Modifier.PUBLIC, currentEnumAttribute.findDatatype(ipsProject)
-                                .getJavaClassName(), methodName, null, null);
+                        DatatypeHelper datatypeHelper = ipsProject.getDatatypeHelper(currentEnumAttribute
+                                .findDatatype(ipsProject));
+                        methodBuilder.methodBegin(Modifier.PUBLIC, datatypeHelper.getJavaClassName(), methodName, null,
+                                null);
                         methodBuilder.append(methodBody);
                         methodBuilder.methodEnd();
                     }
@@ -660,9 +667,6 @@ public class EnumTypeBuilder extends DefaultJavaSourceFileBuilder {
             if (currentEnumAttribute.isValid()) {
                 if (currentEnumAttribute.findIsUniqueIdentifier(getIpsProject())) {
 
-                    Datatype datatype = currentEnumAttribute.findDatatype(getIpsProject());
-                    DatatypeHelper helper = getIpsProject().getDatatypeHelper(datatype);
-
                     JavaCodeFragment body = new JavaCodeFragment();
                     String parameterName = currentEnumAttribute.getName();
                     body.append("if(");
@@ -671,6 +675,9 @@ public class EnumTypeBuilder extends DefaultJavaSourceFileBuilder {
                     body.appendOpenBracket();
                     body.appendln("return null;");
                     body.appendCloseBracket();
+
+                    Datatype datatype = currentEnumAttribute.findDatatype(getIpsProject());
+                    DatatypeHelper datatypeHelper = getIpsProject().getDatatypeHelper(datatype);
 
                     for (IEnumValue currentEnumValue : enumValues) {
                         if (!(currentEnumValue.isValid())) {
@@ -682,7 +689,7 @@ public class EnumTypeBuilder extends DefaultJavaSourceFileBuilder {
                         body.append("if (");
                         body.append(parameterName);
                         body.append(".equals(");
-                        body.append(helper.newInstance(attributeValue.getValue()));
+                        body.append(datatypeHelper.newInstance(attributeValue.getValue()));
                         body.append("))");
                         body.appendOpenBracket();
                         body.append("return ");
@@ -697,7 +704,7 @@ public class EnumTypeBuilder extends DefaultJavaSourceFileBuilder {
                     appendLocalizedJavaDoc("METHOD_GET_VALUE_BY_XXX", parameterName, enumType, methodBuilder);
                     methodBuilder.methodBegin(Modifier.PUBLIC | Modifier.STATIC | Modifier.FINAL,
                             getQualifiedClassName(enumType), getMethodNameGetValueByXXX(currentEnumAttribute),
-                            new String[] { parameterName }, new String[] { helper.getJavaClassName() });
+                            new String[] { parameterName }, new String[] { datatypeHelper.getJavaClassName() });
                     methodBuilder.append(body);
                     methodBuilder.methodEnd();
 
