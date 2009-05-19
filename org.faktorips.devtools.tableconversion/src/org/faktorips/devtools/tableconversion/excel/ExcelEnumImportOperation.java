@@ -102,7 +102,12 @@ public class ExcelEnumImportOperation implements IWorkspaceRunnable {
 
     public void run(IProgressMonitor monitor) throws CoreException {
         // TODO rg: calculate amount of work
-        monitor.beginTask("Import file " + sourceFile, 4);
+        monitor.beginTask("Import file " + sourceFile, 5);
+
+        MessageList ml = valueContainer.validate(valueContainer.getIpsProject());
+        if (ml.containsErrorMsg()) {
+            messageList.add(ml);
+        }
 
         monitor.worked(1);
         if (monitor.isCanceled()) {

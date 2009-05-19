@@ -15,6 +15,7 @@ import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.model.enums.IEnumAttribute;
 import org.faktorips.devtools.core.model.enums.IEnumType;
 import org.faktorips.devtools.core.model.enums.IEnumValueContainer;
+import org.faktorips.devtools.core.model.ipsobject.IIpsObject;
 import org.faktorips.devtools.core.model.tablecontents.ITableContents;
 import org.faktorips.devtools.core.model.tablecontents.ITableContentsGeneration;
 import org.faktorips.devtools.core.model.tablestructure.IColumn;
@@ -171,49 +172,33 @@ public class CSVTableFormat extends AbstractExternalTableFormat {
      */
     @SuppressWarnings("unchecked")
     public List getImportTablePreview(ITableStructure structure, IPath filename, int maxNumberOfRows) {
-        if (structure == null || filename == null || !isValidImportSource(filename.toOSString())) {
-            return Collections.EMPTY_LIST;
-        }
-
-        List result = new ArrayList();
-        MessageList ml = new MessageList();
-        CSVReader reader = null;
-        try {
-            Datatype[] datatypes = getDatatypes(structure);
-
-            reader = new CSVReader(new FileReader(filename.toOSString()));
-            String[] line = (ignoreColumnHeaderRow == true) ? reader.readNext() : null;
-            int linesLeft = maxNumberOfRows;
-            while ((line = reader.readNext()) != null) {
-                if (linesLeft-- <= 0) {
-                    break;
-                }
-                String[] convertedLine = new String[line.length];
-                for (int i = 0; i < line.length; i++) {
-                    convertedLine[i] = getIpsValue(line[i], datatypes[i], ml);
-                }
-
-                result.add(convertedLine);
-            }
-        } catch (Exception e) {
-            if (reader != null) {
-                try {
-                    reader.close();
-                } catch (Exception ee) {
-                    // serious problem, report
-                    IpsPlugin.log(ee);
-                }
-            }
-        }
-
-        return result;
+        return getImportPreview(structure, filename, maxNumberOfRows);
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @SuppressWarnings("unchecked")
     public List getImportEnumPreview(IEnumType structure, IPath filename, int maxNumberOfRows) {
+        return getImportPreview(structure, filename, maxNumberOfRows);        
+    }
+
+    /**
+     * @return A preview of the imported data to be imported using the given structure which can be
+     *         an {@link ITableStructure} or an {@link IEnumType}. 
+     */
+    @SuppressWarnings("unchecked")
+    private List getImportPreview(IIpsObject structure, IPath filename, int maxNumberOfRows) {
         Datatype[] datatypes;
         try {
-            datatypes = getDatatypes(structure);
+            if (structure instanceof ITableStructure) {
+                datatypes = getDatatypes((ITableStructure) structure);
+            } else if (structure instanceof IEnumType) {
+                datatypes = getDatatypes((IEnumType) structure);
+            } else {
+                return Collections.EMPTY_LIST;
+            }
+            
             return getPreviewInternal(datatypes, filename, maxNumberOfRows);
         } catch (CoreException e) {
             IpsPlugin.log(e);
