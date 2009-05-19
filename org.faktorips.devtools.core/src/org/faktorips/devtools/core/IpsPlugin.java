@@ -475,9 +475,6 @@ public class IpsPlugin extends AbstractUIPlugin {
             try {
                 IValueConverter converter = (IValueConverter)valueConverters[i]
                     .createExecutableExtension("class"); //$NON-NLS-1$
-                // TODO Roman: use alternative way where the IValueConverter's are subclasses
-                //       of IExecutableExtensions. In this case parameter passing is possible
-                //       and the setter method setTableFormat() on IValueConverter is not needed.
                 converter.setTableFormat(format);
                 
                 format.addValueConverter(converter);

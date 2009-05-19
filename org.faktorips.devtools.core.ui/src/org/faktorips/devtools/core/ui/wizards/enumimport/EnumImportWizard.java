@@ -26,16 +26,17 @@ import org.eclipse.jface.wizard.IWizardPage;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.model.IIpsModel;
 import org.faktorips.devtools.core.model.enums.IEnumContent;
+import org.faktorips.devtools.core.model.enums.IEnumType;
 import org.faktorips.devtools.core.model.enums.IEnumValueContainer;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObject;
 import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
+import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.ui.IpsUIPlugin;
-import org.faktorips.devtools.core.ui.WorkbenchRunnableAdapter;
 import org.faktorips.devtools.core.ui.controls.EnumRefControl;
 import org.faktorips.devtools.core.ui.wizards.enumcontent.EnumContentPage;
 import org.faktorips.devtools.core.ui.wizards.ipsimport.IpsObjectImportWizard;
-import org.faktorips.devtools.core.ui.wizards.tableimport.SelectFileAndImportMethodPage;
-import org.faktorips.devtools.core.ui.wizards.tableimport.TablePreviewPage;
+import org.faktorips.devtools.core.ui.wizards.ipsimport.ImportPreviewPage;
+import org.faktorips.devtools.core.ui.wizards.enumimport.SelectFileAndImportMethodPage;
 import org.faktorips.devtools.tableconversion.ITableFormat;
 import org.faktorips.util.message.MessageList;
 
@@ -52,7 +53,7 @@ public class EnumImportWizard extends IpsObjectImportWizard {
     private SelectFileAndImportMethodPage filePage;
     private ImportedEnumContentPage newEnumContentPage;
     private SelectEnumPage selectContentsPage;
-    private TablePreviewPage tablePreviewPage;
+    private ImportPreviewPage tablePreviewPage;
 
     public EnumRefControl enumControl;
 
@@ -73,7 +74,7 @@ public class EnumImportWizard extends IpsObjectImportWizard {
             addPage(newEnumContentPage);
             selectContentsPage = new SelectEnumPage(selection);
             addPage(selectContentsPage);
-            tablePreviewPage = new TablePreviewPage(selection);
+            tablePreviewPage = new ImportPreviewPage(selection);
             addPage(tablePreviewPage);
 
             filePage.setImportIntoExisting(importIntoExisting);
@@ -108,16 +109,8 @@ public class EnumImportWizard extends IpsObjectImportWizard {
         }
 
         if (page == selectContentsPage || page == newEnumContentPage) {
-
-            tablePreviewPage.setFilename(filePage.getFilename());
-            tablePreviewPage.setTableFormat(filePage.getFormat());
-            try {
-                tablePreviewPage.setTableStructure(getEnumValueContainer().findEnumType(
-                        getEnumValueContainer().getIpsProject()));
-            } catch (CoreException e) {
-                // not fatal, only the preview is not available if could not determine IEnumType
-                IpsPlugin.logAndShowErrorDialog(e);
-            }
+            IEnumType enumType = getEnumType();
+            tablePreviewPage.reinit(filePage.getFilename(), filePage.getFormat(), enumType);
             tablePreviewPage.validatePage();
 
             return tablePreviewPage;
@@ -146,8 +139,6 @@ public class EnumImportWizard extends IpsObjectImportWizard {
             };
             IIpsModel model = IpsPlugin.getDefault().getIpsModel();
             model.runAndQueueChangeEvents(runnable, null);
-            WorkbenchRunnableAdapter runnableAdapter = new WorkbenchRunnableAdapter(runnable);
-
         } catch (CoreException e) {
             IpsPlugin.log(e);
         }
@@ -157,9 +148,30 @@ public class EnumImportWizard extends IpsObjectImportWizard {
     }
 
     /**
+     * @return The enum type defining the structure for import.
+     */
+    private IEnumType getEnumType() {
+        try {
+            if (filePage.isImportIntoExisting()) {
+                IEnumValueContainer enumValueContainer = selectContentsPage.getEnum();
+                IIpsProject ipsProject = enumValueContainer.getIpsProject();
+                if (ipsProject != null) {
+                    return enumValueContainer.findEnumType(ipsProject);
+                }
+            } else {
+                return newEnumContentPage.getEnumType();
+            }
+        } catch (CoreException e) {
+            IpsPlugin.log(e);
+        }
+        return null;
+    }
+    
+    /**
      * @return the enum type or content as a target for import.
      * @throws CoreException
      */
+    @SuppressWarnings("unchecked")
     private IEnumValueContainer getEnumValueContainer() throws CoreException {
         if (filePage.isImportIntoExisting()) {
             return selectContentsPage.getEnum();
@@ -170,6 +182,8 @@ public class EnumImportWizard extends IpsObjectImportWizard {
         }
     }
 
+    // TODO rg: get rid of this private class by adding getEnumContent() to the 
+    //      new enum content wizard
     private class ImportedEnumContentPage extends EnumContentPage {
 
         private IIpsSrcFile ipsSrcFile;
@@ -178,6 +192,7 @@ public class EnumImportWizard extends IpsObjectImportWizard {
             super(selection);
         }
 
+        // EnumContentPage is missing this method
         public IEnumContent getEnumContent() {
             if (ipsSrcFile != null) {
                 try {
@@ -190,6 +205,7 @@ public class EnumImportWizard extends IpsObjectImportWizard {
         }
 
         @Override
+        @SuppressWarnings("unchecked")
         protected void finishIpsObjects(IIpsObject newIpsObject, List modifiedIpsObjects) throws CoreException {
             super.finishIpsObjects(newIpsObject, modifiedIpsObjects);
         }

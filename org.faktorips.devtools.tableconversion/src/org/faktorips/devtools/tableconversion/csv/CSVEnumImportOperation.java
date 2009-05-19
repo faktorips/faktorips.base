@@ -29,6 +29,7 @@ import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.IpsStatus;
 import org.faktorips.devtools.core.model.enums.IEnumAttribute;
 import org.faktorips.devtools.core.model.enums.IEnumAttributeValue;
+import org.faktorips.devtools.core.model.enums.IEnumType;
 import org.faktorips.devtools.core.model.enums.IEnumValue;
 import org.faktorips.devtools.core.model.enums.IEnumValueContainer;
 import org.faktorips.util.message.Message;
@@ -83,12 +84,6 @@ public class CSVEnumImportOperation implements IWorkspaceRunnable {
     public void run(IProgressMonitor monitor) throws CoreException {
         try {
             monitor.beginTask("Import file " + sourceFile, IProgressMonitor.UNKNOWN);
-
-            MessageList ml = valueContainer.validate(valueContainer.getIpsProject());
-            if (ml.containsErrorMsg()) {
-                messageList.add(ml);
-                return;
-            }
 
             monitor.worked(1);
             if (monitor.isCanceled()) {

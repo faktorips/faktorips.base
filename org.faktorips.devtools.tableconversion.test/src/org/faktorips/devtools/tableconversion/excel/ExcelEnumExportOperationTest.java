@@ -11,30 +11,20 @@
  * Mitwirkende: Faktor Zehn AG - initial API and implementation - http://www.faktorzehn.de
  *******************************************************************************/
 
-package org.faktorips.devtools.tableconversion.csv;
+package org.faktorips.devtools.tableconversion.excel;
 
 import java.io.File;
 
 import org.eclipse.core.runtime.NullProgressMonitor;
+import org.faktorips.devtools.core.model.enums.IEnumType;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProjectProperties;
-import org.faktorips.devtools.core.model.tablecontents.ITableContents;
-import org.faktorips.devtools.core.model.tablestructure.IColumn;
 import org.faktorips.devtools.tableconversion.AbstractTableTest;
 import org.faktorips.devtools.tableconversion.ITableFormat;
-import org.faktorips.devtools.tableconversion.excel.BooleanValueConverter;
-import org.faktorips.devtools.tableconversion.excel.DateValueConverter;
-import org.faktorips.devtools.tableconversion.excel.DecimalValueConverter;
-import org.faktorips.devtools.tableconversion.excel.DoubleValueConverter;
-import org.faktorips.devtools.tableconversion.excel.IntegerValueConverter;
-import org.faktorips.devtools.tableconversion.excel.LongValueConverter;
-import org.faktorips.devtools.tableconversion.excel.MoneyValueConverter;
-import org.faktorips.devtools.tableconversion.excel.StringValueConverter;
 import org.faktorips.util.message.MessageList;
 
+public class ExcelEnumExportOperationTest extends AbstractTableTest {
 
-public class CSVTableExportOperationTest extends AbstractTableTest {
-    
     private ITableFormat format;
     private String filename;
     private IIpsProject ipsProject;
@@ -48,9 +38,9 @@ public class CSVTableExportOperationTest extends AbstractTableTest {
         props.setPredefinedDatatypesUsed(datatypes);
         ipsProject.setProperties(props);
 
-        format = new CSVTableFormat();
-        format.setDefaultExtension(".csv");
-        format.setName("Text (CSV)");
+        format = new ExcelTableFormat();
+        format.setDefaultExtension(".xls");
+        format.setName("Excel");
         format.addValueConverter(new BooleanValueConverter());
         format.addValueConverter(new DecimalValueConverter());
         format.addValueConverter(new DoubleValueConverter());
@@ -60,7 +50,7 @@ public class CSVTableExportOperationTest extends AbstractTableTest {
         format.addValueConverter(new MoneyValueConverter());
         format.addValueConverter(new StringValueConverter());
 
-        this.filename = "table" + format.getDefaultExtension();
+        this.filename = "enum" + format.getDefaultExtension();
     }
 
     protected void tearDownExtension() throws Exception {
@@ -68,46 +58,46 @@ public class CSVTableExportOperationTest extends AbstractTableTest {
     }
 
     public void testExportValid() throws Exception {
-        ITableContents contents = createValidTableContents(ipsProject);
-        
-        MessageList ml = new MessageList();
-        CSVTableExportOperation op = new CSVTableExportOperation(contents, filename, format, "NULL", true, ml);
-        op.run(new NullProgressMonitor());
-        assertTrue(ml.isEmpty());
-    }
+        IEnumType enumType = createValidEnumTypeWithValues(ipsProject);
 
+        MessageList ml = new MessageList();
+        ExcelEnumExportOperation op = new ExcelEnumExportOperation(enumType, filename, format, "NULL", true, ml);
+        op.run(new NullProgressMonitor());
+        assertTrue(ml.toString(), ml.isEmpty());
+    }
+    
     public void testExportValidRowMismatch() throws Exception {
-        ITableContents contents = createValidTableContents(ipsProject);
+        IEnumType enumType = createValidEnumTypeWithValues(ipsProject);
 
         // too many columns
-        IColumn col = getStructure().newColumn();
+        enumType.newEnumAttribute().setName("AddedColumn");
 
         MessageList ml = new MessageList();
-        CSVTableExportOperation op = new CSVTableExportOperation(contents, filename, format, "NULL", true, ml );
+        ExcelEnumExportOperation op = new ExcelEnumExportOperation(enumType, filename, format, "NULL", true, ml );
         op.run(new NullProgressMonitor());
         assertFalse(ml.isEmpty());
 
         // invalid structure
         ml.clear();
-        col.delete();
-        getStructure().getColumn(0).setDatatype("");
+        enumType.getEnumAttribute("AddedColumn").delete();
+        enumType.getEnumAttributes().get(0).setDatatype("");
         op.run(new NullProgressMonitor());
         assertFalse(ml.isEmpty());
 
         // too less columns
         ml.clear();
-        getStructure().getColumn(0).delete();
+        enumType.getEnumAttributes().get(0).delete();
         op.run(new NullProgressMonitor());
         assertFalse(ml.isEmpty());
     }
 
     public void testExportInvalid() throws Exception {
-        ITableContents contents = createInvalidTableContents(ipsProject);
-        
-        MessageList ml = new MessageList();
-        CSVTableExportOperation op = new CSVTableExportOperation(contents, filename, format, "NULL", true, ml);
-        op.run(new NullProgressMonitor());
-        assertEquals(7, ml.getNoOfMessages()); // from 8 columns only the String column is valid
-    }
+        IEnumType enumType = createInvalidEnumTypeWithValues(ipsProject);
 
+        MessageList ml = new MessageList();
+        ExcelEnumExportOperation op = new ExcelEnumExportOperation(enumType, filename, format, "NULL", true, ml);
+        op.run(new NullProgressMonitor());
+        assertEquals(8, ml.getNoOfMessages());
+    }
+    
 }

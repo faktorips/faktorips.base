@@ -77,8 +77,9 @@ public class ExcelTableImportOperation extends AbstractTableImportOperation {
                 return;
             }
 
-
             HSSFSheet sheet = workbook.getSheetAt(0);
+
+            // update datatypes because the structure might be altered if this operation is reused
             fillGeneration(targetGeneration, sheet, monitor);
             if (!monitor.isCanceled()) {
                 targetGeneration.getIpsObject().getIpsSrcFile().save(true, monitor);

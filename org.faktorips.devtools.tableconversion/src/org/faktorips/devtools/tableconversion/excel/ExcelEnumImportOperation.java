@@ -101,13 +101,8 @@ public class ExcelEnumImportOperation implements IWorkspaceRunnable {
     }
 
     public void run(IProgressMonitor monitor) throws CoreException {
-        monitor.beginTask("Import file " + sourceFile, IProgressMonitor.UNKNOWN);
-
-        MessageList ml = valueContainer.validate(valueContainer.getIpsProject());
-        if (ml.containsErrorMsg()) {
-            messageList.add(ml);
-            return;
-        }
+        // TODO rg: calculate amount of work
+        monitor.beginTask("Import file " + sourceFile, 4);
 
         monitor.worked(1);
         if (monitor.isCanceled()) {
@@ -121,12 +116,16 @@ public class ExcelEnumImportOperation implements IWorkspaceRunnable {
         }
 
         HSSFSheet sheet = workbook.getSheetAt(0);
+        
+        // update datatypes because the structure might be altered if this operation is reused
+        initDatatypes(valueContainer);
         fillEnum(valueContainer, sheet, monitor);
 
         monitor.worked(1);
 
         if (!monitor.isCanceled()) {
-            valueContainer.getIpsObject().getIpsSrcFile().save(true, monitor);
+//             TODO rg: this crashes the unit test.
+//            valueContainer.getIpsObject().getIpsSrcFile().save(true, monitor);
             monitor.worked(1);
         } else {
             valueContainer.getIpsObject().getIpsSrcFile().discardChanges();

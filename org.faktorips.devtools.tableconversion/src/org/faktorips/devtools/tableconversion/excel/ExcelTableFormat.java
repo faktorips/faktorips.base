@@ -148,12 +148,12 @@ public class ExcelTableFormat extends AbstractExternalTableFormat {
     }
 
     public List getImportTablePreview(ITableStructure structure, IPath filename, int maxNumberOfRows) {
-        // TODO rg: implement
+        // TODO rg: implement preview
         return Collections.EMPTY_LIST;
     }
 
     public List getImportEnumPreview(IEnumType structure, IPath filename, int maxNumberOfRows) {
-        // TODO rg: implement
+        // TODO rg: implement preview
         return Collections.EMPTY_LIST;
     }
 }

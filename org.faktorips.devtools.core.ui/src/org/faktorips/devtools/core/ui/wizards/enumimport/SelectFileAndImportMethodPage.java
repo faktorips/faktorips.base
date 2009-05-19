@@ -11,15 +11,14 @@
  * Mitwirkende: Faktor Zehn AG - initial API and implementation - http://www.faktorzehn.de
  *******************************************************************************/
 
-package org.faktorips.devtools.core.ui.wizards.tableimport;
+package org.faktorips.devtools.core.ui.wizards.enumimport;
 
 import org.eclipse.jdt.core.JavaModelException;
 import org.eclipse.jface.viewers.IStructuredSelection;
 
 /**
- * Page to select a source file, the table format and the destination table 
- * content to import into.  
- *
+ * Page to select a source file, the table format and the destination enum type or content to import into.  
+ * 
  * @author Roman Grutza
  */
 public class SelectFileAndImportMethodPage extends
@@ -30,12 +29,13 @@ public class SelectFileAndImportMethodPage extends
     }
 
     @Override
+    protected String getLabelForImportIntoExistingIpsObject() {
+        return Messages.SelectFileAndImportMethodPage_labelImportExisting;
+    }
+
+    @Override
     protected String getLabelForImportIntoNewIpsObject() {
         return Messages.SelectFileAndImportMethodPage_labelImportNew;
     }
 
-    @Override
-    protected String getLabelForImportIntoExistingIpsObject() {
-        return Messages.SelectFileAndImportMethodPage_labelImportExisting;
-    }
 }

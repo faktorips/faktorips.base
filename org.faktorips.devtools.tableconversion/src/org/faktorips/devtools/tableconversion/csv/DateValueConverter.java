@@ -47,19 +47,17 @@ public class DateValueConverter extends AbstractValueConverter {
     }
 
     /**
-     * The only supported type for externalDataValue is String.
+     * The supported type for externalDataValue is String or java.util.Date.
      * 
      * {@inheritDoc}
      */
     public String getIpsValue(Object externalDataValue, MessageList messageList) {
+        if (externalDataValue instanceof Date) {
+            return DateUtil.dateToIsoDateString((Date)externalDataValue);
+        }
         if (externalDataValue instanceof String) {
             try {
-                return  DateUtil.parseIsoDateStringToDate((String)externalDataValue).toString();
-            } catch (IllegalArgumentException ignored) {
-                // could not convert, try again using a date format 
-            }
-            try {
-                String dateFormat = tableFormat.getProperty(CSVTableFormat.PROPERTY_DATE_FORMAT).toLowerCase();
+                String dateFormat = tableFormat.getProperty(CSVTableFormat.PROPERTY_DATE_FORMAT);
                 Date parseDate = DateUtils.parseDate((String)externalDataValue, new String[] {dateFormat});
                 return DateUtil.dateToIsoDateString(parseDate);
             } catch (Exception ignored) {

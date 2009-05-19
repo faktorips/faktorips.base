@@ -204,10 +204,8 @@ public class ExcelEnumExportOperation extends AbstractTableExportOperation {
             HSSFRow sheetRow = sheet.createRow(i + offest);
 
             IEnumValue value = values.get(i);
+            String[] fieldsToExport = getFieldsForEnumValue(datatypes, value);
             for (int j = 0; j < value.getEnumAttributeValuesCount(); j++) {
-                int numberOfAttributes = value.getEnumAttributeValuesCount();
-                String[] fieldsToExport = getFieldsForEnumValue(datatypes, value, numberOfAttributes);
-
                 HSSFCell cell = sheetRow.createCell((short)j);
                 fillCell(cell, fieldsToExport[j], datatypes[j]);
             }
@@ -220,22 +218,13 @@ public class ExcelEnumExportOperation extends AbstractTableExportOperation {
         }
     }
 
-    private String[] getFieldsForEnumValue(Datatype[] datatypes, IEnumValue value, int numberOfAttributes) {
+    private String[] getFieldsForEnumValue(Datatype[] datatypes, IEnumValue value) {
+        int numberOfAttributes = value.getEnumAttributeValuesCount();
         String[] fieldsToExport = new String[numberOfAttributes];
         for (int j = 0; j < numberOfAttributes; j++) {
             IEnumAttributeValue attributeValue = value.getEnumAttributeValues().get(j);
-            Object obj = format.getExternalValue(attributeValue.getValue(), datatypes[j], messageList);
-
-            String csvField;
-            try {
-                csvField = (obj == null) ? nullRepresentationString : format
-                        .getIpsValue(obj, datatypes[j], messageList);
-            } catch (NumberFormatException e) {
-                // Null Object for Decimal Datatype returned, see Null-Object Pattern
-                csvField = nullRepresentationString;
-            }
-
-            fieldsToExport[j] = csvField;
+            String obj = attributeValue.getValue();
+            fieldsToExport[j] = obj;
         }
         return fieldsToExport;
     }

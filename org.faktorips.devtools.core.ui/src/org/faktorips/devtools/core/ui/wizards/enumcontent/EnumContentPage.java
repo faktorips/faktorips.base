@@ -25,6 +25,7 @@ import org.faktorips.devtools.core.model.ipsobject.IIpsObject;
 import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
 import org.faktorips.devtools.core.model.ipsproject.IIpsPackageFragmentRoot;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
+import org.faktorips.devtools.core.model.tablestructure.ITableStructure;
 import org.faktorips.devtools.core.ui.IpsUIPlugin;
 import org.faktorips.devtools.core.ui.UIToolkit;
 import org.faktorips.devtools.core.ui.controller.fields.TextButtonField;
@@ -128,4 +129,19 @@ public class EnumContentPage extends IpsObjectPage {
         }
     }
 
+    /**
+     * Returns the selected enum type which defines the structure for the
+     * enum content to be created.
+     * 
+     * @return An <code>IEnumType</code> instance, or null if it could not be determined.
+     */
+    public IEnumType getEnumType() {
+        try {
+            IIpsPackageFragmentRoot root = getIpsPackageFragmentRoot();
+            return (IEnumType) root.getIpsProject().findIpsObject(IpsObjectType.ENUM_TYPE, enumTypeField.getText());
+        } catch (CoreException e) {
+            // page controls are currently invalid, return null
+            return null;
+        }
+    }
 }

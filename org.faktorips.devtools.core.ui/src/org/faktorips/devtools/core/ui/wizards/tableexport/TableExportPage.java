@@ -44,7 +44,7 @@ public class TableExportPage extends IpsObjectExportPage {
         setTitle(Messages.TableExportPage_title);
     }
 
-    public static final String PAGE_NAME = "TableExportPage";    
+    public static final String PAGE_NAME = "TableExportPage";     //$NON-NLS-1$
     
     /**
 	 * @param pageName
@@ -68,7 +68,7 @@ public class TableExportPage extends IpsObjectExportPage {
 	 * {@inheritDoc}
 	 */
     public IpsObjectRefControl createExportedIpsObjectRefControlWithLabel(UIToolkit toolkit, Composite parent) {
-        toolkit.createFormLabel(parent, "Table contents:");
+        toolkit.createFormLabel(parent, Messages.TableExportPage_labelContents);
         return toolkit.createTableContentsRefControl(null, parent);
     }
     

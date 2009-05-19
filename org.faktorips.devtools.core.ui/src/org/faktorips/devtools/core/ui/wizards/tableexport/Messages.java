@@ -30,7 +30,8 @@ public class Messages extends NLS {
 		NLS.initializeMessages(BUNDLE_NAME, Messages.class);
 	}
 
-	public static String TableExport_title;
+	public static String IpsObjectExportPage_pageTitle;
+    public static String TableExport_title;
     public static String TableExportPage_firstRowContainsHeader;
 	public static String TableExportPage_title;
 	public static String TableExportPage_labelContents;

@@ -33,6 +33,7 @@ import org.faktorips.devtools.core.ui.IpsUIPlugin;
 import org.faktorips.devtools.core.ui.WorkbenchRunnableAdapter;
 import org.faktorips.devtools.core.ui.wizards.ResultDisplayer;
 import org.faktorips.devtools.core.ui.wizards.ipsimport.IpsObjectImportWizard;
+import org.faktorips.devtools.core.ui.wizards.ipsimport.ImportPreviewPage;
 import org.faktorips.devtools.tableconversion.ITableFormat;
 import org.faktorips.util.message.MessageList;
 
@@ -49,7 +50,7 @@ public class TableImportWizard extends IpsObjectImportWizard {
     private SelectFileAndImportMethodPage filePage;
     private NewTableContentsPage newContentsPage;
     private SelectTableContentsPage selectContentsPage;
-    private TablePreviewPage tablePreviewPage;
+    private ImportPreviewPage tablePreviewPage;
 
     public TableImportWizard() {
         setWindowTitle(Messages.TableImport_title);
@@ -69,7 +70,7 @@ public class TableImportWizard extends IpsObjectImportWizard {
             addPage(newContentsPage);
             selectContentsPage = new SelectTableContentsPage(selection);
             addPage(selectContentsPage);
-            tablePreviewPage = new TablePreviewPage(selection);
+            tablePreviewPage = new ImportPreviewPage(selection);
             addPage(tablePreviewPage);
 
             filePage.setImportIntoExisting(importIntoExisting);
@@ -130,6 +131,8 @@ public class TableImportWizard extends IpsObjectImportWizard {
                 section = workbenchSettings.addNewSection(DIALOG_SETTINGS_KEY);
                 setDialogSettings(section);
             }
+            
+            IpsUIPlugin.getDefault().openEditor(contents.getIpsSrcFile());
         } catch (InterruptedException ignoredException) {
         } catch (Exception e) {
             Throwable throwable = e;
@@ -139,7 +142,6 @@ public class TableImportWizard extends IpsObjectImportWizard {
             IpsPlugin.logAndShowErrorDialog(new IpsStatus("An error occurred during the import process.", throwable)); //$NON-NLS-1$
         } finally {
             selectContentsPage.saveWidgetValues();
-            newContentsPage.saveWidgetValues();
             filePage.saveWidgetValues();
         }
 
@@ -208,10 +210,7 @@ public class TableImportWizard extends IpsObjectImportWizard {
             return newContentsPage;
         }
         if (page == selectContentsPage || page == newContentsPage) {
-
-            tablePreviewPage.setFilename(filePage.getFilename());
-            tablePreviewPage.setTableFormat(filePage.getFormat());
-            tablePreviewPage.setTableStructure(getTableStructure());
+            tablePreviewPage.reinit(filePage.getFilename(),filePage.getFormat(), getTableStructure());
             tablePreviewPage.validatePage();
 
             return tablePreviewPage;

@@ -26,7 +26,6 @@ import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
-import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Text;
 import org.faktorips.devtools.core.IpsPlugin;
@@ -360,10 +359,12 @@ public class NewTableContentsPage extends NewImportedIpsObjectPage implements Va
     	IIpsPackageFragmentRoot root = sourceFolderControl.getIpsPckFragmentRoot();
     	return (ITableStructure) root.getIpsProject().findIpsObject(IpsObjectType.TABLE_STRUCTURE, structureControl.getText());
     }
+    
 	/**
 	 * @return
 	 * @throws CoreException 
 	 */
+    // TODO rg: rename to reflect that new file is created
 	public ITableContents getTableContents() throws CoreException {
 		IIpsPackageFragmentRoot root = sourceFolderControl.getIpsPckFragmentRoot();
 		ITableStructure structure = getTableStructure();
@@ -382,23 +383,4 @@ public class NewTableContentsPage extends NewImportedIpsObjectPage implements Va
 		
 		return contents;
 	}
-
-    /**
-     * {@inheritDoc}
-     */
-    public void saveWidgetValues() {
-    }
-    
-    /**
-     * {@inheritDoc}
-     */
-    protected boolean allowNewContainerName() {
-        return false;
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    public void handleEvent(Event event) {
-    }    
 }

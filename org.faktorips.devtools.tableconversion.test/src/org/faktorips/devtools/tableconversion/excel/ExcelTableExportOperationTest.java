@@ -13,6 +13,8 @@
 
 package org.faktorips.devtools.tableconversion.excel;
 
+import java.io.File;
+
 import org.eclipse.core.runtime.NullProgressMonitor;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProjectProperties;
@@ -62,6 +64,10 @@ public class ExcelTableExportOperationTest extends AbstractTableTest {
         this.filename = "table" + format.getDefaultExtension();
     }
 
+    protected void tearDownExtension() throws Exception {
+        new File(filename).delete();
+    }
+    
     public void testExportValid() throws Exception {
         ITableContents contents = createValidTableContents(ipsProject);
 

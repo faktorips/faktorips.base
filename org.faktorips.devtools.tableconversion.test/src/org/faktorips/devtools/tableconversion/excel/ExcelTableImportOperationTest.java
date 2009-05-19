@@ -93,7 +93,7 @@ public class ExcelTableImportOperationTest extends AbstractTableTest {
     }
 
     protected void tearDownExtension() throws Exception {
-//        file.delete();
+        file.delete();
     }
 
     public void testImportValid() throws Exception {

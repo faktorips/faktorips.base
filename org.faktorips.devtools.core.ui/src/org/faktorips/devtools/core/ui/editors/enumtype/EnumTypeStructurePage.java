@@ -14,17 +14,10 @@
 package org.faktorips.devtools.core.ui.editors.enumtype;
 
 import org.eclipse.core.runtime.CoreException;
-import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.widgets.Composite;
-import org.eclipse.swt.widgets.Shell;
-import org.eclipse.ui.forms.widgets.ScrolledForm;
-import org.faktorips.devtools.core.model.enums.IEnumType;
-import org.faktorips.devtools.core.model.enums.IEnumValueContainer;
 import org.faktorips.devtools.core.ui.UIToolkit;
-import org.faktorips.devtools.core.ui.actions.EnumImportExportAction;
 import org.faktorips.devtools.core.ui.editors.enums.EnumValuesSection;
-import org.faktorips.devtools.core.ui.editors.type.TypeEditorStructurePage;
 
 /**
  * The <code>EnumTypeStructurePage</code> provides controls to edit the properties and the
@@ -37,19 +30,8 @@ import org.faktorips.devtools.core.ui.editors.type.TypeEditorStructurePage;
  * 
  * @since 2.3
  */
-public class EnumTypeStructurePage extends TypeEditorStructurePage {
+public class EnumTypeStructurePage extends EnumTypeEditorPage {
 
-    /** The enum type the enum type editor this page belongs to is currently editing. */
-    private IEnumType enumType;
-
-    /** Actions corresponding to the toolbar items */
-    private EnumImportExportActionInEditor importAction;
-    private EnumImportExportActionInEditor exportAction;
-
-    /** Values section showing the enumType */
-    private EnumValuesSection enumValuesSection;
-
-    
     /**
      * Creates a new <code>EnumTypeStructurePage</code>.
      * 
@@ -58,9 +40,7 @@ public class EnumTypeStructurePage extends TypeEditorStructurePage {
      *            be part of the page.
      */
     public EnumTypeStructurePage(EnumTypeEditor editor, boolean splittedStructure) {
-        super(editor, splittedStructure, Messages.EnumTypeStructurePage_title);
-
-        enumType = editor.getEnumType();
+        super(editor, editor.getEnumType(), splittedStructure, Messages.EnumTypeStructurePage_title);
 
         if (!splittedStructure) {
             setPartName(Messages.EnumTypeStructurePage_title + ' ' + Messages.EnumTypeStructurePage_andLiteral + ' '
@@ -99,59 +79,5 @@ public class EnumTypeStructurePage extends TypeEditorStructurePage {
         new EnumTypeGeneralInfoSection(enumType, parentContainer, toolkit);
         
         createToolbarActions();
-        createToolbar();
-    }
-
-    /** Creates actions for import and export */
-    private void createToolbarActions() {
-        importAction = new EnumImportExportActionInEditor(getSite().getShell(),
-                enumType, true);
-        exportAction = new EnumImportExportActionInEditor(getSite().getShell(),
-                enumType, false);
-    }
-
-    /** Creates toolbar items to trigger im- and export operations */
-    private void createToolbar() {
-        ScrolledForm form = getManagedForm().getForm();
-        form.getToolBarManager().add(importAction);
-        form.getToolBarManager().add(exportAction);
-        
-        form.updateToolBar();
-        
-        updateToolbarActionEnabledStates();
-    }
-
-    /** Enable im/export operations if the enum type's values are part of the model */
-    private void updateToolbarActionEnabledStates() {
-        boolean enableImportExportActions = enumType.isContainingValues();
-        
-        importAction.setEnabled(enableImportExportActions);
-        exportAction.setEnabled(enableImportExportActions);
-    }
-
-    /** 
-     * Extend <code>EnumImportExportAction</code> in order to react to import operations 
-     * and update the view after the operation is completed.
-     */
-    private class EnumImportExportActionInEditor extends EnumImportExportAction {
-        public EnumImportExportActionInEditor(Shell shell, IEnumValueContainer enumValueContainer, boolean isImport) {
-            super(shell, enumValueContainer);
-            if (isImport) {
-                initImportAction();
-            } else {
-                initExportAction();
-            }            
-        }
-
-        /**
-         * {@inheritDoc}
-         */
-        public void run(IStructuredSelection selection) {
-            if (super.runInternal(selection)) {
-                if (enumValuesSection != null) {
-                    enumValuesSection.refresh();
-                }
-            }
-        }        
     }
 }

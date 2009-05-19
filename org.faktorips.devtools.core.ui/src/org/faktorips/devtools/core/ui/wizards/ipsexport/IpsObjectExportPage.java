@@ -52,10 +52,10 @@ import org.faktorips.util.StringUtil;
  */
 public abstract class IpsObjectExportPage extends WizardDataTransferPage implements ValueChangeListener {
 
-    public static final String PAGE_NAME = "IpsObjectExportPage";
+    public static final String PAGE_NAME = "IpsObjectExportPage"; //$NON-NLS-1$
     
-    protected static final String EXPORT_WITH_COLUMN_HEADER = PAGE_NAME + ".EXPORT_WITH_COLUMN_HEADER";
-    protected static final String NULL_REPRESENTATION = PAGE_NAME + ".NULL_REPRESENTATION";
+    protected static final String EXPORT_WITH_COLUMN_HEADER = PAGE_NAME + ".EXPORT_WITH_COLUMN_HEADER"; //$NON-NLS-1$
+    protected static final String NULL_REPRESENTATION = PAGE_NAME + ".NULL_REPRESENTATION"; //$NON-NLS-1$
 
     protected IpsProjectRefControl projectControl;
     protected Combo fileFormatControl;
@@ -275,7 +275,7 @@ public abstract class IpsObjectExportPage extends WizardDataTransferPage impleme
     public void createControl(Composite parent) {
         UIToolkit toolkit = new UIToolkit(null);
         validateInput = false;
-        setTitle("Select IPS Object and name a file for export");
+        setTitle(Messages.IpsObjectExportPage_pageTitle);
         
         pageControl = new Composite(parent, SWT.NONE);
         pageControl.setLayoutData(new GridData(GridData.FILL_BOTH));

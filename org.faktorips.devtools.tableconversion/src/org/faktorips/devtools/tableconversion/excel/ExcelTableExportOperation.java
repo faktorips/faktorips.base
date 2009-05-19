@@ -178,9 +178,9 @@ public class ExcelTableExportOperation extends AbstractTableExportOperation {
     /**
      * Create the header as first row.
      * 
-     * @param sheet The sheet where to create the header
-     * @param columns The columsn defined by the Structure.
-     * @param exportColumnHeaderRow2 
+     * @param sheet The sheet where to create the header.
+     * @param columns The columns defined by the structure.
+     * @param exportColumnHeaderRow column header names included or not.
      * 
      * @throws CoreException
      */
@@ -197,11 +197,11 @@ public class ExcelTableExportOperation extends AbstractTableExportOperation {
     /**
      * Create the cells for the export
      * 
-     * @param sheet The sheet to create the cells within
-     * @param generation The generation of the content to get the values from
+     * @param sheet The sheet to create the cells within.
+     * @param generation The generation of the content to get the values from.
      * @param structure The structure the content is bound to.
      * @param monitor The monitor to display the progress.
-     * @param exportColumnHeaderRow column header names included or not
+     * @param exportColumnHeaderRow column header names included or not.
      * 
      * @throws CoreException thrown if an error occurs during the search for the datatypes of the
      *             structure.
@@ -212,15 +212,18 @@ public class ExcelTableExportOperation extends AbstractTableExportOperation {
             IProgressMonitor monitor, boolean exportColumnHeaderRow) throws CoreException {
 
         ITableContents contents = getTableContents(typeToExport);
+        
+        // init datatypes
         datatypes = new Datatype[contents.getNumOfColumns()];
         for (int i = 0; i < datatypes.length; i++) {
             datatypes[i] = structure.getIpsProject().findDatatype(structure.getColumns()[i].getDatatype());
         }
 
+        
         IRow[] contentRows = generation.getRows();
-        int offest = exportColumnHeaderRow ? 1 : 0;
-        for (int i = 0; i < generation.getRows().length; i++) {
-            HSSFRow sheetRow = sheet.createRow(i + offest);
+        int offset = exportColumnHeaderRow ? 1 : 0;
+        for (int i = 0; i < contentRows.length; i++) {
+            HSSFRow sheetRow = sheet.createRow(i + offset);
 
             for (int j = 0; j < contents.getNumOfColumns(); j++) {
                 HSSFCell cell = sheetRow.createCell((short)j);

@@ -98,8 +98,7 @@ public class CSVTableImportOperationTest extends AbstractTableTest {
     }
 
     protected void tearDownExtension() throws Exception {
-        // TODO rg: remove comment after implemented
-        //         file.delete();
+        file.delete();
     }
 
     public void testImportValid() throws Exception {
@@ -109,8 +108,7 @@ public class CSVTableImportOperationTest extends AbstractTableTest {
         CSVTableImportOperation op = new CSVTableImportOperation(getStructure(), file.getName(), importTarget, format,
                 "NULL", true, ml);
         op.run(new NullProgressMonitor());
-//        FIXME test disabled
-//        assertTrue(ml.isEmpty());
+        assertTrue(ml.isEmpty());
     }
 
     public void testImportValidRowMismatch() throws Exception {
@@ -148,8 +146,7 @@ public class CSVTableImportOperationTest extends AbstractTableTest {
         CSVTableImportOperation op = new CSVTableImportOperation(getStructure(), file.getName(), importTarget, format,
                 "NULL", false, ml);
         op.run(new NullProgressMonitor());
-//        FIXME test disabled        
-//        assertFalse(ml.containsErrorMsg());
+        assertFalse(ml.containsErrorMsg());
         assertEquals(3, importTarget.getNumOfRows());
     }
 
@@ -160,8 +157,7 @@ public class CSVTableImportOperationTest extends AbstractTableTest {
         CSVTableImportOperation op = new CSVTableImportOperation(getStructure(), file.getName(), importTarget, format,
                 "NULL", true, ml);
         op.run(new NullProgressMonitor());
-//      FIXME test disabled           
-//        assertFalse(ml.containsErrorMsg());
+        assertFalse(ml.containsErrorMsg());
         assertEquals(3, importTarget.getNumOfRows());
     }
 

@@ -20,7 +20,8 @@ Export-Package: au.com.bytecode.opencsv,
  org.apache.poi.hssf.usermodel,
  org.faktorips.devtools.tableconversion,
  org.faktorips.devtools.tableconversion.csv,
- org.faktorips.devtools.tableconversion.excel
+ org.faktorips.devtools.tableconversion.excel,
+ org.faktorips.devtools.tableconversion.ui
 Bundle-ClassPath: .,
  lib/opencsv-1.8.jar,
  lib/poi-2.5.1-final-20040804.jar

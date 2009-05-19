@@ -58,7 +58,7 @@ public class TableContentsPage extends IpsObjectPage {
         super(IpsObjectType.TABLE_CONTENTS, selection, Messages.TableContentsPage_title);
     }
     
-    String getTableStructure() {
+    String getTableStructureName() {
         return structureControl.getText();
     }
     
@@ -163,7 +163,7 @@ public class TableContentsPage extends IpsObjectPage {
      */
     protected void finishIpsObjects(IIpsObject pdObject, List modifiedIpsObjects) throws CoreException {
         ITableContents table = (ITableContents)pdObject;
-        table.setTableStructure(getTableStructure());
+        table.setTableStructure(getTableStructureName());
         GregorianCalendar date = IpsPlugin.getDefault().getIpsPreferences().getWorkingDate();
         if (date==null) {
             return;

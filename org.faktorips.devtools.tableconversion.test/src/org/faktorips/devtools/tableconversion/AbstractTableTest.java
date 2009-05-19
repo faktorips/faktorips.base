@@ -14,13 +14,16 @@
 package org.faktorips.devtools.tableconversion;
 
 import java.util.GregorianCalendar;
+import java.util.List;
 
-import org.eclipse.core.resources.IWorkspaceRunnable;
 import org.eclipse.core.runtime.CoreException;
-import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.core.runtime.Path;
 import org.faktorips.datatype.Datatype;
 import org.faktorips.devtools.core.AbstractIpsPluginTest;
+import org.faktorips.devtools.core.model.enums.IEnumAttribute;
+import org.faktorips.devtools.core.model.enums.IEnumAttributeValue;
+import org.faktorips.devtools.core.model.enums.IEnumType;
+import org.faktorips.devtools.core.model.enums.IEnumValue;
 import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.tablecontents.IRow;
@@ -28,11 +31,10 @@ import org.faktorips.devtools.core.model.tablecontents.ITableContents;
 import org.faktorips.devtools.core.model.tablecontents.ITableContentsGeneration;
 import org.faktorips.devtools.core.model.tablestructure.IColumn;
 import org.faktorips.devtools.core.model.tablestructure.ITableStructure;
-import org.faktorips.devtools.tableconversion.ITableFormat;
 import org.faktorips.util.message.MessageList;
 
 /**
- * Base class for all table import and export test cases. Contains factory methods to create valid and invalid
+ * Base class for all table/enum import and export test cases. Contains factory methods to create valid and invalid
  * table contents.
  * 
  * @author Roman Grutza
@@ -47,10 +49,6 @@ public abstract class AbstractTableTest extends AbstractIpsPluginTest {
             Datatype.MONEY.getQualifiedName(), Datatype.STRING.getQualifiedName() };
     
     
-    protected void setUp() throws Exception {
-        super.setUp();
-    }
-    
     public ITableStructure getStructure() {
         return structure;
     }
@@ -60,7 +58,7 @@ public abstract class AbstractTableTest extends AbstractIpsPluginTest {
     }
     
     /**
-     * Creates a valid source for export.
+     * Creates valid table contents.
      */
     protected ITableContents createValidTableContents(IIpsProject ipsProject) throws Exception {
         ITableContents contents = (ITableContents)newIpsObject(ipsProject, IpsObjectType.TABLE_CONTENTS, "ExportSource");
@@ -194,4 +192,114 @@ public abstract class AbstractTableTest extends AbstractIpsPluginTest {
         return (ITableContentsGeneration)contents.newGeneration(new GregorianCalendar());
     }
 
+    /**
+     * Creates valid table contents.
+     */
+    protected IEnumType createValidEnumTypeWithValues(IIpsProject ipsProject) throws Exception {
+        IEnumType enumType = (IEnumType)newIpsObject(ipsProject, IpsObjectType.ENUM_TYPE, "EnumExportSource");
+        enumType.setAbstract(false);
+        enumType.setContainingValues(true);
+        
+        // create attributes (structure)
+        IEnumAttribute enumAttribute = null;
+        for (int i = 0; i < datatypes.length; i++) {
+            enumAttribute = enumType.newEnumAttribute();
+            enumAttribute.setName("id" + i);
+            enumAttribute.setDatatype(datatypes[i]);
+        }
+        enumAttribute.setLiteralName(true);             // need at least one literal name
+        enumAttribute.setUniqueIdentifier(true);        // unique id must be set if literal name set
+        enumAttribute.setUsedAsIdInFaktorIpsUi(true);   // satisfy validation rules
+        enumAttribute.setUsedAsNameInFaktorIpsUi(true); // satisfy validation rules
+        
+        // create values inside the enum type
+        IEnumValue enumValueRow1 = enumType.newEnumValue();
+        List<IEnumAttributeValue> enumAttributeValues = enumValueRow1.getEnumAttributeValues();
+        enumAttributeValues.get(0).setValue("true");
+        enumAttributeValues.get(1).setValue("12.3");
+        enumAttributeValues.get(2).setValue("" + Double.MAX_VALUE);
+        enumAttributeValues.get(3).setValue("2001-04-26");
+        enumAttributeValues.get(4).setValue("" + Integer.MAX_VALUE);
+        enumAttributeValues.get(5).setValue("" + Long.MAX_VALUE);
+        enumAttributeValues.get(6).setValue("10.23EUR");
+        enumAttributeValues.get(7).setValue("SimpleText");
+        
+        IEnumValue enumValueRow2 = enumType.newEnumValue();
+        enumAttributeValues = enumValueRow2.getEnumAttributeValues();
+        enumAttributeValues.get(0).setValue("false");
+        enumAttributeValues.get(1).setValue("12.3");
+        enumAttributeValues.get(2).setValue("" + Double.MIN_VALUE);
+        enumAttributeValues.get(3).setValue("2001-04-26");
+        enumAttributeValues.get(4).setValue("" + Integer.MIN_VALUE);
+        enumAttributeValues.get(5).setValue("" + Long.MIN_VALUE);
+        enumAttributeValues.get(6).setValue("1 EUR");
+        enumAttributeValues.get(7).setValue("_ValidJavaIdentifier");
+    
+        IEnumValue enumValueRow3 = enumType.newEnumValue();
+        enumAttributeValues = enumValueRow3.getEnumAttributeValues();
+        enumAttributeValues.get(0).setValue(null);
+        enumAttributeValues.get(1).setValue(null);
+        enumAttributeValues.get(2).setValue(null);
+        enumAttributeValues.get(3).setValue(null);
+        enumAttributeValues.get(4).setValue(null);
+        enumAttributeValues.get(5).setValue(null);
+        enumAttributeValues.get(6).setValue(null);
+        enumAttributeValues.get(7).setValue("_UniqueKey");
+
+//        enumType.getIpsSrcFile().save(true, null);
+        
+        return enumType;
+    }
+
+    /**
+     * Creates an invalid enum for export.
+     */
+    protected IEnumType createInvalidEnumTypeWithValues(IIpsProject ipsProject) throws Exception {
+        IEnumType enumType = (IEnumType)newIpsObject(ipsProject, IpsObjectType.ENUM_TYPE, "EnumExportSource");
+        enumType.setAbstract(false);
+        enumType.setContainingValues(true);
+
+        // create attributes (structure)
+        IEnumAttribute enumAttribute = null;
+        for (int i = 0; i < datatypes.length; i++) {
+            enumAttribute = enumType.newEnumAttribute();
+            enumAttribute.setName("id" + i);
+            enumAttribute.setDatatype(datatypes[i]);
+        }
+        enumAttribute.setLiteralName(true);             // need at least one literal name
+        enumAttribute.setUniqueIdentifier(true);        // unique id must be set if literal name set
+        enumAttribute.setUsedAsIdInFaktorIpsUi(true);   // satisfy validation rules
+        enumAttribute.setUsedAsNameInFaktorIpsUi(true); // satisfy validation rules
+        
+        IEnumValue row1 = enumType.newEnumValue();
+        
+        row1.getEnumAttributeValues().get(0).setValue("INVALID"); //BOOLEAN
+        row1.getEnumAttributeValues().get(1).setValue("INVALID"); //DECIMAL
+        row1.getEnumAttributeValues().get(2).setValue("INVALID"); //DOUBLE
+        row1.getEnumAttributeValues().get(3).setValue("INVALID"); //GREGORIAN_CALENDAR_DATE
+        row1.getEnumAttributeValues().get(4).setValue("INVALID"); //INTEGER
+        row1.getEnumAttributeValues().get(5).setValue("INVALID"); //LONG
+        row1.getEnumAttributeValues().get(6).setValue("INVALID"); //MONEY
+        row1.getEnumAttributeValues().get(7).setValue("INVALID because not a valid java identifier"); //STRING
+    
+//        enumType.getIpsSrcFile().save(true, null);
+        
+        return enumType;
+    }
+    
+    /**
+     * Creates a valid enum in the given table format stored on the filesystem. 
+     * The export operation is used to create this file.
+     * 
+     * @param ipsProject The IPS project.
+     * @param format The external table format used for export.
+     * @param exportColumnHeaderRow Flag to indicate whether to create a header line in the generated file.
+     */
+    public void createValidExternalEnumType(IIpsProject ipsProject, 
+            ITableFormat format, boolean exportColumnHeaderRow) throws Exception {
+        IEnumType enumType = createValidEnumTypeWithValues(ipsProject);
+        
+        format.executeEnumExport(enumType, new Path("enum" + format.getDefaultExtension()), 
+                "NULL", exportColumnHeaderRow, new MessageList());
+    }
 }

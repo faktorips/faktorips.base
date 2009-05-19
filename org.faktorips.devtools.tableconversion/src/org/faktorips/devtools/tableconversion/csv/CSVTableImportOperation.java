@@ -69,6 +69,9 @@ public class CSVTableImportOperation extends AbstractTableImportOperation {
             FileInputStream fis = null;
             try {
                 fis = new FileInputStream(importFile);
+
+                // update datatypes because the structure might be altered if this operation is reused
+                initDatatypes(structure);
                 fillGeneration(targetGeneration, fis);
             }
             finally {

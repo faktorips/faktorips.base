@@ -42,7 +42,7 @@ public class CSVTableFormat extends AbstractExternalTableFormat {
         // initialize table format specific properties
         properties.put(PROPERTY_FIELD_DELIMITER, ",");
         properties.put(PROPERTY_DOT_REPRESENTATION, ".");
-        properties.put(PROPERTY_DATE_FORMAT, "YYYY-MM-DD");
+        properties.put(PROPERTY_DATE_FORMAT, "yyyy-MM-dd");
     }
 
     /**
@@ -169,6 +169,7 @@ public class CSVTableFormat extends AbstractExternalTableFormat {
     /**
      * {@inheritDoc}
      */
+    @SuppressWarnings("unchecked")
     public List getImportTablePreview(ITableStructure structure, IPath filename, int maxNumberOfRows) {
         if (structure == null || filename == null || !isValidImportSource(filename.toOSString())) {
             return Collections.EMPTY_LIST;
@@ -208,6 +209,7 @@ public class CSVTableFormat extends AbstractExternalTableFormat {
         return result;
     }
 
+    @SuppressWarnings("unchecked")
     public List getImportEnumPreview(IEnumType structure, IPath filename, int maxNumberOfRows) {
         Datatype[] datatypes;
         try {
@@ -219,6 +221,7 @@ public class CSVTableFormat extends AbstractExternalTableFormat {
         }
     }
 
+    @SuppressWarnings("unchecked")
     private List getPreviewInternal(Datatype[] datatypes, IPath filename, int maxNumberOfRows) {
         if (datatypes == null || filename == null || !isValidImportSource(filename.toOSString())) {
             return Collections.EMPTY_LIST;
