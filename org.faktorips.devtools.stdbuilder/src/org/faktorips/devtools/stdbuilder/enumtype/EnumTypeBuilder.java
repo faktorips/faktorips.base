@@ -88,47 +88,43 @@ public class EnumTypeBuilder extends DefaultJavaSourceFileBuilder {
     private boolean useEnumGeneration() {
         IEnumType enumType = getEnumType();
 
+        if (!(java5EnumsAvailable())) {
+            return false;
+        }
+
         if (enumType.isAbstract()) {
             return false;
         }
 
-        if (java5EnumsAvailable() && enumType.isContainingValues()) {
-            return true;
+        if (!(enumType.isContainingValues())) {
+            return false;
         }
 
-        return false;
+        return true;
     }
 
     /** Returns whether to generate a class. */
     private boolean useClassGeneration() {
         IEnumType enumType = getEnumType();
 
-        if (enumType.isAbstract() && java5EnumsAvailable()) {
-            return false;
-        }
-
-        if (!(enumType.isContainingValues()) || !(java5EnumsAvailable())) {
+        if (!(java5EnumsAvailable())) {
             return true;
         }
 
-        return false;
+        if (enumType.isAbstract()) {
+            return false;
+        }
+
+        if (!(enumType.isContainingValues())) {
+            return true;
+        } else {
+            return false;
+        }
     }
 
     /** Returns whether to generate an interface. */
     private boolean useInterfaceGeneration() {
         if (!(useEnumGeneration()) && !(useClassGeneration())) {
-            return true;
-        }
-
-        return false;
-    }
-
-    /**
-     * Returns whether to generate a class despite java 5 enums are available (this is the case for
-     * enum types that define their values in a separate enum content).
-     */
-    private boolean useClassGenerationDespiteJava5EnumsAvailability() {
-        if (useClassGeneration() && java5EnumsAvailable()) {
             return true;
         }
 
@@ -163,8 +159,7 @@ public class EnumTypeBuilder extends DefaultJavaSourceFileBuilder {
         if (enumType.hasSuperEnumType()) {
             IEnumType superEnumType = enumType.findSuperEnumType(getIpsProject());
             if (superEnumType != null) {
-                if (useEnumGeneration() || useInterfaceGeneration()
-                        || useClassGenerationDespiteJava5EnumsAvailability()) {
+                if (useEnumGeneration() || useInterfaceGeneration() || (useClassGeneration() && java5EnumsAvailable())) {
                     implementedInterfaces.add(getQualifiedClassName(superEnumType));
                 } else {
                     mainSection.setSuperClass(getQualifiedClassName(superEnumType));
@@ -173,7 +168,7 @@ public class EnumTypeBuilder extends DefaultJavaSourceFileBuilder {
         }
         if (useClassGeneration()) {
             if ((enumType.isAbstract() && !(enumType.hasSuperEnumType()))
-                    || useClassGenerationDespiteJava5EnumsAvailability()) {
+                    || (useClassGeneration() && java5EnumsAvailable())) {
                 implementedInterfaces.add("java.io.Serializable");
             }
             generateConstantForSerialVersionNumber(mainSection.getConstantBuilder());
@@ -449,10 +444,11 @@ public class EnumTypeBuilder extends DefaultJavaSourceFileBuilder {
                 /*
                  * If the generation artefact is a class and the attribute is inherited do not
                  * generate source code for this attribute because it is also inherited in the
-                 * source code. An exception to this is if the values are not defined in the model.
+                 * source code.
                  */
+                IEnumType enumType = currentEnumAttribute.getEnumType();
                 if (!(useClassGeneration() && currentEnumAttribute.isInherited())
-                        || (useClassGenerationDespiteJava5EnumsAvailability())) {
+                        || (useClassGeneration() && !(enumType.isContainingValues()))) {
                     appendLocalizedJavaDoc("ATTRIBUTE", attributeName, currentEnumAttribute, attributeBuilder);
                     IIpsProject ipsProject = getIpsProject();
                     DatatypeHelper datatypeHelper = ipsProject.getDatatypeHelper(currentEnumAttribute
@@ -538,16 +534,16 @@ public class EnumTypeBuilder extends DefaultJavaSourceFileBuilder {
     private void createAttributeInitialization(JavaCodeFragment constructorMethodBody) throws CoreException {
         /*
          * If an enum is being generated we need to initialize all attributes, on the other hand, if
-         * a class is being generated we only initialize the attributes that are not inherited. A
-         * class might also be generated when java 5 enums are available but the values are not
-         * defined in the model. In that case all attributes need to be initialized, too. Every
-         * attribute that shall be initialized must be valid.
+         * a class is being generated we only initialize the attributes that are not inherited (an
+         * exception to this is if the class does not contain values). Every attribute that shall be
+         * initialized must be valid.
          */
         List<IEnumAttribute> attributesToInit = new ArrayList<IEnumAttribute>();
         for (IEnumAttribute currentEnumAttribute : getEnumType().getEnumAttributesIncludeSupertypeCopies()) {
             if (currentEnumAttribute.isValid()) {
-                if (useEnumGeneration() || (useClassGenerationDespiteJava5EnumsAvailability())
-                        || !(currentEnumAttribute.isInherited())) {
+                IEnumType enumType = currentEnumAttribute.getEnumType();
+                if (useEnumGeneration() || !(currentEnumAttribute.isInherited())
+                        || (useClassGeneration() && !(enumType.isContainingValues()))) {
                     attributesToInit.add(currentEnumAttribute);
                 }
             }
@@ -604,7 +600,7 @@ public class EnumTypeBuilder extends DefaultJavaSourceFileBuilder {
 
                 } else {
                     if (useEnumGeneration() || !(useClassGeneration() && currentEnumAttribute.isInherited())
-                            || useClassGenerationDespiteJava5EnumsAvailability()) {
+                            || (useClassGeneration() && !(enumType.isContainingValues()))) {
                         appendLocalizedJavaDoc("GETTER", attributeName, description, currentEnumAttribute,
                                 methodBuilder);
 
