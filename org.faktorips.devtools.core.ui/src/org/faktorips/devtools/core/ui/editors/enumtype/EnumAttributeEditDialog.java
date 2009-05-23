@@ -68,6 +68,12 @@ public class EnumAttributeEditDialog extends IpsPartEditDialog2 {
     private boolean inheritedProperty;
 
     /**
+     * This is used to track changes of the literal name property of the enum attribute to be
+     * edited.
+     */
+    private boolean literalNameProperty;
+
+    /**
      * Creates a new <code>EnumAttributeEditDialog</code> for the user to edit the given enum
      * attribute with.
      * 
@@ -79,8 +85,6 @@ public class EnumAttributeEditDialog extends IpsPartEditDialog2 {
 
         this.enumAttribute = enumAttribute;
         this.extFactory = new ExtensionPropertyControlFactory(enumAttribute.getClass());
-
-        this.inheritedProperty = enumAttribute.isInherited();
     }
 
     /**
@@ -101,6 +105,10 @@ public class EnumAttributeEditDialog extends IpsPartEditDialog2 {
 
     /** Creates the general tab. */
     private Control createGeneralPage(TabFolder tabFolder) {
+        IEnumAttribute enumAttribute = (IEnumAttribute)getIpsPart();
+        inheritedProperty = enumAttribute.isInherited();
+        literalNameProperty = enumAttribute.isLiteralName();
+        
         Composite control = createTabItemComposite(tabFolder, 1, false);
         Composite workArea = uiToolkit.createLabelEditColumnComposite(control);
 
@@ -215,14 +223,6 @@ public class EnumAttributeEditDialog extends IpsPartEditDialog2 {
                 throw new RuntimeException(e);
             }
         }
-
-        // Update the ui
-        // TODO aw: sometimes this works, sometimes not, somewhat crazy stuff here ;(
-        bindingContext.updateUI();
-        if (dialogArea != null) {
-            dialogArea.redraw();
-            dialogArea.update();
-        }
     }
 
     /**
@@ -239,10 +239,25 @@ public class EnumAttributeEditDialog extends IpsPartEditDialog2 {
 
         if (changedPart.equals(enumAttribute)) {
             IEnumAttribute changedEnumAttribute = (IEnumAttribute)changedPart;
+
+            // Ensure correct activation / deactivation of the inherited fields
             if (changedEnumAttribute.isInherited() != inheritedProperty) {
                 bindAndSetContentDependendOnInheritedProperty(changedEnumAttribute);
                 inheritedProperty = !inheritedProperty;
             }
+
+            // Ensure checked unique identifier when checking literal name
+            boolean literalName = changedEnumAttribute.isLiteralName();
+            if (literalName != literalNameProperty) {
+                if (literalName) {
+                    changedEnumAttribute.setUniqueIdentifier(true);
+                }
+                literalNameProperty = literalName;
+            }
+
+            bindingContext.updateUI();
+            dialogArea.redraw();
+            dialogArea.update();
         }
     }
 
