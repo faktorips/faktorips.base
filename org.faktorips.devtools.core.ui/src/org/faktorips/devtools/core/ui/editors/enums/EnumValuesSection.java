@@ -35,6 +35,8 @@ import org.eclipse.osgi.util.NLS;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.DisposeEvent;
 import org.eclipse.swt.events.DisposeListener;
+import org.eclipse.swt.events.KeyEvent;
+import org.eclipse.swt.events.KeyListener;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.layout.GridData;
@@ -162,6 +164,19 @@ public class EnumValuesSection extends IpsSection implements ContentsChangeListe
              */
             public void widgetDisposed(DisposeEvent e) {
                 enumValueContainer.getIpsModel().removeChangeListener(EnumValuesSection.this);
+            }
+        });
+
+        // Key listener for deleting rows with the DEL key
+        enumValuesTable.addKeyListener(new KeyListener() {
+            public void keyPressed(KeyEvent e) {
+
+            }
+
+            public void keyReleased(KeyEvent e) {
+                if (e.keyCode == SWT.DEL) {
+                    deleteEnumValueAction.run();
+                }
             }
         });
     }

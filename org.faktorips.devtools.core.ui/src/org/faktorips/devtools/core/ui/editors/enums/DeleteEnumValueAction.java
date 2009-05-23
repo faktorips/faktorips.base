@@ -13,10 +13,14 @@
 
 package org.faktorips.devtools.core.ui.editors.enums;
 
+import java.util.List;
+
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.viewers.IStructuredSelection;
+import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.jface.viewers.TableViewer;
 import org.faktorips.devtools.core.model.enums.IEnumValue;
+import org.faktorips.devtools.core.model.enums.IEnumValueContainer;
 import org.faktorips.devtools.core.ui.IpsUIPlugin;
 import org.faktorips.util.ArgumentCheck;
 
@@ -69,9 +73,24 @@ public class DeleteEnumValueAction extends Action {
 
         IEnumValue enumValue = (IEnumValue)selection.getFirstElement();
         if (enumValue != null) {
+            // Determine index to delete for selecting the next enum value after deletion
+            IEnumValueContainer enumValueContainer = enumValue.getEnumValueContainer();
+            List<IEnumValue> enumValuesList = enumValueContainer.getEnumValues();
+            for (int i = 0; i < enumValuesList.size(); i++) {
+                IEnumValue currentEnumValue = enumValuesList.get(i);
+                if (currentEnumValue.equals(enumValue)) {
+                    if (enumValuesList.size() > i + 1) {
+                        IStructuredSelection newSelection = new StructuredSelection(enumValuesList.get(i + 1));
+                        enumValuesTableViewer.setSelection(newSelection, true);
+                        break;
+                    }
+                }
+            }
+
             enumValue.delete();
             enumValuesTableViewer.refresh(true);
         }
+
     }
 
 }
