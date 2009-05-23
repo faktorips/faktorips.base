@@ -166,19 +166,6 @@ public class EnumValuesSection extends IpsSection implements ContentsChangeListe
                 enumValueContainer.getIpsModel().removeChangeListener(EnumValuesSection.this);
             }
         });
-
-        // Key listener for deleting rows with the DEL key
-        enumValuesTable.addKeyListener(new KeyListener() {
-            public void keyPressed(KeyEvent e) {
-
-            }
-
-            public void keyReleased(KeyEvent e) {
-                if (e.keyCode == SWT.DEL) {
-                    deleteEnumValueAction.run();
-                }
-            }
-        });
     }
 
     /**
@@ -300,6 +287,19 @@ public class EnumValuesSection extends IpsSection implements ContentsChangeListe
 
         createTableColumns(enumType);
         increaseHeightOfTableRows();
+
+        // Key listener for deleting rows with the DEL key
+        enumValuesTable.addKeyListener(new KeyListener() {
+            public void keyPressed(KeyEvent e) {
+
+            }
+
+            public void keyReleased(KeyEvent e) {
+                if (e.keyCode == SWT.DEL) {
+                    deleteEnumValueAction.run();
+                }
+            }
+        });
     }
 
     /**
