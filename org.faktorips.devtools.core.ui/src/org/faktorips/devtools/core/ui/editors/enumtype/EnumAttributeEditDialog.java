@@ -166,10 +166,6 @@ public class EnumAttributeEditDialog extends IpsPartEditDialog2 {
      * If the enum attribute to be edited is not inherited from the supertype hierarchy the fields
      * will be bound to the respective properties.
      */
-    /*
-     * TODO aw: here is a problem with the checked states of the usedAsId and usedAsName fields
-     * (test the program to see it)
-     */
     private void bindAndSetContentDependendOnInheritedProperty(IEnumAttribute enumAttribute) {
         if (!(enumAttribute.isInherited())) {
             bindingContext.bindContent(datatypeControl, enumAttribute, IEnumAttribute.PROPERTY_DATATYPE);

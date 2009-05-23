@@ -516,8 +516,8 @@ public class EnumAttribute extends AtomicIpsObjectPart implements IEnumAttribute
      */
     public void setUsedAsIdInFaktorIpsUi(boolean usedAsIdInFaktorIpsUi) {
         boolean oldUsedAsIdInFaktorIpsUi = this.usedAsIdInFaktorIpsUi;
-        valueChanged(oldUsedAsIdInFaktorIpsUi, usedAsIdInFaktorIpsUi);
         this.usedAsIdInFaktorIpsUi = usedAsIdInFaktorIpsUi;
+        valueChanged(oldUsedAsIdInFaktorIpsUi, usedAsIdInFaktorIpsUi);
     }
 
     /**
@@ -525,8 +525,8 @@ public class EnumAttribute extends AtomicIpsObjectPart implements IEnumAttribute
      */
     public void setUsedAsNameInFaktorIpsUi(boolean usedAsNameInFaktorIpsUi) {
         boolean oldUsedAsNameInFaktorIpsUi = this.usedAsNameInFaktorIpsUi;
-        valueChanged(oldUsedAsNameInFaktorIpsUi, usedAsNameInFaktorIpsUi);
         this.usedAsNameInFaktorIpsUi = usedAsNameInFaktorIpsUi;
+        valueChanged(oldUsedAsNameInFaktorIpsUi, usedAsNameInFaktorIpsUi);
     }
 
     /**
