@@ -227,7 +227,8 @@ public class EnumAttributeValue extends AtomicIpsObjectPart implements IEnumAttr
         // The unique identifier enum attribute value must not be empty
         String uniqueIdentifierValue = getValue();
         boolean uniqueIdentifierValueMissing = (uniqueIdentifierValue == null) ? true : uniqueIdentifierValue
-                .equals("");
+                .equals("")
+                || uniqueIdentifierValue.equals("<null>");
         if (uniqueIdentifierValueMissing) {
             text = NLS.bind(Messages.EnumAttributeValue_UniqueIdentifierValueEmpty, enumAttribute.getName());
             validationMessage = new Message(MSGCODE_ENUM_ATTRIBUTE_VALUE_UNIQUE_IDENTIFIER_VALUE_EMPTY, text,
@@ -244,13 +245,18 @@ public class EnumAttributeValue extends AtomicIpsObjectPart implements IEnumAttr
                     continue;
                 }
 
-                if (currentEnumValue.findEnumAttributeValue(ipsProject, enumAttribute).getValue().equals(value)) {
-                    text = NLS
-                            .bind(Messages.EnumAttributeValue_UniqueIdentifierValueNotUnique, enumAttribute.getName());
-                    validationMessage = new Message(MSGCODE_ENUM_ATTRIBUTE_VALUE_UNIQUE_IDENTIFIER_NOT_UNIQUE, text,
-                            Message.ERROR, this);
-                    list.add(validationMessage);
-                    break;
+                String otherValue = currentEnumValue.findEnumAttributeValue(ipsProject, enumAttribute).getValue();
+                boolean otherValueMissing = (otherValue == null) ? true : uniqueIdentifierValue.equals("")
+                        || uniqueIdentifierValue.equals("<null>");
+                if (!otherValueMissing) {
+                    if (otherValue.equals(value)) {
+                        text = NLS.bind(Messages.EnumAttributeValue_UniqueIdentifierValueNotUnique, enumAttribute
+                                .getName());
+                        validationMessage = new Message(MSGCODE_ENUM_ATTRIBUTE_VALUE_UNIQUE_IDENTIFIER_NOT_UNIQUE,
+                                text, Message.ERROR, this);
+                        list.add(validationMessage);
+                        break;
+                    }
                 }
             }
         }
