@@ -13,6 +13,10 @@
 
 package org.faktorips.devtools.core.ui.editors.enums;
 
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
+
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.viewers.IStructuredSelection;
@@ -84,16 +88,80 @@ public class MoveEnumValueAction extends Action {
             return;
         }
 
-        IEnumValue enumValue = (IEnumValue)selection.getFirstElement();
-        if (enumValue != null) {
-            IEnumValueContainer enumValueContainer = (IEnumValueContainer)enumValue.getParent();
-            try {
-                enumValueContainer.moveEnumValue(enumValue, up);
-            } catch (CoreException e) {
-                throw new RuntimeException(e);
+        @SuppressWarnings("unchecked")
+        Iterator<IEnumValue> selectedEnumValues = selection.iterator();
+        List<IEnumValue> enumValuesToMove = new ArrayList<IEnumValue>();
+        while (selectedEnumValues.hasNext()) {
+            enumValuesToMove.add(selectedEnumValues.next());
+        }
+
+        if (enumValuesToMove.size() < 1) {
+            return;
+        }
+
+        IEnumValueContainer enumValueContainer = ((IEnumValue)selection.getFirstElement()).getEnumValueContainer();
+        List<IEnumValue> allEnumValues = enumValueContainer.getEnumValues();
+
+        if (up) {
+            // Move all selected enum values upwards
+            // ----------------------------------------
+
+            IEnumValue firstSelectedEnumValue = enumValuesToMove.get(0);
+            // Obtain the index of the first selected enum value
+            int index = 0;
+            for (int i = 0; i < allEnumValues.size(); i++) {
+                IEnumValue currentEnumValue = allEnumValues.get(i);
+                if (currentEnumValue.equals(firstSelectedEnumValue)) {
+                    index = i;
+                    break;
+                }
             }
 
-            enumValuesTableViewer.refresh(true);
+            // If the the first selected enum value is the first item we do not move at all
+            if (index == 0) {
+                return;
+            }
+
+            // Perform moving starting with first selected enum value
+            for (IEnumValue currentEnumValue : enumValuesToMove) {
+                try {
+                    enumValueContainer.moveEnumValue(currentEnumValue, true);
+                } catch (CoreException e) {
+                    throw new RuntimeException(e);
+                }
+            }
+
+        } else {
+            // Move all selected enum values downwards
+            // ----------------------------------------
+
+            IEnumValue lastSelectedEnumValue = enumValuesToMove.get(enumValuesToMove.size() - 1);
+            // Obtain the index of the last selected enum value
+            int index = allEnumValues.size() - 1;
+            for (int i = 0; i < allEnumValues.size(); i++) {
+                IEnumValue currentEnumValue = allEnumValues.get(i);
+                if (currentEnumValue.equals(lastSelectedEnumValue)) {
+                    index = i;
+                    break;
+                }
+            }
+
+            // If the the last selected enum value is the last item we do not move at all
+            if (index == allEnumValues.size() - 1) {
+                return;
+            }
+
+            // Perform moving starting with last selected enum value
+            for (int i = enumValuesToMove.size() - 1; i >= 0; i--) {
+                IEnumValue currentEnumValue = enumValuesToMove.get(i);
+                try {
+                    enumValueContainer.moveEnumValue(currentEnumValue, false);
+                } catch (CoreException e) {
+                    throw new RuntimeException(e);
+                }
+            }
         }
+
+        enumValuesTableViewer.refresh(true);
     }
 }

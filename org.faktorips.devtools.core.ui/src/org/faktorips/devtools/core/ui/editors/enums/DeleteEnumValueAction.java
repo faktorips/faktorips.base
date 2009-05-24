@@ -13,6 +13,8 @@
 
 package org.faktorips.devtools.core.ui.editors.enums;
 
+import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
 import org.eclipse.jface.action.Action;
@@ -71,26 +73,46 @@ public class DeleteEnumValueAction extends Action {
             return;
         }
 
-        IEnumValue enumValue = (IEnumValue)selection.getFirstElement();
-        if (enumValue != null) {
-            // Determine index to delete for selecting the next enum value after deletion
-            IEnumValueContainer enumValueContainer = enumValue.getEnumValueContainer();
-            List<IEnumValue> enumValuesList = enumValueContainer.getEnumValues();
-            for (int i = 0; i < enumValuesList.size(); i++) {
-                IEnumValue currentEnumValue = enumValuesList.get(i);
-                if (currentEnumValue.equals(enumValue)) {
-                    if (enumValuesList.size() > i + 1) {
-                        IStructuredSelection newSelection = new StructuredSelection(enumValuesList.get(i + 1));
-                        enumValuesTableViewer.setSelection(newSelection, true);
-                        break;
-                    }
-                }
-            }
-
-            enumValue.delete();
-            enumValuesTableViewer.refresh(true);
+        // Determine enum values to delete and obtain the last selected item
+        @SuppressWarnings("unchecked")
+        Iterator<IEnumValue> selectedEnumValues = selection.iterator();
+        List<IEnumValue> enumValuesToDelete = new ArrayList<IEnumValue>();
+        IEnumValue lastSelectedEnumValue = null;
+        while (selectedEnumValues.hasNext()) {
+            IEnumValue currentSelectedEnumValue = selectedEnumValues.next();
+            enumValuesToDelete.add(currentSelectedEnumValue);
+            lastSelectedEnumValue = currentSelectedEnumValue;
         }
 
+        if (lastSelectedEnumValue == null) {
+            return;
+        }
+        
+        // Obtain the index of the last selected enum value
+        IEnumValueContainer enumValueContainer = lastSelectedEnumValue.getEnumValueContainer();
+        List<IEnumValue> enumValuesList = enumValueContainer.getEnumValues();
+
+        int lastIndex = 0;
+        for (int i = 0; i < enumValuesList.size(); i++) {
+            IEnumValue currentEnumValue = enumValuesList.get(i);
+            if (currentEnumValue.equals(lastSelectedEnumValue)) {
+                lastIndex = i;
+                break;
+            }
+        }
+
+        // Set the new selection if possible
+        if (enumValuesList.size() > lastIndex + 1) {
+            IStructuredSelection newSelection = new StructuredSelection(enumValuesList.get(lastIndex + 1));
+            enumValuesTableViewer.setSelection(newSelection, true);
+        }
+
+        // Delete the previously selected enum values now
+        for (IEnumValue currentEnumValue : enumValuesToDelete) {
+            currentEnumValue.delete();
+        }
+
+        enumValuesTableViewer.refresh(true);
     }
 
 }

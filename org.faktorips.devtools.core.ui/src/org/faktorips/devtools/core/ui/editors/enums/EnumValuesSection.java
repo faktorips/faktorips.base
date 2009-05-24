@@ -274,7 +274,7 @@ public class EnumValuesSection extends IpsSection implements ContentsChangeListe
     /** Creates the ui table for editing enum values. */
     private void createTable(IEnumType enumType, Composite parent, UIToolkit toolkit) throws CoreException {
         // Create the ui widget
-        enumValuesTable = toolkit.createTable(parent, SWT.H_SCROLL | SWT.V_SCROLL | SWT.NO_FOCUS | SWT.SINGLE
+        enumValuesTable = toolkit.createTable(parent, SWT.H_SCROLL | SWT.V_SCROLL | SWT.NO_FOCUS | SWT.MULTI
                 | SWT.FULL_SELECTION);
         enumValuesTable.setHeaderVisible(true);
         enumValuesTable.setLinesVisible(true);
