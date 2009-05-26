@@ -16,6 +16,7 @@ package org.faktorips.devtools.tableconversion.csv;
 import java.util.Date;
 import java.util.GregorianCalendar;
 
+import org.apache.commons.lang.time.DateFormatUtils;
 import org.apache.commons.lang.time.DateUtils;
 import org.faktorips.datatype.Datatype;
 import org.faktorips.datatype.classtypes.DateDatatype;
@@ -37,8 +38,11 @@ public class DateValueConverter extends AbstractValueConverter {
         }
         try {
             Date date = (Date) datatype.getValue(ipsValue);
-            DateUtil.dateToIsoDateString(date);
-            return date;
+            if (tableFormat == null) {
+                return DateUtil.dateToIsoDateString(date);
+            }
+            String datePattern = tableFormat.getProperty(CSVTableFormat.PROPERTY_DATE_FORMAT);
+            return DateFormatUtils.format(date, datePattern);
         } catch (RuntimeException e) {
             messageList.add(ExtSystemsMessageUtil.createConvertIntToExtErrorMessage(ipsValue, getSupportedDatatype()
                     .getQualifiedName(), GregorianCalendar.class.getName())); //$NON-NLS-1$

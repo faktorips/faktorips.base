@@ -51,8 +51,7 @@ public class CSVTableImportOperation extends AbstractTableImportOperation {
     
     public void run(IProgressMonitor monitor) throws CoreException {
         try {
-            monitor.beginTask("Import file " + sourceFile, /* targetGeneration.getNumOfRows() + 3 */ 
-                    IProgressMonitor.UNKNOWN);
+            monitor.beginTask("Import file " + sourceFile, IProgressMonitor.UNKNOWN);
 
             MessageList ml = structure.validate(structure.getIpsProject()); 
             if (ml.containsErrorMsg()) {
@@ -119,11 +118,14 @@ public class CSVTableImportOperation extends AbstractTableImportOperation {
                 
                 IRow genRow = targetGeneration.newRow();
                 for (short j = 0; j < structure.getNumOfColumns(); j++) {
-                    String ipsValue;
-                    if (nullRepresentationString.equals(readLine[j])) {
-                        ipsValue = nullRepresentationString;
-                    } else {
-                        ipsValue = getIpsValue(readLine[j], datatypes[j]);
+                    String ipsValue = null;
+                    
+                    if  (j < readLine.length) {
+                        if (nullRepresentationString.equals(readLine[j])) {
+                            ipsValue = nullRepresentationString;
+                        } else {
+                            ipsValue = getIpsValue(readLine[j], datatypes[j]);
+                        }
                     }
                     
                     if (ipsValue == null) {
@@ -152,7 +154,6 @@ public class CSVTableImportOperation extends AbstractTableImportOperation {
             }
         }
     }
-
 
     private String getIpsValue(Object rawValue, Datatype datatype) {
         return format.getIpsValue(rawValue, datatype, messageList);

@@ -17,6 +17,7 @@ import java.text.ParseException;
 import java.util.Date;
 import java.util.GregorianCalendar;
 
+import org.apache.commons.lang.time.DateFormatUtils;
 import org.apache.commons.lang.time.DateUtils;
 import org.faktorips.datatype.Datatype;
 import org.faktorips.datatype.classtypes.GregorianCalendarDatatype;
@@ -37,8 +38,9 @@ public class GregorianCalendarValueConverter extends AbstractValueConverter {
         try {
             GregorianCalendar cal = (GregorianCalendar)datatype.getValue(ipsValue);
             Date date = cal.getTime();
-            String isoDateString = DateUtil.dateToIsoDateString(date);
-            return isoDateString;
+            
+            String datePattern = tableFormat.getProperty(CSVTableFormat.PROPERTY_DATE_FORMAT);
+            return DateFormatUtils.format(date, datePattern);
         } catch (RuntimeException e) {
             messageList.add(new Message(ExtSystemsMessageUtil.createConvertIntToExtErrorMessage(
                     ipsValue, getSupportedDatatype().getQualifiedName(), GregorianCalendar.class.getName()))); //$NON-NLS-1$
@@ -53,10 +55,11 @@ public class GregorianCalendarValueConverter extends AbstractValueConverter {
      */
     public String getIpsValue(Object externalDataValue, MessageList messageList) {
         GregorianCalendar cal = new GregorianCalendar();
+        GregorianCalendarDatatype datatype = (GregorianCalendarDatatype)getSupportedDatatype();
         if (externalDataValue instanceof String) {
             try {
                 cal = DateUtil.parseIsoDateStringToGregorianCalendar((String)externalDataValue);
-                return cal.getTime().toString();
+                return datatype.valueToString(cal);
             } catch (IllegalArgumentException ignored) {
             }
             try {

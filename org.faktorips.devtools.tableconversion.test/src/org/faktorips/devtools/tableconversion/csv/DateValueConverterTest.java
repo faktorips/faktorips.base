@@ -39,6 +39,7 @@ public class DateValueConverterTest extends TestCase {
         tableFormat.setProperty(CSVTableFormat.PROPERTY_DATE_FORMAT, "dd.MM.yyyy");
         String value = converter.getIpsValue("08.10.2009", ml);
         assertTrue(ml.toString(), ml.isEmpty());
+        assertTrue(value, '-' == value.charAt(4) && '-' == value.charAt(7));
 
         // now use only the year field
         tableFormat.setProperty(CSVTableFormat.PROPERTY_DATE_FORMAT, "yyyy");
@@ -47,6 +48,13 @@ public class DateValueConverterTest extends TestCase {
 
         tableFormat.setProperty(CSVTableFormat.PROPERTY_DATE_FORMAT, "dd.MM.yyyy");
         value = converter.getIpsValue("xx01.10.2009", ml);
-        assertFalse(ml.toString(), ml.isEmpty());
+        assertFalse(ml.isEmpty());
+    }
+    
+    public void testGetExternalDataValue() {
+        tableFormat.setProperty(CSVTableFormat.PROPERTY_DATE_FORMAT, "dd.MM.yyyy");
+        Object extValue = converter.getExternalDataValue("2009-10-15", ml);
+        assertTrue(extValue instanceof String);
+        assertEquals("15.10.2009", (String) extValue);
     }
 }

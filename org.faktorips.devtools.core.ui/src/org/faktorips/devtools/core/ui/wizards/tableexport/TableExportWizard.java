@@ -26,7 +26,6 @@ import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.dialogs.ProgressMonitorDialog;
 import org.eclipse.jface.operation.ModalContext;
 import org.eclipse.swt.graphics.Image;
-import org.eclipse.ui.IExportWizard;
 import org.eclipse.ui.actions.WorkspaceModifyOperation;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.IpsStatus;
@@ -42,7 +41,7 @@ import org.faktorips.util.message.MessageList;
  * 
  * @author Thorsten Waertel, Thorsten Guenther
  */
-public class TableExportWizard extends IpsObjectExportWizard /*implements IExportWizard*/ {
+public class TableExportWizard extends IpsObjectExportWizard {
     
     private static String DIALOG_SETTINGS_KEY = "TableExportWizard"; //$NON-NLS-1$
     

@@ -257,6 +257,7 @@ public interface ITableFormat {
      * @return A <code>List</code> containing a <code>String[]</code> for each row, 
      *   or Collections.EMPTY_LIST if the preview could not be computed or the file contains no entries.
      */
+    @SuppressWarnings("unchecked")
     public List getImportTablePreview(ITableStructure structure, IPath filename, int maxNumberOfRows);
 
     /**
@@ -268,6 +269,7 @@ public interface ITableFormat {
      * @return A <code>List</code> containing a <code>String[]</code> for each row, 
      *   or Collections.EMPTY_LIST if the preview could not be computed or the file contains no entries.
      */
+    @SuppressWarnings("unchecked")
     public List getImportEnumPreview(IEnumType structure, IPath filename, int maxNumberOfRows);
     
 }

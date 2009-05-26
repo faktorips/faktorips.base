@@ -21,14 +21,14 @@ import org.eclipse.ui.IWorkbench;
 import org.faktorips.devtools.core.IpsPlugin;
 
 /**
- * Base class for wizards exporting <code>IIPSObject</code> types like 
+ * Base class for wizards exporting <code>IIpsObject</code> types like 
  * <code>IEnumType</code>, <code>IEnumContent</code> or <code>ITableContents</code>. 
  * 
  * @author Roman Grutza
  */
 public abstract class IpsObjectExportWizard extends Wizard implements IExportWizard {
 
-    protected static String DIALOG_SETTINGS_KEY = "TableExportWizard";
+    protected static String DIALOG_SETTINGS_KEY = "IpsObjectExportWizard"; //$NON-NLS-1$
     protected boolean hasNewDialogSettings;
 
     protected IStructuredSelection selection;

@@ -31,6 +31,7 @@ import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.ui.UIToolkit;
 import org.faktorips.devtools.core.ui.controller.fields.CheckboxField;
+import org.faktorips.devtools.core.ui.controller.fields.ComboField;
 import org.faktorips.devtools.core.ui.controller.fields.FieldValueChangedEvent;
 import org.faktorips.devtools.core.ui.controller.fields.TextButtonField;
 import org.faktorips.devtools.core.ui.controller.fields.ValueChangeListener;
@@ -57,13 +58,16 @@ public abstract class IpsObjectExportPage extends WizardDataTransferPage impleme
     protected static final String EXPORT_WITH_COLUMN_HEADER = PAGE_NAME + ".EXPORT_WITH_COLUMN_HEADER"; //$NON-NLS-1$
     protected static final String NULL_REPRESENTATION = PAGE_NAME + ".NULL_REPRESENTATION"; //$NON-NLS-1$
 
+    protected Composite pageControl;
+
     protected IpsProjectRefControl projectControl;
     protected Combo fileFormatControl;
     protected Text nullRepresentation;
     protected TextButtonField filenameField;
     protected TextButtonField projectField;
     protected CheckboxField exportWithColumnHeaderRowField;
-    protected Composite pageControl;
+    private ComboField fileFormatField;
+    
     protected ITableFormat[] formats;
 
     protected TextButtonField exportedIpsObjectField;
@@ -308,6 +312,8 @@ public abstract class IpsObjectExportPage extends WizardDataTransferPage impleme
         	fileFormatControl.add(formats[i].getName());
     	}
         fileFormatControl.select(0);
+        fileFormatField = new ComboField(fileFormatControl);
+        fileFormatField.addChangeListener(this);
     
         toolkit.createFormLabel(lowerComposite, Messages.TableExportPage_labelName); 
         filenameField = new TextButtonField(new FileSelectionDialogWithDefault(lowerComposite, toolkit));
@@ -340,22 +346,13 @@ public abstract class IpsObjectExportPage extends WizardDataTransferPage impleme
     protected void formatChanged() {
     }
     
-    protected void exportedObjectChanged() {
-        // exported object has changed, thus clear the previous entered file name
-        // because maybe the filename equals the exported object name
-        setFilename(""); //$NON-NLS-1$
-    }
-
     public void valueChanged(FieldValueChangedEvent e) {
         if (e.field == projectField) {
             projectChanged();
         }
-        if (e.field == exportedIpsObjectField) {
-            exportedObjectChanged();
-        }
         if (e.field==filenameField) {
             filenameChanged();
-        }
+        }            
         if (validateInput) { // don't validate during control creating!
             validatePage();    
         }

@@ -15,6 +15,8 @@ package org.faktorips.devtools.core.ui.wizards.enumexport;
 
 import java.io.File;
 import java.lang.reflect.InvocationTargetException;
+import java.util.HashMap;
+import java.util.Map;
 
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
@@ -25,6 +27,8 @@ import org.eclipse.jface.dialogs.IDialogSettings;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.dialogs.ProgressMonitorDialog;
 import org.eclipse.jface.operation.ModalContext;
+import org.eclipse.jface.wizard.IWizardPage;
+import org.eclipse.jface.wizard.WizardPage;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.ui.actions.WorkspaceModifyOperation;
 import org.faktorips.devtools.core.IpsPlugin;
@@ -33,6 +37,7 @@ import org.faktorips.devtools.core.model.enums.IEnumValueContainer;
 import org.faktorips.devtools.core.ui.IpsUIPlugin;
 import org.faktorips.devtools.core.ui.wizards.ResultDisplayer;
 import org.faktorips.devtools.core.ui.wizards.ipsexport.IpsObjectExportWizard;
+import org.faktorips.devtools.core.ui.wizards.ipsexport.TableFormatPropertiesPage;
 import org.faktorips.devtools.tableconversion.ITableFormat;
 import org.faktorips.util.message.MessageList;
 
@@ -45,8 +50,12 @@ public class EnumExportWizard extends IpsObjectExportWizard {
 
     private static String DIALOG_SETTINGS_KEY = "EnumExportWizard"; //$NON-NLS-1$
     
+    // mandatory page to select filename, table format etc. 
     private EnumExportPage exportPage;
-
+    
+    // each table format can contain custom properties which are shown in the second wizard page
+    private Map< ITableFormat, TableFormatPropertiesPage> customPages; 
+    
     
     public EnumExportWizard() {
         setWindowTitle(Messages.EnumExportWizard_title);
@@ -69,11 +78,40 @@ public class EnumExportWizard extends IpsObjectExportWizard {
         try {
             exportPage = new EnumExportPage(selection);
             addPage(exportPage);
+            
+            // add page for each table format having custom properties 
+            customPages = new HashMap<ITableFormat, TableFormatPropertiesPage>();
+            ITableFormat[] externalTableFormats = IpsPlugin.getDefault().getExternalTableFormats();
+            for (ITableFormat format : externalTableFormats) {
+                if (IpsUIPlugin.getDefault().hasTableFormatCustomProperties(format)) {
+                    TableFormatPropertiesPage customPage = new TableFormatPropertiesPage(format);
+                    customPages.put(format, customPage);
+                    addPage(customPage);
+                }
+            }
         } catch (Exception e) {
             IpsPlugin.logAndShowErrorDialog(e);
         }
     }
     
+    @Override
+    public IWizardPage getNextPage(IWizardPage page) {
+        if (page == exportPage) {
+            exportPage.validateObjectToExport();
+            boolean isValid = exportPage.getErrorMessage() == null;
+            
+            for (WizardPage customPage : customPages.values()) {
+                customPage.setPageComplete(isValid);
+                
+            }
+            
+            ITableFormat tableFormat = exportPage.getFormat();
+            TableFormatPropertiesPage nextPage = customPages.get(tableFormat);
+            return nextPage;
+        }
+        return null;
+    }
+
     /**
      * {@inheritDoc}
      */
@@ -143,7 +181,7 @@ public class EnumExportWizard extends IpsObjectExportWizard {
         // keep the dialog up
         return true;
     }
-
+    
     public void saveWidgetSettings() {
         exportPage.saveWidgetValues();
     }

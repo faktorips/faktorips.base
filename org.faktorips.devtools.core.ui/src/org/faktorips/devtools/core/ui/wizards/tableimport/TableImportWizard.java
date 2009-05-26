@@ -20,8 +20,6 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.jface.dialogs.IDialogSettings;
-import org.eclipse.jface.dialogs.ProgressMonitorDialog;
-import org.eclipse.jface.operation.ModalContext;
 import org.eclipse.jface.wizard.IWizardPage;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.IpsStatus;
@@ -30,10 +28,9 @@ import org.faktorips.devtools.core.model.tablecontents.ITableContents;
 import org.faktorips.devtools.core.model.tablecontents.ITableContentsGeneration;
 import org.faktorips.devtools.core.model.tablestructure.ITableStructure;
 import org.faktorips.devtools.core.ui.IpsUIPlugin;
-import org.faktorips.devtools.core.ui.WorkbenchRunnableAdapter;
 import org.faktorips.devtools.core.ui.wizards.ResultDisplayer;
-import org.faktorips.devtools.core.ui.wizards.ipsimport.IpsObjectImportWizard;
 import org.faktorips.devtools.core.ui.wizards.ipsimport.ImportPreviewPage;
+import org.faktorips.devtools.core.ui.wizards.ipsimport.IpsObjectImportWizard;
 import org.faktorips.devtools.tableconversion.ITableFormat;
 import org.faktorips.util.message.MessageList;
 
@@ -108,17 +105,7 @@ public class TableImportWizard extends IpsObjectImportWizard {
             };
             IIpsModel model = IpsPlugin.getDefault().getIpsModel();
             model.runAndQueueChangeEvents(runnable, null);
-            WorkbenchRunnableAdapter runnableAdapter = new WorkbenchRunnableAdapter(runnable);
-
-            /*
-             * use a ProgressMonitorDialog to display the progress and allow the user to cancel the
-             * process - which both is not possible if only getContainer().run() is called.
-             */
-            ProgressMonitorDialog pmd = new ProgressMonitorDialog(getShell());
-            pmd.setCancelable(true);
-            pmd.open();
-            ModalContext.run(runnableAdapter, true, pmd.getProgressMonitor(), getShell().getDisplay());
-            pmd.close();
+            
             if (!messageList.isEmpty()) {
                 getShell().getDisplay().syncExec(
                         new ResultDisplayer(getShell(), Messages.TableImportWizard_operationName, messageList));
@@ -133,7 +120,6 @@ public class TableImportWizard extends IpsObjectImportWizard {
             }
             
             IpsUIPlugin.getDefault().openEditor(contents.getIpsSrcFile());
-        } catch (InterruptedException ignoredException) {
         } catch (Exception e) {
             Throwable throwable = e;
             if (e instanceof InvocationTargetException) {

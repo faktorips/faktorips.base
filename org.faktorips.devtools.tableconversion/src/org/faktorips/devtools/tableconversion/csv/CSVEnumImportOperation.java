@@ -29,7 +29,6 @@ import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.IpsStatus;
 import org.faktorips.devtools.core.model.enums.IEnumAttribute;
 import org.faktorips.devtools.core.model.enums.IEnumAttributeValue;
-import org.faktorips.devtools.core.model.enums.IEnumType;
 import org.faktorips.devtools.core.model.enums.IEnumValue;
 import org.faktorips.devtools.core.model.enums.IEnumValueContainer;
 import org.faktorips.util.message.Message;

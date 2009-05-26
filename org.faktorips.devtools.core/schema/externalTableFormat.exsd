@@ -88,10 +88,10 @@
                <documentation>
                   A class which is able to create a Composite which has widgets to configure a  table format.
 
-The guiClass is a subclass of CompositeFactory.
+The guiClass is a subclass of TableFormatConfigurationCompositeFactory.
                </documentation>
                <appinfo>
-                  <meta.attribute kind="java"/>
+                  <meta.attribute kind="java" basedOn="org.faktorips.devtools.core.ui.TableFormatConfigurationCompositeFactory:"/>
                </appinfo>
             </annotation>
          </attribute>
@@ -127,7 +127,6 @@ The guiClass is a subclass of CompositeFactory.
 
 
 This registers the class &lt;code&gt;org.abc.MyTableFormat&lt;/code&gt; as a new source for table-imports and a new target for table-exports.
-
       </documentation>
    </annotation>
 

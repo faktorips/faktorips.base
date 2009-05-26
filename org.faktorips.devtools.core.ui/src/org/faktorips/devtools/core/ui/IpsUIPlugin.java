@@ -192,7 +192,7 @@ public class IpsUIPlugin extends AbstractUIPlugin {
      * the class could not be created.
      */
     public TableFormatConfigurationCompositeFactory getTableFormatPropertiesControlFactory(ITableFormat tableFormat) {
-        IConfigurationElement[] elements = Platform.getExtensionRegistry().getConfigurationElementsFor(
+        IConfigurationElement[] elements = registry.getConfigurationElementsFor(
                 "org.faktorips.devtools.core.externalTableFormat"); //$NON-NLS-1$
         
         TableFormatConfigurationCompositeFactory compositeFactory = null;
@@ -201,12 +201,15 @@ public class IpsUIPlugin extends AbstractUIPlugin {
                 ITableFormat format = (ITableFormat)elements[i].createExecutableExtension("class"); //$NON-NLS-1$
                 if (format.getClass().equals(tableFormat.getClass())) {
                     // Found the given tableFormat in declared extensions
-                    compositeFactory = (TableFormatConfigurationCompositeFactory)elements[i].createExecutableExtension("guiClass"); //$NON-NLS-1$
-                    compositeFactory.setTableFormat(tableFormat);
-                    break;
+                    if (elements[i].getAttribute("guiClass") != null) { //$NON-NLS-1$
+                        // the contribution has the optional "guiClass" attribute declared
+                        compositeFactory = (TableFormatConfigurationCompositeFactory)elements[i].createExecutableExtension("guiClass");
+                        compositeFactory.setTableFormat(tableFormat);
+                        break;
+                    }
                 }
             } catch (Exception e) {
-                IpsPlugin.log(e);
+                IpsPlugin.logAndShowErrorDialog(e);
             }
         }
     

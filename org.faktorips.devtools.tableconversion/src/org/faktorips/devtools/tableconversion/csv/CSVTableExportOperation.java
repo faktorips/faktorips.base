@@ -209,7 +209,7 @@ public class CSVTableExportOperation extends AbstractTableExportOperation {
                 String csvField;
                 try {
                     csvField = (obj == null) ? nullRepresentationString
-                            : format.getIpsValue(obj, datatypes[j], messageList);
+                            :  obj.toString();
                 } catch (NumberFormatException e) {
                     // Null Object for Decimal Datatype returned, see Null-Object Pattern
                     csvField = nullRepresentationString; 
