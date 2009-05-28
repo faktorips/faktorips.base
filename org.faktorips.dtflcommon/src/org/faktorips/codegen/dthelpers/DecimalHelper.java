@@ -74,7 +74,7 @@ public class DecimalHelper extends AbstractDatatypeHelper {
 	
 	/**
 	 * Methode der Oberklasse wird ueberschrieben, weil bei diesem Datentyp
-	 * valueOf-Methode selbst Null-Expression zurückgeben kann
+	 * valueOf-Methode selbst Null-Expression zurueckgeben kann
 	 */
 	public JavaCodeFragment newInstanceFromExpression(String expression) {	
 	    return valueOfExpression(expression);
