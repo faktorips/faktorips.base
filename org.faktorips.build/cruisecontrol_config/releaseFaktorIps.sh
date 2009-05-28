@@ -168,7 +168,7 @@ generateIndexHtml ()
 
 # substitution: if default variable not use default specified here
 DEFAULT_ANT_HOME=${DEFAULT_ANT_HOME:-'/opt/cc/apache-ant-1.6.5'}
-DEFAULT_JAVA_HOME=${DEFAULT_JAVA_HOME:-'/opt/sun-jdk-1.5.0.08'}
+DEFAULT_JAVA_HOME=${DEFAULT_JAVA_HOME:-'/usr/lib/jvm/ia32-java-1.5.0-sun/jre'}
 
 # default build environment
 DEFAULT_CVS_ROOT='/usr/local/cvsroot'
