@@ -282,9 +282,11 @@
 		                         cctimestamp (see cc reference), 
 		                         thisbuildsuccessful (see cc reference),
 		                         workspaceName (constant in config.xml) -->
-
+		<property name="pluginbuilderTmpDir" value="pluginbuilder_tmp"/>
+		<property name="buildDirectory" value="${basedir}/${pluginbuilderTmpDir}/org.faktorips.pluginbuilder"/>
+		
 		<defaultexcludes remove="**/._*"/>
-			
+		
 	    <condition property="is.thisbuildsuccessful" value="true">
 	        <equals arg1="${thisbuildsuccessful}" arg2="true"/>
 	    </condition>
@@ -305,13 +307,13 @@
         <antcall inheritall="true" target="-copy.eclipse.configuration.log"/>
 
 		<!-- copy automated test html report -->
-		<copy file="${basedir}/pluginbuilder_tmp/org.faktorips.pluginbuilder/results/testresults/html/testReport_N-${label}.html" 
+		<copy file="${buildDirectory}/results/testresults/html/testReport_N-${label}.html" 
 			todir="${ccProjectDir}/${cctimestamp}"
 			failonerror="false" verbose="true"/>
 
 		<!-- copy emma coverage report if available -->
         <copy todir="${ccProjectDir}/${cctimestamp}" failonerror="false" verbose="true">
-            <fileset dir="${basedir}/pluginbuilder_tmp/org.faktorips.pluginbuilder/results/testresults/coverage" includes="**/*"/>
+            <fileset dir="${buildDirectory}/results/testresults/coverage" includes="**/*"/>
         </copy>
 		
 		<!-- copy plugin compile errors -->
@@ -744,11 +746,11 @@
     </target>
     <target name="-copy.pluginbuilder.compile.error" unless="is.thisbuildsuccessful">
         <copy todir="${ccProjectDir}/${cctimestamp}" failonerror="false" verbose="false">
-            <fileset dir="${basedir}/pluginbuilder_tmp/org.faktorips.pluginbuilder/plugins" includes="**/*dot.bin.log"/>
+            <fileset dir="${buildDirectory}/plugins" includes="**/*dot.bin.log"/>
         </copy>
     </target>
     <target name="-copy.javaoutput" unless="is.thisbuildsuccessful">
-        <copy file="${basedir}/pluginbuilder_tmp/org.faktorips.pluginbuilder/javaoutput.txt" 
+        <copy file="${buildDirectory}/javaoutput.txt" 
                      todir="${ccProjectDir}/${cctimestamp}"
                      failonerror="false" verbose="true"/>
     </target>

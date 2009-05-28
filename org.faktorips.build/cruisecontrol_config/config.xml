@@ -754,6 +754,7 @@
             <antpublisher buildfile="${mainbuildfile}" uselogger="true" usedebug="false" target="copy.artifacts.pluginbuilder.faktorips">
                 <property name="ccProjectDir" value="${logdir}/${project.name}"/>
                 <property name="workspaceName" value="workspace"/>
+                <property name="pluginbuilderTmpDir" value="pluginbuilder_tmp"/>
             </antpublisher>
         </publishers>
     </project>
@@ -827,6 +828,11 @@
                 <map alias="cc-de.qv.faktorips" address=""/>
                 <failure reportWhenFixed="true" address="jan.ortmann@faktorzehn.de,peter.erzberger@faktorzehn.de,daniel.hohenberger@faktorzehn.de,alexander.weickmann@faktorzehn.de,joerg.ortmann@faktorzehn.de,roman.grutza@faktorzehn.de"/>
             </htmlemail>
+            <antpublisher buildfile="${mainbuildfile}" uselogger="true" usedebug="false" target="copy.artifacts.pluginbuilder.faktorips">
+                <property name="ccProjectDir" value="${logdir}/${project.name}"/>
+                <property name="workspaceName" value="workspace"/>
+                <property name="pluginbuilderTmpDir" value="pluginbuilder_tmp_branch"/>
+            </antpublisher>
         </publishers>
     </project>
     <!--=====================================================-->
@@ -883,6 +889,7 @@
             <antpublisher buildfile="${mainbuildfile}" uselogger="true" usedebug="false" target="copy.artifacts.pluginbuilder.faktorips">
                 <property name="ccProjectDir" value="${logdir}/${project.name}"/>
                 <property name="workspaceName" value="workspace_integrationtest"/>
+                <property name="pluginbuilderTmpDir" value="pluginbuilder_tmp"/>
             </antpublisher>
         </publishers>
     </project>
@@ -940,6 +947,7 @@
             <antpublisher buildfile="${mainbuildfile}" uselogger="true" usedebug="false" target="copy.artifacts.pluginbuilder.faktorips">
                 <property name="ccProjectDir" value="${logdir}/${project.name}"/>
                 <property name="workspaceName" value="workspace_integrationtest_java5"/>
+                <property name="pluginbuilderTmpDir" value="pluginbuilder_tmp"/>
             </antpublisher>
         </publishers>
     </project>
@@ -997,6 +1005,11 @@
                 <map alias="cc-de.qv.faktorips" address=""/>
                 <failure reportWhenFixed="true" address="jan.ortmann@faktorzehn.de,peter.erzberger@faktorzehn.de,daniel.hohenberger@faktorzehn.de,alexander.weickmann@faktorzehn.de,joerg.ortmann@faktorzehn.de,roman.grutza@faktorzehn.de"/>
             </htmlemail>
+            <antpublisher buildfile="${mainbuildfile}" uselogger="true" usedebug="false" target="copy.artifacts.pluginbuilder.faktorips">
+                <property name="ccProjectDir" value="${logdir}/${project.name}"/>
+                <property name="workspaceName" value="workspace_integrationtest"/>
+                <property name="pluginbuilderTmpDir" value="pluginbuilder_tmp_branch"/>
+            </antpublisher>
         </publishers>
     </project>
     <!--=====================================================-->
@@ -1053,6 +1066,11 @@
                 <map alias="cc-de.qv.faktorips" address=""/>
                 <failure reportWhenFixed="true" address="jan.ortmann@faktorzehn.de,peter.erzberger@faktorzehn.de,daniel.hohenberger@faktorzehn.de,alexander.weickmann@faktorzehn.de,joerg.ortmann@faktorzehn.de,roman.grutza@faktorzehn.de"/>
             </htmlemail>
+            <antpublisher buildfile="${mainbuildfile}" uselogger="true" usedebug="false" target="copy.artifacts.pluginbuilder.faktorips">
+                <property name="ccProjectDir" value="${logdir}/${project.name}"/>
+                <property name="workspaceName" value="workspace_integrationtest_java5"/>
+                <property name="pluginbuilderTmpDir" value="pluginbuilder_tmp_branch"/>
+            </antpublisher>
         </publishers>
     </project>
     <!--=====================================================-->
