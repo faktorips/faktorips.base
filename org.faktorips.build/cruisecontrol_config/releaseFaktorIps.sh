@@ -174,8 +174,8 @@ DEFAULT_JAVA_HOME=${DEFAULT_JAVA_HOME:-'/usr/lib/jvm/ia32-java-1.5.0-sun/jre'}
 DEFAULT_CVS_ROOT='/usr/local/cvsroot'
 #   substitution, if variable not use default
 WORKINGDIR=${WORKINGDIR:-'/opt/cc/work'}
-PUBLISH_DOWNLOAD_DIR=${PUBLISH_DOWNLOAD_DIR:-'/var/www/localhost/htdocs/update.faktorzehn.org/faktorips/downloads'}
-PUBLISH_UPDATESITE_DIR=${PUBLISH_UPDATESITE_DIR:-'/var/www/localhost/htdocs/update.faktorzehn.org/faktorips'}
+PUBLISH_DOWNLOAD_DIR=${PUBLISH_DOWNLOAD_DIR:-'/var/www/update.faktorzehn.org/faktorips/downloads'}
+PUBLISH_UPDATESITE_DIR=${PUBLISH_UPDATESITE_DIR:-'/var/www/update.faktorzehn.org/faktorips/org.faktorips.updatesite'}
 CVS_ROOT=${CVS_ROOT:-$DEFAULT_CVS_ROOT}
 
 PROJECTSROOTDIR=$WORKINGDIR/checkout_release
@@ -185,7 +185,7 @@ fi
 
 # default java and ant environment
 ANT_HOME=$DEFAULT_ANT_HOME
-JAVA_HOME=$DEFAULT_JAVA_HOME
+JAVA_HOME=${JAVA_HOME:-$DEFAULT_JAVA_HOME}
 
 FAKTORIPS_CORE_PLUGIN_NAME=org.faktorips.devtools.core
 PLUGINBUILDER_PROJECT_NAME=org.faktorips.pluginbuilder
