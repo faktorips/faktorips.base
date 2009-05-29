@@ -319,7 +319,7 @@ public class GenProductCmptType extends GenType {
      * public void setMotorProduct(IMotorProduct motorProduct, boolean initPropertiesWithConfiguratedDefaults)
      * </pre>
      */
-    public void generateSignatureSetProductCmpt(JavaCodeFragmentBuilder methodsBuilder) throws CoreException {
+    public void generateSignatureSetProductComponent(JavaCodeFragmentBuilder methodsBuilder) throws CoreException {
         String methodName = getMethodNameSetProductCmpt();
         String[] paramTypes = new String[] { getQualifiedName(true), "boolean" };
         methodsBuilder.signature(java.lang.reflect.Modifier.PUBLIC, "void", methodName,

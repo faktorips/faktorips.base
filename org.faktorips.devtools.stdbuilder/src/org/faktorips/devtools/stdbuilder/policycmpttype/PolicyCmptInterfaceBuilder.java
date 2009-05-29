@@ -176,7 +176,7 @@ public class PolicyCmptInterfaceBuilder extends BasePolicyCmptTypeBuilder {
         String[] replacements = new String[] { getProductCmptType().getName(),
                 StringUtils.uncapitalize(getProductCmptType().getName()), "initPropertiesWithConfiguratedDefaults" };
         appendLocalizedJavaDoc("METHOD_SET_PRODUCTCMPT", replacements, getProductCmptType(), methodsBuilder);
-        getGenProductCmptType().generateSignatureSetProductCmpt(methodsBuilder);
+        getGenProductCmptType().generateSignatureSetProductComponent(methodsBuilder);
         methodsBuilder.appendln(";");
     }
 

@@ -152,7 +152,7 @@ public class PolicyCmptImplClassBuilder extends BasePolicyCmptTypeBuilder {
             if (hasValidProductCmptTypeName()) {
                 generateMethodGetProductCmpt(methodsBuilder);
                 generateMethodGetProductCmptGeneration(methodsBuilder);
-                generateMethodSetProductCmpt(methodsBuilder);
+                generateMethodSetProductComponent(methodsBuilder);
             }
             generateMethodEffectiveFromHasChanged(methodsBuilder);
             generateTableAccessMethods(methodsBuilder);
@@ -862,12 +862,12 @@ public class PolicyCmptImplClassBuilder extends BasePolicyCmptTypeBuilder {
         builder.closeBracket();
     }
 
-    private void generateMethodSetProductCmpt(JavaCodeFragmentBuilder builder) throws CoreException {
+    private void generateMethodSetProductComponent(JavaCodeFragmentBuilder builder) throws CoreException {
         builder.javaDoc(getJavaDocCommentForOverriddenMethod(), ANNOTATION_GENERATED);
-        getGenProductCmptType().generateSignatureSetProductCmpt(builder);
+        getGenProductCmptType().generateSignatureSetProductComponent(builder);
         String[] paramNames = getGenProductCmptType().getMethodParamNamesSetProductCmpt();
         builder.openBracket();
-        builder.appendln("setProductCmpt(" + paramNames[0] + ");");
+        builder.appendln(MethodNames.SET_PRODUCT_COMPONENT + "(" + paramNames[0] + ");");
         builder.appendln("if(" + paramNames[1] + ") { initialize(); }");
         builder.closeBracket();
     }
