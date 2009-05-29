@@ -80,9 +80,9 @@ public class TableContentsCellModifierTest extends AbstractIpsPluginTest {
         assertEquals("A", cellModifier.getValue(rowInvalid, "ColumnA"));
         assertEquals("B", cellModifier.getValue(rowInvalid, "ColumnB"));
         assertEquals("C", cellModifier.getValue(rowInvalid, "ColumnC"));
-        assertEquals(nullPresentation, cellModifier.getValue(rowNull, "ColumnA"));
-        assertEquals(nullPresentation, cellModifier.getValue(rowNull, "ColumnB"));
-        assertEquals(nullPresentation, cellModifier.getValue(rowNull, "ColumnC"));
+        assertNull(cellModifier.getValue(rowNull, "ColumnA"));
+        assertNull(cellModifier.getValue(rowNull, "ColumnB"));
+        assertNull(cellModifier.getValue(rowNull, "ColumnC"));
     }
 
     public void testModify() {
@@ -92,9 +92,9 @@ public class TableContentsCellModifierTest extends AbstractIpsPluginTest {
         assertEquals("X", rowValid.getValue(0));
         assertEquals("Y", rowValid.getValue(1));
         assertEquals("Z", rowValid.getValue(2));
-        cellModifier.modify(rowInvalid, "ColumnA", nullPresentation);
-        cellModifier.modify(rowInvalid, "ColumnB", nullPresentation);
-        cellModifier.modify(rowInvalid, "ColumnC", nullPresentation);
+        cellModifier.modify(rowInvalid, "ColumnA", null);
+        cellModifier.modify(rowInvalid, "ColumnB", null);
+        cellModifier.modify(rowInvalid, "ColumnC", null);
         assertNull(rowInvalid.getValue(0));
         assertNull(rowInvalid.getValue(1));
         assertNull(rowInvalid.getValue(2));
