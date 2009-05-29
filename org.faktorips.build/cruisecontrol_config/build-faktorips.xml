@@ -411,7 +411,7 @@
     	<property name="publishResult" value="false"/>
     	<!-- directories on server -->
         <property name="projectsRootDir" value="${basedir}/checkout_release/"/>
-    	<property name="updatesite.path" value="/var/www/localhost/htdocs/update.faktorzehn.org/faktorips/"/>
+    	<property name="updatesite.path" value="/var/www/update.faktorzehn.org/faktorips/org.faktorips.updatesite"/>
     	<property name="downloadDir" value="/var/www/localhost/htdocs/update.faktorzehn.org/faktorips/downloads"/>
     	<property name="buildDirectory" value="${basedir}/pluginbuilder_release_tmp/org.faktorips.pluginbuilder_release"/>
         <!-- download zip file names -->
