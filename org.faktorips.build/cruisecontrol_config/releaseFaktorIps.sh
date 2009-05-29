@@ -6,6 +6,11 @@
 #   sind falsch (alle gleich) das zip wird irgendwo falsch ueberschrieben/gepackt
 #   Workaround manueller export (vorher 0.0.0 im Workspace ersetzen) und dann auf dem server 
 #   das feature src plugin ersetzen
+# TODO Tagging Problem wenn nicht cruise! permission CVSROOT/val-tags
+#      cvs [rtag aborted]: cannot write /usr/local/cvsroot/CVSROOT/val-tags:
+# TODO build und workingdir in neuer Ordner mit tagging, dann project noch nicht da
+#      also vorher auschecken 
+# TODO site.xml auf dem server neu auschecken, problem mit permission
 
 ##############################################################################################################################
 # Faktor IPS release build script
