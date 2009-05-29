@@ -1,4 +1,12 @@
 #!/bin/bash
+
+#
+# TODO aktuelles Problem bei Verwendung des Pluginbuilders:
+#   die src.zip in den unter plugin Ordnern in plugin/org.faktorips.feature.source../
+#   sind falsch (alle gleich) das zip wird irgendwo falsch ueberschrieben/gepackt
+#   Workaround manueller export (vorher 0.0.0 im Workspace ersetzen) und dann auf dem server 
+#   das feature src plugin ersetzen
+
 ##############################################################################################################################
 # Faktor IPS release build script
 ##############################################################################################################################
