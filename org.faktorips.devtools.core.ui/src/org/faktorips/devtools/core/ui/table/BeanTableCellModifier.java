@@ -26,6 +26,7 @@ import java.util.Map;
 
 import org.eclipse.jface.util.Assert;
 import org.eclipse.jface.viewers.CellEditor;
+import org.eclipse.jface.viewers.ICellModifier;
 import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.swt.widgets.TableItem;
 import org.faktorips.datatype.ValueDatatype;
@@ -40,7 +41,7 @@ import org.faktorips.util.ArgumentCheck;
  * 
  * @author Joerg Ortmann
  */
-public class BeanTableCellModifier extends ValueCellModifier  {
+public class BeanTableCellModifier implements ICellModifier {
     private UIToolkit uiToolkit;
 
     // The table viewer this cell modifier belongs to
@@ -50,16 +51,16 @@ public class BeanTableCellModifier extends ValueCellModifier  {
     IDataChangeableReadWriteAccess parentControl;
 
     // Listeners for the changes inside the cell
-    private List columnChangeListeners = new ArrayList(1);
+    private List<ColumnChangeListener> columnChangeListeners = new ArrayList<ColumnChangeListener>(1);
     
     // Cache
-    private HashMap propertyDescriptors = new HashMap(4);
-    private HashMap columnIdentifers = new HashMap(4);
+    private Map<Object, Object> propertyDescriptors = new HashMap<Object, Object>(4);
+    private Map<Object, Object> columnIdentifers = new HashMap<Object, Object>(4);
     
     // Contains the delegate cell editors for each column, 
     // only if at least one column specifies different cell editor for each row
     // otherwise the list is empty
-    private Map delegateCellEditor= new HashMap(0);
+    private Map<Integer, DelegateCellEditor> delegateCellEditor= new HashMap<Integer, DelegateCellEditor>(0);
 
     
     
@@ -74,7 +75,7 @@ public class BeanTableCellModifier extends ValueCellModifier  {
      * the type of the cell editor in the row.
      */
     public void initRowModifier(int column, ValueDatatype[] datatypesRows) {
-        List rowCellEditors = new ArrayList(datatypesRows.length);
+        List<CellEditor> rowCellEditors = new ArrayList<CellEditor>(datatypesRows.length);
         DelegateCellEditor dm = (DelegateCellEditor) delegateCellEditor.get(new Integer(column));
         if (dm == null){
             // error wrong initializing of the delegate cell editor
@@ -95,7 +96,7 @@ public class BeanTableCellModifier extends ValueCellModifier  {
     public void initModifier(UIToolkit uiToolkit, String[] properties, ValueDatatype[] datatypes) {
         ArgumentCheck.isTrue(properties.length == datatypes.length);
         this.uiToolkit = uiToolkit;
-        ArrayList cellEditors = new ArrayList(datatypes.length);
+        ArrayList<CellEditor> cellEditors = new ArrayList<CellEditor>(datatypes.length);
         
         // create column identifier and cell editors
         for (int i = 0; i < properties.length; i++) {
@@ -155,7 +156,7 @@ public class BeanTableCellModifier extends ValueCellModifier  {
     /**
      * {@inheritDoc}
      */
-    protected String getValueInternal(Object element, String property) {
+    public String getValue(Object element, String property) {
         try {
             PropertyDescriptor pd = getPropertyDescriptor(element, property);
             if (pd != null){
@@ -170,7 +171,7 @@ public class BeanTableCellModifier extends ValueCellModifier  {
     /**
      * {@inheritDoc}
      */
-    protected void modifyInternal(Object element, String property, Object value) {
+    public void modify(Object element, String property, Object value) {
         try {
             ArgumentCheck.isInstanceOf(element, TableItem.class);
             element = ((TableItem)element).getData();
@@ -235,8 +236,8 @@ public class BeanTableCellModifier extends ValueCellModifier  {
     }
     
     private void notifyColumnChangeListener(ColumnIdentifier columnIdentifier, Object value){
-        for (Iterator iter = columnChangeListeners.iterator(); iter.hasNext();) {
-            ((ColumnChangeListener)iter.next()).valueChanged(columnIdentifier, value);
+        for (Iterator<ColumnChangeListener> iter = columnChangeListeners.iterator(); iter.hasNext();) {
+            iter.next().valueChanged(columnIdentifier, value);
         }
     }
 }

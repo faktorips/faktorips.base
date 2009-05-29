@@ -601,6 +601,8 @@ public class UIToolkit {
      * @param combo The combo to set the values.
      * @param values The values to set.
      */
+//    pk 26-05-2009: this code needs to be refactored. the provided parameter array mustn't not be modified
+    //within this method.
     private void setComboValues(Combo combo, String[] values) {
         for (int i = 0; i < values.length; i++) {
             if (values[i] == null) {

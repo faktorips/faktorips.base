@@ -13,6 +13,8 @@
 
 package org.faktorips.devtools.core.internal.model.enums;
 
+import java.util.List;
+
 import javax.xml.parsers.ParserConfigurationException;
 
 import org.eclipse.core.runtime.CoreException;
@@ -22,6 +24,7 @@ import org.faktorips.devtools.core.model.IIpsModel;
 import org.faktorips.devtools.core.model.enums.IEnumAttribute;
 import org.faktorips.devtools.core.model.enums.IEnumAttributeValue;
 import org.faktorips.devtools.core.model.enums.IEnumContent;
+import org.faktorips.devtools.core.model.enums.IEnumType;
 import org.faktorips.devtools.core.model.enums.IEnumValue;
 import org.faktorips.devtools.core.util.XmlUtil;
 import org.faktorips.util.message.MessageList;
@@ -79,6 +82,44 @@ public class EnumAttributeValueTest extends AbstractIpsEnumPluginTest {
         assertEquals(GENDER_ENUM_LITERAL_MALE_ID, loadedEnumContent.getEnumValues().get(0).getEnumAttributeValues()
                 .get(0).getValue());
         assertEquals(2, loadedEnumContent.getEnumValues().size());
+    }
+
+    public void testPropertiesToXml() throws Exception {
+        IEnumType enumType = newEnumType(ipsProject, "AnEnum");
+        IEnumAttribute enumAttr = enumType.newEnumAttribute();
+        enumAttr.setDatatype(Datatype.STRING.getQualifiedName());
+        enumAttr.setLiteralName(true);
+        enumAttr.setName("a");
+        enumAttr.setUniqueIdentifier(true);
+
+        IEnumAttribute enumAttr2 = enumType.newEnumAttribute();
+        enumAttr2.setDatatype(Datatype.INTEGER.getQualifiedName());
+        enumAttr2.setLiteralName(true);
+        enumAttr2.setName("b");
+        enumAttr2.setUniqueIdentifier(true);
+        
+        IEnumValue enumValue = enumType.newEnumValue();
+        List<IEnumAttributeValue> enumAttrList = enumValue.getEnumAttributeValues();
+        enumAttrList.get(0).setValue(null);
+        enumAttrList.get(1).setValue(null);
+        
+        Element enumTypeEl = enumType.toXml(createXmlDocument(IEnumContent.XML_TAG));
+        IEnumType enumType2 = newEnumType(ipsProject, "AnEnum2");
+        enumType2.initFromXml(enumTypeEl);
+        assertNull(enumType2.getEnumValues().get(0).getEnumAttributeValues().get(0).getValue());
+        assertNull(enumType2.getEnumValues().get(0).getEnumAttributeValues().get(1).getValue());
+
+        List<IEnumAttributeValue> enumAttrList1 = enumValue.getEnumAttributeValues();
+        enumAttrList1.get(0).setValue("hallo");
+        enumAttrList1.get(1).setValue("1");
+
+        Element enumTypeEl3 = enumType.toXml(createXmlDocument(IEnumContent.XML_TAG));
+        IEnumType enumType3 = newEnumType(ipsProject, "AnEnum3");
+        enumType3.initFromXml(enumTypeEl3);
+        assertEquals("hallo", enumType3.getEnumValues().get(0).getEnumAttributeValues().get(0).getValue());
+        assertEquals("1", enumType3.getEnumValues().get(0).getEnumAttributeValues().get(1).getValue());
+
+        
     }
 
     public void testValidateParsable() throws CoreException {

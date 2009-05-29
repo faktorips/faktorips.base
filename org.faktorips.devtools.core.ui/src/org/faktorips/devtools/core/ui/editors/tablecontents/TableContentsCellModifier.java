@@ -17,16 +17,16 @@ import java.util.Arrays;
 import java.util.List;
 
 import org.eclipse.jface.viewers.TableViewer;
+import org.eclipse.jface.viewers.ICellModifier;
 import org.eclipse.swt.widgets.TableItem;
 import org.faktorips.devtools.core.model.tablecontents.IRow;
-import org.faktorips.devtools.core.ui.table.ValueCellModifier;
 
 /**
  * A CellModifyer that can modify and retrieve values from <code>IRow</code> objects (<code>ITableContents</code>).
  * 
  * @author Stefan Widmaier
  */
-public class TableContentsCellModifier extends ValueCellModifier {
+public class TableContentsCellModifier implements ICellModifier {
     
     private TableViewer tableViewer;
     private ContentPage page;
@@ -48,7 +48,7 @@ public class TableContentsCellModifier extends ValueCellModifier {
      * Returns the value of the property of the given element. May return null.
      * {@inheritDoc}
      */
-    protected String getValueInternal(Object element, String property) {
+    public String getValue(Object element, String property) {
         int columnIndex= getColumnIndexForProperty(property);
         if(columnIndex>=0){
             if(element instanceof IRow){
@@ -63,7 +63,7 @@ public class TableContentsCellModifier extends ValueCellModifier {
      * Refreshes the given element in the table after the modification.
      * {@inheritDoc}
      */
-    protected void modifyInternal(Object element, String property, Object value) {
+    public void modify(Object element, String property, Object value) {
         int columnIndex= getColumnIndexForProperty(property);
         if(columnIndex>=0){
             IRow row= null;
@@ -82,7 +82,7 @@ public class TableContentsCellModifier extends ValueCellModifier {
     }
 
     private int getColumnIndexForProperty(String columnProperty){
-        List columnProperties = Arrays.asList(tableViewer.getColumnProperties());
+        List<Object> columnProperties = Arrays.asList(tableViewer.getColumnProperties());
         return columnProperties.indexOf(columnProperty);
     }
     

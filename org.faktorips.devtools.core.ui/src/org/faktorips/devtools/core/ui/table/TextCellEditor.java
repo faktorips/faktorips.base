@@ -15,6 +15,7 @@ package org.faktorips.devtools.core.ui.table;
 
 import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.swt.widgets.Text;
+import org.faktorips.devtools.core.IpsPlugin;
 
 /**
  * 
@@ -33,7 +34,11 @@ public class TextCellEditor extends TableCellEditor {
      * {@inheritDoc}
      */
     protected Object doGetValue() {
-        return textControl.getText();
+        String returnValue = textControl.getText();
+        if(IpsPlugin.getDefault().getIpsPreferences().getNullPresentation().equals(returnValue)){
+            return null;
+        }
+        return returnValue;
     }
 
     /**
@@ -48,6 +53,10 @@ public class TextCellEditor extends TableCellEditor {
      * {@inheritDoc}
      */
     protected void doSetValue(Object value) {
+        if (null == value){
+            textControl.setText((IpsPlugin.getDefault().getIpsPreferences().getNullPresentation()));
+            return;
+        }
         if(value instanceof String){
             textControl.setText((String)value);
         }

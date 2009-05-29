@@ -100,7 +100,7 @@ public interface IMethod extends IParameterContainer {
 
     /**
      * Returns <code>true</code> if the other method signature overrides this one. This is the case if
-     * it has the same name and the same numer of parameters and each parameter has the same datatype as the parameter 
+     * it has the same name and the same number of parameters and each parameter has the same datatype as the parameter 
      * in this method. Returns <code>false</code> otherwise.
      * Note that the return type is not checked. 
      */
