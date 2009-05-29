@@ -183,9 +183,9 @@ if [ ! -d $PROJECTSROOTDIR ] ; then
   mkdir $PROJECTSROOTDIR
 fi
 
-# default java and ant environment
+# use default java and ant environment
 ANT_HOME=$DEFAULT_ANT_HOME
-JAVA_HOME=${JAVA_HOME:-$DEFAULT_JAVA_HOME}
+JAVA_HOME=$DEFAULT_JAVA_HOME
 
 FAKTORIPS_CORE_PLUGIN_NAME=org.faktorips.devtools.core
 PLUGINBUILDER_PROJECT_NAME=org.faktorips.pluginbuilder
