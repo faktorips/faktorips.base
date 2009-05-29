@@ -31,7 +31,6 @@ public class TableContentsCellModifierTest extends AbstractIpsPluginTest {
     private IRow rowValid;
     private IRow rowInvalid;
     private IRow rowNull;
-    private String nullPresentation= IpsPlugin.getDefault().getIpsPreferences().getNullPresentation();
     private TableContentsCellModifier cellModifier;
     
     protected void setUp() throws Exception {
