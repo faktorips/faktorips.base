@@ -147,7 +147,7 @@ public abstract class IpsObjectPage extends WizardPage implements ValueChangeLis
         UIToolkit toolkit = new UIToolkit(null);
         validateInput = false;
         setTitle(NLS.bind(Messages.NewIpsObjectWizard_title, WordUtils.capitalize(ipsObjectType.getDisplayName())));
-        setMessage(NLS.bind(Messages.IpsObjectPage_msgNew, getIpsObjectType().getId()));
+        setMessage(NLS.bind(Messages.IpsObjectPage_msgNew, getIpsObjectType().getDisplayName()));
 
         // dont set the layout of the parent composite - this will lead to
         // layout-problems when this wizard-page is opened within allready open dialogs
