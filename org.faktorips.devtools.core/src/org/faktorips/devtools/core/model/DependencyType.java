@@ -84,7 +84,7 @@ public class DependencyType implements Serializable{
         if(DATATYPE.name.equals(name)){
             return DATATYPE;
         }
-        throw new IllegalArgumentException("No type specified for the provided name.");
+        throw new IllegalArgumentException("No type specified for the provided name."); //$NON-NLS-1$
     }
     
     /*

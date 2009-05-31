@@ -117,8 +117,8 @@ public abstract class IpsObjectPart extends IpsObjectPartContainer implements II
      */
     public void setDescription(String newDescription) {
         ArgumentCheck.notNull(description, this);
-        ArgumentCheck.isTrue(isDescriptionChangable(),"The description attribute of this object is marked " +
-        		"as not changeable. See the method isDescriptionChangable() for explanation");
+        ArgumentCheck.isTrue(isDescriptionChangable(),"The description attribute of this object is marked " + //$NON-NLS-1$
+        		"as not changeable. See the method isDescriptionChangable() for explanation"); //$NON-NLS-1$
         
         String oldDescription = description;
         this.description = newDescription;
