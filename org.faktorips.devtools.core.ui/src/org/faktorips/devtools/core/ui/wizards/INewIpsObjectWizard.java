@@ -24,7 +24,7 @@ import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
 public interface INewIpsObjectWizard extends INewWizard {
     
     /**
-     * Returns the ips object type of the to be created ips object.
+     * Returns the type of the object created by the wizard.
      */
     public IpsObjectType getIpsObjectType();
 }
