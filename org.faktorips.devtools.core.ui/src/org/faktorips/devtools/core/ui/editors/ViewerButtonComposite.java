@@ -36,7 +36,7 @@ public abstract class ViewerButtonComposite extends Composite {
     }
     
     /**
-     * Creates the compoiste's controls. This method has to to be called explicitly
+     * Creates the composite's controls. This method has to to be called explicitly
      * by subclasses <b>after</b> they have initialized any subclass specific
      * instance variables. The <code>ViewerButtonComposite</code> does not call this
      * method in it's constructor, because in subclasses in might be neccessary
