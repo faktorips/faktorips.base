@@ -561,7 +561,7 @@ public class IpsObjectPath implements IIpsObjectPath {
                 continue;
             }
             QualifiedNameType cmptTypeQnt = new QualifiedNameType(productCmptFile
-                    .getPropertyValue(IProductCmpt.PROPERTY_PRODUCT_CMPT_TYPE), IpsObjectType.PRODUCT_CMPT_TYPE_V2);
+                    .getPropertyValue(IProductCmpt.PROPERTY_PRODUCT_CMPT_TYPE), IpsObjectType.PRODUCT_CMPT_TYPE);
             visitedEntries.clear();
             IIpsSrcFile typeFoundFile = findIpsSrcFile(cmptTypeQnt, visitedEntries);
             if (typeFoundFile == null) {

@@ -129,7 +129,7 @@ public class DependencyGraph implements Serializable {
     public IDependency[] getDependants(QualifiedNameType id) {
         List qualfiedNameTypes = getDependantsAsList(id);
         if(id.getIpsObjectType().equals(IpsObjectType.POLICY_CMPT_TYPE) ||
-                id.getIpsObjectType().equals(IpsObjectType.PRODUCT_CMPT_TYPE_V2) ||
+                id.getIpsObjectType().equals(IpsObjectType.PRODUCT_CMPT_TYPE) ||
                 id.getIpsObjectType().equals(IpsObjectType.TABLE_STRUCTURE) || 
                 id.getIpsObjectType().equals(IpsObjectType.TABLE_CONTENTS)){
             List additionalNameTypes = getDependantsAsList(id.getName());

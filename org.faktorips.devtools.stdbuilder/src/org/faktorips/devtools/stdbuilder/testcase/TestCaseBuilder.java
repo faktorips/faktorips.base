@@ -373,7 +373,7 @@ public class TestCaseBuilder extends AbstractArtefactBuilder {
         // search for the correct policy cmpt
         String productCmptTypeQName = productCmptSrcFile.getPropertyValue(IProductCmpt.PROPERTY_PRODUCT_CMPT_TYPE);
         IIpsSrcFile productCmptTypeSrcFile = testPolicyCmpt.getIpsProject().findIpsSrcFile(
-                IpsObjectType.PRODUCT_CMPT_TYPE_V2, productCmptTypeQName);
+                IpsObjectType.PRODUCT_CMPT_TYPE, productCmptTypeQName);
         return productCmptTypeSrcFile.getPropertyValue(IProductCmptType.PROPERTY_POLICY_CMPT_TYPE);
     }
 

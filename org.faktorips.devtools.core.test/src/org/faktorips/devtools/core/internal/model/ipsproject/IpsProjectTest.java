@@ -934,7 +934,7 @@ public class IpsProjectTest extends AbstractIpsPluginTest {
             IPolicyCmptType policyCmptType,
             String name) throws CoreException {
         IProductCmptType productCmptType = (IProductCmptType)packageFragment.createIpsFile(
-                IpsObjectType.PRODUCT_CMPT_TYPE_V2, name, true, null).getIpsObject();
+                IpsObjectType.PRODUCT_CMPT_TYPE, name, true, null).getIpsObject();
         productCmptType.setPolicyCmptType(policyCmptType.getQualifiedName());
         policyCmptType.setProductCmptType(productCmptType.getQualifiedName());
         return productCmptType;
@@ -951,7 +951,7 @@ public class IpsProjectTest extends AbstractIpsPluginTest {
         pack.createIpsFile(IpsObjectType.POLICY_CMPT_TYPE, "Type1", true, null);
         IPolicyCmptType policyCmptType2 = (IPolicyCmptType)pack.createIpsFile(IpsObjectType.POLICY_CMPT_TYPE, "Type2",
                 true, null).getIpsObject();
-        IProductCmptType productCmptType2 = (IProductCmptType)pack.createIpsFile(IpsObjectType.PRODUCT_CMPT_TYPE_V2,
+        IProductCmptType productCmptType2 = (IProductCmptType)pack.createIpsFile(IpsObjectType.PRODUCT_CMPT_TYPE,
                 "ProductCmptType2", true, null).getIpsObject();
         productCmptType2.setPolicyCmptType(policyCmptType2.getQualifiedName());
         policyCmptType2.setProductCmptType(productCmptType2.getQualifiedName());
@@ -1034,7 +1034,7 @@ public class IpsProjectTest extends AbstractIpsPluginTest {
         IIpsPackageFragment folderC = root.createPackageFragment("c", true, null);
         folderC.createIpsFile(IpsObjectType.POLICY_CMPT_TYPE, "Type2", true, null);
 
-        IProductCmptType productCmptType0 = (IProductCmptType)pack.createIpsFile(IpsObjectType.PRODUCT_CMPT_TYPE_V2,
+        IProductCmptType productCmptType0 = (IProductCmptType)pack.createIpsFile(IpsObjectType.PRODUCT_CMPT_TYPE,
                 "ProductCmptType0", true, null).getIpsObject();
         productCmptType0.setPolicyCmptType(type0.getQualifiedName());
         type0.setProductCmptType(productCmptType0.getQualifiedName());
@@ -1055,10 +1055,10 @@ public class IpsProjectTest extends AbstractIpsPluginTest {
         result = ipsProject.findIpsSrcFiles(IpsObjectType.TABLE_STRUCTURE);
         assertEquals(1, result.length);
 
-        result = ipsProject.findIpsSrcFiles(IpsObjectType.PRODUCT_CMPT_TYPE_V2);
+        result = ipsProject.findIpsSrcFiles(IpsObjectType.PRODUCT_CMPT_TYPE);
         assertEquals(1, result.length);
 
-        result = ipsProject.findIpsSrcFiles(IpsObjectType.PRODUCT_CMPT_TYPE_V2);
+        result = ipsProject.findIpsSrcFiles(IpsObjectType.PRODUCT_CMPT_TYPE);
         assertEquals(1, result.length);
 
         IIpsObject ipsObj = ipsProject.findIpsObject(pct.getQualifiedNameType());
@@ -1628,7 +1628,7 @@ public class IpsProjectTest extends AbstractIpsPluginTest {
         IIpsObject e = newIpsObject(ipsProject.getIpsPackageFragmentRoots()[0], IpsObjectType.BUSINESS_FUNCTION, "e");
         IIpsObject f = newIpsObject(ipsProject.getIpsPackageFragmentRoots()[0], IpsObjectType.TEST_CASE, "f");
         IIpsObject g = newIpsObject(ipsProject.getIpsPackageFragmentRoots()[0], IpsObjectType.TEST_CASE_TYPE, "g");
-        IIpsObject h = newIpsObject(ipsProject.getIpsPackageFragmentRoots()[0], IpsObjectType.PRODUCT_CMPT_TYPE_V2, "h");
+        IIpsObject h = newIpsObject(ipsProject.getIpsPackageFragmentRoots()[0], IpsObjectType.PRODUCT_CMPT_TYPE, "h");
 
         List result = new ArrayList(7);
         ipsProject.findAllIpsObjects(result);
@@ -1688,7 +1688,7 @@ public class IpsProjectTest extends AbstractIpsPluginTest {
 
         IIpsSrcFile type0 = root.getIpsPackageFragment("").createIpsFile(IpsObjectType.POLICY_CMPT_TYPE, "Type0", true,
                 null);
-        IIpsSrcFile productCmptType0 = root.getIpsPackageFragment("").createIpsFile(IpsObjectType.PRODUCT_CMPT_TYPE_V2,
+        IIpsSrcFile productCmptType0 = root.getIpsPackageFragment("").createIpsFile(IpsObjectType.PRODUCT_CMPT_TYPE,
                 "ProductCmptType0", true, null);
         ((IPolicyCmptType)type0.getIpsObject()).setProductCmptType(productCmptType0.getQualifiedNameType().getName());
         ((IPolicyCmptType)type0.getIpsObject()).setConfigurableByProductCmptType(true);
@@ -1731,7 +1731,7 @@ public class IpsProjectTest extends AbstractIpsPluginTest {
         assertEquals(1, result.length);
         assertTrue(containsIpsSrcFile(result, productCmpt));
 
-        result = ipsProject.findIpsSrcFiles(IpsObjectType.PRODUCT_CMPT_TYPE_V2);
+        result = ipsProject.findIpsSrcFiles(IpsObjectType.PRODUCT_CMPT_TYPE);
         assertEquals(1, result.length);
         assertTrue(containsIpsSrcFile(result, productCmptType0));
 

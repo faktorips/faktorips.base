@@ -191,13 +191,13 @@ public class IpsPackageFragmentTest extends AbstractIpsPluginTest {
 
     public void testFindIpsObjects() throws Exception{
     
-        IIpsObject obj1 = newIpsObject(rootPackage, IpsObjectType.PRODUCT_CMPT_TYPE_V2, "a.b.A");
-        IIpsObject obj2 = newIpsObject(rootPackage, IpsObjectType.PRODUCT_CMPT_TYPE_V2, "a.b.B");
-        IIpsObject obj3 = newIpsObject(rootPackage, IpsObjectType.PRODUCT_CMPT_TYPE_V2, "a.b.C");
+        IIpsObject obj1 = newIpsObject(rootPackage, IpsObjectType.PRODUCT_CMPT_TYPE, "a.b.A");
+        IIpsObject obj2 = newIpsObject(rootPackage, IpsObjectType.PRODUCT_CMPT_TYPE, "a.b.B");
+        IIpsObject obj3 = newIpsObject(rootPackage, IpsObjectType.PRODUCT_CMPT_TYPE, "a.b.C");
 
-        IIpsObject obj4 = newIpsObject(rootPackage, IpsObjectType.PRODUCT_CMPT_TYPE_V2, "a.c.D");
-        IIpsObject obj5 = newIpsObject(rootPackage, IpsObjectType.PRODUCT_CMPT_TYPE_V2, "a.c.E");
-        IIpsObject obj6 = newIpsObject(rootPackage, IpsObjectType.PRODUCT_CMPT_TYPE_V2, "a.c.F");
+        IIpsObject obj4 = newIpsObject(rootPackage, IpsObjectType.PRODUCT_CMPT_TYPE, "a.c.D");
+        IIpsObject obj5 = newIpsObject(rootPackage, IpsObjectType.PRODUCT_CMPT_TYPE, "a.c.E");
+        IIpsObject obj6 = newIpsObject(rootPackage, IpsObjectType.PRODUCT_CMPT_TYPE, "a.c.F");
         
         IpsPackageFragment fragment = (IpsPackageFragment)obj1.getIpsPackageFragment();
 

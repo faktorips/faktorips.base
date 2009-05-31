@@ -96,7 +96,7 @@ public class IpsProjectNamingConventionsTest extends AbstractIpsPluginTest {
     }
 
     public void testValidateNameForProductCmptType() throws CoreException {
-        IpsObjectType type = IpsObjectType.PRODUCT_CMPT_TYPE_V2;
+        IpsObjectType type = IpsObjectType.PRODUCT_CMPT_TYPE;
         testCommonJavaTypeNameValidation(type); 
     }
     

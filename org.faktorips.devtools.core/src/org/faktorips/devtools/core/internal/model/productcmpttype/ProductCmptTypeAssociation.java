@@ -65,7 +65,7 @@ public class ProductCmptTypeAssociation extends Association implements IProductC
      * {@inheritDoc}
      */
     public IProductCmptType findTargetProductCmptType(IIpsProject ipsProject) throws CoreException {
-        return (IProductCmptType)ipsProject.findIpsObject(IpsObjectType.PRODUCT_CMPT_TYPE_V2, getTarget());
+        return (IProductCmptType)ipsProject.findIpsObject(IpsObjectType.PRODUCT_CMPT_TYPE, getTarget());
     }
     
     /**

@@ -54,7 +54,7 @@ public class ProductCmptTypePage extends TypePage {
      * @throws JavaModelException
      */
     public ProductCmptTypePage(IStructuredSelection selection, PcTypePage pcTypePage) throws JavaModelException {
-        super(IpsObjectType.PRODUCT_CMPT_TYPE_V2, selection, Messages.ProductCmptTypePage_title);
+        super(IpsObjectType.PRODUCT_CMPT_TYPE, selection, Messages.ProductCmptTypePage_title);
         this.pageOfAssociatedType = pcTypePage;
         setImageDescriptor(IpsUIPlugin.getDefault().getImageDescriptor("wizards/NewProductCmptTypeWizard.png")); //$NON-NLS-1$
     }

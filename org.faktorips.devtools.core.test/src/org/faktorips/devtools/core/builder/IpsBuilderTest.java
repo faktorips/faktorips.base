@@ -270,7 +270,7 @@ public class IpsBuilderTest extends AbstractIpsPluginTest {
         }
 
         public boolean isBuilderFor(IIpsSrcFile ipsSrcFile) throws CoreException {
-            return ipsSrcFile.getIpsObjectType().equals(IpsObjectType.PRODUCT_CMPT_TYPE_V2)
+            return ipsSrcFile.getIpsObjectType().equals(IpsObjectType.PRODUCT_CMPT_TYPE)
                 || ipsSrcFile.getIpsObjectType().equals(IpsObjectType.POLICY_CMPT_TYPE)
                 || ipsSrcFile.getIpsObjectType().equals(IpsObjectType.PRODUCT_CMPT);
         }

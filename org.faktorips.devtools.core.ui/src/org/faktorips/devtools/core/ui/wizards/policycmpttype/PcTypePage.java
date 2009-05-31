@@ -145,7 +145,7 @@ public class PcTypePage extends TypePage {
             return;
         }
         setErrorMessage(TypeValidations.validateOtherTypeWithSameNameTypeInIpsObjectPath(
-                IpsObjectType.PRODUCT_CMPT_TYPE_V2, getQualifiedIpsObjectName(), getIpsProject(), null));
+                IpsObjectType.PRODUCT_CMPT_TYPE, getQualifiedIpsObjectName(), getIpsProject(), null));
     }
 
     /**

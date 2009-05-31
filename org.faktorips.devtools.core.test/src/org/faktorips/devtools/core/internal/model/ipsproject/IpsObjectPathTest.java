@@ -312,13 +312,13 @@ public class IpsObjectPathTest extends AbstractIpsPluginTest {
     
     public void testFindIpsSrcFiles() throws Exception{
     
-        IIpsObject obj1 = newIpsObject(ipsProject, IpsObjectType.PRODUCT_CMPT_TYPE_V2, "a.b.A");
-        IIpsObject obj2 = newIpsObject(ipsProject, IpsObjectType.PRODUCT_CMPT_TYPE_V2, "a.b.B");
-        IIpsObject obj3 = newIpsObject(ipsProject, IpsObjectType.PRODUCT_CMPT_TYPE_V2, "a.b.C");
+        IIpsObject obj1 = newIpsObject(ipsProject, IpsObjectType.PRODUCT_CMPT_TYPE, "a.b.A");
+        IIpsObject obj2 = newIpsObject(ipsProject, IpsObjectType.PRODUCT_CMPT_TYPE, "a.b.B");
+        IIpsObject obj3 = newIpsObject(ipsProject, IpsObjectType.PRODUCT_CMPT_TYPE, "a.b.C");
         
         ArrayList result = new ArrayList();
         Set visitedEntries = new HashSet();
-        ((IpsObjectPath)ipsProject.getIpsObjectPath()).findIpsSrcFiles(IpsObjectType.PRODUCT_CMPT_TYPE_V2, result, visitedEntries);
+        ((IpsObjectPath)ipsProject.getIpsObjectPath()).findIpsSrcFiles(IpsObjectType.PRODUCT_CMPT_TYPE, result, visitedEntries);
         
         assertTrue(result.contains(obj1.getIpsSrcFile()));
         assertTrue(result.contains(obj2.getIpsSrcFile()));

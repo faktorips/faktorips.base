@@ -153,7 +153,7 @@ public class ArchiveIpsPackageFragmentRootTest extends AbstractIpsPluginTest {
         assertTrue(qualifiedNameTypes.contains(new QualifiedNameType("motor.collision.CollisionCoverage", IpsObjectType.POLICY_CMPT_TYPE)));
         
         result = new ArrayList();
-        root.findIpsSourceFiles(IpsObjectType.PRODUCT_CMPT_TYPE_V2, result);
+        root.findIpsSourceFiles(IpsObjectType.PRODUCT_CMPT_TYPE, result);
         assertEquals(1, result.size());
 
         result = new ArrayList();

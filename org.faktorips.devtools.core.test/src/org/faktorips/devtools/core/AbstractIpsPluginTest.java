@@ -538,7 +538,7 @@ public abstract class AbstractIpsPluginTest extends XmlAbstractTestCase {
      * @throws CoreException
      */
     protected ProductCmptType newProductCmptType(IIpsProject ipsProject, String qualifiedName) throws CoreException {
-        return (ProductCmptType)newIpsObject(ipsProject, IpsObjectType.PRODUCT_CMPT_TYPE_V2, qualifiedName);
+        return (ProductCmptType)newIpsObject(ipsProject, IpsObjectType.PRODUCT_CMPT_TYPE, qualifiedName);
     }
 
     /**
@@ -549,7 +549,7 @@ public abstract class AbstractIpsPluginTest extends XmlAbstractTestCase {
      */
     protected ProductCmptType newProductCmptType(final IIpsPackageFragmentRoot root, final String qualifiedName)
             throws CoreException {
-        return (ProductCmptType)newIpsObject(root, IpsObjectType.PRODUCT_CMPT_TYPE_V2, qualifiedName);
+        return (ProductCmptType)newIpsObject(root, IpsObjectType.PRODUCT_CMPT_TYPE, qualifiedName);
     }
 
     /**

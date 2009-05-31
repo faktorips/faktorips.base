@@ -463,7 +463,7 @@ public class StandardBuilderSet extends DefaultBuilderSet {
         if (ComplianceCheck.isComplianceLevelAtLeast5(getIpsProject())) {
             ModelTypeXmlBuilder policyModelTypeBuilder = new ModelTypeXmlBuilder(IpsObjectType.POLICY_CMPT_TYPE, this,
                     KIND_MODEL_TYPE);
-            ModelTypeXmlBuilder productModelTypeBuilder = new ModelTypeXmlBuilder(IpsObjectType.PRODUCT_CMPT_TYPE_V2,
+            ModelTypeXmlBuilder productModelTypeBuilder = new ModelTypeXmlBuilder(IpsObjectType.PRODUCT_CMPT_TYPE,
                     this, KIND_MODEL_TYPE);
             tocFileBuilder.setPolicyModelTypeXmlBuilder(policyModelTypeBuilder);
             tocFileBuilder.setProductModelTypeXmlBuilder(productModelTypeBuilder);

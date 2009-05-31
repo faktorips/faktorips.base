@@ -47,7 +47,7 @@ public class ProductCmptType2RefControl extends IpsObjectRefControl {
         if (getIpsProject()==null) {
             return new IIpsSrcFile[0];
         }
-        IIpsSrcFile[] allProductCmptTypes = getIpsProject().findIpsSrcFiles(IpsObjectType.PRODUCT_CMPT_TYPE_V2);
+        IIpsSrcFile[] allProductCmptTypes = getIpsProject().findIpsSrcFiles(IpsObjectType.PRODUCT_CMPT_TYPE);
         ArrayList result = new ArrayList();
         for (int i = 0; i < allProductCmptTypes.length; i++) {
             if (!excludeAbstractTypes

@@ -61,9 +61,9 @@ public class DefaultIpsProjectNamingConventions implements IIpsProjectNamingConv
         this.ipsProject = ipsProject;
 
         // initialize special error texts depending on the object type
-        errorMsgTxtNameIsEmpty.put(IpsObjectType.OLD_PRODUCT_CMPT_TYPE,
+        errorMsgTxtNameIsEmpty.put(IpsObjectType.PRODUCT_CMPT_TYPE,
                 Messages.DefaultIpsProjectNamingConventions_msgMissingNameForProductCmpt);
-        errorMsgTxtNameIsQualified.put(IpsObjectType.OLD_PRODUCT_CMPT_TYPE,
+        errorMsgTxtNameIsQualified.put(IpsObjectType.PRODUCT_CMPT_TYPE,
                 Messages.DefaultIpsProjectNamingConventions_msgNameNotValidForProductCmpt);
     }
 
@@ -128,7 +128,7 @@ public class DefaultIpsProjectNamingConventions implements IIpsProjectNamingConv
             MessageList ml = validateNameForPolicyCmptType(name, qualifiedCheck);
             result.add(ml);
             return result;
-        } else if (IpsObjectType.PRODUCT_CMPT_TYPE_V2.equals(type)) {
+        } else if (IpsObjectType.PRODUCT_CMPT_TYPE.equals(type)) {
             MessageList ml = validateNameForProductCmptType(name, qualifiedCheck);
             result.add(ml);
             return result;

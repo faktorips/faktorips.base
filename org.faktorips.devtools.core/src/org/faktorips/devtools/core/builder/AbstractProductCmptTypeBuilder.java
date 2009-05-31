@@ -56,7 +56,7 @@ public abstract class AbstractProductCmptTypeBuilder extends AbstractTypeBuilder
      * {@inheritDoc}
      */
     public boolean isBuilderFor(IIpsSrcFile ipsSrcFile) throws CoreException {
-        return IpsObjectType.PRODUCT_CMPT_TYPE_V2.equals(ipsSrcFile.getIpsObjectType());
+        return IpsObjectType.PRODUCT_CMPT_TYPE.equals(ipsSrcFile.getIpsObjectType());
     }
 
     /**

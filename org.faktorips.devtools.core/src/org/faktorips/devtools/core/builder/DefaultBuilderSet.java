@@ -196,7 +196,7 @@ public abstract class DefaultBuilderSet extends AbstractBuilderSet {
 
         }
 
-        if (IpsObjectType.PRODUCT_CMPT_TYPE_V2.equals(ipsSrcFile.getIpsObjectType())) {
+        if (IpsObjectType.PRODUCT_CMPT_TYPE.equals(ipsSrcFile.getIpsObjectType())) {
             if (KIND_PRODUCT_CMPT_INTERFACE.equals(kind)) {
                 return getPackageName(ipsSrcFile);
             }

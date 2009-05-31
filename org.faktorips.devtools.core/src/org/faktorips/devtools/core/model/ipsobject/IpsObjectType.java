@@ -61,14 +61,8 @@ public class IpsObjectType {
     /**
      * Type for product component type.
      */
-    public final static IpsObjectType PRODUCT_CMPT_TYPE_V2 = new IpsObjectType(
+    public final static IpsObjectType PRODUCT_CMPT_TYPE = new IpsObjectType(
             "ProductCmptType2", "ProductCmptType2", Messages.IpsObjectType_nameProductClass, "ipsproductcmpttype", true, false, "ProductCmptType.gif", "ProductCmptTypeDisabled.gif"); //$NON-NLS-1$  //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
-
-    /**
-     * Type for product component type.
-     */
-    public final static IpsObjectType OLD_PRODUCT_CMPT_TYPE = new IpsObjectType(
-            "ProductCmptType", "ProductCmptType", Messages.IpsObjectType_nameProductClass, "ipsproductcmpttype", false, false, "PolicyCmptType.gif", "PolicyCmptTypeDisabled.gif"); //$NON-NLS-1$  //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
 
     /**
      * Type for table structures.
@@ -190,7 +184,7 @@ public class IpsObjectType {
         if (this == POLICY_CMPT_TYPE) {
             return new PolicyCmptType(file);
         }
-        if (this == PRODUCT_CMPT_TYPE_V2) {
+        if (this == PRODUCT_CMPT_TYPE) {
             return new ProductCmptType(file);
         }
         if (this == TABLE_STRUCTURE) {
@@ -258,7 +252,6 @@ public class IpsObjectType {
     public final String getFileExtension() {
         return fileExtension;
     }
-
     /**
      * Returns <code>true</code> if the ips objects of this type are also datatypes, otherwise
      * <code>false</code>.
@@ -274,7 +267,7 @@ public class IpsObjectType {
      * product component type), otherwise <code>false</code>.
      */
     public boolean isEntityType() {
-        return this == POLICY_CMPT_TYPE || this == PRODUCT_CMPT_TYPE_V2;
+        return this == POLICY_CMPT_TYPE || this == PRODUCT_CMPT_TYPE;
     }
     
     /**

@@ -804,7 +804,7 @@ public class IpsProject extends IpsElement implements IIpsProject {
      * {@inheritDoc}
      */
     public IProductCmptType findProductCmptType(String qualifiedName) throws CoreException {
-        return (IProductCmptType)findIpsObject(IpsObjectType.PRODUCT_CMPT_TYPE_V2, qualifiedName);
+        return (IProductCmptType)findIpsObject(IpsObjectType.PRODUCT_CMPT_TYPE, qualifiedName);
     }
 
     /**
@@ -1814,7 +1814,7 @@ public class IpsProject extends IpsElement implements IIpsProject {
         IProductCmptNamingStrategy strategyI = null;
         IProductCmptNamingStrategy strategyJ = null;
         for (int i = 0; i < cmptsToCheck.length; i++) {
-            ArgumentCheck.equals(cmptsToCheck[i].getIpsObjectType(), IpsObjectType.PRODUCT_CMPT_TYPE_V2);
+            ArgumentCheck.equals(cmptsToCheck[i].getIpsObjectType(), IpsObjectType.PRODUCT_CMPT_TYPE);
 
             IIpsSrcFile productCmptToCheck = (IIpsSrcFile)cmptsToCheck[i];
             strategyI = productCmptToCheck.getIpsProject().getProductCmptNamingStrategy();
@@ -1824,7 +1824,7 @@ public class IpsProject extends IpsElement implements IIpsProject {
                 // i, index j can start allways with i+1 without overlooking some product
                 // component combinations.
                 for (int j = i + 1; j < cmptsToCheck.length; j++) {
-                    ArgumentCheck.equals(cmptsToCheck[j].getIpsObjectType(), IpsObjectType.PRODUCT_CMPT_TYPE_V2);
+                    ArgumentCheck.equals(cmptsToCheck[j].getIpsObjectType(), IpsObjectType.PRODUCT_CMPT_TYPE);
                     IIpsSrcFile productCmptToCheckB = (IIpsSrcFile)cmptsToCheck[j];
                     strategyJ = productCmptToCheckB.getIpsProject().getProductCmptNamingStrategy();
                     checkRuntimeId(strategyI, productCmptToCheck, productCmptToCheckB, result, true);
@@ -1834,7 +1834,7 @@ public class IpsProject extends IpsElement implements IIpsProject {
                 }
             } else {
                 for (int j = 0; j < baseCheck.length; j++) {
-                    ArgumentCheck.equals(baseCheck[j].getIpsObjectType(), IpsObjectType.PRODUCT_CMPT_TYPE_V2);
+                    ArgumentCheck.equals(baseCheck[j].getIpsObjectType(), IpsObjectType.PRODUCT_CMPT_TYPE);
                     IIpsSrcFile productCmptToCheckB = (IIpsSrcFile)baseCheck[j];
                     if (!productCmptToCheck.getQualifiedNameType().equals((productCmptToCheckB.getQualifiedNameType()))) {
                         strategyJ = productCmptToCheckB.getIpsProject().getProductCmptNamingStrategy();

@@ -342,7 +342,7 @@ public class PolicyCmptType extends Type implements IPolicyCmptType {
     protected void validateThis(MessageList list, IIpsProject ipsProject) throws CoreException {
         super.validateThis(list, ipsProject);
         validateProductSide(list, ipsProject);
-        list.add(TypeValidations.validateOtherTypeWithSameNameTypeInIpsObjectPath(IpsObjectType.PRODUCT_CMPT_TYPE_V2,
+        list.add(TypeValidations.validateOtherTypeWithSameNameTypeInIpsObjectPath(IpsObjectType.PRODUCT_CMPT_TYPE,
                 getQualifiedName(), ipsProject, this));
         validateDuplicateRulesNames(list);
     }
@@ -355,7 +355,7 @@ public class PolicyCmptType extends Type implements IPolicyCmptType {
                         IPolicyCmptType.PROPERTY_PRODUCT_CMPT_TYPE));
             } else {
                 IProductCmptType productCmptTypeObj = (IProductCmptType)ValidationUtils.checkIpsObjectReference2(
-                        productCmptType, IpsObjectType.PRODUCT_CMPT_TYPE_V2, Messages.PolicyCmptType_productCmptType,
+                        productCmptType, IpsObjectType.PRODUCT_CMPT_TYPE, Messages.PolicyCmptType_productCmptType,
                         this, IPolicyCmptType.PROPERTY_PRODUCT_CMPT_TYPE,
                         IPolicyCmptType.MSGCODE_PRODUCT_CMPT_TYPE_NOT_FOUND, list, ipsProject);
                 if (productCmptTypeObj != null) {
@@ -470,11 +470,11 @@ public class PolicyCmptType extends Type implements IPolicyCmptType {
         Set dependencies = new HashSet();
         if (!StringUtils.isEmpty(getProductCmptType())) {
             dependencies.add(IpsObjectDependency.createReferenceDependency(getQualifiedNameType(),
-                    new QualifiedNameType(getProductCmptType(), IpsObjectType.PRODUCT_CMPT_TYPE_V2)));
+                    new QualifiedNameType(getProductCmptType(), IpsObjectType.PRODUCT_CMPT_TYPE)));
         }
         // to force a check is a product component type exists with the same qualified name
         dependencies.add(IpsObjectDependency.createReferenceDependency(getQualifiedNameType(), new QualifiedNameType(
-                getQualifiedName(), IpsObjectType.PRODUCT_CMPT_TYPE_V2)));
+                getQualifiedName(), IpsObjectType.PRODUCT_CMPT_TYPE)));
         dependsOn(dependencies);
         return (IDependency[])dependencies.toArray(new IDependency[dependencies.size()]);
     }

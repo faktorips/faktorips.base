@@ -115,7 +115,7 @@ public class ProductCmptType extends Type implements IProductCmptType {
      * {@inheritDoc}
      */
     public IpsObjectType getIpsObjectType() {
-        return IpsObjectType.PRODUCT_CMPT_TYPE_V2;
+        return IpsObjectType.PRODUCT_CMPT_TYPE;
     }
 
     /**
@@ -167,7 +167,7 @@ public class ProductCmptType extends Type implements IProductCmptType {
      * {@inheritDoc}
      */
     public IProductCmptType findSuperProductCmptType(IIpsProject project) throws CoreException {
-        return (IProductCmptType)project.findIpsObject(IpsObjectType.PRODUCT_CMPT_TYPE_V2, getSupertype());
+        return (IProductCmptType)project.findIpsObject(IpsObjectType.PRODUCT_CMPT_TYPE, getSupertype());
     }
     
     /**
