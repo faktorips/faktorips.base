@@ -156,7 +156,7 @@ public class RuleFunctionsControl extends EditTableControl {
     
     private MessageList validate(Object element) throws CoreException {
         IndexFctNameWrapper wrapper = (IndexFctNameWrapper)element;
-        return rule.validate(rule.getIpsProject()).getMessagesFor(wrapper.getFctName());
+        return rule.validate(rule.getIpsProject()).getMessagesFor(rule, IValidationRule.PROPERTY_BUSINESS_FUNCTIONS, wrapper.index);
     }
 
     /**
@@ -290,4 +290,5 @@ public class RuleFunctionsControl extends EditTableControl {
         }
         
     }
+        
 }
