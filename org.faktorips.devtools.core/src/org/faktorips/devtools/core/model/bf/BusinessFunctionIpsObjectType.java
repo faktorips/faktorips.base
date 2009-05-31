@@ -20,7 +20,7 @@ import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
 
 /**
- * The ips object type of a business function. A reference to this class is made in an
+ * The ips object type for a business function. A reference to this class is made in an
  * extension of the extension-point <code>org.faktorips.devtools.core.ipsobjecttype</code>
  * 
  * @author Peter Erzberger
@@ -30,7 +30,11 @@ public class BusinessFunctionIpsObjectType extends IpsObjectType {
     public final static String ID = "org.faktorips.devtools.bf.model.BusinessFunction"; //$NON-NLS-1$
 
     public BusinessFunctionIpsObjectType() {
-        super("BusinessFunction", ID, "BusinessFunction", "ipsbusinessfunction", false, false, "BusinessFunction.gif", //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
+        super(ID, 
+                "BusinessFunction", //xml element name $NON-NLS-1$   //$NON-NLS-1$
+                Messages.getString("BusinessFunctionIpsObjectType.displayName"), //display name //$NON-NLS-1$
+                "ipsbusinessfunction", //$NON-NLS-1$
+                false, false, "BusinessFunction.gif", //$NON-NLS-1$
                 "BusinessFunctionDisabled.gif"); //$NON-NLS-1$
     }
 

@@ -11,7 +11,7 @@
  * Mitwirkende: Faktor Zehn AG - initial API and implementation - http://www.faktorzehn.de
  *******************************************************************************/
 
-package org.faktorips.devtools.core.model;
+package org.faktorips.devtools.core.model.ipsobject;
 
 import org.eclipse.osgi.util.NLS;
 
@@ -21,7 +21,7 @@ import org.eclipse.osgi.util.NLS;
  */
 public class Messages extends NLS {
 
-    private static final String BUNDLE_NAME = "org.faktorips.devtools.core.model.messages"; //$NON-NLS-1$
+    private static final String BUNDLE_NAME = "org.faktorips.devtools.core.model.ipsobject.messages"; //$NON-NLS-1$
 
     private Messages() {
 
@@ -32,5 +32,24 @@ public class Messages extends NLS {
         NLS.initializeMessages(BUNDLE_NAME, Messages.class);
     }
 
-    public static String CreateIpsArchiveOperation_Task_CreateArchive;
+    public static String IpsObjectType_nameEnumContent;
+    
+    public static String IpsObjectType_nameEnumType;
+    
+    public static String IpsObjectType_nameBusinessFunction;
+
+    public static String IpsObjectType_namePolicyClass;
+
+    public static String IpsObjectType_nameProductClass;
+
+    public static String IpsObjectType_nameTableStructure;
+
+    public static String IpsObjectType_nameProductComponent;
+
+    public static String IpsObjectType_nameTableContents;
+
+    public static String IpsObjectType_nameTestCaseType;
+
+    public static String IpsObjectType_nameTestCase;
+
 }

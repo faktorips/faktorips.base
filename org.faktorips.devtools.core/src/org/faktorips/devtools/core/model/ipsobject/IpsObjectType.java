@@ -25,7 +25,6 @@ import org.faktorips.devtools.core.internal.model.tablecontents.TableContents;
 import org.faktorips.devtools.core.internal.model.tablestructure.TableStructure;
 import org.faktorips.devtools.core.internal.model.testcase.TestCase;
 import org.faktorips.devtools.core.internal.model.testcasetype.TestCaseType;
-import org.faktorips.devtools.core.model.Messages;
 import org.faktorips.util.ArgumentCheck;
 
 /**
@@ -279,7 +278,7 @@ public class IpsObjectType {
     }
     
     /**
-     * Returns <code>true</code> if instanced of this type are product definition objects, otherwise
+     * Returns <code>true</code> if instances of this type are product definition objects, otherwise
      * <code>false</code>. Currently product components, enum values, table contents and test cases
      * are product definition objects.
      * 
@@ -348,9 +347,8 @@ public class IpsObjectType {
 
     /**
      * Creates a new ips object type.
-     * 
+     * @param id The name of the new ips object type.
      * @param xmlElementName The name for the xml element.
-     * @param name The name of the new ips object type.
      * @param displayName A human readable name for the new ips object type.
      * @param fileExtension The file extension for the new ips object type.
      * @param datatype Flag indicating whether this new ips object type represents a datatype.
@@ -362,16 +360,16 @@ public class IpsObjectType {
      * @throws NullPointerException If any of xmlElementName, name, fileExtension or enableImage is
      *             <code>null</code>.
      */
-    public IpsObjectType(String xmlElementName, String name, String displayName, String fileExtension,
+    public IpsObjectType(String id, String xmlElementName, String displayName, String fileExtension,
             boolean datatype, boolean productDefinitionType, String enabledImage, String disabledImage) {
 
         ArgumentCheck.notNull(xmlElementName);
-        ArgumentCheck.notNull(name);
+        ArgumentCheck.notNull(id);
         ArgumentCheck.notNull(fileExtension);
         ArgumentCheck.notNull(enabledImage);
 
+        this.id = id;
         this.xmlElementName = xmlElementName;
-        this.id = name;
         this.displayName = displayName;
         this.fileExtension = fileExtension;
         this.datatype = datatype;
