@@ -31,7 +31,7 @@ import org.faktorips.devtools.core.ui.editors.SimpleIpsPartsSection;
 
 
 /**
- *
+ * Section to display the validation rules.
  */
 public class RulesSection extends SimpleIpsPartsSection {
 
