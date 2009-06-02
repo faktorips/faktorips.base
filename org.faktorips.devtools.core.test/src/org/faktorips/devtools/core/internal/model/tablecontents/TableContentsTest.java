@@ -302,4 +302,17 @@ public class TableContentsTest extends AbstractIpsPluginTest {
         MessageList msgList = enumType.validate(project);
         assertNotNull(msgList.getMessageByCode(ITableContents.MSGCODE_NAME_OF_STRUCTURE_AND_CONTENTS_NOT_THE_SAME_WHEN_ENUM));
     }
+    
+    /**
+     * test the findMetaClass method
+     * @throws CoreException
+     */
+    public void testFindMetaClass() throws CoreException {
+    	ITableStructure structure = newTableStructure(project, "Structure");
+    	table.setTableStructure(structure.getQualifiedName());
+
+        IIpsSrcFile typeSrcFile = table.findMetaClassSrcFile(project);
+        assertEquals(structure.getIpsSrcFile(), typeSrcFile);
+    }
+
 }

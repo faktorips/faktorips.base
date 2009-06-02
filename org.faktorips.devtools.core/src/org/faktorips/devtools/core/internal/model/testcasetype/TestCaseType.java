@@ -19,6 +19,7 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
+import java.util.TreeSet;
 
 import org.apache.commons.lang.StringUtils;
 import org.eclipse.core.runtime.CoreException;
@@ -43,6 +44,7 @@ import org.faktorips.devtools.core.model.testcasetype.ITestRuleParameter;
 import org.faktorips.devtools.core.model.testcasetype.ITestValueParameter;
 import org.faktorips.devtools.core.model.testcasetype.TestParameterType;
 import org.faktorips.devtools.core.util.ListElementMover;
+import org.faktorips.devtools.core.util.TreeSetHelper;
 import org.w3c.dom.Element;
 
 /**
@@ -569,4 +571,20 @@ public class TestCaseType extends IpsObject implements ITestCaseType {
             }
         }
     }
+
+	/* (non-Javadoc)
+	 * @see org.faktorips.devtools.core.model.IIpsMetaClass#findAllMetaObjects(org.faktorips.devtools.core.model.ipsproject.IIpsProject, boolean)
+	 */
+	/**
+	 * {@inheritDoc}
+	 */
+	public IIpsSrcFile[] findAllMetaObjectSrcFiles(IIpsProject ipsProject,
+			boolean includeSubtypes) throws CoreException {
+		TreeSet<IIpsSrcFile> result = TreeSetHelper.newIpsSrcFileTreeSet();
+		IIpsProject[] searchProjects = ipsProject.getReferencingProjectLeavesOrSelf();
+		for (IIpsProject project : searchProjects) {
+			result.addAll(Arrays.asList(project.findAllTestCaseSrcFiles(this)));
+		}
+		return result.toArray(new IIpsSrcFile[result.size()]);
+	}
 }

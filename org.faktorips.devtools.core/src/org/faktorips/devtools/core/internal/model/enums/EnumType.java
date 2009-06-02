@@ -14,8 +14,10 @@
 package org.faktorips.devtools.core.internal.model.enums;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.NoSuchElementException;
+import java.util.TreeSet;
 
 import org.apache.commons.lang.ObjectUtils;
 import org.eclipse.core.resources.IWorkspaceRunnable;
@@ -37,6 +39,7 @@ import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
 import org.faktorips.devtools.core.model.ipsobject.QualifiedNameType;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
+import org.faktorips.devtools.core.util.TreeSetHelper;
 import org.faktorips.util.ArgumentCheck;
 import org.faktorips.util.message.Message;
 import org.faktorips.util.message.MessageList;
@@ -148,6 +151,36 @@ public class EnumType extends EnumValueContainer implements IEnumType {
         superEnumType = superEnumTypeQualifiedName;
         valueChanged(oldSupertype, superEnumType);
     }
+    
+    /**
+     * {@inheritDoc}
+     */
+    public boolean isSubEnumTypeOf(IEnumType superEnumTypeCandidate, IIpsProject ipsProject) throws CoreException {
+        if (superEnumTypeCandidate == null) {
+            return false;
+        }
+        IEnumType superEnumType = findSuperEnumType(ipsProject);
+        if (superEnumType==null) {
+            return false;
+        }
+        if (superEnumTypeCandidate.equals(superEnumType)) {
+            return true;
+        }
+        IsSubEnumTypeOfVisitor visitor = new IsSubEnumTypeOfVisitor(ipsProject, superEnumTypeCandidate);
+        visitor.start(superEnumType);
+        return visitor.isSubtype();
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public boolean isSubEnumTypeOrSelf(IEnumType superEnumTypeCandidate, IIpsProject ipsProject) throws CoreException {
+        if (this.equals(superEnumTypeCandidate)) {
+            return true;
+        }
+        return isSubEnumTypeOf(superEnumTypeCandidate, ipsProject);
+    }
+
 
     /**
      * {@inheritDoc}
@@ -1112,4 +1145,47 @@ public class EnumType extends EnumValueContainer implements IEnumType {
 
     }
 
+    private static class IsSubEnumTypeOfVisitor extends EnumTypeHierachyVisitor {
+
+        private IEnumType superEnumTypeCandidate;
+        private boolean subEnumType = false;
+        
+        public IsSubEnumTypeOfVisitor(IIpsProject ipsProject, IEnumType superEnumTypeCandidate) {
+            super(ipsProject);
+            ArgumentCheck.notNull(superEnumTypeCandidate);
+            this.superEnumTypeCandidate = superEnumTypeCandidate;
+        }
+        
+        boolean isSubtype() {
+            return subEnumType;
+        }
+
+		@Override
+		protected boolean visit(IEnumType currentEnumType) throws CoreException {
+			if (currentEnumType == superEnumTypeCandidate) {
+				subEnumType = true;
+				return false;
+			}
+			return true;
+		}
+
+        
+    }
+
+	/* (non-Javadoc)
+	 * @see org.faktorips.devtools.core.model.IIpsMetaClass#findAllMetaObjects(org.faktorips.devtools.core.model.ipsproject.IIpsProject, boolean)
+	 */
+	/**
+	 * {@inheritDoc}
+	 */
+	public IIpsSrcFile[] findAllMetaObjectSrcFiles(IIpsProject ipsProject,
+			boolean includeSubtypes) throws CoreException {
+		TreeSet<IIpsSrcFile> result = TreeSetHelper.newIpsSrcFileTreeSet();
+		IIpsProject[] searchProjects = ipsProject.getReferencingProjectLeavesOrSelf();
+		for (IIpsProject project : searchProjects) {
+			result.addAll(Arrays.asList(project.findAllEnumContentSrcFiles(this, includeSubtypes)));
+		}
+		return result.toArray(new IIpsSrcFile[result.size()]);
+	}    
+    
 }

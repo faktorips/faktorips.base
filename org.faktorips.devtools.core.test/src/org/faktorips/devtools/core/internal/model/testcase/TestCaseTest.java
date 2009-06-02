@@ -21,6 +21,7 @@ import org.eclipse.core.runtime.CoreException;
 import org.faktorips.devtools.core.AbstractIpsPluginTest;
 import org.faktorips.devtools.core.internal.model.pctype.PolicyCmptType;
 import org.faktorips.devtools.core.model.IpsObjectDependency;
+import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
 import org.faktorips.devtools.core.model.ipsproject.IIpsPackageFragmentRoot;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
@@ -738,4 +739,14 @@ public class TestCaseTest extends AbstractIpsPluginTest {
             }
         }
     }
+    
+    /**
+     * test the findMetaClass method
+     * @throws CoreException
+     */
+    public void testFindMetaClass() throws CoreException {
+        IIpsSrcFile typeSrcFile = testCase.findMetaClassSrcFile(ipsProject);
+        assertEquals(testCaseType.getIpsSrcFile(), typeSrcFile);
+    }
+
 }

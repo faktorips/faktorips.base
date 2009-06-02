@@ -14,6 +14,7 @@
 package org.faktorips.devtools.core.model.productcmpttype;
 
 import org.eclipse.core.runtime.CoreException;
+import org.faktorips.devtools.core.model.IIpsMetaClass;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObject;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
@@ -26,7 +27,7 @@ import org.faktorips.devtools.core.model.type.IType;
  * 
  * @author Jan Ortmann
  */
-public interface IProductCmptType extends IIpsObject, IType {
+public interface IProductCmptType extends IType, IIpsMetaClass {
 
     public String PROPERTY_POLICY_CMPT_TYPE = "policyCmptType"; //$NON-NLS-1$
     

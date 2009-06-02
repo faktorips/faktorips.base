@@ -14,6 +14,7 @@
 package org.faktorips.devtools.core.model.tablecontents;
 
 import org.eclipse.core.runtime.CoreException;
+import org.faktorips.devtools.core.model.IIpsMetaObject;
 import org.faktorips.devtools.core.model.XmlSaxSupport;
 import org.faktorips.devtools.core.model.ipsobject.ITimedIpsObject;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
@@ -23,7 +24,7 @@ import org.faktorips.devtools.core.model.tablestructure.ITableStructure;
 /**
  *
  */
-public interface ITableContents extends ITimedIpsObject, XmlSaxSupport {
+public interface ITableContents extends IIpsMetaObject, ITimedIpsObject, XmlSaxSupport {
 
     public final static String PROPERTY_TABLESTRUCTURE = "tableStructure"; //$NON-NLS-1$
     public final static String PROPERTY_NUMOFCOLUMNS = "numOfColumns"; //$NON-NLS-1$

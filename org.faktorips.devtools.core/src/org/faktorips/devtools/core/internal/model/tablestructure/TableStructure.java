@@ -14,8 +14,10 @@
 package org.faktorips.devtools.core.internal.model.tablestructure;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
+import java.util.TreeSet;
 
 import org.eclipse.core.runtime.CoreException;
 import org.faktorips.devtools.core.internal.model.ipsobject.IpsObject;
@@ -33,6 +35,7 @@ import org.faktorips.devtools.core.model.tablestructure.ITableAccessFunction;
 import org.faktorips.devtools.core.model.tablestructure.ITableStructure;
 import org.faktorips.devtools.core.model.tablestructure.IUniqueKey;
 import org.faktorips.devtools.core.util.ListElementMover;
+import org.faktorips.devtools.core.util.TreeSetHelper;
 import org.faktorips.util.ArgumentCheck;
 import org.faktorips.util.message.Message;
 import org.faktorips.util.message.MessageList;
@@ -603,5 +606,21 @@ public class TableStructure extends IpsObject implements ITableStructure {
             list.add(new Message(MSGCODE_MORE_THAN_ONE_KEY_NOT_ADVISABLE_IN_FORMULAS, Messages.TableStructure_msgMoreThanOneKeyNotAdvisableInFormulas, Message.WARNING, this));
         }
     }
+
+	/* (non-Javadoc)
+	 * @see org.faktorips.devtools.core.model.IIpsMetaClass#findAllMetaObjects(org.faktorips.devtools.core.model.ipsproject.IIpsProject, boolean)
+	 */
+	/**
+	 * {@inheritDoc}
+	 */
+	public IIpsSrcFile[] findAllMetaObjectSrcFiles(IIpsProject ipsProject,
+			boolean includeSubtypes) throws CoreException {
+		TreeSet<IIpsSrcFile> result = TreeSetHelper.newIpsSrcFileTreeSet();
+		IIpsProject[] searchProjects = ipsProject.getReferencingProjectLeavesOrSelf();
+		for (IIpsProject project : searchProjects) {
+			result.addAll(Arrays.asList(project.findAllTableContentsSrcFiles(this)));
+		}
+		return result.toArray(new IIpsSrcFile[result.size()]);
+	}
 
 }

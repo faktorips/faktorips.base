@@ -19,6 +19,7 @@ import java.util.GregorianCalendar;
 import javax.xml.parsers.SAXParser;
 import javax.xml.parsers.SAXParserFactory;
 
+import org.apache.commons.lang.NotImplementedException;
 import org.apache.commons.lang.StringUtils;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.osgi.util.NLS;
@@ -138,6 +139,7 @@ public class TableContents extends TimedIpsObject implements ITableContents {
 
     /**
      * Sets the number of columns
+     * @param numOfColumns 
      */
     public void setNumOfColumnsInternal(int numOfColumns){
         this.numOfColumns = numOfColumns;
@@ -267,4 +269,48 @@ public class TableContents extends TimedIpsObject implements ITableContents {
     public void addExtensionProperty(String propertyId, String extPropertyValue) {
         addExtensionPropertyValue(propertyId, extPropertyValue);
     }
+
+	/* (non-Javadoc)
+	 * @see org.faktorips.devtools.core.model.IIpsMetaObject#findMetaClass(org.faktorips.devtools.core.model.ipsproject.IIpsProject)
+	 */
+	/**
+	 * {@inheritDoc}
+	 */
+	public IIpsSrcFile findMetaClassSrcFile(IIpsProject ipsProject)
+			throws CoreException {
+		return ipsProject.findIpsSrcFile(IpsObjectType.TABLE_STRUCTURE, getTableStructure());
+	}
+
+	/* (non-Javadoc)
+	 * @see org.faktorips.devtools.core.model.ipsobject.IFixDifferencesToModelSupport#containsDifferenceToModel(org.faktorips.devtools.core.model.ipsproject.IIpsProject)
+	 */
+	/**
+	 * {@inheritDoc}
+	 */
+	public boolean containsDifferenceToModel(IIpsProject ipsProject)
+			throws CoreException {
+		throw new NotImplementedException();
+	}
+
+	/* (non-Javadoc)
+	 * @see org.faktorips.devtools.core.model.ipsobject.IFixDifferencesToModelSupport#fixAllDifferencesToModel(org.faktorips.devtools.core.model.ipsproject.IIpsProject)
+	 */
+	/**
+	 * {@inheritDoc}
+	 */
+	public void fixAllDifferencesToModel(IIpsProject ipsProject)
+			throws CoreException {
+		throw new NotImplementedException();
+		
+	}
+
+	/* (non-Javadoc)
+	 * @see org.faktorips.devtools.core.model.IIpsMetaObject#getMetaClass()
+	 */
+	/**
+	 * {@inheritDoc}
+	 */
+	public String getMetaClass() {
+		return getTableStructure();
+	}
 }

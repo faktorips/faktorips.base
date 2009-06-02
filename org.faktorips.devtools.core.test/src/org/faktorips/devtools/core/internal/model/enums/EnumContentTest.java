@@ -23,6 +23,8 @@ import org.faktorips.devtools.core.model.IDependency;
 import org.faktorips.devtools.core.model.IIpsModel;
 import org.faktorips.devtools.core.model.IpsObjectDependency;
 import org.faktorips.devtools.core.model.enums.IEnumContent;
+import org.faktorips.devtools.core.model.enums.IEnumType;
+import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
 import org.faktorips.devtools.core.model.ipsobject.QualifiedNameType;
 import org.faktorips.util.message.MessageList;
@@ -145,5 +147,18 @@ public class EnumContentTest extends AbstractIpsEnumPluginTest {
         genderEnumContent.setEnumType(genderEnumType.getQualifiedName());
         assertEquals(3, genderEnumContent.getReferencedEnumAttributesCount());
     }
+    
+    /**
+     * test the findMetaClass method
+     * @throws CoreException
+     */
+    public void testFindMetaClass() throws CoreException {
+        IEnumType type = newEnumType(ipsProject, "EnumType");
+        EnumContent enumContent = newEnumContent(type, "enumContent");
+
+        IIpsSrcFile typeSrcFile = enumContent.findMetaClassSrcFile(ipsProject);
+        assertEquals(type.getIpsSrcFile(), typeSrcFile);
+    }
+    
 
 }

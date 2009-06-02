@@ -51,6 +51,7 @@ import org.faktorips.devtools.core.builder.TestArtefactBuilderSetInfo;
 import org.faktorips.devtools.core.internal.model.TableContentsEnumDatatypeAdapter;
 import org.faktorips.devtools.core.internal.model.tablestructure.TableStructureType;
 import org.faktorips.devtools.core.model.enums.IEnumAttribute;
+import org.faktorips.devtools.core.model.enums.IEnumContent;
 import org.faktorips.devtools.core.model.enums.IEnumType;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObject;
 import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
@@ -75,6 +76,7 @@ import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
 import org.faktorips.devtools.core.model.tablecontents.ITableContents;
 import org.faktorips.devtools.core.model.tablestructure.ITableStructure;
 import org.faktorips.devtools.core.model.testcase.ITestCase;
+import org.faktorips.devtools.core.model.testcasetype.ITestCaseType;
 import org.faktorips.devtools.core.model.versionmanager.AbstractIpsProjectMigrationOperation;
 import org.faktorips.devtools.core.model.versionmanager.IIpsFeatureVersionManager;
 import org.faktorips.util.message.Message;
@@ -322,6 +324,69 @@ public class IpsProjectTest extends AbstractIpsPluginTest {
         List list = Arrays.asList(baseProject.getReferencingProjects(true));
         assertTrue(list.contains(ipsProject));
         assertTrue(list.contains(ipsProject2));
+    }
+
+    public void testGetReferencingProjectsLeavesOrSelf() throws CoreException {
+        assertEquals(1, baseProject.getReferencingProjectLeavesOrSelf().length);
+        assertEquals(baseProject, baseProject.getReferencingProjectLeavesOrSelf()[0]);
+
+        IIpsObjectPath path = ipsProject.getIpsObjectPath();
+        path.newIpsProjectRefEntry(baseProject);
+        ipsProject.setIpsObjectPath(path);
+
+        assertEquals(1, baseProject.getReferencingProjectLeavesOrSelf().length);
+        assertEquals(ipsProject, baseProject.getReferencingProjectLeavesOrSelf()[0]);
+
+        IIpsProject ipsProject2 = newIpsProject("IpsProject2");
+        path = ipsProject2.getIpsObjectPath();
+        path.newIpsProjectRefEntry(ipsProject);
+        ipsProject2.setIpsObjectPath(path);
+
+        assertEquals(1, baseProject.getReferencingProjectLeavesOrSelf().length);
+        assertEquals(ipsProject2, baseProject.getReferencingProjectLeavesOrSelf()[0]);
+
+        IIpsProject ipsProject3 = newIpsProject("IpsProject3");
+        path = ipsProject3.getIpsObjectPath();
+        path.newIpsProjectRefEntry(baseProject);
+        ipsProject3.setIpsObjectPath(path);
+
+        IIpsProject notIn = newIpsProject("notIn");
+
+        assertEquals(2, baseProject.getReferencingProjectLeavesOrSelf().length);
+        List<IIpsProject> list = Arrays.asList(baseProject.getReferencingProjectLeavesOrSelf());
+        assertTrue(list.contains(ipsProject2));
+        assertTrue(list.contains(ipsProject3));
+
+        path = ipsProject3.getIpsObjectPath();
+        path.newIpsProjectRefEntry(notIn);
+        ipsProject3.setIpsObjectPath(path);
+
+        assertEquals(2, baseProject.getReferencingProjectLeavesOrSelf().length);
+        list = Arrays.asList(baseProject.getReferencingProjectLeavesOrSelf());
+        assertTrue(list.contains(ipsProject2));
+        assertTrue(list.contains(ipsProject3));
+        
+        path = ipsProject2.getIpsObjectPath();
+        path.newIpsProjectRefEntry(ipsProject3);
+        ipsProject2.setIpsObjectPath(path);
+        
+        assertEquals(1, baseProject.getReferencingProjectLeavesOrSelf().length);
+        assertEquals(ipsProject2, baseProject.getReferencingProjectLeavesOrSelf()[0]);
+
+        path = ipsProject2.getIpsObjectPath();
+        path.removeProjectRefEntry(ipsProject3);
+        ipsProject2.setIpsObjectPath(path);
+
+        
+        IIpsProject lastProject = newIpsProject("lastProject");
+        path = lastProject.getIpsObjectPath();
+        path.newIpsProjectRefEntry(ipsProject2);
+        path.newIpsProjectRefEntry(ipsProject3);
+        lastProject.setIpsObjectPath(path);
+
+        assertEquals(1, baseProject.getReferencingProjectLeavesOrSelf().length);
+        assertEquals(lastProject, baseProject.getReferencingProjectLeavesOrSelf()[0]);
+
     }
 
     public void testIsAccessibleViaIpsObjectPath() throws CoreException {
@@ -1024,6 +1089,179 @@ public class IpsProjectTest extends AbstractIpsPluginTest {
         // IpsPackageFragmentRootTest;
     }
 
+    public void testFindAllTestCaseSrcFiles() throws CoreException {
+        // create the following testcase types: TestType0, TestType1
+    	
+        IIpsPackageFragment pack = root.createPackageFragment("pack", true, null);
+
+        @SuppressWarnings("unused")
+		ITestCaseType testType0 = (ITestCaseType) pack.createIpsFile(IpsObjectType.TEST_CASE_TYPE, "TestType0", true, null).getIpsObject();
+        @SuppressWarnings("unused")
+		ITestCaseType testType1 = (ITestCaseType) pack.createIpsFile(IpsObjectType.TEST_CASE_TYPE, "TestType1", true, null).getIpsObject();
+
+        // create the following testcases: test0, test1, test2
+        IIpsSrcFile testFile0 = pack.createIpsFile(IpsObjectType.TEST_CASE, "test0", true, null);
+        IIpsSrcFile testFile1 = pack.createIpsFile(IpsObjectType.TEST_CASE, "test1", true, null);
+        IIpsSrcFile testFile2 = pack.createIpsFile(IpsObjectType.TEST_CASE, "test2", true, null);
+
+        ITestCase test0 = (ITestCase)testFile0.getIpsObject();
+        ITestCase test1 = (ITestCase)testFile1.getIpsObject();
+        ITestCase test2 = (ITestCase)testFile2.getIpsObject();
+
+        test0.setTestCaseType("pack.TestType0");
+        test1.setTestCaseType("pack.TestType1");
+        test2.setTestCaseType("pack.TestType0");
+
+        test0.getIpsSrcFile().save(true, null);
+        test1.getIpsSrcFile().save(true, null);
+        test2.getIpsSrcFile().save(true, null);
+
+        assertNotNull(test0.findTestCaseType((test0.getIpsProject())));
+        IIpsSrcFile[] result = ipsProject.findAllTestCaseSrcFiles(test0.findTestCaseType(ipsProject));
+        assertEquals(2, result.length);
+        assertEquals(test0.getIpsSrcFile(), result[0]);
+        assertEquals(test2.getIpsSrcFile(), result[1]);
+
+        result = ipsProject.findAllTestCaseSrcFiles(null);
+        assertEquals(3, result.length);
+
+        //
+        // test search with different projects
+        //
+        IIpsProject ipsProject2 = newIpsProject("Project2");
+
+        pack = ipsProject2.getIpsPackageFragmentRoots()[0].createPackageFragment("pack", true, null);
+
+        @SuppressWarnings("unused")
+		ITestCaseType testTypeProj2 = (ITestCaseType) pack.createIpsFile(IpsObjectType.TEST_CASE_TYPE, "TestTypeProj2", true, null).getIpsObject();
+        IIpsSrcFile testFileProj2 = pack.createIpsFile(IpsObjectType.TEST_CASE, "testProj2", true, null);
+        ITestCase testProj2 = (ITestCase)testFileProj2.getIpsObject();
+        testProj2.setTestCaseType("pack.TestTypeProj2");
+        testProj2.getIpsSrcFile().save(true, null);
+        
+        assertNotNull(testProj2.findTestCaseType(testProj2.getIpsProject()));
+        result = ipsProject.findAllTestCaseSrcFiles(testProj2.findTestCaseType(testProj2.getIpsProject()));
+        assertEquals(0, result.length);
+
+        IIpsObjectPath ipsObjectPath = ((IpsProject)ipsProject).getIpsObjectPath();
+        ipsObjectPath.newIpsProjectRefEntry(ipsProject2);
+        ipsProject.setIpsObjectPath(ipsObjectPath);
+
+        result = ipsProject.findAllTestCaseSrcFiles(testProj2.findTestCaseType(testProj2.getIpsProject()));
+        assertEquals(1, result.length);
+        assertEquals(testProj2.getIpsSrcFile(), result[0]);
+    }
+    
+    public void testFindAllTableContentsSrcFiles() throws CoreException {
+    	
+        ITableStructure ts0 = newTableStructure(ipsProject, "structure0");
+        ITableStructure ts1 = newTableStructure(ipsProject, "structure1");
+        
+        ITableContents tc0 = newTableContents(ts0, "contets0");
+        @SuppressWarnings("unused")
+		ITableContents tc1 = newTableContents(ts1, "contets1");
+        ITableContents tc2 = newTableContents(ts0, "contets2");
+        
+        IIpsSrcFile[] result = ipsProject.findAllTableContentsSrcFiles(ts0);
+        assertEquals(2, result.length);
+        assertEquals(tc0.getIpsSrcFile(), result[0]);
+        assertEquals(tc2.getIpsSrcFile(), result[1]);
+
+        result = ipsProject.findAllTableContentsSrcFiles(null);
+        assertEquals(3, result.length);
+
+        //
+        // test search with different projects
+        //
+        IIpsProject ipsProject2 = newIpsProject("Project2");
+
+        ITableStructure ts2 = newTableStructure(ipsProject2, "structure2");
+        ITableContents tcProj2 = newTableContents(ts2, "contetnsP2");
+        
+        result = ipsProject.findAllTableContentsSrcFiles(ts2);
+        assertEquals(0, result.length);
+
+        IIpsObjectPath ipsObjectPath = ((IpsProject)ipsProject).getIpsObjectPath();
+        ipsObjectPath.newIpsProjectRefEntry(ipsProject2);
+        ipsProject.setIpsObjectPath(ipsObjectPath);
+
+        result = ipsProject.findAllTableContentsSrcFiles(ts2);
+        assertEquals(1, result.length);
+        assertEquals(tcProj2.getIpsSrcFile(), result[0]);
+    }
+
+    
+    public void testFindAllEnumContentSrcFiles() throws CoreException {
+    	
+        IIpsPackageFragment pack = root.createPackageFragment("pack", true, null);
+
+		IEnumType enumType0 = (IEnumType) pack.createIpsFile(IpsObjectType.ENUM_TYPE, "EnumType0", true, null).getIpsObject();
+		@SuppressWarnings("unused")
+		IEnumType enumType1 = (IEnumType) pack.createIpsFile(IpsObjectType.ENUM_TYPE, "EnumType1", true, null).getIpsObject();
+		IEnumType enumType2 = (IEnumType) pack.createIpsFile(IpsObjectType.ENUM_TYPE, "EnumType2", true, null).getIpsObject();
+        enumType0.setSuperEnumType("pack.EnumType2");
+        
+        IIpsSrcFile enumFile0 = pack.createIpsFile(IpsObjectType.ENUM_CONTENT, "enum0", true, null);
+        IIpsSrcFile enumFile1 = pack.createIpsFile(IpsObjectType.ENUM_CONTENT, "enum1", true, null);
+        IIpsSrcFile enumFile2 = pack.createIpsFile(IpsObjectType.ENUM_CONTENT, "enum2", true, null);
+
+        IEnumContent enum0 = (IEnumContent)enumFile0.getIpsObject();
+        IEnumContent enum1 = (IEnumContent)enumFile1.getIpsObject();
+        IEnumContent enum2 = (IEnumContent)enumFile2.getIpsObject();
+
+        enum0.setEnumType("pack.EnumType0");
+        enum1.setEnumType("pack.EnumType1");
+        enum2.setEnumType("pack.EnumType0");
+
+        enum0.getIpsSrcFile().save(true, null);
+        enum1.getIpsSrcFile().save(true, null);
+        enum2.getIpsSrcFile().save(true, null);
+
+        assertNotNull(enum0.findEnumType((enum0.getIpsProject())));
+        IIpsSrcFile[] result = ipsProject.findAllEnumContentSrcFiles(enum0.findEnumType(ipsProject), true);
+        assertEquals(2, result.length);
+        assertEquals(enum0.getIpsSrcFile(), result[0]);
+        assertEquals(enum2.getIpsSrcFile(), result[1]);
+
+        result = ipsProject.findAllEnumContentSrcFiles(enumType2, true);
+        assertEquals(2, result.length);
+        assertEquals(enum0.getIpsSrcFile(), result[0]);
+        assertEquals(enum2.getIpsSrcFile(), result[1]);
+
+        result = ipsProject.findAllEnumContentSrcFiles(enumType2, false);
+        assertEquals(0, result.length);
+        
+        result = ipsProject.findAllEnumContentSrcFiles(null, true);
+        assertEquals(3, result.length);
+
+        //
+        // enum search with different projects
+        //
+        IIpsProject ipsProject2 = newIpsProject("Project2");
+
+        pack = ipsProject2.getIpsPackageFragmentRoots()[0].createPackageFragment("pack", true, null);
+
+        @SuppressWarnings("unused")
+		IEnumType enumTypeProj2 = (IEnumType) pack.createIpsFile(IpsObjectType.ENUM_TYPE, "EnumTypeProj2", true, null).getIpsObject();
+        IIpsSrcFile enumFileProj2 = pack.createIpsFile(IpsObjectType.ENUM_CONTENT, "enumProj2", true, null);
+        IEnumContent enumProj2 = (IEnumContent)enumFileProj2.getIpsObject();
+        enumProj2.setEnumType("pack.EnumTypeProj2");
+        enumProj2.getIpsSrcFile().save(true, null);
+        
+        assertNotNull(enumProj2.findEnumType(enumProj2.getIpsProject()));
+        result = ipsProject.findAllEnumContentSrcFiles(enumProj2.findEnumType(enumProj2.getIpsProject()), true);
+        assertEquals(0, result.length);
+
+        IIpsObjectPath ipsObjectPath = ((IpsProject)ipsProject).getIpsObjectPath();
+        ipsObjectPath.newIpsProjectRefEntry(ipsProject2);
+        ipsProject.setIpsObjectPath(ipsObjectPath);
+
+        result = ipsProject.findAllEnumContentSrcFiles(enumProj2.findEnumType(enumProj2.getIpsProject()), true);
+        assertEquals(1, result.length);
+        assertEquals(enumProj2.getIpsSrcFile(), result[0]);
+    }
+ 
+    
     public void testFindIpsSrcFiles() throws CoreException {
         // create the following types: Type0, a.b.Type1 and c.Type2
         IIpsPackageFragment pack = root.getIpsPackageFragment("");

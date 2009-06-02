@@ -30,6 +30,8 @@ import org.faktorips.devtools.core.model.enums.IEnumType;
 import org.faktorips.devtools.core.model.enums.IEnumValue;
 import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
 import org.faktorips.devtools.core.model.ipsobject.QualifiedNameType;
+import org.faktorips.devtools.core.model.ipsproject.IIpsObjectPath;
+import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.util.XmlUtil;
 import org.faktorips.util.message.MessageList;
 import org.w3c.dom.Element;
@@ -671,6 +673,92 @@ public class EnumTypeTest extends AbstractIpsEnumPluginTest {
         assertEquals(level2EnumType, superEnumTypes.get(0));
         assertEquals(level3EnumType, superEnumTypes.get(1));
     }
+    
+    public void testIsSubEnumTypeOf() throws CoreException {
+        IEnumType rootEnumType = newEnumType(ipsProject, "RootEnumType");
+        IEnumType level1EnumType = newEnumType(ipsProject, "Level1EnumType");
+        IEnumType level2EnumType = newEnumType(ipsProject, "Level2EnumType");
+        IEnumType level3EnumType = newEnumType(ipsProject, "Level3EnumType");
+
+        level1EnumType.setSuperEnumType(rootEnumType.getQualifiedName());
+        level2EnumType.setSuperEnumType(level1EnumType.getQualifiedName());
+        level3EnumType.setSuperEnumType(level2EnumType.getQualifiedName());
+
+        assertFalse(rootEnumType.isSubEnumTypeOf(null, null));
+        assertFalse(rootEnumType.isSubEnumTypeOf(null, ipsProject));
+        try {
+        	assertFalse(level1EnumType.isSubEnumTypeOf(rootEnumType, null));
+        	fail();
+        } catch (NullPointerException e) {
+		}
+
+        assertFalse(rootEnumType.isSubEnumTypeOf(rootEnumType, ipsProject));
+        assertFalse(rootEnumType.isSubEnumTypeOf(level1EnumType, ipsProject));
+        assertFalse(rootEnumType.isSubEnumTypeOf(level2EnumType, ipsProject));
+        assertFalse(rootEnumType.isSubEnumTypeOf(level3EnumType, ipsProject));
+        
+        assertFalse(level1EnumType.isSubEnumTypeOf(level1EnumType, ipsProject));
+        assertTrue(level1EnumType.isSubEnumTypeOf(rootEnumType, ipsProject));
+        assertFalse(level1EnumType.isSubEnumTypeOf(level2EnumType, ipsProject));
+        assertFalse(level1EnumType.isSubEnumTypeOf(level3EnumType, ipsProject));
+
+        assertFalse(level2EnumType.isSubEnumTypeOf(level2EnumType, ipsProject));
+        assertTrue(level2EnumType.isSubEnumTypeOf(rootEnumType, ipsProject));
+        assertTrue(level2EnumType.isSubEnumTypeOf(level1EnumType, ipsProject));
+        assertFalse(level2EnumType.isSubEnumTypeOf(level3EnumType, ipsProject));
+
+        assertFalse(level3EnumType.isSubEnumTypeOf(level3EnumType, ipsProject));
+        assertTrue(level3EnumType.isSubEnumTypeOf(rootEnumType, ipsProject));
+        assertTrue(level3EnumType.isSubEnumTypeOf(level1EnumType, ipsProject));
+        assertTrue(level3EnumType.isSubEnumTypeOf(level2EnumType, ipsProject));
+
+        IIpsProject otherProject = newIpsProject("otherProject");
+        IEnumType enumTypeInOtherProject = newEnumType(otherProject, "enumTypeInOtherProject");
+        enumTypeInOtherProject.setSuperEnumType(level1EnumType.getQualifiedName());
+
+        assertFalse(enumTypeInOtherProject.isSubEnumTypeOf(rootEnumType, otherProject));
+        assertFalse(enumTypeInOtherProject.isSubEnumTypeOf(level1EnumType, otherProject));
+        assertFalse(enumTypeInOtherProject.isSubEnumTypeOf(level2EnumType, otherProject));
+        assertFalse(enumTypeInOtherProject.isSubEnumTypeOf(level3EnumType, otherProject));
+
+        IIpsObjectPath path = otherProject.getIpsObjectPath();
+        path.newIpsProjectRefEntry(ipsProject);
+        otherProject.setIpsObjectPath(path);
+        
+        assertTrue(enumTypeInOtherProject.isSubEnumTypeOf(rootEnumType, otherProject));
+        assertTrue(enumTypeInOtherProject.isSubEnumTypeOf(level1EnumType, otherProject));
+        assertFalse(enumTypeInOtherProject.isSubEnumTypeOf(level2EnumType, otherProject));
+        assertFalse(enumTypeInOtherProject.isSubEnumTypeOf(level3EnumType, otherProject));
+
+        level2EnumType.setSuperEnumType(enumTypeInOtherProject.getQualifiedName());
+        assertFalse(level2EnumType.isSubEnumTypeOf(enumTypeInOtherProject, ipsProject));
+        assertTrue(level2EnumType.isSubEnumTypeOf(enumTypeInOtherProject, otherProject));
+
+        rootEnumType.setSuperEnumType(level3EnumType.getQualifiedName());
+        //false because one one super class is in wrong project 
+        assertFalse(rootEnumType.isSubEnumTypeOf(rootEnumType, ipsProject));
+        //true because of a hierarchy-cycle
+        assertTrue(rootEnumType.isSubEnumTypeOf(rootEnumType, otherProject));
+        //false because of wrong project
+        assertFalse(rootEnumType.isSubEnumTypeOf(enumTypeInOtherProject, ipsProject));
+        assertFalse(rootEnumType.isSubEnumTypeOf(level1EnumType, ipsProject));
+        assertTrue(rootEnumType.isSubEnumTypeOf(enumTypeInOtherProject, otherProject));
+        assertTrue(rootEnumType.isSubEnumTypeOf(level1EnumType, otherProject));
+        assertTrue(rootEnumType.isSubEnumTypeOf(level2EnumType, otherProject));
+        assertTrue(rootEnumType.isSubEnumTypeOf(level3EnumType, otherProject));
+        
+    }
+    
+    public void testIsSubEnumTypeOrSelf() throws CoreException {
+    	// the method isSubEnumTypeOrSelf only checks for self and calls isSubEnumTypeOf
+    	// so only the "self-case" have to be tested
+        IEnumType rootEnumType = newEnumType(ipsProject, "RootEnumType");
+
+        assertFalse(rootEnumType.isSubEnumTypeOrSelf(null, null));
+        assertFalse(rootEnumType.isSubEnumTypeOrSelf(null, ipsProject));
+        assertTrue(rootEnumType.isSubEnumTypeOrSelf(rootEnumType, null));
+        assertTrue(rootEnumType.isSubEnumTypeOrSelf(rootEnumType, ipsProject));
+    }
 
     public void testGetSetEnumContentPackageFragment() {
         assertEquals(DEFAULT_PACKAGE_FRAGMENT, genderEnumType.getEnumContentPackageFragment());
@@ -768,5 +856,86 @@ public class EnumTypeTest extends AbstractIpsEnumPluginTest {
                 new QualifiedNameType(subEnumType.getQualifiedName(), IpsObjectType.ENUM_TYPE));
         assertTrue(depencendiesListSubSubEnumType.contains(superEnumTypeDependency));
     }
+    
+    /**
+     * Test for findAllMetaObjects(..)
+     * @throws CoreException 
+     */
+    public void testFindAllMetaObjects() throws CoreException {
+		String enumTypeQName = "pack.MyEnumType";
+		String enumTypeProj2QName = "otherpack.MyEnumTypeProj2";
+		String enum1QName = "pack.MyEnum1";
+		String enum2QName = "pack.MyEnum2";
+		String enum3QName = "pack.MyEnum3";
+		String enumProj2QName = "otherpack.MyEnumProj2";
+		
+		IIpsProject referencingProject = newIpsProject("referencingProject");
+		IIpsObjectPath path = referencingProject.getIpsObjectPath();
+		path.newIpsProjectRefEntry(ipsProject);
+		referencingProject.setIpsObjectPath(path);
+		
+		IIpsProject independentProject = newIpsProject("independentProject");
+		
+		/* leaveProject1 and leaveProject2 are not directly integrated in any test.
+		 * But the tested instance search methods have to search in all project that
+		 * holds a reference to the project of the object. So the search for a Object
+		 * in e.g. ipsProject have to search for instances in leaveProject1 and
+		 * leaveProject2. The tests implicit that no duplicates are found.
+		 */
+		
+		IIpsProject leaveProject1 = newIpsProject("LeaveProject1");
+		path = leaveProject1.getIpsObjectPath();
+		path.newIpsProjectRefEntry(referencingProject);
+		leaveProject1.setIpsObjectPath(path);
+
+		IIpsProject leaveProject2 = newIpsProject("LeaveProject2");
+		path = leaveProject2.getIpsObjectPath();
+		path.newIpsProjectRefEntry(referencingProject);
+		leaveProject2.setIpsObjectPath(path);
+		
+		EnumType enumType = newEnumType(ipsProject, enumTypeQName);
+		EnumContent enum1 = newEnumContent(enumType, enum1QName);
+		EnumContent enum2 = newEnumContent(enumType, enum2QName);
+		EnumContent enum3 = newEnumContent(ipsProject, enum3QName);
+		
+		Object[] result = enumType.findAllMetaObjectSrcFiles(ipsProject, true);
+		List<Object> resultList = Arrays.asList(result);
+		assertEquals(2, result.length);
+		assertTrue(resultList.contains(enum1.getIpsSrcFile()));
+		assertTrue(resultList.contains(enum2.getIpsSrcFile()));
+		assertFalse(resultList.contains(enum3.getIpsSrcFile()));
+		
+		EnumContent enumProj2 = newEnumContent(referencingProject, enumProj2QName);
+		enumProj2.setEnumType(enumTypeQName);
+
+		result = enumType.findAllMetaObjectSrcFiles(ipsProject, true);
+		resultList = Arrays.asList(result);
+		assertEquals(3, result.length);
+		assertTrue(resultList.contains(enum1.getIpsSrcFile()));
+		assertTrue(resultList.contains(enum2.getIpsSrcFile()));
+		assertTrue(resultList.contains(enumProj2.getIpsSrcFile()));
+		assertFalse(resultList.contains(enum3.getIpsSrcFile()));
+		
+		EnumType enumTypeProj2 = newEnumType(independentProject, enumTypeProj2QName);
+		
+		result = enumTypeProj2.findAllMetaObjectSrcFiles(independentProject, true);
+		assertEquals(0, result.length);
+		
+		EnumType superEnum = newEnumType(ipsProject, "superEnum");
+		superEnum.setAbstract(true);
+		enumType.setSuperEnumType(superEnum.getQualifiedName());
+		
+		result = enumTypeProj2.findAllMetaObjectSrcFiles(independentProject, false);
+		assertEquals(0, result.length);
+		
+		result = superEnum.findAllMetaObjectSrcFiles(ipsProject, true);
+		resultList = Arrays.asList(result);
+		assertEquals(3, result.length);
+		assertTrue(resultList.contains(enum1.getIpsSrcFile()));
+		assertTrue(resultList.contains(enum2.getIpsSrcFile()));
+		assertTrue(resultList.contains(enumProj2.getIpsSrcFile()));
+		assertFalse(resultList.contains(enum3.getIpsSrcFile()));
+		
+	}
 
 }

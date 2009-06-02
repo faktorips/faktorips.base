@@ -19,6 +19,7 @@ import java.util.NoSuchElementException;
 import org.eclipse.core.runtime.CoreException;
 import org.faktorips.datatype.EnumDatatype;
 import org.faktorips.devtools.core.internal.model.enums.EnumType;
+import org.faktorips.devtools.core.model.IIpsMetaClass;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 
 /**
@@ -49,7 +50,7 @@ import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
  * 
  * @since 2.3
  */
-public interface IEnumType extends IEnumValueContainer, EnumDatatype {
+public interface IEnumType extends IEnumValueContainer, EnumDatatype, IIpsMetaClass {
 
     /** The xml tag for this ips object. */
     public final static String XML_TAG = "EnumType"; //$NON-NLS-1$
@@ -149,6 +150,33 @@ public interface IEnumType extends IEnumValueContainer, EnumDatatype {
      */
     public void setSuperEnumType(String superEnumTypeQualifiedName);
 
+    /**
+     * Returns <code>true</code> if this enum type is a sub enum type of the given super enum type candidate,
+     * returns <code>false</code> otherwise. Returns <code>false</code> if super enum type candidate
+     * is <code>null</code>.
+     * 
+     * @param superEnumTypeCandidate The type which is the possibly a super enum type of this enum type
+     * @param ipsProject The project which ips object path is used for the search.
+     * This is not necessarily the project this type is part of. 
+     * 
+     * @throws CoreException if an error occurs while searching the type hierarchy.
+     */
+    public boolean isSubEnumTypeOf(IEnumType superEnumTypeCandidate, IIpsProject ipsProject) throws CoreException;
+    
+    /**
+     * Returns <code>true</code> if this enum type is a sub enum type of the given candidate, or if the
+     * candidate is the same. Returns <code>false</code> otherwise. 
+     * Returns <code>false</code> if candidate is <code>null</code>.
+     * 
+     * @param superEnumTypeCandidate The enum type which is the possibly a super enum type of this enum type
+     * @param ipsProject The project which ips object path is used for the search.
+     * This is not necessarily the project this type is part of. 
+     * 
+     * @throws CoreException if an error occurs while searching the type hierarchy.
+     */
+    public boolean isSubEnumTypeOrSelf(IEnumType superEnumTypeCandidate, IIpsProject ipsProject) throws CoreException;
+
+    
     /**
      * Searches and returns the super enum type of this enum type if any is specified.
      * <p>

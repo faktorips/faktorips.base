@@ -450,4 +450,16 @@ public class ProductCmptTest extends AbstractIpsPluginTest {
         assertEquals(new GregorianCalendar(2000,1,1), productCmpt.getValidTo());
     }
     
+    /**
+     * test the findMetaClass method
+     * @throws CoreException
+     */
+    public void testFindMetaClass() throws CoreException {
+        IProductCmptType type = newProductCmptType(ipsProject, "Product");
+        productCmpt.setProductCmptType(type.getQualifiedName());
+
+        IIpsSrcFile typeSrcFile = productCmpt.findMetaClassSrcFile(ipsProject);
+        assertEquals(type.getIpsSrcFile(), typeSrcFile);
+    }
+    
 }

@@ -349,4 +349,24 @@ public class ProductCmpt extends TimedIpsObject implements IProductCmpt {
         }
         return false;
     }
+
+	/* (non-Javadoc)
+	 * @see org.faktorips.devtools.core.model.IIpsMetaObject#findMetaClass(org.faktorips.devtools.core.model.ipsproject.IIpsProject)
+	 */
+	/**
+	 * {@inheritDoc}
+	 */
+	public IIpsSrcFile findMetaClassSrcFile(IIpsProject ipsProject) throws CoreException {
+		return ipsProject.findIpsSrcFile(IpsObjectType.PRODUCT_CMPT_TYPE, getProductCmptType());
+	}
+
+	/* (non-Javadoc)
+	 * @see org.faktorips.devtools.core.model.IIpsMetaObject#getMetaClass()
+	 */
+	/**
+	 * {@inheritDoc}
+	 */
+	public String getMetaClass() {
+		return getProductCmptType();
+	}
 }

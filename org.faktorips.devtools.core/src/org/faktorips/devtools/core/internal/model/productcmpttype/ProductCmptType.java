@@ -16,12 +16,14 @@ package org.faktorips.devtools.core.internal.model.productcmpttype;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.Comparator;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.TreeSet;
 
 import org.apache.commons.lang.StringUtils;
 import org.eclipse.core.runtime.CoreException;
@@ -31,6 +33,7 @@ import org.faktorips.devtools.core.internal.model.ipsobject.IpsObjectPartCollect
 import org.faktorips.devtools.core.internal.model.type.DuplicatePropertyNameValidator;
 import org.faktorips.devtools.core.internal.model.type.Type;
 import org.faktorips.devtools.core.model.IDependency;
+import org.faktorips.devtools.core.model.IIpsElement;
 import org.faktorips.devtools.core.model.IpsObjectDependency;
 import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
@@ -51,6 +54,7 @@ import org.faktorips.devtools.core.model.productcmpttype.ProductCmptTypeValidati
 import org.faktorips.devtools.core.model.type.IMethod;
 import org.faktorips.devtools.core.model.type.IType;
 import org.faktorips.devtools.core.model.type.TypeValidations;
+import org.faktorips.devtools.core.util.TreeSetHelper;
 import org.faktorips.util.message.Message;
 import org.faktorips.util.message.MessageList;
 import org.faktorips.util.message.ObjectProperty;
@@ -750,4 +754,21 @@ public class ProductCmptType extends Type implements IProductCmptType {
             return true;
         }        
     }
+
+
+	/* (non-Javadoc)
+	 * @see org.faktorips.devtools.core.model.IIpsMetaClass#findAllMetaObjects(org.faktorips.devtools.core.model.ipsproject.IIpsProject, boolean)
+	 */
+    /**
+     * {@inheritDoc}
+     */
+	public IIpsSrcFile[] findAllMetaObjectSrcFiles(IIpsProject ipsProject,
+			boolean includeSubtypes) throws CoreException {
+		TreeSet<IIpsSrcFile> result = TreeSetHelper.newIpsSrcFileTreeSet();
+		IIpsProject[] searchProjects = ipsProject.getReferencingProjectLeavesOrSelf();
+		for (IIpsProject project : searchProjects) {
+			result.addAll(Arrays.asList(project.findAllProductCmptSrcFiles(this, includeSubtypes)));
+		}
+		return result.toArray(new IIpsSrcFile[result.size()]);
+	}
 }

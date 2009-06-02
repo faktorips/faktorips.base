@@ -14,12 +14,13 @@
 package org.faktorips.devtools.core.model.tablestructure;
 
 import org.faktorips.devtools.core.internal.model.tablestructure.TableStructureType;
+import org.faktorips.devtools.core.model.IIpsMetaClass;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObject;
 
 /**
  *
  */
-public interface ITableStructure extends IIpsObject {
+public interface ITableStructure extends IIpsMetaClass {
     
     public final static String PROPERTY_TYPE = "tableStructureType"; //$NON-NLS-1$
 	

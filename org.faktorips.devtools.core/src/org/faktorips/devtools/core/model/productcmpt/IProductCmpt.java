@@ -16,6 +16,7 @@ package org.faktorips.devtools.core.model.productcmpt;
 import java.util.GregorianCalendar;
 
 import org.eclipse.core.runtime.CoreException;
+import org.faktorips.devtools.core.model.IIpsMetaObject;
 import org.faktorips.devtools.core.model.ipsobject.IFixDifferencesToModelSupport;
 import org.faktorips.devtools.core.model.ipsobject.ITimedIpsObject;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
@@ -28,7 +29,7 @@ import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
 /**
  * 
  */
-public interface IProductCmpt extends ITimedIpsObject, IFixDifferencesToModelSupport {
+public interface IProductCmpt extends IIpsMetaObject, ITimedIpsObject {
     
     /**
      * The name of the product component type property

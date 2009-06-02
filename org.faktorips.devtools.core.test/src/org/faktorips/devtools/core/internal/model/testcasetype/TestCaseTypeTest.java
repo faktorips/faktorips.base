@@ -18,8 +18,10 @@ import java.util.List;
 
 import org.eclipse.core.runtime.CoreException;
 import org.faktorips.devtools.core.AbstractIpsPluginTest;
+import org.faktorips.devtools.core.internal.model.testcase.TestCase;
 import org.faktorips.devtools.core.model.IpsObjectDependency;
 import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
+import org.faktorips.devtools.core.model.ipsproject.IIpsObjectPath;
 import org.faktorips.devtools.core.model.ipsproject.IIpsPackageFragmentRoot;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
@@ -275,4 +277,79 @@ public class TestCaseTypeTest extends AbstractIpsPluginTest {
         assertTrue(paramsList.contains(ruleParameter));
         assertTrue(paramsList.contains(valueParameter));
     }
+    
+    /**
+     * Test for findAllMetaObjects(..)
+     * @throws CoreException 
+     */
+    public void testFindAllMetaObjects() throws CoreException {
+		String testCaseTypeQName = "pack.MyTestCaseType";
+		String testCaseTypeProj2QName = "otherpack.MyTestCaseTypeProj2";
+		String testCase1QName = "pack.MyTableContent1";
+		String testCase2QName = "pack.MyTableContent2";
+		String testCase3QName = "pack.MyTableContent3";
+		String testCaseProj2QName = "otherpack.MyTableContentProj2";
+		
+		IIpsProject referencingProject = newIpsProject("referencingProject");
+		IIpsObjectPath path = referencingProject.getIpsObjectPath();
+		path.newIpsProjectRefEntry(ipsProject);
+		referencingProject.setIpsObjectPath(path);
+		
+		IIpsProject independentProject = newIpsProject("independentProject");
+		
+		/* leaveProject1 and leaveProject2 are not directly integrated in any test.
+		 * But the tested instance search methods have to search in all ipsProject that
+		 * holds a reference to the ipsProject of the object. So the search for a Object
+		 * in e.g. ipsProject have to search for instances in leaveProject1 and
+		 * leaveProject2. The tests implicit that no duplicates are found.
+		 */
+		
+		IIpsProject leaveProject1 = newIpsProject("LeaveProject1");
+		path = leaveProject1.getIpsObjectPath();
+		path.newIpsProjectRefEntry(referencingProject);
+		leaveProject1.setIpsObjectPath(path);
+
+		IIpsProject leaveProject2 = newIpsProject("LeaveProject2");
+		path = leaveProject2.getIpsObjectPath();
+		path.newIpsProjectRefEntry(referencingProject);
+		leaveProject2.setIpsObjectPath(path);
+		
+		TestCaseType testCaseType = newTestCaseType(ipsProject, testCaseTypeQName);
+		TestCase testCase1 = newTestCase(testCaseType, testCase1QName);
+		TestCase testCase2 = newTestCase(testCaseType, testCase2QName);
+		TestCase testCase3 = newTestCase(ipsProject, testCase3QName);
+		
+		Object[] result = testCaseType.findAllMetaObjectSrcFiles(ipsProject, true);
+		List<Object> resultList = Arrays.asList(result);
+		assertEquals(2, result.length);
+		assertTrue(resultList.contains(testCase1.getIpsSrcFile()));
+		assertTrue(resultList.contains(testCase2.getIpsSrcFile()));
+		assertFalse(resultList.contains(testCase3.getIpsSrcFile()));
+
+		result = testCaseType.findAllMetaObjectSrcFiles(ipsProject, false);
+		resultList = Arrays.asList(result);
+		assertEquals(2, result.length);
+		assertTrue(resultList.contains(testCase1.getIpsSrcFile()));
+		assertTrue(resultList.contains(testCase2.getIpsSrcFile()));
+		assertFalse(resultList.contains(testCase3.getIpsSrcFile()));
+
+		
+		TestCase testCaseProj2 = newTestCase(referencingProject, testCaseProj2QName);
+		testCaseProj2.setTestCaseType(testCaseTypeQName);
+
+		result = testCaseType.findAllMetaObjectSrcFiles(ipsProject, true);
+		resultList = Arrays.asList(result);
+		assertEquals(3, result.length);
+		assertTrue(resultList.contains(testCase1.getIpsSrcFile()));
+		assertTrue(resultList.contains(testCase2.getIpsSrcFile()));
+		assertTrue(resultList.contains(testCaseProj2.getIpsSrcFile()));
+		assertFalse(resultList.contains(testCase3.getIpsSrcFile()));
+		
+		TestCaseType testCaseTypeProj2 = newTestCaseType(independentProject, testCaseTypeProj2QName);
+		
+		result = testCaseTypeProj2.findAllMetaObjectSrcFiles(independentProject, true);
+		assertEquals(0, result.length);
+		
+	}
+    
 }

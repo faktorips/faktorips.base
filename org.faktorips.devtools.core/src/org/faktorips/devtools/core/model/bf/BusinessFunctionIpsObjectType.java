@@ -33,9 +33,9 @@ public class BusinessFunctionIpsObjectType extends IpsObjectType {
         super(ID, 
                 "BusinessFunction", //xml element name $NON-NLS-1$   //$NON-NLS-1$
                 Messages.getString("BusinessFunctionIpsObjectType.displayName"), //display name //$NON-NLS-1$
-                "ipsbusinessfunction", //$NON-NLS-1$
-                false, false, "BusinessFunction.gif", //$NON-NLS-1$
-                "BusinessFunctionDisabled.gif"); //$NON-NLS-1$
+                Messages.getString("BusinessFunctionIpsObjectType.displayNamePlural"),  //display name plural //$NON-NLS-1$
+                "ipsbusinessfunction", false, false, //$NON-NLS-1$
+                "BusinessFunction.gif", "BusinessFunctionDisabled.gif"); //$NON-NLS-1$
     }
 
     /**

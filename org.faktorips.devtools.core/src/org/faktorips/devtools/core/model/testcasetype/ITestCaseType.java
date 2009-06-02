@@ -15,6 +15,7 @@ package org.faktorips.devtools.core.model.testcasetype;
 
 import org.eclipse.core.runtime.CoreException;
 import org.faktorips.devtools.core.internal.model.testcasetype.TestRuleParameter;
+import org.faktorips.devtools.core.model.IIpsMetaClass;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObject;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.pctype.IValidationRule;
@@ -24,7 +25,7 @@ import org.faktorips.devtools.core.model.pctype.IValidationRule;
  * 
  * @author Jan Ortmann
  */
-public interface ITestCaseType extends IIpsObject {
+public interface ITestCaseType extends IIpsMetaClass {
 
     /**
      * Prefix for all message codes of this class.

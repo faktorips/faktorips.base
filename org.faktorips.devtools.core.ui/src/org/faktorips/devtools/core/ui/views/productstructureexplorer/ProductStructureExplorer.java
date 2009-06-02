@@ -78,6 +78,7 @@ import org.faktorips.devtools.core.model.productcmpt.treestructure.IProductCmptT
 import org.faktorips.devtools.core.ui.IpsUIPlugin;
 import org.faktorips.devtools.core.ui.actions.FindProductReferencesAction;
 import org.faktorips.devtools.core.ui.actions.OpenEditorAction;
+import org.faktorips.devtools.core.ui.actions.ShowInstanceAction;
 import org.faktorips.devtools.core.ui.views.IpsElementDragListener;
 import org.faktorips.devtools.core.ui.views.IpsElementDropListener;
 import org.faktorips.devtools.core.ui.views.IpsProblemsLabelDecorator;
@@ -381,6 +382,7 @@ public class ProductStructureExplorer extends ViewPart implements ContentsChange
                 if (isReferenceAndOpenActionSupportedForSelection()){
                     manager.add(new OpenEditorAction(tree));
                     manager.add(new FindProductReferencesAction(tree));
+                    manager.add(new ShowInstanceAction(tree));
                 }
             }
         });

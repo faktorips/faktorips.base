@@ -23,6 +23,7 @@ import org.faktorips.datatype.Datatype;
 import org.faktorips.devtools.core.AbstractIpsPluginTest;
 import org.faktorips.devtools.core.internal.model.ipsproject.IpsObjectPath;
 import org.faktorips.devtools.core.internal.model.ipsproject.IpsProjectRefEntry;
+import org.faktorips.devtools.core.internal.model.productcmpt.ProductCmpt;
 import org.faktorips.devtools.core.model.ContentChangeEvent;
 import org.faktorips.devtools.core.model.ContentsChangeListener;
 import org.faktorips.devtools.core.model.DatatypeDependency;
@@ -965,4 +966,85 @@ public class ProductCmptTypeTest extends AbstractIpsPluginTest implements Conten
     public void contentsChanged(ContentChangeEvent event) {
         lastEvent = event;
     }
+    
+    /**
+     * Test for findAllMetaObjects(..)
+     * @throws CoreException 
+     */
+    public void testFindAllMetaObjects() throws CoreException {
+		String productCmptTypeQName = "pack.MyProductCmptType";
+		String productCmptTypeProj2QName = "otherpack.MyProductCmptTypeProj2";
+		String productCmpt1QName = "pack.MyProductCmpt1";
+		String productCmpt2QName = "pack.MyProductCmpt2";
+		String productCmpt3QName = "pack.MyProductCmpt3";
+		String productCmptProj2QName = "otherpack.MyProductCmptProj2";
+		
+		IIpsProject referencingProject = newIpsProject("referencingProject");
+		IIpsObjectPath path = referencingProject.getIpsObjectPath();
+		path.newIpsProjectRefEntry(ipsProject);
+		referencingProject.setIpsObjectPath(path);
+		
+		IIpsProject independentProject = newIpsProject("independentProject");
+		
+		/* leaveProject1 and leaveProject2 are not directly integrated in any test.
+		 * But the tested instance search methods have to search in all project that
+		 * holds a reference to the project of the object. So the search for a Object
+		 * in e.g. ipsProject have to search for instances in leaveProject1 and
+		 * leaveProject2. The tests implicit that no duplicates are found.
+		 */
+		
+		IIpsProject leaveProject1 = newIpsProject("LeaveProject1");
+		path = leaveProject1.getIpsObjectPath();
+		path.newIpsProjectRefEntry(referencingProject);
+		leaveProject1.setIpsObjectPath(path);
+
+		IIpsProject leaveProject2 = newIpsProject("LeaveProject2");
+		path = leaveProject2.getIpsObjectPath();
+		path.newIpsProjectRefEntry(referencingProject);
+		leaveProject2.setIpsObjectPath(path);
+		
+		ProductCmptType productCmptType = newProductCmptType(ipsProject, productCmptTypeQName);
+		ProductCmpt productCmpt1 = newProductCmpt(productCmptType, productCmpt1QName);
+		ProductCmpt productCmpt2 = newProductCmpt(productCmptType, productCmpt2QName);
+		ProductCmpt productCmpt3 = newProductCmpt(ipsProject, productCmpt3QName);
+		
+		Object[] result = productCmptType.findAllMetaObjectSrcFiles(ipsProject, true);
+		List<Object> resultList = Arrays.asList(result);
+		assertEquals(2, result.length);
+		assertTrue(resultList.contains(productCmpt1.getIpsSrcFile()));
+		assertTrue(resultList.contains(productCmpt2.getIpsSrcFile()));
+		assertFalse(resultList.contains(productCmpt3.getIpsSrcFile()));
+		
+		ProductCmpt productCmptProj2 = newProductCmpt(referencingProject, productCmptProj2QName);
+		productCmptProj2.setProductCmptType(productCmptTypeQName);
+
+		result = productCmptType.findAllMetaObjectSrcFiles(ipsProject, true);
+		resultList = Arrays.asList(result);
+		assertEquals(3, result.length);
+		assertTrue(resultList.contains(productCmpt1.getIpsSrcFile()));
+		assertTrue(resultList.contains(productCmpt2.getIpsSrcFile()));
+		assertTrue(resultList.contains(productCmptProj2.getIpsSrcFile()));
+		assertFalse(resultList.contains(productCmpt3.getIpsSrcFile()));
+		
+		ProductCmptType productCmptTypeProj2 = newProductCmptType(independentProject, productCmptTypeProj2QName);
+		
+		result = productCmptTypeProj2.findAllMetaObjectSrcFiles(independentProject, true);
+		assertEquals(0, result.length);
+		
+		ProductCmptType superProductCmpt = newProductCmptType(ipsProject, "superProductCmpt");
+		superProductCmpt.setAbstract(true);
+		productCmptType.setSupertype(superProductCmpt.getQualifiedName());
+		
+		result = productCmptTypeProj2.findAllMetaObjectSrcFiles(independentProject, false);
+		assertEquals(0, result.length);
+		
+		result = superProductCmpt.findAllMetaObjectSrcFiles(ipsProject, true);
+		resultList = Arrays.asList(result);
+		assertEquals(3, result.length);
+		assertTrue(resultList.contains(productCmpt1.getIpsSrcFile()));
+		assertTrue(resultList.contains(productCmpt2.getIpsSrcFile()));
+		assertTrue(resultList.contains(productCmptProj2.getIpsSrcFile()));
+		assertFalse(resultList.contains(productCmpt3.getIpsSrcFile()));
+		
+	}
 }

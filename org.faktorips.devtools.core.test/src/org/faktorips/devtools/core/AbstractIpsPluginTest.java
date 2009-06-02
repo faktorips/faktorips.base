@@ -62,9 +62,14 @@ import org.faktorips.devtools.core.internal.model.ipsproject.IpsPackageFragment;
 import org.faktorips.devtools.core.internal.model.pctype.PolicyCmptType;
 import org.faktorips.devtools.core.internal.model.productcmpt.ProductCmpt;
 import org.faktorips.devtools.core.internal.model.productcmpttype.ProductCmptType;
+import org.faktorips.devtools.core.internal.model.tablecontents.TableContents;
+import org.faktorips.devtools.core.internal.model.tablestructure.TableStructure;
+import org.faktorips.devtools.core.internal.model.testcase.TestCase;
+import org.faktorips.devtools.core.internal.model.testcasetype.TestCaseType;
 import org.faktorips.devtools.core.model.ContentChangeEvent;
 import org.faktorips.devtools.core.model.ContentsChangeListener;
 import org.faktorips.devtools.core.model.CreateIpsArchiveOperation;
+import org.faktorips.devtools.core.model.enums.IEnumType;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObject;
 import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
@@ -79,6 +84,7 @@ import org.faktorips.devtools.core.model.ipsproject.IIpsSrcFolderEntry;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmpt;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
+import org.faktorips.devtools.core.model.tablestructure.ITableStructure;
 import org.faktorips.devtools.core.model.versionmanager.IIpsFeatureVersionManager;
 import org.faktorips.devtools.core.test.XmlAbstractTestCase;
 import org.faktorips.devtools.core.util.BeanUtil;
@@ -453,6 +459,22 @@ public abstract class AbstractIpsPluginTest extends XmlAbstractTestCase {
     protected EnumContent newEnumContent(final IIpsProject ipsProject, final String qualifiedName) throws CoreException {
         return (EnumContent)newIpsObject(ipsProject, IpsObjectType.ENUM_CONTENT, qualifiedName);
     }
+    
+    /**
+     * Creates a new enum content that is based on the given enum type. The product component
+     * is stored in the same package fragment root as the type. If the qualifiedName includes a
+     * package name, the package is created if it does not already exists.
+     * 
+     * @throws CoreException
+     */
+    protected EnumContent newEnumContent(IEnumType type, String qualifiedName) throws CoreException {
+        EnumContent enumContent = (EnumContent)newIpsObject(type.getIpsPackageFragment().getRoot(),
+                IpsObjectType.ENUM_CONTENT, qualifiedName);
+        enumContent.setEnumType(type.getQualifiedName());
+        enumContent.getIpsSrcFile().save(true, null);
+        return enumContent;
+    }
+
 
     /**
      * Creates a new enum type in the indicated package fragment root. If the qualified name
@@ -621,6 +643,121 @@ public abstract class AbstractIpsPluginTest extends XmlAbstractTestCase {
         IIpsSrcFile file = pack.createIpsFile(type, unqualifiedName, true, null);
         return file.getIpsObject();
     }
+    
+    /**
+     * Creates a new table structure in the indicated package fragment root. If the
+     * qualifiedName includes a package name, the package is created if it does not already exists.
+     * 
+     * @throws CoreException
+     */
+    protected TableStructure newTableStructure(final IIpsPackageFragmentRoot root, final String qualifiedName)
+            throws CoreException {
+        return (TableStructure)newIpsObject(root, IpsObjectType.TABLE_STRUCTURE, qualifiedName);
+    }
+
+    /**
+     * Creates a new table structure in the project's first package fragment root. If the
+     * qualifiedName includes a package name, the package is created if it does not already exists.
+     * 
+     * @throws CoreException
+     */
+    protected TableStructure newTableStructure(IIpsProject ipsProject, String qualifiedName) throws CoreException {
+        return (TableStructure)newIpsObject(ipsProject, IpsObjectType.TABLE_STRUCTURE, qualifiedName);
+    }
+    
+    /**
+     * Creates a new table content that is based on the given table structure and has one
+     * generation with it's valid from date set to the current working date. The table content
+     * is stored in the same package fragment root as the structure. If the qualifiedName includes a
+     * package name, the package is created if it does not already exists.
+     * 
+     * @throws CoreException
+     */
+    protected TableContents newTableContents(ITableStructure ts0, String qualifiedName) throws CoreException {
+    	TableContents tableContents = (TableContents)newIpsObject(ts0.getIpsPackageFragment().getRoot(),
+                IpsObjectType.TABLE_CONTENTS, qualifiedName);
+    	tableContents.setTableStructure(ts0.getQualifiedName());
+    	tableContents.newGeneration(IpsPlugin.getDefault().getIpsPreferences().getWorkingDate());
+    	tableContents.getIpsSrcFile().save(true, null);
+        return tableContents;
+    }
+
+    /**
+     * Creates a new table content in the indicated package fragment root. If the qualifiedName
+     * includes a package name, the package is created if it does not already exists.
+     * 
+     * @throws CoreException
+     */
+    protected TableContents newTableContents(IIpsPackageFragmentRoot root, String qualifiedName) throws CoreException {
+        return (TableContents)newIpsObject(root, IpsObjectType.TABLE_CONTENTS, qualifiedName);
+    }
+
+    /**
+     * Creates a new table content in the project's first package fragment root. If the
+     * qualifiedName includes a package name, the package is created if it does not already exists.
+     * 
+     * @throws CoreException
+     */
+    protected TableContents newTableContents(IIpsProject project, String qualifiedName) throws CoreException {
+        return (TableContents)newIpsObject(project, IpsObjectType.TABLE_CONTENTS, qualifiedName);
+    }
+
+    /**
+     * Creates a new test case type in the indicated package fragment root. If the
+     * qualifiedName includes a package name, the package is created if it does not already exists.
+     * 
+     * @throws CoreException
+     */
+    protected TestCaseType newTestCaseType(final IIpsPackageFragmentRoot root, final String qualifiedName)
+            throws CoreException {
+        return (TestCaseType)newIpsObject(root, IpsObjectType.TEST_CASE_TYPE, qualifiedName);
+    }
+
+    /**
+     * Creates a new test case type in the project's first package fragment root. If the
+     * qualifiedName includes a package name, the package is created if it does not already exists.
+     * 
+     * @throws CoreException
+     */
+    protected TestCaseType newTestCaseType(IIpsProject ipsProject, String qualifiedName) throws CoreException {
+        return (TestCaseType)newIpsObject(ipsProject, IpsObjectType.TEST_CASE_TYPE, qualifiedName);
+    }
+    
+    /**
+     * Creates a new test case that is based on the given test case type. The test case
+     * is stored in the same package fragment root as the structure. If the qualifiedName includes a
+     * package name, the package is created if it does not already exists.
+     * 
+     * @throws CoreException
+     */
+    protected TestCase newTestCase(TestCaseType tCase, String qualifiedName) throws CoreException {
+    	TestCase testCase = (TestCase)newIpsObject(tCase.getIpsPackageFragment().getRoot(),
+                IpsObjectType.TEST_CASE, qualifiedName);
+    	testCase.setTestCaseType(tCase.getQualifiedName());
+    	testCase.getIpsSrcFile().save(true, null);
+        return testCase;
+    }
+
+    /**
+     * Creates a new test case in the indicated package fragment root. If the qualifiedName
+     * includes a package name, the package is created if it does not already exists.
+     * 
+     * @throws CoreException
+     */
+    protected TestCase newTestCase(IIpsPackageFragmentRoot root, String qualifiedName) throws CoreException {
+        return (TestCase)newIpsObject(root, IpsObjectType.TEST_CASE, qualifiedName);
+    }
+
+    /**
+     * Creates a new test case in the project's first package fragment root. If the
+     * qualifiedName includes a package name, the package is created if it does not already exists.
+     * 
+     * @throws CoreException
+     */
+    protected TestCase newTestCase(IIpsProject project, String qualifiedName) throws CoreException {
+        return (TestCase)newIpsObject(project, IpsObjectType.TEST_CASE, qualifiedName);
+    }
+
 
     /**
      * Triggers a full build of the workspace.

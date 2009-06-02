@@ -13,10 +13,16 @@
 
 package org.faktorips.devtools.core.internal.model.tablestructure;
 
+import java.util.Arrays;
+import java.util.List;
+
+import org.eclipse.core.runtime.CoreException;
 import org.faktorips.datatype.Datatype;
 import org.faktorips.devtools.core.AbstractIpsPluginTest;
+import org.faktorips.devtools.core.internal.model.tablecontents.TableContents;
 import org.faktorips.devtools.core.model.IIpsElement;
 import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
+import org.faktorips.devtools.core.model.ipsproject.IIpsObjectPath;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.tablestructure.ColumnRangeType;
 import org.faktorips.devtools.core.model.tablestructure.IColumn;
@@ -310,4 +316,78 @@ public class TableStructureTest extends AbstractIpsPluginTest {
         msgList = structure.validate(project);
         assertNull(msgList.getMessageByCode(ITableStructure.MSGCODE_STRUCTURE_NEEDS_TWO_KEYS_WHEN_ENUM_STRUCTURE));
     }
+    
+    /**
+     * Test for findAllMetaObjects(..)
+     * @throws CoreException 
+     */
+    public void testFindAllMetaObjects() throws CoreException {
+		String tableStructureQName = "pack.MyTableStructure";
+		String tableStructureProj2QName = "otherpack.MyTableStructureProj2";
+		String tableContent1QName = "pack.MyTableContent1";
+		String tableContent2QName = "pack.MyTableContent2";
+		String tableContent3QName = "pack.MyTableContent3";
+		String tableContentProj2QName = "otherpack.MyTableContentProj2";
+		
+		IIpsProject referencingProject = newIpsProject("referencingProject");
+		IIpsObjectPath path = referencingProject.getIpsObjectPath();
+		path.newIpsProjectRefEntry(project);
+		referencingProject.setIpsObjectPath(path);
+		
+		IIpsProject independentProject = newIpsProject("independentProject");
+		
+		/* leaveProject1 and leaveProject2 are not directly integrated in any test.
+		 * But the tested instance search methods have to search in all project that
+		 * holds a reference to the project of the object. So the search for a Object
+		 * in e.g. project have to search for instances in leaveProject1 and
+		 * leaveProject2. The tests implicit that no duplicates are found.
+		 */
+		
+		IIpsProject leaveProject1 = newIpsProject("LeaveProject1");
+		path = leaveProject1.getIpsObjectPath();
+		path.newIpsProjectRefEntry(referencingProject);
+		leaveProject1.setIpsObjectPath(path);
+
+		IIpsProject leaveProject2 = newIpsProject("LeaveProject2");
+		path = leaveProject2.getIpsObjectPath();
+		path.newIpsProjectRefEntry(referencingProject);
+		leaveProject2.setIpsObjectPath(path);
+		
+		TableStructure tableStructure = newTableStructure(project, tableStructureQName);
+		TableContents tableContent1 = newTableContents(tableStructure, tableContent1QName);
+		TableContents tableContent2 = newTableContents(tableStructure, tableContent2QName);
+		TableContents tableContent3 = newTableContents(project, tableContent3QName);
+		
+		Object[] result = tableStructure.findAllMetaObjectSrcFiles(project, true);
+		List<Object> resultList = Arrays.asList(result);
+		assertEquals(2, result.length);
+		assertTrue(resultList.contains(tableContent1.getIpsSrcFile()));
+		assertTrue(resultList.contains(tableContent2.getIpsSrcFile()));
+		assertFalse(resultList.contains(tableContent3.getIpsSrcFile()));
+
+		result = tableStructure.findAllMetaObjectSrcFiles(project, false);
+		resultList = Arrays.asList(result);
+		assertEquals(2, result.length);
+		assertTrue(resultList.contains(tableContent1.getIpsSrcFile()));
+		assertTrue(resultList.contains(tableContent2.getIpsSrcFile()));
+		assertFalse(resultList.contains(tableContent3.getIpsSrcFile()));
+
+		
+		TableContents tableContentProj2 = newTableContents(referencingProject, tableContentProj2QName);
+		tableContentProj2.setTableStructure(tableStructureQName);
+
+		result = tableStructure.findAllMetaObjectSrcFiles(project, true);
+		resultList = Arrays.asList(result);
+		assertEquals(3, result.length);
+		assertTrue(resultList.contains(tableContent1.getIpsSrcFile()));
+		assertTrue(resultList.contains(tableContent2.getIpsSrcFile()));
+		assertTrue(resultList.contains(tableContentProj2.getIpsSrcFile()));
+		assertFalse(resultList.contains(tableContent3.getIpsSrcFile()));
+		
+		TableStructure tableStructureProj2 = newTableStructure(independentProject, tableStructureProj2QName);
+		
+		result = tableStructureProj2.findAllMetaObjectSrcFiles(independentProject, true);
+		assertEquals(0, result.length);
+		
+	}
 }

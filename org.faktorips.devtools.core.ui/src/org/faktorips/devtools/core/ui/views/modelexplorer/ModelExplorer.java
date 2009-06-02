@@ -125,6 +125,7 @@ import org.faktorips.devtools.core.ui.actions.NewTestCaseAction;
 import org.faktorips.devtools.core.ui.actions.NewTestCaseTypeAction;
 import org.faktorips.devtools.core.ui.actions.OpenEditorAction;
 import org.faktorips.devtools.core.ui.actions.RenameAction;
+import org.faktorips.devtools.core.ui.actions.ShowInstanceAction;
 import org.faktorips.devtools.core.ui.actions.ShowStructureAction;
 import org.faktorips.devtools.core.ui.actions.TableImportExportAction;
 import org.faktorips.devtools.core.ui.actions.TreeViewerRefreshAction;
@@ -133,6 +134,7 @@ import org.faktorips.devtools.core.ui.views.IpsElementDragListener;
 import org.faktorips.devtools.core.ui.views.IpsProblemsLabelDecorator;
 import org.faktorips.devtools.core.ui.views.IpsResourceChangeListener;
 import org.faktorips.devtools.core.ui.views.TreeViewerDoubleclickListener;
+import org.faktorips.devtools.core.ui.views.instanceexplorer.InstanceExplorer;
 import org.faktorips.devtools.core.ui.wizards.deepcopy.DeepCopyWizard;
 
 /**
@@ -1172,6 +1174,9 @@ public class ModelExplorer extends ViewPart implements IShowInTarget {
                 if (selected instanceof IPolicyCmptType) {
                     manager.add(new FindPolicyReferencesAction(treeViewer));
                 }
+                if (InstanceExplorer.supports(selected)) {
+                	manager.add(new ShowInstanceAction((IIpsElement)selected, treeViewer));
+				}
                 // not to be used in this release
                 // if (selected instanceof IPolicyCmptType | selected instanceof IProductCmpt) {
                 // manager.add(new ShowAttributesAction(treeViewer));

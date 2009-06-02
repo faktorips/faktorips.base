@@ -14,6 +14,7 @@
 package org.faktorips.devtools.core.model.enums;
 
 import org.eclipse.core.runtime.CoreException;
+import org.faktorips.devtools.core.model.IIpsMetaObject;
 
 /**
  * This ips object type is used when the values for a Faktor-IPS enum shall not be defined directly
@@ -26,7 +27,7 @@ import org.eclipse.core.runtime.CoreException;
  * 
  * @since 2.3
  */
-public interface IEnumContent extends IEnumValueContainer {
+public interface IEnumContent extends IIpsMetaObject, IEnumValueContainer {
 
     /** The xml tag for this ips object. */
     public final static String XML_TAG = "EnumContent"; //$NON-NLS-1$

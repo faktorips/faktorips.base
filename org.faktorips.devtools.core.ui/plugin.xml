@@ -855,6 +855,14 @@
             icon="icons/ModelDescription.gif"
             id="org.faktorips.devtools.core.ui.views.modelDescription"
             name="%org.faktorips.devtools.core.ui.views.modelDescription"/>
+      <view
+            allowMultiple="false"
+            category="org.faktorips.devtools.productDefinitionCategory"
+            class="org.faktorips.devtools.core.ui.views.instanceexplorer.InstanceExplorer"
+            icon="icons/InstanceExplorer.gif"
+            id="org.faktorips.devtools.core.ui.views.instanceexplorer"
+            name="Instance-Explorer">
+      </view>
    </extension>
    
    <extension

@@ -1116,5 +1116,26 @@ public class TestCase extends IpsObject implements ITestCase {
                 }
             }
         }
-    }    
+    }
+
+	/* (non-Javadoc)
+	 * @see org.faktorips.devtools.core.model.IIpsMetaObject#findMetaClass(org.faktorips.devtools.core.model.ipsproject.IIpsProject)
+	 */
+	/**
+	 * {@inheritDoc}
+	 */
+	public IIpsSrcFile findMetaClassSrcFile(IIpsProject ipsProject)
+			throws CoreException {
+		return ipsProject.findIpsSrcFile(IpsObjectType.TEST_CASE_TYPE, getTestCaseType());
+	}
+
+	/* (non-Javadoc)
+	 * @see org.faktorips.devtools.core.model.IIpsMetaObject#getMetaClass()
+	 */
+	/**
+	 * {@inheritDoc}
+	 */
+	public String getMetaClass() {
+		return getTestCaseType();
+	}    
 }
