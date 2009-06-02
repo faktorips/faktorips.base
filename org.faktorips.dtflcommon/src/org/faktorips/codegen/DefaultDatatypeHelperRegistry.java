@@ -3,7 +3,7 @@
  * 
  * Alle Rechte vorbehalten.
  * 
- * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen, 
+ * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen,
  * etc.) duerfen nur unter den Bedingungen der Faktor-Zehn-Community Lizenzvereinbarung - Version
  * 0.1 (vor Gruendung Community) genutzt werden, die Bestandteil der Auslieferung ist und auch unter
  * http://www.faktorzehn.org/f10-org:lizenzen:community eingesehen werden kann.
@@ -18,14 +18,13 @@ import java.util.Map;
 
 import org.faktorips.datatype.Datatype;
 
-
 /**
- * A default DatatypeHelperRegistry. 
+ * A default DatatypeHelperRegistry.
  */
 public class DefaultDatatypeHelperRegistry implements DatatypeHelperRegistry {
-    
-    private Map helpers = new HashMap(20);
-    
+
+    private Map<Datatype, DatatypeHelper> helpers = new HashMap<Datatype, DatatypeHelper>(20);
+
     /**
      * Returns a new empty registry.
      */
@@ -34,16 +33,14 @@ public class DefaultDatatypeHelperRegistry implements DatatypeHelperRegistry {
     }
 
     /**
-     * Overridden method.
-     * @see org.faktorips.codegen.DatatypeHelperRegistry#getHelper(org.faktorips.datatype.Datatype)
+     * {@inheritDoc}
      */
     public DatatypeHelper getHelper(Datatype datatype) {
         return (DatatypeHelper)helpers.get(datatype);
     }
 
-    /** 
-     * Overridden method.
-     * @see org.faktorips.codegen.DatatypeHelperRegistry#register(org.faktorips.codegen.DatatypeHelper)
+    /**
+     * {@inheritDoc}
      */
     public void register(DatatypeHelper helper) {
         helpers.put(helper.getDatatype(), helper);

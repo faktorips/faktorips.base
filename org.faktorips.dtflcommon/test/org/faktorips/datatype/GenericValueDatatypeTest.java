@@ -3,7 +3,7 @@
  * 
  * Alle Rechte vorbehalten.
  * 
- * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen, 
+ * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen,
  * etc.) duerfen nur unter den Bedingungen der Faktor-Zehn-Community Lizenzvereinbarung - Version
  * 0.1 (vor Gruendung Community) genutzt werden, die Bestandteil der Auslieferung ist und auch unter
  * http://www.faktorzehn.org/f10-org:lizenzen:community eingesehen werden kann.
@@ -20,7 +20,7 @@ import junit.framework.TestCase;
 public class GenericValueDatatypeTest extends TestCase {
 
     private DefaultGenericValueDatatype datatype;
-    
+
     protected void setUp() throws Exception {
         super.setUp();
         datatype = new DefaultGenericValueDatatype(PaymentMode.class);
@@ -44,7 +44,7 @@ public class GenericValueDatatypeTest extends TestCase {
         assertNotNull(list.getMessageByCode(GenericValueDatatype.MSGCODE_ISPARSABLE_METHOD_NOT_FOUND));
         assertNotNull(list.getMessageByCode(GenericValueDatatype.MSGCODE_TOSTRING_METHOD_NOT_FOUND));
     }
-    
+
     public void testValidate_InvalidSpecialCaseNull() {
         datatype.setIsParsableMethodName("isParsable");
         datatype.setToStringMethodName("getId");
@@ -54,12 +54,12 @@ public class GenericValueDatatypeTest extends TestCase {
         MessageList list = datatype.checkReadyToUse();
         assertEquals(1, list.getNoOfMessages());
         assertNotNull(list.getMessageByCode(GenericValueDatatype.MSGCODE_SPECIALCASE_NULL_NOT_FOUND));
-        
+
         datatype.setNullObjectId(PaymentMode.ANNUAL.getId());
         list = datatype.checkReadyToUse();
         assertNotNull(list.getMessageByCode(GenericValueDatatype.MSGCODE_SPECIALCASE_NULL_IS_NOT_NULL));
     }
-    
+
     /*
      * Test method for 'org.faktorips.datatype.GenericValueDatatype.isParsable(String)'
      */
@@ -68,7 +68,7 @@ public class GenericValueDatatypeTest extends TestCase {
         assertTrue(datatype.isParsable(PaymentMode.ANNUAL.getId()));
         assertFalse(datatype.isParsable("unknownId"));
         assertTrue(datatype.isParsable(null));
-        
+
         datatype = new DefaultGenericValueDatatype(TestValueClass.class);
         datatype.setValueOfMethodName("getInteger");
         datatype.setIsParsableMethodName("isInteger");
@@ -137,16 +137,16 @@ public class GenericValueDatatypeTest extends TestCase {
             fail();
         } catch (RuntimeException e) {
         }
-        // Payment hasn't got a special toString method, but the supertype 
+        // Payment hasn't got a special toString method, but the supertype
         datatype.setToStringMethodName("toString");
         assertNotNull(datatype.getToStringMethod());
-        
+
     }
 
-    public void testEquals(){
+    public void testEquals() {
         assertEquals(datatype, datatype);
         assertFalse(datatype.equals(Datatype.INTEGER));
-        GenericValueDatatype paymentMode2 = new GenericValueDatatype(){
+        GenericValueDatatype paymentMode2 = new GenericValueDatatype() {
 
             public Class getAdaptedClass() {
                 return null;
@@ -155,17 +155,17 @@ public class GenericValueDatatypeTest extends TestCase {
             public String getAdaptedClassName() {
                 return null;
             }
-            
+
         };
         paymentMode2.setQualifiedName("PaymentMode");
         assertEquals(datatype, paymentMode2);
-        
+
     }
-    
-    public void testHashCode(){
+
+    public void testHashCode() {
         assertEquals(datatype.hashCode(), datatype.hashCode());
         assertFalse(datatype.hashCode() == Datatype.INTEGER.hashCode());
-        GenericValueDatatype paymentMode2 = new GenericValueDatatype(){
+        GenericValueDatatype paymentMode2 = new GenericValueDatatype() {
 
             public Class getAdaptedClass() {
                 return null;
@@ -174,13 +174,13 @@ public class GenericValueDatatypeTest extends TestCase {
             public String getAdaptedClassName() {
                 return null;
             }
-            
+
         };
         paymentMode2.setQualifiedName("PaymentMode");
         assertEquals(datatype.hashCode(), paymentMode2.hashCode());
-        
+
     }
-    
+
     /*
      * Test method for 'org.faktorips.datatype.GenericValueDatatype.isNull(Object)'
      */
@@ -199,7 +199,7 @@ public class GenericValueDatatypeTest extends TestCase {
         public String getAdaptedClassName() {
             return "UnknownClass";
         }
-        
+
     }
-    
+
 }

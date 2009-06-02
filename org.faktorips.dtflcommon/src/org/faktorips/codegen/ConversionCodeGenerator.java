@@ -3,7 +3,7 @@
  * 
  * Alle Rechte vorbehalten.
  * 
- * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen, 
+ * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen,
  * etc.) duerfen nur unter den Bedingungen der Faktor-Zehn-Community Lizenzvereinbarung - Version
  * 0.1 (vor Gruendung Community) genutzt werden, die Bestandteil der Auslieferung ist und auch unter
  * http://www.faktorzehn.org/f10-org:lizenzen:community eingesehen werden kann.
@@ -20,18 +20,17 @@ import org.faktorips.datatype.AnyDatatype;
 import org.faktorips.datatype.ConversionMatrix;
 import org.faktorips.datatype.Datatype;
 
-
 /**
- * The ConversionCodeGenerator extends the ConversionMatrix with the ability to
- * generate the Java sourcecode needed to convert the value of a given datatype
- * to another (if the conversion is possible).  
+ * The ConversionCodeGenerator extends the ConversionMatrix with the ability to generate the Java
+ * sourcecode needed to convert the value of a given datatype to another (if the conversion is
+ * possible).
  */
 public class ConversionCodeGenerator implements ConversionMatrix {
-    
+
     /**
-     * Returns a default ConversionCodeGenerator that contains the following
-     * conversions.
-     * <p><ul>
+     * Returns a default ConversionCodeGenerator that contains the following conversions.
+     * <p>
+     * <ul>
      * <li>Primitve boolean to Boolean</li>
      * <li>Boolean to primitive boolean</li>
      * <li>Primitive int to Integer</li>
@@ -59,23 +58,23 @@ public class ConversionCodeGenerator implements ConversionMatrix {
         ccg.add(new PrimitiveLongToPrimitiveIntCg());
         return ccg;
     }
-    
-    // List of single conversion code generators
-    private List conversions = new ArrayList();
-    
+
+    /** List of single conversion code generators. */
+    private List<SingleConversionCg> conversions = new ArrayList<SingleConversionCg>();
+
     /**
      * Creates a new instance.
      */
     public ConversionCodeGenerator() {
+
     }
-    
+
     public void add(SingleConversionCg conversion) {
         conversions.add(conversion);
     }
 
-    /** 
-     * Overridden method.
-     * @see org.faktorips.datatype.ConversionMatrix#canConvert(org.faktorips.datatype.Datatype, org.faktorips.datatype.Datatype)
+    /**
+     * {@inheritDoc}
      */
     public boolean canConvert(Datatype from, Datatype to) {
         if (from.equals(to)) {
@@ -84,7 +83,7 @@ public class ConversionCodeGenerator implements ConversionMatrix {
         if (to instanceof AnyDatatype) {
             return true;
         }
-        for (Iterator it=conversions.iterator(); it.hasNext(); ) {
+        for (Iterator<SingleConversionCg> it = conversions.iterator(); it.hasNext();) {
             SingleConversionCg cg = (SingleConversionCg)it.next();
             if (cg.getFrom().equals(from) && cg.getTo().equals(to)) {
                 return true;
@@ -94,27 +93,22 @@ public class ConversionCodeGenerator implements ConversionMatrix {
     }
 
     /**
-     * Returns the Java sourcecode that converts a value of Datatype <code>from</code>
-     * to a value of Datatype <code>to</code> if possible. Returns null if the conversion
-     * is not possible.
+     * Returns the Java sourcecode that converts a value of Datatype <code>from</code> to a value of
+     * Datatype <code>to</code> if possible. Returns null if the conversion is not possible.
      * 
-     * @param from		The datatype to convert from.
-     * @param to		The datatype to convert to.
-     * @param fromValue	A Java sourcecode fragment containing an expression that
-     * evaluates to a value of Datatype from.
+     * @param from The datatype to convert from.
+     * @param to The datatype to convert to.
+     * @param fromValue A Java sourcecode fragment containing an expression that evaluates to a
+     *            value of Datatype from.
      */
-    public JavaCodeFragment getConversionCode(
-            Datatype from, 
-            Datatype to, 
-            JavaCodeFragment fromValue) {
-        
+    public JavaCodeFragment getConversionCode(Datatype from, Datatype to, JavaCodeFragment fromValue) {
         if (from.equals(to)) {
             return fromValue;
         }
         if (to instanceof AnyDatatype) {
             return fromValue;
         }
-        for (Iterator it=conversions.iterator(); it.hasNext(); ) {
+        for (Iterator<SingleConversionCg> it = conversions.iterator(); it.hasNext();) {
             SingleConversionCg cg = (SingleConversionCg)it.next();
             if (cg.getFrom().equals(from) && cg.getTo().equals(to)) {
                 return cg.getConversionCode(fromValue);
