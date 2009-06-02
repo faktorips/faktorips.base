@@ -99,12 +99,29 @@ public interface IMethod extends IParameterContainer {
     public int getJavaModifier();
 
     /**
-     * Returns <code>true</code> if the other method signature overrides this one. This is the case if
-     * it has the same name and the same number of parameters and each parameter has the same datatype as the parameter 
-     * in this method. Returns <code>false</code> otherwise.
-     * Note that the return type is not checked. 
+     * Returns <code>true</code> iff this method overrides the <code>otherMethod</code>. This method could override
+     * a method of any super type of this method's type, so <code>this.getType</code> must be a sub type of <code>otherMethod.getType</code>.
+     * Further the method signature have to be the same.
+     * Returns <code>false</code> otherwise.
+     * Note that the type of the methods return values are not checked due to this case is not valid.
+     *  
+     * @param otherMethod the mothod that overrides this one 
+     * @return true if the other method overrides this one
+     * @throws CoreException if there is an error in type hierarchy check
      */
-    public boolean overrides(IMethod method);
+    public boolean overrides(IMethod otherMethod) throws CoreException;
+    
+    /**
+     * Checks whether the signature of the otherMethod is the same as the signature of this method.
+     * The signature is the same iff the name of the method is equal, the number of parameters is equal
+     * and the data types of the parameters are equal.
+     * Note that the return values are not compared.
+     * 
+     * @param otherMethod the other method, this method have to be compared with 
+     * @return <code>true</code> iff the signature of the other method is the same as the signature of this method
+     * 
+     */
+    public boolean isSameSignature(IMethod otherMethod);
     
     /**
      * Returns the method overriding this one or <code>null</code> if no such method is found. 

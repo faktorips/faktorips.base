@@ -221,7 +221,7 @@ public class Method extends BaseIpsObjectPart implements IMethod {
     /** 
      * {@inheritDoc}
      */
-    public boolean overrides(IMethod other) {
+    public boolean isSameSignature(IMethod other){
         if (!getName().equals(other.getName())) {
             return false;
         }
@@ -236,6 +236,20 @@ public class Method extends BaseIpsObjectPart implements IMethod {
         }
         return true;
     }
+    
+    /** 
+     * {@inheritDoc}
+     */
+    public boolean overrides(IMethod other) throws CoreException{
+    	if (!this.isSameSignature(other)) {
+    		return false;
+    	}
+		if (!this.getType().isSubtypeOf(other.getType(), other.getIpsProject())) {
+			return false;
+		}
+		return true;
+    }
+
     
     /**
      * {@inheritDoc}

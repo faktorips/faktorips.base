@@ -94,7 +94,7 @@ public class TypeHierarchy implements ITypeHierarchy {
             if (searchedProjects.contains(projects[i])) {
                 continue;
             }
-            if (projects[i].equals(project) || projects[i].dependsOn(project)) {
+            if (projects[i].equals(project) || projects[i].isReferencing(project)) {
                 IIpsSrcFile[] pcTypeSrcFiles = projects[i].findIpsSrcFiles(IpsObjectType.POLICY_CMPT_TYPE);
                 for (int j=0; j<pcTypeSrcFiles.length; j++) {
                     IPolicyCmptType candidate = (IPolicyCmptType)pcTypeSrcFiles[j].getIpsObject();

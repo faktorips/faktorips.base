@@ -149,23 +149,8 @@ public class IpsProject extends IpsElement implements IIpsProject {
     /**
      * {@inheritDoc}
      */
-    // TODO BUG: Only the first project of the referenced project is tested for further dependencies.
-    // The recursion should not return false but check for further dependencies. 
-    public boolean dependsOn(IIpsProject otherProject) throws CoreException {
-        if (this.equals(otherProject)) {
-            return false;
-        }
-
-        IIpsProject[] projects = getReferencedIpsProjects();
-        for (int i = 0; i < projects.length; i++) {
-            if (projects[i].equals(otherProject)) {
-                return true;
-            } else {
-                return projects[i].dependsOn(otherProject);
-            }
-        }
-
-        return false;
+    public boolean isReferencing(IIpsProject otherProject) throws CoreException {
+       return otherProject.isReferencedBy(this, true);
     }
 
     /**
@@ -376,12 +361,12 @@ public class IpsProject extends IpsElement implements IIpsProject {
         if (otherProject == null || otherProject == this) {
             return false;
         }
-        Set projectsVisited = new HashSet();
+        Set<IIpsProject> projectsVisited = new HashSet<IIpsProject>();
 
         return isReferencedBy(otherProject, considerIndirect, projectsVisited);
     }
 
-    private boolean isReferencedBy(IIpsProject otherProject, boolean considerIndirect, Set projectsVisited)
+    private boolean isReferencedBy(IIpsProject otherProject, boolean considerIndirect, Set<IIpsProject> projectsVisited)
             throws CoreException {
 
         IIpsObjectPath otherPath = ((IpsProject)otherProject).getIpsObjectPathInternal();

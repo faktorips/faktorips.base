@@ -1561,20 +1561,20 @@ public class IpsProjectTest extends AbstractIpsPluginTest {
     }
 
     public void testDependsOn() throws CoreException {
-        assertFalse(ipsProject.dependsOn(baseProject));
+        assertFalse(ipsProject.isReferencing(baseProject));
 
         IIpsObjectPath path = ipsProject.getIpsObjectPath();
         path.newIpsProjectRefEntry(baseProject);
         ipsProject.setIpsObjectPath(path);
-        assertTrue(ipsProject.dependsOn(baseProject));
+        assertTrue(ipsProject.isReferencing(baseProject));
 
         // transitivitaet der beziehung beruecksichtigt?
         IIpsProject project3 = newIpsProject("Project3");
         path = project3.getIpsObjectPath();
         path.newIpsProjectRefEntry(ipsProject);
         project3.setIpsObjectPath(path);
-        assertTrue(project3.dependsOn(ipsProject));
-        assertTrue(project3.dependsOn(baseProject));
+        assertTrue(project3.isReferencing(ipsProject));
+        assertTrue(project3.isReferencing(baseProject));
     }
 
     public void testValidateMissingMigration() throws Exception {

@@ -799,6 +799,7 @@ public class TypeTest extends AbstractIpsPluginTest {
     
     public void testOverrideMethods() throws CoreException {
         IType supertype = newProductCmptType(ipsProject, "Product");
+        type.setSupertype(supertype.getQualifiedName());
         IMethod m1 = supertype.newMethod();
         m1.setModifier(Modifier.PUBLISHED);
         m1.setAbstract(true);
@@ -816,10 +817,15 @@ public class TypeTest extends AbstractIpsPluginTest {
         assertEquals("int", methods[0].getDatatype());
         assertEquals(Modifier.PUBLISHED, methods[0].getModifier());
         assertEquals("p", methods[0].getParameters()[0].getName());
-        
         assertTrue(methods[1].overrides(m2));
+        
+        IType otherType = newProductCmptType(ipsProject, "OtherType");
+        otherType.overrideMethods(new IMethod[]{m1, m2});
+        assertEquals(2, otherType.getNumOfMethods());
+        methods = otherType.getMethods();
+        assertFalse(methods[0].overrides(m1));
+        assertFalse(methods[1].overrides(m2));
     }
-    
-
+ 
 
 }

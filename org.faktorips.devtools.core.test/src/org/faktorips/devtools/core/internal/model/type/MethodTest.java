@@ -18,7 +18,6 @@ import org.faktorips.datatype.Datatype;
 import org.faktorips.devtools.core.AbstractIpsPluginTest;
 import org.faktorips.devtools.core.model.ipsobject.Modifier;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
-import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.model.type.IMethod;
 import org.faktorips.devtools.core.model.type.IParameter;
 import org.faktorips.devtools.core.model.type.IType;
@@ -177,7 +176,12 @@ public class MethodTest extends AbstractIpsPluginTest {
         testPropertyAccessReadWrite(Method.class, IMethod.PROPERTY_MODIFIER, method, Modifier.PUBLIC);
     }
 
-    public void testOverrides() {
+    
+
+    /**
+     * @throws CoreException
+     */
+    public void testIsSameSignature() throws CoreException {
         method.setName("calc");
         method.setDatatype("void");
         IParameter param0 = method.newParameter();
@@ -198,25 +202,56 @@ public class MethodTest extends AbstractIpsPluginTest {
         otherParam1.setDatatype("Money");
         
         // ok case
-        assertTrue(method.overrides(other));
+        assertTrue(method.isSameSignature(other));
         
         // different name
         other.setName("differentName");
-        assertFalse(method.overrides(other));
+        assertFalse(method.isSameSignature(other));
         
         // different parameter type 
         other.setName("calc"); // make names equals again
-        assertTrue(method.overrides(other)); // and test it
+        assertTrue(method.isSameSignature(other)); // and test it
         otherParam1.setDatatype("int");
-        assertFalse(method.overrides(other));
+        assertFalse(method.isSameSignature(other));
         
         // different number of parameters 
         other.newParameter();
-        assertFalse(method.overrides(other));
+        assertFalse(method.isSameSignature(other));
+    }
+    
+    public void testOverrides() throws CoreException {
+        method.setName("calc");
+        method.setDatatype("void");
+        IParameter param0 = method.newParameter();
+        param0.setName("p1");
+        param0.setDatatype("Decimal");
+        IParameter param1 = method.newParameter();
+        param1.setName("p2");
+        param1.setDatatype("Money");
+
+        IType otherType = newProductCmptType(ipsProject, "otherType");
+        IMethod otherTypeMethod = otherType.newMethod();
+        otherTypeMethod.setName("calc");
+        otherTypeMethod.setDatatype("void");
+        IParameter OtherParam0 = otherTypeMethod.newParameter();
+        OtherParam0.setName("p1");
+        OtherParam0.setDatatype("Decimal");
+        IParameter OtherParam1 = otherTypeMethod.newParameter();
+        OtherParam1.setName("p2");
+        OtherParam1.setDatatype("Money");
+        
+        assertTrue(method.isSameSignature(otherTypeMethod));
+        
+        assertFalse(method.overrides(otherTypeMethod));
+        assertFalse(otherTypeMethod.overrides(method));
+        
+        otherType.setSupertype(type.getQualifiedName());
+        assertFalse(method.overrides(otherTypeMethod));
+        assertTrue(otherTypeMethod.overrides(method));
     }
 
     public void testValidate() throws Exception{
-        IPolicyCmptType pcType = newPolicyCmptType(ipsProject, "aType");
+    	IType pcType = newPolicyCmptType(ipsProject, "aType");
         method = pcType.newMethod();
         method.setModifier(Modifier.PUBLIC);
         method.setName("calculate");
@@ -239,7 +274,7 @@ public class MethodTest extends AbstractIpsPluginTest {
     }
     
     public void testValidateMultipleParameterNames() throws CoreException{
-        IPolicyCmptType pcType = newPolicyCmptType(ipsProject, "aType");
+    	IType pcType = newPolicyCmptType(ipsProject, "aType");
         method = pcType.newMethod();
         method.setModifier(Modifier.PUBLIC);
         method.setName("calculate");
@@ -264,17 +299,17 @@ public class MethodTest extends AbstractIpsPluginTest {
      * @throws CoreException
      */
     public void testFindOverridingMethod() throws CoreException {
-    	IPolicyCmptType superType = newPolicyCmptType(ipsProject, "superType");
-    	IPolicyCmptType thisType = newPolicyCmptType(ipsProject, "thisType");
+    	IType superType = newPolicyCmptType(ipsProject, "superType");
+    	IType thisType = newPolicyCmptType(ipsProject, "thisType");
     	thisType.setSupertype(superType.getQualifiedName());
-    	IPolicyCmptType subType = newPolicyCmptType(ipsProject, "subType");
+    	IType subType = newPolicyCmptType(ipsProject, "subType");
     	subType.setSupertype(thisType.getQualifiedName());
     	
     	IMethod superMethod = superType.newMethod();
     	IMethod thisMethod = thisType.newMethod();
-    	thisMethod.overrides(superMethod);
+    	assertTrue(thisMethod.overrides(superMethod));
     	IMethod subMethod = subType.newMethod();
-    	subMethod.overrides(thisMethod);
+    	assertTrue(subMethod.overrides(thisMethod));
     	
     	IMethod result = thisMethod.findOverridingMethod(thisType, ipsProject);
     	assertEquals(null, result);
@@ -291,17 +326,17 @@ public class MethodTest extends AbstractIpsPluginTest {
      * @throws CoreException
      */
     public void testFindOverriddenMethod() throws CoreException {
-    	IPolicyCmptType superSuperType = newPolicyCmptType(ipsProject, "superSuperType");
-    	IPolicyCmptType superType = newPolicyCmptType(ipsProject, "superType");
+    	IType superSuperType = newPolicyCmptType(ipsProject, "superSuperType");
+    	IType superType = newPolicyCmptType(ipsProject, "superType");
     	superType.setSupertype(superSuperType.getQualifiedName());
-    	IPolicyCmptType thisType = newPolicyCmptType(ipsProject, "thisType");
+    	IType thisType = newPolicyCmptType(ipsProject, "thisType");
     	thisType.setSupertype(superType.getQualifiedName());
     	
     	IMethod superSuperMethod = superSuperType.newMethod();
     	IMethod superMethod = superType.newMethod();
-    	superMethod.overrides(superSuperMethod);
+    	assertTrue(superMethod.overrides(superSuperMethod));
     	IMethod thisMethod = thisType.newMethod();
-    	thisMethod.overrides(superMethod);
+    	assertTrue(thisMethod.overrides(superMethod));
     	
     	IMethod result = thisMethod.findOverriddenMethod(ipsProject);
     	assertEquals(superMethod, result);

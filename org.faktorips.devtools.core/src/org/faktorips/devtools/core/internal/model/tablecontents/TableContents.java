@@ -284,7 +284,7 @@ public class TableContents extends TimedIpsObject implements ITableContents {
 	 * @see org.faktorips.devtools.core.model.ipsobject.IFixDifferencesToModelSupport#containsDifferenceToModel(org.faktorips.devtools.core.model.ipsproject.IIpsProject)
 	 */
 	/**
-	 * {@inheritDoc}
+	 * This Method always returns false because differences to model is not supported at the moment
 	 */
 	public boolean containsDifferenceToModel(IIpsProject ipsProject)
 			throws CoreException {
@@ -296,11 +296,11 @@ public class TableContents extends TimedIpsObject implements ITableContents {
 	 * @see org.faktorips.devtools.core.model.ipsobject.IFixDifferencesToModelSupport#fixAllDifferencesToModel(org.faktorips.devtools.core.model.ipsproject.IIpsProject)
 	 */
 	/**
-	 * {@inheritDoc}
+	 * This method does nothing because there is nothing to do at the moment
+	 * 
 	 */
 	public void fixAllDifferencesToModel(IIpsProject ipsProject)
 			throws CoreException {
-		// TODO throw new NotImplementedException();
 	}
 
 	/* (non-Javadoc)

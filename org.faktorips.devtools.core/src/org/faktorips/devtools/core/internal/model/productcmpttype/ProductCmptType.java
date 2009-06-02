@@ -501,7 +501,7 @@ public class ProductCmptType extends Type implements IProductCmptType {
         for (Iterator it = overloadedSupertypeFormulaSignatures.iterator(); it.hasNext();) {
             IProductCmptTypeMethod overloadedMethod = (IProductCmptTypeMethod)it.next();
             for (int i = 0; i < nonFormulas.length; i++) {
-                if(nonFormulas[i].overrides(overloadedMethod)){
+                if(nonFormulas[i].isSameSignature(overloadedMethod)){
                     String text = NLS.bind(Messages.ProductCmptType_msgOverloadedFormulaMethodCannotBeOverridden, overloadedMethod.getFormulaName());
                     msgList.add(new Message(MSGCODE_OVERLOADED_FORMULA_CANNOT_BE_OVERRIDDEN, text, Message.ERROR, nonFormulas[i], IProductCmptTypeMethod.PROPERTY_NAME));
                 }

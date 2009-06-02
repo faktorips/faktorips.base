@@ -233,7 +233,7 @@ public interface IIpsProject extends IIpsElement, IProjectNature {
      * 
      * @see IIpsObjectPath
      */
-    public boolean dependsOn(IIpsProject otherProject) throws CoreException;
+    public boolean isReferencing(IIpsProject otherProject) throws CoreException;
 
     /**
      * Returns <code>true</code> if the project can be build / Java sourcecode can be generated.
