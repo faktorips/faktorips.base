@@ -18,8 +18,10 @@ import java.util.List;
 
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
+import org.eclipse.swt.widgets.Group;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.TabFolder;
 import org.eclipse.swt.widgets.TabItem;
@@ -71,6 +73,9 @@ public class EnumAttributeEditDialog extends IpsPartEditDialog2 {
     /** This is used to track changes of the inherited property of the enum attribute to be edited. */
     private boolean inheritedProperty;
 
+    /** The canvas. */
+    private Composite workArea;
+
     /**
      * This is used to track changes of the literal name property of the enum attribute to be
      * edited.
@@ -114,11 +119,29 @@ public class EnumAttributeEditDialog extends IpsPartEditDialog2 {
         literalNameProperty = enumAttribute.isLiteralName();
 
         Composite control = createTabItemComposite(tabFolder, 1, false);
-        Composite workArea = uiToolkit.createLabelEditColumnComposite(control);
+        workArea = uiToolkit.createLabelEditColumnComposite(control);
 
         // Create extension properties on position top
         extFactory.createControls(workArea, uiToolkit, enumAttribute, IExtensionPropertyDefinition.POSITION_TOP);
 
+        createFields();
+        createFaktorIpsUiGroup();
+
+        // Content bindings dependend on inherited property
+        bindAndSetContentDependendOnInheritedProperty(enumAttribute);
+
+        // Create extension properties on position bottom
+        extFactory.createControls(workArea, uiToolkit, enumAttribute, IExtensionPropertyDefinition.POSITION_BOTTOM);
+        extFactory.bind(bindingContext);
+
+        // Set the focus into the name field for better usability.
+        nameText.setFocus();
+
+        return control;
+    }
+
+    /** Creates the ui fields. */
+    private void createFields() {
         // Name
         uiToolkit.createFormLabel(workArea, Messages.EnumAttributeEditDialog_labelName);
         nameText = uiToolkit.createText(workArea);
@@ -139,30 +162,27 @@ public class EnumAttributeEditDialog extends IpsPartEditDialog2 {
         uiToolkit.createFormLabel(workArea, Messages.EnumAttributeEditDialog_labelUseAsLiteralName);
         literalNameCheckbox = uiToolkit.createCheckbox(workArea);
 
-        // Used as ID in Faktor-IPS UI
-        uiToolkit.createFormLabel(workArea, Messages.EnumAttributeEditDialog_labelUsedAsIdInFaktorIpsUi);
-        usedAsIdInFaktorIpsUiCheckbox = uiToolkit.createCheckbox(workArea);
-
-        // Used as name in Faktor-IPS UI
-        uiToolkit.createFormLabel(workArea, Messages.EnumAttributeEditDialog_labelUsedAsNameInFaktorIpsUi);
-        usedAsNameInFaktorIpsUiCheckbox = uiToolkit.createCheckbox(workArea);
-
         // Inherited
         uiToolkit.createFormLabel(workArea, Messages.EnumAttributeEditDialog_labelIsInherited);
         Checkbox inheritedCheckbox = uiToolkit.createCheckbox(workArea);
         bindingContext.bindContent(inheritedCheckbox, enumAttribute, IEnumAttribute.PROPERTY_INHERITED);
+    }
 
-        // Content bindings dependend on inherited property
-        bindAndSetContentDependendOnInheritedProperty(enumAttribute);
+    /** Creates the Faktor-IPS UI group. */
+    private void createFaktorIpsUiGroup() {
+        // Fake empty space
+        uiToolkit.createLabel(workArea.getParent(), "");
+        uiToolkit.createLabel(workArea.getParent(), "");
 
-        // Create extension properties on position bottom
-        extFactory.createControls(workArea, uiToolkit, enumAttribute, IExtensionPropertyDefinition.POSITION_BOTTOM);
-        extFactory.bind(bindingContext);
+        Group uiGroup = uiToolkit.createGridGroup(workArea.getParent(), "Faktor-IPS UI", 2, false);
 
-        // Set the focus into the name field for better usability.
-        nameText.setFocus();
+        // Used as ID in Faktor-IPS UI
+        uiToolkit.createFormLabel(uiGroup, Messages.EnumAttributeEditDialog_labelUsedAsIdInFaktorIpsUi);
+        usedAsIdInFaktorIpsUiCheckbox = uiToolkit.createCheckbox(uiGroup);
 
-        return control;
+        // Used as name in Faktor-IPS UI
+        uiToolkit.createFormLabel(uiGroup, Messages.EnumAttributeEditDialog_labelUsedAsNameInFaktorIpsUi);
+        usedAsNameInFaktorIpsUiCheckbox = uiToolkit.createCheckbox(uiGroup);
     }
 
     /**
