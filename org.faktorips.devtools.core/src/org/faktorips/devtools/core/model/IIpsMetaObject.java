@@ -3,7 +3,7 @@
  * 
  * Alle Rechte vorbehalten.
  * 
- * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen, 
+ * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen,
  * etc.) duerfen nur unter den Bedingungen der Faktor-Zehn-Community Lizenzvereinbarung - Version
  * 0.1 (vor Gruendung Community) genutzt werden, die Bestandteil der Auslieferung ist und auch unter
  * http://www.faktorzehn.org/f10-org:lizenzen:community eingesehen werden kann.
@@ -19,30 +19,29 @@ import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 
 /**
+ * This interface is implemented by every java class of the ips meta model representing a meta
+ * object that is derived from a meta class
  * 
- * This interface is implemented by every java class of the ips meta model representing a meta object
- * that is derived from a meta class
- * 
- * e.g. IProductCmpt, IEnumContetn, ITableContents and ITestCase.
+ * e.g. IProductCmpt, IEnumContent, ITableContents and ITestCase.
  * 
  * @author dirmeier
- *
  */
 public interface IIpsMetaObject extends IFixDifferencesToModelSupport, IIpsObject {
 
-	/**
-	 * This method returns the qualified name of the meta class, defining this meta object
-	 * @return the qualified name of its meta object
-	 */
-	public String getMetaClass();
-	
-	/**
-	 * This method finds the ips src file of the meta class, defining this meta object
-	 * 
-	 * @param ipsProject the ipsProject used to find the meta class
-	 * @return Returns the <code>IIpsSrcFile</code> for the meta class of this meta object
-	 * @throws CoreException 
-	 */
-	public IIpsSrcFile findMetaClassSrcFile(IIpsProject ipsProject) throws CoreException;
-	
+    /**
+     * This method returns the qualified name of the meta class, defining this meta object
+     * 
+     * @return the qualified name of its meta object
+     */
+    public String getMetaClass();
+
+    /**
+     * This method finds the ips src file of the meta class, defining this meta object
+     * 
+     * @param ipsProject the ipsProject used to find the meta class
+     * @return Returns the <code>IIpsSrcFile</code> for the meta class of this meta object
+     * @throws CoreException
+     */
+    public IIpsSrcFile findMetaClassSrcFile(IIpsProject ipsProject) throws CoreException;
+
 }
