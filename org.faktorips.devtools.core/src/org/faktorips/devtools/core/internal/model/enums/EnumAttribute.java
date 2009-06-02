@@ -292,7 +292,11 @@ public class EnumAttribute extends AtomicIpsObjectPart implements IEnumAttribute
             // Check for other enum attributes being marked as literalName
             int numberEnumAttributesLiteralName = 0;
             for (IEnumAttribute currentEnumAttribute : enumAttributes) {
-                if (currentEnumAttribute.findIsLiteralName(ipsProject)) {
+                Boolean isLiteralName = currentEnumAttribute.findIsLiteralName(ipsProject);
+                if (isLiteralName == null) {
+                    continue;
+                }
+                if (isLiteralName.booleanValue()) {
                     numberEnumAttributesLiteralName++;
                 }
                 if (numberEnumAttributesLiteralName > 1) {

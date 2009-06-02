@@ -111,16 +111,16 @@ public class EnumTypeValidations {
         SupertypeCollector collector = new SupertypeCollector(ipsProject);
         collector.start(superEnumType);
         if (collector.cycleDetected()) {
-            String msg = Messages.EnumType_cycleDetected;
+            String msg = NLS.bind(Messages.EnumType_cycleDetected, enumType.getQualifiedName());
             msgList.add(new Message(IEnumType.MSGCODE_CYCLE_IN_TYPE_HIERARCHY, msg, Message.ERROR, enumType,
                     IEnumType.PROPERTY_SUPERTYPE));
         } else {
             for (Iterator<IEnumType> it = collector.superTypes.iterator(); it.hasNext();) {
                 MessageList superResult = it.next().validate(ipsProject);
-                if (!superResult.isEmpty()) {
+                if (!(superResult.isEmpty())) {
                     if (superResult.getMessageByCode(IEnumType.MSGCODE_ENUM_TYPE_SUPERTYPE_DOES_NOT_EXIST) != null
                             || superResult.getMessageByCode(IEnumType.MSGCODE_ENUM_TYPE_SUPERTYPE_IS_NOT_ABSTRACT) != null) {
-                        String text = Messages.EnumType_inconsistentHierarchy;
+                        String text = NLS.bind(Messages.EnumType_inconsistentHierarchy, enumType.getQualifiedName());
                         msgList.add(new Message(IEnumType.MSGCODE_INCONSISTENT_TYPE_HIERARCHY, text, Message.ERROR,
                                 enumType, IEnumType.PROPERTY_SUPERTYPE));
                     }
