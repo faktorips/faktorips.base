@@ -259,4 +259,58 @@ public class MethodTest extends AbstractIpsPluginTest {
         assertNull(msgList.getMessageByCode(IMethod.MSGCODE_MULTIPLE_USE_OF_SAME_PARAMETER_NAME));
         
     }
+    
+    /**
+     * @throws CoreException
+     */
+    public void testFindOverridingMethod() throws CoreException {
+    	IPolicyCmptType superType = newPolicyCmptType(ipsProject, "superType");
+    	IPolicyCmptType thisType = newPolicyCmptType(ipsProject, "thisType");
+    	thisType.setSupertype(superType.getQualifiedName());
+    	IPolicyCmptType subType = newPolicyCmptType(ipsProject, "subType");
+    	subType.setSupertype(thisType.getQualifiedName());
+    	
+    	IMethod superMethod = superType.newMethod();
+    	IMethod thisMethod = thisType.newMethod();
+    	thisMethod.overrides(superMethod);
+    	IMethod subMethod = subType.newMethod();
+    	subMethod.overrides(thisMethod);
+    	
+    	IMethod result = thisMethod.findOverridingMethod(thisType, ipsProject);
+    	assertEquals(null, result);
+
+    	result = thisMethod.findOverridingMethod(superType, ipsProject);
+    	assertEquals(null, result);
+
+    	result = thisMethod.findOverridingMethod(subType, ipsProject);
+    	assertEquals(subMethod, result);
+
+    }
+    
+    /**
+     * @throws CoreException
+     */
+    public void testFindOverriddenMethod() throws CoreException {
+    	IPolicyCmptType superSuperType = newPolicyCmptType(ipsProject, "superSuperType");
+    	IPolicyCmptType superType = newPolicyCmptType(ipsProject, "superType");
+    	superType.setSupertype(superSuperType.getQualifiedName());
+    	IPolicyCmptType thisType = newPolicyCmptType(ipsProject, "thisType");
+    	thisType.setSupertype(superType.getQualifiedName());
+    	
+    	IMethod superSuperMethod = superSuperType.newMethod();
+    	IMethod superMethod = superType.newMethod();
+    	superMethod.overrides(superSuperMethod);
+    	IMethod thisMethod = thisType.newMethod();
+    	thisMethod.overrides(superMethod);
+    	
+    	IMethod result = thisMethod.findOverriddenMethod(ipsProject);
+    	assertEquals(superMethod, result);
+
+    	result = superMethod.findOverriddenMethod(ipsProject);
+    	assertEquals(superSuperMethod, result);
+
+    	result = superSuperMethod.findOverriddenMethod(ipsProject);
+    	assertEquals(null, result);
+    }
+
 }

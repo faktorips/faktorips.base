@@ -197,10 +197,26 @@ public class Method extends BaseIpsObjectPart implements IMethod {
      * {@inheritDoc}
      */
     public IMethod findOverridingMethod(IType typeToSearchFrom, IIpsProject ipsProject) throws CoreException {
-        OverridingMethodFinder finder = new OverridingMethodFinder(ipsProject);
+        if (!typeToSearchFrom.isSubtypeOf(this.getType(), ipsProject)) {
+        	return null;
+        }
+    	OverridingMethodFinder finder = new OverridingMethodFinder(ipsProject);
         finder.start(typeToSearchFrom);
         return finder.overridingMethod;
     }
+    
+	/* (non-Javadoc)
+	 * @see org.faktorips.devtools.core.model.type.IMethod#findOverriddenMethod(org.faktorips.devtools.core.model.ipsproject.IIpsProject)
+	 */
+	/**
+	 * {@inheritDoc}
+	 * @throws CoreException 
+	 */
+	public IMethod findOverriddenMethod(IIpsProject ipsProject) throws CoreException {
+    	OverridingMethodFinder finder = new OverridingMethodFinder(ipsProject);
+        finder.start(this.getType());
+        return finder.overridingMethod;
+	}
 
     /** 
      * {@inheritDoc}
@@ -387,4 +403,6 @@ public class Method extends BaseIpsObjectPart implements IMethod {
         }
         
     }
+
+
 }

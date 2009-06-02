@@ -110,15 +110,25 @@ public interface IMethod extends IParameterContainer {
      * Returns the method overriding this one or <code>null</code> if no such method is found. 
      * The search starts from the given type up the supertype hierarchy.
      * 
-     * @param typeToSearchFrom  The type to start the search from 
+     * @param typeToSearchFrom  The type to start the search from, must be a subtype of the type this method belongs to
      * @param ipsProject        The project which ips object path is used to search.
      * 
      * @throws CoreException if an error occurs while searching.
      */
     public IMethod findOverridingMethod(IType typeToSearchFrom, IIpsProject ipsProject) throws CoreException;
-    
+
+	/**
+	 * Returns the first method, that is overridden by this method.
+	 * 
+	 * @param ipsProject
+	 * @return the method that is overridden by this method
+	 * @throws CoreException if an error occurs while searching.
+	 */
+	public IMethod findOverriddenMethod(IIpsProject ipsProject) throws CoreException;
+
     /**
      * Returns the method's signature in String format, e.g. computePremium(base.Coverage, base.Contract, Integer)
      */
     public String getSignatureString();
+
 }

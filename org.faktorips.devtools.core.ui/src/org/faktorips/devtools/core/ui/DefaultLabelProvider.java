@@ -230,7 +230,7 @@ public class DefaultLabelProvider extends LabelProvider {
     }
 
     private Image getMethodImage(IMethod method) throws CoreException {
-        boolean overloaded = method.findOverridingMethod(method.getType(), method.getIpsProject()) != null;
+        boolean overloaded = method.findOverriddenMethod(method.getIpsProject()) != null;
         if (method.isAbstract()) {
             if (overloaded) {
                 return getAbstractOverloadedMethodImage(method);
