@@ -195,32 +195,34 @@ public interface IIpsProject extends IIpsElement, IProjectNature {
     public IIpsProject[] getReferencingProjects(boolean includeIndirect) throws CoreException;
 
     /**
-     * Returns all {@link IIpsProject}s that reference this ips project, excluding projects that
-     * are referenced by another result. If you visualize the project dependencies as a directed graph,
+     * Returns all {@link IIpsProject}s that reference this ips project, excluding projects that are
+     * referenced by another result. If you visualize the project dependencies as a directed graph,
      * only the leaves of this graph are returned.
      * <p>
-     * This method promises the best performance for searching referencing types. If you use any find method
-     * with all the returned project, you could find every type referencing this project without searching an
-     * object path twice.
+     * This method promises the best performance for searching referencing types. If you use any
+     * find method with all the returned project, you could find every type referencing this project
+     * without searching an object path twice.
      * <p>
      * If there is no referencing project, this project is returned.
      * <p>
-     * Although you get a minimal set of ips projects for your search, you have to look for duplicate results.
-     * E.g. in your project structure you have a project called <i>ipsProject</i> and you have two projects
-     * <i>RefProject1</i> and <i>RefProject2</i> that both referencing <i>ipsProject</i>. In <i>ipsProject</i>
-     * there is a <code>ProductCmptType</code> and a derived <code>ProductCmpt</code> you want to find.
-     * Because there are maybe other <code>ProductCmpt</code>s referencing you <code>ProductCmptType</code> you
-     * have to search in all ips projects, referencing your <i>ipsProject</i>. This is exactly the usage of this
-     * method. The problem is, you get two projects, both referencing <i>ipsProject</i>. If you add all results
-     * of search in project <i>RefProject1</i> and <i>RefProject2</i> you found the <code>ProductCmpt</code> in
-     * <i>ipsProject</i> twice.
-     *
+     * Although you get a minimal set of ips projects for your search, you have to look for
+     * duplicate results. E.g. in your project structure you have a project called <i>ipsProject</i>
+     * and you have two projects <i>RefProject1</i> and <i>RefProject2</i> that both referencing
+     * <i>ipsProject</i>. In <i>ipsProject</i> there is a <code>ProductCmptType</code> and a derived
+     * <code>ProductCmpt</code> you want to find. Because there are maybe other
+     * <code>ProductCmpt</code>s referencing you <code>ProductCmptType</code> you have to search in
+     * all ips projects, referencing your <i>ipsProject</i>. This is exactly the usage of this
+     * method. The problem is, you get two projects, both referencing <i>ipsProject</i>. If you add
+     * all results of search in project <i>RefProject1</i> and <i>RefProject2</i> you found the
+     * <code>ProductCmpt</code> in <i>ipsProject</i> twice.
      * 
-     * @return The ips projects referencing this project excluding projects that are referenced by another result
+     * 
+     * @return The ips projects referencing this project excluding projects that are referenced by
+     *         another result
      * @throws CoreException if an error occours while searching the project
      */
-    public IIpsProject[] getReferencingProjectLeavesOrSelf() throws CoreException;    
-    
+    public IIpsProject[] getReferencingProjectLeavesOrSelf() throws CoreException;
+
     /**
      * Returns <code>true</code> if this project depends on the other project, because it is
      * referenced <strong>directly or indirectly</strong> in the project's object path. Returns
@@ -469,9 +471,10 @@ public interface IIpsProject extends IIpsElement, IProjectNature {
     public void findTableContents(ITableStructure structure, List<ITableContents> tableContents) throws CoreException;
 
     /**
-     * Returns all <code>IIpsSrcFile</code>s representing <code>TableContents</code> that are based on the given
-     * <code>TableStructure</code> in this and all referenced projects.
-     * If the <code>structure</code> is null, the method returns all TableContentsSrcFiles found in the classpath.
+     * Returns all <code>IIpsSrcFile</code>s representing <code>TableContents</code> that are based
+     * on the given <code>TableStructure</code> in this and all referenced projects. If the
+     * <code>structure</code> is null, the method returns all TableContentsSrcFiles found in the
+     * classpath.
      * 
      * @param structure The product components type product component will be searched for.
      * @param includeSubtypes If <code>true</code> is passed also product component that are based
@@ -479,9 +482,8 @@ public interface IIpsProject extends IIpsElement, IProjectNature {
      *            product components that are directly based on the given type are returned.
      * 
      */
-   public IIpsSrcFile[] findAllTableContentsSrcFiles(ITableStructure structure) throws CoreException;
+    public IIpsSrcFile[] findAllTableContentsSrcFiles(ITableStructure structure) throws CoreException;
 
-    
     /**
      * Returns the first ips source file on the ips object path with the the indicated qualified
      * name and type. Returns <code>null</code> if no such file was found.
@@ -582,8 +584,9 @@ public interface IIpsProject extends IIpsElement, IProjectNature {
 
     /**
      * Returns all <code>IIpsSrcFile</code>s representing test cases that are based on the given
-     * <code>ITestCaseType</code> in this and all referenced projects.
-     * If the <code>testCaseType</code> is null, the method returns all TestCaseSrcFiles found in the classpath.
+     * <code>ITestCaseType</code> in this and all referenced projects. If the
+     * <code>testCaseType</code> is null, the method returns all TestCaseSrcFiles found in the
+     * classpath.
      * 
      * @param testCaseType The <code>TestCaseType</code> to search the <code>TestCase</code>s for
      * @throws CoreException if an exception occurs while searching
@@ -591,13 +594,14 @@ public interface IIpsProject extends IIpsElement, IProjectNature {
     public IIpsSrcFile[] findAllTestCaseSrcFiles(ITestCaseType testCaseType) throws CoreException;
 
     /**
-     * Returns all <code>IIpsSrcFile</code>s representing <code>EnumContent</code>s that are based on the given
-     * <code>IEnumType</code> in this and all referenced projects.
-     * You could specify whether to include all subtypes of <code>enumType</code> or not
-     * If the <code>enumType</code> is null, the method returns all EnumContentSrcFiles found in the classpath.
+     * Returns all <code>IIpsSrcFile</code>s representing <code>EnumContent</code>s that are based
+     * on the given <code>IEnumType</code> in this and all referenced projects. You could specify
+     * whether to include all subtypes of <code>enumType</code> or not If the <code>enumType</code>
+     * is null, the method returns all EnumContentSrcFiles found in the classpath.
      * 
-     * @param testCaseType The <code>TestCaseType</code> to search the <code>TestCase</code>s for
-     * @param includingSubtypes <code>true</code> if subtypes of <code>enumType</code> should be included in the search
+     * @param testCaseType The <code>IEnumType</code> to search the <code>IEnumContent</code>s for
+     * @param includingSubtypes <code>true</code> if subtypes of <code>enumType</code> should be
+     *            included in the search
      * @throws CoreException if an exception occurs while searching
      */
     public IIpsSrcFile[] findAllEnumContentSrcFiles(IEnumType enumType, boolean includingSubtypes) throws CoreException;
@@ -811,4 +815,5 @@ public interface IIpsProject extends IIpsElement, IProjectNature {
      * <code>false</code>. Returns <code>false</code> if resource is <code>null</code>.
      */
     public boolean isResourceExcludedFromProductDefinition(IResource resource);
+    
 }
