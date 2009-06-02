@@ -278,7 +278,37 @@ public class EnumAttribute extends AtomicIpsObjectPart implements IEnumAttribute
                 validationMessage = new Message(MSGCODE_ENUM_ATTRIBUTE_LITERAL_NAME_NOT_OF_DATATYPE_STRING, text,
                         Message.ERROR, this, PROPERTY_DATATYPE);
                 list.add(validationMessage);
+                return;
             }
+        }
+
+        // Check for primitive datatype
+        if (ipsDatatype.isPrimitive()) {
+            text = Messages.EnumAttribute_DatatypeIsPrimitive;
+            validationMessage = new Message(MSGCODE_ENUM_ATTRIBUTE_DATATYPE_IS_PRIMITIVE, text, Message.ERROR, this,
+                    PROPERTY_DATATYPE);
+            list.add(validationMessage);
+            return;
+        }
+
+        // Check for void datatype
+        if (ipsDatatype.isVoid()) {
+            text = Messages.EnumAttribute_DatatypeIsVoid;
+            validationMessage = new Message(MSGCODE_ENUM_ATTRIBUTE_DATATYPE_IS_VOID, text, Message.ERROR, this,
+                    PROPERTY_DATATYPE);
+            list.add(validationMessage);
+            return;
+        }
+
+        // Check for enum type that contains this enum attribute (or subclasses of it)
+        IEnumType enumType = getEnumType();
+        List<IEnumType> subEnumTypes = enumType.findAllSubEnumTypes(ipsProject);
+        if (ipsDatatype.equals(enumType) || subEnumTypes.contains(ipsDatatype)) {
+            text = Messages.EnumAttribute_DatatypeIsContainingEnumTypeOrSubclass;;
+            validationMessage = new Message(MSGCODE_ENUM_ATTRIBUTE_DATATYPE_IS_CONTAINING_ENUM_TYPE_OR_SUBCLASS, text,
+                    Message.ERROR, this, PROPERTY_DATATYPE);
+            list.add(validationMessage);
+            return;
         }
     }
 

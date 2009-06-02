@@ -83,6 +83,26 @@ public interface IEnumAttribute extends IIpsObjectPart {
             + "EnumAttributeDatatypeDoesNotExist"; //$NON-NLS-1$
 
     /**
+     * Validation message code to indicate that the datatype of this enum attribute is a primitive
+     * datatype, which is forbidden.
+     */
+    public final static String MSGCODE_ENUM_ATTRIBUTE_DATATYPE_IS_PRIMITIVE = MSGCODE_PREFIX
+            + "EnumAttributeDatatypeIsPrimitive"; //$NON-NLS-1$
+
+    /**
+     * Validation message code to indicate that the datatype of this enum attribute is the void
+     * datatype, which is forbidden.
+     */
+    public final static String MSGCODE_ENUM_ATTRIBUTE_DATATYPE_IS_VOID = MSGCODE_PREFIX + "EnumAttributeDatatypeIsVoid"; //$NON-NLS-1$
+
+    /**
+     * Validation message code to indicate that the datatype of this enum attribute is the
+     * containing enum type or a subclass of it, which is forbidden.
+     */
+    public final static String MSGCODE_ENUM_ATTRIBUTE_DATATYPE_IS_CONTAINING_ENUM_TYPE_OR_SUBCLASS = MSGCODE_PREFIX
+            + "EnumAttributeDatatypeIsContainingEnumTypeOrSubclass"; //$NON-NLS-1$
+
+    /**
      * Validation message code to indicate that this enum attribute is marked as literal name but is
      * not of datatype String.
      */

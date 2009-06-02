@@ -173,6 +173,43 @@ public class EnumAttributeTest extends AbstractIpsEnumPluginTest {
         assertNotNull(validationMessageList
                 .getMessageByCode(IEnumAttribute.MSGCODE_ENUM_ATTRIBUTE_DATATYPE_DOES_NOT_EXIST));
         genderEnumAttributeId.setDatatype(Datatype.STRING.getQualifiedName());
+
+        // Test datatype primitive
+        ipsModel.clearValidationCache();
+        genderEnumAttributeId.setDatatype("int");
+        validationMessageList = genderEnumAttributeId.validate(ipsProject);
+        assertOneValidationMessage(validationMessageList);
+        assertNotNull(validationMessageList
+                .getMessageByCode(IEnumAttribute.MSGCODE_ENUM_ATTRIBUTE_DATATYPE_IS_PRIMITIVE));
+        genderEnumAttributeId.setDatatype(Datatype.STRING.getQualifiedName());
+
+        // Test datatype void
+        ipsModel.clearValidationCache();
+        genderEnumAttributeId.setDatatype("void");
+        validationMessageList = genderEnumAttributeId.validate(ipsProject);
+        assertOneValidationMessage(validationMessageList);
+        assertNotNull(validationMessageList.getMessageByCode(IEnumAttribute.MSGCODE_ENUM_ATTRIBUTE_DATATYPE_IS_VOID));
+        genderEnumAttributeId.setDatatype(Datatype.STRING.getQualifiedName());
+
+        // Test datatype is containing enum type
+        ipsModel.clearValidationCache();
+        genderEnumAttributeId.setDatatype(genderEnumType.getQualifiedName());
+        validationMessageList = genderEnumAttributeId.validate(ipsProject);
+        assertOneValidationMessage(validationMessageList);
+        assertNotNull(validationMessageList
+                .getMessageByCode(IEnumAttribute.MSGCODE_ENUM_ATTRIBUTE_DATATYPE_IS_CONTAINING_ENUM_TYPE_OR_SUBCLASS));
+        genderEnumAttributeId.setDatatype(Datatype.STRING.getQualifiedName());
+
+        // Test datatype is subclass of containing enum type
+        ipsModel.clearValidationCache();
+        IEnumType subEnumType = newEnumType(ipsProject, "SubEnumType");
+        subEnumType.setSuperEnumType(genderEnumType.getQualifiedName());
+        genderEnumAttributeId.setDatatype(subEnumType.getQualifiedName());
+        validationMessageList = genderEnumAttributeId.validate(ipsProject);
+        assertOneValidationMessage(validationMessageList);
+        assertNotNull(validationMessageList
+                .getMessageByCode(IEnumAttribute.MSGCODE_ENUM_ATTRIBUTE_DATATYPE_IS_CONTAINING_ENUM_TYPE_OR_SUBCLASS));
+        genderEnumAttributeId.setDatatype(Datatype.STRING.getQualifiedName());
     }
 
     public void testValidateLiteralName() throws CoreException {
