@@ -3,7 +3,7 @@
  * 
  * Alle Rechte vorbehalten.
  * 
- * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen, 
+ * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen,
  * etc.) duerfen nur unter den Bedingungen der Faktor-Zehn-Community Lizenzvereinbarung - Version
  * 0.1 (vor Gruendung Community) genutzt werden, die Bestandteil der Auslieferung ist und auch unter
  * http://www.faktorzehn.org/f10-org:lizenzen:community eingesehen werden kann.
@@ -22,18 +22,18 @@ import org.faktorips.datatype.ValueClassDatatype;
  */
 public class BooleanDatatype extends ValueClassDatatype {
 
-	public BooleanDatatype() {
-		super(Boolean.class);
-	}
+    public BooleanDatatype() {
+        super(Boolean.class);
+    }
 
-	public BooleanDatatype(String name) {
-		super(Boolean.class, name);
-	}
-	
-	/**
+    public BooleanDatatype(String name) {
+        super(Boolean.class, name);
+    }
+
+    /**
      * {@inheritDoc}
-	 */
-	public Object getValue(String s) {
+     */
+    public Object getValue(String s) {
         if (s == null) {
             return null;
         }
@@ -43,9 +43,12 @@ public class BooleanDatatype extends ValueClassDatatype {
         if (s.equalsIgnoreCase("true")) {
             return Boolean.TRUE;
         }
-		throw new IllegalArgumentException("Can't parse " + s + " to Boolean!");
-	}
+        throw new IllegalArgumentException("Can't parse " + s + " to Boolean!");
+    }
 
+    /**
+     * {@inheritDoc}
+     */
     public boolean supportsCompare() {
         return false;
     }

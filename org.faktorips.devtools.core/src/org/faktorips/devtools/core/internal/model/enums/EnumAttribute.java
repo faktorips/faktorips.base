@@ -271,17 +271,6 @@ public class EnumAttribute extends AtomicIpsObjectPart implements IEnumAttribute
             return;
         }
 
-        // Check for literalName datatype = String
-        if (literalName) {
-            if (!(ipsDatatype.getName().equals("String"))) {
-                text = Messages.EnumAttribute_LiteralNameNotOfDatatypeString;
-                validationMessage = new Message(MSGCODE_ENUM_ATTRIBUTE_LITERAL_NAME_NOT_OF_DATATYPE_STRING, text,
-                        Message.ERROR, this, PROPERTY_DATATYPE);
-                list.add(validationMessage);
-                return;
-            }
-        }
-
         // Check for primitive datatype
         if (ipsDatatype.isPrimitive()) {
             text = Messages.EnumAttribute_DatatypeIsPrimitive;
@@ -309,6 +298,17 @@ public class EnumAttribute extends AtomicIpsObjectPart implements IEnumAttribute
                     Message.ERROR, this, PROPERTY_DATATYPE);
             list.add(validationMessage);
             return;
+        }
+
+        // Check for literalName datatype = String
+        if (literalName) {
+            if (!(ipsDatatype.getName().equals("String"))) {
+                text = Messages.EnumAttribute_LiteralNameNotOfDatatypeString;
+                validationMessage = new Message(MSGCODE_ENUM_ATTRIBUTE_LITERAL_NAME_NOT_OF_DATATYPE_STRING, text,
+                        Message.ERROR, this, PROPERTY_DATATYPE);
+                list.add(validationMessage);
+                return;
+            }
         }
     }
 

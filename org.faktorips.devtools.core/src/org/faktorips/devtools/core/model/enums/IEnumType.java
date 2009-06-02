@@ -193,12 +193,6 @@ public interface IEnumType extends IEnumValueContainer, EnumDatatype, IIpsMetaCl
     public IEnumType findSuperEnumType(IIpsProject ipsProject) throws CoreException;
 
     /**
-     * Returns <code>true</code> if this enum type is abstract in terms of the object oriented
-     * abstract concept, <code>false</code> if not.
-     */
-    public boolean isAbstract();
-
-    /**
      * Sets the abstract property for this enum type.
      * 
      * @param isAbstract Flag indicating whether this enum type shall be abstract (<code>true</code>

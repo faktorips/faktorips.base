@@ -3,7 +3,7 @@
  * 
  * Alle Rechte vorbehalten.
  * 
- * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen, 
+ * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen,
  * etc.) duerfen nur unter den Bedingungen der Faktor-Zehn-Community Lizenzvereinbarung - Version
  * 0.1 (vor Gruendung Community) genutzt werden, die Bestandteil der Auslieferung ist und auch unter
  * http://www.faktorzehn.org/f10-org:lizenzen:community eingesehen werden kann.
@@ -31,66 +31,61 @@ public class TestBeanDatatype extends AbstractDatatype implements BeanDatatype {
     private String name;
     private String javaClassName;
     private HashMap properties = new HashMap();
-    
+
     public TestBeanDatatype(String javaClassName) {
         ArgumentCheck.notNull(javaClassName);
         this.javaClassName = javaClassName;
         this.name = StringUtil.unqualifiedName(javaClassName);
     }
-    
+
     public void add(PropertyDatatype property) {
         properties.put(property.getName(), property);
     }
-    
+
     /**
-     * Overridden Method.
-     *
-     * @see org.faktorips.fl.BeanDatatype#getProperty(java.lang.String)
+     * {@inheritDoc}
      */
     public PropertyDatatype getProperty(String name) {
         return (PropertyDatatype)properties.get(name);
     }
 
     /**
-     * Overridden Method.
-     *
-     * @see org.faktorips.datatype.Datatype#getName()
+     * {@inheritDoc}
      */
     public String getName() {
         return name;
     }
 
     /**
-     * Overridden Method.
-     *
-     * @see org.faktorips.datatype.Datatype#getQualifiedName()
+     * {@inheritDoc}
      */
     public String getQualifiedName() {
         return name;
     }
 
     /**
-     * Overridden Method.
-     *
-     * @see org.faktorips.datatype.Datatype#isPrimitive()
+     * {@inheritDoc}
      */
     public boolean isPrimitive() {
         return false;
     }
 
     /**
-     * Overridden Method.
-     *
-     * @see org.faktorips.datatype.Datatype#isValueDatatype()
+     * {@inheritDoc}
+     */
+    public boolean isAbstract() {
+        return false;
+    }
+
+    /**
+     * {@inheritDoc}
      */
     public boolean isValueDatatype() {
         return false;
     }
 
     /**
-     * Overridden Method.
-     *
-     * @see org.faktorips.datatype.Datatype#getJavaClassName()
+     * {@inheritDoc}
      */
     public String getJavaClassName() {
         return javaClassName;

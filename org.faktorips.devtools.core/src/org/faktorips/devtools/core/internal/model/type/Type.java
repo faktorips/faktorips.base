@@ -3,7 +3,7 @@
  * 
  * Alle Rechte vorbehalten.
  * 
- * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen, 
+ * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen,
  * etc.) duerfen nur unter den Bedingungen der Faktor-Zehn-Community Lizenzvereinbarung - Version
  * 0.1 (vor Gruendung Community) genutzt werden, die Bestandteil der Auslieferung ist und auch unter
  * http://www.faktorzehn.org/f10-org:lizenzen:community eingesehen werden kann.
@@ -27,7 +27,6 @@ import org.faktorips.devtools.core.internal.model.ipsobject.IpsObjectPartCollect
 import org.faktorips.devtools.core.model.DatatypeDependency;
 import org.faktorips.devtools.core.model.IpsObjectDependency;
 import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
-import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
 import org.faktorips.devtools.core.model.ipsobject.QualifiedNameType;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProjectProperties;
@@ -54,11 +53,11 @@ public abstract class Type extends BaseIpsObject implements IType {
     private String supertype = ""; //$NON-NLS-1$
 
     private boolean abstractFlag;
-    
+
     protected IpsObjectPartCollection methods;
     protected IpsObjectPartCollection associations;
     protected IpsObjectPartCollection attributes;
-    
+
     public Type(IIpsSrcFile file) {
         super(file);
         attributes = createCollectionForAttributes();
@@ -70,7 +69,7 @@ public abstract class Type extends BaseIpsObject implements IType {
      * Factory method to create the collection holding the methods.
      */
     protected abstract IpsObjectPartCollection createCollectionForMethods();
-    
+
     /**
      * Factory method to create the collection holding the associations.
      */
@@ -81,15 +80,15 @@ public abstract class Type extends BaseIpsObject implements IType {
      */
     protected abstract IpsObjectPartCollection createCollectionForAttributes();
 
-    public Iterator getIteratorForMethods(){
+    public Iterator getIteratorForMethods() {
         return methods.iterator();
     }
-    
-    public Iterator getIteratorForAssociations(){
+
+    public Iterator getIteratorForAssociations() {
         return associations.iterator();
     }
 
-    public Iterator getIteratorForAttributes(){
+    public Iterator getIteratorForAttributes() {
         return attributes.iterator();
     }
 
@@ -115,7 +114,7 @@ public abstract class Type extends BaseIpsObject implements IType {
     public String getSupertype() {
         return supertype;
     }
-    
+
     /**
      * {@inheritDoc}
      */
@@ -138,16 +137,16 @@ public abstract class Type extends BaseIpsObject implements IType {
         supertype = newSupertype;
         valueChanged(oldSupertype, newSupertype);
     }
-    
+
     /**
      * {@inheritDoc}
      */
     public boolean isSubtypeOf(IType supertypeCandidate, IIpsProject ipsProject) throws CoreException {
-        if (supertypeCandidate==null) {
+        if (supertypeCandidate == null) {
             return false;
         }
         IType supertype = findSupertype(ipsProject);
-        if (supertype==null) {
+        if (supertype == null) {
             return false;
         }
         if (supertypeCandidate.equals(supertype)) {
@@ -181,7 +180,7 @@ public abstract class Type extends BaseIpsObject implements IType {
     public IAttribute getAttribute(String name) {
         return (IAttribute)attributes.getPartByName(name);
     }
-    
+
     /**
      * {@inheritDoc}
      */
@@ -190,7 +189,7 @@ public abstract class Type extends BaseIpsObject implements IType {
         finder.start(this);
         return finder.getMethodes();
     }
-    
+
     /**
      * {@inheritDoc}
      */
@@ -238,11 +237,12 @@ public abstract class Type extends BaseIpsObject implements IType {
         finder.start(this);
         return finder.association;
     }
-    
+
     /**
      * {@inheritDoc}
      */
-    public IAssociation findAssociationByRoleNamePlural(String roleNamePlural, IIpsProject ipsProject) throws CoreException {
+    public IAssociation findAssociationByRoleNamePlural(String roleNamePlural, IIpsProject ipsProject)
+            throws CoreException {
         AssociationFinderPlural finder = new AssociationFinderPlural(ipsProject, roleNamePlural);
         finder.start(this);
         return finder.association;
@@ -251,13 +251,16 @@ public abstract class Type extends BaseIpsObject implements IType {
     /**
      * {@inheritDoc}
      */
-    public IAssociation[] findAssociationsForTargetAndAssociationType(String target, AssociationType associationType, IIpsProject project) throws CoreException {
-        if (target == null || associationType == null){
+    public IAssociation[] findAssociationsForTargetAndAssociationType(String target,
+            AssociationType associationType,
+            IIpsProject project) throws CoreException {
+        if (target == null || associationType == null) {
             return new IAssociation[0];
         }
         AssociationTargetAndTypeFinder finder = new AssociationTargetAndTypeFinder(project, target, associationType);
         finder.start(this);
-        return (IAssociation[]) finder.getAssociationsFound().toArray(new IAssociation[finder.getAssociationsFound().size()]);
+        return (IAssociation[])finder.getAssociationsFound().toArray(
+                new IAssociation[finder.getAssociationsFound().size()]);
     }
 
     /**
@@ -266,12 +269,12 @@ public abstract class Type extends BaseIpsObject implements IType {
     public IAssociation getAssociation(String name) {
         return (IAssociation)associations.getPartByName(name);
     }
-    
+
     /**
      * {@inheritDoc}
      */
     public IAssociation getAssociationByRoleNamePlural(String roleNamePlural) {
-        if (roleNamePlural==null) {
+        if (roleNamePlural == null) {
             return null;
         }
         int size = associations.size();
@@ -332,7 +335,7 @@ public abstract class Type extends BaseIpsObject implements IType {
     public IMethod newMethod() {
         return (IMethod)methods.newPart();
     }
-    
+
     /**
      * {@inheritDoc}
      */
@@ -344,16 +347,16 @@ public abstract class Type extends BaseIpsObject implements IType {
      * {@inheritDoc}
      */
     public IMethod getMethod(String methodName, String[] datatypes) {
-        if (datatypes==null) {
+        if (datatypes == null) {
             datatypes = new String[0];
         }
-        for (Iterator it=methods.iterator(); it.hasNext(); ) {
+        for (Iterator it = methods.iterator(); it.hasNext();) {
             IMethod method = (IMethod)it.next();
             if (!method.getName().equals(methodName)) {
                 continue;
             }
             IParameter[] params = method.getParameters();
-            if (params.length!=datatypes.length) {
+            if (params.length != datatypes.length) {
                 continue;
             }
             boolean paramsOk = true;
@@ -383,7 +386,7 @@ public abstract class Type extends BaseIpsObject implements IType {
      * {@inheritDoc}
      */
     public IMethod getMethod(String signature) {
-        for (Iterator it=methods.iterator(); it.hasNext(); ) {
+        for (Iterator it = methods.iterator(); it.hasNext();) {
             IMethod method = (IMethod)it.next();
             if (method.getSignatureString().equals(signature)) {
                 return method;
@@ -391,7 +394,7 @@ public abstract class Type extends BaseIpsObject implements IType {
         }
         return null;
     }
-    
+
     /**
      * {@inheritDoc}
      */
@@ -414,16 +417,18 @@ public abstract class Type extends BaseIpsObject implements IType {
     public int[] moveMethods(int[] indexes, boolean up) {
         return methods.moveParts(indexes, up);
     }
-    
+
     /**
      * {@inheritDoc}
      */
-    public IMethod[] findOverrideMethodCandidates(boolean onlyNotImplementedAbstractMethods, IIpsProject ipsProject) throws CoreException {
-        MethodOverrideCandidatesFinder finder = new MethodOverrideCandidatesFinder(ipsProject, onlyNotImplementedAbstractMethods);
+    public IMethod[] findOverrideMethodCandidates(boolean onlyNotImplementedAbstractMethods, IIpsProject ipsProject)
+            throws CoreException {
+        MethodOverrideCandidatesFinder finder = new MethodOverrideCandidatesFinder(ipsProject,
+                onlyNotImplementedAbstractMethods);
         finder.start(findSupertype(ipsProject));
         return finder.getCandidates();
     }
-    
+
     /**
      * {@inheritDoc}
      */
@@ -465,7 +470,7 @@ public abstract class Type extends BaseIpsObject implements IType {
         }
         return null;
     }
-    
+
     /**
      * {@inheritDoc}
      */
@@ -483,7 +488,7 @@ public abstract class Type extends BaseIpsObject implements IType {
         element.setAttribute(PROPERTY_SUPERTYPE, supertype);
         element.setAttribute(PROPERTY_ABSTRACT, "" + abstractFlag); //$NON-NLS-1$
     }
-    
+
     /**
      * {@inheritDoc}
      */
@@ -512,14 +517,14 @@ public abstract class Type extends BaseIpsObject implements IType {
             }
         }
     }
-    
+
     protected DuplicatePropertyNameValidator createDuplicatePropertyNameValidator(IIpsProject ipsProject) {
         return new DuplicatePropertyNameValidator(ipsProject);
     }
 
     private void validateSupertype(MessageList list, IIpsProject ipsProject) throws CoreException {
         IType supertypeObj = findSupertype(ipsProject);
-        if (supertypeObj==null) {
+        if (supertypeObj == null) {
             String text = NLS.bind(Messages.Type_msg_supertypeNotFound, supertype);
             list.add(new Message(MSGCODE_SUPERTYPE_NOT_FOUND, text, Message.ERROR, this, IType.PROPERTY_SUPERTYPE));
         } else {
@@ -527,15 +532,17 @@ public abstract class Type extends BaseIpsObject implements IType {
             collector.start(supertypeObj);
             if (collector.cycleDetected()) {
                 String msg = Messages.Type_msg_cycleInTypeHierarchy;
-                list.add(new Message(MSGCODE_CYCLE_IN_TYPE_HIERARCHY, msg.toString(), Message.ERROR, this, IType.PROPERTY_SUPERTYPE));
+                list.add(new Message(MSGCODE_CYCLE_IN_TYPE_HIERARCHY, msg.toString(), Message.ERROR, this,
+                        IType.PROPERTY_SUPERTYPE));
             } else {
-                for (Iterator it=collector.supertypes.iterator(); it.hasNext(); ) {
+                for (Iterator it = collector.supertypes.iterator(); it.hasNext();) {
                     IType supertype = (IType)it.next();
                     MessageList superResult = supertype.validate(ipsProject);
                     if (!superResult.isEmpty()) {
-                        if (superResult.getMessageByCode(IType.MSGCODE_SUPERTYPE_NOT_FOUND)!=null) {
+                        if (superResult.getMessageByCode(IType.MSGCODE_SUPERTYPE_NOT_FOUND) != null) {
                             String text = Messages.Type_msg_TypeHierarchyInconsistent;
-                            list.add(new Message(MSGCODE_INCONSISTENT_TYPE_HIERARCHY, text, Message.ERROR, this, PROPERTY_SUPERTYPE));
+                            list.add(new Message(MSGCODE_INCONSISTENT_TYPE_HIERARCHY, text, Message.ERROR, this,
+                                    PROPERTY_SUPERTYPE));
                             return;
                         }
                     }
@@ -543,7 +550,7 @@ public abstract class Type extends BaseIpsObject implements IType {
             }
         }
     }
-    
+
     /**
      * Validation for {@link IPolicyCmptType#MSGCODE_MUST_OVERRIDE_ABSTRACT_METHOD}
      */
@@ -552,8 +559,8 @@ public abstract class Type extends BaseIpsObject implements IType {
 
         IMethod[] methods = findOverrideMethodCandidates(true, ipsProject);
         for (int i = 0; i < methods.length; i++) {
-            String text = NLS.bind(Messages.Type_msg_MustOverrideAbstractMethod, methods[i].getName(),
-                    methods[i].getType().getQualifiedName());
+            String text = NLS.bind(Messages.Type_msg_MustOverrideAbstractMethod, methods[i].getName(), methods[i]
+                    .getType().getQualifiedName());
             list.add(new Message(MSGCODE_MUST_OVERRIDE_ABSTRACT_METHOD, text, Message.ERROR, this));
         }
     }
@@ -607,8 +614,8 @@ public abstract class Type extends BaseIpsObject implements IType {
     }
 
     /**
-     * Collects the dependencies of this type. Subclasses need to call this method in their dependsOn() methods.
-     * The provided parameter must not be <code>null</code>.
+     * Collects the dependencies of this type. Subclasses need to call this method in their
+     * dependsOn() methods. The provided parameter must not be <code>null</code>.
      */
     protected void dependsOn(Set dependencies) throws CoreException {
         if (hasSupertype()) {
@@ -619,14 +626,14 @@ public abstract class Type extends BaseIpsObject implements IType {
         addAttributeDatatypeDependencies(dependencies);
         addMethodDatatypeDependencies(dependencies);
     }
-    
-    private void addMethodDatatypeDependencies(Set dependencies){
+
+    private void addMethodDatatypeDependencies(Set dependencies) {
         for (Iterator it = methods.iterator(); it.hasNext();) {
             Method method = (Method)it.next();
             method.dependsOn(dependencies);
         }
     }
-    
+
     private void addAttributeDatatypeDependencies(Set qualifiedNameTypes) throws CoreException {
         IAttribute[] attributes = getAttributes();
         for (int i = 0; i < attributes.length; i++) {
@@ -634,7 +641,7 @@ public abstract class Type extends BaseIpsObject implements IType {
             qualifiedNameTypes.add(new DatatypeDependency(this.getQualifiedNameType(), datatype));
         }
     }
-    
+
     private void addQualifiedNameTypesForRelationTargets(Set dependencies) throws CoreException {
         IAssociation[] relations = getAssociations();
         for (int i = 0; i < relations.length; i++) {
@@ -643,8 +650,8 @@ public abstract class Type extends BaseIpsObject implements IType {
             // this method is called recursively for the detail and so on. But this detail is not an
             // aggregate root and the recursion will terminate too early.
             if (relations[i].getAssociationType().equals(AssociationType.COMPOSITION_MASTER_TO_DETAIL)) {
-                dependencies.add(IpsObjectDependency.createCompostionMasterDetailDependency(this.getQualifiedNameType(),
-                        new QualifiedNameType(targetQName, getIpsObjectType())));
+                dependencies.add(IpsObjectDependency.createCompostionMasterDetailDependency(
+                        this.getQualifiedNameType(), new QualifiedNameType(targetQName, getIpsObjectType())));
             } else {
                 dependencies.add(IpsObjectDependency.createReferenceDependency(this.getQualifiedNameType(),
                         new QualifiedNameType(targetQName, getIpsObjectType())));
@@ -652,11 +659,10 @@ public abstract class Type extends BaseIpsObject implements IType {
         }
     }
 
-    
     private static class SupertypesCollector extends TypeHierarchyVisitor {
 
         private List supertypes = new ArrayList();
-        
+
         public SupertypesCollector(IIpsProject ipsProject) {
             super(ipsProject);
         }
@@ -674,12 +680,12 @@ public abstract class Type extends BaseIpsObject implements IType {
 
         private List candidates = new ArrayList();
         private boolean onlyNotImplementedAbstractMethods;
-        
+
         public MethodOverrideCandidatesFinder(IIpsProject ipsProject, boolean onlyNotImplementedAbstractMethods) {
             super(ipsProject);
             this.onlyNotImplementedAbstractMethods = onlyNotImplementedAbstractMethods;
         }
-        
+
         public IMethod[] getCandidates() {
             return (IMethod[])candidates.toArray(new IMethod[candidates.size()]);
         }
@@ -694,10 +700,10 @@ public abstract class Type extends BaseIpsObject implements IType {
                     continue;
                 }
                 IMethod overridingMethod = typeMethods[i].findOverridingMethod(Type.this, ipsProject);
-                if (overridingMethod!=null && overridingMethod.getType()==Type.this) {
+                if (overridingMethod != null && overridingMethod.getType() == Type.this) {
                     continue;
                 }
-                if (overridingMethod==null || (!onlyNotImplementedAbstractMethods)) {
+                if (overridingMethod == null || (!onlyNotImplementedAbstractMethods)) {
                     // candidate found, but it might be already in the list
                     if (!sameMethodAlreadyInCandidateList(typeMethods[i], candidates)) {
                         candidates.add(typeMethods[i]);
@@ -718,12 +724,12 @@ public abstract class Type extends BaseIpsObject implements IType {
         }
 
     }
-    
+
     private static class AssociationFinder extends TypeHierarchyVisitor {
 
         private String associationName;
         private IAssociation association = null;
-        
+
         public AssociationFinder(IIpsProject project, String associationName) {
             super(project);
             this.associationName = associationName;
@@ -734,15 +740,15 @@ public abstract class Type extends BaseIpsObject implements IType {
          */
         protected boolean visit(IType currentType) {
             association = currentType.getAssociation(associationName);
-            return association==null;
+            return association == null;
         }
     }
-    
+
     private static class AssociationFinderPlural extends TypeHierarchyVisitor {
 
         private String associationName;
         private IAssociation association = null;
-        
+
         public AssociationFinderPlural(IIpsProject project, String associationName) {
             super(project);
             this.associationName = associationName;
@@ -753,10 +759,10 @@ public abstract class Type extends BaseIpsObject implements IType {
          */
         protected boolean visit(IType currentType) {
             association = currentType.getAssociationByRoleNamePlural(associationName);
-            return association==null;
+            return association == null;
         }
     }
-    
+
     /**
      * Finds all associations with the given target and association type in the type hierarchy.
      * 
@@ -766,8 +772,9 @@ public abstract class Type extends BaseIpsObject implements IType {
         private String associationTarget;
         private AssociationType associationType;
         private List associationsFound = new ArrayList();
-        
-        public AssociationTargetAndTypeFinder(IIpsProject project, String associationTarget, AssociationType associationType) {
+
+        public AssociationTargetAndTypeFinder(IIpsProject project, String associationTarget,
+                AssociationType associationType) {
             super(project);
             this.associationTarget = associationTarget;
             this.associationType = associationType;
@@ -779,7 +786,7 @@ public abstract class Type extends BaseIpsObject implements IType {
         protected boolean visit(IType currentType) {
             IAssociation[] associations = currentType.getAssociationsForTarget(associationTarget);
             for (int i = 0; i < associations.length; i++) {
-                if (associations[i].getAssociationType() == associationType){
+                if (associations[i].getAssociationType() == associationType) {
                     associationsFound.add(associations[i]);
                 }
             }
@@ -794,12 +801,12 @@ public abstract class Type extends BaseIpsObject implements IType {
             return associationsFound;
         }
     }
-    
+
     private static class AttributeFinder extends TypeHierarchyVisitor {
 
         private String attributeName;
         private IAttribute attribute;
-        
+
         public AttributeFinder(IIpsProject ipsProject, String attrName) {
             super(ipsProject);
             this.attributeName = attrName;
@@ -810,7 +817,7 @@ public abstract class Type extends BaseIpsObject implements IType {
          */
         protected boolean visit(IType currentType) throws CoreException {
             attribute = currentType.getAttribute(attributeName);
-            return attribute==null;
+            return attribute == null;
         }
     }
 
@@ -819,7 +826,7 @@ public abstract class Type extends BaseIpsObject implements IType {
         private String methodName;
         private String[] datatypes;
         private IMethod method;
-        
+
         public MethodFinderByNameAndParamtypes(IIpsProject ipsProject, String methodName, String[] datatypes) {
             super(ipsProject);
             this.methodName = methodName;
@@ -831,7 +838,7 @@ public abstract class Type extends BaseIpsObject implements IType {
          */
         protected boolean visit(IType currentType) throws CoreException {
             method = currentType.getMethod(methodName, datatypes);
-            return method==null;
+            return method == null;
         }
     }
 
@@ -839,7 +846,7 @@ public abstract class Type extends BaseIpsObject implements IType {
 
         private String signature;
         private IMethod method;
-        
+
         public MethodFinderBySignature(IIpsProject ipsProject, String signature) {
             super(ipsProject);
             this.signature = signature;
@@ -850,16 +857,15 @@ public abstract class Type extends BaseIpsObject implements IType {
          */
         protected boolean visit(IType currentType) throws CoreException {
             method = currentType.getMethod(signature);
-            return method==null;
+            return method == null;
         }
     }
 
-    
     private static class AllMethodsFinder extends TypeHierarchyVisitor {
 
         private List<IMethod> methods;
         private Set<String> methodSignatures;
-        
+
         public AllMethodsFinder(IIpsProject ipsProject) {
             super(ipsProject);
             methods = new ArrayList<IMethod>();
@@ -870,26 +876,26 @@ public abstract class Type extends BaseIpsObject implements IType {
          * {@inheritDoc}
          */
         protected boolean visit(IType currentType) throws CoreException {
-            //considers overridden methods
+            // considers overridden methods
             for (IMethod method : currentType.getMethods()) {
-                if(!methodSignatures.contains(method.getSignatureString())){
+                if (!methodSignatures.contains(method.getSignatureString())) {
                     methods.add(method);
                     methodSignatures.add(method.getSignatureString());
                 }
             }
             return true;
         }
-        
-        private List<IMethod> getMethodes(){
+
+        private List<IMethod> getMethodes() {
             return methods;
         }
     }
-    
+
     private static class AllAttributeFinder extends TypeHierarchyVisitor {
 
         private List attributes;
         private Set attributeNames;
-        
+
         public AllAttributeFinder(IIpsProject ipsProject) {
             super(ipsProject);
             attributes = new ArrayList();
@@ -901,17 +907,17 @@ public abstract class Type extends BaseIpsObject implements IType {
          */
         protected boolean visit(IType currentType) throws CoreException {
             IAttribute[] lattributes = currentType.getAttributes();
-            //considers overridden attributes
+            // considers overridden attributes
             for (int i = 0; i < lattributes.length; i++) {
-                if(!attributeNames.contains(lattributes[i].getName())){
+                if (!attributeNames.contains(lattributes[i].getName())) {
                     attributeNames.add(lattributes[i].getName());
                     attributes.add(lattributes[i]);
                 }
             }
             return true;
         }
-        
-        private IAttribute[] getAttributes(){
+
+        private IAttribute[] getAttributes() {
             return (IAttribute[])attributes.toArray(new IAttribute[attributes.size()]);
         }
     }
@@ -937,10 +943,10 @@ public abstract class Type extends BaseIpsObject implements IType {
             for (int i = 0; i < associations.length; i++) {
                 if (associations[i].isDerivedUnion()) {
                     if (!isSubsetted(associations[i])) {
-                        String text = NLS.bind(Messages.Type_msg_MustImplementDerivedUnion,
-                                associations[i].getName(), associations[i].getType().getQualifiedName());
-                        msgList.add(new Message(IType.MSGCODE_MUST_SPECIFY_DERIVED_UNION, text,
-                                Message.ERROR, Type.this, IType.PROPERTY_ABSTRACT));
+                        String text = NLS.bind(Messages.Type_msg_MustImplementDerivedUnion, associations[i].getName(),
+                                associations[i].getType().getQualifiedName());
+                        msgList.add(new Message(IType.MSGCODE_MUST_SPECIFY_DERIVED_UNION, text, Message.ERROR,
+                                Type.this, IType.PROPERTY_ABSTRACT));
                     }
                 }
             }
@@ -957,31 +963,30 @@ public abstract class Type extends BaseIpsObject implements IType {
             return false;
         }
     }
-    
+
     private static class IsSubtypeOfVisitor extends TypeHierarchyVisitor {
 
         private IType supertypeCandidate;
         private boolean subtype = false;
-        
+
         public IsSubtypeOfVisitor(IIpsProject ipsProject, IType supertypeCandidate) {
             super(ipsProject);
             ArgumentCheck.notNull(supertypeCandidate);
             this.supertypeCandidate = supertypeCandidate;
         }
-        
+
         boolean isSubtype() {
             return subtype;
         }
 
         protected boolean visit(IType currentType) throws CoreException {
-            if (currentType==supertypeCandidate) {
+            if (currentType == supertypeCandidate) {
                 subtype = true;
                 return false;
             }
             return true;
         }
 
-        
     }
-    
+
 }

@@ -119,6 +119,13 @@ public class TestEnumDatatype extends AbstractDatatype implements EnumDatatype {
     public boolean isPrimitive() {
         return false;
     }
+    
+    /**
+     * {@inheritDoc}
+     */
+    public boolean isAbstract() {
+        return false;
+    }
 
     /**
      * {@inheritDoc}

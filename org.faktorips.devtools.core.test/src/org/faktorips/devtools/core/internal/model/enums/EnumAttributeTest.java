@@ -202,8 +202,6 @@ public class EnumAttributeTest extends AbstractIpsEnumPluginTest {
 
         // Test datatype is subclass of containing enum type
         ipsModel.clearValidationCache();
-        IEnumType subEnumType = newEnumType(ipsProject, "SubEnumType");
-        subEnumType.setSuperEnumType(genderEnumType.getQualifiedName());
         genderEnumAttributeId.setDatatype(subEnumType.getQualifiedName());
         validationMessageList = genderEnumAttributeId.validate(ipsProject);
         assertOneValidationMessage(validationMessageList);

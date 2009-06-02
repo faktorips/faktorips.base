@@ -3,7 +3,7 @@
  * 
  * Alle Rechte vorbehalten.
  * 
- * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen, 
+ * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen,
  * etc.) duerfen nur unter den Bedingungen der Faktor-Zehn-Community Lizenzvereinbarung - Version
  * 0.1 (vor Gruendung Community) genutzt werden, die Bestandteil der Auslieferung ist und auch unter
  * http://www.faktorzehn.org/f10-org:lizenzen:community eingesehen werden kann.
@@ -21,109 +21,131 @@ public class EnumDatatypePaymentMode extends AbstractDatatype implements EnumDat
 
     public final static String ANNUAL = "annual";
     public final static String MONTHLY = "monthly";
-    
-	/**
-	 * {@inheritDoc}
-	 */
-	public String[] getAllValueIds(boolean includeNull) {
-		return new String[]{ANNUAL, MONTHLY};
-	}
 
-	
-	/**
-	 * {@inheritDoc}
-	 */
-	public ValueDatatype getWrapperType() {
-		return null;
-	}
-
-	/**
-	 * {@inheritDoc}
-	 */
-	public boolean isParsable(String value) {
-		return false;
-	}
-
-	/**
-	 * {@inheritDoc}
-	 */
-	public String getName() {
-		return null;
-	}
-
-	/**
+    /**
      * {@inheritDoc}
-	 */
-	public String getDefaultValue() {
+     */
+    public String[] getAllValueIds(boolean includeNull) {
+        return new String[] { ANNUAL, MONTHLY };
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public ValueDatatype getWrapperType() {
         return null;
     }
 
     /**
-	 * {@inheritDoc}
-	 */
-	public String getQualifiedName() {
-		return null;
-	}
+     * {@inheritDoc}
+     */
+    public boolean isParsable(String value) {
+        return false;
+    }
 
-	/**
-	 * {@inheritDoc}
-	 */
-	public boolean isPrimitive() {
-		return false;
-	}
+    /**
+     * {@inheritDoc}
+     */
+    public String getName() {
+        return null;
+    }
 
-	/**
-	 * {@inheritDoc}
-	 */
-	public boolean isValueDatatype() {
-		return false;
-	}
+    /**
+     * {@inheritDoc}
+     */
+    public String getDefaultValue() {
+        return null;
+    }
 
-	/**
-	 * {@inheritDoc}
-	 */
-	public String getJavaClassName() {
-		return null;
-	}
+    /**
+     * {@inheritDoc}
+     */
+    public String getQualifiedName() {
+        return null;
+    }
 
+    /**
+     * {@inheritDoc}
+     */
+    public boolean isPrimitive() {
+        return false;
+    }
 
-	public boolean isSupportingNames() {
-		return false;
-	}
+    /**
+     * {@inheritDoc}
+     */
+    public boolean isAbstract() {
+        return false;
+    }
 
+    /**
+     * {@inheritDoc}
+     */
+    public boolean isValueDatatype() {
+        return false;
+    }
 
-	public String getValueName(String id) {
-		throw new RuntimeException("Not supported");
-	}
+    /**
+     * {@inheritDoc}
+     */
+    public String getJavaClassName() {
+        return null;
+    }
 
+    /**
+     * {@inheritDoc}
+     */
+    public boolean isSupportingNames() {
+        return false;
+    }
 
+    /**
+     * {@inheritDoc}
+     */
+    public String getValueName(String id) {
+        throw new RuntimeException("Not supported");
+    }
+
+    /**
+     * {@inheritDoc}
+     */
     public boolean isNull(String value) {
         return false;
     }
 
-
+    /**
+     * {@inheritDoc}
+     */
     public boolean supportsCompare() {
         return false;
     }
 
-
+    /**
+     * {@inheritDoc}
+     */
     public int compare(String valueA, String valueB) throws UnsupportedOperationException {
         return 0;
     }
 
-
+    /**
+     * {@inheritDoc}
+     */
     public boolean areValuesEqual(String valueA, String valueB) {
         return false;
     }
 
+    /**
+     * {@inheritDoc}
+     */
+    public boolean isImmutable() {
+        return true;
+    }
 
-	public boolean isImmutable() {
-		return true;
-	}
-
-
-	public boolean isMutable() {
-		return false;
-	}
+    /**
+     * {@inheritDoc}
+     */
+    public boolean isMutable() {
+        return false;
+    }
 
 }

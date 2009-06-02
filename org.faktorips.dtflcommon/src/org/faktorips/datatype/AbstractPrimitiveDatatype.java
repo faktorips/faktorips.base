@@ -3,7 +3,7 @@
  * 
  * Alle Rechte vorbehalten.
  * 
- * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen, 
+ * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen,
  * etc.) duerfen nur unter den Bedingungen der Faktor-Zehn-Community Lizenzvereinbarung - Version
  * 0.1 (vor Gruendung Community) genutzt werden, die Bestandteil der Auslieferung ist und auch unter
  * http://www.faktorzehn.org/f10-org:lizenzen:community eingesehen werden kann.
@@ -26,36 +26,37 @@ public abstract class AbstractPrimitiveDatatype extends AbstractDatatype impleme
     public AbstractPrimitiveDatatype() {
         super();
     }
-    
-    /** 
-     * Overridden method.
-     * @see org.faktorips.datatype.Datatype#isPrimitive()
+
+    /**
+     * {@inheritDoc}
      */
     public boolean isPrimitive() {
         return true;
     }
-    
-    
-    
+
     /**
-     * Overridden method.
-     * @see org.faktorips.datatype.Datatype#isValueDatatype()
+     * {@inheritDoc}
+     */
+    public boolean isAbstract() {
+        return false;
+    }
+
+    /**
+     * {@inheritDoc}
      */
     public boolean isValueDatatype() {
         return true;
     }
-    
-    /** 
-     * Overridden method.
-     * @see org.faktorips.datatype.Datatype#valueToXmlString(java.lang.Object)
+
+    /**
+     * {@inheritDoc}
      */
     public String valueToString(Object value) {
         return "" + value;
     }
 
     /**
-     * If the value is <code>null</code> or an empty string, <code>false</code> is
-     * returned.
+     * If the value is <code>null</code> or an empty string, <code>false</code> is returned.
      * 
      * {@inheritDoc}
      */
@@ -66,7 +67,7 @@ public abstract class AbstractPrimitiveDatatype extends AbstractDatatype impleme
         try {
             getValue(value);
             return true;
-            
+
         } catch (IllegalArgumentException e) {
             return false;
         }
@@ -93,7 +94,8 @@ public abstract class AbstractPrimitiveDatatype extends AbstractDatatype impleme
      */
     public int compare(String valueA, String valueB) throws UnsupportedOperationException {
         if (!supportsCompare()) {
-            throw new UnsupportedOperationException("Datatype " + getQualifiedName() + " does not support comparison of values");
+            throw new UnsupportedOperationException("Datatype " + getQualifiedName()
+                    + " does not support comparison of values");
         }
         return ((Comparable)getValue(valueA)).compareTo(getValue(valueB));
     }
@@ -108,15 +110,15 @@ public abstract class AbstractPrimitiveDatatype extends AbstractDatatype impleme
     /**
      * {@inheritDoc}
      */
-	public boolean isMutable() {
-		return false;
-	}
+    public boolean isMutable() {
+        return false;
+    }
 
     /**
      * {@inheritDoc}
      */
-	public boolean isImmutable() {
-		return true;
-	}
-    
+    public boolean isImmutable() {
+        return true;
+    }
+
 }
