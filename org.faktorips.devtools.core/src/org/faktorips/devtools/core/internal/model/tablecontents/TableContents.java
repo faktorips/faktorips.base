@@ -19,7 +19,6 @@ import java.util.GregorianCalendar;
 import javax.xml.parsers.SAXParser;
 import javax.xml.parsers.SAXParserFactory;
 
-import org.apache.commons.lang.NotImplementedException;
 import org.apache.commons.lang.StringUtils;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.osgi.util.NLS;
@@ -289,7 +288,8 @@ public class TableContents extends TimedIpsObject implements ITableContents {
 	 */
 	public boolean containsDifferenceToModel(IIpsProject ipsProject)
 			throws CoreException {
-		throw new NotImplementedException();
+		//TODO throw new NotImplementedException();
+		return false;
 	}
 
 	/* (non-Javadoc)
@@ -300,8 +300,7 @@ public class TableContents extends TimedIpsObject implements ITableContents {
 	 */
 	public void fixAllDifferencesToModel(IIpsProject ipsProject)
 			throws CoreException {
-		throw new NotImplementedException();
-		
+		// TODO throw new NotImplementedException();
 	}
 
 	/* (non-Javadoc)
