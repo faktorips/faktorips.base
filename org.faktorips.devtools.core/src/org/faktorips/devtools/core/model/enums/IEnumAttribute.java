@@ -96,6 +96,13 @@ public interface IEnumAttribute extends IIpsObjectPart {
     public final static String MSGCODE_ENUM_ATTRIBUTE_DATATYPE_IS_VOID = MSGCODE_PREFIX + "EnumAttributeDatatypeIsVoid"; //$NON-NLS-1$
 
     /**
+     * Validation message code to indicate that the datatype of this enum attribute is an abstract
+     * datatype, which is forbidden.
+     */
+    public final static String MSGCODE_ENUM_ATTRIBUTE_DATATYPE_IS_ABSTRACT = MSGCODE_PREFIX
+            + "EnumAttributeDatatypeIsAbstract"; //$NON-NLS-1$
+
+    /**
      * Validation message code to indicate that the datatype of this enum attribute is the
      * containing enum type or a subclass of it, which is forbidden.
      */

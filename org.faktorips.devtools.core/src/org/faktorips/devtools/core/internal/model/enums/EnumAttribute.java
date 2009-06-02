@@ -273,7 +273,7 @@ public class EnumAttribute extends AtomicIpsObjectPart implements IEnumAttribute
 
         // Check for primitive datatype
         if (ipsDatatype.isPrimitive()) {
-            text = Messages.EnumAttribute_DatatypeIsPrimitive;
+            text = NLS.bind(Messages.EnumAttribute_DatatypeIsPrimitive, datatype);
             validationMessage = new Message(MSGCODE_ENUM_ATTRIBUTE_DATATYPE_IS_PRIMITIVE, text, Message.ERROR, this,
                     PROPERTY_DATATYPE);
             list.add(validationMessage);
@@ -284,6 +284,15 @@ public class EnumAttribute extends AtomicIpsObjectPart implements IEnumAttribute
         if (ipsDatatype.isVoid()) {
             text = Messages.EnumAttribute_DatatypeIsVoid;
             validationMessage = new Message(MSGCODE_ENUM_ATTRIBUTE_DATATYPE_IS_VOID, text, Message.ERROR, this,
+                    PROPERTY_DATATYPE);
+            list.add(validationMessage);
+            return;
+        }
+
+        // Check for abstract datatype
+        if (ipsDatatype.isAbstract()) {
+            text = NLS.bind(Messages.EnumAttribute_DatatypeIsAbstract, datatype);
+            validationMessage = new Message(MSGCODE_ENUM_ATTRIBUTE_DATATYPE_IS_ABSTRACT, text, Message.ERROR, this,
                     PROPERTY_DATATYPE);
             list.add(validationMessage);
             return;

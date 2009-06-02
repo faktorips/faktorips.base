@@ -365,11 +365,11 @@ public class IpsProjectTest extends AbstractIpsPluginTest {
         list = Arrays.asList(baseProject.getReferencingProjectLeavesOrSelf());
         assertTrue(list.contains(ipsProject2));
         assertTrue(list.contains(ipsProject3));
-        
+
         path = ipsProject2.getIpsObjectPath();
         path.newIpsProjectRefEntry(ipsProject3);
         ipsProject2.setIpsObjectPath(path);
-        
+
         assertEquals(1, baseProject.getReferencingProjectLeavesOrSelf().length);
         assertEquals(ipsProject2, baseProject.getReferencingProjectLeavesOrSelf()[0]);
 
@@ -377,7 +377,6 @@ public class IpsProjectTest extends AbstractIpsPluginTest {
         path.removeProjectRefEntry(ipsProject3);
         ipsProject2.setIpsObjectPath(path);
 
-        
         IIpsProject lastProject = newIpsProject("lastProject");
         path = lastProject.getIpsObjectPath();
         path.newIpsProjectRefEntry(ipsProject2);
@@ -780,17 +779,30 @@ public class IpsProjectTest extends AbstractIpsPluginTest {
         assertEquals(pcType2, types[6]);
     }
 
-    public void testFindDatatypes4Parameters() throws Exception {
+    public void testFindDatatypes3Parameters() throws CoreException {
         IPolicyCmptType a = newPolicyAndProductCmptType(ipsProject, "a", "aConfig");
-        List<Datatype> datatypes = Arrays.asList(ipsProject.findDatatypes(false, false, false, null));
+        List<Datatype> datatypes = Arrays.asList(ipsProject.findDatatypes(false, false, false));
         assertTrue(datatypes.contains(a));
         IProductCmptType aConfig = a.findProductCmptType(ipsProject);
         assertTrue(datatypes.contains(aConfig));
+    }
 
+    public void testFindDatatypes4Parameters() throws CoreException {
         List<Datatype> disallowedTypesTest = new ArrayList<Datatype>(1);
         disallowedTypesTest.add(Datatype.STRING);
         Datatype[] types = ipsProject.findDatatypes(false, false, false, disallowedTypesTest);
         assertFalse(Arrays.asList(types).contains(Datatype.STRING));
+    }
+
+    public void testFindDatatypes5Parameters() throws CoreException {
+        IEnumType testEnumType = newEnumType(ipsProject, "TestEnumType");
+        testEnumType.setAbstract(true);
+        Datatype[] types = ipsProject.findDatatypes(false, false, false, null, false);
+        assertFalse(Arrays.asList(types).contains(testEnumType));
+
+        testEnumType.setAbstract(false);
+        types = ipsProject.findDatatypes(false, false, false, null, true);
+        assertTrue(Arrays.asList(types).contains(testEnumType));
     }
 
     public void testFindDatatypesOfEnumType() throws Exception {
@@ -1091,13 +1103,15 @@ public class IpsProjectTest extends AbstractIpsPluginTest {
 
     public void testFindAllTestCaseSrcFiles() throws CoreException {
         // create the following testcase types: TestType0, TestType1
-    	
+
         IIpsPackageFragment pack = root.createPackageFragment("pack", true, null);
 
         @SuppressWarnings("unused")
-		ITestCaseType testType0 = (ITestCaseType) pack.createIpsFile(IpsObjectType.TEST_CASE_TYPE, "TestType0", true, null).getIpsObject();
+        ITestCaseType testType0 = (ITestCaseType)pack.createIpsFile(IpsObjectType.TEST_CASE_TYPE, "TestType0", true,
+                null).getIpsObject();
         @SuppressWarnings("unused")
-		ITestCaseType testType1 = (ITestCaseType) pack.createIpsFile(IpsObjectType.TEST_CASE_TYPE, "TestType1", true, null).getIpsObject();
+        ITestCaseType testType1 = (ITestCaseType)pack.createIpsFile(IpsObjectType.TEST_CASE_TYPE, "TestType1", true,
+                null).getIpsObject();
 
         // create the following testcases: test0, test1, test2
         IIpsSrcFile testFile0 = pack.createIpsFile(IpsObjectType.TEST_CASE, "test0", true, null);
@@ -1133,12 +1147,13 @@ public class IpsProjectTest extends AbstractIpsPluginTest {
         pack = ipsProject2.getIpsPackageFragmentRoots()[0].createPackageFragment("pack", true, null);
 
         @SuppressWarnings("unused")
-		ITestCaseType testTypeProj2 = (ITestCaseType) pack.createIpsFile(IpsObjectType.TEST_CASE_TYPE, "TestTypeProj2", true, null).getIpsObject();
+        ITestCaseType testTypeProj2 = (ITestCaseType)pack.createIpsFile(IpsObjectType.TEST_CASE_TYPE, "TestTypeProj2",
+                true, null).getIpsObject();
         IIpsSrcFile testFileProj2 = pack.createIpsFile(IpsObjectType.TEST_CASE, "testProj2", true, null);
         ITestCase testProj2 = (ITestCase)testFileProj2.getIpsObject();
         testProj2.setTestCaseType("pack.TestTypeProj2");
         testProj2.getIpsSrcFile().save(true, null);
-        
+
         assertNotNull(testProj2.findTestCaseType(testProj2.getIpsProject()));
         result = ipsProject.findAllTestCaseSrcFiles(testProj2.findTestCaseType(testProj2.getIpsProject()));
         assertEquals(0, result.length);
@@ -1151,17 +1166,17 @@ public class IpsProjectTest extends AbstractIpsPluginTest {
         assertEquals(1, result.length);
         assertEquals(testProj2.getIpsSrcFile(), result[0]);
     }
-    
+
     public void testFindAllTableContentsSrcFiles() throws CoreException {
-    	
+
         ITableStructure ts0 = newTableStructure(ipsProject, "structure0");
         ITableStructure ts1 = newTableStructure(ipsProject, "structure1");
-        
+
         ITableContents tc0 = newTableContents(ts0, "contets0");
         @SuppressWarnings("unused")
-		ITableContents tc1 = newTableContents(ts1, "contets1");
+        ITableContents tc1 = newTableContents(ts1, "contets1");
         ITableContents tc2 = newTableContents(ts0, "contets2");
-        
+
         IIpsSrcFile[] result = ipsProject.findAllTableContentsSrcFiles(ts0);
         assertEquals(2, result.length);
         assertEquals(tc0.getIpsSrcFile(), result[0]);
@@ -1177,7 +1192,7 @@ public class IpsProjectTest extends AbstractIpsPluginTest {
 
         ITableStructure ts2 = newTableStructure(ipsProject2, "structure2");
         ITableContents tcProj2 = newTableContents(ts2, "contetnsP2");
-        
+
         result = ipsProject.findAllTableContentsSrcFiles(ts2);
         assertEquals(0, result.length);
 
@@ -1190,17 +1205,19 @@ public class IpsProjectTest extends AbstractIpsPluginTest {
         assertEquals(tcProj2.getIpsSrcFile(), result[0]);
     }
 
-    
     public void testFindAllEnumContentSrcFiles() throws CoreException {
-    	
+
         IIpsPackageFragment pack = root.createPackageFragment("pack", true, null);
 
-		IEnumType enumType0 = (IEnumType) pack.createIpsFile(IpsObjectType.ENUM_TYPE, "EnumType0", true, null).getIpsObject();
-		@SuppressWarnings("unused")
-		IEnumType enumType1 = (IEnumType) pack.createIpsFile(IpsObjectType.ENUM_TYPE, "EnumType1", true, null).getIpsObject();
-		IEnumType enumType2 = (IEnumType) pack.createIpsFile(IpsObjectType.ENUM_TYPE, "EnumType2", true, null).getIpsObject();
+        IEnumType enumType0 = (IEnumType)pack.createIpsFile(IpsObjectType.ENUM_TYPE, "EnumType0", true, null)
+                .getIpsObject();
+        @SuppressWarnings("unused")
+        IEnumType enumType1 = (IEnumType)pack.createIpsFile(IpsObjectType.ENUM_TYPE, "EnumType1", true, null)
+                .getIpsObject();
+        IEnumType enumType2 = (IEnumType)pack.createIpsFile(IpsObjectType.ENUM_TYPE, "EnumType2", true, null)
+                .getIpsObject();
         enumType0.setSuperEnumType("pack.EnumType2");
-        
+
         IIpsSrcFile enumFile0 = pack.createIpsFile(IpsObjectType.ENUM_CONTENT, "enum0", true, null);
         IIpsSrcFile enumFile1 = pack.createIpsFile(IpsObjectType.ENUM_CONTENT, "enum1", true, null);
         IIpsSrcFile enumFile2 = pack.createIpsFile(IpsObjectType.ENUM_CONTENT, "enum2", true, null);
@@ -1230,7 +1247,7 @@ public class IpsProjectTest extends AbstractIpsPluginTest {
 
         result = ipsProject.findAllEnumContentSrcFiles(enumType2, false);
         assertEquals(0, result.length);
-        
+
         result = ipsProject.findAllEnumContentSrcFiles(null, true);
         assertEquals(3, result.length);
 
@@ -1242,12 +1259,13 @@ public class IpsProjectTest extends AbstractIpsPluginTest {
         pack = ipsProject2.getIpsPackageFragmentRoots()[0].createPackageFragment("pack", true, null);
 
         @SuppressWarnings("unused")
-		IEnumType enumTypeProj2 = (IEnumType) pack.createIpsFile(IpsObjectType.ENUM_TYPE, "EnumTypeProj2", true, null).getIpsObject();
+        IEnumType enumTypeProj2 = (IEnumType)pack.createIpsFile(IpsObjectType.ENUM_TYPE, "EnumTypeProj2", true, null)
+                .getIpsObject();
         IIpsSrcFile enumFileProj2 = pack.createIpsFile(IpsObjectType.ENUM_CONTENT, "enumProj2", true, null);
         IEnumContent enumProj2 = (IEnumContent)enumFileProj2.getIpsObject();
         enumProj2.setEnumType("pack.EnumTypeProj2");
         enumProj2.getIpsSrcFile().save(true, null);
-        
+
         assertNotNull(enumProj2.findEnumType(enumProj2.getIpsProject()));
         result = ipsProject.findAllEnumContentSrcFiles(enumProj2.findEnumType(enumProj2.getIpsProject()), true);
         assertEquals(0, result.length);
@@ -1260,8 +1278,7 @@ public class IpsProjectTest extends AbstractIpsPluginTest {
         assertEquals(1, result.length);
         assertEquals(enumProj2.getIpsSrcFile(), result[0]);
     }
- 
-    
+
     public void testFindIpsSrcFiles() throws CoreException {
         // create the following types: Type0, a.b.Type1 and c.Type2
         IIpsPackageFragment pack = root.getIpsPackageFragment("");

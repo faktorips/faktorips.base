@@ -191,6 +191,17 @@ public class EnumAttributeTest extends AbstractIpsEnumPluginTest {
         assertNotNull(validationMessageList.getMessageByCode(IEnumAttribute.MSGCODE_ENUM_ATTRIBUTE_DATATYPE_IS_VOID));
         genderEnumAttributeId.setDatatype(Datatype.STRING.getQualifiedName());
 
+        // Test datatype abstract
+        ipsModel.clearValidationCache();
+        IEnumType newEnumType = newEnumType(ipsProject, "NewEnumType");
+        newEnumType.setAbstract(true);
+        genderEnumAttributeId.setDatatype(newEnumType.getQualifiedName());
+        validationMessageList = genderEnumAttributeId.validate(ipsProject);
+        assertOneValidationMessage(validationMessageList);
+        assertNotNull(validationMessageList
+                .getMessageByCode(IEnumAttribute.MSGCODE_ENUM_ATTRIBUTE_DATATYPE_IS_ABSTRACT));
+        genderEnumAttributeId.setDatatype(Datatype.STRING.getQualifiedName());
+
         // Test datatype is containing enum type
         ipsModel.clearValidationCache();
         genderEnumAttributeId.setDatatype(genderEnumType.getQualifiedName());

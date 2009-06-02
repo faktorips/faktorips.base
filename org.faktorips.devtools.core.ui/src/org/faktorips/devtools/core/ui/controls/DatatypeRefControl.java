@@ -70,6 +70,14 @@ public class DatatypeRefControl extends TextButtonControl {
         return completionProcessor.getValueDatatypesOnly();
     }
 
+    public void setAbstractAllowed(boolean abstractAllowed) {
+        completionProcessor.setIncludeAbstract(abstractAllowed);
+    }
+
+    public boolean isAbstractAllowed() {
+        return completionProcessor.isIncludeAbstract();
+    }
+
     public void setIpsProject(IIpsProject project) {
         this.ipsProject = project;
         completionProcessor.setIpsProject(project);
@@ -90,7 +98,7 @@ public class DatatypeRefControl extends TextButtonControl {
         try {
             DatatypeSelectionDialog dialog = new DatatypeSelectionDialog(getShell());
             dialog.setElements(ipsProject.findDatatypes(isOnlyValueDatatypesAllowed(), isVoidAllowed(),
-                    getPrimitivesAllowed(), getDisallowedDatatypes()));
+                    getPrimitivesAllowed(), getDisallowedDatatypes(), isAbstractAllowed()));
             if (dialog.open() == Window.OK) {
                 String textToSet = ""; //$NON-NLS-1$
                 if (dialog.getResult().length > 0) {

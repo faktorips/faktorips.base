@@ -38,6 +38,7 @@ public class Messages extends NLS {
     public static String EnumAttribute_DatatypeDoesNotExist;
     public static String EnumAttribute_DatatypeIsPrimitive;
     public static String EnumAttribute_DatatypeIsVoid;
+    public static String EnumAttribute_DatatypeIsAbstract;
     public static String EnumAttribute_DatatypeIsContainingEnumTypeOrSubclass;
     public static String EnumAttribute_DuplicateLiteralName;
     public static String EnumAttribute_NoSuchAttributeInSupertypeHierarchy;

@@ -150,7 +150,7 @@ public class IpsProject extends IpsElement implements IIpsProject {
      * {@inheritDoc}
      */
     public boolean isReferencing(IIpsProject otherProject) throws CoreException {
-       return otherProject.isReferencedBy(this, true);
+        return otherProject.isReferencedBy(this, true);
     }
 
     /**
@@ -401,7 +401,7 @@ public class IpsProject extends IpsElement implements IIpsProject {
 
         return (IIpsProject[])result.toArray(new IIpsProject[result.size()]);
     }
-    
+
     /**
      * {@inheritDoc}
      */
@@ -409,26 +409,26 @@ public class IpsProject extends IpsElement implements IIpsProject {
         IIpsProject[] projects = getIpsModel().getIpsProjects();
         List<IIpsProject> result = new ArrayList<IIpsProject>(projects.length);
         result.add(this);
-    	for (IIpsProject project : projects) {
-			if (this.isReferencedBy(project, true)) {
-				boolean foundDependent = false;
-				for (Iterator<IIpsProject> iterator = result.iterator();iterator.hasNext();) {
-					IIpsProject aResult = iterator.next();
-					if (project.isReferencedBy(aResult, true)) {
-						foundDependent = true;
-						break;
-					} else {
-						if (aResult.isReferencedBy(project, true)) {
-    						iterator.remove();
-						}
-					}
-				}
-				if (!foundDependent) {
-					result.add(project);
-				}
-			}
-    	}
-    	return (IIpsProject[])result.toArray(new IIpsProject[result.size()]);
+        for (IIpsProject project : projects) {
+            if (this.isReferencedBy(project, true)) {
+                boolean foundDependent = false;
+                for (Iterator<IIpsProject> iterator = result.iterator(); iterator.hasNext();) {
+                    IIpsProject aResult = iterator.next();
+                    if (project.isReferencedBy(aResult, true)) {
+                        foundDependent = true;
+                        break;
+                    } else {
+                        if (aResult.isReferencedBy(project, true)) {
+                            iterator.remove();
+                        }
+                    }
+                }
+                if (!foundDependent) {
+                    result.add(project);
+                }
+            }
+        }
+        return (IIpsProject[])result.toArray(new IIpsProject[result.size()]);
     }
 
     /**
@@ -885,9 +885,9 @@ public class IpsProject extends IpsElement implements IIpsProject {
             }
         }
     }
-    
+
     public ITableStructure findTableStructure(String tableContetnsQName) throws CoreException {
-    	return (ITableStructure)findIpsObject(IpsObjectType.TABLE_STRUCTURE, tableContetnsQName);
+        return (ITableStructure)findIpsObject(IpsObjectType.TABLE_STRUCTURE, tableContetnsQName);
     }
 
     /**
@@ -1068,7 +1068,7 @@ public class IpsProject extends IpsElement implements IIpsProject {
      * {@inheritDoc}
      */
     public Datatype[] findDatatypes(boolean valuetypesOnly, boolean includeVoid) throws CoreException {
-        return findDatatypes(valuetypesOnly, includeVoid, true, null);
+        return findDatatypes(valuetypesOnly, includeVoid, true);
     }
 
     /**
@@ -1088,6 +1088,18 @@ public class IpsProject extends IpsElement implements IIpsProject {
             boolean includePrimitives,
             List<Datatype> excludedDatatypes) throws CoreException {
 
+        return findDatatypes(valuetypesOnly, includeVoid, includePrimitives, excludedDatatypes, true);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public Datatype[] findDatatypes(boolean valuetypesOnly,
+            boolean includeVoid,
+            boolean includePrimitives,
+            List<Datatype> excludedDatatypes,
+            boolean includeAbstract) throws CoreException {
+
         Set<Datatype> result = new LinkedHashSet<Datatype>();
         getDatatypesDefinedInProjectPropertiesInclSubprojects(valuetypesOnly, includeVoid, includePrimitives, result);
 
@@ -1096,10 +1108,17 @@ public class IpsProject extends IpsElement implements IIpsProject {
 
         if (valuetypesOnly) {
             result.addAll(findEnumTypes());
+        } else {
+            findDatatypesDefinedByIpsObjects(result);
         }
 
-        if (!valuetypesOnly) {
-            findDatatypesDefinedByIpsObjects(result);
+        // Remove abstract datatypes from the list if not included
+        if (!includeAbstract) {
+            for (Datatype currentDatatype : result.toArray(new Datatype[result.size()])) {
+                if (currentDatatype.isAbstract()) {
+                    result.remove(currentDatatype);
+                }
+            }
         }
 
         // Remove every excluded datatype from the list
@@ -1434,8 +1453,8 @@ public class IpsProject extends IpsElement implements IIpsProject {
             } else if (includeCmptsForSubtypes) {
                 // TODO Joerg v2 performance verbessern?
                 IProductCmpt productCmpt = (IProductCmpt)ipsSrcFiles[i].getIpsObject();
-                //ASK wieso wird hier nicht direkt der Typ gesucht?:
-                //IProductCmptType type = findProductCmptType(strProductCmptTypeOfCandidate);
+                // ASK wieso wird hier nicht direkt der Typ gesucht?:
+                // IProductCmptType type = findProductCmptType(strProductCmptTypeOfCandidate);
                 IProductCmptType type = productCmpt.findProductCmptType(this);
                 if (type == null) {
                     continue;
@@ -1448,70 +1467,70 @@ public class IpsProject extends IpsElement implements IIpsProject {
 
         return (IIpsSrcFile[])result.toArray(new IIpsSrcFile[result.size()]);
     }
-    
+
     /**
      * {@inheritDoc}
-     * @throws CoreException 
+     * 
+     * @throws CoreException
      */
     public IIpsSrcFile[] findAllTestCaseSrcFiles(ITestCaseType testCaseType) throws CoreException {
-    	IIpsSrcFile[] ipsSrcFiles = findIpsSrcFiles(IpsObjectType.TEST_CASE);
-    	if (testCaseType == null) {
-    		return ipsSrcFiles;
-    	}
-    	List<IIpsSrcFile> result = new ArrayList<IIpsSrcFile>(ipsSrcFiles.length);
-    	for (IIpsSrcFile srcFile : ipsSrcFiles) {
-    		String testCaseTypeCandidateQName = srcFile.getPropertyValue(ITestCase.PROPERTY_TEST_CASE_TYPE);
-    		if (testCaseType.getQualifiedName().equals(testCaseTypeCandidateQName)) {
-    			result.add(srcFile);
-    		}
-    	}
-    	return (IIpsSrcFile[])result.toArray(new IIpsSrcFile[result.size()]);
+        IIpsSrcFile[] ipsSrcFiles = findIpsSrcFiles(IpsObjectType.TEST_CASE);
+        if (testCaseType == null) {
+            return ipsSrcFiles;
+        }
+        List<IIpsSrcFile> result = new ArrayList<IIpsSrcFile>(ipsSrcFiles.length);
+        for (IIpsSrcFile srcFile : ipsSrcFiles) {
+            String testCaseTypeCandidateQName = srcFile.getPropertyValue(ITestCase.PROPERTY_TEST_CASE_TYPE);
+            if (testCaseType.getQualifiedName().equals(testCaseTypeCandidateQName)) {
+                result.add(srcFile);
+            }
+        }
+        return (IIpsSrcFile[])result.toArray(new IIpsSrcFile[result.size()]);
     }
 
     /**
      * {@inheritDoc}
      */
-    public IIpsSrcFile[] findAllEnumContentSrcFiles(IEnumType enumType,
-    		boolean includingSubtypes) throws CoreException {
-    	IIpsSrcFile[] ipsSrcFiles = findIpsSrcFiles(IpsObjectType.ENUM_CONTENT);
-    	if (enumType == null) {
-        	return ipsSrcFiles;
-    	}
-    	List<IIpsSrcFile> result = new ArrayList<IIpsSrcFile>(ipsSrcFiles.length);
-    	for (IIpsSrcFile srcFile : ipsSrcFiles) {
-    		String enumTypeCandidateQNmae = srcFile.getPropertyValue(IEnumContent.PROPERTY_ENUM_TYPE);
-    		if (enumType.getQualifiedName().equals(enumTypeCandidateQNmae)) {
-    			result.add(srcFile);
-    		} else if (includingSubtypes) {
-    			IEnumType enumTypeCandiate = findEnumType(enumTypeCandidateQNmae);
-    			if (enumTypeCandiate == null) {
-    				continue;
-    			} else if (enumTypeCandiate.isSubEnumTypeOf(enumType, this)) {
-    				result.add(srcFile);
-    			}
+    public IIpsSrcFile[] findAllEnumContentSrcFiles(IEnumType enumType, boolean includingSubtypes) throws CoreException {
+        IIpsSrcFile[] ipsSrcFiles = findIpsSrcFiles(IpsObjectType.ENUM_CONTENT);
+        if (enumType == null) {
+            return ipsSrcFiles;
+        }
+        List<IIpsSrcFile> result = new ArrayList<IIpsSrcFile>(ipsSrcFiles.length);
+        for (IIpsSrcFile srcFile : ipsSrcFiles) {
+            String enumTypeCandidateQNmae = srcFile.getPropertyValue(IEnumContent.PROPERTY_ENUM_TYPE);
+            if (enumType.getQualifiedName().equals(enumTypeCandidateQNmae)) {
+                result.add(srcFile);
+            } else if (includingSubtypes) {
+                IEnumType enumTypeCandiate = findEnumType(enumTypeCandidateQNmae);
+                if (enumTypeCandiate == null) {
+                    continue;
+                } else if (enumTypeCandiate.isSubEnumTypeOf(enumType, this)) {
+                    result.add(srcFile);
+                }
             }
-    	}
-    	return (IIpsSrcFile[])result.toArray(new IIpsSrcFile[result.size()]);
+        }
+        return (IIpsSrcFile[])result.toArray(new IIpsSrcFile[result.size()]);
     }
 
     /**
      * {@inheritDoc}
      */
     public IIpsSrcFile[] findAllTableContentsSrcFiles(ITableStructure structure) throws CoreException {
-    	IIpsSrcFile[] ipsSrcFiles = findIpsSrcFiles(IpsObjectType.TABLE_CONTENTS);
-    	if (structure == null) {
-        	return ipsSrcFiles;
-    	}
-    	List<IIpsSrcFile> result = new ArrayList<IIpsSrcFile>(ipsSrcFiles.length);
-    	for (IIpsSrcFile srcFile : ipsSrcFiles) {
-    		String tableContentsCandidateQName = srcFile.getPropertyValue(ITableContents.PROPERTY_TABLESTRUCTURE);
-    		if (structure.getQualifiedName().equals(tableContentsCandidateQName)) {
-    			result.add(srcFile);
-    		}
-    	}
-    	return (IIpsSrcFile[])result.toArray(new IIpsSrcFile[result.size()]);
+        IIpsSrcFile[] ipsSrcFiles = findIpsSrcFiles(IpsObjectType.TABLE_CONTENTS);
+        if (structure == null) {
+            return ipsSrcFiles;
+        }
+        List<IIpsSrcFile> result = new ArrayList<IIpsSrcFile>(ipsSrcFiles.length);
+        for (IIpsSrcFile srcFile : ipsSrcFiles) {
+            String tableContentsCandidateQName = srcFile.getPropertyValue(ITableContents.PROPERTY_TABLESTRUCTURE);
+            if (structure.getQualifiedName().equals(tableContentsCandidateQName)) {
+                result.add(srcFile);
+            }
+        }
+        return (IIpsSrcFile[])result.toArray(new IIpsSrcFile[result.size()]);
     }
-    
+
     /**
      * {@inheritDoc}
      */

@@ -28,12 +28,19 @@ import org.faktorips.datatype.Datatype;
  */
 public class DatatypeCompletionProcessor extends AbstractCompletionProcessor {
 
-    private boolean includeVoid = false;
-    private boolean valuetypesOnly = false;
-    private boolean includePrimitives = true;
-    private List<Datatype> excludedDatatypes = null;
+    private boolean includeVoid;
+    private boolean valuetypesOnly;
+    private boolean includePrimitives;
+    private boolean includeAbstract;
+    private List<Datatype> excludedDatatypes;
 
     public DatatypeCompletionProcessor() {
+        this.includeVoid = false;
+        this.valuetypesOnly = false;
+        this.includePrimitives = true;
+        this.includeAbstract = false;
+        this.excludedDatatypes = null;
+
         setComputeProposalForEmptyPrefix(true);
     }
 
@@ -45,6 +52,14 @@ public class DatatypeCompletionProcessor extends AbstractCompletionProcessor {
         return includeVoid;
     }
 
+    public void setIncludeAbstract(boolean includeAbstract) {
+        this.includeAbstract = includeAbstract;
+    }
+
+    public boolean isIncludeAbstract() {
+        return includeAbstract;
+    }
+
     public void setValueDatatypesOnly(boolean value) {
         valuetypesOnly = value;
     }
@@ -53,16 +68,10 @@ public class DatatypeCompletionProcessor extends AbstractCompletionProcessor {
         return valuetypesOnly;
     }
 
-    /**
-     * @return Returns the includePrimitives.
-     */
     public boolean isIncludePrimitives() {
         return includePrimitives;
     }
 
-    /**
-     * @param includePrimitives The includePrimitives to set.
-     */
     public void setIncludePrimitives(boolean includePrimitives) {
         this.includePrimitives = includePrimitives;
     }
@@ -85,7 +94,8 @@ public class DatatypeCompletionProcessor extends AbstractCompletionProcessor {
         prefix = prefix.toLowerCase();
         DefaultLabelProvider labelProvider = new DefaultLabelProvider();
         List<Datatype> foundTypes = new ArrayList<Datatype>();
-        Datatype[] types = ipsProject.findDatatypes(valuetypesOnly, includeVoid, includePrimitives, excludedDatatypes);
+        Datatype[] types = ipsProject.findDatatypes(valuetypesOnly, includeVoid, includePrimitives, excludedDatatypes,
+                includeAbstract);
         for (int i = 0; i < types.length; i++) {
             if (types[i].getName().toLowerCase().startsWith(prefix)) {
                 foundTypes.add(types[i]);

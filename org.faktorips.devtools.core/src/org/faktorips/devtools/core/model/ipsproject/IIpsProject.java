@@ -690,6 +690,24 @@ public interface IIpsProject extends IIpsElement, IProjectNature {
             List<Datatype> excludedDatatypes) throws CoreException;
 
     /**
+     * Returns all datatypes accessible on the project's path.
+     * 
+     * @param valuetypesOnly true if only value datatypes should be returned.
+     * @param includeVoid true if <code>Datatype.VOID</code> should be included.
+     * @param includePrimitives true if primitive Datatypes are included.
+     * @param excludedDatatypes A list of datatypes that should NOT be included, may be
+     *            code>null</code> if none shall be excluded.
+     * @param includeAbstract true if abstract datatypes should be included.
+     * 
+     * @throws CoreException if an exception occurs while searching for the datatypes.
+     */
+    public Datatype[] findDatatypes(boolean valuetypesOnly,
+            boolean includeVoid,
+            boolean includePrimitives,
+            List<Datatype> excludedDatatypes,
+            boolean includeAbstract) throws CoreException;
+
+    /**
      * Returns all enumeration datatypes accessible on the project's ips object path.
      * 
      * @throws CoreException if an exception occurs while searching for the datatypes.
@@ -815,5 +833,5 @@ public interface IIpsProject extends IIpsElement, IProjectNature {
      * <code>false</code>. Returns <code>false</code> if resource is <code>null</code>.
      */
     public boolean isResourceExcludedFromProductDefinition(IResource resource);
-    
+
 }
