@@ -197,48 +197,33 @@ public class EnumContent extends EnumValueContainer implements IEnumContent {
         return enumAttributesCount;
     }
 
-	/* (non-Javadoc)
-	 * @see org.faktorips.devtools.core.model.IIpsMetaObject#findMetaClass(org.faktorips.devtools.core.model.ipsproject.IIpsProject)
-	 */
-	/**
-	 * {@inheritDoc}
-	 */
-	public IIpsSrcFile findMetaClassSrcFile(IIpsProject ipsProject)
-			throws CoreException {
-		return ipsProject.findIpsSrcFile(IpsObjectType.ENUM_TYPE, getEnumType());
-	}
+    /**
+     * {@inheritDoc}
+     */
+    public IIpsSrcFile findMetaClassSrcFile(IIpsProject ipsProject) throws CoreException {
+        return ipsProject.findIpsSrcFile(IpsObjectType.ENUM_TYPE, getEnumType());
+    }
 
-	/* (non-Javadoc)
-	 * @see org.faktorips.devtools.core.model.ipsobject.IFixDifferencesToModelSupport#containsDifferenceToModel(org.faktorips.devtools.core.model.ipsproject.IIpsProject)
-	 */
-	/**
-	 * {@inheritDoc}
-	 */
-	public boolean containsDifferenceToModel(IIpsProject ipsProject)
-			throws CoreException {
-		// TODO Auto-generated method stub
-		return false;
-	}
+    /**
+     * {@inheritDoc}
+     */
+    public boolean containsDifferenceToModel(IIpsProject ipsProject) throws CoreException {
+        // TODO aw: Auto-generated method stub
+        return false;
+    }
 
-	/* (non-Javadoc)
-	 * @see org.faktorips.devtools.core.model.ipsobject.IFixDifferencesToModelSupport#fixAllDifferencesToModel(org.faktorips.devtools.core.model.ipsproject.IIpsProject)
-	 */
-	/**
-	 * {@inheritDoc}
-	 */
-	public void fixAllDifferencesToModel(IIpsProject ipsProject)
-			throws CoreException {
-		// TODO Auto-generated method stub
-	}
+    /**
+     * {@inheritDoc}
+     */
+    public void fixAllDifferencesToModel(IIpsProject ipsProject) throws CoreException {
+        // TODO aw: Auto-generated method stub
+    }
 
-	/* (non-Javadoc)
-	 * @see org.faktorips.devtools.core.model.IIpsMetaObject#getMetaClass()
-	 */
-	/**
-	 * {@inheritDoc}
-	 */
-	public String getMetaClass() {
-		return getEnumType();
-	}
+    /**
+     * {@inheritDoc}
+     */
+    public String getMetaClass() {
+        return getEnumType();
+    }
 
 }

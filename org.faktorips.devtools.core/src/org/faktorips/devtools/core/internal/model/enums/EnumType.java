@@ -1095,6 +1095,21 @@ public class EnumType extends EnumValueContainer implements IEnumType {
     }
 
     /**
+     * {@inheritDoc}
+     */
+    public IIpsSrcFile[] findAllMetaObjectSrcFiles(IIpsProject ipsProject, boolean includeSubtypes)
+            throws CoreException {
+
+        TreeSet<IIpsSrcFile> result = TreeSetHelper.newIpsSrcFileTreeSet();
+        IIpsProject[] searchProjects = ipsProject.getReferencingProjectLeavesOrSelf();
+        for (IIpsProject project : searchProjects) {
+            result.addAll(Arrays.asList(project.findAllEnumContentSrcFiles(this, includeSubtypes)));
+        }
+
+        return result.toArray(new IIpsSrcFile[result.size()]);
+    }
+
+    /**
      * Creates a new enum attribute. On every enum value that is contained in this enum type new
      * enum attribute value objects need to be created for the new enum attribute.
      * <p>
@@ -1188,26 +1203,6 @@ public class EnumType extends EnumValueContainer implements IEnumType {
             return true;
         }
 
-    }
-
-    /*
-     * (non-Javadoc)
-     * 
-     * @see
-     * org.faktorips.devtools.core.model.IIpsMetaClass#findAllMetaObjects(org.faktorips.devtools
-     * .core.model.ipsproject.IIpsProject, boolean)
-     */
-    /**
-     * {@inheritDoc}
-     */
-    public IIpsSrcFile[] findAllMetaObjectSrcFiles(IIpsProject ipsProject, boolean includeSubtypes)
-            throws CoreException {
-        TreeSet<IIpsSrcFile> result = TreeSetHelper.newIpsSrcFileTreeSet();
-        IIpsProject[] searchProjects = ipsProject.getReferencingProjectLeavesOrSelf();
-        for (IIpsProject project : searchProjects) {
-            result.addAll(Arrays.asList(project.findAllEnumContentSrcFiles(this, includeSubtypes)));
-        }
-        return result.toArray(new IIpsSrcFile[result.size()]);
     }
 
 }

@@ -61,6 +61,7 @@ public class EnumAttributeValue extends AtomicIpsObjectPart implements IEnumAttr
     public EnumAttributeValue(IEnumValue parent, int id) throws CoreException {
         super(parent, id);
         this.descriptionChangable = false;
+        // TODO aw: this could be done better by setting reasonable default values
         this.value = null;
     }
 
@@ -78,10 +79,10 @@ public class EnumAttributeValue extends AtomicIpsObjectPart implements IEnumAttr
     @Override
     protected void propertiesToXml(Element element) {
         super.propertiesToXml(element);
-        if(value == null){
+        if (value == null) {
             element.setAttribute("isNull", "true");
             Text textNode = XmlUtil.getTextNode(element);
-            if(textNode != null){
+            if (textNode != null) {
                 textNode.setTextContent("");
             }
             return;
@@ -102,7 +103,7 @@ public class EnumAttributeValue extends AtomicIpsObjectPart implements IEnumAttr
     protected void initPropertiesFromXml(Element element, Integer id) {
         super.initPropertiesFromXml(element, id);
         Boolean isNull = Boolean.valueOf(element.getAttribute("isNull"));
-        if(isNull.booleanValue()){
+        if (isNull.booleanValue()) {
             value = null;
             return;
         }
