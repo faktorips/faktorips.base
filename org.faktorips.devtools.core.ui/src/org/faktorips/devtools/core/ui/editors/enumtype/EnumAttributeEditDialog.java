@@ -27,6 +27,7 @@ import org.eclipse.swt.widgets.Text;
 import org.faktorips.datatype.Datatype;
 import org.faktorips.devtools.core.model.ContentChangeEvent;
 import org.faktorips.devtools.core.model.enums.IEnumAttribute;
+import org.faktorips.devtools.core.model.enums.IEnumType;
 import org.faktorips.devtools.core.model.ipsobject.IExtensionPropertyDefinition;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.ui.ExtensionPropertyControlFactory;
@@ -128,9 +129,7 @@ public class EnumAttributeEditDialog extends IpsPartEditDialog2 {
         datatypeControl.setVoidAllowed(false);
         datatypeControl.setPrimitivesAllowed(false);
         datatypeControl.setOnlyValueDatatypesAllowed(true);
-        List<Datatype> disallowedDatatypes = new ArrayList<Datatype>(1);
-        disallowedDatatypes.add(enumAttribute.getEnumType());
-        datatypeControl.setDisallowedDatatypes(disallowedDatatypes);
+        filterEnumTypeFromDatatypes();
 
         // Unique identifier
         uiToolkit.createFormLabel(workArea, Messages.EnumAttributeEditDialog_labelUniqueIdentifier);
@@ -164,6 +163,25 @@ public class EnumAttributeEditDialog extends IpsPartEditDialog2 {
         nameText.setFocus();
 
         return control;
+    }
+
+    /**
+     * Searches all the enum types that are subclasses of the enum type referenced by the enum
+     * attribute to edit. All those sub enums and the referenced enum type itself will not be
+     * available in the datatype selection.
+     */
+    private void filterEnumTypeFromDatatypes() {
+        IEnumType enumType = enumAttribute.getEnumType();
+
+        List<Datatype> disallowedDatatypes = new ArrayList<Datatype>(1);
+        disallowedDatatypes.add(enumAttribute.getEnumType());
+        try {
+            disallowedDatatypes.addAll(enumType.findAllSubEnumTypes(enumType.getIpsProject()));
+        } catch (CoreException e) {
+            throw new RuntimeException(e);
+        }
+
+        datatypeControl.setDisallowedDatatypes(disallowedDatatypes);
     }
 
     /**

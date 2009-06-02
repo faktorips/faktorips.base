@@ -151,7 +151,7 @@ public class EnumType extends EnumValueContainer implements IEnumType {
         superEnumType = superEnumTypeQualifiedName;
         valueChanged(oldSupertype, superEnumType);
     }
-    
+
     /**
      * {@inheritDoc}
      */
@@ -160,7 +160,7 @@ public class EnumType extends EnumValueContainer implements IEnumType {
             return false;
         }
         IEnumType superEnumType = findSuperEnumType(ipsProject);
-        if (superEnumType==null) {
+        if (superEnumType == null) {
             return false;
         }
         if (superEnumTypeCandidate.equals(superEnumType)) {
@@ -180,7 +180,6 @@ public class EnumType extends EnumValueContainer implements IEnumType {
         }
         return isSubEnumTypeOf(superEnumTypeCandidate, ipsProject);
     }
-
 
     /**
      * {@inheritDoc}
@@ -1076,6 +1075,26 @@ public class EnumType extends EnumValueContainer implements IEnumType {
     }
 
     /**
+     * {@inheritDoc}
+     */
+    public List<IEnumType> findAllSubEnumTypes(IIpsProject ipsProject) throws CoreException {
+        ArgumentCheck.notNull(ipsProject);
+
+        List<IEnumType> subEnumTypes = new ArrayList<IEnumType>();
+        List<IEnumType> allEnumTypes = ipsProject.findEnumTypes();
+        for (IEnumType currentEnumType : allEnumTypes) {
+            if (!(currentEnumType.hasSuperEnumType())) {
+                continue;
+            }
+            if (currentEnumType.findAllSuperEnumTypes(ipsProject).contains(this)) {
+                subEnumTypes.add(currentEnumType);
+            }
+        }
+
+        return subEnumTypes;
+    }
+
+    /**
      * Creates a new enum attribute. On every enum value that is contained in this enum type new
      * enum attribute value objects need to be created for the new enum attribute.
      * <p>
@@ -1149,43 +1168,46 @@ public class EnumType extends EnumValueContainer implements IEnumType {
 
         private IEnumType superEnumTypeCandidate;
         private boolean subEnumType = false;
-        
+
         public IsSubEnumTypeOfVisitor(IIpsProject ipsProject, IEnumType superEnumTypeCandidate) {
             super(ipsProject);
             ArgumentCheck.notNull(superEnumTypeCandidate);
             this.superEnumTypeCandidate = superEnumTypeCandidate;
         }
-        
+
         boolean isSubtype() {
             return subEnumType;
         }
 
-		@Override
-		protected boolean visit(IEnumType currentEnumType) throws CoreException {
-			if (currentEnumType == superEnumTypeCandidate) {
-				subEnumType = true;
-				return false;
-			}
-			return true;
-		}
+        @Override
+        protected boolean visit(IEnumType currentEnumType) throws CoreException {
+            if (currentEnumType == superEnumTypeCandidate) {
+                subEnumType = true;
+                return false;
+            }
+            return true;
+        }
 
-        
     }
 
-	/* (non-Javadoc)
-	 * @see org.faktorips.devtools.core.model.IIpsMetaClass#findAllMetaObjects(org.faktorips.devtools.core.model.ipsproject.IIpsProject, boolean)
-	 */
-	/**
-	 * {@inheritDoc}
-	 */
-	public IIpsSrcFile[] findAllMetaObjectSrcFiles(IIpsProject ipsProject,
-			boolean includeSubtypes) throws CoreException {
-		TreeSet<IIpsSrcFile> result = TreeSetHelper.newIpsSrcFileTreeSet();
-		IIpsProject[] searchProjects = ipsProject.getReferencingProjectLeavesOrSelf();
-		for (IIpsProject project : searchProjects) {
-			result.addAll(Arrays.asList(project.findAllEnumContentSrcFiles(this, includeSubtypes)));
-		}
-		return result.toArray(new IIpsSrcFile[result.size()]);
-	}    
-    
+    /*
+     * (non-Javadoc)
+     * 
+     * @see
+     * org.faktorips.devtools.core.model.IIpsMetaClass#findAllMetaObjects(org.faktorips.devtools
+     * .core.model.ipsproject.IIpsProject, boolean)
+     */
+    /**
+     * {@inheritDoc}
+     */
+    public IIpsSrcFile[] findAllMetaObjectSrcFiles(IIpsProject ipsProject, boolean includeSubtypes)
+            throws CoreException {
+        TreeSet<IIpsSrcFile> result = TreeSetHelper.newIpsSrcFileTreeSet();
+        IIpsProject[] searchProjects = ipsProject.getReferencingProjectLeavesOrSelf();
+        for (IIpsProject project : searchProjects) {
+            result.addAll(Arrays.asList(project.findAllEnumContentSrcFiles(this, includeSubtypes)));
+        }
+        return result.toArray(new IIpsSrcFile[result.size()]);
+    }
+
 }

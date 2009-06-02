@@ -151,32 +151,33 @@ public interface IEnumType extends IEnumValueContainer, EnumDatatype, IIpsMetaCl
     public void setSuperEnumType(String superEnumTypeQualifiedName);
 
     /**
-     * Returns <code>true</code> if this enum type is a sub enum type of the given super enum type candidate,
-     * returns <code>false</code> otherwise. Returns <code>false</code> if super enum type candidate
-     * is <code>null</code>.
+     * Returns <code>true</code> if this enum type is a sub enum type of the given super enum type
+     * candidate, returns <code>false</code> otherwise. Returns <code>false</code> if super enum
+     * type candidate is <code>null</code>.
      * 
-     * @param superEnumTypeCandidate The type which is the possibly a super enum type of this enum type
-     * @param ipsProject The project which ips object path is used for the search.
-     * This is not necessarily the project this type is part of. 
+     * @param superEnumTypeCandidate The type which is the possibly a super enum type of this enum
+     *            type
+     * @param ipsProject The project which ips object path is used for the search. This is not
+     *            necessarily the project this type is part of.
      * 
      * @throws CoreException if an error occurs while searching the type hierarchy.
      */
     public boolean isSubEnumTypeOf(IEnumType superEnumTypeCandidate, IIpsProject ipsProject) throws CoreException;
-    
+
     /**
-     * Returns <code>true</code> if this enum type is a sub enum type of the given candidate, or if the
-     * candidate is the same. Returns <code>false</code> otherwise. 
-     * Returns <code>false</code> if candidate is <code>null</code>.
+     * Returns <code>true</code> if this enum type is a sub enum type of the given candidate, or if
+     * the candidate is the same. Returns <code>false</code> otherwise. Returns <code>false</code>
+     * if candidate is <code>null</code>.
      * 
-     * @param superEnumTypeCandidate The enum type which is the possibly a super enum type of this enum type
-     * @param ipsProject The project which ips object path is used for the search.
-     * This is not necessarily the project this type is part of. 
+     * @param superEnumTypeCandidate The enum type which is the possibly a super enum type of this
+     *            enum type
+     * @param ipsProject The project which ips object path is used for the search. This is not
+     *            necessarily the project this type is part of.
      * 
      * @throws CoreException if an error occurs while searching the type hierarchy.
      */
     public boolean isSubEnumTypeOrSelf(IEnumType superEnumTypeCandidate, IIpsProject ipsProject) throws CoreException;
 
-    
     /**
      * Searches and returns the super enum type of this enum type if any is specified.
      * <p>
@@ -465,5 +466,17 @@ public interface IEnumType extends IEnumValueContainer, EnumDatatype, IIpsMetaCl
      *             supertype hierarchy of this enum type.
      */
     public List<IEnumAttribute> inheritEnumAttributes(List<IEnumAttribute> superEnumAttributes) throws CoreException;
+
+    /**
+     * Searches the given ips project for enum types that are subclasses of this enum type and
+     * returns them in a list.
+     * <p>
+     * If none could be found an empty list will be returned, so it never returns <code>null</code>.
+     * 
+     * @throws CoreException If an error occurs while searching the given ips project for enum
+     *             types.
+     * @throws NullPointerException If <code>ipsProject<code> is <code>null</code>.
+     */
+    public List<IEnumType> findAllSubEnumTypes(IIpsProject ipsProject) throws CoreException;
 
 }
