@@ -186,6 +186,7 @@ public class UIToolkit {
         Composite newComposite;
         GridLayout layout = new GridLayout(2, false);
         layout.horizontalSpacing = 12;
+        layout.verticalSpacing = 6;
         if (formToolkit != null) {
             newComposite = formToolkit.createComposite(parent);
             formToolkit.paintBordersFor(newComposite);
