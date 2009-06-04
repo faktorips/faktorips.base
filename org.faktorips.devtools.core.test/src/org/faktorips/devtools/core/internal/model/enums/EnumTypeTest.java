@@ -773,17 +773,17 @@ public class EnumTypeTest extends AbstractIpsEnumPluginTest {
         inheritedLiteralNameAttribute.setName(GENDER_ENUM_ATTRIBUTE_ID_NAME);
         inheritedLiteralNameAttribute.setInherited(true);
 
-        assertEquals(inheritedLiteralNameAttribute, subEnumType.getLiteralNameAttribute());
+        assertEquals(inheritedLiteralNameAttribute, subEnumType.findLiteralNameAttribute(ipsProject));
     }
 
     public void testGetEnumValue() throws Exception {
-        IEnumValue annually = paymentMode.getEnumValue("annually");
+        IEnumValue annually = paymentMode.findEnumValue("annually", ipsProject);
         assertNotNull(annually);
-        IEnumValue monthly = paymentMode.getEnumValue("monthly");
+        IEnumValue monthly = paymentMode.findEnumValue("monthly", ipsProject);
         assertNotNull(monthly);
-        IEnumValue quarterly = paymentMode.getEnumValue("quarterly");
+        IEnumValue quarterly = paymentMode.findEnumValue("quarterly", ipsProject);
         assertNull(quarterly);
-        assertNull(paymentMode.getEnumValue(null));
+        assertNull(paymentMode.findEnumValue(null, ipsProject));
     }
 
     public void testFindInheritEnumAttributeCandidates() throws CoreException {
@@ -953,4 +953,58 @@ public class EnumTypeTest extends AbstractIpsEnumPluginTest {
         assertEquals(0, subsOfSubSubEnumType.size());
     }
 
+    public void testFindIsUsedAsIdInFaktorIpsUIAttribute() throws Exception {
+        IEnumType enum1 = newEnumType(ipsProject, "enum1");
+        enum1.setAbstract(false);
+        enum1.setContainingValues(true);
+
+        IEnumAttribute attr1 = enum1.newEnumAttribute();
+        attr1.setDatatype(Datatype.STRING.getQualifiedName());
+        attr1.setLiteralName(true);
+        attr1.setName("id");
+        attr1.setUniqueIdentifier(true);
+        attr1.setUsedAsIdInFaktorIpsUi(true);
+
+        IEnumAttribute attr2 = enum1.newEnumAttribute();
+        attr2.setDatatype(Datatype.STRING.getQualifiedName());
+        attr2.setName("name");
+        attr2.setUniqueIdentifier(true);
+        attr2.setUsedAsNameInFaktorIpsUi(true);
+
+        IEnumAttribute attr3 = enum1.newEnumAttribute();
+        attr3.setDatatype(Datatype.STRING.getQualifiedName());
+        attr3.setName("description");
+        attr3.setUniqueIdentifier(false);
+
+        IEnumAttribute resultAttr = enum1.findIsUsedAsIdInFaktorIpsUIAttribute(ipsProject);
+        assertEquals(attr1, resultAttr);
+    }
+
+    public void testfindIsUsedAsNameInFaktorIpsUIAttribute() throws Exception {
+        IEnumType enum1 = newEnumType(ipsProject, "enum1");
+        enum1.setAbstract(false);
+        enum1.setContainingValues(true);
+
+        IEnumAttribute attr1 = enum1.newEnumAttribute();
+        attr1.setDatatype(Datatype.STRING.getQualifiedName());
+        attr1.setLiteralName(true);
+        attr1.setName("id");
+        attr1.setUniqueIdentifier(true);
+        attr1.setUsedAsIdInFaktorIpsUi(true);
+
+        IEnumAttribute attr2 = enum1.newEnumAttribute();
+        attr2.setDatatype(Datatype.STRING.getQualifiedName());
+        attr2.setName("name");
+        attr2.setUniqueIdentifier(true);
+        attr2.setUsedAsNameInFaktorIpsUi(true);
+
+        IEnumAttribute attr3 = enum1.newEnumAttribute();
+        attr3.setDatatype(Datatype.STRING.getQualifiedName());
+        attr3.setName("description");
+        attr3.setUniqueIdentifier(false);
+
+        IEnumAttribute resultAttr = enum1.findIsUsedAsNameInFaktorIpsUIAttribute(ipsProject);
+        assertEquals(attr2, resultAttr);
+
+    }
 }

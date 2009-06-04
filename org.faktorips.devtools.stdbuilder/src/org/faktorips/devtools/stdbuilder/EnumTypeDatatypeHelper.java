@@ -56,7 +56,7 @@ public class EnumTypeDatatypeHelper extends AbstractDatatypeHelper {
                                 + "part of the composite but instead are contained in an enum content object.");
             }
 
-            IEnumValue enumValue = enumType.getEnumValue(value);
+            IEnumValue enumValue = enumType.findEnumValue(value, enumTypeBuilder.getIpsProject());
             return enumTypeBuilder.getNewInstanceCodeFragement(enumType, enumValue);
 
         } catch (CoreException e) {
@@ -90,7 +90,7 @@ public class EnumTypeDatatypeHelper extends AbstractDatatypeHelper {
     @Override
     protected JavaCodeFragment valueOfExpression(String expression) {
         try {
-            return enumTypeBuilder.getValueByXXXCodeFragment(enumType.getLiteralNameAttribute(), expression);
+            return enumTypeBuilder.getValueByXXXCodeFragment(enumType.findLiteralNameAttribute(enumTypeBuilder.getIpsProject()), expression);
         } catch (CoreException e) {
             throw new RuntimeException(e);
         }

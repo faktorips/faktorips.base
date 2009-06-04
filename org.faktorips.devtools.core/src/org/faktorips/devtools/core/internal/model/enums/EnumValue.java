@@ -48,7 +48,7 @@ import org.w3c.dom.Element;
 public class EnumValue extends BaseIpsObjectPart implements IEnumValue {
 
     /** Collection containing all enum attribute values that belong to this enum value object. */
-    private IpsObjectPartCollection enumAttributeValues;
+    private IpsObjectPartCollection<IEnumAttributeValue> enumAttributeValues;
 
     /**
      * Creates a new <code>EnumValue</code>.
@@ -59,7 +59,7 @@ public class EnumValue extends BaseIpsObjectPart implements IEnumValue {
     public EnumValue(IEnumValueContainer parent, int id) {
         super(parent, id);
         this.descriptionChangable = false;
-        this.enumAttributeValues = new IpsObjectPartCollection(this, EnumAttributeValue.class,
+        this.enumAttributeValues = new IpsObjectPartCollection<IEnumAttributeValue>(this, EnumAttributeValue.class,
                 IEnumAttributeValue.class, IEnumAttributeValue.XML_TAG);
     }
 

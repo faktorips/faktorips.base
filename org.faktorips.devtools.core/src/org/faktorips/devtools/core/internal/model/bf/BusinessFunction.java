@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
@@ -13,7 +12,6 @@ import org.eclipse.draw2d.geometry.Dimension;
 import org.eclipse.draw2d.geometry.Point;
 import org.eclipse.osgi.util.NLS;
 import org.faktorips.devtools.core.internal.model.ipsobject.BaseIpsObject;
-import org.faktorips.devtools.core.internal.model.ipsobject.IpsObjectPart;
 import org.faktorips.devtools.core.internal.model.ipsobject.IpsObjectPartCollection;
 import org.faktorips.devtools.core.model.IDependency;
 import org.faktorips.devtools.core.model.IpsObjectDependency;
@@ -387,11 +385,9 @@ public class BusinessFunction extends BaseIpsObject implements IBusinessFunction
         return list;
     }
 
-    @SuppressWarnings("unchecked")
     private void validateOnlyOneElementAllowed(MessageList msgList, BFElementType type, String msgCode) {
         List<IBFElement> startElements = new ArrayList<IBFElement>();
-        for (Iterator<IBFElement> it = simpleElements.iterator(); it.hasNext();) {
-            IBFElement element = it.next();
+        for (IBFElement element : simpleElements) {
             if (element.getType().equals(type)) {
                 startElements.add(element);
             }
@@ -577,7 +573,7 @@ public class BusinessFunction extends BaseIpsObject implements IBusinessFunction
         return nodeList;
     }
 
-    private static class BFElementIpsObjectPartCollection extends IpsObjectPartCollection {
+    private static class BFElementIpsObjectPartCollection extends IpsObjectPartCollection<BFElement> {
 
         @SuppressWarnings("unchecked")
         public BFElementIpsObjectPartCollection(BaseIpsObject ipsObject, Class partsClazz, Class publishedInterface,
@@ -586,15 +582,14 @@ public class BusinessFunction extends BaseIpsObject implements IBusinessFunction
         }
 
         public IBFElement newBFElement(final Point location, final BFElementType type) {
-            IpsObjectPartInitializer initializer = new IpsObjectPartInitializer() {
+            IpsObjectPartInitializer<BFElement> initializer = new IpsObjectPartInitializer<BFElement>() {
 
-                public void initialize(IpsObjectPart part) {
-                    BFElement element = (BFElement)part;
-                    element.location = location;
-                    element.type = type;
+                public void initialize(BFElement part) {
+                    part.location = location;
+                    part.type = type;
                 }
             };
-            return (BFElement)newPart(initializer);
+            return newPart(initializer);
         }
     }
 }

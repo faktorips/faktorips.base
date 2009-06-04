@@ -40,7 +40,7 @@ import org.w3c.dom.Element;
  * 
  * @author Jan Ortmann
  */
-public class IpsObjectPartCollection {
+public class IpsObjectPartCollection<T extends IIpsObjectPart> implements Iterable<T> {
 
     private IpsObjectPartContainer parent;
     private String xmlTag;
@@ -48,7 +48,7 @@ public class IpsObjectPartCollection {
     private Class partsPublishedInterface;
     private Constructor constructor;
 
-    private List parts = new ArrayList();
+    private List<T> parts = new ArrayList<T>();
 
     public IpsObjectPartCollection(BaseIpsObject ipsObject, Class partsClazz, Class publishedInterface, String xmlTag) {
         this(partsClazz, publishedInterface, xmlTag);
@@ -106,7 +106,7 @@ public class IpsObjectPartCollection {
         return (IIpsObjectPart)parts.get(index);
     }
 
-    public Iterator iterator() {
+    public Iterator<T> iterator() {
         return parts.iterator();
     }
 
@@ -117,7 +117,7 @@ public class IpsObjectPartCollection {
     /**
      * Returns the underlying list that stores the parts.
      */
-    public List getBackingList() {
+    public List<T> getBackingList() {
         return parts;
     }
 
@@ -134,8 +134,7 @@ public class IpsObjectPartCollection {
         if (name == null) {
             return null;
         }
-        for (Iterator it = parts.iterator(); it.hasNext();) {
-            IIpsObjectPart part = (IIpsObjectPart)it.next();
+        for (IIpsObjectPart part : parts) {
             if (name.equals(part.getName())) {
                 return part;
             }
@@ -149,8 +148,7 @@ public class IpsObjectPartCollection {
      * no part with the given id exists.
      */
     public IIpsObjectPart getPartById(int id) {
-        for (Iterator it = parts.iterator(); it.hasNext();) {
-            IIpsObjectPart part = (IIpsObjectPart)it.next();
+        for (IIpsObjectPart part: parts) {
             if (id == part.getId()) {
                 return part;
             }
@@ -168,8 +166,8 @@ public class IpsObjectPartCollection {
      * 
      * @return the new IpsPart
      */
-    protected IpsObjectPart newPart(IpsObjectPartInitializer initializer) {
-        IpsObjectPart part = newPartInternal(parent.getNextPartId());
+    protected T newPart(IpsObjectPartInitializer<T> initializer) {
+        T part = newPartInternal(parent.getNextPartId());
         initializer.initialize(part);
         parent.partWasAdded(part);
         return part;
@@ -178,20 +176,20 @@ public class IpsObjectPartCollection {
     /**
      * {@inheritDoc}
      */
-    public IpsObjectPart newPart() {
-        IpsObjectPart newPart = newPartInternal(parent.getNextPartId());
+    public T newPart() {
+        T newPart = newPartInternal(parent.getNextPartId());
         parent.partWasAdded(newPart);
         return newPart;
     }
 
-    public IpsObjectPart newPart(Element el, int id) {
+    public T newPart(Element el, int id) {
         if (xmlTag.equals(el.getNodeName())) {
             return newPartInternal(id);
         }
         return null;
     }
 
-    public IpsObjectPart newPart(Class clazz) {
+    public T newPart(Class clazz) {
         if (partsPublishedInterface.isAssignableFrom(clazz)) {
             return newPart();
         }
@@ -202,7 +200,7 @@ public class IpsObjectPartCollection {
      * Returns <code>true</code> if the part was contained in this collection (before this call) and
      * was removed. Returns <code>false</code> otherwise.
      */
-    public boolean readdPart(IIpsObjectPart part) {
+    public boolean readdPart(T part) {
         if (this.partsBaseClass.isAssignableFrom(part.getClass())) {
             parts.add(part);
             return true;
@@ -218,9 +216,9 @@ public class IpsObjectPartCollection {
      * Creates a new part without updating the src file. Subclasses have to instantiate a new object
      * of the concrete subclass of IpsObjectPart.
      */
-    private IpsObjectPart newPartInternal(int id) {
+    private T newPartInternal(int id) {
         try {
-            IpsObjectPart newPart = (IpsObjectPart)constructor.newInstance(new Object[] { parent, new Integer(id) });
+            T newPart = (T)constructor.newInstance(new Object[] { parent, new Integer(id) });
             parts.add(newPart);
             return newPart;
         } catch (Exception e) {
@@ -257,11 +255,11 @@ public class IpsObjectPartCollection {
      * 
      * @author Peter Erzberger
      */
-    public interface IpsObjectPartInitializer {
+    public interface IpsObjectPartInitializer<T extends IIpsObjectPart> {
 
         /**
          * Initializes the provided IpsObjectPart.
          */
-        public void initialize(IpsObjectPart part);
+        public void initialize(T part);
     }
 }

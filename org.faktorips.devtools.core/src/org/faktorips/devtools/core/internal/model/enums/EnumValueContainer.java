@@ -23,6 +23,7 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import org.faktorips.datatype.Datatype;
 import org.faktorips.devtools.core.internal.model.ipsobject.BaseIpsObject;
 import org.faktorips.devtools.core.internal.model.ipsobject.IpsObjectPartCollection;
+import org.faktorips.devtools.core.model.enums.IEnumAttribute;
 import org.faktorips.devtools.core.model.enums.IEnumAttributeValue;
 import org.faktorips.devtools.core.model.enums.IEnumType;
 import org.faktorips.devtools.core.model.enums.IEnumValue;
@@ -45,7 +46,7 @@ import org.faktorips.util.ArgumentCheck;
 public abstract class EnumValueContainer extends BaseIpsObject implements IEnumValueContainer {
 
     /** Collection containing the enum values. */
-    private IpsObjectPartCollection enumValues;
+    private IpsObjectPartCollection<IEnumValue> enumValues;
 
     /**
      * Creates a new <code>EnumValueContainer</code>.
@@ -55,7 +56,7 @@ public abstract class EnumValueContainer extends BaseIpsObject implements IEnumV
     protected EnumValueContainer(IIpsSrcFile file) {
         super(file);
 
-        this.enumValues = new IpsObjectPartCollection(this, EnumValue.class, IEnumValue.class, IEnumValue.XML_TAG);
+        this.enumValues = new IpsObjectPartCollection<IEnumValue>(this, EnumValue.class, IEnumValue.class, IEnumValue.XML_TAG);
     }
 
     /**
@@ -69,6 +70,27 @@ public abstract class EnumValueContainer extends BaseIpsObject implements IEnumV
         }
 
         return valuesList;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public IEnumValue findEnumValue(String literalNameAttributeValue, IIpsProject ipsProject) throws CoreException {
+        if (literalNameAttributeValue == null) {
+            return null;
+        }
+        for (IEnumValue enumValue : getEnumValues()) {
+            IEnumType enumType = findEnumType(ipsProject);
+            IEnumAttribute literalNameAttribute = enumType.findLiteralNameAttribute(ipsProject);
+            IEnumAttributeValue value = enumValue.findEnumAttributeValue(ipsProject, literalNameAttribute);
+            if (value == null) {
+                continue;
+            }
+            if (literalNameAttributeValue.equals(value.getValue())) {
+                return enumValue;
+            }
+        }
+        return null;
     }
 
     /**
@@ -98,7 +120,6 @@ public abstract class EnumValueContainer extends BaseIpsObject implements IEnumV
     /**
      * {@inheritDoc}
      */
-    @SuppressWarnings("unchecked")
     public int moveEnumValue(IEnumValue enumValue, boolean up) throws CoreException {
         ArgumentCheck.notNull(enumValue);
 

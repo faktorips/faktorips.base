@@ -16,7 +16,6 @@ package org.faktorips.devtools.core.internal.model.productcmpttype;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
-import java.util.Comparator;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
@@ -33,7 +32,6 @@ import org.faktorips.devtools.core.internal.model.ipsobject.IpsObjectPartCollect
 import org.faktorips.devtools.core.internal.model.type.DuplicatePropertyNameValidator;
 import org.faktorips.devtools.core.internal.model.type.Type;
 import org.faktorips.devtools.core.model.IDependency;
-import org.faktorips.devtools.core.model.IIpsElement;
 import org.faktorips.devtools.core.model.IpsObjectDependency;
 import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
@@ -366,11 +364,10 @@ public class ProductCmptType extends Type implements IProductCmptType {
      */
     public IProductCmptTypeMethod[] getNonFormulaProductCmptTypeMethods() {
 
-        ArrayList result = new ArrayList();
-        for (Iterator it = methods.iterator(); it.hasNext();) {
-            IProductCmptTypeMethod method = (IProductCmptTypeMethod)it.next();
-            if(!method.isFormulaSignatureDefinition()){
-                result.add(method);
+        ArrayList<IProductCmptTypeMethod> result = new ArrayList<IProductCmptTypeMethod>();
+        for (IMethod method : methods) {
+            if(!((IProductCmptTypeMethod)method).isFormulaSignatureDefinition()){
+                result.add((IProductCmptTypeMethod)method);
             }
         }
         return (IProductCmptTypeMethod[])result.toArray(new IProductCmptTypeMethod[result.size()]);
@@ -486,7 +483,7 @@ public class ProductCmptType extends Type implements IProductCmptType {
 
     //TODO pk: write test case
     private void validateIfAnOverrideOfOverloadedFormulaExists(MessageList msgList, IIpsProject ipsProject) throws CoreException{
-        ArrayList overloadedSupertypeFormulaSignatures = new ArrayList();
+        ArrayList<IProductCmptTypeMethod> overloadedSupertypeFormulaSignatures = new ArrayList<IProductCmptTypeMethod>();
         IProductCmptTypeMethod[] formulaSignatures = getFormulaSignatures();
         for (int i = 0; i < formulaSignatures.length; i++) {
             if(formulaSignatures[i].isOverloadsFormula()){
@@ -498,8 +495,7 @@ public class ProductCmptType extends Type implements IProductCmptType {
         }
         
         IProductCmptTypeMethod[] nonFormulas = getNonFormulaProductCmptTypeMethods();
-        for (Iterator it = overloadedSupertypeFormulaSignatures.iterator(); it.hasNext();) {
-            IProductCmptTypeMethod overloadedMethod = (IProductCmptTypeMethod)it.next();
+        for (IProductCmptTypeMethod overloadedMethod : overloadedSupertypeFormulaSignatures) {
             for (int i = 0; i < nonFormulas.length; i++) {
                 if(nonFormulas[i].isSameSignature(overloadedMethod)){
                     String text = NLS.bind(Messages.ProductCmptType_msgOverloadedFormulaMethodCannotBeOverridden, overloadedMethod.getFormulaName());

@@ -22,6 +22,7 @@ import org.faktorips.datatype.PrimitiveBooleanDatatype;
 import org.faktorips.datatype.classtypes.BooleanDatatype;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.ui.controller.fields.EnumDatatypeField;
+import org.faktorips.devtools.core.ui.controller.fields.EnumTypeDatatypeField;
 
 /**
  * 
@@ -53,6 +54,8 @@ public class ComboCellEditor extends TableCellEditor {
         if (data instanceof EnumDatatypeField){
             // map the id by using the stored EnumDatatypeField
             return ((EnumDatatypeField)data).getValue();
+        } else if( data instanceof EnumTypeDatatypeField){
+            return ((EnumTypeDatatypeField)data).getValue();
         } else if (data instanceof BooleanDatatype || data instanceof PrimitiveBooleanDatatype) {
             if (comboControl.getText().equals(IpsPlugin.getDefault().getIpsPreferences().getDatatypeFormatter().getBooleanTrueDisplay())){
                 return Boolean.TRUE.toString();
@@ -84,7 +87,10 @@ public class ComboCellEditor extends TableCellEditor {
             if (data instanceof EnumDatatypeField){
                 // map the value by using the stored EnumDatatypeField
                 ((EnumDatatypeField)data).setValue(value);
-            }  else if (data instanceof BooleanDatatype  || data instanceof PrimitiveBooleanDatatype) {
+            } else if(data instanceof EnumTypeDatatypeField){
+                ((EnumTypeDatatypeField)data).setValue(value);
+            }
+            else if (data instanceof BooleanDatatype  || data instanceof PrimitiveBooleanDatatype) {
                 if (Boolean.TRUE.toString().equals(value)){
                     comboControl.select(getIndexForValue(IpsPlugin.getDefault().getIpsPreferences().getDatatypeFormatter().getBooleanTrueDisplay()));  
                 } else if (value == null) {

@@ -18,7 +18,6 @@ import java.util.NoSuchElementException;
 
 import org.eclipse.core.runtime.CoreException;
 import org.faktorips.datatype.EnumDatatype;
-import org.faktorips.devtools.core.internal.model.enums.EnumType;
 import org.faktorips.devtools.core.model.IIpsMetaClass;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 
@@ -268,8 +267,12 @@ public interface IEnumType extends IEnumValueContainer, EnumDatatype, IIpsMetaCl
      * 
      * @throws CoreException If an error occurs while searching the supertype hierarchy.
      */
-    public IEnumAttribute getLiteralNameAttribute() throws CoreException;
+    public IEnumAttribute findLiteralNameAttribute(IIpsProject ipsProject) throws CoreException;
 
+    public IEnumAttribute findIsUsedAsIdInFaktorIpsUIAttribute(IIpsProject ipsProject) throws CoreException;
+    
+    public IEnumAttribute findIsUsedAsNameInFaktorIpsUIAttribute(IIpsProject ipsProject) throws CoreException;
+    
     /**
      * Returns the index of the given enum attribute in the containing list.
      * 
@@ -330,17 +333,6 @@ public interface IEnumType extends IEnumValueContainer, EnumDatatype, IIpsMetaCl
      */
     public IEnumAttribute findEnumAttributeIncludeSupertypeOriginals(IIpsProject ipsProject, String name)
             throws CoreException;
-
-    /**
-     * Note: This method only applies to {@link IEnumType} instances that contain their own
-     * {@link IEnumValue} instances. It will always return <code>null</code> for {@link EnumType}s
-     * that delegate their contents to {@link IEnumContent}s. </p>Returns the {@link IEnumValue} for
-     * the provided literal Name attribute value. If none is found null<code>null</code> will be
-     * returned.
-     * 
-     * @throws CoreException if an exception occurs will processing
-     */
-    public IEnumValue getEnumValue(String literalNameAttributeValue) throws CoreException;
 
     /**
      * <p>

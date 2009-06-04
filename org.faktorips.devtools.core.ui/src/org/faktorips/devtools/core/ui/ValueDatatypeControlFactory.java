@@ -37,7 +37,7 @@ public abstract class ValueDatatypeControlFactory {
      * Returns <code>true</code> if this factory can create controls for the given datatype,
      * otherwise <code>false</code>.
      * 
-     * @param datatype Datatype controls are needed for - migth be <code>null</code>.
+     * @param datatype Datatype controls are needed for - might be <code>null</code>.
      */
     public abstract boolean isFactoryFor(ValueDatatype datatype);
 

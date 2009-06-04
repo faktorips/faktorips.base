@@ -54,9 +54,9 @@ public abstract class Type extends BaseIpsObject implements IType {
 
     private boolean abstractFlag;
 
-    protected IpsObjectPartCollection methods;
-    protected IpsObjectPartCollection associations;
-    protected IpsObjectPartCollection attributes;
+    protected IpsObjectPartCollection<? extends IMethod> methods;
+    protected IpsObjectPartCollection<? extends IAssociation> associations;
+    protected IpsObjectPartCollection<? extends IAttribute> attributes;
 
     public Type(IIpsSrcFile file) {
         super(file);
@@ -68,27 +68,27 @@ public abstract class Type extends BaseIpsObject implements IType {
     /**
      * Factory method to create the collection holding the methods.
      */
-    protected abstract IpsObjectPartCollection createCollectionForMethods();
+    protected abstract IpsObjectPartCollection<? extends IMethod> createCollectionForMethods();
 
     /**
      * Factory method to create the collection holding the associations.
      */
-    protected abstract IpsObjectPartCollection createCollectionForAssociations();
+    protected abstract IpsObjectPartCollection<? extends IAssociation> createCollectionForAssociations();
 
     /**
      * Factory method to create the collection holding the attributes.
      */
-    protected abstract IpsObjectPartCollection createCollectionForAttributes();
+    protected abstract IpsObjectPartCollection<? extends IAttribute> createCollectionForAttributes();
 
-    public Iterator getIteratorForMethods() {
+    public Iterator<? extends IMethod> getIteratorForMethods() {
         return methods.iterator();
     }
 
-    public Iterator getIteratorForAssociations() {
+    public Iterator<? extends IAssociation> getIteratorForAssociations() {
         return associations.iterator();
     }
 
-    public Iterator getIteratorForAttributes() {
+    public Iterator<? extends IAttribute> getIteratorForAttributes() {
         return attributes.iterator();
     }
 

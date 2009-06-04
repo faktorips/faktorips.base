@@ -39,6 +39,16 @@ public interface IEnumValueContainer extends IIpsObject {
     public List<IEnumValue> getEnumValues();
 
     /**
+     * Returns the {@link IEnumValue} for the provided value of the literal name attribute. This
+     * method can only be applied to {@link IEnumValueContainer} that contain there own values.
+     * Especially this doesn't hold true for {@link IEnumType}s which delegate the content to a
+     * {@link IEnumContent}. For those cases <code>null</code> will be returned by this method.
+     * 
+     * @throws CoreException if an exception occurs will processing
+     */
+    public IEnumValue findEnumValue(String literalNameAttributeValue, IIpsProject ipsProject) throws CoreException;
+
+    /**
      * Creates and returns a new enum value that has as many enum attribute values as the
      * corresponding enum type has attributes.
      * <p>

@@ -67,7 +67,7 @@ public class EnumType extends EnumValueContainer implements IEnumType {
     private String enumContentPackageFragment;
 
     /** Collection containing all enum attributes for this enum type. */
-    private IpsObjectPartCollection enumAttributes;
+    private IpsObjectPartCollection<IEnumAttribute> enumAttributes;
 
     /**
      * Flag indicating whether this enum type is abstract in means of the object oriented abstract
@@ -87,7 +87,7 @@ public class EnumType extends EnumValueContainer implements IEnumType {
         this.containingValues = false;
         this.isAbstract = false;
         this.enumContentPackageFragment = "";
-        this.enumAttributes = new IpsObjectPartCollection(this, EnumAttribute.class, IEnumAttribute.class,
+        this.enumAttributes = new IpsObjectPartCollection<IEnumAttribute>(this, EnumAttribute.class, IEnumAttribute.class,
                 IEnumAttribute.XML_TAG);
     }
 
@@ -327,7 +327,6 @@ public class EnumType extends EnumValueContainer implements IEnumType {
     /**
      * {@inheritDoc}
      */
-    @SuppressWarnings("unchecked")
     public int getIndexOfEnumAttribute(IEnumAttribute enumAttribute) {
         ArgumentCheck.notNull(enumAttribute);
 
@@ -664,12 +663,38 @@ public class EnumType extends EnumValueContainer implements IEnumType {
         return null;
     }
 
+    public IEnumAttribute findIsUsedAsIdInFaktorIpsUIAttribute(IIpsProject ipsProject) throws CoreException{
+        for (IEnumAttribute currentEnumAttribute : getEnumAttributesIncludeSupertypeCopies()) {
+            Boolean isUsedAsIdInFaktorIpsUi = currentEnumAttribute.findIsUsedAsIdInFaktorIpsUi(ipsProject);
+            if (isUsedAsIdInFaktorIpsUi == null) {
+                continue;
+            }
+            if (isUsedAsIdInFaktorIpsUi) {
+                return currentEnumAttribute;
+            }
+        }
+        return null;
+    }
+    
+    public IEnumAttribute findIsUsedAsNameInFaktorIpsUIAttribute(IIpsProject ipsProject) throws CoreException{
+        for (IEnumAttribute currentEnumAttribute : getEnumAttributesIncludeSupertypeCopies()) {
+            Boolean isUsedAsNameInFaktorIpsUi = currentEnumAttribute.findIsUsedAsNameInFaktorIpsUi(ipsProject);
+            if (isUsedAsNameInFaktorIpsUi == null) {
+                continue;
+            }
+            if (isUsedAsNameInFaktorIpsUi) {
+                return currentEnumAttribute;
+            }
+        }
+        return null;
+    }
+
     /**
      * {@inheritDoc}
      */
-    public IEnumAttribute getLiteralNameAttribute() throws CoreException {
+    public IEnumAttribute findLiteralNameAttribute(IIpsProject ipsProject) throws CoreException {
         for (IEnumAttribute currentEnumAttribute : getEnumAttributesIncludeSupertypeCopies()) {
-            Boolean literalName = currentEnumAttribute.findIsLiteralName(getIpsProject());
+            Boolean literalName = currentEnumAttribute.findIsLiteralName(ipsProject);
             if (literalName == null) {
                 continue;
             }
@@ -898,7 +923,7 @@ public class EnumType extends EnumValueContainer implements IEnumType {
 
             List<String> valueIds = new ArrayList<String>(getEnumValuesCount());
             for (IEnumValue enumValue : getEnumValues()) {
-                IEnumAttribute literalNameEnumAttribute = getLiteralNameAttribute();
+                IEnumAttribute literalNameEnumAttribute = findLiteralNameAttribute(getIpsProject());
                 if (literalNameEnumAttribute == null) {
                     return null;
                 }
@@ -917,25 +942,6 @@ public class EnumType extends EnumValueContainer implements IEnumType {
     }
 
     /**
-     * {@inheritDoc}
-     */
-    public IEnumValue getEnumValue(String literalNameAttributeValue) throws CoreException {
-        if (literalNameAttributeValue == null) {
-            return null;
-        }
-        for (IEnumValue enumValue : getEnumValues()) {
-            IEnumAttributeValue value = enumValue.findEnumAttributeValue(getIpsProject(), getLiteralNameAttribute());
-            if (value == null) {
-                continue;
-            }
-            if (literalNameAttributeValue.equals(value.getValue())) {
-                return enumValue;
-            }
-        }
-        return null;
-    }
-
-    /**
      * In the context of an enum type the id is the value of the literal name attribute. This method
      * checks if the provided id is one of the enum attribute values. If so the id is returned
      * otherwise <code>null</code> is returned.
@@ -949,7 +955,7 @@ public class EnumType extends EnumValueContainer implements IEnumType {
 
             for (IEnumValue enumValue : getEnumValues()) {
                 IEnumAttributeValue value = enumValue
-                        .findEnumAttributeValue(getIpsProject(), getLiteralNameAttribute());
+                        .findEnumAttributeValue(getIpsProject(), findLiteralNameAttribute(getIpsProject()));
                 if (value == null) {
                     continue;
                 }

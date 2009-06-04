@@ -29,7 +29,7 @@ import org.faktorips.util.ArgumentCheck;
  * utilized within the implementation. The combo's items are filled not directly with the ids of the
  * enum values but the IpsPreferences#formatValue(..) method is used to get the text to display. But
  * the getValue() and setValue() methods still expect the ids that identify the values. This
- * implementation doesn't adjust to changes of the values it represents. Therefor the reinit()
+ * implementation doesn't adjust to changes of the values it represents. Therefore the reinit()
  * method has to be explicitly called.
  * 
  * @see IpsPreferences#formatValue(EnumDatatype, String)
