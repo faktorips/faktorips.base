@@ -581,8 +581,11 @@
         <echo message="finished. Product build: ${productProject}"/>
         <echo message="   1. ${faktoripsProductLinuxZipPath}"/>		
         <echo message="   2. ${faktoripsProductWinZipPath}"/>		
-	</target>	
+	</target>
 	<target name="-publish.release.all" unless="is.product.build">
+		<antcall inheritall="true" target="-publish.release.all.internal"/>
+	</target>
+	<target name="-publish.release.all.internal" unless="isSkipPublish">
         <!--copy zipped features into the faktorips download directory -->
         <!-- faktorips -->
         <mkdir dir="${downloadDir}" />
