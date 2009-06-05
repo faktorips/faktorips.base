@@ -20,6 +20,8 @@
 
    <windowImages i16="/org.faktorips.devtools.core/icons/FaktorIpsIcon16.gif" i32="/org.faktorips.devtools.core/icons/FaktorIpsIcon32.gif"/>
 
+   <splash
+      location="org.faktorips.devtools.core" />
    <launcher name="faktorips">
       <linux icon="/org.faktorips.devtools.core/icons/FaktorIpsIcon.xpm"/>
       <solaris/>
@@ -37,15 +39,12 @@
    </plugins>
 
    <features>
+      <feature id="org.faktorips.feature" version="0.0.0"/>
       <feature id="org.eclipse.platform" version="0.0.0"/>
       <feature id="org.eclipse.jdt" version="0.0.0"/>
       <feature id="org.eclipse.rcp" version="0.0.0"/>
       <feature id="org.eclipse.cvs" version="0.0.0"/>
       <feature id="org.eclipse.gef" version="0.0.0"/>
       <feature id="org.eclipse.emf" version="0.0.0"/>
-      <feature id="org.eclipse.babel.nls_eclipse_de" version="0.0.0"/>
-      <feature id="org.faktorips.feature" version="0.0.0"/>
-      <feature id="org.faktorips.feature.nls1" version="0.0.0"/>
    </features>
-
 </product>
