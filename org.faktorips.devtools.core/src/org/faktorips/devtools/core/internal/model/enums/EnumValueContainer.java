@@ -18,7 +18,6 @@ import java.util.List;
 import java.util.NoSuchElementException;
 
 import org.eclipse.core.runtime.CoreException;
-import org.faktorips.datatype.Datatype;
 import org.faktorips.devtools.core.internal.model.ipsobject.BaseIpsObject;
 import org.faktorips.devtools.core.internal.model.ipsobject.IpsObjectPartCollection;
 import org.faktorips.devtools.core.model.enums.IEnumAttribute;
@@ -109,19 +108,6 @@ public abstract class EnumValueContainer extends BaseIpsObject implements IEnumV
         // Add as many enum attribute values as there are enum attributes in the enum type
         for (int i = 0; i < enumType.getEnumAttributesCount(true); i++) {
             newEnumValue.newEnumAttributeValue();
-        }
-
-        /*
-         * Set the value of each enum attribute value to null if the datatype of the referenced enum
-         * attribute is not String
-         */
-        // TODO aw: initialization
-        for (IEnumAttributeValue currentEnumAttributeValue : newEnumValue.getEnumAttributeValues()) {
-            IIpsProject ipsProject = currentEnumAttributeValue.getIpsProject();
-            if (!(currentEnumAttributeValue.findEnumAttribute(ipsProject).getDatatype().equals(Datatype.STRING
-                    .getQualifiedName()))) {
-                currentEnumAttributeValue.setValue(null);
-            }
         }
 
         return newEnumValue;

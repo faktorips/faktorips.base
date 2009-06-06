@@ -53,7 +53,6 @@ import org.eclipse.swt.widgets.ToolBar;
 import org.eclipse.ui.forms.widgets.Section;
 import org.faktorips.datatype.ValueDatatype;
 import org.faktorips.devtools.core.IpsPlugin;
-import org.faktorips.devtools.core.internal.model.enums.EnumAttributeValue;
 import org.faktorips.devtools.core.model.ContentChangeEvent;
 import org.faktorips.devtools.core.model.ContentsChangeListener;
 import org.faktorips.devtools.core.model.enums.IEnumAttribute;
@@ -598,12 +597,6 @@ public class EnumValuesSection extends IpsSection implements ContentsChangeListe
         switch (event.getEventType()) {
 
             case ContentChangeEvent.TYPE_PARTS_CHANGED_POSITIONS:
-                IIpsObjectPart[] movedParts = event.getMovedParts();
-                // Do not refresh the table if enum attribute values moved.
-                if (movedParts[0] instanceof EnumAttributeValue) {
-               //     break;
-                }
-
             case ContentChangeEvent.TYPE_PART_ADDED:
             case ContentChangeEvent.TYPE_WHOLE_CONTENT_CHANGED:
                 try {
