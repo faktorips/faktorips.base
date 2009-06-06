@@ -160,7 +160,12 @@ public class EnumAttributeValue extends AtomicIpsObjectPart implements IEnumAttr
             return null;
         }
 
-        return enumType.getEnumAttributesIncludeSupertypeCopies().get(index);
+        List<IEnumAttribute> enumAttributes = enumType.getEnumAttributesIncludeSupertypeCopies();
+        if (enumAttributes.size() < index + 1) {
+            return null;
+        }
+
+        return enumAttributes.get(index);
     }
 
     /**

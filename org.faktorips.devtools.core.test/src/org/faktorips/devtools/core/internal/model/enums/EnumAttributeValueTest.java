@@ -59,6 +59,9 @@ public class EnumAttributeValueTest extends AbstractIpsEnumPluginTest {
 
         genderEnumType.deleteEnumAttributeWithValues(genderEnumAttributeId);
         assertNull(maleIdAttributeValue.findEnumAttribute(ipsProject));
+
+        genderEnumType.deleteEnumAttributeWithValues(genderEnumAttributeName);
+        assertNull(maleNameAttributeValue.findEnumAttribute(ipsProject));
     }
 
     public void testGetSetValue() {
@@ -97,12 +100,12 @@ public class EnumAttributeValueTest extends AbstractIpsEnumPluginTest {
         enumAttr2.setLiteralName(true);
         enumAttr2.setName("b");
         enumAttr2.setUniqueIdentifier(true);
-        
+
         IEnumValue enumValue = enumType.newEnumValue();
         List<IEnumAttributeValue> enumAttrList = enumValue.getEnumAttributeValues();
         enumAttrList.get(0).setValue(null);
         enumAttrList.get(1).setValue(null);
-        
+
         Element enumTypeEl = enumType.toXml(createXmlDocument(IEnumContent.XML_TAG));
         IEnumType enumType2 = newEnumType(ipsProject, "AnEnum2");
         enumType2.initFromXml(enumTypeEl);
@@ -119,7 +122,6 @@ public class EnumAttributeValueTest extends AbstractIpsEnumPluginTest {
         assertEquals("hallo", enumType3.getEnumValues().get(0).getEnumAttributeValues().get(0).getValue());
         assertEquals("1", enumType3.getEnumValues().get(0).getEnumAttributeValues().get(1).getValue());
 
-        
     }
 
     public void testValidateParsable() throws CoreException {
