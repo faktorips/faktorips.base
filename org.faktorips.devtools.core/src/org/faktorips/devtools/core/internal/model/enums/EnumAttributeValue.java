@@ -62,6 +62,7 @@ public class EnumAttributeValue extends AtomicIpsObjectPart implements IEnumAttr
         super(parent, id);
 
         descriptionChangable = false;
+        value = null;
 
         // Initialize the value with the proper default value
         IIpsProject ipsProject = getIpsProject();
