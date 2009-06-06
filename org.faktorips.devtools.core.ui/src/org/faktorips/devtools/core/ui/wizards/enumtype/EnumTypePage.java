@@ -22,7 +22,9 @@ import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Text;
+import org.faktorips.datatype.Datatype;
 import org.faktorips.devtools.core.model.enums.EnumTypeValidations;
+import org.faktorips.devtools.core.model.enums.IEnumAttribute;
 import org.faktorips.devtools.core.model.enums.IEnumType;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObject;
 import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
@@ -62,6 +64,18 @@ public class EnumTypePage extends IpsObjectPage {
     /** The checkbox field to mark the new enum type that its values are defined in the model. */
     private CheckboxField containingValuesField;
 
+    /** The checkbox field to check if an id attribute should be created by the wizard. */
+    private CheckboxField createIdAttributeField;
+
+    /** The checkbox field to check if a name attribute should be created by the wizard. */
+    private CheckboxField createNameAttributeField;
+
+    /** This text field is used to specify the name of the id attribute to be created. */
+    private Text idAttributeNameField;
+
+    /** This text field is used to specify the name of the name attribute to be created. */
+    private Text nameAttributeNameField;
+
     /**
      * The text field to specify the package for the enum content (only enabled if the values are
      * not part of the model and the enum type is not abstract).
@@ -96,9 +110,6 @@ public class EnumTypePage extends IpsObjectPage {
         isAbstractField = new CheckboxField(toolkit.createCheckbox(nameComposite, Messages.Fields_Abstract));
         isAbstractField.addChangeListener(this);
         isAbstractField.addChangeListener(new ValueChangeListener() {
-            /**
-             * {@inheritDoc}
-             */
             public void valueChanged(FieldValueChangedEvent e) {
                 enableEnumContentControls();
             }
@@ -111,13 +122,57 @@ public class EnumTypePage extends IpsObjectPage {
         containingValuesField.setValue(true);
         containingValuesField.addChangeListener(this);
         containingValuesField.addChangeListener(new ValueChangeListener() {
-            /**
-             * {@inheritDoc}
-             */
             public void valueChanged(FieldValueChangedEvent e) {
                 enableEnumContentControls();
             }
         });
+
+        createIdAndNameGenerationFields(nameComposite, toolkit);
+    }
+
+    /**
+     * Creates the fields that enable the user to specify whether he wants to create an id attribute
+     * and a name attribute.
+     */
+    private void createIdAndNameGenerationFields(Composite nameComposite, UIToolkit uiToolkit) {
+        uiToolkit.createLabel(nameComposite, ""); //$NON-NLS-1$
+        Composite createFieldsContainer = uiToolkit.createGridComposite(nameComposite, 2, false, false);
+
+        // Create id attribute
+        createIdAttributeField = new CheckboxField(uiToolkit.createCheckbox(createFieldsContainer,
+                "ID-Attribut erzeugen:"));
+        createIdAttributeField.setValue(true);
+        idAttributeNameField = uiToolkit.createText(createFieldsContainer);
+        idAttributeNameField.setText("id");
+        createIdAttributeField.addChangeListener(new ValueChangeListener() {
+            public void valueChanged(FieldValueChangedEvent e) {
+                idAttributeNameField.setEnabled(createIdAttributeField.getCheckbox().isChecked());
+            }
+        });
+
+        // Create name attribute
+        createNameAttributeField = new CheckboxField(uiToolkit.createCheckbox(createFieldsContainer,
+                "Name-Attribut erzeugen:"));
+        createNameAttributeField.setValue(true);
+        nameAttributeNameField = uiToolkit.createText(createFieldsContainer);
+        nameAttributeNameField.setText("name");
+        createNameAttributeField.addChangeListener(new ValueChangeListener() {
+            public void valueChanged(FieldValueChangedEvent e) {
+                nameAttributeNameField.setEnabled(createNameAttributeField.getCheckbox().isChecked());
+            }
+        });
+
+        // Disable id and name generation fields if a supertype is specified
+        supertypeField.addChangeListener(new ValueChangeListener() {
+            public void valueChanged(FieldValueChangedEvent e) {
+                boolean enabled = supertypeField.getText().equals("");
+                createIdAttributeField.getCheckbox().setEnabled(enabled);
+                createNameAttributeField.getCheckbox().setEnabled(enabled);
+                idAttributeNameField.setEnabled(enabled);
+                nameAttributeNameField.setEnabled(enabled);
+            }
+        });
+
     }
 
     /**
@@ -193,6 +248,27 @@ public class EnumTypePage extends IpsObjectPage {
 
         // Inherit enum attributes from supertype hierarchy
         newEnumType.inheritEnumAttributes(newEnumType.findInheritEnumAttributeCandidates(newEnumType.getIpsProject()));
+
+        /*
+         * Create id attribute and name attribute if checked and possible (no supertype must be
+         * specified)
+         */
+        if (supertypeField.getText().equals("")) {
+            if (createIdAttributeField.getCheckbox().isChecked()) {
+                IEnumAttribute idAttribute = newEnumType.newEnumAttribute();
+                idAttribute.setName(idAttributeNameField.getText());
+                idAttribute.setLiteralName(true);
+                idAttribute.setUniqueIdentifier(true);
+                idAttribute.setDatatype(Datatype.STRING.getName());
+                idAttribute.setUsedAsIdInFaktorIpsUi(true);
+            }
+            if (createNameAttributeField.getCheckbox().isChecked()) {
+                IEnumAttribute nameAttribute = newEnumType.newEnumAttribute();
+                nameAttribute.setName(nameAttributeNameField.getText());
+                nameAttribute.setDatatype(Datatype.STRING.getName());
+                nameAttribute.setUsedAsNameInFaktorIpsUi(true);
+            }
+        }
 
         modifiedIpsObjects.add(newEnumType);
         newEnumType.getIpsSrcFile().markAsDirty();
