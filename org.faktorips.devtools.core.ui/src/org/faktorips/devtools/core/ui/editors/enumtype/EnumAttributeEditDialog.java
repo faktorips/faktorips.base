@@ -18,6 +18,7 @@ import java.util.List;
 
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Group;
@@ -153,27 +154,28 @@ public class EnumAttributeEditDialog extends IpsPartEditDialog2 {
         datatypeControl.setOnlyValueDatatypesAllowed(true);
         filterEnumTypeFromDatatypes();
 
+        Composite marginComposite = uiToolkit.createGridComposite(workArea.getParent(), 2, true, false);
+        ((GridLayout)marginComposite.getLayout()).marginTop = 14;
+
         // Unique identifier
-        uiToolkit.createFormLabel(workArea, Messages.EnumAttributeEditDialog_labelUniqueIdentifier);
-        uniqueIdentifierCheckbox = uiToolkit.createCheckbox(workArea);
+        uiToolkit.createFormLabel(marginComposite, Messages.EnumAttributeEditDialog_labelUniqueIdentifier);
+        uniqueIdentifierCheckbox = uiToolkit.createCheckbox(marginComposite);
 
         // Literal name
-        uiToolkit.createFormLabel(workArea, Messages.EnumAttributeEditDialog_labelUseAsLiteralName);
-        literalNameCheckbox = uiToolkit.createCheckbox(workArea);
+        uiToolkit.createFormLabel(marginComposite, Messages.EnumAttributeEditDialog_labelUseAsLiteralName);
+        literalNameCheckbox = uiToolkit.createCheckbox(marginComposite);
 
         // Inherited
-        uiToolkit.createFormLabel(workArea, Messages.EnumAttributeEditDialog_labelIsInherited);
-        Checkbox inheritedCheckbox = uiToolkit.createCheckbox(workArea);
+        uiToolkit.createFormLabel(marginComposite, Messages.EnumAttributeEditDialog_labelIsInherited);
+        Checkbox inheritedCheckbox = uiToolkit.createCheckbox(marginComposite);
         bindingContext.bindContent(inheritedCheckbox, enumAttribute, IEnumAttribute.PROPERTY_INHERITED);
     }
 
     /** Creates the Faktor-IPS UI group. */
     private void createFaktorIpsUiGroup() {
-        // Fake empty space
-        uiToolkit.createLabel(workArea.getParent(), "");
-        uiToolkit.createLabel(workArea.getParent(), "");
-
-        Group uiGroup = uiToolkit.createGridGroup(workArea.getParent(), "Faktor-IPS UI", 2, false);
+        Composite marginComposite = uiToolkit.createGridComposite(workArea.getParent(), 1, false, false);
+        ((GridLayout)marginComposite.getLayout()).marginTop = 14;
+        Group uiGroup = uiToolkit.createGridGroup(marginComposite, "Faktor-IPS UI", 2, false);
 
         // Used as ID in Faktor-IPS UI
         uiToolkit.createFormLabel(uiGroup, Messages.EnumAttributeEditDialog_labelUsedAsIdInFaktorIpsUi);
