@@ -25,10 +25,18 @@ import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
  */
 public abstract class EnumTypeHierachyVisitor extends HierarchyVisitor<IEnumType> {
 
+    /**
+     * Creates a new <code>EnumTypeHierachyVisitor</code>.
+     * 
+     * @param ipsProject The ips project which ips object path is used to search for enum types.
+     */
     public EnumTypeHierachyVisitor(IIpsProject ipsProject) {
         super(ipsProject);
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     protected IEnumType findSupertype(IEnumType currentType, IIpsProject ipsProject) throws CoreException {
         return currentType.findSuperEnumType(ipsProject);

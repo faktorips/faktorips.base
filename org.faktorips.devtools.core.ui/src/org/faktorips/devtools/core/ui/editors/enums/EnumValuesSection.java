@@ -53,6 +53,7 @@ import org.eclipse.swt.widgets.ToolBar;
 import org.eclipse.ui.forms.widgets.Section;
 import org.faktorips.datatype.ValueDatatype;
 import org.faktorips.devtools.core.IpsPlugin;
+import org.faktorips.devtools.core.internal.model.enums.EnumAttributeValue;
 import org.faktorips.devtools.core.model.ContentChangeEvent;
 import org.faktorips.devtools.core.model.ContentsChangeListener;
 import org.faktorips.devtools.core.model.enums.IEnumAttribute;
@@ -471,7 +472,10 @@ public class EnumValuesSection extends IpsSection implements ContentsChangeListe
             ValueDatatype datatype = enumValueContainer.getIpsProject().findValueDatatype(datatypeQualifiedName);
             if (datatype instanceof IEnumType) {
                 Combo combo = getToolkit().createCombo(enumValuesTableViewer.getTable());
-                //TODO for enum types without content the content must be found here and provided to the field
+                /*
+                 * TODO for enum types without content the content must be found here and provided
+                 * to the field
+                 */
                 EnumTypeDatatypeField field = new EnumTypeDatatypeField(combo, (IEnumType)datatype, null);
                 combo.setData(field);
                 cellEditor = new ComboCellEditor(enumValuesTableViewer, i, combo);
@@ -593,6 +597,14 @@ public class EnumValuesSection extends IpsSection implements ContentsChangeListe
 
         switch (event.getEventType()) {
 
+            case ContentChangeEvent.TYPE_PARTS_CHANGED_POSITIONS:
+                IIpsObjectPart[] movedParts = event.getMovedParts();
+                // Do not refresh the table if enum attribute values moved.
+                if (movedParts[0] instanceof EnumAttributeValue) {
+               //     break;
+                }
+
+            case ContentChangeEvent.TYPE_PART_ADDED:
             case ContentChangeEvent.TYPE_WHOLE_CONTENT_CHANGED:
                 try {
                     IIpsObject changedIpsObject = event.getIpsSrcFile().getIpsObject();
@@ -635,7 +647,7 @@ public class EnumValuesSection extends IpsSection implements ContentsChangeListe
                                 }
                             }
 
-                            // Something else but the name has changed
+                            // Something else but the name has changed.
                             if (oldName == null) {
                                 if (enumValueContainer instanceof IEnumType) {
                                     reinit(enumTypeModifiedEnumAttribute);
@@ -759,9 +771,10 @@ public class EnumValuesSection extends IpsSection implements ContentsChangeListe
                         // Format value properly
                         String datatype = enumAttributeValue.findEnumAttribute(ipsProject).getDatatype();
                         ValueDatatype valueDatatype = enumAttributeValue.getIpsProject().findValueDatatype(datatype);
-                        //TODO pk: in the case of an enum type without content the content must of it must be find
-                        //here and provided to the formatter
-                        if(valueDatatype instanceof IEnumType){
+                        // TODO pk: in the case of an enum type without content the content must of
+                        // it must be find
+                        // here and provided to the formatter
+                        if (valueDatatype instanceof IEnumType) {
                             return IpsPlugin.getDefault().getIpsPreferences().getDatatypeFormatter().formatValue(
                                     (IEnumType)valueDatatype, null, columnValue);
                         }

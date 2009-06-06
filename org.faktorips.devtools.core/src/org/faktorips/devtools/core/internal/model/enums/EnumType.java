@@ -87,8 +87,8 @@ public class EnumType extends EnumValueContainer implements IEnumType {
         this.containingValues = false;
         this.isAbstract = false;
         this.enumContentPackageFragment = "";
-        this.enumAttributes = new IpsObjectPartCollection<IEnumAttribute>(this, EnumAttribute.class, IEnumAttribute.class,
-                IEnumAttribute.XML_TAG);
+        this.enumAttributes = new IpsObjectPartCollection<IEnumAttribute>(this, EnumAttribute.class,
+                IEnumAttribute.class, IEnumAttribute.XML_TAG);
     }
 
     /**
@@ -238,14 +238,15 @@ public class EnumType extends EnumValueContainer implements IEnumType {
      * {@inheritDoc}
      */
     public IEnumAttribute newEnumAttribute() throws CoreException {
-        /*
-         * The creation of a new enum attribute consists of multiple operations that need to be
-         * batched.
-         */
-        NewEnumAttributeRunnable workspaceRunnable = new NewEnumAttributeRunnable();
-        getIpsModel().runAndQueueChangeEvents(workspaceRunnable, null);
+        // Create new enum attribute
+        IEnumAttribute newEnumAttribute = (IEnumAttribute)newPart(IEnumAttribute.class);
 
-        return workspaceRunnable.newEnumAttribute;
+        // Create new enum attribute value objects on the enum values of this enum type
+        for (IEnumValue currentEnumValue : getEnumValues()) {
+            currentEnumValue.newEnumAttributeValue();
+        }
+
+        return newEnumAttribute;
     }
 
     /**
@@ -304,12 +305,12 @@ public class EnumType extends EnumValueContainer implements IEnumType {
         }
 
         if (up) {
-            // Can't move further up any more
+            // Can't move further up any more.
             if (enumAttribute == enumAttributes.getPart(0)) {
                 return getIndexOfEnumAttribute(enumAttribute);
             }
         } else {
-            // Can't move further down any more
+            // Can't move further down any more.
             if (enumAttribute == enumAttributes.getPart(enumAttributes.size() - 1)) {
                 return getIndexOfEnumAttribute(enumAttribute);
             }
@@ -317,11 +318,13 @@ public class EnumType extends EnumValueContainer implements IEnumType {
 
         int indexToMove = getIndexOfEnumAttribute(enumAttribute);
 
-        // Moving an enum attribute consists of multiple operations that need to be batched.
-        MoveEnumAttributeRunnable workspaceRunnable = new MoveEnumAttributeRunnable(indexToMove, up);
-        getIpsModel().runAndQueueChangeEvents(workspaceRunnable, null);
+        // Move the enum attribute
+        int[] newIndex = enumAttributes.moveParts(new int[] { indexToMove }, up);
 
-        return workspaceRunnable.newIndex;
+        // Move the enum attribute values of the enum values of this enum type
+        moveEnumAttributeValues(indexToMove, getEnumValues(), up);
+
+        return newIndex[0];
     }
 
     /**
@@ -663,7 +666,7 @@ public class EnumType extends EnumValueContainer implements IEnumType {
         return null;
     }
 
-    public IEnumAttribute findIsUsedAsIdInFaktorIpsUIAttribute(IIpsProject ipsProject) throws CoreException{
+    public IEnumAttribute findIsUsedAsIdInFaktorIpsUIAttribute(IIpsProject ipsProject) throws CoreException {
         for (IEnumAttribute currentEnumAttribute : getEnumAttributesIncludeSupertypeCopies()) {
             Boolean isUsedAsIdInFaktorIpsUi = currentEnumAttribute.findIsUsedAsIdInFaktorIpsUi(ipsProject);
             if (isUsedAsIdInFaktorIpsUi == null) {
@@ -675,8 +678,8 @@ public class EnumType extends EnumValueContainer implements IEnumType {
         }
         return null;
     }
-    
-    public IEnumAttribute findIsUsedAsNameInFaktorIpsUIAttribute(IIpsProject ipsProject) throws CoreException{
+
+    public IEnumAttribute findIsUsedAsNameInFaktorIpsUIAttribute(IIpsProject ipsProject) throws CoreException {
         for (IEnumAttribute currentEnumAttribute : getEnumAttributesIncludeSupertypeCopies()) {
             Boolean isUsedAsNameInFaktorIpsUi = currentEnumAttribute.findIsUsedAsNameInFaktorIpsUi(ipsProject);
             if (isUsedAsNameInFaktorIpsUi == null) {
@@ -954,8 +957,8 @@ public class EnumType extends EnumValueContainer implements IEnumType {
         try {
 
             for (IEnumValue enumValue : getEnumValues()) {
-                IEnumAttributeValue value = enumValue
-                        .findEnumAttributeValue(getIpsProject(), findLiteralNameAttribute(getIpsProject()));
+                IEnumAttributeValue value = enumValue.findEnumAttributeValue(getIpsProject(),
+                        findLiteralNameAttribute(getIpsProject()));
                 if (value == null) {
                     continue;
                 }
@@ -1113,76 +1116,6 @@ public class EnumType extends EnumValueContainer implements IEnumType {
         }
 
         return result.toArray(new IIpsSrcFile[result.size()]);
-    }
-
-    /**
-     * Creates a new enum attribute. On every enum value that is contained in this enum type new
-     * enum attribute value objects need to be created for the new enum attribute.
-     * <p>
-     * These operations are atomic and therefore need to be batched into a runanble.
-     */
-    private class NewEnumAttributeRunnable implements IWorkspaceRunnable {
-
-        /** Handle to the enum attribute to be created. */
-        private IEnumAttribute newEnumAttribute;
-
-        /** Creates the <code>NewEnumAttributeRunnable</code>. */
-        public NewEnumAttributeRunnable() {
-            this.newEnumAttribute = null;
-        }
-
-        /**
-         * {@inheritDoc}
-         */
-        public void run(IProgressMonitor monitor) throws CoreException {
-            // Create new enum attribute
-            newEnumAttribute = (IEnumAttribute)newPart(IEnumAttribute.class);
-
-            // Create new enum attribute value objects on the enum values of this enum type
-            for (IEnumValue currentEnumValue : getEnumValues()) {
-                currentEnumValue.newEnumAttributeValue();
-            }
-        }
-
-    }
-
-    /**
-     * Moves an enum attribute. On every enum value that is contained in this enum type the enum
-     * attribute values refering to this enum attribute need to be moved, too.
-     * <p>
-     * These operations are atomic and therefore need to be batched into a runanble.
-     */
-    private class MoveEnumAttributeRunnable implements IWorkspaceRunnable {
-
-        /** The index of the enum attribute to be moved. */
-        private int indexToMove;
-
-        /** The new index of the enum attriubute that has been moved. */
-        private int newIndex;
-
-        /** Flag indicating whether to move up or down. */
-        private boolean up;
-
-        /** Creates the <code>MoveEnumAttributeRunnable</code>. */
-        public MoveEnumAttributeRunnable(int indexToMove, boolean up) {
-            this.indexToMove = indexToMove;
-            this.newIndex = -1;
-            this.up = up;
-        }
-
-        /**
-         * {@inheritDoc}
-         */
-        public void run(IProgressMonitor monitor) throws CoreException {
-            // Move the enum attribute
-            int[] newIndex = enumAttributes.moveParts(new int[] { indexToMove }, up);
-
-            // Move the enum attribute values of the enum values of this enum type
-            moveEnumAttributeValues(indexToMove, getEnumValues(), up);
-
-            this.newIndex = newIndex[0];
-        }
-
     }
 
     private static class IsSubEnumTypeOfVisitor extends EnumTypeHierachyVisitor {

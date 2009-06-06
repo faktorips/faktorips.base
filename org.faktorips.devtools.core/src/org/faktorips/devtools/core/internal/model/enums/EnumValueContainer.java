@@ -17,9 +17,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.NoSuchElementException;
 
-import org.eclipse.core.resources.IWorkspaceRunnable;
 import org.eclipse.core.runtime.CoreException;
-import org.eclipse.core.runtime.IProgressMonitor;
 import org.faktorips.datatype.Datatype;
 import org.faktorips.devtools.core.internal.model.ipsobject.BaseIpsObject;
 import org.faktorips.devtools.core.internal.model.ipsobject.IpsObjectPartCollection;
@@ -56,7 +54,8 @@ public abstract class EnumValueContainer extends BaseIpsObject implements IEnumV
     protected EnumValueContainer(IIpsSrcFile file) {
         super(file);
 
-        this.enumValues = new IpsObjectPartCollection<IEnumValue>(this, EnumValue.class, IEnumValue.class, IEnumValue.XML_TAG);
+        this.enumValues = new IpsObjectPartCollection<IEnumValue>(this, EnumValue.class, IEnumValue.class,
+                IEnumValue.XML_TAG);
     }
 
     /**
@@ -104,10 +103,28 @@ public abstract class EnumValueContainer extends BaseIpsObject implements IEnumV
             return null;
         }
 
-        NewEnumValueRunnable workspaceRunnable = new NewEnumValueRunnable(enumType);
-        getIpsModel().runAndQueueChangeEvents(workspaceRunnable, null);
+        // Create new enum value
+        IEnumValue newEnumValue = (IEnumValue)newPart(IEnumValue.class);
 
-        return workspaceRunnable.newEnumValue;
+        // Add as many enum attribute values as there are enum attributes in the enum type
+        for (int i = 0; i < enumType.getEnumAttributesCount(true); i++) {
+            newEnumValue.newEnumAttributeValue();
+        }
+
+        /*
+         * Set the value of each enum attribute value to null if the datatype of the referenced enum
+         * attribute is not String
+         */
+        // TODO aw: initialization
+        for (IEnumAttributeValue currentEnumAttributeValue : newEnumValue.getEnumAttributeValues()) {
+            IIpsProject ipsProject = currentEnumAttributeValue.getIpsProject();
+            if (!(currentEnumAttributeValue.findEnumAttribute(ipsProject).getDatatype().equals(Datatype.STRING
+                    .getQualifiedName()))) {
+                currentEnumAttributeValue.setValue(null);
+            }
+        }
+
+        return newEnumValue;
     }
 
     /**
@@ -168,53 +185,6 @@ public abstract class EnumValueContainer extends BaseIpsObject implements IEnumV
     public void clear() {
         enumValues.clear();
         objectHasChanged();
-    }
-
-    /**
-     * Creates a new enum value with as many enum attribute values as enum attributes in the enum
-     * type referenced by this enum value container.
-     * <p>
-     * These operations are atomic and therefore need to be batched into a runanble.
-     */
-    private class NewEnumValueRunnable implements IWorkspaceRunnable {
-
-        /** The enum type referenced by this enum value container. */
-        private IEnumType enumType;
-
-        /** Handle to the enum value to be created. */
-        private IEnumValue newEnumValue;
-
-        /** Creates the <code>NewEnumAttributeRunnable</code>. */
-        public NewEnumValueRunnable(IEnumType enumType) {
-            this.enumType = enumType;
-            this.newEnumValue = null;
-        }
-
-        /**
-         * {@inheritDoc}
-         */
-        public void run(IProgressMonitor monitor) throws CoreException {
-            // Create new enum value
-            newEnumValue = (IEnumValue)newPart(IEnumValue.class);
-
-            // Add as many enum attribute values as there are enum attributes in the enum type
-            for (int i = 0; i < enumType.getEnumAttributesCount(true); i++) {
-                newEnumValue.newEnumAttributeValue();
-            }
-
-            /*
-             * Set the value of each enum attribute value to null if the datatype of the referenced
-             * enum attribute is not String
-             */
-            for (IEnumAttributeValue currentEnumAttributeValue : newEnumValue.getEnumAttributeValues()) {
-                IIpsProject ipsProject = currentEnumAttributeValue.getIpsProject();
-                if (!(currentEnumAttributeValue.findEnumAttribute(ipsProject).getDatatype().equals(Datatype.STRING
-                        .getQualifiedName()))) {
-                    currentEnumAttributeValue.setValue(null);
-                }
-            }
-        }
-
     }
 
 }

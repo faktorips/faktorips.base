@@ -261,17 +261,21 @@ public class EnumAttributeValue extends AtomicIpsObjectPart implements IEnumAttr
                     continue;
                 }
 
-                String otherValue = currentEnumValue.findEnumAttributeValue(ipsProject, enumAttribute).getValue();
-                boolean otherValueMissing = (otherValue == null) ? true : uniqueIdentifierValue.equals("")
-                        || uniqueIdentifierValue.equals("<null>");
-                if (!otherValueMissing) {
-                    if (otherValue.equals(value)) {
-                        text = NLS.bind(Messages.EnumAttributeValue_UniqueIdentifierValueNotUnique, enumAttribute
-                                .getName());
-                        validationMessage = new Message(MSGCODE_ENUM_ATTRIBUTE_VALUE_UNIQUE_IDENTIFIER_NOT_UNIQUE,
-                                text, Message.ERROR, this);
-                        list.add(validationMessage);
-                        break;
+                IEnumAttributeValue otherEnumAttributeValue = currentEnumValue.findEnumAttributeValue(ipsProject,
+                        enumAttribute);
+                if (otherEnumAttributeValue != null) {
+                    String otherValue = otherEnumAttributeValue.getValue();
+                    boolean otherValueMissing = (otherValue == null) ? true : uniqueIdentifierValue.equals("")
+                            || uniqueIdentifierValue.equals("<null>");
+                    if (!otherValueMissing) {
+                        if (otherValue.equals(value)) {
+                            text = NLS.bind(Messages.EnumAttributeValue_UniqueIdentifierValueNotUnique, enumAttribute
+                                    .getName());
+                            validationMessage = new Message(MSGCODE_ENUM_ATTRIBUTE_VALUE_UNIQUE_IDENTIFIER_NOT_UNIQUE,
+                                    text, Message.ERROR, this);
+                            list.add(validationMessage);
+                            break;
+                        }
                     }
                 }
             }

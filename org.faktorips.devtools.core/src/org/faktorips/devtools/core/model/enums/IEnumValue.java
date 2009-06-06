@@ -68,13 +68,8 @@ public interface IEnumValue extends IIpsObjectPart {
 
     /**
      * Creates a new enum attribute value and returns a reference to it.
-     * <p>
-     * This works only if there are currently less enum attribute values than the referenced enum
-     * type has enum attributes.
      * 
      * @throws CoreException If the enum type this enum value is based upon cannot be found.
-     * @throws IllegalStateException If there are already the same number of enum attribute values
-     *             as enum attributes in the enum type.
      */
     public IEnumAttributeValue newEnumAttributeValue() throws CoreException;
 
