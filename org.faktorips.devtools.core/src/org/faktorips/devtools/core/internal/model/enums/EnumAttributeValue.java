@@ -60,9 +60,18 @@ public class EnumAttributeValue extends AtomicIpsObjectPart implements IEnumAttr
      */
     public EnumAttributeValue(IEnumValue parent, int id) throws CoreException {
         super(parent, id);
-        this.descriptionChangable = false;
-        // TODO aw: this could be done better by setting reasonable default values
-        this.value = null;
+
+        descriptionChangable = false;
+
+        // Initialize the value with the proper default value
+        IIpsProject ipsProject = getIpsProject();
+        IEnumAttribute referencedEnumAttribute = findEnumAttribute(ipsProject);
+        if (referencedEnumAttribute != null) {
+            ValueDatatype datatype = referencedEnumAttribute.findDatatype(ipsProject);
+            if (datatype != null) {
+                value = datatype.getDefaultValue();
+            }
+        }
     }
 
     /**
