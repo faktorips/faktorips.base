@@ -15,6 +15,7 @@ package org.faktorips.devtools.core.ui.controller.fields;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Iterator;
 import java.util.List;
 
 import org.eclipse.core.runtime.CoreException;
@@ -22,8 +23,11 @@ import org.eclipse.swt.widgets.Combo;
 import org.faktorips.devtools.core.DatatypeFormatter;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.IpsPreferences;
+import org.faktorips.devtools.core.model.enums.IEnumAttribute;
+import org.faktorips.devtools.core.model.enums.IEnumAttributeValue;
 import org.faktorips.devtools.core.model.enums.IEnumContent;
 import org.faktorips.devtools.core.model.enums.IEnumType;
+import org.faktorips.devtools.core.model.enums.IEnumValue;
 
 /**
  * An implementation of <code>AbstractEnumDatatypeBasedField</code> that displays the values of an
@@ -46,8 +50,14 @@ public class EnumTypeDatatypeField extends AbstractEnumDatatypeBasedField {
 
     @Override
     protected List<String> getDatatypeValueIds() {
-        List<String> ids = Arrays.asList(getEnumDatatype().getAllValueIds(true));
-        return new ArrayList<String>(ids);
+        if (getEnumDatatype().isContainingValues()) {
+            List<String> ids = Arrays.asList(getEnumDatatype().getAllValueIds(true));
+            return new ArrayList<String>(ids);
+        }
+        if (enumContent != null) {
+            return enumContent.findAllLiteralNameAttributeValues(true, getEnumDatatype().getIpsProject());
+        }
+        return new ArrayList<String>();
     }
 
     private IEnumType getEnumDatatype() {

@@ -152,7 +152,7 @@ public abstract class AbstractEnumDatatypeBasedField extends ComboField {
 
         /*
          * check if the given value was set - if not so, we try to set an invalid value. But because
-         * this is a field for a combo, an invalid value can only be set using this mehtod if it
+         * this is a field for a combo, an invalid value can only be set using this method if it
          * valid before (for example the value-set changed). So we can add the value as invalid
          * value.
          */
@@ -186,7 +186,7 @@ public abstract class AbstractEnumDatatypeBasedField extends ComboField {
     /**
      * For tests only!
      */
-    protected String getInvalidValue() {
+    public String getInvalidValue() {
         return invalidValue;
     }
     
