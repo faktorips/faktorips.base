@@ -73,6 +73,33 @@ public abstract class EnumValueContainer extends BaseIpsObject implements IEnumV
     /**
      * {@inheritDoc}
      */
+    public List<String> findAllLiteralNameAttributeValues(boolean includeNull, IIpsProject ipsProject) {
+        try {
+            List<String> valueIds = new ArrayList<String>(getEnumValuesCount());
+            IEnumType enumType = findEnumType(ipsProject);
+            IEnumAttribute literalNameEnumAttribute = enumType.findLiteralNameAttribute(ipsProject);
+            if (literalNameEnumAttribute != null) {
+                for (IEnumValue enumValue : getEnumValues()) {
+                    IEnumAttributeValue value = enumValue.findEnumAttributeValue(ipsProject, literalNameEnumAttribute);
+                    if (value == null) {
+                        break;
+                    }
+                    valueIds.add(value.getValue());
+                }
+            }
+            if (includeNull) {
+                valueIds.add(null);
+            }
+            return valueIds;
+
+        } catch (CoreException e) {
+            throw new RuntimeException("Unable to determine the value ids of this enum type.", e);
+        }
+    }
+
+    /**
+     * {@inheritDoc}
+     */
     public IEnumValue findEnumValue(String literalNameAttributeValue, IIpsProject ipsProject) throws CoreException {
         if (literalNameAttributeValue == null) {
             return null;

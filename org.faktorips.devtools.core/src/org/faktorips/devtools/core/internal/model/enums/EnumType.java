@@ -929,29 +929,8 @@ public class EnumType extends EnumValueContainer implements IEnumType {
         if (!isContainingValues()) {
             return new String[0];
         }
-        try {
-
-            List<String> valueIds = new ArrayList<String>(getEnumValuesCount());
-            for (IEnumValue enumValue : getEnumValues()) {
-                IEnumAttribute literalNameEnumAttribute = findLiteralNameAttribute(getIpsProject());
-                if (literalNameEnumAttribute == null) {
-                    return null;
-                }
-                IEnumAttributeValue value = enumValue.findEnumAttributeValue(getIpsProject(), literalNameEnumAttribute);
-                if (value == null) {
-                    return null;
-                }
-                valueIds.add(value.getValue());
-            }
-
-            if (includeNull) {
-                valueIds.add(null);
-            }
-            return valueIds.toArray(new String[valueIds.size()]);
-
-        } catch (CoreException e) {
-            throw new RuntimeException("Unable to determine the value ids of this enum type.", e);
-        }
+        List<String> ids = findAllLiteralNameAttributeValues(includeNull, getIpsProject());
+        return ids.toArray(new String[ids.size()]);
     }
 
     /**

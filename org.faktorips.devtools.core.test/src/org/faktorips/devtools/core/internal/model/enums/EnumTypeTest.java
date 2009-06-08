@@ -490,7 +490,7 @@ public class EnumTypeTest extends AbstractIpsEnumPluginTest {
         String[] colorIds = color.getAllValueIds(false);
         // is expected to be null because the literal name attribute is not specified for the enum
         // type
-        assertNull(colorIds);
+        assertEquals(0, colorIds.length);
     }
 
     public void testgGetValueName() {

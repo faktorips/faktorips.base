@@ -49,6 +49,17 @@ public interface IEnumValueContainer extends IIpsObject {
     public IEnumValue findEnumValue(String literalNameAttributeValue, IIpsProject ipsProject) throws CoreException;
 
     /**
+     * Collects the values of the literal name attribute of all enumeration values of this container
+     * and returns them in a list.
+     * 
+     * @param includeNull includes <code>null</code> to the list as the last value.
+     * @param ipsProject used as the starting point to search for enumeration type if necessary 
+     * @return the list of literal name attribute values. An empty list will be returned if now values
+     *          are found.
+     */
+    public List<String> findAllLiteralNameAttributeValues(boolean includeNull, IIpsProject ipsProject);
+    
+    /**
      * Creates and returns a new enum value that has as many enum attribute values as the
      * corresponding enum type has attributes.
      * <p>
