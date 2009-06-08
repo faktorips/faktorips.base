@@ -266,6 +266,7 @@ public abstract class IpsPartEditDialog2 extends EditDialog implements ContentsC
     /**
      * Method for sub classes to hook into the contents changed notification.
      */
+    // TODO aw: Can't use this because it doesn't get the event as parameter
     protected void contentsChangedInternal() {
 
     }

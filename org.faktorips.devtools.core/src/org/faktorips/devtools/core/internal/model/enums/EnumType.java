@@ -1140,6 +1140,9 @@ public class EnumType extends EnumValueContainer implements IEnumType {
             return subEnumType;
         }
 
+        /**
+         * {@inheritDoc}
+         */
         @Override
         protected boolean visit(IEnumType currentEnumType) throws CoreException {
             if (currentEnumType == superEnumTypeCandidate) {

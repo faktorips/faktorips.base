@@ -21,7 +21,7 @@ import org.faktorips.devtools.core.ui.editors.DescriptionPage;
 import org.faktorips.devtools.core.ui.editors.IpsObjectEditor;
 
 /**
- * Provides common behaviour for all type editors.
+ * Provides common behavior for all type editors.
  * 
  * @author Peter Erzberger
  */
@@ -56,14 +56,9 @@ public abstract class TypeEditor extends IpsObjectEditor {
     protected abstract void addSplittedInMorePages() throws PartInitException;
 
     /**
-     * Returns whether this editor should have a description page. May be overriden by subclasses.
+     * Returns whether this editor should have a description page. May be overridden by subclasses.
      * <p>
      * Returns <code>true</code> by default.
-     */
-    /*
-     * TODO aw: this could be done better by giving ips objects and ips object parts the ability to
-     * have no description. The editor could then derive from that fact whether a description page
-     * is neccessary or not. FS#1380
      */
     protected boolean hasDescriptionPage() {
         return true;
