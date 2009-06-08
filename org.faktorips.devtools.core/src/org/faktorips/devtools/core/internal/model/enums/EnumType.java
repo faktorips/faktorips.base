@@ -26,6 +26,7 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.osgi.util.NLS;
 import org.faktorips.datatype.EnumDatatype;
 import org.faktorips.datatype.ValueDatatype;
+import org.faktorips.devtools.core.internal.model.IpsModel;
 import org.faktorips.devtools.core.internal.model.ipsobject.IpsObjectPartCollection;
 import org.faktorips.devtools.core.model.IDependency;
 import org.faktorips.devtools.core.model.IpsObjectDependency;
@@ -238,6 +239,8 @@ public class EnumType extends EnumValueContainer implements IEnumType {
      * {@inheritDoc}
      */
     public IEnumAttribute newEnumAttribute() throws CoreException {
+        ((IpsModel)getIpsModel()).stopBroadcastingChangesMadeByCurrentThread();
+
         // Create new enum attribute.
         IEnumAttribute newEnumAttribute = (IEnumAttribute)newPart(IEnumAttribute.class);
 
@@ -245,6 +248,9 @@ public class EnumType extends EnumValueContainer implements IEnumType {
         for (IEnumValue currentEnumValue : getEnumValues()) {
             currentEnumValue.newEnumAttributeValue();
         }
+
+        ((IpsModel)getIpsModel()).resumeBroadcastingChangesMadeByCurrentThread();
+        objectHasChanged();
 
         return newEnumAttribute;
     }
@@ -316,13 +322,22 @@ public class EnumType extends EnumValueContainer implements IEnumType {
             }
         }
 
+        ((IpsModel)getIpsModel()).stopBroadcastingChangesMadeByCurrentThread();
+
         int indexToMove = getIndexOfEnumAttribute(enumAttribute);
 
         // Move the enum attribute
         int[] newIndex = enumAttributes.moveParts(new int[] { indexToMove }, up);
 
         // Move the enum attribute values of the enum values of this enum type
-        moveEnumAttributeValues(indexToMove, getEnumValues(), up);
+        if (newIndex[0] != indexToMove) {
+            moveEnumAttributeValues(indexToMove, getEnumValues(), up);
+        }
+
+        ((IpsModel)getIpsModel()).resumeBroadcastingChangesMadeByCurrentThread();
+        if (newIndex[0] != indexToMove) {
+            objectHasChanged();
+        }
 
         return newIndex[0];
     }
@@ -496,8 +511,7 @@ public class EnumType extends EnumValueContainer implements IEnumType {
                     showFirst) : NLS.bind(Messages.EnumType_NotInheritedAttributesInSupertypeHierarchySingular,
                     showFirst);
             Message message = new Message(IEnumType.MSGCODE_ENUM_TYPE_NOT_INHERITED_ATTRIBUTES_IN_SUPERTYPE_HIERARCHY,
-                    text, Message.ERROR,
-                    new ObjectProperty[] { new ObjectProperty(this, IEnumType.PROPERTY_SUPERTYPE) });
+                    text, Message.ERROR, this);
             validationMessageList.add(message);
         }
     }

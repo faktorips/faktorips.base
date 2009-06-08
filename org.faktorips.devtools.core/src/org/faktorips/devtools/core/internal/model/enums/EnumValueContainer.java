@@ -18,8 +18,10 @@ import java.util.List;
 import java.util.NoSuchElementException;
 
 import org.eclipse.core.runtime.CoreException;
+import org.faktorips.devtools.core.internal.model.IpsModel;
 import org.faktorips.devtools.core.internal.model.ipsobject.BaseIpsObject;
 import org.faktorips.devtools.core.internal.model.ipsobject.IpsObjectPartCollection;
+import org.faktorips.devtools.core.model.ContentChangeEvent;
 import org.faktorips.devtools.core.model.enums.IEnumAttribute;
 import org.faktorips.devtools.core.model.enums.IEnumAttributeValue;
 import org.faktorips.devtools.core.model.enums.IEnumType;
@@ -129,6 +131,8 @@ public abstract class EnumValueContainer extends BaseIpsObject implements IEnumV
             return null;
         }
 
+        ((IpsModel)getIpsModel()).stopBroadcastingChangesMadeByCurrentThread();
+
         // Create new enum value
         IEnumValue newEnumValue = (IEnumValue)newPart(IEnumValue.class);
 
@@ -136,6 +140,9 @@ public abstract class EnumValueContainer extends BaseIpsObject implements IEnumV
         for (int i = 0; i < enumType.getEnumAttributesCount(true); i++) {
             newEnumValue.newEnumAttributeValue();
         }
+
+        ((IpsModel)getIpsModel()).resumeBroadcastingChangesMadeByCurrentThread();
+        objectHasChanged(ContentChangeEvent.newPartAddedEvent(newEnumValue));
 
         return newEnumValue;
     }
@@ -169,8 +176,7 @@ public abstract class EnumValueContainer extends BaseIpsObject implements IEnumV
         for (int i = 0; i < enumValuesList.size(); i++) {
             IEnumValue currentEnumValue = enumValuesList.get(i);
             if (currentEnumValue == enumValue) {
-                int[] newIndex = enumValues.moveParts(new int[] { i }, up);
-                return newIndex[0];
+                return enumValues.moveParts(new int[] { i }, up)[0];
             }
         }
 

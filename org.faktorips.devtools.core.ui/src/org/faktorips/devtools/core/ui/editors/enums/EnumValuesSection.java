@@ -40,7 +40,6 @@ import org.eclipse.swt.events.KeyListener;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.layout.GridData;
-import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Item;
@@ -67,10 +66,8 @@ import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.ui.IpsUIPlugin;
 import org.faktorips.devtools.core.ui.UIToolkit;
 import org.faktorips.devtools.core.ui.ValueDatatypeControlFactory;
-import org.faktorips.devtools.core.ui.controller.fields.EnumTypeDatatypeField;
 import org.faktorips.devtools.core.ui.editors.TableMessageHoverService;
 import org.faktorips.devtools.core.ui.forms.IpsSection;
-import org.faktorips.devtools.core.ui.table.ComboCellEditor;
 import org.faktorips.devtools.core.ui.table.TableCellEditor;
 import org.faktorips.util.ArgumentCheck;
 import org.faktorips.util.message.MessageList;
@@ -469,20 +466,22 @@ public class EnumValuesSection extends IpsSection implements ContentsChangeListe
 
             TableCellEditor cellEditor = null;
             ValueDatatype datatype = enumValueContainer.getIpsProject().findValueDatatype(datatypeQualifiedName);
-//            if (datatype instanceof IEnumType) {
-//                Combo combo = getToolkit().createCombo(enumValuesTableViewer.getTable());
-//                //TODO for enum types without content the content must be found here and provided to the field
-//                EnumTypeDatatypeField field = new EnumTypeDatatypeField(combo, (IEnumType)datatype, null);
-//                combo.setData(field);
-//                cellEditor = new ComboCellEditor(enumValuesTableViewer, i, combo);
-//            } else {
-                ValueDatatypeControlFactory valueDatatypeControlFactory = IpsUIPlugin.getDefault()
-                        .getValueDatatypeControlFactory(datatype);
-                
-                //the ips project of the enum value container is provided to this method
-                cellEditor = valueDatatypeControlFactory.createCellEditor(getToolkit(), datatype, null,
-                        enumValuesTableViewer, i, enumValueContainer.getIpsProject());
-//            }
+            // if (datatype instanceof IEnumType) {
+            // Combo combo = getToolkit().createCombo(enumValuesTableViewer.getTable());
+            // //TODO for enum types without content the content must be found here and provided to
+            // the field
+            // EnumTypeDatatypeField field = new EnumTypeDatatypeField(combo, (IEnumType)datatype,
+            // null);
+            // combo.setData(field);
+            // cellEditor = new ComboCellEditor(enumValuesTableViewer, i, combo);
+            // } else {
+            ValueDatatypeControlFactory valueDatatypeControlFactory = IpsUIPlugin.getDefault()
+                    .getValueDatatypeControlFactory(datatype);
+
+            // the ips project of the enum value container is provided to this method
+            cellEditor = valueDatatypeControlFactory.createCellEditor(getToolkit(), datatype, null,
+                    enumValuesTableViewer, i, enumValueContainer.getIpsProject());
+            // }
             cellEditor.setRowCreating(true);
             cellEditors[i] = cellEditor;
         }
@@ -594,8 +593,6 @@ public class EnumValuesSection extends IpsSection implements ContentsChangeListe
 
         switch (event.getEventType()) {
 
-            case ContentChangeEvent.TYPE_PARTS_CHANGED_POSITIONS:
-            case ContentChangeEvent.TYPE_PART_ADDED:
             case ContentChangeEvent.TYPE_WHOLE_CONTENT_CHANGED:
                 try {
                     IIpsObject changedIpsObject = event.getIpsSrcFile().getIpsObject();
@@ -762,9 +759,10 @@ public class EnumValuesSection extends IpsSection implements ContentsChangeListe
                         // Format value properly
                         String datatype = enumAttributeValue.findEnumAttribute(ipsProject).getDatatype();
                         ValueDatatype valueDatatype = enumAttributeValue.getIpsProject().findValueDatatype(datatype);
-                        //TODO pk: in the case of an enum type without content the content must of it must be find
-                        //here and provided to the formatter
-                        if(valueDatatype instanceof IEnumType){
+                        // TODO pk: in the case of an enum type without content the content must of
+                        // it must be find
+                        // here and provided to the formatter
+                        if (valueDatatype instanceof IEnumType) {
                             return IpsPlugin.getDefault().getIpsPreferences().getDatatypeFormatter().formatValue(
                                     (IEnumType)valueDatatype, null, columnValue);
                         }

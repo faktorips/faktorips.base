@@ -65,9 +65,6 @@ public interface IEnumValueContainer extends IIpsObject {
      * <p>
      * If the enum type referenced by this enum value container cannot be found then no enum value
      * will be created and <code>null</code> will be returned.
-     * <p>
-     * Fires a <code>WHOLE_CONTENT_CHANGED</code> event if a new enum value has been created
-     * successfully.
      * 
      * @throws CoreException If an error occurs while searching for the enum type.
      */

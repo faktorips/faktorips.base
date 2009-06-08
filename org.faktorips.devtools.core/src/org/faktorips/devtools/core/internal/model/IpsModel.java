@@ -494,7 +494,7 @@ public class IpsModel extends IpsElement implements IIpsModel, IResourceChangeLi
      * Tells the model to stop broadcasting any changes made to ips objects by the current thread.
      * By default changes are broadcasted until this method is called. To restart brodcasting
      * changes the method resumeBroadcastingChangesMadeByCurrentThread() has to be called.
-     * 
+     * <p>
      * <strong>Note<strong> that these to method have a "nested transaction behaviour". That means
      * broadcasting resumes only if the resume method has been called as many times as the stop
      * method. This allows to implement method that stop/resume broadcasting to call other method
@@ -516,7 +516,7 @@ public class IpsModel extends IpsElement implements IIpsModel, IResourceChangeLi
 
     /**
      * Tells the model to resume broadcasting any changes made to ips objects by the current thread.
-     * 
+     * <p>
      * <strong>Note<strong> that these to method have a "nested transaction behaviour". That means
      * broadcasting resumes only if the resume method has been called as many times as the stop
      * method. This allows to implement method that stop/resume broadcasting to call other method
