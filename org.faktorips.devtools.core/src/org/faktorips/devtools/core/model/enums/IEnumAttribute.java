@@ -23,7 +23,7 @@ import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
  * <p>
  * Enum attributes are always of a specific <code>datatype</code> and can be <code>inherited</code>
  * from an enum type in the supertype hierarchy. If an enum attribute is inherited from the
- * supertype hierarchy it is treated as a copy of the original enum attribute refering to its
+ * supertype hierarchy it is treated as a copy of the original enum attribute referring to its
  * properties.
  * <p>
  * An enum attribute can be marked as <code>useAsLiteralName</code> which implies that the values

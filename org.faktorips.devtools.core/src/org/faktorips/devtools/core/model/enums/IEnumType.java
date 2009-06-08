@@ -96,7 +96,7 @@ public interface IEnumType extends IEnumValueContainer, EnumDatatype, IIpsMetaCl
 
     /**
      * Validation message code to indicate that there exists an inconsistency in the hierarchy of
-     * this enumeration type. The inconsistency can result from a type in the super type hierachy
+     * this enumeration type. The inconsistency can result from a type in the super type hierarchy
      * that is missing its super type or that the super type is not abstract which is an additional
      * constraint for enumeration types.
      */
@@ -117,7 +117,7 @@ public interface IEnumType extends IEnumValueContainer, EnumDatatype, IIpsMetaCl
             + "EnumTypeNoUsedAsNameInFaktorIpsUiAttribute";
 
     /**
-     * Returns the package fragment a referecning enum content must be stored in.
+     * Returns the package fragment a referencing enum content must be stored in.
      */
     public String getEnumContentPackageFragment();
 
@@ -270,9 +270,9 @@ public interface IEnumType extends IEnumValueContainer, EnumDatatype, IIpsMetaCl
     public IEnumAttribute findLiteralNameAttribute(IIpsProject ipsProject) throws CoreException;
 
     public IEnumAttribute findIsUsedAsIdInFaktorIpsUIAttribute(IIpsProject ipsProject) throws CoreException;
-    
+
     public IEnumAttribute findIsUsedAsNameInFaktorIpsUIAttribute(IIpsProject ipsProject) throws CoreException;
-    
+
     /**
      * Returns the index of the given enum attribute in the containing list.
      * 

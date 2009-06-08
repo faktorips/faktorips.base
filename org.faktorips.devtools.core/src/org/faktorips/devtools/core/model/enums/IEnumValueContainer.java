@@ -68,7 +68,7 @@ public interface IEnumValueContainer extends IIpsObject {
      * @param ipsProject The ips project which ips object path is used for the search. This is not
      *            necessarily the project this enum attribute is part of.
      * 
-     * @throws CoreException If an error occures while searching the given ips project for the enum
+     * @throws CoreException If an error occurs while searching the given ips project for the enum
      *             type.
      * @throws NullPointerException If <code>ipsProject</code> is <code>null</code>.
      */
