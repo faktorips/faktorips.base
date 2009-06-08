@@ -38,6 +38,7 @@
             <htmlemail buildresultsurl="${buildresultsurl}/${project.name}" mailhost="${htmlemail.mailhost}" username="" password="" returnaddress="${htmlemail.returnaddress}" skipusers="false" spamwhilebroken="true" returnname="faktorips-buildqueue" subjectprefix="[CC ${project.name}]" reportsuccess="always" xsldir="${htmlemail.xsldir}" css="${htmlemail.css}">
                 <map alias="ortmann" address="jan.ortmann@faktorzehn.de"/>
                 <map alias="erzberger" address="peter.erzberger@faktorzehn.de"/>
+                <map alias="kuntz" address="peter.kuntz@faktorzehn.de"/>
                 <map alias="hohenberger" address="daniel.hohenberger@faktorzehn.de"/>
                 <map alias="weickmann" address="alexander.weickmann@faktorzehn.de"/>
                 <map alias="ortmann2" address="joerg.ortmann@faktorzehn.de"/>
@@ -63,7 +64,7 @@
                 <map alias="cc-org.faktorips.integrationtest.v2_2_patches" address=""/>
                 <map alias="cc-org.faktorips.integrationtest.java5.v2_2_patches" address=""/>
                 <map alias="cc-de.qv.faktorips" address=""/>
-                <failure reportWhenFixed="true" address="jan.ortmann@faktorzehn.de,peter.erzberger@faktorzehn.de,daniel.hohenberger@faktorzehn.de,alexander.weickmann@faktorzehn.de,joerg.ortmann@faktorzehn.de,roman.grutza@faktorzehn.de"/>
+                <failure reportWhenFixed="true" address="jan.ortmann@faktorzehn.de,peter.erzberger@faktorzehn.de,peter.kuntz@faktorzehn.de,daniel.hohenberger@faktorzehn.de,alexander.weickmann@faktorzehn.de,joerg.ortmann@faktorzehn.de,roman.grutza@faktorzehn.de"/>
             </htmlemail>
         </publishers>
     </project>
@@ -89,6 +90,7 @@
             <htmlemail buildresultsurl="${buildresultsurl}/${project.name}" mailhost="${htmlemail.mailhost}" username="" password="" returnaddress="${htmlemail.returnaddress}" skipusers="false" spamwhilebroken="true" returnname="faktorips-buildqueue" subjectprefix="[CC ${project.name}]" reportsuccess="always" xsldir="${htmlemail.xsldir}" css="${htmlemail.css}">
                 <map alias="ortmann" address="jan.ortmann@faktorzehn.de"/>
                 <map alias="erzberger" address="peter.erzberger@faktorzehn.de"/>
+                <map alias="kuntz" address="peter.kuntz@faktorzehn.de"/>
                 <map alias="hohenberger" address="daniel.hohenberger@faktorzehn.de"/>
                 <map alias="weickmann" address="alexander.weickmann@faktorzehn.de"/>
                 <map alias="ortmann2" address="joerg.ortmann@faktorzehn.de"/>
@@ -114,7 +116,7 @@
                 <map alias="cc-org.faktorips.integrationtest.v2_2_patches" address=""/>
                 <map alias="cc-org.faktorips.integrationtest.java5.v2_2_patches" address=""/>
                 <map alias="cc-de.qv.faktorips" address=""/>
-                <failure reportWhenFixed="true" address="jan.ortmann@faktorzehn.de,peter.erzberger@faktorzehn.de,daniel.hohenberger@faktorzehn.de,alexander.weickmann@faktorzehn.de,joerg.ortmann@faktorzehn.de,roman.grutza@faktorzehn.de"/>
+                <failure reportWhenFixed="true" address="jan.ortmann@faktorzehn.de,peter.erzberger@faktorzehn.de,peter.kuntz@faktorzehn.de,daniel.hohenberger@faktorzehn.de,alexander.weickmann@faktorzehn.de,joerg.ortmann@faktorzehn.de,roman.grutza@faktorzehn.de"/>
             </htmlemail>
         </publishers>
     </project>
@@ -140,6 +142,7 @@
             <htmlemail buildresultsurl="${buildresultsurl}/${project.name}" mailhost="${htmlemail.mailhost}" username="" password="" returnaddress="${htmlemail.returnaddress}" skipusers="false" spamwhilebroken="true" returnname="faktorips-buildqueue" subjectprefix="[CC ${project.name}]" reportsuccess="always" xsldir="${htmlemail.xsldir}" css="${htmlemail.css}">
                 <map alias="ortmann" address="jan.ortmann@faktorzehn.de"/>
                 <map alias="erzberger" address="peter.erzberger@faktorzehn.de"/>
+                <map alias="kuntz" address="peter.kuntz@faktorzehn.de"/>
                 <map alias="hohenberger" address="daniel.hohenberger@faktorzehn.de"/>
                 <map alias="weickmann" address="alexander.weickmann@faktorzehn.de"/>
                 <map alias="ortmann2" address="joerg.ortmann@faktorzehn.de"/>
@@ -165,7 +168,7 @@
                 <map alias="cc-org.faktorips.integrationtest.v2_2_patches" address=""/>
                 <map alias="cc-org.faktorips.integrationtest.java5.v2_2_patches" address=""/>
                 <map alias="cc-de.qv.faktorips" address=""/>
-                <failure reportWhenFixed="true" address="jan.ortmann@faktorzehn.de,peter.erzberger@faktorzehn.de,daniel.hohenberger@faktorzehn.de,alexander.weickmann@faktorzehn.de,joerg.ortmann@faktorzehn.de,roman.grutza@faktorzehn.de"/>
+                <failure reportWhenFixed="true" address="jan.ortmann@faktorzehn.de,peter.erzberger@faktorzehn.de,peter.kuntz@faktorzehn.de,daniel.hohenberger@faktorzehn.de,alexander.weickmann@faktorzehn.de,joerg.ortmann@faktorzehn.de,roman.grutza@faktorzehn.de"/>
             </htmlemail>
         </publishers>
     </project>
@@ -192,6 +195,7 @@
             <htmlemail buildresultsurl="${buildresultsurl}/${project.name}" mailhost="${htmlemail.mailhost}" username="" password="" returnaddress="${htmlemail.returnaddress}" skipusers="false" spamwhilebroken="true" returnname="faktorips-buildqueue" subjectprefix="[CC ${project.name}]" reportsuccess="always" xsldir="${htmlemail.xsldir}" css="${htmlemail.css}">
                 <map alias="ortmann" address="jan.ortmann@faktorzehn.de"/>
                 <map alias="erzberger" address="peter.erzberger@faktorzehn.de"/>
+                <map alias="kuntz" address="peter.kuntz@faktorzehn.de"/>
                 <map alias="hohenberger" address="daniel.hohenberger@faktorzehn.de"/>
                 <map alias="weickmann" address="alexander.weickmann@faktorzehn.de"/>
                 <map alias="ortmann2" address="joerg.ortmann@faktorzehn.de"/>
@@ -217,7 +221,7 @@
                 <map alias="cc-org.faktorips.integrationtest.v2_2_patches" address=""/>
                 <map alias="cc-org.faktorips.integrationtest.java5.v2_2_patches" address=""/>
                 <map alias="cc-de.qv.faktorips" address=""/>
-                <failure reportWhenFixed="true" address="jan.ortmann@faktorzehn.de,peter.erzberger@faktorzehn.de,daniel.hohenberger@faktorzehn.de,alexander.weickmann@faktorzehn.de,joerg.ortmann@faktorzehn.de,roman.grutza@faktorzehn.de"/>
+                <failure reportWhenFixed="true" address="jan.ortmann@faktorzehn.de,peter.erzberger@faktorzehn.de,peter.kuntz@faktorzehn.de,daniel.hohenberger@faktorzehn.de,alexander.weickmann@faktorzehn.de,joerg.ortmann@faktorzehn.de,roman.grutza@faktorzehn.de"/>
             </htmlemail>
         </publishers>
     </project>
@@ -244,6 +248,7 @@
             <htmlemail buildresultsurl="${buildresultsurl}/${project.name}" mailhost="${htmlemail.mailhost}" username="" password="" returnaddress="${htmlemail.returnaddress}" skipusers="false" spamwhilebroken="true" returnname="faktorips-buildqueue" subjectprefix="[CC ${project.name}]" reportsuccess="always" xsldir="${htmlemail.xsldir}" css="${htmlemail.css}">
                 <map alias="ortmann" address="jan.ortmann@faktorzehn.de"/>
                 <map alias="erzberger" address="peter.erzberger@faktorzehn.de"/>
+                <map alias="kuntz" address="peter.kuntz@faktorzehn.de"/>
                 <map alias="hohenberger" address="daniel.hohenberger@faktorzehn.de"/>
                 <map alias="weickmann" address="alexander.weickmann@faktorzehn.de"/>
                 <map alias="ortmann2" address="joerg.ortmann@faktorzehn.de"/>
@@ -269,7 +274,7 @@
                 <map alias="cc-org.faktorips.integrationtest.v2_2_patches" address=""/>
                 <map alias="cc-org.faktorips.integrationtest.java5.v2_2_patches" address=""/>
                 <map alias="cc-de.qv.faktorips" address=""/>
-                <failure reportWhenFixed="true" address="jan.ortmann@faktorzehn.de,peter.erzberger@faktorzehn.de,daniel.hohenberger@faktorzehn.de,alexander.weickmann@faktorzehn.de,joerg.ortmann@faktorzehn.de,roman.grutza@faktorzehn.de"/>
+                <failure reportWhenFixed="true" address="jan.ortmann@faktorzehn.de,peter.erzberger@faktorzehn.de,peter.kuntz@faktorzehn.de,daniel.hohenberger@faktorzehn.de,alexander.weickmann@faktorzehn.de,joerg.ortmann@faktorzehn.de,roman.grutza@faktorzehn.de"/>
             </htmlemail>
         </publishers>
     </project>
@@ -296,6 +301,7 @@
             <htmlemail buildresultsurl="${buildresultsurl}/${project.name}" mailhost="${htmlemail.mailhost}" username="" password="" returnaddress="${htmlemail.returnaddress}" skipusers="false" spamwhilebroken="true" returnname="faktorips-buildqueue" subjectprefix="[CC ${project.name}]" reportsuccess="always" xsldir="${htmlemail.xsldir}" css="${htmlemail.css}">
                 <map alias="ortmann" address="jan.ortmann@faktorzehn.de"/>
                 <map alias="erzberger" address="peter.erzberger@faktorzehn.de"/>
+                <map alias="kuntz" address="peter.kuntz@faktorzehn.de"/>
                 <map alias="hohenberger" address="daniel.hohenberger@faktorzehn.de"/>
                 <map alias="weickmann" address="alexander.weickmann@faktorzehn.de"/>
                 <map alias="ortmann2" address="joerg.ortmann@faktorzehn.de"/>
@@ -321,7 +327,7 @@
                 <map alias="cc-org.faktorips.integrationtest.v2_2_patches" address=""/>
                 <map alias="cc-org.faktorips.integrationtest.java5.v2_2_patches" address=""/>
                 <map alias="cc-de.qv.faktorips" address=""/>
-                <failure reportWhenFixed="true" address="jan.ortmann@faktorzehn.de,peter.erzberger@faktorzehn.de,daniel.hohenberger@faktorzehn.de,alexander.weickmann@faktorzehn.de,joerg.ortmann@faktorzehn.de,roman.grutza@faktorzehn.de"/>
+                <failure reportWhenFixed="true" address="jan.ortmann@faktorzehn.de,peter.erzberger@faktorzehn.de,peter.kuntz@faktorzehn.de,daniel.hohenberger@faktorzehn.de,alexander.weickmann@faktorzehn.de,joerg.ortmann@faktorzehn.de,roman.grutza@faktorzehn.de"/>
             </htmlemail>
         </publishers>
     </project>
@@ -347,6 +353,7 @@
             <htmlemail buildresultsurl="${buildresultsurl}/${project.name}" mailhost="${htmlemail.mailhost}" username="" password="" returnaddress="${htmlemail.returnaddress}" skipusers="false" spamwhilebroken="true" returnname="faktorips-buildqueue" subjectprefix="[CC ${project.name}]" reportsuccess="always" xsldir="${htmlemail.xsldir}" css="${htmlemail.css}">
                 <map alias="ortmann" address="jan.ortmann@faktorzehn.de"/>
                 <map alias="erzberger" address="peter.erzberger@faktorzehn.de"/>
+                <map alias="kuntz" address="peter.kuntz@faktorzehn.de"/>
                 <map alias="hohenberger" address="daniel.hohenberger@faktorzehn.de"/>
                 <map alias="weickmann" address="alexander.weickmann@faktorzehn.de"/>
                 <map alias="ortmann2" address="joerg.ortmann@faktorzehn.de"/>
@@ -372,7 +379,7 @@
                 <map alias="cc-org.faktorips.integrationtest.v2_2_patches" address=""/>
                 <map alias="cc-org.faktorips.integrationtest.java5.v2_2_patches" address=""/>
                 <map alias="cc-de.qv.faktorips" address=""/>
-                <failure reportWhenFixed="true" address="jan.ortmann@faktorzehn.de,peter.erzberger@faktorzehn.de,daniel.hohenberger@faktorzehn.de,alexander.weickmann@faktorzehn.de,joerg.ortmann@faktorzehn.de,roman.grutza@faktorzehn.de"/>
+                <failure reportWhenFixed="true" address="jan.ortmann@faktorzehn.de,peter.erzberger@faktorzehn.de,peter.kuntz@faktorzehn.de,daniel.hohenberger@faktorzehn.de,alexander.weickmann@faktorzehn.de,joerg.ortmann@faktorzehn.de,roman.grutza@faktorzehn.de"/>
             </htmlemail>
         </publishers>
     </project>
@@ -398,6 +405,7 @@
             <htmlemail buildresultsurl="${buildresultsurl}/${project.name}" mailhost="${htmlemail.mailhost}" username="" password="" returnaddress="${htmlemail.returnaddress}" skipusers="false" spamwhilebroken="true" returnname="faktorips-buildqueue" subjectprefix="[CC ${project.name}]" reportsuccess="always" xsldir="${htmlemail.xsldir}" css="${htmlemail.css}">
                 <map alias="ortmann" address="jan.ortmann@faktorzehn.de"/>
                 <map alias="erzberger" address="peter.erzberger@faktorzehn.de"/>
+                <map alias="kuntz" address="peter.kuntz@faktorzehn.de"/>
                 <map alias="hohenberger" address="daniel.hohenberger@faktorzehn.de"/>
                 <map alias="weickmann" address="alexander.weickmann@faktorzehn.de"/>
                 <map alias="ortmann2" address="joerg.ortmann@faktorzehn.de"/>
@@ -423,7 +431,7 @@
                 <map alias="cc-org.faktorips.integrationtest.v2_2_patches" address=""/>
                 <map alias="cc-org.faktorips.integrationtest.java5.v2_2_patches" address=""/>
                 <map alias="cc-de.qv.faktorips" address=""/>
-                <failure reportWhenFixed="true" address="jan.ortmann@faktorzehn.de,peter.erzberger@faktorzehn.de,daniel.hohenberger@faktorzehn.de,alexander.weickmann@faktorzehn.de,joerg.ortmann@faktorzehn.de,roman.grutza@faktorzehn.de"/>
+                <failure reportWhenFixed="true" address="jan.ortmann@faktorzehn.de,peter.erzberger@faktorzehn.de,peter.kuntz@faktorzehn.de,daniel.hohenberger@faktorzehn.de,alexander.weickmann@faktorzehn.de,joerg.ortmann@faktorzehn.de,roman.grutza@faktorzehn.de"/>
             </htmlemail>
         </publishers>
     </project>
@@ -451,6 +459,7 @@
             <htmlemail buildresultsurl="${buildresultsurl}/${project.name}" mailhost="${htmlemail.mailhost}" username="" password="" returnaddress="${htmlemail.returnaddress}" skipusers="false" spamwhilebroken="true" returnname="faktorips-buildqueue" subjectprefix="[CC ${project.name}]" reportsuccess="always" xsldir="${htmlemail.xsldir}" css="${htmlemail.css}">
                 <map alias="ortmann" address="jan.ortmann@faktorzehn.de"/>
                 <map alias="erzberger" address="peter.erzberger@faktorzehn.de"/>
+                <map alias="kuntz" address="peter.kuntz@faktorzehn.de"/>
                 <map alias="hohenberger" address="daniel.hohenberger@faktorzehn.de"/>
                 <map alias="weickmann" address="alexander.weickmann@faktorzehn.de"/>
                 <map alias="ortmann2" address="joerg.ortmann@faktorzehn.de"/>
@@ -476,7 +485,7 @@
                 <map alias="cc-org.faktorips.integrationtest.v2_2_patches" address=""/>
                 <map alias="cc-org.faktorips.integrationtest.java5.v2_2_patches" address=""/>
                 <map alias="cc-de.qv.faktorips" address=""/>
-                <failure reportWhenFixed="true" address="jan.ortmann@faktorzehn.de,peter.erzberger@faktorzehn.de,daniel.hohenberger@faktorzehn.de,alexander.weickmann@faktorzehn.de,joerg.ortmann@faktorzehn.de,roman.grutza@faktorzehn.de"/>
+                <failure reportWhenFixed="true" address="jan.ortmann@faktorzehn.de,peter.erzberger@faktorzehn.de,peter.kuntz@faktorzehn.de,daniel.hohenberger@faktorzehn.de,alexander.weickmann@faktorzehn.de,joerg.ortmann@faktorzehn.de,roman.grutza@faktorzehn.de"/>
             </htmlemail>
         </publishers>
     </project>
@@ -502,6 +511,7 @@
             <htmlemail buildresultsurl="${buildresultsurl}/${project.name}" mailhost="${htmlemail.mailhost}" username="" password="" returnaddress="${htmlemail.returnaddress}" skipusers="false" spamwhilebroken="true" returnname="faktorips-buildqueue" subjectprefix="[CC ${project.name}]" reportsuccess="always" xsldir="${htmlemail.xsldir}" css="${htmlemail.css}">
                 <map alias="ortmann" address="jan.ortmann@faktorzehn.de"/>
                 <map alias="erzberger" address="peter.erzberger@faktorzehn.de"/>
+                <map alias="kuntz" address="peter.kuntz@faktorzehn.de"/>
                 <map alias="hohenberger" address="daniel.hohenberger@faktorzehn.de"/>
                 <map alias="weickmann" address="alexander.weickmann@faktorzehn.de"/>
                 <map alias="ortmann2" address="joerg.ortmann@faktorzehn.de"/>
@@ -527,7 +537,7 @@
                 <map alias="cc-org.faktorips.integrationtest.v2_2_patches" address=""/>
                 <map alias="cc-org.faktorips.integrationtest.java5.v2_2_patches" address=""/>
                 <map alias="cc-de.qv.faktorips" address=""/>
-                <failure reportWhenFixed="true" address="jan.ortmann@faktorzehn.de,peter.erzberger@faktorzehn.de,daniel.hohenberger@faktorzehn.de,alexander.weickmann@faktorzehn.de,joerg.ortmann@faktorzehn.de,roman.grutza@faktorzehn.de"/>
+                <failure reportWhenFixed="true" address="jan.ortmann@faktorzehn.de,peter.erzberger@faktorzehn.de,peter.kuntz@faktorzehn.de,daniel.hohenberger@faktorzehn.de,alexander.weickmann@faktorzehn.de,joerg.ortmann@faktorzehn.de,roman.grutza@faktorzehn.de"/>
             </htmlemail>
         </publishers>
     </project>
@@ -553,6 +563,7 @@
             <htmlemail buildresultsurl="${buildresultsurl}/${project.name}" mailhost="${htmlemail.mailhost}" username="" password="" returnaddress="${htmlemail.returnaddress}" skipusers="false" spamwhilebroken="true" returnname="faktorips-buildqueue" subjectprefix="[CC ${project.name}]" reportsuccess="always" xsldir="${htmlemail.xsldir}" css="${htmlemail.css}">
                 <map alias="ortmann" address="jan.ortmann@faktorzehn.de"/>
                 <map alias="erzberger" address="peter.erzberger@faktorzehn.de"/>
+                <map alias="kuntz" address="peter.kuntz@faktorzehn.de"/>
                 <map alias="hohenberger" address="daniel.hohenberger@faktorzehn.de"/>
                 <map alias="weickmann" address="alexander.weickmann@faktorzehn.de"/>
                 <map alias="ortmann2" address="joerg.ortmann@faktorzehn.de"/>
@@ -578,7 +589,7 @@
                 <map alias="cc-org.faktorips.integrationtest.v2_2_patches" address=""/>
                 <map alias="cc-org.faktorips.integrationtest.java5.v2_2_patches" address=""/>
                 <map alias="cc-de.qv.faktorips" address=""/>
-                <failure reportWhenFixed="true" address="jan.ortmann@faktorzehn.de,peter.erzberger@faktorzehn.de,daniel.hohenberger@faktorzehn.de,alexander.weickmann@faktorzehn.de,joerg.ortmann@faktorzehn.de,roman.grutza@faktorzehn.de"/>
+                <failure reportWhenFixed="true" address="jan.ortmann@faktorzehn.de,peter.erzberger@faktorzehn.de,peter.kuntz@faktorzehn.de,daniel.hohenberger@faktorzehn.de,alexander.weickmann@faktorzehn.de,joerg.ortmann@faktorzehn.de,roman.grutza@faktorzehn.de"/>
             </htmlemail>
         </publishers>
     </project>
@@ -603,6 +614,7 @@
             <htmlemail buildresultsurl="${buildresultsurl}/${project.name}" mailhost="${htmlemail.mailhost}" username="" password="" returnaddress="${htmlemail.returnaddress}" skipusers="false" spamwhilebroken="true" returnname="faktorips-buildqueue" subjectprefix="[CC ${project.name}]" reportsuccess="always" xsldir="${htmlemail.xsldir}" css="${htmlemail.css}">
                 <map alias="ortmann" address="jan.ortmann@faktorzehn.de"/>
                 <map alias="erzberger" address="peter.erzberger@faktorzehn.de"/>
+                <map alias="kuntz" address="peter.kuntz@faktorzehn.de"/>
                 <map alias="hohenberger" address="daniel.hohenberger@faktorzehn.de"/>
                 <map alias="weickmann" address="alexander.weickmann@faktorzehn.de"/>
                 <map alias="ortmann2" address="joerg.ortmann@faktorzehn.de"/>
@@ -628,7 +640,7 @@
                 <map alias="cc-org.faktorips.integrationtest.v2_2_patches" address=""/>
                 <map alias="cc-org.faktorips.integrationtest.java5.v2_2_patches" address=""/>
                 <map alias="cc-de.qv.faktorips" address=""/>
-                <failure reportWhenFixed="true" address="jan.ortmann@faktorzehn.de,peter.erzberger@faktorzehn.de,daniel.hohenberger@faktorzehn.de,alexander.weickmann@faktorzehn.de,joerg.ortmann@faktorzehn.de,roman.grutza@faktorzehn.de"/>
+                <failure reportWhenFixed="true" address="jan.ortmann@faktorzehn.de,peter.erzberger@faktorzehn.de,peter.kuntz@faktorzehn.de,daniel.hohenberger@faktorzehn.de,alexander.weickmann@faktorzehn.de,joerg.ortmann@faktorzehn.de,roman.grutza@faktorzehn.de"/>
             </htmlemail>
         </publishers>
     </project>
@@ -653,6 +665,7 @@
             <htmlemail buildresultsurl="${buildresultsurl}/${project.name}" mailhost="${htmlemail.mailhost}" username="" password="" returnaddress="${htmlemail.returnaddress}" skipusers="false" spamwhilebroken="true" returnname="faktorips-buildqueue" subjectprefix="[CC ${project.name}]" reportsuccess="always" xsldir="${htmlemail.xsldir}" css="${htmlemail.css}">
                 <map alias="ortmann" address="jan.ortmann@faktorzehn.de"/>
                 <map alias="erzberger" address="peter.erzberger@faktorzehn.de"/>
+                <map alias="kuntz" address="peter.kuntz@faktorzehn.de"/>
                 <map alias="hohenberger" address="daniel.hohenberger@faktorzehn.de"/>
                 <map alias="weickmann" address="alexander.weickmann@faktorzehn.de"/>
                 <map alias="ortmann2" address="joerg.ortmann@faktorzehn.de"/>
@@ -678,7 +691,7 @@
                 <map alias="cc-org.faktorips.integrationtest.v2_2_patches" address=""/>
                 <map alias="cc-org.faktorips.integrationtest.java5.v2_2_patches" address=""/>
                 <map alias="cc-de.qv.faktorips" address=""/>
-                <failure reportWhenFixed="true" address="jan.ortmann@faktorzehn.de,peter.erzberger@faktorzehn.de,daniel.hohenberger@faktorzehn.de,alexander.weickmann@faktorzehn.de,joerg.ortmann@faktorzehn.de,roman.grutza@faktorzehn.de"/>
+                <failure reportWhenFixed="true" address="jan.ortmann@faktorzehn.de,peter.erzberger@faktorzehn.de,peter.kuntz@faktorzehn.de,daniel.hohenberger@faktorzehn.de,alexander.weickmann@faktorzehn.de,joerg.ortmann@faktorzehn.de,roman.grutza@faktorzehn.de"/>
             </htmlemail>
         </publishers>
     </project>
@@ -724,6 +737,7 @@
             <htmlemail buildresultsurl="${buildresultsurl}/${project.name}" mailhost="${htmlemail.mailhost}" username="" password="" returnaddress="${htmlemail.returnaddress}" skipusers="false" spamwhilebroken="true" returnname="faktorips-buildqueue" subjectprefix="[CC ${project.name}]" reportsuccess="always" xsldir="${htmlemail.xsldir}" css="${htmlemail.css}">
                 <map alias="ortmann" address="jan.ortmann@faktorzehn.de"/>
                 <map alias="erzberger" address="peter.erzberger@faktorzehn.de"/>
+                <map alias="kuntz" address="peter.kuntz@faktorzehn.de"/>
                 <map alias="hohenberger" address="daniel.hohenberger@faktorzehn.de"/>
                 <map alias="weickmann" address="alexander.weickmann@faktorzehn.de"/>
                 <map alias="ortmann2" address="joerg.ortmann@faktorzehn.de"/>
@@ -749,7 +763,7 @@
                 <map alias="cc-org.faktorips.integrationtest.v2_2_patches" address=""/>
                 <map alias="cc-org.faktorips.integrationtest.java5.v2_2_patches" address=""/>
                 <map alias="cc-de.qv.faktorips" address=""/>
-                <failure reportWhenFixed="true" address="jan.ortmann@faktorzehn.de,peter.erzberger@faktorzehn.de,daniel.hohenberger@faktorzehn.de,alexander.weickmann@faktorzehn.de,joerg.ortmann@faktorzehn.de,roman.grutza@faktorzehn.de"/>
+                <failure reportWhenFixed="true" address="jan.ortmann@faktorzehn.de,peter.erzberger@faktorzehn.de,peter.kuntz@faktorzehn.de,daniel.hohenberger@faktorzehn.de,alexander.weickmann@faktorzehn.de,joerg.ortmann@faktorzehn.de,roman.grutza@faktorzehn.de"/>
             </htmlemail>
             <antpublisher buildfile="${mainbuildfile}" uselogger="true" usedebug="false" target="copy.artifacts.pluginbuilder.faktorips">
                 <property name="ccProjectDir" value="${logdir}/${project.name}"/>
@@ -801,6 +815,7 @@
             <htmlemail buildresultsurl="${buildresultsurl}/${project.name}" mailhost="${htmlemail.mailhost}" username="" password="" returnaddress="${htmlemail.returnaddress}" skipusers="false" spamwhilebroken="true" returnname="faktorips-buildqueue" subjectprefix="[CC ${project.name}]" reportsuccess="always" xsldir="${htmlemail.xsldir}" css="${htmlemail.css}">
                 <map alias="ortmann" address="jan.ortmann@faktorzehn.de"/>
                 <map alias="erzberger" address="peter.erzberger@faktorzehn.de"/>
+                <map alias="kuntz" address="peter.kuntz@faktorzehn.de"/>
                 <map alias="hohenberger" address="daniel.hohenberger@faktorzehn.de"/>
                 <map alias="weickmann" address="alexander.weickmann@faktorzehn.de"/>
                 <map alias="ortmann2" address="joerg.ortmann@faktorzehn.de"/>
@@ -826,7 +841,7 @@
                 <map alias="cc-org.faktorips.integrationtest.v2_2_patches" address=""/>
                 <map alias="cc-org.faktorips.integrationtest.java5.v2_2_patches" address=""/>
                 <map alias="cc-de.qv.faktorips" address=""/>
-                <failure reportWhenFixed="true" address="jan.ortmann@faktorzehn.de,peter.erzberger@faktorzehn.de,daniel.hohenberger@faktorzehn.de,alexander.weickmann@faktorzehn.de,joerg.ortmann@faktorzehn.de,roman.grutza@faktorzehn.de"/>
+                <failure reportWhenFixed="true" address="jan.ortmann@faktorzehn.de,peter.erzberger@faktorzehn.de,peter.kuntz@faktorzehn.de,daniel.hohenberger@faktorzehn.de,alexander.weickmann@faktorzehn.de,joerg.ortmann@faktorzehn.de,roman.grutza@faktorzehn.de"/>
             </htmlemail>
             <antpublisher buildfile="${mainbuildfile}" uselogger="true" usedebug="false" target="copy.artifacts.pluginbuilder.faktorips">
                 <property name="ccProjectDir" value="${logdir}/${project.name}"/>
@@ -859,6 +874,7 @@
             <htmlemail buildresultsurl="${buildresultsurl}/${project.name}" mailhost="${htmlemail.mailhost}" username="" password="" returnaddress="${htmlemail.returnaddress}" skipusers="false" spamwhilebroken="true" returnname="faktorips-buildqueue" subjectprefix="[CC ${project.name}]" reportsuccess="always" xsldir="${htmlemail.xsldir}" css="${htmlemail.css}">
                 <map alias="ortmann" address="jan.ortmann@faktorzehn.de"/>
                 <map alias="erzberger" address="peter.erzberger@faktorzehn.de"/>
+                <map alias="kuntz" address="peter.kuntz@faktorzehn.de"/>
                 <map alias="hohenberger" address="daniel.hohenberger@faktorzehn.de"/>
                 <map alias="weickmann" address="alexander.weickmann@faktorzehn.de"/>
                 <map alias="ortmann2" address="joerg.ortmann@faktorzehn.de"/>
@@ -884,7 +900,7 @@
                 <map alias="cc-org.faktorips.integrationtest.v2_2_patches" address=""/>
                 <map alias="cc-org.faktorips.integrationtest.java5.v2_2_patches" address=""/>
                 <map alias="cc-de.qv.faktorips" address=""/>
-                <failure reportWhenFixed="true" address="jan.ortmann@faktorzehn.de,peter.erzberger@faktorzehn.de,daniel.hohenberger@faktorzehn.de,alexander.weickmann@faktorzehn.de,joerg.ortmann@faktorzehn.de,roman.grutza@faktorzehn.de"/>
+                <failure reportWhenFixed="true" address="jan.ortmann@faktorzehn.de,peter.erzberger@faktorzehn.de,peter.kuntz@faktorzehn.de,daniel.hohenberger@faktorzehn.de,alexander.weickmann@faktorzehn.de,joerg.ortmann@faktorzehn.de,roman.grutza@faktorzehn.de"/>
             </htmlemail>
             <antpublisher buildfile="${mainbuildfile}" uselogger="true" usedebug="false" target="copy.artifacts.pluginbuilder.faktorips">
                 <property name="ccProjectDir" value="${logdir}/${project.name}"/>
@@ -917,6 +933,7 @@
             <htmlemail buildresultsurl="${buildresultsurl}/${project.name}" mailhost="${htmlemail.mailhost}" username="" password="" returnaddress="${htmlemail.returnaddress}" skipusers="false" spamwhilebroken="true" returnname="faktorips-buildqueue" subjectprefix="[CC ${project.name}]" reportsuccess="always" xsldir="${htmlemail.xsldir}" css="${htmlemail.css}">
                 <map alias="ortmann" address="jan.ortmann@faktorzehn.de"/>
                 <map alias="erzberger" address="peter.erzberger@faktorzehn.de"/>
+                <map alias="kuntz" address="peter.kuntz@faktorzehn.de"/>
                 <map alias="hohenberger" address="daniel.hohenberger@faktorzehn.de"/>
                 <map alias="weickmann" address="alexander.weickmann@faktorzehn.de"/>
                 <map alias="ortmann2" address="joerg.ortmann@faktorzehn.de"/>
@@ -942,7 +959,7 @@
                 <map alias="cc-org.faktorips.integrationtest.v2_2_patches" address=""/>
                 <map alias="cc-org.faktorips.integrationtest.java5.v2_2_patches" address=""/>
                 <map alias="cc-de.qv.faktorips" address=""/>
-                <failure reportWhenFixed="true" address="jan.ortmann@faktorzehn.de,peter.erzberger@faktorzehn.de,daniel.hohenberger@faktorzehn.de,alexander.weickmann@faktorzehn.de,joerg.ortmann@faktorzehn.de,roman.grutza@faktorzehn.de"/>
+                <failure reportWhenFixed="true" address="jan.ortmann@faktorzehn.de,peter.erzberger@faktorzehn.de,peter.kuntz@faktorzehn.de,daniel.hohenberger@faktorzehn.de,alexander.weickmann@faktorzehn.de,joerg.ortmann@faktorzehn.de,roman.grutza@faktorzehn.de"/>
             </htmlemail>
             <antpublisher buildfile="${mainbuildfile}" uselogger="true" usedebug="false" target="copy.artifacts.pluginbuilder.faktorips">
                 <property name="ccProjectDir" value="${logdir}/${project.name}"/>
@@ -978,6 +995,7 @@
             <htmlemail buildresultsurl="${buildresultsurl}/${project.name}" mailhost="${htmlemail.mailhost}" username="" password="" returnaddress="${htmlemail.returnaddress}" skipusers="false" spamwhilebroken="true" returnname="faktorips-buildqueue" subjectprefix="[CC ${project.name}]" reportsuccess="always" xsldir="${htmlemail.xsldir}" css="${htmlemail.css}">
                 <map alias="ortmann" address="jan.ortmann@faktorzehn.de"/>
                 <map alias="erzberger" address="peter.erzberger@faktorzehn.de"/>
+                <map alias="kuntz" address="peter.kuntz@faktorzehn.de"/>
                 <map alias="hohenberger" address="daniel.hohenberger@faktorzehn.de"/>
                 <map alias="weickmann" address="alexander.weickmann@faktorzehn.de"/>
                 <map alias="ortmann2" address="joerg.ortmann@faktorzehn.de"/>
@@ -1003,7 +1021,7 @@
                 <map alias="cc-org.faktorips.integrationtest.v2_2_patches" address=""/>
                 <map alias="cc-org.faktorips.integrationtest.java5.v2_2_patches" address=""/>
                 <map alias="cc-de.qv.faktorips" address=""/>
-                <failure reportWhenFixed="true" address="jan.ortmann@faktorzehn.de,peter.erzberger@faktorzehn.de,daniel.hohenberger@faktorzehn.de,alexander.weickmann@faktorzehn.de,joerg.ortmann@faktorzehn.de,roman.grutza@faktorzehn.de"/>
+                <failure reportWhenFixed="true" address="jan.ortmann@faktorzehn.de,peter.erzberger@faktorzehn.de,peter.kuntz@faktorzehn.de,daniel.hohenberger@faktorzehn.de,alexander.weickmann@faktorzehn.de,joerg.ortmann@faktorzehn.de,roman.grutza@faktorzehn.de"/>
             </htmlemail>
             <antpublisher buildfile="${mainbuildfile}" uselogger="true" usedebug="false" target="copy.artifacts.pluginbuilder.faktorips">
                 <property name="ccProjectDir" value="${logdir}/${project.name}"/>
@@ -1039,6 +1057,7 @@
             <htmlemail buildresultsurl="${buildresultsurl}/${project.name}" mailhost="${htmlemail.mailhost}" username="" password="" returnaddress="${htmlemail.returnaddress}" skipusers="false" spamwhilebroken="true" returnname="faktorips-buildqueue" subjectprefix="[CC ${project.name}]" reportsuccess="always" xsldir="${htmlemail.xsldir}" css="${htmlemail.css}">
                 <map alias="ortmann" address="jan.ortmann@faktorzehn.de"/>
                 <map alias="erzberger" address="peter.erzberger@faktorzehn.de"/>
+                <map alias="kuntz" address="peter.kuntz@faktorzehn.de"/>
                 <map alias="hohenberger" address="daniel.hohenberger@faktorzehn.de"/>
                 <map alias="weickmann" address="alexander.weickmann@faktorzehn.de"/>
                 <map alias="ortmann2" address="joerg.ortmann@faktorzehn.de"/>
@@ -1064,7 +1083,7 @@
                 <map alias="cc-org.faktorips.integrationtest.v2_2_patches" address=""/>
                 <map alias="cc-org.faktorips.integrationtest.java5.v2_2_patches" address=""/>
                 <map alias="cc-de.qv.faktorips" address=""/>
-                <failure reportWhenFixed="true" address="jan.ortmann@faktorzehn.de,peter.erzberger@faktorzehn.de,daniel.hohenberger@faktorzehn.de,alexander.weickmann@faktorzehn.de,joerg.ortmann@faktorzehn.de,roman.grutza@faktorzehn.de"/>
+                <failure reportWhenFixed="true" address="jan.ortmann@faktorzehn.de,peter.erzberger@faktorzehn.de,peter.kuntz@faktorzehn.de,daniel.hohenberger@faktorzehn.de,alexander.weickmann@faktorzehn.de,joerg.ortmann@faktorzehn.de,roman.grutza@faktorzehn.de"/>
             </htmlemail>
             <antpublisher buildfile="${mainbuildfile}" uselogger="true" usedebug="false" target="copy.artifacts.pluginbuilder.faktorips">
                 <property name="ccProjectDir" value="${logdir}/${project.name}"/>
@@ -1095,6 +1114,7 @@
             <htmlemail buildresultsurl="${buildresultsurl}/${project.name}" mailhost="${htmlemail.mailhost}" username="" password="" returnaddress="${htmlemail.returnaddress}" skipusers="false" spamwhilebroken="true" returnname="faktorips-buildqueue" subjectprefix="[CC ${project.name}]" reportsuccess="always" xsldir="${htmlemail.xsldir}" css="${htmlemail.css}">
                 <map alias="ortmann" address="jan.ortmann@faktorzehn.de"/>
                 <map alias="erzberger" address="peter.erzberger@faktorzehn.de"/>
+                <map alias="kuntz" address="peter.kuntz@faktorzehn.de"/>
                 <map alias="hohenberger" address="daniel.hohenberger@faktorzehn.de"/>
                 <map alias="weickmann" address="alexander.weickmann@faktorzehn.de"/>
                 <map alias="ortmann2" address="joerg.ortmann@faktorzehn.de"/>
@@ -1120,7 +1140,7 @@
                 <map alias="cc-org.faktorips.integrationtest.v2_2_patches" address=""/>
                 <map alias="cc-org.faktorips.integrationtest.java5.v2_2_patches" address=""/>
                 <map alias="cc-de.qv.faktorips" address=""/>
-                <failure reportWhenFixed="true" address="jan.ortmann@faktorzehn.de,peter.erzberger@faktorzehn.de,daniel.hohenberger@faktorzehn.de,alexander.weickmann@faktorzehn.de,joerg.ortmann@faktorzehn.de,roman.grutza@faktorzehn.de"/>
+                <failure reportWhenFixed="true" address="jan.ortmann@faktorzehn.de,peter.erzberger@faktorzehn.de,peter.kuntz@faktorzehn.de,daniel.hohenberger@faktorzehn.de,alexander.weickmann@faktorzehn.de,joerg.ortmann@faktorzehn.de,roman.grutza@faktorzehn.de"/>
             </htmlemail>
         </publishers>
     </project>
