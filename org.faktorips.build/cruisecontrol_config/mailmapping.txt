@@ -13,6 +13,7 @@
 <!-- active user -->
 <map alias="ortmann" address="jan.ortmann@faktorzehn.de"/>
 <map alias="erzberger" address="peter.erzberger@faktorzehn.de"/>
+<map alias="kuntz" address="peter.kuntz@faktorzehn.de"/>
 <map alias="hohenberger" address="daniel.hohenberger@faktorzehn.de"/>
 <map alias="weickmann" address="alexander.weickmann@faktorzehn.de"/>
 <map alias="ortmann2" address="joerg.ortmann@faktorzehn.de" />
