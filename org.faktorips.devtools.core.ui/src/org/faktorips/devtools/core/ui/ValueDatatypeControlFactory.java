@@ -18,6 +18,7 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.faktorips.datatype.ValueDatatype;
 import org.faktorips.devtools.core.internal.model.valueset.ValueSet;
+import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.valueset.IValueSet;
 import org.faktorips.devtools.core.ui.controller.EditField;
 import org.faktorips.devtools.core.ui.table.TableCellEditor;
@@ -53,7 +54,7 @@ public abstract class ValueDatatypeControlFactory {
     public abstract EditField createEditField(UIToolkit toolkit,
             Composite parent,
             ValueDatatype datatype,
-            IValueSet valueSet);
+            IValueSet valueSet, IIpsProject ipsProject);
 
     /**
      * Creates a control that allows to edit a value of the value datatype this is a factory for.
@@ -66,7 +67,8 @@ public abstract class ValueDatatypeControlFactory {
     public abstract Control createControl(UIToolkit toolkit,
             Composite parent,
             ValueDatatype datatype,
-            IValueSet valueSet);
+            IValueSet valueSet, 
+            IIpsProject ipsProject);
 
     /**
      * Creates a cell editor that allows to edit a value of the value datatype this is a factory
@@ -82,6 +84,7 @@ public abstract class ValueDatatypeControlFactory {
             ValueDatatype dataType,
             ValueSet valueSet,
             TableViewer tableViewer,
-            int columnIndex);
+            int columnIndex, 
+            IIpsProject ipsProject);
 
 }

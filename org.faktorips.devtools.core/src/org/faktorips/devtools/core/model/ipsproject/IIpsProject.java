@@ -31,6 +31,7 @@ import org.faktorips.datatype.ValueDatatype;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.internal.model.DynamicValueDatatype;
 import org.faktorips.devtools.core.model.IIpsElement;
+import org.faktorips.devtools.core.model.enums.IEnumContent;
 import org.faktorips.devtools.core.model.enums.IEnumType;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObject;
 import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
@@ -453,6 +454,15 @@ public interface IIpsProject extends IIpsElement, IProjectNature {
     public List<IEnumType> findEnumTypes() throws CoreException;
 
     /**
+     * Returns the first enumeration content that is found within this ips project that references
+     * the provided enumeration type.
+     * 
+     * @throws CoreException if an exception occurs while processing the search
+     * @throws NullPointerException if the provided parameter is <code>null</code> 
+     */
+    public IEnumContent findFirstEnumContent(IEnumType enumType) throws CoreException;
+    
+    /**
      * Returns the product component with the given runtime id or <code>null</code> if no such
      * product component exists. If more than one product component with the given id exists, the
      * first one found is returned.
@@ -526,6 +536,20 @@ public interface IIpsProject extends IIpsElement, IProjectNature {
      * Returns all ips source files within this IpsProject and the IpsProjects this one depends on.
      */
     public void findAllIpsSrcFiles(List<IIpsSrcFile> result) throws CoreException;
+
+    /**
+     * Puts all {@link IIpsSrcFile}s within this {@link IIpsProject} in the provided result list
+     * that match the selection parameters.
+     * 
+     * @param result the ips source files that match the selection parameters are put in this list
+     * @param ipsObjectType the selection parameter for the ips object type that is expected in the
+     *            ips source file
+     * @param packageFragment the package fragment where to look for the ips source file. If
+     *            <code>null</code> is specified all package fragments are considered
+     * @throws CoreException if an exception ocurs while searching
+     */
+    public void findAllIpsSrcFiles(List<IIpsSrcFile> result, IpsObjectType ipsObjectType, String packageFragment)
+            throws CoreException;
 
     /**
      * Adds all ips source files that are accessible through ips source folder entries to the result

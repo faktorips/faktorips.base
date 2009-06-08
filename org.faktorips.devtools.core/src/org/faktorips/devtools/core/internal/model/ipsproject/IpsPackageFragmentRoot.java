@@ -210,13 +210,20 @@ public class IpsPackageFragmentRoot extends AbstractIpsPackageFragmentRoot imple
         return IpsPlugin.getDefault().getImage("IpsPackageFragmentRoot.gif"); //$NON-NLS-1$
     }
 
-    void findIpsSourceFiles(IpsObjectType type, List result) throws CoreException {
+    void findIpsSourceFiles(IpsObjectType type, String packageFragment, List result) throws CoreException {
         if (!exists()) {
             return;
         }
-        IIpsPackageFragment[] packs = this.getIpsPackageFragments();
-        for (int i = 0; i < packs.length; i++) {
-            ((IpsPackageFragment)packs[i]).findIpsSourceFiles(type, result);
+        if(packageFragment == null){
+            IIpsPackageFragment[] packs = this.getIpsPackageFragments();
+            for (int i = 0; i < packs.length; i++) {
+                ((IpsPackageFragment)packs[i]).findIpsSourceFiles(type, result);
+            }
+            return;
+        }
+        IpsPackageFragment ipsPackageFragment = (IpsPackageFragment)getIpsPackageFragment(packageFragment);
+        if(ipsPackageFragment != null){
+            ipsPackageFragment.findIpsSourceFiles(type, result);
         }
     }
 

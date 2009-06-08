@@ -64,9 +64,9 @@ public class EnumValueSetFieldTest extends AbstractIpsPluginTest {
         
         String[] items = field.getCombo().getItems();
         assertEquals(3, items.length);
-        assertEquals(nullRepresentation, items[0]);
-        assertEquals(PaymentMode.ANNUAL_ID, items[1]);
-        assertEquals(PaymentMode.MONTHLY_ID, items[2]);
+        assertEquals(PaymentMode.ANNUAL_ID, items[0]);
+        assertEquals(PaymentMode.MONTHLY_ID, items[1]);
+        assertEquals(nullRepresentation, items[2]);
         
         field.setValue(PaymentMode.ANNUAL_ID);
         assertEquals(PaymentMode.ANNUAL_ID, field.getValue());
@@ -79,9 +79,9 @@ public class EnumValueSetFieldTest extends AbstractIpsPluginTest {
         field.setValue("unknownValue");
         items = c.getItems();
         assertEquals(4, items.length);
-        assertEquals(nullRepresentation, items[0]);
-        assertEquals(PaymentMode.ANNUAL_ID, items[1]);
-        assertEquals(PaymentMode.MONTHLY_ID, items[2]);
+        assertEquals(PaymentMode.ANNUAL_ID, items[0]);
+        assertEquals(PaymentMode.MONTHLY_ID, items[1]);
+        assertEquals(nullRepresentation, items[2]);
         assertEquals("unknownValue", items[3]);
         
         field.setValue(PaymentMode.ANNUAL_ID);
@@ -135,9 +135,9 @@ public class EnumValueSetFieldTest extends AbstractIpsPluginTest {
         
         String[] items = field.getCombo().getItems();
         assertEquals(3, items.length);
-        assertEquals(nullRepresentation, items[0]);
-        assertEquals(PaymentMode.ANNUAL_NAME, items[1]);
-        assertEquals(PaymentMode.MONTHLY_NAME, items[2]);
+        assertEquals(PaymentMode.ANNUAL_NAME, items[0]);
+        assertEquals(PaymentMode.MONTHLY_NAME, items[1]);
+        assertEquals(nullRepresentation, items[2]);
         
         field.setValue(PaymentMode.ANNUAL_ID);
         assertEquals(PaymentMode.ANNUAL_ID, field.getValue());
@@ -150,9 +150,9 @@ public class EnumValueSetFieldTest extends AbstractIpsPluginTest {
         field.setValue("unknownValue");
         items = c.getItems();
         assertEquals(4, items.length);
-        assertEquals(nullRepresentation, items[0]);
-        assertEquals(PaymentMode.ANNUAL_NAME, items[1]);
-        assertEquals(PaymentMode.MONTHLY_NAME, items[2]);
+        assertEquals(PaymentMode.ANNUAL_NAME, items[0]);
+        assertEquals(PaymentMode.MONTHLY_NAME, items[1]);
+        assertEquals(nullRepresentation, items[2]);
         assertEquals("unknownValue", items[3]);
         
         field.setValue(PaymentMode.ANNUAL_ID);
@@ -175,9 +175,9 @@ public class EnumValueSetFieldTest extends AbstractIpsPluginTest {
         
         String[] items = field.getCombo().getItems();
         assertEquals(3, items.length);
-        assertEquals(nullRepresentation, items[0]);
-        assertEquals(annualNameAndId, items[1]);
-        assertEquals(monthlyNameAndId, items[2]);
+        assertEquals(annualNameAndId, items[0]);
+        assertEquals(monthlyNameAndId, items[1]);
+        assertEquals(nullRepresentation, items[2]);
         
         field.setValue(PaymentMode.ANNUAL_ID);
         assertEquals(PaymentMode.ANNUAL_ID, field.getValue());
@@ -190,9 +190,9 @@ public class EnumValueSetFieldTest extends AbstractIpsPluginTest {
         field.setValue("unknownValue");
         items = c.getItems();
         assertEquals(4, items.length);
-        assertEquals(nullRepresentation, items[0]);
-        assertEquals(annualNameAndId, items[1]);
-        assertEquals(monthlyNameAndId, items[2]);
+        assertEquals(annualNameAndId, items[0]);
+        assertEquals(monthlyNameAndId, items[1]);
+        assertEquals(nullRepresentation, items[2]);
         assertEquals("unknownValue", items[3]);
         
         field.setValue(PaymentMode.ANNUAL_ID);

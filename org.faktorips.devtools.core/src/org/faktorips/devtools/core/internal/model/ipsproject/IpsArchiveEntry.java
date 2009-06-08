@@ -129,8 +129,8 @@ public class IpsArchiveEntry extends IpsObjectPathEntry implements IIpsArchiveEn
         return archive.contains(qnt);
     }
 
-    public void findIpsSrcFilesInternal(IpsObjectType type, List result, Set visitedEntries) throws CoreException {
-        ((ArchiveIpsPackageFragmentRoot)getIpsPackageFragmentRoot()).findIpsSourceFiles(type, result);
+    public void findIpsSrcFilesInternal(IpsObjectType type, String packageFragment, List result, Set visitedEntries) throws CoreException {
+        ((ArchiveIpsPackageFragmentRoot)getIpsPackageFragmentRoot()).findIpsSourceFiles(type, packageFragment, result);
     }
 
     /**

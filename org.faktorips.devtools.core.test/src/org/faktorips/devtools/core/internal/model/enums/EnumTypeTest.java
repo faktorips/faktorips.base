@@ -457,6 +457,20 @@ public class EnumTypeTest extends AbstractIpsEnumPluginTest {
         assertTrue(idList.contains("monthly"));
         assertTrue(idList.contains("annually"));
 
+        ids = paymentMode.getAllValueIds(true);
+        assertEquals(3, ids.length);
+        idList = Arrays.asList(ids);
+        assertTrue(idList.contains(null));
+        
+        paymentMode.setContainingValues(false);
+        ids = paymentMode.getAllValueIds(true);
+        idList = Arrays.asList(ids);
+        assertEquals(1, ids.length);
+        assertTrue(idList.contains(null));
+
+        ids = paymentMode.getAllValueIds(false);
+        assertEquals(0, ids.length);
+        
         IEnumType color = newEnumType(ipsProject, "Color");
         color.setAbstract(false);
         color.setContainingValues(true);

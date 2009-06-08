@@ -47,20 +47,15 @@ public class EnumValueSetField extends AbstractEnumDatatypeBasedField {
         reInitInternal();
     }
 
-    protected final void reInitInternal() {
+    @Override
+    protected List<String> getDatatypeValueIds() {
         List<String> ids = new ArrayList<String>();
         ids.addAll(Arrays.asList(valueSet.getValues()));
-        ArrayList<String> names = new ArrayList<String>(ids.size());
-        for (int i = 0; i < ids.size(); i++) {
-            names.add(getDisplayTextForValue(valueSet.getValue(i)));
-        }
-
         // add the null representation entry if not exists in list
         if (!valueSet.containsValue(null)) {
-            names.add(0, getDisplayTextForValue(null));
-            ids.add(0, getDisplayTextForValue(null));
+            ids.add(null);
         }
-
-        initialize((String[])ids.toArray(new String[ids.size()]), (String[])names.toArray(new String[names.size()]));
+        return ids;
     }
+
 }

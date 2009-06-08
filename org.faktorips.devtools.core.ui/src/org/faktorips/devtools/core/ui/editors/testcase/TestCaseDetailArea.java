@@ -374,7 +374,7 @@ public class TestCaseDetailArea {
         addSectionSelectionListeners(null, label, testPolicyCmptForSelection);
 
         try {
-            editField = ctrlFactory.createEditField(toolkit, attributeComposite, datatype, null);
+            editField = ctrlFactory.createEditField(toolkit, attributeComposite, datatype, null, ipsProject);
         } catch (Exception e) {
             // ignore exception
         }
@@ -553,7 +553,7 @@ public class TestCaseDetailArea {
         }
 
         Label label = toolkit.createFormLabel(composite, Messages.TestCaseDetailArea_Label_Value);
-        final EditField editField = ctrlFactory.createEditField(toolkit, composite, datatype, null);
+        final EditField editField = ctrlFactory.createEditField(toolkit, composite, datatype, null, ipsProject);
         addSectionSelectionListeners(editField, label, testValue);
 
         addBindingFor(editField, testValue, ITestValue.PROPERTY_VALUE);

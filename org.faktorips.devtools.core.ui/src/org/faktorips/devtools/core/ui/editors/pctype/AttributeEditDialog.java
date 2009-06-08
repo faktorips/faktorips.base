@@ -564,7 +564,7 @@ public class AttributeEditDialog extends IpsPartEditDialog2 implements ContentsC
         ValueDatatypeControlFactory datatypeCtrlFactory = IpsUIPlugin.getDefault().getValueDatatypeControlFactory(
                 currentDatatype);
         defaultValueField = datatypeCtrlFactory.createEditField(uiToolkit, defaultEditFieldPlaceholder,
-                currentDatatype, null);
+                currentDatatype, null, ipsProject);
         defaultValueField.getControl().setLayoutData(new GridData(GridData.FILL_BOTH));
         adjustLabelWidth();
 

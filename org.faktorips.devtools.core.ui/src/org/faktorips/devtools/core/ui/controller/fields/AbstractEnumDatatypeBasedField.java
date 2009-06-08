@@ -13,7 +13,9 @@
 
 package org.faktorips.devtools.core.ui.controller.fields;
 
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 
 import org.apache.commons.lang.ObjectUtils;
 import org.eclipse.swt.widgets.Combo;
@@ -41,7 +43,7 @@ public abstract class AbstractEnumDatatypeBasedField extends ComboField {
 
     private ValueDatatype datatype;
 
-    private String[] ids;
+    private List<String> ids;
 
     private String invalidValue;
 
@@ -50,6 +52,8 @@ public abstract class AbstractEnumDatatypeBasedField extends ComboField {
         ArgumentCheck.notNull(datatype);
         this.datatype = datatype;
     }
+
+    protected abstract List<String> getDatatypeValueIds();
 
     /**
      * Refills the combo box and tries to keep the current value if it is still in the range of
@@ -66,8 +70,8 @@ public abstract class AbstractEnumDatatypeBasedField extends ComboField {
             } catch (Exception e) {
                 // ignore exception, select first element instead if available
             }
-            if (ids != null && ids.length > 0) {
-                setValue(ids[0]);
+            if (ids != null && ids.size() > 0) {
+                setValue(ids.get(0));
             }
         }
     }
@@ -79,30 +83,23 @@ public abstract class AbstractEnumDatatypeBasedField extends ComboField {
      * <code>initialized(String[], String[])</code> method is supposed to be used to set the values
      * of the combo within implementations of <code>reInitInternal()</code>.
      */
-    protected abstract void reInitInternal();
+    protected final void reInitInternal(){
+        ids = getDatatypeValueIds();
+        if(ids == null){
+            ids = new ArrayList<String>();
+        }
+        ArrayList<String> items = new ArrayList<String>(ids.size());
+        for (String id : ids) {
+            String text = getDisplayTextForValue(id);
+            if(text == null){
+                throw new RuntimeException(
+                        "Inconsistant state during initialization of this edit field. The method getDisplayTextForValue(String) returned null for the provided id="
+                                + id);
+            }
+            items.add(text);
+        }
+        setItems(items.toArray(new String[items.size()]));
 
-    /**
-     * Initializes the combo either with the ids of the enumeration values or with the value names
-     * if the Datatype if it is an enum datatype and supports names. The ids are kept during the
-     * life time of this EditField or until the reInit() method is called. They are used to by the
-     * <code>getValue()</code> method. Implementations of the <code>reInitInteral()</code> method
-     * need to call this method to initialize this edit field correctly.
-     */
-    protected final void initialize(String[] ids, String[] texts) {
-        this.ids = ids;
-        for (int i = 0; i < this.ids.length; i++) {
-            this.ids[i] = (String)super.prepareObjectForSet(this.ids[i]);
-        }
-        if (texts == null || texts.length == 0) {
-            setItems(ids);
-            return;
-        }
-        String[] textsToShow = new String[texts.length];
-        for (int i = 0; i < textsToShow.length; i++) {
-            textsToShow[i] = (String)super.prepareObjectForSet(texts[i]);
-        }
-        setItems(textsToShow);
-        return;
     }
 
     private void setItems(String[] items) {
@@ -110,7 +107,7 @@ public abstract class AbstractEnumDatatypeBasedField extends ComboField {
         if (invalidValue != null) {
             // there is an invalid value in the list, add this value to the items if the invalid
             // value is currently not in the list
-            String valueToAdd = (String)super.prepareObjectForSet(getDisplayTextForValue(invalidValue));
+            String valueToAdd = getDisplayTextForValue(invalidValue);
             if (!Arrays.asList(getCombo().getItems()).contains(valueToAdd)) {
                 getCombo().add(valueToAdd);
             }
@@ -134,12 +131,12 @@ public abstract class AbstractEnumDatatypeBasedField extends ComboField {
             return null;
         }
 
-        if (selectedIndex >= ids.length) {
+        if (selectedIndex >= ids.size()) {
             // we have the invalid value selected...
             return invalidValue;
         }
 
-        return super.prepareObjectForGet(ids[selectedIndex]);
+        return ids.get(selectedIndex);
     }
 
     /**
@@ -148,12 +145,9 @@ public abstract class AbstractEnumDatatypeBasedField extends ComboField {
      * selected.
      */
     public void setValue(Object newValue) {
-        boolean isParsable = false;
-        newValue = (String)prepareObjectForSet(newValue);
 
-        isParsable = datatype.isParsable((String)newValue);
-        if (isParsable) {
-            super.setValue(getDisplayTextForValue((String)newValue));
+        if (datatype.isParsable((String)newValue)) {
+            setText(getDisplayTextForValue((String)newValue));
         }
 
         /*
@@ -167,7 +161,7 @@ public abstract class AbstractEnumDatatypeBasedField extends ComboField {
             // because this is an invalid value (not in enum value set, we
             // must reinit the item in the drop down, only so we can select the invalid value
             reInitInternal();
-            super.setValue(newValue);
+            setText(getDisplayTextForValue((String)newValue));
         }
     }
 

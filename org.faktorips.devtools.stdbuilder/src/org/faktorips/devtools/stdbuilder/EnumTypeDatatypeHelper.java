@@ -48,6 +48,9 @@ public class EnumTypeDatatypeHelper extends AbstractDatatypeHelper {
      * {@inheritDoc}
      */
     public JavaCodeFragment newInstance(String value) {
+        if(value == null){
+            return new JavaCodeFragment("null");
+        }
         try {
 
             if (!(enumType.isContainingValues())) {

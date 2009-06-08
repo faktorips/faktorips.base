@@ -171,7 +171,7 @@ public class DefaultsAndRangesSection extends IpsSection {
         toolkit.createFormLabel(rootPane, Messages.PolicyAttributeEditDialog_defaultValue);
 
         ValueDatatypeControlFactory ctrlFactory = IpsUIPlugin.getDefault().getValueDatatypeControlFactory(dataType);
-        EditField field = ctrlFactory.createEditField(toolkit, rootPane, dataType, element.getValueSet());
+        EditField field = ctrlFactory.createEditField(toolkit, rootPane, dataType, element.getValueSet(), generation.getIpsProject());
         addFocusControl(field.getControl());
         editControls.add(field.getControl());
         controller.add(field, element, IConfigElement.PROPERTY_VALUE);

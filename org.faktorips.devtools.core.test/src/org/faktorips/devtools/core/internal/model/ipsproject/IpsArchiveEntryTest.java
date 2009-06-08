@@ -105,12 +105,30 @@ public class IpsArchiveEntryTest extends AbstractIpsPluginTest {
         ArrayList result = new ArrayList();
         Set visitedEntries = new HashSet();
         entry.findIpsSrcFiles(IpsObjectType.POLICY_CMPT_TYPE, result, visitedEntries);
-        
+
         IIpsObject motorPolicy = project.findIpsObject(qntMotorPolicy);
         IIpsObject motorCollision = project.findIpsObject(qntMotorCollision);
-
+        
         assertTrue(result.contains(motorPolicy.getIpsSrcFile()));
         assertTrue(result.contains(motorCollision.getIpsSrcFile()));
+    }
+
+    public void testFindIpsSrcFilesWithPackageFragment() throws Exception{
+        
+        ArrayList result = new ArrayList();
+        entry.findIpsSrcFiles(IpsObjectType.POLICY_CMPT_TYPE, "pack1", result, new HashSet());
+
+        assertEquals(1, result.size());
+        IIpsObject motorPolicy = project.findIpsObject(qntMotorPolicy);
+        assertTrue(result.contains(motorPolicy.getIpsSrcFile()));
+
+        result = new ArrayList();
+        entry.findIpsSrcFiles(IpsObjectType.POLICY_CMPT_TYPE, "pack2", result, new HashSet());
+        
+        assertEquals(1, result.size());
+        IIpsObject motorCollision = project.findIpsObject(qntMotorCollision);
+        assertTrue(result.contains(motorCollision.getIpsSrcFile()));
+
     }
     
     public void testInitFromXml() {

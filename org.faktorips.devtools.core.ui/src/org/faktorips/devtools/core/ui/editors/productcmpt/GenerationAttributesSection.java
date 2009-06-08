@@ -213,7 +213,7 @@ public class GenerationAttributesSection extends IpsSection {
                 valueset = attr.getValueSet();
 			}
 			ValueDatatypeControlFactory ctrlFactory = IpsUIPlugin.getDefault().getValueDatatypeControlFactory(datatype);
-			EditField field = ctrlFactory.createEditField(toolkit, rootPane, (ValueDatatype)datatype, valueset);
+			EditField field = ctrlFactory.createEditField(toolkit, rootPane, (ValueDatatype)datatype, valueset, generation.getIpsProject());
 			Control ctrl = field.getControl();
 			controller.add(field, toDisplay, IConfigElement.PROPERTY_VALUE);
 			addFocusControl(ctrl);

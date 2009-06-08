@@ -1028,6 +1028,33 @@ public class IpsProject extends IpsElement implements IIpsProject {
         findAllIpsSrcFiles(result, getIpsModel().getIpsObjectTypes());
     }
 
+    /**
+     * {@inheritDoc}
+     */
+    public void findAllIpsSrcFiles(List<IIpsSrcFile> result, IpsObjectType ipsObjectType, String packageFragment) throws CoreException{
+        Set<IIpsSrcFile> visitedEntries = new HashSet<IIpsSrcFile>();
+        getIpsObjectPathInternal().findIpsSrcFiles(ipsObjectType, packageFragment, result, visitedEntries);
+    }
+    
+    /**
+     * {@inheritDoc}
+     */
+    public IEnumContent findFirstEnumContent(IEnumType enumType) throws CoreException {
+        ArgumentCheck.notNull(enumType, this);
+        if (enumType.isContainingValues()) {
+            return null;
+        }
+        List<IIpsSrcFile> ipsSrcFiles = new ArrayList<IIpsSrcFile>();
+        findAllIpsSrcFiles(ipsSrcFiles, IpsObjectType.ENUM_CONTENT, enumType.getEnumContentPackageFragment());
+        for (IIpsSrcFile contentFiles : ipsSrcFiles) {
+            IEnumContent enumContent = (IEnumContent)contentFiles.getIpsObject();
+            if (enumContent.getEnumType().equals(enumType.getQualifiedName())) {
+                return enumContent;
+            }
+        }
+        return null;
+    }
+    
     private void findAllIpsSrcFiles(List result, IpsObjectType ipsObjectType) throws CoreException {
         Set visitedEntries = new HashSet();
         getIpsObjectPathInternal().findIpsSrcFiles(ipsObjectType, result, visitedEntries);

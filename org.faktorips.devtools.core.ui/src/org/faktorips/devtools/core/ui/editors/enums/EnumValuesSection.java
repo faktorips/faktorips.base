@@ -469,22 +469,20 @@ public class EnumValuesSection extends IpsSection implements ContentsChangeListe
 
             TableCellEditor cellEditor = null;
             ValueDatatype datatype = enumValueContainer.getIpsProject().findValueDatatype(datatypeQualifiedName);
-            if (datatype instanceof IEnumType) {
-                Combo combo = getToolkit().createCombo(enumValuesTableViewer.getTable());
-                /*
-                 * TODO for enum types without content the content must be found here and provided
-                 * to the field
-                 */
-                EnumTypeDatatypeField field = new EnumTypeDatatypeField(combo, (IEnumType)datatype, null);
-                combo.setData(field);
-                cellEditor = new ComboCellEditor(enumValuesTableViewer, i, combo);
-            } else {
+//            if (datatype instanceof IEnumType) {
+//                Combo combo = getToolkit().createCombo(enumValuesTableViewer.getTable());
+//                //TODO for enum types without content the content must be found here and provided to the field
+//                EnumTypeDatatypeField field = new EnumTypeDatatypeField(combo, (IEnumType)datatype, null);
+//                combo.setData(field);
+//                cellEditor = new ComboCellEditor(enumValuesTableViewer, i, combo);
+//            } else {
                 ValueDatatypeControlFactory valueDatatypeControlFactory = IpsUIPlugin.getDefault()
                         .getValueDatatypeControlFactory(datatype);
-
+                
+                //the ips project of the enum value container is provided to this method
                 cellEditor = valueDatatypeControlFactory.createCellEditor(getToolkit(), datatype, null,
-                        enumValuesTableViewer, i);
-            }
+                        enumValuesTableViewer, i, enumValueContainer.getIpsProject());
+//            }
             cellEditor.setRowCreating(true);
             cellEditors[i] = cellEditor;
         }
@@ -640,7 +638,7 @@ public class EnumValuesSection extends IpsSection implements ContentsChangeListe
                                 }
                             }
 
-                            // Something else but the name has changed.
+                            // Something else but the name has changed
                             if (oldName == null) {
                                 if (enumValueContainer instanceof IEnumType) {
                                     reinit(enumTypeModifiedEnumAttribute);
@@ -764,10 +762,9 @@ public class EnumValuesSection extends IpsSection implements ContentsChangeListe
                         // Format value properly
                         String datatype = enumAttributeValue.findEnumAttribute(ipsProject).getDatatype();
                         ValueDatatype valueDatatype = enumAttributeValue.getIpsProject().findValueDatatype(datatype);
-                        // TODO pk: in the case of an enum type without content the content must of
-                        // it must be find
-                        // here and provided to the formatter
-                        if (valueDatatype instanceof IEnumType) {
+                        //TODO pk: in the case of an enum type without content the content must of it must be find
+                        //here and provided to the formatter
+                        if(valueDatatype instanceof IEnumType){
                             return IpsPlugin.getDefault().getIpsPreferences().getDatatypeFormatter().formatValue(
                                     (IEnumType)valueDatatype, null, columnValue);
                         }

@@ -105,10 +105,10 @@ public class IpsProjectRefEntry extends IpsObjectPathEntry implements
     /**
      * {@inheritDoc}
      */
-    public void findIpsSrcFilesInternal(IpsObjectType type, List result, Set visitedEntries)
+    public void findIpsSrcFilesInternal(IpsObjectType type, String packageFragment, List result, Set visitedEntries)
             throws CoreException {
         if (referencedIpsProject != null) {
-            ((IpsProject)referencedIpsProject).getIpsObjectPathInternal().findIpsSrcFiles(type,
+            ((IpsProject)referencedIpsProject).getIpsObjectPathInternal().findIpsSrcFiles(type, packageFragment,
                     result, visitedEntries);
         }
     }

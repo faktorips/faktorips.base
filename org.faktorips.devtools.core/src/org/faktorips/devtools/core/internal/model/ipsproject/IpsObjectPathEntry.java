@@ -109,9 +109,19 @@ public abstract class IpsObjectPathEntry implements IIpsObjectPathEntry {
             }
             visitedEntries.add(this);
         }
-        findIpsSrcFilesInternal(type, result, visitedEntries);
+        findIpsSrcFilesInternal(type, null, result, visitedEntries);
     }
-        
+
+    public final void findIpsSrcFiles(IpsObjectType type, String packageFragment, List result, Set visitedEntries) throws CoreException {
+        if (visitedEntries!=null) {
+            if (visitedEntries.contains(this)) {
+                return;
+            }
+            visitedEntries.add(this);
+        }
+        findIpsSrcFilesInternal(type, packageFragment, result, visitedEntries);
+    }
+
     /**
      * Returns all isp source files of the given type starting with the given prefix found on the path.
      * 
@@ -136,7 +146,7 @@ public abstract class IpsObjectPathEntry implements IIpsObjectPathEntry {
     /**
      * Adds all objects of the given type found in the path entry to the result list. 
      */
-    protected abstract void findIpsSrcFilesInternal(IpsObjectType type, List result, Set visitedEntries) throws CoreException;
+    protected abstract void findIpsSrcFilesInternal(IpsObjectType type, String packageFragment, List result, Set visitedEntries) throws CoreException;
 
     /**
      * Returns the first ips source file with the indicated qualified name type found in the path entry. 

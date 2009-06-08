@@ -922,6 +922,13 @@ public class EnumType extends EnumValueContainer implements IEnumType {
      *             <code>CoreException</code>.
      */
     public String[] getAllValueIds(boolean includeNull) {
+
+        if(!isContainingValues() && includeNull){
+            return new String[]{null};
+        } 
+        if(!isContainingValues()){
+            return new String[0];
+        }
         try {
 
             List<String> valueIds = new ArrayList<String>(getEnumValuesCount());
@@ -937,6 +944,9 @@ public class EnumType extends EnumValueContainer implements IEnumType {
                 valueIds.add(value.getValue());
             }
 
+            if(includeNull){
+                valueIds.add(null);
+            }
             return valueIds.toArray(new String[valueIds.size()]);
 
         } catch (CoreException e) {
@@ -950,7 +960,7 @@ public class EnumType extends EnumValueContainer implements IEnumType {
      * otherwise <code>null</code> is returned.
      */
     public String getValueName(String id) {
-        if (id == null) {
+        if (id == null || !isContainingValues()) {
             return null;
         }
 
@@ -1052,6 +1062,7 @@ public class EnumType extends EnumValueContainer implements IEnumType {
      * Returns true.
      */
     public boolean isMutable() {
+        //mutable in this case refers to the generated enum class. which is not mutable  
         return false;
     }
 
@@ -1059,13 +1070,16 @@ public class EnumType extends EnumValueContainer implements IEnumType {
      * Returns false.
      */
     public boolean isNull(String value) {
-        return false;
+        return value == null;
     }
 
     /**
      * {@inheritDoc}
      */
     public boolean isParsable(String value) {
+        if(value == null){
+            return true;
+        }
         return getValueName(value) != null;
     }
 

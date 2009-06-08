@@ -82,7 +82,7 @@ public class ComboCellEditor extends TableCellEditor {
      * {@inheritDoc}
      */
     protected void doSetValue(Object value) {
-        if((comboControl != null) && value instanceof String){
+        if((comboControl != null) && (value instanceof String || value == null)){
             Object data = comboControl.getData();
             if (data instanceof EnumDatatypeField){
                 // map the value by using the stored EnumDatatypeField
@@ -91,10 +91,11 @@ public class ComboCellEditor extends TableCellEditor {
                 ((EnumTypeDatatypeField)data).setValue(value);
             }
             else if (data instanceof BooleanDatatype  || data instanceof PrimitiveBooleanDatatype) {
-                if (Boolean.TRUE.toString().equals(value)){
-                    comboControl.select(getIndexForValue(IpsPlugin.getDefault().getIpsPreferences().getDatatypeFormatter().getBooleanTrueDisplay()));  
-                } else if (value == null) {
+                if(value == null){
+                    //TODO pk 08-06-2009 there is missing something
                     IpsPlugin.getDefault().getIpsPreferences().getNullPresentation();
+                } else if (Boolean.TRUE.toString().equals(value)){
+                    comboControl.select(getIndexForValue(IpsPlugin.getDefault().getIpsPreferences().getDatatypeFormatter().getBooleanTrueDisplay()));  
                 } else if (Boolean.FALSE.toString().equals(value)) {
                     comboControl.select(getIndexForValue(IpsPlugin.getDefault().getIpsPreferences().getDatatypeFormatter().getBooleanFalseDisplay()));  
                 } else {

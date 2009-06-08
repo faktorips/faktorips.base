@@ -58,6 +58,7 @@ import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.core.ui.controlfactories.BooleanControlFactory;
 import org.faktorips.devtools.core.ui.controlfactories.DefaultControlFactory;
 import org.faktorips.devtools.core.ui.controlfactories.EnumDatatypeControlFactory;
+import org.faktorips.devtools.core.ui.controlfactories.EnumTypeDatatypeControlFactory;
 import org.faktorips.devtools.core.ui.controller.EditFieldChangesBroadcaster;
 import org.faktorips.devtools.core.ui.editors.IIpsObjectEditorSettings;
 import org.faktorips.devtools.core.ui.editors.IpsArchiveEditorInput;
@@ -127,7 +128,7 @@ public class IpsUIPlugin extends AbstractUIPlugin {
         ResourcesPlugin.getWorkspace().addSaveParticipant(this, saveParticipant);
         controlFactories = new ValueDatatypeControlFactory[] {
                 new BooleanControlFactory(IpsPlugin.getDefault().getIpsPreferences()),
-                new EnumDatatypeControlFactory(), new DefaultControlFactory() };
+                new EnumDatatypeControlFactory(), new EnumTypeDatatypeControlFactory(), new DefaultControlFactory() };
     }
 
     /**

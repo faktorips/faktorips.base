@@ -142,7 +142,7 @@ public class DefaultValueAndValueSetTabPage extends Composite {
         previousDatatype = datatype;
 
         ValueDatatypeControlFactory datatypeCtrlFactory = IpsUIPlugin.getDefault().getValueDatatypeControlFactory(datatype);
-        defaultValueField = datatypeCtrlFactory.createEditField(uiToolkit, defaultEditFieldPlaceholder, datatype, null);
+        defaultValueField = datatypeCtrlFactory.createEditField(uiToolkit, defaultEditFieldPlaceholder, datatype, null, valueSetOwner.getValueSet().getIpsProject());
         defaultValueField.getControl().setLayoutData(new GridData(GridData.FILL_BOTH));
         adjustLabelWidth();
 

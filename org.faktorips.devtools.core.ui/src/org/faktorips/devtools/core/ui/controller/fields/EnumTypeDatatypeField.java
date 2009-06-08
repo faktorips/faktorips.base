@@ -14,6 +14,8 @@
 package org.faktorips.devtools.core.ui.controller.fields;
 
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.swt.widgets.Combo;
@@ -42,17 +44,10 @@ public class EnumTypeDatatypeField extends AbstractEnumDatatypeBasedField {
         reInitInternal();
     }
 
-    /**
-     * {@inheritDoc}
-     */
-    protected final void reInitInternal() {
-        String[] ids = getEnumDatatype().getAllValueIds(true);
-        ArrayList<String> items = new ArrayList<String>(ids.length);
-        for (int i = 0; i < ids.length; i++) {
-            items.add(getDisplayTextForValue(ids[i]));
-        }
-        String[] textToShow = (String[])items.toArray(new String[items.size()]);
-        initialize(ids, textToShow);
+    @Override
+    protected List<String> getDatatypeValueIds() {
+        List<String> ids = Arrays.asList(getEnumDatatype().getAllValueIds(true));
+        return new ArrayList<String>(ids);
     }
 
     private IEnumType getEnumDatatype() {

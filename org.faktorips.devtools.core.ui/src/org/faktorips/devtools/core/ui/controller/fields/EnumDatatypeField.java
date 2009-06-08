@@ -14,6 +14,8 @@
 package org.faktorips.devtools.core.ui.controller.fields;
 
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 import org.eclipse.swt.widgets.Combo;
 import org.faktorips.datatype.EnumDatatype;
@@ -23,7 +25,7 @@ import org.faktorips.datatype.EnumDatatype;
  * <code>EnumDatatype</code>. If the <code>EnumDatatype</code> supports value names these will be
  * displayed instead of the value ids.
  * 
- * @author kuntz
+ * @author Peter Kuntz
  * 
  */
 public class EnumDatatypeField extends AbstractEnumDatatypeBasedField {
@@ -33,20 +35,13 @@ public class EnumDatatypeField extends AbstractEnumDatatypeBasedField {
         reInitInternal();
     }
 
-    /**
-     * {@inheritDoc}
-     */
-    protected final void reInitInternal() {
-        String[] ids = getEnumDatatype().getAllValueIds(true);
-        ArrayList<String> items = new ArrayList<String>(ids.length);
-        for (int i = 0; i < ids.length; i++) {
-            items.add(super.getDisplayTextForValue(ids[i]));
-        }
-        String[] textToShow = (String[])items.toArray(new String[items.size()]);
-        initialize(ids, textToShow);
-    }
-
     private EnumDatatype getEnumDatatype() {
         return (EnumDatatype)getDatatype();
+    }
+
+    @Override
+    protected List<String> getDatatypeValueIds() {
+        List<String> ids = Arrays.asList(getEnumDatatype().getAllValueIds(true));
+        return new ArrayList<String>(ids);
     }
 }

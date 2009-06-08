@@ -747,7 +747,7 @@ public class FormulaTestCaseControl extends Composite implements ColumnChangeLis
         } catch (CoreException e) {
             IpsPlugin.logAndShowErrorDialog(e);
         }
-        BeanTableCellModifier tableCellModifier = new BeanTableCellModifier(formulaTestCaseTableViewer, this);
+        BeanTableCellModifier tableCellModifier = new BeanTableCellModifier(formulaTestCaseTableViewer, this, ipsProject);
         tableCellModifier.initModifier(uiToolkit, new String[] { null, IFormulaTestCase.PROPERTY_NAME,
                 IFormulaTestCase.PROPERTY_EXPECTED_RESULT, PROPERTY_ACTUAL_RESULT }, new ValueDatatype[] { null,
                 ValueDatatype.STRING, resultValueDatatype, null });

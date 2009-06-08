@@ -419,7 +419,7 @@ public class FormulaTestInputValuesControl extends Composite implements ColumnCh
 
     private void createTableCellModifier() {
         delegateCellEditorColumnIndex = 2;
-        tableCellModifier = new BeanTableCellModifier(formulaInputTableViewer, this);
+        tableCellModifier = new BeanTableCellModifier(formulaInputTableViewer, this, ipsProject);
         tableCellModifier.initModifier(uiToolkit, new String[] { "image", IFormulaTestInputValue.PROPERTY_NAME, //$NON-NLS-1$
                 IFormulaTestInputValue.PROPERTY_VALUE}, new ValueDatatype[] { null, null, DelegateCellEditor.DELEGATE_VALUE_DATATYPE});
         tableCellModifier.addListener(this);

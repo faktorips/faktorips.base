@@ -21,6 +21,7 @@ import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Text;
 import org.faktorips.datatype.ValueDatatype;
 import org.faktorips.devtools.core.internal.model.valueset.ValueSet;
+import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.valueset.IEnumValueSet;
 import org.faktorips.devtools.core.model.valueset.IValueSet;
 import org.faktorips.devtools.core.ui.UIToolkit;
@@ -55,7 +56,7 @@ public class DefaultControlFactory extends ValueDatatypeControlFactory {
 	 * {@inheritDoc}
 	 */
 	public EditField createEditField(UIToolkit toolkit, Composite parent,
-			ValueDatatype datatype, IValueSet valueSet) {
+			ValueDatatype datatype, IValueSet valueSet, IIpsProject ipsProject) {
 		
 		if (datatype != null && valueSet instanceof IEnumValueSet) {
             Combo combo = toolkit.createCombo(parent);
@@ -68,9 +69,9 @@ public class DefaultControlFactory extends ValueDatatypeControlFactory {
 	 * {@inheritDoc}
 	 */
 	public Control createControl(UIToolkit toolkit, Composite parent,
-			ValueDatatype datatype, IValueSet valueSet) {
+			ValueDatatype datatype, IValueSet valueSet, IIpsProject ipsProject) {
 
-		return createEditField(toolkit, parent, datatype, valueSet).getControl();
+		return createEditField(toolkit, parent, datatype, valueSet, ipsProject).getControl();
 	}
 
     /**
@@ -78,7 +79,7 @@ public class DefaultControlFactory extends ValueDatatypeControlFactory {
      * columnIndex and a <code>Text</code> control. 
      * {@inheritDoc}
      */
-    public TableCellEditor createCellEditor(UIToolkit toolkit, ValueDatatype dataType, ValueSet valueSet, TableViewer tableViewer, int columnIndex) {
+    public TableCellEditor createCellEditor(UIToolkit toolkit, ValueDatatype dataType, ValueSet valueSet, TableViewer tableViewer, int columnIndex, IIpsProject ipsProject) {
         Text textControl= toolkit.createText(tableViewer.getTable(), SWT.SINGLE);
         return new TextCellEditor(tableViewer, columnIndex, textControl);
     }

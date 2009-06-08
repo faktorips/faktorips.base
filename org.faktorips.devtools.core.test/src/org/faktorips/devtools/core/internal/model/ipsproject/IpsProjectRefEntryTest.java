@@ -66,6 +66,45 @@ public class IpsProjectRefEntryTest extends AbstractIpsPluginTest {
         assertFalse(result.contains(c.getIpsSrcFile()));
     }
     
+    public void testFindIpsSrcFilesWithPackageFragment() throws Exception{
+        IpsProject refProject = (IpsProject)newIpsProject("RefProject");
+        
+        //policy cmpt types in ref project
+        IPolicyCmptType a = newPolicyCmptTypeWithoutProductCmptType(refProject, "a.b.c.A");
+        IPolicyCmptType b = newPolicyCmptTypeWithoutProductCmptType(refProject, "a.b.c.B");
+        
+        //policy cmpt types in original project
+        IPolicyCmptType c = newPolicyCmptTypeWithoutProductCmptType(ipsProject, "a.b.c.C");
+
+        //policy cmpt types in ref project
+        IPolicyCmptType a2 = newPolicyCmptTypeWithoutProductCmptType(refProject, "a.b.d.A");
+        IPolicyCmptType b2 = newPolicyCmptTypeWithoutProductCmptType(refProject, "a.b.d.B");
+        
+        //policy cmpt types in original project
+        IPolicyCmptType c2 = newPolicyCmptTypeWithoutProductCmptType(ipsProject, "a.b.d.C");
+
+        
+        path = (IpsObjectPath)ipsProject.getIpsObjectPath();
+        IpsProjectRefEntry entry = (IpsProjectRefEntry)path.newIpsProjectRefEntry(refProject);
+
+        ArrayList result = new ArrayList();
+        entry.findIpsSrcFiles(IpsObjectType.POLICY_CMPT_TYPE, "a.b.c", result, new HashSet());
+        
+        assertEquals(2, result.size());
+        assertTrue(result.contains(a.getIpsSrcFile()));
+        assertTrue(result.contains(b.getIpsSrcFile()));
+        assertFalse(result.contains(c.getIpsSrcFile()));
+
+        result = new ArrayList();
+        entry.findIpsSrcFiles(IpsObjectType.POLICY_CMPT_TYPE, "a.b.d", result, new HashSet());
+        
+        assertEquals(2, result.size());
+        assertTrue(result.contains(a2.getIpsSrcFile()));
+        assertTrue(result.contains(b2.getIpsSrcFile()));
+        assertFalse(result.contains(c2.getIpsSrcFile()));
+
+    }
+    
     public void testInitFromXml() {
         Document doc = getTestDocument();
         IpsProjectRefEntry entry = new IpsProjectRefEntry(path);

@@ -533,6 +533,12 @@ public class IpsObjectPath implements IIpsObjectPath {
         }
     }
 
+    public void findIpsSrcFiles(IpsObjectType type, String packageFragment, List result, Set visitedEntries) throws CoreException {
+        for (int i = 0; i < entries.length; i++) {
+            ((IpsObjectPathEntry)entries[i]).findIpsSrcFiles(type, packageFragment, result, visitedEntries);
+        }
+    }
+
     /**
      * Searches all product components that are based on the given product component type (either
      * directly or because they are based on a subtype of the given type) and adds them to the
@@ -589,7 +595,7 @@ public class IpsObjectPath implements IIpsObjectPath {
         for (int i = 0; i < entries.length; i++) {
             if (entries[i].getType().equals(IIpsObjectPathEntry.TYPE_SRC_FOLDER)) {
                 for (IpsObjectType currentType : IpsPlugin.getDefault().getIpsModel().getIpsObjectTypes()) {
-                    ((IpsObjectPathEntry)entries[i]).findIpsSrcFilesInternal(currentType, result, visitedEntries);
+                    ((IpsObjectPathEntry)entries[i]).findIpsSrcFilesInternal(currentType, null, result, visitedEntries);
                 }
             }
         }

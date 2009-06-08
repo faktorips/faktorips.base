@@ -30,6 +30,7 @@ import org.eclipse.jface.viewers.ICellModifier;
 import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.swt.widgets.TableItem;
 import org.faktorips.datatype.ValueDatatype;
+import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.ui.IDataChangeableReadWriteAccess;
 import org.faktorips.devtools.core.ui.IpsUIPlugin;
 import org.faktorips.devtools.core.ui.UIToolkit;
@@ -50,6 +51,9 @@ public class BeanTableCellModifier implements ICellModifier {
     // The parent control
     IDataChangeableReadWriteAccess parentControl;
 
+    //the ips project in the context of which this object has been instantiated
+    private IIpsProject ipsProject;
+    
     // Listeners for the changes inside the cell
     private List<ColumnChangeListener> columnChangeListeners = new ArrayList<ColumnChangeListener>(1);
     
@@ -64,10 +68,12 @@ public class BeanTableCellModifier implements ICellModifier {
 
     
     
-    public BeanTableCellModifier(TableViewer tableViewer, IDataChangeableReadWriteAccess parentControl) {
+    public BeanTableCellModifier(TableViewer tableViewer, IDataChangeableReadWriteAccess parentControl, IIpsProject ipsProject) {
         ArgumentCheck.notNull(tableViewer);
         this.tableViewer = tableViewer;
         this.parentControl = parentControl;
+        ArgumentCheck.notNull(ipsProject, this);
+        this.ipsProject = ipsProject;
     }
     
     /**
@@ -135,7 +141,7 @@ public class BeanTableCellModifier implements ICellModifier {
             return dm;
         } else {
             ValueDatatypeControlFactory factory = IpsUIPlugin.getDefault().getValueDatatypeControlFactory(valueDatatype);
-            return factory.createCellEditor(uiToolkit, valueDatatype, null, tableViewer, columnIndex);
+            return factory.createCellEditor(uiToolkit, valueDatatype, null, tableViewer, columnIndex, ipsProject);
         }
     }
     

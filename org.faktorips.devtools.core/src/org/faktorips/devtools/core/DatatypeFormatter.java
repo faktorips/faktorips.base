@@ -135,7 +135,7 @@ public class DatatypeFormatter {
         if(enumType.isContainingValues()){
             valueContainer = enumType;
         } else if(enumContent == null){
-            throw new IllegalStateException("If the provided enum type doesn't contain values an enum content is expected.");
+            return null;
         } else {
             valueContainer = enumContent;
         }

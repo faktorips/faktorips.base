@@ -1996,6 +1996,79 @@ public class IpsProjectTest extends AbstractIpsPluginTest {
 
     }
 
+    public void testFindAllIpsSrcFilesByPackageFragment() throws Exception{
+        
+        IPolicyCmptType a = newPolicyCmptTypeWithoutProductCmptType(ipsProject, "a.b.c.A");
+        IPolicyCmptType b = newPolicyCmptTypeWithoutProductCmptType(ipsProject, "a.b.c.B");
+        IPolicyCmptType c = newPolicyCmptTypeWithoutProductCmptType(ipsProject, "a.b.c.C");
+
+        IPolicyCmptType a2 = newPolicyCmptTypeWithoutProductCmptType(ipsProject, "a.b.d.A");
+        IPolicyCmptType b2 = newPolicyCmptTypeWithoutProductCmptType(ipsProject, "a.b.d.B");
+        IPolicyCmptType c2 = newPolicyCmptTypeWithoutProductCmptType(ipsProject, "a.b.d.C");
+        
+        IEnumType eA = newEnumType(ipsProject, "a.b.c.EA");
+        IEnumType eB = newEnumType(ipsProject, "a.b.c.EB");
+        IEnumType eC = newEnumType(ipsProject, "a.b.c.EC");
+
+        IEnumType eA2 = newEnumType(ipsProject, "a.b.d.EA");
+        IEnumType eB2 = newEnumType(ipsProject, "a.b.d.EB");
+        IEnumType eC2 = newEnumType(ipsProject, "a.b.d.EC");
+        
+        ArrayList<IIpsSrcFile> ipsSrcFiles = new ArrayList<IIpsSrcFile>();
+        ipsProject.findAllIpsSrcFiles(ipsSrcFiles, IpsObjectType.POLICY_CMPT_TYPE, "a.b.c");
+        
+        assertEquals(3, ipsSrcFiles.size());
+        assertTrue(ipsSrcFiles.contains(a.getIpsSrcFile()));
+        assertTrue(ipsSrcFiles.contains(b.getIpsSrcFile()));
+        assertTrue(ipsSrcFiles.contains(c.getIpsSrcFile()));
+
+        ipsSrcFiles = new ArrayList<IIpsSrcFile>();
+        ipsProject.findAllIpsSrcFiles(ipsSrcFiles, IpsObjectType.POLICY_CMPT_TYPE, "a.b.d");
+        
+        assertEquals(3, ipsSrcFiles.size());
+        assertTrue(ipsSrcFiles.contains(a2.getIpsSrcFile()));
+        assertTrue(ipsSrcFiles.contains(b2.getIpsSrcFile()));
+        assertTrue(ipsSrcFiles.contains(c2.getIpsSrcFile()));
+
+        ipsSrcFiles = new ArrayList<IIpsSrcFile>();
+        ipsProject.findAllIpsSrcFiles(ipsSrcFiles, IpsObjectType.ENUM_TYPE, "a.b.c");
+        
+        assertEquals(3, ipsSrcFiles.size());
+        assertTrue(ipsSrcFiles.contains(eA.getIpsSrcFile()));
+        assertTrue(ipsSrcFiles.contains(eB.getIpsSrcFile()));
+        assertTrue(ipsSrcFiles.contains(eC.getIpsSrcFile()));
+        
+        ipsSrcFiles = new ArrayList<IIpsSrcFile>();
+        ipsProject.findAllIpsSrcFiles(ipsSrcFiles, IpsObjectType.ENUM_TYPE, "a.b.d");
+        
+        assertEquals(3, ipsSrcFiles.size());
+        assertTrue(ipsSrcFiles.contains(eA2.getIpsSrcFile()));
+        assertTrue(ipsSrcFiles.contains(eB2.getIpsSrcFile()));
+        assertTrue(ipsSrcFiles.contains(eC2.getIpsSrcFile()));
+    }
+
+    public void testFindFirstEnumContent() throws Exception{
+        IEnumType eA = newEnumType(ipsProject, "a.b.c.EA");
+        eA.setContainingValues(false);
+        eA.setEnumContentPackageFragment("a.b.c");
+        IEnumContent contentA = newEnumContent(eA, "a.b.c.contentA");
+        newEnumContent(eA, "a.b.c.contentB");
+        newEnumContent(eA, "a.b.c.contentC");
+
+        IEnumType eB = newEnumType(ipsProject, "a.b.c.EB");
+        eB.setContainingValues(false);
+        eB.setEnumContentPackageFragment("a.b.c");
+        IEnumContent contentA2 = newEnumContent(eB, "a.b.c.contentA2");
+        newEnumContent(eB, "a.b.c.contentB2");
+        newEnumContent(eB, "a.b.c.contentC2");
+        
+        IEnumContent result = ipsProject.findFirstEnumContent(eA);
+        assertEquals(contentA, result);
+
+        result = ipsProject.findFirstEnumContent(eB);
+        assertEquals(contentA2, result);
+    }
+    
     private boolean containsIpsSrcFile(IIpsSrcFile[] result, IIpsSrcFile policyCmptType) throws CoreException {
         for (int i = 0; i < result.length; i++) {
             if (result[i].getIpsObject().equals(policyCmptType.getIpsObject())) {

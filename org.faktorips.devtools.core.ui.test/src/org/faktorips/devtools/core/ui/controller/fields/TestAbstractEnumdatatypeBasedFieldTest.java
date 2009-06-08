@@ -13,6 +13,9 @@
 
 package org.faktorips.devtools.core.ui.controller.fields;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Composite;
@@ -32,7 +35,6 @@ public class TestAbstractEnumdatatypeBasedFieldTest extends AbstractIpsPluginTes
         Combo combo = new Combo(parent, SWT.READ_ONLY);
         
         MyField field = new MyField(combo, Datatype.INTEGER);
-        field.init();
         
         assertNull(field.getInvalidValue());
         field.setValue("1");
@@ -47,16 +49,17 @@ public class TestAbstractEnumdatatypeBasedFieldTest extends AbstractIpsPluginTes
         public MyField(Combo combo, ValueDatatype datatype) {
             super(combo, datatype);
         }
+        
+        @Override
+        public String getDisplayTextForValue(String id) {
+            return id;
+        }
 
-        protected void reInitInternal() {
-        }
-        
-        public String getInvalidValue() {
-            return super.getInvalidValue();
-        }
-        
-        public void init() {
-            super.initialize(new String[] {"1"}, new String[0]);
+        @Override
+        protected List<String> getDatatypeValueIds() {
+            ArrayList<String> ids = new ArrayList<String>();
+            ids.add("1");
+            return ids;
         }
     }
 }
