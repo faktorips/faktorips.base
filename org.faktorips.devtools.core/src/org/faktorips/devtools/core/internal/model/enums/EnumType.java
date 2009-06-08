@@ -238,10 +238,10 @@ public class EnumType extends EnumValueContainer implements IEnumType {
      * {@inheritDoc}
      */
     public IEnumAttribute newEnumAttribute() throws CoreException {
-        // Create new enum attribute
+        // Create new enum attribute.
         IEnumAttribute newEnumAttribute = (IEnumAttribute)newPart(IEnumAttribute.class);
 
-        // Create new enum attribute value objects on the enum values of this enum type
+        // Create new enum attribute value objects on the enum values of this enum type.
         for (IEnumValue currentEnumValue : getEnumValues()) {
             currentEnumValue.newEnumAttributeValue();
         }
@@ -923,10 +923,10 @@ public class EnumType extends EnumValueContainer implements IEnumType {
      */
     public String[] getAllValueIds(boolean includeNull) {
 
-        if(!isContainingValues() && includeNull){
-            return new String[]{null};
-        } 
-        if(!isContainingValues()){
+        if (!isContainingValues() && includeNull) {
+            return new String[] { null };
+        }
+        if (!isContainingValues()) {
             return new String[0];
         }
         try {
@@ -944,7 +944,7 @@ public class EnumType extends EnumValueContainer implements IEnumType {
                 valueIds.add(value.getValue());
             }
 
-            if(includeNull){
+            if (includeNull) {
                 valueIds.add(null);
             }
             return valueIds.toArray(new String[valueIds.size()]);
@@ -1062,7 +1062,7 @@ public class EnumType extends EnumValueContainer implements IEnumType {
      * Returns true.
      */
     public boolean isMutable() {
-        //mutable in this case refers to the generated enum class. which is not mutable  
+        // mutable in this case refers to the generated enum class. which is not mutable
         return false;
     }
 
@@ -1077,7 +1077,7 @@ public class EnumType extends EnumValueContainer implements IEnumType {
      * {@inheritDoc}
      */
     public boolean isParsable(String value) {
-        if(value == null){
+        if (value == null) {
             return true;
         }
         return getValueName(value) != null;

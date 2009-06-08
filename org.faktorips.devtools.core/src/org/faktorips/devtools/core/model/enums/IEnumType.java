@@ -341,7 +341,7 @@ public interface IEnumType extends IEnumValueContainer, EnumDatatype, IIpsMetaCl
      * Note that for all enum values <strong>that are defined directly in this enum type</strong>
      * new <code>EnumAttributeValue</code> objects will be created.
      * <p>
-     * Fires a <code>WHOLE_CONTENT_CHANGED</code> event.
+     * Fires only a <code>WHOLE_CONTENT_CHANGED</code> event.
      * 
      * @return A reference to the newly created enum attribute.
      * 
