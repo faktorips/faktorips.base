@@ -175,7 +175,7 @@ public class EnumAttributeEditDialog extends IpsPartEditDialog2 {
     private void createFaktorIpsUiGroup() {
         Composite marginComposite = uiToolkit.createGridComposite(workArea.getParent(), 1, false, false);
         ((GridLayout)marginComposite.getLayout()).marginTop = 14;
-        Group uiGroup = uiToolkit.createGridGroup(marginComposite, "Faktor-IPS UI", 2, false);
+        Group uiGroup = uiToolkit.createGridGroup(marginComposite, "Faktor-IPS UI", 2, true);
 
         // Used as ID in Faktor-IPS UI
         uiToolkit.createFormLabel(uiGroup, Messages.EnumAttributeEditDialog_labelUsedAsIdInFaktorIpsUi);
