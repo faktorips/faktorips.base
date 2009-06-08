@@ -3,7 +3,7 @@
  * 
  * Alle Rechte vorbehalten.
  * 
- * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen, 
+ * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen,
  * etc.) duerfen nur unter den Bedingungen der Faktor-Zehn-Community Lizenzvereinbarung - Version
  * 0.1 (vor Gruendung Community) genutzt werden, die Bestandteil der Auslieferung ist und auch unter
  * http://www.faktorzehn.org/f10-org:lizenzen:community eingesehen werden kann.
@@ -51,38 +51,39 @@ public class IpsSrcFileContent {
 
     private IpsObject ipsObject;
 
-    // Map containing the root properties of the source file
-    private Map rootProperties = null;
+    /** Map containing the root properties of the source file. */
+    private Map<String, String> rootProperties = null;
 
-    // true if the content has been modified.
+    /** This flag is <tt>true</tt> if the content has been modified. */
     private boolean modified = false;
-    
-    // the corresponding file's modification stamp at the time of reading
-    // the content from it.
+
+    /**
+     * The corresponding file's modification stamp at the time of reading the content from it.
+     */
     private long modificationStamp;
-    
+
     private boolean parsable = true;
 
-    // see the wasModStampTriggeredBySave() for details.
-    private List modStampsAfterSave = null;
-    
-    // inicates if the ips object is completely initialized with the ips source file content,
+    /** See <tt>wasModStampTriggeredBySave()</tt> for details. */
+    private List<Long> modStampsAfterSave = null;
+
+    /** Indicates if the ips object is completely initialized with the ips source file content. */
     private boolean initialized = false;
-    
+
     public IpsSrcFileContent(IpsObject ipsObject) {
         ArgumentCheck.notNull(ipsObject);
         this.ipsObject = ipsObject;
     }
-    
+
     public IpsObject getIpsObject() {
         return ipsObject;
     }
-    
+
     public void updateState(String xml, boolean newModified) {
         boolean wasModified = newModified;
         try {
             String encoding = ipsObject.getIpsProject().getXmlFileCharset();
-            ByteArrayInputStream is = new ByteArrayInputStream(xml.getBytes(encoding)); 
+            ByteArrayInputStream is = new ByteArrayInputStream(xml.getBytes(encoding));
             DocumentBuilder builder = IpsPlugin.getDefault().newDocumentBuilder();
             Document doc = builder.parse(is);
             is.close();
@@ -99,7 +100,7 @@ public class IpsSrcFileContent {
             wholeContentChanged();
         }
     }
-    
+
     public void updateState(Element el, boolean modified) {
         try {
             ipsObject.initFromXml(el);
@@ -113,7 +114,7 @@ public class IpsSrcFileContent {
             wholeContentChanged();
         }
     }
-            
+
     public IIpsSrcFile getIpsSrcFile() {
         return ipsObject.getIpsSrcFile();
     }
@@ -140,26 +141,26 @@ public class IpsSrcFileContent {
             markAsUnmodified();
         }
     }
-    
+
     public void markAsUnmodified() {
-        if (modified==true) { 
+        if (modified) {
             modified = false;
             modificationStatusHasChanged();
         }
     }
-    
+
     public void markAsModified() {
         if (!modified) {
             modified = true;
             modificationStatusHasChanged();
         }
     }
-    
+
     private void modificationStatusHasChanged() {
         ModificationStatusChangedEvent event = new ModificationStatusChangedEvent(getIpsSrcFile());
         ((IpsModel)ipsObject.getIpsModel()).notifyModificationStatusChangeListener(event);
     }
-    
+
     private void wholeContentChanged() {
         ContentChangeEvent event = ContentChangeEvent.newWholeContentChangedEvent(getIpsSrcFile());
         ((IpsModel)ipsObject.getIpsModel()).ipsSrcFileContentHasChanged(event);
@@ -176,7 +177,7 @@ public class IpsSrcFileContent {
     public long getModificationStamp() {
         return modificationStamp;
     }
-    
+
     /**
      * @param modStamp The modStamp to set.
      */
@@ -197,7 +198,7 @@ public class IpsSrcFileContent {
     public void setParsable(boolean parsable) {
         this.parsable = parsable;
     }
-    
+
     public void discardChanges() {
         if (!modified) {
             return;
@@ -205,22 +206,23 @@ public class IpsSrcFileContent {
         initContentFromFile();
         wholeContentChanged();
     }
-    
+
     public void initContentFromFile() {
         IIpsSrcFile file = getIpsSrcFile();
         InputStream is = null;
         try {
             long startTime = 0;
             if (IpsModel.TRACE_MODEL_MANAGEMENT) {
-                System.out.println("IpsSrcFileContent.initContentFromFile(): About to read content from disk, file=" +  file //$NON-NLS-1$
-                        + ", Thead: " + Thread.currentThread().getName()); //$NON-NLS-1$
+                System.out
+                        .println("IpsSrcFileContent.initContentFromFile(): About to read content from disk, file=" + file //$NON-NLS-1$
+                                + ", Thead: " + Thread.currentThread().getName()); //$NON-NLS-1$
                 startTime = System.currentTimeMillis();
             }
             IpsObject ipsObject = getIpsObject();
             if (ipsObject instanceof XmlSaxSupport) {
                 is = file.getContentFromEnclosingResource();
                 ((XmlSaxSupport)ipsObject).initFromInputStream(is);
-            }  else {
+            } else {
                 is = file.getContentFromEnclosingResource();
                 DocumentBuilder builder = IpsPlugin.getDefault().newDocumentBuilder();
                 Document doc = builder.parse(is);
@@ -231,7 +233,8 @@ public class IpsSrcFileContent {
             parsable = true;
             initializedFinished();
             if (IpsModel.TRACE_MODEL_MANAGEMENT) {
-                System.out.println("IpsSrcFileContent.initContentFromFile: Content read from disk, durration: " + (System.currentTimeMillis() - startTime) + ", file=" + file //$NON-NLS-1$ //$NON-NLS-2$
+                System.out
+                        .println("IpsSrcFileContent.initContentFromFile: Content read from disk, durration: " + (System.currentTimeMillis() - startTime) + ", file=" + file //$NON-NLS-1$ //$NON-NLS-2$
                                 + ", Thead: " + Thread.currentThread().getName()); //$NON-NLS-1$
             }
         } catch (Exception e) {
@@ -239,11 +242,12 @@ public class IpsSrcFileContent {
             IpsPlugin.log(new IpsStatus("Error reading file " + file, e)); //$NON-NLS-1$
             ipsObject.markAsFromUnparsableFile();
             if (IpsModel.TRACE_MODEL_MANAGEMENT) {
-                System.out.println("IpsSrcFileContent.initContentFromFile: Error reading content from disk, file=" +  file //$NON-NLS-1$
-                        + ", Thead: " + Thread.currentThread().getName()); //$NON-NLS-1$
+                System.out
+                        .println("IpsSrcFileContent.initContentFromFile: Error reading content from disk, file=" + file //$NON-NLS-1$
+                                + ", Thead: " + Thread.currentThread().getName()); //$NON-NLS-1$
             }
         } finally {
-            if (is != null){
+            if (is != null) {
                 try {
                     is.close();
                 } catch (IOException ignored) {
@@ -251,23 +255,23 @@ public class IpsSrcFileContent {
             }
         }
     }
-    
-    private void clearRootPropertyCache(){
+
+    private void clearRootPropertyCache() {
         rootProperties = null;
     }
-    
+
     /*
      * Indicates that the initialization was finished.
      */
-    private void initializedFinished(){
+    private void initializedFinished() {
         initialized = true;
         clearRootPropertyCache();
     }
-    
+
     /**
      * Reads and stores all root properties of the corresponding source file.
      */
-    public void initRootPropertiesFromFile(){
+    public void initRootPropertiesFromFile() {
         IIpsSrcFile file = getIpsSrcFile();
         try {
             clearRootPropertyCache();
@@ -277,30 +281,34 @@ public class IpsSrcFileContent {
             IpsPlugin.logAndShowErrorDialog(e);
         }
     }
-    
+
     /**
-     * Returns <code>true</code> if the root properties are read from the source file.
-     * Returns <code>false</code> if the root properties are not read.
+     * Returns <code>true</code> if the root properties are read from the source file. Returns
+     * <code>false</code> if the root properties are not read.
      */
-    public boolean areRootPropertiesAvailable(){
+    public boolean areRootPropertiesAvailable() {
         return rootProperties != null || initialized;
     }
-    
+
     /**
-     * Returns the given root property value. Returns <code>null</code> if the given root property wasn't found.
+     * Returns the given root property value. Returns <code>null</code> if the given root property
+     * wasn't found.
      */
-    public String getRootPropertyValue(String propertyName){
-        if (initialized){
+    public String getRootPropertyValue(String propertyName) {
+        if (initialized) {
             return getPropertyFromIpsObject(propertyName);
         }
-        if (rootProperties == null){
-            // lazy load of root properties
+        if (rootProperties == null) {
+            // Lazy load root properties.
             initRootPropertiesFromFile();
         }
-        // rootProperties could be null if the workspace is out of sync and the file doesn't exists anymore
-        return (String) (rootProperties != null ? rootProperties.get(propertyName) : null);
+        /*
+         * rootProperties could be null if the workspace is out of sync and the file doesn't exist
+         * anymore.
+         */
+        return (String)(rootProperties != null ? rootProperties.get(propertyName) : null);
     }
-    
+
     private String getPropertyFromIpsObject(String propertyName) {
         try {
             PropertyDescriptor propertyDescriptor = BeanUtil.getPropertyDescriptor(ipsObject.getClass(), propertyName);
@@ -330,13 +338,14 @@ public class IpsSrcFileContent {
                     IFile file = ipsObject.getIpsSrcFile().getCorrespondingFile();
                     file.setContents(is, force, true, monitor);
                     modificationStamp = file.getModificationStamp();
-                    if (modStampsAfterSave==null) {
-                        modStampsAfterSave = new ArrayList(1);
+                    if (modStampsAfterSave == null) {
+                        modStampsAfterSave = new ArrayList<Long>(1);
                     }
                     modStampsAfterSave.add(new Long(modificationStamp));
                     markAsUnmodified();
                     if (IpsModel.TRACE_MODEL_MANAGEMENT) {
-                        System.out.println("IpsSrcFileContent.save() finished. ModStamp=" + modificationStamp + ", " + IpsSrcFileContent.this); //$NON-NLS-1$ //$NON-NLS-2$
+                        System.out
+                                .println("IpsSrcFileContent.save() finished. ModStamp=" + modificationStamp + ", " + IpsSrcFileContent.this); //$NON-NLS-1$ //$NON-NLS-2$
                     }
                     clearRootPropertyCache();
                 } catch (Exception e) {
@@ -346,32 +355,32 @@ public class IpsSrcFileContent {
                     throw new CoreException(new IpsStatus(e));
                 }
             }
-            
+
         };
         ResourcesPlugin.getWorkspace().run(runnable, monitor);
     }
-    
+
     /**
      * Returns <code>true</code> if the given mod stamp is the result of saving the content to disk
-     * via the save() method. The method should be called by the IpsModel's resource delta visitor only!
+     * via the save() method. The method should be called by the IpsModel's resource delta visitor
+     * only!
      */
     public boolean wasModStampCreatedBySave(long modStamp) {
-        if (modStampsAfterSave==null) {
+        if (modStampsAfterSave == null) {
             return false;
         }
         boolean rc = modStampsAfterSave.remove(new Long(modStamp));
-        if (modStampsAfterSave.size()==0) {
+        if (modStampsAfterSave.size() == 0) {
             modStampsAfterSave = null;
         }
         return rc;
     }
-    
+
     /**
      * {@inheritDoc}
      */
     public String toString() {
         return "IpsSrcFileContent " + getIpsSrcFile(); //$NON-NLS-1$
     }
-    
-    
+
 }
