@@ -48,6 +48,7 @@ public class TestAbstractEnumdatatypeBasedFieldTest extends AbstractIpsPluginTes
 
         public MyField(Combo combo, ValueDatatype datatype) {
             super(combo, datatype);
+            reInitInternal();
         }
         
         @Override
