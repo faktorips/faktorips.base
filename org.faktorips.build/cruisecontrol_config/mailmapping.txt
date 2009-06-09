@@ -17,3 +17,6 @@
 <map alias="weickmann" address="alexander.weickmann@faktorzehn.de"/>
 <map alias="ortmann2" address="joerg.ortmann@faktorzehn.de" />
 <map alias="grutza" address="roman.grutza@faktorzehn.de" />
+<map alias="dirmeier" address="cornelius.dirmeier@faktorzehn.de" />
+<map alias="dicker" address="stefan.dicker@faktorzehn.de" />
+<map alias="niedernhuber" address="juergen.niedernhuber@faktorzehn.de" />
