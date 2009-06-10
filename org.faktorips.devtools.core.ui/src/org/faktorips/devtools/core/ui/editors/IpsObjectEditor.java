@@ -61,31 +61,21 @@ import org.faktorips.devtools.core.ui.views.IpsProblemsLabelDecorator;
 /**
  * <p>
  * Base class for all editors to edit ips objects.
- * </p>
- * 
  * <p>
  * This editor uses an implementation of <code>ISelectionProvider</code> where
  * <code>ISelectionProvider</code> objects used on the different pages of this editor can be
  * registered.
- * </p>
- * 
  * <p>
  * The <code>ISelectionProvider</code> of this editor is registered at the selection service of the
  * workbench so that only this selection provider is the active one within the workbench when this
  * editor is active.
- * </p>
- * 
  * <p>
  * Implementations of <code>ISelectionProvider</code> that are used on the pages of this editor have
  * to be registered at the <code>SelectionProviderDispatcher</code> of the
  * <code>ISelectionProvider</code> of this editor. The dispatcher finds the currently active of all
  * registered selection providers and forwards requests to it.
- * </p>
- * 
  * <p>
  * There are two ways of registering with the <code>SelectionProviderDispatcher</code>:
- * </p>
- * 
  * <ol>
  * <li>The <code>Composite</code> where the control of the <code>ISelectionProvider</code>
  * implementation e.g. a <code>TreeViewer</code> is added to has to implement the
