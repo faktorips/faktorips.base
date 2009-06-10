@@ -3,7 +3,7 @@
  * 
  * Alle Rechte vorbehalten.
  * 
- * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen, 
+ * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen,
  * etc.) duerfen nur unter den Bedingungen der Faktor-Zehn-Community Lizenzvereinbarung - Version
  * 0.1 (vor Gruendung Community) genutzt werden, die Bestandteil der Auslieferung ist und auch unter
  * http://www.faktorzehn.org/f10-org:lizenzen:community eingesehen werden kann.
@@ -37,30 +37,31 @@ import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.ui.IpsUIPlugin;
 
 /**
- * Problemdecorator for Ips-projects. This decorator marks IpsObjects themselves, packagefragments,
- * packagefragmentroots and IpsProjects the objects are located in with warning and error icons if
+ * This decorator marks <tt>IIpsObject</tt>s, <tt>IIpsPackageFragment</tt>s,
+ * <tt>IIpsPackageFragmentRoot</tt>s and <tt>IIpsProject</tt>s with warning and error icons if
  * problems are detected.
  * <p>
- * The IpsProblemsLabelDecorator is configurable for flat or hierarchical layout styles in
- * treeviewers.
+ * The <tt>IpsProblemsLabelDecorator</tt> is configurable for flat or hierarchical layout styles in
+ * <tt>TreeViewer</tt>s.
  * 
  * @author Stefan Widmaier
  */
 public class IpsProblemsLabelDecorator implements ILabelDecorator, ILightweightLabelDecorator {
+
     private static final IMarker[] EMPTY_MARKER_ARRAY = new IMarker[0];
 
     /**
-     * Indicates if the LabelDecorator works with a flat or hierarchical viewstructure. True means
-     * flat layout, false means hierarchical layout. Default is false for use with the hierarchical
-     * ProductStructureExplorer.
+     * Indicates if the LabelDecorator works with a flat or hierarchical view structure where
+     * <tt>true</tt> means flat layout and <tt>false</tt> means hierarchical layout. Default is
+     * <tt>false</tt> for use with the hierarchical <tt>ProductStructureExplorer</tt>.
      */
     private boolean isFlatLayout = false;
-    
-    public static final String EXTENSION_ID= "org.faktorips.devtools.core.ipsproblemsdecorator"; //$NON-NLS-1$
+
+    public static final String EXTENSION_ID = "org.faktorips.devtools.core.ipsproblemsdecorator"; //$NON-NLS-1$
 
     private ImageDescriptorRegistry registry = null;
 
-    private ArrayList listeners = null;
+    private ArrayList<ILabelProviderListener> listeners = null;
 
     /**
      * {@inheritDoc}
@@ -73,8 +74,7 @@ public class IpsProblemsLabelDecorator implements ILabelDecorator, ILightweightL
                 return getRegistry().get(
                         new JavaElementImageDescriptor(baseImage, computeAdornmentFlags(element), new Point(
                                 bounds.width, bounds.height)));
-            }
-            catch (CoreException e) {
+            } catch (CoreException e) {
                 IpsPlugin.log(e);
             }
         }
@@ -88,8 +88,10 @@ public class IpsProblemsLabelDecorator implements ILabelDecorator, ILightweightL
         if (element instanceof IIpsElement) {
             IIpsElement ipsElement = ((IIpsElement)element);
             if (ipsElement != null) {
-                // Prevent errors in IIpsObject from being displayed by its parts (even if they are
-                // themselves the error source)
+                /*
+                 * Prevent errors in IIpsObject from being displayed by its parts (even if they are
+                 * themselves the error source).
+                 */
                 if (ipsElement instanceof IIpsObjectPart) {
                     return 0;
                 } else if (ipsElement instanceof IIpsProject) {
@@ -101,12 +103,12 @@ public class IpsProblemsLabelDecorator implements ILabelDecorator, ILightweightL
                     }
                     if (isFlatLayout && !(element instanceof IIpsPackageFragmentRoot)) {
                         /*
-                         * In flat layout every packagefragment is represented in its own treeitem,
-                         * thus packagefragments of parentfolders should not be decorated. Only
-                         * search the packagefragments children (files) for problems, no search is
-                         * needed in the tree of subfolders. PackageFragmentRoots on the other hand
-                         * should always be decorated with the problem markers of their
-                         * packagefragments.
+                         * In flat layout every package fragment is represented in its own tree
+                         * item, thus package fragments of parent folders should not be decorated.
+                         * Only search the package fragments children (files) for problems, no
+                         * search is needed in the tree of sub folders. PackageFragmentRoots on the
+                         * other hand should always be decorated with the problem markers of their
+                         * package fragments.
                          */
                         markers = res.findMarkers(IpsPlugin.PROBLEM_MARKER, true, IResource.DEPTH_ONE);
                     } else {
@@ -119,7 +121,7 @@ public class IpsProblemsLabelDecorator implements ILabelDecorator, ILightweightL
         } else {
             return 0;
         }
-        
+
         for (int i = 0; i < markers.length && (flag != JavaElementImageDescriptor.ERROR); i++) {
             if (markers[i].exists()) {
                 int prio = markers[i].getAttribute(IMarker.SEVERITY, -1);
@@ -134,20 +136,21 @@ public class IpsProblemsLabelDecorator implements ILabelDecorator, ILightweightL
     }
 
     /**
-     * Collects the errorflags of all IIpsPackageFragmentRoots contained in the given ipsproject and 
-     * returns the resulting flag. This procedure makes sure no markers of the underlying java-project
-     * are interpreted as problems of the ipsproject and erroneously displayed by the decorator.
+     * Collects the error flags of all <tt>IIpsPackageFragmentRoot</tt>s contained in the given ips
+     * project and returns the resulting flag. This procedure makes sure no markers of the
+     * underlying java-project are interpreted as problems of the ips project and erroneously
+     * displayed by the decorator.
      */
     private int computeAdornmentFlagsProject(IIpsProject project) throws CoreException {
-        IIpsPackageFragmentRoot[] roots= project.getIpsPackageFragmentRoots();
-        int flag= 0;
+        IIpsPackageFragmentRoot[] roots = project.getIpsPackageFragmentRoots();
+        int flag = 0;
         for (int i = 0; i < roots.length; i++) {
-            flag= flag | computeAdornmentFlags(roots[i]);
+            flag = flag | computeAdornmentFlags(roots[i]);
         }
-        
-        // check for errors in .ipsproject file
-        flag= flag | computeAdornmentFlags(project.getIpsProjectPropertiesFile());
-        
+
+        // Check for errors in .ipsproject file.
+        flag = flag | computeAdornmentFlags(project.getIpsProjectPropertiesFile());
+
         return flag;
     }
 
@@ -170,7 +173,7 @@ public class IpsProblemsLabelDecorator implements ILabelDecorator, ILightweightL
      */
     public void addListener(ILabelProviderListener listener) {
         if (listeners == null) {
-            listeners = new ArrayList();
+            listeners = new ArrayList<ILabelProviderListener>();
         }
         listeners.add(listener);
 
@@ -180,13 +183,13 @@ public class IpsProblemsLabelDecorator implements ILabelDecorator, ILightweightL
      * {@inheritDoc}
      */
     public void dispose() {
-        if (registry!=null) {
+        if (registry != null) {
             registry.dispose();
             registry = null;
         }
         this.listeners = null;
     }
-    
+
     /**
      * {@inheritDoc}
      */
@@ -198,7 +201,7 @@ public class IpsProblemsLabelDecorator implements ILabelDecorator, ILightweightL
      * {@inheritDoc}
      */
     public void removeListener(ILabelProviderListener listener) {
-        if (listener != null && listeners!=null ) {
+        if (listener != null && listeners != null) {
             this.listeners.remove(listener);
         }
     }
@@ -220,7 +223,7 @@ public class IpsProblemsLabelDecorator implements ILabelDecorator, ILightweightL
     }
 
     /**
-     * Sets the layout style the Decorator should work on.
+     * Sets the layout style the decorator should work on.
      */
     public void setFlatLayout(boolean isFlatLayout) {
         this.isFlatLayout = isFlatLayout;
