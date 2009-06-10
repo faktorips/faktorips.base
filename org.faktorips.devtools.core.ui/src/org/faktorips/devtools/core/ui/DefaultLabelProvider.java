@@ -57,7 +57,7 @@ public class DefaultLabelProvider extends LabelProvider {
 
     /**
      * Creates an DefaultLabelProvider with additional IpsSourceFile mapping support: In case of an
-     * IpsSourceFile the text and the image of the corresponding IpsObject will be returned.s
+     * IpsSourceFile the text and the image of the corresponding IpsObject will be returned.
      */
     public static ILabelProvider createWithIpsSourceFileMapping() {
         return new DefaultLabelProvider(true);
