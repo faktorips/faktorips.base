@@ -949,10 +949,8 @@ public abstract class IpsObjectEditor extends FormEditor implements ContentsChan
     /**
      * <p>
      * Internal part and shell activation listener.
-     * </p>
      * <p>
      * Copied from <code>AbstractTextEditor</code>.
-     * </p>
      */
     private class ActivationListener implements IPartListener, IWindowListener {
 
