@@ -18,6 +18,10 @@ import java.util.List;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jface.viewers.IStructuredContentProvider;
 import org.eclipse.jface.viewers.Viewer;
+import org.eclipse.swt.events.SelectionEvent;
+import org.eclipse.swt.events.SelectionListener;
+import org.eclipse.swt.layout.GridData;
+import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Shell;
 import org.faktorips.devtools.core.model.enums.IEnumAttribute;
@@ -68,7 +72,7 @@ public class EnumAttributesSection extends SimpleIpsPartsSection {
      */
     private class EnumAttributesComposite extends IpsPartsComposite {
 
-        // The enum type being edited by the editor
+        /** The enum type being edited by the editor. */
         private IEnumType enumType;
 
         /**
@@ -173,6 +177,31 @@ public class EnumAttributesSection extends SimpleIpsPartsSection {
             }
 
             return new int[] { newIndex };
+        }
+
+        /**
+         * {@inheritDoc}
+         */
+        @Override
+        protected boolean createButtons(Composite buttons, UIToolkit toolkit) {
+            super.createButtons(buttons, toolkit);
+
+            createButtonSpace(buttons, toolkit);
+
+            Button inheritButton = toolkit.createButton(buttons, Messages.EnumAttributessection_buttonInherit);
+            inheritButton
+                    .setLayoutData(new GridData(GridData.HORIZONTAL_ALIGN_FILL | GridData.VERTICAL_ALIGN_BEGINNING));
+            inheritButton.addSelectionListener(new SelectionListener() {
+                public void widgetSelected(SelectionEvent e) {
+                    // TODO aw: open the InheritAttributesDialog.
+                }
+
+                public void widgetDefaultSelected(SelectionEvent e) {
+
+                }
+            });
+
+            return true;
         }
 
     }
