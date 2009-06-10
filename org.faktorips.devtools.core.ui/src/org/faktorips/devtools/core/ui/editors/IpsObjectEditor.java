@@ -1081,6 +1081,7 @@ public abstract class IpsObjectEditor extends FormEditor implements ContentsChan
             return decorator.decorateImage(titleImage, ipsObjectEditor.getIpsObject());
         }
 
+        // TODO aw: parameter is not used by this method
         private void updateEditorImage(IResource changedResources) {
             Image image = getDecoratedImage();
             postImageChange(image);
