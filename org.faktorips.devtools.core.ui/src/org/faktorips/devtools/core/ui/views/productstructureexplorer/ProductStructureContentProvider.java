@@ -61,9 +61,9 @@ public class ProductStructureContentProvider implements ITreeContentProvider {
      * {@inheritDoc}
      */
     public Object[] getChildren(Object parentElement) {
-        List children = new ArrayList();
+        List<IProductCmptStructureReference> children = new ArrayList<IProductCmptStructureReference>();
 
-        Object[] childsForAssociationProductCmpts = new Object[0];
+        IProductCmptStructureReference[] childsForAssociationProductCmpts = new IProductCmptStructureReference[0];
         // add product cmpt associations and product cmpts
         if (!fShowAssociationType && parentElement instanceof IProductCmptReference) {
             childsForAssociationProductCmpts = structure
@@ -153,6 +153,7 @@ public class ProductStructureContentProvider implements ITreeContentProvider {
 
     /**
      * Returns <code>true</code> if the association type will be displayed besides the related product cmpt.
+     * @return true if association type showing is on
      */
     public boolean isAssociationTypeShowing() {
     	return fShowAssociationType;
@@ -160,6 +161,7 @@ public class ProductStructureContentProvider implements ITreeContentProvider {
 
     /**
      * Sets if the association type will be shown or hidden.
+     * @param showAssociationType set true for showing association type
      */
     public void setAssociationTypeShowing(boolean showAssociationType) {
     	fShowAssociationType = showAssociationType;
@@ -167,6 +169,7 @@ public class ProductStructureContentProvider implements ITreeContentProvider {
 
     /**
      * Sets the root node.
+     * @param generationRootNode 
      */
     public void setGenerationRootNode(GenerationRootNode generationRootNode) {
         this.generationRootNode = generationRootNode;
@@ -174,6 +177,7 @@ public class ProductStructureContentProvider implements ITreeContentProvider {
 
     /**
      * Returns <code>true</code> if the related table contents cmpts will be shown or hidden.
+     * @return true if show table contents components are shown
      */
     public boolean isShowTableContents() {
         return showTableContents;
@@ -181,6 +185,7 @@ public class ProductStructureContentProvider implements ITreeContentProvider {
 
     /**
      * Set <code>true</code> to show related table contents.
+     * @param showTableContents 
      */
     public void setShowTableContents(boolean showTableContents) {
         this.showTableContents = showTableContents;

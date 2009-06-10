@@ -92,6 +92,9 @@ import org.faktorips.devtools.core.ui.views.TreeViewerDoubleclickListener;
  */
 public class ProductStructureExplorer extends ViewPart implements ContentsChangeListener, IShowInSource,
         IResourceChangeListener, IPropertyChangeListener {
+    /**
+     * The ID of this view extension
+     */
     public static String EXTENSION_ID = "org.faktorips.devtools.core.ui.views.productStructureExplorer"; //$NON-NLS-1$
 
     private static String MENU_INFO_GROUP = "goup.info"; //$NON-NLS-1$
@@ -185,7 +188,7 @@ public class ProductStructureExplorer extends ViewPart implements ContentsChange
     private class ProductCmptDropListener extends IpsElementDropListener {
 
         public void dragEnter(DropTargetEvent event) {
-            event.detail = DND.DROP_LINK;
+            dropAccept(event);
         }
 
         public void drop(DropTargetEvent event) {
@@ -200,10 +203,18 @@ public class ProductStructureExplorer extends ViewPart implements ContentsChange
         }
 
         public void dropAccept(DropTargetEvent event) {
-            event.detail = DND.DROP_LINK;
+        	Object[] transferred = super.getTransferedElements(event.currentDataType);
+        	if (transferred.length > 0 && transferred[0] instanceof IIpsSrcFile && isSupported((IIpsSrcFile) transferred[0])) {
+        		event.detail = DND.DROP_LINK;
+        	} else {
+        		event.detail = DND.DROP_NONE;
+        	}
         }
     }
     
+    /**
+     * Default Constructor
+     */
     public ProductStructureExplorer() {
         IpsPlugin.getDefault().getIpsModel().addChangeListener(this);
 
@@ -350,7 +361,7 @@ public class ProductStructureExplorer extends ViewPart implements ContentsChange
         errormsg.setVisible(false);
 
         // dnd for label
-        DropTarget dropTarget = new DropTarget(errormsg, DND.DROP_LINK);
+        DropTarget dropTarget = new DropTarget(parent, DND.DROP_LINK);
         dropTarget.addDropListener(new ProductCmptDropListener());
         dropTarget.setTransfer(new Transfer[] { FileTransfer.getInstance()});
         
@@ -371,9 +382,7 @@ public class ProductStructureExplorer extends ViewPart implements ContentsChange
         
         tree.addDoubleClickListener(new ProdStructExplTreeDoubleClickListener(tree));
         tree.expandAll();
-        tree.addDragSupport(DND.DROP_LINK, new Transfer[] { FileTransfer.getInstance() }, new IpsElementDragListener(
-                tree));
-        tree.addDropSupport(DND.DROP_LINK, new Transfer[] { FileTransfer.getInstance() }, new ProductCmptDropListener());
+        tree.addDragSupport(DND.DROP_LINK, new Transfer[] { FileTransfer.getInstance() }, new IpsElementDragListener(tree));
 
         MenuManager menumanager = new MenuManager();
         menumanager.setRemoveAllWhenShown(true);
@@ -424,17 +433,22 @@ public class ProductStructureExplorer extends ViewPart implements ContentsChange
     /**
      * Displays the structure of the product component defined by the given file. 
      * 
-     * @param selectedItems The selection to display
+     * @param file The selection to display
      * @throws CoreException 
      */
     public void showStructure(IIpsSrcFile file) throws CoreException {
-    	if(file!=null && file.getIpsObjectType()==IpsObjectType.PRODUCT_CMPT){
+    	if(isSupported(file)){
     		showStructure((IProductCmpt) file.getIpsObject());
     	}
     }
 
+	private boolean isSupported(IIpsSrcFile file) {
+		return file!=null && file.getIpsObjectType()==IpsObjectType.PRODUCT_CMPT;
+	}
+
     /**
      * Displays the structure of the given product component.
+     * @param product The product to show the structure from
      */
     public void showStructure(IProductCmpt product) {
     	if (product == null) {

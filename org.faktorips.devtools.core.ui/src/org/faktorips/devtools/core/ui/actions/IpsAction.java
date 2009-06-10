@@ -177,8 +177,8 @@ public abstract class IpsAction extends Action {
      * If the given Object is of type <code>IIpsObject</code> the object itself is returned. If it
      * is an <code>IIpsObjectPart</code> the corresponding IIpsObject is returned. If the given
      * object is an array, the first element of this array is returned. This object is a
-     * <code>PolicyCmptType</code> or <code>ProductCmpt</code> by convention, <code>null</code> is
-     * returned if this convention is violated.
+     * <code>PolicyCmptType</code>, <code>ProductCmpt</code> or <code>TestCase</code> by convention,
+     * <code>null</code> is returned if this convention is violated.
      * <p>
      * If the given object is an <code>IProductCmptReference</code> the contained
      * <code>IProductCmpt</code>, if it is an <code>IProductCmptTypeRelationReference</code> the
@@ -209,7 +209,7 @@ public abstract class IpsAction extends Action {
             return ((IIpsObjectPart)selected).getIpsObject();
         }
 
-        // for use with StructureExplorer: open ProductComponents contained in
+        // for use with StructureExplorer: open ProductComponents (in Editor) contained in
         // StructureNodes
         if (selected instanceof IProductCmptReference) {
             return ((IProductCmptReference)selected).getProductCmpt();
@@ -226,7 +226,7 @@ public abstract class IpsAction extends Action {
             }
         }
 
-        // for use with StructureExplorer: open TableContent contained in
+        // for use with StructureExplorer: open TableContent (in Editor) contained in
         // StructureNodes
         if (selected instanceof IProductCmptStructureTblUsageReference) {
             try {

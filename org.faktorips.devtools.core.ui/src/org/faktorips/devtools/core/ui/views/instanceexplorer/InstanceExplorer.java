@@ -113,11 +113,9 @@ public class InstanceExplorer extends ViewPart implements IResourceChangeListene
 		panel.setLayout(new GridLayout());
 		panel.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
 
-        DropTarget dropTarget = new DropTarget(panel, DND.DROP_LINK);
+        DropTarget dropTarget = new DropTarget(parent, DND.DROP_LINK);
         dropTarget.addDropListener(new InstanceDropListener());
         dropTarget.setTransfer(new Transfer[] { FileTransfer.getInstance()});
-        
-        
 
         this.labelProvider = new InstanceLabelProvider();
 

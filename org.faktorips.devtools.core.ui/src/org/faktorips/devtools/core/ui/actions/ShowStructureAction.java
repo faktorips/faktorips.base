@@ -34,6 +34,10 @@ import org.faktorips.devtools.core.ui.views.productstructureexplorer.ProductStru
  */
 public class ShowStructureAction extends IpsAction {
 	
+    /**
+     * Constructor inherited from IpsAction
+     * @param selectionProvider
+     */
     public ShowStructureAction(ISelectionProvider selectionProvider) {
     	super(selectionProvider);
         this.setDescription(Messages.ShowStructureAction_description);
@@ -41,10 +45,9 @@ public class ShowStructureAction extends IpsAction {
         this.setToolTipText(this.getDescription());
     }
     
-
 	public void run(IStructuredSelection selection) {
 		IIpsObject ipsObject= getIpsObjectForSelection(selection);
-		if(!(ipsObject instanceof IProductCmpt) || ipsObject==null){
+		if(!(ipsObject instanceof IProductCmpt)){
 			return;
 		}
 		IIpsSrcFile file= ipsObject.getIpsSrcFile();

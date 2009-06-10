@@ -23,29 +23,52 @@ import org.eclipse.jface.viewers.StructuredViewer;
 import org.eclipse.swt.dnd.DragSourceEvent;
 import org.eclipse.swt.dnd.DragSourceListener;
 import org.faktorips.devtools.core.model.IIpsElement;
+import org.faktorips.devtools.core.model.productcmpt.treestructure.IProductCmptStructureReference;
 
+/**
+ * Standard drag listener for ips elements in a structured viewer
+ *
+ */
 public class IpsElementDragListener implements DragSourceListener {
 
     StructuredViewer dragSource;
     
+    /**
+     * Constructor for <code>IpsElementDragListener</code> needs a <code>StructuredViewer</code>
+     * @param dragSource The source you want to add drag support to; you want to drag from this structured viewer
+     */
     public IpsElementDragListener(StructuredViewer dragSource) {
         this.dragSource = dragSource;
     }
     
+    /**
+     * {@inheritDoc}
+     */
     public void dragStart(DragSourceEvent event) {
         event.doit = getFilenames((IStructuredSelection)dragSource.getSelection()).length > 0;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     public void dragSetData(DragSourceEvent event) {
     	event.data = getFilenames((IStructuredSelection)dragSource.getSelection());    	
     }
 
+    /**
+     * {@inheritDoc}
+     */
     public void dragFinished(DragSourceEvent event) {
         // nothing to do
     }
 
-    public static String[] getFilenames(IStructuredSelection selection) {
-    	ArrayList list = new ArrayList(selection.size());
+    /**
+     * To get the filenames of the selected elements in the structured selection
+     * @param selection the selection you want to get the slected filenames from
+     * @return an array of string containing the filenames
+     */
+	public static String[] getFilenames(IStructuredSelection selection) {
+    	ArrayList<String> list = new ArrayList<String>(selection.size());
     	Iterator iter =  selection.iterator();
     	while (iter.hasNext()) {
     		Object selected = iter.next();
@@ -59,16 +82,21 @@ public class IpsElementDragListener implements DragSourceListener {
             }
     	}
     	
-    	return (String[])list.toArray(new String[list.size()]);
+    	return list.toArray(new String[list.size()]);
     }
-    
-    private static void addSelectedObject(List list, Object selected){
+
+    private static void addSelectedObject(List<String> list, Object selected){
         if(selected instanceof IResource){
             list.add(((IResource)selected).getLocation().toOSString());
         } else if (selected instanceof IIpsElement){
-            if (((IIpsElement)selected).getCorrespondingResource() != null) {
-                list.add(((IIpsElement)selected).getCorrespondingResource().getLocation().toOSString());
+            if (((IIpsElement)selected).getEnclosingResource() != null) {
+                list.add(((IIpsElement)selected).getEnclosingResource().getLocation().toOSString());
             }
-        }
+        } else if (selected instanceof IProductCmptStructureReference) {
+			IProductCmptStructureReference reference = (IProductCmptStructureReference) selected;
+			if (reference.getWrappedIpsObject() != null) {
+				list.add(reference.getWrappedIpsObject().getEnclosingResource().getLocation().toOSString());
+			}
+		}
     }
 }

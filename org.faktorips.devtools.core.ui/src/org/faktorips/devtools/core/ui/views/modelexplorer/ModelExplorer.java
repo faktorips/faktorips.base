@@ -1167,8 +1167,10 @@ public class ModelExplorer extends ViewPart implements IShowInTarget {
 
         protected void createObjectInfoActions(IMenuManager manager, Object selected) {
             if (selected instanceof IIpsElement) {
-                if (selected instanceof IProductCmpt || selected instanceof ITableContents) {
+            	if (selected instanceof IProductCmpt) {
                     manager.add(new ShowStructureAction(treeViewer));
+            	}
+            	if (selected instanceof IProductCmpt || selected instanceof ITableContents) {
                     manager.add(new FindProductReferencesAction(treeViewer));
                 }
                 if (selected instanceof IPolicyCmptType) {
