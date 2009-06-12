@@ -52,6 +52,7 @@ import org.eclipse.jdt.core.search.SearchEngine;
 import org.eclipse.jdt.core.search.SearchPattern;
 import org.eclipse.jdt.core.search.TypeNameRequestor;
 import org.eclipse.jdt.launching.JavaRuntime;
+import org.faktorips.datatype.Datatype;
 import org.faktorips.devtools.core.builder.TestArtefactBuilderSetInfo;
 import org.faktorips.devtools.core.internal.model.DynamicEnumDatatype;
 import org.faktorips.devtools.core.internal.model.DynamicValueDatatype;
@@ -69,6 +70,7 @@ import org.faktorips.devtools.core.internal.model.testcasetype.TestCaseType;
 import org.faktorips.devtools.core.model.ContentChangeEvent;
 import org.faktorips.devtools.core.model.ContentsChangeListener;
 import org.faktorips.devtools.core.model.CreateIpsArchiveOperation;
+import org.faktorips.devtools.core.model.enums.IEnumAttribute;
 import org.faktorips.devtools.core.model.enums.IEnumType;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObject;
 import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
@@ -505,6 +507,37 @@ public abstract class AbstractIpsPluginTest extends XmlAbstractTestCase {
     protected EnumType newEnumType(final IIpsProject ipsProject, final String qualifiedName) throws CoreException {
         return (EnumType)newIpsObject(ipsProject, IpsObjectType.ENUM_TYPE, qualifiedName);
     }
+    
+    /**
+     * Creates a new default enum type in the project's first package fragment root. 
+     * The enum type has two attributes named "id" and "name" but does not contain any values, so it
+     * is defined as containing values.
+     * 
+     * If the qualified name includes a package name, the package is created if it does not already exist.
+     * 
+     * @param ipsProject The ips project in which to create the new enum type.
+     * @param qualifiedName The qualified name of the new enum type.
+     * 
+     * @return The newly created enum type.
+     * 
+     * @throws CoreException If the enum type could not be created.
+     */
+    protected EnumType newDefaultEnumType(final IIpsProject ipsProject, final String qualifiedName) throws CoreException {
+        EnumType enumType = newEnumType(ipsProject, qualifiedName);
+        enumType.setContainingValues(true);
+        IEnumAttribute idAttr = enumType.newEnumAttribute();
+        idAttr.setName("id");
+        idAttr.setDatatype(Datatype.STRING.getQualifiedName());
+        idAttr.setUniqueIdentifier(true);
+        idAttr.setUsedAsIdInFaktorIpsUi(true);
+        IEnumAttribute nameAttr = (IEnumAttribute)enumType.newEnumAttribute();
+        nameAttr.setDatatype(Datatype.STRING.getQualifiedName());
+        nameAttr.setName("name");
+        nameAttr.setUsedAsNameInFaktorIpsUi(true);
+        nameAttr.setUniqueIdentifier(true);
+        nameAttr.setLiteralName(true);
+        return enumType;
+    }
 
     /**
      * Creates a new policy component type in the indicated package fragment root. If the
@@ -516,7 +549,7 @@ public abstract class AbstractIpsPluginTest extends XmlAbstractTestCase {
             throws CoreException {
         return (PolicyCmptType)newIpsObject(root, IpsObjectType.POLICY_CMPT_TYPE, qualifiedName);
     }
-
+    
     /**
      * Creates a new policy component type in the project's first package fragment root. If the
      * qualifiedName includes a package name, the package is created if it does not already exists.
