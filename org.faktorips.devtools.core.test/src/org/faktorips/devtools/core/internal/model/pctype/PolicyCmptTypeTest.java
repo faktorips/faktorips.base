@@ -58,7 +58,6 @@ import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
 import org.faktorips.devtools.core.model.type.IAssociation;
 import org.faktorips.devtools.core.model.type.IMethod;
 import org.faktorips.devtools.core.model.type.IType;
-import org.faktorips.devtools.core.util.CollectionUtil;
 import org.faktorips.util.message.MessageList;
 import org.w3c.dom.Element;
 
@@ -387,7 +386,7 @@ public class PolicyCmptTypeTest extends AbstractIpsPluginTest implements Content
         bToC.setAssociationType(AssociationType.ASSOCIATION);
         bToC.setTarget(c.getQualifiedName());
         
-        List dependencyList = CollectionUtil.toArrayList(a.dependsOn());
+        List<IDependency> dependencyList = Arrays.asList(a.dependsOn());
         assertEquals(2, dependencyList.size());
         assertTrue(dependencyList.contains(IpsObjectDependency.createReferenceDependency(a.getQualifiedNameType(), b.getQualifiedNameType())));
     }
@@ -403,7 +402,7 @@ public class PolicyCmptTypeTest extends AbstractIpsPluginTest implements Content
         aMethod.setName("aMethod");
         aMethod.newParameter(c.getQualifiedName(), "cP");
         
-        List dependencyList = CollectionUtil.toArrayList(a.dependsOn());
+        List<IDependency> dependencyList = Arrays.asList(a.dependsOn());
         assertEquals(3, dependencyList.size());
         assertTrue(dependencyList.contains(new DatatypeDependency(a.getQualifiedNameType(), b.getQualifiedName())));
         assertTrue(dependencyList.contains(new DatatypeDependency(a.getQualifiedNameType(), c.getQualifiedName())));
@@ -415,21 +414,21 @@ public class PolicyCmptTypeTest extends AbstractIpsPluginTest implements Content
         IPolicyCmptType c = newPolicyCmptTypeWithoutProductCmptType(ipsProject, "C");
         c.setSupertype(a.getQualifiedName());
         c.newPolicyCmptTypeAssociation().setTarget(b.getQualifiedName());
-        List dependencyList = CollectionUtil.toArrayList(c.dependsOn());
+        List<IDependency> dependencyList = Arrays.asList(c.dependsOn());
         assertEquals(3, dependencyList.size());
         assertTrue(dependencyList.contains(IpsObjectDependency.createSubtypeDependency(c.getQualifiedNameType(), a.getQualifiedNameType())));
         assertTrue(dependencyList.contains(IpsObjectDependency.createReferenceDependency(c.getQualifiedNameType(), b.getQualifiedNameType())));
         
         // test if a cicle in the type hierarchy does not lead to a stack overflow exception
         c.setSupertype(c.getQualifiedName());
-        dependencyList = CollectionUtil.toArrayList(c.dependsOn());
+        dependencyList = Arrays.asList(c.dependsOn());
         assertEquals(3, dependencyList.size());
         assertTrue(dependencyList.contains(IpsObjectDependency.createReferenceDependency(c.getQualifiedNameType(), b.getQualifiedNameType())));
         
         // this is actually not possible
         c.setSupertype(a.getQualifiedName());
         a.setSupertype(c.getQualifiedName());
-        dependencyList = CollectionUtil.toArrayList(c.dependsOn());
+        dependencyList = Arrays.asList(c.dependsOn());
         assertEquals(3, dependencyList.size());
         assertTrue(dependencyList.contains(IpsObjectDependency.createSubtypeDependency(c.getQualifiedNameType(), a.getQualifiedNameType())));
         assertTrue(dependencyList.contains(IpsObjectDependency.createReferenceDependency(c.getQualifiedNameType(), b.getQualifiedNameType())));
@@ -461,16 +460,16 @@ public class PolicyCmptTypeTest extends AbstractIpsPluginTest implements Content
         row.setValue(0, "2");
         row.setValue(1, "female");
         
-        IPolicyCmptType a = newPolicyCmptType(ipsProject, "A");
-        a.setConfigurableByProductCmptType(false);
-        PolicyCmptTypeAttribute aAttr = (PolicyCmptTypeAttribute)a.newPolicyCmptTypeAttribute();
+        IPolicyCmptType type = newPolicyCmptType(ipsProject, "A");
+        type.setConfigurableByProductCmptType(false);
+        PolicyCmptTypeAttribute aAttr = (PolicyCmptTypeAttribute)type.newPolicyCmptTypeAttribute();
         aAttr.setAttributeType(AttributeType.CHANGEABLE);
         aAttr.setDatatype("TestGender");
         aAttr.setModifier(Modifier.PUBLIC);
         aAttr.setName("aAttr");
         
         //make sure the policy component type is valid
-        assertTrue(a.validate(ipsProject).isEmpty());
+        assertTrue(type.validate(ipsProject).isEmpty());
         
         //make sure datatype is available
         Datatype datatype = contents.getIpsProject().findDatatype("TestGender");
@@ -478,9 +477,9 @@ public class PolicyCmptTypeTest extends AbstractIpsPluginTest implements Content
 
         // expect dependency on the TableContents defined above. Dependency on the Tablestructure is
         // no longer expected since we have introduced a DatatypeDependency
-        IDependency[] dependencies = a.dependsOn();
-        List nameTypeList = Arrays.asList(dependencies);
-        assertTrue(nameTypeList.contains(new DatatypeDependency(a.getQualifiedNameType(), contents.getQualifiedNameType().getName())));
+        IDependency[] dependencies = type.dependsOn();
+        List<IDependency> nameTypeList = Arrays.asList(dependencies);
+        assertTrue(nameTypeList.contains(new DatatypeDependency(type.getQualifiedNameType(), contents.getQualifiedNameType().getName())));
     }
     
     public void testDependsOnComposition() throws Exception {
@@ -510,7 +509,7 @@ public class PolicyCmptTypeTest extends AbstractIpsPluginTest implements Content
                 .setIpsArtefactBuilderSetInfos(new IIpsArtefactBuilderSetInfo[] { new TestArtefactBuilderSetInfo(
                         builderSet) });
 
-        List dependsOn = Arrays.asList(a.dependsOn());
+        List<IDependency> dependsOn = Arrays.asList(a.dependsOn());
         assertTrue(dependsOn.contains(IpsObjectDependency.createCompostionMasterDetailDependency(a.getQualifiedNameType(), d1.getQualifiedNameType())));
 
         dependsOn = Arrays.asList(d1.dependsOn());
@@ -708,12 +707,12 @@ public class PolicyCmptTypeTest extends AbstractIpsPluginTest implements Content
         
         IIpsObjectPath bPath = b.getIpsObjectPath();
         IIpsObjectPathEntry[] bPathEntries = bPath.getEntries();
-        ArrayList newbPathEntries = new ArrayList();
+        ArrayList<IIpsObjectPathEntry> newbPathEntries = new ArrayList<IIpsObjectPathEntry>();
         newbPathEntries.add(new IpsProjectRefEntry((IpsObjectPath)bPath, a));
         for (int i = 0; i < bPathEntries.length; i++) {
             newbPathEntries.add(bPathEntries[i]);
         }
-        bPath.setEntries((IIpsObjectPathEntry[])newbPathEntries.toArray(new IIpsObjectPathEntry[newbPathEntries.size()]));
+        bPath.setEntries(newbPathEntries.toArray(new IIpsObjectPathEntry[newbPathEntries.size()]));
         b.setIpsObjectPath(bPath);
         
         MessageList msgList = aProductTypeProjectA.validate(a);
