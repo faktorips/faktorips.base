@@ -117,13 +117,6 @@ public class TocFileBuilderTest extends AbstractIpsPluginTest {
         assertEquals("motor.RateTable", entry.getIpsObjectId());
         assertEquals(tableImplBuilder.getQualifiedClassName(structure), entry.getImplementationClassName());
         assertTrue(entry.isTableTocEntry());
-
-        // test that enum type tables are not generated as toc entry
-        structure.setTableStructureType(TableStructureType.ENUMTYPE_MODEL);
-        structure.getIpsSrcFile().save(true, null);
-
-        entry = tocFileBuilder.createTocEntry(table);
-        assertNull(entry);
     }
     
     public void testToc() throws Exception {
@@ -255,23 +248,6 @@ public class TocFileBuilderTest extends AbstractIpsPluginTest {
         project.getProject().build(IncrementalProjectBuilder.INCREMENTAL_BUILD, null);
         toc = tocFileBuilder.getToc(root);
         assertNotNull(toc.getTableTocEntryByQualifiedTableName("motor.RateTableEnum"));
-        
-        // change table type
-        structure.setTableStructureType(TableStructureType.ENUMTYPE_MODEL);
-        structure.newColumn().setName("col1");
-        structure.newColumn().setName("col2");
-        IUniqueKey key = structure.newUniqueKey();
-        IUniqueKey key2 = structure.newUniqueKey();
-        key.addKeyItem("col1");
-        key2.addKeyItem("col2");
-        structure.getIpsSrcFile().save(true, null);
-        
-        // build
-        project.getProject().build(IncrementalProjectBuilder.INCREMENTAL_BUILD, null);
-        toc = tocFileBuilder.getToc(root);
-        
-        // table content based on enum type and therefore no toc entry should be exists
-        assertNull(toc.getTableTocEntryByQualifiedTableName("motor.RateTableEnum"));
     }
     
     public void testIfIdenticalTocFileIsNotWrittenAfterFullBuild() throws CoreException {

@@ -503,35 +503,6 @@ public class IpsProjectTest extends AbstractIpsPluginTest {
         assertEquals(TestEnumType.class.getName(), types[3].getJavaClassName());
     }
 
-    public void testGetValueDatatypesTableBasedEnum() throws CoreException {
-        ITableStructure structure = (ITableStructure)newIpsObject(this.root, IpsObjectType.TABLE_STRUCTURE, "EnumType");
-        structure.setTableStructureType(TableStructureType.ENUMTYPE_MODEL);
-        ITableContents contents1 = (ITableContents)newIpsObject(root, IpsObjectType.TABLE_CONTENTS, "PaymentMode");
-        contents1.newGeneration();
-        contents1.setTableStructure(structure.getQualifiedName());
-        ITableContents contents2 = (ITableContents)newIpsObject(root, IpsObjectType.TABLE_CONTENTS, "Gender");
-        contents2.setTableStructure(structure.getQualifiedName());
-        contents2.newGeneration();
-
-        ITableStructure structure2 = (ITableStructure)newIpsObject(this.root, IpsObjectType.TABLE_STRUCTURE,
-                "EnumType2");
-        structure2.setTableStructureType(TableStructureType.ENUMTYPE_MODEL);
-        ITableContents contents3 = (ITableContents)newIpsObject(root, IpsObjectType.TABLE_CONTENTS,
-                "AgeCalculationStrategy");
-        contents3.newGeneration();
-
-        ValueDatatype[] datatypes = ipsProject.getValueDatatypes(false);
-        List<String> datatypeList = new ArrayList<String>();
-        for (int i = 0; i < datatypes.length; i++) {
-            datatypeList.add(datatypes[i].getQualifiedName());
-        }
-        assertTrue(datatypeList.contains("PaymentMode"));
-        assertTrue(datatypeList.contains("Gender"));
-        assertFalse(datatypeList.contains("EnumType"));
-        assertFalse(datatypeList.contains("EnumType2"));
-        assertFalse(datatypeList.contains("AgeCalculationStrategy"));
-    }
-
     public void testGetValueDatatypes_boolean_boolean() throws CoreException {
         IIpsProjectProperties props = ipsProject.getProperties();
         props.setPredefinedDatatypesUsed(new String[] { Datatype.DECIMAL.getQualifiedName(),
@@ -649,18 +620,6 @@ public class IpsProjectTest extends AbstractIpsPluginTest {
         assertTrue(enumTypes.contains(gender));
     }
 
-    public void testFindValueDatatypeTableBasedEunm() throws CoreException {
-        ITableStructure structure = (ITableStructure)newIpsObject(ipsProject, IpsObjectType.TABLE_STRUCTURE,
-                "table.Structure");
-        structure.setTableStructureType(TableStructureType.ENUMTYPE_MODEL);
-        assertNull(ipsProject.findValueDatatype("PaymentMode"));
-
-        ITableContents contents = (ITableContents)newIpsObject(ipsProject, IpsObjectType.TABLE_CONTENTS, "PaymentMode");
-        contents.setTableStructure(structure.getQualifiedName());
-        contents.newGeneration();
-        assertNotNull(ipsProject.findValueDatatype("PaymentMode"));
-    }
-
     public void testGetDatatypeHelper() throws Exception {
         IIpsProjectProperties props = ipsProject.getProperties();
         props.setPredefinedDatatypesUsed(new String[] { Datatype.DECIMAL.getQualifiedName() });
@@ -677,19 +636,6 @@ public class IpsProjectTest extends AbstractIpsPluginTest {
         createRefProject();
         helper = ipsProject.getDatatypeHelper(Datatype.MONEY);
         assertEquals(MoneyHelper.class, helper.getClass());
-    }
-
-    public void testGetDatatypeHelperTableBasedEnum() throws CoreException {
-        ITableStructure structure = (ITableStructure)newIpsObject(ipsProject, IpsObjectType.TABLE_STRUCTURE,
-                "table.Structure");
-        structure.setTableStructureType(TableStructureType.ENUMTYPE_MODEL);
-        ITableContents contents = (ITableContents)newIpsObject(ipsProject, IpsObjectType.TABLE_CONTENTS, "PaymentMode");
-        contents.setTableStructure(structure.getQualifiedName());
-        contents.newGeneration();
-        DatatypeHelper helper = ipsProject
-                .getDatatypeHelper(new TableContentsEnumDatatypeAdapter(contents, ipsProject));
-        assertNotNull(helper);
-        assertEquals(new TableContentsEnumDatatypeAdapter(contents, ipsProject), helper.getDatatype());
     }
 
     public void testFindDatatypeString() throws Exception {
