@@ -25,19 +25,15 @@ import org.faktorips.devtools.core.builder.TestArtefactBuilderSetInfo;
 import org.faktorips.devtools.core.internal.model.IpsModel;
 import org.faktorips.devtools.core.internal.model.ipsproject.IpsObjectPath;
 import org.faktorips.devtools.core.internal.model.ipsproject.IpsProjectRefEntry;
-import org.faktorips.devtools.core.internal.model.tablecontents.Row;
-import org.faktorips.devtools.core.internal.model.tablecontents.TableContents;
-import org.faktorips.devtools.core.internal.model.tablecontents.TableContentsGeneration;
-import org.faktorips.devtools.core.internal.model.tablestructure.Column;
-import org.faktorips.devtools.core.internal.model.tablestructure.TableStructure;
-import org.faktorips.devtools.core.internal.model.tablestructure.TableStructureType;
-import org.faktorips.devtools.core.internal.model.tablestructure.UniqueKey;
 import org.faktorips.devtools.core.model.ContentChangeEvent;
 import org.faktorips.devtools.core.model.ContentsChangeListener;
 import org.faktorips.devtools.core.model.DatatypeDependency;
 import org.faktorips.devtools.core.model.IDependency;
 import org.faktorips.devtools.core.model.IIpsElement;
 import org.faktorips.devtools.core.model.IpsObjectDependency;
+import org.faktorips.devtools.core.model.enums.IEnumAttribute;
+import org.faktorips.devtools.core.model.enums.IEnumType;
+import org.faktorips.devtools.core.model.enums.IEnumValue;
 import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
 import org.faktorips.devtools.core.model.ipsobject.Modifier;
@@ -434,52 +430,39 @@ public class PolicyCmptTypeTest extends AbstractIpsPluginTest implements Content
         assertTrue(dependencyList.contains(IpsObjectDependency.createReferenceDependency(c.getQualifiedNameType(), b.getQualifiedNameType())));
     }
     
-    public void testDependsOnTableBasedEnums() throws Exception{
+    public void testDependsOnEnumType() throws Exception{
         
-        TableStructure structure = (TableStructure)newIpsObject(ipsProject, IpsObjectType.TABLE_STRUCTURE, "TestEnumType");
-        structure.setTableStructureType(TableStructureType.ENUMTYPE_MODEL);
-        Column idColumn = (Column)structure.newColumn();
-        idColumn.setDatatype(Datatype.STRING.getQualifiedName());
-        idColumn.setName("id");
-        Column nameColumn = (Column)structure.newColumn();
-        nameColumn.setDatatype(Datatype.STRING.getQualifiedName());
-        nameColumn.setName("name");
-        UniqueKey uniqueKey = (UniqueKey)structure.newUniqueKey();
-        uniqueKey.addKeyItem("id");
-        uniqueKey.addKeyItem("name");
+        IEnumType enumType = newDefaultEnumType(ipsProject, "Gender");
         
-        TableContents contents = (TableContents)newIpsObject(ipsProject, IpsObjectType.TABLE_CONTENTS, "TestGender");
-        contents.setTableStructure(structure.getQualifiedName());
-        contents.newColumn("1");
-        contents.newColumn("male");
-        TableContentsGeneration generation = (TableContentsGeneration)contents.newGeneration();
-        Row row = (Row)generation.newRow();
-        row.setValue(0, "1");
-        row.setValue(1, "male");
-        row = (Row)generation.newRow();
-        row.setValue(0, "2");
-        row.setValue(1, "female");
+        IEnumValue male = enumType.newEnumValue();
+        male.getEnumAttributeValues().get(0).setValue("1");
+        male.getEnumAttributeValues().get(1).setValue("male");
+        
+        IEnumValue female = enumType.newEnumValue();
+        female.getEnumAttributeValues().get(0).setValue("2");
+        female.getEnumAttributeValues().get(1).setValue("female");
         
         IPolicyCmptType type = newPolicyCmptType(ipsProject, "A");
         type.setConfigurableByProductCmptType(false);
         PolicyCmptTypeAttribute aAttr = (PolicyCmptTypeAttribute)type.newPolicyCmptTypeAttribute();
         aAttr.setAttributeType(AttributeType.CHANGEABLE);
-        aAttr.setDatatype("TestGender");
+        aAttr.setDatatype("Gender");
         aAttr.setModifier(Modifier.PUBLIC);
         aAttr.setName("aAttr");
         
         //make sure the policy component type is valid
+        System.out.println(type.validate(ipsProject));
         assertTrue(type.validate(ipsProject).isEmpty());
         
         //make sure datatype is available
-        Datatype datatype = contents.getIpsProject().findDatatype("TestGender");
+        Datatype datatype = ipsProject.findDatatype("Gender");
         assertNotNull(datatype);
 
         // expect dependency on the TableContents defined above. Dependency on the Tablestructure is
         // no longer expected since we have introduced a DatatypeDependency
         IDependency[] dependencies = type.dependsOn();
         List<IDependency> nameTypeList = Arrays.asList(dependencies);
-        assertTrue(nameTypeList.contains(new DatatypeDependency(type.getQualifiedNameType(), contents.getQualifiedNameType().getName())));
+        assertTrue(nameTypeList.contains(new DatatypeDependency(type.getQualifiedNameType(), enumType.getQualifiedNameType().getName())));
     }
     
     public void testDependsOnComposition() throws Exception {
