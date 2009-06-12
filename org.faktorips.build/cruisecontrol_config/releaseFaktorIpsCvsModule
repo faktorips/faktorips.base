@@ -1,3 +1,6 @@
+#
+# CVS Methods to use in releaseFaktorIps script 
+#
 createBranch()
 {
   # $1 : FETCH_TAG
