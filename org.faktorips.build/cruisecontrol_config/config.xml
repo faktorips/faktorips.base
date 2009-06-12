@@ -42,6 +42,9 @@
                 <map alias="weickmann" address="alexander.weickmann@faktorzehn.de"/>
                 <map alias="ortmann2" address="joerg.ortmann@faktorzehn.de"/>
                 <map alias="grutza" address="roman.grutza@faktorzehn.de"/>
+                <map alias="dirmeier" address="cornelius.dirmeier@faktorzehn.de"/>
+                <map alias="dicker" address="stefan.dicker@faktorzehn.de"/>
+                <map alias="niedernhuber" address="juergen.niedernhuber@faktorzehn.de"/>
                 <!--dummy aliases for buildstatus projects (cc-projectname)-->
                 <map alias="cc-org.faktorips.util" address=""/>
                 <map alias="cc-org.faktorips.valuetypes" address=""/>
@@ -63,7 +66,7 @@
                 <map alias="cc-org.faktorips.integrationtest.v2_2_patches" address=""/>
                 <map alias="cc-org.faktorips.integrationtest.java5.v2_2_patches" address=""/>
                 <map alias="cc-de.qv.faktorips" address=""/>
-                <failure reportWhenFixed="true" address="jan.ortmann@faktorzehn.de,peter.kuntz@faktorzehn.de,daniel.hohenberger@faktorzehn.de,alexander.weickmann@faktorzehn.de,joerg.ortmann@faktorzehn.de,roman.grutza@faktorzehn.de"/>
+                <failure reportWhenFixed="true" address="jan.ortmann@faktorzehn.de,peter.kuntz@faktorzehn.de,daniel.hohenberger@faktorzehn.de,alexander.weickmann@faktorzehn.de,joerg.ortmann@faktorzehn.de,roman.grutza@faktorzehn.de,cornelius.dirmeier@faktorzehn.de,stefan.dicker@faktorzehn.de,juergen.niedernhuber@faktorzehn.de"/>
             </htmlemail>
         </publishers>
     </project>
@@ -93,6 +96,9 @@
                 <map alias="weickmann" address="alexander.weickmann@faktorzehn.de"/>
                 <map alias="ortmann2" address="joerg.ortmann@faktorzehn.de"/>
                 <map alias="grutza" address="roman.grutza@faktorzehn.de"/>
+                <map alias="dirmeier" address="cornelius.dirmeier@faktorzehn.de"/>
+                <map alias="dicker" address="stefan.dicker@faktorzehn.de"/>
+                <map alias="niedernhuber" address="juergen.niedernhuber@faktorzehn.de"/>
                 <!--dummy aliases for buildstatus projects (cc-projectname)-->
                 <map alias="cc-org.faktorips.util" address=""/>
                 <map alias="cc-org.faktorips.valuetypes" address=""/>
@@ -114,7 +120,7 @@
                 <map alias="cc-org.faktorips.integrationtest.v2_2_patches" address=""/>
                 <map alias="cc-org.faktorips.integrationtest.java5.v2_2_patches" address=""/>
                 <map alias="cc-de.qv.faktorips" address=""/>
-                <failure reportWhenFixed="true" address="jan.ortmann@faktorzehn.de,peter.kuntz@faktorzehn.de,daniel.hohenberger@faktorzehn.de,alexander.weickmann@faktorzehn.de,joerg.ortmann@faktorzehn.de,roman.grutza@faktorzehn.de"/>
+                <failure reportWhenFixed="true" address="jan.ortmann@faktorzehn.de,peter.kuntz@faktorzehn.de,daniel.hohenberger@faktorzehn.de,alexander.weickmann@faktorzehn.de,joerg.ortmann@faktorzehn.de,roman.grutza@faktorzehn.de,cornelius.dirmeier@faktorzehn.de,stefan.dicker@faktorzehn.de,juergen.niedernhuber@faktorzehn.de"/>
             </htmlemail>
         </publishers>
     </project>
@@ -144,6 +150,9 @@
                 <map alias="weickmann" address="alexander.weickmann@faktorzehn.de"/>
                 <map alias="ortmann2" address="joerg.ortmann@faktorzehn.de"/>
                 <map alias="grutza" address="roman.grutza@faktorzehn.de"/>
+                <map alias="dirmeier" address="cornelius.dirmeier@faktorzehn.de"/>
+                <map alias="dicker" address="stefan.dicker@faktorzehn.de"/>
+                <map alias="niedernhuber" address="juergen.niedernhuber@faktorzehn.de"/>
                 <!--dummy aliases for buildstatus projects (cc-projectname)-->
                 <map alias="cc-org.faktorips.util" address=""/>
                 <map alias="cc-org.faktorips.valuetypes" address=""/>
@@ -165,7 +174,7 @@
                 <map alias="cc-org.faktorips.integrationtest.v2_2_patches" address=""/>
                 <map alias="cc-org.faktorips.integrationtest.java5.v2_2_patches" address=""/>
                 <map alias="cc-de.qv.faktorips" address=""/>
-                <failure reportWhenFixed="true" address="jan.ortmann@faktorzehn.de,peter.kuntz@faktorzehn.de,daniel.hohenberger@faktorzehn.de,alexander.weickmann@faktorzehn.de,joerg.ortmann@faktorzehn.de,roman.grutza@faktorzehn.de"/>
+                <failure reportWhenFixed="true" address="jan.ortmann@faktorzehn.de,peter.kuntz@faktorzehn.de,daniel.hohenberger@faktorzehn.de,alexander.weickmann@faktorzehn.de,joerg.ortmann@faktorzehn.de,roman.grutza@faktorzehn.de,cornelius.dirmeier@faktorzehn.de,stefan.dicker@faktorzehn.de,juergen.niedernhuber@faktorzehn.de"/>
             </htmlemail>
         </publishers>
     </project>
@@ -196,6 +205,9 @@
                 <map alias="weickmann" address="alexander.weickmann@faktorzehn.de"/>
                 <map alias="ortmann2" address="joerg.ortmann@faktorzehn.de"/>
                 <map alias="grutza" address="roman.grutza@faktorzehn.de"/>
+                <map alias="dirmeier" address="cornelius.dirmeier@faktorzehn.de"/>
+                <map alias="dicker" address="stefan.dicker@faktorzehn.de"/>
+                <map alias="niedernhuber" address="juergen.niedernhuber@faktorzehn.de"/>
                 <!--dummy aliases for buildstatus projects (cc-projectname)-->
                 <map alias="cc-org.faktorips.util" address=""/>
                 <map alias="cc-org.faktorips.valuetypes" address=""/>
@@ -217,7 +229,7 @@
                 <map alias="cc-org.faktorips.integrationtest.v2_2_patches" address=""/>
                 <map alias="cc-org.faktorips.integrationtest.java5.v2_2_patches" address=""/>
                 <map alias="cc-de.qv.faktorips" address=""/>
-                <failure reportWhenFixed="true" address="jan.ortmann@faktorzehn.de,peter.kuntz@faktorzehn.de,daniel.hohenberger@faktorzehn.de,alexander.weickmann@faktorzehn.de,joerg.ortmann@faktorzehn.de,roman.grutza@faktorzehn.de"/>
+                <failure reportWhenFixed="true" address="jan.ortmann@faktorzehn.de,peter.kuntz@faktorzehn.de,daniel.hohenberger@faktorzehn.de,alexander.weickmann@faktorzehn.de,joerg.ortmann@faktorzehn.de,roman.grutza@faktorzehn.de,cornelius.dirmeier@faktorzehn.de,stefan.dicker@faktorzehn.de,juergen.niedernhuber@faktorzehn.de"/>
             </htmlemail>
         </publishers>
     </project>
@@ -248,6 +260,9 @@
                 <map alias="weickmann" address="alexander.weickmann@faktorzehn.de"/>
                 <map alias="ortmann2" address="joerg.ortmann@faktorzehn.de"/>
                 <map alias="grutza" address="roman.grutza@faktorzehn.de"/>
+                <map alias="dirmeier" address="cornelius.dirmeier@faktorzehn.de"/>
+                <map alias="dicker" address="stefan.dicker@faktorzehn.de"/>
+                <map alias="niedernhuber" address="juergen.niedernhuber@faktorzehn.de"/>
                 <!--dummy aliases for buildstatus projects (cc-projectname)-->
                 <map alias="cc-org.faktorips.util" address=""/>
                 <map alias="cc-org.faktorips.valuetypes" address=""/>
@@ -269,7 +284,7 @@
                 <map alias="cc-org.faktorips.integrationtest.v2_2_patches" address=""/>
                 <map alias="cc-org.faktorips.integrationtest.java5.v2_2_patches" address=""/>
                 <map alias="cc-de.qv.faktorips" address=""/>
-                <failure reportWhenFixed="true" address="jan.ortmann@faktorzehn.de,peter.kuntz@faktorzehn.de,daniel.hohenberger@faktorzehn.de,alexander.weickmann@faktorzehn.de,joerg.ortmann@faktorzehn.de,roman.grutza@faktorzehn.de"/>
+                <failure reportWhenFixed="true" address="jan.ortmann@faktorzehn.de,peter.kuntz@faktorzehn.de,daniel.hohenberger@faktorzehn.de,alexander.weickmann@faktorzehn.de,joerg.ortmann@faktorzehn.de,roman.grutza@faktorzehn.de,cornelius.dirmeier@faktorzehn.de,stefan.dicker@faktorzehn.de,juergen.niedernhuber@faktorzehn.de"/>
             </htmlemail>
         </publishers>
     </project>
@@ -300,6 +315,9 @@
                 <map alias="weickmann" address="alexander.weickmann@faktorzehn.de"/>
                 <map alias="ortmann2" address="joerg.ortmann@faktorzehn.de"/>
                 <map alias="grutza" address="roman.grutza@faktorzehn.de"/>
+                <map alias="dirmeier" address="cornelius.dirmeier@faktorzehn.de"/>
+                <map alias="dicker" address="stefan.dicker@faktorzehn.de"/>
+                <map alias="niedernhuber" address="juergen.niedernhuber@faktorzehn.de"/>
                 <!--dummy aliases for buildstatus projects (cc-projectname)-->
                 <map alias="cc-org.faktorips.util" address=""/>
                 <map alias="cc-org.faktorips.valuetypes" address=""/>
@@ -321,7 +339,7 @@
                 <map alias="cc-org.faktorips.integrationtest.v2_2_patches" address=""/>
                 <map alias="cc-org.faktorips.integrationtest.java5.v2_2_patches" address=""/>
                 <map alias="cc-de.qv.faktorips" address=""/>
-                <failure reportWhenFixed="true" address="jan.ortmann@faktorzehn.de,peter.kuntz@faktorzehn.de,daniel.hohenberger@faktorzehn.de,alexander.weickmann@faktorzehn.de,joerg.ortmann@faktorzehn.de,roman.grutza@faktorzehn.de"/>
+                <failure reportWhenFixed="true" address="jan.ortmann@faktorzehn.de,peter.kuntz@faktorzehn.de,daniel.hohenberger@faktorzehn.de,alexander.weickmann@faktorzehn.de,joerg.ortmann@faktorzehn.de,roman.grutza@faktorzehn.de,cornelius.dirmeier@faktorzehn.de,stefan.dicker@faktorzehn.de,juergen.niedernhuber@faktorzehn.de"/>
             </htmlemail>
         </publishers>
     </project>
@@ -351,6 +369,9 @@
                 <map alias="weickmann" address="alexander.weickmann@faktorzehn.de"/>
                 <map alias="ortmann2" address="joerg.ortmann@faktorzehn.de"/>
                 <map alias="grutza" address="roman.grutza@faktorzehn.de"/>
+                <map alias="dirmeier" address="cornelius.dirmeier@faktorzehn.de"/>
+                <map alias="dicker" address="stefan.dicker@faktorzehn.de"/>
+                <map alias="niedernhuber" address="juergen.niedernhuber@faktorzehn.de"/>
                 <!--dummy aliases for buildstatus projects (cc-projectname)-->
                 <map alias="cc-org.faktorips.util" address=""/>
                 <map alias="cc-org.faktorips.valuetypes" address=""/>
@@ -372,7 +393,7 @@
                 <map alias="cc-org.faktorips.integrationtest.v2_2_patches" address=""/>
                 <map alias="cc-org.faktorips.integrationtest.java5.v2_2_patches" address=""/>
                 <map alias="cc-de.qv.faktorips" address=""/>
-                <failure reportWhenFixed="true" address="jan.ortmann@faktorzehn.de,peter.kuntz@faktorzehn.de,daniel.hohenberger@faktorzehn.de,alexander.weickmann@faktorzehn.de,joerg.ortmann@faktorzehn.de,roman.grutza@faktorzehn.de"/>
+                <failure reportWhenFixed="true" address="jan.ortmann@faktorzehn.de,peter.kuntz@faktorzehn.de,daniel.hohenberger@faktorzehn.de,alexander.weickmann@faktorzehn.de,joerg.ortmann@faktorzehn.de,roman.grutza@faktorzehn.de,cornelius.dirmeier@faktorzehn.de,stefan.dicker@faktorzehn.de,juergen.niedernhuber@faktorzehn.de"/>
             </htmlemail>
         </publishers>
     </project>
@@ -402,6 +423,9 @@
                 <map alias="weickmann" address="alexander.weickmann@faktorzehn.de"/>
                 <map alias="ortmann2" address="joerg.ortmann@faktorzehn.de"/>
                 <map alias="grutza" address="roman.grutza@faktorzehn.de"/>
+                <map alias="dirmeier" address="cornelius.dirmeier@faktorzehn.de"/>
+                <map alias="dicker" address="stefan.dicker@faktorzehn.de"/>
+                <map alias="niedernhuber" address="juergen.niedernhuber@faktorzehn.de"/>
                 <!--dummy aliases for buildstatus projects (cc-projectname)-->
                 <map alias="cc-org.faktorips.util" address=""/>
                 <map alias="cc-org.faktorips.valuetypes" address=""/>
@@ -423,7 +447,7 @@
                 <map alias="cc-org.faktorips.integrationtest.v2_2_patches" address=""/>
                 <map alias="cc-org.faktorips.integrationtest.java5.v2_2_patches" address=""/>
                 <map alias="cc-de.qv.faktorips" address=""/>
-                <failure reportWhenFixed="true" address="jan.ortmann@faktorzehn.de,peter.kuntz@faktorzehn.de,daniel.hohenberger@faktorzehn.de,alexander.weickmann@faktorzehn.de,joerg.ortmann@faktorzehn.de,roman.grutza@faktorzehn.de"/>
+                <failure reportWhenFixed="true" address="jan.ortmann@faktorzehn.de,peter.kuntz@faktorzehn.de,daniel.hohenberger@faktorzehn.de,alexander.weickmann@faktorzehn.de,joerg.ortmann@faktorzehn.de,roman.grutza@faktorzehn.de,cornelius.dirmeier@faktorzehn.de,stefan.dicker@faktorzehn.de,juergen.niedernhuber@faktorzehn.de"/>
             </htmlemail>
         </publishers>
     </project>
@@ -455,6 +479,9 @@
                 <map alias="weickmann" address="alexander.weickmann@faktorzehn.de"/>
                 <map alias="ortmann2" address="joerg.ortmann@faktorzehn.de"/>
                 <map alias="grutza" address="roman.grutza@faktorzehn.de"/>
+                <map alias="dirmeier" address="cornelius.dirmeier@faktorzehn.de"/>
+                <map alias="dicker" address="stefan.dicker@faktorzehn.de"/>
+                <map alias="niedernhuber" address="juergen.niedernhuber@faktorzehn.de"/>
                 <!--dummy aliases for buildstatus projects (cc-projectname)-->
                 <map alias="cc-org.faktorips.util" address=""/>
                 <map alias="cc-org.faktorips.valuetypes" address=""/>
@@ -476,7 +503,7 @@
                 <map alias="cc-org.faktorips.integrationtest.v2_2_patches" address=""/>
                 <map alias="cc-org.faktorips.integrationtest.java5.v2_2_patches" address=""/>
                 <map alias="cc-de.qv.faktorips" address=""/>
-                <failure reportWhenFixed="true" address="jan.ortmann@faktorzehn.de,peter.kuntz@faktorzehn.de,daniel.hohenberger@faktorzehn.de,alexander.weickmann@faktorzehn.de,joerg.ortmann@faktorzehn.de,roman.grutza@faktorzehn.de"/>
+                <failure reportWhenFixed="true" address="jan.ortmann@faktorzehn.de,peter.kuntz@faktorzehn.de,daniel.hohenberger@faktorzehn.de,alexander.weickmann@faktorzehn.de,joerg.ortmann@faktorzehn.de,roman.grutza@faktorzehn.de,cornelius.dirmeier@faktorzehn.de,stefan.dicker@faktorzehn.de,juergen.niedernhuber@faktorzehn.de"/>
             </htmlemail>
         </publishers>
     </project>
@@ -506,6 +533,9 @@
                 <map alias="weickmann" address="alexander.weickmann@faktorzehn.de"/>
                 <map alias="ortmann2" address="joerg.ortmann@faktorzehn.de"/>
                 <map alias="grutza" address="roman.grutza@faktorzehn.de"/>
+                <map alias="dirmeier" address="cornelius.dirmeier@faktorzehn.de"/>
+                <map alias="dicker" address="stefan.dicker@faktorzehn.de"/>
+                <map alias="niedernhuber" address="juergen.niedernhuber@faktorzehn.de"/>
                 <!--dummy aliases for buildstatus projects (cc-projectname)-->
                 <map alias="cc-org.faktorips.util" address=""/>
                 <map alias="cc-org.faktorips.valuetypes" address=""/>
@@ -527,7 +557,7 @@
                 <map alias="cc-org.faktorips.integrationtest.v2_2_patches" address=""/>
                 <map alias="cc-org.faktorips.integrationtest.java5.v2_2_patches" address=""/>
                 <map alias="cc-de.qv.faktorips" address=""/>
-                <failure reportWhenFixed="true" address="jan.ortmann@faktorzehn.de,peter.kuntz@faktorzehn.de,daniel.hohenberger@faktorzehn.de,alexander.weickmann@faktorzehn.de,joerg.ortmann@faktorzehn.de,roman.grutza@faktorzehn.de"/>
+                <failure reportWhenFixed="true" address="jan.ortmann@faktorzehn.de,peter.kuntz@faktorzehn.de,daniel.hohenberger@faktorzehn.de,alexander.weickmann@faktorzehn.de,joerg.ortmann@faktorzehn.de,roman.grutza@faktorzehn.de,cornelius.dirmeier@faktorzehn.de,stefan.dicker@faktorzehn.de,juergen.niedernhuber@faktorzehn.de"/>
             </htmlemail>
         </publishers>
     </project>
@@ -557,6 +587,9 @@
                 <map alias="weickmann" address="alexander.weickmann@faktorzehn.de"/>
                 <map alias="ortmann2" address="joerg.ortmann@faktorzehn.de"/>
                 <map alias="grutza" address="roman.grutza@faktorzehn.de"/>
+                <map alias="dirmeier" address="cornelius.dirmeier@faktorzehn.de"/>
+                <map alias="dicker" address="stefan.dicker@faktorzehn.de"/>
+                <map alias="niedernhuber" address="juergen.niedernhuber@faktorzehn.de"/>
                 <!--dummy aliases for buildstatus projects (cc-projectname)-->
                 <map alias="cc-org.faktorips.util" address=""/>
                 <map alias="cc-org.faktorips.valuetypes" address=""/>
@@ -578,7 +611,7 @@
                 <map alias="cc-org.faktorips.integrationtest.v2_2_patches" address=""/>
                 <map alias="cc-org.faktorips.integrationtest.java5.v2_2_patches" address=""/>
                 <map alias="cc-de.qv.faktorips" address=""/>
-                <failure reportWhenFixed="true" address="jan.ortmann@faktorzehn.de,peter.kuntz@faktorzehn.de,daniel.hohenberger@faktorzehn.de,alexander.weickmann@faktorzehn.de,joerg.ortmann@faktorzehn.de,roman.grutza@faktorzehn.de"/>
+                <failure reportWhenFixed="true" address="jan.ortmann@faktorzehn.de,peter.kuntz@faktorzehn.de,daniel.hohenberger@faktorzehn.de,alexander.weickmann@faktorzehn.de,joerg.ortmann@faktorzehn.de,roman.grutza@faktorzehn.de,cornelius.dirmeier@faktorzehn.de,stefan.dicker@faktorzehn.de,juergen.niedernhuber@faktorzehn.de"/>
             </htmlemail>
         </publishers>
     </project>
@@ -607,6 +640,9 @@
                 <map alias="weickmann" address="alexander.weickmann@faktorzehn.de"/>
                 <map alias="ortmann2" address="joerg.ortmann@faktorzehn.de"/>
                 <map alias="grutza" address="roman.grutza@faktorzehn.de"/>
+                <map alias="dirmeier" address="cornelius.dirmeier@faktorzehn.de"/>
+                <map alias="dicker" address="stefan.dicker@faktorzehn.de"/>
+                <map alias="niedernhuber" address="juergen.niedernhuber@faktorzehn.de"/>
                 <!--dummy aliases for buildstatus projects (cc-projectname)-->
                 <map alias="cc-org.faktorips.util" address=""/>
                 <map alias="cc-org.faktorips.valuetypes" address=""/>
@@ -628,7 +664,7 @@
                 <map alias="cc-org.faktorips.integrationtest.v2_2_patches" address=""/>
                 <map alias="cc-org.faktorips.integrationtest.java5.v2_2_patches" address=""/>
                 <map alias="cc-de.qv.faktorips" address=""/>
-                <failure reportWhenFixed="true" address="jan.ortmann@faktorzehn.de,peter.kuntz@faktorzehn.de,daniel.hohenberger@faktorzehn.de,alexander.weickmann@faktorzehn.de,joerg.ortmann@faktorzehn.de,roman.grutza@faktorzehn.de"/>
+                <failure reportWhenFixed="true" address="jan.ortmann@faktorzehn.de,peter.kuntz@faktorzehn.de,daniel.hohenberger@faktorzehn.de,alexander.weickmann@faktorzehn.de,joerg.ortmann@faktorzehn.de,roman.grutza@faktorzehn.de,cornelius.dirmeier@faktorzehn.de,stefan.dicker@faktorzehn.de,juergen.niedernhuber@faktorzehn.de"/>
             </htmlemail>
         </publishers>
     </project>
@@ -657,6 +693,9 @@
                 <map alias="weickmann" address="alexander.weickmann@faktorzehn.de"/>
                 <map alias="ortmann2" address="joerg.ortmann@faktorzehn.de"/>
                 <map alias="grutza" address="roman.grutza@faktorzehn.de"/>
+                <map alias="dirmeier" address="cornelius.dirmeier@faktorzehn.de"/>
+                <map alias="dicker" address="stefan.dicker@faktorzehn.de"/>
+                <map alias="niedernhuber" address="juergen.niedernhuber@faktorzehn.de"/>
                 <!--dummy aliases for buildstatus projects (cc-projectname)-->
                 <map alias="cc-org.faktorips.util" address=""/>
                 <map alias="cc-org.faktorips.valuetypes" address=""/>
@@ -678,7 +717,7 @@
                 <map alias="cc-org.faktorips.integrationtest.v2_2_patches" address=""/>
                 <map alias="cc-org.faktorips.integrationtest.java5.v2_2_patches" address=""/>
                 <map alias="cc-de.qv.faktorips" address=""/>
-                <failure reportWhenFixed="true" address="jan.ortmann@faktorzehn.de,peter.kuntz@faktorzehn.de,daniel.hohenberger@faktorzehn.de,alexander.weickmann@faktorzehn.de,joerg.ortmann@faktorzehn.de,roman.grutza@faktorzehn.de"/>
+                <failure reportWhenFixed="true" address="jan.ortmann@faktorzehn.de,peter.kuntz@faktorzehn.de,daniel.hohenberger@faktorzehn.de,alexander.weickmann@faktorzehn.de,joerg.ortmann@faktorzehn.de,roman.grutza@faktorzehn.de,cornelius.dirmeier@faktorzehn.de,stefan.dicker@faktorzehn.de,juergen.niedernhuber@faktorzehn.de"/>
             </htmlemail>
         </publishers>
     </project>
@@ -728,6 +767,9 @@
                 <map alias="weickmann" address="alexander.weickmann@faktorzehn.de"/>
                 <map alias="ortmann2" address="joerg.ortmann@faktorzehn.de"/>
                 <map alias="grutza" address="roman.grutza@faktorzehn.de"/>
+                <map alias="dirmeier" address="cornelius.dirmeier@faktorzehn.de"/>
+                <map alias="dicker" address="stefan.dicker@faktorzehn.de"/>
+                <map alias="niedernhuber" address="juergen.niedernhuber@faktorzehn.de"/>
                 <!--dummy aliases for buildstatus projects (cc-projectname)-->
                 <map alias="cc-org.faktorips.util" address=""/>
                 <map alias="cc-org.faktorips.valuetypes" address=""/>
@@ -749,7 +791,7 @@
                 <map alias="cc-org.faktorips.integrationtest.v2_2_patches" address=""/>
                 <map alias="cc-org.faktorips.integrationtest.java5.v2_2_patches" address=""/>
                 <map alias="cc-de.qv.faktorips" address=""/>
-                <failure reportWhenFixed="true" address="jan.ortmann@faktorzehn.de,peter.kuntz@faktorzehn.de,daniel.hohenberger@faktorzehn.de,alexander.weickmann@faktorzehn.de,joerg.ortmann@faktorzehn.de,roman.grutza@faktorzehn.de"/>
+                <failure reportWhenFixed="true" address="jan.ortmann@faktorzehn.de,peter.kuntz@faktorzehn.de,daniel.hohenberger@faktorzehn.de,alexander.weickmann@faktorzehn.de,joerg.ortmann@faktorzehn.de,roman.grutza@faktorzehn.de,cornelius.dirmeier@faktorzehn.de,stefan.dicker@faktorzehn.de,juergen.niedernhuber@faktorzehn.de"/>
             </htmlemail>
             <antpublisher buildfile="${mainbuildfile}" uselogger="true" usedebug="false" target="copy.artifacts.pluginbuilder.faktorips">
                 <property name="ccProjectDir" value="${logdir}/${project.name}"/>
@@ -805,6 +847,9 @@
                 <map alias="weickmann" address="alexander.weickmann@faktorzehn.de"/>
                 <map alias="ortmann2" address="joerg.ortmann@faktorzehn.de"/>
                 <map alias="grutza" address="roman.grutza@faktorzehn.de"/>
+                <map alias="dirmeier" address="cornelius.dirmeier@faktorzehn.de"/>
+                <map alias="dicker" address="stefan.dicker@faktorzehn.de"/>
+                <map alias="niedernhuber" address="juergen.niedernhuber@faktorzehn.de"/>
                 <!--dummy aliases for buildstatus projects (cc-projectname)-->
                 <map alias="cc-org.faktorips.util" address=""/>
                 <map alias="cc-org.faktorips.valuetypes" address=""/>
@@ -826,7 +871,7 @@
                 <map alias="cc-org.faktorips.integrationtest.v2_2_patches" address=""/>
                 <map alias="cc-org.faktorips.integrationtest.java5.v2_2_patches" address=""/>
                 <map alias="cc-de.qv.faktorips" address=""/>
-                <failure reportWhenFixed="true" address="jan.ortmann@faktorzehn.de,peter.kuntz@faktorzehn.de,daniel.hohenberger@faktorzehn.de,alexander.weickmann@faktorzehn.de,joerg.ortmann@faktorzehn.de,roman.grutza@faktorzehn.de"/>
+                <failure reportWhenFixed="true" address="jan.ortmann@faktorzehn.de,peter.kuntz@faktorzehn.de,daniel.hohenberger@faktorzehn.de,alexander.weickmann@faktorzehn.de,joerg.ortmann@faktorzehn.de,roman.grutza@faktorzehn.de,cornelius.dirmeier@faktorzehn.de,stefan.dicker@faktorzehn.de,juergen.niedernhuber@faktorzehn.de"/>
             </htmlemail>
             <antpublisher buildfile="${mainbuildfile}" uselogger="true" usedebug="false" target="copy.artifacts.pluginbuilder.faktorips">
                 <property name="ccProjectDir" value="${logdir}/${project.name}"/>
@@ -863,6 +908,9 @@
                 <map alias="weickmann" address="alexander.weickmann@faktorzehn.de"/>
                 <map alias="ortmann2" address="joerg.ortmann@faktorzehn.de"/>
                 <map alias="grutza" address="roman.grutza@faktorzehn.de"/>
+                <map alias="dirmeier" address="cornelius.dirmeier@faktorzehn.de"/>
+                <map alias="dicker" address="stefan.dicker@faktorzehn.de"/>
+                <map alias="niedernhuber" address="juergen.niedernhuber@faktorzehn.de"/>
                 <!--dummy aliases for buildstatus projects (cc-projectname)-->
                 <map alias="cc-org.faktorips.util" address=""/>
                 <map alias="cc-org.faktorips.valuetypes" address=""/>
@@ -884,7 +932,7 @@
                 <map alias="cc-org.faktorips.integrationtest.v2_2_patches" address=""/>
                 <map alias="cc-org.faktorips.integrationtest.java5.v2_2_patches" address=""/>
                 <map alias="cc-de.qv.faktorips" address=""/>
-                <failure reportWhenFixed="true" address="jan.ortmann@faktorzehn.de,peter.kuntz@faktorzehn.de,daniel.hohenberger@faktorzehn.de,alexander.weickmann@faktorzehn.de,joerg.ortmann@faktorzehn.de,roman.grutza@faktorzehn.de"/>
+                <failure reportWhenFixed="true" address="jan.ortmann@faktorzehn.de,peter.kuntz@faktorzehn.de,daniel.hohenberger@faktorzehn.de,alexander.weickmann@faktorzehn.de,joerg.ortmann@faktorzehn.de,roman.grutza@faktorzehn.de,cornelius.dirmeier@faktorzehn.de,stefan.dicker@faktorzehn.de,juergen.niedernhuber@faktorzehn.de"/>
             </htmlemail>
             <antpublisher buildfile="${mainbuildfile}" uselogger="true" usedebug="false" target="copy.artifacts.pluginbuilder.faktorips">
                 <property name="ccProjectDir" value="${logdir}/${project.name}"/>
@@ -921,6 +969,9 @@
                 <map alias="weickmann" address="alexander.weickmann@faktorzehn.de"/>
                 <map alias="ortmann2" address="joerg.ortmann@faktorzehn.de"/>
                 <map alias="grutza" address="roman.grutza@faktorzehn.de"/>
+                <map alias="dirmeier" address="cornelius.dirmeier@faktorzehn.de"/>
+                <map alias="dicker" address="stefan.dicker@faktorzehn.de"/>
+                <map alias="niedernhuber" address="juergen.niedernhuber@faktorzehn.de"/>
                 <!--dummy aliases for buildstatus projects (cc-projectname)-->
                 <map alias="cc-org.faktorips.util" address=""/>
                 <map alias="cc-org.faktorips.valuetypes" address=""/>
@@ -942,7 +993,7 @@
                 <map alias="cc-org.faktorips.integrationtest.v2_2_patches" address=""/>
                 <map alias="cc-org.faktorips.integrationtest.java5.v2_2_patches" address=""/>
                 <map alias="cc-de.qv.faktorips" address=""/>
-                <failure reportWhenFixed="true" address="jan.ortmann@faktorzehn.de,peter.kuntz@faktorzehn.de,daniel.hohenberger@faktorzehn.de,alexander.weickmann@faktorzehn.de,joerg.ortmann@faktorzehn.de,roman.grutza@faktorzehn.de"/>
+                <failure reportWhenFixed="true" address="jan.ortmann@faktorzehn.de,peter.kuntz@faktorzehn.de,daniel.hohenberger@faktorzehn.de,alexander.weickmann@faktorzehn.de,joerg.ortmann@faktorzehn.de,roman.grutza@faktorzehn.de,cornelius.dirmeier@faktorzehn.de,stefan.dicker@faktorzehn.de,juergen.niedernhuber@faktorzehn.de"/>
             </htmlemail>
             <antpublisher buildfile="${mainbuildfile}" uselogger="true" usedebug="false" target="copy.artifacts.pluginbuilder.faktorips">
                 <property name="ccProjectDir" value="${logdir}/${project.name}"/>
@@ -982,6 +1033,9 @@
                 <map alias="weickmann" address="alexander.weickmann@faktorzehn.de"/>
                 <map alias="ortmann2" address="joerg.ortmann@faktorzehn.de"/>
                 <map alias="grutza" address="roman.grutza@faktorzehn.de"/>
+                <map alias="dirmeier" address="cornelius.dirmeier@faktorzehn.de"/>
+                <map alias="dicker" address="stefan.dicker@faktorzehn.de"/>
+                <map alias="niedernhuber" address="juergen.niedernhuber@faktorzehn.de"/>
                 <!--dummy aliases for buildstatus projects (cc-projectname)-->
                 <map alias="cc-org.faktorips.util" address=""/>
                 <map alias="cc-org.faktorips.valuetypes" address=""/>
@@ -1003,7 +1057,7 @@
                 <map alias="cc-org.faktorips.integrationtest.v2_2_patches" address=""/>
                 <map alias="cc-org.faktorips.integrationtest.java5.v2_2_patches" address=""/>
                 <map alias="cc-de.qv.faktorips" address=""/>
-                <failure reportWhenFixed="true" address="jan.ortmann@faktorzehn.de,peter.kuntz@faktorzehn.de,daniel.hohenberger@faktorzehn.de,alexander.weickmann@faktorzehn.de,joerg.ortmann@faktorzehn.de,roman.grutza@faktorzehn.de"/>
+                <failure reportWhenFixed="true" address="jan.ortmann@faktorzehn.de,peter.kuntz@faktorzehn.de,daniel.hohenberger@faktorzehn.de,alexander.weickmann@faktorzehn.de,joerg.ortmann@faktorzehn.de,roman.grutza@faktorzehn.de,cornelius.dirmeier@faktorzehn.de,stefan.dicker@faktorzehn.de,juergen.niedernhuber@faktorzehn.de"/>
             </htmlemail>
             <antpublisher buildfile="${mainbuildfile}" uselogger="true" usedebug="false" target="copy.artifacts.pluginbuilder.faktorips">
                 <property name="ccProjectDir" value="${logdir}/${project.name}"/>
@@ -1043,6 +1097,9 @@
                 <map alias="weickmann" address="alexander.weickmann@faktorzehn.de"/>
                 <map alias="ortmann2" address="joerg.ortmann@faktorzehn.de"/>
                 <map alias="grutza" address="roman.grutza@faktorzehn.de"/>
+                <map alias="dirmeier" address="cornelius.dirmeier@faktorzehn.de"/>
+                <map alias="dicker" address="stefan.dicker@faktorzehn.de"/>
+                <map alias="niedernhuber" address="juergen.niedernhuber@faktorzehn.de"/>
                 <!--dummy aliases for buildstatus projects (cc-projectname)-->
                 <map alias="cc-org.faktorips.util" address=""/>
                 <map alias="cc-org.faktorips.valuetypes" address=""/>
@@ -1064,7 +1121,7 @@
                 <map alias="cc-org.faktorips.integrationtest.v2_2_patches" address=""/>
                 <map alias="cc-org.faktorips.integrationtest.java5.v2_2_patches" address=""/>
                 <map alias="cc-de.qv.faktorips" address=""/>
-                <failure reportWhenFixed="true" address="jan.ortmann@faktorzehn.de,peter.kuntz@faktorzehn.de,daniel.hohenberger@faktorzehn.de,alexander.weickmann@faktorzehn.de,joerg.ortmann@faktorzehn.de,roman.grutza@faktorzehn.de"/>
+                <failure reportWhenFixed="true" address="jan.ortmann@faktorzehn.de,peter.kuntz@faktorzehn.de,daniel.hohenberger@faktorzehn.de,alexander.weickmann@faktorzehn.de,joerg.ortmann@faktorzehn.de,roman.grutza@faktorzehn.de,cornelius.dirmeier@faktorzehn.de,stefan.dicker@faktorzehn.de,juergen.niedernhuber@faktorzehn.de"/>
             </htmlemail>
             <antpublisher buildfile="${mainbuildfile}" uselogger="true" usedebug="false" target="copy.artifacts.pluginbuilder.faktorips">
                 <property name="ccProjectDir" value="${logdir}/${project.name}"/>
@@ -1099,6 +1156,9 @@
                 <map alias="weickmann" address="alexander.weickmann@faktorzehn.de"/>
                 <map alias="ortmann2" address="joerg.ortmann@faktorzehn.de"/>
                 <map alias="grutza" address="roman.grutza@faktorzehn.de"/>
+                <map alias="dirmeier" address="cornelius.dirmeier@faktorzehn.de"/>
+                <map alias="dicker" address="stefan.dicker@faktorzehn.de"/>
+                <map alias="niedernhuber" address="juergen.niedernhuber@faktorzehn.de"/>
                 <!--dummy aliases for buildstatus projects (cc-projectname)-->
                 <map alias="cc-org.faktorips.util" address=""/>
                 <map alias="cc-org.faktorips.valuetypes" address=""/>
@@ -1120,7 +1180,7 @@
                 <map alias="cc-org.faktorips.integrationtest.v2_2_patches" address=""/>
                 <map alias="cc-org.faktorips.integrationtest.java5.v2_2_patches" address=""/>
                 <map alias="cc-de.qv.faktorips" address=""/>
-                <failure reportWhenFixed="true" address="jan.ortmann@faktorzehn.de,peter.kuntz@faktorzehn.de,daniel.hohenberger@faktorzehn.de,alexander.weickmann@faktorzehn.de,joerg.ortmann@faktorzehn.de,roman.grutza@faktorzehn.de"/>
+                <failure reportWhenFixed="true" address="jan.ortmann@faktorzehn.de,peter.kuntz@faktorzehn.de,daniel.hohenberger@faktorzehn.de,alexander.weickmann@faktorzehn.de,joerg.ortmann@faktorzehn.de,roman.grutza@faktorzehn.de,cornelius.dirmeier@faktorzehn.de,stefan.dicker@faktorzehn.de,juergen.niedernhuber@faktorzehn.de"/>
             </htmlemail>
         </publishers>
     </project>

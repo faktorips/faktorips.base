@@ -1,4 +1,8 @@
 <!-- define cvs-user mailaddresses -->
+<!- ============================== -->
+<!-- NOTE: Please use the ant script: generate.cc.config.xml to update (generate) the cc config file -->
+<!-- afer changing this configuration -->
+<!- ============================== -->
 
 <!-- inactive user
 <map alias="senf" address="marcel.senf@faktorzehn.de"/>
