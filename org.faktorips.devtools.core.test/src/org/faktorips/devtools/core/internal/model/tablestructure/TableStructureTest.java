@@ -207,7 +207,6 @@ public class TableStructureTest extends AbstractIpsPluginTest {
         copy.initFromXml(element);
         
         assertEquals("blabla", copy.getDescription());
-        assertFalse(copy.isMultipleContentsAllowed());
         assertEquals(TableStructureType.MULTIPLE_CONTENTS, copy.getTableStructureType());
         assertEquals(2, copy.getNumOfColumns());
         assertEquals("ageFrom", copy.getColumns()[0].getName());
