@@ -13,18 +13,12 @@
 
 package org.faktorips.devtools.core.internal.model.tablecontents;
 
-import org.faktorips.datatype.Datatype;
 import org.faktorips.devtools.core.AbstractIpsPluginTest;
-import org.faktorips.devtools.core.internal.model.tablestructure.TableStructureType;
 import org.faktorips.devtools.core.model.IIpsElement;
 import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.tablecontents.IRow;
 import org.faktorips.devtools.core.model.tablecontents.ITableContents;
-import org.faktorips.devtools.core.model.tablecontents.ITableContentsGeneration;
-import org.faktorips.devtools.core.model.tablestructure.IColumn;
-import org.faktorips.devtools.core.model.tablestructure.ITableStructure;
-import org.faktorips.util.message.MessageList;
 import org.w3c.dom.Element;
 
 
@@ -185,43 +179,6 @@ public class TableContentsGenerationTest extends AbstractIpsPluginTest {
         assertEquals(2, row2.getRowNumber());
         IRow row4 = generation.insertRowAfter(999);
         assertEquals(4, row4.getRowNumber());
-    }
-    
-    public void testValidateDuplicateEnumValues() throws Exception{
-        ITableStructure structure = (ITableStructure)newIpsObject(project, IpsObjectType.TABLE_STRUCTURE, "EnumTable");
-        structure.setTableStructureType(TableStructureType.ENUMTYPE_MODEL);
-        IColumn column1 = structure.newColumn();
-        column1.setDatatype(Datatype.INTEGER.getQualifiedName());
-
-        IColumn column2 = structure.newColumn();
-        column2.setDatatype(Datatype.STRING.getQualifiedName());
-        
-        ITableContents enumType = (ITableContents)newIpsObject(project, IpsObjectType.TABLE_CONTENTS, "EnumValue");
-        enumType.setTableStructure(structure.getQualifiedName());
-        enumType.newColumn(null);
-        enumType.newColumn(null);
-        
-        ITableContentsGeneration enumGen = (TableContentsGeneration)enumType.newGeneration();
-        IRow enumValue1 = enumGen.newRow();
-        enumValue1.setValue(0, "1");
-        enumValue1.setValue(1, "eins");
-
-        IRow enumValue2 = enumGen.newRow();
-        enumValue2.setValue(0, "2");
-        enumValue2.setValue(1, "zwei");
-
-        IRow enumValue3 = enumGen.newRow();
-        enumValue3.setValue(0, "1");
-        enumValue3.setValue(1, "drei");
-
-        MessageList msgList = enumGen.validate(project);
-        assertNotNull(msgList.getMessageByCode(ITableContentsGeneration.MSGCODE_DOUBLE_ENUM_ID));
-        
-        enumValue3.setValue(0, "3");
-
-        msgList = enumGen.validate(project);
-        assertNull(msgList.getMessageByCode(ITableContentsGeneration.MSGCODE_DOUBLE_ENUM_ID));
-
     }
     
 }

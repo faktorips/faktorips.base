@@ -27,11 +27,8 @@ import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.tablecontents.IRow;
 import org.faktorips.devtools.core.model.tablecontents.ITableContents;
 import org.faktorips.devtools.core.model.tablecontents.ITableContentsGeneration;
-import org.faktorips.devtools.core.model.tablestructure.IColumn;
 import org.faktorips.devtools.core.model.tablestructure.ITableStructure;
-import org.faktorips.util.message.Message;
 import org.faktorips.util.message.MessageList;
-import org.faktorips.util.message.ObjectProperty;
 import org.w3c.dom.Element;
 
 
@@ -246,26 +243,6 @@ public class TableContentsGeneration extends IpsObjectGeneration implements ITab
         ITableStructure structure = getTableContents().findTableStructure(ipsProject);
         if (structure == null){
             return;
-        }
-        if(structure.isModelEnumType()){
-            IColumn column = getTableContents().findTableStructure(ipsProject).getColumn(0);
-            ValueDatatype idDatatype = column.findValueDatatype(ipsProject);
-            IRow[] rows = getRows();
-            for (int i = 0; i < rows.length; i++) {
-                for (int j = i + 1; j < rows.length; j++) {
-                    
-                    if(!idDatatype.isParsable(rows[i].getValue(0)) || 
-                            !idDatatype.isParsable(rows[j].getValue(0))){
-                        //if values are not parsable they cannot be compared. Another rule has to check if they are parsable
-                        continue;
-                    }
-                    if(idDatatype.areValuesEqual(rows[i].getValue(0), rows[j].getValue(0))){
-                        list.add(new Message(MSGCODE_DOUBLE_ENUM_ID, Messages.TableContentsGeneration_dublicateEnumId, 
-                                Message.ERROR, new ObjectProperty[]{new ObjectProperty(rows[i], IRow.PROPERTY_VALUE, 0), 
-                                new ObjectProperty(rows[j], IRow.PROPERTY_VALUE, 0)}));
-                    }
-                }
-            }
         }
     }
 

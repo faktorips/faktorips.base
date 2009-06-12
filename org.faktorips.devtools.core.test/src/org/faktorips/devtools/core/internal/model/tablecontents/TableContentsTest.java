@@ -13,13 +13,13 @@
 
 package org.faktorips.devtools.core.internal.model.tablecontents;
 
+import java.util.Arrays;
 import java.util.List;
 
 import org.eclipse.core.runtime.CoreException;
 import org.faktorips.datatype.Datatype;
 import org.faktorips.devtools.core.AbstractIpsPluginTest;
 import org.faktorips.devtools.core.internal.model.IpsModel;
-import org.faktorips.devtools.core.internal.model.tablestructure.TableStructureType;
 import org.faktorips.devtools.core.model.IDependency;
 import org.faktorips.devtools.core.model.IpsObjectDependency;
 import org.faktorips.devtools.core.model.extproperties.ExtensionPropertyDefinition;
@@ -35,7 +35,6 @@ import org.faktorips.devtools.core.model.tablecontents.ITableContentsGeneration;
 import org.faktorips.devtools.core.model.tablestructure.IColumn;
 import org.faktorips.devtools.core.model.tablestructure.ITableStructure;
 import org.faktorips.devtools.core.model.tablestructure.IUniqueKey;
-import org.faktorips.devtools.core.util.CollectionUtil;
 import org.faktorips.util.message.MessageList;
 import org.faktorips.values.DateUtil;
 import org.w3c.dom.Element;
@@ -62,7 +61,7 @@ public class TableContentsTest extends AbstractIpsPluginTest {
         assertEquals(0, dependsOn.length);
         
         table.setTableStructure(structure.getQualifiedName());
-        List dependsOnAsList = CollectionUtil.toArrayList(table.dependsOn());
+        List<IDependency> dependsOnAsList = Arrays.asList(table.dependsOn());
         assertTrue(dependsOnAsList.contains(IpsObjectDependency.createInstanceOfDependency(table.getQualifiedNameType(), structure.getQualifiedNameType())));
     }
 
@@ -134,7 +133,7 @@ public class TableContentsTest extends AbstractIpsPluginTest {
     }
 
     private void addExtensionPropertyDefinition(String propId) {
-        Class extendedClass = TableContents.class;
+        Class<TableContents> extendedClass = TableContents.class;
         ExtensionPropertyDefinition property = new StringExtensionPropertyDefinition();
         property.setPropertyId(propId);
         property.setExtendedType(extendedClass);
@@ -283,24 +282,6 @@ public class TableContentsTest extends AbstractIpsPluginTest {
         table.setTableStructure("NONE");
         msgList = table.validate(project);
         assertNotNull(msgList.getMessageByCode(ITableContents.MSGCODE_UNKNWON_STRUCTURE));
-    }
-    
-    public void testValidateStructureAndContentsNameNotTheSameWhenEnum() throws Exception{
-        ITableStructure structure = (ITableStructure)newIpsObject(project, IpsObjectType.TABLE_STRUCTURE, "Enum");
-        structure.setTableStructureType(TableStructureType.ENUMTYPE_MODEL);
-        IColumn column1 = structure.newColumn();
-        column1.setDatatype(Datatype.INTEGER.getQualifiedName());
-
-        IColumn column2 = structure.newColumn();
-        column2.setDatatype(Datatype.STRING.getQualifiedName());
-        
-        ITableContents enumType = (ITableContents)newIpsObject(project, IpsObjectType.TABLE_CONTENTS, "Enum");
-        enumType.setTableStructure(structure.getQualifiedName());
-        enumType.newColumn(null);
-        enumType.newColumn(null);
-
-        MessageList msgList = enumType.validate(project);
-        assertNotNull(msgList.getMessageByCode(ITableContents.MSGCODE_NAME_OF_STRUCTURE_AND_CONTENTS_NOT_THE_SAME_WHEN_ENUM));
     }
     
     /**

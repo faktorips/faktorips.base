@@ -17,7 +17,6 @@ import java.util.ArrayList;
 
 import org.apache.commons.lang.StringUtils;
 import org.eclipse.core.runtime.CoreException;
-import org.eclipse.jdt.core.JavaConventions;
 import org.eclipse.osgi.util.NLS;
 import org.eclipse.swt.graphics.Image;
 import org.faktorips.datatype.ValueDatatype;
@@ -214,38 +213,12 @@ public class Row extends AtomicIpsObjectPart implements IRow {
         if (uniqueKeyCheck){
             validateUniqueKey(result, tableStructure, datatypes);
         }
-        if(result.isEmpty()){
-            validateNameColumnIfTableBasedEnum(result, tableStructure, uniqueKeys);
-        }
     }
     
     private void validateUniqueKey(MessageList list, ITableStructure tableStructure, ValueDatatype[] datatypes) throws CoreException {
         getTableContentsGeneration().validateUniqueKeys(list, tableStructure, datatypes);
     }
 
-    private void validateNameColumnIfTableBasedEnum(MessageList msgList, ITableStructure structure, IUniqueKey[] uniqueKeys){
-        if(!structure.isModelEnumType()){
-            return;
-        }
-        
-        if (!structure.getIpsProject().getIpsArtefactBuilderSet().isTableBasedEnumValidationRequired()) {
-        	return;
-        }
-        
-       //TODO pk: this is already implemented in UniqueKey. Can we get rid of this?
-        if(uniqueKeys.length < 2){
-            return;
-        }
-        IKeyItem[] items = uniqueKeys[1].getKeyItems();
-        if(items.length != 1){
-            return;
-        }
-        String value = getValue(1);
-        if(!JavaConventions.validateIdentifier(value).isOK()){
-            msgList.add(new Message(MSGCODE_VALID_NAME_WHEN_TABLE_ENUM_TYPE, Messages.Row_NameMustBeValidJavaIdentifier, Message.ERROR, new ObjectProperty(this, IRow.PROPERTY_VALUE, 1)));
-        }
-    }
-    
     /*
      * Validates this row using the given list of datatypes.
      */

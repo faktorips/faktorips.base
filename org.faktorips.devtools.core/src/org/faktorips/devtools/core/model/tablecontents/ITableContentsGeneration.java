@@ -26,12 +26,6 @@ public interface ITableContentsGeneration extends IIpsObjectGeneration {
     public final static String MSGCODE_PREFIX = "TABLECONTENTSGENERATION-"; //$NON-NLS-1$
 
     /**
-     * Validation message code to indicate that there exists more than one enumeration value with the same id. The
-     * validation only applies if the structure is a enum table structure.
-     */
-    public final static String MSGCODE_DOUBLE_ENUM_ID = MSGCODE_PREFIX + "DoubleEnumId"; //$NON-NLS-1$
-
-    /**
      * Returns the rows that make up the table.
      */
     public IRow[] getRows();

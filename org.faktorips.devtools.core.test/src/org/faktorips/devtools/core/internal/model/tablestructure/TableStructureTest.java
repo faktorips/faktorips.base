@@ -191,7 +191,7 @@ public class TableStructureTest extends AbstractIpsPluginTest {
      */
     public void testToXmlDocument() {
         table.setDescription("blabla");
-        table.setTableStructureType(TableStructureType.ENUMTYPE_MODEL);
+        table.setTableStructureType(TableStructureType.MULTIPLE_CONTENTS);
         IColumn column1 = table.newColumn();
         column1.setName("ageFrom");
         IColumn column2 = table.newColumn();
@@ -208,7 +208,7 @@ public class TableStructureTest extends AbstractIpsPluginTest {
         
         assertEquals("blabla", copy.getDescription());
         assertFalse(copy.isMultipleContentsAllowed());
-        assertEquals(TableStructureType.ENUMTYPE_MODEL, copy.getTableStructureType());
+        assertEquals(TableStructureType.MULTIPLE_CONTENTS, copy.getTableStructureType());
         assertEquals(2, copy.getNumOfColumns());
         assertEquals("ageFrom", copy.getColumns()[0].getName());
         assertEquals("ageTo", copy.getColumns()[1].getName());
@@ -286,35 +286,6 @@ public class TableStructureTest extends AbstractIpsPluginTest {
         
         msgList = structure.validate(project);
         assertNull(msgList.getMessageByCode(ITableStructure.MSGCODE_MORE_THAN_ONE_KEY_NOT_ADVISABLE_IN_FORMULAS));
-    }
-    
-    public void testValidateTwoKeysNecessaryForEnum() throws Exception{
-        TableStructure structure = (TableStructure)newIpsObject(project, IpsObjectType.TABLE_STRUCTURE, "table");
-        structure.setTableStructureType(TableStructureType.ENUMTYPE_MODEL);
-        
-        IColumn first = structure.newColumn();
-        first.setDatatype(Datatype.INTEGER.getQualifiedName());
-        first.setName("first");
-        
-        IColumn second = structure.newColumn();
-        second.setDatatype(Datatype.INTEGER.getQualifiedName());
-        second.setName("second");
-        
-        IColumn third = structure.newColumn();
-        third.setDatatype(Datatype.STRING.getQualifiedName());
-        third.setName("third");
-        
-        IUniqueKey firstKey = structure.newUniqueKey();
-        firstKey.addKeyItem(first.getName());
-
-        MessageList msgList = structure.validate(project);
-        assertNotNull(msgList.getMessageByCode(ITableStructure.MSGCODE_STRUCTURE_NEEDS_TWO_KEYS_WHEN_ENUM_STRUCTURE));
-        
-        IUniqueKey secondKey = structure.newUniqueKey();
-        secondKey.addKeyItem(second.getName());
-        
-        msgList = structure.validate(project);
-        assertNull(msgList.getMessageByCode(ITableStructure.MSGCODE_STRUCTURE_NEEDS_TWO_KEYS_WHEN_ENUM_STRUCTURE));
     }
     
     /**
