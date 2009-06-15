@@ -158,7 +158,6 @@
                style="toggle"
 			   retarget="true"
 			   allowLabelUpdate="true"
-               class="org.faktorips.devtools.core.ui.actions.ToggleWorkingModeAction"
                icon="icons/obj16/write_obj.gif"
                disabledIcon="icons/obj16/write_obj_disabled.gif"
                id="org.faktorips.devtools.actions.ToggleWorkingModeAction"
