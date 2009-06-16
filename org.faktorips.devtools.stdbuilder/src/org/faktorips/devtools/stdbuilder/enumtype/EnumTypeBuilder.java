@@ -405,7 +405,8 @@ public class EnumTypeBuilder extends DefaultJavaSourceFileBuilder {
         appendEnumValueParameters(enumAttributeValues, initExpression);
         initExpression.append(')');
 
-        constantBuilder.varDeclaration(Modifier.PUBLIC | Modifier.STATIC | Modifier.FINAL, enumType.getJavaClassName(),
+        DatatypeHelper datatypeHelper = getIpsProject().findDatatypeHelper(enumType.getQualifiedName());
+        constantBuilder.varDeclaration(Modifier.PUBLIC | Modifier.STATIC | Modifier.FINAL, datatypeHelper.getJavaClassName(),
                 literalEnumAttributeValue.getValue().toUpperCase(), initExpression);
         constantBuilder.appendLn(' ');
     }
@@ -802,7 +803,8 @@ public class EnumTypeBuilder extends DefaultJavaSourceFileBuilder {
         methodBody.append("};");
 
         appendLocalizedJavaDoc("METHOD_VALUES", enumType, methodBuilder);
-        methodBuilder.method(Modifier.PUBLIC | Modifier.FINAL | Modifier.STATIC, enumType.getJavaClassName() + "[]",
+        DatatypeHelper datatypeHelper = getIpsProject().findDatatypeHelper(enumType.getQualifiedName());
+        methodBuilder.method(Modifier.PUBLIC | Modifier.FINAL | Modifier.STATIC, datatypeHelper.getJavaClassName() + "[]",
                 methodName, new String[0], new String[0], methodBody, null);
     }
 

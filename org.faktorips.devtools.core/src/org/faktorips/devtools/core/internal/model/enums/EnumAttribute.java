@@ -299,14 +299,18 @@ public class EnumAttribute extends AtomicIpsObjectPart implements IEnumAttribute
         }
 
         // Check for enum type that contains this enum attribute (or subclasses of it)
-        IEnumType enumType = getEnumType();
-        List<IEnumType> subEnumTypes = enumType.findAllSubEnumTypes(ipsProject);
-        if (ipsDatatype.equals(enumType) || subEnumTypes.contains(ipsDatatype)) {
-            text = Messages.EnumAttribute_DatatypeIsContainingEnumTypeOrSubclass;;
-            validationMessage = new Message(MSGCODE_ENUM_ATTRIBUTE_DATATYPE_IS_CONTAINING_ENUM_TYPE_OR_SUBCLASS, text,
-                    Message.ERROR, this, PROPERTY_DATATYPE);
-            list.add(validationMessage);
-            return;
+        if(ipsDatatype instanceof EnumTypeDatatypeAdapter){
+            EnumTypeDatatypeAdapter adaptedEnumType = (EnumTypeDatatypeAdapter)ipsDatatype;
+            IEnumType enumType = getEnumType();
+            List<IEnumType> subEnumTypes = enumType.findAllSubEnumTypes(ipsProject);
+            if (adaptedEnumType.getEnumType().equals(enumType) || subEnumTypes.contains(adaptedEnumType.getEnumType())) {
+                text = Messages.EnumAttribute_DatatypeIsContainingEnumTypeOrSubclass;;
+                validationMessage = new Message(MSGCODE_ENUM_ATTRIBUTE_DATATYPE_IS_CONTAINING_ENUM_TYPE_OR_SUBCLASS, text,
+                        Message.ERROR, this, PROPERTY_DATATYPE);
+                list.add(validationMessage);
+                return;
+            }
+            
         }
 
         // Check for literalName datatype = String

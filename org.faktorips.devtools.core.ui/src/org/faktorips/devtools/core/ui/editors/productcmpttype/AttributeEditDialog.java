@@ -142,7 +142,7 @@ public class AttributeEditDialog extends IpsPartEditDialog2 implements ContentsC
         Composite temp = uiToolkit.createGridComposite(c, 1, true, false);
         uiToolkit.createLabel(temp, Messages.AttributeEditDialog_valueSetSection);
         uiToolkit.createVerticalSpacer(temp, 8);
-        valueSetEditControl = new ValueSetEditControl(temp, uiToolkit, uiController, attribute, new Validator());
+        valueSetEditControl = new ValueSetEditControl(temp, uiToolkit, uiController, attribute, new Validator(), true);
         updateValueSetTypes();
 
         Object layoutData = valueSetEditControl.getLayoutData();

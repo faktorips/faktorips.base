@@ -67,6 +67,7 @@ import org.faktorips.devtools.core.ui.IpsUIPlugin;
 import org.faktorips.devtools.core.ui.ValueDatatypeControlFactory;
 import org.faktorips.devtools.core.ui.controller.EditField;
 import org.faktorips.devtools.core.ui.controller.IpsObjectUIController;
+import org.faktorips.devtools.core.ui.controller.fields.EnumTypeDatatypeField;
 import org.faktorips.devtools.core.ui.controller.fields.EnumValueField;
 import org.faktorips.devtools.core.ui.controller.fields.FieldValueChangedEvent;
 import org.faktorips.devtools.core.ui.controller.fields.MessageCueController;
@@ -87,7 +88,7 @@ import org.faktorips.util.message.MessageList;
  * 
  * @author Jan Ortmann
  */
-public class AttributeEditDialog extends IpsPartEditDialog2 implements ContentsChangeListener {
+public class AttributeEditDialog extends IpsPartEditDialog2 {
 
     // the attribute beeing edited.
     private IPolicyCmptTypeAttribute attribute;
@@ -134,7 +135,7 @@ public class AttributeEditDialog extends IpsPartEditDialog2 implements ContentsC
     /**
      * Collection of all controlls depending on the CheckValueAgainstValueSetRule.
      */
-    private ArrayList ruleDependendControls = new ArrayList();
+    private ArrayList<Control> ruleDependendControls = new ArrayList<Control>();
 
     /**
      * Folder which contains the pages shown by this editor. Used to modify which page is shown.
@@ -523,7 +524,7 @@ public class AttributeEditDialog extends IpsPartEditDialog2 implements ContentsC
 
         IpsObjectUIController uiController = new IpsObjectUIController(attribute);
         valueSetEditControl = new ValueSetEditControl(pageControl, uiToolkit, uiController, attribute,
-                new PcTypeValidator());
+                new PcTypeValidator(), true);
         updateValueSetTypes();
 
         Object layoutData = valueSetEditControl.getLayoutData();
@@ -565,6 +566,9 @@ public class AttributeEditDialog extends IpsPartEditDialog2 implements ContentsC
                 currentDatatype);
         defaultValueField = datatypeCtrlFactory.createEditField(uiToolkit, defaultEditFieldPlaceholder,
                 currentDatatype, null, ipsProject);
+        if(defaultValueField instanceof EnumTypeDatatypeField){
+            ((EnumTypeDatatypeField)defaultValueField).setEnableEnumContentDisplay(false);
+        }
         defaultValueField.getControl().setLayoutData(new GridData(GridData.FILL_BOTH));
         adjustLabelWidth();
 

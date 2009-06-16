@@ -19,8 +19,8 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.faktorips.datatype.EnumDatatype;
 import org.faktorips.datatype.ValueDatatype;
+import org.faktorips.devtools.core.internal.model.enums.EnumTypeDatatypeAdapter;
 import org.faktorips.devtools.core.internal.model.valueset.ValueSet;
-import org.faktorips.devtools.core.model.enums.IEnumType;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.valueset.IEnumValueSet;
 import org.faktorips.devtools.core.model.valueset.IValueSet;
@@ -48,7 +48,7 @@ public class EnumDatatypeControlFactory extends ValueDatatypeControlFactory {
      * {@inheritDoc}
      */
     public boolean isFactoryFor(ValueDatatype datatype) {
-        return datatype instanceof EnumDatatype && !(datatype instanceof IEnumType);
+        return datatype instanceof EnumDatatype && !(datatype instanceof EnumTypeDatatypeAdapter);
     }
 
     /**

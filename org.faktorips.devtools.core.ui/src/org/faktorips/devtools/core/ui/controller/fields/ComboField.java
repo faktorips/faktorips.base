@@ -77,7 +77,7 @@ public class ComboField extends DefaultEditField {
     public void setText(String newText) {
         immediatelyNotifyListener = true;
         try {
-            combo.setText(newText);
+            combo.select(combo.indexOf(newText));
         } finally {
             immediatelyNotifyListener = false;
         }

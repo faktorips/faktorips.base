@@ -17,8 +17,11 @@ package org.faktorips.devtools.stdbuilder;
 import org.eclipse.core.runtime.CoreException;
 import org.faktorips.codegen.JavaCodeFragment;
 import org.faktorips.codegen.dthelpers.AbstractDatatypeHelper;
+import org.faktorips.datatype.EnumDatatype;
+import org.faktorips.devtools.core.internal.model.enums.EnumTypeDatatypeAdapter;
 import org.faktorips.devtools.core.model.enums.IEnumType;
 import org.faktorips.devtools.core.model.enums.IEnumValue;
+import org.faktorips.devtools.core.model.enums.IEnumValueContainer;
 import org.faktorips.devtools.stdbuilder.enumtype.EnumTypeBuilder;
 import org.faktorips.util.ArgumentCheck;
 
@@ -32,16 +35,16 @@ import org.faktorips.util.ArgumentCheck;
 public class EnumTypeDatatypeHelper extends AbstractDatatypeHelper {
 
     private EnumTypeBuilder enumTypeBuilder;
-    private IEnumType enumType;
+    private EnumTypeDatatypeAdapter enumTypeAdapter;
 
-    public EnumTypeDatatypeHelper(EnumTypeBuilder enumTypeBuilder, IEnumType enumType) {
-        super(enumType);
+    public EnumTypeDatatypeHelper(EnumTypeBuilder enumTypeBuilder, EnumTypeDatatypeAdapter enumTypeAdapter) {
+        super(enumTypeAdapter);
 
         ArgumentCheck.notNull(enumTypeBuilder, this);
-        ArgumentCheck.notNull(enumType, this);
+        ArgumentCheck.notNull(enumTypeAdapter, this);
 
         this.enumTypeBuilder = enumTypeBuilder;
-        this.enumType = enumType;
+        this.enumTypeAdapter = enumTypeAdapter;
     }
 
     /**
@@ -52,15 +55,8 @@ public class EnumTypeDatatypeHelper extends AbstractDatatypeHelper {
             return new JavaCodeFragment("null");
         }
         try {
-
-            if (!(enumType.isContainingValues())) {
-                throw new IllegalStateException(
-                        "This method cannot be called if the values of the enum type of this helper are not "
-                                + "part of the composite but instead are contained in an enum content object.");
-            }
-
-            IEnumValue enumValue = enumType.findEnumValue(value, enumTypeBuilder.getIpsProject());
-            return enumTypeBuilder.getNewInstanceCodeFragement(enumType, enumValue);
+            IEnumValue enumValue = enumTypeAdapter.getEnumValueContainer().findEnumValue(value, enumTypeBuilder.getIpsProject());
+            return enumTypeBuilder.getNewInstanceCodeFragement(enumTypeAdapter.getEnumType(), enumValue);
 
         } catch (CoreException e) {
             throw new RuntimeException(e);
@@ -80,10 +76,10 @@ public class EnumTypeDatatypeHelper extends AbstractDatatypeHelper {
     @Override
     public String getJavaClassName() {
         try {
-            return enumTypeBuilder.getQualifiedClassName(enumType.getIpsSrcFile());
+            return enumTypeBuilder.getQualifiedClassName(enumTypeAdapter.getEnumType().getIpsSrcFile());
         } catch (CoreException e) {
             throw new RuntimeException("An exception occurred while trying to determine the java class name "
-                    + "of the enum type: " + enumType.getQualifiedName(), e);
+                    + "of the enum type: " + enumTypeAdapter.getQualifiedName(), e);
         }
     }
 
@@ -93,7 +89,7 @@ public class EnumTypeDatatypeHelper extends AbstractDatatypeHelper {
     @Override
     protected JavaCodeFragment valueOfExpression(String expression) {
         try {
-            return enumTypeBuilder.getValueByXXXCodeFragment(enumType.findLiteralNameAttribute(enumTypeBuilder.getIpsProject()), expression);
+            return enumTypeBuilder.getValueByXXXCodeFragment(enumTypeAdapter.getEnumType().findLiteralNameAttribute(enumTypeBuilder.getIpsProject()), expression);
         } catch (CoreException e) {
             throw new RuntimeException(e);
         }

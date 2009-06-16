@@ -13,22 +13,23 @@
 
 package org.faktorips.devtools.core.ui.controlfactories;
 
-import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.faktorips.datatype.EnumDatatype;
 import org.faktorips.datatype.ValueDatatype;
+import org.faktorips.devtools.core.internal.model.enums.EnumTypeDatatypeAdapter;
 import org.faktorips.devtools.core.internal.model.valueset.ValueSet;
-import org.faktorips.devtools.core.model.enums.IEnumContent;
 import org.faktorips.devtools.core.model.enums.IEnumType;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
+import org.faktorips.devtools.core.model.valueset.IEnumValueSet;
 import org.faktorips.devtools.core.model.valueset.IValueSet;
 import org.faktorips.devtools.core.ui.UIToolkit;
 import org.faktorips.devtools.core.ui.ValueDatatypeControlFactory;
 import org.faktorips.devtools.core.ui.controller.EditField;
 import org.faktorips.devtools.core.ui.controller.fields.EnumTypeDatatypeField;
+import org.faktorips.devtools.core.ui.controller.fields.EnumValueSetField;
 import org.faktorips.devtools.core.ui.table.ComboCellEditor;
 import org.faktorips.devtools.core.ui.table.TableCellEditor;
 
@@ -47,7 +48,7 @@ public class EnumTypeDatatypeControlFactory extends ValueDatatypeControlFactory 
      * {@inheritDoc}
      */
     public boolean isFactoryFor(ValueDatatype datatype) {
-        return datatype instanceof IEnumType;
+        return datatype instanceof EnumTypeDatatypeAdapter;
     }
 
     /**
@@ -58,21 +59,23 @@ public class EnumTypeDatatypeControlFactory extends ValueDatatypeControlFactory 
             ValueDatatype datatype,
             IValueSet valueSet,
             IIpsProject ipsProject) {
-        
-        try {
-            Combo combo = toolkit.createCombo(parent);
-            IEnumType enumType = (IEnumType)datatype;
-            IEnumContent enumContent = ipsProject.findFirstEnumContent(enumType);
-            return new EnumTypeDatatypeField(combo, enumType, enumContent);
-        } catch (CoreException e) {
-            throw new RuntimeException(e);
+
+        Combo combo = toolkit.createCombo(parent);
+        if (valueSet instanceof IEnumValueSet) {
+            return new EnumValueSetField(combo, (IEnumValueSet)valueSet, datatype);
         }
+        EnumTypeDatatypeAdapter datatypeAdapter = (EnumTypeDatatypeAdapter)datatype;
+        return new EnumTypeDatatypeField(combo, datatypeAdapter);
     }
 
     /**
      * {@inheritDoc}
      */
-    public Control createControl(UIToolkit toolkit, Composite parent, ValueDatatype datatype, IValueSet valueSet, IIpsProject ipsProject) {
+    public Control createControl(UIToolkit toolkit,
+            Composite parent,
+            ValueDatatype datatype,
+            IValueSet valueSet,
+            IIpsProject ipsProject) {
         return createEditField(toolkit, parent, datatype, valueSet, ipsProject).getControl();
     }
 

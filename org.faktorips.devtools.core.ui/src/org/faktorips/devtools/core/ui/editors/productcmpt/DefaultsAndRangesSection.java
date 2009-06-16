@@ -29,6 +29,8 @@ import org.eclipse.ui.forms.widgets.Section;
 import org.faktorips.datatype.Datatype;
 import org.faktorips.datatype.ValueDatatype;
 import org.faktorips.devtools.core.IpsPlugin;
+import org.faktorips.devtools.core.internal.model.enums.EnumType;
+import org.faktorips.devtools.core.internal.model.enums.EnumTypeDatatypeAdapter;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAttribute;
 import org.faktorips.devtools.core.model.productcmpt.ConfigElementType;
 import org.faktorips.devtools.core.model.productcmpt.IConfigElement;
@@ -171,7 +173,15 @@ public class DefaultsAndRangesSection extends IpsSection {
         toolkit.createFormLabel(rootPane, Messages.PolicyAttributeEditDialog_defaultValue);
 
         ValueDatatypeControlFactory ctrlFactory = IpsUIPlugin.getDefault().getValueDatatypeControlFactory(dataType);
-        EditField field = ctrlFactory.createEditField(toolkit, rootPane, dataType, element.getValueSet(), generation.getIpsProject());
+        EditField field = null;
+        //TODO pk 15-06-2009: as long as faktor ips doesn't support attribute value constraints the value set of
+        //enum types with separate enum contents cannot be restricted  
+        if(dataType instanceof EnumTypeDatatypeAdapter && ((EnumTypeDatatypeAdapter)dataType).hasEnumContent()){
+            EnumTypeDatatypeAdapter adapter = (EnumTypeDatatypeAdapter)dataType;
+            field = ctrlFactory.createEditField(toolkit, rootPane, new EnumTypeDatatypeAdapter(adapter.getEnumType(), null), element.getValueSet(), generation.getIpsProject());
+        } else {
+            field = ctrlFactory.createEditField(toolkit, rootPane, dataType, element.getValueSet(), generation.getIpsProject());
+        }
         addFocusControl(field.getControl());
         editControls.add(field.getControl());
         controller.add(field, element, IConfigElement.PROPERTY_VALUE);

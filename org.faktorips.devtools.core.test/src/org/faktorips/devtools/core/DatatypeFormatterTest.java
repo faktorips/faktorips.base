@@ -16,6 +16,7 @@ package org.faktorips.devtools.core;
 import java.util.List;
 
 import org.faktorips.datatype.Datatype;
+import org.faktorips.devtools.core.internal.model.enums.EnumTypeDatatypeAdapter;
 import org.faktorips.devtools.core.model.enums.IEnumAttribute;
 import org.faktorips.devtools.core.model.enums.IEnumAttributeValue;
 import org.faktorips.devtools.core.model.enums.IEnumType;
@@ -71,57 +72,57 @@ public class DatatypeFormatterTest extends AbstractIpsPluginTest {
         ipsPreferences.setEnumTypeDisplay(EnumTypeDisplay.NAME);
         DatatypeFormatter formatter = new DatatypeFormatter(ipsPreferences);
 
-        String text = formatter.formatValue(enum1, null, "a");
+        String text = formatter.formatValue(new EnumTypeDatatypeAdapter(enum1, null), "a");
         assertEquals("aname", text);
-        text = formatter.formatValue(enum1, null, "b");
+        text = formatter.formatValue(new EnumTypeDatatypeAdapter(enum1, null), "b");
         assertEquals("bname", text);
-        text = formatter.formatValue(enum1, null, "c");
+        text = formatter.formatValue(new EnumTypeDatatypeAdapter(enum1, null), "c");
         assertEquals("cname", text);
 
         attr1.setUsedAsIdInFaktorIpsUi(false);
         //should not have any influence 
-        assertEquals("aname", formatter.formatValue(enum1, null, "a"));
+        assertEquals("aname", formatter.formatValue(new EnumTypeDatatypeAdapter(enum1, null), "a"));
         attr1.setUsedAsIdInFaktorIpsUi(true);
 
         attr2.setUsedAsNameInFaktorIpsUi(false);
         //since the display setting is name and no name ui attribute exists the default is to 
         //return the input value
-        assertEquals("a", formatter.formatValue(enum1, null, "a"));
+        assertEquals("a", formatter.formatValue(new EnumTypeDatatypeAdapter(enum1, null), "a"));
         attr2.setUsedAsNameInFaktorIpsUi(true);
 
         ipsPreferences.setEnumTypeDisplay(EnumTypeDisplay.ID);
         formatter = new DatatypeFormatter(ipsPreferences);
         
-        text = formatter.formatValue(enum1, null, "a");
+        text = formatter.formatValue(new EnumTypeDatatypeAdapter(enum1, null), "a");
         assertEquals("a", text);
-        text = formatter.formatValue(enum1, null, "b");
+        text = formatter.formatValue(new EnumTypeDatatypeAdapter(enum1, null), "b");
         assertEquals("b", text);
-        text = formatter.formatValue(enum1, null, "c");
+        text = formatter.formatValue(new EnumTypeDatatypeAdapter(enum1, null), "c");
         assertEquals("c", text);
         
         attr1.setUsedAsIdInFaktorIpsUi(false);
         //since the display setting is id and no id ui attribute exists the default is to 
         //return the input value
-        assertEquals("a", formatter.formatValue(enum1, null, "a"));
+        assertEquals("a", formatter.formatValue(new EnumTypeDatatypeAdapter(enum1, null), "a"));
         attr1.setUsedAsIdInFaktorIpsUi(true);
 
         attr2.setUsedAsNameInFaktorIpsUi(false);
         //should not have any influence 
-        assertEquals("a", formatter.formatValue(enum1, null, "a"));
+        assertEquals("a", formatter.formatValue(new EnumTypeDatatypeAdapter(enum1, null), "a"));
         attr2.setUsedAsNameInFaktorIpsUi(true);
         
         ipsPreferences.setEnumTypeDisplay(EnumTypeDisplay.NAME_AND_ID);
         formatter = new DatatypeFormatter(ipsPreferences);
         
-        text = formatter.formatValue(enum1, null, "a");
+        text = formatter.formatValue(new EnumTypeDatatypeAdapter(enum1, null), "a");
         assertEquals("aname (a)", text);
 
         attr1.setUsedAsIdInFaktorIpsUi(false);
-        text = formatter.formatValue(enum1, null, "a");
+        text = formatter.formatValue(new EnumTypeDatatypeAdapter(enum1, null), "a");
         assertEquals("aname (null)", text);
         attr1.setUsedAsIdInFaktorIpsUi(true);
 
-        text = formatter.formatValue(enum1, null, "k");
+        text = formatter.formatValue(new EnumTypeDatatypeAdapter(enum1, null), "k");
         assertEquals("k", text);
 
     }

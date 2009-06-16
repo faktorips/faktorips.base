@@ -243,15 +243,7 @@ public class ConfigElement extends IpsObjectPart implements IConfigElement {
 		}
 
 		if (!valueDatatype.isParsable(value)) {
-        	String valueInMsg = value;
-        	if (value==null) {
-        		valueInMsg = IpsPlugin.getDefault().getIpsPreferences().getNullPresentation();
-        	} else if (value.equals("")){ //$NON-NLS-1$
-        		valueInMsg = Messages.ConfigElement_msgValueIsEmptyString;
-        	}
-			String text = NLS.bind(Messages.ConfigElement_msgValueNotParsable, valueInMsg, valueDatatype.getName());
-			list.add(new Message(IConfigElement.MSGCODE_VALUE_NOT_PARSABLE, text, Message.ERROR, this,
-					PROPERTY_VALUE));
+		    addNotParsableMessage(value, valueDatatype, list);
 		}
 		
         IValueSet modelValueSet = attribute.getValueSet();
@@ -310,6 +302,18 @@ public class ConfigElement extends IpsObjectPart implements IConfigElement {
 		}
 	}
     
+	private void addNotParsableMessage(String value, ValueDatatype valueDatatype, MessageList msgList){
+        String valueInMsg = value;
+        if (value==null) {
+            valueInMsg = IpsPlugin.getDefault().getIpsPreferences().getNullPresentation();
+        } else if (value.equals("")){ //$NON-NLS-1$
+            valueInMsg = Messages.ConfigElement_msgValueIsEmptyString;
+        }
+        String text = NLS.bind(Messages.ConfigElement_msgValueNotParsable, valueInMsg, valueDatatype.getName());
+        msgList.add(new Message(IConfigElement.MSGCODE_VALUE_NOT_PARSABLE, text, Message.ERROR, this,
+                PROPERTY_VALUE));
+	}
+	
 	/**
 	 * {@inheritDoc}
 	 */

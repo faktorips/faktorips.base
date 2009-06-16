@@ -17,11 +17,13 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import org.eclipse.core.runtime.CoreException;
+import org.eclipse.swt.events.VerifyEvent;
+import org.eclipse.swt.events.VerifyListener;
 import org.eclipse.swt.widgets.Combo;
 import org.faktorips.devtools.core.DatatypeFormatter;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.IpsPreferences;
+import org.faktorips.devtools.core.internal.model.enums.EnumTypeDatatypeAdapter;
 import org.faktorips.devtools.core.model.enums.IEnumContent;
 import org.faktorips.devtools.core.model.enums.IEnumType;
 
@@ -36,39 +38,36 @@ import org.faktorips.devtools.core.model.enums.IEnumType;
  */
 public class EnumTypeDatatypeField extends AbstractEnumDatatypeBasedField {
 
-    private IEnumContent enumContent;
+    private boolean enableEnumContentDisplay = true;
 
-    public EnumTypeDatatypeField(Combo combo, IEnumType enumType, IEnumContent enumContent) {
-        super(combo, enumType);
-        this.enumContent = enumContent; // can be null
+    public EnumTypeDatatypeField(Combo combo, EnumTypeDatatypeAdapter datatypeAdapter) {
+        super(combo, datatypeAdapter);
+        reInitInternal();
+    }
+
+    public void setEnableEnumContentDisplay(boolean enable) {
+        enableEnumContentDisplay = enable;
         reInitInternal();
     }
 
     @Override
     protected List<String> getDatatypeValueIds() {
-        if (getEnumDatatype().isContainingValues()) {
-            List<String> ids = Arrays.asList(getEnumDatatype().getAllValueIds(true));
-            return new ArrayList<String>(ids);
+        if (getEnumDatatype().getEnumContent() != null && !enableEnumContentDisplay) {
+            ArrayList<String> result = new ArrayList<String>();
+            result.add(null);
+            return result;
         }
-        if (enumContent != null) {
-            return enumContent.findAllLiteralNameAttributeValues(true, getEnumDatatype().getIpsProject());
-        }
-        return new ArrayList<String>();
+        return new ArrayList<String>(Arrays.asList(getEnumDatatype().getAllValueIds(true)));
     }
 
-    private IEnumType getEnumDatatype() {
-        return (IEnumType)getDatatype();
+    private EnumTypeDatatypeAdapter getEnumDatatype() {
+        return (EnumTypeDatatypeAdapter)getDatatype();
     }
 
     /**
      * {@inheritDoc}
      */
     public String getDisplayTextForValue(String id) {
-        try {
-            return IpsPlugin.getDefault().getIpsPreferences().getDatatypeFormatter().formatValue(getEnumDatatype(),
-                    enumContent, id);
-        } catch (CoreException e) {
-            throw new RuntimeException(e);
-        }
+        return IpsPlugin.getDefault().getIpsPreferences().getDatatypeFormatter().formatValue(getEnumDatatype(), id);
     }
 }

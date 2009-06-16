@@ -17,7 +17,6 @@ import java.io.ByteArrayInputStream;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.GregorianCalendar;
 import java.util.HashSet;
 import java.util.List;
@@ -48,8 +47,7 @@ import org.faktorips.devtools.core.TestEnumType;
 import org.faktorips.devtools.core.TestIpsFeatureVersionManager;
 import org.faktorips.devtools.core.builder.DefaultBuilderSet;
 import org.faktorips.devtools.core.builder.TestArtefactBuilderSetInfo;
-import org.faktorips.devtools.core.internal.model.TableContentsEnumDatatypeAdapter;
-import org.faktorips.devtools.core.internal.model.tablestructure.TableStructureType;
+import org.faktorips.devtools.core.internal.model.enums.EnumTypeDatatypeAdapter;
 import org.faktorips.devtools.core.model.enums.IEnumAttribute;
 import org.faktorips.devtools.core.model.enums.IEnumContent;
 import org.faktorips.devtools.core.model.enums.IEnumType;
@@ -590,9 +588,9 @@ public class IpsProjectTest extends AbstractIpsPluginTest {
         id.setName("id");
 
         ValueDatatype datatype = ipsProject.findValueDatatype("PaymentMode");
-        assertSame(paymentMode, datatype);
+        assertEquals(new EnumTypeDatatypeAdapter(paymentMode, null), datatype);
         datatype = ipsProject.findValueDatatype("Gender");
-        assertSame(gender, datatype);
+        assertEquals(new EnumTypeDatatypeAdapter(gender, null), datatype);
     }
 
     public void testfindEnumTypes() throws Exception {
@@ -748,7 +746,7 @@ public class IpsProjectTest extends AbstractIpsPluginTest {
 
         testEnumType.setAbstract(false);
         types = ipsProject.findDatatypes(false, false, false, null, true);
-        assertTrue(Arrays.asList(types).contains(testEnumType));
+        assertTrue(Arrays.asList(types).contains(new EnumTypeDatatypeAdapter(testEnumType, null)));
     }
 
     public void testFindDatatypesOfEnumType() throws Exception {
@@ -772,13 +770,13 @@ public class IpsProjectTest extends AbstractIpsPluginTest {
 
         Datatype[] datatypes = ipsProject.findDatatypes(true, false, false, null);
         List<Datatype> datatypeList = Arrays.asList(datatypes);
-        assertTrue(datatypeList.contains(paymentMode));
-        assertTrue(datatypeList.contains(gender));
+        assertTrue(datatypeList.contains(new EnumTypeDatatypeAdapter(paymentMode, null)));
+        assertTrue(datatypeList.contains(new EnumTypeDatatypeAdapter(gender, null)));
 
         datatypes = ipsProject.findDatatypes(false, false, false, null);
         datatypeList = Arrays.asList(datatypes);
-        assertTrue(datatypeList.contains(paymentMode));
-        assertTrue(datatypeList.contains(gender));
+        assertTrue(datatypeList.contains(new EnumTypeDatatypeAdapter(paymentMode, null)));
+        assertTrue(datatypeList.contains(new EnumTypeDatatypeAdapter(gender, null)));
     }
 
     /*
@@ -1469,8 +1467,8 @@ public class IpsProjectTest extends AbstractIpsPluginTest {
 
         dataTypes = ipsProject.findEnumDatatypes();
         List<EnumDatatype> dataTypeList = Arrays.asList(dataTypes);
-        assertTrue(dataTypeList.contains(paymentMode));
-        assertTrue(dataTypeList.contains(gender));
+        assertTrue(dataTypeList.contains(new EnumTypeDatatypeAdapter(paymentMode, null)));
+        assertTrue(dataTypeList.contains(new EnumTypeDatatypeAdapter(gender, null)));
         assertEquals(3, dataTypes.length);
 
     }

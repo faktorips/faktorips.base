@@ -27,6 +27,7 @@ import org.eclipse.swt.widgets.TabFolder;
 import org.eclipse.swt.widgets.TabItem;
 import org.eclipse.swt.widgets.Text;
 import org.faktorips.datatype.Datatype;
+import org.faktorips.devtools.core.internal.model.enums.EnumTypeDatatypeAdapter;
 import org.faktorips.devtools.core.model.ContentChangeEvent;
 import org.faktorips.devtools.core.model.enums.IEnumAttribute;
 import org.faktorips.devtools.core.model.enums.IEnumType;
@@ -195,13 +196,14 @@ public class EnumAttributeEditDialog extends IpsPartEditDialog2 {
         IEnumType enumType = enumAttribute.getEnumType();
 
         List<Datatype> disallowedDatatypes = new ArrayList<Datatype>(1);
-        disallowedDatatypes.add(enumAttribute.getEnumType());
+        disallowedDatatypes.add(new EnumTypeDatatypeAdapter(enumAttribute.getEnumType(), null));
         try {
-            disallowedDatatypes.addAll(enumType.findAllSubEnumTypes(enumType.getIpsProject()));
+            for (IEnumType subTypes : enumType.findAllSubEnumTypes(enumType.getIpsProject())) {
+                disallowedDatatypes.add(new EnumTypeDatatypeAdapter(subTypes, null));
+            }
         } catch (CoreException e) {
             throw new RuntimeException(e);
         }
-
         datatypeControl.setDisallowedDatatypes(disallowedDatatypes);
     }
 

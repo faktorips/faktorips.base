@@ -19,13 +19,10 @@ import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.TreeSet;
 
-import org.apache.commons.lang.ObjectUtils;
 import org.eclipse.core.resources.IWorkspaceRunnable;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.osgi.util.NLS;
-import org.faktorips.datatype.EnumDatatype;
-import org.faktorips.datatype.ValueDatatype;
 import org.faktorips.devtools.core.internal.model.IpsModel;
 import org.faktorips.devtools.core.internal.model.ipsobject.IpsObjectPartCollection;
 import org.faktorips.devtools.core.model.IDependency;
@@ -239,7 +236,7 @@ public class EnumType extends EnumValueContainer implements IEnumType {
      * {@inheritDoc}
      */
     public IEnumAttribute newEnumAttribute() throws CoreException {
-        ((IpsModel)getIpsModel()).stopBroadcastingChangesMadeByCurrentThread();
+//        ((IpsModel)getIpsModel()).stopBroadcastingChangesMadeByCurrentThread();
 
         // Create new enum attribute.
         IEnumAttribute newEnumAttribute = (IEnumAttribute)newPart(IEnumAttribute.class);
@@ -249,7 +246,7 @@ public class EnumType extends EnumValueContainer implements IEnumType {
             currentEnumValue.newEnumAttributeValue();
         }
 
-        ((IpsModel)getIpsModel()).resumeBroadcastingChangesMadeByCurrentThread();
+//        ((IpsModel)getIpsModel()).resumeBroadcastingChangesMadeByCurrentThread();
         objectHasChanged();
 
         return newEnumAttribute;
@@ -322,7 +319,7 @@ public class EnumType extends EnumValueContainer implements IEnumType {
             }
         }
 
-        ((IpsModel)getIpsModel()).stopBroadcastingChangesMadeByCurrentThread();
+//        ((IpsModel)getIpsModel()).stopBroadcastingChangesMadeByCurrentThread();
 
         int indexToMove = getIndexOfEnumAttribute(enumAttribute);
 
@@ -334,7 +331,7 @@ public class EnumType extends EnumValueContainer implements IEnumType {
             moveEnumAttributeValues(indexToMove, getEnumValues(), up);
         }
 
-        ((IpsModel)getIpsModel()).resumeBroadcastingChangesMadeByCurrentThread();
+//        ((IpsModel)getIpsModel()).resumeBroadcastingChangesMadeByCurrentThread();
         if (newIndex[0] != indexToMove) {
             objectHasChanged();
         }
@@ -882,198 +879,6 @@ public class EnumType extends EnumValueContainer implements IEnumType {
         String oldEnumContentPackageFragment = enumContentPackageFragment;
         enumContentPackageFragment = packageFragmentQualifiedName;
         valueChanged(oldEnumContentPackageFragment, packageFragmentQualifiedName);
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    public String getJavaClassName() {
-        return getIpsProject().getDatatypeHelper(this).getJavaClassName();
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    public boolean hasNullObject() {
-        return false;
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    public boolean isPrimitive() {
-        return false;
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    public boolean isValueDatatype() {
-        return true;
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    public boolean isVoid() {
-        return false;
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    public int compareTo(Object o) {
-        EnumDatatype other = (EnumDatatype)o;
-        return getQualifiedName().compareTo(other.getQualifiedName());
-    }
-
-    /**
-     * Returns the ids of the values of this enum type. The literal name attribute value is
-     * considered to be the id in this context. Returns <code>null</code> if the value of the
-     * literal name attribute of a value of this enum type could not be determined.
-     * 
-     * @throws RuntimeException If the process of determining the enum attribute values throws a
-     *             <code>CoreException</code>.
-     */
-    public String[] getAllValueIds(boolean includeNull) {
-
-        if (!isContainingValues() && includeNull) {
-            return new String[] { null };
-        }
-        if (!isContainingValues()) {
-            return new String[0];
-        }
-        List<String> ids = findAllLiteralNameAttributeValues(includeNull, getIpsProject());
-        return ids.toArray(new String[ids.size()]);
-    }
-
-    /**
-     * In the context of an enum type the id is the value of the literal name attribute. This method
-     * checks if the provided id is one of the enum attribute values. If so the id is returned
-     * otherwise <code>null</code> is returned.
-     */
-    public String getValueName(String id) {
-        if (id == null || !isContainingValues()) {
-            return null;
-        }
-
-        try {
-
-            for (IEnumValue enumValue : getEnumValues()) {
-                IEnumAttributeValue value = enumValue.findEnumAttributeValue(getIpsProject(),
-                        findLiteralNameAttribute(getIpsProject()));
-                if (value == null) {
-                    continue;
-                }
-                if (id.equals(value.getValue())) {
-                    return value.getValue();
-                }
-            }
-
-            return null;
-
-        } catch (CoreException e) {
-            throw new RuntimeException("Unable to determine the value ids of this enum type.", e);
-        }
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    public boolean isSupportingNames() {
-        return true;
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    public boolean areValuesEqual(String valueA, String valueB) {
-        String valueAName = getValueName(valueA);
-        String valueBName = getValueName(valueB);
-        if (valueAName != null && valueBName != null) {
-            return ObjectUtils.equals(valueA, valueB);
-        }
-
-        throw new IllegalArgumentException("Either the value of parameter valueA=" + valueA
-                + " or the one of parameter valueB="
-                + " is not part of this enumeration type. Therefor the equality cannot be determined.");
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    /*
-     * TODO pk: this method needs IIpsProject as parameter but this collides with its original
-     * intention which also manifests in being located in the commons project. Talk to Jan about
-     * this.
-     */
-    public MessageList checkReadyToUse() {
-        try {
-            return validate(getIpsProject());
-        } catch (CoreException e) {
-            throw new RuntimeException(e);
-        }
-    }
-
-    /**
-     * Returns true.
-     */
-    // FIXME aw: to whomever this added: this method does not return true ... is this correct?
-    public boolean supportsCompare() {
-        return false;
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    public int compare(String valueA, String valueB) throws UnsupportedOperationException {
-        throw new UnsupportedOperationException();
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    public String getDefaultValue() {
-        return null;
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    public ValueDatatype getWrapperType() {
-        return null;
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    public boolean isImmutable() {
-        return !isMutable();
-    }
-
-    /**
-     * Returns true.
-     */
-    public boolean isMutable() {
-        // mutable in this case refers to the generated enum class. which is not mutable
-        return false;
-    }
-
-    /**
-     * Returns false.
-     */
-    public boolean isNull(String value) {
-        return value == null;
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    public boolean isParsable(String value) {
-        if (value == null) {
-            return true;
-        }
-        return getValueName(value) != null;
     }
 
     /**

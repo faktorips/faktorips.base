@@ -17,7 +17,6 @@ import java.util.List;
 import java.util.NoSuchElementException;
 
 import org.eclipse.core.runtime.CoreException;
-import org.faktorips.datatype.EnumDatatype;
 import org.faktorips.devtools.core.model.IIpsMetaClass;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 
@@ -49,7 +48,7 @@ import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
  * 
  * @since 2.3
  */
-public interface IEnumType extends IEnumValueContainer, EnumDatatype, IIpsMetaClass {
+public interface IEnumType extends IEnumValueContainer, IIpsMetaClass {
 
     /** The xml tag for this ips object. */
     public final static String XML_TAG = "EnumType"; //$NON-NLS-1$
@@ -405,6 +404,11 @@ public interface IEnumType extends IEnumValueContainer, EnumDatatype, IIpsMetaCl
      * Returns whether this enum type has a super enum type.
      */
     public boolean hasSuperEnumType();
+    
+    /**
+     * Returns if this enumeration type is abstract.
+     */
+    public boolean isAbstract();
 
     /**
      * Searches all enum types in the supertype hierarchy this enum type is a subtype of and returns

@@ -61,6 +61,7 @@ import org.faktorips.devtools.core.internal.model.DynamicValueDatatype;
 import org.faktorips.devtools.core.internal.model.IpsElement;
 import org.faktorips.devtools.core.internal.model.IpsModel;
 import org.faktorips.devtools.core.internal.model.TableContentsEnumDatatypeAdapter;
+import org.faktorips.devtools.core.internal.model.enums.EnumTypeDatatypeAdapter;
 import org.faktorips.devtools.core.internal.model.pctype.PolicyCmptType;
 import org.faktorips.devtools.core.model.IIpsElement;
 import org.faktorips.devtools.core.model.IIpsModel;
@@ -1133,9 +1134,16 @@ public class IpsProject extends IpsElement implements IIpsProject {
         // TODO pk remove when completing change to enum types
         findEnumDatatypesBasedOnTables(result);
 
-        if (valuetypesOnly) {
-            result.addAll(findEnumTypes());
-        } else {
+        List<IEnumType> enumTypeList = findEnumTypes();
+        for (IEnumType enumType : enumTypeList) {
+            if(enumType.isContainingValues()){
+                result.add(new EnumTypeDatatypeAdapter(enumType, null));
+                continue;
+            }
+            IEnumContent enumContent = findFirstEnumContent(enumType);
+            result.add(new EnumTypeDatatypeAdapter(enumType, enumContent));
+        }
+        if (!valuetypesOnly) {
             findDatatypesDefinedByIpsObjects(result);
         }
 
@@ -1264,17 +1272,32 @@ public class IpsProject extends IpsElement implements IIpsProject {
                 }
             }
         }
-        if (arrayDimension == 0) {
-            return type;
+        if(type != null){
+            if (arrayDimension == 0) {
+                return type;
+            }
+            if (type instanceof ValueDatatype) {
+                return new ArrayOfValueDatatype(type, arrayDimension);
+            }
+            throw new IllegalArgumentException("The qualified name: \"" + qualifiedName + //$NON-NLS-1$
+            "\" specifies an array of a non value datatype. This is currently not supported."); //$NON-NLS-1$
         }
-        if (type instanceof ValueDatatype) {
-            return new ArrayOfValueDatatype(type, arrayDimension);
-        }
-
-        throw new IllegalArgumentException("The qualified name: \"" + qualifiedName + //$NON-NLS-1$
-                "\" specifies an array of a non value datatype. This is currently not supported."); //$NON-NLS-1$
+        return getEnumTypeDatatypeAdapter(qualifiedName, this);
     }
 
+    private EnumTypeDatatypeAdapter getEnumTypeDatatypeAdapter(String qualifiedName, IIpsProject ipsProject) throws CoreException{
+        IIpsSrcFile enumTypeSrcFile = ipsProject.findIpsSrcFile(IpsObjectType.ENUM_TYPE, qualifiedName);
+        if(enumTypeSrcFile != null && enumTypeSrcFile.exists()){
+            IEnumType enumType = (IEnumType)enumTypeSrcFile.getIpsObject();
+            if(enumType.isContainingValues()){
+                return new EnumTypeDatatypeAdapter(enumType, null);
+            }
+            IEnumContent enumContent = ipsProject.findFirstEnumContent(enumType);
+            return new EnumTypeDatatypeAdapter(enumType, enumContent);
+        }
+        return null;
+    }
+    
     /**
      * {@inheritDoc}
      */
@@ -1286,7 +1309,7 @@ public class IpsProject extends IpsElement implements IIpsProject {
         if (arrayDimension > 0) {
             qualifiedName = ArrayOfValueDatatype.getBasicDatatypeName(qualifiedName);
         }
-        ValueDatatype type = findValueDatatype(this, qualifiedName, new HashSet());
+        ValueDatatype type = findValueDatatype(this, qualifiedName, new HashSet<IIpsProject>());
         if (arrayDimension == 0) {
             return type;
         }
@@ -1314,9 +1337,9 @@ public class IpsProject extends IpsElement implements IIpsProject {
                 return new TableContentsEnumDatatypeAdapter(contents, ipsProject);
             }
         }
-        IEnumType enumType = findEnumType(qualifiedName);
-        if (enumType != null) {
-            return enumType;
+        datatype = getEnumTypeDatatypeAdapter(qualifiedName, ipsProject);
+        if (datatype != null) {
+            return datatype;
         }
         IIpsProject[] projects = ((IpsProject)ipsProject).getIpsObjectPathInternal().getReferencedIpsProjects();
         for (int i = 0; i < projects.length; i++) {
@@ -1402,8 +1425,8 @@ public class IpsProject extends IpsElement implements IIpsProject {
             return getIpsArtefactBuilderSet().getDatatypeHelperForTableBasedEnum(
                     (TableContentsEnumDatatypeAdapter)datatype);
         }
-        if (datatype instanceof IEnumType) {
-            return getIpsArtefactBuilderSet().getDatatypeHelperForEnumType((IEnumType)datatype);
+        if (datatype instanceof EnumTypeDatatypeAdapter) {
+            return getIpsArtefactBuilderSet().getDatatypeHelperForEnumType((EnumTypeDatatypeAdapter)datatype);
         }
         DatatypeHelper helper = ((IpsModel)getIpsModel()).getDatatypeHelper(this, (ValueDatatype)datatype);
         if (helper != null) {

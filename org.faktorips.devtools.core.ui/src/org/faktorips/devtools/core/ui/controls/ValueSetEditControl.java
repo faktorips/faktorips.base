@@ -27,6 +27,7 @@ import org.faktorips.datatype.EnumDatatype;
 import org.faktorips.datatype.NumericDatatype;
 import org.faktorips.datatype.ValueDatatype;
 import org.faktorips.devtools.core.IpsPlugin;
+import org.faktorips.devtools.core.internal.model.enums.EnumTypeDatatypeAdapter;
 import org.faktorips.devtools.core.internal.model.valueset.RangeValueSet;
 import org.faktorips.devtools.core.model.valueset.IEnumValueSet;
 import org.faktorips.devtools.core.model.valueset.IValueSet;
@@ -42,6 +43,9 @@ import org.faktorips.devtools.core.ui.controller.fields.ValueChangeListener;
 /**
  * A control to define the type of value set and edit a value set. 
  */
+// NOTE: there is a constraint to faktor ips enum types with separate enum content that are used in a
+// modeling context. For those the possibility to restrict the values of the datatype must not be
+// possible. Hence in this case only all values has to be displayed in the validTypesComboField
 public class ValueSetEditControl extends ControlComposite implements IDataChangeableReadWriteAccess{
 
     private Combo validTypesCombo;
@@ -64,6 +68,11 @@ public class ValueSetEditControl extends ControlComposite implements IDataChange
     
     private boolean dataChangeable;
     
+    //there is a contraint to faktor ips enum types with separate enum content that is used in a modeling context in
+    //faktor ips. For those the possibility to restrict the values of the datatype must not be possible. And only all
+    //values has to be displayed in the validTypesComboField
+    private boolean usedForModelling;
+    
     /**
      * Generates a new control which contains a combo box and depending on the value of the box a EnumValueSetEditControl
      * or a or a RangeEditControl.
@@ -71,12 +80,13 @@ public class ValueSetEditControl extends ControlComposite implements IDataChange
      * a composite with a gridlayout with 2 columns generated. In the second row there is a stacklayout used . 
      */
     public ValueSetEditControl(Composite parent, UIToolkit toolkit, DefaultUIController uiController, IValueSetOwner owner                                                       ,
-            TableElementValidator tableElementValidator) {
+            TableElementValidator tableElementValidator, boolean usedForModelling) {
         super(parent, SWT.NONE);
         this.valueSetOwner = owner;
         this.toolkit = toolkit;
         this.uiController = uiController;
         this.tableElementValidator = tableElementValidator;
+        this.usedForModelling = usedForModelling;
         
         initLayout();
         Composite parentArea;
@@ -214,7 +224,6 @@ public class ValueSetEditControl extends ControlComposite implements IDataChange
         validTypesCombo = toolkit.createCombo(this);
 
         ValueSetType[] types = ValueSetType.getValueSetTypes();
-
         for (int i = 0; i < types.length; i++) {
             if (types[i] != ValueSetType.RANGE || datatype instanceof NumericDatatype) {
                 validTypesCombo.add(types[i].getName());
@@ -223,7 +232,7 @@ public class ValueSetEditControl extends ControlComposite implements IDataChange
 
         validTypesComboField = new ComboField(validTypesCombo);
         validTypesComboField.addChangeListener(new TypeModifyListener());
-        
+
         toolkit.setDataChangeable(validTypesCombo, isDataChangeable());
     }
 
@@ -232,7 +241,7 @@ public class ValueSetEditControl extends ControlComposite implements IDataChange
     }
 
     /**
-     * Sets the avaibale value set types and the datatype.
+     * Sets the available value set types and the datatype.
      */
     public void setTypes(ValueSetType[] valueSetTypes, ValueDatatype datatype) {
         this.datatype = datatype;
@@ -246,12 +255,19 @@ public class ValueSetEditControl extends ControlComposite implements IDataChange
         }
         
         validTypesCombo.removeAll();
-        for (int i = 0; i < valueSetTypes.length; i++) {
-            if (valueSetTypes[i] != ValueSetType.RANGE || datatype instanceof NumericDatatype) {
-                validTypesCombo.add(valueSetTypes[i].getName());
-            }
-            if (oldType == valueSetTypes[i]) {
-                newType = oldType;
+        //TODO pk 15-06-2009: as long as faktor ips doesn't support attribute value constraints the value set of
+        //enum types with separate enum contents cannot be restricted  
+        if (usedForModelling && datatype instanceof EnumTypeDatatypeAdapter
+                && ((EnumTypeDatatypeAdapter)datatype).hasEnumContent()) {
+            validTypesCombo.add(ValueSetType.ALL_VALUES.getName());
+        } else {
+            for (int i = 0; i < valueSetTypes.length; i++) {
+                if (valueSetTypes[i] != ValueSetType.RANGE || datatype instanceof NumericDatatype) {
+                    validTypesCombo.add(valueSetTypes[i].getName());
+                }
+                if (oldType == valueSetTypes[i]) {
+                    newType = oldType;
+                }
             }
         }
         validTypesComboField.setText(newType.getName());

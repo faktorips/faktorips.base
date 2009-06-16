@@ -21,6 +21,7 @@ import org.faktorips.codegen.DatatypeHelper;
 import org.faktorips.datatype.Datatype;
 import org.faktorips.devtools.core.builder.IJavaPackageStructure;
 import org.faktorips.devtools.core.internal.model.TableContentsEnumDatatypeAdapter;
+import org.faktorips.devtools.core.internal.model.enums.EnumTypeDatatypeAdapter;
 import org.faktorips.devtools.core.model.enums.IEnumType;
 import org.faktorips.devtools.core.model.productcmpt.IFormula;
 import org.faktorips.devtools.core.model.tablecontents.ITableContents;
@@ -143,7 +144,7 @@ public interface IIpsArtefactBuilderSet extends IJavaPackageStructure {
      * {@link IIpsArtefactBuilderSet} since it determines the full qualified class name of the
      * generated datatype class.
      */
-    public DatatypeHelper getDatatypeHelperForEnumType(IEnumType enumType);
+    public DatatypeHelper getDatatypeHelperForEnumType(EnumTypeDatatypeAdapter datatypeAdapter);
     
     /**
      * Returns the file that contain the runtime repository toc file. Note that the file might not

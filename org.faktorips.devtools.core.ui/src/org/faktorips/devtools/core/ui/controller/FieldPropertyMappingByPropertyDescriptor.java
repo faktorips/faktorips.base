@@ -17,6 +17,7 @@ import java.beans.PropertyDescriptor;
 import java.lang.reflect.Method;
 
 import org.apache.commons.lang.ObjectUtils;
+import org.eclipse.swt.widgets.Combo;
 import org.faktorips.devtools.core.ui.controller.fields.AbstractEnumDatatypeBasedField;
 import org.faktorips.devtools.core.ui.controller.fields.ComboField;
 

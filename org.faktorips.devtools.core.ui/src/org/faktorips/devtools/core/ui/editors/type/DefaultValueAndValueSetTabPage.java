@@ -80,7 +80,9 @@ public class DefaultValueAndValueSetTabPage extends Composite {
         defaultEditFieldPlaceholder.setLayoutData(new GridData(GridData.FILL_BOTH));
         createDefaultValueEditField();
         
-        valueSetEditControl = new ValueSetEditControl(this, uiToolkit,  uiController, valueSetOwner, new Validator());
+        //TODO pk the last parameter of this constructor is set to true until the attribute contraints concept is introduced
+        //to faktor ips. see the remark in the ValueSetEditControl class
+        valueSetEditControl = new ValueSetEditControl(this, uiToolkit,  uiController, valueSetOwner, new Validator(), true);
         
         Object layoutData = valueSetEditControl.getLayoutData();
         if (layoutData instanceof GridData){

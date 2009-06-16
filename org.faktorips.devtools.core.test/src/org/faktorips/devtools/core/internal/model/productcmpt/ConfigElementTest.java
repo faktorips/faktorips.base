@@ -15,16 +15,22 @@ package org.faktorips.devtools.core.internal.model.productcmpt;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 
 import org.eclipse.core.runtime.CoreException;
 import org.faktorips.codegen.JavaCodeFragment;
 import org.faktorips.codegen.dthelpers.AbstractDatatypeHelper;
+import org.faktorips.datatype.Datatype;
 import org.faktorips.datatype.ValueDatatype;
 import org.faktorips.devtools.core.AbstractIpsPluginTest;
 import org.faktorips.devtools.core.TestEnumType;
 import org.faktorips.devtools.core.internal.model.IpsModel;
 import org.faktorips.devtools.core.internal.model.ipsproject.IpsProject;
 import org.faktorips.devtools.core.internal.model.valueset.EnumValueSet;
+import org.faktorips.devtools.core.model.enums.IEnumAttribute;
+import org.faktorips.devtools.core.model.enums.IEnumAttributeValue;
+import org.faktorips.devtools.core.model.enums.IEnumType;
+import org.faktorips.devtools.core.model.enums.IEnumValue;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProjectProperties;
 import org.faktorips.devtools.core.model.pctype.AttributeType;
@@ -142,6 +148,48 @@ public class ConfigElementTest extends AbstractIpsPluginTest {
         assertNull(ml.getMessageByCode(IConfigElement.MSGCODE_VALUE_NOT_PARSABLE));
     }
 
+    public void testValidateParsableEnumTypeDatatype() throws Exception{
+        IEnumType enumType = newEnumType(ipsProject, "EnumType");
+        enumType.setContainingValues(true);
+
+        IEnumAttribute id = enumType.newEnumAttribute();
+        id.setName("id");
+        id.setDatatype(Datatype.STRING.getQualifiedName());
+        id.setLiteralName(true);
+        id.setUniqueIdentifier(true);
+        id.setUsedAsIdInFaktorIpsUi(true);
+
+        IEnumAttribute name = enumType.newEnumAttribute();
+        name.setName("name");
+        name.setDatatype(Datatype.STRING.getQualifiedName());
+        name.setUniqueIdentifier(true);
+        name.setUsedAsNameInFaktorIpsUi(true);
+
+        IEnumValue enumValue = enumType.newEnumValue();
+        List<IEnumAttributeValue> values = enumValue.getEnumAttributeValues();
+        values.get(0).setValue("a");
+        values.get(1).setValue("an");
+
+        IConfigElement ce = generation.newConfigElement();
+        ce.setType(ConfigElementType.POLICY_ATTRIBUTE);
+        ce.setValue("a");
+        ce.setPolicyCmptTypeAttribute("valueTest");
+        IPolicyCmptTypeAttribute attr = policyCmptType.newPolicyCmptTypeAttribute();
+        attr.setName("valueTest");
+        attr.setAttributeType(AttributeType.CHANGEABLE);
+        attr.setDatatype(enumType.getQualifiedName());
+
+        policyCmptType.getIpsSrcFile().save(true, null);
+        productCmpt.getIpsSrcFile().save(true, null);
+
+        MessageList ml = ce.validate(ipsProject);
+        assertNull(ml.getMessageByCode(IConfigElement.MSGCODE_VALUE_NOT_PARSABLE));
+
+        ce.setValue("b");
+        ml = ce.validate(ipsProject);
+        assertNotNull(ml.getMessageByCode(IConfigElement.MSGCODE_VALUE_NOT_PARSABLE));
+    }
+    
     public void testValidate_InvalidValueset() throws CoreException {
         IPolicyCmptTypeAttribute attr = policyCmptType.newPolicyCmptTypeAttribute();
         attr.setName("valueTest");

@@ -18,9 +18,9 @@ import org.faktorips.datatype.EnumDatatype;
 import org.faktorips.datatype.PrimitiveBooleanDatatype;
 import org.faktorips.datatype.ValueDatatype;
 import org.faktorips.datatype.classtypes.BooleanDatatype;
+import org.faktorips.devtools.core.internal.model.enums.EnumTypeDatatypeAdapter;
 import org.faktorips.devtools.core.model.enums.IEnumAttribute;
 import org.faktorips.devtools.core.model.enums.IEnumAttributeValue;
-import org.faktorips.devtools.core.model.enums.IEnumContent;
 import org.faktorips.devtools.core.model.enums.IEnumType;
 import org.faktorips.devtools.core.model.enums.IEnumValue;
 import org.faktorips.devtools.core.model.enums.IEnumValueContainer;
@@ -41,6 +41,7 @@ public class DatatypeFormatter {
      * @param datatype The datatype the value is a value of.
      * @param value The value as string
      * @return
+     * @throws CoreException 
      * 
      * @see #ENUM_TYPE_DISPLAY
      * @see #NULL_REPRESENTATION_STRING
@@ -51,6 +52,9 @@ public class DatatypeFormatter {
         }
         if (datatype==null) {
             return value;
+        }
+        if (datatype instanceof EnumTypeDatatypeAdapter) {
+            return formatValue((EnumTypeDatatypeAdapter)datatype, value);
         }
         if (datatype instanceof EnumDatatype) {
             return formatValue((EnumDatatype)datatype, value);
@@ -73,41 +77,40 @@ public class DatatypeFormatter {
      * @param enumContent can be <code>null</code> and is only necessary if the enum type is one that doesn't contain values
      * @param id the identifies a value of the provided enum type 
      * @return the formatted value
-     * @throws CoreException if an exception occurs it is delegated by this method
      */
-    public String formatValue(IEnumType enumType, IEnumContent enumContent, String id) throws CoreException{
-        if (id==null) {
-            return preferences.getNullPresentation();
+    private String formatValue(EnumTypeDatatypeAdapter datatypeAdapter, String id) {
+        try {
+            String idDisplayValue = getIdDisplayValue(datatypeAdapter, id);
+            EnumTypeDisplay enumTypeDisplay = preferences.getEnumTypeDisplay();
+            if (enumTypeDisplay.equals(EnumTypeDisplay.ID) && idDisplayValue == null) {
+                return id;
+            } else if (enumTypeDisplay.equals(EnumTypeDisplay.ID)) {
+                return idDisplayValue;
+            }
+            String nameDisplayValue = getNameDisplayValue(datatypeAdapter, id);
+            if (enumTypeDisplay.equals(EnumTypeDisplay.NAME) && nameDisplayValue == null) {
+                return id;
+            } else if (enumTypeDisplay.equals(EnumTypeDisplay.NAME)) {
+                return nameDisplayValue;
+            }
+            if (enumTypeDisplay.equals(EnumTypeDisplay.NAME_AND_ID)
+                    && (idDisplayValue != null || nameDisplayValue != null)) {
+                return nameDisplayValue + " (" + idDisplayValue + ")"; //$NON-NLS-1$ //$NON-NLS-2$
+            } else {
+                return id;
+            }
+        } catch (CoreException e) {
+            throw new RuntimeException(e);
         }
-        if (enumType==null) {
-            return id;
-        }
-        String idDisplayValue = getIdDisplayValue(enumType, enumContent, id);
-        EnumTypeDisplay enumTypeDisplay = preferences.getEnumTypeDisplay();
-        if(enumTypeDisplay.equals(EnumTypeDisplay.ID) && idDisplayValue == null){
-            return id;
-        } else if (enumTypeDisplay.equals(EnumTypeDisplay.ID)) {
-            return idDisplayValue;
-        }
-        String nameDisplayValue = getNameDisplayValue(enumType, enumContent, id);
-        if(enumTypeDisplay.equals(EnumTypeDisplay.NAME) && nameDisplayValue == null){
-            return id;
-        } else if(enumTypeDisplay.equals(EnumTypeDisplay.NAME)) {
-            return nameDisplayValue;
-        }
-        if (enumTypeDisplay.equals(EnumTypeDisplay.NAME_AND_ID) && (idDisplayValue != null || nameDisplayValue != null)){
-            return nameDisplayValue + " (" + idDisplayValue + ")"; //$NON-NLS-1$ //$NON-NLS-2$
-        } else {
-            return id;
-        } 
     }
     
-    private String getIdDisplayValue(IEnumType enumType, IEnumContent enumContent, String id) throws CoreException{
+    private String getIdDisplayValue(EnumTypeDatatypeAdapter datatypeAdapter, String id) throws CoreException{
         
-        IEnumValue enumValue = getEnumValue(enumType, enumContent, id);
+        IEnumValue enumValue = getEnumValue(datatypeAdapter, id);
         if(enumValue == null){
             return null;
         }
+        IEnumType enumType = datatypeAdapter.getEnumType();
         IEnumAttribute enumAttribute = enumType.findIsUsedAsIdInFaktorIpsUIAttribute(enumType.getIpsProject());
         if(enumAttribute == null){
             return null;
@@ -116,12 +119,13 @@ public class DatatypeFormatter {
         return enumAttributeValue.getValue();
     }
 
-    private String getNameDisplayValue(IEnumType enumType, IEnumContent enumContent, String id) throws CoreException{
+    private String getNameDisplayValue(EnumTypeDatatypeAdapter datatypeAdapter, String id) throws CoreException{
         
-        IEnumValue enumValue = getEnumValue(enumType, enumContent, id);
+        IEnumValue enumValue = getEnumValue(datatypeAdapter, id);
         if(enumValue == null){
             return null;
         }
+        IEnumType enumType = datatypeAdapter.getEnumType();
         IEnumAttribute enumAttribute = enumType.findIsUsedAsNameInFaktorIpsUIAttribute(enumType.getIpsProject());
         if(enumAttribute == null){
             return null;
@@ -130,16 +134,9 @@ public class DatatypeFormatter {
         return enumAttributeValue.getValue();
     }
     
-    private IEnumValue getEnumValue(IEnumType enumType, IEnumContent enumContent, String id) throws CoreException {
-        IEnumValueContainer valueContainer = null;
-        if(enumType.isContainingValues()){
-            valueContainer = enumType;
-        } else if(enumContent == null){
-            return null;
-        } else {
-            valueContainer = enumContent;
-        }
-        return valueContainer.findEnumValue(id, enumType.getIpsProject());
+    private IEnumValue getEnumValue(EnumTypeDatatypeAdapter datatypeAdapter, String id) throws CoreException {
+        IEnumValueContainer valueContainer = datatypeAdapter.getEnumValueContainer();
+        return valueContainer.findEnumValue(id, valueContainer.getIpsProject());
     }
     
     /**
@@ -152,13 +149,7 @@ public class DatatypeFormatter {
      * @see #ENUM_TYPE_DISPLAY
      * @see #NULL_REPRESENTATION_STRING
      */
-    public String formatValue(EnumDatatype datatype, String id) {
-        if (id==null) {
-            return preferences.getNullPresentation();
-        }
-        if (datatype==null) {
-            return id;
-        }
+    private String formatValue(EnumDatatype datatype, String id) {
         if (!datatype.isSupportingNames()) {
             return id;
         }
