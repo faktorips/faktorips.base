@@ -27,12 +27,15 @@ import org.faktorips.devtools.core.model.ipsproject.IIpsPackageFragment;
 public interface IIpsSrcFile extends IIpsElement {
     
     /**
-     * Returns the package fragment the file belongs to.
+     * Returns the package fragment the file belongs to. If this ips source file is contructed from
+     * an input stream (for example to show an old revision/history) this method returns null!
      */
     public IIpsPackageFragment getIpsPackageFragment();
     
     /**
-     * Returns the corresponding platform file.
+     * Returns the corresponding platform file. This method returns <code>null</code> if the ips source file is
+     * not stored in it's own dedicated plattform file. This is the case if the ips source file is contained
+     * in an ips archive or is constructed from an input stream (e.g. to display an old revision/history in an editor).
      */
     public IFile getCorrespondingFile();
     
@@ -127,10 +130,26 @@ public interface IIpsSrcFile extends IIpsElement {
     public String getIpsObjecName();
     
     /**
-     * Returns whether this file is mutable or not.
+     * Returns whether this file is mutable or not. An ips source file is immutable in the following cases:
+     * <ul>
+     *   <li>The underlying file does not exists.</li>
+     *   <li>The underlying file is read-only.</li>
+     *   <li>The ips source file is contained in an ips archive.</li>
+     *   <li>The ips source file is created from an input stream to show an old revision/history.</li>
+     * </ul>
      */
     public boolean isMutable();
     
+    /**
+     * Returns whether this file is read-only or not. An ips source file is read-only in the following cases:
+     * <ul>
+     *   <li>The underlying file does not exists.</li>
+     *   <li>The underlying file is read-only.</li>
+     *   <li>The ips source file is contained in an ips archive.</li>
+     *   <li>The ips source file is created from an input stream to show an old revision/history.</li>
+     * </ul>
+     */
+    public boolean isReadOnly();
     /**
      * Reads the content from the enclosing resource.
      * 

@@ -237,7 +237,7 @@ public class ProductCmptEditor extends TimedIpsObjectEditor implements IModelDes
 			}
 			return;
 		}
-        if (isInsideArchive()){
+        if (!getIpsSrcFile().isMutable()){
             // no check of working date mismatch
             // because product component is read only
             return;
@@ -469,10 +469,4 @@ public class ProductCmptEditor extends TimedIpsObjectEditor implements IModelDes
         this.ignoreHandlingOfWorkingDateMissmatch = ignoreHandlingOfWorkingDateMissmatch;
     }
     
-    /*
-     * Returns <code>true</code> if the table contents is inside an archive otherwise <code>false</code>
-     */
-    private boolean isInsideArchive() {
-        return getProductCmpt().getIpsPackageFragment().getRoot().isBasedOnIpsArchive();
-    }
 }

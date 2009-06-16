@@ -59,6 +59,13 @@ public abstract class AbstractIpsSrcFile extends IpsElement implements IIpsSrcFi
     /**
      * {@inheritDoc}
      */
+    public final boolean isReadOnly() {
+        return !isMutable();
+    }
+
+    /**
+     * {@inheritDoc}
+     */
     public boolean exists() {
         try {
             IpsObjectPathEntry entry = (IpsObjectPathEntry)getIpsPackageFragment().getRoot().getIpsObjectPathEntry();
