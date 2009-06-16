@@ -513,6 +513,18 @@
 
 		<antcall inheritall="true" target="-publish.release.all"/>
 		<antcall inheritall="true" target="-publish.product"/>
+		
+		<!-- store archiv results, to add the license file later -->
+		<echo file="${basedir}/archives">
+${faktoripsReleaseDownloadZipPath}
+${faktoripsNls1ReleaseDownloadZipPath}
+${faktoripsUmlReleaseDownloadZipPath}
+${faktoripsUmlNls1ReleaseDownloadZipPath}
+${faktoripsUpdateSiteZipPath}
+${faktoripsProductWinZipPath}
+${faktoripsProductLinuxZipPath}
+${faktoripsRuntimeAndValuetypesZipPath}
+		</echo>
 	</target>
 	
     <!--helper targets-->

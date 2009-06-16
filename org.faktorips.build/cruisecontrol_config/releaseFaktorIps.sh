@@ -33,6 +33,8 @@
 #           -useBranch [branch]    : use a given branch instead HEAD (only necessary if the projects should be tagged)
 #           -buildProduct [product project dir]
 #                                  : builds the product in the given project instead of building the features and plugins
+#           -resultDir             : publish directory
+#           -updatesiteDir         : updatesite directory
 #
 # additional functionality
 #-------------------------
@@ -83,6 +85,9 @@ FORCE_BUILD=false
 FAKTORIPS_CORE_PLUGIN_NAME=org.faktorips.devtools.core
 PLUGINBUILDER_PROJECT_NAME=org.faktorips.pluginbuilder
 INTEGRATIONTEST_PROJECTS=(org.faktorips.integrationtest org.faktorips.integrationtest.java5)
+
+CREATE_LIZENZ_SCRIPT=$PLUGINBUILDER_PROJECT_NAME/lizenz/createFaktorIpsLizenz.sh
+LIZENZ_PDF=$PLUGINBUILDER_PROJECT_NAME/lizenz/result/lizenzvertrag_fips.pdf
 
 ###########
 # functions
@@ -290,6 +295,8 @@ showUsageAndExit()
   echo '  -projectsrootdir [dir] the root/parent dir of all projects, all projects will be checkedout here'
   echo '                         if no cvs is used \(e.g. local copy\) then all projects must be exists here'
   echo '                         the default is: ' $PROJECTSROOTDIR
+  echo ' -resultDir [dir]        the result (publish) directory'
+  echo ' - updatesiteDir [dir]   the updatesite directory'
   echo 'additional functionality '
   echo '  -createBranch          to create a branch, the latest HEAD stand will be branched by default (see -branchRootTag)'
   echo '                         with -version [versionnumber] the name (version) of the base version'
@@ -591,7 +598,7 @@ checkAndCreateReleaseProperty()
   fi
 }
 
-checkoutPluginbuilderProject()
+checkoutPluginbuilderParts()
 {
   if [ "$NOCVS" = "true" ] ; then
     return
@@ -604,8 +611,9 @@ checkoutPluginbuilderProject()
   fi
 	
   # checkout release.properties in branch or head	
-  checkoutModule $RELEASE_PROPERTY_DIR LATEST $PLUGINBUILDER_PROJECT_NAME/releases $BRANCH
-  checkoutModule $PLUGINBUILDER_PROJECT_DIR/maps LATEST $PLUGINBUILDER_PROJECT_NAME/maps $BRANCH
+  checkoutModule $RELEASE_PROPERTY_DIR $FETCH_TAG $PLUGINBUILDER_PROJECT_NAME/releases $BRANCH
+  checkoutModule $PLUGINBUILDER_PROJECT_DIR/maps $FETCH_TAG $PLUGINBUILDER_PROJECT_NAME/maps $BRANCH
+  checkoutModule $PLUGINBUILDER_PROJECT_DIR/lizenz $FETCH_TAG $PLUGINBUILDER_PROJECT_NAME/lizenz $BRANCH
 }
 
 printBoolean ()
@@ -662,7 +670,7 @@ if [ ! -d $WORKINGDIR ] ; then
 fi
 cd $WORKING_DIR
 
-checkoutPluginbuilderProject
+checkoutPluginbuilderParts
 
 # asserts for release builds (not active if product build, product exists will be checked in the ant build file)
 if [ ! $SKIPTAGCVS -a  ! "$OVERWRITE" = "true" -a -f $RELEASE_PROPERTIES -a -z "$BUILDPRODUCT" ] ; then 
@@ -670,6 +678,12 @@ if [ ! $SKIPTAGCVS -a  ! "$OVERWRITE" = "true" -a -f $RELEASE_PROPERTIES -a -z "
   echo "   delete the previous release build or use parameter -overwrite"
   exit 1
 fi
+
+# assert license script in pluginbuilder project
+if [ ! -f $PROJECTSROOTDIR/$CREATE_LIZENZ_SCRIPT ] ; then
+  echo "error: the create license script not exists: "$PROJECTSROOTDIR/$CREATE_LIZENZ_SCRIPT
+  exit 1
+fi   
 
 checkAndCreateReleaseProperty
 
@@ -688,6 +702,10 @@ patchAllCvsMap
 # call ant to perform the specified release build
 #################################################
 BUILD_CATEGORY_PATH="faktorips-"$BUILD_CATEGORY
+DOWNLOAD_DIR=$PUBLISH_DOWNLOAD_DIR"/"$BUILD_CATEGORY_PATH
+
+# create download dir if not exists
+test -d $DOWNLOAD_DIR || mkdir $DOWNLOAD_DIR
 
 echo $BUILDFILE
 EXEC="$ANT_HOME/bin/ant -buildfile $BUILDFILE release \
@@ -699,7 +717,7 @@ EXEC="$ANT_HOME/bin/ant -buildfile $BUILDFILE release \
  -DprojectsRootDir=$PROJECTSROOTDIR \
  -Dbasedir=$WORKINGDIR \
  -DnoCvs=$NOCVS \
- -DdownloadDir=$PUBLISH_DOWNLOAD_DIR"/"$BUILD_CATEGORY_PATH \
+ -DdownloadDir=$DOWNLOAD_DIR \
  -Dupdatesite.path=$PUBLISH_UPDATESITE_DIR \
  -DproductProject=$BUILDPRODUCT \
  -DnoBranch=$NOBRANCH
@@ -709,10 +727,30 @@ echo $EXEC
 eval $EXEC
 RC=$(echo $?)
 
+
 #################################
 # update download site index.html
 #################################
+echo ''
 if [ $RC -eq 0 -a ! "$SKIPPUBLISH" = "true" ] ; then
   # build successfull and result should be published
   createIndexHtml
 fi
+
+####################################################
+# add lizenz to all generated and published archives
+####################################################
+echo ''
+if [ ! "$SKIPPUBLISH" = "true" -a -f $WORKINGDIR/archives ] ; then
+ $PROJECTSROOTDIR/$CREATE_LIZENZ_SCRIPT $BUILD_VERSION
+ for i in $(cat $WORKINGDIR/archives) ; do
+   if [ ! -f $i ] ; then continue ; fi 
+   echo "add license to: "$i
+   zip -ujD $i $PROJECTSROOTDIR/$LIZENZ_PDF > /dev/null 2>&1
+   if [ ! $? -eq 0 ] ; then
+     echo "error adding lizenz.pdf to archive: "$i
+     exit 1
+   fi
+ done
+fi
+
