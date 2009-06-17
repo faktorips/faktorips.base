@@ -117,9 +117,6 @@ public class Migration2_2_to2_3 {
                 newEnumAttribute.setInherited(false);
             }
 
-            // Save the new file.
-            newEnumType.getIpsSrcFile().save(true, null);
-
             // Delete the old table structure.
             currentTableStructure.getIpsSrcFile().getCorrespondingResource().delete(true, null);
         }
@@ -163,9 +160,6 @@ public class Migration2_2_to2_3 {
                     currentEnumAttributeValue.setValue(currentRow.getValue(i));
                 }
             }
-
-            // Save the new file.
-            newEnumType.getIpsSrcFile().save(true, null);
 
             // Delete the old table contents.
             currentTableContents.getIpsSrcFile().getCorrespondingResource().delete(true, null);
