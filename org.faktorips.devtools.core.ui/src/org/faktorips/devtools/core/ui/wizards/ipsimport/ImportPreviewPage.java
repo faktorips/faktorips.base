@@ -17,6 +17,7 @@ import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 
+import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.jdt.core.JavaModelException;
 import org.eclipse.jface.dialogs.IMessageProvider;
@@ -32,6 +33,7 @@ import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.TableColumn;
 import org.eclipse.swt.widgets.TableItem;
+import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.model.enums.IEnumType;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObject;
 import org.faktorips.devtools.core.model.tablestructure.ITableStructure;
@@ -156,23 +158,19 @@ public class ImportPreviewPage extends WizardPage implements ValueChangeListener
         if (layoutData instanceof GridData) {
             ((GridData)layoutData).grabExcessVerticalSpace = false;
         }
-
-        configCompositeFactory = getCompositeFactory();
-        if (configCompositeFactory != null) {
-            configCompositeFactory.createPropertyComposite(dynamicPropertiesComposite, toolkit);
-            configCompositeFactory.addValueChangedListener(this);
-        }
+        
+        try {
+            configCompositeFactory = IpsUIPlugin.getDefault().getTableFormatPropertiesControlFactory(tableFormat);
+            if (configCompositeFactory != null) {
+                configCompositeFactory.createPropertyComposite(dynamicPropertiesComposite, toolkit);
+                configCompositeFactory.addValueChangedListener(this);
+            }
+        } catch (CoreException e) {
+            IpsPlugin.log(e);
+        }        
 
         // make sure the configuration composite is displayed above the preview
         dynamicPropertiesComposite.moveAbove(null);
-    }
-
-    private TableFormatConfigurationCompositeFactory getCompositeFactory() {
-        if (configCompositeFactory == null) {
-            configCompositeFactory = IpsUIPlugin.getDefault()
-                .getTableFormatPropertiesControlFactory(tableFormat);
-        }
-        return configCompositeFactory;
     }
 
     private void fillPreviewTableContents() {

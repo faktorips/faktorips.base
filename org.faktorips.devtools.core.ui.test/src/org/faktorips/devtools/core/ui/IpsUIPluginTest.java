@@ -16,28 +16,35 @@ package org.faktorips.devtools.core.ui;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IConfigurationElement;
 import org.eclipse.core.runtime.IExtension;
 import org.eclipse.core.runtime.IExtensionPoint;
 import org.eclipse.swt.widgets.Composite;
 import org.faktorips.devtools.core.AbstractIpsPluginTest;
+import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.TestConfigurationElement;
 import org.faktorips.devtools.core.TestExtension;
 import org.faktorips.devtools.core.TestExtensionPoint;
 import org.faktorips.devtools.core.TestExtensionRegistry;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPartContainer;
 import org.faktorips.devtools.core.ui.controller.EditField;
+import org.faktorips.devtools.tableconversion.ITableFormat;
+import org.faktorips.util.message.Message;
+import org.faktorips.util.message.MessageList;
 
 public class IpsUIPluginTest extends AbstractIpsPluginTest {
 
-    private IExtensionPropertyEditFieldFactory factory;
-    @SuppressWarnings("unchecked")
-    private Map attributes; 
+    private IExtensionPropertyEditFieldFactory editFieldFactory;
+    
+    private Map<String, String> editFieldFactoryAttributes; 
     
     @SuppressWarnings("unchecked")
     public void setUp() throws Exception {
         super.setUp();
-        factory = new IExtensionPropertyEditFieldFactory() {
+        
+        // PropertyEditFieldFactory setup code 
+        editFieldFactory = new IExtensionPropertyEditFieldFactory() {
             public EditField newEditField(IIpsObjectPartContainer ipsObjectPart,
                     Composite extensionArea,
                     UIToolkit toolkit) {
@@ -45,23 +52,58 @@ public class IpsUIPluginTest extends AbstractIpsPluginTest {
             }
         };
         HashMap execAttr = new HashMap();
-        execAttr.put("class", factory);
-        attributes = new HashMap();
-        attributes.put("propertyId", "additionalProperty");
-        TestConfigurationElement configEl = new TestConfigurationElement("", attributes, "",
+        execAttr.put("class", editFieldFactory);
+        editFieldFactoryAttributes = new HashMap();
+        editFieldFactoryAttributes.put("propertyId", "additionalProperty");
+        TestConfigurationElement configEl = new TestConfigurationElement("", editFieldFactoryAttributes, "",
                 new IConfigurationElement[0], execAttr);
         TestExtension extension = new TestExtension(new IConfigurationElement[] { configEl }, IpsUIPlugin.PLUGIN_ID,
                 IpsUIPlugin.EXTENSION_POINT_ID_EXTENSION_PROPERTY_EDIT_FIELD_FACTORY);
         TestExtensionPoint extPoint = new TestExtensionPoint(new IExtension[] { extension }, IpsUIPlugin.PLUGIN_ID,
                 IpsUIPlugin.EXTENSION_POINT_ID_EXTENSION_PROPERTY_EDIT_FIELD_FACTORY);
-        IpsUIPlugin.getDefault().setExtensionRegistry(new TestExtensionRegistry(new IExtensionPoint[] { extPoint }));
+        
+        // TableFormatPropertiesControlFactory setup code
+        TableFormatConfigurationCompositeFactory tableFormatPropertiesFactory = 
+            new TableFormatConfigurationCompositeFactory() {
+                private ITableFormat tableFormat;
+    
+                public Composite createPropertyComposite(Composite parent, UIToolkit toolkit) {
+                    return null;
+                }
+    
+                protected void setTableFormat(ITableFormat tableFormat) {
+                    this.tableFormat = tableFormat;
+                }
+    
+                public MessageList validate() {
+                    MessageList messageList = new MessageList();
+                    if (tableFormat == null)
+                        messageList.add(Message.newError("ERROR", "Table format not set."));
+                    return messageList;
+                }
+            };
+        
+        execAttr = new HashMap();
+        execAttr.put("class", TestTableFormat.class.getName());
+        execAttr.put("guiClass", tableFormatPropertiesFactory);
+        HashMap attributes = new HashMap();
+        attributes.put("defaultExtension", ".ext");
+        attributes.put("guiClass", tableFormatPropertiesFactory.getClass().getName());
+        attributes.put("class", TestTableFormat.class.getName());
+        configEl = new TestConfigurationElement("guiClass", attributes, null,
+                new IConfigurationElement[0], execAttr);
+        extension = new TestExtension(new IConfigurationElement[] { configEl }, IpsPlugin.PLUGIN_ID,
+                "externalTableFormat");
+        TestExtensionPoint tableFormatExtPoint = new TestExtensionPoint(new IExtension[] { extension }, IpsPlugin.PLUGIN_ID,
+                "externalTableFormat");
+        IpsUIPlugin.getDefault().setExtensionRegistry(new TestExtensionRegistry(new IExtensionPoint[] { extPoint, tableFormatExtPoint }));
     }
 
     
     public void testGetExtensionPropertyEditFieldFactory() throws Exception {
         IExtensionPropertyEditFieldFactory resultFactory = IpsUIPlugin.getDefault()
                 .getExtensionPropertyEditFieldFactory("additionalProperty");
-        assertEquals(factory, resultFactory);
+        assertEquals(editFieldFactory, resultFactory);
 
     }
     
@@ -69,7 +111,18 @@ public class IpsUIPluginTest extends AbstractIpsPluginTest {
         IExtensionPropertyEditFieldFactory resultFactory = IpsUIPlugin.getDefault()
         .getExtensionPropertyEditFieldFactory("notRegisteredProperty");
         assertTrue(resultFactory instanceof DefaultExtensionPropertyEditFieldFactory);
+    }
+
+    public void testGetTableFormatPropertiesControlFactory() throws CoreException {
+        ITableFormat tableFormatWithFactory = new TestTableFormat();
+        ITableFormat tableFormatWithoutFactory = new TestTableFormatTwo();
+
+        TableFormatConfigurationCompositeFactory resultFactory = IpsUIPlugin.getDefault()
+            .getTableFormatPropertiesControlFactory(tableFormatWithFactory);
+        assertNotNull(resultFactory);
         
+        resultFactory = IpsUIPlugin.getDefault().getTableFormatPropertiesControlFactory(tableFormatWithoutFactory);
+        assertNull(resultFactory);
     }
 
 }

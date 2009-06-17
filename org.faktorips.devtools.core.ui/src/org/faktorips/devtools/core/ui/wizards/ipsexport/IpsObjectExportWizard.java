@@ -34,10 +34,6 @@ public abstract class IpsObjectExportWizard extends Wizard implements IExportWiz
     protected IStructuredSelection selection;
 
     
-    public IpsObjectExportWizard() {
-        super();
-    }
-
     /** 
      * Saves dialog settings, like size and position information.
      */

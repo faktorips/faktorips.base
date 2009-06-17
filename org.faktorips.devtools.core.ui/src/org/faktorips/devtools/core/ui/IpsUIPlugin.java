@@ -64,6 +64,7 @@ import org.faktorips.devtools.core.ui.editors.IIpsObjectEditorSettings;
 import org.faktorips.devtools.core.ui.editors.IpsArchiveEditorInput;
 import org.faktorips.devtools.core.ui.editors.IpsObjectEditorSettings;
 import org.faktorips.devtools.tableconversion.ITableFormat;
+import org.faktorips.util.ArgumentCheck;
 import org.osgi.framework.BundleContext;
 
 /**
@@ -189,32 +190,50 @@ public class IpsUIPlugin extends AbstractUIPlugin {
      * 
      * @param tableFormat ITableFormat to test whether it has custom properties.
      * @return A Factory class which can be used to create the controls for configuring 
-     * the custom properties, or <code>null</code> if the table format has no custom properties or
-     * the class could not be created.
+     * the custom properties, or <code>null</code> if the table format has no custom properties.
+     * 
+     *  @throws CoreException if the factory class could not be created.
      */
-    public TableFormatConfigurationCompositeFactory getTableFormatPropertiesControlFactory(ITableFormat tableFormat) {
-        IConfigurationElement[] elements = registry.getConfigurationElementsFor(
-                "org.faktorips.devtools.core.externalTableFormat"); //$NON-NLS-1$
+    public TableFormatConfigurationCompositeFactory getTableFormatPropertiesControlFactory(ITableFormat tableFormat) throws CoreException {
+        ArgumentCheck.notNull(tableFormat);
         
-        TableFormatConfigurationCompositeFactory compositeFactory = null;
-        for (int i = 0; i < elements.length; i++) {
-            try {
-                ITableFormat format = (ITableFormat)elements[i].createExecutableExtension("class"); //$NON-NLS-1$
-                if (format.getClass().equals(tableFormat.getClass())) {
-                    // Found the given tableFormat in declared extensions
-                    if (elements[i].getAttribute("guiClass") != null) { //$NON-NLS-1$
-                        // the contribution has the optional "guiClass" attribute declared
-                        compositeFactory = (TableFormatConfigurationCompositeFactory)elements[i].createExecutableExtension("guiClass");
-                        compositeFactory.setTableFormat(tableFormat);
+        Map<ITableFormat, TableFormatConfigurationCompositeFactory> tableFormatToPropertiesCompositeMap = null;
+        if (tableFormatToPropertiesCompositeMap == null) {
+            tableFormatToPropertiesCompositeMap = new HashMap<ITableFormat, TableFormatConfigurationCompositeFactory>();
+            ExtensionPoints extensionPoints = new ExtensionPoints(registry, IpsPlugin.PLUGIN_ID);
+            IExtension[] extensions = extensionPoints.getExtension("externalTableFormat");
+            for (int i = 0; i < extensions.length; i++) {
+                IConfigurationElement[] configElements = extensions[i].getConfigurationElements();
+                for (IConfigurationElement configElement : configElements) {
+                    String configElClass = configElement.getAttribute("class");
+                    if (StringUtils.isEmpty(configElClass)) {
+                        throw new CoreException(new IpsStatus(IStatus.ERROR,
+                                "A problem occured while trying to load the extension: "
+                                + extensions[i].getExtensionPointUniqueIdentifier()
+                                + ". The attribute 'class' is not specified."));
+                    }
+                    if (tableFormat.getClass().getName().equals(configElClass)) {
+                        // the current configuration element corresponds to the given table format
+                        String configElGuiClass = configElement.getAttribute("guiClass");
+                        if (! StringUtils.isEmpty(configElGuiClass)) {
+                            TableFormatConfigurationCompositeFactory factory = (TableFormatConfigurationCompositeFactory) ExtensionPoints
+                                    .createExecutableExtension(extensions[i], configElement, "guiClass",
+                                            TableFormatConfigurationCompositeFactory.class);
+
+                            // assign the given table format to the created factory
+                            factory.setTableFormat(tableFormat);
+
+                            if(factory != null) {
+                                tableFormatToPropertiesCompositeMap.put(tableFormat, factory);
+                            }
+                        }
                         break;
                     }
                 }
-            } catch (Exception e) {
-                IpsPlugin.logAndShowErrorDialog(e);
             }
         }
-    
-        return compositeFactory;
+        
+        return tableFormatToPropertiesCompositeMap.get(tableFormat);
     }
     
     /**
@@ -226,7 +245,14 @@ public class IpsUIPlugin extends AbstractUIPlugin {
      * @return true if the given table format has custom properties, false otherwise.
      */
     public boolean hasTableFormatCustomProperties(ITableFormat tableFormat) {
-        return (getTableFormatPropertiesControlFactory(tableFormat) != null);
+        try {
+            TableFormatConfigurationCompositeFactory tableFormatPropertiesControlFactory = 
+                getTableFormatPropertiesControlFactory(tableFormat);
+            return (tableFormatPropertiesControlFactory != null);
+        } catch (CoreException e) {
+            IpsPlugin.log(e);
+            return false;
+        }
     }
     
     /**

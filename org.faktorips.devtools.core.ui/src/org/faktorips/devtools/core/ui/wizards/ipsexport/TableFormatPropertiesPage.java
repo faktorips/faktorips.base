@@ -17,6 +17,7 @@ import org.eclipse.jface.wizard.WizardPage;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Group;
+import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.ui.IpsUIPlugin;
 import org.faktorips.devtools.core.ui.TableFormatConfigurationCompositeFactory;
 import org.faktorips.devtools.core.ui.UIToolkit;
@@ -55,10 +56,16 @@ public class TableFormatPropertiesPage extends WizardPage {
             ((GridData)layoutData).grabExcessVerticalSpace = true;
         }
         
-        TableFormatConfigurationCompositeFactory factory =
-            IpsUIPlugin.getDefault().getTableFormatPropertiesControlFactory(tableFormat);
+        try {
+            TableFormatConfigurationCompositeFactory factory =
+                IpsUIPlugin.getDefault().getTableFormatPropertiesControlFactory(tableFormat);
+            if (factory != null) {
+                factory.createPropertyComposite(configurationGroup, toolkit);
+            }
+        } catch (Exception e) {
+            IpsPlugin.log(e);
+        }
         
-        factory.createPropertyComposite(configurationGroup, toolkit);
         pageControl.layout();
     }
 }
