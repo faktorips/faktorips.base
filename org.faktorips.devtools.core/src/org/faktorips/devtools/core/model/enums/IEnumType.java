@@ -268,9 +268,9 @@ public interface IEnumType extends IEnumValueContainer, IIpsMetaClass {
      */
     public IEnumAttribute findLiteralNameAttribute(IIpsProject ipsProject) throws CoreException;
 
-    public IEnumAttribute findIsUsedAsIdInFaktorIpsUIAttribute(IIpsProject ipsProject) throws CoreException;
+    public IEnumAttribute findIsUsedAsIdInFaktorIpsUiAttribute(IIpsProject ipsProject) throws CoreException;
 
-    public IEnumAttribute findIsUsedAsNameInFaktorIpsUIAttribute(IIpsProject ipsProject) throws CoreException;
+    public IEnumAttribute findIsUsedAsNameInFaktorIpsUiAttribute(IIpsProject ipsProject) throws CoreException;
 
     /**
      * Returns the index of the given enum attribute in the containing list.

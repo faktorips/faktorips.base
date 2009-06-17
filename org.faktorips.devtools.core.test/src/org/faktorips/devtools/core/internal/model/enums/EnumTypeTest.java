@@ -414,7 +414,6 @@ public class EnumTypeTest extends AbstractIpsEnumPluginTest {
         assertEquals(0, modelValue.getEnumAttributeValues().size());
     }
 
-
     public void testEnumAttributeExists() {
         try {
             genderEnumType.enumAttributeExists(null);
@@ -860,7 +859,7 @@ public class EnumTypeTest extends AbstractIpsEnumPluginTest {
         assertEquals(0, subsOfSubSubEnumType.size());
     }
 
-    public void testFindIsUsedAsIdInFaktorIpsUIAttribute() throws Exception {
+    public void testFindIsUsedAsIdInFaktorIpsUiAttribute() throws Exception {
         IEnumType enum1 = newEnumType(ipsProject, "enum1");
         enum1.setAbstract(false);
         enum1.setContainingValues(true);
@@ -883,11 +882,11 @@ public class EnumTypeTest extends AbstractIpsEnumPluginTest {
         attr3.setName("description");
         attr3.setUniqueIdentifier(false);
 
-        IEnumAttribute resultAttr = enum1.findIsUsedAsIdInFaktorIpsUIAttribute(ipsProject);
+        IEnumAttribute resultAttr = enum1.findIsUsedAsIdInFaktorIpsUiAttribute(ipsProject);
         assertEquals(attr1, resultAttr);
     }
 
-    public void testfindIsUsedAsNameInFaktorIpsUIAttribute() throws Exception {
+    public void testfindIsUsedAsNameInFaktorIpsUiAttribute() throws Exception {
         IEnumType enum1 = newEnumType(ipsProject, "enum1");
         enum1.setAbstract(false);
         enum1.setContainingValues(true);
@@ -910,7 +909,7 @@ public class EnumTypeTest extends AbstractIpsEnumPluginTest {
         attr3.setName("description");
         attr3.setUniqueIdentifier(false);
 
-        IEnumAttribute resultAttr = enum1.findIsUsedAsNameInFaktorIpsUIAttribute(ipsProject);
+        IEnumAttribute resultAttr = enum1.findIsUsedAsNameInFaktorIpsUiAttribute(ipsProject);
         assertEquals(attr2, resultAttr);
 
     }

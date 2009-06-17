@@ -111,7 +111,7 @@ public class DatatypeFormatter {
             return null;
         }
         IEnumType enumType = datatypeAdapter.getEnumType();
-        IEnumAttribute enumAttribute = enumType.findIsUsedAsIdInFaktorIpsUIAttribute(enumType.getIpsProject());
+        IEnumAttribute enumAttribute = enumType.findIsUsedAsIdInFaktorIpsUiAttribute(enumType.getIpsProject());
         if(enumAttribute == null){
             return null;
         }
@@ -126,7 +126,7 @@ public class DatatypeFormatter {
             return null;
         }
         IEnumType enumType = datatypeAdapter.getEnumType();
-        IEnumAttribute enumAttribute = enumType.findIsUsedAsNameInFaktorIpsUIAttribute(enumType.getIpsProject());
+        IEnumAttribute enumAttribute = enumType.findIsUsedAsNameInFaktorIpsUiAttribute(enumType.getIpsProject());
         if(enumAttribute == null){
             return null;
         }

@@ -676,7 +676,7 @@ public class EnumType extends EnumValueContainer implements IEnumType {
         return null;
     }
 
-    public IEnumAttribute findIsUsedAsIdInFaktorIpsUIAttribute(IIpsProject ipsProject) throws CoreException {
+    public IEnumAttribute findIsUsedAsIdInFaktorIpsUiAttribute(IIpsProject ipsProject) throws CoreException {
         for (IEnumAttribute currentEnumAttribute : getEnumAttributesIncludeSupertypeCopies()) {
             Boolean isUsedAsIdInFaktorIpsUi = currentEnumAttribute.findIsUsedAsIdInFaktorIpsUi(ipsProject);
             if (isUsedAsIdInFaktorIpsUi == null) {
@@ -689,7 +689,7 @@ public class EnumType extends EnumValueContainer implements IEnumType {
         return null;
     }
 
-    public IEnumAttribute findIsUsedAsNameInFaktorIpsUIAttribute(IIpsProject ipsProject) throws CoreException {
+    public IEnumAttribute findIsUsedAsNameInFaktorIpsUiAttribute(IIpsProject ipsProject) throws CoreException {
         for (IEnumAttribute currentEnumAttribute : getEnumAttributesIncludeSupertypeCopies()) {
             Boolean isUsedAsNameInFaktorIpsUi = currentEnumAttribute.findIsUsedAsNameInFaktorIpsUi(ipsProject);
             if (isUsedAsNameInFaktorIpsUi == null) {
