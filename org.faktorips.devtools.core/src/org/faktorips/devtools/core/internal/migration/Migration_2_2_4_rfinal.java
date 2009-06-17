@@ -3,7 +3,7 @@
  * 
  * Alle Rechte vorbehalten.
  * 
- * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen, 
+ * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen,
  * etc.) duerfen nur unter den Bedingungen der Faktor-Zehn-Community Lizenzvereinbarung - Version
  * 0.1 (vor Gruendung Community) genutzt werden, die Bestandteil der Auslieferung ist und auch unter
  * http://www.faktorzehn.org/f10-org:lizenzen:community eingesehen werden kann.
@@ -11,9 +11,6 @@
  * Mitwirkende: Faktor Zehn AG - initial API and implementation - http://www.faktorzehn.de
  *******************************************************************************/
 
-/**
- * 
- */
 package org.faktorips.devtools.core.internal.migration;
 
 import org.eclipse.core.runtime.CoreException;
@@ -23,11 +20,13 @@ import org.faktorips.devtools.core.model.versionmanager.AbstractIpsProjectMigrat
 import org.faktorips.util.message.MessageList;
 
 /**
- * Empty Migration 
+ * Migration from Faktor-IPS Version 2.2.4.rfinal to 2.3.0.rfinal.
  * 
+ * @author Alexander Weickmann
  */
 public class Migration_2_2_4_rfinal extends AbstractIpsProjectMigrationOperation {
 
+    /** Creates <code>Migration_2_2_4_rfinal</code>. */
     public Migration_2_2_4_rfinal(IIpsProject projectToMigrate, String featureId) {
         super(projectToMigrate, featureId);
     }
@@ -36,7 +35,9 @@ public class Migration_2_2_4_rfinal extends AbstractIpsProjectMigrationOperation
      * {@inheritDoc}
      */
     public String getDescription() {
-        return "Some bugs fixed."; //$NON-NLS-1$
+        return "New ips object types" + " have been added for modeling enumerations. All table structures"
+                + " that represent enum types will be changed to abstract EnumType objects. The referencing"
+                + " table contents will also be replaced with EnumType objects containing the enum values.";
     }
 
     /**
@@ -50,13 +51,14 @@ public class Migration_2_2_4_rfinal extends AbstractIpsProjectMigrationOperation
      * {@inheritDoc}
      */
     public boolean isEmpty() {
-        return true;
+        return false;
     }
 
     /**
      * {@inheritDoc}
      */
     public MessageList migrate(IProgressMonitor monitor) throws CoreException {
+        Migration2_2_to2_3.migrate(getIpsProject(), monitor);
         return new MessageList();
     }
 }
