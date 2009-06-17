@@ -17,6 +17,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.IProgressMonitor;
 import org.faktorips.devtools.core.internal.model.tablestructure.TableStructureType;
 import org.faktorips.devtools.core.model.enums.IEnumAttribute;
 import org.faktorips.devtools.core.model.enums.IEnumAttributeValue;
@@ -30,6 +31,7 @@ import org.faktorips.devtools.core.model.tablecontents.ITableContents;
 import org.faktorips.devtools.core.model.tablecontents.ITableContentsGeneration;
 import org.faktorips.devtools.core.model.tablestructure.IColumn;
 import org.faktorips.devtools.core.model.tablestructure.ITableStructure;
+import org.faktorips.devtools.core.model.tablestructure.IUniqueKey;
 import org.faktorips.util.ArgumentCheck;
 
 /**
@@ -56,13 +58,15 @@ public class Migration2_2_to2_3 {
      * the super enum type.
      * 
      * @param ipsProject The ips project to migrate to version 2.3.
+     * @param monitor The progress monitor to use to show progress to the user or <tt>null</tt> if
+     *            none is available.
      * 
      * @throws CoreException If an error occurs while searching for the <tt>ITableStructure</tt> or
      *             <tt>ITableContents</tt> ips objects or while creating the new <tt>IEnumType</tt>
      *             ips objects.
      * @throws NullPointerException If <tt>ipsProject</tt> is <tt>null</tt>.
      */
-    public static void migrate(IIpsProject ipsProject) throws CoreException {
+    public static void migrate(IIpsProject ipsProject, IProgressMonitor monitor) throws CoreException {
         ArgumentCheck.notNull(ipsProject);
 
         // Find all enum type table structures.
@@ -86,13 +90,25 @@ public class Migration2_2_to2_3 {
             }
         }
 
+        // Start the progress monitor if available (now we know how much work needs to be done).
+        if (monitor != null) {
+            monitor.beginTask("Migration", enumTableStructures.size() + enumTableContents.size());
+        }
+
         // Replace the table structures and table contents.
-        replaceTableStructures(enumTableStructures);
-        replaceTableContents(enumTableContents);
+        replaceTableStructures(enumTableStructures, monitor);
+        replaceTableContents(enumTableContents, ipsProject, monitor);
+
+        // Finish the monitor if available.
+        if (monitor != null) {
+            monitor.done();
+        }
     }
 
     /** Replaces the given enum table structures with new enum types. */
-    private static void replaceTableStructures(List<ITableStructure> enumTableStructures) throws CoreException {
+    private static void replaceTableStructures(List<ITableStructure> enumTableStructures, IProgressMonitor monitor)
+            throws CoreException {
+
         /*
          * Create a new enum type object for each of the found enum type table structures and delete
          * the old table structures.
@@ -104,21 +120,40 @@ public class Migration2_2_to2_3 {
             IEnumType newEnumType = (IEnumType)newFile.getIpsObject();
             newEnumType.setAbstract(true);
             newEnumType.setContainingValues(false);
+            newEnumType.setDescription(currentTableStructure.getDescription());
 
             // Create enum attributes.
-            // 2. key is java identifier.
-            String identifier = currentTableStructure.getUniqueKeys()[1].getKeyItemAt(0).getName();
+            // 1. key is the id, 2. key is the java literal name.
+            IUniqueKey[] uniqueKeys = currentTableStructure.getUniqueKeys();
+            String id = uniqueKeys[0].getKeyItemAt(0).getName();
+            String literalName = uniqueKeys[1].getKeyItemAt(0).getName();
             for (IColumn currentColumn : currentTableStructure.getColumns()) {
                 IEnumAttribute newEnumAttribute = newEnumType.newEnumAttribute();
                 String currentColumnName = currentColumn.getName();
                 newEnumAttribute.setName(currentColumnName);
                 newEnumAttribute.setDatatype(currentColumn.getDatatype());
-                newEnumAttribute.setLiteralName((identifier.equals(currentColumnName)));
+                boolean isLiteralName = literalName.equals(currentColumnName);
+                if (isLiteralName) {
+                    newEnumAttribute.setLiteralName(true);
+                    newEnumAttribute.setUniqueIdentifier(true);
+                    newEnumAttribute.setUsedAsNameInFaktorIpsUi(true);
+                }
+                boolean isId = id.equals(currentColumnName);
+                if (isId) {
+                    newEnumAttribute.setUniqueIdentifier(true);
+                    newEnumAttribute.setUsedAsIdInFaktorIpsUi(true);
+                }
                 newEnumAttribute.setInherited(false);
+                newEnumAttribute.setDescription(currentColumn.getDescription());
             }
 
             // Delete the old table structure.
             currentTableStructure.getIpsSrcFile().getCorrespondingResource().delete(true, null);
+
+            // Update monitor if available.
+            if (monitor != null) {
+                monitor.worked(1);
+            }
         }
     }
 
@@ -126,7 +161,10 @@ public class Migration2_2_to2_3 {
      * Replaces the given table contents referring to enum table structures with new enum types
      * containing the enum values.
      */
-    private static void replaceTableContents(List<ITableContents> enumTableContents) throws CoreException {
+    private static void replaceTableContents(List<ITableContents> enumTableContents,
+            IIpsProject ipsProject,
+            IProgressMonitor monitor) throws CoreException {
+
         /*
          * Create a new enum type object for each of the found table contents and delete the old
          * table contents.
@@ -141,17 +179,9 @@ public class Migration2_2_to2_3 {
             newEnumType.setContainingValues(true);
 
             // Inherit the enum attributes.
-            IEnumType superEnumType = currentTableContents.getIpsProject().findEnumType(
-                    currentTableContents.getTableStructure());
-            for (IEnumAttribute currentEnumAttribute : superEnumType.getEnumAttributes()) {
-                IEnumAttribute newEnumAttribute = newEnumType.newEnumAttribute();
-                newEnumAttribute.setInherited(true);
-                newEnumAttribute.setLiteralName(currentEnumAttribute.isLiteralName());
-                newEnumAttribute.setDatatype(currentEnumAttribute.getDatatype());
-                newEnumAttribute.setName(currentEnumAttribute.getName());
-            }
+            newEnumType.inheritEnumAttributes(newEnumType.findInheritEnumAttributeCandidates(ipsProject));
 
-            // Create enum values.
+            // Create the enum values.
             for (IRow currentRow : ((ITableContentsGeneration)currentTableContents.getFirstGeneration()).getRows()) {
                 IEnumValue newEnumValue = newEnumType.newEnumValue();
                 List<IEnumAttributeValue> enumAttributeValues = newEnumValue.getEnumAttributeValues();
@@ -163,6 +193,11 @@ public class Migration2_2_to2_3 {
 
             // Delete the old table contents.
             currentTableContents.getIpsSrcFile().getCorrespondingResource().delete(true, null);
+
+            // Update monitor if available.
+            if (monitor != null) {
+                monitor.worked(1);
+            }
         }
     }
 

@@ -48,7 +48,7 @@ public class Migration_2_2_1_test extends AbstractIpsProjectMigrationOperation {
      */
     @Override
     public String getTargetVersion() {
-        return "2.3.0.rc1"; //$NON-NLS-1$
+        return "2.3.0.rfinal"; //$NON-NLS-1$
     }
 
     /**
@@ -66,17 +66,7 @@ public class Migration_2_2_1_test extends AbstractIpsProjectMigrationOperation {
     public MessageList migrate(IProgressMonitor monitor) throws CoreException, InvocationTargetException,
             InterruptedException {
 
-        if (monitor != null) {
-            monitor.beginTask("Migration", 1);
-        }
-
-        Migration2_2_to2_3.migrate(getIpsProject());
-
-        if (monitor != null) {
-            monitor.worked(1);
-            monitor.done();
-        }
-
+        Migration2_2_to2_3.migrate(getIpsProject(), monitor);
         return new MessageList();
     }
 

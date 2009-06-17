@@ -23,7 +23,6 @@ import org.eclipse.core.resources.IWorkspaceRunnable;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.osgi.util.NLS;
-import org.faktorips.devtools.core.internal.model.IpsModel;
 import org.faktorips.devtools.core.internal.model.ipsobject.IpsObjectPartCollection;
 import org.faktorips.devtools.core.model.IDependency;
 import org.faktorips.devtools.core.model.IpsObjectDependency;
@@ -236,7 +235,7 @@ public class EnumType extends EnumValueContainer implements IEnumType {
      * {@inheritDoc}
      */
     public IEnumAttribute newEnumAttribute() throws CoreException {
-//        ((IpsModel)getIpsModel()).stopBroadcastingChangesMadeByCurrentThread();
+        // ((IpsModel)getIpsModel()).stopBroadcastingChangesMadeByCurrentThread();
 
         // Create new enum attribute.
         IEnumAttribute newEnumAttribute = (IEnumAttribute)newPart(IEnumAttribute.class);
@@ -246,7 +245,7 @@ public class EnumType extends EnumValueContainer implements IEnumType {
             currentEnumValue.newEnumAttributeValue();
         }
 
-//        ((IpsModel)getIpsModel()).resumeBroadcastingChangesMadeByCurrentThread();
+        // ((IpsModel)getIpsModel()).resumeBroadcastingChangesMadeByCurrentThread();
         objectHasChanged();
 
         return newEnumAttribute;
@@ -319,7 +318,7 @@ public class EnumType extends EnumValueContainer implements IEnumType {
             }
         }
 
-//        ((IpsModel)getIpsModel()).stopBroadcastingChangesMadeByCurrentThread();
+        // ((IpsModel)getIpsModel()).stopBroadcastingChangesMadeByCurrentThread();
 
         int indexToMove = getIndexOfEnumAttribute(enumAttribute);
 
@@ -331,7 +330,7 @@ public class EnumType extends EnumValueContainer implements IEnumType {
             moveEnumAttributeValues(indexToMove, getEnumValues(), up);
         }
 
-//        ((IpsModel)getIpsModel()).resumeBroadcastingChangesMadeByCurrentThread();
+        // ((IpsModel)getIpsModel()).resumeBroadcastingChangesMadeByCurrentThread();
         if (newIndex[0] != indexToMove) {
             objectHasChanged();
         }
