@@ -134,7 +134,7 @@ initDefaultParameter()
   RELEASE_PROPERTY_DIR=$PLUGINBUILDER_PROJECT_DIR/releases
   RELEASE_PROPERTIES=$RELEASE_PROPERTY_DIR/$BUILD_VERSION.properties
   
-  CVS_LOG=$WORKINGDIR/cvs.log
+  CVS_LOG=cvs.log
 }
 
 getFetchTagVersion ()

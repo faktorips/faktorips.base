@@ -119,7 +119,9 @@ checkoutModule()
         return
       fi
       # nothing found using tag, checkout without using tag
-      rm -r $_TARGET # delete is necessary because CVS stores the previous used tag 
+      if [ -d $_TARGET ] ; then
+	    rm -r $_TARGET # delete is necessary because CVS stores the previous used tag
+	  fi 
     fi
     echo "use Branch latest"
     set +e # must be set to continue if cvs fails (e..g branch not exists)
@@ -130,7 +132,7 @@ checkoutModule()
     echo "checkout HEAD module: "$_MODULE", tag: "$_TAG
     if [ ! "$_TAG" = "LATEST" ] ; then
       # first try using tag
-      set +e # must be set to continue if cvs fails (e..g tag not exists)
+      set +e # must be set to continue if cvs fails (e.g. tag not exists)
       cvs -d $CVS_ROOT co -d $_TARGET -r $_TAG $_MODULE >> $CVS_LOG 2>&1
       RC=$?
       set $BASH_PARAM
@@ -138,7 +140,9 @@ checkoutModule()
         return
       fi
       # nothing found using tag, checkout without using tag
-      rm -r $_TARGET # delete is necessary because CVS stores the previous used tag
+      if [ -d $_TARGET ] ; then
+        rm -r $_TARGET # delete is necessary because CVS stores the previous used tag
+      fi
     fi
     echo "use HEAD latest"
     cvs -d $CVS_ROOT co -d $_TARGET $_MODULE >> $CVS_LOG 2>&1
