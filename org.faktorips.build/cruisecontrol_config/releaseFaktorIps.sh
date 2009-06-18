@@ -128,8 +128,8 @@ initDefaultParameter()
   WORKINGDIR=$(cd $WORKINGDIR; pwd)
   PROJECTSROOTDIR=$WORKINGDIR/checkout_release
 
-  PUBLISH_DOWNLOAD_DIR=${PUBLISH_DOWNLOAD_DIR:-'/var/www/localhost/update.faktorzehn.org/faktorips/downloads'}
-  PUBLISH_UPDATESITE_DIR=${PUBLISH_UPDATESITE_DIR:-'/var/www/localhost/update.faktorzehn.org/faktorips'}
+  PUBLISH_DOWNLOAD_DIR=${PUBLISH_DOWNLOAD_DIR:-'/var/www/update.faktorzehn.org/faktorips/downloads'}
+  PUBLISH_UPDATESITE_DIR=${PUBLISH_UPDATESITE_DIR:-'/var/www/update.faktorzehn.org/faktorips'}
   PLUGINBUILDER_PROJECT_DIR=$PROJECTSROOTDIR/$PLUGINBUILDER_PROJECT_NAME
   RELEASE_PROPERTY_DIR=$PLUGINBUILDER_PROJECT_DIR/releases
   RELEASE_PROPERTIES=$RELEASE_PROPERTY_DIR/$BUILD_VERSION.properties
