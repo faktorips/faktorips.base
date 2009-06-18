@@ -537,6 +537,22 @@ createIndexHtml()
   echo "  finished, result: "$LINK_PREFIX"/"$BUILD_CATEGORY_PATH"/index.html"
 }
 
+createAndAddLicensePdf()
+{
+  if [ ! "$SKIPPUBLISH" = "true" -a -f $WORKINGDIR/archives ] ; then
+    $PROJECTSROOTDIR/$CREATE_LIZENZ_SCRIPT $BUILD_VERSION
+    for i in $(cat $WORKINGDIR/archives) ; do
+      if [ ! -f $i ] ; then continue ; fi 
+        echo "add license to: "$i
+        zip -ujD $i $PROJECTSROOTDIR/$LIZENZ_PDF > /dev/null 2>&1
+        if [ ! $? -eq 0 ] ; then
+          echo "error adding lizenz.pdf to archive: "$i
+        exit 1
+      fi
+    done
+  fi
+}
+
 patchAllCvsMap()
 {
   if [ ! -f $PLUGINBUILDER_PROJECT_DIR/maps/all_cvs.map ] ; then
@@ -741,16 +757,6 @@ fi
 # add lizenz to all generated and published archives
 ####################################################
 echo ''
-if [ ! "$SKIPPUBLISH" = "true" -a -f $WORKINGDIR/archives ] ; then
- $PROJECTSROOTDIR/$CREATE_LIZENZ_SCRIPT $BUILD_VERSION
- for i in $(cat $WORKINGDIR/archives) ; do
-   if [ ! -f $i ] ; then continue ; fi 
-   echo "add license to: "$i
-   zip -ujD $i $PROJECTSROOTDIR/$LIZENZ_PDF > /dev/null 2>&1
-   if [ ! $? -eq 0 ] ; then
-     echo "error adding lizenz.pdf to archive: "$i
-     exit 1
-   fi
- done
-fi
+createAndAddLicensePdf
+
 
