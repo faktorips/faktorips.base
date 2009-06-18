@@ -92,7 +92,7 @@ LIZENZ_PDF=$PLUGINBUILDER_PROJECT_NAME/lizenz/result/lizenzvertrag_fips.pdf
 ###########
 # functions
 ###########
-. $(pwd)/releaseFaktorIpsCvsModule
+. $(dirname $0)/releaseFaktorIpsCvsModule
 
 initEnvironment()
 {
