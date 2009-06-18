@@ -6,6 +6,7 @@
 # TODO Tagging Problem wenn nicht cruise! permission CVSROOT/val-tags
 #      cvs [rtag aborted]: cannot write /usr/local/cvsroot/CVSROOT/val-tags:
 # TODO site.xml auf dem server neu auschecken, problem mit permission
+# TODO projectsrootdir und workingdir relativ zum user anlegen
 ##############################################################################################################################
 # Faktor IPS release build script
 ##############################################################################################################################
@@ -120,7 +121,8 @@ initDefaultParameter()
   # etc
   DEFAULT_CVS_ROOT='/usr/local/cvsroot'
   DEFAULT_ANT_HOME=${DEFAULT_ANT_HOME:-'/opt/cc/apache-ant-1.6.5'}
-  DEFAULT_JAVA_HOME=${DEFAULT_JAVA_HOME:-'/usr/lib/jvm/ia32-java-1.5.0-sun/jre'}
+  # jre: /usr/lib/jvm/ia32-java-1.5.0-sun/jre
+  DEFAULT_JAVA_HOME=${DEFAULT_JAVA_HOME:-'/usr/lib/jvm/java-1.5.0-sun'}
   CVS_ROOT=${CVS_ROOT:-$DEFAULT_CVS_ROOT}
 
   WORKINGDIR=${WORKINGDIR:-'/opt/cc/work'}
