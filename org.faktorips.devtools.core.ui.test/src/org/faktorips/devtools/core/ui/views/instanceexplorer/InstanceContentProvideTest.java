@@ -130,18 +130,32 @@ public class InstanceContentProvideTest extends AbstractIpsPluginTest {
 		String prodCmptRef1QName = "otherpack.MyProductCmptRef1";
 		
 		ProductCmptType prodCmptType = newProductCmptType(ipsProject, prodCmptTypeQName);
-		ProductCmpt prodCmpt1 = newProductCmpt(prodCmptType, prodCmpt1QName);
-		ProductCmpt prodCmpt2 = newProductCmpt(prodCmptType, prodCmpt2QName);
-		ProductCmpt prodCmpt3 = newProductCmpt(ipsProject, prodCmpt3QName);
+		ProductCmpt[] prodCmpt = new ProductCmpt[3];
+		prodCmpt[0] = newProductCmpt(prodCmptType, prodCmpt1QName);
+		prodCmpt[1] = newProductCmpt(prodCmptType, prodCmpt2QName);
+		prodCmpt[2] = newProductCmpt(ipsProject, prodCmpt3QName);
 		
 		Object[] result = contentProvider.getElements(prodCmptType);
 		assertEquals(result.length, 2);
-		List<Object> resultList = Arrays.asList(result);
-		assertTrue(resultList.contains(prodCmpt1.getIpsSrcFile()));
-		assertTrue(resultList.contains(prodCmpt2.getIpsSrcFile()));
-		assertFalse(resultList.contains(prodCmpt3.getIpsSrcFile()));
+		boolean[] included = new boolean[3];
+		for (Object obj : result) {
+			if (obj instanceof InstanceViewerItem) {
+				InstanceViewerItem item = (InstanceViewerItem) obj;
+				for (int i = 0; i < 3; i++) {
+					if (item.getIpsSrcFile().equals(prodCmpt[i].getIpsSrcFile())) {
+						included[i] = true;
+						continue;
+					}
+				}
+			} else {
+				fail("Not a InstanceViewerItem: " + obj.toString());
+			}
+		}
+		assertTrue(included[0]);
+		assertTrue(included[1]);
+		assertFalse(included[2]);
 		
-		result = contentProvider.getElements(prodCmpt1);
+		result = contentProvider.getElements(prodCmpt[0]);
 		assertEquals(result.length, 0);
 
 		ProductCmpt prodCmptRef1 = newProductCmpt(referencingProject, prodCmptRef1QName);
@@ -149,11 +163,28 @@ public class InstanceContentProvideTest extends AbstractIpsPluginTest {
 
 		result = contentProvider.getElements(prodCmptType);
 		assertEquals(result.length, 3);
-		resultList = Arrays.asList(result);
-		assertTrue(resultList.contains(prodCmpt1.getIpsSrcFile()));
-		assertTrue(resultList.contains(prodCmpt2.getIpsSrcFile()));
-		assertTrue(resultList.contains(prodCmptRef1.getIpsSrcFile()));
-		assertFalse(resultList.contains(prodCmpt3.getIpsSrcFile()));
+
+		included = new boolean[4];
+		for (Object obj : result) {
+			if (obj instanceof InstanceViewerItem) {
+				InstanceViewerItem item = (InstanceViewerItem) obj;
+				for (int i = 0; i < 3; i++) {
+					if (item.getIpsSrcFile().equals(prodCmpt[i].getIpsSrcFile())) {
+						included[i] = true;
+						continue;
+					}
+				}
+				if (item.getIpsSrcFile().equals(prodCmptRef1.getIpsSrcFile())) {
+					included[3] = true;
+				}
+			} else {
+				fail("Not a InstanceViewerItem: " + obj.toString());
+			}
+		}
+		assertTrue(included[0]);
+		assertTrue(included[1]);
+		assertFalse(included[2]);
+		assertTrue(included[3]);
 		
 		ProductCmptType prodCmptTypeIndep = newProductCmptType(independentProject, prodCmptTypeIndepQName);
 		
@@ -195,30 +226,62 @@ public class InstanceContentProvideTest extends AbstractIpsPluginTest {
 		String tabContentProj2QName = "otherpack.MyTableContentProj2";
 		
 		TableStructure tableStructure = newTableStructure(ipsProject, tableStructureQName);
-		TableContents tabContent1 = newTableContents(tableStructure, tabContent1QName);
-		TableContents tabContent2 = newTableContents(tableStructure, tabContent2QName);
-		TableContents tabContent3 = newTableContents(ipsProject, tabContent3QName);
+		TableContents[] tabContent = new TableContents[3];
+		tabContent[0] = newTableContents(tableStructure, tabContent1QName);
+		tabContent[1] = newTableContents(tableStructure, tabContent2QName);
+		tabContent[2] = newTableContents(ipsProject, tabContent3QName);
 		
 		Object[] result = contentProvider.getElements(tableStructure);
 		assertEquals(2, result.length);
-		List<Object> resultList = Arrays.asList(result);
-		assertTrue(resultList.contains(tabContent1.getIpsSrcFile()));
-		assertTrue(resultList.contains(tabContent2.getIpsSrcFile()));
-		assertFalse(resultList.contains(tabContent3.getIpsSrcFile()));
 		
-		result = contentProvider.getElements(tabContent1);
+		boolean[] included = new boolean[3];
+		for (Object obj : result) {
+			if (obj instanceof InstanceViewerItem) {
+				InstanceViewerItem item = (InstanceViewerItem) obj;
+				for (int i = 0; i < 3; i++) {
+					if (item.getIpsSrcFile().equals(tabContent[i].getIpsSrcFile())) {
+						included[i] = true;
+						continue;
+					}
+				}
+			} else {
+				fail("Not a InstanceViewerItem: " + obj.toString());
+			}
+		}
+		assertTrue(included[0]);
+		assertTrue(included[1]);
+		assertFalse(included[2]);
+
+		result = contentProvider.getElements(tabContent[0]);
 		assertEquals(0, result.length);
 
 		TableContents tabContentProj2 = newTableContents(referencingProject, tabContentProj2QName);
 		tabContentProj2.setTableStructure(tableStructureQName);
 
 		result = contentProvider.getElements(tableStructure);
-		resultList = Arrays.asList(result);
 		assertEquals(3, result.length);
-		assertTrue(resultList.contains(tabContent1.getIpsSrcFile()));
-		assertTrue(resultList.contains(tabContent2.getIpsSrcFile()));
-		assertTrue(resultList.contains(tabContentProj2.getIpsSrcFile()));
-		assertFalse(resultList.contains(tabContent3.getIpsSrcFile()));
+		
+		included = new boolean[4];
+		for (Object obj : result) {
+			if (obj instanceof InstanceViewerItem) {
+				InstanceViewerItem item = (InstanceViewerItem) obj;
+				for (int i = 0; i < 3; i++) {
+					if (item.getIpsSrcFile().equals(tabContent[i].getIpsSrcFile())) {
+						included[i] = true;
+						continue;
+					}
+				}
+				if (item.getIpsSrcFile().equals(tabContentProj2.getIpsSrcFile())) {
+					included[3] = true;
+				}
+			} else {
+				fail("Not a InstanceViewerItem: " + obj.toString());
+			}
+		}
+		assertTrue(included[0]);
+		assertTrue(included[1]);
+		assertFalse(included[2]);
+		assertTrue(included[3]);
 		
 		TableStructure tableStructureProj2 = newTableStructure(independentProject, tableStructureProj2QName);
 		
@@ -239,31 +302,63 @@ public class InstanceContentProvideTest extends AbstractIpsPluginTest {
 		String testCaseProj2QName = "otherpack.MyTestCaseProj2";
 		
 		TestCaseType testCaseType = newTestCaseType(ipsProject, testCaseTypeQName);
-		TestCase testCase1 = newTestCase(testCaseType, testCase1QName);
-		TestCase testCase2 = newTestCase(testCaseType, testCase2QName);
-		TestCase testCase3 = newTestCase(ipsProject, testCase3QName);
+		TestCase[] testCase = new TestCase[3];
+		testCase[0] = newTestCase(testCaseType, testCase1QName);
+		testCase[1] = newTestCase(testCaseType, testCase2QName);
+		testCase[2] = newTestCase(ipsProject, testCase3QName);
 		
 		Object[] result = contentProvider.getElements(testCaseType);
 		assertEquals(2, result.length);
-		List<Object> resultList = Arrays.asList(result);
-		assertTrue(resultList.contains(testCase1.getIpsSrcFile()));
-		assertTrue(resultList.contains(testCase2.getIpsSrcFile()));
-		assertFalse(resultList.contains(testCase3.getIpsSrcFile()));
 		
-		result = contentProvider.getElements(testCase1);
+		boolean[] included = new boolean[3];
+		for (Object obj : result) {
+			if (obj instanceof InstanceViewerItem) {
+				InstanceViewerItem item = (InstanceViewerItem) obj;
+				for (int i = 0; i < 3; i++) {
+					if (item.getIpsSrcFile().equals(testCase[i].getIpsSrcFile())) {
+						included[i] = true;
+						continue;
+					}
+				}
+			} else {
+				fail("Not a InstanceViewerItem: " + obj.toString());
+			}
+		}
+		assertTrue(included[0]);
+		assertTrue(included[1]);
+		assertFalse(included[2]);
+		
+		result = contentProvider.getElements(testCase[0]);
 		assertEquals(0, result.length);
 
 		TestCase testCaseProj2 = newTestCase(referencingProject, testCaseProj2QName);
 		testCaseProj2.setTestCaseType(testCaseTypeQName);
 
 		result = contentProvider.getElements(testCaseType);
-		resultList = Arrays.asList(result);
 		assertEquals(3, result.length);
-		assertTrue(resultList.contains(testCase1.getIpsSrcFile()));
-		assertTrue(resultList.contains(testCase2.getIpsSrcFile()));
-		assertTrue(resultList.contains(testCaseProj2.getIpsSrcFile()));
-		assertFalse(resultList.contains(testCase3.getIpsSrcFile()));
 		
+		included = new boolean[4];
+		for (Object obj : result) {
+			if (obj instanceof InstanceViewerItem) {
+				InstanceViewerItem item = (InstanceViewerItem) obj;
+				for (int i = 0; i < 3; i++) {
+					if (item.getIpsSrcFile().equals(testCase[i].getIpsSrcFile())) {
+						included[i] = true;
+						continue;
+					}
+				}
+				if (item.getIpsSrcFile().equals(testCaseProj2.getIpsSrcFile())) {
+					included[3] = true;
+				}
+			} else {
+				fail("Not a InstanceViewerItem: " + obj.toString());
+			}
+		}
+		assertTrue(included[0]);
+		assertTrue(included[1]);
+		assertFalse(included[2]);
+		assertTrue(included[3]);
+
 		TestCaseType testCaseTypeProj2 = newTestCaseType(independentProject, testCaseTypeProj2QName);
 		
 		result = contentProvider.getElements(testCaseTypeProj2);
@@ -283,30 +378,61 @@ public class InstanceContentProvideTest extends AbstractIpsPluginTest {
 		String enumProj2QName = "otherpack.MyEnumProj2";
 		
 		EnumType enumType = newEnumType(ipsProject, enumTypeQName);
-		EnumContent enum1 = newEnumContent(enumType, enum1QName);
-		EnumContent enum2 = newEnumContent(enumType, enum2QName);
-		EnumContent enum3 = newEnumContent(ipsProject, enum3QName);
+		EnumContent[] enumc = new EnumContent[3];
+		enumc[0] = newEnumContent(enumType, enum1QName);
+		enumc[1] = newEnumContent(enumType, enum2QName);
+		enumc[2] = newEnumContent(ipsProject, enum3QName);
 		
 		Object[] result = contentProvider.getElements(enumType);
-		List<Object> resultList = Arrays.asList(result);
-		assertEquals(2, result.length);
-		assertTrue(resultList.contains(enum1.getIpsSrcFile()));
-		assertTrue(resultList.contains(enum2.getIpsSrcFile()));
-		assertFalse(resultList.contains(enum3.getIpsSrcFile()));
+		assertEquals(2, result.length);		
+		boolean[] included = new boolean[3];
+		for (Object obj : result) {
+			if (obj instanceof InstanceViewerItem) {
+				InstanceViewerItem item = (InstanceViewerItem) obj;
+				for (int i = 0; i < 3; i++) {
+					if (item.getIpsSrcFile().equals(enumc[i].getIpsSrcFile())) {
+						included[i] = true;
+						continue;
+					}
+				}
+			} else {
+				fail("Not a InstanceViewerItem: " + obj.toString());
+			}
+		}
+		assertTrue(included[0]);
+		assertTrue(included[1]);
+		assertFalse(included[2]);
 		
-		result = contentProvider.getElements(enum1);
+		result = contentProvider.getElements(enumc[0]);
 		assertEquals(0, result.length);
 
 		EnumContent enumProj2 = newEnumContent(referencingProject, enumProj2QName);
 		enumProj2.setEnumType(enumTypeQName);
 
 		result = contentProvider.getElements(enumType);
-		resultList = Arrays.asList(result);
 		assertEquals(3, result.length);
-		assertTrue(resultList.contains(enum1.getIpsSrcFile()));
-		assertTrue(resultList.contains(enum2.getIpsSrcFile()));
-		assertTrue(resultList.contains(enumProj2.getIpsSrcFile()));
-		assertFalse(resultList.contains(enum3.getIpsSrcFile()));
+		
+		included = new boolean[4];
+		for (Object obj : result) {
+			if (obj instanceof InstanceViewerItem) {
+				InstanceViewerItem item = (InstanceViewerItem) obj;
+				for (int i = 0; i < 3; i++) {
+					if (item.getIpsSrcFile().equals(enumc[i].getIpsSrcFile())) {
+						included[i] = true;
+						continue;
+					}
+				}
+				if (item.getIpsSrcFile().equals(enumProj2.getIpsSrcFile())) {
+					included[3] = true;
+				}
+			} else {
+				fail("Not a InstanceViewerItem: " + obj.toString());
+			}
+		}
+		assertTrue(included[0]);
+		assertTrue(included[1]);
+		assertFalse(included[2]);
+		assertTrue(included[3]);
 		
 		EnumType enumTypeProj2 = newEnumType(independentProject, enumTypeProj2QName);
 		

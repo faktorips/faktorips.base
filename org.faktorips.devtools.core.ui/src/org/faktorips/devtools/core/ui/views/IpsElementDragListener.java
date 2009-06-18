@@ -24,6 +24,7 @@ import org.eclipse.swt.dnd.DragSourceEvent;
 import org.eclipse.swt.dnd.DragSourceListener;
 import org.faktorips.devtools.core.model.IIpsElement;
 import org.faktorips.devtools.core.model.productcmpt.treestructure.IProductCmptStructureReference;
+import org.faktorips.devtools.core.ui.IIpsSrcFileWrapper;
 
 /**
  * Standard drag listener for ips elements in a structured viewer
@@ -97,6 +98,9 @@ public class IpsElementDragListener implements DragSourceListener {
 			if (reference.getWrappedIpsObject() != null) {
 				list.add(reference.getWrappedIpsObject().getEnclosingResource().getLocation().toOSString());
 			}
+		} else if (selected instanceof IIpsSrcFileWrapper) {
+			IIpsSrcFileWrapper ipsSrcFileWrapper = (IIpsSrcFileWrapper) selected;
+			list.add(ipsSrcFileWrapper.getIpsSrcFile().getEnclosingResource().getLocation().toOSString());
 		}
     }
 }

@@ -46,6 +46,9 @@ public class InstanceContentProvider implements IStructuredContentProvider {
 		this.subTypeSearch = subTypeSearch;
 	}
     
+    /**
+     * {@inheritDoc}
+     */
 	public Object[] getElements(Object inputElement) {
 		try {
 			if (inputElement instanceof IIpsMetaClass) {
@@ -55,9 +58,9 @@ public class InstanceContentProvider implements IStructuredContentProvider {
 				int i = 0;
 				for (IIpsSrcFile srcFile : metaObjectsSrcFiles) {
 					try {
-						items[i] = new InstanceViewerItem(srcFile.getParent(), srcFile.getName());
+						items[i] = new InstanceViewerItem(srcFile);
 						if (i > 0) {
-							if (items[i-1].getName().equals(items[i].getName())) {
+							if (items[i-1].getIpsSrcFile().getName().equals(items[i].getIpsSrcFile().getName())) {
 								items[i-1].setDuplicateName(true);
 								items[i].setDuplicateName(true);
 							}

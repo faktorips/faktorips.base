@@ -88,6 +88,9 @@ public class DefaultLabelProvider extends LabelProvider {
      */
     @Override
     public Image getImage(Object element) {
+    	if (element instanceof IIpsSrcFileWrapper) {
+    		element = ((IIpsSrcFileWrapper)element).getIpsSrcFile();
+    	}
         try {
             if (element instanceof IIpsSrcFile && ispSourceFile2IpsObjectMapping) {
                 return getMappedImageForIpsSrcFile((IIpsSrcFile)element);
@@ -117,6 +120,9 @@ public class DefaultLabelProvider extends LabelProvider {
     public String getText(Object element) {
         if (element == null) {
             return "null"; //$NON-NLS-1$
+        }
+        if (element instanceof IIpsSrcFileWrapper) {
+        	element = ((IIpsSrcFileWrapper)element).getIpsSrcFile();
         }
 
         if (element instanceof IIpsSrcFile && ispSourceFile2IpsObjectMapping) {

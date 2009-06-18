@@ -12,8 +12,8 @@
  *******************************************************************************/
 package org.faktorips.devtools.core.ui.views.instanceexplorer;
 
-import org.faktorips.devtools.core.internal.model.ipsobject.IpsSrcFile;
-import org.faktorips.devtools.core.model.IIpsElement;
+import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
+import org.faktorips.devtools.core.ui.IIpsSrcFileWrapper;
 
 /**
  * 
@@ -22,14 +22,15 @@ import org.faktorips.devtools.core.model.IIpsElement;
  * @author dirmeier
  *
  */
-public class InstanceViewerItem extends IpsSrcFile {
+public class InstanceViewerItem implements IIpsSrcFileWrapper {
+
+	private IIpsSrcFile ipsSrcFile;
 
 	/**
-	 * @param parent
-	 * @param name
+	 * @param ipsSrcFile The IpsSrcFile represented by this viewer item
 	 */
-	public InstanceViewerItem(IIpsElement parent, String name) {
-		super(parent, name);
+	public InstanceViewerItem(IIpsSrcFile ipsSrcFile) {
+		setIpsSrcFile(ipsSrcFile);
 	}
 
 	private String definingMetaClass;
@@ -66,6 +67,26 @@ public class InstanceViewerItem extends IpsSrcFile {
 	 */
 	public void setDuplicateName(boolean duplicateName) {
 		this.duplicateName = duplicateName;
+	}
+
+	/* (non-Javadoc)
+	 * @see org.faktorips.devtools.core.ui.views.IIpsSrcFileWrapper#getIpsSrcFile()
+	 */
+	/**
+	 * {@inheritDoc}
+	 */
+	public IIpsSrcFile getIpsSrcFile() {
+		return ipsSrcFile;
+	}
+
+	/* (non-Javadoc)
+	 * @see org.faktorips.devtools.core.ui.views.IIpsSrcFileWrapper#setIpsSrcFile(org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile)
+	 */
+	/**
+	 * {@inheritDoc}
+	 */
+	public void setIpsSrcFile(IIpsSrcFile ipsSrcFile) {
+		this.ipsSrcFile = ipsSrcFile;
 	}
 
 }
