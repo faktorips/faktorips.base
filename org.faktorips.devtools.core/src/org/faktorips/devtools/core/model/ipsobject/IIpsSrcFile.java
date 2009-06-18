@@ -41,7 +41,6 @@ public interface IIpsSrcFile extends IIpsElement {
     
     /**
      * Returns true if the file contains unsaved changes to it's contents. 
-     * @throws CoreException
      */
     public boolean isDirty();
     
@@ -127,7 +126,7 @@ public interface IIpsSrcFile extends IIpsElement {
      * Returns the name of the ips object stored in the file.
      */
     //TODO Refactor: getIpsObjecName -> getIpsObjectName
-    public String getIpsObjecName();
+    public String getIpsObjectName();
     
     /**
      * Returns whether this file is mutable or not. An ips source file is immutable in the following cases:

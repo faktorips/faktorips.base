@@ -93,7 +93,7 @@ public class ProductCmptGenImplClassBuilder extends BaseProductCmptTypeBuilder {
      */
     public String getUnqualifiedClassName(IIpsSrcFile ipsSrcFile) throws CoreException {
         String generationAbb = getAbbreviationForGenerationConcept(ipsSrcFile);
-        return getJavaNamingConvention().getImplementationClassName(ipsSrcFile.getIpsObjecName() + generationAbb);
+        return getJavaNamingConvention().getImplementationClassName(ipsSrcFile.getIpsObjectName() + generationAbb);
     }
 
     /**

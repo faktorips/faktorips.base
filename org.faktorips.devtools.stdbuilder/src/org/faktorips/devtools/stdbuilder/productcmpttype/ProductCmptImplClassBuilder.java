@@ -62,7 +62,7 @@ public class ProductCmptImplClassBuilder extends BaseProductCmptTypeBuilder {
      * {@inheritDoc}
      */
     public String getUnqualifiedClassName(IIpsSrcFile ipsSrcFile) throws CoreException {
-        return getJavaNamingConvention().getImplementationClassName(ipsSrcFile.getIpsObjecName());
+        return getJavaNamingConvention().getImplementationClassName(ipsSrcFile.getIpsObjectName());
     }
 
     /**

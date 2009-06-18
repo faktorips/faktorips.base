@@ -17,8 +17,8 @@ import org.faktorips.devtools.core.ui.actions.IpsAction;
 import org.faktorips.devtools.core.ui.views.IpsElementDragListener;
 
 /**
- * This interface is used to wrap a <code>IpsSrcFile</code> in another object. It provides methods
- * for getting and setting the internal <code>IpsSrcFile</code>. You can use such a wrapper object
+ * This abstract class is used to wrap a <code>IpsSrcFile</code> in another object. It provides methods
+ * for getting the internal <code>IpsSrcFile</code>. You can use such a wrapper object
  * to put some additional information for viewing an source file object in an TreeViewer or TableViewer.
  * The components {@link IpsElementDragListener} and {@link IpsAction} are able to handle this instances
  * of this wrapper as <code>IpsSrcFile</code>-Objects by calling the getIpsSrcFile method.
@@ -26,18 +26,20 @@ import org.faktorips.devtools.core.ui.views.IpsElementDragListener;
  * @author dirmeier
  *
  */
-public interface IIpsSrcFileWrapper {
+public abstract class IpsSrcFileProvider {
 
+	private IIpsSrcFile ipsSrcFile;
+	
+	public IpsSrcFileProvider(IIpsSrcFile ipsSrcFile) {
+		this.ipsSrcFile = ipsSrcFile;
+	}
+	
 	/**
 	 * To get the internal <code>IpsSrcFile</code> of this wrapper
 	 * @return the internal <code>IpsSrcFile</code>
 	 */
-	public IIpsSrcFile getIpsSrcFile();
-	
-	/**
-	 * To set the internal <code>IpsSrcFile</code>
-	 * @param ipsSrcFile
-	 */
-	public void setIpsSrcFile(IIpsSrcFile ipsSrcFile);
+	public IIpsSrcFile getIpsSrcFile() {
+		return ipsSrcFile;
+	}
 	
 }

@@ -90,7 +90,7 @@ public abstract class AbstractIpsSrcFile extends IpsElement implements IIpsSrcFi
     /**
      * {@inheritDoc}
      */
-    public String getIpsObjecName() {
+    public String getIpsObjectName() {
         String name = getName();
         int index = name.lastIndexOf('.');
         return name.substring(0, index); // index==-1 can never happen for ipssrcfiles, they have a file extension!

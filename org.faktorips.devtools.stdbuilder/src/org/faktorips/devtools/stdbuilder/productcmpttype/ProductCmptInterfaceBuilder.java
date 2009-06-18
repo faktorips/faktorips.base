@@ -57,7 +57,7 @@ public class ProductCmptInterfaceBuilder extends BaseProductCmptTypeBuilder {
     }
 
     public String getConceptName(IIpsSrcFile ipsSrcFile) throws CoreException {
-        return ipsSrcFile.getIpsObjecName();
+        return ipsSrcFile.getIpsObjectName();
     }
 
     /**

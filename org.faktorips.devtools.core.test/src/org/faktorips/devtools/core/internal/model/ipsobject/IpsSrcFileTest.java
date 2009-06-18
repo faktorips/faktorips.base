@@ -75,7 +75,7 @@ public class IpsSrcFileTest extends AbstractIpsPluginTest implements IModificati
     }
     
     public void testGetIpsObjectName() {
-        assertEquals("ParsableFile", parsableFile.getIpsObjecName());
+        assertEquals("ParsableFile", parsableFile.getIpsObjectName());
     }
     
     public void testSave() throws IOException, CoreException {
