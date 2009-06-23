@@ -18,6 +18,7 @@ import java.util.List;
 
 import org.apache.commons.lang.StringUtils;
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.jdt.core.JavaConventions;
 import org.eclipse.osgi.util.NLS;
 import org.eclipse.swt.graphics.Image;
 import org.faktorips.datatype.Datatype;
@@ -160,6 +161,10 @@ public class ColumnRange extends AtomicIpsObjectPart implements IColumnRange {
         if (StringUtils.isEmpty(parameterName)) {
         	String text = Messages.ColumnRange_msgParameterEmpty;
         	list.add(new Message("", text, Message.ERROR, this, PROPERTY_PARAMETER_NAME)); //$NON-NLS-1$
+        } else if (! JavaConventions.validateIdentifier(parameterName, "1.5", "1.5").isOK()) { //$NON-NLS-1$ //$NON-NLS-2$
+            // FS #1415
+            String text = Messages.ColumnRange_msgNameInvalidJavaIdentifier;
+            list.add(new Message("", text, Message.ERROR, this, PROPERTY_PARAMETER_NAME)); //$NON-NLS-1$
         }
     }
 
