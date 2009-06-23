@@ -162,6 +162,13 @@ public class ColumnRangeTest extends AbstractIpsPluginTest {
 				fail();
 			}
 			
+            // the parameter name must be a valid Java identifier, see FS #1415 
+			range.setParameterName("#invalidJavaIdentifier");
+            list = range.validate(ipsSrcFile.getIpsProject()).getMessagesFor(range, IColumnRange.PROPERTY_PARAMETER_NAME);
+            if (list.isEmpty() || !list.containsErrorMsg()) {
+                fail();
+            }
+			
 			// an assigned parameter name must not signal an error message for the parameter name property
 			range.setParameterName("test");
 			list = range.validate(ipsSrcFile.getIpsProject()).getMessagesFor(range, IColumnRange.PROPERTY_PARAMETER_NAME);
