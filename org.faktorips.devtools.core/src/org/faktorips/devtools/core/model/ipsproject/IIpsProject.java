@@ -657,25 +657,6 @@ public interface IIpsProject extends IIpsElement, IProjectNature {
     public IPolicyCmptType[] findReferencingPolicyCmptTypes(IPolicyCmptType pcType) throws CoreException;
 
     /**
-     * Returns the datatypes representing values. If this project depends on other ips projects the
-     * datatypes from the referenced projects are also returned, but each datatype is returned only
-     * once.
-     * 
-     * @param includeVoid true if <code>Datatype.VOID</code> should be included.
-     */
-    public ValueDatatype[] getValueDatatypes(boolean includeVoid);
-
-    /**
-     * Returns the datatypes representing values. If this project depends on other ips projects the
-     * datatypes from the referenced projects are also returned, but each datatype is returned only
-     * once.
-     * 
-     * @param includeVoid <code>true</code> if <code>Datatype.VOID</code> should be included.
-     * @param includePrimitives <code>true</code> if primitive datatypes should be returned.
-     */
-    public ValueDatatype[] getValueDatatypes(boolean includeVoid, boolean includePrimitives);
-
-    /**
      * Returns all datatypes accessible on the project's path.
      * 
      * @param valuetypesOnly true if only value datatypes should be returned.

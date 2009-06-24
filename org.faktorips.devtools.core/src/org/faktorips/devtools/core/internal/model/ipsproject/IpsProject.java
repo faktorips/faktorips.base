@@ -60,7 +60,6 @@ import org.faktorips.devtools.core.builder.IpsBuilder;
 import org.faktorips.devtools.core.internal.model.DynamicValueDatatype;
 import org.faktorips.devtools.core.internal.model.IpsElement;
 import org.faktorips.devtools.core.internal.model.IpsModel;
-import org.faktorips.devtools.core.internal.model.TableContentsEnumDatatypeAdapter;
 import org.faktorips.devtools.core.internal.model.enums.EnumTypeDatatypeAdapter;
 import org.faktorips.devtools.core.internal.model.pctype.PolicyCmptType;
 import org.faktorips.devtools.core.model.IIpsElement;
@@ -1072,29 +1071,6 @@ public class IpsProject extends IpsElement implements IIpsProject {
     /**
      * {@inheritDoc}
      */
-    public ValueDatatype[] getValueDatatypes(boolean includeVoid) {
-        return getValueDatatypes(includeVoid, true);
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    public ValueDatatype[] getValueDatatypes(boolean includeVoid, boolean includePrimitives) {
-        Set<Datatype> result = new LinkedHashSet<Datatype>();
-        try {
-            getDatatypesDefinedInProjectPropertiesInclSubprojects(true, includeVoid, includePrimitives, result);
-            findEnumDatatypesBasedOnTables(result);
-            // TODO Core Exception werfen!
-        } catch (CoreException e) {
-            throw new RuntimeException(e);
-        }
-
-        return (ValueDatatype[])result.toArray(new ValueDatatype[result.size()]);
-    }
-
-    /**
-     * {@inheritDoc}
-     */
     public Datatype[] findDatatypes(boolean valuetypesOnly, boolean includeVoid) throws CoreException {
         return findDatatypes(valuetypesOnly, includeVoid, true);
     }
@@ -1130,9 +1106,6 @@ public class IpsProject extends IpsElement implements IIpsProject {
 
         Set<Datatype> result = new LinkedHashSet<Datatype>();
         getDatatypesDefinedInProjectPropertiesInclSubprojects(valuetypesOnly, includeVoid, includePrimitives, result);
-
-        // TODO pk remove when completing change to enum types
-        findEnumDatatypesBasedOnTables(result);
 
         List<IEnumType> enumTypeList = findEnumTypes();
         for (IEnumType enumType : enumTypeList) {
@@ -1192,24 +1165,6 @@ public class IpsProject extends IpsElement implements IIpsProject {
                 visitedProjects.add(projects[i]);
                 getDatatypesDefinedInProjectPropertiesInclSubprojects(((IpsProject)projects[i]), valuetypesOnly,
                         includePrimitives, visitedProjects, result);
-            }
-        }
-    }
-
-    // TODO pk remove when completing change to enum types
-    private void findEnumDatatypesBasedOnTables(Set<Datatype> result) throws CoreException {
-        IIpsSrcFile[] structureSrcFiles = findIpsSrcFiles(IpsObjectType.TABLE_STRUCTURE);
-        for (int i = 0; i < structureSrcFiles.length; i++) {
-            if (!structureSrcFiles[i].exists()) {
-                continue;
-            }
-            ITableStructure structure = (ITableStructure)structureSrcFiles[i].getIpsObject();
-            if (structure.isModelEnumType()) {
-                ArrayList<ITableContents> enumTableContents = new ArrayList<ITableContents>(structureSrcFiles.length);
-                findTableContents(structure, enumTableContents);
-                for (ITableContents tableContents : enumTableContents) {
-                    result.add(new TableContentsEnumDatatypeAdapter(tableContents, this));
-                }
             }
         }
     }
@@ -1329,14 +1284,6 @@ public class IpsProject extends IpsElement implements IIpsProject {
         if (datatype != null) {
             return datatype;
         }
-        // TODO pk remove when completing change to enum types
-        ITableContents contents = (ITableContents)ipsProject.findIpsObject(IpsObjectType.TABLE_CONTENTS, qualifiedName);
-        if (contents != null) {
-            ITableStructure structure = contents.findTableStructure(ipsProject);
-            if (structure != null && structure.isModelEnumType()) {
-                return new TableContentsEnumDatatypeAdapter(contents, ipsProject);
-            }
-        }
         datatype = getEnumTypeDatatypeAdapter(qualifiedName, ipsProject);
         if (datatype != null) {
             return datatype;
@@ -1386,15 +1333,6 @@ public class IpsProject extends IpsElement implements IIpsProject {
         if (datatype != null) {
             return datatype;
         }
-        // TODO pk remove when completing change to enum types
-        ITableContents contents = (ITableContents)ipsProject.findIpsObject(IpsObjectType.TABLE_CONTENTS, qualifiedName);
-        if (contents != null) {
-            ITableStructure structure = contents.findTableStructure(ipsProject);
-            if (structure != null && structure.isModelEnumType()) {
-                return new TableContentsEnumDatatypeAdapter(contents, ipsProject);
-            }
-        }
-
         IIpsProject[] projects = ((IpsProject)ipsProject).getIpsObjectPathInternal().getReferencedIpsProjects();
         for (int i = 0; i < projects.length; i++) {
             if (!visitedProjects.contains(projects[i])) {
@@ -1419,11 +1357,6 @@ public class IpsProject extends IpsElement implements IIpsProject {
         }
         if (datatype instanceof ArrayOfValueDatatype) {
             return new ArrayOfValueDatatypeHelper(datatype);
-        }
-        // TODO pk remove when completing change to enum types
-        if (datatype instanceof TableContentsEnumDatatypeAdapter) {
-            return getIpsArtefactBuilderSet().getDatatypeHelperForTableBasedEnum(
-                    (TableContentsEnumDatatypeAdapter)datatype);
         }
         if (datatype instanceof EnumTypeDatatypeAdapter) {
             return getIpsArtefactBuilderSet().getDatatypeHelperForEnumType((EnumTypeDatatypeAdapter)datatype);
