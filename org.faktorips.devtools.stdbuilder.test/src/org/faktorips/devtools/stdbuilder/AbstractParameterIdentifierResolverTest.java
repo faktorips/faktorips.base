@@ -59,7 +59,6 @@ public class AbstractParameterIdentifierResolverTest extends AbstractIpsPluginTe
         IIpsProjectProperties props = ipsProject.getProperties();
         props.setBuilderSetId(StdBuilderPlugin.STANDARD_BUILDER_EXTENSION_ID);
         ipsProject.setProperties(props);
-        ipsProject.getValueDatatypes(false);
         policyCmptType = newPolicyAndProductCmptType(ipsProject, "TestPolicy", "TestProduct");
         attribute = policyCmptType.newPolicyCmptTypeAttribute();
         attribute.setName("tax");
