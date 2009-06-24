@@ -465,57 +465,6 @@ public class IpsProjectTest extends AbstractIpsPluginTest {
         assertEquals("myBuilder", ipsProject.getProperties().getBuilderSetId());
     }
 
-    public void testGetValueDatatypes() throws Exception {
-        IIpsProjectProperties props = ipsProject.getProperties();
-        props.setPredefinedDatatypesUsed(new String[] { Datatype.DECIMAL.getQualifiedName() });
-        ipsProject.setProperties(props);
-        ValueDatatype[] types = ipsProject.getValueDatatypes(false);
-        assertEquals(1, types.length);
-        assertEquals(Datatype.DECIMAL, types[0]);
-
-        createRefProject();
-
-        types = ipsProject.getValueDatatypes(false);
-        assertEquals(3, types.length);
-        assertEquals(Datatype.DECIMAL, types[0]);
-        assertEquals(Datatype.MONEY, types[1]);
-        assertEquals(TestEnumType.class.getName(), types[2].getJavaClassName());
-
-        // make sure none-valuedatatypes defined in the project are filtered out
-        props = ipsProject.getProperties();
-        Datatype messageListDatatype = new JavaClass2DatatypeAdaptor("org.faktorips.MessageList");
-        props.addDefinedDatatype(messageListDatatype);
-        ipsProject.setProperties(props);
-
-        types = ipsProject.getValueDatatypes(false);
-        assertEquals(3, types.length);
-        assertEquals(Datatype.DECIMAL, types[0]);
-        assertEquals(Datatype.MONEY, types[1]);
-        assertEquals(TestEnumType.class.getName(), types[2].getJavaClassName());
-
-        types = ipsProject.getValueDatatypes(true);
-        assertEquals(4, types.length);
-        assertEquals(Datatype.VOID, types[0]);
-        assertEquals(Datatype.DECIMAL, types[1]);
-        assertEquals(Datatype.MONEY, types[2]);
-        assertEquals(TestEnumType.class.getName(), types[3].getJavaClassName());
-    }
-
-    public void testGetValueDatatypes_boolean_boolean() throws CoreException {
-        IIpsProjectProperties props = ipsProject.getProperties();
-        props.setPredefinedDatatypesUsed(new String[] { Datatype.DECIMAL.getQualifiedName(),
-                Datatype.PRIMITIVE_INT.getQualifiedName() });
-        ipsProject.setProperties(props);
-        ValueDatatype[] types = ipsProject.getValueDatatypes(false, false);
-        assertEquals(1, types.length);
-        assertEquals(Datatype.DECIMAL, types[0]);
-
-        types = ipsProject.getValueDatatypes(false, true);
-        assertEquals(2, types.length);
-        assertEquals(Datatype.DECIMAL, types[0]);
-        assertEquals(Datatype.PRIMITIVE_INT, types[1]);
-    }
-
     public void testFindDatatype() throws CoreException {
         IIpsProjectProperties props = ipsProject.getProperties();
         props.setPredefinedDatatypesUsed(new String[] { Datatype.DECIMAL.getQualifiedName(),
@@ -542,7 +491,6 @@ public class IpsProjectTest extends AbstractIpsPluginTest {
 
         makeIpsProjectDependOnBaseProject();
         assertEquals(Datatype.INTEGER, ipsProject.findDatatype("Integer"));
-
     }
 
     public void testFindValueDatatype() throws CoreException {
