@@ -26,7 +26,6 @@ import org.faktorips.devtools.core.IpsStatus;
 import org.faktorips.devtools.core.builder.AbstractParameterIdentifierResolver;
 import org.faktorips.devtools.core.builder.ComplianceCheck;
 import org.faktorips.devtools.core.builder.DefaultBuilderSet;
-import org.faktorips.devtools.core.internal.model.TableContentsEnumDatatypeAdapter;
 import org.faktorips.devtools.core.internal.model.enums.EnumTypeDatatypeAdapter;
 import org.faktorips.devtools.core.model.bf.BusinessFunctionIpsObjectType;
 import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
@@ -485,14 +484,6 @@ public class StandardBuilderSet extends DefaultBuilderSet {
                     formulaTestBuilder, enumClassesBuilder, enumTypeInterfaceBuilder, tocFileBuilder,
                     businessFunctionBuilder, enumTypeBuilder, enumContentBuilder};
         }
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public DatatypeHelper getDatatypeHelperForTableBasedEnum(TableContentsEnumDatatypeAdapter datatype) {
-        return new TableContentsEnumDatatypeHelper(datatype, enumClassesBuilder);
     }
 
     /**

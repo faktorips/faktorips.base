@@ -20,7 +20,6 @@ import org.eclipse.core.runtime.CoreException;
 import org.faktorips.codegen.DatatypeHelper;
 import org.faktorips.datatype.Datatype;
 import org.faktorips.devtools.core.builder.IJavaPackageStructure;
-import org.faktorips.devtools.core.internal.model.TableContentsEnumDatatypeAdapter;
 import org.faktorips.devtools.core.internal.model.enums.EnumTypeDatatypeAdapter;
 import org.faktorips.devtools.core.model.enums.IEnumType;
 import org.faktorips.devtools.core.model.productcmpt.IFormula;
@@ -127,15 +126,6 @@ public interface IIpsArtefactBuilderSet extends IJavaPackageStructure {
      * identifier resolver.
      */
     public IdentifierResolver createFlIdentifierResolverForFormulaTest(IFormula formula) throws CoreException;
-
-    /**
-     * Returns the datatype helper used for the enum type that is defined by a table contents.
-     * 
-     * @throws NullPointerException if structure is <code>null</code>.
-     * @throws IllegalArgumentException if the structure does not define an enum type.
-     */
-    //TODO pk set deprecated when completing change to enum type
-    public DatatypeHelper getDatatypeHelperForTableBasedEnum(TableContentsEnumDatatypeAdapter datatype);
 
     /**
      * Returns the datatype helper for the provided {@link IEnumType}. <code>IEnumType</code>

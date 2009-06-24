@@ -36,7 +36,6 @@ import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
 import org.faktorips.devtools.core.model.ipsobject.QualifiedNameType;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.tablecontents.ITableContents;
-import org.faktorips.devtools.core.model.tablecontents.TableContentsValidations;
 import org.faktorips.devtools.core.model.tablestructure.IColumn;
 import org.faktorips.devtools.core.model.tablestructure.ITableStructure;
 import org.faktorips.util.message.Message;
@@ -247,7 +246,6 @@ public class TableContents extends TimedIpsObject implements ITableContents {
         	String text = NLS.bind(Messages.TableContents_msgColumncountMismatch, structCols, contentCols);
         	list.add(new Message(MSGCODE_COLUMNCOUNT_MISMATCH, text, Message.ERROR, this, PROPERTY_TABLE_STRUCTURE));
         }
-        list.add(TableContentsValidations.validateNameOfStructureAndContentsNotTheSameWhenEnum(tableStructure, getName(), this)); 
     }
     
     ValueDatatype[] findColumnDatatypes(ITableStructure structure, IIpsProject ipsProject) throws CoreException {

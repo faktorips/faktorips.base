@@ -15,9 +15,7 @@ package org.faktorips.devtools.core.builder;
 
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.runtime.CoreException;
-import org.faktorips.codegen.DatatypeHelper;
 import org.faktorips.devtools.core.AbstractIpsPluginTest;
-import org.faktorips.devtools.core.internal.model.TableContentsEnumDatatypeAdapter;
 import org.faktorips.devtools.core.model.ipsproject.IIpsArtefactBuilder;
 import org.faktorips.devtools.core.model.ipsproject.IIpsArtefactBuilderSetConfigModel;
 import org.faktorips.devtools.core.model.ipsproject.IIpsObjectPath;
@@ -95,12 +93,8 @@ public class DefaultBuilderSetTest extends AbstractIpsPluginTest {
         public void initialize(IIpsArtefactBuilderSetConfigModel config) throws CoreException {
         }
 
-        public DatatypeHelper getDatatypeHelperForTableBasedEnum(TableContentsEnumDatatypeAdapter datatype) {
-            return null;
-        }
-
         public String getVersion() {
-            return null;
+            return "";
         }
 
         /**

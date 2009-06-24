@@ -31,7 +31,6 @@ import org.faktorips.devtools.core.model.ipsobject.IIpsObjectGeneration;
 import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
 import org.faktorips.devtools.core.model.ipsproject.IIpsPackageFragmentRoot;
 import org.faktorips.devtools.core.model.tablecontents.ITableContents;
-import org.faktorips.devtools.core.model.tablecontents.TableContentsValidations;
 import org.faktorips.devtools.core.model.tablestructure.ITableStructure;
 import org.faktorips.devtools.core.ui.UIToolkit;
 import org.faktorips.devtools.core.ui.controller.fields.TextButtonField;
@@ -146,8 +145,6 @@ public class TableContentsPage extends IpsObjectPage {
             if (structure.getNumOfColumns() == 0) {
                 setErrorMessage(Messages.TableContentsPage_tableStructureHasntGotAnyColumns);
             }
-            setErrorMessage(TableContentsValidations.validateNameOfStructureAndContentsNotTheSameWhenEnum(structure,
-                    getIpsObjectName(), null));
         }
     }
     

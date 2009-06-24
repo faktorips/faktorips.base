@@ -18,6 +18,7 @@ import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.ui.forms.widgets.Section;
+import org.faktorips.devtools.core.enums.EnumValue;
 import org.faktorips.devtools.core.internal.model.tablestructure.TableStructureType;
 import org.faktorips.devtools.core.model.tablestructure.ITableStructure;
 import org.faktorips.devtools.core.ui.UIToolkit;
@@ -60,7 +61,7 @@ public class GeneralInfoSection extends IpsSection {
         Composite composite = toolkit.createLabelEditColumnComposite(client);
 
         toolkit.createFormLabel(composite, Messages.GeneralInfoSection_labelTableType);
-        Combo combo = toolkit.createCombo(composite, TableStructureType.getEnumType());
+        Combo combo = toolkit.createCombo(composite, new EnumValue[]{TableStructureType.SINGLE_CONTENT, TableStructureType.MULTIPLE_CONTENTS});
         typeField = new EnumValueField(combo, TableStructureType.getEnumType());
         
         uiController = new IpsObjectUIController(tableStructure);

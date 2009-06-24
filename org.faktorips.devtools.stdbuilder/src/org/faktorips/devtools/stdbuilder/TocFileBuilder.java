@@ -446,10 +446,6 @@ public class TocFileBuilder extends AbstractArtefactBuilder {
         if (tableStructure == null) {
             return null;
         }
-        if (tableStructure.isModelEnumType()) {
-            // tables that define an enum are not created in the toc
-            return null;
-        }
         String packageInternal = getBuilderSet().getPackage(DefaultBuilderSet.KIND_TABLE_TOCENTRY,
                 tableContents.getIpsSrcFile());
         String tableStructureName = tableImplClassBuilder.getQualifiedClassName(tableStructure.getIpsSrcFile());

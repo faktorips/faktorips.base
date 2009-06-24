@@ -733,6 +733,7 @@ public class IpsModel extends IpsElement implements IIpsModel, IResourceChangeLi
     /**
      * Adds the datatypes defined for the IPS project to the set of datatypes.
      */
+    // TODO Jan: getDatatypesDefinedInProjectPropeties would be a better name
     public void getDatatypesDefinedInProject(IIpsProject ipsProject,
             boolean valuetypesOnly,
             boolean includePrimitives,
@@ -748,6 +749,7 @@ public class IpsModel extends IpsElement implements IIpsModel, IResourceChangeLi
         return;
     }
 
+    // TODO Jan: getDatatypesDefinedInProjectPropeties would be a better name
     public Map<String, Datatype> getDatatypesDefinedInProject(IIpsProject ipsProject) {
         reinitIpsProjectPropertiesIfNecessary((IpsProject)ipsProject);
         Map<String, Datatype> map = projectDatatypesMap.get(ipsProject.getName());

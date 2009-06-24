@@ -21,10 +21,8 @@ import org.eclipse.core.resources.IFile;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.ILog;
 import org.faktorips.codegen.DatatypeHelper;
-import org.faktorips.devtools.core.internal.model.TableContentsEnumDatatypeAdapter;
 import org.faktorips.devtools.core.internal.model.enums.EnumTypeDatatypeAdapter;
 import org.faktorips.devtools.core.internal.model.ipsproject.IpsArtefactBuilderSetConfig;
-import org.faktorips.devtools.core.model.enums.IEnumType;
 import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.core.model.ipsproject.IIpsArtefactBuilder;
 import org.faktorips.devtools.core.model.ipsproject.IIpsPackageFragmentRoot;
@@ -49,7 +47,7 @@ public class TestIpsArtefactBuilderSet extends AbstractBuilderSet {
 
     public TestIpsArtefactBuilderSet(IIpsArtefactBuilder[] builders) throws CoreException{
         super(builders);
-        Map properties = new HashMap();
+        Map<String, Object> properties = new HashMap<String, Object>();
         properties.put(CONFIG_PROPERTY_GENERATOR_LOCALE, Locale.GERMAN.getLanguage());
         IpsArtefactBuilderSetConfig config = new IpsArtefactBuilderSetConfig(properties);
         initialize(config);
@@ -159,13 +157,6 @@ public class TestIpsArtefactBuilderSet extends AbstractBuilderSet {
      * {@inheritDoc}
      */
     public String getRuntimeRepositoryTocResourceName(IIpsPackageFragmentRoot root) throws CoreException {
-        return null;
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    public DatatypeHelper getDatatypeHelperForTableBasedEnum(TableContentsEnumDatatypeAdapter datatype) {
         return null;
     }
 

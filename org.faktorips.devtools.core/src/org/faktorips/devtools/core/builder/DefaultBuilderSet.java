@@ -19,7 +19,6 @@ import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.faktorips.codegen.DatatypeHelper;
-import org.faktorips.devtools.core.internal.model.TableContentsEnumDatatypeAdapter;
 import org.faktorips.devtools.core.internal.model.enums.EnumTypeDatatypeAdapter;
 import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
@@ -298,15 +297,6 @@ public abstract class DefaultBuilderSet extends AbstractBuilderSet {
      * {@inheritDoc}
      */
     public IdentifierResolver createFlIdentifierResolverForFormulaTest(IFormula formula) throws CoreException {
-        return null;
-    }
-
-    /**
-     * {@inheritDoc}
-     * <p/>
-     * Returns <code>null</code>. This method is supposed to be overridden by subclasses.
-     */
-    public DatatypeHelper getDatatypeHelperForTableBasedEnum(TableContentsEnumDatatypeAdapter datatype) {
         return null;
     }
 
