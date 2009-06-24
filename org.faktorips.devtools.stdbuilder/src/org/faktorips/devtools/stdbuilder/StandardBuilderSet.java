@@ -437,6 +437,8 @@ public class StandardBuilderSet extends DefaultBuilderSet {
         // New enum type builder
         enumTypeBuilder = new EnumTypeBuilder(this);
 
+        IIpsArtefactBuilder enumContentBuilder = new XmlContentFileCopyBuilder(IpsObjectType.ENUM_CONTENT, this, KIND_ENUM_CONTENT);
+
         // product component builders.
         productCmptGenerationImplBuilder.setProductCmptImplBuilder(productCmptImplClassBuilder);
         productCmptGenerationImplBuilder.setProductCmptGenImplBuilder(productCmptGenImplClassBuilder);
@@ -473,7 +475,7 @@ public class StandardBuilderSet extends DefaultBuilderSet {
                     policyCmptImplClassBuilder, policyCmptInterfaceBuilder, productCmptGenerationImplBuilder,
                     tableContentCopyBuilder, productCmptContentCopyBuilder, testCaseTypeClassBuilder, testCaseBuilder,
                     formulaTestBuilder, enumClassesBuilder, enumTypeInterfaceBuilder, tocFileBuilder,
-                    policyModelTypeBuilder, productModelTypeBuilder, businessFunctionBuilder, enumTypeBuilder };
+                    policyModelTypeBuilder, productModelTypeBuilder, businessFunctionBuilder, enumTypeBuilder, enumContentBuilder};
         } else {
             tocFileBuilder.setGenerateEntriesForModelTypes(false);
             return new IIpsArtefactBuilder[] { tableImplBuilder, tableRowBuilder, productCmptGenInterfaceBuilder,
@@ -481,7 +483,7 @@ public class StandardBuilderSet extends DefaultBuilderSet {
                     policyCmptImplClassBuilder, policyCmptInterfaceBuilder, productCmptGenerationImplBuilder,
                     tableContentCopyBuilder, productCmptContentCopyBuilder, testCaseTypeClassBuilder, testCaseBuilder,
                     formulaTestBuilder, enumClassesBuilder, enumTypeInterfaceBuilder, tocFileBuilder,
-                    businessFunctionBuilder, enumTypeBuilder };
+                    businessFunctionBuilder, enumTypeBuilder, enumContentBuilder};
         }
     }
 

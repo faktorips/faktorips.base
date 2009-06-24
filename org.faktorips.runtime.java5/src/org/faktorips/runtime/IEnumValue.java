@@ -14,29 +14,15 @@
 package org.faktorips.runtime;
 
 /**
- * Cache for objects in the repository.
+ * Interface for faktor ips generated enumerations.
  * 
- * @author Jan Ortmann
+ * @author Peter Kuntz
  */
-public interface ICache<T> {
+public interface IEnumValue {
 
     /**
-     * Removes all data from the cache.
+     * Returns the identifying string value every faktor ips generation enumeration can be requested
+     * for.
      */
-    public void clear();
-
-    /**
-     * Returns the object identified by the given key or <code>null</code> if the cache does not
-     * contain an object for the provided key.
-     * 
-     * @param key The key object that identifies the object in the cache. Note that the key class
-     *            must implement a proper hashCode() and equals() function.
-     */
-    public T getObject(Object key);
-
-    /**
-     * Puts the object under the given key in the cache. Replaces any object that has been put in
-     * the cache with the same key.
-     */
-    public void put(Object key, T o);
+    public String getID();
 }

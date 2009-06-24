@@ -114,6 +114,28 @@ public interface IRuntimeRepository {
     public List<IProductComponent> getAllProductComponents(String kindId);
 
     /**
+     * Returns the type safe {@link List} of enumeration values of the provided faktor ips generated
+     * enumeration class. This method is only relevant for faktor ips enumerations whose values are
+     * deferred to a content that is hold by this repository.
+     * 
+     * 
+     * @param clazz the enumeration class upon which the list of enumeration values is returned
+     */
+    public <T extends IEnumValue> List<T> getEnumValues(Class<T> clazz);
+
+    /**
+     * Returns the enumeration value for the provided enumeration class and string representation of
+     * the value. If no value is found in the enumeration of the provided enumeration class
+     * <code>null</code> will be returned. If the provided class cannot be recognized as a faktor
+     * ips enumeration <code>null</code> will be returned. This method is only relevant for faktor
+     * ips enumerations whose values are deferred to a content that is hold by this repository.
+     * 
+     * @param clazz the enumeration class upon which the enumeration value is returned
+     * @param value the string representation of enumeration value
+     */
+    public <T extends IEnumValue> T getEnumValue(Class<T> clazz, String value);
+    
+    /**
      * Returns the product component generation identified by the id and the effective date. Returns
      * <code>null</code> if either the id is <code>null</code>, the effectiveDate is
      * <code>null</code>or no generation with the indicated id can be found or the product component
@@ -307,16 +329,6 @@ public interface IRuntimeRepository {
      * object's class.
      */
     public IModelType getModelType(IProductComponent modelObject);
-
-    /**
-     * Returns a list containing the enum values of the given enum class.
-     * <p>
-     * Returns an empty list if the enum or the enum type the enum refers to cannot be found.
-     * <p>
-     * Never returns <code>null</code>.
-     */
-    // TODO aw: name getEnumeration or getEnumerationValues ?
-    public List<?> getEnumeration(Class<?> enumClass);
 
     /**
      * Returns a set containing the Java Class names of the implementation classes for all model

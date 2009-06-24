@@ -17,11 +17,8 @@ package org.faktorips.devtools.stdbuilder;
 import org.eclipse.core.runtime.CoreException;
 import org.faktorips.codegen.JavaCodeFragment;
 import org.faktorips.codegen.dthelpers.AbstractDatatypeHelper;
-import org.faktorips.datatype.EnumDatatype;
 import org.faktorips.devtools.core.internal.model.enums.EnumTypeDatatypeAdapter;
 import org.faktorips.devtools.core.model.enums.IEnumType;
-import org.faktorips.devtools.core.model.enums.IEnumValue;
-import org.faktorips.devtools.core.model.enums.IEnumValueContainer;
 import org.faktorips.devtools.stdbuilder.enumtype.EnumTypeBuilder;
 import org.faktorips.util.ArgumentCheck;
 
@@ -55,8 +52,7 @@ public class EnumTypeDatatypeHelper extends AbstractDatatypeHelper {
             return new JavaCodeFragment("null");
         }
         try {
-            IEnumValue enumValue = enumTypeAdapter.getEnumValueContainer().findEnumValue(value, enumTypeBuilder.getIpsProject());
-            return enumTypeBuilder.getNewInstanceCodeFragement(enumTypeAdapter.getEnumType(), enumValue);
+            return enumTypeBuilder.getNewInstanceCodeFragement(enumTypeAdapter, value, null);
 
         } catch (CoreException e) {
             throw new RuntimeException(e);
@@ -89,7 +85,7 @@ public class EnumTypeDatatypeHelper extends AbstractDatatypeHelper {
     @Override
     protected JavaCodeFragment valueOfExpression(String expression) {
         try {
-            return enumTypeBuilder.getValueByXXXCodeFragment(enumTypeAdapter.getEnumType().findLiteralNameAttribute(enumTypeBuilder.getIpsProject()), expression);
+            return enumTypeBuilder.getValueByXXXCodeFragment(enumTypeAdapter.getEnumType(), expression, null);
         } catch (CoreException e) {
             throw new RuntimeException(e);
         }

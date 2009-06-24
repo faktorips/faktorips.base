@@ -22,7 +22,7 @@ import java.util.Map;
 
 /**
  * Soft reference cache that uses a HashMap to cache objects. The objects will be releases by the 
- * garbage colector via soft references.
+ * garbage collector via soft references.
  * 
  * @author Joerg Ortmann
  */

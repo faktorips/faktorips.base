@@ -51,6 +51,9 @@ public class InMemoryRuntimeRepository extends AbstractRuntimeRepository {
     // contains all test cases with their qualified name as key.
     private HashMap<String, IpsTestCaseBase> testCasesByQName = new HashMap<String, IpsTestCaseBase>();
 
+    // contains all enumeration values for the faktor ips enumerations which content is deferred 
+    private Map<Class<IEnumValue>, List<IEnumValue>> enumValuesMap = new HashMap<Class<IEnumValue>, List<IEnumValue>>(); 
+    
     public InMemoryRuntimeRepository() {
         super("InMemoryRuntimeRepository");
     }
@@ -161,6 +164,10 @@ public class InMemoryRuntimeRepository extends AbstractRuntimeRepository {
         putTable(table);
     }
 
+    public void putEnumValue(Class<IEnumValue> clazz, List<IEnumValue> enumValues){
+        enumValuesMap.put(clazz, enumValues);
+    }
+    
     /**
      * {@inheritDoc}
      */
@@ -374,6 +381,11 @@ public class InMemoryRuntimeRepository extends AbstractRuntimeRepository {
             return 0;
         }
 
+    }
+
+    @Override
+    protected <T extends IEnumValue> List<T> getEnumValuesInternal(Class<T> clazz) {
+        return (List<T>)enumValuesMap.get(clazz);
     }
 
 }

@@ -13,15 +13,23 @@
 
 package org.faktorips.runtime.internal;
 
+import java.io.InputStream;
 import java.lang.reflect.Constructor;
+import java.util.ArrayList;
+import java.util.List;
+
+import javax.xml.parsers.SAXParser;
+import javax.xml.parsers.SAXParserFactory;
 
 import org.faktorips.runtime.DefaultCacheFactory;
+import org.faktorips.runtime.IEnumValue;
 import org.faktorips.runtime.IProductComponent;
 import org.faktorips.runtime.IProductComponentGeneration;
 import org.faktorips.runtime.IProductDataProvider;
 import org.faktorips.runtime.IRuntimeRepository;
 import org.faktorips.runtime.ITable;
 import org.faktorips.runtime.test.IpsTestCaseBase;
+import org.xml.sax.InputSource;
 
 /**
  * 
@@ -101,6 +109,34 @@ public class RuntimeRepositoryProxy extends AbstractTocBasedRuntimeRepository {
      */
     public boolean isModifiable() {
         return false;
+    }
+
+    //TODO duplicate code in this and the classloaderruntimerepository.
+    protected <T extends IEnumValue> List<T> createEnumValues(TocEntryObject tocEntry, Class<T> clazz) {
+        
+        InputStream is = getClassLoader().getResourceAsStream(tocEntry.getXmlResourceName());
+        if(is == null){
+            throw new RuntimeException("Cant't load the input stream for the enumeration content resource " + tocEntry.getXmlResourceName());
+        }
+        EnumSaxHandler saxhandler = new EnumSaxHandler();
+        try {
+            SAXParser saxParser = SAXParserFactory.newInstance().newSAXParser();
+            saxParser.parse(new InputSource(is), saxhandler);
+        } catch (Exception e) {
+            throw new RuntimeException("Can't parse the enumeration content of the resource " + tocEntry.getXmlResourceName());
+        }        
+        T enumValue = null;
+        ArrayList<T> enumValues = new ArrayList<T>();
+        try {
+            Constructor<T> constructor = clazz.getConstructor(new Class[] { List.class});
+            for (List<String> enumValuesAsStrings : saxhandler.getEnumValueList()) {
+                enumValue = constructor.newInstance(new Object[] {enumValuesAsStrings});
+                enumValues.add(enumValue);
+            }
+        } catch (Exception e) {
+            throw new RuntimeException("Can't create enumeration instance for toc entry " + tocEntry, e);
+        }
+        return enumValues;
     }
 
 }

@@ -21,7 +21,7 @@ package org.faktorips.runtime;
 public interface ICacheFactory {
     
     public enum Type{
-        PRODUCT_CMPT_CHACHE, PRODUCT_CMPT_GENERATION_CHACHE, TABLE_BY_CLASSNAME_CACHE, TABLE_BY_QUALIFIED_NAME_CACHE;
+        PRODUCT_CMPT_CHACHE, PRODUCT_CMPT_GENERATION_CHACHE, TABLE_BY_CLASSNAME_CACHE, TABLE_BY_QUALIFIED_NAME_CACHE, ENUM_CONTENT_BY_CLASS;
     }
     
     /**
@@ -31,6 +31,7 @@ public interface ICacheFactory {
      * @see Type#PRODUCT_CMPT_GENERATION_CHACHE
      * @see Type#TABLE_BY_CLASSNAME_CACHE
      * @see Type#TABLE_BY_QUALIFIED_NAME_CACHE
+     * @see Type#ENUM_CONTENT_BY_CLASS
      */
-    public ICache createCache(Type type);
+    public ICache<?> createCache(Type type);
 }

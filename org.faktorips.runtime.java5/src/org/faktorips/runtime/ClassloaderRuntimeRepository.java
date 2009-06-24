@@ -16,16 +16,20 @@ package org.faktorips.runtime;
 import java.io.IOException;
 import java.io.InputStream;
 import java.lang.reflect.Constructor;
+import java.lang.reflect.Modifier;
 import java.util.ArrayList;
 import java.util.List;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
+import javax.xml.parsers.SAXParser;
+import javax.xml.parsers.SAXParserFactory;
 
 import org.faktorips.runtime.internal.AbstractReadonlyTableOfContents;
 import org.faktorips.runtime.internal.AbstractTocBasedRuntimeRepository;
 import org.faktorips.runtime.internal.DateTime;
+import org.faktorips.runtime.internal.EnumSaxHandler;
 import org.faktorips.runtime.internal.ProductComponent;
 import org.faktorips.runtime.internal.ProductComponentGeneration;
 import org.faktorips.runtime.internal.ReadonlyTableOfContents;
@@ -39,6 +43,7 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
 import org.xml.sax.ErrorHandler;
+import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
 import org.xml.sax.SAXParseException;
 
@@ -349,6 +354,49 @@ public class ClassloaderRuntimeRepository extends AbstractTocBasedRuntimeReposit
         Element docElement = getDocumentElement(tocEntry);
         productCmpt.initFromXml(docElement);
         return productCmpt;
+    }
+
+    protected <T extends IEnumValue> List<T> createEnumValues(TocEntryObject tocEntry, Class<T> clazz) {
+
+        InputStream is = getClassLoader().getResourceAsStream(tocEntry.getXmlResourceName());
+        if (is == null) {
+            throw new RuntimeException("Cant't load the input stream for the enumeration content resource "
+                    + tocEntry.getXmlResourceName());
+        }
+        EnumSaxHandler saxhandler = new EnumSaxHandler();
+        try {
+            SAXParser saxParser = SAXParserFactory.newInstance().newSAXParser();
+            saxParser.parse(new InputSource(is), saxhandler);
+        } catch (Exception e) {
+            throw new RuntimeException("Can't parse the enumeration content of the resource "
+                    + tocEntry.getXmlResourceName());
+        }
+        T enumValue = null;
+        ArrayList<T> enumValues = new ArrayList<T>();
+        try {
+            Constructor<T>[] constructors =  clazz.getDeclaredConstructors();
+            Constructor<T> constructor = null;
+            for (Constructor<T> currentConstructor : constructors) {
+                if((currentConstructor.getModifiers() & Modifier.PRIVATE) > 0){
+                    Class<?>[] parameterTypes = currentConstructor.getParameterTypes();
+                    if(parameterTypes.length == 1 && parameterTypes[0] == List.class){
+                        constructor = currentConstructor;
+                    }
+                }
+            }
+            if (constructor == null) {
+                throw new RuntimeException(
+                        "No valid constructor found to create enumerations instances for the toc entry " + tocEntry);
+            }
+            for (List<String> enumValueAsStrings : saxhandler.getEnumValueList()) {
+                constructor.setAccessible(true);
+                enumValue = constructor.newInstance(new Object[] { enumValueAsStrings });
+                enumValues.add(enumValue);
+            }
+        } catch (Exception e) {
+            throw new RuntimeException("Can't create enumeration instance for toc entry " + tocEntry, e);
+        }
+        return enumValues;
     }
 
     /**

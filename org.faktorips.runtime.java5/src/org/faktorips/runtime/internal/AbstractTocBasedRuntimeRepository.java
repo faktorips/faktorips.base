@@ -22,6 +22,7 @@ import java.util.TimeZone;
 import org.faktorips.runtime.GenerationId;
 import org.faktorips.runtime.ICache;
 import org.faktorips.runtime.ICacheFactory;
+import org.faktorips.runtime.IEnumValue;
 import org.faktorips.runtime.IProductComponent;
 import org.faktorips.runtime.IProductComponentGeneration;
 import org.faktorips.runtime.IRuntimeRepository;
@@ -41,10 +42,12 @@ public abstract class AbstractTocBasedRuntimeRepository extends AbstractRuntimeR
     
     private ICacheFactory cacheFactory;
     
-    private ICache productCmptCache;
-    private ICache productCmptGenerationCache;
-    private ICache tableCacheByQName;
-    private ICache tableCacheByClass;
+    private ICache<IProductComponent> productCmptCache;
+    private ICache<IProductComponentGeneration> productCmptGenerationCache;
+    private ICache<ITable> tableCacheByQName;
+    private ICache<ITable> tableCacheByClass;
+    @SuppressWarnings("unchecked")
+    private ICache<List> enumValuesCacheByClass;
     
     public AbstractTocBasedRuntimeRepository(String name, ICacheFactory cacheFactory) {
         super(name);
@@ -54,11 +57,13 @@ public abstract class AbstractTocBasedRuntimeRepository extends AbstractRuntimeR
     
     protected abstract AbstractReadonlyTableOfContents loadTableOfContents();
     
+    @SuppressWarnings("unchecked")
     private void initCaches() {
-        productCmptCache = cacheFactory.createCache(ICacheFactory.Type.PRODUCT_CMPT_CHACHE);
-        productCmptGenerationCache  = cacheFactory.createCache(ICacheFactory.Type.PRODUCT_CMPT_GENERATION_CHACHE);
-        tableCacheByQName = cacheFactory.createCache(ICacheFactory.Type.TABLE_BY_QUALIFIED_NAME_CACHE);
-        tableCacheByClass = cacheFactory.createCache(ICacheFactory.Type.TABLE_BY_CLASSNAME_CACHE);
+        productCmptCache = (ICache<IProductComponent>)cacheFactory.createCache(ICacheFactory.Type.PRODUCT_CMPT_CHACHE);
+        productCmptGenerationCache  = (ICache<IProductComponentGeneration>)cacheFactory.createCache(ICacheFactory.Type.PRODUCT_CMPT_GENERATION_CHACHE);
+        tableCacheByQName = (ICache<ITable>)cacheFactory.createCache(ICacheFactory.Type.TABLE_BY_QUALIFIED_NAME_CACHE);
+        tableCacheByClass = (ICache<ITable>)cacheFactory.createCache(ICacheFactory.Type.TABLE_BY_CLASSNAME_CACHE);
+        enumValuesCacheByClass = (ICache<List>)cacheFactory.createCache(ICacheFactory.Type.ENUM_CONTENT_BY_CLASS);
     }
     
     /**
@@ -95,6 +100,34 @@ public abstract class AbstractTocBasedRuntimeRepository extends AbstractRuntimeR
         return pc;
     }
     
+    @SuppressWarnings("unchecked")
+    protected <T extends IEnumValue> List<T> getEnumValuesInternal(Class<T> clazz){
+        List<T> enumValues = enumValuesCacheByClass.getObject(clazz);
+        if (enumValues != null) {
+            return enumValues;
+        }
+        Set<TocEntryObject> tocEntries = toc.getEnumContentTocEntries();
+        if (tocEntries==null) {
+            return null;
+        }
+        TocEntryObject currentTocEntry = null;
+        for (TocEntryObject tocEntryObject : tocEntries) {
+            if(tocEntryObject.getImplementationClassName().equals(clazz.getName())){
+                currentTocEntry = tocEntryObject;
+            }
+        }
+        if(currentTocEntry == null){
+            return null;
+        }
+        enumValues = createEnumValues(currentTocEntry, clazz);
+        if (enumValues!=null) {
+            enumValuesCacheByClass.put(clazz, enumValues);
+        }
+        return enumValues;
+    }
+
+    protected abstract <T extends IEnumValue> List<T> createEnumValues(TocEntryObject tocEntry, Class<T> clazz);    
+
     /**
      * {@inheritDoc}
      */

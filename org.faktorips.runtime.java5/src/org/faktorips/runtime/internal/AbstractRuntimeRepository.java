@@ -32,6 +32,7 @@ import javax.xml.stream.XMLStreamConstants;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 
+import org.faktorips.runtime.IEnumValue;
 import org.faktorips.runtime.IModelObject;
 import org.faktorips.runtime.IProductComponent;
 import org.faktorips.runtime.IProductComponentGeneration;
@@ -353,14 +354,6 @@ public abstract class AbstractRuntimeRepository implements IRuntimeRepository {
     /**
      * {@inheritDoc}
      */
-    public List<?> getEnumeration(Class<?> enumClass) {
-        // TODO aw: get the enumeration
-        return null;
-    }
-
-    /**
-     * {@inheritDoc}
-     */
     public ITable getTable(String qualifiedTableName) {
         ITable table = getTableInternal(qualifiedTableName);
         if (table != null) {
@@ -660,4 +653,32 @@ public abstract class AbstractRuntimeRepository implements IRuntimeRepository {
      */
     protected abstract void getAllModelTypeImplementationClasses(Set<String> result);
 
+    public final <T extends IEnumValue> T getEnumValue(Class<T> clazz, String value) {
+        if (value == null) {
+            return null;
+        }
+        List<T> enumValues = getEnumValues(clazz);
+        for (T enumValue : enumValues) {
+            if (value.equals(enumValue.getID())) {
+                return enumValue;
+            }
+        }
+        return null;
+    }
+
+    public final <T extends IEnumValue> List<T> getEnumValues(Class<T> clazz) {
+        List<T> enumValuesList = getEnumValuesInternal(clazz);
+        if (enumValuesList != null) {
+            return Collections.unmodifiableList(enumValuesList);
+        }
+        for (IRuntimeRepository repository : repositories) {
+            enumValuesList = repository.getEnumValues(clazz);
+            if (enumValuesList != null) {
+                return Collections.unmodifiableList(enumValuesList);
+            }
+        }
+        return null;
+    }
+
+    protected abstract <T extends IEnumValue> List<T> getEnumValuesInternal(Class<T> clazz);
 }

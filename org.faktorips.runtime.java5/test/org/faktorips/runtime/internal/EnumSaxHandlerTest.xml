@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<EnumContent enumType="Enum" referencedEnumAttributesCount="2">
+    <Description/>
+    <EnumValue id="0">
+        <EnumAttributeValue id="0" isNull="false">a</EnumAttributeValue>
+        <EnumAttributeValue id="1" isNull="false">an</EnumAttributeValue>
+    </EnumValue>
+    <EnumValue id="1">
+        <EnumAttributeValue id="0" isNull="false">b</EnumAttributeValue>
+        <EnumAttributeValue id="1" isNull="false">bn</EnumAttributeValue>
+    </EnumValue>
+    <EnumValue id="2">
+        <EnumAttributeValue id="0" isNull="false">c</EnumAttributeValue>
+        <EnumAttributeValue id="1" isNull="false">cn</EnumAttributeValue>
+    </EnumValue>
+</EnumContent>

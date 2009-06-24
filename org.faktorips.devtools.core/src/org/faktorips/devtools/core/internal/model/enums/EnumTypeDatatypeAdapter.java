@@ -287,6 +287,9 @@ public class EnumTypeDatatypeAdapter implements EnumDatatype {
             EnumTypeDatatypeAdapter other = (EnumTypeDatatypeAdapter)obj;
             if(other.enumContent == null && enumContent == null){
                 return enumType.equals(other.enumType);
+            } else if((other.enumContent == null && enumContent != null) || 
+                    (other.enumContent != null && enumContent == null)){
+                return false;
             }
             return enumType.equals(other.enumType) && enumContent.equals(other.enumContent);
         }
