@@ -123,8 +123,8 @@ public class AllValuesValueSetTest extends AbstractIpsPluginTest {
 		assertTrue(allValues.getContainsNull());
 		
 		// test with primitive datatype
-		ValueDatatype[] vds = ipsProject.getValueDatatypes(false);
-		ArrayList list = new ArrayList();
+		Datatype[] vds = ipsProject.findDatatypes(true, false);
+		ArrayList<Datatype> list = new ArrayList<Datatype>();
 		list.addAll(Arrays.asList(vds));
 		list.add(new PrimitiveIntegerDatatype());
         IIpsProjectProperties properties = ipsProject.getProperties();
@@ -133,7 +133,6 @@ public class AllValuesValueSetTest extends AbstractIpsPluginTest {
 
         attr.setDatatype(Datatype.PRIMITIVE_INT.getQualifiedName());
 		assertFalse(allValues.getContainsNull());
-		
 	}
 
 	public void testSetContainsNull() throws Exception {
@@ -148,8 +147,8 @@ public class AllValuesValueSetTest extends AbstractIpsPluginTest {
 			// nothing to do
 		}
 		
-		ValueDatatype[] vds = ipsProject.getValueDatatypes(false);
-		ArrayList list = new ArrayList();
+		Datatype[] vds = ipsProject.findDatatypes(true, false);
+		ArrayList<Datatype> list = new ArrayList<Datatype>();
 		list.addAll(Arrays.asList(vds));
 		list.add(new PrimitiveIntegerDatatype());
         IIpsProjectProperties properties = ipsProject.getProperties();

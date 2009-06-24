@@ -244,8 +244,8 @@ public class RangeValueSetTest extends AbstractIpsPluginTest {
         list = range.validate(ipsProject);
         assertFalse(list.containsErrorMsg());
         
-		ValueDatatype[] vds = ipsProject.getValueDatatypes(false);
-		ArrayList vdlist = new ArrayList();
+        Datatype[] vds = ipsProject.findDatatypes(true, false);
+        ArrayList<Datatype> vdlist = new ArrayList<Datatype>();
 		vdlist.addAll(Arrays.asList(vds));
 		vdlist.add(new PrimitiveIntegerDatatype());
         IIpsProjectProperties properties = ipsProject.getProperties();

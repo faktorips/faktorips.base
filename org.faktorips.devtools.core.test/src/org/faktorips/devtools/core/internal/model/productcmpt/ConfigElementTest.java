@@ -236,8 +236,8 @@ public class ConfigElementTest extends AbstractIpsPluginTest {
         InvalidDatatype datatype = new InvalidDatatype();
         attr.setDatatype(datatype.getQualifiedName());
 
-        ValueDatatype[] vds = ipsProject.getValueDatatypes(false);
-        ArrayList<ValueDatatype> vdlist = new ArrayList<ValueDatatype>();
+        Datatype[] vds = ipsProject.findDatatypes(true, false);
+        ArrayList<Datatype> vdlist = new ArrayList<Datatype>();
         vdlist.addAll(Arrays.asList(vds));
         vdlist.add(datatype);
 
