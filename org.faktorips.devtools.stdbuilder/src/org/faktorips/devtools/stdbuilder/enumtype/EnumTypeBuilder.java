@@ -158,7 +158,7 @@ public class EnumTypeBuilder extends DefaultJavaSourceFileBuilder {
         // Set supertype / implemented interface and ensure serialization
         List<String> implementedInterfaces = new ArrayList<String>(5);
         implementedInterfaces.add(org.faktorips.runtime.IEnumValue.class.getName());
-        
+
         if (enumType.hasSuperEnumType()) {
             IEnumType superEnumType = enumType.findSuperEnumType(getIpsProject());
             if (superEnumType != null) {
@@ -191,27 +191,28 @@ public class EnumTypeBuilder extends DefaultJavaSourceFileBuilder {
         generateCodeForMethods(mainSection.getMethodBuilder());
     }
 
-    private void generateMethodGetIDOfEnumValuesInterface(JavaCodeFragmentBuilder methodBuilder) throws CoreException{
-        if(useInterfaceGeneration()){
+    private void generateMethodGetIDOfEnumValuesInterface(JavaCodeFragmentBuilder methodBuilder) throws CoreException {
+        if (useInterfaceGeneration()) {
             return;
         }
-        if(getEnumType().hasSuperEnumType()){
+        if (getEnumType().hasSuperEnumType()) {
             IEnumAttribute literalNameAttribute = getEnumType().findLiteralNameAttribute(getIpsProject());
-            if(literalNameAttribute.getEnumType() != getEnumType()){
+            if (literalNameAttribute.getEnumType() != getEnumType()) {
                 return;
             }
         }
         JavaCodeFragment body = new JavaCodeFragment();
         IEnumAttribute literalNameAttribute = getEnumType().findLiteralNameAttribute(getIpsProject());
-        if(literalNameAttribute == null || !literalNameAttribute.isValid()){
+        if (literalNameAttribute == null || !literalNameAttribute.isValid()) {
             return;
         }
         body.append("return ");
         body.append(getJavaNamingConvention().getMemberVarName(literalNameAttribute.getName()));
         body.append(";");
-        methodBuilder.method(Modifier.PUBLIC, String.class, "getID", new String[0], new Class[0], body, "JavaDoc TODO", ANNOTATION_GENERATED);
+        methodBuilder.method(Modifier.PUBLIC, String.class, "getID", new String[0], new Class[0], body, "{@inheritDoc}",
+                ANNOTATION_GENERATED);
     }
-    
+
     /**
      * Code sample:
      * 
@@ -288,6 +289,7 @@ public class EnumTypeBuilder extends DefaultJavaSourceFileBuilder {
      *  [javadoc]
      *  Gender.MALE
      * </pre>
+     * 
      * <pre>
      *  [javadoc]
      *  repository.getEnumValue(Gender.class, &quot;m&quot;)
@@ -297,41 +299,48 @@ public class EnumTypeBuilder extends DefaultJavaSourceFileBuilder {
      * @throws NullPointerException If <code>enumType</code> or <code>enumValue</code> is
      *             <code>null</code>.
      */
-    public JavaCodeFragment getNewInstanceCodeFragement(EnumTypeDatatypeAdapter enumTypeAdapter, String value, String repositoryExp) throws CoreException {
+    public JavaCodeFragment getNewInstanceCodeFragement(EnumTypeDatatypeAdapter enumTypeAdapter,
+            String value,
+            String repositoryExp) throws CoreException {
         ArgumentCheck.notNull(enumTypeAdapter, this);
-        
+
         JavaCodeFragment fragment = new JavaCodeFragment();
-        if(enumTypeAdapter.getEnumType().isContainingValues()){
-            //TODO pk is this the right ips project that is provided to the finder method??
-            IEnumValue enumValue = enumTypeAdapter.getEnumValueContainer().findEnumValue(value, enumTypeAdapter.getEnumValueContainer().getIpsProject());
-            IEnumAttributeValue attrValue = enumValue.findEnumAttributeValue(getIpsProject(), enumTypeAdapter.getEnumType()
-                    .findLiteralNameAttribute(getIpsProject()));
+        if (enumTypeAdapter.getEnumType().isContainingValues()) {
+            // TODO pk is this the right ips project that is provided to the finder method??
+            IEnumValue enumValue = enumTypeAdapter.getEnumValueContainer().findEnumValue(value,
+                    enumTypeAdapter.getEnumValueContainer().getIpsProject());
+            IEnumAttributeValue attrValue = enumValue.findEnumAttributeValue(getIpsProject(), enumTypeAdapter
+                    .getEnumType().findLiteralNameAttribute(getIpsProject()));
             fragment.appendClassName(getQualifiedClassName(enumTypeAdapter.getEnumType()));
             fragment.append('.');
             fragment.append(getConstantNameForEnumAttributeValue(attrValue));
             return fragment;
         }
-        return getNewInstanceCodeFragmentForEnumTypesWithDeferredContent(enumTypeAdapter.getEnumType(), value, repositoryExp, false);
+        return getNewInstanceCodeFragmentForEnumTypesWithDeferredContent(enumTypeAdapter.getEnumType(), value,
+                repositoryExp, false);
     }
 
-    private JavaCodeFragment getNewInstanceCodeFragmentForEnumTypesWithDeferredContent(IEnumType enumType, String value, String repositoryExp, boolean valueAsExpression) throws CoreException{
+    private JavaCodeFragment getNewInstanceCodeFragmentForEnumTypesWithDeferredContent(IEnumType enumType,
+            String value,
+            String repositoryExp,
+            boolean valueAsExpression) throws CoreException {
         JavaCodeFragment fragment = new JavaCodeFragment();
         fragment.append(repositoryExp);
         fragment.append('.');
         fragment.append("getEnumValue(");
         fragment.appendClassName(getQualifiedClassName(enumType));
         fragment.append(".class, ");
-        if(!valueAsExpression){
+        if (!valueAsExpression) {
             fragment.append("\"");
         }
         fragment.append(value);
-        if(!valueAsExpression){
+        if (!valueAsExpression) {
             fragment.append("\"");
         }
         fragment.append(")");
         return fragment;
     }
-    
+
     /**
      * Returns the code fragment for a <code>getValueByXXX()</code> method call expression.<br />
      * Code snippet:
@@ -355,8 +364,8 @@ public class EnumTypeBuilder extends DefaultJavaSourceFileBuilder {
     public JavaCodeFragment getValueByXXXCodeFragment(IEnumType enumType, String expressionValue, String repositoryExp)
             throws CoreException {
         ArgumentCheck.notNull(enumType);
-        
-        if(enumType.isContainingValues()){
+
+        if (enumType.isContainingValues()) {
             IEnumAttribute enumAttribute = enumType.findLiteralNameAttribute(getIpsProject());
             JavaCodeFragment fragment = new JavaCodeFragment();
             fragment.appendClassName(getQualifiedClassName(enumType));
@@ -463,8 +472,8 @@ public class EnumTypeBuilder extends DefaultJavaSourceFileBuilder {
         initExpression.append(')');
 
         DatatypeHelper datatypeHelper = getIpsProject().findDatatypeHelper(enumType.getQualifiedName());
-        constantBuilder.varDeclaration(Modifier.PUBLIC | Modifier.STATIC | Modifier.FINAL, datatypeHelper.getJavaClassName(),
-                literalEnumAttributeValue.getValue().toUpperCase(), initExpression);
+        constantBuilder.varDeclaration(Modifier.PUBLIC | Modifier.STATIC | Modifier.FINAL, datatypeHelper
+                .getJavaClassName(), literalEnumAttributeValue.getValue().toUpperCase(), initExpression);
         constantBuilder.appendLn(' ');
     }
 
@@ -484,8 +493,8 @@ public class EnumTypeBuilder extends DefaultJavaSourceFileBuilder {
             DatatypeHelper datatypeHelper = ipsProject.findDatatypeHelper(datatype.getQualifiedName());
             if (datatypeHelper != null) {
                 javaCodeFragment.append(datatypeHelper.newInstance(currentEnumAttributeValue.getValue()));
-            } 
-            //TODO pk handle missing datatypeHelper. Write error to the buildStatus
+            }
+            // TODO pk handle missing datatypeHelper. Write error to the buildStatus
             if (i < numberEnumAttributeValues - 1) {
                 javaCodeFragment.append(", ");
             }
@@ -494,10 +503,10 @@ public class EnumTypeBuilder extends DefaultJavaSourceFileBuilder {
 
     /** Generates the java code for the attributes. */
     private void generateCodeForEnumAttributes(JavaCodeFragmentBuilder attributeBuilder) throws CoreException {
-        
+
         IEnumType enumType = getEnumType();
-        int modifier = enumType.isAbstract() ? Modifier.PROTECTED : Modifier.PRIVATE | Modifier.FINAL; 
-        
+        int modifier = enumType.isAbstract() ? Modifier.PROTECTED : Modifier.PRIVATE | Modifier.FINAL;
+
         for (IEnumAttribute currentEnumAttribute : getEnumType().getEnumAttributesIncludeSupertypeCopies()) {
             String attributeName = currentEnumAttribute.getName();
             // The first character will be made lower case
@@ -515,8 +524,7 @@ public class EnumTypeBuilder extends DefaultJavaSourceFileBuilder {
                     IIpsProject ipsProject = getIpsProject();
                     DatatypeHelper datatypeHelper = ipsProject.getDatatypeHelper(currentEnumAttribute
                             .findDatatype(ipsProject));
-                    attributeBuilder.varDeclaration(modifier, datatypeHelper
-                            .getJavaClassName(), codeName);
+                    attributeBuilder.varDeclaration(modifier, datatypeHelper.getJavaClassName(), codeName);
                     attributeBuilder.appendLn(' ');
                 }
             }
@@ -528,17 +536,18 @@ public class EnumTypeBuilder extends DefaultJavaSourceFileBuilder {
         generateConstructorForEnumsWithSeparateContent(constructorBuilder);
         generateConstructurForEnumsWithContent(constructorBuilder);
     }
-    
-    private String getNameForConstructor(IEnumType enumType){
-        return getJavaNamingConvention().getTypeName(enumType.getName()); 
+
+    private String getNameForConstructor(IEnumType enumType) {
+        return getJavaNamingConvention().getTypeName(enumType.getName());
     }
-    
-    private void generateConstructurForEnumsWithContent(JavaCodeFragmentBuilder constructorBuilder) throws CoreException{
+
+    private void generateConstructurForEnumsWithContent(JavaCodeFragmentBuilder constructorBuilder)
+            throws CoreException {
         IEnumType enumType = getEnumType();
-        if(!enumType.isContainingValues() && enumType.isAbstract()){
+        if (!enumType.isContainingValues() || enumType.isAbstract()) {
             return;
         }
-        
+
         List<IEnumAttribute> enumAttributes = enumType.getEnumAttributesIncludeSupertypeCopies();
         List<IEnumAttribute> validEnumAttributes = new ArrayList<IEnumAttribute>();
         for (IEnumAttribute currentEnumAttribute : enumAttributes) {
@@ -565,20 +574,22 @@ public class EnumTypeBuilder extends DefaultJavaSourceFileBuilder {
         appendLocalizedJavaDoc("CONSTRUCTOR", enumType.getName(), enumType, constructorBuilder);
         int constructorVisibility = (useClassGeneration() && enumType.isAbstract()) ? Modifier.PROTECTED
                 : Modifier.PRIVATE;
-        constructorBuilder.methodBegin(constructorVisibility, null, getNameForConstructor(enumType), argumentNames, argumentClasses);
+        constructorBuilder.methodBegin(constructorVisibility, null, getNameForConstructor(enumType), argumentNames,
+                argumentClasses);
         constructorBuilder.append(methodBody);
         constructorBuilder.methodEnd();
 
     }
-    
-    private void generateConstructorForEnumsWithSeparateContent(JavaCodeFragmentBuilder constructorBuilder) throws CoreException{
+
+    private void generateConstructorForEnumsWithSeparateContent(JavaCodeFragmentBuilder constructorBuilder)
+            throws CoreException {
         IEnumType enumType = getEnumType();
-        if(enumType.isContainingValues() || enumType.isAbstract()){
+        if (enumType.isContainingValues() || enumType.isAbstract()) {
             return;
         }
-        
-        String enumValuesListName = "enumValues"; 
-        
+
+        String enumValuesListName = "enumValues";
+
         JavaCodeFragment body = new JavaCodeFragment();
         int i = 0;
         for (IEnumAttribute currentEnumAttribute : enumType.getEnumAttributesIncludeSupertypeCopies()) {
@@ -587,7 +598,7 @@ public class EnumTypeBuilder extends DefaultJavaSourceFileBuilder {
                 body.append("this.");
                 body.append(currentName);
                 body.append(" = ");
-                
+
                 Datatype datatype = currentEnumAttribute.findDatatype(getIpsProject());
                 DatatypeHelper helper = getIpsProject().findDatatypeHelper(datatype.getQualifiedName());
                 String expression = enumValuesListName + ".get(" + i + ")";
@@ -598,43 +609,15 @@ public class EnumTypeBuilder extends DefaultJavaSourceFileBuilder {
             }
             i++;
         }
-        String[] argClasses = java5EnumsAvailable() ? new String[]{List.class.getName()+ "<String>"} : new String[]{List.class.getName()};
+        String[] argClasses = java5EnumsAvailable() ? new String[] { List.class.getName() + "<String>" }
+                : new String[] { List.class.getName() };
 
         appendLocalizedJavaDoc("CONSTRUCTOR", enumType.getName(), enumType, constructorBuilder);
-        constructorBuilder.methodBegin(Modifier.PRIVATE, null, getNameForConstructor(enumType), new String[]{enumValuesListName}, argClasses);
+        constructorBuilder.methodBegin(Modifier.PRIVATE, null, getNameForConstructor(enumType),
+                new String[] { enumValuesListName }, argClasses);
         constructorBuilder.append(body);
         constructorBuilder.methodEnd();
-        
-    }
 
-    /** Creates the method call of the super constructor. */
-    private void createSuperConstructorCall(JavaCodeFragment constructorMethodBody) throws CoreException {
-        IEnumType enumType = getEnumType();
-        IEnumType superEnumType = enumType.findSuperEnumType(getIpsProject());
-        if (superEnumType == null) {
-            return;
-        }
-
-        constructorMethodBody.append("super(");
-
-        List<IEnumAttribute> validSupertypeAttributes = new ArrayList<IEnumAttribute>();
-        for (IEnumAttribute currentEnumAttribute : superEnumType.getEnumAttributesIncludeSupertypeCopies()) {
-            if (currentEnumAttribute.isValid()) {
-                validSupertypeAttributes.add(currentEnumAttribute);
-            }
-        }
-
-        for (int i = 0; i < validSupertypeAttributes.size(); i++) {
-            String name = validSupertypeAttributes.get(i).getName();
-            constructorMethodBody.append(getJavaNamingConvention().getMemberVarName(name));
-            if (i < validSupertypeAttributes.size() - 1) {
-                constructorMethodBody.append(", ");
-            }
-        }
-
-        constructorMethodBody.append(");");
-        constructorMethodBody.appendln(' ');
-        constructorMethodBody.appendln(' ');
     }
 
     /** Creates the attribute initialization code for the constructor. */
@@ -895,8 +878,8 @@ public class EnumTypeBuilder extends DefaultJavaSourceFileBuilder {
 
         appendLocalizedJavaDoc("METHOD_VALUES", enumType, methodBuilder);
         DatatypeHelper datatypeHelper = getIpsProject().findDatatypeHelper(enumType.getQualifiedName());
-        methodBuilder.method(Modifier.PUBLIC | Modifier.FINAL | Modifier.STATIC, datatypeHelper.getJavaClassName() + "[]",
-                methodName, new String[0], new String[0], methodBody, null);
+        methodBuilder.method(Modifier.PUBLIC | Modifier.FINAL | Modifier.STATIC, datatypeHelper.getJavaClassName()
+                + "[]", methodName, new String[0], new String[0], methodBody, null);
     }
 
     /**
