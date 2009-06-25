@@ -37,7 +37,7 @@ public class ObjectProperty {
     }
 
     private void createHashCode() {
-        hashCode = object.hashCode() + index;
+        hashCode = ( object == null ? 0 : object.hashCode() ) + index;
         hashCode = property == null ? hashCode : hashCode + property.hashCode();
     }
 
