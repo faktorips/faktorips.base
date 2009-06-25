@@ -152,6 +152,16 @@ public class MessageList {
     }
     
     /**
+     * Returns the message with the highest severity or <code>null</code> if the list
+     * does not contain any message. If more than one message with the highest severity
+     * exists, the first one is returned.
+     */
+    public Message getMessageWithHighestSeverity() {
+        int highestSeverity = getSeverity();
+        return getFirstMessage(highestSeverity);
+    }
+
+    /**
      * Returns the first message in the list that has the indicacted message code. Returns null, if
      * the list does not contain such a message.
      */

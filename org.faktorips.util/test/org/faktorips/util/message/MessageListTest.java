@@ -157,6 +157,27 @@ public class MessageListTest extends TestCase {
         assertEquals(Message.ERROR, list.getSeverity());
     }
 
+    public void testGetMessageWithHighestSeverity() {
+        MessageList list = new MessageList();
+        assertNull(list.getMessageWithHighestSeverity());
+        
+        Message info = Message.newInfo("1", "some text"); 
+        list.add(info);
+        assertSame(info, list.getMessageWithHighestSeverity());
+
+        Message warn = Message.newWarning("1", "some text"); 
+        list.add(warn);
+        assertSame(warn, list.getMessageWithHighestSeverity());
+        
+        Message error = Message.newError("1", "some text"); 
+        list.add(error);
+        assertSame(error, list.getMessageWithHighestSeverity());
+        
+        Message warn2 = Message.newWarning("1", "some text"); 
+        list.add(warn2);
+        assertSame(error, list.getMessageWithHighestSeverity());
+    }
+    
     public void testContainsErrorMsg() {
         MessageList list = new MessageList();
         assertFalse(list.containsErrorMsg());
