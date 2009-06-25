@@ -54,13 +54,13 @@ public class Messages extends NLS {
 	/**
 	 * 
 	 */
-	public static String InstanceExplorer_infoMessageEmptyView_1;
-	/**
-	 * 
-	 */
-	public static String InstanceExplorer_infoMessageEmptyView_2;
+	public static String InstanceExplorer_infoMessageEmptyView;
 	/**
 	 * 
 	 */
 	public static String InstanceExplorer_tryToSearchSubtypes;
+	/**
+	 * 
+	 */
+	public static String InstanceExplorer_noMetaClassFound;
 }

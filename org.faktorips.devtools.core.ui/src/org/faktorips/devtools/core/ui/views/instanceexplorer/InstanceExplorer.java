@@ -13,8 +13,10 @@
 
 package org.faktorips.devtools.core.ui.views.instanceexplorer;
 
+import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.IResourceChangeEvent;
 import org.eclipse.core.resources.IResourceChangeListener;
+import org.eclipse.core.resources.IResourceDelta;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jface.action.Action;
@@ -22,6 +24,7 @@ import org.eclipse.jface.action.IToolBarManager;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.jface.viewers.DoubleClickEvent;
 import org.eclipse.jface.viewers.IDoubleClickListener;
+import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.dnd.DND;
@@ -34,12 +37,14 @@ import org.eclipse.swt.events.MouseListener;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.ui.IActionBars;
 import org.eclipse.ui.actions.ActionFactory;
 import org.eclipse.ui.actions.ActionFactory.IWorkbenchAction;
 import org.eclipse.ui.part.ViewPart;
 import org.faktorips.devtools.core.IpsPlugin;
+import org.faktorips.devtools.core.model.IIpsElement;
 import org.faktorips.devtools.core.model.IIpsMetaClass;
 import org.faktorips.devtools.core.model.IIpsMetaObject;
 import org.faktorips.devtools.core.model.enums.IEnumContent;
@@ -67,7 +72,7 @@ import org.faktorips.devtools.core.ui.views.IpsElementDropListener;
  *
  */
 
-public class InstanceExplorer extends ViewPart implements IResourceChangeListener {
+public class InstanceExplorer extends ViewPart implements IResourceChangeListener{
 
     /**
      * Extension id of this viewer extension.
@@ -89,7 +94,6 @@ public class InstanceExplorer extends ViewPart implements IResourceChangeListene
 	
 	private SubtypeSearchAction subtypeSearchAction;
 
-
 	private Label errormsg;
 
 
@@ -97,7 +101,7 @@ public class InstanceExplorer extends ViewPart implements IResourceChangeListene
 	 * The default constructor setup the listener and loads the default view.
 	 */
 	public InstanceExplorer() {
-    	ResourcesPlugin.getWorkspace().addResourceChangeListener(this, IResourceChangeEvent.POST_CHANGE);
+		ResourcesPlugin.getWorkspace().addResourceChangeListener(this, IResourceChangeEvent.POST_BUILD);
 	}
 
 
@@ -165,7 +169,11 @@ public class InstanceExplorer extends ViewPart implements IResourceChangeListene
             }
             
             public void run() {
-            	refreshView();
+            	try {
+					refreshAll();
+				} catch (CoreException e) {
+					IpsPlugin.log(e);
+				}
             }
 
             public String getToolTipText() {
@@ -205,19 +213,33 @@ public class InstanceExplorer extends ViewPart implements IResourceChangeListene
      * @throws CoreException if there is an exception with searching objects
      */
     public void showInstancesOf(IIpsObject element) throws CoreException {
+		if (element != null && !element.getEnclosingResource().isAccessible()) {
+			element = null;
+		}
     	if (element instanceof IIpsMetaObject) {
     		IIpsMetaObject metaObject = (IIpsMetaObject)element;
     		IIpsSrcFile metaClassSrcFile = metaObject.findMetaClassSrcFile(metaObject.getIpsProject());
-    		element = metaClassSrcFile.getIpsObject();
+    		if (metaClassSrcFile != null) {
+    			element = metaClassSrcFile.getIpsObject();
+    		} else {
+    			setInputData(null);
+    			selectedElementLabel.setText(Messages.InstanceExplorer_noMetaClassFound);
+    			updateView();
+    			return;
+    		}
     	}
-    	if (supports(element)) {
-	    	tableViewer.setInput(element);
-    		selectedElementLabel.setData(element);
-    		selectedElementLabel.pack();
+    	if (element instanceof IIpsMetaClass || element == null) {
+    		setInputData(element);
     	}
     	updateView();
     }
-
+    
+    private void setInputData(IIpsObject element) {
+		tableViewer.setInput(element);
+		selectedElementLabel.setData(element);
+		selectedElementLabel.pack();
+    }
+    
     private void showEmptyTableMessage(IIpsObject element) {
     	String message = "";
     	if (element instanceof IEnumType && ((IEnumType)element).isContainingValues()) {
@@ -232,7 +254,7 @@ public class InstanceExplorer extends ViewPart implements IResourceChangeListene
     }
     
     private void showEmptyMessage() {
-    	showErrorMessage(Messages.InstanceExplorer_infoMessageEmptyView_1 + Messages.InstanceExplorer_infoMessageEmptyView_2);
+    	showErrorMessage(Messages.InstanceExplorer_infoMessageEmptyView);
     }
 
     private void showErrorMessage(String message) {
@@ -248,15 +270,6 @@ public class InstanceExplorer extends ViewPart implements IResourceChangeListene
         panel.layout();
     }
 
-	private void refreshView() {
-		if (selectedElementLabel.getData() != null) {
-			tableViewer.refresh();
-			selectedElementLabel.refresh();
-		}
-		updateView();
-	}
-
-    
 	/* (non-Javadoc)
 	 * @see org.eclipse.ui.part.WorkbenchPart#setFocus()
 	 */
@@ -272,17 +285,53 @@ public class InstanceExplorer extends ViewPart implements IResourceChangeListene
 	 * {@inheritDoc}
 	 */
 	public void resourceChanged(IResourceChangeEvent event) {
-		if (event.getType() == IResourceChangeEvent.POST_CHANGE) {
-			refreshView();
+		IResource resources = null;
+		if (event != null) {
+			IResourceDelta delta = event.getDelta();
+	        resources = delta.getResource();
 		}
+    	try {
+			refreshAll(resources);
+		} catch (CoreException e) {
+			IpsPlugin.log(e);
+		}    	
 	}
 	
-	private void updateView() {
+	private void refreshAll() throws CoreException {
+		refreshAll(null);
+	}
+	
+	private void refreshAll(IResource resources) throws CoreException {
+    	if (selectedElementLabel != null && !selectedElementLabel.isDisposed()) {
+    		selectedElementLabel.getDisplay().asyncExec(new Runnable(){
+
+				public void run() {
+					if (selectedElementLabel != null && !selectedElementLabel.isDisposed()) {
+						selectedElementLabel.refresh();
+					}
+				}
+    		});
+    	}
+
+    	Runnable runnable = new RunnableTableViewerRefresh(resources);
+    	if (tableViewer != null) {
+    		Control ctrl = tableViewer.getControl();
+    		if (ctrl != null && !ctrl.isDisposed()) {
+    			ctrl.getDisplay().asyncExec(runnable);
+    		}
+    	}
+	}
+	
+	private void updateView() throws CoreException {
 		Object element = tableViewer.getInput();
 		if (element == null) {
 			showEmptyMessage();
 		} else if (element instanceof IIpsObject) {
 			IIpsObject ipsObject = (IIpsObject) element;
+			if (!ipsObject.getEnclosingResource().isAccessible()) {
+				showInstancesOf(null);
+				return;
+			}
 			subtypeSearchAction.setEnabled(supportsSubtypes(ipsObject));
 			if (tableViewer.getTable().getItemCount() == 0) {
 				showEmptyTableMessage(ipsObject);
@@ -377,7 +426,11 @@ public class InstanceExplorer extends ViewPart implements IResourceChangeListene
 		public void run() {
 			labelProvider.setSubTypeSearch(isChecked());
 			contentProvider.setSubTypeSearch(isChecked());
-			refreshView();
+			try {
+				refreshAll();
+			} catch (CoreException e) {
+				IpsPlugin.log(e);
+			}
 			super.run();
 		}
 		
@@ -428,4 +481,44 @@ public class InstanceExplorer extends ViewPart implements IResourceChangeListene
 		
 	}
 	
+	private class RunnableTableViewerRefresh implements Runnable {
+
+		private IResource resource;
+		
+		/**
+		 * 
+		 */
+		public RunnableTableViewerRefresh(IResource resource) {
+			this.resource = resource;
+		}
+		
+		/* (non-Javadoc)
+		 * @see java.lang.Runnable#run()
+		 */
+		/**
+		 * {@inheritDoc}
+		 */
+		public void run() {
+			if (tableViewer != null && !tableViewer.getControl().isDisposed()) {
+				tableViewer.refresh();
+        		IIpsElement element = null;
+        		if (resource != null) {
+        			element = IpsPlugin.getDefault().getIpsModel().getIpsElement(resource);
+        		}
+                // performs full refresh if element is null
+        		tableViewer.refresh(element);
+                
+        		if (element != null) {
+        			tableViewer.setSelection(new StructuredSelection(element), true);
+        		}
+        	}
+			try {
+				updateView();
+			} catch (CoreException e) {
+				IpsPlugin.log(e);
+			}
+		}
+		
+	}
+
 }
