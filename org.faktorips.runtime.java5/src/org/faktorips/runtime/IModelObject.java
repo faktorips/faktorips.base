@@ -28,6 +28,8 @@ public interface IModelObject {
      * @param context provides additional external information that might be necessary to execute the
      *            validation. E.g. the business context, the locale to provide locale specific
      *            message texts, user information. The parameter must not be <code>null</code>.
+     *            
+     * @throws NullPointerException if context is <code>null</code>.
      */
     public MessageList validate(IValidationContext context);
 

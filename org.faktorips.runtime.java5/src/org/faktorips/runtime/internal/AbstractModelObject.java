@@ -57,10 +57,12 @@ public abstract class AbstractModelObject implements IModelObject {
     }
 
     /**
-     * Validates this object. The context provides additional information that might be needed to
-     * execute the validation of this object.
+     * {@inheritDoc}
      */
     public MessageList validate(IValidationContext context) {
+        if (context == null) {
+            throw new NullPointerException();
+        }
         MessageList list = new MessageList();
         validate(list, context);
         return list;
@@ -73,7 +75,10 @@ public abstract class AbstractModelObject implements IModelObject {
      * @param context provides additional external information that might be necessary to execute
      *            the validation. E.g. the business context, the locale to provide locale specific
      *            message texts, user information
-     * @throws NullPointerException if list is <code>null</code> and a message is generated.
+     *            
+     * @throws NullPointerException if the list is <code>null</code> and a message is generated.
+     * 
+     * This method is model internal, it is not part of the published interface and should not be used by clients
      */
     public void validate(MessageList list, IValidationContext context) {
         if (!validateSelf(list, context)) {
