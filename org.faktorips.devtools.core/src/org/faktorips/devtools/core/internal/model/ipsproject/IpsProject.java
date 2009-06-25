@@ -1158,7 +1158,7 @@ public class IpsProject extends IpsElement implements IIpsProject {
             boolean includePrimitives,
             Set<IIpsProject> visitedProjects,
             Set<Datatype> result) throws CoreException {
-        ((IpsModel)getIpsModel()).getDatatypesDefinedInProject(ipsProject, valuetypesOnly, includePrimitives, result);
+        ((IpsModel)getIpsModel()).getDatatypesDefinedInProjectProperties(ipsProject, valuetypesOnly, includePrimitives, result);
         IIpsProject[] projects = ipsProject.getIpsObjectPathInternal().getReferencedIpsProjects();
         for (int i = 0; i < projects.length; i++) {
             if (!visitedProjects.contains(projects[i])) {
@@ -1280,7 +1280,7 @@ public class IpsProject extends IpsElement implements IIpsProject {
             String qualifiedName,
             Set<IIpsProject> visitedProjects) throws CoreException {
 
-        ValueDatatype datatype = ((IpsModel)getIpsModel()).getValueDatatype(ipsProject, qualifiedName);
+        ValueDatatype datatype = ((IpsModel)getIpsModel()).getValueDatatypeDefinedInProjectProperties(ipsProject, qualifiedName);
         if (datatype != null) {
             return datatype;
         }
@@ -1329,7 +1329,7 @@ public class IpsProject extends IpsElement implements IIpsProject {
             String qualifiedName,
             HashSet<IIpsProject> visitedProjects) throws CoreException {
 
-        Datatype datatype = ((IpsModel)getIpsModel()).getDefinedDatatype(ipsProject, qualifiedName);
+        Datatype datatype = ((IpsModel)getIpsModel()).getDatatypeDefinedInProjectProperties(ipsProject, qualifiedName);
         if (datatype != null) {
             return datatype;
         }

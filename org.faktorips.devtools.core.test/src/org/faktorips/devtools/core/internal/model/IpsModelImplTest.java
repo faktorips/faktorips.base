@@ -64,18 +64,6 @@ public class IpsModelImplTest extends AbstractIpsPluginTest {
         assertEquals("secondpackage", secondPath.getSourceFolderEntries()[0].getSpecificBasePackageNameForMergableJavaClasses());
     }
     
-    
-    public void testGetValueDatatypes() throws CoreException, IOException {
-    	IIpsProjectProperties props = ipsProject.getProperties();
-    	props.setPredefinedDatatypesUsed(new String[]{Datatype.DECIMAL.getQualifiedName()});
-        ipsProject.setProperties(props);
-        SortedSet datatypes = new TreeSet();
-        model.getValueDatatypes(ipsProject, datatypes);
-        assertEquals(1, datatypes.size());
-        Iterator it = datatypes.iterator();
-        assertEquals(Datatype.DECIMAL, it.next());
-    }
-
     public void testGetDatatypeHelpers() throws IOException, CoreException {
     	IIpsProjectProperties props = ipsProject.getProperties();
     	props.setPredefinedDatatypesUsed(new String[]{Datatype.DECIMAL.getQualifiedName()});

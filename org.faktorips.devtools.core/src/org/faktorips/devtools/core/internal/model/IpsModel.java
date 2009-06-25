@@ -697,24 +697,11 @@ public class IpsModel extends IpsElement implements IIpsModel, IResourceChangeLi
     }
 
     /**
-     * Adds the value datatypes defined for the IPS project to the set of datatypes.
-     */
-    public void getValueDatatypes(IIpsProject ipsProject, Set<Datatype> datatypes) {
-        Map<String, Datatype> map = getDatatypesDefinedInProject(ipsProject);
-        for (Datatype datatype : map.values()) {
-            if (datatype.isValueDatatype()) {
-                datatypes.add(datatype);
-            }
-        }
-        return;
-    }
-
-    /**
      * Returns the value datatype identified by the given qualified name or null, if the ips project
      * does not contain such a datatype.
      */
-    public ValueDatatype getValueDatatype(IIpsProject ipsProject, String qName) {
-        Datatype datatype = getDefinedDatatype(ipsProject, qName);
+    public ValueDatatype getValueDatatypeDefinedInProjectProperties(IIpsProject ipsProject, String qName) {
+        Datatype datatype = getDatatypeDefinedInProjectProperties(ipsProject, qName);
         if (datatype != null && datatype.isValueDatatype()) {
             return (ValueDatatype)datatype;
         }
@@ -725,20 +712,19 @@ public class IpsModel extends IpsElement implements IIpsModel, IResourceChangeLi
      * Returns the datatype identified by the given qualified name or null, if the ips project does
      * not contain such a datatype.
      */
-    public Datatype getDefinedDatatype(IIpsProject ipsProject, String qName) {
-        Map<String, Datatype> map = getDatatypesDefinedInProject(ipsProject);
+    public Datatype getDatatypeDefinedInProjectProperties(IIpsProject ipsProject, String qName) {
+        Map<String, Datatype> map = getDatatypesDefinedInProjectProperties(ipsProject);
         return map.get(qName);
     }
 
     /**
-     * Adds the datatypes defined for the IPS project to the set of datatypes.
+     * Adds the datatypes defined in the IPS project properties to the set of datatypes.
      */
-    // TODO Jan: getDatatypesDefinedInProjectPropeties would be a better name
-    public void getDatatypesDefinedInProject(IIpsProject ipsProject,
+    public void getDatatypesDefinedInProjectProperties(IIpsProject ipsProject,
             boolean valuetypesOnly,
             boolean includePrimitives,
             Set<Datatype> datatypes) {
-        Map<String, Datatype> map = getDatatypesDefinedInProject(ipsProject);
+        Map<String, Datatype> map = getDatatypesDefinedInProjectProperties(ipsProject);
         for (Datatype datatype : map.values()) {
             if (!valuetypesOnly || datatype.isValueDatatype()) {
                 if (includePrimitives || !datatype.isPrimitive()) {
@@ -750,11 +736,11 @@ public class IpsModel extends IpsElement implements IIpsModel, IResourceChangeLi
     }
 
     // TODO Jan: getDatatypesDefinedInProjectPropeties would be a better name
-    public Map<String, Datatype> getDatatypesDefinedInProject(IIpsProject ipsProject) {
+    public Map<String, Datatype> getDatatypesDefinedInProjectProperties(IIpsProject ipsProject) {
         reinitIpsProjectPropertiesIfNecessary((IpsProject)ipsProject);
         Map<String, Datatype> map = projectDatatypesMap.get(ipsProject.getName());
         if (map == null) {
-            initDatatypes(ipsProject);
+            initDatatypesDefinedInProjectProperties(ipsProject);
             map = projectDatatypesMap.get(ipsProject.getName());
         }
         return map;
@@ -871,7 +857,7 @@ public class IpsModel extends IpsElement implements IIpsModel, IResourceChangeLi
         reinitIpsProjectPropertiesIfNecessary((IpsProject)ipsProject);
         Map map = (Map)projectDatatypeHelpersMap.get(ipsProject.getName());
         if (map == null) {
-            initDatatypes(ipsProject);
+            initDatatypesDefinedInProjectProperties(ipsProject);
             map = (Map)projectDatatypeHelpersMap.get(ipsProject.getName());
         }
         return (DatatypeHelper)map.get(datatype);
@@ -958,7 +944,7 @@ public class IpsModel extends IpsElement implements IIpsModel, IResourceChangeLi
     /*
      * Intializes the datatypes and their helpers for the project.
      */
-    private void initDatatypes(IIpsProject project) {
+    private void initDatatypesDefinedInProjectProperties(IIpsProject project) {
         if (datatypes == null) {
             initDatatypesDefinedViaExtension();
         }
