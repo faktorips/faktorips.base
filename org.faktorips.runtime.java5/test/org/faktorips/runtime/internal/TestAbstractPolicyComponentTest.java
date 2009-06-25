@@ -28,6 +28,7 @@ import org.faktorips.runtime.IValidationContext;
 import org.faktorips.runtime.IpsPropertyChangeSupport;
 import org.faktorips.runtime.Message;
 import org.faktorips.runtime.MessageList;
+import org.faktorips.runtime.ValidationContext;
 import org.faktorips.runtime.XmlAbstractTestCase;
 import org.w3c.dom.Element;
 
@@ -44,22 +45,22 @@ public class TestAbstractPolicyComponentTest extends XmlAbstractTestCase {
 
         a.valid = true;
         b.valid = true;
-        MessageList list = a.validate(null);
+        MessageList list = a.validate(new ValidationContext());
         assertEquals(0, list.getNoOfMessages());
 
         a.valid = false;
-        list = a.validate(null);
+        list = a.validate(new ValidationContext());
         assertEquals(1, list.getNoOfMessages());
         assertEquals("A", list.getMessage(0).getCode());
 
         b.valid = false;
-        list = a.validate(null);
+        list = a.validate(new ValidationContext());
         assertEquals(2, list.getNoOfMessages());
         assertEquals("A", list.getMessage(0).getCode());
         assertEquals("B", list.getMessage(1).getCode());
 
         a.valid = true;
-        list = a.validate(null);
+        list = a.validate(new ValidationContext());
         assertEquals(1, list.getNoOfMessages());
         assertEquals("B", list.getMessage(0).getCode());
     }
