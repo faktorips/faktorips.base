@@ -61,7 +61,9 @@ public class ProductCmptType2RefControl extends IpsObjectRefControl {
     
     /**
      * Returns the product component type entered in this control. Returns <code>null</code>
-     * if the text in the control does not identify a product component type.
+     * if the text in the control does not identify a product component type. 
+     * If abstract types are set to be exclueded but the type found is abstract it is returned
+     * nevertheless! 
      * 
      * @throws CoreException if an exception occurs while searching for
      * the type.
