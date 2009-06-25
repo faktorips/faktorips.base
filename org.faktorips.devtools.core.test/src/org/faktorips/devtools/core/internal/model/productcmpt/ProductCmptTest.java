@@ -92,9 +92,20 @@ public class ProductCmptTest extends AbstractIpsPluginTest {
         ce.setExpression("42");
         list = productCmpt.validate(ipsProject);
         assertNotNull(list.getMessageByCode(IProductCmpt.MSGCODE_MISSINGG_PRODUCT_CMPT_TYPE));
-        
     }
     
+    public void testValidate_ProductCmptTypeIsNotAbstract() throws Exception {
+        IProductCmptType type = newProductCmptType(ipsProject, "Product");
+        productCmpt.setProductCmptType(type.getQualifiedName());
+        
+        MessageList list = productCmpt.validate(ipsProject);
+        assertNull(list.getMessageByCode(IProductCmpt.MSGCODE_ABSTRACT_PRODUCT_CMPT_TYPE));
+
+        type.setAbstract(true);
+        list = productCmpt.validate(ipsProject);
+        assertNotNull(list.getMessageByCode(IProductCmpt.MSGCODE_ABSTRACT_PRODUCT_CMPT_TYPE));
+    }
+
     public void testValidate_InconsitencyInTypeHierarch() throws Exception {
         IProductCmptType type = newProductCmptType(ipsProject, "Product");
         IProductCmptType supertype = newProductCmptType(ipsProject, "SuperProduct");

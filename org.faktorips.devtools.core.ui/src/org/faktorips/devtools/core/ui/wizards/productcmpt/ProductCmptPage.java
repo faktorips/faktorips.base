@@ -42,6 +42,7 @@ import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmpt;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmptGeneration;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmptNamingStrategy;
+import org.faktorips.devtools.core.model.productcmpt.ProductCmptValidations;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
 import org.faktorips.devtools.core.ui.UIToolkit;
 import org.faktorips.devtools.core.ui.controller.fields.TextButtonField;
@@ -221,8 +222,10 @@ public class ProductCmptPage extends IpsObjectPage {
         if (getErrorMessage()!=null) {
             return;
         }
-        if (typeRefControl.findProductCmptType()==null) {
-            setErrorMessage(NLS.bind(Messages.ProductCmptPage_msgTemplateDoesNotExist, typeRefControl.getText()));
+        MessageList list = new MessageList();
+        ProductCmptValidations.validateProductCmptType(null, typeRefControl.getText(), list, typeRefControl.getIpsProject());
+        if (!list.isEmpty()) {
+            setErrorMessage(list.getMessageWithHighestSeverity());
             return;
         }
         String runtimeIdErrorMsg = validateRuntimeId();

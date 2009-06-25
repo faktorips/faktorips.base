@@ -36,8 +36,6 @@ public class Messages extends NLS {
 
 	public static String ProductCmptPage_labelTemplate;
 
-	public static String ProductCmptPage_msgTemplateDoesNotExist;
-
 	public static String ProductCmptPage_labelVersionId;
 
 	public static String ProductCmptPage_labelConstNamePart;

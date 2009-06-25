@@ -17,7 +17,6 @@ import java.util.GregorianCalendar;
 
 import org.eclipse.core.runtime.CoreException;
 import org.faktorips.devtools.core.model.IIpsMetaObject;
-import org.faktorips.devtools.core.model.ipsobject.IFixDifferencesToModelSupport;
 import org.faktorips.devtools.core.model.ipsobject.ITimedIpsObject;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
@@ -27,7 +26,7 @@ import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
 
 
 /**
- * 
+ * A part (or component) of a product.
  */
 public interface IProductCmpt extends IIpsMetaObject, ITimedIpsObject {
     
@@ -45,6 +44,12 @@ public interface IProductCmpt extends IIpsMetaObject, ITimedIpsObject {
      * is missing.
      */
     public final static String MSGCODE_MISSINGG_PRODUCT_CMPT_TYPE = MSGCODE_PREFIX + "MissingProductCmptType"; //$NON-NLS-1$
+
+    /**
+     * Validation message code that indicates that the product component type is abstract.
+     * Abstract product component types can't have an instance (=product component)
+     */
+    public final static String MSGCODE_ABSTRACT_PRODUCT_CMPT_TYPE = MSGCODE_PREFIX + "AbstractProductCmptType"; //$NON-NLS-1$
 
     /**
      * Validation message code that indicates if the type's hierarchy the product component
