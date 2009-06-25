@@ -17,10 +17,10 @@ import org.faktorips.devtools.core.ui.actions.IpsAction;
 import org.faktorips.devtools.core.ui.views.IpsElementDragListener;
 
 /**
- * This abstract class is used to wrap a <code>IpsSrcFile</code> in another object. It provides methods
+ * This abstract class is used to wrap an <code>IpsSrcFile</code> in another object. It provides methods
  * for getting the internal <code>IpsSrcFile</code>. You can use such a wrapper object
  * to put some additional information for viewing an source file object in an TreeViewer or TableViewer.
- * The components {@link IpsElementDragListener} and {@link IpsAction} are able to handle this instances
+ * The components {@link IpsElementDragListener} and {@link IpsAction} are able to handle instances
  * of this wrapper as <code>IpsSrcFile</code>-Objects by calling the getIpsSrcFile method.
  * 
  * @author dirmeier
