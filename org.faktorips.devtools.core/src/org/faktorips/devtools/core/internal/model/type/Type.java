@@ -178,7 +178,7 @@ public abstract class Type extends BaseIpsObject implements IType {
      * {@inheritDoc}
      */
     public IAttribute getAttribute(String name) {
-        return attributes.getPartByName(name);
+        return (IAttribute)attributes.getPartByName(name);
     }
 
     /**
@@ -350,8 +350,7 @@ public abstract class Type extends BaseIpsObject implements IType {
         if (datatypes == null) {
             datatypes = new String[0];
         }
-        for (Iterator it = methods.iterator(); it.hasNext();) {
-            IMethod method = (IMethod)it.next();
+        for (IMethod method : methods) {
             if (!method.getName().equals(methodName)) {
                 continue;
             }
