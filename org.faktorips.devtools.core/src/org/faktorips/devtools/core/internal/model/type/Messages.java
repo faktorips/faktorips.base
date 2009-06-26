@@ -50,7 +50,9 @@ public class Messages extends NLS {
     public static String Attribute_msg_DefaultNotInValueset;
     
     public static String DuplicatePropertyNameValidator_msg;
+    public static String Method_duplicateParamName;
     public static String Method_duplicateSignature;
+    public static String Method_incompatbileReturnType;
     
     public static String Type_msg_AbstractMissmatch;
     public static String Type_msg_cycleInTypeHierarchy;

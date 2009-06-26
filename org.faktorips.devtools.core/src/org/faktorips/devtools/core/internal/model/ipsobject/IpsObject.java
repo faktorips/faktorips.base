@@ -106,6 +106,13 @@ public abstract class IpsObject extends IpsObjectPartContainer implements IIpsOb
         
         return folderName + '.' + getName();
     }
+    
+    /**
+     * {@inheritDoc}
+     */
+    public String getUnqualifiedName() {
+        return getName();
+    }
 
     /**
      * {@inheritDoc}

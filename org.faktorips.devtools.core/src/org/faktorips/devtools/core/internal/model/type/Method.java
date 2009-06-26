@@ -205,12 +205,8 @@ public class Method extends BaseIpsObjectPart implements IMethod {
         return finder.overridingMethod;
     }
     
-	/* (non-Javadoc)
-	 * @see org.faktorips.devtools.core.model.type.IMethod#findOverriddenMethod(org.faktorips.devtools.core.model.ipsproject.IIpsProject)
-	 */
 	/**
 	 * {@inheritDoc}
-	 * @throws CoreException 
 	 */
 	public IMethod findOverriddenMethod(IIpsProject ipsProject) throws CoreException {
     	OverridingMethodFinder finder = new OverridingMethodFinder(ipsProject);
@@ -322,13 +318,15 @@ public class Method extends BaseIpsObjectPart implements IMethod {
         if (isAbstract() && !getType().isAbstract()) {
             result.add(new Message("", NLS.bind(Messages.Method_msg_abstractMethodError, getName()), Message.ERROR, this, PROPERTY_ABSTRACT)); //$NON-NLS-1$
         }
-        validateDuplicateMethodInSameType(result);
         validateMultipleParameterNames(result);
+        if (validateDuplicateMethodInSameType(result)) {
+            validateReturnTypeOfOverriddenMethod(result, ipsProject);
+        }
     }
     
     private void validateMultipleParameterNames(MessageList msgList){
-        List parameterNames = new ArrayList();
-        Set multipleNames = new HashSet();
+        List<String> parameterNames = new ArrayList<String>();
+        Set<String> multipleNames = new HashSet<String>();
         for (Iterator it = parameters.iterator(); it.hasNext();) {
             IParameter p = (IParameter)it.next();
             if(parameterNames.contains(p.getName())){
@@ -339,21 +337,38 @@ public class Method extends BaseIpsObjectPart implements IMethod {
         if(multipleNames.isEmpty()){
             return;
         }
-        for (Iterator it = multipleNames.iterator(); it.hasNext();) {
+        for (Iterator<String> it = multipleNames.iterator(); it.hasNext();) {
             String paramName = (String)it.next();
-            ArrayList objProps = new ArrayList();
+            ArrayList<ObjectProperty> objProps = new ArrayList<ObjectProperty>();
             for (int j = 0; j < parameterNames.size(); j++) {
                 if(parameterNames.get(j).equals(paramName)){
                     objProps.add(new ObjectProperty(getParameter(j), PROPERTY_PARAMETERS, j));
                 }
             }
             ObjectProperty[] objectProperties = (ObjectProperty[])objProps.toArray(new ObjectProperty[objProps.size()]);
-            String text = NLS.bind("The parameter name {0} is used for several parameters.", paramName);
+            String text = NLS.bind(Messages.Method_duplicateParamName, paramName);
             msgList.add(new Message(MSGCODE_MULTIPLE_USE_OF_SAME_PARAMETER_NAME, text, Message.ERROR, objectProperties));
         }
     }
     
-    private void validateDuplicateMethodInSameType(MessageList msgList){
+    private void validateReturnTypeOfOverriddenMethod(MessageList list, IIpsProject ipsProject) throws CoreException {
+        Datatype returnType = findDatatype(ipsProject);
+        if (returnType==null) {
+            return;
+        }
+        IMethod overridden = findOverriddenMethod(ipsProject);
+        if (overridden==null) {
+            return;
+        }
+        Datatype overriddenReturnType = overridden.findDatatype(ipsProject);
+        if (!returnType.equals(overriddenReturnType)) {
+            String text = NLS.bind(Messages.Method_incompatbileReturnType, overridden.getType().getUnqualifiedName(), overridden.getSignatureString());
+            Message msg = Message.newError(IMethod.MSGCODE_RETURN_TYPE_IS_INCOMPATIBLE, text, this, IMethod.PROPERTY_DATATYPE);
+            list.add(msg);
+        }
+    }
+    
+    private boolean validateDuplicateMethodInSameType(MessageList msgList){
         IMethod[] methods = getType().getMethods();
         String thisSignature = getSignatureString();
         for (int i = 0; i < methods.length; i++) {
@@ -362,8 +377,10 @@ public class Method extends BaseIpsObjectPart implements IMethod {
             }
             if(methods[i].getSignatureString().equals(thisSignature)){
                 msgList.add(new Message(MSGCODE_DUBLICATE_SIGNATURE, Messages.Method_duplicateSignature, Message.ERROR, this));
+                return false;
             }
         }
+        return true;
     }
 
     public String toString() {

@@ -37,6 +37,8 @@ public interface IMethod extends IParameterContainer {
     
     public final static String MSGCODE_DUBLICATE_SIGNATURE = MSGCODE_PREFIX + "duplicateSignature";
 
+    public final static String MSGCODE_RETURN_TYPE_IS_INCOMPATIBLE = MSGCODE_PREFIX + "returnTypeIsIncompatibleWithOverriddenMethod";
+
     public final static String MSGCODE_MULTIPLE_USE_OF_SAME_PARAMETER_NAME = MSGCODE_PREFIX + "multipleUseOfSameParameterName";
     
     /**

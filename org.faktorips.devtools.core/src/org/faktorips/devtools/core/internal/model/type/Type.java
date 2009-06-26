@@ -178,7 +178,7 @@ public abstract class Type extends BaseIpsObject implements IType {
      * {@inheritDoc}
      */
     public IAttribute getAttribute(String name) {
-        return (IAttribute)attributes.getPartByName(name);
+        return attributes.getPartByName(name);
     }
 
     /**
