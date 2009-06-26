@@ -19,6 +19,7 @@ import org.eclipse.core.runtime.CoreException;
 import org.faktorips.codegen.DatatypeHelper;
 import org.faktorips.codegen.JavaCodeFragment;
 import org.faktorips.codegen.JavaCodeFragmentBuilder;
+import org.faktorips.datatype.Datatype;
 import org.faktorips.datatype.ValueDatatype;
 import org.faktorips.devtools.core.builder.JavaSourceFileBuilder;
 import org.faktorips.devtools.core.builder.TypeSection;
@@ -27,6 +28,7 @@ import org.faktorips.devtools.core.model.pctype.AttributeType;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAttribute;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
 import org.faktorips.devtools.core.model.type.IAttribute;
+import org.faktorips.devtools.stdbuilder.EnumTypeDatatypeHelper;
 import org.faktorips.devtools.stdbuilder.policycmpttype.GenPolicyCmptType;
 import org.faktorips.devtools.stdbuilder.policycmpttype.GenPolicyCmptTypePart;
 import org.faktorips.runtime.internal.MethodNames;
@@ -215,13 +217,24 @@ public abstract class GenAttribute extends GenPolicyCmptTypePart {
         methodsBuilder.appendln(", options);");
     }
 
-    public void generateInitPropertiesFromXml(JavaCodeFragmentBuilder builder) throws CoreException {
+    public void generateInitPropertiesFromXml(JavaCodeFragmentBuilder builder, String repositoryExpression)
+            throws CoreException {
         String propMapName = "propMap";
         builder.append("if (" + propMapName + ".containsKey(");
         builder.appendQuoted(attributeName);
         builder.appendln(")) {");
         String expr = (isUseTypesafeCollections() ? "" : "(String)") + propMapName + ".get(\"" + attributeName + "\")";
         builder.append(getMemberVarName() + " = ");
+        if (datatypeHelper instanceof EnumTypeDatatypeHelper) {
+            EnumTypeDatatypeHelper enumHelper = (EnumTypeDatatypeHelper)datatypeHelper;
+            if (!enumHelper.getEnumType().isContainingValues()) {
+                builder.append(enumHelper.getEnumTypeBuilder().getValueByXXXCodeFragment(enumHelper.getEnumType(), expr,
+                        repositoryExpression));
+                builder.appendln(";");
+                builder.appendln("}");
+                return;
+            }
+        }
         builder.append(datatypeHelper.newInstanceFromExpression(expr));
         builder.appendln(";");
         builder.appendln("}");

@@ -16,6 +16,7 @@ package org.faktorips.runtime.internal;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.faktorips.runtime.IRuntimeRepository;
 import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
 import org.xml.sax.helpers.DefaultHandler;
@@ -47,8 +48,12 @@ public class TableSaxHandler extends DefaultHandler {
     // true if the current value node represents the null value
     private boolean nullValue;
     
-    public TableSaxHandler(Table table) {
+    //the product repository to get product information from
+    private IRuntimeRepository productRepository;
+    
+    public TableSaxHandler(Table table, IRuntimeRepository productRepository) {
         this.table = table;
+        this.productRepository = productRepository;
     }
 
     /**
@@ -57,7 +62,7 @@ public class TableSaxHandler extends DefaultHandler {
     public void endElement(String uri, String localName, String qName) throws SAXException {
         if (ROW.equals(qName)) {
             insideRowNode = false;
-            table.addRow(columns);
+            table.addRow(columns, productRepository);
             columns.clear();
         } else if (isColumnValueNode(qName)) {
             insideValueNode = false;

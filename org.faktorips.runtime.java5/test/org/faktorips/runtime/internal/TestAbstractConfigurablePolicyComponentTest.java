@@ -28,6 +28,7 @@ import org.faktorips.runtime.IConfigurableModelObject;
 import org.faktorips.runtime.IModelObject;
 import org.faktorips.runtime.INotificationSupport;
 import org.faktorips.runtime.IProductComponent;
+import org.faktorips.runtime.IRuntimeRepository;
 import org.faktorips.runtime.IUnresolvedReference;
 import org.faktorips.runtime.IValidationContext;
 import org.faktorips.runtime.InMemoryRuntimeRepository;
@@ -79,11 +80,11 @@ public class TestAbstractConfigurablePolicyComponentTest extends XmlAbstractTest
         assertEquals(productA, policy.getProductComponent());
         assertEquals(productGenA, policy.getProductCmptGeneration());
         
-        policy.setProductCmpt(productB);
+        policy.setProductComponent(productB);
         assertEquals(productB, policy.getProductComponent());
         assertEquals(productGenB, policy.getProductCmptGeneration());
         
-        policy.setProductCmpt(null);
+        policy.setProductComponent(null);
         assertNull(policy.getProductComponent());
         assertNull(policy.getProductCmptGeneration());
     }
@@ -309,7 +310,7 @@ public class TestAbstractConfigurablePolicyComponentTest extends XmlAbstractTest
         }
 
         @Override
-        protected void initPropertiesFromXml(Map<String, String> propMap) {
+        protected void initPropertiesFromXml(Map<String, String> propMap, IRuntimeRepository productRepository) {
             if (propMap.containsKey("effectiveDate")) {
                 effectiveDate = DateTime.parseIso(propMap.get("effectiveDate")).toGregorianCalendar(TimeZone.getDefault());
             }
@@ -375,7 +376,7 @@ public class TestAbstractConfigurablePolicyComponentTest extends XmlAbstractTest
         String prop0;
 
         @Override
-        protected void initPropertiesFromXml(Map<String, String> propMap) {
+        protected void initPropertiesFromXml(Map<String, String> propMap, IRuntimeRepository productRepository) {
             if (propMap.containsKey("prop0")) {
                 prop0 = propMap.get("prop0");
             }

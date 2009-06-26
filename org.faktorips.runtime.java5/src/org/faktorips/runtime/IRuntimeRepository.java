@@ -118,7 +118,6 @@ public interface IRuntimeRepository {
      * enumeration class. This method is only relevant for faktor ips enumerations whose values are
      * deferred to a content that is hold by this repository.
      * 
-     * 
      * @param clazz the enumeration class upon which the list of enumeration values is returned
      */
     public <T extends IEnumValue> List<T> getEnumValues(Class<T> clazz);

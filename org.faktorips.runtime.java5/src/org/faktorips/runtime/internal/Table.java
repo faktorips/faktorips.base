@@ -23,6 +23,7 @@ import java.util.Map;
 import javax.xml.parsers.SAXParser;
 import javax.xml.parsers.SAXParserFactory;
 
+import org.faktorips.runtime.IRuntimeRepository;
 import org.faktorips.runtime.ITable;
 import org.faktorips.runtime.internal.ReadOnlyBinaryRangeTree.KeyType;
 import org.faktorips.runtime.internal.ReadOnlyBinaryRangeTree.TwoColumnKey;
@@ -63,7 +64,7 @@ public abstract class Table implements ITable {
      * 
      * @param columns List of objects that contain the values.
      */
-    protected abstract void addRow(List<String> columns);
+    protected abstract void addRow(List<String> columns, IRuntimeRepository productRepository);
 
     /**
      * Is used by the generated classes to build up the the maps and trees that are used by the also
@@ -76,10 +77,10 @@ public abstract class Table implements ITable {
      * 
      * @throws Exception
      */
-    public void initFromXml(InputStream is) throws Exception {
+    public void initFromXml(InputStream is, IRuntimeRepository productRepository) throws Exception {
         rows = new ArrayList(200);
         SAXParser saxParser = SAXParserFactory.newInstance().newSAXParser();
-        saxParser.parse(new InputSource(is), new TableSaxHandler(this));
+        saxParser.parse(new InputSource(is), new TableSaxHandler(this, productRepository));
         ((ArrayList)rows).trimToSize();
         initKeyMaps();
     }

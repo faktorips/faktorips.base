@@ -25,6 +25,7 @@ import org.faktorips.datatype.ValueDatatype;
 import org.faktorips.devtools.core.builder.JavaSourceFileBuilder;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeAttribute;
+import org.faktorips.devtools.stdbuilder.EnumTypeDatatypeHelper;
 import org.faktorips.devtools.stdbuilder.productcmpttype.GenProductCmptType;
 import org.faktorips.devtools.stdbuilder.productcmpttype.GenProductCmptTypePart;
 import org.faktorips.runtime.internal.ValueToXmlHelper;
@@ -275,6 +276,15 @@ public class GenProdAttribute extends GenProductCmptTypePart {
         builder.append(".getValueFromElement(configElement, \"Value\");");
         builder.append(getMemberVarName());
         builder.append(" = ");
+        if (getDatatypeHelper() instanceof EnumTypeDatatypeHelper) {
+            EnumTypeDatatypeHelper enumHelper = (EnumTypeDatatypeHelper)getDatatypeHelper();
+            if (!enumHelper.getEnumType().isContainingValues()) {
+                builder.append(enumHelper.getEnumTypeBuilder().getValueByXXXCodeFragment(enumHelper.getEnumType(), "value",
+                        "getRepository()"));
+                builder.appendln(";");
+                return;
+            }
+        }
         builder.append(getDatatypeHelper().newInstanceFromExpression("value"));
         builder.appendln(";");
     }

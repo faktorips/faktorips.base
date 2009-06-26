@@ -191,9 +191,9 @@ public class ExcelEnumExportOperation extends AbstractTableExportOperation {
             IProgressMonitor monitor,
             boolean exportColumnHeaderRow) throws CoreException {
 
-        List<IEnumAttribute> enumAttributes = structure.getEnumAttributes();
+        List<IEnumAttribute> enumAttributes = structure.getEnumAttributesIncludeSupertypeCopies();
 
-        Datatype[] datatypes = new Datatype[structure.getEnumAttributesCount(false)];
+        Datatype[] datatypes = new Datatype[structure.getEnumAttributesCount(true)];
         for (int i = 0; i < datatypes.length; i++) {
             String datatype = enumAttributes.get(i).getDatatype();
             datatypes[i] = structure.getIpsProject().findDatatype(datatype);

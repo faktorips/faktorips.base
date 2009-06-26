@@ -43,6 +43,7 @@ import org.faktorips.devtools.core.model.tablestructure.IKeyItem;
 import org.faktorips.devtools.core.model.tablestructure.ITableStructure;
 import org.faktorips.devtools.core.model.tablestructure.IUniqueKey;
 import org.faktorips.devtools.core.util.QNameUtil;
+import org.faktorips.devtools.stdbuilder.EnumTypeDatatypeHelper;
 import org.faktorips.devtools.stdbuilder.StandardBuilderSet;
 import org.faktorips.runtime.IRuntimeRepository;
 import org.faktorips.runtime.internal.ReadOnlyBinaryRangeTree;
@@ -409,7 +410,17 @@ public class TableImplBuilder extends DefaultJavaSourceFileBuilder {
             methodBody.append(" == null ? ");
             methodBody.append(helper.nullExpression());
             methodBody.append(" : ");
-            methodBody.append(helper.newInstanceFromExpression(valueName));
+            if (helper instanceof EnumTypeDatatypeHelper) {
+                EnumTypeDatatypeHelper enumHelper = (EnumTypeDatatypeHelper)helper;
+                if (!enumHelper.getEnumType().isContainingValues()) {
+                    methodBody.append(enumHelper.getEnumTypeBuilder().getValueByXXXCodeFragment(enumHelper.getEnumType(), valueName,
+                            "productRepository"));
+                } else {
+                    methodBody.append(helper.newInstanceFromExpression(valueName));
+                }
+            } else {
+                methodBody.append(helper.newInstanceFromExpression(valueName));
+            }
             methodBody.append(';');
             methodBody.appendln();
         }
@@ -426,8 +437,8 @@ public class TableImplBuilder extends DefaultJavaSourceFileBuilder {
         methodBody.append("));");
 
         methodBody.addImport(List.class.getName());
-        codeBuilder.method(Modifier.PROTECTED, "void", "addRow", new String[] { "values" }, new String[] { List.class
-                .getName() }, methodBody, getLocalizedText(getIpsObject(), ADD_ROW_JAVADOC), ANNOTATION_GENERATED,
+        codeBuilder.method(Modifier.PROTECTED, "void", "addRow", new String[] { "values", "productRepository" }, new String[] { List.class
+                .getName(), IRuntimeRepository.class.getName() }, methodBody, getLocalizedText(getIpsObject(), ADD_ROW_JAVADOC), ANNOTATION_GENERATED,
                 isUseTypesafeCollections() ? new String[] { ANNOTATION_SUPPRESS_WARNINGS_UNCHECKED } : null);
     }
 

@@ -29,12 +29,14 @@ public class DefaultCacheFactory implements ICacheFactory {
     }
     
     public DefaultCacheFactory(int initialCapacityForProductCmpts, int initialCapacityForProductCmptGenerations,
-            int initialCapacityForTablesByClassname, int initialCapacityForTablesByQname) {
+            int initialCapacityForTablesByClassname, int initialCapacityForTablesByQname,
+            int initialCapacityForEnumContentByClassName) {
         super();
         this.initialCapacityForProductCmpts = initialCapacityForProductCmpts;
         this.initialCapacityForProductCmptGenerations = initialCapacityForProductCmptGenerations;
         this.initialCapacityForTablesByClassname = initialCapacityForTablesByClassname;
         this.initialCapacityForTablesByQname = initialCapacityForTablesByQname;
+        this.initialCapacityForEnumContentByClassName = initialCapacityForEnumContentByClassName;
     }
 
     /**

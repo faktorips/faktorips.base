@@ -195,13 +195,14 @@ public class FormulaTestInputValuesControl extends Composite implements ColumnCh
     }
     
     public FormulaTestInputValuesControl(Composite parent, UIToolkit uiToolkit,
-            UIController uiController) {
+            UIController uiController, IIpsProject ipsProject) {
         super(parent, SWT.NONE);
         ArgumentCheck.notNull(new Object[]{ parent, uiToolkit, uiController});
         
         this.uiToolkit = uiToolkit;
         this.uiController = uiController;
         this.empytImage = new Image(getShell().getDisplay(), 16, 16);
+        this.ipsProject = ipsProject;
     }
     
     /**

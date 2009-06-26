@@ -53,6 +53,7 @@ import org.faktorips.runtime.IDeltaComputationOptions;
 import org.faktorips.runtime.IModelObject;
 import org.faktorips.runtime.IModelObjectDelta;
 import org.faktorips.runtime.IModelObjectVisitor;
+import org.faktorips.runtime.IRuntimeRepository;
 import org.faktorips.runtime.IUnresolvedReference;
 import org.faktorips.runtime.IValidationContext;
 import org.faktorips.runtime.MessageList;
@@ -926,12 +927,12 @@ public class PolicyCmptImplClassBuilder extends BasePolicyCmptTypeBuilder {
                 first = false;
                 builder.javaDoc(getJavaDocCommentForOverriddenMethod(), ANNOTATION_GENERATED);
                 builder.methodBegin(java.lang.reflect.Modifier.PROTECTED, Void.TYPE.getName(),
-                        MethodNames.INIT_PROPERTIES_FROM_XML, new String[] { "propMap" },
+                        MethodNames.INIT_PROPERTIES_FROM_XML, new String[] { "propMap", "productRepository" },
                         new String[] { isUseTypesafeCollections() ? Map.class.getName() + "<" + String.class.getName()
-                                + "," + String.class.getName() + ">" : HashMap.class.getName() });
-                builder.appendln("super." + MethodNames.INIT_PROPERTIES_FROM_XML + "(propMap);");
+                                + "," + String.class.getName() + ">" : HashMap.class.getName(), IRuntimeRepository.class.getName() });
+                builder.appendln("super." + MethodNames.INIT_PROPERTIES_FROM_XML + "(propMap, productRepository);");
             }
-            generator.generateInitPropertiesFromXml(builder);
+            generator.generateInitPropertiesFromXml(builder, "productRepository");
         }
         if (!first) {
             builder.methodEnd();

@@ -18,6 +18,25 @@ import java.util.List;
 
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.jdt.core.ICompilationUnit;
+import org.eclipse.jdt.core.IJavaElement;
+import org.eclipse.jdt.core.IPackageFragment;
+import org.eclipse.jdt.core.IPackageFragmentRoot;
+import org.eclipse.jdt.core.IType;
+import org.eclipse.jdt.core.dom.AST;
+import org.eclipse.jdt.core.dom.ASTParser;
+import org.eclipse.jdt.core.dom.AbstractTypeDeclaration;
+import org.eclipse.jdt.core.dom.CompilationUnit;
+import org.eclipse.jdt.core.dom.MethodDeclaration;
+import org.eclipse.jdt.core.dom.ParameterizedType;
+import org.eclipse.jdt.core.dom.SimpleType;
+import org.eclipse.jdt.core.dom.SingleVariableDeclaration;
+import org.eclipse.jdt.core.dom.Type;
+import org.eclipse.jdt.core.dom.TypeDeclaration;
+import org.eclipse.jdt.internal.core.SourceType;
+import org.eclipse.jface.text.Document;
+import org.eclipse.text.edits.TextEdit;
+import org.faktorips.devtools.core.IpsStatus;
 import org.faktorips.devtools.core.internal.model.tablestructure.TableStructureType;
 import org.faktorips.devtools.core.model.enums.IEnumAttribute;
 import org.faktorips.devtools.core.model.enums.IEnumAttributeValue;
@@ -99,10 +118,83 @@ public class Migration2_2_to2_3 {
         replaceTableStructures(enumTableStructures, monitor);
         replaceTableContents(enumTableContents, ipsProject, monitor);
 
+        migrateInitFromXmlMethods(ipsProject, monitor);
+
         // Finish the monitor if available.
         if (monitor != null) {
             monitor.done();
         }
+    }
+
+    @SuppressWarnings("unchecked")
+    private static void migrateInitFromXmlMethods(IIpsProject ipsProject, IProgressMonitor monitor)
+            throws CoreException {
+        for (IPackageFragmentRoot root : ipsProject.getJavaProject().getPackageFragmentRoots()) {
+            for (IJavaElement javaElement : root.getChildren()) {
+                if (javaElement instanceof IPackageFragment) {
+                    IPackageFragment fragment = (IPackageFragment)javaElement;
+                    for (IJavaElement packageEl : fragment.getChildren()) {
+                        if (packageEl instanceof ICompilationUnit) {
+                            ICompilationUnit cu = (ICompilationUnit)packageEl;
+                            IType type = cu.findPrimaryType();
+                            if (type instanceof SourceType) {
+                                ASTParser parser = ASTParser.newParser(AST.JLS3);
+                                parser.setSource(cu);
+                                CompilationUnit rootNode = (CompilationUnit)parser.createAST(monitor);
+                                rootNode.recordModifications();
+                                AbstractTypeDeclaration abstractDeclaration = (AbstractTypeDeclaration)rootNode.types()
+                                        .get(0);
+                                boolean modified = false;
+                                if (abstractDeclaration instanceof TypeDeclaration) {
+                                    TypeDeclaration typeDecl = (TypeDeclaration)abstractDeclaration;
+                                    for (MethodDeclaration methodDecl : typeDecl.getMethods()) {
+                                        String methodName = methodDecl.getName().getFullyQualifiedName();
+                                        if (methodName.startsWith("initPropertiesFromXml")) {
+                                            List parameterList = methodDecl.parameters();
+                                            if (parameterList.size() == 1) {
+                                                SingleVariableDeclaration parameter = (SingleVariableDeclaration)parameterList
+                                                        .get(0);
+                                                Type paramType = parameter.getType();
+                                                if (paramType instanceof SimpleType) {
+                                                    SimpleType paraTypeSimple = (SimpleType)paramType;
+                                                    if (paraTypeSimple.getName().getFullyQualifiedName().equals("HashMap")) {
+                                                        methodDecl.delete();
+                                                        modified = true;
+                                                    }
+                                                }
+                                                if (paramType instanceof ParameterizedType) {
+                                                    ParameterizedType paraType = (ParameterizedType)paramType;
+                                                    Type hashTable = paraType.getType();
+                                                    if(hashTable instanceof SimpleType){
+                                                        if (((SimpleType)hashTable).getName().getFullyQualifiedName().equals("Map")) {
+                                                            methodDecl.delete();
+                                                            modified = true;
+                                                        }
+                                                    }
+                                                }
+                                            }
+                                        }
+                                    }
+                                    if (modified) {
+                                        Document document = new Document(cu.getSource());
+                                        TextEdit edits = rootNode.rewrite(document, cu.getJavaProject()
+                                                .getOptions(true));
+                                        try {
+                                            edits.apply(document);
+                                            cu.getBuffer().setContents(document.get());
+                                            cu.save(monitor, true);
+                                        } catch (Exception e) {
+                                            throw new CoreException(new IpsStatus(e));
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
     }
 
     /** Replaces the given enum table structures with new enum types. */

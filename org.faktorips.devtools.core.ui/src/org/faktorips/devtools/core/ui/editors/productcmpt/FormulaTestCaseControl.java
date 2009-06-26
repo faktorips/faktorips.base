@@ -488,7 +488,7 @@ public class FormulaTestCaseControl extends Composite implements ColumnChangeLis
         
         Group formulaTestInputGroup = uiToolkit.createGroup(this, Messages.FormulaTestCaseControl_GroupLabel_TestInput);
         formulaTestInputValuesControl = new FormulaTestInputValuesControl(formulaTestInputGroup, uiToolkit,
-                compositeUiController);
+                compositeUiController, ipsProject);
         formulaTestInputValuesControl.setCanCalulateResult(true);
         formulaTestInputValuesControl.setCanStoreExpectedResult(false);
         formulaTestInputValuesControl.setCanStoreFormulaTestCaseAsNewFormulaTestCase(false);

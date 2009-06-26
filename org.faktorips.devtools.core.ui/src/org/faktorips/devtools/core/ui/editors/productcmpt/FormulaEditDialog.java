@@ -245,7 +245,7 @@ public class FormulaEditDialog extends IpsPartEditDialog {
 
         // create the formula input composite
         Group formulaTestGroup = uiToolkit.createGroup(c, Messages.FormulaEditDialog_GroupLabel_FormulaTestInput);
-        formulaDummyTestInputValuesControl = new FormulaTestInputValuesControl(formulaTestGroup, uiToolkit, uiController);
+        formulaDummyTestInputValuesControl = new FormulaTestInputValuesControl(formulaTestGroup, uiToolkit, uiController, ipsProject);
         formulaDummyTestInputValuesControl.setCanCalulateResult(true);
         formulaDummyTestInputValuesControl.setCanStoreFormulaTestCaseAsNewFormulaTestCase(true);
         formulaDummyTestInputValuesControl.setCanStoreExpectedResult(true);

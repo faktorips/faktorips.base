@@ -45,7 +45,7 @@ public class TableTest extends XmlAbstractTestCase {
             throw new RuntimeException("Can't find resource " + resourceName);
         }
 
-        table.initFromXml(is);
+        table.initFromXml(is, null);
         
         TestTableRow row = (TestTableRow) table.rows.get(0);
         assertNull(row.getCompany());

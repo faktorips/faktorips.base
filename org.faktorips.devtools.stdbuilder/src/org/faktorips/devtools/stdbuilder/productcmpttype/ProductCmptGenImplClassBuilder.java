@@ -40,6 +40,7 @@ import org.faktorips.devtools.core.model.productcmpttype.ProductCmptTypeHierarch
 import org.faktorips.devtools.core.model.type.IAssociation;
 import org.faktorips.devtools.core.model.type.IMethod;
 import org.faktorips.devtools.core.model.valueset.ValueSetType;
+import org.faktorips.devtools.stdbuilder.EnumTypeDatatypeHelper;
 import org.faktorips.devtools.stdbuilder.StandardBuilderSet;
 import org.faktorips.devtools.stdbuilder.StdBuilderHelper;
 import org.faktorips.devtools.stdbuilder.policycmpttype.GenPolicyCmptType;
@@ -275,6 +276,15 @@ public class ProductCmptGenImplClassBuilder extends BaseProductCmptTypeBuilder {
         builder.append(".getValueFromElement(configElement, \"Value\");");
         builder.append(memberVar);
         builder.append(" = ");
+        if (helper instanceof EnumTypeDatatypeHelper) {
+            EnumTypeDatatypeHelper enumHelper = (EnumTypeDatatypeHelper)helper;
+            if (!enumHelper.getEnumType().isContainingValues()) {
+                builder.append(enumHelper.getEnumTypeBuilder().getValueByXXXCodeFragment(enumHelper.getEnumType(), "value",
+                        "getRepository()"));
+                builder.appendln(";");
+                return;
+            }
+        }
         builder.append(helper.newInstanceFromExpression("value"));
         builder.appendln(";");
     }

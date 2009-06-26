@@ -15,6 +15,7 @@ package org.faktorips.runtime.internal;
 
 import java.util.List;
 
+import org.faktorips.runtime.IRuntimeRepository;
 import org.faktorips.values.Decimal;
 
 public class TestTable extends Table {
@@ -29,7 +30,7 @@ public class TestTable extends Table {
 
     @Override
     @SuppressWarnings("unchecked")
-    protected void addRow(List columns) {
+    protected void addRow(List columns, IRuntimeRepository repository) {
         String company = (String)columns.get(0);
         Integer gender = columns.get(1) == null ? null : new Integer((String)columns.get(1));
         Decimal rate = columns.get(2) == null ? Decimal.NULL : Decimal.valueOf((String)columns.get(2));

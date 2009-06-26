@@ -188,7 +188,7 @@ public abstract class AbstractModelObject implements IModelObject {
                 initPropertyFromXml(el, propMap);
             }
         }
-        initPropertiesFromXml(propMap);
+        initPropertiesFromXml(propMap, productRepository);
 
         // if the a callback class is given then perform further initialization using the property
         // map
@@ -235,7 +235,7 @@ public abstract class AbstractModelObject implements IModelObject {
         propMap.put(propName, value);
     }
 
-    protected void initPropertiesFromXml(Map<String, String> propMap) {
+    protected void initPropertiesFromXml(Map<String, String> propMap, IRuntimeRepository productRepository) {
     }
 
     protected AbstractModelObject createChildFromXml(Element childEl) {

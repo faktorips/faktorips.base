@@ -15,6 +15,7 @@ package org.faktorips.runtime.testrepository.motor;
 
 import java.util.List;
 
+import org.faktorips.runtime.IRuntimeRepository;
 import org.faktorips.runtime.internal.Table;
 
 
@@ -30,7 +31,7 @@ public class RateTable extends Table {
 
     @Override
     @SuppressWarnings("unchecked")
-    protected void addRow(List columns) {
+    protected void addRow(List columns, IRuntimeRepository repository) {
     }
 
 }

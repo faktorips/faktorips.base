@@ -45,6 +45,20 @@ public class EnumTypeDatatypeHelper extends AbstractDatatypeHelper {
     }
 
     /**
+     * Returns the {@link IEnumType} of this helper.
+     */
+    public IEnumType getEnumType(){
+        return enumTypeAdapter.getEnumType();
+    }
+
+    /**
+     * Returns the {@link EnumTypeBuilder} wrapped by this helper.
+     */
+    public EnumTypeBuilder getEnumTypeBuilder(){
+        return enumTypeBuilder;
+    }
+    
+    /**
      * {@inheritDoc}
      */
     public JavaCodeFragment newInstance(String value) {

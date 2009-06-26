@@ -379,7 +379,8 @@ public class ClassloaderRuntimeRepository extends AbstractTocBasedRuntimeReposit
             for (Constructor<T> currentConstructor : constructors) {
                 if((currentConstructor.getModifiers() & Modifier.PRIVATE) > 0){
                     Class<?>[] parameterTypes = currentConstructor.getParameterTypes();
-                    if(parameterTypes.length == 1 && parameterTypes[0] == List.class){
+                    if (parameterTypes.length == 2 && parameterTypes[0] == List.class
+                            && parameterTypes[1] == IRuntimeRepository.class) {
                         constructor = currentConstructor;
                     }
                 }
@@ -390,7 +391,7 @@ public class ClassloaderRuntimeRepository extends AbstractTocBasedRuntimeReposit
             }
             for (List<String> enumValueAsStrings : saxhandler.getEnumValueList()) {
                 constructor.setAccessible(true);
-                enumValue = constructor.newInstance(new Object[] { enumValueAsStrings });
+                enumValue = constructor.newInstance(new Object[] { enumValueAsStrings, this });
                 enumValues.add(enumValue);
             }
         } catch (Exception e) {
@@ -462,7 +463,7 @@ public class ClassloaderRuntimeRepository extends AbstractTocBasedRuntimeReposit
         }
 
         try {
-            table.initFromXml(is);
+            table.initFromXml(is, this);
         } catch (Exception e) {
             throw new RuntimeException("Can't parse xml resource " + resource, e);
         } finally {

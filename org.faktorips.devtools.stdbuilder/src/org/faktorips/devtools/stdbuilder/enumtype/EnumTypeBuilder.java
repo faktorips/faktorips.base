@@ -37,6 +37,8 @@ import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
 import org.faktorips.devtools.core.model.ipsproject.IIpsArtefactBuilderSet;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
+import org.faktorips.devtools.stdbuilder.EnumTypeDatatypeHelper;
+import org.faktorips.runtime.IRuntimeRepository;
 import org.faktorips.util.ArgumentCheck;
 import org.faktorips.util.LocalizedStringsSet;
 
@@ -325,6 +327,12 @@ public class EnumTypeBuilder extends DefaultJavaSourceFileBuilder {
             String repositoryExp,
             boolean valueAsExpression) throws CoreException {
         JavaCodeFragment fragment = new JavaCodeFragment();
+ 
+        if(!java5EnumsAvailable()){
+            fragment.append("(");
+            fragment.appendClassName(getQualifiedClassName(enumType));
+            fragment.append(")");
+        }
         fragment.append(repositoryExp);
         fragment.append('.');
         fragment.append("getEnumValue(");
@@ -589,7 +597,6 @@ public class EnumTypeBuilder extends DefaultJavaSourceFileBuilder {
         }
 
         String enumValuesListName = "enumValues";
-
         JavaCodeFragment body = new JavaCodeFragment();
         int i = 0;
         for (IEnumAttribute currentEnumAttribute : enumType.getEnumAttributesIncludeSupertypeCopies()) {
@@ -603,18 +610,29 @@ public class EnumTypeBuilder extends DefaultJavaSourceFileBuilder {
                 DatatypeHelper helper = getIpsProject().findDatatypeHelper(datatype.getQualifiedName());
                 String expression = enumValuesListName + ".get(" + i + ")";
                 expression = java5EnumsAvailable() ? expression : "(String)" + expression;
+                if (helper instanceof EnumTypeDatatypeHelper) {
+                    EnumTypeDatatypeHelper enumHelper = (EnumTypeDatatypeHelper)helper;
+                    if (!enumHelper.getEnumType().isContainingValues()) {
+                        body.append(enumHelper.getEnumTypeBuilder().getValueByXXXCodeFragment(enumHelper.getEnumType(), expression,
+                                "productRepository"));
+                        body.append(';');
+                        body.appendln();
+                        break;
+                    }
+                }
                 body.append(helper.newInstanceFromExpression(expression));
                 body.append(';');
                 body.appendln();
             }
             i++;
         }
-        String[] argClasses = java5EnumsAvailable() ? new String[] { List.class.getName() + "<String>" }
-                : new String[] { List.class.getName() };
+        String[] argClasses = java5EnumsAvailable() ? new String[] { List.class.getName() + "<String>",
+                IRuntimeRepository.class.getName() } : new String[] { List.class.getName(),
+                IRuntimeRepository.class.getName() };
 
         appendLocalizedJavaDoc("CONSTRUCTOR", enumType.getName(), enumType, constructorBuilder);
         constructorBuilder.methodBegin(Modifier.PRIVATE, null, getNameForConstructor(enumType),
-                new String[] { enumValuesListName }, argClasses);
+                new String[] { enumValuesListName, "productRepository" }, argClasses);
         constructorBuilder.append(body);
         constructorBuilder.methodEnd();
 

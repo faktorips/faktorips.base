@@ -23,6 +23,7 @@ import org.faktorips.runtime.DefaultObjectReferenceStore;
 import org.faktorips.runtime.DefaultUnresolvedReference;
 import org.faktorips.runtime.IModelObject;
 import org.faktorips.runtime.INotificationSupport;
+import org.faktorips.runtime.IRuntimeRepository;
 import org.faktorips.runtime.IUnresolvedReference;
 import org.faktorips.runtime.IValidationContext;
 import org.faktorips.runtime.IpsPropertyChangeSupport;
@@ -256,7 +257,7 @@ public class TestAbstractPolicyComponentTest extends XmlAbstractTestCase {
         }
 
         @Override
-        protected void initPropertiesFromXml(Map<String, String> propMap) {
+        protected void initPropertiesFromXml(Map<String, String> propMap, IRuntimeRepository productRepository) {
             if (propMap.containsKey("prop0")) {
                 prop0 = propMap.get("prop0");
             }
@@ -313,7 +314,7 @@ public class TestAbstractPolicyComponentTest extends XmlAbstractTestCase {
         String prop0;
 
         @Override
-        protected void initPropertiesFromXml(Map<String, String> propMap) {
+        protected void initPropertiesFromXml(Map<String, String> propMap, IRuntimeRepository productRepository) {
             if (propMap.containsKey("prop0")) {
                 prop0 = propMap.get("prop0");
             }
