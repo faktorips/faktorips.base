@@ -226,15 +226,9 @@ public class EnumTypeBuilder extends DefaultJavaSourceFileBuilder {
      */
     private void generateConstantForSerialVersionNumber(JavaCodeFragmentBuilder constantBuilder) throws CoreException {
         IEnumType enumType = getEnumType();
-
-        String packageName = getBuilderSet().getPackage(PACKAGE_STRUCTURE_KIND_ID, getIpsSrcFile());
-        int hashCode = 17;
-        hashCode = 37 * hashCode + packageName.hashCode();
-        hashCode = 37 * hashCode + enumType.getName().hashCode();
-
         appendLocalizedJavaDoc("SERIALVERSIONUID", enumType, constantBuilder);
         constantBuilder.varDeclaration(Modifier.PUBLIC | Modifier.FINAL | Modifier.STATIC, Long.TYPE,
-                "serialVersionUID", new JavaCodeFragment(String.valueOf(hashCode)));
+                "serialVersionUID", new JavaCodeFragment("1L"));
         constantBuilder.appendLn(' ');
     }
 
@@ -655,17 +649,17 @@ public class EnumTypeBuilder extends DefaultJavaSourceFileBuilder {
 
     /** Generates the java code for the methods. */
     private void generateCodeForMethods(JavaCodeFragmentBuilder methodBuilder) throws CoreException {
-        generateCodeForGetValueByMethods(methodBuilder);
-        generateCodeForIsValueByMethods(methodBuilder);
-        generateCodeForGetterMethods(methodBuilder);
-        generateCodeForMethodValues(methodBuilder);
-        generateCodeForMethodReadResolve(methodBuilder);
-        generateCodeForMethodToString(methodBuilder);
+        generateMethodGetValueBy(methodBuilder);
+        generateMethodIsValueBy(methodBuilder);
+        generateMethodGetterMethods(methodBuilder);
+        generateMethodValues(methodBuilder);
+        generateMethodReadResolve(methodBuilder);
+        generateMethodToString(methodBuilder);
         generateMethodGetIDOfEnumValuesInterface(methodBuilder);
     }
 
     /** Generates the java code for the getter methods. */
-    private void generateCodeForGetterMethods(JavaCodeFragmentBuilder methodBuilder) throws CoreException {
+    private void generateMethodGetterMethods(JavaCodeFragmentBuilder methodBuilder) throws CoreException {
         IEnumType enumType = getEnumType();
         List<IEnumAttribute> enumAttributes = enumType.getEnumAttributesIncludeSupertypeCopies();
         IIpsProject ipsProject = getIpsProject();
@@ -740,7 +734,7 @@ public class EnumTypeBuilder extends DefaultJavaSourceFileBuilder {
      *  }
      * </pre>
      */
-    private void generateCodeForGetValueByMethods(JavaCodeFragmentBuilder methodBuilder) throws CoreException {
+    private void generateMethodGetValueBy(JavaCodeFragmentBuilder methodBuilder) throws CoreException {
         IEnumType enumType = getEnumType();
         if (!(enumType.isContainingValues()) || enumType.isAbstract()) {
             return;
@@ -813,7 +807,7 @@ public class EnumTypeBuilder extends DefaultJavaSourceFileBuilder {
      * }
      * </pre>
      */
-    private void generateCodeForIsValueByMethods(JavaCodeFragmentBuilder methodBuilder) throws CoreException {
+    private void generateMethodIsValueBy(JavaCodeFragmentBuilder methodBuilder) throws CoreException {
         IEnumType enumType = getEnumType();
         if (!(enumType.isContainingValues()) || enumType.isAbstract()) {
             return;
@@ -822,7 +816,7 @@ public class EnumTypeBuilder extends DefaultJavaSourceFileBuilder {
         List<IEnumAttribute> uniqueIdentifierAttributes = enumType.getEnumAttributesIncludeSupertypeCopies();
         for (IEnumAttribute currentUniqueIdentifierEnumAttribute : uniqueIdentifierAttributes) {
             if (currentUniqueIdentifierEnumAttribute.isValid()) {
-                if (currentUniqueIdentifierEnumAttribute.isUniqueIdentifier()) {
+                if (currentUniqueIdentifierEnumAttribute.findIsUniqueIdentifier(getIpsProject())) {
                     String currentUniqueIdentifierName = currentUniqueIdentifierEnumAttribute.getName();
 
                     JavaCodeFragment methodBody = new JavaCodeFragment();
@@ -860,7 +854,7 @@ public class EnumTypeBuilder extends DefaultJavaSourceFileBuilder {
      * Not generated for java5 enum generation because for java5 enums the method is provided by
      * java itself.
      */
-    private void generateCodeForMethodValues(JavaCodeFragmentBuilder methodBuilder) throws CoreException {
+    private void generateMethodValues(JavaCodeFragmentBuilder methodBuilder) throws CoreException {
         IEnumType enumType = getEnumType();
         if (useEnumGeneration() || enumType.isAbstract() || !(enumType.isContainingValues())) {
             return;
@@ -912,9 +906,9 @@ public class EnumTypeBuilder extends DefaultJavaSourceFileBuilder {
      * 
      * Only generated for class generation because java5 enums are serializable out of the box.
      */
-    private void generateCodeForMethodReadResolve(JavaCodeFragmentBuilder methodBuilder) throws CoreException {
+    private void generateMethodReadResolve(JavaCodeFragmentBuilder methodBuilder) throws CoreException {
         IEnumType enumType = getEnumType();
-        if (!(useClassGeneration()) || enumType.isAbstract()) {
+        if (!(useClassGeneration()) || enumType.isAbstract() || !enumType.isContainingValues()) {
             return;
         }
 
@@ -957,7 +951,7 @@ public class EnumTypeBuilder extends DefaultJavaSourceFileBuilder {
      * }
      * </pre>
      */
-    private void generateCodeForMethodToString(JavaCodeFragmentBuilder methodBuilder) throws CoreException {
+    private void generateMethodToString(JavaCodeFragmentBuilder methodBuilder) throws CoreException {
         if (useInterfaceGeneration()) {
             return;
         }
