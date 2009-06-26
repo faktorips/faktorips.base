@@ -131,12 +131,25 @@ public class Message {
     }
 
     /**
+     * Constructs a new error message.
+     * 
+     * @param code The code that identifies the message.
+     * @param text The human readable text of the message.
+     * @param invalidObject The invalid object to refer to.
+     * @param invalidProperty The name of the invalid property (which is a property of the invalidObject)
+     * 
+     * @return The newly created message.
+     */
+    public final static Message newError(String code, String text, Object invalidObject, String invalidProperty) {
+        return new Message(code, text, ERROR, invalidObject, invalidProperty);
+    }
+
+    /**
      * Copy constructor.
      * 
      * @param msg The message to copy from.
      */
     public Message(Message msg) {
-        // TODO Argument Check?
         this.code = msg.code;
         this.severity = msg.severity;
         this.text = msg.text;
