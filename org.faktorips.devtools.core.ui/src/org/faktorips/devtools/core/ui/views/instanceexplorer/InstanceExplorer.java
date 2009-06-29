@@ -235,9 +235,11 @@ public class InstanceExplorer extends ViewPart implements IResourceChangeListene
     }
     
     private void setInputData(IIpsObject element) {
-		tableViewer.setInput(element);
-		selectedElementLabel.setData(element);
-		selectedElementLabel.pack();
+    	if (tableViewer != null && !tableViewer.getTable().isDisposed()) {
+			tableViewer.setInput(element);
+			selectedElementLabel.setData(element);
+			selectedElementLabel.pack();
+    	}
     }
     
     private void showEmptyTableMessage(IIpsObject element) {
@@ -258,16 +260,24 @@ public class InstanceExplorer extends ViewPart implements IResourceChangeListene
     }
 
     private void showErrorMessage(String message) {
-        errormsg.setText(message);
-        showMessgeOrTableView(MessageTableSwitch.MESSAGE);
+    	if (errormsg != null && !errormsg.isDisposed()) {
+    		errormsg.setText(message);
+       		showMessgeOrTableView(MessageTableSwitch.MESSAGE);
+    	}
 	}
 
     private void showMessgeOrTableView(MessageTableSwitch mtSwitch) {
-        errormsg.setVisible(mtSwitch.isMessage());
-        tableViewer.getTable().setVisible(!mtSwitch.isMessage());
-        ((GridData)errormsg.getLayoutData()).exclude = !mtSwitch.isMessage();
-        ((GridData)tableViewer.getTable().getLayoutData()).exclude = mtSwitch.isMessage();
-        panel.layout();
+    	if (errormsg != null && !errormsg.isDisposed()) {
+    		errormsg.setVisible(mtSwitch.isMessage());
+    		((GridData)errormsg.getLayoutData()).exclude = !mtSwitch.isMessage();
+    	}
+    	if (tableViewer != null && !tableViewer.getTable().isDisposed()) {
+	        tableViewer.getTable().setVisible(!mtSwitch.isMessage());
+	        ((GridData)tableViewer.getTable().getLayoutData()).exclude = mtSwitch.isMessage();
+    	}
+    	if (panel != null && !panel.isDisposed()) {
+    		panel.layout();
+    	}
     }
 
 	/* (non-Javadoc)
