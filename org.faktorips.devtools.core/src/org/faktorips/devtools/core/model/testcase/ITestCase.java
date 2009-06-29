@@ -15,8 +15,6 @@ package org.faktorips.devtools.core.model.testcase;
 
 import org.eclipse.core.runtime.CoreException;
 import org.faktorips.devtools.core.model.IIpsMetaObject;
-import org.faktorips.devtools.core.model.ipsobject.IFixDifferencesToModelSupport;
-import org.faktorips.devtools.core.model.ipsobject.IIpsObject;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.pctype.IValidationRule;
 import org.faktorips.devtools.core.model.testcasetype.ITestCaseType;
@@ -27,7 +25,7 @@ import org.faktorips.devtools.core.model.testcasetype.TestParameterType;
  * 
  * @author Joerg Ortmann
  */
-public interface ITestCase extends IIpsMetaObject, IFixDifferencesToModelSupport {
+public interface ITestCase extends IIpsMetaObject {
     
     /** Property names */
     public final static String PROPERTY_TEST_CASE_TYPE = "testCaseType"; //$NON-NLS-1$
