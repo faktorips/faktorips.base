@@ -23,7 +23,7 @@ import org.faktorips.devtools.core.ui.UIToolkit;
 
 
 /**
- * A control to edit policy component type references.  
+ * A control to edit table structure references.  
  */
 public class TableStructureRefControl extends IpsObjectRefControl {
 

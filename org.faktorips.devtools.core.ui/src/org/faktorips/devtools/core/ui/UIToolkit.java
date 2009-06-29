@@ -495,7 +495,7 @@ public class UIToolkit {
     }
     
     /**
-     * Creates a new PcTypeRefControl.
+     * Creates a new TableStructureRefControl.
      */
     public TableStructureRefControl createTableStructureRefControl(IIpsProject project, Composite parent) {
         return new TableStructureRefControl(project, parent, this);
