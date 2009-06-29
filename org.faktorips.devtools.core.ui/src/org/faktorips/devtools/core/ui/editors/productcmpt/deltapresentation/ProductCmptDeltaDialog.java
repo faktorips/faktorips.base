@@ -15,7 +15,6 @@ package org.faktorips.devtools.core.ui.editors.productcmpt.deltapresentation;
 
 
 import org.eclipse.jface.dialogs.IMessageProvider;
-import org.eclipse.jface.dialogs.TitleAreaDialog;
 import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.osgi.util.NLS;
 import org.eclipse.swt.SWT;
@@ -30,21 +29,18 @@ import org.eclipse.swt.widgets.Shell;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.model.productcmpt.IGenerationToTypeDelta;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmptGeneration;
-import org.faktorips.devtools.core.ui.UIToolkit;
+import org.faktorips.devtools.core.ui.editors.deltapresentation.AbstractDeltaDialog;
 
 /**
  * Dialog to display differences between a product component and its type.
  * 
  * @author Thorsten Guenther
  */
-public class ProductCmptDeltaDialog extends TitleAreaDialog {
+public class ProductCmptDeltaDialog extends AbstractDeltaDialog {
 
 	private IProductCmptGeneration[] generations;
 	private IGenerationToTypeDelta[] deltas;
-	private TreeViewer tree;
 	private List generationsList;
-	private UIToolkit toolkit;
-	private Composite parent;
 	
 	/**
 	 * Create a new dialog, showing all the differences given. The first delta found
@@ -59,15 +55,12 @@ public class ProductCmptDeltaDialog extends TitleAreaDialog {
 		super.setShellStyle(getShellStyle() | SWT.RESIZE);
 		this.generations = generations;
 		this.deltas = deltas;
-		this.toolkit = new UIToolkit(null);
 	}
 
 	/**
 	 * {@inheritDoc}
 	 */
 	protected Control createDialogArea(Composite parent) {
-		this.parent = parent;
-		
 		String genTextPlural = IpsPlugin.getDefault().getIpsPreferences().getChangesOverTimeNamingConvention().getGenerationConceptNamePlural();
 		String genTextSingular = IpsPlugin.getDefault().getIpsPreferences().getChangesOverTimeNamingConvention().getGenerationConceptNameSingular();
 		Composite root = (Composite)super.createDialogArea(parent);
@@ -149,16 +142,6 @@ public class ProductCmptDeltaDialog extends TitleAreaDialog {
 	}
 
 
-    /**
-	 * {@inheritDoc}
-	 */
-	protected Control createButtonBar(Composite parent) {
-		Control buttons = super.createButtonBar(parent);
-		super.getButton(OK).setText(Messages.ProductCmptDeltaDialog_fix);
-		super.getButton(CANCEL).setText(Messages.ProductCmptDeltaDialog_ignore);
-		return buttons; 
-	}
-
     /*
 	 * Returns <code>true</code> if the user can edit recent generations, if
 	 * recent generations couldn't be edit return <code>false</code>.
@@ -168,10 +151,7 @@ public class ProductCmptDeltaDialog extends TitleAreaDialog {
 	}
 
 	private void updateDeltaView() {
-		tree.setInput(deltas[generationsList.getSelectionIndex()]);
-		tree.refresh();
-		tree.expandAll();
-		parent.layout();
+		updateDeltaView(deltas[generationsList.getSelectionIndex()]);
 	}
 	
 	public IProductCmptGeneration[] getGenerations() {

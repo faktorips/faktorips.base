@@ -14,6 +14,7 @@
 package org.faktorips.devtools.core.ui.editors.testcase.deltapresentation;
 
 import org.eclipse.swt.graphics.Image;
+import org.faktorips.devtools.core.ui.editors.deltapresentation.DeltaCompositeIcon;
 import org.faktorips.devtools.core.ui.editors.testcase.TestCaseContentProvider;
 import org.faktorips.devtools.core.ui.editors.testcase.TestCaseLabelProvider;
 
@@ -109,7 +110,7 @@ public class TestCaseDeltaWrapperObject {
      * Returns the to be delted image.
      */
     private Image getDeletedImage(Image base){
-        return DeltaCompositeIcon.createToBeDeletedImage(base);
+        return DeltaCompositeIcon.createDeleteImage(base);
     }
     
     /**

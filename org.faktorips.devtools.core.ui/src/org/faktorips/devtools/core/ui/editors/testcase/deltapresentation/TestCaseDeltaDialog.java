@@ -15,7 +15,6 @@ package org.faktorips.devtools.core.ui.editors.testcase.deltapresentation;
 
 
 import org.eclipse.jface.dialogs.IMessageProvider;
-import org.eclipse.jface.dialogs.TitleAreaDialog;
 import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.GridData;
@@ -25,17 +24,14 @@ import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Shell;
 import org.faktorips.devtools.core.model.testcase.ITestCaseTestCaseTypeDelta;
 import org.faktorips.devtools.core.ui.UIToolkit;
+import org.faktorips.devtools.core.ui.editors.deltapresentation.AbstractDeltaDialog;
 
 /**
  * Dialog to display differences between a test case and its test case type.
  * 
  * @author Joerg Ortmann
  */
-public class TestCaseDeltaDialog extends TitleAreaDialog {
-	// Ui elements
-    private TreeViewer tree;
-	private UIToolkit toolkit;
-    private Composite parent;
+public class TestCaseDeltaDialog extends AbstractDeltaDialog {
     
     // The displayed delta in the dialog
     private ITestCaseTestCaseTypeDelta delta;
@@ -47,7 +43,6 @@ public class TestCaseDeltaDialog extends TitleAreaDialog {
 		super(parentShell);
 		super.setShellStyle(getShellStyle() | SWT.RESIZE);
 		this.delta = delta;
-        this.parent = parentShell;
         
 		this.toolkit = new UIToolkit(null);
 	}
@@ -87,20 +82,7 @@ public class TestCaseDeltaDialog extends TitleAreaDialog {
 	}
 	
     private void updateDeltaView() {
-        tree.setInput(delta);
-        tree.refresh();
-        tree.expandAll();
-        tree.getControl().redraw();
-        parent.layout();
+        updateDeltaView(delta);
     }
-    
-	/**
-	 * {@inheritDoc}
-	 */
-	protected Control createButtonBar(Composite parent) {
-		Control buttons = super.createButtonBar(parent);
-		super.getButton(OK).setText(Messages.TestCaseDeltaDialog_Button_Fix);
-		super.getButton(CANCEL).setText(Messages.TestCaseDeltaDialog_Button_Ignore);
-		return buttons; 
-	}
+
 }

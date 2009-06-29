@@ -177,7 +177,7 @@ public class ProductCmptEditor extends TimedIpsObjectEditor implements IModelDes
             logMethodFinished("checkForInconsistenciesToModel"); //$NON-NLS-1$
         }
     }
-
+    
 	/**
 	 * {@inheritDoc}
 	 */

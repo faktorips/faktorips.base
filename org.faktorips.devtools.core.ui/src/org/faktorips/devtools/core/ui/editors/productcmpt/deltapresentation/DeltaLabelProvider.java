@@ -22,6 +22,7 @@ import org.eclipse.swt.graphics.Image;
 import org.faktorips.devtools.core.model.productcmpt.DeltaType;
 import org.faktorips.devtools.core.model.productcmpt.IDeltaEntry;
 import org.faktorips.devtools.core.model.productcmpt.IDeltaEntryForProperty;
+import org.faktorips.devtools.core.ui.editors.deltapresentation.DeltaCompositeIcon;
 
 /**
  * 

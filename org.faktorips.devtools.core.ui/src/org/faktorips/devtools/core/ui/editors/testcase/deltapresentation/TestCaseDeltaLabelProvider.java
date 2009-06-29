@@ -23,6 +23,7 @@ import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.testcase.ITestAttributeValue;
 import org.faktorips.devtools.core.model.testcasetype.ITestAttribute;
 import org.faktorips.devtools.core.model.testcasetype.ITestParameter;
+import org.faktorips.devtools.core.ui.editors.deltapresentation.DeltaCompositeIcon;
 import org.faktorips.devtools.core.ui.editors.testcase.TestCaseLabelProvider;
 
 /**
@@ -97,17 +98,17 @@ final class TestCaseDeltaLabelProvider implements ILabelProvider {
         if (element instanceof TestCaseDeltaType){
             return ((TestCaseDeltaType) element).getImage();
         } else if (element instanceof ITestParameter){
-            return DeltaCompositeIcon.createNewImage(((ITestParameter)element).getImage());
+            return DeltaCompositeIcon.createAddImage(((ITestParameter)element).getImage());
         } else if (element instanceof TestCaseDeltaWrapperObject){
             // The element wrapps the test case content tree, therefore
             // delegate the method to the test case content provider            
             return ((TestCaseDeltaWrapperObject)element).getImage(testCaseLabelProvider);
         } else if (element instanceof ITestAttributeValue){
             // if there is a test attribute value then the deleted image will be returned
-            return DeltaCompositeIcon.createToBeDeletedImage(((ITestAttributeValue)element).getImage());
+            return DeltaCompositeIcon.createDeleteImage(((ITestAttributeValue)element).getImage());
         }  else if (element instanceof ITestAttribute){
             // if there is a test attribute then the new image will be returned
-            return DeltaCompositeIcon.createNewImage(((ITestAttribute)element).getImage());
+            return DeltaCompositeIcon.createAddImage(((ITestAttribute)element).getImage());
         }  else if (element instanceof IIpsObjectPart){
             return ((IIpsObjectPart)element).getImage();
         }

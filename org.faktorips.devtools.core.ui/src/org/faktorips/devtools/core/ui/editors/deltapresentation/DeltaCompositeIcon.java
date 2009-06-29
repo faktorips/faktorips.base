@@ -11,7 +11,7 @@
  * Mitwirkende: Faktor Zehn AG - initial API and implementation - http://www.faktorzehn.de
  *******************************************************************************/
 
-package org.faktorips.devtools.core.ui.editors.testcase.deltapresentation;
+package org.faktorips.devtools.core.ui.editors.deltapresentation;
 
 import org.eclipse.jface.resource.CompositeImageDescriptor;
 import org.eclipse.swt.graphics.Image;
@@ -19,26 +19,32 @@ import org.eclipse.swt.graphics.Point;
 import org.faktorips.devtools.core.IpsPlugin;
 
 /**
- * Composite image to indicate that an object will be removed. A delete image will be rendered above
- * a given base image.
+ * Composite image to indicate changes to an object
  * 
- * @author Joerg Ortmann
+ * @author Thorsten Guenther
  */
 public class DeltaCompositeIcon extends CompositeImageDescriptor {
     private final Point DEFAULT_SIZE = new Point(16, 16);
     private Image baseImage;
-    private static int NEW = 1;
-    private static int TO_BE_DELETED = 2;
+    
+    private static final int ADD = 1;
+    private static final int DELETE = 2;
+    private static final int MODIFY = 3;
+    
     private int imageFor = 0;
     
-    public static Image createToBeDeletedImage(Image baseImage){
-        return IpsPlugin.getDefault().getImage(new DeltaCompositeIcon(baseImage, TO_BE_DELETED));
+    public static Image createDeleteImage(Image baseImage){
+        return IpsPlugin.getDefault().getImage(new DeltaCompositeIcon(baseImage, DELETE));
     }
     
-    public static Image createNewImage(Image baseImage){
-        return IpsPlugin.getDefault().getImage(new DeltaCompositeIcon(baseImage, NEW));
+    public static Image createAddImage(Image baseImage){
+        return IpsPlugin.getDefault().getImage(new DeltaCompositeIcon(baseImage, ADD));
     }
     
+    public static Image createModifyImage(Image baseImage){
+        return IpsPlugin.getDefault().getImage(new DeltaCompositeIcon(baseImage, MODIFY));
+    }
+
     private DeltaCompositeIcon(Image baseImage, int imageFor){
         this.imageFor = imageFor;
         this.baseImage = baseImage;
@@ -50,10 +56,18 @@ public class DeltaCompositeIcon extends CompositeImageDescriptor {
         }
             
         drawImage(baseImage.getImageData(), 0, 0);
-        if (imageFor == TO_BE_DELETED)
-            drawImage(IpsPlugin.getDefault().getImage("DeleteOverlay.gif").getImageData(), 0, 0); //$NON-NLS-1$
-        else if (imageFor == NEW)
-            drawImage(IpsPlugin.getDefault().getImage("AddOverlay.gif").getImageData(), 0, 0);         //$NON-NLS-1$
+        
+        switch (imageFor) {
+            case ADD:
+                drawImage(IpsPlugin.getDefault().getImage("AddOverlay.gif").getImageData(), 8, 0); //$NON-NLS-1$
+                break;
+            case DELETE:
+                drawImage(IpsPlugin.getDefault().getImage("DeleteOverlay.gif").getImageData(), 8, 0); //$NON-NLS-1$
+                break;
+            case MODIFY:
+                drawImage(IpsPlugin.getDefault().getImage("ModifyOverlay.gif").getImageData(), 8, 0); //$NON-NLS-1$
+                break;
+        }
     }
 
     protected Point getSize() {
