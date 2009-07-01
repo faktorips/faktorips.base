@@ -13,6 +13,10 @@
 
 package org.faktorips.devtools.core.model;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+
 import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPart;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPartContainer;
 import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
@@ -49,6 +53,10 @@ public class ContentChangeEvent  {
         return new ContentChangeEvent(file, parts);
     }
 
+    public final static ContentChangeEvent newPartsChangedPositionsChangedEvent(IIpsSrcFile file, List<? extends IIpsObjectPart> parts) {
+        return new ContentChangeEvent(file, parts);
+    }
+
     public final static ContentChangeEvent newWholeContentChangedEvent(IIpsSrcFile file) {
         return new ContentChangeEvent(file);
     }
@@ -57,7 +65,7 @@ public class ContentChangeEvent  {
     
     private IIpsObjectPart part;
     
-    private IIpsObjectPart[] movedParts = null;
+    private List<IIpsObjectPart> movedParts = null;
     
     private int type = TYPE_PROPERTY_CHANGED;
     
@@ -75,8 +83,15 @@ public class ContentChangeEvent  {
     
     private ContentChangeEvent(IIpsSrcFile file, IIpsObjectPart[] parts) {
         this.ipsSrcFile = file;
-        this.movedParts = parts;
+        this.movedParts = new ArrayList<IIpsObjectPart>();
+        for (int i = 0; i < parts.length; i++) {
+            movedParts.add(parts[i]);
+        }
         this.type = TYPE_PARTS_CHANGED_POSITIONS;
+    }
+    
+    private ContentChangeEvent(IIpsSrcFile file, List<? extends IIpsObjectPart> parts) {
+        movedParts = Collections.unmodifiableList(parts);
     }
 
     /**
@@ -111,7 +126,7 @@ public class ContentChangeEvent  {
         if (movedParts==null) {
             return new IIpsObjectPart[0];
         }
-        return movedParts;
+        return movedParts.toArray(new IIpsObjectPart[movedParts.size()]);
     }
     
     public boolean isAffected(IIpsObjectPartContainer partContainer) {
@@ -130,15 +145,15 @@ public class ContentChangeEvent  {
         if (movedParts==null) {
             return false;
         }
-        for (int i = 0; i < movedParts.length; i++) {
-            if (movedParts[i] == partContainer) {
+        for (IIpsObjectPart part : movedParts) {
+            if (part == partContainer) {
                 return true;
             }
         }
         return false;
     }
     
-    public boolean containsAffectedObjects(Class type) {
+    public boolean containsAffectedObjects(Class<?> type) {
         ArgumentCheck.notNull(type);
         if (part!=null) {
             if (type.isAssignableFrom(part.getClass())) {
@@ -148,8 +163,8 @@ public class ContentChangeEvent  {
         if (movedParts==null) {
             return false;
         }
-        for (int i = 0; i < movedParts.length; i++) {
-            if (type.isAssignableFrom(movedParts[i].getClass())) {
+        for (IIpsObjectPart part : movedParts) {
+            if (type.isAssignableFrom(part.getClass())) {
                 return true;
             }
         }
