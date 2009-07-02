@@ -305,7 +305,6 @@ public class EnumType extends EnumValueContainer implements IEnumType {
         if (enumAttribute.getEnumType() != this) {
             throw new NoSuchElementException();
         }
-
         if (up) {
             // Can't move further up any more.
             if (enumAttribute == enumAttributes.getPart(0)) {
@@ -344,12 +343,9 @@ public class EnumType extends EnumValueContainer implements IEnumType {
     public int getIndexOfEnumAttribute(IEnumAttribute enumAttribute) {
         ArgumentCheck.notNull(enumAttribute);
 
-        List<IEnumAttribute> enumAttributesList = enumAttributes.getBackingList();
-        for (int i = 0; i < enumAttributesList.size(); i++) {
-            IEnumAttribute currentEnumAttribute = enumAttributesList.get(i);
-            if (currentEnumAttribute == enumAttribute) {
-                return i;
-            }
+        int index = enumAttributes.indexOf(enumAttribute);
+        if (index >= 0) {
+            return index;
         }
 
         throw new NoSuchElementException();
@@ -724,7 +720,7 @@ public class EnumType extends EnumValueContainer implements IEnumType {
      */
     public void deleteEnumAttributeWithValues(final IEnumAttribute enumAttribute) throws CoreException {
         ArgumentCheck.notNull(enumAttribute);
-        ArgumentCheck.isTrue(enumAttributes.getBackingList().contains(enumAttribute));
+        ArgumentCheck.isTrue(enumAttributes.contains(enumAttribute));
 
         // Deleting an enum attribute consists of multiple operations that need to be batched.
         IWorkspaceRunnable workspaceRunnable = new IWorkspaceRunnable() {

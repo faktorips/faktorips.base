@@ -44,20 +44,23 @@ public class IpsObjectPartCollection<T extends IIpsObjectPart> implements Iterab
 
     private IpsObjectPartContainer parent;
     private String xmlTag;
-    private Class partsBaseClass;
-    private Class partsPublishedInterface;
-    private Constructor constructor;
+    private Class<? extends IpsObjectPart> partsBaseClass;
+    private Class<? extends IIpsObjectPart> partsPublishedInterface;
+    private Constructor<IpsObjectPart> constructor;
 
     private List<T> parts = new ArrayList<T>();
 
-    public IpsObjectPartCollection(BaseIpsObject ipsObject, Class partsClazz, Class publishedInterface, String xmlTag) {
+    public IpsObjectPartCollection(BaseIpsObject ipsObject, Class<? extends IpsObjectPart> partsClazz, Class<? extends IIpsObjectPart> publishedInterface, String xmlTag) {
         this(partsClazz, publishedInterface, xmlTag);
         ArgumentCheck.notNull(ipsObject);
         this.parent = ipsObject;
         ipsObject.addPartCollection(this);
     }
 
-    public IpsObjectPartCollection(BaseIpsObjectPart ipsObjectPart, Class partsClazz, Class publishedInterface,
+    public IpsObjectPartCollection(
+            BaseIpsObjectPart ipsObjectPart, 
+            Class<? extends IpsObjectPart> partsClazz, 
+            Class<? extends IIpsObjectPart> publishedInterface,
             String xmlTag) {
         this(partsClazz, publishedInterface, xmlTag);
         ArgumentCheck.notNull(ipsObjectPart);
@@ -65,7 +68,10 @@ public class IpsObjectPartCollection<T extends IIpsObjectPart> implements Iterab
         ipsObjectPart.addPartCollection(this);
     }
 
-    private IpsObjectPartCollection(Class partsClazz, Class publishedInterface, String xmlTag) {
+    private IpsObjectPartCollection(
+            Class<? extends IpsObjectPart> partsClazz, 
+            Class<? extends IIpsObjectPart> publishedInterface, 
+            String xmlTag) {
         ArgumentCheck.notNull(partsClazz);
         ArgumentCheck.notNull(publishedInterface);
         ArgumentCheck.notNull(xmlTag);
@@ -75,8 +81,9 @@ public class IpsObjectPartCollection<T extends IIpsObjectPart> implements Iterab
         constructor = getConstructor();
     }
 
-    private Constructor getConstructor() {
-        Constructor[] constructors = partsBaseClass.getConstructors();
+    @SuppressWarnings("unchecked")
+    private Constructor<IpsObjectPart> getConstructor() {
+        Constructor<IpsObjectPart>[] constructors = partsBaseClass.getConstructors();
         for (int i = 0; i < constructors.length; i++) {
             Class[] params = constructors[i].getParameterTypes();
             if (params.length != 2) {
@@ -101,9 +108,17 @@ public class IpsObjectPartCollection<T extends IIpsObjectPart> implements Iterab
     public int size() {
         return parts.size();
     }
+    
+    public int indexOf(T part) {
+        return parts.indexOf(part);
+    }
+    
+    public boolean contains(T part) {
+        return parts.contains(part);
+    }
 
     public IIpsObjectPart getPart(int index) {
-        return (IIpsObjectPart)parts.get(index);
+        return parts.get(index);
     }
 
     public Iterator<T> iterator() {
@@ -122,7 +137,7 @@ public class IpsObjectPartCollection<T extends IIpsObjectPart> implements Iterab
     }
 
     public IIpsObjectPart[] getParts() {
-        return (IIpsObjectPart[])parts.toArray(new IIpsObjectPart[parts.size()]);
+        return parts.toArray(new IIpsObjectPart[parts.size()]);
     }
 
     /**
@@ -189,7 +204,7 @@ public class IpsObjectPartCollection<T extends IIpsObjectPart> implements Iterab
         return null;
     }
 
-    public T newPart(Class clazz) {
+    public T newPart(Class<IpsObjectPart> clazz) {
         if (partsPublishedInterface.isAssignableFrom(clazz)) {
             return newPart();
         }
@@ -216,6 +231,7 @@ public class IpsObjectPartCollection<T extends IIpsObjectPart> implements Iterab
      * Creates a new part without updating the src file. Subclasses have to instantiate a new object
      * of the concrete subclass of IpsObjectPart.
      */
+    @SuppressWarnings("unchecked")
     private T newPartInternal(int id) {
         try {
             T newPart = (T)constructor.newInstance(new Object[] { parent, new Integer(id) });

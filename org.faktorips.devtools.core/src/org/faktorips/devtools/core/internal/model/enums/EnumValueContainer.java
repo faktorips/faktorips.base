@@ -160,27 +160,12 @@ public abstract class EnumValueContainer extends BaseIpsObject implements IEnumV
     public int moveEnumValue(IEnumValue enumValue, boolean up) throws CoreException {
         ArgumentCheck.notNull(enumValue);
 
-        if (up) {
-            // Can't move further up any more
-            if (enumValue == enumValues.getPart(0)) {
-                return getIndexOfEnumValue(enumValue);
-            }
-        } else {
-            // Can't move further down any more
-            if (enumValue == enumValues.getPart(enumValues.size() - 1)) {
-                return getIndexOfEnumValue(enumValue);
-            }
+        int index = enumValues.indexOf(enumValue);
+        if (index==-1) {
+            throw new NoSuchElementException();
         }
 
-        List<IEnumValue> enumValuesList = enumValues.getBackingList();
-        for (int i = 0; i < enumValuesList.size(); i++) {
-            IEnumValue currentEnumValue = enumValuesList.get(i);
-            if (currentEnumValue == enumValue) {
-                return enumValues.moveParts(new int[] { i }, up)[0];
-            }
-        }
-
-        throw new NoSuchElementException();
+        return enumValues.moveParts(new int[] {index}, up)[0];
     }
 
     /**
@@ -189,12 +174,11 @@ public abstract class EnumValueContainer extends BaseIpsObject implements IEnumV
     public int getIndexOfEnumValue(IEnumValue enumValue) {
         ArgumentCheck.notNull(enumValue);
 
-        for (int i = 0; i < enumValues.size(); i++) {
-            if (enumValues.getBackingList().get(i) == enumValue) {
-                return i;
-            }
+        int index = enumValues.indexOf(enumValue);
+        if (index>=0) {
+            return index;
         }
-
+        
         throw new NoSuchElementException();
     }
 
