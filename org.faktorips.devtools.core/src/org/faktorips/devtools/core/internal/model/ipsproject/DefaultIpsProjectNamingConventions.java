@@ -41,8 +41,8 @@ public class DefaultIpsProjectNamingConventions implements IIpsProjectNamingConv
 
     private IIpsProject ipsProject;
 
-    private Map errorMsgTxtNameIsEmpty = new HashMap(1);
-    private Map errorMsgTxtNameIsQualified = new HashMap(1);
+    private Map<IpsObjectType, String> errorMsgTxtNameIsEmpty = new HashMap<IpsObjectType, String>(1);
+    private Map<IpsObjectType, String> errorMsgTxtNameIsQualified = new HashMap<IpsObjectType, String>(1);
 
     public static final char[] INVALID_RESOURCE_CHARACTERS;
 
@@ -237,7 +237,9 @@ public class DefaultIpsProjectNamingConventions implements IIpsProjectNamingConv
             String msgNameNotValidWarning) {
         MessageList ml = new MessageList();
         if (!qualifiedCheck) {
-            IStatus status = JavaConventions.validateJavaTypeName(name);
+            String sourceLevel = getCompilerSourceLevel(ipsProject);
+            String complianceLevel = getCompilerComplianceLevel(ipsProject);
+            IStatus status = JavaConventions.validateJavaTypeName(name, sourceLevel, complianceLevel);
             if (status.getSeverity() == IStatus.ERROR) {
                 ml.add(new Message(INVALID_NAME, NLS.bind(msgNameNotValidError, name, status.getMessage()),
                         Message.ERROR));
@@ -271,7 +273,9 @@ public class DefaultIpsProjectNamingConventions implements IIpsProjectNamingConv
 
     private MessageList validateJavaPackageName(String name, String msgNameNotValidError, String msgNameNotValidWarning) {
         MessageList ml = new MessageList();
-        IStatus status = JavaConventions.validatePackageName(name);
+        String sourceLevel = getCompilerSourceLevel(ipsProject);
+        String complianceLevel = getCompilerComplianceLevel(ipsProject);
+        IStatus status = JavaConventions.validatePackageName(name, sourceLevel, complianceLevel);
         if (status.getSeverity() == IStatus.ERROR) {
             ml.add(new Message(INVALID_NAME, NLS.bind(msgNameNotValidError, name, status.getMessage()), Message.ERROR));
             return ml;
@@ -298,12 +302,22 @@ public class DefaultIpsProjectNamingConventions implements IIpsProjectNamingConv
             String text,
             Object validatedObject,
             IIpsProject ipsProject) throws CoreException {
-        String compliance = ipsProject.getJavaProject().getOption(JavaCore.COMPILER_COMPLIANCE, true);
-        String sourceLevel = ipsProject.getJavaProject().getOption(JavaCore.COMPILER_SOURCE, true);
-        IStatus status = JavaConventions.validateIdentifier(name, sourceLevel, compliance);
+
+        String sourceLevel = getCompilerSourceLevel(ipsProject);
+        String complianceLevel = getCompilerComplianceLevel(ipsProject);
+        IStatus status = JavaConventions.validateIdentifier(name, sourceLevel, complianceLevel);
         if (!status.isOK()) {
             return new Message(INVALID_NAME, text, Message.ERROR, validatedObject);
         }
         return null;
     }
+    
+    private String getCompilerComplianceLevel(IIpsProject ipsProject) {
+        return ipsProject.getJavaProject().getOption(JavaCore.COMPILER_COMPLIANCE, true);
+    }
+    
+    private String getCompilerSourceLevel(IIpsProject ipsProject) {
+        return ipsProject.getJavaProject().getOption(JavaCore.COMPILER_SOURCE, true);
+    }
+    
 }
