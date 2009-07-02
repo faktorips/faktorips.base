@@ -294,7 +294,7 @@ public class DefaultIpsProjectNamingConventions implements IIpsProjectNamingConv
     public MessageList validateIpsPackageRootName(String name) throws CoreException {
         return new MessageList();
     }
-
+    
     /**
      * {@inheritDoc}
      */

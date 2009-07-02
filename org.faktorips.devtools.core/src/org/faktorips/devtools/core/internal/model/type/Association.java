@@ -449,7 +449,7 @@ public abstract class Association extends AtomicIpsObjectPart implements IAssoci
     
     private class DerivedUnionCandidatesFinder extends TypeHierarchyVisitor {
 
-        private List candidates = new ArrayList();
+        private List<IAssociation> candidates = new ArrayList<IAssociation>();
         private IType targetType;
         
         public DerivedUnionCandidatesFinder(IType targetType, IIpsProject ipsProject) {

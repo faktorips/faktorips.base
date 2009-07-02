@@ -15,8 +15,6 @@ package org.faktorips.devtools.core.internal.model.type;
 
 import org.apache.commons.lang.StringUtils;
 import org.eclipse.core.runtime.CoreException;
-import org.eclipse.core.runtime.IStatus;
-import org.eclipse.jdt.core.JavaConventions;
 import org.eclipse.swt.graphics.Image;
 import org.faktorips.datatype.Datatype;
 import org.faktorips.devtools.core.IpsPlugin;
@@ -118,11 +116,13 @@ public class Parameter extends AtomicIpsObjectPart implements IParameter {
         if (StringUtils.isEmpty(name)) {
             result.add(new Message("", Messages.Parameter_msg_NameEmpty, Message.ERROR, this, PROPERTY_NAME)); //$NON-NLS-1$
         } else {
-	        IStatus status = JavaConventions.validateIdentifier(getName());
-	        if (!(status.isOK() && ExprCompiler.isValidIdentifier(getName()))) {
-	            result.add(new Message("", Messages.Parameter_msg_InvalidParameterName, Message.ERROR, this, PROPERTY_NAME)); //$NON-NLS-1$
+	        Message msg = ipsProject.getNamingConventions().validateIfValidJavaIdentifier(getName(), Messages.Parameter_msg_InvalidParameterName, this, ipsProject);
+	        if (msg == null) {
+	            if (!ExprCompiler.isValidIdentifier(getName())) {
+	                msg = new Message("", Messages.Parameter_msg_InvalidParameterName, Message.ERROR, this, PROPERTY_NAME); //$NON-NLS-1$
+	            }
 	        }
-            
+	        result.add(msg);
         }
         ValidationUtils.checkDatatypeReference(datatype, false, this, PROPERTY_DATATYPE, "", result, ipsProject); //$NON-NLS-1$
 	}

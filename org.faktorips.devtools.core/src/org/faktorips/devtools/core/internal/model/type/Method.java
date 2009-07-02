@@ -23,6 +23,7 @@ import org.apache.commons.lang.StringUtils;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.jdt.core.JavaConventions;
+import org.eclipse.jdt.core.JavaCore;
 import org.eclipse.osgi.util.NLS;
 import org.eclipse.swt.graphics.Image;
 import org.faktorips.datatype.Datatype;
@@ -31,6 +32,7 @@ import org.faktorips.devtools.core.internal.model.ValidationUtils;
 import org.faktorips.devtools.core.internal.model.ipsobject.BaseIpsObjectPart;
 import org.faktorips.devtools.core.internal.model.ipsobject.IpsObjectPartCollection;
 import org.faktorips.devtools.core.model.DatatypeDependency;
+import org.faktorips.devtools.core.model.IDependency;
 import org.faktorips.devtools.core.model.ipsobject.Modifier;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.type.IMethod;
@@ -56,7 +58,7 @@ public class Method extends BaseIpsObjectPart implements IMethod {
     private Modifier modifier = Modifier.PUBLISHED;
     private boolean abstractFlag = false;
     
-    private IpsObjectPartCollection parameters = new IpsObjectPartCollection(this, Parameter.class, IParameter.class, Parameter.TAG_NAME);
+    private IpsObjectPartCollection<IParameter> parameters = new IpsObjectPartCollection<IParameter>(this, Parameter.class, IParameter.class, Parameter.TAG_NAME);
     
     public Method(IType parent, int id) {
         super(parent, id);
@@ -309,7 +311,9 @@ public class Method extends BaseIpsObjectPart implements IMethod {
         if (StringUtils.isEmpty(name)) {
             result.add(new Message("", Messages.Method_msg_NameEmpty, Message.ERROR, this, PROPERTY_NAME)); //$NON-NLS-1$
         } else {
-            IStatus status = JavaConventions.validateMethodName(name);
+            String complianceLevel = ipsProject.getJavaProject().getOption(JavaCore.COMPILER_COMPLIANCE, true);
+            String sourceLevel = ipsProject.getJavaProject().getOption(JavaCore.COMPILER_SOURCE, true);
+            IStatus status = JavaConventions.validateMethodName(name, sourceLevel, complianceLevel);
             if (!status.isOK()) {
                 result.add(new Message("", Messages.Method_msg_InvalidMethodname, Message.ERROR, this, PROPERTY_NAME)); //$NON-NLS-1$
             }
@@ -327,8 +331,7 @@ public class Method extends BaseIpsObjectPart implements IMethod {
     private void validateMultipleParameterNames(MessageList msgList){
         List<String> parameterNames = new ArrayList<String>();
         Set<String> multipleNames = new HashSet<String>();
-        for (Iterator it = parameters.iterator(); it.hasNext();) {
-            IParameter p = (IParameter)it.next();
+        for (IParameter p : parameters) {
             if(parameterNames.contains(p.getName())){
                 multipleNames.add(p.getName());
             }
@@ -404,10 +407,9 @@ public class Method extends BaseIpsObjectPart implements IMethod {
         return buffer.toString();
     }
     
-    public void dependsOn(Set dependencies){
+    public void dependsOn(Set<IDependency> dependencies){
         dependencies.add(new DatatypeDependency(getType().getQualifiedNameType(), getDatatype()));
-        for (Iterator it = parameters.iterator(); it.hasNext();) {
-            IParameter parameter = (IParameter)it.next();
+        for (IParameter parameter : parameters) {
             dependencies.add(new DatatypeDependency(getType().getQualifiedNameType(), parameter.getDatatype()));
         }
     }

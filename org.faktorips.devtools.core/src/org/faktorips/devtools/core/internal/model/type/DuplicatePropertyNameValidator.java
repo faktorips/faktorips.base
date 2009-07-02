@@ -32,8 +32,10 @@ import org.faktorips.util.message.ObjectProperty;
 
 public class DuplicatePropertyNameValidator extends TypeHierarchyVisitor {
 
-    private Map properties = new HashMap();
-    private List duplicateProperties = new ArrayList();
+    // Map with property names as keys. For a unqiue property name, the map contains the object (with the name) as value.
+    // If there are multiple properties with a name, the value is a list containing all the objects with the same name.
+    private Map<String, Object> properties = new HashMap<String, Object>();
+    private List<String> duplicateProperties = new ArrayList<String>();
     
     public DuplicatePropertyNameValidator(IIpsProject ipsProject) {
         super(ipsProject);
@@ -44,10 +46,10 @@ public class DuplicatePropertyNameValidator extends TypeHierarchyVisitor {
         return new Message(IType.MSGCODE_DUPLICATE_PROPERTY_NAME, text, Message.ERROR, invalidObjProperties);
     }
     
+    @SuppressWarnings("unchecked")
     public void addMessagesForDuplicates(MessageList messages) {
-        for (Iterator it=duplicateProperties.iterator(); it.hasNext(); ) {
-            String propertyName = (String)it.next();
-            List objects = (List)properties.get(propertyName);
+        for (String propertyName : duplicateProperties) {
+            List<ObjectProperty> objects = (List<ObjectProperty>)properties.get(propertyName);
             ObjectProperty[] invalidObjProperties = (ObjectProperty[])objects.toArray(new ObjectProperty[objects.size()]);
             messages.add(createMessage(propertyName, invalidObjProperties));
         }
@@ -58,13 +60,13 @@ public class DuplicatePropertyNameValidator extends TypeHierarchyVisitor {
      */
     protected boolean visit(IType currentType) throws CoreException {
         Type currType = (Type)currentType;
-        for (Iterator it=currType.getIteratorForAttributes(); it.hasNext(); ) {
+        for (Iterator<? extends IAttribute> it=currType.getIteratorForAttributes(); it.hasNext(); ) {
             IAttribute attr = (IAttribute)it.next();
             if (!attr.isOverwrite()) {
                 add(attr.getName().toLowerCase(), new ObjectProperty(attr, IAttribute.PROPERTY_NAME));
             }
         }
-        for (Iterator it=currType.getIteratorForAssociations(); it.hasNext(); ) {
+        for (Iterator<? extends IAssociation> it=currType.getIteratorForAssociations(); it.hasNext(); ) {
             IAssociation ass = (IAssociation)it.next();
             //TODO it needs to be clarified if we should ask the builder set which naming conventions are used and instead of just
             //uncapitalize ask the naming convention how it is handled
@@ -77,6 +79,7 @@ public class DuplicatePropertyNameValidator extends TypeHierarchyVisitor {
         return true;
     }
     
+    @SuppressWarnings("unchecked")
     protected void add(String propertyName, ObjectProperty wrapper) {
         Object objInMap = properties.get(propertyName);
         if (objInMap==null) {
@@ -84,11 +87,11 @@ public class DuplicatePropertyNameValidator extends TypeHierarchyVisitor {
             return;
         }
         if (objInMap instanceof List) {
-            ((List)objInMap).add(wrapper);
+            ((List<ObjectProperty>)objInMap).add(wrapper);
             return;
         }
-        List objects = new ArrayList(2);
-        objects.add(objInMap);
+        List<ObjectProperty> objects = new ArrayList<ObjectProperty>(2);
+        objects.add((ObjectProperty)objInMap);
         objects.add(wrapper);
         properties.put(propertyName, objects);
         duplicateProperties.add(propertyName);
