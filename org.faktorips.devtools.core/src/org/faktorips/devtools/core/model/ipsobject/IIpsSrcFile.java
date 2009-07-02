@@ -40,7 +40,8 @@ public interface IIpsSrcFile extends IIpsElement {
     public IFile getCorrespondingFile();
     
     /**
-     * Returns true if the file contains unsaved changes to it's contents. 
+     * Returns <code>true</code> if the file contains unsaved changes to it's contents,
+     * otherwise <code>false</code>. 
      */
     public boolean isDirty();
     
@@ -163,9 +164,18 @@ public interface IIpsSrcFile extends IIpsElement {
     public String getBasePackageNameForGeneratedJavaClass() throws CoreException;
 
     /**
-     * Returns the name of the base package for the extension Java source files. All generated Java types
-     * are contained in this package or one of the child packages.
-     * Extension Java files are the files where the developer adds it's own code.
+     * Returns the name of the base package for the extension Java source files. 
+     * <p>
+     * This needs some explanation. There are two main strategies to add individual code to generated code.
+     * <ul>
+     * <li>Seperate the generated code and the individual code in different files. That means for classes, that
+     * the individual code is written in a subclass, while the superclass is 100% generated.</li>
+     * <li>Allow the developre to change the generated source code files and merge the changes when generating again.</li> 
+     * </ul> 
+     * At the moment Faktor-IPS supports only the second strategy. In a very early alpha version however, we used
+     * the first strategy. This method is an artifact of this time and it is not used at the moment! The method returns
+     * the name of the base package for the Java classes where the developer add it's own code when the
+     * first strategy is used. As we might support the first strategy in a latter version, we keep it. 
      */
     public String getBasePackageNameForExtensionJavaClass() throws CoreException;
 
