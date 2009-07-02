@@ -94,7 +94,7 @@ public abstract class DefaultBuilderSet extends AbstractBuilderSet {
         if (!StringUtils.isEmpty(packageFragName)) {
             buf.append('.').append(packageFragName);
         }
-        return buf.toString();
+        return buf.toString().toLowerCase();
     }
 
     /**
@@ -113,7 +113,7 @@ public abstract class DefaultBuilderSet extends AbstractBuilderSet {
             buf.append('.').append(packageFragName);
         }
 
-        return buf.toString();
+        return buf.toString().toLowerCase();
     }
 
     /**
@@ -127,7 +127,7 @@ public abstract class DefaultBuilderSet extends AbstractBuilderSet {
             buf.append(basePackeName).append('.');
         }
         buf.append(INTERNAL_PACKAGE);
-        return buf.toString();
+        return buf.toString().toLowerCase();
     }
 
     /**
@@ -141,8 +141,7 @@ public abstract class DefaultBuilderSet extends AbstractBuilderSet {
             return null;
         }
         IIpsSrcFolderEntry entry = (IIpsSrcFolderEntry)root.getIpsObjectPathEntry();
-        String basePack = entry.getBasePackageNameForDerivedJavaClasses();
-        String basePackInternal = QNameUtil.concat(basePack, INTERNAL_PACKAGE);
+        String basePackInternal = getTocFilePackageName(root);
         IPath path = QNameUtil.toPath(basePackInternal);
         path = path.append(entry.getBasePackageRelativeTocPath());
         IFolder tocFileLocation = getTocFileLocation(root);
