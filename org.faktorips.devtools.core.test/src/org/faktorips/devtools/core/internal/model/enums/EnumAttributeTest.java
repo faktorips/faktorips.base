@@ -139,14 +139,14 @@ public class EnumAttributeTest extends AbstractIpsEnumPluginTest {
     public void testValidateName() throws CoreException {
         IIpsModel ipsModel = getIpsModel();
 
-        // Test name missing
+        // Test name missing.
         genderEnumAttributeId.setName("");
         MessageList validationMessageList = genderEnumAttributeId.validate(ipsProject);
         assertOneValidationMessage(validationMessageList);
         assertNotNull(validationMessageList.getMessageByCode(IEnumAttribute.MSGCODE_ENUM_ATTRIBUTE_NAME_MISSING));
         genderEnumAttributeId.setName(GENDER_ENUM_ATTRIBUTE_ID_NAME);
 
-        // Test duplicate attribute name
+        // Test duplicate attribute name.
         ipsModel.clearValidationCache();
         genderEnumAttributeId.setName(GENDER_ENUM_ATTRIBUTE_NAME_NAME);
         validationMessageList = genderEnumAttributeId.validate(ipsProject);
@@ -158,14 +158,14 @@ public class EnumAttributeTest extends AbstractIpsEnumPluginTest {
     public void testValidateDatatype() throws CoreException {
         IIpsModel ipsModel = getIpsModel();
 
-        // Test datatype missing
+        // Test datatype missing.
         genderEnumAttributeId.setDatatype("");
         MessageList validationMessageList = genderEnumAttributeId.validate(ipsProject);
         assertOneValidationMessage(validationMessageList);
         assertNotNull(validationMessageList.getMessageByCode(IEnumAttribute.MSGCODE_ENUM_ATTRIBUTE_DATATYPE_MISSING));
         genderEnumAttributeId.setDatatype(Datatype.STRING.getQualifiedName());
 
-        // Test datatype does not exist
+        // Test datatype does not exist.
         ipsModel.clearValidationCache();
         genderEnumAttributeId.setDatatype("FooBar");
         validationMessageList = genderEnumAttributeId.validate(ipsProject);
@@ -174,7 +174,7 @@ public class EnumAttributeTest extends AbstractIpsEnumPluginTest {
                 .getMessageByCode(IEnumAttribute.MSGCODE_ENUM_ATTRIBUTE_DATATYPE_DOES_NOT_EXIST));
         genderEnumAttributeId.setDatatype(Datatype.STRING.getQualifiedName());
 
-        // Test datatype primitive
+        // Test datatype primitive.
         ipsModel.clearValidationCache();
         genderEnumAttributeId.setDatatype("int");
         validationMessageList = genderEnumAttributeId.validate(ipsProject);
@@ -183,7 +183,7 @@ public class EnumAttributeTest extends AbstractIpsEnumPluginTest {
                 .getMessageByCode(IEnumAttribute.MSGCODE_ENUM_ATTRIBUTE_DATATYPE_IS_PRIMITIVE));
         genderEnumAttributeId.setDatatype(Datatype.STRING.getQualifiedName());
 
-        // Test datatype void
+        // Test datatype void.
         ipsModel.clearValidationCache();
         genderEnumAttributeId.setDatatype("void");
         validationMessageList = genderEnumAttributeId.validate(ipsProject);
@@ -191,7 +191,7 @@ public class EnumAttributeTest extends AbstractIpsEnumPluginTest {
         assertNotNull(validationMessageList.getMessageByCode(IEnumAttribute.MSGCODE_ENUM_ATTRIBUTE_DATATYPE_IS_VOID));
         genderEnumAttributeId.setDatatype(Datatype.STRING.getQualifiedName());
 
-        // Test datatype abstract
+        // Test datatype abstract.
         ipsModel.clearValidationCache();
         IEnumType newEnumType = newEnumType(ipsProject, "NewEnumType");
         newEnumType.setAbstract(true);
@@ -202,7 +202,7 @@ public class EnumAttributeTest extends AbstractIpsEnumPluginTest {
                 .getMessageByCode(IEnumAttribute.MSGCODE_ENUM_ATTRIBUTE_DATATYPE_IS_ABSTRACT));
         genderEnumAttributeId.setDatatype(Datatype.STRING.getQualifiedName());
 
-        // Test datatype is containing enum type
+        // Test datatype is containing enum type.
         ipsModel.clearValidationCache();
         genderEnumAttributeId.setDatatype(genderEnumType.getQualifiedName());
         validationMessageList = genderEnumAttributeId.validate(ipsProject);
@@ -211,7 +211,7 @@ public class EnumAttributeTest extends AbstractIpsEnumPluginTest {
                 .getMessageByCode(IEnumAttribute.MSGCODE_ENUM_ATTRIBUTE_DATATYPE_IS_CONTAINING_ENUM_TYPE_OR_SUBCLASS));
         genderEnumAttributeId.setDatatype(Datatype.STRING.getQualifiedName());
 
-        // Test datatype is subclass of containing enum type
+        // Test datatype is subclass of containing enum type.
         ipsModel.clearValidationCache();
         genderEnumAttributeId.setDatatype(subEnumType.getQualifiedName());
         validationMessageList = genderEnumAttributeId.validate(ipsProject);
@@ -219,12 +219,22 @@ public class EnumAttributeTest extends AbstractIpsEnumPluginTest {
         assertNotNull(validationMessageList
                 .getMessageByCode(IEnumAttribute.MSGCODE_ENUM_ATTRIBUTE_DATATYPE_IS_CONTAINING_ENUM_TYPE_OR_SUBCLASS));
         genderEnumAttributeId.setDatatype(Datatype.STRING.getQualifiedName());
+
+        // Test datatype is enum type that does not contain values but parent enum type does.
+        ipsModel.clearValidationCache();
+        IEnumAttribute attribute = paymentMode.newEnumAttribute();
+        attribute.setName("test");
+        attribute.setDatatype(genderEnumType.getQualifiedName());
+        validationMessageList = attribute.validate(ipsProject);
+        assertOneValidationMessage(validationMessageList);
+        assertNotNull(validationMessageList
+                .getMessageByCode(IEnumAttribute.MSGCODE_ENUM_ATTRIBUTE_ENUM_DATATYPE_DOES_NOT_CONTAIN_VALUES_BUT_PARENT_ENUM_TYPE_DOES));
     }
 
     public void testValidateLiteralName() throws CoreException {
         IIpsModel ipsModel = getIpsModel();
 
-        // Test duplicate literal names
+        // Test duplicate literal names.
         genderEnumAttributeName.setLiteralName(true);
         MessageList validationMessageList = genderEnumAttributeId.validate(ipsProject);
         assertOneValidationMessage(validationMessageList);
@@ -232,7 +242,7 @@ public class EnumAttributeTest extends AbstractIpsEnumPluginTest {
                 .getMessageByCode(IEnumAttribute.MSGCODE_ENUM_ATTRIBUTE_DUPLICATE_LITERAL_NAME));
         genderEnumAttributeName.setLiteralName(false);
 
-        // Test literal name but datatype not String
+        // Test literal name but datatype not String.
         ipsModel.clearValidationCache();
         genderEnumAttributeId.setDatatype(Datatype.INTEGER.getQualifiedName());
         validationMessageList = genderEnumAttributeId.validate(ipsProject);
@@ -241,7 +251,7 @@ public class EnumAttributeTest extends AbstractIpsEnumPluginTest {
                 .getMessageByCode(IEnumAttribute.MSGCODE_ENUM_ATTRIBUTE_LITERAL_NAME_NOT_OF_DATATYPE_STRING));
         genderEnumAttributeId.setDatatype(Datatype.STRING.getQualifiedName());
 
-        // Test literal name but not unique identifier
+        // Test literal name but not unique identifier.
         ipsModel.clearValidationCache();
         genderEnumAttributeId.setUniqueIdentifier(false);
         validationMessageList = genderEnumAttributeId.validate(ipsProject);
@@ -254,7 +264,7 @@ public class EnumAttributeTest extends AbstractIpsEnumPluginTest {
     public void testValidateInherited() throws CoreException {
         IIpsModel ipsModel = getIpsModel();
 
-        // Test no such attribute in supertype hierarchy for inherited attribute
+        // Test no such attribute in supertype hierarchy for inherited attribute.
         IEnumType superEnumType = newEnumType(ipsProject, "SuperEnumType");
         superEnumType.setAbstract(true);
         genderEnumType.setSuperEnumType(superEnumType.getQualifiedName());

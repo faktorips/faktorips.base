@@ -19,7 +19,7 @@ import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.faktorips.codegen.DatatypeHelper;
-import org.faktorips.devtools.core.internal.model.enums.EnumTypeDatatypeAdapter;
+import org.faktorips.devtools.core.model.enums.EnumTypeDatatypeAdapter;
 import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
 import org.faktorips.devtools.core.model.ipsproject.IIpsPackageFragmentRoot;

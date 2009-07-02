@@ -47,7 +47,7 @@ import org.faktorips.devtools.core.TestEnumType;
 import org.faktorips.devtools.core.TestIpsFeatureVersionManager;
 import org.faktorips.devtools.core.builder.DefaultBuilderSet;
 import org.faktorips.devtools.core.builder.TestArtefactBuilderSetInfo;
-import org.faktorips.devtools.core.internal.model.enums.EnumTypeDatatypeAdapter;
+import org.faktorips.devtools.core.model.enums.EnumTypeDatatypeAdapter;
 import org.faktorips.devtools.core.model.enums.IEnumAttribute;
 import org.faktorips.devtools.core.model.enums.IEnumContent;
 import org.faktorips.devtools.core.model.enums.IEnumType;

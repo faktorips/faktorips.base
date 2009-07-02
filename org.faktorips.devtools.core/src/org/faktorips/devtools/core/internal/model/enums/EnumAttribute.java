@@ -22,6 +22,7 @@ import org.faktorips.datatype.Datatype;
 import org.faktorips.datatype.ValueDatatype;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.internal.model.ipsobject.AtomicIpsObjectPart;
+import org.faktorips.devtools.core.model.enums.EnumTypeDatatypeAdapter;
 import org.faktorips.devtools.core.model.enums.IEnumAttribute;
 import org.faktorips.devtools.core.model.enums.IEnumType;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
@@ -54,13 +55,13 @@ public class EnumAttribute extends AtomicIpsObjectPart implements IEnumAttribute
     /** The icon representing an overridden unique literalName enum attribute. */
     private final static String OVERRIDDEN_UNIQUE_IDENTIFIER_ICON = "EnumAttributeOverriddenUniqueIdentifier.gif";
 
-    /** The datatype of this enum attribute. */
+    /** The data type of this enum attribute. */
     private String datatype;
 
     /** Flag indicating whether this enum attribute is used as literal name. */
     private boolean literalName;
 
-    /** Flag indicating whether this enum attribute is inherited from the supertype hierarchy. */
+    /** Flag indicating whether this enum attribute is inherited from the super type hierarchy. */
     private boolean inherited;
 
     /** Flag indicating whether this enum attribute is a unique literalName. */
@@ -251,8 +252,10 @@ public class EnumAttribute extends AtomicIpsObjectPart implements IEnumAttribute
     private void validateDatatype(MessageList list, IIpsProject ipsProject) throws CoreException {
         String text;
         Message validationMessage;
+        IEnumType enumType = getEnumType();
+        Datatype ipsDatatype = getIpsProject().findDatatype(datatype);
 
-        // Check for datatype missing
+        // The datatype must be specified.
         if (datatype.equals("")) {
             text = Messages.EnumAttribute_DatatypeMissing;
             validationMessage = new Message(MSGCODE_ENUM_ATTRIBUTE_DATATYPE_MISSING, text, Message.ERROR, this,
@@ -261,8 +264,7 @@ public class EnumAttribute extends AtomicIpsObjectPart implements IEnumAttribute
             return;
         }
 
-        // Check for datatype not existing
-        Datatype ipsDatatype = getIpsProject().findDatatype(datatype);
+        // The datatype must exist.
         if (ipsDatatype == null) {
             text = NLS.bind(Messages.EnumAttribute_DatatypeDoesNotExist, datatype);
             validationMessage = new Message(MSGCODE_ENUM_ATTRIBUTE_DATATYPE_DOES_NOT_EXIST, text, Message.ERROR, this,
@@ -271,7 +273,7 @@ public class EnumAttribute extends AtomicIpsObjectPart implements IEnumAttribute
             return;
         }
 
-        // Check for primitive datatype
+        // The datatype may not be primitive.
         if (ipsDatatype.isPrimitive()) {
             text = NLS.bind(Messages.EnumAttribute_DatatypeIsPrimitive, datatype);
             validationMessage = new Message(MSGCODE_ENUM_ATTRIBUTE_DATATYPE_IS_PRIMITIVE, text, Message.ERROR, this,
@@ -280,7 +282,7 @@ public class EnumAttribute extends AtomicIpsObjectPart implements IEnumAttribute
             return;
         }
 
-        // Check for void datatype
+        // The datatype may not be void.
         if (ipsDatatype.isVoid()) {
             text = Messages.EnumAttribute_DatatypeIsVoid;
             validationMessage = new Message(MSGCODE_ENUM_ATTRIBUTE_DATATYPE_IS_VOID, text, Message.ERROR, this,
@@ -289,7 +291,7 @@ public class EnumAttribute extends AtomicIpsObjectPart implements IEnumAttribute
             return;
         }
 
-        // Check for abstract datatype
+        // The datatype may not be abstract.
         if (ipsDatatype.isAbstract()) {
             text = NLS.bind(Messages.EnumAttribute_DatatypeIsAbstract, datatype);
             validationMessage = new Message(MSGCODE_ENUM_ATTRIBUTE_DATATYPE_IS_ABSTRACT, text, Message.ERROR, this,
@@ -298,26 +300,44 @@ public class EnumAttribute extends AtomicIpsObjectPart implements IEnumAttribute
             return;
         }
 
-        // Check for enum type that contains this enum attribute (or subclasses of it)
-        if(ipsDatatype instanceof EnumTypeDatatypeAdapter){
+        // The datatype may not be the enum type that contains this enum attribute (or subclasses
+        // of it).
+        if (ipsDatatype instanceof EnumTypeDatatypeAdapter) {
             EnumTypeDatatypeAdapter adaptedEnumType = (EnumTypeDatatypeAdapter)ipsDatatype;
-            IEnumType enumType = getEnumType();
             List<IEnumType> subEnumTypes = enumType.findAllSubEnumTypes(ipsProject);
             if (adaptedEnumType.getEnumType().equals(enumType) || subEnumTypes.contains(adaptedEnumType.getEnumType())) {
                 text = Messages.EnumAttribute_DatatypeIsContainingEnumTypeOrSubclass;;
-                validationMessage = new Message(MSGCODE_ENUM_ATTRIBUTE_DATATYPE_IS_CONTAINING_ENUM_TYPE_OR_SUBCLASS, text,
+                validationMessage = new Message(MSGCODE_ENUM_ATTRIBUTE_DATATYPE_IS_CONTAINING_ENUM_TYPE_OR_SUBCLASS,
+                        text, Message.ERROR, this, PROPERTY_DATATYPE);
+                list.add(validationMessage);
+                return;
+            }
+
+        }
+
+        // If this enum attribute is marked to be used as literal name the datatype must be String.
+        if (literalName) {
+            if (!(ipsDatatype.getName().equals(Datatype.STRING.getName()))) {
+                text = Messages.EnumAttribute_LiteralNameNotOfDatatypeString;
+                validationMessage = new Message(MSGCODE_ENUM_ATTRIBUTE_LITERAL_NAME_NOT_OF_DATATYPE_STRING, text,
                         Message.ERROR, this, PROPERTY_DATATYPE);
                 list.add(validationMessage);
                 return;
             }
-            
         }
 
-        // Check for literalName datatype = String
-        if (literalName) {
-            if (!(ipsDatatype.getName().equals("String"))) {
-                text = Messages.EnumAttribute_LiteralNameNotOfDatatypeString;
-                validationMessage = new Message(MSGCODE_ENUM_ATTRIBUTE_LITERAL_NAME_NOT_OF_DATATYPE_STRING, text,
+        /*
+         * The datatype may not be an enum that does not contain values if the enum type this enum
+         * attribute belongs to does contain values.
+         */
+        if (ipsDatatype instanceof EnumTypeDatatypeAdapter) {
+            EnumTypeDatatypeAdapter enumDatatypeAdapter = (EnumTypeDatatypeAdapter)ipsDatatype;
+            IEnumType enumDatatype = enumDatatypeAdapter.getEnumType();
+            if (enumType.isContainingValues() && !(enumDatatype.isContainingValues())) {
+                text = NLS.bind(Messages.EnumAttribute_EnumDatatypeDoesNotContainValuesButParentEnumTypeDoes,
+                        enumDatatype.getQualifiedName());
+                validationMessage = new Message(
+                        MSGCODE_ENUM_ATTRIBUTE_ENUM_DATATYPE_DOES_NOT_CONTAIN_VALUES_BUT_PARENT_ENUM_TYPE_DOES, text,
                         Message.ERROR, this, PROPERTY_DATATYPE);
                 list.add(validationMessage);
                 return;

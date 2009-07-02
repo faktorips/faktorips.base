@@ -17,13 +17,11 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import org.eclipse.swt.events.VerifyEvent;
-import org.eclipse.swt.events.VerifyListener;
 import org.eclipse.swt.widgets.Combo;
 import org.faktorips.devtools.core.DatatypeFormatter;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.IpsPreferences;
-import org.faktorips.devtools.core.internal.model.enums.EnumTypeDatatypeAdapter;
+import org.faktorips.devtools.core.model.enums.EnumTypeDatatypeAdapter;
 import org.faktorips.devtools.core.model.enums.IEnumContent;
 import org.faktorips.devtools.core.model.enums.IEnumType;
 

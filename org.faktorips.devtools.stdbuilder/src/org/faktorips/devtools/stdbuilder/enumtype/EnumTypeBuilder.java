@@ -28,7 +28,7 @@ import org.faktorips.devtools.core.builder.ComplianceCheck;
 import org.faktorips.devtools.core.builder.DefaultJavaSourceFileBuilder;
 import org.faktorips.devtools.core.builder.JavaNamingConvention;
 import org.faktorips.devtools.core.builder.TypeSection;
-import org.faktorips.devtools.core.internal.model.enums.EnumTypeDatatypeAdapter;
+import org.faktorips.devtools.core.model.enums.EnumTypeDatatypeAdapter;
 import org.faktorips.devtools.core.model.enums.IEnumAttribute;
 import org.faktorips.devtools.core.model.enums.IEnumAttributeValue;
 import org.faktorips.devtools.core.model.enums.IEnumType;

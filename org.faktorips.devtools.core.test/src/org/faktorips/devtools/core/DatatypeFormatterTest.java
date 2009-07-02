@@ -16,7 +16,7 @@ package org.faktorips.devtools.core;
 import java.util.List;
 
 import org.faktorips.datatype.Datatype;
-import org.faktorips.devtools.core.internal.model.enums.EnumTypeDatatypeAdapter;
+import org.faktorips.devtools.core.model.enums.EnumTypeDatatypeAdapter;
 import org.faktorips.devtools.core.model.enums.IEnumAttribute;
 import org.faktorips.devtools.core.model.enums.IEnumAttributeValue;
 import org.faktorips.devtools.core.model.enums.IEnumType;

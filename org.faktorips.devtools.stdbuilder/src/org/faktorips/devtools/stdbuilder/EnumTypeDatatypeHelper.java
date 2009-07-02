@@ -17,7 +17,7 @@ package org.faktorips.devtools.stdbuilder;
 import org.eclipse.core.runtime.CoreException;
 import org.faktorips.codegen.JavaCodeFragment;
 import org.faktorips.codegen.dthelpers.AbstractDatatypeHelper;
-import org.faktorips.devtools.core.internal.model.enums.EnumTypeDatatypeAdapter;
+import org.faktorips.devtools.core.model.enums.EnumTypeDatatypeAdapter;
 import org.faktorips.devtools.core.model.enums.IEnumType;
 import org.faktorips.devtools.stdbuilder.enumtype.EnumTypeBuilder;
 import org.faktorips.util.ArgumentCheck;

@@ -152,6 +152,13 @@ public interface IEnumAttribute extends IIpsObjectPart {
             + "EnumAttributeDuplicateUsedAsIdInFaktorIpsUi"; //$NON-NLS-1$
 
     /**
+     * Validation message code to indicate that the datatype of this enum attribute is an enum type
+     * that does not contain values while the parent enum type does.
+     */
+    public final static String MSGCODE_ENUM_ATTRIBUTE_ENUM_DATATYPE_DOES_NOT_CONTAIN_VALUES_BUT_PARENT_ENUM_TYPE_DOES = MSGCODE_PREFIX
+            + "EnumAttributeEnumDatatypeDoesNotContainValuesButParentEnumTypeDoes"; //$NON-NLS-1$
+
+    /**
      * Sets the name of this enum attribute.
      * 
      * @param name The new name for this enum attribute.
