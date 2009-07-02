@@ -437,8 +437,10 @@ public class AddIpsNatureAction extends ActionDelegate {
             int newValidationStatus = IMessageProvider.NONE;
 
             String basePackageName = basePackageText.getText();
-
-            if (!JavaConventions.validatePackageName(basePackageName).isOK()) {
+            IJavaProject javaProject = getJavaProject();
+            String sourceLevel = javaProject == null ? "1.4" : javaProject.getOption(JavaCore.COMPILER_SOURCE, true);
+            String complianceLevel = javaProject == null ? "1.4" : javaProject.getOption(JavaCore.COMPILER_COMPLIANCE, true);
+            if (!JavaConventions.validatePackageName(basePackageName, sourceLevel, complianceLevel).isOK()) {
                 newValidationStatus = IMessageProvider.ERROR;
                 message = Messages.AddIpsNatureAction_basePackageNameNotValid;
             } else {
