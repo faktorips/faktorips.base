@@ -15,16 +15,34 @@ package org.faktorips.devtools.stdbuilder;
 
 import java.util.ArrayList;
 
+import org.eclipse.core.resources.IncrementalProjectBuilder;
 import org.eclipse.core.runtime.CoreException;
 import org.faktorips.devtools.core.AbstractIpsPluginTest;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.model.ipsproject.IIpsArtefactBuilderSetInfo;
 import org.faktorips.devtools.core.model.ipsproject.IIpsBuilderSetPropertyDef;
 import org.faktorips.devtools.core.model.ipsproject.IIpsLoggingFrameworkConnector;
+import org.faktorips.devtools.core.model.ipsproject.IIpsObjectPath;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
+import org.faktorips.devtools.core.model.ipsproject.IIpsSrcFolderEntry;
 
 public class StdBuilderSetTest extends AbstractIpsPluginTest {
 
+    /*
+     * #bug 1460 
+     */
+    public void testBasePackageNamesWithUpperCaseLetters() throws CoreException {
+        IIpsProject ipsProject = newIpsProject();
+        IIpsObjectPath path = ipsProject.getIpsObjectPath();
+        IIpsSrcFolderEntry entry = path.getSourceFolderEntries()[0];
+        entry.setSpecificBasePackageNameForDerivedJavaClasses("org.faktorips.sample.Model");
+        entry.setSpecificBasePackageNameForMergableJavaClasses("org.faktorips.sample.Model");
+        ipsProject.setIpsObjectPath(path);
+        ipsProject.getProject().build(IncrementalProjectBuilder.FULL_BUILD, null);
+        newPolicyCmptType(ipsProject, "Policy");
+        ipsProject.getProject().build(IncrementalProjectBuilder.INCREMENTAL_BUILD, null);
+    }
+    
     public void testStdBuilderSetPropertyDefinitions() throws CoreException{
         IIpsProject ipsProject = newIpsProject();
         IIpsArtefactBuilderSetInfo builderSetInfo = IpsPlugin.getDefault().getIpsModel().getIpsArtefactBuilderSetInfo("org.faktorips.devtools.stdbuilder.ipsstdbuilderset");
@@ -51,6 +69,5 @@ public class StdBuilderSetTest extends AbstractIpsPluginTest {
         IIpsLoggingFrameworkConnector connector = (IIpsLoggingFrameworkConnector)loggingConnectorPropertyDef.parseValue(
                 loggingConnectorPropertyDef.getDefaultValue(ipsProject));
         assertNull(connector);
-        
     }
 }

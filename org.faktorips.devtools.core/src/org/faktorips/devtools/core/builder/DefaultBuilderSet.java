@@ -94,7 +94,7 @@ public abstract class DefaultBuilderSet extends AbstractBuilderSet {
         if (!StringUtils.isEmpty(packageFragName)) {
             buf.append('.').append(packageFragName);
         }
-        return buf.toString().toLowerCase();
+        return buf.toString();
     }
 
     /**
@@ -113,7 +113,7 @@ public abstract class DefaultBuilderSet extends AbstractBuilderSet {
             buf.append('.').append(packageFragName);
         }
 
-        return buf.toString().toLowerCase();
+        return buf.toString();
     }
 
     /**
@@ -127,7 +127,7 @@ public abstract class DefaultBuilderSet extends AbstractBuilderSet {
             buf.append(basePackeName).append('.');
         }
         buf.append(INTERNAL_PACKAGE);
-        return buf.toString().toLowerCase();
+        return buf.toString();
     }
 
     /**
