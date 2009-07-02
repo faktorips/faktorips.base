@@ -115,9 +115,11 @@ public interface IEnumType extends IEnumValueContainer, IIpsMetaClass {
     public final static String MSGCODE_ENUM_TYPE_NO_USED_AS_NAME_IN_FAKTOR_IPS_UI_ATTRIBUTE = MSGCODE_PREFIX
             + "EnumTypeNoUsedAsNameInFaktorIpsUiAttribute";
 
-    /**
-     * Returns the package fragment a referencing enum content must be stored in.
-     */
+    /** Validation message code to indicate that the enum content package fragment is empty. */
+    public final static String MSGCODE_ENUM_TYPE_ENUM_CONTENT_PACKAGE_FRAGMENT_EMPTY = MSGCODE_PREFIX
+            + "EnumTypeEnumContentPackageFragmentEmpty";
+
+    /** Returns the package fragment a referencing enum content must be stored in. */
     public String getEnumContentPackageFragment();
 
     /**
@@ -404,7 +406,7 @@ public interface IEnumType extends IEnumValueContainer, IIpsMetaClass {
      * Returns whether this enum type has a super enum type.
      */
     public boolean hasSuperEnumType();
-    
+
     /**
      * Returns if this enumeration type is abstract.
      */

@@ -515,6 +515,14 @@ public class EnumTypeTest extends AbstractIpsEnumPluginTest {
                 .getMessageByCode(IEnumType.MSGCODE_ENUM_TYPE_NO_USED_AS_NAME_IN_FAKTOR_IPS_UI_ATTRIBUTE));
     }
 
+    public void testValidateEnumContentPackageFragment() throws CoreException {
+        genderEnumType.setEnumContentPackageFragment("");
+        MessageList validationMessageList = genderEnumType.validate(ipsProject);
+        assertOneValidationMessage(validationMessageList);
+        assertNotNull(validationMessageList
+                .getMessageByCode(IEnumType.MSGCODE_ENUM_TYPE_ENUM_CONTENT_PACKAGE_FRAGMENT_EMPTY));
+    }
+
     public void testFindSuperEnumType() throws CoreException {
         IEnumType subEnumType = newEnumType(ipsProject, "SubEnumType");
         subEnumType.setSuperEnumType(genderEnumType.getQualifiedName());
@@ -667,7 +675,7 @@ public class EnumTypeTest extends AbstractIpsEnumPluginTest {
     }
 
     public void testGetSetEnumContentPackageFragment() {
-        assertEquals(DEFAULT_PACKAGE_FRAGMENT, genderEnumType.getEnumContentPackageFragment());
+        assertEquals(ENUMCONTENTS_PACKAGE_FRAGMENT, genderEnumType.getEnumContentPackageFragment());
         genderEnumType.setEnumContentPackageFragment("bar");
         assertEquals("bar", genderEnumType.getEnumContentPackageFragment());
     }

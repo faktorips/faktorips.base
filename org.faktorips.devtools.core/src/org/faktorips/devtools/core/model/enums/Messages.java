@@ -25,10 +25,9 @@ public class Messages extends NLS {
 
     public static String EnumType_SupertypeDoesNotExist;
     public static String EnumType_SupertypeIsNotAbstract;
-
     public static String EnumType_cycleDetected;
-
     public static String EnumType_inconsistentHierarchy;
+    public static String EnumType_EnumContentPackageFragmentEmpty;
 
     public static String EnumContent_EnumTypeMissing;
     public static String EnumContent_EnumTypeDoesNotExist;

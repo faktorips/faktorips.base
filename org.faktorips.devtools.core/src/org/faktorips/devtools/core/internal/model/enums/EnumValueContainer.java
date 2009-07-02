@@ -161,11 +161,11 @@ public abstract class EnumValueContainer extends BaseIpsObject implements IEnumV
         ArgumentCheck.notNull(enumValue);
 
         int index = enumValues.indexOf(enumValue);
-        if (index==-1) {
+        if (index == -1) {
             throw new NoSuchElementException();
         }
 
-        return enumValues.moveParts(new int[] {index}, up)[0];
+        return enumValues.moveParts(new int[] { index }, up)[0];
     }
 
     /**
@@ -175,10 +175,10 @@ public abstract class EnumValueContainer extends BaseIpsObject implements IEnumV
         ArgumentCheck.notNull(enumValue);
 
         int index = enumValues.indexOf(enumValue);
-        if (index>=0) {
+        if (index >= 0) {
             return index;
         }
-        
+
         throw new NoSuchElementException();
     }
 

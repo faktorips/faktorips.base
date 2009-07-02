@@ -96,13 +96,15 @@ public class EnumTypeValidations {
      * 
      * @param msgList The message list where messages are added to in cases of failing validations.
      * @param enumType The enumeration type that is validated.
-     * @param ipsProject The IpsProject used as starting point for searches. Note: Not the
-     *            IpsProject of the provided enumeration type is used within this method.
+     * @param ipsProject The <tt>IpsProject</tt> used as starting point for searches. Note: Not the
+     *            <tt>IpsProject</tt> of the provided enumeration type is used within this method.
      * 
      * @throws CoreException If an exception occurs during processing.
      */
     public static void validateSuperTypeHierarchy(MessageList msgList, IEnumType enumType, IIpsProject ipsProject)
             throws CoreException {
+
+        ArgumentCheck.notNull(new Object[] { msgList, ipsProject });
 
         IEnumType superEnumType = enumType.findSuperEnumType(ipsProject);
         if (superEnumType == null) {
@@ -125,6 +127,42 @@ public class EnumTypeValidations {
                                 enumType, IEnumType.PROPERTY_SUPERTYPE));
                     }
                 }
+            }
+        }
+    }
+
+    /**
+     * Validates the package specification for enum contents that might want to reference this enum
+     * type.
+     * <p>
+     * Adds validation messages to the given message list.
+     * 
+     * @param msgList The message list where messages are added to in cases of failing validations.
+     * @param enumType The enum type that might be invalid or <code>null</code> if that information
+     *            cannot be supported.
+     * @param isContainingValues Flag indicating whether the enum type to validate does contain
+     *            values.
+     * @param enumContentPackageFragment The enum content package fragment of the enum type to
+     *            validate.
+     * 
+     * @throws NullPointerException If <tt>msgList</tt> or <tt>enumContentPackageFragment</tt> is
+     *             <tt>null</tt>.
+     */
+    public static void validateEnumContentPackageFragment(MessageList msgList,
+            IEnumType enumType,
+            boolean isContainingValues,
+            String enumContentPackageFragment) {
+
+        ArgumentCheck.notNull(new Object[] { msgList, enumContentPackageFragment });
+
+        // Package specification should not be empty if this enum type does not contain values.
+        if (!isContainingValues) {
+            if (enumContentPackageFragment.equals("")) {
+                String text = Messages.EnumType_EnumContentPackageFragmentEmpty;
+                Message message = new Message(IEnumType.MSGCODE_ENUM_TYPE_ENUM_CONTENT_PACKAGE_FRAGMENT_EMPTY, text,
+                        Message.INFO, enumType != null ? new ObjectProperty[] { new ObjectProperty(enumType,
+                                IEnumType.PROPERTY_ENUM_CONTENT_PACKAGE_FRAGMENT) } : new ObjectProperty[0]);
+                msgList.add(message);
             }
         }
     }

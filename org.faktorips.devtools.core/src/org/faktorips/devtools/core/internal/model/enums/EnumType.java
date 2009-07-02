@@ -450,32 +450,36 @@ public class EnumType extends EnumValueContainer implements IEnumType {
     protected void validateThis(MessageList list, IIpsProject ipsProject) throws CoreException {
         super.validateThis(list, ipsProject);
 
-        // Validate super enum type
+        // Validate super enum type.
         if (hasSuperEnumType()) {
             EnumTypeValidations.validateSuperEnumType(list, this, superEnumType, ipsProject);
         }
 
         EnumTypeValidations.validateSuperTypeHierarchy(list, this, ipsProject);
 
-        // Validate inherited attributes
+        // Validate inherited attributes.
         if (hasSuperEnumType()) {
             if (list.getNoOfMessages() == 0) {
                 validateInheritedAttributes(list, ipsProject);
             }
         }
 
-        // Validate literal name attribute
+        // Validate literal name attribute.
         validateLiteralNameAttribute(list, ipsProject);
 
-        // Validate id attribute
+        // Validate id attribute.
         validateUsedAsIdInFaktorIpsUiAttribute(list, ipsProject);
 
-        // Validate name attribute
+        // Validate name attribute.
         validateUsedAsNameInFaktorIpsUiAttribute(list, ipsProject);
+
+        // Validate enum content package fragment.
+        EnumTypeValidations
+                .validateEnumContentPackageFragment(list, this, containingValues, enumContentPackageFragment);
     }
 
     /**
-     * Validates whether the given enum type inherits all enum attributes defined in its supertype
+     * Validates whether this enum type inherits all enum attributes defined in its supertype
      * hierarchy.
      * <p>
      * Adds validation messages to the given message list. The validation will pass immediately if
@@ -509,7 +513,7 @@ public class EnumType extends EnumValueContainer implements IEnumType {
     }
 
     /**
-     * Validates whether the given enum type has at least one enum attribute being marked as literal
+     * Validates whether this enum type has at least one enum attribute being marked as literal
      * name.
      * <p>
      * If the given enum type is abstract the validation will succeed even if there is no literal
@@ -546,8 +550,8 @@ public class EnumType extends EnumValueContainer implements IEnumType {
     }
 
     /**
-     * Validates whether the given enum type has at least one enum attribute being marked to be used
-     * as ID in the Faktor-IPS UI.
+     * Validates whether this enum type has at least one enum attribute being marked to be used as
+     * ID in the Faktor-IPS UI.
      * <p>
      * If the given enum type is abstract the validation will succeed even if there is no such enum
      * attribute.
@@ -583,8 +587,8 @@ public class EnumType extends EnumValueContainer implements IEnumType {
     }
 
     /**
-     * Validates whether the given enum type has at least one enum attribute being marked to be used
-     * as name in the Faktor-IPS UI.
+     * Validates whether this enum type has at least one enum attribute being marked to be used as
+     * name in the Faktor-IPS UI.
      * <p>
      * If the given enum type is abstract the validation will succeed even if there is no such enum
      * attribute.

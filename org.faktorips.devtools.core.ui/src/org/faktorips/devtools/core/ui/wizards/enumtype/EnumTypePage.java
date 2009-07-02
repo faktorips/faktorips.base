@@ -39,6 +39,7 @@ import org.faktorips.devtools.core.ui.controller.fields.TextField;
 import org.faktorips.devtools.core.ui.controller.fields.ValueChangeListener;
 import org.faktorips.devtools.core.ui.controls.IpsObjectRefControl;
 import org.faktorips.devtools.core.ui.wizards.IpsObjectPage;
+import org.faktorips.util.message.Message;
 import org.faktorips.util.message.MessageList;
 
 /**
@@ -80,7 +81,7 @@ public class EnumTypePage extends IpsObjectPage {
      * The text field to specify the package for the enum content (only enabled if the values are
      * not part of the model and the enum type is not abstract).
      */
-    private TextField packageSpecificationField;
+    private TextField enumContentPackageSpecificationField;
 
     /**
      * Creates the enum type page.
@@ -99,13 +100,13 @@ public class EnumTypePage extends IpsObjectPage {
     protected void fillNameComposite(Composite nameComposite, UIToolkit toolkit) {
         super.fillNameComposite(nameComposite, toolkit);
 
-        // Super type
+        // Supertype.
         toolkit.createFormLabel(nameComposite, Messages.Fields_SuperEnumType + ':');
         IpsObjectRefControl superTypeControl = toolkit.createEnumTypeRefControl(null, nameComposite, true);
         supertypeField = new TextButtonField(superTypeControl);
         supertypeField.addChangeListener(this);
 
-        // Abstract
+        // Abstract.
         toolkit.createLabel(nameComposite, ""); //$NON-NLS-1$
         isAbstractField = new CheckboxField(toolkit.createCheckbox(nameComposite, Messages.Fields_Abstract));
         isAbstractField.addChangeListener(this);
@@ -115,7 +116,7 @@ public class EnumTypePage extends IpsObjectPage {
             }
         });
 
-        // Values are part of model
+        // Values are part of model.
         toolkit.createLabel(nameComposite, ""); //$NON-NLS-1$
         containingValuesField = new CheckboxField(toolkit.createCheckbox(nameComposite,
                 Messages.Fields_ContainingValues));
@@ -138,7 +139,7 @@ public class EnumTypePage extends IpsObjectPage {
         uiToolkit.createLabel(nameComposite, ""); //$NON-NLS-1$
         Composite createFieldsContainer = uiToolkit.createGridComposite(nameComposite, 2, false, false);
 
-        // Create id attribute
+        // Create id attribute.
         createIdAttributeField = new CheckboxField(uiToolkit.createCheckbox(createFieldsContainer,
                 "ID-Attribut erzeugen:"));
         createIdAttributeField.setValue(true);
@@ -150,7 +151,7 @@ public class EnumTypePage extends IpsObjectPage {
             }
         });
 
-        // Create name attribute
+        // Create name attribute.
         createNameAttributeField = new CheckboxField(uiToolkit.createCheckbox(createFieldsContainer,
                 "Name-Attribut erzeugen:"));
         createNameAttributeField.setValue(true);
@@ -162,7 +163,7 @@ public class EnumTypePage extends IpsObjectPage {
             }
         });
 
-        // Disable id and name generation fields if a supertype is specified
+        // Disable id and name generation fields if a supertype is specified.
         supertypeField.addChangeListener(new ValueChangeListener() {
             public void valueChanged(FieldValueChangedEvent e) {
                 boolean enabled = supertypeField.getText().equals("");
@@ -177,16 +178,16 @@ public class EnumTypePage extends IpsObjectPage {
 
     /**
      * Enables or disables the <code>rootPackageSpecificationControl</code> and the
-     * <code>packageSpecificationField</code> depending on the values of the
+     * <code>enumContentPackageSpecificationField</code> depending on the values of the
      * <code>isAbstractField</code> and <code>containingValuesField</code>.
      */
     private void enableEnumContentControls() {
         boolean isAbstract = (Boolean)isAbstractField.getValue();
         boolean valuesArePartOfModel = (Boolean)containingValuesField.getValue();
         if (isAbstract) {
-            packageSpecificationField.getTextControl().setEnabled(false);
+            enumContentPackageSpecificationField.getTextControl().setEnabled(false);
         } else {
-            packageSpecificationField.getTextControl().setEnabled(!valuesArePartOfModel);
+            enumContentPackageSpecificationField.getTextControl().setEnabled(!valuesArePartOfModel);
         }
     }
 
@@ -203,16 +204,16 @@ public class EnumTypePage extends IpsObjectPage {
      */
     @Override
     protected void fillAdditionalComposite(Composite additionalComposite, UIToolkit toolkit) {
-        // Set the layout
+        // Set the layout.
         additionalComposite.setLayout(new GridLayout(1, true));
         additionalComposite.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
 
-        // Package specification for product side enum content
+        // Package specification for product side enum content.
         toolkit.createFormLabel(additionalComposite, Messages.Fields_PackageSpecification + ':');
         Text text = toolkit.createText(additionalComposite);
-        packageSpecificationField = new TextField(text);
-        packageSpecificationField.getTextControl().setEnabled(false);
-        packageSpecificationField.addChangeListener(this);
+        enumContentPackageSpecificationField = new TextField(text);
+        enumContentPackageSpecificationField.getTextControl().setEnabled(false);
+        enumContentPackageSpecificationField.addChangeListener(this);
     }
 
     /**
@@ -240,18 +241,18 @@ public class EnumTypePage extends IpsObjectPage {
 
         IEnumType newEnumType = (IEnumType)newIpsObject;
 
-        // Set properties
+        // Set properties.
         newEnumType.setAbstract((Boolean)isAbstractField.getValue());
         newEnumType.setContainingValues((Boolean)containingValuesField.getValue());
         newEnumType.setSuperEnumType(supertypeField.getText());
-        newEnumType.setEnumContentPackageFragment(packageSpecificationField.getText());
+        newEnumType.setEnumContentPackageFragment(enumContentPackageSpecificationField.getText());
 
-        // Inherit enum attributes from supertype hierarchy
+        // Inherit enum attributes from supertype hierarchy.
         newEnumType.inheritEnumAttributes(newEnumType.findInheritEnumAttributeCandidates(newEnumType.getIpsProject()));
 
         /*
          * Create id attribute and name attribute if checked and possible (no supertype must be
-         * specified)
+         * specified).
          */
         if (supertypeField.getText().equals("")) {
             if (createIdAttributeField.getCheckbox().isChecked()) {
@@ -284,17 +285,34 @@ public class EnumTypePage extends IpsObjectPage {
         MessageList validationMessages = new MessageList();
         IIpsProject ipsProject = null;
 
-        // Validate super enum type
+        // Validate super enum type.
         String superTypeFieldText = supertypeField.getText();
         ipsProject = ((IpsObjectRefControl)supertypeField.getControl()).getIpsProject();
         if (!(superTypeFieldText.equals("")) && ipsProject != null) {
             EnumTypeValidations.validateSuperEnumType(validationMessages, null, superTypeFieldText, ipsProject);
         }
 
-        // Display the first error message if any
+        // Validate enum content package fragment specification.
+        EnumTypeValidations.validateEnumContentPackageFragment(validationMessages, null, containingValuesField
+                .getCheckbox().isChecked(), enumContentPackageSpecificationField.getText());
+
+        // Display the first error message if any.
         if (validationMessages.getNoOfMessages() > 0) {
-            setErrorMessage(validationMessages.getMessage(0).getText());
+            Message msg = validationMessages.getMessage(0);
+            int severity = msg.getSeverity();
+            int msgLevel = Message.NONE;
+            switch (severity) {
+                case Message.INFO:
+                    msgLevel = INFORMATION;
+                    break;
+                case Message.ERROR:
+                    msgLevel = ERROR;
+                    break;
+                case Message.WARNING:
+                    msgLevel = WARNING;
+                    break;
+            }
+            setMessage(msg.getText(), msgLevel);
         }
     }
-
 }

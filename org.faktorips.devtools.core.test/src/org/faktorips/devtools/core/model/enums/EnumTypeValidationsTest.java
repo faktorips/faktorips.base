@@ -24,15 +24,15 @@ public class EnumTypeValidationsTest extends AbstractIpsPluginTest {
     private IEnumType abstractEnum;
     private IEnumType abstractSubEnum;
     private IEnumType paymentMode;
-    
-    
-    public void setUp() throws Exception{
+
+    public void setUp() throws Exception {
         super.setUp();
         ipsProject = newIpsProject("TestProject");
-        
+
         abstractEnum = newEnumType(ipsProject, "AbstractEnum");
         abstractEnum.setAbstract(true);
         abstractEnum.setContainingValues(true);
+        abstractEnum.setEnumContentPackageFragment("enumcontents");
         IEnumAttribute id = abstractEnum.newEnumAttribute();
         id.setDatatype(Datatype.STRING.getQualifiedName());
         id.setInherited(false);
@@ -44,6 +44,7 @@ public class EnumTypeValidationsTest extends AbstractIpsPluginTest {
         abstractSubEnum.setSuperEnumType(abstractEnum.getQualifiedName());
         abstractSubEnum.setAbstract(true);
         abstractSubEnum.setContainingValues(true);
+        abstractSubEnum.setEnumContentPackageFragment("enumcontents");
         IEnumAttribute shortText = abstractSubEnum.newEnumAttribute();
         shortText.setDatatype(Datatype.STRING.getQualifiedName());
         shortText.setInherited(false);
@@ -55,6 +56,7 @@ public class EnumTypeValidationsTest extends AbstractIpsPluginTest {
         paymentMode.setSuperEnumType(abstractSubEnum.getQualifiedName());
         paymentMode.setAbstract(false);
         paymentMode.setContainingValues(true);
+        paymentMode.setEnumContentPackageFragment("enumcontents");
 
         id = paymentMode.newEnumAttribute();
         id.setDatatype(Datatype.STRING.getQualifiedName());
@@ -62,20 +64,20 @@ public class EnumTypeValidationsTest extends AbstractIpsPluginTest {
         id.setLiteralName(true);
         id.setUniqueIdentifier(true);
         id.setName("id");
-        
+
         shortText = paymentMode.newEnumAttribute();
         shortText.setDatatype(Datatype.STRING.getQualifiedName());
         shortText.setInherited(true);
         shortText.setLiteralName(false);
         shortText.setUniqueIdentifier(false);
         shortText.setName("shortText");
-        
+
         IEnumValue value1 = paymentMode.newEnumValue();
         IEnumAttributeValue value1id = value1.getEnumAttributeValues().get(0);
         value1id.setValue("monthly");
         IEnumAttributeValue value1Text = value1.getEnumAttributeValues().get(1);
         value1Text.setValue("Monthly Payment");
-        
+
         IEnumValue value2 = paymentMode.newEnumValue();
         IEnumAttributeValue value2id = value2.getEnumAttributeValues().get(0);
         value2id.setValue("annually");
@@ -83,7 +85,7 @@ public class EnumTypeValidationsTest extends AbstractIpsPluginTest {
         value2Text.setValue("Annual Payment");
 
     }
-    
+
     public void testValidateSuperTypeHierarchyValidHierarchy() throws Exception {
         MessageList msgList = new MessageList();
         EnumTypeValidations.validateSuperTypeHierarchy(msgList, paymentMode, ipsProject);
@@ -109,6 +111,12 @@ public class EnumTypeValidationsTest extends AbstractIpsPluginTest {
         msgList = new MessageList();
         EnumTypeValidations.validateSuperTypeHierarchy(msgList, paymentMode, ipsProject);
         assertNotNull(msgList.getMessageByCode(IEnumType.MSGCODE_INCONSISTENT_TYPE_HIERARCHY));
+    }
+
+    public void testValidateEnumContentPackageFragment() {
+        MessageList msgList = new MessageList();
+        EnumTypeValidations.validateEnumContentPackageFragment(msgList, paymentMode, false, "");
+        assertNotNull(msgList.getMessageByCode(IEnumType.MSGCODE_ENUM_TYPE_ENUM_CONTENT_PACKAGE_FRAGMENT_EMPTY));
     }
 
 }
