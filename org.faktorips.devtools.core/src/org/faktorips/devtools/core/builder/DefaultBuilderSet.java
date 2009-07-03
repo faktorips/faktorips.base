@@ -13,7 +13,6 @@
 
 package org.faktorips.devtools.core.builder;
 
-import org.apache.commons.lang.StringUtils;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.runtime.CoreException;
@@ -85,16 +84,9 @@ public abstract class DefaultBuilderSet extends AbstractBuilderSet {
      * implementation.
      */
     public String getPackageName(IIpsSrcFile ipsSrcFile) throws CoreException {
-        StringBuffer buf = new StringBuffer();
-        String basePackeName = ipsSrcFile.getBasePackageNameForGeneratedJavaClass();
-        if (!StringUtils.isEmpty(basePackeName)) {
-            buf.append(basePackeName);
-        }
-        String packageFragName = ipsSrcFile.getIpsPackageFragment().getName();
-        if (!StringUtils.isEmpty(packageFragName)) {
-            buf.append('.').append(packageFragName);
-        }
-        return buf.toString().toLowerCase();
+        String basePackName = ipsSrcFile.getBasePackageNameForGeneratedJavaClass();
+        String packageFragName = ipsSrcFile.getIpsPackageFragment().getName().toLowerCase();
+        return QNameUtil.concat(basePackName, packageFragName);
     }
 
     /**
@@ -102,32 +94,18 @@ public abstract class DefaultBuilderSet extends AbstractBuilderSet {
      * the getPackage() method implementation.
      */
     public String getInternalPackageName(IIpsSrcFile ipsSrcFile) throws CoreException {
-        StringBuffer buf = new StringBuffer();
-        String basePackeName = ipsSrcFile.getBasePackageNameForGeneratedJavaClass();
-        if (!StringUtils.isEmpty(basePackeName)) {
-            buf.append(basePackeName).append('.');
-        }
-        buf.append(INTERNAL_PACKAGE);
-        String packageFragName = ipsSrcFile.getIpsPackageFragment().getName();
-        if (!StringUtils.isEmpty(packageFragName)) {
-            buf.append('.').append(packageFragName);
-        }
-
-        return buf.toString().toLowerCase();
+        String basePackName = QNameUtil.concat(ipsSrcFile.getBasePackageNameForGeneratedJavaClass(), INTERNAL_PACKAGE);
+        String packageFragName = ipsSrcFile.getIpsPackageFragment().getName().toLowerCase();
+        return QNameUtil.concat(basePackName, packageFragName);
     }
 
     /**
      * {@inheritDoc}
      */
     public String getTocFilePackageName(IIpsPackageFragmentRoot root) throws CoreException {
-        StringBuffer buf = new StringBuffer();
         IIpsSrcFolderEntry entry = (IIpsSrcFolderEntry)root.getIpsObjectPathEntry();
-        String basePackeName = entry.getBasePackageNameForDerivedJavaClasses();
-        if (!StringUtils.isEmpty(basePackeName)) {
-            buf.append(basePackeName).append('.');
-        }
-        buf.append(INTERNAL_PACKAGE);
-        return buf.toString().toLowerCase();
+        String basePackName = entry.getBasePackageNameForDerivedJavaClasses();
+        return QNameUtil.concat(basePackName, INTERNAL_PACKAGE);
     }
 
     /**
