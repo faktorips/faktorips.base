@@ -27,6 +27,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import javax.xml.bind.JAXBContext;
+import javax.xml.bind.annotation.adapters.XmlAdapter;
 import javax.xml.stream.XMLInputFactory;
 import javax.xml.stream.XMLStreamConstants;
 import javax.xml.stream.XMLStreamException;
@@ -40,6 +42,7 @@ import org.faktorips.runtime.IRuntimeRepository;
 import org.faktorips.runtime.ITable;
 import org.faktorips.runtime.ProductCmptGenerationNotFoundException;
 import org.faktorips.runtime.ProductCmptNotFoundException;
+import org.faktorips.runtime.jaxb.IpsJAXBContext;
 import org.faktorips.runtime.modeltype.IModelType;
 import org.faktorips.runtime.modeltype.internal.ModelType;
 import org.faktorips.runtime.test.IpsTest2;
@@ -653,6 +656,22 @@ public abstract class AbstractRuntimeRepository implements IRuntimeRepository {
      */
     protected abstract void getAllModelTypeImplementationClasses(Set<String> result);
 
+    @SuppressWarnings("unchecked")
+    public IEnumValue getEnumValue(String uniqueId)  {
+        int index = uniqueId.indexOf('#');
+        if (index == -1){
+            return null;
+        }
+        String className = uniqueId.substring(0, index);
+        String id = uniqueId.substring(index + 1);
+        try {
+            Class<IEnumValue> clazz = (Class<IEnumValue>)getClassLoader().loadClass(className);
+            return getEnumValue(clazz, id);
+        } catch (ClassNotFoundException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
     public final <T extends IEnumValue> T getEnumValue(Class<T> clazz, String value) {
         if (value == null) {
             return null;
@@ -680,5 +699,60 @@ public abstract class AbstractRuntimeRepository implements IRuntimeRepository {
         return null;
     }
 
+    /**
+     * Returns the list of enumeration values of the enumeration type that is identified by its class
+     * which is provided to it.
+     */
     protected abstract <T extends IEnumValue> List<T> getEnumValuesInternal(Class<T> clazz);
+    
+    /**
+     * Returns all Faktor-IPS enumeration XmlAdapters of this repository.
+     */
+    protected abstract List<XmlAdapter<String, IEnumValue>> getAllEnumXmlAdapters();
+   
+    
+    /**
+     * Creates a {@link JAXBContext} that wraps the provided context and extends the marshalling methods to provide
+     * marshalling of Faktor-IPS enumerations and configured policy components.   
+     */
+    public JAXBContext newJAXBContext(JAXBContext ctx) {
+        List<XmlAdapter<String, IEnumValue>> enumXmlAdapters = getAllEnumXmlAdapters();
+        List<XmlAdapter<String, IEnumValue>> allEnumXmlAdapters = new LinkedList<XmlAdapter<String, IEnumValue>>(
+                enumXmlAdapters);
+        for (IRuntimeRepository runtimeRepository : getAllReferencedRepositories()) {
+            AbstractRuntimeRepository refRepository = (AbstractRuntimeRepository)runtimeRepository;
+            allEnumXmlAdapters.addAll(refRepository.getAllEnumXmlAdapters());
+        }
+        return new IpsJAXBContext(ctx, enumXmlAdapters, this);
+    }
+    
+    /**
+     * Creates a new JAXBContext that can marshall / unmarshall all model classes defined in this repository.
+     * If the repository references other repositories (directly or indirectly), the context can also handle the
+     * classes defined in those.  
+     * @throws RuntimeException Exceptions that are thrown while trying to load a class from the class loader
+     *          or creating the jaxb context are wrapped into a runtime exception  
+     */
+    @SuppressWarnings("unchecked")
+    public JAXBContext newJAXBContext() {
+        try {
+            Set<String> classNames = getAllModelTypeImplementationClasses();
+            List<Class> classes = new ArrayList<Class>(classNames.size());
+            for (String className : classNames) {
+                Class clazz = getClassLoader().loadClass(className);
+                if (AbstractModelObject.class.isAssignableFrom(clazz)) {
+                    classes.add(clazz);
+                }
+            }
+            classes.add(AbstractModelObject.class);
+            classes.add(AbstractConfigurableModelObject.class);
+            JAXBContext ctx = JAXBContext.newInstance(classes.toArray(new Class[classes.size()]));
+            return newJAXBContext(ctx);
+        } catch (RuntimeException e) {
+            throw e;
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+    }
+
 }

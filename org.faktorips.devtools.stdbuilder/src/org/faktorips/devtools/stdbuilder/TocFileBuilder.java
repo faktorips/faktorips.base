@@ -31,6 +31,7 @@ import org.eclipse.core.runtime.CoreException;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.IpsStatus;
 import org.faktorips.devtools.core.builder.AbstractArtefactBuilder;
+import org.faktorips.devtools.core.builder.ComplianceCheck;
 import org.faktorips.devtools.core.builder.DefaultBuilderSet;
 import org.faktorips.devtools.core.internal.model.ipsproject.IpsPackageFragmentRoot;
 import org.faktorips.devtools.core.model.enums.IEnumContent;
@@ -54,6 +55,7 @@ import org.faktorips.devtools.core.model.testcasetype.ITestCaseType;
 import org.faktorips.devtools.core.model.type.IType;
 import org.faktorips.devtools.core.util.XmlUtil;
 import org.faktorips.devtools.stdbuilder.enumtype.EnumTypeBuilder;
+import org.faktorips.devtools.stdbuilder.enumtype.EnumXmlAdapterBuilder;
 import org.faktorips.devtools.stdbuilder.formulatest.FormulaTestBuilder;
 import org.faktorips.devtools.stdbuilder.policycmpttype.PolicyCmptImplClassBuilder;
 import org.faktorips.devtools.stdbuilder.productcmpt.ProductCmptBuilder;
@@ -94,6 +96,7 @@ public class TocFileBuilder extends AbstractArtefactBuilder {
     private ModelTypeXmlBuilder policyModelTypeXmlBuilder;
     private ModelTypeXmlBuilder productModelTypeXmlBuilder;
     private PolicyCmptImplClassBuilder policyCmptImplClassBuilder;
+    private EnumXmlAdapterBuilder enumXmlAdapterBuilder;
 
     private boolean generateEntriesForModelTypes;
 
@@ -109,6 +112,10 @@ public class TocFileBuilder extends AbstractArtefactBuilder {
         this.generateEntriesForModelTypes = generateEntriesForModelTypes;
     }
 
+    public void setEnumXmlAdapterBuilder(EnumXmlAdapterBuilder enumXmlAdapterBuilder){
+        this.enumXmlAdapterBuilder = enumXmlAdapterBuilder;
+    }
+    
     public void setProductCmptTypeImplClassBuilder(ProductCmptImplClassBuilder builder) {
         this.productCmptTypeImplClassBuilder = builder;
     }
@@ -167,6 +174,7 @@ public class TocFileBuilder extends AbstractArtefactBuilder {
         IpsObjectType type = ipsSrcFile.getIpsObjectType();
         return IpsObjectType.PRODUCT_CMPT.equals(type) || IpsObjectType.TABLE_CONTENTS.equals(type)
                 || IpsObjectType.TEST_CASE.equals(type) || IpsObjectType.ENUM_CONTENT.equals(type)
+                || IpsObjectType.ENUM_TYPE.equals(type)
                 || (generateEntriesForModelTypes && type.isEntityType());
     }
 
@@ -354,6 +362,8 @@ public class TocFileBuilder extends AbstractArtefactBuilder {
                 entry = createTocEntry((ITestCase)object);
             } else if (type.equals(IpsObjectType.ENUM_CONTENT)) {
                 entry = createTocEntry((IEnumContent)object);
+            } else if (type.equals(IpsObjectType.ENUM_TYPE)) {
+                entry = createTocEntry((IEnumType)object);
             } else {
                 throw new RuntimeException("Unknown ips object type " + object.getIpsObjectType()); //$NON-NLS-1$
             }
@@ -499,6 +509,21 @@ public class TocFileBuilder extends AbstractArtefactBuilder {
         String enumTypeName = enumTypeBuilder.getQualifiedClassName(enumType);
         TocEntryObject entry = TocEntryObject.createEnumContentTocEntry(objectId, enumContent.getQualifiedName(),
                 xmlResourceName, enumTypeName);
+        return entry;
+    }
+
+    public boolean isGenerateJaxbSupport() {
+        return getBuilderSet().getConfig().getPropertyValueAsBoolean(StandardBuilderSet.CONFIG_PROPERTY_GENERATE_JAXB_SUPPORT);
+    }
+    
+    public TocEntryObject createTocEntry(IEnumType enumType) throws CoreException {
+        if(!isGenerateJaxbSupport() || !ComplianceCheck.isComplianceLevelAtLeast5(getIpsProject())){
+            return null;
+        }
+        if (enumType.isContainingValues() || enumType.isAbstract()) {
+            return null;
+        }
+        TocEntryObject entry = TocEntryObject.createEnumXmlAdapterTocEntry(enumType.getQualifiedName(), enumXmlAdapterBuilder.getQualifiedClassName(enumType));
         return entry;
     }
 

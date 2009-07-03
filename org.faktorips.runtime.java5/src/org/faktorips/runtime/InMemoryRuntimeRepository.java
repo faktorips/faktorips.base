@@ -18,12 +18,15 @@ import java.util.Calendar;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.SortedSet;
 import java.util.TimeZone;
 import java.util.TreeSet;
+
+import javax.xml.bind.annotation.adapters.XmlAdapter;
 
 import org.faktorips.runtime.internal.AbstractRuntimeRepository;
 import org.faktorips.runtime.test.IpsTest2;
@@ -53,6 +56,9 @@ public class InMemoryRuntimeRepository extends AbstractRuntimeRepository {
 
     // contains all enumeration values for the faktor ips enumerations which content is deferred 
     private Map<Class<IEnumValue>, List<IEnumValue>> enumValuesMap = new HashMap<Class<IEnumValue>, List<IEnumValue>>(); 
+    
+    private List<XmlAdapter<String, IEnumValue>> enumXmlAdapters = new LinkedList<XmlAdapter<String,IEnumValue>>();
+
     
     public InMemoryRuntimeRepository() {
         super("InMemoryRuntimeRepository");
@@ -383,9 +389,23 @@ public class InMemoryRuntimeRepository extends AbstractRuntimeRepository {
 
     }
 
+    @SuppressWarnings("unchecked")
     @Override
     protected <T extends IEnumValue> List<T> getEnumValuesInternal(Class<T> clazz) {
         return (List<T>)enumValuesMap.get(clazz);
+    }
+
+    /**
+     * Adds an {@link XmlAdapter} for a Faktor-IPS enumeration that defers its content
+     * to a enumeration content to this repository. 
+     */
+    public void addEnumXmlAdapter(XmlAdapter<String, IEnumValue> enumXmlAdapter){
+        enumXmlAdapters.add(enumXmlAdapter);
+    }
+    
+    @Override
+    protected List<XmlAdapter<String, IEnumValue>> getAllEnumXmlAdapters() {
+        return enumXmlAdapters;
     }
 
 }

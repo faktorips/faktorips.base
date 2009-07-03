@@ -57,7 +57,7 @@ public class JavaCodeFragmentBuilder {
     /**
      * Adds an import entry to the code fragment under construction.
      */
-    public void addImport(Class clazz) {
+    public void addImport(Class<?> clazz) {
         fragment.addImport(clazz.getName());
     }
 
@@ -93,7 +93,7 @@ public class JavaCodeFragmentBuilder {
      * Appends the class' unqualified name to the sourcecode and updates the import declaration (if
      * necessary).
      */
-    public void appendClassName(Class clazz) {
+    public void appendClassName(Class<?> clazz) {
         fragment.appendClassName(clazz);
     }
 
@@ -198,7 +198,7 @@ public class JavaCodeFragmentBuilder {
      * @param argName Argument names.
      * @param argClass Argument classes.
      */
-    public void methodBegin(int modifier, Class returnType, String methodName, String[] argName, Class[] argClass) {
+    public void methodBegin(int modifier, Class<?> returnType, String methodName, String[] argName, Class<?>[] argClass) {
 
         methodBegin(modifier, returnType, methodName, argName, argClass, null);
     }
@@ -215,11 +215,11 @@ public class JavaCodeFragmentBuilder {
      * @param argClass Argument classes.
      */
     public void methodBegin(int modifier,
-            Class returnType,
+            Class<?> returnType,
             String methodName,
             String[] argName,
-            Class[] argClass,
-            Class[] exceptionClasses) {
+            Class<?>[] argClass,
+            Class<?>[] exceptionClasses) {
 
         signatureInternal(modifier, methodName, new ClassAsParameterTypeSupport(argName, argClass, exceptionClasses,
                 returnType), false);
@@ -241,10 +241,10 @@ public class JavaCodeFragmentBuilder {
      * @param javadoc the java documentation
      */
     public void method(int modifier,
-            Class returnType,
+            Class<?> returnType,
             String methodName,
             String[] argName,
-            Class[] argClass,
+            Class<?>[] argClass,
             JavaCodeFragment body,
             String javadoc) {
 
@@ -268,11 +268,11 @@ public class JavaCodeFragmentBuilder {
      * @param javadoc the java documentation
      */
     public void method(int modifier,
-            Class returnType,
+            Class<?> returnType,
             String methodName,
             String[] argName,
-            Class[] argClass,
-            Class[] exceptionClasses,
+            Class<?>[] argClass,
+            Class<?>[] exceptionClasses,
             JavaCodeFragment body,
             String javadoc) {
 
@@ -296,10 +296,10 @@ public class JavaCodeFragmentBuilder {
      * @param javaDocAnnotations annotations of the java documentation
      */
     public void method(int modifier,
-            Class returnType,
+            Class<?> returnType,
             String methodName,
             String[] argName,
-            Class[] argClass,
+            Class<?>[] argClass,
             JavaCodeFragment body,
             String javadoc,
             String[] javaDocAnnotations) {
@@ -325,10 +325,10 @@ public class JavaCodeFragmentBuilder {
      * @param annotations Java 5 annotations
      */
     public void method(int modifier,
-            Class returnType,
+            Class<?> returnType,
             String methodName,
             String[] argName,
-            Class[] argClass,
+            Class<?>[] argClass,
             JavaCodeFragment body,
             String javadoc,
             String[] javaDocAnnotations,
@@ -465,10 +465,10 @@ public class JavaCodeFragmentBuilder {
      * @param javaDocAnnotations annotations of the java documentation
      */
     public void methodBegin(int modifier,
-            Class returnType,
+            Class<?> returnType,
             String methodName,
             String[] argName,
-            Class[] argClass,
+            Class<?>[] argClass,
             String javaDoc,
             String[] javaDocAnnotations) {
 
@@ -671,7 +671,7 @@ public class JavaCodeFragmentBuilder {
      * Appends the sourcecode for the beginning of a new class at the end of the fragment under
      * construction.
      */
-    public void classBegin(int modifier, String className, Class extendsClass, Class interfaces[]) {
+    public void classBegin(int modifier, String className, Class<?> extendsClass, Class<?> interfaces[]) {
         String extendsClassString = extendsClass == null ? null : extendsClass.getName();
         if (interfaces == null) {
             classBegin(modifier, className, extendsClassString, null);
@@ -798,7 +798,7 @@ public class JavaCodeFragmentBuilder {
      * @param clazz The class the variable is an instance of
      * @param varName the variable's name.
      */
-    public void varDeclaration(int modifier, Class clazz, String varName) {
+    public void varDeclaration(int modifier, Class<?> clazz, String varName) {
 
         varDeclaration(modifier, clazz.getName(), varName);
     }
@@ -811,7 +811,7 @@ public class JavaCodeFragmentBuilder {
      * @param varName the variable's name.
      * @param expression the initial value of the variable
      */
-    public void varDeclaration(int modifier, Class clazz, String varName, JavaCodeFragment expression) {
+    public void varDeclaration(int modifier, Class<?> clazz, String varName, JavaCodeFragment expression) {
 
         varDeclaration(modifier, clazz.getName(), varName, expression);
     }
@@ -855,7 +855,7 @@ public class JavaCodeFragmentBuilder {
     /**
      * Writes a variable definition.
      */
-    public void varDefinition(Class varClass, String varName, String varValue) {
+    public void varDefinition(Class<?> varClass, String varName, String varValue) {
         varDefinition(varClass.getName(), varName, varValue);
     }
 
@@ -955,7 +955,7 @@ public class JavaCodeFragmentBuilder {
      * 
      * @param annotation
      */
-    public void annotationLn(Class annotation) {
+    public void annotationLn(Class<?> annotation) {
         if (annotation == null) {
             return;
         }
@@ -972,7 +972,7 @@ public class JavaCodeFragmentBuilder {
      * @param params     Parameters for the annotation without paranthesis. If <code>null</code> or an empty String,
      *                   paranthesis aren't added.
      */
-    public void annotationLn(Class annotation, String params) {
+    public void annotationLn(Class<?> annotation, String params) {
         if (annotation==null) {
             return;
         }
@@ -995,7 +995,7 @@ public class JavaCodeFragmentBuilder {
      * @param stringValue The unqoted string value for the parameter. This method generates the quotes.
      * 
      */
-    public void annotationLn(Class annotation, String paramName, String stringValue) {
+    public void annotationLn(Class<?> annotation, String paramName, String stringValue) {
         if (annotation == null) {
             return;
         }
@@ -1055,6 +1055,85 @@ public class JavaCodeFragmentBuilder {
     }
 
     /**
+     * Writes the annotation with the indicated parameter of type Class. '@' character and a line
+     * feed will be automatically added. Import statements are added automatically to the code
+     * fragment (if needed).
+     * 
+     * <pre>
+     * Example 
+     *   annotation : javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter
+     *   paramName  : value
+     *   classValue: EnumValueXmlAdapter.class
+     *   Result: @XmlJavaTypeAdapter(value = EnumValueXmlAdapter.class)
+     * </pre>
+     * 
+     * @param annotation The annotation class
+     * @param paramName The name of the parameter
+     * @param classValue The class value for the parameter
+     */
+    public void annotationLn(String annotation, String paramName, Class<?> classValue) {
+        if (annotation == null) {
+            return;
+        }
+        fragment.append("@");
+        fragment.appendClassName(annotation);
+        fragment.append('(');
+        fragment.append(paramName);
+        fragment.append('=');
+        fragment.appendClassName(classValue);
+        fragment.append(".class");
+        fragment.append(')');
+        fragment.appendln();
+    }
+
+    /**
+     * Writes the annotation for a class value. '@' character and a line feed will be automatically
+     * added. Import statements are added automatically to the code fragment (if needed).
+     * 
+     * <pre>
+     * Example 
+     *   annotation : javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter
+     *   paramName  : value
+     *   classValue: EnumValueXmlAdapter.class
+     *   Result: @XmlJavaTypeAdapter(value = EnumValueXmlAdapter.class)
+     * </pre>
+     * 
+     * @param annotation The annotation class
+     * @param paramName The name of the parameter
+     * @param classValue The class value for the parameter
+     */
+    public void annotationClassValueLn(String annotation, String paramName, String qualifiedClassName) {
+        if (annotation == null) {
+            return;
+        }
+        fragment.append("@");
+        fragment.appendClassName(annotation);
+        fragment.append('(');
+        fragment.append(paramName);
+        fragment.append('=');
+        fragment.appendClassName(qualifiedClassName);
+        fragment.append(".class");
+        fragment.append(')');
+        fragment.appendln();
+    }
+
+    public void annotationClassValueExpressionLn(String annotation, String paramName, String classExpression) {
+        if (annotation == null) {
+            return;
+        }
+        fragment.append("@");
+        fragment.appendClassName(annotation);
+        fragment.append('(');
+        fragment.append(paramName);
+        fragment.append('=');
+        fragment.append(classExpression);
+        fragment.append(')');
+        fragment.appendln();
+    }
+
+    
+    
+    /**
      * Writes the annotation. For an annotation the (fully qualified) annotation class name needs to be specified. The
      * '@' character and a line feed will be automatically added. The annoation may contain parameters in paranthesis. 
      * 
@@ -1081,7 +1160,7 @@ public class JavaCodeFragmentBuilder {
      * 
      * @param annotations
      */
-    public void annotationLn(Class[] annotations) {
+    public void annotationLn(Class<?>[] annotations) {
         if (annotations == null) {
             return;
         }
@@ -1143,15 +1222,15 @@ public class JavaCodeFragmentBuilder {
     private class ClassAsParameterTypeSupport extends MethodSignatureTypesSupport {
 
         private String[] parameterNames = null;
-        private Class[] parameterTypes = null;
-        private Class returnType = null;
-        private Class[] exceptionClasses = null;
+        private Class<?>[] parameterTypes = null;
+        private Class<?> returnType = null;
+        private Class<?>[] exceptionClasses = null;
 
         /**
          * 
          */
-        public ClassAsParameterTypeSupport(String[] parameterNames, Class[] parameterTypes, Class[] exceptionClasses,
-                Class returnType) {
+        public ClassAsParameterTypeSupport(String[] parameterNames, Class<?>[] parameterTypes, Class<?>[] exceptionClasses,
+                Class<?> returnType) {
             check(parameterNames, parameterTypes);
             this.parameterNames = parameterNames;
             this.parameterTypes = parameterTypes;

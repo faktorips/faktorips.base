@@ -13,11 +13,15 @@
 
 package org.faktorips.runtime.internal;
 
+import java.lang.reflect.Constructor;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
 import java.util.TimeZone;
+
+import javax.xml.bind.annotation.adapters.XmlAdapter;
 
 import org.faktorips.runtime.GenerationId;
 import org.faktorips.runtime.ICache;
@@ -48,6 +52,7 @@ public abstract class AbstractTocBasedRuntimeRepository extends AbstractRuntimeR
     private ICache<ITable> tableCacheByClass;
     @SuppressWarnings("unchecked")
     private ICache<List> enumValuesCacheByClass;
+    private List<XmlAdapter<String, IEnumValue>> enumXmlAdapters;
     
     public AbstractTocBasedRuntimeRepository(String name, ICacheFactory cacheFactory) {
         super(name);
@@ -64,6 +69,7 @@ public abstract class AbstractTocBasedRuntimeRepository extends AbstractRuntimeR
         tableCacheByQName = (ICache<ITable>)cacheFactory.createCache(ICacheFactory.Type.TABLE_BY_QUALIFIED_NAME_CACHE);
         tableCacheByClass = (ICache<ITable>)cacheFactory.createCache(ICacheFactory.Type.TABLE_BY_CLASSNAME_CACHE);
         enumValuesCacheByClass = (ICache<List>)cacheFactory.createCache(ICacheFactory.Type.ENUM_CONTENT_BY_CLASS);
+        enumXmlAdapters = new LinkedList<XmlAdapter<String, IEnumValue>>();
     }
     
     /**
@@ -99,7 +105,7 @@ public abstract class AbstractTocBasedRuntimeRepository extends AbstractRuntimeR
         }
         return pc;
     }
-    
+
     @SuppressWarnings("unchecked")
     protected <T extends IEnumValue> List<T> getEnumValuesInternal(Class<T> clazz){
         List<T> enumValues = enumValuesCacheByClass.getObject(clazz);
@@ -381,5 +387,34 @@ public abstract class AbstractTocBasedRuntimeRepository extends AbstractRuntimeR
 		}
 	}
 
-    
+	/**
+	 * {@inheritDoc}
+	 */
+    protected List<XmlAdapter<String, IEnumValue>> getAllEnumXmlAdapters(){
+        if(!enumXmlAdapters.isEmpty()){
+            return enumXmlAdapters;
+        }
+        for (TocEntry tocEntry : toc.getEnumXmlAdapterTocEntries()) {
+            try {
+                enumXmlAdapters.add(createEnumXmlAdapter(tocEntry.getImplementationClassName()));
+            } catch (Exception e) {
+                enumXmlAdapters.clear();
+            }
+        }            
+        return enumXmlAdapters;
+    }
+	
+    /**
+     * Creates and returns an {@link XmlAdapter} instance for the provided class name. 
+     * @throws Exception can occur while localizing the xml adapter class and creating the instance
+     */
+    @SuppressWarnings("unchecked")
+    protected XmlAdapter<String, IEnumValue> createEnumXmlAdapter(String className) throws Exception {
+        Class<XmlAdapter<String, IEnumValue>> xmlAdapterClass = (Class<XmlAdapter<String, IEnumValue>>)getClassLoader()
+                .loadClass(className);
+        Constructor<XmlAdapter<String, IEnumValue>> constructor = xmlAdapterClass
+                .getConstructor(IRuntimeRepository.class);
+        XmlAdapter<String, IEnumValue> instance = constructor.newInstance(this);
+        return instance;
+    }
 }

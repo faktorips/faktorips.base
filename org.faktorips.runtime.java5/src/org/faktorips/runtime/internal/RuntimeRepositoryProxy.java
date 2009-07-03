@@ -18,6 +18,7 @@ import java.lang.reflect.Constructor;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.xml.bind.annotation.adapters.XmlAdapter;
 import javax.xml.parsers.SAXParser;
 import javax.xml.parsers.SAXParserFactory;
 
@@ -137,6 +138,12 @@ public class RuntimeRepositoryProxy extends AbstractTocBasedRuntimeRepository {
             throw new RuntimeException("Can't create enumeration instance for toc entry " + tocEntry, e);
         }
         return enumValues;
+    }
+
+    @Override
+    protected XmlAdapter<String, IEnumValue> createEnumXmlAdapter(String className) throws Exception {
+        // TODO Auto-generated method stub
+        return null;
     }
 
 }

@@ -19,7 +19,6 @@ import org.eclipse.core.runtime.CoreException;
 import org.faktorips.codegen.DatatypeHelper;
 import org.faktorips.codegen.JavaCodeFragment;
 import org.faktorips.codegen.JavaCodeFragmentBuilder;
-import org.faktorips.datatype.Datatype;
 import org.faktorips.datatype.ValueDatatype;
 import org.faktorips.devtools.core.builder.JavaSourceFileBuilder;
 import org.faktorips.devtools.core.builder.TypeSection;
@@ -29,6 +28,7 @@ import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAttribute;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
 import org.faktorips.devtools.core.model.type.IAttribute;
 import org.faktorips.devtools.stdbuilder.EnumTypeDatatypeHelper;
+import org.faktorips.devtools.stdbuilder.enumtype.EnumXmlAdapterBuilder;
 import org.faktorips.devtools.stdbuilder.policycmpttype.GenPolicyCmptType;
 import org.faktorips.devtools.stdbuilder.policycmpttype.GenPolicyCmptTypePart;
 import org.faktorips.runtime.internal.MethodNames;
@@ -266,6 +266,14 @@ public abstract class GenAttribute extends GenPolicyCmptTypePart {
                 annotationParam += ",nillable=true";
             }
             memberVarsBuilders.annotationLn("javax.xml.bind.annotation.XmlElement", annotationParam);
+            if (datatypeHelper instanceof EnumTypeDatatypeHelper) {
+                EnumXmlAdapterBuilder xmlAdapterBuilder = (EnumXmlAdapterBuilder)getGenPolicyCmptType().getBuilderSet().getBuilder(EnumXmlAdapterBuilder.class);
+                EnumTypeDatatypeHelper enumDatatypeHelper = (EnumTypeDatatypeHelper)datatypeHelper;
+                if (!enumDatatypeHelper.getEnumType().isContainingValues()) {
+                    memberVarsBuilders.annotationClassValueLn("javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter", "value",
+                            xmlAdapterBuilder.getQualifiedClassName(enumDatatypeHelper.getEnumType()));
+                }
+            }
         }
 
         memberVarsBuilders.varDeclaration(java.lang.reflect.Modifier.PRIVATE, getJavaClassName(), fieldName,

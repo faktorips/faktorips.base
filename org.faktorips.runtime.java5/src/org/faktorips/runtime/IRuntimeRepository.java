@@ -17,6 +17,8 @@ import java.util.Calendar;
 import java.util.List;
 import java.util.Set;
 
+import javax.xml.bind.JAXBContext;
+
 import org.faktorips.runtime.modeltype.IModelType;
 import org.faktorips.runtime.test.IpsTest2;
 import org.faktorips.runtime.test.IpsTestCaseBase;
@@ -133,6 +135,13 @@ public interface IRuntimeRepository {
      * @param value the string representation of enumeration value
      */
     public <T extends IEnumValue> T getEnumValue(Class<T> clazz, String value);
+    
+    /**
+     * Returns the enumeration value for the provided unique Id. The unique Id is specified as
+     * follows <i>qualifiedClassName'#'valueId</i>. The valueId is the value that is returned by the
+     * method {@link IEnumValue#getID()}.
+     */
+    public IEnumValue getEnumValue(String uniqueId);
     
     /**
      * Returns the product component generation identified by the id and the effective date. Returns
@@ -339,4 +348,17 @@ public interface IRuntimeRepository {
      * Returns an empty set if no type is available.
      */
     public Set<String> getAllModelTypeImplementationClasses();
+    
+    /**
+     * Creates a new JAXBContext that can marshall / unmarshall all modell classes defined in the given repository.
+     * If the repository references other repositories (directly or indirectly), the context can also handle the
+     * classes defined in these other repositories.  
+     * 
+     * Note: The repository contains the model classed by name, so this method needs to actually load the classes.
+     * This method uses the given class loader do load the classes.
+     * 
+     * @param repository The repository that contains the information about the model classes
+     * @param cl         The class loader to load the model classes.
+     */
+    public JAXBContext newJAXBContext();
 }

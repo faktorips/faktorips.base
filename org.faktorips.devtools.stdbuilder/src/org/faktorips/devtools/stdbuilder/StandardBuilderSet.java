@@ -44,6 +44,7 @@ import org.faktorips.devtools.stdbuilder.bf.BusinessFunctionBuilder;
 import org.faktorips.devtools.stdbuilder.enums.EnumClassesBuilder;
 import org.faktorips.devtools.stdbuilder.enums.EnumTypeInterfaceBuilder;
 import org.faktorips.devtools.stdbuilder.enumtype.EnumTypeBuilder;
+import org.faktorips.devtools.stdbuilder.enumtype.EnumXmlAdapterBuilder;
 import org.faktorips.devtools.stdbuilder.formulatest.FormulaTestBuilder;
 import org.faktorips.devtools.stdbuilder.policycmpttype.GenPolicyCmptType;
 import org.faktorips.devtools.stdbuilder.policycmpttype.PolicyCmptImplClassBuilder;
@@ -359,6 +360,9 @@ public class StandardBuilderSet extends DefaultBuilderSet {
         if (BusinessFunctionIpsObjectType.getInstance().equals(objectType)) {
             return getPackageName(ipsSrcFile);
         }
+        if (IpsObjectType.ENUM_TYPE.equals(objectType) && EnumXmlAdapterBuilder.PACKAGE_STRUCTURE_KIND_ID.equals(kind)) {
+            return getInternalPackageName(ipsSrcFile);
+        }
         if (IpsObjectType.ENUM_TYPE.equals(objectType)) {
             return getPackageName(ipsSrcFile);
         }
@@ -435,6 +439,7 @@ public class StandardBuilderSet extends DefaultBuilderSet {
 
         // New enum type builder
         enumTypeBuilder = new EnumTypeBuilder(this);
+        EnumXmlAdapterBuilder enumXmlAdapterBuilder = new EnumXmlAdapterBuilder(this, enumTypeBuilder);
 
         IIpsArtefactBuilder enumContentBuilder = new XmlContentFileCopyBuilder(IpsObjectType.ENUM_CONTENT, this, KIND_ENUM_CONTENT);
 
@@ -460,6 +465,7 @@ public class StandardBuilderSet extends DefaultBuilderSet {
         tocFileBuilder.setTestCaseBuilder(testCaseBuilder);
         tocFileBuilder.setFormulaTestBuilder(formulaTestBuilder);
         tocFileBuilder.setEnumTypeBuilder(enumTypeBuilder);
+        tocFileBuilder.setEnumXmlAdapterBuilder(enumXmlAdapterBuilder);
 
         if (ComplianceCheck.isComplianceLevelAtLeast5(getIpsProject())) {
             ModelTypeXmlBuilder policyModelTypeBuilder = new ModelTypeXmlBuilder(IpsObjectType.POLICY_CMPT_TYPE, this,
@@ -474,7 +480,7 @@ public class StandardBuilderSet extends DefaultBuilderSet {
                     policyCmptImplClassBuilder, policyCmptInterfaceBuilder, productCmptGenerationImplBuilder,
                     tableContentCopyBuilder, productCmptContentCopyBuilder, testCaseTypeClassBuilder, testCaseBuilder,
                     formulaTestBuilder, enumClassesBuilder, enumTypeInterfaceBuilder, tocFileBuilder,
-                    policyModelTypeBuilder, productModelTypeBuilder, businessFunctionBuilder, enumTypeBuilder, enumContentBuilder};
+                    policyModelTypeBuilder, productModelTypeBuilder, businessFunctionBuilder, enumTypeBuilder, enumContentBuilder, enumXmlAdapterBuilder};
         } else {
             tocFileBuilder.setGenerateEntriesForModelTypes(false);
             return new IIpsArtefactBuilder[] { tableImplBuilder, tableRowBuilder, productCmptGenInterfaceBuilder,

@@ -66,6 +66,12 @@ public class ReadonlyTableOfContents extends AbstractReadonlyTableOfContents {
 
     /** A map that contains the runtime id of enum contents as key and the toc entry as value. */
     protected Map<String, TocEntryObject> enumContentNameTocEntryMap = new HashMap<String, TocEntryObject>(100);
+    
+    /**
+     * Maps the qualified name of an enumtype to a toc entry of an XmlAdapter. Only for enum type that defer
+     * their content XmlAdapters and hence entries into this map are created.
+     */
+    protected Map<String, TocEntryObject> enumXmlAdapterTocEntryMap = new HashMap<String, TocEntryObject>(100);
 
     /**
      * Creats a new toc.
@@ -115,7 +121,10 @@ public class ReadonlyTableOfContents extends AbstractReadonlyTableOfContents {
             enumContentNameTocEntryMap.put(entry.getIpsObjectQualifiedName(), entry);
             return;
         }
-
+        if (entry.isEnumXmlAdapterTocEntry()) {
+            enumXmlAdapterTocEntryMap.put(entry.getIpsObjectQualifiedName(), entry);
+            return;
+        }
         throw new IllegalArgumentException("Unknown entry type " + entry);
     }
 
@@ -224,6 +233,11 @@ public class ReadonlyTableOfContents extends AbstractReadonlyTableOfContents {
         return new HashSet<TocEntryObject>(enumContentNameTocEntryMap.values());
     }
 
+    @Override
+    public Set<TocEntryObject> getEnumXmlAdapterTocEntries() {
+        return new HashSet<TocEntryObject>(enumXmlAdapterTocEntryMap.values());
+    }
+
     private class VersionIdTocEntry {
 
         private String versionId;
@@ -235,5 +249,6 @@ public class ReadonlyTableOfContents extends AbstractReadonlyTableOfContents {
         }
 
     }
+
 
 }

@@ -68,6 +68,7 @@ public class MutableClRuntimeRepositoryToc extends ReadonlyTableOfContents {
         tableContentNameTocEntryMap.clear();
         modelTypeNameTocEntryMap.clear();
         enumContentNameTocEntryMap.clear();
+        enumXmlAdapterTocEntryMap.clear();
         ++modificationStamp;
     }
 
@@ -154,6 +155,17 @@ public class MutableClRuntimeRepositoryToc extends ReadonlyTableOfContents {
 
             return true;
         }
+        if (entry.isEnumXmlAdapterTocEntry()) {
+            TocEntryObject currentEntry = (TocEntryObject)enumXmlAdapterTocEntryMap.get(entry.getIpsObjectId());
+            if (entry.equals(currentEntry)) {
+                return false;
+            }
+            
+            enumXmlAdapterTocEntryMap.put(entry.getIpsObjectId(), entry);
+            ++modificationStamp;
+            
+            return true;
+        }
 
         throw new IllegalArgumentException("Unknown toc entry type " + entry); //$NON-NLS-1$
     }
@@ -238,6 +250,7 @@ public class MutableClRuntimeRepositoryToc extends ReadonlyTableOfContents {
         sortedEntries.addAll(testCaseNameTocEntryMap.values());
         sortedEntries.addAll(modelTypeNameTocEntryMap.values());
         sortedEntries.addAll(enumContentNameTocEntryMap.values());
+        sortedEntries.addAll(enumXmlAdapterTocEntryMap.values());
         for (TocEntryObject entry : sortedEntries) {
             element.appendChild(entry.toXml(doc));
         }

@@ -39,6 +39,7 @@ public class TocEntryObject extends TocEntry {
     public final static String TEST_CASE_ENTRY_TYPE = "testCase";
     public final static String FORMULA_TEST_ENTRY_TYPE = "formulaTest";
     public final static String ENUM_CONTENT_ENTRY_TYPE = "enumContent";
+    public final static String ENUM_XML_ADAPTER_TYPE = "enumXmlAdapter";
     public final static String MODEL_TYPE_ENTRY_TYPE = "modelType";
 
     public static final String PROPERTY_ENTRYTYPE = "entryType";
@@ -96,6 +97,8 @@ public class TocEntryObject extends TocEntry {
             newEntry = createTestCaseTocEntry(ipsObjectId, ipsObjectName, xmlResourceName, implementationClassName);
         } else if (ENUM_CONTENT_ENTRY_TYPE.equals(entryType)) {
             newEntry = createEnumContentTocEntry(ipsObjectId, ipsObjectName, xmlResourceName, implementationClassName);
+        } else if(ENUM_XML_ADAPTER_TYPE.equals(entryType)){
+            newEntry = createEnumXmlAdapterTocEntry(ipsObjectId, implementationClassName);
         } else if (FORMULA_TEST_ENTRY_TYPE.equals(entryType)) {
             String kindId = entryElement.getAttribute(PROPERTY_KIND_ID);
             String versionId = entryElement.getAttribute(PROPERTY_VERSION_ID);
@@ -192,6 +195,14 @@ public class TocEntryObject extends TocEntry {
             String xmlResourceName,
             String implementationClassName) {
         return new TocEntryObject(MODEL_TYPE_ENTRY_TYPE, ipsObjectId, ipsObjectQualifiedName, "", "", xmlResourceName,
+                implementationClassName, null);
+    }
+
+    /**
+     * Creates an entry that referes to an enumeration xml adapter.
+     */
+    public final static TocEntryObject createEnumXmlAdapterTocEntry(String ipsObjectId, String implementationClassName) {
+        return new TocEntryObject(ENUM_XML_ADAPTER_TYPE, ipsObjectId, "", "", "", "",
                 implementationClassName, null);
     }
 
@@ -389,6 +400,13 @@ public class TocEntryObject extends TocEntry {
      */
     public boolean isEnumContentTypeTocEntry() {
         return ENUM_CONTENT_ENTRY_TYPE.equals(entryType);
+    }
+
+    /**
+     * @return <code>true</code> if this is an entry representing an enum content.
+     */
+    public boolean isEnumXmlAdapterTocEntry() {
+        return ENUM_XML_ADAPTER_TYPE.equals(entryType);
     }
 
     /**
