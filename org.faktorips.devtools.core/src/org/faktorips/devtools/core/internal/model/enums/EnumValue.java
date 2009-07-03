@@ -160,12 +160,14 @@ public class EnumValue extends BaseIpsObjectPart implements IEnumValue {
             return;
         }
 
-        // Number enum attribute values must match number enum attributes of the enum type.
+        /*
+         * Number enum attribute values must match number enum attributes of the enum value
+         * container.
+         */
         int numberEnumAttributes = (enumValueContainer instanceof IEnumType) ? ((IEnumType)enumValueContainer)
                 .getEnumAttributesCount(true) : ((IEnumContent)enumValueContainer).getReferencedEnumAttributesCount();
         if (numberEnumAttributes != getEnumAttributeValuesCount()) {
-            String text = NLS.bind(Messages.EnumValue_NumberAttributeValuesDoesNotCorrespondToNumberAttributes,
-                    enumValueContainer.getQualifiedName());
+            String text = Messages.EnumValue_NumberAttributeValuesDoesNotCorrespondToNumberAttributes;
             Message validationMessage = new Message(
                     MSGCODE_ENUM_VALUE_NUMBER_ATTRIBUTE_VALUES_DOES_NOT_CORRESPOND_TO_NUMBER_ATTRIBUTES, text,
                     Message.ERROR, this);
