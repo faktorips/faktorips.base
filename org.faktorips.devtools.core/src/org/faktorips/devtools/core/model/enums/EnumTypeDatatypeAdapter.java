@@ -27,6 +27,7 @@ import org.faktorips.util.message.MessageList;
  * 
  * @author Peter Kuntz
  */
+// FIXME: This adapter should not be in the published package but this would require many changes.
 public class EnumTypeDatatypeAdapter implements EnumDatatype {
 
     private IEnumType enumType;
@@ -35,8 +36,10 @@ public class EnumTypeDatatypeAdapter implements EnumDatatype {
     /**
      * Creates a new <code>EnumTypeDatatypeAdapter</code>.
      * 
-     * @param enumType the {@link IEnumType} that is adapted. This parameter cannot be <code>null</code>
-     * @param enumContent the {@link IEnumContent} that is adapted. this parameter can be <code>null</code>
+     * @param enumType the {@link IEnumType} that is adapted. This parameter cannot be
+     *            <code>null</code>
+     * @param enumContent the {@link IEnumContent} that is adapted. this parameter can be
+     *            <code>null</code>
      */
     public EnumTypeDatatypeAdapter(IEnumType enumType, IEnumContent enumContent) {
         super();
@@ -51,9 +54,8 @@ public class EnumTypeDatatypeAdapter implements EnumDatatype {
      * array containing only <code>null</code> as a value if the enumeration type of this adapter
      * doesn't contain values and the enumeration content of this adapter is <code>null</code> and
      * the parameter includeNull is set to true. Returns an empty string array if the parameter
-     * includeNull is set to false.</p>
-     * Returns an empty string array if the literal name attribute of the adapted enumeration type
-     * has not been specified.
+     * includeNull is set to false.</p> Returns an empty string array if the literal name attribute
+     * of the adapted enumeration type has not been specified.
      * 
      * @throws RuntimeException If the process of determining the enum attribute values throws a
      *             <code>CoreException</code>.
@@ -67,7 +69,8 @@ public class EnumTypeDatatypeAdapter implements EnumDatatype {
                 return new String[0];
             }
         }
-        List<String> result = getEnumValueContainer().findAllLiteralNameAttributeValues(includeNull, getEnumValueContainer().getIpsProject());
+        List<String> result = getEnumValueContainer().findAllLiteralNameAttributeValues(includeNull,
+                getEnumValueContainer().getIpsProject());
         return result.toArray(new String[result.size()]);
     }
 
@@ -83,7 +86,8 @@ public class EnumTypeDatatypeAdapter implements EnumDatatype {
             }
         }
         // TODO change to fips ui name
-        List<String> result = getEnumValueContainer().findAllLiteralNameAttributeValues(true, getEnumValueContainer().getIpsProject());
+        List<String> result = getEnumValueContainer().findAllLiteralNameAttributeValues(true,
+                getEnumValueContainer().getIpsProject());
         if (result.contains(id)) {
             return id;
         }
@@ -172,7 +176,8 @@ public class EnumTypeDatatypeAdapter implements EnumDatatype {
      * literal name attribute of the adapted enumeration type.
      */
     public boolean isParsable(String value) {
-        List<String> result = getEnumValueContainer().findAllLiteralNameAttributeValues(true, getEnumValueContainer().getIpsProject());
+        List<String> result = getEnumValueContainer().findAllLiteralNameAttributeValues(true,
+                getEnumValueContainer().getIpsProject());
         return result.contains(value);
     }
 
@@ -255,14 +260,16 @@ public class EnumTypeDatatypeAdapter implements EnumDatatype {
     }
 
     /**
-     * Returns the enumeration content if this adapter adapts one otherwise <code>null</code> is returned.
+     * Returns the enumeration content if this adapter adapts one otherwise <code>null</code> is
+     * returned.
      */
     public IEnumContent getEnumContent() {
         return enumContent;
     }
 
     /**
-     * Returns the enumeration content if this adapter adapts a content otherwise the enumeration type is returned.
+     * Returns the enumeration content if this adapter adapts a content otherwise the enumeration
+     * type is returned.
      */
     public IEnumValueContainer getEnumValueContainer() {
         if (enumContent == null) {
@@ -274,18 +281,18 @@ public class EnumTypeDatatypeAdapter implements EnumDatatype {
     /**
      * Returns true if this adapter adapts an enumeration content.
      */
-    public boolean hasEnumContent(){
+    public boolean hasEnumContent() {
         return getEnumContent() != null;
     }
-    
+
     @Override
     public boolean equals(Object obj) {
-        if(obj instanceof EnumTypeDatatypeAdapter){
+        if (obj instanceof EnumTypeDatatypeAdapter) {
             EnumTypeDatatypeAdapter other = (EnumTypeDatatypeAdapter)obj;
-            if(other.enumContent == null && enumContent == null){
+            if (other.enumContent == null && enumContent == null) {
                 return enumType.equals(other.enumType);
-            } else if((other.enumContent == null && enumContent != null) || 
-                    (other.enumContent != null && enumContent == null)){
+            } else if ((other.enumContent == null && enumContent != null)
+                    || (other.enumContent != null && enumContent == null)) {
                 return false;
             }
             return enumType.equals(other.enumType) && enumContent.equals(other.enumContent);
