@@ -23,9 +23,6 @@ import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 /**
  * An enum value represents a complete set of enum attribute values for an enum type. Enum values
  * are always contained in an enum value container.
- * <p>
- * For more information about how enum values relate to the entire Faktor-IPS enumeration concept
- * please read the documentation of IEnumType.
  * 
  * @see org.faktorips.devtools.core.model.enums.IEnumType
  * 
@@ -35,7 +32,7 @@ import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
  */
 public interface IEnumValue extends IIpsObjectPart {
 
-    /** The xml tag for this ips object part. */
+    /** The XML tag for this IPS object part. */
     public final static String XML_TAG = "EnumValue"; //$NON-NLS-1$
 
     /** Prefix for all message codes of this class. */
@@ -61,9 +58,7 @@ public interface IEnumValue extends IIpsObjectPart {
     public final static String MSGCODE_ENUM_VALUE_ENUM_TYPE_DOES_NOT_CONTAIN_VALUES = MSGCODE_PREFIX
             + "EnumValueEnumTypeDoesNotContainValues"; //$NON-NLS-1$
 
-    /**
-     * Returns a list containing all enum attribute values.
-     */
+    /** Returns a list containing all enum attribute values. */
     public List<IEnumAttributeValue> getEnumAttributeValues();
 
     /**
@@ -76,7 +71,7 @@ public interface IEnumValue extends IIpsObjectPart {
     /**
      * Returns the enum value container this enum value is being stored in.
      * <p>
-     * This is a shortcut for: <code>(IEnumValueContainer)this.getParent();</code>
+     * This is a shortcut for: <tt>(IEnumValueContainer)this.getParent();</tt>
      */
     public IEnumValueContainer getEnumValueContainer();
 
@@ -84,8 +79,8 @@ public interface IEnumValue extends IIpsObjectPart {
      * Searches and returns the enum attribute value that refers to the given enum attribute of the
      * enum type this enum value refers to.
      * <p>
-     * Returns <code>null</code> if none can be found, if the referenced enum type can't be found or
-     * if the provided enum attribute is <code>null</code>.
+     * Returns <tt>null</tt> if none can be found, if the referenced enum type can't be found or if
+     * the provided enum attribute is <tt>null</tt>.
      * 
      * @param ipsProject The ips project which ips object path is used for the search of the
      *            referenced enum type. This is not necessarily the project this enum attribute is
@@ -96,14 +91,12 @@ public interface IEnumValue extends IIpsObjectPart {
      *             referenced enum type.
      * @throws IllegalArgumentException If the given enum attribute is not part of the enum type
      *             referenced by this enum value.
-     * @throws NullPointerException If <code>ipsProject</code> is <code>null</code>.
+     * @throws NullPointerException If <tt>ipsProject</tt> is <tt>null</tt>.
      */
     public IEnumAttributeValue findEnumAttributeValue(IIpsProject ipsProject, IEnumAttribute enumAttribute)
             throws CoreException;
 
-    /**
-     * Returns how many enum attribute values this enum value is currently containing.
-     */
+    /** Returns how many enum attribute values this enum value is currently containing. */
     public int getEnumAttributeValuesCount();
 
     /**
@@ -113,13 +106,52 @@ public interface IEnumValue extends IIpsObjectPart {
      * If the enum attribute value is already the first / last one then nothing will be done.
      * 
      * @param enumAttributeValue The enum attribute value that is to be moved.
-     * @param up Flag indicating whether to move upwards (<code>true</code>) or downwards (
-     *            <code>false</code>).
+     * @param up Flag indicating whether to move upwards (<tt>true</tt>) or downwards (
+     *            <tt>false</tt>).
      * 
-     * @throws NullPointerException If <code>enumAttributeValue</code> is <code>null</code>.
+     * @throws NullPointerException If <tt>enumAttributeValue</tt> is <tt>null</tt>.
      * @throws NoSuchElementException If the given enum attribute value is not a part of this enum
      *             value.
      */
     public int moveEnumAttributeValue(IEnumAttributeValue enumAttributeValue, boolean up);
+
+    /**
+     * Sets the value of the <tt>IEnumAttributeValue</tt> that refers to the given
+     * <tt>IEnumAttribute</tt>.
+     * 
+     * @param enumAttribute The enum attribute for that the value shall be set.
+     * @param value The new value. May also be <tt>null</tt>.
+     * 
+     * @throws CoreException If an error occurs while searching for the <tt>IEnumAttributeValue</tt>
+     *             that refers to the given enum attribute.
+     * @throws NullPointerException If <tt>enumAttribute</tt> is <tt>null</tt>.
+     */
+    public void setEnumAttributeValue(IEnumAttribute enumAttribute, String value) throws CoreException;
+
+    /**
+     * Sets the value of the <tt>IEnumAttributeValue</tt> that refers to the <tt>IEnumAttribute</tt>
+     * identified by the given name.
+     * 
+     * @param enumAttributeName The name of the enum attribute for that the value shall be set.
+     * @param value The new value. May also be <tt>null</tt>.
+     * 
+     * @throws CoreException If an error occurs while searching for the enum attribute identified by
+     *             the given name or while searching for the <tt>IEnumAttributeValue</tt> that
+     *             refers to this enum attribute.
+     * @throws NullPointerException If <tt>enumAttributeName</tt> is <tt>null</tt>.
+     * @throws NoSuchElementException If there is no enum attribute with the given name in the
+     *             parent enum type.
+     */
+    public void setEnumAttributeValue(String enumAttributeName, String value) throws CoreException;
+
+    /**
+     * Sets the value of the <tt>IEnumAttributeValue</tt> identified by the given index.
+     * 
+     * @param enumAttributeIndex The index of the enum attribute value which value shall be set.
+     * @param value The new value. May also be <tt>null</tt>.
+     * 
+     * @throws IndexOutOfBoundsException If the given index is out of bounds.
+     */
+    public void setEnumAttributeValue(int enumAttributeIndex, String value);
 
 }

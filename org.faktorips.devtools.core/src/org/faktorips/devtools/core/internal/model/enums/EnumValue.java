@@ -37,7 +37,7 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
 /**
- * Implementation of <code>IEnumValue</code>, see the corresponding interface for more details.
+ * Implementation of <tt>IEnumValue</tt>, see the corresponding interface for more details.
  * 
  * @see org.faktorips.devtools.core.model.enums.IEnumValue
  * 
@@ -51,7 +51,7 @@ public class EnumValue extends BaseIpsObjectPart implements IEnumValue {
     private IpsObjectPartCollection<IEnumAttributeValue> enumAttributeValues;
 
     /**
-     * Creates a new <code>EnumValue</code>.
+     * Creates a new <tt>EnumValue</tt>.
      * 
      * @param parent The enum value container this enum value belongs to.
      * @param id A unique id for this enum value.
@@ -115,7 +115,7 @@ public class EnumValue extends BaseIpsObjectPart implements IEnumValue {
             }
         }
 
-        // Return if element is already the first / last one
+        // Return if element is already the first / last one.
         if (up) {
             if (index == 0) {
                 return index;
@@ -126,7 +126,7 @@ public class EnumValue extends BaseIpsObjectPart implements IEnumValue {
             }
         }
 
-        // Perform the moving
+        // Perform the moving.
         int[] newIndex = enumAttributeValues.moveParts(new int[] { index }, up);
 
         return newIndex[0];
@@ -160,7 +160,7 @@ public class EnumValue extends BaseIpsObjectPart implements IEnumValue {
             return;
         }
 
-        // Number enum attribute values must match number enum attributes of the enum type
+        // Number enum attribute values must match number enum attributes of the enum type.
         int numberEnumAttributes = (enumValueContainer instanceof IEnumType) ? ((IEnumType)enumValueContainer)
                 .getEnumAttributesCount(true) : ((IEnumContent)enumValueContainer).getReferencedEnumAttributesCount();
         if (numberEnumAttributes != getEnumAttributeValuesCount()) {
@@ -212,6 +212,39 @@ public class EnumValue extends BaseIpsObjectPart implements IEnumValue {
         }
 
         return null;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public void setEnumAttributeValue(IEnumAttribute enumAttribute, String value) throws CoreException {
+        ArgumentCheck.notNull(enumAttribute);
+        findEnumAttributeValue(getIpsProject(), enumAttribute).setValue(value);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public void setEnumAttributeValue(String enumAttributeName, String value) throws CoreException {
+        ArgumentCheck.notNull(enumAttributeName);
+
+        IEnumType enumType = getEnumValueContainer().findEnumType(getIpsProject());
+        IEnumAttribute enumAttribute = enumType.getEnumAttribute(enumAttributeName);
+        if (enumAttribute == null) {
+            throw new NoSuchElementException();
+        }
+
+        setEnumAttributeValue(enumAttribute, value);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public void setEnumAttributeValue(int enumAttributeIndex, String value) {
+        if (!(enumAttributeIndex > -1 && enumAttributeIndex < getEnumAttributeValues().size())) {
+            throw new IndexOutOfBoundsException();
+        }
+        getEnumAttributeValues().get(enumAttributeIndex).setValue(value);
     }
 
 }

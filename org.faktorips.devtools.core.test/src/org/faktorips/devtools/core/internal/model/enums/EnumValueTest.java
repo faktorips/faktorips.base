@@ -17,6 +17,7 @@ import javax.xml.parsers.ParserConfigurationException;
 
 import org.eclipse.core.runtime.CoreException;
 import org.faktorips.devtools.core.internal.model.ipsobject.DescriptionHelper;
+import org.faktorips.devtools.core.model.enums.IEnumAttribute;
 import org.faktorips.devtools.core.model.enums.IEnumContent;
 import org.faktorips.devtools.core.model.enums.IEnumValue;
 import org.faktorips.devtools.core.util.XmlUtil;
@@ -117,6 +118,45 @@ public class EnumValueTest extends AbstractIpsEnumPluginTest {
                 ipsProject, genderEnumAttributeName));
         assertEquals(genderEnumValueFemale.getEnumAttributeValues().get(1), genderEnumValueFemale
                 .findEnumAttributeValue(ipsProject, genderEnumAttributeName));
+    }
+
+    public void testSetEnumAttributeValueAttributeGiven() throws CoreException {
+        try {
+            genderEnumValueMale.setEnumAttributeValue((IEnumAttribute)null, "");
+            fail();
+        } catch (NullPointerException e) {
+        }
+
+        genderEnumValueMale.setEnumAttributeValue(genderEnumAttributeName, "foo");
+        assertEquals("foo", genderEnumValueMale.findEnumAttributeValue(ipsProject, genderEnumAttributeName).getValue());
+    }
+
+    public void testSetEnumAttributeValueAttributeNameGiven() throws CoreException {
+        try {
+            genderEnumValueMale.setEnumAttributeValue((String)null, "");
+            fail();
+        } catch (NullPointerException e) {
+        }
+
+        genderEnumValueMale.setEnumAttributeValue(genderEnumAttributeName.getName(), "foo");
+        assertEquals("foo", genderEnumValueMale.findEnumAttributeValue(ipsProject, genderEnumAttributeName).getValue());
+    }
+
+    public void testSetEnumAttributeValueAttributeValueIndexGiven() {
+        try {
+            genderEnumValueMale.setEnumAttributeValue(-1, "");
+            fail();
+        } catch (IndexOutOfBoundsException e) {
+        }
+        
+        try {
+            genderEnumValueMale.setEnumAttributeValue(20, "");
+            fail();
+        } catch (IndexOutOfBoundsException e) {
+        }
+        
+        genderEnumValueMale.setEnumAttributeValue(1, "foo");
+        assertEquals("foo", genderEnumValueMale.getEnumAttributeValues().get(1).getValue());
     }
 
 }
