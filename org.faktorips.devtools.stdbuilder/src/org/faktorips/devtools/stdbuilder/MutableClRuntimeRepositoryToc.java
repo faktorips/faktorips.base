@@ -160,10 +160,10 @@ public class MutableClRuntimeRepositoryToc extends ReadonlyTableOfContents {
             if (entry.equals(currentEntry)) {
                 return false;
             }
-            
+
             enumXmlAdapterTocEntryMap.put(entry.getIpsObjectId(), entry);
             ++modificationStamp;
-            
+
             return true;
         }
 
@@ -220,6 +220,15 @@ public class MutableClRuntimeRepositoryToc extends ReadonlyTableOfContents {
         for (Iterator<TocEntryObject> it = modelTypeNameTocEntryMap.values().iterator(); it.hasNext();) {
             TocEntryObject entry = (TocEntryObject)it.next();
             if (entry.getIpsObjectQualifiedName().equals(objectId)) {
+                it.remove();
+                ++modificationStamp;
+                return true;
+            }
+        }
+
+        for (Iterator<TocEntryObject> it = enumXmlAdapterTocEntryMap.values().iterator(); it.hasNext();) {
+            TocEntryObject entry = (TocEntryObject)it.next();
+          if (entry.getIpsObjectId().equals(objectId)) {
                 it.remove();
                 ++modificationStamp;
                 return true;

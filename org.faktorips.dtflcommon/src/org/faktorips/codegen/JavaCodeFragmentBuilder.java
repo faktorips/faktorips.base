@@ -1117,22 +1117,6 @@ public class JavaCodeFragmentBuilder {
         fragment.appendln();
     }
 
-    public void annotationClassValueExpressionLn(String annotation, String paramName, String classExpression) {
-        if (annotation == null) {
-            return;
-        }
-        fragment.append("@");
-        fragment.appendClassName(annotation);
-        fragment.append('(');
-        fragment.append(paramName);
-        fragment.append('=');
-        fragment.append(classExpression);
-        fragment.append(')');
-        fragment.appendln();
-    }
-
-    
-    
     /**
      * Writes the annotation. For an annotation the (fully qualified) annotation class name needs to be specified. The
      * '@' character and a line feed will be automatically added. The annoation may contain parameters in paranthesis. 

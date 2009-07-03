@@ -15,6 +15,7 @@ package org.faktorips.devtools.stdbuilder;
 
 
 import java.util.List;
+import java.util.Set;
 
 import org.faktorips.devtools.core.util.XmlUtil;
 import org.faktorips.devtools.stdbuilder.test.XmlAbstractTestCase;
@@ -131,6 +132,19 @@ public class MutableClRuntimeRepositoryTocTest extends XmlAbstractTestCase {
         assertEquals(2, toc.getProductCmptTocEntries().size());
         assertEquals(entry0, toc.getProductCmptTocEntries().get(0)); // !! still old entry0 !!
         assertEquals(entry1, toc.getProductCmptTocEntries().get(1));
+        
+        modStamp = toc.getModificationStamp(); 
+        TocEntryObject tocEntry = TocEntryObject.createEnumXmlAdapterTocEntry("org.faktorips.AnEnum", "org.faktorips.AnEnum");
+        changed = toc.addOrReplaceTocEntry(tocEntry);
+        assertTrue(changed);
+        assertTrue(modStamp != toc.getModificationStamp());
+        assertTrue(toc.getEnumXmlAdapterTocEntries().contains(tocEntry));
+
+        modStamp = toc.getModificationStamp(); 
+        changed = toc.addOrReplaceTocEntry(tocEntry);
+        assertFalse(changed);
+        assertEquals(modStamp, toc.getModificationStamp());
+        
     }
 
     public void testRemoveEntry() {
@@ -138,7 +152,6 @@ public class MutableClRuntimeRepositoryTocTest extends XmlAbstractTestCase {
         toc.removeEntry("MotorProduct");
         assertEquals(modStamp, toc.getModificationStamp());
 
-        
         TocEntryObject entry0 = TocEntryObject.createProductCmptTocEntry("MotorPolicy", "MotorPolicy", "MotorProduct", "2005-01", "MotorProduct2005.ipsproduct", "MotorPolicyPk", new DateTime(2010, 1, 1));
         TocEntryObject entry1 = TocEntryObject.createProductCmptTocEntry("HomePolicy", "HomePolicy", "MotorProduct", "2005-01", "HomeProduct2005.ipsproduct", "HomePolicyPk", new DateTime(2010, 1, 1));
         TocEntryObject entry2 = TocEntryObject.createTableTocEntry("RateTable", "RateTable", "RateTable.ipstablecontents", "RateTable");
@@ -176,6 +189,13 @@ public class MutableClRuntimeRepositoryTocTest extends XmlAbstractTestCase {
         assertTrue(modStamp!=toc.getModificationStamp());
         assertNull(toc.getTableTocEntryByClassname("RateTable"));
         
+        TocEntryObject tocEntry = TocEntryObject.createEnumXmlAdapterTocEntry("org.faktorips.AnEnum", "org.faktorips.AnEnum");
+        boolean changed = toc.addOrReplaceTocEntry(tocEntry);
+        modStamp = toc.getModificationStamp(); 
+        toc.removeEntry(tocEntry.getIpsObjectId());
+        assertTrue(modStamp!=toc.getModificationStamp());
+        assertEquals(0, toc.getEnumXmlAdapterTocEntries().size());
+        
     }
     
     public void testToXml() throws Exception {
@@ -183,10 +203,12 @@ public class MutableClRuntimeRepositoryTocTest extends XmlAbstractTestCase {
         TocEntryObject entry1 = TocEntryObject.createProductCmptTocEntry("HomePolicy", "HomePolicy", "MotorProduct", "2005-01", "HomeProduct2005.ipsproduct", "HomePolicyPk", new DateTime(2010, 1, 1));
         TocEntryObject entry2 = TocEntryObject.createTestCaseTocEntry("TestCaseId", "TestCase", "TestCase.xml", "TestCase");
         TocEntryObject entry3 = TocEntryObject.createTableTocEntry("TableId", "Table", "Table.xml", "Table");
+        TocEntryObject entry4 = TocEntryObject.createEnumXmlAdapterTocEntry("AnEnum", "AnEnum");
         toc.addOrReplaceTocEntry(entry0);
         toc.addOrReplaceTocEntry(entry1);
         toc.addOrReplaceTocEntry(entry2);
         toc.addOrReplaceTocEntry(entry3);
+        toc.addOrReplaceTocEntry(entry4);
         
         Element tocElement = toc.toXml(newDocument());
         assertNotNull(tocElement);
@@ -198,6 +220,8 @@ public class MutableClRuntimeRepositoryTocTest extends XmlAbstractTestCase {
         assertEquals(1, entries.size());
         entries = readOnlyToc.getTableTocEntries();
         assertEquals(1, entries.size());
+        Set<TocEntryObject> xmlAdapterEntries = readOnlyToc.getEnumXmlAdapterTocEntries();
+        assertEquals(1, xmlAdapterEntries.size());
     }
     
     public void testToXml_EntriesAreOrdered() throws Exception {

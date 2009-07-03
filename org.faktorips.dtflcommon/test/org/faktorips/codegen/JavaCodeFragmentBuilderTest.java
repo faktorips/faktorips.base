@@ -14,6 +14,7 @@
 package org.faktorips.codegen;
 
 import java.lang.reflect.Modifier;
+import java.util.List;
 
 import junit.framework.TestCase;
 
@@ -76,4 +77,17 @@ public class JavaCodeFragmentBuilderTest extends TestCase {
         assertEquals(buf.toString(), builder.toString().trim());
     }
 
+    public void testAnnotationLnClassValue(){
+        JavaCodeFragmentBuilder builder = new JavaCodeFragmentBuilder();
+        builder.annotationLn("AnAnnotation", "value", List.class);
+        assertEquals("@AnAnnotation(value=List.class)" + SystemUtils.LINE_SEPARATOR, builder.getFragment().getSourcecode());
+        assertTrue(builder.getFragment().getImportDeclaration().isCovered(List.class));
+    }
+    
+    public void testAnnotationClassValueLn(){
+        JavaCodeFragmentBuilder builder = new JavaCodeFragmentBuilder();
+        builder.annotationClassValueLn("AnAnnotation", "value", List.class.getName());
+        assertEquals("@AnAnnotation(value=List.class)" + SystemUtils.LINE_SEPARATOR, builder.getFragment().getSourcecode());
+        assertTrue(builder.getFragment().getImportDeclaration().isCovered(List.class));
+    }
 }

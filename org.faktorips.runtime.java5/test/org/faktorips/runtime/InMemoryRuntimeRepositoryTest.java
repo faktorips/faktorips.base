@@ -16,6 +16,8 @@ package org.faktorips.runtime;
 import java.util.GregorianCalendar;
 import java.util.List;
 
+import javax.xml.bind.annotation.adapters.XmlAdapter;
+
 import junit.framework.TestCase;
 
 import org.faktorips.runtime.internal.DateTime;
@@ -451,6 +453,15 @@ public class InMemoryRuntimeRepositoryTest extends TestCase {
         assertIpsTestCasesStartingWith("ipsTest1", new IpsTestCase2[]{testCase7});
     }
 
+    public void testAddEnumXmlAdapter(){
+        TestXmlAdapter xmlAdapter = new TestXmlAdapter();
+        repository.addEnumXmlAdapter(xmlAdapter);
+        List<XmlAdapter<String, IEnumValue>> xmlAdapterList = repository.getAllEnumXmlAdapters();
+        assertEquals(1, xmlAdapterList.size());
+        assertEquals(xmlAdapter, xmlAdapterList.get(0));
+        
+    }
+    
     private void assertIpsTestCasesStartingWith(String qNamePrefix, IpsTestCase2[] testCasesExpected) {
         List<IpsTest2> result = repository.getIpsTestCasesStartingWith(qNamePrefix, repository);
         assertEquals("Unexpected number of test cases", testCasesExpected.length, result.size());
@@ -467,5 +478,32 @@ public class InMemoryRuntimeRepositoryTest extends TestCase {
 
     class TestTable2 extends TestTable {
 
+    }
+    
+    private class TestXmlAdapter extends XmlAdapter<String, IEnumValue>{
+
+        @Override
+        public String marshal(IEnumValue value) throws Exception {
+            return value.getID();
+        }
+
+        @Override
+        public IEnumValue unmarshal(String value) throws Exception {
+            return new TestEnumValue(value);
+        }
+        
+    }
+    
+    private class TestEnumValue implements IEnumValue{
+        
+        private String id;
+        
+        public TestEnumValue(String id){
+            this.id = id;
+        }
+        
+        public String getID() {
+            return id;
+        }
     }
 }
