@@ -43,6 +43,8 @@ public class DefaultLabelProviderTest extends AbstractIpsPluginTest {
         String ipsObjectName = "testCaseTextTest";
         String fileName = ipsObjectName + "." + IpsObjectType.TEST_CASE.getFileExtension();
         
+        assertEquals("<null>", provider.getText(null));
+        
         IIpsSrcFile file = packageFragment.createIpsFile(IpsObjectType.TEST_CASE, ipsObjectName, true, null);
         assertEquals(fileName, provider.getText(file));
         assertEquals(ipsObjectName, providerWithIpsSourceFileMapping.getText(file));
