@@ -76,7 +76,9 @@ public class TableContentsCellModifier implements ICellModifier {
                 if (value == null || ! value.equals(row.getValue(columnIndex))){
                     row.setValue(columnIndex, (String)value);
                 }
-                page.refreshTable(row);
+                if (page != null){
+                    page.refreshTable(row);
+                }
             }
         }
     }
