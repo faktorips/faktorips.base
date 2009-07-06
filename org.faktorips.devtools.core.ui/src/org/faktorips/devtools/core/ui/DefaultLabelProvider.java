@@ -119,7 +119,7 @@ public class DefaultLabelProvider extends LabelProvider {
      */
     public String getText(Object element) {
         if (element == null) {
-            return "null"; //$NON-NLS-1$
+            return IpsPlugin.getDefault().getIpsPreferences().getNullPresentation();
         }
         if (element instanceof IpsSrcFileProvider) {
         	element = ((IpsSrcFileProvider)element).getIpsSrcFile();
