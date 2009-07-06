@@ -1,9 +1,0 @@
-
-- Bei der Ausführung von Formeltestcases die Aufzählungstypen verwenden, die im gleichen IpsProjekt definiert werden, 
-  Exceptions auftreten.
-- Die Abhängigkeit zwischen Aufzählungsdatentypen, die über Tabellen- strukturen und inhalte definiert werden, und 
-  Modellklassen, die diese verwenden, wird nicht korrekt verwaltet. Folgendes Szenario ist daher möglich: 
-  Es wird eine Tabellenstruktur oder ein Tabelleninhalt, die ein Aufzählungsdatentyp definieren, entfernt. Bei einer 
-  Modellklasse, die den entsprechenden Datentyp verwendet, wird ein Fehler angezeigt. Wird die Tabellenstruktur oder 
-  der Tabelleninhalt anschließend wieder hinzugefügt, so wird die Modellklasse jedoch nicht als fehlerfrei dargestellt, 
-  sondern der Fehler wird solange dargestellt, bis die Modellklasse neu gebaut wurde.
