@@ -117,7 +117,7 @@ public class IpsObjectPartCollection<T extends IIpsObjectPart> implements Iterab
         return parts.contains(part);
     }
 
-    public IIpsObjectPart getPart(int index) {
+    public T getPart(int index) {
         return parts.get(index);
     }
 
@@ -126,6 +126,10 @@ public class IpsObjectPartCollection<T extends IIpsObjectPart> implements Iterab
     }
 
     public Object[] toArray(Object[] emptyArray) {
+        return parts.toArray(emptyArray);
+    }
+
+    public T[] toArray(T[] emptyArray) {
         return parts.toArray(emptyArray);
     }
 
@@ -145,11 +149,11 @@ public class IpsObjectPartCollection<T extends IIpsObjectPart> implements Iterab
      * the name exist, the first part with the name is returned. Returns <code>null</code> if no
      * part with the given name exists or name is <code>null</code>.
      */
-    public IIpsObjectPart getPartByName(String name) {
+    public T getPartByName(String name) {
         if (name == null) {
             return null;
         }
-        for (IIpsObjectPart part : parts) {
+        for (T part : parts) {
             if (name.equals(part.getName())) {
                 return part;
             }
@@ -162,8 +166,8 @@ public class IpsObjectPartCollection<T extends IIpsObjectPart> implements Iterab
      * Returns the part with the given id contained in this collection. Returns <code>null</code> if
      * no part with the given id exists.
      */
-    public IIpsObjectPart getPartById(int id) {
-        for (IIpsObjectPart part: parts) {
+    public T getPartById(int id) {
+        for (T part: parts) {
             if (id == part.getId()) {
                 return part;
             }
@@ -188,9 +192,6 @@ public class IpsObjectPartCollection<T extends IIpsObjectPart> implements Iterab
         return part;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public T newPart() {
         T newPart = newPartInternal(parent.getNextPartId());
         parent.partWasAdded(newPart);
