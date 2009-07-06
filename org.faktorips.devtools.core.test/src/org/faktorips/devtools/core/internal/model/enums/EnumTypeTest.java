@@ -890,7 +890,7 @@ public class EnumTypeTest extends AbstractIpsEnumPluginTest {
         attr3.setName("description");
         attr3.setUniqueIdentifier(false);
 
-        IEnumAttribute resultAttr = enum1.findIsUsedAsIdInFaktorIpsUiAttribute(ipsProject);
+        IEnumAttribute resultAttr = enum1.findIsIdentiferAttribute(ipsProject);
         assertEquals(attr1, resultAttr);
     }
 

@@ -324,7 +324,7 @@ public class EnumAttributeValue extends AtomicIpsObjectPart implements IEnumAttr
             throw new NullPointerException();
         }
 
-        Boolean uniqueIdentifier = referencedEnumAttribute.findIsUniqueIdentifier(ipsProject);
+        Boolean uniqueIdentifier = referencedEnumAttribute.findIsUnique(ipsProject);
         if (uniqueIdentifier == null) {
             return false;
         }

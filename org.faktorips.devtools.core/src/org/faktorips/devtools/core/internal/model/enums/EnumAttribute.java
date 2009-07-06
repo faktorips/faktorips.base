@@ -184,7 +184,7 @@ public class EnumAttribute extends AtomicIpsObjectPart implements IEnumAttribute
                 return IpsPlugin.getDefault().getImage(OVERRIDDEN_ICON);
             }
 
-            boolean isUniqueIdentifier = findIsUniqueIdentifier(ipsProject);
+            boolean isUniqueIdentifier = findIsUnique(ipsProject);
             if (isUniqueIdentifier && inherited) {
                 return IpsPlugin.getDefault().getImage(OVERRIDDEN_UNIQUE_IDENTIFIER_ICON);
             } else if (isUniqueIdentifier) {
@@ -300,7 +300,7 @@ public class EnumAttribute extends AtomicIpsObjectPart implements IEnumAttribute
             return;
         }
 
-        // The datatype may not be the enum type that contains this enum attribute (or subclasses
+        // The datatype must not be the enum type that contains this enum attribute (or subclasses
         // of it).
         if (ipsDatatype instanceof EnumTypeDatatypeAdapter) {
             EnumTypeDatatypeAdapter adaptedEnumType = (EnumTypeDatatypeAdapter)ipsDatatype;
@@ -431,7 +431,7 @@ public class EnumAttribute extends AtomicIpsObjectPart implements IEnumAttribute
             // Check for other enum attributes being marked to be used as ID
             int numberEnumAttributesUsedAsId = 0;
             for (IEnumAttribute currentEnumAttribute : getEnumType().getEnumAttributesIncludeSupertypeCopies()) {
-                Boolean usedAsIdInFaktorIpsUi = currentEnumAttribute.findIsUsedAsIdInFaktorIpsUi(ipsProject);
+                Boolean usedAsIdInFaktorIpsUi = currentEnumAttribute.findIsIdentifier(ipsProject);
                 if (usedAsIdInFaktorIpsUi != null) {
                     if (usedAsIdInFaktorIpsUi.booleanValue()) {
                         numberEnumAttributesUsedAsId++;
@@ -523,7 +523,7 @@ public class EnumAttribute extends AtomicIpsObjectPart implements IEnumAttribute
     /**
      * {@inheritDoc}
      */
-    public boolean isUniqueIdentifier() {
+    public boolean isUnique() {
         return uniqueIdentifier;
     }
 
@@ -556,7 +556,7 @@ public class EnumAttribute extends AtomicIpsObjectPart implements IEnumAttribute
     /**
      * {@inheritDoc}
      */
-    public Boolean findIsUniqueIdentifier(IIpsProject ipsProject) throws CoreException {
+    public Boolean findIsUnique(IIpsProject ipsProject) throws CoreException {
         ArgumentCheck.notNull(ipsProject);
 
         if (inherited) {
@@ -564,16 +564,16 @@ public class EnumAttribute extends AtomicIpsObjectPart implements IEnumAttribute
             if (superEnumAttribute == null) {
                 return null;
             }
-            return superEnumAttribute.isUniqueIdentifier();
+            return superEnumAttribute.isUnique();
         } else {
-            return isUniqueIdentifier();
+            return isUnique();
         }
     }
 
     /**
      * {@inheritDoc}
      */
-    public boolean isUsedAsIdInFaktorIpsUi() {
+    public boolean isIdentifier() {
         return usedAsIdInFaktorIpsUi;
     }
 
@@ -605,7 +605,7 @@ public class EnumAttribute extends AtomicIpsObjectPart implements IEnumAttribute
     /**
      * {@inheritDoc}
      */
-    public Boolean findIsUsedAsIdInFaktorIpsUi(IIpsProject ipsProject) throws CoreException {
+    public Boolean findIsIdentifier(IIpsProject ipsProject) throws CoreException {
         ArgumentCheck.notNull(ipsProject);
 
         if (inherited) {
@@ -613,9 +613,9 @@ public class EnumAttribute extends AtomicIpsObjectPart implements IEnumAttribute
             if (superEnumAttribute == null) {
                 return null;
             }
-            return superEnumAttribute.isUsedAsIdInFaktorIpsUi();
+            return superEnumAttribute.isIdentifier();
         } else {
-            return isUsedAsIdInFaktorIpsUi();
+            return isIdentifier();
         }
     }
 

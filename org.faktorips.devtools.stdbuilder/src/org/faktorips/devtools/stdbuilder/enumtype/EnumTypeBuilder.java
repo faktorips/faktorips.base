@@ -749,7 +749,7 @@ public class EnumTypeBuilder extends DefaultJavaSourceFileBuilder {
 
         for (IEnumAttribute currentEnumAttribute : uniqueIdentifierAttributes) {
             if (currentEnumAttribute.isValid()) {
-                if (currentEnumAttribute.findIsUniqueIdentifier(getIpsProject())) {
+                if (currentEnumAttribute.findIsUnique(getIpsProject())) {
 
                     JavaCodeFragment body = new JavaCodeFragment();
                     String parameterName = currentEnumAttribute.getName();
@@ -816,7 +816,7 @@ public class EnumTypeBuilder extends DefaultJavaSourceFileBuilder {
         List<IEnumAttribute> uniqueIdentifierAttributes = enumType.getEnumAttributesIncludeSupertypeCopies();
         for (IEnumAttribute currentUniqueIdentifierEnumAttribute : uniqueIdentifierAttributes) {
             if (currentUniqueIdentifierEnumAttribute.isValid()) {
-                if (currentUniqueIdentifierEnumAttribute.findIsUniqueIdentifier(getIpsProject())) {
+                if (currentUniqueIdentifierEnumAttribute.findIsUnique(getIpsProject())) {
                     String currentUniqueIdentifierName = currentUniqueIdentifierEnumAttribute.getName();
 
                     JavaCodeFragment methodBody = new JavaCodeFragment();

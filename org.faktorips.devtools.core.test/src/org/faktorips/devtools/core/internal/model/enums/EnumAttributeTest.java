@@ -91,15 +91,15 @@ public class EnumAttributeTest extends AbstractIpsEnumPluginTest {
         assertTrue(genderEnumAttributeId.isInherited());
         assertEquals("", genderEnumAttributeId.getDatatype());
         assertFalse(genderEnumAttributeId.isLiteralName());
-        assertFalse(genderEnumAttributeId.isUniqueIdentifier());
+        assertFalse(genderEnumAttributeId.isUnique());
         assertFalse(genderEnumAttributeId.isUsedAsNameInFaktorIpsUi());
-        assertFalse(genderEnumAttributeId.isUsedAsIdInFaktorIpsUi());
+        assertFalse(genderEnumAttributeId.isIdentifier());
     }
 
     public void testGetSetIsUniqueIdentifier() {
-        assertTrue(genderEnumAttributeId.isUniqueIdentifier());
+        assertTrue(genderEnumAttributeId.isUnique());
         genderEnumAttributeId.setUniqueIdentifier(false);
-        assertFalse(genderEnumAttributeId.isUniqueIdentifier());
+        assertFalse(genderEnumAttributeId.isUnique());
     }
 
     public void testXml() throws ParserConfigurationException, CoreException {
@@ -125,8 +125,8 @@ public class EnumAttributeTest extends AbstractIpsEnumPluginTest {
         assertEquals(GENDER_ENUM_ATTRIBUTE_ID_NAME, idAttribute.getName());
         assertEquals(Datatype.STRING.getQualifiedName(), idAttribute.getDatatype());
         assertTrue(idAttribute.isLiteralName());
-        assertTrue(idAttribute.isUniqueIdentifier());
-        assertTrue(idAttribute.isUsedAsIdInFaktorIpsUi());
+        assertTrue(idAttribute.isUnique());
+        assertTrue(idAttribute.isIdentifier());
         assertFalse(idAttribute.isUsedAsNameInFaktorIpsUi());
         assertFalse(idAttribute.isInherited());
         assertEquals(2, loadedEnumType.getEnumAttributes().size());
@@ -354,32 +354,32 @@ public class EnumAttributeTest extends AbstractIpsEnumPluginTest {
 
     public void testFindIsUniqueIdentifier() throws CoreException {
         try {
-            inheritedEnumAttributeId.findIsUniqueIdentifier(null);
+            inheritedEnumAttributeId.findIsUnique(null);
             fail();
         } catch (NullPointerException e) {
         }
 
-        assertTrue(inheritedEnumAttributeId.findIsUniqueIdentifier(ipsProject));
+        assertTrue(inheritedEnumAttributeId.findIsUnique(ipsProject));
         inheritedEnumAttributeId.setInherited(false);
-        assertFalse(inheritedEnumAttributeId.findIsUniqueIdentifier(ipsProject));
+        assertFalse(inheritedEnumAttributeId.findIsUnique(ipsProject));
 
         genderEnumAttributeId.setInherited(true);
-        assertNull(genderEnumAttributeId.findIsUniqueIdentifier(ipsProject));
+        assertNull(genderEnumAttributeId.findIsUnique(ipsProject));
     }
 
     public void testFindIsUsedAsIdInFaktorIpsUi() throws CoreException {
         try {
-            inheritedEnumAttributeId.findIsUsedAsIdInFaktorIpsUi(null);
+            inheritedEnumAttributeId.findIsIdentifier(null);
             fail();
         } catch (NullPointerException e) {
         }
 
-        assertTrue(inheritedEnumAttributeId.findIsUsedAsIdInFaktorIpsUi(ipsProject));
+        assertTrue(inheritedEnumAttributeId.findIsIdentifier(ipsProject));
         inheritedEnumAttributeId.setInherited(false);
-        assertFalse(inheritedEnumAttributeId.findIsUsedAsIdInFaktorIpsUi(ipsProject));
+        assertFalse(inheritedEnumAttributeId.findIsIdentifier(ipsProject));
 
         genderEnumAttributeId.setInherited(true);
-        assertNull(genderEnumAttributeId.findIsUsedAsIdInFaktorIpsUi(ipsProject));
+        assertNull(genderEnumAttributeId.findIsIdentifier(ipsProject));
     }
 
     public void testFindIsUsedAsNameInFaktorIpsUi() throws CoreException {
@@ -405,10 +405,10 @@ public class EnumAttributeTest extends AbstractIpsEnumPluginTest {
     }
 
     public void testGetSetUsedAsIdInFaktorIpsUi() {
-        assertTrue(genderEnumAttributeId.isUsedAsIdInFaktorIpsUi());
-        assertFalse(genderEnumAttributeName.isUsedAsIdInFaktorIpsUi());
+        assertTrue(genderEnumAttributeId.isIdentifier());
+        assertFalse(genderEnumAttributeName.isIdentifier());
         genderEnumAttributeId.setUsedAsIdInFaktorIpsUi(false);
-        assertFalse(genderEnumAttributeId.isUsedAsIdInFaktorIpsUi());
+        assertFalse(genderEnumAttributeId.isIdentifier());
     }
 
 }

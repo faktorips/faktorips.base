@@ -111,7 +111,7 @@ public class DatatypeFormatter {
             return null;
         }
         IEnumType enumType = datatypeAdapter.getEnumType();
-        IEnumAttribute enumAttribute = enumType.findIsUsedAsIdInFaktorIpsUiAttribute(enumType.getIpsProject());
+        IEnumAttribute enumAttribute = enumType.findIsIdentiferAttribute(enumType.getIpsProject());
         if(enumAttribute == null){
             return null;
         }

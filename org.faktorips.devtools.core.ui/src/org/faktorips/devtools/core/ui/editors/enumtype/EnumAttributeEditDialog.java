@@ -279,8 +279,8 @@ public class EnumAttributeEditDialog extends IpsPartEditDialog2 {
                 String name = enumAttribute.getName();
                 Datatype datatype = enumAttribute.findDatatype(ipsProject);
                 Boolean literalName = enumAttribute.findIsLiteralName(ipsProject);
-                Boolean uniqueIdentifier = enumAttribute.findIsUniqueIdentifier(ipsProject);
-                Boolean usedAsIdInFaktorIpsUi = enumAttribute.findIsUsedAsIdInFaktorIpsUi(ipsProject);
+                Boolean uniqueIdentifier = enumAttribute.findIsUnique(ipsProject);
+                Boolean usedAsIdInFaktorIpsUi = enumAttribute.findIsIdentifier(ipsProject);
                 Boolean usedAsNameInFaktorIpsUi = enumAttribute.findIsUsedAsNameInFaktorIpsUi(ipsProject);
                 String datatypeString = (datatype == null) ? "" : datatype.getName();
                 boolean literalNameBoolean = (literalName == null) ? false : literalName.booleanValue();

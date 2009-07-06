@@ -270,8 +270,24 @@ public interface IEnumType extends IEnumValueContainer, IIpsMetaClass {
      */
     public IEnumAttribute findLiteralNameAttribute(IIpsProject ipsProject) throws CoreException;
 
-    public IEnumAttribute findIsUsedAsIdInFaktorIpsUiAttribute(IIpsProject ipsProject) throws CoreException;
+    /**
+     * Looks up the enumeration attribute for which the isIdentifier property is <code>true</code>
+     * and returns it. If none is found <code>null</code> will be returned. The supertype hierachy
+     * is considered if necessary.
+     * 
+     * @param ipsProject used for look up in the supertype hierarchy if necessary
+     * @throws CoreException if an exception occurs during the look up
+     */
+    public IEnumAttribute findIsIdentiferAttribute(IIpsProject ipsProject) throws CoreException;
 
+    /**
+     * Looks up the enumeration attribute for which the isUsedAsNameInFaktorIpsUi is true.
+     * <code>null</code> is returned if none is found. The supertype hierachy is considered if
+     * necessary.
+     * 
+     * @param ipsProject used for look up in the supertype hierarchy if necessary
+     * @throws CoreException if an exception occurs during the look up
+     */
     public IEnumAttribute findIsUsedAsNameInFaktorIpsUiAttribute(IIpsProject ipsProject) throws CoreException;
 
     /**

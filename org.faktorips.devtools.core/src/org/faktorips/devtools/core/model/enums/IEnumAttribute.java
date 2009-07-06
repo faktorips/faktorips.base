@@ -275,35 +275,33 @@ public interface IEnumAttribute extends IIpsObjectPart {
     public IEnumType getEnumType();
 
     /**
-     * Returns <code>true</code> if this enum attribute is a unique identifier, <code>false</code>
-     * if not.
+     * Returns <code>true</code> if by means of this attribute a value of this enumeration type
+     * can be identified uniquely.
      * <p>
-     * <strong>Important:</strong> This operation does not search the supertype hierarchy for the
-     * <code>uniqueIdentifier</code> property if this enum attribute is inherited. Use
-     * <code>findIsUniqueIdentifier()</code> in this case.
+     * <strong>Important:</strong> This method does not search the supertype hierarchy for the
+     * <code>unique</code> property. The method <code>findIsUnique()</code> also takes the supertype
+     * hierarchy into account.
      * 
-     * @see #findIsUniqueIdentifier()
+     * @see #findIsUnique()
      */
-    public boolean isUniqueIdentifier();
+    public boolean isUnique();
 
     /**
-     * Returns <code>true</code> if this enum attribute is marked as unique identifier,
+     * Returns <code>true</code> if this enumeration attribute is marked as unique,
      * <code>false</code> if not.
      * <p>
-     * If this enum attribute is inherited the property of the super enum attribute will be
-     * returned. Returns <code>null</code> if the super enum attribute cannot be found.
+     * If this attribute is inherited the property of the supertype attribute will be returned.
+     * Returns <code>null</code> if the supertype attribute cannot be found.
      * 
-     * @see #isUniqueIdentifier()
+     * @see #isUnique()
      * 
-     * @param ipsProject The ips project which ips object path is used for the search of the super
-     *            enum attribute. This is not necessarily the project this enum attribute is part
-     *            of.
+     * @param ipsProject The ips project that is used to the search the isUnique property in the
+     *            supertype hierarchy.
      * 
-     * @throws CoreException If an error occurs while searching the given ips project for the super
-     *             enum attribute.
+     * @throws CoreException If an error occurs while searching
      * @throws NullPointerException If <code>ipsProject</code> is <code>null</code>.
      */
-    public Boolean findIsUniqueIdentifier(IIpsProject ipsProject) throws CoreException;
+    public Boolean findIsUnique(IIpsProject ipsProject) throws CoreException;
 
     /**
      * Sets whether this enum attribute is a unique identifier.
@@ -346,16 +344,15 @@ public interface IEnumAttribute extends IIpsObjectPart {
     public void setUsedAsIdInFaktorIpsUi(boolean usedAsIdInFaktorIpsUi);
 
     /**
-     * Returns a flag indicating whether this enum attribute is marked to be used as ID of enum
-     * values in the Faktor-IPS UI.
+     * Returns true if this attribute is the identifiying attribute of this {@link IEnumType}.
+     * Only one attribute within an {@link IEnumType} can be the identifiying attribute.
      * <p>
-     * <strong>Important:</strong> This operation does not search the supertype hierarchy for the
-     * <code>usedAsIdInFaktorIpsUi</code> property if this enum attribute is inherited. Use
-     * <code>findIsUsedAsIdInFaktorIpsUi()</code> in this case.
+     * <strong>Important:</strong> This method does not search the supertype hierarchy to look
+     * for the this property. Use <code>findIsIdentifier()</code> if necessary.
      * 
-     * @see #findIsUsedAsIdInFaktorIpsUi()
+     * @see #findIsIdentifier(IIpsProject)
      */
-    public boolean isUsedAsIdInFaktorIpsUi();
+    public boolean isIdentifier();
 
     /**
      * Returns <code>true</code> if this enum attribute is marked to be used as name in the
@@ -383,7 +380,7 @@ public interface IEnumAttribute extends IIpsObjectPart {
      * If this enum attribute is inherited the property of the super enum attribute will be
      * returned. Returns <code>null</code> if the super enum attribute cannot be found.
      * 
-     * @see #isUsedAsIdInFaktorIpsUi()
+     * @see #isIdentifier()
      * 
      * @param ipsProject The ips project which ips object path is used for the search of the super
      *            enum attribute. This is not necessarily the project this enum attribute is part
@@ -393,6 +390,6 @@ public interface IEnumAttribute extends IIpsObjectPart {
      *             enum attribute.
      * @throws NullPointerException If <code>ipsProject</code> is <code>null</code>.
      */
-    public Boolean findIsUsedAsIdInFaktorIpsUi(IIpsProject ipsProject) throws CoreException;
+    public Boolean findIsIdentifier(IIpsProject ipsProject) throws CoreException;
 
 }

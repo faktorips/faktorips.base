@@ -330,7 +330,7 @@ public class EnumValuesSection extends IpsSection implements ContentsChangeListe
                     IEnumAttribute currentEnumAttribute = referencedEnumType.getEnumAttributesIncludeSupertypeCopies()
                             .get(i);
                     columnName = currentEnumAttribute.getName();
-                    isIdentifier = currentEnumAttribute.isUniqueIdentifier();
+                    isIdentifier = currentEnumAttribute.isUnique();
                 } else {
                     columnName = NLS.bind(Messages.EnumValuesSection_defaultColumnName, i + 1);
                 }
@@ -339,7 +339,7 @@ public class EnumValuesSection extends IpsSection implements ContentsChangeListe
 
         } else {
             for (IEnumAttribute currentEnumAttribute : enumType.getEnumAttributesIncludeSupertypeCopies()) {
-                addTableColumn(currentEnumAttribute.getName(), currentEnumAttribute.isUniqueIdentifier());
+                addTableColumn(currentEnumAttribute.getName(), currentEnumAttribute.isUnique());
             }
         }
     }
