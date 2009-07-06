@@ -219,7 +219,7 @@ public class UniqueKeyTest extends AbstractIpsPluginTest {
     }
 
     /**
-     * Tests for the correct type of excetion to be thrown - no part of any type could ever be created.
+     * Tests for the correct type of exception to be thrown - no part of any type could ever be created.
      */
     public void testNewPart() {
     	try {
@@ -231,6 +231,9 @@ public class UniqueKeyTest extends AbstractIpsPluginTest {
     }
     
     public void testContainsTwoColumnRanges(){
+        key.getTableStructure().newColumn().setName("a");
+        key.getTableStructure().newColumn().setName("b");
+        
         assertFalse(key.containsTwoColumnRanges());
         
         IColumnRange range = key.getTableStructure().newRange();
@@ -239,9 +242,14 @@ public class UniqueKeyTest extends AbstractIpsPluginTest {
         key.addKeyItem(range.getName());
         assertFalse(key.containsTwoColumnRanges());
 
+        key.removeKeyItem(range.getName());
         range.setColumnRangeType(ColumnRangeType.TWO_COLUMN_RANGE);
         range.setToColumn("b");
+        key.addKeyItem(range.getName());
         assertTrue(key.containsTwoColumnRanges());
+        
+        key.removeKeyItem(range.getName());
+        assertFalse(key.containsTwoColumnRanges());
     }
     
     public void testValidateThis() throws Exception{

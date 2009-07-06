@@ -89,7 +89,7 @@ public class TestCaseLabelProvider implements ILabelProvider {
 			}
 			String unqualifiedPolicyCmptTypeName = StringUtil.unqualifiedName(policyCmptType.getQualifiedName());
 			if (!name.equals(unqualifiedPolicyCmptTypeName)){
-			    return name + " : " + unqualifiedPolicyCmptTypeName; 
+			    return name + " : " + unqualifiedPolicyCmptTypeName;  //$NON-NLS-1$
 			}
 			return name;
 		} else if (element instanceof ITestPolicyCmptLink) {
@@ -160,7 +160,7 @@ public class TestCaseLabelProvider implements ILabelProvider {
 
         String unqualifiedPolicyCmptTypeName = StringUtil.unqualifiedName(policyCmptType.getQualifiedName());
         if (!sectionText.equals(unqualifiedPolicyCmptTypeName)){
-            return sectionText + " : " + unqualifiedPolicyCmptTypeName; 
+            return sectionText + " : " + unqualifiedPolicyCmptTypeName;  //$NON-NLS-1$
         }
         
         return sectionText;

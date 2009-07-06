@@ -141,10 +141,14 @@ public class UniqueKey extends Key implements IUniqueKey {
      * {@inheritDoc}
      */
     public boolean containsTwoColumnRanges() {
-        IColumnRange[] ranges = getTableStructure().getRanges();
-        for (int i = 0; i < ranges.length; i++) {
-            if (ColumnRangeType.TWO_COLUMN_RANGE.equals(ranges[i].getColumnRangeType())){
-                return true;
+        IKeyItem[] keyItems = getKeyItems();
+        for (int i = 0; i < keyItems.length; i++) {
+            IColumnRange[] ranges = getTableStructure().getRanges();
+            for (int j = 0; j < ranges.length; j++) {
+                if (ColumnRangeType.TWO_COLUMN_RANGE.equals(ranges[j].getColumnRangeType()) 
+                        && keyItems[i].getName().equals(ranges[j].getName())){
+                    return true;
+                }
             }
         }
         return false;

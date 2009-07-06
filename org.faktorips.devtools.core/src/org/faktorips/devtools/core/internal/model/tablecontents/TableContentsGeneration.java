@@ -326,6 +326,14 @@ public class TableContentsGeneration extends IpsObjectGeneration implements ITab
     }
     
     /**
+     * Returns <code>true</code> if there was an unique key error state change, e.g. 
+     * current state is error previous state was error free
+     */
+    public boolean wasUniqueKeyErrorStateChange(){
+        return uniqueKeyValidator.wasErrorStateChange();
+    }
+    
+    /**
      * Validates the unique keys of all rows.
      */
     public void validateUniqueKeys(MessageList list, ITableStructure tableStructure, ValueDatatype[] datatypes) throws CoreException {

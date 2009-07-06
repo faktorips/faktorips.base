@@ -256,6 +256,12 @@ public class UniqueKeyValidatorRange {
             
             // iterate all key value range (from-column) objects of the unique key
             KeyValueRange prevKeyValueFrom = null;
+            
+            // check if the KeyValue row is valid
+            if (!keyValue.isValid()){
+                invalidkeyValues.add(keyValue);
+            }
+            
             for (Iterator<Map.Entry<AbstractKeyValue, Object>> iter = keyValueRangeMap.entrySet().iterator(); iter.hasNext();) {
                 Map.Entry<AbstractKeyValue, Object> entry = iter.next();
                 
@@ -265,24 +271,38 @@ public class UniqueKeyValidatorRange {
                 // check if the key value object is valid, if one key item column has changed then the current key value object could be invalid
                 // ignore invalid key values
                 if (!keyValueFrom.isValid()){
-                    invalidkeyValues.add(keyValueFrom);
                     continue;
                 }
                 
                 // check if the KeyValueRange row is valid for the given key value (non two column range key value)
                 if (!keyValue.isValid(keyValueFrom.getRow())){
-                    invalidkeyValues.add(keyValueFrom);
                     continue;
                 }
                 
                 // there are rows with same 'from'-value
                 if (keyValueObject instanceof List){
-                    Set<Row> rowsSameFrom = mapRowsSameFrom.get(keyValueFrom);
-                    if (rowsSameFrom == null){
-                        rowsSameFrom = new HashSet<Row>();
-                        mapRowsSameFrom.put(keyValueFrom, rowsSameFrom);
+                    // cleanup list, maybe there are rows which are not valid anymore
+                    List<Row> validRows = new ArrayList();
+                    for (Iterator<Row> iterator = ((List)keyValueObject).iterator(); iterator.hasNext();) {
+                        Row row = iterator.next();
+                        // check if the key value is valid for the row 
+                        // and check if the key value from is valid
+                        if (keyValue.isValid(row) && keyValueFrom.isValid(row)){
+                            validRows.add(row);
+                        }
                     }
-                    rowsSameFrom.addAll((List<Row>)keyValueObject);
+                    
+                    if (validRows.size()>1){
+                        Set<Row> rowsSameFrom = mapRowsSameFrom.get(keyValueFrom);
+                        if (rowsSameFrom == null){
+                            rowsSameFrom = new HashSet<Row>();
+                            mapRowsSameFrom.put(keyValueFrom, rowsSameFrom);
+                        }
+                        rowsSameFrom.addAll(validRows);
+                    } else if (validRows.size() == 0){
+                        invalidkeyValues.add(keyValueFrom);
+                        continue;
+                    }
                 }
 
                 // abort validation of current key if there are to many unique key violations
@@ -303,7 +323,6 @@ public class UniqueKeyValidatorRange {
                     // update the valid rows for the key value entry
                     entry.setValue(rowsChecked);
                 }
-                
                 
                 prevKeyValueFrom = keyValueFrom;
             }
@@ -362,7 +381,10 @@ public class UniqueKeyValidatorRange {
             for (Iterator<Row> iterator = rows.iterator(); iterator.hasNext();) {
                 Row currentRow = iterator.next();
                 if (!keyValue.isValid(currentRow)) {
-                    invalidkeyValues.add(keyValue);
+                    // note that the key value cannot be removed
+                    // because there is at least one other row
+                    // with the same from value 
+                    // (the hashcode of the keyValue range object is only the from value)
                     continue;
                 }
                 rowsChecked.add(currentRow);

@@ -67,7 +67,7 @@ public class KeyValueRange extends AbstractKeyValue implements Comparable<KeyVal
      */
     @Override
     public boolean isValid(Row row) {
-        return isValid(valueFrom, evalValueFrom(row, columnRange)) && isToGreaterFrom();
+        return isValid(valueFrom, evalValueFrom(row, columnRange)) && isToGreaterOrEqualFrom();
     }
     
     /**
@@ -100,8 +100,8 @@ public class KeyValueRange extends AbstractKeyValue implements Comparable<KeyVal
     /**
      * Returns <code>true</code> if the to value is greater than the from value.
      */
-    private boolean isToGreaterFrom() {
-        return compareTo(evalValueTo(row, columnRange), valueFrom) > 0;
+    private boolean isToGreaterOrEqualFrom() {
+        return compareTo(evalValueTo(row, columnRange), valueFrom) >= 0;
     }
 
     /**

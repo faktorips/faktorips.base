@@ -86,7 +86,7 @@ public class TestCaseModelDescriptionPage extends DefaultModelDescriptionPage im
         } else {
             uniqueTestObjects.add(ipsObjectPart);
         }
-        String desrcItemName = name.equals(parameterName) ? name : parameterName + " : " + name;
+        String desrcItemName = name.equals(parameterName) ? name : parameterName + " : " + name; //$NON-NLS-1$
         desrList.add(new DescriptionItem(desrcItemName, ipsObjectPart.getDescription()));
     }
 
@@ -95,7 +95,7 @@ public class TestCaseModelDescriptionPage extends DefaultModelDescriptionPage im
             ArrayList desrList,
             Set uniqueTestObjects) throws CoreException {
         ITestParameter parameter = cmpt.findTestParameter(testCase.getIpsProject());
-        String parameterName = "";
+        String parameterName = ""; //$NON-NLS-1$
         if (parameter != null) {
             parameterName = parameter.getName();
         }

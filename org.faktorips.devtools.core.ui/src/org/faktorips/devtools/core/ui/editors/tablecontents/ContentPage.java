@@ -48,6 +48,7 @@ import org.eclipse.ui.forms.widgets.ScrolledForm;
 import org.faktorips.datatype.ValueDatatype;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.internal.model.tablecontents.TableContents;
+import org.faktorips.devtools.core.internal.model.tablecontents.TableContentsGeneration;
 import org.faktorips.devtools.core.model.tablecontents.IRow;
 import org.faktorips.devtools.core.model.tablecontents.ITableContents;
 import org.faktorips.devtools.core.model.tablecontents.ITableContentsGeneration;
@@ -581,5 +582,22 @@ public class ContentPage extends IpsObjectEditorPage {
      */
     void redrawTable() {
         table.redraw();
+    }
+
+    private boolean wasUniqueKeyErrorStateChanged(){
+        return ((TableContentsGeneration)getActiveGeneration()).wasUniqueKeyErrorStateChange();
+    }
+
+    public void refreshTable(final IRow row) {
+        tableViewer.refresh(row);
+        if (wasUniqueKeyErrorStateChanged()){
+            // either the unique key error is solved or there is a new unique key error
+            // refresh the rest of the table because an unique key error concerns to more than one row
+            refreshTable();
+        }
+    }
+
+    public void refreshTable() {
+        tableViewer.refresh();
     }
 }

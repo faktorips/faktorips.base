@@ -230,7 +230,7 @@ public class TestCaseCopyWizard extends ResizableWizard {
         }
         
         String pckFrgmtName = targetIpsPackageFragment.getName();
-        return (pckFrgmtName.length()>0?pckFrgmtName+".":"") + testCaseCopyDestinationPage.getTargetTestCaseName(); //$NON-NLS-1$
+        return (pckFrgmtName.length()>0?pckFrgmtName+".":"") + testCaseCopyDestinationPage.getTargetTestCaseName(); //$NON-NLS-1$ //$NON-NLS-2$
     }
 
     /**

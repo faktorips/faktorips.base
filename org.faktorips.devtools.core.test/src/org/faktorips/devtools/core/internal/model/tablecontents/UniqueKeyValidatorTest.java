@@ -669,6 +669,158 @@ public class UniqueKeyValidatorTest extends AbstractIpsPluginTest {
         System.out.println(sb.toString());
     }
     
+    /**
+     * Test Scenario:
+     *   TableStructure: mandant (String), ageMin (int), ageMax (int), Unique Key with mandant, ageMin-ageMax
+     *   Table: 1. Row: 1, 10, 19
+     *          2. Row: 2, 20, 25
+     *          3. Row: 3, 20, 30
+     *   Steps: 1. validate after creation: validaion errors (row 2 and 3)
+     *          2. validate after changing row 3 ageMin to '10': validation error (row 1 and 3)
+     *          3. validate after changing row 3 ageMin to '20': validation error (row 2 and 3)
+     *          4. validate after changing row 3 mandant to '2': no validation error 
+     */
+    public void testKeyValueRangeWithSameFromKeyAfter2ndChange() throws CoreException{
+            ITableStructure structure = (ITableStructure)newIpsObject(project,  IpsObjectType.TABLE_STRUCTURE, "Ts");
+            table.setTableStructure(structure.getQualifiedName());
+
+            // init table structure
+            IColumn column = structure.newColumn();
+            column.setName("mandant");
+            column.setDatatype("String");
+            column = structure.newColumn();
+            column.setName("ageMin");
+            column.setDatatype("int");
+            column = structure.newColumn();
+            column.setName("ageMax");
+            column.setDatatype("int");
+            
+            ColumnRange range = (ColumnRange)structure.newRange();
+            range.setColumnRangeType(ColumnRangeType.TWO_COLUMN_RANGE);
+            range.setFromColumn("ageMin");
+            range.setToColumn("ageMax");
+            
+            IUniqueKey uniqueKey = structure.newUniqueKey();
+            uniqueKey.addKeyItem("mandant");
+            uniqueKey.addKeyItem(range.getName());
+            
+            ITableContentsGeneration gen1 = (ITableContentsGeneration)table.newGeneration();
+            table.newColumn("1");
+            table.newColumn("2");
+            table.newColumn("3");
+            
+            Row row = (Row)gen1.newRow();
+            row.setValue(0, "1");
+            row.setValue(1, "10");
+            row.setValue(2, "19");
+            row = (Row)gen1.newRow();
+            row.setValue(0, "1");
+            row.setValue(1, "20");
+            row.setValue(2, "25");
+            row = (Row)gen1.newRow();
+            row.setValue(0, "1");
+            row.setValue(1, "20");
+            row.setValue(2, "30");
+                    
+            // Step 1
+            MessageList messageList = table.validate(project);
+            assertNotNull(messageList.getMessageByCode(ITableContents.MSGCODE_UNIQUE_KEY_VIOLATION));
+            assertEquals(2, messageList.getNoOfMessages());
+            assertRowInValidationMsg(messageList, 2);
+            assertRowInValidationMsg(messageList, 3);
+            
+            // Step 2
+            row.setValue(1, "10"); // ageMin
+            messageList = table.validate(project);
+            assertNotNull(messageList.getMessageByCode(ITableContents.MSGCODE_UNIQUE_KEY_VIOLATION));
+            assertEquals(2, messageList.getNoOfMessages());
+            assertRowInValidationMsg(messageList, 1);
+            assertRowInValidationMsg(messageList, 3);
+            
+            // Step 3
+            row.setValue(1, "20"); // ageMin
+            messageList = table.validate(project);
+            assertNotNull(messageList.getMessageByCode(ITableContents.MSGCODE_UNIQUE_KEY_VIOLATION));
+            assertEquals(2, messageList.getNoOfMessages());
+            assertRowInValidationMsg(messageList, 2);
+            assertRowInValidationMsg(messageList, 3);
+            
+            // Step 4
+            row.setValue(0, "2"); // mandant
+            messageList = table.validate(project);
+            assertNull(messageList.getMessageByCode(ITableContents.MSGCODE_UNIQUE_KEY_VIOLATION));
+    }
+    
+    private void assertRowInValidationMsg(MessageList messageList, int row) throws CoreException {
+        assertEquals(table.getNumOfGenerations(), 1);
+        assertEquals(1, messageList.getMessagesFor(((IRow[])table.getGeneration(0).getChildren())[row-1]).getNoOfMessages());
+    }
+
+    /**
+     * Test Scenario:
+     *   TableStructure: mandant (String), ageMin (int), ageMax (int), Unique Key with mandant, ageMin-ageMax
+     *   Table: 1. Row: 1, 10, 20
+     *          2. Row: 2, 10, 15
+     *   Steps: 1. validate after creation: no validaion errors
+     *          2. validate after changing row 2 mandant to '1': two validation error
+     *          3. validate after changing row 2 mandant to '2': no validation error again
+     */
+    public void testKeyValueRangeWithSameFromKeyAfterChange() throws CoreException{
+        ITableStructure structure = (ITableStructure)newIpsObject(project,  IpsObjectType.TABLE_STRUCTURE, "Ts");
+        table.setTableStructure(structure.getQualifiedName());
+
+        // init table structure
+        IColumn column = structure.newColumn();
+        column.setName("mandant");
+        column.setDatatype("String");
+        column = structure.newColumn();
+        column.setName("ageMin");
+        column.setDatatype("int");
+        column = structure.newColumn();
+        column.setName("ageMax");
+        column.setDatatype("int");
+        
+        ColumnRange range = (ColumnRange)structure.newRange();
+        range.setColumnRangeType(ColumnRangeType.TWO_COLUMN_RANGE);
+        range.setFromColumn("ageMin");
+        range.setToColumn("ageMax");
+        
+        IUniqueKey uniqueKey = structure.newUniqueKey();
+        uniqueKey.addKeyItem("mandant");
+        uniqueKey.addKeyItem(range.getName());
+        
+        ITableContentsGeneration gen1 = (ITableContentsGeneration)table.newGeneration();
+        table.newColumn("1");
+        table.newColumn("2");
+        table.newColumn("3");
+        
+        Row row = (Row)gen1.newRow();
+        row.setValue(0, "1");
+        row.setValue(1, "10");
+        row.setValue(2, "20");
+        row = (Row)gen1.newRow();
+        row.setValue(0, "2");
+        row.setValue(1, "10");
+        row.setValue(2, "15");
+                
+        // Step 1
+        MessageList messageList = table.validate(project);
+        assertNull(messageList.getMessageByCode(ITableContents.MSGCODE_UNIQUE_KEY_VIOLATION));
+
+        // Step 2
+        row.setValue(0, "1"); // mandant
+        messageList = table.validate(project);
+        assertNotNull(messageList.getMessageByCode(ITableContents.MSGCODE_UNIQUE_KEY_VIOLATION));
+        assertEquals(2, messageList.getNoOfMessages());
+        assertRowInValidationMsg(messageList, 1);
+        assertRowInValidationMsg(messageList, 2);        
+        
+        // Step 3
+        row.setValue(0, "2"); // mandant
+        messageList = table.validate(project);
+        assertNull(messageList.getMessageByCode(ITableContents.MSGCODE_UNIQUE_KEY_VIOLATION));
+    }
+    
     private void testPerformanceInternal(StringBuffer sb, int noOfRunsBefore, int noOfTests, int noOfRows, boolean testWithUniqueKeyValidation) throws Exception {
         int noOfRowStartup = 100;
 

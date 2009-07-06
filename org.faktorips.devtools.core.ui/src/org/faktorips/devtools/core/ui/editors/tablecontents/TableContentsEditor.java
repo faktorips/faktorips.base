@@ -14,6 +14,7 @@
 package org.faktorips.devtools.core.ui.editors.tablecontents;
 
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.part.IPage;
 import org.faktorips.devtools.core.model.tablecontents.ITableContents;
@@ -25,6 +26,8 @@ import org.faktorips.devtools.core.ui.views.modeldescription.IModelDescriptionSu
  * Editor for a table content.
  */
 public class TableContentsEditor extends TimedIpsObjectEditor implements IModelDescriptionSupport {
+
+    private ContentPage contentsPage;
 
     /**
      *
@@ -41,7 +44,20 @@ public class TableContentsEditor extends TimedIpsObjectEditor implements IModelD
      * {@inheritDoc}
      */
     protected void addPagesForParsableSrcFile() throws PartInitException {
-        addPage(new ContentPage(this));
+        contentsPage = new ContentPage(this);
+        addPage(contentsPage);
+    }
+
+    @Override
+    public void doSave(IProgressMonitor monitor) {
+        super.doSave(monitor);
+        
+        // always refresh the table after saving
+        // thus all problem markers of unique key error are updated
+        // necessary because maybe there are old unique key validation problem marker,
+        // this could happen if the unique key error state didn't changed (e.g. at least there are errors)
+        // TODO Joerg performance? evtl. pruefen ob unique key fehler existieren
+        contentsPage.refreshTable();
     }
 
     /**

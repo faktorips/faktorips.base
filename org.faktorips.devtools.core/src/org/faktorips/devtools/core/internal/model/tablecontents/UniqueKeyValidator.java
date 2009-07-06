@@ -75,6 +75,11 @@ public class UniqueKeyValidator {
     private ITableStructure cachedTableStructure;
     private ValueDatatype[] cachedValueDatatypes; 
     
+    // contains the previous error status
+    // used to indicate an error status change
+    private boolean currentErrorStatus;
+    private boolean previousErrorStatus;
+    
     /**
      * Returns the cached table structure
      */
@@ -102,6 +107,18 @@ public class UniqueKeyValidator {
      */
     public boolean isEmtpy() {
         return uniqueKeyMapColumn.isEmpty() && uniqueKeyValidatorForTwoColumnRange.isEmpty();
+    }
+    
+    /**
+     * Returns <code>true</code> if there was an unique key error state change, e.g. 
+     * current state is error previous state was error free
+     */    
+    public boolean wasErrorStateChange(){
+        if (currentErrorStatus != previousErrorStatus){
+            previousErrorStatus = currentErrorStatus;
+            return true;
+        }
+        return false;
     }
     
     /**
@@ -136,7 +153,7 @@ public class UniqueKeyValidator {
             }
         }
     }
-
+    
     /*
      * Updates the unique key cache for the given row. This method handles the update of non two column range keys.
      */
@@ -150,7 +167,7 @@ public class UniqueKeyValidator {
         }
         
         updateKeyValueInMap(keyValueMap, KeyValue.createKeyValue(cachedTableStructure, uniqueKey, row), row, operation);
-    }
+    } 
     
     /*
      * Updates the unique key cache for the given row. This method handles the update of all two column range keys.
@@ -219,7 +236,7 @@ public class UniqueKeyValidator {
             rows.add(row);
             keyValueMap.put(keyValue, rows);
         } else if (operation == HANDLE_UNIQUEKEY_ROW_REMOVED) {
-            if (!(rowOrRowsForKeyValue == row)){
+            if (!(rowOrRowsForKeyValue == row ) && keyValue.isValid(rowOrRowsForKeyValue)){
                 // normally this can never be happen, because if this is not the current row
                 // then there must be a list of rows or the update has not worked correctly before (inconsistent cache)
                 throw new RuntimeException("Warning: inconsistent unique key map!"); //$NON-NLS-1$
@@ -262,8 +279,12 @@ public class UniqueKeyValidator {
         cachedValueDatatypes = datatypes;
         cachedTableStructure = tableStructure;
         
-        validateUniqueKeys(list, uniqueKeyMapColumn);
-        validateUniqueKeysRange(list, uniqueKeyValidatorForTwoColumnRange);
+        MessageList validationErrors = new MessageList();
+        validateUniqueKeys(validationErrors, uniqueKeyMapColumn);
+        validateUniqueKeysRange(validationErrors, uniqueKeyValidatorForTwoColumnRange);
+        
+        list.add(validationErrors);
+        currentErrorStatus = validationErrors.getNoOfMessages()>0;
     }
 
     private void validateUniqueKeysRange(MessageList list,
