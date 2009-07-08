@@ -432,6 +432,7 @@ public abstract class IpsPartsComposite extends ViewerButtonComposite implements
                 if (!dirty) {
                     file.markAsClean();
                 }
+                refresh();
             }
         } catch (Exception e) {
             IpsPlugin.logAndShowErrorDialog(e);
@@ -480,7 +481,9 @@ public abstract class IpsPartsComposite extends ViewerButtonComposite implements
             Table table = (Table)getViewer().getControl();
             int selectedIndexAfterDeletion = Math.min(table.getSelectionIndex(), table.getItemCount() - 2);
             IIpsObjectPart part = getSelectedPart();
-            fireAboutToDelete(part);
+            if (!fireAboutToDelete(part)) {
+            	return;
+            }
             deleteIpsPart(part);
             if (selectedIndexAfterDeletion >= 0) {
                 Object selected = viewer.getElementAt(selectedIndexAfterDeletion);
@@ -564,11 +567,15 @@ public abstract class IpsPartsComposite extends ViewerButtonComposite implements
         deleteListeners.remove(listener);
     }
 
-    private void fireAboutToDelete(IIpsObjectPart part) {
+    private boolean fireAboutToDelete(IIpsObjectPart part) {
         for (Iterator<IDeleteListener> iter = deleteListeners.iterator(); iter.hasNext();) {
             IDeleteListener listener = (IDeleteListener)iter.next();
-            listener.aboutToDelete(part);
+            boolean accept = listener.aboutToDelete(part);
+            if (!accept) {
+            	return false;
+            }
         }
+        return true;
     }
 
     private void fireDeleted(IIpsObjectPart part) {

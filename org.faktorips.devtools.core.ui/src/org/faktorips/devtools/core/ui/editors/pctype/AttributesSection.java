@@ -64,12 +64,12 @@ public class AttributesSection extends SimpleIpsPartsSection {
             super(pdObject, parent, toolkit);
             super.addDeleteListener(new IDeleteListener() {
 			
-				public void aboutToDelete(IIpsObjectPart part) {
+				public boolean aboutToDelete(IIpsObjectPart part) {
 					IValidationRule rule = findValidationRule(part);
 
 					if (rule == null) {
 						// nothing to do if no special rule is defined.
-						return;
+						return true;
 					}
 					
 					String msg = Messages.AttributesSection_deleteMessage;
@@ -80,6 +80,7 @@ public class AttributesSection extends SimpleIpsPartsSection {
 					else if (!delete && rule != null) {
 						rule.setCheckValueAgainstValueSetRule(false);
 					}
+					return true;
 				}
 			
 				private IValidationRule findValidationRule(IIpsObjectPart part) {

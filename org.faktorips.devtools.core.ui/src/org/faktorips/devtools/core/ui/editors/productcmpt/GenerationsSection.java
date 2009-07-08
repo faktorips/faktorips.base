@@ -184,10 +184,11 @@ public class GenerationsSection extends SimpleIpsPartsSection{
 		/**
 		 * {@inheritDoc}
 		 */
-		public void aboutToDelete(IIpsObjectPart part) {
+		public boolean aboutToDelete(IIpsObjectPart part) {
 			if (page.getProductCmpt().getGenerationsOrderedByValidDate().length == 2) {
 				super.deleteButton.setEnabled(false);
 			}
+			return true;
 		}
 
 		/**

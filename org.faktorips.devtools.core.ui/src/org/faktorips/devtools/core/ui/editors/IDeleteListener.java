@@ -24,11 +24,12 @@ public interface IDeleteListener {
 
 	/**
 	 * Called before the method <code>IIpsObjectPart.delete()</code> is called.
-	 * Note that no veto is possible.
+	 * The method have to return true otherwise the deletion will be interrupted
 	 * 
 	 * @param part The part that will be deleted.
+	 * @return true to continue deletion or false to interrupt
 	 */
-	public void aboutToDelete(IIpsObjectPart part);
+	public boolean aboutToDelete(IIpsObjectPart part);
 	
 	/**
 	 * Called after the part was deleted.
@@ -36,4 +37,5 @@ public interface IDeleteListener {
 	 * @param part The deleted part.
 	 */
 	public void deleted(IIpsObjectPart part);
+	
 }
