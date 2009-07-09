@@ -216,23 +216,6 @@ public class FormulaTest extends AbstractIpsPluginTest  {
         policyAttr2.setDatatype("String");
         enumtypes = formula.getEnumDatatypesAllowedInFormula();
         assertEquals(0, enumtypes.length);
-        
-        ITableStructure tableStructure = (ITableStructure)newIpsObject(ipsProject, IpsObjectType.TABLE_STRUCTURE, "Table");
-        IColumn col0 = tableStructure.newColumn();
-        col0.setDatatype("Integer");
-        
-        ITableStructureUsage structureUsage = productCmptType.newTableStructureUsage();
-        structureUsage.addTableStructure(tableStructure.getQualifiedName());
-        productCmpt.fixAllDifferencesToModel(ipsProject);
-        
-        enumtypes = formula.getEnumDatatypesAllowedInFormula();
-        assertEquals(0, enumtypes.length); // 0 because table structure hasn't got a column with an enum type so far
-        
-        IColumn col1 = tableStructure.newColumn();
-        col1.setDatatype(testType.getQualifiedName());
-        enumtypes = formula.getEnumDatatypesAllowedInFormula();
-        assertEquals(1, enumtypes.length);
-        assertEquals(testType, enumtypes[0]);
     }
     
     public void testGetEnumDatatypesAllowedInFormulaWithProductCmptTypeAttributes() throws Exception {
