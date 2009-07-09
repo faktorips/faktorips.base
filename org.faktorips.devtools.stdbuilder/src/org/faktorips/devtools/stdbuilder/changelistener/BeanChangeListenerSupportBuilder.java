@@ -62,7 +62,7 @@ IChangeListenerSupportBuilder {
             methodsBuilder.append(' ');
             methodsBuilder.append(getOldFieldName(fieldName));
             methodsBuilder.append(" = ");
-            methodsBuilder.appendln(fieldName);
+            methodsBuilder.append(fieldName);
             methodsBuilder.appendln(";");
         }
     }

@@ -309,13 +309,13 @@ public class GenAssociationToMany extends GenAssociation {
         generateSignatureGetAllRefObjects(methodsBuilder);
         methodsBuilder.openBracket();
         if (isUseTypesafeCollections()) {
-            methodsBuilder.appendln("return ");
+            methodsBuilder.append("return ");
             methodsBuilder.appendClassName(Collections.class.getName());
-            methodsBuilder.appendln(".unmodifiableList(");
+            methodsBuilder.append(".unmodifiableList(");
             methodsBuilder.append(fieldName);
-            methodsBuilder.append(");");
+            methodsBuilder.appendln(");");
         } else {
-            methodsBuilder.appendln("return (");
+            methodsBuilder.append("return (");
             methodsBuilder.appendClassName(targetImplClassName);
             methodsBuilder.append("[])");
             methodsBuilder.append(fieldName);
@@ -323,7 +323,7 @@ public class GenAssociationToMany extends GenAssociation {
             methodsBuilder.appendClassName(targetImplClassName);
             methodsBuilder.append('[');
             methodsBuilder.append(fieldName);
-            methodsBuilder.append(".size()]);");
+            methodsBuilder.appendln(".size()]);");
         }
         methodsBuilder.closeBracket();
     }
@@ -383,13 +383,18 @@ public class GenAssociationToMany extends GenAssociation {
         generateSignatureAddObject(methodsBuilder);
         String paramName = getParamNameForAddObject();
         methodsBuilder.openBracket();
-        methodsBuilder.append("if (" + paramName + " == null) {");
+        methodsBuilder.append("if (" + paramName + " == null)");
+        methodsBuilder.openBracket();
         methodsBuilder.append("throw new ");
         methodsBuilder.appendClassName(NullPointerException.class);
-        methodsBuilder.append("(\"Can't add null to association " + association.getName() + " of \" + this); }");
+        methodsBuilder.append("(\"Can't add null to association " + association.getName() + " of \" + this);");
+        methodsBuilder.closeBracket();
         methodsBuilder.append("if(");
         methodsBuilder.append(fieldName);
-        methodsBuilder.append(".contains(" + paramName + ")) { return; }");
+        methodsBuilder.append(".contains(" + paramName + "))");
+        methodsBuilder.openBracket();
+        methodsBuilder.appendln("return;");
+        methodsBuilder.closeBracket();
         if (association.isCompositionMasterToDetail()) {
             if (target != null && target.isDependantType()) {
                 methodsBuilder.append(generateCodeToSynchronizeReverseComposition(paramName, "this"));
@@ -397,7 +402,7 @@ public class GenAssociationToMany extends GenAssociation {
         }
         generateChangeListenerSupportBeforeChange(methodsBuilder, ChangeEventType.ASSOCIATION_OBJECT_ADDED, paramName);
         methodsBuilder.append(fieldName);
-        methodsBuilder.append(".add(" + paramName + ");");
+        methodsBuilder.appendln(".add(" + paramName + ");");
         if (association.isAssoziation() && reverseAssociation != null) {
             methodsBuilder.append(getGenPolicyCmptType().getBuilderSet().getGenerator(target).getGenerator(
                     reverseAssociation).generateCodeToSynchronizeReverseAssoziation(paramName, targetInterfaceName));
@@ -430,7 +435,10 @@ public class GenAssociationToMany extends GenAssociation {
         generateSignatureRemoveObject(methodsBuilder);
 
         methodsBuilder.openBracket();
-        methodsBuilder.append("if(" + paramName + "== null) {return;}");
+        methodsBuilder.append("if(" + paramName + "== null)");
+        methodsBuilder.openBracket();
+        methodsBuilder.appendln("return;");
+        methodsBuilder.closeBracket();
 
         generateChangeListenerSupportBeforeChange(methodsBuilder, ChangeEventType.ASSOCIATION_OBJECT_REMOVED, paramName);
         if (reverseAssociation != null || association.isComposition() && target != null && target.isDependantType()) {
@@ -439,15 +447,16 @@ public class GenAssociationToMany extends GenAssociation {
         methodsBuilder.append(fieldName);
         methodsBuilder.append(".remove(" + paramName + ")");
         if (reverseAssociation != null || association.isComposition() && target != null && target.isDependantType()) {
-            methodsBuilder.append(") {");
+            methodsBuilder.append(")");
+            methodsBuilder.openBracket();
             if (association.isAssoziation()) {
                 methodsBuilder.append(generateCodeToCleanupOldReference(association, reverseAssociation, paramName));
             } else {
                 methodsBuilder.append(generateCodeToSynchronizeReverseComposition(paramName, "null"));
             }
-            methodsBuilder.append(" }");
+            methodsBuilder.closeBracket();
         } else {
-            methodsBuilder.append(';');
+            methodsBuilder.appendLn(';');
         }
         generateChangeListenerSupportAfterChange(methodsBuilder, ChangeEventType.ASSOCIATION_OBJECT_REMOVED, paramName);
         methodsBuilder.closeBracket();
@@ -901,7 +910,7 @@ public class GenAssociationToMany extends GenAssociation {
         }
         code.append("! " + varName + ".");
         code.append(getMethodNameContainsObject(association) + "(this)");
-        code.append(") {");
+        code.appendln(") {");
         code.append(varName + "." + getMethodNameAddObject());
         code.appendln("(this);");
         code.appendln("}");
