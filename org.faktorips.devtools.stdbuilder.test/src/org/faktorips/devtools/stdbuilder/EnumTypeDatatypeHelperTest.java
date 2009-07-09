@@ -37,6 +37,7 @@ public class EnumTypeDatatypeHelperTest extends AbstractIpsPluginTest {
         id.setDatatype(Datatype.STRING.getQualifiedName());
         id.setInherited(false);
         id.setLiteralName(true);
+        id.setIdentifier(true);
         id.setUnique(true);
         id.setName("id");
         IEnumValue value1 = paymentMode.newEnumValue();
@@ -53,6 +54,11 @@ public class EnumTypeDatatypeHelperTest extends AbstractIpsPluginTest {
 
         JavaCodeFragment fragment = enumHelper.newInstance("annually");
         assertEquals("PaymentMode.ANNUALLY", fragment.getSourcecode());
+        
+        //ensure than no exception is thrown if the enumtype doesn't have an id attribute
+        id.setIdentifier(false);
+        enumHelper.newInstance("annually");
+        id.setIdentifier(true);
         
         fragment = enumHelper.newInstanceFromExpression("getValue()");
         System.out.println(fragment.getSourcecode());

@@ -302,6 +302,9 @@ public class EnumTypeBuilder extends DefaultJavaSourceFileBuilder {
             // TODO pk is this the right ips project that is provided to the finder method??
             IEnumValue enumValue = enumTypeAdapter.getEnumValueContainer().findEnumValue(value,
                     enumTypeAdapter.getEnumValueContainer().getIpsProject());
+            if(enumValue == null){
+                return fragment;
+            }
             IEnumAttributeValue attrValue = enumValue.findEnumAttributeValue(getIpsProject(), enumTypeAdapter
                     .getEnumType().findLiteralNameAttribute(getIpsProject()));
             fragment.appendClassName(getQualifiedClassName(enumTypeAdapter.getEnumType()));
