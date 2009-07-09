@@ -37,7 +37,7 @@ public class EnumTypeValidationsTest extends AbstractIpsPluginTest {
         id.setDatatype(Datatype.STRING.getQualifiedName());
         id.setInherited(false);
         id.setLiteralName(true);
-        id.setUniqueIdentifier(true);
+        id.setUnique(true);
         id.setName("id");
 
         abstractSubEnum = newEnumType(ipsProject, "AbstractSubEnum");
@@ -49,7 +49,7 @@ public class EnumTypeValidationsTest extends AbstractIpsPluginTest {
         shortText.setDatatype(Datatype.STRING.getQualifiedName());
         shortText.setInherited(false);
         shortText.setLiteralName(false);
-        shortText.setUniqueIdentifier(false);
+        shortText.setUnique(false);
         shortText.setName("shortText");
 
         paymentMode = newEnumType(ipsProject, "PaymentMode");
@@ -62,14 +62,14 @@ public class EnumTypeValidationsTest extends AbstractIpsPluginTest {
         id.setDatatype(Datatype.STRING.getQualifiedName());
         id.setInherited(true);
         id.setLiteralName(true);
-        id.setUniqueIdentifier(true);
+        id.setUnique(true);
         id.setName("id");
 
         shortText = paymentMode.newEnumAttribute();
         shortText.setDatatype(Datatype.STRING.getQualifiedName());
         shortText.setInherited(true);
         shortText.setLiteralName(false);
-        shortText.setUniqueIdentifier(false);
+        shortText.setUnique(false);
         shortText.setName("shortText");
 
         IEnumValue value1 = paymentMode.newEnumValue();

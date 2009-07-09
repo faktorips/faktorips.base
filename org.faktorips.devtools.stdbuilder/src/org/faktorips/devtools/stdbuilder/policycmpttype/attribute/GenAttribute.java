@@ -228,7 +228,7 @@ public abstract class GenAttribute extends GenPolicyCmptTypePart {
         if (datatypeHelper instanceof EnumTypeDatatypeHelper) {
             EnumTypeDatatypeHelper enumHelper = (EnumTypeDatatypeHelper)datatypeHelper;
             if (!enumHelper.getEnumType().isContainingValues()) {
-                builder.append(enumHelper.getEnumTypeBuilder().getValueByXXXCodeFragment(enumHelper.getEnumType(), expr,
+                builder.append(enumHelper.getEnumTypeBuilder().getCallGetValueByIdentifierCodeFragment(enumHelper.getEnumType(), expr,
                         repositoryExpression));
                 builder.appendln(";");
                 builder.appendln("}");

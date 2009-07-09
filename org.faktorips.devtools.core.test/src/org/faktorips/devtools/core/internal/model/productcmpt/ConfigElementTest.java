@@ -156,13 +156,13 @@ public class ConfigElementTest extends AbstractIpsPluginTest {
         id.setName("id");
         id.setDatatype(Datatype.STRING.getQualifiedName());
         id.setLiteralName(true);
-        id.setUniqueIdentifier(true);
-        id.setUsedAsIdInFaktorIpsUi(true);
+        id.setUnique(true);
+        id.setIdentifier(true);
 
         IEnumAttribute name = enumType.newEnumAttribute();
         name.setName("name");
         name.setDatatype(Datatype.STRING.getQualifiedName());
-        name.setUniqueIdentifier(true);
+        name.setUnique(true);
         name.setUsedAsNameInFaktorIpsUi(true);
 
         IEnumValue enumValue = enumType.newEnumValue();

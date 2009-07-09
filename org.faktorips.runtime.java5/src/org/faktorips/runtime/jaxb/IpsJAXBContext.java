@@ -33,11 +33,11 @@ import org.w3c.dom.Node;
 public class IpsJAXBContext extends JAXBContext {
 
     private JAXBContext wrappedCtx;
-    private List<? extends XmlAdapter<String, ? extends IEnumValue>> enumXmlAdapters;
+    private List<? extends XmlAdapter<?, ? extends IEnumValue>> enumXmlAdapters;
     private IRuntimeRepository repository;
 
     public IpsJAXBContext(JAXBContext wrappedCtx,
-            List<? extends XmlAdapter<String, ? extends IEnumValue>> enumXmlAdapters, IRuntimeRepository repository) {
+            List<? extends XmlAdapter<?, ? extends IEnumValue>> enumXmlAdapters, IRuntimeRepository repository) {
         super();
         this.wrappedCtx = wrappedCtx;
         this.repository = repository;
@@ -55,7 +55,7 @@ public class IpsJAXBContext extends JAXBContext {
     public Marshaller createMarshaller() throws JAXBException {
         Marshaller marshaller = wrappedCtx.createMarshaller();
         marshaller.setAdapter(new ProductComponentXmlAdapter(repository));
-        for (XmlAdapter<String, ? extends IEnumValue> xmlAdapter : enumXmlAdapters) {
+        for (XmlAdapter<?, ? extends IEnumValue> xmlAdapter : enumXmlAdapters) {
             marshaller.setAdapter(xmlAdapter);
         }
         return marshaller;
@@ -65,7 +65,7 @@ public class IpsJAXBContext extends JAXBContext {
     public Unmarshaller createUnmarshaller() throws JAXBException {
         Unmarshaller unmarshaller = wrappedCtx.createUnmarshaller();
         unmarshaller.setAdapter(new ProductComponentXmlAdapter(repository));
-        for (XmlAdapter<String, ? extends IEnumValue> xmlAdapter : enumXmlAdapters) {
+        for (XmlAdapter<?, ? extends IEnumValue> xmlAdapter : enumXmlAdapters) {
             unmarshaller.setAdapter(xmlAdapter);
         }
         return unmarshaller;

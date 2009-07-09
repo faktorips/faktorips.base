@@ -24,5 +24,5 @@ public interface IEnumValue {
      * Returns the identifying string value every faktor ips generation enumeration can be requested
      * for.
      */
-    public String getID();
+    public Object getID();
 }

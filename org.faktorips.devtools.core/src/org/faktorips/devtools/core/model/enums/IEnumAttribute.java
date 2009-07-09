@@ -57,13 +57,13 @@ public interface IEnumAttribute extends IIpsObjectPart {
     public final static String PROPERTY_INHERITED = "inherited"; //$NON-NLS-1$
 
     /** Name of the <code>uniqueIdentifier</code> property. */
-    public final static String PROPERTY_UNIQUE_IDENTIFIER = "uniqueIdentifier"; //$NON-NLS-1$
+    public final static String PROPERTY_UNIQUE = "unique"; //$NON-NLS-1$
 
     /** Name of the <code>usedAsNameInFaktorIpsUi</code> property. */
     public final static String PROPERTY_USED_AS_NAME_IN_FAKTOR_IPS_UI = "usedAsNameInFaktorIpsUi"; //$NON-NLS-1$
 
     /** Name of the <code>usedAsIdInFaktorIpsUi</code> property. */
-    public final static String PROPERTY_USED_AS_ID_IN_FAKTOR_IPS_UI = "usedAsIdInFaktorIpsUi"; //$NON-NLS-1$
+    public final static String PROPERTY_IDENTIFIER = "identifier"; //$NON-NLS-1$
 
     /** Prefix for all message codes of this class. */
     public final static String MSGCODE_PREFIX = "ENUMATTRIBUTE-"; //$NON-NLS-1$
@@ -309,7 +309,7 @@ public interface IEnumAttribute extends IIpsObjectPart {
      * @param uniqueIdentifier Flag indicating whether this enum attribute will be a unique
      *            identifier.
      */
-    public void setUniqueIdentifier(boolean uniqueIdentifier);
+    public void setUnique(boolean uniqueIdentifier);
 
     /**
      * Sets whether the values of this enum attribute shall be used as name of enum values in the
@@ -341,7 +341,7 @@ public interface IEnumAttribute extends IIpsObjectPart {
      *            ID of enum values in the Faktor-IPS UI (<code>true</code>) or not (
      *            <code>false</code>).
      */
-    public void setUsedAsIdInFaktorIpsUi(boolean usedAsIdInFaktorIpsUi);
+    public void setIdentifier(boolean usedAsIdInFaktorIpsUi);
 
     /**
      * Returns true if this attribute is the identifiying attribute of this {@link IEnumType}.

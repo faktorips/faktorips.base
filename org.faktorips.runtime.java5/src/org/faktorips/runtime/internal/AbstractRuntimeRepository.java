@@ -672,7 +672,10 @@ public abstract class AbstractRuntimeRepository implements IRuntimeRepository {
         }
     }
 
-    public final <T extends IEnumValue> T getEnumValue(Class<T> clazz, String value) {
+    /**
+     * {@inheritDoc}
+     */
+    public final <T extends IEnumValue> T getEnumValue(Class<T> clazz, Object value) {
         if (value == null) {
             return null;
         }
@@ -685,6 +688,9 @@ public abstract class AbstractRuntimeRepository implements IRuntimeRepository {
         return null;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     public final <T extends IEnumValue> List<T> getEnumValues(Class<T> clazz) {
         List<T> enumValuesList = getEnumValuesInternal(clazz);
         if (enumValuesList != null) {
@@ -708,7 +714,7 @@ public abstract class AbstractRuntimeRepository implements IRuntimeRepository {
     /**
      * Returns all Faktor-IPS enumeration XmlAdapters of this repository.
      */
-    protected abstract List<XmlAdapter<String, IEnumValue>> getAllEnumXmlAdapters();
+    protected abstract List<XmlAdapter<?, IEnumValue>> getAllEnumXmlAdapters();
    
     
     /**
@@ -716,8 +722,8 @@ public abstract class AbstractRuntimeRepository implements IRuntimeRepository {
      * marshalling of Faktor-IPS enumerations and configured policy components.   
      */
     public JAXBContext newJAXBContext(JAXBContext ctx) {
-        List<XmlAdapter<String, IEnumValue>> enumXmlAdapters = getAllEnumXmlAdapters();
-        List<XmlAdapter<String, IEnumValue>> allEnumXmlAdapters = new LinkedList<XmlAdapter<String, IEnumValue>>(
+        List<XmlAdapter<?, IEnumValue>> enumXmlAdapters = getAllEnumXmlAdapters();
+        LinkedList<XmlAdapter<?, IEnumValue>> allEnumXmlAdapters = new LinkedList<XmlAdapter<?, IEnumValue>>(
                 enumXmlAdapters);
         for (IRuntimeRepository runtimeRepository : getAllReferencedRepositories()) {
             AbstractRuntimeRepository refRepository = (AbstractRuntimeRepository)runtimeRepository;

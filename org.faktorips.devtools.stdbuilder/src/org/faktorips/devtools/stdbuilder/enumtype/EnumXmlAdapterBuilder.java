@@ -83,7 +83,7 @@ public class EnumXmlAdapterBuilder extends DefaultJavaSourceFileBuilder {
         mainSection.setEnum(false);
         mainSection.setClassModifier(Modifier.PUBLIC);
         mainSection.setUnqualifiedName(getUnqualifiedClassName(getEnumType().getIpsSrcFile()));
-        IEnumAttribute idAttribute = getEnumType().findLiteralNameAttribute(getIpsProject());
+        IEnumAttribute idAttribute = getEnumType().findIsIdentiferAttribute(getIpsProject());
         if(idAttribute == null || !idAttribute.isValid()){
             return;
         }
@@ -142,7 +142,7 @@ public class EnumXmlAdapterBuilder extends DefaultJavaSourceFileBuilder {
      *      if (value == null) {
      *          return null;
      *      }
-     *      return value.getID();
+     *      return value.getId();
      *   }
      * </pre>
      */
@@ -154,8 +154,10 @@ public class EnumXmlAdapterBuilder extends DefaultJavaSourceFileBuilder {
         body.appendOpenBracket();
         body.append("return null;"); //$NON-NLS-1$
         body.appendCloseBracket();
-        body.append("return "); //$NON-NLS-1$
-        body.append("value.getID();"); //$NON-NLS-1$
+        body.append("return value."); //$NON-NLS-1$
+        body.append(enumTypeBuilder.getMethodNameOfIdentifierAttribute(getEnumType(), getIpsProject()));
+        body.append("();"); //$NON-NLS-1$
+        
         
         appendLocalizedJavaDoc("METHOD_MARSHAL", getEnumType(), builder);
         builder.method(Modifier.PUBLIC, datatypeHelper.getJavaClassName(), "marshal", new String[] { "value" }, //$NON-NLS-1$ //$NON-NLS-2$

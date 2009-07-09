@@ -19,15 +19,15 @@ import org.apache.commons.lang.ObjectUtils;
 import org.eclipse.core.runtime.CoreException;
 import org.faktorips.datatype.EnumDatatype;
 import org.faktorips.datatype.ValueDatatype;
+import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.util.ArgumentCheck;
 import org.faktorips.util.message.MessageList;
 
 /**
- * 
+ * This is an adapter for an {@link IEnumType} that adapts the {@link EnumDatatype} interface.
  * 
  * @author Peter Kuntz
  */
-// FIXME: This adapter should not be in the published package but this would require many changes.
 public class EnumTypeDatatypeAdapter implements EnumDatatype {
 
     private IEnumType enumType;
@@ -69,8 +69,7 @@ public class EnumTypeDatatypeAdapter implements EnumDatatype {
                 return new String[0];
             }
         }
-        List<String> result = getEnumValueContainer().findAllLiteralNameAttributeValues(includeNull,
-                getEnumValueContainer().getIpsProject());
+        List<String> result = findAllIdentifierAttributeValues(includeNull);
         return result.toArray(new String[result.size()]);
     }
 
@@ -85,13 +84,21 @@ public class EnumTypeDatatypeAdapter implements EnumDatatype {
                 return null;
             }
         }
-        // TODO change to fips ui name
-        List<String> result = getEnumValueContainer().findAllLiteralNameAttributeValues(true,
-                getEnumValueContainer().getIpsProject());
-        if (result.contains(id)) {
-            return id;
+        try {
+            IIpsProject ipsProject = getEnumValueContainer().getIpsProject();
+            IEnumValue enumValue = getEnumValueContainer().findEnumValue(id, ipsProject);
+            if(enumValue == null){
+                return null;
+            }
+            IEnumAttribute literalNameAttr = getEnumType().findLiteralNameAttribute(ipsProject);
+            if(literalNameAttr == null){
+                return null;
+            }
+            IEnumAttributeValue enumAttributeValue = enumValue.findEnumAttributeValue(ipsProject, literalNameAttr);
+            return enumAttributeValue.getValue();
+        } catch (CoreException e) {
+            throw new RuntimeException(e);
         }
-        return null;
     }
 
     /**
@@ -101,12 +108,20 @@ public class EnumTypeDatatypeAdapter implements EnumDatatype {
         return true;
     }
 
+    private List<String> findAllIdentifierAttributeValues(boolean includesNull) {
+        List<String> result = getEnumValueContainer().findAllIdentifierAttributeValues(
+                getEnumValueContainer().getIpsProject());
+        if(includesNull){
+            result.add(null);
+        }
+        return result;
+    }
+    
     /**
      * {@inheritDoc}
      */
     public boolean areValuesEqual(String valueA, String valueB) {
-        List<String> result = getEnumValueContainer().findAllLiteralNameAttributeValues(true,
-                getEnumValueContainer().getIpsProject());
+        List<String> result = findAllIdentifierAttributeValues(true);
         if (result.contains(valueA) && result.contains(valueB)) {
             return ObjectUtils.equals(valueA, valueB);
         }
@@ -176,8 +191,7 @@ public class EnumTypeDatatypeAdapter implements EnumDatatype {
      * literal name attribute of the adapted enumeration type.
      */
     public boolean isParsable(String value) {
-        List<String> result = getEnumValueContainer().findAllLiteralNameAttributeValues(true,
-                getEnumValueContainer().getIpsProject());
+        List<String> result = findAllIdentifierAttributeValues(true);
         return result.contains(value);
     }
 

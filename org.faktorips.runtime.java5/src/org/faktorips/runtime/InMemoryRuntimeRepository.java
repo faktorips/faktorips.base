@@ -57,7 +57,7 @@ public class InMemoryRuntimeRepository extends AbstractRuntimeRepository {
     // contains all enumeration values for the faktor ips enumerations which content is deferred 
     private Map<Class<IEnumValue>, List<IEnumValue>> enumValuesMap = new HashMap<Class<IEnumValue>, List<IEnumValue>>(); 
     
-    private List<XmlAdapter<String, IEnumValue>> enumXmlAdapters = new LinkedList<XmlAdapter<String,IEnumValue>>();
+    private List<XmlAdapter<?, IEnumValue>> enumXmlAdapters = new LinkedList<XmlAdapter<?,IEnumValue>>();
 
     
     public InMemoryRuntimeRepository() {
@@ -399,12 +399,12 @@ public class InMemoryRuntimeRepository extends AbstractRuntimeRepository {
      * Adds an {@link XmlAdapter} for a Faktor-IPS enumeration that defers its content
      * to a enumeration content to this repository. 
      */
-    public void addEnumXmlAdapter(XmlAdapter<String, IEnumValue> enumXmlAdapter){
+    public void addEnumXmlAdapter(XmlAdapter<?, IEnumValue> enumXmlAdapter){
         enumXmlAdapters.add(enumXmlAdapter);
     }
     
     @Override
-    protected List<XmlAdapter<String, IEnumValue>> getAllEnumXmlAdapters() {
+    protected List<XmlAdapter<?, IEnumValue>> getAllEnumXmlAdapters() {
         return enumXmlAdapters;
     }
 

@@ -47,19 +47,19 @@ public class EnumTypeDatatypeFieldTest extends AbstractIpsPluginTest {
         attr1.setDatatype(Datatype.STRING.getQualifiedName());
         attr1.setLiteralName(true);
         attr1.setName("id");
-        attr1.setUniqueIdentifier(true);
-        attr1.setUsedAsIdInFaktorIpsUi(true);
+        attr1.setUnique(true);
+        attr1.setIdentifier(true);
 
         IEnumAttribute attr2 = enum1.newEnumAttribute();
         attr2.setDatatype(Datatype.STRING.getQualifiedName());
         attr2.setName("name");
-        attr2.setUniqueIdentifier(true);
+        attr2.setUnique(true);
         attr2.setUsedAsNameInFaktorIpsUi(true);
 
         IEnumAttribute attr3 = enum1.newEnumAttribute();
         attr3.setDatatype(Datatype.STRING.getQualifiedName());
         attr3.setName("description");
-        attr3.setUniqueIdentifier(false);
+        attr3.setUnique(false);
         
         IEnumValue enumValue = enum1.newEnumValue();
         List<IEnumAttributeValue> values = enumValue.getEnumAttributeValues();

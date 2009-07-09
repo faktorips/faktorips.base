@@ -413,7 +413,7 @@ public class TableImplBuilder extends DefaultJavaSourceFileBuilder {
             if (helper instanceof EnumTypeDatatypeHelper) {
                 EnumTypeDatatypeHelper enumHelper = (EnumTypeDatatypeHelper)helper;
                 if (!enumHelper.getEnumType().isContainingValues()) {
-                    methodBody.append(enumHelper.getEnumTypeBuilder().getValueByXXXCodeFragment(enumHelper.getEnumType(), valueName,
+                    methodBody.append(enumHelper.getEnumTypeBuilder().getCallGetValueByIdentifierCodeFragment(enumHelper.getEnumType(), valueName,
                             "productRepository"));
                 } else {
                     methodBody.append(helper.newInstanceFromExpression(valueName));

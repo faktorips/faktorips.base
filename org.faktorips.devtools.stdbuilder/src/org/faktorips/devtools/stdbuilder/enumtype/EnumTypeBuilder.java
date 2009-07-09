@@ -197,22 +197,19 @@ public class EnumTypeBuilder extends DefaultJavaSourceFileBuilder {
         if (useInterfaceGeneration()) {
             return;
         }
-        if (getEnumType().hasSuperEnumType()) {
-            IEnumAttribute literalNameAttribute = getEnumType().findLiteralNameAttribute(getIpsProject());
-            if (literalNameAttribute.getEnumType() != getEnumType()) {
-                return;
-            }
-        }
-        JavaCodeFragment body = new JavaCodeFragment();
-        IEnumAttribute literalNameAttribute = getEnumType().findLiteralNameAttribute(getIpsProject());
-        if (literalNameAttribute == null || !literalNameAttribute.isValid()) {
+        IEnumAttribute identifierAttribute = getEnumType().findIsIdentiferAttribute(getIpsProject());
+        if (identifierAttribute == null || !identifierAttribute.isValid()) {
             return;
         }
+        if (getEnumType().hasSuperEnumType() && identifierAttribute.getEnumType() != getEnumType()) {
+            return;
+        }
+        JavaCodeFragment body = new JavaCodeFragment();
         body.append("return ");
-        body.append(getJavaNamingConvention().getMemberVarName(literalNameAttribute.getName()));
+        body.append(getJavaNamingConvention().getMemberVarName(identifierAttribute.getName()));
         body.append(";");
-        methodBuilder.method(Modifier.PUBLIC, String.class, "getID", new String[0], new Class[0], body, "{@inheritDoc}",
-                ANNOTATION_GENERATED);
+        methodBuilder.method(Modifier.PUBLIC, Object.class, "getID", new String[0], new Class[0], body,
+                "{@inheritDoc}", ANNOTATION_GENERATED);
     }
 
     /**
@@ -363,18 +360,19 @@ public class EnumTypeBuilder extends DefaultJavaSourceFileBuilder {
      * @throws CoreException If an exception occurs while processing.
      * @throws NullPointerException If <code>enumAttribute</code> is <code>null</code>.
      */
-    public JavaCodeFragment getValueByXXXCodeFragment(IEnumType enumType, String expressionValue, String repositoryExp)
+    public JavaCodeFragment getCallGetValueByIdentifierCodeFragment(IEnumType enumType, String expressionValue, String repositoryExp)
             throws CoreException {
         ArgumentCheck.notNull(enumType);
 
         if (enumType.isContainingValues()) {
-            IEnumAttribute enumAttribute = enumType.findLiteralNameAttribute(getIpsProject());
+            IEnumAttribute enumAttribute = enumType.findIsIdentiferAttribute(getIpsProject());
+            DatatypeHelper idAttrDatatypeHelper = getIpsProject().findDatatypeHelper(enumAttribute.findDatatype(getIpsProject()).getQualifiedName());
             JavaCodeFragment fragment = new JavaCodeFragment();
             fragment.appendClassName(getQualifiedClassName(enumType));
             fragment.append('.');
             fragment.append(getMethodNameGetValueByXXX(enumAttribute));
             fragment.append("(");
-            fragment.append(expressionValue);
+            fragment.append(idAttrDatatypeHelper.newInstanceFromExpression(expressionValue));
             fragment.append(")");
             return fragment;
         }
@@ -385,20 +383,25 @@ public class EnumTypeBuilder extends DefaultJavaSourceFileBuilder {
      * Returns the method name for the <code>getValueByXXX()</code> method where <code>xxx</code> is
      * a placeholder for the name of a unique identifier enum attribute.
      * 
-     * @param uniqueIdentifierEnumAttribute The unique identifier enum attribute.
+     * @param identifierEnumAttribute The unique identifier enum attribute.
      * 
      * @throws NullPointerException If <code>uniqueIdentifierAttributeName</code> is
      *             <code>null</code>.
      */
-    private String getMethodNameGetValueByXXX(IEnumAttribute uniqueIdentifierEnumAttribute) {
-        ArgumentCheck.notNull(uniqueIdentifierEnumAttribute);
+    private String getMethodNameGetValueByXXX(IEnumAttribute identifierEnumAttribute) {
+        ArgumentCheck.notNull(identifierEnumAttribute);
 
-        String attributeName = uniqueIdentifierEnumAttribute.getName();
+        String attributeName = identifierEnumAttribute.getName();
         char[] charArray = attributeName.toCharArray();
         charArray[0] = Character.toUpperCase(attributeName.charAt(0));
         return "getValueBy" + String.copyValueOf(charArray);
     }
 
+    public String getMethodNameOfIdentifierAttribute(IEnumType enumType, IIpsProject ipsProject) throws CoreException{
+        IEnumAttribute idAttr = enumType.findIsIdentiferAttribute(ipsProject);
+        return getJavaNamingConvention().getGetterMethodName(idAttr.getName(), idAttr.findDatatype(ipsProject));
+    }
+    
     /**
      * This method expects the literal name attribute value of an enum value as parameter to provide
      * the accurate constant name for it.
@@ -607,7 +610,7 @@ public class EnumTypeBuilder extends DefaultJavaSourceFileBuilder {
                 if (helper instanceof EnumTypeDatatypeHelper) {
                     EnumTypeDatatypeHelper enumHelper = (EnumTypeDatatypeHelper)helper;
                     if (!enumHelper.getEnumType().isContainingValues()) {
-                        body.append(enumHelper.getEnumTypeBuilder().getValueByXXXCodeFragment(enumHelper.getEnumType(), expression,
+                        body.append(enumHelper.getEnumTypeBuilder().getCallGetValueByIdentifierCodeFragment(enumHelper.getEnumType(), expression,
                                 "productRepository"));
                         body.append(';');
                         body.appendln();
@@ -912,24 +915,24 @@ public class EnumTypeBuilder extends DefaultJavaSourceFileBuilder {
             return;
         }
 
-        IEnumAttribute uniqueIdentifierEnumAttribute = getEnumType().findLiteralNameAttribute(getIpsProject());
-        if (uniqueIdentifierEnumAttribute == null) {
+        IEnumAttribute identifierAttribute = getEnumType().findIsIdentiferAttribute(getIpsProject());
+        if (identifierAttribute == null) {
             return;
         }
 
         JavaCodeFragment methodBody = new JavaCodeFragment();
         methodBody.append("return ");
         if (enumType.isContainingValues()) {
-            methodBody.append(getMethodNameGetValueByXXX(uniqueIdentifierEnumAttribute));
+            methodBody.append(getMethodNameGetValueByXXX(identifierAttribute));
             methodBody.append('(');
-            if (uniqueIdentifierEnumAttribute.isInherited()) {
+            if (identifierAttribute.isInherited()) {
                 methodBody.append(getJavaNamingConvention().getGetterMethodName(
-                        uniqueIdentifierEnumAttribute.getName(),
-                        uniqueIdentifierEnumAttribute.findDatatype(getIpsProject())));
+                        identifierAttribute.getName(),
+                        identifierAttribute.findDatatype(getIpsProject())));
                 methodBody.append('(');
                 methodBody.append(')');
             } else {
-                methodBody.append(uniqueIdentifierEnumAttribute.getName());
+                methodBody.append(identifierAttribute.getName());
             }
             methodBody.append(')');
         } else {
@@ -957,11 +960,11 @@ public class EnumTypeBuilder extends DefaultJavaSourceFileBuilder {
         }
 
         IEnumType enumType = getEnumType();
-        IEnumAttribute literalNameEnumAttribute = enumType.findLiteralNameAttribute(getIpsProject());
-        if (literalNameEnumAttribute == null || enumType.isAbstract()) {
+        IEnumAttribute literalNameAttribute = enumType.findLiteralNameAttribute(getIpsProject());
+        if (literalNameAttribute == null || enumType.isAbstract()) {
             return;
         } else {
-            if (!(literalNameEnumAttribute.isValid())) {
+            if (!(literalNameAttribute.isValid())) {
                 return;
             }
         }
@@ -971,9 +974,8 @@ public class EnumTypeBuilder extends DefaultJavaSourceFileBuilder {
         methodBody.append("\"");
         methodBody.append(enumType.getName());
         methodBody.append(": \" + ");
-        methodBody.append(getJavaNamingConvention().getGetterMethodName(literalNameEnumAttribute.getName(),
-                literalNameEnumAttribute.findDatatype(literalNameEnumAttribute.getIpsProject())));
-        methodBody.append("();");
+        methodBody.append(literalNameAttribute.getName());
+        methodBody.append(';');
 
         methodBuilder.javaDoc("{@inheritDoc}", ANNOTATION_GENERATED);
         methodBuilder.method(Modifier.PUBLIC, String.class, "toString", new String[0], new Class[0], methodBody, null);

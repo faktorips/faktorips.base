@@ -121,10 +121,12 @@ public class DatatypeFormatter {
 
     private String getNameDisplayValue(EnumTypeDatatypeAdapter datatypeAdapter, String id) throws CoreException{
         
+        //see if an enum value for the provided id exists if not null will be returned
         IEnumValue enumValue = getEnumValue(datatypeAdapter, id);
         if(enumValue == null){
             return null;
         }
+        //see if a name representation for the id exists
         IEnumType enumType = datatypeAdapter.getEnumType();
         IEnumAttribute enumAttribute = enumType.findIsUsedAsNameInFaktorIpsUiAttribute(enumType.getIpsProject());
         if(enumAttribute == null){

@@ -99,7 +99,7 @@ public class EnumTypeDatatypeHelper extends AbstractDatatypeHelper {
     @Override
     protected JavaCodeFragment valueOfExpression(String expression) {
         try {
-            return enumTypeBuilder.getValueByXXXCodeFragment(enumTypeAdapter.getEnumType(), expression, null);
+            return enumTypeBuilder.getCallGetValueByIdentifierCodeFragment(enumTypeAdapter.getEnumType(), expression, null);
         } catch (CoreException e) {
             throw new RuntimeException(e);
         }

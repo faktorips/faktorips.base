@@ -208,8 +208,8 @@ public abstract class AbstractTableTest extends AbstractIpsPluginTest {
             enumAttribute.setDatatype(datatypes[i]);
         }
         enumAttribute.setLiteralName(true);             // need at least one literal name
-        enumAttribute.setUniqueIdentifier(true);        // unique id must be set if literal name set
-        enumAttribute.setUsedAsIdInFaktorIpsUi(true);   // satisfy validation rules
+        enumAttribute.setUnique(true);        // unique id must be set if literal name set
+        enumAttribute.setIdentifier(true);   // satisfy validation rules
         enumAttribute.setUsedAsNameInFaktorIpsUi(true); // satisfy validation rules
         
         // create values inside the enum type
@@ -267,8 +267,8 @@ public abstract class AbstractTableTest extends AbstractIpsPluginTest {
             enumAttribute.setDatatype(datatypes[i]);
         }
         enumAttribute.setLiteralName(true);             // need at least one literal name
-        enumAttribute.setUniqueIdentifier(true);        // unique id must be set if literal name set
-        enumAttribute.setUsedAsIdInFaktorIpsUi(true);   // satisfy validation rules
+        enumAttribute.setUnique(true);        // unique id must be set if literal name set
+        enumAttribute.setIdentifier(true);   // satisfy validation rules
         enumAttribute.setUsedAsNameInFaktorIpsUi(true); // satisfy validation rules
         
         IEnumValue row1 = enumType.newEnumValue();

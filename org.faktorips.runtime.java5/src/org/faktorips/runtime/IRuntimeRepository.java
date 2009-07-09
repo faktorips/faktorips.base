@@ -134,7 +134,7 @@ public interface IRuntimeRepository {
      * @param clazz the enumeration class upon which the enumeration value is returned
      * @param value the string representation of enumeration value
      */
-    public <T extends IEnumValue> T getEnumValue(Class<T> clazz, String value);
+    public <T extends IEnumValue> T getEnumValue(Class<T> clazz, Object value);
     
     /**
      * Returns the enumeration value for the provided unique Id. The unique Id is specified as

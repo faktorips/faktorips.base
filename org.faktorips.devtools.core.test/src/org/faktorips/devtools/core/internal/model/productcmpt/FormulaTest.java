@@ -317,7 +317,7 @@ public class FormulaTest extends AbstractIpsPluginTest  {
         
         // check with WENN formula and operation with implicit casting 
         // (e.g. the first argument of a formula is an enum type)
-        formula.setExpression("WENN(testParam = TestEnumType.1;1;10)");
+        formula.setExpression("WENN(testParam = TestEnumType.first;1;10)");
         identifierInFormula = Arrays.asList(formula.getParameterIdentifiersUsedInFormula(ipsProject));
         assertEquals(1, identifierInFormula.size());   
         assertTrue(identifierInFormula.contains("testParam"));

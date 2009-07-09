@@ -32,8 +32,6 @@ import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.internal.model.ipsobject.BaseIpsObjectPart;
 import org.faktorips.devtools.core.internal.model.ipsobject.IpsObjectPartCollection;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPart;
-import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
-import org.faktorips.devtools.core.model.ipsobject.QualifiedNameType;
 import org.faktorips.devtools.core.model.ipsproject.IIpsArtefactBuilderSet;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
@@ -45,10 +43,7 @@ import org.faktorips.devtools.core.model.productcmpt.IProductCmptGeneration;
 import org.faktorips.devtools.core.model.productcmpttype.IProdDefProperty;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeMethod;
-import org.faktorips.devtools.core.model.productcmpttype.ITableStructureUsage;
 import org.faktorips.devtools.core.model.productcmpttype.ProdDefPropertyType;
-import org.faktorips.devtools.core.model.tablestructure.IColumn;
-import org.faktorips.devtools.core.model.tablestructure.ITableStructure;
 import org.faktorips.devtools.core.model.type.IAttribute;
 import org.faktorips.devtools.core.model.type.IMethod;
 import org.faktorips.devtools.core.model.type.IParameter;
@@ -257,7 +252,6 @@ public class Formula extends BaseIpsObjectPart implements IFormula {
     private void collectEnumsAllowedInFormula(Map nameToTypeMap) throws CoreException{
         collectEnumTypesFromAttributes(nameToTypeMap);
         collectEnumTypesFromMethod(nameToTypeMap);
-        collectEnumTypesFromUsedTableStructures(nameToTypeMap);
     }
     
     private void collectEnumTypesFromAttributes(Map enumTypes) throws CoreException{
@@ -300,31 +294,6 @@ public class Formula extends BaseIpsObjectPart implements IFormula {
             } catch (Exception e) {
                 IpsPlugin.log(e);
             }
-        }
-    }
-    
-    private void collectEnumTypesFromUsedTableStructures(Map enumtypes) throws CoreException {
-        IProductCmptType type = getProductCmptGeneration().getProductCmpt().findProductCmptType(getIpsProject());
-        if (type==null) {
-            return;
-        }
-        ITableStructureUsage[] usages = type.getTableStructureUsages();
-        for (int i = 0; i < usages.length; i++) {
-            String[] tableNames = usages[i].getTableStructures();
-            IIpsProject project = getIpsProject();
-            for (int j = 0; j < tableNames.length; j++) {
-                ITableStructure table = (ITableStructure)project.findIpsObject(new QualifiedNameType(tableNames[j], IpsObjectType.TABLE_STRUCTURE));
-                if (table!=null) {
-                    collectEnumTypesFromTable(table, project, enumtypes);
-                }
-            }
-        }
-    }
-    
-    private void collectEnumTypesFromTable(ITableStructure table, IIpsProject project, Map types) throws CoreException {
-        IColumn[] columns = table.getColumns();
-        for (int i = 0; i < columns.length; i++) {
-            searchAndAdd(project, columns[i].getDatatype(), types);
         }
     }
     

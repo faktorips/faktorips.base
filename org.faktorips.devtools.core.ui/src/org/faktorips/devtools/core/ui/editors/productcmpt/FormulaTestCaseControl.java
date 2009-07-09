@@ -219,7 +219,7 @@ public class FormulaTestCaseControl extends Composite implements ColumnChangeLis
         if (StringUtils.isEmpty(actualResult)){
             return TEST_UNKNOWN;
         }
-        String expectedResult = formatValue(formulaTestCase.getFormulaTestCase(), formulaTestCase.getExpectedResult());
+        String expectedResult = formulaTestCase.getExpectedResult();
         if (StringUtils.isEmpty(expectedResult)){
             if (StringUtils.isNotEmpty(actualResult)){
                 return TEST_ERROR;
@@ -247,7 +247,7 @@ public class FormulaTestCaseControl extends Composite implements ColumnChangeLis
             if (datatype == null){
                 throw new CoreException(new IpsStatus("Result datatype not found for formula: " + formula.getName()));
             }
-            return datatype.compare(actualResult, expectedResult) == 0;
+            return datatype.areValuesEqual(actualResult, expectedResult);
         } catch (CoreException e) {
             IpsPlugin.logAndShowErrorDialog(e);
             return false;
@@ -302,7 +302,7 @@ public class FormulaTestCaseControl extends Composite implements ColumnChangeLis
                 } else if (columnIndex == IDX_COLUMN_EXPECTED_RESULT) {
                     return IpsPlugin.getDefault().getIpsPreferences().getDatatypeFormatter().formatValue(vd, ftc.getExpectedResult());
                 } else if (columnIndex == IDX_COLUMN_ACTUAL_RESULT) {
-                    return (String)ftc.getActualResult();
+                    return IpsPlugin.getDefault().getIpsPreferences().getDatatypeFormatter().formatValue(vd, ftc.getActualResult());
                 }
             }
             return null;
@@ -638,8 +638,7 @@ public class FormulaTestCaseControl extends Composite implements ColumnChangeLis
                             element.setMessage(mlformula.getFirstMessage(Message.ERROR).getText());
                         }
                         ValueDatatype vd = formula.findValueDatatype(ipsProject);
-                        element.setActualResult(IpsPlugin.getDefault().getIpsPreferences().getDatatypeFormatter().formatValue(
-                                vd, (String)(result == null ? null : result.toString())));
+                        element.setActualResult(result == null ? "" : result.toString());
                     } catch (Exception e) {
                         IpsPlugin.logAndShowErrorDialog(e);
                     }
@@ -781,8 +780,7 @@ public class FormulaTestCaseControl extends Composite implements ColumnChangeLis
                     if (status == TEST_FAILURE) {
                         Object actualResult = ftc.getActualResult();
                         String actualResultStr = actualResult == null ? ""+null : actualResult.toString(); //$NON-NLS-1$
-                        String text = NLS.bind(Messages.FormulaTestCaseControl_TestFailureMessage_ExpectedButWas, formatValue(ftc.getFormulaTestCase(), ftc
-                                .getExpectedResult()), actualResultStr);
+                        String text = NLS.bind(Messages.FormulaTestCaseControl_TestFailureMessage_ExpectedButWas, formatValue(ftc.getFormulaTestCase()), actualResultStr);
                         Message msg = new Message("NONE", text, Message.INFO, this, PROPERTY_ACTUAL_RESULT); //$NON-NLS-1$
                         ml.add(msg);
                     } else if (status == TEST_ERROR) {
@@ -812,7 +810,7 @@ public class FormulaTestCaseControl extends Composite implements ColumnChangeLis
         };
     }
 
-    private String formatValue(IFormulaTestCase ftc, String value) {
+    private String formatValue(IFormulaTestCase ftc) {
         String expectedResult = null;
         try {
             expectedResult = ftc.getExpectedResult();

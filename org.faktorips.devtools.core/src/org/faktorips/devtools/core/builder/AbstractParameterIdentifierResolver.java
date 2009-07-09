@@ -190,11 +190,15 @@ public abstract class AbstractParameterIdentifierResolver implements IdentifierR
             }
 			String[] valueIds = enumType.getAllValueIds(true);
 			for (int i = 0; i < valueIds.length; i++) {
-                if (ObjectUtils.equals(valueIds[i], valueName)) {
+			    String enumValueName = valueIds[i];
+			    if(enumType.isSupportingNames()){
+			        enumValueName = enumType.getValueName(valueIds[i]);
+			    }
+                if (ObjectUtils.equals(enumValueName, valueName)) {
                     JavaCodeFragment frag = new JavaCodeFragment();
                     frag.getImportDeclaration().add(enumType.getJavaClassName());
                     DatatypeHelper helper = ipsproject.getDatatypeHelper(enumType);
-                    frag.append(helper.newInstance(valueName));
+                    frag.append(helper.newInstance(valueIds[i]));
                     return new CompilationResultImpl(frag, enumType);
                 }
             }

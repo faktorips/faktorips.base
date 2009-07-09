@@ -74,22 +74,19 @@ public abstract class EnumValueContainer extends BaseIpsObject implements IEnumV
     /**
      * {@inheritDoc}
      */
-    public List<String> findAllLiteralNameAttributeValues(boolean includeNull, IIpsProject ipsProject) {
+    public List<String> findAllIdentifierAttributeValues(IIpsProject ipsProject) {
         try {
             List<String> valueIds = new ArrayList<String>(getEnumValuesCount());
             IEnumType enumType = findEnumType(ipsProject);
-            IEnumAttribute literalNameEnumAttribute = enumType.findLiteralNameAttribute(ipsProject);
-            if (literalNameEnumAttribute != null) {
+            IEnumAttribute isIdentifierEnumAttribute = enumType.findIsIdentiferAttribute(ipsProject);
+            if (isIdentifierEnumAttribute != null) {
                 for (IEnumValue enumValue : getEnumValues()) {
-                    IEnumAttributeValue value = enumValue.findEnumAttributeValue(ipsProject, literalNameEnumAttribute);
+                    IEnumAttributeValue value = enumValue.findEnumAttributeValue(ipsProject, isIdentifierEnumAttribute);
                     if (value == null) {
                         break;
                     }
                     valueIds.add(value.getValue());
                 }
-            }
-            if (includeNull) {
-                valueIds.add(null);
             }
             return valueIds;
 
@@ -101,18 +98,18 @@ public abstract class EnumValueContainer extends BaseIpsObject implements IEnumV
     /**
      * {@inheritDoc}
      */
-    public IEnumValue findEnumValue(String literalNameAttributeValue, IIpsProject ipsProject) throws CoreException {
-        if (literalNameAttributeValue == null) {
+    public IEnumValue findEnumValue(String identifierAttributeValue, IIpsProject ipsProject) throws CoreException {
+        if (identifierAttributeValue == null) {
             return null;
         }
+        IEnumType enumType = findEnumType(ipsProject);
+        IEnumAttribute identifierAttribute = enumType.findIsIdentiferAttribute(ipsProject);
         for (IEnumValue enumValue : getEnumValues()) {
-            IEnumType enumType = findEnumType(ipsProject);
-            IEnumAttribute literalNameAttribute = enumType.findLiteralNameAttribute(ipsProject);
-            IEnumAttributeValue value = enumValue.findEnumAttributeValue(ipsProject, literalNameAttribute);
+            IEnumAttributeValue value = enumValue.findEnumAttributeValue(ipsProject, identifierAttribute);
             if (value == null) {
                 continue;
             }
-            if (literalNameAttributeValue.equals(value.getValue())) {
+            if (identifierAttributeValue.equals(value.getValue())) {
                 return enumValue;
             }
         }

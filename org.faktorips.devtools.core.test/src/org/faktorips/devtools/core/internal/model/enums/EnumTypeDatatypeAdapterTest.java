@@ -44,13 +44,13 @@ public class EnumTypeDatatypeAdapterTest extends AbstractIpsEnumPluginTest {
         id.setName("id");
         id.setDatatype(Datatype.STRING.getQualifiedName());
         id.setLiteralName(true);
-        id.setUniqueIdentifier(true);
-        id.setUsedAsIdInFaktorIpsUi(true);
+        id.setUnique(true);
+        id.setIdentifier(true);
 
         IEnumAttribute name = enumType.newEnumAttribute();
         name.setName("name");
         name.setDatatype(Datatype.STRING.getQualifiedName());
-        name.setUniqueIdentifier(true);
+        name.setUnique(true);
         name.setUsedAsNameInFaktorIpsUi(true);
 
         IEnumValue enumValue = enumType.newEnumValue();
@@ -93,8 +93,8 @@ public class EnumTypeDatatypeAdapterTest extends AbstractIpsEnumPluginTest {
         String[] ids = paymentModeAdapter.getAllValueIds(false);
         assertEquals(2, ids.length);
         List<String> idList = Arrays.asList(ids);
-        assertTrue(idList.contains("monthly"));
-        assertTrue(idList.contains("annually"));
+        assertTrue(idList.contains("P1"));
+        assertTrue(idList.contains("P2"));
 
         ids = paymentModeAdapter.getAllValueIds(true);
         assertEquals(3, ids.length);
@@ -145,8 +145,8 @@ public class EnumTypeDatatypeAdapterTest extends AbstractIpsEnumPluginTest {
     }
 
     public void testgGetValueName() {
-        assertNotNull(paymentModeAdapter.getValueName("monthly"));
-        assertNotNull(paymentModeAdapter.getValueName("annually"));
+        assertNotNull(paymentModeAdapter.getValueName("P1"));
+        assertNotNull(paymentModeAdapter.getValueName("P2"));
         assertNull(paymentModeAdapter.getValueName("quarterly"));
     }
 
@@ -161,13 +161,13 @@ public class EnumTypeDatatypeAdapterTest extends AbstractIpsEnumPluginTest {
         id.setName("id");
         id.setDatatype(Datatype.STRING.getQualifiedName());
         id.setLiteralName(true);
-        id.setUniqueIdentifier(true);
-        id.setUsedAsIdInFaktorIpsUi(true);
+        id.setUnique(true);
+        id.setIdentifier(true);
 
         IEnumAttribute name = enumType.newEnumAttribute();
         name.setName("name");
         name.setDatatype(Datatype.STRING.getQualifiedName());
-        name.setUniqueIdentifier(true);
+        name.setUnique(true);
         name.setUsedAsNameInFaktorIpsUi(true);
 
         IEnumContent content = newEnumContent(enumType, "EnumContent");
@@ -183,10 +183,10 @@ public class EnumTypeDatatypeAdapterTest extends AbstractIpsEnumPluginTest {
     }
 
     public void testAreValuesEqual() {
-        assertTrue(paymentModeAdapter.areValuesEqual("monthly", "monthly"));
-        assertFalse(paymentModeAdapter.areValuesEqual("monthly", "annually"));
+        assertTrue(paymentModeAdapter.areValuesEqual("P1", "P1"));
+        assertFalse(paymentModeAdapter.areValuesEqual("P1", "P2"));
         try {
-            paymentModeAdapter.areValuesEqual("monthly", "quarterly");
+            paymentModeAdapter.areValuesEqual("P1", "P3");
             fail("");
         } catch (Exception e) {
         }
@@ -201,8 +201,8 @@ public class EnumTypeDatatypeAdapterTest extends AbstractIpsEnumPluginTest {
     }
 
     public void testIsParsable() {
-        assertTrue(paymentModeAdapter.isParsable("monthly"));
-        assertFalse(paymentModeAdapter.isParsable("quarterly"));
+        assertTrue(paymentModeAdapter.isParsable("P1"));
+        assertFalse(paymentModeAdapter.isParsable("P3"));
     }
 
     public void testEquals() throws Exception {
@@ -213,13 +213,13 @@ public class EnumTypeDatatypeAdapterTest extends AbstractIpsEnumPluginTest {
         id.setName("id");
         id.setDatatype(Datatype.STRING.getQualifiedName());
         id.setLiteralName(true);
-        id.setUniqueIdentifier(true);
-        id.setUsedAsIdInFaktorIpsUi(true);
+        id.setUnique(true);
+        id.setIdentifier(true);
 
         IEnumAttribute name = enumType.newEnumAttribute();
         name.setName("name");
         name.setDatatype(Datatype.STRING.getQualifiedName());
-        name.setUniqueIdentifier(true);
+        name.setUnique(true);
         name.setUsedAsNameInFaktorIpsUi(true);
 
         IEnumValue enumValue = enumType.newEnumValue();
@@ -237,13 +237,13 @@ public class EnumTypeDatatypeAdapterTest extends AbstractIpsEnumPluginTest {
         id2.setName("id");
         id2.setDatatype(Datatype.STRING.getQualifiedName());
         id2.setLiteralName(true);
-        id2.setUniqueIdentifier(true);
-        id2.setUsedAsIdInFaktorIpsUi(true);
+        id2.setUnique(true);
+        id2.setIdentifier(true);
 
         IEnumAttribute name2 = enumType2.newEnumAttribute();
         name2.setName("name");
         name2.setDatatype(Datatype.STRING.getQualifiedName());
-        name2.setUniqueIdentifier(true);
+        name2.setUnique(true);
         name2.setUsedAsNameInFaktorIpsUi(true);
 
         IEnumValue enumValue2 = enumType2.newEnumValue();
@@ -262,13 +262,13 @@ public class EnumTypeDatatypeAdapterTest extends AbstractIpsEnumPluginTest {
         id.setName("id");
         id.setDatatype(Datatype.STRING.getQualifiedName());
         id.setLiteralName(true);
-        id.setUniqueIdentifier(true);
-        id.setUsedAsIdInFaktorIpsUi(true);
+        id.setUnique(true);
+        id.setIdentifier(true);
 
         IEnumAttribute name = enumType.newEnumAttribute();
         name.setName("name");
         name.setDatatype(Datatype.STRING.getQualifiedName());
-        name.setUniqueIdentifier(true);
+        name.setUnique(true);
         name.setUsedAsNameInFaktorIpsUi(true);
 
         IEnumContent content1 = newEnumContent(enumType, "EnumContent1");
@@ -296,13 +296,13 @@ public class EnumTypeDatatypeAdapterTest extends AbstractIpsEnumPluginTest {
         id.setName("id");
         id.setDatatype(Datatype.STRING.getQualifiedName());
         id.setLiteralName(true);
-        id.setUniqueIdentifier(true);
-        id.setUsedAsIdInFaktorIpsUi(true);
+        id.setUnique(true);
+        id.setIdentifier(true);
 
         IEnumAttribute name = enumType.newEnumAttribute();
         name.setName("name");
         name.setDatatype(Datatype.STRING.getQualifiedName());
-        name.setUniqueIdentifier(true);
+        name.setUnique(true);
         name.setUsedAsNameInFaktorIpsUi(true);
 
         IEnumContent content1 = newEnumContent(enumType, "EnumContent1");

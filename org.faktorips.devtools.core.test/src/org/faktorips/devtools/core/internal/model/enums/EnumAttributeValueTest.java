@@ -93,13 +93,13 @@ public class EnumAttributeValueTest extends AbstractIpsEnumPluginTest {
         enumAttr.setDatatype(Datatype.STRING.getQualifiedName());
         enumAttr.setLiteralName(true);
         enumAttr.setName("a");
-        enumAttr.setUniqueIdentifier(true);
+        enumAttr.setUnique(true);
 
         IEnumAttribute enumAttr2 = enumType.newEnumAttribute();
         enumAttr2.setDatatype(Datatype.INTEGER.getQualifiedName());
         enumAttr2.setLiteralName(true);
         enumAttr2.setName("b");
-        enumAttr2.setUniqueIdentifier(true);
+        enumAttr2.setUnique(true);
 
         IEnumValue enumValue = enumType.newEnumValue();
         List<IEnumAttributeValue> enumAttrList = enumValue.getEnumAttributeValues();

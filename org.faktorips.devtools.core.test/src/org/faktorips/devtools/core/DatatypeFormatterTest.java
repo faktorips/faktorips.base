@@ -35,20 +35,21 @@ public class DatatypeFormatterTest extends AbstractIpsPluginTest {
         IEnumAttribute attr1 = enum1.newEnumAttribute();
         attr1.setDatatype(Datatype.STRING.getQualifiedName());
         attr1.setLiteralName(true);
+        attr1.setIdentifier(true);
         attr1.setName("id");
-        attr1.setUniqueIdentifier(true);
-        attr1.setUsedAsIdInFaktorIpsUi(true);
+        attr1.setUnique(true);
+        attr1.setIdentifier(true);
 
         IEnumAttribute attr2 = enum1.newEnumAttribute();
         attr2.setDatatype(Datatype.STRING.getQualifiedName());
         attr2.setName("name");
-        attr2.setUniqueIdentifier(true);
+        attr2.setUnique(true);
         attr2.setUsedAsNameInFaktorIpsUi(true);
 
         IEnumAttribute attr3 = enum1.newEnumAttribute();
         attr3.setDatatype(Datatype.STRING.getQualifiedName());
         attr3.setName("description");
-        attr3.setUniqueIdentifier(false);
+        attr3.setUnique(false);
         
         IEnumValue enumValue = enum1.newEnumValue();
         List<IEnumAttributeValue> values = enumValue.getEnumAttributeValues();
@@ -79,10 +80,11 @@ public class DatatypeFormatterTest extends AbstractIpsPluginTest {
         text = formatter.formatValue(new EnumTypeDatatypeAdapter(enum1, null), "c");
         assertEquals("cname", text);
 
-        attr1.setUsedAsIdInFaktorIpsUi(false);
-        //should not have any influence 
-        assertEquals("aname", formatter.formatValue(new EnumTypeDatatypeAdapter(enum1, null), "a"));
-        attr1.setUsedAsIdInFaktorIpsUi(true);
+        attr1.setIdentifier(false);
+        //Returns the unformatted value since the value a cannot be identified as an id value of
+        //the enum1
+        assertEquals("a", formatter.formatValue(new EnumTypeDatatypeAdapter(enum1, null), "a"));
+        attr1.setIdentifier(true);
 
         attr2.setUsedAsNameInFaktorIpsUi(false);
         //since the display setting is name and no name ui attribute exists the default is to 
@@ -100,11 +102,11 @@ public class DatatypeFormatterTest extends AbstractIpsPluginTest {
         text = formatter.formatValue(new EnumTypeDatatypeAdapter(enum1, null), "c");
         assertEquals("c", text);
         
-        attr1.setUsedAsIdInFaktorIpsUi(false);
+        attr1.setIdentifier(false);
         //since the display setting is id and no id ui attribute exists the default is to 
         //return the input value
         assertEquals("a", formatter.formatValue(new EnumTypeDatatypeAdapter(enum1, null), "a"));
-        attr1.setUsedAsIdInFaktorIpsUi(true);
+        attr1.setIdentifier(true);
 
         attr2.setUsedAsNameInFaktorIpsUi(false);
         //should not have any influence 
@@ -117,10 +119,12 @@ public class DatatypeFormatterTest extends AbstractIpsPluginTest {
         text = formatter.formatValue(new EnumTypeDatatypeAdapter(enum1, null), "a");
         assertEquals("aname (a)", text);
 
-        attr1.setUsedAsIdInFaktorIpsUi(false);
+        attr1.setIdentifier(false);
+        //Returns the unformatted value since the value a cannot be identified as an id value of
+        //the enum1
         text = formatter.formatValue(new EnumTypeDatatypeAdapter(enum1, null), "a");
-        assertEquals("aname (null)", text);
-        attr1.setUsedAsIdInFaktorIpsUi(true);
+        assertEquals("a", text);
+        attr1.setIdentifier(true);
 
         text = formatter.formatValue(new EnumTypeDatatypeAdapter(enum1, null), "k");
         assertEquals("k", text);

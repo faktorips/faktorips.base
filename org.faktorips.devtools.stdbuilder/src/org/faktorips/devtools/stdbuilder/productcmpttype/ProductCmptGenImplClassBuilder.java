@@ -279,7 +279,7 @@ public class ProductCmptGenImplClassBuilder extends BaseProductCmptTypeBuilder {
         if (helper instanceof EnumTypeDatatypeHelper) {
             EnumTypeDatatypeHelper enumHelper = (EnumTypeDatatypeHelper)helper;
             if (!enumHelper.getEnumType().isContainingValues()) {
-                builder.append(enumHelper.getEnumTypeBuilder().getValueByXXXCodeFragment(enumHelper.getEnumType(), "value",
+                builder.append(enumHelper.getEnumTypeBuilder().getCallGetValueByIdentifierCodeFragment(enumHelper.getEnumType(), "value",
                         "getRepository()"));
                 builder.appendln(";");
                 return;

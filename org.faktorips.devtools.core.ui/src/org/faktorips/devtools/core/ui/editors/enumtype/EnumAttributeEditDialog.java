@@ -21,7 +21,6 @@ import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
-import org.eclipse.swt.widgets.Group;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.TabFolder;
 import org.eclipse.swt.widgets.TabItem;
@@ -62,14 +61,14 @@ public class EnumAttributeEditDialog extends IpsPartEditDialog2 {
     /** The UI control to set the <code>literalName</code> property. */
     private Checkbox literalNameCheckbox;
 
-    /** The UI control to set the <code>uniqueIdentifier</code> property. */
-    private Checkbox uniqueIdentifierCheckbox;
+    /** The UI control to set the <code>unique</code> property. */
+    private Checkbox uniqueCheckbox;
 
-    /** The UI control to set the <code>usedAsIdInFaktorIpsUi</code> property. */
-    private Checkbox usedAsIdInFaktorIpsUiCheckbox;
+    /** The UI control to set the <code>identifier</code> property. */
+    private Checkbox identifierCheckbox;
 
     /** The UI control to set the <code>usedAsNameInFaktorIpsUi</code> property. */
-    private Checkbox usedAsNameInFaktorIpsUiCheckbox;
+    private Checkbox displayNameCheckbox;
 
     /** This is used to track changes of the inherited property of the enum attribute to be edited. */
     private boolean inheritedProperty;
@@ -78,10 +77,27 @@ public class EnumAttributeEditDialog extends IpsPartEditDialog2 {
     private Composite workArea;
 
     /**
-     * This is used to track changes of the literal name property of the enum attribute to be
-     * edited.
+     * Keeps the last value of the literal name property. This ContentsChangedListener adjusts the value of
+     * the property according to the model value. It is necessary to keep the last state of the property
+     * to determine which property has changed when the contents changed event is fired. 
      */
-    private boolean literalNameProperty;
+    private boolean literalNamePropertyValue;
+
+    /**
+     * Keeps the last value of the usedAsNameInFaktorIpsUi property. This ContentsChangedListener
+     * adjusts the value of the property according to the model value. It is necessary to keep the
+     * last state of the property to determine which property has changed when the contents changed
+     * event is fired.
+     */
+    private boolean displayNamePropertyValue;
+
+    /**
+     * Keeps the last value of the identifier property. This ContentsChangedListener adjusts the
+     * value of the property according to the model value. It is necessary to keep the last state of
+     * the property to determine which property has changed when the contents changed event is
+     * fired.
+     */
+    private boolean identifierPropertyValue;
 
     /**
      * Creates a new <code>EnumAttributeEditDialog</code> for the user to edit the given enum
@@ -117,7 +133,9 @@ public class EnumAttributeEditDialog extends IpsPartEditDialog2 {
     private Control createGeneralPage(TabFolder tabFolder) {
         IEnumAttribute enumAttribute = (IEnumAttribute)getIpsPart();
         inheritedProperty = enumAttribute.isInherited();
-        literalNameProperty = enumAttribute.isLiteralName();
+        literalNamePropertyValue = enumAttribute.isLiteralName();
+        displayNamePropertyValue = enumAttribute.isUsedAsNameInFaktorIpsUi();
+        identifierPropertyValue = enumAttribute.isIdentifier();
 
         Composite control = createTabItemComposite(tabFolder, 1, false);
         workArea = uiToolkit.createLabelEditColumnComposite(control);
@@ -126,7 +144,6 @@ public class EnumAttributeEditDialog extends IpsPartEditDialog2 {
         extFactory.createControls(workArea, uiToolkit, enumAttribute, IExtensionPropertyDefinition.POSITION_TOP);
 
         createFields();
-        createFaktorIpsUiGroup();
 
         // Content bindings dependent on inherited property.
         bindAndSetContentDependendOnInheritedProperty(enumAttribute);
@@ -158,33 +175,26 @@ public class EnumAttributeEditDialog extends IpsPartEditDialog2 {
         Composite marginComposite = uiToolkit.createGridComposite(workArea.getParent(), 2, true, false);
         ((GridLayout)marginComposite.getLayout()).marginTop = 14;
 
-        // Unique identifier.
-        uiToolkit.createFormLabel(marginComposite, Messages.EnumAttributeEditDialog_labelUniqueIdentifier);
-        uniqueIdentifierCheckbox = uiToolkit.createCheckbox(marginComposite);
+        // identifier.
+        uiToolkit.createFormLabel(marginComposite, Messages.EnumAttributeEditDialog_labelIdentifier);
+        identifierCheckbox = uiToolkit.createCheckbox(marginComposite);
 
         // Literal name
         uiToolkit.createFormLabel(marginComposite, Messages.EnumAttributeEditDialog_labelUseAsLiteralName);
         literalNameCheckbox = uiToolkit.createCheckbox(marginComposite);
 
+        // display name.
+        uiToolkit.createFormLabel(marginComposite, Messages.EnumAttributeEditDialog_labelDisplayName);
+        displayNameCheckbox = uiToolkit.createCheckbox(marginComposite);
+
+        // Unique
+        uiToolkit.createFormLabel(marginComposite, Messages.EnumAttributeEditDialog_labelUnique);
+        uniqueCheckbox = uiToolkit.createCheckbox(marginComposite);
+
         // Inherited.
         uiToolkit.createFormLabel(marginComposite, Messages.EnumAttributeEditDialog_labelIsInherited);
         Checkbox inheritedCheckbox = uiToolkit.createCheckbox(marginComposite);
         bindingContext.bindContent(inheritedCheckbox, enumAttribute, IEnumAttribute.PROPERTY_INHERITED);
-    }
-
-    /** Creates the Faktor-IPS UI group. */
-    private void createFaktorIpsUiGroup() {
-        Composite marginComposite = uiToolkit.createGridComposite(workArea.getParent(), 1, false, false);
-        ((GridLayout)marginComposite.getLayout()).marginTop = 14;
-        Group uiGroup = uiToolkit.createGridGroup(marginComposite, "Faktor-IPS UI", 2, true);
-
-        // Used as ID in Faktor-IPS UI.
-        uiToolkit.createFormLabel(uiGroup, Messages.EnumAttributeEditDialog_labelUsedAsIdInFaktorIpsUi);
-        usedAsIdInFaktorIpsUiCheckbox = uiToolkit.createCheckbox(uiGroup);
-
-        // Used as name in Faktor-IPS UI.
-        uiToolkit.createFormLabel(uiGroup, Messages.EnumAttributeEditDialog_labelUsedAsNameInFaktorIpsUi);
-        usedAsNameInFaktorIpsUiCheckbox = uiToolkit.createCheckbox(uiGroup);
     }
 
     /**
@@ -250,27 +260,27 @@ public class EnumAttributeEditDialog extends IpsPartEditDialog2 {
             bindingContext.bindContent(nameText, enumAttribute, IEnumAttribute.PROPERTY_NAME);
             bindingContext.bindContent(datatypeControl, enumAttribute, IEnumAttribute.PROPERTY_DATATYPE);
             bindingContext.bindContent(literalNameCheckbox, enumAttribute, IEnumAttribute.PROPERTY_LITERAL_NAME);
-            bindingContext.bindContent(uniqueIdentifierCheckbox, enumAttribute,
-                    IEnumAttribute.PROPERTY_UNIQUE_IDENTIFIER);
-            bindingContext.bindContent(usedAsIdInFaktorIpsUiCheckbox, enumAttribute,
-                    IEnumAttribute.PROPERTY_USED_AS_ID_IN_FAKTOR_IPS_UI);
-            bindingContext.bindContent(usedAsNameInFaktorIpsUiCheckbox, enumAttribute,
+            bindingContext.bindContent(uniqueCheckbox, enumAttribute,
+                    IEnumAttribute.PROPERTY_UNIQUE);
+            bindingContext.bindContent(identifierCheckbox, enumAttribute,
+                    IEnumAttribute.PROPERTY_IDENTIFIER);
+            bindingContext.bindContent(displayNameCheckbox, enumAttribute,
                     IEnumAttribute.PROPERTY_USED_AS_NAME_IN_FAKTOR_IPS_UI);
         } else {
             bindingContext.removeBindings(nameText);
             bindingContext.removeBindings(datatypeControl);
             bindingContext.removeBindings(literalNameCheckbox);
-            bindingContext.removeBindings(uniqueIdentifierCheckbox);
-            bindingContext.removeBindings(usedAsIdInFaktorIpsUiCheckbox);
-            bindingContext.removeBindings(usedAsNameInFaktorIpsUiCheckbox);
+            bindingContext.removeBindings(uniqueCheckbox);
+            bindingContext.removeBindings(identifierCheckbox);
+            bindingContext.removeBindings(displayNameCheckbox);
             bindingContext.bindEnabled(nameText, enumAttribute, IEnumAttribute.PROPERTY_INHERITED, false);
             bindingContext.bindEnabled(datatypeControl, enumAttribute, IEnumAttribute.PROPERTY_INHERITED, false);
-            bindingContext.bindEnabled(uniqueIdentifierCheckbox, enumAttribute, IEnumAttribute.PROPERTY_INHERITED,
+            bindingContext.bindEnabled(uniqueCheckbox, enumAttribute, IEnumAttribute.PROPERTY_INHERITED,
                     false);
             bindingContext.bindEnabled(literalNameCheckbox, enumAttribute, IEnumAttribute.PROPERTY_INHERITED, false);
-            bindingContext.bindEnabled(usedAsIdInFaktorIpsUiCheckbox, enumAttribute, IEnumAttribute.PROPERTY_INHERITED,
+            bindingContext.bindEnabled(identifierCheckbox, enumAttribute, IEnumAttribute.PROPERTY_INHERITED,
                     false);
-            bindingContext.bindEnabled(usedAsNameInFaktorIpsUiCheckbox, enumAttribute,
+            bindingContext.bindEnabled(displayNameCheckbox, enumAttribute,
                     IEnumAttribute.PROPERTY_INHERITED, false);
 
             // Obtain the properties from the super enum attribute.
@@ -292,9 +302,9 @@ public class EnumAttributeEditDialog extends IpsPartEditDialog2 {
                 nameText.setText(name);
                 datatypeControl.setText(datatypeString);
                 literalNameCheckbox.setChecked(literalNameBoolean);
-                uniqueIdentifierCheckbox.setChecked(uniqueIdentifierBoolean);
-                usedAsIdInFaktorIpsUiCheckbox.setChecked(usedAsIdInFaktorIpsUiBoolean);
-                usedAsNameInFaktorIpsUiCheckbox.setChecked(usedAsNameInFaktorIpsUiBoolean);
+                uniqueCheckbox.setChecked(uniqueIdentifierBoolean);
+                identifierCheckbox.setChecked(usedAsIdInFaktorIpsUiBoolean);
+                displayNameCheckbox.setChecked(usedAsNameInFaktorIpsUiBoolean);
             } catch (CoreException e) {
                 throw new RuntimeException(e);
             }
@@ -321,14 +331,23 @@ public class EnumAttributeEditDialog extends IpsPartEditDialog2 {
                 bindAndSetContentDependendOnInheritedProperty(changedEnumAttribute);
                 inheritedProperty = !inheritedProperty;
             }
-
-            // Ensure checked unique identifier when checking literal name.
-            boolean literalName = changedEnumAttribute.isLiteralName();
-            if (literalName != literalNameProperty) {
-                if (literalName) {
-                    changedEnumAttribute.setUniqueIdentifier(true);
+            if(literalNamePropertyValue != enumAttribute.isLiteralName()){
+                literalNamePropertyValue = enumAttribute.isLiteralName();
+                if(literalNamePropertyValue){
+                    changedEnumAttribute.setUnique(true);
                 }
-                literalNameProperty = literalName;
+            }
+            if(displayNamePropertyValue != enumAttribute.isUsedAsNameInFaktorIpsUi()){
+                displayNamePropertyValue = enumAttribute.isUsedAsNameInFaktorIpsUi();
+                if(displayNamePropertyValue){
+                    changedEnumAttribute.setUnique(true);
+                }
+            }
+            if(identifierPropertyValue != enumAttribute.isIdentifier()){
+                identifierPropertyValue = enumAttribute.isIdentifier();
+                if(identifierPropertyValue){
+                    changedEnumAttribute.setUnique(true);
+                }
             }
 
             bindingContext.updateUI();

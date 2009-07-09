@@ -259,9 +259,9 @@ public class EnumTypePage extends IpsObjectPage {
                 IEnumAttribute idAttribute = newEnumType.newEnumAttribute();
                 idAttribute.setName(idAttributeNameField.getText());
                 idAttribute.setLiteralName(true);
-                idAttribute.setUniqueIdentifier(true);
+                idAttribute.setUnique(true);
                 idAttribute.setDatatype(Datatype.STRING.getName());
-                idAttribute.setUsedAsIdInFaktorIpsUi(true);
+                idAttribute.setIdentifier(true);
             }
             if (createNameAttributeField.getCheckbox().isChecked()) {
                 IEnumAttribute nameAttribute = newEnumType.newEnumAttribute();

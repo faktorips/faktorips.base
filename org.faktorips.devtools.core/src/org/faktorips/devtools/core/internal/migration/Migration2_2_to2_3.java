@@ -227,13 +227,13 @@ public class Migration2_2_to2_3 {
                 boolean isLiteralName = literalName.equals(currentColumnName);
                 if (isLiteralName) {
                     newEnumAttribute.setLiteralName(true);
-                    newEnumAttribute.setUniqueIdentifier(true);
+                    newEnumAttribute.setUnique(true);
                     newEnumAttribute.setUsedAsNameInFaktorIpsUi(true);
                 }
                 boolean isId = id.equals(currentColumnName);
                 if (isId) {
-                    newEnumAttribute.setUniqueIdentifier(true);
-                    newEnumAttribute.setUsedAsIdInFaktorIpsUi(true);
+                    newEnumAttribute.setUnique(true);
+                    newEnumAttribute.setIdentifier(true);
                 }
                 newEnumAttribute.setInherited(false);
                 newEnumAttribute.setDescription(currentColumn.getDescription());

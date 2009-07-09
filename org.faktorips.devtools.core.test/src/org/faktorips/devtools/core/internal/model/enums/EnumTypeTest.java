@@ -464,7 +464,7 @@ public class EnumTypeTest extends AbstractIpsEnumPluginTest {
         attr1.setName("attr1");
         attr1.setDatatype(Datatype.STRING.getQualifiedName());
         attr1.setLiteralName(true);
-        attr1.setUniqueIdentifier(true);
+        attr1.setUnique(true);
         IEnumAttribute attr2 = superSuperEnumType.newEnumAttribute();
         attr2.setName("attr2");
         attr2.setDatatype(Datatype.INTEGER.getQualifiedName());
@@ -500,7 +500,7 @@ public class EnumTypeTest extends AbstractIpsEnumPluginTest {
     }
 
     public void testValidateUsedAsIdInFaktorIpsUiAttribute() throws CoreException {
-        genderEnumAttributeId.setUsedAsIdInFaktorIpsUi(false);
+        genderEnumAttributeId.setIdentifier(false);
         MessageList validationMessageList = genderEnumType.validate(ipsProject);
         assertOneValidationMessage(validationMessageList);
         assertNotNull(validationMessageList
@@ -691,11 +691,11 @@ public class EnumTypeTest extends AbstractIpsEnumPluginTest {
     }
 
     public void testGetEnumValue() throws Exception {
-        IEnumValue annually = paymentMode.findEnumValue("annually", ipsProject);
+        IEnumValue annually = paymentMode.findEnumValue("P1", ipsProject);
         assertNotNull(annually);
-        IEnumValue monthly = paymentMode.findEnumValue("monthly", ipsProject);
+        IEnumValue monthly = paymentMode.findEnumValue("P2", ipsProject);
         assertNotNull(monthly);
-        IEnumValue quarterly = paymentMode.findEnumValue("quarterly", ipsProject);
+        IEnumValue quarterly = paymentMode.findEnumValue("P3", ipsProject);
         assertNull(quarterly);
         assertNull(paymentMode.findEnumValue(null, ipsProject));
     }
@@ -876,19 +876,19 @@ public class EnumTypeTest extends AbstractIpsEnumPluginTest {
         attr1.setDatatype(Datatype.STRING.getQualifiedName());
         attr1.setLiteralName(true);
         attr1.setName("id");
-        attr1.setUniqueIdentifier(true);
-        attr1.setUsedAsIdInFaktorIpsUi(true);
+        attr1.setUnique(true);
+        attr1.setIdentifier(true);
 
         IEnumAttribute attr2 = enum1.newEnumAttribute();
         attr2.setDatatype(Datatype.STRING.getQualifiedName());
         attr2.setName("name");
-        attr2.setUniqueIdentifier(true);
+        attr2.setUnique(true);
         attr2.setUsedAsNameInFaktorIpsUi(true);
 
         IEnumAttribute attr3 = enum1.newEnumAttribute();
         attr3.setDatatype(Datatype.STRING.getQualifiedName());
         attr3.setName("description");
-        attr3.setUniqueIdentifier(false);
+        attr3.setUnique(false);
 
         IEnumAttribute resultAttr = enum1.findIsIdentiferAttribute(ipsProject);
         assertEquals(attr1, resultAttr);
@@ -903,19 +903,19 @@ public class EnumTypeTest extends AbstractIpsEnumPluginTest {
         attr1.setDatatype(Datatype.STRING.getQualifiedName());
         attr1.setLiteralName(true);
         attr1.setName("id");
-        attr1.setUniqueIdentifier(true);
-        attr1.setUsedAsIdInFaktorIpsUi(true);
+        attr1.setUnique(true);
+        attr1.setIdentifier(true);
 
         IEnumAttribute attr2 = enum1.newEnumAttribute();
         attr2.setDatatype(Datatype.STRING.getQualifiedName());
         attr2.setName("name");
-        attr2.setUniqueIdentifier(true);
+        attr2.setUnique(true);
         attr2.setUsedAsNameInFaktorIpsUi(true);
 
         IEnumAttribute attr3 = enum1.newEnumAttribute();
         attr3.setDatatype(Datatype.STRING.getQualifiedName());
         attr3.setName("description");
-        attr3.setUniqueIdentifier(false);
+        attr3.setUnique(false);
 
         IEnumAttribute resultAttr = enum1.findIsUsedAsNameInFaktorIpsUiAttribute(ipsProject);
         assertEquals(attr2, resultAttr);

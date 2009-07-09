@@ -85,19 +85,24 @@ public abstract class AbstractIpsEnumPluginTest extends AbstractIpsPluginTest {
         id.setDatatype(Datatype.STRING.getQualifiedName());
         id.setInherited(false);
         id.setLiteralName(true);
-        id.setUniqueIdentifier(true);
+        id.setUnique(true);
         id.setName("id");
-        id.setUsedAsIdInFaktorIpsUi(true);
+        id.setIdentifier(true);
         IEnumAttribute name = paymentMode.newEnumAttribute();
         name.setName("name");
         name.setUsedAsNameInFaktorIpsUi(true);
+        name.setUnique(true);
         name.setDatatype(Datatype.STRING.getQualifiedName());
         IEnumValue value1 = paymentMode.newEnumValue();
         IEnumAttributeValue value1id = value1.getEnumAttributeValues().get(0);
-        value1id.setValue("monthly");
+        value1id.setValue("P1");
+        IEnumAttributeValue value1Name = value1.getEnumAttributeValues().get(1);
+        value1Name.setValue("monthly");
         IEnumValue value2 = paymentMode.newEnumValue();
         IEnumAttributeValue value2id = value2.getEnumAttributeValues().get(0);
-        value2id.setValue("annually");
+        value2id.setValue("P2");
+        IEnumAttributeValue value2Name = value2.getEnumAttributeValues().get(1);
+        value2Name.setValue("annually");
     }
 
     private void createGenderEnum() throws CoreException {
@@ -111,12 +116,13 @@ public abstract class AbstractIpsEnumPluginTest extends AbstractIpsPluginTest {
         genderEnumAttributeId.setName(GENDER_ENUM_ATTRIBUTE_ID_NAME);
         genderEnumAttributeId.setDatatype(Datatype.STRING.getQualifiedName());
         genderEnumAttributeId.setLiteralName(true);
-        genderEnumAttributeId.setUniqueIdentifier(true);
-        genderEnumAttributeId.setUsedAsIdInFaktorIpsUi(true);
+        genderEnumAttributeId.setUnique(true);
+        genderEnumAttributeId.setIdentifier(true);
         genderEnumAttributeName = genderEnumType.newEnumAttribute();
         genderEnumAttributeName.setName(GENDER_ENUM_ATTRIBUTE_NAME_NAME);
         genderEnumAttributeName.setDatatype(Datatype.STRING.getQualifiedName());
         genderEnumAttributeName.setUsedAsNameInFaktorIpsUi(true);
+        genderEnumAttributeName.setUnique(true);
 
         genderEnumContent = newEnumContent(ipsProject, ENUMCONTENTS_PACKAGE_FRAGMENT + '.' + GENDER_ENUM_CONTENT_NAME);
         genderEnumContent.setEnumType(genderEnumType.getQualifiedName());

@@ -528,13 +528,13 @@ public abstract class AbstractIpsPluginTest extends XmlAbstractTestCase {
         IEnumAttribute idAttr = enumType.newEnumAttribute();
         idAttr.setName("id");
         idAttr.setDatatype(Datatype.STRING.getQualifiedName());
-        idAttr.setUniqueIdentifier(true);
-        idAttr.setUsedAsIdInFaktorIpsUi(true);
+        idAttr.setUnique(true);
+        idAttr.setIdentifier(true);
         IEnumAttribute nameAttr = (IEnumAttribute)enumType.newEnumAttribute();
         nameAttr.setDatatype(Datatype.STRING.getQualifiedName());
         nameAttr.setName("name");
         nameAttr.setUsedAsNameInFaktorIpsUi(true);
-        nameAttr.setUniqueIdentifier(true);
+        nameAttr.setUnique(true);
         nameAttr.setLiteralName(true);
         return enumType;
     }

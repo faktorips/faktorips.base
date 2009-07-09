@@ -52,7 +52,7 @@ public abstract class AbstractTocBasedRuntimeRepository extends AbstractRuntimeR
     private ICache<ITable> tableCacheByClass;
     @SuppressWarnings("unchecked")
     private ICache<List> enumValuesCacheByClass;
-    private List<XmlAdapter<String, IEnumValue>> enumXmlAdapters;
+    private List<XmlAdapter<?, IEnumValue>> enumXmlAdapters;
     
     public AbstractTocBasedRuntimeRepository(String name, ICacheFactory cacheFactory) {
         super(name);
@@ -69,7 +69,7 @@ public abstract class AbstractTocBasedRuntimeRepository extends AbstractRuntimeR
         tableCacheByQName = (ICache<ITable>)cacheFactory.createCache(ICacheFactory.Type.TABLE_BY_QUALIFIED_NAME_CACHE);
         tableCacheByClass = (ICache<ITable>)cacheFactory.createCache(ICacheFactory.Type.TABLE_BY_CLASSNAME_CACHE);
         enumValuesCacheByClass = (ICache<List>)cacheFactory.createCache(ICacheFactory.Type.ENUM_CONTENT_BY_CLASS);
-        enumXmlAdapters = new LinkedList<XmlAdapter<String, IEnumValue>>();
+        enumXmlAdapters = new LinkedList<XmlAdapter<?, IEnumValue>>();
     }
     
     /**
@@ -390,7 +390,7 @@ public abstract class AbstractTocBasedRuntimeRepository extends AbstractRuntimeR
 	/**
 	 * {@inheritDoc}
 	 */
-    protected List<XmlAdapter<String, IEnumValue>> getAllEnumXmlAdapters(){
+    protected List<XmlAdapter<?, IEnumValue>> getAllEnumXmlAdapters(){
         if(!enumXmlAdapters.isEmpty()){
             return enumXmlAdapters;
         }
