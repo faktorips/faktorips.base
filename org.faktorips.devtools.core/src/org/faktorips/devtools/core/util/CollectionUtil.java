@@ -22,18 +22,9 @@ import java.util.List;
 public class CollectionUtil {
     
     /**
-     * Clears the list and adds the objects from the array. 
-     */
-    public final static void copy(List list, Object[] array) {
-        list.clear();
-        list.add(array);
-    }
-    
-    
-    /**
      * Adds the objects in the array to the list.
      */
-    public final static void add(List list, Object[] array) {
+    public final static <T> void add(List<T> list, T[] array) {
         for (int i=0; i<array.length; i++) {
             list.add(array[i]);
         }
@@ -48,8 +39,8 @@ public class CollectionUtil {
      * 
      * @throws NullPointerException if array is <code>null</code>.
      */
-    public final static ArrayList toArrayList(Object[] array) {
-        ArrayList list = new ArrayList(array.length);
+    public final static <T> ArrayList<T> toArrayList(T[] array) {
+        ArrayList<T> list = new ArrayList<T>(array.length);
         add(list, array);
         return list;
     }

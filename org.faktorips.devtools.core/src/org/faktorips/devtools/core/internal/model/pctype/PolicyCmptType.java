@@ -467,7 +467,7 @@ public class PolicyCmptType extends Type implements IPolicyCmptType {
      * {@inheritDoc}
      */
     public IDependency[] dependsOn() throws CoreException {
-        Set dependencies = new HashSet();
+        Set<IDependency> dependencies = new HashSet<IDependency>();
         if (!StringUtils.isEmpty(getProductCmptType())) {
             dependencies.add(IpsObjectDependency.createReferenceDependency(getQualifiedNameType(),
                     new QualifiedNameType(getProductCmptType(), IpsObjectType.PRODUCT_CMPT_TYPE)));
@@ -476,7 +476,7 @@ public class PolicyCmptType extends Type implements IPolicyCmptType {
         dependencies.add(IpsObjectDependency.createReferenceDependency(getQualifiedNameType(), new QualifiedNameType(
                 getQualifiedName(), IpsObjectType.PRODUCT_CMPT_TYPE)));
         dependsOn(dependencies);
-        return (IDependency[])dependencies.toArray(new IDependency[dependencies.size()]);
+        return dependencies.toArray(new IDependency[dependencies.size()]);
     }
 
     private static class IsAggregrateRootVisitor extends PolicyCmptTypeHierarchyVisitor {

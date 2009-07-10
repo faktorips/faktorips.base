@@ -40,7 +40,6 @@ public interface IDependency {
     /**
      * The target from which the source depends on.
      */
-    // TODO aw: is there any reason why this returns Object instead of QualifiedNameType ?
     public Object getTarget();
     
     /**

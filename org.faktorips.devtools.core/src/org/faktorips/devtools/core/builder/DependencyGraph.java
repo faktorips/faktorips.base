@@ -3,7 +3,7 @@
  * 
  * Alle Rechte vorbehalten.
  * 
- * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen, 
+ * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen,
  * etc.) duerfen nur unter den Bedingungen der Faktor-Zehn-Community Lizenzvereinbarung - Version
  * 0.1 (vor Gruendung Community) genutzt werden, die Bestandteil der Auslieferung ist und auch unter
  * http://www.faktorzehn.org/f10-org:lizenzen:community eingesehen werden kann.
@@ -38,23 +38,25 @@ import org.faktorips.util.ArgumentCheck;
  * @author Jan Ortmann, Peter Erzberger
  */
 public class DependencyGraph implements Serializable {
-    
+
     private static final long serialVersionUID = 5692023485881401223L;
 
     public final static boolean TRACE_DEPENDENCY_GRAPH_MANAGEMENT;
-    
+
     static {
-        TRACE_DEPENDENCY_GRAPH_MANAGEMENT = Boolean.valueOf(Platform.getDebugOption("org.faktorips.devtools.core/trace/dependencygraphmanagement")).booleanValue(); //$NON-NLS-1$
+        TRACE_DEPENDENCY_GRAPH_MANAGEMENT = Boolean.valueOf(
+                Platform.getDebugOption("org.faktorips.devtools.core/trace/dependencygraphmanagement")).booleanValue(); //$NON-NLS-1$
     }
 
-    private Map dependantsForMap;
-    private Map dependsOnMap;
+    private Map<Object, List<IDependency>> dependantsForMap;
+    private Map<QualifiedNameType, List<IDependency>> dependsOnMap;
     private transient IIpsProject ipsProject;
 
     /**
      * Creates a new DependencyGraph object.
      * 
-     * @param ipsProject the ips project this dependency graph administers the dependenies of the ips objects for
+     * @param ipsProject the ips project this dependency graph administers the dependenies of the
+     *            ips objects for
      */
     public DependencyGraph(IIpsProject ipsProject) throws CoreException {
         super();
@@ -63,38 +65,38 @@ public class DependencyGraph implements Serializable {
         init();
     }
 
-    public IIpsProject getIpsProject(){
-    	return ipsProject;
+    public IIpsProject getIpsProject() {
+        return ipsProject;
     }
 
-    public void setIpsProject(IIpsProject ipsProject) throws CoreException{
+    public void setIpsProject(IIpsProject ipsProject) throws CoreException {
         ArgumentCheck.notNull(ipsProject, this);
-        if(this.ipsProject == null){
+        if (this.ipsProject == null) {
             this.ipsProject = ipsProject;
             return;
         }
-        if(!this.ipsProject.equals(ipsProject)){
+        if (!this.ipsProject.equals(ipsProject)) {
             this.ipsProject = ipsProject;
             init();
         }
     }
-    public void reInit() throws CoreException{
+
+    public void reInit() throws CoreException {
         init();
     }
-    
+
     private void init() throws CoreException {
-        dependantsForMap = new HashMap();
-        dependsOnMap = new HashMap();
-        List allSrcFiles = new ArrayList();
+        dependantsForMap = new HashMap<Object, List<IDependency>>();
+        dependsOnMap = new HashMap<QualifiedNameType, List<IDependency>>();
+        List<IIpsSrcFile> allSrcFiles = new ArrayList<IIpsSrcFile>();
         ipsProject.collectAllIpsSrcFilesOfSrcFolderEntries(allSrcFiles);
-        for (Iterator it = allSrcFiles.iterator(); it.hasNext();) {
-            IIpsSrcFile file = (IIpsSrcFile)it.next();
+        for (IIpsSrcFile file: allSrcFiles) {
             if (!file.exists()) {
                 continue;
             }
             IIpsObject ipsObject = file.getIpsObject();
             IDependency[] dependsOn = ipsObject.dependsOn();
-            if(dependsOn == null || dependsOn.length == 0){
+            if (dependsOn == null || dependsOn.length == 0) {
                 continue;
             }
             addEntriesToDependsOnMap(dependsOn, ipsObject.getQualifiedNameType());
@@ -102,16 +104,15 @@ public class DependencyGraph implements Serializable {
         }
     }
 
-    private void addEntriesToDependsOnMap(IDependency[] dependsOn,
-            QualifiedNameType requestedNameType) {
+    private void addEntriesToDependsOnMap(IDependency[] dependsOn, QualifiedNameType requestedNameType) {
         dependsOnMap.put(requestedNameType, CollectionUtil.toArrayList(dependsOn));
     }
 
     private void addEntryToDependantsForMap(IDependency[] dependsOn) {
         for (int i = 0; i < dependsOn.length; i++) {
-            List dependants = getDependantsAsList(dependsOn[i].getTarget());
+            List<IDependency> dependants = getDependantsAsList(dependsOn[i].getTarget());
             if (dependants == null) {
-                dependants = new ArrayList(0);
+                dependants = new ArrayList<IDependency>(0);
                 dependantsForMap.put(dependsOn[i].getTarget(), dependants);
             }
             dependants.add(dependsOn[i]);
@@ -122,20 +123,19 @@ public class DependencyGraph implements Serializable {
      * Returns the qualified names of the ips objects that depend on the object identified by the
      * given qualified name.
      * 
-     * @param identifier the identifier for an ips object or datatype for which the dependant objects
-     *            should be returned. Identifier for IpsObjects are QualifiedNameType instances for
-     *            Datatypes qualified name strings.
+     * @param identifier the identifier for an ips object or datatype for which the dependant
+     *            objects should be returned. Identifier for IpsObjects are QualifiedNameType
+     *            instances for Datatypes qualified name strings.
      */
     public IDependency[] getDependants(QualifiedNameType id) {
-        List qualfiedNameTypes = getDependantsAsList(id);
-        if(id.getIpsObjectType().equals(IpsObjectType.POLICY_CMPT_TYPE) ||
-                id.getIpsObjectType().equals(IpsObjectType.PRODUCT_CMPT_TYPE) ||
-                id.getIpsObjectType().equals(IpsObjectType.TABLE_STRUCTURE) || 
-                id.getIpsObjectType().equals(IpsObjectType.TABLE_CONTENTS)){
-            List additionalNameTypes = getDependantsAsList(id.getName());
-            if(qualfiedNameTypes == null){
-                qualfiedNameTypes = additionalNameTypes; 
-            } else if(additionalNameTypes != null) {
+        List<IDependency> qualfiedNameTypes = getDependantsAsList(id);
+        if (id.getIpsObjectType().equals(IpsObjectType.POLICY_CMPT_TYPE)
+                || id.getIpsObjectType().equals(IpsObjectType.PRODUCT_CMPT_TYPE)
+                || id.getIpsObjectType().equals(IpsObjectType.ENUM_TYPE)) {
+            List<IDependency> additionalNameTypes = getDependantsAsList(id.getName());
+            if (qualfiedNameTypes == null) {
+                qualfiedNameTypes = additionalNameTypes;
+            } else if (additionalNameTypes != null) {
                 qualfiedNameTypes.addAll(additionalNameTypes);
             }
         }
@@ -143,12 +143,11 @@ public class DependencyGraph implements Serializable {
         if (qualfiedNameTypes == null) {
             return new IDependency[0];
         }
-        return (IDependency[])qualfiedNameTypes
-                .toArray(new IDependency[qualfiedNameTypes.size()]);
+        return (IDependency[])qualfiedNameTypes.toArray(new IDependency[qualfiedNameTypes.size()]);
     }
 
-    private List getDependantsAsList(Object target) {
-        return (List)dependantsForMap.get(target);
+    private List<IDependency> getDependantsAsList(Object target) {
+        return dependantsForMap.get(target);
     }
 
     /**
@@ -159,8 +158,8 @@ public class DependencyGraph implements Serializable {
      * <li>Get the ips object identified by the qName.</li>
      * <li>Determine the new dependencies by calling the the dependsOn() method on the ips object
      * identified by qName.</li>
-     * <li>Create new relations between the node identified by the qName and the nodes identified
-     * by the dependencies. If one of the nodes doesn't exist it will be created.</li>
+     * <li>Create new relations between the node identified by the qName and the nodes identified by
+     * the dependencies. If one of the nodes doesn't exist it will be created.</li>
      * </ol>
      * For a new ips object step one is omitted. For deleted ips object only step one is executed.
      * 
@@ -182,16 +181,15 @@ public class DependencyGraph implements Serializable {
     }
 
     private void removeDependency(QualifiedNameType qName) {
-        List dependsOnList = (List)dependsOnMap.remove(qName);
+        List<IDependency> dependsOnList = dependsOnMap.remove(qName);
         if (dependsOnList != null && !dependsOnList.isEmpty()) {
-            
-            for (Iterator it = dependsOnList.iterator(); it.hasNext();) {
-                IDependency dependency = (IDependency)it.next();
-                List dependants = getDependantsAsList(dependency.getTarget());
+
+            for (IDependency dependency : dependsOnList) {
+                List<IDependency> dependants = getDependantsAsList(dependency.getTarget());
                 if (dependants != null) {
-                    for (Iterator itDependants = dependants.iterator(); itDependants.hasNext();) {
+                    for (Iterator<IDependency> itDependants = dependants.iterator(); itDependants.hasNext();) {
                         IDependency dependency2 = (IDependency)itDependants.next();
-                        if(dependency2.getSource().equals(qName)){
+                        if (dependency2.getSource().equals(qName)) {
                             itDependants.remove();
                         }
                     }

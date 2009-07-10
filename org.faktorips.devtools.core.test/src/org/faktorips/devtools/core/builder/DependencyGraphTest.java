@@ -16,16 +16,21 @@ package org.faktorips.devtools.core.builder;
 import java.util.List;
 
 import org.eclipse.core.runtime.CoreException;
+import org.faktorips.datatype.Datatype;
 import org.faktorips.devtools.core.AbstractIpsPluginTest;
 import org.faktorips.devtools.core.model.DatatypeDependency;
 import org.faktorips.devtools.core.model.IDependency;
 import org.faktorips.devtools.core.model.IpsObjectDependency;
+import org.faktorips.devtools.core.model.enums.IEnumAttribute;
+import org.faktorips.devtools.core.model.enums.IEnumType;
+import org.faktorips.devtools.core.model.enums.IEnumValue;
 import org.faktorips.devtools.core.model.ipsobject.Modifier;
 import org.faktorips.devtools.core.model.ipsproject.IIpsPackageFragmentRoot;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.pctype.AssociationType;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.model.type.IAssociation;
+import org.faktorips.devtools.core.model.type.IAttribute;
 import org.faktorips.devtools.core.model.type.IMethod;
 import org.faktorips.devtools.core.util.CollectionUtil;
 
@@ -39,6 +44,7 @@ public class DependencyGraphTest extends AbstractIpsPluginTest {
     private IPolicyCmptType c;
     private IPolicyCmptType d;
     private IPolicyCmptType e;
+    private IEnumType enum1;
     
     
     public void setUp() throws Exception{
@@ -55,6 +61,21 @@ public class DependencyGraphTest extends AbstractIpsPluginTest {
         c.setProductCmptType("");
         d.setProductCmptType("");
         e.setProductCmptType("");
+     
+        enum1 = newEnumType(root, "AnEnum1");
+        enum1.setContainingValues(true);
+        IEnumAttribute idAttr = enum1.newEnumAttribute();
+        idAttr.setDatatype(Datatype.STRING.getQualifiedName());
+        idAttr.setIdentifier(true);
+        idAttr.setLiteralName(true);
+        idAttr.setUnique(true);
+        idAttr.setUsedAsNameInFaktorIpsUi(true);
+        IEnumValue firstValue = enum1.newEnumValue();
+        firstValue.setEnumAttributeValue(idAttr, "P1");
+
+        IAttribute aAttr1 = a.newAttribute();
+        aAttr1.setDatatype(enum1.getQualifiedName());
+        aAttr1.setName("aAttr1");
         
         // dependencies c->b, c->a, a->d, 
         a.newPolicyCmptTypeAssociation().setTarget(d.getQualifiedName());
@@ -84,6 +105,11 @@ public class DependencyGraphTest extends AbstractIpsPluginTest {
         assertEquals(2, dependants.length);
     }
     
+    public void testDatatypeDependencyOfEnumType(){
+        IDependency[] dependants = graph.getDependants(enum1.getQualifiedNameType());
+        assertEquals(1, dependants.length);
+        assertEquals(a.getQualifiedNameType(), dependants[0].getSource());
+    }
 
     /*
      * Test method for 'org.faktorips.plugin.builder.DependencyGraph.getDependants(String)'
