@@ -543,6 +543,7 @@ public class EnumTypeBuilder extends DefaultJavaSourceFileBuilder {
     private void generateCodeForConstructor(JavaCodeFragmentBuilder constructorBuilder) throws CoreException {
         generateConstructorForEnumsWithSeparateContent(constructorBuilder);
         generateConstructurForEnumsWithContent(constructorBuilder);
+        generatePublicConstructorForEnumsWithSeparateContent(constructorBuilder);
     }
 
     private String getNameForConstructor(IEnumType enumType) {
@@ -555,7 +556,13 @@ public class EnumTypeBuilder extends DefaultJavaSourceFileBuilder {
         if (!enumType.isContainingValues() || enumType.isAbstract()) {
             return;
         }
+        int constructorVisibility = (useClassGeneration() && enumType.isAbstract()) ? Modifier.PROTECTED
+                : Modifier.PRIVATE;
+        generatePublicConstructor(constructorBuilder, constructorVisibility);
+    }
 
+    private void generatePublicConstructor(JavaCodeFragmentBuilder constructorBuilder, int modifier) throws CoreException{
+        IEnumType enumType = getEnumType();
         List<IEnumAttribute> enumAttributes = enumType.getEnumAttributesIncludeSupertypeCopies();
         List<IEnumAttribute> validEnumAttributes = new ArrayList<IEnumAttribute>();
         for (IEnumAttribute currentEnumAttribute : enumAttributes) {
@@ -580,13 +587,19 @@ public class EnumTypeBuilder extends DefaultJavaSourceFileBuilder {
         createAttributeInitialization(methodBody);
 
         appendLocalizedJavaDoc("CONSTRUCTOR", enumType.getName(), enumType, constructorBuilder);
-        int constructorVisibility = (useClassGeneration() && enumType.isAbstract()) ? Modifier.PROTECTED
-                : Modifier.PRIVATE;
-        constructorBuilder.methodBegin(constructorVisibility, null, getNameForConstructor(enumType), argumentNames,
+        constructorBuilder.methodBegin(modifier, null, getNameForConstructor(enumType), argumentNames,
                 argumentClasses);
         constructorBuilder.append(methodBody);
         constructorBuilder.methodEnd();
+        
+    }
 
+    private void generatePublicConstructorForEnumsWithSeparateContent(JavaCodeFragmentBuilder constructorBuilder) throws CoreException{
+        IEnumType enumType = getEnumType();
+        if (enumType.isContainingValues() || enumType.isAbstract()) {
+            return;
+        }
+        generatePublicConstructor(constructorBuilder, Modifier.PUBLIC);
     }
 
     private void generateConstructorForEnumsWithSeparateContent(JavaCodeFragmentBuilder constructorBuilder)
