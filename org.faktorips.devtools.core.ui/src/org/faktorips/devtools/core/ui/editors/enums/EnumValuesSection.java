@@ -849,11 +849,9 @@ public class EnumValuesSection extends IpsSection implements ContentsChangeListe
 
     }
 
-    /**
+    /*
      * Listener that reacts to <code>SelectionChangedEvent</code>s by deleting all empty rows at the
      * bottom of the table.
-     * 
-     * @author Stefan Widmaier
      */
     private class RowDeletor implements ISelectionChangedListener {
 
@@ -896,16 +894,19 @@ public class EnumValuesSection extends IpsSection implements ContentsChangeListe
          */
         private boolean isRowEmpty(IEnumValue enumValue) {
             List<IEnumAttributeValue> enumAttributeValues = enumValue.getEnumAttributeValues();
-
-            int columnNumber = enumValuesTable.getColumnCount();
-            for (int i = 0; i < columnNumber; i++) {
-                String value = enumAttributeValues.get(i).getValue();
-                if (value == null || !(value.trim().equals(""))) { //$NON-NLS-1$
-                    return false;
+            boolean allValuesEmpty = true;
+            for(IEnumAttributeValue attrValue : enumAttributeValues){
+                String value = attrValue.getValue();
+                if (value == null) { 
+                    continue;
+                }
+                //TODO pk 10-07-2009: this is not really correct. We actually need an empty-string-representation-value
+                if(!(value.trim().equals(""))){
+                    allValuesEmpty = false;
+                    break;
                 }
             }
-
-            return true;
+            return allValuesEmpty;
         }
     }
 

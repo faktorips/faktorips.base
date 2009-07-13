@@ -140,7 +140,7 @@ public class EnumTypeValidations {
      * @param msgList The message list where messages are added to in cases of failing validations.
      * @param enumType The enum type that might be invalid or <code>null</code> if that information
      *            cannot be supported.
-     * @param isContainingValues Flag indicating whether the enum type to validate does contain
+     * @param valuesDeferredToContent Flag indicating whether the enum type to validate does contain
      *            values.
      * @param enumContentPackageFragment The enum content package fragment of the enum type to
      *            validate.
@@ -150,13 +150,13 @@ public class EnumTypeValidations {
      */
     public static void validateEnumContentPackageFragment(MessageList msgList,
             IEnumType enumType,
-            boolean isContainingValues,
+            boolean valuesDeferredToContent,
             String enumContentPackageFragment) {
 
         ArgumentCheck.notNull(new Object[] { msgList, enumContentPackageFragment });
 
         // Package specification should not be empty if this enum type does not contain values.
-        if (!isContainingValues) {
+        if (valuesDeferredToContent) {
             if (enumContentPackageFragment.equals("")) {
                 String text = Messages.EnumType_EnumContentPackageFragmentEmpty;
                 Message message = new Message(IEnumType.MSGCODE_ENUM_TYPE_ENUM_CONTENT_PACKAGE_FRAGMENT_EMPTY, text,

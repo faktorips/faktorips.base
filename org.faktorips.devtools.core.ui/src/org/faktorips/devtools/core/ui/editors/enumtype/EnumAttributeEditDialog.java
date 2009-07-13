@@ -18,9 +18,10 @@ import java.util.List;
 
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.layout.GridLayout;
+import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
+import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.TabFolder;
 import org.eclipse.swt.widgets.TabItem;
@@ -158,6 +159,13 @@ public class EnumAttributeEditDialog extends IpsPartEditDialog2 {
         return control;
     }
 
+    private GridData createLayoutData(){
+        GridData gridData = new GridData();
+        gridData.horizontalIndent = 4;
+        gridData.horizontalAlignment = SWT.LEFT;
+        return gridData;
+    }
+    
     /** Creates the ui fields. */
     private void createFields() {
         // Name.
@@ -173,27 +181,45 @@ public class EnumAttributeEditDialog extends IpsPartEditDialog2 {
         filterDatatypes();
 
         Composite marginComposite = uiToolkit.createGridComposite(workArea.getParent(), 2, true, false);
-        ((GridLayout)marginComposite.getLayout()).marginTop = 14;
-
-        // identifier.
-        uiToolkit.createFormLabel(marginComposite, Messages.EnumAttributeEditDialog_labelIdentifier);
+        ((GridData)marginComposite.getLayoutData()).verticalIndent = 14;
+        Label label = uiToolkit.createFormLabel(marginComposite, Messages.EnumAttributeEditDialog_labelIdentifier);
+        GridData layoutData = new GridData();
+        layoutData.verticalAlignment = SWT.CENTER;
+        layoutData.horizontalAlignment = SWT.FILL;
+        layoutData.widthHint = 320;
+        layoutData.minimumWidth = 320;
+        
+        label.getParent().setLayoutData(layoutData);
         identifierCheckbox = uiToolkit.createCheckbox(marginComposite);
+        identifierCheckbox.setLayoutData(createLayoutData());
 
         // Literal name
-        uiToolkit.createFormLabel(marginComposite, Messages.EnumAttributeEditDialog_labelUseAsLiteralName);
+        label = uiToolkit.createFormLabel(marginComposite, Messages.EnumAttributeEditDialog_labelUseAsLiteralName);
+        label.getParent().setLayoutData(layoutData);
+        
         literalNameCheckbox = uiToolkit.createCheckbox(marginComposite);
-
+        literalNameCheckbox.setLayoutData(createLayoutData());
+        
         // display name.
-        uiToolkit.createFormLabel(marginComposite, Messages.EnumAttributeEditDialog_labelDisplayName);
+        label = uiToolkit.createFormLabel(marginComposite, Messages.EnumAttributeEditDialog_labelDisplayName);
+        label.getParent().setLayoutData(layoutData);
+        
         displayNameCheckbox = uiToolkit.createCheckbox(marginComposite);
-
+        displayNameCheckbox.setLayoutData(createLayoutData());
+        
         // Unique
-        uiToolkit.createFormLabel(marginComposite, Messages.EnumAttributeEditDialog_labelUnique);
+        label = uiToolkit.createFormLabel(marginComposite, Messages.EnumAttributeEditDialog_labelUnique);
+        label.getParent().setLayoutData(layoutData);
+        
         uniqueCheckbox = uiToolkit.createCheckbox(marginComposite);
-
+        uniqueCheckbox.setLayoutData(createLayoutData());
+        
         // Inherited.
-        uiToolkit.createFormLabel(marginComposite, Messages.EnumAttributeEditDialog_labelIsInherited);
+        label = uiToolkit.createFormLabel(marginComposite, Messages.EnumAttributeEditDialog_labelIsInherited);
+        label.getParent().setLayoutData(layoutData);
+        
         Checkbox inheritedCheckbox = uiToolkit.createCheckbox(marginComposite);
+        inheritedCheckbox.setLayoutData(createLayoutData());
         bindingContext.bindContent(inheritedCheckbox, enumAttribute, IEnumAttribute.PROPERTY_INHERITED);
     }
 

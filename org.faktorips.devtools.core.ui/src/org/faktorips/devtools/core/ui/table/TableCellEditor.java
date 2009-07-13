@@ -23,6 +23,7 @@ import org.eclipse.swt.events.TraverseEvent;
 import org.eclipse.swt.events.TraverseListener;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
+import org.eclipse.swt.widgets.Table;
 import org.faktorips.devtools.core.model.enums.IEnumValueContainer;
 import org.faktorips.devtools.core.model.tablecontents.IRow;
 import org.faktorips.devtools.core.model.tablecontents.ITableContents;
@@ -174,6 +175,7 @@ public abstract class TableCellEditor extends CellEditor {
         if (previousRow < 0) {
             previousRow = 0;
         }
+        saveCurrentValue();
         editCell(previousRow, columnIndex);
     }
 
@@ -206,6 +208,18 @@ public abstract class TableCellEditor extends CellEditor {
         editCell(rowIndex, nextColumnIndex);
     }
 
+    private void saveCurrentValue() {
+        Object[] properties = tableViewer.getColumnProperties();
+
+        if (columnIndex < properties.length) {
+            Table table = tableViewer.getTable();
+            tableViewer.getCellModifier().modify(table.getItem(table.getSelectionIndex()),
+                    (String) tableViewer.getColumnProperties()[columnIndex],
+                    getValue());
+        }
+    }
+
+    
     /**
      * Edits the previous column relative to the column this celleditor is used for. If there is no
      * previous column (celleditor in first column), the last cell of the previous row is edited. If
@@ -276,6 +290,7 @@ public abstract class TableCellEditor extends CellEditor {
 
         if (nextRow == tableViewer.getTable().getItemCount()) {
             if (isRowCreating()) {
+                saveCurrentValue();
                 appendTableRow();
                 return nextRow;
             } else {
