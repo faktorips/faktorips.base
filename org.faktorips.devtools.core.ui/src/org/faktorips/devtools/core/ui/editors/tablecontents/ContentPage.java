@@ -17,6 +17,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.StringTokenizer;
 
+import org.apache.commons.lang.StringUtils;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jface.action.MenuManager;
 import org.eclipse.jface.action.Separator;
@@ -365,7 +366,7 @@ public class ContentPage extends IpsObjectEditorPage {
         }
 
         /**
-         * Checks every row from the last up to the currently selected row for emptyness and deletes
+         * Checks every row from the last up to the currently selected row for emptiness and deletes
          * every empty row until a non-empty row is found.
          * <p>
          * Only tries to delete rows if table has more than one row.
@@ -376,9 +377,19 @@ public class ContentPage extends IpsObjectEditorPage {
             if (tableViewer.getTable().getItemCount() <= 1) {
                 return;
             }
+            
+            if (selectionIndex != tableViewer.getTable().getItemCount() -2 ){
+                return;
+            }
+            
             for (int i = tableViewer.getTable().getItemCount() - 1; i > selectionIndex; i--) {
                 IRow row = (IRow)tableViewer.getElementAt(i);
-                if (isRowEmpty(row)) {
+                // delete the row if the row is empty
+                // note that the decision if a row is empty or not must
+                // use the cell editors instead of the row itself, because if this
+                // method is called the column value isn't currently transported to the row value
+                // object, this will be performed later FS#
+                if (areCellEditorEmpty(tableViewer.getCellEditors())) {
                     tableViewer.remove(row);
                     row.delete();
                 } else {
@@ -393,23 +404,25 @@ public class ContentPage extends IpsObjectEditorPage {
              */
         }
 
-        /**
-         * Checks whether a row is empty or not. Returns <code>true</code> if all the given row's
-         * values (columns) contain a whitespace string.
-         * <p>
-         * <code>null</code> is treated as content. Thus a row that contains <code>null</code>
-         * values is not empty.
-         */
-        private boolean isRowEmpty(IRow row) {
-            int columnNumber = row.getTableContents().getNumOfColumns();
-            for (int i = 0; i < columnNumber; i++) {
-                String value = row.getValue(i);
-                if (value == null || !value.trim().equals("")) { //$NON-NLS-1$
-                    return false;
-                }
-            }
-            return true;
+
+    }
+
+    /*
+     * Checks whether all cell editors are empty or not. Returns <code>true</code> if all cell
+     * editors. This method is used to decide if a row, which is visible in the editor, is empty or
+     * not.
+     */
+    private boolean areCellEditorEmpty(CellEditor[] cellEditors) {
+        if (cellEditors.length == 0){
+            return false;
         }
+        for (int i = 0; i < cellEditors.length; i++) {
+            Object value = cellEditors[i].getValue();
+            if (StringUtils.isNotEmpty(value==null?"":""+value)){ //$NON-NLS-1$ //$NON-NLS-2$
+                return false;
+            }
+        }
+        return true;
     }
 
     private void checkDifferences(Composite formBody, UIToolkit toolkit) {

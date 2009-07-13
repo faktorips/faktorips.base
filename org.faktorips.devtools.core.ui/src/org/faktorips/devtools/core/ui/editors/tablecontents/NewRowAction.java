@@ -54,17 +54,20 @@ public class NewRowAction extends IpsAction {
      */
     public void run(IStructuredSelection selection) {
         ITableContents tableContents= (ITableContents)tableViewer.getInput();
-        int position = Integer.MAX_VALUE;
 
         ITableContentsGeneration tableContentsGeneration = (ITableContentsGeneration)tableContents.getFirstGeneration();
-        
+
+        IRow newRow = null;
+        int position = Integer.MAX_VALUE;
         Object selected = selection.getFirstElement();
-        if (selected instanceof IRow){
+        if (selected instanceof IRow) {
             position = ((IRow)selected).getRowNumber();
+            newRow = tableContentsGeneration.insertRowAfter(position);
+            tableViewer.insert(newRow, position);
+        } else {
+            tableContentsGeneration.newRow();
         }
         
-        IRow newRow = tableContentsGeneration.insertRowAfter(position);
-        tableViewer.insert(newRow, position);
         tableViewer.refresh(true);
         contentPage.redrawTable();
     }
