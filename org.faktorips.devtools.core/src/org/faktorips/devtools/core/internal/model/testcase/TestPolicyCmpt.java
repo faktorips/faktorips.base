@@ -466,9 +466,8 @@ public class TestPolicyCmpt extends TestObject implements ITestPolicyCmpt {
 			}else{
 				name = productCmpt;
 			}
-            name = StringUtil.unqualifiedName(name);
-            name = getTestCase().generateUniqueNameForTestPolicyCmpt(newTestPolicyCmpt, name);
-			newTestPolicyCmpt.setName(name);
+			newTestPolicyCmpt.setName(getTestCase().generateUniqueNameForTestPolicyCmpt(newTestPolicyCmpt,
+                    StringUtil.unqualifiedName(name)));
 			
             // add all test attribute values as spedified in the test parameter type
 			ITestAttribute attributes[] = typeParam.getTestAttributes();

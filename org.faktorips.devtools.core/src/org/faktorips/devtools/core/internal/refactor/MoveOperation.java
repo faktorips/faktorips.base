@@ -692,8 +692,10 @@ public class MoveOperation implements IRunnableWithProgress {
             throws CoreException {
         ITestPolicyCmpt[] allTestPolicyCmpt = testCase.getAllTestPolicyCmpt();
         for (int i = 0; i < allTestPolicyCmpt.length; i++) {
-            if (oldName.equals(allTestPolicyCmpt[i].getProductCmpt())){
+            if (oldName.equals(allTestPolicyCmpt[i].getProductCmpt())) {
                 allTestPolicyCmpt[i].setProductCmpt(newName);
+                allTestPolicyCmpt[i].setName(allTestPolicyCmpt[i].getTestCase().generateUniqueNameForTestPolicyCmpt(
+                        allTestPolicyCmpt[i], StringUtil.unqualifiedName(newName)));
             }
         }
         testCase.getIpsSrcFile().save(true, null);
