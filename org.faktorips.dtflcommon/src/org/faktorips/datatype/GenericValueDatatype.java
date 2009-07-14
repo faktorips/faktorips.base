@@ -226,8 +226,8 @@ public abstract class GenericValueDatatype implements ValueDatatype {
                 if (isParsableMethod==null) {
                     throw new NullPointerException();
                 }
-            } catch (Exception e) {
-                throw new RuntimeException("Can't get the method isParsable(String), Class: " + getAdaptedClassName() + ", Methodname: " + isParsableMethodName, e);
+            } catch (Throwable t) {
+                throw new RuntimeException("Can't get the method isParsable(String), Class: " + getAdaptedClassName() + ", Methodname: " + isParsableMethodName, t);
             }
         }
         return isParsableMethod;
@@ -251,8 +251,8 @@ public abstract class GenericValueDatatype implements ValueDatatype {
                 if (valueOfMethod==null) {
                     throw new NullPointerException();
                 }
-            } catch (Exception e) {
-                throw new RuntimeException("Can't get valueOfMethod(String), Class: " + getAdaptedClass() + ", Methodname: " + valueOfMethodName);
+            } catch (Throwable t) {
+                throw new RuntimeException("Can't get valueOfMethod(String), Class: " + getAdaptedClass() + ", Methodname: " + valueOfMethodName, t);
             }
         }
         return valueOfMethod;
@@ -280,8 +280,8 @@ public abstract class GenericValueDatatype implements ValueDatatype {
                 if (toStringMethod==null) {
                     throw new NullPointerException();
                 }
-            } catch (Exception e) {
-                throw new RuntimeException("Can't get method toString(String), Class: " + getAdaptedClass() + ", Methodname: " + toStringMethodName);
+            } catch (Throwable t) {
+                throw new RuntimeException("Can't get method toString(String), Class: " + getAdaptedClass() + ", Methodname: " + toStringMethodName, t);
             }
         }
         return toStringMethod;

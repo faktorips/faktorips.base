@@ -166,7 +166,7 @@ public abstract class GenericEnumDatatype extends GenericValueDatatype implement
 				if (getAllValuesMethod == null) {
 					throw new NullPointerException();
 				}
-			} catch (Exception e) {
+			} catch (Throwable t) {
 				throw new RuntimeException("Can't get method getAllValues(), Class: "
 						+ getAdaptedClass() + ", Methodname: " + getAllValuesMethodName);
 			}
@@ -183,9 +183,9 @@ public abstract class GenericEnumDatatype extends GenericValueDatatype implement
 		if (getNameMethod == null && getNameMethodName != null) {
 			try {
 				getNameMethod = getAdaptedClass().getMethod(getNameMethodName, new Class[0]);
-			} catch (Exception e) {
+			} catch (Throwable t) {
 				throw new RuntimeException("Unable to access the method " + getNameMethodName
-						+ " on the adapted class " + getAdaptedClass(), e);
+						+ " on the adapted class " + getAdaptedClass(), t);
 			}
 		}
 		return getNameMethod;
