@@ -210,9 +210,6 @@ public class FormulaTestCase extends IpsObjectPart implements IFormulaTestCase {
                     DatatypeHelper helper = getIpsProject().getDatatypeHelper(enumTypes[i]);
                     frag.append(helper.newInstance(id));
                     String enumValueName = id;
-                    if(enumTypes[i].isSupportingNames()){
-                        enumValueName = enumTypes[i].getValueName(id);
-                    }
                     resolver.register(valueName + "." + enumValueName, frag, enumTypes[i]); //$NON-NLS-1$
                 }
             }

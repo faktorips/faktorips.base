@@ -299,6 +299,15 @@ public class StandardBuilderSet extends DefaultBuilderSet {
     public IdentifierResolver createFlIdentifierResolverForFormulaTest(IFormula formula, ExprCompiler exprCompiler) throws CoreException {
         return new AbstractParameterIdentifierResolver(formula, exprCompiler) {
 
+            protected void addNewInstanceForEnumType(JavaCodeFragment fragment,
+                    EnumTypeDatatypeAdapter datatype,
+                    ExprCompiler exprCompiler,
+                    String value) throws CoreException {
+                ExtendedExprCompiler compiler = (ExtendedExprCompiler)exprCompiler;
+                fragment.append(enumTypeBuilder.getNewInstanceCodeFragement(datatype, value, compiler
+                        .getRuntimeRepositoryExpression()));
+            }
+
             /**
              * {@inheritDoc}
              */

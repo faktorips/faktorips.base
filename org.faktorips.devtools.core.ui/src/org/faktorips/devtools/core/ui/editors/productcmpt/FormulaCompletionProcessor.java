@@ -106,9 +106,6 @@ public class FormulaCompletionProcessor extends AbstractCompletionProcessor {
 				String[] valueIds = enumTypes[i].getAllValueIds(false);
 				for (int t = 0; t < valueIds.length; t++) {
 				    String valueId = valueIds[t];
-				    if(enumTypes[i].isSupportingNames()){
-				        valueId = enumTypes[i].getValueName(valueIds[t]);
-				    }
 		    		if(valueId.startsWith(enumValuePrefix)){
 		    			addEnumValueToResult(result, enumTypes[i], valueId, replacementOffset, enumValuePrefix.length());
 		    		}

@@ -37,6 +37,7 @@ import org.faktorips.devtools.core.ui.IpsUIPlugin;
 import org.faktorips.devtools.core.ui.ValueDatatypeControlFactory;
 import org.faktorips.devtools.core.ui.controller.EditField;
 import org.faktorips.devtools.core.ui.controller.IpsObjectUIController;
+import org.faktorips.devtools.core.ui.controller.fields.EnumTypeDatatypeField;
 import org.faktorips.devtools.core.ui.controls.DatatypeRefControl;
 import org.faktorips.devtools.core.ui.controls.TableElementValidator;
 import org.faktorips.devtools.core.ui.controls.ValueSetEditControl;
@@ -167,6 +168,9 @@ public class AttributeEditDialog extends IpsPartEditDialog2 implements ContentsC
                 currentDatatype);
         defaultValueField = datatypeCtrlFactory.createEditField(uiToolkit, defaultEditFieldPlaceholder,
                 currentDatatype, null, ipsProject);
+        if(defaultValueField instanceof EnumTypeDatatypeField){
+            ((EnumTypeDatatypeField)defaultValueField).setEnableEnumContentDisplay(false);
+        }
         defaultValueField.getControl().setLayoutData(new GridData(GridData.FILL_BOTH));
 
         defaultEditFieldPlaceholder.layout();

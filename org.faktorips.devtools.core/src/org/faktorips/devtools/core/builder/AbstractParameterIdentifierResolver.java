@@ -211,9 +211,6 @@ public abstract class AbstractParameterIdentifierResolver implements IdentifierR
 			String[] valueIds = enumType.getAllValueIds(true);
 			for (int i = 0; i < valueIds.length; i++) {
 			    String enumValueName = valueIds[i];
-			    if(enumType.isSupportingNames()){
-			        enumValueName = enumType.getValueName(valueIds[i]);
-			    }
                 if (ObjectUtils.equals(enumValueName, valueName)) {
                     JavaCodeFragment frag = new JavaCodeFragment();
                     frag.getImportDeclaration().add(enumType.getJavaClassName());
