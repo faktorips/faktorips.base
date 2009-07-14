@@ -26,6 +26,7 @@ import org.faktorips.datatype.Datatype;
 import org.faktorips.datatype.ValueDatatype;
 import org.faktorips.devtools.core.IpsStatus;
 import org.faktorips.devtools.core.builder.DefaultJavaSourceFileBuilder;
+import org.faktorips.devtools.core.builder.ExtendedExprCompiler;
 import org.faktorips.devtools.core.builder.TypeSection;
 import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.core.model.ipsproject.IIpsArtefactBuilderSet;
@@ -224,7 +225,8 @@ public class ProductCmptGenerationCuBuilder extends DefaultJavaSourceFileBuilder
             return fragment;
         }
         try {
-            ExprCompiler compiler = formula.newExprCompiler(getIpsProject(), formulaTest);
+            ExtendedExprCompiler compiler = formula.newExprCompiler(getIpsProject(), formulaTest);
+            compiler.setRuntimeRepositoryExpression(new JavaCodeFragment("getRepository()"));
             CompilationResult result = compiler.compile(expression);
             if (result.successfull()) {
                 Datatype attributeDatatype = formulaSignature.findDatatype(getIpsProject());

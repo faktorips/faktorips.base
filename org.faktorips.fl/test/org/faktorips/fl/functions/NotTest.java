@@ -18,6 +18,7 @@ import java.util.Locale;
 import org.faktorips.datatype.Datatype;
 import org.faktorips.fl.CompilationResult;
 import org.faktorips.fl.CompilationResultImpl;
+import org.faktorips.fl.ExprCompiler;
 import org.faktorips.fl.IdentifierResolver;
 
 
@@ -34,7 +35,7 @@ public class NotTest extends FunctionAbstractTest {
         registerFunction(new NotBoolean("NOT", ""));
         compiler.setIdentifierResolver(new IdentifierResolver() {
 
-            public CompilationResult compile(String identifier, Locale locale) {
+            public CompilationResult compile(String identifier, ExprCompiler exprCompiler, Locale locale) {
                 if (identifier.equals("beTrue")) {
                     return new CompilationResultImpl("Boolean.TRUE", Datatype.BOOLEAN);
                 } else if (identifier.equals("beFalse")) {

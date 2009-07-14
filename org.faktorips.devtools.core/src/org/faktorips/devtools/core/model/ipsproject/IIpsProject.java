@@ -29,6 +29,7 @@ import org.faktorips.datatype.Datatype;
 import org.faktorips.datatype.EnumDatatype;
 import org.faktorips.datatype.ValueDatatype;
 import org.faktorips.devtools.core.IpsPlugin;
+import org.faktorips.devtools.core.builder.ExtendedExprCompiler;
 import org.faktorips.devtools.core.internal.model.DynamicValueDatatype;
 import org.faktorips.devtools.core.model.IIpsElement;
 import org.faktorips.devtools.core.model.enums.IEnumContent;
@@ -47,7 +48,6 @@ import org.faktorips.devtools.core.model.tablestructure.ITableStructure;
 import org.faktorips.devtools.core.model.testcase.ITestCase;
 import org.faktorips.devtools.core.model.testcasetype.ITestCaseType;
 import org.faktorips.devtools.core.model.valueset.ValueSetType;
-import org.faktorips.fl.ExprCompiler;
 import org.faktorips.util.message.MessageList;
 
 /**
@@ -279,11 +279,11 @@ public interface IIpsProject extends IIpsElement, IProjectNature {
     public String getPlainTextFileCharset();
 
     /**
-     * Returns an ExprCompiler instance that is configured with the default set operations and
-     * functions. Functions that are added via the FunctionResolver extension point are also
-     * included.
+     * Returns an {@link ExtendedExprCompiler} instance that is configured with the default set
+     * operations and functions. Functions that are added via the FunctionResolver extension point
+     * are also included.
      */
-    public ExprCompiler newExpressionCompiler();
+    public ExtendedExprCompiler newExpressionCompiler();
 
     /**
      * Returns a copy of the project's object path. Note that a copy and not a reference is

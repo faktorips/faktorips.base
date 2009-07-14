@@ -294,7 +294,7 @@ public class EnumTypeBuilder extends DefaultJavaSourceFileBuilder {
      */
     public JavaCodeFragment getNewInstanceCodeFragement(EnumTypeDatatypeAdapter enumTypeAdapter,
             String value,
-            String repositoryExp) throws CoreException {
+            JavaCodeFragment repositoryExp) throws CoreException {
         ArgumentCheck.notNull(enumTypeAdapter, this);
 
         JavaCodeFragment fragment = new JavaCodeFragment();
@@ -318,7 +318,7 @@ public class EnumTypeBuilder extends DefaultJavaSourceFileBuilder {
 
     private JavaCodeFragment getNewInstanceCodeFragmentForEnumTypesWithDeferredContent(IEnumType enumType,
             String value,
-            String repositoryExp,
+            JavaCodeFragment repositoryExp,
             boolean valueAsExpression) throws CoreException {
         JavaCodeFragment fragment = new JavaCodeFragment();
  
@@ -327,7 +327,9 @@ public class EnumTypeBuilder extends DefaultJavaSourceFileBuilder {
             fragment.appendClassName(getQualifiedClassName(enumType));
             fragment.append(")");
         }
-        fragment.append(repositoryExp);
+        if(repositoryExp != null){
+            fragment.append(repositoryExp);
+        }
         fragment.append('.');
         fragment.append("getEnumValue(");
         fragment.appendClassName(getQualifiedClassName(enumType));
@@ -363,7 +365,7 @@ public class EnumTypeBuilder extends DefaultJavaSourceFileBuilder {
      * @throws CoreException If an exception occurs while processing.
      * @throws NullPointerException If <code>enumAttribute</code> is <code>null</code>.
      */
-    public JavaCodeFragment getCallGetValueByIdentifierCodeFragment(IEnumType enumType, String expressionValue, String repositoryExp)
+    public JavaCodeFragment getCallGetValueByIdentifierCodeFragment(IEnumType enumType, String expressionValue, JavaCodeFragment repositoryExp)
             throws CoreException {
         ArgumentCheck.notNull(enumType);
 
@@ -627,7 +629,7 @@ public class EnumTypeBuilder extends DefaultJavaSourceFileBuilder {
                     EnumTypeDatatypeHelper enumHelper = (EnumTypeDatatypeHelper)helper;
                     if (!enumHelper.getEnumType().isContainingValues()) {
                         body.append(enumHelper.getEnumTypeBuilder().getCallGetValueByIdentifierCodeFragment(enumHelper.getEnumType(), expression,
-                                "productRepository"));
+                                new JavaCodeFragment("productRepository")));
                         body.append(';');
                         body.appendln();
                         break;

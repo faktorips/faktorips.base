@@ -50,7 +50,7 @@ public class DefaultIdentifierResolver implements IdentifierResolver {
     /**
      * {@inheritDoc}
      */
-    public CompilationResult compile(String identifier, Locale locale) {
+    public CompilationResult compile(String identifier, ExprCompiler exprCompiler, Locale locale) {
         FragmentDatatypeWrapper wrapper = (FragmentDatatypeWrapper)identifiers.get(identifier);
         if (wrapper!=null) {
             return new CompilationResultImpl(new JavaCodeFragment(wrapper.fragment), wrapper.datatype);

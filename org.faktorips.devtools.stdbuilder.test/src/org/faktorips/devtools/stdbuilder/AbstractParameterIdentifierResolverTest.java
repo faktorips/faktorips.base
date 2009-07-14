@@ -72,7 +72,7 @@ public class AbstractParameterIdentifierResolverTest extends AbstractIpsPluginTe
         IProductCmptGeneration productCmptGeneration = (IProductCmptGeneration)productCmpt.newGeneration();
         formula = productCmptGeneration.newFormula();
         formula.setFormulaSignature(method.getFormulaName());
-        resolver = (AbstractParameterIdentifierResolver)ipsProject.getIpsArtefactBuilderSet().createFlIdentifierResolver(formula);
+        resolver = (AbstractParameterIdentifierResolver)ipsProject.getIpsArtefactBuilderSet().createFlIdentifierResolver(formula, formula.newExprCompiler(ipsProject));
     }
 
     private PolicyCmptInterfaceBuilder getPolicyCmptInterfaceBuilder() throws Exception {
@@ -88,14 +88,14 @@ public class AbstractParameterIdentifierResolverTest extends AbstractIpsPluginTe
     public void testCompile() throws Exception {
 
         // no parameter registered => undefined identifier
-        CompilationResult result = resolver.compile("identifier", locale);
+        CompilationResult result = resolver.compile("identifier", null, locale);
         assertTrue(result.failed());
         assertEquals(1, result.getMessages().getNoOfMessages());
         assertEquals(ExprCompiler.UNDEFINED_IDENTIFIER, result.getMessages().getMessage(0).getCode());
 
         // parameter with a value datatype
         method.newParameter(Datatype.MONEY.getQualifiedName(), "rate");
-        result = resolver.compile("rate", locale);
+        result = resolver.compile("rate", null, locale);
         assertTrue(result.successfull());
         assertEquals(Datatype.MONEY, result.getDatatype());
         assertEquals("rate", result.getCodeFragment().getSourcecode());
@@ -105,7 +105,7 @@ public class AbstractParameterIdentifierResolverTest extends AbstractIpsPluginTe
         // with attributeName is the name of one of the type's attributes
         method.newParameter(policyCmptType.getQualifiedName(), "policy");
 
-        result = resolver.compile("policy.tax", locale);
+        result = resolver.compile("policy.tax", null, locale);
         assertTrue(result.successfull());
         assertEquals(Datatype.DECIMAL, result.getDatatype());
         String expected = "policy."
@@ -113,39 +113,39 @@ public class AbstractParameterIdentifierResolverTest extends AbstractIpsPluginTe
         assertEquals(expected, result.getCodeFragment().getSourcecode());
 
         // unkown parameter
-        result = resolver.compile("unkownParameter", locale);
+        result = resolver.compile("unkownParameter", null, locale);
         assertTrue(result.failed());
         assertEquals(1, result.getMessages().getNoOfMessages());
         assertEquals(ExprCompiler.UNDEFINED_IDENTIFIER, result.getMessages().getMessage(0).getCode());
 
         // parameter with unkown datatype
         method.newParameter("UnknownDatatye", "p3");
-        result = resolver.compile("p3", locale);
+        result = resolver.compile("p3", null, locale);
         assertTrue(result.failed());
         assertEquals(1, result.getMessages().getNoOfMessages());
         assertEquals(ExprCompiler.UNDEFINED_IDENTIFIER, result.getMessages().getMessage(0).getCode());
 
         // unkown attribute
-        result = resolver.compile("policy.unkownAttribute", locale);
+        result = resolver.compile("policy.unkownAttribute", null, locale);
         assertTrue(result.failed());
         assertEquals(1, result.getMessages().getNoOfMessages());
         assertEquals(ExprCompiler.UNDEFINED_IDENTIFIER, result.getMessages().getMessage(0).getCode());
 
         // attribute with unkown datatype
         attribute.setDatatype("UnknownDatatype");
-        result = resolver.compile("policy.tax", locale);
+        result = resolver.compile("policy.tax", null, locale);
         assertTrue(result.failed());
         assertEquals(1, result.getMessages().getNoOfMessages());
         assertEquals(ExprCompiler.UNDEFINED_IDENTIFIER, result.getMessages().getMessage(0).getCode());
 
         // no attributename given
-        result = resolver.compile("policy.", locale);
+        result = resolver.compile("policy.", null, locale);
         assertTrue(result.failed());
         assertEquals(1, result.getMessages().getNoOfMessages());
         assertEquals(ExprCompiler.UNDEFINED_IDENTIFIER, result.getMessages().getMessage(0).getCode());
 
         // unkown policy component type
-        result = resolver.compile("unkownType.tax", locale);
+        result = resolver.compile("unkownType.tax", null, locale);
         assertTrue(result.failed());
         assertEquals(1, result.getMessages().getNoOfMessages());
         assertEquals(ExprCompiler.UNDEFINED_IDENTIFIER, result.getMessages().getMessage(0).getCode());
@@ -154,7 +154,7 @@ public class AbstractParameterIdentifierResolverTest extends AbstractIpsPluginTe
         IAttribute attribute = productCmptType.newAttribute();
         attribute.setName("a");
         attribute.setDatatype(Datatype.INTEGER.getName());
-        result = resolver.compile("a", locale);
+        result = resolver.compile("a", null, locale);
         assertTrue(result.successfull());
         assertEquals("getA()", result.getCodeFragment().getSourcecode());
     }
@@ -164,23 +164,23 @@ public class AbstractParameterIdentifierResolverTest extends AbstractIpsPluginTe
         EnumDatatype testType = (EnumDatatype)ipsProject.findDatatype("TestEnumType");
         assertNotNull(testType);
 
-        CompilationResult result = resolver.compile("TestEnumType.1", locale);
+        CompilationResult result = resolver.compile("TestEnumType.1", null, locale);
         assertTrue(result.failed());
         assertEquals(ExprCompiler.UNDEFINED_IDENTIFIER, result.getMessages().getMessage(0).getCode());
         
         IParameter methodParam = method.newParameter("TestEnumType", "param0");
-        result = resolver.compile("TestEnumType.first", locale);
+        result = resolver.compile("TestEnumType.first", null, locale);
         assertTrue(result.successfull());
 
         methodParam.delete();
-        result = resolver.compile("TestEnumType.first", locale);
+        result = resolver.compile("TestEnumType.first", null, locale);
         assertTrue(result.failed());
         
         IAttribute attr = productCmptType.newAttribute();
         attr.setDatatype("TestEnumType");
         attr.setName("a");
 
-        result = resolver.compile("TestEnumType.first", locale);
+        result = resolver.compile("TestEnumType.first", null, locale);
         assertTrue(result.successfull());
     }
     

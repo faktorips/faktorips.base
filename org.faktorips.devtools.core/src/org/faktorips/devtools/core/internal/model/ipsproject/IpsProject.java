@@ -57,6 +57,7 @@ import org.faktorips.devtools.core.IFunctionResolverFactory;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.IpsStatus;
 import org.faktorips.devtools.core.builder.IpsBuilder;
+import org.faktorips.devtools.core.builder.ExtendedExprCompiler;
 import org.faktorips.devtools.core.internal.model.DynamicValueDatatype;
 import org.faktorips.devtools.core.internal.model.IpsElement;
 import org.faktorips.devtools.core.internal.model.IpsModel;
@@ -184,8 +185,8 @@ public class IpsProject extends IpsElement implements IIpsProject {
     /**
      * {@inheritDoc}
      */
-    public ExprCompiler newExpressionCompiler() {
-        ExprCompiler compiler = new ExprCompiler();
+    public ExtendedExprCompiler newExpressionCompiler() {
+        ExtendedExprCompiler compiler = new ExtendedExprCompiler();
         IFunctionResolverFactory[] resolvers = IpsPlugin.getDefault().getFlFunctionResolverFactories();
         for (int i = 0; i < resolvers.length; i++) {
             try {

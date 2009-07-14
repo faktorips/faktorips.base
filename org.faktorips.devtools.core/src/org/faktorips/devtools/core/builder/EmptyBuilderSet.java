@@ -31,6 +31,7 @@ import org.faktorips.devtools.core.model.tablestructure.ITableStructure;
 import org.faktorips.devtools.core.model.type.IAttribute;
 import org.faktorips.fl.CompilationResult;
 import org.faktorips.fl.CompilationResultImpl;
+import org.faktorips.fl.ExprCompiler;
 import org.faktorips.fl.IdentifierResolver;
 
 /**
@@ -71,8 +72,8 @@ public class EmptyBuilderSet extends AbstractBuilderSet {
     /**
      * {@inheritDoc}
      */
-    public IdentifierResolver createFlIdentifierResolver(IFormula formula) throws CoreException {
-        return new AbstractParameterIdentifierResolver(formula) {
+    public IdentifierResolver createFlIdentifierResolver(IFormula formula, ExprCompiler exprCompiler) throws CoreException {
+        return new AbstractParameterIdentifierResolver(formula, exprCompiler) {
 
             protected String getParameterAttributGetterName(IAttribute attribute, Datatype datatype) {
                 return ""; //$NON-NLS-1$
@@ -83,9 +84,9 @@ public class EmptyBuilderSet extends AbstractBuilderSet {
     /**
      * {@inheritDoc}
      */
-    public IdentifierResolver createFlIdentifierResolverForFormulaTest(IFormula formula)
+    public IdentifierResolver createFlIdentifierResolverForFormulaTest(IFormula formula, ExprCompiler exprCompiler)
             throws CoreException {
-        return createFlIdentifierResolver(formula);
+        return createFlIdentifierResolver(formula, exprCompiler);
     }
 
     /**

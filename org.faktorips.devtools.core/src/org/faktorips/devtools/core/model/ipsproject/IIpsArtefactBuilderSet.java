@@ -26,6 +26,7 @@ import org.faktorips.devtools.core.model.productcmpt.IFormula;
 import org.faktorips.devtools.core.model.tablecontents.ITableContents;
 import org.faktorips.devtools.core.model.tablestructure.ITableAccessFunction;
 import org.faktorips.fl.CompilationResult;
+import org.faktorips.fl.ExprCompiler;
 import org.faktorips.fl.IdentifierResolver;
 
 /**
@@ -113,19 +114,25 @@ public interface IIpsArtefactBuilderSet extends IJavaPackageStructure {
      * Creates an<code>IdentifierResolver</code> used to resolve identifiers in the given
      * formula. Returns <code>null</code> if this builder set doesn't support an formula language
      * identifier resolver.
+     * 
+     * @param exprCompiler can be used by the {@link IdentifierResolver} to ask for properties or services 
+     *  that are necessary to be able to resolve an identifier properly 
      */
-    public IdentifierResolver createFlIdentifierResolver(IFormula formula) throws CoreException;
+    public IdentifierResolver createFlIdentifierResolver(IFormula formula, ExprCompiler exprCompiler) throws CoreException;
 
     /**
-     * Creates an<code>IdentifierResolver</code> used to resolve identifiers in the given
-     * formula. The returned identifier resolver has an special handling of type attribute (e.g. an
-     * policy cmpt type attribute), instead of using the getter method of the attribute a parameter
-     * will be used.
+     * Creates an<code>IdentifierResolver</code> used to resolve identifiers in the given formula.
+     * The returned identifier resolver has an special handling of type attribute (e.g. an policy
+     * cmpt type attribute), instead of using the getter method of the attribute a parameter will be
+     * used.
+     * <p>
+     * Returns <code>null</code> if this builder set doesn't support a formula language identifier
+     * resolver.
      * 
-     * Returns <code>null</code> if this builder set doesn't support an formula language
-     * identifier resolver.
+     * @param exprCompiler can be used by the {@link IdentifierResolver} to ask for properties or
+     *            services that are necessary to be able to resolve an identifier properly
      */
-    public IdentifierResolver createFlIdentifierResolverForFormulaTest(IFormula formula) throws CoreException;
+    public IdentifierResolver createFlIdentifierResolverForFormulaTest(IFormula formula, ExprCompiler exprCompiler) throws CoreException;
 
     /**
      * Returns the datatype helper for the provided {@link IEnumType}. <code>IEnumType</code>

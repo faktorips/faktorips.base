@@ -280,7 +280,7 @@ public class GenProdAttribute extends GenProductCmptTypePart {
             EnumTypeDatatypeHelper enumHelper = (EnumTypeDatatypeHelper)getDatatypeHelper();
             if (!enumHelper.getEnumType().isContainingValues()) {
                 builder.append(enumHelper.getEnumTypeBuilder().getCallGetValueByIdentifierCodeFragment(enumHelper.getEnumType(), "value",
-                        "getRepository()"));
+                        new JavaCodeFragment("getRepository()")));
                 builder.appendln(";");
                 return;
             }

@@ -28,6 +28,8 @@ import org.faktorips.datatype.EnumDatatype;
 import org.faktorips.datatype.ValueDatatype;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.IpsStatus;
+import org.faktorips.devtools.core.model.enums.EnumTypeDatatypeAdapter;
+import org.faktorips.devtools.core.model.enums.IEnumType;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.productcmpt.IFormula;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
@@ -50,10 +52,13 @@ public abstract class AbstractParameterIdentifierResolver implements IdentifierR
 
 	private IIpsProject ipsproject;
     private IFormula formula;
+    private ExprCompiler exprCompiler;
 
-    public AbstractParameterIdentifierResolver(IFormula formula) throws CoreException{
+    public AbstractParameterIdentifierResolver(IFormula formula, ExprCompiler exprCompiler) throws CoreException{
         ArgumentCheck.notNull(formula, this);
+        ArgumentCheck.notNull(exprCompiler, this);
         this.formula = formula;
+        this.exprCompiler = exprCompiler;
         ipsproject = formula.getIpsProject();
     }
     
@@ -88,7 +93,7 @@ public abstract class AbstractParameterIdentifierResolver implements IdentifierR
     /**
      * {@inheritDoc}
 	 */
-	public CompilationResult compile(String identifier, Locale locale) {
+	public CompilationResult compile(String identifier, ExprCompiler exprCompiler, Locale locale) {
 
 		if (ipsproject == null) {
 			throw new IllegalStateException(
@@ -179,6 +184,21 @@ public abstract class AbstractParameterIdentifierResolver implements IdentifierR
                 + datatype.getClass());
     }
 
+    /**
+     * Since the generation of a new instance statement of an {@link IEnumType} needs information
+     * about the code generation the implementation is postponed to the generation implementation.
+     * By default this method is an empty implementation.
+     * 
+     * @param fragment the {@link JavaCodeFragment} to add the new instance expression for the provided
+     *          {@link IEnumType}
+     * @throws CoreException 
+     */
+	protected void addNewInstanceForEnumType(JavaCodeFragment fragment,
+	        EnumTypeDatatypeAdapter enumType,
+            ExprCompiler exprCompiler,
+            String value) throws CoreException {
+    }
+	
 	private CompilationResult compileEnumDatatypeValueIdentifier(
 			String enumTypeName, String valueName, Locale locale) {
 		
@@ -197,8 +217,12 @@ public abstract class AbstractParameterIdentifierResolver implements IdentifierR
                 if (ObjectUtils.equals(enumValueName, valueName)) {
                     JavaCodeFragment frag = new JavaCodeFragment();
                     frag.getImportDeclaration().add(enumType.getJavaClassName());
-                    DatatypeHelper helper = ipsproject.getDatatypeHelper(enumType);
-                    frag.append(helper.newInstance(valueIds[i]));
+                    if(enumType instanceof EnumTypeDatatypeAdapter){
+                        addNewInstanceForEnumType(frag, (EnumTypeDatatypeAdapter)enumType, exprCompiler, valueIds[i]);
+                    } else {
+                        DatatypeHelper helper = ipsproject.getDatatypeHelper(enumType);
+                        frag.append(helper.newInstance(valueIds[i]));
+                    }
                     return new CompilationResultImpl(frag, enumType);
                 }
             }

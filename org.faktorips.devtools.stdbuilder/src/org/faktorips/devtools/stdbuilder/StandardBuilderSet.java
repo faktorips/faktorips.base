@@ -26,8 +26,10 @@ import org.faktorips.devtools.core.IpsStatus;
 import org.faktorips.devtools.core.builder.AbstractParameterIdentifierResolver;
 import org.faktorips.devtools.core.builder.ComplianceCheck;
 import org.faktorips.devtools.core.builder.DefaultBuilderSet;
+import org.faktorips.devtools.core.builder.ExtendedExprCompiler;
 import org.faktorips.devtools.core.model.bf.BusinessFunctionIpsObjectType;
 import org.faktorips.devtools.core.model.enums.EnumTypeDatatypeAdapter;
+import org.faktorips.devtools.core.model.enums.IEnumType;
 import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
 import org.faktorips.devtools.core.model.ipsproject.IIpsArtefactBuilder;
@@ -64,6 +66,7 @@ import org.faktorips.devtools.stdbuilder.testcasetype.TestCaseTypeClassBuilder;
 import org.faktorips.devtools.stdbuilder.type.GenType;
 import org.faktorips.fl.CompilationResult;
 import org.faktorips.fl.CompilationResultImpl;
+import org.faktorips.fl.ExprCompiler;
 import org.faktorips.fl.IdentifierResolver;
 import org.faktorips.runtime.ICopySupport;
 import org.faktorips.runtime.IDeltaSupport;
@@ -257,9 +260,17 @@ public class StandardBuilderSet extends DefaultBuilderSet {
     /**
      * {@inheritDoc}
      */
-    @Override
-    public IdentifierResolver createFlIdentifierResolver(IFormula formula) throws CoreException {
-        return new AbstractParameterIdentifierResolver(formula) {
+    public IdentifierResolver createFlIdentifierResolver(IFormula formula, ExprCompiler exprCompiler) throws CoreException {
+        return new AbstractParameterIdentifierResolver(formula, exprCompiler) {
+
+            protected void addNewInstanceForEnumType(JavaCodeFragment fragment,
+                    EnumTypeDatatypeAdapter datatype,
+                    ExprCompiler exprCompiler,
+                    String value) throws CoreException {
+                ExtendedExprCompiler compiler = (ExtendedExprCompiler)exprCompiler;
+                fragment.append(enumTypeBuilder.getNewInstanceCodeFragement(datatype, value, compiler
+                        .getRuntimeRepositoryExpression()));
+            }
 
             protected String getParameterAttributGetterName(IAttribute attribute, Datatype datatype) {
                 try {
@@ -285,9 +296,8 @@ public class StandardBuilderSet extends DefaultBuilderSet {
     /**
      * {@inheritDoc}
      */
-    @Override
-    public IdentifierResolver createFlIdentifierResolverForFormulaTest(IFormula formula) throws CoreException {
-        return new AbstractParameterIdentifierResolver(formula) {
+    public IdentifierResolver createFlIdentifierResolverForFormulaTest(IFormula formula, ExprCompiler exprCompiler) throws CoreException {
+        return new AbstractParameterIdentifierResolver(formula, exprCompiler) {
 
             /**
              * {@inheritDoc}

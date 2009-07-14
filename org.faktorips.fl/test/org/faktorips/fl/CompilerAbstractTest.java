@@ -81,7 +81,7 @@ public abstract class CompilerAbstractTest extends TestCase {
             parameterMap.put(parameterNames[i], parameterTypes[i]);
         }
         IdentifierResolver resolver = new IdentifierResolver(){
-            public CompilationResult compile(String identifier, Locale locale) {
+            public CompilationResult compile(String identifier, ExprCompiler exprCompiler, Locale locale) {
                 Object paramDatatype = parameterMap.get(identifier);
                 if(paramDatatype != null){
                     return new CompilationResultImpl(identifier, (Datatype)paramDatatype);

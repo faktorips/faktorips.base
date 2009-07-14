@@ -280,7 +280,7 @@ public class ExprCompilerTest extends CompilerAbstractTest {
     public void testUsedIdentifiers() {
         compiler.setIdentifierResolver(new IdentifierResolver() {
 
-            public CompilationResult compile(String identifier, Locale locale) {
+            public CompilationResult compile(String identifier, ExprCompiler exprCompiler, Locale locale) {
                 return new CompilationResultImpl(identifier, Datatype.INTEGER);
             }
             

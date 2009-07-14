@@ -20,6 +20,7 @@ import org.faktorips.datatype.ArrayOfValueDatatype;
 import org.faktorips.datatype.Datatype;
 import org.faktorips.fl.CompilationResult;
 import org.faktorips.fl.CompilationResultImpl;
+import org.faktorips.fl.ExprCompiler;
 import org.faktorips.fl.IdentifierResolver;
 import org.faktorips.values.Decimal;
 
@@ -50,7 +51,7 @@ public class SumBeanArrayPropertyFctTest extends FunctionAbstractTest {
     
     class BeanIdentifierResolver implements IdentifierResolver {
 
-        public CompilationResult compile(String identifier, Locale locale) {
+        public CompilationResult compile(String identifier, ExprCompiler exprCompiler, Locale locale) {
             if (identifier.equals("beans")) {
                 return getResultForBeans();
             } else if (identifier.equals("value")) {

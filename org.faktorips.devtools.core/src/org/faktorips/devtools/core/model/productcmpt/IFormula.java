@@ -16,6 +16,7 @@ package org.faktorips.devtools.core.model.productcmpt;
 import org.eclipse.core.runtime.CoreException;
 import org.faktorips.datatype.EnumDatatype;
 import org.faktorips.datatype.ValueDatatype;
+import org.faktorips.devtools.core.builder.ExtendedExprCompiler;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPart;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
@@ -134,7 +135,7 @@ public interface IFormula extends IIpsObjectPart, IPropertyValue {
      *            forumla test, in formula tests all type parameters will be replaced by their
      *            value, which is defined inside the forumla test.
      */
-    public ExprCompiler newExprCompiler(IIpsProject ipsProject, boolean formulaTest) throws CoreException;
+    public ExtendedExprCompiler newExprCompiler(IIpsProject ipsProject, boolean formulaTest) throws CoreException;
     
     /**
      * Returns the enum dataypes that can be use in this formula.

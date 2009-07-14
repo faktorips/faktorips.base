@@ -28,6 +28,7 @@ import org.faktorips.devtools.core.model.tablecontents.ITableContents;
 import org.faktorips.devtools.core.model.tablestructure.ITableAccessFunction;
 import org.faktorips.devtools.core.util.QNameUtil;
 import org.faktorips.fl.CompilationResult;
+import org.faktorips.fl.ExprCompiler;
 import org.faktorips.fl.IdentifierResolver;
 
 /**
@@ -266,14 +267,14 @@ public abstract class DefaultBuilderSet extends AbstractBuilderSet {
     /**
      * {@inheritDoc}
      */
-    public IdentifierResolver createFlIdentifierResolver(IFormula formula) throws CoreException {
+    public IdentifierResolver createFlIdentifierResolver(IFormula formula, ExprCompiler exprCompiler) throws CoreException {
         return null;
     }
 
     /**
      * {@inheritDoc}
      */
-    public IdentifierResolver createFlIdentifierResolverForFormulaTest(IFormula formula) throws CoreException {
+    public IdentifierResolver createFlIdentifierResolverForFormulaTest(IFormula formula, ExprCompiler exprCompiler) throws CoreException {
         return null;
     }
 

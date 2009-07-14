@@ -217,7 +217,7 @@ public abstract class GenAttribute extends GenPolicyCmptTypePart {
         methodsBuilder.appendln(", options);");
     }
 
-    public void generateInitPropertiesFromXml(JavaCodeFragmentBuilder builder, String repositoryExpression)
+    public void generateInitPropertiesFromXml(JavaCodeFragmentBuilder builder, JavaCodeFragment repositoryExpression)
             throws CoreException {
         String propMapName = "propMap";
         builder.append("if (" + propMapName + ".containsKey(");

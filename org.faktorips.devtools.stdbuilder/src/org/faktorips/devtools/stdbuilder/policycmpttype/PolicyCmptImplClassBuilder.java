@@ -932,7 +932,7 @@ public class PolicyCmptImplClassBuilder extends BasePolicyCmptTypeBuilder {
                                 + "," + String.class.getName() + ">" : HashMap.class.getName(), IRuntimeRepository.class.getName() });
                 builder.appendln("super." + MethodNames.INIT_PROPERTIES_FROM_XML + "(propMap, productRepository);");
             }
-            generator.generateInitPropertiesFromXml(builder, "productRepository");
+            generator.generateInitPropertiesFromXml(builder, new JavaCodeFragment("productRepository"));
         }
         if (!first) {
             builder.methodEnd();

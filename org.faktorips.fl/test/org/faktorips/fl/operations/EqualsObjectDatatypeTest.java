@@ -21,6 +21,7 @@ import org.faktorips.fl.BinaryOperation;
 import org.faktorips.fl.CompilationResult;
 import org.faktorips.fl.CompilationResultImpl;
 import org.faktorips.fl.CompilerAbstractTest;
+import org.faktorips.fl.ExprCompiler;
 import org.faktorips.fl.IdentifierResolver;
 
 /**
@@ -34,7 +35,7 @@ public class EqualsObjectDatatypeTest extends CompilerAbstractTest {
         compiler.setBinaryOperations(new BinaryOperation[]{new EqualsObjectDatatype(AnyDatatype.INSTANCE)});
         compiler.setIdentifierResolver(new IdentifierResolver() {
 
-            public CompilationResult compile(String identifier, Locale locale) {
+            public CompilationResult compile(String identifier, ExprCompiler exprCompiler, Locale locale) {
                 if (identifier.equals("beTrue")) {
                     return new CompilationResultImpl("Boolean.TRUE", Datatype.BOOLEAN);
                 } else if (identifier.equals("beFalse")) {

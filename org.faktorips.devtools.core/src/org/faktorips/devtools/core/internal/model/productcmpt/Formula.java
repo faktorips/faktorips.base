@@ -29,6 +29,7 @@ import org.faktorips.datatype.Datatype;
 import org.faktorips.datatype.EnumDatatype;
 import org.faktorips.datatype.ValueDatatype;
 import org.faktorips.devtools.core.IpsPlugin;
+import org.faktorips.devtools.core.builder.ExtendedExprCompiler;
 import org.faktorips.devtools.core.internal.model.ipsobject.BaseIpsObjectPart;
 import org.faktorips.devtools.core.internal.model.ipsobject.IpsObjectPartCollection;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPart;
@@ -206,8 +207,8 @@ public class Formula extends BaseIpsObjectPart implements IFormula {
     /**
      * {@inheritDoc}
      */
-    public ExprCompiler newExprCompiler(IIpsProject ipsProject, boolean formulaTest) throws CoreException {
-        ExprCompiler compiler = ipsProject.newExpressionCompiler();
+    public ExtendedExprCompiler newExprCompiler(IIpsProject ipsProject, boolean formulaTest) throws CoreException {
+        ExtendedExprCompiler compiler = ipsProject.newExpressionCompiler();
         
         // add the table functions based on the table usages defined in the product cmpt type
         IProductCmptGeneration gen = getProductCmptGeneration();
@@ -220,10 +221,10 @@ public class Formula extends BaseIpsObjectPart implements IFormula {
         }
         IdentifierResolver resolver;
         if (! formulaTest){
-            resolver = builderSet.createFlIdentifierResolver(this);
+            resolver = builderSet.createFlIdentifierResolver(this, compiler);
         } else {
             // create special identifier resolver for test methods
-            resolver = builderSet.createFlIdentifierResolverForFormulaTest(this);
+            resolver = builderSet.createFlIdentifierResolverForFormulaTest(this, compiler);
         }
         if (resolver == null) {
             return compiler;
