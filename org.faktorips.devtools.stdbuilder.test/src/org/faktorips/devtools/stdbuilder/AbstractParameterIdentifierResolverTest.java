@@ -169,18 +169,18 @@ public class AbstractParameterIdentifierResolverTest extends AbstractIpsPluginTe
         assertEquals(ExprCompiler.UNDEFINED_IDENTIFIER, result.getMessages().getMessage(0).getCode());
         
         IParameter methodParam = method.newParameter("TestEnumType", "param0");
-        result = resolver.compile("TestEnumType.first", null, locale);
+        result = resolver.compile("TestEnumType.1", null, locale);
         assertTrue(result.successfull());
 
         methodParam.delete();
-        result = resolver.compile("TestEnumType.first", null, locale);
+        result = resolver.compile("TestEnumType.1", null, locale);
         assertTrue(result.failed());
         
         IAttribute attr = productCmptType.newAttribute();
         attr.setDatatype("TestEnumType");
         attr.setName("a");
 
-        result = resolver.compile("TestEnumType.first", null, locale);
+        result = resolver.compile("TestEnumType.1", null, locale);
         assertTrue(result.successfull());
     }
     

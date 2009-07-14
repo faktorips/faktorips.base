@@ -91,9 +91,9 @@ public class FormulaCompletionProcessorTest extends AbstractIpsPluginTest {
 			proposal = (CompletionProposal) iter.next();
 			expectedValues.add(proposal.getDisplayString());
 		}
-		assertTrue(expectedValues.contains("first"));
-		assertTrue(expectedValues.contains("second"));
-		assertTrue(expectedValues.contains("third"));
+		assertTrue(expectedValues.contains("1"));
+		assertTrue(expectedValues.contains("2"));
+		assertTrue(expectedValues.contains("3"));
 	}
 
     public void testDoComputeCompletionProposalsForMultipleTableContentsWithDateFormatName() throws Exception{
