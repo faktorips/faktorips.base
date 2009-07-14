@@ -144,8 +144,8 @@ public class IpsBuilder extends IncrementalProjectBuilder {
             getIpsProject().reinitializeIpsArtefactBuilderSet();
         } catch (CoreException e) {
             throw e;
-        } catch (Exception e) {
-            throw new CoreException(new IpsStatus(e));
+        } catch (Throwable t) {
+            throw new CoreException(new IpsStatus(t));
         } finally {
             monitor.done();
         }
