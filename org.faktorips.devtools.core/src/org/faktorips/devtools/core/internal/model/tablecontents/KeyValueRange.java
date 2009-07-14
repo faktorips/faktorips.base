@@ -77,6 +77,9 @@ public class KeyValueRange extends AbstractKeyValue implements Comparable<KeyVal
      * @see ValueDatatype#isParseable
      */
     public boolean isParsable(){
+        if (valueDatatype == null){
+            return false;
+        }
         return valueDatatype.isParsable(valueFrom) && valueDatatype.isParsable(evalValueTo(row, columnRange));
     }    
 

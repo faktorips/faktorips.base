@@ -32,7 +32,9 @@ import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAttribute;
 import org.faktorips.devtools.core.model.tablecontents.IRow;
 import org.faktorips.devtools.core.model.tablecontents.ITableContents;
 import org.faktorips.devtools.core.model.tablecontents.ITableContentsGeneration;
+import org.faktorips.devtools.core.model.tablestructure.ColumnRangeType;
 import org.faktorips.devtools.core.model.tablestructure.IColumn;
+import org.faktorips.devtools.core.model.tablestructure.IColumnRange;
 import org.faktorips.devtools.core.model.tablestructure.ITableStructure;
 import org.faktorips.devtools.core.model.tablestructure.IUniqueKey;
 import org.faktorips.util.message.MessageList;
@@ -242,6 +244,41 @@ public class TableContentsTest extends AbstractIpsPluginTest {
         } catch (IllegalArgumentException e) {
             //nothing to do :-)
         }
+    }
+
+    public void testValidateRowRangeFromGreaterToValue() throws Exception{
+        ITableStructure structure = (ITableStructure)newIpsObject(project,  IpsObjectType.TABLE_STRUCTURE, "Ts");
+        IColumn fromColumn = structure.newColumn();
+        fromColumn.setDatatype(Datatype.INTEGER.getQualifiedName());
+        fromColumn.setName("fromColumn");
+        IColumn toColumn = structure.newColumn();
+        toColumn.setDatatype(Datatype.INTEGER.getQualifiedName());
+        toColumn.setName("toColumn");
+        
+        IColumnRange range = structure.newRange();
+        range.setColumnRangeType(ColumnRangeType.TWO_COLUMN_RANGE);
+        range.setFromColumn("fromColumn");
+        range.setToColumn("toColumn");
+        
+        structure.newUniqueKey().addKeyItem(range.getName());
+        
+        table.setTableStructure(structure.getQualifiedName());
+        ITableContentsGeneration tableGen = (ITableContentsGeneration)table.newGeneration();
+        table.newColumn("fromColumn");
+        table.newColumn("toColumn");
+        IRow newRow = tableGen.newRow();
+        newRow.setValue(0, "10");
+        newRow.setValue(1, "20");
+        
+        MessageList msgList = table.validate(project);
+        assertNull(msgList.getMessageByCode(IRow.MSGCODE_UNIQUE_KEY_FROM_COlUMN_VALUE_IS_GREATER_TO_COLUMN_VALUE));
+        
+        newRow.setValue(0, "21");
+        newRow.setValue(1, "20");
+        
+        msgList = table.validate(project);
+        assertNotNull(msgList.getMessageByCode(IRow.MSGCODE_UNIQUE_KEY_FROM_COlUMN_VALUE_IS_GREATER_TO_COLUMN_VALUE));
+        
     }
     
     public void testValidate() throws Exception{

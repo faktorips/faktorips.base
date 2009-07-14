@@ -26,6 +26,7 @@ import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.tablecontents.IRow;
 import org.faktorips.devtools.core.model.tablecontents.ITableContents;
 import org.faktorips.devtools.core.model.tablestructure.IColumn;
+import org.faktorips.devtools.core.model.tablestructure.IColumnRange;
 import org.faktorips.devtools.core.model.tablestructure.IKeyItem;
 import org.faktorips.devtools.core.model.tablestructure.ITableStructure;
 import org.faktorips.devtools.core.model.tablestructure.IUniqueKey;
@@ -208,7 +209,7 @@ public class Row extends AtomicIpsObjectPart implements IRow {
 
     private void validateThis(MessageList result, ITableStructure tableStructure, ValueDatatype[] datatypes, boolean uniqueKeyCheck) throws CoreException {
         IUniqueKey[] uniqueKeys = tableStructure.getUniqueKeys();
-        validateMissingUniqueKeyValue(result, datatypes, tableStructure, uniqueKeys);
+        validateMissingAndInvalidUniqueKeyValue(result, datatypes, tableStructure, uniqueKeys);
         validateRowValue(result, tableStructure, datatypes);
         if (uniqueKeyCheck){
             validateUniqueKey(result, tableStructure, datatypes);
@@ -222,7 +223,7 @@ public class Row extends AtomicIpsObjectPart implements IRow {
     /*
      * Validates this row using the given list of datatypes.
      */
-    private void validateMissingUniqueKeyValue(MessageList list, ValueDatatype[] datatypes, 
+    private void validateMissingAndInvalidUniqueKeyValue(MessageList list, ValueDatatype[] datatypes, 
             ITableStructure structure, IUniqueKey[] uniqueKeys) throws CoreException {
 
         //this validation can only be applied if the colum sizes of the structure and content are consistent.
@@ -243,6 +244,39 @@ public class Row extends AtomicIpsObjectPart implements IRow {
                         String text = NLS.bind(Messages.Row_MissingValueForUniqueKey, column.getName());
                         Message message= new Message(MSGCODE_UNDEFINED_UNIQUEKEY_VALUE, text, Message.ERROR, new ObjectProperty(this, IRow.PROPERTY_VALUE, columnIndex));
                         list.add(message);
+                    }
+                } else if (keyItem instanceof IColumnRange){
+                    IColumnRange columnRange = (IColumnRange)keyItem;
+                    if (columnRange.getColumnRangeType().isTwoColumn()){
+                        IColumn fromColumn = structure.getColumn(columnRange.getFromColumn());
+                        IColumn toColumn = structure.getColumn(columnRange.getToColumn());
+                        if (fromColumn == null || toColumn == null){
+                            // ignored, will be another validation error
+                            continue;
+                        }
+                        int fromColumnIndex = structure.getColumnIndex(fromColumn);
+                        int toColumnIndex = structure.getColumnIndex(toColumn);
+                        ValueDatatype valueDatatypeFrom = datatypes[fromColumnIndex];
+                        ValueDatatype valueDatatypeTo = datatypes[toColumnIndex];
+                        if (valueDatatypeFrom == null || valueDatatypeTo == null ){
+                            // Error 'from'-column or the 'to'-column datatype is null!
+                            // ignored, will be another validation error
+                            continue;
+                        }
+                        if (! valueDatatypeFrom.equals(valueDatatypeTo)){
+                            // Error the 'from'-column and the 'to'-column datatypes are different!
+                            // ignored, will be another validation error
+                            continue;
+                        }
+                       if (!valueDatatypeFrom.isParsable(getValue(fromColumnIndex)) || ! valueDatatypeTo.isParsable(getValue(toColumnIndex))){
+                           // ignored, will be another validation error
+                           continue;
+                       }
+                       if (valueDatatypeFrom.compare(getValue(fromColumnIndex), getValue(toColumnIndex)) > 0){
+                           String text = NLS.bind(Messages.Row_FromValueGreaterThanToValue, columnRange.getName());
+                           list.add(new Message(MSGCODE_UNIQUE_KEY_FROM_COlUMN_VALUE_IS_GREATER_TO_COLUMN_VALUE, text, Message.ERROR, new ObjectProperty(this, IRow.PROPERTY_VALUE, fromColumnIndex)));
+                           list.add(new Message(MSGCODE_UNIQUE_KEY_FROM_COlUMN_VALUE_IS_GREATER_TO_COLUMN_VALUE, text, Message.ERROR, new ObjectProperty(this, IRow.PROPERTY_VALUE, toColumnIndex)));
+                       }
                     }
                 }
             }

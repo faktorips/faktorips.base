@@ -43,6 +43,12 @@ public interface IRow extends IIpsObjectPart {
     public final static String MSGCODE_VALID_NAME_WHEN_TABLE_ENUM_TYPE = "ValidNameWhenEnumTypeContent"; //$NON-NLS-1$
 
     /**
+     * Identifies that in case of an existing two column unique key ('from'- and 'to'-column) the
+     * 'from'-column is greater that the 'to'-column
+     */
+    public final static String MSGCODE_UNIQUE_KEY_FROM_COlUMN_VALUE_IS_GREATER_TO_COLUMN_VALUE = "UniqueKeyFromVolumnValueIsGreaterToColumnValue"; //$NON-NLS-1$
+
+    /**
      * Returns the row number as string.
      *  
      * @see org.faktorips.devtools.core.model.IIpsElement#getName()

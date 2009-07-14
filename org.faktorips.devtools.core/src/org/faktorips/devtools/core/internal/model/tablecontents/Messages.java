@@ -30,6 +30,7 @@ public class Messages extends NLS {
 		NLS.initializeMessages(BUNDLE_NAME, Messages.class);
 	}
 
+    public static String Row_FromValueGreaterThanToValue;
     public static String Row_MissingValueForUniqueKey;
     public static String Row_NameMustBeValidJavaIdentifier;
     public static String Row_ValueNotParsable;

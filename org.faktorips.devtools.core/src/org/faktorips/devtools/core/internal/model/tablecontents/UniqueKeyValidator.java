@@ -239,7 +239,7 @@ public class UniqueKeyValidator {
             if (!(rowOrRowsForKeyValue == row ) && keyValue.isValid(rowOrRowsForKeyValue)){
                 // normally this can never be happen, because if this is not the current row
                 // then there must be a list of rows or the update has not worked correctly before (inconsistent cache)
-                throw new RuntimeException("Warning: inconsistent unique key map!"); //$NON-NLS-1$
+                // but sometimes while scrolling the table contents this state could be occur, thus we just ignore it here
             }
             keyValueMap.remove(keyValue);
         } else {
