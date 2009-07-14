@@ -290,8 +290,8 @@ public class IpsPlugin extends AbstractUIPlugin {
     /**
      * Logs the exception
      */
-    public final static void log(Exception e) {
-        log(new IpsStatus(e));
+    public final static void log(Throwable t) {
+        log(new IpsStatus(t));
     }
 
     /**
