@@ -85,7 +85,7 @@ public class Row extends AtomicIpsObjectPart implements IRow {
     private void initValues(int numOfColumns) {
         values = new ArrayList<String>(numOfColumns+5);
         for (int i=0; i<numOfColumns; i++) {
-            values.add(""); //$NON-NLS-1$
+            values.add(null); //$NON-NLS-1$
         }
     }
     
