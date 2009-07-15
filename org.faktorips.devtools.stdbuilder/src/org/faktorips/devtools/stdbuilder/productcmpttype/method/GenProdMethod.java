@@ -113,18 +113,23 @@ public class GenProdMethod extends GenProductCmptTypePart {
         } else {
             methodsBuilder.javaDoc(method.getDescription(), JavaSourceFileBuilder.ANNOTATION_GENERATED);
         }
+
         generateSignatureForModelMethod(method.isAbstract(), false, methodsBuilder, ipsProject);
-        methodsBuilder.openBracket();
-        methodsBuilder.appendln("// TODO implement method!");
-        Datatype datatype = method.getIpsProject().findDatatype(method.getDatatype());
-        if (!datatype.isVoid()) {
-            if (datatype.isValueDatatype()) {
-                methodsBuilder.appendln("return " + ((ValueDatatype)datatype).getDefaultValue() + ';');
-            } else {
-                methodsBuilder.appendln("return null;");
+        if(!method.isAbstract()){
+            methodsBuilder.openBracket();
+            methodsBuilder.appendln("// TODO implement method!");
+            Datatype datatype = method.getIpsProject().findDatatype(method.getDatatype());
+            if (!datatype.isVoid()) {
+                if (datatype.isValueDatatype()) {
+                    methodsBuilder.appendln("return " + ((ValueDatatype)datatype).getDefaultValue() + ';');
+                } else {
+                    methodsBuilder.appendln("return null;");
+                }
             }
+            methodsBuilder.closeBracket();
+        } else {
+            methodsBuilder.append(';');
         }
-        methodsBuilder.closeBracket();
     }
 
     private void generateMethodInterface(JavaCodeFragmentBuilder methodsBuilder, IIpsProject ipsProject)
@@ -169,7 +174,7 @@ public class GenProdMethod extends GenProductCmptTypePart {
 
         String[] parameterNames = null;
         if (formulaTest) {
-            List parametersWithoutTypes = new ArrayList();
+            List<IParameter> parametersWithoutTypes = new ArrayList<IParameter>();
             for (int i = 0; i < parameters.length; i++) {
                 Datatype datatype = parameters[i].findDatatype(ipsProject);
                 if (!(datatype instanceof IPolicyCmptType || datatype instanceof IProductCmptType)) {
