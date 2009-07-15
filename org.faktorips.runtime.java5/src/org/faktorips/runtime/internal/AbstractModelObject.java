@@ -46,7 +46,7 @@ public abstract class AbstractModelObject implements IModelObject {
     @SuppressWarnings("unused")
     @XmlAttribute(name = "object.id")
     @XmlID
-    private String id = UUID.randomUUID().toString();
+    private String id = "id-" + UUID.randomUUID().toString();
 
     /**
      * Removes the given child object from this object. If the given object is not a child of this
