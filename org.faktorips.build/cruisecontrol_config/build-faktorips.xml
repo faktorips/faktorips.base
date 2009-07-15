@@ -365,7 +365,7 @@
     	<property name="isUseCvs" value="true"/>
         
     	<!--checkout org.faktorips.integrationtest project-->
-        <cvs command="co" package="${cvsIntegrationtestmodule}" dest="${projectIntegrationtestDir}" cvsroot="${cvsroot}" quiet="true"/>
+        <cvs command="co" package="${cvsIntegrationtestmodule}" dest="${projectIntegrationtestDir}" cvsroot="${cvsroot}" quiet="true" tag="${cvsTag}"/>
         
     	<!-- checkout faktorips build project because of importProject.xml script -->
         <antcall inheritall="true" target="-checkout.build"/>
