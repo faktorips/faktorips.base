@@ -149,7 +149,8 @@ public class DynamicValueDatatype extends GenericValueDatatype {
                 classLoaderProvider.addClasspathChangeListener(listener);
             } catch (Throwable t) {
                 IpsPlugin.log(t);
-                // datatype remains invalid as long as the class can't be loaded.
+                adaptedClass = null; // datatype remains invalid as long as the class can't be loaded.
+                // or an exception occurs while adding the classpath change listener
             }
         }
         return adaptedClass;
