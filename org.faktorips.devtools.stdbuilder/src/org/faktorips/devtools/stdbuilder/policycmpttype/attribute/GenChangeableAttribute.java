@@ -74,9 +74,6 @@ public class GenChangeableAttribute extends GenAttribute {
      */
     protected void generateConstants(JavaCodeFragmentBuilder builder, IIpsProject ipsProject, boolean generatesInterface)
     throws CoreException {
-        if (isOverwritten()) {
-            return;
-        }
         if (isPublished() == generatesInterface) {
             generateAttributeNameConstant(builder);
             if (isRangeValueSet()) {
@@ -294,13 +291,13 @@ public class GenChangeableAttribute extends GenAttribute {
     protected void generateMethods(JavaCodeFragmentBuilder builder, IIpsProject ipsProject, boolean generatesInterface)
     throws CoreException {
         if (!generatesInterface) {
-            if (isOverwritten()) {
-                return;
-            }
             if (isRangeValueSet()) {
                 generateMethodGetRange(builder, ipsProject);
             } else if (isEnumValueSet()) {
                 generateMethodGetAllowedValues(builder, ipsProject);
+            }
+            if (isOverwritten()) {
+                return;
             }
             generateGetterImplementation(builder);
             generateSetterMethod(builder);
@@ -423,6 +420,10 @@ public class GenChangeableAttribute extends GenAttribute {
             body.append(getMethodNameGetRangeFor(wrapperDatatypeHelper.getDatatype()));
             body.appendln("(context);");
         } else {
+            if(attribute.isOverwrite()){
+                body.appendClassName(getGenPolicyCmptType().getQualifiedName(true));
+                body.append('.');
+            }
             body.append(getFieldNameMaxRange());
             body.appendln(";");
 
@@ -459,6 +460,10 @@ public class GenChangeableAttribute extends GenAttribute {
             body.append(getMethodNameGetAllowedValuesFor(wrapperDatatypeHelper.getDatatype()));
             body.appendln("(context);");
         } else {
+            if(attribute.isOverwrite()){
+                body.appendClassName(getGenPolicyCmptType().getQualifiedName(true));
+                body.append('.');
+            }
             body.append(getFieldNameMaxAllowedValues());
             body.appendln(";");
         }
