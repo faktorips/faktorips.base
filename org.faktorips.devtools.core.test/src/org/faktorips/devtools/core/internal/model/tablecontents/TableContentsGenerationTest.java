@@ -60,8 +60,8 @@ public class TableContentsGenerationTest extends AbstractIpsPluginTest {
         IRow row0 = generation.newRow();
         assertEquals(0, row0.getId());
         assertEquals(0, row0.getRowNumber());
-        assertEquals("", row0.getValue(0));
-        assertEquals("", row0.getValue(1));
+        assertNull(row0.getValue(0));
+        assertNull(row0.getValue(1));
         
         IRow row1 = generation.newRow();
         assertEquals(1, row1.getId());
