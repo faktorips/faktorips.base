@@ -83,7 +83,7 @@ assertCvsEnvironment()
     echo "CVS_ROOT not specified!"
     exit 1
   fi
-  if [ ! -f "$CVS_LOG" ] ; then
+  if [ ! -f $CVS_LOG ] ; then
     echo "cvs logfile: $CVS_LOG not exists!"
     exit 1
   fi  

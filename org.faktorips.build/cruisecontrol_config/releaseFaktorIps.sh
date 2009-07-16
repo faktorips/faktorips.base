@@ -82,13 +82,14 @@ SKIPTAGCVS=false
 NOCVS=false
 CREATE_BRANCH=false
 FORCE_BUILD=false
-  
+
 FAKTORIPS_CORE_PLUGIN_NAME=org.faktorips.devtools.core
 PLUGINBUILDER_PROJECT_NAME=org.faktorips.pluginbuilder
 INTEGRATIONTEST_PROJECTS=(org.faktorips.integrationtest org.faktorips.integrationtest.java5)
 
 CREATE_LIZENZ_SCRIPT=$PLUGINBUILDER_PROJECT_NAME/lizenz/createFaktorIpsLizenz.sh
 LIZENZ_PDF=$PLUGINBUILDER_PROJECT_NAME/lizenz/result/lizenzvertrag_fips.pdf
+DATENSCHUTZ_PDF=$PLUGINBUILDER_PROJECT_NAME/lizenz/result/datenschutzbestimmung.pdf
 
 ###########
 # functions
@@ -136,7 +137,7 @@ initDefaultParameter()
   RELEASE_PROPERTY_DIR=$PLUGINBUILDER_PROJECT_DIR/releases
   RELEASE_PROPERTIES=$RELEASE_PROPERTY_DIR/$BUILD_VERSION.properties
   
-  CVS_LOG=cvs.log
+  CVS_LOG=$(pwd)/cvs.log
 }
 
 getFetchTagVersion ()
@@ -545,10 +546,11 @@ createAndAddLicensePdf()
     $PROJECTSROOTDIR/$CREATE_LIZENZ_SCRIPT $BUILD_VERSION
     for i in $(cat $WORKINGDIR/archives) ; do
       if [ ! -f $i ] ; then continue ; fi 
-        echo "add license to: "$i
-        zip -ujD $i $PROJECTSROOTDIR/$LIZENZ_PDF > /dev/null 2>&1
-        if [ ! $? -eq 0 ] ; then
-          echo "error adding lizenz.pdf to archive: "$i
+      echo "add license to: "$i
+      zip -ujD $i $PROJECTSROOTDIR/$LIZENZ_PDF > /dev/null 2>&1
+      zip -ujD $i $PROJECTSROOTDIR/$DATENSCHUTZ_PDF > /dev/null 2>&1
+      if [ ! $? -eq 0 ] ; then
+        echo "error adding lizenz.pdf or datenschutz.pdf to archive: "$i
         exit 1
       fi
     done
@@ -618,6 +620,7 @@ checkAndCreateReleaseProperty()
 
 checkoutPluginbuilderParts()
 {
+  local _FETCH_TAG=$FETCH_TAG
   if [ "$NOCVS" = "true" ] ; then
     return
   fi
@@ -628,10 +631,13 @@ checkoutPluginbuilderParts()
     mkdir $PLUGINBUILDER_PROJECT_DIR
   fi
 	
-  # checkout release.properties in branch or head	
-  checkoutModule $RELEASE_PROPERTY_DIR $FETCH_TAG $PLUGINBUILDER_PROJECT_NAME/releases $BRANCH
-  checkoutModule $PLUGINBUILDER_PROJECT_DIR/maps $FETCH_TAG $PLUGINBUILDER_PROJECT_NAME/maps $BRANCH
-  checkoutModule $PLUGINBUILDER_PROJECT_DIR/lizenz $FETCH_TAG $PLUGINBUILDER_PROJECT_NAME/lizenz $BRANCH
+  # checkout release.properties in branch or head
+  if [ ! "$SKIPTAGCVS" = "true" ] ; then 
+    _FETCH_TAG=LATEST
+  fi
+  checkoutModule $RELEASE_PROPERTY_DIR $_FETCH_TAG $PLUGINBUILDER_PROJECT_NAME/releases $BRANCH
+  checkoutModule $PLUGINBUILDER_PROJECT_DIR/maps $_FETCH_TAG $PLUGINBUILDER_PROJECT_NAME/maps $BRANCH
+  checkoutModule $PLUGINBUILDER_PROJECT_DIR/lizenz $_FETCH_TAG $PLUGINBUILDER_PROJECT_NAME/lizenz $BRANCH
 }
 
 printBoolean ()
@@ -691,7 +697,7 @@ cd $WORKING_DIR
 checkoutPluginbuilderParts
 
 # asserts for release builds (not active if product build, product exists will be checked in the ant build file)
-if [ ! $SKIPTAGCVS -a  ! "$OVERWRITE" = "true" -a -f $RELEASE_PROPERTIES -a -z "$BUILDPRODUCT" ] ; then 
+if [ ! "$SKIPTAGCVS" = "true" -a  ! "$OVERWRITE" = "true" -a -f $RELEASE_PROPERTIES -a -z "$BUILDPRODUCT" ] ; then 
   echo "=> Cancel build: release already exists ("$RELEASE_PROPERTIES")"
   echo "   delete the previous release build or use parameter -overwrite"
   exit 1
