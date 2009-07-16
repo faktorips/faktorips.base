@@ -140,6 +140,7 @@ public class DynamicValueDatatype extends GenericValueDatatype {
     /**
      * {@inheritDoc}
      */
+    @SuppressWarnings("unchecked")
     public Class getAdaptedClass() {
         if (adaptedClass == null) {
             try {
