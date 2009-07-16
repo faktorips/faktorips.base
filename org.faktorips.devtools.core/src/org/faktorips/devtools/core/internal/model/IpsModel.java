@@ -1305,9 +1305,14 @@ public class IpsModel extends IpsElement implements IIpsModel, IResourceChangeLi
     private void initChangesOverTimeNamingConventionIfNecessary() {
         if (changesOverTimeNamingConventionMap == null) {
             changesOverTimeNamingConventionMap = new HashMap();
+            IChangesOverTimeNamingConvention fips = new ChangesOverTimeNamingConvention(
+                    IChangesOverTimeNamingConvention.FAKTOR_IPS);
+            changesOverTimeNamingConventionMap.put(fips.getId(), fips);
+
             IChangesOverTimeNamingConvention vaa = new ChangesOverTimeNamingConvention(
                     IChangesOverTimeNamingConvention.VAA);
             changesOverTimeNamingConventionMap.put(vaa.getId(), vaa);
+            
             IChangesOverTimeNamingConvention pm = new ChangesOverTimeNamingConvention(
                     IChangesOverTimeNamingConvention.PM);
             changesOverTimeNamingConventionMap.put(pm.getId(), pm);

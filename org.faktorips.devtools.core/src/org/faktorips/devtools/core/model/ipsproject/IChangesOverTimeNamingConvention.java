@@ -29,6 +29,7 @@ import org.eclipse.swt.graphics.Image;
  * policies have to be explicitly converted to the product version, e.g. by a
  * batch program. Perhaps the customer rejects changing to the product version
  * and wants to remain with the old one.
+ * <p>
  * <li>Generation</li>
  * <p>
  * A new product generation affects existing policies (and of course new
@@ -59,7 +60,12 @@ public interface IChangesOverTimeNamingConvention {
 	 */
 	public final static String PM = "PM"; //$NON-NLS-1$
 
-	/**
+    /**
+     * The id of the default Faktor-IPS naming convention.
+     */
+    public final static String FAKTOR_IPS = "FIPS"; //$NON-NLS-1$
+
+    /**
 	 * Returns the conventions' identification.
 	 */
 	public String getId();

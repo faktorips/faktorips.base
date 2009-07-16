@@ -130,7 +130,7 @@ public class IpsPreferences {
     	this.prefStore = prefStore;
     	prefStore.setDefault(NULL_REPRESENTATION_STRING, "<null>"); //$NON-NLS-1$
     	prefStore.setDefault(WORKING_DATE, XmlUtil.gregorianCalendarToXmlDateString(new GregorianCalendar()));
-    	prefStore.setDefault(CHANGES_OVER_TIME_NAMING_CONCEPT, IChangesOverTimeNamingConvention.VAA);
+    	prefStore.setDefault(CHANGES_OVER_TIME_NAMING_CONCEPT, IChangesOverTimeNamingConvention.FAKTOR_IPS);
     	prefStore.setDefault(EDIT_RECENT_GENERATION, false);
     	prefStore.setDefault(MODIFY_RUNTIME_ID, false);
     	prefStore.setDefault(WORKING_MODE, WORKING_MODE_EDIT);

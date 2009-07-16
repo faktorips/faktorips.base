@@ -27,21 +27,21 @@
                name="useTypesafeCollections"
                type="boolean"/>
          <builderSetPropertyDef
-               defaultValue="false"
+               defaultValue="true"
                description="Enables the generation of a delta determining mechanism for model objects"
                disableValue="false"
                label="Generate delta support"
                name="generateDeltaSupport"
                type="boolean"/>
          <builderSetPropertyDef
-               defaultValue="false"
+               defaultValue="true"
                description="Enables the generation of a model copy mechanism"
                disableValue="false"
                label="Generate copy support"
                name="generateCopySupport"
                type="boolean"/>
          <builderSetPropertyDef
-               defaultValue="false"
+               defaultValue="true"
                description="Enables the generation of visitor code"
                disableValue="false"
                label="Generate visitor support"
