@@ -87,7 +87,7 @@ public class EnumXmlAdapterBuilder extends DefaultJavaSourceFileBuilder {
         if(idAttribute == null || !idAttribute.isValid()){
             return;
         }
-        DatatypeHelper datatypeHelper = getIpsProject().findDatatypeHelper(idAttribute.getDatatype());
+        DatatypeHelper datatypeHelper = getIpsProject().getDatatypeHelper(idAttribute.findDatatype(getIpsProject()));
         
         StringBuffer superClassName = new StringBuffer();
         superClassName.append("javax.xml.bind.annotation.adapters.XmlAdapter"); //$NON-NLS-1$
