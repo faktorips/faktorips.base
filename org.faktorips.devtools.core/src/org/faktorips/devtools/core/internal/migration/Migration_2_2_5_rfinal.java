@@ -24,10 +24,10 @@ import org.faktorips.util.message.MessageList;
  * 
  * @author Alexander Weickmann
  */
-public class Migration_2_2_4_rfinal extends AbstractIpsProjectMigrationOperation {
+public class Migration_2_2_5_rfinal extends AbstractIpsProjectMigrationOperation {
 
     /** Creates <code>Migration_2_2_4_rfinal</code>. */
-    public Migration_2_2_4_rfinal(IIpsProject projectToMigrate, String featureId) {
+    public Migration_2_2_5_rfinal(IIpsProject projectToMigrate, String featureId) {
         super(projectToMigrate, featureId);
     }
 
@@ -35,14 +35,16 @@ public class Migration_2_2_4_rfinal extends AbstractIpsProjectMigrationOperation
      * {@inheritDoc}
      */
     public String getDescription() {
-        return "Some bugs fixed.";
+        return "New ips object types" + " have been added for modeling enumerations. All table structures"
+                + " that represent enum types will be changed to abstract EnumType objects. The referencing"
+                + " table contents will also be replaced with EnumType objects containing the enum values.";
     }
 
     /**
      * {@inheritDoc}
      */
     public String getTargetVersion() {
-        return "2.2.5.rfinal"; //$NON-NLS-1$
+        return "2.3.0.rfinal"; //$NON-NLS-1$
     }
 
     /**
@@ -56,6 +58,7 @@ public class Migration_2_2_4_rfinal extends AbstractIpsProjectMigrationOperation
      * {@inheritDoc}
      */
     public MessageList migrate(IProgressMonitor monitor) throws CoreException {
+        Migration2_2_to2_3.migrate(getIpsProject(), monitor);
         return new MessageList();
     }
 }
