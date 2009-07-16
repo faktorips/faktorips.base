@@ -22,7 +22,6 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLClassLoader;
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 
 import org.apache.commons.lang.StringUtils;
@@ -54,13 +53,16 @@ public class ClassLoaderProvider {
 
 	// <code>true</code> if the jars should be copied as temporary jars
 	private boolean copyJars = false;
+
+	// The directory where the jar files are copies to (if copyJars = true).
+    private File tempFileDir = null;
 	
-	// a list of IResources that contain the class files, either an IFile if it's a Jar-File or an
-	// IFolder if it's a directory containing class files.
-	private List classfileContainers = new ArrayList();
+	// a list of IPaths that contain the class files, either a path to a file if it's a Jar-File or to a directory 
+	// if it's a directory containing class files.
+	private List<IPath> classfileContainers = new ArrayList<IPath>();
 
 	// listeners that are informed if the contents of the classpath changes
-	private List classpathContentsChangeListeners = new ArrayList();
+	private List<IClasspathContentsChangeListener> classpathContentsChangeListeners = new ArrayList<IClasspathContentsChangeListener>();
 	
 	// resource change listener that is used to test for changes of the classpath elements (jars and class directories)
 	private IResourceChangeListener resourceChangeListener; 
@@ -117,9 +119,8 @@ public class ClassLoaderProvider {
 	 * (in that case we get a concurrent modification exception from the iterator!)
 	 */
 	private void classpathContentsChanged() {
-		List copy = new ArrayList(classpathContentsChangeListeners);
-		for (Iterator it=copy.iterator(); it.hasNext(); ) {
-			IClasspathContentsChangeListener listener = (IClasspathContentsChangeListener)it.next();
+		List<IClasspathContentsChangeListener> copy = new ArrayList<IClasspathContentsChangeListener>(classpathContentsChangeListeners);
+		for (IClasspathContentsChangeListener listener : copy) {
 			listener.classpathContentsChanges(javaProject);
 		}
 		classLoader = null;
@@ -131,32 +132,32 @@ public class ClassLoaderProvider {
 	 */
 	private URLClassLoader getProjectClassloader(IJavaProject project)
 			throws IOException, CoreException {
-		List urlsList = new ArrayList();
+
+	    List<URL> urlsList = new ArrayList<URL>();
 		accumulateClasspath(project, urlsList);
 		URL[] urls = (URL[]) urlsList.toArray(new URL[urlsList.size()]);
 		return new URLClassLoader(urls, ClassLoader.getSystemClassLoader());
 	}
 
-	private void accumulateClasspath(IJavaProject project, List urlsList)
+	private void accumulateClasspath(IJavaProject currentProject, List<URL> urlsList)
 			throws IOException, CoreException {
-	    File tempFileDir = null;
 		
-        if(project==null || !project.exists()) {
+        if(currentProject==null || !currentProject.exists()) {
             return;
         }
-       
-        
-		IPath projectPath = project.getProject().getLocation();
-		IPath root = projectPath.removeLastSegments(project.getProject()
+
+		IPath projectPath = currentProject.getProject().getLocation();
+		IPath root = projectPath.removeLastSegments(currentProject.getProject()
 				.getFullPath().segmentCount());
 		
-		if (project!=javaProject || includeProjectsOutputLocation) {
-			IPath outLocation = project.getOutputLocation();
+		if (currentProject!=javaProject || includeProjectsOutputLocation) {
+			IPath outLocation = currentProject.getOutputLocation();
 			IPath output = root.append(outLocation);
 			urlsList.add(output.toFile().toURI().toURL());
 			addClassfileContainer(output, urlsList);
 		}
-		IClasspathEntry[] entry = project.getRawClasspath();
+		
+		IClasspathEntry[] entry = currentProject.getRawClasspath();
 		for (int i = 0; i < entry.length; i++) {
 			if (entry[i].getEntryKind() == IClasspathEntry.CPE_LIBRARY) {
                 IPath jarPath;
@@ -171,11 +172,10 @@ public class ClassLoaderProvider {
                     jarPath = entry[i].getPath();
                 }
                 
-                
 				IPath currentPath;
 				if (copyJars){
 				    if (tempFileDir == null){
-				        tempFileDir = initTempDir(project);
+				        tempFileDir = initTempDir(javaProject);
 				    }
 				    currentPath = copyJar(jarPath, tempFileDir);
 				} else {
@@ -188,10 +188,10 @@ public class ClassLoaderProvider {
 			}
 		}
 
-		String[] requiredProjectNames = project.getRequiredProjectNames();
+		String[] requiredProjectNames = currentProject.getRequiredProjectNames();
 		if (requiredProjectNames != null && requiredProjectNames.length > 0) {
 			for (int i = 0; i < requiredProjectNames.length; i++) {
-				accumulateClasspath(project.getJavaModel().getJavaProject(
+				accumulateClasspath(currentProject.getJavaModel().getJavaProject(
 						requiredProjectNames[i]), urlsList);
 			}
 		}
@@ -268,7 +268,7 @@ public class ClassLoaderProvider {
     /**
 	 * @param containerLocation is the full path in the filesytem.
 	 */
-	private void addClassfileContainer(IPath containerLocation, List urls) throws MalformedURLException {
+	private void addClassfileContainer(IPath containerLocation, List<URL> urls) throws MalformedURLException {
 		IPath workspaceLocation = ResourcesPlugin.getWorkspace().getRoot().getLocation();
 		IPath containerPath = containerLocation.removeFirstSegments(workspaceLocation.segmentCount());
 		classfileContainers.add(containerPath);
@@ -284,8 +284,7 @@ public class ClassLoaderProvider {
 
 			// check if one of the previous container have changed and notify that the classloader
             // must re reconstructed next time
-            for (Iterator it=classfileContainers.iterator(); it.hasNext();) {
-				IPath container = (IPath)it.next();
+			for (IPath container : classfileContainers) {
 				IResourceDelta delta = event.getDelta().findMember(container);
 				if (delta!=null) {
 				    classpathContentsChanged();

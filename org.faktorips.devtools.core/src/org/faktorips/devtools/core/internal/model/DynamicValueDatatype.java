@@ -111,7 +111,7 @@ public class DynamicValueDatatype extends GenericValueDatatype {
     private IClasspathContentsChangeListener listener = null;
 
     private String className;
-    private Class adaptedClass;
+    private Class<?> adaptedClass;
 
     public DynamicValueDatatype(IIpsProject ipsProject) {
         super();
@@ -123,7 +123,7 @@ public class DynamicValueDatatype extends GenericValueDatatype {
         clearCache();
     }
 
-    public void setAdaptedClass(Class clazz) {
+    public void setAdaptedClass(Class<?> clazz) {
         this.adaptedClass = clazz;
         this.className = clazz.getName();
     }
@@ -140,6 +140,7 @@ public class DynamicValueDatatype extends GenericValueDatatype {
     /**
      * {@inheritDoc}
      */
+    @SuppressWarnings("unchecked")
     public Class getAdaptedClass() {
         if (adaptedClass == null) {
             try {
@@ -147,9 +148,10 @@ public class DynamicValueDatatype extends GenericValueDatatype {
                 adaptedClass = classLoaderProvider.getClassLoader().loadClass(this.className);
                 listener = new Listener();
                 classLoaderProvider.addClasspathChangeListener(listener);
-            } catch (Exception e) {
-                IpsPlugin.log(e);
-                // datatype remains invalid as long as the class can't be loaded.
+            } catch (Throwable t) {
+                IpsPlugin.log(t);
+                adaptedClass = null; // datatype remains invalid as long as the class can't be loaded.
+                // or an exception occurs while adding the classpath change listener
             }
         }
         return adaptedClass;

@@ -144,8 +144,11 @@ public class IpsBuilder extends IncrementalProjectBuilder {
             getIpsProject().reinitializeIpsArtefactBuilderSet();
         } catch (CoreException e) {
             throw e;
-        } catch (Exception e) {
-            throw new CoreException(new IpsStatus(e));
+        } catch (Throwable t) {
+            // Need to catch Throwable.
+            // If the incremental project builder throws an error, Eclipse just writes a Warning to
+            // the error log. So we wrap the Error in a CoreException.
+            throw new CoreException(new IpsStatus(t));
         } finally {
             monitor.done();
         }
