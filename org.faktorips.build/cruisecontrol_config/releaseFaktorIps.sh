@@ -545,6 +545,7 @@ createAndAddLicensePdf()
   if [ ! "$SKIPPUBLISH" = "true" -a -f $WORKINGDIR/archives ] ; then
     $PROJECTSROOTDIR/$CREATE_LIZENZ_SCRIPT $BUILD_VERSION
     for i in $(cat $WORKINGDIR/archives) ; do
+      # update only existing archives (in a product build no plugin zips exists and vice versa)
       if [ ! -f $i ] ; then continue ; fi 
       echo "add license to: "$i
       zip -ujD $i $PROJECTSROOTDIR/$LIZENZ_PDF > /dev/null 2>&1
