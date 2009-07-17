@@ -23,6 +23,7 @@ import org.faktorips.codegen.DatatypeHelper;
 import org.faktorips.datatype.ValueDatatype;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.codegen.JavaCodeFragment;
+import org.faktorips.devtools.core.builder.ComplianceCheck;
 
 public class TableRowGenerator extends JetJavaContentGenerator
 {
@@ -64,10 +65,11 @@ public class TableRowGenerator extends JetJavaContentGenerator
   protected final String TEXT_26 = " get";
   protected final String TEXT_27 = "(){" + NL + "\t\treturn ";
   protected final String TEXT_28 = ";" + NL + "\t}";
-  protected final String TEXT_29 = NL + "\t@Override" + NL + "\tpublic String toString() {" + NL + "\t\treturn \"\"";
-  protected final String TEXT_30 = " + ";
-  protected final String TEXT_31 = " + \"|\" + ";
-  protected final String TEXT_32 = ";" + NL + "\t}" + NL + "}";
+  protected final String TEXT_29 = NL + "\t@Override";
+  protected final String TEXT_30 = NL + "\tpublic String toString() {" + NL + "\t\treturn \"\"";
+  protected final String TEXT_31 = " + ";
+  protected final String TEXT_32 = " + \"|\" + ";
+  protected final String TEXT_33 = ";" + NL + "\t}" + NL + "}";
 
     public String generate(IIpsSrcFile ipsSrcFile) throws CoreException
   {
@@ -172,24 +174,31 @@ public class TableRowGenerator extends JetJavaContentGenerator
     stringBuffer.append(columnName);
     stringBuffer.append(TEXT_28);
             }
+    
+if(ComplianceCheck.isComplianceLevelAtLeast5(ipsSrcFile.getIpsProject())){
+
     stringBuffer.append(TEXT_29);
+    
+}
+
+    stringBuffer.append(TEXT_30);
      
 			for (int i = 0; i < columns.length; i++) {
 			    if (i == 0) {
 			        
-    stringBuffer.append(TEXT_30);
+    stringBuffer.append(TEXT_31);
     
 			    }
 				if (i != 0) {
 					
-    stringBuffer.append(TEXT_31);
+    stringBuffer.append(TEXT_32);
     
 				}
 				
     stringBuffer.append(StringUtils.uncapitalize(columns[i].getName()));
     
 			}
-    stringBuffer.append(TEXT_32);
+    stringBuffer.append(TEXT_33);
     addImports(stringBuffer);
     return stringBuffer.toString();
   }
