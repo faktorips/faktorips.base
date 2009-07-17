@@ -288,41 +288,6 @@
       <externalValueConverter class="org.faktorips.devtools.extsystems.excel.DateValueConverter"/>
    </extension>
    <extension
-         id="org.faktorips.devtools.core.productCmptMergeViewer"
-         point="org.eclipse.compare.contentMergeViewers">
-      <viewer
-            class="org.faktorips.devtools.core.ui.team.compare.productcmpt.ProductCmptCompareViewerCreator"
-            extensions="ipsproduct"
-            id="org.faktorips.devtools.core.ui.team.compare.productcmpt.productCmptCompareViewer"/>
-      <contentTypeBinding
-            contentMergeViewerId="org.faktorips.devtools.core.ui.team.compare.productcmpt.productCmptCompareViewer"
-            contentTypeId="org.faktorips.devtools.core.productComponent"/>
-      <viewer
-            class="org.faktorips.devtools.core.ui.team.compare.tablecontents.TableContentsCompareViewerCreator"
-            extensions="ipstablecontents"
-            id="org.faktorips.devtools.core.ui.team.compare.tablecontents.tableContentsCompareViewer"/>
-      <contentTypeBinding
-            contentMergeViewerId="org.faktorips.devtools.core.ui.team.compare.tablecontents.tableContentsCompareViewer"
-            contentTypeId="org.faktorips.devtools.core.TableContents"/>
-   </extension>
-   <extension
-         point="org.eclipse.compare.structureCreators">
-      <structureCreator
-            class="org.faktorips.devtools.core.ui.team.compare.productcmpt.ProductCmptCompareItemCreator"
-            extensions="ipsproduct"
-            id="org.faktorips.devtools.core.ui.team.compare.productcmpt.productCmptCompareItemCreator"/>
-      <contentTypeBinding
-            contentTypeId="org.faktorips.devtools.core.productComponent"
-            structureCreatorId="org.faktorips.devtools.core.ui.team.compare.productcmpt.productCmptCompareItemCreator"/>
-      <structureCreator
-            class="org.faktorips.devtools.core.ui.team.compare.tablecontents.TableContentsCompareItemCreator"
-            extensions="ipstablecontents"
-            id="org.faktorips.devtools.core.ui.team.compare.tablecontents.tableContentsCompareItemCreator"/>
-      <contentTypeBinding
-            contentTypeId="org.faktorips.devtools.core.TableContents"
-            structureCreatorId="org.faktorips.devtools.core.ui.team.compare.tablecontents.tableContentsCompareItemCreator"/>
-   </extension>
-   <extension
          id="FaktorIPS"
          point="org.eclipse.core.runtime.products">
       <product
