@@ -98,6 +98,7 @@ public class GenMethod extends GenPolicyCmptTypePart {
         } else {
             methodsBuilder.javaDoc(method.getDescription(), JavaSourceFileBuilder.ANNOTATION_GENERATED);
         }
+        
         generateSignatureForMethodDefinedInModel(method, method.getJavaModifier(), returnType, paramTypes,
                 methodsBuilder);
         if (method.isAbstract()) {

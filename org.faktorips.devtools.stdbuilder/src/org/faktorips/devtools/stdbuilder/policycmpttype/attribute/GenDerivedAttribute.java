@@ -95,6 +95,9 @@ public class GenDerivedAttribute extends GenAttribute {
     private void generateGetterImplementationForOnTheFlyComputation(JavaCodeFragmentBuilder builder,
             IIpsProject ipsProject) throws CoreException {
         builder.javaDoc(getJavaDocCommentForOverriddenMethod(), JavaSourceFileBuilder.ANNOTATION_GENERATED);
+        if(getPolicyCmptTypeAttribute().isOverwrite()){
+            appendOverrideAnnotation(builder, false);
+        }
         generateGetterSignature(builder);
         builder.openBracket();
 

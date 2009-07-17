@@ -996,6 +996,7 @@ public class EnumTypeBuilder extends DefaultJavaSourceFileBuilder {
         methodBody.append(';');
 
         methodBuilder.javaDoc("{@inheritDoc}", ANNOTATION_GENERATED);
+        appendOverrideAnnotation(methodBuilder, false);
         methodBuilder.method(Modifier.PUBLIC, String.class, "toString", new String[0], new Class[0], methodBody, null);
     }
 

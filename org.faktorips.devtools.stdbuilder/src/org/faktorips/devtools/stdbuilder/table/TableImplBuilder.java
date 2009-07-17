@@ -437,6 +437,7 @@ public class TableImplBuilder extends DefaultJavaSourceFileBuilder {
         methodBody.append("));");
 
         methodBody.addImport(List.class.getName());
+        appendOverrideAnnotation(codeBuilder, false);
         codeBuilder.method(Modifier.PROTECTED, "void", "addRow", new String[] { "values", "productRepository" }, new String[] { List.class
                 .getName(), IRuntimeRepository.class.getName() }, methodBody, getLocalizedText(getIpsObject(), ADD_ROW_JAVADOC), ANNOTATION_GENERATED,
                 isUseTypesafeCollections() ? new String[] { ANNOTATION_SUPPRESS_WARNINGS_UNCHECKED } : null);
@@ -526,6 +527,7 @@ public class TableImplBuilder extends DefaultJavaSourceFileBuilder {
         if (keys.length != 0) {
             methodBody = createInitKeyMapsMethodBody(keys);
         }
+        appendOverrideAnnotation(codeBuilder, false);
         codeBuilder.method(Modifier.PROTECTED, Void.TYPE, "initKeyMaps", new String[0], new Class[0], methodBody,
                 getLocalizedText(getIpsObject(), INIT_KEY_MAPS_JAVADOC), ANNOTATION_GENERATED,
                 isUseTypesafeCollections()&&methodBody.getSourcecode().indexOf("<")>0 ? new String[] { ANNOTATION_SUPPRESS_WARNINGS_UNCHECKED } : null);
@@ -847,6 +849,7 @@ public class TableImplBuilder extends DefaultJavaSourceFileBuilder {
         methodBody.appendCloseBracket();
         methodBody.append("return false;");
 
+        appendOverrideAnnotation(codeBuilder, false);
         codeBuilder.method(Modifier.PUBLIC, Boolean.TYPE, "equals", new String[] { "o" }, new Class[] { Object.class },
                 methodBody, getLocalizedText(getIpsObject(), KEY_CLASS_EQUALS_JAVADOC), ANNOTATION_GENERATED);
     }
@@ -857,6 +860,7 @@ public class TableImplBuilder extends DefaultJavaSourceFileBuilder {
         JavaCodeFragment methodBody = new JavaCodeFragment();
         methodBody.append("return hashCode;");
 
+        appendOverrideAnnotation(codeBuilder, false);
         codeBuilder.method(Modifier.PUBLIC, Integer.TYPE, "hashCode", new String[0], new Class[0], methodBody,
                 getLocalizedText(getIpsObject(), KEY_CLASS_HASHCODE_JAVADOC), ANNOTATION_GENERATED);
     }

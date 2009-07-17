@@ -64,7 +64,7 @@ public class TableRowGenerator extends JetJavaContentGenerator
   protected final String TEXT_26 = " get";
   protected final String TEXT_27 = "(){" + NL + "\t\treturn ";
   protected final String TEXT_28 = ";" + NL + "\t}";
-  protected final String TEXT_29 = NL + NL + "\tpublic String toString() {" + NL + "\t\treturn \"\"";
+  protected final String TEXT_29 = NL + "\t@Override" + NL + "\tpublic String toString() {" + NL + "\t\treturn \"\"";
   protected final String TEXT_30 = " + ";
   protected final String TEXT_31 = " + \"|\" + ";
   protected final String TEXT_32 = ";" + NL + "\t}" + NL + "}";

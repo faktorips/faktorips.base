@@ -207,6 +207,9 @@ public class PolicyCmptImplClassBuilder extends BasePolicyCmptTypeBuilder {
      */
     protected void generateMethodNewCopy(JavaCodeFragmentBuilder methodsBuilder) throws CoreException {
         methodsBuilder.javaDoc(getJavaDocCommentForOverriddenMethod(), ANNOTATION_GENERATED);
+        boolean implementsInterface = getPcType().hasSupertype() && getPcType().findSupertype(getIpsProject()).isAbstract();
+        implementsInterface = implementsInterface || !getPcType().hasSupertype();
+        appendOverrideAnnotation(methodsBuilder, implementsInterface);
         methodsBuilder.signature(java.lang.reflect.Modifier.PUBLIC, IModelObject.class.getName(), MethodNames.NEW_COPY,
                 new String[0], new String[0]);
         methodsBuilder.openBracket();
@@ -324,6 +327,7 @@ public class PolicyCmptImplClassBuilder extends BasePolicyCmptTypeBuilder {
      */
     protected void generateMethodAccept(JavaCodeFragmentBuilder methodsBuilder) throws CoreException {
         methodsBuilder.javaDoc(getJavaDocCommentForOverriddenMethod(), ANNOTATION_GENERATED);
+        appendOverrideAnnotation(methodsBuilder, !getPcType().hasSupertype());
         methodsBuilder.signature(java.lang.reflect.Modifier.PUBLIC, "boolean", MethodNames.ACCEPT_VISITOR,
                 new String[] { "visitor" }, new String[] { IModelObjectVisitor.class.getName() });
         methodsBuilder.openBracket();
@@ -368,6 +372,7 @@ public class PolicyCmptImplClassBuilder extends BasePolicyCmptTypeBuilder {
      */
     protected void generateMethodComputeDelta(JavaCodeFragmentBuilder methodsBuilder) throws CoreException {
         methodsBuilder.javaDoc(getJavaDocCommentForOverriddenMethod(), ANNOTATION_GENERATED);
+        appendOverrideAnnotation(methodsBuilder, !getPcType().hasSupertype());
         generateSignatureComputeDelta(methodsBuilder);
         methodsBuilder.openBracket();
 
@@ -475,6 +480,7 @@ public class PolicyCmptImplClassBuilder extends BasePolicyCmptTypeBuilder {
     protected void generateMethodGetEffectiveFromAsCalendarForAggregateRoot(JavaCodeFragmentBuilder methodsBuilder)
             throws CoreException {
         methodsBuilder.javaDoc(getJavaDocCommentForOverriddenMethod(), ANNOTATION_GENERATED);
+        appendOverrideAnnotation(methodsBuilder, !getPcType().hasSupertype());
         methodsBuilder.methodBegin(java.lang.reflect.Modifier.PUBLIC, Calendar.class,
                 MethodNames.GET_EFFECTIVE_FROM_AS_CALENDAR, EMPTY_STRING_ARRAY, new Class[0]);
         if (getPcType().hasSupertype()) {
@@ -513,6 +519,7 @@ public class PolicyCmptImplClassBuilder extends BasePolicyCmptTypeBuilder {
      */
     protected void generateMethodEffectiveFromHasChanged(JavaCodeFragmentBuilder methodsBuilder) throws CoreException {
         methodsBuilder.javaDoc(getJavaDocCommentForOverriddenMethod(), ANNOTATION_GENERATED);
+        appendOverrideAnnotation(methodsBuilder, false);
         methodsBuilder.methodBegin(java.lang.reflect.Modifier.PUBLIC, Void.TYPE,
                 MethodNames.EFFECTIVE_FROM_HAS_CHANGED, EMPTY_STRING_ARRAY, new Class[0]);
         methodsBuilder.appendln("super." + MethodNames.EFFECTIVE_FROM_HAS_CHANGED + "();");
@@ -558,6 +565,7 @@ public class PolicyCmptImplClassBuilder extends BasePolicyCmptTypeBuilder {
     protected void generateMethodRemoveChildModelObjectInternal(JavaCodeFragmentBuilder methodsBuilder)
             throws CoreException {
         methodsBuilder.javaDoc(getJavaDocCommentForOverriddenMethod(), ANNOTATION_GENERATED);
+        appendOverrideAnnotation(methodsBuilder, false);
         String paramName = "childToRemove";
         methodsBuilder.methodBegin(java.lang.reflect.Modifier.PUBLIC, Void.TYPE,
                 MethodNames.REMOVE_CHILD_MODEL_OBJECT_INTERNAL, new String[] { paramName },
@@ -601,7 +609,7 @@ public class PolicyCmptImplClassBuilder extends BasePolicyCmptTypeBuilder {
             JavaCodeFragmentBuilder memberVarBuilder,
             JavaCodeFragmentBuilder methodBuilder) throws CoreException {
         generateMethodValidateSelf(methodBuilder, getPcType().getPolicyCmptTypeAttributes());
-        createMethodValidateDependants(methodBuilder);
+        generateMethodValidateDependants(methodBuilder);
         super.generateCodeForValidationRules(constantBuilder, memberVarBuilder, methodBuilder);
     }
 
@@ -634,7 +642,7 @@ public class PolicyCmptImplClassBuilder extends BasePolicyCmptTypeBuilder {
      * }
      * </pre>
      */
-    private void createMethodValidateDependants(JavaCodeFragmentBuilder builder) throws CoreException {
+    private void generateMethodValidateDependants(JavaCodeFragmentBuilder builder) throws CoreException {
         String methodName = "validateDependants";
         IPolicyCmptTypeAssociation[] associations = getPcType().getPolicyCmptTypeAssociations();
 
@@ -658,7 +666,7 @@ public class PolicyCmptImplClassBuilder extends BasePolicyCmptTypeBuilder {
         }
 
         String javaDoc = getLocalizedText(getPcType(), "VALIDATE_DEPENDANTS_JAVADOC", getPcType().getName());
-
+        appendOverrideAnnotation(builder, false);
         builder.method(java.lang.reflect.Modifier.PUBLIC, Datatype.VOID.getJavaClassName(), methodName, new String[] {
                 "ml", parameterValidationContext }, new String[] { MessageList.class.getName(),
                 IValidationContext.class.getName() }, body, javaDoc, ANNOTATION_GENERATED);
@@ -703,6 +711,7 @@ public class PolicyCmptImplClassBuilder extends BasePolicyCmptTypeBuilder {
         }
         body.appendln(" return true;");
         // buildValidationValueSet(body, attributes); wegschmeissen ??
+        appendOverrideAnnotation(builder, false);
         builder.method(java.lang.reflect.Modifier.PUBLIC, Datatype.PRIMITIVE_BOOLEAN.getJavaClassName(), methodName,
                 new String[] { "ml", parameterNameContext }, new String[] { MessageList.class.getName(),
                         IValidationContext.class.getName() }, body, javaDoc, ANNOTATION_GENERATED);
@@ -792,6 +801,9 @@ public class PolicyCmptImplClassBuilder extends BasePolicyCmptTypeBuilder {
             }
         }
         appendLocalizedJavaDoc("METHOD_INITIALIZE", getPcType(), builder);
+        if(getPcType().isConfigurableByProductCmptType() || getPcType().hasSupertype()){
+            appendOverrideAnnotation(builder, false);
+        }
         GenPolicyCmptType genPolicyCmptType = getGenerator();
         builder.methodBegin(java.lang.reflect.Modifier.PUBLIC, Datatype.VOID.getJavaClassName(), genPolicyCmptType
                 .getMethodNameInitialize(), EMPTY_STRING_ARRAY, EMPTY_STRING_ARRAY);
@@ -926,6 +938,7 @@ public class PolicyCmptImplClassBuilder extends BasePolicyCmptTypeBuilder {
             if (first) {
                 first = false;
                 builder.javaDoc(getJavaDocCommentForOverriddenMethod(), ANNOTATION_GENERATED);
+                appendOverrideAnnotation(builder, false);
                 builder.methodBegin(java.lang.reflect.Modifier.PROTECTED, Void.TYPE.getName(),
                         MethodNames.INIT_PROPERTIES_FROM_XML, new String[] { "propMap", "productRepository" },
                         new String[] { isUseTypesafeCollections() ? Map.class.getName() + "<" + String.class.getName()
@@ -967,6 +980,7 @@ public class PolicyCmptImplClassBuilder extends BasePolicyCmptTypeBuilder {
      */
     private void generateMethodCreateChildFromXml(JavaCodeFragmentBuilder builder) throws CoreException {
         builder.javaDoc(getJavaDocCommentForOverriddenMethod(), ANNOTATION_GENERATED);
+        appendOverrideAnnotation(builder, false);
         builder.methodBegin(java.lang.reflect.Modifier.PROTECTED, AbstractModelObject.class,
                 MethodNames.CREATE_CHILD_FROM_XML, new String[] { "childEl" }, new Class[] { Element.class });
 
@@ -1034,6 +1048,7 @@ public class PolicyCmptImplClassBuilder extends BasePolicyCmptTypeBuilder {
      */
     private void generateMethodCreateUnresolvedReference(JavaCodeFragmentBuilder builder) throws CoreException {
         builder.javaDoc(getJavaDocCommentForOverriddenMethod(), ANNOTATION_GENERATED);
+        appendOverrideAnnotation(builder, false);
         String[] argNames = new String[] { "objectId", "targetRole", "targetId" };
         Class[] argClasses = new Class[] { Object.class, String.class, String.class };
         builder.methodBegin(java.lang.reflect.Modifier.PROTECTED, IUnresolvedReference.class,

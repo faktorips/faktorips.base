@@ -169,6 +169,9 @@ public class ProductCmptImplClassBuilder extends BaseProductCmptTypeBuilder {
     private void generateMethodCreatePolicyCmpt(IPolicyCmptType returnedTypeInSignature,
             JavaCodeFragmentBuilder methodsBuilder) throws CoreException {
         methodsBuilder.javaDoc(getJavaDocCommentForOverriddenMethod(), ANNOTATION_GENERATED);
+        if(!returnedTypeInSignature.equals(getPcType())){
+            appendOverrideAnnotation(methodsBuilder, !getProductCmptType().hasSupertype());
+        }
         ((StandardBuilderSet)getBuilderSet()).getGenerator(returnedTypeInSignature).generateSignatureCreatePolicyCmpt(
                 methodsBuilder);
         methodsBuilder.openBracket();
@@ -191,6 +194,14 @@ public class ProductCmptImplClassBuilder extends BaseProductCmptTypeBuilder {
      */
     private void generateMethodCreatePolicyCmptBase(JavaCodeFragmentBuilder methodsBuilder) throws CoreException {
         methodsBuilder.javaDoc(getJavaDocCommentForOverriddenMethod(), ANNOTATION_GENERATED);
+        // TODO pk 17-07-2009: this is still not correct. Their are situations which I could not yet
+        // figure out when an override of an implementation appears which doesn't have an override
+        // annotation.
+        if(StringUtils.isEmpty(getProductCmptType().getPolicyCmptType())){
+            appendOverrideAnnotation(methodsBuilder, !getProductCmptType().hasSupertype());
+        } else if(getProductCmptType().hasSupertype()){
+            appendOverrideAnnotation(methodsBuilder, getProductCmptType().hasAbstractTypeInSupertypeHierarchy(getIpsProject()));
+        }
         methodsBuilder.signature(Modifier.PUBLIC, IConfigurableModelObject.class.getName(),
                 MethodNames.CREATE_POLICY_COMPONENT, new String[0], new String[0]);
         methodsBuilder.openBracket();
@@ -316,4 +327,5 @@ public class ProductCmptImplClassBuilder extends BaseProductCmptTypeBuilder {
         return null;
     }
 
+    
 }

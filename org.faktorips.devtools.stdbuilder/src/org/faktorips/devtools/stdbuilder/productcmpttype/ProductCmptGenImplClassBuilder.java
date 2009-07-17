@@ -201,6 +201,7 @@ public class ProductCmptGenImplClassBuilder extends BaseProductCmptTypeBuilder {
     private void generateMethodDoInitPropertiesFromXml(JavaCodeFragmentBuilder builder) throws CoreException {
 
         builder.javaDoc(getJavaDocCommentForOverriddenMethod(), ANNOTATION_GENERATED);
+        appendOverrideAnnotation(builder, false);
         builder.methodBegin(Modifier.PROTECTED, "void", "doInitPropertiesFromXml", new String[] { "configMap" },
                 new String[] { isUseTypesafeCollections() ? Map.class.getName() + "<" + String.class.getName() + ", "
                         + Element.class.getName() + ">" : Map.class.getName() });
@@ -394,6 +395,7 @@ public class ProductCmptGenImplClassBuilder extends BaseProductCmptTypeBuilder {
         }
         String javaDoc = null;
         builder.javaDoc(javaDoc, ANNOTATION_GENERATED);
+        appendOverrideAnnotation(builder, false);
         String[] argNames = new String[] { "elementsMap" };
         String[] argTypes = new String[] { isUseTypesafeCollections() ? Map.class.getName() + "<"
                 + String.class.getName() + ", " + List.class.getName() + "<" + Element.class.getName() + ">>"
@@ -497,6 +499,7 @@ public class ProductCmptGenImplClassBuilder extends BaseProductCmptTypeBuilder {
         }
         String javaDoc = null;
         builder.javaDoc(javaDoc, ANNOTATION_GENERATED);
+        appendOverrideAnnotation(builder, false);
         String[] argNames = new String[] { "tableUsageMap" };
         String[] argTypes = new String[] { isUseTypesafeCollections() ? Map.class.getName() + "<"
                 + String.class.getName() + ", " + Element.class.getName() + ">" : Map.class.getName() };
@@ -637,6 +640,7 @@ public class ProductCmptGenImplClassBuilder extends BaseProductCmptTypeBuilder {
      */
     private void generateMethodGetLink(JavaCodeFragmentBuilder methodsBuilder) throws CoreException {
         methodsBuilder.javaDoc(getJavaDocCommentForOverriddenMethod(), ANNOTATION_GENERATED);
+        appendOverrideAnnotation(methodsBuilder, false);
         generateSignatureGetLink(methodsBuilder);
         methodsBuilder.openBracket();
         IAssociation[] associations = getProductCmptType().getAssociations();
@@ -683,6 +687,7 @@ public class ProductCmptGenImplClassBuilder extends BaseProductCmptTypeBuilder {
      */
     private void generateMethodGetLinks(JavaCodeFragmentBuilder methodsBuilder) throws CoreException {
         methodsBuilder.javaDoc(getJavaDocCommentForOverriddenMethod(), ANNOTATION_GENERATED);
+        appendOverrideAnnotation(methodsBuilder, false);
         generateSignatureGetLinks(methodsBuilder);
         methodsBuilder.openBracket();
         methodsBuilder.appendClassName(List.class.getName() + "<" + Java5ClassNames.ILink_QualifiedName + "<? extends "

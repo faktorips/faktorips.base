@@ -364,6 +364,9 @@ public class GenChangeableAttribute extends GenAttribute {
             boolean generatesInterface) throws CoreException {
         if (!generatesInterface) {
             methodsBuilder.javaDoc(getJavaDocCommentForOverriddenMethod(), JavaSourceFileBuilder.ANNOTATION_GENERATED);
+            if(getPolicyCmptTypeAttribute().isOverwrite()){
+                appendOverrideAnnotation(methodsBuilder, false);
+            }
             generateSignatureGetDefaultValue(datatypeHelper, methodsBuilder);
             methodsBuilder.openBracket();
             methodsBuilder.append("return ");
@@ -411,6 +414,9 @@ public class GenChangeableAttribute extends GenAttribute {
     private void generateMethodGetRange(JavaCodeFragmentBuilder methodBuilder, IIpsProject ipsProject)
     throws CoreException {
         methodBuilder.javaDoc("{@inheritDoc}", JavaSourceFileBuilder.ANNOTATION_GENERATED);
+        if(getPolicyCmptTypeAttribute().isOverwrite()){
+            appendOverrideAnnotation(methodBuilder, false);
+        }
         generateSignatureGetRangeFor(wrapperDatatypeHelper, methodBuilder);
         JavaCodeFragment body = new JavaCodeFragment();
         body.appendOpenBracket();
@@ -451,6 +457,9 @@ public class GenChangeableAttribute extends GenAttribute {
     private void generateMethodGetAllowedValues(JavaCodeFragmentBuilder methodBuilder, IIpsProject ipsProject)
     throws CoreException {
         methodBuilder.javaDoc("{@inheritDoc}", JavaSourceFileBuilder.ANNOTATION_GENERATED);
+        if(getPolicyCmptTypeAttribute().isOverwrite()){
+            appendOverrideAnnotation(methodBuilder, false);
+        }
         generateSignatureGetAllowedValuesFor(wrapperDatatypeHelper.getDatatype(), methodBuilder);
         JavaCodeFragment body = new JavaCodeFragment();
         body.appendOpenBracket();
@@ -474,6 +483,9 @@ public class GenChangeableAttribute extends GenAttribute {
     private void generateMethodGetRangeForProd(DatatypeHelper helper, JavaCodeFragmentBuilder methodsBuilder)
     throws CoreException {
         methodsBuilder.javaDoc("{@inheritDoc}", JavaSourceFileBuilder.ANNOTATION_GENERATED);
+        if(getPolicyCmptTypeAttribute().isOverwrite()){
+            appendOverrideAnnotation(methodsBuilder, false);
+        }
         generateSignatureGetRangeFor(helper, methodsBuilder);
         JavaCodeFragment body = new JavaCodeFragment();
         body.appendOpenBracket();
@@ -487,6 +499,9 @@ public class GenChangeableAttribute extends GenAttribute {
     private void generateMethodGetAllowedValuesForProd(Datatype datatype, JavaCodeFragmentBuilder methodsBuilder)
     throws CoreException {
         methodsBuilder.javaDoc("{@inheritDoc}", JavaSourceFileBuilder.ANNOTATION_GENERATED);
+        if(getPolicyCmptTypeAttribute().isOverwrite()){
+            appendOverrideAnnotation(methodsBuilder, false);
+        }
         generateSignatureGetAllowedValuesFor(datatype, methodsBuilder);
         JavaCodeFragment body = new JavaCodeFragment();
         body.appendOpenBracket();
