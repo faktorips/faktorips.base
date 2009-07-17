@@ -639,29 +639,6 @@
   -->
    <extension point="org.eclipse.ui.propertyPages"> 
         <page
-              class="org.faktorips.devtools.core.ui.IpsProjectPropertyPage"
-              icon="icons/IpsSrcFile.gif"
-              id="org.faktorips.projectpropertypage"
-              name="%org.faktorips.projectpropertypage"
-              objectClass="org.eclipse.core.resources.IProject"> 
-         <filter
-               name="nature"
-               value="org.faktorips.plugin.productdefinitionnature">
-         </filter>
-        </page> 
-        <page
-              class="org.faktorips.devtools.core.ui.IpsProjectPropertyPage"
-              icon="icons/IpsSrcFile.gif"
-              id="org.faktorips.projectpropertypage"
-              name="%org.faktorips.projectpropertypage"
-              objectClass="org.eclipse.jdt.core.IJavaProject"> 
-         <filter
-               name="nature"
-               value="org.faktorips.plugin.productdefinitionnature">
-         </filter>
-        </page> 
-
-        <page
               class="org.faktorips.devtools.core.ui.preferencepages.IpsObjectPathPropertyPage"
               id="org.faktorips.devtools.core.ui.propertyPages.IpsObjectPathsPropertyPage"
               name="%org.faktorips.ipsobjectpathspropertypage"
