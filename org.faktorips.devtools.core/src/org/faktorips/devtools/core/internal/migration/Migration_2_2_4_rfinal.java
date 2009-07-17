@@ -20,7 +20,7 @@ import org.faktorips.devtools.core.model.versionmanager.AbstractIpsProjectMigrat
 import org.faktorips.util.message.MessageList;
 
 /**
- * Migration from Faktor-IPS Version 2.2.4.rfinal to 2.3.0.rfinal.
+ * Migration from Faktor-IPS Version 2.2.4.rfinal to 2.2.5.rfinal.
  * 
  * @author Alexander Weickmann
  */

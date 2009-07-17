@@ -20,13 +20,13 @@ import org.faktorips.devtools.core.model.versionmanager.AbstractIpsProjectMigrat
 import org.faktorips.util.message.MessageList;
 
 /**
- * Migration from Faktor-IPS Version 2.2.4.rfinal to 2.3.0.rfinal.
+ * Migration from Faktor-IPS Version 2.2.5.rfinal to 2.3.0.rc1.
  * 
  * @author Alexander Weickmann
  */
 public class Migration_2_2_5_rfinal extends AbstractIpsProjectMigrationOperation {
 
-    /** Creates <code>Migration_2_2_4_rfinal</code>. */
+    /** Creates <code>Migration_2_2_5_rfinal</code>. */
     public Migration_2_2_5_rfinal(IIpsProject projectToMigrate, String featureId) {
         super(projectToMigrate, featureId);
     }
@@ -44,7 +44,7 @@ public class Migration_2_2_5_rfinal extends AbstractIpsProjectMigrationOperation
      * {@inheritDoc}
      */
     public String getTargetVersion() {
-        return "2.3.0.rfinal"; //$NON-NLS-1$
+        return "2.3.0.rc1"; //$NON-NLS-1$
     }
 
     /**
@@ -55,7 +55,7 @@ public class Migration_2_2_5_rfinal extends AbstractIpsProjectMigrationOperation
     }
 
     /**
-     * {@inheritDoc}
+     * {@inhSeritDoc}
      */
     public MessageList migrate(IProgressMonitor monitor) throws CoreException {
         Migration2_2_to2_3.migrate(getIpsProject(), monitor);
