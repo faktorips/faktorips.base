@@ -14,7 +14,7 @@
    </configIni>
 
    <launcherArgs>
-      <vmArgs>-Xms40m
+	<vmArgs>-Xms40m
 -Xmx512m</vmArgs>   
    </launcherArgs>
 
@@ -40,11 +40,11 @@
 
    <features>
       <feature id="org.faktorips.feature" version="0.0.0"/>
-      <feature id="org.eclipse.platform" version="0.0.0"/>
+      <feature id="org.eclipse.emf" version="0.0.0"/>
       <feature id="org.eclipse.jdt" version="0.0.0"/>
+      <feature id="org.eclipse.platform" version="0.0.0"/>
       <feature id="org.eclipse.rcp" version="0.0.0"/>
       <feature id="org.eclipse.cvs" version="0.0.0"/>
       <feature id="org.eclipse.gef" version="0.0.0"/>
-      <feature id="org.eclipse.emf" version="0.0.0"/>
    </features>
 </product>
