@@ -168,4 +168,23 @@
 <feature url="features/org.faktorips.uml.feature.source_2.2.5.rfinal.jar" id="org.faktorips.uml.feature.source" version="2.2.5.rfinal">
 <category name="Faktor-IPS 2.2"/>
 </feature>
+<feature url="features/org.faktorips.feature_2.3.0.rc1.jar" id="org.faktorips.feature" version="2.3.0.rc1">
+<category name="Faktor-IPS 2.3"/>
+</feature>
+<feature url="features/org.faktorips.feature.nls1_2.3.0.rc1.jar" id="org.faktorips.feature.nls1" version="2.3.0.rc1">
+<category name="Faktor-IPS 2.3"/>
+</feature>
+<feature url="features/org.faktorips.feature.source_2.3.0.rc1.jar" id="org.faktorips.feature.source" version="2.3.0.rc1">
+<category name="Faktor-IPS 2.3"/>
+</feature>
+<category-def name="Faktor-IPS 2.3" label="Faktor-IPS 2.3"/>
+<feature url="features/org.faktorips.uml.feature_2.3.0.rc1.jar" id="org.faktorips.uml.feature" version="2.3.0.rc1">
+<category name="Faktor-IPS 2.3"/>
+</feature>
+<feature url="features/org.faktorips.uml.feature.nls1_2.3.0.rc1.jar" id="org.faktorips.uml.feature.nls1" version="2.3.0.rc1">
+<category name="Faktor-IPS 2.3"/>
+</feature>
+<feature url="features/org.faktorips.uml.feature.source_2.3.0.rc1.jar" id="org.faktorips.uml.feature.source" version="2.3.0.rc1">
+<category name="Faktor-IPS 2.3"/>
+</feature>
 </site>
