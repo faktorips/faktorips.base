@@ -581,7 +581,7 @@ patchAllCvsMap()
   fi
 }
 
-assertProductConfiguration()
+assertProductConfigurationExists()
 {
   #if running the product build then the corresponding FaktorIps.product file must be checked out
   #   -> if no cvs is used then no checkout is necessary, because all projects must be checked out in the projectsrootdir 
