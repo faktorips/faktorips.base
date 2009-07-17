@@ -35,4 +35,34 @@ public class ComplianceCheck {
         }
         return false; // assume old Java 1.4 project if compliance level is not set.
     }
+
+    /**
+     * Returns <code>true</code> if the compliance level of the java project that is associated with
+     * the provided {@link IIpsProject} is greater than 1.5. Returns <code>null</code> if the
+     * compliance level could not be determined.
+     * 
+     * @see JavaCore#COMPILER_COMPLIANCE
+     */
+    public static Boolean isComplianceLevelGreaterJava5(IIpsProject project) {
+        String complianceLevel = project.getJavaProject().getOption(JavaCore.COMPILER_COMPLIANCE, true);
+        if (complianceLevel != null) {
+            return Decimal.valueOf(complianceLevel).greaterThan(Decimal.valueOf("1.5")); //$NON-NLS-1$
+        }
+        return null;
+    }
+
+    /**
+     * Returns <code>true</code> if the compliance level of the java project that is associated with the
+     * provided {@link IIpsProject} is 1.5. Returns <code>null</code> if the compliance level could not
+     * be determined. 
+     * 
+     * @see JavaCore#COMPILER_COMPLIANCE
+     */
+    public static Boolean isComplianceLevel5(IIpsProject project) {
+        String complianceLevel = project.getJavaProject().getOption(JavaCore.COMPILER_COMPLIANCE, true);
+        if (complianceLevel != null) {
+            return Decimal.valueOf(complianceLevel).equals(Decimal.valueOf("1.5")); //$NON-NLS-1$
+        }
+        return null;
+    }
 }

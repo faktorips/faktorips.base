@@ -94,7 +94,12 @@ public interface IProductCmptType extends IType, IIpsMetaClass {
      * Returns <code>null</code> if this type does not refer to a policy component type.
      */
     public String getPolicyCmptType();
-    
+
+    /**
+     * Returns <code>true</code> if this type has an abstract type within its super type hierarchy.
+     */
+    public boolean hasAbstractTypeInSupertypeHierarchy(IIpsProject ipsProject) throws CoreException;
+
     /**
      * Returns <code>true</code> if this product component type configures a policy component type.
      * The configured policy component type can be requested via [{@link #getPolicyCmptType()} and {@link #findPolicyCmptType()}.

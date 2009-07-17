@@ -99,6 +99,12 @@ public class ProductCmptType extends Type implements IProductCmptType {
         return tableStructureUsages.iterator();
     }
 
+    public boolean hasAbstractTypeInSupertypeHierarchy(IIpsProject ipsProject) throws CoreException{
+        CheckIfAbstractTypeInSupertypeHierarchy visitor = new CheckIfAbstractTypeInSupertypeHierarchy(ipsProject);
+        visitor.start(findSupertype(ipsProject));
+        return visitor.check;
+    }
+    
     /**
      * {@inheritDoc}
      */
@@ -566,6 +572,18 @@ public class ProductCmptType extends Type implements IProductCmptType {
         return (IDependency[])dependencies.toArray(new IDependency[dependencies.size()]);
     }
     
+    /**
+     * {@inheritDoc}
+     */
+    public IIpsSrcFile[] findAllMetaObjectSrcFiles(IIpsProject ipsProject,
+            boolean includeSubtypes) throws CoreException {
+        TreeSet<IIpsSrcFile> result = TreeSetHelper.newIpsSrcFileTreeSet();
+        IIpsProject[] searchProjects = ipsProject.getReferencingProjectLeavesOrSelf();
+        for (IIpsProject project : searchProjects) {
+            result.addAll(Arrays.asList(project.findAllProductCmptSrcFiles(this, includeSubtypes)));
+        }
+        return result.toArray(new IIpsSrcFile[result.size()]);
+    }
 
     private static class TableStructureUsageFinder extends ProductCmptTypeHierarchyVisitor {
 
@@ -750,21 +768,20 @@ public class ProductCmptType extends Type implements IProductCmptType {
             return true;
         }        
     }
+    
+    
+    private class CheckIfAbstractTypeInSupertypeHierarchy extends ProductCmptTypeHierarchyVisitor{
 
+        boolean check;
 
-	/* (non-Javadoc)
-	 * @see org.faktorips.devtools.core.model.IIpsMetaClass#findAllMetaObjects(org.faktorips.devtools.core.model.ipsproject.IIpsProject, boolean)
-	 */
-    /**
-     * {@inheritDoc}
-     */
-	public IIpsSrcFile[] findAllMetaObjectSrcFiles(IIpsProject ipsProject,
-			boolean includeSubtypes) throws CoreException {
-		TreeSet<IIpsSrcFile> result = TreeSetHelper.newIpsSrcFileTreeSet();
-		IIpsProject[] searchProjects = ipsProject.getReferencingProjectLeavesOrSelf();
-		for (IIpsProject project : searchProjects) {
-			result.addAll(Arrays.asList(project.findAllProductCmptSrcFiles(this, includeSubtypes)));
-		}
-		return result.toArray(new IIpsSrcFile[result.size()]);
-	}
+        public CheckIfAbstractTypeInSupertypeHierarchy(IIpsProject ipsProject) {
+            super(ipsProject);
+        }
+        
+        @Override
+        protected boolean visit(IProductCmptType currentType) throws CoreException {
+            check = currentType.isAbstract();
+            return !check;
+        }
+    }
 }

@@ -48,6 +48,26 @@ public abstract class JavaGeneratorForIpsPart {
     }
     
     /**
+     * Adds an <code>Override</code> annotation to the java code fragment if the java compliance
+     * level is greater than 1.5. It takes into account the fine differences regarding the
+     * <code>Override</code> annotation for compliance level 1.5 and higher.
+     * 
+     * @param fragmentBuilder the annotation is added to this {@link JavaCodeFragmentBuilder}
+     * @param interfaceMethodImplementation to be able to decide if an Override annotation needs to
+     *            be generated it must be known if the the generated method is an implementation of
+     *            an interface method or an override of a super class method.
+     */
+    //TODO duplicate code with JavaSourceFileBuilder
+    public void appendOverrideAnnotation(JavaCodeFragmentBuilder fragmentBuilder, boolean interfaceMethodImplementation){
+        if(ComplianceCheck.isComplianceLevel5(getIpsPart().getIpsProject()) && !interfaceMethodImplementation){
+            fragmentBuilder.annotationLn(JavaSourceFileBuilder.ANNOTATION_OVERRIDE);
+        }
+        if(ComplianceCheck.isComplianceLevelGreaterJava5(getIpsPart().getIpsProject())){
+            fragmentBuilder.annotationLn(JavaSourceFileBuilder.ANNOTATION_OVERRIDE);
+        }
+    }
+
+    /**
      * Returns the language in that variables, methods are named and and Java docs are written in.
      * 
      * @see IIpsArtefactBuilderSet#getLanguageUsedInGeneratedSourceCode()
