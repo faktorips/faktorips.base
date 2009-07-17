@@ -391,8 +391,10 @@ public class TestCaseTypeClassBuilder extends DefaultJavaSourceFileBuilder {
             String methodName,
             JavaCodeFragment body,
             String javaDoc) {
+        codeBuilder.javaDoc(javaDoc, ANNOTATION_RESTRAINED_MODIFIABLE);
+        appendOverrideAnnotation(codeBuilder, false);
         codeBuilder.method(Modifier.PUBLIC, "void", methodName, new String[] { "element" },
-                new String[] { Element.class.getName() }, body, javaDoc, ANNOTATION_RESTRAINED_MODIFIABLE);
+                new String[] { Element.class.getName() }, body, null);
     }
 
     /*
@@ -617,8 +619,10 @@ public class TestCaseTypeClassBuilder extends DefaultJavaSourceFileBuilder {
         String javaDoc = getLocalizedText(getIpsSrcFile(), EXECUTEBUSINESSLOGIC_JAVADOC);
         JavaCodeFragment body = new JavaCodeFragment();
         body.appendln("// TODO " + getLocalizedText(getIpsSrcFile(), EXECUTEBUSINESSLOGIC_TODO));
+        codeBuilder.javaDoc(javaDoc, ANNOTATION_GENERATED);
+        appendOverrideAnnotation(codeBuilder, false);
         codeBuilder.method(Modifier.PUBLIC, "void", "executeBusinessLogic", EMPTY_STRING_ARRAY, EMPTY_STRING_ARRAY,
-                body, javaDoc, ANNOTATION_GENERATED);
+                body, null);
     }
 
     /*
@@ -645,8 +649,10 @@ public class TestCaseTypeClassBuilder extends DefaultJavaSourceFileBuilder {
         body.append("(\"");
         body.append(getLocalizedText(getIpsSrcFile(), RUNTIME_EXCEPTION_NO_ASSERTS));
         body.append("\");");
+        codeBuilder.javaDoc(javaDoc, ANNOTATION_GENERATED);
+        appendOverrideAnnotation(codeBuilder, false);
         codeBuilder.method(Modifier.PUBLIC, "void", "executeAsserts", new String[] { "result" },
-                new String[] { IpsTestResult.class.getName() }, body, javaDoc, ANNOTATION_GENERATED);
+                new String[] { IpsTestResult.class.getName() }, body, null);
     }
 
     /*
