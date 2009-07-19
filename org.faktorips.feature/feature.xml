@@ -220,10 +220,6 @@ A      Drittsoftware
  http.//www.beanshell.org         Gnu Lesser License (LGPL)
    </license>
 
-   <url>
-      <update label="Faktor-IPS" url="http://update.faktorzehn.org/faktorips/"/>
-   </url>
-
    <includes
          id="org.faktorips.feature.source"
          version="0.0.0"
