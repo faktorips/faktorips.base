@@ -548,7 +548,7 @@ createAndAddLicensePdf()
   local ARCHIV_FILE=$1
   if [ ! "$SKIPPUBLISH" = "true" -a -f $WORKINGDIR/archives ] ; then
     $PROJECTSROOTDIR/$CREATE_LIZENZ_SCRIPT $BUILD_VERSION
-    for i in $(cat $WORKINGDIR/$ARCHIV_FILE) ; do
+    for i in $(cat $ARCHIV_FILE) ; do
       if [ ! -f $i ] ; then continue ; fi 
       echo "add license to: "$i
       zip -ujD $i $PROJECTSROOTDIR/$LIZENZ_PDF > /dev/null 2>&1
@@ -773,7 +773,7 @@ echo ''
 if [ product
 
 if [ -n "$BUILDPRODUCT" ] ; then
-  createAndAddLicensePdf archives_products
+  createAndAddLicensePdf $WORKINGDIR/archives_products
 else
-  createAndAddLicensePdf archives_features
+  createAndAddLicensePdf $WORKINGDIR/archives_features
 fi
