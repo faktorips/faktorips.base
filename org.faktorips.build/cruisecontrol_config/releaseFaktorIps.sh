@@ -545,7 +545,7 @@ createIndexHtml()
 createAndAddLicensePdf()
 {
   # $1 archive file
-  local ARCHIV_FILE
+  local ARCHIV_FILE=$1
   if [ ! "$SKIPPUBLISH" = "true" -a -f $WORKINGDIR/archives ] ; then
     $PROJECTSROOTDIR/$CREATE_LIZENZ_SCRIPT $BUILD_VERSION
     for i in $(cat $WORKINGDIR/$ARCHIV_FILE) ; do
@@ -777,4 +777,3 @@ if [ -n "$BUILDPRODUCT" ] ; then
 else
   createAndAddLicensePdf archives_features
 fi
-
