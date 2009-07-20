@@ -148,12 +148,13 @@ getFetchTagVersion ()
  export VERSION_QUALIFIER=$(echo $INPUT_VERSION | sed -r "s/([0-9]*)\.([0-9]*)\.([0-9]*)\.(.*)/\4/g")
  export VERSION=$(echo $INPUT_VERSION | sed -r "s/([0-9]*)\.([0-9]*)\.([0-9]*)\.(.*)/\1\.\2\.\3/g")
  export FETCH_TAG=$(echo $INPUT_VERSION | sed -r "s/([0-9]*)\.([0-9]*)\.([0-9]*)\.(.*)/v\1_\2_\3_\4/g")
- if [ "$FETCH_TAG" = "$INPUT_VERSION" ] ; then
-   # maybe without qualifier
-   export VERSION_QUALIFIER="NONE"
-   export VERSION=$(echo $INPUT_VERSION | sed -r "s/([0-9]*)\.([0-9]*)\.([0-9]*)/\1\.\2\.\3/g")
-   export FETCH_TAG=$(echo $INPUT_VERSION | sed -r "s/([0-9]*)\.([0-9]*)\.(.*)/v\1_\2_\3/g")
- fi
+# not supported by eclipse build files?
+# if [ "$FETCH_TAG" = "$INPUT_VERSION" ] ; then
+#   # maybe without qualifier
+#   export VERSION_QUALIFIER="NONE"
+#   export VERSION=$(echo $INPUT_VERSION | sed -r "s/([0-9]*)\.([0-9]*)\.([0-9]*)/\1\.\2\.\3/g")
+#   export FETCH_TAG=$(echo $INPUT_VERSION | sed -r "s/([0-9]*)\.([0-9]*)\.(.*)/v\1_\2_\3/g")
+# fi
  assertVersionFormat $VERSION $VERSION_QUALIFIER $FETCH_TAG \
   "Wrong release version format '$INPUT_VERSION', must be tree numbers followed by the qualifier (major.minor.micro.qualifier), e.g. 2.2.0.rfinal"
  if [ "$VERSION_QUALIFIER" = "NONE" ] ; then
@@ -178,11 +179,6 @@ assertVersionFormat ()
  FETCH_TAG=$3
  FAIL_MESSAGE=$4
  POINTEXISTS=$( echo $VERSION | grep "\." | wc -l )
- echo 2222
- echo -$VERSION-
- echo -$VERSION_QUALIFIER-
- echo -$FETCH_TAG-
- echo -$POINTEXISTS-
  if [ -z $VERSION -o -z $FETCH_TAG -o "$VERSION" = "$FETCH_TAG" -o "$POINTEXISTS" -eq 0 ] ; then
    echo $FAIL_MESSAGE
    exit 1
