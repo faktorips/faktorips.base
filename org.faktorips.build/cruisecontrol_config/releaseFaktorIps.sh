@@ -125,6 +125,10 @@ initDefaultParameter()
   CVS_ROOT=${CVS_ROOT:-$DEFAULT_CVS_ROOT}
 
   WORKINGDIR=${WORKINGDIR:-'./tmp_fips_release'}
+  # create working dir
+  if [ ! -d $WORKINGDIR ] ; then 
+    mkdir -p $WORKINGDIR
+  fi
   # convert to absolut path
   WORKINGDIR=$(cd $WORKINGDIR; pwd)
   PROJECTSROOTDIR=$WORKINGDIR/checkout_release
