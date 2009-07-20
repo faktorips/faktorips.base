@@ -770,8 +770,6 @@ fi
 ####################################################
 echo ''
 
-if [ product
-
 if [ -n "$BUILDPRODUCT" ] ; then
   createAndAddLicensePdf $WORKINGDIR/archives_products
 else
