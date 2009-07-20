@@ -546,7 +546,7 @@ createAndAddLicensePdf()
 {
   # $1 archive file
   local ARCHIV_FILE=$1
-  if [ ! "$SKIPPUBLISH" = "true" -a -f $WORKINGDIR/archives ] ; then
+  if [ ! "$SKIPPUBLISH" = "true" -a -f $ARCHIV_FILE ] ; then
     $PROJECTSROOTDIR/$CREATE_LIZENZ_SCRIPT $BUILD_VERSION
     for i in $(cat $ARCHIV_FILE) ; do
       if [ ! -f $i ] ; then continue ; fi 
