@@ -3,8 +3,6 @@
 #   die src.zip in den plugin Ordnern in plugin/org.faktorips.feature.source../
 #   sind falsch (alle gleich) problem entsteht beim generieren der Updatesite
 #   Workaround: postBuild.xml -fixUpdateSiteStagingLocation
-# TODO site.xml auf dem server neu auschecken, problem mit permission
-# TODO projectsrootdir und workingdir relativ zum user anlegen
 ##############################################################################################################################
 # Faktor IPS release build script
 ##############################################################################################################################
@@ -148,6 +146,10 @@ getFetchTagVersion ()
  export VERSION_QUALIFIER=$(echo $INPUT_VERSION | sed -r "s/([0-9]*)\.([0-9]*)\.([0-9]*)\.(.*)/\4/g")
  export VERSION=$(echo $INPUT_VERSION | sed -r "s/([0-9]*)\.([0-9]*)\.([0-9]*)\.(.*)/\1\.\2\.\3/g")
  export FETCH_TAG=$(echo $INPUT_VERSION | sed -r "s/([0-9]*)\.([0-9]*)\.([0-9]*)\.(.*)/v\1_\2_\3_\4/g")
+ if [ "$FETCH_TAG" = "$INPUT_VERSION" ] ; then
+   # maybe without qualifier
+   export FETCH_TAG=$(echo $INPUT_VERSION | sed -r "s/([0-9]*)\.([0-9]*)\.(.*)/v\1_\2_\3/g")
+ fi
  assertVersionFormat $VERSION $VERSION_QUALIFIER $FETCH_TAG \
   "Wrong release version format '$INPUT_VERSION', must be tree numbers followed by the qualifier (major.minor.micro.qualifier), e.g. 2.2.0.rfinal"
 }
@@ -169,6 +171,10 @@ assertVersionFormat ()
  FETCH_TAG=$3
  FAIL_MESSAGE=$4
  POINTEXISTS=$( echo $VERSION | grep "\." | wc -l )
+ echo -$VERSION-
+ echo -$VERSION_QUALIFIER-
+ echo -$FETCH_TAG-
+ echo -$POINTEXISTS-
  if [ -z $VERSION -o -z $FETCH_TAG -o "$VERSION" = "$FETCH_TAG" -o "$POINTEXISTS" -eq 0 ] ; then
    echo $FAIL_MESSAGE
    exit 1
