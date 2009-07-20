@@ -3,8 +3,6 @@
 #   die src.zip in den plugin Ordnern in plugin/org.faktorips.feature.source../
 #   sind falsch (alle gleich) problem entsteht beim generieren der Updatesite
 #   Workaround: postBuild.xml -fixUpdateSiteStagingLocation
-# TODO Tagging Problem wenn nicht cruise! permission CVSROOT/val-tags
-#      cvs [rtag aborted]: cannot write /usr/local/cvsroot/CVSROOT/val-tags:
 # TODO site.xml auf dem server neu auschecken, problem mit permission
 # TODO projectsrootdir und workingdir relativ zum user anlegen
 ##############################################################################################################################
@@ -126,7 +124,7 @@ initDefaultParameter()
   DEFAULT_JAVA_HOME=${DEFAULT_JAVA_HOME:-'/usr/lib/jvm/java-1.5.0-sun'}
   CVS_ROOT=${CVS_ROOT:-$DEFAULT_CVS_ROOT}
 
-  WORKINGDIR=${WORKINGDIR:-'/opt/cc/work'}
+  WORKINGDIR=${WORKINGDIR:-'./tmp_fips_release'}
   # convert to absolut path
   WORKINGDIR=$(cd $WORKINGDIR; pwd)
   PROJECTSROOTDIR=$WORKINGDIR/checkout_release
@@ -542,10 +540,11 @@ createIndexHtml()
 
 createAndAddLicensePdf()
 {
+  # $1 archive file
+  local ARCHIV_FILE
   if [ ! "$SKIPPUBLISH" = "true" -a -f $WORKINGDIR/archives ] ; then
     $PROJECTSROOTDIR/$CREATE_LIZENZ_SCRIPT $BUILD_VERSION
-    for i in $(cat $WORKINGDIR/archives) ; do
-      # update only existing archives (in a product build no plugin zips exists and vice versa)
+    for i in $(cat $WORKINGDIR/$ARCHIV_FILE) ; do
       if [ ! -f $i ] ; then continue ; fi 
       echo "add license to: "$i
       zip -ujD $i $PROJECTSROOTDIR/$LIZENZ_PDF > /dev/null 2>&1
@@ -766,6 +765,12 @@ fi
 # add lizenz to all generated and published archives
 ####################################################
 echo ''
-createAndAddLicensePdf
 
+if [ product
+
+if [ -n "$BUILDPRODUCT" ] ; then
+  createAndAddLicensePdf archives_products
+else
+  createAndAddLicensePdf archives_features
+fi
 
