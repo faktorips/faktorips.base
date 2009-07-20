@@ -3,6 +3,8 @@
 #   die src.zip in den plugin Ordnern in plugin/org.faktorips.feature.source../
 #   sind falsch (alle gleich) problem entsteht beim generieren der Updatesite
 #   Workaround: postBuild.xml -fixUpdateSiteStagingLocation
+# TODO site.xml auf dem server neu auschecken, problem mit permission
+# TODO projectsrootdir und workingdir relativ zum user anlegen
 ##############################################################################################################################
 # Faktor IPS release build script
 ##############################################################################################################################
@@ -148,10 +150,15 @@ getFetchTagVersion ()
  export FETCH_TAG=$(echo $INPUT_VERSION | sed -r "s/([0-9]*)\.([0-9]*)\.([0-9]*)\.(.*)/v\1_\2_\3_\4/g")
  if [ "$FETCH_TAG" = "$INPUT_VERSION" ] ; then
    # maybe without qualifier
+   export VERSION_QUALIFIER="NONE"
+   export VERSION=$(echo $INPUT_VERSION | sed -r "s/([0-9]*)\.([0-9]*)\.([0-9]*)/\1\.\2\.\3/g")
    export FETCH_TAG=$(echo $INPUT_VERSION | sed -r "s/([0-9]*)\.([0-9]*)\.(.*)/v\1_\2_\3/g")
  fi
  assertVersionFormat $VERSION $VERSION_QUALIFIER $FETCH_TAG \
   "Wrong release version format '$INPUT_VERSION', must be tree numbers followed by the qualifier (major.minor.micro.qualifier), e.g. 2.2.0.rfinal"
+ if [ "$VERSION_QUALIFIER" = "NONE" ] ; then
+   export VERSION_QUALIFIER=""
+ fi
 }
 
 getFetchTagVersionForBranch ()
@@ -171,6 +178,7 @@ assertVersionFormat ()
  FETCH_TAG=$3
  FAIL_MESSAGE=$4
  POINTEXISTS=$( echo $VERSION | grep "\." | wc -l )
+ echo 2222
  echo -$VERSION-
  echo -$VERSION_QUALIFIER-
  echo -$FETCH_TAG-
@@ -385,7 +393,7 @@ assertValidParameters()
 	
 	# extract build category from given version, if no category is given
 	if [ -z "$BUILD_CATEGORY" ]
-	  then BUILD_CATEGORY=$(echo $BUILD_VERSION | sed -r "s/([0-9]*)\.([0-9]*)\.([0-9]*)\.(.*)/\1\.\2/g")
+	  then BUILD_CATEGORY=$(echo $BUILD_VERSION | sed -r "s/([0-9]*)\.([0-9]*).*/\1\.\2/g")
 	fi 
 	
 	# if a branch should be used the cvs must be used
