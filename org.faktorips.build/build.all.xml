@@ -1,6 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project name="org.faktorips.build.all" default="build.all">
-    <target name="build.all">
+
+	<!-- simulate Cruise Control ant build calls -->
+	<target name="build.all">
         
     	<ant dir="../org.faktorips.util/build" antfile="build.xml" target="buildjar"/>
         
@@ -12,12 +14,10 @@
         
     	<ant dir="../org.faktorips.runtime/build" antfile="build.xml" target="buildjar"/>
     	
-    	<!-- works only with java 4 or 5 runtime, because of jaxb impl in java 1.6
         <ant dir="../org.faktorips.runtime.java5/build" antfile="build.xml" target="buildjar"/>
-        -->
     	
-    	<!-- note: org.faktorips.fl needs javacc home -->
-        <ant dir="../org.faktorips.fl/build" antfile="build.xml" target="cleanParserSource"/>
+		<!-- note: org.faktorips.fl needs javacc home -->
+		<ant dir="../org.faktorips.fl/build" antfile="build.xml" target="cleanParserSource"/>
         <ant dir="../org.faktorips.fl/build" antfile="build.xml" target="clean"/>
         <ant dir="../org.faktorips.fl/build" antfile="build.xml" target="buildjar"/>
 
@@ -32,7 +32,7 @@
     	<ant dir="../org.faktorips.devtools.ant/build" antfile="build.xml" target="buildjar"/>
         
     	<ant dir="../org.faktorips.uml/build" antfile="build.xml" target="buildjar"/>
-        
+		
     	<ant dir="../org.faktorips.devtools.ormext/build" antfile="build.xml" target="buildjar"/>
         
     	<ant dir="../org.faktorips.devtools.ormext.ui/build" antfile="build.xml" target="buildjar"/>

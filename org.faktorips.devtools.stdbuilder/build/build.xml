@@ -69,7 +69,6 @@
 		    		<include name="build/results/*.jar" />
 		    </patternset>
 		</fileset>
-		
 
 
 	</path>
