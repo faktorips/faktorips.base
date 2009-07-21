@@ -20,6 +20,11 @@ import org.apache.commons.lang.SystemUtils;
 
 /**
  * A builder to create JavaCodeFragments with a uniform coding style.
+ * <p>
+ * The JavaCodeFragmentBuilder uses the method chaining pattern. That means: every method
+ * modifying the {@link JavaCodeFragment} retunrs this JavaCodeFragmentBuilder. So you could
+ * chain the methods like this:
+ * javaCodeFragmentBuilder.methodBegin(<method signature parameter>).appendln(<one line>).methodEnd();
  * 
  * @author Jan Ortmann
  */
@@ -50,80 +55,99 @@ public class JavaCodeFragmentBuilder {
      * 
      * @param qualifiedClassName the java class that is added to the import declaration
      */
-    public void addImport(String qualifiedClassName) {
+    public JavaCodeFragmentBuilder addImport(String qualifiedClassName) {
         fragment.addImport(qualifiedClassName);
+        return this;
     }
 
     /**
      * Adds an import entry to the code fragment under construction.
      */
-    public void addImport(Class<?> clazz) {
+    public JavaCodeFragmentBuilder addImport(Class<?> clazz) {
         fragment.addImport(clazz.getName());
+        return this;
     }
 
     /**
      * Appends a line separator to fragment's sourcecode.
      */
-    public void appendln() {
+    public JavaCodeFragmentBuilder appendln() {
         fragment.appendln();
+        return this;
     }
 
     /**
      * Appends the given String to the fragment's sourcecode.
      */
-    public void append(String s) {
+    public JavaCodeFragmentBuilder append(String s) {
         fragment.append(s);
+        return this;
     }
 
     /**
      * Encloses the given String with doublequotes (") and appends it to fragment.
      */
-    public void appendQuoted(String s) {
+    public JavaCodeFragmentBuilder appendQuoted(String s) {
         fragment.appendQuoted(s);
+        return this;
     }
 
     /**
      * Appends the given char to the fragment's sourcecode.
      */
-    public void append(char c) {
+    public JavaCodeFragmentBuilder append(char c) {
         fragment.append(c);
+        return this;
+    }
+
+    /**
+     * Appends the given int to the fragment's sourcecode.
+     */
+    public JavaCodeFragmentBuilder append(int i) {
+        fragment.append(i);
+        return this;
     }
 
     /**
      * Appends the class' unqualified name to the sourcecode and updates the import declaration (if
      * necessary).
      */
-    public void appendClassName(Class<?> clazz) {
+    public JavaCodeFragmentBuilder appendClassName(Class<?> clazz) {
         fragment.appendClassName(clazz);
+        return this;
     }
 
     /**
      * Appends the unqualified class name to the sourcecode and updates the import declaration (if
      * necessary).
      */
-    public void appendClassName(String qualifiedClassName) {
+    public JavaCodeFragmentBuilder appendClassName(String qualifiedClassName) {
         fragment.appendClassName(qualifiedClassName);
+        return this;
     }
 
     /**
      * Appends the given String and a line separator to the fragment's sourcecode.
      */
-    public void appendln(String s) {
+    public JavaCodeFragmentBuilder appendln(String s) {
         fragment.appendln(s);
+        return this;
     }
 
     /**
      * Appends the given char to the fragment's sourcecode.
      */
-    public void appendLn(char c) {
+    public JavaCodeFragmentBuilder appendln(char c) {
         fragment.appendln(c);
+        return this;
     }
 
     /**
      * Appends the given fragment to the fragment under construction and idents it properly.
      */
-    public void append(JavaCodeFragment fragment) {
+    public JavaCodeFragmentBuilder append(JavaCodeFragment fragment) {
         this.fragment.append(fragment);
+        return this;
     }
 
     /**
@@ -134,31 +158,34 @@ public class JavaCodeFragmentBuilder {
      * 
      * @see java.lang.reflect.Modifier
      */
-    public void appendJavaModifier(int modifier) {
+    public JavaCodeFragmentBuilder appendJavaModifier(int modifier) {
         append(Modifier.toString(modifier));
+        return this;
     }
 
     /**
      * Adds an opening bracket followed by a newline and increases the indentation level by one
      * afterwards.
      */
-    public void openBracket() {
+    public JavaCodeFragmentBuilder openBracket() {
         if (!fragment.bol()) {
             fragment.appendln();
         }
         fragment.appendln('{');
         fragment.incIndentationLevel();
+        return this;
     }
 
     /**
      * Adds a closing bracket and decreases the indentation level by one afterwards.
      */
-    public void closeBracket() {
+    public JavaCodeFragmentBuilder closeBracket() {
         fragment.decIndentationLevel();
         if (!fragment.bol()) {
             fragment.appendln();
         }
         fragment.appendln('}');
+        return this;
     }
 
     /**
@@ -173,7 +200,7 @@ public class JavaCodeFragmentBuilder {
      * @param body the method body
      * @param javadoc the java documentation
      */
-    public void method(int modifier,
+    public JavaCodeFragmentBuilder method(int modifier,
             String returnType,
             String methodName,
             String[] argName,
@@ -185,6 +212,7 @@ public class JavaCodeFragmentBuilder {
         methodBegin(modifier, returnType, methodName, argName, argClass);
         append(body);
         methodEnd();
+        return this;
     }
 
     /**
@@ -198,9 +226,9 @@ public class JavaCodeFragmentBuilder {
      * @param argName Argument names.
      * @param argClass Argument classes.
      */
-    public void methodBegin(int modifier, Class<?> returnType, String methodName, String[] argName, Class<?>[] argClass) {
-
+    public JavaCodeFragmentBuilder methodBegin(int modifier, Class<?> returnType, String methodName, String[] argName, Class<?>[] argClass) {
         methodBegin(modifier, returnType, methodName, argName, argClass, null);
+        return this;
     }
 
     /**
@@ -214,7 +242,7 @@ public class JavaCodeFragmentBuilder {
      * @param argName Argument names.
      * @param argClass Argument classes.
      */
-    public void methodBegin(int modifier,
+    public JavaCodeFragmentBuilder methodBegin(int modifier,
             Class<?> returnType,
             String methodName,
             String[] argName,
@@ -226,6 +254,7 @@ public class JavaCodeFragmentBuilder {
         if (!Modifier.isAbstract(modifier)) {
             openBracket();
         }
+        return this;
     }
 
     /**
@@ -240,7 +269,7 @@ public class JavaCodeFragmentBuilder {
      * @param body the method body
      * @param javadoc the java documentation
      */
-    public void method(int modifier,
+    public JavaCodeFragmentBuilder method(int modifier,
             Class<?> returnType,
             String methodName,
             String[] argName,
@@ -252,6 +281,7 @@ public class JavaCodeFragmentBuilder {
         methodBegin(modifier, returnType, methodName, argName, argClass);
         append(body);
         methodEnd();
+        return this;
     }
 
     /**
@@ -267,7 +297,7 @@ public class JavaCodeFragmentBuilder {
      * @param body the method body
      * @param javadoc the java documentation
      */
-    public void method(int modifier,
+    public JavaCodeFragmentBuilder method(int modifier,
             Class<?> returnType,
             String methodName,
             String[] argName,
@@ -280,6 +310,7 @@ public class JavaCodeFragmentBuilder {
         methodBegin(modifier, returnType, methodName, argName, argClass, exceptionClasses);
         append(body);
         methodEnd();
+        return this;
     }
 
     /**
@@ -295,7 +326,7 @@ public class JavaCodeFragmentBuilder {
      * @param javadoc the java documentation
      * @param javaDocAnnotations annotations of the java documentation
      */
-    public void method(int modifier,
+    public JavaCodeFragmentBuilder method(int modifier,
             Class<?> returnType,
             String methodName,
             String[] argName,
@@ -308,6 +339,7 @@ public class JavaCodeFragmentBuilder {
         methodBegin(modifier, returnType, methodName, argName, argClass);
         append(body);
         methodEnd();
+        return this;
     }
 
     /**
@@ -324,7 +356,7 @@ public class JavaCodeFragmentBuilder {
      * @param javaDocAnnotations annotations of the java documentation
      * @param annotations Java 5 annotations
      */
-    public void method(int modifier,
+    public JavaCodeFragmentBuilder method(int modifier,
             Class<?> returnType,
             String methodName,
             String[] argName,
@@ -339,6 +371,7 @@ public class JavaCodeFragmentBuilder {
         methodBegin(modifier, returnType, methodName, argName, argClass);
         append(body);
         methodEnd();
+        return this;
     }
 
     /**
@@ -354,7 +387,7 @@ public class JavaCodeFragmentBuilder {
      * @param javadoc the java documentation
      * @param javaDocAnnotations annotations of the java documentation
      */
-    public void method(int modifier,
+    public JavaCodeFragmentBuilder method(int modifier,
             String returnType,
             String methodName,
             String[] argName,
@@ -367,6 +400,7 @@ public class JavaCodeFragmentBuilder {
         methodBegin(modifier, returnType, methodName, argName, argClass);
         append(body);
         methodEnd();
+        return this;
     }
 
     /**
@@ -383,7 +417,7 @@ public class JavaCodeFragmentBuilder {
      * @param javaDocAnnotations annotations of the java documentation
      * @param annotations Java 5 annotations
      */
-    public void method(int modifier,
+    public JavaCodeFragmentBuilder method(int modifier,
             String returnType,
             String methodName,
             String[] argName,
@@ -398,6 +432,7 @@ public class JavaCodeFragmentBuilder {
         methodBegin(modifier, returnType, methodName, argName, argClass);
         append(body);
         methodEnd();
+        return this;
     }
 
     /**
@@ -413,7 +448,7 @@ public class JavaCodeFragmentBuilder {
      * @param argClass Argument classes.
      * @param javaDoc the java documentation for this method signature
      */
-    public void methodBegin(int modifier,
+    public JavaCodeFragmentBuilder methodBegin(int modifier,
             String returnType,
             String methodName,
             String[] argName,
@@ -422,6 +457,7 @@ public class JavaCodeFragmentBuilder {
 
         javaDoc(javaDoc);
         methodBegin(modifier, returnType, methodName, argName, argClass);
+        return this;
     }
 
     /**
@@ -438,7 +474,7 @@ public class JavaCodeFragmentBuilder {
      * @param javaDoc the java documentation for this method signature
      * @param javaDocAnnotations annotations of the java documentation
      */
-    public void methodBegin(int modifier,
+    public JavaCodeFragmentBuilder methodBegin(int modifier,
             String returnType,
             String methodName,
             String[] argName,
@@ -448,6 +484,7 @@ public class JavaCodeFragmentBuilder {
 
         javaDoc(javaDoc, javaDocAnnotations);
         methodBegin(modifier, returnType, methodName, argName, argClass);
+        return this;
     }
 
     /**
@@ -464,7 +501,7 @@ public class JavaCodeFragmentBuilder {
      * @param javaDoc the java documentation for this method signature
      * @param javaDocAnnotations annotations of the java documentation
      */
-    public void methodBegin(int modifier,
+    public JavaCodeFragmentBuilder methodBegin(int modifier,
             Class<?> returnType,
             String methodName,
             String[] argName,
@@ -474,6 +511,7 @@ public class JavaCodeFragmentBuilder {
 
         javaDoc(javaDoc, javaDocAnnotations);
         methodBegin(modifier, returnType, methodName, argName, argClass);
+        return this;
     }
 
     /**
@@ -488,11 +526,12 @@ public class JavaCodeFragmentBuilder {
      * @param argName Argument names.
      * @param argClass Argument classes.
      */
-    public void methodBegin(int modifier, String returnType, String methodName, String[] argName, String[] argClass) {
+    public JavaCodeFragmentBuilder methodBegin(int modifier, String returnType, String methodName, String[] argName, String[] argClass) {
         signature(modifier, returnType, methodName, argName, argClass);
         if (!Modifier.isAbstract(modifier)) {
             openBracket();
         }
+        return this;
     }
 
     /**
@@ -507,7 +546,7 @@ public class JavaCodeFragmentBuilder {
      * @param argName Argument names.
      * @param argClass Argument classes.
      */
-    public void methodBegin(int modifier,
+    public JavaCodeFragmentBuilder methodBegin(int modifier,
             String returnType,
             String methodName,
             String[] argName,
@@ -517,6 +556,7 @@ public class JavaCodeFragmentBuilder {
         if (!Modifier.isAbstract(modifier)) {
             openBracket();
         }
+        return this;
     }
 
     /**
@@ -528,11 +568,10 @@ public class JavaCodeFragmentBuilder {
      * @param methodName
      * @param argName Argument names.
      * @param argClass Argument classes.
-     * @param javaDoc the java documentation for this method signature
-     * @param javaDocAnnotations annotations of the java documentation
      */
-    public void signature(int modifier, String returnType, String methodName, String[] argName, String[] argClass) {
+    public JavaCodeFragmentBuilder signature(int modifier, String returnType, String methodName, String[] argName, String[] argClass) {
         signature(modifier, returnType, methodName, argName, argClass, false);
+        return this;
     }
 
     /**
@@ -544,11 +583,9 @@ public class JavaCodeFragmentBuilder {
      * @param methodName
      * @param argName Argument names.
      * @param argClass Argument classes.
-     * @param javaDoc the java documentation for this method signature
-     * @param javaDocAnnotations annotations of the java documentation
      * @param argFinal indicates if the arguments are prefix be a final modifier
      */
-    public void signature(int modifier,
+    public JavaCodeFragmentBuilder signature(int modifier,
             String returnType,
             String methodName,
             String[] argName,
@@ -556,9 +593,10 @@ public class JavaCodeFragmentBuilder {
             boolean argFinal) {
         signatureInternal(modifier, methodName, new StringAsParameterTypeSupport(argName, argClass, null, returnType),
                 argFinal);
+        return this;
     }
 
-    private void signatureInternal(int modifier,
+    private JavaCodeFragmentBuilder signatureInternal(int modifier,
             String methodName,
             MethodSignatureTypesSupport support,
             boolean argFinal) {
@@ -585,7 +623,7 @@ public class JavaCodeFragmentBuilder {
         append(')');
 
         if (support.getNumberOfExceptionExtensions() == 0) {
-            return;
+            return this;
         }
         append(" throws ");
         for (int i = 0, max = support.getNumberOfExceptionExtensions(); i < max; i++) {
@@ -594,6 +632,7 @@ public class JavaCodeFragmentBuilder {
             }
             support.appendExceptionExtension(i);
         }
+        return this;
     }
 
     /**
@@ -605,10 +644,9 @@ public class JavaCodeFragmentBuilder {
      * @param methodName
      * @param argName Argument names.
      * @param argClass Argument classes.
-     * @param javaDoc the java documentation for this method signature
-     * @param javaDocAnnotations annotations of the java documentation
+     * @param exceptionClasses the thrown exceptions
      */
-    public void signature(int modifier,
+    public JavaCodeFragmentBuilder signature(int modifier,
             String returnType,
             String methodName,
             String[] argName,
@@ -617,6 +655,7 @@ public class JavaCodeFragmentBuilder {
 
         signatureInternal(modifier, methodName, new StringAsParameterTypeSupport(argName, argClass, exceptionClasses,
                 returnType), false);
+        return this;
     }
 
     /**
@@ -633,7 +672,7 @@ public class JavaCodeFragmentBuilder {
      * @param javaDoc the java documentation for this method signature
      * @param javaDocAnnotations annotations of the java documentation
      */
-    public void signature(int modifier,
+    public JavaCodeFragmentBuilder signature(int modifier,
             String returnType,
             String methodName,
             String[] argName,
@@ -643,6 +682,7 @@ public class JavaCodeFragmentBuilder {
 
         javaDoc(javaDoc, javaDocAnnotations);
         signature(modifier, returnType, methodName, argName, argClass);
+        return this;
     }
 
     /**
@@ -650,46 +690,48 @@ public class JavaCodeFragmentBuilder {
      * generated, otherwise a closing bracket. If the method is abstract or not, is determined from
      * the modifier used in the last call to methodBegin().
      */
-    public void methodEnd() {
+    public JavaCodeFragmentBuilder methodEnd() {
         if (Modifier.isAbstract(lastMethodModifier)) {
             fragment.appendln(";");
         } else {
             closeBracket();
         }
         fragment.appendln();
+        return this;
     }
 
     /**
      * Appends the sourcecode for the beginning of a new class at the end of the fragment under
      * construction.
      */
-    public void classBegin(int modifier, String className) {
+    public JavaCodeFragmentBuilder classBegin(int modifier, String className) {
         classBegin(modifier, className, (String)null, null);
+        return this;
     }
 
     /**
      * Appends the sourcecode for the beginning of a new class at the end of the fragment under
      * construction.
      */
-    public void classBegin(int modifier, String className, Class<?> extendsClass, Class<?> interfaces[]) {
+    public JavaCodeFragmentBuilder classBegin(int modifier, String className, Class<?> extendsClass, Class<?> interfaces[]) {
         String extendsClassString = extendsClass == null ? null : extendsClass.getName();
         if (interfaces == null) {
             classBegin(modifier, className, extendsClassString, null);
-            return;
+            return this;
         }
         String[] interfaceNames = new String[interfaces.length];
         for (int i = 0; i < interfaces.length; i++) {
             interfaceNames[i] = interfaces[i].getName();
         }
         classBegin(modifier, className, extendsClassString, interfaceNames);
-
+        return this;
     }
 
     /**
      * Appends the sourcecode for the beginning of a new class at the end of the fragment under
      * construction.
      */
-    public void classBegin(int modifier, String className, String extendsClassName, String interfaces[]) {
+    public JavaCodeFragmentBuilder classBegin(int modifier, String className, String extendsClassName, String interfaces[]) {
 
         fragment.append(Modifier.toString(modifier));
         fragment.append(" class ");
@@ -711,13 +753,14 @@ public class JavaCodeFragmentBuilder {
         fragment.appendln();
         openBracket();
         fragment.appendln();
+        return this;
     }
 
     /**
      * Appends the sourcecode for the beginning of a new enum at the end of the fragment under
      * construction.
      */
-    public void enumBegin(int modifier, String className, String extendsClassName, String interfaces[]) {
+    public JavaCodeFragmentBuilder enumBegin(int modifier, String className, String extendsClassName, String interfaces[]) {
 
         fragment.append(Modifier.toString(modifier));
         fragment.append(" enum ");
@@ -739,28 +782,31 @@ public class JavaCodeFragmentBuilder {
         fragment.appendln();
         openBracket();
         fragment.appendln();
+        return this;
     }
 
     /**
      * Writes the code at the end of a class.
      */
-    public void classEnd() {
+    public JavaCodeFragmentBuilder classEnd() {
         closeBracket();
+        return this;
     }
 
     /**
      * Appends the sourcecode for the beginning of a new interface at the end of the fragment under
      * construction.
      */
-    public void interfaceBegin(String interfaceName) {
+    public JavaCodeFragmentBuilder interfaceBegin(String interfaceName) {
         interfaceBegin(interfaceName, "");
+        return this;
     }
 
     /**
      * Appends the sourcecode for the beginning of a new interface at the end of the fragment under
      * construction.
      */
-    public void interfaceBegin(String interfaceName, String extendsInterfaceName) {
+    public JavaCodeFragmentBuilder interfaceBegin(String interfaceName, String extendsInterfaceName) {
         fragment.append("public interface ");
         fragment.append(interfaceName);
         if (StringUtils.isNotEmpty(extendsInterfaceName)) {
@@ -769,13 +815,14 @@ public class JavaCodeFragmentBuilder {
         }
         fragment.appendln();
         openBracket();
+        return this;
     }
 
     /**
      * Appends the sourcecode for the beginning of a new interface at the end of the fragment under
      * construction.
      */
-    public void interfaceBegin(String interfaceName, String[] extendedInterfaces) {
+    public JavaCodeFragmentBuilder interfaceBegin(String interfaceName, String[] extendedInterfaces) {
         fragment.append("public interface ");
         fragment.append(interfaceName);
         if (extendedInterfaces != null && extendedInterfaces.length > 0) {
@@ -789,6 +836,7 @@ public class JavaCodeFragmentBuilder {
         }
         fragment.appendln();
         openBracket();
+        return this;
     }
 
     /**
@@ -798,9 +846,10 @@ public class JavaCodeFragmentBuilder {
      * @param clazz The class the variable is an instance of
      * @param varName the variable's name.
      */
-    public void varDeclaration(int modifier, Class<?> clazz, String varName) {
+    public JavaCodeFragmentBuilder varDeclaration(int modifier, Class<?> clazz, String varName) {
 
         varDeclaration(modifier, clazz.getName(), varName);
+        return this;
     }
 
     /**
@@ -811,10 +860,11 @@ public class JavaCodeFragmentBuilder {
      * @param varName the variable's name.
      * @param expression the initial value of the variable
      */
-    public void varDeclaration(int modifier, Class<?> clazz, String varName, JavaCodeFragment expression) {
+    public JavaCodeFragmentBuilder varDeclaration(int modifier, Class<?> clazz, String varName, JavaCodeFragment expression) {
 
         varDeclaration(modifier, clazz.getName(), varName, expression);
-    }
+        return this;
+   }
 
     /**
      * Creates a new variable declaration.
@@ -824,7 +874,7 @@ public class JavaCodeFragmentBuilder {
      * @param varName the variable's name.
      * @param expression the initial value of the variable
      */
-    public void varDeclaration(int modifier, String className, String varName, JavaCodeFragment expression) {
+    public JavaCodeFragmentBuilder varDeclaration(int modifier, String className, String varName, JavaCodeFragment expression) {
         if (modifier > 0) {
             fragment.append(Modifier.toString(modifier));
             fragment.append(' ');
@@ -839,7 +889,8 @@ public class JavaCodeFragmentBuilder {
             fragment.append(expression);
         }
         fragment.appendln(";");
-    }
+        return this;
+   }
 
     /**
      * Creates a new variable declaration.
@@ -848,24 +899,27 @@ public class JavaCodeFragmentBuilder {
      * @param className The class' name the variable is an instance of
      * @param varName the variable's name.
      */
-    public void varDeclaration(int modifier, String className, String varName) {
+    public JavaCodeFragmentBuilder varDeclaration(int modifier, String className, String varName) {
         varDeclaration(modifier, className, varName, null);
-    }
+        return this;
+   }
 
     /**
      * Writes a variable definition.
      */
-    public void varDefinition(Class<?> varClass, String varName, String varValue) {
+    public JavaCodeFragmentBuilder varDefinition(Class<?> varClass, String varName, String varValue) {
         varDefinition(varClass.getName(), varName, varValue);
-    }
+        return this;
+   }
 
     /**
      * Writes a variable definition.
      */
-    public void varDefinition(String classOrTypeName, String variableName, String variableValue) {
+    public JavaCodeFragmentBuilder varDefinition(String classOrTypeName, String variableName, String variableValue) {
         fragment.append(classOrTypeName);
         fragment.append(' ');
         assignment(variableName, variableValue);
+        return this;
     }
 
     /**
@@ -875,12 +929,13 @@ public class JavaCodeFragmentBuilder {
      * varName = value;
      * </code>
      */
-    public void assignment(String variable, JavaCodeFragment expression) {
+    public JavaCodeFragmentBuilder assignment(String variable, JavaCodeFragment expression) {
         fragment.append(variable);
         fragment.append(" = ");
         fragment.append(expression);
         fragment.appendln(";");
-    }
+        return this;
+  }
 
     /**
      * Creates a new variable declaration.
@@ -889,35 +944,39 @@ public class JavaCodeFragmentBuilder {
      * varName = value;
      * </code>
      */
-    public void assignment(String variable, String value) {
+    public JavaCodeFragmentBuilder assignment(String variable, String value) {
         fragment.append(variable);
         fragment.append(" = ");
         fragment.append(value);
         fragment.appendln(";");
-    }
+        return this;
+   }
 
-    public void singleLineComment(String comment) {
+    public JavaCodeFragmentBuilder singleLineComment(String comment) {
         fragment.append("// ");
         if (comment != null) {
             fragment.appendln(comment);
         }
-    }
+        return this;
+   }
 
-    public void multiLineComment(String comment) {
+    public JavaCodeFragmentBuilder multiLineComment(String comment) {
         fragment.appendln("/*");
         if (comment != null) {
             fragment.appendln("   ");
             fragment.appendln(comment);
         }
         fragment.appendln("*/");
-    }
+        return this;
+  }
 
     /**
      * Put the given text into a javadoc comment.
      */
-    public void javaDoc(String text) {
+    public JavaCodeFragmentBuilder javaDoc(String text) {
         javaDoc(text, null);
-    }
+        return this;
+  }
 
     /**
      * Puts the given text and annotations into a java doc comment. For an annotation only the
@@ -927,9 +986,9 @@ public class JavaCodeFragmentBuilder {
      * @param text
      * @param annotations
      */
-    public void javaDoc(String text, String[] annotations) {
+    public JavaCodeFragmentBuilder javaDoc(String text, String[] annotations) {
         if (text == null && annotations == null) {
-            return;
+            return this;
         }
         fragment.appendln("/**");
         if (text != null) {
@@ -947,7 +1006,8 @@ public class JavaCodeFragmentBuilder {
             }
         }
         fragment.appendln(" */");
-    }
+        return this;
+   }
 
     /**
      * Writes the annotation and a line separator. For an annotation only the annotation name needs to be specified. The
@@ -955,13 +1015,14 @@ public class JavaCodeFragmentBuilder {
      * 
      * @param annotation
      */
-    public void annotationLn(Class<?> annotation) {
+    public JavaCodeFragmentBuilder annotationLn(Class<?> annotation) {
         if (annotation == null) {
-            return;
+            return this;
         }
         fragment.append("@");
         fragment.appendClassName(annotation);
         fragment.appendln();
+        return this;
     }
 
     /**
@@ -972,11 +1033,12 @@ public class JavaCodeFragmentBuilder {
      * @param params     Parameters for the annotation without paranthesis. If <code>null</code> or an empty String,
      *                   paranthesis aren't added.
      */
-    public void annotationLn(Class<?> annotation, String params) {
+    public JavaCodeFragmentBuilder annotationLn(Class<?> annotation, String params) {
         if (annotation==null) {
-            return;
+            return this;
         }
         annotationLn(annotation.getName(), params);
+        return this;
     }
     
     /**
@@ -995,12 +1057,13 @@ public class JavaCodeFragmentBuilder {
      * @param stringValue The unqoted string value for the parameter. This method generates the quotes.
      * 
      */
-    public void annotationLn(Class<?> annotation, String paramName, String stringValue) {
+    public JavaCodeFragmentBuilder annotationLn(Class<?> annotation, String paramName, String stringValue) {
         if (annotation == null) {
-            return;
+            return this;
         }
         annotationLn(annotation.getName(), paramName, stringValue);
-    }
+        return this;
+   }
 
     /**
      * Writes the annotation with the indicated parameters. '@' character and a line feed will be automatically added.
@@ -1010,10 +1073,10 @@ public class JavaCodeFragmentBuilder {
      * @param params     Parameters for the annotation without paranthesis. If <code>null</code> or an empty String,
      *                   paranthesis aren't added.
      */
-    public void annotationLn(String annotation, String params) {
+    public JavaCodeFragmentBuilder annotationLn(String annotation, String params) {
         if (annotation == null) {
-            return;
-        }
+            return this;
+       }
         fragment.append("@");
         fragment.appendClassName(annotation);
         if (params!=null && params.length()>0) {
@@ -1022,7 +1085,8 @@ public class JavaCodeFragmentBuilder {
             fragment.append(')');
         }
         fragment.appendln();
-    }
+        return this;
+   }
 
     /**
      * Writes the annotation with the indicated parameter of type String. '@' character and a line feed will be automatically added.
@@ -1040,9 +1104,9 @@ public class JavaCodeFragmentBuilder {
      * @param stringValue The unqoted string value for the parameter. This method generates the quotes.
      * 
      */
-    public void annotationLn(String annotation, String paramName, String stringValue) {
+    public JavaCodeFragmentBuilder annotationLn(String annotation, String paramName, String stringValue) {
         if (annotation == null) {
-            return;
+            return this;
         }
         fragment.append("@");
         fragment.appendClassName(annotation);
@@ -1052,6 +1116,7 @@ public class JavaCodeFragmentBuilder {
         fragment.appendQuoted(stringValue);
         fragment.append(')');
         fragment.appendln();
+        return this;
     }
 
     /**
@@ -1071,9 +1136,9 @@ public class JavaCodeFragmentBuilder {
      * @param paramName The name of the parameter
      * @param classValue The class value for the parameter
      */
-    public void annotationLn(String annotation, String paramName, Class<?> classValue) {
+    public JavaCodeFragmentBuilder annotationLn(String annotation, String paramName, Class<?> classValue) {
         if (annotation == null) {
-            return;
+            return this;
         }
         fragment.append("@");
         fragment.appendClassName(annotation);
@@ -1084,6 +1149,7 @@ public class JavaCodeFragmentBuilder {
         fragment.append(".class");
         fragment.append(')');
         fragment.appendln();
+        return this;
     }
 
     /**
@@ -1100,11 +1166,11 @@ public class JavaCodeFragmentBuilder {
      * 
      * @param annotation The annotation class
      * @param paramName The name of the parameter
-     * @param classValue The class value for the parameter
+     * @param qualifiedClassName The class value for the parameter
      */
-    public void annotationClassValueLn(String annotation, String paramName, String qualifiedClassName) {
+    public JavaCodeFragmentBuilder annotationClassValueLn(String annotation, String paramName, String qualifiedClassName) {
         if (annotation == null) {
-            return;
+            return this;
         }
         fragment.append("@");
         fragment.appendClassName(annotation);
@@ -1115,6 +1181,7 @@ public class JavaCodeFragmentBuilder {
         fragment.append(".class");
         fragment.append(')');
         fragment.appendln();
+        return this;
     }
 
     /**
@@ -1123,20 +1190,21 @@ public class JavaCodeFragmentBuilder {
      * 
      * @param annotation The fully qualified annotation name
      */
-    public void annotationLn(String annotation) {
+    public JavaCodeFragmentBuilder annotationLn(String annotation) {
         if (annotation == null) {
-            return;
+            return this;
         }
         fragment.append("@");
         int index = annotation.indexOf('(');
         if (index==-1) {
             fragment.appendClassName(annotation);
             fragment.appendln();
-            return;
+            return this;
         }
         fragment.appendClassName(annotation.substring(0, index));
         fragment.appendln(annotation.substring(index));
-    }
+        return this;
+   }
 
     /**
      * Writes the annotations. For an annotation only the annotation name needs to be specified. The
@@ -1144,14 +1212,15 @@ public class JavaCodeFragmentBuilder {
      * 
      * @param annotations
      */
-    public void annotationLn(Class<?>[] annotations) {
+    public JavaCodeFragmentBuilder annotationLn(Class<?>[] annotations) {
         if (annotations == null) {
-            return;
-        }
+            return this;
+      }
         for (int i = 0; i < annotations.length; i++) {
             annotationLn(annotations[i]);
         }
-    }
+        return this;
+   }
 
     /**
      * Writes the annotations. For an annotation only the annotation name needs to be specified. The
@@ -1159,13 +1228,14 @@ public class JavaCodeFragmentBuilder {
      * 
      * @param annotations
      */
-    public void annotation(String[] annotations) {
+    public JavaCodeFragmentBuilder annotation(String[] annotations) {
         if (annotations == null) {
-            return;
+            return this;
         }
         for (int i = 0; i < annotations.length; i++) {
             annotationLn(annotations[i]);
         }
+        return this;
     }
 
     public String toString() {
