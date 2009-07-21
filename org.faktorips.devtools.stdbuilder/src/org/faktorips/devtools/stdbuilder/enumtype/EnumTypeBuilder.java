@@ -71,7 +71,6 @@ public class EnumTypeBuilder extends DefaultJavaSourceFileBuilder {
     /**
      * {@inheritDoc}
      */
-    @Override
     public boolean isBuilderFor(IIpsSrcFile ipsSrcFile) throws CoreException {
         if (ipsSrcFile.getIpsObjectType().equals(IpsObjectType.ENUM_TYPE)) {
             return true;
@@ -226,7 +225,7 @@ public class EnumTypeBuilder extends DefaultJavaSourceFileBuilder {
         appendLocalizedJavaDoc("SERIALVERSIONUID", enumType, constantBuilder);
         constantBuilder.varDeclaration(Modifier.PUBLIC | Modifier.FINAL | Modifier.STATIC, Long.TYPE,
                 "serialVersionUID", new JavaCodeFragment("1L"));
-        constantBuilder.appendLn(' ');
+        constantBuilder.appendln(' ');
     }
 
     /** Generates the java code for the enum values. */
@@ -484,7 +483,7 @@ public class EnumTypeBuilder extends DefaultJavaSourceFileBuilder {
         DatatypeHelper datatypeHelper = getIpsProject().findDatatypeHelper(enumType.getQualifiedName());
         constantBuilder.varDeclaration(Modifier.PUBLIC | Modifier.STATIC | Modifier.FINAL, datatypeHelper
                 .getJavaClassName(), literalEnumAttributeValue.getValue().toUpperCase(), initExpression);
-        constantBuilder.appendLn(' ');
+        constantBuilder.appendln(' ');
     }
 
     /** Appends the parameter values to an enum value creation code fragment. */
@@ -535,7 +534,7 @@ public class EnumTypeBuilder extends DefaultJavaSourceFileBuilder {
                     DatatypeHelper datatypeHelper = ipsProject.getDatatypeHelper(currentEnumAttribute
                             .findDatatype(ipsProject));
                     attributeBuilder.varDeclaration(modifier, datatypeHelper.getJavaClassName(), codeName);
-                    attributeBuilder.appendLn(' ');
+                    attributeBuilder.appendln(' ');
                 }
             }
         }
@@ -704,7 +703,7 @@ public class EnumTypeBuilder extends DefaultJavaSourceFileBuilder {
                                 .findDatatype(ipsProject));
                         methodBuilder.signature(Modifier.PUBLIC, datatypeHelper.getJavaClassName(), methodName, null,
                                 null);
-                        methodBuilder.appendLn(';');
+                        methodBuilder.appendln(';');
                     }
 
                 } else {

@@ -456,7 +456,7 @@ public class GenAssociationToMany extends GenAssociation {
             }
             methodsBuilder.closeBracket();
         } else {
-            methodsBuilder.appendLn(';');
+            methodsBuilder.appendln(';');
         }
         generateChangeListenerSupportAfterChange(methodsBuilder, ChangeEventType.ASSOCIATION_OBJECT_REMOVED, paramName);
         methodsBuilder.closeBracket();
