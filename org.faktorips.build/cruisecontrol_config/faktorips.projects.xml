@@ -142,10 +142,30 @@
         <!--=====================================================-->
         <!--Project definition: org.faktorips.uml-->
         <!--=====================================================-->           
-        <project name="org.faktorips.uml" mainbuildtarget="uml" 
-            testresult="${workdir}/${project.name}/scripts/">
+        <project name="org.faktorips.uml" mainbuildtarget="uml">
+            <depends>
+                <project name="org.faktorips.devtools.core"/>
+            </depends>
         </project>
-        
+
+        <!--=====================================================-->
+        <!--Project definition: org.faktorips.devtools.ormext-->
+        <!--=====================================================-->           
+        <project name="org.faktorips.devtools.ormext" mainbuildtarget="ormext"> 
+            <depends>
+                <project name="org.faktorips.devtools.core"/>
+            </depends>
+        </project>
+
+        <!--=====================================================-->
+        <!--Project definition: org.faktorips.devtools.ormext.ui-->
+        <!--=====================================================-->           
+        <project name="org.faktorips.devtools.ormext.ui" mainbuildtarget="ormext.ui">
+            <depends>
+                <project name="org.faktorips.devtools.core.ui"/>
+            </depends>
+        </project>
+
         <!--=====================================================-->
         <!--Project definition: org.faktorips.pluginbuilder-->
         <!--=====================================================-->
@@ -169,6 +189,8 @@
                 <cvs module="org.faktorips.devtools.core.ui"/>
                 <cvs module="org.faktorips.devtools.tableconversion"/>
                 <cvs module="org.faktorips.devtools.ant"/>
+                <cvs module="org.faktorips.uml"/>
+                <cvs module="org.faktorips.devtools.ormext"/>
                 
                 <!-- plugin test dependencies-->
                 <cvs module="org.faktorips.devtools.core.test"/>
@@ -177,6 +199,7 @@
                 <cvs module="org.faktorips.devtools.tableconversion.test"/>            
                 <cvs module="org.faktorips.devtools.ant.test"/>            
                 <cvs module="org.faktorips.uml.test"/> 
+                <cvs module="org.faktorips.devtools.ormext.test"/> 
 
                 <!-- customer plugins -->              
                 <cvs module="de.qv.faktorips"/>                               
@@ -211,6 +234,8 @@
                 <cvs module="org.faktorips.devtools.stdbuilder"/>
                 <cvs module="org.faktorips.devtools.core.ui"/>
                 <cvs module="org.faktorips.devtools.ant"/>
+                <cvs module="org.faktorips.uml"/>
+                <cvs module="org.faktorips.devtools.ormext"/>
                 
                 <!-- plugin test dependencies-->
                 <cvs module="org.faktorips.devtools.core.test"/>
@@ -218,6 +243,7 @@
                 <cvs module="org.faktorips.devtools.core.ui.test"/>            
                 <cvs module="org.faktorips.devtools.ant.test"/>            
                 <cvs module="org.faktorips.uml.test"/>  
+                <cvs module="org.faktorips.devtools.ormext.test"/> 
                 
                 <!-- customer plugins -->              
                 <cvs module="de.qv.faktorips"/>  
@@ -245,6 +271,7 @@
             <jvmarg arg="-Dprg=cruise.integrationtest.java5"/>
             <depends>
                 <project name="org.faktorips.pluginbuilder"/>
+<!-- TODO to receive emails add cvs projects -->
             </depends>         
         </project>
 
@@ -261,6 +288,7 @@
             <property name="pluginbuilderTmpDir" value="pluginbuilder_tmp_branch"/>            
             <depends>
                 <project name="org.faktorips.pluginbuilder.v2_2_patches"/>
+<!-- TODO to receive emails add cvs projects -->
             </depends>         
         </project>
 
