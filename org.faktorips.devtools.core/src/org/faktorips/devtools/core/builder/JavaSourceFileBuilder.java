@@ -198,13 +198,6 @@ public abstract class JavaSourceFileBuilder extends AbstractArtefactBuilder {
     /**
      * {@inheritDoc}
      */
-    public boolean isBuilderFor(IIpsSrcFile ipsSrcFile) throws CoreException {
-        return false;
-    }
-
-    /**
-     * {@inheritDoc}
-     */
     public String getName() {
         return StringUtil.unqualifiedName(getClass().getName());
     }

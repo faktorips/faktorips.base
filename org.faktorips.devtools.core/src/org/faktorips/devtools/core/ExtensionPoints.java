@@ -70,8 +70,8 @@ public class ExtensionPoints {
     }
     
     /**
-     * Wrapper around IConfigurationElement.createExecutableExtension(propertyName) with detaied
-     * logging. If the exectuable extension couldn't be created, the reason is logged, no exception
+     * Wrapper around IConfigurationElement.createExecutableExtension(propertyName) with detailed
+     * logging. If the executable extension couldn't be created, the reason is logged, no exception
      * is thrown. The returned object is of the expected type.
      * 
      * @param extension The extension to create an  

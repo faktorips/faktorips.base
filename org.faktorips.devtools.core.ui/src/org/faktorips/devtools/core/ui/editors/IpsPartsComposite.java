@@ -181,7 +181,7 @@ public abstract class IpsPartsComposite extends ViewerButtonComposite implements
      * {@inheritDoc}
      */
     protected Viewer createViewer(Composite parent, UIToolkit toolkit) {
-        table = toolkit.getFormToolkit().createTable(parent, SWT.NONE);
+        table = createTable(parent, toolkit);
         setEditDoubleClickListenerEnabled(true);
         registerOpenLinkListener();
 
@@ -201,6 +201,17 @@ public abstract class IpsPartsComposite extends ViewerButtonComposite implements
         };
 
         return viewer;
+    }
+    
+    /**
+     * Create the table for the viewer in this component. If you want to create another Table for example
+     * a table with a different style you could override this method
+     * @param parent the composite the table is nested in
+     * @param toolkit the toolkit to create the table
+     * @return the new table
+     */
+    protected Table createTable(Composite parent, UIToolkit toolkit) {
+    	return toolkit.getFormToolkit().createTable(parent, SWT.NONE);
     }
 
     /*

@@ -48,6 +48,7 @@ public interface EnumType  {
      * @throws IllegalArgumentException if the index is out of bounce. 
      */
     public EnumValue getEnumValue(int index) throws IndexOutOfBoundsException;
+    
     /**
      * Returns the number of possible values 
      */

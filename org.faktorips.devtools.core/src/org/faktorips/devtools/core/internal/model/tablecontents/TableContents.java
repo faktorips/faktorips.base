@@ -267,9 +267,6 @@ public class TableContents extends TimedIpsObject implements ITableContents {
         addExtensionPropertyValue(propertyId, extPropertyValue);
     }
 
-	/* (non-Javadoc)
-	 * @see org.faktorips.devtools.core.model.IIpsMetaObject#findMetaClass(org.faktorips.devtools.core.model.ipsproject.IIpsProject)
-	 */
 	/**
 	 * {@inheritDoc}
 	 */
@@ -278,9 +275,6 @@ public class TableContents extends TimedIpsObject implements ITableContents {
 		return ipsProject.findIpsSrcFile(IpsObjectType.TABLE_STRUCTURE, getTableStructure());
 	}
 
-	/* (non-Javadoc)
-	 * @see org.faktorips.devtools.core.model.ipsobject.IFixDifferencesToModelSupport#containsDifferenceToModel(org.faktorips.devtools.core.model.ipsproject.IIpsProject)
-	 */
 	/**
 	 * This Method always returns false because differences to model is not supported at the moment
 	 */
@@ -290,9 +284,6 @@ public class TableContents extends TimedIpsObject implements ITableContents {
 		return false;
 	}
 
-	/* (non-Javadoc)
-	 * @see org.faktorips.devtools.core.model.ipsobject.IFixDifferencesToModelSupport#fixAllDifferencesToModel(org.faktorips.devtools.core.model.ipsproject.IIpsProject)
-	 */
 	/**
 	 * This method does nothing because there is nothing to do at the moment
 	 * 
@@ -301,9 +292,6 @@ public class TableContents extends TimedIpsObject implements ITableContents {
 			throws CoreException {
 	}
 
-	/* (non-Javadoc)
-	 * @see org.faktorips.devtools.core.model.IIpsMetaObject#getMetaClass()
-	 */
 	/**
 	 * {@inheritDoc}
 	 */
