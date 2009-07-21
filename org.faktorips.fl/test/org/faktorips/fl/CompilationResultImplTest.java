@@ -58,15 +58,24 @@ public class CompilationResultImplTest extends TestCase {
         set.add("b");
         result.addIdentifiersUsed(set);
         assertEquals(2, result.getResolvedIdentifiers().length);
-        assertEquals("a", result.getResolvedIdentifiers()[0]);
-        assertEquals("b", result.getResolvedIdentifiers()[1]);
+        assertContains("a", result.getResolvedIdentifiers());
+        assertContains("b", result.getResolvedIdentifiers());
 
         result.addIdentifiersUsed(null);
         assertEquals(2, result.getResolvedIdentifiers().length);
-        assertEquals("a", result.getResolvedIdentifiers()[0]);
-        assertEquals("b", result.getResolvedIdentifiers()[1]);
+        assertContains("a", result.getResolvedIdentifiers());
+        assertContains("b", result.getResolvedIdentifiers());
     }
     
+    private void assertContains(String expected, String[] arrayToCheck) {
+        for (int i = 0; i < arrayToCheck.length; i++) {
+            if (expected.equals(arrayToCheck[i])){
+                return;
+            }
+        }
+        fail("Expected value: " + expected + " not in array!");
+    }
+
     public void testAdd() {
         CompilationResultImpl result1 = new CompilationResultImpl();
         
