@@ -117,6 +117,19 @@ public class Message {
     public final static Message newWarning(String code, String text) {
         return new Message(code, text, WARNING);
     }
+    
+    /**
+     * Constructs a new warning message.
+     * 
+     * @param code The code that identifies the message.
+     * @param text The human readable text of the message.
+     * @param invalidObject The invalid object
+     * 
+     * @return The newly created message.
+     */
+    public final static Message newWarning(String code, String text, Object invalidObject) {
+        return new Message(code, text, WARNING, new ObjectProperty[] { new ObjectProperty(invalidObject, null) });
+    }
 
     /**
      * Constructs a new error message.
