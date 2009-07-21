@@ -142,13 +142,33 @@
     </target>
 
 	<target name="uml" depends="updateBuildTemplate" description="builds the 'org.faktorips.uml' project">
-        <property name="cvsUmlmodule" value="org.faktorips.uml"/>
-        <property name="projectUmlDir" value="checkout/"/>
+        <property name="cvsModule" value="org.faktorips.uml"/>
+        <property name="projectDir" value="checkout/"/>
         <!--checkout/update project-->
-        <cvs command="co" package="${cvsUmlmodule}" dest="${projectUmlDir}" cvsroot="${cvsroot}" quiet="true"/>
+        <cvs command="co" package="${cvsModule}" dest="${projectDir}" cvsroot="${cvsroot}" quiet="true"/>
         <!--Call the target that does everything-->
-        <ant dir="${projectUmlDir}/${cvsUmlmodule}/build/" antfile="build.xml" target="clean"/>
-        <ant dir="${projectUmlDir}/${cvsUmlmodule}/build/" antfile="build.xml" target="buildjar"/>
+        <ant dir="${projectDir}/${cvsModule}/build/" antfile="build.xml" target="clean"/>
+        <ant dir="${projectDir}/${cvsModule}/build/" antfile="build.xml" target="buildjar"/>
+    </target>
+
+	<target name="ormext" depends="updateBuildTemplate" description="builds the 'org.faktorips.devtools.ormext' project">
+        <property name="cvsModule" value="org.faktorips.devtools.ormext"/>
+        <property name="projectDir" value="checkout/"/>
+        <!--checkout/update project-->
+        <cvs command="co" package="${cvsModule}" dest="${projectDir}" cvsroot="${cvsroot}" quiet="true"/>
+        <!--Call the target that does everything-->
+        <ant dir="${projectDir}/${cvsModule}/build/" antfile="build.xml" target="clean"/>
+        <ant dir="${projectDir}/${cvsModule}/build/" antfile="build.xml" target="buildjar"/>
+    </target>
+
+	<target name="ormext.ui" depends="updateBuildTemplate" description="builds the 'org.faktorips.devtools.ormext.ui' project">
+        <property name="cvsModule" value="org.faktorips.devtools.ormext.ui"/>
+        <property name="projectDir" value="checkout/"/>
+        <!--checkout/update project-->
+        <cvs command="co" package="${cvsModule}" dest="${projectDir}" cvsroot="${cvsroot}" quiet="true"/>
+        <!--Call the target that does everything-->
+        <ant dir="${projectDir}/${cvsModule}/build/" antfile="build.xml" target="clean"/>
+        <ant dir="${projectDir}/${cvsModule}/build/" antfile="build.xml" target="buildjar"/>
     </target>
 	
     <!--============================================================================================-->
@@ -253,6 +273,16 @@
         <cvs command="co" package="org.faktorips.uml" dest="${projectsRootDir}" cvsroot="${cvsroot}" quiet="true" tag="${cvsTag}"/>
         <cvs command="co" package="org.faktorips.uml.nl1" dest="${projectsRootDir}" cvsroot="${cvsroot}" quiet="true" tag="${cvsTag}"/>
         <cvs command="co" package="org.faktorips.uml.test" dest="${projectsRootDir}" cvsroot="${cvsroot}" quiet="true" tag="${cvsTag}"/>
+    	
+    	<!-- checkout faktorips ormext plugins and feature -->
+        <cvs command="co" package="org.faktorips.ormext.feature" dest="${projectsRootDir}" cvsroot="${cvsroot}" quiet="true" tag="${cvsTag}"/>
+        <cvs command="co" package="org.faktorips.ormext.feature.nls1" dest="${projectsRootDir}" cvsroot="${cvsroot}" quiet="true" tag="${cvsTag}"/>
+        <cvs command="co" package="org.faktorips.ormext.feature.test" dest="${projectsRootDir}" cvsroot="${cvsroot}" quiet="true" tag="${cvsTag}"/>
+        <cvs command="co" package="org.faktorips.devtools.ormext" dest="${projectsRootDir}" cvsroot="${cvsroot}" quiet="true" tag="${cvsTag}"/>
+        <cvs command="co" package="org.faktorips.devtools.ormext.ui" dest="${projectsRootDir}" cvsroot="${cvsroot}" quiet="true" tag="${cvsTag}"/>
+        <cvs command="co" package="org.faktorips.devtools.ormext.test" dest="${projectsRootDir}" cvsroot="${cvsroot}" quiet="true" tag="${cvsTag}"/>
+        <cvs command="co" package="org.faktorips.nls.devtools.ormext.nl1" dest="${projectsRootDir}" cvsroot="${cvsroot}" quiet="true" tag="${cvsTag}"/>
+        <cvs command="co" package="org.faktorips.nls.devtools.ormext.ui.nl1" dest="${projectsRootDir}" cvsroot="${cvsroot}" quiet="true" tag="${cvsTag}"/>
 
     	<!-- checkout de.qv.faktorips.feature and plugin -->
     	<cvs command="co" package="de.qv.faktorips.feature" dest="${projectsRootDir}" cvsroot="${cvsroot}" quiet="true" tag="${cvsTag}"/>
