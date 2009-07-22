@@ -561,7 +561,8 @@ createAndAddLicensePdf()
       if [ ! -f $i ] ; then continue ; fi 
       echo "add license to: "$i
       zip -ujD $i $PROJECTSROOTDIR/$LIZENZ_PDF > /dev/null 2>&1
-      zip -ujD $i $PROJECTSROOTDIR/$DATENSCHUTZ_PDF > /dev/null 2>&1
+      ## note: the Datenschutzbestimmung is not necessary in the archive file
+      ## zip -ujD $i $PROJECTSROOTDIR/$DATENSCHUTZ_PDF > /dev/null 2>&1
       if [ ! $? -eq 0 ] ; then
         echo "error adding lizenz.pdf or datenschutz.pdf to archive: "$i
         exit 1
